@@ -46,15 +46,11 @@ export interface TableViewItem {
  * (including sorting, pagination, and filtering).
  */
 export class TableViewDataSource extends DataSource<TableViewItem> {
-  data: TableViewItem[] = [];
+  data: TableViewItem[];
 
-  constructor(private paginator: MatPaginator, private sort: MatSort, private d?) {
+  constructor(private paginator: MatPaginator, private sort: MatSort, private inData: TableViewItem[]) {
     super();
-    this.data = d || [];
-  }
-
-  loadData(data){
-    this.data = data;
+    this.data = inData;
   }
 
   /**

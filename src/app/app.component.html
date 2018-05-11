@@ -1,8 +1,6 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
+<div *ngIf="data" style="float:left; width:80%; height: 100%; position: fixed; overflow-y: scroll;">
+  <table-view (selected)="onSelected($event)" [data]="data"></table-view>
 </div>
-
-<table-view></table-view>
+<div style="float:right; width:20%; height: 100%; display:flex">
+  <node-view [node]="selectedNode"></node-view>
+</div>

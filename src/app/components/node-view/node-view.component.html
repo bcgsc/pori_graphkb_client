@@ -1,0 +1,19 @@
+<mat-card class="node-view">
+    <mat-list class="myList">
+        <mat-list-item>Class: {{node.class}}</mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item>Source ID: {{node.sourceId}}</mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item>Created By: {{node.createdBy}}</mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item>RID: {{node.rid}}</mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item>Name: {{node.name}}</mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item>Description: {{node.description || 'none'}}</mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item>Version: {{node.version}}</mat-list-item>
+        <mat-divider></mat-divider>
+        <mat-list-item>Source: {{node.source}}</mat-list-item>
+    </mat-list>
+</mat-card>

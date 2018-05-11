@@ -8,11 +8,13 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatGridListModule, MatCardModule, MatMenuModule, MatTableModule, MatPaginatorModule, MatSortModule } from '@angular/material';
 import { TableViewComponent } from './components/table-view/table-view.component';
 import { KBService } from './services/kb.service';
+import { NodeViewComponent } from './components/node-view/node-view.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    TableViewComponent
+    TableViewComponent,
+    NodeViewComponent
   ],
   imports: [
     BrowserModule,

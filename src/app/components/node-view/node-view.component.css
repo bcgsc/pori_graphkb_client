@@ -1,0 +1,26 @@
+.node-view{
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+}
+mat-list{
+    flex:1;
+    height: auto;
+    
+}
+mat-list-item{
+    flex:1;
+    height: auto;
+    
+}
+mat-divider{
+    flex:1;
+    height: auto;
+    
+}
+.myList .mat-list-item{
+    padding: 8px;
+    height: auto;
+    width: inherit;
+}

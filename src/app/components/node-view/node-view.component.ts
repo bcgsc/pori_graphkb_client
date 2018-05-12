@@ -22,7 +22,7 @@ export class NodeViewComponent {
     this.snackBar.open('Child added!');
   }
   editSelected(){
-    this.edit();
+    this.enterEdit();
     this._editing = true;
     this.editing.emit(true);
   }
@@ -42,7 +42,7 @@ export class NodeViewComponent {
     this.editing.emit(false);
   }
 
-  edit(){
+  enterEdit(){
     this._temp = {
       class: this.node.class,
       sourceId: this.node.sourceId,

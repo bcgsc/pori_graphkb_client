@@ -40,11 +40,11 @@ export class AppComponent {
       });
 
       this.data = temp;
+      this.selectedNode = this.data[0];
     });
   }
 
   onSelected(selected: TableViewItem){
-    console.log(selected);
     this.selectedNode = selected;
   }
 }

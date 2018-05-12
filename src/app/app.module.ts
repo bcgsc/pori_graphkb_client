@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
+import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -9,6 +10,7 @@ import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, Mat
 import { TableViewComponent } from './components/table-view/table-view.component';
 import { KBService } from './services/kb.service';
 import { NodeViewComponent } from './components/node-view/node-view.component';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,9 @@ import { NodeViewComponent } from './components/node-view/node-view.component';
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
-    HttpModule
+    HttpModule,
+    MatSnackBarModule,
+    FormsModule
   ],
   providers: [KBService],
   bootstrap: [AppComponent]

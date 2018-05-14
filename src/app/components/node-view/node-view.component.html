@@ -1,49 +1,49 @@
 <mat-card>
+    <mat-list class="myList">
+        <mat-list-item>Class: {{node.class}}</mat-list-item>
+
+        <mat-divider></mat-divider>
+
+        <mat-list-item>Source ID: {{node.sourceId}}</mat-list-item>
+
+        <mat-divider></mat-divider>
+
+        <mat-list-item>Created By: {{node.createdBy}}</mat-list-item>
+
+        <mat-divider></mat-divider>
+
+        <mat-list-item>RID: {{node.rid}}</mat-list-item>
+
+        <mat-divider></mat-divider>
+
+        <mat-list-item *ngIf="!_editing">Name: {{node.name}}</mat-list-item>
+        <input *ngIf="_editing" matInput placeholder="Name" [(ngModel)]="_temp.name"> <!--//TODO: style these-->
+        
+        <mat-divider></mat-divider>
+
+        <mat-list-item *ngIf="!_editing">Description: {{node.description || 'none'}}</mat-list-item>
+        <input *ngIf="_editing" matInput placeholder="Description" [(ngModel)]="_temp.description">
+        
+        <mat-divider></mat-divider>
+        
+        <mat-list-item>Version: {{node.version}}</mat-list-item>
+        
+        <mat-divider></mat-divider>
+        
+        <mat-list-item>Source: {{node.source}}</mat-list-item>
+        
+        <mat-divider></mat-divider>
+
+    </mat-list>
+
     <div *ngIf="!_editing">
-        <mat-list class="myList">
-            <mat-list-item>Class: {{node.class}}</mat-list-item>
-            <mat-divider></mat-divider>
-            <mat-list-item>Source ID: {{node.sourceId}}</mat-list-item>
-            <mat-divider></mat-divider>
-            <mat-list-item>Created By: {{node.createdBy}}</mat-list-item>
-            <mat-divider></mat-divider>
-            <mat-list-item>RID: {{node.rid}}</mat-list-item>
-            <mat-divider></mat-divider>
-            <mat-list-item>Name: {{node.name}}</mat-list-item>
-            <mat-divider></mat-divider>
-            <mat-list-item>Description: {{node.description || 'none'}}</mat-list-item>
-            <mat-divider></mat-divider>
-            <mat-list-item>Version: {{node.version}}</mat-list-item>
-            <mat-divider></mat-divider>
-            <mat-list-item>Source: {{node.source}}</mat-list-item>
-            <mat-divider></mat-divider>
-            
-        </mat-list>
         <button mat-button (click)="addChild()">Add Child</button>
         <button mat-button (click)="editSelected()">Edit Properties</button>
         <button mat-button (click)="deleteSelected()">Delete Node</button>
     </div>
 
     <div *ngIf="_editing">
-        <mat-list class="myList">
-            <mat-list-item>Class: {{node.class}}</mat-list-item>
-            <mat-divider></mat-divider>
-            <mat-list-item>Source ID: {{node.sourceId}}</mat-list-item>
-            <mat-divider></mat-divider>
-            <mat-list-item>Created By: {{node.createdBy}}</mat-list-item>
-            <mat-divider></mat-divider>
-            <mat-list-item>RID: {{node.rid}}</mat-list-item>
-            <mat-divider></mat-divider>
-            <input matInput placeholder="Name" [(ngModel)]="_temp.name">
-            <mat-divider></mat-divider>
-            <input matInput placeholder="Description" [(ngModel)]="_temp.description" >
-            <mat-divider></mat-divider>
-            <mat-list-item>Version: {{node.version}}</mat-list-item>
-            <mat-divider></mat-divider>
-            <mat-list-item>Source: {{node.source}}</mat-list-item>
-        </mat-list>
         <button mat-button (click)="doneEdit()">Done</button>
         <button mat-button (click)="cancelEdit()">Cancel</button>
-
     </div>
 </mat-card>

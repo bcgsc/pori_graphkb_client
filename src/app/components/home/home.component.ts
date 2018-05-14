@@ -12,11 +12,13 @@ import * as jc from 'json-cycle';
 export class HomeComponent {  
   title = 'Ontologyweb';
   data: TableViewItem[];
+  private _data: TableViewItem[];
   selectedNode: TableViewItem;
 
   constructor(private api: APIService) {
     this.api.getJSON('../../assets/get_diseases.body_expanded.json').subscribe((json) => {
       this.data = [];
+      this._data = [];
       json = jc.retrocycle(json);
 
       json.forEach(element => {
@@ -38,6 +40,7 @@ export class HomeComponent {
             version: element['@version'],
           }
           this.data.push(entry);
+          this._data.push(entry);
       });
 
       this.selectedNode = this.data[0];

@@ -1,0 +1,15 @@
+.mat-row:hover{
+    background-color: lightsteelblue;
+    background-color: rgba(214,219,245,0.8);
+    cursor: pointer;
+}
+
+.mat-column-class{
+    flex: 0 0 10%;
+}
+.mat-column-sourceId{
+    flex: 0 0 13%;
+}
+.mat-column-createdBy{
+    flex: 0 0 10%;
+}

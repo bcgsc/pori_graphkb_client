@@ -1,35 +1,35 @@
 <div class="mat-elevation-z8">
-  <mat-table #table [dataSource]="dataSource" matSort aria-label="Elements">
+  <mat-table #table [dataSource]="dataSource" matSort >
 
     <!-- Id Column -->
     <ng-container matColumnDef="class">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Class</mat-header-cell>
-      <mat-cell (click)="onClick($event, row)" *matCellDef="let row">{{row.class}}</mat-cell>
+      <mat-cell *matCellDef="let row">{{row.class}}</mat-cell>
     </ng-container>
 
     <!-- Name Column -->
     <ng-container matColumnDef="sourceId">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Source ID</mat-header-cell>
-      <mat-cell (click)="onClick($event, row)" *matCellDef="let row">{{row.sourceId}}</mat-cell>
+      <mat-cell *matCellDef="let row">{{row.sourceId}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="createdBy">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Created By</mat-header-cell>
-      <mat-cell (click)="onClick($event, row)" *matCellDef="let row">{{row.createdBy}}</mat-cell>
+      <mat-cell *matCellDef="let row">{{row.createdBy}}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
-      <mat-cell (click)="onClick($event, row)" *matCellDef="let row">{{row.name}}</mat-cell> <!--CSS class for each to set width, etc-->
+      <mat-cell *matCellDef="let row">{{row.name}}</mat-cell> <!--CSS class for each to set width, etc-->
     </ng-container>
 
     <ng-container matColumnDef="rid-version">
       <mat-header-cell *matHeaderCellDef mat-sort-header>RID</mat-header-cell>
-      <mat-cell (click)="onClick($event, row)" *matCellDef="let row">{{row.rid +' v'+row.version}}</mat-cell>
+      <mat-cell *matCellDef="let row">{{row.rid +' v'+row.version}}</mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    <mat-row class="mat-row" (click)="onClick($event, row)" *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
 
   <mat-paginator #paginator [length]="dataSource.data.length" [pageIndex]="0" [pageSize]="50" [pageSizeOptions]="[25, 50, 100, 250]">

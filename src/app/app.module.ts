@@ -1,22 +1,30 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-
-import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatGridListModule, MatCardModule, MatMenuModule, MatTableModule, MatPaginatorModule, MatSortModule } from '@angular/material';
-import { TableViewComponent } from './components/table-view/table-view.component';
-import { KBService } from './services/kb.service';
-import { NodeViewComponent } from './components/node-view/node-view.component';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
+import { AppComponent } from './app.component';
+import { NodeViewComponent } from './components/node-view/node-view.component';
+import { TableViewComponent } from './components/table-view/table-view.component';
+import { BannerViewComponent } from './components/banner-view/banner-view.component';
+import { HomeComponent } from './components/home/home.component';
+
+import { APIService } from './services/api.service';
+import { AuthService } from './services/auth.service';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { APIInterceptor } from './services/api.interceptor';
+import { AppRoutingModule } from './/app-routing.module';
 @NgModule({
   declarations: [
     AppComponent,
     TableViewComponent,
-    NodeViewComponent
+    NodeViewComponent,
+    BannerViewComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,
@@ -33,11 +41,20 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
-    HttpModule,
+    HttpClientModule,
     MatSnackBarModule,
-    FormsModule
+    FormsModule,
+    AppRoutingModule
   ],
-  providers: [KBService],
+  providers: [
+    APIService, 
+    AuthService, 
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: APIInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,4 +1,4 @@
-<mat-card class="node-view">
+<mat-card>
     <div *ngIf="!_editing">
         <mat-list class="myList">
             <mat-list-item>Class: {{node.class}}</mat-list-item>
@@ -16,6 +16,8 @@
             <mat-list-item>Version: {{node.version}}</mat-list-item>
             <mat-divider></mat-divider>
             <mat-list-item>Source: {{node.source}}</mat-list-item>
+            <mat-divider></mat-divider>
+            
         </mat-list>
         <button mat-button (click)="addChild()">Add Child</button>
         <button mat-button (click)="editSelected()">Edit Properties</button>

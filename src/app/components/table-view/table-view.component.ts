@@ -1,18 +1,19 @@
 import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { TableViewDataSource, TableViewItem } from './table-view-datasource';
-import { KBService } from '../../services/kb.service';
+import { APIService } from '../../services/api.service';
 import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'table-view',
   templateUrl: './table-view.component.html',
-  styleUrls: ['./table-view.component.css'],
-  providers: [KBService]
+  styleUrls: ['./table-view.component.scss'],
+  providers: [APIService]
 })
 export class TableViewComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  
   @Input('data') data: TableViewItem[];
   @Output() selected = new EventEmitter<TableViewItem>();
   dataSource: TableViewDataSource;
@@ -20,7 +21,7 @@ export class TableViewComponent implements OnInit {
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['class', 'sourceId', 'createdBy', 'name', 'rid-version'];
   
-  constructor(private kbservice: KBService, private changeDetectorRefs: ChangeDetectorRef) { }
+  constructor() { }
 
   ngOnInit() {
     this.dataSource = new TableViewDataSource(this.paginator, this.sort, this.data);
@@ -28,5 +29,6 @@ export class TableViewComponent implements OnInit {
 
   onClick(e, row: TableViewItem) {
       this.selected.emit(row);
+
   }
 }

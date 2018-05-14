@@ -1,48 +1,46 @@
 import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { TableViewItem } from '../table-view/table-view-datasource';
-import { MatSnackBar} from '@angular/material';
+import { MatSnackBar } from '@angular/material';
 import { Output } from '@angular/core';
 import { EventEmitter } from '@angular/core';
-@Component({  
+@Component({
   selector: 'node-view',
-  templateUrl:'./node-view.component.html',
-  styleUrls: ['./node-view.component.css'],
+  templateUrl: './node-view.component.html',
+  styleUrls: ['./node-view.component.scss'],
   providers: [MatSnackBar],
 })
 export class NodeViewComponent {
   @Input('node') node: TableViewItem;
   @Output() changed = new EventEmitter<TableViewItem>();
-  @Output() editing = new EventEmitter<boolean>();
+  @Output() added = new EventEmitter<TableViewItem>();
+  @Output() deleted = new EventEmitter<TableViewItem>();
+  
   private _editing = false;
   private _temp: TableViewItem;
 
-  constructor(public snackBar:MatSnackBar){}
+  constructor(public snackBar: MatSnackBar) { }
 
-  addChild(){
-    this.snackBar.open('Child added!');
+  addChild() {
+    this.snackBar.open('Child added!', undefined, { duration: 1000 });
   }
-  editSelected(){
+  editSelected() {
     this.enterEdit();
     this._editing = true;
-    this.editing.emit(true);
   }
-  deleteSelected(){
-    this.snackBar.open('Goodbye!');        
+  deleteSelected() {
+    this.snackBar.open('Goodbye!', undefined, { duration: 1000 });
   }
-  doneEdit(){
-    this.recall();    
-    console.log(this.node.description);
+  doneEdit() {
+    this.recall();
     this.node.version++;
     this.changed.emit(this.node);
     this._editing = false;
-    this.editing.emit(false);
   }
-  cancelEdit(){
+  cancelEdit() {
     this._editing = false;
-    this.editing.emit(false);
   }
 
-  enterEdit(){
+  enterEdit() {
     this._temp = {
       class: this.node.class,
       sourceId: this.node.sourceId,
@@ -54,8 +52,8 @@ export class NodeViewComponent {
       version: this.node.version,
     }
   }
-  
-  recall(){
+
+  recall() {
     this.node = this._temp;
   }
 

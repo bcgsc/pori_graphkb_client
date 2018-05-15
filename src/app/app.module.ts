@@ -10,8 +10,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AppComponent } from './app.component';
 import { NodeViewComponent } from './components/node-view/node-view.component';
 import { TableViewComponent } from './components/table-view/table-view.component';
-import { BannerViewComponent } from './components/banner-view/banner-view.component';
-import { HomeComponent } from './components/home/home.component';
+import { TreeViewComponent } from './components/tree-view/tree-view.component';
 
 import { APIService } from './services/api.service';
 import { AuthService } from './services/auth.service';
@@ -23,8 +22,7 @@ import { AppRoutingModule } from './/app-routing.module';
     AppComponent,
     TableViewComponent,
     NodeViewComponent,
-    BannerViewComponent,
-    HomeComponent
+    TreeViewComponent
   ],
   imports: [
     BrowserModule,

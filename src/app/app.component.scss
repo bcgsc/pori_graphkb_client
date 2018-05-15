@@ -1,8 +1,8 @@
 @import './styles/variables';
 
 .banner{
-    width: 100%;
-    height: 14%;
+    width: 100vw;
+    height: 14vh;
     display: block;
     @if($testing){
         height: calc(14% - 2px);

@@ -1,5 +1,31 @@
+@import '../../styles/variables';
+
+.node-view {
+    float:right;     
+    width: 25vw;
+    height: $panels-height;
+    display: flex;
+    flex-direction: column;
+}
+
+.data-view{
+    max-width: 80vw;
+    height: $panels-height;
+    margin-left: 10vw;
+    margin-right: 10vw; 
+    display: flex;
+    justify-content: center;
+}
+
+.mat-elevation-z8 {
+    float: left; 
+    width: 55vw; 
+    height: $panels-height;
+    overflow: scroll;
+    font-size: 90%;
+}
+
 .mat-row:hover{
-    background-color: lightsteelblue;
     background-color: rgba(214,219,245,0.8);
     cursor: pointer;
 }

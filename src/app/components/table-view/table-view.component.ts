@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { TableViewDataSource, TableViewItem } from './table-view-datasource';
 import { APIService } from '../../services/api.service';
@@ -12,51 +12,31 @@ import { NodeViewComponent } from '../node-view/node-view.component';
   styleUrls: ['./table-view.component.scss'],
   providers: [APIService]
 })
-export class TableViewComponent implements OnInit {
+export class TableViewComponent implements OnInit, AfterViewInit {
+ 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  @ViewChild(NodeViewComponent) node;
+
+  @Output() selected = new EventEmitter<TableViewItem>();
   
-  private data;
+  @Input() data;
   dataSource: TableViewDataSource;
-  private selectedNode = {};
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['rid-version','class', 'sourceId', 'createdBy', 'name', 'subsets'];
   
-  constructor(private api: APIService) { }
+  constructor(private api: APIService) { 
+  }
 
   ngOnInit() {
-    this.api.testGetDiseases().subscribe(d => console.log(d));
-    this.data = [];    
-    this.dataSource = new TableViewDataSource(this.paginator, this.sort, this.data);
-    this.api.getJSON('../../assets/get_diseases.body_expanded.json').subscribe((json) => {
-      json = jc.retrocycle(json);
+    this.dataSource = new TableViewDataSource(this.paginator, this.sort, this.data);    
+  }
 
-      json.forEach(element => {
-
-          let entry: TableViewItem = {
-            class: element['@class'],
-            sourceId: element['sourceId'],
-            createdBy: element['createdBy']['name'],
-            name: element['name'],
-            description: element['description'],
-            source: element['source'],
-            rid: element['@rid'],
-            version: element['@version'],
-            subsets: element['subsets'],
-          }
-          this.data.push(entry);
-      });
-
-      // this.selectedNode = this.data2[0];
-      this.node.node = this.data[0];
-      this.dataSource = new TableViewDataSource(this.paginator, this.sort, this.data);
-    });
+  ngAfterViewInit(): void {
   }
 
   onClick(e, row: TableViewItem) {
-    this.selectedNode = row;
+    this.selected.emit(row);
   }
 
   onEdit(edited: TableViewItem){

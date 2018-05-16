@@ -6,11 +6,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatGridListModule, MatCardModule, MatMenuModule, MatTableModule, MatPaginatorModule, MatSortModule } from '@angular/material';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatFormFieldModule} from '@angular/material/form-field';
 
 import { AppComponent } from './app.component';
 import { NodeViewComponent } from './components/node-view/node-view.component';
 import { TableViewComponent } from './components/table-view/table-view.component';
 import { TreeViewComponent } from './components/tree-view/tree-view.component';
+import { DataHubComponent } from './components/data-hub/data-hub.component';
+import { QueryViewComponent } from './components/query-view/query-view.component';
 
 import { APIService } from './services/api.service';
 import { AuthService } from './services/auth.service';
@@ -24,6 +28,8 @@ import { SubsetsPipe } from'./pipes/subsets.pipe';
     TableViewComponent,
     NodeViewComponent,
     TreeViewComponent,
+    DataHubComponent,
+    QueryViewComponent,
     SubsetsPipe
   ],
   imports: [
@@ -44,7 +50,9 @@ import { SubsetsPipe } from'./pipes/subsets.pipe';
     HttpClientModule,
     MatSnackBarModule,
     FormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    MatTabsModule,
+    MatFormFieldModule
   ],
   providers: [
     APIService, 

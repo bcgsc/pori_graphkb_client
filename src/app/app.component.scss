@@ -4,21 +4,14 @@
     width: 100vw;
     height: 14vh;
     display: block;
+    background-color: #1F2B65;
+    margin-bottom: 1%;    
     @if($testing){
         height: calc(14% - 2px);
     }
 }
-.margin-workaround {
-    display: block;
-    height: 85%;
-    bottom: 15%;
-    background-color: #1F2B65;
-    position: relative;
-}
 .link{
+    margin: 20px;
     font-family: 'Courier New', Courier, monospace;
     color:aliceblue; 
-    position: absolute; 
-    bottom: 10%;
-    left: 0.35em;
 }

@@ -20,4 +20,8 @@ export class APIService {
         
         return this.http.get(API_ENDPOINT + "/diseases", {params: params});
     }
+
+    public query(params){
+        console.log(params);
+    }
 }

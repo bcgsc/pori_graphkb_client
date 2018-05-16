@@ -1,0 +1,25 @@
+$position: 60vh;
+
+.main-search{
+    width: 40vw;
+    vertical-align: middle;
+}
+
+.search-wrapper{
+    text-align: center;
+    margin: auto;
+    width: 100vw;
+    height: $position;
+    line-height: $position;
+}
+
+.advanced-button{
+    display: block;
+    margin: auto;
+    text-align: center;
+}
+
+a{
+    text-decoration: none;
+    color:black;    
+}

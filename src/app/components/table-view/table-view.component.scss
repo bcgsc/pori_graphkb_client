@@ -1,44 +1,5 @@
 @import '../../styles/variables';
 
-.node-view {
-    float:right;     
-    width: 25vw;
-    max-height: $panels-height;
-    display: flex;
-    flex-direction: column;
-}
-
-.data-view{
-    width: 90%;
-    max-height: $panels-height;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 1vh;
-    display: flex;
-    justify-content: center;
-}
-
-.mat-elevation-z8 {
-    float: left;
-    width: 65vw;
-    max-height: $panels-height;
-    overflow-y: scroll;
-}
-
-@media only screen and (max-width: 600px){
-    .mat-elevation-z8{
-        width: 90vw;
-        max-height: 45vh;
-    }
-    .node-view{
-        width: 90vw;
-        max-height: 41vh;
-    }
-    .data-view{
-        display: block;
-    }
-}
-
 .mat-row{
     width: auto;
 }

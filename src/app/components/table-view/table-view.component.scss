@@ -24,6 +24,21 @@
     max-height: $panels-height;
     overflow-y: scroll;
 }
+
+@media only screen and (max-width: 600px){
+    .mat-elevation-z8{
+        width: 90vw;
+        max-height: 45vh;
+    }
+    .node-view{
+        width: 90vw;
+        max-height: 41vh;
+    }
+    .data-view{
+        display: block;
+    }
+}
+
 .mat-row{
     width: auto;
 }

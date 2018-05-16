@@ -23,10 +23,13 @@ export class APIInterceptor implements HttpInterceptor {
         if (this.auth.getToken()) {
             request = request.clone({
                 setHeaders: {
-                    Authorization: 'Bearer ' + this.auth.getToken()
+                    Authorization: this.auth.getToken(),
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, DELETE, PUT, PATCH'
                 }
             });
         }
+        console.log(request);        
 
         return next.handle(request).do((event: HttpEvent<any>) => {
             if (event instanceof HttpResponse) {

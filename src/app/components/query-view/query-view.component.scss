@@ -13,6 +13,18 @@ $position: 60vh;
     line-height: $position;
 }
 
+.adv-wrapper{
+    text-align: center;
+    margin: auto;
+    width: 60vw;
+    
+    mat-form-field{
+        display: block;
+        margin: auto;
+        width: 30%;
+    }
+}
+
 .advanced-button{
     display: block;
     margin: auto;

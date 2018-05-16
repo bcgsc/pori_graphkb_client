@@ -24,6 +24,19 @@ export interface DiseaseParams {
 export class QueryViewComponent {
   private adv: boolean = false;
   private params: DiseaseParams;
+  private paramKeys = [
+    'name',
+    'source',
+    'sourceId',
+    'sourceVersion',
+    'longName',
+    'sourceIdVersion',
+    'limit',
+    'returnProperties',
+    'ancestors',
+    'descendants',
+    'fuzzyMatch'
+  ];
 
   constructor(private api: APIService) {
     this.params = {
@@ -40,16 +53,19 @@ export class QueryViewComponent {
       fuzzyMatch: 0
     }
   }
-  
+
   advanced() {
     this.adv = !this.adv;
   }
 
+  simpleQuery() {
+    if (this.params.name) this.api.query({ name: this.params.name });
+  }
   query() {
     let filteredParams = {};
 
     Object.keys(this.params).forEach(key => {
-      if(this.params[key]) filteredParams[key] = this.params[key];
+      if (this.params[key]) filteredParams[key] = this.params[key];
     });
 
     this.api.query(filteredParams);

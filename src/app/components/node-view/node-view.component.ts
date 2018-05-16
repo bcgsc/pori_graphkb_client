@@ -31,6 +31,7 @@ export class NodeViewComponent {
     this.snackBar.open('Goodbye!', undefined, { duration: 1000 });
   }
   doneEdit() {
+    console.log(this._temp);
     this.recall();
     this.node.version++;
     this.changed.emit(this.node);
@@ -50,6 +51,7 @@ export class NodeViewComponent {
       source: this.node.source,
       rid: this.node.rid,
       version: this.node.version,
+      subsets: this.node.subsets
     }
   }
 

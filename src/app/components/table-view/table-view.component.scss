@@ -3,39 +3,50 @@
 .node-view {
     float:right;     
     width: 25vw;
-    height: $panels-height;
+    max-height: $panels-height;
     display: flex;
     flex-direction: column;
 }
 
 .data-view{
-    max-width: 80vw;
-    height: $panels-height;
-    margin-left: 10vw;
-    margin-right: 10vw; 
+    width: 90%;
+    max-height: $panels-height;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1vh;
     display: flex;
     justify-content: center;
 }
 
 .mat-elevation-z8 {
-    float: left; 
-    width: 55vw; 
-    height: $panels-height;
-    overflow: scroll;
-    font-size: 90%;
+    float: left;
+    width: 65vw;
+    max-height: $panels-height;
+    overflow-y: scroll;
 }
-
+.mat-row{
+    width: auto;
+}
 .mat-row:hover{
     background-color: rgba(214,219,245,0.8);
     cursor: pointer;
 }
 
 .mat-column-class{
-    flex: 0 0 10%;
+    flex: 0 0 100px;
 }
 .mat-column-sourceId{
-    flex: 0 0 13%;
+    flex: 0 0 100px;
 }
 .mat-column-createdBy{
-    flex: 0 0 10%;
+    flex: 0 0 100px;    
+}
+.mat-column-rid-version{
+    flex: 0 0 100px;
+}
+.mat-column-name{
+    flex: 0 0 300px;    
+}
+.mat-column-subsets{
+    flex: 0 0 400px;
 }

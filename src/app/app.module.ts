@@ -16,13 +16,15 @@ import { APIService } from './services/api.service';
 import { AuthService } from './services/auth.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { APIInterceptor } from './services/api.interceptor';
-import { AppRoutingModule } from './/app-routing.module';
+import { AppRoutingModule } from './app-routing.module';
+import { SubsetsPipe } from'./pipes/subsets.pipe';
 @NgModule({
   declarations: [
     AppComponent,
     TableViewComponent,
     NodeViewComponent,
-    TreeViewComponent
+    TreeViewComponent,
+    SubsetsPipe
   ],
   imports: [
     BrowserModule,

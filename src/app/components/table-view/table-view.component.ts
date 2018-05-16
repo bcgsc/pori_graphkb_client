@@ -4,6 +4,7 @@ import { TableViewDataSource, TableViewItem } from './table-view-datasource';
 import { APIService } from '../../services/api.service';
 import { ChangeDetectorRef } from '@angular/core';
 import * as jc from 'json-cycle';
+import { NodeViewComponent } from '../node-view/node-view.component';
 
 @Component({
   selector: 'table-view',
@@ -14,22 +15,21 @@ import * as jc from 'json-cycle';
 export class TableViewComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(NodeViewComponent) node;
   
-  @Input('data') data: TableViewItem[];
-  private data2;
-  @Output() selected = new EventEmitter<TableViewItem>();
+  private data;
   dataSource: TableViewDataSource;
-  private selectedNode;
+  private selectedNode = {};
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns = ['class', 'sourceId', 'createdBy', 'name', 'rid-version'];
+  displayedColumns = ['rid-version','class', 'sourceId', 'createdBy', 'name', 'subsets'];
   
   constructor(private api: APIService) { }
 
   ngOnInit() {
-    this.dataSource = new TableViewDataSource(this.paginator, this.sort, []);
+    this.data = [];    
+    this.dataSource = new TableViewDataSource(this.paginator, this.sort, this.data);
     this.api.getJSON('../../assets/get_diseases.body_expanded.json').subscribe((json) => {
-      this.data2 = [];
       json = jc.retrocycle(json);
 
       json.forEach(element => {
@@ -43,12 +43,14 @@ export class TableViewComponent implements OnInit {
             source: element['source'],
             rid: element['@rid'],
             version: element['@version'],
+            subsets: element['subsets'],
           }
-          this.data2.push(entry);
+          this.data.push(entry);
       });
 
-      this.selectedNode = this.data2[0];
-      this.dataSource = new TableViewDataSource(this.paginator, this.sort, this.data2);
+      // this.selectedNode = this.data2[0];
+      this.node.node = this.data[0];
+      this.dataSource = new TableViewDataSource(this.paginator, this.sort, this.data);
     });
   }
 
@@ -57,6 +59,10 @@ export class TableViewComponent implements OnInit {
   }
 
   onEdit(edited: TableViewItem){
-    // Need api
+  }
+  onAdded(added: TableViewItem){
+  }
+  onDeleted(deleted: TableViewItem){
+    
   }
 }

@@ -8,26 +8,35 @@
         <mat-cell *matCellDef="let row">{{row.class}}</mat-cell>
       </ng-container>
 
-      <!-- Name Column -->
+      <!-- Source ID Column -->
       <ng-container matColumnDef="sourceId">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Source ID</mat-header-cell>
         <mat-cell *matCellDef="let row">{{row.sourceId}}</mat-cell>
       </ng-container>
 
+      <!-- Created By Column -->
       <ng-container matColumnDef="createdBy">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Created By</mat-header-cell>
         <mat-cell *matCellDef="let row">{{row.createdBy}}</mat-cell>
       </ng-container>
 
+      <!-- Name Column -->
       <ng-container matColumnDef="name">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
         <mat-cell *matCellDef="let row">{{row.name}}</mat-cell>
         <!--CSS class for each to set width, etc-->
       </ng-container>
 
+      <!-- RID & Version Column -->
       <ng-container matColumnDef="rid-version">
         <mat-header-cell *matHeaderCellDef mat-sort-header>RID</mat-header-cell>
         <mat-cell *matCellDef="let row">{{row.rid +' v'+row.version}}</mat-cell>
+      </ng-container>
+
+      <!-- Subsets Column -->
+      <ng-container matColumnDef="subsets">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Subsets</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{row.subsets | subsetsPipe}}</mat-cell>
       </ng-container>
 
       <mat-header-row style="position:sticky" *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -38,5 +47,6 @@
     </mat-paginator>
   </div>
 
-  <node-view class="node-view" [node]="selectedNode" (changed)="onEdit($event)"></node-view>
+  <node-view class="node-view" [node]="selectedNode" (changed)="onEdit($event)" (added)="onAdd($event)" (deleted)="onDelete($event)">
+  </node-view>
 </div>

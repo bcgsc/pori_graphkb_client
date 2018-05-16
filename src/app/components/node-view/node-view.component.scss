@@ -1,12 +1,6 @@
 mat-list{
     flex:1;
     height: auto;
-    
-}
-mat-list-item{
-    flex:1;
-    height: auto;
-    
 }
 mat-divider{
     flex:1;
@@ -14,8 +8,24 @@ mat-divider{
     
 }
 .myList .mat-list-item{
-    padding: 5%;
+    padding-bottom: 3%;
     height: auto;
     width: inherit;
+    font-size: 100%;
 }
-//TODO: Fix this
+.label{
+    display:block;
+}
+.card{
+    overflow:scroll;
+    padding: 12px;
+    height: 86vh;
+}
+.edit-box{
+    display: block;
+    height: 150px;
+    width: 100%;
+}
+.buttons{
+    text-align: center;
+}

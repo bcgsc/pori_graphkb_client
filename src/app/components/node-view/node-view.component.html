@@ -1,49 +1,69 @@
-<mat-card>
+<mat-card class="card">
     <mat-list class="myList">
-        <mat-list-item>Class: {{node.class}}</mat-list-item>
+
+        <h3 matSubheader>Class</h3>
+        <mat-list-item>{{node.class}}</mat-list-item>
 
         <mat-divider></mat-divider>
 
-        <mat-list-item>Source ID: {{node.sourceId}}</mat-list-item>
+        <h3 matSubheader>Source ID</h3>
+        <mat-list-item>{{node.sourceId}}</mat-list-item>
 
         <mat-divider></mat-divider>
 
-        <mat-list-item>Created By: {{node.createdBy}}</mat-list-item>
+        <h3 matSubheader>Created By</h3>
+        <mat-list-item>{{node.createdBy}}</mat-list-item>
 
         <mat-divider></mat-divider>
 
-        <mat-list-item>RID: {{node.rid}}</mat-list-item>
+        <h3 matSubheader>RID</h3>
+        <mat-list-item>{{node.rid}}</mat-list-item>
 
         <mat-divider></mat-divider>
 
-        <mat-list-item *ngIf="!_editing">Name: {{node.name}}</mat-list-item>
-        <input *ngIf="_editing" matInput placeholder="Name" [(ngModel)]="_temp.name"> <!--//TODO: style these-->
-        
+        <h3 matSubheader>Name</h3>
+        <mat-list-item *ngIf="!_editing">{{node.name}}</mat-list-item>
+        <mat-list-item *ngIf="_editing">
+            <textarea class="edit-box" matInput placeholder="Name" [(ngModel)]="_temp.name"></textarea>
+        </mat-list-item>
+
         <mat-divider></mat-divider>
 
-        <mat-list-item *ngIf="!_editing">Description: {{node.description || 'none'}}</mat-list-item>
-        <input *ngIf="_editing" matInput placeholder="Description" [(ngModel)]="_temp.description">
-        
+        <h3 matSubheader>Description</h3>
+        <mat-list-item *ngIf="!_editing">{{node.description || 'none'}}</mat-list-item>
+        <mat-list-item *ngIf="_editing">
+            <textarea class="edit-box" matInput placeholder="Description" [(ngModel)]="_temp.description"></textarea>
+        </mat-list-item>
+
         <mat-divider></mat-divider>
-        
-        <mat-list-item>Version: {{node.version}}</mat-list-item>
-        
+        <h3 matSubheader>Subsets</h3>
+        <mat-list-item *ngFor="let subset of node.subsets">{{subset.split('#')[1]}}
+            <mat-icon matListIcon>folder</mat-icon>
+        </mat-list-item>
+
         <mat-divider></mat-divider>
-        
-        <mat-list-item>Source: {{node.source}}</mat-list-item>
-        
+
+        <h3 matSubheader>Version</h3>
+        <mat-list-item>{{node.version}}</mat-list-item>
+
+        <mat-divider></mat-divider>
+
+        <h3 matSubheader>Source</h3>
+        <mat-list-item>{{node.source}}</mat-list-item>
+
         <mat-divider></mat-divider>
 
     </mat-list>
+    <div class="buttons">
+        <div *ngIf="!_editing">
+            <button mat-button (click)="addChild()">Add Child</button>
+            <button mat-button (click)="editSelected()">Edit Properties</button>
+            <button mat-button (click)="deleteSelected()">Delete Node</button>
+        </div>
 
-    <div *ngIf="!_editing">
-        <button mat-button (click)="addChild()">Add Child</button>
-        <button mat-button (click)="editSelected()">Edit Properties</button>
-        <button mat-button (click)="deleteSelected()">Delete Node</button>
-    </div>
-
-    <div *ngIf="_editing">
-        <button mat-button (click)="doneEdit()">Done</button>
-        <button mat-button (click)="cancelEdit()">Cancel</button>
+        <div *ngIf="_editing">
+            <button mat-button (click)="doneEdit()">Done</button>
+            <button mat-button (click)="cancelEdit()">Cancel</button>
+        </div>
     </div>
 </mat-card>

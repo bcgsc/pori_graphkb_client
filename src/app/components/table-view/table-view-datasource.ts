@@ -13,31 +13,8 @@ export interface TableViewItem {
     source: string,
     rid: string,
     version: number,
+    subsets: string[],
 }
-
-// TODO: replace this with real data from your application
-// const EXAMPLE_DATA: TableViewItem[] = [
-//   {id: 1, name: 'Hydrogen', desc: 'hy'},
-//   {id: 2, name: 'Helium', desc: 'hy'},
-//   {id: 3, name: 'Lithium', desc: 'hy'},
-//   {id: 4, name: 'Beryllium', desc: 'hy'},
-//   {id: 5, name: 'Boron', desc: 'hy'},
-//   {id: 6, name: 'Carbon', desc: 'hy'},
-//   {id: 7, name: 'Nitrogen', desc: 'hy'},
-//   {id: 8, name: 'Oxygen', desc: undefined},
-//   {id: 9, name: 'Fluorine', desc: 'hy'},
-//   {id: 10, name: 'Neon', desc: 'hy'},
-//   {id: 11, name: 'Sodium', desc: 'hy'},
-//   {id: 12, name: 'Magnesium', desc: 'hy'},
-//   {id: 13, name: 'Aluminum', desc: 'hy'},
-//   {id: 14, name: 'Silicon', desc: 'hy'},
-//   {id: 15, name: 'Phosphorus', desc: 'hy'},
-//   {id: 16, name: 'Sulfur', desc: 'hy'},
-//   {id: 17, name: 'Chlorine', desc: 'hy'},
-//   {id: 18, name: 'Argon', desc: 'hy'},
-//   {id: 19, name: 'Potassium', desc: 'hy'},
-//   {id: 20, name: 'Calcium', desc: 'hy'},
-// ];
 
 /**
  * Data source for the TableView view. This class should

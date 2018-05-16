@@ -4,10 +4,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
-import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatGridListModule, MatCardModule, MatMenuModule, MatTableModule, MatPaginatorModule, MatSortModule } from '@angular/material';
+import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatGridListModule, MatCardModule, MatMenuModule, MatTableModule, MatPaginatorModule, MatSortModule, MatCheckboxModule } from '@angular/material';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
 
 import { AppComponent } from './app.component';
 import { NodeViewComponent } from './components/node-view/node-view.component';
@@ -22,6 +24,8 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { APIInterceptor } from './services/api.interceptor';
 import { AppRoutingModule } from './app-routing.module';
 import { SubsetsPipe } from'./pipes/subsets.pipe';
+import { CamelCasePipe } from './pipes/camelCase.pipe';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -30,7 +34,8 @@ import { SubsetsPipe } from'./pipes/subsets.pipe';
     TreeViewComponent,
     DataHubComponent,
     QueryViewComponent,
-    SubsetsPipe
+    SubsetsPipe,
+    CamelCasePipe
   ],
   imports: [
     BrowserModule,
@@ -52,7 +57,10 @@ import { SubsetsPipe } from'./pipes/subsets.pipe';
     FormsModule,
     AppRoutingModule,
     MatTabsModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatCheckboxModule
   ],
   providers: [
     APIService, 

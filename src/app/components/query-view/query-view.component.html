@@ -1,21 +1,58 @@
-<div *ngIf="!adv"class="search-wrapper">
-    <input #name (keyup.enter)="search(name.value)" class="main-search" matInput placeholder="Search a name" [(ngModel)]="params.name">
-    <button (click)="query()" mat-button>Search</button>
+<div *ngIf="!adv" class="search-wrapper">
+    <mat-form-field class="main-search">
+        <input #name (keyup.enter)="search(name.value)" matInput placeholder="Search a name" [(ngModel)]="params.name"> </mat-form-field>
+    <button (click)="simpleQuery()" mat-button>Search</button>
     <button (click)="advanced()" class="advanced-button" mat-button>Advanced Search</button>
 </div>
-<div *ngIf="adv">
-    <input matInput placeholder="Search a name" [(ngModel)]="params.name">
-    <input matInput placeholder="Search a source" [(ngModel)]="params.source">
-    <input matInput placeholder="Search a source ID" [(ngModel)]="params.sourceId">
-    <input matInput placeholder="Search a source Version" [(ngModel)]="params.sourceVersion">
-    <input matInput placeholder="Search a lONG name" [(ngModel)]="params.longName">
-    <input matInput placeholder="Search a source ID Version" [(ngModel)]="params.sourceIdVersion">
-    <input matInput placeholder="choose a limit" [(ngModel)]="params.limit">
-    <input matInput placeholder="what return properties" [(ngModel)]="params.returnProperties">
+<div *ngIf="adv" class="adv-wrapper">
+    <mat-form-field>
+        <input matInput placeholder="Search a name" [(ngModel)]="params.name">
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput placeholder="Search a source" [(ngModel)]="params.source">
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput placeholder="Search a source ID" [(ngModel)]="params.sourceId">
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput placeholder="Search a source Version" [(ngModel)]="params.sourceVersion">
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput placeholder="Search a lONG name" [(ngModel)]="params.longName">
+    </mat-form-field>
+    <mat-form-field>
+        <input matInput placeholder="Search a source ID Version" [(ngModel)]="params.sourceIdVersion">
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput placeholder="choose a limit" [(ngModel)]="params.limit">
+    </mat-form-field>
+
+    <mat-form-field>
+        <!-- <input matInput placeholder="what return properties" [(ngModel)]="params.returnProperties"> -->
+        <mat-select placeholder="Return Properties">
+            <mat-option *ngFor="let p of paramKeys.slice(0,6)">
+                <mat-checkbox disableRipple='true'>{{p | camelCase}}</mat-checkbox>
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
     <!--dropdown-->
-    <input matInput placeholder="ancestors?" [(ngModel)]="params.ancestors">
-    <input matInput placeholder="descendants?" [(ngModel)]="params.descendants">
-    <input matInput placeholder="fuzzy match?" [(ngModel)]="params.fuzzyMatch">
+    <mat-form-field>
+        <input matInput placeholder="ancestors?" [(ngModel)]="params.ancestors">
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput placeholder="descendants?" [(ngModel)]="params.descendants">
+    </mat-form-field>
+    
+    <mat-form-field>
+        <input matInput placeholder="fuzzy match?" [(ngModel)]="params.fuzzyMatch">
+    </mat-form-field>
+
     <button mat-button (click)="advanced()">Back</button>
-    <button (click)="query()" mat-button>Search</button>    
+    <button (click)="query()" mat-button>Search</button>
 </div>

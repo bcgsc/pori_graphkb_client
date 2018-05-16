@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { TableViewComponent } from './components/table-view/table-view.component';
+import { DataHubComponent } from './components/data-hub/data-hub.component';
+import { QueryViewComponent } from './components/query-view/query-view.component';
 //TODO: add home view component (migrate)
 const routes: Routes = [
-  { path: 'table', component: TableViewComponent },
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+  { path: 'table', component: DataHubComponent },
+  { path: 'query', component: QueryViewComponent },
+  { path: '', redirectTo: '/table', pathMatch: 'full' },
 ]
 
 @NgModule({

@@ -1,0 +1,28 @@
+@import '../../styles/variables';
+
+.data-view{
+    width: 90%;
+    max-height: calc($panels-height - 48px);
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1vh;
+    justify-content: center;
+}
+
+.group-view{
+    float: left;
+    max-height: $panels-height;
+    width: 65vw;
+}
+
+.node-view {
+    float:right;     
+    width: 25vw;
+    max-height: $panels-height;
+    display: flex;
+    flex-direction: column;
+}
+
+.table-wrapper{
+    width: inherit;
+}

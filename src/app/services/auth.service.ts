@@ -4,10 +4,14 @@ import { Observable } from 'rxjs';
 import 'rxjs/add/operator/map';
 
 const AUTH_ENDPOINT = 'bcgsc/api/authenticate';
+const TEST_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXIiOnsibmFtZSI6ImFkbWluIiwiQHJpZCI6IiM0MTowIn19LCJpYXQiOjE1MjY0MzIwMjF9.iUSZphrn7zFL6ZXrEt39SuIfyVFQqG3c6xYtM4aNvyM";
+
 @Injectable()
 export class AuthService {
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient) { 
+        this.loadToken(TEST_TOKEN);
+    }
 
     public login(username: string, password: string): void {
         this.http.post(AUTH_ENDPOINT, { username: username, password: password }).subscribe();

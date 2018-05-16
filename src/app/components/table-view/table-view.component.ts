@@ -27,6 +27,7 @@ export class TableViewComponent implements OnInit {
   constructor(private api: APIService) { }
 
   ngOnInit() {
+    this.api.testGetDiseases().subscribe(d => console.log(d));
     this.data = [];    
     this.dataSource = new TableViewDataSource(this.paginator, this.sort, this.data);
     this.api.getJSON('../../assets/get_diseases.body_expanded.json').subscribe((json) => {

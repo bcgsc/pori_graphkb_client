@@ -1,0 +1,65 @@
+<div>
+    <div class="parameter-selection">
+        <!-- <h5 class="mat-h5">Source: </h5> -->
+        <mat-form-field>
+            <input required matInput placeholder="Source">
+        </mat-form-field>
+    </div>
+
+    <div class="parameter-selection">
+        <!-- <h5 class="mat-h5">Source ID: </h5> -->
+        <mat-form-field>
+            <input required matInput placeholder="Source ID">
+        </mat-form-field>
+    </div>
+
+    <div class="parameter-selection">
+        <!-- <h5 class="mat-h5">Name: </h5> -->
+        <mat-form-field>
+            <textarea matInput placeholder="Name"></textarea>
+        </mat-form-field>
+    </div>
+
+    <div class="parameter-selection">
+        <!-- <h5 class="mat-h5">Long Name: </h5> -->
+        <mat-form-field>
+            <input matInput placeholder="Long Name">
+        </mat-form-field>
+    </div>
+
+    <div class="parameter-selection">
+        <!-- <h5 class="mat-h5">Description: </h5> -->
+        <mat-form-field>
+            <textarea matInput placeholder="Description"></textarea>
+        </mat-form-field>
+    </div>
+
+    <div class="subsets-selection">
+        <!-- <h5 class="mat-h5">Subsets: </h5> -->
+        <ul>
+            <li *ngFor="let subset of subsets">{{subset}}<mat-icon (click)="delete(subset)">folder</mat-icon></li>
+        </ul>
+        <mat-form-field>
+                <input (keyup.enter)="add()" matInput placeholder="Add New Subset" [(ngModel)]="_temp">
+        </mat-form-field>
+
+        <mat-icon (click)="add()">home</mat-icon>
+
+    </div>
+
+    <div class="parameter-selection">
+        <!-- <h5 class="mat-h5">Source Version: </h5> -->
+        <mat-form-field>
+            <input matInput placeholder="Source Version">
+        </mat-form-field>
+    </div>
+
+    <div class="parameter-selection">
+        <!-- <h5 class="mat-h5">Source ID Version: </h5> -->
+        <mat-form-field>
+            <input matInput placeholder="Source ID Version">
+        </mat-form-field>
+    </div>
+
+    <button mat-button>Add Node</button>
+</div>

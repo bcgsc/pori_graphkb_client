@@ -1,0 +1,11 @@
+.parameter-selection{
+    display: flex;
+
+    mat-form-field{
+        display: block;
+        width: 20vw;
+    }
+    input{
+        display: block;
+    }
+}

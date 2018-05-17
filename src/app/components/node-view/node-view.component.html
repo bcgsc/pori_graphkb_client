@@ -37,9 +37,21 @@
 
         <mat-divider></mat-divider>
         <h3 matSubheader>Subsets</h3>
-        <mat-list-item *ngFor="let subset of node.subsets">{{subset | subsetPipe}}
-            <mat-icon matListIcon>folder</mat-icon>
-        </mat-list-item>
+        <div *ngIf="!_editing">
+            <mat-list-item *ngFor="let subset of node.subsets">{{subset | subsetPipe}}
+                <mat-icon matListIcon>folder</mat-icon>
+            </mat-list-item>
+        </div>
+
+        <div *ngIf="_editing">
+            <mat-list-item *ngFor="let subset of _temp.subsets">{{subset | subsetPipe}}
+                <mat-icon matListIcon (click)="deleteTempSubset(subset)">folder</mat-icon>
+            </mat-list-item>
+        </div>
+
+        <mat-form-field *ngIf="_editing">
+            <input matInput (keyup.enter)="addTempSubset()" [(ngModel)]="_tempSubset">
+        </mat-form-field>
 
         <mat-divider></mat-divider>
 

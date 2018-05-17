@@ -66,7 +66,7 @@ export class QueryViewComponent {
   }
 
   simpleQuery() {
-    if (this.params.name) this.router.navigate(['/table'], { queryParams: {name: this.params.name} })    
+    if (this.params.name) this.router.navigate(['/table'], { queryParams: {name: this.params.name, fuzzyMatch: 1} })    
   }
 
   query() {

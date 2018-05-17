@@ -14,6 +14,7 @@ export interface TableViewItem {
   rid: string,
   version: number,
   subsets: string[],
+  out_SubClassOf?: string;
 }
 
 /**

@@ -14,17 +14,30 @@ export class NodeViewComponent {
   @Output() changed = new EventEmitter<TableViewItem>();
   @Output() added = new EventEmitter<TableViewItem>();
   @Output() deleted = new EventEmitter<TableViewItem>();
-  
+
   private _editing = false;
   private _temp: TableViewItem;
+  private _tempSubset = '';
 
   constructor(public snackBar: MatSnackBar) { }
 
   addChild() {
     this.snackBar.open('Child added!', undefined, { duration: 1000 });
+    console.log(this.node);
   }
   editSelected() {
-    this.enterEdit();
+    this._tempSubset = '';
+    this._temp = {
+      class: this.node.class,
+      sourceId: this.node.sourceId,
+      createdBy: this.node.createdBy,
+      name: this.node.name,
+      description: this.node.description,
+      source: this.node.source,
+      rid: this.node.rid,
+      version: this.node.version,
+      subsets: this.node.subsets.slice()
+    }
     this._editing = true;
   }
   deleteSelected() {
@@ -36,27 +49,24 @@ export class NodeViewComponent {
     this.node.version++;
     this.changed.emit(this.node);
     this._editing = false;
+
   }
   cancelEdit() {
     this._editing = false;
   }
 
-  enterEdit() {
-    this._temp = {
-      class: this.node.class,
-      sourceId: this.node.sourceId,
-      createdBy: this.node.createdBy,
-      name: this.node.name,
-      description: this.node.description,
-      source: this.node.source,
-      rid: this.node.rid,
-      version: this.node.version,
-      subsets: this.node.subsets
-    }
-  }
-
   recall() {
     this.node = this._temp;
+  }
+
+  addTempSubset() {
+    this._temp.subsets.push(this._tempSubset);
+    this._tempSubset = '';
+  }
+
+  deleteTempSubset(subset): void {
+    let i = this._temp.subsets.findIndex(s => subset == s);
+    this._temp.subsets.splice(i, 1);
   }
 
 }

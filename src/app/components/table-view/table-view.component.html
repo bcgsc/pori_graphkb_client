@@ -1,16 +1,22 @@
   <div class="mat-elevation-z8">
     <mat-table #table [dataSource]="dataSource" matSort>
 
-      <!-- Id Column -->
+      <!-- Class Column -->
       <ng-container matColumnDef="class">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Class</mat-header-cell>
         <mat-cell *matCellDef="let row">{{row.class}}</mat-cell>
       </ng-container>
 
+      <!-- Source Column -->
+      <ng-container matColumnDef="source">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Source</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.source | uppercase}}</mat-cell>
+        </ng-container>
+
       <!-- Source ID Column -->
       <ng-container matColumnDef="sourceId">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Source ID</mat-header-cell>
-        <mat-cell *matCellDef="let row">{{row.sourceId}}</mat-cell>
+        <mat-cell *matCellDef="let row">{{row.sourceId | uppercase}}</mat-cell>
       </ng-container>
 
       <!-- Created By Column -->

@@ -24,8 +24,12 @@ export class APIInterceptor implements HttpInterceptor {
             request = request.clone({
                 setHeaders: {
                     Authorization: this.auth.getToken(),
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                     'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, DELETE, PUT, PATCH'
+                    'Access-Control-Allow-Methods': 'GET,OPTIONS,POST',
+                    'Access-Control-Allow-Headers': 'content-type',
+
                 }
             });
         }

@@ -37,7 +37,7 @@
 
         <mat-divider></mat-divider>
         <h3 matSubheader>Subsets</h3>
-        <mat-list-item *ngFor="let subset of node.subsets">{{subset.split('#')[1]}}
+        <mat-list-item *ngFor="let subset of node.subsets">{{subset | subsetPipe}}
             <mat-icon matListIcon>folder</mat-icon>
         </mat-list-item>
 

@@ -15,13 +15,31 @@ export class APIService {
         return this.http.get(url);
     }
 
-    public testGetDiseases(): Observable<any>{
-        let params = {name: 'angiosarcoma'}
+    public testGetDiseases(): Observable<any> {
+        let payloads = {
+            class: 'string',
+            sourceId: 'string',
+            createdBy: 'string',
+            name: 'string',
+            description: 'string',
+            source: 'string',
+            rid: 'string',
+            version: 3,
+            subsets: ['string'],
+        }
+
         
-        return this.http.get(API_ENDPOINT + "/diseases", {params: params});
+        let params = { 'name': 'angiosarcoma' }
+
+        return this.http.get(API_ENDPOINT + "/diseases", { params: params });
     }
 
-    public query(params){
+    public query(params): Observable<any> {
         console.log(params);
+        return this.http.get(API_ENDPOINT + "/diseases", {params: params});
+        
     }
+    // public query(endpoint: string){
+    //     return this.http.get(API_ENDPOINT + endpoint);
+    // }
 }

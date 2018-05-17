@@ -14,19 +14,11 @@ export class APIService {
     public getJSON(url: string): Observable<any> {
         return this.http.get(url);
     }
+    public addNode(node): Observable<any> {
+        return this.http.post(API_ENDPOINT + "/diseases", node);
+    }
 
     public testGetDiseases(): Observable<any> {
-        let payloads = {
-            class: 'string',
-            sourceId: 'string',
-            createdBy: 'string',
-            name: 'string',
-            description: 'string',
-            source: 'string',
-            rid: 'string',
-            version: 3,
-            subsets: ['string'],
-        }
 
         
         let params = { 'name': 'angiosarcoma' }
@@ -37,9 +29,9 @@ export class APIService {
     public query(params): Observable<any> {
         console.log(params);
         return this.http.get(API_ENDPOINT + "/diseases", {params: params});
-        
     }
-    // public query(endpoint: string){
-    //     return this.http.get(API_ENDPOINT + endpoint);
-    // }
+
+    public editNode(): Observable<any>{
+        return this.http.patch(API_ENDPOINT + "/diseases", {name: 'isaac'});
+    }
 }

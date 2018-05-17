@@ -24,13 +24,12 @@ export class TableViewComponent implements OnInit, AfterViewInit {
   dataSource: TableViewDataSource;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns = ['rid-version', 'class', 'sourceId', 'createdBy', 'name', 'subsets'];
+  displayedColumns = ['rid-version', 'source', 'sourceId', 'createdBy', 'name', 'subsets'];
   
   constructor(private api: APIService) { 
   }
 
   ngOnInit() {
-
     this.dataSource = new TableViewDataSource(this.paginator, this.sort, this.data);    
   }
 
@@ -46,6 +45,9 @@ export class TableViewComponent implements OnInit, AfterViewInit {
   onAdded(added: TableViewItem){
   }
   onDeleted(deleted: TableViewItem){
-    
+  }
+
+  refresh(){
+    this.dataSource = new TableViewDataSource(this.paginator, this.sort, this.data);
   }
 }

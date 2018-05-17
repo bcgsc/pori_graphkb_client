@@ -23,7 +23,7 @@ import { AuthService } from './services/auth.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { APIInterceptor } from './services/api.interceptor';
 import { AppRoutingModule } from './app-routing.module';
-import { SubsetsPipe } from'./pipes/subsets.pipe';
+import { SubsetsPipe, SubsetPipe } from'./pipes/subsets.pipe';
 import { CamelCasePipe } from './pipes/camelCase.pipe';
 
 @NgModule({
@@ -35,6 +35,7 @@ import { CamelCasePipe } from './pipes/camelCase.pipe';
     DataHubComponent,
     QueryViewComponent,
     SubsetsPipe,
+    SubsetPipe,
     CamelCasePipe
   ],
   imports: [

@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
-import { TableViewDataSource, TableViewItem } from './table-view-datasource';
 import { APIService } from '../../services/api.service';
-import { ChangeDetectorRef } from '@angular/core';
-import * as jc from 'json-cycle';
+
+import { TableViewDataSource, TableViewItem } from './table-view-datasource';
 import { NodeViewComponent } from '../node-view/node-view.component';
+
+import * as jc from 'json-cycle';
 
 @Component({
   selector: 'table-view',
@@ -23,12 +24,13 @@ export class TableViewComponent implements OnInit, AfterViewInit {
   dataSource: TableViewDataSource;
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns = ['rid-version','class', 'sourceId', 'createdBy', 'name', 'subsets'];
+  displayedColumns = ['rid-version', 'class', 'sourceId', 'createdBy', 'name', 'subsets'];
   
   constructor(private api: APIService) { 
   }
 
   ngOnInit() {
+
     this.dataSource = new TableViewDataSource(this.paginator, this.sort, this.data);    
   }
 

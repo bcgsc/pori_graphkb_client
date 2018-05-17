@@ -17,12 +17,36 @@ $position: 60vh;
     text-align: center;
     margin: auto;
     width: 60vw;
+    vertical-align: middle;
     
     mat-form-field{
         display: block;
         margin: auto;
-        width: 30%;
+        width: 50vw;
     }
+    .mat-h3{
+        text-align: left;
+        width: 10vw;
+        display: block;
+        margin: 0;
+        
+    }
+    .checkboxes{
+        display: grid;
+        grid: repeat(3, 50px) / auto-flow 190px;
+
+        .checkbox{
+            display: block;
+            mat-checkbox{
+                float: left;
+            }
+        }
+    }
+}
+
+
+.parameter-selection{
+    display: flex;
 }
 
 .advanced-button{

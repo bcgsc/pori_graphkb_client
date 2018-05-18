@@ -1,8 +1,10 @@
-import { Component, OnInit, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input, SimpleChanges } from '@angular/core';
 import { TableViewItem } from '../table-view/table-view-datasource';
 import { MatSnackBar } from '@angular/material';
 import { Output } from '@angular/core';
 import { EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
+import { APIService } from '../../services/api.service';
 @Component({
   selector: 'node-view',
   templateUrl: './node-view.component.html',
@@ -19,10 +21,32 @@ export class NodeViewComponent {
   private _temp: TableViewItem;
   private _tempSubset = '';
 
-  constructor(public snackBar: MatSnackBar) { }
+  constructor(public snackBar: MatSnackBar, private router: Router, private api: APIService) { }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if(!changes.node || !changes.node.currentValue || !changes.node.currentValue.children) return;
+
+    let children = changes.node.currentValue.children;
+    for (let i = 0; i < children.length; i++) {
+      // this.api.getRecord(children[i].slice(1)).subscribe(data => {
+      //   this.node.children[i] = data.name;
+      // });
+    }
+
+    let parents = changes.node.currentValue.parents;
+    if(!parents) return;
+    for (let i = 0; i < parents.length; i++) {
+      // this.api.getRecord(parents[i].slice(1)).subscribe(data => {
+      //   this.node.parents[i] = data.name;
+      // });
+    }
+  }
 
   addChild() {
     this.snackBar.open('Child added!', undefined, { duration: 1000 });
+    let params = { 'parentId': this.node.rid.slice(1) }
+    this.router.navigate(['/add'], { queryParams: params });
+
   }
   editSelected() {
     this._tempSubset = '';
@@ -45,22 +69,17 @@ export class NodeViewComponent {
     this._editing = true;
   }
   deleteSelected() {
-    this.snackBar.open('Goodbye!', undefined, { duration: 1000 });
+    this.deleted.emit(this.node);
   }
+
   doneEdit() {
-    console.log(this._temp);
-    this.recall();
+    this.node = this._temp;
     this.node.version++;
     this.changed.emit(this.node);
     this._editing = false;
-
   }
   cancelEdit() {
     this._editing = false;
-  }
-
-  recall() {
-    this.node = this._temp;
   }
 
   addTempSubset() {

@@ -1,4 +1,4 @@
-<div>
+<div class="wrapper">
     <div class="parameter-selection">
         <!-- <h5 class="mat-h5">Source: </h5> -->
         <mat-form-field>
@@ -37,13 +37,15 @@
     <div class="subsets-selection">
         <!-- <h5 class="mat-h5">Subsets: </h5> -->
         <ul>
-            <li *ngFor="let subset of subsets">{{subset}}<mat-icon (click)="delete(subset)">folder</mat-icon></li>
+            <li *ngFor="let subset of subsets">{{subset}}
+                <mat-icon (click)="delete(subset)">folder</mat-icon>
+            </li>
         </ul>
         <mat-form-field>
-                <input (keyup.enter)="add()" matInput placeholder="Add New Subset" [(ngModel)]="_temp">
+            <input (keyup.enter)="addSubset()" matInput placeholder="Add New Subset" [(ngModel)]="tempSubset">
         </mat-form-field>
 
-        <mat-icon (click)="add()">home</mat-icon>
+        <mat-icon (click)="addSubset()">home</mat-icon>
 
     </div>
 
@@ -61,5 +63,39 @@
         </mat-form-field>
     </div>
 
+    <h3 class="mat-h3">Relationships</h3>
+    <div class="subsets-selection">
+        <!-- <h5 class="mat-h5">Subsets: </h5> -->
+        <ul>
+            <li *ngFor="let relationship of relationships">{{relationship | relationshipPipe}}
+                <mat-icon (click)="deleteEdge(relationship)">folder</mat-icon>
+            </li>
+        </ul>
+
+        <form (keyup.enter)="addEdge()">
+            <mat-form-field>
+                <mat-select placeholder="Type" [(value)]="tempEdge.type">
+                    <mat-option value="parent">
+                        Parent
+                    </mat-option>
+                    <mat-option value="child">
+                        Child
+                    </mat-option>
+                    <mat-option value="alias">
+                        Alias
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field>
+                <input matInput placeholder="Add target ID" name="edgeId" [(ngModel)]="tempEdge.id">
+            </mat-form-field>
+            <mat-icon (click)="addEdge()"> home</mat-icon>
+            
+        </form >
+
+    </div>
+
     <button mat-button>Add Node</button>
+
 </div>

@@ -36,6 +36,22 @@
         </mat-list-item>
 
         <mat-divider></mat-divider>
+        <h3 matSubheader>Children</h3>
+        <div *ngIf="node">
+            <mat-list-item *ngFor="let child of node.children">{{child}}
+                <mat-icon matListIcon>folder</mat-icon>
+            </mat-list-item>
+        </div>
+
+        <mat-divider></mat-divider>
+        <h3 matSubheader>Parents</h3>
+        <div *ngIf="node">
+            <mat-list-item *ngFor="let parent of node.parents">{{parent}}
+                <mat-icon matListIcon>folder</mat-icon>
+            </mat-list-item>
+        </div>
+
+        <mat-divider></mat-divider>
         <h3 matSubheader>Subsets</h3>
         <div *ngIf="!_editing && node">
             <mat-list-item *ngFor="let subset of node.subsets">{{subset | subsetPipe}}

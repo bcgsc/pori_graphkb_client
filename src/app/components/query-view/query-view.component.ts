@@ -66,34 +66,35 @@ export class QueryViewComponent {
   }
 
   simpleQuery() {
-    if (this.params.name) this.router.navigate(['/table'], { queryParams: {name: this.params.name, fuzzyMatch: 1} })    
+    if (this.params.name) this.router.navigate(['/table'], { queryParams: { name: this.params.name, fuzzyMatch: 1 } })
   }
 
   query() {
-    
+    /* Process returnProperties: */
     let reqDefault = true;
     let returnProperties = ''
 
     this.properties.forEach(obj => {
       let term = obj[0];
-      if (term == 'parents') term = 'out_SubClassOf'
-      if (term == 'children') term = 'in_SubClassOf'
-      if (term == 'aliases') {
-        term = 'out_AliasOf,in_AliasOf';
-      }
+      // if (term == 'parents') term = 'out_SubClassOf'
+      // if (term == 'children') term = 'in_SubClassOf'
+      // if (term == 'aliases') {
+      //   term = 'out_AliasOf,in_AliasOf';
+      // }
 
-      if (!obj[1]) reqDefault = false;
-      else returnProperties += term + ','
+      obj[1] ? returnProperties += term + ',' : reqDefault = false;
     });
+
     !reqDefault ? this.params.returnProperties = returnProperties.slice(0, returnProperties.length - 1) : this.params.returnProperties = '';
-
-
+    
+    /* Filter out empty parameters from api call */
     let filteredParams: DiseaseParams = {};
 
     Object.keys(this.params).forEach(key => {
       if (this.params[key]) filteredParams[key] = this.params[key];
     });
 
+    /* Add parameters to route to be called by the api in the data hub component */
     this.router.navigate(['/table'], { queryParams: filteredParams })
   }
 }

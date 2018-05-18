@@ -23,10 +23,14 @@ export class NodeViewComponent {
 
   addChild() {
     this.snackBar.open('Child added!', undefined, { duration: 1000 });
-    console.log(this.node);
   }
   editSelected() {
     this._tempSubset = '';
+    let subsets = [];
+    if (this.node.subsets) {
+      subsets = this.node.subsets.slice();
+    }
+
     this._temp = {
       class: this.node.class,
       sourceId: this.node.sourceId,
@@ -36,7 +40,7 @@ export class NodeViewComponent {
       source: this.node.source,
       rid: this.node.rid,
       version: this.node.version,
-      subsets: this.node.subsets.slice()
+      subsets: subsets
     }
     this._editing = true;
   }

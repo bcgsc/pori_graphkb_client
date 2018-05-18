@@ -7,6 +7,9 @@
     background-color: rgba(214,219,245,0.8);
     cursor: pointer;
 }
+.mat-row.active{
+    background-color: rgba(214,219,245,0.8);    
+}
 
 .mat-column-source{
     flex: 0 0 100px;

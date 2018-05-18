@@ -23,6 +23,8 @@ export class TableViewComponent implements OnInit, AfterViewInit {
   @Input() data;
   dataSource: TableViewDataSource;
 
+  private selectedNode;
+
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['rid-version', 'source', 'sourceId', 'createdBy', 'name', 'subsets'];
   
@@ -30,7 +32,8 @@ export class TableViewComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-    this.dataSource = new TableViewDataSource(this.paginator, this.sort, this.data);    
+    this.dataSource = new TableViewDataSource(this.paginator, this.sort, this.data);
+    this.selectedNode = this.data[0];
   }
 
   ngAfterViewInit(): void {
@@ -38,6 +41,7 @@ export class TableViewComponent implements OnInit, AfterViewInit {
 
   onClick(e, row: TableViewItem) {
     this.selected.emit(row);
+    this.selectedNode = row;
   }
 
   onEdit(edited: TableViewItem){
@@ -47,7 +51,8 @@ export class TableViewComponent implements OnInit, AfterViewInit {
   onDeleted(deleted: TableViewItem){
   }
 
-  refresh(){
+  refresh(node?){
     this.dataSource = new TableViewDataSource(this.paginator, this.sort, this.data);
+    if(node) this.selectedNode = node;
   }
 }

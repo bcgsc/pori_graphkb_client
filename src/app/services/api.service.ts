@@ -19,19 +19,21 @@ export class APIService {
     }
 
     public testGetDiseases(): Observable<any> {
-
-        
         let params = { 'name': 'angiosarcoma' }
 
         return this.http.get(API_ENDPOINT + "/diseases", { params: params });
     }
 
     public query(params): Observable<any> {
-        console.log(params);
-        return this.http.get(API_ENDPOINT + "/diseases", {params: params});
+        return this.http.get(API_ENDPOINT + "/diseases", { params: params });
     }
 
-    public editNode(): Observable<any>{
-        return this.http.patch(API_ENDPOINT + "/diseases", {name: 'isaac'});
+    //must be formatted before (get rid of #)
+    public getRecord(rid): Observable<any> {
+        return this.http.get(API_ENDPOINT + "/diseases/" + rid);
+    }
+
+    public editNode(rid, payload): Observable<any> {
+        return this.http.patch(API_ENDPOINT + "/diseases/" + rid, payload);
     }
 }

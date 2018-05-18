@@ -5,6 +5,7 @@ import { TableViewItem } from '../table-view/table-view-datasource';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { TableViewComponent } from '../table-view/table-view.component';
+import { NodeViewComponent } from '../node-view/node-view.component';
 
 @Component({
     selector: 'data-hub',
@@ -14,12 +15,18 @@ import { TableViewComponent } from '../table-view/table-view.component';
 })
 export class DataHubComponent {
     @ViewChild(TableViewComponent) table;
+    @ViewChild(NodeViewComponent) node;
     data: TableViewItem[];
     selectedNode: TableViewItem;
 
     constructor(private api: APIService, private route: ActivatedRoute) { }
 
     ngOnInit() {
+        let rid = this.route.snapshot.paramMap.get('rid')
+        rid ? this.getRecord(rid) : this.getQuery();
+    }
+
+    getQuery() {
         this.route.queryParams.subscribe(params =>
             this.api.query(params).subscribe((json) => {
                 this.data = [];
@@ -47,16 +54,39 @@ export class DataHubComponent {
         );
     }
 
-    onSelect(node) {
-        this.selectedNode = node;
+    getRecord(rid) {
+        this.api.getRecord(rid).subscribe((json) => {
+            this.data = [];
+
+            json = jc.retrocycle(json);
+
+            let entry: TableViewItem = {
+                class: json['@class'],
+                sourceId: json['sourceId'],
+                createdBy: json['createdBy']['name'],
+                name: json['name'],
+                description: json['description'],
+                source: json['source'],
+                rid: json['@rid'],
+                version: json['@version'],
+                subsets: json['subsets'],
+            }
+            this.data.push(entry);
+
+            this.selectedNode = entry;
+        });
     }
 
-    onEdit(node){
+    onSelect(node) {
+        this.selectedNode = node;
+        this.node.cancelEdit();
+    }
+
+    onEdit(node) {
         let i = this.data.findIndex(d => d.rid == node.rid);
         this.data[i] = node;
-        console.log(i);
-        this.table.refresh();
+        this.table.refresh(node);
         // also make api call
-    }   
+    }
 }
 

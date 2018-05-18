@@ -34,6 +34,32 @@ export class DataHubComponent {
                 json = jc.retrocycle(json);
 
                 json.forEach(element => {
+                    let children, parents, aliases;
+
+                    if (element['out_SubClassOf']) {
+                        parents = [];                        
+                        element['out_SubClassOf'].forEach(edge => {
+                            edge['in']['@rid'] ? parents.push(edge['in']['@rid']) : parents.push(edge['in'])
+                        });
+                    }
+                    if (element['in_SubClassOf']) {
+                        children = [];
+                        element['in_SubClassOf'].forEach(edge => {
+                            edge['out']['@rid'] ? children.push(edge['out']['@rid']) : children.push(edge['out'])
+                        });
+                    } 
+                    if (element['out_AliasOf']) {
+                        aliases = [];
+                        element['out_AliasOf'].forEach(edge => {
+                            edge['in']['@rid'] ? aliases.push(edge['in']['@rid']) : aliases.push(edge['in'])
+                        });
+                    } 
+                    if (element['in_AliasOf']) {
+                        aliases = aliases || [];
+                        element['in_AliasOf'].forEach(edge => {
+                            edge['out']['@rid'] ? aliases.push(edge['out']['@rid']) : aliases.push(edge['out'])
+                        });
+                    }
 
                     let entry: TableViewItem = {
                         class: element['@class'],
@@ -45,6 +71,9 @@ export class DataHubComponent {
                         rid: element['@rid'],
                         version: element['@version'],
                         subsets: element['subsets'],
+                        parents: parents,
+                        children: children,
+                        aliases: aliases,
                     }
                     this.data.push(entry);
                 });
@@ -86,7 +115,14 @@ export class DataHubComponent {
         let i = this.data.findIndex(d => d.rid == node.rid);
         this.data[i] = node;
         this.table.refresh(node);
-        // also make api call
+        this.api.editNode(node.rid.slice(1), node).subscribe();
+    }
+    onDelete(node){
+        let i = this.data.findIndex(d => d.rid == node.rid);
+        this.data.splice(i,1);
+        this.table.refresh(node);
+        this.api.deleteNode(node.rid.slice(1)).subscribe();
+        this.selectedNode = undefined;
     }
 }
 

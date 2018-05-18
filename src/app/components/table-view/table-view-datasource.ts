@@ -5,16 +5,18 @@ import { Observable, of as observableOf, merge } from 'rxjs';
 
 // TODO: Replace this with your own data model type
 export interface TableViewItem {
-  class: string,
-  sourceId: string,
-  createdBy: string,
-  name: string,
-  description: string,
-  source: string,
-  rid: string,
-  version: number,
-  subsets: string[],
-  out_SubClassOf?: string;
+  class: string;
+  sourceId: string;
+  createdBy: string;
+  name?: string;
+  description?: string;
+  source: string;
+  rid: string;
+  version: number;
+  subsets?: string[];
+  parents?: string[];
+  children?: string[];
+  aliases?: string[];
 }
 
 /**

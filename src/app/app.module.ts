@@ -26,6 +26,7 @@ import { APIInterceptor } from './services/api.interceptor';
 import { AppRoutingModule } from './app-routing.module';
 import { SubsetsPipe, SubsetPipe } from'./pipes/subsets.pipe';
 import { CamelCasePipe } from './pipes/camelCase.pipe';
+import { RelationshipPipe } from './pipes/relationship.pipe';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { CamelCasePipe } from './pipes/camelCase.pipe';
     AddNodeViewComponent,
     SubsetsPipe,
     SubsetPipe,
-    CamelCasePipe
+    CamelCasePipe,
+    RelationshipPipe
   ],
   imports: [
     BrowserModule,

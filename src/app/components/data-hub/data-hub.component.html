@@ -5,8 +5,7 @@
                 <table-view [data]="data" (selected)="onSelect($event)"></table-view>
             </div>
         </mat-tab>
-        <mat-tab label="Add Node">
-            <add-node></add-node>
+        <mat-tab label="Tree View">
         </mat-tab>
     </mat-tab-group>
     <node-view class="node-view" [node]="selectedNode" (changed)="onEdit($event)" (added)="onAdd($event)" (deleted)="onDelete($event)">

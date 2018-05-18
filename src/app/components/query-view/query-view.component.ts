@@ -70,6 +70,7 @@ export class QueryViewComponent {
   }
 
   query() {
+    //TODO: sanitize untouched form 
     /* Process returnProperties: */
     let reqDefault = true;
     let returnProperties = ''

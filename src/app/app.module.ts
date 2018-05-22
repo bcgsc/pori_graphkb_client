@@ -1,30 +1,43 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
-import { MatToolbarModule,MatProgressSpinnerModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatGridListModule, MatCardModule, MatMenuModule, MatTableModule, MatPaginatorModule, MatSortModule, MatCheckboxModule } from '@angular/material';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTabsModule } from '@angular/material/tabs';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
+import { 
+  MatToolbarModule, 
+  MatProgressSpinnerModule, 
+  MatButtonModule,
+  MatSidenavModule, 
+  MatIconModule, 
+  MatListModule, 
+  MatGridListModule, 
+  MatCardModule, 
+  MatMenuModule, 
+  MatTableModule, 
+  MatPaginatorModule, 
+  MatSortModule, 
+  MatCheckboxModule,
+  MatSnackBarModule,
+  MatTabsModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatSelectModule,
+} from '@angular/material';
+import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
-import { NodeViewComponent } from './components/node-view/node-view.component';
-import { TableViewComponent } from './components/table-view/table-view.component';
-import { TreeViewComponent } from './components/tree-view/tree-view.component';
-import { DataHubComponent } from './components/data-hub/data-hub.component';
-import { QueryViewComponent } from './components/query-view/query-view.component';
-import { AddNodeViewComponent } from './components/add-node-view/add-node-view.component';
+import {
+  NodeViewComponent,
+  TableViewComponent,
+  TreeViewComponent,
+  DataHubComponent,
+  QueryViewComponent,
+  AddNodeViewComponent
+} from './components';
 
-import { APIService } from './services/api.service';
-import { AuthService } from './services/auth.service';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { APIInterceptor } from './services/api.interceptor';
-import { AppRoutingModule } from './app-routing.module';
-import { SubsetsPipe, SubsetPipe } from'./pipes/subsets.pipe';
+import { APIService, AuthService, APIInterceptor} from './services';
+import { SubsetsPipe, SubsetPipe } from './pipes/subsets.pipe';
 import { CamelCasePipe } from './pipes/camelCase.pipe';
 import { RelationshipPipe } from './pipes/relationship.pipe';
 
@@ -69,8 +82,8 @@ import { RelationshipPipe } from './pipes/relationship.pipe';
     MatProgressSpinnerModule,
   ],
   providers: [
-    APIService, 
-    AuthService, 
+    APIService,
+    AuthService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: APIInterceptor,

@@ -1,20 +1,7 @@
 import { Component } from '@angular/core';
 import { APIService } from '../../services/api.service';
 import { Router } from '@angular/router';
-
-export interface DiseaseParams {
-  name?: string,
-  source?: string,
-  sourceId?: string,
-  sourceVersion?: string,
-  longName?: string,
-  sourceIdVersion?: string,
-  limit?: number,
-  returnProperties?: string,
-  ancestors?: string,
-  descendants?: string,
-  fuzzyMatch?: number
-}
+import { DiseaseParams} from '../../models/models';
 
 @Component({
   selector: 'query-view',
@@ -35,28 +22,27 @@ export class QueryViewComponent {
     returnProperties: '',
     ancestors: '',
     descendants: '',
-    fuzzyMatch: 0
+    fuzzyMatch: 1,
+    // neighbors: 2,
   };
-  private properties = [
-    ['name', true],
-    ['description', true],
-    ['subsets', true],
-    ['history', true],
-    // ['parents', true],
-    // ['children', true],
-    // ['aliases', true],
-    ['createdBy', true],
-    ['createdAt', true],
-    ['deletedBy', true],
-    ['deletedAt', true],
-    ['source', true],
-    ['sourceVersion', true],
-    ['sourceId', true],
-    ['sourceIdVersion', true],
-    ['sourceUri', true],
-    ['uuid', true],
-    ['longName', true],
-  ];
+  private properties = {
+    'name': true,
+    'description': true,
+    'subsets': true,
+    'history': true,
+    'createdBy': true,
+    'createdAt': true,
+    'deletedBy': true,
+    'deletedAt': true,
+    'source': true,
+    'sourceVersion': true,
+    'sourceId': true,
+    'sourceIdVersion': true,
+    'sourceUri': true,
+    'uuid': true,
+    'longName': true,
+  };
+  private propKeys = Object.keys(this.properties);
 
   constructor(private api: APIService, private router: Router) {
   }
@@ -65,8 +51,13 @@ export class QueryViewComponent {
     this.adv = !this.adv;
   }
 
-  simpleQuery() {
-    if (this.params.name) this.router.navigate(['/table'], { queryParams: { name: this.params.name, fuzzyMatch: 1 } })
+  simpleQuery() { //neighbors: 2
+    if (this.params.name) this.router.navigate(['/table'], { 
+      queryParams: { 
+        name: this.params.name, 
+        fuzzyMatch: 1 
+      } 
+    });
   }
 
   query() {
@@ -75,15 +66,8 @@ export class QueryViewComponent {
     let reqDefault = true;
     let returnProperties = ''
 
-    this.properties.forEach(obj => {
-      let term = obj[0];
-      // if (term == 'parents') term = 'out_SubClassOf'
-      // if (term == 'children') term = 'in_SubClassOf'
-      // if (term == 'aliases') {
-      //   term = 'out_AliasOf,in_AliasOf';
-      // }
-
-      obj[1] ? returnProperties += term + ',' : reqDefault = false;
+    Object.keys(this.properties).forEach(key => {
+      this.properties[key] ? returnProperties += key + ',' : reqDefault = false;
     });
 
     !reqDefault ? this.params.returnProperties = returnProperties.slice(0, returnProperties.length - 1) : this.params.returnProperties = '';

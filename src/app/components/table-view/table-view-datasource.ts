@@ -2,32 +2,18 @@ import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator, MatSort } from '@angular/material';
 import { map } from 'rxjs/operators';
 import { Observable, of as observableOf, merge } from 'rxjs';
+import { DiseaseTerm } from '../../models/models';
 
-// TODO: Replace this with your own data model type
-export interface TableViewItem {
-  class: string;
-  sourceId: string;
-  createdBy: string;
-  name?: string;
-  description?: string;
-  source: string;
-  rid: string;
-  version: number;
-  subsets?: string[];
-  parents?: string[];
-  children?: string[];
-  aliases?: string[];
-}
 
 /**
  * Data source for the TableView view. This class should
  * encapsulate all logic for fetching and manipulating the displayed data
  * (including sorting, pagination, and filtering).
  */
-export class TableViewDataSource extends DataSource<TableViewItem> {
-  data: TableViewItem[];
+export class TableViewDataSource extends DataSource<DiseaseTerm> {
+  data: DiseaseTerm[];
 
-  constructor(private paginator: MatPaginator, private sort: MatSort, private inData: TableViewItem[]) {
+  constructor(private paginator: MatPaginator, private sort: MatSort, private inData: DiseaseTerm[]) {
     super();
     this.data = inData;
   }
@@ -37,7 +23,7 @@ export class TableViewDataSource extends DataSource<TableViewItem> {
    * the returned stream emits new items.
    * @returns A stream of the items to be rendered.
    */
-  connect(): Observable<TableViewItem[]> {
+  connect(): Observable<DiseaseTerm[]> {
     // Combine everything that affects the rendered data into one update
     // stream for the data-table to consume.
     const dataMutations = [
@@ -64,7 +50,7 @@ export class TableViewDataSource extends DataSource<TableViewItem> {
    * Paginate the data (client-side). If you're using server-side pagination,
    * this would be replaced by requesting the appropriate data from the server.
    */
-  private getPagedData(data: TableViewItem[]) {
+  private getPagedData(data: DiseaseTerm[]) {
     const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
     return data.splice(startIndex, this.paginator.pageSize);
   }
@@ -73,7 +59,7 @@ export class TableViewDataSource extends DataSource<TableViewItem> {
    * Sort the data (client-side). If you're using server-side sorting,
    * this would be replaced by requesting the appropriate data from the server.
    */
-  private getSortedData(data: TableViewItem[]) {
+  private getSortedData(data: DiseaseTerm[]) {
     if (!this.sort.active || this.sort.direction === '') {
       return data;
     }
@@ -81,11 +67,11 @@ export class TableViewDataSource extends DataSource<TableViewItem> {
     return data.sort((a, b) => {
       const isAsc = this.sort.direction === 'asc';
       switch (this.sort.active) {
-        case 'class': return compare(a.class, b.class, isAsc);
+        case 'class': return compare(a['@class'], b['@class'], isAsc);
         case 'sourceId': return compare(a.sourceId.split(':')[1], b.sourceId.split(':')[1], isAsc);
         case 'createdBy': return compare(a.createdBy, b.createdBy, isAsc);
         case 'name': return compare(a.name, b.name, isAsc);
-        case 'rid-version': return compare(a.rid.split(':')[1], b.rid.split(':')[1], isAsc);
+        case 'rid-version': return compare(a['@rid'].split(':')[1], b['@rid'].split(':')[1], isAsc);
         case 'subsets': () => {
           a.subsets = a.subsets || [''];
           b.subsets = b.subsets || [''];          

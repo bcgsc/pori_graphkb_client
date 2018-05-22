@@ -10,7 +10,7 @@ export class SubsetsPipe implements PipeTransform {
     if (value) value.forEach(subset => {
       let subName = subset.split('#')[1] || subset;
 
-      concat += subName + ", "
+      concat += subName.toUpperCase() + ", "
     });
     return concat.substr(0, concat.length - 2);
   }

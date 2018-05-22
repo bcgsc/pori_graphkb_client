@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { APIService } from '../../services/api.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DiseasePayload } from '../../models/models';
 
 export interface Edge {
     type: string,
@@ -16,12 +17,12 @@ export interface Edge {
 export class AddNodeViewComponent implements OnInit {
     private tempSubset = '';
     private subsets = [];
-    private payload;
+    private payload: DiseasePayload = {source: '', sourceId: ''};
     private rid;
     private relationships: Edge[] = [];
     private tempEdge = { type: '', id: '', in: '' };
 
-    constructor(private api: APIService, private route: ActivatedRoute) { }
+    constructor(private api: APIService, private route: ActivatedRoute, private router: Router) { }
 
     ngOnInit() {
         this.route.queryParams.subscribe(params => {
@@ -35,13 +36,13 @@ export class AddNodeViewComponent implements OnInit {
         });
     }
 
-    deleteEdge(edge){
+    deleteEdge(edge) {
         let i = this.relationships.findIndex(s => edge == s);
         this.relationships.splice(i, 1);
     }
 
     addEdge() {
-        if(!this.tempEdge.id) return;
+        if (!this.tempEdge.id) return;
         switch (this.tempEdge.type) {
             case 'parent':
                 this.relationships.push({
@@ -81,4 +82,13 @@ export class AddNodeViewComponent implements OnInit {
         this.subsets.splice(i, 1);
     }
 
+    addNode(): void {
+        this.api.addNode(this.payload).subscribe(response => {
+            let id = response['@rid'];
+
+            //Cascading relationship calls
+            this.router.navigate(['/table/' + id.slice(1)]);
+        })
+
+    }
 }

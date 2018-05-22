@@ -9,12 +9,15 @@ const TEST_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXIiOns
 @Injectable()
 export class AuthService {
 
-    constructor(private http: HttpClient) { 
+    constructor(private http: HttpClient) {
         this.loadToken(TEST_TOKEN);
     }
 
     public login(username: string, password: string): void {
-        this.http.post(AUTH_ENDPOINT, { username: username, password: password }).subscribe();
+        this.http.post(AUTH_ENDPOINT, { 
+            username: username, 
+            password: password 
+        }).subscribe((token: string) => this.loadToken(token));
     }
 
     public getToken(): string {

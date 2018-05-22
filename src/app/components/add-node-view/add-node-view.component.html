@@ -1,36 +1,51 @@
 <div class="wrapper">
+    <form (ngSubmit)="addNode()" #addNodeForm="ngForm">
+
     <div class="parameter-selection">
         <!-- <h5 class="mat-h5">Source: </h5> -->
         <mat-form-field>
-            <input required matInput placeholder="Source">
+            <input matInput type="text" id="source"
+                required
+                [(ngModel)]="payload.source" name="source"
+                placeholder="Source">
         </mat-form-field>
     </div>
 
     <div class="parameter-selection">
         <!-- <h5 class="mat-h5">Source ID: </h5> -->
         <mat-form-field>
-            <input required matInput placeholder="Source ID">
+            <input matInput type="text" id="sourceId" 
+                required
+                [(ngModel)]="payload.sourceId" name="sourceId"
+                placeholder="Source ID">
         </mat-form-field>
     </div>
 
     <div class="parameter-selection">
         <!-- <h5 class="mat-h5">Name: </h5> -->
         <mat-form-field>
-            <textarea matInput placeholder="Name"></textarea>
+            <textarea matInput type="text" id="name"
+                [(ngModel)]="payload.name" name="name"
+                placeholder="Name">
+            </textarea>
         </mat-form-field>
     </div>
 
     <div class="parameter-selection">
         <!-- <h5 class="mat-h5">Long Name: </h5> -->
         <mat-form-field>
-            <input matInput placeholder="Long Name">
+            <input matInput type="text" id="longName"
+                [(ngModel)]="payload.longName" name="longName"
+                placeholder="Long Name">
         </mat-form-field>
     </div>
 
     <div class="parameter-selection">
         <!-- <h5 class="mat-h5">Description: </h5> -->
         <mat-form-field>
-            <textarea matInput placeholder="Description"></textarea>
+            <textarea matInput type="text" id="description"
+                [(ngModel)]="payload.description" name="description"
+                placeholder="Description"></textarea>
         </mat-form-field>
     </div>
 
@@ -42,7 +57,10 @@
             </li>
         </ul>
         <mat-form-field>
-            <input (keyup.enter)="addSubset()" matInput placeholder="Add New Subset" [(ngModel)]="tempSubset">
+            <input matInput type="text" id="subset"
+                [(ngModel)]="tempSubset" name="tempSubset"
+                placeholder="Add New Subset"
+                (keyup.enter)="addSubset()">
         </mat-form-field>
 
         <mat-icon (click)="addSubset()">home</mat-icon>
@@ -52,14 +70,18 @@
     <div class="parameter-selection">
         <!-- <h5 class="mat-h5">Source Version: </h5> -->
         <mat-form-field>
-            <input matInput placeholder="Source Version">
+            <input matInput type="text" id="sourceVersion"
+                [(ngModel)]="payload.sourceVersion" name="sourceVersion"
+                placeholder="Source Version">
         </mat-form-field>
     </div>
 
     <div class="parameter-selection">
         <!-- <h5 class="mat-h5">Source ID Version: </h5> -->
         <mat-form-field>
-            <input matInput placeholder="Source ID Version">
+            <input matInput type="text" id="sourceIdVersion"
+                [(ngModel)]="payload.sourceIdVersion" name="sourceIdVersion"
+                placeholder="Source ID Version">
         </mat-form-field>
     </div>
 
@@ -96,6 +118,8 @@
 
     </div>
 
-    <button mat-button>Add Node</button>
-
+    <button [disabled]="!addNodeForm.form.valid" type="submit"mat-button>Add Node</button>
+    <!-- <button mat-button (click)="addNode()">Add Node</button> -->
+    
+    </form> 
 </div>

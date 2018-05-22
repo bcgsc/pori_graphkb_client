@@ -10,13 +10,14 @@ import { Observable } from 'rxjs';
 import 'rxjs/add/operator/do';
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
+import { Router } from '@angular/router';
 
 /**
  * Interceptor for authentication and responses
  */
 @Injectable()
 export class APIInterceptor implements HttpInterceptor {
-    constructor(public auth: AuthService) { }
+    constructor(public auth: AuthService, private router: Router) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         // Add authorization header if token exists
@@ -48,7 +49,9 @@ export class APIInterceptor implements HttpInterceptor {
                 if (err.status === 401) {
                     this.auth.clearToken();
                     // redirect to the login route
-                    // or show a modal
+                }
+                if(err.status === 404){
+                    this.router.navigate(['/query']);
                 }
                 console.log(err);
             };

@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { APIService } from '../../services/api.service';
-
-import { TableViewDataSource, TableViewItem } from './table-view-datasource';
+import { DiseaseTerm } from '../../models/models';
+import { TableViewDataSource } from './table-view-datasource';
 import { NodeViewComponent } from '../node-view/node-view.component';
 
 import * as jc from 'json-cycle';
@@ -18,9 +18,10 @@ export class TableViewComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  @Output() selected = new EventEmitter<TableViewItem>();
+  @Output() selected = new EventEmitter<DiseaseTerm>();
   
   @Input() data;
+  @Input() initSelected?;
   dataSource: TableViewDataSource;
 
   private selectedNode;
@@ -33,26 +34,23 @@ export class TableViewComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.dataSource = new TableViewDataSource(this.paginator, this.sort, this.data);
-    this.selectedNode = this.data[0];
+    this.selectedNode = this.initSelected || this.data[0];
   }
 
   ngAfterViewInit(): void {
   }
 
-  onClick(e, row: TableViewItem) {
+  onClick(e, row: DiseaseTerm) {
+    // this.selected.emit(row['@rid'].slice(1));
     this.selected.emit(row);
+    
     this.selectedNode = row;
   }
 
-  onEdit(edited: TableViewItem){
+  onEdit(edited: DiseaseTerm){
   }
-  onAdded(added: TableViewItem){
+  onAdded(added: DiseaseTerm){
   }
-  onDeleted(deleted: TableViewItem){
-  }
-
-  refresh(node?){
-    this.dataSource = new TableViewDataSource(this.paginator, this.sort, this.data);
-    if(node) this.selectedNode = node;
+  onDeleted(deleted: DiseaseTerm){
   }
 }

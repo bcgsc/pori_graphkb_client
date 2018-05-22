@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { TableViewItem } from '../components/table-view/table-view-datasource';
+import { DiseaseTerm } from '../models/models';
 
 const API_ENDPOINT = "http://10.9.202.242:8088/api";
 /**
@@ -9,23 +9,21 @@ const API_ENDPOINT = "http://10.9.202.242:8088/api";
  */
 @Injectable()
 export class APIService {
-    constructor(private http: HttpClient) { }
+    private _terms: {[id:string]: DiseaseTerm};
+    private _list: string[];
 
-    public getJSON(url: string): Observable<any> {
-        return this.http.get(url);
+    get terms(): DiseaseTerm[]{
+        return this._list.map(id => this._terms[id]);
     }
+
+    constructor(private http: HttpClient) {}
+
     public addNode(node): Observable<any> {
         return this.http.post(API_ENDPOINT + "/diseases", node);
     }
 
-    public deleteNode(rid): Observable<any>{
+    public deleteNode(rid): Observable<any> {
         return this.http.delete(API_ENDPOINT + "/diseases/" + rid);
-    }
-
-    public testGetDiseases(): Observable<any> {
-        let params = { 'name': 'angiosarcoma' }
-
-        return this.http.get(API_ENDPOINT + "/diseases", { params: params });
     }
 
     public query(params): Observable<any> {
@@ -33,11 +31,12 @@ export class APIService {
     }
 
     //must be formatted before (get rid of #)
-    public getRecord(rid): Observable<any> {
-        return this.http.get(API_ENDPOINT + "/diseases/" + rid);
+    public getRecord(rid, params?): Observable<any> {
+        return this.http.get(API_ENDPOINT + "/diseases/" + rid, {params: params});
     }
 
-    public editNode(rid, data:TableViewItem): Observable<any> {
+    // Configure add relationship calls
+    public editNode(rid, data: DiseaseTerm): Observable<any> {
         let payload = {
             name: data.name,
             description: data.description,

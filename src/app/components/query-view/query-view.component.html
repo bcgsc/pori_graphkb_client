@@ -59,8 +59,8 @@
     <div class="parameter-selection">
         <h3 class="mat-h3">Return Properties: </h3>
         <div class="checkboxes">
-            <div class="checkbox" *ngFor="let p of properties">
-                <mat-checkbox [(ngModel)]="p[1]" disableRipple='true'>{{p[0] | camelCase}}</mat-checkbox>
+            <div class="checkbox" *ngFor="let p of propKeys">
+                <mat-checkbox [(ngModel)]="properties[p]" disableRipple='true'>{{p | camelCase}}</mat-checkbox>
             </div>
         </div>
     </div>

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Input, SimpleChanges } from '@angular/core';
-import { TableViewItem } from '../table-view/table-view-datasource';
+import { DiseaseTerm } from '../../models/models';
 import { MatSnackBar } from '@angular/material';
 import { Output } from '@angular/core';
 import { EventEmitter } from '@angular/core';
@@ -12,39 +12,27 @@ import { APIService } from '../../services/api.service';
   providers: [MatSnackBar],
 })
 export class NodeViewComponent {
-  @Input('node') node: TableViewItem;
-  @Output() changed = new EventEmitter<TableViewItem>();
-  @Output() added = new EventEmitter<TableViewItem>();
-  @Output() deleted = new EventEmitter<TableViewItem>();
+  @Input('node') node: DiseaseTerm;
+  @Output() changed = new EventEmitter<DiseaseTerm>();
+  @Output() added = new EventEmitter<DiseaseTerm>();
+  @Output() deleted = new EventEmitter<DiseaseTerm>();
 
   private _editing = false;
-  private _temp: TableViewItem;
+  private _temp: DiseaseTerm;
   private _tempSubset = '';
 
   constructor(public snackBar: MatSnackBar, private router: Router, private api: APIService) { }
 
   ngOnChanges(changes: SimpleChanges) {
-    if(!changes.node || !changes.node.currentValue || !changes.node.currentValue.children) return;
+    if (!changes.node || !changes.node.currentValue) return;
 
-    let children = changes.node.currentValue.children;
-    for (let i = 0; i < children.length; i++) {
-      // this.api.getRecord(children[i].slice(1)).subscribe(data => {
-      //   this.node.children[i] = data.name;
-      // });
-    }
+    // this.api.getRecord(changes.node.currentValue['@rid'].slice(1), { neighbors: 2 }).subscribe(response => {})
 
-    let parents = changes.node.currentValue.parents;
-    if(!parents) return;
-    for (let i = 0; i < parents.length; i++) {
-      // this.api.getRecord(parents[i].slice(1)).subscribe(data => {
-      //   this.node.parents[i] = data.name;
-      // });
-    }
   }
 
   addChild() {
     this.snackBar.open('Child added!', undefined, { duration: 1000 });
-    let params = { 'parentId': this.node.rid.slice(1) }
+    let params = { 'parentId': this.node['@rid'].slice(1) }
     this.router.navigate(['/add'], { queryParams: params });
 
   }
@@ -56,14 +44,14 @@ export class NodeViewComponent {
     }
 
     this._temp = {
-      class: this.node.class,
+      '@class': this.node['@class'],
       sourceId: this.node.sourceId,
       createdBy: this.node.createdBy,
       name: this.node.name,
       description: this.node.description,
       source: this.node.source,
-      rid: this.node.rid,
-      version: this.node.version,
+      '@rid': this.node['@rid'],
+      '@version': this.node['@version'],
       subsets: subsets
     }
     this._editing = true;
@@ -74,7 +62,7 @@ export class NodeViewComponent {
 
   doneEdit() {
     this.node = this._temp;
-    this.node.version++;
+    this.node['@version']++;
     this.changed.emit(this.node);
     this._editing = false;
   }

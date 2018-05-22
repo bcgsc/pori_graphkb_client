@@ -15,13 +15,3 @@ export class RelationshipPipe implements PipeTransform {
 
     }
 }
-
-@Pipe({ name: 'subsetPipe' })
-export class SubsetPipe implements PipeTransform {
-    transform(value: string): string {
-
-        let subName = value.split('#')[1] || value;
-
-        return subName;
-    }
-}

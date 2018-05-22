@@ -2,7 +2,7 @@
     <mat-tab-group class="group-view">
         <mat-tab label="Table View">
             <div class="table-wrapper">
-                <table-view [data]="data" (selected)="onSelect($event)"></table-view>
+                <table-view [data]="data" [initSelected]="selectedNode"(selected)="onSelect($event)"></table-view>
             </div>
         </mat-tab>
         <mat-tab label="Tree View">

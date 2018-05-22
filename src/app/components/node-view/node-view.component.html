@@ -1,13 +1,13 @@
 <mat-card class="card">
     <mat-list class="myList">
 
-        <h3 matSubheader>Class</h3>
-        <mat-list-item *ngIf="node">{{node.class}}</mat-list-item>
+        <h3 matSubheader>Source</h3>
+        <mat-list-item *ngIf="node">{{node.source}}</mat-list-item>
 
         <mat-divider></mat-divider>
 
         <h3 matSubheader>Source ID</h3>
-        <mat-list-item *ngIf="node">{{node.sourceId}}</mat-list-item>
+        <mat-list-item *ngIf="node">{{node.sourceId | uppercase}}</mat-list-item>
 
         <mat-divider></mat-divider>
 
@@ -17,7 +17,7 @@
         <mat-divider></mat-divider>
 
         <h3 matSubheader>RID</h3>
-        <mat-list-item *ngIf="node">{{node.rid}}</mat-list-item>
+        <mat-list-item *ngIf="node">{{node['@rid']}}</mat-list-item>
 
         <mat-divider></mat-divider>
 
@@ -72,7 +72,7 @@
         <mat-divider></mat-divider>
 
         <h3 matSubheader>Version</h3>
-        <mat-list-item *ngIf="node">{{node.version}}</mat-list-item>
+        <mat-list-item *ngIf="node">{{node['@version']}}</mat-list-item>
 
         <mat-divider></mat-divider>
 

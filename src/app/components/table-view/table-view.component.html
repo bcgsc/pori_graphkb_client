@@ -4,7 +4,7 @@
       <!-- Class Column -->
       <ng-container matColumnDef="class">
         <mat-header-cell *matHeaderCellDef mat-sort-header>Class</mat-header-cell>
-        <mat-cell *matCellDef="let row">{{row.class}}</mat-cell>
+        <mat-cell *matCellDef="let row">{{row['@class']}}</mat-cell>
       </ng-container>
 
       <!-- Source Column -->
@@ -35,7 +35,7 @@
       <!-- RID & Version Column -->
       <ng-container matColumnDef="rid-version">
         <mat-header-cell *matHeaderCellDef mat-sort-header>RID</mat-header-cell>
-        <mat-cell *matCellDef="let row">{{row.rid +' v'+row.version}}</mat-cell>
+        <mat-cell *matCellDef="let row">{{row['@rid'] +' v'+row['@version']}}</mat-cell>
       </ng-container>
 
       <!-- Subsets Column -->

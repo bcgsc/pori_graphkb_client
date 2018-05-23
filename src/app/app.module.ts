@@ -23,6 +23,7 @@ import {
   MatFormFieldModule,
   MatInputModule,
   MatSelectModule,
+  MatTreeModule,
 } from '@angular/material';
 import { AppRoutingModule } from './app-routing.module';
 
@@ -33,7 +34,7 @@ import {
   TreeViewComponent,
   DataHubComponent,
   QueryViewComponent,
-  AddNodeViewComponent
+  AddNodeViewComponent,
 } from './components';
 
 import { APIService, AuthService, APIInterceptor} from './services';
@@ -80,6 +81,7 @@ import { RelationshipPipe } from './pipes/relationship.pipe';
     MatSelectModule,
     MatCheckboxModule,
     MatProgressSpinnerModule,
+    MatTreeModule,
   ],
   providers: [
     APIService,

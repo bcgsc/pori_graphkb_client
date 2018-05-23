@@ -14,6 +14,7 @@ export interface DiseaseTerm {
     subsets?: string[];
     parents?: string[];
     children?: string[];
+    _children?: DiseaseTerm[];
     aliases?: string[];
 }
 /**

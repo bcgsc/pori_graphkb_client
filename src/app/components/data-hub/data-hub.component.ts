@@ -92,14 +92,12 @@ export class DataHubComponent {
                         i = this.tableData.length;
                     }
                     this.tableData.push(entry);
-                    this.dataMap[entry["@rid"]] = entry;
+                    this.dataMap[entry["@rid"]] = Object.assign({}, entry);
                 });
 
                 this.selectedNode = this.tableData[i];
+
                 this.treeData = this.getHierarchy();
-                this.treeData.forEach(root => {
-                    if (root._children) console.log(root);
-                })
             })
         );
     }
@@ -155,29 +153,34 @@ export class DataHubComponent {
             }
 
             this.tableData.push(entry);
-            this.dataMap[entry["@rid"]] = entry;
+            this.dataMap[entry["@rid"]] = entry
             this.treeData = this.getHierarchy();
             this.selectedNode = this.tableData[0];
         });
     }
 
     getHierarchy(): any[] {
+        let inMap = Object.assign({}, this.dataMap);
         let h = [];
-        Object.keys(this.dataMap).forEach(element => {
-            if (!this.dataMap[element].parents) {
-                h.push(this.dataMap[element]);
+        let t = true;
+        Object.keys(inMap).forEach(element => {
+            if (!inMap[element].parents) {
+                h.push(inMap[element]);
             } else {
-                this.dataMap[element].parents.forEach(pid => {
-                    if (pid in this.dataMap) {
-                        let parent = this.dataMap[pid];
+                inMap[element].parents.forEach(pid => {
+                    if (pid in inMap) {
+                        let parent = inMap[pid];
                         if (!('_children' in parent)) {
                             parent._children = [];
                         }
-                        parent._children.push(this.dataMap[element]);
+                        parent._children.push(inMap[element]);
+                    } else{
+                        h.push(inMap[element]);
                     }
                 })
             }
         });
+        console.log(h);
 
         return h;
     }

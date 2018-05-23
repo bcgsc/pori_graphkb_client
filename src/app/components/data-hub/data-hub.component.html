@@ -3,7 +3,8 @@
         <mat-tab label="Table View">
             <table-view [data]="tableData" [initSelected]="selectedNode" (selected)="onSelect($event)"></table-view>
         </mat-tab>
-        <mat-tab label="Tree View">tree</mat-tab>
+        <mat-tab label="Tree View">
+            <tree-view [data]="treeData" (selected)="onSelect($event)"></tree-view></mat-tab>
         <mat-tab label="Graph View">graph</mat-tab>
     </mat-tab-group>
     <node-view class="node-view" [node]="selectedNode" (changed)="onEdit($event)" (added)="onAdd($event)" (deleted)="onDelete($event)">

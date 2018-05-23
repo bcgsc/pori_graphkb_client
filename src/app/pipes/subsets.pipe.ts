@@ -3,8 +3,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({ name: 'subsetsPipe' })
 export class SubsetsPipe implements PipeTransform {
   transform(value: string[]): string {
-
-
     let concat: string = ''
 
     if (value) value.forEach(subset => {

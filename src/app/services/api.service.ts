@@ -45,4 +45,14 @@ export class APIService {
 
         return this.http.patch(API_ENDPOINT + "/diseases/" + rid, payload);
     }
+
+    public addRelationship(input): Observable<any>{
+        let classEndpoint = input.type;
+        let payload = {
+            in: input.in,
+            out: input.out,
+        }
+
+        return this.http.post(API_ENDPOINT + "/" + classEndpoint, payload);
+    }
 }

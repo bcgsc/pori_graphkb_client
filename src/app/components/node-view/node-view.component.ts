@@ -15,28 +15,64 @@ export class NodeViewComponent {
   @Input('node') node: DiseaseTerm;
   @Output() changed = new EventEmitter<DiseaseTerm>();
   @Output() added = new EventEmitter<DiseaseTerm>();
-  @Output() deleted = new EventEmitter<DiseaseTerm>();
+  @Output() deleted = new EventEmitter<string>();
 
   private _editing = false;
   private _temp: DiseaseTerm;
   private _tempSubset = '';
+  private init;
 
   constructor(public snackBar: MatSnackBar, private router: Router, private api: APIService) { }
 
   ngOnChanges(changes: SimpleChanges) {
+    this._editing = false;
+    this._temp = undefined;
+    this._tempSubset = '';
     if (!changes.node || !changes.node.currentValue) return;
-
+    this.init = changes.node.currentValue;
     // this.api.getRecord(changes.node.currentValue['@rid'].slice(1), { neighbors: 2 }).subscribe(response => {})
-
   }
 
-  addChild() {
-    this.snackBar.open('Child added!', undefined, { duration: 1000 });
+  /**
+   * Navigates to Add Node page and initializes form with 1 edge connecting 
+   * this node as parent
+   */
+  private addChild() {
+    // this.snackBar.open('Child added!', undefined, { duration: 1000 });
     let params = { 'parentId': this.node['@rid'].slice(1) }
     this.router.navigate(['/add'], { queryParams: params });
+  }
+
+  /**
+   * Takes all changes and sends a PATCH request to the server. Emits change to
+   * parent component
+   */
+  private applyChanges() {
+    if(this._tempSubset) this._temp.subsets.push(this._tempSubset);
+    this.node = this._temp;
+    this.changed.emit(this.node);
+  }
+
+  /**
+   * Sends a DELETE request to the server. 
+   */
+  private deleteSelected() {
+    this.deleted.emit(this.node['@rid']);
+  }
+
+  /**
+   * Navigates to the general query endpoint, specifying only this node's 
+   * source as a query parameter.
+   */
+  private queryBySource(){
+    let params = {source: this.node.source};
+    this.router.navigate(['/table'], {queryParams: params});
 
   }
-  editSelected() {
+
+  /* Helper Methods */
+  
+  private beginEdit() {
     this._tempSubset = '';
     let subsets = [];
     if (this.node.subsets) {
@@ -56,28 +92,19 @@ export class NodeViewComponent {
     }
     this._editing = true;
   }
-  deleteSelected() {
-    this.deleted.emit(this.node);
-  }
 
-  doneEdit() {
-    this.node = this._temp;
-    this.node['@version']++;
-    this.changed.emit(this.node);
-    this._editing = false;
-  }
-  cancelEdit() {
+  private cancelEdit() {
     this._editing = false;
   }
 
-  addTempSubset() {
+  private addTempSubset() {
+    if(!this._tempSubset) return;
     this._temp.subsets.push(this._tempSubset);
     this._tempSubset = '';
   }
 
-  deleteTempSubset(subset): void {
+  private deleteTempSubset(subset): void {
     let i = this._temp.subsets.findIndex(s => subset == s);
     this._temp.subsets.splice(i, 1);
   }
-
 }

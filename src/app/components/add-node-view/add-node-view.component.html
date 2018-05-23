@@ -1,5 +1,5 @@
 <div class="wrapper">
-    <form (ngSubmit)="addNode()" #addNodeForm="ngForm">
+    <form (ngSubmit)="addNode()" #addNodeForm="ngForm" (keydown.enter)="$event.preventDefault()">
 
     <div class="parameter-selection">
         <!-- <h5 class="mat-h5">Source: </h5> -->
@@ -51,9 +51,9 @@
 
     <div class="subsets-selection">
         <!-- <h5 class="mat-h5">Subsets: </h5> -->
-        <ul>
-            <li *ngFor="let subset of subsets">{{subset}}
-                <mat-icon (click)="delete(subset)">folder</mat-icon>
+        <ul name="subsetList">
+            <li *ngFor="let subset of subsets" >{{subset}}
+                <mat-icon (click)="delete(subset)">close</mat-icon>
             </li>
         </ul>
         <mat-form-field>
@@ -63,7 +63,7 @@
                 (keyup.enter)="addSubset()">
         </mat-form-field>
 
-        <mat-icon (click)="addSubset()">home</mat-icon>
+        <mat-icon (click)="addSubset()">add</mat-icon>
 
     </div>
 
@@ -90,7 +90,7 @@
         <!-- <h5 class="mat-h5">Subsets: </h5> -->
         <ul>
             <li *ngFor="let relationship of relationships">{{relationship | relationshipPipe}}
-                <mat-icon (click)="deleteEdge(relationship)">folder</mat-icon>
+                <mat-icon (click)="deleteEdge(relationship)">close</mat-icon>
             </li>
         </ul>
 
@@ -112,7 +112,7 @@
             <mat-form-field>
                 <input matInput placeholder="Add target ID" name="edgeId" [(ngModel)]="tempEdge.id">
             </mat-form-field>
-            <mat-icon (click)="addEdge()"> home</mat-icon>
+            <mat-icon (click)="addEdge()">add</mat-icon>
             
         </form >
 

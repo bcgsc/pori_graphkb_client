@@ -16,7 +16,11 @@ import { NodeViewComponent } from '../node-view/node-view.component';
 export class DataHubComponent {
     @ViewChild(TableViewComponent) table;
     @ViewChild(NodeViewComponent) node;
-    data: DiseaseTerm[];
+
+    tableData: DiseaseTerm[];
+    dataMap: { [id: string]: any };
+    treeData;
+
     selectedNode: DiseaseTerm;
 
     constructor(private api: APIService, private route: ActivatedRoute) { }
@@ -25,11 +29,19 @@ export class DataHubComponent {
         this.refresh();
     }
 
+    //TODO: make this less confusing
+    refresh(queryRid?) {
+        this.tableData = undefined;
+        let rid = this.route.snapshot.paramMap.get('rid')
+        rid ? this.getRecord(rid) : this.getQuery(queryRid);
+    }
+
     getQuery(rid?) {
         this.route.queryParams.subscribe(params =>
             this.api.query(params).subscribe((json) => {
                 let i = 0;
-                this.data = [];
+                this.tableData = [];
+                this.dataMap = {};
 
                 json = jc.retrocycle(json);
 
@@ -77,20 +89,25 @@ export class DataHubComponent {
                         aliases: aliases,
                     }
                     if (rid && entry['@rid'] === rid) {
-                        i = this.data.length;
-                        console.log(i);
+                        i = this.tableData.length;
                     }
-                    this.data.push(entry);
+                    this.tableData.push(entry);
+                    this.dataMap[entry["@rid"]] = entry;
                 });
 
-                this.selectedNode = this.data[i];
+                this.selectedNode = this.tableData[i];
+                this.treeData = this.getHierarchy();
+                this.treeData.forEach(root => {
+                    if (root._children) console.log(root);
+                })
             })
         );
     }
 
     getRecord(rid) {
         this.api.getRecord(rid).subscribe((json) => {
-            this.data = [];
+            this.tableData = [];
+            this.dataMap = {};
 
             json = jc.retrocycle(json);
 
@@ -136,30 +153,62 @@ export class DataHubComponent {
                 children: children,
                 aliases: aliases,
             }
-            this.data.push(entry);
 
-            this.selectedNode = this.data[0];
+            this.tableData.push(entry);
+            this.dataMap[entry["@rid"]] = entry;
+            this.treeData = this.getHierarchy();
+            this.selectedNode = this.tableData[0];
         });
     }
 
-    refresh(queryRid?) {
-        this.data = undefined;
-        let rid = this.route.snapshot.paramMap.get('rid')
-        rid ? this.getRecord(rid) : this.getQuery(queryRid);
+    getHierarchy(): any[] {
+        let h = [];
+        Object.keys(this.dataMap).forEach(element => {
+            if (!this.dataMap[element].parents) {
+                h.push(this.dataMap[element]);
+            } else {
+                this.dataMap[element].parents.forEach(pid => {
+                    if (pid in this.dataMap) {
+                        let parent = this.dataMap[pid];
+                        if (!('_children' in parent)) {
+                            parent._children = [];
+                        }
+                        parent._children.push(this.dataMap[element]);
+                    }
+                })
+            }
+        });
+
+        return h;
     }
 
-    onSelect(rid) {
-        this.selectedNode = rid;
-        this.node.cancelEdit();
+    /* Event triggered methods */
+
+    /**
+     * Triggered when user selects a node in one of the views.
+     * @param node record ID of the selected node.
+     */
+    onSelect(node: DiseaseTerm) {
+        this.node = undefined;
+        this.selectedNode = node;
     }
 
+    /**
+     * Triggered when user confirms edits made to a node.
+     * @param node updated node object after edits.
+     */
     onEdit(node: DiseaseTerm) {
         this.api.editNode(node['@rid'].slice(1), node).subscribe(() => {
             this.refresh(node['@rid']);
         });
     }
-    onDelete(node: DiseaseTerm) {
-        this.api.deleteNode(node['@rid'].slice(1)).subscribe(() => {
+
+    /**
+     * Triggered when user deletes a node.
+     * @param rid record ID of the deleted node.
+     */
+    onDelete(rid: string) {
+        this.api.deleteNode(rid.slice(1)).subscribe(() => {
             this.refresh();
         });
     }

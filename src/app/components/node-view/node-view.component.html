@@ -1,97 +1,114 @@
 <mat-card class="card">
-    <mat-list class="myList">
+    <form (ngSubmit)="applyChanges()" #editNodeForm="ngForm" (keydown.enter)="$event.preventDefault()">
+        <mat-list class="myList">
 
-        <h3 matSubheader>Source</h3>
-        <mat-list-item *ngIf="node">{{node.source}}</mat-list-item>
+            <h3 matSubheader>Source</h3>
 
-        <mat-divider></mat-divider>
-
-        <h3 matSubheader>Source ID</h3>
-        <mat-list-item *ngIf="node">{{node.sourceId | uppercase}}</mat-list-item>
-
-        <mat-divider></mat-divider>
-
-        <h3 matSubheader>Created By</h3>
-        <mat-list-item *ngIf="node">{{node.createdBy}}</mat-list-item>
-
-        <mat-divider></mat-divider>
-
-        <h3 matSubheader>RID</h3>
-        <mat-list-item *ngIf="node">{{node['@rid']}}</mat-list-item>
-
-        <mat-divider></mat-divider>
-
-        <h3 matSubheader>Name</h3>
-        <mat-list-item *ngIf="!_editing && node">{{node.name}}</mat-list-item>
-        <mat-list-item *ngIf="_editing">
-            <textarea class="edit-box" matInput placeholder="Name" [(ngModel)]="_temp.name"></textarea>
-        </mat-list-item>
-
-        <mat-divider></mat-divider>
-
-        <h3 matSubheader>Description</h3>
-        <mat-list-item *ngIf="!_editing && node">{{node.description || 'none'}}</mat-list-item>
-        <mat-list-item *ngIf="_editing">
-            <textarea class="edit-box" matInput placeholder="Description" [(ngModel)]="_temp.description"></textarea>
-        </mat-list-item>
-
-        <mat-divider></mat-divider>
-        <h3 matSubheader>Children</h3>
-        <div *ngIf="node">
-            <mat-list-item *ngFor="let child of node.children">{{child}}
-                <mat-icon matListIcon>folder</mat-icon>
+            <mat-list-item *ngIf="node">{{node.source}}
+                <mat-icon matListIcon (click)="queryBySource()">search</mat-icon>
             </mat-list-item>
-        </div>
 
-        <mat-divider></mat-divider>
-        <h3 matSubheader>Parents</h3>
-        <div *ngIf="node">
-            <mat-list-item *ngFor="let parent of node.parents">{{parent}}
-                <mat-icon matListIcon>folder</mat-icon>
+
+            <mat-divider></mat-divider>
+
+            <h3 matSubheader>Source ID</h3>
+            <mat-list-item *ngIf="node">{{node.sourceId | uppercase}}</mat-list-item>
+
+            <mat-divider></mat-divider>
+
+            <h3 matSubheader>Created By</h3>
+            <mat-list-item *ngIf="node">{{node.createdBy}}</mat-list-item>
+
+            <mat-divider></mat-divider>
+
+            <h3 matSubheader>RID</h3>
+            <mat-list-item *ngIf="node">{{node['@rid']}}</mat-list-item>
+
+            <mat-divider></mat-divider>
+
+            <h3 matSubheader>Name</h3>
+            <mat-list-item *ngIf="!_editing && node">{{node.name}}</mat-list-item>
+            <mat-list-item *ngIf="_editing">
+                <textarea matInput type="text" id="name" class="edit-box" [(ngModel)]="_temp.name" name="source" placeholder="Name">
+                </textarea>
             </mat-list-item>
-        </div>
 
-        <mat-divider></mat-divider>
-        <h3 matSubheader>Subsets</h3>
-        <div *ngIf="!_editing && node">
-            <mat-list-item *ngFor="let subset of node.subsets">{{subset | subsetPipe}}
-                <mat-icon matListIcon>folder</mat-icon>
+            <mat-divider></mat-divider>
+
+            <h3 matSubheader>Description</h3>
+            <mat-list-item *ngIf="!_editing && node">{{node.description || 'none'}}</mat-list-item>
+            <mat-list-item *ngIf="_editing">
+                <textarea matInput type="text" id="description" class="edit-box" [(ngModel)]="_temp.description" name="description" placeholder="Description"></textarea>
             </mat-list-item>
+
+            <mat-divider></mat-divider>
+            <h3 matSubheader>Aliases</h3>
+            <div *ngIf="node">
+                <mat-list-item *ngFor="let alias of node.aliases">{{alias}}
+                    <mat-icon matListIcon>folder</mat-icon>
+                </mat-list-item>
+            </div>
+
+            <mat-divider></mat-divider>
+            <h3 matSubheader>Children</h3>
+            <div *ngIf="node">
+                <mat-list-item *ngFor="let child of node.children">{{child}}
+                    <mat-icon matListIcon>folder</mat-icon>
+                </mat-list-item>
+            </div>
+
+            <mat-divider></mat-divider>
+            <h3 matSubheader>Parents</h3>
+            <div *ngIf="node">
+                <mat-list-item *ngFor="let parent of node.parents">{{parent}}
+                    <mat-icon matListIcon>folder</mat-icon>
+                </mat-list-item>
+            </div>
+
+            <mat-divider></mat-divider>
+            <h3 matSubheader>Subsets</h3>
+            <div *ngIf="!_editing && node">
+                <mat-list-item *ngFor="let subset of node.subsets">{{subset | subsetPipe}}
+                    <mat-icon matListIcon>folder</mat-icon>
+                </mat-list-item>
+            </div>
+
+            <div *ngIf="_editing && node">
+                <mat-list-item *ngFor="let subset of _temp.subsets">{{subset | subsetPipe}}
+                    <mat-icon matListIcon (click)="deleteTempSubset(subset)">close</mat-icon>
+                </mat-list-item>
+            </div>
+            <div *ngIf="_editing">
+                <mat-form-field>
+                    <input matInput type="text" id="tempSubset" [(ngModel)]="_tempSubset" name="tempSubset" (keyup.enter)="addTempSubset()">
+                </mat-form-field>
+                <mat-icon matListIcon (click)="addTempSubset()">add</mat-icon>
+            </div>
+
+            <mat-divider></mat-divider>
+
+            <h3 matSubheader>Version</h3>
+            <mat-list-item *ngIf="node">{{node['@version']}}</mat-list-item>
+
+            <mat-divider></mat-divider>
+
+            <h3 matSubheader>Source</h3>
+            <mat-list-item *ngIf="node">{{node.source}}</mat-list-item>
+
+            <mat-divider></mat-divider>
+
+        </mat-list>
+        <div class="buttons">
+            <div *ngIf="!_editing && node">
+                <button mat-button (click)="addChild()">Add Child</button>
+                <button mat-button (click)="beginEdit()">Edit Properties</button>
+                <button mat-button (click)="deleteSelected()">Delete Node</button>
+            </div>
+
+            <div *ngIf="_editing">
+                <button mat-button [disabled]="editNodeForm.form.pristine" (click)="applyChanges()">Done</button>
+                <button mat-button (click)="cancelEdit()">Cancel</button>
+            </div>
         </div>
-
-        <div *ngIf="_editing && node">
-            <mat-list-item *ngFor="let subset of _temp.subsets">{{subset | subsetPipe}}
-                <mat-icon matListIcon (click)="deleteTempSubset(subset)">folder</mat-icon>
-            </mat-list-item>
-        </div>
-
-        <mat-form-field *ngIf="_editing">
-            <input matInput (keyup.enter)="addTempSubset()" [(ngModel)]="_tempSubset">
-        </mat-form-field>
-
-        <mat-divider></mat-divider>
-
-        <h3 matSubheader>Version</h3>
-        <mat-list-item *ngIf="node">{{node['@version']}}</mat-list-item>
-
-        <mat-divider></mat-divider>
-
-        <h3 matSubheader>Source</h3>
-        <mat-list-item *ngIf="node">{{node.source}}</mat-list-item>
-
-        <mat-divider></mat-divider>
-
-    </mat-list>
-    <div class="buttons">
-        <div *ngIf="!_editing && node">
-            <button mat-button (click)="addChild()">Add Child</button>
-            <button mat-button (click)="editSelected()">Edit Properties</button>
-            <button mat-button (click)="deleteSelected()">Delete Node</button>
-        </div>
-
-        <div *ngIf="_editing">
-            <button mat-button (click)="doneEdit()">Done</button>
-            <button mat-button (click)="cancelEdit()">Cancel</button>
-        </div>
-    </div>
+    </form>
 </mat-card>

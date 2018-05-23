@@ -7,6 +7,7 @@ export interface Edge {
     type: string,
     in?: string,
     out?: string,
+    source?: string,
 }
 
 @Component({
@@ -18,7 +19,6 @@ export class AddNodeViewComponent implements OnInit {
     private tempSubset = '';
     private subsets = [];
     private payload: DiseasePayload = {source: '', sourceId: ''};
-    private rid;
     private relationships: Edge[] = [];
     private tempEdge = { type: '', id: '', in: '' };
 
@@ -59,7 +59,7 @@ export class AddNodeViewComponent implements OnInit {
 
             case 'alias':
                 this.relationships.push({
-                    type: this.tempEdge.type,
+                    type: 'aliasof',
                     out: '#' + this.tempEdge.id
                 });
                 break;
@@ -83,9 +83,20 @@ export class AddNodeViewComponent implements OnInit {
     }
 
     addNode(): void {
+        if(this.tempSubset) this.subsets.push(this.tempSubset);
+        this.payload.subsets = this.subsets;
+
         this.api.addNode(this.payload).subscribe(response => {
             let id = response['@rid'];
 
+            this.relationships.forEach(edge => {
+                if(!edge.in) edge.in = id;
+                if(!edge.out) edge.out = id;
+
+                this.api.addRelationship(edge).subscribe();
+            });
+
+            
             //Cascading relationship calls
             this.router.navigate(['/table/' + id.slice(1)]);
         })

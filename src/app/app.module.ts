@@ -36,6 +36,8 @@ import {
   DataHubComponent,
   QueryViewComponent,
   AddNodeViewComponent,
+  PaginationComponent,
+  MyTableComponent,
 } from './components';
 
 import { APIService, AuthService, APIInterceptor, D3Service } from './services';
@@ -52,6 +54,8 @@ import { RelationshipPipe } from './pipes/relationship.pipe';
     DataHubComponent,
     QueryViewComponent,
     AddNodeViewComponent,
+    PaginationComponent,
+    MyTableComponent,
     SubsetsPipe,
     SubsetPipe,
     CamelCasePipe,

@@ -1,4 +1,5 @@
 $testing: false;
+$breakpoint: 130 0px;
 
 @mixin test-border($color: black, $style: solid){
     @if($testing){
@@ -11,7 +12,11 @@ $testing: false;
     margin: 20px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: auto;
+    grid-template-rows: 1fr;
+    
+    @media (max-width: $breakpoint){
+        grid-template-columns: 1fr;
+    }
 }
 
 .basic-params-selection{
@@ -39,6 +44,11 @@ $testing: false;
     grid-column-end: 3;
     padding:20px;
 
+    @media (max-width: $breakpoint){
+        grid-column-start: 1;
+        grid-column-end: end;
+    }
+
     .input-box{
         display: flex;
         width: 100%;
@@ -60,6 +70,11 @@ $testing: false;
     grid-column-start: 3;
     grid-column-end: end;
     padding:20px;
+
+    @media (max-width: $breakpoint){
+        grid-column-start: 1;
+        grid-column-end: end;
+    }
 
     .input-box{
         display: flex;

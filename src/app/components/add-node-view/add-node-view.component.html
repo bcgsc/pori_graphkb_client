@@ -2,7 +2,7 @@
     <div class="wrapper">
 
         <div class="basic-params-selection">
-            <h3 class="mat-h3">Basic Parameters</h3>
+            <h2 color="primary" class="mat-h2">Basic Parameters</h2>
             <div class="parameter-selection">
                 <!-- <h5 class="mat-h5">Source: </h5> -->
                 <mat-form-field>
@@ -55,7 +55,7 @@
         </div>
 
         <div class="subsets-selection">
-            <h3 class="mat-h3">Subsets</h3>
+            <h2 class="mat-h2">Subsets</h2>
 
             <mat-list name="subsetList">
                 <mat-list-item *ngFor="let subset of subsets">
@@ -78,7 +78,7 @@
         </div>
 
         <div class="relationship-selection">
-            <h3 class="mat-h3">Relationships</h3>
+            <h2 class="mat-h2">Relationships</h2>
             <!-- <h5 class="mat-h5">Subsets: </h5> -->
             <mat-list>
                 <mat-list-item *ngFor="let relationship of relationships">{{relationship | relationshipPipe}}
@@ -113,7 +113,7 @@
                 </mat-form-field>
 
                 <button mat-icon-button (click)="addEdge()">
-                    <mat-icon>add</mat-icon>
+                    <mat-icon color="primary">add</mat-icon>
                 </button>
             </form>
         </div>

@@ -16,6 +16,7 @@ $position: 60vh;
 .adv-wrapper{
     text-align: center;
     margin: auto;
+    margin-bottom: 24px;
     width: 60vw;
     vertical-align: middle;
     
@@ -32,8 +33,50 @@ $position: 60vh;
         
     }
     .checkboxes{
+
         display: grid;
         grid: repeat(3, 50px) / auto-flow 190px;
+
+        @media (max-width: 1800px){
+            grid: repeat(3, 50px) / auto-flow 170px;
+        }
+        @media(max-width: 1700px){
+            grid: repeat(3, 50px) / auto-flow 160px;
+        }
+        @media(max-width: 1500px){
+            grid: repeat(4, 50px) / auto-flow 180px;
+        }
+        @media(max-width: 1400px){
+            grid: repeat(4, 50px) / auto-flow 170px;
+        }
+        @media(max-width: 1300px){
+            grid: repeat(4, 50px) / auto-flow 160px;
+        }
+        @media(max-width: 1250px){
+            grid: repeat(5, 50px) / auto-flow 200px;
+        }
+        @media(max-width: 1200px){
+            grid: repeat(5,50px) / auto-flow 185px;
+        }
+        @media(max-width: 1150px){
+            grid: repeat(5, 50px) / auto-flow 170px;
+        }
+        @media(max-width: 1050px){
+            grid: repeat(5, 50px) / auto-flow 155px;
+        }
+        @media(max-width: 900px){
+            grid: repeat(8, 50px) / auto-flow 215px;
+        }
+        @media (max-width: 850px){
+            grid: repeat(8, 50px) / auto-flow 200px;
+        }
+        @media(max-width: 800px){
+            grid: repeat(8, 50px) / auto-flow 170px;
+        }
+        @media(max-width: 750px){
+            grid: repeat(16, 50px) / auto-flow 300px;
+            
+        }
 
         .checkbox{
             display: block;

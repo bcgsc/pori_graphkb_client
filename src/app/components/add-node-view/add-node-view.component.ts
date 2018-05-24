@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { APIService } from '../../services/api.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DiseasePayload } from '../../models/models';
+import { DiseasePayload } from '../../models';
+import { FormControl } from '@angular/forms';
+import 'rxjs/add/operator/debounceTime';
+import * as jc from 'json-cycle';
 
 export interface Edge {
     type: string,
@@ -18,11 +21,33 @@ export interface Edge {
 export class AddNodeViewComponent implements OnInit {
     private tempSubset = '';
     private subsets = [];
-    private payload: DiseasePayload = {source: '', sourceId: ''};
+    private payload: DiseasePayload = { source: '', sourceId: '' };
     private relationships: Edge[] = [];
     private tempEdge = { type: '', id: '', in: '' };
 
-    constructor(private api: APIService, private route: ActivatedRoute, private router: Router) { }
+    searchTerm: FormControl = new FormControl();
+    searchResult = [];
+
+    constructor(private api: APIService, private route: ActivatedRoute, private router: Router) {
+        this.searchTerm.valueChanges
+            .debounceTime(400)
+            .subscribe(dat => {
+                if (!dat) return;
+                this.api.query({
+                    name: dat,
+                    fuzzyMatch: 1,
+                    limit: 10,
+                }).subscribe(data => {
+                    data = jc.retrocycle(data);
+                    let temp = [];
+
+                    data.forEach(json => {
+                        temp.push(json);
+                    });
+                    this.searchResult = temp;
+                })
+            })
+    }
 
     ngOnInit() {
         this.route.queryParams.subscribe(params => {
@@ -83,20 +108,20 @@ export class AddNodeViewComponent implements OnInit {
     }
 
     addNode(): void {
-        if(this.tempSubset) this.subsets.push(this.tempSubset);
+        if (this.tempSubset) this.subsets.push(this.tempSubset);
         this.payload.subsets = this.subsets;
 
         this.api.addNode(this.payload).subscribe(response => {
             let id = response['@rid'];
 
             this.relationships.forEach(edge => {
-                if(!edge.in) edge.in = id;
-                if(!edge.out) edge.out = id;
+                if (!edge.in) edge.in = id;
+                if (!edge.out) edge.out = id;
 
                 this.api.addRelationship(edge).subscribe();
             });
 
-            
+
             //Cascading relationship calls
             this.router.navigate(['/table/' + id.slice(1)]);
         })

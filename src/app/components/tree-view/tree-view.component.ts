@@ -2,7 +2,7 @@ import { Component, Input, OnInit, EventEmitter, Output } from '@angular/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
 import { BehaviorSubject, Observable, of as observableOf } from 'rxjs';
-import { DiseaseTerm } from '../../models/models';
+import { DiseaseTerm } from '../../models';
 
 @Component({
   selector: 'tree-view',

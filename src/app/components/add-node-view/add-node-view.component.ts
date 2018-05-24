@@ -19,8 +19,8 @@ export interface Edge {
     styleUrls: ['add-node-view.component.scss']
 })
 export class AddNodeViewComponent implements OnInit {
-    private tempSubset = '';
-    private subsets = [];
+    private tempSubset: string = '';
+    private subsets: string[] = [];
     private payload: DiseasePayload = { source: '', sourceId: '' };
     private relationships: Edge[] = [];
     private tempEdge = { type: '', id: '', in: '' };
@@ -32,12 +32,17 @@ export class AddNodeViewComponent implements OnInit {
         this.searchTerm.valueChanges
             .debounceTime(400)
             .subscribe(dat => {
+
                 if (!dat) return;
                 this.api.query({
                     name: dat,
                     fuzzyMatch: 1,
                     limit: 10,
                 }).subscribe(data => {
+                    if (!data || data.length == 0) { 
+                        this.tempEdge.id = ''; 
+                    }
+
                     data = jc.retrocycle(data);
                     let temp = [];
 
@@ -45,8 +50,9 @@ export class AddNodeViewComponent implements OnInit {
                         temp.push(json);
                     });
                     this.searchResult = temp;
-                })
-            })
+                });
+            });
+
     }
 
     ngOnInit() {
@@ -61,31 +67,36 @@ export class AddNodeViewComponent implements OnInit {
         });
     }
 
+    loadTerm(e) {
+        this.searchTerm.setValue(e.option.value.name);
+        this.tempEdge.id = e.option.value['@rid'];
+    }
+
     deleteEdge(edge) {
         let i = this.relationships.findIndex(s => edge == s);
         this.relationships.splice(i, 1);
     }
 
     addEdge() {
-        if (!this.tempEdge.id) return;
+        if (!this.searchTerm.value || !this.tempEdge.id) return;
         switch (this.tempEdge.type) {
             case 'parent':
                 this.relationships.push({
                     type: 'subclassof',
-                    in: '#' + this.tempEdge.id
+                    in: this.tempEdge.id
                 });
                 break;
             case 'child':
                 this.relationships.push({
                     type: 'subclassof',
-                    out: '#' + this.tempEdge.id
+                    out: this.tempEdge.id
                 });
                 break;
 
             case 'alias':
                 this.relationships.push({
                     type: 'aliasof',
-                    out: '#' + this.tempEdge.id
+                    out: this.tempEdge.id
                 });
                 break;
             default:
@@ -93,11 +104,14 @@ export class AddNodeViewComponent implements OnInit {
         }
         this.tempEdge.type = '';
         this.tempEdge.id = '';
+        this.searchTerm.setValue('');
     }
 
     addSubset(): void {
-        if (!this.tempSubset) return;
-        console.log(this.tempSubset);
+        let seen = false;
+        this.subsets.forEach(sub => { if (sub == this.tempSubset) seen = true; });
+        if (!this.tempSubset || seen) return;
+
         this.subsets.push(this.tempSubset);
         this.tempSubset = '';
     }
@@ -121,8 +135,6 @@ export class AddNodeViewComponent implements OnInit {
                 this.api.addRelationship(edge).subscribe();
             });
 
-
-            //Cascading relationship calls
             this.router.navigate(['/table/' + id.slice(1)]);
         })
 

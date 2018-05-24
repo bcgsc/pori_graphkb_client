@@ -55,14 +55,12 @@ export class QueryViewComponent {
     this.searchTerm.valueChanges
       .debounceTime(400)
       .subscribe(dat => {
-        console.log('hello ' + dat)
         if (!dat) return;
         this.api.query({
           name: dat,
           fuzzyMatch: 1,
           limit: 10,
         }).subscribe(data => {
-          console.log(data);
           data = jc.retrocycle(data);
           let temp = [];
 
@@ -80,9 +78,9 @@ export class QueryViewComponent {
   }
 
   simpleQuery() { //neighbors: 2
-    if (this.params.name) this.router.navigate(['/table'], {
+    if (this.searchTerm.value) this.router.navigate(['/table'], {
       queryParams: {
-        name: this.params.name,
+        name: this.searchTerm.value,
         fuzzyMatch: 1
       }
     });

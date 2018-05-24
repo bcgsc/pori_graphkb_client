@@ -1,10 +1,6 @@
 <div *ngIf="!adv" class="search-wrapper">
     <mat-form-field class="main-search">
-        <input #name (keyup.enter)="simpleQuery()" 
-            matInput 
-            placeholder="Search a name" 
-            [(ngModel)]="params.name"
-            [formControl]="searchTerm"
+        <input #name (keyup.enter)="simpleQuery()" matInput placeholder="Search a name" [formControl]="searchTerm"
             [matAutocomplete]="auto">
         <mat-autocomplete #auto="matAutocomplete">
             <mat-option *ngFor="let item of searchResult" [value]="item">
@@ -12,16 +8,18 @@
             </mat-option>
         </mat-autocomplete>
     </mat-form-field>
-    <button (click)="simpleQuery()" mat-button>Search</button>
-    <button (click)="advanced()" class="advanced-button" mat-button>Advanced Search</button>
+    <button (click)="simpleQuery()" color="primary" mat-raised-button>Search</button>
+    <button (click)="advanced()" color="primary" class="advanced-button" mat-stroked-button>Advanced Search</button>
 </div>
+
+<!-- //// Advanced Search \\\\\ -->
 
 <div *ngIf="adv" class="adv-wrapper">
     <div class="parameter-selection">
         <h3 class="mat-h3">Name: </h3>
 
         <mat-form-field>
-            <input matInput placeholder="Search a name" [(ngModel)]="params.name" </mat-form-field>
+            <input matInput placeholder="Search a name" [(ngModel)]="params.name"> </mat-form-field>
     </div>
 
     <div class="parameter-selection">
@@ -99,6 +97,6 @@
         </mat-form-field>
     </div>
 
-    <button mat-button (click)="advanced()">Back</button>
-    <button (click)="query()" mat-button>Search</button>
+    <button mat-stroked-button (click)="advanced()" color="primary">Back</button>
+    <button (click)="query()" color="primary" mat-raised-button>Search</button>
 </div>

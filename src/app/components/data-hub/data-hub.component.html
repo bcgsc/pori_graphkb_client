@@ -1,7 +1,9 @@
 <div class="data-view" *ngIf="dataMap" [@.disabled]="disabled">
     <mat-tab-group class="group-view">
         <mat-tab label="Table View">
+            <!-- <my-table [data]="tableData" [initSelected]="selectedNode" (selected)="onSelect($event)"></my-table> -->
             <table-view [data]="tableData" [initSelected]="selectedNode" (selected)="onSelect($event)"></table-view>
+
         </mat-tab>
         <mat-tab label="Tree View">
             <!-- <tree-view [data]="treeData" [initSelected]="treeSelected" (selected)="onSelect($event)"></tree-view> -->

@@ -1,5 +1,5 @@
 $testing: false;
-$breakpoint: 130 0px;
+$breakpoint: 1300px;
 
 @mixin test-border($color: black, $style: solid){
     @if($testing){

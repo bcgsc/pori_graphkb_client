@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
 import { APIService } from '../../services/api.service';
 import { Router } from '@angular/router';
-import { DiseaseParams} from '../../models/models';
+import { DiseaseParams } from '../../models';
+import { FormControl } from '@angular/forms';
+import 'rxjs/add/operator/debounceTime';
+import * as jc from 'json-cycle';
 
 @Component({
   selector: 'query-view',
@@ -42,9 +45,34 @@ export class QueryViewComponent {
     'uuid': true,
     'longName': true,
   };
+
   private propKeys = Object.keys(this.properties);
+  searchTerm: FormControl = new FormControl();
+  searchResult = [];
 
   constructor(private api: APIService, private router: Router) {
+
+    this.searchTerm.valueChanges
+      .debounceTime(400)
+      .subscribe(dat => {
+        console.log('hello ' + dat)
+        if (!dat) return;
+        this.api.query({
+          name: dat,
+          fuzzyMatch: 1,
+          limit: 10,
+        }).subscribe(data => {
+          console.log(data);
+          data = jc.retrocycle(data);
+          let temp = [];
+
+          data.forEach(json => {
+            temp.push(json.name);
+          });
+          this.searchResult = temp;
+        })
+      })
+
   }
 
   advanced() {
@@ -52,11 +80,11 @@ export class QueryViewComponent {
   }
 
   simpleQuery() { //neighbors: 2
-    if (this.params.name) this.router.navigate(['/table'], { 
-      queryParams: { 
-        name: this.params.name, 
-        fuzzyMatch: 1 
-      } 
+    if (this.params.name) this.router.navigate(['/table'], {
+      queryParams: {
+        name: this.params.name,
+        fuzzyMatch: 1
+      }
     });
   }
 
@@ -71,7 +99,7 @@ export class QueryViewComponent {
     });
 
     !reqDefault ? this.params.returnProperties = returnProperties.slice(0, returnProperties.length - 1) : this.params.returnProperties = '';
-    
+
     /* Filter out empty parameters from api call */
     let filteredParams: DiseaseParams = {};
 

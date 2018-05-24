@@ -1,7 +1,7 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, HostBinding } from '@angular/core';
 import { APIService } from '../../services/api.service';
 import * as jc from 'json-cycle';
-import { DiseaseTerm } from '../../models/models';
+import { DiseaseTerm } from '../../models';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { TableViewComponent } from '../table-view/table-view.component';
@@ -16,6 +16,7 @@ import { NodeViewComponent } from '../node-view/node-view.component';
 export class DataHubComponent {
     @ViewChild(TableViewComponent) table;
     @ViewChild(NodeViewComponent) node;
+    disabled = true;
 
     tableData: DiseaseTerm[];
     dataMap: { [id: string]: any };
@@ -31,7 +32,11 @@ export class DataHubComponent {
 
     //TODO: make this less confusing
     refresh(queryRid?) {
-        this.tableData = undefined;
+        delete this.tableData;
+        delete this.dataMap;
+        delete this.treeData;
+        delete this.selectedNode;
+
         let rid = this.route.snapshot.paramMap.get('rid')
         rid ? this.getRecord(rid) : this.getQuery(queryRid);
     }
@@ -46,58 +51,19 @@ export class DataHubComponent {
                 json = jc.retrocycle(json);
 
                 json.forEach(element => {
-                    let children, parents, aliases;
 
-                    if (element['out_SubClassOf']) {
-                        parents = [];
-                        element['out_SubClassOf'].forEach(edge => {
-                            edge['in']['@rid'] ? parents.push(edge['in']['@rid']) : parents.push(edge['in'])
-                        });
-                    }
-                    if (element['in_SubClassOf']) {
-                        children = [];
-                        element['in_SubClassOf'].forEach(edge => {
-                            edge['out']['@rid'] ? children.push(edge['out']['@rid']) : children.push(edge['out'])
-                        });
-                    }
-                    if (element['out_AliasOf']) {
-                        aliases = [];
-                        element['out_AliasOf'].forEach(edge => {
-                            edge['in']['@rid'] ? aliases.push(edge['in']['@rid']) : aliases.push(edge['in'])
-                        });
-                    }
-                    if (element['in_AliasOf']) {
-                        aliases = aliases || [];
-                        element['in_AliasOf'].forEach(edge => {
-                            edge['out']['@rid'] ? aliases.push(edge['out']['@rid']) : aliases.push(edge['out'])
-                        });
-                    }
-
-                    let entry: DiseaseTerm = {
-                        '@class': element['@class'],
-                        sourceId: element['sourceId'],
-                        createdBy: element['createdBy']['name'],
-                        name: element['name'],
-                        description: element['description'],
-                        source: element['source'],
-                        '@rid': element['@rid'],
-                        longName: element['longName'],
-                        '@version': element['@version'],
-                        subsets: element['subsets'],
-                        parents: parents,
-                        children: children,
-                        aliases: aliases,
-                    }
+                    let entry = this.prepareEntry(element);
+                    
                     if (rid && entry['@rid'] === rid) {
                         i = this.tableData.length;
                     }
+
+                    this.dataMap[entry["@rid"]] = entry;
                     this.tableData.push(entry);
-                    this.dataMap[entry["@rid"]] = Object.assign({}, entry);
                 });
 
-                this.selectedNode = this.tableData[i];
-
                 this.treeData = this.getHierarchy();
+                this.selectedNode = this.tableData[i];                
             })
         );
     }
@@ -109,51 +75,11 @@ export class DataHubComponent {
 
             json = jc.retrocycle(json);
 
-            let children, parents, aliases;
-
-            if (json['out_SubClassOf']) {
-                parents = [];
-                json['out_SubClassOf'].forEach(edge => {
-                    edge['in']['@rid'] ? parents.push(edge['in']['@rid']) : parents.push(edge['in'])
-                });
-            }
-            if (json['in_SubClassOf']) {
-                children = [];
-                json['in_SubClassOf'].forEach(edge => {
-                    edge['out']['@rid'] ? children.push(edge['out']['@rid']) : children.push(edge['out'])
-                });
-            }
-            if (json['out_AliasOf']) {
-                aliases = [];
-                json['out_AliasOf'].forEach(edge => {
-                    edge['in']['@rid'] ? aliases.push(edge['in']['@rid']) : aliases.push(edge['in'])
-                });
-            }
-            if (json['in_AliasOf']) {
-                aliases = aliases || [];
-                json['in_AliasOf'].forEach(edge => {
-                    edge['out']['@rid'] ? aliases.push(edge['out']['@rid']) : aliases.push(edge['out'])
-                });
-            }
-
-            let entry: DiseaseTerm = {
-                '@class': json['@class'],
-                sourceId: json['sourceId'],
-                createdBy: json['createdBy']['name'],
-                name: json['name'],
-                description: json['description'],
-                source: json['source'],
-                '@rid': json['@rid'],
-                longName: json['longName'],
-                '@version': json['@version'],
-                subsets: json['subsets'],
-                parents: parents,
-                children: children,
-                aliases: aliases,
-            }
+            let entry = this.prepareEntry(json);
 
             this.tableData.push(entry);
             this.dataMap[entry["@rid"]] = entry
+
             this.treeData = this.getHierarchy();
             this.selectedNode = this.tableData[0];
         });
@@ -162,11 +88,11 @@ export class DataHubComponent {
     getHierarchy(): any[] {
         let inMap = Object.assign({}, this.dataMap);
         let h = [];
-        let t = true;
         Object.keys(inMap).forEach(element => {
             if (!inMap[element].parents) {
                 h.push(inMap[element]);
             } else {
+                let t = true;
                 inMap[element].parents.forEach(pid => {
                     if (pid in inMap) {
                         let parent = inMap[pid];
@@ -174,15 +100,61 @@ export class DataHubComponent {
                             parent._children = [];
                         }
                         parent._children.push(inMap[element]);
-                    } else{
+                    } else if (t) {
+                        t = false;
                         h.push(inMap[element]);
                     }
                 })
             }
         });
-        console.log(h);
 
         return h;
+    }
+
+    prepareEntry(element): DiseaseTerm {
+        let children, parents, aliases;
+
+        if (element['out_SubClassOf']) {
+            parents = [];
+            element['out_SubClassOf'].forEach(edge => {
+                edge['in']['@rid'] ? parents.push(edge['in']['@rid']) : parents.push(edge['in'])
+            });
+        }
+        if (element['in_SubClassOf']) {
+            children = [];
+            element['in_SubClassOf'].forEach(edge => {
+                edge['out']['@rid'] ? children.push(edge['out']['@rid']) : children.push(edge['out'])
+            });
+        }
+        if (element['out_AliasOf']) {
+            aliases = [];
+            element['out_AliasOf'].forEach(edge => {
+                edge['in']['@rid'] ? aliases.push(edge['in']['@rid']) : aliases.push(edge['in'])
+            });
+        }
+        if (element['in_AliasOf']) {
+            aliases = aliases || [];
+            element['in_AliasOf'].forEach(edge => {
+                edge['out']['@rid'] ? aliases.push(edge['out']['@rid']) : aliases.push(edge['out'])
+            });
+        }
+
+        let entry: DiseaseTerm = {
+            '@class': element['@class'],
+            sourceId: element['sourceId'],
+            createdBy: element['createdBy']['name'],
+            name: element['name'],
+            description: element['description'],
+            source: element['source'],
+            '@rid': element['@rid'],
+            longName: element['longName'],
+            '@version': element['@version'],
+            subsets: element['subsets'],
+            parents: parents,
+            children: children,
+            aliases: aliases,
+        }
+        return entry;
     }
 
     /* Event triggered methods */
@@ -201,6 +173,7 @@ export class DataHubComponent {
      * @param node updated node object after edits.
      */
     onEdit(node: DiseaseTerm) {
+        
         this.api.editNode(node['@rid'].slice(1), node).subscribe(() => {
             this.refresh(node['@rid']);
         });
@@ -208,12 +181,51 @@ export class DataHubComponent {
 
     /**
      * Triggered when user deletes a node.
-     * @param rid record ID of the deleted node.
+     * @param node record to be deleted.
      */
-    onDelete(rid: string) {
-        this.api.deleteNode(rid.slice(1)).subscribe(() => {
+    onDelete(node: DiseaseTerm) {
+        let rid = node['@rid'].slice(1);
+        //TODO: add cleanup to all related nodes
+        
+        if(node.aliases){
+            node.aliases.forEach(alias =>{ 
+                this.api.getRecord(alias.slice(1)).subscribe(json =>{
+                    let entry = this.prepareEntry(json);
+                    let i = entry.aliases.findIndex(d => d['@rid'] == rid);
+                    entry.aliases = entry.aliases.splice(i,1);
+                    this.api.editNode(alias.slice(1), entry).subscribe();
+                })
+            })
+        }
+        if(node.parents){
+            node.parents.forEach(parent =>{ 
+                this.api.getRecord(parent.slice(1)).subscribe(json =>{
+                    let entry = this.prepareEntry(json);
+                    let i = entry.children.findIndex(d => d['@rid'] == rid);
+                    entry.children = entry.children.splice(i,1);
+                    console.log(entry);
+                    this.api.editNode(parent.slice(1), entry).subscribe();
+                })
+            })
+        }
+        if(node.children){
+            node.children.forEach(child =>{ 
+                this.api.getRecord(child.slice(1)).subscribe(json =>{
+                    let entry = this.prepareEntry(json);
+                    let i = entry.parents.findIndex(d => d['@rid'] == rid);
+                    entry.parents = entry.parents.splice(i,1);
+                    this.api.editNode(child.slice(1), entry).subscribe();
+                })
+            })
+        }
+
+        this.api.deleteNode(rid).subscribe(() => {
             this.refresh();
         });
+    }
+
+    onSourceQuery(params){
+        this.refresh();
     }
 }
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Input, SimpleChanges } from '@angular/core';
-import { DiseaseTerm } from '../../models/models';
+import { DiseaseTerm } from '../../models';
 import { MatSnackBar } from '@angular/material';
 import { Output } from '@angular/core';
 import { EventEmitter } from '@angular/core';
@@ -15,7 +15,9 @@ export class NodeViewComponent {
   @Input('node') node: DiseaseTerm;
   @Output() changed = new EventEmitter<DiseaseTerm>();
   @Output() added = new EventEmitter<DiseaseTerm>();
-  @Output() deleted = new EventEmitter<string>();
+  @Output() deleted = new EventEmitter<DiseaseTerm>();
+
+  @Output() sourceQuery = new EventEmitter<any>();
 
   private _editing = false;
   private _temp: DiseaseTerm;
@@ -56,8 +58,8 @@ export class NodeViewComponent {
   /**
    * Sends a DELETE request to the server. 
    */
-  private deleteSelected() {
-    this.deleted.emit(this.node['@rid']);
+  private deleteSelected(node) {
+    this.deleted.emit(this.node);
   }
 
   /**
@@ -67,6 +69,7 @@ export class NodeViewComponent {
   private queryBySource(){
     let params = {source: this.node.source};
     this.router.navigate(['/table'], {queryParams: params});
+    this.sourceQuery.emit(params);    
 
   }
 

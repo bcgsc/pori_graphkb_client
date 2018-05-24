@@ -1,16 +1,27 @@
 <div *ngIf="!adv" class="search-wrapper">
     <mat-form-field class="main-search">
-        <input #name (keyup.enter)="simpleQuery()" matInput placeholder="Search a name" [(ngModel)]="params.name"> </mat-form-field>
+        <input #name (keyup.enter)="simpleQuery()" 
+            matInput 
+            placeholder="Search a name" 
+            [(ngModel)]="params.name"
+            [formControl]="searchTerm"
+            [matAutocomplete]="auto">
+        <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let item of searchResult" [value]="item">
+                {{item}}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
     <button (click)="simpleQuery()" mat-button>Search</button>
     <button (click)="advanced()" class="advanced-button" mat-button>Advanced Search</button>
 </div>
+
 <div *ngIf="adv" class="adv-wrapper">
     <div class="parameter-selection">
         <h3 class="mat-h3">Name: </h3>
 
         <mat-form-field>
-            <input matInput placeholder="Search a name" [(ngModel)]="params.name">
-        </mat-form-field>
+            <input matInput placeholder="Search a name" [(ngModel)]="params.name" </mat-form-field>
     </div>
 
     <div class="parameter-selection">
@@ -37,7 +48,7 @@
     <div class="parameter-selection">
         <h3 class="mat-h3">Long Name: </h3>
         <mat-form-field>
-            <input matInput placeholder="Search a lONG name" [(ngModel)]="params.longName">
+            <input matInput placeholder="Search a Long Name" [(ngModel)]="params.longName">
         </mat-form-field>
     </div>
 
@@ -70,21 +81,21 @@
     <div class="parameter-selection">
         <h3 class="mat-h3">Ancestors: </h3>
         <mat-form-field>
-            <input matInput placeholder="ancestors?" [(ngModel)]="params.ancestors">
+            <input matInput [(ngModel)]="params.ancestors">
         </mat-form-field>
     </div>
 
     <div class="parameter-selection">
         <h3 class="mat-h3">Descendants: </h3>
         <mat-form-field>
-            <input matInput placeholder="descendants?" [(ngModel)]="params.descendants">
+            <input matInput [(ngModel)]="params.descendants">
         </mat-form-field>
     </div>
 
     <div class="parameter-selection">
         <h3 class="mat-h3">Fuzzy Match: </h3>
         <mat-form-field>
-            <input matInput placeholder="fuzzy match?" [(ngModel)]="params.fuzzyMatch">
+            <input matInput [(ngModel)]="params.fuzzyMatch">
         </mat-form-field>
     </div>
 

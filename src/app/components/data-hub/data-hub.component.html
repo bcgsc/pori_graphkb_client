@@ -1,13 +1,18 @@
-<div class="data-view" *ngIf="dataMap">
+<div class="data-view" *ngIf="dataMap" [@.disabled]="disabled">
     <mat-tab-group class="group-view">
         <mat-tab label="Table View">
             <table-view [data]="tableData" [initSelected]="selectedNode" (selected)="onSelect($event)"></table-view>
         </mat-tab>
         <mat-tab label="Tree View">
-            <tree-view [data]="treeData" (selected)="onSelect($event)"></tree-view></mat-tab>
+            <!-- <tree-view [data]="treeData" [initSelected]="treeSelected" (selected)="onSelect($event)"></tree-view> -->
+        </mat-tab>
         <mat-tab label="Graph View">graph</mat-tab>
     </mat-tab-group>
-    <node-view class="node-view" [node]="selectedNode" (changed)="onEdit($event)" (added)="onAdd($event)" (deleted)="onDelete($event)">
+    <node-view class="node-view" [node]="selectedNode" 
+        (changed)="onEdit($event)" 
+        (added)="onAdd($event)" 
+        (deleted)="onDelete($event)"
+        (sourceQuery)="onSourceQuery($event)">
     </node-view>
 </div>
 <div *ngIf="!dataMap" class="data-view">

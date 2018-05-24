@@ -110,7 +110,17 @@
             </mat-form-field>
 
             <mat-form-field>
-                <input matInput placeholder="Add target ID" name="edgeId" [(ngModel)]="tempEdge.id">
+                <input matInput 
+                    placeholder="Add target ID" 
+                    name="edgeId" 
+                    [(ngModel)]="tempEdge.id"
+                    [formControl]="searchTerm"
+                    [matAutocomplete]="auto">
+                <mat-autocomplete #auto="matAutocomplete">
+                    <mat-option *ngFor="let item of searchResult" [value]="item['@rid']">
+                        {{item.name}} : {{item['@rid']}}
+                    </mat-option>
+                </mat-autocomplete>
             </mat-form-field>
             <mat-icon (click)="addEdge()">add</mat-icon>
             

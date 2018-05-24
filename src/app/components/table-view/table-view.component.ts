@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { MatPaginator, MatSort } from '@angular/material';
 import { APIService } from '../../services/api.service';
-import { DiseaseTerm } from '../../models/models';
+import { DiseaseTerm } from '../../models';
 import { TableViewDataSource } from './table-view-datasource';
 import { NodeViewComponent } from '../node-view/node-view.component';
 

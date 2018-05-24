@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { DiseaseTerm } from '../models/models';
+import { DiseaseTerm } from '../models';
 
 const API_ENDPOINT = "http://10.9.202.242:8088/api";
 /**

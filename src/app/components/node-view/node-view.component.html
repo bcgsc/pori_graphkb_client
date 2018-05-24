@@ -1,5 +1,5 @@
 <mat-card class="card">
-    <form (ngSubmit)="applyChanges()" #editNodeForm="ngForm" (keydown.enter)="$event.preventDefault()">
+    <form #editNodeForm="ngForm" (keydown.enter)="$event.preventDefault()">
         <mat-list class="myList">
 
             <h3 matSubheader>Source</h3>
@@ -102,7 +102,7 @@
             <div *ngIf="!_editing && node">
                 <button mat-button (click)="addChild()">Add Child</button>
                 <button mat-button (click)="beginEdit()">Edit Properties</button>
-                <button mat-button (click)="deleteSelected()">Delete Node</button>
+                <button mat-button (click)="deleteSelected(node)">Delete Node</button>
             </div>
 
             <div *ngIf="_editing">

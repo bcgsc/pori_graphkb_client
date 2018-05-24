@@ -43,25 +43,25 @@
 
             <mat-divider></mat-divider>
             <h3 matSubheader>Aliases</h3>
-            <div *ngIf="node">
+            <mat-list dense *ngIf="node">
                 <mat-list-item *ngFor="let alias of node.aliases">{{alias}}
-                    <mat-icon matListIcon>folder</mat-icon>
+                    <mat-icon matListIcon>search</mat-icon>
                 </mat-list-item>
-            </div>
+            </mat-list>
 
             <mat-divider></mat-divider>
             <h3 matSubheader>Children</h3>
-            <div *ngIf="node">
+            <mat-list dense *ngIf="node">
                 <mat-list-item *ngFor="let child of node.children">{{child}}
-                    <mat-icon matListIcon>folder</mat-icon>
+                    <mat-icon matListIcon>search</mat-icon>
                 </mat-list-item>
-            </div>
+            </mat-list>
 
             <mat-divider></mat-divider>
             <h3 matSubheader>Parents</h3>
             <div *ngIf="node">
                 <mat-list-item *ngFor="let parent of node.parents">{{parent}}
-                    <mat-icon matListIcon>folder</mat-icon>
+                    <mat-icon matListIcon>search</mat-icon>
                 </mat-list-item>
             </div>
 
@@ -100,9 +100,9 @@
         </mat-list>
         <div class="buttons">
             <div *ngIf="!_editing && node">
-                <button mat-button (click)="addChild()">Add Child</button>
-                <button mat-button (click)="beginEdit()">Edit Properties</button>
-                <button mat-button (click)="deleteSelected(node)">Delete Node</button>
+                <button mat-raised-button color="primary" (click)="addChild()">Add Child</button>
+                <button mat-stroked-button color="primary" (click)="beginEdit()">Edit Properties</button>
+                <button mat-raised-button color="warn" (click)="deleteSelected(node)">Delete Node</button>
             </div>
 
             <div *ngIf="_editing">

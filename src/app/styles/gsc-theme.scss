@@ -78,7 +78,7 @@ $ontologyweb-primary: mat-palette($gsc-indigo, 800);
 $ontologyweb-accent:  mat-palette($gsc-teal, 700, 300, A700);
 
 // The warn palette is optional (defaults to red).
-$ontologyweb-warn:    mat-palette($mat-red);
+$ontologyweb-warn:    mat-palette($mat-red, 700);
 
 // Create the theme object (a Sass map containing all of the palettes).
 $ontologyweb-theme: mat-light-theme($ontologyweb-primary, $ontologyweb-accent, $ontologyweb-warn);

@@ -8,6 +8,7 @@ import * as jc from 'json-cycle';
 
 export interface Edge {
     type: string,
+    targetName?: string,
     in?: string,
     out?: string,
     source?: string,
@@ -20,11 +21,13 @@ export interface Edge {
 })
 export class AddNodeViewComponent implements OnInit {
     private tempSubset: string = '';
-    private subsets: string[] = [];
-    private payload: DiseasePayload = { source: '', sourceId: '' };
-    private relationships: Edge[] = [];
     private tempEdge = { type: '', id: '', in: '' };
+    
+    private subsets: string[] = [];
+    private relationships: Edge[] = [];
 
+    private payload: DiseasePayload = { source: '', sourceId: '' };
+    
     searchTerm: FormControl = new FormControl();
     searchResult = [];
 

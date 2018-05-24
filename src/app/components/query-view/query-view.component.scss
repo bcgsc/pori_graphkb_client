@@ -29,8 +29,7 @@ $position: 60vh;
         text-align: left;
         width: 10vw;
         display: block;
-        margin: 0;
-        
+        margin: auto;
     }
     .checkboxes{
 
@@ -101,4 +100,8 @@ $position: 60vh;
 a{
     text-decoration: none;
     color:black;    
+}
+
+button{
+    margin:8px;
 }

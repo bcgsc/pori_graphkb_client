@@ -24,10 +24,15 @@ export class DataHubComponent {
 
     selectedNode: DiseaseTerm;
 
+    params;
+
     constructor(private api: APIService, private route: ActivatedRoute) { }
 
     ngOnInit() {
-        this.refresh();
+        this.route.queryParams.subscribe(params => {
+            this.params = params;
+            this.refresh();
+        })
     }
 
     //TODO: make this less confusing
@@ -42,30 +47,28 @@ export class DataHubComponent {
     }
 
     getQuery(rid?) {
-        this.route.queryParams.subscribe(params =>
-            this.api.query(params).subscribe((json) => {
-                let i = 0;
-                this.tableData = [];
-                this.dataMap = {};
+        this.api.query(this.params).subscribe((json) => {
+            let i = 0;
+            this.tableData = [];
+            this.dataMap = {};
 
-                json = jc.retrocycle(json);
+            json = jc.retrocycle(json);
 
-                json.forEach(element => {
+            json.forEach(element => {
 
-                    let entry = this.prepareEntry(element);
-                    
-                    if (rid && entry['@rid'] === rid) {
-                        i = this.tableData.length;
-                    }
+                let entry = this.prepareEntry(element);
 
-                    this.dataMap[entry["@rid"]] = entry;
-                    this.tableData.push(entry);
-                });
+                if (rid && entry['@rid'] === rid) {
+                    i = this.tableData.length;
+                }
 
-                this.treeData = this.getHierarchy();
-                this.selectedNode = this.tableData[i];                
-            })
-        );
+                this.dataMap[entry["@rid"]] = entry;
+                this.tableData.push(entry);
+            });
+
+            this.treeData = this.getHierarchy();
+            this.selectedNode = this.tableData[i];
+        });
     }
 
     getRecord(rid) {
@@ -173,7 +176,7 @@ export class DataHubComponent {
      * @param node updated node object after edits.
      */
     onEdit(node: DiseaseTerm) {
-        
+
         this.api.editNode(node['@rid'].slice(1), node).subscribe(() => {
             this.refresh(node['@rid']);
         });
@@ -186,34 +189,34 @@ export class DataHubComponent {
     onDelete(node: DiseaseTerm) {
         let rid = node['@rid'].slice(1);
         //TODO: add cleanup to all related nodes
-        
-        if(node.aliases){
-            node.aliases.forEach(alias =>{ 
-                this.api.getRecord(alias.slice(1)).subscribe(json =>{
+
+        if (node.aliases) {
+            node.aliases.forEach(alias => {
+                this.api.getRecord(alias.slice(1)).subscribe(json => {
                     let entry = this.prepareEntry(json);
                     let i = entry.aliases.findIndex(d => d['@rid'] == rid);
-                    entry.aliases = entry.aliases.splice(i,1);
+                    entry.aliases = entry.aliases.splice(i, 1);
                     this.api.editNode(alias.slice(1), entry).subscribe();
                 })
             })
         }
-        if(node.parents){
-            node.parents.forEach(parent =>{ 
-                this.api.getRecord(parent.slice(1)).subscribe(json =>{
+        if (node.parents) {
+            node.parents.forEach(parent => {
+                this.api.getRecord(parent.slice(1)).subscribe(json => {
                     let entry = this.prepareEntry(json);
                     let i = entry.children.findIndex(d => d['@rid'] == rid);
-                    entry.children = entry.children.splice(i,1);
+                    entry.children = entry.children.splice(i, 1);
                     console.log(entry);
                     this.api.editNode(parent.slice(1), entry).subscribe();
                 })
             })
         }
-        if(node.children){
-            node.children.forEach(child =>{ 
-                this.api.getRecord(child.slice(1)).subscribe(json =>{
+        if (node.children) {
+            node.children.forEach(child => {
+                this.api.getRecord(child.slice(1)).subscribe(json => {
                     let entry = this.prepareEntry(json);
                     let i = entry.parents.findIndex(d => d['@rid'] == rid);
-                    entry.parents = entry.parents.splice(i,1);
+                    entry.parents = entry.parents.splice(i, 1);
                     this.api.editNode(child.slice(1), entry).subscribe();
                 })
             })
@@ -224,7 +227,9 @@ export class DataHubComponent {
         });
     }
 
-    onSourceQuery(params){
+    //FIX
+    onSourceQuery(params) {
+        this.params = params;
         this.refresh();
     }
 }

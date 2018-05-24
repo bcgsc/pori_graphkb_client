@@ -1,135 +1,125 @@
-<div class="wrapper">
-    <form (ngSubmit)="addNode()" #addNodeForm="ngForm" (keydown.enter)="$event.preventDefault()">
+<form (ngSubmit)="addNode()" #addNodeForm="ngForm" (keydown.enter)="$event.preventDefault()">
+    <div class="wrapper">
 
-    <div class="parameter-selection">
-        <!-- <h5 class="mat-h5">Source: </h5> -->
-        <mat-form-field>
-            <input matInput type="text" id="source"
-                required
-                [(ngModel)]="payload.source" name="source"
-                placeholder="Source">
-        </mat-form-field>
-    </div>
+        <div class="basic-params-selection">
+            <h3 class="mat-h3">Basic Parameters</h3>
+            <div class="parameter-selection">
+                <!-- <h5 class="mat-h5">Source: </h5> -->
+                <mat-form-field>
+                    <input matInput type="text" id="source" required [(ngModel)]="payload.source" name="source" placeholder="Source">
+                </mat-form-field>
+            </div>
 
-    <div class="parameter-selection">
-        <!-- <h5 class="mat-h5">Source ID: </h5> -->
-        <mat-form-field>
-            <input matInput type="text" id="sourceId" 
-                required
-                [(ngModel)]="payload.sourceId" name="sourceId"
-                placeholder="Source ID">
-        </mat-form-field>
-    </div>
+            <div class="parameter-selection">
+                <!-- <h5 class="mat-h5">Source ID: </h5> -->
+                <mat-form-field>
+                    <input matInput type="text" id="sourceId" required [(ngModel)]="payload.sourceId" name="sourceId" placeholder="Source ID">
+                </mat-form-field>
+            </div>
 
-    <div class="parameter-selection">
-        <!-- <h5 class="mat-h5">Name: </h5> -->
-        <mat-form-field>
-            <textarea matInput type="text" id="name"
-                [(ngModel)]="payload.name" name="name"
-                placeholder="Name">
+            <div class="parameter-selection">
+                <!-- <h5 class="mat-h5">Name: </h5> -->
+                <mat-form-field>
+                    <textarea matInput type="text" id="name" [(ngModel)]="payload.name" name="name" placeholder="Name">
             </textarea>
-        </mat-form-field>
+                </mat-form-field>
+            </div>
+
+            <div class="parameter-selection">
+                <!-- <h5 class="mat-h5">Long Name: </h5> -->
+                <mat-form-field>
+                    <input matInput type="text" id="longName" [(ngModel)]="payload.longName" name="longName" placeholder="Long Name">
+                </mat-form-field>
+            </div>
+
+            <div class="parameter-selection">
+                <!-- <h5 class="mat-h5">Description: </h5> -->
+                <mat-form-field>
+                    <textarea matInput type="text" id="description" [(ngModel)]="payload.description" name="description" placeholder="Description"></textarea>
+                </mat-form-field>
+            </div>
+
+            <div class="parameter-selection">
+                <!-- <h5 class="mat-h5">Source Version: </h5> -->
+                <mat-form-field>
+                    <input matInput type="text" id="sourceVersion" [(ngModel)]="payload.sourceVersion" name="sourceVersion" placeholder="Source Version">
+                </mat-form-field>
+            </div>
+
+            <div class="parameter-selection">
+                <!-- <h5 class="mat-h5">Source ID Version: </h5> -->
+                <mat-form-field>
+                    <input matInput type="text" id="sourceIdVersion" [(ngModel)]="payload.sourceIdVersion" name="sourceIdVersion" placeholder="Source ID Version">
+                </mat-form-field>
+            </div>
+        </div>
+
+        <div class="subsets-selection">
+            <h3 class="mat-h3">Subsets</h3>
+
+            <mat-list name="subsetList">
+                <mat-list-item *ngFor="let subset of subsets">
+                    <mat-icon style="margin-right: 12px;">device_hub</mat-icon>
+                    {{subset}}
+                    <button style="color: red" mat-icon-button (click)="delete(subset)">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </mat-list-item>
+            </mat-list>
+
+            <form class="input-box" (keyup.enter)="addSubset()">
+                <mat-form-field>
+                    <input matInput type="text" id="subset" [(ngModel)]="tempSubset" name="tempSubset" placeholder="Add New Subset">
+                </mat-form-field>
+                <button mat-icon-button (click)="addSubset()">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </form>
+        </div>
+
+        <div class="relationship-selection">
+            <h3 class="mat-h3">Relationships</h3>
+            <!-- <h5 class="mat-h5">Subsets: </h5> -->
+            <mat-list>
+                <mat-list-item *ngFor="let relationship of relationships">{{relationship | relationshipPipe}}
+                    <button style="color: red" mat-icon-button (click)="deleteEdge(relationship)">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </mat-list-item>
+            </mat-list>
+
+            <form class="input-box" (keyup.enter)="addEdge()">
+                <mat-form-field>
+                    <mat-select placeholder="Type" [(value)]="tempEdge.type">
+                        <mat-option value="parent">
+                            Parent
+                        </mat-option>
+                        <mat-option value="child">
+                            Child
+                        </mat-option>
+                        <mat-option value="alias">
+                            Alias
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field class="id-select">
+                    <input matInput placeholder="Target name" name="edgeId" [formControl]="searchTerm" [matAutocomplete]="auto">
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="loadTerm($event)">
+                        <mat-option *ngFor="let item of searchResult" [value]="item">
+                            {{item.name}} : {{item['@rid']}}
+                        </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+
+                <button mat-icon-button (click)="addEdge()">
+                    <mat-icon>add</mat-icon>
+                </button>
+            </form>
+        </div>
     </div>
 
-    <div class="parameter-selection">
-        <!-- <h5 class="mat-h5">Long Name: </h5> -->
-        <mat-form-field>
-            <input matInput type="text" id="longName"
-                [(ngModel)]="payload.longName" name="longName"
-                placeholder="Long Name">
-        </mat-form-field>
-    </div>
-
-    <div class="parameter-selection">
-        <!-- <h5 class="mat-h5">Description: </h5> -->
-        <mat-form-field>
-            <textarea matInput type="text" id="description"
-                [(ngModel)]="payload.description" name="description"
-                placeholder="Description"></textarea>
-        </mat-form-field>
-    </div>
-
-    <div class="subsets-selection">
-        <!-- <h5 class="mat-h5">Subsets: </h5> -->
-        <ul name="subsetList">
-            <li *ngFor="let subset of subsets" >{{subset}}
-                <mat-icon (click)="delete(subset)">close</mat-icon>
-            </li>
-        </ul>
-        <mat-form-field>
-            <input matInput type="text" id="subset"
-                [(ngModel)]="tempSubset" name="tempSubset"
-                placeholder="Add New Subset"
-                (keyup.enter)="addSubset()">
-        </mat-form-field>
-
-        <mat-icon (click)="addSubset()">add</mat-icon>
-
-    </div>
-
-    <div class="parameter-selection">
-        <!-- <h5 class="mat-h5">Source Version: </h5> -->
-        <mat-form-field>
-            <input matInput type="text" id="sourceVersion"
-                [(ngModel)]="payload.sourceVersion" name="sourceVersion"
-                placeholder="Source Version">
-        </mat-form-field>
-    </div>
-
-    <div class="parameter-selection">
-        <!-- <h5 class="mat-h5">Source ID Version: </h5> -->
-        <mat-form-field>
-            <input matInput type="text" id="sourceIdVersion"
-                [(ngModel)]="payload.sourceIdVersion" name="sourceIdVersion"
-                placeholder="Source ID Version">
-        </mat-form-field>
-    </div>
-
-    <h3 class="mat-h3">Relationships</h3>
-    <div class="subsets-selection">
-        <!-- <h5 class="mat-h5">Subsets: </h5> -->
-        <ul>
-            <li *ngFor="let relationship of relationships">{{relationship | relationshipPipe}}
-                <mat-icon (click)="deleteEdge(relationship)">close</mat-icon>
-            </li>
-        </ul>
-
-        <form (keyup.enter)="addEdge()">
-            <mat-form-field>
-                <mat-select placeholder="Type" [(value)]="tempEdge.type">
-                    <mat-option value="parent">
-                        Parent
-                    </mat-option>
-                    <mat-option value="child">
-                        Child
-                    </mat-option>
-                    <mat-option value="alias">
-                        Alias
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-
-            <mat-form-field>
-                <input matInput 
-                    placeholder="Add target ID" 
-                    name="edgeId" 
-                    [(ngModel)]="tempEdge.id"
-                    [formControl]="searchTerm"
-                    [matAutocomplete]="auto">
-                <mat-autocomplete #auto="matAutocomplete">
-                    <mat-option *ngFor="let item of searchResult" [value]="item['@rid']">
-                        {{item.name}} : {{item['@rid']}}
-                    </mat-option>
-                </mat-autocomplete>
-            </mat-form-field>
-            <mat-icon (click)="addEdge()">add</mat-icon>
-            
-        </form >
-
-    </div>
-
-    <button [disabled]="!addNodeForm.form.valid" type="submit"mat-button>Add Node</button>
-    <!-- <button mat-button (click)="addNode()">Add Node</button> -->
-    
-    </form> 
-</div>
+    <button class="submit-button" color="primary" [disabled]="!addNodeForm.form.valid" type="submit" mat-raised-button>
+        Add Node
+    </button>
+</form>

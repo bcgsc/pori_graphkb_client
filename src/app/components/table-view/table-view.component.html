@@ -1,4 +1,7 @@
   <div class="mat-elevation-z8">
+    <mat-form-field>
+      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+    </mat-form-field>
     <mat-table #table [dataSource]="dataSource" matSort>
 
       <!-- Class Column -->
@@ -35,7 +38,7 @@
       <!-- RID & Version Column -->
       <ng-container matColumnDef="rid-version">
         <mat-header-cell *matHeaderCellDef mat-sort-header>RID</mat-header-cell>
-        <mat-cell *matCellDef="let row">{{row['@rid'] +' v'+row['@version']}}</mat-cell>
+        <mat-cell *matCellDef="let row">{{row['@rid']}}</mat-cell>
       </ng-container>
 
       <!-- Subsets Column -->

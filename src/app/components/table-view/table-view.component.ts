@@ -22,15 +22,14 @@ export class TableViewComponent implements OnInit {
 
   @Input() data;
   @Input() initSelected?;
-  dataSource;
+  private dataSource;
 
   private selectedNode;
 
   /* Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['rid-version', 'source', 'sourceId', 'createdBy', 'name', 'subsets'];
 
-  constructor(private api: APIService) {
-  }
+  constructor(private api: APIService) {}
 
   ngOnInit() {
     // this.dataSource = new TableViewDataSource(this.paginator, this.sort, this.data);
@@ -46,32 +45,29 @@ export class TableViewComponent implements OnInit {
   }
 
   subsetsFilter(data: any, filter: string): boolean {
-    let result = true;
-    let subsets = [];
+    if(!data['subsets']) return false;
     
-    data['subsets'].forEach(sub => subsets.push(sub.trim().toLowerCase()));
+    let result = true;
+    let subsets = data['subsets'].map(sub => sub.trim().toLowerCase());
 
-    filter.split(',').forEach(subset => {
-      if (subset && !(subsets.includes(subset.trim().toLowerCase()))) result = false;
+    filter.split(',').forEach(filterTerm => { //can make more precise
+      let subr = false;
+      subsets.forEach(sub => {
+        if(sub.indexOf(filterTerm.trim().toLowerCase()) != -1) subr = true;
+      })
+      if(!subr) result = false;
+
+      // if (subset && !(subsets.includes(subset.trim().toLowerCase()))) result = false;
     });
     return result;
   }
 
   onClick(e, row: DiseaseTerm) {
-    // this.selected.emit(row['@rid'].slice(1));
     this.selected.emit(row);
-
     this.selectedNode = row;
   }
 
   applyFilter(filter) {
     this.dataSource.filter = filter.trim().toLowerCase();
-  }
-
-  onEdit(edited: DiseaseTerm) {
-  }
-  onAdded(added: DiseaseTerm) {
-  }
-  onDeleted(deleted: DiseaseTerm) {
   }
 }

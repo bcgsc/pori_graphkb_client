@@ -10,6 +10,6 @@
                 {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
             </mat-icon>
         </button>
-        <span (click)="onClick(node)">{{node.name}}</span>
+        <span (click)="onClick(node)">{{node.name}} : {{node.sourceId}}</span>
     </mat-tree-node>
 </mat-tree>

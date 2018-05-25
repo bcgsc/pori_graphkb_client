@@ -45,8 +45,13 @@ export class QueryViewComponent {
     'uuid': true,
     'longName': true,
   };
-
+  private relatedNodes = {
+    parents: false,
+    children: false,
+    aliases: false,
+  }
   private propKeys = Object.keys(this.properties);
+
   searchTerm: FormControl = new FormControl();
   searchResult = [];
 
@@ -90,9 +95,17 @@ export class QueryViewComponent {
     //TODO: sanitize untouched form 
     /* Process returnProperties: */
     let reqDefault = true;
-    let returnProperties = ''
+    let returnProperties = '';
 
-    Object.keys(this.properties).forEach(key => {
+    if (this.relatedNodes.parents) this.params.ancestors += 'subclassof';
+    if (this.relatedNodes.children) this.params.descendants += 'subclassof';
+    if (this.relatedNodes.aliases) {
+
+      this.params.ancestors ? this.params.ancestors += ',aliasof' : this.params.ancestors += 'aliasof';
+      this.params.descendants ? this.params.descendants += ',aliasof': this.params.descendants +='aliasof';
+    }
+
+    this.propKeys.forEach(key => {
       this.properties[key] ? returnProperties += key + ',' : reqDefault = false;
     });
 

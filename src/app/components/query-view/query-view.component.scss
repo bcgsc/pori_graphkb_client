@@ -86,6 +86,19 @@ $position: 60vh;
     }
 }
 
+.related-checkboxes{
+    display: block;
+    flex-grow: 1;
+    justify-content: left;
+    
+    .checkbox{
+        display: inline-block;
+        margin: 24px;
+        mat-checkbox{
+            float: left;
+        }
+    }
+}
 
 .parameter-selection{
     display: flex;

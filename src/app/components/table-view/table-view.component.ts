@@ -40,7 +40,7 @@ export class TableViewComponent implements OnInit {
     let defaultpredicate = this.dataSource.filterPredicate;
 
     this.dataSource.filterPredicate = (data:any, filter: string) =>{
-      return defaultpredicate(data, filter)|| this.subsetsFilter(data, filter);
+      return defaultpredicate(data, filter) || this.subsetsFilter(data, filter);
     }
   }
 
@@ -56,8 +56,6 @@ export class TableViewComponent implements OnInit {
         if(sub.indexOf(filterTerm.trim().toLowerCase()) != -1) subr = true;
       })
       if(!subr) result = false;
-
-      // if (subset && !(subsets.includes(subset.trim().toLowerCase()))) result = false;
     });
     return result;
   }

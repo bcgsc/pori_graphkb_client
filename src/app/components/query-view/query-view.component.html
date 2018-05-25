@@ -1,7 +1,6 @@
 <div *ngIf="!adv" class="search-wrapper">
     <mat-form-field class="main-search">
-        <input #name (keyup.enter)="simpleQuery()" matInput placeholder="Search a name" [formControl]="searchTerm"
-            [matAutocomplete]="auto">
+        <input #name (keyup.enter)="simpleQuery()" matInput placeholder="Search a name" [formControl]="searchTerm" [matAutocomplete]="auto">
         <mat-autocomplete #auto="matAutocomplete">
             <mat-option *ngFor="let item of searchResult" [value]="item">
                 {{item}}
@@ -75,19 +74,19 @@
     </div>
     <!-- add breakpoint for checkboxes -->
 
-    <!--dropdown-->
     <div class="parameter-selection">
-        <h3 class="mat-h3">Ancestors: </h3>
-        <mat-form-field>
-            <input matInput [(ngModel)]="params.ancestors">
-        </mat-form-field>
-    </div>
-
-    <div class="parameter-selection">
-        <h3 class="mat-h3">Descendants: </h3>
-        <mat-form-field>
-            <input matInput [(ngModel)]="params.descendants">
-        </mat-form-field>
+        <h3 class="mat-h3">Related Terms: </h3>
+        <div class="related-checkboxes">
+            <div class="checkbox">
+                <mat-checkbox [(ngModel)]="relatedNodes.parents" disableRipple='true'>Parents</mat-checkbox>
+            </div>
+            <div class="checkbox">
+                <mat-checkbox [(ngModel)]="relatedNodes.children" disableRipple='true'>Children</mat-checkbox>
+            </div>
+            <div class="checkbox">
+                <mat-checkbox [(ngModel)]="relatedNodes.aliases" disableRipple='true'>Aliases</mat-checkbox>
+            </div>
+        </div>
     </div>
 
     <div class="parameter-selection">

@@ -95,7 +95,7 @@ export class DataHubComponent {
             if (!inMap[element].parents) {
                 h.push(inMap[element]);
             } else {
-                let t = true;
+                let t = false;
                 inMap[element].parents.forEach(pid => {
                     if (pid in inMap) {
                         let parent = inMap[pid];
@@ -103,11 +103,12 @@ export class DataHubComponent {
                             parent._children = [];
                         }
                         parent._children.push(inMap[element]);
-                    } else if (t) {
-                        t = false;
-                        h.push(inMap[element]);
+                        t = true;
                     }
-                })
+                });
+                if (!t) {
+                    h.push(inMap[element]);
+                }
             }
         });
 
@@ -188,38 +189,6 @@ export class DataHubComponent {
     onDelete(node: DiseaseTerm) {
         let rid = node['@rid'].slice(1);
         //TODO: add cleanup to all related nodes (Can't yet)
-
-        // if (node.aliases) {
-        //     node.aliases.forEach(alias => {
-        //         this.api.getRecord(alias.slice(1)).subscribe(json => {
-        //             let entry = this.prepareEntry(json);
-        //             let i = entry.aliases.findIndex(d => d['@rid'] == rid);
-        //             entry.aliases = entry.aliases.splice(i, 1);
-        //             this.api.editNode(alias.slice(1), entry).subscribe();
-        //         })
-        //     })
-        // }
-        // if (node.parents) {
-        //     node.parents.forEach(parent => {
-        //         this.api.getRecord(parent.slice(1)).subscribe(json => {
-        //             let entry = this.prepareEntry(json);
-        //             let i = entry.children.findIndex(d => d['@rid'] == rid);
-        //             entry.children = entry.children.splice(i, 1);
-        //             console.log(entry);
-        //             this.api.editNode(parent.slice(1), entry).subscribe();
-        //         })
-        //     })
-        // }
-        // if (node.children) {
-        //     node.children.forEach(child => {
-        //         this.api.getRecord(child.slice(1)).subscribe(json => {
-        //             let entry = this.prepareEntry(json);
-        //             let i = entry.parents.findIndex(d => d['@rid'] == rid);
-        //             entry.parents = entry.parents.splice(i, 1);
-        //             this.api.editNode(child.slice(1), entry).subscribe();
-        //         })
-        //     })
-        // }
 
         this.api.deleteNode(rid).subscribe(() => {
             this.refresh();

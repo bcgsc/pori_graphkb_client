@@ -76,12 +76,58 @@ $gsc-teal: (
 
 $ontologyweb-primary: mat-palette($gsc-indigo, 800);
 $ontologyweb-accent:  mat-palette($gsc-teal, 700, 300, A700);
+$ontologyweb-background: (  
+  status-bar: map_get($mat-grey, 300),
+  app-bar:    map_get($mat-grey, 100),
+  background: #f2f1fb,
+  hover:      rgba(black, 0.04), // TODO(kara): check style with Material Design UX
+  card:       white,
+  dialog:     white,
+  disabled-button: rgba(black, 0.12),
+  raised-button: white,
+  focused-button: $dark-focused,
+  selected-button: map_get($mat-grey, 300),
+  selected-disabled-button: map_get($mat-grey, 400),
+  disabled-button-toggle: map_get($mat-grey, 200),
+  unselected-chip: map_get($mat-grey, 300),
+  disabled-list-option: map_get($mat-grey, 200),
+);
+
+$ontologyweb-foreground: (
+  base:              black,
+  divider:           $dark-dividers,
+  dividers:          $dark-dividers,
+  disabled:          $dark-disabled-text,
+  disabled-button:   rgba(black, 0.26),
+  disabled-text:     $dark-disabled-text,
+  hint-text:         $dark-disabled-text,
+  secondary-text:    $dark-secondary-text,
+  icon:              rgba(black, 0.54),
+  icons:             rgba(black, 0.54),
+  text:              rgba(black, 0.87),
+  slider-min:        rgba(black, 0.87),
+  slider-off:        rgba(black, 0.26),
+  slider-off-active: rgba(black, 0.38),
+);
 
 // The warn palette is optional (defaults to red).
 $ontologyweb-warn:    mat-palette($mat-red, 700);
 
+// instead of creating a theme with mat-light-theme like a sane person, we will create our own theme-creating function that lets us apply our own foreground and background palettes.
+@function create-wonky-theme($primary, $accent, $warn: mat-palette($mat-red)) {
+  @return (
+    primary: $primary,
+    accent: $accent,
+    warn: $warn,
+    is-dark: false,
+    foreground: $ontologyweb-foreground,
+    background: $ontologyweb-background,
+  );
+}
+
 // Create the theme object (a Sass map containing all of the palettes).
 $ontologyweb-theme: mat-light-theme($ontologyweb-primary, $ontologyweb-accent, $ontologyweb-warn);
+// $ontologyweb-theme: create-wonky-theme($ontologyweb-primary, $ontologyweb-accent, $ontologyweb-warn);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component

@@ -6,7 +6,7 @@
 
         </mat-tab>
         <mat-tab label="Tree View">
-            <!-- <tree-view [data]="treeData" [initSelected]="treeSelected" (selected)="onSelect($event)"></tree-view> -->
+            <tree-view [data]="treeData" [initSelected]="treeSelected" (selected)="onSelect($event)"></tree-view>
         </mat-tab>
         <mat-tab label="Graph View">graph</mat-tab>
     </mat-tab-group>
@@ -14,9 +14,10 @@
         (changed)="onEdit($event)" 
         (added)="onAdd($event)" 
         (deleted)="onDelete($event)"
+        (relationshipped)="onNewRelationship($event)"
         (sourceQuery)="onSourceQuery($event)">
     </node-view>
 </div>
-<div *ngIf="!dataMap" class="data-view">
-    <mat-spinner style="margin:auto; display: block; margin-top: 200px;"></mat-spinner>
+<div *ngIf="!dataMap">
+    <mat-spinner style="margin:auto; margin-top: 200px;"></mat-spinner>
 </div>

@@ -6,6 +6,10 @@ mat-table{
 }
 .mat-elevation-z8{
     min-width: 1148px;
+    mat-form-field{
+        display: block;
+        padding: 16px;
+    }
 }
 .mat-row, .mat-header-row{
     min-width: 1148px;

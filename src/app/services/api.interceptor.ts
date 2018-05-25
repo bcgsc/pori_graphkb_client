@@ -34,7 +34,6 @@ export class APIInterceptor implements HttpInterceptor {
                 }
             });
         }
-        console.log(request);        
 
         return next.handle(request).do((event: HttpEvent<any>) => {
             if (event instanceof HttpResponse) {
@@ -53,7 +52,6 @@ export class APIInterceptor implements HttpInterceptor {
                 if(err.status === 404){
                     this.router.navigate(['/query']);
                 }
-                console.log(err);
             };
         });
     }

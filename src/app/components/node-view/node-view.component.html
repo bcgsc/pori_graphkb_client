@@ -5,7 +5,7 @@
             <h3 matSubheader>Source</h3>
 
             <mat-list-item *ngIf="node">{{node.source}}
-                <mat-icon matListIcon (click)="queryBySource()">search</mat-icon>
+                <mat-icon matListIcon color="accent" (click)="queryBySource()">search</mat-icon>
             </mat-list-item>
 
 
@@ -43,47 +43,75 @@
 
             <mat-divider></mat-divider>
             <h3 matSubheader>Aliases</h3>
-            <mat-list dense *ngIf="node">
+            <mat-list dense *ngIf="!_editing && node">
                 <mat-list-item *ngFor="let alias of node.aliases">{{alias}}
-                    <mat-icon matListIcon>search</mat-icon>
+                    <mat-icon color="accent" (click)="search(alias.slice(1))" matListIcon>search</mat-icon>
                 </mat-list-item>
             </mat-list>
 
+            <mat-list dense *ngIf="_editing && node">
+                <mat-list-item *ngFor="let alias of _temp.aliases">{{alias}}
+                    <mat-icon matListIcon color="warn" (click)="deleteTempAlias(alias)">close</mat-icon>
+                </mat-list-item>
+                <mat-form-field>
+                    <input matInput type="text" id="tempAlias" [(ngModel)]="_tempAlias" name="tempAlias" (keyup.enter)="addTempAlias()">
+                </mat-form-field>
+                <mat-icon matListIcon color="primary" (click)="addTempAlias()">add</mat-icon>
+            </mat-list>
+
+
             <mat-divider></mat-divider>
             <h3 matSubheader>Children</h3>
-            <mat-list dense *ngIf="node">
+            <mat-list dense *ngIf="!_editing && node">
                 <mat-list-item *ngFor="let child of node.children">{{child}}
-                    <mat-icon matListIcon>search</mat-icon>
+                    <mat-icon color="accent" (click)="search(child.slice(1))" matListIcon>search</mat-icon>
                 </mat-list-item>
+            </mat-list>
+            <mat-list dense *ngIf="_editing && node">
+                <mat-list-item *ngFor="let child of _temp.children">{{child}}
+                    <mat-icon matListIcon color="warn" (click)="deleteTempChild(child)">close</mat-icon>
+                </mat-list-item>
+                <mat-form-field>
+                    <input matInput type="text" id="tempChild" [(ngModel)]="_tempChild" name="tempChild" (keyup.enter)="addTempChild()">
+                </mat-form-field>
+                <mat-icon matListIcon color="primary" (click)="addTempChild()">add</mat-icon>
             </mat-list>
 
             <mat-divider></mat-divider>
             <h3 matSubheader>Parents</h3>
-            <div *ngIf="node">
+            <mat-list dense *ngIf="!_editing && node">
                 <mat-list-item *ngFor="let parent of node.parents">{{parent}}
-                    <mat-icon matListIcon>search</mat-icon>
+                    <mat-icon color="accent" (click)="search(parent.slice(1))" matListIcon>search</mat-icon>
                 </mat-list-item>
-            </div>
+            </mat-list>
+
+            <mat-list dense *ngIf="_editing && node">
+                <mat-list-item *ngFor="let parent of _temp.parents">{{parent}}
+                    <mat-icon matListIcon color="warn" (click)="deleteTempParent(parent)">close</mat-icon>
+                </mat-list-item>
+                <mat-form-field>
+                    <input matInput type="text" id="tempParent" [(ngModel)]="_tempParent" name="tempParent" (keyup.enter)="addTempParent()">
+                </mat-form-field>
+                <mat-icon matListIcon color="primary" (click)="addTempParent()">add</mat-icon>
+            </mat-list>
 
             <mat-divider></mat-divider>
             <h3 matSubheader>Subsets</h3>
-            <div *ngIf="!_editing && node">
+            <mat-list dense *ngIf="!_editing && node">
                 <mat-list-item *ngFor="let subset of node.subsets">{{subset | subsetPipe}}
                     <mat-icon matListIcon>folder</mat-icon>
                 </mat-list-item>
-            </div>
+            </mat-list>
 
-            <div *ngIf="_editing && node">
+            <mat-list dense *ngIf="_editing && node">
                 <mat-list-item *ngFor="let subset of _temp.subsets">{{subset | subsetPipe}}
-                    <mat-icon matListIcon (click)="deleteTempSubset(subset)">close</mat-icon>
+                    <mat-icon matListIcon color="warn" (click)="deleteTempSubset(subset)">close</mat-icon>
                 </mat-list-item>
-            </div>
-            <div *ngIf="_editing">
                 <mat-form-field>
                     <input matInput type="text" id="tempSubset" [(ngModel)]="_tempSubset" name="tempSubset" (keyup.enter)="addTempSubset()">
                 </mat-form-field>
-                <mat-icon matListIcon (click)="addTempSubset()">add</mat-icon>
-            </div>
+                <mat-icon matListIcon color="primary" (click)="addTempSubset()">add</mat-icon>
+            </mat-list>
 
             <mat-divider></mat-divider>
 
@@ -100,7 +128,7 @@
         </mat-list>
         <div class="buttons">
             <div *ngIf="!_editing && node">
-                <button mat-raised-button color="primary" (click)="addChild()">Add Child</button>
+                <button mat-stroked-button color="primary" (click)="addChild()">Add Child</button>
                 <button mat-stroked-button color="primary" (click)="beginEdit()">Edit Properties</button>
                 <button mat-raised-button color="warn" (click)="deleteSelected(node)">Delete Node</button>
             </div>

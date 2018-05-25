@@ -19,12 +19,12 @@ export class DataHubComponent {
     disabled = true;
 
     tableData: DiseaseTerm[];
-    dataMap: { [id: string]: any };
+    dataMap: { [id: string]: DiseaseTerm };
     treeData;
 
-    selectedNode: DiseaseTerm;
+    private selectedNode: DiseaseTerm;
 
-    params;
+    private params;
 
     constructor(private api: APIService, private route: ActivatedRoute) { }
 
@@ -168,7 +168,7 @@ export class DataHubComponent {
      */
     onSelect(node: DiseaseTerm) {
         this.node = undefined;
-        this.selectedNode = node;
+        this.selectedNode = this.dataMap[node['@rid']];
     }
 
     /**
@@ -176,7 +176,6 @@ export class DataHubComponent {
      * @param node updated node object after edits.
      */
     onEdit(node: DiseaseTerm) {
-
         this.api.editNode(node['@rid'].slice(1), node).subscribe(() => {
             this.refresh(node['@rid']);
         });
@@ -188,39 +187,39 @@ export class DataHubComponent {
      */
     onDelete(node: DiseaseTerm) {
         let rid = node['@rid'].slice(1);
-        //TODO: add cleanup to all related nodes
+        //TODO: add cleanup to all related nodes (Can't yet)
 
-        if (node.aliases) {
-            node.aliases.forEach(alias => {
-                this.api.getRecord(alias.slice(1)).subscribe(json => {
-                    let entry = this.prepareEntry(json);
-                    let i = entry.aliases.findIndex(d => d['@rid'] == rid);
-                    entry.aliases = entry.aliases.splice(i, 1);
-                    this.api.editNode(alias.slice(1), entry).subscribe();
-                })
-            })
-        }
-        if (node.parents) {
-            node.parents.forEach(parent => {
-                this.api.getRecord(parent.slice(1)).subscribe(json => {
-                    let entry = this.prepareEntry(json);
-                    let i = entry.children.findIndex(d => d['@rid'] == rid);
-                    entry.children = entry.children.splice(i, 1);
-                    console.log(entry);
-                    this.api.editNode(parent.slice(1), entry).subscribe();
-                })
-            })
-        }
-        if (node.children) {
-            node.children.forEach(child => {
-                this.api.getRecord(child.slice(1)).subscribe(json => {
-                    let entry = this.prepareEntry(json);
-                    let i = entry.parents.findIndex(d => d['@rid'] == rid);
-                    entry.parents = entry.parents.splice(i, 1);
-                    this.api.editNode(child.slice(1), entry).subscribe();
-                })
-            })
-        }
+        // if (node.aliases) {
+        //     node.aliases.forEach(alias => {
+        //         this.api.getRecord(alias.slice(1)).subscribe(json => {
+        //             let entry = this.prepareEntry(json);
+        //             let i = entry.aliases.findIndex(d => d['@rid'] == rid);
+        //             entry.aliases = entry.aliases.splice(i, 1);
+        //             this.api.editNode(alias.slice(1), entry).subscribe();
+        //         })
+        //     })
+        // }
+        // if (node.parents) {
+        //     node.parents.forEach(parent => {
+        //         this.api.getRecord(parent.slice(1)).subscribe(json => {
+        //             let entry = this.prepareEntry(json);
+        //             let i = entry.children.findIndex(d => d['@rid'] == rid);
+        //             entry.children = entry.children.splice(i, 1);
+        //             console.log(entry);
+        //             this.api.editNode(parent.slice(1), entry).subscribe();
+        //         })
+        //     })
+        // }
+        // if (node.children) {
+        //     node.children.forEach(child => {
+        //         this.api.getRecord(child.slice(1)).subscribe(json => {
+        //             let entry = this.prepareEntry(json);
+        //             let i = entry.parents.findIndex(d => d['@rid'] == rid);
+        //             entry.parents = entry.parents.splice(i, 1);
+        //             this.api.editNode(child.slice(1), entry).subscribe();
+        //         })
+        //     })
+        // }
 
         this.api.deleteNode(rid).subscribe(() => {
             this.refresh();
@@ -231,6 +230,10 @@ export class DataHubComponent {
     onSourceQuery(params) {
         this.params = params;
         this.refresh();
+    }
+
+    onNewRelationship(edge){
+        this.api.addRelationship(edge).subscribe(()=>this.refresh());
     }
 }
 

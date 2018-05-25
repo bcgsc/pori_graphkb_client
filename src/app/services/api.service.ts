@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { DiseaseTerm } from '../models';
+import { Edge } from '../components/add-node-view/add-node-view.component';
 
 const API_ENDPOINT = "http://10.9.202.242:8088/api";
 /**
@@ -46,7 +47,7 @@ export class APIService {
         return this.http.patch(API_ENDPOINT + "/diseases/" + rid, payload);
     }
 
-    public addRelationship(input): Observable<any>{
+    public addRelationship(input: Edge): Observable<any>{
         let classEndpoint = input.type;
         let payload = {
             in: input.in,

@@ -30,7 +30,6 @@ export class APIInterceptor implements HttpInterceptor {
                     'Access-Control-Allow-Origin': '*',
                     'Access-Control-Allow-Methods': 'GET,OPTIONS,POST',
                     'Access-Control-Allow-Headers': 'content-type',
-
                 }
             });
         }

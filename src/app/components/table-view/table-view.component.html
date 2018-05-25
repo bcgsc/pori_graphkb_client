@@ -2,6 +2,8 @@
     <mat-form-field>
       <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
     </mat-form-field>
+    <!-- <mat-icon matListIcon color="primary">search</mat-icon> -->
+    
     <mat-table #table [dataSource]="dataSource" matSort>
 
       <!-- Class Column -->

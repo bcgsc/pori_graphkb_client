@@ -25,7 +25,7 @@ export class QueryViewComponent {
     returnProperties: '',
     ancestors: '',
     descendants: '',
-    fuzzyMatch: 1,
+    fuzzyMatch: undefined,
     // neighbors: 2,
   };
   private properties = {

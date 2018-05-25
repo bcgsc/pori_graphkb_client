@@ -6,7 +6,8 @@ export class SubsetsPipe implements PipeTransform {
     let concat: string = ''
 
     if (value) value.forEach(subset => {
-      let subName = subset.split('#')[1] || subset;
+      // let subName = subset.split('#')[1] || subset;
+      let subName = subset;
 
       concat += subName.toUpperCase() + ", "
     });

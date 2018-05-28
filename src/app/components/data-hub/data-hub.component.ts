@@ -43,6 +43,8 @@ export class DataHubComponent {
         delete this.dataMap;
         delete this.treeData;
         delete this.selectedNode;
+        this.nodes = [];
+        this.links = [];
 
         let rid = this.route.snapshot.paramMap.get('rid')
         rid ? this.getRecord(rid) : this.getQuery(queryRid);
@@ -72,7 +74,7 @@ export class DataHubComponent {
             this.selectedNode = this.tableData[i];
 
             /** constructing the nodes array */
-            let N = 100;
+            let N = Math.min(100, this.tableData.length);
             for (let i = 1; i <= N; i++) {
                 this.nodes.push(new GraphNode(i, this.tableData[i - 1]));
             }

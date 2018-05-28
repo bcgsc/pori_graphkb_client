@@ -96,7 +96,7 @@ export class DataHubComponent {
             } else {
                 let retrieved = false;
                 this.dataMap[rid].parents.forEach(pid => {
-                    if (pid in this.dataMap) {
+                    if (pid in this.dataMap && !retrieved) {
                         let parent = this.dataMap[pid];
                         if (!('_children' in parent)) {
                             parent._children = [];
@@ -105,7 +105,7 @@ export class DataHubComponent {
                         retrieved = true;
                     }
                 });
-                // If a node's parent is not retrieved by query, the node is a de facto root.
+                // If none of a node's parents is not retrieved by query, the node is displayed as a root.
                 if (!retrieved) {
                     roots.push(this.dataMap[rid]);
                 }

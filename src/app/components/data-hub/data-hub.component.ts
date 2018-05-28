@@ -16,11 +16,10 @@ import { NodeViewComponent } from '../node-view/node-view.component';
 export class DataHubComponent {
     @ViewChild(TableViewComponent) table;
     @ViewChild(NodeViewComponent) node;
-    disabled = true;
 
-    tableData: DiseaseTerm[];
-    dataMap: { [id: string]: DiseaseTerm };
-    treeData;
+    private tableData: DiseaseTerm[];
+    private dataMap: { [id: string]: DiseaseTerm };
+    private treeData: DiseaseTerm[];
 
     private selectedNode: DiseaseTerm;
 
@@ -32,7 +31,7 @@ export class DataHubComponent {
         this.route.queryParams.subscribe(params => {
             this.params = params;
             this.refresh();
-        })
+        });
     }
 
     //TODO: make this less confusing
@@ -54,9 +53,9 @@ export class DataHubComponent {
 
             json = jc.retrocycle(json);
 
-            json.forEach(element => {
+            json.forEach(diseaseTerm => {
 
-                let entry = this.prepareEntry(element);
+                let entry = this.prepareEntry(diseaseTerm);
 
                 if (rid && entry['@rid'] === rid) {
                     i = this.tableData.length;
@@ -88,72 +87,73 @@ export class DataHubComponent {
         });
     }
 
-    getHierarchy(): any[] {
-        let inMap = Object.assign({}, this.dataMap);
-        let h = [];
-        Object.keys(inMap).forEach(element => {
-            if (!inMap[element].parents) {
-                h.push(inMap[element]);
+    getHierarchy(): DiseaseTerm[] {
+        let roots: DiseaseTerm[] = [];
+
+        Object.keys(this.dataMap).forEach(rid => {
+            if (!this.dataMap[rid].parents) {
+                roots.push(this.dataMap[rid]);
             } else {
-                let t = false;
-                inMap[element].parents.forEach(pid => {
-                    if (pid in inMap) {
-                        let parent = inMap[pid];
+                let retrieved = false;
+                this.dataMap[rid].parents.forEach(pid => {
+                    if (pid in this.dataMap) {
+                        let parent = this.dataMap[pid];
                         if (!('_children' in parent)) {
                             parent._children = [];
                         }
-                        parent._children.push(inMap[element]);
-                        t = true;
+                        parent._children.push(this.dataMap[rid]);
+                        retrieved = true;
                     }
                 });
-                if (!t) {
-                    h.push(inMap[element]);
+                // If a node's parent is not retrieved by query, the node is a de facto root.
+                if (!retrieved) {
+                    roots.push(this.dataMap[rid]);
                 }
             }
         });
 
-        return h;
+        return roots;
     }
 
-    prepareEntry(element): DiseaseTerm {
+    prepareEntry(jsonTerm): DiseaseTerm {
         let children, parents, aliases;
 
-        if (element['out_SubClassOf']) {
+        if (jsonTerm['out_SubClassOf']) {
             parents = [];
-            element['out_SubClassOf'].forEach(edge => {
+            jsonTerm['out_SubClassOf'].forEach(edge => {
                 edge['in']['@rid'] ? parents.push(edge['in']['@rid']) : parents.push(edge['in'])
             });
         }
-        if (element['in_SubClassOf']) {
+        if (jsonTerm['in_SubClassOf']) {
             children = [];
-            element['in_SubClassOf'].forEach(edge => {
+            jsonTerm['in_SubClassOf'].forEach(edge => {
                 edge['out']['@rid'] ? children.push(edge['out']['@rid']) : children.push(edge['out'])
             });
         }
-        if (element['out_AliasOf']) {
+        if (jsonTerm['out_AliasOf']) {
             aliases = [];
-            element['out_AliasOf'].forEach(edge => {
+            jsonTerm['out_AliasOf'].forEach(edge => {
                 edge['in']['@rid'] ? aliases.push(edge['in']['@rid']) : aliases.push(edge['in'])
             });
         }
-        if (element['in_AliasOf']) {
+        if (jsonTerm['in_AliasOf']) {
             aliases = aliases || [];
-            element['in_AliasOf'].forEach(edge => {
+            jsonTerm['in_AliasOf'].forEach(edge => {
                 edge['out']['@rid'] ? aliases.push(edge['out']['@rid']) : aliases.push(edge['out'])
             });
         }
 
         let entry: DiseaseTerm = {
-            '@class': element['@class'],
-            sourceId: element['sourceId'],
-            createdBy: element['createdBy']['name'],
-            name: element['name'],
-            description: element['description'],
-            source: element['source'],
-            '@rid': element['@rid'],
-            longName: element['longName'],
-            '@version': element['@version'],
-            subsets: element['subsets'],
+            '@class': jsonTerm['@class'],
+            sourceId: jsonTerm['sourceId'],
+            createdBy: jsonTerm['createdBy']['name'],
+            name: jsonTerm['name'],
+            description: jsonTerm['description'],
+            source: jsonTerm['source'],
+            '@rid': jsonTerm['@rid'],
+            longName: jsonTerm['longName'],
+            '@version': jsonTerm['@version'],
+            subsets: jsonTerm['subsets'],
             parents: parents,
             children: children,
             aliases: aliases,

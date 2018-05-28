@@ -38,12 +38,16 @@ import {
   AddNodeViewComponent,
   PaginationComponent,
   MyTableComponent,
+  GraphViewComponent,
+  SHARED_COMPONENTS,
 } from './components';
 
 import { APIService, AuthService, APIInterceptor, D3Service } from './services';
 import { SubsetsPipe, SubsetPipe } from './pipes/subsets.pipe';
 import { CamelCasePipe } from './pipes/camelCase.pipe';
 import { RelationshipPipe } from './pipes/relationship.pipe';
+
+import { D3_DIRECTIVES } from './directives/';
 
 @NgModule({
   declarations: [
@@ -56,10 +60,13 @@ import { RelationshipPipe } from './pipes/relationship.pipe';
     AddNodeViewComponent,
     PaginationComponent,
     MyTableComponent,
+    GraphViewComponent,
+    ...SHARED_COMPONENTS,
     SubsetsPipe,
     SubsetPipe,
     CamelCasePipe,
-    RelationshipPipe
+    RelationshipPipe,
+    ...D3_DIRECTIVES,
   ],
   imports: [
     BrowserModule,

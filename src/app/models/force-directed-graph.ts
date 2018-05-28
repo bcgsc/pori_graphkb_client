@@ -1,6 +1,6 @@
 import { EventEmitter } from '@angular/core';
-import { Link } from './link';
-import { Node } from './node';
+import { GraphLink } from './graph-link';
+import { GraphNode } from './graph-node';
 import * as d3 from 'd3';
 
 const FORCES = {
@@ -10,27 +10,27 @@ const FORCES = {
 }
 
 export class ForceDirectedGraph {
-    public ticker: EventEmitter<d3.Simulation<Node, Link>> = new EventEmitter();
+    public ticker: EventEmitter<d3.Simulation<GraphNode, GraphLink>> = new EventEmitter();
     public simulation: d3.Simulation<any, any>;
 
-    public nodes: Node[] = [];
-    public links: Link[] = [];
+    public GraphNodes: GraphNode[] = [];
+    public links: GraphLink[] = [];
 
-    constructor(nodes, links, options: { width, height }) {
-        this.nodes = nodes;
+    constructor(GraphNodes, links, options: { width, height }) {
+        this.GraphNodes = GraphNodes;
         this.links = links;
         this.initSimulation(options);
     }
 
-    initNodes() {
+    initGraphNodes() {
         if (!this.simulation) {
             throw new Error('simulation not yet initialized');
         }
 
-        this.simulation.nodes(this.nodes);
+        this.simulation.nodes(this.GraphNodes);
     }
 
-    initLinks() {
+    initGraphLinks() {
         if (!this.simulation) {
             throw new Error('simulation not yet initialized');
         }
@@ -59,8 +59,8 @@ export class ForceDirectedGraph {
                 ticker.emit(this)
             });
             
-            this.initNodes();
-            this.initLinks();
+            this.initGraphNodes();
+            this.initGraphLinks();
             
         }
         this.simulation.force("center", d3.forceCenter(options.width / 2, options.height / 2));

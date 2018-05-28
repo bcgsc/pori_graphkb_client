@@ -19,9 +19,7 @@ import { GraphNode } from '../../models/graph-node';
         cy="0"
         [attr.r]="node.r">
     </svg:circle>
-        <svg:text
-            class="node-name"
-            [attr.font-size]="node.fontSize">
+        <svg:text class="node-name">
           {{node.data.name}}
         </svg:text>
       </svg:g>
@@ -41,6 +39,7 @@ import { GraphNode } from '../../models/graph-node';
         font-family: 'Lato';
         text-anchor: middle;
         alignment-baseline: central;
+        baseline-shift:-12px;
         font-weight: 300;
         fill: #1F2B65;
         cursor: pointer;

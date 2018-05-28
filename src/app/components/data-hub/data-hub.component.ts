@@ -1,7 +1,7 @@
 import { Component, ViewChild, HostBinding } from '@angular/core';
 import { APIService } from '../../services/api.service';
 import * as jc from 'json-cycle';
-import { DiseaseTerm } from '../../models';
+import { DiseaseTerm, GraphLink, GraphNode } from '../../models';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { TableViewComponent } from '../table-view/table-view.component';
@@ -20,6 +20,9 @@ export class DataHubComponent {
     private tableData: DiseaseTerm[];
     private dataMap: { [id: string]: DiseaseTerm };
     private treeData: DiseaseTerm[];
+
+    nodes: GraphNode[] = [];
+    links: GraphLink[] = [];
 
     private selectedNode: DiseaseTerm;
 
@@ -67,6 +70,18 @@ export class DataHubComponent {
 
             this.treeData = this.getHierarchy();
             this.selectedNode = this.tableData[i];
+
+            /** constructing the nodes array */
+            let N = 100;
+            for (let i = 1; i <= N; i++) {
+                this.nodes.push(new GraphNode(i, this.tableData[i - 1]));
+            }
+
+            for (let i = 1; i < N; i++) {
+                this.nodes[i - 1].linkCount++;
+                this.nodes[i].linkCount++;
+                this.links.push(new GraphLink(this.nodes[i - 1], this.nodes[i], ''));
+            }
         });
     }
 
@@ -96,7 +111,7 @@ export class DataHubComponent {
             } else {
                 let retrieved = false;
                 this.dataMap[rid].parents.forEach(pid => {
-                    if (pid in this.dataMap) {
+                    if (pid in this.dataMap && !retrieved) {
                         let parent = this.dataMap[pid];
                         if (!('_children' in parent)) {
                             parent._children = [];
@@ -105,7 +120,7 @@ export class DataHubComponent {
                         retrieved = true;
                     }
                 });
-                // If a node's parent is not retrieved by query, the node is a de facto root.
+                // If none of a node's parents is not retrieved by query, the node is displayed as a root.
                 if (!retrieved) {
                     roots.push(this.dataMap[rid]);
                 }
@@ -201,8 +216,8 @@ export class DataHubComponent {
         this.refresh();
     }
 
-    onNewRelationship(edge){
-        this.api.addRelationship(edge).subscribe(()=>this.refresh());
+    onNewRelationship(edge) {
+        this.api.addRelationship(edge).subscribe(() => this.refresh());
     }
 }
 

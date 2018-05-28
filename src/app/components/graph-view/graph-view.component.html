@@ -1,7 +1,7 @@
-<svg #svg [attr.width]="_options.width" [attr.height]="_options.height">
+<svg #svg [attr.width]="_options.width" [attr.height]="_options.height" class="container">
     <g [zoomableOf]="svg">
         <g [linkDisplay]="link" *ngFor="let link of links"></g>
-        <g [nodeDisplay]="node" *ngFor="let node of nodes"
+        <g [nodeDisplay]="node" *ngFor="let node of nodes" [selectedNode]="selectedNode"
         [draggableNode]="node" [draggableInGraph]="graph" (click)="onClick(node)"></g>
     </g>
 </svg>

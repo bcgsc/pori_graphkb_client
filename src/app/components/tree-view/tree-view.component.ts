@@ -17,7 +17,7 @@ export class TreeViewComponent implements OnInit {
   dataSource: MatTreeFlatDataSource<DiseaseTerm, any>;
 
   @Input() data: DiseaseTerm[];
-  @Input() selectedNode;
+  @Input() selectedNode: DiseaseTerm;
 
   @Output() selected = new EventEmitter<DiseaseTerm>();
 
@@ -31,7 +31,15 @@ export class TreeViewComponent implements OnInit {
   ngOnInit() {
     this.dataSource.data = this.data;
     this.treeControl.expandDescendants(this.data[0]);
-    this.treeControl.collapseDescendants(this.selectedNode);
+    let level = this._getLevel(this.selectedNode);
+    let children = this.treeControl.getDescendants(this.data[0]);
+    let parents = this.selectedNode.parents;
+
+    children.forEach(child => {
+      if (child['level'] == level - 1 && !parents.includes(child['@rid'])) {
+        this.treeControl.collapseDescendants(child);
+      }
+    })
   }
 
   transformer = (node: DiseaseTerm, level: number) => {

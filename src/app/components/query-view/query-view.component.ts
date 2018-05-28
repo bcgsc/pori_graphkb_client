@@ -86,7 +86,8 @@ export class QueryViewComponent {
     if (this.searchTerm.value) this.router.navigate(['/table'], {
       queryParams: {
         name: this.searchTerm.value,
-        fuzzyMatch: 1
+        ancestors: 'subclassof',
+        descendants: 'subclassof',
       }
     });
   }

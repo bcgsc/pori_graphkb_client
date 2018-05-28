@@ -21,10 +21,8 @@ export class TableViewComponent implements OnInit {
   @Output() selected = new EventEmitter<DiseaseTerm>();
 
   @Input() data;
-  @Input() initSelected?;
+  @Input() selectedNode;
   private dataSource;
-
-  private selectedNode;
 
   /* Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['rid-version', 'source', 'sourceId', 'createdBy', 'name', 'subsets'];
@@ -36,7 +34,6 @@ export class TableViewComponent implements OnInit {
     this.dataSource = new MatTableDataSource(this.data);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    this.selectedNode = this.initSelected || this.data[0];
     let defaultpredicate = this.dataSource.filterPredicate;
 
     this.dataSource.filterPredicate = (data:any, filter: string) =>{

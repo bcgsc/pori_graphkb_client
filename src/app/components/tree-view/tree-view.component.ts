@@ -10,19 +10,16 @@ import { DiseaseTerm } from '../../models';
   styleUrls: ['./tree-view.component.scss'],
   providers: []
 })
-export class TreeViewComponent implements OnInit{
+export class TreeViewComponent implements OnInit {
 
-  treeControl: FlatTreeControl<any>;
+  treeControl: FlatTreeControl<DiseaseTerm>;
+  treeFlattener: MatTreeFlattener<DiseaseTerm, any>;
+  dataSource: MatTreeFlatDataSource<DiseaseTerm, any>;
 
-  treeFlattener: MatTreeFlattener<any, any>;
+  @Input() data: DiseaseTerm[];
+  @Input() selectedNode;
 
-  dataSource: MatTreeFlatDataSource<any, any>;
-
-  @Input() data;
-  @Input() initSelected?;
-  @Output() selected = new EventEmitter<any>();
-
-  private selectedNode;
+  @Output() selected = new EventEmitter<DiseaseTerm>();
 
   constructor() {
     this.treeFlattener = new MatTreeFlattener(this.transformer, this._getLevel,
@@ -33,6 +30,8 @@ export class TreeViewComponent implements OnInit{
 
   ngOnInit() {
     this.dataSource.data = this.data;
+    this.treeControl.expandDescendants(this.data[0]);
+    this.treeControl.collapseDescendants(this.selectedNode);
   }
 
   transformer = (node: DiseaseTerm, level: number) => {
@@ -52,7 +51,7 @@ export class TreeViewComponent implements OnInit{
 
   hasChild = (_: number, _nodeData: any) => { return _nodeData.expandable; };
 
-  onClick(node: DiseaseTerm){
+  onClick(node: DiseaseTerm) {
     this.selectedNode = node;
     this.selected.emit(node);
   }

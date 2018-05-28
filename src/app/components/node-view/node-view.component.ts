@@ -28,7 +28,6 @@ export class NodeViewComponent {
   private _tempChild = '';
   private _tempAlias = '';
   
-  
   private init;
 
   constructor(public snackBar: MatSnackBar, private router: Router, private api: APIService) { }

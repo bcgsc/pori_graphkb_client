@@ -2,11 +2,11 @@
     <mat-tab-group class="group-view">
         <mat-tab label="Table View">
             <!-- <my-table [data]="tableData" [initSelected]="selectedNode" (selected)="onSelect($event)"></my-table> -->
-            <table-view [data]="tableData" [initSelected]="selectedNode" (selected)="onSelect($event)"></table-view>
+            <table-view [data]="tableData" [selectedNode]="selectedNode" (selected)="onSelect($event)"></table-view>
 
         </mat-tab>
         <mat-tab label="Tree View">
-            <tree-view [data]="treeData" [initSelected]="treeSelected" (selected)="onSelect($event)"></tree-view>
+            <tree-view [data]="treeData" [selectedNode]="selectedNode" (selected)="onSelect($event)"></tree-view>
         </mat-tab>
         <mat-tab label="Graph View">graph</mat-tab>
     </mat-tab-group>

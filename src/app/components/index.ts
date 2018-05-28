@@ -6,3 +6,5 @@ export { TableViewComponent } from './table-view/table-view.component';
 export { TreeViewComponent } from './tree-view/tree-view.component';
 export { PaginationComponent } from './pagination.component/pagination.component';
 export { MyTableComponent } from './my-table.component/table.component';
+export { GraphViewComponent } from './graph-view/graph-view.component';
+export { SHARED_COMPONENTS } from './shared';

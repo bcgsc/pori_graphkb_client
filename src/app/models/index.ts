@@ -1,4 +1,4 @@
 export { ForceDirectedGraph } from './force-directed-graph';
-export { Node } from './node';
-export { Link } from './link';
+export { GraphNode } from './graph-node';
+export { GraphLink } from './graph-link';
 export { DiseaseTerm, DiseasePayload, DiseaseParams } from './disease';

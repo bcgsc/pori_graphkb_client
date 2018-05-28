@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, AfterViewInit, ChangeDetectorRef, ChangeDetectionStrategy, Output, EventEmitter } from '@angular/core';
-import { ForceDirectedGraph, Node } from '../../models';
+import { ForceDirectedGraph, DiseaseTerm } from '../../models';
 import { D3Service } from '../../services/d3.service';
 import { HostListener } from '@angular/core';
 
@@ -11,10 +11,11 @@ import { HostListener } from '@angular/core';
     styleUrls: ['./graph-view.component.scss']
 })
 export class GraphViewComponent implements OnInit, AfterViewInit{
-    @Input('nodes') nodes;
-    @Input('links') links;
+    @Input() nodes;
+    @Input() links;
+    @Input() selectedNode;
 
-    @Output() selected = new EventEmitter<string>();
+    @Output() selected = new EventEmitter<DiseaseTerm>();
     graph: ForceDirectedGraph;
     private _options:{ width, height } = { width: 0, height: 0};
     
@@ -45,7 +46,8 @@ export class GraphViewComponent implements OnInit, AfterViewInit{
         };
     }
     onClick(node){
-        console.log(node);
+        this.selectedNode = node.data;
+        this.selected.emit(node.data);
     }
 
 }

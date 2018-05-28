@@ -1,4 +1,6 @@
-export class Node implements d3.SimulationNodeDatum{
+import { DiseaseTerm } from ".";
+
+export class GraphNode implements d3.SimulationNodeDatum{
     index?: number;
     x?: number;
     y?: number;
@@ -8,12 +10,12 @@ export class Node implements d3.SimulationNodeDatum{
     fy?: number | null;
 
     id: string;
-    name: string;
+    data: DiseaseTerm;
     linkCount: number = 0;
     r = 4;
 
-    constructor(id, name){
+    constructor(id, data){
         this.id = id;
-        this.name = name;
+        this.data = data;
     }
 }

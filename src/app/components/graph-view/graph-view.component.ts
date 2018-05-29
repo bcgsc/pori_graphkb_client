@@ -40,7 +40,7 @@ export class GraphViewComponent implements OnInit, AfterViewInit {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if(!this.graph) return;
+        if(!this.graph || !changes.nodes || !changes.links) return;
         this.graph.onChange(changes.nodes.currentValue, changes.links.currentValue, this.options);
       }
 

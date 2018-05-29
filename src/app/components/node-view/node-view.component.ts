@@ -169,9 +169,9 @@ export class NodeViewComponent {
 
 
   private addTempChild() {
-    if (!this._tempSubset) return;
-    this._temp.children.push(this._tempSubset);
-    this._tempSubset = '';
+    if (!this._tempChild) return;
+    this._temp.children.push(this._tempChild);
+    this._tempChild = '';
   }
 
   private deleteTempChild(subset): void {

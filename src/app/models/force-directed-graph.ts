@@ -13,21 +13,27 @@ export class ForceDirectedGraph {
     public ticker: EventEmitter<d3.Simulation<GraphNode, GraphLink>> = new EventEmitter();
     public simulation: d3.Simulation<any, any>;
 
-    public GraphNodes: GraphNode[] = [];
+    public nodes: GraphNode[] = [];
     public links: GraphLink[] = [];
 
-    constructor(GraphNodes, links, options: { width, height }) {
-        this.GraphNodes = GraphNodes;
+    constructor(nodes, links, options: { width, height }) {
+        this.nodes = nodes;
         this.links = links;
         this.initSimulation(options);
+    }
+
+    onChange(nodes, links, options){
+        this.nodes = nodes;
+        this.links = links;
+        this.initGraphNodes();
+        this.initGraphLinks();
     }
 
     initGraphNodes() {
         if (!this.simulation) {
             throw new Error('simulation not yet initialized');
         }
-
-        this.simulation.nodes(this.GraphNodes);
+        this.simulation.nodes(this.nodes);
     }
 
     initGraphLinks() {
@@ -56,7 +62,7 @@ export class ForceDirectedGraph {
                 
 
             this.simulation.on('tick', function () {
-                ticker.emit(this)
+                ticker.emit(this);
             });
             
             this.initGraphNodes();

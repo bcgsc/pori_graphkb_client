@@ -84,6 +84,7 @@ export class DataHubComponent {
                 this.nodes[i].linkCount++;
                 this.links.push(new GraphLink(this.nodes[i - 1], this.nodes[i], ''));
             }
+            
         });
     }
 
@@ -101,6 +102,18 @@ export class DataHubComponent {
 
             this.treeData = this.getHierarchy();
             this.selectedNode = this.tableData[0];
+
+             /** constructing the nodes array */
+             let N = Math.min(100, this.tableData.length);
+             for (let i = 1; i <= N; i++) {
+                 this.nodes.push(new GraphNode(i, this.tableData[i - 1]));
+             }
+ 
+             for (let i = 1; i < N; i++) {
+                 this.nodes[i - 1].linkCount++;
+                 this.nodes[i].linkCount++;
+                 this.links.push(new GraphLink(this.nodes[i - 1], this.nodes[i], ''));
+             }
         });
     }
 
@@ -187,6 +200,8 @@ export class DataHubComponent {
     onSelect(node: DiseaseTerm) {
         this.node = undefined;
         this.selectedNode = this.dataMap[node['@rid']];
+
+        
     }
 
     /**
@@ -220,6 +235,29 @@ export class DataHubComponent {
 
     onNewRelationship(edge) {
         this.api.addRelationship(edge).subscribe(() => this.refresh());
+    }
+
+    onNewGraphNode(node){
+        this.nodes = this.nodes.slice();
+        this.links = this.links.slice();
+        let dummyData: DiseaseTerm ={
+            source: 'ha',
+            sourceId: 'asd',
+            name:'hello',
+            '@class': 'Disease',
+            '@rid': '1234',
+            createdBy:'#41:0',
+            '@version': 1,
+        }
+        let n = new GraphNode(this.nodes.length + 1, dummyData);
+        n.fx = null;
+        n.fy = null;
+        this.nodes.push(n);
+        this.nodes[this.nodes.length-1].linkCount++;
+        this.nodes[this.nodes.length-3].linkCount++;
+        
+        let l = new GraphLink(this.nodes[this.nodes.length-3], this.nodes[this.nodes.length - 1], '');
+        this.links.push(l);
     }
 }
 

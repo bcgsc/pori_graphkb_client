@@ -6,7 +6,7 @@
 
         </mat-tab>
         <mat-tab label="Tree View">
-            <tree-view [data]="treeData" [selectedNode]="selectedNode" (selected)="onSelect($event)"></tree-view>
+            <tree-view [data]="treeData" [selectedNode]="selectedNode" (selected)="onSelect($event, true)"></tree-view>
         </mat-tab>
         <mat-tab label="Graph View">
             <graph-view style="overflow: hidden;" [nodes]="nodes" [links]="links" [selectedNode]="selectedNode" (selected)="onSelect($event)"></graph-view>

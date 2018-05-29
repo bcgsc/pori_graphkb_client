@@ -3,12 +3,15 @@ import { GraphLink } from './graph-link';
 import { GraphNode } from './graph-node';
 import * as d3 from 'd3';
 
-const FORCES = {
-    LINKS: 1 / 20,
+var FORCES = {
+    LINKS: 1 / 100,
     COLLISION: 1,
     CHARGE: -1
 }
 
+/**
+ * Force directed graph model for the graph view.
+ */
 export class ForceDirectedGraph {
     public ticker: EventEmitter<d3.Simulation<GraphNode, GraphLink>> = new EventEmitter();
     public simulation: d3.Simulation<any, any>;
@@ -16,19 +19,35 @@ export class ForceDirectedGraph {
     public nodes: GraphNode[] = [];
     public links: GraphLink[] = [];
 
-    constructor(nodes, links, options: { width, height }) {
+    /**
+     * Initializes the graph and simulation.
+     * @param nodes input list of node objects.
+     * @param links input list of link objects.
+     * @param options target width and height of simulation.
+     */
+    constructor(nodes: GraphNode[], links: GraphLink[], options: { width, height }) {
         this.nodes = nodes;
         this.links = links;
         this.initSimulation(options);
     }
 
-    onChange(nodes, links, options){
+    /**
+     * Updates simulation parameters.
+     * @param nodes updated list of node objects.
+     * @param links updated list of link objects.
+     * @param force updated force parameter.
+     */
+    onChange(nodes: GraphNode[], links: GraphLink[], force: number) {
+        FORCES.LINKS = force;
         this.nodes = nodes;
         this.links = links;
         this.initGraphNodes();
         this.initGraphLinks();
     }
 
+    /**
+     * Initializes nodes' positions and velocities.
+     */
     initGraphNodes() {
         if (!this.simulation) {
             throw new Error('simulation not yet initialized');
@@ -36,6 +55,9 @@ export class ForceDirectedGraph {
         this.simulation.nodes(this.nodes);
     }
 
+    /**
+     * Initializes link's start/end points, as well as bond strength.
+     */
     initGraphLinks() {
         if (!this.simulation) {
             throw new Error('simulation not yet initialized');
@@ -47,7 +69,11 @@ export class ForceDirectedGraph {
         );
     }
 
-    initSimulation(options) {
+    /**
+     * Initializes simulation parameters and nodes/links.
+     * @param options simulation width and height.
+     */
+    initSimulation(options: { width: number, height: number }) {
         if (!options || !options.width || !options.height) {
             throw new Error('missing options when initializing simulation');
         }
@@ -59,18 +85,18 @@ export class ForceDirectedGraph {
             this.simulation = d3.forceSimulation()
                 .force("link", d3.forceLink().id(d => d['id']))
                 .force("charge", d3.forceManyBody());
-                
+
 
             this.simulation.on('tick', function () {
                 ticker.emit(this);
             });
-            
+
             this.initGraphNodes();
             this.initGraphLinks();
-            
+
         }
         this.simulation.force("center", d3.forceCenter(options.width / 2, options.height / 2));
-        
+
         this.simulation.restart();
     }
 }

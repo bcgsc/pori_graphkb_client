@@ -6,6 +6,15 @@ import { EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { APIService } from '../../services/api.service';
 import { Edge } from '../add-node-view/add-node-view.component';
+
+/**
+ * Component to view a single node of data. Displays the node's basic fields, 
+ * as well as all of its edges, in list form. Allows editing, deleting, and 
+ * adding children to the selected node. Must have a parent component with 
+ * proper event handlers.
+ * 
+ * @param node selected node for displaying in this component.
+ */
 @Component({
   selector: 'node-view',
   templateUrl: './node-view.component.html',
@@ -13,12 +22,23 @@ import { Edge } from '../add-node-view/add-node-view.component';
   providers: [MatSnackBar],
 })
 export class NodeViewComponent {
-  @Input('node') node: DiseaseTerm;
+  @Input() node: DiseaseTerm;
+
+  /**
+   * @param changed triggers when changes to the selected node have been 
+   * committed by client.
+   * @param added triggers when the client adds a new child node to the 
+   * selected node.
+   * @param deleted triggers when client deletes selected node.
+   * @param relationshipped triggers when the client adds a new relationship
+   * to the selected node.
+   * @param query triggers when the client queries the selected node's source
+   * or neighbors.
+   */
   @Output() changed = new EventEmitter<DiseaseTerm>();
   @Output() added = new EventEmitter<DiseaseTerm>();
   @Output() deleted = new EventEmitter<DiseaseTerm>();
   @Output() relationshipped = new EventEmitter<Edge>();
-
   @Output() query = new EventEmitter<any>();
 
   private _editing = false;
@@ -27,8 +47,8 @@ export class NodeViewComponent {
   private _tempParent = '';
   private _tempChild = '';
   private _tempAlias = '';
-  
-  private init;
+
+  private init: DiseaseTerm;
 
   constructor(public snackBar: MatSnackBar, private router: Router, private api: APIService) { }
 
@@ -43,7 +63,7 @@ export class NodeViewComponent {
 
   /**
    * Navigates to Add Node page and initializes form with 1 edge connecting 
-   * this node as parent
+   * this selected node as parent
    */
   private addChild() {
     // this.snackBar.open('Child added!', undefined, { duration: 1000 });
@@ -52,43 +72,42 @@ export class NodeViewComponent {
   }
 
   /**
-   * Takes all changes and sends a PATCH request to the server. Emits change to
-   * parent component
+   * Takes all changes (fields and edges) and emits them to parent component.
    */
   private applyChanges() {
     if (this._tempSubset) this._temp.subsets.push(this._tempSubset);
-    
+
     this._temp.parents.forEach(p => {
-      if (!this.node.parents || !this.node.parents.includes(p)){
+      if (!this.node.parents || !this.node.parents.includes(p)) {
         let edge: Edge = {
-          type:'subclassof',
+          type: 'subclassof',
           in: p,
-          out:this.node['@rid'], 
+          out: this.node['@rid'],
         }
         this.relationshipped.emit(edge);
-      } 
+      }
     });
 
     this._temp.children.forEach(c => {
-      if (!this.node.children || !this.node.children.includes(c)){
+      if (!this.node.children || !this.node.children.includes(c)) {
         let edge: Edge = {
-          type:'subclassof',
-          in: this.node['@rid'], 
-          out: c,          
+          type: 'subclassof',
+          in: this.node['@rid'],
+          out: c,
         }
         this.relationshipped.emit(edge);
-      } 
+      }
     });
 
     this._temp.aliases.forEach(a => {
-      if (!this.node.aliases || !this.node.aliases.includes(a)){
+      if (!this.node.aliases || !this.node.aliases.includes(a)) {
         let edge: Edge = {
-          type:'aliasof',
-          in: this.node['@rid'], 
-          out: a,          
+          type: 'aliasof',
+          in: this.node['@rid'],
+          out: a,
         }
         this.relationshipped.emit(edge);
-      } 
+      }
     });
 
     this.node = this._temp;
@@ -96,7 +115,7 @@ export class NodeViewComponent {
   }
 
   /**
-   * Sends a DELETE request to the server. 
+   * Emits a signal to parent component to delete this selected node.
    */
   private deleteSelected(node) {
     this.deleted.emit(this.node);
@@ -104,7 +123,8 @@ export class NodeViewComponent {
 
   /**
    * Navigates to the general query endpoint, specifying only this node's 
-   * source as a query parameter.
+   * source as a query parameter. This will change the query results to
+   * those of a source query.
    */
   private queryBySource() {
     let params = { source: this.node.source };
@@ -113,15 +133,17 @@ export class NodeViewComponent {
 
   }
 
-  /* Helper Methods */
 
+  /**
+   * Initializes temp variables for making edits to selected node.
+   */
   private beginEdit() {
     this._tempSubset = '';
 
     let subsets = this.node.subsets ? this.node.subsets.slice() : [];
     let parents = this.node.parents ? this.node.parents.slice() : [];
     let children = this.node.children ? this.node.children.slice() : [];
-    let aliases = this.node.aliases ? this.node.aliases.slice() : [];    
+    let aliases = this.node.aliases ? this.node.aliases.slice() : [];
 
     this._temp = {
       '@class': this.node['@class'],
@@ -140,63 +162,94 @@ export class NodeViewComponent {
     this._editing = true;
   }
 
+  /**
+   * Sets editing state to false, changing the view accordingly.
+   */
   private cancelEdit() {
     this._editing = false;
   }
 
+  /**
+   * Adds an entry to the temporary subset list.
+   */
   private addTempSubset() {
     if (!this._tempSubset) return;
     this._temp.subsets.push(this._tempSubset);
     this._tempSubset = '';
   }
 
-  private deleteTempSubset(subset): void {
+  /**
+   * Deletes a subset entry from the temporary subset list.
+   * @param subset subset entry to be deleted from the temporary list.
+   */
+  private deleteTempSubset(subset: string): void {
     let i = this._temp.subsets.findIndex(s => subset == s);
     this._temp.subsets.splice(i, 1);
   }
 
-
+  /**
+   * Adds an entry to the temporary parent list.
+   */
   private addTempParent() {
     if (!this._tempParent) return;
     this._temp.parents.push(this._tempParent);
     this._tempParent = '';
   }
 
-  private deleteTempParent(subset): void {
-    let i = this._temp.parents.findIndex(s => subset == s);
+  /**
+   * Deletes a parent entry from the temporary parent list.
+   * @param parent parent entry to be deleted from the temporary parent list.
+   */
+  private deleteTempParent(parent: string): void {
+    let i = this._temp.parents.findIndex(s => parent == s);
     this._temp.parents.splice(i, 1);
   }
 
-
+  /**
+   * Adds an entry to the temporary child list.
+   */
   private addTempChild() {
     if (!this._tempChild) return;
     this._temp.children.push(this._tempChild);
     this._tempChild = '';
   }
 
-  private deleteTempChild(subset): void {
-    let i = this._temp.children.findIndex(s => subset == s);
+  /**
+   * Deletes a child entry from the temporary child list.
+   * @param child child entry to be deleted from the temporary child list.
+   */
+  private deleteTempChild(child: string): void {
+    let i = this._temp.children.findIndex(s => child == s);
     this._temp.children.splice(i, 1);
   }
 
-
+  /**
+   * Adds an alias entry to the temporary alias list.
+   */
   private addTempAlias() {
     if (!this._tempAlias) return;
     this._temp.aliases.push(this._tempAlias);
     this._tempAlias = '';
   }
-
-  private deleteTempAlias(subset): void {
-    let i = this._temp.aliases.findIndex(s => subset == s);
+  /**
+   * Deletes an alias entry from the temporary alias list.
+   * @param alias alias entry to be deleted from the temporary alias list.
+   */
+  private deleteTempAlias(alias: string): void {
+    let i = this._temp.aliases.findIndex(s => alias == s);
     this._temp.aliases.splice(i, 1);
   }
 
-  private search(rid){
+  /**
+   * Queries the database for the RID specified, then refreshes the view.
+   * @param rid rid to be queried
+   */
+  private search(rid) {
     //TODO: check if it's in datamap, o.w. make a new api call.
 
-    let params = { ancestors: 'subclassof', descendants:'subclassof' };
-    this.router.navigate(['/table/'+rid], { queryParams: params });
-    this.query.emit(params);
+    let params = { ancestors: 'subclassof', descendants: 'subclassof' };
+    this.router.navigate(['/table/' + rid], { queryParams: params });
+    this.query.emit({ params: params, rid: rid });
   }
 
 }

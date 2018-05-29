@@ -1,4 +1,4 @@
-<div *ngIf="!adv" class="search-wrapper">
+<div *ngIf="!_adv" class="search-wrapper">
     <mat-form-field class="main-search">
         <input #name (keyup.enter)="simpleQuery()" matInput placeholder="Search a name" [formControl]="searchTerm" [matAutocomplete]="auto">
         <mat-autocomplete #auto="matAutocomplete">
@@ -13,7 +13,7 @@
 
 <!-- //// Advanced Search \\\\\ -->
 
-<div *ngIf="adv" class="adv-wrapper">
+<div *ngIf="_adv" class="adv-wrapper">
     <div class="parameter-selection">
         <h3 class="mat-h3">Name: </h3>
 
@@ -67,7 +67,7 @@
     <div class="parameter-selection">
         <h3 class="mat-h3">Return Properties: </h3>
         <div class="checkboxes">
-            <div class="checkbox" *ngFor="let p of propKeys">
+            <div class="checkbox" *ngFor="let p of _propKeys">
                 <mat-checkbox [(ngModel)]="properties[p]" disableRipple='true'>{{p | camelCase}}</mat-checkbox>
             </div>
         </div>

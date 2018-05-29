@@ -6,6 +6,9 @@ import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/debounceTime';
 import * as jc from 'json-cycle';
 
+/**
+ * Component to handle all query preparations from the user.
+ */
 @Component({
   selector: 'query-view',
   templateUrl: './query-view.component.html',
@@ -13,7 +16,7 @@ import * as jc from 'json-cycle';
   providers: [APIService]
 })
 export class QueryViewComponent {
-  private adv: boolean = false;
+  private _adv: boolean = false;
   private params: DiseaseParams = {
     name: '',
     source: '',
@@ -50,13 +53,15 @@ export class QueryViewComponent {
     children: false,
     aliases: false,
   }
-  private propKeys = Object.keys(this.properties);
+  private _propKeys = Object.keys(this.properties);
 
   searchTerm: FormControl = new FormControl();
   searchResult = [];
 
   constructor(private api: APIService, private router: Router) {
-
+    /**
+     * Initializes autocorrect functionality for edge adding form.
+     */
     this.searchTerm.valueChanges
       .debounceTime(400)
       .subscribe(dat => {
@@ -73,15 +78,22 @@ export class QueryViewComponent {
             temp.push(json.name);
           });
           this.searchResult = temp;
-        })
-      })
-
+        });
+      });
   }
 
+  /**
+   * Toggles advanced view.
+   */
   advanced() {
-    this.adv = !this.adv;
+    this._adv = !this._adv;
   }
 
+  /**
+   * Prepares a query taking in name parameter from the user. Attaches 
+   * the ancestor and descendants headers to return parents and children of the
+   * results.
+   */
   simpleQuery() { //neighbors: 2
     if (this.searchTerm.value) this.router.navigate(['/table'], {
       queryParams: {
@@ -92,6 +104,9 @@ export class QueryViewComponent {
     });
   }
 
+  /**
+   * Prepares a query taking in all user defined parameters
+   */
   query() {
     //TODO: sanitize untouched form 
     /* Process returnProperties: */
@@ -106,7 +121,7 @@ export class QueryViewComponent {
       this.params.descendants ? this.params.descendants += ',aliasof': this.params.descendants +='aliasof';
     }
 
-    this.propKeys.forEach(key => {
+    this._propKeys.forEach(key => {
       this.properties[key] ? returnProperties += key + ',' : reqDefault = false;
     });
 

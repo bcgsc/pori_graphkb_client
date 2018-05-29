@@ -50,7 +50,7 @@
       </ng-container>
 
       <mat-header-row style="position:sticky" *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row [class.active]="row == selectedNode" class="mat-row" (click)="onClick($event, row)" *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      <mat-row [class.active]="row == selectedNode" class="mat-row" (click)="onClick(row)" *matRowDef="let row; columns: displayedColumns;"></mat-row>
     </mat-table>
 
     <mat-paginator #paginator [length]="dataSource.data.length" [pageIndex]="0" [pageSize]="50" [pageSizeOptions]="[25, 50, 100, 250]">

@@ -1,6 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { GraphNode } from '../../../models/graph-node';
 
+/**
+ * Component for formatting/styling graph nodes.
+ * @param node subject node.
+ * @param selectedNode application selected node.
+ */
 @Component({
   selector: '[nodeDisplay]',
   templateUrl: './node-display.component.html',

@@ -7,14 +7,14 @@ import { GraphNode } from '../../models/graph-node';
       <svg:g [attr.transform]="'translate(' + node.x + ',' + node.y + ')'">
         <svg:circle *ngIf="node.data != selectedNode"
             class="node"
-            [attr.fill]="node.color"
+            fill=#1F2B65
             cx="0"
             cy="0"
             [attr.r]="node.r">
         </svg:circle>
         <svg:circle *ngIf="node.data == selectedNode"
         class="node"
-        fill="red"
+        fill=#d32f2f
         cx="0"
         cy="0"
         [attr.r]="node.r">
@@ -31,8 +31,8 @@ import { GraphNode } from '../../models/graph-node';
           fill 0.1s ease-out,
           stroke 0.1s ease-out;
 
-      stroke: black;
-      stroke-width: 0.25;
+      stroke: #1f6552;
+      stroke-width: 0.5;
       }
 
   .node-name {

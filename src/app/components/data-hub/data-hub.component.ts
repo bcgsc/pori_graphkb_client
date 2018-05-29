@@ -38,7 +38,7 @@ export class DataHubComponent {
     }
 
     //TODO: make this less confusing
-    refresh(queryRid?) {
+    private refresh(queryRid?) {
         delete this.tableData;
         delete this.dataMap;
         delete this.treeData;
@@ -50,7 +50,7 @@ export class DataHubComponent {
         rid ? this.getRecord(rid) : this.getQuery(queryRid);
     }
 
-    getQuery(rid?) {
+    private getQuery(rid?) {
         this.api.query(this.params).subscribe((json) => {
             let i = 0;
             this.tableData = [];
@@ -87,7 +87,7 @@ export class DataHubComponent {
         });
     }
 
-    getRecord(rid) {
+    private getRecord(rid) {
         this.api.getRecord(rid).subscribe((json) => {
             this.tableData = [];
             this.dataMap = {};
@@ -104,7 +104,7 @@ export class DataHubComponent {
         });
     }
 
-    getHierarchy(): DiseaseTerm[] {
+    private getHierarchy(): DiseaseTerm[] {
         let roots: DiseaseTerm[] = [];
 
         Object.keys(this.dataMap).forEach(rid => {
@@ -132,7 +132,7 @@ export class DataHubComponent {
         return roots;
     }
 
-    prepareEntry(jsonTerm): DiseaseTerm {
+    private prepareEntry(jsonTerm): DiseaseTerm {
         let children, parents, aliases;
 
         if (jsonTerm['out_SubClassOf']) {
@@ -213,7 +213,7 @@ export class DataHubComponent {
     }
 
     //FIX
-    onSourceQuery(params) {
+    onQuery(params) {
         this.params = params;
         this.refresh();
     }

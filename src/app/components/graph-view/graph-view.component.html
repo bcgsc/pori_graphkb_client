@@ -5,3 +5,8 @@
         [draggableNode]="node" [draggableInGraph]="graph" (click)="onClick(node)"></g>
     </g>
 </svg>
+<mat-card class="card">
+    <mat-form-field>
+        <input matInput [(ngModel)]="_force" name="forces" placeholder="Force Strength" (blur)="onForceChange()"(keyup.enter)="onForceChange()">
+    </mat-form-field>
+</mat-card>

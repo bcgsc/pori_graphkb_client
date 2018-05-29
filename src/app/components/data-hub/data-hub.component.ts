@@ -6,7 +6,14 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { TableViewComponent } from '../table-view/table-view.component';
 import { NodeViewComponent } from '../node-view/node-view.component';
+import { Edge } from '../add-node-view/add-node-view.component';
+import { TreeViewComponent } from '../tree-view/tree-view.component';
 
+/**
+ * Component that handles all communication with the server, and allocating of
+ * data objects to the different child components. Defines the layout of the 
+ * different data views.
+ */
 @Component({
     selector: 'data-hub',
     templateUrl: './data-hub.component.html',
@@ -14,8 +21,7 @@ import { NodeViewComponent } from '../node-view/node-view.component';
     providers: [APIService]
 })
 export class DataHubComponent {
-    @ViewChild(TableViewComponent) table;
-    @ViewChild(NodeViewComponent) node;
+    @ViewChild(TreeViewComponent) tree;
 
     private tableData: DiseaseTerm[];
     private dataMap: { [id: string]: DiseaseTerm };
@@ -26,19 +32,26 @@ export class DataHubComponent {
 
     private selectedNode: DiseaseTerm;
 
-    private params;
+    private params: { [key: string]: any };
 
     constructor(private api: APIService, private route: ActivatedRoute) { }
 
+    /**
+     * Stores query parameters passed through the url, then refreshes the view
+     */
     ngOnInit() {
         this.route.queryParams.subscribe(params => {
             this.params = params;
-            this.refresh();
+            this._refresh();
         });
     }
 
-    //TODO: make this less confusing
-    private refresh(queryRid?) {
+    /**
+     * Clears all stored data objects and queries the api.
+     * @param queryRid optional parameter that defines a node to be initially
+     * selected.
+     */
+    private _refresh(queryRid?: string): void {
         delete this.tableData;
         delete this.dataMap;
         delete this.treeData;
@@ -47,10 +60,15 @@ export class DataHubComponent {
         this.links = [];
 
         let rid = this.route.snapshot.paramMap.get('rid')
-        rid ? this.getRecord(rid) : this.getQuery(queryRid);
+        rid ? this._getRecord(rid) : this._getQuery(queryRid);
     }
 
-    private getQuery(rid?) {
+    /**
+     * Queries the api with parameters as passed in the url. 
+     * @param queryRid optional parameter that defines a node to be initially 
+     * selected.
+     */
+    private _getQuery(queryRid?: string): void {
         this.api.query(this.params).subscribe((json) => {
             let i = 0;
             this.tableData = [];
@@ -60,9 +78,9 @@ export class DataHubComponent {
 
             json.forEach(diseaseTerm => {
 
-                let entry = this.prepareEntry(diseaseTerm);
+                let entry = this._prepareEntry(diseaseTerm);
 
-                if (rid && entry['@rid'] === rid) {
+                if (queryRid && entry['@rid'] === queryRid) {
                     i = this.tableData.length;
                 }
 
@@ -70,43 +88,48 @@ export class DataHubComponent {
                 this.tableData.push(entry);
             });
 
-            this.treeData = this.getHierarchy();
+            this.treeData = this._getHierarchy();
             this.selectedNode = this.tableData[i];
 
-            // this.treeData.forEach(root => {
-            //     let gn = new GraphNode(root['@rid'], root);
-            //     this.nodes.push(gn);
-            //     this.buildGraph(gn);
-            // })
+            this.treeData.forEach(root => {
+                let gn = new GraphNode(root['@rid'], root);
+                this.nodes.push(gn);
+                this._buildGraph(gn);
+            })
 
-            /** constructing the nodes array */
-            let N = Math.min(100, this.tableData.length);
-            for (let i = 1; i <= N; i++) {
-                this.nodes.push(new GraphNode(i, this.tableData[i - 1]));
-            }
+            // /** constructing the nodes array */
+            // let N = Math.min(100, this.tableData.length);
+            // for (let i = 1; i <= N; i++) {
+            //     this.nodes.push(new GraphNode(i, this.tableData[i - 1]));
+            // }
 
-            for (let i = 1; i < N; i++) {
-                this.nodes[i - 1].linkCount++;
-                this.nodes[i].linkCount++;
-                this.links.push(new GraphLink(this.nodes[i - 1], this.nodes[i], ''));
-            }
+            // for (let i = 1; i < N; i++) {
+            //     this.nodes[i - 1].linkCount++;
+            //     this.nodes[i].linkCount++;
+            //     this.links.push(new GraphLink(this.nodes[i - 1], this.nodes[i], ''));
+            // }
 
         });
     }
 
-    private getRecord(rid) {
-        this.api.getRecord(rid).subscribe((json) => {
+    /**
+     * Retrieves a record from the database with input rid. If no record exists
+     * in the database, redirects to the query home page.
+     * @param rid id for the api endpoint.
+     */
+    private _getRecord(rid: string): void {
+        this.api.getRecord(rid).subscribe(json => {
             this.tableData = [];
             this.dataMap = {};
 
             json = jc.retrocycle(json);
 
-            let entry = this.prepareEntry(json);
+            let entry = this._prepareEntry(json);
 
             this.tableData.push(entry);
             this.dataMap[entry["@rid"]] = entry
 
-            this.treeData = this.getHierarchy();
+            this.treeData = this._getHierarchy();
             this.selectedNode = this.tableData[0];
 
             /** constructing the nodes array */
@@ -135,22 +158,24 @@ export class DataHubComponent {
      * 
      * @param rgn root graph node object
      */
-    private buildGraph(rgn): void {
-        if(!rgn.data._children) return;
-        rgn.data._children.forEach(child =>{
+    private _buildGraph(rgn: GraphNode): void {
+        if (!rgn.data._children) return;
+        rgn.data._children.forEach(child => {
             let cgn = new GraphNode(child['@rid'], child);
             this.nodes.push(cgn);
             let l = new GraphLink(cgn, rgn, 'subclassof');
             cgn.linkCount++;
             rgn.linkCount++;
             this.links.push(l);
-            this.buildGraph(cgn);
+            this._buildGraph(cgn);
         });
         return;
     }
 
-
-    private getHierarchy(): DiseaseTerm[] {
+    /**
+     * Helper function to format query result data for the tree view.
+     */
+    private _getHierarchy(): DiseaseTerm[] {
         let roots: DiseaseTerm[] = [];
 
         Object.keys(this.dataMap).forEach(rid => {
@@ -178,7 +203,12 @@ export class DataHubComponent {
         return roots;
     }
 
-    private prepareEntry(jsonTerm): DiseaseTerm {
+    /**
+     * Processes json disease term into front end model.
+     * @param jsonTerm disease ontology term in JSON form as returned from
+     * the server.
+     */
+    private _prepareEntry(jsonTerm: JSON): DiseaseTerm {
         let children, parents, aliases;
 
         if (jsonTerm['out_SubClassOf']) {
@@ -229,10 +259,11 @@ export class DataHubComponent {
     /**
      * Triggered when user selects a node in one of the views.
      * @param node record ID of the selected node.
+     * @param tree optional flag to alert when to expand the tree view.
      */
-    onSelect(node: DiseaseTerm) {
-        this.node = undefined;
+    onSelect(node: DiseaseTerm, tree?: boolean) {
         this.selectedNode = this.dataMap[node['@rid']];
+        if (!tree) { this.tree.selectedNode = this.selectedNode; this.tree.onOuterChange(); }
     }
 
     /**
@@ -241,7 +272,7 @@ export class DataHubComponent {
      */
     onEdit(node: DiseaseTerm) {
         this.api.editNode(node['@rid'].slice(1), node).subscribe(() => {
-            this.refresh(node['@rid']);
+            this._refresh(node['@rid']);
         });
     }
 
@@ -254,33 +285,33 @@ export class DataHubComponent {
         //TODO: add cleanup to all related nodes (Can't yet)
 
         this.api.deleteNode(rid).subscribe(() => {
-            this.refresh();
+            this._refresh();
         });
     }
 
-    //FIX
-    onQuery(params) {
+    //under construction
+    onQuery(params: { [key: string]: any }) {
         this.params = params;
-        this.refresh();
+        this._refresh();
     }
 
-    onNewRelationship(edge) {
-        this.api.addRelationship(edge).subscribe(() => this.refresh());
+    /**
+     * Makes API call adding a new edge to the database. Refreshes the view
+     * when the call is executed.
+     * @param edge new edge to be added
+     */
+    onNewRelationship(edge: Edge) {
+        this.api.addRelationship(edge).subscribe(() => this._refresh());
     }
 
-    onNewGraphNode(node) {
+    /**
+     * under construction
+     * @param node 
+     */
+    onNewGraphNode(node: DiseaseTerm) {
         this.nodes = this.nodes.slice();
         this.links = this.links.slice();
-        let dummyData: DiseaseTerm = {
-            source: 'ha',
-            sourceId: 'asd',
-            name: 'hello',
-            '@class': 'Disease',
-            '@rid': '1234',
-            createdBy: '#41:0',
-            '@version': 1,
-        }
-        let n = new GraphNode(this.nodes.length + 1, dummyData);
+        let n = new GraphNode(this.nodes.length + 1, node);
         n.fx = null;
         n.fy = null;
         this.nodes.push(n);

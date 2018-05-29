@@ -69,7 +69,7 @@
 
             <form class="input-box" (keyup.enter)="addSubset()">
                 <mat-form-field>
-                    <input matInput type="text" id="subset" [(ngModel)]="tempSubset" name="tempSubset" placeholder="Add New Subset">
+                    <input matInput type="text" id="subset" [(ngModel)]="_tempSubset" name="tempSubset" placeholder="Add New Subset">
                 </mat-form-field>
                 <button mat-icon-button (click)="addSubset()">
                     <mat-icon color="accent">add</mat-icon>
@@ -90,7 +90,7 @@
 
             <form class="input-box" (keyup.enter)="addEdge()">
                 <mat-form-field>
-                    <mat-select placeholder="Type" [(value)]="tempEdge.type">
+                    <mat-select placeholder="Type" [(value)]="_tempEdge.type">
                         <mat-option value="parent">
                             Parent
                         </mat-option>

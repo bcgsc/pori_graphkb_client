@@ -13,12 +13,18 @@ import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
 
 /**
- * Interceptor for authentication and responses
+ * Interceptor for authentication and response handling.
  */
 @Injectable()
 export class APIInterceptor implements HttpInterceptor {
     constructor(public auth: AuthService, private router: Router) { }
 
+    /**
+     * Injects outgoing http requests with an authorization header if able, and 
+     * handles response error codes 404 and 401.
+     * @param request outgoing http request.
+     * @param next http handler.
+     */
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         // Add authorization header if token exists
         if (this.auth.getToken()) {

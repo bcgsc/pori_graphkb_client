@@ -6,6 +6,9 @@ import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/debounceTime';
 import * as jc from 'json-cycle';
 
+/**
+ * Edge interface
+ */
 export interface Edge {
     type: string,
     targetName?: string,
@@ -14,24 +17,30 @@ export interface Edge {
     source?: string,
 }
 
+/**
+ * Component for displaying the form to add new nodes to the database.
+ */
 @Component({
     selector: 'add-node',
     templateUrl: './add-node-view.component.html',
     styleUrls: ['add-node-view.component.scss']
 })
 export class AddNodeViewComponent implements OnInit {
-    private tempSubset: string = '';
-    private tempEdge = { type: '', id: '', in: '' };
-    
+    private _tempSubset: string = '';
+    private _tempEdge = { type: '', id: '', in: '' };
+
     private subsets: string[] = [];
     private relationships: Edge[] = [];
 
     private payload: DiseasePayload = { source: '', sourceId: '' };
-    
+
     searchTerm: FormControl = new FormControl();
     searchResult = [];
 
     constructor(private api: APIService, private route: ActivatedRoute, private router: Router) {
+        /**
+         * Initializes autocorrect functionality for edge adding form.
+         */
         this.searchTerm.valueChanges
             .debounceTime(400)
             .subscribe(dat => {
@@ -42,8 +51,8 @@ export class AddNodeViewComponent implements OnInit {
                     fuzzyMatch: 1,
                     limit: 10,
                 }).subscribe(data => {
-                    if (!data || data.length == 0) { 
-                        this.tempEdge.id = ''; 
+                    if (!data || data.length == 0) {
+                        this._tempEdge.id = '';
                     }
 
                     data = jc.retrocycle(data);
@@ -55,9 +64,12 @@ export class AddNodeViewComponent implements OnInit {
                     this.searchResult = temp;
                 });
             });
-
     }
 
+    /**
+     * Initializes the form with a 'Parent' relationship if passed in through
+     * url parameters.
+     */
     ngOnInit() {
         this.route.queryParams.subscribe(params => {
             if (params.parentId) {
@@ -70,62 +82,86 @@ export class AddNodeViewComponent implements OnInit {
         });
     }
 
-    loadTerm(e) {
+    /* Event Triggered Methods */
+
+    /**
+     * Loads temporary edge into edge list.
+     * @param e selected option event
+     */
+    loadTerm(e): void {
         this.searchTerm.setValue(e.option.value.name);
-        this.tempEdge.id = e.option.value['@rid'];
+        this._tempEdge.id = e.option.value['@rid'];
+        this.addEdge();
     }
 
-    deleteEdge(edge) {
+    /**
+     * Deletes an edge off the temporary edge list.
+     * @param edge edge to be deleted from list.
+     */
+    deleteEdge(edge): void {
         let i = this.relationships.findIndex(s => edge == s);
         this.relationships.splice(i, 1);
     }
 
-    addEdge() {
-        if (!this.searchTerm.value || !this.tempEdge.id) return;
-        switch (this.tempEdge.type) {
+    /**
+     * Adds an entry to the temporary edge list.
+     */
+    addEdge(): void {
+        if (!this.searchTerm.value || !this._tempEdge.id) return;
+        switch (this._tempEdge.type) {
             case 'parent':
                 this.relationships.push({
                     type: 'subclassof',
-                    in: this.tempEdge.id
+                    in: this._tempEdge.id
                 });
                 break;
             case 'child':
                 this.relationships.push({
                     type: 'subclassof',
-                    out: this.tempEdge.id
+                    out: this._tempEdge.id
                 });
                 break;
 
             case 'alias':
                 this.relationships.push({
                     type: 'aliasof',
-                    out: this.tempEdge.id
+                    out: this._tempEdge.id
                 });
                 break;
             default:
                 return;
         }
-        this.tempEdge.type = '';
-        this.tempEdge.id = '';
+        this._tempEdge.type = '';
+        this._tempEdge.id = '';
         this.searchTerm.setValue('');
     }
 
+    /**
+     * Adds an entry to the temporary subset list.
+     */
     addSubset(): void {
         let seen = false;
-        this.subsets.forEach(sub => { if (sub == this.tempSubset) seen = true; });
-        if (!this.tempSubset || seen) return;
+        this.subsets.forEach(sub => { if (sub == this._tempSubset) seen = true; });
+        if (!this._tempSubset || seen) return;
 
-        this.subsets.push(this.tempSubset);
-        this.tempSubset = '';
+        this.subsets.push(this._tempSubset);
+        this._tempSubset = '';
     }
 
+    /**
+     * Deletes a subset entry from the temporary subset list.
+     * @param subset subset entry to be deleted from the list.
+     */
     delete(subset): void {
         let i = this.subsets.findIndex(s => subset == s);
         this.subsets.splice(i, 1);
     }
 
+    /**
+     * Collects all fields and navigates to the query results view.
+     */
     addNode(): void {
-        if (this.tempSubset) this.subsets.push(this.tempSubset);
+        if (this._tempSubset) this.subsets.push(this._tempSubset);
         this.payload.subsets = this.subsets;
 
         this.api.addNode(this.payload).subscribe(response => {
@@ -140,6 +176,5 @@ export class AddNodeViewComponent implements OnInit {
 
             this.router.navigate(['/table/' + id.slice(1)]);
         })
-
     }
 }

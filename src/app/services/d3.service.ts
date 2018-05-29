@@ -4,12 +4,19 @@ import { GraphNode } from '../models/graph-node';
 import { GraphLink } from '../models/graph-link';
 import { ForceDirectedGraph } from '../models/force-directed-graph';
 
-
+/**
+ * Service to handle d3 functionality for the force directed graph.
+ */
 @Injectable()
 export class D3Service {
 
     constructor() { }
 
+    /**
+     * Applies zoom functionality to svg element.
+     * @param svgElement html svg element reference
+     * @param containerElement html container element reference
+     */
     applyZoomableBehaviour(svgElement, containerElement) {
         let svg, container, zoomed, zoom;
 
@@ -24,7 +31,13 @@ export class D3Service {
         zoom = d3.zoom().on("zoom", zoomed);
         svg.call(zoom);
     }
-
+    
+    /**
+     * Applies drag functionality to element.
+     * @param element element reference.
+     * @param node graph node object.
+     * @param graph force directed graph object.
+     */
     applyDraggableBehaviour(element, node: GraphNode, graph: ForceDirectedGraph) { 
         const d3element = d3.select(element);
 
@@ -54,6 +67,12 @@ export class D3Service {
         d3element.call(d3.drag().on("start", started));
     }
 
+    /**
+     * Returns a new force directed graph object.
+     * @param nodes list of graph nodes.
+     * @param links list of graph links.
+     * @param options options for specifying simulation dimensions.
+     */
     getForceDirectedGraph(nodes: GraphNode[], links: GraphLink[], options: { width, height }) {
         let graph = new ForceDirectedGraph(nodes, links, options);
         return graph;

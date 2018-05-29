@@ -4,6 +4,13 @@ import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
 import { BehaviorSubject, Observable, of as observableOf } from 'rxjs';
 import { DiseaseTerm } from '../../models';
 
+/**
+ * Component for displaying data in a hierarchical tree view format.
+ * @param data disease terms formatted in a hierarchical form, with elements
+ * being lowest depth roots.
+ * @param selectedNode selected node variable to link this component to the 
+ * other views 
+ */
 @Component({
   selector: 'tree-view',
   templateUrl: './tree-view.component.html',
@@ -19,31 +26,48 @@ export class TreeViewComponent implements OnInit {
   @Input() data: DiseaseTerm[];
   @Input() selectedNode: DiseaseTerm;
 
+  /**
+   * @param selected triggers when the user single clicks on a node.
+   */
   @Output() selected = new EventEmitter<DiseaseTerm>();
 
   constructor() {
-    this.treeFlattener = new MatTreeFlattener(this.transformer, this._getLevel,
-      this._isExpandable, this._getChildren);
+    this.treeFlattener = new MatTreeFlattener(
+      this.transformer, 
+      this._getLevel,
+      this._isExpandable, 
+      this._getChildren
+    );
+
     this.treeControl = new FlatTreeControl<any>(this._getLevel, this._isExpandable);
     this.dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
   }
 
+  /**
+   * Initializes Mat-Tree datasource, and expands tree to selected node.
+   */
   ngOnInit() {
     this.dataSource.data = this.data;
     this.data.forEach(root => {
-      this.expandToSelected(root)
+      this._expandToSelected(root)
     });
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (!changes.selectedNode) return;
+  /**
+   * Expands tree to ensure selected node is easily located.
+   */
+  onOuterChange() {
     this.treeControl.collapseAll();
     this.data.forEach(root => {
-      this.expandToSelected(root);
+      this._expandToSelected(root);
     });
   }
 
-  private expandToSelected(rn): boolean {
+  /**
+   * Recursively finds and expands tree to display the selected node.
+   * @param rn root node.
+   */
+  private _expandToSelected(rn): boolean {
     if (rn['@rid'] == this.selectedNode["@rid"]) {
       return true;
     }
@@ -51,7 +75,7 @@ export class TreeViewComponent implements OnInit {
 
     let ret = false;
     rn._children.forEach(child => {
-      if (this.expandToSelected(child)) {
+      if (this._expandToSelected(child)) {
         ret = true;
         this.treeControl.expand(rn);
       }
@@ -59,6 +83,10 @@ export class TreeViewComponent implements OnInit {
     return ret;
   }
 
+  /**
+   * Adds 'level' and 'expandable' fields to the disease term objects in order
+   * to be displayed.
+   */
   transformer = (node: DiseaseTerm, level: number) => {
     let flatNode = node;
     flatNode['level'] = level;
@@ -66,18 +94,33 @@ export class TreeViewComponent implements OnInit {
     return flatNode;
   }
 
+  /**
+   * Returns input node's level in the tree.
+   */
   private _getLevel = (node: any) => { return node.level; };
 
+  /**
+   * Returns true if the node is expandable.
+   */
   private _isExpandable = (node: any) => { return node.expandable; };
 
+  /**
+   * Returns an observable containing node's children.
+   */
   private _getChildren = (node: any): Observable<any[]> => {
     return observableOf(node._children);
   }
 
+  /**
+   * Returns true iff the node has a child node.
+   */
   hasChild = (_: number, _nodeData: any) => { return _nodeData.expandable; };
 
+  /**
+   * Triggered when a node in the tree is clicked.
+   * @param node clicked node.
+   */
   onClick(node: DiseaseTerm) {
-    this.selectedNode = node;
     this.selected.emit(node);
   }
 }

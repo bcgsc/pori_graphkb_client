@@ -2,6 +2,12 @@ import { Directive, Input, ElementRef, OnInit } from '@angular/core';
 import { GraphNode, ForceDirectedGraph } from '../models';
 import { D3Service } from '../services/d3.service';
 
+/**
+ * Directive to allow draggable functionality to be added to the force directed
+ * graph.
+ * @param draggableNode graph node to be dragged.
+ * @param draggableInGraph graph to be dragged (panned).
+ */
 @Directive({
     selector: '[draggableNode]'
 })

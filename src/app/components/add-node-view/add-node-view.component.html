@@ -59,9 +59,9 @@
 
             <mat-list name="subsetList">
                 <mat-list-item *ngFor="let subset of subsets">
-                    <mat-icon style="margin-right: 12px;">device_hub</mat-icon>
+                    <mat-icon style="margin-right: 12px;">folder</mat-icon>
                     {{subset}}
-                    <button style="color: red" mat-icon-button (click)="delete(subset)">
+                    <button color="warn" mat-icon-button (click)="delete(subset)">
                         <mat-icon>close</mat-icon>
                     </button>
                 </mat-list-item>
@@ -82,7 +82,7 @@
             <!-- <h5 class="mat-h5">Subsets: </h5> -->
             <mat-list>
                 <mat-list-item *ngFor="let relationship of relationships">{{relationship | relationshipPipe}}
-                    <button style="color: red" mat-icon-button (click)="deleteEdge(relationship)">
+                    <button color="warn" mat-icon-button (click)="deleteEdge(relationship)">
                         <mat-icon>close</mat-icon>
                     </button>
                 </mat-list-item>
@@ -107,7 +107,7 @@
                     <input matInput placeholder="Target name" name="edgeId" [formControl]="searchTerm" [matAutocomplete]="auto">
                     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="loadTerm($event)">
                         <mat-option *ngFor="let item of searchResult" [value]="item">
-                            {{item.name}} : {{item['@rid']}}
+                            {{item.name}} [{{item.source}}] : {{item['@rid']}}
                         </mat-option>
                     </mat-autocomplete>
                 </mat-form-field>

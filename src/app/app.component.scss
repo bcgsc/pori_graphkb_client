@@ -1,9 +1,9 @@
 @import './styles/variables';
 
-.banner{
-    width: 100vw;
+.mat-elevation-z2{
+    min-width: 100vw;
     height: 14vh;
-    display: block;
+    display: flex;
     background-color: #1F2B65;
     margin-bottom: 1%;    
     @if($testing){
@@ -14,4 +14,20 @@
     margin: 20px;
     font-family: 'Courier New', Courier, monospace;
     color:aliceblue; 
+}
+.search-bar{
+    display: block;
+    width: 15%;
+    margin-left: auto;
+    margin-right: 1vh;
+    max-height: 6vh;
+    margin-top: 6vh;
+    search-bar{
+        max-height: 6vh;    
+        padding-left: 16px;
+        display: flex;
+        justify-content: center;
+        margin: auto;
+        background-color: #fafafa;
+    }
 }

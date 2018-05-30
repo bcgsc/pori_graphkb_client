@@ -1,5 +1,11 @@
 @import '../../styles/variables';
 
+.wrapper{
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+
 .data-view{
     width: 90%;
     max-height: calc($panels-height - 48px);
@@ -13,21 +19,31 @@
 
 .group-view{
     float: left;
-    max-height: $panels-height;
+    height: $panels-height;
     width: 65vw;
 }
 
 .node-view {
     float:right;     
     width: 25vw;
-    max-height: $panels-height;
+    height: $panels-height;
     display: flex;
     flex-direction: column;
 }
 
-table-view{
-    width: inherit;
-}
-graph-view{
-    width: 100%;
+@media (max-width: 960px){
+    .wrapper{
+        max-width: 960px;
+        overflow-y: hidden;
+    }
+    .data-view{
+        display: flex;
+        width: calc(624px + 240px);
+    }
+    .group-view{
+        width: 624px;
+    }
+    .node-view{
+        width:240px;
+    }
 }

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { GraphNode } from '../../../models/graph-node';
 
 /**
@@ -9,7 +9,8 @@ import { GraphNode } from '../../../models/graph-node';
 @Component({
   selector: '[nodeDisplay]',
   templateUrl: './node-display.component.html',
-  styleUrls: ['./node-display.component.scss']
+  styleUrls: ['./node-display.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class NodeDisplayComponent {
   @Input('nodeDisplay') node: GraphNode;

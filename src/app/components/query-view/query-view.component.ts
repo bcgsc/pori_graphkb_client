@@ -17,6 +17,7 @@ import * as jc from 'json-cycle';
 })
 export class QueryViewComponent {
   private _adv: boolean = false;
+
   private params: DiseaseParams = {
     name: '',
     source: '',
@@ -31,6 +32,7 @@ export class QueryViewComponent {
     fuzzyMatch: undefined,
     // neighbors: 2,
   };
+
   private properties = {
     'name': true,
     'description': true,
@@ -48,6 +50,7 @@ export class QueryViewComponent {
     'uuid': true,
     'longName': true,
   };
+
   private relatedNodes = {
     parents: false,
     children: false,
@@ -55,31 +58,7 @@ export class QueryViewComponent {
   }
   private _propKeys = Object.keys(this.properties);
 
-  searchTerm: FormControl = new FormControl();
-  searchResult = [];
-
   constructor(private api: APIService, private router: Router) {
-    /**
-     * Initializes autocorrect functionality for edge adding form.
-     */
-    this.searchTerm.valueChanges
-      .debounceTime(400)
-      .subscribe(dat => {
-        if (!dat) return;
-        this.api.query({
-          name: dat,
-          fuzzyMatch: 1,
-          limit: 10,
-        }).subscribe(data => {
-          data = jc.retrocycle(data);
-          let temp = [];
-
-          data.forEach(json => {
-            temp.push(json.name);
-          });
-          this.searchResult = temp;
-        });
-      });
   }
 
   /**
@@ -94,10 +73,10 @@ export class QueryViewComponent {
    * the ancestor and descendants headers to return parents and children of the
    * results.
    */
-  simpleQuery() { //neighbors: 2
-    if (this.searchTerm.value) this.router.navigate(['/table'], {
+  simpleQuery(name) { //neighbors: 2
+    this.router.navigate(['/table'], {
       queryParams: {
-        name: this.searchTerm.value,
+        name: name,
         ancestors: 'subclassof',
         descendants: 'subclassof',
       }
@@ -118,7 +97,7 @@ export class QueryViewComponent {
     if (this.relatedNodes.aliases) {
 
       this.params.ancestors ? this.params.ancestors += ',aliasof' : this.params.ancestors += 'aliasof';
-      this.params.descendants ? this.params.descendants += ',aliasof': this.params.descendants +='aliasof';
+      this.params.descendants ? this.params.descendants += ',aliasof' : this.params.descendants += 'aliasof';
     }
 
     this._propKeys.forEach(key => {

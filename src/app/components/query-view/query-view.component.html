@@ -1,13 +1,5 @@
 <div *ngIf="!_adv" class="search-wrapper">
-    <mat-form-field class="main-search">
-        <input #name (keyup.enter)="simpleQuery()" matInput placeholder="Search a name" [formControl]="searchTerm" [matAutocomplete]="auto">
-        <mat-autocomplete #auto="matAutocomplete">
-            <mat-option *ngFor="let item of searchResult" [value]="item">
-                {{item}}
-            </mat-option>
-        </mat-autocomplete>
-    </mat-form-field>
-    <button (click)="simpleQuery()" color="primary" mat-raised-button>Search</button>
+    <search-bar style="width: 40vw" (query)="simpleQuery($event)" [placeholder]="'Search a Name'"></search-bar>
     <button (click)="advanced()" color="primary" class="advanced-button" mat-stroked-button>Advanced Search</button>
 </div>
 

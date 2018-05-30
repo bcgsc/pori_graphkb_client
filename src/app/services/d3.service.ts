@@ -49,6 +49,8 @@ export class D3Service {
             }
 
             d3.event.on("drag", dragged).on("end", ended);
+            //Enable for touchscreen
+            d3.event.on("touchmove", dragged).on("touchend", ended);            
 
             function dragged(){
                 node.fx = d3.event.x;
@@ -65,6 +67,9 @@ export class D3Service {
         }
 
         d3element.call(d3.drag().on("start", started));
+        //Enable for touchscreen
+        d3element.call(d3.drag().on("touchstart", started)); 
+        
     }
 
     /**

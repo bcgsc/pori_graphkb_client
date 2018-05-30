@@ -12,9 +12,8 @@
       font-family: 'Lato';
       font-size: 16px;
       text-anchor: middle;
-      alignment-baseline: central;
-      baseline-shift:-12px;
+      dominant-baseline: central; //doesn't work on firefox
       font-weight: 300;
       fill: #1F2B65;
       cursor: pointer;
-}
+}   

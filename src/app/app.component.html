@@ -1,6 +1,11 @@
-<div class="banner">
-    <a class="link" routerLink="/query">Query</a>
-    <a class="link" routerLink="/add">Add Node</a>
-</div>
+<div class="wrapper">
+    <div class="mat-elevation-z2">
+        <a class="link" routerLink="/query">Query</a>
+        <a class="link" routerLink="/add">Add Node</a>
+        <!-- <div class="search-bar">
+            <search-bar (query)="simpleQuery($event)" [color]="'accent'" [icon]="'search'"></search-bar>
+        </div> -->
+    </div>
 
-<router-outlet></router-outlet>
+    <router-outlet></router-outlet>
+</div>

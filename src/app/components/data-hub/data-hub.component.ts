@@ -75,6 +75,7 @@ export class DataHubComponent {
             this.dataMap = {};
 
             json = jc.retrocycle(json);
+            console.log(json);
 
             json.forEach(diseaseTerm => {
 
@@ -154,7 +155,8 @@ export class DataHubComponent {
     }
 
     /**
-     * Recursively builds force directed graph datatype to be passed to the graph view.
+     * Recursively builds force directed graph datatype to be passed to the
+     * graph view, connecting parent/child nodes together (not aliases).
      * 
      * @param rgn root graph node object
      */
@@ -257,7 +259,8 @@ export class DataHubComponent {
     /* Event triggered methods */
 
     /**
-     * Triggered when user selects a node in one of the views.
+     * Triggered when user selects a node in one of the views. Updates the 
+     * application wide selected node object.
      * @param node record ID of the selected node.
      * @param tree optional flag to alert when to expand the tree view.
      */
@@ -267,7 +270,8 @@ export class DataHubComponent {
     }
 
     /**
-     * Triggered when user confirms edits made to a node.
+     * Triggered when user confirms edits made to a node. Sends an API PATCH 
+     * request and then refreshes the view, making the same query.
      * @param node updated node object after edits.
      */
     onEdit(node: DiseaseTerm) {
@@ -277,7 +281,8 @@ export class DataHubComponent {
     }
 
     /**
-     * Triggered when user deletes a node.
+     * Triggered when user deletes a node. Sends an API DELETE request and then
+     * refreshes the view, making the same query.
      * @param node record to be deleted.
      */
     onDelete(node: DiseaseTerm) {

@@ -7,8 +7,8 @@
             </mat-option>
         </mat-autocomplete>
     </mat-form-field>
-    <button [disableRipple]="'true'" *ngIf="!icon" (click)="onSearch()" [color]="color || 'primary'" mat-raised-button>{{buttonText || 'Search'}}</button>
-    <button [disableRipple]="'true'" *ngIf="icon" mat-icon-button (click)="onSearch()">
+    <button *ngIf="!icon" (click)="onSearch()" [color]="color || 'primary'" mat-raised-button>{{buttonText || 'Search'}}</button>
+    <button disableRipple='true' *ngIf="icon" mat-icon-button (click)="onSearch()">
         <mat-icon>{{icon}}</mat-icon>
     </button>
 </div>

@@ -48,13 +48,14 @@
 }
 
 .search-background{
-    border: 1px solid #3d3d3d;
+    border: 1px solid #363636;
     height: 44px;
     width: 234px;
     background-color: #fafafa;
     position: absolute;
     right: 8px;
     bottom: 14px;
+    border-radius: 8px;
 
     @media(max-width: $banner-collapse) {
         left: 0;

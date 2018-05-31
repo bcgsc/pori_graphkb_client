@@ -1,7 +1,8 @@
 <div class="wrapper">
     <div *ngIf="!_adv" class="search-wrapper">
+        <mat-icon class="search-icon" color="accent">search</mat-icon>
         <search-bar matInput="true" (query)="simpleQuery($event)" [placeholder]="'Search a Name'"></search-bar>
-        <button (click)="advanced()" color="primary" class="advanced-button" mat-stroked-button>Advanced Search</button>
+        <button (click)="advanced()" color="accent" class="advanced-button" mat-stroked-button>Advanced Search</button>
     </div>
 
     <!-- //// Advanced Search \\\\\ -->
@@ -67,7 +68,7 @@
             </div>
         </div>
         <!-- add breakpoint for checkboxes -->
-
+<div style="margin-top: 16px;"></div>
         <div class="parameter-selection">
             <h3 class="mat-h3">Related Terms: </h3>
             <div class="related-checkboxes">

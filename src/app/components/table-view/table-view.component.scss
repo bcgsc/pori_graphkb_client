@@ -1,15 +1,38 @@
 @import '../../styles/variables';
 
+.wrapper{
+    width: 100%;
+}
+.filter-box{
+    position: absolute;
+    left: 0; 
+    right: -1px;
+    top: 0;
+    padding: 8px;
+    padding-bottom:0;
+    width: auto;
+    display: block;
+    background-color: #fafafa;
+    z-index: 100000;
+    height: 60px;
+}
+
 mat-table{
     min-width: 1148px;
     table-layout: fixed;
 }
-.mat-elevation-z8{
+
+.mat-elevation-z2{
+    padding-top: 64px; 
     min-width: 1148px;
+
     mat-form-field{
         display: block;
         padding: 16px;
     }
+}
+.mat-header-row{
+    position:sticky;
 }
 .mat-row, .mat-header-row{
     min-width: 1148px;
@@ -35,8 +58,13 @@ mat-table{
     flex: 0 0 100px;
 }
 .mat-column-name{
-    flex: 0 0 300px;    
+    flex: 0 0 240px;    
 }
 .mat-column-subsets{
-    flex: 0 0 400px;
+    flex: 0 0 380px;
+}
+
+.paginator{
+    display:flex;
+    justify-content: flex-start;
 }

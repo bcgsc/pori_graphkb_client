@@ -9,6 +9,7 @@ $breakpoint: 1300px;
 
 .wrapper{
     @include test-border(blue);
+
     margin: 20px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -17,85 +18,93 @@ $breakpoint: 1300px;
     @media (max-width: $breakpoint){
         grid-template-columns: 1fr;
     }
-}
 
-.basic-params-selection{
-    @include test-border();
-    grid-column-start: 1;
-    grid-column-end: 2;
-    padding:20px;
 
-    .parameter-selection{
-        display: flex;
-    
-        mat-form-field{
-            display: block;
-            width: 100%;
-        }
-        input{
-            display: block;
-        }
-    }
-}
-
-.subsets-selection{
-    @include test-border();
-    grid-column-start: 2;
-    grid-column-end: 3;
-    padding:20px;
-
-    @media (max-width: $breakpoint){
+    .basic-params-selection{
+        @include test-border();
         grid-column-start: 1;
-        grid-column-end: end;
-    }
+        grid-column-end: 2;
+        padding: 20px;
 
-    .input-box{
-        display: flex;
-        width: 100%;
-
-        mat-form-field{
-            flex-grow: 1;
-        }
+        .parameter-selection{
+            display: flex;
         
-        button{
-            margin-left: 16px;
-            margin-top: auto;
-            margin-bottom: auto;
+            mat-form-field{
+                display: block;
+                width: 100%;
+            }
+            input{
+                display: block;
+            }
         }
     }
-}
 
-.relationship-selection{
-    @include test-border();
-    grid-column-start: 3;
-    grid-column-end: end;
-    padding:20px;
+    .subsets-selection{
+        @include test-border();
+        grid-column-start: 2;
+        grid-column-end: 3;
+        padding:20px;
 
-    @media (max-width: $breakpoint){
-        grid-column-start: 1;
+        @media (max-width: $breakpoint){
+            grid-column-start: 1;
+            grid-column-end: end;
+        }
+
+        .input-box{
+            display: flex;
+            width: 100%;
+
+            mat-form-field{
+                flex-grow: 1;
+            }
+            
+            button{
+                margin-left: 16px;
+                margin-top: auto;
+                margin-bottom: auto;
+            }
+        }
+    }
+
+    .relationship-selection{
+        @include test-border();
+        grid-column-start: 3;
         grid-column-end: end;
-    }
+        padding:20px;
 
-    .input-box{
-        display: flex;
-        width: 100%;
+        @media (max-width: $breakpoint){
+            grid-column-start: 1;
+            grid-column-end: end;
+        }
 
-        .id-select{
+        .input-box {
             flex-grow: 1;
-        }
-    
-        button{
-            margin-left: 16px;
-            margin-top: auto;
-            margin-bottom: auto;
-            // color:red;
+            display: flex;
+            width: 100%;
+            @media (max-width: 460px){
+                flex-direction: column;
+            }
+
+            .id-select{
+                flex-grow: 1;
+            }
+        
+            button{
+                margin-left: 16px;
+                margin-top: auto;
+                margin-bottom: auto;
+                // color:red;
+            }
         }
     }
-}
 
-.submit-button{
-    position: fixed;
-    width: 200px;
-    right: 1%;
-    bottom: 1%;
+    .submit-button{
+        position: fixed;
+        width: 200px;
+        right: 1%;
+        bottom: 1%;
+    }
+    mat-list{
+        overflow: hidden;
+    }
 }

@@ -2,19 +2,17 @@
 
 .wrapper{
     width: 100%;
-    height: 100%;
-    overflow: auto;
 }
 
 .data-view{
     width: 90%;
-    max-height: calc($panels-height - 48px);
+    min-height: $panels-height;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 1vh;
     justify-content: center;
     background-color: #f4f4f4;
-    
+    display:flex;
 }
 
 .group-view{
@@ -24,6 +22,7 @@
 }
 
 .node-view {
+    margin-left:1px;
     float:right;     
     width: 25vw;
     height: $panels-height;
@@ -31,19 +30,24 @@
     flex-direction: column;
 }
 
-@media (max-width: 960px){
+@media (max-width: $data-view-collapse){
     .wrapper{
-        max-width: 960px;
         overflow-y: hidden;
+        padding-left: 5vw;
+        padding-right: 5vw;
+        width: auto;
     }
     .data-view{
-        display: flex;
-        width: calc(624px + 240px);
+        flex-direction: column;
+        width: 100%;
     }
-    .group-view{
-        width: 624px;
+    .group-view{ 
+        width: 100%;
+        
     }
     .node-view{
-        width:240px;
+        margin-top: 7vw;
+        width: 100%;
+        
     }
 }

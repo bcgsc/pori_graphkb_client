@@ -25,40 +25,44 @@ export class D3Service {
 
         zoomed = () => {
             const transform = d3.event.transform;
-            container.attr("transform", "translate("+transform.x + "," + transform.y + ")scale("+transform.k+")");
+            container.attr("transform", "translate(" + transform.x + "," + transform.y + ")scale(" + transform.k + ")");
         }
-        
+
         zoom = d3.zoom().on("zoom", zoomed);
         svg.call(zoom);
     }
-    
+
     /**
      * Applies drag functionality to element.
      * @param element element reference.
      * @param node graph node object.
      * @param graph force directed graph object.
      */
-    applyDraggableBehaviour(element, node: GraphNode, graph: ForceDirectedGraph) { 
+    applyDraggableBehaviour(element, node: GraphNode, graph: ForceDirectedGraph) {
         const d3element = d3.select(element);
 
         function started() {
             d3.event.sourceEvent.stopPropagation();
 
-            if(!d3.event.active){
+            if (!d3.event.active) {
                 graph.simulation.alphaTarget(0.3).restart();
             }
 
             d3.event.on("drag", dragged).on("end", ended);
             //Enable for touchscreen
-            d3.event.on("touchmove", dragged).on("touchend", ended);            
+            try {
+                d3.event.on("touchmove", dragged).on("touchend", ended);
+            } catch (e) {
+                //ignore
+            }
 
-            function dragged(){
+            function dragged() {
                 node.fx = d3.event.x;
                 node.fy = d3.event.y;
             }
 
-            function ended(){
-                if(!d3.event.active){
+            function ended() {
+                if (!d3.event.active) {
                     graph.simulation.alphaTarget(0);
                 }
                 node.fx = null;
@@ -68,8 +72,11 @@ export class D3Service {
 
         d3element.call(d3.drag().on("start", started));
         //Enable for touchscreen
-        d3element.call(d3.drag().on("touchstart", started)); 
-        
+        try {
+            d3element.call(d3.drag().on("touchstart", started));
+        }
+        catch (e) { }
+
     }
 
     /**

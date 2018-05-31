@@ -39,7 +39,7 @@ export class NodeViewComponent {
   @Output() added = new EventEmitter<DiseaseTerm>();
   @Output() deleted = new EventEmitter<DiseaseTerm>();
   @Output() relationshipped = new EventEmitter<Edge>();
-  @Output() query = new EventEmitter<any>();
+  // @Output() query = new EventEmitter<any>();
 
   private _editing = false;
   private _temp: DiseaseTerm;
@@ -129,8 +129,6 @@ export class NodeViewComponent {
   private queryBySource() {
     let params = { source: this.node.source };
     this.router.navigate(['/table'], { queryParams: params });
-    this.query.emit(params);
-
   }
 
 
@@ -249,7 +247,5 @@ export class NodeViewComponent {
 
     let params = { ancestors: 'subclassof', descendants: 'subclassof' };
     this.router.navigate(['/table/' + rid], { queryParams: params });
-    this.query.emit({ params: params, rid: rid });
   }
-
 }

@@ -1,12 +1,14 @@
-<mat-form-field class="main-search">
-    <input #name (keyup.enter)="onSearch()" matInput [placeholder]="placeholder" [formControl]="searchTerm" [matAutocomplete]="auto">
-    <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let item of searchResult" [value]="item">
-            {{item}}
-        </mat-option>
-    </mat-autocomplete>
-</mat-form-field>
-<button *ngIf="!icon" (click)="onSearch()" [color]="color || 'primary'" mat-raised-button>{{buttonText || 'Search'}}</button>
-<button *ngIf="icon" mat-icon-button (click)="onSearch()">
-    <mat-icon>{{icon}}</mat-icon>
-</button>
+<div class="search-wrapper">
+    <mat-form-field class="main-search">
+        <input #name (keyup.enter)="onSearch()" matInput [placeholder]="placeholder" [formControl]="searchTerm" [matAutocomplete]="auto">      
+        <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let item of searchResult" [value]="item">
+                {{item}}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+    <button [disableRipple]="'true'" *ngIf="!icon" (click)="onSearch()" [color]="color || 'primary'" mat-raised-button>{{buttonText || 'Search'}}</button>
+    <button [disableRipple]="'true'" *ngIf="icon" mat-icon-button (click)="onSearch()">
+        <mat-icon>{{icon}}</mat-icon>
+    </button>
+</div>

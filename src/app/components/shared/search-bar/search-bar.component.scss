@@ -1,8 +1,18 @@
+.search-wrapper{
+    display: flex;
+    margin: 0;
+    padding: 0;
+    width: inherit;
+}
+
 .main-search{
     vertical-align: middle;
-    width: inherit;
+    flex-grow: 1;
+    flex-shrink: 1;
 }
 
 button{
     margin: 8px;
+    max-height: 44px;
 }
+

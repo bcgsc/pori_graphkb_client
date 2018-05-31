@@ -1,9 +1,10 @@
-  <div class="mat-elevation-z8">
-    <mat-form-field>
-      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
-    </mat-form-field>
+<div class="wrapper">
+  <mat-form-field class="filter-box">
+    <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+  </mat-form-field>
+  <section class="mat-elevation-z2">
     <!-- <mat-icon matListIcon color="primary">search</mat-icon> -->
-    
+
     <mat-table #table [dataSource]="dataSource" matSort>
 
       <!-- Class Column -->
@@ -14,9 +15,9 @@
 
       <!-- Source Column -->
       <ng-container matColumnDef="source">
-          <mat-header-cell *matHeaderCellDef mat-sort-header>Source</mat-header-cell>
-          <mat-cell *matCellDef="let row">{{row.source}}</mat-cell>
-        </ng-container>
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Source</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{row.source}}</mat-cell>
+      </ng-container>
 
       <!-- Source ID Column -->
       <ng-container matColumnDef="sourceId">
@@ -53,8 +54,10 @@
       <mat-row [class.active]="row == selectedNode" class="mat-row" (click)="onClick(row)" *matRowDef="let row; columns: displayedColumns;"></mat-row>
     </mat-table>
 
-    <mat-paginator #paginator [length]="dataSource.data.length" [pageIndex]="0" [pageSize]="50" [pageSizeOptions]="[25, 50, 100, 250]">
-    </mat-paginator>
-  </div>
-
- 
+    <section class="paginator">
+      <mat-paginator #paginator [length]="dataSource.data.length" [pageIndex]="0" [pageSize]="50" [pageSizeOptions]="[25, 50, 100, 250]">
+      </mat-paginator><div style="background-color:#fafafa; flex-grow:1"></div> 
+      <!-- patch for mat-paginator  -->
+    </section>
+  </section>
+</div>

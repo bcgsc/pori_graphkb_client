@@ -19,6 +19,7 @@ export class SearchBarComponent {
     @Input() icon: string;
     @Input() color: string;
     @Input() buttonText: string;
+    @Input() matInput: boolean;
 
     @Output() query = new EventEmitter<any>();
 

@@ -1,11 +1,16 @@
 .container{
     width: 100%;
-    height: calc(82vh - 67px);
 }
 .card{
     position: absolute;
-    right: 8px;
+    left: 8px;
     top: 8px;
-    padding: 12px;
-    padding-bottom: 8px;
+    padding: 8px;
+    padding-bottom: 0;
+    width: 180px;
+    height: 56px;
+
+    mat-form-field{
+        position: absolute;
+    }
 }

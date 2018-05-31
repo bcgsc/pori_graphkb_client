@@ -22,10 +22,27 @@
     @media(max-width: 500px){
         max-width: 300px;      
     }
+
+    $icon-size: 200px;
+    $d: 9%;
+
+    .search-icon{
+        position: absolute;
+        margin: auto;
+        left: 0;
+        right: 0;
+        top: $d; 
+        width: $icon-size;
+        height: $icon-size;
+        font-size: $icon-size;
+    }
+
+    $s: calc(9% + 200px + 5%);
+
     search-bar{
         margin: auto;
         position: absolute;
-        top: 35%;
+        top: $s;
         height: 64px;
         bottom: auto;
         left:0;
@@ -34,7 +51,7 @@
 
     button{
         position: absolute;
-        top: calc(35% + 80px);
+        top: calc(14% + 320px);
         left: 0;
         right: 0;
         margin: auto;
@@ -76,10 +93,11 @@
     .checkboxes{
         margin: auto;        
         width: 50vw;
-        border: 1px solid #3d3d3d;
+        // border: 1px solid #3d3d3d;
         padding: 8px;
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+        grid-row-gap: 4px;
         align-content: center;
 
         .checkbox{
@@ -93,7 +111,7 @@
     .related-checkboxes{
         margin: auto;
         width: 50vw;
-        border: 1px solid #3d3d3d;
+        // border: 1px solid #3d3d3d;
         padding: 8px;
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;

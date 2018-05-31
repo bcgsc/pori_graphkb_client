@@ -98,13 +98,14 @@ $breakpoint: 1300px;
         }
     }
 
-    .submit-button{
-        position: fixed;
-        width: 200px;
-        right: 1%;
-        bottom: 1%;
-    }
     mat-list{
         overflow: hidden;
     }
+}
+
+.submit-button{
+    position: fixed;
+    width: 200px;
+    right: 1%;
+    bottom: 1%;
 }

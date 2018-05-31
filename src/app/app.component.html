@@ -1,11 +1,16 @@
-<div class="wrapper">
-    <div class="mat-elevation-z2">
-        <a class="link" routerLink="/query">Query</a>
-        <a class="link" routerLink="/add">Add Node</a>
-        <!-- <div class="search-bar">
+<div class="all-wrapper">
+    <section class="mat-elevation-z2">
+        <section class="links">
+            <a class="link" routerLink="/query">Query</a>
+            <a class="link" routerLink="/add">Add Node</a>
+        </section>
+        <section class="search-bar">
+            <div class="search-background"></div>
             <search-bar (query)="simpleQuery($event)" [color]="'accent'" [icon]="'search'"></search-bar>
-        </div> -->
-    </div>
+        </section>
 
-    <router-outlet></router-outlet>
+    </section>
+    <section class="content">
+        <router-outlet></router-outlet>
+    </section>
 </div>

@@ -1,93 +1,96 @@
-<div *ngIf="!_adv" class="search-wrapper">
-    <search-bar style="width: 40vw" (query)="simpleQuery($event)" [placeholder]="'Search a Name'"></search-bar>
-    <button (click)="advanced()" color="primary" class="advanced-button" mat-stroked-button>Advanced Search</button>
-</div>
-
-<!-- //// Advanced Search \\\\\ -->
-
-<div *ngIf="_adv" class="adv-wrapper">
-    <div class="parameter-selection">
-        <h3 class="mat-h3">Name: </h3>
-
-        <mat-form-field>
-            <input matInput placeholder="Search a name" [(ngModel)]="params.name"> </mat-form-field>
+<div class="wrapper">
+    <div *ngIf="!_adv" class="search-wrapper">
+        <search-bar matInput="true" (query)="simpleQuery($event)" [placeholder]="'Search a Name'"></search-bar>
+        <button (click)="advanced()" color="primary" class="advanced-button" mat-stroked-button>Advanced Search</button>
     </div>
 
-    <div class="parameter-selection">
-        <h3 class="mat-h3">Source: </h3>
-        <mat-form-field>
-            <input matInput placeholder="Search a source" [(ngModel)]="params.source">
-        </mat-form-field>
-    </div>
+    <!-- //// Advanced Search \\\\\ -->
 
-    <div class="parameter-selection">
-        <h3 class="mat-h3">Source ID: </h3>
-        <mat-form-field>
-            <input matInput placeholder="Search a source ID" [(ngModel)]="params.sourceId">
-        </mat-form-field>
-    </div>
+    <div *ngIf="_adv" class="adv-wrapper">
+        <div class="parameter-selection">
+            <h3 class="mat-h3">Name: </h3>
 
-    <div class="parameter-selection">
-        <h3 class="mat-h3">Source Version: </h3>
-        <mat-form-field>
-            <input matInput placeholder="Search a source Version" [(ngModel)]="params.sourceVersion">
-        </mat-form-field>
-    </div>
+            <mat-form-field>
+                <input matInput placeholder="Search a name" [(ngModel)]="params.name">
+            </mat-form-field>
+        </div>
 
-    <div class="parameter-selection">
-        <h3 class="mat-h3">Long Name: </h3>
-        <mat-form-field>
-            <input matInput placeholder="Search a Long Name" [(ngModel)]="params.longName">
-        </mat-form-field>
-    </div>
+        <div class="parameter-selection">
+            <h3 class="mat-h3">Source: </h3>
+            <mat-form-field>
+                <input matInput placeholder="Search a source" [(ngModel)]="params.source">
+            </mat-form-field>
+        </div>
 
-    <div class="parameter-selection">
-        <h3 class="mat-h3">Source ID Version: </h3>
-        <mat-form-field>
-            <input matInput placeholder="Search a source ID Version" [(ngModel)]="params.sourceIdVersion">
-        </mat-form-field>
-    </div>
+        <div class="parameter-selection">
+            <h3 class="mat-h3">Source ID: </h3>
+            <mat-form-field>
+                <input matInput placeholder="Search a source ID" [(ngModel)]="params.sourceId">
+            </mat-form-field>
+        </div>
 
-    <div class="parameter-selection">
-        <h3 class="mat-h3">Limit: </h3>
-        <mat-form-field>
-            <input matInput placeholder="choose a limit" [(ngModel)]="params.limit">
-        </mat-form-field>
-    </div>
+        <div class="parameter-selection">
+            <h3 class="mat-h3">Source Version: </h3>
+            <mat-form-field>
+                <input matInput placeholder="Search a source Version" [(ngModel)]="params.sourceVersion">
+            </mat-form-field>
+        </div>
 
-    <!-- <input matInput placeholder="what return properties" [(ngModel)]="params.returnProperties"> -->
-    <div class="parameter-selection">
-        <h3 class="mat-h3">Return Properties: </h3>
-        <div class="checkboxes">
-            <div class="checkbox" *ngFor="let p of _propKeys">
-                <mat-checkbox [(ngModel)]="properties[p]" disableRipple='true'>{{p | camelCase}}</mat-checkbox>
+        <div class="parameter-selection">
+            <h3 class="mat-h3">Long Name: </h3>
+            <mat-form-field>
+                <input matInput placeholder="Search a Long Name" [(ngModel)]="params.longName">
+            </mat-form-field>
+        </div>
+
+        <div class="parameter-selection">
+            <h3 class="mat-h3">Source ID Version: </h3>
+            <mat-form-field>
+                <input matInput placeholder="Search a source ID Version" [(ngModel)]="params.sourceIdVersion">
+            </mat-form-field>
+        </div>
+
+        <div class="parameter-selection">
+            <h3 class="mat-h3">Limit: </h3>
+            <mat-form-field>
+                <input matInput placeholder="choose a limit" [(ngModel)]="params.limit">
+            </mat-form-field>
+        </div>
+
+        <!-- <input matInput placeholder="what return properties" [(ngModel)]="params.returnProperties"> -->
+        <div class="parameter-selection">
+            <h3 class="mat-h3">Return Properties: </h3>
+            <div class="checkboxes">
+                <div class="checkbox" *ngFor="let p of _propKeys">
+                    <mat-checkbox [(ngModel)]="properties[p]" disableRipple='true'>{{p | camelCase}}</mat-checkbox>
+                </div>
             </div>
         </div>
-    </div>
-    <!-- add breakpoint for checkboxes -->
+        <!-- add breakpoint for checkboxes -->
 
-    <div class="parameter-selection">
-        <h3 class="mat-h3">Related Terms: </h3>
-        <div class="related-checkboxes">
-            <div class="checkbox">
-                <mat-checkbox [(ngModel)]="relatedNodes.parents" disableRipple='true'>Parents</mat-checkbox>
-            </div>
-            <div class="checkbox">
-                <mat-checkbox [(ngModel)]="relatedNodes.children" disableRipple='true'>Children</mat-checkbox>
-            </div>
-            <div class="checkbox">
-                <mat-checkbox [(ngModel)]="relatedNodes.aliases" disableRipple='true'>Aliases</mat-checkbox>
+        <div class="parameter-selection">
+            <h3 class="mat-h3">Related Terms: </h3>
+            <div class="related-checkboxes">
+                <div class="checkbox">
+                    <mat-checkbox [(ngModel)]="relatedNodes.parents" disableRipple='true'>Parents</mat-checkbox>
+                </div>
+                <div class="checkbox">
+                    <mat-checkbox [(ngModel)]="relatedNodes.children" disableRipple='true'>Children</mat-checkbox>
+                </div>
+                <div class="checkbox">
+                    <mat-checkbox [(ngModel)]="relatedNodes.aliases" disableRipple='true'>Aliases</mat-checkbox>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="parameter-selection">
-        <h3 class="mat-h3">Fuzzy Match: </h3>
-        <mat-form-field>
-            <input matInput [(ngModel)]="params.fuzzyMatch">
-        </mat-form-field>
-    </div>
+        <div class="parameter-selection">
+            <h3 class="mat-h3">Fuzzy Match: </h3>
+            <mat-form-field>
+                <input matInput [(ngModel)]="params.fuzzyMatch">
+            </mat-form-field>
+        </div>
 
-    <button mat-stroked-button (click)="advanced()" color="primary">Back</button>
-    <button (click)="query()" color="primary" mat-raised-button>Search</button>
+        <button mat-stroked-button (click)="advanced()" color="primary">Back</button>
+        <button (click)="query()" color="primary" mat-raised-button>Search</button>
+    </div>
 </div>

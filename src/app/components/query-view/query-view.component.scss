@@ -1,81 +1,86 @@
-$position: 60vh;
 
-.main-search{
-    width: 40vw;
-    vertical-align: middle;
+.wrapper{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: auto;
+    height: auto;
 }
 
 .search-wrapper{
-    text-align: center;
+    position: absolute;
     margin: auto;
-    width: 100vw;
-    height: $position;
-    line-height: $position;
+    top: 0;
+    bottom: 0;    
+    left: 0;
+    right: 0;
+    min-width: 40vw;
+    max-width: 50vw;
+
+    @media(max-width: 500px){
+        max-width: 300px;      
+    }
+    search-bar{
+        margin: auto;
+        position: absolute;
+        top: 35%;
+        height: 64px;
+        bottom: auto;
+        left:0;
+        right:0;
+    }
+
+    button{
+        position: absolute;
+        top: calc(35% + 80px);
+        left: 0;
+        right: 0;
+        margin: auto;
+        width: 144px;  
+    }
+    
 }
 
 .adv-wrapper{
     text-align: center;
     margin: auto;
     margin-bottom: 24px;
-    width: 60vw;
+    width: 70vw;
+    height: 100%;
     vertical-align: middle;
     
+    .parameter-selection{
+        display: flex;
+
+        @media( max-width: 720px){
+            flex-direction: column;        
+        }
+    }
+
     mat-form-field{
         display: block;
         margin: auto;
         width: 50vw;
     }
+
     .mat-h3{
         text-align: left;
-        width: 10vw;
+        min-width: 10vw;
         display: block;
         margin: auto;
+        flex-grow: 1;
     }
+
     .checkboxes{
-
+        margin: auto;        
+        width: 50vw;
+        border: 1px solid #3d3d3d;
+        padding: 8px;
         display: grid;
-        grid: repeat(3, 50px) / auto-flow 190px;
-
-        @media (max-width: 1800px){
-            grid: repeat(3, 50px) / auto-flow 170px;
-        }
-        @media(max-width: 1700px){
-            grid: repeat(3, 50px) / auto-flow 160px;
-        }
-        @media(max-width: 1500px){
-            grid: repeat(4, 50px) / auto-flow 180px;
-        }
-        @media(max-width: 1400px){
-            grid: repeat(4, 50px) / auto-flow 170px;
-        }
-        @media(max-width: 1300px){
-            grid: repeat(4, 50px) / auto-flow 160px;
-        }
-        @media(max-width: 1250px){
-            grid: repeat(5, 50px) / auto-flow 200px;
-        }
-        @media(max-width: 1200px){
-            grid: repeat(5,50px) / auto-flow 185px;
-        }
-        @media(max-width: 1150px){
-            grid: repeat(5, 50px) / auto-flow 170px;
-        }
-        @media(max-width: 1050px){
-            grid: repeat(5, 50px) / auto-flow 155px;
-        }
-        @media(max-width: 900px){
-            grid: repeat(8, 50px) / auto-flow 215px;
-        }
-        @media (max-width: 850px){
-            grid: repeat(8, 50px) / auto-flow 200px;
-        }
-        @media(max-width: 800px){
-            grid: repeat(8, 50px) / auto-flow 170px;
-        }
-        @media(max-width: 750px){
-            grid: repeat(16, 50px) / auto-flow 300px;
-            
-        }
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+        align-content: center;
 
         .checkbox{
             display: block;
@@ -84,24 +89,53 @@ $position: 60vh;
             }
         }
     }
-}
 
-.related-checkboxes{
-    display: block;
-    flex-grow: 1;
-    justify-content: left;
-    
-    .checkbox{
-        display: inline-block;
-        margin: 24px;
-        mat-checkbox{
-            float: left;
+    .related-checkboxes{
+        margin: auto;
+        width: 50vw;
+        border: 1px solid #3d3d3d;
+        padding: 8px;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        align-content: center;
+
+        .checkbox{
+            display: block;
+            mat-checkbox{
+                float: left;
+            }
         }
     }
-}
 
-.parameter-selection{
-    display: flex;
+    @media(max-width: 1550px){
+        .checkboxes{
+            grid-template-columns: 1fr 1fr 1fr 1fr
+        }
+    }
+
+    @media(max-width: 1172px){
+        .checkboxes{
+            grid-template-columns: 1fr 1fr 1fr
+        }
+    }
+    
+    @media(max-width: 872px){
+        .checkboxes{
+            grid-template-columns: 1fr 1fr
+        }
+        .related-checkboxes{
+            grid-template-columns: 1fr 1fr
+        }
+    }
+
+    @media(max-width: 720px){
+        .checkboxes{
+            grid-template-columns: 1fr
+        }
+        .related-checkboxes{
+            grid-template-columns: 1fr
+        }
+    }
 }
 
 .advanced-button{

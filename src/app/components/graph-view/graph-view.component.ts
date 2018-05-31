@@ -28,7 +28,7 @@ export class GraphViewComponent implements OnInit, AfterViewInit {
     @Output() selected = new EventEmitter<DiseaseTerm>();
 
     private graph: ForceDirectedGraph;
-    
+
     private _options: { width, height } = { width: window.innerWidth, height: window.innerHeight };
     private _force: number = 1 / 100;
 
@@ -43,6 +43,7 @@ export class GraphViewComponent implements OnInit, AfterViewInit {
      * Initializes graph object and ticker.
      */
     ngOnInit() {
+        console.log('init');
         this.graph = this.d3Service.getForceDirectedGraph(this.nodes, this.links, this.options);
 
         this.graph.ticker.subscribe((d) => {
@@ -62,8 +63,9 @@ export class GraphViewComponent implements OnInit, AfterViewInit {
      * @param changes list of changes made to this component's fields.
      */
     ngOnChanges(changes: SimpleChanges) {
-        if (!this.graph || !changes.nodes || !changes.links) return;
-        this.graph.onChange(this.nodes, this.links, this._force);
+        if (this.graph) {
+            this.graph.onChange(this.nodes, this.links, this._force);
+        }
     }
 
     /**

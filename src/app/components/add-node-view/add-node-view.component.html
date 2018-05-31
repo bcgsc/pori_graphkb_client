@@ -102,19 +102,21 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
+                <!-- TODO: fix... -->
+                <div style="display: flex; flex-grow: 1">
+                    <mat-form-field class="id-select">
+                        <input matInput placeholder="Target name" name="edgeId" [formControl]="searchTerm" [matAutocomplete]="auto">
+                        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="loadTerm($event)">
+                            <mat-option *ngFor="let item of searchResult" [value]="item">
+                                {{item.name}} [{{item.source}}] : {{item['@rid']}}
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
 
-                <mat-form-field class="id-select">
-                    <input matInput placeholder="Target name" name="edgeId" [formControl]="searchTerm" [matAutocomplete]="auto">
-                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="loadTerm($event)">
-                        <mat-option *ngFor="let item of searchResult" [value]="item">
-                            {{item.name}} [{{item.source}}] : {{item['@rid']}}
-                        </mat-option>
-                    </mat-autocomplete>
-                </mat-form-field>
-
-                <button mat-icon-button (click)="addEdge()">
-                    <mat-icon color="accent">add</mat-icon>
-                </button>
+                    <button mat-icon-button (click)="addEdge()">
+                        <mat-icon color="accent">add</mat-icon>
+                    </button>
+                </div>
             </form>
         </div>
     </div>

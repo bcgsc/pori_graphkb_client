@@ -85,8 +85,8 @@ export class D3Service {
      * @param links list of graph links.
      * @param options options for specifying simulation dimensions.
      */
-    getForceDirectedGraph(nodes: GraphNode[], links: GraphLink[], options: { width, height }) {
-        let graph = new ForceDirectedGraph(nodes, links, options);
+    getForceDirectedGraph(nodes: GraphNode[], links: GraphLink[], options: { width, height }, force: number) {
+        let graph = new ForceDirectedGraph(nodes, links, options, force);
         return graph;
     }
 

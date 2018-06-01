@@ -1,12 +1,23 @@
-<svg *ngIf="graph" #svg [attr.width]="_options.width" [attr.height]="_options.height" class="container">
-    <g [zoomableOf]="svg">
-        <g [linkDisplay]="link" *ngFor="let link of links"></g>
-        <g [nodeDisplay]="node" *ngFor="let node of nodes" [selectedNode]="selectedNode"
-        [draggableNode]="node" [draggableInGraph]="graph" (click)="onClick(node)"></g>
-    </g>
-</svg>
-<mat-card class="card">
-    <mat-form-field>
-        <input matInput [(ngModel)]="_force" name="forces" placeholder="Force Strength" (blur)="onForceChange()"(keyup.enter)="onForceChange()">
-    </mat-form-field>
-</mat-card>
+<div style="overflow:hidden; height: 100%;">
+    <svg *ngIf="graph" #svg [attr.width]="_options.width" [attr.height]="_options.height" class="container">
+        <g [zoomableOf]="svg">
+            <g [linkDisplay]="link" [linkLabels]="_linkLabels" *ngFor="let link of links"></g>
+            <g [nodeDisplay]="node" [_nodeLabels]="_nodeLabels" *ngFor="let node of nodes" [selectedNode]="selectedNode" [draggableNode]="node"
+                [draggableInGraph]="graph" (click)="onClick(node)"></g>
+        </g>
+    </svg>
+
+    <button mat-button class="menu-btn" [matMenuTriggerFor]="menu">
+        <mat-icon>menu</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+        <div class="card" (click)="$event.stopPropagation()">
+            <h3 class="mat-h3">Graph Options</h3>
+            <mat-form-field>
+                <input matInput [(ngModel)]="_force" name="forces" placeholder="Force Strength" (blur)="onForceChange()" (keyup.enter)="onForceChange()">
+            </mat-form-field>
+            <mat-checkbox [(ngModel)]="_linkLabels" disableRipple='true'>Link Labels</mat-checkbox>
+            <mat-checkbox [(ngModel)]="_nodeLabels" disableRipple='true'>Node Labels</mat-checkbox>
+        </div>
+    </mat-menu>
+</div>

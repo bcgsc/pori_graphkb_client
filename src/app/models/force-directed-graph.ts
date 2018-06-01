@@ -3,10 +3,6 @@ import { GraphLink } from './graph-link';
 import { GraphNode } from './graph-node';
 import * as d3 from 'd3';
 
-var FORCES = {
-    LINKS: 1 / 100,
-}
-
 /**
  * Force directed graph model for the graph view.
  */
@@ -16,6 +12,7 @@ export class ForceDirectedGraph {
 
     public nodes: GraphNode[] = [];
     public links: GraphLink[] = [];
+    public force: number;
 
     /**
      * Initializes the graph and simulation.
@@ -23,9 +20,10 @@ export class ForceDirectedGraph {
      * @param links input list of link objects.
      * @param options target width and height of simulation.
      */
-    constructor(nodes: GraphNode[], links: GraphLink[], options: { width, height }) {
+    constructor(nodes: GraphNode[], links: GraphLink[], options: { width, height }, force: number) {
         this.nodes = nodes;
         this.links = links;
+        this.force = force;
         this.initSimulation(options);
     }
 
@@ -36,7 +34,7 @@ export class ForceDirectedGraph {
      * @param force updated force parameter.
      */
     onChange(nodes: GraphNode[], links: GraphLink[], force: number) {
-        FORCES.LINKS = force;
+        this.force = force;
         this.nodes = nodes;
         this.links = links;
         this.initGraphNodes();
@@ -63,7 +61,7 @@ export class ForceDirectedGraph {
 
         this.simulation.force('links',
             d3.forceLink(this.links).id(d => d['id'])
-                .strength(FORCES.LINKS)
+                .strength(this.force)
         );
     }
 

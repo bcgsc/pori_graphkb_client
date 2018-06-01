@@ -75,7 +75,6 @@ export class DataHubComponent {
             this.dataMap = {};
 
             json = jc.retrocycle(json);
-            console.log(json);
 
             json.forEach(diseaseTerm => {
 

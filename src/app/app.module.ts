@@ -24,7 +24,7 @@ import {
   MatInputModule,
   MatSelectModule,
   MatTreeModule,
-  MatAutocompleteModule
+  MatAutocompleteModule,
 } from '@angular/material';
 import { AppRoutingModule } from './app-routing.module';
 
@@ -95,7 +95,7 @@ import { D3_DIRECTIVES } from './directives/';
     MatProgressSpinnerModule,
     MatTreeModule,
     MatAutocompleteModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   providers: [
     APIService,

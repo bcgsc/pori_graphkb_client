@@ -31,6 +31,8 @@ export class GraphViewComponent implements OnInit, AfterViewInit {
 
     private _options: { width, height } = { width: window.innerWidth, height: window.innerHeight };
     private _force: number = 1 / 100;
+    private _linkLabels: boolean = true;
+    private _nodeLabels: boolean = true;
 
     @HostListener('window:resize', ['$event'])
     onResize(event) {
@@ -43,8 +45,7 @@ export class GraphViewComponent implements OnInit, AfterViewInit {
      * Initializes graph object and ticker.
      */
     ngOnInit() {
-        console.log('init');
-        this.graph = this.d3Service.getForceDirectedGraph(this.nodes, this.links, this.options);
+        this.graph = this.d3Service.getForceDirectedGraph(this.nodes, this.links, this.options, this._force);
 
         this.graph.ticker.subscribe((d) => {
             this.ref.markForCheck();

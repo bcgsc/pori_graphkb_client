@@ -2,6 +2,18 @@ span{
     cursor: pointer;
 }
 
+mat-tree{
+    min-width: fit-content;
+}
+
+mat-tree-node{
+    min-width: fit-content;
+    padding-right: 8px;
+    span{
+        white-space:nowrap;
+    }
+}
+
 .mat-tree-node.active{
     background-color: rgba(214,219,245,0.8);    
 }

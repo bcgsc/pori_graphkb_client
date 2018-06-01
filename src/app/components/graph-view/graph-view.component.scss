@@ -2,15 +2,15 @@
     width: 100%;
 }
 .card{
+    width: 180px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-btn{
     position: absolute;
     left: 8px;
     top: 8px;
-    padding: 8px;
-    padding-bottom: 0;
-    width: 180px;
-    height: 56px;
-
-    mat-form-field{
-        position: absolute;
-    }
+    width: 48px;
 }

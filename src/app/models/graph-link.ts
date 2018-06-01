@@ -10,5 +10,6 @@ export class GraphLink implements d3.SimulationLinkDatum<GraphNode>{
     constructor(source, target, type){
         this.source = source;
         this.target = target;
+        this.type = type;
     }
 }

@@ -1,7 +1,11 @@
-<svg:line
-    class="link"
-    [attr.x1]="link.source.x"
-    [attr.y1]="link.source.y"
-    [attr.x2]="link.target.x"
-    [attr.y2]="link.target.y">
-</svg:line>
+<svg:defs>
+    <svg:marker id="arrow" markerWidth="25" markerHeight="10" refX="11" refY="2" orient="auto" markerUnits="strokeWidth">
+        <svg:path d="M0,0 L0,4 L6,2 z" fill="#555"></svg:path>
+    </svg:marker>
+</svg:defs>
+
+<svg:path id="textPath{{link.index}}" class="link" attr.d="M {{link.source.x}} {{link.source.y}} L {{link.target.x}} {{link.target.y}}" marker-end="url(#arrow)"></svg:path>
+
+<svg:text class="type-text" *ngIf="linkLabels">
+    <svg:textPath attr.href="#textPath{{link.index}}" startOffset="20%" textLength="5%">{{link.type}}</svg:textPath>
+</svg:text>

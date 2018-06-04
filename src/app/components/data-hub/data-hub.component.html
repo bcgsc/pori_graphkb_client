@@ -11,12 +11,12 @@
                     <tree-view [data]="treeData" [selectedNode]="selectedNode" (selected)="onSelect($event, true)"></tree-view>
                 </mat-tab>
                 <mat-tab label="Graph View">
-                    <graph-view style="overflow: hidden;" [nodes]="nodes" [links]="links" [selectedNode]="selectedNode" (selected)="onSelect($event)"></graph-view>
+                    <graph-view style="overflow: hidden;" [nodes]="nodes" [links]="links" [selectedNode]="selectedNode" [subsets]="subsets" (selected)="onSelect($event)"></graph-view>
                 </mat-tab>
             </mat-tab-group>
         </div>
-        <node-view class="node-view" [node]="selectedNode" (changed)="onEdit($event)" (added)="onAdd($event)" (deleted)="onDelete($event)"
-            (relationshipped)="onNewRelationship($event)">
+        <node-view class="node-view" [node]="selectedNode" [ontologyMap]="dataMap" (changed)="onEdit($event)" (added)="onAdd($event)" (deleted)="onDelete($event)"
+            (relationshipped)="onNewRelationship($event)" (query)="onQuery($event)">
         </node-view>
     </div>
     <div *ngIf="!dataMap">

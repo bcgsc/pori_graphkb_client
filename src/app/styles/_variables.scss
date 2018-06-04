@@ -1,5 +1,9 @@
+@import './gsc-theme.scss';
+
 $panels-height: 82vh;
 $testing: false;
+
+$primary: map-get($gsc-indigo, 800);
 
 // (x-component) BREAKPOINTS
 

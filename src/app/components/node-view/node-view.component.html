@@ -44,13 +44,13 @@
             <mat-divider></mat-divider>
             <h3 matSubheader>Aliases</h3>
             <mat-list dense *ngIf="!_editing && node">
-                <mat-list-item *ngFor="let alias of node.aliases">{{alias}}
+                <mat-list-item *ngFor="let alias of node.aliases">{{ontologyMap[alias] ? ontologyMap[alias].name : ''}}
                     <mat-icon color="accent" (click)="search(alias.slice(1))" matListIcon>search</mat-icon>
                 </mat-list-item>
             </mat-list>
 
             <mat-list dense *ngIf="_editing && node">
-                <mat-list-item *ngFor="let alias of _temp.aliases">{{alias}}
+                <mat-list-item *ngFor="let alias of _temp.aliases">{{ontologyMap[alias] ? ontologyMap[alias].name : ''}}
                     <mat-icon matListIcon color="warn" (click)="deleteTempAlias(alias)">close</mat-icon>
                 </mat-list-item>
                 <mat-form-field>
@@ -63,12 +63,12 @@
             <mat-divider></mat-divider>
             <h3 matSubheader>Children</h3>
             <mat-list dense *ngIf="!_editing && node">
-                <mat-list-item *ngFor="let child of node.children">{{child}}
-                    <mat-icon color="accent" (click)="search(child.slice(1))" matListIcon>search</mat-icon>
+                <mat-list-item *ngFor="let child of node.children">{{ontologyMap[child] ? ontologyMap[child].name : ''}}
+                    <mat-icon color="accent" (click)="search(child)" matListIcon>search</mat-icon>
                 </mat-list-item>
             </mat-list>
             <mat-list dense *ngIf="_editing && node">
-                <mat-list-item *ngFor="let child of _temp.children">{{child}}
+                <mat-list-item *ngFor="let child of _temp.children">{{ontologyMap[child] ? ontologyMap[child].name : ''}}
                     <mat-icon matListIcon color="warn" (click)="deleteTempChild(child)">close</mat-icon>
                 </mat-list-item>
                 <mat-form-field>
@@ -80,13 +80,13 @@
             <mat-divider></mat-divider>
             <h3 matSubheader>Parents</h3>
             <mat-list dense *ngIf="!_editing && node">
-                <mat-list-item *ngFor="let parent of node.parents">{{parent}}
+                <mat-list-item *ngFor="let parent of node.parents">{{ontologyMap[parent] ? ontologyMap[parent].name : ''}}
                     <mat-icon color="accent" (click)="search(parent.slice(1))" matListIcon>search</mat-icon>
                 </mat-list-item>
             </mat-list>
 
             <mat-list dense *ngIf="_editing && node">
-                <mat-list-item *ngFor="let parent of _temp.parents">{{parent}}
+                <mat-list-item *ngFor="let parent of _temp.parents">{{ontologyMap[parent] ? ontologyMap[parent].name : ''}}
                     <mat-icon matListIcon color="warn" (click)="deleteTempParent(parent)">close</mat-icon>
                 </mat-list-item>
                 <mat-form-field>

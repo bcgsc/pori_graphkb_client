@@ -1,7 +1,7 @@
 /**
  * Disease term data type as returned by the API.
  */
-export interface DiseaseTerm {
+export interface Ontology {
     '@class': string;
     sourceId: string;
     createdBy: string;
@@ -14,13 +14,13 @@ export interface DiseaseTerm {
     subsets?: string[];
     parents?: string[];
     children?: string[];
-    _children?: DiseaseTerm[];
+    _children?: Ontology[];
     aliases?: string[];
 }
 /**
  * Disease payload definition for POST and PATCH requests.
  */
-export interface DiseasePayload {
+export interface OntologyPayload {
     source: string;
     sourceId: string;
     name?: string;
@@ -34,7 +34,7 @@ export interface DiseasePayload {
 /**
  * Disease parameters for GET requests.
  */
-export interface DiseaseParams {
+export interface KBParams {
     name?: string,
     source?: string,
     sourceId?: string,

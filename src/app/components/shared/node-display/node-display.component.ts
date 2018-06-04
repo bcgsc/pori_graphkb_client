@@ -1,6 +1,6 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { GraphNode } from '../../../models/graph-node';
-import { DiseaseTerm } from '../../../models';
+import { Ontology } from '../../../models';
 
 /**
  * Component for formatting/styling graph nodes.
@@ -15,14 +15,29 @@ import { DiseaseTerm } from '../../../models';
 })
 export class NodeDisplayComponent {
   @Input('nodeDisplay') node: GraphNode;
-  @Input() selectedNode: DiseaseTerm;
+  @Input() selectedNode: Ontology;
   @Input() _nodeLabels: boolean;
+  @Input() _subsets: string[];
   private _color = '';
 
   get color() {
+    if (this._subsets.length > 0) {
+      let c = '#80ff8b';
+
+      if (this.node.data.subsets) {
+        this._subsets.forEach(s =>{
+          if(!this.node.data.subsets.includes(s)) c = 'rgba(31, 43, 101, 0.5)';
+        })
+      } else{
+        c = 'rgba(31, 43, 101, 0.5)'
+      }
+
+      return c;
+    }
     if (this.node.data == this.selectedNode) return '#d32f2f';
     if (this.selectedNode._children && this.selectedNode._children.includes(this.node.data)) return "#00bfa5";
-    if (this.node.data._children && this.node.data._children.includes(this.selectedNode)) return "#f57c00"
+    if (this.node.data._children && this.node.data._children.includes(this.selectedNode)) return "#f57c00";
+    // if(this.selectedNode.aliases && this.selectedNode.aliases.includes(this.node.data["@rid"])) return "#d9e94e";
     return '#1F2B65';
   }
 
@@ -30,7 +45,9 @@ export class NodeDisplayComponent {
     let isEq: boolean = this.node.data == this.selectedNode;
     let isIn: boolean = this.selectedNode._children && this.selectedNode._children.includes(this.node.data);
     let isOut: boolean = this.node.data._children && this.node.data._children.includes(this.selectedNode);
-    return this._nodeLabels || isEq || isIn || isOut;
+    // let isAl: boolean = this.selectedNode.aliases && this.selectedNode.aliases.includes(this.node.data["@rid"]);
+    let isAl = false;
+    return this._nodeLabels || isEq || isIn || isOut || isAl;
 
   }
 }

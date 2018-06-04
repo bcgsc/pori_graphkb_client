@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, Input, Output, EventEmitter, AfterViewInit } from '@angular/core';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { APIService } from '../../services/api.service';
-import { DiseaseTerm } from '../../models';
+import { Ontology } from '../../models';
 import { TableViewDataSource } from './table-view-datasource';
 import { NodeViewComponent } from '../node-view/node-view.component';
 
@@ -29,7 +29,7 @@ export class TableViewComponent implements OnInit {
   /**
    * @param selected triggers when the user selects a term from the table.
    */
-  @Output() selected = new EventEmitter<DiseaseTerm>();
+  @Output() selected = new EventEmitter<string>();
 
   private dataSource;
 
@@ -79,8 +79,8 @@ export class TableViewComponent implements OnInit {
    * Emits the clicked node to parent component.
    * @param row disease term that was clicked on.
    */
-  onClick(row: DiseaseTerm) {
-    this.selected.emit(row);
+  onClick(row: Ontology) {
+    this.selected.emit(row["@rid"]);
   }
 
   /**

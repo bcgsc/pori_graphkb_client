@@ -2,7 +2,7 @@ import { Component, Input, OnInit, EventEmitter, Output, SimpleChanges } from '@
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
 import { BehaviorSubject, Observable, of as observableOf } from 'rxjs';
-import { DiseaseTerm } from '../../models';
+import { Ontology } from '../../models';
 
 /**
  * Component for displaying data in a hierarchical tree view format.
@@ -19,17 +19,17 @@ import { DiseaseTerm } from '../../models';
 })
 export class TreeViewComponent implements OnInit {
 
-  treeControl: FlatTreeControl<DiseaseTerm>;
-  treeFlattener: MatTreeFlattener<DiseaseTerm, any>;
-  dataSource: MatTreeFlatDataSource<DiseaseTerm, any>;
+  treeControl: FlatTreeControl<Ontology>;
+  treeFlattener: MatTreeFlattener<Ontology, any>;
+  dataSource: MatTreeFlatDataSource<Ontology, any>;
 
-  @Input() data: DiseaseTerm[];
-  @Input() selectedNode: DiseaseTerm;
+  @Input() data: Ontology[];
+  @Input() selectedNode: Ontology;
 
   /**
    * @param selected triggers when the user single clicks on a node.
    */
-  @Output() selected = new EventEmitter<DiseaseTerm>();
+  @Output() selected = new EventEmitter<string>();
 
   constructor() {
     this.treeFlattener = new MatTreeFlattener(
@@ -87,7 +87,7 @@ export class TreeViewComponent implements OnInit {
    * Adds 'level' and 'expandable' fields to the disease term objects in order
    * to be displayed.
    */
-  transformer = (node: DiseaseTerm, level: number) => {
+  transformer = (node: Ontology, level: number) => {
     let flatNode = node;
     flatNode['level'] = level;
     flatNode['expandable'] = !!node._children;
@@ -120,7 +120,7 @@ export class TreeViewComponent implements OnInit {
    * Triggered when a node in the tree is clicked.
    * @param node clicked node.
    */
-  onClick(node: DiseaseTerm) {
-    this.selected.emit(node);
+  onClick(node: Ontology) {
+    this.selected.emit(node['@rid']);
   }
 }

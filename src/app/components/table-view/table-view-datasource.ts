@@ -2,7 +2,7 @@ import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator, MatSort } from '@angular/material';
 import { map } from 'rxjs/operators';
 import { Observable, of as observableOf, merge } from 'rxjs';
-import { DiseaseTerm } from '../../models';
+import { Ontology } from '../../models';
 
 
 /**
@@ -10,10 +10,10 @@ import { DiseaseTerm } from '../../models';
  * encapsulate all logic for fetching and manipulating the displayed data
  * (including sorting, pagination, and filtering).
  */
-export class TableViewDataSource extends DataSource<DiseaseTerm> {
-  data: DiseaseTerm[];
+export class TableViewDataSource extends DataSource<Ontology> {
+  data: Ontology[];
 
-  constructor(private paginator: MatPaginator, private sort: MatSort, private inData: DiseaseTerm[]) {
+  constructor(private paginator: MatPaginator, private sort: MatSort, private inData: Ontology[]) {
     super();
     this.data = inData;
   }
@@ -23,7 +23,7 @@ export class TableViewDataSource extends DataSource<DiseaseTerm> {
    * the returned stream emits new items.
    * @returns A stream of the items to be rendered.
    */
-  connect(): Observable<DiseaseTerm[]> {
+  connect(): Observable<Ontology[]> {
     // Combine everything that affects the rendered data into one update
     // stream for the data-table to consume.
     const dataMutations = [
@@ -50,7 +50,7 @@ export class TableViewDataSource extends DataSource<DiseaseTerm> {
    * Paginate the data (client-side). If you're using server-side pagination,
    * this would be replaced by requesting the appropriate data from the server.
    */
-  private getPagedData(data: DiseaseTerm[]) {
+  private getPagedData(data: Ontology[]) {
     const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
     return data.splice(startIndex, this.paginator.pageSize);
   }
@@ -59,7 +59,7 @@ export class TableViewDataSource extends DataSource<DiseaseTerm> {
    * Sort the data (client-side). If you're using server-side sorting,
    * this would be replaced by requesting the appropriate data from the server.
    */
-  private getSortedData(data: DiseaseTerm[]) {
+  private getSortedData(data: Ontology[]) {
     if (!this.sort.active || this.sort.direction === '') {
       return data;
     }

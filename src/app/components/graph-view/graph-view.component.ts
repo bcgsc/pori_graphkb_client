@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, AfterViewInit, ChangeDetectorRef, ChangeDetectionStrategy, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { ForceDirectedGraph, DiseaseTerm, GraphNode, GraphLink } from '../../models';
+import { ForceDirectedGraph, Ontology, GraphNode, GraphLink } from '../../models';
 import { D3Service } from '../../services/d3.service';
 import { HostListener } from '@angular/core';
 import { throwMatDialogContentAlreadyAttachedError } from '@angular/material';
@@ -20,19 +20,21 @@ import { throwMatDialogContentAlreadyAttachedError } from '@angular/material';
 export class GraphViewComponent implements OnInit, AfterViewInit {
     @Input() nodes: GraphNode[];
     @Input() links: GraphLink[];
-    @Input() selectedNode: DiseaseTerm;
+    @Input() selectedNode: Ontology;
+    @Input() subsets: string[];
 
     /**
      * @param selected triggers when the user single clicks on a node.
      */
-    @Output() selected = new EventEmitter<DiseaseTerm>();
+    @Output() selected = new EventEmitter<string>();
 
     private graph: ForceDirectedGraph;
 
     private _options: { width, height } = { width: window.innerWidth, height: window.innerHeight };
-    private _force: number = 1 / 100;
+    private _force: number = 1 / 50;
     private _linkLabels: boolean = true;
     private _nodeLabels: boolean = true;
+    private _subsets = [];
 
     @HostListener('window:resize', ['$event'])
     onResize(event) {
@@ -84,7 +86,7 @@ export class GraphViewComponent implements OnInit, AfterViewInit {
      */
     onClick(node: GraphNode) {
         this.selectedNode = node.data;
-        this.selected.emit(node.data);
+        this.selected.emit(node.data['@rid']);
     }
 
     /**
@@ -94,4 +96,15 @@ export class GraphViewComponent implements OnInit, AfterViewInit {
         this.graph.onChange(this.nodes, this.links, this._force);
     }
 
+    onParentHop() {
+        if (this.selectedNode.parents) this.selected.emit(this.selectedNode.parents[0]);
+    }
+
+    onSubset(subset) {
+        if (this._subsets.includes(subset)) { 
+            this._subsets = this._subsets.filter(s => s != subset) 
+        } else {
+            this._subsets.push(subset);
+        }
+    }
 }

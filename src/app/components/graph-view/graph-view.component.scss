@@ -2,10 +2,14 @@
     width: 100%;
 }
 .card{
-    width: 180px;
+    min-width: 180px;
     padding: 16px;
     display: flex;
     flex-direction: column;
+    
+    button{
+        margin:8px;
+    }
 }
 
 .menu-btn{

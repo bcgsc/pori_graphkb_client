@@ -2,7 +2,7 @@
     <svg *ngIf="graph" #svg [attr.width]="_options.width" [attr.height]="_options.height" class="container">
         <g [zoomableOf]="svg">
             <g [linkDisplay]="link" [linkLabels]="_linkLabels" *ngFor="let link of links"></g>
-            <g [nodeDisplay]="node" [_nodeLabels]="_nodeLabels" *ngFor="let node of nodes" [selectedNode]="selectedNode" [draggableNode]="node"
+            <g [nodeDisplay]="node" [_subsets]="_subsets" [_nodeLabels]="_nodeLabels" *ngFor="let node of nodes" [selectedNode]="selectedNode" [draggableNode]="node"
                 [draggableInGraph]="graph" (click)="onClick(node)"></g>
         </g>
     </svg>
@@ -18,6 +18,8 @@
             </mat-form-field>
             <mat-checkbox [(ngModel)]="_linkLabels" disableRipple='true'>Link Labels</mat-checkbox>
             <mat-checkbox [(ngModel)]="_nodeLabels" disableRipple='true'>Node Labels</mat-checkbox>
+            <button mat-stroked-button color="accent" (click)="onParentHop()">Parent Hop</button>
+            <mat-checkbox (change)="onSubset(subset)" *ngFor="let subset of subsets">{{subset}}</mat-checkbox>
         </div>
     </mat-menu>
 </div>

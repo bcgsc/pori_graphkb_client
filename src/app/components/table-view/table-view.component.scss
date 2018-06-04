@@ -1,5 +1,7 @@
 @import '../../styles/variables';
 
+$table-size: 1100px;
+
 .wrapper{
     width: 100%;
 }
@@ -18,13 +20,13 @@
 }
 
 mat-table{
-    min-width: 1148px;
+    min-width: $table-size;
     table-layout: fixed;
 }
 
 .mat-elevation-z2{
     padding-top: 64px; 
-    min-width: 1148px;
+    min-width: $table-size;
 
     mat-form-field{
         display: block;
@@ -35,7 +37,7 @@ mat-table{
     position:sticky;
 }
 .mat-row, .mat-header-row{
-    min-width: 1148px;
+    min-width: $table-size;
 }
 .mat-row:hover{
     background-color: rgba(214,219,245,0.7);

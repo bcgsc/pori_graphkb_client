@@ -1,0 +1,26 @@
+.main-message{
+    display: block;
+    font-size: 54px;
+    font-family: 'Lato';
+    width: fit-content;
+    position: absolute;    
+    top: 30%;
+    left: 0;
+    right: 0;  
+    margin: auto;
+}
+
+.wrapper{
+    width: 100%;
+    height: 100%;
+}
+
+button{
+    width: fit-content;    
+    position: absolute;
+    top: 40%;
+    left: 0;
+    right: 0;
+    margin: auto;
+    display: block;
+}

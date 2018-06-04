@@ -1,8 +1,8 @@
 import { Component, ViewChild, HostBinding } from '@angular/core';
 import { APIService } from '../../services/api.service';
 import * as jc from 'json-cycle';
-import { DiseaseTerm, GraphLink, GraphNode } from '../../models';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Ontology, GraphLink, GraphNode } from '../../models';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { switchMap } from 'rxjs/operators';
 import { TableViewComponent } from '../table-view/table-view.component';
 import { NodeViewComponent } from '../node-view/node-view.component';
@@ -23,18 +23,25 @@ import { TreeViewComponent } from '../tree-view/tree-view.component';
 export class DataHubComponent {
     @ViewChild(TreeViewComponent) tree;
 
-    private tableData: DiseaseTerm[];
-    private dataMap: { [id: string]: DiseaseTerm };
-    private treeData: DiseaseTerm[];
+    // Table formatted data
+    private tableData: Ontology[];
 
-    nodes: GraphNode[] = [];
-    links: GraphLink[] = [];
+    // Tree formatted data
+    private treeData: Ontology[];
 
-    private selectedNode: DiseaseTerm;
+    // Graph formatted nodes and links
+    private nodes: GraphNode[] = [];
+    private links: GraphLink[] = [];
+
+    // Master query result map
+    private dataMap: { [id: string]: Ontology };
+
+    private selectedNode: Ontology;
+    private subsets: string[] = [];
 
     private params: { [key: string]: any };
 
-    constructor(private api: APIService, private route: ActivatedRoute) { }
+    constructor(private api: APIService, private route: ActivatedRoute, private router: Router) { }
 
     /**
      * Stores query parameters passed through the url, then refreshes the view
@@ -58,6 +65,7 @@ export class DataHubComponent {
         delete this.selectedNode;
         this.nodes = [];
         this.links = [];
+        this.subsets = [];
 
         let rid = this.route.snapshot.paramMap.get('rid')
         rid ? this._getRecord(rid) : this._getQuery(queryRid);
@@ -95,7 +103,8 @@ export class DataHubComponent {
                 let gn = new GraphNode(root['@rid'], root);
                 this.nodes.push(gn);
                 this._buildGraph(gn);
-            })
+            });
+            console.log(this.nodes.length);
 
             // /** constructing the nodes array */
             // let N = Math.min(100, this.tableData.length);
@@ -160,24 +169,49 @@ export class DataHubComponent {
      * @param rgn root graph node object
      */
     private _buildGraph(rgn: GraphNode): void {
-        if (!rgn.data._children) return;
-        rgn.data._children.forEach(child => {
-            let cgn = new GraphNode(child['@rid'], child);
-            this.nodes.push(cgn);
-            let l = new GraphLink(cgn, rgn, 'subclassof');
-            cgn.linkCount++;
-            rgn.linkCount++;
-            this.links.push(l);
-            this._buildGraph(cgn);
-        });
+        if (rgn.data._children) {
+            rgn.data._children.forEach(child => {
+                let cgn = new GraphNode(child['@rid'], child);
+                this.nodes.push(cgn);
+                let l = new GraphLink(cgn, rgn, 'subclassof');
+                cgn.linkCount++;
+                rgn.linkCount++;
+                this.links.push(l);
+
+                // if (cgn.data.aliases) {
+                //     cgn.data.aliases.forEach(alias => {
+                //         if (alias in this.dataMap) {
+                //             let agn: GraphNode = this.nodes.filter(node => node.data["@rid"] == alias)[0];
+
+                //             if (!agn) {
+                //                 agn = new GraphNode(alias, this.dataMap[alias]);
+                //                 console.log(agn.data.name);
+
+                //                 this.nodes.push(agn);
+
+                //             }
+                //             l = new GraphLink(agn, cgn, 'aliasof');
+                //             this.links.push(l);
+                //             l = new GraphLink(cgn, agn, '');
+                //             this.links.push(l);
+                //             agn.linkCount += 2;
+                //             rgn.linkCount += 2;
+                //         }
+                //     });
+                // }
+
+                this._buildGraph(cgn);
+            });
+        }
+
         return;
     }
 
     /**
      * Helper function to format query result data for the tree view.
      */
-    private _getHierarchy(): DiseaseTerm[] {
-        let roots: DiseaseTerm[] = [];
+    private _getHierarchy(): Ontology[] {
+        let roots: Ontology[] = [];
 
         Object.keys(this.dataMap).forEach(rid => {
             if (!this.dataMap[rid].parents) {
@@ -209,7 +243,7 @@ export class DataHubComponent {
      * @param jsonTerm disease ontology term in JSON form as returned from
      * the server.
      */
-    private _prepareEntry(jsonTerm: JSON): DiseaseTerm {
+    private _prepareEntry(jsonTerm: JSON): Ontology {
         let children, parents, aliases;
 
         if (jsonTerm['out_SubClassOf']) {
@@ -237,7 +271,7 @@ export class DataHubComponent {
             });
         }
 
-        let entry: DiseaseTerm = {
+        let entry: Ontology = {
             '@class': jsonTerm['@class'],
             sourceId: jsonTerm['sourceId'],
             createdBy: jsonTerm['createdBy']['name'],
@@ -252,6 +286,12 @@ export class DataHubComponent {
             children: children,
             aliases: aliases,
         }
+
+        if (jsonTerm['subsets']) {
+            jsonTerm['subsets'].forEach(subset => {
+                if (!this.subsets.includes(subset)) this.subsets.push(subset);
+            })
+        }
         return entry;
     }
 
@@ -260,11 +300,12 @@ export class DataHubComponent {
     /**
      * Triggered when user selects a node in one of the views. Updates the 
      * application wide selected node object.
-     * @param node record ID of the selected node.
+     * @param rid record ID of the selected node.
      * @param tree optional flag to alert when to expand the tree view.
      */
-    onSelect(node: DiseaseTerm, tree?: boolean) {
-        this.selectedNode = this.dataMap[node['@rid']];
+    onSelect(rid: string, tree?: boolean) {
+        console.log(rid);
+        this.selectedNode = this.dataMap[rid];
         if (!tree) { this.tree.selectedNode = this.selectedNode; this.tree.onOuterChange(); }
     }
 
@@ -273,7 +314,7 @@ export class DataHubComponent {
      * request and then refreshes the view, making the same query.
      * @param node updated node object after edits.
      */
-    onEdit(node: DiseaseTerm) {
+    onEdit(node: Ontology) {
         this.api.editNode(node['@rid'].slice(1), node).subscribe(() => {
             this._refresh(node['@rid']);
         });
@@ -284,7 +325,7 @@ export class DataHubComponent {
      * refreshes the view, making the same query.
      * @param node record to be deleted.
      */
-    onDelete(node: DiseaseTerm) {
+    onDelete(node: Ontology) {
         let rid = node['@rid'].slice(1);
         //TODO: add cleanup to all related nodes (Can't yet)
 
@@ -294,8 +335,9 @@ export class DataHubComponent {
     }
 
     //under construction
-    onQuery(params: { [key: string]: any }) {
-        this.params = params;
+    onQuery(params) {
+        this.params = params.params;
+        if (params.rid) this.router.navigate(['/results/' + params.rid], { queryParams: this.params });
         this._refresh();
     }
 
@@ -312,7 +354,7 @@ export class DataHubComponent {
      * under construction
      * @param node 
      */
-    onNewGraphNode(node: DiseaseTerm) {
+    onNewGraphNode(node: Ontology) {
         this.nodes = this.nodes.slice();
         this.links = this.links.slice();
         let n = new GraphNode(this.nodes.length + 1, node);

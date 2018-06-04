@@ -30,15 +30,7 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
 import {
-  NodeViewComponent,
-  TableViewComponent,
-  TreeViewComponent,
-  DataHubComponent,
-  QueryViewComponent,
-  AddNodeViewComponent,
-  PaginationComponent,
-  MyTableComponent,
-  GraphViewComponent,
+  APP_COMPONENTS,
   SHARED_COMPONENTS,
 } from './components';
 
@@ -52,15 +44,7 @@ import { D3_DIRECTIVES } from './directives/';
 @NgModule({
   declarations: [
     AppComponent,
-    TableViewComponent,
-    NodeViewComponent,
-    TreeViewComponent,
-    DataHubComponent,
-    QueryViewComponent,
-    AddNodeViewComponent,
-    PaginationComponent,
-    MyTableComponent,
-    GraphViewComponent,
+    ...APP_COMPONENTS,
     ...SHARED_COMPONENTS,
     SubsetsPipe,
     SubsetPipe,

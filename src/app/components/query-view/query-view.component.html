@@ -1,6 +1,6 @@
 <div class="wrapper">
     <div *ngIf="!_adv" class="search-wrapper">
-        <mat-icon class="search-icon" color="accent">search</mat-icon>
+        <!-- <img class="search-icon" src="../../../assets/logo.png"> -->
         <search-bar matInput="true" (query)="simpleQuery($event)" [placeholder]="'Search a Name'"></search-bar>
         <button (click)="advanced()" color="accent" class="advanced-button" mat-stroked-button>Advanced Search</button>
     </div>

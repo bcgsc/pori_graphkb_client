@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { APIService } from '../../services/api.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DiseasePayload } from '../../models';
+import { OntologyPayload } from '../../models';
 import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/debounceTime';
 import * as jc from 'json-cycle';
@@ -32,15 +32,20 @@ export class AddNodeViewComponent implements OnInit {
     private subsets: string[] = [];
     private relationships: Edge[] = [];
 
-    private payload: DiseasePayload = { source: '', sourceId: '' };
+    private payload: OntologyPayload = { source: '', sourceId: '' };
 
     searchTerm: FormControl = new FormControl();
     searchResult = [];
 
+    /**
+     * Initializes component and autocorrect feature.
+     * 
+     * @param {APIService} api backend api functionality access
+     * @param {ActivatedRoute} route current route access 
+     * @param {Router} router app router 
+     */
     constructor(private api: APIService, private route: ActivatedRoute, private router: Router) {
-        /**
-         * Initializes autocorrect functionality for edge adding form.
-         */
+        // Initializes autocorrect functionality for edge adding form.
         this.searchTerm.valueChanges
             .debounceTime(400)
             .subscribe(dat => {
@@ -174,7 +179,7 @@ export class AddNodeViewComponent implements OnInit {
                 this.api.addRelationship(edge).subscribe();
             });
 
-            this.router.navigate(['/table/' + id.slice(1)]);
+            this.router.navigate(['/results/' + id.slice(1)]);
         })
     }
 }

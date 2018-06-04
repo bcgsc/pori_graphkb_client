@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { DiseaseTerm, DiseasePayload, DiseaseParams } from '../models';
+import { Ontology, OntologyPayload, KBParams } from '../models';
 import { Edge } from '../components/add-node-view/add-node-view.component';
 
 const API_ENDPOINT = "http://10.9.202.242:8088/api";
@@ -11,10 +11,10 @@ const API_ENDPOINT = "http://10.9.202.242:8088/api";
  */
 @Injectable()
 export class APIService {
-    private _terms: {[id:string]: DiseaseTerm};
+    private _terms: {[id:string]: Ontology};
     private _list: string[];
 
-    get terms(): DiseaseTerm[]{
+    get terms(): Ontology[]{
         return this._list.map(id => this._terms[id]);
     }
 
@@ -24,7 +24,7 @@ export class APIService {
      * POST's a new disease term to the server.
      * @param node disease term payload.
      */
-    public addNode(node: DiseasePayload): Observable<any> {
+    public addNode(node: OntologyPayload): Observable<any> {
         return this.http.post(API_ENDPOINT + "/diseases", node);
     }
 
@@ -63,7 +63,7 @@ export class APIService {
      * @param rid target term's RID.
      * @param data payload containing new data to be patched.
      */
-    public editNode(rid, data: DiseaseTerm): Observable<any> {
+    public editNode(rid, data: Ontology): Observable<any> {
         let payload = {
             name: data.name,
             description: data.description,

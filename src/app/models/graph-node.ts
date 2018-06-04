@@ -1,4 +1,4 @@
-import { DiseaseTerm } from ".";
+import { Ontology } from ".";
 
 export class GraphNode implements d3.SimulationNodeDatum{
     index?: number;
@@ -10,7 +10,7 @@ export class GraphNode implements d3.SimulationNodeDatum{
     fy?: number | null;
 
     id: string;
-    data: DiseaseTerm;
+    data: Ontology;
     linkCount: number = 0;
     r = 4;
 

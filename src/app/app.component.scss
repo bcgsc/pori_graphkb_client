@@ -18,6 +18,10 @@
     @if($testing){
         height: calc(14% - 2px);
     }
+    img{
+        height: 48px;
+        margin: 8px;
+    }
 }
 
 .content{

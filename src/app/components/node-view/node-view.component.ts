@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Input, SimpleChanges } from '@angular/core';
-import { DiseaseTerm } from '../../models';
+import { Ontology } from '../../models';
 import { MatSnackBar } from '@angular/material';
 import { Output } from '@angular/core';
 import { EventEmitter } from '@angular/core';
@@ -22,7 +22,8 @@ import { Edge } from '../add-node-view/add-node-view.component';
   providers: [MatSnackBar],
 })
 export class NodeViewComponent {
-  @Input() node: DiseaseTerm;
+  @Input() node: Ontology;
+  @Input() ontologyMap: { [id: string]: Ontology };
 
   /**
    * @param changed triggers when changes to the selected node have been 
@@ -35,20 +36,19 @@ export class NodeViewComponent {
    * @param query triggers when the client queries the selected node's source
    * or neighbors.
    */
-  @Output() changed = new EventEmitter<DiseaseTerm>();
-  @Output() added = new EventEmitter<DiseaseTerm>();
-  @Output() deleted = new EventEmitter<DiseaseTerm>();
+  @Output() changed = new EventEmitter<Ontology>();
+  @Output() added = new EventEmitter<Ontology>();
+  @Output() deleted = new EventEmitter<Ontology>();
   @Output() relationshipped = new EventEmitter<Edge>();
-  // @Output() query = new EventEmitter<any>();
+  @Output() query = new EventEmitter<any>();
 
   private _editing = false;
-  private _temp: DiseaseTerm;
+  private _temp: Ontology;
   private _tempSubset = '';
   private _tempParent = '';
   private _tempChild = '';
   private _tempAlias = '';
 
-  private init: DiseaseTerm;
 
   constructor(public snackBar: MatSnackBar, private router: Router, private api: APIService) { }
 
@@ -57,8 +57,38 @@ export class NodeViewComponent {
     this._temp = undefined;
     this._tempSubset = '';
     if (!changes.node || !changes.node.currentValue) return;
-    this.init = changes.node.currentValue;
     // this.api.getRecord(changes.node.currentValue['@rid'].slice(1), { neighbors: 2 }).subscribe(response => {})
+    if (this.node.children) {
+      this.node.children.forEach(childRID => {
+        if (!(childRID in this.ontologyMap)) {
+          // Prevent duplicate calls
+          this.ontologyMap[childRID] = null;
+          this.api.getRecord(childRID.slice(1)).subscribe(node => {
+            this.ontologyMap[childRID] = node;
+          });
+        }
+      });
+    }
+    if (this.node.parents) {
+      this.node.parents.forEach(childRID => {
+        if (!(childRID in this.ontologyMap)) {
+          this.ontologyMap[childRID] = null;
+          this.api.getRecord(childRID.slice(1)).subscribe(node => {
+            this.ontologyMap[childRID] = node;
+          });
+        }
+      });
+    }
+    if (this.node.aliases) {
+      this.node.aliases.forEach(childRID => {
+        if (!(childRID in this.ontologyMap)) {
+          this.ontologyMap[childRID] = null;
+          this.api.getRecord(childRID.slice(1)).subscribe(node => {
+            this.ontologyMap[childRID] = node;
+          });
+        }
+      });
+    }
   }
 
   /**
@@ -128,9 +158,8 @@ export class NodeViewComponent {
    */
   private queryBySource() {
     let params = { source: this.node.source };
-    this.router.navigate(['/table'], { queryParams: params });
+    this.router.navigate(['/results'], { queryParams: params });
   }
-
 
   /**
    * Initializes temp variables for making edits to selected node.
@@ -141,6 +170,7 @@ export class NodeViewComponent {
     let subsets = this.node.subsets ? this.node.subsets.slice() : [];
     let parents = this.node.parents ? this.node.parents.slice() : [];
     let children = this.node.children ? this.node.children.slice() : [];
+    let _children = this.node._children ? this.node._children.slice() : [];
     let aliases = this.node.aliases ? this.node.aliases.slice() : [];
 
     this._temp = {
@@ -156,6 +186,7 @@ export class NodeViewComponent {
       parents: parents,
       children: children,
       aliases: aliases,
+      _children: _children,
     }
     this._editing = true;
   }
@@ -242,10 +273,10 @@ export class NodeViewComponent {
    * Queries the database for the RID specified, then refreshes the view.
    * @param rid rid to be queried
    */
-  private search(rid) {
+  private search(rid: string) {
     //TODO: check if it's in datamap, o.w. make a new api call.
-
+    if (rid.startsWith('#')) rid = rid.slice(1);
     let params = { ancestors: 'subclassof', descendants: 'subclassof' };
-    this.router.navigate(['/table/' + rid], { queryParams: params });
+    this.query.emit({ params: params, rid: rid });
   }
 }

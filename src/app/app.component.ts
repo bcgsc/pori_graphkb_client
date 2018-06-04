@@ -13,7 +13,7 @@ export class AppComponent {
   }
 
   simpleQuery(name) {
-    this.router.navigate(['/table'], {
+    this.router.navigate(['/results'], {
       queryParams: {
         name: name,
         ancestors: 'subclassof',

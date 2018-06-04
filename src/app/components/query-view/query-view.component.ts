@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { APIService } from '../../services/api.service';
 import { Router } from '@angular/router';
-import { DiseaseParams } from '../../models';
+import { KBParams } from '../../models';
 import { FormControl } from '@angular/forms';
 import 'rxjs/add/operator/debounceTime';
 import * as jc from 'json-cycle';
@@ -18,7 +18,7 @@ import * as jc from 'json-cycle';
 export class QueryViewComponent {
   private _adv: boolean = false;
 
-  private params: DiseaseParams = {
+  private params: KBParams = {
     name: '',
     source: '',
     sourceId: '',
@@ -74,7 +74,7 @@ export class QueryViewComponent {
    * results.
    */
   simpleQuery(name) { //neighbors: 2
-    this.router.navigate(['/table'], {
+    this.router.navigate(['/results'], {
       queryParams: {
         name: name,
         ancestors: 'subclassof',
@@ -92,8 +92,8 @@ export class QueryViewComponent {
     let reqDefault = true;
     let returnProperties = '';
 
-    if (this.relatedNodes.parents) this.params.ancestors += 'subclassof';
-    if (this.relatedNodes.children) this.params.descendants += 'subclassof';
+    if (this.relatedNodes.children) this.params.ancestors += 'subclassof';
+    if (this.relatedNodes.parents) this.params.descendants += 'subclassof';
     if (this.relatedNodes.aliases) {
 
       this.params.ancestors ? this.params.ancestors += ',aliasof' : this.params.ancestors += 'aliasof';
@@ -107,13 +107,13 @@ export class QueryViewComponent {
     !reqDefault ? this.params.returnProperties = returnProperties.slice(0, returnProperties.length - 1) : this.params.returnProperties = '';
 
     /* Filter out empty parameters from api call */
-    let filteredParams: DiseaseParams = {};
+    let filteredParams: KBParams = {};
 
     Object.keys(this.params).forEach(key => {
       if (this.params[key]) filteredParams[key] = this.params[key];
     });
 
     /* Add parameters to route to be called by the api in the data hub component */
-    this.router.navigate(['/table'], { queryParams: filteredParams })
+    this.router.navigate(['/results'], { queryParams: filteredParams })
   }
 }

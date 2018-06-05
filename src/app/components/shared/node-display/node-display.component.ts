@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewEncapsulation, SimpleChanges } from '@angular/core';
 import { GraphNode } from '../../../models/graph-node';
 import { Ontology } from '../../../models';
 
@@ -18,36 +18,46 @@ export class NodeDisplayComponent {
   @Input() selectedNode: Ontology;
   @Input() _nodeLabels: boolean;
   @Input() _subsets: string[];
-  private _color = '';
+  private _color = '#1F2B65';
+
 
   get color() {
     if (this._subsets.length > 0) {
-      let c = '#80ff8b';
-
-      if (this.node.data.subsets) {
-        this._subsets.forEach(s =>{
-          if(!this.node.data.subsets.includes(s)) c = 'rgba(31, 43, 101, 0.5)';
-        })
-      } else{
-        c = 'rgba(31, 43, 101, 0.5)'
-      }
-
-      return c;
+      return this.subsetFiltered() ? '#80ff8b': 'rgba(31,43,101,0.5)'
     }
-    if (this.node.data == this.selectedNode) return '#d32f2f';
-    if (this.selectedNode._children && this.selectedNode._children.includes(this.node.data)) return "#00bfa5";
-    if (this.node.data._children && this.node.data._children.includes(this.selectedNode)) return "#f57c00";
-    // if(this.selectedNode.aliases && this.selectedNode.aliases.includes(this.node.data["@rid"])) return "#d9e94e";
+    if (this.node.data['@rid'] == this.selectedNode['@rid']) return '#d32f2f';
+    if (this.selectedNode.children && this.selectedNode.children.includes(this.node.data['@rid'])) return "#00bfa5";
+    if (this.node.data.children && this.node.data.children.includes(this.selectedNode['@rid'])) return "#f57c00";
+    if(this.selectedNode.aliases && this.selectedNode.aliases.includes(this.node.data["@rid"])) return "#d9e94e";
     return '#1F2B65';
   }
 
-  get nodeLabels() {
-    let isEq: boolean = this.node.data == this.selectedNode;
-    let isIn: boolean = this.selectedNode._children && this.selectedNode._children.includes(this.node.data);
-    let isOut: boolean = this.node.data._children && this.node.data._children.includes(this.selectedNode);
-    // let isAl: boolean = this.selectedNode.aliases && this.selectedNode.aliases.includes(this.node.data["@rid"]);
-    let isAl = false;
+  get nodeLabels(): boolean {
+    if (this._subsets.length > 0) {
+      return this.subsetFiltered();
+    }
+    let isEq: boolean = this.node.data['@rid'] == this.selectedNode['@rid'];
+    let isIn: boolean = this.selectedNode.children && this.selectedNode.children.includes(this.node.data['@rid']);
+    let isOut: boolean = this.node.data.children && this.node.data.children.includes(this.selectedNode['@rid']);
+    let isAl: boolean = this.selectedNode.aliases && this.selectedNode.aliases.includes(this.node.data["@rid"]);
     return this._nodeLabels || isEq || isIn || isOut || isAl;
 
+  }
+
+  /**
+   * Returns TRUE if this node passes requirements of subsets filter. FALSE o.w.
+   */
+  private subsetFiltered() {
+    let c = true;
+
+    if (this.node.data.subsets) {
+      this._subsets.forEach(s => {
+        if (!this.node.data.subsets.includes(s)) c = false;
+      })
+    } else {
+      c = false
+    }
+
+    return c;
   }
 }

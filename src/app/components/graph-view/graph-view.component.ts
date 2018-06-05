@@ -31,7 +31,7 @@ export class GraphViewComponent implements OnInit, AfterViewInit {
     private graph: ForceDirectedGraph;
 
     private _options: { width, height } = { width: window.innerWidth, height: window.innerHeight };
-    private _force: number = 1 / 50;
+    private _force: number = 1 / 10;
     private _linkLabels: boolean = true;
     private _nodeLabels: boolean = true;
     private _subsets = [];

@@ -16,6 +16,7 @@ export class GraphNode implements d3.SimulationNodeDatum{
 
     constructor(id, data){
         this.id = id;
+        this.index = id;
         this.data = data;
     }
 }

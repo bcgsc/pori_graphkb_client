@@ -60,11 +60,11 @@ export class APIInterceptor implements HttpInterceptor {
                     this.auth.clearToken();
                     // redirect to the login route
                 }
-                if (err.status === 404) {
-                    this.snackBar.open("Record not found!", "OK", {duration: 5000});
-                    this.router.navigate(['/error']);
+                // if (err.status === 404) {
+                //     this.snackBar.open("Record not found!", "OK", {duration: 5000});
+                //     this.router.navigate(['/error']);
 
-                }
+                // }
             };
         });
     }

@@ -55,10 +55,10 @@ export class DataHubComponent {
 
     /**
      * Clears all stored data objects and queries the api.
-     * @param queryRid optional parameter that defines a node to be initially
+     * @param initRid optional parameter that defines a node to be initially
      * selected.
      */
-    private _refresh(queryRid?: string): void {
+    private _refresh(initRid?: string): void {
         delete this.tableData;
         delete this.dataMap;
         delete this.treeData;
@@ -68,15 +68,15 @@ export class DataHubComponent {
         this.subsets = [];
 
         let rid = this.route.snapshot.paramMap.get('rid')
-        rid ? this._getRecord(rid) : this._getQuery(queryRid);
+        rid ? this._getRecord(rid) : this._getQuery(initRid);
     }
 
     /**
      * Queries the api with parameters as passed in the url. 
-     * @param queryRid optional parameter that defines a node to be initially 
+     * @param initRid optional parameter that defines a node to be initially 
      * selected.
      */
-    private _getQuery(queryRid?: string): void {
+    private _getQuery(initRid?: string): void {
         this.api.query(this.params).subscribe((json) => {
             let i = 0;
             this.tableData = [];
@@ -88,7 +88,7 @@ export class DataHubComponent {
 
                 let entry = this._prepareEntry(diseaseTerm);
 
-                if (queryRid && entry['@rid'] === queryRid) {
+                if (initRid && entry['@rid'] === initRid) {
                     i = this.tableData.length;
                 }
 
@@ -98,26 +98,8 @@ export class DataHubComponent {
 
             this.treeData = this._getHierarchy();
             this.selectedNode = this.tableData[i];
-
-            this.treeData.forEach(root => {
-                let gn = new GraphNode(root['@rid'], root);
-                this.nodes.push(gn);
-                this._buildGraph(gn);
-            });
-            console.log(this.nodes.length);
-
-            // /** constructing the nodes array */
-            // let N = Math.min(100, this.tableData.length);
-            // for (let i = 1; i <= N; i++) {
-            //     this.nodes.push(new GraphNode(i, this.tableData[i - 1]));
-            // }
-
-            // for (let i = 1; i < N; i++) {
-            //     this.nodes[i - 1].linkCount++;
-            //     this.nodes[i].linkCount++;
-            //     this.links.push(new GraphLink(this.nodes[i - 1], this.nodes[i], ''));
-            // }
-
+            this.nodes = this._initNodes();
+            this.links = this._initLinks(this.nodes);
         });
     }
 
@@ -159,52 +141,75 @@ export class DataHubComponent {
             //     this.buildGraph(gn);
             // });
 
+        }, err => {
+            if (err.status === 404) {
+                this.router.navigate(['/error']);
+            }
         });
     }
 
     /**
-     * Recursively builds force directed graph datatype to be passed to the
-     * graph view, connecting parent/child nodes together (not aliases).
-     * 
-     * @param rgn root graph node object
+     * Builds nodes
      */
-    private _buildGraph(rgn: GraphNode): void {
-        if (rgn.data._children) {
-            rgn.data._children.forEach(child => {
-                let cgn = new GraphNode(child['@rid'], child);
-                this.nodes.push(cgn);
-                let l = new GraphLink(cgn, rgn, 'subclassof');
-                cgn.linkCount++;
-                rgn.linkCount++;
-                this.links.push(l);
+    private _initNodes(): GraphNode[]{
+        let nodes = [];
+        Object.keys(this.dataMap).forEach(key => {
+            nodes.push(new GraphNode(key, this.dataMap[key]));
+        });
+        return nodes;
+    }
 
-                // if (cgn.data.aliases) {
-                //     cgn.data.aliases.forEach(alias => {
-                //         if (alias in this.dataMap) {
-                //             let agn: GraphNode = this.nodes.filter(node => node.data["@rid"] == alias)[0];
+    private _initLinks(nodes: GraphNode[]): GraphLink[]{
+        let links: GraphLink[] = [];
+        nodes.forEach(node => {
+            if (node.data.parents) {
+                node.data.parents.forEach(childRid => {
+                    let pgn: GraphNode = nodes.filter(node => node.data["@rid"] == childRid)[0];
+                    if (pgn) {
+                        let l: GraphLink = links.filter(link => {
+                            return link.source == node && link.target == pgn && link.type == 'subclassof';
+                        })[0];
+                        if (!l) {
+                            pgn.linkCount++;
+                            node.linkCount++;
+                            links.push(new GraphLink(node, pgn, 'subclassof'));
+                        }
+                    }
+                });
+            }
+            if (node.data.children) {
+                node.data.children.forEach(childRid => {
+                    let cgn: GraphNode = nodes.filter(node => node.data["@rid"] == childRid)[0];
+                    if (cgn) {
+                        let l: GraphLink = links.filter(link => {
+                            return link.source == cgn && link.target == node && link.type == 'subclassof';
+                        })[0];
+                        if (!l) {
+                            cgn.linkCount++;
+                            node.linkCount++;
+                            links.push(new GraphLink(cgn, node, 'subclassof'));
+                        }
+                    }
+                });
+            }
+            if (node.data.aliases) {
+                node.data.aliases.forEach(alias => {
+                    let agn: GraphNode = nodes.filter(node => node.data["@rid"] == alias)[0];
+                    if (agn) {
+                        let l: GraphLink = links.filter(link => {
+                            return link.source == node && link.target == agn && link.type == 'aliasof';
+                        })[0];
+                        if (!l) {
+                            agn.linkCount++;
+                            node.linkCount++;
+                            links.push(new GraphLink(agn, node, 'aliasof'));
+                        }
+                    }
+                });
+            }
+        });
 
-                //             if (!agn) {
-                //                 agn = new GraphNode(alias, this.dataMap[alias]);
-                //                 console.log(agn.data.name);
-
-                //                 this.nodes.push(agn);
-
-                //             }
-                //             l = new GraphLink(agn, cgn, 'aliasof');
-                //             this.links.push(l);
-                //             l = new GraphLink(cgn, agn, '');
-                //             this.links.push(l);
-                //             agn.linkCount += 2;
-                //             rgn.linkCount += 2;
-                //         }
-                //     });
-                // }
-
-                this._buildGraph(cgn);
-            });
-        }
-
-        return;
+        return links;
     }
 
     /**
@@ -228,7 +233,7 @@ export class DataHubComponent {
                         retrieved = true;
                     }
                 });
-                // If none of a node's parents is not retrieved by query, the node is displayed as a root.
+                // If none of a node's parents are retrieved by query, the node is displayed as a root.
                 if (!retrieved) {
                     roots.push(this.dataMap[rid]);
                 }
@@ -304,7 +309,6 @@ export class DataHubComponent {
      * @param tree optional flag to alert when to expand the tree view.
      */
     onSelect(rid: string, tree?: boolean) {
-        console.log(rid);
         this.selectedNode = this.dataMap[rid];
         if (!tree) { this.tree.selectedNode = this.selectedNode; this.tree.onOuterChange(); }
     }

@@ -6,9 +6,12 @@
     padding: 16px;
     display: flex;
     flex-direction: column;
+    max-height: 668px;
+    overflow: auto;
     
     button{
         margin:8px;
+        flex-shrink: 0;
     }
 }
 

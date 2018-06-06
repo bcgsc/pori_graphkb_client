@@ -4,11 +4,11 @@
     width: 100%;
 }
 ::ng-deep .mat-tab-body-wrapper{
-    height: 100%!important;
+    height: 100% !important;
 }
 
 .data-view{
-    width: 90%;
+    width: 94%;
     min-height: $panels-height;
     margin-left: auto;
     margin-right: auto;
@@ -21,13 +21,13 @@
 .group-view{
     float: left;
     height: $panels-height;
-    width: 65vw;
+    width: 67vw;
 }
 
 .node-view {
     margin-left:1px;
     float:right;     
-    width: 25vw;
+    width: 27vw;
     height: $panels-height;
     display: flex;
     flex-direction: column;

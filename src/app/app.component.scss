@@ -14,7 +14,7 @@
     bottom: auto;
     height: 120px;
     display: flex;
-    background-color: #1F2B65;
+    background-color: $primary;
     @if($testing){
         height: calc(14% - 2px);
     }

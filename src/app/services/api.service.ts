@@ -3,6 +3,8 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Ontology, OntologyPayload, KBParams } from '../models';
 import { Edge } from '../components/add-node-view/add-node-view.component';
+import * as jc from 'json-cycle';
+import { tap, map } from 'rxjs/operators';
 
 const API_ENDPOINT = "http://10.9.202.242:8088/api";
 /**
@@ -11,14 +13,12 @@ const API_ENDPOINT = "http://10.9.202.242:8088/api";
  */
 @Injectable()
 export class APIService {
-    private _terms: {[id:string]: Ontology};
-    private _list: string[];
-
-    get terms(): Ontology[]{
-        return this._list.map(id => this._terms[id]);
-    }
 
     constructor(private http: HttpClient) {}
+
+    public query(params){
+        return this.http.get('../../assets/get_diseases.body_expanded.json').pipe(map(json => jc.retrocycle(json)));
+    }
 
     /**
      * POST's a new disease term to the server.
@@ -36,13 +36,13 @@ export class APIService {
         return this.http.delete(API_ENDPOINT + "/diseases/" + rid);
     }
 
-    /**
-     * Queries the server with input parameters.
-     * @param params map of disease term parameters.
-     */
-    public query(params): Observable<any> {
-        return this.http.get(API_ENDPOINT + "/diseases", { params: params });
-    }
+    // /**
+    //  * Queries the server with input parameters.
+    //  * @param params map of disease term parameters.
+    //  */
+    // public query(params): Observable<any> {
+    //     return this.http.get(API_ENDPOINT + "/diseases", { params: params }).pipe(map(json => jc.retrocycle(json)));
+    // }
 
     //must be formatted before (get rid of #)
 
@@ -53,7 +53,7 @@ export class APIService {
      * @param params optional additional query parameters.
      */
     public getRecord(rid, params?): Observable<any> {
-        return this.http.get(API_ENDPOINT + "/diseases/" + rid, {params: params});
+        return this.http.get(API_ENDPOINT + "/diseases/" + rid, {params: params}).pipe(map(json => jc.retrocycle(json)));
     }
 
     // Configure add relationship calls

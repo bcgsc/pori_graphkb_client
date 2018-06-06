@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild, Input, Output, EventEmitter, AfterViewIni
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { APIService } from '../../services/api.service';
 import { Ontology } from '../../models';
-import { TableViewDataSource } from './table-view-datasource';
 import { NodeViewComponent } from '../node-view/node-view.component';
 
 import * as jc from 'json-cycle';
@@ -34,7 +33,7 @@ export class TableViewComponent implements OnInit {
   private dataSource;
 
   /* Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns = ['rid-version', 'source', 'sourceId', 'createdBy', 'name', 'subsets'];
+  displayedColumns = ['rid', 'source', 'sourceId', 'createdBy', 'name', 'subsets'];
 
   constructor(private api: APIService) {}
 
@@ -46,6 +45,7 @@ export class TableViewComponent implements OnInit {
     this.dataSource = new MatTableDataSource(this.data);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    this.dataSource.sortingDataAccessor = this.sortData;
     let defaultpredicate = this.dataSource.filterPredicate;
 
     this.dataSource.filterPredicate = (data:any, filter: string) =>{
@@ -61,18 +61,45 @@ export class TableViewComponent implements OnInit {
    */
   subsetsFilter(data: any, filterStr: string): boolean {
     if(!data['subsets']) return false;
+
+    let subsets = data['subsets'].map(subset => {
+      let concat = '';
+      let subName: string = subset.split('#').slice(1).toString() || subset;
+      let s = subName.split('_') || [subName];
+
+      s.forEach(word => {
+        concat += word + " ";
+      });
+
+      return concat.toLowerCase().trim();
+    });
     
-    let result = true;
-    let subsets = data['subsets'].map(sub => sub.trim().toLowerCase());
+    let result = false;
 
     filterStr.split(',').forEach(filterTerm => { //can make more precise
-      let subr = false;
       subsets.forEach(sub => {
-        if(sub.indexOf(filterTerm.trim().toLowerCase()) != -1) subr = true;
+        if(sub.indexOf(filterTerm.trim().toLowerCase()) != -1) result = true;
       })
-      if(!subr) result = false;
     });
     return result;
+  }
+
+  sortData(data, active){
+    switch (active) {
+      case 'class': return data['@class'];
+      case 'sourceId': return data.sourceId;
+      case 'createdBy': return data.createdBy;
+      case 'name': return data.name;
+      case 'rid': 
+        let a = data['@rid'].split(':')[0].slice(1)*10000 + parseInt(data['@rid'].split(':')[1]);
+        return a;
+      case 'subsets':
+        if(!data.subsets) return '';
+
+        return data.subsets.toString();
+
+      default: return 0;
+    }
   }
 
   /**

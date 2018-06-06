@@ -6,10 +6,14 @@ export class SubsetsPipe implements PipeTransform {
     let concat: string = ''
 
     if (value) value.forEach(subset => {
-      // let subName = subset.split('#')[1] || subset;
-      let subName = subset;
+      let subName: string = subset.split('#').slice(1).toString() || subset;
+      let s = subName.split('_') || [subName];
 
-      concat += subName.toUpperCase() + ", "
+      s.forEach(word => {
+        concat += word[0].toUpperCase() + word.slice(1).toLowerCase() + ' ';
+      });
+
+      concat = concat.substr(0, concat.length - 1) + ', ';
     });
     return concat.substr(0, concat.length - 2);
   }
@@ -19,7 +23,7 @@ export class SubsetsPipe implements PipeTransform {
 export class SubsetPipe implements PipeTransform {
   transform(value: string): string {
 
-      let subName = value.split('#')[1] || value;
+    let subName = value.split('#')[1] || value;
 
     return subName;
   }

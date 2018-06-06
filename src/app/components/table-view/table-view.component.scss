@@ -5,7 +5,7 @@ $table-size: 1100px;
 .wrapper{
     width: 100%;
 }
-.filter-box{
+#filter-box{
     position: absolute;
     left: 0; 
     right: -1px;
@@ -25,7 +25,6 @@ mat-table{
 }
 
 .mat-elevation-z2{
-    padding-top: 64px; 
     min-width: $table-size;
 
     mat-form-field{
@@ -35,6 +34,8 @@ mat-table{
 }
 .mat-header-row{
     position:sticky;
+    background-color: #fafafa;
+
 }
 .mat-row, .mat-header-row{
     min-width: $table-size;
@@ -48,25 +49,39 @@ mat-table{
 }
 
 .mat-column-source{
-    flex: 0 0 100px;
+    flex: 0 0 150px;
 }
 .mat-column-sourceId{
-    flex: 0 0 100px;
+    flex: 0 0 150px;
 }
 .mat-column-createdBy{
-    flex: 0 0 100px;    
+    flex: 0 0 150px;    
 }
-.mat-column-rid-version{
+.mat-column-rid{
     flex: 0 0 100px;
 }
-.mat-column-name{
-    flex: 0 0 240px;    
-}
-.mat-column-subsets{
-    flex: 0 0 380px;
-}
+// .mat-column-name{
+//     flex: 0 0 240px;    
+// }
+// .mat-column-subsets{
+//     flex: 0 0 380px;
+// }
 
-.paginator{
+#paginator{
     display:flex;
     justify-content: flex-start;
+    position: absolute;
+    bottom: 0;
+    right:0;
+    left:0;
+    background-color: #fafafa;
+}
+
+.table-wrapper{
+    position: absolute;
+    bottom: 56px;
+    right:0;
+    left:0;
+    top:68px;
+    overflow:auto;
 }

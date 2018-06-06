@@ -27,7 +27,7 @@
             <mat-divider></mat-divider>
 
             <h3 matSubheader>Name</h3>
-            <mat-list-item *ngIf="!_editing && node">{{node.name}}</mat-list-item>
+            <mat-list-item *ngIf="!_editing && node">{{node.name}} <span *ngIf="node.longName">({{node.longName}})</span></mat-list-item>
             <mat-list-item *ngIf="_editing">
                 <textarea matInput type="text" id="name" class="edit-box" [(ngModel)]="_temp.name" name="source" placeholder="Name">
                 </textarea>

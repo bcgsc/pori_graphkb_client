@@ -51,6 +51,7 @@ export class APIInterceptor implements HttpInterceptor {
             }
         }, (err: any) => {
             if (err instanceof HttpErrorResponse) {
+                console.log('error~! ' + err.error);
                 if (err.status === 401) {
                     if(this.auth.getToken){
                         this.snackBar.open("Session expired!", "OK", {duration: 5000});

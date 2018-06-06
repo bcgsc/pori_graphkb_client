@@ -67,6 +67,11 @@
     height: 100%;
     vertical-align: middle;
     
+    #back-button{
+        position:absolute;
+        left: 72px;
+    }
+
     .parameter-selection{
         display: flex;
 

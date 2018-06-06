@@ -1,13 +1,18 @@
 <mat-card class="card">
     <form #editNodeForm="ngForm" (keydown.enter)="$event.preventDefault()">
         <mat-list class="myList">
+            <div class="buttons">
+                <button mat-mini-fab id="graph-button" (click)="viewInGraph()">
+                    <mat-icon>scatter_plot</mat-icon> <!--TODO: add tooltip-->
+                </button>
+            </div>
 
+            <mat-divider></mat-divider>            
             <h3 matSubheader>Source</h3>
 
             <mat-list-item *ngIf="node">{{node.source}}
                 <mat-icon matListIcon color="accent" (click)="queryBySource()">search</mat-icon>
             </mat-list-item>
-
 
             <mat-divider></mat-divider>
 
@@ -27,7 +32,9 @@
             <mat-divider></mat-divider>
 
             <h3 matSubheader>Name</h3>
-            <mat-list-item *ngIf="!_editing && node">{{node.name}} <span *ngIf="node.longName">({{node.longName}})</span></mat-list-item>
+            <mat-list-item *ngIf="!_editing && node">{{node.name}}
+                <span *ngIf="node.longName">({{node.longName}})</span>
+            </mat-list-item>
             <mat-list-item *ngIf="_editing">
                 <textarea matInput type="text" id="name" class="edit-box" [(ngModel)]="_temp.name" name="source" placeholder="Name">
                 </textarea>

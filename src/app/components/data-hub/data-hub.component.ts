@@ -1,4 +1,4 @@
-import { Component, ViewChild, HostBinding } from '@angular/core';
+import { Component, ViewChild, HostBinding, ViewEncapsulation } from '@angular/core';
 import { APIService } from '../../services/api.service';
 import * as jc from 'json-cycle';
 import { Ontology, GraphLink, GraphNode } from '../../models';
@@ -18,7 +18,7 @@ import { TreeViewComponent } from '../tree-view/tree-view.component';
     selector: 'data-hub',
     templateUrl: './data-hub.component.html',
     styleUrls: ['./data-hub.component.scss'],
-    providers: [APIService]
+    providers: [APIService],
 })
 export class DataHubComponent {
     @ViewChild(TreeViewComponent) tree;
@@ -82,8 +82,6 @@ export class DataHubComponent {
             this.tableData = [];
             this.dataMap = {};
 
-            json = jc.retrocycle(json);
-
             json.forEach(diseaseTerm => {
 
                 let entry = this._prepareEntry(diseaseTerm);
@@ -94,12 +92,13 @@ export class DataHubComponent {
 
                 this.dataMap[entry["@rid"]] = entry;
                 this.tableData.push(entry);
+                this.nodes.push(new GraphNode(entry['@rid'], entry)); 
             });
 
             this.treeData = this._getHierarchy();
-            this.selectedNode = this.tableData[i];
-            this.nodes = this._initNodes();
             this.links = this._initLinks(this.nodes);
+
+            this.selectedNode = this.tableData[i];            
         });
     }
 
@@ -113,13 +112,11 @@ export class DataHubComponent {
             this.tableData = [];
             this.dataMap = {};
 
-            json = jc.retrocycle(json);
-
             let entry = this._prepareEntry(json);
 
             this.tableData.push(entry);
             this.dataMap[entry["@rid"]] = entry
-
+            // this.nodes.push(new GraphNode(entry['@rid'], entry)); 
             this.treeData = this._getHierarchy();
             this.selectedNode = this.tableData[0];
 
@@ -154,7 +151,6 @@ export class DataHubComponent {
     private _initNodes(): GraphNode[]{
         let nodes = [];
         Object.keys(this.dataMap).forEach(key => {
-            nodes.push(new GraphNode(key, this.dataMap[key]));
         });
         return nodes;
     }

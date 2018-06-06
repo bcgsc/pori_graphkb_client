@@ -1,5 +1,3 @@
-
-
 <svg:path *ngIf="link.type == 'aliasof'" id="textPath{{link.index}}" class="link" attr.d="M {{link.source.x}} {{link.source.y}} L {{link.target.x}} {{link.target.y}}" marker-end="url(#arrow)" marker-start="url(#starrow)"></svg:path>
 <svg:path *ngIf="link.type == 'subclassof'" id="textPath{{link.index}}" class="link" attr.d="M {{link.source.x}} {{link.source.y}} L {{link.target.x}} {{link.target.y}}" marker-end="url(#arrow)"></svg:path>
 

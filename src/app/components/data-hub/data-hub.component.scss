@@ -3,6 +3,9 @@
 .wrapper{
     width: 100%;
 }
+::ng-deep .mat-tab-body-wrapper{
+    height: 100%!important;
+}
 
 .data-view{
     width: 90%;

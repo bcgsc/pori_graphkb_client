@@ -16,7 +16,7 @@ $gsc-indigo: (
   300: #7986cb,
   500: #3f51b5,
   600: #3949ab,
-  700: #303f9f,
+  700: #26328c,
   800: #1F2B65,
   900: #08113e,
   A100: #8c9eff,
@@ -74,7 +74,7 @@ $gsc-teal: (
   )
 );
 
-$ontologyweb-primary: mat-palette($gsc-indigo, 800);
+$ontologyweb-primary: mat-palette($gsc-indigo, 700);
 $ontologyweb-accent:  mat-palette($gsc-teal, 700, 300, A700);
 $ontologyweb-background: (  
   status-bar: map_get($mat-grey, 300),

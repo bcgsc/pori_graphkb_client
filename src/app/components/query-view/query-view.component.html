@@ -8,6 +8,8 @@
     <!-- //// Advanced Search \\\\\ -->
 
     <div *ngIf="_adv" class="adv-wrapper" (keyup.enter)="query()">
+        <button id="back-button" mat-stroked-button (click)="advanced()" color="primary">Back</button>
+        
         <div class="parameter-selection">
             <h3 class="mat-h3">Name: </h3>
 
@@ -91,7 +93,6 @@
             </mat-form-field>
         </div>
 
-        <button mat-stroked-button (click)="advanced()" color="primary">Back</button>
         <button (click)="query()" color="primary" mat-raised-button>Search</button>
     </div>
 </div>

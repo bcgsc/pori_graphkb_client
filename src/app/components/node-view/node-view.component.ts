@@ -161,6 +161,11 @@ export class NodeViewComponent {
     this.router.navigate(['/results'], { queryParams: params });
   }
 
+  private viewInGraph() {
+    let params = { node: this.node };
+    this.router.navigate(['/graph'], { queryParams: params });
+  }
+
   /**
    * Initializes temp variables for making edits to selected node.
    */

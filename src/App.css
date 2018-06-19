@@ -1,3 +1,10 @@
+.link {
+  font-family: 'Roboto';
+  color: #303030;
+  margin: 8px;
+  display: block;
+  text-decoration: none; }
+
 .App {
   text-align: center; }
 
@@ -22,13 +29,6 @@
       left: 0;
       bottom: auto;
       top: 0; } }
-
-.link {
-  font-family: 'Roboto';
-  color: #303030;
-  margin: 8px;
-  display: block;
-  text-decoration: none; }
 
 .content {
   overflow-y: auto;

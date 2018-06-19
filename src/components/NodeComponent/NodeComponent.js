@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import './NodeComponent.css';
+import React, { Component } from "react";
+import ReactDOM from "react-dom";
+import "./NodeComponent.css";
 import {
   List,
   ListItem,
@@ -8,14 +8,13 @@ import {
   IconButton,
   Button,
   Paper
-} from '@material-ui/core';
-import TimelineIcon from '@material-ui/icons/Timeline';
-import AssignmentIcon from '@material-ui/icons/Assignment';
-import Drawer from '@material-ui/core/Drawer';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import GraphComponent from '../GraphComponent/GraphComponent';
-import { CompactPicker } from 'react-color';
-import { Link } from 'react-router-dom';
+} from "@material-ui/core";
+import TimelineIcon from "@material-ui/icons/Timeline";
+import AssignmentIcon from "@material-ui/icons/Assignment";
+import Drawer from "@material-ui/core/Drawer";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import GraphComponent from "../GraphComponent/GraphComponent";
+import { Link } from "react-router-dom";
 
 class NodeComponent extends Component {
   constructor(props) {
@@ -30,25 +29,25 @@ class NodeComponent extends Component {
       graphOptions: {
         width: 0,
         height: 0,
-        selectedColor: '#ff0000',
-        aliasesColor: '#e6a249',
-        parentsColor: '#C062FF',
-        childrenColor: '#00bfa5'
+        selectedColor: "#D33115",
+        aliasesColor: "#FB9E00",
+        parentsColor: "#AEA1FF",
+        childrenColor: "#73D8FF"
       },
-      colorKey: 'selectedColor'
+      colorKey: "selectedColor"
     };
     this.handleResize = this.handleResize.bind(this);
-    this.handleColorPick = this.handleColorPick.bind(this);
   }
 
   componentDidMount() {
-    window.addEventListener('resize', this.handleResize);
+    window.addEventListener("resize", this.handleResize);
     this.handleResize();
   }
 
   handleResize() {
     let w, h;
-    let n = ReactDOM.findDOMNode(this.refs['node-wrapper']);
+    let n = ReactDOM.findDOMNode(this.refs["graph-dim"]);
+
     if (n) {
       w = n.clientWidth;
       h = n.clientHeight - 51;
@@ -65,17 +64,7 @@ class NodeComponent extends Component {
     this.setState({ drawer }, this.handleResize);
   }
 
-  handleColorPick(color) {
-    console.log(color);
-    console.log(this.state.graphOptions);
-
-    let graphOptions = this.state.graphOptions;
-    graphOptions[this.state.colorKey] = color.hex;
-    this.setState({ graphOptions });
-  }
-  handleColorKeyChange(key) {
-    this.setState({ colorKey: key });
-  }
+ 
 
   render() {
     const node = this.props.data[this.props.selectedId];
@@ -83,10 +72,10 @@ class NodeComponent extends Component {
     const listItems = key => {
       if (node[key]) {
         return (
-          <div className='list-subheader'>
+          <div className="list-subheader">
             <ListItemText
               primary={
-                key[0].toUpperCase() + key.substr(1, key.length - 1) + ':'
+                key[0].toUpperCase() + key.substr(1, key.length - 1) + ":"
               }
             />
             {node[key].map(item => {
@@ -102,39 +91,44 @@ class NodeComponent extends Component {
     };
 
     const basicProperties = (
-      <div className='node-properties'>
-        <List component='nav'>
+      <div className="node-properties">
+        <List component="nav">
           <ListItem>
-            <ListItemText primary='Class:' secondary={node.class} />
+            <ListItemText primary="Class:" secondary={node.class} />
           </ListItem>
           <ListItem>
-            <ListItemText primary='Source:' secondary={node.source} />
+            <ListItemText primary="Source:" secondary={node.source} />
           </ListItem>
           <ListItem>
-            <ListItemText primary='SourceId:' secondary={node.sourceId} />
+            <ListItemText primary="SourceId:" secondary={node.sourceId} />
           </ListItem>
           <ListItem>
             <ListItemText
-              primary='CreatedBy:'
-              secondary={node.createdBy || 'Undefined'}
+              primary="CreatedBy:"
+              secondary={node.createdBy || "Undefined"}
             />
           </ListItem>
           <ListItem>
-            <ListItemText primary='Name:' secondary={node.name} />
+            <ListItemText primary="Name:" secondary={node.name} />
           </ListItem>
           <ListItem>
-            <ListItemText primary='Description:' secondary={node.description} />
+            <ListItemText primary="Description:" secondary={node.description} />
           </ListItem>
-          {listItems('subsets')}
-          {listItems('aliases')}
-          {listItems('parents')}
-          {listItems('children')}
+          {listItems("subsets")}
+          {listItems("aliases")}
+          {listItems("parents")}
+          {listItems("children")}
+          <ListItem className="edit-btn">
+            <Link
+              className="link"
+              to={{ state: this.state, pathname: "/edit" }}
+            >
+              <Button variant="raised" color="primary">
+                Edit Node
+              </Button>
+            </Link>
+          </ListItem>
         </List>
-        <Link to={{ state: this.state, pathname: '/edit' }}>
-          <Button variant='flat' color='primary'>
-            Edit Node
-          </Button>
-        </Link>
       </div>
     );
 
@@ -148,13 +142,8 @@ class NodeComponent extends Component {
           <GraphComponent
             width={this.state.graphOptions.width}
             height={this.state.graphOptions.height}
-            linkStrength={1 / 20}
             handleClick={this.props.handleClick}
             node={node}
-            selectedColor={this.state.graphOptions.selectedColor}
-            aliasesColor={this.state.graphOptions.aliasesColor}
-            childrenColor={this.state.graphOptions.childrenColor}
-            parentsColor={this.state.graphOptions.parentsColor}
           />
         );
       } else return null;
@@ -163,57 +152,17 @@ class NodeComponent extends Component {
     const selected = key => key === this.state.colorKey;
     const graphDrawer = (
       <Drawer
-        variant='persistent'
-        anchor='right'
+        variant="persistent"
+        anchor="right"
         open={this.state.drawer.graph}
         classes={{
-          paper: 'drawer-box'
+          paper: "drawer-box"
         }}
-        onClose={() => this.handleDrawer('graph')}
-        SlideProps={{ unmountOnExit: true }}
+        onClose={() => this.handleDrawer("graph")}
+        // SlideProps={{ unmountOnExit: true }}
       >
-        <div className='color-picker'>
-          <div className='compact-picker'>
-            <CompactPicker
-              color={this.state.graphOptions.selectedColor}
-              onChangeComplete={this.handleColorPick}
-            />
-          </div>
-          <div className='grid-wrapper'>
-            <div className='button-grid'>
-              <Button
-                style={{ color: this.state.graphOptions.selectedColor }}
-                onClick={e => this.handleColorKeyChange('selectedColor')}
-                variant={selected('selectedColor') ? 'flat' : 'raised'}
-              >
-                Selected
-              </Button>
-              <Button
-                style={{ color: this.state.graphOptions.parentsColor }}
-                onClick={e => this.handleColorKeyChange('parentsColor')}
-                variant={selected('parentsColor') ? 'flat' : 'raised'}
-              >
-                Parents
-              </Button>
-              <Button
-                style={{ color: this.state.graphOptions.childrenColor }}
-                onClick={e => this.handleColorKeyChange('childrenColor')}
-                variant={selected('childrenColor') ? 'flat' : 'raised'}
-              >
-                Children
-              </Button>
-              <Button
-                style={{ color: this.state.graphOptions.aliasesColor }}
-                onClick={e => this.handleColorKeyChange('aliasesColor')}
-                variant={selected('aliasesColor') ? 'flat' : 'raised'}
-              >
-                Aliases
-              </Button>
-            </div>
-          </div>
-        </div>
-        <Paper elevation={5} className='graph-wrapper' ref='node-wrapper'>
-          <IconButton onClick={() => this.handleDrawer('graph')}>
+        <Paper elevation={5} className="graph-wrapper" ref="graph-dim">
+          <IconButton onClick={() => this.handleDrawer("graph")}>
             <ChevronRightIcon />
           </IconButton>
           {graph()}
@@ -223,17 +172,17 @@ class NodeComponent extends Component {
 
     const basicDrawer = (
       <Drawer
-        variant='persistent'
-        anchor='right'
+        variant="persistent"
+        anchor="right"
         open={this.state.drawer.basic}
         classes={{
-          paper: 'drawer-box'
+          paper: "drawer-box"
         }}
-        onClose={() => this.handleDrawer('basic')}
+        onClose={() => this.handleDrawer("basic")}
         SlideProps={{ unmountOnExit: true }}
       >
-        <Paper elevation={5} className='graph-wrapper'>
-          <IconButton onClick={() => this.handleDrawer('basic')}>
+        <Paper className="basic-wrapper">
+          <IconButton onClick={() => this.handleDrawer("basic")}>
             <ChevronRightIcon />
           </IconButton>
           {basicProperties}
@@ -242,20 +191,20 @@ class NodeComponent extends Component {
     );
 
     return (
-      <div className='node-wrapper'>
+      <div className="node-wrapper">
         {graphDrawer}
         {basicDrawer}
-        <Paper className='graph-btn'>
+        <Paper className="graph-btn">
           <IconButton
-            color='secondary'
-            onClick={() => this.handleDrawer('graph')}
+            color="secondary"
+            onClick={() => this.handleDrawer("graph")}
           >
             <TimelineIcon />
           </IconButton>
-          <div className='basic-btn'>
+          <div className="basic-btn">
             <IconButton
-              color='primary'
-              onClick={() => this.handleDrawer('basic')}
+              color="primary"
+              onClick={() => this.handleDrawer("basic")}
             >
               <AssignmentIcon />
             </IconButton>

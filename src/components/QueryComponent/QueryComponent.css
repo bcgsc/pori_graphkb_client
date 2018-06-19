@@ -1,3 +1,10 @@
+.link {
+  font-family: 'Roboto';
+  color: #303030;
+  margin: 8px;
+  display: block;
+  text-decoration: none; }
+
 .search-wrapper {
   min-width: 50vw;
   max-width: 60vw;

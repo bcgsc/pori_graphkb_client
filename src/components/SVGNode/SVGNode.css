@@ -1,3 +1,10 @@
+.link {
+  font-family: 'Roboto';
+  color: #303030;
+  margin: 8px;
+  display: block;
+  text-decoration: none; }
+
 .node {
   cursor: pointer;
   transition: stroke-width 0.1s ease-out, fill 0.1s ease-out, stroke 0.1s ease-out;

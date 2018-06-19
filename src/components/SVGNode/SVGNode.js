@@ -53,7 +53,7 @@ class SVGNode extends PureComponent {
                     r={this.props.r}
                 />
                 <text>
-                    <tspan className='node-name' dy={20}>{this.props.node.name}</tspan>
+                    <tspan className='node-name' dy={12}>{this.props.node.name}</tspan>
                 </text>
 
             </g>

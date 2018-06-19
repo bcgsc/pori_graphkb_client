@@ -15,22 +15,27 @@
     height: 60px;
     display: flex;
     background-color: $primary;
-    @if($testing){
-        height: calc(14% - 2px);
-    }
+    
     img{
         height: 48px;
         margin: 8px;
+    }
+
+    @media(max-width: $banner-collapse) {
+        height: 90px;
     }
 }
 
 .content{
     position: absolute;
-    top: 80px;
+    top: 60px;
     left:0;
     right:0;
     margin: auto;
     bottom:0;
+    @media(max-width: $banner-collapse){
+        top: 90px;
+    }
 }
 
 .links{

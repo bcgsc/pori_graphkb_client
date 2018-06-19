@@ -1,4 +1,4 @@
-import { Component, ViewChild, HostBinding, ViewEncapsulation } from '@angular/core';
+import { Component, ViewChild, HostBinding, ViewEncapsulation, EventEmitter } from '@angular/core';
 import { APIService } from '../../services/api.service';
 import * as jc from 'json-cycle';
 import { Ontology, GraphLink, GraphNode } from '../../models';
@@ -18,7 +18,6 @@ import { TreeViewComponent } from '../tree-view/tree-view.component';
     selector: 'data-hub',
     templateUrl: './data-hub.component.html',
     styleUrls: ['./data-hub.component.scss'],
-    providers: [APIService],
 })
 export class DataHubComponent {
     @ViewChild(TreeViewComponent) tree;
@@ -38,6 +37,7 @@ export class DataHubComponent {
 
     private selectedNode: Ontology;
     private subsets: string[] = [];
+    private ping = new EventEmitter<void>();
 
     private params: { [key: string]: any };
 
@@ -84,7 +84,7 @@ export class DataHubComponent {
 
             json.forEach(diseaseTerm => {
 
-                let entry = this._prepareEntry(diseaseTerm);
+                let entry = this.prepareEntry(diseaseTerm);
 
                 if (initRid && entry['@rid'] === initRid) {
                     i = this.tableData.length;
@@ -98,7 +98,7 @@ export class DataHubComponent {
             this.treeData = this._getHierarchy();
             this.links = this._initLinks(this.nodes);
 
-            this.selectedNode = this.tableData[i];            
+            this.selectedNode = this.tableData[i];        
         });
     }
 
@@ -112,7 +112,7 @@ export class DataHubComponent {
             this.tableData = [];
             this.dataMap = {};
 
-            let entry = this._prepareEntry(json);
+            let entry = this.prepareEntry(json);
 
             this.tableData.push(entry);
             this.dataMap[entry["@rid"]] = entry
@@ -244,7 +244,7 @@ export class DataHubComponent {
      * @param jsonTerm disease ontology term in JSON form as returned from
      * the server.
      */
-    private _prepareEntry(jsonTerm: JSON): Ontology {
+    private prepareEntry(jsonTerm: JSON): Ontology {
         let children, parents, aliases;
 
         if (jsonTerm['out_SubClassOf']) {
@@ -306,7 +306,7 @@ export class DataHubComponent {
      */
     onSelect(rid: string, tree?: boolean) {
         this.selectedNode = this.dataMap[rid];
-        if (!tree) { this.tree.selectedNode = this.selectedNode; this.tree.onOuterChange(); }
+        // if (!tree) { this.tree.selectedNode = this.selectedNode; this.tree.onOuterChange(); }
     }
 
     /**
@@ -351,21 +351,38 @@ export class DataHubComponent {
     }
 
     /**
-     * under construction
+     * under construction TODO: move to graph-view, push to all global datasets on event
      * @param node 
      */
     onNewGraphNode(node: Ontology) {
-        this.nodes = this.nodes.slice();
-        this.links = this.links.slice();
+        //Make api call, collect all new nodes, attach them in subscription as below
+        node = {
+            '@class': 'g',
+            '@rid': '1234:5678',
+            sourceId: '1',
+            source: 'asdf',
+            createdBy: 'isaac',
+            '@version': 1,
+            name: 'aaaaaaAAAAAAAAAAAA'
+        }
+        this.dataMap[node["@rid"]] = node;
+        if(!this.dataMap['#65:998']._children) this.dataMap['#65:998']._children = [];
+        this.dataMap['#65:998']._children.push(node);
+        this.tableData.push(node);
+
         let n = new GraphNode(this.nodes.length + 1, node);
         n.fx = null;
         n.fy = null;
+        n.x = this.nodes[this.nodes.length - 2].x + 100;
+        n.y = this.nodes[this.nodes.length - 2].y + 100;
+        
         this.nodes.push(n);
         this.nodes[this.nodes.length - 1].linkCount++;
         this.nodes[this.nodes.length - 3].linkCount++;
 
-        let l = new GraphLink(this.nodes[this.nodes.length - 3], this.nodes[this.nodes.length - 1], '');
+        let l = new GraphLink(this.nodes[this.nodes.length - 3], this.nodes[this.nodes.length - 1], 'TEST');
         this.links.push(l);
+        this.ping.emit();
     }
 }
 

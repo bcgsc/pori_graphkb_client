@@ -2,40 +2,47 @@
 
 .wrapper{
     width: 100%;
+    height:100%;
 }
 ::ng-deep .mat-tab-body-wrapper{
     height: 100% !important;
 }
 
-.data-view{
-    width: 94%;
-    min-height: $panels-height;
+.data-view {
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: 2vh;
     justify-content: center;
     background-color: #f4f4f4;
     display:flex;
+    position: absolute;
+    left: 32px;
+    right: 32px;
+    bottom:16px;
+    top:16px;
 }
 
-.group-view{
+mat-tab-group{
+    height:100%;
+}
+
+.mat-elevation-z3 {
     float: left;
-    height: $panels-height;
-    width: 67vw;
+    height: 100%;
+    min-width: 69vw;
 }
 
 .node-view {
     margin-left:1px;
     float:right;     
-    width: 27vw;
-    height: $panels-height;
+    min-width: 27vw;
+    height: 100%;
     display: flex;
     flex-direction: column;
 }
 
 @media (max-width: $data-view-collapse){
     .wrapper{
-        overflow-y: hidden;
+        overflow-y: auto;
         padding-left: 5vw;
         padding-right: 5vw;
         width: auto;
@@ -44,13 +51,11 @@
         flex-direction: column;
         width: 100%;
     }
-    .group-view{ 
+    .mat-elevation-z3{ 
         width: 100%;
-        
     }
     .node-view{
         margin-top: 7vw;
         width: 100%;
-        
     }
 }

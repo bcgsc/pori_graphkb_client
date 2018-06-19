@@ -7,6 +7,7 @@ import { TreeViewComponent } from './tree-view/tree-view.component';
 import { GraphViewComponent } from './graph-view/graph-view.component';
 import { LoginViewComponent } from './login-view/login-view.component';
 import { ErrorViewComponent } from './error-view/error-view.component';
+import { BrowseComponent } from './browse/browse.component';
 
 export { SHARED_COMPONENTS } from './shared';
 
@@ -19,5 +20,6 @@ export const APP_COMPONENTS = [
     GraphViewComponent,
     LoginViewComponent,
     ErrorViewComponent,
-    AddNodeViewComponent
+    AddNodeViewComponent,
+    BrowseComponent,
 ];

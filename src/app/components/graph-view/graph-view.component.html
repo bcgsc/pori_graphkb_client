@@ -11,7 +11,7 @@
                 </svg:marker>
             </svg:defs>
 
-            <g [linkDisplay]="link" [linkLabels]="_linkLabels" *ngFor="let link of links"></g>
+            <g [linkDisplay]="link" *ngFor="let link of links"></g>
             <g [nodeDisplay]="node" [_subsets]="_subsets" [_nodeLabels]="_nodeLabels" *ngFor="let node of nodes" [selectedNode]="selectedNode"
                 [draggableNode]="node" [draggableInGraph]="graph" (click)="onClick(node)"></g>
         </g>
@@ -23,14 +23,15 @@
     <mat-menu #menu="matMenu">
         <div class="card" (click)="$event.stopPropagation()">
             <h3 class="mat-h3">Graph Options</h3>
+            <button (click)="onNodeExpand()">new guy</button>
+            
             <mat-form-field>
                 <input matInput [(ngModel)]="_force" name="forces" placeholder="Force Strength" (blur)="onForceChange()" (keyup.enter)="onForceChange()">
             </mat-form-field>
-            <mat-checkbox [(ngModel)]="_linkLabels" disableRipple='true'>Link Labels</mat-checkbox>
             <mat-checkbox [(ngModel)]="_nodeLabels" disableRipple='true'>Node Labels</mat-checkbox>
             <button mat-stroked-button color="accent" (click)="onParentHop()">Parent Hop</button>
             <h4 class="mat-h4">Subset Filter:</h4>
-            <mat-checkbox (change)="onSubset(subset)" *ngFor="let subset of subsets">{{subset}}</mat-checkbox>
+            <mat-checkbox (change)="onSubset(subset)" *ngFor="let subset of subsets">{{subset | subsetPipe}}</mat-checkbox>
         </div>
     </mat-menu>
 </div>

@@ -3,11 +3,11 @@
         <mat-list class="myList">
             <div class="buttons">
                 <button mat-mini-fab id="graph-button" (click)="viewInGraph()">
-                    <mat-icon>scatter_plot</mat-icon> <!--TODO: add tooltip-->
+                    <mat-icon>timeline</mat-icon>
                 </button>
-            </div>
+            </div> 
 
-            <mat-divider></mat-divider>            
+            <mat-divider></mat-divider>
             <h3 matSubheader>Source</h3>
 
             <mat-list-item *ngIf="node">{{node.source}}

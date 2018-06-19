@@ -3,6 +3,7 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlattener, MatTreeFlatDataSource } from '@angular/material';
 import { BehaviorSubject, Observable, of as observableOf } from 'rxjs';
 import { Ontology } from '../../models';
+import { DataService } from '../../services';
 
 /**
  * Component for displaying data in a hierarchical tree view format.
@@ -31,7 +32,7 @@ export class TreeViewComponent implements OnInit {
    */
   @Output() selected = new EventEmitter<string>();
 
-  constructor() {
+  constructor(private dataService: DataService) {
     this.treeFlattener = new MatTreeFlattener(
       this.transformer, 
       this._getLevel,
@@ -56,7 +57,7 @@ export class TreeViewComponent implements OnInit {
   /**
    * Expands tree to ensure selected node is easily located.
    */
-  onOuterChange() {
+  ngOnChanges(changes: SimpleChanges) {
     this.treeControl.collapseAll();
     this.data.forEach(root => {
       this._expandToSelected(root);
@@ -68,6 +69,7 @@ export class TreeViewComponent implements OnInit {
    * @param rn root node.
    */
   private _expandToSelected(rn): boolean {
+
     if (rn['@rid'] == this.selectedNode["@rid"]) {
       return true;
     }

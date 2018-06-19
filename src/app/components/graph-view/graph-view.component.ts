@@ -22,11 +22,13 @@ export class GraphViewComponent implements OnInit, AfterViewInit {
     @Input() links: GraphLink[];
     @Input() selectedNode: Ontology;
     @Input() subsets: string[];
+    @Input() updated: EventEmitter<void>;
 
     /**
      * @param selected triggers when the user single clicks on a node.
      */
     @Output() selected = new EventEmitter<string>();
+    @Output() expanded = new EventEmitter<string>();
 
     private graph: ForceDirectedGraph;
 
@@ -41,12 +43,17 @@ export class GraphViewComponent implements OnInit, AfterViewInit {
         this.graph.initSimulation(this.options);
     }
 
-    constructor(private d3Service: D3Service, private ref: ChangeDetectorRef) { }
+    constructor(private d3Service: D3Service, private ref: ChangeDetectorRef) {
+       
+     }
 
     /**
      * Initializes graph object and ticker.
      */
     ngOnInit() {
+        this.updated.subscribe(()=>{
+            this.ngOnChanges(null);
+        });
         this.graph = this.d3Service.getForceDirectedGraph(this.nodes, this.links, this.options, this._force);
 
         this.graph.ticker.subscribe((d) => {
@@ -105,6 +112,10 @@ export class GraphViewComponent implements OnInit, AfterViewInit {
             this._subsets = this._subsets.filter(s => s != subset) 
         } else {
             this._subsets.push(subset);
-        }
+        }1 / 10;
+    }
+
+    onNodeExpand(rid){
+        this.expanded.emit(rid);
     }
 }

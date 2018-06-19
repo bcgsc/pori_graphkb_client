@@ -12,6 +12,5 @@ import { GraphLink } from '../../../models/graph-link';
 })
 export class LinkDisplayComponent {
   @Input('linkDisplay') link: GraphLink;
-  @Input('linkLabels') linkLabels: boolean;
 
 }

@@ -1,22 +1,24 @@
 <div class="wrapper">
     <div class="data-view" *ngIf="dataMap" [@.disabled]="disabled">
-        <div class="mat-elevation-z3">
-            <mat-tab-group class="group-view">
+        <section class="mat-elevation-z3">
+            <mat-tab-group>
                 <mat-tab label="Table View">
-                    <!-- <my-table [data]="tableData" [initSelected]="selectedNode" (selected)="onSelect($event)"></my-table> -->
-                    <table-view [data]="tableData" [selectedNode]="selectedNode" (selected)="onSelect($event)"></table-view>
-
+                    <table-view [data]="tableData" [updated]="ping" [selectedNode]="selectedNode" (selected)="onSelect($event)"></table-view>
                 </mat-tab>
                 <mat-tab label="Tree View">
-                    <tree-view [data]="treeData" [selectedNode]="selectedNode" (selected)="onSelect($event, true)"></tree-view>
+                    <ng-template matTabContent>
+                        <tree-view [data]="treeData" [selectedNode]="selectedNode" (selected)="onSelect($event, true)"></tree-view>
+                    </ng-template>
                 </mat-tab>
                 <mat-tab label="Graph View">
-                    <graph-view style="overflow: hidden;" [nodes]="nodes" [links]="links" [selectedNode]="selectedNode" [subsets]="subsets" (selected)="onSelect($event)"></graph-view>
+                    <ng-template matTabContent>
+                        <graph-view style="overflow: hidden;" [updated]="ping" [nodes]="nodes" [links]="links" [selectedNode]="selectedNode" [subsets]="subsets" (selected)="onSelect($event)" (expanded)="onNewGraphNode($event)"></graph-view>
+                    </ng-template>
                 </mat-tab>
             </mat-tab-group>
-        </div>
-        <node-view class="node-view" [node]="selectedNode" [ontologyMap]="dataMap" (changed)="onEdit($event)" (added)="onAdd($event)" (deleted)="onDelete($event)"
-            (relationshipped)="onNewRelationship($event)" (query)="onQuery($event)">
+        </section>
+        <node-view class="node-view" [node]="selectedNode" [ontologyMap]="dataMap" (changed)="onEdit($event)" (added)="onAdd($event)"
+            (deleted)="onDelete($event)" (relationshipped)="onNewRelationship($event)" (query)="onQuery($event)">
         </node-view>
     </div>
     <div *ngIf="!dataMap">

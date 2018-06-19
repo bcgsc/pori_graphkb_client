@@ -34,7 +34,7 @@ import {
   SHARED_COMPONENTS,
 } from './components';
 
-import { APIService, AuthService, APIInterceptor, D3Service } from './services';
+import { APIService, AuthService, APIInterceptor, D3Service, DataService } from './services';
 import { SubsetsPipe, SubsetPipe } from './pipes/subsets.pipe';
 import { CamelCasePipe } from './pipes/camelCase.pipe';
 import { RelationshipPipe } from './pipes/relationship.pipe';
@@ -84,6 +84,7 @@ import { D3_DIRECTIVES } from './directives/';
   providers: [
     APIService,
     AuthService,
+    DataService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: APIInterceptor,

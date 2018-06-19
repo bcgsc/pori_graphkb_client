@@ -74,7 +74,7 @@ $gsc-teal: (
   )
 );
 
-$ontologyweb-primary: mat-palette($gsc-indigo, 700);
+$ontologyweb-primary: mat-palette($gsc-indigo, 800);
 $ontologyweb-accent:  mat-palette($gsc-teal, 700, 300, A700);
 $ontologyweb-background: (  
   status-bar: map_get($mat-grey, 300),

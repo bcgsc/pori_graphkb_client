@@ -17,7 +17,8 @@ export class APIService {
     constructor(private http: HttpClient) {}
 
     public query(params){
-        return this.http.get('../../assets/get_diseases.body_expanded.json').pipe(map(json => jc.retrocycle(json)));
+        return this.http.get('../../assets/get_diseases.body_expanded.json')
+            .pipe(map(json => jc.retrocycle(json)));
     }
 
     /**
@@ -53,7 +54,8 @@ export class APIService {
      * @param params optional additional query parameters.
      */
     public getRecord(rid, params?): Observable<any> {
-        return this.http.get(API_ENDPOINT + "/diseases/" + rid, {params: params}).pipe(map(json => jc.retrocycle(json)));
+        return this.http.get(API_ENDPOINT + "/diseases/" + rid, {params: params})
+            .pipe(map(json => jc.retrocycle(json)));
     }
 
     // Configure add relationship calls

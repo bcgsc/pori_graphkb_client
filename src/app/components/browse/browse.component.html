@@ -1,0 +1,9 @@
+<div class="wrapper">
+  <h1 class="mat-h1">Select a source to browse:</h1>
+  <mat-divider></mat-divider>
+  <div class="source-selection">
+    <button mat-stroked-button color="primary" *ngFor="let source of sources">
+      {{ source }}
+    </button>
+  </div>
+</div>

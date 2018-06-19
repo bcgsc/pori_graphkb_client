@@ -1,0 +1,90 @@
+.adv-wrapper {
+  text-align: center;
+  margin: auto;
+  width: 80vw;
+  height: 100%;
+  vertical-align: middle;
+
+  #back-button {
+    position: absolute;
+    left: 72px;
+  }
+
+  .parameter-selection {
+    display: flex;
+    margin: 8px 0;
+
+    @media (max-width: 920px) {
+      flex-direction: column;
+    }
+    .mat-h3 {
+      text-align: left;
+      min-width: 15vw;
+      margin: auto;
+      font: 400 16px/28px Roboto, "Helvetica Neue", sans-serif;
+    }
+
+    .text-input {
+      flex-grow: 1;
+    }
+  }
+
+  .checkboxes {
+    flex-grow: 1;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-row-gap: 4px;
+  }
+
+  .related-checkboxes {
+    flex-grow: 1;
+    margin: auto;
+    min-width: 45vw;
+    // border: 1px solid #3d3d3d;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-content: center;
+  }
+  .checkbox {
+    display: block;
+    text-align: left;
+  }
+  @media (max-width: 1550px) {
+    .checkboxes {
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 1172px) {
+    .checkboxes {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+  @media (max-width: 720px) {
+    .checkboxes {
+      grid-template-columns: 1fr;
+    }
+    .related-checkboxes {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 700px) {
+    .checkboxes {
+      grid-template-columns: 1fr 1fr;
+    }
+    .related-checkboxes {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  button {
+    margin: 8px;
+  }
+
+  .link {
+    text-decoration: none;
+    width: fit-content;
+    margin: auto;
+  }
+}

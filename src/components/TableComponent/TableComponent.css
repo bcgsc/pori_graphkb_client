@@ -1,0 +1,53 @@
+.table-head tr,
+.table-head th {
+  position: sticky;
+  top: 0;
+  background-color: #f8f8f8; }
+
+.selected-override {
+  background-color: rgba(214, 219, 245, 0.7) !important; }
+
+.cursor-override {
+  cursor: pointer; }
+
+.cursor-override:hover {
+  background-color: rgba(227, 230, 248, 0.4); }
+
+.data-table {
+  position: sticky;
+  bottom: 56px;
+  margin: auto;
+  width: 100%; }
+
+.table-paginator {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  background-color: #f8f8f8;
+  display: flex;
+  float: left;
+  z-index: 1; }
+
+.source-col {
+  min-width: 40px;
+  max-width: 40px; }
+
+.sourceId-col {
+  min-width: 65px;
+  max-width: 65px; }
+
+.name-col {
+  min-width: 200px;
+  max-width: 200px; }
+
+.subsets-col {
+  min-width: 300px; }
+
+.spacer-cell {
+  position: sticky;
+  left: 0;
+  right: 0;
+  background-color: #fafafa;
+  bottom: 0; }

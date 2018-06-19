@@ -1,0 +1,88 @@
+$breakpoint: 1300px;
+
+
+.wrapper{
+    width:100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+    margin-bottom: 20px;
+
+    @media (max-width: $breakpoint){
+        grid-template-columns: 1fr;
+        width:100%;
+        
+    }
+}
+
+.mat-h2{
+    text-align: left;
+    margin: 0;
+}
+
+.basic-params{
+    grid-column-start: 1;
+    grid-column-end: 2;
+    padding:20px;
+}
+
+.subsets-selection{
+    grid-column-start: 2;
+    grid-column-end: 3;
+    padding:20px;
+
+    .list{
+        padding:0;
+    }
+
+    @media (max-width: $breakpoint){
+        grid-column-start: 1;
+        grid-column-end: end;
+    }
+}
+
+.relationships-selection{
+    grid-column-start: 3;
+    padding:20px;
+
+    .list{
+        padding:0;
+    }
+
+    @media (max-width: $breakpoint){
+        grid-column-start: 1;
+        grid-column-end: end;
+    }
+}
+
+.input-wrapper{
+    display: flex;
+    width: inherit;
+    margin: 20px 0;
+
+    .text-input{
+        flex:1;
+    }
+}
+
+.type-select{
+    min-width: 88px;
+    text-align: left;
+}
+
+.search-wrap{
+    flex-grow: 1;
+    margin-top: 16px;
+}
+
+.submit-button{
+    position: fixed;
+    width: 200px;
+    right: 1%;
+    bottom: 1%;
+
+    button{
+        width:100%;
+    }
+}
+

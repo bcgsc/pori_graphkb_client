@@ -33,10 +33,12 @@
   display: flex;
   float: left;
   z-index: 1;
+  border-bottom: unset !important;
 }
 
-.source-col {
-  $width: 40px;
+.source-col,
+.table-paginator {
+  $width: 45px;
   min-width: $width;
   max-width: $width;
 }

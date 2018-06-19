@@ -1,3 +1,5 @@
+@import "../../globals";
+
 .node-wrapper {
   height: 100%;
   overflow-y: auto;
@@ -25,7 +27,11 @@
     margin: auto;
   }
 }
-
+.edit-btn {
+  a {
+    margin: auto;
+  }
+}
 .basic-btn {
   height: 56px;
   display: none;
@@ -50,6 +56,12 @@
 .graph-wrapper {
   height: 100%;
   width: 100%;
+}
+
+.basic-wrapper {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .drawer-box {

@@ -28,11 +28,13 @@
   background-color: #f8f8f8;
   display: flex;
   float: left;
-  z-index: 1; }
+  z-index: 1;
+  border-bottom: unset !important; }
 
-.source-col {
-  min-width: 40px;
-  max-width: 40px; }
+.source-col,
+.table-paginator {
+  min-width: 45px;
+  max-width: 45px; }
 
 .sourceId-col {
   min-width: 65px;

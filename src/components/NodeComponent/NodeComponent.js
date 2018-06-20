@@ -58,13 +58,11 @@ class NodeComponent extends Component {
     }
   }
 
-  handleDrawer(key) {
+  handleDrawer(key, value) {
     let drawer = this.state.drawer;
-    drawer[key] = !drawer[key];
+    drawer[key] = value;
     this.setState({ drawer }, this.handleResize);
   }
-
- 
 
   render() {
     const node = this.props.data[this.props.selectedId];
@@ -119,10 +117,7 @@ class NodeComponent extends Component {
           {listItems("parents")}
           {listItems("children")}
           <ListItem className="edit-btn">
-            <Link
-              className="link"
-              to={{ state: this.state, pathname: "/edit" }}
-            >
+            <Link className="link" to={{ state: node, pathname: "/edit" }}>
               <Button variant="raised" color="primary">
                 Edit Node
               </Button>
@@ -150,19 +145,20 @@ class NodeComponent extends Component {
     };
 
     const selected = key => key === this.state.colorKey;
+
     const graphDrawer = (
       <Drawer
         variant="persistent"
         anchor="right"
         open={this.state.drawer.graph}
         classes={{
-          paper: "drawer-box"
+          paper: "drawer-box-graph"
         }}
-        onClose={() => this.handleDrawer("graph")}
+        onClose={() => this.handleDrawer("graph", false)}
         // SlideProps={{ unmountOnExit: true }}
       >
         <Paper elevation={5} className="graph-wrapper" ref="graph-dim">
-          <IconButton onClick={() => this.handleDrawer("graph")}>
+          <IconButton onClick={() => this.handleDrawer("graph", false)}>
             <ChevronRightIcon />
           </IconButton>
           {graph()}
@@ -172,17 +168,17 @@ class NodeComponent extends Component {
 
     const basicDrawer = (
       <Drawer
-        variant="persistent"
+        variant="temporary"
         anchor="right"
         open={this.state.drawer.basic}
         classes={{
-          paper: "drawer-box"
+          paper: "drawer-box-basic"
         }}
-        onClose={() => this.handleDrawer("basic")}
+        onClose={() => this.handleDrawer("basic", false)}
         SlideProps={{ unmountOnExit: true }}
       >
         <Paper className="basic-wrapper">
-          <IconButton onClick={() => this.handleDrawer("basic")}>
+          <IconButton onClick={() => this.handleDrawer("basic", false)}>
             <ChevronRightIcon />
           </IconButton>
           {basicProperties}
@@ -197,14 +193,14 @@ class NodeComponent extends Component {
         <Paper className="graph-btn">
           <IconButton
             color="secondary"
-            onClick={() => this.handleDrawer("graph")}
+            onClick={() => this.handleDrawer("graph", true)}
           >
             <TimelineIcon />
           </IconButton>
           <div className="basic-btn">
             <IconButton
               color="primary"
-              onClick={() => this.handleDrawer("basic")}
+              onClick={() => this.handleDrawer("basic", true)}
             >
               <AssignmentIcon />
             </IconButton>

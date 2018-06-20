@@ -9,7 +9,9 @@ import { Button, Paper } from "@material-ui/core";
 import { CompactPicker } from "react-color";
 
 const R = 55;
-
+const arrowWidth = 6;
+const arrowLength = 9;
+const nodeR = 4;
 class GraphComponent extends Component {
   constructor(props) {
     super(props);
@@ -259,10 +261,10 @@ class GraphComponent extends Component {
     this.setState({ colorKey: key });
   }
   render() {
-    let links = this.state.links.map(link => {
-      return <SVGLink key={link.index} link={link} />;
+    const links = this.state.links.map(link => {
+      return <SVGLink key={link.rid} link={link} />;
     });
-    let nodes = this.state.nodes.map(node => {
+    const nodes = this.state.nodes.map(node => {
       const color =
         this.state.expandId === node.rid
           ? this.state.graphOptions.selectedColor
@@ -279,13 +281,17 @@ class GraphComponent extends Component {
           node={node}
           simulation={this.state.simulation}
           color={color}
-          r={node.rid === this.state.expandId ? 4 : 4}
+          r={node.rid === this.state.expandId ? nodeR : nodeR}
           handleClick={e => this.handleClick(e, node)}
         />
       );
     });
     const selected = key => key === this.state.colorKey;
-
+    const arrowSize = {
+      d: "M0,0 L0," + arrowWidth + " L" + arrowLength + ", " + arrowWidth / 2,
+      refX: nodeR + arrowLength + 1,
+      refY: arrowWidth / 2
+    };
     return (
       <div>
         <div className="color-picker">
@@ -328,19 +334,19 @@ class GraphComponent extends Component {
             </div>
           </div>
         </div>
-        <Paper>
+        <div>
           <svg ref="graph">
             <defs>
               <marker
                 id="arrow"
-                markerWidth="25"
-                markerHeight="10"
-                refX="11"
-                refY="2"
+                markerWidth={arrowLength}
+                markerHeight={arrowWidth}
+                refX={arrowSize.refX}
+                refY={arrowSize.refY}
                 orient="auto"
                 markerUnits="strokeWidth"
               >
-                <path d="M0,0 L0,4 L6,2 z" fill="#555" />
+                <path d={arrowSize.d} fill="#555" />
               </marker>
 
               <marker
@@ -360,7 +366,7 @@ class GraphComponent extends Component {
               {nodes}
             </g>
           </svg>
-        </Paper>
+        </div>
       </div>
     );
   }

@@ -117,21 +117,19 @@ class NodeComponent extends Component {
           {listItems("parents")}
           {listItems("children")}
           <ListItem className="edit-btn">
-            <Link className="link" to={{ state: node, pathname: "/edit" }}>
+            <Link
+              className="link"
+              to={{
+                state: { rid: node.rid },
+                pathname: "/edit/" + node.rid.slice(1)
+              }}
+            >
               <Button variant="raised" color="primary">
                 Edit Node
               </Button>
             </Link>
           </ListItem>
-          <ListItem className="graph-btn">
-            <IconButton
-              color="secondary"
-              onClick={() => this.handleDrawer("graph", true)}
-              // classes={{ root: "graph-btn" }}
-            >
-              <TimelineIcon />
-            </IconButton>
-          </ListItem>
+          <ListItem className="graph-btn" />
         </List>
       </div>
     );
@@ -171,7 +169,7 @@ class NodeComponent extends Component {
             className="close-btn"
             onClick={() => this.handleDrawer("graph", false)}
           >
-            <ChevronRightIcon />
+            <span>Close</span> <ChevronRightIcon />
           </IconButton>
           {graph()}
         </Paper>
@@ -200,18 +198,36 @@ class NodeComponent extends Component {
 
     return (
       <div className="node-wrapper">
-        {basicDrawer}      
+        {basicDrawer}
         {graphDrawer}
         <Paper className="detail-wrapper">
           <div className="basic-btn">
-            <IconButton
-              color="primary"
-              onClick={() => this.handleDrawer("basic", !this.state.drawer.basic)}
-            >
-              <AssignmentIcon />
-            </IconButton>
+            <div className="btn-wrapper">
+              <IconButton
+                className="basic"
+                onClick={() =>
+                  this.handleDrawer("basic", !this.state.drawer.basic)
+                }
+              >
+                <AssignmentIcon />
+              </IconButton>
+            </div>
+            <div className="btn-wrapper">
+              <IconButton
+                color="secondary"
+                onClick={() => this.handleDrawer("graph", true)}
+              >
+                <TimelineIcon />
+              </IconButton>
+            </div>
           </div>
         </Paper>
+        <IconButton
+          color="secondary"
+          onClick={() => this.handleDrawer("graph", true)}
+        >
+          <TimelineIcon />
+        </IconButton>
         {basicProperties}
       </div>
     );

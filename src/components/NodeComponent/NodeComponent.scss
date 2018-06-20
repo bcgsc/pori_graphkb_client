@@ -6,6 +6,7 @@
 
   @media (max-width: 60em) {
     height: fit-content;
+    overflow: hidden;
   }
 }
 
@@ -40,19 +41,33 @@
 }
 
 .basic-btn {
-  height: 56px;
   display: none;
   float: left;
-  position: absolute;
-  left: 0;
-  bottom: 0;
+  position: fixed;
+  left: 48px;
+  top: 0;
   @media (max-width: 60em) {
     height: 48px;
     display: unset;
   }
 
+  $size: 40px;
+  .btn-wrapper {
+    display: inline-block;
+    margin: 4px;
+    overflow: visible;
+    height: $size;
+    width: $size;
+    background-color: #17214e;
+    border-radius: $size;
+  }
+
+  .basic {
+    color: #fafafa;
+  }
   button {
     margin: auto;
+    transform: translate(-4px, -4px);
   }
 }
 
@@ -64,8 +79,9 @@
   height: 100%;
   width: 100%;
   .close-btn {
-    position: absolute;
-    right: 0;
+    span {
+      font-size: 0.9em;
+    }
   }
 }
 

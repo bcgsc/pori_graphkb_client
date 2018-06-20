@@ -1,97 +1,124 @@
-import React, { Component } from 'react';
-import './AutoSearchComponent.css';
-import TextField from '@material-ui/core/TextField';
-import Downshift from 'downshift';
-import Paper from '@material-ui/core/Paper';
-import { MenuItem } from '@material-ui/core';
-import api from '../../services/api';
-import { debounce } from 'throttle-debounce';
+import React, { Component } from "react";
+import "./AutoSearchComponent.css";
+import TextField from "@material-ui/core/TextField";
+import Downshift from "downshift";
+import Paper from "@material-ui/core/Paper";
+import { MenuItem } from "@material-ui/core";
+import api from "../../services/api";
+import { debounce } from "throttle-debounce";
+import List from "@material-ui/core/List";
 
 class AutoSearchComponent extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
+    this.state = {
+      options: [],
+      limit: props.limit || 30,
+      endpoint: props.endpoint || "diseases",
+      property: props.property || "name",
+      isOpen: false
+    };
+    this.callApi = debounce(300, this.callApi.bind(this));
+    this.refreshOptions = this.refreshOptions.bind(this);
+    this.keepOpen = this.keepOpen.bind(this);
+    this.close = this.close.bind(this);
+  }
 
-        this.state = {
-            options: [],
-            limit: props.limit || 30,
-            endpoint: props.endpoint || 'diseases',
-            property: props.property || 'name',
-        }
+  componentWillUnmount() {
+    this.callApi = null;
+    this.refreshOptions = null;
+  }
 
-        this.callApi = debounce(300, this.callApi.bind(this));
-        this.refreshOptions = this.refreshOptions.bind(this);
-    }
+  refreshOptions(e) {
+    this.callApi(e.target.value);
+  }
 
-    componentWillUnmount(){
-        this.callApi = null;
-        this.refreshOptions = null;
-    }
-
-    refreshOptions(e) {
-        this.callApi(e.target.value);
-    }
-
-    callApi(value) {
-        api.get('/' + this.state.endpoint + '?' + this.state.property + '=~' + value + '&limit=' + this.state.limit).then(response => {
-            response = response.map(object => { return { value: object.name, rid: object['@rid'] } });
-            this.setState({ options: response });
-        })
-    }
-
-    render() {
-        let options = (inputValue, getItemProps) => {
-            return this.state.options.map((item, index) => (
-                <MenuItem
-                    {...getItemProps({
-                        key: item.rid,
-                        index,
-                        item,
-                    })}
-                >
-                    {item.value}
-                </MenuItem>
-            ))
-        }
-
-        return (
-            <Downshift
-                onChange={(e) => { this.props.onChange({ target: e }) }}
-                itemToString={item => { if (item) return item.value; }}
+  callApi(value) {
+    api
+      .get(
+        "/" +
+          this.state.endpoint +
+          "?" +
+          this.state.property +
+          "=~" +
+          value +
+          "&limit=" +
+          this.state.limit
+      )
+      .then(response => {
+        const options = response.map(object => {
+          return object;
+        });
+        this.setState({ isOpen: true, options });
+      });
+  }
+  render() {
+    let options = (inputValue, getItemProps, setState, getInputProps) => {
+      return this.state.options.map(
+        (item, index) =>
+          this.props.children ? (
+            this.props.children(item, getItemProps, setState, index, getInputProps)
+          ) : (
+            <MenuItem
+              {...getItemProps({
+                key: item["@rid"],
+                index,
+                item
+              })}
             >
-                {({
-                    getInputProps,
-                    getItemProps,
-                    getLabelProps,
-                    isOpen,
-                    inputValue,
-                    highlightedIndex,
-                    selectedItem,
-                }) => (
-                        <div className="autosearch-wrapper">
-                            <TextField
-                                onChange={(e) => { this.props.onChange(e) }}
-                                onKeyUp={this.refreshOptions}
-                                fullWidth
-                                required={this.props.required}
-                                label={this.props.label}
-                                InputProps={{
-                                    ...getInputProps({
-                                        placeholder: this.props.placeholder,
-                                        value: this.props.value,
-                                        onChange: this.props.onChange,
-                                        name: this.props.name,
-                                    })
-                                }}
-                            />
-                            {isOpen ? (
-                                <Paper className="droptions" square>
-                                    {options(inputValue, getItemProps)}
-                                </Paper>
-                            ) : null}
-                        </div>
-                    )}
-            </Downshift>
-        )
-    }
+              {item.name}
+            </MenuItem>
+          )
+      );
+    };
+
+    return (
+      <Downshift
+        onChange={e => {
+          this.props.onChange({ target: { value: e.name } });
+        }}
+        itemToString={item => {
+          if (item) return item.name;
+        }}
+      >
+        {({
+          getInputProps,
+          getItemProps,
+          getLabelProps,
+          isOpen,
+          inputValue,
+          highlightedIndex,
+          selectedItem,
+          setState
+        }) => (
+          <div className="autosearch-wrapper">
+            <TextField
+              onChange={e => {
+                this.props.onChange(e);
+              }}
+              onKeyUp={this.refreshOptions}
+              fullWidth
+              required={this.props.required}
+              label={this.props.label}
+              InputProps={{
+                ...getInputProps({
+                  placeholder: this.props.placeholder,
+                  value: this.props.value,
+                  onChange: this.props.onChange,
+                  name: this.props.name
+                })
+              }}
+            />
+            {isOpen &&
+            options(inputValue, getItemProps, setState, getInputProps).length !== 0 ? (
+              <Paper className="droptions">
+                <List>{options(inputValue, getItemProps, setState, getInputProps)}</List>
+              </Paper>
+            ) : null}
+          </div>
+        )}
+      </Downshift>
+    );
+  }
 }
 export default AutoSearchComponent;

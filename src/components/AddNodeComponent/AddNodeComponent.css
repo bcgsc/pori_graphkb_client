@@ -41,8 +41,7 @@
 
 .input-wrapper {
   display: flex;
-  width: inherit;
-  margin: 20px 0; }
+  width: inherit; }
   .input-wrapper .text-input {
     flex: 1; }
 
@@ -61,3 +60,12 @@
   bottom: 1%; }
   .submit-button button {
     width: 100%; }
+
+.relationship-item {
+  width: calc(100% - 32px);
+  margin: 8px 0;
+  padding: 8px 16px;
+  text-align: left;
+  display: flex; }
+  .relationship-item .detail {
+    flex-grow: 1; }

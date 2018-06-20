@@ -10,7 +10,8 @@
   overflow-y: auto; }
   @media (max-width: 60em) {
     .node-wrapper {
-      height: fit-content; } }
+      height: fit-content;
+      overflow: hidden; } }
 
 .list-subheader {
   padding-left: 24px;
@@ -33,18 +34,28 @@
   margin: auto; }
 
 .basic-btn {
-  height: 56px;
   display: none;
   float: left;
-  position: absolute;
-  left: 0;
-  bottom: 0; }
+  position: fixed;
+  left: 48px;
+  top: 0; }
   @media (max-width: 60em) {
     .basic-btn {
       height: 48px;
       display: unset; } }
+  .basic-btn .btn-wrapper {
+    display: inline-block;
+    margin: 4px;
+    overflow: visible;
+    height: 40px;
+    width: 40px;
+    background-color: #17214e;
+    border-radius: 40px; }
+  .basic-btn .basic {
+    color: #fafafa; }
   .basic-btn button {
-    margin: auto; }
+    margin: auto;
+    transform: translate(-4px, -4px); }
 
 .node-properties {
   overflow: auto; }
@@ -52,9 +63,8 @@
 .graph-wrapper {
   height: 100%;
   width: 100%; }
-  .graph-wrapper .close-btn {
-    position: absolute;
-    right: 0; }
+  .graph-wrapper .close-btn span {
+    font-size: 0.9em; }
 
 .basic-wrapper {
   width: 100%;

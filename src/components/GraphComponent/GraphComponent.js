@@ -94,12 +94,12 @@ class GraphComponent extends Component {
               edge.out["@rid"] &&
               nodes.filter(n => n.rid === edge.out["@rid"]).length === 0
             ) {
-              let pos = this.positionInit(position.x, position.y, j++, n, R);
+              let positionInit = this.positionInit(position.x, position.y, j++, n, R);
               nodes.push({
                 name: edge.out.name,
                 rid: edge.out["@rid"],
-                x: pos.x,
-                y: pos.y
+                x: positionInit.x,
+                y: positionInit.y
               });
             }
             if (

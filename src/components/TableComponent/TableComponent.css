@@ -14,8 +14,6 @@
   background-color: rgba(227, 230, 248, 0.4); }
 
 .data-table {
-  position: sticky;
-  bottom: 56px;
   margin: auto;
   width: 100%; }
 

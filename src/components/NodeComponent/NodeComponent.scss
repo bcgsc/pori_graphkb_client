@@ -13,11 +13,10 @@
   padding-left: 24px;
   text-align: left;
 }
-.graph-btn {
+.detail-wrapper {
   top: 0;
   position: sticky;
   z-index: 1;
-  height: 56px;
 
   @media (max-width: 60em) {
     height: 48px;
@@ -27,11 +26,19 @@
     margin: auto;
   }
 }
+
 .edit-btn {
   a {
     margin: auto;
   }
 }
+
+.graph-btn {
+  button {
+    margin: auto;
+  }
+}
+
 .basic-btn {
   height: 56px;
   display: none;
@@ -56,6 +63,10 @@
 .graph-wrapper {
   height: 100%;
   width: 100%;
+  .close-btn {
+    position: absolute;
+    right: 0;
+  }
 }
 
 .basic-wrapper {
@@ -65,7 +76,7 @@
 }
 
 .drawer-box-graph {
-  width: calc(100vw - 48px);
+  width: calc(100vw - 1px);
 }
 
 .drawer-box-basic {

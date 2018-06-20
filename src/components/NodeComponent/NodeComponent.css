@@ -16,18 +16,20 @@
   padding-left: 24px;
   text-align: left; }
 
-.graph-btn {
+.detail-wrapper {
   top: 0;
   position: sticky;
-  z-index: 1;
-  height: 56px; }
+  z-index: 1; }
   @media (max-width: 60em) {
-    .graph-btn {
+    .detail-wrapper {
       height: 48px; } }
-  .graph-btn button {
+  .detail-wrapper button {
     margin: auto; }
 
 .edit-btn a {
+  margin: auto; }
+
+.graph-btn button {
   margin: auto; }
 
 .basic-btn {
@@ -50,6 +52,9 @@
 .graph-wrapper {
   height: 100%;
   width: 100%; }
+  .graph-wrapper .close-btn {
+    position: absolute;
+    right: 0; }
 
 .basic-wrapper {
   width: 100%;
@@ -57,7 +62,7 @@
   overflow-y: auto; }
 
 .drawer-box-graph {
-  width: calc(100vw - 48px); }
+  width: calc(100vw - 1px); }
 
 .drawer-box-basic {
   width: calc(50vw + 24px); }

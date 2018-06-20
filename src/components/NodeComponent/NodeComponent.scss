@@ -64,9 +64,14 @@
   overflow-y: auto;
 }
 
-.drawer-box {
+.drawer-box-graph {
   width: calc(100vw - 48px);
 }
+
+.drawer-box-basic {
+  width: calc(50vw + 24px);
+}
+
 .btn-background {
   background-color: #fafafa;
 }

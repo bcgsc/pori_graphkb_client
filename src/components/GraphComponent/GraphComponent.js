@@ -94,7 +94,13 @@ class GraphComponent extends Component {
               edge.out["@rid"] &&
               nodes.filter(n => n.rid === edge.out["@rid"]).length === 0
             ) {
-              let positionInit = this.positionInit(position.x, position.y, j++, n, R);
+              let positionInit = this.positionInit(
+                position.x,
+                position.y,
+                j++,
+                n,
+                R
+              );
               nodes.push({
                 name: edge.out.name,
                 rid: edge.out["@rid"],

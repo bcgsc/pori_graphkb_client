@@ -17,7 +17,6 @@ class AdvancedQueryComponent extends Component {
         name: props.location.state.name || "",
         source: "",
         sourceId: "",
-        sourceVersion: "",
         longName: "",
         sourceIdVersion: "",
         limit: 1000,
@@ -37,10 +36,8 @@ class AdvancedQueryComponent extends Component {
         deletedBy: true,
         deletedAt: true,
         source: true,
-        sourceVersion: true,
         sourceId: true,
         sourceIdVersion: true,
-        sourceUri: true,
         uuid: true,
         longName: true
       },
@@ -188,17 +185,6 @@ class AdvancedQueryComponent extends Component {
             onChange={this.handleChange}
             name="sourceId"
             className="text-input"
-          />
-        </div>
-        <div className="parameter-selection">
-          <h3 className="mat-h3">Source Version:</h3>
-          <TextField
-            id="source-version-adv"
-            label="Source Version"
-            value={this.state.mainParams.sourceVersion}
-            onChange={this.handleChange}
-            className="text-input"
-            name="sourceVersion"
           />
         </div>
         <div className="parameter-selection">

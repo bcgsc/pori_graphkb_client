@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import "./NodeComponent.css";
+import "./NodeDetail.css";
 import {
   List,
   ListItem,
@@ -16,7 +16,7 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import GraphComponent from "../GraphComponent/GraphComponent";
 import { Link } from "react-router-dom";
 
-class NodeComponent extends Component {
+class NodeDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -65,7 +65,7 @@ class NodeComponent extends Component {
   }
 
   render() {
-    const node = this.props.data[this.props.selectedId];
+    const node = this.props.node;
 
     const listItems = key => {
       if (node[key]) {
@@ -233,4 +233,4 @@ class NodeComponent extends Component {
     );
   }
 }
-export default NodeComponent;
+export default NodeDetail;

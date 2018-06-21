@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './DataHubComponent.css';
 import api from '../../services/api';
 import prepareEntry from '../../services/serializers';
-import NodeComponent from '../NodeComponent/NodeComponent';
+import NodeDetail from '../NodeDetail/NodeDetail';
 import TableComponent from '../TableComponent/TableComponent';
 import { Redirect } from 'react-router-dom';
 import { Paper } from '@material-ui/core';
@@ -65,13 +65,13 @@ class DataHubComponent extends Component {
                                 />
                             </Paper>
                         </div>
-                        <Paper className="node-view" elevation={4}>
-                            <NodeComponent
+                        {/* <Paper className="node-view" elevation={4}>
+                            <NodeDetail
                                 selectedId={this.state.selectedId}
                                 data={this.state.data}
                                 handleClick={this.handleClick}
                             />
-                        </Paper>
+                        </Paper> */}
                     </div>
                 );
             } else return null;

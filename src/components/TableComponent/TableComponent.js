@@ -7,8 +7,13 @@ import {
   TableCell,
   TableBody,
   TablePagination,
-  TableSortLabel
+  TableSortLabel,
+  IconButton,
+  Collapse,
+  Typography
 } from "@material-ui/core";
+import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
+import NodeDetail from "../NodeDetail/NodeDetail";
 
 class TableComponent extends Component {
   constructor(props) {
@@ -19,18 +24,22 @@ class TableComponent extends Component {
       page: 0,
       rowsPerPage: 50,
       order: "asc",
-      orderBy: null
+      orderBy: null,
+      toggle: ""
     };
+    this.handleDetailToggle = this.handleDetailToggle.bind(this);
+    this.handleRequestSort = this.handleRequestSort.bind(this);
+    this.handleChangePage = this.handleChangePage.bind(this);
+    this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
   }
 
-  handleChangePage = (event, page) => {
+  handleChangePage(event, page) {
     this.setState({ page });
-  };
-
-  handleChangeRowsPerPage = event => {
+  }
+  handleChangeRowsPerPage(event) {
     this.setState({ rowsPerPage: event.target.value });
-  };
-  handleRequestSort = property => {
+  }
+  handleRequestSort(property) {
     const orderBy = property;
     let order = "desc";
 
@@ -45,7 +54,11 @@ class TableComponent extends Component {
 
     this.setState({ data, order, orderBy });
     console.log(this.state);
-  };
+  }
+  handleDetailToggle(rid) {
+    if (this.state.toggle === rid) rid = "";
+    this.setState({ toggle: rid });
+  }
 
   isSelected = rid => this.props.selectedId === rid;
 
@@ -64,11 +77,11 @@ class TableComponent extends Component {
       {
         id: "name",
         label: "Name"
-      },
-      {
-        id: "subsets",
-        label: "Subsets"
       }
+      // {
+      //   id: "subsets",
+      //   label: "Subsets"
+      // }
     ];
 
     return (
@@ -89,6 +102,7 @@ class TableComponent extends Component {
                   </TableCell>
                 );
               })}
+              <TableCell style={{ zIndex: 1 }} />
             </TableRow>
           </TableHead>
           <TableBody>
@@ -96,48 +110,65 @@ class TableComponent extends Component {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map(n => {
                 const isSelected = this.isSelected(n.rid);
+                const detail =
+                  this.state.toggle === n.rid ? (
+                    <TableRow>
+                      <Collapse in={this.state.toggle === n.rid} unmountOnExit>
+                        <NodeDetail node={n} />
+                      </Collapse>
+                    </TableRow>
+                  ) : null;
+
                 return (
-                  <TableRow
-                    key={n.rid}
-                    selected={isSelected}
-                    onClick={e => this.props.handleClick(e, n.rid)}
-                    classes={{
-                      root: "cursor-override",
-                      selected: "selected-override"
-                    }}
-                  >
-                    <TableCell
+                  <React.Fragment>
+                    <TableRow
+                      key={n.rid}
+                      selected={isSelected}
+                      onClick={e => this.props.handleClick(e, n.rid)}
                       classes={{
-                        root: "source-col"
+                        root: "cursor-override",
+                        selected: "selected-override"
                       }}
                     >
-                      {n.source}
-                    </TableCell>
-                    <TableCell
-                      classes={{
-                        root: "sourceId-col"
-                      }}
-                    >
-                      {n.sourceId}
-                    </TableCell>
-                    {/* <TableCell>
-                                        {n.createdBy}
-                                    </TableCell> */}
-                    <TableCell
-                      classes={{
-                        root: "name-col"
-                      }}
-                    >
-                      {n.name}
-                    </TableCell>
-                    <TableCell
-                      classes={{
-                        root: "subsets-col"
-                      }}
-                    >
-                      {n.subsets}
-                    </TableCell>
-                  </TableRow>
+                      <TableCell
+                        classes={{
+                          root: "source-col"
+                        }}
+                      >
+                        {n.source}
+                      </TableCell>
+                      <TableCell
+                        classes={{
+                          root: "sourceId-col"
+                        }}
+                      >
+                        {n.sourceId}
+                      </TableCell>
+
+                      <TableCell
+                        classes={{
+                          root: "name-col"
+                        }}
+                      >
+                        {n.name}
+                      </TableCell>
+                      {/* <TableCell
+                        classes={{
+                          root: "subsets-col"
+                        }}
+                      >
+                        {n.subsets}
+                      </TableCell> */}
+                      <TableCell>
+                        <IconButton
+                          onClick={() => this.handleDetailToggle(n.rid)}
+                        >
+                          <KeyboardArrowDownIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                    {detail}
+                  </React.Fragment>
                 );
               })}
             <TableRow>

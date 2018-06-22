@@ -101,8 +101,8 @@ class TableComponent extends Component {
         <Table>
           <TableHead className="table-head">
             <TableRow>
-            <TableCell style={{ zIndex: 1 }} />
-              
+              <TableCell style={{ zIndex: 1 }} />
+
               {columns.map(col => {
                 return (
                   <TableCell key={col.id} classes={{ root: col.id + "-col" }}>
@@ -128,7 +128,7 @@ class TableComponent extends Component {
                 const detail = active ? (
                   <TableRow>
                     <Collapse
-                      colSpan={4}
+                      colSpan={5}
                       component="td"
                       in={active}
                       unmountOnExit
@@ -192,9 +192,9 @@ class TableComponent extends Component {
                 );
               })}
             <TableRow>
-              <TableCell colSpan={4} className="spacer-cell">
+              <TableCell colSpan={5} className="spacer-cell">
                 <TablePagination
-                  classes={{ root: "table-paginator", toolbar: "toolbar" }}
+                  classes={{ root: "table-paginator" }}
                   count={data.length}
                   rowsPerPage={rowsPerPage}
                   page={page}

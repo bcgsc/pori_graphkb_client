@@ -1,3 +1,5 @@
+@import "../../globals";
+
 .graph-wrapper {
   position: absolute;
   top: 0;
@@ -8,20 +10,20 @@
 
 $toolbar-height: 100px;
 .toolbar {
-  height: $toolbar-height;
+  height: calc(#{$toolbar-height} - 1px);
   position: absolute;
   top: 0;
   right: 0;
   left: 0;
   margin: auto;
   display: flex;
+  border-bottom: solid $md-primary-color 1px;
 
   .compact-picker {
     float: left;
   }
 
   .grid-wrapper {
-    float: left;
     padding: 8px;
 
     .button-grid {
@@ -34,6 +36,36 @@ $toolbar-height: 100px;
 
       button {
         padding: 4px;
+      }
+    }
+  }
+
+  .graph-options-wrapper {
+    padding: 8px;
+    .graph-options-grid {
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      grid-template-columns: 86px 86px;
+      grid-row-gap: 4px;
+      grid-column-gap: 4px;
+
+      .graph-input {
+        height: 34px;
+        border-radius: 4px;
+        border: 1px solid rgba(0, 0, 0, 0.23);
+        overflow: hidden;
+        input {
+          border: none;
+          font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+          font-size: 1em;
+          margin-top: 4px;
+          padding: 4px;
+
+          background-color: unset;
+        }
+        input:focus {
+          outline: none;
+        }
       }
     }
   }

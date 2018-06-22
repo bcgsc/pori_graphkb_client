@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import './ErrorComponent.css';
+import './ErrorView.css';
 
-class ErrorComponent extends Component{
+class ErrorView extends Component{
     render(){
         return (
             <h1>Error!</h1>
@@ -9,4 +9,4 @@ class ErrorComponent extends Component{
     }
 }
 
-export default ErrorComponent;
+export default ErrorView;

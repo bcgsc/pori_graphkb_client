@@ -5,7 +5,7 @@ import ReactDOM from "react-dom";
 import SVGLink from "../SVGLink/SVGLink";
 import SVGNode from "../SVGNode/SVGNode";
 import api from "../../services/api";
-import { Button, TextField } from "@material-ui/core";
+import { Button, TextField, Checkbox } from "@material-ui/core";
 import { CompactPicker } from "react-color";
 import { Link } from "react-router-dom";
 import queryString from "query-string";
@@ -495,7 +495,7 @@ class GraphComponent extends Component {
                   onChange={this.handleGraphOptionsChange}
                 />
               </div>
-              <div className="graph-input">
+              {/* <div className="graph-input">
                 <input
                   label="Other Field"
                   // name="chargeStrength"
@@ -503,7 +503,13 @@ class GraphComponent extends Component {
                   // value={this.state.graphOptions.chargeStrength}
                   // onChange={this.handleGraphOptionsChange}
                 />
-              </div>
+              </div> */}
+              <Checkbox
+                onChange={e => {
+                  // this.props.handleCheckbox(n["@rid"]);
+                }}
+                label="hi"
+              />
             </div>
           </div>
         </div>

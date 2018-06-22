@@ -8,13 +8,10 @@ class QueryComponent extends Component {
   constructor(props) {
     super(props);
 
-    let initName;
-    if (props.location.state) {
-      initName = props.location.state.name;
-    }
+    const initName = props.location.state ? props.location.state.name : "";
 
     this.state = {
-      name: initName || "",
+      name: initName,
       redirect: false
     };
 
@@ -35,7 +32,10 @@ class QueryComponent extends Component {
       return (
         <Redirect
           push
-          to={{ pathname: "/results", search: "?name=~" + this.state.name }}
+          to={{
+            pathname: "/data/table",
+            search: "?name=~" + this.state.name + "&neighbors=3"
+          }}
         />
       );
 

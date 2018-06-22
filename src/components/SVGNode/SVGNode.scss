@@ -9,6 +9,15 @@
     stroke: #1f6552;
     stroke-width: 0.5;
 }
+.node-expandable{
+    cursor: pointer;
+    transition: stroke-width 0.1s ease-out,
+        fill 0.1s ease-out,
+        stroke 0.1s ease-out;
+
+    stroke: #00FF00;
+    stroke-width: 0.7;
+}
 
 .node-name {
       font-family: 'Lato';

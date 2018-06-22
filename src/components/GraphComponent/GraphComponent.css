@@ -1,0 +1,65 @@
+.link {
+  font-family: 'Roboto';
+  color: #303030;
+  margin: 8px;
+  display: block;
+  text-decoration: none; }
+
+.graph-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0; }
+
+.toolbar {
+  height: calc(100px - 1px);
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  margin: auto;
+  display: flex;
+  border-bottom: solid #1F2B65 1px; }
+  .toolbar .compact-picker {
+    float: left; }
+  .toolbar .grid-wrapper {
+    padding: 8px; }
+    .toolbar .grid-wrapper .button-grid {
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      grid-row-gap: 4px;
+      grid-column-gap: 4px; }
+      .toolbar .grid-wrapper .button-grid button {
+        padding: 4px; }
+  .toolbar .graph-options-wrapper {
+    padding: 8px; }
+    .toolbar .graph-options-wrapper .graph-options-grid {
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      grid-template-columns: 86px 86px;
+      grid-row-gap: 4px;
+      grid-column-gap: 4px; }
+      .toolbar .graph-options-wrapper .graph-options-grid .graph-input {
+        height: 34px;
+        border-radius: 4px;
+        border: 1px solid rgba(0, 0, 0, 0.23);
+        overflow: hidden; }
+        .toolbar .graph-options-wrapper .graph-options-grid .graph-input input {
+          border: none;
+          font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+          font-size: 1em;
+          margin-top: 4px;
+          padding: 4px;
+          background-color: unset; }
+        .toolbar .graph-options-wrapper .graph-options-grid .graph-input input:focus {
+          outline: none; }
+
+.svg-wrapper {
+  position: absolute;
+  top: 100px;
+  left: 0;
+  right: 0;
+  bottom: 0; }

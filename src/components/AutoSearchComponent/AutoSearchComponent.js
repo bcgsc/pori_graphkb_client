@@ -1,12 +1,9 @@
 import React, { Component } from "react";
 import "./AutoSearchComponent.css";
-import TextField from "@material-ui/core/TextField";
 import Downshift from "downshift";
-import Paper from "@material-ui/core/Paper";
-import { MenuItem } from "@material-ui/core";
+import { MenuItem, List, Paper, TextField } from "@material-ui/core";
 import api from "../../services/api";
 import { debounce } from "throttle-debounce";
-import List from "@material-ui/core/List";
 
 class AutoSearchComponent extends Component {
   constructor(props) {
@@ -20,8 +17,6 @@ class AutoSearchComponent extends Component {
     };
     this.callApi = debounce(300, this.callApi.bind(this));
     this.refreshOptions = this.refreshOptions.bind(this);
-    this.keepOpen = this.keepOpen.bind(this);
-    this.close = this.close.bind(this);
   }
 
   componentWillUnmount() {

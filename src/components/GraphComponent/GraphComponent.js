@@ -5,7 +5,7 @@ import ReactDOM from "react-dom";
 import SVGLink from "../SVGLink/SVGLink";
 import SVGNode from "../SVGNode/SVGNode";
 import api from "../../services/api";
-import { Button } from "@material-ui/core";
+import { Button, TextField } from "@material-ui/core";
 import { CompactPicker } from "react-color";
 import { Link } from "react-router-dom";
 import queryString from "query-string";
@@ -28,7 +28,6 @@ class GraphComponent extends Component {
       nodes: [],
       links: [],
       graphObjects: {},
-      linkStrength: 1 / 30,
       simulation: d3.forceSimulation(),
       svg: undefined,
       selectedChildren: [],
@@ -41,7 +40,10 @@ class GraphComponent extends Component {
         aliasesColor: "#FB9E00",
         parentsColor: "#AEA1FF",
         childrenColor: "#73D8FF",
-        defaultColor: "#1F265B"
+        defaultColor: "#1F265B",
+        linkStrength: 1 / 30,
+        chargeStrength: 100,
+        collisionRadius: 4
       },
       colorKey: "selectedColor",
       expandable: {}
@@ -53,6 +55,7 @@ class GraphComponent extends Component {
     this.updateColors = this.updateColors.bind(this);
     this.handleColorPick = this.handleColorPick.bind(this);
     this.handleResize = this.handleResize.bind(this);
+    this.handleGraphOptionsChange = this.handleGraphOptionsChange.bind(this);
   }
 
   componentDidMount() {
@@ -71,7 +74,6 @@ class GraphComponent extends Component {
           ...this.processData(
             this.props.data[key],
             { x: 0, y: 0 },
-            1 + Math.floor(neighbors / 2),
             nodes,
             links,
             graphObjects
@@ -102,9 +104,10 @@ class GraphComponent extends Component {
     }
   }
 
-  processData(node, position, depth, nodes, links, graphObjects) {
-    if (depth === 0)
-      return { nodes: nodes, links: links, graphObjects: graphObjects };
+  processData(node, position, nodes, links, graphObjects) {
+    if (node.name === "lymphoid") {
+      console.log(node);
+    }
 
     edgeTypes.forEach(edgeType => {
       if (node[edgeType]) {
@@ -116,6 +119,7 @@ class GraphComponent extends Component {
 
           if (!graphObjects[edgeRid]) {
             const expandable = this.state.expandable;
+            console.log(edge);
             if (edge["@rid"] && edge.in["@rid"] && edge.out["@rid"]) {
               const link = {
                 source: edge.out["@rid"],
@@ -150,7 +154,6 @@ class GraphComponent extends Component {
                 const d = this.processData(
                   edge.out,
                   positionInit,
-                  depth - 1,
                   nodes,
                   links,
                   graphObjects
@@ -177,7 +180,6 @@ class GraphComponent extends Component {
                 const d = this.processData(
                   edge.in,
                   positionInit,
-                  depth - 1,
                   nodes,
                   links,
                   graphObjects
@@ -198,25 +200,31 @@ class GraphComponent extends Component {
   }
 
   getNeighbors(node) {
+    const expandable = this.state.expandable;
+
     //Maintain data invariant
     const depth = 3;
     let url = "/diseases/" + node.data["@rid"].slice(1) + "?neighbors=" + depth;
-
-    api.get(url).then(response => {
-      this.props.handleNodeAdd(response);
-      this.setState({
-        ...this.processData(
-          response,
-          { x: node.x, y: node.y },
-          1 + Math.floor(depth / 2),
-          this.state.nodes,
-          this.state.links,
-          this.state.graphObjects
-        )
+    if (expandable[node.data["@rid"]]) {
+      api.get(url).then(response => {
+        this.setState({
+          ...this.processData(
+            response,
+            { x: node.x, y: node.y },
+            this.state.nodes,
+            this.state.links,
+            this.state.graphObjects
+          )
+        });
+        this.props.handleNodeAdd(response);
+        this.drawGraph();
+        this.updateColors(node.data["@rid"]);
       });
-      this.drawGraph();
-      this.updateColors(node.data["@rid"]);
-    });
+    } else {
+      this.props.handleNodeAdd(node.data);
+    }
+    delete expandable[node.data["@rid"]];
+    this.setState({ expandable });
   }
 
   componentWillUnmount() {
@@ -237,7 +245,10 @@ class GraphComponent extends Component {
           return d.data.name.length * 2.8;
         })
       ) //Can change these to make nodes more readable
-      .force("charge", d3.forceManyBody())
+      .force(
+        "charge",
+        d3.forceManyBody().strength(-this.state.graphOptions.chargeStrength)
+      )
       .force(
         "center",
         d3.forceCenter(
@@ -282,7 +293,7 @@ class GraphComponent extends Component {
       "links",
       d3
         .forceLink(links)
-        .strength(this.state.linkStrength)
+        .strength(this.state.graphOptions.linkStrength)
         .id(d => {
           return d.data["@rid"];
         })
@@ -346,24 +357,28 @@ class GraphComponent extends Component {
   handleClick(e, node) {
     if (node.data["@rid"] === this.state.expandId) {
       e.stopPropagation();
-      const expandable = this.state.expandable;
-      if (expandable[node.data["@rid"]]) this.getNeighbors(node);
-      delete expandable[node.data["@rid"]];
-      this.setState({ expandable });
+      this.getNeighbors(node);
     } else {
       this.updateColors(node.data["@rid"]);
     }
   }
-
   handleColorPick(color) {
     let graphOptions = this.state.graphOptions;
     graphOptions[this.state.colorKey] = color.hex;
     this.setState({ graphOptions });
   }
-
   handleColorKeyChange(key) {
     this.setState({ colorKey: key });
   }
+  handleGraphOptionsChange(e) {
+    const graphOptions = this.state.graphOptions;
+    graphOptions[e.target.name] = e.target.value;
+    this.setState({ graphOptions }, () => {
+      this.initSimulation();
+      this.drawGraph();
+    });
+  }
+
   render() {
     const links = this.state.links.map(link => {
       return <SVGLink key={link["@rid"]} link={link} />;
@@ -451,7 +466,46 @@ class GraphComponent extends Component {
               </Button>
             </div>
           </div>
-          <div className="graph-options" />
+          <div className="graph-options-wrapper">
+            <div className="graph-options-grid">
+              <div className="graph-input">
+                <input
+                  label="Link Strength"
+                  name="linkStrength"
+                  type="number"
+                  value={this.state.graphOptions.linkStrength}
+                  onChange={this.handleGraphOptionsChange}
+                />
+              </div>
+              <div className="graph-input">
+                <input
+                  label="Charge Strength"
+                  name="chargeStrength"
+                  type="number"
+                  value={this.state.graphOptions.chargeStrength}
+                  onChange={this.handleGraphOptionsChange}
+                />
+              </div>
+              <div className="graph-input">
+                <input
+                  label="Collision Radius"
+                  name="collisionRadius"
+                  type="number"
+                  value={this.state.graphOptions.collisionRadius}
+                  onChange={this.handleGraphOptionsChange}
+                />
+              </div>
+              <div className="graph-input">
+                <input
+                  label="Other Field"
+                  // name="chargeStrength"
+                  type="number"
+                  // value={this.state.graphOptions.chargeStrength}
+                  // onChange={this.handleGraphOptionsChange}
+                />
+              </div>
+            </div>
+          </div>
         </div>
         <div className="svg-wrapper" ref="wrapper">
           <svg ref="graph">

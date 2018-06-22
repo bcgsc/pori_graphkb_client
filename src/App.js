@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import "./App.css";
-import QueryComponent from "./components/QueryComponent/QueryComponent";
-import AdvancedQueryComponent from "./components/AdvancedQueryComponent/AdvancedQueryComponent";
-import AddNodeComponent from "./components/AddNodeComponent/AddNodeComponent";
-import GraphComponent from "./components/GraphComponent/GraphComponent";
-import DataHubComponent from "./components/DataHubComponent/DataHubComponent";
-import ErrorComponent from "./components/ErrorComponent/ErrorComponent";
+import QueryView from "./views/QueryView/QueryView";
+import AdvancedQueryView from "./views/AdvancedQueryView/AdvancedQueryView";
+import AddNodeView from "./views/AddNodeView/AddNodeView";
+import DataView from "./views/DataView/DataView";
+import ErrorView from "./views/ErrorView/ErrorView";
+import EditNodeView from "./views/EditNodeView/EditNodeView";
 import AppBar from "@material-ui/core/AppBar";
 import Drawer from "@material-ui/core/Drawer";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
@@ -17,7 +17,6 @@ import {
   MuiThemeProvider,
   IconButton
 } from "@material-ui/core";
-import EditNodeComponent from "./components/EditNodeComponent/EditNodeComponent";
 
 class App extends Component {
   state = {
@@ -82,25 +81,25 @@ class App extends Component {
             {drawer}
             <section className="content">
               <div className="router-outlet">
-                <Route exact path="/query" component={QueryComponent} />
+                <Route exact path="/query" component={QueryView} />
               </div>
               <div className="router-outlet">
                 <Route
                   path="/query/advanced"
-                  component={AdvancedQueryComponent}
+                  component={AdvancedQueryView}
                 />
               </div>
               <div className="router-outlet">
-                <Route path="/add" component={AddNodeComponent} />
+                <Route path="/add" component={AddNodeView} />
               </div>
               <div className="router-outlet">
-                <Route path="/data" component={DataHubComponent} />
+                <Route path="/data" component={DataView} />
               </div>
               <div className="router-outlet">
-                <Route path="/error" component={ErrorComponent} />
+                <Route path="/error" component={ErrorView} />
               </div>
               <div className="router-outlet">
-                <Route path="/edit" component={EditNodeComponent} />
+                <Route path="/edit" component={EditNodeView} />
               </div>
             </section>
           </div>

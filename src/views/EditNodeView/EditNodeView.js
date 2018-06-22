@@ -1,24 +1,26 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import "./EditNodeComponent.css";
-import TextField from "@material-ui/core/TextField";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
+import "./EditNodeView.css";
+import {
+  TextField,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  FormControl,
+  Select,
+  Button
+} from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import CloseIcon from "@material-ui/icons/Close";
-import IconButton from "@material-ui/core/IconButton";
 import FolderIcon from "@material-ui/icons/Folder";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import Button from "@material-ui/core/Button";
-import AutoSearchComponent from "../AutoSearchComponent/AutoSearchComponent";
+import AutoSearchComponent from "../../components/AutoSearchComponent/AutoSearchComponent";
 import api from "../../services/api";
 
-class EditNodeComponent extends Component {
+class EditNodeView extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -261,4 +263,4 @@ class EditNodeComponent extends Component {
     );
   }
 }
-export default EditNodeComponent;
+export default EditNodeView;

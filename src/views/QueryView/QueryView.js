@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import "./QueryComponent.css";
+import "./QueryView.css";
 import Button from "@material-ui/core/Button";
 import { Link, Redirect } from "react-router-dom";
-import AutoSearchComponent from "../AutoSearchComponent/AutoSearchComponent";
+import AutoSearchComponent from "../../components/AutoSearchComponent/AutoSearchComponent";
 
-class QueryComponent extends Component {
+class QueryView extends Component {
   constructor(props) {
     super(props);
 
@@ -88,4 +88,4 @@ class QueryComponent extends Component {
   }
 }
 
-export default QueryComponent;
+export default QueryView;

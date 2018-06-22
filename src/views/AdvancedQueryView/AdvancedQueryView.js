@@ -1,14 +1,16 @@
 import React, { Component } from "react";
-import "./AdvancedQueryComponent.css";
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import Checkbox from "@material-ui/core/Checkbox";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+import "./AdvancedQueryView.css";
+import {
+  TextField,
+  Button,
+  Checkbox,
+  FormControlLabel
+} from "@material-ui/core/";
 import { Link } from "react-router-dom";
 import queryString from "query-string";
-import AutoSearchComponent from "../AutoSearchComponent/AutoSearchComponent";
+import AutoSearchComponent from "../../components/AutoSearchComponent/AutoSearchComponent";
 
-class AdvancedQueryComponent extends Component {
+class AdvancedQueryView extends Component {
   constructor(props) {
     super(props);
 
@@ -314,4 +316,4 @@ class AdvancedQueryComponent extends Component {
   }
 }
 
-export default AdvancedQueryComponent;
+export default AdvancedQueryView;

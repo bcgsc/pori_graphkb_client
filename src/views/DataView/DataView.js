@@ -1,15 +1,13 @@
 import React, { Component } from "react";
-import "./DataHubComponent.css";
+import "./DataView.css";
 import api from "../../services/api";
-import prepareEntry from "../../services/serializers";
-import NodeDetail from "../NodeDetail/NodeDetail";
-import TableComponent from "../TableComponent/TableComponent";
-import { Redirect } from "react-router-dom";
+import { Link, Route, Redirect } from "react-router-dom";
 import { Paper } from "@material-ui/core";
-import GraphComponent from "../GraphComponent/GraphComponent";
-import { Link, Route } from "react-router-dom";
+import GraphComponent from "../../components/GraphComponent/GraphComponent";
+import NodeDetail from "../../components/NodeDetail/NodeDetail";
+import TableComponent from "../../components/TableComponent/TableComponent";
 
-class DataHubComponent extends Component {
+class DataView extends Component {
   constructor(props) {
     super(props);
 
@@ -32,7 +30,6 @@ class DataHubComponent extends Component {
     api.get("/diseases" + this.props.location.search).then(data => {
       if (data.length === 0) redirect = true;
       data.forEach(ontologyTerm => {
-        let entry = prepareEntry(ontologyTerm);
         dataMap[ontologyTerm["@rid"]] = ontologyTerm;
       });
       this.setState({
@@ -88,4 +85,4 @@ class DataHubComponent extends Component {
   }
 }
 
-export default DataHubComponent;
+export default DataView;

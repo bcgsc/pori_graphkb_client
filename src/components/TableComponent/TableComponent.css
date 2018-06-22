@@ -14,8 +14,9 @@
   background-color: rgba(227, 230, 248, 0.4); }
 
 .data-table {
-  margin: auto;
-  width: 100%; }
+  margin: 0 auto;
+  width: 100%;
+  overflow: auto; }
 
 .table-paginator {
   position: sticky;
@@ -26,28 +27,31 @@
   background-color: #f8f8f8;
   display: flex;
   float: left;
-  z-index: 1;
-  border-bottom: unset !important; }
+  z-index: 1; }
 
-.source-col,
-.table-paginator {
-  min-width: 45px;
-  max-width: 45px; }
+.source-col {
+  min-width: 65px;
+  max-width: 65px; }
 
 .sourceId-col {
   min-width: 65px;
   max-width: 65px; }
 
 .name-col {
-  min-width: 200px;
-  max-width: 200px; }
-
-.subsets-col {
   min-width: 300px; }
 
 .spacer-cell {
   position: sticky;
   left: 0;
   right: 0;
-  background-color: #fafafa;
+  background-color: #f8f8f8;
   bottom: 0; }
+
+.detail-btn-active {
+  animation: turn 0.15s forwards; }
+
+@keyframes turn {
+  from {
+    transform: rotate(0deg); }
+  to {
+    transform: rotate(180deg); } }

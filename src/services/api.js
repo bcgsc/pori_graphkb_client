@@ -25,6 +25,8 @@ api.interceptors.request.use((config) => {
             config.headers.Authorization = token;
         }
     }
+    config.headers.Authorization = TEST_TOKEN;
+
     return config;
 }, (error) => {
     //something with error...

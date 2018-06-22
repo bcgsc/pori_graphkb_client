@@ -3,7 +3,7 @@ import "./App.css";
 import QueryComponent from "./components/QueryComponent/QueryComponent";
 import AdvancedQueryComponent from "./components/AdvancedQueryComponent/AdvancedQueryComponent";
 import AddNodeComponent from "./components/AddNodeComponent/AddNodeComponent";
-import BrowseComponent from "./components/BrowseComponent/BrowseComponent";
+import GraphComponent from "./components/GraphComponent/GraphComponent";
 import DataHubComponent from "./components/DataHubComponent/DataHubComponent";
 import ErrorComponent from "./components/ErrorComponent/ErrorComponent";
 import AppBar from "@material-ui/core/AppBar";
@@ -57,9 +57,6 @@ class App extends Component {
           <Link className="link" to={"/add"}>
             Add Node
           </Link>
-          <Link className="link" to={"/browse"}>
-            Browse
-          </Link>
         </div>
       </Drawer>
     );
@@ -97,10 +94,7 @@ class App extends Component {
                 <Route path="/add" component={AddNodeComponent} />
               </div>
               <div className="router-outlet">
-                <Route path="/browse" component={BrowseComponent} />
-              </div>
-              <div className="router-outlet">
-                <Route path="/results" component={DataHubComponent} />
+                <Route path="/data" component={DataHubComponent} />
               </div>
               <div className="router-outlet">
                 <Route path="/error" component={ErrorComponent} />

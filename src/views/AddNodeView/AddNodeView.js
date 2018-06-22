@@ -1,26 +1,32 @@
 import React, { Component } from "react";
-import "./AddNodeComponent.css";
-import TextField from "@material-ui/core/TextField";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import AddIcon from "@material-ui/icons/Add";
-import CloseIcon from "@material-ui/icons/Close";
-import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
-import IconButton from "@material-ui/core/IconButton";
-import FolderIcon from "@material-ui/icons/Folder";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import Button from "@material-ui/core/Button";
-import AutoSearchComponent from "../AutoSearchComponent/AutoSearchComponent";
+import "./AddNodeView.css";
+import {
+  Divider,
+  Paper,
+  Menu,
+  Typography,
+  TextField,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  InputLabel,
+  MenuItem,
+  FormControl,
+  Select,
+  Button,
+  IconButton
+} from "@material-ui/core";
+import {
+  AddIcon,
+  CloseIcon,
+  KeyboardArrowDownIcon,
+  FolderIcon
+} from "@material-ui/icons/Add";
+import AutoSearchComponent from "../../components/AutoSearchComponent/AutoSearchComponent";
 import api from "../../services/api";
-import Typography from "@material-ui/core/Typography";
-import { Divider, Paper, Menu } from "@material-ui/core";
 
-class AddNodeComponent extends Component {
+class AddNodeView extends Component {
   constructor(props) {
     super(props);
 
@@ -420,4 +426,4 @@ class AddNodeComponent extends Component {
   }
 }
 
-export default AddNodeComponent;
+export default AddNodeView;

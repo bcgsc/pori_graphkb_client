@@ -25,7 +25,6 @@ api.interceptors.request.use((config) => {
             config.headers.Authorization = token;
         }
     }
-    console.log(config)
     config.headers.Authorization = TEST_TOKEN;
 
     return config;

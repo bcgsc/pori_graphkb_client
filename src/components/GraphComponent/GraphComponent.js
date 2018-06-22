@@ -5,13 +5,21 @@ import ReactDOM from "react-dom";
 import SVGLink from "../SVGLink/SVGLink";
 import SVGNode from "../SVGNode/SVGNode";
 import api from "../../services/api";
-import { Button, Paper } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import { CompactPicker } from "react-color";
+import { Link } from "react-router-dom";
+import queryString from "query-string";
 
 const R = 55;
 const arrowWidth = 6;
 const arrowLength = 9;
 const nodeR = 4;
+const edgeTypes = [
+  "in_SubClassOf",
+  "out_SubClassOf",
+  "in_AliasOf",
+  "out_AliasOf"
+];
 class GraphComponent extends Component {
   constructor(props) {
     super(props);
@@ -19,10 +27,10 @@ class GraphComponent extends Component {
     this.state = {
       nodes: [],
       links: [],
+      graphObjects: {},
       linkStrength: 1 / 30,
       simulation: d3.forceSimulation(),
       svg: undefined,
-      node: this.props.node,
       selectedChildren: [],
       selectedParents: [],
       selectedAliases: [],
@@ -35,104 +43,179 @@ class GraphComponent extends Component {
         childrenColor: "#73D8FF",
         defaultColor: "#1F265B"
       },
-      colorKey: "selectedColor"
+      colorKey: "selectedColor",
+      expandable: {}
     };
 
-    this.drawChart = this.drawChart.bind(this);
+    this.drawGraph = this.drawGraph.bind(this);
     this.initSimulation = this.initSimulation.bind(this);
     this.getNeighbors = this.getNeighbors.bind(this);
-    this.getNeighbours = this.getNeighbors.bind(this);
     this.updateColors = this.updateColors.bind(this);
     this.handleColorPick = this.handleColorPick.bind(this);
+    this.handleResize = this.handleResize.bind(this);
   }
 
   componentDidMount() {
-    this.initSimulation();
-    const nodes = this.state.nodes;
-    nodes.push({
-      name: this.props.node.name,
-      rid: this.props.node.rid,
-      index: 0
+    this.handleResize();
+    const neighbors = queryString.parse(this.props.search).neighbors;
+    Object.keys(this.props.data).forEach(key => {
+      let nodes = this.state.nodes;
+      let links = this.state.links;
+      let graphObjects = this.state.graphObjects;
+      if (!graphObjects[key]) {
+        nodes.push({ data: this.props.data[key] });
+        graphObjects["" + key] = this.props.data[key];
+      }
+      this.setState(
+        {
+          ...this.processData(
+            this.props.data[key],
+            { x: 0, y: 0 },
+            1 + Math.floor(neighbors / 2),
+            nodes,
+            links,
+            graphObjects
+          )
+        },
+        () => {
+          nodes = this.state.nodes;
+          links = this.state.links;
+          graphObjects = this.state.graphObjects;
+        }
+      );
     });
-    this.setState({ nodes }, this.getNeighbors(this.props.node));
-
-    window.addEventListener("resize", this.initSimulation);
+    this.drawGraph();
+    this.updateColors(Object.keys(this.props.data)[0]);
+    window.addEventListener("resize", this.handleResize);
   }
 
-  getNeighbors(node) {
-    const links = this.state.links;
-    const nodes = this.state.nodes;
-    const edgeTypes = [
-      "in_SubClassOf",
-      "out_SubClassOf",
-      "in_AliasOf",
-      "out_AliasOf"
-    ];
-    const depth = 2;
-    const position = { x: node.x || 0, y: node.y || 0 };
-    let url = "/diseases/" + node.rid.slice(1) + "?neighbors=" + depth;
+  handleResize() {
+    let w, h;
+    let n = ReactDOM.findDOMNode(this.refs["wrapper"]);
+    if (n) {
+      w = n.clientWidth;
+      h = n.clientHeight;
+      let graphOptions = this.state.graphOptions;
+      graphOptions.width = w;
+      graphOptions.height = h;
+      this.setState({ graphOptions }, this.initSimulation);
+    }
+  }
 
-    api.get(url).then(data => {
-      edgeTypes.forEach(edgeType => {
-        if (data[edgeType]) {
-          let n = data[edgeType].length;
-          let j = 0;
-          data[edgeType].forEach(edge => {
-            if (links.filter(l => l.rid === edge["@rid"]).length === 0) {
-              links.push({
-                source: edge.out["@rid"] || edge.out,
-                target: edge.in["@rid"] || edge.in,
+  processData(node, position, depth, nodes, links, graphObjects) {
+    if (depth === 0)
+      return { nodes: nodes, links: links, graphObjects: graphObjects };
+
+    edgeTypes.forEach(edgeType => {
+      if (node[edgeType]) {
+        const n = node[edgeType].length;
+        let j = 0;
+
+        node[edgeType].forEach(edge => {
+          const edgeRid = edge["@rid"] || edge;
+
+          if (!graphObjects[edgeRid]) {
+            const expandable = this.state.expandable;
+            if (edge["@rid"] && edge.in["@rid"] && edge.out["@rid"]) {
+              const link = {
+                source: edge.out["@rid"],
+                target: edge.in["@rid"],
                 type: edgeType
                   .split("_")[1]
                   .split("Of")[0]
                   .toLowerCase(),
-                rid: edge["@rid"]
-              });
-            }
+                "@rid": edge["@rid"]
+              };
+              links.push(link);
+              graphObjects[link["@rid"]] = link;
+              delete expandable[edge.in["@rid"]];
+              delete expandable[edge.out["@rid"]];
 
-            if (
-              edge.out["@rid"] &&
-              nodes.filter(n => n.rid === edge.out["@rid"]).length === 0
-            ) {
-              let positionInit = this.positionInit(
-                position.x,
-                position.y,
-                j++,
-                n,
-                R
-              );
-              nodes.push({
-                name: edge.out.name,
-                rid: edge.out["@rid"],
-                x: positionInit.x,
-                y: positionInit.y
-              });
+              if (!graphObjects[edge.out["@rid"]]) {
+                let positionInit = this.positionInit(
+                  position.x,
+                  position.y,
+                  j++,
+                  n,
+                  R
+                );
+                const newNode = {
+                  data: edge.out,
+                  x: positionInit.x,
+                  y: positionInit.y
+                };
+                nodes.push(newNode);
+                graphObjects[newNode.data["@rid"]] = newNode;
+
+                const d = this.processData(
+                  edge.out,
+                  positionInit,
+                  depth - 1,
+                  nodes,
+                  links,
+                  graphObjects
+                );
+                nodes = d.nodes;
+                links = d.links;
+                graphObjects = d.graphObjects;
+              }
+              if (!graphObjects[edge.in["@rid"]]) {
+                let positionInit = this.positionInit(
+                  position.x,
+                  position.y,
+                  j++,
+                  n,
+                  R
+                );
+                const newNode = {
+                  data: edge.in,
+                  x: positionInit.x,
+                  y: positionInit.y
+                };
+                nodes.push(newNode);
+                graphObjects[newNode.data["@rid"]] = newNode;
+                const d = this.processData(
+                  edge.in,
+                  positionInit,
+                  depth - 1,
+                  nodes,
+                  links,
+                  graphObjects
+                );
+                nodes = d.nodes;
+                links = d.links;
+                graphObjects = d.graphObjects;
+              }
+            } else {
+              expandable[node["@rid"]] = true;
             }
-            if (
-              edge.in["@rid"] &&
-              nodes.filter(n => n.rid === edge.in["@rid"]).length === 0
-            ) {
-              let pos = this.positionInit(position.x, position.y, j++, n, R);
-              nodes.push({
-                name: edge.in.name,
-                rid: edge.in["@rid"],
-                x: pos.x,
-                y: pos.y
-              });
-            }
-          });
-        }
+            this.setState({ expandable });
+          }
+        });
+      }
+    });
+    return { nodes: nodes, links: links, graphObjects: graphObjects };
+  }
+
+  getNeighbors(node) {
+    //Maintain data invariant
+    const depth = 3;
+    let url = "/diseases/" + node.data["@rid"].slice(1) + "?neighbors=" + depth;
+
+    api.get(url).then(response => {
+      this.props.handleNodeAdd(response);
+      this.setState({
+        ...this.processData(
+          response,
+          { x: node.x, y: node.y },
+          1 + Math.floor(depth / 2),
+          this.state.nodes,
+          this.state.links,
+          this.state.graphObjects
+        )
       });
-
-      this.updateColors(data["@rid"]);
-      this.setState(
-        {
-          nodes,
-          links,
-          selectedId: data["@rid"]
-        },
-        this.drawChart(nodes, links)
-      );
+      this.drawGraph();
+      this.updateColors(node.data["@rid"]);
     });
   }
 
@@ -140,49 +223,57 @@ class GraphComponent extends Component {
     //remove all event listeners
     this.state.svg.call(d3.zoom().on("zoom", null));
     this.state.simulation.on("tick", null);
-    window.removeEventListener("resize", this.initSimulation);
+    window.removeEventListener("resize", this.handleResize);
+    this.setState({ expandable: {} });
   }
 
   initSimulation() {
     let simulation = this.state.simulation
-      .force("link", d3.forceLink().id(d => d.rid))
+      .force("link", d3.forceLink().id(d => d.data["@rid"]))
       .force(
         "collide",
         d3.forceCollide(d => {
-          return d.name.length * 2.8;
+          return 4;
+          return d.data.name.length * 2.8;
         })
       ) //Can change these to make nodes more readable
       .force("charge", d3.forceManyBody())
       .force(
         "center",
-        d3.forceCenter(this.props.width / 2, this.props.height / 2)
+        d3.forceCenter(
+          this.state.graphOptions.width / 2,
+          this.state.graphOptions.height / 2
+        )
       );
 
     let container = d3.select(ReactDOM.findDOMNode(this.refs.zoom));
 
     let svg = d3.select(ReactDOM.findDOMNode(this.refs.graph));
-    svg.attr("width", this.props.width).attr("height", this.props.height);
-
-    svg.call(
-      d3.zoom().on("zoom", () => {
-        const transform = d3.event.transform;
-        container.attr(
-          "transform",
-          "translate(" +
-            transform.x +
-            "," +
-            transform.y +
-            ")scale(" +
-            transform.k +
-            ")"
-        );
-      })
-    );
+    svg
+      .attr("width", this.state.graphOptions.width)
+      .attr("height", this.state.graphOptions.height)
+      .call(
+        d3.zoom().on("zoom", () => {
+          const transform = d3.event.transform;
+          container.attr(
+            "transform",
+            "translate(" +
+              transform.x +
+              "," +
+              transform.y +
+              ")scale(" +
+              transform.k +
+              ")"
+          );
+        })
+      );
 
     this.setState({ simulation: simulation, svg: svg });
   }
 
-  drawChart(nodes, links) {
+  drawGraph() {
+    const nodes = this.state.nodes;
+    const links = this.state.links;
     const simulation = this.state.simulation;
 
     simulation.nodes(nodes);
@@ -193,7 +284,7 @@ class GraphComponent extends Component {
         .forceLink(links)
         .strength(this.state.linkStrength)
         .id(d => {
-          return d.rid;
+          return d.data["@rid"];
         })
     );
 
@@ -222,8 +313,12 @@ class GraphComponent extends Component {
       selectedParents = [];
 
     links.forEach(link => {
-      const targetRid = link.target.rid || link.target;
-      const sourceRid = link.source.rid || link.source;
+      const targetRid = link.target.data
+        ? link.target.data["@rid"]
+        : link.target;
+      const sourceRid = link.source.data
+        ? link.source.data["@rid"]
+        : link.source;
 
       if (targetRid === rid) {
         if (link.type === "alias") {
@@ -249,11 +344,14 @@ class GraphComponent extends Component {
   }
 
   handleClick(e, node) {
-    if (node.rid === this.state.expandId) {
+    if (node.data["@rid"] === this.state.expandId) {
       e.stopPropagation();
-      this.getNeighbors(node);
+      const expandable = this.state.expandable;
+      if (expandable[node.data["@rid"]]) this.getNeighbors(node);
+      delete expandable[node.data["@rid"]];
+      this.setState({ expandable });
     } else {
-      this.updateColors(node.rid);
+      this.updateColors(node.data["@rid"]);
     }
   }
 
@@ -268,39 +366,53 @@ class GraphComponent extends Component {
   }
   render() {
     const links = this.state.links.map(link => {
-      return <SVGLink key={link.rid} link={link} />;
+      return <SVGLink key={link["@rid"]} link={link} />;
     });
     const nodes = this.state.nodes.map(node => {
       const color =
-        this.state.expandId === node.rid
+        this.state.expandId === node.data["@rid"]
           ? this.state.graphOptions.selectedColor
-          : this.state.selectedChildren.includes(node.rid)
+          : this.state.selectedChildren.includes(node.data["@rid"])
             ? this.state.graphOptions.childrenColor
-            : this.state.selectedParents.includes(node.rid)
+            : this.state.selectedParents.includes(node.data["@rid"])
               ? this.state.graphOptions.parentsColor
-              : this.state.selectedAliases.includes(node.rid)
+              : this.state.selectedAliases.includes(node.data["@rid"])
                 ? this.state.graphOptions.aliasesColor
                 : this.state.graphOptions.defaultColor;
+      const expandable = this.state.expandable[node.data["@rid"]];
       return (
         <SVGNode
-          key={"node" + node.rid}
+          key={"node" + node.data["@rid"]}
           node={node}
           simulation={this.state.simulation}
           color={color}
-          r={node.rid === this.state.expandId ? nodeR : nodeR}
+          r={nodeR}
           handleClick={e => this.handleClick(e, node)}
+          expandable={expandable}
         />
       );
     });
+
     const selected = key => key === this.state.colorKey;
+
     const arrowSize = {
       d: "M0,0 L0," + arrowWidth + " L" + arrowLength + ", " + arrowWidth / 2,
       refX: nodeR + arrowLength + 1,
       refY: arrowWidth / 2
     };
+
     return (
-      <div>
-        <div className="color-picker">
+      <div className="graph-wrapper">
+        <div className="toolbar">
+          <Link
+            className="link"
+            to={{
+              pathname: "/data/table",
+              search: this.props.search
+            }}
+          >
+            <Button variant="outlined">Table</Button>
+          </Link>
           <div className="compact-picker">
             <CompactPicker
               color={this.state.graphOptions[this.state.colorKey]}
@@ -339,8 +451,9 @@ class GraphComponent extends Component {
               </Button>
             </div>
           </div>
+          <div className="graph-options" />
         </div>
-        <div>
+        <div className="svg-wrapper" ref="wrapper">
           <svg ref="graph">
             <defs>
               <marker

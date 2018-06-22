@@ -46,14 +46,14 @@ class SVGNode extends PureComponent {
 
         return (
             <g ref={'node' + this.props.node.index} onClick={this.props.handleClick} transform={'translate(' + (this.props.node.x || 0) + ',' + (this.props.node.y || 0) + ')'}>
-                <circle className='node'
+                <circle className={this.props.expandable ? 'node-expandable' : 'node'}
                     fill={this.props.color}
                     cx={0}
                     cy={0}
                     r={this.props.r}
                 />
                 <text>
-                    <tspan className='node-name' dy={12}>{this.props.node.name}</tspan>
+                    <tspan className='node-name' dy={12}>{this.props.node.data.name}</tspan>
                 </text>
 
             </g>

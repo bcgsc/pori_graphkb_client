@@ -17,7 +17,7 @@
 }
 
 .data-table {
-  margin: auto;
+  margin: 0 auto;
   width: 100%;
 }
 
@@ -31,12 +31,10 @@
   display: flex;
   float: left;
   z-index: 1;
-  border-bottom: unset !important;
 }
 
-.source-col,
-.table-paginator {
-  $width: 45px;
+.source-col {
+  $width: 65px;
   min-width: $width;
   max-width: $width;
 }
@@ -46,11 +44,6 @@
   max-width: $width;
 }
 .name-col {
-  $width: 200px;
-  min-width: $width;
-  max-width: $width;
-}
-.subsets-col {
   $width: 300px;
   min-width: $width;
 }
@@ -60,4 +53,20 @@
   right: 0;
   background-color: #f8f8f8;
   bottom: 0;
+}
+
+$flip-duration: 0.15s;
+.detail-btn {
+}
+.detail-btn-active {
+  animation: turn $flip-duration forwards;
+}
+
+@keyframes turn {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(180deg);
+  }
 }

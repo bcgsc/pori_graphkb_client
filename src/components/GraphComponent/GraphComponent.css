@@ -1,0 +1,36 @@
+.graph-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0; }
+
+.toolbar {
+  height: 100px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  margin: auto;
+  display: flex; }
+  .toolbar .compact-picker {
+    float: left; }
+  .toolbar .grid-wrapper {
+    float: left;
+    padding: 8px; }
+    .toolbar .grid-wrapper .button-grid {
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      grid-row-gap: 4px;
+      grid-column-gap: 4px; }
+      .toolbar .grid-wrapper .button-grid button {
+        padding: 4px; }
+
+.svg-wrapper {
+  position: absolute;
+  top: 100px;
+  left: 0;
+  right: 0;
+  bottom: 0; }

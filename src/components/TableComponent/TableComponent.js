@@ -10,10 +10,13 @@ import {
   TableSortLabel,
   IconButton,
   Collapse,
-  Typography
+  Typography,
+  Button,
+  Checkbox
 } from "@material-ui/core";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import NodeDetail from "../NodeDetail/NodeDetail";
+import { BrowserRouter, Link, Route } from "react-router-dom";
 
 class TableComponent extends Component {
   constructor(props) {
@@ -25,7 +28,8 @@ class TableComponent extends Component {
       rowsPerPage: 50,
       order: "asc",
       orderBy: null,
-      toggle: ""
+      toggle: "",
+      displayed: this.props.displayed
     };
     this.handleDetailToggle = this.handleDetailToggle.bind(this);
     this.handleRequestSort = this.handleRequestSort.bind(this);
@@ -53,7 +57,6 @@ class TableComponent extends Component {
         : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
 
     this.setState({ data, order, orderBy });
-    console.log(this.state);
   }
   handleDetailToggle(rid) {
     if (this.state.toggle === rid) rid = "";
@@ -86,9 +89,20 @@ class TableComponent extends Component {
 
     return (
       <section className="data-table">
+        <Link
+          className="link"
+          to={{
+            pathname: "/data/graph",
+            search: this.props.search
+          }}
+        >
+          <Button variant="outlined">Graph</Button>
+        </Link>
         <Table>
           <TableHead className="table-head">
             <TableRow>
+            <TableCell style={{ zIndex: 1 }} />
+              
               {columns.map(col => {
                 return (
                   <TableCell key={col.id} classes={{ root: col.id + "-col" }}>
@@ -109,33 +123,43 @@ class TableComponent extends Component {
             {data
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map(n => {
-                const isSelected = this.isSelected(n.rid);
-                const detail =
-                  this.state.toggle === n.rid ? (
-                    <TableRow>
-                      <Collapse in={this.state.toggle === n.rid} unmountOnExit>
-                        <NodeDetail node={n} />
-                      </Collapse>
-                    </TableRow>
-                  ) : null;
-
+                const isSelected = this.isSelected(n["@rid"]);
+                let active = this.state.toggle === n["@rid"];
+                const detail = active ? (
+                  <TableRow>
+                    <Collapse
+                      colSpan={4}
+                      component="td"
+                      in={active}
+                      unmountOnExit
+                    >
+                      <NodeDetail node={n} data={this.props.data} />
+                    </Collapse>
+                  </TableRow>
+                ) : null;
                 return (
-                  <React.Fragment>
+                  <React.Fragment key={n["@rid"]}>
                     <TableRow
-                      key={n.rid}
                       selected={isSelected}
-                      onClick={e => this.props.handleClick(e, n.rid)}
+                      onClick={e => this.props.handleClick(n["@rid"])}
                       classes={{
                         root: "cursor-override",
                         selected: "selected-override"
                       }}
                     >
+                      <TableCell>
+                        <Checkbox
+                          onChange={e => {
+                            // this.props.handleCheckbox(n["@rid"]);
+                          }}
+                        />
+                      </TableCell>
                       <TableCell
                         classes={{
                           root: "source-col"
                         }}
                       >
-                        {n.source}
+                        {n.source.name}
                       </TableCell>
                       <TableCell
                         classes={{
@@ -152,16 +176,12 @@ class TableComponent extends Component {
                       >
                         {n.name}
                       </TableCell>
-                      {/* <TableCell
-                        classes={{
-                          root: "subsets-col"
-                        }}
-                      >
-                        {n.subsets}
-                      </TableCell> */}
                       <TableCell>
                         <IconButton
-                          onClick={() => this.handleDetailToggle(n.rid)}
+                          onClick={() => this.handleDetailToggle(n["@rid"])}
+                          className={
+                            active ? "detail-btn-active" : "detail-btn"
+                          }
                         >
                           <KeyboardArrowDownIcon />
                         </IconButton>
@@ -172,18 +192,18 @@ class TableComponent extends Component {
                 );
               })}
             <TableRow>
-              <TablePagination
-                classes={{ root: "table-paginator" }}
-                count={data.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onChangePage={this.handleChangePage}
-                onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                rowsPerPageOptions={[25, 50, 100]}
-              />
-              <TableCell classes={{ root: "spacer-cell" }} />
-              <TableCell classes={{ root: "spacer-cell" }} />
-              <TableCell classes={{ root: "spacer-cell" }} />
+              <TableCell colSpan={4} className="spacer-cell">
+                <TablePagination
+                  classes={{ root: "table-paginator", toolbar: "toolbar" }}
+                  count={data.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onChangePage={this.handleChangePage}
+                  onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                  rowsPerPageOptions={[25, 50, 100]}
+                  component="div"
+                />
+              </TableCell>
             </TableRow>
           </TableBody>
         </Table>

@@ -303,7 +303,7 @@ class AdvancedQueryComponent extends Component {
         </Link>
         <Link
           className="link"
-          to={{ search: this.bundle(), pathname: "/results" }}
+          to={{ search: this.bundle(), pathname: "/table" }}
         >
           <Button variant="contained" color="primary" onClick={this.submit}>
             Search

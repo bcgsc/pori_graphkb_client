@@ -1,85 +1,91 @@
-import React, { Component } from 'react';
-import './DataHubComponent.css';
-import api from '../../services/api';
-import prepareEntry from '../../services/serializers';
-import NodeDetail from '../NodeDetail/NodeDetail';
-import TableComponent from '../TableComponent/TableComponent';
-import { Redirect } from 'react-router-dom';
-import { Paper } from '@material-ui/core';
+import React, { Component } from "react";
+import "./DataHubComponent.css";
+import api from "../../services/api";
+import prepareEntry from "../../services/serializers";
+import NodeDetail from "../NodeDetail/NodeDetail";
+import TableComponent from "../TableComponent/TableComponent";
+import { Redirect } from "react-router-dom";
+import { Paper } from "@material-ui/core";
+import GraphComponent from "../GraphComponent/GraphComponent";
+import { Link, Route } from "react-router-dom";
 
 class DataHubComponent extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            redirect: false,
-            value: 0,
-            data: null,
-            selectedId: null,
-        }
+    const url = props.location.pathname.split("/");
 
-        this.handleClick = this.handleClick.bind(this);
-    }
-
-    componentDidMount() {
-        let dataMap = {};
-        let redirect = false;
-        api.get('/diseases' + this.props.location.search).then(data => {
-
-            if (data.length === 0) redirect = true;
-            data.forEach(ontologyTerm => {
-                let entry = prepareEntry(ontologyTerm);
-                dataMap[entry.rid] = entry;
-            });
-
-            this.setState({
-                data: dataMap,
-                selectedId: Object.keys(dataMap)[0],
-                redirect: redirect,
-            });
-        })
-    }
-
-    handleChange = (event, value) => {
-        this.setState({ value });
+    this.state = {
+      redirect: false,
+      data: null,
+      displayed: [],
+      selectedId: null
     };
 
-    handleClick(e, rid) {
-        // alert(rid);
-        this.setState({ selectedId: rid });
-    }
+    this.handleClick = this.handleClick.bind(this);
+    this.handleNodeAdd = this.handleNodeAdd.bind(this);
+  }
 
-    render() {
-        let dataView = () => {
-            if (this.state.redirect) return (<Redirect push to={{ pathname: '/query' }} />);
+  componentDidMount() {
+    let dataMap = {};
+    let redirect = false;
+    api.get("/diseases" + this.props.location.search).then(data => {
+      if (data.length === 0) redirect = true;
+      data.forEach(ontologyTerm => {
+        let entry = prepareEntry(ontologyTerm);
+        dataMap[ontologyTerm["@rid"]] = ontologyTerm;
+      });
+      this.setState({
+        data: dataMap,
+        selectedId: Object.keys(dataMap)[0],
+        redirect: redirect
+      });
+    });
+  }
 
-            if (this.state.data) {
-                return (
-                    <div className="data-view">
-                        <div className="group-view">
-                            <Paper className='group-body'>
-                                <TableComponent
-                                    data={this.state.data}
-                                    selectedId={this.state.selectedId}
-                                    handleClick={this.handleClick}
-                                />
-                            </Paper>
-                        </div>
-                        {/* <Paper className="node-view" elevation={4}>
-                            <NodeDetail
-                                selectedId={this.state.selectedId}
-                                data={this.state.data}
-                                handleClick={this.handleClick}
-                            />
-                        </Paper> */}
-                    </div>
-                );
-            } else return null;
-        }
+  handleNodeAdd(node) {
+    const data = this.state.data;
+    data[node["@rid"]] = node;
+    this.setState({ data });
+  }
 
-        return dataView()
+  handleClick(e, rid) {
+    this.setState({ selectedId: rid });
+  }
 
-    }
+  render() {
+    const GraphWithProps = () => (
+      <GraphComponent
+        handleNodeAdd={this.handleNodeAdd}
+        data={this.state.data}
+        search={this.props.location.search}
+      />
+    );
+    const TableWithProps = () => (
+      <TableComponent
+        data={this.state.data}
+        selectedId={this.state.selectedId}
+        handleClick={this.handleClick}
+        handleCheckbox={this.handleCheckbox}
+        search={this.props.location.search}
+      />
+    );
+    let dataView = () => {
+      if (this.state.redirect)
+        return <Redirect push to={{ pathname: "/query" }} />;
+
+      if (this.state.data) {
+        return (
+          <div className="data-view">
+            <Route exact path="/data/table" render={TableWithProps} />
+            <Route exact path="/data/graph" render={GraphWithProps} />
+          </div>
+        );
+      } else return null;
+    };
+
+    return dataView();
+  }
 }
 
 export default DataHubComponent;

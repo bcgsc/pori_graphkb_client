@@ -1,17 +1,14 @@
 import React, { Component } from "react";
 import "./DataView.css";
 import api from "../../services/api";
-import { Link, Route, Redirect } from "react-router-dom";
+import { Route, Redirect } from "react-router-dom";
 import { Paper } from "@material-ui/core";
 import GraphComponent from "../../components/GraphComponent/GraphComponent";
-import NodeDetail from "../../components/NodeDetail/NodeDetail";
 import TableComponent from "../../components/TableComponent/TableComponent";
 
 class DataView extends Component {
   constructor(props) {
     super(props);
-
-    const url = props.location.pathname.split("/");
 
     this.state = {
       redirect: false,
@@ -22,6 +19,7 @@ class DataView extends Component {
 
     this.handleClick = this.handleClick.bind(this);
     this.handleNodeAdd = this.handleNodeAdd.bind(this);
+    this.handleCheckbox = this.handleCheckbox.bind(this);
   }
 
   componentDidMount() {
@@ -41,13 +39,23 @@ class DataView extends Component {
   }
 
   handleNodeAdd(node) {
-    const data = this.state.data;
+    const { data, displayed } = this.state;
     data[node["@rid"]] = node;
     this.setState({ data });
   }
 
-  handleClick(e, rid) {
+  handleClick(rid) {
     this.setState({ selectedId: rid });
+  }
+  handleCheckbox(rid) {
+    const displayed = this.state.displayed;
+    const i = displayed.indexOf(rid);
+    if (i === -1) {
+      displayed.push(rid);
+    } else {
+      displayed.splice(i, 1);
+    }
+    this.setState({ displayed }, console.log(this.state.displayed));
   }
 
   render() {
@@ -56,6 +64,8 @@ class DataView extends Component {
         handleNodeAdd={this.handleNodeAdd}
         data={this.state.data}
         search={this.props.location.search}
+        handleClick={this.handleClick}
+        displayed={this.state.displayed}
       />
     );
     const TableWithProps = () => (
@@ -65,6 +75,7 @@ class DataView extends Component {
         handleClick={this.handleClick}
         handleCheckbox={this.handleCheckbox}
         search={this.props.location.search}
+        displayed={this.state.displayed}
       />
     );
     let dataView = () => {

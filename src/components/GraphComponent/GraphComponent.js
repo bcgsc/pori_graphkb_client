@@ -60,8 +60,8 @@ class GraphComponent extends Component {
 
   componentDidMount() {
     this.handleResize();
-    const neighbors = queryString.parse(this.props.search).neighbors;
-    Object.keys(this.props.data).forEach(key => {
+    // const neighbors = queryString.parse(this.props.search).neighbors;
+    this.props.displayed.forEach(key => {
       let nodes = this.state.nodes;
       let links = this.state.links;
       let graphObjects = this.state.graphObjects;
@@ -105,9 +105,6 @@ class GraphComponent extends Component {
   }
 
   processData(node, position, nodes, links, graphObjects) {
-    if (node.name === "lymphoid") {
-      console.log(node);
-    }
 
     edgeTypes.forEach(edgeType => {
       if (node[edgeType]) {
@@ -119,7 +116,6 @@ class GraphComponent extends Component {
 
           if (!graphObjects[edgeRid]) {
             const expandable = this.state.expandable;
-            console.log(edge);
             if (edge["@rid"] && edge.in["@rid"] && edge.out["@rid"]) {
               const link = {
                 source: edge.out["@rid"],
@@ -355,6 +351,7 @@ class GraphComponent extends Component {
   }
 
   handleClick(e, node) {
+    this.props.handleClick(node.data["@rid"])
     if (node.data["@rid"] === this.state.expandId) {
       e.stopPropagation();
       this.getNeighbors(node);

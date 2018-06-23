@@ -29,7 +29,6 @@ class TableComponent extends Component {
       order: "asc",
       orderBy: null,
       toggle: "",
-      displayed: this.props.displayed
     };
     this.handleDetailToggle = this.handleDetailToggle.bind(this);
     this.handleRequestSort = this.handleRequestSort.bind(this);
@@ -81,10 +80,6 @@ class TableComponent extends Component {
         id: "name",
         label: "Name"
       }
-      // {
-      //   id: "subsets",
-      //   label: "Subsets"
-      // }
     ];
 
     return (
@@ -101,7 +96,7 @@ class TableComponent extends Component {
         <Table>
           <TableHead className="table-head">
             <TableRow>
-              <TableCell style={{ zIndex: 1 }} />
+              <TableCell style={{ zIndex: 2 }} />
 
               {columns.map(col => {
                 return (
@@ -150,8 +145,10 @@ class TableComponent extends Component {
                       <TableCell>
                         <Checkbox
                           onChange={e => {
-                            // this.props.handleCheckbox(n["@rid"]);
+                            this.props.handleCheckbox(n["@rid"]);
                           }}
+                          defaultChecked={this.props.displayed.includes(n["@rid"])}
+
                         />
                       </TableCell>
                       <TableCell

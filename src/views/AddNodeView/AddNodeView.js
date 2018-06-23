@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import "./AddNodeView.css";
 import {
   Divider,
-  Paper,
   Menu,
   Typography,
   TextField,
@@ -10,10 +9,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  InputLabel,
   MenuItem,
-  FormControl,
-  Select,
   Button,
   IconButton
 } from "@material-ui/core";

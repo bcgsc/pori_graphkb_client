@@ -15,20 +15,21 @@ import {
   Checkbox
 } from "@material-ui/core";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
+import TimelineIcon from "@material-ui/icons/Timeline";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import NodeDetail from "../NodeDetail/NodeDetail";
 import { BrowserRouter, Link, Route } from "react-router-dom";
 
 class TableComponent extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       data: Object.keys(this.props.data).map(rid => this.props.data[rid]),
       page: 0,
       rowsPerPage: 50,
       order: "asc",
       orderBy: null,
-      toggle: "",
+      toggle: ""
     };
     this.handleDetailToggle = this.handleDetailToggle.bind(this);
     this.handleRequestSort = this.handleRequestSort.bind(this);
@@ -50,10 +51,27 @@ class TableComponent extends Component {
       order = "asc";
     }
 
-    const data =
-      order === "desc"
-        ? this.state.data.sort((a, b) => (b[orderBy] < a[orderBy] ? -1 : 1))
-        : this.state.data.sort((a, b) => (a[orderBy] < b[orderBy] ? -1 : 1));
+    const data = this.state.data.sort((a, b) => {
+      if (orderBy !== "displayed") {
+        return order === "desc"
+          ? b[orderBy] < a[orderBy]
+            ? -1
+            : 1
+          : a[orderBy] < b[orderBy]
+            ? -1
+            : 1;
+      } else {
+        return order === "desc"
+          ? this.props.displayed.includes(b["@rid"]) <
+            this.props.displayed.includes(a["@rid"])
+            ? -1
+            : 1
+          : this.props.displayed.includes(a["@rid"]) <
+            this.props.displayed.includes(b["@rid"])
+            ? -1
+            : 1;
+      }
+    });
 
     this.setState({ data, order, orderBy });
   }
@@ -68,6 +86,10 @@ class TableComponent extends Component {
     const data = Object.keys(this.state.data).map(rid => this.state.data[rid]);
     const { rowsPerPage, page, orderBy, order } = this.state;
     const columns = [
+      // {
+      //   id: "displayed",
+      //   label: <Checkbox onChange={this.props.handleCheckAll} />
+      // },
       {
         id: "source",
         label: "Source"
@@ -84,20 +106,20 @@ class TableComponent extends Component {
 
     return (
       <section className="data-table">
-        <Link
-          className="link"
-          to={{
-            pathname: "/data/graph",
-            search: this.props.search
-          }}
-        >
-          <Button variant="outlined">Graph</Button>
-        </Link>
         <Table>
           <TableHead className="table-head">
             <TableRow>
-              <TableCell style={{ zIndex: 2 }} />
-
+              <TableCell>
+                <Checkbox
+                  onChange={this.props.handleCheckAll}
+                  checked={this.props.displayed.length === data.length}
+                />
+                <TableSortLabel
+                  active={orderBy === "displayed"}
+                  onClick={e => this.handleRequestSort("displayed")}
+                  direction={order}
+                />
+              </TableCell>
               {columns.map(col => {
                 return (
                   <TableCell key={col.id} classes={{ root: col.id + "-col" }}>
@@ -147,8 +169,7 @@ class TableComponent extends Component {
                           onChange={e => {
                             this.props.handleCheckbox(n["@rid"]);
                           }}
-                          defaultChecked={this.props.displayed.includes(n["@rid"])}
-
+                          checked={this.props.displayed.includes(n["@rid"])}
                         />
                       </TableCell>
                       <TableCell
@@ -189,7 +210,7 @@ class TableComponent extends Component {
                 );
               })}
             <TableRow>
-              <TableCell colSpan={5} className="spacer-cell">
+              <TableCell colSpan={4} className="spacer-cell">
                 <TablePagination
                   classes={{ root: "table-paginator" }}
                   count={data.length}
@@ -200,6 +221,22 @@ class TableComponent extends Component {
                   rowsPerPageOptions={[25, 50, 100]}
                   component="div"
                 />
+              </TableCell>
+              <TableCell className="spacer-cell">
+                <Link
+                  className="link"
+                  to={{
+                    pathname: "/data/graph",
+                    search: this.props.search
+                  }}
+                >
+                  <IconButton
+                    color="secondary"
+                    style={{ backgroundColor: "rgba(0, 137, 123, 0.1)" }}
+                  >
+                    <TimelineIcon />
+                  </IconButton>
+                </Link>
               </TableCell>
             </TableRow>
           </TableBody>

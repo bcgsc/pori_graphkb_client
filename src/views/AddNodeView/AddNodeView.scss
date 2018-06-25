@@ -53,25 +53,6 @@ $breakpoint: 1300px;
   }
 }
 
-.input-wrapper {
-  display: flex;
-  width: inherit;
-
-  .text-input {
-    flex: 1;
-  }
-}
-
-.type-select {
-  min-width: 88px;
-  text-align: left;
-}
-
-.search-wrap {
-  flex-grow: 1;
-  margin-top: 16px;
-}
-
 .submit-button {
   position: fixed;
   width: 200px;

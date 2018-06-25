@@ -17,6 +17,7 @@ import {
   MuiThemeProvider,
   IconButton
 } from "@material-ui/core";
+import LoginView from "./views/LoginView/LoginView";
 
 class App extends Component {
   state = {
@@ -99,7 +100,7 @@ class App extends Component {
                 <Route path="/error" component={ErrorView} />
               </div>
               <div className="router-outlet">
-                <Route path="/edit" component={EditNodeView} />
+                <Route path="/login" component={LoginView} />
               </div>
             </section>
           </div>

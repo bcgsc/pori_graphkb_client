@@ -39,20 +39,6 @@
       grid-column-start: 1;
       grid-column-end: end; } }
 
-.input-wrapper {
-  display: flex;
-  width: inherit; }
-  .input-wrapper .text-input {
-    flex: 1; }
-
-.type-select {
-  min-width: 88px;
-  text-align: left; }
-
-.search-wrap {
-  flex-grow: 1;
-  margin-top: 16px; }
-
 .submit-button {
   position: fixed;
   width: 200px;

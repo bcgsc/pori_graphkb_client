@@ -12,7 +12,6 @@ import {
   CardHeader,
   Typography
 } from "@material-ui/core";
-import TimelineIcon from "@material-ui/icons/Timeline";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import Drawer from "@material-ui/core/Drawer";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";

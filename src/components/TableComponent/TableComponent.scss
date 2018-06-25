@@ -1,9 +1,20 @@
+@import "../../globals";
+
 .table-head {
   tr,
   th {
     position: sticky;
     top: 0;
     background-color: #f8f8f8;
+    z-index: 2;
+  }
+  th:before{
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-bottom: 1px solid rgba(224, 224, 224, 1);
   }
 }
 .selected-override {
@@ -15,6 +26,7 @@
 .cursor-override:hover {
   background-color: rgba(227, 230, 248, 0.4);
 }
+
 
 .data-table {
   margin: 0 auto;
@@ -54,6 +66,15 @@
   right: 0;
   background-color: #f8f8f8;
   bottom: 0;
+}
+.spacer-cell:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid rgba(224, 224, 224, 1);
 }
 
 $flip-duration: 0.15s;

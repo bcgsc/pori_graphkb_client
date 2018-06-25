@@ -5,7 +5,14 @@ import ReactDOM from "react-dom";
 import SVGLink from "../SVGLink/SVGLink";
 import SVGNode from "../SVGNode/SVGNode";
 import api from "../../services/api";
-import { Button, TextField, Checkbox } from "@material-ui/core";
+import {
+  Button,
+  TextField,
+  Checkbox,
+  FormControlLabel,
+  IconButton
+} from "@material-ui/core";
+import ViewListIcon from "@material-ui/icons/ViewList";
 import { CompactPicker } from "react-color";
 import { Link } from "react-router-dom";
 import queryString from "query-string";
@@ -43,7 +50,8 @@ class GraphComponent extends Component {
         defaultColor: "#1F265B",
         linkStrength: 1 / 30,
         chargeStrength: 100,
-        collisionRadius: 4
+        collisionRadius: 4,
+        autoCollisionRadius: false
       },
       colorKey: "selectedColor",
       expandable: {}
@@ -59,9 +67,16 @@ class GraphComponent extends Component {
   }
 
   componentDidMount() {
+    const start = performance.now();
+    let displayed = this.props.displayed;
     this.handleResize();
-    // const neighbors = queryString.parse(this.props.search).neighbors;
-    this.props.displayed.forEach(key => {
+    const a = performance.now();
+    console.log(a - start);
+    const neighbors = queryString.parse(this.props.search).neighbors;
+    if (!displayed || displayed.length === 0) {
+      displayed = [Object.keys(this.props.data)[0]];
+    }
+    displayed.forEach(key => {
       let nodes = this.state.nodes;
       let links = this.state.links;
       let graphObjects = this.state.graphObjects;
@@ -69,6 +84,7 @@ class GraphComponent extends Component {
         nodes.push({ data: this.props.data[key] });
         graphObjects["" + key] = this.props.data[key];
       }
+      this.props.handleNodeAdd(this.props.data[key]);
       this.setState(
         {
           ...this.processData(
@@ -76,7 +92,8 @@ class GraphComponent extends Component {
             { x: 0, y: 0 },
             nodes,
             links,
-            graphObjects
+            graphObjects,
+            Math.floor(neighbors / 2) + 1
           )
         },
         () => {
@@ -86,9 +103,16 @@ class GraphComponent extends Component {
         }
       );
     });
+    const b = performance.now();
+    console.log(b - a);
     this.drawGraph();
-    this.updateColors(Object.keys(this.props.data)[0]);
+    const c = performance.now();
+    console.log(c - b);
+    this.updateColors(displayed[0]);
+    const e = performance.now();
+    console.log(e - c);
     window.addEventListener("resize", this.handleResize);
+    console.log("done: " + (performance.now() - start));
   }
 
   handleResize() {
@@ -103,9 +127,11 @@ class GraphComponent extends Component {
       this.setState({ graphOptions }, this.initSimulation);
     }
   }
-
-  processData(node, position, nodes, links, graphObjects) {
-
+  handleCheckbox() {
+    const graphOptions = this.state.graphOptions;
+    graphOptions.autoCollisionRadius = !graphOptions.autoCollisionRadius;
+  }
+  processData(node, position, nodes, links, graphObjects, depth) {
     edgeTypes.forEach(edgeType => {
       if (node[edgeType]) {
         const n = node[edgeType].length;
@@ -116,7 +142,12 @@ class GraphComponent extends Component {
 
           if (!graphObjects[edgeRid]) {
             const expandable = this.state.expandable;
-            if (edge["@rid"] && edge.in["@rid"] && edge.out["@rid"]) {
+            if (
+              edge["@rid"] &&
+              edge.in["@rid"] &&
+              edge.out["@rid"] &&
+              depth !== 0
+            ) {
               const link = {
                 source: edge.out["@rid"],
                 target: edge.in["@rid"],
@@ -152,7 +183,8 @@ class GraphComponent extends Component {
                   positionInit,
                   nodes,
                   links,
-                  graphObjects
+                  graphObjects,
+                  depth - 1
                 );
                 nodes = d.nodes;
                 links = d.links;
@@ -174,11 +206,12 @@ class GraphComponent extends Component {
                 nodes.push(newNode);
                 graphObjects[newNode.data["@rid"]] = newNode;
                 const d = this.processData(
-                  edge.in,
+                  newNode.data,
                   positionInit,
                   nodes,
                   links,
-                  graphObjects
+                  graphObjects,
+                  depth - 1
                 );
                 nodes = d.nodes;
                 links = d.links;
@@ -196,7 +229,7 @@ class GraphComponent extends Component {
   }
 
   getNeighbors(node) {
-    const expandable = this.state.expandable;
+    const { expandable } = this.state;
 
     //Maintain data invariant
     const depth = 3;
@@ -209,7 +242,8 @@ class GraphComponent extends Component {
             { x: node.x, y: node.y },
             this.state.nodes,
             this.state.links,
-            this.state.graphObjects
+            this.state.graphObjects,
+            Math.floor(depth / 2) + 1
           )
         });
         this.props.handleNodeAdd(response);
@@ -219,6 +253,7 @@ class GraphComponent extends Component {
     } else {
       this.props.handleNodeAdd(node.data);
     }
+
     delete expandable[node.data["@rid"]];
     this.setState({ expandable });
   }
@@ -228,7 +263,6 @@ class GraphComponent extends Component {
     this.state.svg.call(d3.zoom().on("zoom", null));
     this.state.simulation.on("tick", null);
     window.removeEventListener("resize", this.handleResize);
-    this.setState({ expandable: {} });
   }
 
   initSimulation() {
@@ -237,8 +271,11 @@ class GraphComponent extends Component {
       .force(
         "collide",
         d3.forceCollide(d => {
-          return 4;
-          return d.data.name.length * 2.8;
+          if (this.state.graphOptions.autoCollisionRadius) {
+            return d.data.name.length * 2.8;
+          } else {
+            return this.state.graphOptions.collisionRadius;
+          }
         })
       ) //Can change these to make nodes more readable
       .force(
@@ -351,7 +388,7 @@ class GraphComponent extends Component {
   }
 
   handleClick(e, node) {
-    this.props.handleClick(node.data["@rid"])
+    this.props.handleClick(node.data["@rid"]);
     if (node.data["@rid"] === this.state.expandId) {
       e.stopPropagation();
       this.getNeighbors(node);
@@ -417,13 +454,21 @@ class GraphComponent extends Component {
       <div className="graph-wrapper">
         <div className="toolbar">
           <Link
-            className="link"
+            style={{ margin: "4px 12px" }}
             to={{
               pathname: "/data/table",
-              search: this.props.search
+              search: this.props.search,
+              state: this.state.displayed
             }}
           >
-            <Button variant="outlined">Table</Button>
+            <IconButton
+              color="secondary"
+              style={{
+                backgroundColor: "rgba(0, 137, 123, 0.1)"
+              }}
+            >
+              <ViewListIcon />
+            </IconButton>
           </Link>
           <div className="compact-picker">
             <CompactPicker
@@ -465,48 +510,65 @@ class GraphComponent extends Component {
           </div>
           <div className="graph-options-wrapper">
             <div className="graph-options-grid">
-              <div className="graph-input">
-                <input
-                  label="Link Strength"
-                  name="linkStrength"
-                  type="number"
-                  value={this.state.graphOptions.linkStrength}
-                  onChange={this.handleGraphOptionsChange}
+              <div className="graph-input-wrapper">
+                <span>Link Strength</span>
+                <div className="graph-input">
+                  <input
+                    label="Link Strength"
+                    name="linkStrength"
+                    type="number"
+                    value={this.state.graphOptions.linkStrength}
+                    onChange={this.handleGraphOptionsChange}
+                  />
+                </div>
+              </div>
+              <div className="graph-input-wrapper">
+                <span>Charge Strength</span>
+                <div className="graph-input">
+                  <input
+                    label="Charge Strength"
+                    name="chargeStrength"
+                    type="number"
+                    value={this.state.graphOptions.chargeStrength}
+                    onChange={this.handleGraphOptionsChange}
+                  />
+                </div>
+              </div>
+              <div className="graph-input-wrapper">
+                <span>Collision Radius</span>
+                <div className="graph-input">
+                  <input
+                    label="Collision Radius"
+                    name="collisionRadius"
+                    type="number"
+                    value={this.state.graphOptions.collisionRadius}
+                    onChange={this.handleGraphOptionsChange}
+                  />
+                </div>
+              </div>
+              <div className="graph-input-wrapper">
+                <FormControlLabel
+                  classes={{
+                    root: "checkbox-wrapper",
+                    label: "checkbox-label"
+                  }}
+                  control={
+                    <Checkbox
+                      onChange={e =>
+                        this.handleGraphOptionsChange({
+                          target: {
+                            value: e.target.checked,
+                            name: e.target.name
+                          }
+                        })
+                      }
+                      name="autoCollisionRadius"
+                      checked={this.state.graphOptions.autoCollisionRadius}
+                    />
+                  }
+                  label="Auto Collision Radius"
                 />
               </div>
-              <div className="graph-input">
-                <input
-                  label="Charge Strength"
-                  name="chargeStrength"
-                  type="number"
-                  value={this.state.graphOptions.chargeStrength}
-                  onChange={this.handleGraphOptionsChange}
-                />
-              </div>
-              <div className="graph-input">
-                <input
-                  label="Collision Radius"
-                  name="collisionRadius"
-                  type="number"
-                  value={this.state.graphOptions.collisionRadius}
-                  onChange={this.handleGraphOptionsChange}
-                />
-              </div>
-              {/* <div className="graph-input">
-                <input
-                  label="Other Field"
-                  // name="chargeStrength"
-                  type="number"
-                  // value={this.state.graphOptions.chargeStrength}
-                  // onChange={this.handleGraphOptionsChange}
-                />
-              </div> */}
-              <Checkbox
-                onChange={e => {
-                  // this.props.handleCheckbox(n["@rid"]);
-                }}
-                label="hi"
-              />
             </div>
           </div>
         </div>

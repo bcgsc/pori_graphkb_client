@@ -52,7 +52,13 @@ class AutoSearchComponent extends Component {
       return this.state.options.map(
         (item, index) =>
           this.props.children ? (
-            this.props.children(item, getItemProps, setState, index, getInputProps)
+            this.props.children(
+              item,
+              getItemProps,
+              setState,
+              index,
+              getInputProps
+            )
           ) : (
             <MenuItem
               {...getItemProps({
@@ -70,7 +76,9 @@ class AutoSearchComponent extends Component {
     return (
       <Downshift
         onChange={e => {
-          this.props.onChange({ target: { value: e.name } });
+          this.props.onChange({
+            target: { value: e.name, "@rid": e["@rid"], name: this.props.name }
+          });
         }}
         itemToString={item => {
           if (item) return item.name;
@@ -88,9 +96,7 @@ class AutoSearchComponent extends Component {
         }) => (
           <div className="autosearch-wrapper">
             <TextField
-              onChange={e => {
-                this.props.onChange(e);
-              }}
+              onChange={this.props.onChange}
               onKeyUp={this.refreshOptions}
               fullWidth
               required={this.props.required}
@@ -105,9 +111,12 @@ class AutoSearchComponent extends Component {
               }}
             />
             {isOpen &&
-            options(inputValue, getItemProps, setState, getInputProps).length !== 0 ? (
+            options(inputValue, getItemProps, setState, getInputProps)
+              .length !== 0 ? (
               <Paper className="droptions">
-                <List>{options(inputValue, getItemProps, setState, getInputProps)}</List>
+                <List>
+                  {options(inputValue, getItemProps, setState, getInputProps)}
+                </List>
               </Paper>
             ) : null}
           </div>

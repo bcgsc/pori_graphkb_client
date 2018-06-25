@@ -1,8 +1,24 @@
+.link {
+  font-family: 'Roboto';
+  color: #303030;
+  margin: 8px;
+  display: block;
+  text-decoration: none; }
+
 .table-head tr,
 .table-head th {
   position: sticky;
   top: 0;
-  background-color: #f8f8f8; }
+  background-color: #f8f8f8;
+  z-index: 2; }
+
+.table-head th:before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  border-bottom: 1px solid #e0e0e0; }
 
 .selected-override {
   background-color: rgba(214, 219, 245, 0.7) !important; }
@@ -46,6 +62,15 @@
   right: 0;
   background-color: #f8f8f8;
   bottom: 0; }
+
+.spacer-cell:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid #e0e0e0; }
 
 .detail-btn-active {
   animation: turn 0.15s forwards; }

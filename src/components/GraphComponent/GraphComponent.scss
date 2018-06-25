@@ -21,10 +21,11 @@ $toolbar-height: 100px;
 
   .compact-picker {
     float: left;
+    margin: auto 4px;
   }
 
   .grid-wrapper {
-    padding: 8px;
+    margin: auto 4px;
 
     .button-grid {
       margin: auto;
@@ -41,30 +42,55 @@ $toolbar-height: 100px;
   }
 
   .graph-options-wrapper {
-    padding: 8px;
+    margin: auto 4px;
+
     .graph-options-grid {
       display: grid;
-      grid-template-rows: 1fr 1fr;
-      grid-template-columns: 86px 86px;
+      grid-template-rows: 36px 36px;
+      grid-template-columns: 200px 200px;
       grid-row-gap: 4px;
       grid-column-gap: 4px;
+      height: 100%;
 
-      .graph-input {
-        height: 34px;
-        border-radius: 4px;
-        border: 1px solid rgba(0, 0, 0, 0.23);
-        overflow: hidden;
-        input {
-          border: none;
-          font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-          font-size: 1em;
-          margin-top: 4px;
-          padding: 4px;
-
-          background-color: unset;
+      .graph-input-wrapper {
+        .checkbox-wrapper {
+          margin: 3px 0 0 -15px;
+          .checkbox-label {
+            margin-left: -8px;
+            font-size: 0.9em;
+          }
+          svg {
+            color: $md-secondary-color;
+          }
         }
-        input:focus {
-          outline: none;
+
+        span {
+          margin: 0;
+          font-size: 0.7em;
+          font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+          color: $md-primary-color;
+        }
+
+        .graph-input {
+          border-radius: 4px;
+          border: 1px solid rgba(0, 0, 0, 0.23);
+          overflow: hidden;
+
+          input {
+            border: none;
+            font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+            font-size: 0.9em;
+            background-color: unset;
+            width: 100%;
+          }
+          input:focus {
+            outline: none;
+            box-shadow: none;
+          }
+          input:invalid {
+            outline: none;
+            box-shadow: none;
+          }
         }
       }
     }

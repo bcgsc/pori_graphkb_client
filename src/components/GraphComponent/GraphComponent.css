@@ -22,9 +22,10 @@
   display: flex;
   border-bottom: solid #1F2B65 1px; }
   .toolbar .compact-picker {
-    float: left; }
+    float: left;
+    margin: auto 4px; }
   .toolbar .grid-wrapper {
-    padding: 8px; }
+    margin: auto 4px; }
     .toolbar .grid-wrapper .button-grid {
       margin: auto;
       display: grid;
@@ -35,27 +36,42 @@
       .toolbar .grid-wrapper .button-grid button {
         padding: 4px; }
   .toolbar .graph-options-wrapper {
-    padding: 8px; }
+    margin: auto 4px; }
     .toolbar .graph-options-wrapper .graph-options-grid {
       display: grid;
-      grid-template-rows: 1fr 1fr;
-      grid-template-columns: 86px 86px;
+      grid-template-rows: 36px 36px;
+      grid-template-columns: 200px 200px;
       grid-row-gap: 4px;
-      grid-column-gap: 4px; }
-      .toolbar .graph-options-wrapper .graph-options-grid .graph-input {
-        height: 34px;
+      grid-column-gap: 4px;
+      height: 100%; }
+      .toolbar .graph-options-wrapper .graph-options-grid .graph-input-wrapper .checkbox-wrapper {
+        margin: 3px 0 0 -15px; }
+        .toolbar .graph-options-wrapper .graph-options-grid .graph-input-wrapper .checkbox-wrapper .checkbox-label {
+          margin-left: -8px;
+          font-size: 0.9em; }
+        .toolbar .graph-options-wrapper .graph-options-grid .graph-input-wrapper .checkbox-wrapper svg {
+          color: #00897b; }
+      .toolbar .graph-options-wrapper .graph-options-grid .graph-input-wrapper span {
+        margin: 0;
+        font-size: 0.7em;
+        font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+        color: #1F2B65; }
+      .toolbar .graph-options-wrapper .graph-options-grid .graph-input-wrapper .graph-input {
         border-radius: 4px;
         border: 1px solid rgba(0, 0, 0, 0.23);
         overflow: hidden; }
-        .toolbar .graph-options-wrapper .graph-options-grid .graph-input input {
+        .toolbar .graph-options-wrapper .graph-options-grid .graph-input-wrapper .graph-input input {
           border: none;
           font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-          font-size: 1em;
-          margin-top: 4px;
-          padding: 4px;
-          background-color: unset; }
-        .toolbar .graph-options-wrapper .graph-options-grid .graph-input input:focus {
-          outline: none; }
+          font-size: 0.9em;
+          background-color: unset;
+          width: 100%; }
+        .toolbar .graph-options-wrapper .graph-options-grid .graph-input-wrapper .graph-input input:focus {
+          outline: none;
+          box-shadow: none; }
+        .toolbar .graph-options-wrapper .graph-options-grid .graph-input-wrapper .graph-input input:invalid {
+          outline: none;
+          box-shadow: none; }
 
 .svg-wrapper {
   position: absolute;

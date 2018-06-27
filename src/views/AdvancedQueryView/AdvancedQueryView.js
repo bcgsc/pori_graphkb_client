@@ -4,7 +4,8 @@ import {
   TextField,
   Button,
   Checkbox,
-  FormControlLabel
+  FormControlLabel,
+  Typography
 } from "@material-ui/core/";
 import { Link } from "react-router-dom";
 import queryString from "query-string";
@@ -154,8 +155,13 @@ class AdvancedQueryView extends Component {
 
     return (
       <div className="adv-wrapper">
+        <Typography color="textSecondary" variant="headline" id="adv-title">
+          Advanced Query
+        </Typography>
         <div className="parameter-selection">
-          <h3 className="mat-h3">Name:</h3>
+          <Typography variant="subheading" className="parameter-name">
+            Name:
+          </Typography>
           <TextField
             id="name-adv"
             placeholder="eg. angiosarcoma"
@@ -167,7 +173,9 @@ class AdvancedQueryView extends Component {
           />
         </div>
         <div className="parameter-selection">
-          <h3 className="mat-h3">Source:</h3>
+          <Typography variant="subheading" className="parameter-name">
+            Source:
+          </Typography>
           <AutoSearchComponent
             value={this.state.sourceName}
             onChange={this.handleSourceChange}
@@ -178,7 +186,9 @@ class AdvancedQueryView extends Component {
           />
         </div>
         <div className="parameter-selection">
-          <h3 className="mat-h3">Source ID:</h3>
+          <Typography variant="subheading" className="parameter-name">
+            Source ID:
+          </Typography>
           <TextField
             id="source-id-adv"
             placeholder="eg. DOID:4"
@@ -190,7 +200,9 @@ class AdvancedQueryView extends Component {
           />
         </div>
         <div className="parameter-selection">
-          <h3 className="mat-h3">Long Name:</h3>
+          <Typography variant="subheading" className="parameter-name">
+            Long Name:
+          </Typography>
           <TextField
             id="long-name-adv"
             label="Long Name"
@@ -201,7 +213,9 @@ class AdvancedQueryView extends Component {
           />
         </div>
         <div className="parameter-selection">
-          <h3 className="mat-h3">Source ID Version:</h3>
+          <Typography variant="subheading" className="parameter-name">
+            Source ID Version:
+          </Typography>
           <TextField
             id="source-id-version-adv"
             label="Source ID Version"
@@ -212,7 +226,9 @@ class AdvancedQueryView extends Component {
           />
         </div>
         <div className="parameter-selection">
-          <h3 className="mat-h3">Limit:</h3>
+          <Typography variant="subheading" className="parameter-name">
+            Limit:
+          </Typography>
           <TextField
             id="limit-adv"
             placeholder="Default = 1000"
@@ -225,11 +241,15 @@ class AdvancedQueryView extends Component {
           />
         </div>
         <div className="parameter-selection">
-          <h3 className="mat-h3">Return Properties: </h3>
+          <Typography variant="subheading" className="parameter-name">
+            Return Properties:{" "}
+          </Typography>
           <div className="checkboxes">{returnProperties}</div>
         </div>
         <div className="parameter-selection">
-          <h3 className="mat-h3">Related Terms:</h3>
+          <Typography variant="subheading" className="parameter-name">
+            Related Terms:
+          </Typography>
           <div className="related-checkboxes">
             <div className="checkbox">
               <FormControlLabel
@@ -276,7 +296,9 @@ class AdvancedQueryView extends Component {
           </div>
         </div>
         <div className="parameter-selection">
-          <h3 className="mat-h3">Fuzzy Match:</h3>
+          <Typography variant="subheading" className="parameter-name">
+            Fuzzy Match:
+          </Typography>
           <TextField
             id="fuzzy-match-adv"
             placeholder=""
@@ -289,7 +311,9 @@ class AdvancedQueryView extends Component {
           />
         </div>
         <div className="parameter-selection">
-          <h3 className="mat-h3">Neighbors:</h3>
+          <Typography variant="subheading" className="parameter-name">
+            Neighbors:
+          </Typography>
           <TextField
             id="neighbors-adv"
             label="Neighbors"
@@ -300,17 +324,19 @@ class AdvancedQueryView extends Component {
             type="number"
           />
         </div>
-        <Link className="link" to={{ state: this.state, pathname: "/query" }}>
-          <Button variant="outlined">Back</Button>
-        </Link>
-        <Link
-          className="link"
-          to={{ search: this.bundle(), pathname: "/table" }}
-        >
-          <Button variant="contained" color="primary" onClick={this.submit}>
-            Search
-          </Button>
-        </Link>
+        <div id="adv-nav-buttons">
+          <Link className="link" to={{ state: this.state, pathname: "/query" }}>
+            <Button variant="outlined">Back</Button>
+          </Link>
+          <Link
+            className="link"
+            to={{ search: this.bundle(), pathname: "/table" }}
+          >
+            <Button variant="contained" color="primary" onClick={this.submit}>
+              Search
+            </Button>
+          </Link>
+        </div>
       </div>
     );
   }

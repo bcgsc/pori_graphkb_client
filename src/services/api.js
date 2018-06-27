@@ -1,43 +1,75 @@
-import axios from 'axios';
-import promise from 'promise';
-import * as jc from 'json-cycle';
+import axios from "axios";
+import promise from "promise";
+import * as jc from "json-cycle";
 
-const API_BASE_URL = 'http://kbapi01:8088/api';
-const TEST_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXIiOnsibmFtZSI6ImFkbWluIiwiQHJpZCI6IiM0MTowIn19LCJpYXQiOjE1MjY0MzIwMjF9.iUSZphrn7zFL6ZXrEt39SuIfyVFQqG3c6xYtM4aNvyM";
+// const API_BASE_URL = "http://kbapi01:8088/api";
+const API_BASE_URL = "http://kbapi01:8006/api/v0.0.6";
 
-var api = axios.create({
-    baseURL: API_BASE_URL,
-    headers: {
-        Authorization: TEST_TOKEN,
-        'Content-type': 'application/json',
-    },
-});
+export default class Api {
+  getToken() {
+    return localStorage.getItem("kbToken");
+  }
 
-function getToken() {
-    return 0;
-}
-
-api.interceptors.request.use((config) => {
-    // get access token from whatever...
-    let token = getToken() //another service?
-    if (token) {
-        if (config.method !== 'OPTIONS') {
-            config.headers.Authorization = token;
-        }
+  getHeaders() {
+    const headers = new Headers();
+    headers.append("Content-type", "application/json");
+    if (this.getToken()) {
+      headers.append("Authorization", this.getToken());
     }
-    config.headers.Authorization = TEST_TOKEN;
+    return headers;
+  }
 
-    return config;
-}, (error) => {
-    //something with error...
-    return promise.reject(error);
-});
+  patch(endpoint, payload) {
+    const init = {
+      method: "PATCH",
+      body: JSON.stringify(payload)
+    };
+    return this.fetchWithInterceptors(endpoint, init);
+  }
 
-api.interceptors.response.use((response) => {
-    console.log(response);
-    return jc.retrocycle(response.data);
-}, (error) => {
-    return promise.reject(error);
-})
+  get(endpoint) {
+    const init = {
+      method: "GET"
+    };
+    return this.fetchWithInterceptors(endpoint, init);
+  }
 
-export default api;
+  post(endpoint, payload) {
+    const init = {
+      method: "POST",
+      body: JSON.stringify(payload)
+    };
+
+    return this.fetchWithInterceptors(endpoint, init);
+  }
+
+  fetchWithInterceptors(endpoint, init) {
+    const initWithInterceptors = {
+      ...init,
+      headers: this.getHeaders(),
+      cache: "default"
+    };
+
+    return fetch(new Request(API_BASE_URL + endpoint, initWithInterceptors))
+      .then(response => {
+        console.log(response);
+        if (response.ok) {
+          console.log("ok");
+          return response.json();
+        } else {
+          return promise.reject(response);
+        }
+      })
+      .then(json => {
+        console.log(json);
+        if (json.result) json = json.result; //???
+        return jc.retrocycle(json);
+      })
+      .catch(error => {
+        if (error.status === 401) {
+          localStorage.removeItem("kbToken");
+        }
+        return promise.reject(error.status);
+      });
+  }
+}

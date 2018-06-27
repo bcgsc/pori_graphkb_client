@@ -5,9 +5,13 @@
   height: 100%;
   vertical-align: middle;
 
-  #back-button {
-    position: absolute;
-    left: 72px;
+  #adv-title {
+    margin: 16px;
+  }
+
+  #adv-nav-buttons {
+    display: flex;
+    justify-content: center;
   }
 
   .parameter-selection {
@@ -17,7 +21,7 @@
     @media (max-width: 920px) {
       flex-direction: column;
     }
-    .mat-h3 {
+    .parameter-name {
       text-align: left;
       min-width: 15vw;
       margin: auto;
@@ -85,6 +89,5 @@
   .link {
     text-decoration: none;
     width: fit-content;
-    margin: auto;
   }
 }

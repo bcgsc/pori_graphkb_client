@@ -11,13 +11,14 @@ import Drawer from "@material-ui/core/Drawer";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import Divider from "@material-ui/core/Divider";
 import MenuIcon from "@material-ui/icons/Menu";
-import { BrowserRouter, Link, Route } from "react-router-dom";
+import { BrowserRouter, Link, Route, Redirect } from "react-router-dom";
 import {
   createMuiTheme,
   MuiThemeProvider,
   IconButton
 } from "@material-ui/core";
 import LoginView from "./views/LoginView/LoginView";
+import Api from "./services/api";
 
 class App extends Component {
   state = {
@@ -51,6 +52,9 @@ class App extends Component {
           </div>
 
           <Divider />
+          <Link className="link" to={"/login"}>
+            Login
+          </Link>
           <Link className="link" to={"/query"}>
             Query
           </Link>
@@ -74,7 +78,6 @@ class App extends Component {
               >
                 <MenuIcon />
               </IconButton>
-              {/* <span>Knowledge Base</span> */}
               <section className="search-bar">
                 <div className="search-background" />
               </section>
@@ -82,25 +85,12 @@ class App extends Component {
             {drawer}
             <section className="content">
               <div className="router-outlet">
-                <Route exact path="/query" component={QueryView} />
-              </div>
-              <div className="router-outlet">
-                <Route
-                  path="/query/advanced"
-                  component={AdvancedQueryView}
-                />
-              </div>
-              <div className="router-outlet">
-                <Route path="/add" component={AddNodeView} />
-              </div>
-              <div className="router-outlet">
-                <Route path="/data" component={DataView} />
-              </div>
-              <div className="router-outlet">
-                <Route path="/error" component={ErrorView} />
-              </div>
-              <div className="router-outlet">
                 <Route path="/login" component={LoginView} />
+                <Route exact path="/query" component={QueryView} />
+                <Route path="/query/advanced" component={AdvancedQueryView} />
+                <Route path="/add" component={AddNodeView} />
+                <Route path="/data" component={DataView} />
+                <Route path="/error" component={ErrorView} />
               </div>
             </section>
           </div>

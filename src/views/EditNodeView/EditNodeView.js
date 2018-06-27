@@ -20,20 +20,29 @@ import CloseIcon from "@material-ui/icons/Close";
 import FolderIcon from "@material-ui/icons/Folder";
 import TrendingFlatIcon from "@material-ui/icons/TrendingFlat";
 import AutoSearchComponent from "../../components/AutoSearchComponent/AutoSearchComponent";
-import api from "../../services/api";
+import Api from "../../services/api";
 
 //TODO: Implement variants
 class EditNodeView extends Component {
   constructor(props) {
     super(props);
+
     const mainFields = {
       "@rid": props.node["@rid"],
       name: props.node.name,
       longName: props.node.longName,
       description: props.node.description,
       sourceIdVersion: props.node.sourceIdVersion,
-      subsets: props.node.subsets || []
+      subsets: props.node.subsets || [],
+      api: new Api()
     };
+
+    const loadedEdges =
+      localStorage.getItem("edgeTypeExpiry") &&
+      Date.now() < localStorage.getItem("edgeTypeExpiry")
+        ? JSON.parse(localStorage.getItem("edgeTypes"))
+        : [];
+
     this.state = {
       ...mainFields,
       subset: "",
@@ -45,7 +54,7 @@ class EditNodeView extends Component {
       },
       relationships: [],
       subsets: [],
-      loadedEdges: !!localStorage.getItem("edgeTypes")
+      loadedEdges: loadedEdges
     };
     this.handleMainPayloadChange = this.handleMainPayloadChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -57,6 +66,7 @@ class EditNodeView extends Component {
     );
     this.handleRelationshipDelete = this.handleRelationshipDelete.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.loadEdges = this.loadEdges.bind(this);
   }
 
   componentDidMount() {
@@ -66,8 +76,8 @@ class EditNodeView extends Component {
       "in_AliasOf",
       "out_AliasOf"
     ];
-    api
-      .get("/diseases/" + this.state["@rid"].slice(1) + "?neighbors=2")
+    this.state.api
+      .get("/diseases/" + this.state["@rid"].slice(1) + "?neighbors=3")
       .then(response => {
         const relationships = [];
         edgeTypes.forEach(type => {
@@ -94,6 +104,7 @@ class EditNodeView extends Component {
           sourceName: response.source.name,
           relationships
         });
+        this.loadEdges();
       });
   }
 
@@ -168,11 +179,35 @@ class EditNodeView extends Component {
       subsets: this.state.subsets
     };
 
-    api
+    this.state.api
       .patch("/diseases/" + this.state["@rid"].slice(1), mainFields)
       .then(response => {
         console.log(response);
       });
+  }
+
+  loadEdges() {
+    if (!this.state.loadedEdges || this.state.loadedEdges.length === 0) {
+      this.state.api.get("/schema").then(response => {
+        const list = [];
+        Object.keys(response).forEach(key => {
+          if (
+            response[key].inherits.includes("E") &&
+            response[key].inherits.includes("OntologyEdge")
+          ) {
+            list.push(key);
+          }
+        });
+
+        const now = new Date();
+        const expiry = new Date(now);
+        expiry.setHours(now.getHours() + 8);
+
+        localStorage.setItem("edgeTypeExpiry", expiry.getTime());
+        localStorage.setItem("edgeTypes", JSON.stringify(list));
+        this.setState({ loadedEdges: list });
+      });
+    }
   }
 
   render() {
@@ -214,37 +249,15 @@ class EditNodeView extends Component {
         </ListItem>
       );
     });
-    const edgeTypes = () => {
-      if (this.state.loadedEdges) {
-        return JSON.parse(localStorage.getItem("edgeTypes")).map(edgeType => (
-          <MenuItem key={edgeType} value={edgeType}>
-            {edgeType}
-          </MenuItem>
-        ));
-      } else {
-        api.get("/schema").then(response => {
-          const list = [];
-          Object.keys(response).forEach(key => {
-            if (response[key].inherits.includes("E")) {
-              list.push(key);
-            }
-          });
-          localStorage.setItem("edgeTypes", JSON.stringify(list));
-          this.setState({ loadedEdges: true });
-        });
-      }
-    };
+    const edgeTypes = this.state.loadedEdges.map(edgeType => (
+      <MenuItem key={edgeType} value={edgeType}>
+        {edgeType}
+      </MenuItem>
+    ));
 
     return (
       <div className="edit-node-wrapper">
         {/* Style */}
-        <IconButton
-          onClick={this.props.handleDrawer}
-          className="close-drawer-btn"
-        >
-          <CloseIcon color="error" />
-        </IconButton>
-
         <form onSubmit={this.handleSubmit}>
           <div className="param-section">
             <Typography variant="title">Edit Term Parameters</Typography>
@@ -366,7 +379,7 @@ class EditNodeView extends Component {
                     <MenuItem value="">
                       <em>None</em>
                     </MenuItem>
-                    {edgeTypes()}
+                    {edgeTypes}
                   </Select>
                 </FormControl>
               </div>

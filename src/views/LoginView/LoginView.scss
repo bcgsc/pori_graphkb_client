@@ -1,0 +1,25 @@
+.login-wrapper {
+  position: absolute;
+  top: 30vh;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  .login-form {
+    margin: auto;
+    width: 50vw;
+    display: flex;
+    flex-direction: column;
+
+    .login-input {
+      margin: 8px;
+    }
+
+    button {
+      margin: 8px;
+    }
+    #caption {
+      margin: 8px;
+    }
+  }
+}

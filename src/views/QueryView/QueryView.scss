@@ -1,46 +1,46 @@
-@import '../../globals';
+@import "../../globals";
 
 .search-wrapper {
-    min-width: 50vw;
-    max-width: 60vw;
-    position: absolute;
-    left:0;
-    right:0;
-    top: 35vh;
-    margin:auto;
+  min-width: 50vw;
+  max-width: 60vw;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 35vh;
+  margin: auto;
 
-    .search-bar{
-        width:100%;
-        display: flex;
+  .search-bar {
+    width: 100%;
+    display: flex;
 
-        .search-box{
-            flex-grow:1;
-        }
-        @media (max-width: 25em) {
-            flex-direction: column;
-            button{
-                margin-top: 8px;
-            }
-        }
+    .search-box {
+      flex-grow: 1;
     }
+    @media (max-width: 25em) {
+      flex-direction: column;
+      button {
+        margin-top: 8px;
+      }
+    }
+    button {
+      margin-right: 8px;
+    }
+  }
 
-    Button{
-        margin-left: 8px;
-    }
-    .advanced-button{
-        display: block;
-        margin: auto;
-        margin-top: 16px;
-        border: 1px solid $md-secondary-color;
-    }
+  .advanced-button {
+    display: block;
+    margin: auto;
+    margin-top: 16px;
+    border: 1px solid $md-secondary-color;
+  }
 }
 
-.query-link{
-    text-decoration: none;
-    text-decoration-color: white;
-    color: white;
+.query-link {
+  text-decoration: none;
+  text-decoration-color: white;
+  color: white;
 }
 
-.main-search{
-    flex-grow: 1;
+.main-search {
+  flex-grow: 1;
 }

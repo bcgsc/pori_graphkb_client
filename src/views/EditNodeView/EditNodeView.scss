@@ -9,11 +9,6 @@ $mediumBreakpoint: 500px;
   height: 100%;
   width: 100%;
 
-  .close-drawer-btn {
-    float: right;
-    margin: 8px;
-  }
-
   form {
     width: 100%;
     padding-bottom: 20px;
@@ -65,6 +60,16 @@ $mediumBreakpoint: 500px;
     .relationship-add-wrapper {
       @media (max-width: $mediumBreakpoint) {
         flex-direction: column;
+        width: 100%;
+      }
+    }
+    .submit-button {
+      position: fixed;
+      width: 200px;
+      right: 1%;
+      bottom: 1%;
+
+      button {
         width: 100%;
       }
     }

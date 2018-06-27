@@ -150,7 +150,11 @@ class TableComponent extends Component {
                       in={active}
                       unmountOnExit
                     >
-                      <NodeDetail node={n} data={this.props.data} />
+                      <NodeDetail
+                        node={n}
+                        data={this.props.data}
+                        handleNodeEdit={this.props.handleNodeEdit}
+                      />
                     </Collapse>
                   </TableRow>
                 ) : null;

@@ -4,7 +4,7 @@ import * as d3 from "d3";
 import ReactDOM from "react-dom";
 import SVGLink from "../SVGLink/SVGLink";
 import SVGNode from "../SVGNode/SVGNode";
-import api from "../../services/api";
+import Api from "../../services/api";
 import {
   Button,
   TextField,
@@ -13,6 +13,7 @@ import {
   IconButton
 } from "@material-ui/core";
 import ViewListIcon from "@material-ui/icons/ViewList";
+import EditIcon from "@material-ui/icons/Edit";
 import { CompactPicker } from "react-color";
 import { Link } from "react-router-dom";
 import queryString from "query-string";
@@ -32,6 +33,7 @@ class GraphComponent extends Component {
     super(props);
 
     this.state = {
+      api: new Api(),
       nodes: [],
       links: [],
       graphObjects: {},
@@ -74,7 +76,7 @@ class GraphComponent extends Component {
     console.log(a - start);
     const neighbors = queryString.parse(this.props.search).neighbors;
     if (!displayed || displayed.length === 0) {
-      displayed = [Object.keys(this.props.data)[0]];
+      displayed = [this.props.selectedId];
     }
     displayed.forEach(key => {
       let nodes = this.state.nodes;
@@ -235,7 +237,7 @@ class GraphComponent extends Component {
     const depth = 3;
     let url = "/diseases/" + node.data["@rid"].slice(1) + "?neighbors=" + depth;
     if (expandable[node.data["@rid"]]) {
-      api.get(url).then(response => {
+      this.state.api.get(url).then(response => {
         this.setState({
           ...this.processData(
             response,
@@ -572,7 +574,13 @@ class GraphComponent extends Component {
             </div>
           </div>
         </div>
+
         <div className="svg-wrapper" ref="wrapper">
+          <div className="node-options">
+            <IconButton>
+              <EditIcon />
+            </IconButton>
+          </div>
           <svg ref="graph">
             <defs>
               <marker

@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import "./AutoSearchComponent.css";
 import Downshift from "downshift";
 import { MenuItem, List, Paper, TextField } from "@material-ui/core";
-import api from "../../services/api";
+import { Redirect } from "react-router-dom";
+import Api from "../../services/api";
 import { debounce } from "throttle-debounce";
 
 class AutoSearchComponent extends Component {
@@ -13,7 +14,9 @@ class AutoSearchComponent extends Component {
       limit: props.limit || 30,
       endpoint: props.endpoint || "diseases",
       property: props.property || "name",
-      isOpen: false
+      isOpen: false,
+      loginRedirect: false,
+      api: new Api()
     };
     this.callApi = debounce(300, this.callApi.bind(this));
     this.refreshOptions = this.refreshOptions.bind(this);
@@ -29,7 +32,7 @@ class AutoSearchComponent extends Component {
   }
 
   callApi(value) {
-    api
+    this.state.api
       .get(
         "/" +
           this.state.endpoint +
@@ -45,9 +48,16 @@ class AutoSearchComponent extends Component {
           return object;
         });
         this.setState({ isOpen: true, options });
+      })
+      .catch(error => {
+        error === 401
+          ? this.setState({ loginRedirect: true })
+          : alert("Error code: " + error);
       });
   }
+
   render() {
+    if (this.state.loginRedirect) return <Redirect push to="/login" />;
     let options = (inputValue, getItemProps, setState, getInputProps) => {
       return this.state.options.map(
         (item, index) =>

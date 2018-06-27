@@ -4,6 +4,7 @@
   padding: 0.8em;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  overflow: auto;
 }
 
 .node-wrapper {
@@ -16,88 +17,13 @@
   }
 }
 
-.list-subheader {
-  padding-left: 24px;
-  text-align: left;
-}
-.detail-wrapper {
-  top: 0;
-  position: sticky;
-  z-index: 1;
-
-  @media (max-width: 60em) {
-    height: 48px;
-  }
-
-  button {
-    margin: auto;
-  }
-}
-
-.edit-btn {
-  a {
-    margin: auto;
-  }
-}
-
-.graph-btn {
-  button {
-    margin: auto;
-  }
-}
-
-.basic-btn {
-  display: none;
-  float: left;
-  position: fixed;
-  left: 48px;
-  top: 0;
-  @media (max-width: 60em) {
-    height: 48px;
-    display: unset;
-  }
-
-  $size: 40px;
-  .btn-wrapper {
-    display: inline-block;
-    margin: 4px;
-    overflow: visible;
-    height: $size;
-    width: $size;
-    background-color: #17214e;
-    border-radius: $size;
-  }
-
-  .basic {
-    color: #fafafa;
-  }
-  button {
-    margin: auto;
-    transform: translate(-4px, -4px);
-  }
-}
-
-.node-properties {
-  overflow: auto;
-}
-
-
 .basic-wrapper {
   width: 100%;
   height: 100%;
   overflow-y: auto;
 }
 
-.drawer-box-graph {
-  width: calc(100vw - 1px);
+.node-edit-btn {
+  float: right;
+  margin: 0 0.8em;
 }
-
-.drawer-box-basic {
-  width: calc(50vw + 24px);
-}
-
-.btn-background {
-  background-color: #fafafa;
-}
-
-

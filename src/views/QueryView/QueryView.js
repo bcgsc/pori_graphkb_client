@@ -1,10 +1,19 @@
 import React, { Component } from "react";
 import "./QueryView.css";
-import Button from "@material-ui/core/Button";
+import { Button, IconButton } from "@material-ui/core";
 import { Link, Redirect } from "react-router-dom";
 import AutoSearchComponent from "../../components/AutoSearchComponent/AutoSearchComponent";
-
+import ViewListIcon from "@material-ui/icons/ViewList";
+import TimelineIcon from "@material-ui/icons/Timeline";
+/**
+ * View representing the simple query page and the entry point into querying the database.
+ */
 class QueryView extends Component {
+  /**
+   * Initializes the query string and binds methods to the component for two
+   * way data binding. Initializes redirect flag as false.
+   * @param {state?} props continued state object passed from AdvancedQueryView component.
+   */
   constructor(props) {
     super(props);
 
@@ -12,28 +21,37 @@ class QueryView extends Component {
 
     this.state = {
       name: initName,
-      redirect: false
+      redirect: false,
+      endpoint: "table"
     };
 
-    this.handleName = this.handleName.bind(this);
-    this.submit = this.submit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  submit() {
-    if (this.state.name) this.setState({ redirect: true });
+  /**
+   * Sets redirect flag to true if there is a valid query (any string).
+   */
+  handleSubmit(endpoint) {
+    if (this.state.name) this.setState({ redirect: true, endpoint });
   }
 
-  handleName(e) {
-    this.setState({ name: e.target.value });
+  /**
+   * Sets state field specified by event target name to event target value.
+   * @param {Event} e
+   */
+  handleChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
   }
 
   render() {
+    //Redirects to
     if (this.state.redirect)
       return (
         <Redirect
           push
           to={{
-            pathname: "/data/table",
+            pathname: "/data/" + this.state.endpoint,
             search: "?name=~" + this.state.name + "&neighbors=3"
           }}
         />
@@ -45,7 +63,7 @@ class QueryView extends Component {
           className="search-wrapper"
           onKeyUp={e => {
             if (e.keyCode === 13) {
-              this.submit();
+              this.handleSubmit("table");
             }
           }}
         >
@@ -54,22 +72,33 @@ class QueryView extends Component {
               <AutoSearchComponent
                 value={this.state.name}
                 onChange={e => {
-                  this.handleName(e);
+                  this.handleChange(e);
                 }}
                 placeholder="Search"
                 limit={30}
+                name="name"
               />
             </div>
-            <Button
+            <IconButton
               variant="raised"
               color="primary"
               onClick={() => {
-                this.submit();
+                this.handleSubmit("table");
               }}
             >
-              Search
-            </Button>
+              <ViewListIcon />
+            </IconButton>
+            <IconButton
+              variant="raised"
+              color="secondary"
+              onClick={() => {
+                this.handleSubmit("graph");
+              }}
+            >
+              <TimelineIcon />
+            </IconButton>
           </div>
+          <div className="search-buttons" />
           <Link
             className="query-link"
             to={{ state: this.state, pathname: "/query/advanced" }}

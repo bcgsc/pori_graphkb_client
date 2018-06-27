@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import "./DataView.css";
-import api from "../../services/api";
+import Api from "../../services/api";
 import { Route, Redirect } from "react-router-dom";
 import { Paper, Drawer, IconButton } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 import GraphComponent from "../../components/GraphComponent/GraphComponent";
 import TableComponent from "../../components/TableComponent/TableComponent";
 import EditNodeView from "../EditNodeView/EditNodeView";
@@ -12,34 +13,44 @@ class DataView extends Component {
     super(props);
 
     this.state = {
-      redirect: false,
+      queryRedirect: false,
+      loginRedirect: false,
       data: null,
       displayed: [],
       selectedId: null,
-      editing: true
+      editing: true,
+      loginRedirect: false,
+      api: new Api()
     };
 
     this.handleClick = this.handleClick.bind(this);
     this.handleNodeAdd = this.handleNodeAdd.bind(this);
     this.handleCheckbox = this.handleCheckbox.bind(this);
     this.handleCheckAll = this.handleCheckAll.bind(this);
-    this.handleDrawer = this.handleDrawer.bind(this);
+    this.handleDrawerClose = this.handleDrawerClose.bind(this);
+    this.handleNodeEdit = this.handleNodeEdit.bind(this);
   }
 
   componentDidMount() {
     let dataMap = {};
-    let redirect = false;
-    api.get("/diseases" + this.props.location.search).then(data => {
-      if (data.length === 0) redirect = true;
-      data.forEach(ontologyTerm => {
-        dataMap[ontologyTerm["@rid"]] = ontologyTerm;
-      });
-      this.setState({
-        data: dataMap,
-        selectedId: Object.keys(dataMap)[0],
-        redirect: redirect
-      });
-    });
+    let queryRedirect = this.state.queryRedirect;
+    let loginRedirect = this.state.loginRedirect;
+    this.state.api
+      .get("/diseases" + this.props.location.search)
+      .then(data => {
+        console.log(data);
+        if (data.length === 0) queryRedirect = true;
+        data.forEach(ontologyTerm => {
+          dataMap[ontologyTerm["@rid"]] = ontologyTerm;
+        });
+        this.setState({
+          data: dataMap,
+          selectedId: Object.keys(dataMap)[0],
+          queryRedirect,
+          loginRedirect
+        });
+      })
+      .catch(error => this.setState({ loginRedirect: true }));
   }
 
   handleNodeAdd(node) {
@@ -52,7 +63,6 @@ class DataView extends Component {
       this.setState({ data, displayed });
     }
   }
-
   handleClick(rid) {
     this.setState({ selectedId: rid });
   }
@@ -75,9 +85,13 @@ class DataView extends Component {
     }
     this.setState({ displayed });
   }
-  handleDrawer(e) {
-    this.setState({ editing: !this.state.editing }, console.log(this.state));
+  handleDrawerClose(e) {
+    this.setState({ editing: false });
   }
+  handleNodeEdit(node) {
+    this.setState({ selectedId: node["@rid"], editing: true });
+  }
+
   render() {
     const selectedNode = () => {
       if (this.state.data) return this.state.data[this.state.selectedId];
@@ -90,14 +104,19 @@ class DataView extends Component {
         classes={{
           paper: "drawer-box-graph"
         }}
-        onClose={() => this.handleDrawer(false)}
+        onClose={this.handleDrawerClose}
         SlideProps={{ unmountOnExit: true }}
       >
         <Paper elevation={5} className="graph-wrapper">
-          <EditNodeView
-            handleDrawer={this.handleDrawer}
-            node={selectedNode()}
-          />
+          <div className="close-drawer-btn">
+            <IconButton
+              onClick={this.handleDrawerClose}
+              className="close-drawer-btn"
+            >
+              <CloseIcon color="error" />
+            </IconButton>
+          </div>
+          <EditNodeView node={selectedNode()} />
         </Paper>
       </Drawer>
     );
@@ -109,6 +128,7 @@ class DataView extends Component {
         search={this.props.location.search}
         handleClick={this.handleClick}
         displayed={this.state.displayed}
+        selectedId={this.state.selectedId}
       />
     );
     const TableWithProps = () => (
@@ -120,11 +140,14 @@ class DataView extends Component {
         search={this.props.location.search}
         displayed={this.state.displayed}
         handleCheckAll={this.handleCheckAll}
+        handleNodeEdit={this.handleNodeEdit}
       />
     );
     let dataView = () => {
-      if (this.state.redirect)
+      if (this.state.queryRedirect)
         return <Redirect push to={{ pathname: "/query" }} />;
+      if (this.state.loginRedirect)
+        return <Redirect push to={{ pathname: "/login" }} />;
 
       if (this.state.data) {
         return (

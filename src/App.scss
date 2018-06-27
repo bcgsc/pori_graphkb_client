@@ -1,8 +1,8 @@
-@import 'globals';
+@import "globals";
 
 $banner-height: 48px;
 
-.banner{
+.banner {
   position: absolute;
   top: 0;
   left: 0;
@@ -11,55 +11,46 @@ $banner-height: 48px;
   height: $banner-height;
   display: flex;
   background-color: $md-primary-color;
-  
-  button{
+
+  button {
     margin: auto 0;
   }
-
-  // @media(max-width: $banner-collapse) {
-  //     height: 90px;
-  // }
 }
 
-.links{
+.links {
   position: absolute;
   bottom: 8px;
   padding: 4px;
 
-  @media(max-width: $banner-collapse) {
-      left: 0;
-      bottom: auto;
-      top: 0;
+  @media (max-width: $banner-collapse) {
+    left: 0;
+    bottom: auto;
+    top: 0;
   }
-  
-  
 }
 
-.content{
+.content {
   overflow-y: auto;
   position: absolute;
   top: $banner-height;
-  left:0;
-  right:0;
+  left: 0;
+  right: 0;
   margin: auto;
-  bottom:0;
-  // @media(max-width: $banner-collapse){
-  //     top:130px;
-  // }
+  bottom: 0;
 }
 
-.sidebar{
+.sidebar {
   width: 240px;
 }
 
-.router-outlet{
+.router-outlet {
   height: inherit;
 }
-.nav-drawer{
-  width:100%;
-  height:100%;
+.nav-drawer {
+  width: 100%;
+  height: 100%;
 }
-.close-button{
-  display:flex;
+.close-button {
+  display: flex;
   justify-content: flex-end;
 }

@@ -20,31 +20,23 @@ import CloseIcon from "@material-ui/icons/Close";
 import FolderIcon from "@material-ui/icons/Folder";
 import TrendingFlatIcon from "@material-ui/icons/TrendingFlat";
 import AutoSearchComponent from "../../components/AutoSearchComponent/AutoSearchComponent";
-import Api from "../../services/api";
+import ResourceSelectComponent from "../../components/ResourceSelectComponent/ResourceSelectComponent";
+import api from "../../services/api";
+import * as jc from "json-cycle";
 
 //TODO: Implement variants
 class EditNodeView extends Component {
   constructor(props) {
     super(props);
-
-    const mainFields = {
-      "@rid": props.node["@rid"],
-      name: props.node.name,
-      longName: props.node.longName,
-      description: props.node.description,
-      sourceIdVersion: props.node.sourceIdVersion,
-      subsets: props.node.subsets || [],
-      api: new Api()
-    };
-
-    const loadedEdges =
-      localStorage.getItem("edgeTypeExpiry") &&
-      Date.now() < localStorage.getItem("edgeTypeExpiry")
-        ? JSON.parse(localStorage.getItem("edgeTypes"))
-        : [];
+    console.log(props.node);
 
     this.state = {
-      ...mainFields,
+      "@rid": props.node["@rid"],
+      name: props.node.name || "",
+      longName: props.node.longName || "",
+      description: props.node.description || "",
+      sourceIdVersion: props.node.sourceIdVersion || "",
+      subsets: props.node.subsets || [],
       subset: "",
       relationship: {
         type: "",
@@ -54,11 +46,12 @@ class EditNodeView extends Component {
       },
       relationships: [],
       subsets: [],
-      loadedEdges: loadedEdges
+      edgeTypes: []
     };
-    this.handleMainPayloadChange = this.handleMainPayloadChange.bind(this);
+
     this.handleChange = this.handleChange.bind(this);
     this.handleSubsetAdd = this.handleSubsetAdd.bind(this);
+    this.handleSubsetDelete = this.handleSubsetDelete.bind(this);
     this.handleRelationshipAdd = this.handleRelationshipAdd.bind(this);
     this.handleRelationship = this.handleRelationship.bind(this);
     this.handleRelationshipDirection = this.handleRelationshipDirection.bind(
@@ -66,35 +59,52 @@ class EditNodeView extends Component {
     );
     this.handleRelationshipDelete = this.handleRelationshipDelete.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+
     this.loadEdges = this.loadEdges.bind(this);
+    this.initNode = this.initNode.bind(this);
   }
 
   componentDidMount() {
-    const edgeTypes = [
-      "in_SubClassOf",
-      "out_SubClassOf",
-      "in_AliasOf",
-      "out_AliasOf"
-    ];
-    this.state.api
+    api.getEdgeTypes().then(edgeTypes => {
+      this.setState({ edgeTypes }, this.initNode);
+    });
+  }
+
+  initNode() {
+    function processRelationships(node, relationships, key) {
+      node[key].forEach(edge => {
+        relationships.push({
+          in: edge.in["@rid"],
+          out: edge.out["@rid"],
+          type: key,
+          targetName: edge.in.name === node.name ? edge.out.name : edge.in.name,
+          targetRid:
+            edge.in["@rid"] === node["@rid"]
+              ? edge.out["@rid"]
+              : edge.in["@rid"]
+        });
+      });
+      return relationships;
+    }
+    api
       .get("/diseases/" + this.state["@rid"].slice(1) + "?neighbors=3")
       .then(response => {
-        const relationships = [];
-        edgeTypes.forEach(type => {
-          if (response[type]) {
-            response[type].forEach(edge => {
-              relationships.push({
-                in: edge.in["@rid"],
-                out: edge.out["@rid"],
-                type: type,
-                targetName:
-                  edge.in.name === response.name ? edge.out.name : edge.in.name,
-                targetRid:
-                  edge.in["@rid"] === response["@rid"]
-                    ? edge.out["@rid"]
-                    : edge.in["@rid"]
-              });
-            });
+        response = jc.retrocycle(response.result);
+        let relationships = [];
+        this.state.edgeTypes.forEach(type => {
+          if (response["in_" + type]) {
+            relationships = processRelationships(
+              response,
+              relationships,
+              "in_" + type
+            );
+          }
+          if (response["out_" + type]) {
+            relationships = processRelationships(
+              response,
+              relationships,
+              "out_" + type
+            );
           }
         });
 
@@ -104,40 +114,38 @@ class EditNodeView extends Component {
           sourceName: response.source.name,
           relationships
         });
-        this.loadEdges();
       });
   }
 
-  handleMainPayloadChange(e) {
-    const node = this.state;
-    node[e.target.name] = e.target.value;
-    this.setState({ node });
+  handleChange(e) {
+    console.log(e.target);
+    this.setState({ [e.target.name]: e.target.value }, console.log(this.state));
   }
+
   handleSubsetAdd() {
-    const subsets = this.state.subsets;
-    subsets.push(this.state.subset);
-    this.setState({ subsets, subset: "" });
+    if (this.state.subset) {
+      const subsets = this.state.subsets;
+      subsets.push(this.state.subset);
+      this.setState({ subsets, subset: "" });
+    }
   }
   handleSubsetDelete(subset) {
     const subsets = this.state.subsets;
     if (subsets.indexOf(subset) !== -1) {
-      subsets.splice(subsets.indexOf(subset));
+      subsets.splice(subsets.indexOf(subset), 1);
     }
     this.setState({ subsets });
-  }
-  handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
   }
   handleRelationshipAdd() {
     const { relationship, relationships } = this.state;
     if (relationship.targetRid && relationship.type && relationship.direction) {
-      const type = relationship.direction + "_" + relationship.type;
       if (
         relationships.filter(
-          r => r.targetRid === relationship.targetRid && r.type === type
+          r =>
+            r.targetRid === relationship.targetRid &&
+            r.type === relationship.type
         ).length === 0
       ) {
-        relationship.type = relationship.direction + "_" + relationship.type;
         relationships.push(relationship);
         this.setState({
           relationships,
@@ -154,7 +162,7 @@ class EditNodeView extends Component {
   handleRelationshipDelete(relationship) {
     const relationships = this.state.relationships;
     if (relationships.indexOf(relationship) !== -1) {
-      relationships.splice(relationships.indexOf(relationship));
+      relationships.splice(relationships.indexOf(relationship), 1);
     }
     this.setState({ relationships });
   }
@@ -166,7 +174,13 @@ class EditNodeView extends Component {
   }
   handleRelationshipDirection(e) {
     const relationship = this.state.relationship;
-    relationship.direction = relationship.direction === "out" ? "in" : "out";
+    if (relationship.direction === "out") {
+      relationship.direction = "in";
+      relationship.type = "in_" + relationship.type.split("_")[1];
+    } else {
+      relationship.direction = "out";
+      relationship.type = "out_" + relationship.type.split("_")[1];
+    }
     this.setState({ relationship });
   }
   handleSubmit(e) {
@@ -179,34 +193,19 @@ class EditNodeView extends Component {
       subsets: this.state.subsets
     };
 
-    this.state.api
+    api
       .patch("/diseases/" + this.state["@rid"].slice(1), mainFields)
       .then(response => {
         console.log(response);
-      });
+      })
+      .catch(e => console.log(e));
   }
 
   loadEdges() {
-    if (!this.state.loadedEdges || this.state.loadedEdges.length === 0) {
-      this.state.api.get("/schema").then(response => {
-        const list = [];
-        Object.keys(response).forEach(key => {
-          if (
-            response[key].inherits.includes("E") &&
-            response[key].inherits.includes("OntologyEdge")
-          ) {
-            list.push(key);
-          }
-        });
-
-        const now = new Date();
-        const expiry = new Date(now);
-        expiry.setHours(now.getHours() + 8);
-
-        localStorage.setItem("edgeTypeExpiry", expiry.getTime());
-        localStorage.setItem("edgeTypes", JSON.stringify(list));
-        this.setState({ loadedEdges: list });
-      });
+    if (!this.state.edgeTypes || this.state.edgeTypes.length === 0) {
+      return api.loadEdges();
+    } else {
+      return Promise.resolve(this.state.edgeTypes);
     }
   }
 
@@ -249,11 +248,14 @@ class EditNodeView extends Component {
         </ListItem>
       );
     });
-    const edgeTypes = this.state.loadedEdges.map(edgeType => (
-      <MenuItem key={edgeType} value={edgeType}>
-        {edgeType}
+    const edgeTypesDisplay = edgeType => (
+      <MenuItem
+        key={edgeType.name}
+        value={this.state.relationship.direction + "_" + edgeType.name}
+      >
+        {this.state.relationship.direction + "_" + edgeType.name}
       </MenuItem>
-    ));
+    );
 
     return (
       <div className="edit-node-wrapper">
@@ -281,7 +283,7 @@ class EditNodeView extends Component {
                   placeholder="eg. angiosarcoma"
                   label="Name"
                   value={this.state.name}
-                  onChange={this.handleMainPayloadChange}
+                  onChange={this.handleChange}
                   className="text-input"
                   name="name"
                 />
@@ -291,7 +293,7 @@ class EditNodeView extends Component {
                   id="longName"
                   label="Long Name"
                   value={this.state.longName}
-                  onChange={this.handleMainPayloadChange}
+                  onChange={this.handleChange}
                   className="text-input"
                   name="longName"
                   multiline
@@ -302,7 +304,7 @@ class EditNodeView extends Component {
                   id="description"
                   label="Description"
                   value={this.state.description}
-                  onChange={this.handleMainPayloadChange}
+                  onChange={this.handleChange}
                   className="text-input"
                   name="description"
                   multiline
@@ -313,7 +315,7 @@ class EditNodeView extends Component {
                   id="sourceIdVersion"
                   label="Source ID Version"
                   value={this.state.sourceIdVersion}
-                  onChange={this.handleMainPayloadChange}
+                  onChange={this.handleChange}
                   className="text-input"
                   name="sourceIdVersion"
                 />
@@ -366,22 +368,14 @@ class EditNodeView extends Component {
                     }
                   />
                 </IconButton>
-                <FormControl className="type-select">
-                  <InputLabel htmlFor="relation-type">Type</InputLabel>
-                  <Select
-                    value={this.state.relationship.type}
-                    onChange={this.handleRelationship}
-                    inputProps={{
-                      name: "type",
-                      id: "relation-type"
-                    }}
-                  >
-                    <MenuItem value="">
-                      <em>None</em>
-                    </MenuItem>
-                    {edgeTypes}
-                  </Select>
-                </FormControl>
+                <ResourceSelectComponent
+                  value={this.state.relationship.type}
+                  onChange={this.handleRelationship}
+                  name="type"
+                  label="Type"
+                >
+                  {edgeTypesDisplay}
+                </ResourceSelectComponent>
               </div>
               <div className="search-wrap">
                 <AutoSearchComponent

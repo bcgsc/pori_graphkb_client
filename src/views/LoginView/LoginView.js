@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import "./LoginView.css";
 import { Button, Typography, TextField } from "@material-ui/core";
 import { Redirect } from "react-router-dom";
-import Api from "../../services/api";
+import api from "../../services/api";
+import auth from "../../services/auth";
 
 class LoginView extends Component {
   constructor(props) {
@@ -10,7 +11,6 @@ class LoginView extends Component {
     this.state = {
       username: "",
       password: "",
-      api: new Api(),
       queryRedirect: false
     };
     this.handleChange = this.handleChange.bind(this);
@@ -25,14 +25,13 @@ class LoginView extends Component {
     e.stopPropagation();
     e.preventDefault();
 
-    this.state.api
+    api
       .post("/token", {
         username: this.state.username,
         password: this.state.password
       })
       .then(response => {
-        console.log(response);
-        localStorage.setItem("kbToken", response.kbToken);
+        auth.loadToken(response.kbToken);
         this.setState({ queryRedirect: true });
       })
       .catch(error => {

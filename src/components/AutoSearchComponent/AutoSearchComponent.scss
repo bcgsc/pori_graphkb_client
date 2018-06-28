@@ -1,15 +1,18 @@
-.droptions{
-    width:inherit;
-    z-index: 1;
-    left: 0;
-    right: 0;
-    position: absolute;
-    max-height: 384px;
-    overflow: auto;
+.droptions {
+  width: inherit;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  position: absolute;
+  max-height: 384px;
+  overflow: auto;
 }
 
-.autosearch-wrapper{
-    position: relative;
-    flex-grow: 1;
-    
+.autosearch-wrapper {
+  position: relative;
+  flex-grow: 1;
+}
+
+.list-item {
+  color: blue;
 }

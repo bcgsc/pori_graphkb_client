@@ -5,12 +5,15 @@ import {
   Button,
   Checkbox,
   FormControlLabel,
-  Typography
+  Typography,
+  IconButton
 } from "@material-ui/core/";
+import ViewListIcon from "@material-ui/icons/ViewList";
+import TimelineIcon from "@material-ui/icons/Timeline";
 import { Link } from "react-router-dom";
 import queryString from "query-string";
 import AutoSearchComponent from "../../components/AutoSearchComponent/AutoSearchComponent";
-
+import ResourceSelectComponent from "../../components/ResourceSelectComponent/ResourceSelectComponent";
 class AdvancedQueryView extends Component {
   constructor(props) {
     super(props);
@@ -28,7 +31,6 @@ class AdvancedQueryView extends Component {
         fuzzyMatch: undefined,
         neighbors: 0
       },
-      sourceName: "",
       returnProperties: {
         name: true,
         description: true,
@@ -55,23 +57,13 @@ class AdvancedQueryView extends Component {
     this.handleNeighbors = this.handleNeighbors.bind(this);
     this.handleReturnProperties = this.handleReturnProperties.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handleSourceChange = this.handleSourceChange.bind(this);
     this.bundle = this.bundle.bind(this);
   }
 
   handleChange(e) {
     let mainParams = this.state.mainParams;
     mainParams[e.target.name] = e.target.value;
-    this.setState({ mainParams });
-  }
-
-  handleSourceChange(e) {
-    let mainParams = this.state.mainParams;
-    mainParams.source = e.target.rid ? e.target.rid.slice(1) : e.target.rid;
-    this.setState({
-      sourceName: e.target.value,
-      mainParams
-    });
+    this.setState({ mainParams }, console.log(this.state.mainParams));
   }
 
   handleNeighbors(e) {
@@ -120,6 +112,9 @@ class AdvancedQueryView extends Component {
       if (this.state.mainParams[key]) {
         params[key] = this.state.mainParams[key];
       }
+      if (key === "neighbors") {
+        params[key] = Math.max(1, this.state.mainParams[key]);
+      }
     });
 
     return queryString.stringify(params);
@@ -159,9 +154,9 @@ class AdvancedQueryView extends Component {
           Advanced Query
         </Typography>
         <div className="parameter-selection">
-          <Typography variant="subheading" className="parameter-name">
+          {/* <Typography variant="subheading" className="parameter-name">
             Name:
-          </Typography>
+          </Typography> */}
           <TextField
             id="name-adv"
             placeholder="eg. angiosarcoma"
@@ -173,22 +168,30 @@ class AdvancedQueryView extends Component {
           />
         </div>
         <div className="parameter-selection">
-          <Typography variant="subheading" className="parameter-name">
+          {/* <Typography variant="subheading" className="parameter-name">
             Source:
-          </Typography>
-          <AutoSearchComponent
+          </Typography> */}
+          <ResourceSelectComponent
+            value={this.state.mainParams.source}
+            onChange={this.handleChange}
+            name="source"
+            label="Source"
+            id="source-adv"
+            resourceType="sources"
+          />
+          {/* <AutoSearchComponent
             value={this.state.sourceName}
             onChange={this.handleSourceChange}
             endpoint="sources"
             id="source-adv"
             placeholder="eg. NCIT, Disease Ontology"
             label="Source"
-          />
+          /> */}
         </div>
         <div className="parameter-selection">
-          <Typography variant="subheading" className="parameter-name">
+          {/* <Typography variant="subheading" className="parameter-name">
             Source ID:
-          </Typography>
+          </Typography> */}
           <TextField
             id="source-id-adv"
             placeholder="eg. DOID:4"
@@ -200,9 +203,9 @@ class AdvancedQueryView extends Component {
           />
         </div>
         <div className="parameter-selection">
-          <Typography variant="subheading" className="parameter-name">
+          {/* <Typography variant="subheading" className="parameter-name">
             Long Name:
-          </Typography>
+          </Typography> */}
           <TextField
             id="long-name-adv"
             label="Long Name"
@@ -213,9 +216,9 @@ class AdvancedQueryView extends Component {
           />
         </div>
         <div className="parameter-selection">
-          <Typography variant="subheading" className="parameter-name">
+          {/* <Typography variant="subheading" className="parameter-name">
             Source ID Version:
-          </Typography>
+          </Typography> */}
           <TextField
             id="source-id-version-adv"
             label="Source ID Version"
@@ -226,9 +229,9 @@ class AdvancedQueryView extends Component {
           />
         </div>
         <div className="parameter-selection">
-          <Typography variant="subheading" className="parameter-name">
+          {/* <Typography variant="subheading" className="parameter-name">
             Limit:
-          </Typography>
+          </Typography> */}
           <TextField
             id="limit-adv"
             placeholder="Default = 1000"
@@ -241,15 +244,15 @@ class AdvancedQueryView extends Component {
           />
         </div>
         <div className="parameter-selection">
-          <Typography variant="subheading" className="parameter-name">
-            Return Properties:{" "}
-          </Typography>
+          {/* <Typography variant="subheading" className="parameter-name">
+            Return Properties:
+          </Typography> */}
           <div className="checkboxes">{returnProperties}</div>
         </div>
         <div className="parameter-selection">
-          <Typography variant="subheading" className="parameter-name">
+          {/* <Typography variant="subheading" className="parameter-name">
             Related Terms:
-          </Typography>
+          </Typography> */}
           <div className="related-checkboxes">
             <div className="checkbox">
               <FormControlLabel
@@ -296,9 +299,9 @@ class AdvancedQueryView extends Component {
           </div>
         </div>
         <div className="parameter-selection">
-          <Typography variant="subheading" className="parameter-name">
+          {/* <Typography variant="subheading" className="parameter-name">
             Fuzzy Match:
-          </Typography>
+          </Typography> */}
           <TextField
             id="fuzzy-match-adv"
             placeholder=""
@@ -311,9 +314,9 @@ class AdvancedQueryView extends Component {
           />
         </div>
         <div className="parameter-selection">
-          <Typography variant="subheading" className="parameter-name">
+          {/* <Typography variant="subheading" className="parameter-name">
             Neighbors:
-          </Typography>
+          </Typography> */}
           <TextField
             id="neighbors-adv"
             label="Neighbors"
@@ -328,13 +331,29 @@ class AdvancedQueryView extends Component {
           <Link className="link" to={{ state: this.state, pathname: "/query" }}>
             <Button variant="outlined">Back</Button>
           </Link>
-          <Link
+          {/* <Link
             className="link"
-            to={{ search: this.bundle(), pathname: "/table" }}
+            to={{ search: this.bundle(), pathname: "/data/table" }}
           >
-            <Button variant="contained" color="primary" onClick={this.submit}>
+            <Button variant="contained" color="primary">
               Search
             </Button>
+          </Link> */}
+          <Link
+            className="link"
+            to={{ search: this.bundle(), pathname: "/data/table" }}
+          >
+            <IconButton variant="raised" color="primary">
+              <ViewListIcon />
+            </IconButton>
+          </Link>
+          <Link
+            className="link"
+            to={{ search: this.bundle(), pathname: "/data/graph" }}
+          >
+            <IconButton variant="raised" color="secondary">
+              <TimelineIcon />
+            </IconButton>
           </Link>
         </div>
       </div>

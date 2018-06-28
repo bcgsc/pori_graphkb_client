@@ -1,10 +1,17 @@
 import React, { Component } from "react";
 import "./AutoSearchComponent.css";
 import Downshift from "downshift";
-import { MenuItem, List, Paper, TextField } from "@material-ui/core";
+import {
+  MenuItem,
+  List,
+  Paper,
+  TextField,
+  Typography
+} from "@material-ui/core";
 import { Redirect } from "react-router-dom";
-import Api from "../../services/api";
+import api from "../../services/api";
 import { debounce } from "throttle-debounce";
+import * as jc from "json-cycle";
 
 class AutoSearchComponent extends Component {
   constructor(props) {
@@ -15,8 +22,7 @@ class AutoSearchComponent extends Component {
       endpoint: props.endpoint || "diseases",
       property: props.property || "name",
       isOpen: false,
-      loginRedirect: false,
-      api: new Api()
+      loginRedirect: false
     };
     this.callApi = debounce(300, this.callApi.bind(this));
     this.refreshOptions = this.refreshOptions.bind(this);
@@ -32,7 +38,7 @@ class AutoSearchComponent extends Component {
   }
 
   callApi(value) {
-    this.state.api
+    api
       .get(
         "/" +
           this.state.endpoint +
@@ -41,23 +47,22 @@ class AutoSearchComponent extends Component {
           "=~" +
           value +
           "&limit=" +
-          this.state.limit
+          this.state.limit +
+          "&neighbors=1"
       )
       .then(response => {
+        console.log(response);
+        response = jc.retrocycle(response.result);
+        console.log(response);
         const options = response.map(object => {
           return object;
         });
         this.setState({ isOpen: true, options });
       })
-      .catch(error => {
-        error === 401
-          ? this.setState({ loginRedirect: true })
-          : alert("Error code: " + error);
-      });
+      .catch(error => console.log(error));
   }
 
   render() {
-    if (this.state.loginRedirect) return <Redirect push to="/login" />;
     let options = (inputValue, getItemProps, setState, getInputProps) => {
       return this.state.options.map(
         (item, index) =>
@@ -76,8 +81,14 @@ class AutoSearchComponent extends Component {
                 index,
                 item
               })}
+              style={{ whiteSpace: "normal", height: "unset" }}
             >
-              {item.name}
+              <span>
+                {item.name}
+                <Typography color="textSecondary" variant="body1">
+                  {item.source && item.source.name ? item.source.name : ""}
+                </Typography>
+              </span>
             </MenuItem>
           )
       );

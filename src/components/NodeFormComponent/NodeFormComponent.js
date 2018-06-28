@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import "./EditNodeView.css";
+import "./NodeFormComponent.css";
 import {
   TextField,
   List,
@@ -23,20 +23,20 @@ import AutoSearchComponent from "../../components/AutoSearchComponent/AutoSearch
 import ResourceSelectComponent from "../../components/ResourceSelectComponent/ResourceSelectComponent";
 import api from "../../services/api";
 import * as jc from "json-cycle";
+import { Redirect } from "react-router-dom";
 
 //TODO: Implement variants
-class EditNodeView extends Component {
+class NodeFormComponent extends Component {
   constructor(props) {
     super(props);
-    console.log(props.node);
 
     this.state = {
-      "@rid": props.node["@rid"],
-      name: props.node.name || "",
-      longName: props.node.longName || "",
-      description: props.node.description || "",
-      sourceIdVersion: props.node.sourceIdVersion || "",
-      subsets: props.node.subsets || [],
+      name: "",
+      longName: "",
+      description: "",
+      sourceIdVersion: "",
+      source: "",
+      subsets: [],
       subset: "",
       relationship: {
         type: "",
@@ -60,13 +60,16 @@ class EditNodeView extends Component {
     this.handleRelationshipDelete = this.handleRelationshipDelete.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
 
-    this.loadEdges = this.loadEdges.bind(this);
     this.initNode = this.initNode.bind(this);
   }
 
   componentDidMount() {
     api.getEdgeTypes().then(edgeTypes => {
-      this.setState({ edgeTypes }, this.initNode);
+      this.setState({ edgeTypes }, () => {
+        if (this.props.variant === "edit") {
+          this.initNode();
+        }
+      });
     });
   }
 
@@ -81,29 +84,30 @@ class EditNodeView extends Component {
           targetRid:
             edge.in["@rid"] === node["@rid"]
               ? edge.out["@rid"]
-              : edge.in["@rid"]
+              : edge.in["@rid"],
+          source: edge.source.name || edge.source
         });
       });
       return relationships;
     }
     api
-      .get("/diseases/" + this.state["@rid"].slice(1) + "?neighbors=3")
+      .get("/diseases/" + this.props.node["@rid"].slice(1) + "?neighbors=3")
       .then(response => {
         response = jc.retrocycle(response.result);
         let relationships = [];
         this.state.edgeTypes.forEach(type => {
-          if (response["in_" + type]) {
+          if (response["in_" + type.name]) {
             relationships = processRelationships(
               response,
               relationships,
-              "in_" + type
+              "in_" + type.name
             );
           }
-          if (response["out_" + type]) {
+          if (response["out_" + type.name]) {
             relationships = processRelationships(
               response,
               relationships,
-              "out_" + type
+              "out_" + type.name
             );
           }
         });
@@ -118,10 +122,8 @@ class EditNodeView extends Component {
   }
 
   handleChange(e) {
-    console.log(e.target);
-    this.setState({ [e.target.name]: e.target.value }, console.log(this.state));
+    this.setState({ [e.target.name]: e.target.value });
   }
-
   handleSubsetAdd() {
     if (this.state.subset) {
       const subsets = this.state.subsets;
@@ -185,6 +187,10 @@ class EditNodeView extends Component {
   }
   handleSubmit(e) {
     e.preventDefault();
+    this.props.variant === "edit" ? this.editSubmit() : this.addSubmit();
+  }
+
+  editSubmit() {
     const mainFields = {
       name: this.state.name,
       longName: this.state.longName,
@@ -196,18 +202,11 @@ class EditNodeView extends Component {
     api
       .patch("/diseases/" + this.state["@rid"].slice(1), mainFields)
       .then(response => {
-        console.log(response);
+        this.setState({ ...response.result });
       })
-      .catch(e => console.log(e));
+      .catch(error => {});
   }
-
-  loadEdges() {
-    if (!this.state.edgeTypes || this.state.edgeTypes.length === 0) {
-      return api.loadEdges();
-    } else {
-      return Promise.resolve(this.state.edgeTypes);
-    }
-  }
+  addSubmit() {}
 
   render() {
     const subsets = this.state.subsets.map(subset => {
@@ -235,6 +234,7 @@ class EditNodeView extends Component {
           </ListItemIcon>
           <ListItemText
             primary={relationship.type + ": " + relationship.targetName}
+            secondary={relationship.source}
             style={{ overflow: "auto" }}
           />
           <IconButton
@@ -256,27 +256,54 @@ class EditNodeView extends Component {
         {this.state.relationship.direction + "_" + edgeType.name}
       </MenuItem>
     );
-
+    const source =
+      this.props.variant === "edit" ? (
+        <ListItem>
+          <ListItemText primary="Source:" secondary={this.state.sourceName} />
+        </ListItem>
+      ) : (
+        <ListItem>
+          <ResourceSelectComponent
+            value={this.state.source}
+            onChange={this.handleChange}
+            name="source"
+            label="Source"
+            id="source"
+            resourceType="sources"
+          />
+        </ListItem>
+      );
+    const sourceId =
+      this.props.variant === "edit" ? (
+        <ListItem>
+          <ListItemText primary="Source ID:" secondary={this.state.sourceId} />
+        </ListItem>
+      ) : (
+        <ListItem className="input-wrapper">
+          <TextField
+            id="sourceId"
+            placeholder="eg. NCIT:0123"
+            label="Source ID"
+            value={this.state.sourceId}
+            onChange={this.handleChange}
+            className="text-input"
+            name="sourceId"
+          />
+        </ListItem>
+      );
     return (
       <div className="edit-node-wrapper">
         {/* Style */}
         <form onSubmit={this.handleSubmit}>
           <div className="param-section">
-            <Typography variant="title">Edit Term Parameters</Typography>
+            <Typography variant="title">
+              {this.props.variant === "edit"
+                ? "Edit Term Parameters"
+                : "Add New Term"}
+            </Typography>
             <List component="nav">
-              <ListItem>
-                <ListItemText
-                  primary="Source:"
-                  secondary={this.state.sourceName}
-                />
-              </ListItem>
-              <ListItem>
-                <ListItemText
-                  primary="Source ID:"
-                  secondary={this.state.sourceId}
-                />
-              </ListItem>
-
+              {source}
+              {sourceId}
               <ListItem className="input-wrapper">
                 <TextField
                   id="name"
@@ -397,7 +424,7 @@ class EditNodeView extends Component {
           </div>
           <div className="submit-button">
             <Button type="submit" variant="outlined">
-              Confirm Changes
+              {this.props.variant === "edit" ? "Confirm Changes" : "Submit"}
             </Button>
           </div>
         </form>
@@ -405,4 +432,4 @@ class EditNodeView extends Component {
     );
   }
 }
-export default EditNodeView;
+export default NodeFormComponent;

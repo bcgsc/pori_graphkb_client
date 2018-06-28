@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import "./DataView.css";
 import api from "../../services/api";
 import { Route, Redirect } from "react-router-dom";
-import { Paper, Drawer, IconButton } from "@material-ui/core";
+import { Paper, Drawer, Button, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import GraphComponent from "../../components/GraphComponent/GraphComponent";
 import TableComponent from "../../components/TableComponent/TableComponent";
-import EditNodeView from "../EditNodeView/EditNodeView";
+import NodeFormComponent from "../../components/NodeFormComponent/NodeFormComponent";
 import * as jc from "json-cycle";
 
 class DataView extends Component {
@@ -20,7 +20,7 @@ class DataView extends Component {
       displayed: [],
       selectedId: null,
       editing: true,
-      loginRedirect: false,
+      loginRedirect: false
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -93,9 +93,9 @@ class DataView extends Component {
   }
 
   render() {
-    const selectedNode = () => {
-      if (this.state.data) return this.state.data[this.state.selectedId];
-    };
+    const selectedNode = this.state.data
+      ? this.state.data[this.state.selectedId]
+      : null;
     const editDrawer = (
       <Drawer
         variant="persistent"
@@ -109,14 +109,16 @@ class DataView extends Component {
       >
         <Paper elevation={5} className="graph-wrapper">
           <div className="close-drawer-btn">
-            <IconButton
+            <Button
+              variant="fab"
+              mini
               onClick={this.handleDrawerClose}
               className="close-drawer-btn"
             >
               <CloseIcon color="error" />
-            </IconButton>
+            </Button>
           </div>
-          <EditNodeView node={selectedNode()} />
+          <NodeFormComponent node={selectedNode} variant="edit" />
         </Paper>
       </Drawer>
     );

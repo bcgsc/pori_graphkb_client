@@ -17,8 +17,10 @@ class QueryView extends Component {
   constructor(props) {
     super(props);
 
-    const initName = props.location.state ? props.location.state.name : "";
-
+    const initName =
+      props.location.state && props.location.state.mainParams.name
+        ? props.location.state.mainParams.name
+        : "";
     this.state = {
       name: initName,
       redirect: false,

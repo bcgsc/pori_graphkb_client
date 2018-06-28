@@ -5,8 +5,8 @@ import promise from "promise";
 import auth from "./auth";
 import * as jc from "json-cycle";
 
-// const API_BASE_URL = "http://kbapi01:8006/api/v0.0.6";
-const API_BASE_URL = "http://creisle04.phage.bcgsc.ca:8081/api/v0.0.6";
+const API_BASE_URL = "http://kbapi01:8006/api/v0.0.6";
+// const API_BASE_URL = "http://creisle04.phage.bcgsc.ca:8081/api/v0.0.6";
 
 export default class api {
   static getHeaders() {
@@ -46,23 +46,19 @@ export default class api {
     const initWithInterceptors = {
       ...init,
       headers: api.getHeaders(),
-      mode: "cors"
     };
-    console.log(initWithInterceptors);
-    initWithInterceptors.headers.forEach(h => console.log(h));
     return fetch(new Request(API_BASE_URL + endpoint, initWithInterceptors))
       .then(response => {
-        response.headers.forEach(h => console.log(h));
         console.log(response);
         if (response.ok) {
-          console.log("ok");
           return response.json();
         } else {
           return promise.reject(response);
         }
       })
       .catch(error => {
-        console.log(error);
+        console.error(JSON.parse(error));
+        Object.keys(error).forEach(k => console.log(k));
         if (error.status === 401) {
           auth.clearToken();
         }
@@ -76,7 +72,8 @@ export default class api {
     const edgeTypeExpiry = localStorage.getItem("edgeTypesExpiry");
     if (
       !edgeTypes ||
-      (edgeTypes && edgeTypeExpiry && edgeTypeExpiry < Date.now().valueOf())
+      (edgeTypes && edgeTypeExpiry && edgeTypeExpiry < Date.now().valueOf()) ||
+      !edgeTypeExpiry
     ) {
       return api.loadEdges();
     } else {

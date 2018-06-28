@@ -4,7 +4,7 @@ import * as d3 from "d3";
 import ReactDOM from "react-dom";
 import SVGLink from "../SVGLink/SVGLink";
 import SVGNode from "../SVGNode/SVGNode";
-import Api from "../../services/api";
+import api from "../../services/api";
 import {
   Button,
   TextField,
@@ -17,6 +17,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import { CompactPicker } from "react-color";
 import { Link } from "react-router-dom";
 import queryString from "query-string";
+import * as jc from "json-cycle";
 
 const R = 55;
 const arrowWidth = 6;
@@ -33,7 +34,6 @@ class GraphComponent extends Component {
     super(props);
 
     this.state = {
-      api: new Api(),
       nodes: [],
       links: [],
       graphObjects: {},
@@ -237,7 +237,8 @@ class GraphComponent extends Component {
     const depth = 3;
     let url = "/diseases/" + node.data["@rid"].slice(1) + "?neighbors=" + depth;
     if (expandable[node.data["@rid"]]) {
-      this.state.api.get(url).then(response => {
+      api.get(url).then(response => {
+        response = jc.retrocycle(response.result);
         this.setState({
           ...this.processData(
             response,
@@ -274,6 +275,7 @@ class GraphComponent extends Component {
         "collide",
         d3.forceCollide(d => {
           if (this.state.graphOptions.autoCollisionRadius) {
+            if (!d.data.name || d.data.name.length === 0) return 4;
             return d.data.name.length * 2.8;
           } else {
             return this.state.graphOptions.collisionRadius;

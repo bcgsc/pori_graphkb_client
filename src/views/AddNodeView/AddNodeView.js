@@ -24,32 +24,51 @@ import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import FolderIcon from "@material-ui/icons/Folder";
 import AutoSearchComponent from "../../components/AutoSearchComponent/AutoSearchComponent";
 import EditNodeView from "../EditNodeView/EditNodeView";
-import Api from "../../services/api";
+import api from "../../services/api";
 
 class AddNodeView extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      api: new Api(),
       nodeRid: null,
       open: true,
       source: "",
-      sourceId: ""
+      sourceId: "",
+      sourceRid: ""
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleAutoSearch = this.handleAutoSearch.bind(this);
   }
 
+  handleAutoSearch(e) {
+    this.setState({
+      [e.target.name]: e.target.value,
+      sourceRid: e.target["@rid"]
+    });
+  }
   handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
+    this.setState({
+      [e.target.name]: e.target.value
+    });
   }
   handleClose(e) {
     this.setState({ open: false });
   }
   handleSubmit(e) {
-    console.log("hiya");
+    const { source, sourceId, sourceRid } = this.state;
+
+    if (sourceRid && sourceId) {
+      api
+        .post("/diseases", { sourceId: sourceId, source: sourceRid })
+        .then(response => {
+          console.log(response);
+          response = response.result;
+          this.setState({ nodeRid: response["@rid"], open: false });
+        });
+    }
   }
 
   render() {
@@ -59,7 +78,7 @@ class AddNodeView extends Component {
       ) : null;
     };
     const redirect = () => {
-      return !this.state.nodeRid && !this.state.open  ? (
+      return !this.state.nodeRid && !this.state.open ? (
         <Redirect
           push
           to={{
@@ -77,16 +96,18 @@ class AddNodeView extends Component {
           <DialogTitle>Please Specify a Source and Source ID</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              To add an ontology term, you must choose a source and source ID.
+              To add an ontology term, you must first define a source and source
+              ID.
             </DialogContentText>
-            <TextField
-              name="source"
-              fullWidth
+            <AutoSearchComponent
               value={this.state.source}
-              onChange={this.handleChange}
+              onChange={this.handleAutoSearch}
+              endpoint="sources"
+              placeholder="eg. NCIT, Disease Ontology"
+              name="source"
               label="Source"
-              autoFocus
             />
+
             <TextField
               name="sourceId"
               fullWidth

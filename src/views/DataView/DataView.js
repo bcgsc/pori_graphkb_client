@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import "./DataView.css";
-import Api from "../../services/api";
+import api from "../../services/api";
 import { Route, Redirect } from "react-router-dom";
 import { Paper, Drawer, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import GraphComponent from "../../components/GraphComponent/GraphComponent";
 import TableComponent from "../../components/TableComponent/TableComponent";
 import EditNodeView from "../EditNodeView/EditNodeView";
+import * as jc from "json-cycle";
 
 class DataView extends Component {
   constructor(props) {
@@ -20,7 +21,6 @@ class DataView extends Component {
       selectedId: null,
       editing: true,
       loginRedirect: false,
-      api: new Api()
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -35,10 +35,10 @@ class DataView extends Component {
     let dataMap = {};
     let queryRedirect = this.state.queryRedirect;
     let loginRedirect = this.state.loginRedirect;
-    this.state.api
+    api
       .get("/diseases" + this.props.location.search)
       .then(data => {
-        console.log(data);
+        data = jc.retrocycle(data.result);
         if (data.length === 0) queryRedirect = true;
         data.forEach(ontologyTerm => {
           dataMap[ontologyTerm["@rid"]] = ontologyTerm;

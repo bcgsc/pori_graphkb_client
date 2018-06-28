@@ -11,14 +11,14 @@ import Drawer from "@material-ui/core/Drawer";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import Divider from "@material-ui/core/Divider";
 import MenuIcon from "@material-ui/icons/Menu";
-import { BrowserRouter, Link, Route, Redirect } from "react-router-dom";
+import { BrowserRouter, Link, Route, Redirect, Switch } from "react-router-dom";
 import {
   createMuiTheme,
   MuiThemeProvider,
   IconButton
 } from "@material-ui/core";
 import LoginView from "./views/LoginView/LoginView";
-import Api from "./services/api";
+import auth from "./services/auth";
 
 class App extends Component {
   state = {
@@ -64,7 +64,15 @@ class App extends Component {
         </div>
       </Drawer>
     );
-
+    const loggedInContent = (
+      <React.Fragment>
+        <Route exact path="/query" component={QueryView} />
+        <Route path="/query/advanced" component={AdvancedQueryView} />
+        <Route path="/add" component={AddNodeView} />
+        <Route path="/data" component={DataView} />
+        <Route path="/error" component={ErrorView} />
+      </React.Fragment>
+    );
     return (
       <MuiThemeProvider theme={theme}>
         <BrowserRouter>
@@ -85,12 +93,20 @@ class App extends Component {
             {drawer}
             <section className="content">
               <div className="router-outlet">
+              <Switch>
                 <Route path="/login" component={LoginView} />
-                <Route exact path="/query" component={QueryView} />
-                <Route path="/query/advanced" component={AdvancedQueryView} />
-                <Route path="/add" component={AddNodeView} />
-                <Route path="/data" component={DataView} />
-                <Route path="/error" component={ErrorView} />
+                <Route
+                  path="/"
+                  render={props =>
+                    !auth.getToken() ? (
+                      <Redirect to="/login" />
+                    ) : (
+                      loggedInContent
+                    )
+                  }
+                />
+              </Switch>
+                
               </div>
             </section>
           </div>

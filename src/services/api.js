@@ -1,57 +1,58 @@
+"use strict";
+
 import axios from "axios";
 import promise from "promise";
+import auth from "./auth";
 import * as jc from "json-cycle";
 
-// const API_BASE_URL = "http://kbapi01:8088/api";
-const API_BASE_URL = "http://kbapi01:8006/api/v0.0.6";
+// const API_BASE_URL = "http://kbapi01:8006/api/v0.0.6";
+const API_BASE_URL = "http://creisle04.phage.bcgsc.ca:8081/api/v0.0.6";
 
-export default class Api {
-  getToken() {
-    return localStorage.getItem("kbToken");
-  }
-
-  getHeaders() {
+export default class api {
+  static getHeaders() {
     const headers = new Headers();
     headers.append("Content-type", "application/json");
-    if (this.getToken()) {
-      headers.append("Authorization", this.getToken());
+    if (auth.getToken()) {
+      headers.append("Authorization", auth.getToken());
     }
     return headers;
   }
 
-  patch(endpoint, payload) {
+  static patch(endpoint, payload) {
     const init = {
       method: "PATCH",
       body: JSON.stringify(payload)
     };
-    return this.fetchWithInterceptors(endpoint, init);
+    return api.fetchWithInterceptors(endpoint, init);
   }
 
-  get(endpoint) {
+  static get(endpoint) {
     const init = {
       method: "GET"
     };
-    return this.fetchWithInterceptors(endpoint, init);
+    return api.fetchWithInterceptors(endpoint, init);
   }
 
-  post(endpoint, payload) {
+  static post(endpoint, payload) {
     const init = {
       method: "POST",
       body: JSON.stringify(payload)
     };
 
-    return this.fetchWithInterceptors(endpoint, init);
+    return api.fetchWithInterceptors(endpoint, init);
   }
 
-  fetchWithInterceptors(endpoint, init) {
+  static fetchWithInterceptors(endpoint, init) {
     const initWithInterceptors = {
       ...init,
-      headers: this.getHeaders(),
-      cache: "default"
+      headers: api.getHeaders(),
+      mode: "cors"
     };
-
+    console.log(initWithInterceptors);
+    initWithInterceptors.headers.forEach(h => console.log(h));
     return fetch(new Request(API_BASE_URL + endpoint, initWithInterceptors))
       .then(response => {
+        response.headers.forEach(h => console.log(h));
         console.log(response);
         if (response.ok) {
           console.log("ok");
@@ -60,16 +61,78 @@ export default class Api {
           return promise.reject(response);
         }
       })
-      .then(json => {
-        console.log(json);
-        if (json.result) json = json.result; //???
-        return jc.retrocycle(json);
-      })
       .catch(error => {
+        console.log(error);
         if (error.status === 401) {
-          localStorage.removeItem("kbToken");
+          auth.clearToken();
         }
-        return promise.reject(error.status);
+
+        return promise.reject(error);
       });
+  }
+
+  static getEdgeTypes() {
+    const edgeTypes = localStorage.getItem("edgeTypes");
+    const edgeTypeExpiry = localStorage.getItem("edgeTypesExpiry");
+    if (
+      !edgeTypes ||
+      (edgeTypes && edgeTypeExpiry && edgeTypeExpiry < Date.now().valueOf())
+    ) {
+      return api.loadEdges();
+    } else {
+      return Promise.resolve(JSON.parse(edgeTypes));
+    }
+  }
+  static loadEdges() {
+    return api.get("/schema").then(response => {
+      response = jc.retrocycle(response.schema);
+      const list = [];
+      Object.keys(response).forEach(key => {
+        if (
+          response[key].inherits.includes("E") &&
+          response[key].inherits.includes("OntologyEdge")
+        ) {
+          list.push({ name: key });
+        }
+      });
+
+      const now = new Date();
+      const expiry = new Date(now);
+      expiry.setHours(now.getHours() + 8);
+
+      localStorage.setItem("edgeTypesExpiry", expiry.getTime());
+      localStorage.setItem("edgeTypes", JSON.stringify(list));
+      return promise.resolve(list);
+    });
+  }
+  static getSources() {
+    const sources = localStorage.getItem("sources");
+    const sourcesExpiry = localStorage.getItem("sourcesExpiry");
+    if (
+      !sources ||
+      (sources && sourcesExpiry && sourcesExpiry < Date.now().valueOf())
+    ) {
+      return api.loadSources();
+    } else {
+      return Promise.resolve(JSON.parse(sources));
+    }
+  }
+  static loadSources() {
+    return api.get("/sources").then(response => {
+      response = jc.retrocycle(response.result);
+      const list = [];
+      response.forEach(source => {
+        list.push(source);
+      });
+
+      const now = new Date();
+      const expiry = new Date(now);
+      expiry.setHours(now.getHours() + 8);
+
+      localStorage.setItem("sourcesExpiry", expiry.getTime());
+      localStorage.setItem("sources", JSON.stringify(list));
+
+      return promise.resolve(list);
+    });
   }
 }

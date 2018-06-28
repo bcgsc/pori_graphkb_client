@@ -5,7 +5,7 @@ import AdvancedQueryView from "./views/AdvancedQueryView/AdvancedQueryView";
 import AddNodeView from "./views/AddNodeView/AddNodeView";
 import DataView from "./views/DataView/DataView";
 import ErrorView from "./views/ErrorView/ErrorView";
-import EditNodeView from "./views/EditNodeView/EditNodeView";
+import NodeFormComponent from "./components/NodeFormComponent/NodeFormComponent";
 import AppBar from "@material-ui/core/AppBar";
 import Drawer from "@material-ui/core/Drawer";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
@@ -64,11 +64,12 @@ class App extends Component {
         </div>
       </Drawer>
     );
+    const addNodeForm = () => <NodeFormComponent variant="add" />;
     const loggedInContent = (
       <React.Fragment>
         <Route exact path="/query" component={QueryView} />
         <Route path="/query/advanced" component={AdvancedQueryView} />
-        <Route path="/add" component={AddNodeView} />
+        <Route path="/add" component={addNodeForm} />
         <Route path="/data" component={DataView} />
         <Route path="/error" component={ErrorView} />
       </React.Fragment>
@@ -93,20 +94,19 @@ class App extends Component {
             {drawer}
             <section className="content">
               <div className="router-outlet">
-              <Switch>
-                <Route path="/login" component={LoginView} />
-                <Route
-                  path="/"
-                  render={props =>
-                    !auth.getToken() ? (
-                      <Redirect to="/login" />
-                    ) : (
-                      loggedInContent
-                    )
-                  }
-                />
-              </Switch>
-                
+                <Switch>
+                  <Route path="/login" component={LoginView} />
+                  <Route
+                    path="/"
+                    render={props =>
+                      !auth.getToken() ? (
+                        <Redirect to="/login" />
+                      ) : (
+                        loggedInContent
+                      )
+                    }
+                  />
+                </Switch>
               </div>
             </section>
           </div>

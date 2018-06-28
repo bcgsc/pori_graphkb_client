@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import "./NodeDetail.css";
+import "./NodeDetailComponent.css";
 import {
   List,
   ListItem,
@@ -18,7 +18,7 @@ import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import GraphComponent from "../GraphComponent/GraphComponent";
 import { Link } from "react-router-dom";
 
-class NodeDetail extends Component {
+class NodeDetailComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -36,16 +36,20 @@ class NodeDetail extends Component {
             <List>
               {node[key].map(edge => {
                 const relatedNode =
-                  edge.in["@rid"] === node["@rid"] ? edge.out : edge.in;
+                  edge.in && edge.in["@rid"] === node["@rid"]
+                    ? edge.out
+                    : edge.in;
                 return (
                   <ListItem dense key={key + edge["@rid"]}>
                     <ListItemText
                       secondary={
-                        relatedNode.name +
-                        " | " +
-                        relatedNode.sourceId +
-                        " : " +
-                        edge.source.name
+                        relatedNode
+                          ? relatedNode.name +
+                            " | " +
+                            relatedNode.sourceId +
+                            " : " +
+                            edge.source.name
+                          : edge
                       }
                     />
                   </ListItem>
@@ -57,7 +61,7 @@ class NodeDetail extends Component {
       } else return null;
     };
     const subsets = () => {
-      return node.subsets ? (
+      return node.subsets && node.subsets.length !== 0 ? (
         <React.Fragment>
           <Typography variant="subheading">Subsets:</Typography>
           <List>
@@ -105,4 +109,4 @@ class NodeDetail extends Component {
     );
   }
 }
-export default NodeDetail;
+export default NodeDetailComponent;

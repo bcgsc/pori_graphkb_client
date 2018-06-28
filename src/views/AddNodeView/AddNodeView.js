@@ -23,7 +23,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import FolderIcon from "@material-ui/icons/Folder";
 import AutoSearchComponent from "../../components/AutoSearchComponent/AutoSearchComponent";
-import EditNodeView from "../EditNodeView/EditNodeView";
+import NodeFormComponent from "../../components/NodeFormComponent/NodeFormComponent";
 import api from "../../services/api";
 
 class AddNodeView extends Component {
@@ -61,22 +61,17 @@ class AddNodeView extends Component {
     const { source, sourceId, sourceRid } = this.state;
 
     if (sourceRid && sourceId) {
-      api
-        .post("/diseases", { sourceId: sourceId, source: sourceRid })
-        .then(response => {
-          console.log(response);
-          response = response.result;
-          this.setState({ nodeRid: response["@rid"], open: false });
-        });
+      // api
+      //   .post("/diseases", { sourceId: sourceId, source: sourceRid })
+      //   .then(response => {
+      //     console.log(response);
+      //     response = response.result;
+      //     this.setState({ nodeRid: response["@rid"], open: false });
+      //   });
     }
   }
 
   render() {
-    const editWithProps = () => {
-      return this.state.nodeRid ? (
-        <EditNodeView node={{ "@rid": this.state.nodeRid }} />
-      ) : null;
-    };
     const redirect = () => {
       return !this.state.nodeRid && !this.state.open ? (
         <Redirect
@@ -90,8 +85,7 @@ class AddNodeView extends Component {
 
     return (
       <div className="wrapper">
-        {editWithProps()}
-        {redirect()}
+         <NodeFormComponent variant="add" />
         <Dialog open={this.state.open} onClose={this.handleClose}>
           <DialogTitle>Please Specify a Source and Source ID</DialogTitle>
           <DialogContent>

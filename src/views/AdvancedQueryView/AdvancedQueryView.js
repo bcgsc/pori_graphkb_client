@@ -113,7 +113,7 @@ class AdvancedQueryView extends Component {
         params[key] = this.state.mainParams[key];
       }
       if (key === "neighbors") {
-        params[key] = Math.max(1, this.state.mainParams[key]);
+        params[key] = Math.max(3, this.state.mainParams[key]);
       }
     });
 

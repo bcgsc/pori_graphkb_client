@@ -10,8 +10,8 @@ import {
 } from "@material-ui/core";
 import { Redirect } from "react-router-dom";
 import api from "../../services/api";
-import { debounce } from "throttle-debounce";
 import * as jc from "json-cycle";
+import * as _ from "lodash";
 
 class AutoSearchComponent extends Component {
   constructor(props) {
@@ -22,15 +22,17 @@ class AutoSearchComponent extends Component {
       endpoint: props.endpoint || "diseases",
       property: props.property || "name",
       isOpen: false,
-      loginRedirect: false
+      loginRedirect: false,
+      flag: true
     };
-    this.callApi = debounce(300, this.callApi.bind(this));
+
+    this.callApi = _.debounce(this.callApi.bind(this), 300);
     this.refreshOptions = this.refreshOptions.bind(this);
   }
 
   componentWillUnmount() {
-    this.callApi = null;
-    this.refreshOptions = null;
+    this.callApi.cancel();
+    this.render = null;
   }
 
   refreshOptions(e) {
@@ -51,9 +53,7 @@ class AutoSearchComponent extends Component {
           "&neighbors=1"
       )
       .then(response => {
-        console.log(response);
         response = jc.retrocycle(response.result);
-        console.log(response);
         const options = response.map(object => {
           return object;
         });
@@ -117,17 +117,16 @@ class AutoSearchComponent extends Component {
         }) => (
           <div className="autosearch-wrapper">
             <TextField
-              onChange={this.props.onChange}
-              onKeyUp={this.refreshOptions}
               fullWidth
-              required={this.props.required}
-              label={this.props.label}
               InputProps={{
                 ...getInputProps({
                   placeholder: this.props.placeholder,
                   value: this.props.value,
                   onChange: this.props.onChange,
-                  name: this.props.name
+                  name: this.props.name,
+                  label: this.props.label,
+                  onKeyUp: this.refreshOptions,
+                  required: this.props.required
                 })
               }}
             />

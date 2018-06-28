@@ -17,7 +17,7 @@ import {
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import TimelineIcon from "@material-ui/icons/Timeline";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import NodeDetail from "../NodeDetail/NodeDetail";
+import NodeDetailComponent from "../NodeDetailComponent/NodeDetailComponent";
 import { BrowserRouter, Link, Route } from "react-router-dom";
 
 class TableComponent extends Component {
@@ -150,7 +150,7 @@ class TableComponent extends Component {
                       in={active}
                       unmountOnExit
                     >
-                      <NodeDetail
+                      <NodeDetailComponent
                         node={n}
                         data={this.props.data}
                         handleNodeEdit={this.props.handleNodeEdit}

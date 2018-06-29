@@ -8,9 +8,11 @@ import ErrorView from "./views/ErrorView/ErrorView";
 import NodeFormComponent from "./components/NodeFormComponent/NodeFormComponent";
 import AppBar from "@material-ui/core/AppBar";
 import Drawer from "@material-ui/core/Drawer";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import Divider from "@material-ui/core/Divider";
+import TimelineIcon from "@material-ui/icons/Timeline";
 import MenuIcon from "@material-ui/icons/Menu";
+import SearchIcon from "@material-ui/icons/Search";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import { BrowserRouter, Link, Route, Redirect, Switch } from "react-router-dom";
 import {
   createMuiTheme,
@@ -80,16 +82,25 @@ class App extends Component {
           <div className="App">
             <AppBar position="static" className="banner">
               <IconButton
-                className=""
                 color="inherit"
                 aria-label="open drawer"
                 onClick={this.handleDrawerOpen}
               >
                 <MenuIcon />
               </IconButton>
-              <section className="search-bar">
-                <div className="search-background" />
-              </section>
+              <IconButton color="inherit" aria-label="open drawer">
+                <Link className="icon-link" to={"/query"}>
+                  <SearchIcon />
+                </Link>
+              </IconButton>
+              <IconButton color="inherit">
+                <Link
+                  className="icon-link"
+                  to={"/data/graph?neighbors=3&name=disease"}
+                >
+                  <TimelineIcon color="secondary"/>
+                </Link>
+              </IconButton>
             </AppBar>
             {drawer}
             <section className="content">

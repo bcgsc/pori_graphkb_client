@@ -81,7 +81,9 @@ class NodeDetailComponent extends Component {
       <div className="node-wrapper">
         <Card>
           <div className="node-edit-btn">
-            <IconButton onClick={() => this.props.handleNodeEdit(node)}>
+            <IconButton
+              onClick={() => this.props.handleNodeEditStart(node["@rid"])}
+            >
               <AssignmentIcon />
             </IconButton>
           </div>
@@ -94,6 +96,10 @@ class NodeDetailComponent extends Component {
               <Typography variant="subheading"> Description: </Typography>
               <Typography paragraph variant="caption">
                 {node.description || "none"}
+              </Typography>
+              <Typography variant="subheading"> Long Name: </Typography>
+              <Typography paragraph variant="caption">
+                {node.longName || "none"}
               </Typography>
               {subsets()}
             </section>

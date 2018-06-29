@@ -494,14 +494,14 @@ class GraphComponent extends Component {
                 onClick={e => this.handleColorKeyChange("parentsColor")}
                 variant={selected("parentsColor") ? "outlined" : "flat"}
               >
-                Parents
+                SubClass Of
               </Button>
               <Button
                 style={{ color: this.state.graphOptions.childrenColor }}
                 onClick={e => this.handleColorKeyChange("childrenColor")}
                 variant={selected("childrenColor") ? "outlined" : "flat"}
               >
-                Children
+                has SubClass
               </Button>
               <Button
                 style={{ color: this.state.graphOptions.aliasesColor }}
@@ -579,7 +579,7 @@ class GraphComponent extends Component {
 
         <div className="svg-wrapper" ref="wrapper">
           <div className="node-options">
-            <IconButton>
+            <IconButton onClick={() => this.props.handleNodeEditStart()}>
               <EditIcon />
             </IconButton>
           </div>

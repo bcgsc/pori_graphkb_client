@@ -54,12 +54,10 @@ class AutoSearchComponent extends Component {
       )
       .then(response => {
         response = jc.retrocycle(response.result);
-        const options = response.map(object => {
-          return object;
-        });
+        const options = response;
         this.setState({ isOpen: true, options });
       })
-      .catch(error => console.log(error));
+      .catch(error => console.error(error));
   }
 
   render() {
@@ -98,7 +96,7 @@ class AutoSearchComponent extends Component {
       <Downshift
         onChange={e => {
           this.props.onChange({
-            target: { value: e.name, "@rid": e["@rid"], name: this.props.name }
+            target: { value: e.name, "@rid": e["@rid"], name: this.props.name } //TODO: sourceID variant
           });
         }}
         itemToString={item => {

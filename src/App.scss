@@ -11,6 +11,7 @@ $banner-height: 48px;
   height: $banner-height;
   display: flex;
   background-color: $md-primary-color;
+  flex-direction: row !important;
 
   button {
     margin: auto 0;

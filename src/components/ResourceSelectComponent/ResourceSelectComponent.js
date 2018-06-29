@@ -19,34 +19,26 @@ import api from "../../services/api";
 class ResourceSelectComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      resources: []
-    };
     this.onChange = this.onChange.bind(this);
-  }
-
-  componentDidMount() {
-    this.props.resourceType === "sources"
-      ? api.getSources().then(resources => this.setState({ resources }))
-      : api.getEdgeTypes().then(resources => this.setState({ resources }));
+    console.log(props.resources);
   }
 
   onChange(e) {
-    console.log(e.target);
     this.props.onChange(e);
   }
+  
   render() {
-    const resources = this.state.resources.map(resource => {
+    const resources = this.props.resources.map(resource => {
       return this.props.children ? (
         this.props.children(resource)
       ) : (
-        <MenuItem key={resource.name} value={resource["@rid"].slice(1)}>
+        <MenuItem key={resource.name} value={resource["@rid"]}>
           {resource.name}
         </MenuItem>
       );
     });
     return (
-      <FormControl className="type-select">
+      <FormControl className="type-select" style={{ width: "100%" }}>
         <InputLabel htmlFor="resource-select">{this.props.label}</InputLabel>
         <Select
           value={this.props.value}

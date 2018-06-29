@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import queryString from "query-string";
 import AutoSearchComponent from "../../components/AutoSearchComponent/AutoSearchComponent";
 import ResourceSelectComponent from "../../components/ResourceSelectComponent/ResourceSelectComponent";
+import api from "../../services/api";
 class AdvancedQueryView extends Component {
   constructor(props) {
     super(props);
@@ -51,13 +52,18 @@ class AdvancedQueryView extends Component {
         parents: false,
         children: false,
         aliases: false
-      }
+      },
+      sources: []
     };
 
     this.handleNeighbors = this.handleNeighbors.bind(this);
     this.handleReturnProperties = this.handleReturnProperties.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.bundle = this.bundle.bind(this);
+  }
+  async componentDidMount() {
+    const sources = await api.getSources();
+    this.setState({ sources });
   }
 
   handleChange(e) {
@@ -177,7 +183,7 @@ class AdvancedQueryView extends Component {
             name="source"
             label="Source"
             id="source-adv"
-            resourceType="sources"
+            resources={this.state.sources}
           />
           {/* <AutoSearchComponent
             value={this.state.sourceName}

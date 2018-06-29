@@ -1,9 +1,16 @@
 .link {
-  font-family: 'Roboto';
+  font-family: "Roboto";
   color: #303030;
   margin: 8px;
   display: block;
   text-decoration: none; }
+
+.icon-link {
+  color: white;
+  text-decoration: none;
+  font-size: 0;
+  margin: 0;
+  padding: 0; }
 
 body {
   margin: 0;

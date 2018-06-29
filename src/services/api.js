@@ -5,7 +5,7 @@ import promise from "promise";
 import auth from "./auth";
 import * as jc from "json-cycle";
 
-const API_BASE_URL = "http://kbapi01:8006/api/v0.0.6";
+const API_BASE_URL = "http://kbapi01:8007/api/v0.0.7";
 // const API_BASE_URL = "http://creisle04.phage.bcgsc.ca:8081/api/v0.0.6";
 
 export default class api {
@@ -42,6 +42,14 @@ export default class api {
     return api.fetchWithInterceptors(endpoint, init);
   }
 
+  static delete(endpoint) {
+    const init = {
+      method: "DELETE",
+    };
+
+    return api.fetchWithInterceptors(endpoint, init);
+  }
+
   static fetchWithInterceptors(endpoint, init) {
     const initWithInterceptors = {
       ...init,
@@ -57,7 +65,6 @@ export default class api {
         }
       })
       .catch(error => {
-        console.error(JSON.parse(error));
         Object.keys(error).forEach(k => console.log(k));
         if (error.status === 401) {
           auth.clearToken();

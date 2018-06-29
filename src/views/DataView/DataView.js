@@ -19,7 +19,7 @@ class DataView extends Component {
       data: null,
       displayed: [],
       selectedId: null,
-      editing: true,
+      editing: false,
       loginRedirect: false
     };
 
@@ -28,6 +28,7 @@ class DataView extends Component {
     this.handleCheckbox = this.handleCheckbox.bind(this);
     this.handleCheckAll = this.handleCheckAll.bind(this);
     this.handleDrawerClose = this.handleDrawerClose.bind(this);
+    this.handleNodeEditStart = this.handleNodeEditStart.bind(this);
     this.handleNodeEdit = this.handleNodeEdit.bind(this);
   }
 
@@ -88,14 +89,17 @@ class DataView extends Component {
   handleDrawerClose(e) {
     this.setState({ editing: false });
   }
+  handleNodeEditStart(rid) {
+    this.setState({ selectedId: rid, editing: true });
+  }
   handleNodeEdit(node) {
-    this.setState({ selectedId: node["@rid"], editing: true });
+    const data = this.state.data;
+
+    data[node["@rid"]] = node;
+    this.setState({ data, editing: false });
   }
 
   render() {
-    const selectedNode = this.state.data
-      ? this.state.data[this.state.selectedId]
-      : null;
     const editDrawer = (
       <Drawer
         variant="persistent"
@@ -109,16 +113,18 @@ class DataView extends Component {
       >
         <Paper elevation={5} className="graph-wrapper">
           <div className="close-drawer-btn">
-            <Button
-              variant="fab"
-              mini
+            <IconButton
               onClick={this.handleDrawerClose}
               className="close-drawer-btn"
             >
               <CloseIcon color="error" />
-            </Button>
+            </IconButton>
           </div>
-          <NodeFormComponent node={selectedNode} variant="edit" />
+          <NodeFormComponent
+            selectedId={this.state.selectedId}
+            variant="edit"
+            handleNodeEdit={this.handleNodeEdit}
+          />
         </Paper>
       </Drawer>
     );
@@ -131,6 +137,9 @@ class DataView extends Component {
         handleClick={this.handleClick}
         displayed={this.state.displayed}
         selectedId={this.state.selectedId}
+        handleNodeEditStart={() =>
+          this.handleNodeEditStart(this.state.selectedId)
+        }
       />
     );
     const TableWithProps = () => (
@@ -142,7 +151,7 @@ class DataView extends Component {
         search={this.props.location.search}
         displayed={this.state.displayed}
         handleCheckAll={this.handleCheckAll}
-        handleNodeEdit={this.handleNodeEdit}
+        handleNodeEditStart={this.handleNodeEditStart}
       />
     );
     let dataView = () => {

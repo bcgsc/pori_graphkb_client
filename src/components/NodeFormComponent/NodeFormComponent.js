@@ -13,7 +13,8 @@ import {
   FormControl,
   Select,
   Button,
-  Typography
+  Typography,
+  Divider
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import CloseIcon from "@material-ui/icons/Close";
@@ -31,25 +32,30 @@ class NodeFormComponent extends Component {
     super(props);
 
     this.state = {
-      name: "",
-      longName: "",
-      description: "",
-      sourceIdVersion: "",
-      source: "",
-      subsets: [],
-      subset: "",
-      relationship: {
-        type: "",
-        direction: "out",
-        targetName: "",
-        targetRid: ""
+      node: {},
+      form: {
+        source: "",
+        sourceId: "",
+        name: "",
+        longName: "",
+        description: "",
+        sourceIdVersion: "",
+        subsets: [],
+        subset: "",
+        relationship: {
+          "@class": "", //strip these on submit
+          targetName: "", //---------------------
+          in: "",
+          out: "",
+          source: ""
+        },
+        relationships: []
       },
-      relationships: [],
-      subsets: [],
-      edgeTypes: []
+      edgeTypes: [],
+      sources: []
     };
 
-    this.handleChange = this.handleChange.bind(this);
+    this.handleFormChange = this.handleFormChange.bind(this);
     this.handleSubsetAdd = this.handleSubsetAdd.bind(this);
     this.handleSubsetDelete = this.handleSubsetDelete.bind(this);
     this.handleRelationshipAdd = this.handleRelationshipAdd.bind(this);
@@ -63,153 +69,274 @@ class NodeFormComponent extends Component {
     this.initNode = this.initNode.bind(this);
   }
 
-  componentDidMount() {
-    api.getEdgeTypes().then(edgeTypes => {
-      this.setState({ edgeTypes }, () => {
-        if (this.props.variant === "edit") {
-          this.initNode();
-        }
-      });
+  async componentDidMount() {
+    const sources = await api.getSources();
+    const edgeTypes = await api.getEdgeTypes();
+
+    this.setState({ sources, edgeTypes }, () => {
+      if (this.props.variant === "edit") {
+        this.initNode();
+      } else{
+        const {form} =this.state;
+        form.relationship.out = -1;
+        
+      }
     });
   }
 
+  //TODO: flag
   initNode() {
     function processRelationships(node, relationships, key) {
-      node[key].forEach(edge => {
-        relationships.push({
-          in: edge.in["@rid"],
-          out: edge.out["@rid"],
-          type: key,
-          targetName: edge.in.name === node.name ? edge.out.name : edge.in.name,
-          targetRid:
-            edge.in["@rid"] === node["@rid"]
-              ? edge.out["@rid"]
-              : edge.in["@rid"],
-          source: edge.source.name || edge.source
+      if (node["in_" + key]) {
+        node["in_" + key].forEach(edge => {
+          relationships.push({
+            "@rid": edge["@rid"],
+            in: edge.in["@rid"],
+            out: edge.out["@rid"],
+            "@class": key,
+            targetName:
+              edge.in.name === node.name ? edge.out.name : edge.in.name,
+            source: edge.source["@rid"] || edge.source
+          });
         });
-      });
+      }
+      if (node["out_" + key]) {
+        node["out_" + key].forEach(edge => {
+          relationships.push({
+            "@rid": edge["@rid"],
+            in: edge.in["@rid"],
+            out: edge.out["@rid"],
+            "@class": key,
+            targetName:
+              edge.in.name === node.name ? edge.out.name : edge.in.name,
+            source: edge.source["@rid"] || edge.source
+          });
+        });
+      }
       return relationships;
     }
     api
-      .get("/diseases/" + this.props.node["@rid"].slice(1) + "?neighbors=3")
+      .get("/diseases/" + this.props.selectedId.slice(1) + "?neighbors=3")
       .then(response => {
         response = jc.retrocycle(response.result);
         let relationships = [];
         this.state.edgeTypes.forEach(type => {
-          if (response["in_" + type.name]) {
-            relationships = processRelationships(
-              response,
-              relationships,
-              "in_" + type.name
-            );
-          }
-          if (response["out_" + type.name]) {
-            relationships = processRelationships(
-              response,
-              relationships,
-              "out_" + type.name
-            );
-          }
+          relationships = processRelationships(
+            response,
+            relationships,
+            type.name
+          );
         });
+        const { node, form } = this.state;
+        Object.keys(response).forEach(key => {
+          node[key] =
+            key === "subsets"
+              ? response[key].slice(0, response[key].length)
+              : response[key];
+          form[key] = response[key];
+        });
+        node.relationships = relationships.slice(0, relationships.length); //preserve initial state
+        form.relationships = relationships;
+        form.relationship.out = response["@rid"];
 
-        this.setState({
-          ...response,
-          rid: response["@rid"],
-          sourceName: response.source.name,
-          relationships
-        });
+        this.setState({ node, form }, () => console.log(this.state));
       });
   }
 
-  handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
+  handleFormChange(e) {
+    const { form } = this.state;
+    form[e.target.name] = e.target.value;
+    this.setState({ form });
   }
-  handleSubsetAdd() {
-    if (this.state.subset) {
-      const subsets = this.state.subsets;
-      subsets.push(this.state.subset);
-      this.setState({ subsets, subset: "" });
+  handleSubsetAdd(e) {
+    e.preventDefault();
+    const { form } = this.state;
+
+    if (form.subset && !form.subsets.includes(form.subset)) {
+      form.subsets.push(form.subset);
+      form.subset = "";
+      this.setState({ form });
     }
   }
   handleSubsetDelete(subset) {
-    const subsets = this.state.subsets;
-    if (subsets.indexOf(subset) !== -1) {
-      subsets.splice(subsets.indexOf(subset), 1);
+    const { form } = this.state;
+    if (form.subsets.indexOf(subset) !== -1) {
+      form.subsets.splice(form.subsets.indexOf(subset), 1);
     }
-    this.setState({ subsets });
+    this.setState({ form });
   }
-  handleRelationshipAdd() {
-    const { relationship, relationships } = this.state;
-    if (relationship.targetRid && relationship.type && relationship.direction) {
+  handleRelationshipAdd(e) {
+    e.preventDefault();
+    const { form } = this.state;
+    const { relationship, relationships } = form;
+    if (
+      relationship.in &&
+      relationship.out &&
+      relationship["@class"] &&
+      relationship.source
+    ) {
       if (
         relationships.filter(
           r =>
-            r.targetRid === relationship.targetRid &&
-            r.type === relationship.type
+            r.out === relationship.out &&
+            r.in === relationship.in &&
+            r["@class"] === relationship["@class"] &&
+            r.source === relationship.source
         ).length === 0
       ) {
         relationships.push(relationship);
-        this.setState({
-          relationships,
-          relationship: {
-            type: "",
-            direction: "out",
-            targetName: "",
-            targetRid: ""
-          }
-        });
+        form.relationships = relationships;
+        form.relationship = {
+          "@class": "", //strip these
+          targetName: "",
+          in: "",
+          out: this.state.node["@rid"],
+          source: ""
+        };
+        this.setState({ form });
       }
     }
   }
   handleRelationshipDelete(relationship) {
-    const relationships = this.state.relationships;
+    const { form } = this.state;
+    const relationships = form.relationships;
     if (relationships.indexOf(relationship) !== -1) {
       relationships.splice(relationships.indexOf(relationship), 1);
     }
-    this.setState({ relationships });
+    form.relationships = relationships;
+    this.setState({ form });
   }
   handleRelationship(e) {
-    const relationship = this.state.relationship;
-    relationship[e.target.name] = e.target.value;
-    relationship["targetRid"] = e.target["@rid"];
-    this.setState({ relationship });
+    const { form, node } = this.state;
+    form.relationship[e.target.name] = e.target.value;
+    if (e.target["@rid"]) {
+      form.relationship.in === node["@rid"]
+        ? (form.relationship.out = e.target["@rid"])
+        : (form.relationship.in = e.target["@rid"]);
+    }
+    this.setState({ form });
   }
   handleRelationshipDirection(e) {
-    const relationship = this.state.relationship;
-    if (relationship.direction === "out") {
-      relationship.direction = "in";
-      relationship.type = "in_" + relationship.type.split("_")[1];
+    const { form, node } = this.state;
+
+    if (form.relationship.in === node["@rid"]) {
+      form.relationship.in = form.relationship.out;
+      form.relationship.out = node["@rid"];
     } else {
-      relationship.direction = "out";
-      relationship.type = "out_" + relationship.type.split("_")[1];
+      form.relationship.out = form.relationship.in;
+      form.relationship.in = node["@rid"];
     }
-    this.setState({ relationship });
+    this.setState({ form });
   }
   handleSubmit(e) {
     e.preventDefault();
     this.props.variant === "edit" ? this.editSubmit() : this.addSubmit();
   }
 
-  editSubmit() {
-    const mainFields = {
-      name: this.state.name,
-      longName: this.state.longName,
-      description: this.state.description,
-      sourceIdVersion: this.state.sourceIdVersion,
-      subsets: this.state.subsets
-    };
+  async editSubmit() {
+    const { form, node } = this.state;
+    node.relationships.forEach(async initRelationship => {
+      if (
+        form.relationships.filter(
+          r =>
+            r.out === initRelationship.out &&
+            r.in === initRelationship.in &&
+            r["@class"] === initRelationship["@class"] &&
+            r.source === initRelationship.source
+        ).length === 0
+      ) {
+        await api.delete(
+          "/" +
+            initRelationship["@class"].toLowerCase() +
+            "/" +
+            initRelationship["@rid"].slice(1)
+        );
+      }
+    });
+    form.relationships.forEach(async currRelationship => {
+      if (
+        node.relationships.filter(
+          r =>
+            r.out === currRelationship.out &&
+            r.in === currRelationship.in &&
+            r["@class"] === currRelationship["@class"] &&
+            r.source === currRelationship.source
+        ).length === 0
+      ) {
+        await api.post("/" + currRelationship["@class"].toLowerCase(), {
+          in: currRelationship.in,
+          out: currRelationship.out,
+          source: currRelationship.source
+        });
+      }
+    });
 
-    api
-      .patch("/diseases/" + this.state["@rid"].slice(1), mainFields)
-      .then(response => {
-        this.setState({ ...response.result });
-      })
-      .catch(error => {});
+    const payload = {};
+    let changed = false;
+    if (form.name !== node.name) (changed = true), (payload.name = form.name);
+    if (form.name !== node.name)
+      (changed = true), (payload.longName = form.longName);
+    if (form.description !== node.description)
+      (changed = true), (payload.description = form.description);
+    if (form.sourceIdVersion !== node.sourceIdVersion)
+      (changed = true), (payload.sourceIdVersion = form.sourceIdVersion);
+    payload.subsets = [];
+    form.subsets.forEach(subset => {
+      if (!node.subsets.includes(subset))
+        (changed = true), payload.subsets.push(subset);
+    });
+    node.subsets.forEach(subset => {
+      if (form.subsets.includes(subset)) payload.subsets.push(subset);
+    });
+
+    if (changed) {
+      api
+        .patch(
+          "/" +
+            node["@class"].toLowerCase() +
+            "s/" +
+            this.state.node["@rid"].slice(1),
+          payload
+        )
+        .then(response => {
+          console.log(response);
+          response.result.source = this.state.node.source;
+          response.result.sourceId = this.state.node.sourceId;
+
+          this.props.handleNodeEdit(response.result);
+        })
+        .catch(error => {});
+    }
   }
-  addSubmit() {}
+  async addSubmit() {
+    const { form } = this.state;
+
+    const response = await api.post("/diseases", {
+      source: form.source,
+      sourceId: form.sourceId,
+      name: form.name,
+      longName: form.longName,
+      subsets: form.subsets,
+      description: form.description,
+      sourceIdVersion: form.sourceIdVersion
+    });
+
+    form.relationships.forEach(async relationship => {
+      relationship.in === -1
+        ? (relationship.in = response.result["@rid"])
+        : (relationship.out = response.result["@rid"]);
+      await api.post("/" + relationship["@class"].toLowerCase(), {
+        in: relationship.in,
+        out: relationship.out,
+        source: relationship.source
+      });
+    });
+  }
 
   render() {
-    const subsets = this.state.subsets.map(subset => {
+    const { form, node, edgeTypes } = this.state;
+
+    const subsets = form.subsets.map(subset => {
       return (
         <ListItem key={subset}>
           <ListItemIcon>
@@ -226,15 +353,23 @@ class NodeFormComponent extends Component {
         </ListItem>
       );
     });
-    const relationships = this.state.relationships.map(relationship => {
+    const relationships = form.relationships.map(relationship => {
+      const sourceName = this.state.sources.find(
+        s => s["@rid"] === relationship.source
+      ).name;
+      const typeName =
+        relationship.in === node["@rid"]
+          ? "has" +
+            relationship["@class"].slice(0, relationship["@class"].length - 2)
+          : relationship["@class"];
       return (
-        <ListItem key={relationship.type + ": " + relationship.targetName}>
+        <ListItem key={relationship["@class"] + ": " + relationship.targetName}>
           <ListItemIcon>
             <FolderIcon />
           </ListItemIcon>
           <ListItemText
-            primary={relationship.type + ": " + relationship.targetName}
-            secondary={relationship.source}
+            primary={typeName + ": " + relationship.targetName}
+            secondary={sourceName}
             style={{ overflow: "auto" }}
           />
           <IconButton
@@ -248,35 +383,44 @@ class NodeFormComponent extends Component {
         </ListItem>
       );
     });
-    const edgeTypesDisplay = edgeType => (
-      <MenuItem
-        key={edgeType.name}
-        value={this.state.relationship.direction + "_" + edgeType.name}
-      >
-        {this.state.relationship.direction + "_" + edgeType.name}
-      </MenuItem>
-    );
+    const edgeTypesDisplay = edgeType => {
+      const inOut =
+        form.relationship.in === node["@rid"]
+          ? "has" + edgeType.name.slice(0, edgeType.name.length - 2)
+          : edgeType.name;
+      return (
+        <MenuItem key={edgeType.name} value={edgeType.name}>
+          {inOut}
+        </MenuItem>
+      );
+    };
     const source =
       this.props.variant === "edit" ? (
         <ListItem>
-          <ListItemText primary="Source:" secondary={this.state.sourceName} />
+          <ListItemText
+            primary="Source:"
+            secondary={node.source ? node.source.name : null}
+          />
         </ListItem>
       ) : (
         <ListItem>
           <ResourceSelectComponent
-            value={this.state.source}
-            onChange={this.handleChange}
+            value={form.source}
+            onChange={this.handleFormChange}
             name="source"
             label="Source"
             id="source"
-            resourceType="sources"
+            resources={this.state.sources}
           />
         </ListItem>
       );
     const sourceId =
       this.props.variant === "edit" ? (
         <ListItem>
-          <ListItemText primary="Source ID:" secondary={this.state.sourceId} />
+          <ListItemText
+            primary="Source ID:"
+            secondary={this.state.node.sourceId}
+          />
         </ListItem>
       ) : (
         <ListItem className="input-wrapper">
@@ -284,23 +428,24 @@ class NodeFormComponent extends Component {
             id="sourceId"
             placeholder="eg. NCIT:0123"
             label="Source ID"
-            value={this.state.sourceId}
-            onChange={this.handleChange}
+            value={form.sourceId}
+            onChange={this.handleFormChange}
             className="text-input"
             name="sourceId"
           />
         </ListItem>
       );
+
     return (
       <div className="edit-node-wrapper">
         {/* Style */}
+        <Typography variant="display1" className="form-title">
+          {this.props.variant === "edit" ? "Edit Term" : "Add New Term"}
+        </Typography>
+        <Divider />
         <form onSubmit={this.handleSubmit}>
           <div className="param-section">
-            <Typography variant="title">
-              {this.props.variant === "edit"
-                ? "Edit Term Parameters"
-                : "Add New Term"}
-            </Typography>
+            <Typography variant="title">Basic Parameters</Typography>
             <List component="nav">
               {source}
               {sourceId}
@@ -309,8 +454,8 @@ class NodeFormComponent extends Component {
                   id="name"
                   placeholder="eg. angiosarcoma"
                   label="Name"
-                  value={this.state.name}
-                  onChange={this.handleChange}
+                  value={form.name}
+                  onChange={this.handleFormChange}
                   className="text-input"
                   name="name"
                 />
@@ -319,8 +464,8 @@ class NodeFormComponent extends Component {
                 <TextField
                   id="longName"
                   label="Long Name"
-                  value={this.state.longName}
-                  onChange={this.handleChange}
+                  value={form.longName}
+                  onChange={this.handleFormChange}
                   className="text-input"
                   name="longName"
                   multiline
@@ -330,8 +475,8 @@ class NodeFormComponent extends Component {
                 <TextField
                   id="description"
                   label="Description"
-                  value={this.state.description}
-                  onChange={this.handleChange}
+                  value={form.description}
+                  onChange={this.handleFormChange}
                   className="text-input"
                   name="description"
                   multiline
@@ -341,8 +486,8 @@ class NodeFormComponent extends Component {
                 <TextField
                   id="sourceIdVersion"
                   label="Source ID Version"
-                  value={this.state.sourceIdVersion}
-                  onChange={this.handleChange}
+                  value={form.sourceIdVersion}
+                  onChange={this.handleFormChange}
                   className="text-input"
                   name="sourceIdVersion"
                 />
@@ -355,13 +500,13 @@ class NodeFormComponent extends Component {
               <TextField
                 id="subset-temp"
                 label="Add a Subset"
-                value={this.state.subset}
-                onChange={this.handleChange}
+                value={form.subset}
+                onChange={this.handleFormChange}
                 className="text-input"
                 name="subset"
                 onKeyDown={e => {
                   if (e.keyCode === 13) {
-                    this.handleSubsetAdd();
+                    this.handleSubsetAdd(e);
                   }
                 }}
               />
@@ -376,49 +521,68 @@ class NodeFormComponent extends Component {
             <ListItem
               className="input-wrapper relationship-add-wrapper"
               onKeyDown={e => {
-                if (e.keyCode === 13) this.handleRelationshipAdd();
+                if (e.keyCode === 13) this.handleRelationshipAdd(e);
               }}
             >
-              <div className="relationship-dir-type">
-                <IconButton
-                  disableRipple
-                  name="direction"
-                  onClick={this.handleRelationshipDirection}
-                  color="primary"
-                >
-                  <TrendingFlatIcon
-                    style={{ margin: "20px 24px 0 0" }}
-                    className={
-                      this.state.relationship.direction === "in"
-                        ? "relationship-in"
-                        : "relationship-out"
-                    }
-                  />
-                </IconButton>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  flexGrow: "1"
+                }}
+              >
                 <ResourceSelectComponent
-                  value={this.state.relationship.type}
+                  value={form.relationship.source}
                   onChange={this.handleRelationship}
-                  name="type"
-                  label="Type"
-                >
-                  {edgeTypesDisplay}
-                </ResourceSelectComponent>
-              </div>
-              <div className="search-wrap">
-                <AutoSearchComponent
-                  value={this.state.relationship.targetName}
-                  onChange={this.handleRelationship}
-                  placeholder="Target Name"
-                  limit={10}
-                  name="targetName"
+                  name="source"
+                  label="Source"
+                  resources={this.state.sources}
                 />
-                <IconButton
-                  color="primary"
-                  onClick={this.handleRelationshipAdd}
-                >
-                  <AddIcon />
-                </IconButton>
+                <div style={{ display: "flex", width: "100%" }}>
+                  <div className="relationship-dir-type">
+                    <IconButton
+                      disableRipple
+                      name="direction"
+                      onClick={this.handleRelationshipDirection}
+                      color="primary"
+                    >
+                      <TrendingFlatIcon
+                        style={{ margin: "20px 24px 0 0" }}
+                        className={
+                          form.relationship.in === node["@rid"]
+                            ? "relationship-in"
+                            : "relationship-out"
+                        }
+                      />
+                    </IconButton>
+                    <ResourceSelectComponent
+                      value={form.relationship["@class"]}
+                      onChange={this.handleRelationship}
+                      name="@class"
+                      label="Type"
+                      resources={this.state.edgeTypes}
+                    >
+                      {edgeTypesDisplay}
+                    </ResourceSelectComponent>
+                  </div>
+                  <div className="search-wrap">
+                    <AutoSearchComponent
+                      value={form.relationship.targetName}
+                      onChange={this.handleRelationship}
+                      placeholder="Target Name"
+                      limit={10}
+                      name="targetName"
+                    />
+                  </div>
+                </div>
               </div>
+              <IconButton
+                style={{ margin: "auto 8px" }}
+                color="primary"
+                onClick={this.handleRelationshipAdd}
+              >
+                <AddIcon />
+              </IconButton>
             </ListItem>
             <List className="list">{relationships}</List>
           </div>

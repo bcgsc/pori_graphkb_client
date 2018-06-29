@@ -1,4 +1,4 @@
-$md-primary-color: #1F2B65;
+$md-primary-color: #1f2b65;
 $md-secondary-color: #00897b;
 $md-warn: #d32f2f;
 
@@ -9,12 +9,17 @@ $panels-height: 85vh;
 $banner-collapse: 425px;
 $data-view-collapse: 960px;
 
-
-.link{
-    font-family: 'Roboto';
-  //   color:aliceblue;
-    color: #303030;
-    margin: 8px;
-    display: block;
-    text-decoration: none;
+.link {
+  font-family: "Roboto";
+  color: #303030;
+  margin: 8px;
+  display: block;
+  text-decoration: none;
+}
+.icon-link {
+  color: white;
+  text-decoration: none;
+  font-size: 0;
+  margin: 0;
+  padding: 0;
 }

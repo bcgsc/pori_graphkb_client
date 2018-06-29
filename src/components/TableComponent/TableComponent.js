@@ -83,13 +83,8 @@ class TableComponent extends Component {
   isSelected = rid => this.props.selectedId === rid;
 
   render() {
-    const data = Object.keys(this.state.data).map(rid => this.state.data[rid]);
-    const { rowsPerPage, page, orderBy, order } = this.state;
+    const { data, rowsPerPage, page, orderBy, order } = this.state;
     const columns = [
-      // {
-      //   id: "displayed",
-      //   label: <Checkbox onChange={this.props.handleCheckAll} />
-      // },
       {
         id: "source",
         label: "Source"
@@ -153,7 +148,7 @@ class TableComponent extends Component {
                       <NodeDetailComponent
                         node={n}
                         data={this.props.data}
-                        handleNodeEdit={this.props.handleNodeEdit}
+                        handleNodeEditStart={this.props.handleNodeEditStart}
                       />
                     </Collapse>
                   </TableRow>

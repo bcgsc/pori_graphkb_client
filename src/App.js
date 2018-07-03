@@ -71,6 +71,9 @@ class App extends Component {
     const addNodeForm = () => <NodeFormComponent variant="add" />;
     const loggedInContent = (
       <React.Fragment>
+        <Route exact path="/">
+          <Redirect to="/query" />
+        </Route>
         <Route exact path="/query" component={QueryView} />
         <Route path="/query/advanced" component={AdvancedQueryView} />
         <Route path="/add" component={addNodeForm} />

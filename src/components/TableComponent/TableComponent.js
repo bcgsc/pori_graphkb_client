@@ -29,7 +29,8 @@ class TableComponent extends Component {
       rowsPerPage: 50,
       order: "asc",
       orderBy: null,
-      toggle: ""
+      toggle: "",
+      sort: null,
     };
     this.handleDetailToggle = this.handleDetailToggle.bind(this);
     this.handleRequestSort = this.handleRequestSort.bind(this);
@@ -51,7 +52,7 @@ class TableComponent extends Component {
       order = "asc";
     }
 
-    const data = this.state.data.sort((a, b) => {
+    const sort = (a, b) => {
       if (orderBy !== "displayed") {
         return order === "desc"
           ? b[orderBy] < a[orderBy]
@@ -71,9 +72,9 @@ class TableComponent extends Component {
             ? -1
             : 1;
       }
-    });
+    };
 
-    this.setState({ data, order, orderBy });
+    this.setState({ order, orderBy, sort });
   }
   handleDetailToggle(rid) {
     if (this.state.toggle === rid) rid = "";
@@ -83,7 +84,9 @@ class TableComponent extends Component {
   isSelected = rid => this.props.selectedId === rid;
 
   render() {
-    const { data, rowsPerPage, page, orderBy, order } = this.state;
+    const { rowsPerPage, page, orderBy, order, sort } = this.state;
+    let data = Object.keys(this.props.data).map(rid => this.props.data[rid])
+    if(sort !== null) data = data.sort((a,b) => sort(a,b));
     const columns = [
       {
         id: "source",

@@ -5,7 +5,7 @@ import promise from "promise";
 import auth from "./auth";
 import * as jc from "json-cycle";
 
-const API_BASE_URL = "http://kbapi01:8007/api/v0.0.7";
+const API_BASE_URL = "http://kbapi01:8008/api/v0.0.8";
 // const API_BASE_URL = "http://creisle04.phage.bcgsc.ca:8081/api/v0.0.6";
 
 export default class api {
@@ -69,7 +69,6 @@ export default class api {
         if (error.status === 401) {
           auth.clearToken();
         }
-
         return promise.reject(error);
       });
   }

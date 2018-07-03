@@ -20,13 +20,12 @@ class ResourceSelectComponent extends Component {
   constructor(props) {
     super(props);
     this.onChange = this.onChange.bind(this);
-    console.log(props.resources);
   }
 
   onChange(e) {
     this.props.onChange(e);
   }
-  
+
   render() {
     const resources = this.props.resources.map(resource => {
       return this.props.children ? (

@@ -16,14 +16,20 @@
     .search-box {
       flex-grow: 1;
     }
+    button {
+      margin: 0 8px;
+    }
+    .main-search {
+      flex-grow: 1;
+    }
     @media (max-width: 25em) {
       flex-direction: column;
       button {
         margin-top: 8px;
       }
-    }
-    button {
-      margin-right: 8px;
+      .main-search {
+        width: 100%;
+      }
     }
   }
 
@@ -35,12 +41,13 @@
   }
 }
 
+.search-buttons {
+  margin: auto;
+  display: flex;
+}
+
 .query-link {
   text-decoration: none;
   text-decoration-color: white;
   color: white;
-}
-
-.main-search {
-  flex-grow: 1;
 }

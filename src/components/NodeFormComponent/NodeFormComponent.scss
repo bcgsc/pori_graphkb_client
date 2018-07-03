@@ -8,7 +8,7 @@ $mediumBreakpoint: 500px;
   overflow: auto;
   height: 100%;
   width: 100%;
-  
+
   .form-title {
     padding: 8px;
     height: 48px;
@@ -76,6 +76,12 @@ $mediumBreakpoint: 500px;
       button {
         width: 100%;
       }
+    }
+    .delete-button {
+      position: fixed;
+      width: 200px;
+      left: 1%;
+      bottom: 1%;
     }
   }
 }

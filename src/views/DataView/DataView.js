@@ -30,6 +30,7 @@ class DataView extends Component {
     this.handleDrawerClose = this.handleDrawerClose.bind(this);
     this.handleNodeEditStart = this.handleNodeEditStart.bind(this);
     this.handleNodeEdit = this.handleNodeEdit.bind(this);
+    this.handleNodeDelete = this.handleNodeDelete.bind(this);
   }
 
   componentDidMount() {
@@ -92,6 +93,12 @@ class DataView extends Component {
   handleNodeEditStart(rid) {
     this.setState({ selectedId: rid, editing: true });
   }
+  handleNodeDelete(rid) {
+    const data = this.state.data;
+    console.log(data[rid])
+    delete data[rid];
+    this.setState({ data, editing: false });
+  }
   handleNodeEdit(node) {
     const data = this.state.data;
     api
@@ -130,6 +137,7 @@ class DataView extends Component {
             selectedId={this.state.selectedId}
             variant="edit"
             handleNodeEdit={this.handleNodeEdit}
+            handleNodeDelete={this.handleNodeDelete}
           />
         </Paper>
       </Drawer>

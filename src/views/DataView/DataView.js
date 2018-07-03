@@ -1,13 +1,13 @@
 import React, { Component } from "react";
-import "./DataView.css";
-import api from "../../services/api";
 import { Route, Redirect } from "react-router-dom";
+import "./DataView.css";
 import { Paper, Drawer, Button, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
+import * as jc from "json-cycle";
 import GraphComponent from "../../components/GraphComponent/GraphComponent";
 import TableComponent from "../../components/TableComponent/TableComponent";
 import NodeFormComponent from "../../components/NodeFormComponent/NodeFormComponent";
-import * as jc from "json-cycle";
+import api from "../../services/api";
 
 class DataView extends Component {
   constructor(props) {
@@ -29,7 +29,7 @@ class DataView extends Component {
     this.handleCheckAll = this.handleCheckAll.bind(this);
     this.handleDrawerClose = this.handleDrawerClose.bind(this);
     this.handleNodeEditStart = this.handleNodeEditStart.bind(this);
-    this.handleNodeEdit = this.handleNodeEdit.bind(this);
+    this.handleNodeFinishEdit = this.handleNodeFinishEdit.bind(this);
     this.handleNodeDelete = this.handleNodeDelete.bind(this);
   }
 
@@ -52,7 +52,13 @@ class DataView extends Component {
           loginRedirect
         });
       })
-      .catch(error => this.setState({ loginRedirect: true }));
+      .catch(error => {
+        if (error.status === 401) {
+          this.setState({ loginRedirect: true });
+        } else if (error.status === 400) {
+          this.setState({ queryRedirect: true });
+        }
+      });
   }
 
   handleNodeAdd(node) {
@@ -95,11 +101,10 @@ class DataView extends Component {
   }
   handleNodeDelete(rid) {
     const data = this.state.data;
-    console.log(data[rid])
     delete data[rid];
     this.setState({ data, editing: false });
   }
-  handleNodeEdit(node) {
+  handleNodeFinishEdit(node) {
     const data = this.state.data;
     api
       .get(
@@ -136,7 +141,7 @@ class DataView extends Component {
           <NodeFormComponent
             selectedId={this.state.selectedId}
             variant="edit"
-            handleNodeEdit={this.handleNodeEdit}
+            handleNodeFinishEdit={this.handleNodeFinishEdit}
             handleNodeDelete={this.handleNodeDelete}
           />
         </Paper>

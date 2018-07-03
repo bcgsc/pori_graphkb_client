@@ -1,7 +1,7 @@
 import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 import "./LoginView.css";
 import { Button, Typography, TextField } from "@material-ui/core";
-import { Redirect } from "react-router-dom";
 import api from "../../services/api";
 import auth from "../../services/auth";
 

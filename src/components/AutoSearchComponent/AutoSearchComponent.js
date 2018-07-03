@@ -36,21 +36,17 @@ class AutoSearchComponent extends Component {
   }
 
   refreshOptions(e) {
+    // Allow debouncing
     this.callApi(e.target.value);
   }
 
   callApi(value) {
     api
-      .get(
-        "/" +
-          this.state.endpoint +
-          "?" +
-          this.state.property +
-          "=~" +
-          value +
-          "&limit=" +
-          this.state.limit +
-          "&neighbors=1"
+      .autoSearch(
+        this.state.endpoint,
+        this.state.property,
+        value,
+        this.state.limit
       )
       .then(response => {
         response = jc.retrocycle(response.result);

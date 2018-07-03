@@ -109,7 +109,6 @@ class NodeFormComponent extends Component {
       .then(response => {
         response = jc.retrocycle(response.result);
         let relationships = [];
-        console.log(this.state.edgeTypes);
         const edgeTypes = this.state.edgeTypes.reduce((r, e) => {
           r.push({ name: "in_" + e.name });
           r.push({ name: "out_" + e.name });
@@ -315,7 +314,7 @@ class NodeFormComponent extends Component {
       this.setState({ node: response.result });
     }
 
-    this.props.handleNodeEdit(this.state.node);
+    this.props.handleNodeFinishEdit(this.state.node);
   }
 
   async addSubmit() {

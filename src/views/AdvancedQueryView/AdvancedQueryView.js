@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import "./AdvancedQueryView.css";
 import {
   TextField,
@@ -10,7 +11,6 @@ import {
 } from "@material-ui/core/";
 import ViewListIcon from "@material-ui/icons/ViewList";
 import TimelineIcon from "@material-ui/icons/Timeline";
-import { Link } from "react-router-dom";
 import queryString from "query-string";
 import AutoSearchComponent from "../../components/AutoSearchComponent/AutoSearchComponent";
 import ResourceSelectComponent from "../../components/ResourceSelectComponent/ResourceSelectComponent";
@@ -56,8 +56,8 @@ class AdvancedQueryView extends Component {
       sources: []
     };
 
-    this.handleNeighbors = this.handleNeighbors.bind(this);
-    this.handleReturnProperties = this.handleReturnProperties.bind(this);
+    // this.handleNeighbors = this.handleNeighbors.bind(this);
+    // this.handleReturnProperties = this.handleReturnProperties.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.bundle = this.bundle.bind(this);
   }
@@ -69,50 +69,46 @@ class AdvancedQueryView extends Component {
   handleChange(e) {
     let mainParams = this.state.mainParams;
     mainParams[e.target.name] = e.target.value;
-    this.setState({ mainParams }, console.log(this.state.mainParams));
+    this.setState({ mainParams });
   }
 
-  handleNeighbors(e) {
-    this.setState({ neighbors: e.target.value });
-  }
+  // handleReturnProperties(e, key) {
+  //   let returnProperties = { ...this.state.returnProperties };
+  //   returnProperties[key] = e;
+  //   this.setState({ returnProperties: returnProperties });
+  // }
 
-  handleReturnProperties(e, key) {
-    let returnProperties = { ...this.state.returnProperties };
-    returnProperties[key] = e;
-    this.setState({ returnProperties: returnProperties });
-  }
-
-  handleRelatedTerms(e, key) {
-    let relatedTerms = { ...this.state.relatedTerms };
-    relatedTerms[key] = e;
-    this.setState({ relatedTerms });
-  }
+  // handleRelatedTerms(e, key) {
+  //   let relatedTerms = { ...this.state.relatedTerms };
+  //   relatedTerms[key] = e;
+  //   this.setState({ relatedTerms });
+  // }
 
   bundle() {
     let params = {};
-    let returnProperties = "";
-    let returnDefault = true;
-    Object.keys(this.state.returnProperties).forEach(key => {
-      this.state.returnProperties[key]
-        ? (returnProperties += key + ",")
-        : (returnDefault = false);
-    });
+    // let returnProperties = "";
+    // let returnDefault = true;
+    // Object.keys(this.state.returnProperties).forEach(key => {
+    //   this.state.returnProperties[key]
+    //     ? (returnProperties += key + ",")
+    //     : (returnDefault = false);
+    // });
 
-    if (!returnDefault) {
-      params.returnProperties = returnProperties.slice(
-        0,
-        returnProperties.length - 1
-      );
-    }
-    if (this.state.relatedTerms.children) params.ancestors = "subclassof";
-    if (this.state.relatedTerms.parents) params.descendants = "subclassof";
-    if (this.state.relatedTerms.aliases) {
-      if (!params.ancestors) params.ancestors = "";
-      if (!params.descendants) params.descendants = "";
+    // if (!returnDefault) {
+    //   params.returnProperties = returnProperties.slice(
+    //     0,
+    //     returnProperties.length - 1
+    //   );
+    // }
+    // if (this.state.relatedTerms.children) params.ancestors = "subclassof";
+    // if (this.state.relatedTerms.parents) params.descendants = "subclassof";
+    // if (this.state.relatedTerms.aliases) {
+    //   if (!params.ancestors) params.ancestors = "";
+    //   if (!params.descendants) params.descendants = "";
 
-      params.ancestors += "aliasof";
-      params.descendants += "aliasof";
-    }
+    //   params.ancestors += "aliasof";
+    //   params.descendants += "aliasof";
+    // }
 
     Object.keys(this.state.mainParams).forEach(key => {
       if (this.state.mainParams[key]) {
@@ -134,25 +130,25 @@ class AdvancedQueryView extends Component {
   }
 
   render() {
-    let returnProperties = Object.keys(this.state.returnProperties).map(key => {
-      return (
-        <div key={key} className="checkbox">
-          <FormControlLabel
-            control={
-              <Checkbox
-                id={key + "check"}
-                name={key + "check"}
-                onChange={(e, checked) => {
-                  this.handleReturnProperties(checked, key);
-                }}
-                defaultChecked={true}
-              />
-            }
-            label={this.antiCamelCase(key)}
-          />
-        </div>
-      );
-    });
+    // let returnProperties = Object.keys(this.state.returnProperties).map(key => {
+    //   return (
+    //     <div key={key} className="checkbox">
+    //       <FormControlLabel
+    //         control={
+    //           <Checkbox
+    //             id={key + "check"}
+    //             name={key + "check"}
+    //             onChange={(e, checked) => {
+    //               this.handleReturnProperties(checked, key);
+    //             }}
+    //             defaultChecked={true}
+    //           />
+    //         }
+    //         label={this.antiCamelCase(key)}
+    //       />
+    //     </div>
+    //   );
+    // });
 
     return (
       <div className="adv-wrapper">
@@ -160,9 +156,6 @@ class AdvancedQueryView extends Component {
           Advanced Query
         </Typography>
         <div className="parameter-selection">
-          {/* <Typography variant="subheading" className="parameter-name">
-            Name:
-          </Typography> */}
           <TextField
             id="name-adv"
             placeholder="eg. angiosarcoma"
@@ -174,9 +167,6 @@ class AdvancedQueryView extends Component {
           />
         </div>
         <div className="parameter-selection">
-          {/* <Typography variant="subheading" className="parameter-name">
-            Source:
-          </Typography> */}
           <ResourceSelectComponent
             value={this.state.mainParams.source}
             onChange={this.handleChange}

@@ -1,5 +1,7 @@
-import React, { Component } from "react";
-import "./TableComponent.css";
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import './TableComponent.css';
 import {
   Table,
   TableHead,
@@ -10,26 +12,21 @@ import {
   TableSortLabel,
   IconButton,
   Collapse,
-  Typography,
-  Button,
-  Checkbox
-} from "@material-ui/core";
-import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
-import TimelineIcon from "@material-ui/icons/Timeline";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import NodeDetailComponent from "../NodeDetailComponent/NodeDetailComponent";
-import { BrowserRouter, Link, Route } from "react-router-dom";
+  Checkbox,
+} from '@material-ui/core';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import TimelineIcon from '@material-ui/icons/Timeline';
+import NodeDetailComponent from '../NodeDetailComponent/NodeDetailComponent';
 
 class TableComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: Object.keys(this.props.data).map(rid => this.props.data[rid]),
       page: 0,
       rowsPerPage: 50,
-      order: "asc",
+      order: 'asc',
       orderBy: null,
-      toggle: "",
+      toggle: '',
       sort: null,
     };
     this.handleDetailToggle = this.handleDetailToggle.bind(this);
@@ -41,65 +38,97 @@ class TableComponent extends Component {
   handleChangePage(event, page) {
     this.setState({ page });
   }
+
   handleChangeRowsPerPage(event) {
     this.setState({ rowsPerPage: event.target.value });
   }
-  handleRequestSort(property) {
-    const orderBy = property;
-    let order = "desc";
 
-    if (this.state.orderBy === property && this.state.order === "desc") {
-      order = "asc";
+  handleRequestSort(property) {
+    const { orderBy, order } = this.state;
+    const { displayed } = this.props;
+
+    let newOrder = 'desc';
+
+    if (orderBy === property && order === 'desc') {
+      newOrder = 'asc';
     }
 
     const sort = (a, b) => {
-      if (orderBy !== "displayed") {
-        return order === "desc"
-          ? b[orderBy] < a[orderBy]
-            ? -1
-            : 1
-          : a[orderBy] < b[orderBy]
+      if (property !== 'displayed') {
+        if (newOrder === 'desc') {
+          return b[property] < a[property]
             ? -1
             : 1;
-      } else {
-        return order === "desc"
-          ? this.props.displayed.includes(b["@rid"]) <
-            this.props.displayed.includes(a["@rid"])
-            ? -1
-            : 1
-          : this.props.displayed.includes(a["@rid"]) <
-            this.props.displayed.includes(b["@rid"])
-            ? -1
-            : 1;
+        }
+        return a[property] < b[property]
+          ? -1
+          : 1;
       }
+      if (newOrder === 'desc') {
+        return displayed.includes(b['@rid'])
+          < displayed.includes(a['@rid'])
+          ? -1
+          : 1;
+      }
+      return displayed.includes(a['@rid'])
+        < displayed.includes(b['@rid'])
+        ? -1
+        : 1;
     };
 
-    this.setState({ order, orderBy, sort });
-  }
-  handleDetailToggle(rid) {
-    if (this.state.toggle === rid) rid = "";
-    this.setState({ toggle: rid });
+    this.setState({ order: newOrder, orderBy: property, sort });
   }
 
-  isSelected = rid => this.props.selectedId === rid;
+  handleDetailToggle(rid) {
+    const { toggle } = this.state;
+    if (toggle === rid) this.setState({ toggle: '' });
+    else {
+      this.setState({ toggle: rid });
+    }
+  }
+
+  isSelected(rid) {
+    const { selectedId } = this.props;
+    return selectedId === rid;
+  }
 
   render() {
-    const { rowsPerPage, page, orderBy, order, sort } = this.state;
-    let data = Object.keys(this.props.data).map(rid => this.props.data[rid])
-    if(sort !== null) data = data.sort((a,b) => sort(a,b));
+    const {
+      rowsPerPage,
+      page,
+      orderBy,
+      order,
+      sort,
+      toggle,
+    } = this.state;
+
+    const {
+      data,
+      handleCheckAll,
+      displayed,
+      handleNodeEditStart,
+      handleClick,
+      handleCheckbox,
+      search,
+    } = this.props;
+
+    let tableData = Object.keys(data).map(rid => data[rid]);
+
+    if (sort !== null) tableData = tableData.sort((a, b) => sort(a, b));
+
     const columns = [
       {
-        id: "source",
-        label: "Source"
+        id: 'source',
+        label: 'Source',
       },
       {
-        id: "sourceId",
-        label: "Source ID"
+        id: 'sourceId',
+        label: 'Source ID',
       },
       {
-        id: "name",
-        label: "Name"
-      }
+        id: 'name',
+        label: 'Name',
+      },
     ];
 
     return (
@@ -109,37 +138,35 @@ class TableComponent extends Component {
             <TableRow>
               <TableCell>
                 <Checkbox
-                  onChange={this.props.handleCheckAll}
-                  checked={this.props.displayed.length === data.length}
+                  onChange={handleCheckAll}
+                  checked={displayed.length === tableData.length}
                 />
                 <TableSortLabel
-                  active={orderBy === "displayed"}
-                  onClick={e => this.handleRequestSort("displayed")}
+                  active={orderBy === 'displayed'}
+                  onClick={() => this.handleRequestSort('displayed')}
                   direction={order}
                 />
               </TableCell>
-              {columns.map(col => {
-                return (
-                  <TableCell key={col.id} classes={{ root: col.id + "-col" }}>
-                    <TableSortLabel
-                      active={col.id === orderBy}
-                      onClick={e => this.handleRequestSort(col.id)}
-                      direction={order}
-                    >
-                      {col.label}
-                    </TableSortLabel>
-                  </TableCell>
-                );
-              })}
+              {columns.map(col => (
+                <TableCell key={col.id} classes={{ root: `${col.id}-col` }}>
+                  <TableSortLabel
+                    active={col.id === orderBy}
+                    onClick={() => this.handleRequestSort(col.id)}
+                    direction={order}
+                  >
+                    {col.label}
+                  </TableSortLabel>
+                </TableCell>
+              ))}
               <TableCell style={{ zIndex: 1 }} />
             </TableRow>
           </TableHead>
           <TableBody>
-            {data
+            {tableData
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map(n => {
-                const isSelected = this.isSelected(n["@rid"]);
-                let active = this.state.toggle === n["@rid"];
+              .map((n) => {
+                const isSelected = this.isSelected(n['@rid']);
+                const active = toggle === n['@rid'];
                 const detail = active ? (
                   <TableRow>
                     <Collapse
@@ -150,40 +177,38 @@ class TableComponent extends Component {
                     >
                       <NodeDetailComponent
                         node={n}
-                        data={this.props.data}
-                        handleNodeEditStart={this.props.handleNodeEditStart}
+                        data={data}
+                        handleNodeEditStart={handleNodeEditStart}
                       />
                     </Collapse>
                   </TableRow>
                 ) : null;
                 return (
-                  <React.Fragment key={n["@rid"]}>
+                  <React.Fragment key={n['@rid']}>
                     <TableRow
                       selected={isSelected}
-                      onClick={e => this.props.handleClick(n["@rid"])}
+                      onClick={() => handleClick(n['@rid'])}
                       classes={{
-                        root: "cursor-override",
-                        selected: "selected-override"
+                        root: 'cursor-override',
+                        selected: 'selected-override',
                       }}
                     >
                       <TableCell>
                         <Checkbox
-                          onChange={e => {
-                            this.props.handleCheckbox(n["@rid"]);
-                          }}
-                          checked={this.props.displayed.includes(n["@rid"])}
+                          onChange={() => handleCheckbox(n['@rid'])}
+                          checked={displayed.includes(n['@rid'])}
                         />
                       </TableCell>
                       <TableCell
                         classes={{
-                          root: "source-col"
+                          root: 'source-col',
                         }}
                       >
                         {n.source.name}
                       </TableCell>
                       <TableCell
                         classes={{
-                          root: "sourceId-col"
+                          root: 'sourceId-col',
                         }}
                       >
                         {n.sourceId}
@@ -191,16 +216,16 @@ class TableComponent extends Component {
 
                       <TableCell
                         classes={{
-                          root: "name-col"
+                          root: 'name-col',
                         }}
                       >
                         {n.name}
                       </TableCell>
                       <TableCell>
                         <IconButton
-                          onClick={() => this.handleDetailToggle(n["@rid"])}
+                          onClick={() => this.handleDetailToggle(n['@rid'])}
                           className={
-                            active ? "detail-btn-active" : "detail-btn"
+                            active ? 'detail-btn-active' : 'detail-btn'
                           }
                         >
                           <KeyboardArrowDownIcon />
@@ -214,8 +239,8 @@ class TableComponent extends Component {
             <TableRow>
               <TableCell colSpan={4} className="spacer-cell">
                 <TablePagination
-                  classes={{ root: "table-paginator" }}
-                  count={data.length}
+                  classes={{ root: 'table-paginator' }}
+                  count={tableData.length}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   onChangePage={this.handleChangePage}
@@ -228,13 +253,13 @@ class TableComponent extends Component {
                 <Link
                   className="link"
                   to={{
-                    pathname: "/data/graph",
-                    search: this.props.search
+                    pathname: '/data/graph',
+                    search,
                   }}
                 >
                   <IconButton
                     color="secondary"
-                    style={{ backgroundColor: "rgba(0, 137, 123, 0.1)" }}
+                    style={{ backgroundColor: 'rgba(0, 137, 123, 0.1)' }}
                   >
                     <TimelineIcon />
                   </IconButton>
@@ -247,4 +272,16 @@ class TableComponent extends Component {
     );
   }
 }
+
+TableComponent.propTypes = {
+  data: PropTypes.object.isRequired,
+  displayed: PropTypes.array.isRequired,
+  search: PropTypes.string.isRequired,
+  selectedId: PropTypes.string.isRequired,
+  handleCheckAll: PropTypes.func.isRequired,
+  handleNodeEditStart: PropTypes.func.isRequired,
+  handleClick: PropTypes.func.isRequired,
+  handleCheckbox: PropTypes.func.isRequired,
+};
+
 export default TableComponent;

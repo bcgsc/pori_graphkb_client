@@ -24,10 +24,13 @@ import queryString from "query-string";
 import * as jc from "json-cycle";
 import NodeDetailComponent from "../NodeDetailComponent/NodeDetailComponent";
 
-const R = 55;
-const arrowWidth = 6;
-const arrowLength = 9;
-const nodeR = 4;
+const arrowProperties = {
+  width: 6,
+  length: 9
+};
+
+const nodeInitRadius = 55;
+const nodeRadius = 4;
 
 class GraphComponent extends Component {
   constructor(props) {
@@ -92,7 +95,7 @@ class GraphComponent extends Component {
       let graphObjects = this.state.graphObjects;
       if (!graphObjects[key]) {
         nodes.push({ data: this.props.data[key] });
-        graphObjects["" + key] = this.props.data[key];
+        graphObjects[key] = this.props.data[key];
       }
       this.props.handleNodeAdd(this.props.data[key]);
       this.setState(
@@ -120,11 +123,11 @@ class GraphComponent extends Component {
 
   handleResize() {
     let w, h;
-    let n = ReactDOM.findDOMNode(this.refs["wrapper"]);
+    const n = ReactDOM.findDOMNode(this.refs["wrapper"]);
     if (n) {
       w = n.clientWidth;
       h = n.clientHeight;
-      let graphOptions = this.state.graphOptions;
+      const graphOptions = this.state.graphOptions;
       graphOptions.width = w;
       graphOptions.height = h;
       this.setState({ graphOptions }, this.initSimulation);
@@ -177,8 +180,7 @@ class GraphComponent extends Component {
                   position.x,
                   position.y,
                   j++,
-                  n,
-                  R
+                  n
                 );
                 const newNode = {
                   data: edge.out,
@@ -205,8 +207,7 @@ class GraphComponent extends Component {
                   position.x,
                   position.y,
                   j++,
-                  n,
-                  R
+                  n
                 );
                 const newNode = {
                   data: edge.in,
@@ -361,9 +362,9 @@ class GraphComponent extends Component {
     this.setState({ simulation: simulation });
   }
 
-  positionInit(x, y, i, n, R) {
-    x = R * Math.cos((2 * Math.PI * i - Math.PI / 6) / n) + x;
-    y = R * Math.sin((2 * Math.PI * i - Math.PI / 6) / n) + y;
+  positionInit(x, y, i, n) {
+    x = nodeInitRadius * Math.cos((2 * Math.PI * i - Math.PI / 6) / n) + x;
+    y = nodeInitRadius * Math.sin((2 * Math.PI * i - Math.PI / 6) / n) + y;
     return { x: x, y: y };
   }
 
@@ -460,6 +461,7 @@ class GraphComponent extends Component {
     const links = this.state.links.map(link => {
       return <SVGLink key={link["@rid"]} link={link} />;
     });
+
     const nodes = this.state.nodes.map(node => {
       const color =
         this.state.expandId === node.data["@rid"]
@@ -478,7 +480,7 @@ class GraphComponent extends Component {
           node={node}
           simulation={this.state.simulation}
           color={color}
-          r={nodeR}
+          r={nodeRadius}
           handleClick={e => this.handleClick(e, node)}
           expandable={expandable}
         />
@@ -486,11 +488,16 @@ class GraphComponent extends Component {
     });
 
     const selected = key => key === this.state.colorKey;
-
     const arrowSize = {
-      d: "M0,0 L0," + arrowWidth + " L" + arrowLength + ", " + arrowWidth / 2,
-      refX: nodeR + arrowLength + 1,
-      refY: arrowWidth / 2
+      d:
+        "M0,0 L0," +
+        arrowProperties.width +
+        " L" +
+        arrowProperties.length +
+        ", " +
+        arrowProperties.width / 2,
+      refX: nodeRadius + arrowProperties.length + 1,
+      refY: arrowProperties.width / 2
     };
 
     return (
@@ -626,8 +633,8 @@ class GraphComponent extends Component {
             <defs>
               <marker
                 id="arrow"
-                markerWidth={arrowLength}
-                markerHeight={arrowWidth}
+                markerWidth={arrowProperties.length}
+                markerHeight={arrowProperties.width}
                 refX={arrowSize.refX}
                 refY={arrowSize.refY}
                 orient="auto"

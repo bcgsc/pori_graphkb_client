@@ -6,7 +6,6 @@ import auth from "./auth";
 import * as jc from "json-cycle";
 
 const API_BASE_URL = "http://kbapi01:8008/api/v0.0.8";
-// const API_BASE_URL = "http://creisle04.phage.bcgsc.ca:8081/api/v0.0.6";
 
 export default class api {
   static getHeaders() {
@@ -44,7 +43,7 @@ export default class api {
 
   static delete(endpoint) {
     const init = {
-      method: "DELETE",
+      method: "DELETE"
     };
 
     return api.fetchWithInterceptors(endpoint, init);
@@ -53,11 +52,10 @@ export default class api {
   static fetchWithInterceptors(endpoint, init) {
     const initWithInterceptors = {
       ...init,
-      headers: api.getHeaders(),
+      headers: api.getHeaders()
     };
     return fetch(new Request(API_BASE_URL + endpoint, initWithInterceptors))
       .then(response => {
-        console.log(response);
         if (response.ok) {
           return response.json();
         } else {
@@ -65,7 +63,6 @@ export default class api {
         }
       })
       .catch(error => {
-        Object.keys(error).forEach(k => console.log(k));
         if (error.status === 401) {
           auth.clearToken();
         }
@@ -86,6 +83,7 @@ export default class api {
       return Promise.resolve(JSON.parse(edgeTypes));
     }
   }
+
   static loadEdges() {
     return api.get("/schema").then(response => {
       response = jc.retrocycle(response.schema);
@@ -108,6 +106,7 @@ export default class api {
       return promise.resolve(list);
     });
   }
+
   static getSources() {
     const sources = localStorage.getItem("sources");
     const sourcesExpiry = localStorage.getItem("sourcesExpiry");
@@ -120,6 +119,7 @@ export default class api {
       return Promise.resolve(JSON.parse(sources));
     }
   }
+
   static loadSources() {
     return api.get("/sources").then(response => {
       response = jc.retrocycle(response.result);
@@ -137,5 +137,19 @@ export default class api {
 
       return promise.resolve(list);
     });
+  }
+
+  static autoSearch(endpoint, property, value, limit) {
+    return api.get(
+      "/" +
+        endpoint +
+        "?" +
+        property +
+        "=~" +
+        value +
+        "&limit=" +
+        limit +
+        "&neighbors=1"
+    );
   }
 }

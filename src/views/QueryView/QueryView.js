@@ -1,10 +1,11 @@
 import React, { Component } from "react";
+import { Link, Redirect } from "react-router-dom";
 import "./QueryView.css";
 import { Button, IconButton } from "@material-ui/core";
-import { Link, Redirect } from "react-router-dom";
-import AutoSearchComponent from "../../components/AutoSearchComponent/AutoSearchComponent";
 import ViewListIcon from "@material-ui/icons/ViewList";
 import TimelineIcon from "@material-ui/icons/Timeline";
+import AutoSearchComponent from "../../components/AutoSearchComponent/AutoSearchComponent";
+
 /**
  * View representing the simple query page and the entry point into querying the database.
  */

@@ -18,18 +18,6 @@ $banner-height: 48px;
   }
 }
 
-.links {
-  position: absolute;
-  bottom: 8px;
-  padding: 4px;
-
-  @media (max-width: $banner-collapse) {
-    left: 0;
-    bottom: auto;
-    top: 0;
-  }
-}
-
 .content {
   overflow-y: auto;
   position: absolute;
@@ -40,18 +28,6 @@ $banner-height: 48px;
   bottom: 0;
 }
 
-.sidebar {
-  width: 240px;
-}
-
 .router-outlet {
   height: inherit;
-}
-.nav-drawer {
-  width: 100%;
-  height: 100%;
-}
-.close-button {
-  display: flex;
-  justify-content: flex-end;
 }

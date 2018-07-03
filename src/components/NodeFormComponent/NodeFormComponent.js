@@ -32,7 +32,7 @@ class NodeFormComponent extends Component {
     super(props);
 
     this.state = {
-      node: {},
+      node: { "@rid": -1 },
       form: {
         source: "",
         sourceId: "",
@@ -52,7 +52,8 @@ class NodeFormComponent extends Component {
         relationships: []
       },
       edgeTypes: [],
-      sources: []
+      sources: [],
+      completedFlag: false
     };
 
     this.handleFormChange = this.handleFormChange.bind(this);
@@ -70,16 +71,15 @@ class NodeFormComponent extends Component {
   }
 
   async componentDidMount() {
-    const sources = await api.getSources();
+    const sources = await api.getSources(); //await/async is apparently an experimental api, could change this to nested promises
     const edgeTypes = await api.getEdgeTypes();
 
     this.setState({ sources, edgeTypes }, () => {
       if (this.props.variant === "edit") {
         this.initNode();
-      } else{
-        const {form} =this.state;
+      } else {
+        const { form } = this.state;
         form.relationship.out = -1;
-        
       }
     });
   }
@@ -127,19 +127,23 @@ class NodeFormComponent extends Component {
             type.name
           );
         });
-        const { node, form } = this.state;
+
+        //create copy of original node and initialize form fields.
+        const { node, form } = this.state; 
         Object.keys(response).forEach(key => {
           node[key] =
+          //create shallow copy each field for original node model
             key === "subsets"
-              ? response[key].slice(0, response[key].length)
+              ? response[key].slice(0, response[key].length) 
               : response[key];
           form[key] = response[key];
         });
-        node.relationships = relationships.slice(0, relationships.length); //preserve initial state
+        //shallow copy of array object.
+        node.relationships = relationships.slice(0, relationships.length); 
         form.relationships = relationships;
         form.relationship.out = response["@rid"];
 
-        this.setState({ node, form }, () => console.log(this.state));
+        this.setState({ node, form });
       });
   }
 
@@ -235,7 +239,8 @@ class NodeFormComponent extends Component {
 
   async editSubmit() {
     const { form, node } = this.state;
-    node.relationships.forEach(async initRelationship => {
+    const newEdges = [];
+    node.relationships.forEach(initRelationship => {
       if (
         form.relationships.filter(
           r =>
@@ -245,15 +250,18 @@ class NodeFormComponent extends Component {
             r.source === initRelationship.source
         ).length === 0
       ) {
-        await api.delete(
+        api.delete(
           "/" +
             initRelationship["@class"].toLowerCase() +
             "/" +
             initRelationship["@rid"].slice(1)
         );
+      } else {
+        newEdges.push();
       }
     });
-    form.relationships.forEach(async currRelationship => {
+    for (let i = 0; i < form.relationships.length; i++) {
+      const currRelationship = form.relationships[i];
       if (
         node.relationships.filter(
           r =>
@@ -269,12 +277,12 @@ class NodeFormComponent extends Component {
           source: currRelationship.source
         });
       }
-    });
+    }
 
     const payload = {};
     let changed = false;
     if (form.name !== node.name) (changed = true), (payload.name = form.name);
-    if (form.name !== node.name)
+    if (form.longName !== node.longName)
       (changed = true), (payload.longName = form.longName);
     if (form.description !== node.description)
       (changed = true), (payload.description = form.description);
@@ -287,27 +295,23 @@ class NodeFormComponent extends Component {
     });
     node.subsets.forEach(subset => {
       if (form.subsets.includes(subset)) payload.subsets.push(subset);
+      else changed = true;
     });
 
     if (changed) {
-      api
-        .patch(
-          "/" +
-            node["@class"].toLowerCase() +
-            "s/" +
-            this.state.node["@rid"].slice(1),
-          payload
-        )
-        .then(response => {
-          console.log(response);
-          response.result.source = this.state.node.source;
-          response.result.sourceId = this.state.node.sourceId;
-
-          this.props.handleNodeEdit(response.result);
-        })
-        .catch(error => {});
+      const response = await api.patch(
+        "/" +
+          node["@class"].toLowerCase() +
+          "s/" +
+          this.state.node["@rid"].slice(1),
+        payload
+      );
+      this.setState({ node: response.result });
     }
+
+    this.props.handleNodeEdit(this.state.node);
   }
+
   async addSubmit() {
     const { form } = this.state;
 
@@ -321,7 +325,8 @@ class NodeFormComponent extends Component {
       sourceIdVersion: form.sourceIdVersion
     });
 
-    form.relationships.forEach(async relationship => {
+    for (let i = 0; i < form.relationships.length; i++) {
+      const relationship = form.relationships[i];
       relationship.in === -1
         ? (relationship.in = response.result["@rid"])
         : (relationship.out = response.result["@rid"]);
@@ -330,11 +335,13 @@ class NodeFormComponent extends Component {
         out: relationship.out,
         source: relationship.source
       });
-    });
+    }
+    this.setState({ completedFlag: true });
   }
 
   render() {
-    const { form, node, edgeTypes } = this.state;
+    const { form, node, edgeTypes, completedFlag } = this.state;
+    if (completedFlag) return <Redirect push to="/query" />;
 
     const subsets = form.subsets.map(subset => {
       return (

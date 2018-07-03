@@ -19,20 +19,17 @@ import GraphComponent from "../GraphComponent/GraphComponent";
 import { Link } from "react-router-dom";
 
 class NodeDetailComponent extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
   render() {
     const node = this.props.node;
 
     const listEdges = key => {
+      const label = key.startsWith("in_")
+        ? "has" + key.split("_")[1].slice(0, key.split("_")[1].length - 2)
+        : key.split("_")[1];
       if (node[key]) {
         return (
           <React.Fragment>
-            <Typography variant="subheading">{key + ":"}</Typography>
-            {/*Format this*/}
+            <Typography variant="subheading">{label + ":"}</Typography>
             <List>
               {node[key].map(edge => {
                 const relatedNode =
@@ -92,6 +89,18 @@ class NodeDetailComponent extends Component {
               <Typography variant="subheading"> Class: </Typography>
               <Typography paragraph variant="caption">
                 {node["@class"]}
+              </Typography>
+              <Typography variant="subheading"> Source: </Typography>
+              <Typography paragraph variant="caption">
+                {node.source.name || "none"}
+              </Typography>
+              <Typography variant="subheading"> Source ID: </Typography>
+              <Typography paragraph variant="caption">
+                {node.sourceId || "none"}
+              </Typography>
+              <Typography variant="subheading"> Name: </Typography>
+              <Typography paragraph variant="caption">
+                {node.name || "none"}
               </Typography>
               <Typography variant="subheading"> Description: </Typography>
               <Typography paragraph variant="caption">

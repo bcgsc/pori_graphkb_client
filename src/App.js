@@ -12,7 +12,9 @@ import Divider from "@material-ui/core/Divider";
 import TimelineIcon from "@material-ui/icons/Timeline";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
+import ViewListIcon from "@material-ui/icons/ViewList";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import AddIcon from "@material-ui/icons/Add";
 import { BrowserRouter, Link, Route, Redirect, Switch } from "react-router-dom";
 import {
   createMuiTheme,
@@ -81,26 +83,38 @@ class App extends Component {
         <BrowserRouter>
           <div className="App">
             <AppBar position="static" className="banner">
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={this.handleDrawerOpen}
-              >
-                <MenuIcon />
-              </IconButton>
               <IconButton color="inherit" aria-label="open drawer">
                 <Link className="icon-link" to={"/query"}>
                   <SearchIcon />
                 </Link>
               </IconButton>
+              <IconButton color="inherit" aria-label="open drawer">
+                <Link className="icon-link" to={"/add"}>
+                  <AddIcon />
+                </Link>
+              </IconButton>
+              {/* <IconButton
+              // color="inherit"
+              // aria-label="open drawer"
+              // onClick={this.handleDrawerOpen}
+              >
+                <Link
+                  className="icon-link"
+                  to={
+                    "/data/table?name=disease&ancestors=subclassof&neighbors=3"
+                  }
+                >
+                  <ViewListIcon color="secondary" />
+                </Link>
+              </IconButton>
               <IconButton color="inherit">
                 <Link
                   className="icon-link"
-                  to={"/data/graph?neighbors=3&name=disease"}
+                  to={"/data/graph?name=disease&neighbors=3"}
                 >
-                  <TimelineIcon color="secondary"/>
+                  <TimelineIcon color="secondary" />
                 </Link>
-              </IconButton>
+              </IconButton> */}
             </AppBar>
             {drawer}
             <section className="content">

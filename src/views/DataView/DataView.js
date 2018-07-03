@@ -94,9 +94,18 @@ class DataView extends Component {
   }
   handleNodeEdit(node) {
     const data = this.state.data;
-
-    data[node["@rid"]] = node;
-    this.setState({ data, editing: false });
+    api
+      .get(
+        "/" +
+          node["@class"].toLowerCase() +
+          "s/" +
+          node["@rid"].slice(1) +
+          "?neighbors=3"
+      )
+      .then(response => {
+        data[node["@rid"]] = jc.retrocycle(response.result);
+        this.setState({ data, editing: false });
+      });
   }
 
   render() {

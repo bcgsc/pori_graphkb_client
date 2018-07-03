@@ -17,8 +17,10 @@ $data-view-collapse: 60em;
   position: absolute;
   top: 0;
   right: 0;
-  margin: 8px;
   z-index: 1;
+  button {
+    margin: 8px;
+  }
 }
 
 .drawer-box-graph {

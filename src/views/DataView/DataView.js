@@ -122,10 +122,7 @@ class DataView extends Component {
       >
         <Paper elevation={5} className="graph-wrapper">
           <div className="close-drawer-btn">
-            <IconButton
-              onClick={this.handleDrawerClose}
-              className="close-drawer-btn"
-            >
+            <IconButton onClick={this.handleDrawerClose}>
               <CloseIcon color="error" />
             </IconButton>
           </div>

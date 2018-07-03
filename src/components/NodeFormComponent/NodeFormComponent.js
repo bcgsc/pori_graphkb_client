@@ -26,13 +26,12 @@ import api from "../../services/api";
 import * as jc from "json-cycle";
 import { Redirect } from "react-router-dom";
 
-//TODO: Implement variants
 class NodeFormComponent extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      node: { "@rid": -1 },
+      node: { "@rid": -1 }, //placeholder rid, new node hasn't been assigned a real rid yet
       form: {
         source: "",
         sourceId: "",
@@ -43,8 +42,8 @@ class NodeFormComponent extends Component {
         subsets: [],
         subset: "",
         relationship: {
-          "@class": "", //strip these on submit
-          targetName: "", //---------------------
+          "@class": "",
+          targetName: "",
           in: "",
           out: "",
           source: ""
@@ -71,7 +70,8 @@ class NodeFormComponent extends Component {
   }
 
   async componentDidMount() {
-    const sources = await api.getSources(); //await/async is apparently an experimental api, could change this to nested promises
+    //await/async is apparently an experimental api, could change this to nested promises
+    const sources = await api.getSources();
     const edgeTypes = await api.getEdgeTypes();
 
     this.setState({ sources, edgeTypes }, () => {
@@ -83,45 +83,40 @@ class NodeFormComponent extends Component {
       }
     });
   }
-
-  //TODO: flag
-  initNode() {
-    function processRelationships(node, relationships, key) {
-      if (node["in_" + key]) {
-        node["in_" + key].forEach(edge => {
-          relationships.push({
-            "@rid": edge["@rid"],
-            in: edge.in["@rid"],
-            out: edge.out["@rid"],
-            "@class": key,
-            targetName:
-              edge.in.name === node.name ? edge.out.name : edge.in.name,
-            source: edge.source["@rid"] || edge.source
-          });
+  
+  processRelationships(node, relationships, key) {
+    if (node[key]) {
+      node[key].forEach(edge => {
+        relationships.push({
+          "@rid": edge["@rid"],
+          in: edge.in["@rid"],
+          out: edge.out["@rid"],
+          "@class": key.split("_")[1],
+          targetName:
+            edge.out.name === node.name ? edge.in.name : edge.out.name,
+          source: edge.source["@rid"] || edge.source
         });
-      }
-      if (node["out_" + key]) {
-        node["out_" + key].forEach(edge => {
-          relationships.push({
-            "@rid": edge["@rid"],
-            in: edge.in["@rid"],
-            out: edge.out["@rid"],
-            "@class": key,
-            targetName:
-              edge.in.name === node.name ? edge.out.name : edge.in.name,
-            source: edge.source["@rid"] || edge.source
-          });
-        });
-      }
-      return relationships;
+      });
     }
+
+    return relationships;
+  }
+
+  initNode() {
     api
       .get("/diseases/" + this.props.selectedId.slice(1) + "?neighbors=3")
       .then(response => {
         response = jc.retrocycle(response.result);
         let relationships = [];
-        this.state.edgeTypes.forEach(type => {
-          relationships = processRelationships(
+        console.log(this.state.edgeTypes);
+        const edgeTypes = this.state.edgeTypes.reduce((r, e) => {
+          r.push({ name: "in_" + e.name });
+          r.push({ name: "out_" + e.name });
+          return r;
+        }, []);
+
+        edgeTypes.forEach(type => {
+          relationships = this.processRelationships(
             response,
             relationships,
             type.name
@@ -129,17 +124,17 @@ class NodeFormComponent extends Component {
         });
 
         //create copy of original node and initialize form fields.
-        const { node, form } = this.state; 
+        const { node, form } = this.state;
         Object.keys(response).forEach(key => {
           node[key] =
-          //create shallow copy each field for original node model
+            //create shallow copy each field for original node model
             key === "subsets"
-              ? response[key].slice(0, response[key].length) 
+              ? response[key].slice(0, response[key].length)
               : response[key];
           form[key] = response[key];
         });
         //shallow copy of array object.
-        node.relationships = relationships.slice(0, relationships.length); 
+        node.relationships = relationships.slice(0, relationships.length);
         form.relationships = relationships;
         form.relationship.out = response["@rid"];
 
@@ -239,7 +234,6 @@ class NodeFormComponent extends Component {
 
   async editSubmit() {
     const { form, node } = this.state;
-    const newEdges = [];
     node.relationships.forEach(initRelationship => {
       if (
         form.relationships.filter(
@@ -256,10 +250,9 @@ class NodeFormComponent extends Component {
             "/" +
             initRelationship["@rid"].slice(1)
         );
-      } else {
-        newEdges.push();
       }
     });
+
     for (let i = 0; i < form.relationships.length; i++) {
       const currRelationship = form.relationships[i];
       if (
@@ -315,6 +308,7 @@ class NodeFormComponent extends Component {
   async addSubmit() {
     const { form } = this.state;
 
+    //TODO: Scale up to all ontology types, not just diseases
     const response = await api.post("/diseases", {
       source: form.source,
       sourceId: form.sourceId,

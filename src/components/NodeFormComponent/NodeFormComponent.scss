@@ -8,9 +8,12 @@ $mediumBreakpoint: 500px;
   overflow: auto;
   height: 100%;
   width: 100%;
+  
   .form-title {
     padding: 8px;
+    height: 48px;
   }
+
   form {
     width: 100%;
     padding-bottom: 20px;
@@ -27,7 +30,6 @@ $mediumBreakpoint: 500px;
     .param-section {
       padding: 20px;
       flex: 0;
-      // overflow: auto;
     }
 
     .input-wrapper {

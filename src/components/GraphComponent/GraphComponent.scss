@@ -1,5 +1,7 @@
 @import "../../globals";
 
+$toolbar-height: 100px;
+
 .graph-wrapper {
   position: absolute;
   top: 0;
@@ -8,7 +10,13 @@
   bottom: 0;
 }
 
-$toolbar-height: 100px;
+.graph-close-drawer-btn {
+  button {
+    float: right;
+    margin: 8px;
+  }
+}
+
 .toolbar {
   height: calc(#{$toolbar-height} - 1px);
   position: absolute;
@@ -18,6 +26,8 @@ $toolbar-height: 100px;
   margin: auto;
   display: flex;
   border-bottom: solid $md-primary-color 1px;
+  overflow-x: auto;
+  overflow-y: hidden;
 
   .compact-picker {
     float: left;

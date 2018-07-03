@@ -10,33 +10,35 @@ import {
   TextField,
   Checkbox,
   FormControlLabel,
-  IconButton
+  IconButton,
+  Collapse,
+  Drawer,
+  Paper
 } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 import ViewListIcon from "@material-ui/icons/ViewList";
 import EditIcon from "@material-ui/icons/Edit";
 import { CompactPicker } from "react-color";
 import { Link } from "react-router-dom";
 import queryString from "query-string";
 import * as jc from "json-cycle";
+import NodeDetailComponent from "../NodeDetailComponent/NodeDetailComponent";
 
 const R = 55;
 const arrowWidth = 6;
 const arrowLength = 9;
 const nodeR = 4;
-const edgeTypes = [
-  "in_SubClassOf",
-  "out_SubClassOf",
-  "in_AliasOf",
-  "out_AliasOf"
-];
+
 class GraphComponent extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      detail: false,
       nodes: [],
       links: [],
       graphObjects: {},
+      edgeTypes: [],
       simulation: d3.forceSimulation(),
       svg: undefined,
       selectedChildren: [],
@@ -66,18 +68,24 @@ class GraphComponent extends Component {
     this.handleColorPick = this.handleColorPick.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.handleGraphOptionsChange = this.handleGraphOptionsChange.bind(this);
+    this.handleDrawerClose = this.handleDrawerClose.bind(this);
+    this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
   }
 
-  componentDidMount() {
-    const start = performance.now();
-    let displayed = this.props.displayed;
+  async componentDidMount() {
     this.handleResize();
-    const a = performance.now();
-    console.log(a - start);
+
+    const edgeTypes = await api.getEdgeTypes();
+    this.setState({ edgeTypes });
+
     const neighbors = queryString.parse(this.props.search).neighbors;
+
+    let displayed = this.props.displayed;
+
     if (!displayed || displayed.length === 0) {
       displayed = [this.props.selectedId];
     }
+
     displayed.forEach(key => {
       let nodes = this.state.nodes;
       let links = this.state.links;
@@ -105,16 +113,9 @@ class GraphComponent extends Component {
         }
       );
     });
-    const b = performance.now();
-    console.log(b - a);
     this.drawGraph();
-    const c = performance.now();
-    console.log(c - b);
     this.updateColors(displayed[0]);
-    const e = performance.now();
-    console.log(e - c);
     window.addEventListener("resize", this.handleResize);
-    console.log("done: " + (performance.now() - start));
   }
 
   handleResize() {
@@ -133,7 +134,17 @@ class GraphComponent extends Component {
     const graphOptions = this.state.graphOptions;
     graphOptions.autoCollisionRadius = !graphOptions.autoCollisionRadius;
   }
+
+  //TODO: fix bug where expandable flag isnt cleared unless node is clicked
   processData(node, position, nodes, links, graphObjects, depth) {
+    const edgeTypes = this.state.edgeTypes.reduce((r, e) => {
+      r.push("in_" + e.name);
+      r.push("out_" + e.name);
+      return r;
+    }, []);
+
+    const expandable = this.state.expandable;
+
     edgeTypes.forEach(edgeType => {
       if (node[edgeType]) {
         const n = node[edgeType].length;
@@ -143,12 +154,11 @@ class GraphComponent extends Component {
           const edgeRid = edge["@rid"] || edge;
 
           if (!graphObjects[edgeRid]) {
-            const expandable = this.state.expandable;
             if (
               edge["@rid"] &&
               edge.in["@rid"] &&
               edge.out["@rid"] &&
-              depth !== 0
+              depth > 0
             ) {
               const link = {
                 source: edge.out["@rid"],
@@ -161,8 +171,6 @@ class GraphComponent extends Component {
               };
               links.push(link);
               graphObjects[link["@rid"]] = link;
-              delete expandable[edge.in["@rid"]];
-              delete expandable[edge.out["@rid"]];
 
               if (!graphObjects[edge.out["@rid"]]) {
                 let positionInit = this.positionInit(
@@ -205,6 +213,7 @@ class GraphComponent extends Component {
                   x: positionInit.x,
                   y: positionInit.y
                 };
+
                 nodes.push(newNode);
                 graphObjects[newNode.data["@rid"]] = newNode;
                 const d = this.processData(
@@ -222,18 +231,19 @@ class GraphComponent extends Component {
             } else {
               expandable[node["@rid"]] = true;
             }
-            this.setState({ expandable });
           }
         });
       }
     });
+
+    this.setState({ expandable });
+
     return { nodes: nodes, links: links, graphObjects: graphObjects };
   }
 
   getNeighbors(node) {
     const { expandable } = this.state;
 
-    //Maintain data invariant
     const depth = 3;
     let url = "/diseases/" + node.data["@rid"].slice(1) + "?neighbors=" + depth;
     if (expandable[node.data["@rid"]]) {
@@ -246,7 +256,7 @@ class GraphComponent extends Component {
             this.state.nodes,
             this.state.links,
             this.state.graphObjects,
-            Math.floor(depth / 2) + 1
+            Math.floor(depth / 2)
           )
         });
         this.props.handleNodeAdd(response);
@@ -301,19 +311,22 @@ class GraphComponent extends Component {
       .attr("width", this.state.graphOptions.width)
       .attr("height", this.state.graphOptions.height)
       .call(
-        d3.zoom().on("zoom", () => {
-          const transform = d3.event.transform;
-          container.attr(
-            "transform",
-            "translate(" +
-              transform.x +
-              "," +
-              transform.y +
-              ")scale(" +
-              transform.k +
-              ")"
-          );
-        })
+        d3
+          .zoom()
+          .scaleExtent([0.5, 10]) //TODO: add to toolbar?
+          .on("zoom", () => {
+            const transform = d3.event.transform;
+            container.attr(
+              "transform",
+              "translate(" +
+                transform.x +
+                "," +
+                transform.y +
+                ")scale(" +
+                transform.k +
+                ")"
+            );
+          })
       );
 
     this.setState({ simulation: simulation, svg: svg });
@@ -416,8 +429,34 @@ class GraphComponent extends Component {
       this.drawGraph();
     });
   }
+  handleDrawerClose(e) {
+    this.setState({ detail: false });
+  }
+  handleDrawerOpen(e) {
+    this.setState({ detail: true });
+  }
 
   render() {
+    const detailDrawer = (
+      <Drawer
+        variant="persistent"
+        anchor="right"
+        open={this.state.detail}
+        classes={{
+          paper: "drawer-box-graph"
+        }}
+        onClose={this.handleDrawerClose}
+        SlideProps={{ unmountOnExit: true }}
+      >
+        <div className="graph-close-drawer-btn">
+          <IconButton onClick={this.handleDrawerClose}>
+            <CloseIcon color="error" />
+          </IconButton>
+        </div>
+        <NodeDetailComponent node={this.props.data[this.state.expandId]} />
+      </Drawer>
+    );
+
     const links = this.state.links.map(link => {
       return <SVGLink key={link["@rid"]} link={link} />;
     });
@@ -456,6 +495,7 @@ class GraphComponent extends Component {
 
     return (
       <div className="graph-wrapper">
+        {detailDrawer}
         <div className="toolbar">
           <Link
             style={{ margin: "4px 12px" }}
@@ -576,10 +616,9 @@ class GraphComponent extends Component {
             </div>
           </div>
         </div>
-
         <div className="svg-wrapper" ref="wrapper">
           <div className="node-options">
-            <IconButton onClick={() => this.props.handleNodeEditStart()}>
+            <IconButton onClick={this.handleDrawerOpen}>
               <EditIcon />
             </IconButton>
           </div>

@@ -75,52 +75,50 @@ class NodeDetailComponent extends Component {
     };
 
     return (
-      <div className="node-wrapper">
-        <Card>
-          <div className="node-edit-btn">
-            <IconButton
-              onClick={() => this.props.handleNodeEditStart(node["@rid"])}
-            >
-              <AssignmentIcon />
-            </IconButton>
-          </div>
-          <div className="node-properties">
-            <section className="basic-properties">
-              <Typography variant="subheading"> Class: </Typography>
-              <Typography paragraph variant="caption">
-                {node["@class"]}
-              </Typography>
-              <Typography variant="subheading"> Source: </Typography>
-              <Typography paragraph variant="caption">
-                {node.source.name || "none"}
-              </Typography>
-              <Typography variant="subheading"> Source ID: </Typography>
-              <Typography paragraph variant="caption">
-                {node.sourceId || "none"}
-              </Typography>
-              <Typography variant="subheading"> Name: </Typography>
-              <Typography paragraph variant="caption">
-                {node.name || "none"}
-              </Typography>
-              <Typography variant="subheading"> Description: </Typography>
-              <Typography paragraph variant="caption">
-                {node.description || "none"}
-              </Typography>
-              <Typography variant="subheading"> Long Name: </Typography>
-              <Typography paragraph variant="caption">
-                {node.longName || "none"}
-              </Typography>
-              {subsets()}
-            </section>
-            <section className="listed-properties">
-              {listEdges("out_AliasOf")}
-              {listEdges("in_AliasOf")}
-              {listEdges("out_SubClassOf")}
-              {listEdges("in_SubClassOf")}
-            </section>
-          </div>
-        </Card>
-      </div>
+      <Card className="node-wrapper">
+        <div className="node-edit-btn">
+          <IconButton
+            onClick={() => this.props.handleNodeEditStart(node["@rid"])}
+          >
+            <AssignmentIcon />
+          </IconButton>
+        </div>
+        <div className="node-properties">
+          <section className="basic-properties">
+            <Typography variant="subheading"> Class: </Typography>
+            <Typography paragraph variant="caption">
+              {node["@class"]}
+            </Typography>
+            <Typography variant="subheading"> Source: </Typography>
+            <Typography paragraph variant="caption">
+              {node.source.name || "none"}
+            </Typography>
+            <Typography variant="subheading"> Source ID: </Typography>
+            <Typography paragraph variant="caption">
+              {node.sourceId || "none"}
+            </Typography>
+            <Typography variant="subheading"> Name: </Typography>
+            <Typography paragraph variant="caption">
+              {node.name || "none"}
+            </Typography>
+            <Typography variant="subheading"> Description: </Typography>
+            <Typography paragraph variant="caption">
+              {node.description || "none"}
+            </Typography>
+            <Typography variant="subheading"> Long Name: </Typography>
+            <Typography paragraph variant="caption">
+              {node.longName || "none"}
+            </Typography>
+            {subsets()}
+          </section>
+          <section className="listed-properties">
+            {listEdges("out_AliasOf")}
+            {listEdges("in_AliasOf")}
+            {listEdges("out_SubClassOf")}
+            {listEdges("in_SubClassOf")}
+          </section>
+        </div>
+      </Card>
     );
   }
 }

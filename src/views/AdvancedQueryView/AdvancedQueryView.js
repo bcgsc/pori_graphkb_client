@@ -185,19 +185,8 @@ class AdvancedQueryView extends Component {
             id="source-adv"
             resources={this.state.sources}
           />
-          {/* <AutoSearchComponent
-            value={this.state.sourceName}
-            onChange={this.handleSourceChange}
-            endpoint="sources"
-            id="source-adv"
-            placeholder="eg. NCIT, Disease Ontology"
-            label="Source"
-          /> */}
         </div>
         <div className="parameter-selection">
-          {/* <Typography variant="subheading" className="parameter-name">
-            Source ID:
-          </Typography> */}
           <TextField
             id="source-id-adv"
             placeholder="eg. DOID:4"
@@ -209,9 +198,6 @@ class AdvancedQueryView extends Component {
           />
         </div>
         <div className="parameter-selection">
-          {/* <Typography variant="subheading" className="parameter-name">
-            Long Name:
-          </Typography> */}
           <TextField
             id="long-name-adv"
             label="Long Name"
@@ -222,9 +208,6 @@ class AdvancedQueryView extends Component {
           />
         </div>
         <div className="parameter-selection">
-          {/* <Typography variant="subheading" className="parameter-name">
-            Source ID Version:
-          </Typography> */}
           <TextField
             id="source-id-version-adv"
             label="Source ID Version"
@@ -235,9 +218,6 @@ class AdvancedQueryView extends Component {
           />
         </div>
         <div className="parameter-selection">
-          {/* <Typography variant="subheading" className="parameter-name">
-            Limit:
-          </Typography> */}
           <TextField
             id="limit-adv"
             placeholder="Default = 1000"
@@ -249,16 +229,14 @@ class AdvancedQueryView extends Component {
             name="limit"
           />
         </div>
-        <div className="parameter-selection">
-          {/* <Typography variant="subheading" className="parameter-name">
-            Return Properties:
-          </Typography> */}
+        {/* <div className="parameter-selection">
+        
           <div className="checkboxes">{returnProperties}</div>
-        </div>
-        <div className="parameter-selection">
-          {/* <Typography variant="subheading" className="parameter-name">
+        </div> */}
+        {/* <div className="parameter-selection">
+          <Typography variant="subheading" className="parameter-name">
             Related Terms:
-          </Typography> */}
+          </Typography>
           <div className="related-checkboxes">
             <div className="checkbox">
               <FormControlLabel
@@ -303,11 +281,8 @@ class AdvancedQueryView extends Component {
               />
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="parameter-selection">
-          {/* <Typography variant="subheading" className="parameter-name">
-            Fuzzy Match:
-          </Typography> */}
           <TextField
             id="fuzzy-match-adv"
             placeholder=""
@@ -320,9 +295,6 @@ class AdvancedQueryView extends Component {
           />
         </div>
         <div className="parameter-selection">
-          {/* <Typography variant="subheading" className="parameter-name">
-            Neighbors:
-          </Typography> */}
           <TextField
             id="neighbors-adv"
             label="Neighbors"
@@ -334,29 +306,17 @@ class AdvancedQueryView extends Component {
           />
         </div>
         <div id="adv-nav-buttons">
-          <Link className="link" to={{ state: this.state, pathname: "/query" }}>
-            <Button variant="outlined">Back</Button>
-          </Link>
-          {/* <Link
-            className="link"
-            to={{ search: this.bundle(), pathname: "/data/table" }}
-          >
-            <Button variant="contained" color="primary">
-              Search
+          <Link to={{ state: this.state, pathname: "/query" }}>
+            <Button id="text-button" variant="outlined">
+              Back
             </Button>
-          </Link> */}
-          <Link
-            className="link"
-            to={{ search: this.bundle(), pathname: "/data/table" }}
-          >
+          </Link>
+          <Link to={{ search: this.bundle(), pathname: "/data/table" }}>
             <IconButton variant="raised" color="primary">
               <ViewListIcon />
             </IconButton>
           </Link>
-          <Link
-            className="link"
-            to={{ search: this.bundle(), pathname: "/data/graph" }}
-          >
+          <Link to={{ search: this.bundle(), pathname: "/data/graph" }}>
             <IconButton variant="raised" color="secondary">
               <TimelineIcon />
             </IconButton>

@@ -65,6 +65,7 @@ class NodeFormComponent extends Component {
     );
     this.handleRelationshipDelete = this.handleRelationshipDelete.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleDeleteNode = this.handleDeleteNode.bind(this);
 
     this.initNode = this.initNode.bind(this);
   }
@@ -83,7 +84,7 @@ class NodeFormComponent extends Component {
       }
     });
   }
-  
+
   processRelationships(node, relationships, key) {
     if (node[key]) {
       node[key].forEach(edge => {
@@ -230,6 +231,18 @@ class NodeFormComponent extends Component {
   handleSubmit(e) {
     e.preventDefault();
     this.props.variant === "edit" ? this.editSubmit() : this.addSubmit();
+  }
+  handleDeleteNode(e) {
+    api
+      .delete(
+        "/" +
+          this.state.node["@class"].toLowerCase() +
+          "s/" +
+          this.state.node["@rid"].slice(1)
+      )
+      .then(response => {
+        this.props.handleNodeDelete(this.state.node["@rid"]);
+      });
   }
 
   async editSubmit() {
@@ -592,6 +605,13 @@ class NodeFormComponent extends Component {
               {this.props.variant === "edit" ? "Confirm Changes" : "Submit"}
             </Button>
           </div>
+          {this.props.variant === "edit" ? (
+            <div className="delete-button">
+              <Button variant="outlined" onClick={this.handleDeleteNode}>
+                Delete
+              </Button>
+            </div>
+          ) : null}
         </form>
       </div>
     );

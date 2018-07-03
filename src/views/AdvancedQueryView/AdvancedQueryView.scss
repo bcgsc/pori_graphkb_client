@@ -12,6 +12,12 @@
   #adv-nav-buttons {
     display: flex;
     justify-content: center;
+    a {
+      text-decoration: none;
+      #text-button {
+        height: 48px;
+      }
+    }
   }
 
   .parameter-selection {

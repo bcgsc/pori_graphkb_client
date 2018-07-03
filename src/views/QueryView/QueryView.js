@@ -81,26 +81,27 @@ class QueryView extends Component {
                 name="name"
               />
             </div>
-            <IconButton
-              variant="raised"
-              color="primary"
-              onClick={() => {
-                this.handleSubmit("table");
-              }}
-            >
-              <ViewListIcon />
-            </IconButton>
-            <IconButton
-              variant="raised"
-              color="secondary"
-              onClick={() => {
-                this.handleSubmit("graph");
-              }}
-            >
-              <TimelineIcon />
-            </IconButton>
+            <div className="search-buttons">
+              <IconButton
+                variant="raised"
+                color="primary"
+                onClick={() => {
+                  this.handleSubmit("table");
+                }}
+              >
+                <ViewListIcon />
+              </IconButton>
+              <IconButton
+                variant="raised"
+                color="secondary"
+                onClick={() => {
+                  this.handleSubmit("graph");
+                }}
+              >
+                <TimelineIcon />
+              </IconButton>
+            </div>
           </div>
-          <div className="search-buttons" />
           <Link
             className="query-link"
             to={{ state: this.state, pathname: "/query/advanced" }}

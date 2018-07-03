@@ -70,7 +70,7 @@ class App extends Component {
     );
     const addNodeForm = () => <NodeFormComponent variant="add" />;
     const loggedInContent = (
-      <React.Fragment>
+      <Switch>
         <Route exact path="/">
           <Redirect to="/query" />
         </Route>
@@ -79,7 +79,7 @@ class App extends Component {
         <Route path="/add" component={addNodeForm} />
         <Route path="/data" component={DataView} />
         <Route path="/error" component={ErrorView} />
-      </React.Fragment>
+      </Switch>
     );
     return (
       <MuiThemeProvider theme={theme}>

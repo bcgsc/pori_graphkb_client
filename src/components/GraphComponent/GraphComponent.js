@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './GraphComponent.css';
 import * as d3 from 'd3';
 import ReactDOM from 'react-dom';
@@ -279,8 +280,6 @@ class GraphComponent extends Component {
     graphOptions.autoCollisionRadius = !graphOptions.autoCollisionRadius;
   }
 
-
-
   initSimulation() {
     const { simulation, graphOptions } = this.state;
 
@@ -295,18 +294,17 @@ class GraphComponent extends Component {
           }
           return graphOptions.collisionRadius;
         }),
-    ) // Can change these to make nodes more readable
+      )
       .force(
         'charge',
-        d3.forceManyBody().strength(-graphOptions.chargeStrength),
-    )
+        d3.forceManyBody().strength(-graphOptions.chargeStrength))
       .force(
         'center',
         d3.forceCenter(
           graphOptions.width / 2,
           graphOptions.height / 2,
         ),
-    );
+      );
 
     const container = d3.select(ReactDOM.findDOMNode(this.refs.zoom));
 
@@ -488,7 +486,7 @@ class GraphComponent extends Component {
           return graphOptions.aliasesColor;
         }
         return graphOptions.defaultColor;
-      }
+      };
 
       const isExpandable = expandable[node.data['@rid']];
       return (
@@ -520,13 +518,13 @@ class GraphComponent extends Component {
             to={{
               pathname: '/data/table',
               search,
-              state: displayed
+              state: displayed,
             }}
           >
             <IconButton
               color="secondary"
               style={{
-                backgroundColor: 'rgba(0, 137, 123, 0.1)'
+                backgroundColor: 'rgba(0, 137, 123, 0.1)',
               }}
             >
               <ViewListIcon />
@@ -681,4 +679,13 @@ class GraphComponent extends Component {
     );
   }
 }
+
+GraphComponent.propTypes = {
+  handleNodeAdd: PropTypes.func.isRequired,
+  handleClick: PropTypes.func.isRequired,
+  data: PropTypes.object.isRequired,
+  search: PropTypes.string.isRequired,
+
+}
+
 export default GraphComponent;

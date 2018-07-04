@@ -1,17 +1,17 @@
-import React, { Component } from "react";
-import "./AutoSearchComponent.css";
-import Downshift from "downshift";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import './AutoSearchComponent.css';
+import Downshift from 'downshift';
 import {
   MenuItem,
   List,
   Paper,
   TextField,
-  Typography
-} from "@material-ui/core";
-import { Redirect } from "react-router-dom";
-import api from "../../services/api";
-import * as jc from "json-cycle";
-import * as _ from "lodash";
+  Typography,
+} from '@material-ui/core';
+import * as jc from 'json-cycle';
+import * as _ from 'lodash';
+import api from '../../services/api';
 
 class AutoSearchComponent extends Component {
   constructor(props) {
@@ -19,11 +19,8 @@ class AutoSearchComponent extends Component {
     this.state = {
       options: [],
       limit: props.limit || 30,
-      endpoint: props.endpoint || "diseases",
-      property: props.property || "name",
-      isOpen: false,
-      loginRedirect: false,
-      flag: true
+      endpoint: props.endpoint || 'diseases',
+      property: props.property || 'name',
     };
 
     this.callApi = _.debounce(this.callApi.bind(this), 300);
@@ -41,102 +38,135 @@ class AutoSearchComponent extends Component {
   }
 
   callApi(value) {
-    api
-      .autoSearch(
-        this.state.endpoint,
-        this.state.property,
-        value,
-        this.state.limit
-      )
-      .then(response => {
-        response = jc.retrocycle(response.result);
-        const options = response;
-        this.setState({ isOpen: true, options });
-      })
-      .catch(error => console.error(error));
+    const { endpoint, property, limit } = this.state;
+    api.autoSearch(
+      endpoint,
+      property,
+      value,
+      limit,
+    ).then((response) => {
+      const cycled = jc.retrocycle(response.result);
+      this.setState({ options: cycled });
+    })
+      .catch(error => (error));
   }
 
   render() {
-    let options = (inputValue, getItemProps, setState, getInputProps) => {
-      return this.state.options.map(
-        (item, index) =>
-          this.props.children ? (
-            this.props.children(
-              item,
-              getItemProps,
-              setState,
-              index,
-              getInputProps
-            )
-          ) : (
-            <MenuItem
-              {...getItemProps({
-                key: item["@rid"],
-                index,
-                item
-              })}
-              style={{ whiteSpace: "normal", height: "unset" }}
-            >
-              <span>
-                {item.name}
-                <Typography color="textSecondary" variant="body1">
-                  {item.source && item.source.name ? item.source.name : ""}
-                </Typography>
-              </span>
-            </MenuItem>
-          )
-      );
-    };
+    const { options } = this.state;
+    const {
+      children,
+      onChange,
+      name,
+      placeholder,
+      value,
+      label,
+      required,
+    } = this.props;
+
+    const autoSearchResults = (
+      inputValue,
+      getItemProps,
+      setState,
+      getInputProps,
+    ) => options.map((item, index) => children(
+      getItemProps,
+      item,
+      index,
+      setState,
+      getInputProps,
+    ));
 
     return (
       <Downshift
-        onChange={e => {
-          this.props.onChange({
-            target: { value: e.name, "@rid": e["@rid"], name: this.props.name } //TODO: sourceID variant
+        onChange={(e) => {
+          onChange({
+            target: { value: e.name, '@rid': e['@rid'], name }, // TODO: sourceID variant
           });
         }}
-        itemToString={item => {
+        itemToString={(item) => {
           if (item) return item.name;
+          return null;
         }}
       >
-        {({
-          getInputProps,
-          getItemProps,
-          getLabelProps,
-          isOpen,
-          inputValue,
-          highlightedIndex,
-          selectedItem,
-          setState
-        }) => (
+        {(
+          {
+            getInputProps,
+            getItemProps,
+            isOpen,
+            inputValue,
+            setState,
+          },
+        ) => (
           <div className="autosearch-wrapper">
             <TextField
               fullWidth
               InputProps={{
                 ...getInputProps({
-                  placeholder: this.props.placeholder,
-                  value: this.props.value,
-                  onChange: this.props.onChange,
-                  name: this.props.name,
-                  label: this.props.label,
+                  placeholder,
+                  value,
+                  onChange,
+                  name,
+                  label,
                   onKeyUp: this.refreshOptions,
-                  required: this.props.required
-                })
+                  required,
+                }),
               }}
             />
-            {isOpen &&
-            options(inputValue, getItemProps, setState, getInputProps)
-              .length !== 0 ? (
-              <Paper className="droptions">
-                <List>
-                  {options(inputValue, getItemProps, setState, getInputProps)}
-                </List>
-              </Paper>
-            ) : null}
-          </div>
-        )}
+            {isOpen
+              && autoSearchResults(inputValue, getItemProps, setState, getInputProps)
+                .length !== 0
+              ? (
+                <Paper className="droptions">
+                  <List>
+                    {autoSearchResults(inputValue, getItemProps, setState, getInputProps)}
+                  </List>
+                </Paper>
+              ) : null}
+          </div>)
+        }
       </Downshift>
     );
   }
 }
+
+AutoSearchComponent.defaultProps = {
+  limit: 30,
+  endpoint: 'diseases',
+  property: 'name',
+  placeholder: '',
+  value: '',
+  label: '',
+  required: false,
+  children: (getItemProps, item, index) => ( // TODO: change this to be more flexible
+    <MenuItem
+      {...getItemProps({
+        key: item['@rid'],
+        index,
+        item,
+      })}
+      style={{ whiteSpace: 'normal', height: 'unset' }}
+    >
+      <span>
+        {item.name}
+        <Typography color="textSecondary" variant="body1">
+          {item.source && item.source.name ? item.source.name : ''}
+        </Typography>
+      </span>
+    </MenuItem>
+  ),
+};
+
+AutoSearchComponent.propTypes = {
+  limit: PropTypes.number,
+  endpoint: PropTypes.string,
+  property: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  placeholder: PropTypes.string,
+  value: PropTypes.string,
+  label: PropTypes.string,
+  required: PropTypes.bool,
+  children: PropTypes.func,
+};
+
 export default AutoSearchComponent;

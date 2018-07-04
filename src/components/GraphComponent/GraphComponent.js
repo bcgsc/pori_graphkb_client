@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './GraphComponent.css';
 import * as d3 from 'd3';
-import ReactDOM from 'react-dom';
 
 import {
   Button,
@@ -264,7 +263,8 @@ class GraphComponent extends Component {
   handleResize() {
     let w;
     let h;
-    const n = ReactDOM.findDOMNode(this.refs['wrapper']);
+    const n = this.wrapper;
+
     if (n) {
       w = n.clientWidth;
       h = n.clientHeight;
@@ -283,32 +283,32 @@ class GraphComponent extends Component {
   initSimulation() {
     const { simulation, graphOptions } = this.state;
 
-    simulation
-      .force('link', d3.forceLink().id(d => d.data['@rid']))
-      .force(
-        'collide',
-        d3.forceCollide((d) => {
-          if (graphOptions.autoCollisionRadius) {
-            if (!d.data.name || d.data.name.length === 0) return 4;
-            return d.data.name.length * 2.8;
-          }
-          return graphOptions.collisionRadius;
-        }),
-      )
-      .force(
-        'charge',
-        d3.forceManyBody().strength(-graphOptions.chargeStrength))
-      .force(
-        'center',
-        d3.forceCenter(
-          graphOptions.width / 2,
-          graphOptions.height / 2,
-        ),
-      );
+    simulation.force(
+      'link',
+      d3.forceLink().id(d => d.data['@rid']),
+    ).force(
+      'collide',
+      d3.forceCollide((d) => {
+        if (graphOptions.autoCollisionRadius) {
+          if (!d.data.name || d.data.name.length === 0) return 4;
+          return d.data.name.length * 2.8;
+        }
+        return graphOptions.collisionRadius;
+      }),
+    ).force(
+      'charge',
+      d3.forceManyBody().strength(-graphOptions.chargeStrength),
+    ).force(
+      'center',
+      d3.forceCenter(
+        graphOptions.width / 2,
+        graphOptions.height / 2,
+      ),
+    );
 
-    const container = d3.select(ReactDOM.findDOMNode(this.refs.zoom));
+    const container = d3.select(this.zoom);
 
-    const svg = d3.select(ReactDOM.findDOMNode(this.refs.graph));
+    const svg = d3.select(this.graph);
     svg
       .attr('width', graphOptions.width)
       .attr('height', graphOptions.height)
@@ -637,13 +637,13 @@ class GraphComponent extends Component {
             </div>
           </div>
         </div>
-        <div className="svg-wrapper" ref="wrapper">
+        <div className="svg-wrapper" ref={(node) => { this.wrapper = node; }}>
           <div className="node-options">
             <IconButton onClick={this.handleDrawerOpen}>
               <EditIcon />
             </IconButton>
           </div>
-          <svg ref="graph">
+          <svg ref={(node) => { this.graph = node; }}>
             <defs>
               <marker
                 id="arrow"
@@ -669,7 +669,7 @@ class GraphComponent extends Component {
                 <path d="M0,2 L6,4 L 6,0 z" fill="#555" />
               </marker>
             </defs>
-            <g ref="zoom">
+            <g ref={(node) => { this.zoom = node; }}>
               {linksDisplay}
               {nodesDisplay}
             </g>
@@ -686,6 +686,6 @@ GraphComponent.propTypes = {
   data: PropTypes.object.isRequired,
   search: PropTypes.string.isRequired,
 
-}
+};
 
 export default GraphComponent;

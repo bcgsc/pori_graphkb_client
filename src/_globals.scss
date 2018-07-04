@@ -10,9 +10,9 @@ $banner-collapse: 425px;
 $data-view-collapse: 960px;
 
 .icon-link {
-  color: white;
   text-decoration: none;
   font-size: 0;
   margin: 0;
   padding: 0;
+  color: unset;
 }

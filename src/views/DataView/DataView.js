@@ -38,8 +38,10 @@ class DataView extends Component {
     let { queryRedirect } = this.state;
     const { loginRedirect } = this.state;
     const { location } = this.props;
+    const search = location.search ? `${location.search}&` : '?';
+
     api
-      .get(`/diseases${location.search}`)
+      .get(`/diseases${search}neighbors=3`)
       .then((data) => {
         const cycled = jc.retrocycle(data.result);
         if (cycled.length === 0) queryRedirect = true;
@@ -147,7 +149,7 @@ class DataView extends Component {
         <Paper elevation={5} className="graph-wrapper">
           <div className="close-drawer-btn">
             <IconButton onClick={this.handleDrawerClose}>
-              <CloseIcon color="error" />
+              <CloseIcon color="action" />
             </IconButton>
           </div>
           <NodeFormComponent

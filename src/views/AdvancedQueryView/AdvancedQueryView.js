@@ -34,34 +34,11 @@ class AdvancedQueryView extends Component {
         ancestors: '',
         descendants: '',
         fuzzyMatch: 0,
-        neighbors: 0,
       },
-      // returnProperties: {
-      //   name: true,
-      //   description: true,
-      //   subsets: true,
-      //   history: true,
-      //   createdBy: true,
-      //   createdAt: true,
-      //   deletedBy: true,
-      //   deletedAt: true,
-      //   source: true,
-      //   sourceId: true,
-      //   sourceIdVersion: true,
-      //   uuid: true,
-      //   longName: true
-      // },
-
-      // relatedTerms: {
-      //   parents: false,
-      //   children: false,
-      //   aliases: false
-      // },
       sources: [],
     };
 
     // this.handleNeighbors = this.handleNeighbors.bind(this);
-    // this.handleReturnProperties = this.handleReturnProperties.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.bundle = this.bundle.bind(this);
   }
@@ -77,12 +54,6 @@ class AdvancedQueryView extends Component {
     this.setState({ mainParams });
   }
 
-  // handleReturnProperties(e, key) {
-  //   let returnProperties = { ...this.state.returnProperties };
-  //   returnProperties[key] = e;
-  //   this.setState({ returnProperties: returnProperties });
-  // }
-
   // handleRelatedTerms(e, key) {
   //   let relatedTerms = { ...this.state.relatedTerms };
   //   relatedTerms[key] = e;
@@ -92,20 +63,7 @@ class AdvancedQueryView extends Component {
   bundle() {
     const { mainParams } = this.state;
     const params = {};
-    // let returnProperties = '';
-    // let returnDefault = true;
-    // Object.keys(this.state.returnProperties).forEach(key => {
-    //   this.state.returnProperties[key]
-    //     ? (returnProperties += key + ',')
-    //     : (returnDefault = false);
-    // });
 
-    // if (!returnDefault) {
-    //   params.returnProperties = returnProperties.slice(
-    //     0,
-    //     returnProperties.length - 1
-    //   );
-    // }
     // if (this.state.relatedTerms.children) params.ancestors = 'subclassof';
     // if (this.state.relatedTerms.parents) params.descendants = 'subclassof';
     // if (this.state.relatedTerms.aliases) {
@@ -120,35 +78,12 @@ class AdvancedQueryView extends Component {
       if (mainParams[key]) {
         params[key] = mainParams[key];
       }
-      if (key === 'neighbors') {
-        params[key] = Math.max(3, mainParams[key]);
-      }
     });
 
     return queryString.stringify(params);
   }
 
   render() {
-    // let returnProperties = Object.keys(this.state.returnProperties).map(key => {
-    //   return (
-    //     <div key={key} className='checkbox'>
-    //       <FormControlLabel
-    //         control={
-    //           <Checkbox
-    //             id={key + 'check'}
-    //             name={key + 'check'}
-    //             onChange={(e, checked) => {
-    //               this.handleReturnProperties(checked, key);
-    //             }}
-    //             defaultChecked={true}
-    //           />
-    //         }
-    //         label={this.antiCamelCase(key)}
-    //       />
-    //     </div>
-    //   );
-    // });
-
     const { mainParams, sources } = this.state;
 
     return (
@@ -221,9 +156,6 @@ class AdvancedQueryView extends Component {
           />
         </div>
         {/* <div className="parameter-selection">
-          <div className="checkboxes">{returnProperties}</div>
-        </div> */}
-        {/* <div className="parameter-selection">
           <Typography variant="subheading" className="parameter-name">
             Related Terms:
           </Typography>
@@ -272,48 +204,22 @@ class AdvancedQueryView extends Component {
             </div>
           </div>
         </div> */}
-        <div className="parameter-selection">
-          <TextField
-            id="fuzzy-match-adv"
-            label="Fuzzy Match"
-            value={mainParams.fuzzyMatch}
-            onChange={this.handleChange}
-            className="text-input"
-            name="fuzzyMatch"
-            type="number"
-          />
-        </div>
-        <div className="parameter-selection">
-          <TextField
-            id="neighbors-adv"
-            label="Neighbors"
-            value={mainParams.neighbors}
-            onChange={this.handleChange}
-            className="text-input"
-            name="neighbors"
-            type="number"
-          />
-        </div>
         <div id="adv-nav-buttons">
           <Link to={{ state: this.state, pathname: '/query' }}>
-            {/* <Button id="text-button" variant="outlined"> */}
-            <Button variant="outlined">
+            <Button id="text-button" variant="outlined">
               Back
             </Button>
           </Link>
-          <Link to={{ search: this.bundle(), pathname: '/data/table' }}>
-            {/* <IconButton variant="raised" color="primary">
+          <IconButton color="primary">
+            <Link to={{ search: this.bundle(), pathname: '/data/table' }} className="icon-link">
               <ViewListIcon />
-            </IconButton> */}
-            <Button variant="raised" color="primary">
-              Search
-            </Button>
-          </Link>
-          {/* <Link to={{ search: this.bundle(), pathname: '/data/graph' }}>
-            <IconButton variant="raised" color="secondary">
+            </Link>
+          </IconButton>
+          <IconButton color="secondary">
+            <Link to={{ search: this.bundle(), pathname: '/data/graph' }} className="icon-link">
               <TimelineIcon />
-            </IconButton>
-          </Link> */}
+            </Link>
+          </IconButton>
         </div>
       </div>
     );

@@ -1,38 +1,42 @@
-import React, { Component } from "react";
-import "./GraphComponent.css";
-import * as d3 from "d3";
-import ReactDOM from "react-dom";
-import SVGLink from "../SVGLink/SVGLink";
-import SVGNode from "../SVGNode/SVGNode";
-import api from "../../services/api";
+import React, { Component } from 'react';
+import './GraphComponent.css';
+import * as d3 from 'd3';
+import ReactDOM from 'react-dom';
+
 import {
   Button,
-  TextField,
   Checkbox,
   FormControlLabel,
   IconButton,
-  Collapse,
   Drawer,
-  Paper
-} from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
-import ViewListIcon from "@material-ui/icons/ViewList";
-import EditIcon from "@material-ui/icons/Edit";
-import { CompactPicker } from "react-color";
-import { Link } from "react-router-dom";
-import queryString from "query-string";
-import * as jc from "json-cycle";
-import NodeDetailComponent from "../NodeDetailComponent/NodeDetailComponent";
+} from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
+import ViewListIcon from '@material-ui/icons/ViewList';
+import EditIcon from '@material-ui/icons/Edit';
+import { CompactPicker } from 'react-color';
+import { Link } from 'react-router-dom';
+import queryString from 'query-string';
+import * as jc from 'json-cycle';
+import NodeDetailComponent from '../NodeDetailComponent/NodeDetailComponent';
+import SVGLink from '../SVGLink/SVGLink';
+import SVGNode from '../SVGNode/SVGNode';
+import api from '../../services/api';
 
 const arrowProperties = {
   width: 6,
-  length: 9
+  length: 9,
 };
 
 const nodeInitRadius = 55;
 const nodeRadius = 4;
 
 class GraphComponent extends Component {
+  static positionInit(x, y, i, n) {
+    const newX = nodeInitRadius * Math.cos((2 * Math.PI * i - Math.PI / 6) / n) + x;
+    const newY = nodeInitRadius * Math.sin((2 * Math.PI * i - Math.PI / 6) / n) + y;
+    return { x: newX, y: newY };
+  }
+
   constructor(props) {
     super(props);
 
@@ -50,18 +54,18 @@ class GraphComponent extends Component {
       graphOptions: {
         width: 0,
         height: 0,
-        selectedColor: "#D33115",
-        aliasesColor: "#FB9E00",
-        parentsColor: "#AEA1FF",
-        childrenColor: "#73D8FF",
-        defaultColor: "#1F265B",
+        selectedColor: '#D33115',
+        aliasesColor: '#FB9E00',
+        parentsColor: '#AEA1FF',
+        childrenColor: '#73D8FF',
+        defaultColor: '#1F265B',
         linkStrength: 1 / 30,
         chargeStrength: 100,
         collisionRadius: 4,
-        autoCollisionRadius: false
+        autoCollisionRadius: false,
       },
-      colorKey: "selectedColor",
-      expandable: {}
+      colorKey: 'selectedColor',
+      expandable: {},
     };
 
     this.drawGraph = this.drawGraph.bind(this);
@@ -76,161 +80,175 @@ class GraphComponent extends Component {
   }
 
   async componentDidMount() {
+    const {
+      selectedId,
+      search,
+      displayed,
+      data,
+      handleNodeAdd,
+    } = this.props;
+
     this.handleResize();
 
-    const edgeTypes = await api.getEdgeTypes();
-    this.setState({ edgeTypes });
+    this.setState({ edgeTypes: await api.getEdgeTypes() });
 
-    const neighbors = queryString.parse(this.props.search).neighbors;
+    const { neighbors } = queryString.parse(search);
 
-    let displayed = this.props.displayed;
-
-    if (!displayed || displayed.length === 0) {
-      displayed = [this.props.selectedId];
+    let validDisplayed = displayed;
+    if (!validDisplayed || validDisplayed.length === 0) {
+      validDisplayed = [selectedId];
     }
 
-    displayed.forEach(key => {
-      let nodes = this.state.nodes;
-      let links = this.state.links;
-      let graphObjects = this.state.graphObjects;
+    validDisplayed.forEach((key) => {
+      const { nodes, graphObjects } = this.state;
       if (!graphObjects[key]) {
-        nodes.push({ data: this.props.data[key] });
-        graphObjects[key] = this.props.data[key];
+        nodes.push({ data: data[key] });
+        graphObjects[key] = data[key];
       }
-      this.props.handleNodeAdd(this.props.data[key]);
+      handleNodeAdd(data[key]);
       this.setState(
         {
           ...this.processData(
-            this.props.data[key],
+            data[key],
             { x: 0, y: 0 },
-            nodes,
-            links,
-            graphObjects,
-            Math.floor(neighbors / 2) + 1
-          )
+            Math.floor(neighbors / 2) + 1,
+          ),
         },
-        () => {
-          nodes = this.state.nodes;
-          links = this.state.links;
-          graphObjects = this.state.graphObjects;
-        }
       );
     });
     this.drawGraph();
-    this.updateColors(displayed[0]);
-    window.addEventListener("resize", this.handleResize);
+    this.updateColors(validDisplayed[0]);
+    window.addEventListener('resize', this.handleResize);
   }
 
-  handleResize() {
-    let w, h;
-    const n = ReactDOM.findDOMNode(this.refs["wrapper"]);
-    if (n) {
-      w = n.clientWidth;
-      h = n.clientHeight;
-      const graphOptions = this.state.graphOptions;
-      graphOptions.width = w;
-      graphOptions.height = h;
-      this.setState({ graphOptions }, this.initSimulation);
+  componentWillUnmount() {
+    const { svg, simulation } = this.state;
+    // remove all event listeners
+    svg.call(d3.zoom().on('zoom', null));
+    simulation.on('tick', null);
+    window.removeEventListener('resize', this.handleResize);
+  }
+
+  getNeighbors(node) {
+    const {
+      expandable,
+    } = this.state;
+    const { handleNodeAdd } = this.props;
+
+    const depth = 3;
+    const url = `/diseases/${node.data['@rid'].slice(1)}?neighbors=${depth}`;
+    if (expandable[node.data['@rid']]) {
+      api.get(url).then((response) => {
+        const cycled = jc.retrocycle(response.result);
+        this.setState({
+          ...this.processData(
+            cycled,
+            { x: node.x, y: node.y },
+            Math.floor(depth / 2) + 1,
+          ),
+        });
+        handleNodeAdd(cycled);
+        this.drawGraph();
+        this.updateColors(node.data['@rid']);
+      });
+    } else {
+      handleNodeAdd(node.data);
     }
-  }
-  handleCheckbox() {
-    const graphOptions = this.state.graphOptions;
-    graphOptions.autoCollisionRadius = !graphOptions.autoCollisionRadius;
+
+    delete expandable[node.data['@rid']];
+    this.setState({ expandable });
   }
 
-  //TODO: fix bug where expandable flag isnt cleared unless node is clicked
-  processData(node, position, nodes, links, graphObjects, depth) {
-    const edgeTypes = this.state.edgeTypes.reduce((r, e) => {
-      r.push("in_" + e.name);
-      r.push("out_" + e.name);
+  // TODO: fix bug where expandable flag isnt cleared unless node is clicked
+  processData(node, position, depth) {
+    const {
+      edgeTypes,
+      expandable,
+      nodes,
+      links,
+      graphObjects,
+    } = this.state;
+
+    const expandedEdgeTypes = edgeTypes.reduce((r, e) => {
+      r.push(`in_${e.name}`);
+      r.push(`out_${e.name}`);
       return r;
     }, []);
 
-    const expandable = this.state.expandable;
-
-    edgeTypes.forEach(edgeType => {
+    expandedEdgeTypes.forEach((edgeType) => {
       if (node[edgeType]) {
         const n = node[edgeType].length;
         let j = 0;
 
-        node[edgeType].forEach(edge => {
-          const edgeRid = edge["@rid"] || edge;
+        node[edgeType].forEach((edge) => {
+          const edgeRid = edge['@rid'] || edge;
 
           if (!graphObjects[edgeRid]) {
             if (
-              edge["@rid"] &&
-              edge.in["@rid"] &&
-              edge.out["@rid"] &&
-              depth > 0
+              edge['@rid']
+              && edge.in['@rid']
+              && edge.out['@rid']
+              && depth > 0
             ) {
               const link = {
-                source: edge.out["@rid"],
-                target: edge.in["@rid"],
+                source: edge.out['@rid'],
+                target: edge.in['@rid'],
                 type: edgeType
-                  .split("_")[1]
-                  .split("Of")[0]
+                  .split('_')[1]
+                  .split('Of')[0]
                   .toLowerCase(),
-                "@rid": edge["@rid"]
+                '@rid': edge['@rid'],
               };
               links.push(link);
-              graphObjects[link["@rid"]] = link;
+              graphObjects[link['@rid']] = link;
 
-              if (!graphObjects[edge.out["@rid"]]) {
-                let positionInit = this.positionInit(
+              if (!graphObjects[edge.out['@rid']]) {
+                const positionInit = GraphComponent.positionInit(
                   position.x,
                   position.y,
-                  j++,
-                  n
+                  j += 1,
+                  n,
                 );
                 const newNode = {
                   data: edge.out,
                   x: positionInit.x,
-                  y: positionInit.y
+                  y: positionInit.y,
                 };
                 nodes.push(newNode);
-                graphObjects[newNode.data["@rid"]] = newNode;
+                graphObjects[newNode.data['@rid']] = newNode;
 
                 const d = this.processData(
                   edge.out,
                   positionInit,
-                  nodes,
-                  links,
-                  graphObjects,
-                  depth - 1
+                  depth - 1,
                 );
-                nodes = d.nodes;
-                links = d.links;
-                graphObjects = d.graphObjects;
+                this.setState({ nodes: d.nodes, links: d.links, graphObjects: d.graphObjects });
               }
-              if (!graphObjects[edge.in["@rid"]]) {
-                let positionInit = this.positionInit(
+              if (!graphObjects[edge.in['@rid']]) {
+                const positionInit = GraphComponent.positionInit(
                   position.x,
                   position.y,
-                  j++,
-                  n
+                  j += 1,
+                  n,
                 );
                 const newNode = {
                   data: edge.in,
                   x: positionInit.x,
-                  y: positionInit.y
+                  y: positionInit.y,
                 };
 
                 nodes.push(newNode);
-                graphObjects[newNode.data["@rid"]] = newNode;
+                graphObjects[newNode.data['@rid']] = newNode;
                 const d = this.processData(
                   newNode.data,
                   positionInit,
-                  nodes,
-                  links,
                   graphObjects,
-                  depth - 1
+                  depth - 1,
                 );
-                nodes = d.nodes;
-                links = d.links;
-                graphObjects = d.graphObjects;
+                this.setState({ nodes: d.nodes, links: d.links, graphObjects: d.graphObjects });
               }
             } else {
-              expandable[node["@rid"]] = true;
+              expandable[node['@rid']] = true;
             }
           }
         });
@@ -239,158 +257,129 @@ class GraphComponent extends Component {
 
     this.setState({ expandable });
 
-    return { nodes: nodes, links: links, graphObjects: graphObjects };
+    return { nodes, links, graphObjects };
   }
 
-  getNeighbors(node) {
-    const { expandable } = this.state;
-
-    const depth = 3;
-    let url = "/diseases/" + node.data["@rid"].slice(1) + "?neighbors=" + depth;
-    if (expandable[node.data["@rid"]]) {
-      api.get(url).then(response => {
-        response = jc.retrocycle(response.result);
-        this.setState({
-          ...this.processData(
-            response,
-            { x: node.x, y: node.y },
-            this.state.nodes,
-            this.state.links,
-            this.state.graphObjects,
-            Math.floor(depth / 2)
-          )
-        });
-        this.props.handleNodeAdd(response);
-        this.drawGraph();
-        this.updateColors(node.data["@rid"]);
-      });
-    } else {
-      this.props.handleNodeAdd(node.data);
+  handleResize() {
+    let w;
+    let h;
+    const n = ReactDOM.findDOMNode(this.refs['wrapper']);
+    if (n) {
+      w = n.clientWidth;
+      h = n.clientHeight;
+      const { graphOptions } = this.state;
+      graphOptions.width = w;
+      graphOptions.height = h;
+      this.setState({ graphOptions }, this.initSimulation);
     }
-
-    delete expandable[node.data["@rid"]];
-    this.setState({ expandable });
   }
 
-  componentWillUnmount() {
-    //remove all event listeners
-    this.state.svg.call(d3.zoom().on("zoom", null));
-    this.state.simulation.on("tick", null);
-    window.removeEventListener("resize", this.handleResize);
+  handleCheckbox() {
+    const { graphOptions } = this.state;
+    graphOptions.autoCollisionRadius = !graphOptions.autoCollisionRadius;
   }
+
+
 
   initSimulation() {
-    let simulation = this.state.simulation
-      .force("link", d3.forceLink().id(d => d.data["@rid"]))
+    const { simulation, graphOptions } = this.state;
+
+    simulation
+      .force('link', d3.forceLink().id(d => d.data['@rid']))
       .force(
-        "collide",
-        d3.forceCollide(d => {
-          if (this.state.graphOptions.autoCollisionRadius) {
+        'collide',
+        d3.forceCollide((d) => {
+          if (graphOptions.autoCollisionRadius) {
             if (!d.data.name || d.data.name.length === 0) return 4;
             return d.data.name.length * 2.8;
-          } else {
-            return this.state.graphOptions.collisionRadius;
           }
-        })
-      ) //Can change these to make nodes more readable
+          return graphOptions.collisionRadius;
+        }),
+    ) // Can change these to make nodes more readable
       .force(
-        "charge",
-        d3.forceManyBody().strength(-this.state.graphOptions.chargeStrength)
-      )
+        'charge',
+        d3.forceManyBody().strength(-graphOptions.chargeStrength),
+    )
       .force(
-        "center",
+        'center',
         d3.forceCenter(
-          this.state.graphOptions.width / 2,
-          this.state.graphOptions.height / 2
-        )
-      );
+          graphOptions.width / 2,
+          graphOptions.height / 2,
+        ),
+    );
 
-    let container = d3.select(ReactDOM.findDOMNode(this.refs.zoom));
+    const container = d3.select(ReactDOM.findDOMNode(this.refs.zoom));
 
-    let svg = d3.select(ReactDOM.findDOMNode(this.refs.graph));
+    const svg = d3.select(ReactDOM.findDOMNode(this.refs.graph));
     svg
-      .attr("width", this.state.graphOptions.width)
-      .attr("height", this.state.graphOptions.height)
-      .call(
-        d3
-          .zoom()
-          .scaleExtent([0.5, 10]) //TODO: add to toolbar?
-          .on("zoom", () => {
-            const transform = d3.event.transform;
-            container.attr(
-              "transform",
-              "translate(" +
-                transform.x +
-                "," +
-                transform.y +
-                ")scale(" +
-                transform.k +
-                ")"
-            );
-          })
-      );
-
-    this.setState({ simulation: simulation, svg: svg });
+      .attr('width', graphOptions.width)
+      .attr('height', graphOptions.height)
+      .call(d3.zoom()
+        .scaleExtent([0.5, 10]) // TODO: add to toolbar?
+        .on('zoom', () => {
+          const { transform } = d3.event;
+          container.attr(
+            'transform',
+            `translate(${transform.x},${transform.y})scale(${transform.k})`,
+          );
+        }));
+    this.setState({ simulation, svg });
   }
 
   drawGraph() {
-    const nodes = this.state.nodes;
-    const links = this.state.links;
-    const simulation = this.state.simulation;
+    const {
+      nodes,
+      links,
+      simulation,
+      graphOptions,
+    } = this.state;
 
     simulation.nodes(nodes);
 
     simulation.force(
-      "links",
+      'links',
       d3
         .forceLink(links)
-        .strength(this.state.graphOptions.linkStrength)
-        .id(d => {
-          return d.data["@rid"];
-        })
+        .strength(graphOptions.linkStrength)
+        .id(d => d.data['@rid']),
     );
 
-    var ticked = () => {
+    const ticked = () => {
       this.setState({
-        links: links,
-        nodes: nodes
+        links,
+        nodes,
       });
     };
 
-    simulation.on("tick", ticked);
+    simulation.on('tick', ticked);
     simulation.restart();
-    this.setState({ simulation: simulation });
+    this.setState({ simulation });
   }
 
-  positionInit(x, y, i, n) {
-    x = nodeInitRadius * Math.cos((2 * Math.PI * i - Math.PI / 6) / n) + x;
-    y = nodeInitRadius * Math.sin((2 * Math.PI * i - Math.PI / 6) / n) + y;
-    return { x: x, y: y };
-  }
 
   updateColors(rid) {
-    const links = this.state.links,
-      selectedAliases = [],
-      selectedChildren = [],
-      selectedParents = [];
+    const { links } = this.state;
+    const selectedAliases = [];
+    const selectedChildren = [];
+    const selectedParents = [];
 
-    links.forEach(link => {
+    links.forEach((link) => {
       const targetRid = link.target.data
-        ? link.target.data["@rid"]
+        ? link.target.data['@rid']
         : link.target;
       const sourceRid = link.source.data
-        ? link.source.data["@rid"]
+        ? link.source.data['@rid']
         : link.source;
 
       if (targetRid === rid) {
-        if (link.type === "alias") {
+        if (link.type === 'alias') {
           selectedAliases.push(sourceRid);
         } else {
           selectedChildren.push(sourceRid);
         }
       }
       if (sourceRid === rid) {
-        if (link.type === "alias") {
+        if (link.type === 'alias') {
           selectedAliases.push(targetRid);
         } else {
           selectedParents.push(targetRid);
@@ -401,50 +390,74 @@ class GraphComponent extends Component {
       expandId: rid,
       selectedAliases,
       selectedChildren,
-      selectedParents
+      selectedParents,
     });
   }
 
   handleClick(e, node) {
-    this.props.handleClick(node.data["@rid"]);
-    if (node.data["@rid"] === this.state.expandId) {
+    const { handleClick } = this.props;
+    const { expandId } = this.state;
+
+    handleClick(node.data['@rid']);
+    if (node.data['@rid'] === expandId) {
       e.stopPropagation();
       this.getNeighbors(node);
     } else {
-      this.updateColors(node.data["@rid"]);
+      this.updateColors(node.data['@rid']);
     }
   }
+
   handleColorPick(color) {
-    let graphOptions = this.state.graphOptions;
-    graphOptions[this.state.colorKey] = color.hex;
+    const { graphOptions, colorKey } = this.state;
+    graphOptions[colorKey] = color.hex;
     this.setState({ graphOptions });
   }
+
   handleColorKeyChange(key) {
     this.setState({ colorKey: key });
   }
+
   handleGraphOptionsChange(e) {
-    const graphOptions = this.state.graphOptions;
+    const { graphOptions } = this.state;
     graphOptions[e.target.name] = e.target.value;
     this.setState({ graphOptions }, () => {
       this.initSimulation();
       this.drawGraph();
     });
   }
-  handleDrawerClose(e) {
+
+  handleDrawerClose() {
     this.setState({ detail: false });
   }
-  handleDrawerOpen(e) {
+
+  handleDrawerOpen() {
     this.setState({ detail: true });
   }
 
   render() {
+    const {
+      nodes,
+      links,
+      detail,
+      expandId,
+      expandable,
+      graphOptions,
+      simulation,
+      selectedChildren,
+      selectedParents,
+      selectedAliases,
+      colorKey,
+      displayed,
+    } = this.state;
+
+    const { data, search } = this.props;
     const detailDrawer = (
       <Drawer
         variant="persistent"
         anchor="right"
-        open={this.state.detail}
+        open={detail}
         classes={{
-          paper: "drawer-box-graph"
+          paper: 'drawer-box-graph',
         }}
         onClose={this.handleDrawerClose}
         SlideProps={{ unmountOnExit: true }}
@@ -454,50 +467,48 @@ class GraphComponent extends Component {
             <CloseIcon color="error" />
           </IconButton>
         </div>
-        <NodeDetailComponent node={this.props.data[this.state.expandId]} />
+        <NodeDetailComponent node={data[expandId]} />
       </Drawer>
     );
 
-    const links = this.state.links.map(link => {
-      return <SVGLink key={link["@rid"]} link={link} />;
-    });
+    const linksDisplay = links.map(link => <SVGLink key={link['@rid']} link={link} />);
 
-    const nodes = this.state.nodes.map(node => {
-      const color =
-        this.state.expandId === node.data["@rid"]
-          ? this.state.graphOptions.selectedColor
-          : this.state.selectedChildren.includes(node.data["@rid"])
-            ? this.state.graphOptions.childrenColor
-            : this.state.selectedParents.includes(node.data["@rid"])
-              ? this.state.graphOptions.parentsColor
-              : this.state.selectedAliases.includes(node.data["@rid"])
-                ? this.state.graphOptions.aliasesColor
-                : this.state.graphOptions.defaultColor;
-      const expandable = this.state.expandable[node.data["@rid"]];
+    const nodesDisplay = nodes.map((node) => {
+      const color = () => {
+        if (expandId === node.data['@rid']) {
+          return graphOptions.selectedColor;
+        }
+        if (selectedChildren.includes(node.data['@rid'])) {
+          return graphOptions.childrenColor;
+        }
+        if (selectedParents.includes(node.data['@rid'])) {
+          return graphOptions.parentsColor;
+        }
+        if (selectedAliases.includes(node.data['@rid'])) {
+          return graphOptions.aliasesColor;
+        }
+        return graphOptions.defaultColor;
+      }
+
+      const isExpandable = expandable[node.data['@rid']];
       return (
         <SVGNode
-          key={"node" + node.data["@rid"]}
+          key={`node${node.data['@rid']}`}
           node={node}
-          simulation={this.state.simulation}
-          color={color}
+          simulation={simulation}
+          color={color()}
           r={nodeRadius}
           handleClick={e => this.handleClick(e, node)}
-          expandable={expandable}
+          expandable={isExpandable}
         />
       );
     });
 
-    const selected = key => key === this.state.colorKey;
+    const selected = key => key === colorKey;
     const arrowSize = {
-      d:
-        "M0,0 L0," +
-        arrowProperties.width +
-        " L" +
-        arrowProperties.length +
-        ", " +
-        arrowProperties.width / 2,
+      d: `M0,0,L0,${arrowProperties.width} L ${arrowProperties.length}, ${arrowProperties.width / 2}`,
       refX: nodeRadius + arrowProperties.length + 1,
-      refY: arrowProperties.width / 2
+      refY: arrowProperties.width / 2,
     };
 
     return (
@@ -505,17 +516,17 @@ class GraphComponent extends Component {
         {detailDrawer}
         <div className="toolbar">
           <Link
-            style={{ margin: "4px 12px" }}
+            style={{ margin: '4px 12px' }}
             to={{
-              pathname: "/data/table",
-              search: this.props.search,
-              state: this.state.displayed
+              pathname: '/data/table',
+              search,
+              state: displayed
             }}
           >
             <IconButton
               color="secondary"
               style={{
-                backgroundColor: "rgba(0, 137, 123, 0.1)"
+                backgroundColor: 'rgba(0, 137, 123, 0.1)'
               }}
             >
               <ViewListIcon />
@@ -523,37 +534,37 @@ class GraphComponent extends Component {
           </Link>
           <div className="compact-picker">
             <CompactPicker
-              color={this.state.graphOptions[this.state.colorKey]}
+              color={graphOptions[colorKey]}
               onChangeComplete={this.handleColorPick}
             />
           </div>
           <div className="grid-wrapper">
             <div className="button-grid">
               <Button
-                style={{ color: this.state.graphOptions.selectedColor }}
-                onClick={e => this.handleColorKeyChange("selectedColor")}
-                variant={selected("selectedColor") ? "outlined" : "flat"}
+                style={{ color: graphOptions.selectedColor }}
+                onClick={() => this.handleColorKeyChange('selectedColor')}
+                variant={selected('selectedColor') ? 'outlined' : 'flat'}
               >
                 Selected
               </Button>
               <Button
-                style={{ color: this.state.graphOptions.parentsColor }}
-                onClick={e => this.handleColorKeyChange("parentsColor")}
-                variant={selected("parentsColor") ? "outlined" : "flat"}
+                style={{ color: graphOptions.parentsColor }}
+                onClick={() => this.handleColorKeyChange('parentsColor')}
+                variant={selected('parentsColor') ? 'outlined' : 'flat'}
               >
                 SubClass Of
               </Button>
               <Button
-                style={{ color: this.state.graphOptions.childrenColor }}
-                onClick={e => this.handleColorKeyChange("childrenColor")}
-                variant={selected("childrenColor") ? "outlined" : "flat"}
+                style={{ color: graphOptions.childrenColor }}
+                onClick={() => this.handleColorKeyChange('childrenColor')}
+                variant={selected('childrenColor') ? 'outlined' : 'flat'}
               >
                 has SubClass
               </Button>
               <Button
-                style={{ color: this.state.graphOptions.aliasesColor }}
-                onClick={e => this.handleColorKeyChange("aliasesColor")}
-                variant={selected("aliasesColor") ? "outlined" : "flat"}
+                style={{ color: graphOptions.aliasesColor }}
+                onClick={() => this.handleColorKeyChange('aliasesColor')}
+                variant={selected('aliasesColor') ? 'outlined' : 'flat'}
               >
                 Aliases
               </Button>
@@ -562,37 +573,43 @@ class GraphComponent extends Component {
           <div className="graph-options-wrapper">
             <div className="graph-options-grid">
               <div className="graph-input-wrapper">
-                <span>Link Strength</span>
+                <span>
+                  Link Strength
+                </span>
                 <div className="graph-input">
                   <input
                     label="Link Strength"
                     name="linkStrength"
                     type="number"
-                    value={this.state.graphOptions.linkStrength}
+                    value={graphOptions.linkStrength}
                     onChange={this.handleGraphOptionsChange}
                   />
                 </div>
               </div>
               <div className="graph-input-wrapper">
-                <span>Charge Strength</span>
+                <span>
+                  Charge Strength
+                </span>
                 <div className="graph-input">
                   <input
                     label="Charge Strength"
                     name="chargeStrength"
                     type="number"
-                    value={this.state.graphOptions.chargeStrength}
+                    value={graphOptions.chargeStrength}
                     onChange={this.handleGraphOptionsChange}
                   />
                 </div>
               </div>
               <div className="graph-input-wrapper">
-                <span>Collision Radius</span>
+                <span>
+                  Collision Radius
+                </span>
                 <div className="graph-input">
                   <input
                     label="Collision Radius"
                     name="collisionRadius"
                     type="number"
-                    value={this.state.graphOptions.collisionRadius}
+                    value={graphOptions.collisionRadius}
                     onChange={this.handleGraphOptionsChange}
                   />
                 </div>
@@ -600,23 +617,22 @@ class GraphComponent extends Component {
               <div className="graph-input-wrapper">
                 <FormControlLabel
                   classes={{
-                    root: "checkbox-wrapper",
-                    label: "checkbox-label"
+                    root: 'checkbox-wrapper',
+                    label: 'checkbox-label',
                   }}
-                  control={
+                  control={(
                     <Checkbox
-                      onChange={e =>
-                        this.handleGraphOptionsChange({
-                          target: {
-                            value: e.target.checked,
-                            name: e.target.name
-                          }
-                        })
+                      onChange={e => this.handleGraphOptionsChange({
+                        target: {
+                          value: e.target.checked,
+                          name: e.target.name,
+                        },
+                      })
                       }
                       name="autoCollisionRadius"
-                      checked={this.state.graphOptions.autoCollisionRadius}
+                      checked={graphOptions.autoCollisionRadius}
                     />
-                  }
+                  )}
                   label="Auto Collision Radius"
                 />
               </div>
@@ -656,8 +672,8 @@ class GraphComponent extends Component {
               </marker>
             </defs>
             <g ref="zoom">
-              {links}
-              {nodes}
+              {linksDisplay}
+              {nodesDisplay}
             </g>
           </svg>
         </div>

@@ -12,8 +12,10 @@
   #adv-nav-buttons {
     display: flex;
     justify-content: center;
+
     a {
       text-decoration: none;
+
       #text-button {
         height: 48px;
       }
@@ -22,7 +24,7 @@
 
   .parameter-selection {
     display: flex;
-    margin: 8px 0;
+    margin: 24px 0;
 
     @media (max-width: 920px) {
       flex-direction: column;

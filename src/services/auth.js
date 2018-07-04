@@ -1,6 +1,4 @@
-import * as jc from "json-cycle";
-
-const KB_TOKEN_KEY = "kbToken";
+const KB_TOKEN_KEY = 'kbToken';
 
 export default class auth {
   static getToken() {

@@ -64,7 +64,7 @@ function NodeDetailComponent(props) {
   ) : null;
 
   return (
-    <Card className="node-wrapper">
+    <Card style={{ height: '100%', overflowY: 'auto' }}>
       <div className="node-edit-btn">
         <IconButton
           onClick={() => handleNodeEditStart(node['@rid'])}

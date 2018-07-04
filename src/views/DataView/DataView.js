@@ -63,8 +63,9 @@ class DataView extends Component {
   }
 
   handleNodeAdd(node) {
-    if (node.source.name) {
-      const { data, displayed } = this.state;
+    const { data, displayed } = this.state;
+
+    if (node.source.name && !data[node['@rid']]) {
       data[node['@rid']] = node;
       if (displayed.indexOf(node['@rid']) === -1) {
         displayed.push(node['@rid']);
@@ -74,7 +75,12 @@ class DataView extends Component {
   }
 
   handleClick(rid) {
-    this.setState({ selectedId: rid });
+    const { data } = this.state;
+    if (!data[rid]) {
+      const response = api.get(`/diseases/${rid.slice(1)}?neighbors=3`);
+      data[rid] = jc.retrocycle(response.result);
+    }
+    this.setState({ data, selectedId: rid });
   }
 
   handleCheckbox(rid) {

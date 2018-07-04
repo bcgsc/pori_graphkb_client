@@ -354,7 +354,6 @@ class GraphComponent extends Component {
     this.setState({ simulation });
   }
 
-
   updateColors(rid) {
     const { links } = this.state;
     const selectedAliases = [];
@@ -397,6 +396,7 @@ class GraphComponent extends Component {
     const { expandId } = this.state;
 
     handleClick(node.data['@rid']);
+
     if (node.data['@rid'] === expandId) {
       e.stopPropagation();
       this.getNeighbors(node);
@@ -428,7 +428,15 @@ class GraphComponent extends Component {
     this.setState({ detail: false });
   }
 
-  handleDrawerOpen() {
+  async handleDrawerOpen() {
+    const { expandId } = this.state;
+    const { data } = this.props;
+
+    if (!data[expandId]) {
+      const response = await api.get(`/diseases/${expandId.slice(1)}?neighbors=3`);
+      data[expandId] = jc.retrocycle(response.result);
+    }
+
     this.setState({ detail: true });
   }
 
@@ -462,7 +470,7 @@ class GraphComponent extends Component {
       >
         <div className="graph-close-drawer-btn">
           <IconButton onClick={this.handleDrawerClose}>
-            <CloseIcon color="error" />
+            <CloseIcon color="action" />
           </IconButton>
         </div>
         <NodeDetailComponent

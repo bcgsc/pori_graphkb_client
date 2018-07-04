@@ -12,7 +12,7 @@ import {
 import AssignmentIcon from '@material-ui/icons/Assignment';
 
 function NodeDetailComponent(props) {
-  const { node } = props;
+  const { node, handleNodeEditStart } = props;
 
   const listEdges = (key) => {
     // Format string:  in_[edgeType] => has[edgeType]
@@ -21,7 +21,7 @@ function NodeDetailComponent(props) {
     const label = key.startsWith('in_')
       ? `has${edgeType.slice(0, edgeType.length - 2)}`
       : edgeType;
-    if (node[key]) {
+    if (node[key] && node[key].length !== 0) {
       return (
         <React.Fragment>
           <Typography variant="subheading">
@@ -47,6 +47,7 @@ function NodeDetailComponent(props) {
       );
     } return null;
   };
+
   const subsets = node.subsets && node.subsets.length !== 0 ? (
     <React.Fragment>
       <Typography variant="subheading">
@@ -66,7 +67,7 @@ function NodeDetailComponent(props) {
     <Card className="node-wrapper">
       <div className="node-edit-btn">
         <IconButton
-          onClick={() => props.handleNodeEditStart(node['@rid'])}
+          onClick={() => handleNodeEditStart(node['@rid'])}
         >
           <AssignmentIcon />
         </IconButton>
@@ -97,18 +98,30 @@ function NodeDetailComponent(props) {
           <Typography paragraph variant="caption">
             {node.name || 'none'}
           </Typography>
-          <Typography variant="subheading">
-            Description:
-          </Typography>
-          <Typography paragraph variant="caption">
-            {node.description || 'none'}
-          </Typography>
-          <Typography variant="subheading">
-            Long Name:
-          </Typography>
-          <Typography paragraph variant="caption">
-            {node.longName || 'none'}
-          </Typography>
+          {node.description
+            ? (
+              <div>
+                <Typography variant="subheading">
+                  Description:
+                </Typography>
+                <Typography paragraph variant="caption">
+                  {node.description || 'none'}
+                </Typography>
+              </div>
+            ) : null
+          }
+          {node.longName
+            ? (
+              <div>
+                <Typography variant="subheading">
+                  Long Name:
+                </Typography>
+                <Typography paragraph variant="caption">
+                  {node.longName || 'none'}
+                </Typography>
+              </div>
+            ) : null
+          }
           {subsets}
         </section>
         <section className="listed-properties">
@@ -122,8 +135,12 @@ function NodeDetailComponent(props) {
   );
 }
 
+NodeDetailComponent.defaultProps = {
+  node: null,
+};
+
 NodeDetailComponent.propTypes = {
-  node: PropTypes.object.isRequired,
+  node: PropTypes.object,
   handleNodeEditStart: PropTypes.func.isRequired,
 };
 

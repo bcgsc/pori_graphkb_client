@@ -448,7 +448,7 @@ class GraphComponent extends Component {
       displayed,
     } = this.state;
 
-    const { data, search } = this.props;
+    const { data, search, handleNodeEditStart } = this.props;
     const detailDrawer = (
       <Drawer
         variant="persistent"
@@ -465,7 +465,10 @@ class GraphComponent extends Component {
             <CloseIcon color="error" />
           </IconButton>
         </div>
-        <NodeDetailComponent node={data[expandId]} />
+        <NodeDetailComponent
+          node={data[expandId]}
+          handleNodeEditStart={handleNodeEditStart}
+        />
       </Drawer>
     );
 
@@ -683,9 +686,9 @@ class GraphComponent extends Component {
 GraphComponent.propTypes = {
   handleNodeAdd: PropTypes.func.isRequired,
   handleClick: PropTypes.func.isRequired,
+  handleNodeEditStart: PropTypes.func.isRequired,
   data: PropTypes.object.isRequired,
   search: PropTypes.string.isRequired,
-
 };
 
 export default GraphComponent;

@@ -1,59 +1,67 @@
-import React, { Component } from "react";
-import "./ResourceSelectComponent.css";
+import React from 'react';
+import PropTypes from 'prop-types';
+import './ResourceSelectComponent.css';
 import {
-  TextField,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  IconButton,
   InputLabel,
   MenuItem,
   FormControl,
   Select,
-  Button,
-  Typography
-} from "@material-ui/core";
-import api from "../../services/api";
+} from '@material-ui/core';
 
-class ResourceSelectComponent extends Component {
-  constructor(props) {
-    super(props);
-    this.onChange = this.onChange.bind(this);
-  }
+function ResourceSelectComponent(props) {
+  const {
+    resources,
+    value,
+    onChange,
+    name,
+    label,
+    children,
+  } = props;
 
-  onChange(e) {
-    this.props.onChange(e);
-  }
-
-  render() {
-    const resources = this.props.resources.map(resource => {
-      return this.props.children ? (
-        this.props.children(resource)
-      ) : (
-        <MenuItem key={resource.name} value={resource["@rid"]}>
-          {resource.name}
+  const resourcesDisplay = resources.map(resource => children(resource));
+  return (
+    <FormControl className="type-select" style={{ width: '100%' }}>
+      <InputLabel htmlFor="resource-select">
+        {label}
+      </InputLabel>
+      <Select
+        value={value}
+        onChange={onChange}
+        inputProps={{
+          name,
+          id: 'resource-select',
+        }}
+      >
+        <MenuItem value="">
+          <em>
+            None
+          </em>
         </MenuItem>
-      );
-    });
-    return (
-      <FormControl className="type-select" style={{ width: "100%" }}>
-        <InputLabel htmlFor="resource-select">{this.props.label}</InputLabel>
-        <Select
-          value={this.props.value}
-          onChange={e => this.onChange(e)}
-          inputProps={{
-            name: this.props.name,
-            id: "resource-select"
-          }}
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          {resources}
-        </Select>
-      </FormControl>
-    );
-  }
+        {resourcesDisplay}
+      </Select>
+    </FormControl>
+  );
 }
+
+ResourceSelectComponent.defaultProps = {
+  children: resource => (
+    <MenuItem key={resource.name} value={resource['@rid']}>
+      {resource.name}
+    </MenuItem>
+  ),
+  resources: [],
+  onChange: null,
+  name: '',
+  label: '',
+};
+
+ResourceSelectComponent.propTypes = {
+  resources: PropTypes.array,
+  value: PropTypes.any.isRequired,
+  onChange: PropTypes.func,
+  name: PropTypes.string,
+  label: PropTypes.string,
+  children: PropTypes.func,
+};
+
 export default ResourceSelectComponent;

@@ -136,7 +136,7 @@ class TableComponent extends Component {
         <Table>
           <TableHead className="table-head">
             <TableRow>
-              <TableCell>
+              {/* <TableCell>
                 <Checkbox
                   onChange={handleCheckAll}
                   checked={displayed.length === tableData.length}
@@ -146,7 +146,7 @@ class TableComponent extends Component {
                   onClick={() => this.handleRequestSort('displayed')}
                   direction={order}
                 />
-              </TableCell>
+              </TableCell> */}
               {columns.map(col => (
                 <TableCell key={col.id} classes={{ root: `${col.id}-col` }}>
                   <TableSortLabel
@@ -170,7 +170,7 @@ class TableComponent extends Component {
                 const detail = active ? (
                   <TableRow>
                     <Collapse
-                      colSpan={5}
+                      colSpan={4}
                       component="td"
                       in={active}
                       unmountOnExit
@@ -193,12 +193,12 @@ class TableComponent extends Component {
                         selected: 'selected-override',
                       }}
                     >
-                      <TableCell>
+                      {/* <TableCell>
                         <Checkbox
                           onChange={() => handleCheckbox(n['@rid'])}
                           checked={displayed.includes(n['@rid'])}
                         />
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell
                         classes={{
                           root: 'source-col',
@@ -237,7 +237,7 @@ class TableComponent extends Component {
                 );
               })}
             <TableRow>
-              <TableCell colSpan={4} className="spacer-cell">
+              <TableCell colSpan={3} className="spacer-cell">
                 <TablePagination
                   classes={{ root: 'table-paginator' }}
                   count={tableData.length}
@@ -250,7 +250,7 @@ class TableComponent extends Component {
                 />
               </TableCell>
               <TableCell className="spacer-cell">
-                <Link
+                {/* <Link
                   className="link"
                   to={{
                     pathname: '/data/graph',
@@ -263,7 +263,7 @@ class TableComponent extends Component {
                   >
                     <TimelineIcon />
                   </IconButton>
-                </Link>
+                </Link> */}
               </TableCell>
             </TableRow>
           </TableBody>

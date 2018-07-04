@@ -1,13 +1,13 @@
 import React, { Component } from "react";
-import { Route, Redirect } from "react-router-dom";
 import "./DataView.css";
+import api from "../../services/api";
+import { Route, Redirect } from "react-router-dom";
 import { Paper, Drawer, Button, IconButton } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import * as jc from "json-cycle";
 import GraphComponent from "../../components/GraphComponent/GraphComponent";
 import TableComponent from "../../components/TableComponent/TableComponent";
 import NodeFormComponent from "../../components/NodeFormComponent/NodeFormComponent";
-import api from "../../services/api";
+import * as jc from "json-cycle";
 
 class DataView extends Component {
   constructor(props) {
@@ -52,13 +52,7 @@ class DataView extends Component {
           loginRedirect
         });
       })
-      .catch(error => {
-        if (error.status === 401) {
-          this.setState({ loginRedirect: true });
-        } else if (error.status === 400) {
-          this.setState({ queryRedirect: true });
-        }
-      });
+      .catch(error => this.setState({ loginRedirect: true }));
   }
 
   handleNodeAdd(node) {
@@ -101,6 +95,7 @@ class DataView extends Component {
   }
   handleNodeDelete(rid) {
     const data = this.state.data;
+    console.log(data[rid])
     delete data[rid];
     this.setState({ data, editing: false });
   }
@@ -109,10 +104,10 @@ class DataView extends Component {
     api
       .get(
         "/" +
-          node["@class"].toLowerCase() +
-          "s/" +
-          node["@rid"].slice(1) +
-          "?neighbors=3"
+        node["@class"].toLowerCase() +
+        "s/" +
+        node["@rid"].slice(1) +
+        "?neighbors=3"
       )
       .then(response => {
         data[node["@rid"]] = jc.retrocycle(response.result);
@@ -182,12 +177,13 @@ class DataView extends Component {
       if (this.state.data) {
         return (
           <div className="data-view">
-            {editDrawer}
             <Route exact path="/data/table" render={TableWithProps} />
             <Route exact path="/data/graph" render={GraphWithProps} />
+            {editDrawer}
           </div>
         );
-      } else return null;
+      }
+      return null;
     };
 
     return dataView();

@@ -149,7 +149,7 @@ class NodeFormComponent extends Component {
     e.preventDefault();
     const { form } = this.state;
 
-    if (form.subset && !form.subsets.includes(form.subset)) {
+    if (form.subset && !form.subsets.includes(form.subset.toLowerCase())) {
       form.subsets.push(form.subset);
       form.subset = '';
       this.setState({ form });
@@ -339,7 +339,7 @@ class NodeFormComponent extends Component {
   async addSubmit() {
     const { form } = this.state;
     const newEdges = [];
-
+    if (!form.source || !form.sourceId) return;
     // TODO: Scale up to all ontology types, not just diseases
     const response = await api.post('/diseases', {
       source: form.source,
@@ -472,7 +472,7 @@ class NodeFormComponent extends Component {
       );
 
     return (
-      <div className="edit-node-wrapper">
+      <div className="node-form-wrapper">
         <Typography variant="display1" className="form-title">
           {variant === 'edit' ? 'Edit Term' : 'Add New Term'}
         </Typography>
@@ -631,13 +631,13 @@ class NodeFormComponent extends Component {
             </List>
           </div>
           <div className="submit-button">
-            <Button type="submit" variant="outlined">
+            <Button type="submit" disabled={!form.source || !form.sourceId} variant="raised" color="primary">
               {variant === 'edit' ? 'Confirm Changes' : 'Submit'}
             </Button>
           </div>
           {variant === 'edit' ? (
             <div className="delete-button">
-              <Button variant="outlined" onClick={this.handleDeleteNode}>
+              <Button variant="raised" onClick={this.handleDeleteNode}>
                 Delete
               </Button>
             </div>

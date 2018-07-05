@@ -1,0 +1,37 @@
+@import '../../globals';
+
+.error-wrapper{
+    margin: auto;
+    text-align: center;
+    display:flex;
+    flex-direction: column;
+    position:absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+#return-link{
+    margin-bottom: 10vh;
+    a{
+        text-decoration: none;
+        color:unset;
+    }
+}
+
+.error-content{
+    margin:16px;
+}
+
+#error-header{
+    color: $md-warn;
+}
+
+
+#error-text{
+    font-family: 'Courier New', Courier, monospace;
+}
+#spacer{
+    flex-grow:1;
+}

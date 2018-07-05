@@ -11,9 +11,18 @@ import {
 } from '@material-ui/core';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 
+/**
+ * Component to view details of a selected node.
+ * @param {Object} props - Component properties passed in by parent.
+ * @param {Object} props.node - Node object selected for detail.
+ */
 function NodeDetailComponent(props) {
   const { node, handleNodeEditStart } = props;
 
+  /**
+   * Renders list of edges of specified type on selected node.
+   * @param {string} key - node object key of edge type.
+   */
   const listEdges = (key) => {
     // Format string:  in_[edgeType] => has[edgeType]
     //                 out_[edgeType] => [edgeType]

@@ -13,6 +13,9 @@ import * as jc from 'json-cycle';
 import * as _ from 'lodash';
 import api from '../../services/api';
 
+/**
+ * Autocomplete search component for querying ease of use.
+ */
 class AutoSearchComponent extends Component {
   constructor(props) {
     super(props);
@@ -29,16 +32,26 @@ class AutoSearchComponent extends Component {
     this.refreshOptions = this.refreshOptions.bind(this);
   }
 
+  /**
+   * Cancels debounce method to avoid memory leaks.
+   */
   componentWillUnmount() {
     this.callApi.cancel();
     this.render = null;
   }
 
+  /**
+   * Calls debounced api call with user input value as parameter.
+   * @param {Event} e - user input event.
+   */
   refreshOptions(e) {
-    // Allow debouncing
     this.callApi(e.target.value);
   }
 
+  /**
+   * Calls the api to and sets the state to show returned records, and to set error flags.
+   * @param {string} value - query value to be sent to the api.
+   */
   callApi(value) {
     const { endpoint, property, limit } = this.state;
     api.autoSearch(
@@ -173,18 +186,31 @@ AutoSearchComponent.defaultProps = {
       </span>
     </MenuItem>
   ),
+  onChange: null,
 };
 
+/**
+ * @param {number} limit - entry number limit when querying the database.
+ * @param {string} name - name of input for event parsing.
+ * @param {string} endpoint - api endpoint identifier.
+ * @param {string} property - api property identifier.
+ * @param {string} placeholder - placeholder for text input.
+ * @param {string} value - specified value for two way binding.
+ * @param {string} label - label for text input.
+ * @param {bool} required - required flag for text input indicator.
+ * @param {func} onChange - parent method for handling change events
+ * @param {func} children - component for display display query results.
+ */
 AutoSearchComponent.propTypes = {
   limit: PropTypes.number,
+  name: PropTypes.string.isRequired,
   endpoint: PropTypes.string,
   property: PropTypes.string,
-  onChange: PropTypes.func.isRequired,
-  name: PropTypes.string.isRequired,
   placeholder: PropTypes.string,
   value: PropTypes.string,
   label: PropTypes.string,
   required: PropTypes.bool,
+  onChange: PropTypes.func,
   children: PropTypes.func,
 };
 

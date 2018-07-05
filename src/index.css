@@ -1,9 +1,9 @@
 .icon-link {
-  color: white;
   text-decoration: none;
   font-size: 0;
   margin: 0;
-  padding: 0; }
+  padding: 0;
+  color: unset; }
 
 body {
   margin: 0;

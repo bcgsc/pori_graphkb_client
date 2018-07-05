@@ -6,6 +6,12 @@ import './ErrorView.css';
 import { Typography, Button } from '@material-ui/core';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 
+/**
+ * Component for viewing errors.
+ * @param {Object} props - properties passed into the component.
+ * @param {Object} props.location - location property for the route and passed state.
+ * @param {Object} props.location.state - passed state from originator of redirect.
+ */
 function ErrorView(props) {
   const { location } = props;
   const { status, body } = location.state;

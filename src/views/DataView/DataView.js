@@ -3,7 +3,12 @@ import PropTypes from 'prop-types';
 import './DataView.css';
 import * as jc from 'json-cycle';
 import { Route, Redirect } from 'react-router-dom';
-import { Paper, Drawer, IconButton } from '@material-ui/core';
+import {
+  Paper,
+  Drawer,
+  IconButton,
+  CircularProgress,
+} from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
@@ -203,7 +208,7 @@ class DataView extends Component {
           </div>
         );
       }
-      return null;
+      return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
     };
 
     return dataView();

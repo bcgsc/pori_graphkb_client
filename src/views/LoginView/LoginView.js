@@ -7,6 +7,7 @@ import {
   Typography,
   TextField,
 } from '@material-ui/core';
+import queryString from 'query-string';
 import api from '../../services/api';
 import auth from '../../services/auth';
 
@@ -17,6 +18,7 @@ class LoginView extends Component {
       username: '',
       password: '',
       invalid: false,
+      error: null,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -42,9 +44,18 @@ class LoginView extends Component {
         auth.loadToken(response.kbToken);
         handleAuthenticate();
       })
-      .catch((error) => {
+      .catch(async (error) => {
         if (error.status === 401) {
           this.setState({ invalid: true });
+        } else {
+          const body = await error.json();
+          this.setState({
+            error: {
+              status: error.status,
+              text: body && body.error ? body.error.toLowerCase() : '',
+              message: body && body.message ? body.message.toLowerCase() : '',
+            },
+          });
         }
       });
   }
@@ -54,11 +65,13 @@ class LoginView extends Component {
       username,
       password,
       invalid,
+      error,
     } = this.state;
 
     const { loggedIn } = this.props;
 
     if (loggedIn) { return <Redirect push to="/query" />; }
+    if (error) { return <Redirect push to={{ pathname: '/error', search: queryString.stringify(error) }} />; }
 
     return (
       <div className="login-wrapper">

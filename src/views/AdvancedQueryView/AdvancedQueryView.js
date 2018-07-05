@@ -149,11 +149,16 @@ class AdvancedQueryView extends Component {
         </div>
         <div id="adv-nav-buttons">
           <Link to={{ state: this.state, pathname: '/query' }}>
-            <Button id="text-button" variant="outlined">
+            <Button variant="outlined">
               Back
             </Button>
           </Link>
-          <IconButton color="primary">
+          <Link to={{ search: this.bundle(), pathname: '/data/table' }}>
+            <Button color="primary" variant="raised">
+              Search
+            </Button>
+          </Link>
+          {/* <IconButton color="primary">
             <Link to={{ search: this.bundle(), pathname: '/data/table' }} className="icon-link">
               <ViewListIcon />
             </Link>
@@ -162,7 +167,7 @@ class AdvancedQueryView extends Component {
             <Link to={{ search: this.bundle(), pathname: '/data/graph' }} className="icon-link">
               <TimelineIcon />
             </Link>
-          </IconButton>
+          </IconButton> */}
         </div>
       </div>
     );

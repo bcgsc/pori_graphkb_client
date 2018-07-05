@@ -13,11 +13,17 @@ import {
   IconButton,
   Collapse,
   Checkbox,
+  Menu,
+  MenuItem,
 } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import TimelineIcon from '@material-ui/icons/Timeline';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import NodeDetailComponent from '../NodeDetailComponent/NodeDetailComponent';
 
+/**
+ * Component to display query results in table form.
+ */
 class TableComponent extends Component {
   constructor(props) {
     super(props);
@@ -28,21 +34,36 @@ class TableComponent extends Component {
       orderBy: null,
       toggle: '',
       sort: null,
+      anchorEl: null,
     };
     this.handleDetailToggle = this.handleDetailToggle.bind(this);
     this.handleRequestSort = this.handleRequestSort.bind(this);
     this.handleChangePage = this.handleChangePage.bind(this);
     this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
+    this.handleOpen = this.handleOpen.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
+  /**
+   * Updates page to display.
+   */
   handleChangePage(event, page) {
     this.setState({ page });
   }
 
+  /**
+   * Updates page rows per page property.
+   * @param {Event} event - Rows per page change event.
+   */
   handleChangeRowsPerPage(event) {
     this.setState({ rowsPerPage: event.target.value });
   }
 
+  /**
+   * Sorts table by the input property, if property is already
+   * selected, toggles the sort direction.
+   * @param {string} property - Key of property to be sorted by.
+   */
   handleRequestSort(property) {
     const { orderBy, order } = this.state;
     const { displayed } = this.props;
@@ -79,6 +100,10 @@ class TableComponent extends Component {
     this.setState({ order: newOrder, orderBy: property, sort });
   }
 
+  /**
+   * Expands row of input node to view details. If node is already expanded, collapses it.
+   * @param {string} rid - Node identifier.
+   */
   handleDetailToggle(rid) {
     const { toggle } = this.state;
     if (toggle === rid) this.setState({ toggle: '' });
@@ -87,6 +112,25 @@ class TableComponent extends Component {
     }
   }
 
+  /**
+   * Opens table actions menu.
+   * @param {Event} e - Open menu button event.
+   */
+  handleOpen(e) {
+    this.setState({ anchorEl: e.currentTarget });
+  }
+
+  /**
+   * Closes table actions menu.
+   */
+  handleClose() {
+    this.setState({ anchorEl: null });
+  }
+
+  /**
+   * Returns true if node identifier is the currently selected id.
+   * @param {string} rid - Target node identifier.
+   */
   isSelected(rid) {
     const { selectedId } = this.props;
     return selectedId === rid;
@@ -100,6 +144,7 @@ class TableComponent extends Component {
       order,
       sort,
       toggle,
+      anchorEl,
     } = this.state;
 
     const {
@@ -131,12 +176,30 @@ class TableComponent extends Component {
       },
     ];
 
+    const menu = (
+      <Menu
+        anchorEl={anchorEl}
+        open={!!anchorEl}
+        onClose={this.handleClose}
+      >
+        <MenuItem>
+          View selected as graph
+        </MenuItem>
+        <MenuItem>
+          Download as CSV
+        </MenuItem>
+        <MenuItem>
+          Hide Selected Rows
+        </MenuItem>
+      </Menu>
+    );
+
     return (
       <section className="data-table">
         <Table>
           <TableHead className="table-head">
             <TableRow>
-              {/* <TableCell>
+              <TableCell>
                 <Checkbox
                   onChange={handleCheckAll}
                   checked={displayed.length === tableData.length}
@@ -146,7 +209,7 @@ class TableComponent extends Component {
                   onClick={() => this.handleRequestSort('displayed')}
                   direction={order}
                 />
-              </TableCell> */}
+              </TableCell>
               {columns.map(col => (
                 <TableCell key={col.id} classes={{ root: `${col.id}-col` }}>
                   <TableSortLabel
@@ -158,7 +221,12 @@ class TableComponent extends Component {
                   </TableSortLabel>
                 </TableCell>
               ))}
-              <TableCell style={{ zIndex: 1 }} />
+              <TableCell style={{ zIndex: 1 }}>
+                <IconButton onClick={this.handleOpen}>
+                  <MoreHorizIcon color="action" />
+                </IconButton>
+                {menu}
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -170,7 +238,7 @@ class TableComponent extends Component {
                 const detail = active ? (
                   <TableRow>
                     <Collapse
-                      colSpan={4}
+                      colSpan={5}
                       component="td"
                       in={active}
                       unmountOnExit
@@ -193,12 +261,12 @@ class TableComponent extends Component {
                         selected: 'selected-override',
                       }}
                     >
-                      {/* <TableCell>
+                      <TableCell>
                         <Checkbox
                           onChange={() => handleCheckbox(n['@rid'])}
                           checked={displayed.includes(n['@rid'])}
                         />
-                      </TableCell> */}
+                      </TableCell>
                       <TableCell
                         classes={{
                           root: 'source-col',
@@ -237,7 +305,7 @@ class TableComponent extends Component {
                 );
               })}
             <TableRow>
-              <TableCell colSpan={3} className="spacer-cell">
+              <TableCell colSpan={4} className="spacer-cell">
                 <TablePagination
                   classes={{ root: 'table-paginator' }}
                   count={tableData.length}
@@ -250,20 +318,22 @@ class TableComponent extends Component {
                 />
               </TableCell>
               <TableCell className="spacer-cell">
-                {/* <Link
-                  className="link"
-                  to={{
-                    pathname: '/data/graph',
-                    search,
-                  }}
+
+                <IconButton
+                  color="secondary"
+                  style={{ backgroundColor: 'rgba(0, 137, 123, 0.1)' }}
+                  disabled={displayed.length === 0}
                 >
-                  <IconButton
-                    color="secondary"
-                    style={{ backgroundColor: 'rgba(0, 137, 123, 0.1)' }}
+                  <Link
+                    className="icon-link"
+                    to={{
+                      pathname: '/data/graph',
+                      search,
+                    }}
                   >
                     <TimelineIcon />
-                  </IconButton>
-                </Link> */}
+                  </Link>
+                </IconButton>
               </TableCell>
             </TableRow>
           </TableBody>
@@ -273,6 +343,16 @@ class TableComponent extends Component {
   }
 }
 
+/**
+ * @param {Object} data - Object containing query results.
+ * @param {Array} displayed - Array of displayed nodes.
+ * @param {string} search - URL search string.
+ * @param {string} selectedId - Selected node identifier.
+ * @param {function} handleCheckAll - Method triggered when all rows are checked.
+ * @param {function} handleNodeEditStart - Method triggered when user requests to edit a node.
+ * @param {function} handleClick - Method triggered when a row is clicked.
+ * @param {function} handleCheckbox - Method triggered when a single row is checked.
+ */
 TableComponent.propTypes = {
   data: PropTypes.object.isRequired,
   displayed: PropTypes.array.isRequired,

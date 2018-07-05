@@ -26,6 +26,7 @@ class DataView extends Component {
       displayed: [],
       selectedId: null,
       editing: false,
+      error: null,
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -63,6 +64,8 @@ class DataView extends Component {
       .catch((error) => {
         if (error.status === 401) {
           this.setState({ loginRedirect: true });
+        } else {
+          this.setState({ error });
         }
       });
   }
@@ -137,6 +140,7 @@ class DataView extends Component {
       displayed,
       queryRedirect,
       loginRedirect,
+      error,
     } = this.state;
 
     const { location } = this.props;
@@ -197,6 +201,9 @@ class DataView extends Component {
       }
       if (loginRedirect) {
         return <Redirect push to={{ pathname: '/login' }} />;
+      }
+      if (error) {
+        return <Redirect push to={{ pathname: '/error', state: error }} />;
       }
 
       if (data) {

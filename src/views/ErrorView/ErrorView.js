@@ -39,7 +39,7 @@ function ErrorView(props) {
         </Typography>
       </div>
       <div className="error-content">
-        <Typography variant="title" id="error-text">
+        <Typography variant="subheading">
           {methodText}
         </Typography>
       </div>

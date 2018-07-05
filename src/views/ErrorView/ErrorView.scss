@@ -10,10 +10,11 @@
     bottom: 0;
     left: 0;
     right: 0;
+    padding-bottom: 10vh;
+    
 }
 
 #return-link{
-    margin-bottom: 10vh;
     a{
         text-decoration: none;
         color:unset;
@@ -21,17 +22,31 @@
 }
 
 .error-content{
-    margin:16px;
+    margin: 8px;
 }
 
 #error-header{
     color: $md-warn;
 }
 
-
 #error-text{
     font-family: 'Courier New', Courier, monospace;
 }
 #spacer{
     flex-grow:1;
+}
+
+#copy-button{
+    margin: 8px auto;
+}
+
+.stacktrace{
+    border: 1px solid $md-warn;
+    border-radius: 8px;
+    padding: 8px;
+}
+
+#stacktrace-text{
+    font-size: 0.8em;
+    text-align: left;
 }

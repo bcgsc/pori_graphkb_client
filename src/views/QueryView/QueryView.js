@@ -81,7 +81,7 @@ class QueryView extends Component {
             <AutoSearchComponent
               value={name}
               onChange={this.handleChange}
-              placeholder="Search"
+              placeholder="Search by Name"
               limit={30}
               name="name"
             />

@@ -14,8 +14,9 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
  */
 function ErrorView(props) {
   const { location } = props;
-  const { status, body } = location.state;
-  if (!status && !body) return <Redirect push to="/query" />;
+  const { state } = location;
+  if (!state || (!state.status && !state.body)) return <Redirect push to="/query" />;
+  const { status, body } = state;
 
   const {
     error,

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
 import './QueryView.css';
-import { Button, IconButton } from '@material-ui/core';
+import { Button, IconButton, Snackbar } from '@material-ui/core';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import AutoSearchComponent from '../../components/AutoSearchComponent/AutoSearchComponent';
@@ -15,18 +15,22 @@ class QueryView extends Component {
     super(props);
 
     const initName = props.location.state
+      && props.location.state.mainParams
       && props.location.state.mainParams.name
       ? props.location.state.mainParams.name
       : '';
+
 
     this.state = {
       name: initName,
       redirect: false,
       endpoint: 'table',
+      prevEmpty: props.location.state && props.location.state.noResults,
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   /**
@@ -45,8 +49,17 @@ class QueryView extends Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
+  handleClose() {
+    this.setState({ prevEmpty: false });
+  }
+
   render() {
-    const { redirect, endpoint, name } = this.state;
+    const {
+      redirect,
+      endpoint,
+      name,
+      prevEmpty,
+    } = this.state;
 
     if (redirect) {
       return (
@@ -62,6 +75,17 @@ class QueryView extends Component {
 
     return (
       <div className="search-wrapper">
+        <Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          open={prevEmpty}
+          onClose={this.handleClose}
+          autoHideDuration={3000}
+          message={(
+            <span>
+              No results found
+            </span>
+          )}
+        />
         <div className="search-bar">
           <div
             className="main-search"

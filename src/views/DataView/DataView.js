@@ -236,7 +236,7 @@ class DataView extends Component {
     );
     const dataView = () => {
       if (queryRedirect) {
-        return <Redirect push to={{ pathname: '/query' }} />;
+        return <Redirect push to={{ pathname: '/query', state: { noResults: true } }} />;
       }
       if (loginRedirect) {
         return <Redirect push to={{ pathname: '/login' }} />;

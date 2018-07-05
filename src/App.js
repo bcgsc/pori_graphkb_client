@@ -95,6 +95,7 @@ class App extends Component {
         <Route path="/add" component={addNodeForm} />
         <Route path="/data" component={DataView} />
         <Route path="/error" component={ErrorView} />
+        <Redirect from="*" to="/query" />
       </Switch>
     );
 

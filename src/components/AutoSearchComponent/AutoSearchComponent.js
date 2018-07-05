@@ -21,6 +21,8 @@ class AutoSearchComponent extends Component {
       limit: props.limit || 30,
       endpoint: props.endpoint || 'diseases',
       property: props.property || 'name',
+      error: false,
+      emptyFlag: false,
     };
 
     this.callApi = _.debounce(this.callApi.bind(this), 300);
@@ -46,13 +48,18 @@ class AutoSearchComponent extends Component {
       limit,
     ).then((response) => {
       const cycled = jc.retrocycle(response.result);
-      this.setState({ options: cycled });
+      const emptyFlag = cycled.length === 0 && value;
+      this.setState({ options: cycled, error: false, emptyFlag });
     })
-      .catch(error => (error));
+      .catch((error) => {
+        if (error.status === 400) {
+          this.setState({ error: true });
+        }
+      });
   }
 
   render() {
-    const { options } = this.state;
+    const { options, error, emptyFlag } = this.state;
     const {
       children,
       onChange,
@@ -100,6 +107,7 @@ class AutoSearchComponent extends Component {
           <div className="autosearch-wrapper">
             <TextField
               fullWidth
+              error={error || emptyFlag}
               InputProps={{
                 ...getInputProps({
                   placeholder,
@@ -122,6 +130,17 @@ class AutoSearchComponent extends Component {
                   </List>
                 </Paper>
               ) : null}
+            {error ? (
+              <Typography variant="caption" color="error">
+                Invalid Request
+              </Typography>
+            ) : null
+            }
+            {emptyFlag ? (
+              <Typography variant="caption" color="error">
+                No Results
+              </Typography>
+            ) : null}
           </div>)
         }
       </Downshift>

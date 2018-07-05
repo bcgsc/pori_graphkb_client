@@ -11,11 +11,6 @@ import AutoSearchComponent from '../../components/AutoSearchComponent/AutoSearch
  * View representing the simple query page and the entry point into querying the database.
  */
 class QueryView extends Component {
-  /**
-   * Initializes the query string and binds methods to the component for two
-   * way data binding. Initializes redirect flag as false.
-   * @param {state?} props continued state object passed from AdvancedQueryView component.
-   */
   constructor(props) {
     super(props);
 
@@ -43,8 +38,8 @@ class QueryView extends Component {
   }
 
   /**
-   * Sets state field specified by event target name to event target value.
-   * @param {Event} e
+   * Updates state from user input.
+   * @param {Event} e - user input event.
    */
   handleChange(e) {
     this.setState({ [e.target.name]: e.target.value });
@@ -125,6 +120,9 @@ class QueryView extends Component {
   }
 }
 
+/**
+ * @param {Object} location - location property for the route and passed state.
+ */
 QueryView.propTypes = {
   location: PropTypes.object.isRequired,
 };

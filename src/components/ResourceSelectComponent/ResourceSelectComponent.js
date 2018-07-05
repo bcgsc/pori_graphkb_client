@@ -32,11 +32,6 @@ function ResourceSelectComponent(props) {
           id: 'resource-select',
         }}
       >
-        <MenuItem value="">
-          <em>
-            None
-          </em>
-        </MenuItem>
         {resourcesDisplay}
       </Select>
     </FormControl>

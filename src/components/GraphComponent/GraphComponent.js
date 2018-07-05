@@ -22,14 +22,19 @@ import SVGLink from '../SVGLink/SVGLink';
 import SVGNode from '../SVGNode/SVGNode';
 import api from '../../services/api';
 
+// SVG arrow dimensions.
 const arrowProperties = {
   width: 6,
   length: 9,
 };
-
+// Node position radius initializer.
 const nodeInitRadius = 55;
+// SVG node radius.
 const nodeRadius = 4;
 
+/**
+ * Component for displaying query results in force directed graph form.
+ */
 class GraphComponent extends Component {
   static positionInit(x, y, i, n) {
     const newX = nodeInitRadius * Math.cos((2 * Math.PI * i - Math.PI / 6) / n) + x;
@@ -79,6 +84,10 @@ class GraphComponent extends Component {
     this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
   }
 
+  /**
+   * Loads edge types, initializes graph and populates it with specified input nodes.
+   * Initializes event listener for window resize.
+   */
   async componentDidMount() {
     const {
       selectedId,
@@ -121,6 +130,9 @@ class GraphComponent extends Component {
     window.addEventListener('resize', this.handleResize);
   }
 
+  /**
+   * Removes all event listeners.
+   */
   componentWillUnmount() {
     const { svg, simulation } = this.state;
     // remove all event listeners
@@ -129,6 +141,10 @@ class GraphComponent extends Component {
     window.removeEventListener('resize', this.handleResize);
   }
 
+  /**
+   * Calls the api and renders neighbor nodes of the input node onto the graph.
+   * @param {Object} node - d3 simulation node whose neighbors were requestsed.
+   */
   getNeighbors(node) {
     const {
       expandable,
@@ -160,6 +176,13 @@ class GraphComponent extends Component {
   }
 
   // TODO: fix bug where expandable flag isnt cleared unless node is clicked
+  /**
+   * Processes node data and updates state with new nodes and links.
+   * Returns updated nodes, links, and graphObjects.
+   * @param {Object} node - Node object as returned by the api.
+   * @param {Object} position - Object containing x and y position of input node.
+   * @param {number} depth - Recursion base case flag.
+   */
   processData(node, position, depth) {
     const {
       edgeTypes,
@@ -169,6 +192,7 @@ class GraphComponent extends Component {
       graphObjects,
     } = this.state;
 
+    // Defines what edge keys to look for.
     const expandedEdgeTypes = edgeTypes.reduce((r, e) => {
       r.push(`in_${e.name}`);
       r.push(`out_${e.name}`);
@@ -177,12 +201,14 @@ class GraphComponent extends Component {
 
     expandedEdgeTypes.forEach((edgeType) => {
       if (node[edgeType]) {
+        // stores total number of edges and initializes count for position calculating.
         const n = node[edgeType].length;
         let j = 0;
 
         node[edgeType].forEach((edge) => {
           const edgeRid = edge['@rid'] || edge;
 
+          // Checks if edge is already rendered in the graph
           if (!graphObjects[edgeRid]) {
             if (
               edge['@rid']
@@ -190,6 +216,7 @@ class GraphComponent extends Component {
               && edge.out['@rid']
               && depth > 0
             ) {
+              // Initialize new link object and pushes to links list.
               const link = {
                 source: edge.out['@rid'],
                 target: edge.in['@rid'],
@@ -202,7 +229,9 @@ class GraphComponent extends Component {
               links.push(link);
               graphObjects[link['@rid']] = link;
 
+              // Checks if node is already rendered
               if (!graphObjects[edge.out['@rid']]) {
+                // Initializes position of new child
                 const positionInit = GraphComponent.positionInit(
                   position.x,
                   position.y,
@@ -248,6 +277,7 @@ class GraphComponent extends Component {
                 this.setState({ nodes: d.nodes, links: d.links, graphObjects: d.graphObjects });
               }
             } else {
+              // If there are unrendered edges, set expandable flag.
               expandable[node['@rid']] = true;
             }
           }
@@ -260,6 +290,9 @@ class GraphComponent extends Component {
     return { nodes, links, graphObjects };
   }
 
+  /**
+   * Resizes svg window and reinitializes the simulation.
+   */
   handleResize() {
     let w;
     let h;
@@ -275,11 +308,17 @@ class GraphComponent extends Component {
     }
   }
 
+  /**
+   * Toggles Auto Collision Radius feature.
+   */
   handleCheckbox() {
     const { graphOptions } = this.state;
     graphOptions.autoCollisionRadius = !graphOptions.autoCollisionRadius;
   }
 
+  /**
+   * Initializes simulation rules and properties. Updates simulation component state.
+   */
   initSimulation() {
     const { simulation, graphOptions } = this.state;
 
@@ -324,6 +363,9 @@ class GraphComponent extends Component {
     this.setState({ simulation, svg });
   }
 
+  /**
+   * Renders nodes and links to the graph.
+   */
   drawGraph() {
     const {
       nodes,
@@ -354,6 +396,10 @@ class GraphComponent extends Component {
     this.setState({ simulation });
   }
 
+  /**
+   * Updates selected node's and its neighbors' colors.
+   * @param {string} rid - selected node identifier.
+   */
   updateColors(rid) {
     const { links } = this.state;
     const selectedAliases = [];
@@ -391,6 +437,11 @@ class GraphComponent extends Component {
     });
   }
 
+  /**
+   * Updates node colors or retrieves node neighbors.
+   * @param {Event} e - User click event.
+   * @param {Object} node - Clicked simulation node.
+   */
   handleClick(e, node) {
     const { handleClick } = this.props;
     const { expandId } = this.state;
@@ -405,16 +456,28 @@ class GraphComponent extends Component {
     }
   }
 
+  /**
+   * Updates color indicators for related/selected nodes
+   * @param {Object} color - color object as returned by the colorpicker.
+   */
   handleColorPick(color) {
     const { graphOptions, colorKey } = this.state;
     graphOptions[colorKey] = color.hex;
     this.setState({ graphOptions });
   }
 
+  /**
+   * Changes the property bound to the colorpicker.
+   * @param {string} key - object key for target property.
+   */
   handleColorKeyChange(key) {
     this.setState({ colorKey: key });
   }
 
+  /**
+   * Updates graph options, re-initializes simulation, and re-renders objects.
+   * @param {Event} e - User input event.
+   */
   handleGraphOptionsChange(e) {
     const { graphOptions } = this.state;
     graphOptions[e.target.name] = e.target.value;
@@ -424,10 +487,16 @@ class GraphComponent extends Component {
     });
   }
 
+  /**
+   * Closes detail drawer.
+   */
   handleDrawerClose() {
     this.setState({ detail: false });
   }
 
+  /**
+   * Updates data and opens detail drawer.
+   */
   async handleDrawerOpen() {
     const { expandId } = this.state;
     const { data } = this.props;
@@ -691,9 +760,22 @@ class GraphComponent extends Component {
   }
 }
 
+GraphComponent.defaultProps = {
+  handleNodeAdd: null,
+  handleClick: null,
+};
+
+/**
+ * @param {function} handleNodeAdd - Parent component method triggered when a node
+ * is added to the graph.
+ * @param {function} handleClick - Parent component method triggered when a graph object is clicked.
+ * @param {function} handleNodeEditStart - Method triggered when node edit start is requested.
+ * @param {Object} data - Parent state data.
+ * @param {string} search - url search string.
+ */
 GraphComponent.propTypes = {
-  handleNodeAdd: PropTypes.func.isRequired,
-  handleClick: PropTypes.func.isRequired,
+  handleNodeAdd: PropTypes.func,
+  handleClick: PropTypes.func,
   handleNodeEditStart: PropTypes.func.isRequired,
   data: PropTypes.object.isRequired,
   search: PropTypes.string.isRequired,

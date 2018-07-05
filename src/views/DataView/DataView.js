@@ -75,12 +75,7 @@ class DataView extends Component {
   }
 
   handleClick(rid) {
-    const { data } = this.state;
-    if (!data[rid]) {
-      const response = api.get(`/diseases/${rid.slice(1)}?neighbors=3`);
-      data[rid] = jc.retrocycle(response.result);
-    }
-    this.setState({ data, selectedId: rid });
+    this.setState({ selectedId: rid });
   }
 
   handleCheckbox(rid) {

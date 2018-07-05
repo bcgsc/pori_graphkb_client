@@ -1,6 +1,6 @@
 @import "globals";
 
-$banner-height: 48px;
+$banner-height: 56px;
 
 .banner {
   position: absolute;
@@ -15,6 +15,23 @@ $banner-height: 48px;
 
   button {
     margin: auto 0;
+  }
+  
+  .user-dropdown{
+    float: right;
+    margin: auto;
+    margin-right: 1em;
+    
+    .user-btn{
+      color: white;
+      svg{
+        font-size: 32px;
+        margin-right: 4px;
+      }
+      span aside{
+          color:white;
+      }
+    }
   }
 }
 

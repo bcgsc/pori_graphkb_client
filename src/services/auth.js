@@ -1,3 +1,5 @@
+import * as jwt from 'jsonwebtoken';
+
 const KB_TOKEN_KEY = 'kbToken';
 
 export default class auth {
@@ -11,5 +13,10 @@ export default class auth {
 
   static clearToken() {
     localStorage.removeItem(KB_TOKEN_KEY);
+  }
+
+  static getUser() {
+    const token = localStorage.getItem(KB_TOKEN_KEY);
+    return jwt.decode(token).user.name;
   }
 }

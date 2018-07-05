@@ -1,68 +1,108 @@
-import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
-import "./LoginView.css";
-import { Button, Typography, TextField } from "@material-ui/core";
-import api from "../../services/api";
-import auth from "../../services/auth";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
+import './LoginView.css';
+import {
+  Button,
+  Typography,
+  TextField,
+} from '@material-ui/core';
+import api from '../../services/api';
+import auth from '../../services/auth';
 
+/**
+ * Component for logging in function.
+ */
 class LoginView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: "",
-      password: "",
-      queryRedirect: false
+      username: '',
+      password: '',
+      invalid: false,
+      error: null,
+      loggedIn: props.loggedIn,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  /**
+   * Updates component state based on user input.
+   * @param {Event} e - Change event triggered from user inputs.
+   */
   handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
+    this.setState({ [e.target.name]: e.target.value, invalid: false });
   }
 
+  /**
+   * Makes authentication request to api.
+   * @param {Event} e - Submit event.
+   */
   handleSubmit(e) {
     e.stopPropagation();
     e.preventDefault();
 
+    const { username, password } = this.state;
+    const { handleAuthenticate } = this.props;
+
     api
-      .post("/token", {
-        username: this.state.username,
-        password: this.state.password
+      .post('/token', {
+        username,
+        password,
       })
-      .then(response => {
+      .then((response) => {
         auth.loadToken(response.kbToken);
-        this.setState({ queryRedirect: true });
+        handleAuthenticate();
+        this.setState({ loggedIn: true });
       })
-      .catch(error => {
-        if (error === 401) {
-          alert("Invalid Username or Password");
+      .catch(async (error) => {
+        if (error.status === 401) {
+          this.setState({ invalid: true });
+        } else {
+          this.setState({ error });
         }
       });
   }
 
+  /**
+   * Renders the component.
+   */
   render() {
-    if (this.state.queryRedirect) return <Redirect push to="/query" />;
+    const {
+      username,
+      password,
+      invalid,
+      error,
+      loggedIn,
+    } = this.state;
+
+
+    if (loggedIn) { return <Redirect push to="/query" />; }
+    if (error) { return <Redirect push to={{ pathname: '/error', state: error }} />; }
+
     return (
       <div className="login-wrapper">
         <form className="login-form" onSubmit={this.handleSubmit}>
           <TextField
             className="login-input"
             name="username"
-            value={this.state.username}
+            value={username}
             onChange={this.handleChange}
             type="text"
             label="Username"
             required
+            error={invalid}
           />
           <TextField
             className="login-input"
             name="password"
-            value={this.state.password}
+            value={password}
             onChange={this.handleChange}
             type="password"
             label="Password"
             required
+            error={invalid}
           />
           <Button type="submit" color="primary" variant="raised">
             Login
@@ -70,9 +110,30 @@ class LoginView extends Component {
           <Typography variant="caption" id="caption">
             Log in with your BC GSC web credentials
           </Typography>
+          {invalid ? (
+            <Typography variant="subheading" id="invalid-meessage">
+              Invalid Username or Password
+            </Typography>
+          ) : null
+          }
         </form>
       </div>
     );
   }
 }
+
+LoginView.defaultProps = {
+  loggedIn: false,
+};
+
+/**
+ * @param {function} handleAuthenticate - function passed in from parent to handle a
+ * successful log in.
+ * @param {bool} loggedIn - initial log in flag.
+ */
+LoginView.propTypes = {
+  handleAuthenticate: PropTypes.func.isRequired,
+  loggedIn: PropTypes.bool,
+};
+
 export default LoginView;

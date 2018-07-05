@@ -200,7 +200,7 @@ class GraphComponent extends Component {
     }, []);
 
     expandedEdgeTypes.forEach((edgeType) => {
-      if (node[edgeType]) {
+      if (node[edgeType] && node[edgeType].length !== 0) {
         // stores total number of edges and initializes count for position calculating.
         const n = node[edgeType].length;
         let j = 0;

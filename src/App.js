@@ -94,7 +94,6 @@ class App extends Component {
         <Route path="/query/advanced" component={AdvancedQueryView} />
         <Route path="/add" component={addNodeForm} />
         <Route path="/data" component={DataView} />
-        <Route path="/error" component={ErrorView} />
         <Redirect from="*" to="/query" />
       </Switch>
     );
@@ -142,6 +141,7 @@ class App extends Component {
               <div className="router-outlet">
                 <Switch>
                   <Route path="/login" render={loginWithProps} />
+                  <Route path="/error" component={ErrorView} />
                   <Route
                     path="/"
                     render={() => {

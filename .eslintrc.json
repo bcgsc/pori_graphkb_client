@@ -17,7 +17,8 @@
                 "checkContextTypes": false,
                 "checkChildContextTypes": false
             }
-        ]
+        ],
+        "prefer-promise-reject-errors": "off"
     },
     "env": {
         "browser": true,

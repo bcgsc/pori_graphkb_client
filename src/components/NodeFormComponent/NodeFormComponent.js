@@ -23,7 +23,16 @@ import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectCo
 import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
 import api from '../../services/api';
 
+/**
+ * Component for editing or adding database nodes.
+ */
 class NodeFormComponent extends Component {
+  /**
+   * Formats input node relationships and adds them to state relationship list.
+   * @param {Object} node - node object.
+   * @param {Array<Object>} relationships - current relationship list.
+   * @param {string} key - node object key specifying edge type.
+   */
   static processRelationships(node, relationships, key) {
     if (node[key]) {
       node[key].forEach((edge) => {
@@ -83,8 +92,10 @@ class NodeFormComponent extends Component {
     this.initNode = this.initNode.bind(this);
   }
 
+  /**
+   * Loads sources and edge types from the api, initializes fields if form is an edit variant.
+   */
   async componentDidMount() {
-    // await/async is apparently an experimental api, could change this to nested promises
     const sources = await api.getSources();
     const edgeTypes = await api.getEdgeTypes();
     const { variant } = this.props;
@@ -99,6 +110,9 @@ class NodeFormComponent extends Component {
     });
   }
 
+  /**
+   * Initializes input node to be edited. Calls api to refresh its properties.
+   */
   initNode() {
     const { selectedId } = this.props;
     const { edgeTypes } = this.state;
@@ -139,12 +153,20 @@ class NodeFormComponent extends Component {
       });
   }
 
+  /**
+   * Changes state based on user input.
+   * @param {Event} e - user input event.
+   */
   handleFormChange(e) {
     const { form } = this.state;
     form[e.target.name] = e.target.value;
     this.setState({ form });
   }
 
+  /**
+   * Adds new subset to state list. Clears subset field.
+   * @param {Event} e - User request subset add event.
+   */
   handleSubsetAdd(e) {
     e.preventDefault();
     const { form } = this.state;
@@ -156,6 +178,10 @@ class NodeFormComponent extends Component {
     }
   }
 
+  /**
+   * Deletes subset from state subset list.
+   * @param {string} subset - Subset to be deleted.
+   */
   handleSubsetDelete(subset) {
     const { form } = this.state;
     if (form.subsets.indexOf(subset) !== -1) {
@@ -164,6 +190,11 @@ class NodeFormComponent extends Component {
     this.setState({ form });
   }
 
+  /**
+   * Validates and then adds a new relationship to state list.
+   * Clears relationship fields.
+   * @param {Event} e - User request relationship add event.
+   */
   handleRelationshipAdd(e) {
     e.preventDefault();
     const { form, node } = this.state;
@@ -195,6 +226,10 @@ class NodeFormComponent extends Component {
     }
   }
 
+  /**
+   * Deletes a relationship from state relationship list.
+   * @param {Object} relationship - Relationship to be deleted
+   */
   handleRelationshipDelete(relationship) {
     const { form } = this.state;
     const { relationships } = form;
@@ -205,6 +240,10 @@ class NodeFormComponent extends Component {
     this.setState({ form });
   }
 
+  /**
+   * Updates staged relationship object from user input.
+   * @param {Event} e - User input event.
+   */
   handleRelationship(e) {
     const { form, node } = this.state;
     form.relationship[e.target.name] = e.target.value;
@@ -218,6 +257,9 @@ class NodeFormComponent extends Component {
     this.setState({ form });
   }
 
+  /**
+   * Updates staged relationship direction by swapping in/out properties.
+   */
   handleRelationshipDirection() {
     const { form, node } = this.state;
 
@@ -231,6 +273,10 @@ class NodeFormComponent extends Component {
     this.setState({ form });
   }
 
+  /**
+   * Submits form.
+   * @param {Event} e - Submit event.
+   */
   handleSubmit(e) {
     e.preventDefault();
     const { variant } = this.props;
@@ -242,6 +288,9 @@ class NodeFormComponent extends Component {
     }
   }
 
+  /**
+   * Deletes target node.
+   */
   handleDeleteNode() {
     const { node } = this.state;
     const { handleNodeDelete } = this.props;
@@ -253,6 +302,9 @@ class NodeFormComponent extends Component {
     });
   }
 
+  /**
+   * Adds new edges and deletes specified ones, then patches property changes to the api.
+   */
   async editSubmit() {
     const { form, node } = this.state;
     const { handleNodeFinishEdit } = this.props;
@@ -336,6 +388,9 @@ class NodeFormComponent extends Component {
     handleNodeFinishEdit(node);
   }
 
+  /**
+   * Posts new node to the api, then posts all new edges.
+   */
   async addSubmit() {
     const { form } = this.state;
     const newEdges = [];
@@ -445,6 +500,7 @@ class NodeFormComponent extends Component {
             name="source"
             label="Source"
             id="source"
+            required
             resources={sources}
           />
         </ListItem>
@@ -467,6 +523,7 @@ class NodeFormComponent extends Component {
             onChange={this.handleFormChange}
             className="text-input"
             name="sourceId"
+            required
           />
         </ListItem>
       );
@@ -655,12 +712,17 @@ NodeFormComponent.defaultProps = {
   selectedId: null,
 };
 
+/**
+ * @param {string} selectedId - node database identifier.
+ * @param {string} variant - specifies form type/function.
+ * @param {function} handleNodeDelete - parent method triggered on node delete.
+ * @param {function} handleNodeFinishEdit - parent method triggered when node is edited.
+ */
 NodeFormComponent.propTypes = {
   selectedId: PropTypes.string,
   variant: PropTypes.string,
   handleNodeDelete: PropTypes.func,
   handleNodeFinishEdit: PropTypes.func,
-
 };
 
 export default NodeFormComponent;

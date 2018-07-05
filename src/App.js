@@ -29,7 +29,7 @@ import LoginView from './views/LoginView/LoginView';
 import auth from './services/auth';
 
 /**
- * Entry point to application. Handles routing set up as well as defining the app theme.
+ * Entry point to application. Handles routing, app theme, and logged in state.
  */
 class App extends Component {
   constructor(props) {
@@ -44,18 +44,31 @@ class App extends Component {
     this.handleLogOut = this.handleLogOut.bind(this);
   }
 
+  /**
+   * Sets logged in status to true.
+   */
   handleAuthenticate() {
     this.setState({ loggedIn: true });
   }
 
+  /**
+   * Opens user dropdown menu.
+   * @param {Event} e - User menu button click event.
+   */
   handleOpen(e) {
     this.setState({ anchorEl: e.currentTarget });
   }
 
+  /**
+   * Closes user dropdown menu.
+   */
   handleClose() {
     this.setState({ anchorEl: null });
   }
 
+  /**
+   * Clears authentication token and sets logged in status to false.
+   */
   handleLogOut() {
     auth.clearToken();
     this.setState({ loggedIn: false }, this.handleClose);

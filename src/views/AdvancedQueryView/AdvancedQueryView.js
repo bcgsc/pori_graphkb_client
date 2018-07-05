@@ -14,18 +14,16 @@ import queryString from 'query-string';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
 import api from '../../services/api';
 
+/**
+ * Advanced query page, allows user to specify more parameters in their queries.
+ */
 class AdvancedQueryView extends Component {
-  static antiCamelCase(value) {
-    const returnValue = value.charAt(0).toUpperCase() + value.slice(1);
-    return returnValue.replace(/[A-Z]/g, match => ` ${match}`);
-  }
-
   constructor(props) {
     super(props);
 
     this.state = {
       mainParams: {
-        name: props.location.state.name || '',
+        name: props.location.state.name,
         source: '',
         sourceId: '',
         longName: '',
@@ -43,36 +41,30 @@ class AdvancedQueryView extends Component {
     this.bundle = this.bundle.bind(this);
   }
 
+  /**
+   * Initializes valid sources.
+   */
   async componentDidMount() {
     const sources = await api.getSources();
     this.setState({ sources });
   }
 
+  /**
+   * Updates main parameters after user input.
+   * @param {Event} e - User input event.
+   */
   handleChange(e) {
     const { mainParams } = this.state;
     mainParams[e.target.name] = e.target.value;
     this.setState({ mainParams });
   }
 
-  // handleRelatedTerms(e, key) {
-  //   let relatedTerms = { ...this.state.relatedTerms };
-  //   relatedTerms[key] = e;
-  //   this.setState({ relatedTerms });
-  // }
-
+  /**
+   * Formats query string to be passed into url.
+   */
   bundle() {
     const { mainParams } = this.state;
     const params = {};
-
-    // if (this.state.relatedTerms.children) params.ancestors = 'subclassof';
-    // if (this.state.relatedTerms.parents) params.descendants = 'subclassof';
-    // if (this.state.relatedTerms.aliases) {
-    //   if (!params.ancestors) params.ancestors = '';
-    //   if (!params.descendants) params.descendants = '';
-
-    //   params.ancestors += 'aliasof';
-    //   params.descendants += 'aliasof';
-    // }
 
     Object.keys(mainParams).forEach((key) => {
       if (mainParams[key]) {
@@ -155,55 +147,6 @@ class AdvancedQueryView extends Component {
             name="limit"
           />
         </div>
-        {/* <div className="parameter-selection">
-          <Typography variant="subheading" className="parameter-name">
-            Related Terms:
-          </Typography>
-          <div className="related-checkboxes">
-            <div className="checkbox">
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="parents"
-                    id="parents"
-                    onChange={(e, checked) =>
-                      this.handleRelatedTerms(checked, 'parents')
-                    }
-                  />
-                }
-                label="Parents"
-              />
-            </div>
-            <div className="checkbox">
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="children"
-                    id="children"
-                    onChange={(e, checked) =>
-                      this.handleRelatedTerms(checked, 'children')
-                    }
-                  />
-                }
-                label="Children"
-              />
-            </div>
-            <div className="checkbox">
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="aliases"
-                    id="aliases"
-                    onChange={(e, checked) =>
-                      this.handleRelatedTerms(checked, 'aliases')
-                    }
-                  />
-                }
-                label="Aliases"
-              />
-            </div>
-          </div>
-        </div> */}
         <div id="adv-nav-buttons">
           <Link to={{ state: this.state, pathname: '/query' }}>
             <Button id="text-button" variant="outlined">
@@ -227,9 +170,12 @@ class AdvancedQueryView extends Component {
 }
 
 AdvancedQueryView.defaultProps = {
-  location: '',
+  location: { state: { name: '' } },
 };
 
+/**
+ * @param {Object} location - location property for the route and passed state.
+ */
 AdvancedQueryView.propTypes = {
   location: PropTypes.object,
 };

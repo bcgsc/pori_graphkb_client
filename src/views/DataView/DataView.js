@@ -15,6 +15,9 @@ import TableComponent from '../../components/TableComponent/TableComponent';
 import NodeFormComponent from '../../components/NodeFormComponent/NodeFormComponent';
 import api from '../../services/api';
 
+/**
+ * State handling component for query results.
+ */
 class DataView extends Component {
   constructor(props) {
     super(props);
@@ -39,6 +42,9 @@ class DataView extends Component {
     this.handleNodeDelete = this.handleNodeDelete.bind(this);
   }
 
+  /**
+   * Queries the api and loads results into component state.
+   */
   componentDidMount() {
     const dataMap = {};
     let { queryRedirect } = this.state;
@@ -70,6 +76,11 @@ class DataView extends Component {
       });
   }
 
+  /**
+   * Triggered function for when a child component gets a new node from the api.
+   * Adds new node to state data object.
+   * @param {Object} node - Node data retrieved from api.
+   */
   handleNodeAdd(node) {
     const { data, displayed } = this.state;
 
@@ -82,10 +93,19 @@ class DataView extends Component {
     }
   }
 
+  /**
+   * Triggered function for when a node object is clicked in a child component.
+   * Sets the state selected ID to clicked node.
+   * @param {string} rid - Clicked node identifier.
+   */
   handleClick(rid) {
     this.setState({ selectedId: rid });
   }
 
+  /**
+   * Adds node identifier to list of displayed nodes.
+   * @param {string} rid - Checked node identifier.
+   */
   handleCheckbox(rid) {
     const { displayed } = this.state;
     const i = displayed.indexOf(rid);
@@ -97,6 +117,10 @@ class DataView extends Component {
     this.setState({ displayed });
   }
 
+  /**
+   * Adds all data entries to the list of displayed nodes.
+   * @param {Evemt} e - Checkbox event.
+   */
   handleCheckAll(e) {
     let displayed;
     const { data } = this.state;
@@ -108,20 +132,35 @@ class DataView extends Component {
     this.setState({ displayed });
   }
 
+  /**
+   * Closes node edit drawer.
+   */
   handleDrawerClose() {
     this.setState({ editing: false });
   }
 
+  /**
+   * Sets selected ID to input node identifier and opens edit drawer.
+   * @param {string} rid - Target node identifier.
+   */
   handleNodeEditStart(rid) {
     this.setState({ selectedId: rid, editing: true });
   }
 
+  /**
+   * deletes a node from the data list.
+   * @param {string} rid - Target node identifier.
+   */
   handleNodeDelete(rid) {
     const { data } = this.state;
     delete data[rid];
     this.setState({ data, editing: false });
   }
 
+  /**
+   * Updates corresponding data entry after a node has been edited.
+   * @param {Object} node - node object
+   */
   handleNodeFinishEdit(node) {
     const { data } = this.state;
     api
@@ -222,6 +261,9 @@ class DataView extends Component {
   }
 }
 
+/**
+ * @param {Object} location - location property for the route and passed state.
+ */
 DataView.propTypes = {
   location: PropTypes.object.isRequired,
 };

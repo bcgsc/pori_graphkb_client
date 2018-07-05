@@ -10,6 +10,9 @@ import {
 import api from '../../services/api';
 import auth from '../../services/auth';
 
+/**
+ * Component for logging in function.
+ */
 class LoginView extends Component {
   constructor(props) {
     super(props);
@@ -18,15 +21,24 @@ class LoginView extends Component {
       password: '',
       invalid: false,
       error: null,
+      loggedIn: props.loggedIn,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  /**
+   * Updates component state based on user input.
+   * @param {Event} e - Change event triggered from user inputs.
+   */
   handleChange(e) {
     this.setState({ [e.target.name]: e.target.value, invalid: false });
   }
 
+  /**
+   * Makes authentication request to api.
+   * @param {Event} e - Submit event.
+   */
   handleSubmit(e) {
     e.stopPropagation();
     e.preventDefault();
@@ -42,6 +54,7 @@ class LoginView extends Component {
       .then((response) => {
         auth.loadToken(response.kbToken);
         handleAuthenticate();
+        this.setState({ loggedIn: true });
       })
       .catch(async (error) => {
         if (error.status === 401) {
@@ -52,15 +65,18 @@ class LoginView extends Component {
       });
   }
 
+  /**
+   * Renders the component.
+   */
   render() {
     const {
       username,
       password,
       invalid,
       error,
+      loggedIn,
     } = this.state;
 
-    const { loggedIn } = this.props;
 
     if (loggedIn) { return <Redirect push to="/query" />; }
     if (error) { return <Redirect push to={{ pathname: '/error', state: error }} />; }
@@ -110,6 +126,11 @@ LoginView.defaultProps = {
   loggedIn: false,
 };
 
+/**
+ * @param {function} handleAuthenticate - function passed in from parent to handle a
+ * successful log in.
+ * @param {bool} loggedIn - initial log in flag.
+ */
 LoginView.propTypes = {
   handleAuthenticate: PropTypes.func.isRequired,
   loggedIn: PropTypes.bool,

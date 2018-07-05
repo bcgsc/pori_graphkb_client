@@ -26,3 +26,10 @@ $data-view-collapse: 60em;
 .drawer-box-graph {
   width: calc(100vw - 1px);
 }
+#progress-spinner{
+  margin: auto;
+  position: absolute;
+  top: 40%;
+  left: 0;
+  right: 0;
+}

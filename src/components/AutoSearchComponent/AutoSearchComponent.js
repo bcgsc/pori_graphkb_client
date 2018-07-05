@@ -48,7 +48,7 @@ class AutoSearchComponent extends Component {
       limit,
     ).then((response) => {
       const cycled = jc.retrocycle(response.result);
-      const emptyFlag = cycled.length === 0 && value;
+      const emptyFlag = !!(cycled.length === 0 && value);
       this.setState({ options: cycled, error: false, emptyFlag });
     })
       .catch((error) => {

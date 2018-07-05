@@ -16,12 +16,14 @@ function ResourceSelectComponent(props) {
     name,
     label,
     children,
+    required,
   } = props;
 
   const resourcesDisplay = resources.map(resource => children(resource));
+
   return (
     <FormControl className="type-select" style={{ width: '100%' }}>
-      <InputLabel htmlFor="resource-select">
+      <InputLabel htmlFor="resource-select" required={required}>
         {label}
       </InputLabel>
       <Select
@@ -48,6 +50,7 @@ ResourceSelectComponent.defaultProps = {
   onChange: null,
   name: '',
   label: '',
+  required: false,
 };
 
 ResourceSelectComponent.propTypes = {
@@ -57,6 +60,7 @@ ResourceSelectComponent.propTypes = {
   name: PropTypes.string,
   label: PropTypes.string,
   children: PropTypes.func,
+  required: PropTypes.bool,
 };
 
 export default ResourceSelectComponent;

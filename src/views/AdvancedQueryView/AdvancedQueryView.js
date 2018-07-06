@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import './AdvancedQueryView.css';
 import {
   TextField,
   Button,
   Typography,
-  IconButton,
 } from '@material-ui/core/';
-import ViewListIcon from '@material-ui/icons/ViewList';
-import TimelineIcon from '@material-ui/icons/Timeline';
 import queryString from 'query-string';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
 import api from '../../services/api';
@@ -34,6 +31,8 @@ class AdvancedQueryView extends Component {
         fuzzyMatch: 0,
       },
       sources: [],
+      loginRedirect: false,
+      error: null,
     };
 
     // this.handleNeighbors = this.handleNeighbors.bind(this);
@@ -45,8 +44,15 @@ class AdvancedQueryView extends Component {
    * Initializes valid sources.
    */
   async componentDidMount() {
-    const sources = await api.getSources();
-    this.setState({ sources });
+    api.getSources()
+      .then(sources => this.setState({ sources }))
+      .catch((error) => {
+        if (error.status === 401) {
+          this.setState({ loginRedirect: true });
+        } else {
+          this.setState({ error });
+        }
+      });
   }
 
   /**
@@ -76,7 +82,15 @@ class AdvancedQueryView extends Component {
   }
 
   render() {
-    const { mainParams, sources } = this.state;
+    const {
+      mainParams,
+      sources,
+      error,
+      loginRedirect,
+    } = this.state;
+
+    if (loginRedirect) return <Redirect push to="/login" />;
+    if (error) return <Redirect push to={{ pathname: '/error', state: error }} />;
 
     return (
       <div className="adv-wrapper">

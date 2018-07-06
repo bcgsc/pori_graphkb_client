@@ -34,14 +34,24 @@ import auth from './services/auth';
 class App extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       anchorEl: null,
       loggedIn: !!auth.getToken(),
     };
+
     this.handleAuthenticate = this.handleAuthenticate.bind(this);
+    this.handleRedirect = this.handleRedirect.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleLogOut = this.handleLogOut.bind(this);
+  }
+
+  /**
+   * Refreshes state upon login page render.
+   */
+  handleRedirect() {
+    this.setState({ loggedIn: !!auth.getToken() });
   }
 
   /**
@@ -95,14 +105,14 @@ class App extends Component {
 
     const addNodeForm = () => <NodeFormComponent variant="add" />;
     const loginWithProps = () => (
-      <LoginView loggedIn={loggedIn} handleAuthenticate={this.handleAuthenticate} />
+      <LoginView
+        handleRedirect={this.handleRedirect}
+        handleAuthenticate={this.handleAuthenticate}
+      />
     );
 
     const loggedInContent = (
       <Switch>
-        <Route exact path="/">
-          <Redirect to="/query" />
-        </Route>
         <Route exact path="/query" component={QueryView} />
         <Route path="/query/advanced" component={AdvancedQueryView} />
         <Route path="/add" component={addNodeForm} />
@@ -116,12 +126,18 @@ class App extends Component {
         <BrowserRouter>
           <div className="App">
             <AppBar position="static" className="banner">
-              <IconButton color="inherit" aria-label="open drawer">
+              <IconButton
+                color="inherit"
+                disabled={!loggedIn}
+              >
                 <Link className="icon-link" to="/query">
                   <SearchIcon />
                 </Link>
               </IconButton>
-              <IconButton color="inherit" aria-label="open drawer">
+              <IconButton
+                color="inherit"
+                disabled={!loggedIn}
+              >
                 <Link className="icon-link" to="/add">
                   <AddIcon />
                 </Link>

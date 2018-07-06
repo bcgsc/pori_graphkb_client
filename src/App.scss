@@ -15,6 +15,11 @@ $banner-height: 56px;
 
   button {
     margin: auto 0;
+    color: white;
+  }
+
+  button:disabled{
+    color: white;
   }
   
   .user-dropdown{

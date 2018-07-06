@@ -6,6 +6,7 @@ import {
   Button,
   Typography,
   TextField,
+  Snackbar,
 } from '@material-ui/core';
 import api from '../../services/api';
 import auth from '../../services/auth';
@@ -21,10 +22,18 @@ class LoginView extends Component {
       password: '',
       invalid: false,
       error: null,
-      loggedIn: props.loggedIn,
+      loggedIn: false,
+      timedout: false,
     };
     this.handleChange = this.handleChange.bind(this);
+    this.handleClose = this.handleClose.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    const { handleRedirect } = this.props;
+    this.setState({ timedout: auth.isExpired() });
+    handleRedirect();
   }
 
   /**
@@ -33,6 +42,13 @@ class LoginView extends Component {
    */
   handleChange(e) {
     this.setState({ [e.target.name]: e.target.value, invalid: false });
+  }
+
+  /**
+   * Closes snackbar.
+   */
+  handleClose() {
+    this.setState({ timedout: false });
   }
 
   /**
@@ -56,7 +72,7 @@ class LoginView extends Component {
         handleAuthenticate();
         this.setState({ loggedIn: true });
       })
-      .catch(async (error) => {
+      .catch((error) => {
         if (error.status === 401) {
           this.setState({ invalid: true });
         } else {
@@ -75,6 +91,7 @@ class LoginView extends Component {
       invalid,
       error,
       loggedIn,
+      timedout,
     } = this.state;
 
 
@@ -83,6 +100,18 @@ class LoginView extends Component {
 
     return (
       <div className="login-wrapper">
+        <Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          open={timedout}
+          onClose={this.handleClose}
+          autoHideDuration={3000}
+          message={(
+            <span>
+              Session timed out.
+            </span>
+          )}
+        />
+
         <form className="login-form" onSubmit={this.handleSubmit}>
           <TextField
             className="login-input"
@@ -122,18 +151,13 @@ class LoginView extends Component {
   }
 }
 
-LoginView.defaultProps = {
-  loggedIn: false,
-};
-
 /**
  * @param {function} handleAuthenticate - function passed in from parent to handle a
  * successful log in.
- * @param {bool} loggedIn - initial log in flag.
  */
 LoginView.propTypes = {
   handleAuthenticate: PropTypes.func.isRequired,
-  loggedIn: PropTypes.bool,
+  handleRedirect: PropTypes.func.isRequired,
 };
 
 export default LoginView;

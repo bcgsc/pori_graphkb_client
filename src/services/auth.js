@@ -14,6 +14,19 @@ export default class auth {
   }
 
   /**
+   * Checks expiry date on JWT token and compares with current time.
+   */
+  static isExpired() {
+    const token = localStorage.getItem(KB_TOKEN_KEY);
+    if (token) {
+      const expiry = jwt.decode(token).exp;
+      const now = new Date();
+      return now.getTime() > expiry * 1000;
+    }
+    return false;
+  }
+
+  /**
    * Loads new Knowledge Base token into localstorage.
    * @param {string} token - New Knowledge Base token.
    */
@@ -33,6 +46,9 @@ export default class auth {
    */
   static getUser() {
     const token = localStorage.getItem(KB_TOKEN_KEY);
-    return jwt.decode(token).user.name;
+    if (token) {
+      return jwt.decode(token).user.name;
+    }
+    return null;
   }
 }

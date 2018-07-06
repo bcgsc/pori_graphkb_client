@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
 import './QueryView.css';
-import { Button, IconButton, Snackbar } from '@material-ui/core';
-import ViewListIcon from '@material-ui/icons/ViewList';
-import TimelineIcon from '@material-ui/icons/Timeline';
+import { Button, Snackbar } from '@material-ui/core';
 import AutoSearchComponent from '../../components/AutoSearchComponent/AutoSearchComponent';
 
 /**

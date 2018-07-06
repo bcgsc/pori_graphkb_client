@@ -87,16 +87,10 @@ export default class api {
         }
         return Promise.reject(response);
       })
-      .catch((error) => {
-        if (error.status === 401) {
-          auth.clearToken();
-        }
-
-        return error.json().then(body => Promise.reject({
-          status: error.status,
-          body,
-        }));
-      });
+      .catch(error => error.json().then(body => Promise.reject({
+        status: error.status,
+        body,
+      })));
   }
 
   /**

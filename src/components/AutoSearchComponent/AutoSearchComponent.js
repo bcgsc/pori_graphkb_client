@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Redirect } from 'react-router-dom';
 import './AutoSearchComponent.css';
 import Downshift from 'downshift';
 import {
@@ -26,6 +27,7 @@ class AutoSearchComponent extends Component {
       property: props.property || 'name',
       error: false,
       emptyFlag: false,
+      loginRedirect: false,
     };
 
     this.callApi = _.debounce(this.callApi.bind(this), 300);
@@ -65,14 +67,22 @@ class AutoSearchComponent extends Component {
       this.setState({ options: cycled, error: false, emptyFlag });
     })
       .catch((error) => {
-        if (error.status === 400) {
+        if (error.status === 401) {
+          this.setState({ loginRedirect: true });
+        } else if (error.status === 400) {
           this.setState({ error: true });
         }
       });
   }
 
   render() {
-    const { options, error, emptyFlag } = this.state;
+    const {
+      options,
+      error,
+      emptyFlag,
+      loginRedirect,
+    } = this.state;
+
     const {
       children,
       onChange,
@@ -82,6 +92,8 @@ class AutoSearchComponent extends Component {
       label,
       required,
     } = this.props;
+
+    if (loginRedirect) return <Redirect push to={{ pathname: '/login' }} />;
 
     const autoSearchResults = (
       inputValue,

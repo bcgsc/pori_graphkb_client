@@ -172,16 +172,6 @@ class AdvancedQueryView extends Component {
               Search
             </Button>
           </Link>
-          {/* <IconButton color="primary">
-            <Link to={{ search: this.bundle(), pathname: '/data/table' }} className="icon-link">
-              <ViewListIcon />
-            </Link>
-          </IconButton>
-          <IconButton color="secondary">
-            <Link to={{ search: this.bundle(), pathname: '/data/graph' }} className="icon-link">
-              <TimelineIcon />
-            </Link>
-          </IconButton> */}
         </div>
       </div>
     );

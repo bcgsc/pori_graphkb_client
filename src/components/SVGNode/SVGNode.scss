@@ -1,0 +1,30 @@
+@import '../../globals';
+
+.node {
+    cursor: pointer;
+    transition: stroke-width 0.1s ease-out,
+        fill 0.1s ease-out,
+        stroke 0.1s ease-out;
+
+    stroke: #1f6552;
+    stroke-width: 0.5;
+}
+.node-expandable{
+    cursor: pointer;
+    transition: stroke-width 0.1s ease-out,
+        fill 0.1s ease-out,
+        stroke 0.1s ease-out;
+
+    stroke: #00FF00;
+    stroke-width: 0.7;
+}
+
+.node-name {
+      font-family: 'Lato';
+      font-size: 12px;
+      text-anchor: middle;
+      dominant-baseline: central; //doesn't work on firefox
+      font-weight: 300;
+      fill: $md-primary-color;
+      cursor: pointer;
+}   

@@ -1,0 +1,27 @@
+@import "../../globals";
+
+.node-properties {
+  padding: 0.8em;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: auto;
+  section {
+    padding: 0.3em;
+  }
+}
+
+.node-wrapper {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.basic-wrapper {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.node-edit-btn {
+  float: right;
+  margin: 0 0.8em;
+}

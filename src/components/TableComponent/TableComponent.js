@@ -276,26 +276,27 @@ class TableComponent extends Component {
         onClose={this.handleClose}
       >
         <MenuItem
-          onClick={() => { this.handleGraphRedirect(); this.handleClose(); }}
+          onClick={() => { this.handleClose(); this.handleGraphRedirect(); }}
           disabled={displayed.length === 0}
         >
           View selected as graph
         </MenuItem>
         <MenuItem
-          onClick={() => { this.handleTSVDownload(); this.handleClose(); }}
+          onClick={() => { this.handleClose(); this.handleTSVDownload(); }}
         >
           Download as TSV
         </MenuItem>
         <MenuItem
-          onClick={() => { this.handleHideSelected(); this.handleClose(); }}
+          onClick={() => { this.handleClose(); this.handleHideSelected(); }}
         >
           Hide Selected Rows
         </MenuItem>
         <MenuItem
-          onClick={() => { this.handleShowAllNodes(); this.handleClose(); }}
+          onClick={() => { this.handleClose(); this.handleShowAllNodes(); }}
           disabled={hidden.length === 0}
         >
-          Show all rows
+          Show hidden rows
+          {hidden.length !== 0 ? ` (${hidden.length})` : null}
         </MenuItem>
       </Menu>
     );

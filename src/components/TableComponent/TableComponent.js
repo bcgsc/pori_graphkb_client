@@ -44,6 +44,7 @@ class TableComponent extends Component {
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleGraphRedirect = this.handleGraphRedirect.bind(this);
+    this.handleTSVDownload = this.handleTSVDownload.bind(this);
   }
 
   /**
@@ -137,6 +138,43 @@ class TableComponent extends Component {
   }
 
   /**
+   * builds tsv data and prompts the browser to download file.
+   */
+  handleTSVDownload() {
+    const { data } = this.props;
+    const columns = ['name', 'source', 'sourceId', 'longName', 'description', 'subsets'];
+    const rows = [];
+    rows.push(columns.join('\t'));
+    Object.keys(data).forEach((key) => {
+      const row = [];
+
+      columns.forEach((column) => {
+        if (column === 'source') {
+          row.push(data[key][column].name);
+        } else if (column === 'subsets' && data[key][column]) {
+          row.push(data[key][column].join(', '));
+        } else {
+          row.push(data[key][column]);
+        }
+      });
+
+      rows.push(row.join('\t'));
+    });
+    const tsv = rows.join('\n');
+
+    const uri = `data:text/tab-separated-values,${encodeURIComponent(tsv)}`;
+
+    const link = document.createElement('a');
+    link.download = 'download.tsv';
+    link.href = uri;
+
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+  }
+
+  /**
    * Returns true if node identifier is the currently selected id.
    * @param {string} rid - Target node identifier.
    */
@@ -204,13 +242,15 @@ class TableComponent extends Component {
         onClose={this.handleClose}
       >
         <MenuItem
-          onClick={this.handleGraphRedirect}
+          onClick={() => { this.handleGraphRedirect(); this.handleClose(); }}
           disabled={displayed.length === 0}
         >
           View selected as graph
         </MenuItem>
-        <MenuItem>
-          Download as CSV
+        <MenuItem
+          onClick={() => { this.handleTSVDownload(); this.handleClose(); }}
+        >
+          Download as TSV
         </MenuItem>
         <MenuItem>
           Hide Selected Rows

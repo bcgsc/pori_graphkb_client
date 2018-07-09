@@ -1,0 +1,55 @@
+@import "globals";
+
+$banner-height: 56px;
+
+.banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: auto;
+  height: $banner-height;
+  display: flex;
+  background-color: $md-primary-color;
+  flex-direction: row !important;
+
+  button {
+    margin: auto 0;
+    color: white;
+  }
+
+  button:disabled{
+    color: white;
+  }
+  
+  .user-dropdown{
+    float: right;
+    margin: auto;
+    margin-right: 1em;
+    
+    .user-btn{
+      color: white;
+      svg{
+        font-size: 32px;
+        margin-right: 4px;
+      }
+      span aside{
+          color:white;
+      }
+    }
+  }
+}
+
+.content {
+  overflow-y: auto;
+  position: absolute;
+  top: $banner-height;
+  left: 0;
+  right: 0;
+  margin: auto;
+  bottom: 0;
+}
+
+.router-outlet {
+  height: inherit;
+}

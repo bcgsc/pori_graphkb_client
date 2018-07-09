@@ -1,64 +1,23 @@
-# Ontologyweb
+# Knowledge Base GUI
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.0.
+## What you need to know
 
-## Developers
+This is the front end for the Knowledge Base database. Users can query the database, view results in a table or graph view, edit record properties, and add or delete records.
 
-After cloning, run `npm install` to install all dependencies. Then run `ng serve` to start the dev server (`http://localhost:4200/`). 
+### Querying
+The query page allows users to search records by name, with action buttons to view the results in either table or graph form. This simple query will also return records with names that contain the input string.
 
-### Project structure
+The advanced querying page allows users to specify additional search parameters. The disease schema can be found here: http://kbapi01:8008/api/v0.0.8/spec/#/Disease/get_diseases
 
-* Root Directory:
+### Data View
 
-    * `node_modules `: Project dependencies.
-    * `e2e`: End to end tests.
-    * `src`: App source code.
-    * `angular.json`: Angular configuration file.
-    * `package.json`: Project dependencies configuration file.
-    * `tsconfig.json`: Typescript configuration file.
-    * `tslint.json`: Typescript linting configuration file.
+The query results can be viewed in either table or graph form. In table form, data can be sorted by source, source ID, or name, as well as whether or not the record has been staged to be viewed in graph form. Each row can be expanded to see record details.
 
-* `src`:
-    * `index.html`: Entry point to the app. Try not to change anything here.
-    * `main.ts`: Compiles and bootstraps the app to be served to the browser.
-    * `favicon.ico`: Browser tab icon for the app.
-    * `karma.conf.js`: Karma configuration file.
-    * `polyfills.ts`: Polyfills file for target browsers.
-    * `styles.scss`: Global styles file.
-    * `tests.ts`: Main entry point for tests. Try not to change anything here.
-    * `tsconfig.{app|spec}.json`: Typescript compiler for app/tests.
-    * `tslint.ts`: Additional linting info for running `ng lint`.
-    * `assets`: Static resources for the app (pictures, files, etc.)
-    * `environments`: Contains configuration info for different environments (could remove dummy services, master tokens, etc. from source code when deploying to production environment).
-    * `app`: App Source code.
+In graph form, nodes can be expanded by clicking them if they are the currently selected node. Related nodes are highlighted with configurable colors. When switching to graph view from table view, the application will display all records that have their checkboxes checked. If none are checked, it will default to the currently selected node. Graph properties can also be configured in the toolbar.
 
-* `app`:
-    * `app.module.ts`: Main module for the app. Configures imports and declarations for app.
-    * `app.component.{html|ts|scss}`: Base app component. Best practice to not put too much business logic here.
-    * `app-routing.module.ts`: Routing module for the app. Declare routes and corresponding component views.
-    * `components`: Contains all app components. Each component is comprised of a .ts, .html, and .scss file corresponding to the view (html + scss) and controller (ts) of the component. By convention, components are named in the format `hyphenated-name/hyphenated-name.component.{html|ts|scss}`
-    * `directives`: Contains custom directives for the app. Naming convention is `hyphenated-name.directive.ts`.
-    * `models`: Contains model classes for the app.
-    * `pipes`: Pipes can be used to dynamically format data in a view. Naming convention `hyphenated-name.pipe.ts`.
-    * `services`: Services are meant to house business logic, and provide distinct functionalities to components that they are injected in.
-    * `styles`: Additional style resources can be found here.
+### Forms
 
-## Code scaffolding
+Records can be edited via the table view by clicking on the clipboard icon in the top right of the details dropdown. Records can be added via the add node form, which can be accessed by the add icon in the application header.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+For more info on the database api, look here: http://kbapi01:8008/api/v0.0.8/spec
 
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).

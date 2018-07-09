@@ -51,7 +51,7 @@ class App extends Component {
    * Refreshes state upon login page render.
    */
   handleRedirect() {
-    this.setState({ loggedIn: !!auth.getToken() });
+    this.setState({ loggedIn: !!auth.getToken() && !auth.isExpired() });
   }
 
   /**

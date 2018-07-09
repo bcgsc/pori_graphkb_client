@@ -36,6 +36,8 @@ class DataView extends Component {
     this.handleNodeAdd = this.handleNodeAdd.bind(this);
     this.handleCheckbox = this.handleCheckbox.bind(this);
     this.handleCheckAll = this.handleCheckAll.bind(this);
+    this.handleHideSelected = this.handleHideSelected.bind(this);
+    this.handleShowAllNodes = this.handleShowAllNodes.bind(this);
     this.handleDrawerClose = this.handleDrawerClose.bind(this);
     this.handleNodeEditStart = this.handleNodeEditStart.bind(this);
     this.handleNodeFinishEdit = this.handleNodeFinishEdit.bind(this);
@@ -129,6 +131,23 @@ class DataView extends Component {
     } else {
       displayed = [];
     }
+    this.setState({ displayed });
+  }
+
+  /**
+   * Clears displayed array.
+   */
+  handleHideSelected() {
+    this.setState({ displayed: [] });
+  }
+
+  /**
+   * Appends the input array to the displayed array.
+   */
+  handleShowAllNodes(hidden) {
+    const { displayed } = this.state;
+
+    displayed.push(...hidden);
     this.setState({ displayed });
   }
 
@@ -232,6 +251,8 @@ class DataView extends Component {
         displayed={displayed}
         handleCheckAll={this.handleCheckAll}
         handleNodeEditStart={this.handleNodeEditStart}
+        handleHideSelected={this.handleHideSelected}
+        handleShowAllNodes={this.handleShowAllNodes}
       />
     );
     const dataView = () => {

@@ -36,6 +36,7 @@ class TableComponent extends Component {
       sort: null,
       anchorEl: null,
       graphRedirect: false,
+      hidden: [],
     };
     this.handleDetailToggle = this.handleDetailToggle.bind(this);
     this.handleRequestSort = this.handleRequestSort.bind(this);
@@ -45,6 +46,8 @@ class TableComponent extends Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleGraphRedirect = this.handleGraphRedirect.bind(this);
     this.handleTSVDownload = this.handleTSVDownload.bind(this);
+    this.handleHideSelected = this.handleHideSelected.bind(this);
+    this.handleShowAllNodes = this.handleShowAllNodes.bind(this);
   }
 
   /**
@@ -67,24 +70,28 @@ class TableComponent extends Component {
    * selected, toggles the sort direction.
    * @param {string} property - Key of property to be sorted by.
    */
-  handleRequestSort(property) {
+  handleRequestSort(property, fOrder) {
     const { orderBy, order } = this.state;
     const { displayed } = this.props;
 
-    let newOrder = 'desc';
+    let newOrder = fOrder || 'desc';
 
-    if (orderBy === property && order === 'desc') {
+    if (orderBy === property && order === 'desc' && !fOrder) {
       newOrder = 'asc';
     }
 
     const sort = (a, b) => {
       if (property !== 'displayed') {
+        const aValue = property === 'source' ? a[property].name : a[property];
+        const bValue = property === 'source' ? b[property].name : b[property];
+
+
         if (newOrder === 'desc') {
-          return b[property] < a[property]
+          return bValue < aValue
             ? -1
             : 1;
         }
-        return a[property] < b[property]
+        return bValue > aValue
           ? -1
           : 1;
       }
@@ -175,6 +182,32 @@ class TableComponent extends Component {
   }
 
   /**
+   *  Hides currently selected rows from the view.
+   */
+  handleHideSelected() {
+    const { displayed, handleHideSelected } = this.props;
+    const { hidden, selectedId } = this.state;
+
+    hidden.push(...displayed);
+    handleHideSelected();
+
+    if (displayed.includes(selectedId)) this.setState({ selectedId: null });
+    this.setState({ hidden });
+  }
+
+  /**
+   * Returns all hidden rows to the view
+   */
+  handleShowAllNodes() {
+    const { handleShowAllNodes } = this.props;
+    const { hidden } = this.state;
+    handleShowAllNodes(hidden);
+    this.setState({ hidden: [] });
+
+    this.handleRequestSort('displayed', 'desc');
+  }
+
+  /**
    * Returns true if node identifier is the currently selected id.
    * @param {string} rid - Target node identifier.
    */
@@ -193,6 +226,7 @@ class TableComponent extends Component {
       toggle,
       anchorEl,
       graphRedirect,
+      hidden,
     } = this.state;
 
     const {
@@ -252,10 +286,15 @@ class TableComponent extends Component {
         >
           Download as TSV
         </MenuItem>
-        <MenuItem>
+        <MenuItem
+          onClick={() => { this.handleHideSelected(); this.handleClose(); }}
+        >
           Hide Selected Rows
         </MenuItem>
-        <MenuItem>
+        <MenuItem
+          onClick={() => { this.handleShowAllNodes(); this.handleClose(); }}
+          disabled={hidden.length === 0}
+        >
           Show all rows
         </MenuItem>
       </Menu>
@@ -318,59 +357,61 @@ class TableComponent extends Component {
                     </Collapse>
                   </TableRow>
                 ) : null;
-                return (
-                  <React.Fragment key={n['@rid']}>
-                    <TableRow
-                      selected={isSelected}
-                      onClick={() => handleClick(n['@rid'])}
-                      classes={{
-                        root: 'cursor-override',
-                        selected: 'selected-override',
-                      }}
-                    >
-                      <TableCell>
-                        <Checkbox
-                          onChange={() => handleCheckbox(n['@rid'])}
-                          checked={displayed.includes(n['@rid'])}
-                        />
-                      </TableCell>
-                      <TableCell
+                return !hidden.includes(n['@rid'])
+                  ? (
+                    <React.Fragment key={n['@rid']}>
+                      <TableRow
+                        selected={isSelected}
+                        onClick={() => handleClick(n['@rid'])}
                         classes={{
-                          root: 'source-col',
+                          root: 'cursor-override',
+                          selected: 'selected-override',
                         }}
                       >
-                        {n.source.name}
-                      </TableCell>
-                      <TableCell
-                        classes={{
-                          root: 'sourceId-col',
-                        }}
-                      >
-                        {n.sourceId}
-                      </TableCell>
-
-                      <TableCell
-                        classes={{
-                          root: 'name-col',
-                        }}
-                      >
-                        {n.name}
-                      </TableCell>
-                      <TableCell>
-                        <IconButton
-                          onClick={() => this.handleDetailToggle(n['@rid'])}
-                          className={
-                            active ? 'detail-btn-active' : 'detail-btn'
-                          }
+                        <TableCell>
+                          <Checkbox
+                            onChange={() => handleCheckbox(n['@rid'])}
+                            checked={displayed.includes(n['@rid'])}
+                          />
+                        </TableCell>
+                        <TableCell
+                          classes={{
+                            root: 'source-col',
+                          }}
                         >
-                          <KeyboardArrowDownIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                    {detail}
-                  </React.Fragment>
-                );
-              })}
+                          {n.source.name}
+                        </TableCell>
+                        <TableCell
+                          classes={{
+                            root: 'sourceId-col',
+                          }}
+                        >
+                          {n.sourceId}
+                        </TableCell>
+
+                        <TableCell
+                          classes={{
+                            root: 'name-col',
+                          }}
+                        >
+                          {n.name}
+                        </TableCell>
+                        <TableCell>
+                          <IconButton
+                            onClick={() => this.handleDetailToggle(n['@rid'])}
+                            className={
+                              active ? 'detail-btn-active' : 'detail-btn'
+                            }
+                          >
+                            <KeyboardArrowDownIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                      {detail}
+                    </React.Fragment>
+                  ) : null;
+              })
+            }
             <TableRow>
               <TableCell colSpan={4} className="spacer-cell">
                 <TablePagination
@@ -419,6 +460,8 @@ class TableComponent extends Component {
 * @param {function} handleNodeEditStart - Method triggered when user requests to edit a node.
 * @param {function} handleClick - Method triggered when a row is clicked.
 * @param {function} handleCheckbox - Method triggered when a single row is checked.
+* @param {function} handleHideSelected - Method for hiding selected rows from the view.
+* @param {function} handleShowAllNodes - Method for returning previously hidden rows to the view.
     */
 TableComponent.propTypes = {
   data: PropTypes.object.isRequired,
@@ -429,6 +472,8 @@ TableComponent.propTypes = {
   handleNodeEditStart: PropTypes.func.isRequired,
   handleClick: PropTypes.func.isRequired,
   handleCheckbox: PropTypes.func.isRequired,
+  handleHideSelected: PropTypes.func.isRequired,
+  handleShowAllNodes: PropTypes.func.isRequired,
 };
 
 export default TableComponent;

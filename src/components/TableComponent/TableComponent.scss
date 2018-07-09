@@ -1,0 +1,92 @@
+@import "../../globals";
+
+.table-head {
+  tr,
+  th {
+    position: sticky;
+    top: 0;
+    background-color: #f8f8f8;
+    z-index: 2;
+  }
+  th:before{
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-bottom: 1px solid rgba(224, 224, 224, 1);
+  }
+}
+.selected-override {
+  background-color: rgba(214, 219, 245, 0.7) !important;
+}
+.cursor-override {
+  cursor: pointer;
+}
+.cursor-override:hover {
+  background-color: rgba(227, 230, 248, 0.4);
+}
+
+
+.data-table {
+  margin: 0 auto;
+  width: 100%;
+  overflow: auto;
+}
+
+.table-paginator {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  background-color: #f8f8f8;
+  display: flex;
+  float: left;
+  z-index: 1;
+}
+
+.source-col {
+  $width: 65px;
+  min-width: $width;
+  max-width: $width;
+}
+.sourceId-col {
+  $width: 65px;
+  min-width: $width;
+  max-width: $width;
+}
+.name-col {
+  $width: 300px;
+  min-width: $width;
+}
+.spacer-cell {
+  position: sticky;
+  left: 0;
+  right: 0;
+  background-color: #f8f8f8;
+  bottom: 0;
+}
+.spacer-cell:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid rgba(224, 224, 224, 1);
+}
+
+$flip-duration: 0.15s;
+.detail-btn-active {
+  animation: turn $flip-duration forwards;
+}
+
+@keyframes turn {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(180deg);
+  }
+}

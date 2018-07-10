@@ -33,10 +33,10 @@ class TableComponent extends Component {
       order: 'asc',
       orderBy: null,
       toggle: '',
-      sort: null,
       anchorEl: null,
       graphRedirect: false,
       hidden: [],
+      sortedData: Object.keys(props.data).map(key => props.data[key]),
     };
     this.handleDetailToggle = this.handleDetailToggle.bind(this);
     this.handleRequestSort = this.handleRequestSort.bind(this);
@@ -69,22 +69,24 @@ class TableComponent extends Component {
    * Sorts table by the input property, if property is already
    * selected, toggles the sort direction.
    * @param {string} property - Key of property to be sorted by.
+   * @param {string} fOrder - Optional forced order for the sort.
    */
   handleRequestSort(property, fOrder) {
     const { orderBy, order } = this.state;
-    const { displayed } = this.props;
+    const { displayed, data } = this.props;
 
     let newOrder = fOrder || 'desc';
+    const newProperty = order === 'asc' && orderBy === property ? null : property;
 
     if (orderBy === property && order === 'desc' && !fOrder) {
       newOrder = 'asc';
     }
 
     const sort = (a, b) => {
-      if (property !== 'displayed') {
-        const aValue = property === 'source' ? a[property].name : a[property];
-        const bValue = property === 'source' ? b[property].name : b[property];
-
+      if (!newProperty) return 1;
+      if (newProperty !== 'displayed') {
+        const aValue = newProperty === 'source' ? a[newProperty].name : a[newProperty];
+        const bValue = newProperty === 'source' ? b[newProperty].name : b[newProperty];
 
         if (newOrder === 'desc') {
           return bValue < aValue
@@ -107,7 +109,13 @@ class TableComponent extends Component {
         : 1;
     };
 
-    this.setState({ order: newOrder, orderBy: property, sort });
+    this.setState(
+      {
+        order: newOrder,
+        orderBy: newProperty,
+        sortedData: Object.keys(data).map(k => data[k]).sort(sort),
+      },
+    );
   }
 
   /**
@@ -225,7 +233,7 @@ class TableComponent extends Component {
       page,
       orderBy,
       order,
-      sort,
+      sortedData,
       toggle,
       anchorEl,
       graphRedirect,
@@ -252,10 +260,6 @@ class TableComponent extends Component {
         />
       );
     }
-
-    let tableData = Object.keys(data).map(rid => data[rid]);
-
-    if (sort !== null) tableData = tableData.sort((a, b) => sort(a, b));
 
     const columns = [
       {
@@ -312,13 +316,16 @@ class TableComponent extends Component {
               <TableCell>
                 <Checkbox
                   onChange={handleCheckAll}
-                  checked={displayed.length === tableData.length}
+                  checked={displayed.length === sortedData.length}
                 />
                 <TableSortLabel
                   active={orderBy === 'displayed'}
                   onClick={() => this.handleRequestSort('displayed')}
                   direction={order}
-                />
+                >
+                  {/* not sure what to label this as */}
+                  Select
+                </TableSortLabel>
               </TableCell>
               {columns.map(col => (
                 <TableCell key={col.id} classes={{ root: `${col.id}-col` }}>
@@ -340,7 +347,7 @@ class TableComponent extends Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {tableData
+            {sortedData
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((n) => {
                 const isSelected = this.isSelected(n['@rid']);
@@ -420,7 +427,7 @@ class TableComponent extends Component {
               <TableCell colSpan={4} className="spacer-cell">
                 <TablePagination
                   classes={{ root: 'table-paginator' }}
-                  count={tableData.length}
+                  count={sortedData.length}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   onChangePage={this.handleChangePage}

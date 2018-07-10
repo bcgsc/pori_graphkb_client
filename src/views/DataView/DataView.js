@@ -27,6 +27,7 @@ class DataView extends Component {
       loginRedirect: false,
       data: null,
       displayed: [],
+      hidden: [],
       selectedId: null,
       editing: false,
       error: null,
@@ -125,9 +126,9 @@ class DataView extends Component {
    */
   handleCheckAll(e) {
     let displayed;
-    const { data } = this.state;
+    const { data, hidden } = this.state;
     if (e.target.checked) {
-      displayed = Object.keys(data);
+      displayed = Object.keys(data).filter(key => !hidden.includes(key));
     } else {
       displayed = [];
     }
@@ -138,19 +139,22 @@ class DataView extends Component {
    * Clears displayed array.
    */
   handleHideSelected() {
-    this.setState({ displayed: [] });
+    const { displayed, hidden, selectedId } = this.state;
+    hidden.push(...displayed);
+
+    if (displayed.includes(selectedId)) this.setState({ selectedId: null });
+
+    this.setState({ hidden, displayed: [] });
   }
 
   /**
    * Appends the input array to the displayed array.
-   *
-   * @param {Array} hidden - Array containing nodes that user wants to hide from view.
    */
-  handleShowAllNodes(hidden) {
-    const { displayed } = this.state;
+  handleShowAllNodes() {
+    const { displayed, hidden } = this.state;
 
     displayed.push(...hidden);
-    this.setState({ displayed });
+    this.setState({ displayed, hidden: [] });
   }
 
   /**
@@ -201,6 +205,7 @@ class DataView extends Component {
       queryRedirect,
       loginRedirect,
       error,
+      hidden,
     } = this.state;
 
     const { location } = this.props;
@@ -251,6 +256,7 @@ class DataView extends Component {
         handleCheckbox={this.handleCheckbox}
         search={location.search}
         displayed={displayed}
+        hidden={hidden}
         handleCheckAll={this.handleCheckAll}
         handleNodeEditStart={this.handleNodeEditStart}
         handleHideSelected={this.handleHideSelected}

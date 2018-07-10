@@ -148,24 +148,27 @@ class TableComponent extends Component {
    * builds tsv data and prompts the browser to download file.
    */
   handleTSVDownload() {
+    const { hidden } = this.state;
     const { data } = this.props;
     const columns = ['name', 'source', 'sourceId', 'longName', 'description', 'subsets'];
     const rows = [];
     rows.push(columns.join('\t'));
+    if (hidden.length === Object.keys(data).length) return;
     Object.keys(data).forEach((key) => {
       const row = [];
+      if (!hidden.includes(key)) {
+        columns.forEach((column) => {
+          if (column === 'source') {
+            row.push(data[key][column].name);
+          } else if (column === 'subsets' && data[key][column]) {
+            row.push(data[key][column].join(', '));
+          } else {
+            row.push(data[key][column]);
+          }
+        });
 
-      columns.forEach((column) => {
-        if (column === 'source') {
-          row.push(data[key][column].name);
-        } else if (column === 'subsets' && data[key][column]) {
-          row.push(data[key][column].join(', '));
-        } else {
-          row.push(data[key][column]);
-        }
-      });
-
-      rows.push(row.join('\t'));
+        rows.push(row.join('\t'));
+      }
     });
     const tsv = rows.join('\n');
 

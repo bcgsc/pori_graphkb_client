@@ -143,6 +143,8 @@ class DataView extends Component {
 
   /**
    * Appends the input array to the displayed array.
+   *
+   * @param {Array} hidden - Array containing nodes that user wants to hide from view.
    */
   handleShowAllNodes(hidden) {
     const { displayed } = this.state;

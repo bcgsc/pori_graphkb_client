@@ -35,7 +35,6 @@ class TableComponent extends Component {
       toggle: '',
       anchorEl: null,
       graphRedirect: false,
-      hidden: [],
       sortedData: Object.keys(props.data).map(key => props.data[key]),
     };
     this.handleDetailToggle = this.handleDetailToggle.bind(this);
@@ -46,8 +45,6 @@ class TableComponent extends Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleGraphRedirect = this.handleGraphRedirect.bind(this);
     this.handleTSVDownload = this.handleTSVDownload.bind(this);
-    this.handleHideSelected = this.handleHideSelected.bind(this);
-    this.handleShowAllNodes = this.handleShowAllNodes.bind(this);
   }
 
   /**
@@ -76,8 +73,7 @@ class TableComponent extends Component {
     const { displayed, data } = this.props;
 
     let newOrder = fOrder || 'desc';
-    const newProperty = order === 'asc' && orderBy === property ? null : property;
-
+    const newProperty = order === 'asc' && orderBy === property && !fOrder ? null : property;
     if (orderBy === property && order === 'desc' && !fOrder) {
       newOrder = 'asc';
     }
@@ -156,8 +152,7 @@ class TableComponent extends Component {
    * builds tsv data and prompts the browser to download file.
    */
   handleTSVDownload() {
-    const { hidden } = this.state;
-    const { data } = this.props;
+    const { data, hidden } = this.props;
     const columns = ['name', 'source', 'sourceId', 'longName', 'description', 'subsets'];
     const rows = [];
     rows.push(columns.join('\t'));
@@ -193,32 +188,6 @@ class TableComponent extends Component {
   }
 
   /**
-   *  Hides currently selected rows from the view.
-   */
-  handleHideSelected() {
-    const { displayed, handleHideSelected } = this.props;
-    const { hidden, selectedId } = this.state;
-
-    hidden.push(...displayed);
-    handleHideSelected();
-
-    if (displayed.includes(selectedId)) this.setState({ selectedId: null });
-    this.setState({ hidden });
-  }
-
-  /**
-   * Returns all hidden rows to the view
-   */
-  handleShowAllNodes() {
-    const { handleShowAllNodes } = this.props;
-    const { hidden } = this.state;
-    handleShowAllNodes(hidden);
-    this.setState({ hidden: [] });
-
-    this.handleRequestSort('displayed', 'desc');
-  }
-
-  /**
    * Returns true if node identifier is the currently selected id.
    * @param {string} rid - Target node identifier.
    */
@@ -237,7 +206,6 @@ class TableComponent extends Component {
       toggle,
       anchorEl,
       graphRedirect,
-      hidden,
     } = this.state;
 
     const {
@@ -248,6 +216,9 @@ class TableComponent extends Component {
       handleClick,
       handleCheckbox,
       search,
+      hidden,
+      handleShowAllNodes,
+      handleHideSelected,
     } = this.props;
 
     if (graphRedirect) {
@@ -294,12 +265,18 @@ class TableComponent extends Component {
           Download as TSV
         </MenuItem>
         <MenuItem
-          onClick={() => { this.handleClose(); this.handleHideSelected(); }}
+          onClick={() => { this.handleClose(); handleHideSelected(); }}
         >
           Hide Selected Rows
+          {displayed.length !== 0 ? ` (${displayed.length})` : null}
         </MenuItem>
         <MenuItem
-          onClick={() => { this.handleClose(); this.handleShowAllNodes(); }}
+
+          onClick={() => {
+            this.handleClose();
+            handleShowAllNodes();
+            this.handleRequestSort('displayed', 'desc');
+          }}
           disabled={hidden.length === 0}
         >
           Show hidden rows
@@ -427,7 +404,7 @@ class TableComponent extends Component {
               <TableCell colSpan={4} className="spacer-cell">
                 <TablePagination
                   classes={{ root: 'table-paginator' }}
-                  count={sortedData.length}
+                  count={sortedData.length - hidden.length}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   onChangePage={this.handleChangePage}
@@ -465,6 +442,7 @@ class TableComponent extends Component {
 /**
 * @param {Object} data - Object containing query results.
 * @param {Array} displayed - Array of displayed nodes.
+* @param {Array} hidden - Array of hidden nodes.
 * @param {string} search - URL search string.
 * @param {string} selectedId - Selected node identifier.
 * @param {function} handleCheckAll - Method triggered when all rows are checked.
@@ -478,13 +456,18 @@ TableComponent.propTypes = {
   data: PropTypes.object.isRequired,
   displayed: PropTypes.array.isRequired,
   search: PropTypes.string.isRequired,
-  selectedId: PropTypes.string.isRequired,
+  selectedId: PropTypes.string,
   handleCheckAll: PropTypes.func.isRequired,
   handleNodeEditStart: PropTypes.func.isRequired,
   handleClick: PropTypes.func.isRequired,
   handleCheckbox: PropTypes.func.isRequired,
   handleHideSelected: PropTypes.func.isRequired,
   handleShowAllNodes: PropTypes.func.isRequired,
+  hidden: PropTypes.array.isRequired,
+};
+
+TableComponent.defaultProps = {
+  selectedId: null,
 };
 
 export default TableComponent;

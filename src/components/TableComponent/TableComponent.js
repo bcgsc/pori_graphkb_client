@@ -272,7 +272,6 @@ class TableComponent extends Component {
           {displayed.length !== 0 ? ` (${displayed.length})` : null}
         </MenuItem>
         <MenuItem
-
           onClick={() => {
             this.handleClose();
             handleShowAllNodes();
@@ -301,7 +300,7 @@ class TableComponent extends Component {
                   onClick={() => this.handleRequestSort('displayed')}
                   direction={order}
                 >
-                  Select
+                  Selected
                 </TableSortLabel>
               </TableCell>
               {columns.map(col => (

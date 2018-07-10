@@ -293,14 +293,13 @@ class TableComponent extends Component {
               <TableCell>
                 <Checkbox
                   onChange={handleCheckAll}
-                  checked={displayed.length === sortedData.length}
+                  checked={displayed.length === sortedData.length - hidden.length}
                 />
                 <TableSortLabel
                   active={orderBy === 'displayed'}
                   onClick={() => this.handleRequestSort('displayed')}
                   direction={order}
                 >
-                  {/* not sure what to label this as */}
                   Select
                 </TableSortLabel>
               </TableCell>

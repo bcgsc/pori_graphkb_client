@@ -1,6 +1,6 @@
 @import "../../globals";
 
-$toolbar-height: 100px;
+$toolbar-height: 64px;
 
 .graph-wrapper {
   position: absolute;
@@ -20,104 +20,72 @@ $toolbar-height: 100px;
 .toolbar {
   height: calc(#{$toolbar-height} - 1px);
   position: absolute;
-  top: 0;
+  bottom: 0;
   right: 0;
   left: 0;
   margin: auto;
   display: flex;
-  border-bottom: solid $md-primary-color 1px;
+  border-top: solid $md-primary-color 1px;
   overflow-x: auto;
   overflow-y: hidden;
+  flex-direction: row-reverse;
+}
 
-  .compact-picker {
-    float: left;
-    margin: auto 4px;
-  }
+.graph-options-wrapper {
 
-  .grid-wrapper {
-    margin: auto 4px;
-
-    .button-grid {
-      margin: auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: 1fr 1fr;
-      grid-row-gap: 4px;
-      grid-column-gap: 4px;
-
-      button {
-        padding: 4px;
-      }
+  .graph-input-wrapper {
+    svg {
+      color: $md-secondary-color;
     }
   }
 
-  .graph-options-wrapper {
-    margin: auto 4px;
+  span.label {
+    margin: 0;
+    font-size: 0.7em;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    color: $md-primary-color;
+  }
 
-    .graph-options-grid {
-      display: grid;
-      grid-template-rows: 36px 36px;
-      grid-template-columns: 200px 200px;
-      grid-row-gap: 4px;
-      grid-column-gap: 4px;
-      height: 100%;
+  .graph-input {
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.23);
+    overflow: hidden;
 
-      .graph-input-wrapper {
-        .checkbox-wrapper {
-          margin: 3px 0 0 -15px;
-          .checkbox-label {
-            margin-left: -8px;
-            font-size: 0.9em;
-          }
-          svg {
-            color: $md-secondary-color;
-          }
-        }
-
-        span {
-          margin: 0;
-          font-size: 0.7em;
-          font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-          color: $md-primary-color;
-        }
-
-        .graph-input {
-          border-radius: 4px;
-          border: 1px solid rgba(0, 0, 0, 0.23);
-          overflow: hidden;
-
-          input {
-            border: none;
-            font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-            font-size: 0.9em;
-            background-color: unset;
-            width: 100%;
-          }
-          input:focus {
-            outline: none;
-            box-shadow: none;
-          }
-          input:invalid {
-            outline: none;
-            box-shadow: none;
-          }
-        }
-      }
+    input {
+      border: none;
+      font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+      font-size: 0.9em;
+      background-color: unset;
+      width: 100%;
+    }
+    input:focus {
+      outline: none;
+      box-shadow: none;
+    }
+    input:invalid {
+      outline: none;
+      box-shadow: none;
     }
   }
 }
 
 .svg-wrapper {
   position: absolute;
-  top: $toolbar-height;
+  bottom: $toolbar-height;
   left: 0;
   right: 0;
-  bottom: 0;
+  top: 0;
 
   .node-options {
     position: absolute;
     right: 0;
-    top: 0;
-    margin: 8px;
+    bottom: 0;
+    margin: 24px;
   }
+}
+
+.options-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 32px;
 }

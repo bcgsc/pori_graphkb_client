@@ -4,15 +4,23 @@ import './GraphComponent.css';
 import * as d3 from 'd3';
 
 import {
-  Button,
   Checkbox,
   FormControlLabel,
   IconButton,
   Drawer,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  List,
+  ListItem,
+  Typography,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import EditIcon from '@material-ui/icons/Edit';
+import BuildIcon from '@material-ui/icons/Build';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import { withStyles } from '@material-ui/core/styles';
 import { CompactPicker } from 'react-color';
 import { Link } from 'react-router-dom';
 import queryString from 'query-string';
@@ -31,6 +39,20 @@ const arrowProperties = {
 const nodeInitRadius = 55;
 // SVG node radius.
 const nodeRadius = 4;
+
+const styles = {
+  paper: {
+    width: 'calc(100vw - 1px)',
+  },
+  root: {
+    margin: '3px 0 0 -15px',
+  },
+  label: {
+    'margin-left': '- 8px',
+    'font-size': '0.9em',
+  },
+};
+
 
 /**
  * Component for displaying query results in force directed graph form.
@@ -69,6 +91,7 @@ class GraphComponent extends Component {
         collisionRadius: 4,
         autoCollisionRadius: false,
       },
+      graphOptionsPanel: false,
       colorKey: 'selectedColor',
       expandable: {},
     };
@@ -82,6 +105,8 @@ class GraphComponent extends Component {
     this.handleGraphOptionsChange = this.handleGraphOptionsChange.bind(this);
     this.handleDrawerClose = this.handleDrawerClose.bind(this);
     this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
+    this.handleOptionsPanelOpen = this.handleOptionsPanelOpen.bind(this);
+    this.handleOptionsPanelClose = this.handleOptionsPanelClose.bind(this);
   }
 
   /**
@@ -317,6 +342,20 @@ class GraphComponent extends Component {
   }
 
   /**
+   * Opens graph options dialog.
+   */
+  handleOptionsPanelOpen() {
+    this.setState({ graphOptionsPanel: true });
+  }
+
+  /**
+   * Closes graph options dialog.
+   */
+  handleOptionsPanelClose() {
+    this.setState({ graphOptionsPanel: false });
+  }
+
+  /**
    * Initializes simulation rules and properties. Updates simulation component state.
    */
   initSimulation() {
@@ -366,7 +405,7 @@ class GraphComponent extends Component {
   /**
    * Renders nodes and links to the graph.
    */
-  drawGraph() {
+  drawGraph(reset) {
     const {
       nodes,
       links,
@@ -374,7 +413,21 @@ class GraphComponent extends Component {
       graphOptions,
     } = this.state;
 
-    simulation.nodes(nodes);
+    if (reset) {
+      simulation.nodes(nodes.map((node) => {
+        const n = node;
+        delete n.x;
+        delete n.y;
+        delete n.fx;
+        delete n.fy;
+        delete n.vx;
+        delete n.vy;
+        return n;
+      }));
+    } else {
+      simulation.nodes(nodes);
+    }
+
 
     simulation.force(
       'links',
@@ -523,16 +576,200 @@ class GraphComponent extends Component {
       selectedAliases,
       colorKey,
       displayed,
+      graphOptionsPanel,
     } = this.state;
 
-    const { data, search, handleNodeEditStart } = this.props;
+    const {
+      data,
+      search,
+      handleNodeEditStart,
+      classes,
+    } = this.props;
+
+
+    const selected = key => key === colorKey;
+
+    const arrowSize = {
+      d: `M0,0,L0,${arrowProperties.width} L ${arrowProperties.length}, ${arrowProperties.width / 2}`,
+      refX: nodeRadius + arrowProperties.length + 1,
+      refY: arrowProperties.width / 2,
+    };
+
+    const optionsPanel = (
+      <Dialog
+        open={graphOptionsPanel}
+        onClose={this.handleOptionsPanelClose}
+      >
+        <DialogTitle>
+          Graph Options
+        </DialogTitle>
+        <DialogContent className="options-grid">
+          <div>
+            <div className="compact-picker">
+              <CompactPicker
+                color={graphOptions[colorKey]}
+                onChangeComplete={this.handleColorPick}
+              />
+            </div>
+            <List dense>
+              <ListItem>
+                <Typography
+                  style={
+                    {
+                      color: graphOptions.selectedColor,
+                      border: selected('selectedColor')
+                        ? `solid 1px ${graphOptions.selectedColor}`
+                        : 'none',
+                      padding: selected('selectedColor')
+                        ? '8px'
+                        : '9px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                    }
+                  }
+                  onClick={() => this.handleColorKeyChange('selectedColor')}
+                >
+                  selected
+                </Typography>
+              </ListItem>
+              <ListItem>
+                <Typography
+                  style={
+                    {
+                      color: graphOptions.parentsColor,
+                      border: selected('parentsColor')
+                        ? `solid 1px ${graphOptions.parentsColor}`
+                        : 'none',
+                      padding: selected('parentsColor')
+                        ? '8px'
+                        : '9px',
+                      borderRadius: '4px',
+                    }
+                  }
+                  onClick={() => this.handleColorKeyChange('parentsColor')}
+                >
+                  subclass of
+                </Typography>
+              </ListItem>
+              <ListItem>
+                <Typography
+                  style={
+                    {
+                      color: graphOptions.childrenColor,
+                      border: selected('childrenColor')
+                        ? `solid 1px ${graphOptions.childrenColor}`
+                        : 'none',
+                      padding: selected('childrenColor')
+                        ? '8px'
+                        : '9px',
+                      borderRadius: '4px',
+                    }
+                  }
+                  onClick={() => this.handleColorKeyChange('childrenColor')}
+                >
+                  has subclass
+                </Typography>
+              </ListItem>
+              <ListItem>
+                <Typography
+                  style={
+                    {
+                      color: graphOptions.aliasesColor,
+                      border: selected('aliasesColor')
+                        ? `solid 1px ${graphOptions.aliasesColor}`
+                        : 'none',
+                      padding: selected('aliasesColor')
+                        ? '8px'
+                        : '9px',
+                      borderRadius: '4px',
+                    }
+                  }
+                  onClick={() => this.handleColorKeyChange('aliasesColor')}
+                >
+                  aliases
+                </Typography>
+              </ListItem>
+            </List>
+          </div>
+
+          <div className="graph-options-wrapper">
+            <div className="graph-input-wrapper">
+              <span className="label">
+                Link Strength
+              </span>
+              <div className="graph-input">
+                <input
+                  label="Link Strength"
+                  name="linkStrength"
+                  type="number"
+                  value={graphOptions.linkStrength}
+                  onChange={this.handleGraphOptionsChange}
+                />
+              </div>
+            </div>
+            <div className="graph-input-wrapper">
+              <span className="label">
+                Charge Strength
+              </span>
+              <div className="graph-input">
+                <input
+                  label="Charge Strength"
+                  name="chargeStrength"
+                  type="number"
+                  value={graphOptions.chargeStrength}
+                  onChange={this.handleGraphOptionsChange}
+                />
+              </div>
+            </div>
+            <div className="graph-input-wrapper">
+              <span className="label">
+                Collision Radius
+              </span>
+              <div className="graph-input">
+                <input
+                  label="Collision Radius"
+                  name="collisionRadius"
+                  type="number"
+                  value={graphOptions.collisionRadius}
+                  onChange={this.handleGraphOptionsChange}
+                />
+              </div>
+            </div>
+            <div>
+              <FormControlLabel
+                classes={{
+                  root: classes.root,
+                  label: classes.label,
+                }}
+                control={(
+                  <Checkbox
+                    color="secondary"
+                    onChange={e => this.handleGraphOptionsChange({
+                      target: {
+                        value: e.target.checked,
+                        name: e.target.name,
+                      },
+                    })
+                    }
+                    name="autoCollisionRadius"
+                    checked={graphOptions.autoCollisionRadius}
+                  />
+                )}
+                label="Auto Collision Radius"
+              />
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+
     const detailDrawer = (
       <Drawer
         variant="persistent"
         anchor="right"
         open={detail}
         classes={{
-          paper: 'drawer-box-graph',
+          paper: classes.paper,
         }}
         onClose={this.handleDrawerClose}
         SlideProps={{ unmountOnExit: true }}
@@ -582,23 +819,19 @@ class GraphComponent extends Component {
       );
     });
 
-    const selected = key => key === colorKey;
-    const arrowSize = {
-      d: `M0,0,L0,${arrowProperties.width} L ${arrowProperties.length}, ${arrowProperties.width / 2}`,
-      refX: nodeRadius + arrowProperties.length + 1,
-      refY: arrowProperties.width / 2,
-    };
-
     return (
       <div className="graph-wrapper">
         {detailDrawer}
+        {optionsPanel}
         <div className="toolbar">
           <Link
-            style={{ margin: '4px 12px' }}
             to={{
               pathname: '/data/table',
               search,
               state: displayed,
+            }}
+            style={{
+              margin: 'auto 24px auto 8px',
             }}
           >
             <IconButton
@@ -606,117 +839,33 @@ class GraphComponent extends Component {
               style={{
                 backgroundColor: 'rgba(0, 137, 123, 0.1)',
               }}
+              onClick={this.handleOptionsPanelOpen}
             >
               <ViewListIcon />
             </IconButton>
           </Link>
-          <div className="compact-picker">
-            <CompactPicker
-              color={graphOptions[colorKey]}
-              onChangeComplete={this.handleColorPick}
-            />
-          </div>
-          <div className="grid-wrapper">
-            <div className="button-grid">
-              <Button
-                style={{ color: graphOptions.selectedColor }}
-                onClick={() => this.handleColorKeyChange('selectedColor')}
-                variant={selected('selectedColor') ? 'outlined' : 'flat'}
-              >
-                Selected
-              </Button>
-              <Button
-                style={{ color: graphOptions.parentsColor }}
-                onClick={() => this.handleColorKeyChange('parentsColor')}
-                variant={selected('parentsColor') ? 'outlined' : 'flat'}
-              >
-                SubClass Of
-              </Button>
-              <Button
-                style={{ color: graphOptions.childrenColor }}
-                onClick={() => this.handleColorKeyChange('childrenColor')}
-                variant={selected('childrenColor') ? 'outlined' : 'flat'}
-              >
-                has SubClass
-              </Button>
-              <Button
-                style={{ color: graphOptions.aliasesColor }}
-                onClick={() => this.handleColorKeyChange('aliasesColor')}
-                variant={selected('aliasesColor') ? 'outlined' : 'flat'}
-              >
-                Aliases
-              </Button>
-            </div>
-          </div>
-          <div className="graph-options-wrapper">
-            <div className="graph-options-grid">
-              <div className="graph-input-wrapper">
-                <span>
-                  Link Strength
-                </span>
-                <div className="graph-input">
-                  <input
-                    label="Link Strength"
-                    name="linkStrength"
-                    type="number"
-                    value={graphOptions.linkStrength}
-                    onChange={this.handleGraphOptionsChange}
-                  />
-                </div>
-              </div>
-              <div className="graph-input-wrapper">
-                <span>
-                  Charge Strength
-                </span>
-                <div className="graph-input">
-                  <input
-                    label="Charge Strength"
-                    name="chargeStrength"
-                    type="number"
-                    value={graphOptions.chargeStrength}
-                    onChange={this.handleGraphOptionsChange}
-                  />
-                </div>
-              </div>
-              <div className="graph-input-wrapper">
-                <span>
-                  Collision Radius
-                </span>
-                <div className="graph-input">
-                  <input
-                    label="Collision Radius"
-                    name="collisionRadius"
-                    type="number"
-                    value={graphOptions.collisionRadius}
-                    onChange={this.handleGraphOptionsChange}
-                  />
-                </div>
-              </div>
-              <div className="graph-input-wrapper">
-                <FormControlLabel
-                  classes={{
-                    root: 'checkbox-wrapper',
-                    label: 'checkbox-label',
-                  }}
-                  control={(
-                    <Checkbox
-                      onChange={e => this.handleGraphOptionsChange({
-                        target: {
-                          value: e.target.checked,
-                          name: e.target.name,
-                        },
-                      })
-                      }
-                      name="autoCollisionRadius"
-                      checked={graphOptions.autoCollisionRadius}
-                    />
-                  )}
-                  label="Auto Collision Radius"
-                />
-              </div>
-            </div>
-          </div>
+
+          <IconButton
+            color="primary"
+            onClick={this.handleOptionsPanelOpen}
+            style={{
+              margin: 'auto 8px',
+            }}
+          >
+            <BuildIcon />
+          </IconButton>
+
+          <IconButton
+            color="primary"
+            onClick={() => { this.initSimulation(); this.drawGraph(true); }}
+            style={{
+              margin: 'auto 8px',
+            }}
+          >
+            <RefreshIcon />
+          </IconButton>
         </div>
+
         <div className="svg-wrapper" ref={(node) => { this.wrapper = node; }}>
           <div className="node-options">
             <IconButton onClick={this.handleDrawerOpen}>
@@ -763,22 +912,25 @@ class GraphComponent extends Component {
 GraphComponent.defaultProps = {
   handleNodeAdd: null,
   handleClick: null,
+  classes: null,
 };
 
 /**
- * @param {function} handleNodeAdd - Parent component method triggered when a node
- * is added to the graph.
- * @param {function} handleClick - Parent component method triggered when a graph object is clicked.
- * @param {function} handleNodeEditStart - Method triggered when node edit start is requested.
- * @param {Object} data - Parent state data.
- * @param {string} search - url search string.
- */
+* @param {function} handleNodeAdd - Parent component method triggered when a node
+  * is added to the graph.
+* @param {function} handleClick - Parent component method triggered when a graph object is clicked.
+* @param {function} handleNodeEditStart - Method triggered when node edit start is requested.
+* @param {Object} data - Parent state data.
+* @param {string} search - url search string.
+  */
 GraphComponent.propTypes = {
   handleNodeAdd: PropTypes.func,
   handleClick: PropTypes.func,
   handleNodeEditStart: PropTypes.func.isRequired,
   data: PropTypes.object.isRequired,
   search: PropTypes.string.isRequired,
+  classes: PropTypes.object,
 };
 
-export default GraphComponent;
+
+export default withStyles(styles)(GraphComponent);

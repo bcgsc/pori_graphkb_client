@@ -242,6 +242,9 @@ class TableComponent extends Component {
         anchorEl={anchorEl}
         open={!!anchorEl}
         onClose={this.handleClose}
+        MenuListProps={{
+          onMouseLeave: this.handleClose,
+        }}
       >
         <MenuItem
           onClick={() => { this.handleClose(); this.handleGraphRedirect(); }}
@@ -263,6 +266,7 @@ class TableComponent extends Component {
         </DownloadFileComponent>
         <MenuItem
           onClick={() => { this.handleClose(); handleHideSelected(); }}
+          disabled={displayed.length === 0}
         >
           Hide Selected Rows
           {displayed.length !== 0 ? ` (${displayed.length})` : null}

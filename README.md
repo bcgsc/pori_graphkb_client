@@ -21,3 +21,21 @@ Records can be edited via the table view by clicking on the clipboard icon in th
 
 For more info on the database api, look here: http://kbapi01:8008/api/v0.0.8/spec
 
+
+## Testing
+
+End to end tests are made using cypress.io.
+
+To run tests:
+* `npm run cypress:open`
+
+This will open the cypress dashboard, which will list the available tests for the application. Clicking on an will open a new browser tab and run the suite.
+
+#### Important: to run the authentication tests, you must create a file called `config.json` in the root directory, with the variable:
+
+``` 
+const credentials = {
+  username: '[username]',
+  password: '[password]',
+};
+```

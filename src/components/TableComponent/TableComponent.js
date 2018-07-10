@@ -20,6 +20,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import NodeDetailComponent from '../NodeDetailComponent/NodeDetailComponent';
+import DownloadFileComponent from '../DownloadFileComponent/DownloadFileComponent';
 
 /**
  * Component to display query results in table form.
@@ -44,7 +45,7 @@ class TableComponent extends Component {
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleGraphRedirect = this.handleGraphRedirect.bind(this);
-    this.handleTSVDownload = this.handleTSVDownload.bind(this);
+    this.createTSV = this.createTSV.bind(this);
   }
 
   /**
@@ -151,12 +152,12 @@ class TableComponent extends Component {
   /**
    * builds tsv data and prompts the browser to download file.
    */
-  handleTSVDownload() {
+  createTSV() {
     const { data, hidden } = this.props;
     const columns = ['name', 'source', 'sourceId', 'longName', 'description', 'subsets'];
     const rows = [];
     rows.push(columns.join('\t'));
-    if (hidden.length === Object.keys(data).length) return;
+
     Object.keys(data).forEach((key) => {
       const row = [];
       if (!hidden.includes(key)) {
@@ -173,18 +174,7 @@ class TableComponent extends Component {
         rows.push(row.join('\t'));
       }
     });
-    const tsv = rows.join('\n');
-
-    const uri = `data:text/tab-separated-values,${encodeURIComponent(tsv)}`;
-
-    const link = document.createElement('a');
-    link.download = 'download.tsv';
-    link.href = uri;
-
-    document.body.appendChild(link);
-    link.click();
-
-    document.body.removeChild(link);
+    return rows.join('\n');
   }
 
   /**
@@ -259,11 +249,18 @@ class TableComponent extends Component {
         >
           View selected as graph
         </MenuItem>
-        <MenuItem
-          onClick={() => { this.handleClose(); this.handleTSVDownload(); }}
+        <DownloadFileComponent
+          mediaType="text/tab-separated-values"
+          rawFileContent={this.createTSV()}
+          fileName="download.tsv"
         >
-          Download as TSV
-        </MenuItem>
+          <MenuItem
+            onClick={() => { this.handleClose(); }}
+            disabled={sortedData.length === 0}
+          >
+            Download as TSV
+          </MenuItem>
+        </DownloadFileComponent>
         <MenuItem
           onClick={() => { this.handleClose(); handleHideSelected(); }}
         >

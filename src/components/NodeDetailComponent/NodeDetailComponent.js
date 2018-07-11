@@ -131,8 +131,9 @@ class NodeDetailComponent extends Component {
             onChange={() => this.handleNestedToggle(label)}
             className="nested-container"
           >
+            {/* TODO: Add Breakpoints */}
             <ExpansionPanelSummary expandIcon={<KeyboardArrowDownIcon />}>
-              <Typography variant="subheading" style={{ flexBasis: '15%' }}>
+              <Typography variant="subheading" style={{ flexBasis: '25%' }}>
                 {label}
               </Typography>
               {!isOpen

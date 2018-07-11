@@ -31,12 +31,8 @@ To run tests:
 
 This will open the cypress dashboard, which will list the available tests for the application. Clicking on an will open a new browser tab and run the suite.
 
-#### Important: to run the authentication tests, you must create a file called `config.js` in the root directory, with the variable:
+#### Important: to run the authentication tests, you must set your password via the PASSWORD environment variable 
 
 ``` 
-const credentials = {
-  username: '[username]',
-  password: '[password]',
-};
-module.exports = { credentials };
+export PASSWORD='mysupersecretpassword'
 ```

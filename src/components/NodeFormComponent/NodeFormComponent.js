@@ -97,7 +97,7 @@ class NodeFormComponent extends Component {
    */
   async componentDidMount() {
     const sources = await api.getSources();
-    const edgeTypes = await api.getEdgeTypes();
+    const edgeTypes = await api.getOntologyEdges();
     const { variant } = this.props;
 
     this.setState({ sources, edgeTypes }, () => {

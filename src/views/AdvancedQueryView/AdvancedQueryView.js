@@ -6,6 +6,7 @@ import {
   TextField,
   Button,
   Typography,
+  MenuItem,
 } from '@material-ui/core/';
 import queryString from 'query-string';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
@@ -29,13 +30,14 @@ class AdvancedQueryView extends Component {
         ancestors: '',
         descendants: '',
         fuzzyMatch: 0,
+        class: '',
       },
       sources: [],
+      ontologies: [],
       loginRedirect: false,
       error: null,
     };
 
-    // this.handleNeighbors = this.handleNeighbors.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.bundle = this.bundle.bind(this);
   }
@@ -44,8 +46,7 @@ class AdvancedQueryView extends Component {
    * Initializes valid sources.
    */
   async componentDidMount() {
-    api.getSources()
-      .then(sources => this.setState({ sources }))
+    const sources = await api.getSources()
       .catch((error) => {
         if (error.status === 401) {
           this.setState({ loginRedirect: true });
@@ -53,6 +54,16 @@ class AdvancedQueryView extends Component {
           this.setState({ error });
         }
       });
+    const ontologies = await api.getOntologyVertices()
+      .catch((error) => {
+        if (error.status === 401) {
+          this.setState({ loginRedirect: true });
+        } else {
+          this.setState({ error });
+        }
+      });
+
+    this.setState({ sources, ontologies });
   }
 
   /**
@@ -85,6 +96,7 @@ class AdvancedQueryView extends Component {
     const {
       mainParams,
       sources,
+      ontologies,
       error,
       loginRedirect,
     } = this.state;
@@ -97,6 +109,22 @@ class AdvancedQueryView extends Component {
         <Typography color="textSecondary" variant="headline" id="adv-title">
           Advanced Query
         </Typography>
+        <div className="endpoint-selection">
+          <ResourceSelectComponent
+            value={mainParams.class}
+            onChange={this.handleChange}
+            name="class"
+            label="Class"
+            id="class-adv"
+            resources={ontologies}
+          >
+            {resource => (
+              <MenuItem key={resource.name} value={resource.name}>
+                {resource.name}
+              </MenuItem>
+            )}
+          </ResourceSelectComponent>
+        </div>
         <div className="parameter-selection">
           <TextField
             id="name-adv"

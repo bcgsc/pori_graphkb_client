@@ -346,7 +346,7 @@ class TableComponent extends Component {
                 ) : null;
                 return !hidden.includes(n['@rid'])
                   ? (
-                    <React.Fragment key={n['@rid']}>
+                    <React.Fragment key={n['@rid'] || Math.random()}>
                       <TableRow
                         selected={isSelected}
                         onClick={() => handleClick(n['@rid'])}

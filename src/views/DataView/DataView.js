@@ -10,18 +10,19 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import queryString from 'query-string';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import NodeFormComponent from '../../components/NodeFormComponent/NodeFormComponent';
 import api from '../../services/api';
-
+import util from '../../services/util';
 /**
  * State handling component for query results.
  */
 class DataView extends Component {
   constructor(props) {
     super(props);
-
+    api.getOntologyVertices();
     this.state = {
       queryRedirect: false,
       loginRedirect: false,
@@ -53,12 +54,20 @@ class DataView extends Component {
     let { queryRedirect } = this.state;
     const { loginRedirect } = this.state;
     const { location } = this.props;
-    const search = location.search ? `${location.search}&` : '?';
+
+    const filteredSearch = queryString.parse(location.search);
+    const endpoint = util.pluralize(`${filteredSearch.class.toLowerCase()}` || 'disease');
+    delete filteredSearch.class;
+    const search = location.search ? `${queryString.stringify(filteredSearch)}&` : '';
 
     api
-      .get(`/diseases${search}neighbors=3`)
+      .get(`/${endpoint}/?${search}neighbors=3`)
       .then((data) => {
         const cycled = jc.retrocycle(data.result);
+        api.getOntologyVertices().then((response) => {
+          console.log(response);
+        });
+
         if (cycled.length === 0) queryRedirect = true;
         cycled.forEach((ontologyTerm) => {
           dataMap[ontologyTerm['@rid']] = ontologyTerm;

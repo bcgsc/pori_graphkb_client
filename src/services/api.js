@@ -3,6 +3,11 @@ import auth from './auth';
 
 const API_BASE_URL = 'http://kbapi01:8008/api/v0.0.8';
 const CACHE_EXPIRY = 8;
+const KEYS = {
+  ONTOLOGYVERTICES: 'ontologyVertices',
+  SOURCES: 'sources',
+  ONTOLOGYEDGES: 'ontologyEdges',
+};
 
 /**
  * Wrapper for api, handles all requests and special functions.
@@ -96,15 +101,15 @@ export default class api {
   /**
    * Returns all valid edge types.
    */
-  static getEdgeTypes() {
-    const edgeTypes = localStorage.getItem('edgeTypes');
-    const edgeTypeExpiry = localStorage.getItem('edgeTypesExpiry');
+  static getOntologyEdges() {
+    const edgeTypes = localStorage.getItem(KEYS.ONTOLOGYEDGES);
+    const edgeTypeExpiry = localStorage.getItem(`${KEYS.ONTOLOGYEDGES}Expiry`);
     if (
       !edgeTypes
       || (edgeTypes && edgeTypeExpiry && edgeTypeExpiry < Date.now().valueOf())
       || !edgeTypeExpiry
     ) {
-      return api.loadEdges();
+      return api.loadOntologyEdges();
     }
     return Promise.resolve(JSON.parse(edgeTypes));
   }
@@ -112,7 +117,7 @@ export default class api {
   /**
    * Requests edge types from api and loads into localstorage.
    */
-  static loadEdges() {
+  static loadOntologyEdges() {
     return api.get('/schema').then((response) => {
       const cycled = jc.retrocycle(response.schema);
       const list = [];
@@ -128,8 +133,8 @@ export default class api {
       const expiry = new Date(now);
       expiry.setHours(now.getHours() + CACHE_EXPIRY);
 
-      localStorage.setItem('edgeTypesExpiry', expiry.getTime());
-      localStorage.setItem('edgeTypes', JSON.stringify(list));
+      localStorage.setItem(`${KEYS.ONTOLOGYEDGES}Expiry`, expiry.getTime());
+      localStorage.setItem(KEYS.ONTOLOGYEDGES, JSON.stringify(list));
       return Promise.resolve(list);
     });
   }
@@ -138,8 +143,8 @@ export default class api {
    * Returns all valid sources.
    */
   static getSources() {
-    const sources = localStorage.getItem('sources');
-    const sourcesExpiry = localStorage.getItem('sourcesExpiry');
+    const sources = localStorage.getItem(KEYS.SOURCES);
+    const sourcesExpiry = localStorage.getItem(`${KEYS.SOURCES}Expiry`);
     if (
       !sources || (sources && sourcesExpiry && sourcesExpiry < Date.now().valueOf())
     ) {
@@ -161,10 +166,92 @@ export default class api {
       const expiry = new Date(now);
       expiry.setHours(now.getHours() + CACHE_EXPIRY);
 
-      localStorage.setItem('sourcesExpiry', expiry.getTime());
-      localStorage.setItem('sources', JSON.stringify(list));
+      localStorage.setItem(`${KEYS.SOURCES}Expiry`, expiry.getTime());
+      localStorage.setItem(KEYS.SOURCES, JSON.stringify(list));
 
       return Promise.resolve(list);
+    });
+  }
+
+  /**
+   * Returns all valid ontology vertex types.
+   */
+  static getOntologyVertices() {
+    const ontologies = localStorage.getItem(KEYS.ONTOLOGYVERTICES);
+    const ontologiesExpiry = localStorage.getItem(`${KEYS.ONTOLOGYVERTICES}Expiry`);
+    if (
+      !ontologies
+      || (
+        ontologies
+        && ontologiesExpiry
+        && ontologiesExpiry < Date.now().valueOf()
+      )
+    ) {
+      return api.loadOntologyVertices();
+    }
+    return Promise.resolve(JSON.parse(ontologies));
+  }
+
+  /**
+   * Requests ontology vertices from the api and loads them into localstorage.
+   */
+  static loadOntologyVertices() {
+    return api.get('/schema').then((response) => {
+      const cycled = jc.retrocycle(response.schema);
+      const list = [];
+      Object.keys(cycled).forEach((key) => {
+        if (
+          cycled[key].inherits.includes('Ontology')
+          && cycled[key].inherits.includes('V')
+        ) {
+          list.push({ name: key, properties: cycled[key].properties });
+        }
+      });
+
+      const now = new Date();
+      const expiry = new Date(now);
+      expiry.setHours(now.getHours() + CACHE_EXPIRY);
+
+      localStorage.setItem(`${KEYS.ONTOLOGYVERTICES}Expiry`, expiry.getTime());
+      localStorage.setItem(KEYS.ONTOLOGYVERTICES, JSON.stringify(list));
+
+      return Promise.resolve(list);
+    });
+  }
+
+  /**
+  * Returns the vertex base class.
+  */
+  static getVertexBaseClass() {
+    const vertex = localStorage.getItem(KEYS.V);
+    const vExpiry = localStorage.getItem(`${KEYS.V}Expiry`);
+    if (
+      !vertex
+      || (
+        vertex
+        && vExpiry
+        && vExpiry < Date.now().valueOf()
+      )
+    ) {
+      return api.loadVertexBaseClass();
+    }
+    return Promise.resolve(JSON.parse(vertex));
+  }
+
+  /**
+    * Requests the vertex V from the api and loads it into localstorage.
+    */
+  static loadVertexBaseClass() {
+    return api.get('/schema').then((response) => {
+      const cycled = jc.retrocycle(response.schema);
+      const now = new Date();
+      const expiry = new Date(now);
+      expiry.setHours(now.getHours() + CACHE_EXPIRY);
+
+      localStorage.setItem(`${KEYS.V}Expiry`, expiry.getTime());
+      localStorage.setItem(KEYS.V, JSON.stringify(cycled.V));
+
+      return Promise.resolve(cycled.V);
     });
   }
 

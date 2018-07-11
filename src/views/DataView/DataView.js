@@ -56,7 +56,7 @@ class DataView extends Component {
     const { location } = this.props;
 
     const filteredSearch = queryString.parse(location.search);
-    const endpoint = util.pluralize(`${filteredSearch.class.toLowerCase()}` || 'disease');
+    const endpoint = util.pluralize(filteredSearch.class || 'disease').toLowerCase();
     delete filteredSearch.class;
     const search = location.search ? `${queryString.stringify(filteredSearch)}&` : '';
 

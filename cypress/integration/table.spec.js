@@ -69,4 +69,12 @@ describe('Query Page Test', () => {
   it('Ellipsis menu: returning hidden rows', () => {
 
   });
+
+  it('Different class details', () => {
+
+  });
+
+  it('Nested class expansion', () => {
+
+  });
 });

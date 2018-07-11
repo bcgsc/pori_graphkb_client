@@ -46,20 +46,6 @@
   z-index: 1;
 }
 
-.source-col {
-  $width: 65px;
-  min-width: $width;
-  max-width: $width;
-}
-.sourceId-col {
-  $width: 65px;
-  min-width: $width;
-  max-width: $width;
-}
-.name-col {
-  $width: 300px;
-  min-width: $width;
-}
 .spacer-cell {
   position: sticky;
   left: 0;

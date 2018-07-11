@@ -5,6 +5,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  ListItemIcon,
   IconButton,
   Card,
   Typography,
@@ -16,9 +17,10 @@ import {
 } from '@material-ui/core';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import FolderIcon from '@material-ui/icons/Folder';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import api from '../../services/api';
 import util from '../../services/util';
-
 
 /**
  * Component to view details of a selected node.
@@ -48,7 +50,12 @@ class NodeDetailComponent extends Component {
     const filteredNode = Object.assign({}, node);
     Object.keys(V.properties).forEach(key => delete filteredNode[key]);
 
-    this.setState({ V, ontologyEdges, filteredNode });
+    this.setState({
+      V,
+      ontologyEdges,
+      filteredNode,
+      rid: node['@rid'],
+    });
   }
 
   handleNestedToggle(id) {
@@ -69,6 +76,7 @@ class NodeDetailComponent extends Component {
       ontologyEdges,
       filteredNode,
       nestedExpanded,
+      rid,
     } = this.state;
 
     const { handleNodeEditStart } = this.props;
@@ -93,9 +101,9 @@ class NodeDetailComponent extends Component {
         const content = (
           <List>
             {filteredNode[key].map((edge, i) => {
-              const relatedNode = edge.in && edge.in['@rid'] === filteredNode['@rid'] ? edge.out : edge.in;
+              const relatedNode = edge.in && edge.in['@rid'] === rid ? edge.out : edge.in;
               const edgeLabel = relatedNode
-                ? `${relatedNode.name} | ${relatedNode.sourceId} : ${edge.source.name}`
+                ? `${relatedNode.name} | ${relatedNode.sourceId} `
                 : edge;
 
               if (i === 0) {
@@ -103,8 +111,12 @@ class NodeDetailComponent extends Component {
               }
               return (
                 <ListItem dense key={key + edge['@rid']}>
+                  <ListItemIcon>
+                    <ChevronRightIcon />
+                  </ListItemIcon>
                   <ListItemText
-                    secondary={edgeLabel}
+                    primary={edgeLabel}
+                    secondary={edge.source.name}
                   />
                 </ListItem>
               );
@@ -144,16 +156,17 @@ class NodeDetailComponent extends Component {
      * @param {any} value - node property value.
      */
     const formatProperty = (key, value, prefix) => {
-      // Checks if value is falsy OR if it is an edge property
+      const id = `${prefix ? `${prefix}.` : ''}${key}`;
+      /* Checks if value is falsy, if it is an edge property, or if the depth
+        of nested values is exceeded. (2) */
       if (
         !value
         || ontologyEdges.filter(o => o.name === key.split('_')[1]).length !== 0
         || value.length === 0
+        || (id.match(/\./g) || []).length > 2
       ) {
         return null;
       }
-
-      const id = `${prefix ? `${prefix}.` : ''}${key}`;
       const isOpen = nestedExpanded.includes(id);
 
       if (typeof value !== 'object') {
@@ -177,7 +190,10 @@ class NodeDetailComponent extends Component {
             <List style={{ paddingTop: '0' }}>
               {value.map(item => (
                 <ListItem dense key={`${id}${item}`}>
-                  <ListItemText secondary={item} />
+                  <ListItemIcon>
+                    <FolderIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={item} />
                 </ListItem>
               ))}
             </List>
@@ -255,7 +271,7 @@ class NodeDetailComponent extends Component {
       <Card style={{ height: '100%', overflowY: 'auto' }}>
         <div className="node-edit-btn">
           <IconButton
-            onClick={() => handleNodeEditStart(filteredNode['@rid'])}
+            onClick={() => handleNodeEditStart(rid)}
           >
             <AssignmentIcon />
           </IconButton>

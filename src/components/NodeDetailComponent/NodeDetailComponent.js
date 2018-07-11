@@ -35,7 +35,7 @@ class NodeDetailComponent extends Component {
     const { node } = this.props;
     const V = await api.getVertexBaseClass();
     const ontologyEdges = await api.getOntologyEdges();
-    const filteredNode = node;
+    const filteredNode = Object.assign({}, node);
     Object.keys(V.properties).forEach(key => delete filteredNode[key]);
 
     this.setState({ V, ontologyEdges, filteredNode });

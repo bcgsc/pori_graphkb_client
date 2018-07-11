@@ -57,4 +57,16 @@ describe('Query Page Test', () => {
     cy.get('table tbody tr td div div div button:first').click();
     cy.contains('26-50');
   });
+
+  it('Ellipsis menu: Download as TSV', () => {
+
+  });
+
+  it('Ellipsis menu: hiding rows', () => {
+
+  });
+
+  it('Ellipsis menu: returning hidden rows', () => {
+
+  });
 });

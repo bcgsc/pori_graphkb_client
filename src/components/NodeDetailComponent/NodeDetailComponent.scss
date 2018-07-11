@@ -1,13 +1,11 @@
 @import "../../globals";
 
 .node-properties {
-  padding: 1.6em;
+  padding: 1.1em;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-column-gap: 10px;
   overflow: auto;
-  section {
-    padding: 0.3em;
-  }
 }
 
 .node-wrapper {
@@ -24,4 +22,12 @@
 .node-edit-btn {
   float: right;
   margin: 0 0.8em;
+}
+
+.nested-container {
+  margin-bottom: 0.8em;
+
+  h3{
+    font-size: 0.9em;
+  }
 }

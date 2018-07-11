@@ -24,22 +24,25 @@ class NodeDetailComponent extends Component {
     this.state = {
       V: null,
       ontologyEdges: null,
+      filteredNode: null,
     };
   }
 
+  /**
+   * Loads resources and filters node properties.
+   */
   async componentDidMount() {
     const { node } = this.props;
     const V = await api.getVertexBaseClass();
     const ontologyEdges = await api.getOntologyEdges();
     const filteredNode = node;
     Object.keys(V.properties).forEach(key => delete filteredNode[key]);
-    console.log(Object.keys(node));
 
-    this.setState({ V, ontologyEdges, node: filteredNode });
+    this.setState({ V, ontologyEdges, filteredNode });
   }
 
   render() {
-    const { V, ontologyEdges, node } = this.state;
+    const { V, ontologyEdges, filteredNode } = this.state;
     const { handleNodeEditStart } = this.props;
 
     const expandedEdgeTypes = ontologyEdges ? ontologyEdges.reduce((r, e) => {
@@ -57,15 +60,15 @@ class NodeDetailComponent extends Component {
       const label = key.startsWith('in_')
         ? `has${edgeType.slice(0, edgeType.length - 2)}`
         : edgeType;
-      if (node[key] && node[key].length !== 0) {
+      if (filteredNode[key] && filteredNode[key].length !== 0) {
         return (
           <React.Fragment key={label}>
             <Typography variant="subheading">
               {`${label}:`}
             </Typography>
             <List>
-              {node[key].map((edge) => {
-                const relatedNode = edge.in && edge.in['@rid'] === node['@rid'] ? edge.out : edge.in;
+              {filteredNode[key].map((edge) => {
+                const relatedNode = edge.in && edge.in['@rid'] === filteredNode['@rid'] ? edge.out : edge.in;
                 return (
                   <ListItem dense key={key + edge['@rid']}>
                     <ListItemText
@@ -84,7 +87,13 @@ class NodeDetailComponent extends Component {
       } return null;
     };
 
+    /**
+     * Formats node properties based on type.
+     * @param {string} key - node property key.
+     * @param {any} value - node property value.
+     */
     const formatProperty = (key, value) => {
+      // Checks if value is falsy OR if it is an edge property
       if (
         !value
         || ontologyEdges.filter(o => o.name === key.split('_')[1]).length !== 0
@@ -137,14 +146,14 @@ class NodeDetailComponent extends Component {
       <Card style={{ height: '100%', overflowY: 'auto' }}>
         <div className="node-edit-btn">
           <IconButton
-            onClick={() => handleNodeEditStart(node['@rid'])}
+            onClick={() => handleNodeEditStart(filteredNode['@rid'])}
           >
             <AssignmentIcon />
           </IconButton>
         </div>
         <div className="node-properties">
           <section className="basic-properties">
-            {Object.keys(node).map(key => formatProperty(key, node[key]))}
+            {Object.keys(filteredNode).map(key => formatProperty(key, filteredNode[key]))}
           </section>
           <section className="listed-properties">
             {expandedEdgeTypes.map(edgeType => listEdges(edgeType.name))}

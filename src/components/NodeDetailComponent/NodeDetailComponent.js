@@ -8,10 +8,17 @@ import {
   IconButton,
   Card,
   Typography,
+  CardContent,
+  Divider,
+  ExpansionPanel,
+  ExpansionPanelDetails,
+  ExpansionPanelSummary,
 } from '@material-ui/core';
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import api from '../../services/api';
 import util from '../../services/util';
+
 
 /**
  * Component to view details of a selected node.
@@ -25,7 +32,10 @@ class NodeDetailComponent extends Component {
       V: null,
       ontologyEdges: null,
       filteredNode: null,
+      nestedExpanded: [],
     };
+
+    this.handleNestedToggle = this.handleNestedToggle.bind(this);
   }
 
   /**
@@ -41,8 +51,26 @@ class NodeDetailComponent extends Component {
     this.setState({ V, ontologyEdges, filteredNode });
   }
 
+  handleNestedToggle(id) {
+    const { nestedExpanded } = this.state;
+
+    if (nestedExpanded.includes(id)) {
+      const newList = nestedExpanded.filter(n => !n.startsWith(id));
+      this.setState({ nestedExpanded: newList });
+    } else {
+      nestedExpanded.push(id);
+      this.setState({ nestedExpanded });
+    }
+  }
+
   render() {
-    const { V, ontologyEdges, filteredNode } = this.state;
+    const {
+      V,
+      ontologyEdges,
+      filteredNode,
+      nestedExpanded,
+    } = this.state;
+
     const { handleNodeEditStart } = this.props;
 
     const expandedEdgeTypes = ontologyEdges ? ontologyEdges.reduce((r, e) => {
@@ -53,36 +81,59 @@ class NodeDetailComponent extends Component {
 
     if (!V) return null;
 
+    /**
+     * Formats and lists relationship (edge) fields.
+     */
     const listEdges = (key) => {
-      // Format string:  in_[edgeType] => has[edgeType]
-      //                 out_[edgeType] => [edgeType]
-      const edgeType = key.split('_')[1];
-      const label = key.startsWith('in_')
-        ? `has${edgeType.slice(0, edgeType.length - 2)}`
-        : edgeType;
+      const label = util.getEdgeLabel(key);
+      const isOpen = nestedExpanded.includes(label);
+
       if (filteredNode[key] && filteredNode[key].length !== 0) {
+        let preview;
+        const content = (
+          <List>
+            {filteredNode[key].map((edge, i) => {
+              const relatedNode = edge.in && edge.in['@rid'] === filteredNode['@rid'] ? edge.out : edge.in;
+              const edgeLabel = relatedNode
+                ? `${relatedNode.name} | ${relatedNode.sourceId} : ${edge.source.name}`
+                : edge;
+
+              if (i === 0) {
+                preview = edgeLabel;
+              }
+              return (
+                <ListItem dense key={key + edge['@rid']}>
+                  <ListItemText
+                    secondary={edgeLabel}
+                  />
+                </ListItem>
+              );
+            })}
+          </List>
+        );
+
         return (
-          <React.Fragment key={label}>
-            <Typography variant="subheading">
-              {`${label}:`}
-            </Typography>
-            <List>
-              {filteredNode[key].map((edge) => {
-                const relatedNode = edge.in && edge.in['@rid'] === filteredNode['@rid'] ? edge.out : edge.in;
-                return (
-                  <ListItem dense key={key + edge['@rid']}>
-                    <ListItemText
-                      secondary={
-                        relatedNode
-                          ? `${relatedNode.name} | ${relatedNode.sourceId} : ${edge.source.name}`
-                          : edge
-                      }
-                    />
-                  </ListItem>
-                );
-              })}
-            </List>
-          </React.Fragment>
+          <ExpansionPanel
+            key={label}
+            expanded={isOpen}
+            onChange={() => this.handleNestedToggle(label)}
+            className="nested-container"
+          >
+            <ExpansionPanelSummary expandIcon={<KeyboardArrowDownIcon />}>
+              <Typography variant="subheading" style={{ flexBasis: '15%' }}>
+                {label}
+              </Typography>
+              {!isOpen
+                ? (
+                  <Typography variant="subheading" color="textSecondary">
+                    {preview}
+                  </Typography>
+                ) : null}
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails style={{ display: 'block' }}>
+              {content}
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
         );
       } return null;
     };
@@ -92,7 +143,7 @@ class NodeDetailComponent extends Component {
      * @param {string} key - node property key.
      * @param {any} value - node property value.
      */
-    const formatProperty = (key, value) => {
+    const formatProperty = (key, value, prefix) => {
       // Checks if value is falsy OR if it is an edge property
       if (
         !value
@@ -102,9 +153,12 @@ class NodeDetailComponent extends Component {
         return null;
       }
 
+      const id = `${prefix ? `${prefix}.` : ''}${key}`;
+      const isOpen = nestedExpanded.includes(id);
+
       if (typeof value !== 'object') {
         return (
-          <React.Fragment key={`${key}${value}`}>
+          <React.Fragment key={id}>
             <Typography variant="subheading">
               {`${util.antiCamelCase(key)}:`}
             </Typography>
@@ -114,31 +168,86 @@ class NodeDetailComponent extends Component {
           </React.Fragment>
         );
       }
+      // TODO: handle case where field is array of objects that aren't edges.
       if (Array.isArray(value)) {
-        return (
-          <React.Fragment key={util.antiCamelCase(key)}>
-            <Typography variant="subheading">
-              {`${util.antiCamelCase(key)}:`}
-            </Typography>
-            <List>
+        if (value.length > 1) {
+          const preview = value[0];
+
+          const content = (
+            <List style={{ paddingTop: '0' }}>
               {value.map(item => (
-                <ListItem dense key={`${value}${item}`}>
+                <ListItem dense key={`${id}${item}`}>
                   <ListItemText secondary={item} />
                 </ListItem>
               ))}
             </List>
+          );
+          return (
+            <ExpansionPanel
+              key={id}
+              expanded={isOpen}
+              onChange={() => this.handleNestedToggle(id)}
+              className="nested-container"
+            >
+              <ExpansionPanelSummary expandIcon={<KeyboardArrowDownIcon />}>
+                <Typography variant="subheading" style={{ flexBasis: '15%' }}>
+                  {`${util.antiCamelCase(key)}:`}
+                </Typography>
+                {!isOpen
+                  ? (
+                    <Typography variant="subheading" color="textSecondary">
+                      {preview}
+                    </Typography>
+                  ) : null}
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails style={{ display: 'block' }}>
+                {content}
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+          );
+        }
+        return (
+          <React.Fragment key={id}>
+            <Typography variant="subheading">
+              {`${util.antiCamelCase(key)}:`}
+            </Typography>
+            <Typography paragraph variant="caption">
+              {value[0].toString()}
+            </Typography>
           </React.Fragment>
         );
       }
+
+      const nestedObject = Object.assign({}, value);
+      Object.keys(V.properties).forEach(vk => delete nestedObject[vk]);
+      let preview = util.getPreview(nestedObject);
+      if (!preview) {
+        const prop = Object.keys(nestedObject).filter(nk => typeof nestedObject[nk] !== 'object')[0];
+        preview = nestedObject[prop];
+      }
+
       return (
-        <React.Fragment key={util.antiCamelCase(key)}>
-          <Typography variant="subheading">
-            {`${util.antiCamelCase(key)}:`}
-          </Typography>
-          <Typography paragraph variant="caption">
-            {value.name}
-          </Typography>
-        </React.Fragment>
+        <ExpansionPanel
+          key={id}
+          expanded={isOpen}
+          onChange={() => this.handleNestedToggle(id)}
+          className="nested-container"
+        >
+          <ExpansionPanelSummary expandIcon={<KeyboardArrowDownIcon />}>
+            <Typography variant="subheading" style={{ flexBasis: '15%' }}>
+              {`${util.antiCamelCase(key)}:`}
+            </Typography>
+            {!isOpen
+              ? (
+                <Typography variant="subheading" color="textSecondary">
+                  {preview}
+                </Typography>
+              ) : null}
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails style={{ display: 'block' }}>
+            {Object.keys(nestedObject).map(k => formatProperty(k, nestedObject[k], `${prefix ? `${prefix}.` : ''}${key}`))}
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
       );
     };
 
@@ -152,12 +261,24 @@ class NodeDetailComponent extends Component {
           </IconButton>
         </div>
         <div className="node-properties">
-          <section className="basic-properties">
-            {Object.keys(filteredNode).map(key => formatProperty(key, filteredNode[key]))}
-          </section>
-          <section className="listed-properties">
-            {expandedEdgeTypes.map(edgeType => listEdges(edgeType.name))}
-          </section>
+          <Card className="basic-properties">
+            <CardContent>
+              <Typography paragraph variant="title" component="h1">
+                Properties:
+                <Divider />
+              </Typography>
+              {Object.keys(filteredNode).map(key => formatProperty(key, filteredNode[key], ''))}
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent>
+              <Typography paragraph variant="title" component="h1">
+                Relationships:
+                <Divider />
+              </Typography>
+              {expandedEdgeTypes.map(edgeType => listEdges(edgeType.name))}
+            </CardContent>
+          </Card>
         </div>
       </Card>
     );

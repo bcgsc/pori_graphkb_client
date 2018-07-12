@@ -472,6 +472,9 @@ class NodeFormComponent extends Component {
       }
     });
 
+    /**
+     * Renders input component to fit property's importance and type.
+     */
     const formatInputSection = (key, value) => {
       const property = editableProps.filter(prop => prop.name === key)[0];
       if (!property) return null;
@@ -574,6 +577,9 @@ class NodeFormComponent extends Component {
       return null;
     };
 
+    /**
+     * Formats model subsets into list form.
+     */
     const subsets = (form.subsets || []).map(s => (
       <ListItem key={s}>
         <ListItemIcon>
@@ -588,6 +594,9 @@ class NodeFormComponent extends Component {
       </ListItem>
     ));
 
+    /**
+     * Formats model relationships into list form.
+     */
     const rships = relationships.map((r) => {
       const sourceName = sources.find(
         s => s['@rid'] === r.source,

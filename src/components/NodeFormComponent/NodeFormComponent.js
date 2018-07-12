@@ -390,21 +390,22 @@ class NodeFormComponent extends Component {
     }
 
     await Promise.all(changedEdges);
+    const payload = Object.assign({}, form);
 
-    Object.keys(form).forEach((key) => {
-      if (!form[key]) delete form[key];
+    Object.keys(payload).forEach((key) => {
+      if (!payload[key]) delete payload[key];
       if (key.includes('.@rid')) {
-        form[key.split('.')[0]] = form[key];
-        delete form[key];
+        payload[key.split('.')[0]] = payload[key];
+        delete payload[key];
       }
       if (key.includes('.class')) {
-        delete form[key];
+        delete payload[key];
       }
     });
 
     api.patch(
       `/${util.pluralize(originalNode['@class'])}/${originalNode['@rid'].slice(1)}`,
-      { ...form },
+      { ...payload },
     ).then(() => {
       handleNodeFinishEdit();
     });

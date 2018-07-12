@@ -98,6 +98,7 @@ $mediumBreakpoint: 500px;
   transform: rotate(180deg);
   animation: flipr 0.1s linear;
 }
+
 .relationship-out {
   animation: flip 0.1s linear;
 }
@@ -110,6 +111,7 @@ $mediumBreakpoint: 500px;
     transform: rotate(0);
   }
 }
+
 @keyframes flipr {
   from {
     transform: rotate(0);

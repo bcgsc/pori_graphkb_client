@@ -104,15 +104,6 @@ class QueryView extends Component {
             />
           </div>
           <div className="search-buttons">
-            {/* <IconButton
-              variant="raised"
-              color="primary"
-              onClick={() => {
-                this.handleSubmit('table');
-              }}
-            >
-              <ViewListIcon />
-            </IconButton> */}
             <Button
               variant="raised"
               color="primary"
@@ -122,16 +113,6 @@ class QueryView extends Component {
             >
               Search
             </Button>
-
-            {/* <IconButton
-              variant="raised"
-              color="secondary"
-              onClick={() => {
-                this.handleSubmit('graph');
-              }}
-            >
-              <TimelineIcon />
-            </IconButton> */}
           </div>
         </div>
         <Link

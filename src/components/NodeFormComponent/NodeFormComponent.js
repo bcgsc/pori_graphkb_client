@@ -251,11 +251,10 @@ class NodeFormComponent extends Component {
       && relationship.source
     ) {
       if (
-        relationships.filter(r => r.out === relationship.out
+        !relationships.find(r => r.out === relationship.out
           && r.in === relationship.in
           && r['@class'] === relationship['@class']
           && r.source === relationship.source)
-          .length === 0
       ) {
         relationships.push(relationship);
         this.setState({
@@ -359,12 +358,12 @@ class NodeFormComponent extends Component {
 
     originalNode.relationships.forEach((initRelationship) => {
       if (
-        relationships.filter(
+        !relationships.find(
           r => r.out === initRelationship.out
             && r.in === initRelationship.in
             && r['@class'] === initRelationship['@class']
             && r.source === initRelationship.source,
-        ).length === 0
+        )
       ) {
         changedEdges.push(api.delete(
           `/${initRelationship['@class'].toLowerCase()}/${initRelationship['@rid'].slice(1)}`,
@@ -375,12 +374,12 @@ class NodeFormComponent extends Component {
     for (let i = 0; i < relationships.length; i += 1) {
       const currRelationship = relationships[i];
       if (
-        originalNode.relationships.filter(
+        !originalNode.relationships.find(
           r => r.out === currRelationship.out
             && r.in === currRelationship.in
             && r['@class'] === currRelationship['@class']
             && r.source === currRelationship.source,
-        ).length === 0
+        )
       ) {
         changedEdges.push(api.post(`/${currRelationship['@class'].toLowerCase()}`, {
           in: currRelationship.in,
@@ -485,10 +484,13 @@ class NodeFormComponent extends Component {
      * Renders input component to fit property's importance and type.
      */
     const formatInputSection = (key, value) => {
-      const property = editableProps.filter(prop => prop.name === key)[0];
+      const property = editableProps.find(prop => prop.name === key);
       if (!property) return null;
+
       const { type, mandatory } = property;
+
       if (typeof value !== 'object') {
+        // Radio group component for boolean types.
         if (type === 'boolean') {
           return (
             <ListItem className="input-wrapper" key={key}>

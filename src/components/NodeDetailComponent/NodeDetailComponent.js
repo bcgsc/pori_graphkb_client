@@ -161,7 +161,7 @@ class NodeDetailComponent extends Component {
         of nested values is exceeded. (2) */
       if (
         !value
-        || ontologyEdges.filter(edge => edge === key.split('_')[1]).length !== 0
+        || ontologyEdges.find(edge => edge === key.split('_')[1])
         || value.length === 0
         || (id.match(/\./g) || []).length > 2
       ) {
@@ -238,7 +238,7 @@ class NodeDetailComponent extends Component {
       Object.keys(V.properties).forEach(vk => delete nestedObject[vk]);
       let preview = util.getPreview(nestedObject);
       if (!preview) {
-        const prop = Object.keys(nestedObject).filter(nk => typeof nestedObject[nk] !== 'object')[0];
+        const prop = Object.keys(nestedObject).find(nk => typeof nestedObject[nk] !== 'object');
         preview = nestedObject[prop];
       }
 

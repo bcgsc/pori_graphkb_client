@@ -53,7 +53,7 @@ class DataView extends Component {
     delete filteredSearch.class;
     const search = location.search ? `${queryString.stringify(filteredSearch)}&` : '';
     const V = await api.getVertexBaseClass();
-    const allColumns = [];
+    const allColumns = ['@rid'];
 
     api
       .get(`/${endpoint}/?${search}neighbors=3`)
@@ -63,7 +63,7 @@ class DataView extends Component {
         if (cycled.length === 0) queryRedirect = true;
         cycled.forEach((ontologyTerm) => {
           Object.keys(ontologyTerm).forEach((prop) => {
-            if (!V.properties[prop] && !prop.startsWith('in_') && !prop.startsWith('out_') && !allColumns.includes(prop)) {
+            if (!V.properties[prop] && !allColumns.includes(prop)) {
               allColumns.push(prop);
             }
           });

@@ -11,6 +11,7 @@ function DownloadFileComponent(props) {
   } = props;
 
   const onClick = () => {
+    if (!rawFileContent) return;
     const uri = `data:${mediaType}${base64 ? `;${base64}` : null},${encodeURIComponent(rawFileContent)}`;
 
     const link = document.createElement('a');

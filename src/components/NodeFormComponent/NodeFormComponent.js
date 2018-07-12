@@ -47,6 +47,7 @@ class NodeFormComponent extends Component {
       relationship: {
         '@class': '',
         targetName: '',
+        targetSourceId: '',
         in: '',
         out: -1,
         source: '',
@@ -130,7 +131,9 @@ class NodeFormComponent extends Component {
             out: edge.out['@rid'],
             '@class': type.split('_')[1],
             targetName:
-              edge.out.name === originalNode.name ? edge.in.name : edge.out.name,
+              edge.out['@rid'] === originalNode['@rid'] ? edge.in.name : edge.out.name,
+            targetSourceId:
+              edge.out['@rid'] === originalNode['@rid'] ? edge.in.sourceId : edge.out.sourceId,
             source: edge.source['@rid'] || edge.source,
           });
         });
@@ -185,6 +188,11 @@ class NodeFormComponent extends Component {
       form[`${e.target.name}.@rid`] = e.target['@rid'];
     } else if (form[`${e.target.name}.@rid`]) {
       form[`${e.target.name}.@rid`] = '';
+    }
+    if (e.target.sourceId) {
+      form[`${e.target.name}.sourceId`] = e.target.sourceId;
+    } else if (form[`${e.target.name}.sourceId`]) {
+      form[`${e.target.name}.sourceId`] = '';
     }
     this.setState({ form });
   }
@@ -256,6 +264,7 @@ class NodeFormComponent extends Component {
           relationship: {
             '@class': '',
             targetName: '',
+            targetSourceId: '',
             in: '',
             out: originalNode['@rid'],
             source: '',
@@ -605,12 +614,12 @@ class NodeFormComponent extends Component {
         ? `has${r['@class'].slice(0, r['@class'].length - 2)}`
         : r['@class'];
       return (
-        <ListItem key={`${typeName}: ${r.targetName}`}>
+        <ListItem key={`${typeName}: ${r.targetSourceId} | ${r.targetName}`}>
           <ListItemIcon>
             <FolderIcon />
           </ListItemIcon>
           <ListItemText
-            primary={`${typeName}: ${r.targetName}`}
+            primary={`${typeName}: ${r.targetSourceId} ${r.targetName ? `| "${r.targetName}"` : ''}`}
             secondary={sourceName}
             style={{ overflow: 'auto' }}
           />
@@ -811,7 +820,7 @@ NodeFormComponent.defaultProps = {
 * @param {string} variant - specifies form type/function.
 * @param {function} handleNodeDelete - parent method triggered on node delete.
 * @param {function} handleNodeFinishEdit - parent method triggered when node is edited.
-    */
+      */
 NodeFormComponent.propTypes = {
   node: PropTypes.object,
   variant: PropTypes.string,

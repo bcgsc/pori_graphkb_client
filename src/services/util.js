@@ -62,9 +62,30 @@ export default class util {
    * @param {string} str - string to be formatted.
    */
   static getEdgeLabel(str) {
-    const edgeType = str.split('_')[1];
-    return str.startsWith('in_')
-      ? `has${edgeType.slice(0, edgeType.length - 2)}`
-      : edgeType;
+    if (str.startsWith('in_')) {
+      return `has${str.split('_')[1].slice(0, str.split('_')[1].length - 2)}`;
+    }
+    if (str.startsWith('out_')) {
+      return `${str.split('_')[1]}`;
+    }
+    return str;
+  }
+
+  static getTSVRepresentation(value, key) {
+    if (typeof value !== 'object') {
+      return value || '';
+    }
+    if (Array.isArray(value)) {
+      let list;
+      if (key.startsWith('in_')) {
+        list = value.map(obj => obj.out['@rid'] || obj.out);
+      } else if (key.startsWith('out_')) {
+        list = value.map(obj => obj.in['@rid'] || obj.in);
+      } else {
+        list = value.map(obj => this.getTSVRepresentation(obj, key));
+      }
+      return list.join(', ');
+    }
+    return this.getPreview(value);
   }
 }

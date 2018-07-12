@@ -21,6 +21,7 @@ import TimelineIcon from '@material-ui/icons/Timeline';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import NodeDetailComponent from '../NodeDetailComponent/NodeDetailComponent';
 import DownloadFileComponent from '../DownloadFileComponent/DownloadFileComponent';
+import util from '../../services/util';
 
 /**
  * Component to display query results in table form.
@@ -153,22 +154,15 @@ class TableComponent extends Component {
    * builds tsv data and prompts the browser to download file.
    */
   createTSV() {
-    const { data, hidden } = this.props;
-    const columns = ['name', 'source', 'sourceId', 'longName', 'description', 'subsets'];
+    const { data, hidden, allColumns } = this.props;
     const rows = [];
-    rows.push(columns.join('\t'));
+    rows.push(allColumns.map(column => util.getEdgeLabel(column)).join('\t'));
 
-    Object.keys(data).forEach((key) => {
+    Object.keys(data).forEach((rid) => {
       const row = [];
-      if (!hidden.includes(key)) {
-        columns.forEach((column) => {
-          if (column === 'source') {
-            row.push(data[key][column].name);
-          } else if (column === 'subsets' && data[key][column]) {
-            row.push(data[key][column].join(', '));
-          } else {
-            row.push(data[key][column]);
-          }
+      if (!hidden.includes(rid)) {
+        allColumns.forEach((column) => {
+          row.push(util.getTSVRepresentation(data[rid][column], column));
         });
 
         rows.push(row.join('\t'));
@@ -450,6 +444,7 @@ class TableComponent extends Component {
 * @param {function} handleCheckbox - Method triggered when a single row is checked.
 * @param {function} handleHideSelected - Method for hiding selected rows from the view.
 * @param {function} handleShowAllNodes - Method for returning previously hidden rows to the view.
+* @param {Array} allColumns - all non-base columns represented throughout the query results.
     */
 TableComponent.propTypes = {
   data: PropTypes.object.isRequired,
@@ -462,11 +457,14 @@ TableComponent.propTypes = {
   handleCheckbox: PropTypes.func.isRequired,
   handleHideSelected: PropTypes.func.isRequired,
   handleShowAllNodes: PropTypes.func.isRequired,
-  hidden: PropTypes.array.isRequired,
+  hidden: PropTypes.array,
+  allColumns: PropTypes.array,
 };
 
 TableComponent.defaultProps = {
   selectedId: null,
+  allColumns: [],
+  hidden: [],
 };
 
 export default TableComponent;

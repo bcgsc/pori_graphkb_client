@@ -138,7 +138,6 @@ class NodeFormComponent extends Component {
     });
 
     originalNode.relationships = relationships.slice(0);
-    console.log(originalNode);
     this.setState({
       form,
       relationships,

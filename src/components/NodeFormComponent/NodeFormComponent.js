@@ -662,10 +662,21 @@ class NodeFormComponent extends Component {
 
     return (
       <div className="node-form-wrapper">
-        <Typography variant="display1" className="form-title">
-          {variant === 'edit' ? 'Edit Ontology Term'
-            : 'Add NewOntology Term'}
-        </Typography>
+        <div>
+          <div className="form-header">
+            <Typography variant="display1" className="form-title">
+              {variant === 'edit' ? 'Edit Ontology Term'
+                : 'Add New Ontology Term'}
+            </Typography>
+            <Button
+              color="default"
+              onClick={handleNodeFinishEdit}
+              variant="outlined"
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
         <Divider />
         <form onSubmit={this.handleSubmit}>
           <div className="param-section">

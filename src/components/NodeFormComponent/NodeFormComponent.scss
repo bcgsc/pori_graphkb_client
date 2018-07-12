@@ -16,9 +16,17 @@ $mediumBreakpoint: 500px;
   right: 0;
   bottom: 0;
 
-  .form-title {
-    padding: 8px;
-    height: 48px;
+  div.form-header{
+    display: flex;
+
+    .form-title {
+      padding: 8px;
+      height: 48px;
+    }
+    button {
+      float: right;
+      margin: auto 1em auto auto;
+    }
   }
 
   form {

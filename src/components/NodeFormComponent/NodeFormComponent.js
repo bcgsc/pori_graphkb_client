@@ -116,8 +116,8 @@ class NodeFormComponent extends Component {
     });
 
     const expandedEdgeTypes = edgeTypes.reduce((r, e) => {
-      r.push(`in_${e.name}`);
-      r.push(`out_${e.name}`);
+      r.push(`in_${e}`);
+      r.push(`out_${e}`);
       return r;
     }, []);
 
@@ -615,12 +615,16 @@ class NodeFormComponent extends Component {
       );
     });
 
+    /**
+     * Formats valid edge types.
+     * @param {Object} edgeType - Edge type object.
+     */
     const edgeTypesDisplay = (edgeType) => {
       const inOut = relationship.in === originalNode['@rid']
-        ? `has${edgeType.name.slice(0, edgeType.name.length - 2)}`
-        : edgeType.name;
+        ? `has${edgeType.slice(0, edgeType.length - 2)}`
+        : edgeType;
       return (
-        <MenuItem key={edgeType.name} value={edgeType.name}>
+        <MenuItem key={edgeType} value={edgeType}>
           {inOut}
         </MenuItem>
       );

@@ -54,7 +54,6 @@ class NodeDetailComponent extends Component {
       V,
       ontologyEdges,
       filteredNode,
-      rid: node['@rid'],
     });
   }
 
@@ -76,11 +75,11 @@ class NodeDetailComponent extends Component {
       ontologyEdges,
       filteredNode,
       nestedExpanded,
-      rid,
     } = this.state;
 
-    const { handleNodeEditStart } = this.props;
+    const { handleNodeEditStart, node } = this.props;
 
+    // Accounts for in and out edgetypes.
     const expandedEdgeTypes = ontologyEdges ? ontologyEdges.reduce((r, e) => {
       r.push({ name: `in_${e.name}` });
       r.push({ name: `out_${e.name}` });
@@ -101,13 +100,13 @@ class NodeDetailComponent extends Component {
         const content = (
           <List>
             {filteredNode[key].map((edge, i) => {
-              const relatedNode = edge.in && edge.in['@rid'] === rid ? edge.out : edge.in;
+              const relatedNode = edge.in && edge.in['@rid'] === node['@rid'] ? edge.out : edge.in;
               const edgeLabel = relatedNode
                 ? `${relatedNode.name} | ${relatedNode.sourceId} `
                 : edge;
 
               if (i === 0) {
-                preview = edgeLabel;
+                preview = util.getPreview(relatedNode);
               }
               return (
                 <ListItem dense key={key + edge['@rid']}>
@@ -134,7 +133,7 @@ class NodeDetailComponent extends Component {
             {/* TODO: Add Breakpoints */}
             <ExpansionPanelSummary expandIcon={<KeyboardArrowDownIcon />}>
               <Typography variant="subheading" style={{ flexBasis: '25%' }}>
-                {label}
+                {`${label}:`}
               </Typography>
               {!isOpen
                 ? (
@@ -272,7 +271,7 @@ class NodeDetailComponent extends Component {
       <Card style={{ height: '100%', overflowY: 'auto' }}>
         <div className="node-edit-btn">
           <IconButton
-            onClick={() => handleNodeEditStart(rid)}
+            onClick={() => handleNodeEditStart(node)}
           >
             <AssignmentIcon />
           </IconButton>

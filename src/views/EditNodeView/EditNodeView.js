@@ -21,18 +21,27 @@ class EditNodeView extends Component {
     this.handleNodeFinishEdit = this.handleNodeFinishEdit.bind(this);
   }
 
+  /**
+   * Initializes editing node and query on return.
+   */
   componentDidMount() {
     const { location } = this.props;
     if (location.state.node && location.state.query) {
       const { node, query } = location.state;
       this.setState({ node, query });
-    }
+    } else this.setState({ returnFlag: true });
   }
 
+  /**
+   * Sets return flag to navigate to query page.
+   */
   handleNodeDelete() {
     this.setState({ returnFlag: true });
   }
 
+  /**
+   * Sets completed flag to navigate back to previous query.
+   */
   handleNodeFinishEdit() {
     this.setState({ completedFlag: true });
   }
@@ -46,7 +55,7 @@ class EditNodeView extends Component {
     } = this.state;
 
     if (returnFlag) return <Redirect push to="/query" />;
-    if (completedFlag) return <Redirect push to={{ pathname: 'data/table', search: query }} />;
+    if (completedFlag) return <Redirect push to={{ pathname: '/data/table', search: query }} />;
 
     if (node) {
       return (

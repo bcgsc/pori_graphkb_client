@@ -463,13 +463,15 @@ class NodeFormComponent extends Component {
       subset,
       newNodeClass,
     } = this.state;
-    const { variant } = this.props;
+    const { variant, handleNodeFinishEdit } = this.props;
 
+    // Wait for form to get initialized
     if (!form) return null;
     if (completedFlag) {
       return <Redirect push to="/query" />;
     }
 
+    // Validates form
     let formIsInvalid = false;
     editableProps.forEach((prop) => {
       if (prop.mandatory) {
@@ -502,7 +504,7 @@ class NodeFormComponent extends Component {
                 <RadioGroup
                   name={key}
                   onChange={this.handleFormChange}
-                  value={value}
+                  value={value.toString()}
                   style={{ flexDirection: 'row' }}
                 >
                   <FormControlLabel value="true" control={<Radio />} label="Yes" />
@@ -539,11 +541,18 @@ class NodeFormComponent extends Component {
             </ListItem>
           );
         }
+        // If type is a link to another record, must find that record in the
+        // database and store its rid.
+
+        // Decide which endpoint to query.
         const classKey = `${key}.class`;
         let endpoint;
+
+        // If a linkedClass is specified, restrict querying to that endpoint, and do not
+        // show a resource selector.
         const resourceSelector = property.linkedClass ? null
           : (
-            <div>
+            <div style={{ marginBottom: '8px' }}>
               <ResourceSelectComponent
                 value={form[classKey]}
                 onChange={this.handleFormChange}

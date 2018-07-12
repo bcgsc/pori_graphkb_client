@@ -116,7 +116,7 @@ class App extends Component {
         <Route exact path="/query" component={QueryView} />
         <Route path="/query/advanced" component={AdvancedQueryView} />
         <Route path="/add" component={AddNodeView} />
-        <Route path="/edit" component={EditNodeView} />
+        <Route path="/edit/:rid" component={EditNodeView} />
         <Route path="/data" component={DataView} />
         <Redirect from="*" to="/query" />
       </Switch>

@@ -196,7 +196,7 @@ class DataView extends Component {
     const { location } = this.props;
     const selectedNode = data ? data[selectedId] : null;
     if (editing && selectedNode) {
-      return <Redirect push to={{ pathname: '/edit', state: { node: selectedNode, query: location.search } }} />;
+      return <Redirect push to={{ pathname: `/edit/${selectedNode['@rid'].slice(1)}`, state: { node: selectedNode, query: location.search } }} />;
     }
 
     const GraphWithProps = () => (

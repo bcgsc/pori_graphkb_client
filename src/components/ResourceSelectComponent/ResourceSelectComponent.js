@@ -33,7 +33,7 @@ function ResourceSelectComponent(props) {
   const resourcesDisplay = resources.map(resource => children(resource));
 
   return (
-    <FormControl className="type-select" style={{ width: '100%' }}>
+    <FormControl className="resource-select" style={{ width: '100%', minWidth: `${label.length * 22}px` }}>
       <InputLabel htmlFor="resource-select" required={required}>
         {label}
       </InputLabel>

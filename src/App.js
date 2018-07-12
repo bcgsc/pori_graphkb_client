@@ -24,7 +24,8 @@ import QueryView from './views/QueryView/QueryView';
 import AdvancedQueryView from './views/AdvancedQueryView/AdvancedQueryView';
 import DataView from './views/DataView/DataView';
 import ErrorView from './views/ErrorView/ErrorView';
-import NodeFormComponent from './components/NodeFormComponent/NodeFormComponent';
+import EditNodeView from './views/EditNodeView/EditNodeView';
+import AddNodeView from './views/AddNodeView/AddNodeView';
 import LoginView from './views/LoginView/LoginView';
 import auth from './services/auth';
 
@@ -103,7 +104,6 @@ class App extends Component {
       },
     });
 
-    const addNodeForm = () => <NodeFormComponent variant="add" />;
     const loginWithProps = () => (
       <LoginView
         handleRedirect={this.handleRedirect}

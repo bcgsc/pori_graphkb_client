@@ -26,6 +26,7 @@ class DataView extends Component {
       selectedId: null,
       editing: false,
       error: null,
+      allColumns: [],
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -51,17 +52,21 @@ class DataView extends Component {
     const endpoint = util.pluralize(filteredSearch.class || 'disease').toLowerCase();
     delete filteredSearch.class;
     const search = location.search ? `${queryString.stringify(filteredSearch)}&` : '';
+    const V = await api.getVertexBaseClass();
+    const allColumns = [];
 
     api
       .get(`/${endpoint}/?${search}neighbors=3`)
       .then((data) => {
         const cycled = jc.retrocycle(data.result);
-        api.getOntologyVertices().then((response) => {
-          console.log(response);
-        });
 
         if (cycled.length === 0) queryRedirect = true;
         cycled.forEach((ontologyTerm) => {
+          Object.keys(ontologyTerm).forEach((prop) => {
+            if (!V.properties[prop] && !prop.startsWith('in_') && !prop.startsWith('out_') && !allColumns.includes(prop)) {
+              allColumns.push(prop);
+            }
+          });
           dataMap[ontologyTerm['@rid']] = ontologyTerm;
         });
         this.setState({
@@ -69,6 +74,7 @@ class DataView extends Component {
           selectedId: Object.keys(dataMap)[0],
           queryRedirect,
           loginRedirect,
+          allColumns,
         });
       })
       .catch((error) => {
@@ -213,6 +219,7 @@ class DataView extends Component {
         search={location.search}
         displayed={displayed}
         hidden={hidden}
+        allColumns={allColumns}
         handleCheckAll={this.handleCheckAll}
         handleNodeEditStart={this.handleNodeEditStart}
         handleHideSelected={this.handleHideSelected}

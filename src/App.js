@@ -115,33 +115,33 @@ class App extends Component {
       <Switch>
         <Route exact path="/query" component={QueryView} />
         <Route path="/query/advanced" component={AdvancedQueryView} />
-        <Route path="/add" component={addNodeForm} />
+        <Route path="/add" component={AddNodeView} />
+        <Route path="/edit" component={EditNodeView} />
         <Route path="/data" component={DataView} />
         <Redirect from="*" to="/query" />
       </Switch>
     );
-
     return (
       <MuiThemeProvider theme={theme}>
         <BrowserRouter>
           <div className="App">
             <AppBar position="static" className="banner">
-              <IconButton
-                color="inherit"
-                disabled={!loggedIn}
-              >
-                <Link className="icon-link" to="/query">
+              <Link className="icon-link" to="/query">
+                <IconButton
+                  color="inherit"
+                  disabled={!loggedIn}
+                >
                   <SearchIcon />
-                </Link>
-              </IconButton>
-              <IconButton
-                color="inherit"
-                disabled={!loggedIn}
-              >
-                <Link className="icon-link" to="/add">
+                </IconButton>
+              </Link>
+              <Link className="icon-link" to="/add">
+                <IconButton
+                  color="inherit"
+                  disabled={!loggedIn}
+                >
                   <AddIcon />
-                </Link>
-              </IconButton>
+                </IconButton>
+              </Link>
 
               <div className="user-dropdown">
                 <Button

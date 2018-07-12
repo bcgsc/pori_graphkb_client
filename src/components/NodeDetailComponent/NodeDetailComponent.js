@@ -102,7 +102,7 @@ class NodeDetailComponent extends Component {
             {filteredNode[key].map((edge, i) => {
               const relatedNode = edge.in && edge.in['@rid'] === node['@rid'] ? edge.out : edge.in;
               const edgeLabel = relatedNode
-                ? `${relatedNode.name} | ${relatedNode.sourceId} `
+                ? `${relatedNode.sourceId}${relatedNode.name ? `| "${relatedNode.name}"` : ''}`
                 : edge;
 
               if (i === 0) {

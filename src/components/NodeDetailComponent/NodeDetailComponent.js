@@ -81,8 +81,8 @@ class NodeDetailComponent extends Component {
 
     // Accounts for in and out edgetypes.
     const expandedEdgeTypes = ontologyEdges ? ontologyEdges.reduce((r, e) => {
-      r.push({ name: `in_${e.name}` });
-      r.push({ name: `out_${e.name}` });
+      r.push(`in_${e}`);
+      r.push(`out_${e}`);
       return r;
     }, []) : [];
 
@@ -161,7 +161,7 @@ class NodeDetailComponent extends Component {
         of nested values is exceeded. (2) */
       if (
         !value
-        || ontologyEdges.filter(o => o.name === key.split('_')[1]).length !== 0
+        || ontologyEdges.filter(edge => edge === key.split('_')[1]).length !== 0
         || value.length === 0
         || (id.match(/\./g) || []).length > 2
       ) {
@@ -292,7 +292,7 @@ class NodeDetailComponent extends Component {
                 Relationships:
                 <Divider />
               </Typography>
-              {expandedEdgeTypes.map(edgeType => listEdges(edgeType.name))}
+              {expandedEdgeTypes.map(edgeType => listEdges(edgeType))}
             </CardContent>
           </Card>
         </div>

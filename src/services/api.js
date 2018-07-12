@@ -125,7 +125,7 @@ export default class api {
         if (
           cycled[key].inherits.includes('E') && cycled[key].inherits.includes('OntologyEdge')
         ) {
-          list.push({ name: key });
+          list.push(key);
         }
       });
 

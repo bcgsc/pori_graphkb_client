@@ -7,6 +7,7 @@ const KEYS = {
   ONTOLOGYVERTICES: 'ontologyVertices',
   SOURCES: 'sources',
   ONTOLOGYEDGES: 'ontologyEdges',
+  V: 'baseVertex',
 };
 
 /**

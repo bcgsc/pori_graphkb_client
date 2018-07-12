@@ -256,6 +256,26 @@ export default class api {
   }
 
   /**
+   * Returns the editable properties of target ontology class.
+   * @param {string} className - requested class name
+   */
+  static getEditableProps(className) {
+    return api.get('/schema').then((response) => {
+      const cycled = jc.retrocycle(response.schema);
+      const V = Object.keys(cycled.V.properties);
+      if (cycled[className]) {
+        const props = Object.keys(cycled[className].properties).map(prop => (
+          {
+            name: prop,
+            ...cycled[className].properties[prop],
+          }));
+        return Promise.resolve(props.filter(prop => !V.includes(prop.name)));
+      }
+      return Promise.reject('Class not found');
+    });
+  }
+
+  /**
    * Wrapper for autosearch method.
    * @param {string} endpoint - URL endpoint.
    * @param {string} property - Property to query.

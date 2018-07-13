@@ -14,11 +14,12 @@ function DownloadFileComponent(props) {
   } = props;
 
   const onClick = () => {
-    if (!rawFileContent) return;
+    const file = rawFileContent();
+    if (!file) return;
 
     if (window.Cypress) return;
 
-    const uri = `data:${mediaType}${base64 ? `;${base64}` : null},${encodeURIComponent(rawFileContent)}`;
+    const uri = `data:${mediaType}${base64 ? `;${base64}` : null},${encodeURIComponent(file)}`;
 
     const link = document.createElement('a');
     link.download = fileName;
@@ -48,7 +49,7 @@ function DownloadFileComponent(props) {
 DownloadFileComponent.propTypes = {
   mediaType: PropTypes.string,
   base64: PropTypes.string,
-  rawFileContent: PropTypes.string,
+  rawFileContent: PropTypes.func,
   fileName: PropTypes.string,
   children: PropTypes.node.isRequired,
   id: PropTypes.string,
@@ -57,9 +58,9 @@ DownloadFileComponent.propTypes = {
 };
 
 DownloadFileComponent.defaultProps = {
-  mediaType: 'text/plan;charset=US-ASCII',
+  mediaType: 'text/plain;charset=US-ASCII',
   base64: null,
-  rawFileContent: '',
+  rawFileContent: null,
   fileName: 'download.txt',
   id: undefined,
   className: undefined,

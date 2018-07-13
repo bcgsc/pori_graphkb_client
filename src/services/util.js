@@ -92,6 +92,10 @@ export default class util {
       }
       return list.join(', ');
     }
+    if (key.includes('.')) {
+      const newKey = key.split('.')[1];
+      return this.getTSVRepresentation(value[newKey], newKey);
+    }
     return this.getPreview(value);
   }
 }

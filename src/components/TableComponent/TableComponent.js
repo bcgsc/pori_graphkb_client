@@ -187,7 +187,11 @@ class TableComponent extends Component {
       const row = [];
       if (!hidden.includes(rid)) {
         allColumns.forEach((column) => {
-          row.push(util.getTSVRepresentation(data[rid][column], column));
+          if (column.includes('.')) {
+            row.push(util.getTSVRepresentation(data[rid][column.split('.')[0]], column));
+          } else {
+            row.push(util.getTSVRepresentation(data[rid][column], column));
+          }
         });
 
         rows.push(row.join('\t'));
@@ -275,7 +279,7 @@ class TableComponent extends Component {
         </MenuItem>
         <DownloadFileComponent
           mediaType="text/tab-separated-values"
-          rawFileContent={this.createTSV()}
+          rawFileContent={this.createTSV}
           fileName="download.tsv"
           id="download-tsv"
         >

@@ -50,6 +50,7 @@ class DataView extends Component {
 
     const filteredSearch = queryString.parse(location.search);
     const endpoint = util.pluralize(filteredSearch.class || 'disease').toLowerCase();
+    const endpointProps = await api.getEditableProps(filteredSearch.class || 'Disease');
     delete filteredSearch.class;
     const search = location.search ? `${queryString.stringify(filteredSearch)}&` : '';
     const V = await api.getVertexBaseClass();
@@ -63,7 +64,22 @@ class DataView extends Component {
         cycled.forEach((ontologyTerm) => {
           Object.keys(ontologyTerm).forEach((prop) => {
             if (!V.properties[prop] && !allColumns.includes(prop)) {
-              allColumns.push(prop);
+              const endpointProp = endpointProps.find(p => p.name === prop);
+              if (endpointProp && endpointProp.type === 'link') {
+                Object.keys(ontologyTerm[prop]).forEach((nestedProp) => {
+                  if (
+                    !V.properties[nestedProp]
+                    && !allColumns.includes(`${prop}.${nestedProp}`)
+                    && !nestedProp.startsWith('in_')
+                    && !nestedProp.startsWith('out_')
+                    && !(endpointProp.linkedClass && nestedProp === '@class')
+                  ) {
+                    allColumns.push(`${prop}.${nestedProp}`);
+                  }
+                });
+              } else {
+                allColumns.push(prop);
+              }
             }
           });
           dataMap[ontologyTerm['@rid']] = ontologyTerm;

@@ -99,6 +99,21 @@ class TableComponent extends Component {
       }
       return r;
     }, []);
+
+    // Set default order for columns.
+    tableColumns.sort((a, b) => {
+      if (a.id === 'source') {
+        return -1;
+      }
+      if (a.id === 'sourceId' && b.id !== 'source') {
+        return -1;
+      }
+      if (a.id === 'name' && b.id !== 'source' && b.id !== 'sourceId') {
+        return -1;
+      }
+      return 1;
+    });
+
     this.setState({ tableColumns });
   }
 

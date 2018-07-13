@@ -15,6 +15,12 @@ import {
   Checkbox,
   Menu,
   MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
 } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import TimelineIcon from '@material-ui/icons/Timeline';
@@ -38,7 +44,9 @@ class TableComponent extends Component {
       anchorEl: null,
       graphRedirect: false,
       sortedData: Object.keys(props.data).map(key => props.data[key]),
+      columnSelect: false,
     };
+
     this.handleDetailToggle = this.handleDetailToggle.bind(this);
     this.handleRequestSort = this.handleRequestSort.bind(this);
     this.handleChangePage = this.handleChangePage.bind(this);
@@ -46,6 +54,9 @@ class TableComponent extends Component {
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleGraphRedirect = this.handleGraphRedirect.bind(this);
+    this.handleColumnOpen = this.handleColumnOpen.bind(this);
+    this.handleColumnClose = this.handleColumnClose.bind(this);
+
     this.createTSV = this.createTSV.bind(this);
   }
 
@@ -151,6 +162,20 @@ class TableComponent extends Component {
   }
 
   /**
+   * Opens column selection dialog.
+   */
+  handleColumnOpen() {
+    this.setState({ columnSelect: true });
+  }
+
+  /**
+   * Closes column selection dialog.
+   */
+  handleColumnClose() {
+    this.setState({ columnSelect: false });
+  }
+
+  /**
    * builds tsv data and prompts the browser to download file.
    */
   createTSV() {
@@ -190,6 +215,7 @@ class TableComponent extends Component {
       toggle,
       anchorEl,
       graphRedirect,
+      columnSelect,
     } = this.state;
 
     const {
@@ -279,11 +305,44 @@ class TableComponent extends Component {
           Show hidden rows
           {hidden.length !== 0 ? ` (${hidden.length})` : null}
         </MenuItem>
+        <MenuItem
+          onClick={() => {
+            this.handleClose();
+            this.handleColumnOpen();
+          }}
+        >
+          Edit Visible Columns
+        </MenuItem>
       </Menu>
+    );
+
+    const columnDialog = (
+      <Dialog
+        open={columnSelect}
+        onClose={this.handleColumnClose}
+      >
+        <DialogTitle id="column-dialog-title">
+          Select Columns:
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Checkbox />
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.handleColumnClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={this.handleColumnClose} color="primary">
+            Subscribe
+          </Button>
+        </DialogActions>
+      </Dialog>
     );
 
     return (
       <section className="data-table">
+        {columnDialog}
         <Table>
           <TableHead className="table-head">
             <TableRow>

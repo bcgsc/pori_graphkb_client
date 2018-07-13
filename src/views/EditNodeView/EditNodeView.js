@@ -5,16 +5,14 @@ import './EditNodeView.css';
 import NodeFormComponent from '../../components/NodeFormComponent/NodeFormComponent';
 
 /**
- * Component for editing or adding database nodes.
+ * Component for editing ontologies.
  */
 class EditNodeView extends Component {
   constructor(props) {
     super(props);
     this.state = {
       node: null,
-      completedFlag: false,
       returnFlag: false,
-      query: '',
     };
 
     this.handleNodeDelete = this.handleNodeDelete.bind(this);
@@ -27,8 +25,8 @@ class EditNodeView extends Component {
   componentDidMount() {
     const { location } = this.props;
     if (location.state.node && location.state.query) {
-      const { node, query } = location.state;
-      this.setState({ node, query });
+      const { node } = location.state;
+      this.setState({ node });
     } else this.setState({ returnFlag: true });
   }
 
@@ -43,19 +41,17 @@ class EditNodeView extends Component {
    * Sets completed flag to navigate back to previous query.
    */
   handleNodeFinishEdit() {
-    this.setState({ completedFlag: true });
+    const { history } = this.props;
+    history.goBack();
   }
 
   render() {
     const {
       node,
-      completedFlag,
       returnFlag,
-      query,
     } = this.state;
 
     if (returnFlag) return <Redirect push to="/query" />;
-    if (completedFlag) return <Redirect push to={{ pathname: '/data/table', search: query }} />;
 
     if (node) {
       return (
@@ -73,6 +69,7 @@ class EditNodeView extends Component {
 
 EditNodeView.propTypes = {
   location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 export default EditNodeView;

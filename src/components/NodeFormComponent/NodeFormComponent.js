@@ -351,7 +351,12 @@ class NodeFormComponent extends Component {
    * Adds new edges and deletes specified ones, then patches property changes to the api.
    */
   async editSubmit() {
-    const { form, originalNode, relationships } = this.state;
+    const {
+      form,
+      originalNode,
+      relationships,
+      editableProps,
+    } = this.state;
     const { handleNodeFinishEdit } = this.props;
 
     const changedEdges = [];
@@ -398,7 +403,7 @@ class NodeFormComponent extends Component {
         payload[key.split('.')[0]] = payload[key];
         delete payload[key];
       }
-      if (key.includes('.class')) {
+      if (key.includes('.class') || !editableProps.find(p => p.name === key)) {
         delete payload[key];
       }
     });
@@ -415,21 +420,29 @@ class NodeFormComponent extends Component {
    * Posts new node to the api, then posts all new edges.
    */
   async addSubmit() {
-    const { form, relationships, newNodeClass } = this.state;
+    const {
+      form,
+      relationships,
+      newNodeClass,
+      editableProps,
+    } = this.state;
     const { handleNodeFinishEdit } = this.props;
+
     const newEdges = [];
-    Object.keys(form).forEach((key) => {
-      if (!form[key]) delete form[key];
+    const payload = Object.assign({}, form);
+
+    Object.keys(payload).forEach((key) => {
+      if (!payload[key]) delete payload[key];
       if (key.includes('.@rid')) {
-        form[key.split('.')[0]] = form[key];
-        delete form[key];
+        payload[key.split('.')[0]] = payload[key];
+        delete payload[key];
       }
-      if (key.includes('.class')) {
-        delete form[key];
+      if (key.includes('.class') || !editableProps.find(p => p.name === key)) {
+        delete payload[key];
       }
     });
 
-    const response = await api.post(`/${util.pluralize(newNodeClass)}`, { ...form });
+    const response = await api.post(`/${util.pluralize(newNodeClass)}`, { ...payload });
 
     for (let i = 0; i < relationships.length; i += 1) {
       const relationship = relationships[i];

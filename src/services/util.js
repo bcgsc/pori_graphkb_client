@@ -1,5 +1,6 @@
 
 const propOrder = ['sourceId', 'name'];
+const acronyms = ['id', 'uuid', 'ncit', 'uberon', 'doid'];
 
 
 /**
@@ -26,8 +27,13 @@ export default class util {
   static antiCamelCase(str) {
     let accstr = str;
     if (accstr.startsWith('@')) accstr = accstr.slice(1);
-    accstr = accstr.charAt(0).toUpperCase() + accstr.slice(1);
-    return accstr.replace(/[A-Z]/g, match => ` ${match}`);
+    accstr = (accstr.charAt(0).toUpperCase() + accstr.slice(1))
+      .replace(/[A-Z]/g, match => ` ${match}`);
+    acronyms.forEach((acronym) => {
+      const re = new RegExp(acronym, 'ig');
+      accstr = accstr.replace(re, match => match.toUpperCase());
+    });
+    return accstr;
   }
 
   /**

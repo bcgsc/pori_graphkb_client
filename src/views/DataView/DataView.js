@@ -55,8 +55,7 @@ class DataView extends Component {
     const V = await api.getVertexBaseClass();
     const allColumns = ['@rid'];
 
-    api
-      .get(`/${endpoint}/?${search}neighbors=3`)
+    api.get(`/${endpoint}/?${search}neighbors=3`)
       .then((data) => {
         const cycled = jc.retrocycle(data.result);
 

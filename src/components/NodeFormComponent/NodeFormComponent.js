@@ -503,7 +503,7 @@ class NodeFormComponent extends Component {
       const property = editableProps.find(prop => prop.name === key);
       if (!property) return null;
 
-      const { type, mandatory } = property;
+      const { type, mandatory, linkedClass } = property;
 
       if (typeof value !== 'object') {
         // Radio group component for boolean types.
@@ -563,7 +563,7 @@ class NodeFormComponent extends Component {
 
         // If a linkedClass is specified, restrict querying to that endpoint, and do not
         // show a resource selector.
-        const resourceSelector = property.linkedClass ? null
+        const resourceSelector = linkedClass ? null
           : (
             <div style={{ marginBottom: '8px' }}>
               <ResourceSelectComponent
@@ -583,14 +583,14 @@ class NodeFormComponent extends Component {
             </div>
           );
 
-        if (property.linkedClass) {
-          endpoint = util.pluralize(property.linkedClass);
+        if (linkedClass) {
+          endpoint = util.pluralize(linkedClass);
         } else {
           endpoint = util.pluralize(form[classKey]);
         }
 
         return (
-          <ListItem key={key} style={{ display: 'block' }}>
+          <ListItem key={key} style={{ display: 'block', border: '1px red solid' }}>
             {resourceSelector}
             <div>
               <AutoSearchComponent
@@ -601,7 +601,7 @@ class NodeFormComponent extends Component {
                 id={key}
                 limit={30}
                 endpoint={endpoint}
-                disabled={(!property.linkedClass && !form[classKey])}
+                disabled={(!linkedClass && !form[classKey])}
                 required={mandatory}
               />
             </div>

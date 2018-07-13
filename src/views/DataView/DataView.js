@@ -4,24 +4,19 @@ import './DataView.css';
 import * as jc from 'json-cycle';
 import { Route, Redirect } from 'react-router-dom';
 import {
-  Paper,
-  Drawer,
-  IconButton,
   CircularProgress,
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import queryString from 'query-string';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
-import NodeFormComponent from '../../components/NodeFormComponent/NodeFormComponent';
 import api from '../../services/api';
-
+import util from '../../services/util';
 /**
  * State handling component for query results.
  */
 class DataView extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       queryRedirect: false,
       loginRedirect: false,
@@ -31,6 +26,7 @@ class DataView extends Component {
       selectedId: null,
       editing: false,
       error: null,
+      allColumns: [],
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -41,26 +37,51 @@ class DataView extends Component {
     this.handleShowAllNodes = this.handleShowAllNodes.bind(this);
     this.handleDrawerClose = this.handleDrawerClose.bind(this);
     this.handleNodeEditStart = this.handleNodeEditStart.bind(this);
-    this.handleNodeFinishEdit = this.handleNodeFinishEdit.bind(this);
-    this.handleNodeDelete = this.handleNodeDelete.bind(this);
   }
 
   /**
    * Queries the api and loads results into component state.
    */
-  componentDidMount() {
+  async componentDidMount() {
     const dataMap = {};
     let { queryRedirect } = this.state;
     const { loginRedirect } = this.state;
     const { location } = this.props;
-    const search = location.search ? `${location.search}&` : '?';
 
-    api
-      .get(`/diseases${search}neighbors=3`)
+    const filteredSearch = queryString.parse(location.search);
+    const endpoint = util.pluralize(filteredSearch.class || 'disease').toLowerCase();
+    const endpointProps = await api.getEditableProps(filteredSearch.class || 'Disease');
+    delete filteredSearch.class;
+    const search = location.search ? `${queryString.stringify(filteredSearch)}&` : '';
+    const V = await api.getVertexBaseClass();
+    const allColumns = ['@rid'];
+
+    api.get(`/${endpoint}/?${search}neighbors=3`)
       .then((data) => {
         const cycled = jc.retrocycle(data.result);
+
         if (cycled.length === 0) queryRedirect = true;
         cycled.forEach((ontologyTerm) => {
+          Object.keys(ontologyTerm).forEach((prop) => {
+            if (!V.properties[prop] && !allColumns.includes(prop)) {
+              const endpointProp = endpointProps.find(p => p.name === prop);
+              if (endpointProp && endpointProp.type === 'link') {
+                Object.keys(ontologyTerm[prop]).forEach((nestedProp) => {
+                  if (
+                    !V.properties[nestedProp]
+                    && !allColumns.includes(`${prop}.${nestedProp}`)
+                    && !nestedProp.startsWith('in_')
+                    && !nestedProp.startsWith('out_')
+                    && !(endpointProp.linkedClass && nestedProp === '@class')
+                  ) {
+                    allColumns.push(`${prop}.${nestedProp}`);
+                  }
+                });
+              } else {
+                allColumns.push(prop);
+              }
+            }
+          });
           dataMap[ontologyTerm['@rid']] = ontologyTerm;
         });
         this.setState({
@@ -68,6 +89,7 @@ class DataView extends Component {
           selectedId: Object.keys(dataMap)[0],
           queryRedirect,
           loginRedirect,
+          allColumns,
         });
       })
       .catch((error) => {
@@ -166,34 +188,10 @@ class DataView extends Component {
 
   /**
    * Sets selected ID to input node identifier and opens edit drawer.
-   * @param {string} rid - Target node identifier.
+   * @param {string} node - Target node.
    */
-  handleNodeEditStart(rid) {
-    this.setState({ selectedId: rid, editing: true });
-  }
-
-  /**
-   * deletes a node from the data list.
-   * @param {string} rid - Target node identifier.
-   */
-  handleNodeDelete(rid) {
-    const { data } = this.state;
-    delete data[rid];
-    this.setState({ data, editing: false });
-  }
-
-  /**
-   * Updates corresponding data entry after a node has been edited.
-   * @param {Object} node - node object
-   */
-  handleNodeFinishEdit(node) {
-    const { data } = this.state;
-    api
-      .get(`/${node['@class'].toLowerCase()}s/${node['@rid'].slice(1)}?neighbors=3`)
-      .then((response) => {
-        data[node['@rid']] = jc.retrocycle(response.result);
-        this.setState({ data, editing: false });
-      });
+  handleNodeEditStart(node) {
+    this.setState({ selectedId: node['@rid'], editing: true });
   }
 
   render() {
@@ -206,36 +204,15 @@ class DataView extends Component {
       loginRedirect,
       error,
       hidden,
+      allColumns,
     } = this.state;
 
-    const { location } = this.props;
 
-    const editDrawer = (
-      <Drawer
-        variant="persistent"
-        anchor="right"
-        open={editing}
-        classes={{
-          paper: 'drawer-box-graph',
-        }}
-        onClose={this.handleDrawerClose}
-        SlideProps={{ unmountOnExit: true }}
-      >
-        <Paper elevation={5} className="graph-wrapper">
-          <div className="close-drawer-btn">
-            <IconButton onClick={this.handleDrawerClose}>
-              <CloseIcon color="action" />
-            </IconButton>
-          </div>
-          <NodeFormComponent
-            selectedId={selectedId}
-            variant="edit"
-            handleNodeFinishEdit={this.handleNodeFinishEdit}
-            handleNodeDelete={this.handleNodeDelete}
-          />
-        </Paper>
-      </Drawer>
-    );
+    const { location } = this.props;
+    const selectedNode = data ? data[selectedId] : null;
+    if (editing && selectedNode) {
+      return <Redirect push to={{ pathname: `/edit/${selectedNode['@rid'].slice(1)}`, state: { node: selectedNode, query: location.search } }} />;
+    }
 
     const GraphWithProps = () => (
       <GraphComponent
@@ -257,6 +234,7 @@ class DataView extends Component {
         search={location.search}
         displayed={displayed}
         hidden={hidden}
+        allColumns={allColumns}
         handleCheckAll={this.handleCheckAll}
         handleNodeEditStart={this.handleNodeEditStart}
         handleHideSelected={this.handleHideSelected}
@@ -279,7 +257,6 @@ class DataView extends Component {
           <div className="data-view">
             <Route exact path="/data/table" render={TableWithProps} />
             <Route exact path="/data/graph" render={GraphWithProps} />
-            {editDrawer}
           </div>
         );
       }

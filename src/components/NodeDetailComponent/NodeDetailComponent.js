@@ -77,7 +77,11 @@ class NodeDetailComponent extends Component {
       nestedExpanded,
     } = this.state;
 
-    const { handleNodeEditStart, node } = this.props;
+    const {
+      handleNodeEditStart,
+      node,
+      children,
+    } = this.props;
 
     // Accounts for in and out edgetypes.
     const expandedEdgeTypes = ontologyEdges ? ontologyEdges.reduce((r, e) => {
@@ -275,6 +279,7 @@ class NodeDetailComponent extends Component {
           >
             <AssignmentIcon />
           </IconButton>
+          {children}
         </div>
         <div className="node-properties">
           <Card className="basic-properties">
@@ -303,11 +308,13 @@ class NodeDetailComponent extends Component {
 
 NodeDetailComponent.defaultProps = {
   node: null,
+  children: null,
 };
 
 NodeDetailComponent.propTypes = {
   node: PropTypes.object,
   handleNodeEditStart: PropTypes.func.isRequired,
+  children: PropTypes.node,
 };
 
 export default NodeDetailComponent;

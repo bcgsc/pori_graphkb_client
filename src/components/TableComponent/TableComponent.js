@@ -12,15 +12,19 @@ import {
   TableSortLabel,
   IconButton,
   Collapse,
+  FormControlLabel,
+  Typography,
+  RadioGroup,
+  Radio,
   Checkbox,
   Menu,
   MenuItem,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
   DialogActions,
   Button,
+  Divider,
 } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import TimelineIcon from '@material-ui/icons/Timeline';
@@ -45,6 +49,7 @@ class TableComponent extends Component {
       graphRedirect: false,
       sortedData: Object.keys(props.data).map(key => props.data[key]),
       columnSelect: false,
+      tableColumns: [],
     };
 
     this.handleDetailToggle = this.handleDetailToggle.bind(this);
@@ -56,9 +61,43 @@ class TableComponent extends Component {
     this.handleGraphRedirect = this.handleGraphRedirect.bind(this);
     this.handleColumnOpen = this.handleColumnOpen.bind(this);
     this.handleColumnClose = this.handleColumnClose.bind(this);
+    this.handleColumnCheck = this.handleColumnCheck.bind(this);
+    this.handleSortByChange = this.handleSortByChange.bind(this);
 
     this.createTSV = this.createTSV.bind(this);
   }
+
+  componentDidMount() {
+    const { allColumns } = this.props;
+    const tableColumns = allColumns.reduce((r, column) => {
+      if (column.startsWith('in_') || column.startsWith('out_') || column === '@rid') return r;
+      if (!column.includes('.')) {
+        r.push({
+          id: column,
+          label: util.antiCamelCase(column),
+          checked: column === 'name' || column === 'sourceId',
+          sortBy: null,
+          sortable: null,
+        });
+      } else if (column.split('.')[1] !== 'source') {
+        const col = r.find(c => c.id === column.split('.')[0]);
+        if (!col) {
+          r.push({
+            id: column.split('.')[0],
+            label: util.antiCamelCase(column.split('.')[0]),
+            checked: column.split('.')[0] === 'source',
+            sortBy: column.split('.')[1],
+            sortable: [column.split('.')[1]],
+          });
+        } else {
+          col.sortable.push(column.split('.')[1]);
+        }
+      }
+      return r;
+    }, []);
+    this.setState({ tableColumns });
+  }
+
 
   /**
    * Updates page to display.
@@ -169,6 +208,24 @@ class TableComponent extends Component {
   }
 
   /**
+   * Selects/deselects a column for displaying on the table.
+   */
+  handleColumnCheck(i) {
+    const { tableColumns } = this.state;
+    tableColumns[i].checked = !tableColumns[i].checked;
+    this.setState({ tableColumns });
+  }
+
+  /**
+   * sets a new subproperty to sort by.
+   */
+  handleSortByChange(sortBy, i) {
+    const { tableColumns } = this.state;
+    tableColumns[i].sortBy = sortBy;
+    this.setState({ tableColumns });
+  }
+
+  /**
    * Closes column selection dialog.
    */
   handleColumnClose() {
@@ -220,8 +277,10 @@ class TableComponent extends Component {
       anchorEl,
       graphRedirect,
       columnSelect,
+      tableColumns,
     } = this.state;
 
+    const numCols = tableColumns.filter(c => c.checked).length;
     const {
       data,
       handleCheckAll,
@@ -245,21 +304,6 @@ class TableComponent extends Component {
         />
       );
     }
-
-    const columns = [
-      {
-        id: 'source',
-        label: 'Source',
-      },
-      {
-        id: 'sourceId',
-        label: 'Source ID',
-      },
-      {
-        id: 'name',
-        label: 'Name',
-      },
-    ];
 
     const menu = (
       <Menu
@@ -329,16 +373,46 @@ class TableComponent extends Component {
           Select Columns:
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            <Checkbox />
-          </DialogContentText>
+          {tableColumns.map((column, i) => (
+            <div key={column.id}>
+              <FormControlLabel
+                control={(
+                  <Checkbox
+                    checked={column.checked}
+                    onChange={() => this.handleColumnCheck(i)}
+                    color="primary"
+                  />
+                )}
+                label={column.label}
+              />
+              {column.sortBy ? (
+                <div>
+                  <Typography variant="caption">
+                    Sort By:
+                  </Typography>
+                  <RadioGroup
+                    onChange={e => this.handleSortByChange(e.target.value, i)}
+                    value={column.sortBy}
+                    style={{ flexDirection: 'row' }}
+                  >
+                    {column.sortable.map(sort => (
+                      <FormControlLabel
+                        key={sort}
+                        value={sort}
+                        control={<Radio />}
+                        label={util.antiCamelCase(sort)}
+                      />
+                    ))}
+                  </RadioGroup>
+                </div>
+              ) : null}
+              <Divider />
+            </div>
+          ))}
         </DialogContent>
         <DialogActions>
           <Button onClick={this.handleColumnClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={this.handleColumnClose} color="primary">
-            Subscribe
+            Done
           </Button>
         </DialogActions>
       </Dialog>
@@ -365,17 +439,22 @@ class TableComponent extends Component {
                   direction={order}
                 />
               </TableCell>
-              {columns.map(col => (
-                <TableCell key={col.id} classes={{ root: `${col.id}-col` }}>
-                  <TableSortLabel
-                    active={col.id === orderBy}
-                    onClick={() => this.handleRequestSort(col.id)}
-                    direction={order}
-                  >
-                    {col.label}
-                  </TableSortLabel>
-                </TableCell>
-              ))}
+              {tableColumns.map((col) => {
+                if (col.checked) {
+                  return (
+                    <TableCell key={col.id}>
+                      <TableSortLabel
+                        active={col.id === orderBy}
+                        onClick={() => this.handleRequestSort(col.id)}
+                        direction={order}
+                      >
+                        {col.label}
+                      </TableSortLabel>
+                    </TableCell>
+                  );
+                }
+                return null;
+              })}
               <TableCell style={{ zIndex: 1 }}>
                 <IconButton onClick={this.handleOpen} id="ellipsis-menu">
                   <MoreHorizIcon color="action" />
@@ -386,6 +465,7 @@ class TableComponent extends Component {
           </TableHead>
           <TableBody>
             {sortedData
+              .filter(n => !hidden.includes(n['@rid']))
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((n) => {
                 const isSelected = this.isSelected(n['@rid']);
@@ -393,7 +473,7 @@ class TableComponent extends Component {
                 const detail = active ? (
                   <TableRow>
                     <Collapse
-                      colSpan={5}
+                      colSpan={numCols + 2}
                       component="td"
                       in={active}
                       unmountOnExit
@@ -427,28 +507,16 @@ class TableComponent extends Component {
                             checked={displayed.includes(n['@rid'])}
                           />
                         </TableCell>
-                        <TableCell
-                          classes={{
-                            root: 'source-col',
-                          }}
-                        >
-                          {n.source.name}
-                        </TableCell>
-                        <TableCell
-                          classes={{
-                            root: 'sourceId-col',
-                          }}
-                        >
-                          {n.sourceId}
-                        </TableCell>
-
-                        <TableCell
-                          classes={{
-                            root: 'name-col',
-                          }}
-                        >
-                          {n.name}
-                        </TableCell>
+                        {tableColumns.map((col) => {
+                          if (col.checked) {
+                            return (
+                              <TableCell key={col.id}>
+                                {col.sortBy ? (n[col.id] || '')[col.sortBy] : (n[col.id] || '').toString()}
+                              </TableCell>
+                            );
+                          }
+                          return null;
+                        })}
                         <TableCell>
                           <IconButton
                             onClick={() => this.handleDetailToggle(n['@rid'])}
@@ -466,7 +534,7 @@ class TableComponent extends Component {
               })
             }
             <TableRow>
-              <TableCell colSpan={4} className="spacer-cell">
+              <TableCell colSpan={numCols + 1} className="spacer-cell">
                 <TablePagination
                   classes={{ root: 'table-paginator' }}
                   count={sortedData.length - hidden.length}

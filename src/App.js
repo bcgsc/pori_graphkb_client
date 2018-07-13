@@ -27,6 +27,7 @@ import ErrorView from './views/ErrorView/ErrorView';
 import EditNodeView from './views/EditNodeView/EditNodeView';
 import AddNodeView from './views/AddNodeView/AddNodeView';
 import LoginView from './views/LoginView/LoginView';
+import NodeDetailView from './views/NodeDetailView/NodeDetailView';
 import auth from './services/auth';
 
 /**
@@ -117,6 +118,7 @@ class App extends Component {
         <Route path="/query/advanced" component={AdvancedQueryView} />
         <Route path="/add" component={AddNodeView} />
         <Route path="/edit/:rid" component={EditNodeView} />
+        <Route path="/ontology/:rid" component={NodeDetailView} />
         <Route path="/data" component={DataView} />
         <Redirect from="*" to="/query" />
       </Switch>

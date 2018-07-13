@@ -54,6 +54,7 @@ class TableComponent extends Component {
 
     this.handleDetailToggle = this.handleDetailToggle.bind(this);
     this.handleRequestSort = this.handleRequestSort.bind(this);
+    this.handleSortByChecked = this.handleSortByChecked.bind(this);
     this.handleChangePage = this.handleChangePage.bind(this);
     this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
@@ -67,6 +68,9 @@ class TableComponent extends Component {
     this.createTSV = this.createTSV.bind(this);
   }
 
+  /**
+   * Initializes table columns.
+   */
   componentDidMount() {
     const { allColumns } = this.props;
     const tableColumns = allColumns.reduce((r, column) => {
@@ -98,7 +102,6 @@ class TableComponent extends Component {
     this.setState({ tableColumns });
   }
 
-
   /**
    * Updates page to display.
    */
@@ -117,34 +120,57 @@ class TableComponent extends Component {
   /**
    * Sorts table by the input property, if property is already
    * selected, toggles the sort direction.
-   * @param {string} property - Key of property to be sorted by.
-   * @param {string} fOrder - Optional forced order for the sort.
+   * @param {string} column - Column property object to be sorted by.
    */
-  handleRequestSort(property, fOrder) {
+  handleRequestSort(column) {
     const { orderBy, order } = this.state;
-    const { displayed, data } = this.props;
+    const { data } = this.props;
 
-    let newOrder = fOrder || 'desc';
-    const newProperty = order === 'asc' && orderBy === property && !fOrder ? null : property;
-    if (orderBy === property && order === 'desc' && !fOrder) {
+    let newOrder = 'desc';
+    const newProperty = order === 'asc' && orderBy === column.id ? null : column.id;
+    if (orderBy === column.id && order === 'desc') {
       newOrder = 'asc';
     }
 
     const sort = (a, b) => {
       if (!newProperty) return 1;
-      if (newProperty !== 'displayed') {
-        const aValue = newProperty === 'source' ? a[newProperty].name : a[newProperty];
-        const bValue = newProperty === 'source' ? b[newProperty].name : b[newProperty];
+      const aValue = column.sortBy ? (a[newProperty] || { [column.sortBy]: '' })[column.sortBy] : a[newProperty];
+      const bValue = column.sortBy ? (b[newProperty] || { [column.sortBy]: '' })[column.sortBy] : b[newProperty];
 
-        if (newOrder === 'desc') {
-          return bValue < aValue
-            ? -1
-            : 1;
-        }
-        return bValue > aValue
+      if (newOrder === 'desc') {
+        return bValue < aValue
           ? -1
           : 1;
       }
+      return bValue > aValue
+        ? -1
+        : 1;
+    };
+
+    this.setState(
+      {
+        order: newOrder,
+        orderBy: newProperty,
+        sortedData: Object.keys(data).map(k => data[k]).sort(sort),
+      },
+    );
+  }
+
+  /**
+   * Sorts table by whether or not row is checked. Toggles output order based on current state.
+   * @param {string} fOrder - forces output order.
+   */
+  handleSortByChecked(fOrder) {
+    const { orderBy, order } = this.state;
+    const { displayed, data } = this.props;
+    let newOrder = fOrder || 'desc';
+    const newProperty = order === 'asc' && orderBy === 'displayed' && !fOrder ? null : 'displayed';
+    if (orderBy === 'displayed' && order === 'desc' && !fOrder) {
+      newOrder = 'asc';
+    }
+
+    const sort = (a, b) => {
+      if (!newProperty) return 1;
       if (newOrder === 'desc') {
         return displayed.includes(b['@rid'])
           < displayed.includes(a['@rid'])
@@ -346,7 +372,7 @@ class TableComponent extends Component {
           onClick={() => {
             this.handleClose();
             handleShowAllNodes();
-            this.handleRequestSort('displayed', 'desc');
+            this.handleSortByChecked('desc');
           }}
           disabled={hidden.length === 0}
         >
@@ -368,6 +394,7 @@ class TableComponent extends Component {
       <Dialog
         open={columnSelect}
         onClose={this.handleColumnClose}
+        classes={{ paper: 'column-dialog' }}
       >
         <DialogTitle id="column-dialog-title">
           Select Columns:
@@ -435,7 +462,7 @@ class TableComponent extends Component {
                 />
                 <TableSortLabel
                   active={orderBy === 'displayed'}
-                  onClick={() => this.handleRequestSort('displayed')}
+                  onClick={() => this.handleSortByChecked()}
                   direction={order}
                 />
               </TableCell>
@@ -445,7 +472,7 @@ class TableComponent extends Component {
                     <TableCell key={col.id}>
                       <TableSortLabel
                         active={col.id === orderBy}
-                        onClick={() => this.handleRequestSort(col.id)}
+                        onClick={() => this.handleRequestSort(col)}
                         direction={order}
                       >
                         {col.label}

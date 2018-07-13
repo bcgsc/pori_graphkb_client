@@ -8,9 +8,16 @@ function DownloadFileComponent(props) {
     rawFileContent,
     fileName,
     children,
+    id,
+    className,
+    style,
   } = props;
 
   const onClick = () => {
+    if (!rawFileContent) return;
+
+    if (window.Cypress) return;
+
     const uri = `data:${mediaType}${base64 ? `;${base64}` : null},${encodeURIComponent(rawFileContent)}`;
 
     const link = document.createElement('a');
@@ -29,6 +36,9 @@ function DownloadFileComponent(props) {
       onKeyUp={(e) => { if (e.keyCode === 13) onClick(); }}
       role="button"
       tabIndex={0}
+      id={id}
+      className={className}
+      style={style}
     >
       {children}
     </div>
@@ -41,6 +51,9 @@ DownloadFileComponent.propTypes = {
   rawFileContent: PropTypes.string,
   fileName: PropTypes.string,
   children: PropTypes.node.isRequired,
+  id: PropTypes.string,
+  className: PropTypes.string,
+  style: PropTypes.object,
 };
 
 DownloadFileComponent.defaultProps = {
@@ -48,6 +61,9 @@ DownloadFileComponent.defaultProps = {
   base64: null,
   rawFileContent: '',
   fileName: 'download.txt',
+  id: undefined,
+  className: undefined,
+  style: undefined,
 };
 
 export default DownloadFileComponent;

@@ -46,20 +46,6 @@
   z-index: 1;
 }
 
-.source-col {
-  $width: 65px;
-  min-width: $width;
-  max-width: $width;
-}
-.sourceId-col {
-  $width: 65px;
-  min-width: $width;
-  max-width: $width;
-}
-.name-col {
-  $width: 300px;
-  min-width: $width;
-}
 .spacer-cell {
   position: sticky;
   left: 0;
@@ -75,6 +61,12 @@
   bottom: 0;
   width: 100%;
   border-top: 1px solid rgba(224, 224, 224, 1);
+}
+.selected-col{
+  $w: 72px;
+  max-width: $w;
+  min-width: $w;
+  width: $w;
 }
 
 $flip-duration: 0.15s;

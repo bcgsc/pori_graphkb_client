@@ -15,12 +15,19 @@ import {
   Checkbox,
   Menu,
   MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
 } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import NodeDetailComponent from '../NodeDetailComponent/NodeDetailComponent';
 import DownloadFileComponent from '../DownloadFileComponent/DownloadFileComponent';
+import util from '../../services/util';
 
 /**
  * Component to display query results in table form.
@@ -37,7 +44,9 @@ class TableComponent extends Component {
       anchorEl: null,
       graphRedirect: false,
       sortedData: Object.keys(props.data).map(key => props.data[key]),
+      columnSelect: false,
     };
+
     this.handleDetailToggle = this.handleDetailToggle.bind(this);
     this.handleRequestSort = this.handleRequestSort.bind(this);
     this.handleChangePage = this.handleChangePage.bind(this);
@@ -45,6 +54,9 @@ class TableComponent extends Component {
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleGraphRedirect = this.handleGraphRedirect.bind(this);
+    this.handleColumnOpen = this.handleColumnOpen.bind(this);
+    this.handleColumnClose = this.handleColumnClose.bind(this);
+
     this.createTSV = this.createTSV.bind(this);
   }
 
@@ -150,25 +162,32 @@ class TableComponent extends Component {
   }
 
   /**
+   * Opens column selection dialog.
+   */
+  handleColumnOpen() {
+    this.setState({ columnSelect: true });
+  }
+
+  /**
+   * Closes column selection dialog.
+   */
+  handleColumnClose() {
+    this.setState({ columnSelect: false });
+  }
+
+  /**
    * builds tsv data and prompts the browser to download file.
    */
   createTSV() {
-    const { data, hidden } = this.props;
-    const columns = ['name', 'source', 'sourceId', 'longName', 'description', 'subsets'];
+    const { data, hidden, allColumns } = this.props;
     const rows = [];
-    rows.push(columns.join('\t'));
+    rows.push(allColumns.map(column => util.getEdgeLabel(column)).join('\t'));
 
-    Object.keys(data).forEach((key) => {
+    Object.keys(data).forEach((rid) => {
       const row = [];
-      if (!hidden.includes(key)) {
-        columns.forEach((column) => {
-          if (column === 'source') {
-            row.push(data[key][column].name);
-          } else if (column === 'subsets' && data[key][column]) {
-            row.push(data[key][column].join(', '));
-          } else {
-            row.push(data[key][column]);
-          }
+      if (!hidden.includes(rid)) {
+        allColumns.forEach((column) => {
+          row.push(util.getTSVRepresentation(data[rid][column], column));
         });
 
         rows.push(row.join('\t'));
@@ -196,6 +215,7 @@ class TableComponent extends Component {
       toggle,
       anchorEl,
       graphRedirect,
+      columnSelect,
     } = this.state;
 
     const {
@@ -249,6 +269,7 @@ class TableComponent extends Component {
         <MenuItem
           onClick={() => { this.handleClose(); this.handleGraphRedirect(); }}
           disabled={displayed.length === 0}
+          id="view-as-graph"
         >
           View selected as graph
         </MenuItem>
@@ -256,6 +277,7 @@ class TableComponent extends Component {
           mediaType="text/tab-separated-values"
           rawFileContent={this.createTSV()}
           fileName="download.tsv"
+          id="download-tsv"
         >
           <MenuItem
             onClick={() => { this.handleClose(); }}
@@ -267,6 +289,7 @@ class TableComponent extends Component {
         <MenuItem
           onClick={() => { this.handleClose(); handleHideSelected(); }}
           disabled={displayed.length === 0}
+          id="hide-selected"
         >
           Hide Selected Rows
           {displayed.length !== 0 ? ` (${displayed.length})` : null}
@@ -282,15 +305,52 @@ class TableComponent extends Component {
           Show hidden rows
           {hidden.length !== 0 ? ` (${hidden.length})` : null}
         </MenuItem>
+        <MenuItem
+          onClick={() => {
+            this.handleClose();
+            this.handleColumnOpen();
+          }}
+        >
+          Edit Visible Columns
+        </MenuItem>
       </Menu>
+    );
+
+    const columnDialog = (
+      <Dialog
+        open={columnSelect}
+        onClose={this.handleColumnClose}
+      >
+        <DialogTitle id="column-dialog-title">
+          Select Columns:
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Checkbox />
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.handleColumnClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={this.handleColumnClose} color="primary">
+            Subscribe
+          </Button>
+        </DialogActions>
+      </Dialog>
     );
 
     return (
       <section className="data-table">
+        {columnDialog}
         <Table>
           <TableHead className="table-head">
             <TableRow>
-              <TableCell>
+              <TableCell
+                classes={{
+                  root: 'selected-col',
+                }}
+              >
                 <Checkbox
                   onChange={handleCheckAll}
                   checked={displayed.length === sortedData.length - hidden.length}
@@ -299,9 +359,7 @@ class TableComponent extends Component {
                   active={orderBy === 'displayed'}
                   onClick={() => this.handleRequestSort('displayed')}
                   direction={order}
-                >
-                  Selected
-                </TableSortLabel>
+                />
               </TableCell>
               {columns.map(col => (
                 <TableCell key={col.id} classes={{ root: `${col.id}-col` }}>
@@ -315,7 +373,7 @@ class TableComponent extends Component {
                 </TableCell>
               ))}
               <TableCell style={{ zIndex: 1 }}>
-                <IconButton onClick={this.handleOpen}>
+                <IconButton onClick={this.handleOpen} id="ellipsis-menu">
                   <MoreHorizIcon color="action" />
                 </IconButton>
                 {menu}
@@ -346,7 +404,7 @@ class TableComponent extends Component {
                 ) : null;
                 return !hidden.includes(n['@rid'])
                   ? (
-                    <React.Fragment key={n['@rid']}>
+                    <React.Fragment key={n['@rid'] || Math.random()}>
                       <TableRow
                         selected={isSelected}
                         onClick={() => handleClick(n['@rid'])}
@@ -355,7 +413,11 @@ class TableComponent extends Component {
                           selected: 'selected-override',
                         }}
                       >
-                        <TableCell>
+                        <TableCell
+                          classes={{
+                            root: 'selected-col',
+                          }}
+                        >
                           <Checkbox
                             onChange={() => handleCheckbox(n['@rid'])}
                             checked={displayed.includes(n['@rid'])}
@@ -450,6 +512,7 @@ class TableComponent extends Component {
 * @param {function} handleCheckbox - Method triggered when a single row is checked.
 * @param {function} handleHideSelected - Method for hiding selected rows from the view.
 * @param {function} handleShowAllNodes - Method for returning previously hidden rows to the view.
+* @param {Array} allColumns - all non-base columns represented throughout the query results.
     */
 TableComponent.propTypes = {
   data: PropTypes.object.isRequired,
@@ -462,11 +525,14 @@ TableComponent.propTypes = {
   handleCheckbox: PropTypes.func.isRequired,
   handleHideSelected: PropTypes.func.isRequired,
   handleShowAllNodes: PropTypes.func.isRequired,
-  hidden: PropTypes.array.isRequired,
+  hidden: PropTypes.array,
+  allColumns: PropTypes.array,
 };
 
 TableComponent.defaultProps = {
   selectedId: null,
+  allColumns: [],
+  hidden: [],
 };
 
 export default TableComponent;

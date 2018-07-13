@@ -287,7 +287,11 @@ class TableComponent extends Component {
         <Table>
           <TableHead className="table-head">
             <TableRow>
-              <TableCell>
+              <TableCell
+                classes={{
+                  root: 'selected-col',
+                }}
+              >
                 <Checkbox
                   onChange={handleCheckAll}
                   checked={displayed.length === sortedData.length - hidden.length}
@@ -296,9 +300,7 @@ class TableComponent extends Component {
                   active={orderBy === 'displayed'}
                   onClick={() => this.handleRequestSort('displayed')}
                   direction={order}
-                >
-                  Selected
-                </TableSortLabel>
+                />
               </TableCell>
               {columns.map(col => (
                 <TableCell key={col.id} classes={{ root: `${col.id}-col` }}>
@@ -352,7 +354,11 @@ class TableComponent extends Component {
                           selected: 'selected-override',
                         }}
                       >
-                        <TableCell>
+                        <TableCell
+                          classes={{
+                            root: 'selected-col',
+                          }}
+                        >
                           <Checkbox
                             onChange={() => handleCheckbox(n['@rid'])}
                             checked={displayed.includes(n['@rid'])}

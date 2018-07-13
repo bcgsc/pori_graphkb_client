@@ -8,6 +8,7 @@ const KEYS = {
   SOURCES: 'sources',
   ONTOLOGYEDGES: 'ontologyEdges',
   V: 'baseVertex',
+  SCHEMA: 'schema',
 };
 
 /**
@@ -103,39 +104,16 @@ export default class api {
    * Returns all valid edge types.
    */
   static getOntologyEdges() {
-    const edgeTypes = localStorage.getItem(KEYS.ONTOLOGYEDGES);
-    const edgeTypeExpiry = localStorage.getItem(`${KEYS.ONTOLOGYEDGES}Expiry`);
-    if (
-      !edgeTypes
-      || (edgeTypes && edgeTypeExpiry && edgeTypeExpiry < Date.now().valueOf())
-      || !edgeTypeExpiry
-    ) {
-      return api.loadOntologyEdges();
-    }
-    return Promise.resolve(JSON.parse(edgeTypes));
-  }
-
-  /**
-   * Requests edge types from api and loads into localstorage.
-   */
-  static loadOntologyEdges() {
-    return api.get('/schema').then((response) => {
-      const cycled = jc.retrocycle(response.schema);
+    return api.getSchema().then((schema) => {
       const list = [];
-      Object.keys(cycled).forEach((key) => {
+      Object.keys(schema).forEach((key) => {
         if (
-          cycled[key].inherits.includes('E') && cycled[key].inherits.includes('OntologyEdge')
+          schema[key].inherits.includes('E')
+          && schema[key].inherits.includes('OntologyEdge')
         ) {
           list.push(key);
         }
       });
-
-      const now = new Date();
-      const expiry = new Date(now);
-      expiry.setHours(now.getHours() + CACHE_EXPIRY);
-
-      localStorage.setItem(`${KEYS.ONTOLOGYEDGES}Expiry`, expiry.getTime());
-      localStorage.setItem(KEYS.ONTOLOGYEDGES, JSON.stringify(list));
       return Promise.resolve(list);
     });
   }
@@ -175,47 +153,55 @@ export default class api {
   }
 
   /**
-   * Returns all valid ontology vertex types.
+   * Requests schema from api and loads into localstorage.
    */
-  static getOntologyVertices() {
-    const ontologies = localStorage.getItem(KEYS.ONTOLOGYVERTICES);
-    const ontologiesExpiry = localStorage.getItem(`${KEYS.ONTOLOGYVERTICES}Expiry`);
-    if (
-      !ontologies
-      || (
-        ontologies
-        && ontologiesExpiry
-        && ontologiesExpiry < Date.now().valueOf()
-      )
-    ) {
-      return api.loadOntologyVertices();
-    }
-    return Promise.resolve(JSON.parse(ontologies));
-  }
-
-  /**
-   * Requests ontology vertices from the api and loads them into localstorage.
-   */
-  static loadOntologyVertices() {
+  static loadSchema() {
     return api.get('/schema').then((response) => {
       const cycled = jc.retrocycle(response.schema);
-      const list = [];
-      Object.keys(cycled).forEach((key) => {
-        if (
-          cycled[key].inherits.includes('Ontology')
-          && cycled[key].inherits.includes('V')
-        ) {
-          list.push({ name: key, properties: cycled[key].properties });
-        }
-      });
-
       const now = new Date();
       const expiry = new Date(now);
       expiry.setHours(now.getHours() + CACHE_EXPIRY);
 
-      localStorage.setItem(`${KEYS.ONTOLOGYVERTICES}Expiry`, expiry.getTime());
-      localStorage.setItem(KEYS.ONTOLOGYVERTICES, JSON.stringify(list));
+      localStorage.setItem(`${KEYS.SCHEMA}Expiry`, expiry.getTime());
+      localStorage.setItem(KEYS.SCHEMA, JSON.stringify(cycled));
 
+      return Promise.resolve(cycled);
+    });
+  }
+
+  /**
+   * Returns schema.
+   */
+  static getSchema() {
+    const schema = localStorage.getItem(KEYS.SCHEMA);
+    const schemaExpiry = localStorage.getItem(`${KEYS.SCHEMA}Expiry`);
+    if (
+      !schema
+      || (
+        schema
+        && schemaExpiry
+        && schemaExpiry < Date.now().valueOf()
+      )
+    ) {
+      return api.loadSchema();
+    }
+    return Promise.resolve(JSON.parse(schema));
+  }
+
+  /**
+   * Returns all valid ontology vertex types.
+   */
+  static getOntologyVertices() {
+    return api.getSchema().then((schema) => {
+      const list = [];
+      Object.keys(schema).forEach((key) => {
+        if (
+          schema[key].inherits.includes('Ontology')
+          && schema[key].inherits.includes('V')
+        ) {
+          list.push({ name: key, properties: schema[key].properties });
+        }
+      });
       return Promise.resolve(list);
     });
   }
@@ -224,36 +210,7 @@ export default class api {
   * Returns the vertex base class.
   */
   static getVertexBaseClass() {
-    const vertex = localStorage.getItem(KEYS.V);
-    const vExpiry = localStorage.getItem(`${KEYS.V}Expiry`);
-    if (
-      !vertex
-      || (
-        vertex
-        && vExpiry
-        && vExpiry < Date.now().valueOf()
-      )
-    ) {
-      return api.loadVertexBaseClass();
-    }
-    return Promise.resolve(JSON.parse(vertex));
-  }
-
-  /**
-    * Requests the vertex V from the api and loads it into localstorage.
-    */
-  static loadVertexBaseClass() {
-    return api.get('/schema').then((response) => {
-      const cycled = jc.retrocycle(response.schema);
-      const now = new Date();
-      const expiry = new Date(now);
-      expiry.setHours(now.getHours() + CACHE_EXPIRY);
-
-      localStorage.setItem(`${KEYS.V}Expiry`, expiry.getTime());
-      localStorage.setItem(KEYS.V, JSON.stringify(cycled.V));
-
-      return Promise.resolve(cycled.V);
-    });
+    return api.getSchema().then(schema => Promise.resolve(schema.V));
   }
 
   /**
@@ -261,16 +218,15 @@ export default class api {
    * @param {string} className - requested class name
    */
   static getEditableProps(className) {
-    return api.get('/schema').then((response) => {
-      const cycled = jc.retrocycle(response.schema);
-      const V = Object.keys(cycled.V.properties);
-      if (cycled[className]) {
-        const props = Object.keys(cycled[className].properties).map(prop => (
+    return api.getSchema().then((schema) => {
+      const VPropKeys = Object.keys(schema.V.properties);
+      if (schema[className]) {
+        const props = Object.keys(schema[className].properties).map(prop => (
           {
             name: prop,
-            ...cycled[className].properties[prop],
+            ...schema[className].properties[prop],
           }));
-        return Promise.resolve(props.filter(prop => !V.includes(prop.name)));
+        return Promise.resolve(props.filter(prop => !VPropKeys.includes(prop.name)));
       }
       return Promise.reject('Class not found');
     });

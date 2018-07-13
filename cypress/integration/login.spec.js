@@ -1,8 +1,7 @@
-import { credentials } from '../../config';
 
 function successfulLogIn() {
-  cy.get('input[name=username]').type(credentials.username);
-  cy.get('input[name=password]').type(`${credentials.password}{enter}`);
+  cy.get('input[name=username]').type(Cypress.env('USER'));
+  cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`);
 }
 
 describe('Login Test', () => {
@@ -45,7 +44,7 @@ describe('Login Test', () => {
       expect(localStorage.getItem('kbToken')).to.not.be.null;
       /* eslint-enable */
     });
-    cy.contains(credentials.username);
+    cy.contains(Cypress.env('USER'));
   });
 
   it('logs out', () => {

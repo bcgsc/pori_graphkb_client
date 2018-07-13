@@ -27,6 +27,9 @@
   background-color: rgba(227, 230, 248, 0.4);
 }
 
+.column-dialog {
+  width: 600px;
+}
 
 .data-table {
   margin: 0 auto;
@@ -53,6 +56,7 @@
   background-color: #f8f8f8;
   bottom: 0;
 }
+
 .spacer-cell:before {
   content: "";
   position: absolute;
@@ -62,6 +66,13 @@
   width: 100%;
   border-top: 1px solid rgba(224, 224, 224, 1);
 }
+.selected-col{
+  $w: 72px;
+  max-width: $w;
+  min-width: $w;
+  width: $w;
+}
+
 .selected-col{
   $w: 72px;
   max-width: $w;

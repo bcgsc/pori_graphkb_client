@@ -132,45 +132,45 @@ class AutoSearchComponent extends Component {
             setState,
           },
         ) => (
-            <div className="autosearch-wrapper">
-              <TextField
-                disabled={disabled}
-                fullWidth
-                error={error || emptyFlag}
-                label={label}
-                required={required}
-                InputProps={{
-                  ...getInputProps({
-                    placeholder,
-                    value,
-                    onChange,
-                    name,
-                    onKeyUp: this.refreshOptions,
-                  }),
-                }}
-              />
-              {isOpen
-                && autoSearchResults(inputValue, getItemProps, setState, getInputProps)
-                  .length !== 0
-                ? (
-                  <Paper className="droptions">
-                    <List>
-                      {autoSearchResults(inputValue, getItemProps, setState, getInputProps)}
-                    </List>
-                  </Paper>
-                ) : null}
-              {error ? (
-                <Typography variant="caption" color="error">
-                  Invalid Request
-              </Typography>
-              ) : null
-              }
-              {emptyFlag ? (
-                <Typography variant="caption" color="error">
-                  No Results
-              </Typography>
+          <div className="autosearch-wrapper">
+            <TextField
+              disabled={disabled}
+              fullWidth
+              error={error || emptyFlag}
+              label={label}
+              required={required}
+              InputProps={{
+                ...getInputProps({
+                  placeholder,
+                  value,
+                  onChange,
+                  name,
+                  onKeyUp: this.refreshOptions,
+                }),
+              }}
+            />
+            {isOpen
+              && autoSearchResults(inputValue, getItemProps, setState, getInputProps)
+                .length !== 0
+              ? (
+                <Paper className="droptions">
+                  <List>
+                    {autoSearchResults(inputValue, getItemProps, setState, getInputProps)}
+                  </List>
+                </Paper>
               ) : null}
-            </div>)
+            {error ? (
+              <Typography variant="caption" color="error">
+                Invalid Request
+              </Typography>
+            ) : null
+            }
+            {emptyFlag ? (
+              <Typography variant="caption" color="error">
+                No Results
+              </Typography>
+            ) : null}
+          </div>)
         }
       </Downshift>
     );

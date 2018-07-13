@@ -243,6 +243,7 @@ class TableComponent extends Component {
         <MenuItem
           onClick={() => { this.handleClose(); this.handleGraphRedirect(); }}
           disabled={displayed.length === 0}
+          id="view-as-graph"
         >
           View selected as graph
         </MenuItem>
@@ -250,6 +251,7 @@ class TableComponent extends Component {
           mediaType="text/tab-separated-values"
           rawFileContent={this.createTSV()}
           fileName="download.tsv"
+          id="download-tsv"
         >
           <MenuItem
             onClick={() => { this.handleClose(); }}
@@ -261,6 +263,7 @@ class TableComponent extends Component {
         <MenuItem
           onClick={() => { this.handleClose(); handleHideSelected(); }}
           disabled={displayed.length === 0}
+          id="hide-selected"
         >
           Hide Selected Rows
           {displayed.length !== 0 ? ` (${displayed.length})` : null}
@@ -309,7 +312,7 @@ class TableComponent extends Component {
                 </TableCell>
               ))}
               <TableCell style={{ zIndex: 1 }}>
-                <IconButton onClick={this.handleOpen}>
+                <IconButton onClick={this.handleOpen} id="ellipsis-menu">
                   <MoreHorizIcon color="action" />
                 </IconButton>
                 {menu}

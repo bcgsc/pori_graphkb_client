@@ -1,6 +1,6 @@
 import { credentials } from '../../config';
 
-describe('Query Page Test', () => {
+describe('Table Test', () => {
   beforeEach(() => {
     cy.visit('/');
     cy.url().should('includes', '/login');
@@ -59,22 +59,25 @@ describe('Query Page Test', () => {
   });
 
   it('Ellipsis menu: Download as TSV', () => {
-
+    cy.get('#ellipsis-menu').click();
+    cy.get('#download-tsv').click();
   });
 
-  it('Ellipsis menu: hiding rows', () => {
+  it('Ellipsis menu: hiding/returning rows', () => {
+    cy.get('table tbody tr').then((array) => {
+      cy.contains(array.length);
 
-  });
-
-  it('Ellipsis menu: returning hidden rows', () => {
-
-  });
-
-  it('Different class details', () => {
-
-  });
-
-  it('Nested class expansion', () => {
-
+      cy.wrap(array).each((row, i) => {
+        if (i !== 0 && i <= Math.round(array.length / 6)) {
+          cy.wrap(row).children('td:first').children().click();
+        }
+      });
+      cy.get('#ellipsis-menu').click();
+      cy.get('#hide-selected').click();
+      cy.contains(170 - Math.round(array.length / 6));
+      cy.get('#ellipsis-menu').click();
+      cy.contains(`Show hidden rows (${Math.round(array.length / 6)})`).click();
+      cy.contains('1-50 of 170');
+    });
   });
 });

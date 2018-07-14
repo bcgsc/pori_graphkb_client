@@ -578,7 +578,7 @@ class TableComponent extends Component {
             <TableRow>
               <TableCell colSpan={numCols + 1} className="spacer-cell">
                 <TablePagination
-                  classes={{ root: 'table-paginator' }}
+                  classes={{ root: 'table-paginator', toolbar: 'paginator-spacing' }}
                   count={sortedData.length - hidden.length}
                   rowsPerPage={rowsPerPage}
                   page={page}

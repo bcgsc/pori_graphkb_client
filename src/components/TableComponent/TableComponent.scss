@@ -49,6 +49,11 @@
   z-index: 1;
 }
 
+.paginator-spacing {
+  display: grid !important;
+  grid-template-columns: 0 100px 56px 100px 116px;
+}
+
 .spacer-cell {
   position: sticky;
   left: 0;

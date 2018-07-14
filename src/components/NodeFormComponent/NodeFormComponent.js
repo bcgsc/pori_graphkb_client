@@ -590,7 +590,7 @@ class NodeFormComponent extends Component {
         }
 
         return (
-          <ListItem key={key} style={{ display: 'block', border: '1px red solid' }}>
+          <ListItem key={key} style={{ display: 'block' }}>
             {resourceSelector}
             <div>
               <AutoSearchComponent

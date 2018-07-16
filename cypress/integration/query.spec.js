@@ -35,7 +35,7 @@ describe('Query Page Test', () => {
     cy.get('input[type=text]').type('&angiosarcoma');
     cy.contains('Invalid Request');
     cy.get('div.search-buttons button').click();
-    cy.url().should('includes', '/error');
+    cy.url().should('includes', '/query');
   });
 
   it('AutoSearch no results', () => {
@@ -48,7 +48,7 @@ describe('Query Page Test', () => {
     cy.contains('No results found').should('not.exist');
   });
 
-  it.only('Advanced search', () => {
+  it('Advanced search', () => {
     const name = 'pneumonitis';
     const sourceId = 'ncit:c113159';
     cy.contains('Advanced Search').click();

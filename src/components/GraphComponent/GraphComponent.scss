@@ -32,7 +32,6 @@ $toolbar-height: 64px;
 }
 
 .graph-options-wrapper {
-
   .graph-input-wrapper {
     svg {
       color: $md-secondary-color;
@@ -75,13 +74,6 @@ $toolbar-height: 64px;
   left: 0;
   right: 0;
   top: 0;
-
-  .node-options {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    margin: 24px;
-  }
 }
 
 .options-grid{

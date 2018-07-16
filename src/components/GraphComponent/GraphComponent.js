@@ -17,7 +17,6 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import ViewListIcon from '@material-ui/icons/ViewList';
-import EditIcon from '@material-ui/icons/Edit';
 import BuildIcon from '@material-ui/icons/Build';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { withStyles } from '@material-ui/core/styles';
@@ -50,7 +49,7 @@ const styles = {
     margin: '3px 0 0 -15px',
   },
   label: {
-    'margin-left': '- 8px',
+    'margin-left': '-8px',
     'font-size': '0.9em',
   },
 };
@@ -991,11 +990,6 @@ class GraphComponent extends Component {
         </div>
 
         <div className="svg-wrapper" ref={(node) => { this.wrapper = node; }}>
-          <div className="node-options">
-            <IconButton onClick={this.handleDrawerOpen}>
-              <EditIcon />
-            </IconButton>
-          </div>
           <svg ref={(node) => { this.graph = node; }}>
             <defs>
               <marker

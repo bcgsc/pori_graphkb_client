@@ -1,7 +1,7 @@
 
 function successfulLogIn() {
   cy.get('input[name=username]').type(Cypress.env('USER'));
-  cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`);
+  cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
 }
 
 describe('Login Test', () => {

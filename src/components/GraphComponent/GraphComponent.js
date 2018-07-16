@@ -290,21 +290,26 @@ class GraphComponent extends Component {
         const n = node[edgeType].length;
         let j = 0;
 
+        // Looks through each edge of certain type.
         node[edgeType].forEach((edge) => {
           const edgeRid = edge['@rid'] || edge;
 
           // Checks if edge is already rendered in the graph
           if (!graphObjects[edgeRid]) {
+            const inRid = edge.in['@rid'] || edge.in;
+            const outRid = edge.out['@rid'] || edge.out;
+            const targetRid = inRid === node['@rid'] ? outRid : inRid;
+
             if (
               edge['@rid']
-              && edge.in['@rid']
-              && edge.out['@rid']
-              && depth > 0
+              && inRid
+              && outRid
+              && (depth > 0 || graphObjects[targetRid])
             ) {
               // Initialize new link object and pushes to links list.
               const link = {
-                source: edge.out['@rid'],
-                target: edge.in['@rid'],
+                source: outRid,
+                target: inRid,
                 type: edgeType
                   .split('_')[1]
                   .split('Of')[0]
@@ -315,7 +320,7 @@ class GraphComponent extends Component {
               graphObjects[link['@rid']] = link;
 
               // Checks if node is already rendered
-              if (!graphObjects[edge.out['@rid']]) {
+              if (edge.out['@rid'] && !graphObjects[edge.out['@rid']]) {
                 // Initializes position of new child
                 const positionInit = GraphComponent.positionInit(
                   position.x,
@@ -338,7 +343,7 @@ class GraphComponent extends Component {
                 );
                 this.setState({ nodes: d.nodes, links: d.links, graphObjects: d.graphObjects });
               }
-              if (!graphObjects[edge.in['@rid']]) {
+              if (edge.in['@rid'] && !graphObjects[edge.in['@rid']]) {
                 const positionInit = GraphComponent.positionInit(
                   position.x,
                   position.y,

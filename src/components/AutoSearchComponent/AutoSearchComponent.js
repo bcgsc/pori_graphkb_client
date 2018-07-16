@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import api from '../../services/api';
 
 /**

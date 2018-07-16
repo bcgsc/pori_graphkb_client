@@ -550,6 +550,7 @@ class NodeFormComponent extends Component {
                 type={t || ''}
                 step={step || ''}
                 required={mandatory}
+                multiline={!!(t === 'text')}
               />
             </ListItem>
           );

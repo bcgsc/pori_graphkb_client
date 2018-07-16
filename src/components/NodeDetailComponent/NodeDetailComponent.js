@@ -15,7 +15,7 @@ import {
   ExpansionPanelDetails,
   ExpansionPanelSummary,
 } from '@material-ui/core';
-import AssignmentIcon from '@material-ui/icons/Assignment';
+import EditIcon from '@material-ui/icons/Edit';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import FolderIcon from '@material-ui/icons/Folder';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
@@ -277,7 +277,7 @@ class NodeDetailComponent extends Component {
           <IconButton
             onClick={() => handleNodeEditStart(node)}
           >
-            <AssignmentIcon />
+            <EditIcon />
           </IconButton>
           {children}
         </div>

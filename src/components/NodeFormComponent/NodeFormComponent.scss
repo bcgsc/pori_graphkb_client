@@ -16,9 +16,17 @@ $mediumBreakpoint: 500px;
   right: 0;
   bottom: 0;
 
-  .form-title {
-    padding: 8px;
-    height: 48px;
+  div.form-header{
+    display: flex;
+
+    .form-title {
+      padding: 8px;
+      height: 48px;
+    }
+    button {
+      float: right;
+      margin: auto 1em auto auto;
+    }
   }
 
   form {
@@ -38,6 +46,11 @@ $mediumBreakpoint: 500px;
     .param-section {
       padding: 20px;
       flex: 0;
+
+      .class-select{
+        margin-top: 12px;
+      }
+
     }
 
     .input-wrapper {
@@ -98,6 +111,7 @@ $mediumBreakpoint: 500px;
   transform: rotate(180deg);
   animation: flipr 0.1s linear;
 }
+
 .relationship-out {
   animation: flip 0.1s linear;
 }
@@ -110,6 +124,7 @@ $mediumBreakpoint: 500px;
     transform: rotate(0);
   }
 }
+
 @keyframes flipr {
   from {
     transform: rotate(0);

@@ -63,22 +63,29 @@ class SVGNode extends PureComponent {
       expandable,
       color,
       r,
+      actionsRing,
     } = this.props;
 
     return (
-      <g ref={(n) => { this.node = n; }} onClick={handleClick} transform={`translate(${(node.x || 0)},${(node.y || 0)})`}>
+      <g
+        ref={(n) => { this.node = n; }}
+        transform={`translate(${(node.x || 0)},${(node.y || 0)})`}
+      >
+        <text>
+          <tspan className="node-name" dy={28}>
+            {node.data.name || node.data.sourceId}
+          </tspan>
+        </text>
+        {actionsRing}
         <circle
+          onClick={handleClick}
           className={expandable ? 'node-expandable' : 'node'}
           fill={color}
           cx={0}
           cy={0}
           r={r}
         />
-        <text>
-          <tspan className="node-name" dy={12}>
-            {node.data.name}
-          </tspan>
-        </text>
+
       </g>
     );
   }
@@ -89,6 +96,7 @@ SVGNode.defaultProps = {
   expandable: false,
   color: '#000',
   r: 4,
+  actionsRing: null,
 };
 
 /**
@@ -106,6 +114,7 @@ SVGNode.propTypes = {
   color: PropTypes.string,
   r: PropTypes.number,
   simulation: PropTypes.object.isRequired,
+  actionsRing: PropTypes.array,
 };
 
 export default SVGNode;

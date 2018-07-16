@@ -51,7 +51,7 @@ describe('Query Page Test', () => {
   it.only('Advanced search', () => {
     const name = 'pneumonitis';
     const sourceId = 'ncit:c113159';
-    cy.get('a button').click();
+    cy.contains('Advanced Search').click();
     cy.url().should('includes', '/query/advanced');
     cy.get('input[name=name]').type(name);
     cy.get('#source-adv').click();

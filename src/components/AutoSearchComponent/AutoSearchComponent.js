@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import api from '../../services/api';
 
 /**
@@ -22,7 +22,6 @@ class AutoSearchComponent extends Component {
     super(props);
     this.state = {
       options: [],
-      error: false,
       emptyFlag: false,
       loginRedirect: false,
     };
@@ -53,7 +52,6 @@ class AutoSearchComponent extends Component {
    */
   callApi(value) {
     const {
-      onInvalid,
       limit,
       endpoint,
       property,
@@ -67,14 +65,11 @@ class AutoSearchComponent extends Component {
     ).then((response) => {
       const cycled = jc.retrocycle(response.result);
       const emptyFlag = !!(cycled.length === 0 && value);
-      this.setState({ options: cycled, error: false, emptyFlag });
+      this.setState({ options: cycled, emptyFlag });
     })
       .catch((error) => {
         if (error.status === 401) {
           this.setState({ loginRedirect: true });
-        } else if (error.status === 400) {
-          if (onInvalid) onInvalid();
-          this.setState({ error: true });
         }
       });
   }
@@ -82,7 +77,6 @@ class AutoSearchComponent extends Component {
   render() {
     const {
       options,
-      error,
       emptyFlag,
       loginRedirect,
     } = this.state;
@@ -143,7 +137,7 @@ class AutoSearchComponent extends Component {
             <TextField
               disabled={disabled}
               fullWidth
-              error={error || emptyFlag}
+              error={emptyFlag}
               label={label}
               required={required}
               InputProps={{
@@ -166,12 +160,6 @@ class AutoSearchComponent extends Component {
                   </List>
                 </Paper>
               ) : null}
-            {error ? (
-              <Typography variant="caption" color="error">
-                Invalid Request
-              </Typography>
-            ) : null
-            }
             {emptyFlag ? (
               <Typography variant="caption" color="error">
                 No Results
@@ -211,7 +199,6 @@ AutoSearchComponent.defaultProps = {
   ),
   onChange: null,
   disabled: false,
-  onInvalid: null,
 };
 
 /**
@@ -239,7 +226,6 @@ AutoSearchComponent.propTypes = {
   onChange: PropTypes.func,
   children: PropTypes.func,
   disabled: PropTypes.bool,
-  onInvalid: PropTypes.func,
 };
 
 export default AutoSearchComponent;

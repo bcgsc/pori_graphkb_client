@@ -24,19 +24,21 @@ class QueryView extends Component {
       redirect: false,
       endpoint: 'table',
       prevEmpty: props.location.state && props.location.state.noResults,
+      disabled: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.handleInvalid = this.handleInvalid.bind(this);
   }
 
   /**
    * Sets redirect flag to true if there is a valid query (any string).
    */
   handleSubmit(endpoint) {
-    const { name } = this.state;
-    if (name) this.setState({ redirect: true, endpoint });
+    const { name, disabled } = this.state;
+    if (name && !disabled) this.setState({ redirect: true, endpoint });
   }
 
   /**
@@ -44,11 +46,21 @@ class QueryView extends Component {
    * @param {Event} e - user input event.
    */
   handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
+    this.setState({ [e.target.name]: e.target.value, disabled: false });
   }
 
+  /**
+   * Closes "no results" snackbar.
+   */
   handleClose() {
     this.setState({ prevEmpty: false });
+  }
+
+  /**
+   * Binds autosearch disabled flag to search button.
+   */
+  handleInvalid() {
+    this.setState({ disabled: true });
   }
 
   render() {
@@ -101,18 +113,10 @@ class QueryView extends Component {
               placeholder="Search by Name"
               limit={30}
               name="name"
+              onInvalid={this.handleInvalid}
             />
           </div>
           <div className="search-buttons">
-            {/* <IconButton
-              variant="raised"
-              color="primary"
-              onClick={() => {
-                this.handleSubmit('table');
-              }}
-            >
-              <ViewListIcon />
-            </IconButton> */}
             <Button
               variant="raised"
               color="primary"
@@ -122,16 +126,6 @@ class QueryView extends Component {
             >
               Search
             </Button>
-
-            {/* <IconButton
-              variant="raised"
-              color="secondary"
-              onClick={() => {
-                this.handleSubmit('graph');
-              }}
-            >
-              <TimelineIcon />
-            </IconButton> */}
           </div>
         </div>
         <Link

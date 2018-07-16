@@ -6,7 +6,6 @@ import {
   TextField,
   List,
   ListItem,
-  ListItemIcon,
   ListItemText,
   IconButton,
   MenuItem,
@@ -21,7 +20,6 @@ import {
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
-import FolderIcon from '@material-ui/icons/Folder';
 import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
 import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';

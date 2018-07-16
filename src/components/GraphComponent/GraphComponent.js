@@ -38,7 +38,9 @@ const arrowProperties = {
 // Node position radius initializer.
 const nodeInitRadius = 55;
 // SVG node radius.
-const nodeRadius = 4;
+const nodeRadius = 16;
+// Details ring radius
+const detailsRadius = 56;
 
 const styles = {
   paper: {
@@ -93,6 +95,7 @@ class GraphComponent extends Component {
       graphOptionsPanel: false,
       colorKey: 'selectedColor',
       expandable: {},
+      paths,
     };
 
     this.drawGraph = this.drawGraph.bind(this);
@@ -106,6 +109,8 @@ class GraphComponent extends Component {
     this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
     this.handleOptionsPanelOpen = this.handleOptionsPanelOpen.bind(this);
     this.handleOptionsPanelClose = this.handleOptionsPanelClose.bind(this);
+    this.handleActionsRing = this.handleActionsRing.bind(this);
+    this.handleNodeHide = this.handleNodeHide.bind(this);
   }
 
   /**
@@ -192,7 +197,7 @@ class GraphComponent extends Component {
     }
 
     delete expandable[node.data['@rid']];
-    this.setState({ expandable });
+    this.setState({ expandable, actionsNode: null });
   }
 
   /**
@@ -443,8 +448,8 @@ class GraphComponent extends Component {
 
   /**
    * Updates selected node's and its neighbors' colors.
-   * @param {string} rid - selected node identifier.
-   */
+  * @param {string} rid - selected node identifier.
+        */
   updateColors(rid) {
     const { links } = this.state;
     const selectedAliases = [];
@@ -476,6 +481,7 @@ class GraphComponent extends Component {
     });
     this.setState({
       expandId: rid,
+      actionsNode: null,
       selectedAliases,
       selectedChildren,
       selectedParents,
@@ -495,7 +501,7 @@ class GraphComponent extends Component {
 
     if (node.data['@rid'] === expandId) {
       e.stopPropagation();
-      this.getNeighbors(node);
+      this.setState({ actionsNode: node });
     } else {
       this.updateColors(node.data['@rid']);
     }
@@ -545,7 +551,6 @@ class GraphComponent extends Component {
   async handleDrawerOpen() {
     const { expandId } = this.state;
     const { data } = this.props;
-
     if (!data[expandId]) {
       // Change this to general ontology endpoint.
       const response = await api.get(`/diseases/${expandId.slice(1)}?neighbors=3`);
@@ -555,12 +560,64 @@ class GraphComponent extends Component {
     this.setState({ detail: true });
   }
 
+  handleActionsRing(section) {
+    const { actionsNode } = this.state;
+    const options = [
+      this.handleDrawerOpen,
+      () => this.setState({ actionsNode: null }),
+      () => this.loadNeighbors(actionsNode),
+      this.handleNodeHide,
+    ];
+    options[section]();
+  }
+
+  handleNodeHide() {
+    const {
+      actionsNode,
+      graphObjects,
+      nodes,
+      links,
+      expandedEdgeTypes,
+      expandable,
+    } = this.state;
+
+    const i = nodes.indexOf(actionsNode);
+
+    nodes.splice(i, 1);
+    delete graphObjects[actionsNode.data['@rid']];
+
+    expandedEdgeTypes.forEach((edgeType) => {
+      if (actionsNode.data[edgeType]) {
+        actionsNode.data[edgeType].forEach((edge) => {
+          const j = links.findIndex(l => l['@rid'] === edge['@rid']);
+          if (j !== -1) {
+            const link = links[j];
+            const targetRid = link.source.data['@rid'] === actionsNode.data['@rid']
+              ? link.target.data['@rid'] : link.source.data['@rid'];
+            links.splice(j, 1);
+            delete graphObjects[edge['@rid']];
+            expandable[targetRid] = true;
+          }
+        });
+      }
+    });
+
+    this.setState({
+      expandable,
+      nodes,
+      links,
+      graphObjects,
+      actionsNode: null,
+    });
+  }
+
   render() {
     const {
       nodes,
       links,
       detail,
       expandId,
+      actionsNode,
       expandable,
       graphOptions,
       simulation,
@@ -570,6 +627,7 @@ class GraphComponent extends Component {
       colorKey,
       displayed,
       graphOptionsPanel,
+      paths,
     } = this.state;
 
     const {
@@ -755,7 +813,6 @@ class GraphComponent extends Component {
         </DialogContent>
       </Dialog>
     );
-
     const detailDrawer = (
       <Drawer
         variant="persistent"
@@ -799,6 +856,7 @@ class GraphComponent extends Component {
       };
 
       const isExpandable = expandable[node.data['@rid']];
+      const actionsRing = actionsNode === node ? paths : null;
       return (
         <SVGNode
           key={`node${node.data['@rid']}`}
@@ -808,6 +866,7 @@ class GraphComponent extends Component {
           r={nodeRadius}
           handleClick={e => this.handleClick(e, node)}
           expandable={isExpandable}
+          actionsRing={actionsRing}
         />
       );
     });

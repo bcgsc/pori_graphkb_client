@@ -196,7 +196,7 @@ class AdvancedQueryView extends Component {
             </Button>
           </Link>
           <Link to={{ search: this.bundle(), pathname: '/data/table' }}>
-            <Button color="primary" variant="raised">
+            <Button color="primary" variant="raised" id="search-button">
               Search
             </Button>
           </Link>

@@ -28,6 +28,7 @@ function ResourceSelectComponent(props) {
     label,
     children,
     required,
+    id,
   } = props;
 
   const resourcesDisplay = resources.map(resource => children(resource));
@@ -40,6 +41,7 @@ function ResourceSelectComponent(props) {
         minWidth: `${label.length * 16}px`,
         maxWidth: '100%',
       }}
+      id={id}
     >
       <InputLabel htmlFor="resource-select" required={required}>
         {label}
@@ -69,6 +71,7 @@ ResourceSelectComponent.defaultProps = {
   name: '',
   label: '',
   required: false,
+  id: '',
 };
 
 ResourceSelectComponent.propTypes = {
@@ -79,6 +82,7 @@ ResourceSelectComponent.propTypes = {
   label: PropTypes.string,
   children: PropTypes.func,
   required: PropTypes.bool,
+  id: PropTypes.string,
 };
 
 export default ResourceSelectComponent;

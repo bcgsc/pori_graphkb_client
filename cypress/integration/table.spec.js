@@ -4,7 +4,7 @@ describe('Table Test', () => {
     cy.visit('/');
     cy.url().should('includes', '/login');
     cy.get('input[name=username]').type(Cypress.env('USER'));
-    cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`);
+    cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
     cy.url().should('includes', '/query');
     cy.get('input').type('melanoma{enter}');
     cy.url().should('includes', '/table?name=~melanoma');

@@ -4,7 +4,7 @@ describe('Query Page Test', () => {
     cy.visit('/');
     cy.url().should('includes', '/login');
     cy.get('input[name=username]').type(Cypress.env('USER'));
-    cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`);
+    cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
     cy.url().should('includes', '/query');
   });
 
@@ -48,7 +48,7 @@ describe('Query Page Test', () => {
     cy.contains('No results found').should('not.exist');
   });
 
-  it('Advanced search', () => {
+  it.only('Advanced search', () => {
     const name = 'pneumonitis';
     const sourceId = 'ncit:c113159';
     cy.contains('Advanced Search').click();

@@ -52,7 +52,13 @@ class AutoSearchComponent extends Component {
    * @param {string} value - query value to be sent to the api.
    */
   callApi(value) {
-    const { endpoint, property, limit } = this.props;
+    const {
+      onInvalid,
+      limit,
+      endpoint,
+      property,
+    } = this.props;
+
     api.autoSearch(
       endpoint,
       property,
@@ -67,6 +73,7 @@ class AutoSearchComponent extends Component {
         if (error.status === 401) {
           this.setState({ loginRedirect: true });
         } else if (error.status === 400) {
+          onInvalid();
           this.setState({ error: true });
         }
       });
@@ -204,6 +211,7 @@ AutoSearchComponent.defaultProps = {
   ),
   onChange: null,
   disabled: false,
+  onInvalid: null,
 };
 
 /**
@@ -231,6 +239,7 @@ AutoSearchComponent.propTypes = {
   onChange: PropTypes.func,
   children: PropTypes.func,
   disabled: PropTypes.bool,
+  onInvalid: PropTypes.func,
 };
 
 export default AutoSearchComponent;

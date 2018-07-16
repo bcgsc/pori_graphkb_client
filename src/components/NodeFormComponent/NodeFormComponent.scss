@@ -34,11 +34,8 @@ $mediumBreakpoint: 500px;
     width: 100%;
     padding-bottom: 20px;
     display: grid;
-    grid-template-columns: 33% 33% 34%;
+    grid-template-columns: 50% 50%;
     grid-template-rows: 1fr;
-    @media (max-width: $relationshipBreakpoint) {
-      grid-template-columns: 30% 30% 40%;
-    }
     @media (max-width: $breakpoint) {
       grid-template-columns: 1fr;
     }
@@ -50,7 +47,6 @@ $mediumBreakpoint: 500px;
       .class-select{
         margin-top: 12px;
       }
-
     }
 
     .input-wrapper {
@@ -105,6 +101,13 @@ $mediumBreakpoint: 500px;
       bottom: 1%;
     }
   }
+}
+
+.form-list {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 4px 24px;
+  margin: 8px 0;
 }
 
 .relationship-in {

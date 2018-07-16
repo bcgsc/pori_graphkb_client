@@ -241,7 +241,7 @@ export default class api {
    */
   static autoSearch(endpoint, property, value, limit) {
     return api.get(
-      `/${endpoint}?${property}=~${value}&limit=${limit}&neighbors=1`,
+      `/${endpoint}?${property}=~${encodeURIComponent(value)}&limit=${limit}&neighbors=1`,
     );
   }
 }

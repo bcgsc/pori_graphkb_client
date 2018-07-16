@@ -22,9 +22,6 @@ class AutoSearchComponent extends Component {
     super(props);
     this.state = {
       options: [],
-      limit: props.limit || 30,
-      endpoint: props.endpoint || 'diseases',
-      property: props.property || 'name',
       error: false,
       emptyFlag: false,
       loginRedirect: false,
@@ -55,8 +52,13 @@ class AutoSearchComponent extends Component {
    * @param {string} value - query value to be sent to the api.
    */
   callApi(value) {
-    const { endpoint, property, limit } = this.state;
-    const { onInvalid } = this.props;
+    const {
+      onInvalid,
+      limit,
+      endpoint,
+      property,
+    } = this.props;
+
     api.autoSearch(
       endpoint,
       property,
@@ -71,7 +73,7 @@ class AutoSearchComponent extends Component {
         if (error.status === 401) {
           this.setState({ loginRedirect: true });
         } else if (error.status === 400) {
-          onInvalid();
+          if (onInvalid) onInvalid();
           this.setState({ error: true });
         }
       });
@@ -93,6 +95,7 @@ class AutoSearchComponent extends Component {
       value,
       label,
       required,
+      disabled,
     } = this.props;
 
     if (loginRedirect) return <Redirect push to={{ pathname: '/login' }} />;
@@ -114,7 +117,12 @@ class AutoSearchComponent extends Component {
       <Downshift
         onChange={(e) => {
           onChange({
-            target: { value: e.name, '@rid': e['@rid'], name }, // TODO: sourceID variant
+            target: {
+              value: e.name,
+              sourceId: e.sourceId,
+              '@rid': e['@rid'],
+              name,
+            },
           });
         }}
         itemToString={(item) => {
@@ -133,17 +141,18 @@ class AutoSearchComponent extends Component {
         ) => (
           <div className="autosearch-wrapper">
             <TextField
+              disabled={disabled}
               fullWidth
               error={error || emptyFlag}
+              label={label}
+              required={required}
               InputProps={{
                 ...getInputProps({
                   placeholder,
                   value,
                   onChange,
                   name,
-                  label,
                   onKeyUp: this.refreshOptions,
-                  required,
                 }),
               }}
             />
@@ -201,6 +210,7 @@ AutoSearchComponent.defaultProps = {
     </MenuItem>
   ),
   onChange: null,
+  disabled: false,
   onInvalid: null,
 };
 
@@ -215,6 +225,7 @@ AutoSearchComponent.defaultProps = {
  * @param {bool} required - required flag for text input indicator.
  * @param {func} onChange - parent method for handling change events
  * @param {func} children - component for display display query results.
+ * @param {bool} disabled - disabled flag.
  */
 AutoSearchComponent.propTypes = {
   limit: PropTypes.number,
@@ -227,6 +238,7 @@ AutoSearchComponent.propTypes = {
   required: PropTypes.bool,
   onChange: PropTypes.func,
   children: PropTypes.func,
+  disabled: PropTypes.bool,
   onInvalid: PropTypes.func,
 };
 

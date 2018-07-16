@@ -904,11 +904,10 @@ class GraphComponent extends Component {
         </div>
         <NodeDetailComponent
           node={data[expandId]}
-          handleNodeEditStart={handleNodeEditStart}
+          handleNodeEditStart={() => handleNodeEditStart(data[expandId])}
         />
       </Drawer>
     );
-
     const linksDisplay = links.map(link => <SVGLink key={link['@rid']} link={link} />);
 
     const nodesDisplay = nodes.map((node) => {

@@ -222,7 +222,7 @@ class DataView extends Component {
         handleClick={this.handleClick}
         displayed={displayed}
         selectedId={selectedId}
-        handleNodeEditStart={() => this.handleNodeEditStart(selectedId)}
+        handleNodeEditStart={this.handleNodeEditStart}
       />
     );
     const TableWithProps = () => (

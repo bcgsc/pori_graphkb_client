@@ -23,7 +23,6 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import { withStyles } from '@material-ui/core/styles';
 import { CompactPicker } from 'react-color';
 import { Link } from 'react-router-dom';
-import queryString from 'query-string';
 import * as jc from 'json-cycle';
 import NodeDetailComponent from '../NodeDetailComponent/NodeDetailComponent';
 import SVGLink from '../SVGLink/SVGLink';
@@ -53,7 +52,6 @@ const styles = {
     'font-size': '0.9em',
   },
 };
-
 
 /**
  * Component for displaying query results in force directed graph form.
@@ -135,22 +133,17 @@ class GraphComponent extends Component {
     }
 
     validDisplayed.forEach((key) => {
-      const { nodes, graphObjects } = this.state;
-      if (!graphObjects[key]) {
-        nodes.push({ data: data[key] });
-        graphObjects[key] = data[key];
-      }
-      handleNodeAdd(data[key]);
       this.setState(
         {
           ...this.processData(
             data[key],
             { x: 0, y: 0 },
-            Math.floor(neighbors / 2) + 1,
+            0,
           ),
         },
       );
     });
+
     this.drawGraph();
     this.updateColors(validDisplayed[0]);
     window.addEventListener('resize', this.handleResize);
@@ -187,7 +180,7 @@ class GraphComponent extends Component {
           ...this.processData(
             cycled,
             { x: node.x, y: node.y },
-            2,
+            1,
           ),
         });
         handleNodeAdd(cycled);
@@ -202,14 +195,13 @@ class GraphComponent extends Component {
     this.setState({ expandable });
   }
 
-  // TODO: fix bug where expandable flag isnt cleared unless node is clicked
   /**
    * Processes node data and updates state with new nodes and links.
    * Returns updated nodes, links, and graphObjects.
-   * @param {Object} node - Node object as returned by the api.
-   * @param {Object} position - Object containing x and y position of input node.
-   * @param {number} depth - Recursion base case flag.
-   */
+  * @param {Object} node - Node object as returned by the api.
+  * @param {Object} position - Object containing x and y position of input node.
+  * @param {number} depth - Recursion base case flag.
+        */
   processData(node, position, depth) {
     const {
       edgeTypes,
@@ -219,12 +211,10 @@ class GraphComponent extends Component {
       graphObjects,
     } = this.state;
 
-    // Defines what edge keys to look for.
-    const expandedEdgeTypes = edgeTypes.reduce((r, e) => {
-      r.push(`in_${e.name}`);
-      r.push(`out_${e.name}`);
-      return r;
-    }, []);
+    if (!graphObjects[node['@rid']]) {
+      nodes.push({ data: node });
+      graphObjects[node['@rid']] = node;
+    }
 
     expandedEdgeTypes.forEach((edgeType) => {
       if (node[edgeType] && node[edgeType].length !== 0) {

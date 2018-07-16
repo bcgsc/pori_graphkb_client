@@ -13,70 +13,46 @@ import {
   Button,
   Typography,
   Divider,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
+  FormControl,
+  FormLabel,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import FolderIcon from '@material-ui/icons/Folder';
 import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
-import * as jc from 'json-cycle';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
 import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
 import api from '../../services/api';
+import util from '../../services/util';
 
 /**
  * Component for editing or adding database nodes.
  */
 class NodeFormComponent extends Component {
-  /**
-   * Formats input node relationships and adds them to state relationship list.
-   * @param {Object} node - node object.
-   * @param {Array<Object>} relationships - current relationship list.
-   * @param {string} key - node object key specifying edge type.
-   */
-  static processRelationships(node, relationships, key) {
-    if (node[key]) {
-      node[key].forEach((edge) => {
-        relationships.push({
-          '@rid': edge['@rid'],
-          in: edge.in['@rid'],
-          out: edge.out['@rid'],
-          '@class': key.split('_')[1],
-          targetName:
-            edge.out.name === node.name ? edge.in.name : edge.out.name,
-          source: edge.source['@rid'] || edge.source,
-        });
-      });
-    }
-
-    return relationships;
-  }
-
   constructor(props) {
     super(props);
 
     this.state = {
-      node: { '@rid': -1 }, // placeholder rid, new node hasn't been assigned a real rid yet
-      form: {
-        source: '',
-        sourceId: '',
-        name: '',
-        longName: '',
-        description: '',
-        sourceIdVersion: '',
-        subsets: [],
-        subset: '',
-        relationship: {
-          '@class': '',
-          targetName: '',
-          in: '',
-          out: '',
-          source: '',
-        },
-        relationships: [],
-      },
+      originalNode: null,
+      form: null,
       edgeTypes: [],
       sources: [],
+      ontologyTypes: [],
+      newNodeClass: 'Disease',
       completedFlag: false,
+      relationships: [],
+      relationship: {
+        '@class': '',
+        targetName: '',
+        targetSourceId: '',
+        in: '',
+        out: -1,
+        source: '',
+      },
+      subset: '',
     };
 
     this.handleFormChange = this.handleFormChange.bind(this);
@@ -88,8 +64,8 @@ class NodeFormComponent extends Component {
     this.handleRelationshipDelete = this.handleRelationshipDelete.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDeleteNode = this.handleDeleteNode.bind(this);
-
-    this.initNode = this.initNode.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleClassChange = this.handleClassChange.bind(this);
   }
 
   /**
@@ -97,70 +73,136 @@ class NodeFormComponent extends Component {
    */
   async componentDidMount() {
     const sources = await api.getSources();
-    const edgeTypes = await api.getEdgeTypes();
-    const { variant } = this.props;
+    const edgeTypes = await api.getOntologyEdges();
+    const ontologyTypes = await api.getOntologyVertices();
+    const { node } = this.props;
+    const { relationships, relationship } = this.state;
 
-    this.setState({ sources, edgeTypes }, () => {
-      if (variant === 'edit') {
-        this.initNode();
-      } else {
-        const { form } = this.state;
-        form.relationship.out = -1;
+    let originalNode = { '@rid': -1 };
+    let nodeClass = 'Disease'; // default
+
+    if (node) {
+      originalNode = node;
+      nodeClass = node['@class'];
+      relationship.out = node['@rid'];
+    }
+
+    const editableProps = await api.getEditableProps(nodeClass);
+    const form = {};
+
+    editableProps.forEach((prop) => {
+      const { name, type, linkedClass } = prop;
+      switch (type) {
+        case 'embeddedset':
+          form[name] = originalNode[name] || [];
+          break;
+        case 'link':
+          form[name] = (originalNode[name] || '').name || '';
+          if (!linkedClass) {
+            form[`${name}.class`] = (originalNode[name] || '')['@class'] || '';
+          }
+          form[`${name}.@rid`] = (originalNode[name] || '')['@rid'] || '';
+          break;
+        case 'integer':
+          if (originalNode[name] === 0) {
+            form[name] = 0;
+          } else {
+            form[name] = originalNode[name] || '';
+          }
+          break;
+        default:
+          form[name] = originalNode[name] || '';
+          break;
       }
+    });
+
+    const expandedEdgeTypes = edgeTypes.reduce((r, e) => {
+      r.push(`in_${e}`);
+      r.push(`out_${e}`);
+      return r;
+    }, []);
+
+    expandedEdgeTypes.forEach((type) => {
+      if (originalNode[type]) {
+        originalNode[type].forEach((edge) => {
+          relationships.push({
+            '@rid': edge['@rid'],
+            in: edge.in['@rid'],
+            out: edge.out['@rid'],
+            '@class': type.split('_')[1],
+            targetName:
+              edge.out['@rid'] === originalNode['@rid'] ? edge.in.name : edge.out.name,
+            targetSourceId:
+              edge.out['@rid'] === originalNode['@rid'] ? edge.in.sourceId : edge.out.sourceId,
+            source: edge.source['@rid'] || edge.source,
+          });
+        });
+      }
+    });
+
+    originalNode.relationships = relationships.slice(0);
+    this.setState({
+      form,
+      relationships,
+      originalNode,
+      sources,
+      edgeTypes,
+      ontologyTypes,
+      editableProps,
+      newNodeClass: nodeClass,
     });
   }
 
   /**
-   * Initializes input node to be edited. Calls api to refresh its properties.
+   * Re renders form input fields based on class editable properties.
+   * @param {Event} e - Class selection event
    */
-  initNode() {
-    const { selectedId } = this.props;
-    const { edgeTypes } = this.state;
-
-    api
-      .get(`/diseases/${selectedId.slice(1)}?neighbors=3`)
-      .then((response) => {
-        const cycled = jc.retrocycle(response.result);
-        let relationships = [];
-        const expandedEdgeTypes = edgeTypes.reduce((r, e) => {
-          r.push({ name: `in_${e.name}` });
-          r.push({ name: `out_${e.name}` });
-          return r;
-        }, []);
-
-        expandedEdgeTypes.forEach((type) => {
-          relationships = NodeFormComponent.processRelationships(
-            cycled,
-            relationships,
-            type.name,
-          );
-        });
-
-        // create copy of original node and initialize form fields.
-        const { node, form } = this.state;
-        Object.keys(cycled).forEach((key) => {
-          node[key] = key === 'subsets'
-            ? cycled[key].slice(0, cycled[key].length)
-            : cycled[key];
-          form[key] = cycled[key];
-        });
-        // shallow copy of array object.
-        node.relationships = relationships.slice(0, relationships.length);
-        form.relationships = relationships;
-        form.relationship.out = cycled['@rid'];
-
-        this.setState({ node, form });
-      });
+  async handleClassChange(e) {
+    const newNodeClass = e.target.value;
+    const editableProps = await api.getEditableProps(newNodeClass);
+    const { form } = this.state;
+    editableProps.forEach((prop) => {
+      const { name, type } = prop;
+      if (!form[name]) {
+        switch (type) {
+          case 'embeddedset':
+            form[name] = [];
+            break;
+          default:
+            form[name] = '';
+            break;
+        }
+      }
+    });
+    this.setState({ form, editableProps, newNodeClass });
   }
 
   /**
-   * Changes state based on user input.
+   * Changes form state based on user input.
    * @param {Event} e - user input event.
    */
   handleFormChange(e) {
     const { form } = this.state;
     form[e.target.name] = e.target.value;
+    if (e.target['@rid']) {
+      form[`${e.target.name}.@rid`] = e.target['@rid'];
+    } else if (form[`${e.target.name}.@rid`]) {
+      form[`${e.target.name}.@rid`] = '';
+    }
+    if (e.target.sourceId) {
+      form[`${e.target.name}.sourceId`] = e.target.sourceId;
+    } else if (form[`${e.target.name}.sourceId`]) {
+      form[`${e.target.name}.sourceId`] = '';
+    }
     this.setState({ form });
+  }
+
+  /**
+   * Changes state base on user input.
+   * @param {Event} e - user input event.
+   */
+  handleChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
   }
 
   /**
@@ -169,12 +211,11 @@ class NodeFormComponent extends Component {
    */
   handleSubsetAdd(e) {
     e.preventDefault();
-    const { form } = this.state;
+    const { form, subset } = this.state;
 
-    if (form.subset && !form.subsets.includes(form.subset.toLowerCase())) {
-      form.subsets.push(form.subset);
-      form.subset = '';
-      this.setState({ form });
+    if (subset && !form.subsets.includes(subset.toLowerCase())) {
+      form.subsets.push(subset);
+      this.setState({ form, subset: '' });
     }
   }
 
@@ -197,8 +238,12 @@ class NodeFormComponent extends Component {
    */
   handleRelationshipAdd(e) {
     e.preventDefault();
-    const { form, node } = this.state;
-    const { relationship, relationships } = form;
+    const {
+      form,
+      originalNode,
+      relationship,
+      relationships,
+    } = this.state;
     if (
       relationship.in
       && relationship.out
@@ -206,22 +251,24 @@ class NodeFormComponent extends Component {
       && relationship.source
     ) {
       if (
-        relationships.filter(r => r.out === relationship.out
+        !relationships.find(r => r.out === relationship.out
           && r.in === relationship.in
           && r['@class'] === relationship['@class']
           && r.source === relationship.source)
-          .length === 0
       ) {
         relationships.push(relationship);
-        form.relationships = relationships;
-        form.relationship = {
-          '@class': '',
-          targetName: '',
-          in: '',
-          out: node['@rid'],
-          source: '',
-        };
-        this.setState({ form });
+        this.setState({
+          form,
+          relationships,
+          relationship: {
+            '@class': '',
+            targetName: '',
+            targetSourceId: '',
+            in: '',
+            out: originalNode['@rid'],
+            source: '',
+          },
+        });
       }
     }
   }
@@ -231,13 +278,11 @@ class NodeFormComponent extends Component {
    * @param {Object} relationship - Relationship to be deleted
    */
   handleRelationshipDelete(relationship) {
-    const { form } = this.state;
-    const { relationships } = form;
+    const { relationships } = this.state;
     if (relationships.indexOf(relationship) !== -1) {
       relationships.splice(relationships.indexOf(relationship), 1);
     }
-    form.relationships = relationships;
-    this.setState({ form });
+    this.setState({ relationships });
   }
 
   /**
@@ -245,32 +290,32 @@ class NodeFormComponent extends Component {
    * @param {Event} e - User input event.
    */
   handleRelationship(e) {
-    const { form, node } = this.state;
-    form.relationship[e.target.name] = e.target.value;
+    const { originalNode, relationship } = this.state;
+    relationship[e.target.name] = e.target.value;
     if (e.target['@rid']) {
-      if (form.relationship.in === node['@rid']) {
-        form.relationship.out = e.target['@rid'];
+      if (relationship.in === originalNode['@rid']) {
+        relationship.out = e.target['@rid'];
       } else {
-        form.relationship.in = e.target['@rid'];
+        relationship.in = e.target['@rid'];
       }
     }
-    this.setState({ form });
+    this.setState({ relationship });
   }
 
   /**
    * Updates staged relationship direction by swapping in/out properties.
    */
   handleRelationshipDirection() {
-    const { form, node } = this.state;
+    const { relationship, originalNode } = this.state;
 
-    if (form.relationship.in === node['@rid']) {
-      form.relationship.in = form.relationship.out;
-      form.relationship.out = node['@rid'];
+    if (relationship.in === originalNode['@rid']) {
+      relationship.in = relationship.out;
+      relationship.out = originalNode['@rid'];
     } else {
-      form.relationship.out = form.relationship.in;
-      form.relationship.in = node['@rid'];
+      relationship.out = relationship.in;
+      relationship.in = originalNode['@rid'];
     }
-    this.setState({ form });
+    this.setState({ relationship });
   }
 
   /**
@@ -292,13 +337,13 @@ class NodeFormComponent extends Component {
    * Deletes target node.
    */
   handleDeleteNode() {
-    const { node } = this.state;
+    const { originalNode } = this.state;
     const { handleNodeDelete } = this.props;
 
     api.delete(
-      `/${node['@class'].toLowerCase()}s/${node['@rid'].slice(1)}`,
+      `/${originalNode['@class'].toLowerCase()}s/${originalNode['@rid'].slice(1)}`,
     ).then(() => {
-      handleNodeDelete(node['@rid']);
+      handleNodeDelete();
     });
   }
 
@@ -306,19 +351,24 @@ class NodeFormComponent extends Component {
    * Adds new edges and deletes specified ones, then patches property changes to the api.
    */
   async editSubmit() {
-    const { form, node } = this.state;
+    const {
+      form,
+      originalNode,
+      relationships,
+      editableProps,
+    } = this.state;
     const { handleNodeFinishEdit } = this.props;
 
     const changedEdges = [];
 
-    node.relationships.forEach((initRelationship) => {
+    originalNode.relationships.forEach((initRelationship) => {
       if (
-        form.relationships.filter(
+        !relationships.find(
           r => r.out === initRelationship.out
             && r.in === initRelationship.in
             && r['@class'] === initRelationship['@class']
             && r.source === initRelationship.source,
-        ).length === 0
+        )
       ) {
         changedEdges.push(api.delete(
           `/${initRelationship['@class'].toLowerCase()}/${initRelationship['@rid'].slice(1)}`,
@@ -326,15 +376,15 @@ class NodeFormComponent extends Component {
       }
     });
 
-    for (let i = 0; i < form.relationships.length; i += 1) {
-      const currRelationship = form.relationships[i];
+    for (let i = 0; i < relationships.length; i += 1) {
+      const currRelationship = relationships[i];
       if (
-        node.relationships.filter(
+        !originalNode.relationships.find(
           r => r.out === currRelationship.out
             && r.in === currRelationship.in
             && r['@class'] === currRelationship['@class']
             && r.source === currRelationship.source,
-        ).length === 0
+        )
       ) {
         changedEdges.push(api.post(`/${currRelationship['@class'].toLowerCase()}`, {
           in: currRelationship.in,
@@ -343,71 +393,59 @@ class NodeFormComponent extends Component {
         }));
       }
     }
+
     await Promise.all(changedEdges);
+    const payload = Object.assign({}, form);
 
-    const payload = {};
-    let changed = false;
-    if (form.name !== node.name) {
-      changed = true;
-      payload.name = form.name;
-    }
-    if (form.longName !== node.longName) {
-      changed = true;
-      payload.longName = form.longName;
-    }
-    if (form.description !== node.description) {
-      changed = true;
-      payload.description = form.description;
-    }
-    if (form.sourceIdVersion !== node.sourceIdVersion) {
-      changed = true;
-      payload.sourceIdVersion = form.sourceIdVersion;
-    }
-
-    payload.subsets = [];
-
-    form.subsets.forEach((subset) => {
-      if (!node.subsets.includes(subset)) {
-        changed = true;
-        payload.subsets.push(subset);
+    Object.keys(payload).forEach((key) => {
+      if (!payload[key]) delete payload[key];
+      if (key.includes('.@rid')) {
+        payload[key.split('.')[0]] = payload[key];
+        delete payload[key];
+      }
+      if (key.includes('.class') || !editableProps.find(p => p.name === key)) {
+        delete payload[key];
       }
     });
-    node.subsets.forEach((subset) => {
-      if (form.subsets.includes(subset)) payload.subsets.push(subset);
-      else changed = true;
+
+    api.patch(
+      `/${util.pluralize(originalNode['@class'])}/${originalNode['@rid'].slice(1)}`,
+      { ...payload },
+    ).then(() => {
+      handleNodeFinishEdit();
     });
-
-    if (changed) {
-      const response = await api.patch(
-        `/${node['@class'].toLowerCase()}s/${node['@rid'].slice(1)}`,
-        payload,
-      );
-      this.setState({ node: response.result });
-    }
-
-    handleNodeFinishEdit(node);
   }
 
   /**
    * Posts new node to the api, then posts all new edges.
    */
   async addSubmit() {
-    const { form } = this.state;
+    const {
+      form,
+      relationships,
+      newNodeClass,
+      editableProps,
+    } = this.state;
+    const { handleNodeFinishEdit } = this.props;
+
     const newEdges = [];
-    if (!form.source || !form.sourceId) return;
-    // TODO: Scale up to all ontology types, not just diseases
-    const response = await api.post('/diseases', {
-      source: form.source,
-      sourceId: form.sourceId,
-      name: form.name,
-      longName: form.longName,
-      subsets: form.subsets,
-      description: form.description,
-      sourceIdVersion: form.sourceIdVersion,
+    const payload = Object.assign({}, form);
+
+    Object.keys(payload).forEach((key) => {
+      if (!payload[key]) delete payload[key];
+      if (key.includes('.@rid')) {
+        payload[key.split('.')[0]] = payload[key];
+        delete payload[key];
+      }
+      if (key.includes('.class') || !editableProps.find(p => p.name === key)) {
+        delete payload[key];
+      }
     });
 
-    for (let i = 0; i < form.relationships.length; i += 1) {
-      const relationship = form.relationships[i];
+    const response = await api.post(`/${util.pluralize(newNodeClass)}`, { ...payload });
+
+    for (let i = 0; i < relationships.length; i += 1) {
+      const relationship = relationships[i];
       if (relationship.in === -1) {
         relationship.in = response.result['@rid'];
       } else {
@@ -421,170 +459,266 @@ class NodeFormComponent extends Component {
       }));
     }
     await Promise.all(newEdges);
-    this.setState({ completedFlag: true });
+    handleNodeFinishEdit();
   }
 
   render() {
     const {
       form,
-      node,
-      edgeTypes,
+      originalNode,
       completedFlag,
       sources,
+      edgeTypes,
+      ontologyTypes,
+      editableProps,
+      relationship,
+      relationships,
+      subset,
+      newNodeClass,
     } = this.state;
-    const { variant } = this.props;
-    if (completedFlag) return <Redirect push to="/query" />;
+    const { variant, handleNodeFinishEdit } = this.props;
 
-    const subsets = form.subsets.map(subset => (
-      <ListItem key={subset}>
+    // Wait for form to get initialized
+    if (!form) return null;
+    if (completedFlag) {
+      return <Redirect push to="/query" />;
+    }
+
+    // Validates form
+    let formIsInvalid = false;
+    editableProps.forEach((prop) => {
+      if (prop.mandatory) {
+        if (prop.type === 'link' && (!form[prop.name] || !form[`${prop.name}.@rid`])) {
+          formIsInvalid = true;
+        } else if (prop.type !== 'boolean' && !form[prop.name]) {
+          formIsInvalid = true;
+        }
+      }
+    });
+
+    /**
+     * Renders input component to fit property's importance and type.
+     */
+    const formatInputSection = (key, value) => {
+      const property = editableProps.find(prop => prop.name === key);
+      if (!property) return null;
+
+      const { type, mandatory, linkedClass } = property;
+
+      if (typeof value !== 'object') {
+        // Radio group component for boolean types.
+        if (type === 'boolean') {
+          return (
+            <ListItem className="input-wrapper" key={key}>
+              <FormControl component="fieldset" required={mandatory}>
+                <FormLabel>
+                  {util.antiCamelCase(key)}
+                </FormLabel>
+                <RadioGroup
+                  name={key}
+                  onChange={this.handleFormChange}
+                  value={value.toString()}
+                  style={{ flexDirection: 'row' }}
+                >
+                  <FormControlLabel value="true" control={<Radio />} label="Yes" />
+                  <FormControlLabel value="" control={<Radio />} label="No" />
+                </RadioGroup>
+              </FormControl>
+            </ListItem>
+          );
+        }
+
+        if (type !== 'link') {
+          let t;
+          let step;
+          if (type === 'string') {
+            t = 'text';
+          } else if (type === 'integer') {
+            t = 'number';
+            step = 1;
+          }
+
+          return (
+            <ListItem className="input-wrapper" key={key}>
+              <TextField
+                id={key}
+                label={util.antiCamelCase(key)}
+                value={value}
+                onChange={this.handleFormChange}
+                className="text-input"
+                name={key}
+                type={t || ''}
+                step={step || ''}
+                required={mandatory}
+              />
+            </ListItem>
+          );
+        }
+        // If type is a link to another record, must find that record in the
+        // database and store its rid.
+
+        // Decide which endpoint to query.
+        const classKey = `${key}.class`;
+        let endpoint;
+
+        // If a linkedClass is specified, restrict querying to that endpoint, and do not
+        // show a resource selector.
+        const resourceSelector = linkedClass ? null
+          : (
+            <div style={{ marginBottom: '8px' }}>
+              <ResourceSelectComponent
+                value={form[classKey]}
+                onChange={this.handleFormChange}
+                name={classKey}
+                label={`${util.antiCamelCase(key)} Class`}
+                resources={ontologyTypes}
+                required={mandatory}
+              >
+                {ontologyClass => (
+                  <MenuItem key={ontologyClass.name} value={ontologyClass.name}>
+                    {ontologyClass.name}
+                  </MenuItem>
+                )}
+              </ResourceSelectComponent>
+            </div>
+          );
+
+        if (linkedClass) {
+          endpoint = util.pluralize(linkedClass);
+        } else {
+          endpoint = util.pluralize(form[classKey]);
+        }
+
+        return (
+          <ListItem key={key} style={{ display: 'block' }}>
+            {resourceSelector}
+            <div>
+              <AutoSearchComponent
+                value={value}
+                onChange={this.handleFormChange}
+                name={key}
+                label={util.antiCamelCase(key)}
+                id={key}
+                limit={30}
+                endpoint={endpoint}
+                disabled={(!linkedClass && !form[classKey])}
+                required={mandatory}
+              />
+            </div>
+          </ListItem>
+        );
+      }
+      return null;
+    };
+
+    /**
+     * Formats model subsets into list form.
+     */
+    const subsets = (form.subsets || []).map(s => (
+      <ListItem key={s}>
         <ListItemIcon>
           <FolderIcon />
         </ListItemIcon>
-        <ListItemText primary={subset} style={{ overflow: 'auto' }} />
+        <ListItemText primary={s} style={{ overflow: 'auto' }} />
         <IconButton
-          onClick={() => this.handleSubsetDelete(subset)}
+          onClick={() => this.handleSubsetDelete(s)}
         >
           <CloseIcon color="error" />
         </IconButton>
       </ListItem>
     ));
-    const relationships = form.relationships.map((relationship) => {
+
+    /**
+     * Formats model relationships into list form.
+     */
+    const rships = relationships.map((r) => {
       const sourceName = sources.find(
-        s => s['@rid'] === relationship.source,
+        s => s['@rid'] === r.source,
       ).name;
-      const typeName = relationship.in === node['@rid']
-        ? `has${relationship['@class'].slice(0, relationship['@class'].length - 2)}`
-        : relationship['@class'];
+      const typeName = r.in === originalNode['@rid']
+        ? `has${r['@class'].slice(0, r['@class'].length - 2)}`
+        : r['@class'];
       return (
-        <ListItem key={`${typeName}: ${relationship.targetName}`}>
+        <ListItem key={`${typeName}: ${r.targetSourceId} | ${r.targetName}`}>
           <ListItemIcon>
             <FolderIcon />
           </ListItemIcon>
           <ListItemText
-            primary={`${typeName}: ${relationship.targetName}`}
+            primary={`${typeName}: ${r.targetSourceId} ${r.targetName ? `| "${r.targetName}"` : ''}`}
             secondary={sourceName}
             style={{ overflow: 'auto' }}
           />
           <IconButton
             color="secondary"
-            onClick={() => this.handleRelationshipDelete(relationship)}
+            onClick={() => this.handleRelationshipDelete(r)}
           >
             <CloseIcon color="error" />
           </IconButton>
         </ListItem>
       );
     });
+
+    /**
+     * Formats valid edge types.
+     * @param {Object} edgeType - Edge type object.
+     */
     const edgeTypesDisplay = (edgeType) => {
-      const inOut = form.relationship.in === node['@rid']
-        ? `has${edgeType.name.slice(0, edgeType.name.length - 2)}`
-        : edgeType.name;
+      const inOut = relationship.in === originalNode['@rid']
+        ? `has${edgeType.slice(0, edgeType.length - 2)}`
+        : edgeType;
       return (
-        <MenuItem key={edgeType.name} value={edgeType.name}>
+        <MenuItem key={edgeType} value={edgeType}>
           {inOut}
         </MenuItem>
       );
     };
-    const source = variant === 'edit'
-      ? (
-        <ListItem>
-          <ListItemText
-            primary="Source:"
-            secondary={node.source ? node.source.name : null}
-          />
-        </ListItem>
-      ) : (
-        <ListItem>
-          <ResourceSelectComponent
-            value={form.source}
-            onChange={this.handleFormChange}
-            name="source"
-            label="Source"
-            id="source"
-            required
-            resources={sources}
-          />
-        </ListItem>
-      );
-    const sourceId = variant === 'edit'
-      ? (
-        <ListItem>
-          <ListItemText
-            primary="Source ID:"
-            secondary={node.sourceId}
-          />
-        </ListItem>
-      ) : (
-        <ListItem className="input-wrapper">
-          <TextField
-            id="sourceId"
-            placeholder="eg. NCIT:0123"
-            label="Source ID"
-            value={form.sourceId}
-            onChange={this.handleFormChange}
-            className="text-input"
-            name="sourceId"
-            required
-          />
-        </ListItem>
-      );
 
     return (
       <div className="node-form-wrapper">
-        <Typography variant="display1" className="form-title">
-          {variant === 'edit' ? 'Edit Term' : 'Add New Term'}
-        </Typography>
+        <div>
+          <div className="form-header">
+            <Typography variant="display1" className="form-title">
+              {variant === 'edit' ? 'Edit Ontology Term'
+                : 'Add New Ontology Term'}
+            </Typography>
+            <Button
+              color="default"
+              onClick={handleNodeFinishEdit}
+              variant="outlined"
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
         <Divider />
         <form onSubmit={this.handleSubmit}>
           <div className="param-section">
             <Typography variant="title">
               Basic Parameters
             </Typography>
+            {variant === 'edit' ? null
+              : (
+                <div className="class-select">
+                  <ResourceSelectComponent
+                    value={newNodeClass}
+                    onChange={this.handleClassChange}
+                    name="newNodeClass"
+                    label="Class"
+                    resources={ontologyTypes}
+                  >
+                    {resource => (
+                      <MenuItem key={resource.name} value={resource.name}>
+                        {resource.name}
+                      </MenuItem>
+                    )}
+                  </ResourceSelectComponent>
+                </div>
+              )}
             <List component="nav">
-              {source}
-              {sourceId}
-              <ListItem className="input-wrapper">
-                <TextField
-                  id="name"
-                  placeholder="eg. angiosarcoma"
-                  label="Name"
-                  value={form.name}
-                  onChange={this.handleFormChange}
-                  className="text-input"
-                  name="name"
-                />
-              </ListItem>
-              <ListItem className="input-wrapper">
-                <TextField
-                  id="longName"
-                  label="Long Name"
-                  value={form.longName}
-                  onChange={this.handleFormChange}
-                  className="text-input"
-                  name="longName"
-                  multiline
-                />
-              </ListItem>
-              <ListItem className="input-wrapper">
-                <TextField
-                  id="description"
-                  label="Description"
-                  value={form.description}
-                  onChange={this.handleFormChange}
-                  className="text-input"
-                  name="description"
-                  multiline
-                />
-              </ListItem>
-              <ListItem className="input-wrapper">
-                <TextField
-                  id="sourceIdVersion"
-                  label="Source ID Version"
-                  value={form.sourceIdVersion}
-                  onChange={this.handleFormChange}
-                  className="text-input"
-                  name="sourceIdVersion"
-                />
-              </ListItem>
+              {Object.keys(form)
+                .filter(key => !key.includes('.'))
+                .map(key => formatInputSection(key, form[key]))
+              }
             </List>
           </div>
           <div className="param-section">
@@ -595,8 +729,8 @@ class NodeFormComponent extends Component {
               <TextField
                 id="subset-temp"
                 label="Add a Subset"
-                value={form.subset}
-                onChange={this.handleFormChange}
+                value={subset}
+                onChange={this.handleChange}
                 className="text-input"
                 name="subset"
                 onKeyDown={(e) => {
@@ -631,7 +765,7 @@ class NodeFormComponent extends Component {
                 }}
               >
                 <ResourceSelectComponent
-                  value={form.relationship.source}
+                  value={relationship.source}
                   onChange={this.handleRelationship}
                   name="source"
                   label="Source"
@@ -648,14 +782,14 @@ class NodeFormComponent extends Component {
                       <TrendingFlatIcon
                         style={{ margin: '20px 24px 0 0' }}
                         className={
-                          form.relationship.in === node['@rid']
+                          relationship.in === originalNode['@rid']
                             ? 'relationship-in'
                             : 'relationship-out'
                         }
                       />
                     </IconButton>
                     <ResourceSelectComponent
-                      value={form.relationship['@class']}
+                      value={relationship['@class']}
                       onChange={this.handleRelationship}
                       name="@class"
                       label="Type"
@@ -666,7 +800,7 @@ class NodeFormComponent extends Component {
                   </div>
                   <div className="search-wrap">
                     <AutoSearchComponent
-                      value={form.relationship.targetName}
+                      value={relationship.targetName}
                       onChange={this.handleRelationship}
                       placeholder="Target Name"
                       limit={10}
@@ -684,11 +818,16 @@ class NodeFormComponent extends Component {
               </IconButton>
             </ListItem>
             <List className="list">
-              {relationships}
+              {rships}
             </List>
           </div>
           <div className="submit-button">
-            <Button type="submit" disabled={!form.source || !form.sourceId} variant="raised" color="primary">
+            <Button
+              type="submit"
+              variant="raised"
+              color="primary"
+              disabled={formIsInvalid}
+            >
               {variant === 'edit' ? 'Confirm Changes' : 'Submit'}
             </Button>
           </div>
@@ -709,17 +848,17 @@ NodeFormComponent.defaultProps = {
   variant: 'edit',
   handleNodeDelete: null,
   handleNodeFinishEdit: null,
-  selectedId: null,
+  node: null,
 };
 
 /**
- * @param {string} selectedId - node database identifier.
- * @param {string} variant - specifies form type/function.
- * @param {function} handleNodeDelete - parent method triggered on node delete.
- * @param {function} handleNodeFinishEdit - parent method triggered when node is edited.
- */
+* @param {string} selectedId - node database identifier.
+* @param {string} variant - specifies form type/function.
+* @param {function} handleNodeDelete - parent method triggered on node delete.
+* @param {function} handleNodeFinishEdit - parent method triggered when node is edited.
+      */
 NodeFormComponent.propTypes = {
-  selectedId: PropTypes.string,
+  node: PropTypes.object,
   variant: PropTypes.string,
   handleNodeDelete: PropTypes.func,
   handleNodeFinishEdit: PropTypes.func,

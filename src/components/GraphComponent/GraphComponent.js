@@ -29,6 +29,7 @@ import NodeDetailComponent from '../NodeDetailComponent/NodeDetailComponent';
 import SVGLink from '../SVGLink/SVGLink';
 import SVGNode from '../SVGNode/SVGNode';
 import api from '../../services/api';
+import util from '../../services/util';
 
 // SVG arrow dimensions.
 const arrowProperties = {
@@ -124,7 +125,7 @@ class GraphComponent extends Component {
 
     this.handleResize();
 
-    this.setState({ edgeTypes: await api.getEdgeTypes() });
+    this.setState({ edgeTypes: await api.getOntologyEdges() });
 
     const { neighbors } = queryString.parse(search);
 
@@ -176,8 +177,9 @@ class GraphComponent extends Component {
     } = this.state;
     const { handleNodeAdd } = this.props;
 
-    const depth = 3;
-    const url = `/diseases/${node.data['@rid'].slice(1)}?neighbors=${depth}`;
+    const endpoint = util.pluralize(node.data['@class']);
+
+    const url = `/${endpoint}/${node.data['@rid'].slice(1)}?neighbors=3`;
     if (expandable[node.data['@rid']]) {
       api.get(url).then((response) => {
         const cycled = jc.retrocycle(response.result);
@@ -185,7 +187,7 @@ class GraphComponent extends Component {
           ...this.processData(
             cycled,
             { x: node.x, y: node.y },
-            Math.floor(depth / 2) + 1,
+            2,
           ),
         });
         handleNodeAdd(cycled);
@@ -555,6 +557,7 @@ class GraphComponent extends Component {
     const { data } = this.props;
 
     if (!data[expandId]) {
+      // Change this to general ontology endpoint.
       const response = await api.get(`/diseases/${expandId.slice(1)}?neighbors=3`);
       data[expandId] = jc.retrocycle(response.result);
     }

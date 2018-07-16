@@ -709,8 +709,13 @@ class GraphComponent extends Component {
     const selected = key => key === colorKey;
 
     const arrowSize = {
-      d: `M0,0,L0,${arrowProperties.width} L ${arrowProperties.length}, ${arrowProperties.width / 2}`,
-      refX: nodeRadius + arrowProperties.length + 1,
+      d: `M0,0,L0,${arrowProperties.width} L ${arrowProperties.length}, ${arrowProperties.width / 2} z`,
+      refX: nodeRadius + arrowProperties.length,
+      refY: arrowProperties.width / 2,
+    };
+    const darrowSize = {
+      d: `M0,${arrowProperties.width / 2} L${arrowProperties.length}, ${arrowProperties.width} L${arrowProperties.length},0 z`,
+      refX: -nodeRadius,
       refY: arrowProperties.width / 2,
     };
 
@@ -1008,14 +1013,14 @@ class GraphComponent extends Component {
 
               <marker
                 id="darrow"
-                markerWidth="25"
-                markerHeight="10"
-                refX="-5"
-                refY="2"
+                markerWidth={arrowProperties.length}
+                markerHeight={arrowProperties.width}
+                refX={darrowSize.refX}
+                refY={darrowSize.refY}
                 orient="auto"
                 markerUnits="strokeWidth"
               >
-                <path d="M0,2 L6,4 L 6,0 z" fill="#555" />
+                <path d={darrowSize.d} fill="#555" />
               </marker>
             </defs>
             <g ref={(node) => { this.zoom = node; }}>

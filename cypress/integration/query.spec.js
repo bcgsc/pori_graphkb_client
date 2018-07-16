@@ -48,7 +48,7 @@ describe('Query Page Test', () => {
     cy.contains('No results found').should('not.exist');
   });
 
-  it.only('Advanced search', () => {
+  it('Advanced search', () => {
     const name = 'pneumonitis';
     const sourceId = 'ncit:c113159';
     cy.contains('Advanced Search').click();

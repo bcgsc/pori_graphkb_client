@@ -615,10 +615,10 @@ class NodeFormComponent extends Component {
      * Formats model subsets into list form.
      */
     const subsets = (form.subsets || []).map(s => (
-      <ListItem key={s}>
-        <ListItemIcon>
-          <FolderIcon />
-        </ListItemIcon>
+      <ListItem
+        key={s}
+        className="form-list"
+      >
         <ListItemText primary={s} style={{ overflow: 'auto' }} />
         <IconButton
           onClick={() => this.handleSubsetDelete(s)}
@@ -639,10 +639,10 @@ class NodeFormComponent extends Component {
         ? `has${r['@class'].slice(0, r['@class'].length - 2)}`
         : r['@class'];
       return (
-        <ListItem key={`${typeName}: ${r.targetSourceId} | ${r.targetName}`}>
-          <ListItemIcon>
-            <FolderIcon />
-          </ListItemIcon>
+        <ListItem
+          key={`${typeName}: ${r.targetSourceId} | ${r.targetName}`}
+          className="form-list"
+        >
           <ListItemText
             primary={`${typeName}: ${r.targetSourceId} ${r.targetName ? `| "${r.targetName}"` : ''}`}
             secondary={sourceName}
@@ -746,8 +746,6 @@ class NodeFormComponent extends Component {
             <List className="list">
               {subsets}
             </List>
-          </div>
-          <div className="param-section">
             <Typography variant="title">
               Relationships
             </Typography>

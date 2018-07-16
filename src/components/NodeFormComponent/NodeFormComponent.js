@@ -723,7 +723,7 @@ class NodeFormComponent extends Component {
             <Typography variant="title">
               Subsets
             </Typography>
-            <ListItem className="input-wrapper">
+            <ListItem className="input-wrapper form-list">
               <TextField
                 id="subset-temp"
                 label="Add a Subset"
@@ -748,7 +748,7 @@ class NodeFormComponent extends Component {
               Relationships
             </Typography>
             <ListItem
-              className="input-wrapper relationship-add-wrapper"
+              className="input-wrapper relationship-add-wrapper form-list"
               onKeyDown={(e) => {
                 if (e.keyCode === 13) this.handleRelationshipAdd(e);
               }}
@@ -806,7 +806,7 @@ class NodeFormComponent extends Component {
                 </div>
               </div>
               <IconButton
-                style={{ margin: 'auto 8px' }}
+                style={{ margin: 'auto 0 auto 8px' }}
                 color="primary"
                 onClick={this.handleRelationshipAdd}
               >

@@ -35,7 +35,7 @@ describe('Query Page Test', () => {
     cy.get('input[type=text]').type('&angiosarcoma');
     cy.contains('Invalid Request');
     cy.get('div.search-buttons button').click();
-    cy.url().should('includes', '/error');
+    cy.url().should('includes', '/query');
   });
 
   it('AutoSearch no results', () => {

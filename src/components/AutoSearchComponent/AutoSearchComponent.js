@@ -73,7 +73,7 @@ class AutoSearchComponent extends Component {
         if (error.status === 401) {
           this.setState({ loginRedirect: true });
         } else if (error.status === 400) {
-          onInvalid();
+          if (onInvalid) onInvalid();
           this.setState({ error: true });
         }
       });

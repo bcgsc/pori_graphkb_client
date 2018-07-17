@@ -33,7 +33,6 @@ class NodeDetailComponent extends Component {
     this.state = {
       V: null,
       ontologyEdges: null,
-      filteredNode: null,
       nestedExpanded: [],
     };
 
@@ -44,19 +43,18 @@ class NodeDetailComponent extends Component {
    * Loads resources and filters node properties.
    */
   async componentDidMount() {
-    const { node } = this.props;
     const V = await api.getVertexBaseClass();
     const ontologyEdges = await api.getOntologyEdges();
-    const filteredNode = Object.assign({}, node);
-    Object.keys(V.properties).forEach(key => delete filteredNode[key]);
-
     this.setState({
       V,
       ontologyEdges,
-      filteredNode,
     });
   }
 
+  /**
+   * Toggles the open/closed state of a nested object drawer.
+   * @param {string} id - id of nested object.
+   */
   handleNestedToggle(id) {
     const { nestedExpanded } = this.state;
 
@@ -73,7 +71,6 @@ class NodeDetailComponent extends Component {
     const {
       V,
       ontologyEdges,
-      filteredNode,
       nestedExpanded,
     } = this.state;
 
@@ -92,6 +89,9 @@ class NodeDetailComponent extends Component {
     }, []) : [];
 
     if (!V) return null;
+
+    const filteredNode = Object.assign({}, node);
+    Object.keys(V.properties).forEach(key => delete filteredNode[key]);
 
     /**
      * Formats and lists relationship (edge) fields.
@@ -159,6 +159,7 @@ class NodeDetailComponent extends Component {
      * Formats node properties based on type.
      * @param {string} key - node property key.
      * @param {any} value - node property value.
+     * @param {string} prefix - represents depth of nested object.
      */
     const formatProperty = (key, value, prefix) => {
       const id = `${prefix ? `${prefix}.` : ''}${key}`;

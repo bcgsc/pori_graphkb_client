@@ -149,13 +149,14 @@ class GraphComponent extends Component {
         defaultColor: '#1F265B',
         linkStrength: 0.03,
         chargeStrength: 100,
-        collisionRadius: 4,
+        collisionRadius: nodeRadius,
         autoCollisionRadius: false,
       },
       graphOptionsPanel: false,
       colorKey: 'selectedColor',
       expandable: {},
       paths,
+      actionsNode: null,
     };
 
     this.drawGraph = this.drawGraph.bind(this);
@@ -509,7 +510,7 @@ class GraphComponent extends Component {
 
     simulation.on('tick', ticked);
     simulation.restart();
-    this.setState({ simulation });
+    this.setState({ simulation, actionsNode: null });
   }
 
   /**
@@ -626,15 +627,20 @@ class GraphComponent extends Component {
     this.setState({ detail: true });
   }
 
+  /**
+   * Handles user selections within the actions ring.
+   * @param {number} section - number of section of actions ring clicked.
+   */
   handleActionsRing(section) {
     const { actionsNode } = this.state;
     const options = [
-      this.handleDrawerOpen,
+      () => this.handleDrawerOpen(actionsNode),
       () => this.setState({ actionsNode: null }),
       () => this.loadNeighbors(actionsNode),
       this.handleNodeHide,
     ];
     options[section]();
+    this.setState({ actionsNode: null });
   }
 
   handleNodeHide() {

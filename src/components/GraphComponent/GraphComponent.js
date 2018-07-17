@@ -564,14 +564,13 @@ class GraphComponent extends Component {
    * @param {Event} e - User click event.
    * @param {Object} node - Clicked simulation node.
    */
-  handleClick(e, node) {
+  async handleClick(e, node) {
     const { handleClick } = this.props;
     const { expandId } = this.state;
 
-    handleClick(node.data['@rid']);
+    await handleClick(node.data['@rid'], node.data['@class']);
 
     if (node.data['@rid'] === expandId) {
-      e.stopPropagation();
       this.setState({ actionsNode: node });
     } else {
       this.updateColors(node.data['@rid']);
@@ -613,22 +612,20 @@ class GraphComponent extends Component {
    * Closes detail drawer.
    */
   handleDrawerClose() {
-    this.setState({ detail: false });
+    this.setState({ detail: null });
   }
 
   /**
-   * Updates data and opens detail drawer.
+   * Updates data and opens detail drawer for the specified node.
+   * @param {Object} node - Specified node.
    */
-  async handleDrawerOpen() {
-    const { expandId } = this.state;
+  async handleDrawerOpen(node) {
     const { data } = this.props;
-    if (!data[expandId]) {
-      // Change this to general ontology endpoint.
-      const response = await api.get(`/diseases/${expandId.slice(1)}?neighbors=3`);
-      data[expandId] = jc.retrocycle(response.result);
+    if (!data[node.data['@rid']]) {
+      const response = await api.get(`/${util.pluralize(node.data['@class'])}/${node.data['@rid'].slice(1)}`);
+      data[node.data['@rid']] = jc.retrocycle(response.result);
     }
-
-    this.setState({ detail: true });
+    this.setState({ detail: node.data['@rid'] });
   }
 
   /**
@@ -901,7 +898,7 @@ class GraphComponent extends Component {
       <Drawer
         variant="persistent"
         anchor="right"
-        open={detail}
+        open={!!detail}
         classes={{
           paper: classes.paper,
         }}

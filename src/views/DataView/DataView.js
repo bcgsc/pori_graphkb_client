@@ -122,9 +122,17 @@ class DataView extends Component {
    * Triggered function for when a node object is clicked in a child component.
    * Sets the state selected ID to clicked node.
    * @param {string} rid - Clicked node identifier.
+   * @param {string} nodeClass - Class of clicked node.
    */
-  handleClick(rid) {
-    this.setState({ selectedId: rid });
+  async handleClick(rid, nodeClass) {
+    const { data } = this.state;
+
+    if (!data[rid] && nodeClass) {
+      const endpoint = `/${util.pluralize(nodeClass)}/${rid.slice(1)}?neighbors=3`;
+      const json = await api.get(endpoint);
+      data[rid] = jc.retrocycle(json.result);
+    }
+    this.setState({ selectedId: rid, data });
   }
 
   /**
@@ -188,10 +196,10 @@ class DataView extends Component {
 
   /**
    * Sets selected ID to input node identifier and opens edit drawer.
-   * @param {string} node - Target node.
+   * @param {string} rid - Target node rid.
    */
-  handleNodeEditStart(node) {
-    this.setState({ selectedId: node['@rid'], editing: true });
+  handleNodeEditStart(rid) {
+    this.setState({ selectedId: rid, editing: true });
   }
 
   render() {

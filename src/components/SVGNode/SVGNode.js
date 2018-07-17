@@ -85,7 +85,6 @@ class SVGNode extends PureComponent {
           cy={0}
           r={r}
         />
-
       </g>
     );
   }

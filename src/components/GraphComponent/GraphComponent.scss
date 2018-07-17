@@ -13,7 +13,6 @@ $toolbar-height: 64px;
 .graph-close-drawer-btn {
   button {
     float: right;
-    margin: 8px;
   }
 }
 
@@ -29,6 +28,12 @@ $toolbar-height: 64px;
   overflow-x: auto;
   overflow-y: hidden;
   flex-direction: row-reverse;
+}
+
+#options-close-btn {
+  position:absolute;
+  top:0;
+  right:0;
 }
 
 .graph-options-wrapper {

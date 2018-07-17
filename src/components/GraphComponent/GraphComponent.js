@@ -647,7 +647,7 @@ class GraphComponent extends Component {
       expandedEdgeTypes,
       expandable,
     } = this.state;
-
+    if (nodes.length === 1) return;
     const i = nodes.indexOf(actionsNode);
 
     nodes.splice(i, 1);

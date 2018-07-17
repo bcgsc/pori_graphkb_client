@@ -1,15 +1,6 @@
 import * as jc from 'json-cycle';
 import auth from './auth';
-
-const API_BASE_URL = 'http://kbapi01:8008/api/v0.0.8';
-const CACHE_EXPIRY = 8;
-const KEYS = {
-  ONTOLOGYVERTICES: 'ontologyVertices',
-  SOURCES: 'sources',
-  ONTOLOGYEDGES: 'ontologyEdges',
-  V: 'baseVertex',
-  SCHEMA: 'schema',
-};
+import config from '../config.json';
 
 /**
  * Wrapper for api, handles all requests and special functions.
@@ -87,7 +78,7 @@ export default class api {
       ...init,
       headers: api.getHeaders(),
     };
-    return fetch(new Request(API_BASE_URL + endpoint, initWithInterceptors))
+    return fetch(new Request(config.API_BASE_URL + endpoint, initWithInterceptors))
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -122,8 +113,8 @@ export default class api {
    * Returns all valid sources.
    */
   static getSources() {
-    const sources = localStorage.getItem(KEYS.SOURCES);
-    const sourcesExpiry = localStorage.getItem(`${KEYS.SOURCES}Expiry`);
+    const sources = localStorage.getItem(config.KEYS.SOURCES);
+    const sourcesExpiry = localStorage.getItem(`${config.KEYS.SOURCES}Expiry`);
     if (
       !sources || (sources && sourcesExpiry && sourcesExpiry < Date.now().valueOf())
     ) {
@@ -143,10 +134,10 @@ export default class api {
 
       const now = new Date();
       const expiry = new Date(now);
-      expiry.setHours(now.getHours() + CACHE_EXPIRY);
+      expiry.setHours(now.getHours() + config.CACHE_EXPIRY);
 
-      localStorage.setItem(`${KEYS.SOURCES}Expiry`, expiry.getTime());
-      localStorage.setItem(KEYS.SOURCES, JSON.stringify(list));
+      localStorage.setItem(`${config.KEYS.SOURCES}Expiry`, expiry.getTime());
+      localStorage.setItem(config.KEYS.SOURCES, JSON.stringify(list));
 
       return Promise.resolve(list);
     });
@@ -160,10 +151,10 @@ export default class api {
       const cycled = jc.retrocycle(response.schema);
       const now = new Date();
       const expiry = new Date(now);
-      expiry.setHours(now.getHours() + CACHE_EXPIRY);
+      expiry.setHours(now.getHours() + config.CACHE_EXPIRY);
 
-      localStorage.setItem(`${KEYS.SCHEMA}Expiry`, expiry.getTime());
-      localStorage.setItem(KEYS.SCHEMA, JSON.stringify(cycled));
+      localStorage.setItem(`${config.KEYS.SCHEMA}Expiry`, expiry.getTime());
+      localStorage.setItem(config.KEYS.SCHEMA, JSON.stringify(cycled));
 
       return Promise.resolve(cycled);
     });
@@ -173,8 +164,8 @@ export default class api {
    * Returns schema.
    */
   static getSchema() {
-    const schema = localStorage.getItem(KEYS.SCHEMA);
-    const schemaExpiry = localStorage.getItem(`${KEYS.SCHEMA}Expiry`);
+    const schema = localStorage.getItem(config.KEYS.SCHEMA);
+    const schemaExpiry = localStorage.getItem(`${config.KEYS.SCHEMA}Expiry`);
     if (
       !schema
       || (

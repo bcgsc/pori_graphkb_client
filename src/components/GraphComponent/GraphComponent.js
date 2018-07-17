@@ -843,6 +843,7 @@ class GraphComponent extends Component {
                   type="number"
                   value={graphOptions.linkStrength}
                   onChange={this.handleGraphOptionsChange}
+                  step={0.001}
                 />
               </div>
             </div>

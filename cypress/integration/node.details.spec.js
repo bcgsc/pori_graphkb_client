@@ -1,4 +1,4 @@
-describe('Node Detail View Test', () => {
+describe('Node Detail in Table View Test', () => {
   beforeEach(() => {
     cy.visit('/');
     cy.url().should('includes', '/login');

@@ -14,8 +14,8 @@ function SVGLink(props) {
       <path
         className="link"
         d={`M${(link.source.x || 0)} ${(link.source.y || 0)}L${(link.target.x || 0)} ${(link.target.y || 0)}`}
-        markerEnd="url(#arrow)"
-        markerStart={(link.type === 'alias') ? 'url(#darrow)' : ''}
+        markerEnd="url(#endArrow)"
+        markerStart={(link.type === 'alias') ? 'url(#startArrow)' : ''}
       />
     </g>
   );

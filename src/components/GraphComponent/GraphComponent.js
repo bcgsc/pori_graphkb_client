@@ -258,10 +258,10 @@ class GraphComponent extends Component {
   /**
    * Processes node data and updates state with new nodes and links.
    * Returns updated nodes, links, and graphObjects. Also updates expandable flags.
-  * @param {Object} node - Node object as returned by the api.
-  * @param {Object} position - Object containing x and y position of input node.
-  * @param {number} depth - Recursion base case flag.
-        */
+   * @param {Object} node - Node object as returned by the api.
+   * @param {Object} position - Object containing x and y position of input node.
+   * @param {number} depth - Recursion base case flag.
+   */
   processData(node, position, depth) {
     const {
       expandedEdgeTypes,
@@ -654,7 +654,7 @@ class GraphComponent extends Component {
     delete graphObjects[actionsNode.data['@rid']];
 
     expandedEdgeTypes.forEach((edgeType) => {
-      if (actionsNode.data[edgeType]) {
+      if (actionsNode.data[edgeType] && actionsNode.data[edgeType].length !== 0) {
         actionsNode.data[edgeType].forEach((edge) => {
           const j = links.findIndex(l => l['@rid'] === edge['@rid']);
           if (j !== -1) {

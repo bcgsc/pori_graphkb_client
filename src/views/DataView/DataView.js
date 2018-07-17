@@ -30,7 +30,6 @@ class DataView extends Component {
     };
 
     this.handleClick = this.handleClick.bind(this);
-    this.handleNodeAdd = this.handleNodeAdd.bind(this);
     this.handleCheckbox = this.handleCheckbox.bind(this);
     this.handleCheckAll = this.handleCheckAll.bind(this);
     this.handleHideSelected = this.handleHideSelected.bind(this);
@@ -99,23 +98,6 @@ class DataView extends Component {
           this.setState({ error });
         }
       });
-  }
-
-  /**
-   * Triggered function for when a child component gets a new node from the api.
-   * Adds new node to state data object.
-   * @param {Object} node - Node data retrieved from api.
-   */
-  handleNodeAdd(node) {
-    const { data, displayed } = this.state;
-
-    if (node.source.name && !data[node['@rid']]) {
-      data[node['@rid']] = node;
-      if (displayed.indexOf(node['@rid']) === -1) {
-        displayed.push(node['@rid']);
-      }
-      this.setState({ data, displayed });
-    }
   }
 
   /**
@@ -224,7 +206,6 @@ class DataView extends Component {
 
     const GraphWithProps = () => (
       <GraphComponent
-        handleNodeAdd={this.handleNodeAdd}
         data={data}
         search={location.search}
         handleClick={this.handleClick}

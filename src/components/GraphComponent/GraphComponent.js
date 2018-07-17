@@ -237,27 +237,18 @@ class GraphComponent extends Component {
     const {
       expandable,
     } = this.state;
-    const { handleNodeAdd } = this.props;
+    const { data } = this.props;
 
-    const endpoint = util.pluralize(node.data['@class']);
-
-    const url = `/${endpoint}/${node.data['@rid'].slice(1)}?neighbors=3`;
-    if (expandable[node.data['@rid']]) {
-      api.get(url).then((response) => {
-        const cycled = jc.retrocycle(response.result);
-        this.setState({
-          ...this.processData(
-            cycled,
-            { x: node.x, y: node.y },
-            1,
-          ),
-        });
-        handleNodeAdd(cycled);
-        this.drawGraph();
-        this.updateColors(node.data['@rid']);
+    if (expandable[node.data['@rid']] && data[node.data['@rid']]) {
+      this.setState({
+        ...this.processData(
+          data[node.data['@rid']],
+          { x: node.x, y: node.y },
+          1,
+        ),
       });
-    } else {
-      handleNodeAdd(node.data);
+      this.drawGraph();
+      this.updateColors(node.data['@rid']);
     }
 
     delete expandable[node.data['@rid']];
@@ -1046,7 +1037,6 @@ class GraphComponent extends Component {
 }
 
 GraphComponent.defaultProps = {
-  handleNodeAdd: null,
   handleClick: null,
   classes: null,
 };
@@ -1060,7 +1050,6 @@ GraphComponent.defaultProps = {
 * @param {string} search - url search string.
       */
 GraphComponent.propTypes = {
-  handleNodeAdd: PropTypes.func,
   handleClick: PropTypes.func,
   handleNodeEditStart: PropTypes.func.isRequired,
   data: PropTypes.object.isRequired,

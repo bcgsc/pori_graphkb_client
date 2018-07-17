@@ -220,11 +220,12 @@ export default class api {
   static getEditableProps(className) {
     return api.getSchema().then((schema) => {
       const VPropKeys = Object.keys(schema.V.properties);
-      if (schema[className]) {
-        const props = Object.keys(schema[className].properties).map(prop => (
+      const key = Object.keys(schema).find(k => k.toLowerCase() === className.toLowerCase());
+      if (key) {
+        const props = Object.keys(schema[key].properties).map(prop => (
           {
             name: prop,
-            ...schema[className].properties[prop],
+            ...schema[key].properties[prop],
           }));
         return Promise.resolve(props.filter(prop => !VPropKeys.includes(prop.name)));
       }

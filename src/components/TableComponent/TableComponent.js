@@ -463,152 +463,150 @@ class TableComponent extends Component {
     return (
       <section className="data-table">
         {columnDialog}
-        <Table>
-          <TableHead className="table-head">
-            <TableRow>
-              <TableCell
-                classes={{
-                  root: 'selected-col',
-                }}
-              >
-                <Checkbox
-                  onChange={handleCheckAll}
-                  checked={displayed.length === sortedData.length - hidden.length}
-                />
-                <TableSortLabel
-                  active={orderBy === 'displayed'}
-                  onClick={() => this.handleSortByChecked()}
-                  direction={order}
-                />
-              </TableCell>
-              {tableColumns.map((col) => {
-                if (col.checked) {
-                  return (
-                    <TableCell key={col.id}>
-                      <TableSortLabel
-                        active={col.id === orderBy}
-                        onClick={() => this.handleRequestSort(col)}
-                        direction={order}
+        <div className="table-container">
+          <Table>
+            <TableHead className="table-head">
+              <TableRow>
+                <TableCell
+                  classes={{
+                    root: 'selected-col',
+                  }}
+                >
+                  <Checkbox
+                    onChange={handleCheckAll}
+                    checked={displayed.length === sortedData.length - hidden.length}
+                  />
+                  <TableSortLabel
+                    active={orderBy === 'displayed'}
+                    onClick={() => this.handleSortByChecked()}
+                    direction={order}
+                  />
+                </TableCell>
+                {tableColumns.map((col) => {
+                  if (col.checked) {
+                    return (
+                      <TableCell key={col.id}>
+                        <TableSortLabel
+                          active={col.id === orderBy}
+                          onClick={() => this.handleRequestSort(col)}
+                          direction={order}
+                        >
+                          {col.label}
+                        </TableSortLabel>
+                      </TableCell>
+                    );
+                  }
+                  return null;
+                })}
+                <TableCell style={{ zIndex: 1 }}>
+                  <IconButton onClick={this.handleOpen} id="ellipsis-menu">
+                    <MoreHorizIcon color="action" />
+                  </IconButton>
+                  {menu}
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {sortedData
+                .filter(n => !hidden.includes(n['@rid']))
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((n) => {
+                  const isSelected = this.isSelected(n['@rid']);
+                  const active = toggle === n['@rid'];
+                  const detail = active ? (
+                    <TableRow>
+                      <Collapse
+                        colSpan={numCols + 2}
+                        component="td"
+                        in={active}
+                        unmountOnExit
                       >
-                        {col.label}
-                      </TableSortLabel>
-                    </TableCell>
-                  );
-                }
-                return null;
-              })}
-              <TableCell style={{ zIndex: 1 }}>
-                <IconButton onClick={this.handleOpen} id="ellipsis-menu">
-                  <MoreHorizIcon color="action" />
-                </IconButton>
-                {menu}
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {sortedData
-              .filter(n => !hidden.includes(n['@rid']))
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((n) => {
-                const isSelected = this.isSelected(n['@rid']);
-                const active = toggle === n['@rid'];
-                const detail = active ? (
-                  <TableRow>
-                    <Collapse
-                      colSpan={numCols + 2}
-                      component="td"
-                      in={active}
-                      unmountOnExit
-                    >
-                      <NodeDetailComponent
-                        node={n}
-                        data={data}
-                        handleNodeEditStart={handleNodeEditStart}
-                      />
-                    </Collapse>
-                  </TableRow>
-                ) : null;
-                return !hidden.includes(n['@rid'])
-                  ? (
-                    <React.Fragment key={n['@rid'] || Math.random()}>
-                      <TableRow
-                        selected={isSelected}
-                        onClick={() => handleClick(n['@rid'])}
-                        classes={{
-                          root: 'cursor-override',
-                          selected: 'selected-override',
-                        }}
-                      >
-                        <TableCell
+                        <NodeDetailComponent
+                          node={n}
+                          data={data}
+                          handleNodeEditStart={handleNodeEditStart}
+                        />
+                      </Collapse>
+                    </TableRow>
+                  ) : null;
+                  return !hidden.includes(n['@rid'])
+                    ? (
+                      <React.Fragment key={n['@rid'] || Math.random()}>
+                        <TableRow
+                          selected={isSelected}
+                          onClick={() => handleClick(n['@rid'])}
                           classes={{
-                            root: 'selected-col',
+                            root: 'cursor-override',
+                            selected: 'selected-override',
                           }}
                         >
-                          <Checkbox
-                            onChange={() => handleCheckbox(n['@rid'])}
-                            checked={displayed.includes(n['@rid'])}
-                          />
-                        </TableCell>
-                        {tableColumns.map((col) => {
-                          if (col.checked) {
-                            return (
-                              <TableCell key={col.id}>
-                                {col.sortBy ? (n[col.id] || '')[col.sortBy] : (n[col.id] || '').toString()}
-                              </TableCell>
-                            );
-                          }
-                          return null;
-                        })}
-                        <TableCell>
-                          <IconButton
-                            onClick={() => this.handleDetailToggle(n['@rid'])}
-                            className={
-                              active ? 'detail-btn-active' : 'detail-btn'
-                            }
+                          <TableCell
+                            classes={{
+                              root: 'selected-col',
+                            }}
                           >
-                            <KeyboardArrowDownIcon />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                      {detail}
-                    </React.Fragment>
-                  ) : null;
-              })
-            }
-            <TableRow>
-              <TableCell colSpan={numCols + 1} className="spacer-cell">
-                <TablePagination
-                  classes={{ root: 'table-paginator', toolbar: 'paginator-spacing' }}
-                  count={sortedData.length - hidden.length}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onChangePage={this.handleChangePage}
-                  onChangeRowsPerPage={this.handleChangeRowsPerPage}
-                  rowsPerPageOptions={[25, 50, 100]}
-                  component="div"
-                />
-              </TableCell>
-              <TableCell className="spacer-cell">
+                            <Checkbox
+                              onChange={() => handleCheckbox(n['@rid'])}
+                              checked={displayed.includes(n['@rid'])}
+                            />
+                          </TableCell>
+                          {tableColumns.map((col) => {
+                            if (col.checked) {
+                              return (
+                                <TableCell key={col.id}>
+                                  {col.sortBy ? (n[col.id] || '')[col.sortBy] : (n[col.id] || '').toString()}
+                                </TableCell>
+                              );
+                            }
+                            return null;
+                          })}
+                          <TableCell>
+                            <IconButton
+                              onClick={() => this.handleDetailToggle(n['@rid'])}
+                              className={
+                                active ? 'detail-btn-active' : 'detail-btn'
+                              }
+                            >
+                              <KeyboardArrowDownIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                        {detail}
+                      </React.Fragment>
+                    ) : null;
+                })
+              }
+            </TableBody>
+          </Table>
+        </div>
+        <div className="pag">
+          <TablePagination
+            classes={{ root: 'table-paginator', toolbar: 'paginator-spacing' }}
+            count={sortedData.length - hidden.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onChangePage={this.handleChangePage}
+            onChangeRowsPerPage={this.handleChangeRowsPerPage}
+            rowsPerPageOptions={[25, 50, 100]}
+            component="div"
+          />
 
-                <IconButton
-                  color="secondary"
-                  style={{ backgroundColor: 'rgba(0, 137, 123, 0.1)' }}
-                  disabled={displayed.length === 0}
-                >
-                  <Link
-                    className="icon-link"
-                    to={{
-                      pathname: '/data/graph',
-                      search,
-                    }}
-                  >
-                    <TimelineIcon />
-                  </Link>
-                </IconButton>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+          <IconButton
+            color="secondary"
+            disabled={displayed.length === 0}
+            className="graph-btn"
+          >
+            <Link
+              className="icon-link"
+              to={{
+                pathname: '/data/graph',
+                search,
+              }}
+            >
+              <TimelineIcon />
+            </Link>
+          </IconButton>
+        </div>
       </section>
     );
   }

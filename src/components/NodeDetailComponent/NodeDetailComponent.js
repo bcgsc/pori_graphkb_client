@@ -81,6 +81,7 @@ class NodeDetailComponent extends Component {
       handleNodeEditStart,
       node,
       children,
+      variant,
     } = this.props;
 
     // Accounts for in and out edgetypes.
@@ -106,7 +107,7 @@ class NodeDetailComponent extends Component {
             {filteredNode[key].map((edge, i) => {
               const relatedNode = edge.in && edge.in['@rid'] === node['@rid'] ? edge.out : edge.in;
               const edgeLabel = relatedNode
-                ? `${relatedNode.sourceId}${relatedNode.name ? `| "${relatedNode.name}"` : ''}`
+                ? `${relatedNode.sourceId}${relatedNode.name ? ` | "${relatedNode.name}"` : ''}`
                 : edge;
 
               if (i === 0) {
@@ -271,17 +272,19 @@ class NodeDetailComponent extends Component {
       );
     };
 
+    const className = variant === 'table' ? 'detail-table' : 'detail-graph';
+
     return (
       <Card style={{ height: '100%', overflowY: 'auto' }}>
         <div className="node-edit-btn">
           <IconButton
-            onClick={() => handleNodeEditStart(node)}
+            onClick={() => handleNodeEditStart(node['@rid'], node['@class'])}
           >
             <EditIcon />
           </IconButton>
           {children}
         </div>
-        <div className="node-properties">
+        <div className={`node-properties ${className}`}>
           <Card className="basic-properties">
             <CardContent>
               <Typography paragraph variant="title" component="h1">
@@ -309,12 +312,14 @@ class NodeDetailComponent extends Component {
 NodeDetailComponent.defaultProps = {
   node: null,
   children: null,
+  variant: 'table',
 };
 
 NodeDetailComponent.propTypes = {
   node: PropTypes.object,
   handleNodeEditStart: PropTypes.func.isRequired,
   children: PropTypes.node,
+  variant: PropTypes.string,
 };
 
 export default NodeDetailComponent;

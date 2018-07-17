@@ -43,7 +43,8 @@ const detailsRadius = 56;
 
 const styles = {
   paper: {
-    width: 'calc(100vw - 1px)',
+    width: '500px',
+    '@media (max-width: 768px)': { width: 'calc(100% - 1px)' },
   },
   root: {
     margin: '3px 0 0 -15px',
@@ -298,7 +299,6 @@ class GraphComponent extends Component {
             const inRid = edge.in['@rid'] || edge.in;
             const outRid = edge.out['@rid'] || edge.out;
             const targetRid = inRid === node['@rid'] ? outRid : inRid;
-
             if (
               edge['@rid']
               && inRid
@@ -491,7 +491,6 @@ class GraphComponent extends Component {
     } else {
       simulation.nodes(nodes);
     }
-
 
     simulation.force(
       'links',
@@ -902,8 +901,9 @@ class GraphComponent extends Component {
           </IconButton>
         </div>
         <NodeDetailComponent
-          node={data[expandId]}
-          handleNodeEditStart={() => handleNodeEditStart(data[expandId])}
+          variant="graph"
+          node={data[detail]}
+          handleNodeEditStart={handleNodeEditStart}
         />
       </Drawer>
     );

@@ -101,6 +101,7 @@ class GraphComponent extends Component {
       const scale = 0.8;
       paths.push((
         <g
+          style={{ cursor: 'pointer' }}
           onClick={() => this.handleActionsRing(i)}
           key={d}
         >

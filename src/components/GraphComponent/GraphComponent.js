@@ -266,7 +266,7 @@ class GraphComponent extends Component {
 
   /**
    * Processes node data and updates state with new nodes and links.
-   * Returns updated nodes, links, and graphObjects.
+   * Returns updated nodes, links, and graphObjects. Also updates expandable flags.
   * @param {Object} node - Node object as returned by the api.
   * @param {Object} position - Object containing x and y position of input node.
   * @param {number} depth - Recursion base case flag.
@@ -281,10 +281,15 @@ class GraphComponent extends Component {
     } = this.state;
 
     if (!graphObjects[node['@rid']]) {
-      nodes.push({ data: node });
+      nodes.push({
+        data: node,
+        x: position.x,
+        y: position.y,
+      });
       graphObjects[node['@rid']] = node;
     }
 
+    let flag = false;
     expandedEdgeTypes.forEach((edgeType) => {
       if (node[edgeType] && node[edgeType].length !== 0) {
         // stores total number of edges and initializes count for position calculating.
@@ -328,14 +333,6 @@ class GraphComponent extends Component {
                   j += 1,
                   n,
                 );
-                const newNode = {
-                  data: edge.out,
-                  x: positionInit.x,
-                  y: positionInit.y,
-                };
-                nodes.push(newNode);
-                graphObjects[newNode.data['@rid']] = newNode;
-
                 const d = this.processData(
                   edge.out,
                   positionInit,
@@ -350,31 +347,36 @@ class GraphComponent extends Component {
                   j += 1,
                   n,
                 );
-                const newNode = {
-                  data: edge.in,
-                  x: positionInit.x,
-                  y: positionInit.y,
-                };
-
-                nodes.push(newNode);
-                graphObjects[newNode.data['@rid']] = newNode;
                 const d = this.processData(
-                  newNode.data,
+                  edge.in,
                   positionInit,
                   graphObjects,
                   depth - 1,
                 );
                 this.setState({ nodes: d.nodes, links: d.links, graphObjects: d.graphObjects });
               }
+
+              // Updates expanded on target node.
+              if (expandable[targetRid]) {
+                let targetFlag = false;
+                expandedEdgeTypes.forEach((e) => {
+                  if (graphObjects[targetRid][e]) {
+                    graphObjects[targetRid][e].forEach((l) => {
+                      if (!graphObjects[l['@rid'] || l]) targetFlag = true;
+                    });
+                  }
+                });
+                expandable[targetRid] = targetFlag;
+              }
             } else {
               // If there are unrendered edges, set expandable flag.
-              expandable[node['@rid']] = true;
+              flag = true;
             }
           }
         });
       }
     });
-
+    expandable[node['@rid']] = flag;
     this.setState({ expandable });
 
     return { nodes, links, graphObjects };

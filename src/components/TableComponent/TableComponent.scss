@@ -37,23 +37,6 @@
   overflow: auto;
 }
 
-.table-paginator {
-  position: sticky;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
-  background-color: #f8f8f8;
-  display: flex;
-  float: left;
-  z-index: 1;
-}
-
-.paginator-spacing {
-  display: grid !important;
-  grid-template-columns: 0 100px 56px 100px 116px;
-}
-
 .spacer-cell {
   position: sticky;
   left: 0;
@@ -96,5 +79,44 @@ $flip-duration: 0.15s;
   }
   to {
     transform: rotate(180deg);
+  }
+}
+
+$paginator-height: 57px;
+.table-container{
+  position: absolute;
+  overflow: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: calc(#{$paginator-height} - 1px);
+}
+
+.pag {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #f8f8f8;
+  height: $paginator-height;
+  display: flex;
+  border-top: 1px solid #ddd;
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  .table-paginator {
+    display: flex;
+    float: left;
+    z-index: 1;
+  }
+  
+  .paginator-spacing {
+    display: grid !important;
+    grid-template-columns: 0 100px 56px 120px 116px;
+  }
+
+  .graph-btn {
+    margin: auto 24px auto auto;
+    background-color: rgba(0, 137, 123, 0.1);
   }
 }

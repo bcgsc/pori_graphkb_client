@@ -31,13 +31,6 @@ describe('Query Page Test', () => {
     });
   });
 
-  it('AutoSearch invalid input', () => {
-    cy.get('input[type=text]').type('&angiosarcoma');
-    cy.contains('Invalid Request');
-    cy.get('div.search-buttons button').click();
-    cy.url().should('includes', '/query');
-  });
-
   it('AutoSearch no results', () => {
     cy.get('input[type=text]').type('AAAAAAAAAAAAAAAAAAAAAA');
     cy.contains('No Results');
@@ -62,5 +55,30 @@ describe('Query Page Test', () => {
     cy.get('input[name=limit]').type('{backspace}');
     cy.get('#search-button').click();
     cy.url().should('includes', '/data/table?limit=100&longName=%21nothing%3F%23%29%24%28%23%24%25&name=pneumonitis&source=%2318%3A0&sourceId=ncit%3Ac113159&sourceIdVersion=%21something');
+  });
+
+  it('Other classes', () => {
+    cy.contains('Advanced Search').click();
+    cy.get('div.endpoint-selection').click();
+    const endpoints = ['Feature', 'AnatomicalEntity', 'Pathway', 'Therapy', 'Disease'];
+    endpoints.sort(
+      () => {
+        if (Math.random() > 0.5) {
+          return -1;
+        }
+        return 1;
+      },
+    );
+
+    endpoints.forEach((endpoint) => {
+      cy.get(`ul li[data-value=${endpoint}]`).click();
+      cy.contains(endpoint);
+      cy.get('div.endpoint-selection').click();
+    });
+    cy.get(`ul li[data-value=${endpoints[endpoints.length - 1]}]`).click();
+
+    cy.get('input[name=limit]').type('{backspace}{backspace}');
+    cy.get('#search-button').click();
+    cy.url().should('includes', endpoints[endpoints.length - 1]);
   });
 });

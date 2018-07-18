@@ -54,7 +54,7 @@ export default class util {
       }
     });
     if (!preview) {
-      const prop = Object.keys(obj).filter(key => typeof obj[key] !== 'object')[0];
+      const prop = Object.keys(obj).find(key => typeof obj[key] !== 'object');
       preview = obj[prop];
     }
     return preview;

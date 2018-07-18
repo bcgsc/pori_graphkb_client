@@ -339,7 +339,7 @@ class NodeFormComponent extends Component {
     const { handleNodeDelete } = this.props;
 
     api.delete(
-      `/${originalNode['@class'].toLowerCase()}s/${originalNode['@rid'].slice(1)}`,
+      `/${util.pluralize(originalNode['@class'])}/${originalNode['@rid'].slice(1)}`,
     ).then(() => {
       handleNodeDelete();
     });

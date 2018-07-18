@@ -35,7 +35,7 @@ const arrowProperties = {
   length: 9,
 };
 // Node position radius initializer.
-const nodeInitRadius = 55;
+const nodeInitRadius = 80;
 // SVG node radius.
 const nodeRadius = 16;
 // Details ring radius
@@ -70,10 +70,22 @@ class GraphComponent extends Component {
 
     const paths = [];
     const options = [
-      { name: 'Details', icon: <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" /> },
-      { name: 'Back', icon: <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" /> },
-      { name: 'Expand', icon: <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" /> },
-      { name: 'Hide', icon: <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" /> },
+      {
+        name: 'Details',
+        icon: <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />,
+      },
+      {
+        name: 'Back',
+        icon: <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />,
+      },
+      {
+        name: 'Expand',
+        icon: <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />,
+      },
+      {
+        name: 'Hide',
+        icon: <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" />,
+      },
     ];
     options.forEach((option, i) => {
       const l = options.length;
@@ -148,7 +160,7 @@ class GraphComponent extends Component {
         childrenColor: '#73D8FF',
         defaultColor: '#1F265B',
         linkStrength: 0.03,
-        chargeStrength: 100,
+        chargeStrength: 150,
         collisionRadius: nodeRadius,
         autoCollisionRadius: false,
       },
@@ -224,7 +236,9 @@ class GraphComponent extends Component {
   componentWillUnmount() {
     const { svg, simulation } = this.state;
     // remove all event listeners
-    svg.call(d3.zoom().on('zoom', null));
+    svg.call(d3.zoom()
+      .on('zoom', null))
+      .on('dblclick.zoom', null);
     simulation.on('tick', null);
     window.removeEventListener('resize', this.handleResize);
   }
@@ -456,7 +470,8 @@ class GraphComponent extends Component {
             'transform',
             `translate(${transform.x},${transform.y})scale(${transform.k})`,
           );
-        }));
+        }))
+      .on('dblclick.zoom', null);
     this.setState({ simulation, svg });
   }
 
@@ -710,11 +725,6 @@ class GraphComponent extends Component {
     const endArrowSize = {
       d: `M0,0,L0,${arrowProperties.width} L ${arrowProperties.length}, ${arrowProperties.width / 2} z`,
       refX: nodeRadius + arrowProperties.length,
-      refY: arrowProperties.width / 2,
-    };
-    const startArrowSize = {
-      d: `M0,${arrowProperties.width / 2} L${arrowProperties.length}, ${arrowProperties.width} L${arrowProperties.length},0 z`,
-      refX: -nodeRadius,
       refY: arrowProperties.width / 2,
     };
 
@@ -999,7 +1009,10 @@ class GraphComponent extends Component {
         </div>
 
         <div className="svg-wrapper" ref={(node) => { this.wrapper = node; }}>
-          <svg ref={(node) => { this.graph = node; }}>
+          <svg
+            ref={(node) => { this.graph = node; }}
+            onClick={() => this.setState({ actionsNode: null })}
+          >
             <defs>
               <marker
                 id="endArrow"
@@ -1011,18 +1024,6 @@ class GraphComponent extends Component {
                 markerUnits="strokeWidth"
               >
                 <path d={endArrowSize.d} fill="#555" />
-              </marker>
-
-              <marker
-                id="startArrow"
-                markerWidth={arrowProperties.length}
-                markerHeight={arrowProperties.width}
-                refX={startArrowSize.refX}
-                refY={startArrowSize.refY}
-                orient="auto"
-                markerUnits="strokeWidth"
-              >
-                <path d={startArrowSize.d} fill="#555" />
               </marker>
             </defs>
             <g ref={(node) => { this.zoom = node; }}>

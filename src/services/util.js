@@ -8,21 +8,23 @@ const acronyms = ['id', 'uuid', 'ncit', 'uberon', 'doid'];
  */
 export default class util {
   /**
-   * Returns plural version of input string.
+   * Returns plural version of input string in all lower case.
    * @param {string} str - string to be pluralized
    */
   static pluralize(str) {
+    const retstr = str.toLowerCase();
     if (
-      str.endsWith('y')
-      && !['a', 'e', 'i', 'o', 'u', 'y'].includes(str[str.length - 2])
+      retstr.endsWith('y')
+      && !['a', 'e', 'i', 'o', 'u', 'y'].includes(retstr[retstr.length - 2])
     ) {
-      return `${str.slice(0, str.length - 1)}ies`;
+      return `${retstr.slice(0, retstr.length - 1)}ies`;
     }
-    return `${str}s`;
+    return `${retstr}s`;
   }
 
   /**
    * Un-camelCase's input string.
+   * @param {string} str - camelCase'd string.
    */
   static antiCamelCase(str) {
     let accstr = str;
@@ -59,11 +61,11 @@ export default class util {
   }
 
   /**
-   * Formatter meant for edge types with given in the form:
+   * Formatter meant for edge types given in the form:
    * '['in' | 'out']_[edgeType]'.
    *
    *    Format string:  in_[edgeType] => has[edgeType]
-   *    out_[edgeType] => [edgeType]
+   *                    out_[edgeType] => [edgeType]
    *
    * @param {string} str - string to be formatted.
    */
@@ -77,6 +79,12 @@ export default class util {
     return str;
   }
 
+  /**
+   * Returns the plaintext representation of a value in order to be loaded into
+   * a TSV file. Parses nested objects and arrays using the key as reference.
+   * @param {any} value - Value
+   * @param {string} key - Object Key.
+   */
   static getTSVRepresentation(value, key) {
     if (typeof value !== 'object') {
       return value || '';

@@ -359,6 +359,9 @@ class NodeFormComponent extends Component {
 
     const changedEdges = [];
 
+    /* Checks for differences in original node and submitted form. */
+
+    // Deletes edges that are no longer present on the edited node.
     originalNode.relationships.forEach((initRelationship) => {
       if (
         !relationships.find(
@@ -374,8 +377,8 @@ class NodeFormComponent extends Component {
       }
     });
 
-    for (let i = 0; i < relationships.length; i += 1) {
-      const currRelationship = relationships[i];
+    // Adds new edges that were not present on the original node.
+    relationships.forEach((currRelationship) => {
       if (
         !originalNode.relationships.find(
           r => r.out === currRelationship.out
@@ -560,7 +563,8 @@ class NodeFormComponent extends Component {
         let endpoint;
 
         // If a linkedClass is specified, restrict querying to that endpoint, and do not
-        // show a resource selector.
+        // show a resource selector. Otherwise, choose a dropdown for the class (might
+        // remove this when general ontology endpoint is pushed to production).
         const resourceSelector = linkedClass ? null
           : (
             <div style={{ marginBottom: '8px' }}>

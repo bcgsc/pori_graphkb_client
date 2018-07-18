@@ -297,6 +297,9 @@ class NodeFormComponent extends Component {
         relationship.in = e.target['@rid'];
       }
     }
+    if (e.target.sourceId) {
+      relationship.targetSourceId = e.target.sourceId;
+    }
     this.setState({ relationship });
   }
 

@@ -148,9 +148,6 @@ class GraphComponent extends Component {
       expandedEdgeTypes: [],
       simulation: d3.forceSimulation(),
       svg: undefined,
-      selectedChildren: [],
-      selectedParents: [],
-      selectedAliases: [],
       graphOptions: {
         width: 0,
         height: 0,
@@ -559,9 +556,6 @@ class GraphComponent extends Component {
     this.setState({
       expandId: rid,
       actionsNode: null,
-      selectedAliases,
-      selectedChildren,
-      selectedParents,
     });
   }
 
@@ -703,9 +697,6 @@ class GraphComponent extends Component {
       expandable,
       graphOptions,
       simulation,
-      selectedChildren,
-      selectedParents,
-      selectedAliases,
       colorKey,
       displayed,
       graphOptionsPanel,
@@ -933,13 +924,22 @@ class GraphComponent extends Component {
         if (expandId === node.data['@rid']) {
           return graphOptions.selectedColor;
         }
-        if (selectedChildren.includes(node.data['@rid'])) {
+        if (node.data.out_SubClassOf && node.data.out_SubClassOf.find(edge => ((edge.in['@rid'] || edge.in) === expandId))) {
           return graphOptions.childrenColor;
         }
-        if (selectedParents.includes(node.data['@rid'])) {
+        if (node.data.in_SubClassOf && node.data.in_SubClassOf.find(edge => ((edge.out['@rid'] || edge.out) === expandId))) {
           return graphOptions.parentsColor;
         }
-        if (selectedAliases.includes(node.data['@rid'])) {
+        if (
+          (
+            node.data.in_AliasOf
+            && node.data.in_AliasOf.find(edge => ((edge.out['@rid'] || edge.out) === expandId))
+          )
+          || (
+            node.data.out_AliasOf
+            && node.data.out_AliasOf.find(edge => ((edge.in['@rid'] || edge.in) === expandId))
+          )
+        ) {
           return graphOptions.aliasesColor;
         }
         return graphOptions.defaultColor;

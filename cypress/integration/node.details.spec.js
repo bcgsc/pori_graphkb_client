@@ -21,7 +21,7 @@ describe('Node Detail View Test', () => {
     cy.contains('Class:').should('not.exist');
   });
 
-  it.only('Nested class expansion', () => {
+  it('Nested class expansion', () => {
     cy.get('div.nested-container:first div div[tabindex="-1"]').click();
     cy.get('div.nested-container:first div div div div h3').should('visible');
     cy.get('div.nested-container:first div div[tabindex="-1"]').click({ force: true });

@@ -3,6 +3,13 @@ import auth from './auth';
 
 const API_BASE_URL = 'http://kbapi01:8008/api/v0.0.8';
 const CACHE_EXPIRY = 8;
+const KEYS = {
+  ONTOLOGYVERTICES: 'ontologyVertices',
+  SOURCES: 'sources',
+  ONTOLOGYEDGES: 'ontologyEdges',
+  V: 'baseVertex',
+  SCHEMA: 'schema',
+};
 
 /**
  * Wrapper for api, handles all requests and special functions.
@@ -96,40 +103,17 @@ export default class api {
   /**
    * Returns all valid edge types.
    */
-  static getEdgeTypes() {
-    const edgeTypes = localStorage.getItem('edgeTypes');
-    const edgeTypeExpiry = localStorage.getItem('edgeTypesExpiry');
-    if (
-      !edgeTypes
-      || (edgeTypes && edgeTypeExpiry && edgeTypeExpiry < Date.now().valueOf())
-      || !edgeTypeExpiry
-    ) {
-      return api.loadEdges();
-    }
-    return Promise.resolve(JSON.parse(edgeTypes));
-  }
-
-  /**
-   * Requests edge types from api and loads into localstorage.
-   */
-  static loadEdges() {
-    return api.get('/schema').then((response) => {
-      const cycled = jc.retrocycle(response.schema);
+  static getOntologyEdges() {
+    return api.getSchema().then((schema) => {
       const list = [];
-      Object.keys(cycled).forEach((key) => {
+      Object.keys(schema).forEach((key) => {
         if (
-          cycled[key].inherits.includes('E') && cycled[key].inherits.includes('OntologyEdge')
+          schema[key].inherits.includes('E')
+          && schema[key].inherits.includes('OntologyEdge')
         ) {
-          list.push({ name: key });
+          list.push(key);
         }
       });
-
-      const now = new Date();
-      const expiry = new Date(now);
-      expiry.setHours(now.getHours() + CACHE_EXPIRY);
-
-      localStorage.setItem('edgeTypesExpiry', expiry.getTime());
-      localStorage.setItem('edgeTypes', JSON.stringify(list));
       return Promise.resolve(list);
     });
   }
@@ -138,8 +122,8 @@ export default class api {
    * Returns all valid sources.
    */
   static getSources() {
-    const sources = localStorage.getItem('sources');
-    const sourcesExpiry = localStorage.getItem('sourcesExpiry');
+    const sources = localStorage.getItem(KEYS.SOURCES);
+    const sourcesExpiry = localStorage.getItem(`${KEYS.SOURCES}Expiry`);
     if (
       !sources || (sources && sourcesExpiry && sourcesExpiry < Date.now().valueOf())
     ) {
@@ -161,10 +145,90 @@ export default class api {
       const expiry = new Date(now);
       expiry.setHours(now.getHours() + CACHE_EXPIRY);
 
-      localStorage.setItem('sourcesExpiry', expiry.getTime());
-      localStorage.setItem('sources', JSON.stringify(list));
+      localStorage.setItem(`${KEYS.SOURCES}Expiry`, expiry.getTime());
+      localStorage.setItem(KEYS.SOURCES, JSON.stringify(list));
 
       return Promise.resolve(list);
+    });
+  }
+
+  /**
+   * Requests schema from api and loads into localstorage.
+   */
+  static loadSchema() {
+    return api.get('/schema').then((response) => {
+      const cycled = jc.retrocycle(response.schema);
+      const now = new Date();
+      const expiry = new Date(now);
+      expiry.setHours(now.getHours() + CACHE_EXPIRY);
+
+      localStorage.setItem(`${KEYS.SCHEMA}Expiry`, expiry.getTime());
+      localStorage.setItem(KEYS.SCHEMA, JSON.stringify(cycled));
+
+      return Promise.resolve(cycled);
+    });
+  }
+
+  /**
+   * Returns schema.
+   */
+  static getSchema() {
+    const schema = localStorage.getItem(KEYS.SCHEMA);
+    const schemaExpiry = localStorage.getItem(`${KEYS.SCHEMA}Expiry`);
+    if (
+      !schema
+      || (
+        schema
+        && schemaExpiry
+        && schemaExpiry < Date.now().valueOf()
+      )
+    ) {
+      return api.loadSchema();
+    }
+    return Promise.resolve(JSON.parse(schema));
+  }
+
+  /**
+   * Returns all valid ontology vertex types.
+   */
+  static getOntologyVertices() {
+    return api.getSchema().then((schema) => {
+      const list = [];
+      Object.keys(schema).forEach((key) => {
+        if (
+          schema[key].inherits.includes('Ontology')
+          && schema[key].inherits.includes('V')
+        ) {
+          list.push({ name: key, properties: schema[key].properties });
+        }
+      });
+      return Promise.resolve(list);
+    });
+  }
+
+  /**
+  * Returns the vertex base class.
+  */
+  static getVertexBaseClass() {
+    return api.getSchema().then(schema => Promise.resolve(schema.V));
+  }
+
+  /**
+   * Returns the editable properties of target ontology class.
+   * @param {string} className - requested class name
+   */
+  static getEditableProps(className) {
+    return api.getSchema().then((schema) => {
+      const VPropKeys = Object.keys(schema.V.properties);
+      if (schema[className]) {
+        const props = Object.keys(schema[className].properties).map(prop => (
+          {
+            name: prop,
+            ...schema[className].properties[prop],
+          }));
+        return Promise.resolve(props.filter(prop => !VPropKeys.includes(prop.name)));
+      }
+      return Promise.reject('Class not found');
     });
   }
 
@@ -177,7 +241,7 @@ export default class api {
    */
   static autoSearch(endpoint, property, value, limit) {
     return api.get(
-      `/${endpoint}?${property}=~${value}&limit=${limit}&neighbors=1`,
+      `/${endpoint}?${property}=~${encodeURIComponent(value)}&limit=${limit}&neighbors=1`,
     );
   }
 }

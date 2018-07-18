@@ -79,4 +79,17 @@ describe('Table Test', () => {
       cy.contains('1-50 of 170');
     });
   });
+
+  it('Ellipsis menu: column changes', () => {
+    cy.get('#ellipsis-menu').click();
+    cy.get('#column-edit').click();
+    cy.contains('Select Columns:');
+    cy.get('#subsets input[type=checkbox]').click();
+    cy.get('#deprecated').scrollIntoView();
+    cy.get('#deprecated input[type=checkbox]').click();
+    cy.get('#column-dialog-actions button').click();
+    cy.get('thead tr th').then((array) => {
+      cy.expect(array.length).to.eq(7);
+    });
+  });
 });

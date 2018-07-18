@@ -399,6 +399,7 @@ class TableComponent extends Component {
             this.handleClose();
             this.handleColumnOpen();
           }}
+          id="column-edit"
         >
           Edit Visible Columns
         </MenuItem>
@@ -414,9 +415,9 @@ class TableComponent extends Component {
         <DialogTitle id="column-dialog-title">
           Select Columns:
         </DialogTitle>
-        <DialogContent>
+        <DialogContent id="column-dialog-content">
           {tableColumns.map((column, i) => (
-            <div key={column.id}>
+            <div key={column.id} id={column.id}>
               <FormControlLabel
                 control={(
                   <Checkbox
@@ -452,7 +453,7 @@ class TableComponent extends Component {
             </div>
           ))}
         </DialogContent>
-        <DialogActions>
+        <DialogActions id="column-dialog-actions">
           <Button onClick={this.handleColumnClose} color="primary">
             Done
           </Button>

@@ -22,6 +22,10 @@
     },
     "env": {
         "browser": true,
-        "node": true
-    }
+        "node": true,
+        "cypress/globals": true
+    },
+    "plugins": [
+        "cypress"
+    ]
 }

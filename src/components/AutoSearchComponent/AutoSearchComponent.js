@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
-import * as _ from 'lodash';
+import _ from 'lodash';
 import api from '../../services/api';
 
 /**
@@ -22,10 +22,6 @@ class AutoSearchComponent extends Component {
     super(props);
     this.state = {
       options: [],
-      limit: props.limit || 30,
-      endpoint: props.endpoint || 'diseases',
-      property: props.property || 'name',
-      error: false,
       emptyFlag: false,
       loginRedirect: false,
     };
@@ -55,7 +51,12 @@ class AutoSearchComponent extends Component {
    * @param {string} value - query value to be sent to the api.
    */
   callApi(value) {
-    const { endpoint, property, limit } = this.state;
+    const {
+      limit,
+      endpoint,
+      property,
+    } = this.props;
+
     api.autoSearch(
       endpoint,
       property,
@@ -64,13 +65,11 @@ class AutoSearchComponent extends Component {
     ).then((response) => {
       const cycled = jc.retrocycle(response.result);
       const emptyFlag = !!(cycled.length === 0 && value);
-      this.setState({ options: cycled, error: false, emptyFlag });
+      this.setState({ options: cycled, emptyFlag });
     })
       .catch((error) => {
         if (error.status === 401) {
           this.setState({ loginRedirect: true });
-        } else if (error.status === 400) {
-          this.setState({ error: true });
         }
       });
   }
@@ -78,7 +77,6 @@ class AutoSearchComponent extends Component {
   render() {
     const {
       options,
-      error,
       emptyFlag,
       loginRedirect,
     } = this.state;
@@ -91,6 +89,7 @@ class AutoSearchComponent extends Component {
       value,
       label,
       required,
+      disabled,
     } = this.props;
 
     if (loginRedirect) return <Redirect push to={{ pathname: '/login' }} />;
@@ -112,7 +111,12 @@ class AutoSearchComponent extends Component {
       <Downshift
         onChange={(e) => {
           onChange({
-            target: { value: e.name, '@rid': e['@rid'], name }, // TODO: sourceID variant
+            target: {
+              value: e.name,
+              sourceId: e.sourceId,
+              '@rid': e['@rid'],
+              name,
+            },
           });
         }}
         itemToString={(item) => {
@@ -131,17 +135,18 @@ class AutoSearchComponent extends Component {
         ) => (
           <div className="autosearch-wrapper">
             <TextField
+              disabled={disabled}
               fullWidth
-              error={error || emptyFlag}
+              error={emptyFlag}
+              label={label}
+              required={required}
               InputProps={{
                 ...getInputProps({
                   placeholder,
                   value,
                   onChange,
                   name,
-                  label,
                   onKeyUp: this.refreshOptions,
-                  required,
                 }),
               }}
             />
@@ -155,12 +160,6 @@ class AutoSearchComponent extends Component {
                   </List>
                 </Paper>
               ) : null}
-            {error ? (
-              <Typography variant="caption" color="error">
-                Invalid Request
-              </Typography>
-            ) : null
-            }
             {emptyFlag ? (
               <Typography variant="caption" color="error">
                 No Results
@@ -199,6 +198,7 @@ AutoSearchComponent.defaultProps = {
     </MenuItem>
   ),
   onChange: null,
+  disabled: false,
 };
 
 /**
@@ -212,6 +212,7 @@ AutoSearchComponent.defaultProps = {
  * @param {bool} required - required flag for text input indicator.
  * @param {func} onChange - parent method for handling change events
  * @param {func} children - component for display display query results.
+ * @param {bool} disabled - disabled flag.
  */
 AutoSearchComponent.propTypes = {
   limit: PropTypes.number,
@@ -224,6 +225,7 @@ AutoSearchComponent.propTypes = {
   required: PropTypes.bool,
   onChange: PropTypes.func,
   children: PropTypes.func,
+  disabled: PropTypes.bool,
 };
 
 export default AutoSearchComponent;

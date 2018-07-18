@@ -1,11 +1,10 @@
-import { credentials } from '../../config';
 
-describe('Query Page Test', () => {
+describe('Table Test', () => {
   beforeEach(() => {
     cy.visit('/');
     cy.url().should('includes', '/login');
-    cy.get('input[name=username]').type(credentials.username);
-    cy.get('input[name=password]').type(`${credentials.password}{enter}`);
+    cy.get('input[name=username]').type(Cypress.env('USER'));
+    cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
     cy.url().should('includes', '/query');
     cy.get('input').type('melanoma{enter}');
     cy.url().should('includes', '/table?name=~melanoma');
@@ -56,5 +55,28 @@ describe('Query Page Test', () => {
     cy.contains('51-75');
     cy.get('table tbody tr td div div div button:first').click();
     cy.contains('26-50');
+  });
+
+  it('Ellipsis menu: Download as TSV', () => {
+    cy.get('#ellipsis-menu').click();
+    cy.get('#download-tsv').click();
+  });
+
+  it('Ellipsis menu: hiding/returning rows', () => {
+    cy.get('table tbody tr').then((array) => {
+      cy.contains(array.length);
+
+      cy.wrap(array).each((row, i) => {
+        if (i !== 0 && i <= Math.round(array.length / 6)) {
+          cy.wrap(row).children('td:first').children().click();
+        }
+      });
+      cy.get('#ellipsis-menu').click();
+      cy.get('#hide-selected').click();
+      cy.contains(170 - Math.round(array.length / 6));
+      cy.get('#ellipsis-menu').click();
+      cy.contains(`Show hidden rows (${Math.round(array.length / 6)})`).click();
+      cy.contains('1-50 of 170');
+    });
   });
 });

@@ -97,7 +97,7 @@ class NodeFormComponent extends Component {
    */
   async componentDidMount() {
     const sources = await api.getSources();
-    const edgeTypes = await api.getEdgeTypes();
+    const edgeTypes = await api.getOntologyEdges();
     const { variant } = this.props;
 
     this.setState({ sources, edgeTypes }, () => {
@@ -123,8 +123,8 @@ class NodeFormComponent extends Component {
         const cycled = jc.retrocycle(response.result);
         let relationships = [];
         const expandedEdgeTypes = edgeTypes.reduce((r, e) => {
-          r.push({ name: `in_${e.name}` });
-          r.push({ name: `out_${e.name}` });
+          r.push({ name: `in_${e}` });
+          r.push({ name: `out_${e}` });
           return r;
         }, []);
 
@@ -476,10 +476,10 @@ class NodeFormComponent extends Component {
     });
     const edgeTypesDisplay = (edgeType) => {
       const inOut = form.relationship.in === node['@rid']
-        ? `has${edgeType.name.slice(0, edgeType.name.length - 2)}`
-        : edgeType.name;
+        ? `has${edgeType.slice(0, edgeType.length - 2)}`
+        : edgeType;
       return (
-        <MenuItem key={edgeType.name} value={edgeType.name}>
+        <MenuItem key={edgeType} value={edgeType}>
           {inOut}
         </MenuItem>
       );

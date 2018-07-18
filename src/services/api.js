@@ -170,7 +170,7 @@ export default class api {
   }
 
   /**
-   * Returns schema.
+   * Returns the database schema.
    */
   static getSchema() {
     const schema = localStorage.getItem(KEYS.SCHEMA);

@@ -106,7 +106,7 @@ class NodeDetailComponent extends Component {
             {filteredNode[key].map((edge, i) => {
               const relatedNode = edge.in && edge.in['@rid'] === node['@rid'] ? edge.out : edge.in;
               const edgeLabel = relatedNode
-                ? `${relatedNode.sourceId}${relatedNode.name ? `| "${relatedNode.name}"` : ''}`
+                ? `${relatedNode.sourceId}${relatedNode.name ? ` | "${relatedNode.name}"` : ''}`
                 : edge;
 
               if (i === 0) {
@@ -187,7 +187,7 @@ class NodeDetailComponent extends Component {
       }
       // TODO: handle case where field is array of objects that aren't edges.
       if (Array.isArray(value)) {
-        if (value.length > 1) {
+        if (value.length > 1 && !(id.match(/\./g) || []).length === 2) {
           const preview = value[0];
 
           const content = (
@@ -233,17 +233,34 @@ class NodeDetailComponent extends Component {
             </Typography>
             <Typography paragraph variant="caption">
               {value[0].toString()}
+              {((id.match(/\./g) || []).length === 2 && value.length > 1)
+                ? (
+                  <span>
+                    <br />
+                    . . .
+                  </span>
+                ) : null}
             </Typography>
           </React.Fragment>
         );
       }
 
+
       const nestedObject = Object.assign({}, value);
       Object.keys(V.properties).forEach(vk => delete nestedObject[vk]);
-      let preview = util.getPreview(nestedObject);
-      if (!preview) {
-        const prop = Object.keys(nestedObject).find(nk => typeof nestedObject[nk] !== 'object');
-        preview = nestedObject[prop];
+      const preview = util.getPreview(nestedObject);
+
+      if ((id.match(/\./g) || []).length === 2) {
+        return (
+          <React.Fragment key={id}>
+            <Typography variant="subheading">
+              {`${util.antiCamelCase(key)}:`}
+            </Typography>
+            <Typography paragraph variant="caption">
+              {preview}
+            </Typography>
+          </React.Fragment>
+        );
       }
 
       return (

@@ -393,21 +393,11 @@ class NodeFormComponent extends Component {
           source: currRelationship.source,
         }));
       }
-    }
+    });
 
     await Promise.all(changedEdges);
-    const payload = Object.assign({}, form);
 
-    Object.keys(payload).forEach((key) => {
-      if (!payload[key]) delete payload[key];
-      if (key.includes('.@rid')) {
-        payload[key.split('.')[0]] = payload[key];
-        delete payload[key];
-      }
-      if (key.includes('.class') || !editableProps.find(p => p.name === key)) {
-        delete payload[key];
-      }
-    });
+    const payload = util.parsePayload(form, editableProps);
 
     api.patch(
       `/${util.pluralize(originalNode['@class'])}/${originalNode['@rid'].slice(1)}`,
@@ -430,19 +420,7 @@ class NodeFormComponent extends Component {
     const { handleNodeFinishEdit } = this.props;
 
     const newEdges = [];
-    const payload = Object.assign({}, form);
-
-    Object.keys(payload).forEach((key) => {
-      if (!payload[key]) delete payload[key];
-      if (key.includes('.@rid')) {
-        payload[key.split('.')[0]] = payload[key];
-        delete payload[key];
-      }
-      if (key.includes('.class') || !editableProps.find(p => p.name === key)) {
-        delete payload[key];
-      }
-    });
-
+    const payload = util.parsePayload(form, editableProps);
     const response = await api.post(`/${util.pluralize(newNodeClass)}`, { ...payload });
 
     for (let i = 0; i < relationships.length; i += 1) {

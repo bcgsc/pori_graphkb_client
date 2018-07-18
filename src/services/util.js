@@ -106,4 +106,23 @@ export default class util {
     }
     return this.getPreview(value);
   }
+
+  static parsePayload(form, editableProps) {
+    const payload = Object.assign({}, form);
+    Object.keys(payload).forEach((key) => {
+      if (!payload[key]) delete payload[key];
+      // For link properties, must specify record id being linking to. Clear the rest.
+      if (key.includes('.@rid')) {
+        // Sets top level property to the rid: ie.
+        // 'source.@rid': #18:5 => 'source': #18:5
+        payload[key.split('.')[0]] = payload[key];
+        delete payload[key];
+      }
+      // Clears out all other unknown fields.
+      if (!editableProps.find(p => p.name === key)) {
+        delete payload[key];
+      }
+    });
+    return payload;
+  }
 }

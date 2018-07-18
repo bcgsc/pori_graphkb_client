@@ -507,12 +507,13 @@ class NodeFormComponent extends Component {
           );
         }
 
+        // For text fields, apply some final changes for number inputs.
         if (type !== 'link') {
           let t;
           let step;
           if (type === 'string') {
             t = 'text';
-          } else if (type === 'integer') {
+          } else if (type === 'integer' || type === 'long') {
             t = 'number';
             step = 1;
           }
@@ -749,7 +750,7 @@ class NodeFormComponent extends Component {
                   label="Source"
                   resources={sources}
                 />
-                <div style={{ display: 'flex', width: '100%' }}>
+                <div style={{ display: 'flex', width: '100%', margin: '8px' }}>
                   <div className="relationship-dir-type">
                     <IconButton
                       disableRipple
@@ -758,7 +759,6 @@ class NodeFormComponent extends Component {
                       color="primary"
                     >
                       <TrendingFlatIcon
-                        style={{ margin: '20px 24px 0 0' }}
                         className={
                           relationship.in === originalNode['@rid']
                             ? 'relationship-in'

@@ -1,13 +1,11 @@
 import * as jc from 'json-cycle';
 import auth from './auth';
 
+const VERSION = 'v0.1.0';
 const API_BASE_URL = 'http://kbapi01:8010/api/v0.1.0';
 const CACHE_EXPIRY = 8;
 const KEYS = {
-  ONTOLOGYVERTICES: 'ontologyVertices',
   SOURCES: 'sources',
-  ONTOLOGYEDGES: 'ontologyEdges',
-  V: 'baseVertex',
   SCHEMA: 'schema',
 };
 
@@ -161,8 +159,13 @@ export default class api {
       const expiry = new Date(now);
       expiry.setHours(now.getHours() + CACHE_EXPIRY);
 
+      const schema = {
+        schema: cycled,
+        version: VERSION,
+      };
+
       localStorage.setItem(`${KEYS.SCHEMA}Expiry`, expiry.getTime());
-      localStorage.setItem(KEYS.SCHEMA, JSON.stringify(cycled));
+      localStorage.setItem(KEYS.SCHEMA, JSON.stringify(schema));
 
       return Promise.resolve(cycled);
     });
@@ -172,7 +175,7 @@ export default class api {
    * Returns the database schema.
    */
   static getSchema() {
-    const schema = localStorage.getItem(KEYS.SCHEMA);
+    const schema = JSON.parse(localStorage.getItem(KEYS.SCHEMA) || '');
     const schemaExpiry = localStorage.getItem(`${KEYS.SCHEMA}Expiry`);
     if (
       !schema
@@ -181,10 +184,11 @@ export default class api {
         && schemaExpiry
         && schemaExpiry < Date.now().valueOf()
       )
+      || schema.version !== VERSION
     ) {
       return api.loadSchema();
     }
-    return Promise.resolve(JSON.parse(schema));
+    return Promise.resolve(schema.schema);
   }
 
   /**

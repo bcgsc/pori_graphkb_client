@@ -1,13 +1,15 @@
 import * as jc from 'json-cycle';
 import auth from './auth';
+import config from '../config.json';
 
-const VERSION = 'v0.1.0';
-const API_BASE_URL = 'http://kbapi01:8010/api/v0.1.0';
+const {
+  VERSION,
+  KEYS,
+  PORT,
+  HOST,
+} = config;
+const API_BASE_URL = `http://${HOST}:${PORT}/api/v${VERSION}`;
 const CACHE_EXPIRY = 8;
-const KEYS = {
-  SOURCES: 'sources',
-  SCHEMA: 'schema',
-};
 
 /**
  * Wrapper for api, handles all requests and special functions.

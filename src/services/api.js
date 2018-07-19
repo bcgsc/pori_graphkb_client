@@ -1,7 +1,7 @@
 import * as jc from 'json-cycle';
 import auth from './auth';
 
-const API_BASE_URL = 'http://kbapi01:8008/api/v0.0.8';
+const API_BASE_URL = 'http://kbapi01:8010/api/v0.1.0';
 const CACHE_EXPIRY = 8;
 const KEYS = {
   ONTOLOGYVERTICES: 'ontologyVertices',
@@ -109,7 +109,6 @@ export default class api {
       Object.keys(schema).forEach((key) => {
         if (
           schema[key].inherits.includes('E')
-          && schema[key].inherits.includes('OntologyEdge')
         ) {
           list.push(key);
         }
@@ -217,16 +216,17 @@ export default class api {
    * Returns the editable properties of target ontology class.
    * @param {string} className - requested class name
    */
-  static getEditableProps(className) {
+  static getClass(className) {
     return api.getSchema().then((schema) => {
       const VPropKeys = Object.keys(schema.V.properties);
       if (schema[className]) {
-        const props = Object.keys(schema[className].properties).map(prop => (
-          {
-            name: prop,
-            ...schema[className].properties[prop],
-          }));
-        return Promise.resolve(props.filter(prop => !VPropKeys.includes(prop.name)));
+        const props = Object.keys(schema[className].properties)
+          .filter(prop => !VPropKeys.includes(prop))
+          .map(prop => (
+            {
+              ...schema[className].properties[prop],
+            }));
+        return Promise.resolve({ route: schema[className].route, properties: props });
       }
       return Promise.reject('Class not found');
     });

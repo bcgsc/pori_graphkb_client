@@ -10,7 +10,7 @@ import queryString from 'query-string';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import api from '../../services/api';
-import util from '../../services/util';
+
 /**
  * State handling component for query results.
  */
@@ -50,14 +50,14 @@ class DataView extends Component {
     const { location } = this.props;
 
     const filteredSearch = queryString.parse(location.search);
-    const endpoint = util.pluralize(filteredSearch.class || 'disease').toLowerCase();
-    const endpointProps = await api.getEditableProps(filteredSearch.class || 'Disease');
+    const endpointClass = await api.getClass(filteredSearch.class || 'Disease');
+    const { route, properties } = endpointClass;
     delete filteredSearch.class;
     const search = location.search ? `${queryString.stringify(filteredSearch)}&` : '';
     const V = await api.getVertexBaseClass();
     const allColumns = ['@rid'];
 
-    api.get(`/${endpoint}/?${search}neighbors=3`)
+    api.get(`${route}/?${search}neighbors=3`)
       .then((data) => {
         const cycled = jc.retrocycle(data.result);
 
@@ -65,7 +65,7 @@ class DataView extends Component {
         cycled.forEach((ontologyTerm) => {
           Object.keys(ontologyTerm).forEach((prop) => {
             if (!V.properties[prop] && !allColumns.includes(prop)) {
-              const endpointProp = endpointProps.find(p => p.name === prop);
+              const endpointProp = properties.find(p => p.name === prop);
               if (endpointProp && endpointProp.type === 'link') {
                 Object.keys(ontologyTerm[prop]).forEach((nestedProp) => {
                   if (

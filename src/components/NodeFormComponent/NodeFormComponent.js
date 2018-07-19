@@ -91,7 +91,7 @@ class NodeFormComponent extends Component {
       relationship.out = node['@rid'];
     }
 
-    const editableProps = await api.getEditableProps(nodeClass);
+    const editableProps = await api.getClass(nodeClass);
     const form = {};
 
     editableProps.forEach((prop) => {
@@ -163,7 +163,7 @@ class NodeFormComponent extends Component {
    */
   async handleClassChange(e) {
     const newNodeClass = e.target.value;
-    const editableProps = await api.getEditableProps(newNodeClass);
+    const editableProps = await api.getClass(newNodeClass);
     const { form } = this.state;
     editableProps.forEach((prop) => {
       const { name, type } = prop;

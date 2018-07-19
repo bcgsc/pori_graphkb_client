@@ -93,11 +93,11 @@ class App extends Component {
       direction: 'ltr',
       palette: {
         primary: {
-          main: '#1F2B65',
+          main: '#26328C',
         },
         secondary: {
-          light: '#009688',
-          main: '#00897b',
+          light: '#CCCFE2',
+          main: '#9AA1CB',
         },
         warn: {
           main: '#d32f2f',

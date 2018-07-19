@@ -475,6 +475,7 @@ class TableComponent extends Component {
                   }}
                 >
                   <Checkbox
+                    color="secondary"
                     onChange={handleCheckAll}
                     checked={displayed.length === sortedData.length - hidden.length}
                   />

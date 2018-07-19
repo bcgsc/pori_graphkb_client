@@ -17,6 +17,7 @@ import {
   ListItemIcon,
 } from '@material-ui/core';
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import EditIcon from '@material-ui/icons/Edit';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import SearchIcon from '@material-ui/icons/Search';
 import api from '../../services/api';
@@ -375,7 +376,7 @@ class NodeDetailComponent extends Component {
           <IconButton
             onClick={() => handleNodeEditStart(node)}
           >
-            <AssignmentIcon />
+            <EditIcon />
           </IconButton>
           {children}
         </div>

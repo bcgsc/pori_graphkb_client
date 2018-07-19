@@ -21,10 +21,12 @@ import {
   DialogContent,
   DialogActions,
   DialogTitle,
+  Tooltip,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
+import HelpIcon from '@material-ui/icons/Help';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
 import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
 import api from '../../services/api';
@@ -55,6 +57,7 @@ class NodeFormComponent extends Component {
         source: '',
       },
       subset: '',
+      deleteDialog: false,
     };
 
     this.handleFormChange = this.handleFormChange.bind(this);
@@ -531,7 +534,12 @@ class NodeFormComponent extends Component {
       const property = editableProps.find(prop => prop.name === key);
       if (!property) return null;
 
-      const { type, mandatory, linkedClass } = property;
+      const {
+        type,
+        mandatory,
+        linkedClass,
+        description,
+      } = property;
 
       if (typeof value !== 'object') {
         // Radio group component for boolean types.
@@ -579,8 +587,13 @@ class NodeFormComponent extends Component {
                 type={t || ''}
                 step={step || ''}
                 required={mandatory}
-                multiline={!!t}
+                multiline={t === 'text'}
               />
+              {description ? (
+                <Tooltip title={description}>
+                  <HelpIcon />
+                </Tooltip>
+              ) : null}
             </ListItem>
           );
         }

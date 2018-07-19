@@ -429,7 +429,7 @@ class TableComponent extends Component {
                 label={column.label}
               />
               {column.sortBy ? (
-                <div>
+                <div style={{ marginLeft: '32px' }}>
                   <Typography variant="caption">
                     Sort By:
                   </Typography>
@@ -440,6 +440,7 @@ class TableComponent extends Component {
                   >
                     {column.sortable.map(sort => (
                       <FormControlLabel
+                        disabled={!column.checked}
                         key={sort}
                         value={sort}
                         control={<Radio />}

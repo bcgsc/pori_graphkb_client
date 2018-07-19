@@ -579,6 +579,7 @@ class NodeFormComponent extends Component {
                 type={t || ''}
                 step={step || ''}
                 required={mandatory}
+                multiline={!!t}
               />
             </ListItem>
           );
@@ -670,7 +671,7 @@ class NodeFormComponent extends Component {
         : r['@class'];
       return (
         <ListItem
-          key={`${typeName}: ${r.targetSourceId} | ${r.targetName}`}
+          key={`${typeName}: ${r['@rid']}`}
           className="form-list"
         >
           <ListItemText

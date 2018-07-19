@@ -11,7 +11,6 @@ $banner-height: 56px;
   height: $banner-height;
   display: flex;
   background-color: $md-primary-color;
-  flex-direction: row !important;
 
   button {
     margin: auto 0;
@@ -52,4 +51,7 @@ $banner-height: 56px;
 
 .router-outlet {
   height: 100%;
+}
+.sidebar {
+  height: calc(100% - #{$banner-height});
 }

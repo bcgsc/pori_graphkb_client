@@ -126,7 +126,7 @@ class NodeDetailComponent extends Component {
       }
       // TODO: handle case where field is array of objects that aren't edges.
       if (Array.isArray(value)) {
-        if (value.length > 1 && !((id.match(/\./g) || []).length === 2)) {
+        if (!((id.match(/\./g) || []).length === 2)) {
           const preview = value.join(', ');
           const content = (
             <List style={{ paddingTop: '0' }}>
@@ -135,10 +135,10 @@ class NodeDetailComponent extends Component {
                 <ListItem
                   dense
                   key={`${id}${item}`}
-                  onClick={() => handleNewQuery(`subsets=${item}`)}
+                  onClick={() => handleNewQuery(`${key}=${item}`)}
                 >
                   <Link
-                    to={`/data/table?subsets=${item}`}
+                    to={`/data/table?${key}=${item}`}
                     className="icon-link"
                   >
                     <ListItemIcon>
@@ -206,7 +206,16 @@ class NodeDetailComponent extends Component {
                     . . .
                   </span>
                 ) : null}
-              {value[0].toString()}
+              <Link
+                to={`/data/table?${key}=${value[0].toString()}`}
+                className="icon-link"
+                onClick={() => handleNewQuery(`${key}=${value[0].toString()}`)}
+              >
+                <SearchIcon />
+                <Typography variant="caption" style={{ margin: 'auto 8px' }}>
+                  {value[0].toString()}
+                </Typography>
+              </Link>
             </Typography>
           </React.Fragment>
         );

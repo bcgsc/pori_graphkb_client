@@ -690,9 +690,9 @@ class NodeFormComponent extends Component {
     });
 
     /**
-     * Formats valid edge types.
-     * @param {Object} edgeType - Edge type object.
-     */
+      * Formats valid edge types.
+      * @param {Object} edgeType - Edge type object.
+      */
     const edgeTypesDisplay = (edgeType) => {
       const inOut = relationship.in === originalNode['@rid']
         ? `has${edgeType.slice(0, edgeType.length - 2)}`

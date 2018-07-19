@@ -157,15 +157,34 @@ class NodeDetailComponent extends Component {
               onChange={() => this.handleNestedToggle(id)}
               className="nested-container"
             >
-              <ExpansionPanelSummary expandIcon={<KeyboardArrowDownIcon />}>
-                <Typography variant="subheading" style={{ flexBasis: '15%' }}>
+              <ExpansionPanelSummary
+                expandIcon={<KeyboardArrowDownIcon />}
+                classes={{ content: 'preview-content' }}
+              >
+                <Typography
+                  variant="subheading"
+                  className="preview-title"
+                >
                   {`${util.antiCamelCase(key)}:`}
                 </Typography>
                 {!isOpen
                   ? (
-                    <Typography variant="subheading" color="textSecondary">
-                      {preview}
-                    </Typography>
+                    <React.Fragment>
+                      <Typography
+                        variant="subheading"
+                        color="textSecondary"
+                        className="preview"
+                      >
+                        {preview}
+                      </Typography>
+                      <div className="length-box">
+                        <Typography
+                          variant="subheading"
+                        >
+                          {value.length}
+                        </Typography>
+                      </div>
+                    </React.Fragment>
                   ) : null}
               </ExpansionPanelSummary>
               <ExpansionPanelDetails style={{ display: 'block' }}>
@@ -180,7 +199,6 @@ class NodeDetailComponent extends Component {
               {`${util.antiCamelCase(key)}:`}
             </Typography>
             <Typography paragraph variant="caption">
-              {value[0].toString()}
               {((id.match(/\./g) || []).length === 2 && value.length > 1)
                 ? (
                   <span>
@@ -188,11 +206,11 @@ class NodeDetailComponent extends Component {
                     . . .
                   </span>
                 ) : null}
+              {value[0].toString()}
             </Typography>
           </React.Fragment>
         );
       }
-
 
       const nestedObject = Object.assign({}, value);
       Object.keys(V.properties).forEach(vk => delete nestedObject[vk]);
@@ -218,16 +236,28 @@ class NodeDetailComponent extends Component {
           onChange={() => this.handleNestedToggle(id)}
           className="nested-container"
         >
-          <ExpansionPanelSummary expandIcon={<KeyboardArrowDownIcon />}>
-            <Typography variant="subheading" style={{ flexBasis: '15%' }}>
+          <ExpansionPanelSummary
+            expandIcon={<KeyboardArrowDownIcon />}
+          >
+            <Typography
+              variant="subheading"
+              className="preview-title"
+            >
               {`${util.antiCamelCase(key)}:`}
             </Typography>
             {!isOpen
               ? (
-                <Typography variant="subheading" color="textSecondary">
+                <Typography
+                  variant="subheading"
+                  color="textSecondary"
+                  className="preview"
+                >
                   {preview}
                 </Typography>
               ) : null}
+            <div className="node-icon length-box">
+              <AssignmentIcon />
+            </div>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={{ display: 'block' }}>
             {Object.keys(nestedObject).map(k => formatProperty(k, nestedObject[k], `${prefix ? `${prefix}.` : ''}${key}`))}

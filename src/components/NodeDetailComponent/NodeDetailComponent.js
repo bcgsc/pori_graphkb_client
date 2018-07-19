@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import './NodeDetailComponent.css';
 import {
   List,
   ListItem,
   ListItemText,
-  ListItemIcon,
   IconButton,
   Card,
   Typography,
@@ -14,11 +14,11 @@ import {
   ExpansionPanel,
   ExpansionPanelDetails,
   ExpansionPanelSummary,
+  ListItemIcon,
 } from '@material-ui/core';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import FolderIcon from '@material-ui/icons/Folder';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import SearchIcon from '@material-ui/icons/Search';
 import api from '../../services/api';
 import util from '../../services/util';
 
@@ -47,6 +47,7 @@ class NodeDetailComponent extends Component {
     const { node } = this.props;
     const V = await api.getVertexBaseClass();
     const ontologyEdges = await api.getOntologyEdges();
+
     const filteredNode = Object.assign({}, node);
     Object.keys(V.properties).forEach(key => delete filteredNode[key]);
 
@@ -81,6 +82,7 @@ class NodeDetailComponent extends Component {
       handleNodeEditStart,
       node,
       children,
+      handleNewQuery,
     } = this.props;
 
     // Accounts for in and out edgetypes.
@@ -172,7 +174,6 @@ class NodeDetailComponent extends Component {
         return null;
       }
       const isOpen = nestedExpanded.includes(id);
-
       if (typeof value !== 'object') {
         return (
           <React.Fragment key={id}>
@@ -187,17 +188,26 @@ class NodeDetailComponent extends Component {
       }
       // TODO: handle case where field is array of objects that aren't edges.
       if (Array.isArray(value)) {
-        if (value.length > 1 && !(id.match(/\./g) || []).length === 2) {
-          const preview = value[0];
-
+        if (value.length > 1 && !((id.match(/\./g) || []).length === 2)) {
+          const preview = value.join(', ');
           const content = (
             <List style={{ paddingTop: '0' }}>
               {value.map(item => (
-                <ListItem dense key={`${id}${item}`}>
-                  <ListItemIcon>
-                    <FolderIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={item} />
+
+                <ListItem
+                  dense
+                  key={`${id}${item}`}
+                  onClick={() => handleNewQuery(`subsets=${item}`)}
+                >
+                  <Link
+                    to={`/data/table?subsets=${item}`}
+                    className="icon-link"
+                  >
+                    <ListItemIcon>
+                      <SearchIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={item} />
+                  </Link>
                 </ListItem>
               ))}
             </List>
@@ -326,11 +336,13 @@ class NodeDetailComponent extends Component {
 NodeDetailComponent.defaultProps = {
   node: null,
   children: null,
+  handleNewQuery: null,
 };
 
 NodeDetailComponent.propTypes = {
   node: PropTypes.object,
   handleNodeEditStart: PropTypes.func.isRequired,
+  handleNewQuery: PropTypes.func,
   children: PropTypes.node,
 };
 

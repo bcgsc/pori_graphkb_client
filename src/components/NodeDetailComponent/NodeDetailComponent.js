@@ -95,72 +95,10 @@ class NodeDetailComponent extends Component {
     if (!V) return null;
 
     /**
-     * Formats and lists relationship (edge) fields.
-     */
-    const listEdges = (key) => {
-      const label = util.getEdgeLabel(key);
-      const isOpen = nestedExpanded.includes(label);
-
-      if (filteredNode[key] && filteredNode[key].length !== 0) {
-        let preview;
-        const content = (
-          <List>
-            {filteredNode[key].map((edge, i) => {
-              const relatedNode = edge.in && edge.in['@rid'] === node['@rid'] ? edge.out : edge.in;
-              const edgeLabel = relatedNode
-                ? `${relatedNode.sourceId}${relatedNode.name ? ` | "${relatedNode.name}"` : ''}`
-                : edge;
-
-              if (i === 0) {
-                preview = util.getPreview(relatedNode);
-              }
-              return (
-                <ListItem dense key={key + edge['@rid']}>
-                  <ListItemIcon>
-                    <ChevronRightIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={edgeLabel}
-                    secondary={edge.source.name}
-                  />
-                </ListItem>
-              );
-            })}
-          </List>
-        );
-
-        return (
-          <ExpansionPanel
-            key={label}
-            expanded={isOpen}
-            onChange={() => this.handleNestedToggle(label)}
-            className="nested-container"
-          >
-            {/* TODO: Add Breakpoints */}
-            <ExpansionPanelSummary expandIcon={<KeyboardArrowDownIcon />}>
-              <Typography variant="subheading" style={{ flexBasis: '25%' }}>
-                {`${label}:`}
-              </Typography>
-              {!isOpen
-                ? (
-                  <Typography variant="subheading" color="textSecondary">
-                    {preview}
-                  </Typography>
-                ) : null}
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails style={{ display: 'block' }}>
-              {content}
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-        );
-      } return null;
-    };
-
-    /**
-     * Formats node properties based on type.
-     * @param {string} key - node property key.
-     * @param {any} value - node property value.
-     */
+   * Formats node properties based on type.
+   * @param {string} key - node property key.
+   * @param {any} value - node property value.
+   */
     const formatProperty = (key, value, prefix) => {
       const id = `${prefix ? `${prefix}.` : ''}${key}`;
       /* Checks if value is falsy, if it is an edge property, or if the depth
@@ -296,6 +234,109 @@ class NodeDetailComponent extends Component {
           </ExpansionPanelDetails>
         </ExpansionPanel>
       );
+    };
+
+
+    /**
+     * Formats and lists relationship (edge) fields.
+     */
+    const listEdges = (key) => {
+      const label = util.getEdgeLabel(key);
+      const isOpen = nestedExpanded.includes(label);
+
+      if (filteredNode[key] && filteredNode[key].length !== 0) {
+        const preview = [];
+        const content = (
+          filteredNode[key].map((edge) => {
+            const id = `${label}.${edge['@rid']}`;
+            const relatedNode = edge.in && edge.in['@rid'] === node['@rid'] ? edge.out : edge.in;
+            const edgeOpen = nestedExpanded.includes(id);
+            preview.push(relatedNode.sourceId);
+            return (
+              <ExpansionPanel
+                key={id}
+                expanded={edgeOpen}
+                onChange={() => this.handleNestedToggle(id)}
+                className="nested-container"
+              >
+                <ExpansionPanelSummary
+                  expandIcon={<KeyboardArrowDownIcon />}
+                  classes={{ content: 'preview-content' }}
+                >
+                  <Typography
+                    variant="subheading"
+                    className="preview-title"
+                  >
+                    {`${relatedNode.sourceId}:`}
+                  </Typography>
+                  {!edgeOpen
+                    ? (
+                      <Typography
+                        variant="subheading"
+                        color="textSecondary"
+                        className="preview"
+                      >
+                        {relatedNode.name || ''}
+                      </Typography>
+                    ) : null}
+                  <div className="node-icon length-box">
+                    <AssignmentIcon />
+                  </div>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails style={{ display: 'block' }}>
+                  {formatProperty('@class', relatedNode['@class'], id)}
+                  {formatProperty('sourceId', relatedNode.sourceId, id)}
+                  {formatProperty('name', relatedNode.name, id)}
+                  {formatProperty('source', edge.source.name, id)}
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+            );
+          })
+        );
+
+        return (
+          <ExpansionPanel
+            key={label}
+            expanded={isOpen}
+            onChange={() => this.handleNestedToggle(label)}
+            className="nested-container"
+          >
+            <ExpansionPanelSummary
+              expandIcon={<KeyboardArrowDownIcon />}
+              classes={{ content: 'preview-content' }}
+            >
+              <Typography
+                variant="subheading"
+                className="preview-title"
+              >
+                {`${label}:`}
+              </Typography>
+              {!isOpen
+                ? (
+                  <React.Fragment>
+                    <Typography
+                      variant="subheading"
+                      color="textSecondary"
+                      className="preview"
+                    >
+                      {preview.join(', ')}
+                    </Typography>
+                    <div className="length-box">
+                      <Typography
+                        variant="subheading"
+                      >
+                        {filteredNode[key].length}
+                      </Typography>
+                    </div>
+                  </React.Fragment>
+                ) : null}
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails style={{ display: 'block' }}>
+              {content}
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+        );
+      } return null;
     };
 
     return (

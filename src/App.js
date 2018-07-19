@@ -7,6 +7,7 @@ import {
   Switch,
 } from 'react-router-dom';
 import './App.css';
+import { withStyles } from '@material-ui/core/styles';
 import {
   AppBar,
   createMuiTheme,
@@ -16,6 +17,7 @@ import {
   Typography,
   Menu,
   MenuItem,
+  Drawer,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
@@ -30,6 +32,17 @@ import LoginView from './views/LoginView/LoginView';
 import NodeDetailView from './views/NodeDetailView/NodeDetailView';
 import auth from './services/auth';
 
+
+const styles = theme => ({
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+});
+
 /**
  * Entry point to application. Handles routing, app theme, and logged in state.
  */
@@ -40,6 +53,7 @@ class App extends Component {
     this.state = {
       anchorEl: null,
       loggedIn: !!auth.getToken(),
+      drawer: false,
     };
 
     this.handleAuthenticate = this.handleAuthenticate.bind(this);
@@ -47,6 +61,8 @@ class App extends Component {
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleLogOut = this.handleLogOut.bind(this);
+    this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
+    this.handleDrawerClose = this.handleDrawerClose.bind(this);
   }
 
   /**
@@ -79,6 +95,20 @@ class App extends Component {
   }
 
   /**
+   * Opens side drawer.
+   */
+  handleDrawerOpen() {
+    this.setState({ drawer: true });
+  }
+
+  /**
+   * Closes side drawer.
+   */
+  handleDrawerClose() {
+    this.setState({ drawer: false });
+  }
+
+  /**
    * Clears authentication token and sets logged in status to false.
    */
   handleLogOut() {
@@ -87,17 +117,17 @@ class App extends Component {
   }
 
   render() {
-    const { anchorEl, loggedIn } = this.state;
+    const { anchorEl, loggedIn, drawer } = this.state;
 
     const theme = createMuiTheme({
       direction: 'ltr',
       palette: {
         primary: {
-          main: '#1F2B65',
+          main: '#26328C',
         },
         secondary: {
-          light: '#009688',
-          main: '#00897b',
+          light: '#CCCFE2',
+          main: '#9AA1CB',
         },
         warn: {
           main: '#d32f2f',
@@ -168,6 +198,31 @@ class App extends Component {
                 </Menu>
               </div>
             </AppBar>
+            <Drawer
+              open={drawer}
+              variant="permanent"
+              classes={{
+                paper: 'sidebar',
+
+              }}
+            >
+              <Link className="icon-link" to="/query">
+                <IconButton
+                  color="inherit"
+                  disabled={!loggedIn}
+                >
+                  <SearchIcon />
+                </IconButton>
+              </Link>
+              <Link className="icon-link" to="/add">
+                <IconButton
+                  color="inherit"
+                  disabled={!loggedIn}
+                >
+                  <AddIcon />
+                </IconButton>
+              </Link>
+            </Drawer>
             <section className="content">
               <div className="router-outlet">
                 <Switch>
@@ -192,4 +247,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withStyles(styles, { withTheme: true })(App);

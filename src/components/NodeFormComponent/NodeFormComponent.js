@@ -22,6 +22,8 @@ import {
   DialogActions,
   DialogTitle,
   Tooltip,
+  ListItemSecondaryAction,
+  Card,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
@@ -142,6 +144,7 @@ class NodeFormComponent extends Component {
             targetSourceId:
               edge.out['@rid'] === originalNode['@rid'] ? edge.in.sourceId : edge.out.sourceId,
             source: edge.source['@rid'] || edge.source,
+            key: type,
           });
         });
       }
@@ -274,6 +277,7 @@ class NodeFormComponent extends Component {
             in: '',
             out: originalNode['@rid'],
             source: '',
+            key: '',
           },
         });
       }
@@ -591,7 +595,7 @@ class NodeFormComponent extends Component {
               />
               {description ? (
                 <Tooltip title={description}>
-                  <HelpIcon />
+                  <HelpIcon color="primary" />
                 </Tooltip>
               ) : null}
             </ListItem>
@@ -664,11 +668,13 @@ class NodeFormComponent extends Component {
         className="form-list"
       >
         <ListItemText primary={s} style={{ overflow: 'auto' }} />
-        <IconButton
-          onClick={() => this.handleSubsetDelete(s)}
-        >
-          <CloseIcon color="error" />
-        </IconButton>
+        <ListItemSecondaryAction>
+          <IconButton
+            onClick={() => this.handleSubsetDelete(s)}
+          >
+            <CloseIcon color="error" />
+          </IconButton>
+        </ListItemSecondaryAction>
       </ListItem>
     ));
 
@@ -684,20 +690,22 @@ class NodeFormComponent extends Component {
         : r['@class'];
       return (
         <ListItem
-          key={`${typeName}: ${r['@rid']}`}
+          key={`${r.key}: ${r['@rid']}`}
           className="form-list"
         >
           <ListItemText
-            primary={`${typeName}: ${r.targetSourceId} ${r.targetName ? `| "${r.targetName}"` : ''}`}
+            primary={`${typeName}: ${r.targetSourceId}`}
             secondary={sourceName}
             style={{ overflow: 'auto' }}
           />
-          <IconButton
-            color="secondary"
-            onClick={() => this.handleRelationshipDelete(r)}
-          >
-            <CloseIcon color="error" />
-          </IconButton>
+          <ListItemSecondaryAction>
+            <IconButton
+              color="secondary"
+              onClick={() => this.handleRelationshipDelete(r)}
+            >
+              <CloseIcon color="error" />
+            </IconButton>
+          </ListItemSecondaryAction>
         </ListItem>
       );
     });
@@ -737,7 +745,7 @@ class NodeFormComponent extends Component {
         </div>
         <Divider />
         <form onSubmit={this.handleSubmit}>
-          <div className="param-section">
+          <Card className="param-section">
             <Typography variant="title">
               Basic Parameters
             </Typography>
@@ -765,8 +773,8 @@ class NodeFormComponent extends Component {
                 .map(key => formatInputSection(key, form[key]))
               }
             </List>
-          </div>
-          <div className="param-section">
+          </Card>
+          <Card className="param-section">
             <Typography variant="title">
               Subsets
             </Typography>
@@ -859,10 +867,10 @@ class NodeFormComponent extends Component {
                 <AddIcon />
               </IconButton>
             </ListItem>
-            <List className="list">
+            <List className="relationships-list">
               {rships}
             </List>
-          </div>
+          </Card>
           <div className="submit-button">
             <Button
               type="submit"

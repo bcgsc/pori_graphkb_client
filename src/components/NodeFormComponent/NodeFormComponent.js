@@ -17,6 +17,10 @@ import {
   FormControlLabel,
   FormControl,
   FormLabel,
+  Dialog,
+  DialogContent,
+  DialogActions,
+  DialogTitle,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
@@ -64,6 +68,8 @@ class NodeFormComponent extends Component {
     this.handleDeleteNode = this.handleDeleteNode.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleClassChange = this.handleClassChange.bind(this);
+    this.handleDialogClose = this.handleDialogClose.bind(this);
+    this.handleDialogOpen = this.handleDialogOpen.bind(this);
   }
 
   /**
@@ -349,6 +355,20 @@ class NodeFormComponent extends Component {
   }
 
   /**
+   * Opens node deletion dialog.
+   */
+  handleDialogOpen() {
+    this.setState({ deleteDialog: true });
+  }
+
+  /**
+   * Closes node deletion dialog.
+   */
+  handleDialogClose() {
+    this.setState({ deleteDialog: false });
+  }
+
+  /**
    * Adds new edges and deletes specified ones, then patches property changes to the api.
    */
   async editSubmit() {
@@ -457,6 +477,7 @@ class NodeFormComponent extends Component {
       relationships,
       subset,
       newNodeClass,
+      deleteDialog,
     } = this.state;
     const { variant, handleNodeFinishEdit } = this.props;
 
@@ -477,6 +498,31 @@ class NodeFormComponent extends Component {
         }
       }
     });
+
+    const dialog = (
+      <Dialog
+        onClose={this.handleDialogClose}
+        open={deleteDialog}
+      >
+        <DialogTitle>
+          Really Delete this Term?
+        </DialogTitle>
+        <DialogContent>
+          <DialogActions style={{ justifyContent: 'center' }}>
+            <Button
+              onClick={this.handleDialogClose}
+            >
+              No
+            </Button>
+            <Button
+              onClick={this.handleDeleteNode}
+            >
+              Yes
+            </Button>
+          </DialogActions>
+        </DialogContent>
+      </Dialog>
+    );
 
     /**
      * Renders input component to fit property's importance and type.
@@ -659,6 +705,7 @@ class NodeFormComponent extends Component {
 
     return (
       <div className="node-form-wrapper">
+        {dialog}
         <div>
           <div className="form-header">
             <Typography variant="display1" className="form-title">
@@ -814,7 +861,7 @@ class NodeFormComponent extends Component {
           </div>
           {variant === 'edit' ? (
             <div className="delete-button">
-              <Button variant="raised" onClick={this.handleDeleteNode}>
+              <Button variant="raised" onClick={this.handleDialogOpen}>
                 Delete
               </Button>
             </div>
@@ -833,11 +880,11 @@ NodeFormComponent.defaultProps = {
 };
 
 /**
-* @param {string} selectedId - node database identifier.
-* @param {string} variant - specifies form type/function.
-* @param {function} handleNodeDelete - parent method triggered on node delete.
-* @param {function} handleNodeFinishEdit - parent method triggered when node is edited.
-      */
+  * @param {string} selectedId - node database identifier.
+  * @param {string} variant - specifies form type/function.
+  * @param {function} handleNodeDelete - parent method triggered on node delete.
+  * @param {function} handleNodeFinishEdit - parent method triggered when node is edited.
+  */
 NodeFormComponent.propTypes = {
   node: PropTypes.object,
   variant: PropTypes.string,

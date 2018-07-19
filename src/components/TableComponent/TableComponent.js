@@ -333,6 +333,7 @@ class TableComponent extends Component {
       hidden,
       handleShowAllNodes,
       handleHideSelected,
+      handleNewQuery,
     } = this.props;
 
     if (graphRedirect) {
@@ -525,6 +526,7 @@ class TableComponent extends Component {
                           node={n}
                           data={data}
                           handleNodeEditStart={handleNodeEditStart}
+                          handleNewQuery={handleNewQuery}
                         />
                       </Collapse>
                     </TableRow>
@@ -637,6 +639,7 @@ TableComponent.propTypes = {
   handleCheckbox: PropTypes.func.isRequired,
   handleHideSelected: PropTypes.func.isRequired,
   handleShowAllNodes: PropTypes.func.isRequired,
+  handleNewQuery: PropTypes.func,
   hidden: PropTypes.array,
   allColumns: PropTypes.array,
 };
@@ -645,6 +648,7 @@ TableComponent.defaultProps = {
   selectedId: null,
   allColumns: [],
   hidden: [],
+  handleNewQuery: null,
 };
 
 export default TableComponent;

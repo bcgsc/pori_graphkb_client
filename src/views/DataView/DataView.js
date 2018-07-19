@@ -37,6 +37,7 @@ class DataView extends Component {
     this.handleShowAllNodes = this.handleShowAllNodes.bind(this);
     this.handleDrawerClose = this.handleDrawerClose.bind(this);
     this.handleNodeEditStart = this.handleNodeEditStart.bind(this);
+    this.handleNewQuery = this.handleNewQuery.bind(this);
   }
 
   /**
@@ -194,6 +195,28 @@ class DataView extends Component {
     this.setState({ selectedId: node['@rid'], editing: true });
   }
 
+  /**
+   * Re initializes the component and loads a new query into the search.
+   * @param {string} search - new search string
+   */
+  handleNewQuery(search) {
+    const { location } = this.props;
+    if (location.search.split('?')[1] !== search) {
+      location.search = `?${search}`;
+      this.setState({
+        queryRedirect: false,
+        loginRedirect: false,
+        data: null,
+        displayed: [],
+        hidden: [],
+        selectedId: null,
+        editing: false,
+        error: null,
+        allColumns: [],
+      }, this.componentDidMount);
+    }
+  }
+
   render() {
     const {
       editing,
@@ -206,7 +229,6 @@ class DataView extends Component {
       hidden,
       allColumns,
     } = this.state;
-
 
     const { location } = this.props;
     const selectedNode = data ? data[selectedId] : null;
@@ -239,6 +261,7 @@ class DataView extends Component {
         handleNodeEditStart={this.handleNodeEditStart}
         handleHideSelected={this.handleHideSelected}
         handleShowAllNodes={this.handleShowAllNodes}
+        handleNewQuery={this.handleNewQuery}
       />
     );
     const dataView = () => {

@@ -33,7 +33,7 @@
 
 .node-edit-btn {
     float: right;
-    margin: 0 0.8em;
+    margin: 0 0.8em 0 0;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -52,13 +52,11 @@
 }
 
 .preview-title {
-    width: 20%;
+    min-width: 20%;
     flex-shrink: 0;
     @media (max-width: 1440px) {
-        flex-basis: 20%;
         width: auto;
     }
-    @media(max-width:1024px) {}
 }
 
 .preview-content {

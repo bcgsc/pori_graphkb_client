@@ -93,7 +93,7 @@ class NodeDetailComponent extends Component {
     if (!V) return null;
 
     const filteredNode = Object.assign({}, node);
-    Object.keys(V.properties).forEach(key => delete filteredNode[key]);
+    Object.keys(V.properties).forEach((key) => { if (key !== '@class') delete filteredNode[key]; });
 
     /**
    * Formats node properties based on type.
@@ -214,7 +214,9 @@ class NodeDetailComponent extends Component {
       }
 
       const nestedObject = Object.assign({}, value);
-      Object.keys(V.properties).forEach(vk => delete nestedObject[vk]);
+      Object.keys(V.properties).forEach((vk) => {
+        if (vk !== '@class') delete nestedObject[vk];
+      });
       const preview = util.getPreview(nestedObject);
 
       if ((id.match(/\./g) || []).length === 2) {

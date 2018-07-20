@@ -146,6 +146,7 @@ class GraphComponent extends Component {
       selectedAliases: [],
       selectedInSubClassOf: [],
       selectedOutSubClassOf: [],
+      selected: {},
       graphOptions: {
         width: 0,
         height: 0,
@@ -189,6 +190,8 @@ class GraphComponent extends Component {
       displayed,
       data,
     } = this.props;
+    const { graphOptions } = this.state;
+    const selected = {};
 
     this.handleResize();
     const edgeTypes = await api.getOntologyEdges();
@@ -196,10 +199,17 @@ class GraphComponent extends Component {
     const expandedEdgeTypes = edgeTypes.reduce((r, e) => {
       r.push(`in_${e}`);
       r.push(`out_${e}`);
+      selected[`in_${e}`] = [];
+      selected[`out_${e}`] = [];
       return r;
     }, []);
 
-    this.setState({ expandedEdgeTypes });
+    const selectedKeys = Object.keys(selected);
+    for (let i = 0; i < selectedKeys.length; i += 1) {
+      graphOptions[`${selectedKeys[i]}Color`] = util.chooseColor(i, selectedKeys.length);
+    }
+
+    this.setState({ expandedEdgeTypes, selected, graphOptions });
 
     let validDisplayed = displayed;
     if (!validDisplayed || validDisplayed.length === 0) {
@@ -300,8 +310,8 @@ class GraphComponent extends Component {
 
           // Checks if edge is already rendered in the graph
           if (!graphObjects[edgeRid]) {
-            const inRid = edge.in['@rid'] || edge.in;
-            const outRid = edge.out['@rid'] || edge.out;
+            const inRid = (edge.in || {})['@rid'] || edge.in;
+            const outRid = (edge.out || {})['@rid'] || edge.out;
             const targetRid = inRid === node['@rid'] ? outRid : inRid;
             if (
               edge['@rid']
@@ -313,10 +323,7 @@ class GraphComponent extends Component {
               const link = {
                 source: outRid,
                 target: inRid,
-                type: edgeType
-                  .split('_')[1]
-                  .split('Of')[0]
-                  .toLowerCase(),
+                type: edge['@class'],
                 '@rid': edge['@rid'],
               };
               links.push(link);
@@ -521,10 +528,11 @@ class GraphComponent extends Component {
    * @param {string} rid - selected node identifier.
    */
   updateColors(rid) {
-    const { links } = this.state;
-    const selectedAliases = [];
-    const selectedInSubClassOf = [];
-    const selectedOutSubClassOf = [];
+    const { links, expandedEdgeTypes } = this.state;
+    const selected = {};
+    expandedEdgeTypes.forEach((edge) => {
+      selected[edge] = [];
+    });
 
     links.forEach((link) => {
       const targetRid = link.target.data
@@ -534,27 +542,19 @@ class GraphComponent extends Component {
         ? link.source.data['@rid']
         : link.source;
 
+      // In
       if (targetRid === rid) {
-        if (link.type === 'alias') {
-          selectedAliases.push(sourceRid);
-        } else {
-          selectedInSubClassOf.push(sourceRid);
-        }
+        selected[`in_${link.type}`].push(sourceRid);
       }
+      // Out
       if (sourceRid === rid) {
-        if (link.type === 'alias') {
-          selectedAliases.push(targetRid);
-        } else {
-          selectedOutSubClassOf.push(targetRid);
-        }
+        selected[`out_${link.type}`].push(targetRid);
       }
     });
     this.setState({
       expandId: rid,
       actionsNode: null,
-      selectedOutSubClassOf,
-      selectedAliases,
-      selectedInSubClassOf,
+      selected,
     });
   }
 
@@ -665,6 +665,10 @@ class GraphComponent extends Component {
       links,
       graphObjects,
       actionsNode: null,
+      expandId: null,
+      selectedAliases: [],
+      selectedInSubClassOf: [],
+      selectedOutSubClassOf: [],
     });
   }
 
@@ -684,6 +688,7 @@ class GraphComponent extends Component {
       selectedInSubClassOf,
       selectedOutSubClassOf,
       selectedAliases,
+      selected,
     } = this.state;
 
     const {
@@ -692,7 +697,7 @@ class GraphComponent extends Component {
     } = this.props;
 
 
-    const selected = key => key === colorKey;
+    const isSelected = key => key === colorKey;
 
     const endArrowSize = {
       d: `M0,0,L0,${arrowProperties.width} L ${arrowProperties.length}, ${arrowProperties.width / 2} z`,
@@ -728,10 +733,10 @@ class GraphComponent extends Component {
                   style={
                     {
                       color: graphOptions.selectedColor,
-                      border: selected('selectedColor')
+                      border: isSelected('selectedColor')
                         ? `solid 1px ${graphOptions.selectedColor}`
                         : 'none',
-                      padding: selected('selectedColor')
+                      padding: isSelected('selectedColor')
                         ? '8px'
                         : '9px',
                       borderRadius: '4px',
@@ -743,63 +748,27 @@ class GraphComponent extends Component {
                   selected
                 </Typography>
               </ListItem>
-              <ListItem>
-                <Typography
-                  style={
-                    {
-                      color: graphOptions.parentsColor,
-                      border: selected('parentsColor')
-                        ? `solid 1px ${graphOptions.parentsColor}`
-                        : 'none',
-                      padding: selected('parentsColor')
-                        ? '8px'
-                        : '9px',
-                      borderRadius: '4px',
+              {Object.keys(selected).map(key => (
+                <ListItem key={key}>
+                  <Typography
+                    style={
+                      {
+                        color: graphOptions[`${key}Color`],
+                        border: isSelected(`${key}Color`)
+                          ? `solid 1px ${graphOptions[`${key}Color`]}`
+                          : 'none',
+                        padding: isSelected(`${key}Color`)
+                          ? '8px'
+                          : '9px',
+                        borderRadius: '4px',
+                      }
                     }
-                  }
-                  onClick={() => this.handleColorKeyChange('parentsColor')}
-                >
-                  subclass of
-                </Typography>
-              </ListItem>
-              <ListItem>
-                <Typography
-                  style={
-                    {
-                      color: graphOptions.childrenColor,
-                      border: selected('childrenColor')
-                        ? `solid 1px ${graphOptions.childrenColor}`
-                        : 'none',
-                      padding: selected('childrenColor')
-                        ? '8px'
-                        : '9px',
-                      borderRadius: '4px',
-                    }
-                  }
-                  onClick={() => this.handleColorKeyChange('childrenColor')}
-                >
-                  has subclass
-                </Typography>
-              </ListItem>
-              <ListItem>
-                <Typography
-                  style={
-                    {
-                      color: graphOptions.aliasesColor,
-                      border: selected('aliasesColor')
-                        ? `solid 1px ${graphOptions.aliasesColor}`
-                        : 'none',
-                      padding: selected('aliasesColor')
-                        ? '8px'
-                        : '9px',
-                      borderRadius: '4px',
-                    }
-                  }
-                  onClick={() => this.handleColorKeyChange('aliasesColor')}
-                >
-                  aliases
-                </Typography>
-              </ListItem>
+                    onClick={() => this.handleColorKeyChange(`${key}Color`)}
+                  >
+                    {key}
+                  </Typography>
+                </ListItem>
+              ))}
             </List>
           </div>
 
@@ -881,6 +850,12 @@ class GraphComponent extends Component {
       const color = () => {
         if (expandId === node.data['@rid']) {
           return graphOptions.selectedColor;
+        }
+
+        for (let i = 0; i < Object.keys(selected).length; i += 1) {
+          if (selected[Object.keys(selected)[i]].includes(node.data['@rid'])) {
+            return graphOptions[`${Object.keys(selected)[i]}Color`];
+          }
         }
         if (selectedInSubClassOf.includes(node.data['@rid'])) {
           return graphOptions.childrenColor;

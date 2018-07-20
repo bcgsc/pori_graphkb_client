@@ -132,7 +132,6 @@ class NodeDetailComponent extends Component {
           const content = (
             <List style={{ paddingTop: '0' }}>
               {value.map(item => (
-
                 <ListItem
                   dense
                   key={`${id}${item}`}

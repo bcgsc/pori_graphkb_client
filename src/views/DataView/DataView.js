@@ -5,11 +5,23 @@ import * as jc from 'json-cycle';
 import { Route, Redirect } from 'react-router-dom';
 import {
   CircularProgress,
+  Drawer,
+  IconButton,
 } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
+import { withStyles } from '@material-ui/core/styles';
 import queryString from 'query-string';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
+import NodeDetailComponent from '../../components/NodeDetailComponent/NodeDetailComponent';
 import api from '../../services/api';
+
+const styles = {
+  paper: {
+    width: '500px',
+    '@media (max-width: 768px)': { width: 'calc(100% - 1px)' },
+  },
+};
 
 /**
  * State handling component for query results.
@@ -27,6 +39,7 @@ class DataView extends Component {
       editing: false,
       error: null,
       allColumns: [],
+      detail: false,
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -34,9 +47,11 @@ class DataView extends Component {
     this.handleCheckAll = this.handleCheckAll.bind(this);
     this.handleHideSelected = this.handleHideSelected.bind(this);
     this.handleShowAllNodes = this.handleShowAllNodes.bind(this);
-    this.handleDrawerClose = this.handleDrawerClose.bind(this);
+    this.handleEditDrawerClose = this.handleEditDrawerClose.bind(this);
     this.handleNodeEditStart = this.handleNodeEditStart.bind(this);
     this.handleNewQuery = this.handleNewQuery.bind(this);
+    this.handleDetailDrawerOpen = this.handleDetailDrawerOpen.bind(this);
+    this.handleDetailDrawerClose = this.handleDetailDrawerClose.bind(this);
   }
 
   /**
@@ -175,7 +190,7 @@ class DataView extends Component {
   /**
    * Closes node edit drawer.
    */
-  handleDrawerClose() {
+  handleEditDrawerClose() {
     this.setState({ editing: false });
   }
 
@@ -209,6 +224,29 @@ class DataView extends Component {
     }
   }
 
+  /**
+   * Closes detail drawer.
+   */
+  handleDetailDrawerClose() {
+    this.setState({ detail: null });
+  }
+
+  /**
+   * Updates data and opens detail drawer for the specified node.
+   * @param {Object} node - Specified node.
+   */
+  async handleDetailDrawerOpen(node) {
+    const { data } = this.state;
+    if (!data[node.data['@rid']]) {
+      const endpointClass = await api.getClass(node.data['@class'] || 'Disease');
+      const { route } = endpointClass;
+      const response = await api.get(`${route}/${node.data['@rid'].slice(1)}?neighbors=3`);
+      data[node.data['@rid']] = jc.retrocycle(response.result);
+    }
+    this.setState({ detail: node.data['@rid'] });
+  }
+
+
   render() {
     const {
       editing,
@@ -220,13 +258,41 @@ class DataView extends Component {
       error,
       hidden,
       allColumns,
+      detail,
+
     } = this.state;
 
-    const { location } = this.props;
+    if (!data) return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
+
+    const { location, classes } = this.props;
     const selectedNode = data ? data[selectedId] : null;
     if (editing && selectedNode) {
       return <Redirect push to={{ pathname: `/edit/${selectedNode['@rid'].slice(1)}`, state: { node: selectedNode, query: location.search } }} />;
     }
+
+    const detailDrawer = (
+      <Drawer
+        variant="persistent"
+        anchor="right"
+        open={!!detail}
+        classes={{
+          paper: classes.paper,
+        }}
+        onClose={this.handleDetailDrawerClose}
+        SlideProps={{ unmountOnExit: true }}
+      >
+        <div className="graph-close-drawer-btn">
+          <IconButton onClick={this.handleDetailDrawerClose}>
+            <CloseIcon color="action" />
+          </IconButton>
+        </div>
+        <NodeDetailComponent
+          variant="graph"
+          node={data[detail]}
+          handleNodeEditStart={this.handleNodeEditStart}
+        />
+      </Drawer>
+    );
 
     const GraphWithProps = () => (
       <GraphComponent
@@ -236,6 +302,7 @@ class DataView extends Component {
         displayed={displayed}
         selectedId={selectedId}
         handleNodeEditStart={this.handleNodeEditStart}
+        handleDetailDrawerOpen={this.handleDetailDrawerOpen}
       />
     );
     const TableWithProps = () => (
@@ -266,15 +333,13 @@ class DataView extends Component {
         return <Redirect push to={{ pathname: '/error', state: error }} />;
       }
 
-      if (data) {
-        return (
-          <div className="data-view">
-            <Route exact path="/data/table" render={TableWithProps} />
-            <Route exact path="/data/graph" render={GraphWithProps} />
-          </div>
-        );
-      }
-      return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
+      return (
+        <div className="data-view">
+          {detailDrawer}
+          <Route exact path="/data/table" render={TableWithProps} />
+          <Route exact path="/data/graph" render={GraphWithProps} />
+        </div>
+      );
     };
 
     return dataView();
@@ -286,6 +351,7 @@ class DataView extends Component {
  */
 DataView.propTypes = {
   location: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired,
 };
 
-export default DataView;
+export default withStyles(styles)(DataView);

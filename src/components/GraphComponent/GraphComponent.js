@@ -2,12 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './GraphComponent.css';
 import * as d3 from 'd3';
-
 import {
   Checkbox,
   FormControlLabel,
   IconButton,
-  Drawer,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -22,8 +20,6 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import { withStyles } from '@material-ui/core/styles';
 import { CompactPicker } from 'react-color';
 import { Link } from 'react-router-dom';
-import * as jc from 'json-cycle';
-import NodeDetailComponent from '../NodeDetailComponent/NodeDetailComponent';
 import SVGLink from '../SVGLink/SVGLink';
 import SVGNode from '../SVGNode/SVGNode';
 import api from '../../services/api';
@@ -141,7 +137,6 @@ class GraphComponent extends Component {
     });
 
     this.state = {
-      detail: false,
       nodes: [],
       links: [],
       graphObjects: {},
@@ -178,8 +173,6 @@ class GraphComponent extends Component {
     this.handleColorPick = this.handleColorPick.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.handleGraphOptionsChange = this.handleGraphOptionsChange.bind(this);
-    this.handleDrawerClose = this.handleDrawerClose.bind(this);
-    this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
     this.handleOptionsPanelOpen = this.handleOptionsPanelOpen.bind(this);
     this.handleOptionsPanelClose = this.handleOptionsPanelClose.bind(this);
     this.handleActionsRing = this.handleActionsRing.bind(this);
@@ -614,25 +607,6 @@ class GraphComponent extends Component {
     });
   }
 
-  /**
-   * Closes detail drawer.
-   */
-  handleDrawerClose() {
-    this.setState({ detail: null });
-  }
-
-  /**
-   * Updates data and opens detail drawer for the specified node.
-   * @param {Object} node - Specified node.
-   */
-  async handleDrawerOpen(node) {
-    const { data } = this.props;
-    if (!data[node.data['@rid']]) {
-      const response = await api.get(`/${util.pluralize(node.data['@class'])}/${node.data['@rid'].slice(1)}`);
-      data[node.data['@rid']] = jc.retrocycle(response.result);
-    }
-    this.setState({ detail: node.data['@rid'] });
-  }
 
   /**
    * Handles user selections within the actions ring.
@@ -640,8 +614,9 @@ class GraphComponent extends Component {
    */
   handleActionsRing(section) {
     const { actionsNode } = this.state;
+    const { handleDetailDrawerOpen } = this.props;
     const options = [
-      () => this.handleDrawerOpen(actionsNode),
+      () => handleDetailDrawerOpen(actionsNode),
       () => this.setState({ actionsNode: null }),
       () => this.loadNeighbors(actionsNode),
       this.handleNodeHide,
@@ -697,7 +672,6 @@ class GraphComponent extends Component {
     const {
       nodes,
       links,
-      detail,
       expandId,
       actionsNode,
       expandable,
@@ -713,9 +687,7 @@ class GraphComponent extends Component {
     } = this.state;
 
     const {
-      data,
       search,
-      handleNodeEditStart,
       classes,
     } = this.props;
 
@@ -741,7 +713,6 @@ class GraphComponent extends Component {
         </IconButton>
         <DialogTitle>
           Graph Options
-
         </DialogTitle>
         <DialogContent className="options-grid">
           <div>
@@ -903,29 +874,7 @@ class GraphComponent extends Component {
         </DialogContent>
       </Dialog>
     );
-    const detailDrawer = (
-      <Drawer
-        variant="persistent"
-        anchor="right"
-        open={!!detail}
-        classes={{
-          paper: classes.paper,
-        }}
-        onClose={this.handleDrawerClose}
-        SlideProps={{ unmountOnExit: true }}
-      >
-        <div className="graph-close-drawer-btn">
-          <IconButton onClick={this.handleDrawerClose}>
-            <CloseIcon color="action" />
-          </IconButton>
-        </div>
-        <NodeDetailComponent
-          variant="graph"
-          node={data[detail]}
-          handleNodeEditStart={handleNodeEditStart}
-        />
-      </Drawer>
-    );
+
     const linksDisplay = links.map(link => <SVGLink key={link['@rid']} link={link} />);
 
     const nodesDisplay = nodes.map((node) => {
@@ -963,7 +912,6 @@ class GraphComponent extends Component {
 
     return (
       <div className="graph-wrapper">
-        {detailDrawer}
         {optionsPanel}
         <div className="toolbar">
           <Link
@@ -1052,10 +1000,10 @@ GraphComponent.defaultProps = {
       */
 GraphComponent.propTypes = {
   handleClick: PropTypes.func,
-  handleNodeEditStart: PropTypes.func.isRequired,
   data: PropTypes.object.isRequired,
   search: PropTypes.string.isRequired,
   classes: PropTypes.object,
+  handleDetailDrawerOpen: PropTypes.func.isRequired,
 };
 
 

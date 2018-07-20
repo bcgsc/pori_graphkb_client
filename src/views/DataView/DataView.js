@@ -113,7 +113,7 @@ class DataView extends Component {
     const { route } = endpointClass;
 
     if (!data[rid] && nodeClass) {
-      const endpoint = `${route}}/${rid.slice(1)}?neighbors=3`;
+      const endpoint = `${route}/${rid.slice(1)}?neighbors=3`;
       const json = await api.get(endpoint);
       data[rid] = jc.retrocycle(json.result);
     }

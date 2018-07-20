@@ -148,6 +148,9 @@ class GraphComponent extends Component {
       expandedEdgeTypes: [],
       simulation: d3.forceSimulation(),
       svg: undefined,
+      selectedAliases: [],
+      selectedInSubClassOf: [],
+      selectedOutSubClassOf: [],
       graphOptions: {
         width: 0,
         height: 0,
@@ -527,8 +530,8 @@ class GraphComponent extends Component {
   updateColors(rid) {
     const { links } = this.state;
     const selectedAliases = [];
-    const selectedChildren = [];
-    const selectedParents = [];
+    const selectedInSubClassOf = [];
+    const selectedOutSubClassOf = [];
 
     links.forEach((link) => {
       const targetRid = link.target.data
@@ -542,20 +545,23 @@ class GraphComponent extends Component {
         if (link.type === 'alias') {
           selectedAliases.push(sourceRid);
         } else {
-          selectedChildren.push(sourceRid);
+          selectedInSubClassOf.push(sourceRid);
         }
       }
       if (sourceRid === rid) {
         if (link.type === 'alias') {
           selectedAliases.push(targetRid);
         } else {
-          selectedParents.push(targetRid);
+          selectedOutSubClassOf.push(targetRid);
         }
       }
     });
     this.setState({
       expandId: rid,
       actionsNode: null,
+      selectedOutSubClassOf,
+      selectedAliases,
+      selectedInSubClassOf,
     });
   }
 
@@ -701,6 +707,9 @@ class GraphComponent extends Component {
       displayed,
       graphOptionsPanel,
       paths,
+      selectedInSubClassOf,
+      selectedOutSubClassOf,
+      selectedAliases,
     } = this.state;
 
     const {
@@ -924,22 +933,13 @@ class GraphComponent extends Component {
         if (expandId === node.data['@rid']) {
           return graphOptions.selectedColor;
         }
-        if (node.data.out_SubClassOf && node.data.out_SubClassOf.find(edge => ((edge.in['@rid'] || edge.in) === expandId))) {
+        if (selectedInSubClassOf.includes(node.data['@rid'])) {
           return graphOptions.childrenColor;
         }
-        if (node.data.in_SubClassOf && node.data.in_SubClassOf.find(edge => ((edge.out['@rid'] || edge.out) === expandId))) {
+        if (selectedOutSubClassOf.includes(node.data['@rid'])) {
           return graphOptions.parentsColor;
         }
-        if (
-          (
-            node.data.in_AliasOf
-            && node.data.in_AliasOf.find(edge => ((edge.out['@rid'] || edge.out) === expandId))
-          )
-          || (
-            node.data.out_AliasOf
-            && node.data.out_AliasOf.find(edge => ((edge.in['@rid'] || edge.in) === expandId))
-          )
-        ) {
+        if (selectedAliases.includes(node.data['@rid'])) {
           return graphOptions.aliasesColor;
         }
         return graphOptions.defaultColor;

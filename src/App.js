@@ -29,6 +29,7 @@ import EditNodeView from './views/EditNodeView/EditNodeView';
 import AddNodeView from './views/AddNodeView/AddNodeView';
 import LoginView from './views/LoginView/LoginView';
 import NodeDetailView from './views/NodeDetailView/NodeDetailView';
+import UserView from './views/UserView/UserView';
 import auth from './services/auth';
 
 /**
@@ -121,6 +122,7 @@ class App extends Component {
         <Route path="/edit/:rid" component={EditNodeView} />
         <Route path="/ontology/:rid" component={NodeDetailView} />
         <Route path="/data" component={DataView} />
+        <Route path="/admin" component={UserView} />
         <Redirect from="*" to="/query" />
       </Switch>
     );

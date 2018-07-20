@@ -27,7 +27,6 @@ class QueryView extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleClose = this.handleClose.bind(this);
     this.handleInvalid = this.handleInvalid.bind(this);
   }
 

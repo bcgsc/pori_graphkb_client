@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link, Redirect } from 'react-router-dom';
 import './QueryView.css';
-import { Button, Snackbar } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import AutoSearchComponent from '../../components/AutoSearchComponent/AutoSearchComponent';
 
 /**
@@ -18,12 +18,10 @@ class QueryView extends Component {
       ? props.location.state.mainParams.name
       : '';
 
-
     this.state = {
       name: initName,
       redirect: false,
       endpoint: 'table',
-      prevEmpty: props.location.state && props.location.state.noResults,
       disabled: false,
     };
 
@@ -50,13 +48,6 @@ class QueryView extends Component {
   }
 
   /**
-   * Closes "no results" snackbar.
-   */
-  handleClose() {
-    this.setState({ prevEmpty: false });
-  }
-
-  /**
    * Binds autosearch disabled flag to search button.
    */
   handleInvalid() {
@@ -68,7 +59,6 @@ class QueryView extends Component {
       redirect,
       endpoint,
       name,
-      prevEmpty,
     } = this.state;
 
     if (redirect) {
@@ -85,17 +75,6 @@ class QueryView extends Component {
 
     return (
       <div className="search-wrapper">
-        <Snackbar
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          open={prevEmpty}
-          onClose={this.handleClose}
-          autoHideDuration={3000}
-          message={(
-            <span>
-              No results found
-            </span>
-          )}
-        />
         <div className="search-bar">
           <div
             className="main-search"

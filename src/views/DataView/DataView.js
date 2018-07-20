@@ -9,6 +9,7 @@ import {
   IconButton,
   Snackbar,
   Button,
+  Typography,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { withStyles } from '@material-ui/core/styles';
@@ -363,8 +364,21 @@ class DataView extends Component {
           )}
         />
         {detailDrawer}
-        <Route exact path="/data/table" render={TableWithProps} />
-        <Route exact path="/data/graph" render={GraphWithProps} />
+        {Object.keys(data).length !== 0
+          ? (
+            <React.Fragment>
+              <Route exact path="/data/table" render={TableWithProps} />
+              <Route exact path="/data/graph" render={GraphWithProps} />
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <Typography variant="headline">
+                No Results
+              </Typography>
+            </React.Fragment>
+          )
+        }
+
       </div>);
   }
 }

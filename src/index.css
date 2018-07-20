@@ -1,9 +1,10 @@
 .icon-link {
   text-decoration: none;
   font-size: 0;
-  margin: 0;
+  margin: auto 0;
   padding: 0;
-  color: unset; }
+  color: unset;
+  display: flex; }
 
 body {
   margin: 0;

@@ -19,13 +19,15 @@ import {
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import PersonIcon from '@material-ui/icons/Person';
 import QueryView from './views/QueryView/QueryView';
 import AdvancedQueryView from './views/AdvancedQueryView/AdvancedQueryView';
 import DataView from './views/DataView/DataView';
 import ErrorView from './views/ErrorView/ErrorView';
-import NodeFormComponent from './components/NodeFormComponent/NodeFormComponent';
+import EditNodeView from './views/EditNodeView/EditNodeView';
+import AddNodeView from './views/AddNodeView/AddNodeView';
 import LoginView from './views/LoginView/LoginView';
+import NodeDetailView from './views/NodeDetailView/NodeDetailView';
 import auth from './services/auth';
 
 /**
@@ -91,11 +93,11 @@ class App extends Component {
       direction: 'ltr',
       palette: {
         primary: {
-          main: '#1F2B65',
+          main: '#26328C',
         },
         secondary: {
-          light: '#009688',
-          main: '#00897b',
+          light: '#CCCFE2',
+          main: '#9AA1CB',
         },
         warn: {
           main: '#d32f2f',
@@ -103,7 +105,6 @@ class App extends Component {
       },
     });
 
-    const addNodeForm = () => <NodeFormComponent variant="add" />;
     const loginWithProps = () => (
       <LoginView
         handleRedirect={this.handleRedirect}
@@ -115,33 +116,34 @@ class App extends Component {
       <Switch>
         <Route exact path="/query" component={QueryView} />
         <Route path="/query/advanced" component={AdvancedQueryView} />
-        <Route path="/add" component={addNodeForm} />
+        <Route path="/add" component={AddNodeView} />
+        <Route path="/edit/:rid" component={EditNodeView} />
+        <Route path="/ontology/:rid" component={NodeDetailView} />
         <Route path="/data" component={DataView} />
         <Redirect from="*" to="/query" />
       </Switch>
     );
-
     return (
       <MuiThemeProvider theme={theme}>
         <BrowserRouter>
           <div className="App">
             <AppBar position="static" className="banner">
-              <IconButton
-                color="inherit"
-                disabled={!loggedIn}
-              >
-                <Link className="icon-link" to="/query">
+              <Link className="icon-link" to="/query">
+                <IconButton
+                  color="inherit"
+                  disabled={!loggedIn}
+                >
                   <SearchIcon />
-                </Link>
-              </IconButton>
-              <IconButton
-                color="inherit"
-                disabled={!loggedIn}
-              >
-                <Link className="icon-link" to="/add">
+                </IconButton>
+              </Link>
+              <Link className="icon-link" to="/add">
+                <IconButton
+                  color="inherit"
+                  disabled={!loggedIn}
+                >
                   <AddIcon />
-                </Link>
-              </IconButton>
+                </IconButton>
+              </Link>
 
               <div className="user-dropdown">
                 <Button
@@ -150,7 +152,7 @@ class App extends Component {
                   size="small"
                   disabled={!loggedIn}
                 >
-                  <AccountCircleIcon />
+                  <PersonIcon />
                   <Typography variant="body2">
                     {loggedIn ? auth.getUser() : 'Logged Out'}
                   </Typography>

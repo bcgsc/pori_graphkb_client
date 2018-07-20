@@ -14,8 +14,9 @@ import {
   IconButton,
   Button,
   Typography,
-  Menu,
   MenuItem,
+  Popover,
+  Card,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
@@ -67,8 +68,8 @@ class App extends Component {
    * Opens user dropdown menu.
    * @param {Event} e - User menu button click event.
    */
-  handleOpen(e) {
-    this.setState({ anchorEl: e.currentTarget });
+  handleOpen() {
+    this.setState({ anchorEl: this.dropdown });
   }
 
   /**
@@ -145,27 +146,45 @@ class App extends Component {
                 </IconButton>
               </Link>
 
-              <div className="user-dropdown">
-                <Button
-                  classes={{ root: 'user-btn' }}
-                  onClick={this.handleOpen}
-                  size="small"
-                  disabled={!loggedIn}
-                >
-                  <PersonIcon />
-                  <Typography variant="body2">
-                    {loggedIn ? auth.getUser() : 'Logged Out'}
-                  </Typography>
-                </Button>
-                <Menu
-                  anchorEl={anchorEl}
-                  open={!!anchorEl}
-                  onClose={this.handleClose}
-                >
-                  <MenuItem onClick={this.handleLogOut}>
-                    Logout
-                  </MenuItem>
-                </Menu>
+              <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>
+                <div>
+                  <Button
+                    classes={{ root: 'user-btn' }}
+                    onClick={this.handleOpen}
+                    size="small"
+                    disabled={!loggedIn}
+                  >
+                    <PersonIcon />
+                    <Typography variant="body2">
+                      {loggedIn ? auth.getUser() : 'Logged Out'}
+                    </Typography>
+                  </Button>
+                  <Popover
+                    open={!!anchorEl}
+                    anchorEl={anchorEl}
+                    onClose={this.handleClose}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                  >
+                    <Card className="user-menu">
+                      <MenuItem>
+                        Settings
+                      </MenuItem>
+                      <MenuItem>
+                        Feedback
+                      </MenuItem>
+                      <MenuItem onClick={this.handleLogOut}>
+                        Logout
+                      </MenuItem>
+                    </Card>
+                  </Popover>
+                </div>
               </div>
             </AppBar>
             <section className="content">

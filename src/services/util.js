@@ -8,21 +8,23 @@ const acronyms = ['id', 'uuid', 'ncit', 'uberon', 'doid'];
  */
 export default class util {
   /**
-   * Returns plural version of input string.
+   * Returns plural version of input string in all lower case.
    * @param {string} str - string to be pluralized
    */
   static pluralize(str) {
+    const retstr = str.toLowerCase();
     if (
-      str.endsWith('y')
-      && !['a', 'e', 'i', 'o', 'u', 'y'].includes(str[str.length - 2])
+      retstr.endsWith('y')
+      && !['a', 'e', 'i', 'o', 'u', 'y'].includes(retstr[retstr.length - 2])
     ) {
-      return `${str.slice(0, str.length - 1)}ies`;
+      return `${retstr.slice(0, retstr.length - 1)}ies`;
     }
-    return `${str}s`;
+    return `${retstr}s`;
   }
 
   /**
    * Un-camelCase's input string.
+   * @param {string} str - camelCase'd string.
    */
   static antiCamelCase(str) {
     let accstr = str;
@@ -52,18 +54,18 @@ export default class util {
       }
     });
     if (!preview) {
-      const prop = Object.keys(obj).filter(key => typeof obj[key] !== 'object')[0];
+      const prop = Object.keys(obj).find(key => typeof obj[key] !== 'object');
       preview = obj[prop];
     }
     return preview;
   }
 
   /**
-   * Formatter meant for edge types with given in the form:
+   * Formatter meant for edge types given in the form:
    * '['in' | 'out']_[edgeType]'.
    *
    *    Format string:  in_[edgeType] => has[edgeType]
-   *    out_[edgeType] => [edgeType]
+   *                    out_[edgeType] => [edgeType]
    *
    * @param {string} str - string to be formatted.
    */
@@ -77,6 +79,12 @@ export default class util {
     return str;
   }
 
+  /**
+   * Returns the plaintext representation of a value in order to be loaded into
+   * a TSV file. Parses nested objects and arrays using the key as reference.
+   * @param {any} value - Value
+   * @param {string} key - Object Key.
+   */
   static getTSVRepresentation(value, key) {
     if (typeof value !== 'object') {
       return value || '';
@@ -97,5 +105,24 @@ export default class util {
       return this.getTSVRepresentation(value[newKey], newKey);
     }
     return this.getPreview(value);
+  }
+
+  static parsePayload(form, editableProps) {
+    const payload = Object.assign({}, form);
+    Object.keys(payload).forEach((key) => {
+      if (!payload[key]) delete payload[key];
+      // For link properties, must specify record id being linking to. Clear the rest.
+      if (key.includes('.@rid')) {
+        // Sets top level property to the rid: ie.
+        // 'source.@rid': #18:5 => 'source': #18:5
+        payload[key.split('.')[0]] = payload[key];
+        delete payload[key];
+      }
+      // Clears out all other unknown fields.
+      if (!editableProps.find(p => p.name === key)) {
+        delete payload[key];
+      }
+    });
+    return payload;
   }
 }

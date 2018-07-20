@@ -1,5 +1,5 @@
 
-describe('Query Page Test', () => {
+describe('App Bar Test', () => {
   beforeEach(() => {
     cy.visit('/');
     cy.url().should('includes', '/login');

@@ -191,7 +191,7 @@ class AdvancedQueryView extends Component {
         </div>
         <div id="adv-nav-buttons">
           <Link to={{ state: this.state, pathname: '/query' }}>
-            <Button variant="outlined">
+            <Button variant="outlined" color="secondary">
               Back
             </Button>
           </Link>

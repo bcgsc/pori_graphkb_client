@@ -889,26 +889,22 @@ class GraphComponent extends Component {
       <div className="graph-wrapper">
         {optionsPanel}
         <div className="toolbar">
-          <Link
-            to={{
-              pathname: '/data/table',
-              search,
-              state: displayed,
-            }}
-            style={{
-              margin: 'auto 24px auto 8px',
-            }}
+          <IconButton
+            color="secondary"
+            className="table-btn"
+            onClick={this.handleOptionsPanelOpen}
           >
-            <IconButton
-              color="secondary"
-              style={{
-                backgroundColor: 'rgba(0, 137, 123, 0.1)',
+            <Link
+              to={{
+                pathname: '/data/table',
+                search,
+                state: displayed,
               }}
-              onClick={this.handleOptionsPanelOpen}
+              className="icon-link"
             >
               <ViewListIcon />
-            </IconButton>
-          </Link>
+            </Link>
+          </IconButton>
 
           <IconButton
             color="primary"

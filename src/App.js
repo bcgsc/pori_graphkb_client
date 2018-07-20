@@ -97,8 +97,8 @@ class App extends Component {
           main: '#26328C',
         },
         secondary: {
-          light: '#CCCFE2',
           main: '#9AA1CB',
+          light: '#CCCFE2',
         },
         warn: {
           main: '#d32f2f',

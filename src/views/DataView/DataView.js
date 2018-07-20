@@ -7,6 +7,8 @@ import {
   CircularProgress,
   Drawer,
   IconButton,
+  Snackbar,
+  Button,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { withStyles } from '@material-ui/core/styles';
@@ -61,9 +63,9 @@ class DataView extends Component {
     const dataMap = {};
     let { queryRedirect } = this.state;
     const { loginRedirect } = this.state;
-    const { location } = this.props;
+    const { location, history } = this.props;
 
-    const filteredSearch = queryString.parse(location.search);
+    const filteredSearch = queryString.parse(history.location.search);
     const endpointClass = await api.getClass(filteredSearch.class || 'Disease');
     const { route, properties } = endpointClass;
     delete filteredSearch.class;
@@ -78,7 +80,7 @@ class DataView extends Component {
         if (cycled.length === 0) queryRedirect = true;
         cycled.forEach((ontologyTerm) => {
           Object.keys(ontologyTerm).forEach((prop) => {
-            if (!V.properties[prop] && !allColumns.includes(prop)) {
+            if ((!V.properties[prop] || prop === '@class') && !allColumns.includes(prop)) {
               const endpointProp = properties.find(p => p.name === prop);
               if (endpointProp && endpointProp.type === 'link') {
                 Object.keys(ontologyTerm[prop]).forEach((nestedProp) => {
@@ -246,28 +248,48 @@ class DataView extends Component {
     this.setState({ detail: node.data['@rid'] });
   }
 
-
   render() {
     const {
       editing,
       selectedId,
       data,
       displayed,
-      queryRedirect,
       loginRedirect,
       error,
       hidden,
       allColumns,
       detail,
-
     } = this.state;
 
     if (!data) return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
 
-    const { location, classes } = this.props;
+    const { classes, history } = this.props;
     const selectedNode = data ? data[selectedId] : null;
+
     if (editing && selectedNode) {
-      return <Redirect push to={{ pathname: `/edit/${selectedNode['@rid'].slice(1)}`, state: { node: selectedNode, query: location.search } }} />;
+      return (
+        <Redirect
+          push
+          to={
+            {
+              pathname: `/edit/${selectedNode['@rid'].slice(1)}`,
+              state: {
+                node: selectedNode,
+                query: history.location.search,
+              },
+            }
+          }
+        />
+      );
+    }
+    if (loginRedirect) {
+      return <Redirect push to={{ pathname: '/login' }} />;
+    }
+    // if (queryRedirect) {
+    //   return <Redirect push to={{ pathname: '/query', state: { noResults: true } }} />;
+    // }
+    if (error) {
+      return <Redirect push to={{ pathname: '/error', state: error }} />;
     }
 
     const detailDrawer = (
@@ -297,7 +319,7 @@ class DataView extends Component {
     const GraphWithProps = () => (
       <GraphComponent
         data={data}
-        search={location.search}
+        search={history.location.search}
         handleClick={this.handleClick}
         displayed={displayed}
         selectedId={selectedId}
@@ -311,7 +333,7 @@ class DataView extends Component {
         selectedId={selectedId}
         handleClick={this.handleClick}
         handleCheckbox={this.handleCheckbox}
-        search={location.search}
+        search={history.location.search}
         displayed={displayed}
         hidden={hidden}
         allColumns={allColumns}
@@ -322,27 +344,28 @@ class DataView extends Component {
         handleNewQuery={this.handleNewQuery}
       />
     );
-    const dataView = () => {
-      if (loginRedirect) {
-        return <Redirect push to={{ pathname: '/login' }} />;
-      }
-      if (queryRedirect) {
-        return <Redirect push to={{ pathname: '/query', state: { noResults: true } }} />;
-      }
-      if (error) {
-        return <Redirect push to={{ pathname: '/error', state: error }} />;
-      }
-
-      return (
-        <div className="data-view">
-          {detailDrawer}
-          <Route exact path="/data/table" render={TableWithProps} />
-          <Route exact path="/data/graph" render={GraphWithProps} />
-        </div>
-      );
-    };
-
-    return dataView();
+    return (
+      <div className="data-view">
+        <Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          open={Object.keys(data).length === 0}
+          onClose={history.goBack}
+          autoHideDuration={3000}
+          message={(
+            <span>
+              No results found, redirecting...
+            </span>
+          )}
+          action={(
+            <Button color="secondary" onClick={history.goBack}>
+              Ok
+            </Button>
+          )}
+        />
+        {detailDrawer}
+        <Route exact path="/data/table" render={TableWithProps} />
+        <Route exact path="/data/graph" render={GraphWithProps} />
+      </div>);
   }
 }
 
@@ -351,6 +374,7 @@ class DataView extends Component {
  */
 DataView.propTypes = {
   location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
 };
 

@@ -1,88 +1,87 @@
 @import "../../globals";
-
 $toolbar-height: 64px;
-
 .graph-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 .graph-close-drawer-btn {
-  button {
-    float: right;
-  }
+    button {
+        float: right;
+    }
 }
 
 .toolbar {
-  height: calc(#{$toolbar-height} - 1px);
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  margin: auto;
-  display: flex;
-  border-top: solid $md-primary-color 1px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  flex-direction: row-reverse;
+    height: calc(#{$toolbar-height} - 1px);
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+    display: flex;
+    border-top: solid $md-primary-color 1px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-direction: row-reverse;
+    .table-btn {
+        background-color: rgba($md-secondary-light, 0.5);
+        margin: auto 24px auto 8px,
+    }
 }
 
 #options-close-btn {
-  position:absolute;
-  top:0;
-  right:0;
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 
 .graph-options-wrapper {
-  .graph-input-wrapper {
-    svg {
-      color: $md-secondary-color;
+    .graph-input-wrapper {
+        svg {
+            color: $md-secondary-color;
+        }
     }
-  }
-
-  span.label {
-    margin: 0;
-    font-size: 0.7em;
-    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-    color: $md-primary-color;
-  }
-
-  .graph-input {
-    border-radius: 4px;
-    border: 1px solid rgba(0, 0, 0, 0.23);
-    overflow: hidden;
-
-    input {
-      border: none;
-      font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-      font-size: 0.9em;
-      background-color: unset;
-      width: 100%;
+    span.label {
+        margin: 0;
+        font-size: 0.7em;
+        font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+        color: $md-primary-color;
     }
-    input:focus {
-      outline: none;
-      box-shadow: none;
+    .graph-input {
+        border-radius: 4px;
+        border: 1px solid rgba(0, 0, 0, 0.23);
+        overflow: hidden;
+        input {
+            border: none;
+            font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+            font-size: 0.9em;
+            background-color: unset;
+            width: 100%;
+        }
+        input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+        input:invalid {
+            outline: none;
+            box-shadow: none;
+        }
     }
-    input:invalid {
-      outline: none;
-      box-shadow: none;
-    }
-  }
 }
 
 .svg-wrapper {
-  position: absolute;
-  bottom: $toolbar-height;
-  left: 0;
-  right: 0;
-  top: 0;
+    position: absolute;
+    bottom: $toolbar-height;
+    left: 0;
+    right: 0;
+    top: 0;
 }
 
-.options-grid{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-column-gap: 32px;
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 32px;
 }

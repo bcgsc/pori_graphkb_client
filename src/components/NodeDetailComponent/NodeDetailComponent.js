@@ -33,8 +33,8 @@ class NodeDetailComponent extends Component {
     super(props);
     this.state = {
       V: null,
-      ontologyEdges: null,
       nestedExpanded: [],
+      expandedEdgeTypes: [],
     };
 
     this.handleNestedToggle = this.handleNestedToggle.bind(this);
@@ -46,9 +46,15 @@ class NodeDetailComponent extends Component {
   async componentDidMount() {
     const V = await api.getVertexBaseClass();
     const ontologyEdges = await api.getOntologyEdges();
+    // Accounts for in and out edgetypes.
+    const expandedEdgeTypes = ontologyEdges ? ontologyEdges.reduce((r, e) => {
+      r.push(`in_${e}`);
+      r.push(`out_${e}`);
+      return r;
+    }, []) : [];
     this.setState({
       V,
-      ontologyEdges,
+      expandedEdgeTypes,
     });
   }
 
@@ -71,7 +77,7 @@ class NodeDetailComponent extends Component {
   render() {
     const {
       V,
-      ontologyEdges,
+      expandedEdgeTypes,
       nestedExpanded,
     } = this.state;
 
@@ -83,15 +89,7 @@ class NodeDetailComponent extends Component {
       handleNewQuery,
     } = this.props;
 
-    // Accounts for in and out edgetypes.
-    const expandedEdgeTypes = ontologyEdges ? ontologyEdges.reduce((r, e) => {
-      r.push(`in_${e}`);
-      r.push(`out_${e}`);
-      return r;
-    }, []) : [];
-
     if (!V) return null;
-
     const filteredNode = Object.assign({}, node);
     Object.keys(V.properties).forEach((key) => { if (key !== '@class') delete filteredNode[key]; });
 
@@ -106,7 +104,7 @@ class NodeDetailComponent extends Component {
         of nested values is exceeded. (2) */
       if (
         !value
-        || ontologyEdges.find(edge => edge === key.split('_')[1])
+        || expandedEdgeTypes.find(edge => edge === key)
         || value.length === 0
         || (id.match(/\./g) || []).length > 2
       ) {

@@ -10,7 +10,7 @@ import queryString from 'query-string';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import api from '../../services/api';
-import util from '../../services/util';
+
 /**
  * State handling component for query results.
  */
@@ -37,6 +37,7 @@ class DataView extends Component {
     this.handleShowAllNodes = this.handleShowAllNodes.bind(this);
     this.handleDrawerClose = this.handleDrawerClose.bind(this);
     this.handleNodeEditStart = this.handleNodeEditStart.bind(this);
+    this.handleNewQuery = this.handleNewQuery.bind(this);
   }
 
   /**
@@ -49,14 +50,14 @@ class DataView extends Component {
     const { location } = this.props;
 
     const filteredSearch = queryString.parse(location.search);
-    const endpoint = util.pluralize(filteredSearch.class || 'disease').toLowerCase();
-    const endpointProps = await api.getEditableProps(filteredSearch.class || 'Disease');
+    const endpointClass = await api.getClass(filteredSearch.class || 'Disease');
+    const { route, properties } = endpointClass;
     delete filteredSearch.class;
     const search = location.search ? `${queryString.stringify(filteredSearch)}&` : '';
     const V = await api.getVertexBaseClass();
     const allColumns = ['@rid'];
 
-    api.get(`/${endpoint}/?${search}neighbors=3`)
+    api.get(`${route}/?${search}neighbors=3`)
       .then((data) => {
         const cycled = jc.retrocycle(data.result);
 
@@ -64,7 +65,7 @@ class DataView extends Component {
         cycled.forEach((ontologyTerm) => {
           Object.keys(ontologyTerm).forEach((prop) => {
             if (!V.properties[prop] && !allColumns.includes(prop)) {
-              const endpointProp = endpointProps.find(p => p.name === prop);
+              const endpointProp = properties.find(p => p.name === prop);
               if (endpointProp && endpointProp.type === 'link') {
                 Object.keys(ontologyTerm[prop]).forEach((nestedProp) => {
                   if (
@@ -194,6 +195,28 @@ class DataView extends Component {
     this.setState({ selectedId: node['@rid'], editing: true });
   }
 
+  /**
+   * Re initializes the component and loads a new query into the search.
+   * @param {string} search - new search string
+   */
+  handleNewQuery(search) {
+    const { location } = this.props;
+    if (location.search.split('?')[1] !== search) {
+      location.search = `?${search}`;
+      this.setState({
+        queryRedirect: false,
+        loginRedirect: false,
+        data: null,
+        displayed: [],
+        hidden: [],
+        selectedId: null,
+        editing: false,
+        error: null,
+        allColumns: [],
+      }, this.componentDidMount);
+    }
+  }
+
   render() {
     const {
       editing,
@@ -206,7 +229,6 @@ class DataView extends Component {
       hidden,
       allColumns,
     } = this.state;
-
 
     const { location } = this.props;
     const selectedNode = data ? data[selectedId] : null;
@@ -239,6 +261,7 @@ class DataView extends Component {
         handleNodeEditStart={this.handleNodeEditStart}
         handleHideSelected={this.handleHideSelected}
         handleShowAllNodes={this.handleShowAllNodes}
+        handleNewQuery={this.handleNewQuery}
       />
     );
     const dataView = () => {

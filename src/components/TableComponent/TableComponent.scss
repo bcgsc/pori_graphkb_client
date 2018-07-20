@@ -1,89 +1,122 @@
 @import "../../globals";
-
 .table-head {
-  tr,
-  th {
-    position: sticky;
-    top: 0;
-    background-color: #f8f8f8;
-    z-index: 2;
-  }
-  th:before{
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    border-bottom: 1px solid rgba(224, 224, 224, 1);
-  }
+    tr,
+    th {
+        position: sticky;
+        top: 0;
+        background-color: #f8f8f8;
+        z-index: 2;
+    }
+    th:before {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        border-bottom: 1px solid rgba(224, 224, 224, 1);
+    }
 }
+
 .selected-override {
-  background-color: rgba(214, 219, 245, 0.7) !important;
+    background-color: rgba(214, 219, 245, 0.7) !important;
 }
+
 .cursor-override {
-  cursor: pointer;
+    cursor: pointer;
 }
+
 .cursor-override:hover {
-  background-color: rgba(227, 230, 248, 0.4);
+    background-color: rgba(227, 230, 248, 0.4);
 }
 
 .column-dialog {
-  width: 600px;
+    width: 600px;
 }
 
 .data-table {
-  margin: 0 auto;
-  width: 100%;
-  overflow: auto;
-}
-
-.table-paginator {
-  position: sticky;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
-  background-color: #f8f8f8;
-  display: flex;
-  float: left;
-  z-index: 1;
+    margin: 0 auto;
+    width: 100%;
+    overflow: auto;
 }
 
 .spacer-cell {
-  position: sticky;
-  left: 0;
-  right: 0;
-  background-color: #f8f8f8;
-  bottom: 0;
+    position: sticky;
+    left: 0;
+    right: 0;
+    background-color: #f8f8f8;
+    bottom: 0;
 }
 
 .spacer-cell:before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  border-top: 1px solid rgba(224, 224, 224, 1);
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    border-top: 1px solid rgba(224, 224, 224, 1);
 }
 
-.selected-col{
-  $w: 72px;
-  max-width: $w;
-  min-width: $w;
-  width: $w;
+.selected-col {
+    $w: 72px;
+    max-width: $w;
+    min-width: $w;
+    width: $w;
+}
+
+.selected-col {
+    $w: 72px;
+    max-width: $w;
+    min-width: $w;
+    width: $w;
 }
 
 $flip-duration: 0.15s;
 .detail-btn-active {
-  animation: turn $flip-duration forwards;
+    animation: turn $flip-duration forwards;
 }
 
 @keyframes turn {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(180deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(180deg);
+    }
+}
+
+$paginator-height: 57px;
+.table-container {
+    position: absolute;
+    overflow: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: calc(#{$paginator-height} - 1px);
+}
+
+.pag {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #f8f8f8;
+    height: $paginator-height;
+    display: flex;
+    border-top: 1px solid #ddd;
+    overflow-x: auto;
+    overflow-y: hidden;
+    .table-paginator {
+        display: flex;
+        float: left;
+        z-index: 1;
+    }
+    .paginator-spacing {
+        display: grid !important;
+        grid-template-columns: 0 100px 56px 120px 116px;
+    }
+    .graph-btn {
+        margin: auto 24px auto auto;
+        background-color: rgba($md-secondary-light, 0.5);
+    }
 }

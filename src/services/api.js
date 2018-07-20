@@ -1,15 +1,15 @@
 import * as jc from 'json-cycle';
 import auth from './auth';
+import config from '../config.json';
 
-const API_BASE_URL = 'http://kbapi01:8008/api/v0.0.8';
+const {
+  VERSION,
+  KEYS,
+  PORT,
+  HOST,
+} = config;
+const API_BASE_URL = `http://${HOST}:${PORT}/api/v${VERSION}`;
 const CACHE_EXPIRY = 8;
-const KEYS = {
-  ONTOLOGYVERTICES: 'ontologyVertices',
-  SOURCES: 'sources',
-  ONTOLOGYEDGES: 'ontologyEdges',
-  V: 'baseVertex',
-  SCHEMA: 'schema',
-};
 
 /**
  * Wrapper for api, handles all requests and special functions.
@@ -109,7 +109,6 @@ export default class api {
       Object.keys(schema).forEach((key) => {
         if (
           schema[key].inherits.includes('E')
-          && schema[key].inherits.includes('OntologyEdge')
         ) {
           list.push(key);
         }
@@ -162,18 +161,23 @@ export default class api {
       const expiry = new Date(now);
       expiry.setHours(now.getHours() + CACHE_EXPIRY);
 
+      const schema = {
+        schema: cycled,
+        version: VERSION,
+      };
+
       localStorage.setItem(`${KEYS.SCHEMA}Expiry`, expiry.getTime());
-      localStorage.setItem(KEYS.SCHEMA, JSON.stringify(cycled));
+      localStorage.setItem(KEYS.SCHEMA, JSON.stringify(schema));
 
       return Promise.resolve(cycled);
     });
   }
 
   /**
-   * Returns schema.
+   * Returns the database schema.
    */
   static getSchema() {
-    const schema = localStorage.getItem(KEYS.SCHEMA);
+    const schema = JSON.parse(localStorage.getItem(KEYS.SCHEMA) || '');
     const schemaExpiry = localStorage.getItem(`${KEYS.SCHEMA}Expiry`);
     if (
       !schema
@@ -182,10 +186,11 @@ export default class api {
         && schemaExpiry
         && schemaExpiry < Date.now().valueOf()
       )
+      || schema.version !== VERSION
     ) {
       return api.loadSchema();
     }
-    return Promise.resolve(JSON.parse(schema));
+    return Promise.resolve(schema.schema);
   }
 
   /**
@@ -217,16 +222,19 @@ export default class api {
    * Returns the editable properties of target ontology class.
    * @param {string} className - requested class name
    */
-  static getEditableProps(className) {
+  static getClass(className) {
     return api.getSchema().then((schema) => {
       const VPropKeys = Object.keys(schema.V.properties);
-      if (schema[className]) {
-        const props = Object.keys(schema[className].properties).map(prop => (
-          {
-            name: prop,
-            ...schema[className].properties[prop],
-          }));
-        return Promise.resolve(props.filter(prop => !VPropKeys.includes(prop.name)));
+      const classKey = Object.keys(schema)
+        .find(key => key.toLowerCase() === className.toLowerCase());
+      if (classKey) {
+        const props = Object.keys(schema[classKey].properties)
+          .filter(prop => !VPropKeys.includes(prop))
+          .map(prop => (
+            {
+              ...schema[classKey].properties[prop],
+            }));
+        return Promise.resolve({ route: schema[classKey].route, properties: props });
       }
       return Promise.reject('Class not found');
     });

@@ -1,0 +1,10 @@
+{
+  "VERSION": "0.1.0",
+  "HOST": "kbapi01",
+  "PORT": 8010,
+  "KEYS": {
+    "SOURCES": "sources",
+    "SCHEMA": "schema",
+    "KB_TOKEN": "kbToken"
+  }
+}

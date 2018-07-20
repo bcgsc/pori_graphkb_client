@@ -19,7 +19,7 @@ import {
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import PersonIcon from '@material-ui/icons/Person';
 import QueryView from './views/QueryView/QueryView';
 import AdvancedQueryView from './views/AdvancedQueryView/AdvancedQueryView';
 import DataView from './views/DataView/DataView';
@@ -93,11 +93,11 @@ class App extends Component {
       direction: 'ltr',
       palette: {
         primary: {
-          main: '#1F2B65',
+          main: '#26328C',
         },
         secondary: {
-          light: '#009688',
-          main: '#00897b',
+          light: '#CCCFE2',
+          main: '#9AA1CB',
         },
         warn: {
           main: '#d32f2f',
@@ -152,7 +152,7 @@ class App extends Component {
                   size="small"
                   disabled={!loggedIn}
                 >
-                  <AccountCircleIcon />
+                  <PersonIcon />
                   <Typography variant="body2">
                     {loggedIn ? auth.getUser() : 'Logged Out'}
                   </Typography>

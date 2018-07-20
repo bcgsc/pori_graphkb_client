@@ -2,6 +2,15 @@ import * as jc from 'json-cycle';
 import auth from './auth';
 import config from '../config.json';
 
+const {
+  VERSION,
+  KEYS,
+  PORT,
+  HOST,
+} = config;
+const API_BASE_URL = `http://${HOST}:${PORT}/api/v${VERSION}`;
+const CACHE_EXPIRY = 8;
+
 /**
  * Wrapper for api, handles all requests and special functions.
  */
@@ -78,7 +87,7 @@ export default class api {
       ...init,
       headers: api.getHeaders(),
     };
-    return fetch(new Request(config.API_BASE_URL + endpoint, initWithInterceptors))
+    return fetch(new Request(API_BASE_URL + endpoint, initWithInterceptors))
       .then((response) => {
         if (response.ok) {
           return response.json();
@@ -100,7 +109,6 @@ export default class api {
       Object.keys(schema).forEach((key) => {
         if (
           schema[key].inherits.includes('E')
-          && schema[key].inherits.includes('OntologyEdge')
         ) {
           list.push(key);
         }
@@ -113,8 +121,8 @@ export default class api {
    * Returns all valid sources.
    */
   static getSources() {
-    const sources = localStorage.getItem(config.KEYS.SOURCES);
-    const sourcesExpiry = localStorage.getItem(`${config.KEYS.SOURCES}Expiry`);
+    const sources = localStorage.getItem(KEYS.SOURCES);
+    const sourcesExpiry = localStorage.getItem(`${KEYS.SOURCES}Expiry`);
     if (
       !sources || (sources && sourcesExpiry && sourcesExpiry < Date.now().valueOf())
     ) {
@@ -134,10 +142,10 @@ export default class api {
 
       const now = new Date();
       const expiry = new Date(now);
-      expiry.setHours(now.getHours() + config.CACHE_EXPIRY);
+      expiry.setHours(now.getHours() + CACHE_EXPIRY);
 
-      localStorage.setItem(`${config.KEYS.SOURCES}Expiry`, expiry.getTime());
-      localStorage.setItem(config.KEYS.SOURCES, JSON.stringify(list));
+      localStorage.setItem(`${KEYS.SOURCES}Expiry`, expiry.getTime());
+      localStorage.setItem(KEYS.SOURCES, JSON.stringify(list));
 
       return Promise.resolve(list);
     });
@@ -151,21 +159,26 @@ export default class api {
       const cycled = jc.retrocycle(response.schema);
       const now = new Date();
       const expiry = new Date(now);
-      expiry.setHours(now.getHours() + config.CACHE_EXPIRY);
+      expiry.setHours(now.getHours() + CACHE_EXPIRY);
 
-      localStorage.setItem(`${config.KEYS.SCHEMA}Expiry`, expiry.getTime());
-      localStorage.setItem(config.KEYS.SCHEMA, JSON.stringify(cycled));
+      const schema = {
+        schema: cycled,
+        version: VERSION,
+      };
+
+      localStorage.setItem(`${KEYS.SCHEMA}Expiry`, expiry.getTime());
+      localStorage.setItem(KEYS.SCHEMA, JSON.stringify(schema));
 
       return Promise.resolve(cycled);
     });
   }
 
   /**
-   * Returns schema.
+   * Returns the database schema.
    */
   static getSchema() {
-    const schema = localStorage.getItem(config.KEYS.SCHEMA);
-    const schemaExpiry = localStorage.getItem(`${config.KEYS.SCHEMA}Expiry`);
+    const schema = JSON.parse(localStorage.getItem(KEYS.SCHEMA) || '');
+    const schemaExpiry = localStorage.getItem(`${KEYS.SCHEMA}Expiry`);
     if (
       !schema
       || (
@@ -173,10 +186,11 @@ export default class api {
         && schemaExpiry
         && schemaExpiry < Date.now().valueOf()
       )
+      || schema.version !== VERSION
     ) {
       return api.loadSchema();
     }
-    return Promise.resolve(JSON.parse(schema));
+    return Promise.resolve(schema.schema);
   }
 
   /**
@@ -208,17 +222,19 @@ export default class api {
    * Returns the editable properties of target ontology class.
    * @param {string} className - requested class name
    */
-  static getEditableProps(className) {
+  static getClass(className) {
     return api.getSchema().then((schema) => {
       const VPropKeys = Object.keys(schema.V.properties);
-      const key = Object.keys(schema).find(k => k.toLowerCase() === className.toLowerCase());
-      if (key) {
-        const props = Object.keys(schema[key].properties).map(prop => (
-          {
-            name: prop,
-            ...schema[key].properties[prop],
-          }));
-        return Promise.resolve(props.filter(prop => !VPropKeys.includes(prop.name)));
+      const classKey = Object.keys(schema)
+        .find(key => key.toLowerCase() === className.toLowerCase());
+      if (classKey) {
+        const props = Object.keys(schema[classKey].properties)
+          .filter(prop => !VPropKeys.includes(prop))
+          .map(prop => (
+            {
+              ...schema[classKey].properties[prop],
+            }));
+        return Promise.resolve({ route: schema[classKey].route, properties: props });
       }
       return Promise.reject('Class not found');
     });
@@ -233,7 +249,7 @@ export default class api {
    */
   static autoSearch(endpoint, property, value, limit) {
     return api.get(
-      `/${endpoint}?${property}=~${value}&limit=${limit}&neighbors=1`,
+      `/${endpoint}?${property}=~${encodeURIComponent(value)}&limit=${limit}&neighbors=1`,
     );
   }
 }

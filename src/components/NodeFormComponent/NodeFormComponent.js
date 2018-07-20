@@ -6,7 +6,6 @@ import {
   TextField,
   List,
   ListItem,
-  ListItemIcon,
   ListItemText,
   IconButton,
   MenuItem,
@@ -18,11 +17,18 @@ import {
   FormControlLabel,
   FormControl,
   FormLabel,
+  Dialog,
+  DialogContent,
+  DialogActions,
+  DialogTitle,
+  Tooltip,
+  ListItemSecondaryAction,
+  Card,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
-import FolderIcon from '@material-ui/icons/Folder';
 import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
+import HelpIcon from '@material-ui/icons/Help';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
 import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
 import api from '../../services/api';
@@ -53,6 +59,7 @@ class NodeFormComponent extends Component {
         source: '',
       },
       subset: '',
+      deleteDialog: false,
     };
 
     this.handleFormChange = this.handleFormChange.bind(this);
@@ -66,6 +73,8 @@ class NodeFormComponent extends Component {
     this.handleDeleteNode = this.handleDeleteNode.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleClassChange = this.handleClassChange.bind(this);
+    this.handleDialogClose = this.handleDialogClose.bind(this);
+    this.handleDialogOpen = this.handleDialogOpen.bind(this);
   }
 
   /**
@@ -87,7 +96,7 @@ class NodeFormComponent extends Component {
       relationship.out = node['@rid'];
     }
 
-    const editableProps = await api.getEditableProps(nodeClass);
+    const editableProps = (await api.getClass(nodeClass)).properties;
     const form = {};
 
     editableProps.forEach((prop) => {
@@ -135,6 +144,7 @@ class NodeFormComponent extends Component {
             targetSourceId:
               edge.out['@rid'] === originalNode['@rid'] ? edge.in.sourceId : edge.out.sourceId,
             source: edge.source['@rid'] || edge.source,
+            key: type,
           });
         });
       }
@@ -159,7 +169,7 @@ class NodeFormComponent extends Component {
    */
   async handleClassChange(e) {
     const newNodeClass = e.target.value;
-    const editableProps = await api.getEditableProps(newNodeClass);
+    const editableProps = (await api.getClass(newNodeClass)).properties;
     const { form } = this.state;
     editableProps.forEach((prop) => {
       const { name, type } = prop;
@@ -267,6 +277,7 @@ class NodeFormComponent extends Component {
             in: '',
             out: originalNode['@rid'],
             source: '',
+            key: '',
           },
         });
       }
@@ -298,6 +309,9 @@ class NodeFormComponent extends Component {
       } else {
         relationship.in = e.target['@rid'];
       }
+    }
+    if (e.target.sourceId) {
+      relationship.targetSourceId = e.target.sourceId;
     }
     this.setState({ relationship });
   }
@@ -341,10 +355,24 @@ class NodeFormComponent extends Component {
     const { handleNodeDelete } = this.props;
 
     api.delete(
-      `/${originalNode['@class'].toLowerCase()}s/${originalNode['@rid'].slice(1)}`,
+      `/${util.pluralize(originalNode['@class'])}/${originalNode['@rid'].slice(1)}`,
     ).then(() => {
       handleNodeDelete();
     });
+  }
+
+  /**
+   * Opens node deletion dialog.
+   */
+  handleDialogOpen() {
+    this.setState({ deleteDialog: true });
+  }
+
+  /**
+   * Closes node deletion dialog.
+   */
+  handleDialogClose() {
+    this.setState({ deleteDialog: false });
   }
 
   /**
@@ -361,6 +389,9 @@ class NodeFormComponent extends Component {
 
     const changedEdges = [];
 
+    /* Checks for differences in original node and submitted form. */
+
+    // Deletes edges that are no longer present on the edited node.
     originalNode.relationships.forEach((initRelationship) => {
       if (
         !relationships.find(
@@ -376,8 +407,8 @@ class NodeFormComponent extends Component {
       }
     });
 
-    for (let i = 0; i < relationships.length; i += 1) {
-      const currRelationship = relationships[i];
+    // Adds new edges that were not present on the original node.
+    relationships.forEach((currRelationship) => {
       if (
         !originalNode.relationships.find(
           r => r.out === currRelationship.out
@@ -392,21 +423,11 @@ class NodeFormComponent extends Component {
           source: currRelationship.source,
         }));
       }
-    }
+    });
 
     await Promise.all(changedEdges);
-    const payload = Object.assign({}, form);
 
-    Object.keys(payload).forEach((key) => {
-      if (!payload[key]) delete payload[key];
-      if (key.includes('.@rid')) {
-        payload[key.split('.')[0]] = payload[key];
-        delete payload[key];
-      }
-      if (key.includes('.class') || !editableProps.find(p => p.name === key)) {
-        delete payload[key];
-      }
-    });
+    const payload = util.parsePayload(form, editableProps);
 
     api.patch(
       `/${util.pluralize(originalNode['@class'])}/${originalNode['@rid'].slice(1)}`,
@@ -429,19 +450,7 @@ class NodeFormComponent extends Component {
     const { handleNodeFinishEdit } = this.props;
 
     const newEdges = [];
-    const payload = Object.assign({}, form);
-
-    Object.keys(payload).forEach((key) => {
-      if (!payload[key]) delete payload[key];
-      if (key.includes('.@rid')) {
-        payload[key.split('.')[0]] = payload[key];
-        delete payload[key];
-      }
-      if (key.includes('.class') || !editableProps.find(p => p.name === key)) {
-        delete payload[key];
-      }
-    });
-
+    const payload = util.parsePayload(form, editableProps);
     const response = await api.post(`/${util.pluralize(newNodeClass)}`, { ...payload });
 
     for (let i = 0; i < relationships.length; i += 1) {
@@ -475,6 +484,7 @@ class NodeFormComponent extends Component {
       relationships,
       subset,
       newNodeClass,
+      deleteDialog,
     } = this.state;
     const { variant, handleNodeFinishEdit } = this.props;
 
@@ -496,6 +506,31 @@ class NodeFormComponent extends Component {
       }
     });
 
+    const dialog = (
+      <Dialog
+        onClose={this.handleDialogClose}
+        open={deleteDialog}
+      >
+        <DialogTitle>
+          Really Delete this Term?
+        </DialogTitle>
+        <DialogContent>
+          <DialogActions style={{ justifyContent: 'center' }}>
+            <Button
+              onClick={this.handleDialogClose}
+            >
+              No
+            </Button>
+            <Button
+              onClick={this.handleDeleteNode}
+            >
+              Yes
+            </Button>
+          </DialogActions>
+        </DialogContent>
+      </Dialog>
+    );
+
     /**
      * Renders input component to fit property's importance and type.
      */
@@ -503,7 +538,12 @@ class NodeFormComponent extends Component {
       const property = editableProps.find(prop => prop.name === key);
       if (!property) return null;
 
-      const { type, mandatory, linkedClass } = property;
+      const {
+        type,
+        mandatory,
+        linkedClass,
+        description,
+      } = property;
 
       if (typeof value !== 'object') {
         // Radio group component for boolean types.
@@ -528,12 +568,13 @@ class NodeFormComponent extends Component {
           );
         }
 
+        // For text fields, apply some final changes for number inputs.
         if (type !== 'link') {
           let t;
           let step;
           if (type === 'string') {
             t = 'text';
-          } else if (type === 'integer') {
+          } else if (type === 'integer' || type === 'long') {
             t = 'number';
             step = 1;
           }
@@ -550,8 +591,13 @@ class NodeFormComponent extends Component {
                 type={t || ''}
                 step={step || ''}
                 required={mandatory}
-                multiline={!!(t === 'text')}
+                multiline={t === 'text'}
               />
+              {description ? (
+                <Tooltip title={description}>
+                  <HelpIcon color="primary" />
+                </Tooltip>
+              ) : null}
             </ListItem>
           );
         }
@@ -563,7 +609,8 @@ class NodeFormComponent extends Component {
         let endpoint;
 
         // If a linkedClass is specified, restrict querying to that endpoint, and do not
-        // show a resource selector.
+        // show a resource selector. Otherwise, choose a dropdown for the class (might
+        // remove this when general ontology endpoint is pushed to production).
         const resourceSelector = linkedClass ? null
           : (
             <div style={{ marginBottom: '8px' }}>
@@ -616,16 +663,18 @@ class NodeFormComponent extends Component {
      * Formats model subsets into list form.
      */
     const subsets = (form.subsets || []).map(s => (
-      <ListItem key={s}>
-        <ListItemIcon>
-          <FolderIcon />
-        </ListItemIcon>
+      <ListItem
+        key={s}
+        className="form-list"
+      >
         <ListItemText primary={s} style={{ overflow: 'auto' }} />
-        <IconButton
-          onClick={() => this.handleSubsetDelete(s)}
-        >
-          <CloseIcon color="error" />
-        </IconButton>
+        <ListItemSecondaryAction>
+          <IconButton
+            onClick={() => this.handleSubsetDelete(s)}
+          >
+            <CloseIcon color="error" />
+          </IconButton>
+        </ListItemSecondaryAction>
       </ListItem>
     ));
 
@@ -640,29 +689,31 @@ class NodeFormComponent extends Component {
         ? `has${r['@class'].slice(0, r['@class'].length - 2)}`
         : r['@class'];
       return (
-        <ListItem key={`${typeName}: ${r.targetSourceId} | ${r.targetName}`}>
-          <ListItemIcon>
-            <FolderIcon />
-          </ListItemIcon>
+        <ListItem
+          key={`${r.key}: ${r['@rid']}`}
+          className="form-list"
+        >
           <ListItemText
-            primary={`${typeName}: ${r.targetSourceId} ${r.targetName ? `| "${r.targetName}"` : ''}`}
+            primary={`${typeName}: ${r.targetSourceId}`}
             secondary={sourceName}
             style={{ overflow: 'auto' }}
           />
-          <IconButton
-            color="secondary"
-            onClick={() => this.handleRelationshipDelete(r)}
-          >
-            <CloseIcon color="error" />
-          </IconButton>
+          <ListItemSecondaryAction>
+            <IconButton
+              color="secondary"
+              onClick={() => this.handleRelationshipDelete(r)}
+            >
+              <CloseIcon color="error" />
+            </IconButton>
+          </ListItemSecondaryAction>
         </ListItem>
       );
     });
 
     /**
-     * Formats valid edge types.
-     * @param {Object} edgeType - Edge type object.
-     */
+      * Formats valid edge types.
+      * @param {Object} edgeType - Edge type object.
+      */
     const edgeTypesDisplay = (edgeType) => {
       const inOut = relationship.in === originalNode['@rid']
         ? `has${edgeType.slice(0, edgeType.length - 2)}`
@@ -676,6 +727,7 @@ class NodeFormComponent extends Component {
 
     return (
       <div className="node-form-wrapper">
+        {dialog}
         <div>
           <div className="form-header">
             <Typography variant="display1" className="form-title">
@@ -693,7 +745,7 @@ class NodeFormComponent extends Component {
         </div>
         <Divider />
         <form onSubmit={this.handleSubmit}>
-          <div className="param-section">
+          <Card className="param-section">
             <Typography variant="title">
               Basic Parameters
             </Typography>
@@ -721,12 +773,12 @@ class NodeFormComponent extends Component {
                 .map(key => formatInputSection(key, form[key]))
               }
             </List>
-          </div>
-          <div className="param-section">
+          </Card>
+          <Card className="param-section">
             <Typography variant="title">
               Subsets
             </Typography>
-            <ListItem className="input-wrapper">
+            <ListItem className="input-wrapper form-list">
               <TextField
                 id="subset-temp"
                 label="Add a Subset"
@@ -747,13 +799,11 @@ class NodeFormComponent extends Component {
             <List className="list">
               {subsets}
             </List>
-          </div>
-          <div className="param-section">
             <Typography variant="title">
               Relationships
             </Typography>
             <ListItem
-              className="input-wrapper relationship-add-wrapper"
+              className="input-wrapper relationship-add-wrapper form-list"
               onKeyDown={(e) => {
                 if (e.keyCode === 13) this.handleRelationshipAdd(e);
               }}
@@ -772,7 +822,7 @@ class NodeFormComponent extends Component {
                   label="Source"
                   resources={sources}
                 />
-                <div style={{ display: 'flex', width: '100%' }}>
+                <div style={{ display: 'flex', width: '100%', margin: '8px' }}>
                   <div className="relationship-dir-type">
                     <IconButton
                       disableRipple
@@ -781,7 +831,6 @@ class NodeFormComponent extends Component {
                       color="primary"
                     >
                       <TrendingFlatIcon
-                        style={{ margin: '20px 24px 0 0' }}
                         className={
                           relationship.in === originalNode['@rid']
                             ? 'relationship-in'
@@ -811,17 +860,17 @@ class NodeFormComponent extends Component {
                 </div>
               </div>
               <IconButton
-                style={{ margin: 'auto 8px' }}
+                style={{ margin: 'auto 0 auto 8px' }}
                 color="primary"
                 onClick={this.handleRelationshipAdd}
               >
                 <AddIcon />
               </IconButton>
             </ListItem>
-            <List className="list">
+            <List className="relationships-list">
               {rships}
             </List>
-          </div>
+          </Card>
           <div className="submit-button">
             <Button
               type="submit"
@@ -834,7 +883,7 @@ class NodeFormComponent extends Component {
           </div>
           {variant === 'edit' ? (
             <div className="delete-button">
-              <Button variant="raised" onClick={this.handleDeleteNode}>
+              <Button variant="raised" onClick={this.handleDialogOpen}>
                 Delete
               </Button>
             </div>
@@ -853,11 +902,11 @@ NodeFormComponent.defaultProps = {
 };
 
 /**
-* @param {string} selectedId - node database identifier.
-* @param {string} variant - specifies form type/function.
-* @param {function} handleNodeDelete - parent method triggered on node delete.
-* @param {function} handleNodeFinishEdit - parent method triggered when node is edited.
-      */
+  * @param {string} selectedId - node database identifier.
+  * @param {string} variant - specifies form type/function.
+  * @param {function} handleNodeDelete - parent method triggered on node delete.
+  * @param {function} handleNodeFinishEdit - parent method triggered when node is edited.
+  */
 NodeFormComponent.propTypes = {
   node: PropTypes.object,
   variant: PropTypes.string,

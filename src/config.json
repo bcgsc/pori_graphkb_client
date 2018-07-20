@@ -1,11 +1,10 @@
 {
-    "API_BASE_URL": "http://kbapi01:8008/api/v0.0.8",
-    "CACHE_EXPIRY": 8,
-    "KEYS": {
-        "ONTOLOGYVERTICES": "ontologyVertices",
-        "SOURCES": "sources",
-        "ONTOLOGYEDGES": "ontologyEdges",
-        "V": "baseVertex",
-        "SCHEMA": "schema"
-    }
+  "VERSION": "0.1.0",
+  "HOST": "kbapi01",
+  "PORT": 8010,
+  "KEYS": {
+    "SOURCES": "sources",
+    "SCHEMA": "schema",
+    "KB_TOKEN": "kbToken"
+  }
 }

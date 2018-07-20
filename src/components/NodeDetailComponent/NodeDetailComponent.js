@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import './NodeDetailComponent.css';
 import {
   List,
   ListItem,
   ListItemText,
-  ListItemIcon,
   IconButton,
   Card,
   Typography,
@@ -14,11 +14,12 @@ import {
   ExpansionPanel,
   ExpansionPanelDetails,
   ExpansionPanelSummary,
+  ListItemIcon,
 } from '@material-ui/core';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import EditIcon from '@material-ui/icons/Edit';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import FolderIcon from '@material-ui/icons/Folder';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import SearchIcon from '@material-ui/icons/Search';
 import api from '../../services/api';
 import util from '../../services/util';
 
@@ -79,6 +80,7 @@ class NodeDetailComponent extends Component {
       node,
       children,
       variant,
+      handleNewQuery,
     } = this.props;
 
     // Accounts for in and out edgetypes.
@@ -94,73 +96,10 @@ class NodeDetailComponent extends Component {
     Object.keys(V.properties).forEach(key => delete filteredNode[key]);
 
     /**
-     * Formats and lists relationship (edge) fields.
-     */
-    const listEdges = (key) => {
-      const label = util.getEdgeLabel(key);
-      const isOpen = nestedExpanded.includes(label);
-
-      if (filteredNode[key] && filteredNode[key].length !== 0) {
-        let preview;
-        const content = (
-          <List>
-            {filteredNode[key].map((edge, i) => {
-              const relatedNode = edge.in && edge.in['@rid'] === node['@rid'] ? edge.out : edge.in;
-              const edgeLabel = relatedNode
-                ? `${relatedNode.sourceId}${relatedNode.name ? ` | "${relatedNode.name}"` : ''}`
-                : edge;
-
-              if (i === 0) {
-                preview = util.getPreview(relatedNode);
-              }
-              return (
-                <ListItem dense key={key + edge['@rid']}>
-                  <ListItemIcon>
-                    <ChevronRightIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={edgeLabel}
-                    secondary={edge.source.name}
-                  />
-                </ListItem>
-              );
-            })}
-          </List>
-        );
-
-        return (
-          <ExpansionPanel
-            key={label}
-            expanded={isOpen}
-            onChange={() => this.handleNestedToggle(label)}
-            className="nested-container"
-          >
-            {/* TODO: Add Breakpoints */}
-            <ExpansionPanelSummary expandIcon={<KeyboardArrowDownIcon />}>
-              <Typography variant="subheading" style={{ flexBasis: '25%' }}>
-                {`${label}:`}
-              </Typography>
-              {!isOpen
-                ? (
-                  <Typography variant="subheading" color="textSecondary">
-                    {preview}
-                  </Typography>
-                ) : null}
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails style={{ display: 'block' }}>
-              {content}
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
-        );
-      } return null;
-    };
-
-    /**
-     * Formats node properties based on type.
-     * @param {string} key - node property key.
-     * @param {any} value - node property value.
-     * @param {string} prefix - represents depth of nested object.
-     */
+   * Formats node properties based on type.
+   * @param {string} key - node property key.
+   * @param {any} value - node property value.
+   */
     const formatProperty = (key, value, prefix) => {
       const id = `${prefix ? `${prefix}.` : ''}${key}`;
       /* Checks if value is falsy, if it is an edge property, or if the depth
@@ -174,7 +113,6 @@ class NodeDetailComponent extends Component {
         return null;
       }
       const isOpen = nestedExpanded.includes(id);
-
       if (typeof value !== 'object') {
         return (
           <React.Fragment key={id}>
@@ -189,17 +127,26 @@ class NodeDetailComponent extends Component {
       }
       // TODO: handle case where field is array of objects that aren't edges.
       if (Array.isArray(value)) {
-        if (value.length > 1) {
-          const preview = value[0];
-
+        if (value.length > 1 && !((id.match(/\./g) || []).length === 2)) {
+          const preview = value.join(', ');
           const content = (
             <List style={{ paddingTop: '0' }}>
               {value.map(item => (
-                <ListItem dense key={`${id}${item}`}>
-                  <ListItemIcon>
-                    <FolderIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={item} />
+
+                <ListItem
+                  dense
+                  key={`${id}${item}`}
+                  onClick={() => handleNewQuery(`subsets=${item}`)}
+                >
+                  <Link
+                    to={`/data/table?subsets=${item}`}
+                    className="icon-link"
+                  >
+                    <ListItemIcon>
+                      <SearchIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={item} />
+                  </Link>
                 </ListItem>
               ))}
             </List>
@@ -211,15 +158,34 @@ class NodeDetailComponent extends Component {
               onChange={() => this.handleNestedToggle(id)}
               className="nested-container"
             >
-              <ExpansionPanelSummary expandIcon={<KeyboardArrowDownIcon />}>
-                <Typography variant="subheading" style={{ flexBasis: '15%' }}>
+              <ExpansionPanelSummary
+                expandIcon={<KeyboardArrowDownIcon />}
+                classes={{ content: 'preview-content' }}
+              >
+                <Typography
+                  variant="subheading"
+                  className="preview-title"
+                >
                   {`${util.antiCamelCase(key)}:`}
                 </Typography>
                 {!isOpen
                   ? (
-                    <Typography variant="subheading" color="textSecondary">
-                      {preview}
-                    </Typography>
+                    <React.Fragment>
+                      <Typography
+                        variant="subheading"
+                        color="textSecondary"
+                        className="preview"
+                      >
+                        {preview}
+                      </Typography>
+                      <div className="length-box">
+                        <Typography
+                          variant="subheading"
+                        >
+                          {value.length}
+                        </Typography>
+                      </div>
+                    </React.Fragment>
                   ) : null}
               </ExpansionPanelSummary>
               <ExpansionPanelDetails style={{ display: 'block' }}>
@@ -234,6 +200,13 @@ class NodeDetailComponent extends Component {
               {`${util.antiCamelCase(key)}:`}
             </Typography>
             <Typography paragraph variant="caption">
+              {((id.match(/\./g) || []).length === 2 && value.length > 1)
+                ? (
+                  <span>
+                    <br />
+                    . . .
+                  </span>
+                ) : null}
               {value[0].toString()}
             </Typography>
           </React.Fragment>
@@ -242,10 +215,19 @@ class NodeDetailComponent extends Component {
 
       const nestedObject = Object.assign({}, value);
       Object.keys(V.properties).forEach(vk => delete nestedObject[vk]);
-      let preview = util.getPreview(nestedObject);
-      if (!preview) {
-        const prop = Object.keys(nestedObject).find(nk => typeof nestedObject[nk] !== 'object');
-        preview = nestedObject[prop];
+      const preview = util.getPreview(nestedObject);
+
+      if ((id.match(/\./g) || []).length === 2) {
+        return (
+          <React.Fragment key={id}>
+            <Typography variant="subheading">
+              {`${util.antiCamelCase(key)}:`}
+            </Typography>
+            <Typography paragraph variant="caption">
+              {preview}
+            </Typography>
+          </React.Fragment>
+        );
       }
 
       return (
@@ -255,22 +237,137 @@ class NodeDetailComponent extends Component {
           onChange={() => this.handleNestedToggle(id)}
           className="nested-container"
         >
-          <ExpansionPanelSummary expandIcon={<KeyboardArrowDownIcon />}>
-            <Typography variant="subheading" style={{ flexBasis: '15%' }}>
+          <ExpansionPanelSummary
+            expandIcon={<KeyboardArrowDownIcon />}
+          >
+            <Typography
+              variant="subheading"
+              className="preview-title"
+            >
               {`${util.antiCamelCase(key)}:`}
             </Typography>
             {!isOpen
               ? (
-                <Typography variant="subheading" color="textSecondary">
+                <Typography
+                  variant="subheading"
+                  color="textSecondary"
+                  className="preview"
+                >
                   {preview}
                 </Typography>
               ) : null}
+            <div className="node-icon length-box">
+              <AssignmentIcon />
+            </div>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={{ display: 'block' }}>
             {Object.keys(nestedObject).map(k => formatProperty(k, nestedObject[k], `${prefix ? `${prefix}.` : ''}${key}`))}
           </ExpansionPanelDetails>
         </ExpansionPanel>
       );
+    };
+
+    /**
+     * Formats and lists relationship (edge) fields.
+     */
+    const listEdges = (key) => {
+      const label = util.getEdgeLabel(key);
+      const isOpen = nestedExpanded.includes(label);
+
+      if (filteredNode[key] && filteredNode[key].length !== 0) {
+        const preview = [];
+        const content = (
+          filteredNode[key].map((edge) => {
+            const id = `${label}.${edge['@rid']}`;
+            const relatedNode = edge.in && edge.in['@rid'] === node['@rid'] ? edge.out : edge.in;
+            const edgeOpen = nestedExpanded.includes(id);
+            preview.push(relatedNode.sourceId);
+            return (
+              <ExpansionPanel
+                key={id}
+                expanded={edgeOpen}
+                onChange={() => this.handleNestedToggle(id)}
+                className="nested-container"
+              >
+                <ExpansionPanelSummary
+                  expandIcon={<KeyboardArrowDownIcon />}
+                  classes={{ content: 'preview-content' }}
+                >
+                  <Typography
+                    variant="subheading"
+                    className="preview-title"
+                  >
+                    {`${relatedNode.sourceId}:`}
+                  </Typography>
+                  {!edgeOpen
+                    ? (
+                      <Typography
+                        variant="subheading"
+                        color="textSecondary"
+                        className="preview"
+                      >
+                        {relatedNode.name || ''}
+                      </Typography>
+                    ) : null}
+                  <div className="node-icon length-box">
+                    <AssignmentIcon />
+                  </div>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails style={{ display: 'block' }}>
+                  {formatProperty('@class', relatedNode['@class'], id)}
+                  {formatProperty('sourceId', relatedNode.sourceId, id)}
+                  {formatProperty('name', relatedNode.name, id)}
+                  {formatProperty('source', edge.source.name, id)}
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+            );
+          })
+        );
+
+
+        return (
+          <ExpansionPanel
+            key={label}
+            expanded={isOpen}
+            onChange={() => this.handleNestedToggle(label)}
+            className="nested-container"
+          >
+            <ExpansionPanelSummary
+              expandIcon={<KeyboardArrowDownIcon />}
+              classes={{ content: 'preview-content' }}
+            >
+              <Typography
+                variant="subheading"
+                className="preview-title"
+              >
+                {`${label}:`}
+              </Typography>
+              {!isOpen
+                ? (
+                  <React.Fragment>
+                    <Typography
+                      variant="subheading"
+                      color="textSecondary"
+                      className="preview"
+                    >
+                      {preview.join(', ')}
+                    </Typography>
+                    <div className="length-box">
+                      <Typography
+                        variant="subheading"
+                      >
+                        {filteredNode[key].length}
+                      </Typography>
+                    </div>
+                  </React.Fragment>
+                ) : null}
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails style={{ display: 'block' }}>
+              {content}
+            </ExpansionPanelDetails>
+          </ExpansionPanel>
+        );
+      } return null;
     };
 
     const className = variant === 'table' ? 'detail-table' : 'detail-graph';
@@ -314,11 +411,13 @@ NodeDetailComponent.defaultProps = {
   node: null,
   children: null,
   variant: 'table',
+  handleNewQuery: null,
 };
 
 NodeDetailComponent.propTypes = {
   node: PropTypes.object,
   handleNodeEditStart: PropTypes.func.isRequired,
+  handleNewQuery: PropTypes.func,
   children: PropTypes.node,
   variant: PropTypes.string,
 };

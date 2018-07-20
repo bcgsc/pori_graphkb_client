@@ -125,4 +125,36 @@ export default class util {
     });
     return payload;
   }
+
+  static chooseColor(x, n) {
+    const y = Math.round(x / n * 9 * 255);
+    if (y < 256) {
+      return `rgb(255, 255, ${y})`;
+    }
+    if (y < 511) {
+      return `rgb(255, ${y - 255}, 0)`;
+    }
+    if (y < 766) {
+      return `rgb(255, 0, ${y - 510})`;
+    }
+    if (y < 1021) {
+      return `rgb(${y - 765}, 0, 255)`;
+    }
+    if (y < 1276) {
+      return `rgb(0, ${y - 1020}, 255)`;
+    }
+    if (y < 1531) {
+      return `rgb(0, 255, ${y - 1275})`;
+    }
+    if (y < 1786) {
+      return `rgb(${y - 1530}, 255, 0)`;
+    }
+    if (y < 2041) {
+      return `rgb(${y - 1785}, 255, 255)`;
+    }
+    if (y < 2296) {
+      return `rgb(255, ${y - 2040}, 255)`;
+    }
+    return '#000';
+  }
 }

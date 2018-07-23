@@ -62,7 +62,6 @@ class AdvancedQueryView extends Component {
           this.setState({ error });
         }
       });
-
     this.setState({ sources, ontologies });
   }
 

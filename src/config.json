@@ -6,5 +6,16 @@
     "SOURCES": "sources",
     "SCHEMA": "schema",
     "KB_TOKEN": "kbToken"
+  },
+  "GRAPH_PROPERTIES": {
+    "ARROW_WIDTH": 6,
+    "ARROW_LENGTH": 9,
+    "NODE_INIT_RADIUS": 80,
+    "NODE_RADIUS": 16,
+    "DETAILS_RING_RADIUS": 56
+  },
+  "GRAPH_DEFAULTS": {
+    "LINK_STRENGTH": 0.03,
+    "CHARGE_STRENGTH": 150
   }
 }

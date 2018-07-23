@@ -24,18 +24,20 @@ import SVGLink from '../SVGLink/SVGLink';
 import SVGNode from '../SVGNode/SVGNode';
 import api from '../../services/api';
 import util from '../../services/util';
+import config from '../../config.json';
 
-// SVG arrow dimensions.
-const arrowProperties = {
-  width: 6,
-  length: 9,
-};
-// Node position radius initializer.
-const nodeInitRadius = 80;
-// SVG node radius.
-const nodeRadius = 16;
-// Details ring radius
-const detailsRadius = 56;
+const {
+  ARROW_WIDTH,
+  ARROW_LENGTH,
+  NODE_INIT_RADIUS,
+  NODE_RADIUS,
+  DETAILS_RING_RADIUS,
+} = config.GRAPH_PROPERTIES;
+
+const {
+  LINK_STRENGTH,
+  CHARGE_STRENGTH,
+} = config.GRAPH_DEFAULTS;
 
 const styles = {
   paper: {
@@ -56,8 +58,8 @@ const styles = {
  */
 class GraphComponent extends Component {
   static positionInit(x, y, i, n) {
-    const newX = nodeInitRadius * Math.cos((2 * Math.PI * i - Math.PI / 6) / n) + x;
-    const newY = nodeInitRadius * Math.sin((2 * Math.PI * i - Math.PI / 6) / n) + y;
+    const newX = NODE_INIT_RADIUS * Math.cos((2 * Math.PI * i - Math.PI / 6) / n) + x;
+    const newY = NODE_INIT_RADIUS * Math.sin((2 * Math.PI * i - Math.PI / 6) / n) + y;
     return { x: newX, y: newY };
   }
 
@@ -86,24 +88,24 @@ class GraphComponent extends Component {
     options.forEach((option, i) => {
       const l = options.length;
       const start = {
-        x: detailsRadius * Math.cos((i + 1) / l * 2 * Math.PI),
-        y: detailsRadius * Math.sin((i + 1) / l * 2 * Math.PI),
+        x: DETAILS_RING_RADIUS * Math.cos((i + 1) / l * 2 * Math.PI),
+        y: DETAILS_RING_RADIUS * Math.sin((i + 1) / l * 2 * Math.PI),
       };
       const end = {
-        x: detailsRadius * Math.cos(i / l * 2 * Math.PI),
-        y: detailsRadius * Math.sin(i / l * 2 * Math.PI),
+        x: DETAILS_RING_RADIUS * Math.cos(i / l * 2 * Math.PI),
+        y: DETAILS_RING_RADIUS * Math.sin(i / l * 2 * Math.PI),
       };
 
       const d = [
         'M', start.x, start.y,
-        'A', detailsRadius, detailsRadius, 0, 0, 0, end.x, end.y,
+        'A', DETAILS_RING_RADIUS, DETAILS_RING_RADIUS, 0, 0, 0, end.x, end.y,
         'L', 0, 0,
         'L', start.x, start.y,
       ].join(' ');
 
       const angle = (2 * i + 1) / l * Math.PI;
-      const dx = detailsRadius * Math.cos(angle);
-      const dy = detailsRadius * Math.sin(angle);
+      const dx = DETAILS_RING_RADIUS * Math.cos(angle);
+      const dy = DETAILS_RING_RADIUS * Math.sin(angle);
       const iconDims = 24;
       const scale = 0.8;
       paths.push((
@@ -152,9 +154,9 @@ class GraphComponent extends Component {
         height: 0,
         selectedColor: '#D33115',
         defaultColor: '#1F265B',
-        linkStrength: 0.03,
-        chargeStrength: 150,
-        collisionRadius: nodeRadius,
+        linkStrength: LINK_STRENGTH,
+        chargeStrength: CHARGE_STRENGTH,
+        collisionRadius: NODE_RADIUS,
         autoCollisionRadius: false,
       },
       graphOptionsPanel: false,
@@ -292,7 +294,6 @@ class GraphComponent extends Component {
       });
       graphObjects[node['@rid']] = node;
     }
-
     let flag = false;
     expandedEdgeTypes.forEach((edgeType) => {
       if (node[edgeType] && node[edgeType].length !== 0) {
@@ -687,9 +688,9 @@ class GraphComponent extends Component {
     const isSelected = key => key === colorKey;
 
     const endArrowSize = {
-      d: `M0,0,L0,${arrowProperties.width} L ${arrowProperties.length}, ${arrowProperties.width / 2} z`,
-      refX: nodeRadius + arrowProperties.length,
-      refY: arrowProperties.width / 2,
+      d: `M0,0,L0,${ARROW_WIDTH} L ${ARROW_LENGTH}, ${ARROW_WIDTH / 2} z`,
+      refX: NODE_RADIUS + ARROW_LENGTH,
+      refY: ARROW_WIDTH / 2,
     };
 
     const optionsPanel = (
@@ -864,7 +865,7 @@ class GraphComponent extends Component {
           node={node}
           simulation={simulation}
           color={color()}
-          r={nodeRadius}
+          r={NODE_RADIUS}
           handleClick={e => this.handleClick(e, node)}
           expandable={isExpandable}
           actionsRing={actionsRing}
@@ -922,8 +923,8 @@ class GraphComponent extends Component {
             <defs>
               <marker
                 id="endArrow"
-                markerWidth={arrowProperties.length}
-                markerHeight={arrowProperties.width}
+                markerWidth={ARROW_LENGTH}
+                markerHeight={ARROW_WIDTH}
                 refX={endArrowSize.refX}
                 refY={endArrowSize.refY}
                 orient="auto"

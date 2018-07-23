@@ -12,6 +12,9 @@ import {
   List,
   ListItem,
   Typography,
+  Card,
+  CardContent,
+  CardHeader,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import ViewListIcon from '@material-ui/icons/ViewList';
@@ -693,7 +696,7 @@ class GraphComponent extends Component {
 
     const endArrowSize = {
       d: `M0,0,L0,${ARROW_WIDTH} L ${ARROW_LENGTH}, ${ARROW_WIDTH / 2} z`,
-      refX: NODE_RADIUS + ARROW_LENGTH,
+      refX: NODE_RADIUS + ARROW_WIDTH / 2,
       refY: ARROW_WIDTH / 2,
     };
 
@@ -713,55 +716,61 @@ class GraphComponent extends Component {
         </DialogTitle>
         <DialogContent className="options-grid">
           <div>
-            <div className="compact-picker">
-              <CompactPicker
-                color={graphOptions[colorKey]}
-                onChangeComplete={this.handleColorPick}
-              />
-            </div>
-            <List dense>
-              <ListItem>
-                <Typography
-                  style={
-                    {
-                      color: graphOptions.selectedColor,
-                      border: isSelected('selectedColor')
-                        ? `solid 1px ${graphOptions.selectedColor}`
-                        : 'none',
-                      padding: isSelected('selectedColor')
-                        ? '8px'
-                        : '9px',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                    }
-                  }
-                  onClick={() => this.handleColorKeyChange('selectedColor')}
-                >
-                  selected
-                </Typography>
-              </ListItem>
-              {Object.keys(selected).map(key => (
-                <ListItem key={key}>
-                  <Typography
-                    style={
-                      {
-                        color: graphOptions[`${key}Color`],
-                        border: isSelected(`${key}Color`)
-                          ? `solid 1px ${graphOptions[`${key}Color`]}`
-                          : 'none',
-                        padding: isSelected(`${key}Color`)
-                          ? '8px'
-                          : '9px',
-                        borderRadius: '4px',
+            <Card className="edge-color-list">
+              <CardHeader subheader="Node Coloring" />
+              <CardContent>
+                <div className="compact-picker">
+                  <CompactPicker
+                    color={graphOptions[colorKey]}
+                    onChangeComplete={this.handleColorPick}
+                  />
+                </div>
+                <List dense className="edge-colors">
+                  <ListItem>
+                    <Typography
+                      style={
+                        {
+                          color: graphOptions.selectedColor,
+                          border: isSelected('selectedColor')
+                            ? `solid 1px ${graphOptions.selectedColor}`
+                            : 'none',
+                          padding: isSelected('selectedColor')
+                            ? '8px'
+                            : '9px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                        }
                       }
-                    }
-                    onClick={() => this.handleColorKeyChange(`${key}Color`)}
-                  >
-                    {key}
-                  </Typography>
-                </ListItem>
-              ))}
-            </List>
+                      onClick={() => this.handleColorKeyChange('selectedColor')}
+                    >
+                      selected
+                    </Typography>
+                  </ListItem>
+                  {Object.keys(selected).map(key => (
+                    <ListItem key={key}>
+                      <Typography
+                        style={
+                          {
+                            color: graphOptions[`${key}Color`],
+                            border: isSelected(`${key}Color`)
+                              ? `solid 1px ${graphOptions[`${key}Color`]}`
+                              : 'none',
+                            padding: isSelected(`${key}Color`)
+                              ? '8px'
+                              : '9px',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                          }
+                        }
+                        onClick={() => this.handleColorKeyChange(`${key}Color`)}
+                      >
+                        {key}
+                      </Typography>
+                    </ListItem>
+                  ))}
+                </List>
+              </CardContent>
+            </Card>
           </div>
 
           <div className="graph-options-wrapper">
@@ -935,6 +944,17 @@ class GraphComponent extends Component {
                 markerUnits="strokeWidth"
               >
                 <path d={endArrowSize.d} fill="#555" />
+              </marker>
+              <marker
+                id="highLightedArrow"
+                markerWidth={ARROW_LENGTH}
+                markerHeight={ARROW_WIDTH}
+                refX={endArrowSize.refX}
+                refY={endArrowSize.refY}
+                orient="auto"
+                markerUnits="strokeWidth"
+              >
+                <path d={endArrowSize.d} className="highlighted-arrow" />
               </marker>
             </defs>
             <g ref={(node) => { this.zoom = node; }}>

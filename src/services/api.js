@@ -177,7 +177,7 @@ export default class api {
    * Returns the database schema.
    */
   static getSchema() {
-    const schema = JSON.parse(localStorage.getItem(KEYS.SCHEMA) || '');
+    const schema = JSON.parse(localStorage.getItem(KEYS.SCHEMA) || '{}');
     const schemaExpiry = localStorage.getItem(`${KEYS.SCHEMA}Expiry`);
     if (
       !schema

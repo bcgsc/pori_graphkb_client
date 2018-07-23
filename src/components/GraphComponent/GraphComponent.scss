@@ -85,3 +85,15 @@ $toolbar-height: 64px;
     grid-template-columns: 1fr 1fr;
     grid-column-gap: 32px;
 }
+
+.highlighted-arrow {
+    fill: $md-secondary-color;
+}
+
+.edge-color-list {
+    .edge-colors {
+        margin: 4px 0;
+        max-height: 472px;
+        overflow: auto;
+    }
+}

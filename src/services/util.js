@@ -144,10 +144,10 @@ export default class util {
       return `rgb(0, ${y}, 0)`;
     }
     if (i < 5) {
-      return `rgb(${y}, 255, 0)`;
+      return `rgb(255, ${y}, 0)`;
     }
     if (i < 6) {
-      return `rgb(255, ${y}, 0)`;
+      return `rgb(${y}, 255, 0)`;
     }
     if (i < 7) {
       return `rgb(255, 255, ${y})`;
@@ -162,10 +162,10 @@ export default class util {
       return `rgb(0, 255, ${y})`;
     }
     if (i < 11) {
-      return `rgb(${y}, 0, 0)`;
+      return `rgb(255, 0, ${y})`;
     }
     if (i < 12) {
-      return `rgb(255, 0, ${y})`;
+      return `rgb(${y}, 0, 0)`;
     }
     return '#000';
   }

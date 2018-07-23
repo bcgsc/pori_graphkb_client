@@ -8,7 +8,7 @@ describe('Node Detail in Table View Test', () => {
     cy.get('a[href="/query/advanced"]').children().click();
     cy.url().should('includes', '/query/advanced');
     cy.get('div.endpoint-selection').click();
-    cy.get('ul >li:first').click();
+    cy.contains('Feature').click();
     cy.get('input[name=limit').type('{backspace}{backspace}');
     cy.contains('Search').click();
     cy.get('table tbody tr:first td button[tabindex=0]').click({ force: true });

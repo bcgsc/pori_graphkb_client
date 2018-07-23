@@ -137,7 +137,7 @@ class NodeDetailComponent extends Component {
                 >
                   <Link
                     to={`/data/table?subsets=${item}`}
-                    className="icon-link"
+                    className="icon-link list-icon"
                   >
                     <ListItemIcon>
                       <SearchIcon />

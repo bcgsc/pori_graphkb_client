@@ -28,7 +28,6 @@ class NodeDetailView extends Component {
    */
   componentDidMount() {
     const { match } = this.props;
-    console.log(this.props);
     api.get(`/diseases/${match.params.rid}?neighbors=3`).then((response) => {
       const node = jc.retrocycle(response.result);
       this.setState({ node });

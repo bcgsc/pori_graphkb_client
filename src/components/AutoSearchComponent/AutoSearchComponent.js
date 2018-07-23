@@ -9,10 +9,12 @@ import {
   Paper,
   TextField,
   Typography,
+  CircularProgress,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
 import _ from 'lodash';
 import api from '../../services/api';
+import util from '../../services/util';
 
 /**
  * Autocomplete search component for querying ease of use.
@@ -24,6 +26,7 @@ class AutoSearchComponent extends Component {
       options: [],
       emptyFlag: false,
       loginRedirect: false,
+      loading: false,
     };
 
     this.callApi = _.debounce(this.callApi.bind(this), 300);
@@ -43,6 +46,7 @@ class AutoSearchComponent extends Component {
    * @param {Event} e - user input event.
    */
   refreshOptions(e) {
+    this.setState({ loading: true, emptyFlag: false });
     this.callApi(e.target.value);
   }
 
@@ -63,14 +67,19 @@ class AutoSearchComponent extends Component {
       value,
       limit,
     ).then((response) => {
-      const cycled = jc.retrocycle(response.result);
-      const emptyFlag = !!(cycled.length === 0 && value);
-      this.setState({ options: cycled, emptyFlag });
+      const results = [];
+      response.forEach((query) => {
+        const cycled = jc.retrocycle(query.result);
+        results.push(...cycled);
+      });
+      const emptyFlag = !!(results.length === 0 && value);
+      this.setState({ options: results, emptyFlag, loading: false });
     })
       .catch((error) => {
         if (error.status === 401) {
           this.setState({ loginRedirect: true });
         }
+        this.setState({ loading: false });
       });
   }
 
@@ -79,6 +88,7 @@ class AutoSearchComponent extends Component {
       options,
       emptyFlag,
       loginRedirect,
+      loading,
     } = this.state;
 
     const {
@@ -112,7 +122,7 @@ class AutoSearchComponent extends Component {
         onChange={(e) => {
           onChange({
             target: {
-              value: e.name,
+              value: e.name || e.sourceId,
               sourceId: e.sourceId,
               '@rid': e['@rid'],
               name,
@@ -150,13 +160,13 @@ class AutoSearchComponent extends Component {
                 }),
               }}
             />
-            {isOpen
-              && autoSearchResults(inputValue, getItemProps, setState, getInputProps)
-                .length !== 0
+            {(isOpen || loading) && !emptyFlag
               ? (
                 <Paper className="droptions">
                   <List>
-                    {autoSearchResults(inputValue, getItemProps, setState, getInputProps)}
+                    {loading
+                      ? (<CircularProgress color="primary" size={20} id="autosearch-spinner" />)
+                      : autoSearchResults(inputValue, getItemProps, setState, getInputProps)}
                   </List>
                 </Paper>
               ) : null}
@@ -175,7 +185,7 @@ class AutoSearchComponent extends Component {
 AutoSearchComponent.defaultProps = {
   limit: 30,
   endpoint: 'diseases',
-  property: 'name',
+  property: ['name'],
   placeholder: '',
   value: '',
   label: '',
@@ -190,7 +200,7 @@ AutoSearchComponent.defaultProps = {
       style={{ whiteSpace: 'normal', height: 'unset' }}
     >
       <span>
-        {item.name}
+        {item.name || util.getPreview(item)}
         <Typography color="textSecondary" variant="body1">
           {item.source && item.source.name ? item.source.name : ''}
         </Typography>
@@ -218,7 +228,7 @@ AutoSearchComponent.propTypes = {
   limit: PropTypes.number,
   name: PropTypes.string.isRequired,
   endpoint: PropTypes.string,
-  property: PropTypes.string,
+  property: PropTypes.array,
   placeholder: PropTypes.string,
   value: PropTypes.string,
   label: PropTypes.string,

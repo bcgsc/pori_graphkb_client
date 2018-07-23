@@ -248,8 +248,11 @@ export default class api {
    * @param {number} limit - Limit for number of returned matches.
    */
   static autoSearch(endpoint, property, value, limit) {
-    return api.get(
-      `/${endpoint}?${property}=~${encodeURIComponent(value)}&limit=${limit}&neighbors=1`,
-    );
+    const results = [];
+    for (let i = 0; i < property.length; i += 1) {
+      const intResults = api.get(`/${endpoint}?${property[i]}=~${encodeURIComponent(value)}&limit=${limit}&neighbors=1`);
+      results.push(intResults);
+    }
+    return Promise.all(results);
   }
 }

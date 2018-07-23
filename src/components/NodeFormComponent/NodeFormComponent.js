@@ -106,13 +106,19 @@ class NodeFormComponent extends Component {
           form[name] = originalNode[name] || [];
           break;
         case 'link':
+          form[`${name}.@rid`] = (originalNode[name] || '')['@rid'] || '';
           form[name] = (originalNode[name] || '').name || '';
+
           if (!linkedClass) {
             form[`${name}.class`] = (originalNode[name] || '')['@class'] || '';
           }
-          form[`${name}.@rid`] = (originalNode[name] || '')['@rid'] || '';
+
+          if ((originalNode[name] || '').sourceId) {
+            form[`${name}.sourceId`] = (originalNode[name] || '').sourceId || '';
+          }
+
           break;
-        case 'integer':
+        case 'integer' || 'long':
           if (originalNode[name] === 0) {
             form[name] = 0;
           } else {
@@ -194,6 +200,7 @@ class NodeFormComponent extends Component {
   handleFormChange(e) {
     const { form } = this.state;
     form[e.target.name] = e.target.value;
+
     if (e.target['@rid']) {
       form[`${e.target.name}.@rid`] = e.target['@rid'];
     } else if (form[`${e.target.name}.@rid`]) {
@@ -204,6 +211,7 @@ class NodeFormComponent extends Component {
     } else if (form[`${e.target.name}.sourceId`]) {
       form[`${e.target.name}.sourceId`] = '';
     }
+
     this.setState({ form });
   }
 
@@ -544,7 +552,6 @@ class NodeFormComponent extends Component {
         linkedClass,
         description,
       } = property;
-
       if (typeof value !== 'object') {
         // Radio group component for boolean types.
         if (type === 'boolean') {
@@ -651,10 +658,14 @@ class NodeFormComponent extends Component {
                 endpoint={endpoint}
                 disabled={(!linkedClass && !form[classKey])}
                 required={mandatory}
+                property={!linkedClass ? ['name', 'sourceId'] : undefined}
               />
             </div>
           </ListItem>
         );
+      }
+      if (Array.isArray(value)) {
+        return null;
       }
       return null;
     };

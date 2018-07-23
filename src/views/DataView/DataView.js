@@ -132,10 +132,17 @@ class DataView extends Component {
 
     if (!data[rid] && nodeClass) {
       const endpoint = `${route}/${rid.slice(1)}?neighbors=3`;
-      const json = await api.get(endpoint);
-      data[rid] = jc.retrocycle(json.result);
+      api.get(endpoint).then((json) => {
+        data[rid] = jc.retrocycle(json.result);
+        this.setState({ selectedId: rid, data });
+      }).catch((error) => {
+        if (error.status === 401) {
+          this.setState({ loginRedirect: true });
+        } else {
+          this.setState({ error });
+        }
+      });
     }
-    this.setState({ selectedId: rid, data });
   }
 
   /**
@@ -262,8 +269,6 @@ class DataView extends Component {
       detail,
     } = this.state;
 
-    if (!data) return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
-
     const { classes, history } = this.props;
     const selectedNode = data ? data[selectedId] : null;
 
@@ -292,6 +297,8 @@ class DataView extends Component {
     if (error) {
       return <Redirect push to={{ pathname: '/error', state: error }} />;
     }
+
+    if (!data) return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
 
     const detailDrawer = (
       <Drawer

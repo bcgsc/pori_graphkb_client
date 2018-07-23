@@ -151,9 +151,6 @@ class GraphComponent extends Component {
         width: 0,
         height: 0,
         selectedColor: '#D33115',
-        aliasesColor: '#FB9E00',
-        parentsColor: '#AEA1FF',
-        childrenColor: '#73D8FF',
         defaultColor: '#1F265B',
         linkStrength: 0.03,
         chargeStrength: 150,
@@ -209,19 +206,18 @@ class GraphComponent extends Component {
       graphOptions[`${selectedKeys[i]}Color`] = util.chooseColor(i, selectedKeys.length);
     }
 
-    this.setState({ expandedEdgeTypes, selected, graphOptions });
-
     let validDisplayed = displayed;
     if (!validDisplayed || validDisplayed.length === 0) {
       validDisplayed = [selectedId];
     }
+    this.setState({ expandedEdgeTypes, selected, graphOptions });
 
-    validDisplayed.forEach((key) => {
+    validDisplayed.forEach((key, i) => {
       this.setState(
         {
           ...this.processData(
             data[key],
-            { x: 0, y: 0 },
+            GraphComponent.positionInit(0, 0, i, validDisplayed.length),
             0,
           ),
         },
@@ -481,6 +477,10 @@ class GraphComponent extends Component {
    * initialize node positions.
    */
   drawGraph(reset) {
+    if (reset) {
+      this.setState({ nodes: [], links: [], graphObjects: [] }, this.componentDidMount);
+    }
+
     const {
       nodes,
       links,
@@ -488,20 +488,7 @@ class GraphComponent extends Component {
       graphOptions,
     } = this.state;
 
-    if (reset) {
-      simulation.nodes(nodes.map((node) => {
-        const n = node;
-        delete n.x;
-        delete n.y;
-        delete n.fx;
-        delete n.fy;
-        delete n.vx;
-        delete n.vy;
-        return n;
-      }));
-    } else {
-      simulation.nodes(nodes);
-    }
+    simulation.nodes(nodes);
 
     simulation.force(
       'links',

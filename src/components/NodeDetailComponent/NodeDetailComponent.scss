@@ -11,13 +11,13 @@
         grid-template-columns: 1fr;
     }
 }
-.detail-table {
-  grid-template-columns: 1fr 1fr;
 
+.detail-table {
+    grid-template-columns: 1fr 1fr;
 }
 
 .detail-graph {
-  grid-template-columns: 1fr;
+    grid-template-columns: 1fr;
 }
 
 .node-wrapper {
@@ -70,7 +70,6 @@
     padding-right: 8px;
     padding-left: 3%;
     flex-grow: 1;
-    @media(max-width: 1024px) {}
     @media(max-width: 768px) {
         visibility: hidden;
     }
@@ -85,7 +84,7 @@
     height: 24px;
     text-align: center;
     flex-shrink: 0;
-    background-color: rgba(204, 204, 204, 0.6);
+    background-color: rgba(#ccc, 0.6);
     h3 {
         margin: 1.5px auto;
     }
@@ -98,4 +97,5 @@
     flex-shrink: 0;
     background-color: unset;
     border: none;
+    color: rgba(0, 0, 0, 0.54);
 }

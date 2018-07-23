@@ -285,7 +285,10 @@ class GraphComponent extends Component {
       links,
       graphObjects,
     } = this.state;
-
+    const { data } = this.props;
+    /* eslint-disable */
+    if (data[node['@rid']]) node = data[node['@rid']];
+    /* eslint-enable */
     if (!graphObjects[node['@rid']]) {
       nodes.push({
         data: node,
@@ -327,7 +330,7 @@ class GraphComponent extends Component {
               graphObjects[link['@rid']] = link;
 
               // Checks if node is already rendered
-              if (edge.out['@rid'] && !graphObjects[edge.out['@rid']]) {
+              if (outRid && !graphObjects[outRid]) {
                 // Initializes position of new child
                 const positionInit = GraphComponent.positionInit(
                   position.x,
@@ -342,7 +345,7 @@ class GraphComponent extends Component {
                 );
                 this.setState({ nodes: d.nodes, links: d.links, graphObjects: d.graphObjects });
               }
-              if (edge.in['@rid'] && !graphObjects[edge.in['@rid']]) {
+              if (inRid && !graphObjects[inRid]) {
                 const positionInit = GraphComponent.positionInit(
                   position.x,
                   position.y,
@@ -634,13 +637,14 @@ class GraphComponent extends Component {
     expandedEdgeTypes.forEach((edgeType) => {
       if (actionsNode.data[edgeType] && actionsNode.data[edgeType].length !== 0) {
         actionsNode.data[edgeType].forEach((edge) => {
-          const j = links.findIndex(l => l['@rid'] === edge['@rid']);
+          const edgeRid = edge['@rid'] || edge;
+          const j = links.findIndex(l => l['@rid'] === edgeRid);
           if (j !== -1) {
             const link = links[j];
             const targetRid = link.source.data['@rid'] === actionsNode.data['@rid']
               ? link.target.data['@rid'] : link.source.data['@rid'];
             links.splice(j, 1);
-            delete graphObjects[edge['@rid']];
+            delete graphObjects[edgeRid];
             expandable[targetRid] = true;
           }
         });

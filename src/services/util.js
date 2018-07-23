@@ -127,44 +127,45 @@ export default class util {
   }
 
   static chooseColor(x, n) {
-    const i = Math.floor(x / n * 12);
-    const y = Math.round(x / n * 12 * 255) - i * 255;
+    const j = x < n / 2 ? x * 2 : Math.floor(x - n / 2) * 2 + 1;
+    const i = Math.floor(j / n * 12);
+    const y = Math.round(j / n * 12 * 255) - i * 255;
 
     if (i < 1) {
-      return `rgb(255, 0, ${y})`;
-    }
-    if (i < 2) {
-      return `rgb(255, ${y}, 0)`;
-    }
-    if (i < 3) {
-      return `rgb(255, ${y}, 255)`;
-    }
-    if (i < 4) {
-      return `rgb(${y}, 0, 255)`;
-    }
-    if (i < 5) {
-      return `rgb(255, 255, ${y})`;
-    }
-    if (i < 6) {
-      return `rgb(${y}, 255, 0)`;
-    }
-    if (i < 7) {
-      return `rgb(0, 255, ${y})`;
-    }
-    if (i < 8) {
       return `rgb(${y}, 255, 255)`;
     }
-    if (i < 9) {
+    if (i < 2) {
       return `rgb(0, ${y}, 255)`;
     }
-    if (i < 10) {
-      return `rgb(0, ${y}, 0)`;
-    }
-    if (i < 11) {
+    if (i < 3) {
       return `rgb(0, 0, ${y})`;
     }
-    if (i < 12) {
+    if (i < 4) {
+      return `rgb(0, ${y}, 0)`;
+    }
+    if (i < 5) {
+      return `rgb(${y}, 255, 0)`;
+    }
+    if (i < 6) {
+      return `rgb(255, ${y}, 0)`;
+    }
+    if (i < 7) {
+      return `rgb(255, 255, ${y})`;
+    }
+    if (i < 8) {
+      return `rgb(255, ${y}, 255)`;
+    }
+    if (i < 9) {
+      return `rgb(${y}, 0, 255)`;
+    }
+    if (i < 10) {
+      return `rgb(0, 255, ${y})`;
+    }
+    if (i < 11) {
       return `rgb(${y}, 0, 0)`;
+    }
+    if (i < 12) {
+      return `rgb(255, 0, ${y})`;
     }
     return '#000';
   }

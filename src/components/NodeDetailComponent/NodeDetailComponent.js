@@ -296,7 +296,7 @@ class NodeDetailComponent extends Component {
                     variant="subheading"
                     className="preview-title"
                   >
-                    {`${relatedNode.sourceId}:`}
+                    {`${util.getPreview(relatedNode)}:`}
                   </Typography>
                   {!edgeOpen
                     ? (
@@ -316,7 +316,9 @@ class NodeDetailComponent extends Component {
                   {formatProperty('@class', relatedNode['@class'], id)}
                   {formatProperty('sourceId', relatedNode.sourceId, id)}
                   {formatProperty('name', relatedNode.name, id)}
-                  {formatProperty('source', edge.source.name, id)}
+                  {edge.source && edge.source.name
+                    ? formatProperty('source', edge.source.name, id)
+                    : null}
                 </ExpansionPanelDetails>
               </ExpansionPanel>
             );

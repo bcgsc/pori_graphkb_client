@@ -233,6 +233,7 @@ class NodeDetailComponent extends Component {
         >
           <ExpansionPanelSummary
             expandIcon={<KeyboardArrowDownIcon />}
+            classes={{ content: 'preview-content' }}
           >
             <Typography
               variant="subheading"

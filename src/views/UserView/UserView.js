@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-// import { Link, Redirect } from 'react-router-dom';
-// import { Button } from '@material-ui/core';
 
-
+/**
+ * View for user settings. Route is /user.
+ * UNDER CONSTRUCTION
+ */
 class UserView extends Component {
   constructor(props) {
     super(props);
@@ -29,5 +30,6 @@ class UserView extends Component {
 
 UserView.propTypes = {
   children: PropTypes.func.isRequired,
-}
+};
+
 export default UserView;

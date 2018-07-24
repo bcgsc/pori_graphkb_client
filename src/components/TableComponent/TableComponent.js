@@ -24,6 +24,7 @@ import {
   DialogActions,
   Button,
   Divider,
+  Tooltip,
 } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import TimelineIcon from '@material-ui/icons/Timeline';
@@ -574,15 +575,17 @@ class TableComponent extends Component {
             rowsPerPageOptions={[25, 50, 100]}
             component="div"
           />
-
-          <IconButton
-            color="secondary"
-            disabled={displayed.length === 0}
-            className="graph-btn"
-            onClick={handleGraphRedirect}
-          >
-            <TimelineIcon />
-          </IconButton>
+          <Tooltip title="Select ontologies to display in graph form">
+            <div className="graph-btn">
+              <IconButton
+                color="secondary"
+                disabled={displayed.length === 0}
+                onClick={handleGraphRedirect}
+              >
+                <TimelineIcon />
+              </IconButton>
+            </div>
+          </Tooltip>
         </div>
       </section>
     );

@@ -117,6 +117,8 @@ $paginator-height: 57px;
     }
     .graph-btn {
         margin: auto 24px auto auto;
-        background-color: rgba($md-secondary-light, 0.5);
+        button {
+            background-color: rgba($md-secondary-light, 0.5);
+        }
     }
 }

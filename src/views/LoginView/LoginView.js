@@ -154,6 +154,7 @@ class LoginView extends Component {
 /**
  * @param {function} handleAuthenticate - function passed in from parent to handle a
  * successful log in.
+ * @param {function} handleRedirect - notifies parent component if login was redirected to.
  */
 LoginView.propTypes = {
   handleAuthenticate: PropTypes.func.isRequired,

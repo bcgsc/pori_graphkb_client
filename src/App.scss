@@ -1,6 +1,7 @@
 @import "globals";
 $banner-height: 56px;
-$user-menu-width: 150px;
+$user-menu-width: 124px;
+
 .banner {
     position: absolute;
     top: 0;
@@ -21,7 +22,7 @@ $user-menu-width: 150px;
     .user-dropdown {
         float: right;
         margin: auto;
-        margin-right: 1.1em;
+        margin-right: 2%;
         height: 100%;
         display: flex;
         flex-direction: column;

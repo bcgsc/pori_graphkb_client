@@ -182,6 +182,33 @@ class AutoSearchComponent extends Component {
   }
 }
 
+/**
+ * @param {number} limit - entry number limit when querying the database.
+ * @param {string} name - name of input for event parsing.
+ * @param {string} endpoint - api endpoint identifier.
+ * @param {string} property - api property identifier.
+ * @param {string} placeholder - placeholder for text input.
+ * @param {string} value - specified value for two way binding.
+ * @param {string} label - label for text input.
+ * @param {bool} required - required flag for text input indicator.
+ * @param {func} onChange - parent method for handling change events
+ * @param {func} children - component for display display query results.
+ * @param {bool} disabled - disabled flag.
+ */
+AutoSearchComponent.propTypes = {
+  limit: PropTypes.number,
+  name: PropTypes.string.isRequired,
+  endpoint: PropTypes.string,
+  property: PropTypes.array,
+  placeholder: PropTypes.string,
+  value: PropTypes.string,
+  label: PropTypes.string,
+  required: PropTypes.bool,
+  onChange: PropTypes.func,
+  children: PropTypes.func,
+  disabled: PropTypes.bool,
+};
+
 AutoSearchComponent.defaultProps = {
   limit: 30,
   endpoint: 'ontologies',
@@ -209,33 +236,6 @@ AutoSearchComponent.defaultProps = {
   ),
   onChange: null,
   disabled: false,
-};
-
-/**
- * @param {number} limit - entry number limit when querying the database.
- * @param {string} name - name of input for event parsing.
- * @param {string} endpoint - api endpoint identifier.
- * @param {string} property - api property identifier.
- * @param {string} placeholder - placeholder for text input.
- * @param {string} value - specified value for two way binding.
- * @param {string} label - label for text input.
- * @param {bool} required - required flag for text input indicator.
- * @param {func} onChange - parent method for handling change events
- * @param {func} children - component for display display query results.
- * @param {bool} disabled - disabled flag.
- */
-AutoSearchComponent.propTypes = {
-  limit: PropTypes.number,
-  name: PropTypes.string.isRequired,
-  endpoint: PropTypes.string,
-  property: PropTypes.array,
-  placeholder: PropTypes.string,
-  value: PropTypes.string,
-  label: PropTypes.string,
-  required: PropTypes.bool,
-  onChange: PropTypes.func,
-  children: PropTypes.func,
-  disabled: PropTypes.bool,
 };
 
 export default AutoSearchComponent;

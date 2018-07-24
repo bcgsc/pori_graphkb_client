@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
 import './NodeFormComponent.css';
 import {
   TextField,
@@ -48,7 +47,6 @@ class NodeFormComponent extends Component {
       sources: [],
       ontologyTypes: [],
       newNodeClass: 'Disease',
-      completedFlag: false,
       relationships: [],
       relationship: {
         '@class': '',
@@ -100,7 +98,12 @@ class NodeFormComponent extends Component {
     const form = {};
 
     editableProps.forEach((prop) => {
-      const { name, type, linkedClass } = prop;
+      const {
+        name,
+        type,
+        linkedClass,
+        defaultValue,
+      } = prop;
       switch (type) {
         case 'embeddedset':
           form[name] = originalNode[name] || [];
@@ -122,11 +125,15 @@ class NodeFormComponent extends Component {
           if (originalNode[name] === 0) {
             form[name] = 0;
           } else {
-            form[name] = originalNode[name] || '';
+            form[name] = originalNode[name] || defaultValue || '';
           }
           break;
+        case 'boolean':
+          
+          form[name] = originalNode[name] || defaultValue.toString() === 'true';
+          break;
         default:
-          form[name] = originalNode[name] || '';
+          form[name] = originalNode[name] || defaultValue || '';
           break;
       }
     });
@@ -483,7 +490,6 @@ class NodeFormComponent extends Component {
     const {
       form,
       originalNode,
-      completedFlag,
       sources,
       edgeTypes,
       ontologyTypes,
@@ -498,9 +504,6 @@ class NodeFormComponent extends Component {
 
     // Wait for form to get initialized
     if (!form) return null;
-    if (completedFlag) {
-      return <Redirect push to="/query" />;
-    }
 
     // Validates form
     let formIsInvalid = false;
@@ -568,7 +571,7 @@ class NodeFormComponent extends Component {
                   style={{ flexDirection: 'row' }}
                 >
                   <FormControlLabel value="true" control={<Radio />} label="Yes" />
-                  <FormControlLabel value="" control={<Radio />} label="No" />
+                  <FormControlLabel value="false" control={<Radio />} label="No" />
                 </RadioGroup>
               </FormControl>
             </ListItem>

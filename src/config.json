@@ -17,5 +17,40 @@
   "GRAPH_DEFAULTS": {
     "LINK_STRENGTH": 0.03,
     "CHARGE_STRENGTH": 150
-  }
+  },
+  "DEFAULT_PROPS": [
+    "name",
+    "sourceId"
+  ],
+  "ONTOLOGY_QUERY_PARAMS": [
+    {
+      "name": "neighbors",
+      "type": "integer"
+    },
+    {
+      "name": "limit",
+      "type": "integer"
+    },
+    {
+      "name": "skip",
+      "type": "integer"
+    },
+    {
+      "name": "fuzzyMatch",
+      "type": "integer"
+    },
+    {
+      "name": "ancestors",
+      "type": "string"
+    },
+    {
+      "name": "descendants",
+      "type": "string"
+    },
+    {
+      "name": "activeOnly",
+      "type": "boolean",
+      "defaultValue": "true"
+    }
+  ]
 }

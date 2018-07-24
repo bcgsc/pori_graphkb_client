@@ -51,7 +51,7 @@ describe('Login Test', () => {
     successfulLogIn();
 
     cy.get('div.user-dropdown button').click();
-    cy.get('ul li[role=menuitem]').contains('Logout').click();
+    cy.contains('Logout').click();
 
     cy.url().should('includes', '/login').should(() => {
       /* eslint-disable */

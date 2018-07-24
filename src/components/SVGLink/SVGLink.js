@@ -25,12 +25,12 @@ class SVGLink extends Component {
   }
 
   render() {
-    const { link } = this.props;
+    const { link, linkHighlighting } = this.props;
     const { displayType } = this.state;
     const left = link.source.x < link.target.x;
 
     let marker = '';
-    if (displayType) {
+    if (displayType && linkHighlighting) {
       marker = 'url(#highLightedArrow)';
     } else if (link.source !== link.target) {
       marker = 'url(#endArrow)';
@@ -50,7 +50,7 @@ class SVGLink extends Component {
           d={`M${(link.source.x || 0)} ${(link.source.y || 0)}L${(link.target.x || 0)} ${(link.target.y || 0)}`}
           markerEnd={marker}
         />
-        {displayType ? (
+        {displayType && linkHighlighting ? (
           <text className="link-label">
             <textPath
               href={`#link${link['@rid']}`}
@@ -68,6 +68,11 @@ class SVGLink extends Component {
 
 SVGLink.propTypes = {
   link: PropTypes.object.isRequired,
+  linkHighlighting: PropTypes.bool,
+};
+
+SVGLink.defaultProps = {
+  linkHighlighting: true,
 };
 
 export default SVGLink;

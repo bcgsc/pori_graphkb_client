@@ -558,7 +558,7 @@ class GraphComponent extends Component {
    * @param {Object} node - Clicked simulation node.
    */
   async handleClick(e, node) {
-    const { handleClick } = this.props;
+    const { handleClick, handleDetailDrawerOpen } = this.props;
     const { expandId } = this.state;
 
     await handleClick(node.data['@rid'], node.data['@class']);
@@ -566,6 +566,7 @@ class GraphComponent extends Component {
     if (node.data['@rid'] === expandId) {
       this.setState({ actionsNode: node });
     } else {
+      handleDetailDrawerOpen(node);
       this.updateColors(node.data['@rid']);
     }
   }
@@ -610,7 +611,7 @@ class GraphComponent extends Component {
     const { actionsNode } = this.state;
     const { handleDetailDrawerOpen } = this.props;
     const options = [
-      () => handleDetailDrawerOpen(actionsNode),
+      () => handleDetailDrawerOpen(actionsNode, true),
       () => this.setState({ actionsNode: null }),
       () => this.loadNeighbors(actionsNode),
       this.handleNodeHide,

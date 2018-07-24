@@ -246,9 +246,11 @@ class DataView extends Component {
   /**
    * Updates data and opens detail drawer for the specified node.
    * @param {Object} node - Specified node.
+   * @param {boolean} open - flag to open drawer, or to just update.
    */
-  async handleDetailDrawerOpen(node) {
-    const { data } = this.state;
+  async handleDetailDrawerOpen(node, open) {
+    const { data, detail } = this.state;
+    if (!open && !detail) return;
     if (!data[node.data['@rid']]) {
       const endpointClass = await api.getClass(node.data['@class'] || 'Disease');
       const { route } = endpointClass;

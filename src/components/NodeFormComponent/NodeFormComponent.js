@@ -129,7 +129,6 @@ class NodeFormComponent extends Component {
           }
           break;
         case 'boolean':
-          
           form[name] = originalNode[name] || defaultValue.toString() === 'true';
           break;
         default:

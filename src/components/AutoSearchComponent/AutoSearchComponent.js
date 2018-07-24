@@ -184,7 +184,7 @@ class AutoSearchComponent extends Component {
 
 AutoSearchComponent.defaultProps = {
   limit: 30,
-  endpoint: 'diseases',
+  endpoint: 'ontologies',
   property: ['name'],
   placeholder: '',
   value: '',

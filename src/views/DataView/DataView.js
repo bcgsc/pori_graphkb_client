@@ -66,12 +66,12 @@ class DataView extends Component {
     const { location, history } = this.props;
 
     const filteredSearch = queryString.parse(history.location.search);
-    const endpointClass = await api.getClass(filteredSearch.class || 'Disease');
+    const endpointClass = await api.getClass(filteredSearch['@class'] || 'Disease');
     const { route, properties } = endpointClass;
     delete filteredSearch.class;
     const search = location.search ? `${queryString.stringify(filteredSearch)}&` : '';
     const V = await api.getVertexBaseClass();
-    const allColumns = ['@rid'];
+    const allColumns = ['@rid', '@class'];
 
     api.get(`${route}/?${search}neighbors=3`)
       .then((data) => {
@@ -80,7 +80,7 @@ class DataView extends Component {
         if (cycled.length === 0) queryRedirect = true;
         cycled.forEach((ontologyTerm) => {
           Object.keys(ontologyTerm).forEach((prop) => {
-            if ((!V.properties[prop] || prop === '@class') && !allColumns.includes(prop)) {
+            if ((!V.properties[prop]) && !allColumns.includes(prop)) {
               const endpointProp = properties.find(p => p.name === prop);
               if (endpointProp && endpointProp.type === 'link') {
                 Object.keys(ontologyTerm[prop]).forEach((nestedProp) => {

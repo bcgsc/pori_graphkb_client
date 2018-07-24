@@ -87,7 +87,7 @@ export default class util {
    */
   static getTSVRepresentation(value, key) {
     if (typeof value !== 'object') {
-      return value || '';
+      return (value || '').toString().replace(/[\r\n\t]/g, ' ');
     }
     if (Array.isArray(value)) {
       let list;

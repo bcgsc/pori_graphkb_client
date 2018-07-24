@@ -36,12 +36,9 @@ describe('Query Page Test', () => {
     cy.contains('No Results');
     cy.get('div.search-buttons button').click();
     cy.url().should('includes', '/query');
-    cy.contains('No results found');
-    cy.wait(3500);
-    cy.contains('No results found').should('not.exist');
   });
 
-  it('Advanced search', () => {
+  it.only('Advanced search', () => {
     const name = 'pneumonitis';
     const sourceId = 'ncit:c113159';
     cy.contains('Advanced Search').click();
@@ -54,7 +51,7 @@ describe('Query Page Test', () => {
     cy.get('input[name=sourceIdVersion]').type('!something');
     cy.get('input[name=limit]').type('{backspace}');
     cy.get('#search-button').click();
-    cy.url().should('includes', '/data/table?limit=100&longName=%21nothing%3F%23%29%24%28%23%24%25&name=pneumonitis&source=%2318%3A0&sourceId=ncit%3Ac113159&sourceIdVersion=%21something');
+    cy.url().should('includes', '/table?limit=100&longName=%21nothing%3F%23%29%24%28%23%24%25&name=pneumonitis&source=%2315%3A0&sourceId=ncit%3Ac113159&sourceIdVersion=%21something');
   });
 
   it('Other classes', () => {

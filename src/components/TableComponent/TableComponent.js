@@ -575,7 +575,10 @@ class TableComponent extends Component {
             rowsPerPageOptions={[25, 50, 100]}
             component="div"
           />
-          <Tooltip title="Select ontologies to display in graph form">
+          <Tooltip
+            title="Select ontologies to display in graph form"
+            placement="left"
+          >
             <div className="graph-btn">
               <IconButton
                 color="secondary"

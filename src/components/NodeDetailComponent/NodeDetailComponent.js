@@ -275,7 +275,7 @@ class NodeDetailComponent extends Component {
             const id = `${label}.${edge['@rid']}`;
             const relatedNode = edge.in && edge.in['@rid'] === node['@rid'] ? edge.out : edge.in;
             const edgeOpen = nestedExpanded.includes(id);
-            preview.push(relatedNode.sourceId);
+            preview.push(util.getPreview(relatedNode));
             return (
               <ExpansionPanel
                 key={id}
@@ -291,7 +291,7 @@ class NodeDetailComponent extends Component {
                     variant="subheading"
                     className="preview-title"
                   >
-                    {`${util.getPreview(relatedNode)}:`}
+                    {util.getPreview(relatedNode)}
                   </Typography>
                   {!edgeOpen
                     ? (

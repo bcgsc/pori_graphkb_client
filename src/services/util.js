@@ -1,5 +1,6 @@
+import config from '../config.json';
 
-const propOrder = ['sourceId', 'name'];
+const { DEFAULT_PROPS } = config;
 const acronyms = ['id', 'uuid', 'ncit', 'uberon', 'doid'];
 
 
@@ -46,7 +47,7 @@ export default class util {
    */
   static getPreview(obj) {
     let preview;
-    propOrder.forEach((prop) => {
+    DEFAULT_PROPS.forEach((prop) => {
       if (obj[prop]) {
         if (!preview) {
           preview = obj[prop];

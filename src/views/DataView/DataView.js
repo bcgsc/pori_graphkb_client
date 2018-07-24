@@ -66,9 +66,9 @@ class DataView extends Component {
     const { location, history } = this.props;
 
     const filteredSearch = queryString.parse(history.location.search);
-    const endpointClass = await api.getClass(filteredSearch.class || 'Ontology');
+    const endpointClass = await api.getClass(filteredSearch['@class'] || 'Ontology');
     const { route, properties } = endpointClass;
-    delete filteredSearch.class;
+    delete filteredSearch['@class'];
     const search = location.search ? `${queryString.stringify(filteredSearch)}&` : '';
     const V = await api.getVertexBaseClass();
     const allColumns = ['@rid', '@class'];

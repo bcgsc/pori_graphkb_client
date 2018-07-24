@@ -134,7 +134,7 @@ class DataView extends Component {
       const endpoint = `${route}/${rid.slice(1)}?neighbors=3`;
       api.get(endpoint).then((json) => {
         data[rid] = jc.retrocycle(json.result);
-        this.setState({ selectedId: rid, data });
+        this.setState({ data });
       }).catch((error) => {
         if (error.status === 401) {
           this.setState({ loginRedirect: true });
@@ -143,6 +143,7 @@ class DataView extends Component {
         }
       });
     }
+    this.setState({ selectedId: rid });
   }
 
   /**

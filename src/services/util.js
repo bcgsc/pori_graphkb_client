@@ -108,7 +108,13 @@ export default class util {
     return this.getPreview(value);
   }
 
-  static parsePayload(form, editableProps) {
+  /**
+   * Prepares a payload to be sent to the server for a POST, PATCH, or GET requst.
+   * @param {Object} form - unprocessed form object containing user data.
+   * @param {*} editableProps - List of valid properties for given form.
+   * @param {*} exceptions - List of extra parameters not specified in editableProps.
+   */
+  static parsePayload(form, editableProps, exceptions) {
     const payload = Object.assign({}, form);
     Object.keys(payload).forEach((key) => {
       if (!payload[key]) delete payload[key];
@@ -121,7 +127,9 @@ export default class util {
       }
       // Clears out all other unknown fields.
       if (!editableProps.find(p => p.name === key)) {
-        delete payload[key];
+        if (!exceptions || !exceptions.find(p => p.name === key)) {
+          delete payload[key];
+        }
       }
     });
     return payload;

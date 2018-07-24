@@ -53,7 +53,7 @@ describe('Graph View Test', () => {
     });
   });
 
-  it.only('Features different edges', () => {
+  it('Features different edges', () => {
     getClass('Feature', { name: 'a1bg-as1' });
     cy.get('circle.node-expandable').click();
     cy.contains('(Expand)').click();

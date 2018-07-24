@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
 import * as jc from 'json-cycle';
 import './EditNodeView.css';
 import NodeFormComponent from '../../components/NodeFormComponent/NodeFormComponent';
@@ -13,7 +12,6 @@ class EditNodeView extends Component {
     super(props);
     this.state = {
       node: null,
-      returnFlag: false,
     };
 
     this.handleNodeDelete = this.handleNodeDelete.bind(this);
@@ -24,13 +22,14 @@ class EditNodeView extends Component {
    * Initializes editing node and query on return.
    */
   componentDidMount() {
-    const { match } = this.props;
+    const { match, history } = this.props;
     const { rid } = match.params;
     api.get(`/ontologies/${rid}?neighbors=3`).then((data) => {
       const node = jc.retrocycle(data.result);
       this.setState({ node });
     }).catch(() => {
-      this.setState({ returnFlag: true });
+      // TODO: 404 page
+      history.push('/query');
     });
   }
 
@@ -38,7 +37,8 @@ class EditNodeView extends Component {
    * Sets return flag to navigate to query page.
    */
   handleNodeDelete() {
-    this.setState({ returnFlag: true });
+    const { history } = this.props;
+    history.push('/query');
   }
 
   /**
@@ -52,10 +52,8 @@ class EditNodeView extends Component {
   render() {
     const {
       node,
-      returnFlag,
     } = this.state;
 
-    if (returnFlag) return <Redirect push to="/query" />;
 
     if (node) {
       return (

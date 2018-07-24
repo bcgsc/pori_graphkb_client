@@ -17,19 +17,9 @@
     }
   }
 
-  .parameter-selection {
+  .input-wrapper {
     display: flex;
-    margin: 24px 0;
-
-    @media (max-width: 920px) {
-      flex-direction: column;
-    }
-    .parameter-name {
-      text-align: left;
-      min-width: 15vw;
-      margin: auto;
-      font: 400 16px/28px Roboto, "Helvetica Neue", sans-serif;
-    }
+    width: 100%;
 
     .text-input {
       flex-grow: 1;

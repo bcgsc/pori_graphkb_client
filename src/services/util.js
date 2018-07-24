@@ -1,5 +1,6 @@
+import config from '../config.json';
 
-const propOrder = ['sourceId', 'name'];
+const { DEFAULT_PROPS } = config;
 const acronyms = ['id', 'uuid', 'ncit', 'uberon', 'doid'];
 
 
@@ -46,7 +47,7 @@ export default class util {
    */
   static getPreview(obj) {
     let preview;
-    propOrder.forEach((prop) => {
+    DEFAULT_PROPS.forEach((prop) => {
       if (obj[prop]) {
         if (!preview) {
           preview = obj[prop];
@@ -87,7 +88,7 @@ export default class util {
    */
   static getTSVRepresentation(value, key) {
     if (typeof value !== 'object') {
-      return value || '';
+      return (value || '').toString().replace(/[\r\n\t]/g, ' ');
     }
     if (Array.isArray(value)) {
       let list;
@@ -107,7 +108,13 @@ export default class util {
     return this.getPreview(value);
   }
 
-  static parsePayload(form, editableProps) {
+  /**
+   * Prepares a payload to be sent to the server for a POST, PATCH, or GET requst.
+   * @param {Object} form - unprocessed form object containing user data.
+   * @param {*} editableProps - List of valid properties for given form.
+   * @param {*} exceptions - List of extra parameters not specified in editableProps.
+   */
+  static parsePayload(form, editableProps, exceptions) {
     const payload = Object.assign({}, form);
     Object.keys(payload).forEach((key) => {
       if (!payload[key]) delete payload[key];
@@ -120,7 +127,9 @@ export default class util {
       }
       // Clears out all other unknown fields.
       if (!editableProps.find(p => p.name === key)) {
-        delete payload[key];
+        if (!exceptions || !exceptions.find(p => p.name === key)) {
+          delete payload[key];
+        }
       }
     });
     return payload;

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Redirect, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import './ErrorView.css';
 import { Typography, Button } from '@material-ui/core';
@@ -9,13 +9,13 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 /**
  * Component for viewing errors.
  * @param {Object} props - properties passed into the component.
- * @param {Object} props.location - location property for the route and passed state.
- * @param {Object} props.location.state - passed state from originator of redirect.
+ * @param {Object} props.history - history property for the route and passed state.
+ * @param {Object} props.history.location.state - passed state from originator of redirect.
  */
 function ErrorView(props) {
-  const { location } = props;
-  const { state } = location;
-  if (!state || (!state.status && !state.body)) return <Redirect push to="/query" />;
+  const { history } = props;
+  const { state } = history.location;
+  if (!state || (!state.status && !state.body)) history.push('/query');
   const { status, body } = state;
 
   const {
@@ -76,7 +76,7 @@ function ErrorView(props) {
 }
 
 ErrorView.propTypes = {
-  location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 export default ErrorView;

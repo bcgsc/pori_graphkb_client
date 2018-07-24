@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import './NodeDetailComponent.css';
 import {
   List,
@@ -134,16 +133,12 @@ class NodeDetailComponent extends Component {
                   dense
                   key={`${id}${item}`}
                   onClick={() => handleNewQuery(`subsets=${item}`)}
+                  className="list-icon"
                 >
-                  <Link
-                    to={`/data/table?subsets=${item}`}
-                    className="icon-link list-icon"
-                  >
-                    <ListItemIcon>
-                      <SearchIcon />
-                    </ListItemIcon>
-                    <ListItemText primary={item} />
-                  </Link>
+                  <ListItemIcon>
+                    <SearchIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={item} />
                 </ListItem>
               ))}
             </List>
@@ -280,7 +275,7 @@ class NodeDetailComponent extends Component {
             const id = `${label}.${edge['@rid']}`;
             const relatedNode = edge.in && edge.in['@rid'] === node['@rid'] ? edge.out : edge.in;
             const edgeOpen = nestedExpanded.includes(id);
-            preview.push(relatedNode.sourceId);
+            preview.push(util.getPreview(relatedNode));
             return (
               <ExpansionPanel
                 key={id}
@@ -296,7 +291,7 @@ class NodeDetailComponent extends Component {
                     variant="subheading"
                     className="preview-title"
                   >
-                    {`${util.getPreview(relatedNode)}:`}
+                    {util.getPreview(relatedNode)}
                   </Typography>
                   {!edgeOpen
                     ? (
@@ -324,7 +319,6 @@ class NodeDetailComponent extends Component {
             );
           })
         );
-
 
         return (
           <ExpansionPanel

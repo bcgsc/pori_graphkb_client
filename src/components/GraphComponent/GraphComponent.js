@@ -39,6 +39,7 @@ const {
 const {
   LINK_STRENGTH,
   CHARGE_STRENGTH,
+  DEFAULT_NODE_COLOR,
 } = config.GRAPH_DEFAULTS;
 
 const styles = {
@@ -68,7 +69,7 @@ class GraphComponent extends Component {
   constructor(props) {
     super(props);
 
-    const paths = [];
+    const actionsRing = [];
     const options = [
       {
         name: 'Details',
@@ -110,7 +111,7 @@ class GraphComponent extends Component {
       const dy = DETAILS_RING_RADIUS * Math.sin(angle);
       const iconDims = 24;
       const scale = 0.8;
-      paths.push((
+      actionsRing.push((
         <g
           style={{ cursor: 'pointer' }}
           onClick={() => this.handleActionsRing(i)}
@@ -145,17 +146,12 @@ class GraphComponent extends Component {
       links: [],
       graphObjects: {},
       expandedEdgeTypes: [],
-      simulation: d3.forceSimulation(),
+      simulation: null,
       svg: undefined,
-      selectedAliases: [],
-      selectedInSubClassOf: [],
-      selectedOutSubClassOf: [],
-      selected: {},
       graphOptions: {
         width: 0,
         height: 0,
-        selectedColor: '#D33115',
-        defaultColor: '#1F265B',
+        defaultColor: DEFAULT_NODE_COLOR,
         linkStrength: LINK_STRENGTH,
         chargeStrength: CHARGE_STRENGTH,
         collisionRadius: NODE_RADIUS,
@@ -165,7 +161,7 @@ class GraphComponent extends Component {
       graphOptionsPanel: false,
       colorKey: 'selectedColor',
       expandable: {},
-      paths,
+      actionsRing,
       actionsNode: null,
     };
 
@@ -194,9 +190,10 @@ class GraphComponent extends Component {
     } = this.props;
     const { graphOptions } = this.state;
     const selected = {};
+    const simulation = d3.forceSimulation();
 
-    this.handleResize();
     const edgeTypes = await api.getOntologyEdges();
+    const ontologyTypes = await api.getOntologyVertices();
     // Defines what edge keys to look for.
     const expandedEdgeTypes = edgeTypes.reduce((r, e) => {
       r.push(`in_${e}`);
@@ -206,32 +203,38 @@ class GraphComponent extends Component {
       return r;
     }, []);
 
-    const selectedKeys = Object.keys(selected);
-    for (let i = 0; i < selectedKeys.length; i += 1) {
-      graphOptions[`${selectedKeys[i]}Color`] = util.chooseColor(i, selectedKeys.length);
-    }
+    ontologyTypes.forEach((type, i) => {
+      graphOptions[`${type.name}Color`] = util.chooseColor(i + 1, ontologyTypes.length);
+    });
+    graphOptions.selectedColor = util.chooseColor(0, ontologyTypes.length);
 
     let validDisplayed = displayed;
     if (!validDisplayed || validDisplayed.length === 0) {
       validDisplayed = [selectedId];
     }
-    this.setState({ expandedEdgeTypes, selected, graphOptions });
+    this.setState({
+      expandedEdgeTypes,
+      ontologyTypes,
+      graphOptions,
+      simulation,
+    }, () => {
+      this.handleResize();
+      validDisplayed.forEach((key, i) => {
+        this.setState(
+          {
+            ...this.processData(
+              data[key],
+              GraphComponent.positionInit(0, 0, i, validDisplayed.length),
+              0,
+            ),
+          },
+        );
+      });
 
-    validDisplayed.forEach((key, i) => {
-      this.setState(
-        {
-          ...this.processData(
-            data[key],
-            GraphComponent.positionInit(0, 0, i, validDisplayed.length),
-            0,
-          ),
-        },
-      );
+      this.drawGraph();
+      this.updateColors(validDisplayed[0]);
+      window.addEventListener('resize', this.handleResize);
     });
-
-    this.drawGraph();
-    this.updateColors(validDisplayed[0]);
-    window.addEventListener('resize', this.handleResize);
   }
 
   /**
@@ -548,7 +551,6 @@ class GraphComponent extends Component {
     this.setState({
       expandId: rid,
       actionsNode: null,
-      selected,
     });
   }
 
@@ -662,9 +664,6 @@ class GraphComponent extends Component {
       graphObjects,
       actionsNode: null,
       expandId: null,
-      selectedAliases: [],
-      selectedInSubClassOf: [],
-      selectedOutSubClassOf: [],
     });
   }
 
@@ -679,11 +678,8 @@ class GraphComponent extends Component {
       simulation,
       colorKey,
       graphOptionsPanel,
-      paths,
-      selectedInSubClassOf,
-      selectedOutSubClassOf,
-      selectedAliases,
-      selected,
+      actionsRing,
+      ontologyTypes,
     } = this.state;
 
     const {
@@ -691,12 +687,13 @@ class GraphComponent extends Component {
       handleTableRedirect,
     } = this.props;
 
+    if (!simulation) return null;
 
     const isSelected = key => key === colorKey;
 
     const endArrowSize = {
       d: `M0,0,L0,${ARROW_WIDTH} L ${ARROW_LENGTH}, ${ARROW_WIDTH / 2} z`,
-      refX: NODE_RADIUS + ARROW_WIDTH / 2,
+      refX: NODE_RADIUS - 1,
       refY: ARROW_WIDTH / 2,
     };
 
@@ -746,25 +743,25 @@ class GraphComponent extends Component {
                       selected
                     </Typography>
                   </ListItem>
-                  {Object.keys(selected).map(key => (
-                    <ListItem key={key}>
+                  {ontologyTypes.map(key => (
+                    <ListItem key={key.name}>
                       <Typography
                         style={
                           {
-                            color: graphOptions[`${key}Color`],
-                            border: isSelected(`${key}Color`)
-                              ? `solid 1px ${graphOptions[`${key}Color`]}`
+                            color: graphOptions[`${key.name}Color`],
+                            border: isSelected(`${key.name}Color`)
+                              ? `solid 1px ${graphOptions[`${key.name}Color`]}`
                               : 'none',
-                            padding: isSelected(`${key}Color`)
+                            padding: isSelected(`${key.name}Color`)
                               ? '8px'
                               : '9px',
                             borderRadius: '4px',
                             cursor: 'pointer',
                           }
                         }
-                        onClick={() => this.handleColorKeyChange(`${key}Color`)}
+                        onClick={() => this.handleColorKeyChange(`${key.name}Color`)}
                       >
-                        {key}
+                        {key.name}
                       </Typography>
                     </ListItem>
                   ))}
@@ -877,40 +874,21 @@ class GraphComponent extends Component {
     ));
 
     const nodesDisplay = nodes.map((node) => {
-      const color = () => {
-        if (expandId === node.data['@rid']) {
-          return graphOptions.selectedColor;
-        }
-
-        for (let i = 0; i < Object.keys(selected).length; i += 1) {
-          if (selected[Object.keys(selected)[i]].includes(node.data['@rid'])) {
-            return graphOptions[`${Object.keys(selected)[i]}Color`];
-          }
-        }
-        if (selectedInSubClassOf.includes(node.data['@rid'])) {
-          return graphOptions.childrenColor;
-        }
-        if (selectedOutSubClassOf.includes(node.data['@rid'])) {
-          return graphOptions.parentsColor;
-        }
-        if (selectedAliases.includes(node.data['@rid'])) {
-          return graphOptions.aliasesColor;
-        }
-        return graphOptions.defaultColor;
-      };
+      const color = expandId === node.data['@rid']
+        ? graphOptions.selectedColor
+        : graphOptions[`${node.data['@class']}Color`];
 
       const isExpandable = expandable[node.data['@rid']];
-      const actionsRing = actionsNode === node ? paths : null;
       return (
         <SVGNode
           key={`node${node.data['@rid']}`}
           node={node}
           simulation={simulation}
-          color={color()}
+          color={color}
           r={NODE_RADIUS}
           handleClick={e => this.handleClick(e, node)}
           expandable={isExpandable}
-          actionsRing={actionsRing}
+          actionsRing={actionsNode === node ? actionsRing : null}
         />
       );
     });

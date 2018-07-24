@@ -8,15 +8,74 @@
     "KB_TOKEN": "kbToken"
   },
   "GRAPH_PROPERTIES": {
-    "ARROW_WIDTH": 6,
-    "ARROW_LENGTH": 9,
+    "ARROW_WIDTH": 3,
+    "ARROW_LENGTH": 4,
     "NODE_INIT_RADIUS": 100,
     "NODE_RADIUS": 16,
     "DETAILS_RING_RADIUS": 56
   },
   "GRAPH_DEFAULTS": {
     "LINK_STRENGTH": 0.03,
-    "CHARGE_STRENGTH": 150
+    "CHARGE_STRENGTH": 150,
+    "DEFAULT_NODE_COLOR": "#1F265B",
+    "NODE_COLORS_5": [
+      "#56ae6c",
+      "#9350a1",
+      "#b0923b",
+      "#697cd4",
+      "#ba495b"
+    ],
+    "NODE_COLORS_10": [
+      "#8750a6",
+      "#83b74d",
+      "#677fd7",
+      "#c79f3a",
+      "#b74d86",
+      "#56b772",
+      "#b8434e",
+      "#43c9b0",
+      "#bb6639",
+      "#748434"
+    ],
+    "NODE_COLORS_15": [
+      "#6972d7",
+      "#9bb140",
+      "#593787",
+      "#63c471",
+      "#c075cd",
+      "#5f8d3d",
+      "#b75192",
+      "#45c097",
+      "#da585c",
+      "#6290d7",
+      "#d49c3b",
+      "#b84568",
+      "#a1823b",
+      "#9a4130",
+      "#c35e31"
+    ],
+    "NODE_COLORS_20": [
+      "#d14a64",
+      "#48c69e",
+      "#ca58ae",
+      "#72b14d",
+      "#a76ed1",
+      "#acb839",
+      "#5e74d8",
+      "#d1972c",
+      "#4a3689",
+      "#aba94e",
+      "#7b3077",
+      "#4e9d54",
+      "#ce89d3",
+      "#c67b33",
+      "#628ed6",
+      "#bb4834",
+      "#8a702c",
+      "#bd4d7f",
+      "#d07b56",
+      "#9d3d43"
+    ]
   },
   "DEFAULT_PROPS": [
     "name",

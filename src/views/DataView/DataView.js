@@ -122,27 +122,21 @@ class DataView extends Component {
    * Triggered function for when a node object is clicked in a child component.
    * Sets the state selected ID to clicked node.
    * @param {string} rid - Clicked node identifier.
-   * @param {string} nodeClass - Class of clicked node.
    */
-  async handleClick(rid, nodeClass) {
+  async handleClick(rid) {
     const { data } = this.state;
     const { history } = this.props;
-
-    const endpointClass = await api.getClass(nodeClass || 'Ontology');
-    const { route } = endpointClass;
-
-    if (!data[rid] && nodeClass) {
-      const endpoint = `${route}/${rid.slice(1)}?neighbors=3`;
-      api.get(endpoint).then((json) => {
-        data[rid] = jc.retrocycle(json.result);
-        this.setState({ data });
-      }).catch((error) => {
+    if (!data[rid]) {
+      const endpoint = `/ontologies/${rid.slice(1)}?neighbors=3`;
+      const json = await api.get(endpoint).catch((error) => {
         if (error.status === 401) {
           history.push('/login');
         } else {
           history.push({ pathname: '/error', state: error });
         }
       });
+      data[rid] = jc.retrocycle(json.result);
+      this.setState({ data });
     }
     this.setState({ selectedId: rid });
   }
@@ -252,9 +246,7 @@ class DataView extends Component {
     const { data, detail } = this.state;
     if (!open && !detail) return;
     if (!data[node.data['@rid']]) {
-      const endpointClass = await api.getClass(node.data['@class'] || 'Disease');
-      const { route } = endpointClass;
-      const response = await api.get(`${route}/${node.data['@rid'].slice(1)}?neighbors=3`);
+      const response = await api.get(`/ontologies/${node.data['@rid'].slice(1)}?neighbors=3`);
       data[node.data['@rid']] = jc.retrocycle(response.result);
     }
     this.setState({ detail: node.data['@rid'] });

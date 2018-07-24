@@ -201,7 +201,7 @@ export default class api {
       const list = [];
       Object.keys(schema).forEach((key) => {
         if (
-          (schema[key].inherits.includes('Ontology') || key === 'Ontology')
+          schema[key].inherits.includes('Ontology')
           && schema[key].inherits.includes('V')
         ) {
           list.push({ name: key, properties: schema[key].properties });

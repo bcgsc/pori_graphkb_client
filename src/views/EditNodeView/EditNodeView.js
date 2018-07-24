@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
+import * as jc from 'json-cycle';
 import './EditNodeView.css';
 import NodeFormComponent from '../../components/NodeFormComponent/NodeFormComponent';
-
+import api from '../../services/api';
 /**
  * Component for editing ontologies.
  */
@@ -23,11 +24,14 @@ class EditNodeView extends Component {
    * Initializes editing node and query on return.
    */
   componentDidMount() {
-    const { location } = this.props;
-    if (location.state.node && location.state.query) {
-      const { node } = location.state;
+    const { match } = this.props;
+    const { rid } = match.params;
+    api.get(`/ontologies/${rid}?neighbors=3`).then((data) => {
+      const node = jc.retrocycle(data.result);
       this.setState({ node });
-    } else this.setState({ returnFlag: true });
+    }).catch(() => {
+      this.setState({ returnFlag: true });
+    });
   }
 
   /**
@@ -68,7 +72,7 @@ class EditNodeView extends Component {
 }
 
 EditNodeView.propTypes = {
-  location: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
 };
 

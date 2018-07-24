@@ -67,7 +67,7 @@ class DataView extends Component {
     const { location, history } = this.props;
 
     const filteredSearch = queryString.parse(history.location.search);
-    const endpointClass = await api.getClass(filteredSearch.class || 'Disease');
+    const endpointClass = await api.getClass(filteredSearch.class || 'Ontology');
     const { route, properties } = endpointClass;
     delete filteredSearch.class;
     const search = location.search ? `${queryString.stringify(filteredSearch)}&` : '';
@@ -127,7 +127,7 @@ class DataView extends Component {
    */
   async handleClick(rid, nodeClass) {
     const { data } = this.state;
-    const endpointClass = await api.getClass(nodeClass || 'Disease');
+    const endpointClass = await api.getClass(nodeClass || 'Ontology');
     const { route } = endpointClass;
 
     if (!data[rid] && nodeClass) {

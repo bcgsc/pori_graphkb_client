@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './TableComponent.css';
 import {
@@ -46,7 +45,6 @@ class TableComponent extends Component {
       orderBy: null,
       toggle: '',
       anchorEl: null,
-      graphRedirect: false,
       sortedData: Object.keys(props.data).map(key => props.data[key]),
       columnSelect: false,
       tableColumns: [],
@@ -59,7 +57,6 @@ class TableComponent extends Component {
     this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.handleGraphRedirect = this.handleGraphRedirect.bind(this);
     this.handleColumnOpen = this.handleColumnOpen.bind(this);
     this.handleColumnClose = this.handleColumnClose.bind(this);
     this.handleColumnCheck = this.handleColumnCheck.bind(this);
@@ -235,13 +232,6 @@ class TableComponent extends Component {
   }
 
   /**
-   * Sets the graph redirect flag to true.
-   */
-  handleGraphRedirect() {
-    this.setState({ graphRedirect: true });
-  }
-
-  /**
    * Opens column selection dialog.
    */
   handleColumnOpen() {
@@ -316,7 +306,7 @@ class TableComponent extends Component {
       sortedData,
       toggle,
       anchorEl,
-      graphRedirect,
+
       columnSelect,
       tableColumns,
     } = this.state;
@@ -329,23 +319,12 @@ class TableComponent extends Component {
       handleNodeEditStart,
       handleClick,
       handleCheckbox,
-      search,
       hidden,
       handleShowAllNodes,
       handleHideSelected,
       handleNewQuery,
+      handleGraphRedirect,
     } = this.props;
-
-    if (graphRedirect) {
-      return (
-        <Redirect
-          to={{
-            pathname: '/data/graph',
-            search,
-          }}
-        />
-      );
-    }
 
     const menu = (
       <Menu
@@ -357,7 +336,7 @@ class TableComponent extends Component {
         }}
       >
         <MenuItem
-          onClick={() => { this.handleClose(); this.handleGraphRedirect(); }}
+          onClick={() => { this.handleClose(); handleGraphRedirect(); }}
           disabled={displayed.length === 0}
           id="view-as-graph"
         >
@@ -600,16 +579,9 @@ class TableComponent extends Component {
             color="secondary"
             disabled={displayed.length === 0}
             className="graph-btn"
+            onClick={handleGraphRedirect}
           >
-            <Link
-              className="icon-link"
-              to={{
-                pathname: '/data/graph',
-                search,
-              }}
-            >
-              <TimelineIcon />
-            </Link>
+            <TimelineIcon />
           </IconButton>
         </div>
       </section>
@@ -621,7 +593,6 @@ class TableComponent extends Component {
 * @param {Object} data - Object containing query results.
 * @param {Array} displayed - Array of displayed nodes.
 * @param {Array} hidden - Array of hidden nodes.
-* @param {string} search - URL search string.
 * @param {string} selectedId - Selected node identifier.
 * @param {function} handleCheckAll - Method triggered when all rows are checked.
 * @param {function} handleNodeEditStart - Method triggered when user requests to edit a node.
@@ -634,7 +605,6 @@ class TableComponent extends Component {
 TableComponent.propTypes = {
   data: PropTypes.object.isRequired,
   displayed: PropTypes.array.isRequired,
-  search: PropTypes.string.isRequired,
   selectedId: PropTypes.string,
   handleCheckAll: PropTypes.func.isRequired,
   handleNodeEditStart: PropTypes.func.isRequired,
@@ -643,6 +613,7 @@ TableComponent.propTypes = {
   handleHideSelected: PropTypes.func.isRequired,
   handleShowAllNodes: PropTypes.func.isRequired,
   handleNewQuery: PropTypes.func,
+  handleGraphRedirect: PropTypes.func.isRequired,
   hidden: PropTypes.array,
   allColumns: PropTypes.array,
 };

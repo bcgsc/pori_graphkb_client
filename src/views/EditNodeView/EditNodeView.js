@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
 import './EditNodeView.css';
 import NodeFormComponent from '../../components/NodeFormComponent/NodeFormComponent';
 
@@ -12,7 +11,6 @@ class EditNodeView extends Component {
     super(props);
     this.state = {
       node: null,
-      returnFlag: false,
     };
 
     this.handleNodeDelete = this.handleNodeDelete.bind(this);
@@ -23,18 +21,20 @@ class EditNodeView extends Component {
    * Initializes editing node and query on return.
    */
   componentDidMount() {
-    const { location } = this.props;
-    if (location.state.node && location.state.query) {
+    const { history } = this.props;
+    const { location } = history;
+    if (location.state.node) {
       const { node } = location.state;
       this.setState({ node });
-    } else this.setState({ returnFlag: true });
+    } else history.push('/query');
   }
 
   /**
    * Sets return flag to navigate to query page.
    */
   handleNodeDelete() {
-    this.setState({ returnFlag: true });
+    const { history } = this.props;
+    history.push('/query');
   }
 
   /**
@@ -48,10 +48,8 @@ class EditNodeView extends Component {
   render() {
     const {
       node,
-      returnFlag,
     } = this.state;
 
-    if (returnFlag) return <Redirect push to="/query" />;
 
     if (node) {
       return (
@@ -68,7 +66,6 @@ class EditNodeView extends Component {
 }
 
 EditNodeView.propTypes = {
-  location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
 };
 

@@ -22,7 +22,6 @@ import BuildIcon from '@material-ui/icons/Build';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { withStyles } from '@material-ui/core/styles';
 import { CompactPicker } from 'react-color';
-import { Link } from 'react-router-dom';
 import SVGLink from '../SVGLink/SVGLink';
 import SVGNode from '../SVGNode/SVGNode';
 import api from '../../services/api';
@@ -161,6 +160,7 @@ class GraphComponent extends Component {
         chargeStrength: CHARGE_STRENGTH,
         collisionRadius: NODE_RADIUS,
         autoCollisionRadius: false,
+        linkHighlighting: true,
       },
       graphOptionsPanel: false,
       colorKey: 'selectedColor',
@@ -677,7 +677,6 @@ class GraphComponent extends Component {
       graphOptions,
       simulation,
       colorKey,
-      displayed,
       graphOptionsPanel,
       paths,
       selectedInSubClassOf,
@@ -687,8 +686,8 @@ class GraphComponent extends Component {
     } = this.state;
 
     const {
-      search,
       classes,
+      handleTableRedirect,
     } = this.props;
 
 
@@ -840,12 +839,41 @@ class GraphComponent extends Component {
                 label="Auto Collision Radius"
               />
             </div>
+            <div>
+              <FormControlLabel
+                classes={{
+                  root: classes.root,
+                  label: classes.label,
+                }}
+                control={(
+                  <Checkbox
+                    color="secondary"
+                    onChange={e => this.handleGraphOptionsChange({
+                      target: {
+                        value: e.target.checked,
+                        name: e.target.name,
+                      },
+                    })
+                    }
+                    name="linkHighlighting"
+                    checked={graphOptions.linkHighlighting}
+                  />
+                )}
+                label="Link Highlight"
+              />
+            </div>
           </div>
         </DialogContent>
       </Dialog>
     );
 
-    const linksDisplay = links.map(link => <SVGLink key={link['@rid']} link={link} />);
+    const linksDisplay = links.map(link => (
+      <SVGLink
+        key={link['@rid']}
+        link={link}
+        linkHighlighting={graphOptions.linkHighlighting}
+      />
+    ));
 
     const nodesDisplay = nodes.map((node) => {
       const color = () => {
@@ -893,18 +921,9 @@ class GraphComponent extends Component {
           <IconButton
             color="secondary"
             className="table-btn"
-            onClick={this.handleOptionsPanelOpen}
+            onClick={handleTableRedirect}
           >
-            <Link
-              to={{
-                pathname: '/data/table',
-                search,
-                state: displayed,
-              }}
-              className="icon-link"
-            >
-              <ViewListIcon />
-            </Link>
+            <ViewListIcon />
           </IconButton>
 
           <IconButton
@@ -979,14 +998,13 @@ GraphComponent.defaultProps = {
 * @param {function} handleClick - Parent component method triggered when a graph object is clicked.
 * @param {function} handleNodeEditStart - Method triggered when node edit start is requested.
 * @param {Object} data - Parent state data.
-* @param {string} search - url search string.
       */
 GraphComponent.propTypes = {
   handleClick: PropTypes.func,
   data: PropTypes.object.isRequired,
-  search: PropTypes.string.isRequired,
   classes: PropTypes.object,
   handleDetailDrawerOpen: PropTypes.func.isRequired,
+  handleTableRedirect: PropTypes.func.isRequired,
 };
 
 

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './DataView.css';
 import * as jc from 'json-cycle';
-import { Route, Redirect } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import {
   CircularProgress,
   Drawer,
@@ -39,8 +39,6 @@ class DataView extends Component {
       displayed: [],
       hidden: [],
       selectedId: null,
-      editing: false,
-      error: null,
       allColumns: [],
       detail: false,
     };
@@ -50,11 +48,12 @@ class DataView extends Component {
     this.handleCheckAll = this.handleCheckAll.bind(this);
     this.handleHideSelected = this.handleHideSelected.bind(this);
     this.handleShowAllNodes = this.handleShowAllNodes.bind(this);
-    this.handleEditDrawerClose = this.handleEditDrawerClose.bind(this);
     this.handleNodeEditStart = this.handleNodeEditStart.bind(this);
     this.handleNewQuery = this.handleNewQuery.bind(this);
     this.handleDetailDrawerOpen = this.handleDetailDrawerOpen.bind(this);
     this.handleDetailDrawerClose = this.handleDetailDrawerClose.bind(this);
+    this.handleGraphRedirect = this.handleGraphRedirect.bind(this);
+    this.handleTableRedirect = this.handleTableRedirect.bind(this);
   }
 
   /**
@@ -112,9 +111,9 @@ class DataView extends Component {
       })
       .catch((error) => {
         if (error.status === 401) {
-          this.setState({ loginRedirect: true });
+          history.push('/login');
         } else {
-          this.setState({ error });
+          history.push({ pathname: '/error', state: error });
         }
       });
   }
@@ -127,6 +126,7 @@ class DataView extends Component {
    */
   async handleClick(rid, nodeClass) {
     const { data } = this.state;
+    const { history } = this.props;
     const endpointClass = await api.getClass(nodeClass || 'Disease');
     const { route } = endpointClass;
 
@@ -137,9 +137,9 @@ class DataView extends Component {
         this.setState({ data });
       }).catch((error) => {
         if (error.status === 401) {
-          this.setState({ loginRedirect: true });
+          history.push('/login');
         } else {
-          this.setState({ error });
+          history.push({ pathname: '/error', state: error });
         }
       });
     }
@@ -199,18 +199,18 @@ class DataView extends Component {
   }
 
   /**
-   * Closes node edit drawer.
-   */
-  handleEditDrawerClose() {
-    this.setState({ editing: false });
-  }
-
-  /**
    * Sets selected ID to input node identifier and opens edit drawer.
    * @param {string} rid - Target node rid.
    */
   handleNodeEditStart(rid) {
-    this.setState({ selectedId: rid, editing: true });
+    const { data } = this.state;
+    const { history } = this.props;
+    history.push({
+      pathname: `/edit/${rid.slice(1)}`,
+      state: {
+        node: data[rid],
+      },
+    });
   }
 
   /**
@@ -218,9 +218,11 @@ class DataView extends Component {
    * @param {string} search - new search string
    */
   handleNewQuery(search) {
-    const { location } = this.props;
+    const { history } = this.props;
+    const { location } = history;
+
     if (location.search.split('?')[1] !== search) {
-      location.search = `?${search}`;
+      history.push(`/data/table?${search}`);
       this.setState({
         queryRedirect: false,
         loginRedirect: false,
@@ -228,8 +230,6 @@ class DataView extends Component {
         displayed: [],
         hidden: [],
         selectedId: null,
-        editing: false,
-        error: null,
         allColumns: [],
       }, this.componentDidMount);
     }
@@ -257,47 +257,36 @@ class DataView extends Component {
     this.setState({ detail: node.data['@rid'] });
   }
 
+  /**
+   * Handles redirect to graph from table.
+   */
+  handleGraphRedirect() {
+    const { history } = this.props;
+    history.push({ pathname: '/data/graph', search: history.location.search });
+  }
+
+  /**
+   * Handles redirect to table from graph.
+   */
+  handleTableRedirect() {
+    const { history } = this.props;
+    history.push({
+      pathname: '/data/table',
+      search: history.location.search,
+    });
+  }
+
   render() {
     const {
-      editing,
       selectedId,
       data,
       displayed,
-      loginRedirect,
-      error,
       hidden,
       allColumns,
       detail,
     } = this.state;
 
     const { classes, history } = this.props;
-    const selectedNode = data ? data[selectedId] : null;
-
-    if (editing && selectedNode) {
-      return (
-        <Redirect
-          push
-          to={
-            {
-              pathname: `/edit/${selectedNode['@rid'].slice(1)}`,
-              state: {
-                node: selectedNode,
-                query: history.location.search,
-              },
-            }
-          }
-        />
-      );
-    }
-    if (loginRedirect) {
-      return <Redirect push to={{ pathname: '/login' }} />;
-    }
-    // if (queryRedirect) {
-    //   return <Redirect push to={{ pathname: '/query', state: { noResults: true } }} />;
-    // }
-    if (error) {
-      return <Redirect push to={{ pathname: '/error', state: error }} />;
-    }
 
     if (!data) return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
 
@@ -334,6 +323,7 @@ class DataView extends Component {
         selectedId={selectedId}
         handleNodeEditStart={this.handleNodeEditStart}
         handleDetailDrawerOpen={this.handleDetailDrawerOpen}
+        handleTableRedirect={this.handleTableRedirect}
       />
     );
     const TableWithProps = () => (
@@ -342,7 +332,7 @@ class DataView extends Component {
         selectedId={selectedId}
         handleClick={this.handleClick}
         handleCheckbox={this.handleCheckbox}
-        search={history.location.search}
+        history={history}
         displayed={displayed}
         hidden={hidden}
         allColumns={allColumns}
@@ -351,6 +341,7 @@ class DataView extends Component {
         handleHideSelected={this.handleHideSelected}
         handleShowAllNodes={this.handleShowAllNodes}
         handleNewQuery={this.handleNewQuery}
+        handleGraphRedirect={this.handleGraphRedirect}
       />
     );
     return (

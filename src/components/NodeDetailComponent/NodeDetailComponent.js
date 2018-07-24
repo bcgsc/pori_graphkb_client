@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import './NodeDetailComponent.css';
 import {
   List,
@@ -134,16 +133,12 @@ class NodeDetailComponent extends Component {
                   dense
                   key={`${id}${item}`}
                   onClick={() => handleNewQuery(`subsets=${item}`)}
+                  className="list-icon"
                 >
-                  <Link
-                    to={`/data/table?subsets=${item}`}
-                    className="icon-link list-icon"
-                  >
-                    <ListItemIcon>
-                      <SearchIcon />
-                    </ListItemIcon>
-                    <ListItemText primary={item} />
-                  </Link>
+                  <ListItemIcon>
+                    <SearchIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={item} />
                 </ListItem>
               ))}
             </List>
@@ -324,7 +319,6 @@ class NodeDetailComponent extends Component {
             );
           })
         );
-
 
         return (
           <ExpansionPanel

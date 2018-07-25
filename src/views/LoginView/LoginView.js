@@ -12,7 +12,10 @@ import api from '../../services/api';
 import auth from '../../services/auth';
 
 /**
- * Component for logging in function.
+ * View to handle user authentication. Redirected to if at any point during use
+ * the application receives a 401 error code from the server. Logs in by posting
+ * user credentials to the api authentication endpoint, and stores the returned
+ * token in browser localstorage.
  */
 class LoginView extends Component {
   constructor(props) {

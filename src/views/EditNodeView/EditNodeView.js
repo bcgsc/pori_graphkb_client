@@ -4,8 +4,11 @@ import * as jc from 'json-cycle';
 import './EditNodeView.css';
 import NodeFormComponent from '../../components/NodeFormComponent/NodeFormComponent';
 import api from '../../services/api';
+
 /**
- * Component for editing ontologies.
+ * View for record editing. Contains a form component with the 'edit' variant
+ * selected. Selects node with record ID as passed in to the url (/edit/[rid]).
+ * Redirects to the home query page on form submit, or to the error page.
  */
 class EditNodeView extends Component {
   constructor(props) {

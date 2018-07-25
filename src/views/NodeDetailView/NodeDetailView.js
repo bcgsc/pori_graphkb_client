@@ -4,8 +4,10 @@ import { Redirect } from 'react-router-dom';
 import * as jc from 'json-cycle';
 import NodeDetailComponent from '../../components/NodeDetailComponent/NodeDetailComponent';
 import api from '../../services/api';
+
 /**
- * Component for editing or adding database nodes.
+ * Fullscreen view for record details. Selects record with identifier passed in through
+ * the route URL.
  */
 class NodeDetailView extends Component {
   constructor(props) {
@@ -28,7 +30,7 @@ class NodeDetailView extends Component {
    */
   componentDidMount() {
     const { match } = this.props;
-    api.get(`/diseases/${match.params.rid}?neighbors=3`).then((response) => {
+    api.get(`/ontologies/${match.params.rid}?neighbors=3`).then((response) => {
       const node = jc.retrocycle(response.result);
       this.setState({ node });
     }).catch((error) => {

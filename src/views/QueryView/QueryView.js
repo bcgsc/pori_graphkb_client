@@ -6,7 +6,8 @@ import { Button } from '@material-ui/core';
 import AutoSearchComponent from '../../components/AutoSearchComponent/AutoSearchComponent';
 
 /**
- * View representing the simple query page and the entry point into querying the database.
+ * View for simple search by name query. Form submissions are passed through the URL to
+ * the DataView module to handle the query transaction.
  */
 class QueryView extends Component {
   constructor(props) {

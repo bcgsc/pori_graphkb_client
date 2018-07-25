@@ -27,7 +27,14 @@ const styles = {
 };
 
 /**
- * State handling component for query results.
+ * View for managing state of query results. Contains sub-routes for table view (/data/table)
+ * and graph view (/data/graph) to display data. Redirects to /data/table for all other
+ * sub-routes.
+ *
+ * Handles all api calls for its child components, including firing the passed in query
+ * from the url search string, retrieving the database schema, and making subsequent
+ * individual record GETs throughout the user's session.
+ *
  */
 class DataView extends Component {
   constructor(props) {

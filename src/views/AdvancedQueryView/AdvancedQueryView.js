@@ -25,7 +25,8 @@ import util from '../../services/util';
 import config from '../../config';
 
 /**
- * Advanced query page, allows user to specify more parameters in their queries.
+ * View for in-depth database query building. Form submissions will route to
+ * the data results route to display the returned data.
  */
 class AdvancedQueryView extends Component {
   constructor(props) {

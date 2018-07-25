@@ -1,7 +1,7 @@
 import config from '../config.json';
 
 const { DEFAULT_PROPS } = config;
-const acronyms = ['id', 'uuid', 'ncit', 'uberon', 'doid'];
+const acronyms = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
 
 
 /**

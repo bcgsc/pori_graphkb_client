@@ -80,10 +80,15 @@ $toolbar-height: 64px;
     top: 0;
 }
 
+.options-panel-wrapper {
+    width: 100%;
+}
+
 .options-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-column-gap: 32px;
+    grid-template-rows: 2fr 1fr;
+    grid-template-columns: 1fr;
+    grid-column-gap: 8px;
 }
 
 .highlighted-arrow {
@@ -96,4 +101,48 @@ $toolbar-height: 64px;
         max-height: 400px;
         overflow: auto;
     }
+}
+
+.main-options-wrapper {
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+    grid-row-gap: 24px;
+    flex-grow: 1;
+    padding: 0 48px 24px 48px;
+}
+
+.advanced-options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 8px;
+    padding: 24px;
+}
+
+.advanced-options-wrapper {
+    padding: 24px;
+}
+
+.legend-wrapper {
+    height: auto;
+    position: fixed;
+    top: $banner-height;
+    overflow: auto;
+    width: 35%;
+    max-height: calc(100vh - #{$banner-height} - #{$toolbar-height});
+    @media (max-width: 768px) {
+        width: 300px;
+    }
+    .legend-content {
+        padding: 12px;
+    }
+    .node-colors {
+        width: 100%;
+    }
+}
+
+.color-chip {
+    margin: 12px;
+    width: 24px;
+    height: 24px;
 }

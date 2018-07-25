@@ -701,6 +701,9 @@ class GraphComponent extends Component {
       <Dialog
         open={graphOptionsPanel}
         onClose={this.handleOptionsPanelClose}
+        classes={{
+          paper: 'options-panel-wrapper',
+        }}
       >
         <IconButton
           onClick={this.handleOptionsPanelClose}

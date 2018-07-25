@@ -312,7 +312,6 @@ class DataView extends Component {
     const GraphWithProps = () => (
       <GraphComponent
         data={data}
-        search={history.location.search}
         handleClick={this.handleClick}
         displayed={displayed}
         selectedId={selectedId}

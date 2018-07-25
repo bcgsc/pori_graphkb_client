@@ -105,6 +105,7 @@ SVGNode.defaultProps = {
  * @param {string} color - Color of node.
  * @param {number} r - Node radius.
  * @param {Object} simulation - parent simulation that node is a member of.
+ * @param {string} label - property to display as label.
  */
 SVGNode.propTypes = {
   node: PropTypes.object.isRequired,
@@ -114,6 +115,7 @@ SVGNode.propTypes = {
   r: PropTypes.number,
   simulation: PropTypes.object.isRequired,
   actionsRing: PropTypes.array,
+  label: PropTypes.string,
 };
 
 export default SVGNode;

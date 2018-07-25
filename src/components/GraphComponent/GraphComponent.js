@@ -12,16 +12,23 @@ import {
   List,
   ListItem,
   Typography,
-  Card,
-  CardContent,
-  CardHeader,
+  Paper,
+  TextField,
+  Select,
+  MenuItem,
+  InputLabel,
+  Input,
+  FormControl,
+  Popper,
+  ListItemIcon,
+  ListItemText,
+  Divider,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import BuildIcon from '@material-ui/icons/Build';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { withStyles } from '@material-ui/core/styles';
-import { CompactPicker } from 'react-color';
 import SVGLink from '../SVGLink/SVGLink';
 import SVGNode from '../SVGNode/SVGNode';
 import api from '../../services/api';
@@ -157,25 +164,34 @@ class GraphComponent extends Component {
         collisionRadius: NODE_RADIUS,
         autoCollisionRadius: false,
         linkHighlighting: true,
+        nodeLabelProp: 'name',
+        edgeLabelProp: '',
+        nodesColor: '@class',
+        linksColor: '',
+        legend: false,
+        nodesColors: {},
+        linksColors: {},
       },
       graphOptionsPanel: false,
       colorKey: 'selectedColor',
       expandable: {},
       actionsRing,
       actionsNode: null,
+      expansions: [],
     };
 
     this.drawGraph = this.drawGraph.bind(this);
     this.initSimulation = this.initSimulation.bind(this);
     this.loadNeighbors = this.loadNeighbors.bind(this);
     this.updateColors = this.updateColors.bind(this);
-    this.handleColorPick = this.handleColorPick.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.handleGraphOptionsChange = this.handleGraphOptionsChange.bind(this);
     this.handleOptionsPanelOpen = this.handleOptionsPanelOpen.bind(this);
     this.handleOptionsPanelClose = this.handleOptionsPanelClose.bind(this);
     this.handleActionsRing = this.handleActionsRing.bind(this);
     this.handleNodeHide = this.handleNodeHide.bind(this);
+    this.handleLegendSectionToggle = this.handleLegendSectionToggle.bind(this);
+    this.handleGraphColorsChange = this.handleGraphColorsChange.bind(this);
   }
 
   /**
@@ -232,8 +248,10 @@ class GraphComponent extends Component {
       });
 
       this.drawGraph();
-      this.updateColors(validDisplayed[0]);
+      this.setState({ expandId: validDisplayed[0] });
       window.addEventListener('resize', this.handleResize);
+      this.updateColors('nodes');
+      this.updateColors('links');
     });
   }
 
@@ -257,6 +275,7 @@ class GraphComponent extends Component {
   loadNeighbors(node) {
     const {
       expandable,
+
     } = this.state;
     const { data } = this.props;
 
@@ -269,7 +288,8 @@ class GraphComponent extends Component {
         ),
       });
       this.drawGraph();
-      this.updateColors(node.data['@rid']);
+      this.updateColors('nodes');
+      this.updateColors('links');
     }
 
     delete expandable[node.data['@rid']];
@@ -319,6 +339,10 @@ class GraphComponent extends Component {
             const inRid = (edge.in || {})['@rid'] || edge.in;
             const outRid = (edge.out || {})['@rid'] || edge.out;
             const targetRid = inRid === node['@rid'] ? outRid : inRid;
+            // TODO: Remove once statements are stable.
+            if (edge.out['@class'] === 'Statement' || edge.in['@class'] === 'Statement') {
+              return;
+            }
             if (
               edge['@rid']
               && inRid
@@ -329,11 +353,14 @@ class GraphComponent extends Component {
               const link = {
                 source: outRid,
                 target: inRid,
-                type: edge['@class'],
-                '@rid': edge['@rid'],
+                data: {
+                  source: edge.source,
+                  '@class': edge['@class'],
+                  '@rid': edge['@rid'],
+                },
               };
               links.push(link);
-              graphObjects[link['@rid']] = link;
+              graphObjects[link.data['@rid']] = link;
 
               // Checks if node is already rendered
               if (outRid && !graphObjects[outRid]) {
@@ -520,38 +547,31 @@ class GraphComponent extends Component {
     this.setState({ simulation, actionsNode: null });
   }
 
-  /**
-   * Updates selected node's and its neighbors' colors.
-   * @param {string} rid - selected node identifier.
-   */
-  updateColors(rid) {
-    const { links, expandedEdgeTypes } = this.state;
-    const selected = {};
-    expandedEdgeTypes.forEach((edge) => {
-      selected[edge] = [];
-    });
-
-    links.forEach((link) => {
-      const targetRid = link.target.data
-        ? link.target.data['@rid']
-        : link.target;
-      const sourceRid = link.source.data
-        ? link.source.data['@rid']
-        : link.source;
-
-      // In
-      if (targetRid === rid) {
-        selected[`in_${link.type}`].push(sourceRid);
+  updateColors(type) {
+    /* eslint-disable */
+    const objs = this.state[type];
+    const { graphOptions } = this.state;
+    const key = graphOptions[`${type}Color`];
+    const colors = {};
+    objs.forEach((obj) => {
+      if (key.includes('.')) {
+        const keys = key.split('.');
+        if (obj.data[keys[0]][keys[1]] && !colors[obj.data[keys[0]][keys[1]]]) {
+          colors[obj.data[keys[0]][keys[1]]] = '';
+        }
       }
-      // Out
-      if (sourceRid === rid) {
-        selected[`out_${link.type}`].push(targetRid);
+      if (obj.data[key] && !colors[obj.data[key]]) {
+        colors[obj.data[key]] = '';
       }
     });
-    this.setState({
-      expandId: rid,
-      actionsNode: null,
-    });
+    const pallette = util.getPallette(Object.keys(colors).length);
+    Object.keys(colors).forEach((color, i) => { colors[color] = pallette[i + 1]; });
+
+    graphOptions[`${type}Colors`] = colors;
+    graphOptions[`${type}Pallette`] = pallette;
+    graphOptions.selectedColor = graphOptions.nodesPallette[0];
+    this.setState({ graphOptions }, () => console.log(graphOptions));
+    /* eslint-enable */
   }
 
   /**
@@ -569,26 +589,8 @@ class GraphComponent extends Component {
       this.setState({ actionsNode: node });
     } else {
       handleDetailDrawerOpen(node);
-      this.updateColors(node.data['@rid']);
+      this.setState({ expandId: node.data['@rid'] });
     }
-  }
-
-  /**
-   * Updates color indicators for related/selected nodes
-   * @param {Object} color - color object as returned by the colorpicker.
-   */
-  handleColorPick(color) {
-    const { graphOptions, colorKey } = this.state;
-    graphOptions[colorKey] = color.hex;
-    this.setState({ graphOptions });
-  }
-
-  /**
-   * Changes the property bound to the colorpicker.
-   * @param {string} key - object key for target property.
-   */
-  handleColorKeyChange(key) {
-    this.setState({ colorKey: key });
   }
 
   /**
@@ -604,6 +606,11 @@ class GraphComponent extends Component {
     });
   }
 
+  handleGraphColorsChange(e, type) {
+    const { graphOptions } = this.state;
+    graphOptions[`${type}Color`] = e.target.value;
+    this.setState({ graphOptions }, () => this.updateColors(type));
+  }
 
   /**
    * Handles user selections within the actions ring.
@@ -644,7 +651,7 @@ class GraphComponent extends Component {
       if (actionsNode.data[edgeType] && actionsNode.data[edgeType].length !== 0) {
         actionsNode.data[edgeType].forEach((edge) => {
           const edgeRid = edge['@rid'] || edge;
-          const j = links.findIndex(l => l['@rid'] === edgeRid);
+          const j = links.findIndex(l => l.data['@rid'] === edgeRid);
           if (j !== -1) {
             const link = links[j];
             const targetRid = link.source.data['@rid'] === actionsNode.data['@rid']
@@ -664,7 +671,18 @@ class GraphComponent extends Component {
       graphObjects,
       actionsNode: null,
       expandId: null,
-    });
+    }, () => { this.updateColors('nodes'); this.updateColors('links'); });
+  }
+
+  handleLegendSectionToggle(key) {
+    const { expansions } = this.state;
+    if (expansions.includes(key)) {
+      const newList = expansions.filter(n => !n.startsWith(key));
+      this.setState({ expansions: newList });
+    } else {
+      expansions.push(key);
+      this.setState({ expansions });
+    }
   }
 
   render() {
@@ -676,10 +694,8 @@ class GraphComponent extends Component {
       expandable,
       graphOptions,
       simulation,
-      colorKey,
       graphOptionsPanel,
       actionsRing,
-      ontologyTypes,
     } = this.state;
 
     const {
@@ -688,8 +704,6 @@ class GraphComponent extends Component {
     } = this.props;
 
     if (!simulation) return null;
-
-    const isSelected = key => key === colorKey;
 
     const endArrowSize = {
       d: `M0,0,L0,${ARROW_WIDTH} L ${ARROW_LENGTH}, ${ARROW_WIDTH / 2} z`,
@@ -714,72 +728,88 @@ class GraphComponent extends Component {
         <DialogTitle>
           Graph Options
         </DialogTitle>
-        <DialogContent className="options-grid">
-          <div>
-            <Card className="edge-color-list">
-              <CardHeader subheader="Node Coloring" />
-              <CardContent>
-                <div className="compact-picker">
-                  <CompactPicker
-                    color={graphOptions[colorKey]}
-                    onChangeComplete={this.handleColorPick}
+        <DialogContent>
+          <div className="main-options-wrapper">
+            <FormControl className="graph-option-label">
+              <InputLabel htmlFor="nodeLabelProp">Label nodes by</InputLabel>
+              <Select
+                name="nodeLabelProp"
+                input={<Input name="nodeLabelProp" id="nodeLabelProp" />}
+                onChange={this.handleGraphOptionsChange}
+                value={graphOptions.nodeLabelProp}
+              >
+                <MenuItem value="name">Name</MenuItem>
+                <MenuItem value="sourceId">Source ID</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl className="graph-option-label">
+              <InputLabel htmlFor="nodesColor">Color nodes by</InputLabel>
+              <Select
+                name="nodesColor"
+                input={<Input name="nodesColor" id="nodesColor" />}
+                onChange={e => this.handleGraphColorsChange(e, 'nodes')}
+                value={graphOptions.nodesColor}
+              >
+                <MenuItem value="">No Coloring</MenuItem>
+                <MenuItem value="@class">Class</MenuItem>
+                <MenuItem value="source.name">Source</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl className="graph-option-label">
+              <InputLabel htmlFor="edgeLabelProp">Label edges by</InputLabel>
+              <Select
+                input={<Input name="edgeLabelProp" id="edgeLabelProp" />}
+                onChange={this.handleGraphOptionsChange}
+                value={graphOptions.edgeLabelProp}
+              >
+                <MenuItem value="">None</MenuItem>
+                <MenuItem value="@class">Class</MenuItem>
+                <MenuItem value="source.name">Source</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl className="graph-option-label">
+              <InputLabel htmlFor="linksColor">Color edges by</InputLabel>
+              <Select
+                input={<Input name="linksColor" id="linksColor" />}
+                onChange={e => this.handleGraphColorsChange(e, 'links')}
+                value={graphOptions.linksColor}
+              >
+                <MenuItem value="">No Coloring</MenuItem>
+                <MenuItem value="@class">Class</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl className="graph-option-label">
+              <FormControlLabel
+                classes={{
+                  root: classes.root,
+                  label: classes.label,
+                }}
+                control={(
+                  <Checkbox
+                    color="secondary"
+                    onChange={e => this.handleGraphOptionsChange({
+                      target: {
+                        value: e.target.checked,
+                        name: e.target.name,
+                      },
+                    })
+                    }
+                    name="legend"
+                    checked={graphOptions.legend}
                   />
-                </div>
-                <List dense className="edge-colors">
-                  <ListItem>
-                    <Typography
-                      style={
-                        {
-                          color: graphOptions.selectedColor,
-                          border: isSelected('selectedColor')
-                            ? `solid 1px ${graphOptions.selectedColor}`
-                            : 'none',
-                          padding: isSelected('selectedColor')
-                            ? '8px'
-                            : '9px',
-                          borderRadius: '4px',
-                          cursor: 'pointer',
-                        }
-                      }
-                      onClick={() => this.handleColorKeyChange('selectedColor')}
-                    >
-                      selected
-                    </Typography>
-                  </ListItem>
-                  {ontologyTypes.map(key => (
-                    <ListItem key={key.name}>
-                      <Typography
-                        style={
-                          {
-                            color: graphOptions[`${key.name}Color`],
-                            border: isSelected(`${key.name}Color`)
-                              ? `solid 1px ${graphOptions[`${key.name}Color`]}`
-                              : 'none',
-                            padding: isSelected(`${key.name}Color`)
-                              ? '8px'
-                              : '9px',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                          }
-                        }
-                        onClick={() => this.handleColorKeyChange(`${key.name}Color`)}
-                      >
-                        {key.name}
-                      </Typography>
-                    </ListItem>
-                  ))}
-                </List>
-              </CardContent>
-            </Card>
+                )}
+                label="Show Coloring Legend"
+              />
+            </FormControl>
           </div>
-
-          <div className="graph-options-wrapper">
-            <div className="graph-input-wrapper">
-              <span className="label">
-                Link Strength
-              </span>
-              <div className="graph-input">
-                <input
+          <Divider />
+          <div className="advanced-options-wrapper">
+            <Typography variant="title" color="textSecondary">
+              Advanced Graph Options
+            </Typography>
+            <div className="advanced-options-grid">
+              <div className="graph-input-wrapper">
+                <TextField
                   label="Link Strength"
                   name="linkStrength"
                   type="number"
@@ -788,13 +818,8 @@ class GraphComponent extends Component {
                   step={0.001}
                 />
               </div>
-            </div>
-            <div className="graph-input-wrapper">
-              <span className="label">
-                Charge Strength
-              </span>
-              <div className="graph-input">
-                <input
+              <div className="graph-input-wrapper">
+                <TextField
                   label="Charge Strength"
                   name="chargeStrength"
                   type="number"
@@ -802,13 +827,8 @@ class GraphComponent extends Component {
                   onChange={this.handleGraphOptionsChange}
                 />
               </div>
-            </div>
-            <div className="graph-input-wrapper">
-              <span className="label">
-                Collision Radius
-              </span>
-              <div className="graph-input">
-                <input
+              <div className="graph-input-wrapper">
+                <TextField
                   label="Collision Radius"
                   name="collisionRadius"
                   type="number"
@@ -816,70 +836,105 @@ class GraphComponent extends Component {
                   onChange={this.handleGraphOptionsChange}
                 />
               </div>
-            </div>
-            <div>
-              <FormControlLabel
-                classes={{
-                  root: classes.root,
-                  label: classes.label,
-                }}
-                control={(
-                  <Checkbox
-                    color="secondary"
-                    onChange={e => this.handleGraphOptionsChange({
-                      target: {
-                        value: e.target.checked,
-                        name: e.target.name,
-                      },
-                    })
-                    }
-                    name="autoCollisionRadius"
-                    checked={graphOptions.autoCollisionRadius}
-                  />
-                )}
-                label="Auto Collision Radius"
-              />
-            </div>
-            <div>
-              <FormControlLabel
-                classes={{
-                  root: classes.root,
-                  label: classes.label,
-                }}
-                control={(
-                  <Checkbox
-                    color="secondary"
-                    onChange={e => this.handleGraphOptionsChange({
-                      target: {
-                        value: e.target.checked,
-                        name: e.target.name,
-                      },
-                    })
-                    }
-                    name="linkHighlighting"
-                    checked={graphOptions.linkHighlighting}
-                  />
-                )}
-                label="Link Highlight"
-              />
+              <div>
+                <FormControlLabel
+                  classes={{
+                    root: classes.root,
+                    label: classes.label,
+                  }}
+                  control={(
+                    <Checkbox
+                      color="secondary"
+                      onChange={e => this.handleGraphOptionsChange({
+                        target: {
+                          value: e.target.checked,
+                          name: e.target.name,
+                        },
+                      })
+                      }
+                      name="autoCollisionRadius"
+                      checked={graphOptions.autoCollisionRadius}
+                    />
+                  )}
+                  label="Auto Space Nodes"
+                />
+              </div>
             </div>
           </div>
         </DialogContent>
       </Dialog>
     );
 
+    const legend = (
+      <Paper className="legend-wrapper">
+        <IconButton
+          name="legend"
+          onClick={() => this.handleGraphOptionsChange({
+            target: {
+              value: false,
+              name: 'legend',
+            },
+          })}
+        >
+          <CloseIcon />
+        </IconButton>
+        <div className="legend-content">
+          <Typography variant="subheading">Nodes</Typography>
+          <List className="node-colors" dense>
+            <ListItem>
+              <ListItemIcon>
+                <div
+                  style={
+                    {
+                      backgroundColor: graphOptions.selectedColor,
+                      cursor: 'pointer',
+                    }
+                  }
+                  className="color-chip"
+                />
+              </ListItemIcon>
+              <ListItemText primary="Selected" />
+            </ListItem>
+            {Object.keys(graphOptions.nodesColors).map(key => (
+              <ListItem key={key}>
+                <ListItemIcon>
+                  <div
+                    style={
+                      {
+                        backgroundColor: graphOptions.nodesColors[key],
+                        cursor: 'pointer',
+                      }
+                    }
+                    className="color-chip"
+                  />
+                </ListItemIcon>
+                <ListItemText primary={key} />
+              </ListItem>
+            ))}
+          </List>
+        </div>
+      </Paper>
+    );
+
     const linksDisplay = links.map(link => (
       <SVGLink
-        key={link['@rid']}
+        key={link.data['@rid']}
         link={link}
         linkHighlighting={graphOptions.linkHighlighting}
       />
     ));
 
     const nodesDisplay = nodes.map((node) => {
+      let nodeColorKey = '';
+      if (graphOptions.nodesColor && graphOptions.nodesColor.includes('.')) {
+        const keys = graphOptions.nodesColor.split('.');
+        nodeColorKey = node.data[keys[0]][keys[1]];
+      } else if (graphOptions.nodesColor) {
+        nodeColorKey = node.data[graphOptions.nodesColor];
+      }
       const color = expandId === node.data['@rid']
         ? graphOptions.selectedColor
-        : graphOptions[`${node.data['@class']}Color`];
+        : graphOptions.nodesColors[nodeColorKey];
 
       const isExpandable = expandable[node.data['@rid']];
       return (
@@ -892,6 +947,7 @@ class GraphComponent extends Component {
           handleClick={e => this.handleClick(e, node)}
           expandable={isExpandable}
           actionsRing={actionsNode === node ? actionsRing : null}
+          label={graphOptions.nodeLabelProp}
         />
       );
     });
@@ -899,6 +955,9 @@ class GraphComponent extends Component {
     return (
       <div className="graph-wrapper">
         {optionsPanel}
+        <Popper open={graphOptions.legend}>
+          {legend}
+        </Popper>
         <div className="toolbar">
           <IconButton
             color="secondary"

@@ -135,47 +135,26 @@ export default class util {
     return payload;
   }
 
-  static chooseColor(x, n) {
-    const j = x < n / 2 ? x * 2 : Math.floor(x - n / 2) * 2 + 1;
-    const i = Math.floor(j / n * 12);
-    const y = Math.round(j / n * 12 * 255) - i * 255;
+  static chooseColor(i, n) {
+    let pallette = [];
 
-    if (i < 1) {
-      return `rgb(${y}, 255, 255)`;
+    if (n < 5) {
+      pallette = config.GRAPH_DEFAULTS.NODE_COLORS_5;
     }
-    if (i < 2) {
-      return `rgb(0, ${y}, 255)`;
+    if (n < 10) {
+      pallette = config.GRAPH_DEFAULTS.NODE_COLORS_10;
     }
-    if (i < 3) {
-      return `rgb(0, 0, ${y})`;
+    if (n < 15) {
+      pallette = config.GRAPH_DEFAULTS.NODE_COLORS_15;
     }
-    if (i < 4) {
-      return `rgb(0, ${y}, 0)`;
+    if (n < 20) {
+      pallette = config.GRAPH_DEFAULTS.NODE_COLORS_20;
     }
-    if (i < 5) {
-      return `rgb(255, ${y}, 0)`;
+
+    if (i < pallette.length) {
+      return pallette[i];
     }
-    if (i < 6) {
-      return `rgb(${y}, 255, 0)`;
-    }
-    if (i < 7) {
-      return `rgb(255, 255, ${y})`;
-    }
-    if (i < 8) {
-      return `rgb(255, ${y}, 255)`;
-    }
-    if (i < 9) {
-      return `rgb(${y}, 0, 255)`;
-    }
-    if (i < 10) {
-      return `rgb(0, 255, ${y})`;
-    }
-    if (i < 11) {
-      return `rgb(255, 0, ${y})`;
-    }
-    if (i < 12) {
-      return `rgb(${y}, 0, 0)`;
-    }
-    return '#000';
+
+    return Math.round(Math.random() * (255 ** 3)).toString(16);
   }
 }

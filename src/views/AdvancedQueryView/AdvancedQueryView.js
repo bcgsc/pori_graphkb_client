@@ -47,7 +47,8 @@ class AdvancedQueryView extends Component {
   async componentDidMount() {
     const { history } = this.props;
     const form = {};
-    const ontologyTypes = await api.getOntologyVertices()
+    const ontologyTypes = [{ name: 'Ontology', properties: (await api.getClass('Ontology')).properties }];
+    const schemaVertices = await api.getOntologyVertices()
       .catch((error) => {
         if (error.status === 401) {
           history.push('/login');
@@ -55,6 +56,7 @@ class AdvancedQueryView extends Component {
           history.push({ pathname: '/error', state: error });
         }
       });
+    ontologyTypes.push(...schemaVertices);
     form['@class'] = ontologyTypes[0].name;
 
     const editableProps = (await api.getClass(form['@class'])).properties;
@@ -225,40 +227,15 @@ class AdvancedQueryView extends Component {
         // database and store its rid.
 
         // Decide which endpoint to query.
-        const classKey = `${key}.class`;
         let endpoint;
-
-        // If a linkedClass is specified, restrict querying to that endpoint, and do not
-        // show a resource selector. Otherwise, choose a dropdown for the class (might
-        // remove this when general ontology endpoint is pushed to production).
-        const resourceSelector = linkedClass ? null
-          : (
-            <div style={{ marginBottom: '8px' }}>
-              <ResourceSelectComponent
-                value={form[classKey]}
-                onChange={this.handleChange}
-                name={classKey}
-                label={`${util.antiCamelCase(key)} Class`}
-                resources={ontologyTypes}
-              >
-                {ontologyClass => (
-                  <MenuItem key={ontologyClass.name} value={ontologyClass.name}>
-                    {ontologyClass.name}
-                  </MenuItem>
-                )}
-              </ResourceSelectComponent>
-            </div>
-          );
-
         if (linkedClass) {
           endpoint = util.pluralize(linkedClass);
         } else {
-          endpoint = util.pluralize(form[classKey]);
+          endpoint = 'ontologies';
         }
 
         return (
           <ListItem key={key} style={{ display: 'block' }}>
-            {resourceSelector}
             <div>
               <AutoSearchComponent
                 value={value}
@@ -268,7 +245,6 @@ class AdvancedQueryView extends Component {
                 id={key}
                 limit={30}
                 endpoint={endpoint}
-                disabled={(!linkedClass && !form[classKey])}
                 property={!linkedClass ? ['name', 'sourceId'] : undefined}
               />
             </div>

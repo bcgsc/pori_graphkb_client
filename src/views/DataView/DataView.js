@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './DataView.css';
 import * as jc from 'json-cycle';
-import { Route } from 'react-router-dom';
+import { Route, Redirect, Switch } from 'react-router-dom';
 import {
   CircularProgress,
   Drawer,
@@ -64,7 +64,8 @@ class DataView extends Component {
     let { queryRedirect } = this.state;
     const { loginRedirect } = this.state;
     const { location, history } = this.props;
-
+    const edgeTypes = await api.getOntologyEdges();
+    const ontologyTypes = await api.getOntologyVertices();
     const filteredSearch = queryString.parse(history.location.search);
     const endpointClass = await api.getClass(filteredSearch['@class'] || 'Ontology');
     const { route, properties } = endpointClass;
@@ -107,6 +108,8 @@ class DataView extends Component {
           queryRedirect,
           loginRedirect,
           allColumns,
+          edgeTypes,
+          ontologyTypes,
         });
       })
       .catch((error) => {
@@ -279,9 +282,14 @@ class DataView extends Component {
       hidden,
       allColumns,
       detail,
+      edgeTypes,
+      ontologyTypes,
     } = this.state;
 
-    const { classes, history } = this.props;
+    const {
+      classes,
+      history,
+    } = this.props;
 
     if (!data) return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
 
@@ -318,6 +326,8 @@ class DataView extends Component {
         handleNodeEditStart={this.handleNodeEditStart}
         handleDetailDrawerOpen={this.handleDetailDrawerOpen}
         handleTableRedirect={this.handleTableRedirect}
+        edgeTypes={edgeTypes}
+        ontologyTypes={ontologyTypes}
       />
     );
     const TableWithProps = () => (
@@ -359,10 +369,15 @@ class DataView extends Component {
         {detailDrawer}
         {Object.keys(data).length !== 0
           ? (
-            <React.Fragment>
+            <Switch>
               <Route exact path="/data/table" render={TableWithProps} />
               <Route exact path="/data/graph" render={GraphWithProps} />
-            </React.Fragment>
+              <Route exact path="/data/*">
+                {
+                  <Redirect to={`/data/table${history.location.search}`} />
+                }
+              </Route>
+            </Switch>
           ) : (
             <React.Fragment>
               <Typography variant="headline">

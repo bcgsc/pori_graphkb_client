@@ -31,7 +31,6 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import { withStyles } from '@material-ui/core/styles';
 import SVGLink from '../SVGLink/SVGLink';
 import SVGNode from '../SVGNode/SVGNode';
-import api from '../../services/api';
 import util from '../../services/util';
 import config from '../../config.json';
 
@@ -203,13 +202,13 @@ class GraphComponent extends Component {
       selectedId,
       displayed,
       data,
+      edgeTypes,
+      ontologyTypes,
     } = this.props;
     const { graphOptions } = this.state;
     const selected = {};
     const simulation = d3.forceSimulation();
 
-    const edgeTypes = await api.getOntologyEdges();
-    const ontologyTypes = await api.getOntologyVertices();
     // Defines what edge keys to look for.
     const expandedEdgeTypes = edgeTypes.reduce((r, e) => {
       r.push(`in_${e}`);
@@ -1034,18 +1033,24 @@ GraphComponent.defaultProps = {
 };
 
 /**
-* @param {function} handleNodeAdd - Parent component method triggered when a node
-      * is added to the graph.
-* @param {function} handleClick - Parent component method triggered when a graph object is clicked.
-* @param {function} handleNodeEditStart - Method triggered when node edit start is requested.
-* @param {Object} data - Parent state data.
-      */
+  * @param {function} handleClick - Parent component method triggered when a
+  * graph object is clicked.
+  * @param {Object} data - Parent state data.
+  * @param {function} handleDetailDrawerOpen - Method to handle opening of detail drawer.
+  * @param {function} handleTableRedirect - Method to handle a redirect to the table view.
+  * @param {Array} edgeTypes - Array containing all the different edge types as defined by
+  * the database schema.
+  * @param {Array} ontologyTypes - Array containing individual schemas for each Ontology
+  * subclass as defined by the schema.
+  */
 GraphComponent.propTypes = {
   handleClick: PropTypes.func,
   data: PropTypes.object.isRequired,
   classes: PropTypes.object,
   handleDetailDrawerOpen: PropTypes.func.isRequired,
   handleTableRedirect: PropTypes.func.isRequired,
+  edgeTypes: PropTypes.array.isRequired,
+  ontologyTypes: PropTypes.array.isRequired,
 };
 
 

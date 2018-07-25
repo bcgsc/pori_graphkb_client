@@ -64,6 +64,7 @@ class SVGNode extends PureComponent {
       color,
       r,
       actionsRing,
+      label,
     } = this.props;
 
     return (
@@ -73,7 +74,7 @@ class SVGNode extends PureComponent {
       >
         <text>
           <tspan className="node-name" dy={28}>
-            {node.data.name || node.data.sourceId}
+            {node.data[label] || ''}
           </tspan>
         </text>
         {actionsRing}
@@ -93,9 +94,10 @@ class SVGNode extends PureComponent {
 SVGNode.defaultProps = {
   handleClick: null,
   expandable: false,
-  color: '#000',
+  color: '#26328C',
   r: 4,
   actionsRing: null,
+  label: 'name',
 };
 
 /**

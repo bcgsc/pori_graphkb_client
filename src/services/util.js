@@ -157,4 +157,25 @@ export default class util {
 
     return Math.round(Math.random() * (255 ** 3)).toString(16);
   }
+
+  static getPallette(n) {
+    if (n < 5) {
+      return config.GRAPH_DEFAULTS.NODE_COLORS_5;
+    }
+    if (n < 10) {
+      return config.GRAPH_DEFAULTS.NODE_COLORS_10;
+    }
+    if (n < 15) {
+      return config.GRAPH_DEFAULTS.NODE_COLORS_15;
+    }
+    if (n < 20) {
+      return config.GRAPH_DEFAULTS.NODE_COLORS_20;
+    }
+    const list = config.GRAPH_DEFAULTS.NODE_COLORS_20;
+    for (let i = 20; i < n; i += 1) {
+      const color = `000000${Math.round(Math.random() * (255 ** 3)).toString(16)}`;
+      list.push(`#${color.substr(color.length - 6)}`);
+    }
+    return list;
+  }
 }

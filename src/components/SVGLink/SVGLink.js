@@ -46,18 +46,18 @@ class SVGLink extends Component {
         />
         <path
           className="link"
-          id={`link${link['@rid']}`}
+          id={`link${link.data['@rid']}`}
           d={`M${(link.source.x || 0)} ${(link.source.y || 0)}L${(link.target.x || 0)} ${(link.target.y || 0)}`}
           markerEnd={marker}
         />
         {displayType && linkHighlighting ? (
           <text className="link-label">
             <textPath
-              href={`#link${link['@rid']}`}
+              href={`#link${link.data['@rid']}`}
               startOffset="20%"
               side={left ? 'left' : 'right'}
             >
-              {link.type}
+              {link.data['@class']}
             </textPath>
           </text>
         ) : null}

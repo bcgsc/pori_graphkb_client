@@ -614,41 +614,15 @@ class NodeFormComponent extends Component {
         // database and store its rid.
 
         // Decide which endpoint to query.
-        const classKey = `${key}.class`;
         let endpoint;
-
-        // If a linkedClass is specified, restrict querying to that endpoint, and do not
-        // show a resource selector. Otherwise, choose a dropdown for the class (might
-        // remove this when general ontology endpoint is pushed to production).
-        const resourceSelector = linkedClass ? null
-          : (
-            <div style={{ marginBottom: '8px' }}>
-              <ResourceSelectComponent
-                value={form[classKey]}
-                onChange={this.handleFormChange}
-                name={classKey}
-                label={`${util.antiCamelCase(key)} Class`}
-                resources={ontologyTypes}
-                required={mandatory}
-              >
-                {ontologyClass => (
-                  <MenuItem key={ontologyClass.name} value={ontologyClass.name}>
-                    {ontologyClass.name}
-                  </MenuItem>
-                )}
-              </ResourceSelectComponent>
-            </div>
-          );
-
         if (linkedClass) {
           endpoint = util.pluralize(linkedClass);
         } else {
-          endpoint = util.pluralize(form[classKey]);
+          endpoint = 'ontologies';
         }
 
         return (
           <ListItem key={key} style={{ display: 'block' }}>
-            {resourceSelector}
             <div>
               <AutoSearchComponent
                 value={value}
@@ -658,7 +632,6 @@ class NodeFormComponent extends Component {
                 id={key}
                 limit={30}
                 endpoint={endpoint}
-                disabled={(!linkedClass && !form[classKey])}
                 required={mandatory}
                 property={!linkedClass ? ['name', 'sourceId'] : undefined}
               />

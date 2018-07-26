@@ -15,6 +15,8 @@ import {
   Radio,
   Tooltip,
   InputAdornment,
+  Divider,
+  Paper,
 } from '@material-ui/core/';
 import HelpIcon from '@material-ui/icons/Help';
 import queryString from 'query-string';
@@ -265,27 +267,29 @@ class AdvancedQueryView extends Component {
     };
 
     return (
-      <div className="adv-wrapper">
-        <Typography color="textSecondary" variant="headline" id="adv-title">
+      <Paper className="adv-wrapper" elevation={4}>
+        <Typography variant="headline" id="adv-title">
           Advanced Query
         </Typography>
-        <div className="endpoint-selection">
-          <ResourceSelectComponent
-            value={form['@class']}
-            onChange={this.handleClassChange}
-            name="@class"
-            label="Class"
-            id="class-adv"
-            resources={ontologyTypes}
-          >
-            {resource => (
-              <MenuItem key={resource.name} value={resource.name}>
-                {resource.name ? resource.name : '---'}
-              </MenuItem>
-            )}
-          </ResourceSelectComponent>
-        </div>
+        <Divider />
+
         <List component="nav">
+          <ListItem className="input-wrapper">
+            <ResourceSelectComponent
+              value={form['@class']}
+              onChange={this.handleClassChange}
+              name="@class"
+              label="Class"
+              id="class-adv"
+              resources={ontologyTypes}
+            >
+              {resource => (
+                <MenuItem key={resource.name} value={resource.name}>
+                  {resource.name ? resource.name : '---'}
+                </MenuItem>
+              )}
+            </ResourceSelectComponent>
+          </ListItem>
           {Object.keys(form)
             .filter(key => !key.includes('.'))
             .map(key => formatInputSection(key, form[key]))
@@ -311,7 +315,7 @@ class AdvancedQueryView extends Component {
             Search
           </Button>
         </div>
-      </div>
+      </Paper>
     );
   }
 }

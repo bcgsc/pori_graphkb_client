@@ -110,6 +110,7 @@ class AdvancedQueryView extends Component {
         form[name] = '';
       }
     });
+    editableProps.push(...config.ONTOLOGY_QUERY_PARAMS);
     form['@class'] = e.target.value;
     this.setState({
       form,

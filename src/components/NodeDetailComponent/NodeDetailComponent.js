@@ -380,38 +380,36 @@ class NodeDetailComponent extends Component {
     const className = variant === 'table' ? 'detail-table' : 'detail-graph';
 
     return (
-      <Card style={{ overflowY: 'auto', height: '100%' }}>
-        <div className="detail-grid-wrapper">
-          <div className={`node-properties ${className}`}>
-            <Card className="basic-properties">
-              <CardContent>
-                <Typography paragraph variant="title" component="h1">
-                  Properties:
-                  <Divider />
-                </Typography>
-                {Object.keys(filteredNode).map(key => formatProperty(key, filteredNode[key], ''))}
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent>
-                <Typography paragraph variant="title" component="h1">
-                  Relationships:
-                  <Divider />
-                </Typography>
-                {relationships.length !== 0 ? relationships : (
-                  <Typography variant="caption" style={{ margin: 'auto' }}>No relationships</Typography>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-          <div className="node-edit-btn">
-            {children}
-            <IconButton
-              onClick={() => handleNodeEditStart(node['@rid'], node['@class'])}
-            >
-              <EditIcon />
-            </IconButton>
-          </div>
+      <Card style={{ height: '100%', overflowY: 'auto' }}>
+        <div className="node-edit-btn">
+          {children}
+          <IconButton
+            onClick={() => handleNodeEditStart(node['@rid'], node['@class'])}
+          >
+            <EditIcon />
+          </IconButton>
+        </div>
+        <div className={`node-properties ${className}`}>
+          <Card className="properties">
+            <CardContent>
+              <Typography paragraph variant="title" component="h1">
+                Properties:
+                <Divider />
+              </Typography>
+              {Object.keys(filteredNode).map(key => formatProperty(key, filteredNode[key], ''))}
+            </CardContent>
+          </Card>
+          <Card className="properties">
+            <CardContent>
+              <Typography paragraph variant="title" component="h1">
+                Relationships:
+                <Divider />
+              </Typography>
+              {relationships.length !== 0 ? relationships : (
+                <Typography variant="caption" style={{ margin: 'auto' }}>No relationships</Typography>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </Card>
     );

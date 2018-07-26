@@ -165,7 +165,7 @@ class GraphComponent extends Component {
         autoCollisionRadius: false,
         linkHighlighting: true,
         nodeLabelProp: 'name',
-        edgeLabelProp: '',
+        linkLabelProp: '@class',
         nodesColor: '@class',
         linksColor: '',
         legend: false,
@@ -173,7 +173,6 @@ class GraphComponent extends Component {
         linksColors: {},
       },
       graphOptionsPanel: false,
-      colorKey: 'selectedColor',
       expandable: {},
       actionsRing,
       actionsNode: null,
@@ -756,11 +755,11 @@ class GraphComponent extends Component {
               </Select>
             </FormControl>
             <FormControl className="graph-option-label">
-              <InputLabel htmlFor="edgeLabelProp">Label edges by</InputLabel>
+              <InputLabel htmlFor="linkLabelProp">Label edges by</InputLabel>
               <Select
-                input={<Input name="edgeLabelProp" id="edgeLabelProp" />}
+                input={<Input name="linkLabelProp" id="linkLabelProp" />}
                 onChange={this.handleGraphOptionsChange}
-                value={graphOptions.edgeLabelProp}
+                value={graphOptions.linkLabelProp}
               >
                 <MenuItem value="">None</MenuItem>
                 <MenuItem value="@class">Class</MenuItem>

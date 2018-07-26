@@ -31,7 +31,13 @@ class SVGLink extends Component {
   }
 
   render() {
-    const { link, linkHighlighting } = this.props;
+    const {
+      link,
+      linkHighlighting,
+      detail,
+      labelKey,
+    } = this.props;
+
     const { displayType } = this.state;
     const left = link.source.x < link.target.x;
 
@@ -41,6 +47,15 @@ class SVGLink extends Component {
     } else if (link.source !== link.target) {
       marker = 'url(#endArrow)';
     }
+
+    let label = '';
+    if (labelKey && labelKey.includes('.')) {
+      const keys = labelKey.split('.');
+      label = link.data[keys[0]][keys[1]];
+    } else if (labelKey) {
+      label = link.data[labelKey];
+    }
+
     return (
       <g
         onMouseEnter={this.handleDisplayTypeEnter}
@@ -55,15 +70,16 @@ class SVGLink extends Component {
           id={`link${link.data['@rid']}`}
           d={`M${(link.source.x || 0)} ${(link.source.y || 0)}L${(link.target.x || 0)} ${(link.target.y || 0)}`}
           markerEnd={marker}
+          style={{ opacity: detail ? 0.6 : 1 }}
         />
-        {displayType && linkHighlighting ? (
+        {displayType ? (
           <text className="link-label">
             <textPath
               href={`#link${link.data['@rid']}`}
               startOffset="20%"
               side={left ? 'left' : 'right'}
             >
-              {link.data['@class']}
+              {label}
             </textPath>
           </text>
         ) : null}
@@ -79,10 +95,14 @@ class SVGLink extends Component {
 SVGLink.propTypes = {
   link: PropTypes.object.isRequired,
   linkHighlighting: PropTypes.bool,
+  detail: PropTypes.string,
+  labelKey: PropTypes.string,
 };
 
 SVGLink.defaultProps = {
   linkHighlighting: true,
+  detail: null,
+  labelKey: null,
 };
 
 export default SVGLink;

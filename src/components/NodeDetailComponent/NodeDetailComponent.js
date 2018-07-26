@@ -14,8 +14,9 @@ import {
   ExpansionPanelDetails,
   ExpansionPanelSummary,
   ListItemIcon,
+  Tooltip,
 } from '@material-ui/core';
-import AssignmentIcon from '@material-ui/icons/Assignment';
+import BookmarkIcon from '@material-ui/icons/Bookmark';
 import EditIcon from '@material-ui/icons/Edit';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import SearchIcon from '@material-ui/icons/Search';
@@ -116,7 +117,7 @@ class NodeDetailComponent extends Component {
             <Typography variant="subheading">
               {`${util.antiCamelCase(key)}:`}
             </Typography>
-            <Typography paragraph variant="caption">
+            <Typography paragraph variant="body1" color="textSecondary">
               {value.toString()}
             </Typography>
           </React.Fragment>
@@ -251,9 +252,11 @@ class NodeDetailComponent extends Component {
                   {preview}
                 </Typography>
               ) : null}
-            <div className="node-icon length-box">
-              <AssignmentIcon />
-            </div>
+            <Tooltip title="This refers to another database record">
+              <div className="node-icon length-box">
+                <BookmarkIcon />
+              </div>
+            </Tooltip>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={{ display: 'block' }}>
             {Object.keys(nestedObject).map(k => formatProperty(k, nestedObject[k], `${prefix ? `${prefix}.` : ''}${key}`))}
@@ -304,9 +307,11 @@ class NodeDetailComponent extends Component {
                         {relatedNode.name || ''}
                       </Typography>
                     ) : null}
-                  <div className="node-icon length-box">
-                    <AssignmentIcon />
-                  </div>
+                  <Tooltip title="This refers to another database record">
+                    <div className="node-icon length-box">
+                      <BookmarkIcon />
+                    </div>
+                  </Tooltip>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails style={{ display: 'block' }}>
                   {formatProperty('@class', relatedNode['@class'], id)}
@@ -366,37 +371,47 @@ class NodeDetailComponent extends Component {
       } return null;
     };
 
+    const relationships = expandedEdgeTypes.reduce((r, e) => {
+      const rendered = listEdges(e);
+      if (rendered) r.push(rendered);
+      return r;
+    }, []);
+
     const className = variant === 'table' ? 'detail-table' : 'detail-graph';
 
     return (
-      <Card style={{ height: '100%', overflowY: 'auto' }}>
-        <div className="node-edit-btn">
-          <IconButton
-            onClick={() => handleNodeEditStart(node['@rid'], node['@class'])}
-          >
-            <EditIcon />
-          </IconButton>
-          {children}
-        </div>
-        <div className={`node-properties ${className}`}>
-          <Card className="basic-properties">
-            <CardContent>
-              <Typography paragraph variant="title" component="h1">
-                Properties:
-                <Divider />
-              </Typography>
-              {Object.keys(filteredNode).map(key => formatProperty(key, filteredNode[key], ''))}
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent>
-              <Typography paragraph variant="title" component="h1">
-                Relationships:
-                <Divider />
-              </Typography>
-              {expandedEdgeTypes.map(edgeType => listEdges(edgeType))}
-            </CardContent>
-          </Card>
+      <Card style={{ overflowY: 'auto', height: '100%' }}>
+        <div className="detail-grid-wrapper">
+          <div className={`node-properties ${className}`}>
+            <Card className="basic-properties">
+              <CardContent>
+                <Typography paragraph variant="title" component="h1">
+                  Properties:
+                  <Divider />
+                </Typography>
+                {Object.keys(filteredNode).map(key => formatProperty(key, filteredNode[key], ''))}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent>
+                <Typography paragraph variant="title" component="h1">
+                  Relationships:
+                  <Divider />
+                </Typography>
+                {relationships.length !== 0 ? relationships : (
+                  <Typography variant="caption" style={{ margin: 'auto' }}>No relationships</Typography>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+          <div className="node-edit-btn">
+            {children}
+            <IconButton
+              onClick={() => handleNodeEditStart(node['@rid'], node['@class'])}
+            >
+              <EditIcon />
+            </IconButton>
+          </div>
         </div>
       </Card>
     );

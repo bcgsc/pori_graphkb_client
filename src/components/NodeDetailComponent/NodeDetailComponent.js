@@ -403,19 +403,18 @@ class NodeDetailComponent extends Component {
   }
 }
 
+NodeDetailComponent.propTypes = {
+  node: PropTypes.object,
+  handleNodeEditStart: PropTypes.func.isRequired,
+  handleNewQuery: PropTypes.func.isRequired,
+  children: PropTypes.node,
+  variant: PropTypes.string,
+};
+
 NodeDetailComponent.defaultProps = {
   node: null,
   children: null,
   variant: 'table',
-  handleNewQuery: null,
-};
-
-NodeDetailComponent.propTypes = {
-  node: PropTypes.object,
-  handleNodeEditStart: PropTypes.func.isRequired,
-  handleNewQuery: PropTypes.func,
-  children: PropTypes.node,
-  variant: PropTypes.string,
 };
 
 export default NodeDetailComponent;

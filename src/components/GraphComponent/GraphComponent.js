@@ -541,6 +541,10 @@ class GraphComponent extends Component {
     this.setState({ simulation, actionsNode: null });
   }
 
+  /**
+   * Updates color scheme for the graph, for nodes or links.
+   * @param {string} type - Object type (nodes or links)
+   */
   updateColors(type) {
     /* eslint-disable */
     const objs = this.state[type];

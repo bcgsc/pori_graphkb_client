@@ -47,6 +47,14 @@ function DownloadFileComponent(props) {
   );
 }
 
+/**
+ * @param {string} mediaType - File media type.
+ * @param {function} rawFileContent - Raw file data.
+ * @param {string} fileName - Filename of file to be downloaded.
+ * @param {string} id - CSS identifier for styling.
+ * @param {string} className - CSS class name for styling.
+ * @param {object} style - Object of individual CSS properties for styling.
+ */
 DownloadFileComponent.propTypes = {
   mediaType: PropTypes.string,
   rawFileContent: PropTypes.func,

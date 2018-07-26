@@ -199,33 +199,28 @@ class GraphComponent extends Component {
    */
   async componentDidMount() {
     const {
-      selectedId,
       displayed,
       data,
       edgeTypes,
       ontologyTypes,
     } = this.props;
     const { graphOptions } = this.state;
-    const selected = {};
     const simulation = d3.forceSimulation();
 
     // Defines what edge keys to look for.
     const expandedEdgeTypes = edgeTypes.reduce((r, e) => {
       r.push(`in_${e}`);
       r.push(`out_${e}`);
-      selected[`in_${e}`] = [];
-      selected[`out_${e}`] = [];
       return r;
     }, []);
 
     ontologyTypes.forEach((type, i) => {
-      graphOptions[`${type.name}Color`] = util.chooseColor(i + 1, ontologyTypes.length);
+      graphOptions[`${type.name}Color`] = util.chooseColor(i, ontologyTypes.length);
     });
-    graphOptions.selectedColor = util.chooseColor(0, ontologyTypes.length);
 
     let validDisplayed = displayed;
     if (!validDisplayed || validDisplayed.length === 0) {
-      validDisplayed = [selectedId];
+      validDisplayed = [Object.keys(data)[0]];
     }
     this.setState({
       expandedEdgeTypes,
@@ -568,8 +563,7 @@ class GraphComponent extends Component {
 
     graphOptions[`${type}Colors`] = colors;
     graphOptions[`${type}Pallette`] = pallette;
-    graphOptions.selectedColor = graphOptions.nodesPallette[0];
-    this.setState({ graphOptions }, () => console.log(graphOptions));
+    this.setState({ graphOptions });
     /* eslint-enable */
   }
 
@@ -688,7 +682,6 @@ class GraphComponent extends Component {
     const {
       nodes,
       links,
-      expandId,
       actionsNode,
       expandable,
       graphOptions,
@@ -700,6 +693,8 @@ class GraphComponent extends Component {
     const {
       classes,
       handleTableRedirect,
+      detail,
+      handleDetailDrawerClose,
     } = this.props;
 
     if (!simulation) return null;
@@ -879,21 +874,10 @@ class GraphComponent extends Component {
         </IconButton>
         <div className="legend-content">
           <Typography variant="subheading">Nodes</Typography>
+          <Typography variant="caption">
+            {graphOptions.nodesColor ? `(${graphOptions.nodesColor.split('.')[0]})` : ''}
+          </Typography>
           <List className="node-colors" dense>
-            <ListItem>
-              <ListItemIcon>
-                <div
-                  style={
-                    {
-                      backgroundColor: graphOptions.selectedColor,
-                      cursor: 'pointer',
-                    }
-                  }
-                  className="color-chip"
-                />
-              </ListItemIcon>
-              <ListItemText primary="Selected" />
-            </ListItem>
             {Object.keys(graphOptions.nodesColors).map(key => (
               <ListItem key={key}>
                 <ListItemIcon>
@@ -920,6 +904,8 @@ class GraphComponent extends Component {
         key={link.data['@rid']}
         link={link}
         linkHighlighting={graphOptions.linkHighlighting}
+        detail={detail}
+        labelKey={graphOptions.linkLabelProp}
       />
     ));
 
@@ -931,9 +917,7 @@ class GraphComponent extends Component {
       } else if (graphOptions.nodesColor) {
         nodeColorKey = node.data[graphOptions.nodesColor];
       }
-      const color = expandId === node.data['@rid']
-        ? graphOptions.selectedColor
-        : graphOptions.nodesColors[nodeColorKey];
+      const color = graphOptions.nodesColors[nodeColorKey];
 
       const isExpandable = expandable[node.data['@rid']];
       return (
@@ -947,6 +931,7 @@ class GraphComponent extends Component {
           expandable={isExpandable}
           actionsRing={actionsNode === node ? actionsRing : null}
           label={graphOptions.nodeLabelProp}
+          detail={detail}
         />
       );
     });
@@ -1058,9 +1043,17 @@ GraphComponent.propTypes = {
   data: PropTypes.object.isRequired,
   classes: PropTypes.object,
   handleDetailDrawerOpen: PropTypes.func.isRequired,
+  handleDetailDrawerClose: PropTypes.func.isRequired,
   handleTableRedirect: PropTypes.func.isRequired,
   edgeTypes: PropTypes.array.isRequired,
   ontologyTypes: PropTypes.array.isRequired,
+  detail: PropTypes.string,
+};
+
+GraphComponent.defaultProps = {
+  handleClick: null,
+  classes: null,
+  detail: null,
 };
 
 

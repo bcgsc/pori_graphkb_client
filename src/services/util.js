@@ -138,16 +138,16 @@ export default class util {
   static chooseColor(i, n) {
     let pallette = [];
 
-    if (n < 5) {
+    if (n <= 5) {
       pallette = config.GRAPH_DEFAULTS.NODE_COLORS_5;
     }
-    if (n < 10) {
+    if (n <= 10) {
       pallette = config.GRAPH_DEFAULTS.NODE_COLORS_10;
     }
-    if (n < 15) {
+    if (n <= 15) {
       pallette = config.GRAPH_DEFAULTS.NODE_COLORS_15;
     }
-    if (n < 20) {
+    if (n <= 20) {
       pallette = config.GRAPH_DEFAULTS.NODE_COLORS_20;
     }
 

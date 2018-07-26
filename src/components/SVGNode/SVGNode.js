@@ -51,9 +51,7 @@ class SVGNode extends PureComponent {
 
     d3.event
       .on('drag', dragged)
-      // .on("touchmove", dragged)
       .on('end', ended);
-    // .on("touchend", ended);
   }
 
   render() {
@@ -107,6 +105,8 @@ SVGNode.defaultProps = {
  * @param {string} color - Color of node.
  * @param {number} r - Node radius.
  * @param {Object} simulation - parent simulation that node is a member of.
+ * @param {Array} actionsRing - Array of svg components making up the node actions ring
+ * surrounding a selected node.
  * @param {string} label - property to display as label.
  */
 SVGNode.propTypes = {

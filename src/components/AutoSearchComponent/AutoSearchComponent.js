@@ -10,7 +10,9 @@ import {
   TextField,
   Typography,
   CircularProgress,
+  InputAdornment,
 } from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
 import * as jc from 'json-cycle';
 import _ from 'lodash';
 import api from '../../services/api';
@@ -94,12 +96,14 @@ class AutoSearchComponent extends Component {
     const {
       children,
       onChange,
+      onAction,
       name,
       placeholder,
       value,
       label,
       required,
       disabled,
+      endAdornment,
     } = this.props;
 
     if (loginRedirect) return <Redirect push to={{ pathname: '/login' }} />;
@@ -158,6 +162,15 @@ class AutoSearchComponent extends Component {
                   name,
                   onKeyUp: this.refreshOptions,
                 }),
+                endAdornment: endAdornment ? (
+                  <InputAdornment
+                    position="end"
+                    onClick={onAction}
+                    style={{ cursor: onAction ? 'pointer' : 'default' }}
+                  >
+                    {endAdornment}
+                  </InputAdornment>
+                ) : null,
               }}
             />
             {(isOpen || loading) && !emptyFlag
@@ -207,6 +220,8 @@ AutoSearchComponent.propTypes = {
   onChange: PropTypes.func,
   children: PropTypes.func,
   disabled: PropTypes.bool,
+  onAction: PropTypes.func,
+  endAdornment: PropTypes.object,
 };
 
 AutoSearchComponent.defaultProps = {
@@ -236,6 +251,8 @@ AutoSearchComponent.defaultProps = {
   ),
   onChange: null,
   disabled: false,
+  onAction: null,
+  endAdornment: <SearchIcon />,
 };
 
 export default AutoSearchComponent;

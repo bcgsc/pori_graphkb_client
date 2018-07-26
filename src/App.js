@@ -32,6 +32,22 @@ import NodeDetailView from './views/NodeDetailView/NodeDetailView';
 import UserView from './views/UserView/UserView';
 import auth from './services/auth';
 
+const theme = createMuiTheme({
+  direction: 'ltr',
+  palette: {
+    primary: {
+      main: '#26328C',
+    },
+    secondary: {
+      main: '#9AA1CB',
+      light: '#CCCFE2',
+    },
+    warn: {
+      main: '#d32f2f',
+    },
+  },
+});
+
 /**
  * Entry point to application. Handles routing, app theme, and logged in state.
  */
@@ -67,7 +83,6 @@ class App extends Component {
 
   /**
    * Opens user dropdown menu.
-   * @param {Event} e - User menu button click event.
    */
   handleOpen() {
     this.setState({ anchorEl: this.dropdown });
@@ -90,22 +105,6 @@ class App extends Component {
 
   render() {
     const { anchorEl, loggedIn } = this.state;
-
-    const theme = createMuiTheme({
-      direction: 'ltr',
-      palette: {
-        primary: {
-          main: '#26328C',
-        },
-        secondary: {
-          main: '#9AA1CB',
-          light: '#CCCFE2',
-        },
-        warn: {
-          main: '#d32f2f',
-        },
-      },
-    });
 
     const loginWithProps = () => (
       <LoginView

@@ -86,9 +86,13 @@ class DataView extends Component {
     const { V } = schema;
 
     const filteredSearch = queryString.parse(history.location.search);
+    let route = '/ontologies';
+    if (filteredSearch['@class']) {
+      route = schema[filteredSearch['@class']].route;
+    }
     const allColumns = ['@rid', '@class'];
 
-    api.get(`/ontologies?${queryString.stringify(filteredSearch)}&neighbors=3`)
+    api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`)
       .then((data) => {
         const cycled = jc.retrocycle(data.result);
         if (cycled.length === 0) queryRedirect = true;
@@ -322,17 +326,17 @@ class DataView extends Component {
         onClose={this.handleDetailDrawerClose}
         SlideProps={{ unmountOnExit: true }}
       >
-        <div className="graph-close-drawer-btn">
-          <IconButton onClick={this.handleDetailDrawerClose}>
-            <CloseIcon color="action" />
-          </IconButton>
-        </div>
         <NodeDetailComponent
           variant="graph"
           node={data[detail]}
           handleNodeEditStart={this.handleNodeEditStart}
           handleNewQuery={this.handleNewQuery}
-        />
+          handleClose={this.handleDetailDrawerClose}
+        >
+          <IconButton onClick={this.handleDetailDrawerClose}>
+            <CloseIcon color="action" />
+          </IconButton>
+        </NodeDetailComponent>
       </Drawer>
     );
 

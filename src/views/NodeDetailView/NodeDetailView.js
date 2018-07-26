@@ -93,6 +93,10 @@ class NodeDetailView extends Component {
   }
 }
 
+/**
+ * @param {Object} match - Match object for extracting URL parameters.
+ * @param {Object} history - Application routing history object.
+ */
 NodeDetailView.propTypes = {
   match: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,

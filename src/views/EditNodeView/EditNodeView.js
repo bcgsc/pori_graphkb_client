@@ -72,6 +72,10 @@ class EditNodeView extends Component {
   }
 }
 
+/**
+ * @param {Object} match - Match object for extracting URL parameters.
+ * @param {Object} history - Application routing history object.
+ */
 EditNodeView.propTypes = {
   match: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,

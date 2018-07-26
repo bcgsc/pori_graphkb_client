@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './QueryView.css';
 import { Button } from '@material-ui/core';
 import AutoSearchComponent from '../../components/AutoSearchComponent/AutoSearchComponent';
@@ -12,17 +12,15 @@ import AutoSearchComponent from '../../components/AutoSearchComponent/AutoSearch
 class QueryView extends Component {
   constructor(props) {
     super(props);
-
-    const initName = props.location.state
-      && props.location.state.mainParams
-      && props.location.state.mainParams.name
-      ? props.location.state.mainParams.name
+    const { state } = props.history.location;
+    const initName = state
+      && state.mainParams
+      && state.mainParams.name
+      ? state.mainParams.name
       : '';
 
     this.state = {
       name: initName,
-      redirect: false,
-      endpoint: 'table',
       disabled: false,
     };
 
@@ -34,9 +32,15 @@ class QueryView extends Component {
   /**
    * Sets redirect flag to true if there is a valid query (any string).
    */
-  handleSubmit(endpoint) {
+  handleSubmit() {
     const { name, disabled } = this.state;
-    if (name && !disabled) this.setState({ redirect: true, endpoint });
+    const { history } = this.props;
+    if (name && !disabled) {
+      history.push({
+        pathname: '/data/table',
+        search: `?name=~${name}`,
+      });
+    }
   }
 
   /**
@@ -56,22 +60,8 @@ class QueryView extends Component {
 
   render() {
     const {
-      redirect,
-      endpoint,
       name,
     } = this.state;
-
-    if (redirect) {
-      return (
-        <Redirect
-          push
-          to={{
-            pathname: `/data/${endpoint}`,
-            search: `?name=~${name}`,
-          }}
-        />
-      );
-    }
 
     return (
       <div className="search-wrapper">
@@ -80,7 +70,7 @@ class QueryView extends Component {
             className="main-search"
             onKeyUp={(e) => {
               if (e.keyCode === 13) {
-                this.handleSubmit('table');
+                this.handleSubmit();
               }
             }}
             role="textbox"
@@ -100,7 +90,7 @@ class QueryView extends Component {
               variant="raised"
               color="primary"
               onClick={() => {
-                this.handleSubmit('table');
+                this.handleSubmit();
               }}
             >
               Search
@@ -125,10 +115,10 @@ class QueryView extends Component {
 }
 
 /**
- * @param {Object} location - location property for the route and passed state.
+ * @param {Object} history - Application routing history object.
  */
 QueryView.propTypes = {
-  location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 export default QueryView;

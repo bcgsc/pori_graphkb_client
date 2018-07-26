@@ -7,7 +7,7 @@ import { Typography, Button } from '@material-ui/core';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 
 /**
- * Component for viewing errors.
+ * View for displaying uncaught error messages.
  * @param {Object} props - properties passed into the component.
  * @param {Object} props.history - history property for the route and passed state.
  * @param {Object} props.history.location.state - passed state from originator of redirect.
@@ -75,6 +75,9 @@ function ErrorView(props) {
   );
 }
 
+/**
+ * @param {Object} history - Application routing history object.
+ */
 ErrorView.propTypes = {
   history: PropTypes.object.isRequired,
 };

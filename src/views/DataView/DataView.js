@@ -70,55 +70,17 @@ class DataView extends Component {
     const dataMap = {};
     let { queryRedirect } = this.state;
     const { loginRedirect } = this.state;
-    const { location, history } = this.props;
+    const { history } = this.props;
+
     const edgeTypes = await api.getOntologyEdges();
     const ontologyTypes = await api.getOntologyVertices();
+    const schema = await api.getSchema();
+    const { V } = schema;
+
     const filteredSearch = queryString.parse(history.location.search);
-    const endpointClass = await api.getClass(filteredSearch['@class'] || 'Ontology');
-    const { route, properties } = endpointClass;
-    delete filteredSearch['@class'];
-    const search = location.search ? `${queryString.stringify(filteredSearch)}&` : '';
-    const V = await api.getVertexBaseClass();
     const allColumns = ['@rid', '@class'];
 
-    api.get(`${route}/?${search}neighbors=3`)
-      .then((data) => {
-        const cycled = jc.retrocycle(data.result);
-
-        if (cycled.length === 0) queryRedirect = true;
-        cycled.forEach((ontologyTerm) => {
-          Object.keys(ontologyTerm).forEach((prop) => {
-            if ((!V.properties[prop]) && !allColumns.includes(prop)) {
-              const endpointProp = properties.find(p => p.name === prop);
-              if (endpointProp && endpointProp.type === 'link') {
-                Object.keys(ontologyTerm[prop]).forEach((nestedProp) => {
-                  if (
-                    !V.properties[nestedProp]
-                    && !allColumns.includes(`${prop}.${nestedProp}`)
-                    && !nestedProp.startsWith('in_')
-                    && !nestedProp.startsWith('out_')
-                    && !(endpointProp.linkedClass && nestedProp === '@class')
-                  ) {
-                    allColumns.push(`${prop}.${nestedProp}`);
-                  }
-                });
-              } else {
-                allColumns.push(prop);
-              }
-            }
-          });
-          dataMap[ontologyTerm['@rid']] = ontologyTerm;
-        });
-        this.setState({
-          data: dataMap,
-          selectedId: Object.keys(dataMap)[0],
-          queryRedirect,
-          loginRedirect,
-          allColumns,
-          edgeTypes,
-          ontologyTypes,
-        });
-      })
+    const data = await api.get(`/ontologies?${queryString.stringify(filteredSearch)}&neighbors=3`)
       .catch((error) => {
         if (error.status === 401) {
           history.push('/login');
@@ -126,6 +88,45 @@ class DataView extends Component {
           history.push({ pathname: '/error', state: error });
         }
       });
+
+    const cycled = jc.retrocycle(data.result);
+
+    if (cycled.length === 0) queryRedirect = true;
+
+    cycled.forEach((ontologyTerm) => {
+      const ontologyClass = schema[ontologyTerm['@class']];
+      const { properties } = ontologyClass;
+      Object.keys(ontologyTerm).forEach((prop) => {
+        if ((!V.properties[prop]) && !allColumns.includes(prop)) {
+          const endpointProp = properties[prop];
+          if (endpointProp && endpointProp.type === 'link') {
+            Object.keys(ontologyTerm[prop]).forEach((nestedProp) => {
+              if (
+                !V.properties[nestedProp]
+                && !allColumns.includes(`${prop}.${nestedProp}`)
+                && !nestedProp.startsWith('in_')
+                && !nestedProp.startsWith('out_')
+                && !(endpointProp.linkedClass && nestedProp === '@class')
+              ) {
+                allColumns.push(`${prop}.${nestedProp}`);
+              }
+            });
+          } else {
+            allColumns.push(prop);
+          }
+        }
+      });
+      dataMap[ontologyTerm['@rid']] = ontologyTerm;
+    });
+    this.setState({
+      data: dataMap,
+      selectedId: Object.keys(dataMap)[0],
+      queryRedirect,
+      loginRedirect,
+      allColumns,
+      edgeTypes,
+      ontologyTypes,
+    });
   }
 
   /**

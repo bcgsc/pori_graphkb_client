@@ -225,18 +225,15 @@ export default class api {
   static getClass(className) {
     return api.getSchema().then((schema) => {
       const VPropKeys = Object.keys(schema.V.properties);
-      const classKey = Object.keys(schema)
-        .find(key => key.toLowerCase() === className.toLowerCase());
-      if (classKey) {
-        const props = Object.keys(schema[classKey].properties)
-          .filter(prop => !VPropKeys.includes(prop))
-          .map(prop => (
-            {
-              ...schema[classKey].properties[prop],
-            }));
-        return Promise.resolve({ route: schema[classKey].route, properties: props });
-      }
-      return Promise.reject('Class not found');
+      const classKey = (Object.keys(schema)
+        .find(key => key.toLowerCase() === (className || '').toLowerCase()) || 'Ontology');
+      const props = Object.keys(schema[classKey].properties)
+        .filter(prop => !VPropKeys.includes(prop))
+        .map(prop => (
+          {
+            ...schema[classKey].properties[prop],
+          }));
+      return Promise.resolve({ route: schema[classKey].route, properties: props });
     });
   }
 

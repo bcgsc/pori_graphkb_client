@@ -26,10 +26,15 @@ $toolbar-height: 64px;
     overflow-x: auto;
     overflow-y: hidden;
     flex-direction: row-reverse;
+    transition: padding 255ms;
     .table-btn {
         background-color: rgba($md-secondary-light, 0.5);
         margin: auto 24px auto 8px,
     }
+}
+
+.transition-left {
+    padding-right: 500px;
 }
 
 #options-close-btn {
@@ -128,10 +133,10 @@ $toolbar-height: 64px;
     position: fixed;
     top: $banner-height;
     overflow: auto;
-    width: 35%;
+    max-width: 25%;
     max-height: calc(100vh - #{$banner-height} - #{$toolbar-height});
     @media (max-width: 768px) {
-        width: 300px;
+        max-width: unset;
     }
     .legend-content {
         padding: 12px;

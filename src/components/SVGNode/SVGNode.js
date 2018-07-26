@@ -63,6 +63,7 @@ class SVGNode extends PureComponent {
       r,
       actionsRing,
       label,
+      detail,
     } = this.props;
 
     return (
@@ -77,6 +78,15 @@ class SVGNode extends PureComponent {
         </text>
         {actionsRing}
         <circle
+          fill="#fff"
+          cx={0}
+          cy={0}
+          r={r}
+        />
+        <circle
+          style={{
+            opacity: detail && detail !== node.data['@rid'] ? 0.6 : 1,
+          }}
           onClick={handleClick}
           className={expandable ? 'node-expandable' : 'node'}
           fill={color}
@@ -96,6 +106,7 @@ SVGNode.defaultProps = {
   r: 4,
   actionsRing: null,
   label: 'name',
+  detail: null,
 };
 
 /**
@@ -108,6 +119,7 @@ SVGNode.defaultProps = {
  * @param {Array} actionsRing - Array of svg components making up the node actions ring
  * surrounding a selected node.
  * @param {string} label - property to display as label.
+ * @param {string} detail - node identifier for node who's details are currently displayed.
  */
 SVGNode.propTypes = {
   node: PropTypes.object.isRequired,
@@ -118,6 +130,7 @@ SVGNode.propTypes = {
   simulation: PropTypes.object.isRequired,
   actionsRing: PropTypes.array,
   label: PropTypes.string,
+  detail: PropTypes.string,
 };
 
 export default SVGNode;

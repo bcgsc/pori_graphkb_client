@@ -330,12 +330,13 @@ class DataView extends Component {
         data={data}
         handleClick={this.handleClick}
         displayed={displayed}
-        selectedId={selectedId}
         handleNodeEditStart={this.handleNodeEditStart}
         handleDetailDrawerOpen={this.handleDetailDrawerOpen}
+        handleDetailDrawerClose={this.handleDetailDrawerClose}
         handleTableRedirect={this.handleTableRedirect}
         edgeTypes={edgeTypes}
         ontologyTypes={ontologyTypes}
+        detail={detail}
       />
     );
     const TableWithProps = () => (

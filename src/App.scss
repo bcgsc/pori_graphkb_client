@@ -2,14 +2,7 @@
 $user-menu-width: 124px;
 
 .banner {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: auto;
     height: $banner-height;
-    display: flex;
-    background-color: $md-primary-color;
     flex-direction: row !important;
     button {
         margin: auto 0;

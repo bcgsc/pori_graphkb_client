@@ -80,7 +80,46 @@ class DataView extends Component {
     const filteredSearch = queryString.parse(history.location.search);
     const allColumns = ['@rid', '@class'];
 
-    const data = await api.get(`/ontologies?${queryString.stringify(filteredSearch)}&neighbors=3`)
+    api.get(`/ontologies?${queryString.stringify(filteredSearch)}&neighbors=3`)
+      .then((data) => {
+        const cycled = jc.retrocycle(data.result);
+        if (cycled.length === 0) queryRedirect = true;
+
+        cycled.forEach((ontologyTerm) => {
+          const ontologyClass = schema[ontologyTerm['@class']];
+          const { properties } = ontologyClass;
+          Object.keys(ontologyTerm).forEach((prop) => {
+            if ((!V.properties[prop]) && !allColumns.includes(prop)) {
+              const endpointProp = properties[prop];
+              if (endpointProp && endpointProp.type === 'link') {
+                Object.keys(ontologyTerm[prop]).forEach((nestedProp) => {
+                  if (
+                    !V.properties[nestedProp]
+                    && !allColumns.includes(`${prop}.${nestedProp}`)
+                    && !nestedProp.startsWith('in_')
+                    && !nestedProp.startsWith('out_')
+                    && !(endpointProp.linkedClass && nestedProp === '@class')
+                  ) {
+                    allColumns.push(`${prop}.${nestedProp}`);
+                  }
+                });
+              } else {
+                allColumns.push(prop);
+              }
+            }
+          });
+          dataMap[ontologyTerm['@rid']] = ontologyTerm;
+        });
+        this.setState({
+          data: dataMap,
+          selectedId: Object.keys(dataMap)[0],
+          queryRedirect,
+          loginRedirect,
+          allColumns,
+          edgeTypes,
+          ontologyTypes,
+        });
+      })
       .catch((error) => {
         if (error.status === 401) {
           history.push('/login');
@@ -88,45 +127,6 @@ class DataView extends Component {
           history.push({ pathname: '/error', state: error });
         }
       });
-
-    const cycled = jc.retrocycle(data.result);
-
-    if (cycled.length === 0) queryRedirect = true;
-
-    cycled.forEach((ontologyTerm) => {
-      const ontologyClass = schema[ontologyTerm['@class']];
-      const { properties } = ontologyClass;
-      Object.keys(ontologyTerm).forEach((prop) => {
-        if ((!V.properties[prop]) && !allColumns.includes(prop)) {
-          const endpointProp = properties[prop];
-          if (endpointProp && endpointProp.type === 'link') {
-            Object.keys(ontologyTerm[prop]).forEach((nestedProp) => {
-              if (
-                !V.properties[nestedProp]
-                && !allColumns.includes(`${prop}.${nestedProp}`)
-                && !nestedProp.startsWith('in_')
-                && !nestedProp.startsWith('out_')
-                && !(endpointProp.linkedClass && nestedProp === '@class')
-              ) {
-                allColumns.push(`${prop}.${nestedProp}`);
-              }
-            });
-          } else {
-            allColumns.push(prop);
-          }
-        }
-      });
-      dataMap[ontologyTerm['@rid']] = ontologyTerm;
-    });
-    this.setState({
-      data: dataMap,
-      selectedId: Object.keys(dataMap)[0],
-      queryRedirect,
-      loginRedirect,
-      allColumns,
-      edgeTypes,
-      ontologyTypes,
-    });
   }
 
   /**
@@ -169,7 +169,7 @@ class DataView extends Component {
 
   /**
    * Adds all data entries to the list of displayed nodes.
-   * @param {Evemt} e - Checkbox event.
+   * @param {Event} e - Checkbox event.
    */
   handleCheckAll(e) {
     let displayed;

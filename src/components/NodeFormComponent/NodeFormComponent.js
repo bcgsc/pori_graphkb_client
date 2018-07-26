@@ -23,6 +23,7 @@ import {
   Tooltip,
   ListItemSecondaryAction,
   Card,
+  InputAdornment,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
@@ -601,12 +602,16 @@ class NodeFormComponent extends Component {
                 step={step || ''}
                 required={mandatory}
                 multiline={t === 'text'}
+                InputProps={{
+                  endAdornment: description ? (
+                    <InputAdornment position="end">
+                      <Tooltip title={description}>
+                        <HelpIcon color="primary" />
+                      </Tooltip>
+                    </InputAdornment>
+                  ) : null,
+                }}
               />
-              {description ? (
-                <Tooltip title={description}>
-                  <HelpIcon color="primary" />
-                </Tooltip>
-              ) : null}
             </ListItem>
           );
         }
@@ -777,10 +782,17 @@ class NodeFormComponent extends Component {
                     this.handleSubsetAdd(e);
                   }
                 }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton color="primary" onClick={this.handleSubsetAdd}>
+                        <AddIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
-              <IconButton color="primary" onClick={this.handleSubsetAdd}>
-                <AddIcon />
-              </IconButton>
+
             </ListItem>
             <List className="list">
               {subsets}
@@ -841,6 +853,7 @@ class NodeFormComponent extends Component {
                       placeholder="Target Name"
                       limit={10}
                       name="targetName"
+                      endAdornment={null}
                     />
                   </div>
                 </div>
@@ -888,7 +901,7 @@ NodeFormComponent.defaultProps = {
 };
 
 /**
-  * @param {string} selectedId - node database identifier.
+  * @param {Object} node - node object.
   * @param {string} variant - specifies form type/function.
   * @param {function} handleNodeDelete - parent method triggered on node delete.
   * @param {function} handleNodeFinishEdit - parent method triggered when node is edited.

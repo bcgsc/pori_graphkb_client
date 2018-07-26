@@ -117,6 +117,8 @@ class TableComponent extends Component {
 
   /**
    * Updates page to display.
+   * @param {Event} event - Triggered event.
+   * @param {number} page - New page number.
    */
   handleChangePage(event, page) {
     this.setState({ page });
@@ -171,7 +173,7 @@ class TableComponent extends Component {
 
   /**
    * Sorts table by whether or not row is checked. Toggles output order based on current state.
-   * @param {string} fOrder - forces output order.
+   * @param {string} fOrder - forced output order.
    */
   handleSortByChecked(fOrder) {
     const { orderBy, order } = this.state;
@@ -241,6 +243,7 @@ class TableComponent extends Component {
 
   /**
    * Selects/deselects a column for displaying on the table.
+   * @param {number} i - Table column index.
    */
   handleColumnCheck(i) {
     const { tableColumns } = this.state;
@@ -250,6 +253,8 @@ class TableComponent extends Component {
 
   /**
    * sets a new subproperty to sort by.
+   * @param {string} sortBy - new property for column to be sorted by.
+   * @param {number} i - column index.
    */
   handleSortByChange(sortBy, i) {
     const { tableColumns } = this.state;

@@ -16,10 +16,16 @@ class SVGLink extends Component {
     this.handleDisplayTypeEnter = this.handleDisplayTypeEnter.bind(this);
   }
 
+  /**
+   * Highlights link arrows and displays label along link path.
+   */
   handleDisplayTypeEnter() {
     this.setState({ displayType: true });
   }
 
+  /**
+   * Stops highlight effect and label.
+   */
   handleDisplayTypeExit() {
     this.setState({ displayType: false });
   }
@@ -66,6 +72,10 @@ class SVGLink extends Component {
   }
 }
 
+/**
+ * @param {Object} link - Graph link object.
+ * @param {bool} linkHighlighting - flag for enabling link highlight on hover.
+ */
 SVGLink.propTypes = {
   link: PropTypes.object.isRequired,
   linkHighlighting: PropTypes.bool,

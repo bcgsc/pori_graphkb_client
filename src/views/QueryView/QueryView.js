@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import './QueryView.css';
 import { Button } from '@material-ui/core';
 import AutoSearchComponent from '../../components/AutoSearchComponent/AutoSearchComponent';
@@ -62,6 +61,7 @@ class QueryView extends Component {
     const {
       name,
     } = this.state;
+    const { history } = this.props;
 
     return (
       <div className="search-wrapper">
@@ -83,32 +83,18 @@ class QueryView extends Component {
               limit={30}
               name="name"
               onInvalid={this.handleInvalid}
+              onAction={this.handleSubmit}
             />
           </div>
-          <div className="search-buttons">
-            <Button
-              variant="raised"
-              color="primary"
-              onClick={() => {
-                this.handleSubmit();
-              }}
-            >
-              Search
-            </Button>
-          </div>
         </div>
-        <Link
-          className="query-link"
-          to={{ state: this.state, pathname: '/query/advanced' }}
+        <Button
+          variant="outlined"
+          color="secondary"
+          className="advanced-button"
+          onClick={() => history.push({ state: this.state, pathname: '/query/advanced' })}
         >
-          <Button
-            variant="outlined"
-            color="secondary"
-            className="advanced-button"
-          >
-            Advanced Search
-          </Button>
-        </Link>
+          Advanced Search
+        </Button>
       </div>
     );
   }

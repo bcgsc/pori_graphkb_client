@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import './AdvancedQueryView.css';
 import {
   TextField,
@@ -15,6 +14,7 @@ import {
   RadioGroup,
   Radio,
   Tooltip,
+  InputAdornment,
 } from '@material-ui/core/';
 import HelpIcon from '@material-ui/icons/Help';
 import queryString from 'query-string';
@@ -158,6 +158,7 @@ class AdvancedQueryView extends Component {
       ontologyTypes,
       editableProps,
     } = this.state;
+    const { history } = this.props;
 
     if (!form) return null;
 
@@ -216,12 +217,16 @@ class AdvancedQueryView extends Component {
                 type={t || ''}
                 step={step || ''}
                 multiline={t === 'text'}
+                InputProps={{
+                  endAdornment: description ? (
+                    <InputAdornment position="end">
+                      <Tooltip title={description}>
+                        <HelpIcon color="primary" />
+                      </Tooltip>
+                    </InputAdornment>
+                  ) : null,
+                }}
               />
-              {description ? (
-                <Tooltip title={description}>
-                  <HelpIcon color="primary" />
-                </Tooltip>
-              ) : null}
             </ListItem>
           );
         }
@@ -275,7 +280,7 @@ class AdvancedQueryView extends Component {
           >
             {resource => (
               <MenuItem key={resource.name} value={resource.name}>
-                {resource.name}
+                {resource.name ? resource.name : '---'}
               </MenuItem>
             )}
           </ResourceSelectComponent>
@@ -287,16 +292,24 @@ class AdvancedQueryView extends Component {
           }
         </List>
         <div id="adv-nav-buttons">
-          <Link to={{ state: this.state, pathname: '/query' }}>
-            <Button variant="outlined" color="secondary">
-              Back
-            </Button>
-          </Link>
-          <Link to={{ search: this.bundle(), pathname: '/data/table' }}>
-            <Button color="primary" variant="raised" id="search-button">
-              Search
-            </Button>
-          </Link>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => history.push({ pathname: '/query', state: this.state })}
+          >
+            Back
+          </Button>
+          <Button
+            color="primary"
+            variant="raised"
+            id="search-button"
+            onClick={() => history.push({
+              pathname: '/data/table',
+              search: this.bundle(),
+            })}
+          >
+            Search
+          </Button>
         </div>
       </div>
     );

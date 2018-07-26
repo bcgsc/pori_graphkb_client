@@ -141,8 +141,8 @@ class AdvancedQueryView extends Component {
   }
 
   /**
-   * Formats query string to be passed into url.
-   */
+  * Formats query string to be passed into url.
+  */
   bundle() {
     const { form, editableProps } = this.state;
     const params = [{ name: '@class', type: 'string' }];
@@ -317,8 +317,8 @@ class AdvancedQueryView extends Component {
 }
 
 /**
- * @param {object} history - Application history state object.
- */
+* @param {object} history - Application history state object.
+    */
 AdvancedQueryView.propTypes = {
   history: PropTypes.object.isRequired,
 };

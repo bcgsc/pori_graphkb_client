@@ -149,8 +149,8 @@ class TableComponent extends Component {
 
     const sort = (a, b) => {
       if (!newProperty) return 1;
-      const aValue = column.sortBy ? (a[newProperty] || { [column.sortBy]: '' })[column.sortBy] : a[newProperty];
-      const bValue = column.sortBy ? (b[newProperty] || { [column.sortBy]: '' })[column.sortBy] : b[newProperty];
+      const aValue = column.sortBy ? (a[newProperty] || {})[column.sortBy] : a[newProperty];
+      const bValue = column.sortBy ? (b[newProperty] || {})[column.sortBy] : b[newProperty];
 
       if (newOrder === 'desc') {
         return bValue < aValue

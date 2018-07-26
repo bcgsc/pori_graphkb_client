@@ -47,18 +47,26 @@ class DataView extends Component {
       hidden: [],
       selectedId: null,
       allColumns: [],
-      detail: false,
+      detail: null,
     };
 
     this.handleClick = this.handleClick.bind(this);
+
+    // TableComponent methods
     this.handleCheckbox = this.handleCheckbox.bind(this);
     this.handleCheckAll = this.handleCheckAll.bind(this);
     this.handleHideSelected = this.handleHideSelected.bind(this);
     this.handleShowAllNodes = this.handleShowAllNodes.bind(this);
-    this.handleNodeEditStart = this.handleNodeEditStart.bind(this);
-    this.handleNewQuery = this.handleNewQuery.bind(this);
+
+    // GraphComponent methods
     this.handleDetailDrawerOpen = this.handleDetailDrawerOpen.bind(this);
     this.handleDetailDrawerClose = this.handleDetailDrawerClose.bind(this);
+
+    // NodeDetailComponent methods
+    this.handleNodeEditStart = this.handleNodeEditStart.bind(this);
+    this.handleNewQuery = this.handleNewQuery.bind(this);
+
+    // Routing methods
     this.handleGraphRedirect = this.handleGraphRedirect.bind(this);
     this.handleTableRedirect = this.handleTableRedirect.bind(this);
   }
@@ -99,6 +107,7 @@ class DataView extends Component {
                     && !nestedProp.startsWith('in_')
                     && !nestedProp.startsWith('out_')
                     && !(endpointProp.linkedClass && nestedProp === '@class')
+                    && (properties[nestedProp] || {}).type !== 'link'
                   ) {
                     allColumns.push(`${prop}.${nestedProp}`);
                   }
@@ -322,6 +331,7 @@ class DataView extends Component {
           variant="graph"
           node={data[detail]}
           handleNodeEditStart={this.handleNodeEditStart}
+          handleNewQuery={this.handleNewQuery}
         />
       </Drawer>
     );

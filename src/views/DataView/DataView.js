@@ -400,10 +400,10 @@ class DataView extends Component {
 }
 
 /**
- * @param {Object} location - location property for the route and passed state.
+ * @param {Object} history - Application routing history object.
+ * @param {Object} classes - Classes provided by the @material-ui withStyles function
  */
 DataView.propTypes = {
-  location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired,
 };

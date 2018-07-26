@@ -807,7 +807,7 @@ class GraphComponent extends Component {
           </div>
           <Divider />
           <div className="advanced-options-wrapper">
-            <Typography variant="title" color="textSecondary">
+            <Typography variant="title">
               Advanced Graph Options
             </Typography>
             <div className="advanced-options-grid">

@@ -276,6 +276,7 @@ class DataView extends Component {
    */
   handleTableRedirect() {
     const { history } = this.props;
+    this.setState({ detail: '' });
     history.push({
       pathname: '/data/table',
       search: history.location.search,

@@ -634,6 +634,7 @@ class GraphComponent extends Component {
       expandedEdgeTypes,
       expandable,
     } = this.state;
+    const { handleDetailDrawerClose } = this.props;
     if (nodes.length === 1) return;
     const i = nodes.indexOf(actionsNode);
 
@@ -664,7 +665,11 @@ class GraphComponent extends Component {
       graphObjects,
       actionsNode: null,
       expandId: null,
-    }, () => { this.updateColors('nodes'); this.updateColors('links'); });
+    }, () => {
+      this.updateColors('nodes');
+      this.updateColors('links');
+      handleDetailDrawerClose();
+    });
   }
 
   handleLegendSectionToggle(key) {
@@ -886,12 +891,13 @@ class GraphComponent extends Component {
                       {
                         backgroundColor: graphOptions.nodesColors[key],
                         cursor: 'pointer',
+                        border: '1px solid rgba(0,0,0,0.54)',
                       }
                     }
                     className="color-chip"
                   />
                 </ListItemIcon>
-                <ListItemText primary={key} />
+                <ListItemText primary={util.antiCamelCase(key)} />
               </ListItem>
             ))}
           </List>
@@ -1022,16 +1028,12 @@ class GraphComponent extends Component {
   }
 }
 
-GraphComponent.defaultProps = {
-  handleClick: null,
-  classes: null,
-};
-
 /**
   * @param {function} handleClick - Parent component method triggered when a
   * graph object is clicked.
   * @param {Object} data - Parent state data.
   * @param {function} handleDetailDrawerOpen - Method to handle opening of detail drawer.
+  * @param {function} handleDetailDrawerClose - Method to handle closing of detail drawer.
   * @param {function} handleTableRedirect - Method to handle a redirect to the table view.
   * @param {Array} edgeTypes - Array containing all the different edge types as defined by
   * the database schema.

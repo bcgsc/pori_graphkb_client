@@ -23,6 +23,7 @@ import {
   ListItemIcon,
   ListItemText,
   Divider,
+  Tooltip,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import ViewListIcon from '@material-ui/icons/ViewList';
@@ -957,34 +958,44 @@ class GraphComponent extends Component {
         <Popper open={graphOptions.legend}>
           {legend}
         </Popper>
-        <div className="toolbar">
-          <IconButton
-            color="secondary"
-            className="table-btn"
-            onClick={handleTableRedirect}
-          >
-            <ViewListIcon />
-          </IconButton>
+        <div className={`toolbar ${detail ? 'transition-left' : ''}`}>
+          <Tooltip placement="top" title="Return to table view">
+            <IconButton
+              color="secondary"
+              className="table-btn"
+              onClick={handleTableRedirect}
+            >
+              <ViewListIcon />
+            </IconButton>
+          </Tooltip>
 
-          <IconButton
-            color="primary"
-            onClick={this.handleOptionsPanelOpen}
-            style={{
-              margin: 'auto 8px',
-            }}
-          >
-            <BuildIcon />
-          </IconButton>
+          <Tooltip placement="top" title="Graph options">
+            <IconButton
+              color="primary"
+              onClick={this.handleOptionsPanelOpen}
+              style={{
+                margin: 'auto 8px',
+              }}
+            >
+              <BuildIcon />
+            </IconButton>
+          </Tooltip>
 
-          <IconButton
-            color="primary"
-            onClick={() => { this.initSimulation(); this.drawGraph(true); }}
-            style={{
-              margin: 'auto 8px',
-            }}
-          >
-            <RefreshIcon />
-          </IconButton>
+          <Tooltip placement="top" title="Restart simulation with initial nodes">
+            <IconButton
+              color="primary"
+              onClick={() => {
+                this.initSimulation();
+                this.drawGraph(true);
+                handleDetailDrawerClose();
+              }}
+              style={{
+                margin: 'auto 8px',
+              }}
+            >
+              <RefreshIcon />
+            </IconButton>
+          </Tooltip>
         </div>
 
         <div className="svg-wrapper" ref={(node) => { this.wrapper = node; }}>

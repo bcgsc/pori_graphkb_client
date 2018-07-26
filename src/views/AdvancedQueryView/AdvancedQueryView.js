@@ -48,7 +48,7 @@ class AdvancedQueryView extends Component {
   async componentDidMount() {
     const { history } = this.props;
     const form = {};
-    const ontologyTypes = [{ name: 'Ontology', properties: (await api.getClass('Ontology')).properties }];
+    const ontologyTypes = [{ name: '', properties: null }];
     const schemaVertices = await api.getOntologyVertices()
       .catch((error) => {
         if (error.status === 401) {

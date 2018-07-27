@@ -17,6 +17,7 @@ import {
   InputAdornment,
   Divider,
   Paper,
+  Snackbar,
 } from '@material-ui/core/';
 import HelpIcon from '@material-ui/icons/Help';
 import queryString from 'query-string';
@@ -37,11 +38,13 @@ class AdvancedQueryView extends Component {
     this.state = {
       form: null,
       ontologyTypes: [],
+      message: '',
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleClassChange = this.handleClassChange.bind(this);
     this.bundle = this.bundle.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   /**
@@ -49,16 +52,19 @@ class AdvancedQueryView extends Component {
    */
   async componentDidMount() {
     const { history } = this.props;
+
+    if (
+      history.location
+      && history.location.state
+      && history.location.state.body
+      && history.location.state.body.message
+    ) {
+      this.setState({ message: history.location.state.body.message });
+    }
+
     const form = {};
     const ontologyTypes = [{ name: '', properties: null }];
-    const schemaVertices = await api.getOntologyVertices()
-      .catch((error) => {
-        if (error.status === 401) {
-          history.push('/login');
-        } else {
-          history.push({ pathname: '/error', state: error });
-        }
-      });
+    const schemaVertices = await api.getOntologyVertices();
     ontologyTypes.push(...schemaVertices);
     form['@class'] = ontologyTypes[0].name;
 
@@ -142,6 +148,10 @@ class AdvancedQueryView extends Component {
     this.setState({ form });
   }
 
+  handleClose() {
+    this.setState({ message: '' });
+  }
+
   /**
   * Formats query string to be passed into url.
   */
@@ -159,6 +169,7 @@ class AdvancedQueryView extends Component {
       form,
       ontologyTypes,
       editableProps,
+      message,
     } = this.state;
     const { history } = this.props;
 
@@ -268,6 +279,18 @@ class AdvancedQueryView extends Component {
 
     return (
       <Paper className="adv-wrapper" elevation={4}>
+        <Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          open={!!message}
+          onClose={this.handleClose}
+          autoHideDuration={3000}
+          message={(
+            <span>
+              {message}
+            </span>
+          )}
+        />
+
         <Typography variant="headline" id="adv-title">
           Advanced Query
         </Typography>

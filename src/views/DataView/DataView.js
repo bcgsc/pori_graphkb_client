@@ -40,7 +40,6 @@ class DataView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      queryRedirect: false,
       loginRedirect: false,
       data: null,
       displayed: [],
@@ -76,7 +75,6 @@ class DataView extends Component {
    */
   async componentDidMount() {
     const dataMap = {};
-    let { queryRedirect } = this.state;
     const { loginRedirect } = this.state;
     const { history } = this.props;
 
@@ -126,20 +124,12 @@ class DataView extends Component {
         this.setState({
           data: dataMap,
           selectedId: Object.keys(dataMap)[0],
-          queryRedirect,
           loginRedirect,
           allColumns,
           edgeTypes,
           ontologyTypes,
         });
-      })
-      .catch((error) => {
-        if (error.status === 401) {
-          history.push('/login');
-        } else {
-          history.push({ pathname: '/error', state: error });
-        }
-      });
+      }).catch(() => { });
   }
 
   /**
@@ -149,16 +139,9 @@ class DataView extends Component {
    */
   async handleClick(rid) {
     const { data } = this.state;
-    const { history } = this.props;
     if (!data[rid]) {
       const endpoint = `/ontologies/${rid.slice(1)}?neighbors=3`;
-      const json = await api.get(endpoint).catch((error) => {
-        if (error.status === 401) {
-          history.push('/login');
-        } else {
-          history.push({ pathname: '/error', state: error });
-        }
-      });
+      const json = await api.get(endpoint);
       data[rid] = jc.retrocycle(json.result);
       this.setState({ data });
     }
@@ -243,7 +226,6 @@ class DataView extends Component {
     if (location.search.split('?')[1] !== search) {
       history.push(`/data/table?${search}`);
       this.setState({
-        queryRedirect: false,
         loginRedirect: false,
         data: null,
         displayed: [],
@@ -360,7 +342,6 @@ class DataView extends Component {
         selectedId={selectedId}
         handleClick={this.handleClick}
         handleCheckbox={this.handleCheckbox}
-        history={history}
         displayed={displayed}
         hidden={hidden}
         allColumns={allColumns}

@@ -76,13 +76,7 @@ class AutoSearchComponent extends Component {
       });
       const emptyFlag = !!(results.length === 0 && value);
       this.setState({ options: results, emptyFlag, loading: false });
-    })
-      .catch((error) => {
-        if (error.status === 401) {
-          this.setState({ loginRedirect: true });
-        }
-        this.setState({ loading: false });
-      });
+    }).catch(() => { });
   }
 
   render() {

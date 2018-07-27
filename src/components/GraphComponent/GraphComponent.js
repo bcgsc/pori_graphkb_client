@@ -733,7 +733,7 @@ class GraphComponent extends Component {
         </DialogTitle>
         <DialogContent>
           <div className="main-options-wrapper">
-            <FormControl className="graph-option-label">
+            <FormControl className="graph-option">
               <InputLabel htmlFor="nodeLabelProp">Label nodes by</InputLabel>
               <Select
                 name="nodeLabelProp"
@@ -745,7 +745,7 @@ class GraphComponent extends Component {
                 <MenuItem value="sourceId">Source ID</MenuItem>
               </Select>
             </FormControl>
-            <FormControl className="graph-option-label">
+            <FormControl className="graph-option">
               <InputLabel htmlFor="nodesColor">Color nodes by</InputLabel>
               <Select
                 name="nodesColor"
@@ -758,7 +758,9 @@ class GraphComponent extends Component {
                 <MenuItem value="source.name">Source</MenuItem>
               </Select>
             </FormControl>
-            <FormControl className="graph-option-label">
+          </div>
+          <div className="main-options-wrapper">
+            <FormControl className="graph-option">
               <InputLabel htmlFor="linkLabelProp">Label edges by</InputLabel>
               <Select
                 input={<Input name="linkLabelProp" id="linkLabelProp" />}
@@ -770,7 +772,7 @@ class GraphComponent extends Component {
                 <MenuItem value="source.name">Source</MenuItem>
               </Select>
             </FormControl>
-            <FormControl className="graph-option-label">
+            <FormControl className="graph-option">
               <InputLabel htmlFor="linksColor">Color edges by</InputLabel>
               <Select
                 input={<Input name="linksColor" id="linksColor" />}
@@ -780,8 +782,11 @@ class GraphComponent extends Component {
                 <MenuItem value="">No Coloring</MenuItem>
                 <MenuItem value="@class">Class</MenuItem>
               </Select>
+              <Divider />
             </FormControl>
-            <FormControl className="graph-option-label">
+          </div>
+          <div className="main-options-wrapper">
+            <FormControl className="graph-option">
               <FormControlLabel
                 classes={{
                   root: classes.root,
@@ -798,7 +803,7 @@ class GraphComponent extends Component {
                     })
                     }
                     name="legend"
-                    checked={graphOptions.legend}
+                    checked={graphOptions.legend && graphOptions.nodesColor}
                   />
                 )}
                 label="Show Coloring Legend"
@@ -870,17 +875,19 @@ class GraphComponent extends Component {
 
     const legend = (
       <Paper className="legend-wrapper">
-        <IconButton
-          name="legend"
-          onClick={() => this.handleGraphOptionsChange({
-            target: {
-              value: false,
-              name: 'legend',
-            },
-          })}
-        >
-          <CloseIcon />
-        </IconButton>
+        <div className="close-btn">
+          <IconButton
+            name="legend"
+            onClick={() => this.handleGraphOptionsChange({
+              target: {
+                value: false,
+                name: 'legend',
+              },
+            })}
+          >
+            <CloseIcon />
+          </IconButton>
+        </div>
         <div className="legend-content">
           <Typography variant="subheading">Nodes</Typography>
           <Typography variant="caption">
@@ -891,13 +898,7 @@ class GraphComponent extends Component {
               <ListItem key={key}>
                 <ListItemIcon>
                   <div
-                    style={
-                      {
-                        backgroundColor: graphOptions.nodesColors[key],
-                        cursor: 'pointer',
-                        border: '1px solid rgba(0,0,0,0.54)',
-                      }
-                    }
+                    style={{ backgroundColor: graphOptions.nodesColors[key] }}
                     className="color-chip"
                   />
                 </ListItemIcon>
@@ -949,7 +950,7 @@ class GraphComponent extends Component {
     return (
       <div className="graph-wrapper">
         {optionsPanel}
-        <Popper open={graphOptions.legend}>
+        <Popper open={!!(graphOptions.legend && graphOptions.nodesColor)}>
           {legend}
         </Popper>
         <div className={`toolbar ${detail ? 'transition-left' : ''}`}>

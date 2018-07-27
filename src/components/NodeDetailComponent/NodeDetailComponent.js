@@ -297,7 +297,7 @@ class NodeDetailComponent extends Component {
                   >
                     {util.getPreview(relatedNode)}
                   </Typography>
-                  {!edgeOpen
+                  {!edgeOpen && variant === 'table'
                     ? (
                       <Typography
                         variant="subheading"

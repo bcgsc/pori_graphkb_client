@@ -27,10 +27,9 @@ $mediumBreakpoint: 500px;
     form {
         flex-grow: 1;
         width: 100%;
-        padding-bottom: 20px;
         display: grid;
         grid-template-columns: 1fr 1fr;
-        column-gap: 8px;
+        grid-column-gap: 8px;
         grid-template-rows: 1fr;
         @media (max-width: $breakpoint) {
             grid-template-columns: 1fr;
@@ -38,7 +37,7 @@ $mediumBreakpoint: 500px;
         .param-section {
             padding: 20px;
             padding-bottom: 40px;
-            flex: 0;
+            flex-grow: 1;
             .class-select {
                 margin-top: 12px;
             }

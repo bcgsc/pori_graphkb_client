@@ -1,6 +1,5 @@
 @import "globals";
 $user-menu-width: 124px;
-
 .banner {
     height: $banner-height;
     flex-direction: row !important;
@@ -48,13 +47,13 @@ $user-menu-width: 124px;
     right: 0;
     margin: auto;
     bottom: 0;
+    background-color: rgba(0, 0, 0, 0.03);
 }
 
 .router-outlet {
-    height: 100%;
     position: absolute;
     left: 0;
     right: 0;
-    top: 0;
+    top: 5px;
     bottom: 0;
 }

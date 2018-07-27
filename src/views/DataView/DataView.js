@@ -82,18 +82,18 @@ class DataView extends Component {
     const ontologyTypes = await api.getOntologyVertices();
     const schema = await api.getSchema();
     const { V } = schema;
-
     const filteredSearch = queryString.parse(history.location.search);
     let route = '/ontologies';
+
     if (filteredSearch['@class']) {
       route = schema[filteredSearch['@class']].route;
     }
+
     const allColumns = ['@rid', '@class'];
 
     api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`)
       .then((data) => {
         const cycled = jc.retrocycle(data.result);
-        if (cycled.length === 0) queryRedirect = true;
 
         cycled.forEach((ontologyTerm) => {
           const ontologyClass = schema[ontologyTerm['@class']];
@@ -384,14 +384,18 @@ class DataView extends Component {
               </Route>
             </Switch>
           ) : (
-            <React.Fragment>
+            <div className="no-results-msg">
               <Typography variant="headline">
-                No Results
+                No Results for:
               </Typography>
-            </React.Fragment>
+              {Object.keys(queryString.parse(history.location.search)).map(queryParam => (
+                <Typography variant="body1">
+                  {`${queryParam}: ${queryString.parse(history.location.search)[queryParam]}`}
+                </Typography>
+              ))}
+            </div>
           )
         }
-
       </div>);
   }
 }

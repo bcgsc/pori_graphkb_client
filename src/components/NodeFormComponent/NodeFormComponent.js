@@ -24,6 +24,7 @@ import {
   ListItemSecondaryAction,
   Card,
   InputAdornment,
+  Paper,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
@@ -720,7 +721,7 @@ class NodeFormComponent extends Component {
       <div className="node-form-wrapper">
         {dialog}
         <div>
-          <div className="form-header">
+          <Paper className="form-header" elevation={4}>
             <Typography variant="display1" className="form-title">
               {variant === 'edit' ? 'Edit Ontology Term'
                 : 'Add New Ontology Term'}
@@ -732,7 +733,7 @@ class NodeFormComponent extends Component {
             >
               Cancel
             </Button>
-          </div>
+          </Paper>
         </div>
         <Divider />
         <form onSubmit={this.handleSubmit}>

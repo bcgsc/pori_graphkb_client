@@ -1,7 +1,7 @@
 $data-view-collapse: 60em;
 .data-view {
     position: absolute;
-    top: 5px;
+    top: 0;
     bottom: 0;
     left: 0;
     right: 0;
@@ -31,4 +31,9 @@ $data-view-collapse: 60em;
     top: 40%;
     left: 0;
     right: 0;
+}
+
+.no-results-msg {
+    text-align: center;
+    margin: auto;
 }

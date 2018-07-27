@@ -148,18 +148,20 @@ class NodeFormComponent extends Component {
     expandedEdgeTypes.forEach((type) => {
       if (originalNode[type]) {
         originalNode[type].forEach((edge) => {
-          relationships.push({
-            '@rid': edge['@rid'],
-            in: edge.in['@rid'],
-            out: edge.out['@rid'],
-            '@class': type.split('_')[1],
-            targetName:
-              edge.out['@rid'] === originalNode['@rid'] ? edge.in.name : edge.out.name,
-            targetSourceId:
-              edge.out['@rid'] === originalNode['@rid'] ? edge.in.sourceId : edge.out.sourceId,
-            source: edge.source['@rid'] || edge.source,
-            key: type,
-          });
+          if (edge['@class'] !== 'Implies') { // TODO: remove filter for implies edges.
+            relationships.push({
+              '@rid': edge['@rid'],
+              in: edge.in['@rid'],
+              out: edge.out['@rid'],
+              '@class': edge['@class'],
+              targetName:
+                edge.out['@rid'] === originalNode['@rid'] ? edge.in.name : edge.out.name,
+              targetSourceId:
+                edge.out['@rid'] === originalNode['@rid'] ? edge.in.sourceId : edge.out.sourceId,
+              source: edge.source['@rid'] || edge.source,
+              key: type,
+            });
+          }
         });
       }
     });

@@ -28,7 +28,7 @@ describe('Table Test', () => {
         if (i !== 0 && i !== array.length - 1) {
           cy.wrap(row).children('td:first').children().click()
             .children('span:first')
-            .should('have.css', 'color', 'rgb(154, 161, 203)');
+            .should('have.css', 'color', 'rgb(84, 177, 152)');
         }
       });
     });
@@ -65,7 +65,7 @@ describe('Table Test', () => {
   it('Ellipsis menu: hiding/returning rows', () => {
     cy.get('table tbody tr').then((array) => {
       const l = array.length;
-      cy.contains(178);
+      cy.contains(319);
 
       cy.wrap(array).each((row, i) => {
         if (i !== 0 && i <= Math.round(l / 6)) {
@@ -74,14 +74,14 @@ describe('Table Test', () => {
       });
       cy.get('#ellipsis-menu').click();
       cy.get('#hide-selected').click();
-      cy.contains(178 - Math.round(l / 6));
+      cy.contains(319 - Math.round(l / 6));
       cy.get('#ellipsis-menu').click();
       cy.contains(`Show hidden rows (${Math.round(l / 6)})`).click();
       cy.contains('1-50 of');
     });
   });
 
-  it.only('Ellipsis menu: column changes', () => {
+  it('Ellipsis menu: column changes', () => {
     cy.get('#ellipsis-menu').click();
     cy.get('#column-edit').click();
     cy.contains('Select Columns:');

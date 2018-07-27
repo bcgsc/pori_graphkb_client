@@ -1,7 +1,7 @@
 function goToClass(endpoint) {
-  cy.get('div.endpoint-selection').click();
+  cy.get('#class-adv').click();
   cy.contains(endpoint).click();
-  cy.get('input[name=limit').type('{backspace}{backspace}');
+  cy.get('input[name=limit').type('10');
   cy.contains('Search').click();
   cy.get('table tbody tr:first td button[tabindex=0]').click({ force: true });
   cy.get('table tbody tr td div div div div.node-properties').should('exist');
@@ -15,7 +15,7 @@ describe('Node Detail in Table View Test', () => {
     cy.get('input[name=username]').type(Cypress.env('USER'));
     cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
     cy.url().should('includes', '/query');
-    cy.get('a[href="/query/advanced"]').children().click();
+    cy.get('button.advanced-button').click();
     cy.url().should('includes', '/query/advanced');
   });
 
@@ -34,7 +34,7 @@ describe('Node Detail in Table View Test', () => {
     cy.get('div.nested-container:first div div div div h3').should('not.visible');
   });
 
-  it.only('Subset links', () => {
+  it('Subset links', () => {
     goToClass('Disease');
     cy.contains('Subsets:').click();
     cy.get('ul>li:first').click();

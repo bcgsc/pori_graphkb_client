@@ -966,6 +966,7 @@ class GraphComponent extends Component {
 
           <Tooltip placement="top" title="Graph options">
             <IconButton
+              id="graph-options-btn"
               color="primary"
               onClick={this.handleOptionsPanelOpen}
               style={{

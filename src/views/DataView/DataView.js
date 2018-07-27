@@ -386,13 +386,8 @@ class DataView extends Component {
           ) : (
             <div className="no-results-msg">
               <Typography variant="headline">
-                No Results for:
+                No Results
               </Typography>
-              {Object.keys(queryString.parse(history.location.search)).map(queryParam => (
-                <Typography variant="body1">
-                  {`${queryParam}: ${queryString.parse(history.location.search)[queryParam]}`}
-                </Typography>
-              ))}
             </div>
           )
         }

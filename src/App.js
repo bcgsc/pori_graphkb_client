@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
-  BrowserRouter,
-  Link,
+  Router,
   Route,
   Redirect,
   Switch,
@@ -31,6 +30,7 @@ import LoginView from './views/LoginView/LoginView';
 import NodeDetailView from './views/NodeDetailView/NodeDetailView';
 import UserView from './views/UserView/UserView';
 import auth from './services/auth';
+import history from './services/history';
 
 const theme = createMuiTheme({
   direction: 'ltr',
@@ -64,25 +64,10 @@ class App extends Component {
       loggedIn: !!auth.getToken(),
     };
 
-    this.handleAuthenticate = this.handleAuthenticate.bind(this);
-    this.handleRedirect = this.handleRedirect.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleLogOut = this.handleLogOut.bind(this);
-  }
-
-  /**
-   * Refreshes state upon login page render.
-   */
-  handleRedirect() {
-    this.setState({ loggedIn: !!auth.getToken() && !auth.isExpired() });
-  }
-
-  /**
-   * Sets logged in status to true.
-   */
-  handleAuthenticate() {
-    this.setState({ loggedIn: true });
+    this.handleAuthenticate = this.handleAuthenticate.bind(this);
   }
 
   /**
@@ -104,7 +89,15 @@ class App extends Component {
    */
   handleLogOut() {
     auth.clearToken();
-    this.setState({ loggedIn: false }, this.handleClose);
+    this.handleClose();
+    this.setState({ loggedIn: false });
+  }
+
+  /**
+   * Disables action buttons in headers and force redirects to /login.
+   */
+  handleAuthenticate() {
+    this.setState({ loggedIn: true });
   }
 
   render() {
@@ -112,7 +105,8 @@ class App extends Component {
 
     const loginWithProps = () => (
       <LoginView
-        handleRedirect={this.handleRedirect}
+        history={history}
+        handleLogOut={this.handleLogOut}
         handleAuthenticate={this.handleAuthenticate}
       />
     );
@@ -131,25 +125,23 @@ class App extends Component {
     );
     return (
       <MuiThemeProvider theme={theme}>
-        <BrowserRouter>
+        <Router history={history}>
           <div className="App">
             <AppBar position="static" className="banner">
-              <Link className="icon-link" to="/query">
-                <IconButton
-                  color="inherit"
-                  disabled={!loggedIn}
-                >
-                  <SearchIcon />
-                </IconButton>
-              </Link>
-              <Link className="icon-link" to="/add">
-                <IconButton
-                  color="inherit"
-                  disabled={!loggedIn}
-                >
-                  <AddIcon />
-                </IconButton>
-              </Link>
+              <IconButton
+                color="inherit"
+                disabled={!loggedIn}
+                onClick={() => history.push('/query')}
+              >
+                <SearchIcon />
+              </IconButton>
+              <IconButton
+                color="inherit"
+                disabled={!loggedIn}
+                onClick={() => history.push('/add')}
+              >
+                <AddIcon />
+              </IconButton>
 
               <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>
                 <div>
@@ -161,7 +153,7 @@ class App extends Component {
                   >
                     <PersonIcon />
                     <Typography variant="body2">
-                      {loggedIn ? auth.getUser() : 'Logged Out'}
+                      {auth.getUser() || 'Logged Out'}
                     </Typography>
                   </Button>
                   <Popover
@@ -210,7 +202,7 @@ class App extends Component {
               </div>
             </section>
           </div>
-        </BrowserRouter>
+        </Router>
       </MuiThemeProvider>
     );
   }

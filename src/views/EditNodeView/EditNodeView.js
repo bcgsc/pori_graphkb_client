@@ -25,14 +25,11 @@ class EditNodeView extends Component {
    * Initializes editing node and query on return.
    */
   componentDidMount() {
-    const { match, history } = this.props;
+    const { match } = this.props;
     const { rid } = match.params;
     api.get(`/ontologies/${rid}?neighbors=3`).then((data) => {
       const node = jc.retrocycle(data.result);
       this.setState({ node });
-    }).catch(() => {
-      // TODO: 404 page
-      history.push('/query');
     });
   }
 
@@ -49,7 +46,7 @@ class EditNodeView extends Component {
    */
   handleNodeFinishEdit() {
     const { history } = this.props;
-    history.goBack();
+    history.push('/query');
   }
 
   render() {

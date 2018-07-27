@@ -1,6 +1,7 @@
 import * as jc from 'json-cycle';
 import auth from './auth';
 import config from '../config.json';
+import history from './history';
 
 const {
   VERSION,
@@ -10,7 +11,6 @@ const {
 } = config;
 const API_BASE_URL = `http://${HOST}:${PORT}/api/v${VERSION}`;
 const CACHE_EXPIRY = 8;
-
 /**
  * Wrapper for api, handles all requests and special functions.
  */
@@ -97,7 +97,27 @@ export default class api {
       .catch(error => error.json().then(body => Promise.reject({
         status: error.status,
         body,
-      })));
+      })))
+      .catch((error) => {
+        if (error.status === 401) {
+          let state = {};
+          if (auth.isExpired()) {
+            state = { timedout: true };
+          }
+          auth.clearToken();
+          if (history.location.pathname !== '/login') {
+            history.push({ pathname: '/login', state });
+            return Promise.reject('Unauthorized, redirecting...');
+          }
+          return Promise.reject(error);
+        }
+        if (error.status === 400) {
+          history.push({ pathname: '/query/advanced', state: error });
+          return Promise.reject('Invalid Query');
+        }
+        history.push({ pathname: '/error', state: error });
+        return Promise.reject('Unexpected Error, redirecting...');
+      });
   }
 
   /**

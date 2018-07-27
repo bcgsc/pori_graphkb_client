@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
 import './LoginView.css';
 import {
   Button,
@@ -24,8 +23,6 @@ class LoginView extends Component {
       username: '',
       password: '',
       invalid: false,
-      error: null,
-      loggedIn: false,
       timedout: false,
     };
     this.handleChange = this.handleChange.bind(this);
@@ -33,10 +30,17 @@ class LoginView extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  /**
+   * Checks if there is a timedout flag in passed state to notify user, then
+   * updates parent component if user is logged out with handleLogOut.
+   */
   componentDidMount() {
-    const { handleRedirect } = this.props;
-    this.setState({ timedout: auth.isExpired() });
-    handleRedirect();
+    const { history, handleLogOut } = this.props;
+    const { timedout } = history.location.state || {};
+    if (!auth.getToken()) {
+      handleLogOut();
+    }
+    this.setState({ timedout: !!timedout });
   }
 
   /**
@@ -63,7 +67,7 @@ class LoginView extends Component {
     e.preventDefault();
 
     const { username, password } = this.state;
-    const { handleAuthenticate } = this.props;
+    const { history, handleAuthenticate } = this.props;
 
     api
       .post('/token', {
@@ -73,13 +77,11 @@ class LoginView extends Component {
       .then((response) => {
         auth.loadToken(response.kbToken);
         handleAuthenticate();
-        this.setState({ loggedIn: true });
+        history.push('/query');
       })
       .catch((error) => {
         if (error.status === 401) {
           this.setState({ invalid: true });
-        } else {
-          this.setState({ error });
         }
       });
   }
@@ -92,14 +94,8 @@ class LoginView extends Component {
       username,
       password,
       invalid,
-      error,
-      loggedIn,
       timedout,
     } = this.state;
-
-
-    if (loggedIn) { return <Redirect push to="/query" />; }
-    if (error) { return <Redirect push to={{ pathname: '/error', state: error }} />; }
 
     return (
       <div className="login-wrapper">
@@ -155,13 +151,14 @@ class LoginView extends Component {
 }
 
 /**
- * @param {function} handleAuthenticate - function passed in from parent to handle a
- * successful log in.
- * @param {function} handleRedirect - notifies parent component if login was redirected to.
+ * @param {object} history -  Application history object.
+ * @param {function} handleLogOut - Updates parent state on unauthorized user.
+ * @param {function} handleAuthenticate - Updates parent state on successful login.
  */
 LoginView.propTypes = {
+  history: PropTypes.object.isRequired,
+  handleLogOut: PropTypes.func.isRequired,
   handleAuthenticate: PropTypes.func.isRequired,
-  handleRedirect: PropTypes.func.isRequired,
 };
 
 export default LoginView;

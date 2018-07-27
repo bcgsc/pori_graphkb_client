@@ -155,15 +155,15 @@ class NodeDetailComponent extends Component {
                 expandIcon={<KeyboardArrowDownIcon />}
                 classes={{ content: 'preview-content' }}
               >
-                <Typography
-                  variant="subheading"
-                  className="preview-title"
-                >
-                  {`${util.antiCamelCase(key)}:`}
-                </Typography>
-                {!isOpen
-                  ? (
-                    <React.Fragment>
+                <div className="preview-wrap">
+                  <Typography
+                    variant="subheading"
+                    className="preview-title"
+                  >
+                    {`${util.antiCamelCase(key)}:`}
+                  </Typography>
+                  {!isOpen
+                    ? (
                       <Typography
                         variant="subheading"
                         color="textSecondary"
@@ -171,15 +171,17 @@ class NodeDetailComponent extends Component {
                       >
                         {preview}
                       </Typography>
-                      <div className="length-box">
-                        <Typography
-                          variant="subheading"
-                        >
-                          {value.length}
-                        </Typography>
-                      </div>
-                    </React.Fragment>
-                  ) : null}
+                    ) : null}
+                </div>
+                {!isOpen
+                  ? (
+                    <div className="length-box">
+                      <Typography
+                        variant="subheading"
+                      >
+                        {value.length}
+                      </Typography>
+                    </div>) : null}
               </ExpansionPanelSummary>
               <ExpansionPanelDetails style={{ display: 'block' }}>
                 {content}
@@ -291,22 +293,24 @@ class NodeDetailComponent extends Component {
                   expandIcon={<KeyboardArrowDownIcon />}
                   classes={{ content: 'preview-content' }}
                 >
-                  <Typography
-                    variant="subheading"
-                    className="preview-title"
-                  >
-                    {util.getPreview(relatedNode)}
-                  </Typography>
-                  {!edgeOpen && variant === 'table'
-                    ? (
-                      <Typography
-                        variant="subheading"
-                        color="textSecondary"
-                        className="preview"
-                      >
-                        {relatedNode.name || ''}
-                      </Typography>
-                    ) : null}
+                  <div className="preview-wrap">
+                    <Typography
+                      variant="subheading"
+                      className="preview-title"
+                    >
+                      {util.getPreview(relatedNode)}
+                    </Typography>
+                    {!edgeOpen && variant === 'table'
+                      ? (
+                        <Typography
+                          variant="subheading"
+                          color="textSecondary"
+                          className="preview"
+                        >
+                          {relatedNode.name || ''}
+                        </Typography>
+                      ) : null}
+                  </div>
                   <Tooltip title="This refers to another database record">
                     <div className="node-icon length-box">
                       <BookmarkIcon />

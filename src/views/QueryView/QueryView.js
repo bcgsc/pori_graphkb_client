@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './QueryView.css';
-import { Button } from '@material-ui/core';
+import { Button, IconButton } from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
 import AutoSearchComponent from '../../components/AutoSearchComponent/AutoSearchComponent';
 
 /**
@@ -84,6 +85,11 @@ class QueryView extends Component {
               name="name"
               onInvalid={this.handleInvalid}
               onAction={this.handleSubmit}
+              endAdornment={(
+                <IconButton onClick={this.handleSubmit} color="primary">
+                  <SearchIcon />
+                </IconButton>
+              )}
             />
           </div>
         </div>

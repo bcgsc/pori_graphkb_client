@@ -90,7 +90,6 @@ class AutoSearchComponent extends Component {
     const {
       children,
       onChange,
-      onAction,
       name,
       placeholder,
       value,
@@ -141,48 +140,44 @@ class AutoSearchComponent extends Component {
             setState,
           },
         ) => (
-          <div className="autosearch-wrapper">
-            <TextField
-              disabled={disabled}
-              fullWidth
-              error={emptyFlag}
-              label={label}
-              required={required}
-              InputProps={{
-                ...getInputProps({
-                  placeholder,
-                  value,
-                  onChange,
-                  name,
-                  onKeyUp: this.refreshOptions,
-                }),
-                endAdornment: endAdornment ? (
-                  <InputAdornment
-                    position="end"
-                    onClick={onAction}
-                    style={{ cursor: onAction ? 'pointer' : 'default' }}
-                  >
-                    {endAdornment}
-                  </InputAdornment>
-                ) : null,
-              }}
-            />
-            {(isOpen || loading) && !emptyFlag
-              ? (
-                <Paper className="droptions">
-                  <List>
-                    {loading
-                      ? (<CircularProgress color="primary" size={20} id="autosearch-spinner" />)
-                      : autoSearchResults(inputValue, getItemProps, setState, getInputProps)}
-                  </List>
-                </Paper>
-              ) : null}
-            {emptyFlag ? (
-              <Typography variant="caption" color="error">
-                No Results
+            <div className="autosearch-wrapper">
+              <TextField
+                disabled={disabled}
+                fullWidth
+                error={emptyFlag}
+                label={label}
+                required={required}
+                InputProps={{
+                  ...getInputProps({
+                    placeholder,
+                    value,
+                    onChange,
+                    name,
+                    onKeyUp: this.refreshOptions,
+                  }),
+                  endAdornment: endAdornment ? (
+                    <InputAdornment position="end">
+                      {endAdornment}
+                    </InputAdornment>
+                  ) : null,
+                }}
+              />
+              {(isOpen || loading) && !emptyFlag
+                ? (
+                  <Paper className="droptions">
+                    <List>
+                      {loading
+                        ? (<CircularProgress color="primary" size={20} id="autosearch-spinner" />)
+                        : autoSearchResults(inputValue, getItemProps, setState, getInputProps)}
+                    </List>
+                  </Paper>
+                ) : null}
+              {emptyFlag ? (
+                <Typography variant="caption" color="error">
+                  No Results
               </Typography>
-            ) : null}
-          </div>)
+              ) : null}
+            </div>)
         }
       </Downshift>
     );
@@ -214,7 +209,6 @@ AutoSearchComponent.propTypes = {
   onChange: PropTypes.func,
   children: PropTypes.func,
   disabled: PropTypes.bool,
-  onAction: PropTypes.func,
   endAdornment: PropTypes.object,
 };
 
@@ -245,7 +239,6 @@ AutoSearchComponent.defaultProps = {
   ),
   onChange: null,
   disabled: false,
-  onAction: null,
   endAdornment: <SearchIcon />,
 };
 

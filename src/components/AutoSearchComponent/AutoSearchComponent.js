@@ -140,44 +140,44 @@ class AutoSearchComponent extends Component {
             setState,
           },
         ) => (
-            <div className="autosearch-wrapper">
-              <TextField
-                disabled={disabled}
-                fullWidth
-                error={emptyFlag}
-                label={label}
-                required={required}
-                InputProps={{
-                  ...getInputProps({
-                    placeholder,
-                    value,
-                    onChange,
-                    name,
-                    onKeyUp: this.refreshOptions,
-                  }),
-                  endAdornment: endAdornment ? (
-                    <InputAdornment position="end">
-                      {endAdornment}
-                    </InputAdornment>
-                  ) : null,
-                }}
-              />
-              {(isOpen || loading) && !emptyFlag
-                ? (
-                  <Paper className="droptions">
-                    <List>
-                      {loading
-                        ? (<CircularProgress color="primary" size={20} id="autosearch-spinner" />)
-                        : autoSearchResults(inputValue, getItemProps, setState, getInputProps)}
-                    </List>
-                  </Paper>
-                ) : null}
-              {emptyFlag ? (
-                <Typography variant="caption" color="error">
-                  No Results
-              </Typography>
+          <div className="autosearch-wrapper">
+            <TextField
+              disabled={disabled}
+              fullWidth
+              error={emptyFlag}
+              label={label}
+              required={required}
+              InputProps={{
+                ...getInputProps({
+                  placeholder,
+                  value,
+                  onChange,
+                  name,
+                  onKeyUp: this.refreshOptions,
+                }),
+                endAdornment: endAdornment ? (
+                  <InputAdornment position="end">
+                    {endAdornment}
+                  </InputAdornment>
+                ) : null,
+              }}
+            />
+            {(isOpen || loading) && !emptyFlag
+              ? (
+                <Paper className="droptions">
+                  <List>
+                    {loading
+                      ? (<CircularProgress color="primary" size={20} id="autosearch-spinner" />)
+                      : autoSearchResults(inputValue, getItemProps, setState, getInputProps)}
+                  </List>
+                </Paper>
               ) : null}
-            </div>)
+            {emptyFlag ? (
+              <Typography variant="caption" color="error">
+                No Results
+              </Typography>
+            ) : null}
+          </div>)
         }
       </Downshift>
     );

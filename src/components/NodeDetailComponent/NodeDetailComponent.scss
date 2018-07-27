@@ -15,11 +15,11 @@
 }
 
 .preview-title {
-    min-width: 20%;
-    flex-shrink: 0;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    flex-shrink: 0;
+    min-width: 0;
     @media (max-width: 1440px) {
         width: auto;
     }
@@ -27,6 +27,18 @@
 
 .preview-content {
     width: 100%;
+}
+
+.preview-wrap {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    h3 {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        max-width:100%;
+    }
 }
 
 .preview {

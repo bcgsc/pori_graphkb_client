@@ -394,7 +394,12 @@ class GraphComponent extends Component {
                 expandedEdgeTypes.forEach((e) => {
                   if (graphObjects[targetRid][e]) {
                     graphObjects[targetRid][e].forEach((l) => {
-                      if (!graphObjects[l['@rid'] || l]) targetFlag = true;
+                      if (
+                        !graphObjects[l['@rid'] || l]
+                        && !((l.in || {})['@class'] === 'Statement' || (l.out || {})['@class'] === 'Statement')
+                      ) {
+                        targetFlag = true;
+                      }
                     });
                   }
                 });

@@ -86,7 +86,7 @@ class QueryView extends Component {
               onInvalid={this.handleInvalid}
               onAction={this.handleSubmit}
               endAdornment={(
-                <IconButton onClick={this.handleSubmit} color="primary">
+                <IconButton id="search-btn" onClick={this.handleSubmit} color="primary">
                   <SearchIcon />
                 </IconButton>
               )}

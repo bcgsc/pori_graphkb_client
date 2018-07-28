@@ -273,16 +273,15 @@ class NodeDetailComponent extends Component {
     const listEdges = (key) => {
       const label = util.getEdgeLabel(key);
       const isOpen = nestedExpanded.includes(label);
-
       if (filteredNode[key] && filteredNode[key].length !== 0) {
         const preview = [];
-        const content = (
-          filteredNode[key].map((edge) => {
-            const id = `${label}.${edge['@rid']}`;
-            const relatedNode = edge.in && edge.in['@rid'] === node['@rid'] ? edge.out : edge.in;
+        const content = filteredNode[key].reduce((r, edge) => {
+          const id = `${label}.${edge['@rid']}`;
+          const relatedNode = edge.in && edge.in['@rid'] === node['@rid'] ? edge.out : edge.in;
+          if (relatedNode['@class'] !== 'Statement') {
             const edgeOpen = nestedExpanded.includes(id);
             preview.push(util.getPreview(relatedNode));
-            return (
+            r.push((
               <ExpansionPanel
                 key={id}
                 expanded={edgeOpen}
@@ -326,10 +325,11 @@ class NodeDetailComponent extends Component {
                     : null}
                 </ExpansionPanelDetails>
               </ExpansionPanel>
-            );
-          })
-        );
-
+            ));
+          }
+          return r;
+        }, []);
+        if (content.length === 0) return null;
         return (
           <ExpansionPanel
             key={label}

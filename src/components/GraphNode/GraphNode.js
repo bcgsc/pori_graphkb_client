@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import './SVGNode.css';
+import './GraphNode.css';
 import * as d3 from 'd3';
 
 /**
  * Component used to display graph nodes and apply draggable behavior to them through d3.
  */
-class SVGNode extends PureComponent {
+class GraphNode extends PureComponent {
   /**
    * Initializes node element and applies drag behavior to it.
    */
@@ -58,7 +58,6 @@ class SVGNode extends PureComponent {
     const {
       node,
       handleClick,
-      expandable,
       color,
       r,
       actionsRing,
@@ -99,9 +98,8 @@ class SVGNode extends PureComponent {
   }
 }
 
-SVGNode.defaultProps = {
+GraphNode.defaultProps = {
   handleClick: null,
-  expandable: false,
   color: '#26328C',
   r: 4,
   actionsRing: null,
@@ -121,16 +119,15 @@ SVGNode.defaultProps = {
  * @param {string} label - property to display as label.
  * @param {string} detail - node identifier for node who's details are currently displayed.
  */
-SVGNode.propTypes = {
+GraphNode.propTypes = {
   node: PropTypes.object.isRequired,
   handleClick: PropTypes.func,
-  expandable: PropTypes.bool,
   color: PropTypes.string,
   r: PropTypes.number,
   simulation: PropTypes.object.isRequired,
-  actionsRing: PropTypes.array,
+  actionsRing: PropTypes.object,
   label: PropTypes.string,
   detail: PropTypes.string,
 };
 
-export default SVGNode;
+export default GraphNode;

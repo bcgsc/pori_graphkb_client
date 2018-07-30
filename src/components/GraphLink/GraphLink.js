@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './SVGLink.css';
+import './GraphLink.css';
 
 /**
  * Display component for graph link objects.
  * @param {Object} props.link - Graph link object to be displayed.
  */
-class SVGLink extends Component {
+class GraphLink extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -92,17 +92,17 @@ class SVGLink extends Component {
  * @param {Object} link - Graph link object.
  * @param {bool} linkHighlighting - flag for enabling link highlight on hover.
  */
-SVGLink.propTypes = {
+GraphLink.propTypes = {
   link: PropTypes.object.isRequired,
   linkHighlighting: PropTypes.bool,
   detail: PropTypes.string,
   labelKey: PropTypes.string,
 };
 
-SVGLink.defaultProps = {
+GraphLink.defaultProps = {
   linkHighlighting: true,
   detail: null,
   labelKey: null,
 };
 
-export default SVGLink;
+export default GraphLink;

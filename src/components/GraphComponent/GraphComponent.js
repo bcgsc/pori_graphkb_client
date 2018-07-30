@@ -230,17 +230,12 @@ class GraphComponent extends Component {
     }, () => {
       this.handleResize();
       validDisplayed.forEach((key, i) => {
-        this.setState(
-          {
-            ...this.processData(
-              data[key],
-              GraphComponent.positionInit(0, 0, i, validDisplayed.length),
-              0,
-            ),
-          },
+        this.processData(
+          data[key],
+          GraphComponent.positionInit(0, 0, i, validDisplayed.length),
+          0,
         );
       });
-
       this.drawGraph();
       this.setState({ expandId: validDisplayed[0] });
       window.addEventListener('resize', this.handleResize);
@@ -274,13 +269,11 @@ class GraphComponent extends Component {
     const { data } = this.props;
 
     if (expandable[node.data['@rid']] && data[node.data['@rid']]) {
-      this.setState({
-        ...this.processData(
-          data[node.data['@rid']],
-          { x: node.x, y: node.y },
-          1,
-        ),
-      });
+      this.processData(
+        data[node.data['@rid']],
+        { x: node.x, y: node.y },
+        1,
+      );
       this.drawGraph();
       this.updateColors('nodes');
       this.updateColors('links');
@@ -365,12 +358,11 @@ class GraphComponent extends Component {
                   j += 1,
                   n,
                 );
-                const d = this.processData(
+                this.processData(
                   edge.out,
                   positionInit,
                   depth - 1,
                 );
-                this.setState({ nodes: d.nodes, links: d.links, graphObjects: d.graphObjects });
               }
               if (inRid && !graphObjects[inRid]) {
                 const positionInit = GraphComponent.positionInit(
@@ -379,13 +371,12 @@ class GraphComponent extends Component {
                   j += 1,
                   n,
                 );
-                const d = this.processData(
+                this.processData(
                   edge.in,
                   positionInit,
                   graphObjects,
                   depth - 1,
                 );
-                this.setState({ nodes: d.nodes, links: d.links, graphObjects: d.graphObjects });
               }
 
               // Updates expanded on target node.
@@ -414,9 +405,12 @@ class GraphComponent extends Component {
       }
     });
     expandable[node['@rid']] = flag;
-    this.setState({ expandable });
-
-    return { nodes, links, graphObjects };
+    this.setState({
+      expandable,
+      nodes,
+      links,
+      graphObjects,
+    });
   }
 
   /**

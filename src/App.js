@@ -61,7 +61,7 @@ class App extends Component {
 
     this.state = {
       anchorEl: null,
-      loggedIn: !!auth.getToken(),
+      loggedIn: (!!auth.getToken() && !auth.isExpired()),
     };
 
     this.handleOpen = this.handleOpen.bind(this);

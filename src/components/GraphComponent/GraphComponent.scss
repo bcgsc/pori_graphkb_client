@@ -145,15 +145,20 @@ $toolbar-height: 64px;
         flex-direction: row-reverse;
     }
     .legend-content {
-        padding: 12px;
+        padding: 1rem;
+        padding-top: 0;
     }
     .node-colors {
         width: 100%;
+        li {
+            padding-left: 0;
+        }
     }
 }
 
 .color-chip {
     margin: 12px;
+    margin-left: 0;
     width: 24px;
     height: 24px;
     border: 1px solid rgba(0, 0, 0, 0.54);

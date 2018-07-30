@@ -58,7 +58,6 @@ class GraphNode extends PureComponent {
     const {
       node,
       handleClick,
-      expandable,
       color,
       r,
       actionsRing,
@@ -101,7 +100,6 @@ class GraphNode extends PureComponent {
 
 GraphNode.defaultProps = {
   handleClick: null,
-  expandable: false,
   color: '#26328C',
   r: 4,
   actionsRing: null,
@@ -124,11 +122,10 @@ GraphNode.defaultProps = {
 GraphNode.propTypes = {
   node: PropTypes.object.isRequired,
   handleClick: PropTypes.func,
-  expandable: PropTypes.bool,
   color: PropTypes.string,
   r: PropTypes.number,
   simulation: PropTypes.object.isRequired,
-  actionsRing: PropTypes.array,
+  actionsRing: PropTypes.object,
   label: PropTypes.string,
   detail: PropTypes.string,
 };

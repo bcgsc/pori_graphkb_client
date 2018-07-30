@@ -88,7 +88,7 @@ class SVGNode extends PureComponent {
             opacity: detail && detail !== node.data['@rid'] ? 0.6 : 1,
           }}
           onClick={handleClick}
-          className={expandable ? 'node-expandable' : 'node'}
+          className="node"
           fill={color}
           cx={0}
           cy={0}

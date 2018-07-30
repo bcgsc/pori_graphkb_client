@@ -30,8 +30,8 @@ import ViewListIcon from '@material-ui/icons/ViewList';
 import BuildIcon from '@material-ui/icons/Build';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { withStyles } from '@material-ui/core/styles';
-import SVGLink from '../SVGLink/SVGLink';
-import SVGNode from '../SVGNode/SVGNode';
+import GraphLink from '../GraphLink/GraphLink';
+import GraphNode from '../GraphNode/GraphNode';
 import util from '../../services/util';
 import config from '../../config.json';
 
@@ -910,7 +910,7 @@ class GraphComponent extends Component {
     );
 
     const linksDisplay = links.map(link => (
-      <SVGLink
+      <GraphLink
         key={link.data['@rid']}
         link={link}
         linkHighlighting={graphOptions.linkHighlighting}
@@ -931,7 +931,7 @@ class GraphComponent extends Component {
 
       const isExpandable = expandable[node.data['@rid']];
       return (
-        <SVGNode
+        <GraphNode
           key={`node${node.data['@rid']}`}
           node={node}
           simulation={simulation}

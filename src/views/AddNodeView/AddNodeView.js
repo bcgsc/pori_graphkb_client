@@ -4,7 +4,9 @@ import './AddNodeView.css';
 import NodeFormComponent from '../../components/NodeFormComponent/NodeFormComponent';
 
 /**
- * Component for editing or adding database nodes.
+ * View for editing or adding database nodes. Includes a NodeFormComponent with the
+ * 'add' variant. Submissions will post to the server, and redirect user to the home
+ * query page.
  */
 class AddNodeView extends Component {
   constructor(props) {

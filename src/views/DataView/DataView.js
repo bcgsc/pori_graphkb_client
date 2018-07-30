@@ -2,42 +2,72 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './DataView.css';
 import * as jc from 'json-cycle';
-import { Route, Redirect } from 'react-router-dom';
+import { Route, Redirect, Switch } from 'react-router-dom';
 import {
   CircularProgress,
+  Drawer,
+  IconButton,
+  Snackbar,
+  Button,
+  Typography,
 } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
+import { withStyles } from '@material-ui/core/styles';
 import queryString from 'query-string';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
+import NodeDetailComponent from '../../components/NodeDetailComponent/NodeDetailComponent';
 import api from '../../services/api';
 
+const styles = {
+  paper: {
+    width: '500px',
+    '@media (max-width: 768px)': { width: 'calc(100% - 1px)' },
+  },
+};
+
 /**
- * State handling component for query results.
+ * View for managing state of query results. Contains sub-routes for table view (/data/table)
+ * and graph view (/data/graph) to display data. Redirects to /data/table for all other
+ * sub-routes.
+ *
+ * Handles all api calls for its child components, including firing the passed in query
+ * from the url search string, retrieving the database schema, and making subsequent
+ * individual record GETs throughout the user's session.
+ *
  */
 class DataView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      queryRedirect: false,
       loginRedirect: false,
       data: null,
       displayed: [],
       hidden: [],
       selectedId: null,
-      editing: false,
-      error: null,
       allColumns: [],
+      detail: null,
     };
 
     this.handleClick = this.handleClick.bind(this);
-    this.handleNodeAdd = this.handleNodeAdd.bind(this);
+
+    // TableComponent methods
     this.handleCheckbox = this.handleCheckbox.bind(this);
     this.handleCheckAll = this.handleCheckAll.bind(this);
     this.handleHideSelected = this.handleHideSelected.bind(this);
     this.handleShowAllNodes = this.handleShowAllNodes.bind(this);
-    this.handleDrawerClose = this.handleDrawerClose.bind(this);
+
+    // GraphComponent methods
+    this.handleDetailDrawerOpen = this.handleDetailDrawerOpen.bind(this);
+    this.handleDetailDrawerClose = this.handleDetailDrawerClose.bind(this);
+
+    // NodeDetailComponent methods
     this.handleNodeEditStart = this.handleNodeEditStart.bind(this);
     this.handleNewQuery = this.handleNewQuery.bind(this);
+
+    // Routing methods
+    this.handleGraphRedirect = this.handleGraphRedirect.bind(this);
+    this.handleTableRedirect = this.handleTableRedirect.bind(this);
   }
 
   /**
@@ -45,27 +75,32 @@ class DataView extends Component {
    */
   async componentDidMount() {
     const dataMap = {};
-    let { queryRedirect } = this.state;
     const { loginRedirect } = this.state;
-    const { location } = this.props;
+    const { history } = this.props;
 
-    const filteredSearch = queryString.parse(location.search);
-    const endpointClass = await api.getClass(filteredSearch.class || 'Disease');
-    const { route, properties } = endpointClass;
-    delete filteredSearch.class;
-    const search = location.search ? `${queryString.stringify(filteredSearch)}&` : '';
-    const V = await api.getVertexBaseClass();
-    const allColumns = ['@rid'];
+    const edgeTypes = await api.getOntologyEdges();
+    const ontologyTypes = await api.getOntologyVertices();
+    const schema = await api.getSchema();
+    const { V } = schema;
+    const filteredSearch = queryString.parse(history.location.search);
+    let route = '/ontologies';
 
-    api.get(`${route}/?${search}neighbors=3`)
+    if (filteredSearch['@class']) {
+      route = schema[filteredSearch['@class']].route;
+    }
+
+    const allColumns = ['@rid', '@class'];
+
+    api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`)
       .then((data) => {
         const cycled = jc.retrocycle(data.result);
 
-        if (cycled.length === 0) queryRedirect = true;
         cycled.forEach((ontologyTerm) => {
+          const ontologyClass = schema[ontologyTerm['@class']];
+          const { properties } = ontologyClass;
           Object.keys(ontologyTerm).forEach((prop) => {
-            if (!V.properties[prop] && !allColumns.includes(prop)) {
-              const endpointProp = properties.find(p => p.name === prop);
+            if ((!V.properties[prop]) && !allColumns.includes(prop)) {
+              const endpointProp = properties[prop];
               if (endpointProp && endpointProp.type === 'link') {
                 Object.keys(ontologyTerm[prop]).forEach((nestedProp) => {
                   if (
@@ -74,6 +109,7 @@ class DataView extends Component {
                     && !nestedProp.startsWith('in_')
                     && !nestedProp.startsWith('out_')
                     && !(endpointProp.linkedClass && nestedProp === '@class')
+                    && (properties[nestedProp] || {}).type !== 'link'
                   ) {
                     allColumns.push(`${prop}.${nestedProp}`);
                   }
@@ -88,35 +124,12 @@ class DataView extends Component {
         this.setState({
           data: dataMap,
           selectedId: Object.keys(dataMap)[0],
-          queryRedirect,
           loginRedirect,
           allColumns,
+          edgeTypes,
+          ontologyTypes,
         });
-      })
-      .catch((error) => {
-        if (error.status === 401) {
-          this.setState({ loginRedirect: true });
-        } else {
-          this.setState({ error });
-        }
-      });
-  }
-
-  /**
-   * Triggered function for when a child component gets a new node from the api.
-   * Adds new node to state data object.
-   * @param {Object} node - Node data retrieved from api.
-   */
-  handleNodeAdd(node) {
-    const { data, displayed } = this.state;
-
-    if (node.source.name && !data[node['@rid']]) {
-      data[node['@rid']] = node;
-      if (displayed.indexOf(node['@rid']) === -1) {
-        displayed.push(node['@rid']);
-      }
-      this.setState({ data, displayed });
-    }
+      }).catch(() => { });
   }
 
   /**
@@ -124,7 +137,14 @@ class DataView extends Component {
    * Sets the state selected ID to clicked node.
    * @param {string} rid - Clicked node identifier.
    */
-  handleClick(rid) {
+  async handleClick(rid) {
+    const { data } = this.state;
+    if (!data[rid]) {
+      const endpoint = `/ontologies/${rid.slice(1)}?neighbors=3`;
+      const json = await api.get(endpoint);
+      data[rid] = jc.retrocycle(json.result);
+      this.setState({ data });
+    }
     this.setState({ selectedId: rid });
   }
 
@@ -145,7 +165,7 @@ class DataView extends Component {
 
   /**
    * Adds all data entries to the list of displayed nodes.
-   * @param {Evemt} e - Checkbox event.
+   * @param {Event} e - Checkbox event.
    */
   handleCheckAll(e) {
     let displayed;
@@ -181,18 +201,18 @@ class DataView extends Component {
   }
 
   /**
-   * Closes node edit drawer.
-   */
-  handleDrawerClose() {
-    this.setState({ editing: false });
-  }
-
-  /**
    * Sets selected ID to input node identifier and opens edit drawer.
-   * @param {string} node - Target node.
+   * @param {string} rid - Target node rid.
    */
-  handleNodeEditStart(node) {
-    this.setState({ selectedId: node['@rid'], editing: true });
+  handleNodeEditStart(rid) {
+    const { data } = this.state;
+    const { history } = this.props;
+    history.push({
+      pathname: `/edit/${rid.slice(1)}`,
+      state: {
+        node: data[rid],
+      },
+    });
   }
 
   /**
@@ -200,51 +220,120 @@ class DataView extends Component {
    * @param {string} search - new search string
    */
   handleNewQuery(search) {
-    const { location } = this.props;
+    const { history } = this.props;
+    const { location } = history;
+
     if (location.search.split('?')[1] !== search) {
-      location.search = `?${search}`;
+      history.push(`/data/table?${search}`);
       this.setState({
-        queryRedirect: false,
         loginRedirect: false,
         data: null,
         displayed: [],
         hidden: [],
         selectedId: null,
-        editing: false,
-        error: null,
         allColumns: [],
       }, this.componentDidMount);
     }
   }
 
+  /**
+   * Closes detail drawer.
+   */
+  handleDetailDrawerClose() {
+    this.setState({ detail: null });
+  }
+
+  /**
+   * Updates data and opens detail drawer for the specified node.
+   * @param {Object} node - Specified node.
+   * @param {boolean} open - flag to open drawer, or to just update.
+   */
+  async handleDetailDrawerOpen(node, open) {
+    const { data, detail } = this.state;
+    if (!open && !detail) return;
+    if (!data[node.data['@rid']]) {
+      const response = await api.get(`/ontologies/${node.data['@rid'].slice(1)}?neighbors=3`);
+      data[node.data['@rid']] = jc.retrocycle(response.result);
+    }
+    this.setState({ detail: node.data['@rid'] });
+  }
+
+  /**
+   * Handles redirect to graph from table.
+   */
+  handleGraphRedirect() {
+    const { history } = this.props;
+    history.push({ pathname: '/data/graph', search: history.location.search });
+  }
+
+  /**
+   * Handles redirect to table from graph.
+   */
+  handleTableRedirect() {
+    const { history } = this.props;
+    this.setState({ detail: '' });
+    history.push({
+      pathname: '/data/table',
+      search: history.location.search,
+    });
+  }
+
   render() {
     const {
-      editing,
       selectedId,
       data,
       displayed,
-      queryRedirect,
-      loginRedirect,
-      error,
       hidden,
       allColumns,
+      detail,
+      edgeTypes,
+      ontologyTypes,
     } = this.state;
 
-    const { location } = this.props;
-    const selectedNode = data ? data[selectedId] : null;
-    if (editing && selectedNode) {
-      return <Redirect push to={{ pathname: `/edit/${selectedNode['@rid'].slice(1)}`, state: { node: selectedNode, query: location.search } }} />;
-    }
+    const {
+      classes,
+      history,
+    } = this.props;
+
+    if (!data) return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
+
+    const detailDrawer = (
+      <Drawer
+        variant="persistent"
+        anchor="right"
+        open={!!detail}
+        classes={{
+          paper: classes.paper,
+        }}
+        onClose={this.handleDetailDrawerClose}
+        SlideProps={{ unmountOnExit: true }}
+      >
+        <NodeDetailComponent
+          variant="graph"
+          node={data[detail]}
+          handleNodeEditStart={this.handleNodeEditStart}
+          handleNewQuery={this.handleNewQuery}
+          handleClose={this.handleDetailDrawerClose}
+        >
+          <IconButton onClick={this.handleDetailDrawerClose}>
+            <CloseIcon color="action" />
+          </IconButton>
+        </NodeDetailComponent>
+      </Drawer>
+    );
 
     const GraphWithProps = () => (
       <GraphComponent
-        handleNodeAdd={this.handleNodeAdd}
         data={data}
-        search={location.search}
         handleClick={this.handleClick}
         displayed={displayed}
-        selectedId={selectedId}
-        handleNodeEditStart={() => this.handleNodeEditStart(selectedId)}
+        handleNodeEditStart={this.handleNodeEditStart}
+        handleDetailDrawerOpen={this.handleDetailDrawerOpen}
+        handleDetailDrawerClose={this.handleDetailDrawerClose}
+        handleTableRedirect={this.handleTableRedirect}
+        edgeTypes={edgeTypes}
+        ontologyTypes={ontologyTypes}
+        detail={detail}
       />
     );
     const TableWithProps = () => (
@@ -253,7 +342,6 @@ class DataView extends Component {
         selectedId={selectedId}
         handleClick={this.handleClick}
         handleCheckbox={this.handleCheckbox}
-        search={location.search}
         displayed={displayed}
         hidden={hidden}
         allColumns={allColumns}
@@ -262,39 +350,58 @@ class DataView extends Component {
         handleHideSelected={this.handleHideSelected}
         handleShowAllNodes={this.handleShowAllNodes}
         handleNewQuery={this.handleNewQuery}
+        handleGraphRedirect={this.handleGraphRedirect}
       />
     );
-    const dataView = () => {
-      if (loginRedirect) {
-        return <Redirect push to={{ pathname: '/login' }} />;
-      }
-      if (queryRedirect) {
-        return <Redirect push to={{ pathname: '/query', state: { noResults: true } }} />;
-      }
-      if (error) {
-        return <Redirect push to={{ pathname: '/error', state: error }} />;
-      }
-
-      if (data) {
-        return (
-          <div className="data-view">
-            <Route exact path="/data/table" render={TableWithProps} />
-            <Route exact path="/data/graph" render={GraphWithProps} />
-          </div>
-        );
-      }
-      return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
-    };
-
-    return dataView();
+    return (
+      <div className="data-view">
+        <Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          open={Object.keys(data).length === 0}
+          onClose={history.goBack}
+          autoHideDuration={3000}
+          message={(
+            <span>
+              No results found, redirecting...
+            </span>
+          )}
+          action={(
+            <Button color="secondary" onClick={history.goBack}>
+              Ok
+            </Button>
+          )}
+        />
+        {detailDrawer}
+        {Object.keys(data).length !== 0
+          ? (
+            <Switch>
+              <Route exact path="/data/table" render={TableWithProps} />
+              <Route exact path="/data/graph" render={GraphWithProps} />
+              <Route exact path="/data/*">
+                {
+                  <Redirect to={`/data/table${history.location.search}`} />
+                }
+              </Route>
+            </Switch>
+          ) : (
+            <div className="no-results-msg">
+              <Typography variant="headline">
+                No Results
+              </Typography>
+            </div>
+          )
+        }
+      </div>);
   }
 }
 
 /**
- * @param {Object} location - location property for the route and passed state.
+ * @param {Object} history - Application routing history object.
+ * @param {Object} classes - Classes provided by the @material-ui withStyles function
  */
 DataView.propTypes = {
-  location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired,
 };
 
-export default DataView;
+export default withStyles(styles)(DataView);

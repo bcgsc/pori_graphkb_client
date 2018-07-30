@@ -1,44 +1,46 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link, Redirect } from 'react-router-dom';
 import './QueryView.css';
-import { Button, Snackbar } from '@material-ui/core';
+import { Button, IconButton } from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
 import AutoSearchComponent from '../../components/AutoSearchComponent/AutoSearchComponent';
 
 /**
- * View representing the simple query page and the entry point into querying the database.
+ * View for simple search by name query. Form submissions are passed through the URL to
+ * the DataView module to handle the query transaction.
  */
 class QueryView extends Component {
   constructor(props) {
     super(props);
-
-    const initName = props.location.state
-      && props.location.state.mainParams
-      && props.location.state.mainParams.name
-      ? props.location.state.mainParams.name
+    const { state } = props.history.location;
+    const initName = state
+      && state.mainParams
+      && state.mainParams.name
+      ? state.mainParams.name
       : '';
-
 
     this.state = {
       name: initName,
-      redirect: false,
-      endpoint: 'table',
-      prevEmpty: props.location.state && props.location.state.noResults,
       disabled: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleClose = this.handleClose.bind(this);
     this.handleInvalid = this.handleInvalid.bind(this);
   }
 
   /**
    * Sets redirect flag to true if there is a valid query (any string).
    */
-  handleSubmit(endpoint) {
+  handleSubmit() {
     const { name, disabled } = this.state;
-    if (name && !disabled) this.setState({ redirect: true, endpoint });
+    const { history } = this.props;
+    if (name && !disabled) {
+      history.push({
+        pathname: '/data/table',
+        search: `?name=~${name}`,
+      });
+    }
   }
 
   /**
@@ -50,13 +52,6 @@ class QueryView extends Component {
   }
 
   /**
-   * Closes "no results" snackbar.
-   */
-  handleClose() {
-    this.setState({ prevEmpty: false });
-  }
-
-  /**
    * Binds autosearch disabled flag to search button.
    */
   handleInvalid() {
@@ -65,43 +60,18 @@ class QueryView extends Component {
 
   render() {
     const {
-      redirect,
-      endpoint,
       name,
-      prevEmpty,
     } = this.state;
-
-    if (redirect) {
-      return (
-        <Redirect
-          push
-          to={{
-            pathname: `/data/${endpoint}`,
-            search: `?name=~${name}`,
-          }}
-        />
-      );
-    }
+    const { history } = this.props;
 
     return (
       <div className="search-wrapper">
-        <Snackbar
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          open={prevEmpty}
-          onClose={this.handleClose}
-          autoHideDuration={3000}
-          message={(
-            <span>
-              No results found
-            </span>
-          )}
-        />
         <div className="search-bar">
           <div
             className="main-search"
             onKeyUp={(e) => {
               if (e.keyCode === 13) {
-                this.handleSubmit('table');
+                this.handleSubmit();
               }
             }}
             role="textbox"
@@ -114,42 +84,33 @@ class QueryView extends Component {
               limit={30}
               name="name"
               onInvalid={this.handleInvalid}
+              onAction={this.handleSubmit}
+              endAdornment={(
+                <IconButton id="search-btn" onClick={this.handleSubmit} color="primary">
+                  <SearchIcon />
+                </IconButton>
+              )}
             />
           </div>
-          <div className="search-buttons">
-            <Button
-              variant="raised"
-              color="primary"
-              onClick={() => {
-                this.handleSubmit('table');
-              }}
-            >
-              Search
-            </Button>
-          </div>
         </div>
-        <Link
-          className="query-link"
-          to={{ state: this.state, pathname: '/query/advanced' }}
+        <Button
+          variant="outlined"
+          color="secondary"
+          className="advanced-button"
+          onClick={() => history.push({ state: this.state, pathname: '/query/advanced' })}
         >
-          <Button
-            variant="outlined"
-            color="secondary"
-            className="advanced-button"
-          >
-            Advanced Search
-          </Button>
-        </Link>
+          Advanced Search
+        </Button>
       </div>
     );
   }
 }
 
 /**
- * @param {Object} location - location property for the route and passed state.
+ * @param {Object} history - Application routing history object.
  */
 QueryView.propTypes = {
-  location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 export default QueryView;

@@ -24,7 +24,7 @@ describe('Query Page Test', () => {
     cy.get('div.droptions ul li:first span:first').click();
 
     cy.get('input[type=text]').then((inputText) => {
-      cy.get('div.search-buttons button').click();
+      cy.get('#search-btn').click();
       cy.then(() => {
         cy.url().should('includes', encodeURI(`/data/table?name=~${inputText[0].value}`));
       });
@@ -34,11 +34,8 @@ describe('Query Page Test', () => {
   it('AutoSearch no results', () => {
     cy.get('input[type=text]').type('AAAAAAAAAAAAAAAAAAAAAA');
     cy.contains('No Results');
-    cy.get('div.search-buttons button').click();
+    cy.get('#search-btn').click();
     cy.url().should('includes', '/query');
-    cy.contains('No results found');
-    cy.wait(3500);
-    cy.contains('No results found').should('not.exist');
   });
 
   it('Advanced search', () => {
@@ -46,21 +43,21 @@ describe('Query Page Test', () => {
     const sourceId = 'ncit:c113159';
     cy.contains('Advanced Search').click();
     cy.url().should('includes', '/query/advanced');
-    cy.get('input[name=name]').type(name);
-    cy.get('#source-adv').click();
-    cy.get('ul > li:first').click();
-    cy.get('input[name=sourceId]').type(sourceId);
-    cy.get('input[name=longName]').type('!nothing?#)$(#$%');
-    cy.get('input[name=sourceIdVersion]').type('!something');
-    cy.get('input[name=limit]').type('{backspace}');
+    cy.get('textarea[name=name]').type(name);
+    cy.get('input[name=source]').type('ncit');
+    cy.get('ul li:first').click();
+    cy.get('textarea[name=sourceId]').type(sourceId);
+    cy.get('textarea[name=longName]').type('!nothing?#)$(#$%');
+    cy.get('textarea[name=sourceIdVersion]').type('!something');
+    cy.get('input[name=limit]').type('100');
     cy.get('#search-button').click();
-    cy.url().should('includes', '/data/table?limit=100&longName=%21nothing%3F%23%29%24%28%23%24%25&name=pneumonitis&source=%2318%3A0&sourceId=ncit%3Ac113159&sourceIdVersion=%21something');
+    cy.url().should('includes', '/table?activeOnly=true&limit=100&longName=%21nothing%3F%23%29%24%28%23%24%25&name=pneumonitis&source=%2315%3A0&sourceId=ncit%3Ac113159&sourceIdVersion=%21something');
   });
 
   it('Other classes', () => {
     cy.contains('Advanced Search').click();
-    cy.get('div.endpoint-selection').click();
-    const endpoints = ['Feature', 'AnatomicalEntity', 'Pathway', 'Therapy', 'Disease'];
+    cy.get('#class-adv').click();
+    const endpoints = ['Feature', 'AnatomicalEntity', 'Pathway', 'Therapy', 'Disease', 'Publication'];
     endpoints.sort(
       () => {
         if (Math.random() > 0.5) {
@@ -73,7 +70,7 @@ describe('Query Page Test', () => {
     endpoints.forEach((endpoint) => {
       cy.get(`ul li[data-value=${endpoint}]`).click();
       cy.contains(endpoint);
-      cy.get('div.endpoint-selection').click();
+      cy.get('#class-adv').click();
     });
     cy.get(`ul li[data-value=${endpoints[endpoints.length - 1]}]`).click();
 

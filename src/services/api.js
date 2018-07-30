@@ -1,6 +1,7 @@
 import * as jc from 'json-cycle';
 import auth from './auth';
 import config from '../config.json';
+import history from './history';
 
 const {
   VERSION,
@@ -10,7 +11,6 @@ const {
 } = config;
 const API_BASE_URL = `http://${HOST}:${PORT}/api/v${VERSION}`;
 const CACHE_EXPIRY = 8;
-
 /**
  * Wrapper for api, handles all requests and special functions.
  */
@@ -97,7 +97,27 @@ export default class api {
       .catch(error => error.json().then(body => Promise.reject({
         status: error.status,
         body,
-      })));
+      })))
+      .catch((error) => {
+        if (error.status === 401) {
+          let state = {};
+          if (auth.isExpired()) {
+            state = { timedout: true };
+          }
+          auth.clearToken();
+          if (history.location.pathname !== '/login') {
+            history.push({ pathname: '/login', state });
+            return Promise.reject('Unauthorized, redirecting...');
+          }
+          return Promise.reject(error);
+        }
+        if (error.status === 400) {
+          history.push({ pathname: '/query/advanced', state: error });
+          return Promise.reject('Invalid Query');
+        }
+        history.push({ pathname: '/error', state: error });
+        return Promise.reject('Unexpected Error, redirecting...');
+      });
   }
 
   /**
@@ -177,7 +197,7 @@ export default class api {
    * Returns the database schema.
    */
   static getSchema() {
-    const schema = JSON.parse(localStorage.getItem(KEYS.SCHEMA) || '');
+    const schema = JSON.parse(localStorage.getItem(KEYS.SCHEMA) || '{}');
     const schemaExpiry = localStorage.getItem(`${KEYS.SCHEMA}Expiry`);
     if (
       !schema
@@ -225,18 +245,15 @@ export default class api {
   static getClass(className) {
     return api.getSchema().then((schema) => {
       const VPropKeys = Object.keys(schema.V.properties);
-      const classKey = Object.keys(schema)
-        .find(key => key.toLowerCase() === className.toLowerCase());
-      if (classKey) {
-        const props = Object.keys(schema[classKey].properties)
-          .filter(prop => !VPropKeys.includes(prop))
-          .map(prop => (
-            {
-              ...schema[classKey].properties[prop],
-            }));
-        return Promise.resolve({ route: schema[classKey].route, properties: props });
-      }
-      return Promise.reject('Class not found');
+      const classKey = (Object.keys(schema)
+        .find(key => key.toLowerCase() === (className || '').toLowerCase()) || 'Ontology');
+      const props = Object.keys(schema[classKey].properties)
+        .filter(prop => !VPropKeys.includes(prop))
+        .map(prop => (
+          {
+            ...schema[classKey].properties[prop],
+          }));
+      return Promise.resolve({ route: schema[classKey].route, properties: props });
     });
   }
 
@@ -248,8 +265,11 @@ export default class api {
    * @param {number} limit - Limit for number of returned matches.
    */
   static autoSearch(endpoint, property, value, limit) {
-    return api.get(
-      `/${endpoint}?${property}=~${encodeURIComponent(value)}&limit=${limit}&neighbors=1`,
-    );
+    const results = [];
+    for (let i = 0; i < property.length; i += 1) {
+      const intResults = api.get(`/${endpoint}?${property[i]}=~${encodeURIComponent(value)}&limit=${limit}&neighbors=1`);
+      results.push(intResults);
+    }
+    return Promise.all(results);
   }
 }

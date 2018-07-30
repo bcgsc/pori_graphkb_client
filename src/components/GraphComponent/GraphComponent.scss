@@ -1,123 +1,162 @@
 @import "../../globals";
-
-$toolbar-height: 100px;
-
+$toolbar-height: 64px;
 .graph-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 .graph-close-drawer-btn {
-  button {
-    float: right;
-    margin: 8px;
-  }
+    button {
+        float: right;
+    }
 }
 
 .toolbar {
-  height: calc(#{$toolbar-height} - 1px);
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  margin: auto;
-  display: flex;
-  border-bottom: solid $md-primary-color 1px;
-  overflow-x: auto;
-  overflow-y: hidden;
-
-  .compact-picker {
-    float: left;
-    margin: auto 4px;
-  }
-
-  .grid-wrapper {
-    margin: auto 4px;
-
-    .button-grid {
-      margin: auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: 1fr 1fr;
-      grid-row-gap: 4px;
-      grid-column-gap: 4px;
-
-      button {
-        padding: 4px;
-      }
+    height: calc(#{$toolbar-height} - 1px);
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    margin: auto;
+    display: flex;
+    border-top: solid $md-primary-color 1px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-direction: row-reverse;
+    transition: padding 255ms;
+    .table-btn {
+        background-color: rgba($md-secondary-light, 0.5);
+        margin: auto 24px auto 8px,
     }
-  }
+}
 
-  .graph-options-wrapper {
-    margin: auto 4px;
+.transition-left {
+    padding-right: 500px;
+}
 
-    .graph-options-grid {
-      display: grid;
-      grid-template-rows: 36px 36px;
-      grid-template-columns: 200px 200px;
-      grid-row-gap: 4px;
-      grid-column-gap: 4px;
-      height: 100%;
+#options-close-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
 
-      .graph-input-wrapper {
-        .checkbox-wrapper {
-          margin: 3px 0 0 -15px;
-          .checkbox-label {
-            margin-left: -8px;
-            font-size: 0.9em;
-          }
-          svg {
+.graph-options-wrapper {
+    .graph-input-wrapper {
+        svg {
             color: $md-secondary-color;
-          }
         }
-
-        span {
-          margin: 0;
-          font-size: 0.7em;
-          font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-          color: $md-primary-color;
-        }
-
-        .graph-input {
-          border-radius: 4px;
-          border: 1px solid rgba(0, 0, 0, 0.23);
-          overflow: hidden;
-
-          input {
+    }
+    span.label {
+        margin: 0;
+        font-size: 0.7em;
+        font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+        color: $md-primary-color;
+    }
+    .graph-input {
+        border-radius: 4px;
+        border: 1px solid rgba(0, 0, 0, 0.23);
+        overflow: hidden;
+        input {
             border: none;
             font-family: "Roboto", "Helvetica", "Arial", sans-serif;
             font-size: 0.9em;
             background-color: unset;
             width: 100%;
-          }
-          input:focus {
-            outline: none;
-            box-shadow: none;
-          }
-          input:invalid {
-            outline: none;
-            box-shadow: none;
-          }
         }
-      }
+        input:focus {
+            outline: none;
+            box-shadow: none;
+        }
+        input:invalid {
+            outline: none;
+            box-shadow: none;
+        }
     }
-  }
 }
 
 .svg-wrapper {
-  position: absolute;
-  top: $toolbar-height;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  .node-options {
     position: absolute;
+    bottom: $toolbar-height;
+    left: 0;
     right: 0;
     top: 0;
-    margin: 8px;
-  }
+}
+
+.options-panel-wrapper {
+    width: 100%;
+}
+
+.options-grid {
+    display: grid;
+    grid-template-rows: 2fr 1fr;
+    grid-template-columns: 1fr;
+    grid-column-gap: 8px;
+}
+
+.highlighted-arrow {
+    fill: $md-secondary-color;
+}
+
+.edge-color-list {
+    .edge-colors {
+        margin: 4px 0;
+        max-height: 400px;
+        overflow: auto;
+    }
+}
+
+.main-options-wrapper {
+    flex-grow: 1;
+    padding: 0 48px 24px 48px;
+    .graph-option {
+        width: 100%;
+        margin: 12px 0;
+    }
+}
+
+.advanced-options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 8px;
+    padding: 24px;
+}
+
+.advanced-options-wrapper {
+    padding: 24px;
+}
+
+.legend-wrapper {
+    height: auto;
+    position: fixed;
+    top: calc(#{$banner-height} + 16px);
+    left: 16px;
+    overflow: auto;
+    max-width: 25%;
+    max-height: calc(100vh - #{$banner-height} - #{$toolbar-height});
+    @media (max-width: 768px) {
+        max-width: unset;
+    }
+    .close-btn {
+        display: flex;
+        flex-direction: row-reverse;
+    }
+    .legend-content {
+        padding: 12px;
+    }
+    .node-colors {
+        width: 100%;
+    }
+}
+
+.color-chip {
+    margin: 12px;
+    width: 24px;
+    height: 24px;
+    border: 1px solid rgba(0, 0, 0, 0.54);
+    border-radius: 4px;
+    cursor: pointer;
 }

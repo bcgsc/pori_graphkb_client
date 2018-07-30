@@ -20,7 +20,7 @@ export default class auth {
    */
   static isExpired() {
     const token = localStorage.getItem(KB_TOKEN);
-    if (token) {
+    if (token && jwt.decode(token)) {
       const expiry = jwt.decode(token).exp;
       const now = new Date();
       return now.getTime() > expiry * 1000;
@@ -48,7 +48,7 @@ export default class auth {
    */
   static getUser() {
     const token = localStorage.getItem(KB_TOKEN);
-    if (token) {
+    if (token && jwt.decode(token)) {
       return jwt.decode(token).user.name;
     }
     return null;

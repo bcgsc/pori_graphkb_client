@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
-  BrowserRouter,
-  Link,
+  Router,
   Route,
   Redirect,
   Switch,
@@ -14,8 +13,9 @@ import {
   IconButton,
   Button,
   Typography,
-  Menu,
   MenuItem,
+  Popover,
+  Card,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
@@ -28,7 +28,29 @@ import EditNodeView from './views/EditNodeView/EditNodeView';
 import AddNodeView from './views/AddNodeView/AddNodeView';
 import LoginView from './views/LoginView/LoginView';
 import NodeDetailView from './views/NodeDetailView/NodeDetailView';
+import UserView from './views/UserView/UserView';
 import auth from './services/auth';
+import history from './services/history';
+
+const theme = createMuiTheme({
+  direction: 'ltr',
+  palette: {
+    primary: {
+      main: '#26328C',
+    },
+    secondary: {
+      main: '#54B198',
+      light: '#CCCFE2',
+    },
+    error: {
+      main: '#d32f2f',
+    },
+    text: {
+      primary: 'rgba(0,0,0,0.7)',
+      secondary: 'rgba(0,0,0,0.54)',
+    },
+  },
+});
 
 /**
  * Entry point to application. Handles routing, app theme, and logged in state.
@@ -42,33 +64,17 @@ class App extends Component {
       loggedIn: !!auth.getToken(),
     };
 
-    this.handleAuthenticate = this.handleAuthenticate.bind(this);
-    this.handleRedirect = this.handleRedirect.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleLogOut = this.handleLogOut.bind(this);
-  }
-
-  /**
-   * Refreshes state upon login page render.
-   */
-  handleRedirect() {
-    this.setState({ loggedIn: !!auth.getToken() && !auth.isExpired() });
-  }
-
-  /**
-   * Sets logged in status to true.
-   */
-  handleAuthenticate() {
-    this.setState({ loggedIn: true });
+    this.handleAuthenticate = this.handleAuthenticate.bind(this);
   }
 
   /**
    * Opens user dropdown menu.
-   * @param {Event} e - User menu button click event.
    */
-  handleOpen(e) {
-    this.setState({ anchorEl: e.currentTarget });
+  handleOpen() {
+    this.setState({ anchorEl: this.dropdown });
   }
 
   /**
@@ -83,31 +89,24 @@ class App extends Component {
    */
   handleLogOut() {
     auth.clearToken();
-    this.setState({ loggedIn: false }, this.handleClose);
+    this.handleClose();
+    this.setState({ loggedIn: false });
+  }
+
+  /**
+   * Disables action buttons in headers and force redirects to /login.
+   */
+  handleAuthenticate() {
+    this.setState({ loggedIn: true });
   }
 
   render() {
     const { anchorEl, loggedIn } = this.state;
 
-    const theme = createMuiTheme({
-      direction: 'ltr',
-      palette: {
-        primary: {
-          main: '#26328C',
-        },
-        secondary: {
-          light: '#CCCFE2',
-          main: '#9AA1CB',
-        },
-        warn: {
-          main: '#d32f2f',
-        },
-      },
-    });
-
     const loginWithProps = () => (
       <LoginView
-        handleRedirect={this.handleRedirect}
+        history={history}
+        handleLogOut={this.handleLogOut}
         handleAuthenticate={this.handleAuthenticate}
       />
     );
@@ -120,52 +119,69 @@ class App extends Component {
         <Route path="/edit/:rid" component={EditNodeView} />
         <Route path="/ontology/:rid" component={NodeDetailView} />
         <Route path="/data" component={DataView} />
+        <Route path="/admin" component={UserView} />
         <Redirect from="*" to="/query" />
       </Switch>
     );
     return (
       <MuiThemeProvider theme={theme}>
-        <BrowserRouter>
+        <Router history={history}>
           <div className="App">
             <AppBar position="static" className="banner">
-              <Link className="icon-link" to="/query">
-                <IconButton
-                  color="inherit"
-                  disabled={!loggedIn}
-                >
-                  <SearchIcon />
-                </IconButton>
-              </Link>
-              <Link className="icon-link" to="/add">
-                <IconButton
-                  color="inherit"
-                  disabled={!loggedIn}
-                >
-                  <AddIcon />
-                </IconButton>
-              </Link>
+              <IconButton
+                color="inherit"
+                disabled={!loggedIn}
+                onClick={() => history.push('/query')}
+              >
+                <SearchIcon />
+              </IconButton>
+              <IconButton
+                color="inherit"
+                disabled={!loggedIn}
+                onClick={() => history.push('/add')}
+              >
+                <AddIcon />
+              </IconButton>
 
-              <div className="user-dropdown">
-                <Button
-                  classes={{ root: 'user-btn' }}
-                  onClick={this.handleOpen}
-                  size="small"
-                  disabled={!loggedIn}
-                >
-                  <PersonIcon />
-                  <Typography variant="body2">
-                    {loggedIn ? auth.getUser() : 'Logged Out'}
-                  </Typography>
-                </Button>
-                <Menu
-                  anchorEl={anchorEl}
-                  open={!!anchorEl}
-                  onClose={this.handleClose}
-                >
-                  <MenuItem onClick={this.handleLogOut}>
-                    Logout
-                  </MenuItem>
-                </Menu>
+              <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>
+                <div>
+                  <Button
+                    classes={{ root: 'user-btn' }}
+                    onClick={this.handleOpen}
+                    size="small"
+                    disabled={!loggedIn}
+                  >
+                    <PersonIcon />
+                    <Typography variant="body2">
+                      {auth.getUser() || 'Logged Out'}
+                    </Typography>
+                  </Button>
+                  <Popover
+                    open={!!anchorEl}
+                    anchorEl={anchorEl}
+                    onClose={this.handleClose}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                  >
+                    <Card className="user-menu">
+                      <MenuItem>
+                        Settings
+                      </MenuItem>
+                      <MenuItem>
+                        Feedback
+                      </MenuItem>
+                      <MenuItem onClick={this.handleLogOut}>
+                        Logout
+                      </MenuItem>
+                    </Card>
+                  </Popover>
+                </div>
               </div>
             </AppBar>
             <section className="content">
@@ -186,7 +202,7 @@ class App extends Component {
               </div>
             </section>
           </div>
-        </BrowserRouter>
+        </Router>
       </MuiThemeProvider>
     );
   }

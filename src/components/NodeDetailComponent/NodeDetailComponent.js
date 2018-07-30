@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import './NodeDetailComponent.css';
 import {
   List,
@@ -15,8 +14,9 @@ import {
   ExpansionPanelDetails,
   ExpansionPanelSummary,
   ListItemIcon,
+  Tooltip,
 } from '@material-ui/core';
-import AssignmentIcon from '@material-ui/icons/Assignment';
+import BookmarkIcon from '@material-ui/icons/Bookmark';
 import EditIcon from '@material-ui/icons/Edit';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import SearchIcon from '@material-ui/icons/Search';
@@ -33,9 +33,8 @@ class NodeDetailComponent extends Component {
     super(props);
     this.state = {
       V: null,
-      ontologyEdges: null,
-      filteredNode: null,
       nestedExpanded: [],
+      expandedEdgeTypes: [],
     };
 
     this.handleNestedToggle = this.handleNestedToggle.bind(this);
@@ -45,20 +44,24 @@ class NodeDetailComponent extends Component {
    * Loads resources and filters node properties.
    */
   async componentDidMount() {
-    const { node } = this.props;
     const V = await api.getVertexBaseClass();
     const ontologyEdges = await api.getOntologyEdges();
-
-    const filteredNode = Object.assign({}, node);
-    Object.keys(V.properties).forEach(key => delete filteredNode[key]);
-
+    // Accounts for in and out edgetypes.
+    const expandedEdgeTypes = ontologyEdges ? ontologyEdges.reduce((r, e) => {
+      r.push(`in_${e}`);
+      r.push(`out_${e}`);
+      return r;
+    }, []) : [];
     this.setState({
       V,
-      ontologyEdges,
-      filteredNode,
+      expandedEdgeTypes,
     });
   }
 
+  /**
+   * Toggles the open/closed state of a nested object drawer.
+   * @param {string} id - id of nested object.
+   */
   handleNestedToggle(id) {
     const { nestedExpanded } = this.state;
 
@@ -74,8 +77,7 @@ class NodeDetailComponent extends Component {
   render() {
     const {
       V,
-      ontologyEdges,
-      filteredNode,
+      expandedEdgeTypes,
       nestedExpanded,
     } = this.state;
 
@@ -83,17 +85,13 @@ class NodeDetailComponent extends Component {
       handleNodeEditStart,
       node,
       children,
+      variant,
       handleNewQuery,
     } = this.props;
 
-    // Accounts for in and out edgetypes.
-    const expandedEdgeTypes = ontologyEdges ? ontologyEdges.reduce((r, e) => {
-      r.push(`in_${e}`);
-      r.push(`out_${e}`);
-      return r;
-    }, []) : [];
-
     if (!V) return null;
+    const filteredNode = Object.assign({}, node);
+    Object.keys(V.properties).forEach((key) => { if (key !== '@class') delete filteredNode[key]; });
 
     /**
    * Formats node properties based on type.
@@ -106,7 +104,7 @@ class NodeDetailComponent extends Component {
         of nested values is exceeded. (2) */
       if (
         !value
-        || ontologyEdges.find(edge => edge === key.split('_')[1])
+        || expandedEdgeTypes.find(edge => edge === key)
         || value.length === 0
         || (id.match(/\./g) || []).length > 2
       ) {
@@ -119,7 +117,7 @@ class NodeDetailComponent extends Component {
             <Typography variant="subheading">
               {`${util.antiCamelCase(key)}:`}
             </Typography>
-            <Typography paragraph variant="caption">
+            <Typography paragraph variant="body1" color="textSecondary">
               {value.toString()}
             </Typography>
           </React.Fragment>
@@ -132,21 +130,16 @@ class NodeDetailComponent extends Component {
           const content = (
             <List style={{ paddingTop: '0' }}>
               {value.map(item => (
-
                 <ListItem
                   dense
                   key={`${id}${item}`}
                   onClick={() => handleNewQuery(`subsets=${item}`)}
+                  className="list-icon"
                 >
-                  <Link
-                    to={`/data/table?subsets=${item}`}
-                    className="icon-link"
-                  >
-                    <ListItemIcon>
-                      <SearchIcon />
-                    </ListItemIcon>
-                    <ListItemText primary={item} />
-                  </Link>
+                  <ListItemIcon>
+                    <SearchIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={item} />
                 </ListItem>
               ))}
             </List>
@@ -162,15 +155,15 @@ class NodeDetailComponent extends Component {
                 expandIcon={<KeyboardArrowDownIcon />}
                 classes={{ content: 'preview-content' }}
               >
-                <Typography
-                  variant="subheading"
-                  className="preview-title"
-                >
-                  {`${util.antiCamelCase(key)}:`}
-                </Typography>
-                {!isOpen
-                  ? (
-                    <React.Fragment>
+                <div className="preview-wrap">
+                  <Typography
+                    variant="subheading"
+                    className="preview-title"
+                  >
+                    {`${util.antiCamelCase(key)}:`}
+                  </Typography>
+                  {!isOpen
+                    ? (
                       <Typography
                         variant="subheading"
                         color="textSecondary"
@@ -178,15 +171,17 @@ class NodeDetailComponent extends Component {
                       >
                         {preview}
                       </Typography>
-                      <div className="length-box">
-                        <Typography
-                          variant="subheading"
-                        >
-                          {value.length}
-                        </Typography>
-                      </div>
-                    </React.Fragment>
-                  ) : null}
+                    ) : null}
+                </div>
+                {!isOpen
+                  ? (
+                    <div className="length-box">
+                      <Typography
+                        variant="subheading"
+                      >
+                        {value.length}
+                      </Typography>
+                    </div>) : null}
               </ExpansionPanelSummary>
               <ExpansionPanelDetails style={{ display: 'block' }}>
                 {content}
@@ -214,7 +209,9 @@ class NodeDetailComponent extends Component {
       }
 
       const nestedObject = Object.assign({}, value);
-      Object.keys(V.properties).forEach(vk => delete nestedObject[vk]);
+      Object.keys(V.properties).forEach((vk) => {
+        if (vk !== '@class') delete nestedObject[vk];
+      });
       const preview = util.getPreview(nestedObject);
 
       if ((id.match(/\./g) || []).length === 2) {
@@ -239,6 +236,7 @@ class NodeDetailComponent extends Component {
         >
           <ExpansionPanelSummary
             expandIcon={<KeyboardArrowDownIcon />}
+            classes={{ content: 'preview-content' }}
           >
             <Typography
               variant="subheading"
@@ -256,9 +254,11 @@ class NodeDetailComponent extends Component {
                   {preview}
                 </Typography>
               ) : null}
-            <div className="node-icon length-box">
-              <AssignmentIcon />
-            </div>
+            <Tooltip title="This refers to another database record">
+              <div className="node-icon length-box">
+                <BookmarkIcon />
+              </div>
+            </Tooltip>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails style={{ display: 'block' }}>
             {Object.keys(nestedObject).map(k => formatProperty(k, nestedObject[k], `${prefix ? `${prefix}.` : ''}${key}`))}
@@ -267,23 +267,21 @@ class NodeDetailComponent extends Component {
       );
     };
 
-
     /**
      * Formats and lists relationship (edge) fields.
      */
     const listEdges = (key) => {
       const label = util.getEdgeLabel(key);
       const isOpen = nestedExpanded.includes(label);
-
       if (filteredNode[key] && filteredNode[key].length !== 0) {
         const preview = [];
-        const content = (
-          filteredNode[key].map((edge) => {
-            const id = `${label}.${edge['@rid']}`;
-            const relatedNode = edge.in && edge.in['@rid'] === node['@rid'] ? edge.out : edge.in;
+        const content = filteredNode[key].reduce((r, edge) => {
+          const id = `${label}.${edge['@rid']}`;
+          const relatedNode = edge.in && edge.in['@rid'] === node['@rid'] ? edge.out : edge.in;
+          if (relatedNode['@class'] !== 'Statement') {
             const edgeOpen = nestedExpanded.includes(id);
-            preview.push(relatedNode.sourceId);
-            return (
+            preview.push(util.getPreview(relatedNode));
+            r.push((
               <ExpansionPanel
                 key={id}
                 expanded={edgeOpen}
@@ -294,37 +292,44 @@ class NodeDetailComponent extends Component {
                   expandIcon={<KeyboardArrowDownIcon />}
                   classes={{ content: 'preview-content' }}
                 >
-                  <Typography
-                    variant="subheading"
-                    className="preview-title"
-                  >
-                    {`${relatedNode.sourceId}:`}
-                  </Typography>
-                  {!edgeOpen
-                    ? (
-                      <Typography
-                        variant="subheading"
-                        color="textSecondary"
-                        className="preview"
-                      >
-                        {relatedNode.name || ''}
-                      </Typography>
-                    ) : null}
-                  <div className="node-icon length-box">
-                    <AssignmentIcon />
+                  <div className="preview-wrap">
+                    <Typography
+                      variant="subheading"
+                      className="preview-title"
+                    >
+                      {util.getPreview(relatedNode)}
+                    </Typography>
+                    {!edgeOpen && variant === 'table'
+                      ? (
+                        <Typography
+                          variant="subheading"
+                          color="textSecondary"
+                          className="preview"
+                        >
+                          {relatedNode.name || ''}
+                        </Typography>
+                      ) : null}
                   </div>
+                  <Tooltip title="This refers to another database record">
+                    <div className="node-icon length-box">
+                      <BookmarkIcon />
+                    </div>
+                  </Tooltip>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails style={{ display: 'block' }}>
                   {formatProperty('@class', relatedNode['@class'], id)}
                   {formatProperty('sourceId', relatedNode.sourceId, id)}
                   {formatProperty('name', relatedNode.name, id)}
-                  {formatProperty('source', edge.source.name, id)}
+                  {edge.source && edge.source.name
+                    ? formatProperty('source', edge.source.name, id)
+                    : null}
                 </ExpansionPanelDetails>
               </ExpansionPanel>
-            );
-          })
-        );
-
+            ));
+          }
+          return r;
+        }, []);
+        if (content.length === 0) return null;
         return (
           <ExpansionPanel
             key={label}
@@ -370,18 +375,26 @@ class NodeDetailComponent extends Component {
       } return null;
     };
 
+    const relationships = expandedEdgeTypes.reduce((r, e) => {
+      const rendered = listEdges(e);
+      if (rendered) r.push(rendered);
+      return r;
+    }, []);
+
+    const className = variant === 'table' ? 'detail-table' : 'detail-graph';
+
     return (
       <Card style={{ height: '100%', overflowY: 'auto' }}>
         <div className="node-edit-btn">
+          {children}
           <IconButton
-            onClick={() => handleNodeEditStart(node)}
+            onClick={() => handleNodeEditStart(node['@rid'], node['@class'])}
           >
             <EditIcon />
           </IconButton>
-          {children}
         </div>
-        <div className="node-properties">
-          <Card className="basic-properties">
+        <div className={`node-properties ${className}`}>
+          <Card className="properties">
             <CardContent>
               <Typography paragraph variant="title" component="h1">
                 Properties:
@@ -390,13 +403,15 @@ class NodeDetailComponent extends Component {
               {Object.keys(filteredNode).map(key => formatProperty(key, filteredNode[key], ''))}
             </CardContent>
           </Card>
-          <Card>
+          <Card className="properties">
             <CardContent>
               <Typography paragraph variant="title" component="h1">
                 Relationships:
                 <Divider />
               </Typography>
-              {expandedEdgeTypes.map(edgeType => listEdges(edgeType))}
+              {relationships.length !== 0 ? relationships : (
+                <Typography variant="caption" style={{ margin: 'auto' }}>No relationships</Typography>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -405,17 +420,18 @@ class NodeDetailComponent extends Component {
   }
 }
 
-NodeDetailComponent.defaultProps = {
-  node: null,
-  children: null,
-  handleNewQuery: null,
-};
-
 NodeDetailComponent.propTypes = {
   node: PropTypes.object,
   handleNodeEditStart: PropTypes.func.isRequired,
-  handleNewQuery: PropTypes.func,
+  handleNewQuery: PropTypes.func.isRequired,
   children: PropTypes.node,
+  variant: PropTypes.string,
+};
+
+NodeDetailComponent.defaultProps = {
+  node: null,
+  children: null,
+  variant: 'table',
 };
 
 export default NodeDetailComponent;

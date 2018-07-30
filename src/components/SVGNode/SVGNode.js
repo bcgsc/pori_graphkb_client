@@ -51,9 +51,7 @@ class SVGNode extends PureComponent {
 
     d3.event
       .on('drag', dragged)
-      // .on("touchmove", dragged)
       .on('end', ended);
-    // .on("touchend", ended);
   }
 
   render() {
@@ -63,22 +61,39 @@ class SVGNode extends PureComponent {
       expandable,
       color,
       r,
+      actionsRing,
+      label,
+      detail,
     } = this.props;
 
     return (
-      <g ref={(n) => { this.node = n; }} onClick={handleClick} transform={`translate(${(node.x || 0)},${(node.y || 0)})`}>
+      <g
+        ref={(n) => { this.node = n; }}
+        transform={`translate(${(node.x || 0)},${(node.y || 0)})`}
+      >
+        <text>
+          <tspan className="node-name" dy={28}>
+            {node.data[label] || ''}
+          </tspan>
+        </text>
+        {actionsRing}
         <circle
-          className={expandable ? 'node-expandable' : 'node'}
+          fill="#fff"
+          cx={0}
+          cy={0}
+          r={r}
+        />
+        <circle
+          style={{
+            opacity: detail && detail !== node.data['@rid'] ? 0.6 : 1,
+          }}
+          onClick={handleClick}
+          className="node"
           fill={color}
           cx={0}
           cy={0}
           r={r}
         />
-        <text>
-          <tspan className="node-name" dy={12}>
-            {node.data.name}
-          </tspan>
-        </text>
       </g>
     );
   }
@@ -87,8 +102,11 @@ class SVGNode extends PureComponent {
 SVGNode.defaultProps = {
   handleClick: null,
   expandable: false,
-  color: '#000',
+  color: '#26328C',
   r: 4,
+  actionsRing: null,
+  label: 'name',
+  detail: null,
 };
 
 /**
@@ -98,6 +116,10 @@ SVGNode.defaultProps = {
  * @param {string} color - Color of node.
  * @param {number} r - Node radius.
  * @param {Object} simulation - parent simulation that node is a member of.
+ * @param {Array} actionsRing - Array of svg components making up the node actions ring
+ * surrounding a selected node.
+ * @param {string} label - property to display as label.
+ * @param {string} detail - node identifier for node who's details are currently displayed.
  */
 SVGNode.propTypes = {
   node: PropTypes.object.isRequired,
@@ -106,6 +128,9 @@ SVGNode.propTypes = {
   color: PropTypes.string,
   r: PropTypes.number,
   simulation: PropTypes.object.isRequired,
+  actionsRing: PropTypes.array,
+  label: PropTypes.string,
+  detail: PropTypes.string,
 };
 
 export default SVGNode;

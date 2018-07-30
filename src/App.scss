@@ -1,55 +1,59 @@
 @import "globals";
-
-$banner-height: 56px;
-
+$user-menu-width: 124px;
 .banner {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: auto;
-  height: $banner-height;
-  display: flex;
-  background-color: $md-primary-color;
-  flex-direction: row !important;
-
-  button {
-    margin: auto 0;
-    color: white;
-  }
-
-  button:disabled{
-    color: white;
-  }
-  
-  .user-dropdown{
-    float: right;
-    margin: auto;
-    margin-right: 1em;
-    
-    .user-btn{
-      color: white;
-      svg{
-        font-size: 32px;
-        margin-right: 4px;
-      }
-      span aside{
-          color:white;
-      }
+    height: $banner-height;
+    flex-direction: row !important;
+    button {
+        margin: auto 0;
+        color: white;
     }
-  }
+    button:disabled {
+        color: white;
+    }
+    .user-dropdown {
+        float: right;
+        margin: auto;
+        margin-right: 2%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-width: $user-menu-width;
+        div {
+            margin: auto 0;
+        }
+        .user-btn {
+            color: white;
+            svg {
+                font-size: 32px;
+                margin-right: 4px;
+            }
+            span aside {
+                color: white;
+            }
+        }
+    }
+}
+
+.user-menu {
+    width: $user-menu-width;
 }
 
 .content {
-  overflow-y: auto;
-  position: absolute;
-  top: $banner-height;
-  left: 0;
-  right: 0;
-  margin: auto;
-  bottom: 0;
+    overflow-y: auto;
+    position: absolute;
+    top: $banner-height;
+    left: 0;
+    right: 0;
+    margin: auto;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.03);
 }
 
 .router-outlet {
-  height: 100%;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 5px;
+    bottom: 0;
 }

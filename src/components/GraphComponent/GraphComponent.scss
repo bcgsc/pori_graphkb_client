@@ -129,6 +129,18 @@ $toolbar-height: 64px;
     padding: 24px;
 }
 
+.advanced-title {
+    display: flex;
+    align-items: center;
+    svg {
+        margin-left: 8px;
+        cursor: pointer;
+    }
+    button {
+        margin-left: auto;
+    }
+}
+
 .legend-wrapper {
     height: auto;
     position: fixed;

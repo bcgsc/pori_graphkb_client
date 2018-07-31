@@ -13,7 +13,6 @@ import {
   ListItem,
   Typography,
   Paper,
-  TextField,
   Select,
   MenuItem,
   InputLabel,
@@ -31,6 +30,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import BuildIcon from '@material-ui/icons/Build';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import HelpIcon from '@material-ui/icons/Help';
 import { withStyles } from '@material-ui/core/styles';
 import GraphLink from '../GraphLink/GraphLink';
 import GraphNode from '../GraphNode/GraphNode';
@@ -51,6 +51,8 @@ const {
   DEFAULT_NODE_COLOR,
 } = config.GRAPH_DEFAULTS;
 
+const { GRAPH_ADVANCED, GRAPH_MAIN } = config.DESCRIPTIONS;
+
 const styles = {
   paper: {
     width: '500px',
@@ -63,6 +65,12 @@ const styles = {
     'margin-left': '-8px',
     'font-size': '0.9em',
   },
+};
+
+const endArrowSize = {
+  d: `M0,0,L0,${ARROW_WIDTH} L ${ARROW_LENGTH}, ${ARROW_WIDTH / 2} z`,
+  refX: NODE_RADIUS - 1,
+  refY: ARROW_WIDTH / 2,
 };
 
 /**
@@ -102,7 +110,9 @@ class GraphComponent extends Component {
         nodesColors: {},
         linksColors: {},
       },
-      graphOptionsPanel: false,
+      graphOptionsOpen: false,
+      mainHelp: false,
+      advancedHelp: false,
       expandable: {},
       actionsNode: null,
       expansions: [],
@@ -119,6 +129,8 @@ class GraphComponent extends Component {
     this.handleActionsRing = this.handleActionsRing.bind(this);
     this.handleNodeHide = this.handleNodeHide.bind(this);
     this.handleGraphColorsChange = this.handleGraphColorsChange.bind(this);
+    this.handleHelpOpen = this.handleHelpOpen.bind(this);
+    this.handleHelpClose = this.handleHelpClose.bind(this);
   }
 
   /**
@@ -416,14 +428,14 @@ class GraphComponent extends Component {
    * Opens graph options dialog.
    */
   handleOptionsPanelOpen() {
-    this.setState({ graphOptionsPanel: true });
+    this.setState({ graphOptionsOpen: true });
   }
 
   /**
    * Closes graph options dialog.
    */
   handleOptionsPanelClose() {
-    this.setState({ graphOptionsPanel: false });
+    this.setState({ graphOptionsOpen: false });
   }
 
   /**
@@ -439,8 +451,14 @@ class GraphComponent extends Component {
       'collide',
       d3.forceCollide((d) => {
         if (graphOptions.autoCollisionRadius) {
-          if (!d.data.name || d.data.name.length === 0) return 4;
-          return d.data.name.length * 2.8;
+          let obj = d.data;
+          let key = graphOptions.nodeLabelProp;
+          if (key.includes('.')) {
+            key = key.split('.')[1];
+            obj = graphOptions.nodeLabelProp.split('.')[0] || {};
+          }
+          if (!obj[key] || obj[key].length === 0) return graphOptions.collisionRadius;
+          return Math.max(obj[key].length * 2.8, NODE_INIT_RADIUS);
         }
         return graphOptions.collisionRadius;
       }),
@@ -550,7 +568,7 @@ class GraphComponent extends Component {
 
     } else {
       graphOptions[`${type}Color`] = '';
-      this.setState({ graphOptions, snackbar: true }, () => this.updateColors(type));
+      this.setState({ graphOptions, snackbarOpen: true }, () => this.updateColors(type));
     }
     /* eslint-enable */
   }
@@ -696,6 +714,22 @@ class GraphComponent extends Component {
     });
   }
 
+  /**
+   * Opens additional help dialog.
+   * @param {string} helpType - ['main', 'advanced'].
+   */
+  handleHelpOpen(helpType) {
+    this.setState({ [`${helpType}Help`]: true });
+  }
+
+  /**
+   * Closes additional help dialog.
+   * @param {string} helpType - ['main', 'advanced'].
+   */
+  handleHelpClose(helpType) {
+    this.setState({ [`${helpType}Help`]: false });
+  }
+
   render() {
     const {
       nodes,
@@ -704,9 +738,11 @@ class GraphComponent extends Component {
       expandable,
       graphOptions,
       simulation,
-      graphOptionsPanel,
+      graphOptionsOpen,
       propsMap,
-      snackbar,
+      snackbarOpen,
+      mainHelp,
+      advancedHelp,
     } = this.state;
 
     const {
@@ -719,15 +755,61 @@ class GraphComponent extends Component {
 
     if (!simulation) return null;
 
-    const endArrowSize = {
-      d: `M0,0,L0,${ARROW_WIDTH} L ${ARROW_LENGTH}, ${ARROW_WIDTH / 2} z`,
-      refX: NODE_RADIUS - 1,
-      refY: ARROW_WIDTH / 2,
-    };
-
-    const optionsPanel = (
+    const mainHelpPanel = (
       <Dialog
-        open={graphOptionsPanel}
+        open={mainHelp}
+        onClose={() => this.handleHelpClose('main')}
+      >
+        <DialogTitle disableTypography className="advanced-title">
+          <Typography variant="title">Graph Options Help</Typography>
+          <IconButton onClick={() => this.handleHelpClose('main')}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          {GRAPH_MAIN.map(description => (
+            <React.Fragment>
+              <Typography variant="subheading" gutterBottom>
+                {description.title}
+              </Typography>
+              <Typography variant="body1" paragraph>
+                {description.description}
+              </Typography>
+            </React.Fragment>
+          ))}
+        </DialogContent>
+      </Dialog>
+    );
+
+    const advancedHelpPanel = (
+      <Dialog
+        open={advancedHelp}
+        onClose={() => this.handleHelpClose('advanced')}
+      >
+        <DialogTitle disableTypography className="advanced-title">
+          <Typography variant="title">Advanced Graph Options Help</Typography>
+          <IconButton onClick={() => this.handleHelpClose('advanced')}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent>
+          {GRAPH_ADVANCED.map(description => (
+            <React.Fragment>
+              <Typography variant="subheading" gutterBottom>
+                {description.title}
+              </Typography>
+              <Typography variant="body1" paragraph>
+                {description.description}
+              </Typography>
+            </React.Fragment>
+          ))}
+        </DialogContent>
+      </Dialog>
+    );
+
+    const graphOptionsPanel = (
+      <Dialog
+        open={graphOptionsOpen}
         onClose={this.handleOptionsPanelClose}
         classes={{
           paper: 'options-panel-wrapper',
@@ -739,8 +821,9 @@ class GraphComponent extends Component {
         >
           <CloseIcon />
         </IconButton>
-        <DialogTitle>
-          Graph Options
+        <DialogTitle className="advanced-title" disableTypography>
+          <Typography variant="title">Graph Options</Typography>
+          <HelpIcon color="primary" onClick={() => this.handleHelpOpen('main')} />
         </DialogTitle>
         <DialogContent>
           <div className="main-options-wrapper">
@@ -854,36 +937,61 @@ class GraphComponent extends Component {
           </div>
           <Divider />
           <div className="advanced-options-wrapper">
-            <Typography variant="title">
-              Advanced Graph Options
-            </Typography>
+            <div className="advanced-title">
+              <Typography variant="title">
+                Advanced Graph Options
+              </Typography>
+              <HelpIcon color="primary" onClick={() => this.handleHelpOpen('advanced')} />
+            </div>
             <div className="advanced-options-grid">
               <div className="graph-input-wrapper">
-                <TextField
-                  label="Link Strength"
+                <InputLabel htmlFor="linkStrength" style={{ fontSize: '0.75rem' }}>
+                  Link Strength
+                </InputLabel>
+                <Input
                   name="linkStrength"
                   type="number"
+                  id="linkStrength"
                   value={graphOptions.linkStrength}
                   onChange={this.handleGraphOptionsChange}
-                  step={0.001}
+                  inputProps={{
+                    max: 1,
+                    step: 0.001,
+                  }}
                 />
               </div>
               <div className="graph-input-wrapper">
-                <TextField
+                <InputLabel htmlFor="chargeStrength" style={{ fontSize: '0.75rem' }}>
+                  Charge Strength
+                </InputLabel>
+                <Input
                   label="Charge Strength"
                   name="chargeStrength"
                   type="number"
+                  id="chargeStrength"
                   value={graphOptions.chargeStrength}
                   onChange={this.handleGraphOptionsChange}
+                  inputProps={{
+                    max: 1000,
+                    step: 1,
+                  }}
                 />
               </div>
               <div className="graph-input-wrapper">
-                <TextField
+                <InputLabel htmlFor="collisionRadius" style={{ fontSize: '0.75rem' }}>
+                  Collision Radius
+                </InputLabel>
+                <Input
                   label="Collision Radius"
                   name="collisionRadius"
+                  id="collisionRadius"
                   type="number"
                   value={graphOptions.collisionRadius}
                   onChange={this.handleGraphOptionsChange}
+                  inputProps={{
+                    max: 100,
+                    step: 1,
+                  }}
                 />
               </div>
               <div>
@@ -916,51 +1024,72 @@ class GraphComponent extends Component {
     );
 
     const legend = (
-      <Paper className="legend-wrapper">
-        <div className="close-btn">
-          <IconButton
-            name="legend"
-            onClick={() => this.handleGraphOptionsChange({
-              target: {
-                value: false,
-                name: 'legend',
-              },
-            })}
-          >
-            <CloseIcon />
-          </IconButton>
-        </div>
-        <div className="legend-content">
-          <Typography variant="subheading">Nodes</Typography>
-          <Typography variant="caption">
-            {graphOptions.nodesColor ? `(${graphOptions.nodesColor.split('.')[0]})` : ''}
-          </Typography>
-          <List className="node-colors" dense>
-            {Object.keys(graphOptions.nodesColors).map(key => (
-              <ListItem key={key}>
-                <ListItemIcon>
-                  <div
-                    style={{ backgroundColor: graphOptions.nodesColors[key] }}
-                    className="color-chip"
-                  />
-                </ListItemIcon>
-                <ListItemText primary={util.antiCamelCase(key)} />
-              </ListItem>
-            ))}
-            {(propsMap.nodes[graphOptions.nodesColor] || []).includes('null') ? (
-              <ListItem key="null">
-                <ListItemIcon>
-                  <div
-                    style={{ backgroundColor: graphOptions.defaultColor }}
-                    className="color-chip"
-                  />
-                </ListItemIcon>
-                <ListItemText primary="Null" />
-              </ListItem>
-            ) : null}
-          </List>
-        </div>
-      </Paper>
+      <Popper open={!!(graphOptions.legend && graphOptions.nodesColor)}>
+        <Paper className="legend-wrapper">
+          <div className="close-btn">
+            <IconButton
+              name="legend"
+              onClick={() => this.handleGraphOptionsChange({
+                target: {
+                  value: false,
+                  name: 'legend',
+                },
+              })}
+            >
+              <CloseIcon />
+            </IconButton>
+          </div>
+          <div className="legend-content">
+            <Typography variant="subheading">Nodes</Typography>
+            <Typography variant="caption">
+              {graphOptions.nodesColor ? `(${graphOptions.nodesColor.split('.')[0]})` : ''}
+            </Typography>
+            <List className="node-colors" dense>
+              {Object.keys(graphOptions.nodesColors).map(key => (
+                <ListItem key={key}>
+                  <ListItemIcon>
+                    <div
+                      style={{ backgroundColor: graphOptions.nodesColors[key] }}
+                      className="color-chip"
+                    />
+                  </ListItemIcon>
+                  <ListItemText primary={util.antiCamelCase(key)} />
+                </ListItem>
+              ))}
+              {(propsMap.nodes[graphOptions.nodesColor] || []).includes('null') ? (
+                <ListItem key="null">
+                  <ListItemIcon>
+                    <div
+                      style={{ backgroundColor: graphOptions.defaultColor }}
+                      className="color-chip"
+                    />
+                  </ListItemIcon>
+                  <ListItemText primary="Null" />
+                </ListItem>
+              ) : null}
+            </List>
+          </div>
+        </Paper>
+      </Popper>
+    );
+
+    const snackbar = (
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        open={snackbarOpen}
+        onClose={() => this.setState({ snackbarOpen: false })}
+        autoHideDuration={6000}
+        message={(
+          <span>
+            Too many subgroups, choose new coloring property.
+          </span>
+        )}
+        action={(
+          <Button color="secondary" onClick={() => this.setState({ snackbarOpen: false })}>
+            Ok
+          </Button>
+        )}
+      />
     );
 
     const actionsRing = () => {
@@ -1037,26 +1166,11 @@ class GraphComponent extends Component {
 
     return (
       <div className="graph-wrapper">
-        <Snackbar
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          open={snackbar}
-          onClose={() => this.setState({ snackbar: false })}
-          autoHideDuration={6000}
-          message={(
-            <span>
-              Too many subgroups, choose new coloring property.
-            </span>
-          )}
-          action={(
-            <Button color="secondary" onClick={() => this.setState({ snackbar: false })}>
-              Ok
-            </Button>
-          )}
-        />
-        {optionsPanel}
-        <Popper open={!!(graphOptions.legend && graphOptions.nodesColor)}>
-          {legend}
-        </Popper>
+        {snackbar}
+        {advancedHelpPanel}
+        {mainHelpPanel}
+        {graphOptionsPanel}
+        {legend}
         <div className={`toolbar ${detail ? 'transition-left' : ''}`}>
           <Tooltip placement="top" title="Return to table view">
             <IconButton

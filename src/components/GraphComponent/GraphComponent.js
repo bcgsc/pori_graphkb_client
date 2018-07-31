@@ -118,7 +118,6 @@ class GraphComponent extends Component {
     this.handleOptionsPanelClose = this.handleOptionsPanelClose.bind(this);
     this.handleActionsRing = this.handleActionsRing.bind(this);
     this.handleNodeHide = this.handleNodeHide.bind(this);
-    this.handleLegendSectionToggle = this.handleLegendSectionToggle.bind(this);
     this.handleGraphColorsChange = this.handleGraphColorsChange.bind(this);
   }
 
@@ -695,17 +694,6 @@ class GraphComponent extends Component {
       this.updateColors('links');
       handleDetailDrawerClose();
     });
-  }
-
-  handleLegendSectionToggle(key) {
-    const { expansions } = this.state;
-    if (expansions.includes(key)) {
-      const newList = expansions.filter(n => !n.startsWith(key));
-      this.setState({ expansions: newList });
-    } else {
-      expansions.push(key);
-      this.setState({ expansions });
-    }
   }
 
   render() {

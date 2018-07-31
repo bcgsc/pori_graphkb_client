@@ -63,9 +63,9 @@ class AdvancedQueryView extends Component {
     }
 
     const form = {};
+    const schema = await api.getSchema();
     const ontologyTypes = [{ name: '', properties: null }];
-    const schemaVertices = await api.getOntologyVertices();
-    ontologyTypes.push(...schemaVertices);
+    ontologyTypes.push(...util.getOntologies(schema));
     form['@class'] = ontologyTypes[0].name;
 
     const editableProps = (await api.getClass(form['@class'])).properties;

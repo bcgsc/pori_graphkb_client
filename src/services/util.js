@@ -178,4 +178,68 @@ export default class util {
     }
     return list;
   }
+
+  /**
+   * Updates allColumns list with any new properties from ontologyTerm.
+   * @param {Object} ontologyTerm - new node who's properties will be parsed.
+   * @param {Array} allColumns - current list of all collected properties.
+   * @param {Object} schema - api schema.
+   */
+  static collectOntologyProps(ontologyTerm, allColumns, schema) {
+    const { properties } = schema[ontologyTerm['@class']];
+    const { V } = schema;
+    Object.keys(ontologyTerm).forEach((prop) => {
+      if (!V.properties[prop] && prop !== '@class' && !allColumns.includes(prop)) {
+        const endpointProp = properties[prop];
+        if (endpointProp && endpointProp.type === 'link') {
+          Object.keys(ontologyTerm[prop]).forEach((nestedProp) => {
+            if (
+              !V.properties[nestedProp]
+              && !allColumns.includes(`${prop}.${nestedProp}`)
+              && !nestedProp.startsWith('in_')
+              && !nestedProp.startsWith('out_')
+              && !(endpointProp.linkedClass && nestedProp === '@class')
+              && (properties[nestedProp] || {}).type !== 'link'
+            ) {
+              allColumns.push(`${prop}.${nestedProp}`);
+            }
+          });
+        } else {
+          allColumns.push(prop);
+        }
+      }
+    });
+    return allColumns;
+  }
+
+  /**
+    * Returns all valid ontology types.
+    */
+  static getOntologies(schema) {
+    const list = [];
+    Object.keys(schema).forEach((key) => {
+      if (
+        schema[key].inherits.includes('Ontology')
+        && schema[key].inherits.includes('V')
+      ) {
+        list.push({ name: key, properties: schema[key].properties });
+      }
+    });
+    return list;
+  }
+
+  /**
+    * Returns all valid edge types.
+    */
+  static getEdges(schema) {
+    const list = [];
+    Object.keys(schema).forEach((key) => {
+      if (
+        schema[key].inherits.includes('E')
+      ) {
+        list.push(key);
+      }
+    });
+    return list;
+  }
 }

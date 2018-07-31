@@ -18,6 +18,7 @@ import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import NodeDetailComponent from '../../components/NodeDetailComponent/NodeDetailComponent';
 import api from '../../services/api';
+import util from '../../services/util';
 
 const styles = {
   paper: {
@@ -78,10 +79,7 @@ class DataView extends Component {
     const { loginRedirect } = this.state;
     const { history } = this.props;
 
-    const edgeTypes = await api.getOntologyEdges();
-    const ontologyTypes = await api.getOntologyVertices();
     const schema = await api.getSchema();
-    const { V } = schema;
     const filteredSearch = queryString.parse(history.location.search);
     let route = '/ontologies';
 
@@ -89,35 +87,14 @@ class DataView extends Component {
       route = schema[filteredSearch['@class']].route;
     }
 
-    const allColumns = ['@rid', '@class'];
+    let allColumns = ['@rid', '@class'];
 
     api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`)
       .then((data) => {
         const cycled = jc.retrocycle(data.result);
 
         cycled.forEach((ontologyTerm) => {
-          const { properties } = schema[ontologyTerm['@class']];
-          Object.keys(ontologyTerm).forEach((prop) => {
-            if (!V.properties[prop] && prop !== '@class' && !allColumns.includes(prop)) {
-              const endpointProp = properties[prop];
-              if (endpointProp && endpointProp.type === 'link') {
-                Object.keys(ontologyTerm[prop]).forEach((nestedProp) => {
-                  if (
-                    !V.properties[nestedProp]
-                    && !allColumns.includes(`${prop}.${nestedProp}`)
-                    && !nestedProp.startsWith('in_')
-                    && !nestedProp.startsWith('out_')
-                    && !(endpointProp.linkedClass && nestedProp === '@class')
-                    && (properties[nestedProp] || {}).type !== 'link'
-                  ) {
-                    allColumns.push(`${prop}.${nestedProp}`);
-                  }
-                });
-              } else {
-                allColumns.push(prop);
-              }
-            }
-          });
+          allColumns = util.collectOntologyProps(ontologyTerm, allColumns, schema);
           dataMap[ontologyTerm['@rid']] = ontologyTerm;
         });
         this.setState({
@@ -125,8 +102,7 @@ class DataView extends Component {
           selectedId: Object.keys(dataMap)[0],
           loginRedirect,
           allColumns,
-          edgeTypes,
-          ontologyTypes,
+          schema,
         });
       }).catch(() => { });
   }
@@ -285,8 +261,7 @@ class DataView extends Component {
       hidden,
       allColumns,
       detail,
-      edgeTypes,
-      ontologyTypes,
+      schema,
     } = this.state;
 
     const {
@@ -330,8 +305,7 @@ class DataView extends Component {
         handleDetailDrawerOpen={this.handleDetailDrawerOpen}
         handleDetailDrawerClose={this.handleDetailDrawerClose}
         handleTableRedirect={this.handleTableRedirect}
-        edgeTypes={edgeTypes}
-        ontologyTypes={ontologyTypes}
+        schema={schema}
         detail={detail}
         allColumns={allColumns}
       />

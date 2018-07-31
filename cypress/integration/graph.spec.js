@@ -63,7 +63,7 @@ describe('Graph View Test', () => {
     cy.contains('DeprecatedBy').should('not.exist');
   });
 
-  it('Graph options', () => {
+  it.only('Graph options', () => {
     const name = 'a1bg-as1';
     getClass('Feature', { name });
     cy.get('circle.node').click();
@@ -80,7 +80,7 @@ describe('Graph View Test', () => {
     cy.get('#graph-options-btn').click();
 
     cy.contains('Class').click();
-    cy.contains('Source').click();
+    cy.contains('Source Name').click();
     cy.get('#options-close-btn').click();
     cy.get('div.legend-wrapper').should('exist');
     cy.contains('Hgnc');
@@ -97,5 +97,11 @@ describe('Graph View Test', () => {
     cy.contains('Source ID').click();
     cy.get('#options-close-btn').click();
     cy.contains(name).should('not.exist');
+
+    cy.get('#graph-options-btn').click();
+    cy.contains('Source ID').click();
+    cy.contains('Biotype').click();
+    cy.get('#options-close-btn').click();
+    cy.contains('gene');
   });
 });

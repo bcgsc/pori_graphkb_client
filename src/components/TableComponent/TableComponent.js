@@ -25,6 +25,7 @@ import {
   Button,
   Divider,
   Tooltip,
+  CircularProgress,
 } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import TimelineIcon from '@material-ui/icons/Timeline';
@@ -49,6 +50,7 @@ class TableComponent extends Component {
       sortedData: Object.keys(props.data).map(key => props.data[key]),
       columnSelect: false,
       tableColumns: [],
+      awaiting: false,
     };
 
     this.handleDetailToggle = this.handleDetailToggle.bind(this);
@@ -116,11 +118,37 @@ class TableComponent extends Component {
   }
 
   /**
+   * Checks for new arriving data.
+   * @param {Object} nextProps - new properties object
+   */
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.data) {
+      const { sortedData, sort } = this.state;
+      if (Object.keys(nextProps.data).length > sortedData.length) {
+        const s = sort || (() => 1);
+        this.setState({
+          sortedData: Object.keys(nextProps.data).map(k => nextProps.data[k]).sort(s),
+          awaiting: false,
+        });
+      }
+    }
+  }
+
+  /**
    * Updates page to display.
    * @param {Event} event - Triggered event.
    * @param {number} page - New page number.
    */
   handleChangePage(event, page) {
+    const { sortedData, rowsPerPage } = this.state;
+    const rows = (page + 1) * rowsPerPage;
+    if (rows >= 0.8 * sortedData.length) {
+      const { handleTriggerNext } = this.props;
+      if (handleTriggerNext) {
+        handleTriggerNext();
+        this.setState({ awaiting: true });
+      }
+    }
     this.setState({ page });
   }
 
@@ -167,6 +195,7 @@ class TableComponent extends Component {
         order: newOrder,
         orderBy: newProperty,
         sortedData: Object.keys(data).map(k => data[k]).sort(sort),
+        sort,
       },
     );
   }
@@ -312,9 +341,9 @@ class TableComponent extends Component {
       sortedData,
       toggle,
       anchorEl,
-
       columnSelect,
       tableColumns,
+      awaiting,
     } = this.state;
 
     const numCols = tableColumns.filter(c => c.checked).length;
@@ -447,7 +476,6 @@ class TableComponent extends Component {
         </DialogActions>
       </Dialog>
     );
-
     return (
       <section className="data-table">
         {columnDialog}
@@ -580,6 +608,7 @@ class TableComponent extends Component {
             rowsPerPageOptions={[25, 50, 100]}
             component="div"
           />
+          {awaiting ? <CircularProgress size={20} color="primary" id="new-data-spinner" /> : null}
           <Tooltip
             title="Select ontologies to display in graph form"
             placement="left"
@@ -625,8 +654,10 @@ TableComponent.propTypes = {
   handleShowAllNodes: PropTypes.func.isRequired,
   handleNewQuery: PropTypes.func,
   handleGraphRedirect: PropTypes.func.isRequired,
+  handleTriggerNext: PropTypes.func,
   hidden: PropTypes.array,
   allColumns: PropTypes.array,
+
 };
 
 TableComponent.defaultProps = {
@@ -634,6 +665,7 @@ TableComponent.defaultProps = {
   allColumns: [],
   hidden: [],
   handleNewQuery: null,
+  handleTriggerNext: null,
 };
 
 export default TableComponent;

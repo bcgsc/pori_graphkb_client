@@ -48,6 +48,8 @@ class DataView extends Component {
       selectedId: null,
       allColumns: [],
       detail: null,
+      next: null,
+      filteredSearch: null,
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -57,6 +59,7 @@ class DataView extends Component {
     this.handleCheckAll = this.handleCheckAll.bind(this);
     this.handleHideSelected = this.handleHideSelected.bind(this);
     this.handleShowAllNodes = this.handleShowAllNodes.bind(this);
+    this.handleTriggerNext = this.handleTriggerNext.bind(this);
 
     // GraphComponent methods
     this.handleDetailDrawerOpen = this.handleDetailDrawerOpen.bind(this);
@@ -97,12 +100,18 @@ class DataView extends Component {
         allColumns = util.collectOntologyProps(ontologyTerm, allColumns, schema);
         dataMap[ontologyTerm['@rid']] = ontologyTerm;
       });
+
+      if (cycled.length >= filteredSearch.limit || 1000) {
+        filteredSearch.skip = filteredSearch.limit || 1000;
+        this.setState({ next: () => api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`) });
+      }
       this.setState({
         data: dataMap,
         selectedId: Object.keys(dataMap)[0],
         loginRedirect,
         allColumns,
         schema,
+        filteredSearch,
       });
     } catch (e) {
       // do nothing
@@ -175,6 +184,45 @@ class DataView extends Component {
 
     displayed.push(...hidden);
     this.setState({ displayed, hidden: [] });
+  }
+
+  handleTriggerNext() {
+    const { next } = this.state;
+
+    if (next) {
+      next().then((nextData) => {
+        const {
+          data,
+          allColumns,
+          schema,
+          filteredSearch,
+        } = this.state;
+        const cycled = jc.retrocycle(nextData.result);
+        let newColumns = allColumns;
+        cycled.forEach((ontologyTerm) => {
+          newColumns = util.collectOntologyProps(ontologyTerm, allColumns, schema);
+          data[ontologyTerm['@rid']] = ontologyTerm;
+        });
+
+        let route = '/ontologies';
+        if (filteredSearch['@class']) {
+          route = schema[filteredSearch['@class']].route;
+        }
+
+        let newNext = null;
+        if (cycled.length >= (filteredSearch.limit || 1000)) {
+          filteredSearch.skip += (filteredSearch.limit || 1000);
+          newNext = () => api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`);
+        }
+        this.setState({
+          data,
+          allColumns: newColumns,
+          next: newNext,
+          filteredSearch,
+        });
+      });
+    }
+    this.setState({ next: null });
   }
 
   /**
@@ -327,6 +375,7 @@ class DataView extends Component {
         handleShowAllNodes={this.handleShowAllNodes}
         handleNewQuery={this.handleNewQuery}
         handleGraphRedirect={this.handleGraphRedirect}
+        handleTriggerNext={this.handleTriggerNext}
       />
     );
     return (

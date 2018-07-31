@@ -65,14 +65,25 @@ class GraphNode extends PureComponent {
       detail,
     } = this.props;
 
+    let obj = node.data;
+    let key = label;
+    if (label.includes('.')) {
+      key = label.split('.')[1];
+      obj = node.data[label.split('.')[0]];
+    }
+
     return (
       <g
         ref={(n) => { this.node = n; }}
         transform={`translate(${(node.x || 0)},${(node.y || 0)})`}
       >
-        <text>
+        <text
+          style={{
+            opacity: detail && detail !== node.data['@rid'] ? 0.6 : 1,
+          }}
+        >
           <tspan className="node-name" dy={28}>
-            {node.data[label] || ''}
+            {obj ? obj[key] || null : null}
           </tspan>
         </text>
         {actionsRing}

@@ -675,7 +675,9 @@ class GraphComponent extends Component {
           || (propsMap.nodes[prop].length === 1
             && propsMap.nodes[prop].includes('null'))
         ) {
-          graphOptions.nodesColor = '';
+          if (graphOptions.nodesColor === prop) graphOptions.nodesColor = '';
+          if (graphOptions.nodeLabelProp === prop) graphOptions.nodeLabelProp = '';
+
           this.setState({ graphOptions });
         }
       }
@@ -764,7 +766,9 @@ class GraphComponent extends Component {
               >
                 <MenuItem value="">No Label</MenuItem>
                 {Object.keys(propsMap.nodes).map((prop) => {
-                  if (propsMap.nodes[prop]) {
+                  if (propsMap.nodes[prop]
+                    && !(propsMap.nodes[prop].length === 1 && propsMap.nodes[prop].includes('null'))
+                  ) {
                     return (
                       <MenuItem value={prop} key={prop}>
                         {util.antiCamelCase(prop.split('.')[0]

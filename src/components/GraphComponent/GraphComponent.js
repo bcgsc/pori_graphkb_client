@@ -790,7 +790,7 @@ class GraphComponent extends Component {
                       <MenuItem value={prop} key={prop}>
                         {util.antiCamelCase(prop.split('.')[0]
                           + (prop.split('.')[1]
-                            ? ` ${prop.split('.')[1][0].toUpperCase()}${prop.split('.')[1].slice(1)}`
+                            ? `${prop.split('.')[1][0].toUpperCase()}${prop.split('.')[1].slice(1)}`
                             : ''))
                         }
                       </MenuItem>

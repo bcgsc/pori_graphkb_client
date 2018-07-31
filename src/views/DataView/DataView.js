@@ -96,8 +96,7 @@ class DataView extends Component {
         const cycled = jc.retrocycle(data.result);
 
         cycled.forEach((ontologyTerm) => {
-          const ontologyClass = schema[ontologyTerm['@class']];
-          const { properties } = ontologyClass;
+          const { properties } = schema[ontologyTerm['@class']];
           Object.keys(ontologyTerm).forEach((prop) => {
             if (!V.properties[prop] && prop !== '@class' && !allColumns.includes(prop)) {
               const endpointProp = properties[prop];
@@ -114,7 +113,7 @@ class DataView extends Component {
                     allColumns.push(`${prop}.${nestedProp}`);
                   }
                 });
-              } else if (!prop.startsWith('in_') && !prop.startsWith('out_')) {
+              } else {
                 allColumns.push(prop);
               }
             }

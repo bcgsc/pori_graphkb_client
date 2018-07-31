@@ -24,6 +24,8 @@ import {
   ListItemText,
   Divider,
   Tooltip,
+  Snackbar,
+  Button,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import ViewListIcon from '@material-ui/icons/ViewList';
@@ -539,12 +541,18 @@ class GraphComponent extends Component {
       }
     });
 
-    const pallette = util.getPallette(Object.keys(colors).length);
-    Object.keys(colors).forEach((color, i) => { colors[color] = pallette[i + 1]; });
+    if (Object.keys(colors).length < 20) {
+      const pallette = util.getPallette(Object.keys(colors).length);
+      Object.keys(colors).forEach((color, i) => { colors[color] = pallette[i + 1]; });
 
-    graphOptions[`${type}Colors`] = colors;
-    graphOptions[`${type}Pallette`] = pallette;
-    this.setState({ graphOptions });
+      graphOptions[`${type}Colors`] = colors;
+      graphOptions[`${type}Pallette`] = pallette;
+      this.setState({ graphOptions });
+
+    } else {
+      graphOptions[`${type}Color`] = '';
+      this.setState({ graphOptions, snackbar: true }, () => this.updateColors(type));
+    }
     /* eslint-enable */
   }
 
@@ -670,6 +678,7 @@ class GraphComponent extends Component {
       simulation,
       graphOptionsPanel,
       propsMap,
+      snackbar,
     } = this.state;
 
     const {
@@ -994,6 +1003,22 @@ class GraphComponent extends Component {
 
     return (
       <div className="graph-wrapper">
+        <Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          open={snackbar}
+          onClose={() => this.setState({ snackbar: false })}
+          autoHideDuration={6000}
+          message={(
+            <span>
+              Too many subgroups, choose new coloring property.
+            </span>
+          )}
+          action={(
+            <Button color="secondary" onClick={() => this.setState({ snackbar: false })}>
+              Ok
+            </Button>
+          )}
+        />
         {optionsPanel}
         <Popper open={!!(graphOptions.legend && graphOptions.nodesColor)}>
           {legend}

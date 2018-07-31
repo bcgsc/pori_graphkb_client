@@ -44,8 +44,9 @@ class NodeDetailComponent extends Component {
    * Loads resources and filters node properties.
    */
   async componentDidMount() {
-    const V = await api.getVertexBaseClass();
-    const ontologyEdges = await api.getOntologyEdges();
+    const schema = await api.getSchema();
+    const { V } = schema;
+    const ontologyEdges = util.getEdges(schema);
     // Accounts for in and out edgetypes.
     const expandedEdgeTypes = ontologyEdges ? ontologyEdges.reduce((r, e) => {
       r.push(`in_${e}`);

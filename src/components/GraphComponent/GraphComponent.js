@@ -128,20 +128,21 @@ class GraphComponent extends Component {
     const {
       displayed,
       data,
-      edgeTypes,
-      ontologyTypes,
+      schema,
     } = this.props;
     const { graphOptions } = this.state;
     const simulation = d3.forceSimulation();
     // Defines what edge keys to look for.
-    const expandedEdgeTypes = edgeTypes.reduce((r, e) => {
+    const ontologies = util.getOntologies(schema);
+    const edges = util.getEdges(schema);
+    const expandedEdgeTypes = edges.reduce((r, e) => {
       r.push(`in_${e}`);
       r.push(`out_${e}`);
       return r;
     }, []);
 
-    ontologyTypes.forEach((type, i) => {
-      graphOptions[`${type.name}Color`] = util.chooseColor(i, ontologyTypes.length);
+    ontologies.forEach((type, i) => {
+      graphOptions[`${type.name}Color`] = util.chooseColor(i, ontologies.length);
     });
 
     let validDisplayed = displayed;
@@ -150,7 +151,7 @@ class GraphComponent extends Component {
     }
     this.setState({
       expandedEdgeTypes,
-      ontologyTypes,
+      schema,
       graphOptions,
       simulation,
     }, () => {
@@ -223,14 +224,20 @@ class GraphComponent extends Component {
       links,
       graphObjects,
       propsMap,
+      schema,
     } = this.state;
+
     const {
       allColumns,
       data,
     } = this.props;
+
     /* eslint-disable */
     if (data[node['@rid']]) node = data[node['@rid']];
     /* eslint-enable */
+
+    const newColumns = util.collectOntologyProps(node, allColumns, schema);
+
     if (!graphObjects[node['@rid']]) {
       nodes.push({
         data: node,
@@ -238,7 +245,7 @@ class GraphComponent extends Component {
         y: position.y,
       });
       graphObjects[node['@rid']] = node;
-      allColumns.forEach((prop) => {
+      newColumns.forEach((prop) => {
         let obj = node;
         let key = prop;
 
@@ -365,6 +372,7 @@ class GraphComponent extends Component {
       links,
       graphObjects,
       propsMap,
+      allColumns: newColumns,
     });
   }
 
@@ -1083,8 +1091,7 @@ GraphComponent.propTypes = {
   handleDetailDrawerOpen: PropTypes.func.isRequired,
   handleDetailDrawerClose: PropTypes.func.isRequired,
   handleTableRedirect: PropTypes.func.isRequired,
-  edgeTypes: PropTypes.array.isRequired,
-  ontologyTypes: PropTypes.array.isRequired,
+  schema: PropTypes.object.isRequired,
   detail: PropTypes.string,
   allColumns: PropTypes.array,
 };

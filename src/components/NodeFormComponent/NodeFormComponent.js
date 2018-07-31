@@ -82,8 +82,7 @@ class NodeFormComponent extends Component {
    */
   async componentDidMount() {
     const sources = await api.getSources();
-    const edgeTypes = await api.getOntologyEdges();
-    const ontologyTypes = await api.getOntologyVertices();
+    const schema = await api.getSchema();
     const { node } = this.props;
     const { relationships, relationship } = this.state;
 
@@ -138,7 +137,8 @@ class NodeFormComponent extends Component {
           break;
       }
     });
-
+    const edgeTypes = util.getEdges(schema);
+    const ontologyTypes = util.getOntologies(schema);
     const expandedEdgeTypes = edgeTypes.reduce((r, e) => {
       r.push(`in_${e}`);
       r.push(`out_${e}`);

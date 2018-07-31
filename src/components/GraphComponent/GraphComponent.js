@@ -715,6 +715,7 @@ class GraphComponent extends Component {
                 onChange={this.handleGraphOptionsChange}
                 value={graphOptions.nodeLabelProp}
               >
+                <MenuItem value="">No Label</MenuItem>
                 {Object.keys(propsMap.nodes).map((prop) => {
                   if (propsMap.nodes[prop]) {
                     return (

@@ -99,7 +99,7 @@ class DataView extends Component {
           const ontologyClass = schema[ontologyTerm['@class']];
           const { properties } = ontologyClass;
           Object.keys(ontologyTerm).forEach((prop) => {
-            if ((!V.properties[prop]) && !allColumns.includes(prop)) {
+            if (!V.properties[prop] && prop !== '@class' && !allColumns.includes(prop)) {
               const endpointProp = properties[prop];
               if (endpointProp && endpointProp.type === 'link') {
                 Object.keys(ontologyTerm[prop]).forEach((nestedProp) => {
@@ -114,7 +114,7 @@ class DataView extends Component {
                     allColumns.push(`${prop}.${nestedProp}`);
                   }
                 });
-              } else {
+              } else if (!prop.startsWith('in_') && !prop.startsWith('out_')) {
                 allColumns.push(prop);
               }
             }
@@ -334,6 +334,7 @@ class DataView extends Component {
         edgeTypes={edgeTypes}
         ontologyTypes={ontologyTypes}
         detail={detail}
+        allColumns={allColumns}
       />
     );
     const TableWithProps = () => (

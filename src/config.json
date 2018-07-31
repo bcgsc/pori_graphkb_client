@@ -17,7 +17,7 @@
   "GRAPH_DEFAULTS": {
     "LINK_STRENGTH": 0.03,
     "CHARGE_STRENGTH": 150,
-    "DEFAULT_NODE_COLOR": "#1F265B",
+    "DEFAULT_NODE_COLOR": "#26328C",
     "NODE_COLORS_5": [
       "#56ae6c",
       "#9350a1",

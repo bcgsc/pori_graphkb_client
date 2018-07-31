@@ -276,7 +276,7 @@ class GraphComponent extends Component {
         }
         // Permanently removes certain properties from being eligible to display
         // due to content length.
-        if (obj[key] && obj[key].length >= 50) {
+        if (obj[key] && obj[key].length >= 50 && key !== 'name') {
           propsMap.nodes[prop] = null;
         }
       });

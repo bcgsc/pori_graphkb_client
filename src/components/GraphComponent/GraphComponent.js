@@ -618,6 +618,9 @@ class GraphComponent extends Component {
       links,
       expandedEdgeTypes,
       expandable,
+      propsMap,
+      allColumns,
+      graphOptions,
     } = this.state;
     const { handleDetailDrawerClose } = this.props;
     if (nodes.length === 1) return;
@@ -643,6 +646,40 @@ class GraphComponent extends Component {
       }
     });
 
+    allColumns.forEach((prop) => {
+      let obj = actionsNode.data;
+      let key = prop;
+
+      // Nested prop condition
+      if (prop.includes('.')) {
+        key = prop.split('.')[1];
+        obj = actionsNode.data[prop.split('.')[0]] || {};
+      }
+      if (
+        propsMap.nodes[prop]
+        && obj[key]
+        && !nodes.find((n) => {
+          let nObj = n.data;
+
+          // Nested prop condition
+          if (prop.includes('.')) {
+            nObj = n.data[prop.split('.')[0]] || {};
+          }
+          return nObj[key] === obj[key];
+        })
+      ) {
+        const j = propsMap.nodes[prop].indexOf(obj[key]);
+        propsMap.nodes[prop].splice(j, 1);
+        if (
+          propsMap.nodes[prop].length === 0
+          || (propsMap.nodes[prop].length === 1
+            && propsMap.nodes[prop].includes('null'))
+        ) {
+          graphOptions.nodesColor = '';
+          this.setState({ graphOptions });
+        }
+      }
+    });
     this.setState({
       expandable,
       nodes,
@@ -650,6 +687,7 @@ class GraphComponent extends Component {
       graphObjects,
       actionsNode: null,
       expandId: null,
+      propsMap,
     }, () => {
       this.updateColors('nodes');
       this.updateColors('links');
@@ -751,7 +789,11 @@ class GraphComponent extends Component {
               >
                 <MenuItem value="">No Coloring</MenuItem>
                 {Object.keys(propsMap.nodes).map((prop) => {
-                  if (propsMap.nodes[prop] && propsMap.nodes[prop].length <= 20) {
+                  if (
+                    propsMap.nodes[prop]
+                    && propsMap.nodes[prop].length <= 20
+                    && !(propsMap.nodes[prop].length === 1 && propsMap.nodes[prop].includes('null'))
+                  ) {
                     return (
                       <MenuItem value={prop} key={prop}>
                         {util.antiCamelCase(prop.split('.')[0]

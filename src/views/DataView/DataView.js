@@ -89,22 +89,24 @@ class DataView extends Component {
 
     let allColumns = ['@rid', '@class'];
 
-    api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`)
-      .then((data) => {
-        const cycled = jc.retrocycle(data.result);
+    try {
+      const data = await api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`);
+      const cycled = jc.retrocycle(data.result);
 
-        cycled.forEach((ontologyTerm) => {
-          allColumns = util.collectOntologyProps(ontologyTerm, allColumns, schema);
-          dataMap[ontologyTerm['@rid']] = ontologyTerm;
-        });
-        this.setState({
-          data: dataMap,
-          selectedId: Object.keys(dataMap)[0],
-          loginRedirect,
-          allColumns,
-          schema,
-        });
-      }).catch(() => { });
+      cycled.forEach((ontologyTerm) => {
+        allColumns = util.collectOntologyProps(ontologyTerm, allColumns, schema);
+        dataMap[ontologyTerm['@rid']] = ontologyTerm;
+      });
+      this.setState({
+        data: dataMap,
+        selectedId: Object.keys(dataMap)[0],
+        loginRedirect,
+        allColumns,
+        schema,
+      });
+    } catch (e) {
+      // do nothing
+    }
   }
 
   /**

@@ -129,6 +129,7 @@ class GraphComponent extends Component {
       displayed,
       data,
       schema,
+      allColumns,
     } = this.props;
     const { graphOptions } = this.state;
     const simulation = d3.forceSimulation();
@@ -154,6 +155,7 @@ class GraphComponent extends Component {
       schema,
       graphOptions,
       simulation,
+      allColumns,
     }, () => {
       this.handleResize();
       validDisplayed.forEach((key, i) => {
@@ -217,6 +219,7 @@ class GraphComponent extends Component {
    * @param {number} depth - Recursion base case flag.
    */
   processData(node, position, depth) {
+    /* eslint-disable */
     const {
       expandedEdgeTypes,
       expandable,
@@ -225,18 +228,19 @@ class GraphComponent extends Component {
       graphObjects,
       propsMap,
       schema,
+      allColumns,
     } = this.state;
 
-    const {
-      allColumns,
-      data,
-    } = this.props;
+    const { data } = this.props;
 
-    /* eslint-disable */
-    if (data[node['@rid']]) node = data[node['@rid']];
+    let newColumns = allColumns;
+    if (data[node['@rid']]) {
+      node = data[node['@rid']];
+    } else {
+      // Node properties haven't been processed.
+      newColumns = util.collectOntologyProps(node, allColumns, schema);
+    }
     /* eslint-enable */
-
-    const newColumns = util.collectOntologyProps(node, allColumns, schema);
 
     if (!graphObjects[node['@rid']]) {
       nodes.push({
@@ -245,10 +249,12 @@ class GraphComponent extends Component {
         y: position.y,
       });
       graphObjects[node['@rid']] = node;
+      // Iterate over all props.
       newColumns.forEach((prop) => {
         let obj = node;
         let key = prop;
 
+        // Nested prop condition
         if (prop.includes('.')) {
           key = prop.split('.')[1];
           obj = node[prop.split('.')[0]] || {};
@@ -258,14 +264,17 @@ class GraphComponent extends Component {
           if (propsMap.nodes[prop] === undefined) {
             propsMap.nodes[prop] = [obj[key]];
           } else if (
-            propsMap.nodes[prop]
+            propsMap.nodes[prop] // If null, fails here
             && !propsMap.nodes[prop].includes(obj[key])
           ) {
             propsMap.nodes[prop].push(obj[key]);
           }
         } else if (propsMap.nodes[prop] && !propsMap.nodes[prop].includes('null')) {
+          // This null represents nodes that do not contain specified property.
           propsMap.nodes[prop].push('null');
         }
+        // Permanently removes certain properties from being eligible to display
+        // due to content length.
         if (obj[key] && obj[key].length >= 50) {
           propsMap.nodes[prop] = null;
         }

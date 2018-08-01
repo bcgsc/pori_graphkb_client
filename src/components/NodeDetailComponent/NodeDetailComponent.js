@@ -300,16 +300,6 @@ class NodeDetailComponent extends Component {
                     >
                       {util.getPreview(relatedNode)}
                     </Typography>
-                    {!edgeOpen && variant === 'table'
-                      ? (
-                        <Typography
-                          variant="subheading"
-                          color="textSecondary"
-                          className="preview"
-                        >
-                          {relatedNode.name || ''}
-                        </Typography>
-                      ) : null}
                   </div>
                   <Tooltip title="This refers to another database record">
                     <div className="node-icon length-box">

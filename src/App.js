@@ -18,9 +18,8 @@ import {
   Card,
   Drawer,
   List,
-  ListItem,
   ListItemText,
-  ListItemAvatar,
+  ListItemIcon,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
@@ -129,19 +128,15 @@ class App extends Component {
       >
         <List dense>
           <MenuItem onClick={() => history.push('/query')}>
-            <ListItemAvatar>
-              <IconButton color="inherit">
-                <SearchIcon />
-              </IconButton>
-            </ListItemAvatar>
+            <ListItemIcon>
+              <SearchIcon />
+            </ListItemIcon>
             <ListItemText primary="Query" />
           </MenuItem>
           <MenuItem onClick={() => history.push('/add')}>
-            <ListItemAvatar>
-              <IconButton color="inherit">
-                <AddIcon />
-              </IconButton>
-            </ListItemAvatar>
+            <ListItemIcon>
+              <AddIcon />
+            </ListItemIcon>
             <ListItemText primary="Add Ontology" />
           </MenuItem>
         </List>

@@ -36,6 +36,7 @@ describe('Query Page Test', () => {
     cy.get('input[type=text]').type('AAAAAAAAAAAAAAAAAAAAAA');
     cy.contains('No Results');
     cy.get('#search-btn').click();
+    cy.wait(6500);
     cy.url().should('includes', '/query');
   });
 

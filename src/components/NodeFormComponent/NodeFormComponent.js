@@ -58,6 +58,7 @@ class NodeFormComponent extends Component {
       },
       subset: '',
       deleteDialog: false,
+      errorFlag: false,
     };
 
     this.handleFormChange = this.handleFormChange.bind(this);
@@ -286,6 +287,7 @@ class NodeFormComponent extends Component {
         this.setState({
           form,
           relationships,
+          errorFlag: true,
           relationship: {
             '@class': '',
             targetName: '',
@@ -297,6 +299,8 @@ class NodeFormComponent extends Component {
           },
         });
       }
+    } else {
+      this.setState({ errorFlag: true });
     }
   }
 
@@ -329,7 +333,7 @@ class NodeFormComponent extends Component {
     if (e.target.sourceId) {
       relationship.targetSourceId = e.target.sourceId;
     }
-    this.setState({ relationship });
+    this.setState({ relationship, errorFlag: false });
   }
 
   /**
@@ -345,7 +349,7 @@ class NodeFormComponent extends Component {
       relationship.out = relationship.in;
       relationship.in = originalNode['@rid'];
     }
-    this.setState({ relationship });
+    this.setState({ relationship, errorFlag: false });
   }
 
   /**
@@ -500,6 +504,7 @@ class NodeFormComponent extends Component {
       subset,
       newNodeClass,
       deleteDialog,
+      errorFlag,
     } = this.state;
     const { variant, handleNodeFinishEdit } = this.props;
 
@@ -813,8 +818,9 @@ class NodeFormComponent extends Component {
                     name="source"
                     label="Source"
                     resources={sources}
+                    error={errorFlag}
                   />
-                  <div style={{ display: 'flex', width: '100%', margin: '8px' }}>
+                  <div style={{ display: 'flex', width: '100%', margin: '0 8px' }}>
                     <div className="relationship-dir-type">
                       <IconButton
                         disableRipple
@@ -836,6 +842,7 @@ class NodeFormComponent extends Component {
                         name="@class"
                         label="Type"
                         resources={edgeTypes}
+                        error={errorFlag}
                       >
                         {edgeTypesDisplay}
                       </ResourceSelectComponent>
@@ -847,6 +854,7 @@ class NodeFormComponent extends Component {
                         placeholder="Target Name"
                         limit={10}
                         name="targetName"
+                        error={errorFlag}
                       />
                     </div>
                   </div>

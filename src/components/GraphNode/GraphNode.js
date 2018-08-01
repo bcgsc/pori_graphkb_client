@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import './SVGNode.css';
+import './GraphNode.css';
 import * as d3 from 'd3';
 
 /**
  * Component used to display graph nodes and apply draggable behavior to them through d3.
  */
-class SVGNode extends PureComponent {
+class GraphNode extends PureComponent {
   /**
    * Initializes node element and applies drag behavior to it.
    */
@@ -51,44 +51,71 @@ class SVGNode extends PureComponent {
 
     d3.event
       .on('drag', dragged)
-      // .on("touchmove", dragged)
       .on('end', ended);
-    // .on("touchend", ended);
   }
 
   render() {
     const {
       node,
       handleClick,
-      expandable,
       color,
       r,
+      actionsRing,
+      label,
+      detail,
     } = this.props;
 
+    let obj = node.data;
+    let key = label;
+    if (label.includes('.')) {
+      key = label.split('.')[1];
+      obj = node.data[label.split('.')[0]];
+    }
+
     return (
-      <g ref={(n) => { this.node = n; }} onClick={handleClick} transform={`translate(${(node.x || 0)},${(node.y || 0)})`}>
+      <g
+        ref={(n) => { this.node = n; }}
+        transform={`translate(${(node.x || 0)},${(node.y || 0)})`}
+      >
+        <text
+          style={{
+            opacity: detail && detail !== node.data['@rid'] ? 0.6 : 1,
+          }}
+        >
+          <tspan className="node-name" dy={28}>
+            {obj ? obj[key] || null : null}
+          </tspan>
+        </text>
+        {actionsRing}
         <circle
-          className={expandable ? 'node-expandable' : 'node'}
+          fill="#fff"
+          cx={0}
+          cy={0}
+          r={r}
+        />
+        <circle
+          style={{
+            opacity: detail && detail !== node.data['@rid'] ? 0.6 : 1,
+          }}
+          onClick={handleClick}
+          className="node"
           fill={color}
           cx={0}
           cy={0}
           r={r}
         />
-        <text>
-          <tspan className="node-name" dy={12}>
-            {node.data.name}
-          </tspan>
-        </text>
       </g>
     );
   }
 }
 
-SVGNode.defaultProps = {
+GraphNode.defaultProps = {
   handleClick: null,
-  expandable: false,
-  color: '#000',
+  color: '#26328C',
   r: 4,
+  actionsRing: null,
+  label: 'name',
+  detail: null,
 };
 
 /**
@@ -98,14 +125,20 @@ SVGNode.defaultProps = {
  * @param {string} color - Color of node.
  * @param {number} r - Node radius.
  * @param {Object} simulation - parent simulation that node is a member of.
+ * @param {Array} actionsRing - Array of svg components making up the node actions ring
+ * surrounding a selected node.
+ * @param {string} label - property to display as label.
+ * @param {string} detail - node identifier for node who's details are currently displayed.
  */
-SVGNode.propTypes = {
+GraphNode.propTypes = {
   node: PropTypes.object.isRequired,
   handleClick: PropTypes.func,
-  expandable: PropTypes.bool,
   color: PropTypes.string,
   r: PropTypes.number,
   simulation: PropTypes.object.isRequired,
+  actionsRing: PropTypes.object,
+  label: PropTypes.string,
+  detail: PropTypes.string,
 };
 
-export default SVGNode;
+export default GraphNode;

@@ -28,7 +28,7 @@ describe('Table Test', () => {
         if (i !== 0 && i !== array.length - 1) {
           cy.wrap(row).children('td:first').children().click()
             .children('span:first')
-            .should('have.css', 'color', 'rgb(0, 137, 123)');
+            .should('have.css', 'color', 'rgb(84, 177, 152)');
         }
       });
     });
@@ -42,7 +42,7 @@ describe('Table Test', () => {
   });
 
   it('Paginator', () => {
-    cy.get('table tbody tr td div div div button').each((button, i) => {
+    cy.get('div.pag div div div button').each((button, i) => {
       if (i !== 0) {
         cy.wrap(button).click();
         cy.contains('51-100');
@@ -50,10 +50,10 @@ describe('Table Test', () => {
         cy.contains('101-150');
       }
     });
-    cy.get('table tbody tr td[colspan=4] div div div div div').click();
+    cy.get('div.pag div div div div').contains(50).click();
     cy.get('#menu- div ul li:first').click();
     cy.contains('51-75');
-    cy.get('table tbody tr td div div div button:first').click();
+    cy.get('div.pag div div div button:first').click();
     cy.contains('26-50');
   });
 
@@ -64,19 +64,20 @@ describe('Table Test', () => {
 
   it('Ellipsis menu: hiding/returning rows', () => {
     cy.get('table tbody tr').then((array) => {
-      cy.contains(array.length);
+      const l = array.length;
+      cy.contains(319);
 
       cy.wrap(array).each((row, i) => {
-        if (i !== 0 && i <= Math.round(array.length / 6)) {
+        if (i !== 0 && i <= Math.round(l / 6)) {
           cy.wrap(row).children('td:first').children().click();
         }
       });
       cy.get('#ellipsis-menu').click();
       cy.get('#hide-selected').click();
-      cy.contains(170 - Math.round(array.length / 6));
+      cy.contains(319 - Math.round(l / 6));
       cy.get('#ellipsis-menu').click();
-      cy.contains(`Show hidden rows (${Math.round(array.length / 6)})`).click();
-      cy.contains('1-50 of 170');
+      cy.contains(`Show hidden rows (${Math.round(l / 6)})`).click();
+      cy.contains('1-50 of');
     });
   });
 

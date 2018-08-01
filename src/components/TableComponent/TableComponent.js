@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import './TableComponent.css';
 import {
@@ -25,6 +24,7 @@ import {
   DialogActions,
   Button,
   Divider,
+  Tooltip,
 } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import TimelineIcon from '@material-ui/icons/Timeline';
@@ -46,7 +46,6 @@ class TableComponent extends Component {
       orderBy: null,
       toggle: '',
       anchorEl: null,
-      graphRedirect: false,
       sortedData: Object.keys(props.data).map(key => props.data[key]),
       columnSelect: false,
       tableColumns: [],
@@ -59,7 +58,6 @@ class TableComponent extends Component {
     this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.handleGraphRedirect = this.handleGraphRedirect.bind(this);
     this.handleColumnOpen = this.handleColumnOpen.bind(this);
     this.handleColumnClose = this.handleColumnClose.bind(this);
     this.handleColumnCheck = this.handleColumnCheck.bind(this);
@@ -119,6 +117,8 @@ class TableComponent extends Component {
 
   /**
    * Updates page to display.
+   * @param {Event} event - Triggered event.
+   * @param {number} page - New page number.
    */
   handleChangePage(event, page) {
     this.setState({ page });
@@ -149,15 +149,15 @@ class TableComponent extends Component {
 
     const sort = (a, b) => {
       if (!newProperty) return 1;
-      const aValue = column.sortBy ? (a[newProperty] || { [column.sortBy]: '' })[column.sortBy] : a[newProperty];
-      const bValue = column.sortBy ? (b[newProperty] || { [column.sortBy]: '' })[column.sortBy] : b[newProperty];
+      const aValue = column.sortBy ? (a[newProperty] || {})[column.sortBy] : a[newProperty];
+      const bValue = column.sortBy ? (b[newProperty] || {})[column.sortBy] : b[newProperty];
 
       if (newOrder === 'desc') {
-        return bValue < aValue
+        return (bValue || '').toString() < (aValue || '').toString()
           ? -1
           : 1;
       }
-      return bValue > aValue
+      return (bValue || '').toString() > (aValue || '').toString()
         ? -1
         : 1;
     };
@@ -173,7 +173,7 @@ class TableComponent extends Component {
 
   /**
    * Sorts table by whether or not row is checked. Toggles output order based on current state.
-   * @param {string} fOrder - forces output order.
+   * @param {string} fOrder - forced output order.
    */
   handleSortByChecked(fOrder) {
     const { orderBy, order } = this.state;
@@ -235,13 +235,6 @@ class TableComponent extends Component {
   }
 
   /**
-   * Sets the graph redirect flag to true.
-   */
-  handleGraphRedirect() {
-    this.setState({ graphRedirect: true });
-  }
-
-  /**
    * Opens column selection dialog.
    */
   handleColumnOpen() {
@@ -250,6 +243,7 @@ class TableComponent extends Component {
 
   /**
    * Selects/deselects a column for displaying on the table.
+   * @param {number} i - Table column index.
    */
   handleColumnCheck(i) {
     const { tableColumns } = this.state;
@@ -259,6 +253,8 @@ class TableComponent extends Component {
 
   /**
    * sets a new subproperty to sort by.
+   * @param {string} sortBy - new property for column to be sorted by.
+   * @param {number} i - column index.
    */
   handleSortByChange(sortBy, i) {
     const { tableColumns } = this.state;
@@ -316,7 +312,7 @@ class TableComponent extends Component {
       sortedData,
       toggle,
       anchorEl,
-      graphRedirect,
+
       columnSelect,
       tableColumns,
     } = this.state;
@@ -329,23 +325,12 @@ class TableComponent extends Component {
       handleNodeEditStart,
       handleClick,
       handleCheckbox,
-      search,
       hidden,
       handleShowAllNodes,
       handleHideSelected,
       handleNewQuery,
+      handleGraphRedirect,
     } = this.props;
-
-    if (graphRedirect) {
-      return (
-        <Redirect
-          to={{
-            pathname: '/data/graph',
-            search,
-          }}
-        />
-      );
-    }
 
     const menu = (
       <Menu
@@ -357,7 +342,7 @@ class TableComponent extends Component {
         }}
       >
         <MenuItem
-          onClick={() => { this.handleClose(); this.handleGraphRedirect(); }}
+          onClick={() => { this.handleClose(); handleGraphRedirect(); }}
           disabled={displayed.length === 0}
           id="view-as-graph"
         >
@@ -400,6 +385,7 @@ class TableComponent extends Component {
             this.handleClose();
             this.handleColumnOpen();
           }}
+          id="column-edit"
         >
           Edit Visible Columns
         </MenuItem>
@@ -417,7 +403,7 @@ class TableComponent extends Component {
         </DialogTitle>
         <DialogContent>
           {tableColumns.map((column, i) => (
-            <div key={column.id}>
+            <div key={column.id} id={column.id}>
               <FormControlLabel
                 control={(
                   <Checkbox
@@ -454,7 +440,7 @@ class TableComponent extends Component {
             </div>
           ))}
         </DialogContent>
-        <DialogActions>
+        <DialogActions id="column-dialog-actions">
           <Button onClick={this.handleColumnClose} color="primary">
             Done
           </Button>
@@ -475,6 +461,7 @@ class TableComponent extends Component {
                   }}
                 >
                   <Checkbox
+                    color="secondary"
                     onChange={handleCheckAll}
                     checked={displayed.length === sortedData.length - hidden.length}
                   />
@@ -593,22 +580,20 @@ class TableComponent extends Component {
             rowsPerPageOptions={[25, 50, 100]}
             component="div"
           />
-
-          <IconButton
-            color="secondary"
-            disabled={displayed.length === 0}
-            className="graph-btn"
+          <Tooltip
+            title="Select ontologies to display in graph form"
+            placement="left"
           >
-            <Link
-              className="icon-link"
-              to={{
-                pathname: '/data/graph',
-                search,
-              }}
-            >
-              <TimelineIcon />
-            </Link>
-          </IconButton>
+            <div className="graph-btn">
+              <IconButton
+                color="secondary"
+                disabled={displayed.length === 0}
+                onClick={handleGraphRedirect}
+              >
+                <TimelineIcon />
+              </IconButton>
+            </div>
+          </Tooltip>
         </div>
       </section>
     );
@@ -619,7 +604,6 @@ class TableComponent extends Component {
 * @param {Object} data - Object containing query results.
 * @param {Array} displayed - Array of displayed nodes.
 * @param {Array} hidden - Array of hidden nodes.
-* @param {string} search - URL search string.
 * @param {string} selectedId - Selected node identifier.
 * @param {function} handleCheckAll - Method triggered when all rows are checked.
 * @param {function} handleNodeEditStart - Method triggered when user requests to edit a node.
@@ -632,7 +616,6 @@ class TableComponent extends Component {
 TableComponent.propTypes = {
   data: PropTypes.object.isRequired,
   displayed: PropTypes.array.isRequired,
-  search: PropTypes.string.isRequired,
   selectedId: PropTypes.string,
   handleCheckAll: PropTypes.func.isRequired,
   handleNodeEditStart: PropTypes.func.isRequired,
@@ -641,6 +624,7 @@ TableComponent.propTypes = {
   handleHideSelected: PropTypes.func.isRequired,
   handleShowAllNodes: PropTypes.func.isRequired,
   handleNewQuery: PropTypes.func,
+  handleGraphRedirect: PropTypes.func.isRequired,
   hidden: PropTypes.array,
   allColumns: PropTypes.array,
 };

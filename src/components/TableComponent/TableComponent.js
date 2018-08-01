@@ -608,7 +608,13 @@ class TableComponent extends Component {
             rowsPerPageOptions={[25, 50, 100]}
             component="div"
           />
-          {awaiting ? <CircularProgress size={20} color="primary" id="new-data-spinner" /> : null}
+          {awaiting ? (
+            <div style={{ display: 'flex', justifyItems: 'center' }}>
+              <CircularProgress size={20} color="primary" id="new-data-spinner" />
+              <Typography variant="caption" style={{ margin: 'auto' }}>loading more results...</Typography>
+            </div>
+          ) : null
+          }
           <Tooltip
             title="Select ontologies to display in graph form"
             placement="left"

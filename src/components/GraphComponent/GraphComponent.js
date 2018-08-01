@@ -767,13 +767,13 @@ class GraphComponent extends Component {
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          {GRAPH_MAIN.map(description => (
-            <React.Fragment>
+          {GRAPH_MAIN.map(help => (
+            <React.Fragment key={help.title}>
               <Typography variant="subheading" gutterBottom>
-                {description.title}
+                {help.title}
               </Typography>
               <Typography variant="body1" paragraph>
-                {description.description}
+                {help.description}
               </Typography>
             </React.Fragment>
           ))}
@@ -793,13 +793,13 @@ class GraphComponent extends Component {
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          {GRAPH_ADVANCED.map(description => (
-            <React.Fragment>
+          {GRAPH_ADVANCED.map(help => (
+            <React.Fragment key={help.title}>
               <Typography variant="subheading" gutterBottom>
-                {description.title}
+                {help.title}
               </Typography>
               <Typography variant="body1" paragraph>
-                {description.description}
+                {help.description}
               </Typography>
             </React.Fragment>
           ))}

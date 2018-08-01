@@ -16,7 +16,7 @@ $mediumBreakpoint: 500px;
         grid-column-end: 3;
         @media (max-width: $breakpoint) {
             grid-column-end: 2;
-        }        
+        }
         display: flex;
         justify-items: center;
         padding: 16px;
@@ -61,8 +61,11 @@ $mediumBreakpoint: 500px;
             }
         }
         .relationship-dir-type {
-            height: 48px;
             display: flex;
+            height: 48px;
+            button {
+                margin: auto 8px;
+            }
             @media (max-width: $mediumBreakpoint) {
                 width: 100%;
             }
@@ -77,7 +80,7 @@ $mediumBreakpoint: 500px;
             display: flex;
             width: 100%;
             .autosearch-wrapper {
-                margin-top: 16px;
+                transform: translate(0, 16px);
             }
         }
         .relationship-add-wrapper {

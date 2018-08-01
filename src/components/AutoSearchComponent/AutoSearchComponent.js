@@ -101,6 +101,7 @@ class AutoSearchComponent extends Component {
       required,
       disabled,
       endAdornment,
+      error,
     } = this.props;
 
     if (loginRedirect) return <Redirect push to={{ pathname: '/login' }} />;
@@ -149,7 +150,7 @@ class AutoSearchComponent extends Component {
             <TextField
               disabled={disabled}
               fullWidth
-              error={emptyFlag || noRidFlag}
+              error={emptyFlag || noRidFlag || error}
               label={label}
               required={required}
               InputProps={{
@@ -218,6 +219,7 @@ AutoSearchComponent.propTypes = {
   value: PropTypes.string,
   label: PropTypes.string,
   required: PropTypes.bool,
+  error: PropTypes.bool,
   onChange: PropTypes.func,
   children: PropTypes.func,
   disabled: PropTypes.bool,
@@ -232,6 +234,7 @@ AutoSearchComponent.defaultProps = {
   value: '',
   label: '',
   required: false,
+  error: false,
   children: (getItemProps, item, index) => ( // TODO: change this to be more flexible
     <MenuItem
       {...getItemProps({

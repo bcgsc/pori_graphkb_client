@@ -29,6 +29,7 @@ function ResourceSelectComponent(props) {
     children,
     required,
     id,
+    error,
   } = props;
 
   const resourcesDisplay = resources.map(resource => children(resource));
@@ -49,6 +50,7 @@ function ResourceSelectComponent(props) {
       <Select
         value={value}
         onChange={onChange}
+        error={error}
         inputProps={{
           name,
           id: 'resource-select',
@@ -68,6 +70,7 @@ ResourceSelectComponent.propTypes = {
   label: PropTypes.string,
   children: PropTypes.func,
   required: PropTypes.bool,
+  error: PropTypes.bool,
   id: PropTypes.string,
 };
 
@@ -82,6 +85,7 @@ ResourceSelectComponent.defaultProps = {
   name: '',
   label: '',
   required: false,
+  error: false,
   id: '',
 };
 

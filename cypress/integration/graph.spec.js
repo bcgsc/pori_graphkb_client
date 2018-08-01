@@ -9,7 +9,7 @@ function getClass(endpoint, params) {
       cy.get(`textarea[name=${param}]`).type(params[[param]]);
     });
   }
-  cy.get('#search-button').click();
+  cy.get('#search-button').click().wait(1000);
   cy.get('table tbody tr:first input[type=checkbox]').click();
   cy.get('div.pag div.graph-btn').click();
 }

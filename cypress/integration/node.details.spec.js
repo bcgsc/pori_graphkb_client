@@ -14,7 +14,7 @@ describe('Node Detail ', () => {
     cy.url().should('includes', '/login');
     cy.get('input[name=username]').type(Cypress.env('USER'));
     cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
-    cy.wait(100);
+    cy.wait(1000);
     cy.url().should('includes', '/query');
     cy.get('button.advanced-button').click();
     cy.url().should('includes', '/query/advanced');
@@ -54,7 +54,7 @@ describe('Node Detail ', () => {
     cy.contains('c8278');
   });
 
-  it.only('Detail Page details & edge drop down lists', () => {
+  it('Detail Page details & edge drop down lists', () => {
     cy.visit('/ontology/36:10795');
     // Gets length indicator
     cy.get('div.length-box h3:first').invoke('text').then((length) => {

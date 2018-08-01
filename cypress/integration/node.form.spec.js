@@ -9,7 +9,7 @@ describe('Node Form Test', () => {
     cy.url().should('includes', '/query/advanced');
   });
 
-  it('Add form', () => {
+  it('Form fields', () => {
     cy.visit('/add');
     cy.contains('Disease');
     cy.get('div.submit-button button').should('disabled');

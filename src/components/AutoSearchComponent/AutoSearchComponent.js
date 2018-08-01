@@ -160,7 +160,7 @@ class AutoSearchComponent extends Component {
                   name,
                   onKeyUp: this.refreshOptions,
                   onFocus: () => this.setState({ noRidFlag: false }),
-                  onBlur: () => this.setState({ noRidFlag: (!lastRid && value) }),
+                  onBlur: () => this.setState({ noRidFlag: !!(!lastRid && value) }),
                 }),
                 endAdornment: endAdornment ? (
                   <InputAdornment position="end">

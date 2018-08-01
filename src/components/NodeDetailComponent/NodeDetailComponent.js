@@ -126,7 +126,7 @@ class NodeDetailComponent extends Component {
       }
       // TODO: handle case where field is array of objects that aren't edges.
       if (Array.isArray(value)) {
-        if (value.length > 1 && !((id.match(/\./g) || []).length === 2)) {
+        if (!((id.match(/\./g) || []).length === 2)) {
           const preview = value.join(', ');
           const content = (
             <List style={{ paddingTop: '0' }}>
@@ -134,7 +134,7 @@ class NodeDetailComponent extends Component {
                 <ListItem
                   dense
                   key={`${id}${item}`}
-                  onClick={() => handleNewQuery(`subsets=${item}`)}
+                  onClick={() => handleNewQuery(`${key.includes('.') ? key.split('.')[key.split('.').length - 1] : key}=${encodeURIComponent(item)}`)}
                   className="list-icon"
                 >
                   <ListItemIcon>
@@ -190,23 +190,6 @@ class NodeDetailComponent extends Component {
             </ExpansionPanel>
           );
         }
-        return (
-          <React.Fragment key={id}>
-            <Typography variant="subheading">
-              {`${util.antiCamelCase(key)}:`}
-            </Typography>
-            <Typography paragraph variant="caption">
-              {((id.match(/\./g) || []).length === 2 && value.length > 1)
-                ? (
-                  <span>
-                    <br />
-                    . . .
-                  </span>
-                ) : null}
-              {value[0].toString()}
-            </Typography>
-          </React.Fragment>
-        );
       }
 
       const nestedObject = Object.assign({}, value);

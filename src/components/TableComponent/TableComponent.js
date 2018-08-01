@@ -144,8 +144,7 @@ class TableComponent extends Component {
     const rows = (page + 1) * rowsPerPage;
     if (rows >= 0.8 * sortedData.length) {
       const { handleTriggerNext } = this.props;
-      if (handleTriggerNext) {
-        handleTriggerNext();
+      if (handleTriggerNext && handleTriggerNext()) {
         this.setState({ awaiting: true });
       }
     }

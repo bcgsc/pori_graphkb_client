@@ -223,6 +223,7 @@ class DataView extends Component {
       });
     }
     this.setState({ next: null });
+    return next;
   }
 
   /**

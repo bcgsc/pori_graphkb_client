@@ -105,7 +105,7 @@ class DataView extends Component {
         schema,
       });
     } catch (e) {
-      // do nothing
+      console.error(e);
     }
   }
 

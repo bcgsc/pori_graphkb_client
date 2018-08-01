@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 function DownloadFileComponent(props) {
   const {
     mediaType,
-    base64,
     rawFileContent,
     fileName,
     children,
@@ -18,17 +17,19 @@ function DownloadFileComponent(props) {
     if (!file) return;
 
     if (window.Cypress) return;
-
-    const uri = `data:${mediaType}${base64 ? `;${base64}` : null},${encodeURIComponent(file)}`;
-
-    const link = document.createElement('a');
-    link.download = fileName;
-    link.href = uri;
-
-    document.body.appendChild(link);
-    link.click();
-
-    document.body.removeChild(link);
+    const blob = new Blob([file], { type: mediaType });
+    if (window.navigator.msSaveBlob) {
+      // FOR IE BROWSER
+      navigator.msSaveBlob(blob, fileName);
+    } else {
+      const tsvUrl = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = tsvUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   };
 
   return (
@@ -46,9 +47,16 @@ function DownloadFileComponent(props) {
   );
 }
 
+/**
+ * @param {string} mediaType - File media type.
+ * @param {function} rawFileContent - Raw file data.
+ * @param {string} fileName - Filename of file to be downloaded.
+ * @param {string} id - CSS identifier for styling.
+ * @param {string} className - CSS class name for styling.
+ * @param {object} style - Object of individual CSS properties for styling.
+ */
 DownloadFileComponent.propTypes = {
   mediaType: PropTypes.string,
-  base64: PropTypes.string,
   rawFileContent: PropTypes.func,
   fileName: PropTypes.string,
   children: PropTypes.node.isRequired,
@@ -59,7 +67,6 @@ DownloadFileComponent.propTypes = {
 
 DownloadFileComponent.defaultProps = {
   mediaType: 'text/plain;charset=US-ASCII',
-  base64: null,
   rawFileContent: null,
   fileName: 'download.txt',
   id: undefined,

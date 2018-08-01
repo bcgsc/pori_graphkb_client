@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
 import './NodeFormComponent.css';
 import {
   TextField,
@@ -22,6 +21,10 @@ import {
   DialogActions,
   DialogTitle,
   Tooltip,
+  ListItemSecondaryAction,
+  Card,
+  InputAdornment,
+  Paper,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
@@ -46,7 +49,6 @@ class NodeFormComponent extends Component {
       sources: [],
       ontologyTypes: [],
       newNodeClass: 'Disease',
-      completedFlag: false,
       relationships: [],
       relationship: {
         '@class': '',
@@ -80,8 +82,7 @@ class NodeFormComponent extends Component {
    */
   async componentDidMount() {
     const sources = await api.getSources();
-    const edgeTypes = await api.getOntologyEdges();
-    const ontologyTypes = await api.getOntologyVertices();
+    const schema = await api.getSchema();
     const { node } = this.props;
     const { relationships, relationship } = this.state;
 
@@ -98,31 +99,46 @@ class NodeFormComponent extends Component {
     const form = {};
 
     editableProps.forEach((prop) => {
-      const { name, type, linkedClass } = prop;
+      const {
+        name,
+        type,
+        linkedClass,
+        defaultValue,
+      } = prop;
       switch (type) {
         case 'embeddedset':
           form[name] = originalNode[name] || [];
           break;
         case 'link':
+          form[`${name}.@rid`] = (originalNode[name] || '')['@rid'] || '';
           form[name] = (originalNode[name] || '').name || '';
+
           if (!linkedClass) {
             form[`${name}.class`] = (originalNode[name] || '')['@class'] || '';
           }
-          form[`${name}.@rid`] = (originalNode[name] || '')['@rid'] || '';
+
+          if ((originalNode[name] || '').sourceId) {
+            form[`${name}.sourceId`] = (originalNode[name] || '').sourceId || '';
+          }
+
           break;
-        case 'integer':
+        case 'integer' || 'long':
           if (originalNode[name] === 0) {
             form[name] = 0;
           } else {
-            form[name] = originalNode[name] || '';
+            form[name] = originalNode[name] || defaultValue || '';
           }
           break;
+        case 'boolean':
+          form[name] = originalNode[name] || defaultValue.toString() === 'true';
+          break;
         default:
-          form[name] = originalNode[name] || '';
+          form[name] = originalNode[name] || defaultValue || '';
           break;
       }
     });
-
+    const edgeTypes = util.getEdges(schema);
+    const ontologyTypes = util.getOntologies(schema);
     const expandedEdgeTypes = edgeTypes.reduce((r, e) => {
       r.push(`in_${e}`);
       r.push(`out_${e}`);
@@ -132,17 +148,20 @@ class NodeFormComponent extends Component {
     expandedEdgeTypes.forEach((type) => {
       if (originalNode[type]) {
         originalNode[type].forEach((edge) => {
-          relationships.push({
-            '@rid': edge['@rid'],
-            in: edge.in['@rid'],
-            out: edge.out['@rid'],
-            '@class': type.split('_')[1],
-            targetName:
-              edge.out['@rid'] === originalNode['@rid'] ? edge.in.name : edge.out.name,
-            targetSourceId:
-              edge.out['@rid'] === originalNode['@rid'] ? edge.in.sourceId : edge.out.sourceId,
-            source: edge.source['@rid'] || edge.source,
-          });
+          if (edge['@class'] !== 'Implies') { // TODO: remove filter for implies edges.
+            relationships.push({
+              '@rid': edge['@rid'],
+              in: edge.in['@rid'],
+              out: edge.out['@rid'],
+              '@class': edge['@class'],
+              targetName:
+                edge.out['@rid'] === originalNode['@rid'] ? edge.in.name : edge.out.name,
+              targetSourceId:
+                edge.out['@rid'] === originalNode['@rid'] ? edge.in.sourceId : edge.out.sourceId,
+              source: edge.source['@rid'] || edge.source,
+              key: type,
+            });
+          }
         });
       }
     });
@@ -191,6 +210,7 @@ class NodeFormComponent extends Component {
   handleFormChange(e) {
     const { form } = this.state;
     form[e.target.name] = e.target.value;
+
     if (e.target['@rid']) {
       form[`${e.target.name}.@rid`] = e.target['@rid'];
     } else if (form[`${e.target.name}.@rid`]) {
@@ -201,6 +221,7 @@ class NodeFormComponent extends Component {
     } else if (form[`${e.target.name}.sourceId`]) {
       form[`${e.target.name}.sourceId`] = '';
     }
+
     this.setState({ form });
   }
 
@@ -274,6 +295,7 @@ class NodeFormComponent extends Component {
             in: '',
             out: originalNode['@rid'],
             source: '',
+            key: '',
           },
         });
       }
@@ -471,7 +493,6 @@ class NodeFormComponent extends Component {
     const {
       form,
       originalNode,
-      completedFlag,
       sources,
       edgeTypes,
       ontologyTypes,
@@ -486,9 +507,6 @@ class NodeFormComponent extends Component {
 
     // Wait for form to get initialized
     if (!form) return null;
-    if (completedFlag) {
-      return <Redirect push to="/query" />;
-    }
 
     // Validates form
     let formIsInvalid = false;
@@ -540,7 +558,6 @@ class NodeFormComponent extends Component {
         linkedClass,
         description,
       } = property;
-
       if (typeof value !== 'object') {
         // Radio group component for boolean types.
         if (type === 'boolean') {
@@ -557,7 +574,7 @@ class NodeFormComponent extends Component {
                   style={{ flexDirection: 'row' }}
                 >
                   <FormControlLabel value="true" control={<Radio />} label="Yes" />
-                  <FormControlLabel value="" control={<Radio />} label="No" />
+                  <FormControlLabel value="false" control={<Radio />} label="No" />
                 </RadioGroup>
               </FormControl>
             </ListItem>
@@ -588,12 +605,16 @@ class NodeFormComponent extends Component {
                 step={step || ''}
                 required={mandatory}
                 multiline={t === 'text'}
+                InputProps={{
+                  endAdornment: description ? (
+                    <InputAdornment position="end">
+                      <Tooltip title={description}>
+                        <HelpIcon color="primary" />
+                      </Tooltip>
+                    </InputAdornment>
+                  ) : null,
+                }}
               />
-              {description ? (
-                <Tooltip title={description}>
-                  <HelpIcon />
-                </Tooltip>
-              ) : null}
             </ListItem>
           );
         }
@@ -601,41 +622,15 @@ class NodeFormComponent extends Component {
         // database and store its rid.
 
         // Decide which endpoint to query.
-        const classKey = `${key}.class`;
         let endpoint;
-
-        // If a linkedClass is specified, restrict querying to that endpoint, and do not
-        // show a resource selector. Otherwise, choose a dropdown for the class (might
-        // remove this when general ontology endpoint is pushed to production).
-        const resourceSelector = linkedClass ? null
-          : (
-            <div style={{ marginBottom: '8px' }}>
-              <ResourceSelectComponent
-                value={form[classKey]}
-                onChange={this.handleFormChange}
-                name={classKey}
-                label={`${util.antiCamelCase(key)} Class`}
-                resources={ontologyTypes}
-                required={mandatory}
-              >
-                {ontologyClass => (
-                  <MenuItem key={ontologyClass.name} value={ontologyClass.name}>
-                    {ontologyClass.name}
-                  </MenuItem>
-                )}
-              </ResourceSelectComponent>
-            </div>
-          );
-
         if (linkedClass) {
           endpoint = util.pluralize(linkedClass);
         } else {
-          endpoint = util.pluralize(form[classKey]);
+          endpoint = 'ontologies';
         }
 
         return (
           <ListItem key={key} style={{ display: 'block' }}>
-            {resourceSelector}
             <div>
               <AutoSearchComponent
                 value={value}
@@ -645,12 +640,15 @@ class NodeFormComponent extends Component {
                 id={key}
                 limit={30}
                 endpoint={endpoint}
-                disabled={(!linkedClass && !form[classKey])}
                 required={mandatory}
+                property={!linkedClass ? ['name', 'sourceId'] : undefined}
               />
             </div>
           </ListItem>
         );
+      }
+      if (Array.isArray(value)) {
+        return null;
       }
       return null;
     };
@@ -664,11 +662,13 @@ class NodeFormComponent extends Component {
         className="form-list"
       >
         <ListItemText primary={s} style={{ overflow: 'auto' }} />
-        <IconButton
-          onClick={() => this.handleSubsetDelete(s)}
-        >
-          <CloseIcon color="error" />
-        </IconButton>
+        <ListItemSecondaryAction>
+          <IconButton
+            onClick={() => this.handleSubsetDelete(s)}
+          >
+            <CloseIcon color="error" />
+          </IconButton>
+        </ListItemSecondaryAction>
       </ListItem>
     ));
 
@@ -684,20 +684,22 @@ class NodeFormComponent extends Component {
         : r['@class'];
       return (
         <ListItem
-          key={`${typeName}: ${r['@rid']}`}
+          key={`${r.key}: ${r['@rid']}`}
           className="form-list"
         >
           <ListItemText
-            primary={`${typeName}: ${r.targetSourceId} ${r.targetName ? `| "${r.targetName}"` : ''}`}
+            primary={`${typeName}: ${r.targetSourceId}`}
             secondary={sourceName}
             style={{ overflow: 'auto' }}
           />
-          <IconButton
-            color="secondary"
-            onClick={() => this.handleRelationshipDelete(r)}
-          >
-            <CloseIcon color="error" />
-          </IconButton>
+          <ListItemSecondaryAction>
+            <IconButton
+              color="secondary"
+              onClick={() => this.handleRelationshipDelete(r)}
+            >
+              <CloseIcon color="error" />
+            </IconButton>
+          </ListItemSecondaryAction>
         </ListItem>
       );
     });
@@ -721,7 +723,7 @@ class NodeFormComponent extends Component {
       <div className="node-form-wrapper">
         {dialog}
         <div>
-          <div className="form-header">
+          <Paper className="form-header" elevation={4}>
             <Typography variant="display1" className="form-title">
               {variant === 'edit' ? 'Edit Ontology Term'
                 : 'Add New Ontology Term'}
@@ -733,11 +735,11 @@ class NodeFormComponent extends Component {
             >
               Cancel
             </Button>
-          </div>
+          </Paper>
         </div>
         <Divider />
         <form onSubmit={this.handleSubmit}>
-          <div className="param-section">
+          <Card className="param-section">
             <Typography variant="title">
               Basic Parameters
             </Typography>
@@ -765,8 +767,8 @@ class NodeFormComponent extends Component {
                 .map(key => formatInputSection(key, form[key]))
               }
             </List>
-          </div>
-          <div className="param-section">
+          </Card>
+          <Card className="param-section">
             <Typography variant="title">
               Subsets
             </Typography>
@@ -783,10 +785,17 @@ class NodeFormComponent extends Component {
                     this.handleSubsetAdd(e);
                   }
                 }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton color="primary" onClick={this.handleSubsetAdd}>
+                        <AddIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
-              <IconButton color="primary" onClick={this.handleSubsetAdd}>
-                <AddIcon />
-              </IconButton>
+
             </ListItem>
             <List className="list">
               {subsets}
@@ -847,6 +856,7 @@ class NodeFormComponent extends Component {
                       placeholder="Target Name"
                       limit={10}
                       name="targetName"
+                      endAdornment={null}
                     />
                   </div>
                 </div>
@@ -859,10 +869,10 @@ class NodeFormComponent extends Component {
                 <AddIcon />
               </IconButton>
             </ListItem>
-            <List className="list">
+            <List className="relationships-list">
               {rships}
             </List>
-          </div>
+          </Card>
           <div className="submit-button">
             <Button
               type="submit"
@@ -894,7 +904,7 @@ NodeFormComponent.defaultProps = {
 };
 
 /**
-  * @param {string} selectedId - node database identifier.
+  * @param {Object} node - node object.
   * @param {string} variant - specifies form type/function.
   * @param {function} handleNodeDelete - parent method triggered on node delete.
   * @param {function} handleNodeFinishEdit - parent method triggered when node is edited.

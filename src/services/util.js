@@ -1,6 +1,7 @@
+import config from '../config.json';
 
-const propOrder = ['sourceId', 'name'];
-const acronyms = ['id', 'uuid', 'ncit', 'uberon', 'doid'];
+const { DEFAULT_PROPS } = config;
+const acronyms = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
 
 
 /**
@@ -46,7 +47,7 @@ export default class util {
    */
   static getPreview(obj) {
     let preview;
-    propOrder.forEach((prop) => {
+    DEFAULT_PROPS.forEach((prop) => {
       if (obj[prop]) {
         if (!preview) {
           preview = obj[prop];
@@ -87,7 +88,7 @@ export default class util {
    */
   static getTSVRepresentation(value, key) {
     if (typeof value !== 'object') {
-      return value || '';
+      return (value || '').toString().replace(/[\r\n\t]/g, ' ');
     }
     if (Array.isArray(value)) {
       let list;
@@ -107,7 +108,13 @@ export default class util {
     return this.getPreview(value);
   }
 
-  static parsePayload(form, editableProps) {
+  /**
+   * Prepares a payload to be sent to the server for a POST, PATCH, or GET requst.
+   * @param {Object} form - unprocessed form object containing user data.
+   * @param {*} editableProps - List of valid properties for given form.
+   * @param {*} exceptions - List of extra parameters not specified in editableProps.
+   */
+  static parsePayload(form, editableProps, exceptions) {
     const payload = Object.assign({}, form);
     Object.keys(payload).forEach((key) => {
       if (!payload[key]) delete payload[key];
@@ -120,9 +127,119 @@ export default class util {
       }
       // Clears out all other unknown fields.
       if (!editableProps.find(p => p.name === key)) {
-        delete payload[key];
+        if (!exceptions || !exceptions.find(p => p.name === key)) {
+          delete payload[key];
+        }
       }
     });
     return payload;
+  }
+
+  static chooseColor(i, n) {
+    let pallette = [];
+
+    if (n <= 5) {
+      pallette = config.GRAPH_DEFAULTS.NODE_COLORS_5;
+    }
+    if (n <= 10) {
+      pallette = config.GRAPH_DEFAULTS.NODE_COLORS_10;
+    }
+    if (n <= 15) {
+      pallette = config.GRAPH_DEFAULTS.NODE_COLORS_15;
+    }
+    if (n <= 20) {
+      pallette = config.GRAPH_DEFAULTS.NODE_COLORS_20;
+    }
+
+    if (i < pallette.length) {
+      return pallette[i];
+    }
+
+    return Math.round(Math.random() * (255 ** 3)).toString(16);
+  }
+
+  static getPallette(n) {
+    if (n < 5) {
+      return config.GRAPH_DEFAULTS.NODE_COLORS_5;
+    }
+    if (n < 10) {
+      return config.GRAPH_DEFAULTS.NODE_COLORS_10;
+    }
+    if (n < 15) {
+      return config.GRAPH_DEFAULTS.NODE_COLORS_15;
+    }
+    if (n < 20) {
+      return config.GRAPH_DEFAULTS.NODE_COLORS_20;
+    }
+    const list = config.GRAPH_DEFAULTS.NODE_COLORS_20;
+    for (let i = 20; i < n; i += 1) {
+      const color = `000000${Math.round(Math.random() * (255 ** 3)).toString(16)}`;
+      list.push(`#${color.substr(color.length - 6)}`);
+    }
+    return list;
+  }
+
+  /**
+   * Updates allColumns list with any new properties from ontologyTerm.
+   * @param {Object} ontologyTerm - new node who's properties will be parsed.
+   * @param {Array} allColumns - current list of all collected properties.
+   * @param {Object} schema - api schema.
+   */
+  static collectOntologyProps(ontologyTerm, allColumns, schema) {
+    const { properties } = schema[ontologyTerm['@class']];
+    const { V } = schema;
+    Object.keys(ontologyTerm).forEach((prop) => {
+      if (!V.properties[prop] && prop !== '@class' && !allColumns.includes(prop)) {
+        const endpointProp = properties[prop];
+        if (endpointProp && endpointProp.type === 'link') {
+          Object.keys(ontologyTerm[prop]).forEach((nestedProp) => {
+            if (
+              !V.properties[nestedProp]
+              && !allColumns.includes(`${prop}.${nestedProp}`)
+              && !nestedProp.startsWith('in_')
+              && !nestedProp.startsWith('out_')
+              && !(endpointProp.linkedClass && nestedProp === '@class')
+              && (properties[nestedProp] || {}).type !== 'link'
+            ) {
+              allColumns.push(`${prop}.${nestedProp}`);
+            }
+          });
+        } else {
+          allColumns.push(prop);
+        }
+      }
+    });
+    return allColumns;
+  }
+
+  /**
+    * Returns all valid ontology types.
+    */
+  static getOntologies(schema) {
+    const list = [];
+    Object.keys(schema).forEach((key) => {
+      if (
+        schema[key].inherits.includes('Ontology')
+        && schema[key].inherits.includes('V')
+      ) {
+        list.push({ name: key, properties: schema[key].properties });
+      }
+    });
+    return list;
+  }
+
+  /**
+    * Returns all valid edge types.
+    */
+  static getEdges(schema) {
+    const list = [];
+    Object.keys(schema).forEach((key) => {
+      if (
+        schema[key].inherits.includes('E')
+      ) {
+        list.push(key);
+      }
+    });
+    return list;
   }
 }

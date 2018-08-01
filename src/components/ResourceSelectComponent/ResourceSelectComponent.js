@@ -60,6 +60,17 @@ function ResourceSelectComponent(props) {
   );
 }
 
+ResourceSelectComponent.propTypes = {
+  resources: PropTypes.array,
+  value: PropTypes.any.isRequired,
+  onChange: PropTypes.func,
+  name: PropTypes.string,
+  label: PropTypes.string,
+  children: PropTypes.func,
+  required: PropTypes.bool,
+  id: PropTypes.string,
+};
+
 ResourceSelectComponent.defaultProps = {
   children: resource => (
     <MenuItem key={resource.name} value={resource['@rid']}>
@@ -72,17 +83,6 @@ ResourceSelectComponent.defaultProps = {
   label: '',
   required: false,
   id: '',
-};
-
-ResourceSelectComponent.propTypes = {
-  resources: PropTypes.array,
-  value: PropTypes.any.isRequired,
-  onChange: PropTypes.func,
-  name: PropTypes.string,
-  label: PropTypes.string,
-  children: PropTypes.func,
-  required: PropTypes.bool,
-  id: PropTypes.string,
 };
 
 export default ResourceSelectComponent;

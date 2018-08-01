@@ -1,69 +1,129 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link, Redirect } from 'react-router-dom';
 import './AdvancedQueryView.css';
 import {
   TextField,
   Button,
   Typography,
   MenuItem,
+  List,
+  ListItem,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  RadioGroup,
+  Radio,
+  Tooltip,
+  InputAdornment,
+  Divider,
+  Paper,
+  Snackbar,
 } from '@material-ui/core/';
+import HelpIcon from '@material-ui/icons/Help';
 import queryString from 'query-string';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
+import AutoSearchComponent from '../../components/AutoSearchComponent/AutoSearchComponent';
 import api from '../../services/api';
+import util from '../../services/util';
+import config from '../../config';
 
 /**
- * Advanced query page, allows user to specify more parameters in their queries.
+ * View for in-depth database query building. Form submissions will route to
+ * the data results route to display the returned data.
  */
 class AdvancedQueryView extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      mainParams: {
-        name: props.location.state.name,
-        source: '',
-        sourceId: '',
-        longName: '',
-        sourceIdVersion: '',
-        limit: 1000,
-        ancestors: '',
-        descendants: '',
-        fuzzyMatch: 0,
-        class: '',
-      },
-      sources: [],
-      ontologies: [],
-      loginRedirect: false,
-      error: null,
+      form: null,
+      ontologyTypes: [],
+      message: '',
     };
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleClassChange = this.handleClassChange.bind(this);
     this.bundle = this.bundle.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   /**
    * Initializes valid sources.
    */
   async componentDidMount() {
-    const sources = await api.getSources()
-      .catch((error) => {
-        if (error.status === 401) {
-          this.setState({ loginRedirect: true });
-        } else {
-          this.setState({ error });
-        }
-      });
-    const ontologies = await api.getOntologyVertices()
-      .catch((error) => {
-        if (error.status === 401) {
-          this.setState({ loginRedirect: true });
-        } else {
-          this.setState({ error });
-        }
-      });
+    const { history } = this.props;
 
-    this.setState({ sources, ontologies });
+    if (
+      history.location
+      && history.location.state
+      && history.location.state.body
+      && history.location.state.body.message
+    ) {
+      this.setState({ message: history.location.state.body.message });
+    }
+
+    const form = {};
+    const schema = await api.getSchema();
+    const ontologyTypes = [{ name: '', properties: null }];
+    ontologyTypes.push(...util.getOntologies(schema));
+    form['@class'] = ontologyTypes[0].name;
+
+    const editableProps = (await api.getClass(form['@class'])).properties;
+    editableProps.push(...config.ONTOLOGY_QUERY_PARAMS);
+    editableProps.forEach((prop) => {
+      const {
+        name,
+        type,
+        linkedClass,
+        defaultValue,
+      } = prop;
+      switch (type) {
+        case 'link':
+          form[`${name}.@rid`] = '';
+          form[name] = '';
+
+          if (!linkedClass) {
+            form[`${name}.class`] = '';
+          }
+          form[`${name}.sourceId`] = '';
+
+          break;
+        case 'boolean':
+          form[name] = defaultValue.toString() === 'true';
+          break;
+        default:
+          form[name] = name === 'name' ? history.location.state.name : defaultValue || '';
+          break;
+      }
+    });
+
+    this.setState({
+      ontologyTypes,
+      form,
+      editableProps,
+    });
+  }
+
+  /**
+   * Re renders form input fields based on class editable properties.
+   * @param {Event} e - Class selection event
+   */
+  async handleClassChange(e) {
+    const newNodeClass = e.target.value;
+    const editableProps = (await api.getClass(newNodeClass)).properties;
+    const { form } = this.state;
+    editableProps.forEach((prop) => {
+      const { name } = prop;
+      if (!form[name]) {
+        form[name] = '';
+      }
+    });
+    editableProps.push(...config.ONTOLOGY_QUERY_PARAMS);
+    form['@class'] = e.target.value;
+    this.setState({
+      form,
+      editableProps,
+    });
   }
 
   /**
@@ -71,150 +131,223 @@ class AdvancedQueryView extends Component {
    * @param {Event} e - User input event.
    */
   handleChange(e) {
-    const { mainParams } = this.state;
-    mainParams[e.target.name] = e.target.value;
-    this.setState({ mainParams });
+    const { form } = this.state;
+    form[e.target.name] = e.target.value;
+
+    if (e.target['@rid']) {
+      form[`${e.target.name}.@rid`] = e.target['@rid'];
+    } else if (form[`${e.target.name}.@rid`]) {
+      form[`${e.target.name}.@rid`] = '';
+    }
+    if (e.target.sourceId) {
+      form[`${e.target.name}.sourceId`] = e.target.sourceId;
+    } else if (form[`${e.target.name}.sourceId`]) {
+      form[`${e.target.name}.sourceId`] = '';
+    }
+
+    this.setState({ form });
+  }
+
+  handleClose() {
+    this.setState({ message: '' });
   }
 
   /**
-   * Formats query string to be passed into url.
-   */
+  * Formats query string to be passed into url.
+  */
   bundle() {
-    const { mainParams } = this.state;
-    const params = {};
+    const { form, editableProps } = this.state;
+    const params = [{ name: '@class', type: 'string' }];
+    params.push(...config.ONTOLOGY_QUERY_PARAMS);
+    const payload = util.parsePayload(form, editableProps, params);
 
-    Object.keys(mainParams).forEach((key) => {
-      if (mainParams[key]) {
-        params[key] = mainParams[key];
-      }
-    });
-
-    return queryString.stringify(params);
+    return queryString.stringify(payload);
   }
 
   render() {
     const {
-      mainParams,
-      sources,
-      ontologies,
-      error,
-      loginRedirect,
+      form,
+      ontologyTypes,
+      editableProps,
+      message,
     } = this.state;
+    const { history } = this.props;
 
-    if (loginRedirect) return <Redirect push to="/login" />;
-    if (error) return <Redirect push to={{ pathname: '/error', state: error }} />;
+    if (!form) return null;
+
+    const formatInputSection = (key, value) => {
+      const property = editableProps.find(prop => prop.name === key);
+      if (!property) return null;
+
+      const {
+        type,
+        linkedClass,
+        description,
+      } = property;
+      if (typeof value !== 'object') {
+        // Radio group component for boolean types.
+        if (type === 'boolean') {
+          return (
+            <ListItem className="input-wrapper" key={key}>
+              <FormControl component="fieldset">
+                <FormLabel>
+                  {util.antiCamelCase(key)}
+                </FormLabel>
+                <RadioGroup
+                  name={key}
+                  onChange={this.handleChange}
+                  value={value.toString()}
+                  style={{ flexDirection: 'row' }}
+                >
+                  <FormControlLabel value="true" control={<Radio />} label="Yes" />
+                  <FormControlLabel value="false" control={<Radio />} label="No" />
+                </RadioGroup>
+              </FormControl>
+            </ListItem>
+          );
+        }
+
+        // For text fields, apply some final changes for number inputs.
+        if (type !== 'link') {
+          let t;
+          let step;
+          if (type === 'string') {
+            t = 'text';
+          } else if (type === 'integer' || type === 'long') {
+            t = 'number';
+            step = 1;
+          }
+
+          return (
+            <ListItem className="input-wrapper" key={key}>
+              <TextField
+                id={key}
+                label={util.antiCamelCase(key)}
+                value={value}
+                onChange={this.handleChange}
+                className="text-input"
+                name={key}
+                type={t || ''}
+                step={step || ''}
+                multiline={t === 'text'}
+                InputProps={{
+                  endAdornment: description ? (
+                    <InputAdornment position="end">
+                      <Tooltip title={description}>
+                        <HelpIcon color="primary" />
+                      </Tooltip>
+                    </InputAdornment>
+                  ) : null,
+                }}
+              />
+            </ListItem>
+          );
+        }
+        // If type is a link to another record, must find that record in the
+        // database and store its rid.
+
+        // Decide which endpoint to query.
+        let endpoint;
+        if (linkedClass) {
+          endpoint = util.pluralize(linkedClass);
+        } else {
+          endpoint = 'ontologies';
+        }
+
+        return (
+          <ListItem key={key} style={{ display: 'block' }}>
+            <div>
+              <AutoSearchComponent
+                value={value}
+                onChange={this.handleChange}
+                name={key}
+                label={util.antiCamelCase(key)}
+                id={key}
+                limit={30}
+                endpoint={endpoint}
+                property={!linkedClass ? ['name', 'sourceId'] : undefined}
+              />
+            </div>
+          </ListItem>
+        );
+      }
+      if (Array.isArray(value)) {
+        return null;
+      }
+      return null;
+    };
 
     return (
-      <div className="adv-wrapper">
-        <Typography color="textSecondary" variant="headline" id="adv-title">
+      <Paper className="adv-wrapper" elevation={4}>
+        <Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          open={!!message}
+          onClose={this.handleClose}
+          autoHideDuration={3000}
+          message={(
+            <span>
+              {message}
+            </span>
+          )}
+        />
+
+        <Typography variant="headline" id="adv-title">
           Advanced Query
         </Typography>
-        <div className="endpoint-selection">
-          <ResourceSelectComponent
-            value={mainParams.class}
-            onChange={this.handleChange}
-            name="class"
-            label="Class"
-            id="class-adv"
-            resources={ontologies}
-          >
-            {resource => (
-              <MenuItem key={resource.name} value={resource.name}>
-                {resource.name}
-              </MenuItem>
-            )}
-          </ResourceSelectComponent>
-        </div>
-        <div className="parameter-selection">
-          <TextField
-            id="name-adv"
-            placeholder="eg. angiosarcoma"
-            label="Name"
-            value={mainParams.name}
-            onChange={this.handleChange}
-            name="name"
-            className="text-input"
-          />
-        </div>
-        <div className="parameter-selection">
-          <ResourceSelectComponent
-            value={mainParams.source}
-            onChange={this.handleChange}
-            name="source"
-            label="Source"
-            id="source-adv"
-            resources={sources}
-          />
-        </div>
-        <div className="parameter-selection">
-          <TextField
-            id="source-id-adv"
-            placeholder="eg. DOID:4"
-            label="Source ID"
-            value={mainParams.sourceId}
-            onChange={this.handleChange}
-            name="sourceId"
-            className="text-input"
-          />
-        </div>
-        <div className="parameter-selection">
-          <TextField
-            id="long-name-adv"
-            label="Long Name"
-            value={mainParams.longName}
-            onChange={this.handleChange}
-            className="text-input"
-            name="longName"
-          />
-        </div>
-        <div className="parameter-selection">
-          <TextField
-            id="source-id-version-adv"
-            label="Source ID Version"
-            value={mainParams.sourceIdVersion}
-            onChange={this.handleChange}
-            className="text-input"
-            name="sourceIdVersion"
-          />
-        </div>
-        <div className="parameter-selection">
-          <TextField
-            id="limit-adv"
-            placeholder="Default = 1000"
-            label="Limit"
-            value={mainParams.limit}
-            onChange={this.handleChange}
-            className="text-input"
-            type="number"
-            name="limit"
-          />
-        </div>
+        <Divider />
+
+        <List component="nav">
+          <ListItem className="input-wrapper">
+            <ResourceSelectComponent
+              value={form['@class']}
+              onChange={this.handleClassChange}
+              name="@class"
+              label="Class"
+              id="class-adv"
+              resources={ontologyTypes}
+            >
+              {resource => (
+                <MenuItem key={resource.name} value={resource.name}>
+                  {resource.name ? resource.name : '---'}
+                </MenuItem>
+              )}
+            </ResourceSelectComponent>
+          </ListItem>
+          {Object.keys(form)
+            .filter(key => !key.includes('.'))
+            .map(key => formatInputSection(key, form[key]))
+          }
+        </List>
         <div id="adv-nav-buttons">
-          <Link to={{ state: this.state, pathname: '/query' }}>
-            <Button variant="outlined">
-              Back
-            </Button>
-          </Link>
-          <Link to={{ search: this.bundle(), pathname: '/data/table' }}>
-            <Button color="primary" variant="raised" id="search-button">
-              Search
-            </Button>
-          </Link>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => history.push({ pathname: '/query', state: this.state })}
+          >
+            Back
+          </Button>
+          <Button
+            color="primary"
+            variant="raised"
+            id="search-button"
+            onClick={() => history.push({
+              pathname: '/data/table',
+              search: this.bundle(),
+            })}
+          >
+            Search
+          </Button>
         </div>
-      </div>
+      </Paper>
     );
   }
 }
 
-AdvancedQueryView.defaultProps = {
-  location: { state: { name: '' } },
-};
-
 /**
- * @param {Object} location - location property for the route and passed state.
- */
+* @param {object} history - Application history state object.
+    */
 AdvancedQueryView.propTypes = {
-  location: PropTypes.object,
+  history: PropTypes.object.isRequired,
 };
 
 export default AdvancedQueryView;

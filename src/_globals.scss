@@ -1,6 +1,10 @@
-$md-primary-color: #1f2b65;
-$md-secondary-color: #00897b;
+$md-primary-color: #26328C;
+$md-primary-variant: #1F2B65;
+$md-secondary-color: #54B198;
+$md-secondary-variant: #1F6552;
+$md-secondary-light: #a0ebd8;
 $md-warn: #d32f2f;
+$banner-height: 56px;
 
 .icon-link {
   text-decoration: none;
@@ -10,3 +14,4 @@ $md-warn: #d32f2f;
   color: unset;
   display: flex;
 }
+

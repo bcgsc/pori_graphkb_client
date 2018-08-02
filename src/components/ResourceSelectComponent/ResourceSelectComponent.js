@@ -44,7 +44,7 @@ function ResourceSelectComponent(props) {
       }}
       id={id}
     >
-      <InputLabel htmlFor="resource-select" required={required}>
+      <InputLabel htmlFor="resource-select" required={required} error={error}>
         {label}
       </InputLabel>
       <Select

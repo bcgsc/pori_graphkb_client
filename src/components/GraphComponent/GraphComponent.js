@@ -724,10 +724,9 @@ class GraphComponent extends Component {
 
   /**
    * Closes additional help dialog.
-   * @param {string} helpType - ['main', 'advanced'].
    */
-  handleHelpClose(helpType) {
-    this.setState({ [`${helpType}Help`]: false });
+  handleHelpClose() {
+    this.setState({ advancedHelp: false, mainHelp: false });
   }
 
   render() {
@@ -755,45 +754,21 @@ class GraphComponent extends Component {
 
     if (!simulation) return null;
 
-    const mainHelpPanel = (
+    const helpPanel = (
       <Dialog
-        open={mainHelp}
-        onClose={() => this.handleHelpClose('main')}
+        open={advancedHelp || mainHelp}
+        onClose={() => this.handleHelpClose()}
       >
         <DialogTitle disableTypography className="advanced-title">
-          <Typography variant="title">Graph Options Help</Typography>
-          <IconButton onClick={() => this.handleHelpClose('main')}>
+          <Typography variant="headline">
+            {advancedHelp ? 'Advanced Graph Options Help' : 'Graph Options Help'}
+          </Typography>
+          <IconButton onClick={() => this.handleHelpClose()}>
             <CloseIcon />
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          {GRAPH_MAIN.map(help => (
-            <React.Fragment key={help.title}>
-              <Typography variant="subheading" gutterBottom>
-                {help.title}
-              </Typography>
-              <Typography variant="body1" paragraph>
-                {help.description}
-              </Typography>
-            </React.Fragment>
-          ))}
-        </DialogContent>
-      </Dialog>
-    );
-
-    const advancedHelpPanel = (
-      <Dialog
-        open={advancedHelp}
-        onClose={() => this.handleHelpClose('advanced')}
-      >
-        <DialogTitle disableTypography className="advanced-title">
-          <Typography variant="title">Advanced Graph Options Help</Typography>
-          <IconButton onClick={() => this.handleHelpClose('advanced')}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          {GRAPH_ADVANCED.map(help => (
+          {(advancedHelp ? GRAPH_ADVANCED : GRAPH_MAIN).map(help => (
             <React.Fragment key={help.title}>
               <Typography variant="subheading" gutterBottom>
                 {help.title}
@@ -1155,8 +1130,7 @@ class GraphComponent extends Component {
     return (
       <div className="graph-wrapper">
         {snackbar}
-        {advancedHelpPanel}
-        {mainHelpPanel}
+        {helpPanel}
         {graphOptionsPanel}
         {legend}
         <div className={`toolbar ${detail ? 'transition-left' : ''}`}>

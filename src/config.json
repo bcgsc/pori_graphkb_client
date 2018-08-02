@@ -124,7 +124,7 @@
       },
       {
         "title": "Collision Radius",
-        "description": "Defines the perceived radius of nodes."
+        "description": "Defines the minimum distance between nodes."
       },
       {
         "title": "Auto Space Nodes Option",

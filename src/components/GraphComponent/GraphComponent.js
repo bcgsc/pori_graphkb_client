@@ -24,6 +24,8 @@ import {
   ListItemText,
   Divider,
   Tooltip,
+  Snackbar,
+  Button,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import ViewListIcon from '@material-ui/icons/ViewList';
@@ -79,6 +81,7 @@ class GraphComponent extends Component {
       nodes: [],
       links: [],
       graphObjects: {},
+      propsMap: { nodes: {}, links: {} },
       expandedEdgeTypes: [],
       simulation: null,
       svg: undefined,
@@ -115,7 +118,6 @@ class GraphComponent extends Component {
     this.handleOptionsPanelClose = this.handleOptionsPanelClose.bind(this);
     this.handleActionsRing = this.handleActionsRing.bind(this);
     this.handleNodeHide = this.handleNodeHide.bind(this);
-    this.handleLegendSectionToggle = this.handleLegendSectionToggle.bind(this);
     this.handleGraphColorsChange = this.handleGraphColorsChange.bind(this);
   }
 
@@ -127,21 +129,22 @@ class GraphComponent extends Component {
     const {
       displayed,
       data,
-      edgeTypes,
-      ontologyTypes,
+      schema,
+      allColumns,
     } = this.props;
     const { graphOptions } = this.state;
     const simulation = d3.forceSimulation();
-
     // Defines what edge keys to look for.
-    const expandedEdgeTypes = edgeTypes.reduce((r, e) => {
+    const ontologies = util.getOntologies(schema);
+    const edges = util.getEdges(schema);
+    const expandedEdgeTypes = edges.reduce((r, e) => {
       r.push(`in_${e}`);
       r.push(`out_${e}`);
       return r;
     }, []);
 
-    ontologyTypes.forEach((type, i) => {
-      graphOptions[`${type.name}Color`] = util.chooseColor(i, ontologyTypes.length);
+    ontologies.forEach((type, i) => {
+      graphOptions[`${type.name}Color`] = util.chooseColor(i, ontologies.length);
     });
 
     let validDisplayed = displayed;
@@ -150,9 +153,10 @@ class GraphComponent extends Component {
     }
     this.setState({
       expandedEdgeTypes,
-      ontologyTypes,
+      schema,
       graphOptions,
       simulation,
+      allColumns,
     }, () => {
       this.handleResize();
       validDisplayed.forEach((key, i) => {
@@ -190,7 +194,6 @@ class GraphComponent extends Component {
   loadNeighbors(node) {
     const {
       expandable,
-
     } = this.state;
     const { data } = this.props;
 
@@ -223,11 +226,22 @@ class GraphComponent extends Component {
       nodes,
       links,
       graphObjects,
+      propsMap,
+      schema,
+      allColumns,
     } = this.state;
+
     const { data } = this.props;
-    /* eslint-disable */
-    if (data[node['@rid']]) node = data[node['@rid']];
+
+    let newColumns = allColumns;
+    if (data[node['@rid']]) {
+      node = data[node['@rid']];
+    } else {
+      // Node properties haven't been processed.
+      newColumns = util.collectOntologyProps(node, allColumns, schema);
+    }
     /* eslint-enable */
+
     if (!graphObjects[node['@rid']]) {
       nodes.push({
         data: node,
@@ -235,6 +249,36 @@ class GraphComponent extends Component {
         y: position.y,
       });
       graphObjects[node['@rid']] = node;
+      // Iterate over all props.
+      newColumns.forEach((prop) => {
+        let obj = node;
+        let key = prop;
+
+        // Nested prop condition
+        if (prop.includes('.')) {
+          key = prop.split('.')[1];
+          obj = node[prop.split('.')[0]] || {};
+        }
+
+        if (obj[key] && (obj[key].length < 50 || key === 'name') && !Array.isArray(obj[key])) {
+          if (propsMap.nodes[prop] === undefined) {
+            propsMap.nodes[prop] = [obj[key]];
+          } else if (
+            propsMap.nodes[prop] // If null, fails here
+            && !propsMap.nodes[prop].includes(obj[key])
+          ) {
+            propsMap.nodes[prop].push(obj[key]);
+          }
+        } else if (propsMap.nodes[prop] && !propsMap.nodes[prop].includes('null')) {
+          // This null represents nodes that do not contain specified property.
+          propsMap.nodes[prop].push('null');
+        }
+        // Permanently removes certain properties from being eligible to display
+        // due to content length.
+        if (obj[key] && obj[key].length >= 50 && key !== 'name') {
+          propsMap.nodes[prop] = null;
+        }
+      });
     }
     let flag = false;
     expandedEdgeTypes.forEach((edgeType) => {
@@ -274,6 +318,19 @@ class GraphComponent extends Component {
               };
               links.push(link);
               graphObjects[link.data['@rid']] = link;
+
+              if (!propsMap.links['source.name']) {
+                propsMap.links['source.name'] = [];
+              }
+              if (!propsMap.links['source.name'].includes(link.data.source.name)) {
+                propsMap.links['source.name'].push(link.data.source.name);
+              }
+              if (!propsMap.links['@class']) {
+                propsMap.links['@class'] = [];
+              }
+              if (!propsMap.links['@class'].includes(link.data['@class'])) {
+                propsMap.links['@class'].push(link.data['@class']);
+              }
 
               // Checks if node is already rendered
               if (outRid && !graphObjects[outRid]) {
@@ -336,6 +393,8 @@ class GraphComponent extends Component {
       nodes,
       links,
       graphObjects,
+      propsMap,
+      allColumns: newColumns,
     });
   }
 
@@ -476,23 +535,35 @@ class GraphComponent extends Component {
     const { graphOptions } = this.state;
     const key = graphOptions[`${type}Color`];
     const colors = {};
+
     objs.forEach((obj) => {
       if (key.includes('.')) {
-        const keys = key.split('.');
-        if (obj.data[keys[0]][keys[1]] && !colors[obj.data[keys[0]][keys[1]]]) {
-          colors[obj.data[keys[0]][keys[1]]] = '';
+        const [prop, nestedProp] = key.split('.');
+        if (
+          obj.data[prop]
+          && obj.data[prop][nestedProp]
+          && !colors[obj.data[prop][nestedProp]]
+        ) {
+          colors[obj.data[prop][nestedProp]] = '';
         }
       }
       if (obj.data[key] && !colors[obj.data[key]]) {
         colors[obj.data[key]] = '';
       }
     });
-    const pallette = util.getPallette(Object.keys(colors).length);
-    Object.keys(colors).forEach((color, i) => { colors[color] = pallette[i + 1]; });
 
-    graphOptions[`${type}Colors`] = colors;
-    graphOptions[`${type}Pallette`] = pallette;
-    this.setState({ graphOptions });
+    if (Object.keys(colors).length <= 20) {
+      const pallette = util.getPallette(Object.keys(colors).length, type);
+      Object.keys(colors).forEach((color, i) => { colors[color] = pallette[i + 1]; });
+
+      graphOptions[`${type}Colors`] = colors;
+      graphOptions[`${type}Pallette`] = pallette;
+      this.setState({ graphOptions });
+
+    } else {
+      graphOptions[`${type}Color`] = '';
+      this.setState({ graphOptions, snackbar: true }, () => this.updateColors(type));
+    }
     /* eslint-enable */
   }
 
@@ -558,6 +629,9 @@ class GraphComponent extends Component {
       links,
       expandedEdgeTypes,
       expandable,
+      propsMap,
+      allColumns,
+      graphOptions,
     } = this.state;
     const { handleDetailDrawerClose } = this.props;
     if (nodes.length === 1) return;
@@ -583,6 +657,42 @@ class GraphComponent extends Component {
       }
     });
 
+    allColumns.forEach((prop) => {
+      let obj = actionsNode.data;
+      let key = prop;
+
+      // Nested prop condition
+      if (prop.includes('.')) {
+        key = prop.split('.')[1];
+        obj = actionsNode.data[prop.split('.')[0]] || {};
+      }
+      if (
+        propsMap.nodes[prop]
+        && obj[key]
+        && !nodes.find((n) => {
+          let nObj = n.data;
+
+          // Nested prop condition
+          if (prop.includes('.')) {
+            nObj = n.data[prop.split('.')[0]] || {};
+          }
+          return nObj[key] === obj[key];
+        })
+      ) {
+        const j = propsMap.nodes[prop].indexOf(obj[key]);
+        propsMap.nodes[prop].splice(j, 1);
+        if (
+          propsMap.nodes[prop].length === 0
+          || (propsMap.nodes[prop].length === 1
+            && propsMap.nodes[prop].includes('null'))
+        ) {
+          if (graphOptions.nodesColor === prop) graphOptions.nodesColor = '';
+          if (graphOptions.nodeLabelProp === prop) graphOptions.nodeLabelProp = '';
+
+          this.setState({ graphOptions });
+        }
+      }
+    });
     this.setState({
       expandable,
       nodes,
@@ -590,22 +700,12 @@ class GraphComponent extends Component {
       graphObjects,
       actionsNode: null,
       expandId: null,
+      propsMap,
     }, () => {
       this.updateColors('nodes');
       this.updateColors('links');
       handleDetailDrawerClose();
     });
-  }
-
-  handleLegendSectionToggle(key) {
-    const { expansions } = this.state;
-    if (expansions.includes(key)) {
-      const newList = expansions.filter(n => !n.startsWith(key));
-      this.setState({ expansions: newList });
-    } else {
-      expansions.push(key);
-      this.setState({ expansions });
-    }
   }
 
   render() {
@@ -617,6 +717,8 @@ class GraphComponent extends Component {
       graphOptions,
       simulation,
       graphOptionsPanel,
+      propsMap,
+      snackbar,
     } = this.state;
 
     const {
@@ -662,8 +764,19 @@ class GraphComponent extends Component {
                 onChange={this.handleGraphOptionsChange}
                 value={graphOptions.nodeLabelProp}
               >
-                <MenuItem value="name">Name</MenuItem>
-                <MenuItem value="sourceId">Source ID</MenuItem>
+                <MenuItem value="">No Label</MenuItem>
+                {Object.keys(propsMap.nodes).map((prop) => {
+                  if (propsMap.nodes[prop]
+                    && !(propsMap.nodes[prop].length === 1 && propsMap.nodes[prop].includes('null'))
+                  ) {
+                    return (
+                      <MenuItem value={prop} key={prop}>
+                        {util.antiCamelCase(prop)}
+                      </MenuItem>
+                    );
+                  }
+                  return null;
+                })}
               </Select>
             </FormControl>
             <FormControl className="graph-option">
@@ -675,8 +788,20 @@ class GraphComponent extends Component {
                 value={graphOptions.nodesColor}
               >
                 <MenuItem value="">No Coloring</MenuItem>
-                <MenuItem value="@class">Class</MenuItem>
-                <MenuItem value="source.name">Source</MenuItem>
+                {Object.keys(propsMap.nodes).map((prop) => {
+                  if (
+                    propsMap.nodes[prop]
+                    && propsMap.nodes[prop].length <= 20
+                    && !(propsMap.nodes[prop].length === 1 && propsMap.nodes[prop].includes('null'))
+                  ) {
+                    return (
+                      <MenuItem value={prop} key={prop}>
+                        {util.antiCamelCase(prop)}
+                      </MenuItem>
+                    );
+                  }
+                  return null;
+                })}
               </Select>
             </FormControl>
           </div>
@@ -690,9 +815,11 @@ class GraphComponent extends Component {
               >
                 <MenuItem value="">None</MenuItem>
                 <MenuItem value="@class">Class</MenuItem>
-                <MenuItem value="source.name">Source</MenuItem>
+                <MenuItem value="source.name">Source Name</MenuItem>
               </Select>
             </FormControl>
+          </div>
+          <div className="main-options-wrapper">
             <FormControl className="graph-option">
               <InputLabel htmlFor="linksColor">Color edges by</InputLabel>
               <Select
@@ -700,10 +827,10 @@ class GraphComponent extends Component {
                 onChange={e => this.handleGraphColorsChange(e, 'links')}
                 value={graphOptions.linksColor}
               >
-                <MenuItem value="">No Coloring</MenuItem>
+                <MenuItem value="">None</MenuItem>
                 <MenuItem value="@class">Class</MenuItem>
+                <MenuItem value="source.name">Source Name</MenuItem>
               </Select>
-              <Divider />
             </FormControl>
           </div>
           <div className="main-options-wrapper">
@@ -812,7 +939,7 @@ class GraphComponent extends Component {
         <div className="legend-content">
           <Typography variant="subheading">Nodes</Typography>
           <Typography variant="caption">
-            {graphOptions.nodesColor ? `(${graphOptions.nodesColor.split('.')[0]})` : ''}
+            {graphOptions.nodesColor ? `(${util.antiCamelCase(graphOptions.nodesColor)})` : ''}
           </Typography>
           <List className="node-colors" dense>
             {Object.keys(graphOptions.nodesColors).map(key => (
@@ -826,6 +953,17 @@ class GraphComponent extends Component {
                 <ListItemText primary={util.antiCamelCase(key)} />
               </ListItem>
             ))}
+            {(propsMap.nodes[graphOptions.nodesColor] || []).includes('null') ? (
+              <ListItem key="null">
+                <ListItemIcon>
+                  <div
+                    style={{ backgroundColor: graphOptions.defaultColor }}
+                    className="color-chip"
+                  />
+                </ListItemIcon>
+                <ListItemText primary="Null" />
+              </ListItem>
+            ) : null}
           </List>
         </div>
       </Paper>
@@ -837,6 +975,7 @@ class GraphComponent extends Component {
           name: 'Details',
           icon: <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />,
           action: () => handleDetailDrawerOpen(actionsNode, true),
+          disabled: node => node.data['@rid'] === detail,
         },
         {
           name: 'Close',
@@ -865,21 +1004,33 @@ class GraphComponent extends Component {
       );
     };
 
-    const linksDisplay = links.map(link => (
-      <GraphLink
-        key={link.data['@rid']}
-        link={link}
-        linkHighlighting={graphOptions.linkHighlighting}
-        detail={detail}
-        labelKey={graphOptions.linkLabelProp}
-      />
-    ));
+    const linksDisplay = links.map((link) => {
+      let linkColorKey = '';
+      if (graphOptions.linksColor && graphOptions.linksColor.includes('.')) {
+        const keys = graphOptions.linksColor.split('.');
+        linkColorKey = (link.data[keys[0]] || {})[keys[1]];
+      } else if (graphOptions.linksColor) {
+        linkColorKey = link.data[graphOptions.linksColor];
+      }
+      const color = graphOptions.linksColors[linkColorKey];
+
+      return (
+        <GraphLink
+          key={link.data['@rid']}
+          link={link}
+          linkHighlighting={graphOptions.linkHighlighting}
+          detail={detail}
+          labelKey={graphOptions.linkLabelProp}
+          color={color}
+        />
+      );
+    });
 
     const nodesDisplay = nodes.map((node) => {
       let nodeColorKey = '';
       if (graphOptions.nodesColor && graphOptions.nodesColor.includes('.')) {
         const keys = graphOptions.nodesColor.split('.');
-        nodeColorKey = node.data[keys[0]][keys[1]];
+        nodeColorKey = (node.data[keys[0]] || {})[keys[1]];
       } else if (graphOptions.nodesColor) {
         nodeColorKey = node.data[graphOptions.nodesColor];
       }
@@ -904,6 +1055,22 @@ class GraphComponent extends Component {
 
     return (
       <div className="graph-wrapper">
+        <Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          open={snackbar}
+          onClose={() => this.setState({ snackbar: false })}
+          autoHideDuration={6000}
+          message={(
+            <span>
+              Too many subgroups, choose new coloring property.
+            </span>
+          )}
+          action={(
+            <Button color="secondary" onClick={() => this.setState({ snackbar: false })}>
+              Ok
+            </Button>
+          )}
+        />
         {optionsPanel}
         <Popper open={!!(graphOptions.legend && graphOptions.nodesColor)}>
           {legend}
@@ -1000,6 +1167,9 @@ class GraphComponent extends Component {
   * the database schema.
   * @param {Array} ontologyTypes - Array containing individual schemas for each Ontology
   * subclass as defined by the schema.
+  * @param {string} detail - record ID of node currently selected for detail viewing.
+  * @param {Array} allColumns - list of all unique properties on all nodes returned in
+  * initial query.
   */
 GraphComponent.propTypes = {
   handleClick: PropTypes.func,
@@ -1008,16 +1178,16 @@ GraphComponent.propTypes = {
   handleDetailDrawerOpen: PropTypes.func.isRequired,
   handleDetailDrawerClose: PropTypes.func.isRequired,
   handleTableRedirect: PropTypes.func.isRequired,
-  edgeTypes: PropTypes.array.isRequired,
-  ontologyTypes: PropTypes.array.isRequired,
+  schema: PropTypes.object.isRequired,
   detail: PropTypes.string,
+  allColumns: PropTypes.array,
 };
 
 GraphComponent.defaultProps = {
   handleClick: null,
   classes: null,
   detail: null,
+  allColumns: [],
 };
-
 
 export default withStyles(styles)(GraphComponent);

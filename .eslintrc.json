@@ -10,15 +10,26 @@
                 ]
             }
         ],
-        "react/forbid-prop-types": [
-            0,
+        "react/jsx-one-expression-per-line": 0,
+        "react/forbid-prop-types": 0,
+        "prefer-promise-reject-errors": 0,
+        "prefer-destructuring": [
+            "error",
             {
-                "forbid": [],
-                "checkContextTypes": false,
-                "checkChildContextTypes": false
+                "VariableDeclarator": {
+                    "array": false,
+                    "object": true
+                },
+                "AssignmentExpression": {
+                    "array": false,
+                    "object": false
+                }
+            },
+            {
+                "enforceForRenamedProperties": false
             }
         ],
-        "prefer-promise-reject-errors": "off"
+        "consistent-return": 0
     },
     "env": {
         "browser": true,

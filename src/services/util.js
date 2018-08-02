@@ -30,13 +30,22 @@ export default class util {
   static antiCamelCase(str) {
     let accstr = str;
     if (accstr.startsWith('@')) accstr = accstr.slice(1);
-    accstr = (accstr.charAt(0).toUpperCase() + accstr.slice(1))
-      .replace(/[A-Z]/g, match => ` ${match}`);
+    let words = [accstr];
+    if (accstr.includes('.')) {
+      words = accstr.split('.');
+    }
+
+    words.forEach((word, i) => {
+      words[i] = (word.charAt(0).toUpperCase() + word.slice(1))
+        .replace(/[A-Z]/g, match => ` ${match}`).trim();
+    });
+
+    accstr = words.join(' ');
     acronyms.forEach((acronym) => {
       const re = new RegExp(acronym, 'ig');
       accstr = accstr.replace(re, match => match.toUpperCase());
     });
-    return accstr;
+    return accstr.trim();
   }
 
   /**
@@ -158,24 +167,83 @@ export default class util {
     return Math.round(Math.random() * (255 ** 3)).toString(16);
   }
 
-  static getPallette(n) {
+  static getPallette(n, type) {
     if (n < 5) {
-      return config.GRAPH_DEFAULTS.NODE_COLORS_5;
+      return config.GRAPH_DEFAULTS[`${type.toUpperCase().slice(0, type.length - 1)}_COLORS_5`];
     }
     if (n < 10) {
-      return config.GRAPH_DEFAULTS.NODE_COLORS_10;
+      return config.GRAPH_DEFAULTS[`${type.toUpperCase().slice(0, type.length - 1)}_COLORS_10`];
     }
     if (n < 15) {
-      return config.GRAPH_DEFAULTS.NODE_COLORS_15;
+      return config.GRAPH_DEFAULTS[`${type.toUpperCase().slice(0, type.length - 1)}_COLORS_15`];
     }
     if (n < 20) {
-      return config.GRAPH_DEFAULTS.NODE_COLORS_20;
+      return config.GRAPH_DEFAULTS[`${type.toUpperCase().slice(0, type.length - 1)}_COLORS_20`];
     }
-    const list = config.GRAPH_DEFAULTS.NODE_COLORS_20;
+    const list = config.GRAPH_DEFAULTS[`${type.toUpperCase().slice(0, type.length - 1)}_COLORS_20`];
     for (let i = 20; i < n; i += 1) {
       const color = `000000${Math.round(Math.random() * (255 ** 3)).toString(16)}`;
       list.push(`#${color.substr(color.length - 6)}`);
     }
+    return list;
+  }
+
+  /**
+   * Updates allColumns list with any new properties from ontologyTerm.
+   * @param {Object} ontologyTerm - new node who's properties will be parsed.
+   * @param {Array} allColumns - current list of all collected properties.
+   * @param {Object} schema - api schema.
+   */
+  static collectOntologyProps(ontologyTerm, allColumns, schema) {
+    const { properties } = schema[ontologyTerm['@class']];
+    const { V } = schema;
+    Object.keys(ontologyTerm).forEach((prop) => {
+      if (!V.properties[prop] && prop !== '@class' && !allColumns.includes(prop)) {
+        const endpointProp = properties[prop];
+        if (endpointProp && endpointProp.type === 'link') {
+          Object.keys(ontologyTerm[prop]).forEach((nestedProp) => {
+            if (
+              !V.properties[nestedProp]
+              && !allColumns.includes(`${prop}.${nestedProp}`)
+              && !nestedProp.startsWith('in_')
+              && !nestedProp.startsWith('out_')
+              && !(endpointProp.linkedClass && nestedProp === '@class')
+              && (properties[nestedProp] || {}).type !== 'link'
+            ) {
+              allColumns.push(`${prop}.${nestedProp}`);
+            }
+          });
+        } else {
+          allColumns.push(prop);
+        }
+      }
+    });
+    return allColumns;
+  }
+
+  /**
+    * Returns all valid ontology types.
+    */
+  static getOntologies(schema) {
+    const list = [];
+    Object.keys(schema).forEach((key) => {
+      if (schema[key].inherits.includes('Ontology')) {
+        list.push({ name: key, properties: schema[key].properties });
+      }
+    });
+    return list;
+  }
+
+  /**
+    * Returns all valid edge types.
+    */
+  static getEdges(schema) {
+    const list = [];
+    Object.keys(schema).forEach((key) => {
+      if (schema[key].inherits.includes('E')) {
+        list.push(key);
+      }
+    });
     return list;
   }
 }

@@ -30,13 +30,22 @@ export default class util {
   static antiCamelCase(str) {
     let accstr = str;
     if (accstr.startsWith('@')) accstr = accstr.slice(1);
-    accstr = (accstr.charAt(0).toUpperCase() + accstr.slice(1))
-      .replace(/[A-Z]/g, match => ` ${match}`);
+    let words = [accstr];
+    if (accstr.includes('.')) {
+      words = accstr.split('.');
+    }
+
+    words.forEach((word, i) => {
+      words[i] = (word.charAt(0).toUpperCase() + word.slice(1))
+        .replace(/[A-Z]/g, match => ` ${match}`).trim();
+    });
+
+    accstr = words.join(' ');
     acronyms.forEach((acronym) => {
       const re = new RegExp(acronym, 'ig');
       accstr = accstr.replace(re, match => match.toUpperCase());
     });
-    return accstr;
+    return accstr.trim();
   }
 
   /**
@@ -158,20 +167,20 @@ export default class util {
     return Math.round(Math.random() * (255 ** 3)).toString(16);
   }
 
-  static getPallette(n) {
+  static getPallette(n, type) {
     if (n < 5) {
-      return config.GRAPH_DEFAULTS.NODE_COLORS_5;
+      return config.GRAPH_DEFAULTS[`${type.toUpperCase().slice(0, type.length - 1)}_COLORS_5`];
     }
     if (n < 10) {
-      return config.GRAPH_DEFAULTS.NODE_COLORS_10;
+      return config.GRAPH_DEFAULTS[`${type.toUpperCase().slice(0, type.length - 1)}_COLORS_10`];
     }
     if (n < 15) {
-      return config.GRAPH_DEFAULTS.NODE_COLORS_15;
+      return config.GRAPH_DEFAULTS[`${type.toUpperCase().slice(0, type.length - 1)}_COLORS_15`];
     }
     if (n < 20) {
-      return config.GRAPH_DEFAULTS.NODE_COLORS_20;
+      return config.GRAPH_DEFAULTS[`${type.toUpperCase().slice(0, type.length - 1)}_COLORS_20`];
     }
-    const list = config.GRAPH_DEFAULTS.NODE_COLORS_20;
+    const list = config.GRAPH_DEFAULTS[`${type.toUpperCase().slice(0, type.length - 1)}_COLORS_20`];
     for (let i = 20; i < n; i += 1) {
       const color = `000000${Math.round(Math.random() * (255 ** 3)).toString(16)}`;
       list.push(`#${color.substr(color.length - 6)}`);
@@ -218,10 +227,7 @@ export default class util {
   static getOntologies(schema) {
     const list = [];
     Object.keys(schema).forEach((key) => {
-      if (
-        schema[key].inherits.includes('Ontology')
-        && schema[key].inherits.includes('V')
-      ) {
+      if (schema[key].inherits.includes('Ontology')) {
         list.push({ name: key, properties: schema[key].properties });
       }
     });
@@ -234,9 +240,7 @@ export default class util {
   static getEdges(schema) {
     const list = [];
     Object.keys(schema).forEach((key) => {
-      if (
-        schema[key].inherits.includes('E')
-      ) {
+      if (schema[key].inherits.includes('E')) {
         list.push(key);
       }
     });

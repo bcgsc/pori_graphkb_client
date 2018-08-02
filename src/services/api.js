@@ -197,13 +197,6 @@ export default class api {
   }
 
   /**
-  * Returns the vertex base class.
-  */
-  static getVertexBaseClass() {
-    return api.getSchema().then(schema => Promise.resolve(schema.V));
-  }
-
-  /**
    * Returns the editable properties of target ontology class.
    * @param {string} className - requested class name
    */

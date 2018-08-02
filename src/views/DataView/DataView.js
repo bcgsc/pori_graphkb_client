@@ -114,7 +114,7 @@ class DataView extends Component {
         filteredSearch,
       });
     } catch (e) {
-      // do nothing
+      console.error(e);
     }
   }
 

@@ -232,7 +232,6 @@ class GraphComponent extends Component {
    * @param {number} depth - Recursion base case flag.
    */
   processData(node, position, depth) {
-    /* eslint-disable */
     const {
       expandedEdgeTypes,
       expandable,
@@ -273,7 +272,7 @@ class GraphComponent extends Component {
           obj = node[prop.split('.')[0]] || {};
         }
 
-        if (obj[key] && obj[key].length < 50 && !Array.isArray(obj[key])) {
+        if (obj[key] && (obj[key].length < 50 || key === 'name') && !Array.isArray(obj[key])) {
           if (propsMap.nodes[prop] === undefined) {
             propsMap.nodes[prop] = [obj[key]];
           } else if (
@@ -288,7 +287,7 @@ class GraphComponent extends Component {
         }
         // Permanently removes certain properties from being eligible to display
         // due to content length.
-        if (obj[key] && obj[key].length >= 50) {
+        if (obj[key] && obj[key].length >= 50 && key !== 'name') {
           propsMap.nodes[prop] = null;
         }
       });
@@ -331,6 +330,19 @@ class GraphComponent extends Component {
               };
               links.push(link);
               graphObjects[link.data['@rid']] = link;
+
+              if (!propsMap.links['source.name']) {
+                propsMap.links['source.name'] = [];
+              }
+              if (!propsMap.links['source.name'].includes(link.data.source.name)) {
+                propsMap.links['source.name'].push(link.data.source.name);
+              }
+              if (!propsMap.links['@class']) {
+                propsMap.links['@class'] = [];
+              }
+              if (!propsMap.links['@class'].includes(link.data['@class'])) {
+                propsMap.links['@class'].push(link.data['@class']);
+              }
 
               // Checks if node is already rendered
               if (outRid && !graphObjects[outRid]) {
@@ -544,13 +556,13 @@ class GraphComponent extends Component {
 
     objs.forEach((obj) => {
       if (key.includes('.')) {
-        const keys = key.split('.');
+        const [prop, nestedProp] = key.split('.');
         if (
-          obj.data[keys[0]]
-          && obj.data[keys[0]][keys[1]]
-          && !colors[obj.data[keys[0]][keys[1]]]
+          obj.data[prop]
+          && obj.data[prop][nestedProp]
+          && !colors[obj.data[prop][nestedProp]]
         ) {
-          colors[obj.data[keys[0]][keys[1]]] = '';
+          colors[obj.data[prop][nestedProp]] = '';
         }
       }
       if (obj.data[key] && !colors[obj.data[key]]) {
@@ -558,8 +570,8 @@ class GraphComponent extends Component {
       }
     });
 
-    if (Object.keys(colors).length < 20) {
-      const pallette = util.getPallette(Object.keys(colors).length);
+    if (Object.keys(colors).length <= 20) {
+      const pallette = util.getPallette(Object.keys(colors).length, type);
       Object.keys(colors).forEach((color, i) => { colors[color] = pallette[i + 1]; });
 
       graphOptions[`${type}Colors`] = colors;
@@ -842,11 +854,7 @@ class GraphComponent extends Component {
                   ) {
                     return (
                       <MenuItem value={prop} key={prop}>
-                        {util.antiCamelCase(prop.split('.')[0]
-                          + (prop.split('.')[1]
-                            ? ` ${prop.split('.')[1][0].toUpperCase()}${prop.split('.')[1].slice(1)}`
-                            : ''))
-                        }
+                        {util.antiCamelCase(prop)}
                       </MenuItem>
                     );
                   }
@@ -871,11 +879,7 @@ class GraphComponent extends Component {
                   ) {
                     return (
                       <MenuItem value={prop} key={prop}>
-                        {util.antiCamelCase(prop.split('.')[0]
-                          + (prop.split('.')[1]
-                            ? `${prop.split('.')[1][0].toUpperCase()}${prop.split('.')[1].slice(1)}`
-                            : ''))
-                        }
+                        {util.antiCamelCase(prop)}
                       </MenuItem>
                     );
                   }
@@ -894,9 +898,11 @@ class GraphComponent extends Component {
               >
                 <MenuItem value="">None</MenuItem>
                 <MenuItem value="@class">Class</MenuItem>
-                <MenuItem value="source.name">Source</MenuItem>
+                <MenuItem value="source.name">Source Name</MenuItem>
               </Select>
             </FormControl>
+          </div>
+          <div className="main-options-wrapper">
             <FormControl className="graph-option">
               <InputLabel htmlFor="linksColor">Color edges by</InputLabel>
               <Select
@@ -904,10 +910,10 @@ class GraphComponent extends Component {
                 onChange={e => this.handleGraphColorsChange(e, 'links')}
                 value={graphOptions.linksColor}
               >
-                <MenuItem value="">No Coloring</MenuItem>
+                <MenuItem value="">None</MenuItem>
                 <MenuItem value="@class">Class</MenuItem>
+                <MenuItem value="source.name">Source Name</MenuItem>
               </Select>
-              <Divider />
             </FormControl>
           </div>
           <div className="main-options-wrapper">
@@ -1127,15 +1133,27 @@ class GraphComponent extends Component {
       );
     };
 
-    const linksDisplay = links.map(link => (
-      <GraphLink
-        key={link.data['@rid']}
-        link={link}
-        linkHighlighting={graphOptions.linkHighlighting}
-        detail={detail}
-        labelKey={graphOptions.linkLabelProp}
-      />
-    ));
+    const linksDisplay = links.map((link) => {
+      let linkColorKey = '';
+      if (graphOptions.linksColor && graphOptions.linksColor.includes('.')) {
+        const keys = graphOptions.linksColor.split('.');
+        linkColorKey = (link.data[keys[0]] || {})[keys[1]];
+      } else if (graphOptions.linksColor) {
+        linkColorKey = link.data[graphOptions.linksColor];
+      }
+      const color = graphOptions.linksColors[linkColorKey];
+
+      return (
+        <GraphLink
+          key={link.data['@rid']}
+          link={link}
+          linkHighlighting={graphOptions.linkHighlighting}
+          detail={detail}
+          labelKey={graphOptions.linkLabelProp}
+          color={color}
+        />
+      );
+    });
 
     const nodesDisplay = nodes.map((node) => {
       let nodeColorKey = '';

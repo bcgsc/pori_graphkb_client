@@ -11,6 +11,7 @@ describe('Table Test', () => {
     cy.url().should('includes', '/login');
     cy.get('input[name=username]').type(Cypress.env('USER'));
     cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
+    cy.wait(500);
     cy.url().should('includes', '/query');
   });
 

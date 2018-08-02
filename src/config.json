@@ -201,6 +201,10 @@
       {
         "title": "Edge Labels",
         "description": "Choose which property to display when hovering over the edges in the graph. The 'None' option disables hovering."
+      },
+      {
+        "title": "Edge Colors",
+        "description": "Choose which property to color links based on."
       }
     ]
   }

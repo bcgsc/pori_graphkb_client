@@ -9,7 +9,7 @@ function getClass(endpoint, params) {
       cy.get(`textarea[name=${param}]`).type(params[[param]]);
     });
   }
-  cy.get('#search-button').click();
+  cy.get('#search-button').click().wait(1000);
   cy.get('table tbody tr:first input[type=checkbox]').click();
   cy.get('div.pag div.graph-btn').click();
 }
@@ -63,7 +63,7 @@ describe('Graph View Test', () => {
     cy.contains('DeprecatedBy').should('not.exist');
   });
 
-  it.only('Graph options', () => {
+  it('Graph options', () => {
     const name = 'a1bg-as1';
     getClass('Feature', { name });
     cy.get('circle.node').click();
@@ -103,5 +103,34 @@ describe('Graph View Test', () => {
     cy.contains('Biotype').click();
     cy.get('#options-close-btn').click();
     cy.contains('gene');
+  });
+
+  it('Unique property limit exceeding test', () => {
+    getClass('Disease');
+    cy.get('circle.node').click();
+    cy.contains('(Expand)').click();
+
+    cy.get('#graph-options-btn').click();
+    cy.contains('Show Coloring Legend').click();
+    cy.contains('Class').click();
+    cy.contains('Source ID').click();
+    cy.get('#options-close-btn').click();
+    cy.get('circle.node').then((array) => {
+      cy.wrap(array).each((node) => {
+        cy.wrap(node).parent().children('text').children('tspan')
+          .invoke('text')
+          .then((text) => {
+            if (text === 'polyp') {
+              cy.wrap(node).click();
+              cy.wrap(node).click();
+              cy.wrap(node).click();
+              cy.contains('(Expand)').click();
+              cy.contains('Too many subgroups, choose new coloring property.');
+              cy.wait(6500);
+              cy.contains('Too many subgroups, choose new coloring property.').should('not.exist');
+            }
+          });
+      });
+    });
   });
 });

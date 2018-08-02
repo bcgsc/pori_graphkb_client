@@ -187,11 +187,18 @@ class NodeFormComponent extends Component {
     const editableProps = (await api.getClass(newNodeClass)).properties;
     const { form } = this.state;
     editableProps.forEach((prop) => {
-      const { name, type } = prop;
+      const {
+        name,
+        type,
+        defaultValue,
+      } = prop;
       if (!form[name]) {
         switch (type) {
           case 'embeddedset':
             form[name] = [];
+            break;
+          case 'boolean':
+            form[name] = defaultValue.toString() === 'true';
             break;
           default:
             form[name] = '';
@@ -448,13 +455,10 @@ class NodeFormComponent extends Component {
     await Promise.all(changedEdges);
 
     const payload = util.parsePayload(form, editableProps);
+    const { route } = await api.getClass(originalNode['@class']);
 
-    api.patch(
-      `/${util.pluralize(originalNode['@class'])}/${originalNode['@rid'].slice(1)}`,
-      { ...payload },
-    ).then(() => {
-      handleNodeFinishEdit();
-    });
+    await api.patch(`${route}/${originalNode['@rid'].slice(1)}`, { ...payload });
+    handleNodeFinishEdit();
   }
 
   /**
@@ -471,7 +475,8 @@ class NodeFormComponent extends Component {
 
     const newEdges = [];
     const payload = util.parsePayload(form, editableProps);
-    const response = await api.post(`/${util.pluralize(newNodeClass)}`, { ...payload });
+    const { route } = await api.getClass(newNodeClass);
+    const response = await api.post(`${route}`, { ...payload });
 
     for (let i = 0; i < relationships.length; i += 1) {
       const relationship = relationships[i];
@@ -697,7 +702,6 @@ class NodeFormComponent extends Component {
           />
           <ListItemSecondaryAction>
             <IconButton
-              color="secondary"
               onClick={() => this.handleRelationshipDelete(r)}
             >
               <CloseIcon color="error" />

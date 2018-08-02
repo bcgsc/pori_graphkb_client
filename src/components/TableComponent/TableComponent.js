@@ -153,11 +153,11 @@ class TableComponent extends Component {
       const bValue = column.sortBy ? (b[newProperty] || {})[column.sortBy] : b[newProperty];
 
       if (newOrder === 'desc') {
-        return bValue < aValue
+        return (bValue || '').toString() < (aValue || '').toString()
           ? -1
           : 1;
       }
-      return bValue > aValue
+      return (bValue || '').toString() > (aValue || '').toString()
         ? -1
         : 1;
     };

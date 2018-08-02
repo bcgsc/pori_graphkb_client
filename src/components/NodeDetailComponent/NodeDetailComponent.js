@@ -44,8 +44,9 @@ class NodeDetailComponent extends Component {
    * Loads resources and filters node properties.
    */
   async componentDidMount() {
-    const V = await api.getVertexBaseClass();
-    const ontologyEdges = await api.getOntologyEdges();
+    const schema = await api.getSchema();
+    const { V } = schema;
+    const ontologyEdges = util.getEdges(schema);
     // Accounts for in and out edgetypes.
     const expandedEdgeTypes = ontologyEdges ? ontologyEdges.reduce((r, e) => {
       r.push(`in_${e}`);
@@ -278,7 +279,7 @@ class NodeDetailComponent extends Component {
         const content = filteredNode[key].reduce((r, edge) => {
           const id = `${label}.${edge['@rid']}`;
           const relatedNode = edge.in && edge.in['@rid'] === node['@rid'] ? edge.out : edge.in;
-          if (relatedNode['@class'] !== 'Statement') {
+          if (relatedNode['@class'] !== 'Statement') { // Statement flag
             const edgeOpen = nestedExpanded.includes(id);
             preview.push(util.getPreview(relatedNode));
             r.push((
@@ -286,7 +287,7 @@ class NodeDetailComponent extends Component {
                 key={id}
                 expanded={edgeOpen}
                 onChange={() => this.handleNestedToggle(id)}
-                className="nested-container"
+                className="nested-container detail-edge"
               >
                 <ExpansionPanelSummary
                   expandIcon={<KeyboardArrowDownIcon />}
@@ -336,6 +337,7 @@ class NodeDetailComponent extends Component {
             expanded={isOpen}
             onChange={() => this.handleNestedToggle(label)}
             className="nested-container"
+            id={label}
           >
             <ExpansionPanelSummary
               expandIcon={<KeyboardArrowDownIcon />}

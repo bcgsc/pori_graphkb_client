@@ -36,6 +36,7 @@ class GraphLink extends Component {
       linkHighlighting,
       detail,
       labelKey,
+      color,
     } = this.props;
 
     const { displayType } = this.state;
@@ -71,6 +72,8 @@ class GraphLink extends Component {
           d={`M${(link.source.x || 0)} ${(link.source.y || 0)}L${(link.target.x || 0)} ${(link.target.y || 0)}`}
           markerEnd={marker}
           style={{ opacity: detail ? 0.6 : 1 }}
+          fill={color}
+          stroke={color}
         />
         {displayType ? (
           <text className="link-label">
@@ -97,12 +100,14 @@ GraphLink.propTypes = {
   linkHighlighting: PropTypes.bool,
   detail: PropTypes.string,
   labelKey: PropTypes.string,
+  color: PropTypes.string,
 };
 
 GraphLink.defaultProps = {
   linkHighlighting: true,
   detail: null,
   labelKey: null,
+  color: '#999',
 };
 
 export default GraphLink;

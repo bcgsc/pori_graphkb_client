@@ -121,23 +121,6 @@ export default class api {
   }
 
   /**
-   * Returns all valid edge types.
-   */
-  static getOntologyEdges() {
-    return api.getSchema().then((schema) => {
-      const list = [];
-      Object.keys(schema).forEach((key) => {
-        if (
-          schema[key].inherits.includes('E')
-        ) {
-          list.push(key);
-        }
-      });
-      return Promise.resolve(list);
-    });
-  }
-
-  /**
    * Returns all valid sources.
    */
   static getSources() {
@@ -211,31 +194,6 @@ export default class api {
       return api.loadSchema();
     }
     return Promise.resolve(schema.schema);
-  }
-
-  /**
-   * Returns all valid ontology vertex types.
-   */
-  static getOntologyVertices() {
-    return api.getSchema().then((schema) => {
-      const list = [];
-      Object.keys(schema).forEach((key) => {
-        if (
-          schema[key].inherits.includes('Ontology')
-          && schema[key].inherits.includes('V')
-        ) {
-          list.push({ name: key, properties: schema[key].properties });
-        }
-      });
-      return Promise.resolve(list);
-    });
-  }
-
-  /**
-  * Returns the vertex base class.
-  */
-  static getVertexBaseClass() {
-    return api.getSchema().then(schema => Promise.resolve(schema.V));
   }
 
   /**

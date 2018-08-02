@@ -138,6 +138,9 @@ $toolbar-height: 64px;
     }
     button {
         margin-left: auto;
+        svg {
+            margin: 0;
+        }
     }
 }
 

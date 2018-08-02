@@ -62,22 +62,27 @@ describe('Table Test', () => {
     cy.get('#download-tsv').click();
   });
 
-  it('Ellipsis menu: hiding/returning rows', () => {
+  it.only('Ellipsis menu: hiding/returning rows', () => {
     cy.get('table tbody tr').then((array) => {
-      const l = array.length;
       cy.contains(319);
+      cy.contains('1-50').invoke('text').then((text) => {
+        cy.log(text);
+        const total = text.split('1-50 of ')[1];
+        cy.contains(total);
+        const hiddenRows = Math.min(50, Math.round(total / 6));
 
-      cy.wrap(array).each((row, i) => {
-        if (i !== 0 && i <= Math.round(l / 6)) {
-          cy.wrap(row).children('td:first').children().click();
-        }
+        cy.wrap(array).each((row, i) => {
+          if (i <= hiddenRows) {
+            cy.wrap(row).children('td:first').children().click();
+          }
+        });
+        cy.get('#ellipsis-menu').click();
+        cy.get('#hide-selected').click();
+        cy.contains(total - hiddenRows);
+        cy.get('#ellipsis-menu').click();
+        cy.contains(`Show hidden rows (${hiddenRows})`).click();
+        cy.contains(`1-50 of ${total}`);
       });
-      cy.get('#ellipsis-menu').click();
-      cy.get('#hide-selected').click();
-      cy.contains(319 - Math.round(l / 6));
-      cy.get('#ellipsis-menu').click();
-      cy.contains(`Show hidden rows (${Math.round(l / 6)})`).click();
-      cy.contains('1-50 of');
     });
   });
 

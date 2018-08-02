@@ -260,7 +260,7 @@ class GraphComponent extends Component {
           obj = node[prop.split('.')[0]] || {};
         }
 
-        if (obj[key] && obj[key].length < 50 && !Array.isArray(obj[key])) {
+        if (obj[key] && (obj[key].length < 50 || key === 'name') && !Array.isArray(obj[key])) {
           if (propsMap.nodes[prop] === undefined) {
             propsMap.nodes[prop] = [obj[key]];
           } else if (
@@ -932,7 +932,7 @@ class GraphComponent extends Component {
         <div className="legend-content">
           <Typography variant="subheading">Nodes</Typography>
           <Typography variant="caption">
-            {graphOptions.nodesColor ? `(${graphOptions.nodesColor.split('.')[0]})` : ''}
+            {graphOptions.nodesColor ? `(${util.antiCamelCase(graphOptions.nodesColor.split('.')[0])})` : ''}
           </Typography>
           <List className="node-colors" dense>
             {Object.keys(graphOptions.nodesColors).map(key => (

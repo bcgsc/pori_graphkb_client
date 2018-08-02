@@ -36,7 +36,7 @@ export default class util {
       const re = new RegExp(acronym, 'ig');
       accstr = accstr.replace(re, match => match.toUpperCase());
     });
-    return accstr;
+    return accstr.trim();
   }
 
   /**

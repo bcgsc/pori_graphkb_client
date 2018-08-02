@@ -319,6 +319,19 @@ class GraphComponent extends Component {
               links.push(link);
               graphObjects[link.data['@rid']] = link;
 
+              if (!propsMap.links['source.name']) {
+                propsMap.links['source.name'] = [];
+              }
+              if (!propsMap.links['source.name'].includes(link.data.source.name)) {
+                propsMap.links['source.name'].push(link.data.source.name);
+              }
+              if (!propsMap.links['@class']) {
+                propsMap.links['@class'] = [];
+              }
+              if (!propsMap.links['@class'].includes(link.data['@class'])) {
+                propsMap.links['@class'].push(link.data['@class']);
+              }
+
               // Checks if node is already rendered
               if (outRid && !graphObjects[outRid]) {
                 // Initializes position of new child
@@ -540,7 +553,7 @@ class GraphComponent extends Component {
     });
 
     if (Object.keys(colors).length <= 20) {
-      const pallette = util.getPallette(Object.keys(colors).length);
+      const pallette = util.getPallette(Object.keys(colors).length, type);
       Object.keys(colors).forEach((color, i) => { colors[color] = pallette[i + 1]; });
 
       graphOptions[`${type}Colors`] = colors;
@@ -802,7 +815,21 @@ class GraphComponent extends Component {
               >
                 <MenuItem value="">None</MenuItem>
                 <MenuItem value="@class">Class</MenuItem>
-                <MenuItem value="source.name">Source</MenuItem>
+                <MenuItem value="source.name">Source Name</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+          <div className="main-options-wrapper">
+            <FormControl className="graph-option">
+              <InputLabel htmlFor="linksColor">Color edges by</InputLabel>
+              <Select
+                input={<Input name="linksColor" id="linksColor" />}
+                onChange={e => this.handleGraphColorsChange(e, 'links')}
+                value={graphOptions.linksColor}
+              >
+                <MenuItem value="">None</MenuItem>
+                <MenuItem value="@class">Class</MenuItem>
+                <MenuItem value="source.name">Source Name</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -977,15 +1004,27 @@ class GraphComponent extends Component {
       );
     };
 
-    const linksDisplay = links.map(link => (
-      <GraphLink
-        key={link.data['@rid']}
-        link={link}
-        linkHighlighting={graphOptions.linkHighlighting}
-        detail={detail}
-        labelKey={graphOptions.linkLabelProp}
-      />
-    ));
+    const linksDisplay = links.map((link) => {
+      let linkColorKey = '';
+      if (graphOptions.linksColor && graphOptions.linksColor.includes('.')) {
+        const keys = graphOptions.linksColor.split('.');
+        linkColorKey = (link.data[keys[0]] || {})[keys[1]];
+      } else if (graphOptions.linksColor) {
+        linkColorKey = link.data[graphOptions.linksColor];
+      }
+      const color = graphOptions.linksColors[linkColorKey];
+
+      return (
+        <GraphLink
+          key={link.data['@rid']}
+          link={link}
+          linkHighlighting={graphOptions.linkHighlighting}
+          detail={detail}
+          labelKey={graphOptions.linkLabelProp}
+          color={color}
+        />
+      );
+    });
 
     const nodesDisplay = nodes.map((node) => {
       let nodeColorKey = '';

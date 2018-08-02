@@ -287,7 +287,7 @@ class NodeFormComponent extends Component {
         this.setState({
           form,
           relationships,
-          errorFlag: true,
+          errorFlag: false,
           relationship: {
             '@class': '',
             targetName: '',

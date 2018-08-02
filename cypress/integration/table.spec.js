@@ -62,7 +62,7 @@ describe('Table Test', () => {
     cy.get('#download-tsv').click();
   });
 
-  it.only('Ellipsis menu: hiding/returning rows', () => {
+  it('Ellipsis menu: hiding/returning rows', () => {
     cy.get('table tbody tr').then((array) => {
       cy.contains(319);
       cy.contains('1-50').invoke('text').then((text) => {

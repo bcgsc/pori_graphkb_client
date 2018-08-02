@@ -276,7 +276,7 @@ class TableComponent extends Component {
     const { data, hidden, allColumns } = this.props;
     const rows = [];
     rows.push(allColumns.map(column => util.getEdgeLabel(column)).join('\t'));
-
+    console.log(rows);
     Object.keys(data).forEach((rid) => {
       const row = [];
       if (!hidden.includes(rid)) {

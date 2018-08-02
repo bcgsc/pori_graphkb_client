@@ -182,7 +182,7 @@
       },
       {
         "title": "Collision Radius",
-        "description": "Defines the perceived radius of nodes."
+        "description": "Defines the minimum distance between nodes."
       },
       {
         "title": "Auto Space Nodes Option",
@@ -199,12 +199,8 @@
         "description": "Choose which node properties to color nodes based on. Eligible properties are those with 20 or fewer different unique values throughout the displayed nodes."
       },
       {
-        "title": "Collision Radius",
-        "description": "Defines the perceived radius of nodes."
-      },
-      {
-        "title": "Auto Space Nodes Option",
-        "description": "Spaces nodes based on label length, in order to help label readability."
+        "title": "Edge Labels",
+        "description": "Choose which property to display when hovering over the edges in the graph. The 'None' option disables hovering."
       }
     ]
   }

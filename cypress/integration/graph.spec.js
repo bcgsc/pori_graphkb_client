@@ -75,20 +75,29 @@ describe('Graph View Test', () => {
     cy.get('#options-close-btn').click();
     cy.get('div.legend-wrapper').should('exist');
     cy.contains('Feature');
-    cy.contains('(@class)');
+    cy.contains('(Class)');
 
     cy.get('#graph-options-btn').click();
 
-    cy.contains('Class').click();
-    cy.contains('Source Name').click();
+    cy.get('div.main-options-wrapper div.graph-option').each((div, i) => {
+      if (i === 1) {
+        cy.wrap(div).click();
+      }
+    });
+
+    cy.get('li[data-value="source.name"]').click();
     cy.get('#options-close-btn').click();
     cy.get('div.legend-wrapper').should('exist');
     cy.contains('Hgnc');
-    cy.contains('(source)');
+    cy.contains('(Source Name)');
 
     cy.get('#graph-options-btn').click();
-    cy.contains('Source').click();
-    cy.contains('No Coloring').click();
+    cy.get('div.main-options-wrapper div.graph-option').each((div, i) => {
+      if (i === 1) {
+        cy.wrap(div).click();
+      }
+    });
+    cy.get('li[data-value=""]').click();
     cy.get('#options-close-btn').click();
     cy.get('div.legend-wrapper').should('not.exist');
 

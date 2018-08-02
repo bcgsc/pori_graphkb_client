@@ -279,7 +279,7 @@ class NodeDetailComponent extends Component {
         const content = filteredNode[key].reduce((r, edge) => {
           const id = `${label}.${edge['@rid']}`;
           const relatedNode = edge.in && edge.in['@rid'] === node['@rid'] ? edge.out : edge.in;
-          if (relatedNode['@class'] !== 'Statement') {
+          if (relatedNode['@class'] !== 'Statement') { // Statement flag
             const edgeOpen = nestedExpanded.includes(id);
             preview.push(util.getPreview(relatedNode));
             r.push((
@@ -287,7 +287,7 @@ class NodeDetailComponent extends Component {
                 key={id}
                 expanded={edgeOpen}
                 onChange={() => this.handleNestedToggle(id)}
-                className="nested-container"
+                className="nested-container detail-edge"
               >
                 <ExpansionPanelSummary
                   expandIcon={<KeyboardArrowDownIcon />}
@@ -337,6 +337,7 @@ class NodeDetailComponent extends Component {
             expanded={isOpen}
             onChange={() => this.handleNestedToggle(label)}
             className="nested-container"
+            id={label}
           >
             <ExpansionPanelSummary
               expandIcon={<KeyboardArrowDownIcon />}

@@ -84,6 +84,7 @@ $mediumBreakpoint: 500px;
             }
         }
         .relationship-add-wrapper {
+            z-index: 1;
             @media (max-width: $mediumBreakpoint) {
                 flex-direction: column;
                 width: 100%;
@@ -118,11 +119,6 @@ $mediumBreakpoint: 500px;
 
 .relationship-out {
     animation: flip 0.1s linear;
-}
-
-.relationships-list {
-    max-height: 900px;
-    overflow: auto;
 }
 
 .relationship-detail {

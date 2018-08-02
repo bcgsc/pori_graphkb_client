@@ -799,75 +799,75 @@ class NodeFormComponent extends Component {
               <Typography variant="title">
                 Relationships
               </Typography>
-              <ListItem
-                className="input-wrapper relationship-add-wrapper form-list"
-                onKeyDown={(e) => {
-                  if (e.keyCode === 13) this.handleRelationshipAdd(e);
-                }}
-              >
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    flexGrow: '1',
+              <List component="nav">
+                <ListItem
+                  className="input-wrapper relationship-add-wrapper form-list"
+                  onKeyDown={(e) => {
+                    if (e.keyCode === 13) this.handleRelationshipAdd(e);
                   }}
                 >
-                  <ResourceSelectComponent
-                    value={relationship.source}
-                    onChange={this.handleRelationship}
-                    name="source"
-                    label="Source"
-                    resources={sources}
-                    error={errorFlag}
-                  />
-                  <div style={{ display: 'flex', width: '100%', margin: '0 8px' }}>
-                    <div className="relationship-dir-type">
-                      <IconButton
-                        disableRipple
-                        name="direction"
-                        onClick={this.handleRelationshipDirection}
-                        color="primary"
-                      >
-                        <TrendingFlatIcon
-                          className={
-                            relationship.in === originalNode['@rid']
-                              ? 'relationship-in'
-                              : 'relationship-out'
-                          }
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      flexGrow: '1',
+                    }}
+                  >
+                    <ResourceSelectComponent
+                      value={relationship.source}
+                      onChange={this.handleRelationship}
+                      name="source"
+                      label="Source"
+                      resources={sources}
+                      error={errorFlag}
+                    />
+                    <div style={{ display: 'flex', width: '100%', margin: '0 8px' }}>
+                      <div className="relationship-dir-type">
+                        <IconButton
+                          disableRipple
+                          name="direction"
+                          onClick={this.handleRelationshipDirection}
+                          color="primary"
+                        >
+                          <TrendingFlatIcon
+                            className={
+                              relationship.in === originalNode['@rid']
+                                ? 'relationship-in'
+                                : 'relationship-out'
+                            }
+                          />
+                        </IconButton>
+                        <ResourceSelectComponent
+                          value={relationship['@class']}
+                          onChange={this.handleRelationship}
+                          name="@class"
+                          label="Type"
+                          resources={edgeTypes}
+                          error={errorFlag}
+                        >
+                          {edgeTypesDisplay}
+                        </ResourceSelectComponent>
+                      </div>
+                      <div className="search-wrap">
+                        <AutoSearchComponent
+                          value={relationship.targetName}
+                          onChange={this.handleRelationship}
+                          placeholder="Target Name"
+                          limit={10}
+                          name="targetName"
+                          error={errorFlag}
                         />
-                      </IconButton>
-                      <ResourceSelectComponent
-                        value={relationship['@class']}
-                        onChange={this.handleRelationship}
-                        name="@class"
-                        label="Type"
-                        resources={edgeTypes}
-                        error={errorFlag}
-                      >
-                        {edgeTypesDisplay}
-                      </ResourceSelectComponent>
-                    </div>
-                    <div className="search-wrap">
-                      <AutoSearchComponent
-                        value={relationship.targetName}
-                        onChange={this.handleRelationship}
-                        placeholder="Target Name"
-                        limit={10}
-                        name="targetName"
-                        error={errorFlag}
-                      />
+                      </div>
                     </div>
                   </div>
-                </div>
-                <IconButton
-                  style={{ margin: 'auto 0 auto 8px' }}
-                  color="primary"
-                  onClick={this.handleRelationshipAdd}
-                >
-                  <AddIcon />
-                </IconButton>
-              </ListItem>
-              <List className="relationships-list">
+                  <IconButton
+                    style={{ margin: 'auto 0 auto 8px' }}
+                    color="primary"
+                    onClick={this.handleRelationshipAdd}
+                  >
+                    <AddIcon />
+                  </IconButton>
+                </ListItem>
                 {rships}
               </List>
             </Paper>

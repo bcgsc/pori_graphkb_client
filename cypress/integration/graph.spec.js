@@ -63,7 +63,7 @@ describe('Graph View Test', () => {
     cy.contains('DeprecatedBy').should('not.exist');
   });
 
-  it.only('Graph options', () => {
+  it('Graph options', () => {
     const name = 'a1bg-as1';
     getClass('Feature', { name });
     cy.get('circle.node').click();

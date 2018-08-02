@@ -30,8 +30,17 @@ export default class util {
   static antiCamelCase(str) {
     let accstr = str;
     if (accstr.startsWith('@')) accstr = accstr.slice(1);
-    accstr = (accstr.charAt(0).toUpperCase() + accstr.slice(1))
-      .replace(/[A-Z]/g, match => ` ${match}`);
+    let words = [accstr];
+    if (accstr.includes('.')) {
+      words = accstr.split('.');
+    }
+
+    words.forEach((word, i) => {
+      words[i] = (word.charAt(0).toUpperCase() + word.slice(1))
+        .replace(/[A-Z]/g, match => ` ${match}`);
+    });
+
+    accstr = words.join(' ');
     acronyms.forEach((acronym) => {
       const re = new RegExp(acronym, 'ig');
       accstr = accstr.replace(re, match => match.toUpperCase());

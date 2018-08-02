@@ -1023,7 +1023,7 @@ class GraphComponent extends Component {
           <div className="legend-content">
             <Typography variant="subheading">Nodes</Typography>
             <Typography variant="caption">
-              {graphOptions.nodesColor ? `(${graphOptions.nodesColor.split('.')[0]})` : ''}
+              {graphOptions.nodesColor ? `(${util.antiCamelCase(graphOptions.nodesColor)})` : ''}
             </Typography>
             <List className="node-colors" dense>
               {Object.keys(graphOptions.nodesColors).map(key => (

@@ -805,18 +805,6 @@ class GraphComponent extends Component {
                 <MenuItem value="source.name">Source</MenuItem>
               </Select>
             </FormControl>
-            <FormControl className="graph-option">
-              <InputLabel htmlFor="linksColor">Color edges by</InputLabel>
-              <Select
-                input={<Input name="linksColor" id="linksColor" />}
-                onChange={e => this.handleGraphColorsChange(e, 'links')}
-                value={graphOptions.linksColor}
-              >
-                <MenuItem value="">No Coloring</MenuItem>
-                <MenuItem value="@class">Class</MenuItem>
-              </Select>
-              <Divider />
-            </FormControl>
           </div>
           <div className="main-options-wrapper">
             <FormControl className="graph-option">

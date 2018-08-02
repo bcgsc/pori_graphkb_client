@@ -758,11 +758,7 @@ class GraphComponent extends Component {
                   ) {
                     return (
                       <MenuItem value={prop} key={prop}>
-                        {util.antiCamelCase(prop.split('.')[0]
-                          + (prop.split('.')[1]
-                            ? ` ${prop.split('.')[1][0].toUpperCase()}${prop.split('.')[1].slice(1)}`
-                            : ''))
-                        }
+                        {util.antiCamelCase(prop)}
                       </MenuItem>
                     );
                   }
@@ -787,11 +783,7 @@ class GraphComponent extends Component {
                   ) {
                     return (
                       <MenuItem value={prop} key={prop}>
-                        {util.antiCamelCase(prop.split('.')[0]
-                          + (prop.split('.')[1]
-                            ? `${prop.split('.')[1][0].toUpperCase()}${prop.split('.')[1].slice(1)}`
-                            : ''))
-                        }
+                        {util.antiCamelCase(prop)}
                       </MenuItem>
                     );
                   }
@@ -932,7 +924,7 @@ class GraphComponent extends Component {
         <div className="legend-content">
           <Typography variant="subheading">Nodes</Typography>
           <Typography variant="caption">
-            {graphOptions.nodesColor ? `(${util.antiCamelCase(graphOptions.nodesColor.split('.')[0])})` : ''}
+            {graphOptions.nodesColor ? `(${util.antiCamelCase(graphOptions.nodesColor)})` : ''}
           </Typography>
           <List className="node-colors" dense>
             {Object.keys(graphOptions.nodesColors).map(key => (

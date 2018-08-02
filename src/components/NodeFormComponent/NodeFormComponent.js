@@ -45,7 +45,6 @@ class NodeFormComponent extends Component {
       form: null,
       edgeTypes: [],
       sources: [],
-      ontologyTypes: [],
       newNodeClass: 'Disease',
       relationships: [],
       relationship: {
@@ -137,7 +136,6 @@ class NodeFormComponent extends Component {
       }
     });
     const edgeTypes = util.getEdges(schema);
-    const ontologyTypes = util.getOntologies(schema);
     const expandedEdgeTypes = edgeTypes.reduce((r, e) => {
       r.push(`in_${e}`);
       r.push(`out_${e}`);
@@ -172,7 +170,6 @@ class NodeFormComponent extends Component {
       originalNode,
       sources,
       edgeTypes,
-      ontologyTypes,
       editableProps,
       newNodeClass: nodeClass,
     });
@@ -502,14 +499,14 @@ class NodeFormComponent extends Component {
       originalNode,
       sources,
       edgeTypes,
-      ontologyTypes,
       editableProps,
       relationship,
       relationships,
       subset,
-      newNodeClass,
       deleteDialog,
+      newNodeClass,
       errorFlag,
+      ontologyTypes,
     } = this.state;
     const { variant, handleNodeFinishEdit } = this.props;
 

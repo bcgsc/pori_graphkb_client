@@ -218,10 +218,7 @@ export default class util {
   static getOntologies(schema) {
     const list = [];
     Object.keys(schema).forEach((key) => {
-      if (
-        schema[key].inherits.includes('Ontology')
-        && schema[key].inherits.includes('V')
-      ) {
+      if (schema[key].inherits.includes('Ontology')) {
         list.push({ name: key, properties: schema[key].properties });
       }
     });
@@ -234,9 +231,7 @@ export default class util {
   static getEdges(schema) {
     const list = [];
     Object.keys(schema).forEach((key) => {
-      if (
-        schema[key].inherits.includes('E')
-      ) {
+      if (schema[key].inherits.includes('E')) {
         list.push(key);
       }
     });

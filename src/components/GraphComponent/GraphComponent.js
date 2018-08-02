@@ -220,7 +220,6 @@ class GraphComponent extends Component {
    * @param {number} depth - Recursion base case flag.
    */
   processData(node, position, depth) {
-    /* eslint-disable */
     const {
       expandedEdgeTypes,
       expandable,
@@ -526,13 +525,13 @@ class GraphComponent extends Component {
 
     objs.forEach((obj) => {
       if (key.includes('.')) {
-        const keys = key.split('.');
+        const [prop, nestedProp] = key.split('.');
         if (
-          obj.data[keys[0]]
-          && obj.data[keys[0]][keys[1]]
-          && !colors[obj.data[keys[0]][keys[1]]]
+          obj.data[prop]
+          && obj.data[prop][nestedProp]
+          && !colors[obj.data[prop][nestedProp]]
         ) {
-          colors[obj.data[keys[0]][keys[1]]] = '';
+          colors[obj.data[prop][nestedProp]] = '';
         }
       }
       if (obj.data[key] && !colors[obj.data[key]]) {

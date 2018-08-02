@@ -865,6 +865,7 @@ class NodeFormComponent extends Component {
                     style={{ margin: 'auto 0 auto 8px' }}
                     color="primary"
                     onClick={this.handleRelationshipAdd}
+                    id="relationship-add"
                   >
                     <AddIcon />
                   </IconButton>

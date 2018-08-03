@@ -822,7 +822,7 @@ class GraphComponent extends Component {
                 onChange={this.handleGraphOptionsChange}
                 value={graphOptions.nodeLabelProp}
               >
-                <MenuItem value="">No Label</MenuItem>
+                <MenuItem value="">None</MenuItem>
                 {Object.keys(propsMap.nodes).map((prop) => {
                   if (propsMap.nodes[prop]
                     && !(propsMap.nodes[prop].length === 1 && propsMap.nodes[prop].includes('null'))
@@ -845,7 +845,7 @@ class GraphComponent extends Component {
                 onChange={e => this.handleGraphColorsChange(e, 'nodes')}
                 value={graphOptions.nodesColor}
               >
-                <MenuItem value="">No Coloring</MenuItem>
+                <MenuItem value="">None</MenuItem>
                 {Object.keys(propsMap.nodes).map((prop) => {
                   if (
                     propsMap.nodes[prop]
@@ -876,8 +876,6 @@ class GraphComponent extends Component {
                 <MenuItem value="source.name">Source Name</MenuItem>
               </Select>
             </FormControl>
-          </div>
-          <div className="main-options-wrapper">
             <FormControl className="graph-option">
               <InputLabel htmlFor="linksColor">Color edges by</InputLabel>
               <Select
@@ -1123,7 +1121,6 @@ class GraphComponent extends Component {
         <GraphLink
           key={link.data['@rid']}
           link={link}
-          linkHighlighting={graphOptions.linkHighlighting}
           detail={detail}
           labelKey={graphOptions.linkLabelProp}
           color={color}
@@ -1221,17 +1218,6 @@ class GraphComponent extends Component {
                 markerUnits="strokeWidth"
               >
                 <path d={endArrowSize.d} fill="#555" />
-              </marker>
-              <marker
-                id="highLightedArrow"
-                markerWidth={ARROW_LENGTH}
-                markerHeight={ARROW_WIDTH}
-                refX={endArrowSize.refX}
-                refY={endArrowSize.refY}
-                orient="auto"
-                markerUnits="strokeWidth"
-              >
-                <path d={endArrowSize.d} className="highlighted-arrow" />
               </marker>
             </defs>
             <g ref={(node) => { this.zoom = node; }}>

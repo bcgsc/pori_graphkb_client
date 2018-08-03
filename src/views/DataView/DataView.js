@@ -386,7 +386,7 @@ class DataView extends Component {
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           open={Object.keys(data).length === 0}
-          onClose={history.goBack}
+          onClose={() => history.push('/query')}
           autoHideDuration={3000}
           message={(
             <span>
@@ -394,7 +394,7 @@ class DataView extends Component {
             </span>
           )}
           action={(
-            <Button color="secondary" onClick={history.goBack}>
+            <Button color="secondary" onClick={() => history.push('/query')}>
               Ok
             </Button>
           )}

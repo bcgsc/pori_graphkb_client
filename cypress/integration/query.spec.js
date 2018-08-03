@@ -48,6 +48,7 @@ describe('Query Page Test', () => {
     cy.url().should('includes', '/query/advanced');
     cy.get('textarea[name=name]').type(name);
     cy.get('input[name=source]').type('ncit');
+    cy.wait(500);
     cy.get('ul li:first').click();
     cy.get('textarea[name=sourceId]').type(sourceId);
     cy.get('textarea[name=longName]').type('!nothing?#)$(#$%');

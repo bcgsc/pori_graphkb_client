@@ -901,11 +901,38 @@ class GraphComponent extends Component {
                       },
                     })
                     }
-                    name="legend"
-                    checked={graphOptions.legend && graphOptions.nodesColor}
+                    name="nodesLegend"
+                    checked={!!(graphOptions.nodesLegend && graphOptions.nodesColor)}
                   />
                 )}
-                label="Show Coloring Legend"
+                label="Show Nodes Coloring Legend"
+              />
+            </FormControl>
+            <FormControl className="graph-option">
+              <FormControlLabel
+                classes={{
+                  root: classes.root,
+                  label: classes.label,
+                }}
+                control={(
+                  <Checkbox
+                    color="secondary"
+                    onChange={e => this.handleGraphOptionsChange({
+                      target: {
+                        value: e.target.checked,
+                        name: e.target.name,
+                      },
+                    })
+                    }
+                    name="linksLegend"
+                    checked={!!(
+                      graphOptions.linksLegend
+                      && graphOptions.linksColor
+                      && links.length !== 0
+                    )}
+                  />
+                )}
+                label="Show Links Coloring Legend"
               />
             </FormControl>
           </div>
@@ -998,52 +1025,106 @@ class GraphComponent extends Component {
     );
 
     const legend = (
-      <Popper open={!!(graphOptions.legend && graphOptions.nodesColor)}>
-        <Paper className="legend-wrapper">
-          <div className="close-btn">
-            <IconButton
-              name="legend"
-              onClick={() => this.handleGraphOptionsChange({
-                target: {
-                  value: false,
-                  name: 'legend',
-                },
-              })}
-            >
-              <CloseIcon />
-            </IconButton>
-          </div>
-          <div className="legend-content">
-            <Typography variant="subheading">Nodes</Typography>
-            <Typography variant="caption">
-              {graphOptions.nodesColor ? `(${util.antiCamelCase(graphOptions.nodesColor)})` : ''}
-            </Typography>
-            <List className="node-colors" dense>
-              {Object.keys(graphOptions.nodesColors).map(key => (
-                <ListItem key={key}>
-                  <ListItemIcon>
-                    <div
-                      style={{ backgroundColor: graphOptions.nodesColors[key] }}
-                      className="color-chip"
-                    />
-                  </ListItemIcon>
-                  <ListItemText primary={util.antiCamelCase(key)} />
-                </ListItem>
-              ))}
-              {(propsMap.nodes[graphOptions.nodesColor] || []).includes('null') ? (
-                <ListItem key="null">
-                  <ListItemIcon>
-                    <div
-                      style={{ backgroundColor: graphOptions.defaultColor }}
-                      className="color-chip"
-                    />
-                  </ListItemIcon>
-                  <ListItemText primary="Null" />
-                </ListItem>
-              ) : null}
-            </List>
-          </div>
-        </Paper>
+      <Popper
+        open={
+          !!(graphOptions.nodesLegend && graphOptions.nodesColor)
+          || !!(graphOptions.linksLegend && graphOptions.linksColor)
+        }
+      >
+        <div className="legend-wrapper">
+          {graphOptions.nodesLegend && graphOptions.nodesColor ? (
+            <Paper>
+              <div className="close-btn">
+                <IconButton
+                  name="nodesLegend"
+                  onClick={() => this.handleGraphOptionsChange({
+                    target: {
+                      value: false,
+                      name: 'nodesLegend',
+                    },
+                  })}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </div>
+              <div className="legend-content">
+                <Typography variant="subheading">Nodes</Typography>
+                <Typography variant="caption">
+                  {graphOptions.nodesColor ? `(${util.antiCamelCase(graphOptions.nodesColor)})` : ''}
+                </Typography>
+                <List className="node-colors" dense>
+                  {Object.keys(graphOptions.nodesColors).map(key => (
+                    <ListItem key={key}>
+                      <ListItemIcon>
+                        <div
+                          style={{ backgroundColor: graphOptions.nodesColors[key] }}
+                          className="color-chip"
+                        />
+                      </ListItemIcon>
+                      <ListItemText primary={util.antiCamelCase(key)} />
+                    </ListItem>
+                  ))}
+                  {(propsMap.nodes[graphOptions.nodesColor] || []).includes('null') ? (
+                    <ListItem key="null">
+                      <ListItemIcon>
+                        <div
+                          style={{ backgroundColor: graphOptions.defaultColor }}
+                          className="color-chip"
+                        />
+                      </ListItemIcon>
+                      <ListItemText primary="Null" />
+                    </ListItem>
+                  ) : null}
+                </List>
+              </div>
+            </Paper>) : null}
+          {!!(graphOptions.linksLegend && graphOptions.linksColor) && links.length !== 0 ? (
+            <Paper>
+              <div className="close-btn">
+                <IconButton
+                  name="linksLegend"
+                  onClick={() => this.handleGraphOptionsChange({
+                    target: {
+                      value: false,
+                      name: 'linksLegend',
+                    },
+                  })}
+                >
+                  <CloseIcon />
+                </IconButton>
+              </div>
+              <div className="legend-content">
+                <Typography variant="subheading">Edges</Typography>
+                <Typography variant="caption">
+                  {graphOptions.linksColor ? `(${util.antiCamelCase(graphOptions.linksColor)})` : ''}
+                </Typography>
+                <List className="node-colors" dense>
+                  {Object.keys(graphOptions.linksColors).map(key => (
+                    <ListItem key={key}>
+                      <ListItemIcon>
+                        <div
+                          style={{ backgroundColor: graphOptions.linksColors[key] }}
+                          className="color-chip"
+                        />
+                      </ListItemIcon>
+                      <ListItemText primary={util.antiCamelCase(key)} />
+                    </ListItem>
+                  ))}
+                  {(propsMap.links[graphOptions.linksColor] || []).includes('null') ? (
+                    <ListItem key="null">
+                      <ListItemIcon>
+                        <div
+                          style={{ backgroundColor: graphOptions.defaultColor }}
+                          className="color-chip"
+                        />
+                      </ListItemIcon>
+                      <ListItemText primary="Null" />
+                    </ListItem>
+                  ) : null}
+                </List>
+              </div>
+            </Paper>) : null}
+        </div>
       </Popper>
     );
 

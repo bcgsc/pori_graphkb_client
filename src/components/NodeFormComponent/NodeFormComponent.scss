@@ -64,7 +64,8 @@ $mediumBreakpoint: 500px;
             display: flex;
             height: 48px;
             button {
-                margin: auto 8px;
+                margin: auto;
+                margin-right: 8px;
             }
             @media (max-width: $mediumBreakpoint) {
                 width: 100%;

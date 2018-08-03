@@ -71,7 +71,7 @@ describe('Graph View Test', () => {
 
     cy.get('#graph-options-btn').click();
 
-    cy.contains('Show Coloring Legend').click();
+    cy.contains('Show Nodes Coloring Legend').click();
     cy.get('#options-close-btn').click();
     cy.get('div.legend-wrapper').should('exist');
     cy.contains('Feature');
@@ -120,7 +120,7 @@ describe('Graph View Test', () => {
     cy.contains('(Expand)').click();
 
     cy.get('#graph-options-btn').click();
-    cy.contains('Show Coloring Legend').click();
+    cy.contains('Show Nodes Coloring Legend').click();
     cy.contains('Class').click();
     cy.contains('Source ID').click();
     cy.get('#options-close-btn').click();

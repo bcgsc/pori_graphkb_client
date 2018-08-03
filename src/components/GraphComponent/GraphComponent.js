@@ -592,16 +592,11 @@ class GraphComponent extends Component {
    */
   async handleClick(e, node) {
     const { handleClick, handleDetailDrawerOpen } = this.props;
-    const { expandId } = this.state;
 
     await handleClick(node.data['@rid'], node.data['@class']);
 
-    if (node.data['@rid'] === expandId) {
-      this.setState({ actionsNode: node });
-    } else {
-      handleDetailDrawerOpen(node);
-      this.setState({ expandId: node.data['@rid'] });
-    }
+    handleDetailDrawerOpen(node);
+    this.setState({ expandId: node.data['@rid'], actionsNode: node });
   }
 
   /**
@@ -782,7 +777,7 @@ class GraphComponent extends Component {
         <DialogContent>
           {(advancedHelp ? GRAPH_ADVANCED : GRAPH_MAIN).map(help => (
             <React.Fragment key={help.title}>
-              <Typography variant="subheading" gutterBottom>
+              <Typography variant="title" gutterBottom>
                 {help.title}
               </Typography>
               <Typography variant="body1" paragraph>

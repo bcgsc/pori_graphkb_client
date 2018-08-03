@@ -21,15 +21,18 @@ export default class util {
     }
 
     words.forEach((word, i) => {
-      words[i] = (word.charAt(0).toUpperCase() + word.slice(1))
-        .replace(/[A-Z]/g, match => ` ${match}`).trim();
+      words[i] = word.replace(/[A-Z]/g, match => ` ${match}`).trim();
+    });
+
+    acronyms.forEach((acronym) => {
+      const re = new RegExp(`[^\\w]*${acronym}(?!\\w)`, 'ig');
+      words.forEach((word, i) => {
+        const w = word.replace(re, match => match.toUpperCase());
+        words[i] = w.charAt(0).toUpperCase() + w.slice(1);
+      });
     });
 
     accstr = words.join(' ');
-    acronyms.forEach((acronym) => {
-      const re = new RegExp(`[^\\w]${acronym}(?!\\w)`, 'ig');
-      accstr = accstr.replace(re, match => match.toUpperCase());
-    });
     return accstr.trim();
   }
 

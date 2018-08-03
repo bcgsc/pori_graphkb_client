@@ -103,7 +103,10 @@ class DataView extends Component {
 
       if (cycled.length >= filteredSearch.limit || 1000) {
         filteredSearch.skip = filteredSearch.limit || 1000;
-        this.setState({ next: () => api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`) });
+        this.setState({
+          next: () => api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`),
+          moreResults: true,
+        });
       }
       this.setState({
         data: dataMap,
@@ -210,21 +213,24 @@ class DataView extends Component {
         }
 
         let newNext = null;
+        let moreResults = false;
         if (cycled.length >= (filteredSearch.limit || 1000)) {
           let newSkip = Number(filteredSearch.skip);
           newSkip += Number((filteredSearch.limit || 1000));
           filteredSearch.skip = newSkip;
           newNext = () => api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`);
+          moreResults = true;
         }
         this.setState({
           data,
           allColumns: newColumns,
           next: newNext,
           filteredSearch,
+          moreResults,
         });
       });
     }
-    this.setState({ next: null });
+    this.setState({ next: null, moreResults: false });
     return next;
   }
 
@@ -315,6 +321,7 @@ class DataView extends Component {
       allColumns,
       detail,
       schema,
+      moreResults,
     } = this.state;
 
     const {
@@ -372,6 +379,7 @@ class DataView extends Component {
         displayed={displayed}
         hidden={hidden}
         allColumns={allColumns}
+        moreResults={moreResults}
         handleCheckAll={this.handleCheckAll}
         handleNodeEditStart={this.handleNodeEditStart}
         handleHideSelected={this.handleHideSelected}

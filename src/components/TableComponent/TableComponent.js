@@ -30,6 +30,7 @@ import {
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import AddIcon from '@material-ui/icons/Add';
 import NodeDetailComponent from '../NodeDetailComponent/NodeDetailComponent';
 import DownloadFileComponent from '../DownloadFileComponent/DownloadFileComponent';
 import util from '../../services/util';
@@ -304,7 +305,6 @@ class TableComponent extends Component {
     const { data, hidden, allColumns } = this.props;
     const rows = [];
     rows.push(allColumns.map(column => util.getEdgeLabel(column)).join('\t'));
-    console.log(rows);
     Object.keys(data).forEach((rid) => {
       const row = [];
       if (!hidden.includes(rid)) {
@@ -345,7 +345,6 @@ class TableComponent extends Component {
       awaiting,
     } = this.state;
 
-    const numCols = tableColumns.filter(c => c.checked).length;
     const {
       data,
       handleCheckAll,
@@ -358,7 +357,11 @@ class TableComponent extends Component {
       handleHideSelected,
       handleNewQuery,
       handleGraphRedirect,
+      handleTriggerNext,
+      moreResults,
     } = this.props;
+
+    const numCols = tableColumns.filter(c => c.checked).length;
 
     const menu = (
       <Menu
@@ -607,6 +610,18 @@ class TableComponent extends Component {
             rowsPerPageOptions={[25, 50, 100]}
             component="div"
           />
+          <div className="more-results-btn">
+            <IconButton
+              disabled={!moreResults}
+              onClick={() => {
+                if (handleTriggerNext && handleTriggerNext()) {
+                  this.setState({ awaiting: true });
+                }
+              }}
+            >
+              <AddIcon />
+            </IconButton>
+          </div>
           {awaiting ? (
             <div style={{ display: 'flex', justifyItems: 'center' }}>
               <CircularProgress size={20} color="primary" id="new-data-spinner" />

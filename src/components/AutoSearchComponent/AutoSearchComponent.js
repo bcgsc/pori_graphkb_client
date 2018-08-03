@@ -27,11 +27,13 @@ class AutoSearchComponent extends Component {
     this.state = {
       options: [],
       emptyFlag: false,
+      noRidFlag: false,
       loginRedirect: false,
       loading: false,
+      lastRid: null,
     };
-
-    this.callApi = _.debounce(this.callApi.bind(this), 300);
+    const { property } = props;
+    this.callApi = _.debounce(this.callApi.bind(this), property.length > 1 ? 600 : 300);
     this.refreshOptions = this.refreshOptions.bind(this);
   }
 
@@ -48,7 +50,7 @@ class AutoSearchComponent extends Component {
    * @param {Event} e - user input event.
    */
   refreshOptions(e) {
-    this.setState({ loading: true, emptyFlag: false });
+    this.setState({ loading: true, emptyFlag: false, lastRid: null });
     this.callApi(e.target.value);
   }
 
@@ -83,6 +85,8 @@ class AutoSearchComponent extends Component {
     const {
       options,
       emptyFlag,
+      noRidFlag,
+      lastRid,
       loginRedirect,
       loading,
     } = this.state;
@@ -97,6 +101,7 @@ class AutoSearchComponent extends Component {
       required,
       disabled,
       endAdornment,
+      error,
     } = this.props;
 
     if (loginRedirect) return <Redirect push to={{ pathname: '/login' }} />;
@@ -125,6 +130,7 @@ class AutoSearchComponent extends Component {
               name,
             },
           });
+          this.setState({ lastRid: e['@rid'] });
         }}
         itemToString={(item) => {
           if (item) return item.name;
@@ -144,7 +150,7 @@ class AutoSearchComponent extends Component {
             <TextField
               disabled={disabled}
               fullWidth
-              error={emptyFlag}
+              error={emptyFlag || noRidFlag || error}
               label={label}
               required={required}
               InputProps={{
@@ -154,6 +160,8 @@ class AutoSearchComponent extends Component {
                   onChange,
                   name,
                   onKeyUp: this.refreshOptions,
+                  onFocus: () => this.setState({ noRidFlag: false }),
+                  onBlur: () => this.setState({ noRidFlag: !!(!lastRid && value) }),
                 }),
                 endAdornment: endAdornment ? (
                   <InputAdornment position="end">
@@ -175,6 +183,11 @@ class AutoSearchComponent extends Component {
             {emptyFlag ? (
               <Typography variant="caption" color="error">
                 No Results
+              </Typography>
+            ) : null}
+            {noRidFlag && !emptyFlag ? (
+              <Typography variant="caption" color="error">
+                Select an option
               </Typography>
             ) : null}
           </div>)
@@ -206,6 +219,7 @@ AutoSearchComponent.propTypes = {
   value: PropTypes.string,
   label: PropTypes.string,
   required: PropTypes.bool,
+  error: PropTypes.bool,
   onChange: PropTypes.func,
   children: PropTypes.func,
   disabled: PropTypes.bool,
@@ -220,6 +234,7 @@ AutoSearchComponent.defaultProps = {
   value: '',
   label: '',
   required: false,
+  error: false,
   children: (getItemProps, item, index) => ( // TODO: change this to be more flexible
     <MenuItem
       {...getItemProps({

@@ -80,13 +80,35 @@ export default class util {
    * @param {string} str - string to be formatted.
    */
   static getEdgeLabel(str) {
+    const edgeType = str.split('_')[1];
+    let retstr = edgeType;
+
     if (str.startsWith('in_')) {
-      return `has${str.split('_')[1].slice(0, str.split('_')[1].length - 2)}`;
+      switch (edgeType.slice(edgeType.length - 2, edgeType.length)) {
+        case 'By':
+          if (
+            ['a', 'e', 'i', 'o', 'u', 'y']
+              .includes(edgeType.slice(edgeType.length - 6, edgeType.length - 5))
+          ) {
+            retstr = `${edgeType.slice(0, edgeType.length - 3)}s`;
+          } else {
+            retstr = `${edgeType.slice(0, edgeType.length - 4)}s`;
+          }
+          break;
+        case 'Of':
+          retstr = `has${edgeType.slice(0, edgeType.length - 2)}`;
+          break;
+        case 'es':
+          retstr = `${edgeType.slice(0, edgeType.length - 1)}dBy`;
+          break;
+        case 'rs':
+          retstr = `${edgeType.slice(0, edgeType.length - 1)}redBy`;
+          break;
+        default:
+          break;
+      }
     }
-    if (str.startsWith('out_')) {
-      return `${str.split('_')[1]}`;
-    }
-    return str;
+    return retstr;
   }
 
   /**

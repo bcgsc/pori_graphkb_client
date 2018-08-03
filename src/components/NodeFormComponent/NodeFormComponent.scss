@@ -6,32 +6,43 @@ $mediumBreakpoint: 500px;
     overflow: auto;
     height: 100%;
     width: 100%;
-    display: flex;
-    flex-direction: column;
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    div.form-header {
-        display: flex;
-        .form-title {
-            padding: 8px;
-            height: 48px;
+    .form-header {
+        grid-column-start: 1;
+        grid-column-end: 3;
+        @media (max-width: $breakpoint) {
+            grid-column-end: 2;
         }
-        button {
-            float: right;
-            margin: auto 1em auto auto;
+        display: flex;
+        justify-items: center;
+        padding: 16px;
+        .form-cancel-btn {
+            display: flex;
+            justify-items: center;
+            margin: auto 0 auto auto;
+            button {
+                margin: auto 0;
+            }
+        }
+        .form-title {
+            font-weight: 300;
         }
     }
-    form {
+    .form-grid {
         flex-grow: 1;
-        width: 100%;
+        width: calc(80vw + 32px);
+        margin: 32px auto;
         display: grid;
         grid-template-columns: 1fr 1fr;
-        grid-column-gap: 8px;
-        grid-template-rows: 1fr;
+        grid-column-gap: 1rem;
+        grid-row-gap: 1rem;
+        grid-template-rows: auto 1fr auto;
         @media (max-width: $breakpoint) {
+            grid-template-rows: auto auto auto auto;
             grid-template-columns: 1fr;
         }
         .param-section {
@@ -50,8 +61,11 @@ $mediumBreakpoint: 500px;
             }
         }
         .relationship-dir-type {
-            height: 48px;
             display: flex;
+            height: 48px;
+            button {
+                margin: auto 8px;
+            }
             @media (max-width: $mediumBreakpoint) {
                 width: 100%;
             }
@@ -66,29 +80,34 @@ $mediumBreakpoint: 500px;
             display: flex;
             width: 100%;
             .autosearch-wrapper {
-                margin-top: 16px;
+                transform: translate(0, 16px);
             }
         }
         .relationship-add-wrapper {
+            z-index: 1;
             @media (max-width: $mediumBreakpoint) {
                 flex-direction: column;
                 width: 100%;
             }
         }
-        .submit-button {
-            position: fixed;
-            width: 200px;
-            right: 1%;
-            bottom: 1%;
-            button {
-                width: 100%;
+        .form-btns {
+            grid-column-start: 1;
+            grid-column-end: 3;
+            display: flex;
+            padding: 16px;
+            @media (max-width: $breakpoint) {
+                grid-column-end:2;
             }
-        }
-        .delete-button {
-            position: fixed;
-            width: 200px;
-            left: 1%;
-            bottom: 1%;
+            button {
+                display: flex;
+                margin: auto 0;
+            }
+            #submit-btn {
+                margin-left: auto;
+            }
+            #delete-btn {
+                margin-right: auto;
+            }
         }
     }
 }
@@ -100,11 +119,6 @@ $mediumBreakpoint: 500px;
 
 .relationship-out {
     animation: flip 0.1s linear;
-}
-
-.relationships-list {
-    max-height: 900px;
-    overflow: auto;
 }
 
 .relationship-detail {

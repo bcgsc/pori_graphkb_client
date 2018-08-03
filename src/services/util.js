@@ -9,21 +9,6 @@ const acronyms = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
  */
 export default class util {
   /**
-   * Returns plural version of input string in all lower case.
-   * @param {string} str - string to be pluralized
-   */
-  static pluralize(str) {
-    const retstr = str.toLowerCase();
-    if (
-      retstr.endsWith('y')
-      && !['a', 'e', 'i', 'o', 'u', 'y'].includes(retstr[retstr.length - 2])
-    ) {
-      return `${retstr.slice(0, retstr.length - 1)}ies`;
-    }
-    return `${retstr}s`;
-  }
-
-  /**
    * Un-camelCase's input string.
    * @param {string} str - camelCase'd string.
    */
@@ -42,7 +27,7 @@ export default class util {
 
     accstr = words.join(' ');
     acronyms.forEach((acronym) => {
-      const re = new RegExp(acronym, 'ig');
+      const re = new RegExp(`[^\\w]${acronym}(?!\\w)`, 'ig');
       accstr = accstr.replace(re, match => match.toUpperCase());
     });
     return accstr.trim();
@@ -166,43 +151,20 @@ export default class util {
     return payload;
   }
 
-  static chooseColor(i, n) {
-    let pallette = [];
-
-    if (n <= 5) {
-      pallette = config.GRAPH_DEFAULTS.NODE_COLORS_5;
-    }
-    if (n <= 10) {
-      pallette = config.GRAPH_DEFAULTS.NODE_COLORS_10;
-    }
-    if (n <= 15) {
-      pallette = config.GRAPH_DEFAULTS.NODE_COLORS_15;
-    }
-    if (n <= 20) {
-      pallette = config.GRAPH_DEFAULTS.NODE_COLORS_20;
-    }
-
-    if (i < pallette.length) {
-      return pallette[i];
-    }
-
-    return Math.round(Math.random() * (255 ** 3)).toString(16);
-  }
-
+  /**
+   * Returns pallette of colors for displaying objects of given type.
+   */
   static getPallette(n, type) {
-    if (n < 5) {
-      return config.GRAPH_DEFAULTS[`${type.toUpperCase().slice(0, type.length - 1)}_COLORS_5`];
+    const baseName = `${type.toUpperCase().slice(0, type.length - 1)}_COLORS_`;
+    const tiers = [5, 10, 15, 20];
+
+    for (let i = 0; i < tiers.length; i += 1) {
+      if (n < tiers[i]) {
+        return config.GRAPH_DEFAULTS[baseName + tiers[i]];
+      }
     }
-    if (n < 10) {
-      return config.GRAPH_DEFAULTS[`${type.toUpperCase().slice(0, type.length - 1)}_COLORS_10`];
-    }
-    if (n < 15) {
-      return config.GRAPH_DEFAULTS[`${type.toUpperCase().slice(0, type.length - 1)}_COLORS_15`];
-    }
-    if (n < 20) {
-      return config.GRAPH_DEFAULTS[`${type.toUpperCase().slice(0, type.length - 1)}_COLORS_20`];
-    }
-    const list = config.GRAPH_DEFAULTS[`${type.toUpperCase().slice(0, type.length - 1)}_COLORS_20`];
+
+    const list = config.GRAPH_DEFAULTS[`${baseName}20`];
     for (let i = 20; i < n; i += 1) {
       const color = `000000${Math.round(Math.random() * (255 ** 3)).toString(16)}`;
       list.push(`#${color.substr(color.length - 6)}`);

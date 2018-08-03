@@ -118,8 +118,14 @@ $paginator-height: 57px;
     .graph-btn {
         margin: auto 24px auto auto;
         button {
+            transition: all 500ms;
+        }
+        button:enabled {
             background-color: rgba($md-secondary-light, 0.5);
         }
+    }
+    .more-results-btn {
+        margin: auto 0;
     }
 }
 

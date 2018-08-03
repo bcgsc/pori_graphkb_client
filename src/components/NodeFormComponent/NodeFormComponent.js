@@ -172,6 +172,7 @@ class NodeFormComponent extends Component {
       edgeTypes,
       editableProps,
       newNodeClass: nodeClass,
+      ontologyTypes: util.getOntologies(schema),
     });
   }
 
@@ -690,7 +691,7 @@ class NodeFormComponent extends Component {
       return (
         <ListItem
           key={`${r.key}: ${r['@rid']}`}
-          className="form-list"
+          className="relationship-item"
         >
           <ListItemText
             primary={`${typeName}: ${r.targetSourceId}`}
@@ -822,7 +823,7 @@ class NodeFormComponent extends Component {
                       resources={sources}
                       error={errorFlag}
                     />
-                    <div style={{ display: 'flex', width: '100%', margin: '0 8px' }}>
+                    <div style={{ display: 'flex', width: '100%' }}>
                       <div className="relationship-dir-type">
                         <IconButton
                           disableRipple
@@ -845,6 +846,7 @@ class NodeFormComponent extends Component {
                           label="Type"
                           resources={edgeTypes}
                           error={errorFlag}
+                          id="relationship-type"
                         >
                           {edgeTypesDisplay}
                         </ResourceSelectComponent>

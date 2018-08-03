@@ -610,18 +610,24 @@ class TableComponent extends Component {
             rowsPerPageOptions={[25, 50, 100]}
             component="div"
           />
-          <div className="more-results-btn">
-            <IconButton
-              disabled={!moreResults}
-              onClick={() => {
-                if (handleTriggerNext && handleTriggerNext()) {
-                  this.setState({ awaiting: true });
-                }
-              }}
-            >
-              <AddIcon />
-            </IconButton>
-          </div>
+          <Tooltip
+            title="Load more results into table"
+            placement="top"
+            disableFocusListener
+          >
+            <div className="more-results-btn">
+              <IconButton
+                disabled={!moreResults}
+                onClick={() => {
+                  if (handleTriggerNext && handleTriggerNext()) {
+                    this.setState({ awaiting: true });
+                  }
+                }}
+              >
+                <AddIcon />
+              </IconButton>
+            </div>
+          </Tooltip>
           {awaiting ? (
             <div style={{ display: 'flex', justifyItems: 'center' }}>
               <CircularProgress size={20} color="primary" id="new-data-spinner" />
@@ -677,7 +683,7 @@ TableComponent.propTypes = {
   handleTriggerNext: PropTypes.func,
   hidden: PropTypes.array,
   allColumns: PropTypes.array,
-
+  moreResults: PropTypes.bool,
 };
 
 TableComponent.defaultProps = {
@@ -686,6 +692,7 @@ TableComponent.defaultProps = {
   hidden: [],
   handleNewQuery: null,
   handleTriggerNext: null,
+  moreResults: false,
 };
 
 export default TableComponent;

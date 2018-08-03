@@ -183,3 +183,25 @@ $toolbar-height: 64px;
     border-radius: 4px;
     cursor: pointer;
 }
+
+.save-check {
+    width: 48px;
+    height: 48px;
+    margin: auto 8px;
+    display: flex;
+    svg {
+        animation: popup 0.2s forwards;
+    }
+    button {
+        animation: popup 0.2s forwards;
+    }
+}
+
+@keyframes popup {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
+}

@@ -1,8 +1,9 @@
+import * as jc from 'json-cycle';
 import config from '../config.json';
 
 const { DEFAULT_PROPS } = config;
 const acronyms = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
-
+const CACHE_EXPIRY = 8;
 
 /**
  * Handles miscellaneous tasks.
@@ -267,5 +268,76 @@ export default class util {
       }
     });
     return list;
+  }
+
+  static loadGraphData(filteredSearch, data) {
+    const now = new Date();
+    const expiry = new Date(now);
+    expiry.setHours(now.getHours() + CACHE_EXPIRY);
+    data.expiry = expiry.getTime();
+    data.filteredSearch = filteredSearch;
+    localStorage.setItem('graphObjects', JSON.stringify(jc.decycle(data)));
+  }
+
+  static getGraphData(filteredSearch) {
+    const data = localStorage.getItem('graphObjects');
+    if (data) {
+      const obj = jc.retrocycle(JSON.parse(data));
+      if (obj.filteredSearch === filteredSearch) {
+        return obj;
+      }
+    }
+    return null;
+  }
+
+  static loadColorProps(newColumns, node, propsMap) {
+    // Iterate over all props.
+    newColumns.forEach((prop) => {
+      let obj = node;
+      let key = prop;
+
+      // Nested prop condition
+      if (prop.includes('.')) {
+        key = prop.split('.')[1];
+        obj = node[prop.split('.')[0]] || {};
+      }
+
+      if (obj[key] && (obj[key].length < 50 || key === 'name') && !Array.isArray(obj[key])) {
+        if (propsMap.nodes[prop] === undefined) {
+          propsMap.nodes[prop] = [obj[key]];
+        } else if (
+          propsMap.nodes[prop] // If null, fails here
+          && !propsMap.nodes[prop].includes(obj[key])
+        ) {
+          propsMap.nodes[prop].push(obj[key]);
+        }
+      } else if (propsMap.nodes[prop] && !propsMap.nodes[prop].includes('null')) {
+        // This null represents nodes that do not contain specified property.
+        propsMap.nodes[prop].push('null');
+      }
+      // Permanently removes certain properties from being eligible to display
+      // due to content length.
+      if (obj[key] && obj[key].length >= 50 && key !== 'name') {
+        propsMap.nodes[prop] = null;
+      }
+    });
+    return propsMap;
+  }
+
+  static expanded(expandedEdgeTypes, graphObjects, targetRid, expandable) {
+    let targetFlag = false;
+    expandedEdgeTypes.forEach((e) => {
+      if (graphObjects[targetRid][e]) {
+        graphObjects[targetRid][e].forEach((l) => {
+          if (
+            !graphObjects[l['@rid'] || l]
+            && !((l.in || {})['@class'] === 'Statement' || (l.out || {})['@class'] === 'Statement')
+          ) {
+            targetFlag = true;
+          }
+        });
+      }
+    });
+    expandable[targetRid] = targetFlag;
   }
 }

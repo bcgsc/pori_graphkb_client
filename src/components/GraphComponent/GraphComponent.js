@@ -147,17 +147,12 @@ class GraphComponent extends Component {
     const { graphOptions } = this.state;
     const simulation = d3.forceSimulation();
     // Defines what edge keys to look for.
-    const ontologies = util.getOntologies(schema);
     const edges = util.getEdges(schema);
     const expandedEdgeTypes = edges.reduce((r, e) => {
       r.push(`in_${e}`);
       r.push(`out_${e}`);
       return r;
     }, []);
-
-    ontologies.forEach((type, i) => {
-      graphOptions[`${type.name}Color`] = util.chooseColor(i, ontologies.length);
-    });
 
     let validDisplayed = displayed;
     if (!validDisplayed || validDisplayed.length === 0) {

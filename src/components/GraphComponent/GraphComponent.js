@@ -565,9 +565,9 @@ class GraphComponent extends Component {
       }
     });
 
-    if (Object.keys(colors).length <= 20) {
+    if (Object.keys(colors).length <= 20 || Object.keys(propsMap[type]).length === 1) {
       const pallette = util.getPallette(Object.keys(colors).length, type);
-      Object.keys(colors).forEach((color, i) => { colors[color] = pallette[i + 1]; });
+      Object.keys(colors).forEach((color, i) => { colors[color] = pallette[i]; });
 
       graphOptions[`${type}Colors`] = colors;
       graphOptions[`${type}Pallette`] = pallette;

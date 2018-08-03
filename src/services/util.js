@@ -162,7 +162,7 @@ export default class util {
     const tiers = [5, 10, 15, 20];
 
     for (let i = 0; i < tiers.length; i += 1) {
-      if (n < tiers[i]) {
+      if (n <= tiers[i]) {
         return config.GRAPH_DEFAULTS[baseName + tiers[i]];
       }
     }

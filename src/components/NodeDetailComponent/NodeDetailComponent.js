@@ -378,17 +378,19 @@ class NodeDetailComponent extends Component {
               {Object.keys(filteredNode).map(key => formatProperty(key, filteredNode[key], ''))}
             </CardContent>
           </Card>
-          <Card className="properties">
-            <CardContent>
-              <Typography paragraph variant="title" component="h1">
-                Relationships:
-                <Divider />
-              </Typography>
-              {relationships.length !== 0 ? relationships : (
-                <Typography variant="caption" style={{ margin: 'auto' }}>No relationships</Typography>
-              )}
-            </CardContent>
-          </Card>
+          {variant === 'graph' && relationships.length === 0 ? null : (
+            <Card className="properties">
+              <CardContent>
+                <Typography paragraph variant="title" component="h1">
+                  Relationships:
+                  <Divider />
+                </Typography>
+                {relationships.length !== 0 ? relationships : (
+                  <Typography variant="caption" style={{ margin: 'auto' }}>No relationships</Typography>
+                )}
+              </CardContent>
+            </Card>
+          )}
         </div>
       </Card>
     );

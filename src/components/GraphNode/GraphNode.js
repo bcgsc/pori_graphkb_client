@@ -79,7 +79,7 @@ class GraphNode extends PureComponent {
       >
         <text
           style={{
-            opacity: detail && detail !== node.data['@rid'] ? 0.6 : 1,
+            opacity: detail && detail['@rid'] !== node.data['@rid'] ? 0.6 : 1,
           }}
         >
           <tspan className="node-name" dy={28}>
@@ -95,7 +95,7 @@ class GraphNode extends PureComponent {
         />
         <circle
           style={{
-            opacity: detail && detail !== node.data['@rid'] ? 0.6 : 1,
+            opacity: detail && detail['@rid'] !== node.data['@rid'] ? 0.6 : 1,
           }}
           onClick={handleClick}
           className="node"
@@ -128,7 +128,7 @@ GraphNode.defaultProps = {
  * @param {Array} actionsRing - Array of svg components making up the node actions ring
  * surrounding a selected node.
  * @param {string} label - property to display as label.
- * @param {string} detail - node identifier for node who's details are currently displayed.
+ * @param {Object} detail - node identifier for node who's details are currently displayed.
  */
 GraphNode.propTypes = {
   node: PropTypes.object.isRequired,
@@ -138,7 +138,7 @@ GraphNode.propTypes = {
   simulation: PropTypes.object.isRequired,
   actionsRing: PropTypes.object,
   label: PropTypes.string,
-  detail: PropTypes.string,
+  detail: PropTypes.object,
 };
 
 export default GraphNode;

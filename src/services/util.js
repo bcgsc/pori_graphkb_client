@@ -2,6 +2,7 @@ import config from '../config.json';
 
 const { DEFAULT_PROPS } = config;
 const { PALLETE_SIZES } = config.GRAPH_DEFAULTS;
+const { NODE_INIT_RADIUS } = config.GRAPH_PROPERTIES;
 const acronyms = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
 
 /**
@@ -177,5 +178,11 @@ export default class util {
       list.push(`#${color.substr(color.length - 6)}`);
     }
     return list;
+  }
+
+  static positionInit(x, y, i, n) {
+    const newX = NODE_INIT_RADIUS * Math.cos((2 * Math.PI * i - Math.PI / 6) / n) + x;
+    const newY = NODE_INIT_RADIUS * Math.sin((2 * Math.PI * i - Math.PI / 6) / n) + y;
+    return { x: newX, y: newY };
   }
 }

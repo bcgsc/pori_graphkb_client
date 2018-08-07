@@ -146,11 +146,11 @@ class GraphComponent extends Component {
       data,
       schema,
       allColumns,
+      edges,
     } = this.props;
     const { graphOptions } = this.state;
     const simulation = d3.forceSimulation();
     // Defines what edge keys to look for.
-    const edges = util.getEdges(schema);
     const expandedEdgeTypes = edges.reduce((r, e) => {
       r.push(`in_${e}`);
       r.push(`out_${e}`);

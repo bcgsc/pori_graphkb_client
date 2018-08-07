@@ -144,8 +144,8 @@ class TableComponent extends Component {
     const { sortedData, rowsPerPage } = this.state;
     const rows = (page + 1) * rowsPerPage;
     if (rows >= 0.8 * sortedData.length) {
-      const { handleTriggerNext } = this.props;
-      if (handleTriggerNext && handleTriggerNext()) {
+      const { handleSubsequentPagination } = this.props;
+      if (handleSubsequentPagination && handleSubsequentPagination()) {
         this.setState({ awaiting: true });
       }
     }
@@ -357,7 +357,7 @@ class TableComponent extends Component {
       handleHideSelected,
       handleNewQuery,
       handleGraphRedirect,
-      handleTriggerNext,
+      handleSubsequentPagination,
       moreResults,
     } = this.props;
 
@@ -619,7 +619,7 @@ class TableComponent extends Component {
               <IconButton
                 disabled={!moreResults}
                 onClick={() => {
-                  if (handleTriggerNext && handleTriggerNext()) {
+                  if (handleSubsequentPagination && handleSubsequentPagination()) {
                     this.setState({ awaiting: true });
                   }
                 }}
@@ -680,7 +680,7 @@ TableComponent.propTypes = {
   handleShowAllNodes: PropTypes.func.isRequired,
   handleNewQuery: PropTypes.func,
   handleGraphRedirect: PropTypes.func.isRequired,
-  handleTriggerNext: PropTypes.func,
+  handleSubsequentPagination: PropTypes.func,
   hidden: PropTypes.array,
   allColumns: PropTypes.array,
   moreResults: PropTypes.bool,
@@ -691,7 +691,7 @@ TableComponent.defaultProps = {
   allColumns: [],
   hidden: [],
   handleNewQuery: null,
-  handleTriggerNext: null,
+  handleSubsequentPagination: null,
   moreResults: false,
 };
 

@@ -152,17 +152,12 @@ class GraphComponent extends Component {
     const { graphOptions, propsMap, expandable } = this.state;
     const simulation = d3.forceSimulation();
     // Defines what edge keys to look for.
-    const ontologies = util.getOntologies(schema);
     const edges = util.getEdges(schema);
     const expandedEdgeTypes = edges.reduce((r, e) => {
       r.push(`in_${e}`);
       r.push(`out_${e}`);
       return r;
     }, []);
-
-    ontologies.forEach((type, i) => {
-      graphOptions[`${type.name}Color`] = util.chooseColor(i, ontologies.length);
-    });
 
     let validDisplayed = displayed;
     if (!displayed || displayed.length === 0) {
@@ -551,9 +546,8 @@ class GraphComponent extends Component {
    * @param {string} type - Object type (nodes or links)
    */
   updateColors(type) {
-    /* eslint-disable */
     const objs = this.state[type];
-    const { graphOptions } = this.state;
+    const { graphOptions, propsMap } = this.state;
     const key = graphOptions[`${type}Color`];
     const colors = {};
 
@@ -573,14 +567,13 @@ class GraphComponent extends Component {
       }
     });
 
-    if (Object.keys(colors).length <= 20) {
+    if (Object.keys(colors).length <= 20 || Object.keys(propsMap[type]).length === 1) {
       const pallette = util.getPallette(Object.keys(colors).length, type);
-      Object.keys(colors).forEach((color, i) => { colors[color] = pallette[i + 1]; });
+      Object.keys(colors).forEach((color, i) => { colors[color] = pallette[i]; });
 
       graphOptions[`${type}Colors`] = colors;
       graphOptions[`${type}Pallette`] = pallette;
       this.setState({ graphOptions });
-
     } else {
       graphOptions[`${type}Color`] = '';
       this.setState({ graphOptions, snackbarOpen: true }, () => this.updateColors(type));
@@ -925,7 +918,7 @@ class GraphComponent extends Component {
                 label="Show Nodes Coloring Legend"
               />
             </FormControl>
-            <FormControl className="graph-option">
+            <FormControl>
               <FormControlLabel
                 classes={{
                   root: classes.root,

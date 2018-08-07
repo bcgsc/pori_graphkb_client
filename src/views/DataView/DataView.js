@@ -287,15 +287,20 @@ class DataView extends Component {
    * Updates data and opens detail drawer for the specified node.
    * @param {Object} node - Specified node.
    * @param {boolean} open - flag to open drawer, or to just update.
+   * @param {boolean} edge - flag to indicate edge record.
    */
-  async handleDetailDrawerOpen(node, open) {
+  async handleDetailDrawerOpen(node, open, edge) {
     const { data, detail } = this.state;
     if (!open && !detail) return;
-    if (!data[node.data['@rid']]) {
-      const response = await api.get(`/ontologies/${node.data['@rid'].slice(1)}?neighbors=3`);
-      data[node.data['@rid']] = jc.retrocycle(response.result);
+    if (edge) {
+      this.setState({ detail: node.data });
+    } else {
+      if (!data[node.data['@rid']]) {
+        const response = await api.get(`/ontologies/${node.data['@rid'].slice(1)}?neighbors=3`);
+        data[node.data['@rid']] = jc.retrocycle(response.result);
+      }
+      this.setState({ detail: data[node.data['@rid']] });
     }
-    this.setState({ detail: node.data['@rid'] });
   }
 
   /**
@@ -311,7 +316,7 @@ class DataView extends Component {
    */
   handleTableRedirect() {
     const { history } = this.props;
-    this.setState({ detail: '' });
+    this.setState({ detail: null });
     history.push({
       pathname: '/data/table',
       search: history.location.search,
@@ -360,7 +365,7 @@ class DataView extends Component {
       >
         <NodeDetailComponent
           variant="graph"
-          node={data[detail]}
+          node={detail}
           handleNodeEditStart={this.handleNodeEditStart}
           handleNewQuery={this.handleNewQuery}
           handleClose={this.handleDetailDrawerClose}

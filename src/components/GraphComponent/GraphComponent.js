@@ -80,12 +80,6 @@ const AUTO_SPACE_COEFFICIENT = 2.8;
  * Component for displaying query results in force directed graph form.
  */
 class GraphComponent extends Component {
-  static positionInit(x, y, i, n) {
-    const newX = NODE_INIT_RADIUS * Math.cos((2 * Math.PI * i - Math.PI / 6) / n) + x;
-    const newY = NODE_INIT_RADIUS * Math.sin((2 * Math.PI * i - Math.PI / 6) / n) + y;
-    return { x: newX, y: newY };
-  }
-
   constructor(props) {
     super(props);
     this.state = {
@@ -134,6 +128,7 @@ class GraphComponent extends Component {
     this.handleGraphColorsChange = this.handleGraphColorsChange.bind(this);
     this.handleHelpOpen = this.handleHelpOpen.bind(this);
     this.handleHelpClose = this.handleHelpClose.bind(this);
+    this.handleLinkClick = this.handleLinkClick.bind(this);
   }
 
   /**
@@ -172,12 +167,11 @@ class GraphComponent extends Component {
       validDisplayed.forEach((key, i) => {
         this.processData(
           data[key],
-          GraphComponent.positionInit(0, 0, i, validDisplayed.length),
+          util.positionInit(0, 0, i, validDisplayed.length),
           0,
         );
       });
       this.drawGraph();
-      this.setState({ expandId: validDisplayed[0] });
       window.addEventListener('resize', this.handleResize);
       this.updateColors('nodes');
       this.updateColors('links');
@@ -317,11 +311,7 @@ class GraphComponent extends Component {
               const link = {
                 source: outRid,
                 target: inRid,
-                data: {
-                  source: edge.source,
-                  '@class': edge['@class'],
-                  '@rid': edge['@rid'],
-                },
+                data: edge,
               };
               links.push(link);
               graphObjects[link.data['@rid']] = link;
@@ -342,7 +332,7 @@ class GraphComponent extends Component {
               // Checks if node is already rendered
               if (outRid && !graphObjects[outRid]) {
                 // Initializes position of new child
-                const positionInit = GraphComponent.positionInit(
+                const positionInit = util.positionInit(
                   position.x,
                   position.y,
                   j += 1,
@@ -355,7 +345,7 @@ class GraphComponent extends Component {
                 );
               }
               if (inRid && !graphObjects[inRid]) {
-                const positionInit = GraphComponent.positionInit(
+                const positionInit = util.positionInit(
                   position.x,
                   position.y,
                   j += 1,
@@ -591,7 +581,12 @@ class GraphComponent extends Component {
     await handleClick(node.data['@rid'], node.data['@class']);
 
     handleDetailDrawerOpen(node);
-    this.setState({ expandId: node.data['@rid'], actionsNode: node });
+    this.setState({ actionsNode: node });
+  }
+
+  handleLinkClick(e, link) {
+    const { handleDetailDrawerOpen } = this.props;
+    handleDetailDrawerOpen(link, false, true);
   }
 
   /**
@@ -707,7 +702,6 @@ class GraphComponent extends Component {
       links,
       graphObjects,
       actionsNode: null,
-      expandId: null,
       propsMap,
     }, () => {
       this.updateColors('nodes');
@@ -1149,7 +1143,7 @@ class GraphComponent extends Component {
           name: 'Details',
           icon: <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />,
           action: () => handleDetailDrawerOpen(actionsNode, true),
-          disabled: node => node.data['@rid'] === detail,
+          disabled: node => node.data['@rid'] === (detail || {})['@rid'],
         },
         {
           name: 'Close',
@@ -1195,6 +1189,7 @@ class GraphComponent extends Component {
           detail={detail}
           labelKey={graphOptions.linkLabelProp}
           color={color}
+          handleClick={e => this.handleLinkClick(e, link)}
         />
       );
     });
@@ -1313,7 +1308,7 @@ class GraphComponent extends Component {
   * the database schema.
   * @param {Array} ontologyTypes - Array containing individual schemas for each Ontology
   * subclass as defined by the schema.
-  * @param {string} detail - record ID of node currently selected for detail viewing.
+  * @param {Object} detail - record ID of node currently selected for detail viewing.
   * @param {Array} allColumns - list of all unique properties on all nodes returned in
   * initial query.
   */
@@ -1326,7 +1321,7 @@ GraphComponent.propTypes = {
   handleTableRedirect: PropTypes.func.isRequired,
   handleNewColumns: PropTypes.func.isRequired,
   schema: PropTypes.object.isRequired,
-  detail: PropTypes.string,
+  detail: PropTypes.object,
   allColumns: PropTypes.array,
 };
 

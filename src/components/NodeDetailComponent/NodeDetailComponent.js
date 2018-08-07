@@ -46,7 +46,7 @@ class NodeDetailComponent extends Component {
   async componentDidMount() {
     const schema = await api.getSchema();
     const { V } = schema;
-    const ontologyEdges = util.getEdges(schema);
+    const ontologyEdges = api.getEdges(schema);
     // Accounts for in and out edgetypes.
     const expandedEdgeTypes = ontologyEdges ? ontologyEdges.reduce((r, e) => {
       r.push(`in_${e}`);

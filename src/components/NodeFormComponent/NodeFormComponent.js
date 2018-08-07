@@ -135,7 +135,7 @@ class NodeFormComponent extends Component {
           break;
       }
     });
-    const edgeTypes = util.getEdges(schema);
+    const edgeTypes = api.getEdges(schema);
     const expandedEdgeTypes = edgeTypes.reduce((r, e) => {
       r.push(`in_${e}`);
       r.push(`out_${e}`);
@@ -172,7 +172,7 @@ class NodeFormComponent extends Component {
       edgeTypes,
       editableProps,
       newNodeClass: nodeClass,
-      ontologyTypes: util.getOntologies(schema),
+      ontologyTypes: api.getOntologies(schema),
       schema,
     });
   }

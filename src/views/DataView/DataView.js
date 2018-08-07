@@ -208,7 +208,7 @@ class DataView extends Component {
         const cycled = jc.retrocycle(nextData.result);
         let newColumns = allColumns;
         cycled.forEach((ontologyTerm) => {
-          newColumns = util.collectOntologyProps(ontologyTerm, allColumns, schema);
+          newColumns = api.collectOntologyProps(ontologyTerm, allColumns, schema);
           data[ontologyTerm['@rid']] = ontologyTerm;
         });
 

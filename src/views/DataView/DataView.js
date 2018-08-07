@@ -27,6 +27,8 @@ const styles = {
   },
 };
 
+const DEFAULT_LIMIT = 1000;
+
 /**
  * View for managing state of query results. Contains sub-routes for table view (/data/table)
  * and graph view (/data/graph) to display data. Redirects to /data/table for all other
@@ -97,12 +99,12 @@ class DataView extends Component {
       const cycled = jc.retrocycle(data.result);
 
       cycled.forEach((ontologyTerm) => {
-        allColumns = util.collectOntologyProps(ontologyTerm, allColumns, schema);
+        allColumns = api.collectOntologyProps(ontologyTerm, allColumns, schema);
         dataMap[ontologyTerm['@rid']] = ontologyTerm;
       });
 
-      if (cycled.length >= filteredSearch.limit || 1000) {
-        filteredSearch.skip = filteredSearch.limit || 1000;
+      if (cycled.length >= filteredSearch.limit || DEFAULT_LIMIT) {
+        filteredSearch.skip = filteredSearch.limit || DEFAULT_LIMIT;
         this.setState({
           next: () => api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`),
           moreResults: true,
@@ -217,8 +219,9 @@ class DataView extends Component {
 
         let newNext = null;
         let moreResults = false;
-        if (cycled.length >= (filteredSearch.limit || 1000)) {
-          const newSkip = Number(filteredSearch.skip) + Number((filteredSearch.limit || 1000));
+        if (cycled.length >= (filteredSearch.limit || DEFAULT_LIMIT)) {
+          const newSkip = Number(filteredSearch.skip)
+            + Number((filteredSearch.limit || DEFAULT_LIMIT));
           filteredSearch.skip = newSkip;
           newNext = () => api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`);
           moreResults = true;

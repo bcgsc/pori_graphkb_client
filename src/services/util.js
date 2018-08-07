@@ -1,8 +1,8 @@
 import config from '../config.json';
 
 const { DEFAULT_PROPS } = config;
+const { PALLETE_SIZES } = config.GRAPH_DEFAULTS;
 const acronyms = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
-
 
 /**
  * Handles miscellaneous tasks.
@@ -159,16 +159,15 @@ export default class util {
    */
   static getPallette(n, type) {
     const baseName = `${type.toUpperCase().slice(0, type.length - 1)}_COLORS_`;
-    const tiers = [5, 10, 15, 20];
-
-    for (let i = 0; i < tiers.length; i += 1) {
-      if (n <= tiers[i]) {
-        return config.GRAPH_DEFAULTS[baseName + tiers[i]];
+    const maxPalletteSize = PALLETE_SIZES[PALLETE_SIZES.length - 1];
+    for (let i = 0; i < PALLETE_SIZES.length; i += 1) {
+      if (n <= PALLETE_SIZES[i]) {
+        return config.GRAPH_DEFAULTS[baseName + PALLETE_SIZES[i]];
       }
     }
 
-    const list = config.GRAPH_DEFAULTS[`${baseName}20`];
-    for (let i = 20; i < n; i += 1) {
+    const list = config.GRAPH_DEFAULTS[baseName + maxPalletteSize];
+    for (let i = maxPalletteSize; i < n; i += 1) {
       const color = `000000${Math.round(Math.random() * (255 ** 3)).toString(16)}`;
       list.push(`#${color.substr(color.length - 6)}`);
     }

@@ -173,6 +173,7 @@ class NodeFormComponent extends Component {
       editableProps,
       newNodeClass: nodeClass,
       ontologyTypes: util.getOntologies(schema),
+      schema,
     });
   }
 
@@ -375,12 +376,12 @@ class NodeFormComponent extends Component {
   /**
    * Deletes target node.
    */
-  handleDeleteNode() {
+  async handleDeleteNode() {
     const { originalNode } = this.state;
     const { handleNodeDelete } = this.props;
-
+    const { route } = await api.getClass(originalNode['@class']);
     api.delete(
-      `/${util.pluralize(originalNode['@class'])}/${originalNode['@rid'].slice(1)}`,
+      `${route}/${originalNode['@rid'].slice(1)}`,
     ).then(() => {
       handleNodeDelete();
     });
@@ -508,6 +509,7 @@ class NodeFormComponent extends Component {
       newNodeClass,
       errorFlag,
       ontologyTypes,
+      schema,
     } = this.state;
     const { variant, handleNodeFinishEdit } = this.props;
 
@@ -630,9 +632,7 @@ class NodeFormComponent extends Component {
         // Decide which endpoint to query.
         let endpoint;
         if (linkedClass) {
-          endpoint = util.pluralize(linkedClass);
-        } else {
-          endpoint = 'ontologies';
+          endpoint = schema[linkedClass].route.slice(1);
         }
 
         return (

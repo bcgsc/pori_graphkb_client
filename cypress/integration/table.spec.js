@@ -16,6 +16,9 @@ describe('Table Test', () => {
     cy.url().should('includes', '/query');
   });
 
+  /**
+   * Tests selected row visuals.
+   */
   it('Selected indicator', () => {
     getName('melanoma');
     cy.contains('Rows per page');
@@ -29,6 +32,9 @@ describe('Table Test', () => {
     });
   });
 
+  /**
+   * Tests checkboxes visuals.
+   */
   it('Checkboxes', () => {
     getName('melanoma');
     cy.get('table tbody tr').then((array) => {
@@ -42,6 +48,9 @@ describe('Table Test', () => {
     });
   });
 
+  /**
+   * Tests node detail drawer expansion.
+   */
   it('Expand details', () => {
     getName('melanoma');
     cy.get('table tbody tr:first td button[tabindex=0]').click({ force: true });
@@ -50,6 +59,9 @@ describe('Table Test', () => {
     cy.contains('Class:').should('not.exist');
   });
 
+  /**
+   * Tables paginator navigation buttons.
+   */
   it('Paginator', () => {
     getName('melanoma');
     cy.get('div.pag div div div button').each((button, i) => {
@@ -67,12 +79,18 @@ describe('Table Test', () => {
     cy.contains('26-50');
   });
 
+  /**
+   * Tests download as TSV button.
+   */
   it('Ellipsis menu: Download as TSV', () => {
     getName('melanoma');
     cy.get('#ellipsis-menu').click();
     cy.get('#download-tsv').click();
   });
 
+  /**
+   * Tests hiding and showing table rows.
+   */
   it('Ellipsis menu: hiding/returning rows', () => {
     getName('melanoma');
     cy.get('table tbody tr').then((array) => {
@@ -98,6 +116,9 @@ describe('Table Test', () => {
     });
   });
 
+  /**
+   * Tests column management.
+   */
   it('Ellipsis menu: column changes', () => {
     getName('melanoma');
     cy.get('#ellipsis-menu').click();
@@ -112,9 +133,14 @@ describe('Table Test', () => {
     });
   });
 
+  /**
+   * Tests automatic loading of more records.
+   */
   it('Subsequent Pagination', () => {
     getName('dis');
+    cy.wait(100);
     cy.get('div.pag div div div button').each((button, i) => {
+      // Chooses second button.
       if (i !== 0) {
         for (let j = 0; j < 15; j += 1) {
           cy.wrap(button).click();
@@ -127,5 +153,18 @@ describe('Table Test', () => {
         cy.contains('2000');
       }
     });
+  });
+
+  /**
+   * Tests manual add button for loading more records.
+   */
+  it('Forced Subsequent Pagination', () => {
+    getName('dis');
+    cy.get('div.more-results-btn button').click();
+    cy.contains('loading more results...');
+    cy.contains('1000');
+    cy.get('div.more-results-btn button').should('disabled');
+    cy.wait(1000);
+    cy.contains('2000');
   });
 });

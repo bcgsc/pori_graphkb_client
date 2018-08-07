@@ -59,7 +59,7 @@ class DataView extends Component {
     this.handleCheckAll = this.handleCheckAll.bind(this);
     this.handleHideSelected = this.handleHideSelected.bind(this);
     this.handleShowAllNodes = this.handleShowAllNodes.bind(this);
-    this.handleTriggerNext = this.handleTriggerNext.bind(this);
+    this.handleSubsequentPagination = this.handleSubsequentPagination.bind(this);
 
     // GraphComponent methods
     this.handleDetailDrawerOpen = this.handleDetailDrawerOpen.bind(this);
@@ -189,7 +189,10 @@ class DataView extends Component {
     this.setState({ displayed, hidden: [] });
   }
 
-  handleTriggerNext() {
+  /**
+   * Handles subsequent pagination call
+   */
+  handleSubsequentPagination() {
     const { next } = this.state;
 
     if (next) {
@@ -215,8 +218,7 @@ class DataView extends Component {
         let newNext = null;
         let moreResults = false;
         if (cycled.length >= (filteredSearch.limit || 1000)) {
-          let newSkip = Number(filteredSearch.skip);
-          newSkip += Number((filteredSearch.limit || 1000));
+          const newSkip = Number(filteredSearch.skip) + Number((filteredSearch.limit || 1000));
           filteredSearch.skip = newSkip;
           newNext = () => api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`);
           moreResults = true;
@@ -386,7 +388,7 @@ class DataView extends Component {
         handleShowAllNodes={this.handleShowAllNodes}
         handleNewQuery={this.handleNewQuery}
         handleGraphRedirect={this.handleGraphRedirect}
-        handleTriggerNext={this.handleTriggerNext}
+        handleSubsequentPagination={this.handleSubsequentPagination}
       />
     );
     return (

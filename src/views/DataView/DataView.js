@@ -159,11 +159,10 @@ class DataView extends Component {
    * Adds all data entries to the list of displayed nodes.
    * @param {Event} e - Checkbox event.
    */
-  handleCheckAll(e) {
+  handleCheckAll(e, pageData) {
     let displayed;
-    const { data, hidden } = this.state;
     if (e.target.checked) {
-      displayed = Object.keys(data).filter(key => !hidden.includes(key));
+      displayed = pageData.map(d => d['@rid']);
     } else {
       displayed = [];
     }

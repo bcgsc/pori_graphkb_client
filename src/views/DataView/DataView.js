@@ -117,6 +117,7 @@ class DataView extends Component {
         allColumns,
         schema,
         filteredSearch,
+        edges: api.getEdges(schema),
       });
     } catch (e) {
       console.error(e);
@@ -336,6 +337,7 @@ class DataView extends Component {
       detail,
       schema,
       moreResults,
+      edges,
     } = this.state;
 
     const {
@@ -380,6 +382,7 @@ class DataView extends Component {
         handleDetailDrawerClose={this.handleDetailDrawerClose}
         handleTableRedirect={this.handleTableRedirect}
         schema={schema}
+        edges={edges}
         detail={detail}
         allColumns={allColumns}
         handleNewColumns={this.handleNewColumns}

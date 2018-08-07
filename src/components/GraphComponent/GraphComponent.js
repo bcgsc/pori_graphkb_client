@@ -106,7 +106,7 @@ class GraphComponent extends Component {
         autoCollisionRadius: false,
         linkHighlighting: true,
         nodeLabelProp: 'name',
-        linkLabelProp: '@class',
+        linkLabelProp: '',
         nodesColor: '@class',
         linksColor: '',
         legend: false,

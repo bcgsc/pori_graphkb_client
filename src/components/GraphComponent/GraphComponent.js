@@ -543,9 +543,8 @@ class GraphComponent extends Component {
    * @param {string} type - Object type (nodes or links)
    */
   updateColors(type) {
-    /* eslint-disable */
     const objs = this.state[type];
-    const { graphOptions } = this.state;
+    const { graphOptions, propsMap } = this.state;
     const key = graphOptions[`${type}Color`];
     const colors = {};
 
@@ -572,7 +571,6 @@ class GraphComponent extends Component {
       graphOptions[`${type}Colors`] = colors;
       graphOptions[`${type}Pallette`] = pallette;
       this.setState({ graphOptions });
-
     } else {
       graphOptions[`${type}Color`] = '';
       this.setState({ graphOptions, snackbarOpen: true }, () => this.updateColors(type));
@@ -903,7 +901,7 @@ class GraphComponent extends Component {
                 label="Show Nodes Coloring Legend"
               />
             </FormControl>
-            <FormControl className="graph-option">
+            <FormControl>
               <FormControlLabel
                 classes={{
                   root: classes.root,

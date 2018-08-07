@@ -18,6 +18,12 @@
     "LINK_STRENGTH": 0.03,
     "CHARGE_STRENGTH": 150,
     "DEFAULT_NODE_COLOR": "#26328C",
+    "PALLETE_SIZES": [
+      5,
+      10,
+      15,
+      20
+    ],
     "NODE_COLORS_5": [
       "#56ae6c",
       "#9350a1",

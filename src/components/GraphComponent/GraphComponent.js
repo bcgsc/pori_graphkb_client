@@ -49,6 +49,7 @@ const {
   LINK_STRENGTH,
   CHARGE_STRENGTH,
   DEFAULT_NODE_COLOR,
+  PALLETE_SIZES,
 } = config.GRAPH_DEFAULTS;
 
 const { GRAPH_ADVANCED, GRAPH_MAIN } = config.DESCRIPTIONS;
@@ -67,11 +68,13 @@ const styles = {
   },
 };
 
-const endArrowSize = {
+const END_ARROW_SIZE = {
   d: `M0,0,L0,${ARROW_WIDTH} L ${ARROW_LENGTH}, ${ARROW_WIDTH / 2} z`,
   refX: NODE_RADIUS - 1,
   refY: ARROW_WIDTH / 2,
 };
+
+const AUTO_SPACE_COEFFICIENT = 2.8;
 
 /**
  * Component for displaying query results in force directed graph form.
@@ -465,7 +468,7 @@ class GraphComponent extends Component {
             obj = graphOptions.nodeLabelProp.split('.')[0] || {};
           }
           if (!obj[key] || obj[key].length === 0) return graphOptions.collisionRadius;
-          return Math.max(obj[key].length * 2.8, NODE_INIT_RADIUS);
+          return Math.max(obj[key].length * AUTO_SPACE_COEFFICIENT, NODE_INIT_RADIUS);
         }
         return graphOptions.collisionRadius;
       }),
@@ -564,7 +567,10 @@ class GraphComponent extends Component {
       }
     });
 
-    if (Object.keys(colors).length <= 20 || Object.keys(propsMap[type]).length === 1) {
+    if (
+      Object.keys(colors).length <= PALLETE_SIZES[PALLETE_SIZES.length - 1]
+      || Object.keys(propsMap[type]).length === 1
+    ) {
       const pallette = util.getPallette(Object.keys(colors).length, type);
       Object.keys(colors).forEach((color, i) => { colors[color] = pallette[i]; });
 
@@ -1281,12 +1287,12 @@ class GraphComponent extends Component {
                 id="endArrow"
                 markerWidth={ARROW_LENGTH}
                 markerHeight={ARROW_WIDTH}
-                refX={endArrowSize.refX}
-                refY={endArrowSize.refY}
+                refX={END_ARROW_SIZE.refX}
+                refY={END_ARROW_SIZE.refY}
                 orient="auto"
                 markerUnits="strokeWidth"
               >
-                <path d={endArrowSize.d} fill="#555" />
+                <path d={END_ARROW_SIZE.d} fill="#555" />
               </marker>
             </defs>
             <g ref={(node) => { this.zoom = node; }}>

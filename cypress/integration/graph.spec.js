@@ -1,3 +1,9 @@
+/**
+ * Queries endpoint with given params and selects first record to load into
+ * graph view.
+ * @param {string} endpoint - database endpoint to query.
+ * @param {Object} params - query parameters as an object.
+ */
 function getClass(endpoint, params) {
   cy.contains('Advanced Search').click();
   cy.url().should('includes', '/query/advanced');
@@ -23,6 +29,9 @@ describe('Graph View Test', () => {
     cy.url().should('includes', '/query');
   });
 
+  /**
+   * Tests disease actions buttons and their actions.
+   */
   it('Diseases actions ring', () => {
     getClass('Disease');
     cy.get('circle.node').click();
@@ -52,6 +61,9 @@ describe('Graph View Test', () => {
     });
   });
 
+  /**
+   * Tests link hovering property for different classes of links.
+   */
   it('Features different edges', () => {
     const name = 'a1bg-as1';
     getClass('Feature', { name });
@@ -63,6 +75,9 @@ describe('Graph View Test', () => {
     cy.contains('DeprecatedBy').should('not.exist');
   });
 
+  /**
+   * Checks graph options panel.
+   */
   it('Graph options', () => {
     const name = 'a1bg-as1';
     getClass('Feature', { name });

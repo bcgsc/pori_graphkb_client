@@ -237,20 +237,17 @@ class GraphComponent extends Component {
       links,
       graphObjects,
       propsMap,
-      schema,
-      allColumns,
     } = this.state;
 
-    const { data } = this.props;
+    const { data, handleNewColumns } = this.props;
 
-    let newColumns = allColumns;
     if (data[node['@rid']]) {
       node = data[node['@rid']];
     } else {
       // Node properties haven't been processed.
-      newColumns = util.collectOntologyProps(node, allColumns, schema);
+      handleNewColumns(node);
     }
-    /* eslint-enable */
+    const { allColumns } = this.props;
 
     if (!graphObjects[node['@rid']]) {
       nodes.push({
@@ -260,7 +257,7 @@ class GraphComponent extends Component {
       });
       graphObjects[node['@rid']] = node;
       // Iterate over all props.
-      newColumns.forEach((prop) => {
+      allColumns.forEach((prop) => {
         let obj = node;
         let key = prop;
 
@@ -404,7 +401,6 @@ class GraphComponent extends Component {
       links,
       graphObjects,
       propsMap,
-      allColumns: newColumns,
     });
   }
 
@@ -1328,6 +1324,7 @@ GraphComponent.propTypes = {
   handleDetailDrawerOpen: PropTypes.func.isRequired,
   handleDetailDrawerClose: PropTypes.func.isRequired,
   handleTableRedirect: PropTypes.func.isRequired,
+  handleNewColumns: PropTypes.func.isRequired,
   schema: PropTypes.object.isRequired,
   detail: PropTypes.string,
   allColumns: PropTypes.array,

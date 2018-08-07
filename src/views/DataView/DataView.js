@@ -18,7 +18,6 @@ import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import NodeDetailComponent from '../../components/NodeDetailComponent/NodeDetailComponent';
 import api from '../../services/api';
-import util from '../../services/util';
 
 const styles = {
   paper: {
@@ -66,6 +65,7 @@ class DataView extends Component {
     // GraphComponent methods
     this.handleDetailDrawerOpen = this.handleDetailDrawerOpen.bind(this);
     this.handleDetailDrawerClose = this.handleDetailDrawerClose.bind(this);
+    this.handleNewColumns = this.handleNewColumns.bind(this);
 
     // NodeDetailComponent methods
     this.handleNodeEditStart = this.handleNodeEditStart.bind(this);
@@ -317,6 +317,15 @@ class DataView extends Component {
     });
   }
 
+  /**
+   * Updates column list with field keys from new node.
+   * @param {Object} node - newly added object.
+   */
+  handleNewColumns(node) {
+    const { allColumns, schema } = this.state;
+    this.setState({ allColumns: api.collectOntologyProps(node, allColumns, schema) });
+  }
+
   render() {
     const {
       selectedId,
@@ -373,6 +382,7 @@ class DataView extends Component {
         schema={schema}
         detail={detail}
         allColumns={allColumns}
+        handleNewColumns={this.handleNewColumns}
       />
     );
     const TableWithProps = () => (

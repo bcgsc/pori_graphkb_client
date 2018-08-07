@@ -114,6 +114,10 @@ describe('Graph View Test', () => {
     cy.contains('gene');
   });
 
+  /**
+   * Tests if coloring scheme properly reverts to default coloring if there
+   * is too much color diversity of categorizing property among nodes.
+   */
   it('Unique property limit exceeding test', () => {
     getClass('Disease');
     cy.get('circle.node').click();
@@ -139,6 +143,29 @@ describe('Graph View Test', () => {
               cy.contains('Too many subgroups, choose new coloring property.').should('not.exist');
             }
           });
+      });
+    });
+  });
+
+  /**
+   * Tests whether or not graph objects are properly stored in localstorage.
+   */
+  it('Persistent graph objects', () => {
+    getClass('Disease');
+    cy.get('circle.node').click();
+    cy.contains('(Expand)').click();
+    cy.get('circle.node').then((nodes) => {
+      cy.get('div.save-check button').click();
+      cy.get('div.save-check button').should('not.exist');
+      cy.get('div.save-check svg g path').should('exist').then(() => {
+        /* eslint-disable no-unused-expressions */
+        expect(localStorage.getItem('graphObjects')).to.not.be.null;
+        /* eslint-enable */
+      });
+
+      cy.reload();
+      cy.get('circle.node').then((refreshedNodes) => {
+        expect(refreshedNodes.length).to.eq(nodes.length);
       });
     });
   });

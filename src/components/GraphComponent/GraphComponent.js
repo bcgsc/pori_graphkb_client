@@ -1294,7 +1294,7 @@ class GraphComponent extends Component {
             </IconButton>
           </Tooltip>
 
-          <Tooltip placement="top" title="Save graph state">
+          <Tooltip placement="top" title={!icon ? 'Save graph state' : 'Saved!'}>
             <div className="save-check">
               {!icon ? (
                 <IconButton

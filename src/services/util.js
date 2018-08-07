@@ -215,7 +215,7 @@ export default class util {
     const list = [];
     Object.keys(schema).forEach((key) => {
       if (schema[key].inherits.includes('Ontology')) {
-        list.push({ name: key, properties: schema[key].properties });
+        list.push({ name: key, properties: schema[key].properties, route: schema[key].route });
       }
     });
     return list;

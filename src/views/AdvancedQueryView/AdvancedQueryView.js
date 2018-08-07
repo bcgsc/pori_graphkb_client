@@ -63,7 +63,7 @@ class AdvancedQueryView extends Component {
 
     const form = {};
     const schema = await api.getSchema();
-    const ontologyTypes = [{ name: '', properties: null }];
+    const ontologyTypes = [{ name: '', properties: null, route: 'ontologies' }];
     ontologyTypes.push(...util.getOntologies(schema));
     form['@class'] = ontologyTypes[0].name;
 
@@ -95,11 +95,11 @@ class AdvancedQueryView extends Component {
           break;
       }
     });
-
     this.setState({
       ontologyTypes,
       form,
       editableProps,
+      schema,
     });
   }
 
@@ -169,6 +169,7 @@ class AdvancedQueryView extends Component {
       ontologyTypes,
       editableProps,
       message,
+      schema,
     } = this.state;
     const { history } = this.props;
 
@@ -248,9 +249,7 @@ class AdvancedQueryView extends Component {
         // Decide which endpoint to query.
         let endpoint;
         if (linkedClass) {
-          endpoint = util.pluralize(linkedClass);
-        } else {
-          endpoint = 'ontologies';
+          endpoint = schema[linkedClass].route.slice(1);
         }
 
         return (

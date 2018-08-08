@@ -37,8 +37,7 @@ class AutoSearchComponent extends Component {
       lastRid: null,
     };
     const { property } = props;
-    this.callApi = _.debounce(DEBOUNCE_TIME,
-      this.callApi.bind(this), property.length > 1 ? LONG_DEBOUNCE_TIME : DEBOUNCE_TIME);
+    this.callApi = _.debounce(this.callApi.bind(this), property.length > 1 ? LONG_DEBOUNCE_TIME : DEBOUNCE_TIME);
     this.refreshOptions = this.refreshOptions.bind(this);
   }
 

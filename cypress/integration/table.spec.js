@@ -12,7 +12,7 @@ describe('Table Test', () => {
     cy.get('input[name=username]').type(Cypress.env('USER'));
     cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
     cy.get('button[type=submit]').click();
-    cy.wait(500);
+    cy.wait(1000);
     cy.url().should('includes', '/query');
   });
 

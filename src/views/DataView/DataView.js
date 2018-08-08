@@ -293,7 +293,7 @@ class DataView extends Component {
     const { data, detail } = this.state;
     if (!open && !detail) return;
     if (edge) {
-      this.setState({ detail: node.data });
+      this.setState({ detail: node.data, detailEdge: true });
     } else {
       if (!data[node.data['@rid']]) {
         const response = await api.get(`/ontologies/${node.data['@rid'].slice(1)}?neighbors=3`);
@@ -343,6 +343,7 @@ class DataView extends Component {
       schema,
       moreResults,
       edges,
+      detailEdge,
     } = this.state;
 
     const {
@@ -369,6 +370,7 @@ class DataView extends Component {
           handleNodeEditStart={this.handleNodeEditStart}
           handleNewQuery={this.handleNewQuery}
           handleClose={this.handleDetailDrawerClose}
+          detailEdge={detailEdge}
         >
           <IconButton onClick={this.handleDetailDrawerClose}>
             <CloseIcon color="action" />

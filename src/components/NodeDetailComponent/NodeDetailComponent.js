@@ -88,6 +88,7 @@ class NodeDetailComponent extends Component {
       children,
       variant,
       handleNewQuery,
+      detailEdge,
     } = this.props;
 
     if (!V) return null;
@@ -362,11 +363,13 @@ class NodeDetailComponent extends Component {
       <Card style={{ height: '100%', overflowY: 'auto' }}>
         <div className="node-edit-btn">
           {children}
-          <IconButton
-            onClick={() => handleNodeEditStart(node['@rid'], node['@class'])}
-          >
-            <EditIcon />
-          </IconButton>
+          {detailEdge ? null : (
+            <IconButton
+              onClick={() => handleNodeEditStart(node['@rid'], node['@class'])}
+            >
+              <EditIcon />
+            </IconButton>
+          )}
         </div>
         <div className={`node-properties ${className}`}>
           <Card className="properties">
@@ -403,12 +406,14 @@ NodeDetailComponent.propTypes = {
   handleNewQuery: PropTypes.func.isRequired,
   children: PropTypes.node,
   variant: PropTypes.string,
+  detailEdge: PropTypes.bool,
 };
 
 NodeDetailComponent.defaultProps = {
   node: null,
   children: null,
   variant: 'table',
+  detailEdge: false,
 };
 
 export default NodeDetailComponent;

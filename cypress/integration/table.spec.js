@@ -149,7 +149,7 @@ describe('Table Test', () => {
         cy.contains('loading more results...');
         cy.contains('1000');
 
-        cy.wait(1000);
+        cy.wait(2000);
         cy.contains('2000');
       }
     });
@@ -164,7 +164,7 @@ describe('Table Test', () => {
     cy.contains('loading more results...');
     cy.contains('1000');
     cy.get('div.more-results-btn button').should('disabled');
-    cy.wait(1000);
+    cy.wait(2000);
     cy.contains('2000');
   });
 });

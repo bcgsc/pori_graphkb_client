@@ -48,6 +48,7 @@ const {
 const {
   LINK_STRENGTH,
   CHARGE_STRENGTH,
+  CHARGE_MAX,
   DEFAULT_NODE_COLOR,
   PALLETE_SIZES,
 } = config.GRAPH_DEFAULTS;
@@ -102,6 +103,7 @@ class GraphComponent extends Component {
         defaultColor: DEFAULT_NODE_COLOR,
         linkStrength: LINK_STRENGTH,
         chargeStrength: CHARGE_STRENGTH,
+        chargeMax: CHARGE_MAX,
         collisionRadius: NODE_RADIUS,
         autoCollisionRadius: false,
         linkHighlighting: true,
@@ -470,7 +472,9 @@ class GraphComponent extends Component {
       }),
     ).force(
       'charge',
-      d3.forceManyBody().strength(-graphOptions.chargeStrength),
+      d3.forceManyBody()
+        .distanceMax(graphOptions.chargeMax)
+        .strength(-graphOptions.chargeStrength),
     ).force(
       'center',
       d3.forceCenter(
@@ -516,7 +520,6 @@ class GraphComponent extends Component {
     } = this.state;
 
     simulation.nodes(nodes);
-
     simulation.force(
       'links',
       d3

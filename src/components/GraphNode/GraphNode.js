@@ -60,7 +60,6 @@ class GraphNode extends PureComponent {
       handleClick,
       color,
       r,
-      actionsRing,
       label,
       detail,
     } = this.props;
@@ -86,7 +85,6 @@ class GraphNode extends PureComponent {
             {obj ? obj[key] : null}
           </tspan>
         </text>
-        {actionsRing}
         <circle
           fill="#fff"
           cx={0}
@@ -113,7 +111,6 @@ GraphNode.defaultProps = {
   handleClick: null,
   color: '#26328C',
   r: 4,
-  actionsRing: null,
   label: 'name',
   detail: null,
 };
@@ -136,7 +133,6 @@ GraphNode.propTypes = {
   color: PropTypes.string,
   r: PropTypes.number,
   simulation: PropTypes.object.isRequired,
-  actionsRing: PropTypes.object,
   label: PropTypes.string,
   detail: PropTypes.object,
 };

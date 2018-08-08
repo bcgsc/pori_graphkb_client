@@ -4,7 +4,14 @@ import config from '../../config.json';
 
 const {
   DETAILS_RING_RADIUS,
+  NODE_RADIUS,
+  FONT_SIZE,
+  LABEL_V_MARGIN,
+  ICON_DIMS,
 } = config.GRAPH_PROPERTIES;
+
+const ICON_POSITION_COEFFICIENT = 0.64;
+const SCALE = 0.8;
 
 /**
  * Component for displaying ring-shaped panel containing possible actions for selected node.
@@ -15,6 +22,7 @@ function GraphActionsNode(props) {
     handleActionsRing,
     actionsNode,
   } = props;
+  if (!actionsNode || actionsNode.source || actionsNode.target) return null;
 
   const actionsRing = [];
   options.forEach((option, i) => {
@@ -22,6 +30,7 @@ function GraphActionsNode(props) {
     const offset = 1 / l * Math.PI;
     const startAngle = (i + 1) / l * 2 * Math.PI + offset;
     const endAngle = i / l * 2 * Math.PI + offset;
+
     const start = {
       x: DETAILS_RING_RADIUS * Math.cos(startAngle),
       y: DETAILS_RING_RADIUS * Math.sin(startAngle),
@@ -31,18 +40,27 @@ function GraphActionsNode(props) {
       y: DETAILS_RING_RADIUS * Math.sin(endAngle),
     };
 
+    const innerEnd = {
+      x: NODE_RADIUS * Math.cos(startAngle),
+      y: NODE_RADIUS * Math.sin(startAngle),
+    };
+    const innerStart = {
+      x: NODE_RADIUS * Math.cos(endAngle),
+      y: NODE_RADIUS * Math.sin(endAngle),
+    };
+
     const d = [
       'M', start.x, start.y,
       'A', DETAILS_RING_RADIUS, DETAILS_RING_RADIUS, 0, 0, 0, end.x, end.y,
-      'L', 0, 0,
+      'L', innerStart.x, innerStart.y,
+      'A', NODE_RADIUS, NODE_RADIUS, 0, 0, 1, innerEnd.x, innerEnd.y,
       'L', start.x, start.y,
     ].join(' ');
 
     const angle = (2 * i + 1) / l * Math.PI + offset;
     const dx = DETAILS_RING_RADIUS * Math.cos(angle);
     const dy = DETAILS_RING_RADIUS * Math.sin(angle);
-    const iconDims = 24;
-    const scale = 0.8;
+
     actionsRing.push((
       <g
         style={{ cursor: 'pointer' }}
@@ -55,16 +73,16 @@ function GraphActionsNode(props) {
           stroke="#ccc"
         />
         <g
-          transform={`translate(${dx * 0.64 - iconDims * scale / 2}, ${dy * 0.64 - iconDims * scale / 2}) scale(${scale})`}
+          transform={`translate(${dx * ICON_POSITION_COEFFICIENT - ICON_DIMS * SCALE / 2}, ${dy * ICON_POSITION_COEFFICIENT - ICON_DIMS * SCALE / 2}) scale(${SCALE})`}
           fill={option.disabled && option.disabled(actionsNode) ? '#ccc' : '#555'}
         >
           {(option || '').icon}
           <text
             textAnchor="middle"
             dominantBaseline="central"
-            fontSize={7}
-            dy={iconDims + 4}
-            dx={iconDims / 2}
+            fontSize={FONT_SIZE}
+            dy={ICON_DIMS + LABEL_V_MARGIN} // add small margin vertically
+            dx={ICON_DIMS / 2} // center label horizontally
           >
             {`(${option.name})`}
           </text>
@@ -73,7 +91,11 @@ function GraphActionsNode(props) {
     ));
   });
 
-  return actionsRing;
+  return (
+    <g transform={`translate(${(actionsNode.x || 0)},${(actionsNode.y || 0)})`}>
+      {actionsRing}
+    </g>
+  );
 }
 
 /**
@@ -92,5 +114,12 @@ GraphActionsNode.propTypes = {
   handleActionsRing: PropTypes.func,
   actionsNode: PropTypes.object,
 };
+
+GraphActionsNode.defaultProps = {
+  options: [],
+  handleActionsRing: null,
+  actionsNode: null,
+};
+
 
 export default GraphActionsNode;

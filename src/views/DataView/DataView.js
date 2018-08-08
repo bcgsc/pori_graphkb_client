@@ -88,8 +88,8 @@ class DataView extends Component {
     const filteredSearch = queryString.parse(history.location.search);
     let route = '/ontologies';
 
-    if (filteredSearch['@class']) {
-      route = schema[filteredSearch['@class']].route;
+    if (filteredSearch['@class'] && schema[filteredSearch['@class']]) {
+      route = schema[filteredSearch['@class']].route || filteredSearch['@class'];
     }
 
     let allColumns = ['@rid', '@class'];

@@ -5,6 +5,7 @@ const { DEFAULT_PROPS } = config;
 const { PALLETE_SIZES } = config.GRAPH_DEFAULTS;
 const CACHE_EXPIRY = 8;
 const ACRONYMS = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
+const GRAPH_OBJECTS_KEY = 'graphObjects';
 
 /**
  * Handles miscellaneous tasks.
@@ -200,7 +201,7 @@ export default class util {
    * @param {Object} search - collection of search parameters .
    */
   static getGraphData(search) {
-    const data = localStorage.getItem('graphObjects');
+    const data = localStorage.getItem(GRAPH_OBJECTS_KEY);
     if (data) {
       const obj = jc.retrocycle(JSON.parse(data));
       if (obj.filteredSearch === search) {

@@ -18,6 +18,12 @@
     "LINK_STRENGTH": 0.03,
     "CHARGE_STRENGTH": 150,
     "DEFAULT_NODE_COLOR": "#26328C",
+    "PALLETE_SIZES": [
+      5,
+      10,
+      15,
+      20
+    ],
     "NODE_COLORS_5": [
       "#56ae6c",
       "#9350a1",
@@ -169,5 +175,43 @@
       "type": "boolean",
       "defaultValue": "true"
     }
-  ]
+  ],
+  "DESCRIPTIONS": {
+    "GRAPH_ADVANCED": [
+      {
+        "title": "Link Strength",
+        "description": "Defines the strength of the pulling force that links exert between nodes"
+      },
+      {
+        "title": "Charge Strength",
+        "description": "Defines the strength of the repulsive force that nodes exert on other nodes."
+      },
+      {
+        "title": "Collision Radius",
+        "description": "Defines the minimum distance between nodes."
+      },
+      {
+        "title": "Auto Space Nodes Option",
+        "description": "Spaces nodes based on label length, in order to help label readability."
+      }
+    ],
+    "GRAPH_MAIN": [
+      {
+        "title": "Node Labels",
+        "description": "Choose which property to label nodes by. Determined based on the current displayed nodes."
+      },
+      {
+        "title": "Node Colors",
+        "description": "Choose which node properties to color nodes based on. Eligible properties are those with 20 or fewer different unique values throughout the displayed nodes."
+      },
+      {
+        "title": "Edge Labels",
+        "description": "Choose which property to display on the edges in the graph."
+      },
+      {
+        "title": "Edge Colors",
+        "description": "Choose which edge properties to color edges based on. Eligible properties are those with 20 or fewer different unique values throughout the displayed edges."
+      }
+    ]
+  }
 }

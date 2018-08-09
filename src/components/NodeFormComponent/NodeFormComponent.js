@@ -10,7 +10,6 @@ import {
   MenuItem,
   Button,
   Typography,
-  Divider,
   RadioGroup,
   Radio,
   FormControlLabel,
@@ -22,9 +21,8 @@ import {
   DialogTitle,
   Tooltip,
   ListItemSecondaryAction,
-  Card,
-  InputAdornment,
   Paper,
+  InputAdornment,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
@@ -47,7 +45,6 @@ class NodeFormComponent extends Component {
       form: null,
       edgeTypes: [],
       sources: [],
-      ontologyTypes: [],
       newNodeClass: 'Disease',
       relationships: [],
       relationship: {
@@ -60,6 +57,7 @@ class NodeFormComponent extends Component {
       },
       subset: '',
       deleteDialog: false,
+      errorFlag: false,
     };
 
     this.handleFormChange = this.handleFormChange.bind(this);
@@ -137,8 +135,7 @@ class NodeFormComponent extends Component {
           break;
       }
     });
-    const edgeTypes = util.getEdges(schema);
-    const ontologyTypes = util.getOntologies(schema);
+    const edgeTypes = api.getEdges(schema);
     const expandedEdgeTypes = edgeTypes.reduce((r, e) => {
       r.push(`in_${e}`);
       r.push(`out_${e}`);
@@ -173,9 +170,10 @@ class NodeFormComponent extends Component {
       originalNode,
       sources,
       edgeTypes,
-      ontologyTypes,
       editableProps,
       newNodeClass: nodeClass,
+      ontologyTypes: api.getOntologies(schema),
+      schema,
     });
   }
 
@@ -188,11 +186,18 @@ class NodeFormComponent extends Component {
     const editableProps = (await api.getClass(newNodeClass)).properties;
     const { form } = this.state;
     editableProps.forEach((prop) => {
-      const { name, type } = prop;
+      const {
+        name,
+        type,
+        defaultValue,
+      } = prop;
       if (!form[name]) {
         switch (type) {
           case 'embeddedset':
             form[name] = [];
+            break;
+          case 'boolean':
+            form[name] = defaultValue.toString() === 'true';
             break;
           default:
             form[name] = '';
@@ -288,6 +293,7 @@ class NodeFormComponent extends Component {
         this.setState({
           form,
           relationships,
+          errorFlag: false,
           relationship: {
             '@class': '',
             targetName: '',
@@ -299,6 +305,8 @@ class NodeFormComponent extends Component {
           },
         });
       }
+    } else {
+      this.setState({ errorFlag: true });
     }
   }
 
@@ -331,7 +339,7 @@ class NodeFormComponent extends Component {
     if (e.target.sourceId) {
       relationship.targetSourceId = e.target.sourceId;
     }
-    this.setState({ relationship });
+    this.setState({ relationship, errorFlag: false });
   }
 
   /**
@@ -347,7 +355,7 @@ class NodeFormComponent extends Component {
       relationship.out = relationship.in;
       relationship.in = originalNode['@rid'];
     }
-    this.setState({ relationship });
+    this.setState({ relationship, errorFlag: false });
   }
 
   /**
@@ -368,12 +376,12 @@ class NodeFormComponent extends Component {
   /**
    * Deletes target node.
    */
-  handleDeleteNode() {
+  async handleDeleteNode() {
     const { originalNode } = this.state;
     const { handleNodeDelete } = this.props;
-
+    const { route } = await api.getClass(originalNode['@class']);
     api.delete(
-      `/${util.pluralize(originalNode['@class'])}/${originalNode['@rid'].slice(1)}`,
+      `${route}/${originalNode['@rid'].slice(1)}`,
     ).then(() => {
       handleNodeDelete();
     });
@@ -446,13 +454,10 @@ class NodeFormComponent extends Component {
     await Promise.all(changedEdges);
 
     const payload = util.parsePayload(form, editableProps);
+    const { route } = await api.getClass(originalNode['@class']);
 
-    api.patch(
-      `/${util.pluralize(originalNode['@class'])}/${originalNode['@rid'].slice(1)}`,
-      { ...payload },
-    ).then(() => {
-      handleNodeFinishEdit();
-    });
+    await api.patch(`${route}/${originalNode['@rid'].slice(1)}`, { ...payload });
+    handleNodeFinishEdit();
   }
 
   /**
@@ -469,7 +474,8 @@ class NodeFormComponent extends Component {
 
     const newEdges = [];
     const payload = util.parsePayload(form, editableProps);
-    const response = await api.post(`/${util.pluralize(newNodeClass)}`, { ...payload });
+    const { route } = await api.getClass(newNodeClass);
+    const response = await api.post(`${route}`, { ...payload });
 
     for (let i = 0; i < relationships.length; i += 1) {
       const relationship = relationships[i];
@@ -495,13 +501,15 @@ class NodeFormComponent extends Component {
       originalNode,
       sources,
       edgeTypes,
-      ontologyTypes,
       editableProps,
       relationship,
       relationships,
       subset,
-      newNodeClass,
       deleteDialog,
+      newNodeClass,
+      errorFlag,
+      ontologyTypes,
+      schema,
     } = this.state;
     const { variant, handleNodeFinishEdit } = this.props;
 
@@ -624,9 +632,7 @@ class NodeFormComponent extends Component {
         // Decide which endpoint to query.
         let endpoint;
         if (linkedClass) {
-          endpoint = util.pluralize(linkedClass);
-        } else {
-          endpoint = 'ontologies';
+          endpoint = schema[linkedClass].route.slice(1);
         }
 
         return (
@@ -685,7 +691,7 @@ class NodeFormComponent extends Component {
       return (
         <ListItem
           key={`${r.key}: ${r['@rid']}`}
-          className="form-list"
+          className="relationship-item"
         >
           <ListItemText
             primary={`${typeName}: ${r.targetSourceId}`}
@@ -694,7 +700,6 @@ class NodeFormComponent extends Component {
           />
           <ListItemSecondaryAction>
             <IconButton
-              color="secondary"
               onClick={() => this.handleRelationshipDelete(r)}
             >
               <CloseIcon color="error" />
@@ -710,8 +715,8 @@ class NodeFormComponent extends Component {
       */
     const edgeTypesDisplay = (edgeType) => {
       const inOut = relationship.in === originalNode['@rid']
-        ? `has${edgeType.slice(0, edgeType.length - 2)}`
-        : edgeType;
+        ? util.getEdgeLabel(`in_${edgeType}`)
+        : util.getEdgeLabel(`out_${edgeType}`);
       return (
         <MenuItem key={edgeType} value={edgeType}>
           {inOut}
@@ -722,176 +727,177 @@ class NodeFormComponent extends Component {
     return (
       <div className="node-form-wrapper">
         {dialog}
-        <div>
-          <Paper className="form-header" elevation={4}>
-            <Typography variant="display1" className="form-title">
-              {variant === 'edit' ? 'Edit Ontology Term'
-                : 'Add New Ontology Term'}
-            </Typography>
-            <Button
-              color="default"
-              onClick={handleNodeFinishEdit}
-              variant="outlined"
-            >
-              Cancel
-            </Button>
-          </Paper>
-        </div>
-        <Divider />
         <form onSubmit={this.handleSubmit}>
-          <Card className="param-section">
-            <Typography variant="title">
-              Basic Parameters
-            </Typography>
-            {variant === 'edit' ? null
-              : (
-                <div className="class-select">
-                  <ResourceSelectComponent
-                    value={newNodeClass}
-                    onChange={this.handleClassChange}
-                    name="newNodeClass"
-                    label="Class"
-                    resources={ontologyTypes}
-                  >
-                    {resource => (
-                      <MenuItem key={resource.name} value={resource.name}>
-                        {resource.name}
-                      </MenuItem>
-                    )}
-                  </ResourceSelectComponent>
-                </div>
-              )}
-            <List component="nav">
-              {Object.keys(form)
-                .filter(key => !key.includes('.'))
-                .map(key => formatInputSection(key, form[key]))
-              }
-            </List>
-          </Card>
-          <Card className="param-section">
-            <Typography variant="title">
-              Subsets
-            </Typography>
-            <ListItem className="input-wrapper form-list">
-              <TextField
-                id="subset-temp"
-                label="Add a Subset"
-                value={subset}
-                onChange={this.handleChange}
-                className="text-input"
-                name="subset"
-                onKeyDown={(e) => {
-                  if (e.keyCode === 13) {
-                    this.handleSubsetAdd(e);
-                  }
-                }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton color="primary" onClick={this.handleSubsetAdd}>
-                        <AddIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-
-            </ListItem>
-            <List className="list">
-              {subsets}
-            </List>
-            <Typography variant="title">
-              Relationships
-            </Typography>
-            <ListItem
-              className="input-wrapper relationship-add-wrapper form-list"
-              onKeyDown={(e) => {
-                if (e.keyCode === 13) this.handleRelationshipAdd(e);
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  flexGrow: '1',
-                }}
-              >
-                <ResourceSelectComponent
-                  value={relationship.source}
-                  onChange={this.handleRelationship}
-                  name="source"
-                  label="Source"
-                  resources={sources}
-                />
-                <div style={{ display: 'flex', width: '100%', margin: '8px' }}>
-                  <div className="relationship-dir-type">
-                    <IconButton
-                      disableRipple
-                      name="direction"
-                      onClick={this.handleRelationshipDirection}
-                      color="primary"
-                    >
-                      <TrendingFlatIcon
-                        className={
-                          relationship.in === originalNode['@rid']
-                            ? 'relationship-in'
-                            : 'relationship-out'
-                        }
-                      />
-                    </IconButton>
+          <div className="form-grid">
+            <Paper className="form-header" elevation={4}>
+              <Typography variant="headline" className="form-title">
+                {variant === 'edit' ? 'Edit Ontology Term'
+                  : 'Add New Ontology Term'}
+              </Typography>
+              <div className="form-cancel-btn">
+                <Button
+                  color="default"
+                  onClick={handleNodeFinishEdit}
+                  variant="outlined"
+                >
+                  Cancel
+                </Button>
+              </div>
+            </Paper>
+            <Paper className="param-section" elevation={4}>
+              <Typography variant="title">
+                Basic Parameters
+              </Typography>
+              {variant === 'edit' ? null
+                : (
+                  <div className="class-select">
                     <ResourceSelectComponent
-                      value={relationship['@class']}
-                      onChange={this.handleRelationship}
-                      name="@class"
-                      label="Type"
-                      resources={edgeTypes}
-                      id="relationship-type"
+                      value={newNodeClass}
+                      onChange={this.handleClassChange}
+                      name="newNodeClass"
+                      label="Class"
+                      resources={ontologyTypes}
                     >
-                      {edgeTypesDisplay}
+                      {resource => (
+                        <MenuItem key={resource.name} value={resource.name}>
+                          {resource.name}
+                        </MenuItem>
+                      )}
                     </ResourceSelectComponent>
                   </div>
-                  <div className="search-wrap">
-                    <AutoSearchComponent
-                      value={relationship.targetName}
+                )}
+              <List component="nav">
+                {Object.keys(form)
+                  .filter(key => !key.includes('.'))
+                  .map(key => formatInputSection(key, form[key]))
+                }
+              </List>
+            </Paper>
+            <Paper className="param-section" elevation={4}>
+              <Typography variant="title">
+                Subsets
+              </Typography>
+              <ListItem className="input-wrapper form-list">
+                <TextField
+                  id="subset-temp"
+                  label="Add a Subset"
+                  value={subset}
+                  onChange={this.handleChange}
+                  className="text-input"
+                  name="subset"
+                  onKeyDown={(e) => {
+                    if (e.keyCode === 13) {
+                      this.handleSubsetAdd(e);
+                    }
+                  }}
+                />
+                <IconButton color="primary" onClick={this.handleSubsetAdd}>
+                  <AddIcon />
+                </IconButton>
+              </ListItem>
+              <List className="list">
+                {subsets}
+              </List>
+              <Typography variant="title">
+                Relationships
+              </Typography>
+              <List component="nav">
+                <ListItem
+                  className="input-wrapper relationship-add-wrapper form-list"
+                  onKeyDown={(e) => {
+                    if (e.keyCode === 13) this.handleRelationshipAdd(e);
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      flexGrow: '1',
+                    }}
+                  >
+                    <ResourceSelectComponent
+                      value={relationship.source}
                       onChange={this.handleRelationship}
-                      placeholder="Target Name"
-                      limit={10}
-                      name="targetName"
-                      endAdornment={null}
+                      name="source"
+                      label="Source"
+                      resources={sources}
+                      error={errorFlag}
                     />
+                    <div style={{ display: 'flex', width: '100%' }}>
+                      <div className="relationship-dir-type">
+                        <IconButton
+                          disableRipple
+                          name="direction"
+                          onClick={this.handleRelationshipDirection}
+                          color="primary"
+                        >
+                          <TrendingFlatIcon
+                            className={
+                              relationship.in === originalNode['@rid']
+                                ? 'relationship-in'
+                                : 'relationship-out'
+                            }
+                          />
+                        </IconButton>
+                        <ResourceSelectComponent
+                          value={relationship['@class']}
+                          onChange={this.handleRelationship}
+                          name="@class"
+                          label="Type"
+                          resources={edgeTypes}
+                          error={errorFlag}
+                          id="relationship-type"
+                        >
+                          {edgeTypesDisplay}
+                        </ResourceSelectComponent>
+                      </div>
+                      <div className="search-wrap">
+                        <AutoSearchComponent
+                          value={relationship.targetName}
+                          onChange={this.handleRelationship}
+                          placeholder="Target Name"
+                          limit={10}
+                          name="targetName"
+                          error={errorFlag}
+                        />
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <IconButton
-                style={{ margin: 'auto 0 auto 8px' }}
+                  <IconButton
+                    style={{ margin: 'auto 0 auto 8px' }}
+                    color="primary"
+                    onClick={this.handleRelationshipAdd}
+                    id="relationship-add"
+                  >
+                    <AddIcon />
+                  </IconButton>
+                </ListItem>
+                {rships}
+              </List>
+            </Paper>
+            <Paper className="form-btns" elevation={4}>
+              {variant === 'edit' ? (
+                <Button
+                  variant="raised"
+                  onClick={this.handleDialogOpen}
+                  id="delete-btn"
+                  size="large"
+                >
+                  Delete Ontology
+                </Button>
+              ) : null}
+              <Button
+                type="submit"
+                variant="raised"
                 color="primary"
-                onClick={this.handleRelationshipAdd}
-                id="relationship-add"
+                disabled={formIsInvalid}
+                id="submit-btn"
+                size="large"
               >
-                <AddIcon />
-              </IconButton>
-            </ListItem>
-            <List className="relationships-list">
-              {rships}
-            </List>
-          </Card>
-          <div className="submit-button">
-            <Button
-              type="submit"
-              variant="raised"
-              color="primary"
-              disabled={formIsInvalid}
-            >
-              {variant === 'edit' ? 'Confirm Changes' : 'Submit'}
-            </Button>
-          </div>
-          {variant === 'edit' ? (
-            <div className="delete-button">
-              <Button variant="raised" onClick={this.handleDialogOpen}>
-                Delete
+                {variant === 'edit' ? 'Confirm Changes' : 'Submit Ontology'}
               </Button>
-            </div>
-          ) : null}
+            </Paper>
+          </div>
         </form>
       </div>
     );

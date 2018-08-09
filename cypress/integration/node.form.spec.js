@@ -12,11 +12,11 @@ describe('Node Form Test', () => {
   it('Form fields', () => {
     cy.visit('/add');
     cy.contains('Disease');
-    cy.get('div.submit-button button').should('disabled');
+    cy.get('#submit-btn').should('disabled');
     cy.get('input[name=source][type=text]').type('test').wait(100);
     cy.get('div.droptions ul li:first').click();
     cy.get('textarea[name=sourceId][type=text]').type('test').wait(100);
-    cy.get('div.submit-button button').should('not.disabled');
+    cy.get('#submit-btn').should('not.disabled');
 
     cy.get('input[name=subset]').type('cypress{enter}');
     cy.get('ul.list li:first').contains('cypress');
@@ -35,6 +35,6 @@ describe('Node Form Test', () => {
     cy.get('input[name=targetName]').type('angiosarcoma').wait(500);
     cy.get('div.droptions ul li:first').click();
     cy.get('#relationship-add').click();
-    cy.get('ul.relationships-list li').should('exist');
+    cy.get('div.relationship-item').should('exist');
   });
 });

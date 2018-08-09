@@ -33,7 +33,6 @@ class GraphLink extends Component {
   render() {
     const {
       link,
-      linkHighlighting,
       detail,
       labelKey,
       color,
@@ -43,9 +42,7 @@ class GraphLink extends Component {
     const left = link.source.x < link.target.x;
 
     let marker = '';
-    if (displayType && linkHighlighting) {
-      marker = 'url(#highLightedArrow)';
-    } else if (link.source !== link.target) {
+    if (link.source !== link.target) {
       marker = 'url(#endArrow)';
     }
 
@@ -71,12 +68,12 @@ class GraphLink extends Component {
           id={`link${link.data['@rid']}`}
           d={`M${(link.source.x || 0)} ${(link.source.y || 0)}L${(link.target.x || 0)} ${(link.target.y || 0)}`}
           markerEnd={marker}
-          style={{ opacity: detail ? 0.6 : 1 }}
+          style={{ opacity: detail ? 0.4 : 0.7, strokeOpacity: detail ? 0.4 : 0.7 }}
           fill={color}
           stroke={color}
         />
         {displayType ? (
-          <text className="link-label">
+          <text fill={color} opacity={detail ? 0.4 : 0.7}>
             <textPath
               href={`#link${link.data['@rid']}`}
               startOffset="20%"
@@ -97,14 +94,12 @@ class GraphLink extends Component {
  */
 GraphLink.propTypes = {
   link: PropTypes.object.isRequired,
-  linkHighlighting: PropTypes.bool,
   detail: PropTypes.string,
   labelKey: PropTypes.string,
   color: PropTypes.string,
 };
 
 GraphLink.defaultProps = {
-  linkHighlighting: true,
   detail: null,
   labelKey: null,
   color: '#999',

@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './GraphLink.css';
 
+const LABEL_BASELINE_SHIFT = 4;
+
 /**
  * Display component for graph link objects.
  * @param {Object} props.link - Graph link object to be displayed.
@@ -60,6 +62,7 @@ function GraphLink(props) {
             href={`#link${link.data['@rid']}`}
             startOffset="20%"
             side={left ? 'left' : 'right'}
+            baselineShift={LABEL_BASELINE_SHIFT}
           >
             {label}
           </textPath>

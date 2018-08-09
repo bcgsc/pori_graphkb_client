@@ -125,6 +125,7 @@ class GraphComponent extends Component {
     this.handleOptionsPanelClose = this.handleOptionsPanelClose.bind(this);
     this.handleActionsRing = this.handleActionsRing.bind(this);
     this.handleNodeHide = this.handleNodeHide.bind(this);
+    this.handleLinkHide = this.handleLinkHide.bind(this);
     this.handleGraphColorsChange = this.handleGraphColorsChange.bind(this);
     this.handleHelpOpen = this.handleHelpOpen.bind(this);
     this.handleHelpClose = this.handleHelpClose.bind(this);
@@ -398,13 +399,11 @@ class GraphComponent extends Component {
    * Resizes svg window and reinitializes the simulation.
    */
   handleResize() {
-    let w;
-    let h;
     const n = this.wrapper;
 
     if (n) {
-      w = n.clientWidth;
-      h = n.clientHeight;
+      const w = n.clientWidth;
+      const h = n.clientHeight;
       const { graphOptions } = this.state;
       graphOptions.width = w;
       graphOptions.height = h;
@@ -470,8 +469,8 @@ class GraphComponent extends Component {
     );
 
     const container = d3.select(this.zoom);
-
     const svg = d3.select(this.graph);
+
     svg
       .attr('width', graphOptions.width)
       .attr('height', graphOptions.height)
@@ -485,6 +484,7 @@ class GraphComponent extends Component {
           );
         }))
       .on('dblclick.zoom', null);
+
     this.setState({ simulation, svg });
   }
 
@@ -718,6 +718,27 @@ class GraphComponent extends Component {
       actionsNode: null,
       propsMap,
     }, () => {
+      this.updateColors('nodes');
+      this.updateColors('links');
+      handleDetailDrawerClose();
+    });
+  }
+
+  /**
+   * Hides link from the graph view.
+   */
+  handleLinkHide() {
+    const { actionsNode, links, graphObjects, expandable } = this.state;
+    const { handleDetailDrawerClose } = this.props;
+
+    const i = links.indexOf(actionsNode);
+    links.splice(i, 1);
+    delete graphObjects[actionsNode.data['@rid']];
+
+    expandable[actionsNode.source.data['@rid']] = true;
+    expandable[actionsNode.target.data['@rid']] = true;
+
+    this.setState({ actionsNode: null, graphObjects, links, expandable }, () => {
       this.updateColors('nodes');
       this.updateColors('links');
       handleDetailDrawerClose();

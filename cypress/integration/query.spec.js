@@ -6,7 +6,6 @@ describe('Query Page Test', () => {
     cy.get('input[name=username]').type(Cypress.env('USER'));
     cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
     cy.get('#search-btn').click();
-    cy.wait(500);
     cy.url().should('includes', '/query');
   });
 
@@ -18,7 +17,6 @@ describe('Query Page Test', () => {
 
   it('AutoSearch valid input', () => {
     cy.get('input[type=text]').type('angiosarcoma');
-    cy.wait(700);
     cy.get('div.droptions ul li').each(($li) => {
       cy.wrap($li).contains('angiosarcoma');
     });
@@ -48,7 +46,6 @@ describe('Query Page Test', () => {
     cy.url().should('includes', '/query/advanced');
     cy.get('textarea[name=name]').type(name);
     cy.get('input[name=source]').type('ncit');
-    cy.wait(500);
     cy.get('ul li:first').click();
     cy.get('textarea[name=sourceId]').type(sourceId);
     cy.get('textarea[name=longName]').type('!nothing?#)$(#$%');

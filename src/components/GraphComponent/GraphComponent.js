@@ -70,11 +70,11 @@ const styles = {
 
 const END_ARROW_SIZE = {
   d: `M0,0,L0,${ARROW_WIDTH} L ${ARROW_LENGTH}, ${ARROW_WIDTH / 2} z`,
-  refX: 2 * ARROW_LENGTH + 2,
   refY: ARROW_WIDTH / 2,
 };
 
 const AUTO_SPACE_COEFFICIENT = 2.8;
+const SNACKBAR_AUTOHIDE_DURATION = 6000;
 
 /**
  * Component for displaying query results in force directed graph form.
@@ -728,7 +728,12 @@ class GraphComponent extends Component {
    * Hides link from the graph view.
    */
   handleLinkHide() {
-    const { actionsNode, links, graphObjects, expandable } = this.state;
+    const {
+      actionsNode,
+      links,
+      graphObjects,
+      expandable,
+    } = this.state;
     const { handleDetailDrawerClose } = this.props;
 
     const i = links.indexOf(actionsNode);
@@ -738,7 +743,12 @@ class GraphComponent extends Component {
     expandable[actionsNode.source.data['@rid']] = true;
     expandable[actionsNode.target.data['@rid']] = true;
 
-    this.setState({ actionsNode: null, graphObjects, links, expandable }, () => {
+    this.setState({
+      actionsNode: null,
+      graphObjects,
+      links,
+      expandable,
+    }, () => {
       this.updateColors('nodes');
       this.updateColors('links');
       handleDetailDrawerClose();
@@ -1158,7 +1168,7 @@ class GraphComponent extends Component {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         open={snackbarOpen}
         onClose={() => this.setState({ snackbarOpen: false })}
-        autoHideDuration={6000}
+        autoHideDuration={SNACKBAR_AUTOHIDE_DURATION}
         message={(
           <span>
             Too many subgroups, choose new coloring property.
@@ -1304,7 +1314,6 @@ class GraphComponent extends Component {
                 id="endArrow"
                 markerWidth={ARROW_LENGTH}
                 markerHeight={ARROW_WIDTH}
-                refX={END_ARROW_SIZE.refX}
                 refY={END_ARROW_SIZE.refY}
                 orient="auto"
                 markerUnits="strokeWidth"

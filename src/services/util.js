@@ -2,8 +2,9 @@ import * as jc from 'json-cycle';
 import config from '../config.json';
 
 const { DEFAULT_PROPS } = config;
-const acronyms = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
+const { PALLETE_SIZES } = config.GRAPH_DEFAULTS;
 const CACHE_EXPIRY = 8;
+const ACRONYMS = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
 
 /**
  * Handles miscellaneous tasks.
@@ -25,7 +26,7 @@ export default class util {
       words[i] = word.replace(/[A-Z]/g, match => ` ${match}`).trim();
     });
 
-    acronyms.forEach((acronym) => {
+    ACRONYMS.forEach((acronym) => {
       const re = new RegExp(`[^\\w]*${acronym}(?!\\w)`, 'ig');
       words.forEach((word, i) => {
         const w = word.replace(re, match => match.toUpperCase());
@@ -140,10 +141,15 @@ export default class util {
       if (!payload[key]) delete payload[key];
       // For link properties, must specify record id being linking to. Clear the rest.
       if (key.includes('.@rid')) {
-        // Sets top level property to the rid: ie.
-        // 'source.@rid': #18:5 => 'source': #18:5
-        payload[key.split('.')[0]] = payload[key];
-        delete payload[key];
+        const nestedKey = key.split('.')[0];
+        if (editableProps.find(p => p.name === nestedKey)
+          || (exceptions && exceptions.find(p => p.name === nestedKey))
+        ) {
+          // Sets top level property to the rid: ie.
+          // 'source.@rid': #18:5 => 'source': #18:5
+          payload[key.split('.')[0]] = payload[key];
+          delete payload[key];
+        }
       }
       // Clears out all other unknown fields.
       if (!editableProps.find(p => p.name === key)) {
@@ -160,78 +166,18 @@ export default class util {
    */
   static getPallette(n, type) {
     const baseName = `${type.toUpperCase().slice(0, type.length - 1)}_COLORS_`;
-    const tiers = [5, 10, 15, 20];
-
-    for (let i = 0; i < tiers.length; i += 1) {
-      if (n <= tiers[i]) {
-        return config.GRAPH_DEFAULTS[baseName + tiers[i]];
+    const maxPalletteSize = PALLETE_SIZES[PALLETE_SIZES.length - 1];
+    for (let i = 0; i < PALLETE_SIZES.length; i += 1) {
+      if (n <= PALLETE_SIZES[i]) {
+        return config.GRAPH_DEFAULTS[baseName + PALLETE_SIZES[i]];
       }
     }
 
-    const list = config.GRAPH_DEFAULTS[`${baseName}20`];
-    for (let i = 20; i < n; i += 1) {
+    const list = config.GRAPH_DEFAULTS[baseName + maxPalletteSize];
+    for (let i = maxPalletteSize; i < n; i += 1) {
       const color = `000000${Math.round(Math.random() * (255 ** 3)).toString(16)}`;
       list.push(`#${color.substr(color.length - 6)}`);
     }
-    return list;
-  }
-
-  /**
-   * Updates allColumns list with any new properties from ontologyTerm.
-   * @param {Object} ontologyTerm - new node who's properties will be parsed.
-   * @param {Array} allColumns - current list of all collected properties.
-   * @param {Object} schema - api schema.
-   */
-  static collectOntologyProps(ontologyTerm, allColumns, schema) {
-    const { properties } = schema[ontologyTerm['@class']];
-    const { V } = schema;
-    Object.keys(ontologyTerm).forEach((prop) => {
-      if (!V.properties[prop] && prop !== '@class' && !allColumns.includes(prop)) {
-        const endpointProp = properties[prop];
-        if (endpointProp && endpointProp.type === 'link') {
-          Object.keys(ontologyTerm[prop]).forEach((nestedProp) => {
-            if (
-              !V.properties[nestedProp]
-              && !allColumns.includes(`${prop}.${nestedProp}`)
-              && !nestedProp.startsWith('in_')
-              && !nestedProp.startsWith('out_')
-              && !(endpointProp.linkedClass && nestedProp === '@class')
-              && (properties[nestedProp] || {}).type !== 'link'
-            ) {
-              allColumns.push(`${prop}.${nestedProp}`);
-            }
-          });
-        } else {
-          allColumns.push(prop);
-        }
-      }
-    });
-    return allColumns;
-  }
-
-  /**
-    * Returns all valid ontology types.
-    */
-  static getOntologies(schema) {
-    const list = [];
-    Object.keys(schema).forEach((key) => {
-      if (schema[key].inherits.includes('Ontology')) {
-        list.push({ name: key, properties: schema[key].properties, route: schema[key].route });
-      }
-    });
-    return list;
-  }
-
-  /**
-    * Returns all valid edge types.
-    */
-  static getEdges(schema) {
-    const list = [];
-    Object.keys(schema).forEach((key) => {
-      if (schema[key].inherits.includes('E')) {
-        list.push(key);
-      }
-    });
     return list;
   }
 

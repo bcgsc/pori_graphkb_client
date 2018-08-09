@@ -35,6 +35,8 @@ import NodeDetailComponent from '../NodeDetailComponent/NodeDetailComponent';
 import DownloadFileComponent from '../DownloadFileComponent/DownloadFileComponent';
 import util from '../../services/util';
 
+const NEXT_CUTOFF = 0.8;
+
 /**
  * Component to display query results in table form.
  */
@@ -143,7 +145,7 @@ class TableComponent extends Component {
   handleChangePage(event, page) {
     const { sortedData, rowsPerPage } = this.state;
     const rows = (page + 1) * rowsPerPage;
-    if (rows >= 0.8 * sortedData.length) {
+    if (rows >= NEXT_CUTOFF * sortedData.length) {
       const { handleSubsequentPagination } = this.props;
       if (handleSubsequentPagination && handleSubsequentPagination()) {
         this.setState({ awaiting: true });

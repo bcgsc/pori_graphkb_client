@@ -62,15 +62,16 @@ class GraphNode extends PureComponent {
       node,
       handleClick,
       color,
-      label,
+      labelKey,
       detail,
     } = this.props;
 
+    // Extract label
     let obj = node.data;
-    let key = label;
-    if (label.includes('.')) {
-      key = label.split('.')[1];
-      obj = node.data[label.split('.')[0]];
+    let key = labelKey;
+    if (labelKey.includes('.')) {
+      key = labelKey.split('.')[1];
+      obj = node.data[labelKey.split('.')[0]];
     }
 
     return (
@@ -112,7 +113,7 @@ class GraphNode extends PureComponent {
 GraphNode.defaultProps = {
   handleClick: null,
   color: '#26328C',
-  label: 'name',
+  labelKey: 'name',
   detail: null,
 };
 
@@ -125,7 +126,7 @@ GraphNode.defaultProps = {
  * @param {Object} simulation - parent simulation that node is a member of.
  * @param {Array} actionsRing - Array of svg components making up the node actions ring
  * surrounding a selected node.
- * @param {string} label - property to display as label.
+ * @param {string} labelKey - property to display as label.
  * @param {Object} detail - node identifier for node who's details are currently displayed.
  */
 GraphNode.propTypes = {
@@ -133,7 +134,7 @@ GraphNode.propTypes = {
   handleClick: PropTypes.func,
   color: PropTypes.string,
   simulation: PropTypes.object.isRequired,
-  label: PropTypes.string,
+  labelKey: PropTypes.string,
   detail: PropTypes.object,
 };
 

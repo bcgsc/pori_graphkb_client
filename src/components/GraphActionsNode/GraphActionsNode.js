@@ -12,6 +12,7 @@ const {
 
 const ICON_POSITION_COEFFICIENT = 0.64;
 const SCALE = 0.8;
+const OPACITY = 0.9;
 
 /**
  * Component for displaying ring-shaped panel containing possible actions for selected node.
@@ -49,26 +50,27 @@ function GraphActionsNode(props) {
       y: DETAILS_RING_RADIUS * Math.sin(endAngle),
     };
 
+    const innerRadius = edge ? 8 : NODE_RADIUS;
     const innerEnd = {
-      x: NODE_RADIUS * Math.cos(startAngle),
-      y: NODE_RADIUS * Math.sin(startAngle),
+      x: innerRadius * Math.cos(startAngle),
+      y: innerRadius * Math.sin(startAngle),
     };
     const innerStart = {
-      x: NODE_RADIUS * Math.cos(endAngle),
-      y: NODE_RADIUS * Math.sin(endAngle),
+      x: innerRadius * Math.cos(endAngle),
+      y: innerRadius * Math.sin(endAngle),
     };
 
     const d = [
       'M', start.x, start.y,
       'A', DETAILS_RING_RADIUS, DETAILS_RING_RADIUS, 0, 0, 0, end.x, end.y,
       'L', innerStart.x, innerStart.y,
-      'A', NODE_RADIUS, NODE_RADIUS, 0, 0, 1, innerEnd.x, innerEnd.y,
+      'A', innerRadius, innerRadius, 0, 0, 1, innerEnd.x, innerEnd.y,
       'L', start.x, start.y,
     ].join(' ');
 
     const angle = (2 * i + 1) / l * Math.PI + offset;
-    const dx = DETAILS_RING_RADIUS * Math.cos(angle);
-    const dy = DETAILS_RING_RADIUS * Math.sin(angle);
+    const dx = DETAILS_RING_RADIUS * Math.cos(angle) * ICON_POSITION_COEFFICIENT;
+    const dy = DETAILS_RING_RADIUS * Math.sin(angle) * ICON_POSITION_COEFFICIENT;
 
     actionsRing.push((
       <g
@@ -78,11 +80,11 @@ function GraphActionsNode(props) {
       >
         <path
           d={d}
-          fill="rgba(255,255,255,0.8)"
+          fill={`rgba(255,255,255,${OPACITY})`}
           stroke="#ccc"
         />
         <g
-          transform={`translate(${dx * ICON_POSITION_COEFFICIENT - ICON_DIMS * SCALE / 2}, ${dy * ICON_POSITION_COEFFICIENT - ICON_DIMS * SCALE / 2}) scale(${SCALE})`}
+          transform={`translate(${dx - ICON_DIMS * SCALE / 2}, ${dy - ICON_DIMS * SCALE / 2}) scale(${SCALE})`}
           fill={option.disabled && option.disabled(actionsNode) ? '#ccc' : '#555'}
         >
           {(option || '').icon}

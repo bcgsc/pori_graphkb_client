@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import './GraphLink.css';
 
 const LABEL_BASELINE_SHIFT = 4;
+const DEFAULT_OPACITY = 0.7;
+const FADED_OPACITY = 0.4;
 
 /**
  * Display component for graph link objects.
@@ -31,12 +33,12 @@ function GraphLink(props) {
     label = link.data[labelKey];
   }
 
-  let opacity = 0.7;
+  let opacity = DEFAULT_OPACITY;
   if (detail) {
     if (detail['@rid'] === link.data['@rid']) {
       opacity = 1;
     } else {
-      opacity = 0.4;
+      opacity = FADED_OPACITY;
     }
   }
   return (

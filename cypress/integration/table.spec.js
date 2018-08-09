@@ -1,9 +1,9 @@
+
 function getName(name) {
   cy.get('input').type(`${name}{enter}`);
   cy.url().should('includes', `/table?name=~${name}`);
   cy.wait(1000);
 }
-
 
 describe('Table Test', () => {
   beforeEach(() => {
@@ -11,8 +11,6 @@ describe('Table Test', () => {
     cy.url().should('includes', '/login');
     cy.get('input[name=username]').type(Cypress.env('USER'));
     cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
-    cy.get('#search-btn').click();
-    cy.wait(500);
     cy.url().should('includes', '/query');
   });
 
@@ -131,5 +129,37 @@ describe('Table Test', () => {
     cy.get('thead tr th').then((array) => {
       cy.expect(array.length).to.eq(7);
     });
+  });
+
+  /**
+   * Tests automatic loading of more records.
+   */
+  it('Subsequent Pagination', () => {
+    getName('dis');
+    cy.wait(500);
+    cy.get('div.pag div div div button').each((button, i) => {
+      // Chooses second button.
+      if (i !== 0) {
+        for (let j = 0; j < 15; j += 1) {
+          cy.wrap(button).click();
+          cy.contains(`${1 + (j + 1) * 50}-${50 + (j + 1) * 50}`);
+        }
+        cy.contains('loading more results...');
+        cy.contains('1000');
+        cy.contains('2000');
+      }
+    });
+  });
+
+  /**
+   * Tests manual add button for loading more records.
+   */
+  it('Forced Subsequent Pagination', () => {
+    getName('dis');
+    cy.get('div.more-results-btn button').click();
+    cy.contains('loading more results...');
+    cy.contains('1000');
+    cy.get('div.more-results-btn button').should('disabled');
+    cy.contains('2000');
   });
 });

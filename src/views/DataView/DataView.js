@@ -18,7 +18,6 @@ import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import NodeDetailComponent from '../../components/NodeDetailComponent/NodeDetailComponent';
 import api from '../../services/api';
-import util from '../../services/util';
 
 const styles = {
   paper: {
@@ -26,6 +25,8 @@ const styles = {
     '@media (max-width: 768px)': { width: 'calc(100% - 1px)' },
   },
 };
+
+const DEFAULT_LIMIT = 1000;
 
 /**
  * View for managing state of query results. Contains sub-routes for table view (/data/table)
@@ -64,6 +65,7 @@ class DataView extends Component {
     // GraphComponent methods
     this.handleDetailDrawerOpen = this.handleDetailDrawerOpen.bind(this);
     this.handleDetailDrawerClose = this.handleDetailDrawerClose.bind(this);
+    this.handleNewColumns = this.handleNewColumns.bind(this);
 
     // NodeDetailComponent methods
     this.handleNodeEditStart = this.handleNodeEditStart.bind(this);
@@ -97,13 +99,13 @@ class DataView extends Component {
       const cycled = jc.retrocycle(data.result);
 
       cycled.forEach((ontologyTerm) => {
-        allColumns = util.collectOntologyProps(ontologyTerm, allColumns, schema);
+        allColumns = api.collectOntologyProps(ontologyTerm, allColumns, schema);
         dataMap[ontologyTerm['@rid']] = ontologyTerm;
       });
 
-      if (cycled.length >= filteredSearch.limit || 1000) {
+      if (cycled.length >= filteredSearch.limit || DEFAULT_LIMIT) {
         const nextFilteredSearch = Object.assign({}, filteredSearch);
-        nextFilteredSearch.skip = filteredSearch.limit || 1000;
+        nextFilteredSearch.skip = filteredSearch.limit || DEFAULT_LIMIT;
         this.setState({
           next: () => api.get(`${route}?${queryString.stringify(nextFilteredSearch)}&neighbors=3`),
           moreResults: true,
@@ -116,6 +118,7 @@ class DataView extends Component {
         allColumns,
         schema,
         filteredSearch,
+        edges: api.getEdges(schema),
       });
     } catch (e) {
       console.error(e);
@@ -207,7 +210,7 @@ class DataView extends Component {
         const cycled = jc.retrocycle(nextData.result);
         let newColumns = allColumns;
         cycled.forEach((ontologyTerm) => {
-          newColumns = util.collectOntologyProps(ontologyTerm, allColumns, schema);
+          newColumns = api.collectOntologyProps(ontologyTerm, allColumns, schema);
           data[ontologyTerm['@rid']] = ontologyTerm;
         });
 
@@ -218,8 +221,9 @@ class DataView extends Component {
 
         let newNext = null;
         let moreResults = false;
-        if (cycled.length >= (filteredSearch.limit || 1000)) {
-          const newSkip = Number(filteredSearch.skip) + Number((filteredSearch.limit || 1000));
+        if (cycled.length >= (filteredSearch.limit || DEFAULT_LIMIT)) {
+          const newSkip = Number(filteredSearch.skip)
+            + Number((filteredSearch.limit || DEFAULT_LIMIT));
           filteredSearch.skip = newSkip;
           newNext = () => api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`);
           moreResults = true;
@@ -315,6 +319,15 @@ class DataView extends Component {
     });
   }
 
+  /**
+   * Updates column list with field keys from new node.
+   * @param {Object} node - newly added object.
+   */
+  handleNewColumns(node) {
+    const { allColumns, schema } = this.state;
+    this.setState({ allColumns: api.collectOntologyProps(node, allColumns, schema) });
+  }
+
   render() {
     const {
       selectedId,
@@ -326,6 +339,7 @@ class DataView extends Component {
       schema,
       moreResults,
       filteredSearch,
+      edges,
     } = this.state;
 
     const {
@@ -370,9 +384,11 @@ class DataView extends Component {
         handleDetailDrawerClose={this.handleDetailDrawerClose}
         handleTableRedirect={this.handleTableRedirect}
         schema={schema}
+        edges={edges}
         detail={detail}
         allColumns={allColumns}
         filteredSearch={filteredSearch}
+        handleNewColumns={this.handleNewColumns}
       />
     );
     const TableWithProps = () => (

@@ -18,6 +18,10 @@ import _ from 'lodash';
 import api from '../../services/api';
 import util from '../../services/util';
 
+const DEBOUNCE_TIME = 300;
+
+// More conservative timeout for double query call.
+const LONG_DEBOUNCE_TIME = 600;
 /**
  * Autocomplete search component for querying ease of use.
  */
@@ -33,7 +37,7 @@ class AutoSearchComponent extends Component {
       lastRid: null,
     };
     const { property } = props;
-    this.callApi = _.debounce(this.callApi.bind(this), property.length > 1 ? 600 : 300);
+    this.callApi = _.debounce(this.callApi.bind(this), property.length > 1 ? LONG_DEBOUNCE_TIME : DEBOUNCE_TIME);
     this.refreshOptions = this.refreshOptions.bind(this);
   }
 

@@ -52,6 +52,7 @@ const {
   LINK_STRENGTH,
   CHARGE_STRENGTH,
   DEFAULT_NODE_COLOR,
+  PALLETE_SIZES,
 } = config.GRAPH_DEFAULTS;
 
 const { GRAPH_ADVANCED, GRAPH_MAIN } = config.DESCRIPTIONS;
@@ -70,11 +71,13 @@ const styles = {
   },
 };
 
-const endArrowSize = {
+const END_ARROW_SIZE = {
   d: `M0,0,L0,${ARROW_WIDTH} L ${ARROW_LENGTH}, ${ARROW_WIDTH / 2} z`,
   refX: NODE_RADIUS - 1,
   refY: ARROW_WIDTH / 2,
 };
+
+const AUTO_SPACE_COEFFICIENT = 2.8;
 
 /**
  * Component for displaying query results in force directed graph form.
@@ -148,11 +151,11 @@ class GraphComponent extends Component {
       schema,
       allColumns,
       filteredSearch,
+      edges,
     } = this.props;
     const { graphOptions, propsMap, expandable } = this.state;
     const simulation = d3.forceSimulation();
     // Defines what edge keys to look for.
-    const edges = util.getEdges(schema);
     const expandedEdgeTypes = edges.reduce((r, e) => {
       r.push(`in_${e}`);
       r.push(`out_${e}`);
@@ -277,20 +280,17 @@ class GraphComponent extends Component {
       links,
       graphObjects,
       propsMap,
-      schema,
-      allColumns,
     } = this.state;
 
-    const { data } = this.props;
+    const { data, handleNewColumns } = this.props;
 
-    let newColumns = allColumns;
     if (data[node['@rid']]) {
       node = data[node['@rid']];
     } else {
       // Node properties haven't been processed.
-      newColumns = util.collectOntologyProps(node, allColumns, schema);
+      handleNewColumns(node);
     }
-    /* eslint-enable */
+    const { allColumns } = this.props;
 
     if (!graphObjects[node['@rid']]) {
       nodes.push({
@@ -299,7 +299,7 @@ class GraphComponent extends Component {
         y: position.y,
       });
       graphObjects[node['@rid']] = node;
-      util.loadColorProps(newColumns, node, propsMap);
+      util.loadColorProps(allColumns, node, propsMap);
     }
 
     let flag = false;
@@ -404,7 +404,6 @@ class GraphComponent extends Component {
       links,
       graphObjects,
       propsMap,
-      allColumns: newColumns,
     });
   }
 
@@ -468,7 +467,7 @@ class GraphComponent extends Component {
             obj = graphOptions.nodeLabelProp.split('.')[0] || {};
           }
           if (!obj[key] || obj[key].length === 0) return graphOptions.collisionRadius;
-          return Math.max(obj[key].length * 2.8, NODE_INIT_RADIUS);
+          return Math.max(obj[key].length * AUTO_SPACE_COEFFICIENT, NODE_INIT_RADIUS);
         }
         return graphOptions.collisionRadius;
       }),
@@ -567,7 +566,10 @@ class GraphComponent extends Component {
       }
     });
 
-    if (Object.keys(colors).length <= 20 || Object.keys(propsMap[type]).length === 1) {
+    if (
+      Object.keys(colors).length <= PALLETE_SIZES[PALLETE_SIZES.length - 1]
+      || Object.keys(propsMap[type]).length === 1
+    ) {
       const pallette = util.getPallette(Object.keys(colors).length, type);
       Object.keys(colors).forEach((color, i) => { colors[color] = pallette[i]; });
 
@@ -709,6 +711,7 @@ class GraphComponent extends Component {
       graphObjects,
       actionsNode: null,
       propsMap,
+      icon: false,
     }, () => {
       this.updateColors('nodes');
       this.updateColors('links');
@@ -1319,12 +1322,12 @@ class GraphComponent extends Component {
                 id="endArrow"
                 markerWidth={ARROW_LENGTH}
                 markerHeight={ARROW_WIDTH}
-                refX={endArrowSize.refX}
-                refY={endArrowSize.refY}
+                refX={END_ARROW_SIZE.refX}
+                refY={END_ARROW_SIZE.refY}
                 orient="auto"
                 markerUnits="strokeWidth"
               >
-                <path d={endArrowSize.d} fill="#555" />
+                <path d={END_ARROW_SIZE.d} fill="#555" />
               </marker>
             </defs>
             <g ref={(node) => { this.zoom = node; }}>
@@ -1360,6 +1363,7 @@ GraphComponent.propTypes = {
   handleDetailDrawerOpen: PropTypes.func.isRequired,
   handleDetailDrawerClose: PropTypes.func.isRequired,
   handleTableRedirect: PropTypes.func.isRequired,
+  handleNewColumns: PropTypes.func.isRequired,
   schema: PropTypes.object.isRequired,
   detail: PropTypes.string,
   allColumns: PropTypes.array,

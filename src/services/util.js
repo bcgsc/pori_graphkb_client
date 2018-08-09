@@ -181,26 +181,41 @@ export default class util {
     return list;
   }
 
-  static loadGraphData(filteredSearch, data) {
+  /**
+   * Saves current graph state into localstorage, identified by the url search parameters.
+   * @param {Object} search - collection of search parameters.
+   * @param {Object} data - graph data to be stored.
+   */
+  static loadGraphData(search, data) {
     const now = new Date();
     const expiry = new Date(now);
     expiry.setHours(now.getHours() + CACHE_EXPIRY);
     data.expiry = expiry.getTime();
-    data.filteredSearch = filteredSearch;
+    data.filteredSearch = search;
     localStorage.setItem('graphObjects', JSON.stringify(jc.decycle(data)));
   }
 
-  static getGraphData(filteredSearch) {
+  /**
+   * Retrieves graph data from localstorage for the input search parameters.
+   * @param {Object} search - collection of search parameters .
+   */
+  static getGraphData(search) {
     const data = localStorage.getItem('graphObjects');
     if (data) {
       const obj = jc.retrocycle(JSON.parse(data));
-      if (obj.filteredSearch === filteredSearch) {
+      if (obj.filteredSearch === search) {
         return obj;
       }
     }
     return null;
   }
 
+  /**
+   * Updates valid properties and color mappings for graph objects.
+   * @param {Array} newColumns - Current list of valid properties
+   * @param {Object} node - new node object to be processed.
+   * @param {Object} propsMap - Property map containing color mappings.
+   */
   static loadColorProps(newColumns, node, propsMap) {
     // Iterate over all props.
     newColumns.forEach((prop) => {
@@ -235,11 +250,18 @@ export default class util {
     return propsMap;
   }
 
-  static expanded(expandedEdgeTypes, graphObjects, targetRid, expandable) {
+  /**
+   * Updates expandable map for input rid.
+   * @param {Array} expandedEdgeTypes - List of valid edge types.
+   * @param {Object} graphObjects - Collection of all graph objects.
+   * @param {string} rid - identifier for input node.
+   * @param {Object} expandable - Expandable flags map.
+   */
+  static expanded(expandedEdgeTypes, graphObjects, rid, expandable) {
     let targetFlag = false;
     expandedEdgeTypes.forEach((e) => {
-      if (graphObjects[targetRid][e]) {
-        graphObjects[targetRid][e].forEach((l) => {
+      if (graphObjects[rid][e]) {
+        graphObjects[rid][e].forEach((l) => {
           if (
             !graphObjects[l['@rid'] || l]
             && !((l.in || {})['@class'] === 'Statement' || (l.out || {})['@class'] === 'Statement')
@@ -249,6 +271,6 @@ export default class util {
         });
       }
     });
-    expandable[targetRid] = targetFlag;
+    expandable[rid] = targetFlag;
   }
 }

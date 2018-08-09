@@ -3,7 +3,7 @@ import config from '../config.json';
 const { DEFAULT_PROPS } = config;
 const { PALLETE_SIZES } = config.GRAPH_DEFAULTS;
 const { NODE_INIT_RADIUS } = config.GRAPH_PROPERTIES;
-const acronyms = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
+const ACRONYMS = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
 
 /**
  * Handles miscellaneous tasks.
@@ -25,7 +25,7 @@ export default class util {
       words[i] = word.replace(/[A-Z]/g, match => ` ${match}`).trim();
     });
 
-    acronyms.forEach((acronym) => {
+    ACRONYMS.forEach((acronym) => {
       const re = new RegExp(`[^\\w]*${acronym}(?!\\w)`, 'ig');
       words.forEach((word, i) => {
         const w = word.replace(re, match => match.toUpperCase());

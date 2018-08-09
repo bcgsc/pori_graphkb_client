@@ -209,7 +209,11 @@
       },
       {
         "title": "Edge Labels",
-        "description": "Choose which property to display when hovering over the edges in the graph. The 'None' option disables hovering."
+        "description": "Choose which property to display on the edges in the graph."
+      },
+      {
+        "title": "Edge Colors",
+        "description": "Choose which edge properties to color edges based on. Eligible properties are those with 20 or fewer different unique values throughout the displayed edges."
       }
     ]
   }

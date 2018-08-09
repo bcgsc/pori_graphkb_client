@@ -2,6 +2,9 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import './GraphNode.css';
 import * as d3 from 'd3';
+import config from '../../config.json';
+
+const { NODE_RADIUS } = config.GRAPH_PROPERTIES;
 
 /**
  * Component used to display graph nodes and apply draggable behavior to them through d3.

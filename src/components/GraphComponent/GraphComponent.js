@@ -1170,7 +1170,6 @@ class GraphComponent extends Component {
           </Button>
         )}
       />
-
     );
 
     const actionsRingOptions = actionsNodeIsEdge
@@ -1233,14 +1232,14 @@ class GraphComponent extends Component {
 
     const nodesDisplay = nodes.map(node => (
       <GraphNode
-        key={`node${node.data['@rid']}`}
+        key={node.data['@rid']}
         node={node}
-        simulation={simulation}
+        detail={detail}
+        labelKey={graphOptions.nodeLabelProp}
         color={util.getColor(node, graphOptions.nodesColor, graphOptions.nodesColors)}
         handleClick={e => this.handleClick(e, node)}
         expandable={expandable[node.data['@rid']]}
-        label={graphOptions.nodeLabelProp}
-        detail={detail}
+        simulation={simulation}
       />
     ));
 

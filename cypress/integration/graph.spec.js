@@ -25,19 +25,18 @@ describe('Graph View Test', () => {
 
   it('Diseases actions ring', () => {
     getClass('Disease');
-    cy.get('circle.node').click();
+    cy.get('circle.node').click({ force: true });
     cy.contains('(Details)').click();
     cy.contains('Properties:');
     cy.get('div.node-edit-btn button:first').click();
 
-    cy.get('circle.node').click();
+    cy.get('circle.node').click({ force: true });
     cy.contains('(Close)').click();
     cy.contains('(Close)').should('not.exist');
 
     let nodes = 1;
-    cy.get('circle.node').click();
+    cy.get('circle.node').click({ force: true });
     cy.contains('(Expand)').click().then(() => {
-      cy.wait(1000);
       cy.get('circle').then((array) => {
         expect(array.length).to.be.greaterThan(nodes);
         nodes = array.length;
@@ -55,7 +54,7 @@ describe('Graph View Test', () => {
   it('Features different edges', () => {
     const name = 'a1bg-as1';
     getClass('Feature', { name });
-    cy.get('circle.node').click();
+    cy.get('circle.node').click({ force: true });
     cy.contains('(Expand)').click();
     cy.get('path.link:first').trigger('mouseover');
     cy.contains('DeprecatedBy');
@@ -111,7 +110,7 @@ describe('Graph View Test', () => {
 
   it('Unique property limit exceeding test', () => {
     getClass('Disease');
-    cy.get('circle.node').click();
+    cy.get('circle.node').click({ force: true });
     cy.contains('(Expand)').click();
 
     cy.get('#graph-options-btn').click();

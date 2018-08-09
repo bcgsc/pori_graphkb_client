@@ -2,7 +2,6 @@
 function getName(name) {
   cy.get('input').type(`${name}{enter}`);
   cy.url().should('includes', `/table?name=~${name}`);
-  cy.wait(1000);
 }
 
 describe('Table Test', () => {
@@ -11,8 +10,7 @@ describe('Table Test', () => {
     cy.url().should('includes', '/login');
     cy.get('input[name=username]').type(Cypress.env('USER'));
     cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
-    cy.get('button[type=submit]').click();
-    cy.url({ timeout: 8000 }).should('includes', '/query');
+    cy.url().should('includes', '/query');
   });
 
   /**
@@ -137,7 +135,6 @@ describe('Table Test', () => {
    */
   it('Subsequent Pagination', () => {
     getName('dis');
-    cy.wait(500);
     cy.get('div.pag div div div button').each((button, i) => {
       // Chooses second button.
       if (i !== 0) {

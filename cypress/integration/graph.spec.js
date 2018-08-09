@@ -37,7 +37,6 @@ describe('Graph View Test', () => {
     let nodes = 1;
     cy.get('circle.node').click({ force: true });
     cy.contains('(Expand)').click().then(() => {
-      cy.wait(1000);
       cy.get('circle').then((array) => {
         expect(array.length).to.be.greaterThan(nodes);
         nodes = array.length;

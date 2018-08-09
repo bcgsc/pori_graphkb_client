@@ -62,7 +62,6 @@ class GraphNode extends PureComponent {
       node,
       handleClick,
       color,
-      r,
       label,
       detail,
     } = this.props;
@@ -92,7 +91,7 @@ class GraphNode extends PureComponent {
           fill="#fff"
           cx={0}
           cy={0}
-          r={r}
+          r={NODE_RADIUS}
         />
         <circle
           style={{
@@ -103,7 +102,7 @@ class GraphNode extends PureComponent {
           fill={color}
           cx={0}
           cy={0}
-          r={r}
+          r={NODE_RADIUS}
         />
       </g>
     );
@@ -113,7 +112,6 @@ class GraphNode extends PureComponent {
 GraphNode.defaultProps = {
   handleClick: null,
   color: '#26328C',
-  r: 4,
   label: 'name',
   detail: null,
 };
@@ -134,7 +132,6 @@ GraphNode.propTypes = {
   node: PropTypes.object.isRequired,
   handleClick: PropTypes.func,
   color: PropTypes.string,
-  r: PropTypes.number,
   simulation: PropTypes.object.isRequired,
   label: PropTypes.string,
   detail: PropTypes.object,

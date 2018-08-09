@@ -21,8 +21,17 @@ function GraphActionsNode(props) {
     options,
     handleActionsRing,
     actionsNode,
+    edge,
   } = props;
-  if (!actionsNode || actionsNode.source || actionsNode.target) return null;
+
+  if (!actionsNode) return null;
+
+  const translateX = edge
+    ? (actionsNode.target.x + actionsNode.source.x) / 2
+    : (actionsNode.x || 0);
+  const translateY = edge
+    ? (actionsNode.target.y + actionsNode.source.y) / 2
+    : (actionsNode.y);
 
   const actionsRing = [];
   options.forEach((option, i) => {
@@ -92,7 +101,7 @@ function GraphActionsNode(props) {
   });
 
   return (
-    <g transform={`translate(${(actionsNode.x || 0)},${(actionsNode.y || 0)})`}>
+    <g transform={`translate(${translateX},${translateY})`}>
       {actionsRing}
     </g>
   );
@@ -113,12 +122,14 @@ GraphActionsNode.propTypes = {
   options: PropTypes.array,
   handleActionsRing: PropTypes.func,
   actionsNode: PropTypes.object,
+  edge: PropTypes.bool,
 };
 
 GraphActionsNode.defaultProps = {
   options: [],
   handleActionsRing: null,
   actionsNode: null,
+  edge: false,
 };
 
 

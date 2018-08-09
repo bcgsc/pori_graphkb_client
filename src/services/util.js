@@ -1,28 +1,13 @@
 import config from '../config.json';
 
 const { DEFAULT_PROPS } = config;
-const acronyms = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
-
+const { PALLETE_SIZES } = config.GRAPH_DEFAULTS;
+const ACRONYMS = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
 
 /**
  * Handles miscellaneous tasks.
  */
 export default class util {
-  /**
-   * Returns plural version of input string in all lower case.
-   * @param {string} str - string to be pluralized
-   */
-  static pluralize(str) {
-    const retstr = str.toLowerCase();
-    if (
-      retstr.endsWith('y')
-      && !['a', 'e', 'i', 'o', 'u', 'y'].includes(retstr[retstr.length - 2])
-    ) {
-      return `${retstr.slice(0, retstr.length - 1)}ies`;
-    }
-    return `${retstr}s`;
-  }
-
   /**
    * Un-camelCase's input string.
    * @param {string} str - camelCase'd string.
@@ -36,15 +21,18 @@ export default class util {
     }
 
     words.forEach((word, i) => {
-      words[i] = (word.charAt(0).toUpperCase() + word.slice(1))
-        .replace(/[A-Z]/g, match => ` ${match}`).trim();
+      words[i] = word.replace(/[A-Z]/g, match => ` ${match}`).trim();
+    });
+
+    ACRONYMS.forEach((acronym) => {
+      const re = new RegExp(`[^\\w]*${acronym}(?!\\w)`, 'ig');
+      words.forEach((word, i) => {
+        const w = word.replace(re, match => match.toUpperCase());
+        words[i] = w.charAt(0).toUpperCase() + w.slice(1);
+      });
     });
 
     accstr = words.join(' ');
-    acronyms.forEach((acronym) => {
-      const re = new RegExp(acronym, 'ig');
-      accstr = accstr.replace(re, match => match.toUpperCase());
-    });
     return accstr.trim();
   }
 
@@ -80,13 +68,35 @@ export default class util {
    * @param {string} str - string to be formatted.
    */
   static getEdgeLabel(str) {
+    const edgeType = str.split('_')[1];
+    let retstr = edgeType;
+
     if (str.startsWith('in_')) {
-      return `has${str.split('_')[1].slice(0, str.split('_')[1].length - 2)}`;
+      switch (edgeType.slice(edgeType.length - 2, edgeType.length)) {
+        case 'By':
+          if (
+            ['a', 'e', 'i', 'o', 'u', 'y']
+              .includes(edgeType.slice(edgeType.length - 6, edgeType.length - 5))
+          ) {
+            retstr = `${edgeType.slice(0, edgeType.length - 3)}s`;
+          } else {
+            retstr = `${edgeType.slice(0, edgeType.length - 4)}s`;
+          }
+          break;
+        case 'Of':
+          retstr = `has${edgeType.slice(0, edgeType.length - 2)}`;
+          break;
+        case 'es':
+          retstr = `${edgeType.slice(0, edgeType.length - 1)}dBy`;
+          break;
+        case 'rs':
+          retstr = `${edgeType.slice(0, edgeType.length - 1)}redBy`;
+          break;
+        default:
+          break;
+      }
     }
-    if (str.startsWith('out_')) {
-      return `${str.split('_')[1]}`;
-    }
-    return str;
+    return retstr;
   }
 
   /**
@@ -129,10 +139,15 @@ export default class util {
       if (!payload[key]) delete payload[key];
       // For link properties, must specify record id being linking to. Clear the rest.
       if (key.includes('.@rid')) {
-        // Sets top level property to the rid: ie.
-        // 'source.@rid': #18:5 => 'source': #18:5
-        payload[key.split('.')[0]] = payload[key];
-        delete payload[key];
+        const nestedKey = key.split('.')[0];
+        if (editableProps.find(p => p.name === nestedKey)
+          || (exceptions && exceptions.find(p => p.name === nestedKey))
+        ) {
+          // Sets top level property to the rid: ie.
+          // 'source.@rid': #18:5 => 'source': #18:5
+          payload[key.split('.')[0]] = payload[key];
+          delete payload[key];
+        }
       }
       // Clears out all other unknown fields.
       if (!editableProps.find(p => p.name === key)) {
@@ -144,106 +159,23 @@ export default class util {
     return payload;
   }
 
-  static chooseColor(i, n) {
-    let pallette = [];
-
-    if (n <= 5) {
-      pallette = config.GRAPH_DEFAULTS.NODE_COLORS_5;
-    }
-    if (n <= 10) {
-      pallette = config.GRAPH_DEFAULTS.NODE_COLORS_10;
-    }
-    if (n <= 15) {
-      pallette = config.GRAPH_DEFAULTS.NODE_COLORS_15;
-    }
-    if (n <= 20) {
-      pallette = config.GRAPH_DEFAULTS.NODE_COLORS_20;
-    }
-
-    if (i < pallette.length) {
-      return pallette[i];
-    }
-
-    return Math.round(Math.random() * (255 ** 3)).toString(16);
-  }
-
+  /**
+   * Returns pallette of colors for displaying objects of given type.
+   */
   static getPallette(n, type) {
-    if (n < 5) {
-      return config.GRAPH_DEFAULTS[`${type.toUpperCase().slice(0, type.length - 1)}_COLORS_5`];
+    const baseName = `${type.toUpperCase().slice(0, type.length - 1)}_COLORS_`;
+    const maxPalletteSize = PALLETE_SIZES[PALLETE_SIZES.length - 1];
+    for (let i = 0; i < PALLETE_SIZES.length; i += 1) {
+      if (n <= PALLETE_SIZES[i]) {
+        return config.GRAPH_DEFAULTS[baseName + PALLETE_SIZES[i]];
+      }
     }
-    if (n < 10) {
-      return config.GRAPH_DEFAULTS[`${type.toUpperCase().slice(0, type.length - 1)}_COLORS_10`];
-    }
-    if (n < 15) {
-      return config.GRAPH_DEFAULTS[`${type.toUpperCase().slice(0, type.length - 1)}_COLORS_15`];
-    }
-    if (n < 20) {
-      return config.GRAPH_DEFAULTS[`${type.toUpperCase().slice(0, type.length - 1)}_COLORS_20`];
-    }
-    const list = config.GRAPH_DEFAULTS[`${type.toUpperCase().slice(0, type.length - 1)}_COLORS_20`];
-    for (let i = 20; i < n; i += 1) {
+
+    const list = config.GRAPH_DEFAULTS[baseName + maxPalletteSize];
+    for (let i = maxPalletteSize; i < n; i += 1) {
       const color = `000000${Math.round(Math.random() * (255 ** 3)).toString(16)}`;
       list.push(`#${color.substr(color.length - 6)}`);
     }
-    return list;
-  }
-
-  /**
-   * Updates allColumns list with any new properties from ontologyTerm.
-   * @param {Object} ontologyTerm - new node who's properties will be parsed.
-   * @param {Array} allColumns - current list of all collected properties.
-   * @param {Object} schema - api schema.
-   */
-  static collectOntologyProps(ontologyTerm, allColumns, schema) {
-    const { properties } = schema[ontologyTerm['@class']];
-    const { V } = schema;
-    Object.keys(ontologyTerm).forEach((prop) => {
-      if (!V.properties[prop] && prop !== '@class' && !allColumns.includes(prop)) {
-        const endpointProp = properties[prop];
-        if (endpointProp && endpointProp.type === 'link') {
-          Object.keys(ontologyTerm[prop]).forEach((nestedProp) => {
-            if (
-              !V.properties[nestedProp]
-              && !allColumns.includes(`${prop}.${nestedProp}`)
-              && !nestedProp.startsWith('in_')
-              && !nestedProp.startsWith('out_')
-              && !(endpointProp.linkedClass && nestedProp === '@class')
-              && (properties[nestedProp] || {}).type !== 'link'
-            ) {
-              allColumns.push(`${prop}.${nestedProp}`);
-            }
-          });
-        } else {
-          allColumns.push(prop);
-        }
-      }
-    });
-    return allColumns;
-  }
-
-  /**
-    * Returns all valid ontology types.
-    */
-  static getOntologies(schema) {
-    const list = [];
-    Object.keys(schema).forEach((key) => {
-      if (schema[key].inherits.includes('Ontology')) {
-        list.push({ name: key, properties: schema[key].properties });
-      }
-    });
-    return list;
-  }
-
-  /**
-    * Returns all valid edge types.
-    */
-  static getEdges(schema) {
-    const list = [];
-    Object.keys(schema).forEach((key) => {
-      if (schema[key].inherits.includes('E')) {
-        list.push(key);
-      }
-    });
     return list;
   }
 }

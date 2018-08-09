@@ -18,7 +18,6 @@ import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import NodeDetailComponent from '../../components/NodeDetailComponent/NodeDetailComponent';
 import api from '../../services/api';
-import util from '../../services/util';
 
 const styles = {
   paper: {
@@ -26,6 +25,8 @@ const styles = {
     '@media (max-width: 768px)': { width: 'calc(100% - 1px)' },
   },
 };
+
+const DEFAULT_LIMIT = 1000;
 
 /**
  * View for managing state of query results. Contains sub-routes for table view (/data/table)
@@ -48,6 +49,8 @@ class DataView extends Component {
       selectedId: null,
       allColumns: [],
       detail: null,
+      next: null,
+      filteredSearch: null,
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -57,10 +60,12 @@ class DataView extends Component {
     this.handleCheckAll = this.handleCheckAll.bind(this);
     this.handleHideSelected = this.handleHideSelected.bind(this);
     this.handleShowAllNodes = this.handleShowAllNodes.bind(this);
+    this.handleSubsequentPagination = this.handleSubsequentPagination.bind(this);
 
     // GraphComponent methods
     this.handleDetailDrawerOpen = this.handleDetailDrawerOpen.bind(this);
     this.handleDetailDrawerClose = this.handleDetailDrawerClose.bind(this);
+    this.handleNewColumns = this.handleNewColumns.bind(this);
 
     // NodeDetailComponent methods
     this.handleNodeEditStart = this.handleNodeEditStart.bind(this);
@@ -94,15 +99,25 @@ class DataView extends Component {
       const cycled = jc.retrocycle(data.result);
 
       cycled.forEach((ontologyTerm) => {
-        allColumns = util.collectOntologyProps(ontologyTerm, allColumns, schema);
+        allColumns = api.collectOntologyProps(ontologyTerm, allColumns, schema);
         dataMap[ontologyTerm['@rid']] = ontologyTerm;
       });
+
+      if (cycled.length >= filteredSearch.limit || DEFAULT_LIMIT) {
+        filteredSearch.skip = filteredSearch.limit || DEFAULT_LIMIT;
+        this.setState({
+          next: () => api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`),
+          moreResults: true,
+        });
+      }
       this.setState({
         data: dataMap,
         selectedId: Object.keys(dataMap)[0],
         loginRedirect,
         allColumns,
         schema,
+        filteredSearch,
+        edges: api.getEdges(schema),
       });
     } catch (e) {
       console.error(e);
@@ -175,6 +190,54 @@ class DataView extends Component {
 
     displayed.push(...hidden);
     this.setState({ displayed, hidden: [] });
+  }
+
+  /**
+   * Handles subsequent pagination call
+   */
+  handleSubsequentPagination() {
+    const { next } = this.state;
+
+    if (next) {
+      next().then((nextData) => {
+        const {
+          data,
+          allColumns,
+          schema,
+          filteredSearch,
+        } = this.state;
+        const cycled = jc.retrocycle(nextData.result);
+        let newColumns = allColumns;
+        cycled.forEach((ontologyTerm) => {
+          newColumns = api.collectOntologyProps(ontologyTerm, allColumns, schema);
+          data[ontologyTerm['@rid']] = ontologyTerm;
+        });
+
+        let route = '/ontologies';
+        if (filteredSearch['@class']) {
+          route = schema[filteredSearch['@class']].route;
+        }
+
+        let newNext = null;
+        let moreResults = false;
+        if (cycled.length >= (filteredSearch.limit || DEFAULT_LIMIT)) {
+          const newSkip = Number(filteredSearch.skip)
+            + Number((filteredSearch.limit || DEFAULT_LIMIT));
+          filteredSearch.skip = newSkip;
+          newNext = () => api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`);
+          moreResults = true;
+        }
+        this.setState({
+          data,
+          allColumns: newColumns,
+          next: newNext,
+          filteredSearch,
+          moreResults,
+        });
+      });
+    }
+    this.setState({ next: null, moreResults: false });
+    return next;
   }
 
   /**
@@ -255,6 +318,15 @@ class DataView extends Component {
     });
   }
 
+  /**
+   * Updates column list with field keys from new node.
+   * @param {Object} node - newly added object.
+   */
+  handleNewColumns(node) {
+    const { allColumns, schema } = this.state;
+    this.setState({ allColumns: api.collectOntologyProps(node, allColumns, schema) });
+  }
+
   render() {
     const {
       selectedId,
@@ -264,6 +336,8 @@ class DataView extends Component {
       allColumns,
       detail,
       schema,
+      moreResults,
+      edges,
     } = this.state;
 
     const {
@@ -308,8 +382,10 @@ class DataView extends Component {
         handleDetailDrawerClose={this.handleDetailDrawerClose}
         handleTableRedirect={this.handleTableRedirect}
         schema={schema}
+        edges={edges}
         detail={detail}
         allColumns={allColumns}
+        handleNewColumns={this.handleNewColumns}
       />
     );
     const TableWithProps = () => (
@@ -321,12 +397,14 @@ class DataView extends Component {
         displayed={displayed}
         hidden={hidden}
         allColumns={allColumns}
+        moreResults={moreResults}
         handleCheckAll={this.handleCheckAll}
         handleNodeEditStart={this.handleNodeEditStart}
         handleHideSelected={this.handleHideSelected}
         handleShowAllNodes={this.handleShowAllNodes}
         handleNewQuery={this.handleNewQuery}
         handleGraphRedirect={this.handleGraphRedirect}
+        handleSubsequentPagination={this.handleSubsequentPagination}
       />
     );
     return (
@@ -334,7 +412,7 @@ class DataView extends Component {
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           open={Object.keys(data).length === 0}
-          onClose={history.goBack}
+          onClose={() => history.push('/query')}
           autoHideDuration={3000}
           message={(
             <span>
@@ -342,7 +420,7 @@ class DataView extends Component {
             </span>
           )}
           action={(
-            <Button color="secondary" onClick={history.goBack}>
+            <Button color="secondary" onClick={() => history.push('/query')}>
               Ok
             </Button>
           )}

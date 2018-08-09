@@ -15,7 +15,6 @@ import {
   Radio,
   Tooltip,
   InputAdornment,
-  Divider,
   Paper,
   Snackbar,
 } from '@material-ui/core/';
@@ -64,8 +63,8 @@ class AdvancedQueryView extends Component {
 
     const form = {};
     const schema = await api.getSchema();
-    const ontologyTypes = [{ name: '', properties: null }];
-    ontologyTypes.push(...util.getOntologies(schema));
+    const ontologyTypes = [{ name: '', properties: null, route: 'ontologies' }];
+    ontologyTypes.push(...api.getOntologies(schema));
     form['@class'] = ontologyTypes[0].name;
 
     const editableProps = (await api.getClass(form['@class'])).properties;
@@ -92,15 +91,15 @@ class AdvancedQueryView extends Component {
           form[name] = defaultValue.toString() === 'true';
           break;
         default:
-          form[name] = name === 'name' ? history.location.state.name : defaultValue || '';
+          form[name] = name === 'name' ? (history.location.state || {}).name : defaultValue || '';
           break;
       }
     });
-
     this.setState({
       ontologyTypes,
       form,
       editableProps,
+      schema,
     });
   }
 
@@ -170,6 +169,7 @@ class AdvancedQueryView extends Component {
       ontologyTypes,
       editableProps,
       message,
+      schema,
     } = this.state;
     const { history } = this.props;
 
@@ -249,9 +249,7 @@ class AdvancedQueryView extends Component {
         // Decide which endpoint to query.
         let endpoint;
         if (linkedClass) {
-          endpoint = util.pluralize(linkedClass);
-        } else {
-          endpoint = 'ontologies';
+          endpoint = schema[linkedClass].route.slice(1);
         }
 
         return (
@@ -278,7 +276,7 @@ class AdvancedQueryView extends Component {
     };
 
     return (
-      <Paper className="adv-wrapper" elevation={4}>
+      <div className="adv-wrapper" elevation={4}>
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           open={!!message}
@@ -290,39 +288,41 @@ class AdvancedQueryView extends Component {
             </span>
           )}
         />
-
-        <Typography variant="headline" id="adv-title">
-          Advanced Query
-        </Typography>
-        <Divider />
-
-        <List component="nav">
-          <ListItem className="input-wrapper">
-            <ResourceSelectComponent
-              value={form['@class']}
-              onChange={this.handleClassChange}
-              name="@class"
-              label="Class"
-              id="class-adv"
-              resources={ontologyTypes}
-            >
-              {resource => (
-                <MenuItem key={resource.name} value={resource.name}>
-                  {resource.name ? resource.name : '---'}
-                </MenuItem>
-              )}
-            </ResourceSelectComponent>
-          </ListItem>
-          {Object.keys(form)
-            .filter(key => !key.includes('.'))
-            .map(key => formatInputSection(key, form[key]))
-          }
-        </List>
-        <div id="adv-nav-buttons">
+        <Paper elevation={4} className="adv-header">
+          <Typography variant="headline" id="adv-title">
+            Advanced Query
+          </Typography>
+        </Paper>
+        <Paper elevation={4}>
+          <List component="nav">
+            <ListItem className="input-wrapper">
+              <ResourceSelectComponent
+                value={form['@class']}
+                onChange={this.handleClassChange}
+                name="@class"
+                label="Class"
+                id="class-adv"
+                resources={ontologyTypes}
+              >
+                {resource => (
+                  <MenuItem key={resource.name} value={resource.name}>
+                    {resource.name ? resource.name : '---'}
+                  </MenuItem>
+                )}
+              </ResourceSelectComponent>
+            </ListItem>
+            {Object.keys(form)
+              .filter(key => !key.includes('.'))
+              .map(key => formatInputSection(key, form[key]))
+            }
+          </List>
+        </Paper>
+        <Paper elevation={4} id="adv-nav-buttons">
           <Button
             variant="outlined"
             color="secondary"
             onClick={() => history.push({ pathname: '/query', state: this.state })}
+            size="large"
           >
             Back
           </Button>
@@ -334,11 +334,12 @@ class AdvancedQueryView extends Component {
               pathname: '/data/table',
               search: this.bundle(),
             })}
+            size="large"
           >
             Search
           </Button>
-        </div>
-      </Paper>
+        </Paper>
+      </div>
     );
   }
 }

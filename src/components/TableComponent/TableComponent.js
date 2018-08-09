@@ -25,13 +25,17 @@ import {
   Button,
   Divider,
   Tooltip,
+  CircularProgress,
 } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import AddIcon from '@material-ui/icons/Add';
 import NodeDetailComponent from '../NodeDetailComponent/NodeDetailComponent';
 import DownloadFileComponent from '../DownloadFileComponent/DownloadFileComponent';
 import util from '../../services/util';
+
+const NEXT_CUTOFF = 0.8;
 
 /**
  * Component to display query results in table form.
@@ -49,6 +53,7 @@ class TableComponent extends Component {
       sortedData: Object.keys(props.data).map(key => props.data[key]),
       columnSelect: false,
       tableColumns: [],
+      awaiting: false,
     };
 
     this.handleDetailToggle = this.handleDetailToggle.bind(this);
@@ -116,11 +121,36 @@ class TableComponent extends Component {
   }
 
   /**
+   * Checks for new arriving data.
+   * @param {Object} nextProps - new properties object
+   */
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.data) {
+      const { sortedData, sort } = this.state;
+      if (Object.keys(nextProps.data).length > sortedData.length) {
+        const s = sort || (() => 1);
+        this.setState({
+          sortedData: Object.keys(nextProps.data).map(k => nextProps.data[k]).sort(s),
+          awaiting: false,
+        });
+      }
+    }
+  }
+
+  /**
    * Updates page to display.
    * @param {Event} event - Triggered event.
    * @param {number} page - New page number.
    */
   handleChangePage(event, page) {
+    const { sortedData, rowsPerPage } = this.state;
+    const rows = (page + 1) * rowsPerPage;
+    if (rows >= NEXT_CUTOFF * sortedData.length) {
+      const { handleSubsequentPagination } = this.props;
+      if (handleSubsequentPagination && handleSubsequentPagination()) {
+        this.setState({ awaiting: true });
+      }
+    }
     this.setState({ page });
   }
 
@@ -167,6 +197,7 @@ class TableComponent extends Component {
         order: newOrder,
         orderBy: newProperty,
         sortedData: Object.keys(data).map(k => data[k]).sort(sort),
+        sort,
       },
     );
   }
@@ -276,7 +307,6 @@ class TableComponent extends Component {
     const { data, hidden, allColumns } = this.props;
     const rows = [];
     rows.push(allColumns.map(column => util.getEdgeLabel(column)).join('\t'));
-
     Object.keys(data).forEach((rid) => {
       const row = [];
       if (!hidden.includes(rid)) {
@@ -312,12 +342,11 @@ class TableComponent extends Component {
       sortedData,
       toggle,
       anchorEl,
-
       columnSelect,
       tableColumns,
+      awaiting,
     } = this.state;
 
-    const numCols = tableColumns.filter(c => c.checked).length;
     const {
       data,
       handleCheckAll,
@@ -330,7 +359,11 @@ class TableComponent extends Component {
       handleHideSelected,
       handleNewQuery,
       handleGraphRedirect,
+      handleSubsequentPagination,
+      moreResults,
     } = this.props;
+
+    const numCols = tableColumns.filter(c => c.checked).length;
 
     const menu = (
       <Menu
@@ -447,7 +480,6 @@ class TableComponent extends Component {
         </DialogActions>
       </Dialog>
     );
-
     return (
       <section className="data-table">
         {columnDialog}
@@ -581,6 +613,31 @@ class TableComponent extends Component {
             component="div"
           />
           <Tooltip
+            title="Load more results into table"
+            placement="top"
+            disableFocusListener
+          >
+            <div className="more-results-btn">
+              <IconButton
+                disabled={!moreResults}
+                onClick={() => {
+                  if (handleSubsequentPagination && handleSubsequentPagination()) {
+                    this.setState({ awaiting: true });
+                  }
+                }}
+              >
+                <AddIcon />
+              </IconButton>
+            </div>
+          </Tooltip>
+          {awaiting ? (
+            <div style={{ display: 'flex', justifyItems: 'center' }}>
+              <CircularProgress size={20} color="primary" id="new-data-spinner" />
+              <Typography variant="caption" style={{ margin: 'auto' }}>loading more results...</Typography>
+            </div>
+          ) : null
+          }
+          <Tooltip
             title="Select ontologies to display in graph form"
             placement="left"
           >
@@ -625,8 +682,10 @@ TableComponent.propTypes = {
   handleShowAllNodes: PropTypes.func.isRequired,
   handleNewQuery: PropTypes.func,
   handleGraphRedirect: PropTypes.func.isRequired,
+  handleSubsequentPagination: PropTypes.func,
   hidden: PropTypes.array,
   allColumns: PropTypes.array,
+  moreResults: PropTypes.bool,
 };
 
 TableComponent.defaultProps = {
@@ -634,6 +693,8 @@ TableComponent.defaultProps = {
   allColumns: [],
   hidden: [],
   handleNewQuery: null,
+  handleSubsequentPagination: null,
+  moreResults: false,
 };
 
 export default TableComponent;

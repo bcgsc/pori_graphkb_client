@@ -5,7 +5,7 @@ describe('Query Page Test', () => {
     cy.url().should('includes', '/login');
     cy.get('input[name=username]').type(Cypress.env('USER'));
     cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
-    cy.wait(500);
+    cy.get('#search-btn').click();
     cy.url().should('includes', '/query');
   });
 
@@ -17,7 +17,6 @@ describe('Query Page Test', () => {
 
   it('AutoSearch valid input', () => {
     cy.get('input[type=text]').type('angiosarcoma');
-    cy.wait(700);
     cy.get('div.droptions ul li').each(($li) => {
       cy.wrap($li).contains('angiosarcoma');
     });

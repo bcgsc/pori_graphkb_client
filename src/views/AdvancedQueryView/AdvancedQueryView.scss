@@ -1,19 +1,22 @@
 .adv-wrapper {
-    text-align: center;
-    margin: auto;
-    width: 80vw;
-    vertical-align: middle;
-    margin-bottom: 16px;
-    padding: 16px;
-    margin-top: 16px;
-    #adv-title {
-        margin: 16px;
+    margin: 32px auto;
+    width: calc(80vw + 32px);
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-row-gap: 1rem;
+    .adv-header {
+        padding: 16px;
+        #adv-title {
+            font-weight: 300;
+            height: 37px;
+        }
     }
     #adv-nav-buttons {
         display: flex;
         justify-content: center;
-        a {
-            text-decoration: none;
+        padding: 16px;
+        button {
+            margin: auto 12px;
         }
     }
     .input-wrapper {
@@ -67,9 +70,6 @@
         .related-checkboxes {
             grid-template-columns: 1fr 1fr;
         }
-    }
-    button {
-        margin: 8px;
     }
     .link {
         text-decoration: none;

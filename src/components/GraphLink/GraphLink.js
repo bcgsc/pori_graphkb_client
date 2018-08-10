@@ -2,6 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './GraphLink.css';
 
+const LABEL_BASELINE_SHIFT = 4;
+const DEFAULT_OPACITY = 0.7;
+const FADED_OPACITY = 0.4;
+
 /**
  * Display component for graph link objects.
  * @param {Object} props.link - Graph link object to be displayed.
@@ -40,16 +44,24 @@ function GraphLink(props) {
         id={`link${link.data['@rid']}`}
         d={`M${(link.source.x || 0)} ${(link.source.y || 0)}L${(link.target.x || 0)} ${(link.target.y || 0)}`}
         markerEnd={marker}
-        style={{ opacity: detail ? 0.4 : 0.7, strokeOpacity: detail ? 0.4 : 0.7 }}
+        style={{
+          opacity: detail ? FADED_OPACITY : DEFAULT_OPACITY,
+          strokeOpacity: detail ? FADED_OPACITY : DEFAULT_OPACITY,
+        }}
         fill={color}
         stroke={color}
       />
       {labelKey ? (
-        <text fill={color} opacity={detail ? 0.4 : 0.7}>
+        <text
+          fill={color}
+          opacity={detail ? FADED_OPACITY : DEFAULT_OPACITY}
+          className="link-label"
+        >
           <textPath
             href={`#link${link.data['@rid']}`}
             startOffset="20%"
             side={left ? 'left' : 'right'}
+            baselineShift={LABEL_BASELINE_SHIFT}
           >
             {label}
           </textPath>

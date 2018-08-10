@@ -182,7 +182,6 @@ class GraphComponent extends Component {
 
       if (
         storedData
-        && storedData.expiry > Date.now().valueOf()
         && (!displayed || displayed.length === 0)
       ) {
         const { graphObjects, nodes, links } = storedData;

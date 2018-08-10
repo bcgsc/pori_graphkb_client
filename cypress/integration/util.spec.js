@@ -233,10 +233,8 @@ describe('util methods test', () => {
     expect(localStorage.getItem('graphObjects')).to.not.eq(null);
 
     const graphData = util.getGraphData(key);
-    expect(graphData.expiry).to.above(Date.now().valueOf());
     expect(graphData.filteredSearch).to.eq(key);
     expect(graphData.data1.message).to.eq(data1.message);
     expect(graphData.data1.reference).to.deep.eq(data2);
   });
-
 });

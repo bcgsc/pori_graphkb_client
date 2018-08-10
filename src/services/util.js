@@ -188,10 +188,6 @@ export default class util {
    * @param {Object} data - graph data to be stored.
    */
   static loadGraphData(search, data) {
-    const now = new Date();
-    const expiry = new Date(now);
-    expiry.setHours(now.getHours() + CACHE_EXPIRY);
-    data.expiry = expiry.getTime();
     data.filteredSearch = search;
     localStorage.setItem(GRAPH_OBJECTS_KEY, JSON.stringify(jc.decycle(data)));
   }

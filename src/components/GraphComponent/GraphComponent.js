@@ -68,11 +68,7 @@ const styles = {
   },
 };
 
-const END_ARROW_SIZE = {
-  d: `M0,0,L0,${ARROW_WIDTH} L ${ARROW_LENGTH}, ${ARROW_WIDTH / 2} z`,
-  refY: ARROW_WIDTH / 2,
-};
-
+// Component specific constants.
 const AUTO_SPACE_COEFFICIENT = 2.8;
 const SNACKBAR_AUTOHIDE_DURATION = 6000;
 
@@ -1314,11 +1310,14 @@ class GraphComponent extends Component {
                 id="endArrow"
                 markerWidth={ARROW_LENGTH}
                 markerHeight={ARROW_WIDTH}
-                refY={END_ARROW_SIZE.refY}
+                refY={ARROW_WIDTH / 2}
                 orient="auto"
                 markerUnits="strokeWidth"
               >
-                <path d={END_ARROW_SIZE.d} fill="#555" />
+                <path
+                  d={`M0,0,L0,${ARROW_WIDTH} L ${ARROW_LENGTH}, ${ARROW_WIDTH / 2} z`}
+                  fill="#555"
+                />
               </marker>
             </defs>
             <g ref={(node) => { this.zoom = node; }}>

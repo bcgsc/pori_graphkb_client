@@ -193,7 +193,7 @@ export default class util {
     expiry.setHours(now.getHours() + CACHE_EXPIRY);
     data.expiry = expiry.getTime();
     data.filteredSearch = search;
-    localStorage.setItem('graphObjects', JSON.stringify(jc.decycle(data)));
+    localStorage.setItem(GRAPH_OBJECTS_KEY, JSON.stringify(jc.decycle(data)));
   }
 
   /**
@@ -273,5 +273,6 @@ export default class util {
       }
     });
     expandable[rid] = targetFlag;
+    return expandable;
   }
 }

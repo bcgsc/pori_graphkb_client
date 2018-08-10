@@ -37,7 +37,10 @@ class AutoSearchComponent extends Component {
       lastRid: null,
     };
     const { property } = props;
-    this.callApi = _.debounce(this.callApi.bind(this), property.length > 1 ? LONG_DEBOUNCE_TIME : DEBOUNCE_TIME);
+    this.callApi = _.debounce(
+      this.callApi.bind(this),
+      property.length > 1 ? LONG_DEBOUNCE_TIME : DEBOUNCE_TIME,
+    );
     this.refreshOptions = this.refreshOptions.bind(this);
   }
 
@@ -106,6 +109,8 @@ class AutoSearchComponent extends Component {
       disabled,
       endAdornment,
       error,
+      dense,
+      container,
     } = this.props;
 
     if (loginRedirect) return <Redirect push to={{ pathname: '/login' }} />;
@@ -150,7 +155,7 @@ class AutoSearchComponent extends Component {
             setState,
           },
         ) => (
-          <div className="autosearch-wrapper">
+          <div className="autosearch-wrapper" style={{ minHeight: dense ? '48px' : '64px' }}>
             <TextField
               disabled={disabled}
               fullWidth
@@ -166,6 +171,9 @@ class AutoSearchComponent extends Component {
                   onKeyUp: this.refreshOptions,
                   onFocus: () => this.setState({ noRidFlag: false }),
                   onBlur: () => this.setState({ noRidFlag: !!(!lastRid && value) }),
+                  style: {
+                    fontSize: dense ? '0.8125rem' : '',
+                  },
                 }),
                 endAdornment: endAdornment ? (
                   <InputAdornment position="end">
@@ -173,8 +181,11 @@ class AutoSearchComponent extends Component {
                   </InputAdornment>
                 ) : null,
               }}
+              style={{
+                fontSize: dense ? '0.8125rem' : '',
+              }}
             />
-            {(isOpen || loading) && !emptyFlag
+            {(isOpen || loading || true) && !emptyFlag
               ? (
                 <Paper className="droptions">
                   <List>

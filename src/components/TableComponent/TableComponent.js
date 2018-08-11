@@ -53,7 +53,6 @@ class TableComponent extends Component {
       sortedData: Object.keys(props.data).map(key => props.data[key]),
       columnSelect: false,
       tableColumns: [],
-      awaiting: false,
     };
 
     this.handleDetailToggle = this.handleDetailToggle.bind(this);
@@ -131,7 +130,6 @@ class TableComponent extends Component {
         const s = sort || (() => 1);
         this.setState({
           sortedData: Object.keys(nextProps.data).map(k => nextProps.data[k]).sort(s),
-          awaiting: false,
         });
       }
     }
@@ -147,8 +145,8 @@ class TableComponent extends Component {
     const rows = (page + 1) * rowsPerPage;
     if (rows >= NEXT_CUTOFF * sortedData.length) {
       const { handleSubsequentPagination } = this.props;
-      if (handleSubsequentPagination && handleSubsequentPagination()) {
-        this.setState({ awaiting: true });
+      if (handleSubsequentPagination) {
+        handleSubsequentPagination();
       }
     }
     this.setState({ page });
@@ -344,7 +342,6 @@ class TableComponent extends Component {
       anchorEl,
       columnSelect,
       tableColumns,
-      awaiting,
     } = this.state;
 
     const {
@@ -361,6 +358,7 @@ class TableComponent extends Component {
       handleGraphRedirect,
       handleSubsequentPagination,
       moreResults,
+      completedNext,
     } = this.props;
 
     const numCols = tableColumns.filter(c => c.checked).length;
@@ -621,8 +619,8 @@ class TableComponent extends Component {
               <IconButton
                 disabled={!moreResults}
                 onClick={() => {
-                  if (handleSubsequentPagination && handleSubsequentPagination()) {
-                    this.setState({ awaiting: true });
+                  if (handleSubsequentPagination) {
+                    handleSubsequentPagination();
                   }
                 }}
               >
@@ -630,7 +628,7 @@ class TableComponent extends Component {
               </IconButton>
             </div>
           </Tooltip>
-          {awaiting ? (
+          {!completedNext ? (
             <div style={{ display: 'flex', justifyItems: 'center' }}>
               <CircularProgress size={20} color="primary" id="new-data-spinner" />
               <Typography variant="caption" style={{ margin: 'auto' }}>loading more results...</Typography>
@@ -686,6 +684,7 @@ TableComponent.propTypes = {
   hidden: PropTypes.array,
   allColumns: PropTypes.array,
   moreResults: PropTypes.bool,
+  completedNext: PropTypes.bool.isRequired,
 };
 
 TableComponent.defaultProps = {

@@ -185,7 +185,7 @@ class AutoSearchComponent extends Component {
                 fontSize: dense ? '0.8125rem' : '',
               }}
             />
-            {(isOpen || loading || true) && !emptyFlag
+            {(isOpen || loading) && !emptyFlag
               ? (
                 <Paper className="droptions">
                   <List>

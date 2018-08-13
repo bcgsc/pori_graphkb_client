@@ -76,6 +76,13 @@ describe('Table Test', () => {
     cy.contains('26-50');
   });
 
+  it.only('Check-all', () => {
+    getName('dis');
+    cy.get('table thead tr th:first input[type=checkbox]').click();
+    cy.get('#ellipsis-menu').click();
+    cy.contains('Hide Selected Rows (50)');
+  });
+
   /**
    * Tests download as TSV button.
    */
@@ -107,7 +114,7 @@ describe('Table Test', () => {
         cy.get('#hide-selected').click();
         cy.contains(total - hiddenRows);
         cy.get('#ellipsis-menu').click();
-        cy.contains(`Show hidden rows (${hiddenRows})`).click();
+        cy.contains(`Show Hidden Rows (${hiddenRows})`).click();
         cy.contains(`1-50 of ${total}`);
       });
     });

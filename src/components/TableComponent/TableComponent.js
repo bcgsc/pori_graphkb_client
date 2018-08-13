@@ -428,7 +428,7 @@ class TableComponent extends Component {
           }}
           disabled={hidden.length === 0}
         >
-          Show hidden rows
+          Show Hidden Rows
           {hidden.length !== 0 ? ` (${hidden.length})` : null}
         </MenuItem>
         <MenuItem

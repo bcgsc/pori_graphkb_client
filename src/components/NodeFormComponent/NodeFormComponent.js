@@ -906,7 +906,7 @@ class NodeFormComponent extends Component {
                                   className={
                                     relationship.in === originalNode['@rid']
                                       ? 'relationship-in'
-                                      : 'relationship-out'
+                                      : ''
                                   }
                                 />
                               </IconButton>

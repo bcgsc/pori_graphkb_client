@@ -111,6 +111,8 @@ class AutoSearchComponent extends Component {
       disabled,
       endAdornment,
       error,
+      dense,
+      container,
     } = this.props;
 
     if (loginRedirect) return <Redirect push to={{ pathname: '/login' }} />;
@@ -155,37 +157,34 @@ class AutoSearchComponent extends Component {
             setState,
           },
         ) => (
-            <div
-              className="autosearch-wrapper"
-            // ref={this.setRef}
-            >
-              <TextField
-                disabled={disabled}
-                fullWidth
-                error={emptyFlag || noRidFlag || error}
-                label={label}
-                required={required}
-                InputProps={{
-                  ...getInputProps({
-                    placeholder,
-                    value,
-                    onChange,
-                    name,
-                    onKeyUp: this.refreshOptions,
-                    onFocus: () => this.setState({ noRidFlag: false }),
-                    onBlur: () => this.setState({ noRidFlag: !!(!lastRid && value) }),
-                  }),
-                  endAdornment: endAdornment ? (
-                    <InputAdornment
-                      position="end"
-                    // ref={(node) => { this.endAdornmentNode = node; }}
-                    >
-                      {endAdornment}
-                    </InputAdornment>
-                  ) : null,
-                  inputRef: this.setRef
-                }}
-              />
+            <div className="autosearch-wrapper">
+              <div ref={this.setRef}>
+                <TextField
+                  fullWidth
+                  error={emptyFlag || noRidFlag || error}
+                  label={label}
+                  required={required}
+                  InputProps={{
+                    ...getInputProps({
+                      placeholder,
+                      value,
+                      onChange,
+                      name,
+                      disabled,
+                      onKeyUp: this.refreshOptions,
+                      onFocus: () => this.setState({ noRidFlag: false }),
+                      onBlur: () => this.setState({ noRidFlag: !!(!lastRid && value) }),
+                    }),
+                    endAdornment: endAdornment ? (
+                      <InputAdornment
+                        position="end"
+                      >
+                        {endAdornment}
+                      </InputAdornment>
+                    ) : null,
+                  }}
+                />
+              </div>
               <Popper
                 open={(isOpen || loading) && !emptyFlag}
                 anchorEl={this.popperNode}
@@ -209,12 +208,12 @@ class AutoSearchComponent extends Component {
               {emptyFlag ? (
                 <Typography variant="caption" color="error">
                   No Results
-              </Typography>
+                </Typography>
               ) : null}
               {noRidFlag && !emptyFlag ? (
                 <Typography variant="caption" color="error">
                   Select an option
-              </Typography>
+                </Typography>
               ) : null}
             </div>)
         }
@@ -271,7 +270,7 @@ AutoSearchComponent.defaultProps = {
       style={{ whiteSpace: 'normal', height: 'unset' }}
     >
       <span>
-        {item.name || util.getPreview(item)}
+        {util.getPreview(item)}
         <Typography color="textSecondary" variant="body1">
           {item.source && item.source.name ? item.source.name : ''}
         </Typography>

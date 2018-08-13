@@ -23,6 +23,12 @@ import {
   ListItemSecondaryAction,
   Paper,
   InputAdornment,
+  Chip,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
@@ -46,7 +52,14 @@ class NodeFormComponent extends Component {
       edgeTypes: [],
       sources: [],
       newNodeClass: 'Disease',
-      relationships: [],
+      relationships: [{
+        '@class': 'AliasOf',
+        targetName: 'melanoma',
+        targetSourceId: 'mel',
+        in: '#32:12',
+        out: -1,
+        source: '#15:0',
+      }],
       relationship: {
         '@class': '',
         targetName: '',
@@ -105,7 +118,7 @@ class NodeFormComponent extends Component {
       } = prop;
       switch (type) {
         case 'embeddedset':
-          form[name] = originalNode[name] || [];
+          form[name] = originalNode[name] || ['doid#do_agr_slim', 'doid#do_gold'];
           break;
         case 'link':
           form[`${name}.@rid`] = (originalNode[name] || '')['@rid'] || '';
@@ -663,51 +676,60 @@ class NodeFormComponent extends Component {
      * Formats model subsets into list form.
      */
     const subsets = (form.subsets || []).map(s => (
-      <ListItem
+      <Chip
+        label={s}
+        deleteIcon={<CloseIcon />}
+        onDelete={() => this.handleSubsetDelete(s)}
         key={s}
-        className="form-list"
-      >
-        <ListItemText primary={s} style={{ overflow: 'auto' }} />
-        <ListItemSecondaryAction>
-          <IconButton
-            onClick={() => this.handleSubsetDelete(s)}
-          >
-            <CloseIcon color="error" />
-          </IconButton>
-        </ListItemSecondaryAction>
-      </ListItem>
+        className="subset-chip"
+      />
+      // <ListItem
+      //   key={s}
+      //   className="form-list"
+      // >
+      //   <ListItemText primary={s} style={{ overflow: 'auto' }} />
+      //   <ListItemSecondaryAction>
+      //     <IconButton
+      //       onClick={() => this.handleSubsetDelete(s)}
+      //     >
+      //       <CloseIcon color="error" />
+      //     </IconButton>
+      //   </ListItemSecondaryAction>
+      // </ListItem>
     ));
 
     /**
      * Formats model relationships into list form.
      */
-    const rships = relationships.map((r) => {
-      const sourceName = sources.find(
-        s => s['@rid'] === r.source,
-      ).name;
-      const typeName = r.in === originalNode['@rid']
-        ? `has${r['@class'].slice(0, r['@class'].length - 2)}`
-        : r['@class'];
-      return (
-        <ListItem
-          key={`${r.key}: ${r['@rid']}`}
-          className="relationship-item"
-        >
-          <ListItemText
-            primary={`${typeName}: ${r.targetSourceId}`}
-            secondary={sourceName}
-            style={{ overflow: 'auto' }}
-          />
-          <ListItemSecondaryAction>
-            <IconButton
-              onClick={() => this.handleRelationshipDelete(r)}
-            >
-              <CloseIcon color="error" />
-            </IconButton>
-          </ListItemSecondaryAction>
-        </ListItem>
-      );
-    });
+    // const rships = relationships.map((r) => {
+    //   const sourceName = sources.find(
+    //     s => s['@rid'] === r.source,
+    //   ).name;
+
+    //   const typeName = r.in === originalNode['@rid']
+    //     ? util.getEdgeLabel(`in_${r['@class']}`)
+    //     : util.getEdgeLabel(`out_${r['@class']}`);
+
+    //   return (
+    //     <ListItem
+    //       key={`${r.key}: ${r['@rid']}`}
+    //       className="relationship-item"
+    //     >
+    //       <ListItemText
+    //         primary={`${typeName}: ${r.targetSourceId}`}
+    //         secondary={sourceName}
+    //         style={{ overflow: 'auto' }}
+    //       />
+    //       <ListItemSecondaryAction>
+    //         <IconButton
+    //           onClick={() => this.handleRelationshipDelete(r)}
+    //         >
+    //           <CloseIcon color="error" />
+    //         </IconButton>
+    //       </ListItemSecondaryAction>
+    //     </ListItem>
+    //   );
+    // });
 
     /**
       * Formats valid edge types.
@@ -744,137 +766,269 @@ class NodeFormComponent extends Component {
                 </Button>
               </div>
             </Paper>
-            <Paper className="param-section" elevation={4}>
-              <Typography variant="title">
-                Basic Parameters
-              </Typography>
-              {variant === 'edit' ? null
-                : (
-                  <div className="class-select">
-                    <ResourceSelectComponent
-                      value={newNodeClass}
-                      onChange={this.handleClassChange}
-                      name="newNodeClass"
-                      label="Class"
-                      resources={ontologyTypes}
-                    >
-                      {resource => (
-                        <MenuItem key={resource.name} value={resource.name}>
-                          {resource.name}
-                        </MenuItem>
-                      )}
-                    </ResourceSelectComponent>
+            <div className="flexbox">
+              <Paper className="param-section" elevation={4}>
+                <Typography variant="title">
+                  Basic Parameters
+                </Typography>
+                {variant === 'edit' ? (
+                  <div style={{ padding: '8px 24px' }}>
+                    <Typography variant="subheading">
+                      Class:
+                    </Typography>
+                    <Typography variant="caption">
+                      {originalNode['@class']}
+                    </Typography>
                   </div>
-                )}
-              <List component="nav">
-                {Object.keys(form)
-                  .filter(key => !key.includes('.'))
-                  .map(key => formatInputSection(key, form[key]))
-                }
-              </List>
-            </Paper>
-            <Paper className="param-section" elevation={4}>
-              <Typography variant="title">
-                Subsets
-              </Typography>
-              <ListItem className="input-wrapper form-list">
-                <TextField
-                  id="subset-temp"
-                  label="Add a Subset"
-                  value={subset}
-                  onChange={this.handleChange}
-                  className="text-input"
-                  name="subset"
-                  onKeyDown={(e) => {
-                    if (e.keyCode === 13) {
-                      this.handleSubsetAdd(e);
-                    }
-                  }}
-                />
-                <IconButton color="primary" onClick={this.handleSubsetAdd}>
-                  <AddIcon />
-                </IconButton>
-              </ListItem>
-              <List className="list">
-                {subsets}
-              </List>
-              <Typography variant="title">
-                Relationships
-              </Typography>
-              <List component="nav">
-                <ListItem
-                  className="input-wrapper relationship-add-wrapper form-list"
-                  onKeyDown={(e) => {
-                    if (e.keyCode === 13) this.handleRelationshipAdd(e);
-                  }}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      flexGrow: '1',
-                    }}
-                  >
-                    <ResourceSelectComponent
-                      value={relationship.source}
-                      onChange={this.handleRelationship}
-                      name="source"
-                      label="Source"
-                      resources={sources}
-                      error={errorFlag}
+                )
+                  : (
+                    <div className="class-select">
+                      <ResourceSelectComponent
+                        value={newNodeClass}
+                        onChange={this.handleClassChange}
+                        name="newNodeClass"
+                        label="Class"
+                        resources={ontologyTypes}
+                      >
+                        {resource => (
+                          <MenuItem key={resource.name} value={resource.name}>
+                            {resource.name}
+                          </MenuItem>
+                        )}
+                      </ResourceSelectComponent>
+                    </div>
+                  )}
+                <List component="nav">
+                  {Object.keys(form)
+                    .filter(key => !key.includes('.'))
+                    .map(key => formatInputSection(key, form[key]))
+                  }
+                </List>
+              </Paper>
+              <Paper className="param-section" id="forms-lists" elevation={4}>
+                <Paper className="subsets-wrapper">
+                  <Typography variant="title">
+                    Subsets
+                  </Typography>
+                  <div className="input-wrapper">
+                    <TextField
+                      id="subset-temp"
+                      label="Add a Subset"
+                      value={subset}
+                      onChange={this.handleChange}
+                      className="text-input"
+                      name="subset"
+                      onKeyDown={(e) => {
+                        if (e.keyCode === 13) {
+                          this.handleSubsetAdd(e);
+                        }
+                      }}
                     />
-                    <div style={{ display: 'flex', width: '100%' }}>
-                      <div className="relationship-dir-type">
-                        <IconButton
-                          disableRipple
-                          name="direction"
-                          onClick={this.handleRelationshipDirection}
-                          color="primary"
-                        >
-                          <TrendingFlatIcon
-                            className={
-                              relationship.in === originalNode['@rid']
-                                ? 'relationship-in'
-                                : 'relationship-out'
-                            }
-                          />
-                        </IconButton>
+                    <IconButton color="primary" onClick={this.handleSubsetAdd}>
+                      <AddIcon />
+                    </IconButton>
+                  </div>
+                  <List className="list">
+                    {subsets}
+                  </List>
+                </Paper>
+                <Paper className="relationships-wrapper">
+                  <Typography variant="title">
+                    Relationships
+                  </Typography>
+                  <div style={{ overflow: 'auto' }}>
+                    <Table className="form-table">
+                      <TableHead className="form-table-header">
+                        <TableRow>
+                          <TableCell padding="checkbox" />
+                          <TableCell padding="dense">
+                            Class
+                          </TableCell>
+
+                          <TableCell padding="dense">
+                            Related Record
+                          </TableCell>
+                          <TableCell padding="dense">
+                            Source
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {relationships.map((r) => {
+                          const sourceName = sources.find(
+                            s => s['@rid'] === r.source,
+                          ).name;
+
+                          const typeName = r.in === originalNode['@rid']
+                            ? util.getEdgeLabel(`in_${r['@class']}`)
+                            : util.getEdgeLabel(`out_${r['@class']}`);
+
+                          return (
+                            <TableRow key={`${r.key}: ${r['@rid']}`}>
+                              <TableCell padding="checkbox">
+                                <IconButton
+                                  onClick={() => this.handleRelationshipDelete(r)}
+                                >
+                                  <CloseIcon color="error" />
+                                </IconButton>
+                              </TableCell>
+                              <TableCell padding="dense">
+                                {typeName}
+                              </TableCell>
+                              <TableCell padding="dense">
+                                {r.targetName}: {r.targetSourceId}
+                              </TableCell>
+                              <TableCell padding="dense">
+                                {sourceName}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                        <TableRow id="relationship-add">
+                          <TableCell padding="checkbox">
+                            <IconButton
+                              color="primary"
+                              onClick={this.handleRelationshipAdd}
+                              id="relationship-add"
+                            >
+                              <AddIcon />
+                            </IconButton>
+                          </TableCell>
+                          <TableCell padding="dense">
+                            <div className="relationship-dir-type">
+                              <IconButton
+                                disableRipple
+                                name="direction"
+                                onClick={this.handleRelationshipDirection}
+                                color="primary"
+                              >
+                                <TrendingFlatIcon
+                                  className={
+                                    relationship.in === originalNode['@rid']
+                                      ? 'relationship-in'
+                                      : 'relationship-out'
+                                  }
+                                />
+                              </IconButton>
+                              <ResourceSelectComponent
+                                value={relationship['@class']}
+                                onChange={this.handleRelationship}
+                                name="@class"
+                                label="Type"
+                                resources={edgeTypes}
+                                error={errorFlag}
+                                id="relationship-type"
+                                dense
+                              >
+                                {edgeTypesDisplay}
+                              </ResourceSelectComponent>
+                            </div>
+                          </TableCell>
+                          <TableCell padding="dense">
+                            <div className="search-wrap">
+                              <AutoSearchComponent
+                                value={relationship.targetName}
+                                onChange={this.handleRelationship}
+                                placeholder="Target Name"
+                                limit={10}
+                                name="targetName"
+                                error={errorFlag}
+                                dense
+                              />
+                            </div>
+                          </TableCell>
+                          <TableCell padding="dense">
+                            <ResourceSelectComponent
+                              value={relationship.source}
+                              onChange={this.handleRelationship}
+                              name="source"
+                              label="Source"
+                              resources={sources}
+                              error={errorFlag}
+                              dense
+                            />
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </div>
+                </Paper>
+                {/* <List component="nav">
+                  <Paper className="input-wrapper relationship-add-wrapper">
+                    <ListItem
+                      onKeyDown={(e) => {
+                        if (e.keyCode === 13) this.handleRelationshipAdd(e);
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          flexGrow: '1',
+                        }}
+                      >
                         <ResourceSelectComponent
-                          value={relationship['@class']}
+                          value={relationship.source}
                           onChange={this.handleRelationship}
-                          name="@class"
-                          label="Type"
-                          resources={edgeTypes}
-                          error={errorFlag}
-                          id="relationship-type"
-                        >
-                          {edgeTypesDisplay}
-                        </ResourceSelectComponent>
-                      </div>
-                      <div className="search-wrap">
-                        <AutoSearchComponent
-                          value={relationship.targetName}
-                          onChange={this.handleRelationship}
-                          placeholder="Target Name"
-                          limit={10}
-                          name="targetName"
+                          name="source"
+                          label="Source"
+                          resources={sources}
                           error={errorFlag}
                         />
+                        <div style={{ display: 'flex', width: '100%' }}>
+                          <div className="relationship-dir-type">
+                            <IconButton
+                              disableRipple
+                              name="direction"
+                              onClick={this.handleRelationshipDirection}
+                              color="primary"
+                            >
+                              <TrendingFlatIcon
+                                className={
+                                  relationship.in === originalNode['@rid']
+                                    ? 'relationship-in'
+                                    : 'relationship-out'
+                                }
+                              />
+                            </IconButton>
+                            <ResourceSelectComponent
+                              value={relationship['@class']}
+                              onChange={this.handleRelationship}
+                              name="@class"
+                              label="Type"
+                              resources={edgeTypes}
+                              error={errorFlag}
+                              id="relationship-type"
+                            >
+                              {edgeTypesDisplay}
+                            </ResourceSelectComponent>
+                          </div>
+                          <div className="search-wrap">
+                            <AutoSearchComponent
+                              value={relationship.targetName}
+                              onChange={this.handleRelationship}
+                              placeholder="Target Name"
+                              limit={10}
+                              name="targetName"
+                              error={errorFlag}
+                            />
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                  <IconButton
-                    style={{ margin: 'auto 0 auto 8px' }}
-                    color="primary"
-                    onClick={this.handleRelationshipAdd}
-                    id="relationship-add"
-                  >
-                    <AddIcon />
-                  </IconButton>
-                </ListItem>
-                {rships}
-              </List>
-            </Paper>
+                      <IconButton
+                        style={{ margin: 'auto 0 auto 8px' }}
+                        color="primary"
+                        onClick={this.handleRelationshipAdd}
+                        id="relationship-add"
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    </ListItem>
+                  </Paper>
+                  {rships}
+                </List> */}
+              </Paper>
+            </div>
             <Paper className="form-btns" elevation={4}>
               {variant === 'edit' ? (
                 <Button
@@ -912,11 +1066,11 @@ NodeFormComponent.defaultProps = {
 };
 
 /**
-  * @param {Object} node - node object.
-  * @param {string} variant - specifies form type/function.
-  * @param {function} handleNodeDelete - parent method triggered on node delete.
-  * @param {function} handleNodeFinishEdit - parent method triggered when node is edited.
-  */
+* @param {Object} node - node object.
+* @param {string} variant - specifies form type/function.
+* @param {function} handleNodeDelete - parent method triggered on node delete.
+* @param {function} handleNodeFinishEdit - parent method triggered when node is edited.
+    */
 NodeFormComponent.propTypes = {
   node: PropTypes.object,
   variant: PropTypes.string,

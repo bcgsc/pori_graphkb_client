@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
 import './AutoSearchComponent.css';
 import Downshift from 'downshift';
 import {
@@ -23,6 +22,9 @@ const DEBOUNCE_TIME = 300;
 
 // More conservative timeout for double query call.
 const LONG_DEBOUNCE_TIME = 600;
+
+const PROGRESS_SPINNER_SIZE = 20;
+
 /**
  * Autocomplete search component for querying ease of use.
  */
@@ -33,7 +35,6 @@ class AutoSearchComponent extends Component {
       options: [],
       emptyFlag: false,
       noRidFlag: false,
-      loginRedirect: false,
       loading: false,
       lastRid: null,
     };
@@ -43,7 +44,7 @@ class AutoSearchComponent extends Component {
       property.length > 1 ? LONG_DEBOUNCE_TIME : DEBOUNCE_TIME,
     );
     this.refreshOptions = this.refreshOptions.bind(this);
-    this.setRef = (node) => { console.log('ref'); this.popperNode = node; };
+    this.setRef = (node) => { this.popperNode = node; };
   }
 
   /**
@@ -96,7 +97,6 @@ class AutoSearchComponent extends Component {
       emptyFlag,
       noRidFlag,
       lastRid,
-      loginRedirect,
       loading,
     } = this.state;
 
@@ -114,20 +114,16 @@ class AutoSearchComponent extends Component {
       dense,
     } = this.props;
 
-    if (loginRedirect) return <Redirect push to={{ pathname: '/login' }} />;
-
     const autoSearchResults = (
       inputValue,
       getItemProps,
       setState,
-      getInputProps,
       style,
     ) => options.map((item, index) => children(
       getItemProps,
       item,
       index,
       setState,
-      getInputProps,
       style,
     ));
 
@@ -149,16 +145,18 @@ class AutoSearchComponent extends Component {
           return null;
         }}
       >
-        {(
-          {
-            getInputProps,
-            getItemProps,
-            isOpen,
-            inputValue,
-            setState,
-          },
-        ) => (
-          <div className="autosearch-wrapper">
+        {({
+          getInputProps,
+          getItemProps,
+          isOpen,
+          inputValue,
+          setState,
+          getMenuProps,
+        }) => (
+          <div
+            className="autosearch-wrapper"
+            style={{ minHeight: dense ? '48px' : '64px' }}
+          >
             <div ref={this.setRef}>
               <TextField
                 fullWidth
@@ -196,6 +194,7 @@ class AutoSearchComponent extends Component {
               open={(isOpen || loading) && !emptyFlag}
               anchorEl={this.popperNode}
               placement="bottom-start"
+              {...getMenuProps()}
             >
               <Paper
                 className="droptions"
@@ -207,8 +206,8 @@ class AutoSearchComponent extends Component {
               >
                 <List dense={dense}>
                   {loading
-                    ? (<CircularProgress color="primary" size={20} id="autosearch-spinner" />)
-                    : autoSearchResults(inputValue, getItemProps, setState, getInputProps)}
+                    ? (<CircularProgress color="primary" size={PROGRESS_SPINNER_SIZE} id="autosearch-spinner" />)
+                    : autoSearchResults(inputValue, getItemProps, setState)}
                 </List>
               </Paper>
             </Popper>

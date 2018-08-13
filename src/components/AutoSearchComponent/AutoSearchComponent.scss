@@ -1,12 +1,12 @@
 .droptions {
     max-height: 200px;
     overflow: auto;
+    z-index:10000;
 }
 
 .autosearch-wrapper {
     position: relative;
     flex-grow: 1;
-    min-height: 64px;
 }
 
 #autosearch-spinner {

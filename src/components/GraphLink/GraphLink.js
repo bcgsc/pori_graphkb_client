@@ -4,6 +4,7 @@ import './GraphLink.css';
 import config from '../../config.json';
 
 const LABEL_BASELINE_SHIFT = 4;
+const SELECTED_OPACITY = 1;
 const DEFAULT_OPACITY = 0.7;
 const FADED_OPACITY = 0.4;
 const { NODE_RADIUS, ARROW_LENGTH } = config.GRAPH_PROPERTIES;
@@ -19,6 +20,7 @@ function GraphLink(props) {
     labelKey,
     color,
     handleClick,
+    actionsNode,
   } = props;
 
   const left = link.source.x < link.target.x;
@@ -37,7 +39,14 @@ function GraphLink(props) {
   let opacity = DEFAULT_OPACITY;
   if (detail) {
     if (detail['@rid'] === link.data['@rid']) {
-      opacity = 1;
+      opacity = SELECTED_OPACITY;
+    } else {
+      opacity = FADED_OPACITY;
+    }
+  }
+  if (actionsNode) {
+    if (actionsNode.data['@rid'] === link.data['@rid']) {
+      opacity = SELECTED_OPACITY;
     } else {
       opacity = FADED_OPACITY;
     }
@@ -114,6 +123,7 @@ GraphLink.propTypes = {
   labelKey: PropTypes.string,
   color: PropTypes.string,
   handleClick: PropTypes.func,
+  actionsNode: PropTypes.object,
 };
 
 GraphLink.defaultProps = {
@@ -121,6 +131,7 @@ GraphLink.defaultProps = {
   labelKey: null,
   color: '#999',
   handleClick: null,
+  actionsNode: null,
 };
 
 export default GraphLink;

@@ -1234,6 +1234,7 @@ class GraphComponent extends Component {
         labelKey={graphOptions.linkLabelProp}
         color={util.getColor(link, graphOptions.linksColor, graphOptions.linksColors)}
         handleClick={e => this.handleLinkClick(e, link)}
+        actionsNode={actionsNode}
       />));
 
     const nodesDisplay = nodes.map(node => (
@@ -1241,6 +1242,7 @@ class GraphComponent extends Component {
         key={node.data['@rid']}
         node={node}
         detail={detail}
+        actionsNode={actionsNode}
         labelKey={graphOptions.nodeLabelProp}
         color={util.getColor(node, graphOptions.nodesColor, graphOptions.nodesColors)}
         handleClick={e => this.handleClick(e, node)}

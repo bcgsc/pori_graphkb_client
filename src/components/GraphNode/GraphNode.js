@@ -5,6 +5,8 @@ import * as d3 from 'd3';
 import config from '../../config.json';
 
 const { NODE_RADIUS } = config.GRAPH_PROPERTIES;
+const DEFAULT_OPACITY = 1;
+const FADED_OPACITY = 0.6;
 
 /**
  * Component used to display graph nodes and apply draggable behavior to them through d3.
@@ -64,6 +66,7 @@ class GraphNode extends PureComponent {
       color,
       labelKey,
       detail,
+      actionsNode,
     } = this.props;
 
     // Extract label
@@ -74,6 +77,13 @@ class GraphNode extends PureComponent {
       obj = node.data[labelKey.split('.')[0]];
     }
 
+    let opacity = DEFAULT_OPACITY;
+    if ((detail && detail['@rid'] !== node.data['@rid'])
+      || (actionsNode && actionsNode.data['@rid'] !== node.data['@rid'])
+    ) {
+      opacity = FADED_OPACITY;
+    }
+
     return (
       <g
         ref={(n) => { this.node = n; }}
@@ -81,7 +91,7 @@ class GraphNode extends PureComponent {
       >
         <text
           style={{
-            opacity: detail && detail['@rid'] !== node.data['@rid'] ? 0.6 : 1,
+            opacity,
           }}
         >
           <tspan className="node-name" dy={28}>
@@ -96,7 +106,7 @@ class GraphNode extends PureComponent {
         />
         <circle
           style={{
-            opacity: detail && detail['@rid'] !== node.data['@rid'] ? 0.6 : 1,
+            opacity,
           }}
           onClick={handleClick}
           className="node"
@@ -115,6 +125,7 @@ GraphNode.defaultProps = {
   color: '#26328C',
   labelKey: 'name',
   detail: null,
+  actionsNode: null,
 };
 
 /**
@@ -136,6 +147,7 @@ GraphNode.propTypes = {
   simulation: PropTypes.object.isRequired,
   labelKey: PropTypes.string,
   detail: PropTypes.object,
+  actionsNode: PropTypes.object,
 };
 
 export default GraphNode;

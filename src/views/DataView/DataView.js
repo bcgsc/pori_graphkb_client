@@ -50,6 +50,7 @@ class DataView extends Component {
       allColumns: [],
       detail: null,
       next: null,
+      completedNext: true,
       filteredSearch: null,
     };
 
@@ -232,10 +233,11 @@ class DataView extends Component {
           next: newNext,
           filteredSearch,
           moreResults,
+          completedNext: true,
         });
       });
     }
-    this.setState({ next: null, moreResults: false });
+    this.setState({ next: null, moreResults: false, completedNext: false });
     return next;
   }
 
@@ -337,6 +339,7 @@ class DataView extends Component {
       schema,
       moreResults,
       edges,
+      completedNext,
     } = this.state;
 
     const {
@@ -397,6 +400,7 @@ class DataView extends Component {
         hidden={hidden}
         allColumns={allColumns}
         moreResults={moreResults}
+        completedNext={completedNext}
         handleCheckAll={this.handleCheckAll}
         handleNodeEditStart={this.handleNodeEditStart}
         handleHideSelected={this.handleHideSelected}

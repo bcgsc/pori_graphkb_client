@@ -306,7 +306,12 @@ class TableComponent extends Component {
     const { data, hidden, allColumns } = this.props;
     const rows = [];
     const rids = fData || Object.keys(data);
-    rows.push(allColumns.map(column => util.getEdgeLabel(column)).join('\t'));
+    rows.push(allColumns.map((column) => {
+      if (column.includes('_')) {
+        return util.getEdgeLabel(column);
+      }
+      return column;
+    }).join('\t'));
     rids.forEach((rid) => {
       const row = [];
       if (!hidden.includes(rid)) {

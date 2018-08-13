@@ -112,7 +112,6 @@ class AutoSearchComponent extends Component {
       endAdornment,
       error,
       dense,
-      container,
     } = this.props;
 
     if (loginRedirect) return <Redirect push to={{ pathname: '/login' }} />;
@@ -122,12 +121,14 @@ class AutoSearchComponent extends Component {
       getItemProps,
       setState,
       getInputProps,
+      style,
     ) => options.map((item, index) => children(
       getItemProps,
       item,
       index,
       setState,
       getInputProps,
+      style,
     ));
 
     return (
@@ -157,65 +158,71 @@ class AutoSearchComponent extends Component {
             setState,
           },
         ) => (
-            <div className="autosearch-wrapper">
-              <div ref={this.setRef}>
-                <TextField
-                  fullWidth
-                  error={emptyFlag || noRidFlag || error}
-                  label={label}
-                  required={required}
-                  InputProps={{
-                    ...getInputProps({
-                      placeholder,
-                      value,
-                      onChange,
-                      name,
-                      disabled,
-                      onKeyUp: this.refreshOptions,
-                      onFocus: () => this.setState({ noRidFlag: false }),
-                      onBlur: () => this.setState({ noRidFlag: !!(!lastRid && value) }),
-                    }),
-                    endAdornment: endAdornment ? (
-                      <InputAdornment
-                        position="end"
-                      >
-                        {endAdornment}
-                      </InputAdornment>
-                    ) : null,
-                  }}
-                />
-              </div>
-              <Popper
-                open={(isOpen || loading) && !emptyFlag}
-                anchorEl={this.popperNode}
-                placement="bottom-start"
+          <div className="autosearch-wrapper">
+            <div ref={this.setRef}>
+              <TextField
+                fullWidth
+                error={emptyFlag || noRidFlag || error}
+                label={label}
+                required={required}
+                InputProps={{
+                  ...getInputProps({
+                    placeholder,
+                    value,
+                    onChange,
+                    name,
+                    disabled,
+                    onKeyUp: this.refreshOptions,
+                    onFocus: () => this.setState({ noRidFlag: false }),
+                    onBlur: () => this.setState({ noRidFlag: !!(!lastRid && value) }),
+                    style: {
+                      fontSize: dense ? '0.8125rem' : '',
+                    },
+                  }),
+                  endAdornment: endAdornment ? (
+                    <InputAdornment
+                      position="end"
+                    >
+                      {endAdornment}
+                    </InputAdornment>
+                  ) : null,
+                }}
+                style={{
+                  fontSize: dense ? '0.8125rem' : '',
+                }}
+              />
+            </div>
+            <Popper
+              open={(isOpen || loading) && !emptyFlag}
+              anchorEl={this.popperNode}
+              placement="bottom-start"
+            >
+              <Paper
+                className="droptions"
+                style={{
+                  width: this.popperNode
+                    ? this.popperNode.clientWidth
+                    : null,
+                }}
               >
-                <Paper
-                  className="droptions"
-                  style={{
-                    width: this.popperNode
-                      ? this.popperNode.clientWidth
-                      : null,
-                  }}
-                >
-                  <List>
-                    {loading
-                      ? (<CircularProgress color="primary" size={20} id="autosearch-spinner" />)
-                      : autoSearchResults(inputValue, getItemProps, setState, getInputProps)}
-                  </List>
-                </Paper>
-              </Popper>
-              {emptyFlag ? (
-                <Typography variant="caption" color="error">
-                  No Results
-                </Typography>
-              ) : null}
-              {noRidFlag && !emptyFlag ? (
-                <Typography variant="caption" color="error">
-                  Select an option
-                </Typography>
-              ) : null}
-            </div>)
+                <List dense={dense}>
+                  {loading
+                    ? (<CircularProgress color="primary" size={20} id="autosearch-spinner" />)
+                    : autoSearchResults(inputValue, getItemProps, setState, getInputProps)}
+                </List>
+              </Paper>
+            </Popper>
+            {emptyFlag ? (
+              <Typography variant="caption" color="error">
+                No Results
+              </Typography>
+            ) : null}
+            {noRidFlag && !emptyFlag ? (
+              <Typography variant="caption" color="error">
+                Select an option
+              </Typography>
+            ) : null}
+          </div>)
         }
       </Downshift>
     );
@@ -249,6 +256,7 @@ AutoSearchComponent.propTypes = {
   children: PropTypes.func,
   disabled: PropTypes.bool,
   endAdornment: PropTypes.object,
+  dense: PropTypes.bool,
 };
 
 AutoSearchComponent.defaultProps = {
@@ -260,6 +268,7 @@ AutoSearchComponent.defaultProps = {
   label: '',
   required: false,
   error: false,
+  dense: false,
   children: (getItemProps, item, index) => ( // TODO: change this to be more flexible
     <MenuItem
       {...getItemProps({

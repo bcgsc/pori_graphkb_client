@@ -84,7 +84,11 @@ function GraphLink(props) {
         onClick={handleClick}
       />
       {labelKey ? (
-        <text fill={color} opacity={opacity}>
+        <text
+          fill={color}
+          opacity={opacity}
+          onClick={handleClick}
+        >
           <textPath
             href={`#link${link.data['@rid']}`}
             startOffset="20%"

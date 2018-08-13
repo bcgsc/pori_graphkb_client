@@ -11,6 +11,7 @@ import {
   Typography,
   CircularProgress,
   InputAdornment,
+  Popper,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import * as jc from 'json-cycle';
@@ -37,8 +38,12 @@ class AutoSearchComponent extends Component {
       lastRid: null,
     };
     const { property } = props;
-    this.callApi = _.debounce(this.callApi.bind(this), property.length > 1 ? LONG_DEBOUNCE_TIME : DEBOUNCE_TIME);
+    this.callApi = _.debounce(
+      this.callApi.bind(this),
+      property.length > 1 ? LONG_DEBOUNCE_TIME : DEBOUNCE_TIME,
+    );
     this.refreshOptions = this.refreshOptions.bind(this);
+    this.setRef = (node) => { console.log('ref'); this.popperNode = node; };
   }
 
   /**
@@ -150,51 +155,68 @@ class AutoSearchComponent extends Component {
             setState,
           },
         ) => (
-          <div className="autosearch-wrapper">
-            <TextField
-              disabled={disabled}
-              fullWidth
-              error={emptyFlag || noRidFlag || error}
-              label={label}
-              required={required}
-              InputProps={{
-                ...getInputProps({
-                  placeholder,
-                  value,
-                  onChange,
-                  name,
-                  onKeyUp: this.refreshOptions,
-                  onFocus: () => this.setState({ noRidFlag: false }),
-                  onBlur: () => this.setState({ noRidFlag: !!(!lastRid && value) }),
-                }),
-                endAdornment: endAdornment ? (
-                  <InputAdornment position="end">
-                    {endAdornment}
-                  </InputAdornment>
-                ) : null,
-              }}
-            />
-            {(isOpen || loading) && !emptyFlag
-              ? (
-                <Paper className="droptions">
+            <div
+              className="autosearch-wrapper"
+            // ref={this.setRef}
+            >
+              <TextField
+                disabled={disabled}
+                fullWidth
+                error={emptyFlag || noRidFlag || error}
+                label={label}
+                required={required}
+                InputProps={{
+                  ...getInputProps({
+                    placeholder,
+                    value,
+                    onChange,
+                    name,
+                    onKeyUp: this.refreshOptions,
+                    onFocus: () => this.setState({ noRidFlag: false }),
+                    onBlur: () => this.setState({ noRidFlag: !!(!lastRid && value) }),
+                  }),
+                  endAdornment: endAdornment ? (
+                    <InputAdornment
+                      position="end"
+                    // ref={(node) => { this.endAdornmentNode = node; }}
+                    >
+                      {endAdornment}
+                    </InputAdornment>
+                  ) : null,
+                  inputRef: this.setRef
+                }}
+              />
+              <Popper
+                open={(isOpen || loading) && !emptyFlag}
+                anchorEl={this.popperNode}
+                placement="bottom-start"
+              >
+                <Paper
+                  className="droptions"
+                  style={{
+                    width: this.popperNode
+                      ? this.popperNode.clientWidth
+                      : null,
+                  }}
+                >
                   <List>
                     {loading
                       ? (<CircularProgress color="primary" size={20} id="autosearch-spinner" />)
                       : autoSearchResults(inputValue, getItemProps, setState, getInputProps)}
                   </List>
                 </Paper>
+              </Popper>
+              {emptyFlag ? (
+                <Typography variant="caption" color="error">
+                  No Results
+              </Typography>
               ) : null}
-            {emptyFlag ? (
-              <Typography variant="caption" color="error">
-                No Results
+              {noRidFlag && !emptyFlag ? (
+                <Typography variant="caption" color="error">
+                  Select an option
               </Typography>
-            ) : null}
-            {noRidFlag && !emptyFlag ? (
-              <Typography variant="caption" color="error">
-                Select an option
-              </Typography>
-            ) : null}
-          </div>)
+              ) : null}
+            </div>)
         }
       </Downshift>
     );
@@ -202,18 +224,18 @@ class AutoSearchComponent extends Component {
 }
 
 /**
- * @param {number} limit - entry number limit when querying the database.
- * @param {string} name - name of input for event parsing.
- * @param {string} endpoint - api endpoint identifier.
- * @param {string} property - api property identifier.
- * @param {string} placeholder - placeholder for text input.
- * @param {string} value - specified value for two way binding.
- * @param {string} label - label for text input.
- * @param {bool} required - required flag for text input indicator.
- * @param {func} onChange - parent method for handling change events
- * @param {func} children - component for display display query results.
- * @param {bool} disabled - disabled flag.
- */
+* @param {number} limit - entry number limit when querying the database.
+* @param {string} name - name of input for event parsing.
+* @param {string} endpoint - api endpoint identifier.
+* @param {string} property - api property identifier.
+* @param {string} placeholder - placeholder for text input.
+* @param {string} value - specified value for two way binding.
+* @param {string} label - label for text input.
+* @param {bool} required - required flag for text input indicator.
+* @param {func} onChange - parent method for handling change events
+* @param {func} children - component for display display query results.
+* @param {bool} disabled - disabled flag.
+  */
 AutoSearchComponent.propTypes = {
   limit: PropTypes.number,
   name: PropTypes.string.isRequired,

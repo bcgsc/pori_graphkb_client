@@ -5,7 +5,6 @@ import {
   TextField,
   List,
   ListItem,
-  ListItemText,
   IconButton,
   MenuItem,
   Button,
@@ -20,7 +19,6 @@ import {
   DialogActions,
   DialogTitle,
   Tooltip,
-  ListItemSecondaryAction,
   Paper,
   InputAdornment,
   Chip,
@@ -823,10 +821,16 @@ class NodeFormComponent extends Component {
                           this.handleSubsetAdd(e);
                         }
                       }}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton color="primary" onClick={this.handleSubsetAdd}>
+                              <AddIcon />
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
                     />
-                    <IconButton color="primary" onClick={this.handleSubsetAdd}>
-                      <AddIcon />
-                    </IconButton>
                   </div>
                   <List className="list">
                     {subsets}

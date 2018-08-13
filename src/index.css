@@ -6,6 +6,11 @@
   color: unset;
   display: flex; }
 
+@keyframes fade-in {
+  from {
+    opacity: 0; }
+  to { } }
+
 body {
   margin: 0;
   padding: 0;

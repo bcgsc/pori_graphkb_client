@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import './GraphActionsNode.css';
 import config from '../../config.json';
 
 const {
@@ -103,7 +104,7 @@ function GraphActionsNode(props) {
   });
 
   return (
-    <g transform={`translate(${translateX},${translateY})`}>
+    <g transform={`translate(${translateX},${translateY})`} className="actions-node">
       {actionsRing}
     </g>
   );

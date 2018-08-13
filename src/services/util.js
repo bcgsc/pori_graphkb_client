@@ -3,7 +3,6 @@ import config from '../config.json';
 
 const { DEFAULT_PROPS } = config;
 const { PALLETE_SIZES } = config.GRAPH_DEFAULTS;
-const CACHE_EXPIRY = 8;
 const ACRONYMS = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
 const GRAPH_OBJECTS_KEY = 'graphObjects';
 

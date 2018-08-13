@@ -115,6 +115,7 @@ class GraphComponent extends Component {
     this.initSimulation = this.initSimulation.bind(this);
     this.loadNeighbors = this.loadNeighbors.bind(this);
     this.updateColors = this.updateColors.bind(this);
+    this.refresh = this.refresh.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.handleGraphOptionsChange = this.handleGraphOptionsChange.bind(this);
     this.handleOptionsPanelOpen = this.handleOptionsPanelOpen.bind(this);
@@ -489,11 +490,7 @@ class GraphComponent extends Component {
    * @param {boolean} reset - Reset flag to determine whether or not to re-
    * initialize node positions.
    */
-  drawGraph(reset) {
-    if (reset) {
-      this.setState({ nodes: [], links: [], graphObjects: [] }, this.componentDidMount);
-    }
-
+  drawGraph() {
     const {
       nodes,
       links,
@@ -587,7 +584,7 @@ class GraphComponent extends Component {
   /**
    * Handles link clicks from user.
    * @param {Event} e - User click event.
-   * @param {*} link - Clicked simulation link.
+   * @param {Object} link - Clicked simulation link.
    */
   handleLinkClick(e, link) {
     const { handleDetailDrawerOpen } = this.props;
@@ -766,6 +763,12 @@ class GraphComponent extends Component {
     this.setState({ advancedHelp: false, mainHelp: false });
   }
 
+  refresh() {
+    const { handleDetailDrawerClose } = this.props;
+    this.setState({ nodes: [], links: [], graphObjects: [] }, this.componentDidMount);
+    handleDetailDrawerClose();
+  }
+
   render() {
     const {
       nodes,
@@ -786,7 +789,6 @@ class GraphComponent extends Component {
       classes,
       handleTableRedirect,
       detail,
-      handleDetailDrawerClose,
       handleDetailDrawerOpen,
     } = this.props;
 
@@ -1284,11 +1286,7 @@ class GraphComponent extends Component {
           <Tooltip placement="top" title="Restart simulation with initial nodes">
             <IconButton
               color="primary"
-              onClick={() => {
-                this.initSimulation();
-                this.drawGraph(true);
-                handleDetailDrawerClose();
-              }}
+              onClick={this.refresh}
               style={{
                 margin: 'auto 8px',
               }}

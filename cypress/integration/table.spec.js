@@ -76,6 +76,9 @@ describe('Table Test', () => {
     cy.contains('26-50');
   });
 
+  /**
+   * Check all checkbox
+   */
   it('Check-all', () => {
     getName('dis');
     cy.get('table thead tr th:first input[type=checkbox]').click();

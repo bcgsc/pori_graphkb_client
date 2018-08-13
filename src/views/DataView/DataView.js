@@ -345,11 +345,8 @@ class DataView extends Component {
       schema,
       moreResults,
       edges,
-<<<<<<< HEAD
       detailEdge,
-=======
       completedNext,
->>>>>>> c7618ad55d2e87aaa0cfde904c718fc46e4c1ea7
     } = this.state;
 
     const {

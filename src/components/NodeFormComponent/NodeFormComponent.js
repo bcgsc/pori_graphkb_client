@@ -82,6 +82,53 @@ class NodeFormComponent extends Component {
           in: -1,
           out: '#32:12',
           source: '#15:3',
+        }, {
+          '@class': 'AliasOf',
+          name: 'melanoma',
+          sourceId: 'mel',
+          in: -1,
+          out: '#32:12',
+          source: '#15:0',
+        },
+        {
+          '@class': 'SubclassOf',
+          name: 'melanoma',
+          sourceId: 'mel',
+          in: -1,
+          out: '#32:12',
+          source: '#15:2',
+        },
+        {
+          '@class': 'TargetOf',
+          name: 'melanoma',
+          sourceId: 'mel',
+          in: -1,
+          out: '#32:12',
+          source: '#15:1',
+        },
+        {
+          '@class': 'Implies',
+          name: 'melanoma',
+          sourceId: 'mel',
+          in: '#32:12',
+          out: -1,
+          source: '#15:3',
+        },
+        {
+          '@class': 'Implies',
+          name: 'melanoma',
+          sourceId: 'mel',
+          in: '#32:12',
+          out: -1,
+          source: '#15:4',
+        },
+        {
+          '@class': 'TargetOf',
+          name: 'melanoma',
+          sourceId: 'mel',
+          in: -1,
+          out: '#32:12',
+          source: '#15:6',
         }],
       relationship: {
         '@class': '',
@@ -704,53 +751,7 @@ class NodeFormComponent extends Component {
         key={s}
         className="subset-chip"
       />
-      // <ListItem
-      //   key={s}
-      //   className="form-list"
-      // >
-      //   <ListItemText primary={s} style={{ overflow: 'auto' }} />
-      //   <ListItemSecondaryAction>
-      //     <IconButton
-      //       onClick={() => this.handleSubsetDelete(s)}
-      //     >
-      //       <CloseIcon color="error" />
-      //     </IconButton>
-      //   </ListItemSecondaryAction>
-      // </ListItem>
     ));
-
-    /**
-     * Formats model relationships into list form.
-     */
-    // const rships = relationships.map((r) => {
-    //   const sourceName = sources.find(
-    //     s => s['@rid'] === r.source,
-    //   ).name;
-
-    //   const typeName = r.in === originalNode['@rid']
-    //     ? util.getEdgeLabel(`in_${r['@class']}`)
-    //     : util.getEdgeLabel(`out_${r['@class']}`);
-
-    //   return (
-    //     <ListItem
-    //       key={`${r.key}: ${r['@rid']}`}
-    //       className="relationship-item"
-    //     >
-    //       <ListItemText
-    //         primary={`${typeName}: ${r.sourceId}`}
-    //         secondary={sourceName}
-    //         style={{ overflow: 'auto' }}
-    //       />
-    //       <ListItemSecondaryAction>
-    //         <IconButton
-    //           onClick={() => this.handleRelationshipDelete(r)}
-    //         >
-    //           <CloseIcon color="error" />
-    //         </IconButton>
-    //       </ListItemSecondaryAction>
-    //     </ListItem>
-    //   );
-    // });
 
     /**
       * Formats valid edge types.
@@ -867,9 +868,7 @@ class NodeFormComponent extends Component {
                     <Table className="form-table">
                       <TableHead className="form-table-header">
                         <TableRow>
-                          <TableCell padding="checkbox">
-                            <div />
-                          </TableCell>
+                          <TableCell padding="checkbox" />
                           <TableCell padding="dense">
                             Class
                           </TableCell>
@@ -896,6 +895,7 @@ class NodeFormComponent extends Component {
                               <TableCell padding="checkbox">
                                 <IconButton
                                   onClick={() => this.handleRelationshipDelete(r)}
+                                  style={{ position: 'unset' }}
                                 >
                                   <CloseIcon color="error" />
                                 </IconButton>
@@ -917,7 +917,6 @@ class NodeFormComponent extends Component {
                             <IconButton
                               color="primary"
                               onClick={this.handleRelationshipAdd}
-                              id="relationship-add"
                             >
                               <AddIcon />
                             </IconButton>
@@ -981,80 +980,6 @@ class NodeFormComponent extends Component {
                     </Table>
                   </div>
                 </Paper>
-                {/* <List component="nav">
-                  <Paper className="input-wrapper relationship-add-wrapper">
-                    <ListItem
-                      onKeyDown={(e) => {
-                        if (e.keyCode === 13) this.handleRelationshipAdd(e);
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          flexGrow: '1',
-                        }}
-                      >
-                        <ResourceSelectComponent
-                          value={relationship.source}
-                          onChange={this.handleRelationship}
-                          name="source"
-                          label="Source"
-                          resources={sources}
-                          error={errorFlag}
-                        />
-                        <div style={{ display: 'flex', width: '100%' }}>
-                          <div className="relationship-dir-type">
-                            <IconButton
-                              disableRipple
-                              name="direction"
-                              onClick={this.handleRelationshipDirection}
-                              color="primary"
-                            >
-                              <TrendingFlatIcon
-                                className={
-                                  relationship.in === originalNode['@rid']
-                                    ? 'relationship-in'
-                                    : 'relationship-out'
-                                }
-                              />
-                            </IconButton>
-                            <ResourceSelectComponent
-                              value={relationship['@class']}
-                              onChange={this.handleRelationship}
-                              name="@class"
-                              label="Type"
-                              resources={edgeTypes}
-                              error={errorFlag}
-                              id="relationship-type"
-                            >
-                              {edgeTypesDisplay}
-                            </ResourceSelectComponent>
-                          </div>
-                          <div className="search-wrap">
-                            <AutoSearchComponent
-                              value={relationship.name}
-                              onChange={this.handleRelationship}
-                              placeholder="Target Name"
-                              limit={10}
-                              name="name"
-                              error={errorFlag}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <IconButton
-                        style={{ margin: 'auto 0 auto 8px' }}
-                        color="primary"
-                        onClick={this.handleRelationshipAdd}
-                        id="relationship-add"
-                      >
-                        <AddIcon />
-                      </IconButton>
-                    </ListItem>
-                  </Paper>
-                  {rships}
-                </List> */}
               </Paper>
             </div>
             <Paper className="form-btns" elevation={4}>

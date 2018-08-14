@@ -89,7 +89,6 @@ $mediumBreakpoint: 500px;
             }
         }
         .relationship-add-wrapper {
-            z-index: 1;
             @media (max-width: $mediumBreakpoint) {
                 flex-direction: column;
                 width: 100%;
@@ -139,7 +138,6 @@ $mediumBreakpoint: 500px;
 .form-table-header {
     tr th {
         background-color: #f8f8f8;
-        z-index: 1;
         border-bottom: solid 1px rgba(0, 0, 0, 0.34);
     }
 }

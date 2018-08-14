@@ -522,7 +522,7 @@ class GraphComponent extends Component {
    */
   drawGraph(reset) {
     if (reset) {
-      this.setState({ nodes: [], links: [], graphObjects: [] }, this.componentDidMount);
+      this.setState({ nodes: [], links: [], graphObjects: {} }, this.componentDidMount);
     }
 
     const {

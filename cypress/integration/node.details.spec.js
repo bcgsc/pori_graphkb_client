@@ -14,7 +14,6 @@ describe('Node Detail ', () => {
     cy.url().should('includes', '/login');
     cy.get('input[name=username]').type(Cypress.env('USER'));
     cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
-    cy.wait(1000);
     cy.url().should('includes', '/query');
     cy.get('button.advanced-button').click();
     cy.url().should('includes', '/query/advanced');
@@ -44,7 +43,6 @@ describe('Node Detail ', () => {
     cy.get('div.graph-btn button:first').click();
     cy.url().should('includes', '/graph');
     cy.get('circle.node:first').click();
-    cy.wait(100);
     cy.contains('(Details)').click();
     cy.contains('Properties:');
     cy.get('div.node-properties').parent().scrollTo('bottom');

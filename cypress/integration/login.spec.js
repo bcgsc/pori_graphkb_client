@@ -18,7 +18,7 @@ describe('Login Test', () => {
     cy.get('input[name=username]').type('invalid user');
     cy.get('input[name=password]').type('invalid password{enter}');
     cy.url().should('includes', '/login').should(() => {
-      /* eslint-disable */
+      /* eslint-disable no-unused-expressions */
       expect(localStorage.getItem('kbToken')).to.be.null;
       /* eslint-enable */
     });

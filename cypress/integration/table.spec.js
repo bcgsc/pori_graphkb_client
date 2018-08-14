@@ -1,9 +1,9 @@
+
 function getName(name) {
   cy.get('input').type(`${name}{enter}`);
   cy.url().should('includes', `/table?name=~${name}`);
   cy.wait(1000);
 }
-
 
 describe('Table Test', () => {
   beforeEach(() => {
@@ -11,9 +11,7 @@ describe('Table Test', () => {
     cy.url().should('includes', '/login');
     cy.get('input[name=username]').type(Cypress.env('USER'));
     cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
-    cy.get('button[type=submit]').click();
-    cy.wait(500);
-    cy.url().should('includes', '/query');
+    cy.url({ timeout: 8000 }).should('includes', '/query');
   });
 
   /**
@@ -138,7 +136,7 @@ describe('Table Test', () => {
    */
   it('Subsequent Pagination', () => {
     getName('dis');
-    cy.wait(100);
+    cy.wait(500);
     cy.get('div.pag div div div button').each((button, i) => {
       // Chooses second button.
       if (i !== 0) {
@@ -148,8 +146,6 @@ describe('Table Test', () => {
         }
         cy.contains('loading more results...');
         cy.contains('1000');
-
-        cy.wait(2000);
         cy.contains('2000');
       }
     });
@@ -164,7 +160,6 @@ describe('Table Test', () => {
     cy.contains('loading more results...');
     cy.contains('1000');
     cy.get('div.more-results-btn button').should('disabled');
-    cy.wait(2000);
     cy.contains('2000');
   });
 });

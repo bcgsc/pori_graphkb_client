@@ -10,26 +10,19 @@
                 ]
             }
         ],
-        "react/jsx-one-expression-per-line": 0,
-        "react/forbid-prop-types": 0,
-        "prefer-promise-reject-errors": 0,
-        "prefer-destructuring": [
-            "error",
+        "react/forbid-prop-types": [
+            0,
             {
-                "VariableDeclarator": {
-                    "array": false,
-                    "object": true
-                },
-                "AssignmentExpression": {
-                    "array": false,
-                    "object": false
-                }
-            },
-            {
-                "enforceForRenamedProperties": false
+                "forbid": [],
+                "checkContextTypes": false,
+                "checkChildContextTypes": false
             }
         ],
-        "consistent-return": 0
+        "prefer-promise-reject-errors": 0,
+        "no-param-reassign": "warn",
+        "react/jsx-one-expression-per-line": 0,
+        "prefer-destructuring": "warn",
+        "react/destructuring-assignment": "warn"
     },
     "env": {
         "browser": true,

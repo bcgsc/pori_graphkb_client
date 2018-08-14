@@ -7,6 +7,8 @@
     "SCHEMA": "schema",
     "KB_TOKEN": "kbToken"
   },
+  "FEEDBACK_EMAIL": "ibeckie@bcgsc.ca",
+  "FEEDBACK_HIPCHAT": "@IsaacBeckie",
   "GRAPH_PROPERTIES": {
     "ARROW_WIDTH": 3,
     "ARROW_LENGTH": 4,

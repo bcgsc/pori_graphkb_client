@@ -165,7 +165,7 @@ class NodeDetailComponent extends Component {
                     {`${util.antiCamelCase(key)}:`}
                   </Typography>
                   {!isOpen
-                    ? (
+                    && (
                       <Typography
                         variant="subheading"
                         color="textSecondary"
@@ -173,17 +173,17 @@ class NodeDetailComponent extends Component {
                       >
                         {preview}
                       </Typography>
-                    ) : null}
+                    )}
                 </div>
                 {!isOpen
-                  ? (
+                  && (
                     <div className="length-box">
                       <Typography
                         variant="subheading"
                       >
                         {value.length}
                       </Typography>
-                    </div>) : null}
+                    </div>)}
               </ExpansionPanelSummary>
               <ExpansionPanelDetails style={{ display: 'block' }}>
                 {content}
@@ -230,7 +230,7 @@ class NodeDetailComponent extends Component {
               {`${util.antiCamelCase(key)}:`}
             </Typography>
             {!isOpen
-              ? (
+              && (
                 <Typography
                   variant="subheading"
                   color="textSecondary"
@@ -238,7 +238,7 @@ class NodeDetailComponent extends Component {
                 >
                   {preview}
                 </Typography>
-              ) : null}
+              )}
             <Tooltip title="This refers to another database record">
               <div className="node-icon length-box">
                 <BookmarkIcon />
@@ -296,8 +296,7 @@ class NodeDetailComponent extends Component {
                   {formatProperty('sourceId', relatedNode.sourceId, id)}
                   {formatProperty('name', relatedNode.name, id)}
                   {edge.source && edge.source.name
-                    ? formatProperty('source', edge.source.name, id)
-                    : null}
+                  && formatProperty('source', edge.source.name, id)}
                 </ExpansionPanelDetails>
               </ExpansionPanel>
             ));
@@ -323,25 +322,24 @@ class NodeDetailComponent extends Component {
               >
                 {`${label}:`}
               </Typography>
-              {!isOpen
-                ? (
-                  <React.Fragment>
+              {!isOpen && (
+                <React.Fragment>
+                  <Typography
+                    variant="subheading"
+                    color="textSecondary"
+                    className="preview"
+                  >
+                    {preview.join(', ')}
+                  </Typography>
+                  <div className="length-box">
                     <Typography
                       variant="subheading"
-                      color="textSecondary"
-                      className="preview"
                     >
-                      {preview.join(', ')}
+                      {filteredNode[key].length}
                     </Typography>
-                    <div className="length-box">
-                      <Typography
-                        variant="subheading"
-                      >
-                        {filteredNode[key].length}
-                      </Typography>
-                    </div>
-                  </React.Fragment>
-                ) : null}
+                  </div>
+                </React.Fragment>
+              )}
             </ExpansionPanelSummary>
             <ExpansionPanelDetails style={{ display: 'block' }}>
               {content}
@@ -363,7 +361,7 @@ class NodeDetailComponent extends Component {
       <Card style={{ height: '100%', overflowY: 'auto' }}>
         <div className="node-edit-btn">
           {children}
-          {detailEdge ? null : (
+          {!detailEdge && (
             <IconButton
               onClick={() => handleNodeEditStart(node['@rid'], node['@class'])}
             >
@@ -381,7 +379,7 @@ class NodeDetailComponent extends Component {
               {Object.keys(filteredNode).map(key => formatProperty(key, filteredNode[key], ''))}
             </CardContent>
           </Card>
-          {variant === 'graph' && relationships.length === 0 ? null : (
+          {(variant !== 'graph' || relationships.length !== 0) && (
             <Card className="properties">
               <CardContent>
                 <Typography paragraph variant="title" component="h1">

@@ -231,13 +231,13 @@ class AdvancedQueryView extends Component {
                 step={step || ''}
                 multiline={t === 'text'}
                 InputProps={{
-                  endAdornment: description ? (
+                  endAdornment: description && (
                     <InputAdornment position="end">
                       <Tooltip title={description}>
                         <HelpIcon color="primary" />
                       </Tooltip>
                     </InputAdornment>
-                  ) : null,
+                  ),
                 }}
               />
             </ListItem>

@@ -95,7 +95,7 @@ class GraphNode extends PureComponent {
           }}
         >
           <tspan className="node-name" dy={28}>
-            {obj ? obj[key] : null}
+            {obj && obj[key]}
           </tspan>
         </text>
         <circle

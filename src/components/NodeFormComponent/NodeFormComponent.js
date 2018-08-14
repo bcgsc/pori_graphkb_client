@@ -52,16 +52,16 @@ class NodeFormComponent extends Component {
       newNodeClass: 'Disease',
       relationships: [{
         '@class': 'AliasOf',
-        targetName: 'melanoma',
-        targetSourceId: 'mel',
+        name: 'melanoma',
+        sourceId: 'mel',
         in: '#32:12',
         out: -1,
         source: '#15:0',
       }],
       relationship: {
         '@class': '',
-        targetName: '',
-        targetSourceId: '',
+        name: '',
+        sourceId: '',
         in: '',
         out: -1,
         source: '',
@@ -162,12 +162,11 @@ class NodeFormComponent extends Component {
               in: edge.in['@rid'],
               out: edge.out['@rid'],
               '@class': edge['@class'],
-              targetName:
+              name:
                 edge.out['@rid'] === originalNode['@rid'] ? edge.in.name : edge.out.name,
-              targetSourceId:
+              sourceId:
                 edge.out['@rid'] === originalNode['@rid'] ? edge.in.sourceId : edge.out.sourceId,
               source: edge.source['@rid'] || edge.source,
-              key: type,
             });
           }
         });
@@ -307,12 +306,11 @@ class NodeFormComponent extends Component {
           errorFlag: false,
           relationship: {
             '@class': '',
-            targetName: '',
-            targetSourceId: '',
+            name: '',
+            sourceId: '',
             in: '',
             out: originalNode['@rid'],
             source: '',
-            key: '',
           },
         });
       }
@@ -348,7 +346,7 @@ class NodeFormComponent extends Component {
       }
     }
     if (e.target.sourceId) {
-      relationship.targetSourceId = e.target.sourceId;
+      relationship.sourceId = e.target.sourceId;
     }
     this.setState({ relationship, errorFlag: false });
   }
@@ -714,7 +712,7 @@ class NodeFormComponent extends Component {
     //       className="relationship-item"
     //     >
     //       <ListItemText
-    //         primary={`${typeName}: ${r.targetSourceId}`}
+    //         primary={`${typeName}: ${r.sourceId}`}
     //         secondary={sourceName}
     //         style={{ overflow: 'auto' }}
     //       />
@@ -866,9 +864,8 @@ class NodeFormComponent extends Component {
                           const typeName = r.in === originalNode['@rid']
                             ? util.getEdgeLabel(`in_${r['@class']}`)
                             : util.getEdgeLabel(`out_${r['@class']}`);
-
                           return (
-                            <TableRow key={`${r.key}: ${r['@rid']}`}>
+                            <TableRow key={`${r['@class']}${r.in}${r.out}${r.source}`}>
                               <TableCell padding="checkbox">
                                 <IconButton
                                   onClick={() => this.handleRelationshipDelete(r)}
@@ -880,7 +877,7 @@ class NodeFormComponent extends Component {
                                 {typeName}
                               </TableCell>
                               <TableCell padding="dense">
-                                {r.targetName}: {r.targetSourceId}
+                                {util.getPreview(r)}
                               </TableCell>
                               <TableCell padding="dense">
                                 {sourceName}
@@ -931,11 +928,11 @@ class NodeFormComponent extends Component {
                           <TableCell padding="dense">
                             <div className="search-wrap">
                               <AutoSearchComponent
-                                value={relationship.targetName}
+                                value={relationship.name}
                                 onChange={this.handleRelationship}
                                 placeholder="Target Name"
                                 limit={10}
-                                name="targetName"
+                                name="name"
                                 error={errorFlag}
                                 dense
                               />
@@ -1009,11 +1006,11 @@ class NodeFormComponent extends Component {
                           </div>
                           <div className="search-wrap">
                             <AutoSearchComponent
-                              value={relationship.targetName}
+                              value={relationship.name}
                               onChange={this.handleRelationship}
                               placeholder="Target Name"
                               limit={10}
-                              name="targetName"
+                              name="name"
                               error={errorFlag}
                             />
                           </div>

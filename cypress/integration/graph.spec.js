@@ -40,7 +40,7 @@ describe('Graph View Test', () => {
     cy.get('div.node-edit-btn button:first').click();
 
     cy.get('circle.node').click({ force: true });
-    cy.contains('(Close)').click();
+    cy.contains('(Close)').click({ force: true });
     cy.contains('(Close)').should('not.exist');
 
     let nodes = 1;
@@ -67,11 +67,11 @@ describe('Graph View Test', () => {
     const name = 'a1bg-as1';
     getClass('Feature', { name });
     cy.get('circle.node').click({ force: true });
-    cy.contains('(Expand)').click();
+    cy.contains('(Expand)').click({ force: true });
     cy.get('#graph-options-btn').click();
     cy.get('div.main-options-wrapper div.graph-option').each((div, i) => {
       if (i === 2) {
-        cy.wrap(div).click();
+        cy.wrap(div).click({ force: true });
       }
     });
     cy.get('ul li[data-value="@class"').click();
@@ -86,22 +86,17 @@ describe('Graph View Test', () => {
   it('Graph options', () => {
     const name = 'a1bg-as1';
     getClass('Feature', { name });
-    cy.get('circle.node').click({ force: true });
-    cy.contains('(Expand)').click();
-
-    cy.get('#graph-options-btn').click();
-
-    cy.contains('Show Nodes Coloring Legend').click();
-    cy.get('#options-close-btn').click();
-    cy.get('div.legend-wrapper').should('exist');
     cy.contains('Feature');
     cy.contains('(Class)');
+
+    cy.get('circle.node').click({ force: true });
+    cy.contains('(Expand)').click({ force: true });
 
     cy.get('#graph-options-btn').click();
 
     cy.get('div.main-options-wrapper div.graph-option').each((div, i) => {
       if (i === 1) {
-        cy.wrap(div).click();
+        cy.wrap(div).click({ force: true });
       }
     });
 
@@ -114,7 +109,7 @@ describe('Graph View Test', () => {
     cy.get('#graph-options-btn').click();
     cy.get('div.main-options-wrapper div.graph-option').each((div, i) => {
       if (i === 1) {
-        cy.wrap(div).click();
+        cy.wrap(div).click({ force: true });
       }
     });
     cy.get('li[data-value=""]').click();
@@ -141,7 +136,7 @@ describe('Graph View Test', () => {
   it('Unique property limit exceeding test', () => {
     getClass('Disease');
     cy.get('circle.node').click({ force: true });
-    cy.contains('(Expand)').click();
+    cy.contains('(Expand)').click({ force: true });
 
     cy.get('#graph-options-btn').click();
     cy.contains('Show Nodes Coloring Legend').click();
@@ -154,10 +149,10 @@ describe('Graph View Test', () => {
           .invoke('text')
           .then((text) => {
             if (text === 'polyp') {
-              cy.wrap(node).click();
-              cy.wrap(node).click();
-              cy.wrap(node).click();
-              cy.contains('(Expand)').click();
+              cy.wrap(node).click({ force: true });
+              cy.wrap(node).click({ force: true });
+              cy.wrap(node).click({ force: true });
+              cy.contains('(Expand)').click({ force: true });
               cy.contains('Too many subgroups, choose new coloring property.');
               cy.wait(6500);
               cy.contains('Too many subgroups, choose new coloring property.').should('not.exist');
@@ -172,8 +167,8 @@ describe('Graph View Test', () => {
    */
   it('Persistent graph objects', () => {
     getClass('Disease');
-    cy.get('circle.node').click();
-    cy.contains('(Expand)').click();
+    cy.get('circle.node').click({ force: true });
+    cy.contains('(Expand)').click({ force: true });
     cy.get('circle.node').then((nodes) => {
       cy.get('div.save-check button').click();
       cy.get('div.save-check button').should('not.exist');

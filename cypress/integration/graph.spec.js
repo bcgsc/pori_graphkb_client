@@ -71,16 +71,11 @@ describe('Graph View Test', () => {
   it('Graph options', () => {
     const name = 'a1bg-as1';
     getClass('Feature', { name });
-    cy.get('circle.node').click({ force: true });
-    cy.contains('(Expand)').click();
-
-    cy.get('#graph-options-btn').click();
-
-    cy.contains('Show Nodes Coloring Legend').click();
-    cy.get('#options-close-btn').click();
-    cy.get('div.legend-wrapper').should('exist');
     cy.contains('Feature');
     cy.contains('(Class)');
+
+    cy.get('circle.node').click();
+    cy.contains('(Expand)').click();
 
     cy.get('#graph-options-btn').click();
 

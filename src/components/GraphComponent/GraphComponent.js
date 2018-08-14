@@ -99,7 +99,6 @@ class GraphComponent extends Component {
         linkLabelProp: '',
         nodesColor: '@class',
         linksColor: '',
-        legend: false,
         nodesColors: {},
         linksColors: {},
       },
@@ -169,6 +168,11 @@ class GraphComponent extends Component {
           0,
         );
       });
+      const { propsMap } = this.state;
+      if (propsMap.nodes.length !== 0) {
+        graphOptions.nodesLegend = true;
+        this.setState({ graphOptions });
+      }
       this.drawGraph();
       window.addEventListener('resize', this.handleResize);
       this.updateColors('nodes');

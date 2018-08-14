@@ -56,10 +56,16 @@ describe('Graph View Test', () => {
     getClass('Feature', { name });
     cy.get('circle.node').click({ force: true });
     cy.contains('(Expand)').click();
-    cy.get('path.link:first').trigger('mouseover');
+    cy.get('#graph-options-btn').click();
+    cy.get('div.main-options-wrapper div.graph-option').each((div, i) => {
+      if (i === 2) {
+        cy.wrap(div).click();
+      }
+    });
+    cy.get('ul li[data-value="@class"').click();
+    cy.get('#options-close-btn').click();
     cy.contains('DeprecatedBy');
-    cy.get('path.link:first').trigger('mouseout', { force: true });
-    cy.contains('DeprecatedBy').should('not.exist');
+    cy.contains('AliasOf');
   });
 
   it('Graph options', () => {

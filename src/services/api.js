@@ -115,7 +115,7 @@ export default class api {
           history.push({ pathname: '/query/advanced', state: error });
           return Promise.reject('Invalid Query');
         }
-        history.push({ pathname: '/error', state: error });
+        history.push({ pathname: '/error', state: { status: error.status, body: error.body } });
         return Promise.reject('Unexpected Error, redirecting...');
       });
   }

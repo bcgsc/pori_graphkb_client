@@ -23,10 +23,11 @@ function GraphLink(props) {
     actionsNode,
   } = props;
 
+  if (link.source === link.target) return null;
+
   const left = link.source.x < link.target.x;
 
   const marker = 'url(#endArrow)';
-  if (link.source === link.target) return null;
 
   let label = '';
   if (labelKey && labelKey.includes('.')) {
@@ -74,7 +75,6 @@ function GraphLink(props) {
     y: link.target.y - Math.sin(angle) * (NODE_RADIUS + 3 * ARROW_LENGTH),
   };
 
-
   return (
     <g>
       <path
@@ -97,6 +97,7 @@ function GraphLink(props) {
           fill={color}
           opacity={opacity}
           onClick={handleClick}
+          className="link-label"
         >
           <textPath
             href={`#link${link.data['@rid']}`}

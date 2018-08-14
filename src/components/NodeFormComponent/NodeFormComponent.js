@@ -50,14 +50,39 @@ class NodeFormComponent extends Component {
       edgeTypes: [],
       sources: [],
       newNodeClass: 'Disease',
-      relationships: [{
-        '@class': 'AliasOf',
-        name: 'melanoma',
-        sourceId: 'mel',
-        in: '#32:12',
-        out: -1,
-        source: '#15:0',
-      }],
+      relationships: [
+        {
+          '@class': 'AliasOf',
+          name: 'melanoma',
+          sourceId: 'mel',
+          in: '#32:12',
+          out: -1,
+          source: '#15:0',
+        },
+        {
+          '@class': 'SubclassOf',
+          name: 'melanoma',
+          sourceId: 'mel',
+          in: '#32:12',
+          out: -1,
+          source: '#15:2',
+        },
+        {
+          '@class': 'TargetOf',
+          name: 'melanoma',
+          sourceId: 'mel',
+          in: '#32:12',
+          out: -1,
+          source: '#15:1',
+        },
+        {
+          '@class': 'Implies',
+          name: 'melanoma',
+          sourceId: 'mel',
+          in: -1,
+          out: '#32:12',
+          source: '#15:3',
+        }],
       relationship: {
         '@class': '',
         name: '',
@@ -842,7 +867,9 @@ class NodeFormComponent extends Component {
                     <Table className="form-table">
                       <TableHead className="form-table-header">
                         <TableRow>
-                          <TableCell padding="checkbox" />
+                          <TableCell padding="checkbox">
+                            <div />
+                          </TableCell>
                           <TableCell padding="dense">
                             Class
                           </TableCell>

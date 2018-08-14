@@ -9,6 +9,7 @@
   },
   "FEEDBACK_EMAIL": "ibeckie@bcgsc.ca",
   "FEEDBACK_HIPCHAT": "@IsaacBeckie",
+  "JIRA_LINK": "https://www.bcgsc.ca/jira/projects/KBDEV",
   "GRAPH_PROPERTIES": {
     "ARROW_WIDTH": 3,
     "ARROW_LENGTH": 4,

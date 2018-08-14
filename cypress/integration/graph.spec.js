@@ -71,7 +71,7 @@ describe('Graph View Test', () => {
     cy.get('#graph-options-btn').click();
     cy.get('div.main-options-wrapper div.graph-option').each((div, i) => {
       if (i === 2) {
-        cy.wrap(div).click({ force: true });
+        cy.wrap(div).click();
       }
     });
     cy.get('ul li[data-value="@class"').click();
@@ -96,7 +96,7 @@ describe('Graph View Test', () => {
 
     cy.get('div.main-options-wrapper div.graph-option').each((div, i) => {
       if (i === 1) {
-        cy.wrap(div).click({ force: true });
+        cy.wrap(div).click();
       }
     });
 
@@ -109,7 +109,7 @@ describe('Graph View Test', () => {
     cy.get('#graph-options-btn').click();
     cy.get('div.main-options-wrapper div.graph-option').each((div, i) => {
       if (i === 1) {
-        cy.wrap(div).click({ force: true });
+        cy.wrap(div).click();
       }
     });
     cy.get('li[data-value=""]').click();
@@ -149,8 +149,6 @@ describe('Graph View Test', () => {
           .invoke('text')
           .then((text) => {
             if (text === 'polyp') {
-              cy.wrap(node).click({ force: true });
-              cy.wrap(node).click({ force: true });
               cy.wrap(node).click({ force: true });
               cy.contains('(Expand)').click({ force: true });
               cy.contains('Too many subgroups, choose new coloring property.');

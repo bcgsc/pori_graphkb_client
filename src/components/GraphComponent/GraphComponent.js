@@ -73,7 +73,7 @@ const styles = {
 
 const END_ARROW_SIZE = {
   d: `M0,0,L0,${ARROW_WIDTH} L ${ARROW_LENGTH}, ${ARROW_WIDTH / 2} z`,
-  refX: NODE_RADIUS - 1,
+  refX: 2 * ARROW_LENGTH + 2,
   refY: ARROW_WIDTH / 2,
 };
 
@@ -109,7 +109,7 @@ class GraphComponent extends Component {
         autoCollisionRadius: false,
         linkHighlighting: true,
         nodeLabelProp: 'name',
-        linkLabelProp: '@class',
+        linkLabelProp: '',
         nodesColor: '@class',
         linksColor: '',
         legend: false,

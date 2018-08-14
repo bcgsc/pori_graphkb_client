@@ -3,8 +3,7 @@ import './FeedbackView.css';
 import { Typography, Paper } from '@material-ui/core';
 import config from '../../config.json';
 
-const { FEEDBACK_EMAIL, FEEDBACK_HIPCHAT } = config;
-const JIRA_LINK = 'https://www.bcgsc.ca/jira/projects/KBDEV';
+const { FEEDBACK_EMAIL, FEEDBACK_HIPCHAT, JIRA_LINK } = config;
 
 function FeedbackView() {
   const emailLink = <a href={`mailto:${FEEDBACK_EMAIL}`}>{FEEDBACK_EMAIL}</a>;

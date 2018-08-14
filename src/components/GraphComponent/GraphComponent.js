@@ -99,9 +99,9 @@ class GraphComponent extends Component {
       expandedEdgeTypes: [],
       simulation: null,
       svg: undefined,
+      width: 0,
+      height: 0,
       graphOptions: {
-        width: 0,
-        height: 0,
         defaultColor: DEFAULT_NODE_COLOR,
         linkStrength: LINK_STRENGTH,
         chargeStrength: CHARGE_STRENGTH,
@@ -120,7 +120,6 @@ class GraphComponent extends Component {
       advancedHelp: false,
       expandable: {},
       actionsNode: null,
-      expansions: [],
     };
 
     this.drawGraph = this.drawGraph.bind(this);
@@ -152,7 +151,7 @@ class GraphComponent extends Component {
       filteredSearch,
       edges,
     } = this.props;
-    const { graphOptions, propsMap, expandable } = this.state;
+    const { propsMap, expandable, graphOptions } = this.state;
     const simulation = d3.forceSimulation();
     // Defines what edge keys to look for.
     const expandedEdgeTypes = edges.reduce((r, e) => {
@@ -169,7 +168,6 @@ class GraphComponent extends Component {
     this.setState({
       expandedEdgeTypes,
       schema,
-      graphOptions,
       simulation,
       allColumns,
       filteredSearch: stringifiedSearch,
@@ -178,28 +176,25 @@ class GraphComponent extends Component {
       window.addEventListener('resize', this.handleResize);
 
       const storedData = util.getGraphData(stringifiedSearch);
+      const storedOptions = util.getGraphOptions();
 
       if (
         storedData
         && (!displayed || displayed.length === 0)
       ) {
-        const { graphObjects, nodes, links } = storedData;
+        const {
+          graphObjects,
+          nodes,
+        } = storedData;
+        delete storedData.filteredSearch;
         nodes.forEach((node) => {
           util.loadColorProps(allColumns, node.data, propsMap);
           util.expanded(expandedEdgeTypes, graphObjects, node.data['@rid'], expandable);
         });
-
         this.setState(
           {
-            graphObjects,
-            links,
-            nodes,
+            ...storedData,
             icon: true,
-          },
-          () => {
-            this.drawGraph();
-            this.updateColors('nodes');
-            this.updateColors('links');
           },
         );
       } else {
@@ -211,13 +206,23 @@ class GraphComponent extends Component {
           );
         });
       }
-      if (propsMap.nodes.length !== 0) {
-        graphOptions.nodesLegend = true;
-        this.setState({ graphOptions });
+
+      if (storedOptions) {
+        this.setState({ ...storedOptions }, () => {
+          this.drawGraph();
+          this.updateColors('nodes');
+          this.updateColors('links');
+        });
+      } else {
+        if (propsMap.nodes.length !== 0) {
+          graphOptions.nodesLegend = true;
+        }
+        this.setState({ graphOptions }, () => {
+          this.drawGraph();
+          this.updateColors('nodes');
+          this.updateColors('links');
+        });
       }
-      this.drawGraph();
-      this.updateColors('nodes');
-      this.updateColors('links');
     });
   }
 
@@ -239,7 +244,7 @@ class GraphComponent extends Component {
       .on('dblclick.zoom', null);
     simulation.on('tick', null);
     window.removeEventListener('resize', this.handleResize);
-    util.loadGraphData(filteredSearch, { graphObjects, nodes, links });
+    util.loadGraphData(filteredSearch, { nodes, links, graphObjects });
   }
 
   /**
@@ -249,6 +254,10 @@ class GraphComponent extends Component {
   loadNeighbors(node) {
     const {
       expandable,
+      filteredSearch,
+      nodes,
+      links,
+      graphObjects,
     } = this.state;
     const { data } = this.props;
 
@@ -264,7 +273,8 @@ class GraphComponent extends Component {
     }
 
     delete expandable[node.data['@rid']];
-    this.setState({ expandable, actionsNode: null, icon: false });
+    util.loadGraphData(filteredSearch, { nodes, links, graphObjects });
+    this.setState({ expandable, actionsNode: null });
   }
 
   /**
@@ -420,10 +430,7 @@ class GraphComponent extends Component {
     if (n) {
       w = n.clientWidth;
       h = n.clientHeight;
-      const { graphOptions } = this.state;
-      graphOptions.width = w;
-      graphOptions.height = h;
-      this.setState({ graphOptions }, this.initSimulation);
+      this.setState({ width: w, height: h }, this.initSimulation);
     }
   }
 
@@ -453,7 +460,12 @@ class GraphComponent extends Component {
    * Initializes simulation rules and properties. Updates simulation component state.
    */
   initSimulation() {
-    const { simulation, graphOptions } = this.state;
+    const {
+      simulation,
+      graphOptions,
+      width,
+      height,
+    } = this.state;
 
     simulation.force(
       'link',
@@ -479,8 +491,8 @@ class GraphComponent extends Component {
     ).force(
       'center',
       d3.forceCenter(
-        graphOptions.width / 2,
-        graphOptions.height / 2,
+        width / 2,
+        height / 2,
       ),
     );
 
@@ -488,8 +500,8 @@ class GraphComponent extends Component {
 
     const svg = d3.select(this.graph);
     svg
-      .attr('width', graphOptions.width)
-      .attr('height', graphOptions.height)
+      .attr('width', width)
+      .attr('height', height)
       .call(d3.zoom()
         .scaleExtent([0.2, 10])
         .on('zoom', () => {
@@ -569,18 +581,21 @@ class GraphComponent extends Component {
     });
 
     if (
-      Object.keys(colors).length <= PALLETE_SIZES[PALLETE_SIZES.length - 1]
-      || Object.keys(propsMap[type]).length === 1
+      (Object.keys(colors).length > PALLETE_SIZES[PALLETE_SIZES.length - 1]
+        && Object.keys(propsMap[type]).length !== 1)
+      || (propsMap[type][key]
+      && (propsMap[type][key].length === 0
+        || (propsMap[type][key].length === 1 && propsMap[type][key].includes('null'))))
     ) {
+      graphOptions[`${type}Color`] = '';
+      this.setState({ graphOptions, snackbarOpen: true }, () => this.updateColors(type));
+    } else {
       const pallette = util.getPallette(Object.keys(colors).length, type);
       Object.keys(colors).forEach((color, i) => { colors[color] = pallette[i]; });
 
       graphOptions[`${type}Colors`] = colors;
       graphOptions[`${type}Pallette`] = pallette;
       this.setState({ graphOptions });
-    } else {
-      graphOptions[`${type}Color`] = '';
-      this.setState({ graphOptions, snackbarOpen: true }, () => this.updateColors(type));
     }
     /* eslint-enable */
   }
@@ -606,7 +621,7 @@ class GraphComponent extends Component {
   handleGraphOptionsChange(e) {
     const { graphOptions } = this.state;
     graphOptions[e.target.name] = e.target.value;
-    this.setState({ graphOptions }, () => {
+    this.setState({ graphOptions, icon: false }, () => {
       this.initSimulation();
       this.drawGraph();
     });
@@ -620,7 +635,7 @@ class GraphComponent extends Component {
   handleGraphColorsChange(e, type) {
     const { graphOptions } = this.state;
     graphOptions[`${type}Color`] = e.target.value;
-    this.setState({ graphOptions }, () => this.updateColors(type));
+    this.setState({ graphOptions, icon: null }, () => this.updateColors(type));
   }
 
   /**
@@ -645,6 +660,7 @@ class GraphComponent extends Component {
       propsMap,
       allColumns,
       graphOptions,
+      filteredSearch,
     } = this.state;
     const { handleDetailDrawerClose } = this.props;
     if (nodes.length === 1) return;
@@ -713,11 +729,11 @@ class GraphComponent extends Component {
       graphObjects,
       actionsNode: null,
       propsMap,
-      icon: false,
     }, () => {
       this.updateColors('nodes');
       this.updateColors('links');
       handleDetailDrawerClose();
+      util.loadGraphData(filteredSearch, { nodes, links, graphObjects });
     });
   }
 
@@ -741,12 +757,13 @@ class GraphComponent extends Component {
    */
   handleSaveGraph() {
     const {
-      graphObjects,
-      nodes,
-      links,
-      filteredSearch,
+      graphOptions,
+      propsMap,
     } = this.state;
-    util.loadGraphData(filteredSearch, { graphObjects, nodes, links });
+    util.loadGraphOptions({
+      graphOptions,
+      propsMap,
+    });
     this.setState({ icon: true });
   }
 

@@ -5,6 +5,7 @@ const { DEFAULT_PROPS } = config;
 const { PALLETE_SIZES } = config.GRAPH_DEFAULTS;
 const ACRONYMS = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
 const GRAPH_OBJECTS_KEY = 'graphObjects';
+const GRAPH_OPTIONS_KEY = 'graphOptions';
 
 /**
  * Handles miscellaneous tasks.
@@ -179,6 +180,20 @@ export default class util {
       list.push(`#${color.substr(color.length - 6)}`);
     }
     return list;
+  }
+
+
+  static loadGraphOptions(data) {
+    localStorage.setItem(GRAPH_OPTIONS_KEY, JSON.stringify(data));
+  }
+
+  static getGraphOptions() {
+    const data = localStorage.getItem(GRAPH_OPTIONS_KEY);
+    if (data) {
+      const obj = JSON.parse(data);
+      return obj;
+    }
+    return null;
   }
 
   /**

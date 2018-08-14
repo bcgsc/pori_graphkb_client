@@ -119,6 +119,7 @@ class App extends Component {
         <Route path="/edit/:rid" component={EditNodeView} />
         <Route path="/ontology/:rid" component={NodeDetailView} />
         <Route path="/data" component={DataView} />
+        <Route path="/feedback" component={FeedbackView} />
         <Redirect from="*" to="/query" />
       </Switch>
     );
@@ -169,7 +170,7 @@ class App extends Component {
                     }}
                   >
                     <Card className="user-menu">
-                      <MenuItem onClick={() => history.push('/feedback')}>
+                      <MenuItem onClick={() => { history.push('/feedback'); this.handleClose(); }}>
                         Feedback
                       </MenuItem>
                       <MenuItem onClick={this.handleLogOut}>
@@ -185,7 +186,6 @@ class App extends Component {
                 <Switch>
                   <Route path="/login" render={loginWithProps} />
                   <Route path="/error" component={ErrorView} />
-                  <Route path="/feedback" component={FeedbackView} />
                   <Route
                     path="/"
                     render={() => {

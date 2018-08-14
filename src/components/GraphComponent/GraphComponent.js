@@ -194,7 +194,6 @@ class GraphComponent extends Component {
         this.setState(
           {
             ...storedData,
-            icon: true,
           },
         );
       } else {
@@ -208,7 +207,7 @@ class GraphComponent extends Component {
       }
 
       if (storedOptions) {
-        this.setState({ ...storedOptions }, () => {
+        this.setState({ ...storedOptions, icon: true }, () => {
           this.drawGraph();
           this.updateColors('nodes');
           this.updateColors('links');
@@ -584,8 +583,8 @@ class GraphComponent extends Component {
       (Object.keys(colors).length > PALLETE_SIZES[PALLETE_SIZES.length - 1]
         && Object.keys(propsMap[type]).length !== 1)
       || (propsMap[type][key]
-      && (propsMap[type][key].length === 0
-        || (propsMap[type][key].length === 1 && propsMap[type][key].includes('null'))))
+        && (propsMap[type][key].length === 0
+          || (propsMap[type][key].length === 1 && propsMap[type][key].includes('null'))))
     ) {
       graphOptions[`${type}Color`] = '';
       this.setState({ graphOptions, snackbarOpen: true }, () => this.updateColors(type));
@@ -635,7 +634,7 @@ class GraphComponent extends Component {
   handleGraphColorsChange(e, type) {
     const { graphOptions } = this.state;
     graphOptions[`${type}Color`] = e.target.value;
-    this.setState({ graphOptions, icon: null }, () => this.updateColors(type));
+    this.setState({ graphOptions, icon: false }, () => this.updateColors(type));
   }
 
   /**

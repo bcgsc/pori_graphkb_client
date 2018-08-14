@@ -1069,7 +1069,7 @@ class GraphComponent extends Component {
         }
       >
         <div className="legend-wrapper">
-          {graphOptions.nodesLegend && graphOptions.nodesColor ? (
+          {graphOptions.nodesLegend && graphOptions.nodesColor && (
             <Paper>
               <div className="close-btn">
                 <IconButton
@@ -1101,7 +1101,7 @@ class GraphComponent extends Component {
                       <ListItemText primary={util.antiCamelCase(key)} />
                     </ListItem>
                   ))}
-                  {(propsMap.nodes[graphOptions.nodesColor] || []).includes('null') ? (
+                  {(propsMap.nodes[graphOptions.nodesColor] || []).includes('null') && (
                     <ListItem key="null">
                       <ListItemIcon>
                         <div
@@ -1111,11 +1111,11 @@ class GraphComponent extends Component {
                       </ListItemIcon>
                       <ListItemText primary="Null" />
                     </ListItem>
-                  ) : null}
+                  )}
                 </List>
               </div>
-            </Paper>) : null}
-          {!!(graphOptions.linksLegend && graphOptions.linksColor) && links.length !== 0 ? (
+            </Paper>)}
+          {!!(graphOptions.linksLegend && graphOptions.linksColor) && links.length !== 0 && (
             <Paper>
               <div className="close-btn">
                 <IconButton
@@ -1133,7 +1133,7 @@ class GraphComponent extends Component {
               <div className="legend-content">
                 <Typography variant="subheading">Edges</Typography>
                 <Typography variant="caption">
-                  {graphOptions.linksColor ? `(${util.antiCamelCase(graphOptions.linksColor)})` : ''}
+                  {graphOptions.linksColor && `(${util.antiCamelCase(graphOptions.linksColor)})`}
                 </Typography>
                 <List className="node-colors" dense>
                   {Object.keys(graphOptions.linksColors).map(key => (
@@ -1147,7 +1147,7 @@ class GraphComponent extends Component {
                       <ListItemText primary={util.antiCamelCase(key)} />
                     </ListItem>
                   ))}
-                  {(propsMap.links[graphOptions.linksColor] || []).includes('null') ? (
+                  {(propsMap.links[graphOptions.linksColor] || []).includes('null') && (
                     <ListItem key="null">
                       <ListItemIcon>
                         <div
@@ -1157,10 +1157,10 @@ class GraphComponent extends Component {
                       </ListItemIcon>
                       <ListItemText primary="Null" />
                     </ListItem>
-                  ) : null}
+                  )}
                 </List>
               </div>
-            </Paper>) : null}
+            </Paper>)}
         </div>
       </Popper>
     );

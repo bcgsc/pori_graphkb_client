@@ -92,7 +92,7 @@ function GraphLink(props) {
         stroke={color}
         onClick={handleClick}
       />
-      {labelKey ? (
+      {labelKey && (
         <text
           fill={color}
           opacity={opacity}
@@ -108,7 +108,7 @@ function GraphLink(props) {
             {label}
           </textPath>
         </text>
-      ) : null}
+      )}
     </g>
   );
 }

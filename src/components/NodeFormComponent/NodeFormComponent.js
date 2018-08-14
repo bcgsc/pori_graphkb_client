@@ -614,13 +614,13 @@ class NodeFormComponent extends Component {
                 required={mandatory}
                 multiline={t === 'text'}
                 InputProps={{
-                  endAdornment: description ? (
+                  endAdornment: description && (
                     <InputAdornment position="end">
                       <Tooltip title={description}>
                         <HelpIcon color="primary" />
                       </Tooltip>
                     </InputAdornment>
-                  ) : null,
+                  ),
                 }}
               />
             </ListItem>
@@ -748,8 +748,8 @@ class NodeFormComponent extends Component {
               <Typography variant="title">
                 Basic Parameters
               </Typography>
-              {variant === 'edit' ? null
-                : (
+              {variant === 'add'
+                && (
                   <div className="class-select">
                     <ResourceSelectComponent
                       value={newNodeClass}
@@ -876,7 +876,7 @@ class NodeFormComponent extends Component {
               </List>
             </Paper>
             <Paper className="form-btns" elevation={4}>
-              {variant === 'edit' ? (
+              {variant === 'edit' && (
                 <Button
                   variant="raised"
                   onClick={this.handleDialogOpen}
@@ -885,7 +885,7 @@ class NodeFormComponent extends Component {
                 >
                   Delete Ontology
                 </Button>
-              ) : null}
+              )}
               <Button
                 type="submit"
                 variant="raised"

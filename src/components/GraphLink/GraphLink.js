@@ -1,10 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './GraphLink.css';
+import config from '../../config.json';
 
 const LABEL_BASELINE_SHIFT = 4;
+const SELECTED_OPACITY = 1;
 const DEFAULT_OPACITY = 0.7;
 const FADED_OPACITY = 0.4;
+const { NODE_RADIUS, ARROW_LENGTH } = config.GRAPH_PROPERTIES;
 
 /**
  * Display component for graph link objects.
@@ -16,14 +19,15 @@ function GraphLink(props) {
     detail,
     labelKey,
     color,
+    handleClick,
+    actionsNode,
   } = props;
+
+  if (link.source === link.target) return null;
 
   const left = link.source.x < link.target.x;
 
-  let marker = '';
-  if (link.source !== link.target) {
-    marker = 'url(#endArrow)';
-  }
+  const marker = 'url(#endArrow)';
 
   let label = '';
   if (labelKey && labelKey.includes('.')) {
@@ -33,28 +37,66 @@ function GraphLink(props) {
     label = link.data[labelKey];
   }
 
+  let opacity = DEFAULT_OPACITY;
+  if (detail) {
+    if (detail['@rid'] === link.data['@rid']) {
+      opacity = SELECTED_OPACITY;
+    } else {
+      opacity = FADED_OPACITY;
+    }
+  }
+  if (actionsNode) {
+    if (actionsNode.data['@rid'] === link.data['@rid']) {
+      opacity = SELECTED_OPACITY;
+    } else {
+      opacity = FADED_OPACITY;
+    }
+  }
+
+  const dx = link.target.x - link.source.x;
+  const dy = link.target.y - link.source.y;
+
+  let angle = 0;
+
+  if (dx === 0) {
+    angle = dy > 0 ? Math.PI / 2 : Math.PI * 3 / 2;
+  } else if (dy === 0) {
+    angle = dx > 0 ? 0 : Math.PI;
+  } else {
+    angle = Math.atan((dx < 0 ? -dy : dy) / dx);
+  }
+
+  const start = {
+    x: link.source.x + (dx < 0 ? -1 : 1) * Math.cos(angle) * NODE_RADIUS,
+    y: link.source.y + Math.sin(angle) * NODE_RADIUS,
+  };
+  const end = {
+    x: link.target.x - (dx < 0 ? -1 : 1) * Math.cos(angle) * (NODE_RADIUS + 3 * ARROW_LENGTH),
+    y: link.target.y - Math.sin(angle) * (NODE_RADIUS + 3 * ARROW_LENGTH),
+  };
+
   return (
     <g>
       <path
         className="link-widen"
-        d={`M${(link.source.x || 0)} ${(link.source.y || 0)}L${(link.target.x || 0)} ${(link.target.y || 0)}`}
+        d={`M${start.x} ${start.y}L${end.x} ${end.y}`}
+        onClick={handleClick}
       />
       <path
         className="link"
         id={`link${link.data['@rid']}`}
-        d={`M${(link.source.x || 0)} ${(link.source.y || 0)}L${(link.target.x || 0)} ${(link.target.y || 0)}`}
+        d={`M${start.x} ${start.y}L${end.x} ${end.y}`}
         markerEnd={marker}
-        style={{
-          opacity: detail ? FADED_OPACITY : DEFAULT_OPACITY,
-          strokeOpacity: detail ? FADED_OPACITY : DEFAULT_OPACITY,
-        }}
+        style={{ opacity, strokeOpacity: opacity }}
         fill={color}
         stroke={color}
+        onClick={handleClick}
       />
-      {labelKey ? (
+      {labelKey && (
         <text
           fill={color}
-          opacity={detail ? FADED_OPACITY : DEFAULT_OPACITY}
+          opacity={opacity}
+          onClick={handleClick}
           className="link-label"
         >
           <textPath
@@ -66,26 +108,31 @@ function GraphLink(props) {
             {label}
           </textPath>
         </text>
-      ) : null}
+      )}
     </g>
   );
 }
 
 /**
  * @param {Object} link - Graph link object.
+ * @param {Object} detail - record currently displayed in the detail drawer.
  * @param {bool} linkHighlighting - flag for enabling link highlight on hover.
  */
 GraphLink.propTypes = {
   link: PropTypes.object.isRequired,
-  detail: PropTypes.string,
+  detail: PropTypes.object,
   labelKey: PropTypes.string,
   color: PropTypes.string,
+  handleClick: PropTypes.func,
+  actionsNode: PropTypes.object,
 };
 
 GraphLink.defaultProps = {
   detail: null,
   labelKey: null,
   color: '#999',
+  handleClick: null,
+  actionsNode: null,
 };
 
 export default GraphLink;

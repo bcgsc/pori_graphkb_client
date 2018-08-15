@@ -1,0 +1,32 @@
+.feedback-wrapper {
+    overflow: auto;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.feedback {
+    padding: 16px;
+}
+
+.feedback-header {
+    height: 37px;
+    h1 {
+        font-weight: 300;
+    }
+}
+
+.feedback-grid {
+    flex-grow: 1;
+    width: calc(80vw + 32px);
+    margin: 32px auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-column-gap: 1rem;
+    grid-row-gap: 1rem;
+    grid-template-rows: auto 1fr auto;
+}

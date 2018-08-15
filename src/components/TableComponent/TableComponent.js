@@ -170,7 +170,7 @@ class TableComponent extends Component {
     const { data } = this.props;
 
     let newOrder = 'desc';
-    const newProperty = order === 'asc' && orderBy === column.id ? null : column.id;
+    const newProperty = (order !== 'asc' || orderBy !== column.id) && column.id;
     if (orderBy === column.id && order === 'desc') {
       newOrder = 'asc';
     }
@@ -208,7 +208,7 @@ class TableComponent extends Component {
     const { orderBy, order } = this.state;
     const { displayed, data } = this.props;
     let newOrder = fOrder || 'desc';
-    const newProperty = order === 'asc' && orderBy === 'displayed' && !fOrder ? null : 'displayed';
+    const newProperty = !(order === 'asc' && orderBy === 'displayed' && !fOrder) && 'displayed';
     if (orderBy === 'displayed' && order === 'desc' && !fOrder) {
       newOrder = 'asc';
     }
@@ -300,12 +300,14 @@ class TableComponent extends Component {
 
   /**
    * builds tsv data and prompts the browser to download file.
+   * @param {Array} fData - forced data to be put into tsv.
    */
-  createTSV() {
+  createTSV(fData) {
     const { data, hidden, allColumns } = this.props;
     const rows = [];
+    const rids = fData || Object.keys(data);
     rows.push(allColumns.map(column => util.getEdgeLabel(column)).join('\t'));
-    Object.keys(data).forEach((rid) => {
+    rids.forEach((rid) => {
       const row = [];
       if (!hidden.includes(rid)) {
         allColumns.forEach((column) => {
@@ -362,6 +364,9 @@ class TableComponent extends Component {
     } = this.props;
 
     const numCols = tableColumns.filter(c => c.checked).length;
+    const pageData = sortedData
+      .filter(n => !hidden.includes(n['@rid']))
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
     const menu = (
       <Menu
@@ -389,7 +394,20 @@ class TableComponent extends Component {
             onClick={() => { this.handleClose(); }}
             disabled={sortedData.length === 0}
           >
-            Download as TSV
+            Download all as TSV
+          </MenuItem>
+        </DownloadFileComponent>
+        <DownloadFileComponent
+          mediaType="text/tab-separated-values"
+          rawFileContent={() => this.createTSV(displayed)}
+          fileName="download.tsv"
+          id="download-tsv"
+        >
+          <MenuItem
+            onClick={() => { this.handleClose(); }}
+            disabled={displayed.length === 0}
+          >
+            Download selected as TSV
           </MenuItem>
         </DownloadFileComponent>
         <MenuItem
@@ -398,7 +416,7 @@ class TableComponent extends Component {
           id="hide-selected"
         >
           Hide Selected Rows
-          {displayed.length !== 0 ? ` (${displayed.length})` : null}
+          {displayed.length !== 0 && ` (${displayed.length})`}
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -408,8 +426,8 @@ class TableComponent extends Component {
           }}
           disabled={hidden.length === 0}
         >
-          Show hidden rows
-          {hidden.length !== 0 ? ` (${hidden.length})` : null}
+          Show Hidden Rows
+          {hidden.length !== 0 && ` (${hidden.length})`}
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -445,7 +463,7 @@ class TableComponent extends Component {
                 )}
                 label={column.label}
               />
-              {column.sortBy ? (
+              {column.sortBy && (
                 <div style={{ marginLeft: '32px' }}>
                   <Typography variant="caption">
                     Sort By:
@@ -466,7 +484,7 @@ class TableComponent extends Component {
                     ))}
                   </RadioGroup>
                 </div>
-              ) : null}
+              )}
               <Divider />
             </div>
           ))}
@@ -492,8 +510,7 @@ class TableComponent extends Component {
                 >
                   <Checkbox
                     color="secondary"
-                    onChange={handleCheckAll}
-                    checked={displayed.length === sortedData.length - hidden.length}
+                    onChange={e => handleCheckAll(e, pageData)}
                   />
                   <TableSortLabel
                     active={orderBy === 'displayed'}
@@ -526,76 +543,73 @@ class TableComponent extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {sortedData
-                .filter(n => !hidden.includes(n['@rid']))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((n) => {
-                  const isSelected = this.isSelected(n['@rid']);
-                  const active = toggle === n['@rid'];
-                  const detail = active ? (
-                    <TableRow>
-                      <Collapse
-                        colSpan={numCols + 2}
-                        component="td"
-                        in={active}
-                        unmountOnExit
+
+              {pageData.map((n) => {
+                const isSelected = this.isSelected(n['@rid']);
+                const active = toggle === n['@rid'];
+                const detail = active ? (
+                  <TableRow>
+                    <Collapse
+                      colSpan={numCols + 2}
+                      component="td"
+                      in={active}
+                      unmountOnExit
+                    >
+                      <NodeDetailComponent
+                        node={n}
+                        data={data}
+                        handleNodeEditStart={handleNodeEditStart}
+                        handleNewQuery={handleNewQuery}
+                      />
+                    </Collapse>
+                  </TableRow>
+                ) : null;
+                return !hidden.includes(n['@rid'])
+                  && (
+                    <React.Fragment key={n['@rid'] || Math.random()}>
+                      <TableRow
+                        selected={isSelected}
+                        onClick={() => handleClick(n['@rid'])}
+                        classes={{
+                          root: 'cursor-override',
+                          selected: 'selected-override',
+                        }}
                       >
-                        <NodeDetailComponent
-                          node={n}
-                          data={data}
-                          handleNodeEditStart={handleNodeEditStart}
-                          handleNewQuery={handleNewQuery}
-                        />
-                      </Collapse>
-                    </TableRow>
-                  ) : null;
-                  return !hidden.includes(n['@rid'])
-                    ? (
-                      <React.Fragment key={n['@rid'] || Math.random()}>
-                        <TableRow
-                          selected={isSelected}
-                          onClick={() => handleClick(n['@rid'])}
+                        <TableCell
                           classes={{
-                            root: 'cursor-override',
-                            selected: 'selected-override',
+                            root: 'selected-col',
                           }}
                         >
-                          <TableCell
-                            classes={{
-                              root: 'selected-col',
-                            }}
-                          >
-                            <Checkbox
-                              onChange={() => handleCheckbox(n['@rid'])}
-                              checked={displayed.includes(n['@rid'])}
-                            />
-                          </TableCell>
-                          {tableColumns.map((col) => {
-                            if (col.checked) {
-                              return (
-                                <TableCell key={col.id}>
-                                  {col.sortBy ? (n[col.id] || '')[col.sortBy] : (n[col.id] || '').toString()}
-                                </TableCell>
-                              );
+                          <Checkbox
+                            onChange={() => handleCheckbox(n['@rid'])}
+                            checked={displayed.includes(n['@rid'])}
+                          />
+                        </TableCell>
+                        {tableColumns.map((col) => {
+                          if (col.checked) {
+                            return (
+                              <TableCell key={col.id}>
+                                {col.sortBy ? (n[col.id] || '')[col.sortBy] : (n[col.id] || '').toString()}
+                              </TableCell>
+                            );
+                          }
+                          return null;
+                        })}
+                        <TableCell>
+                          <IconButton
+                            onClick={() => this.handleDetailToggle(n['@rid'])}
+                            className={
+                              active ? 'detail-btn-active' : 'detail-btn'
                             }
-                            return null;
-                          })}
-                          <TableCell>
-                            <IconButton
-                              onClick={() => this.handleDetailToggle(n['@rid'])}
-                              className={
-                                active ? 'detail-btn-active' : 'detail-btn'
-                              }
-                            >
-                              <KeyboardArrowDownIcon />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                        {detail}
-                      </React.Fragment>
-                    ) : null;
-                })
-              }
+                          >
+                            <KeyboardArrowDownIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                      {detail}
+                    </React.Fragment>
+                  );
+              })}
             </TableBody>
           </Table>
         </div>
@@ -628,13 +642,12 @@ class TableComponent extends Component {
               </IconButton>
             </div>
           </Tooltip>
-          {!completedNext ? (
+          {!completedNext && (
             <div style={{ display: 'flex', justifyItems: 'center' }}>
               <CircularProgress size={20} color="primary" id="new-data-spinner" />
               <Typography variant="caption" style={{ margin: 'auto' }}>loading more results...</Typography>
             </div>
-          ) : null
-          }
+          )}
           <Tooltip
             title="Select ontologies to display in graph form"
             placement="left"

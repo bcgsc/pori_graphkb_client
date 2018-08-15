@@ -5,6 +5,9 @@ $md-secondary-variant: #1F6552;
 $md-secondary-light: #a0ebd8;
 $md-warn: #d32f2f;
 $banner-height: 56px;
+@function fade-in($duration: 0.6s){
+  @return fade-in #{$duration} ease-out forwards;
+}
 
 .icon-link {
   text-decoration: none;
@@ -15,3 +18,9 @@ $banner-height: 56px;
   display: flex;
 }
 
+@keyframes fade-in {
+  from {
+      opacity: 0;
+  }
+  to {}
+}

@@ -422,14 +422,13 @@ class GraphComponent extends Component {
    * Resizes svg window and reinitializes the simulation.
    */
   handleResize() {
-    let w;
-    let h;
-    const n = this.wrapper;
-
-    if (n) {
-      w = n.clientWidth;
-      h = n.clientHeight;
-      this.setState({ width: w, height: h }, this.initSimulation);
+    if (this.wrapper) {
+      this.setState(
+        {
+          width: this.wrapper.clientWidth,
+          height: this.wrapper.clientHeight,
+        }, this.initSimulation,
+      );
     }
   }
 

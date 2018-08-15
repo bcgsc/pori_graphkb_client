@@ -32,8 +32,6 @@ import ViewListIcon from '@material-ui/icons/ViewList';
 import BuildIcon from '@material-ui/icons/Build';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import HelpIcon from '@material-ui/icons/Help';
-import SaveIcon from '@material-ui/icons/Save';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { withStyles } from '@material-ui/core/styles';
 import GraphLink from '../GraphLink/GraphLink';
 import GraphNode from '../GraphNode/GraphNode';
@@ -135,7 +133,6 @@ class GraphComponent extends Component {
     this.handleGraphColorsChange = this.handleGraphColorsChange.bind(this);
     this.handleHelpOpen = this.handleHelpOpen.bind(this);
     this.handleHelpClose = this.handleHelpClose.bind(this);
-    this.handleSaveGraph = this.handleSaveGraph.bind(this);
   }
 
   /**
@@ -207,7 +204,7 @@ class GraphComponent extends Component {
       }
 
       if (storedOptions) {
-        this.setState({ ...storedOptions, icon: true }, () => {
+        this.setState({ ...storedOptions }, () => {
           this.drawGraph();
           this.updateColors('nodes');
           this.updateColors('links');
@@ -584,6 +581,7 @@ class GraphComponent extends Component {
       || (propsMap[type][key]
         && (propsMap[type][key].length === 0
           || (propsMap[type][key].length === 1 && propsMap[type][key].includes('null'))))
+      || (key && !propsMap[type][key])
     ) {
       graphOptions[`${type}Color`] = '';
       this.setState({ graphOptions, snackbarOpen: true }, () => this.updateColors(type));
@@ -619,7 +617,8 @@ class GraphComponent extends Component {
   handleGraphOptionsChange(e) {
     const { graphOptions } = this.state;
     graphOptions[e.target.name] = e.target.value;
-    this.setState({ graphOptions, icon: false }, () => {
+    util.loadGraphOptions({ graphOptions });
+    this.setState({ graphOptions }, () => {
       this.initSimulation();
       this.drawGraph();
     });
@@ -633,7 +632,8 @@ class GraphComponent extends Component {
   handleGraphColorsChange(e, type) {
     const { graphOptions } = this.state;
     graphOptions[`${type}Color`] = e.target.value;
-    this.setState({ graphOptions, icon: false }, () => this.updateColors(type));
+    util.loadGraphOptions({ graphOptions });
+    this.setState({ graphOptions }, () => this.updateColors(type));
   }
 
   /**
@@ -750,21 +750,6 @@ class GraphComponent extends Component {
     this.setState({ advancedHelp: false, mainHelp: false });
   }
 
-  /**
-   * Loads graph data into localstorage, and notifies indicator.
-   */
-  handleSaveGraph() {
-    const {
-      graphOptions,
-      propsMap,
-    } = this.state;
-    util.loadGraphOptions({
-      graphOptions,
-      propsMap,
-    });
-    this.setState({ icon: true });
-  }
-
   render() {
     const {
       nodes,
@@ -778,7 +763,6 @@ class GraphComponent extends Component {
       snackbarOpen,
       mainHelp,
       advancedHelp,
-      icon,
     } = this.state;
 
     const {
@@ -1305,27 +1289,6 @@ class GraphComponent extends Component {
             >
               <RefreshIcon />
             </IconButton>
-          </Tooltip>
-
-          <Tooltip placement="top" title={!icon ? 'Save graph state' : 'Saved!'}>
-            <div className="save-check">
-              {!icon ? (
-                <IconButton
-                  color="primary"
-                  onClick={this.handleSaveGraph}
-                >
-                  <SaveIcon />
-                </IconButton>
-              )
-                : (
-                  <CheckCircleIcon
-                    color="secondary"
-                    style={{
-                      margin: 'auto',
-                    }}
-                  />
-                )}
-            </div>
           </Tooltip>
         </div>
 

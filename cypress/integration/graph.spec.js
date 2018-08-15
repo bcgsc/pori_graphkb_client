@@ -32,7 +32,7 @@ describe('Graph View Test', () => {
   /**
    * Tests disease actions buttons and their actions.
    */
-  it.only('Diseases actions ring', () => {
+  it('Diseases actions ring', () => {
     getClass('Disease');
     cy.get('circle.node').click({ force: true });
     cy.contains('(Details)').click({ force: true });

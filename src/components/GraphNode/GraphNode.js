@@ -2,6 +2,11 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import './GraphNode.css';
 import * as d3 from 'd3';
+import config from '../../config.json';
+
+const { NODE_RADIUS } = config.GRAPH_PROPERTIES;
+const DEFAULT_OPACITY = 1;
+const FADED_OPACITY = 0.6;
 
 /**
  * Component used to display graph nodes and apply draggable behavior to them through d3.
@@ -59,17 +64,24 @@ class GraphNode extends PureComponent {
       node,
       handleClick,
       color,
-      r,
-      actionsRing,
-      label,
+      labelKey,
       detail,
+      actionsNode,
     } = this.props;
 
+    // Extract label
     let obj = node.data;
-    let key = label;
-    if (label.includes('.')) {
-      key = label.split('.')[1];
-      obj = node.data[label.split('.')[0]];
+    let key = labelKey;
+    if (labelKey.includes('.')) {
+      key = labelKey.split('.')[1];
+      obj = node.data[labelKey.split('.')[0]];
+    }
+
+    let opacity = DEFAULT_OPACITY;
+    if ((detail && detail['@rid'] !== node.data['@rid'])
+      || (actionsNode && actionsNode.data['@rid'] !== node.data['@rid'])
+    ) {
+      opacity = FADED_OPACITY;
     }
 
     return (
@@ -79,30 +91,29 @@ class GraphNode extends PureComponent {
       >
         <text
           style={{
-            opacity: detail && detail !== node.data['@rid'] ? 0.6 : 1,
+            opacity,
           }}
         >
           <tspan className="node-name" dy={28}>
-            {obj ? obj[key] : null}
+            {obj && obj[key]}
           </tspan>
         </text>
-        {actionsRing}
         <circle
           fill="#fff"
           cx={0}
           cy={0}
-          r={r}
+          r={NODE_RADIUS}
         />
         <circle
           style={{
-            opacity: detail && detail !== node.data['@rid'] ? 0.6 : 1,
+            opacity,
           }}
           onClick={handleClick}
           className="node"
           fill={color}
           cx={0}
           cy={0}
-          r={r}
+          r={NODE_RADIUS}
         />
       </g>
     );
@@ -112,10 +123,9 @@ class GraphNode extends PureComponent {
 GraphNode.defaultProps = {
   handleClick: null,
   color: '#26328C',
-  r: 4,
-  actionsRing: null,
-  label: 'name',
+  labelKey: 'name',
   detail: null,
+  actionsNode: null,
 };
 
 /**
@@ -127,18 +137,17 @@ GraphNode.defaultProps = {
  * @param {Object} simulation - parent simulation that node is a member of.
  * @param {Array} actionsRing - Array of svg components making up the node actions ring
  * surrounding a selected node.
- * @param {string} label - property to display as label.
- * @param {string} detail - node identifier for node who's details are currently displayed.
+ * @param {string} labelKey - property to display as label.
+ * @param {Object} detail - node identifier for node who's details are currently displayed.
  */
 GraphNode.propTypes = {
   node: PropTypes.object.isRequired,
   handleClick: PropTypes.func,
   color: PropTypes.string,
-  r: PropTypes.number,
   simulation: PropTypes.object.isRequired,
-  actionsRing: PropTypes.object,
-  label: PropTypes.string,
-  detail: PropTypes.string,
+  labelKey: PropTypes.string,
+  detail: PropTypes.object,
+  actionsNode: PropTypes.object,
 };
 
 export default GraphNode;

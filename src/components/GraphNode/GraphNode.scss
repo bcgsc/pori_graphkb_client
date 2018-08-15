@@ -4,6 +4,7 @@
     cursor: pointer;
     transition: opacity 0.1s ease-out,
         fill 0.1s ease-out;
+    animation: fade-in();
 }
 
 .node-name {

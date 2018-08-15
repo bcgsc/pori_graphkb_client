@@ -55,6 +55,8 @@ const {
 
 const { GRAPH_ADVANCED, GRAPH_MAIN } = config.DESCRIPTIONS;
 
+const { GRAPH_UNIQUE_LIMIT, GRAPH_NO_UNIQUES } = config.NOTIFICATIONS;
+
 const styles = {
   paper: {
     width: '500px',
@@ -93,8 +95,10 @@ class GraphComponent extends Component {
       nodes: [],
       links: [],
       graphObjects: {},
+      expandable: {},
       propsMap: { nodes: {}, links: {} },
       expandedEdgeTypes: [],
+      actionsNode: null,
       simulation: null,
       svg: undefined,
       width: 0,
@@ -116,13 +120,14 @@ class GraphComponent extends Component {
       graphOptionsOpen: false,
       mainHelp: false,
       advancedHelp: false,
-      expandable: {},
-      actionsNode: null,
+      refreshable: false,
+      initState: null,
     };
 
     this.drawGraph = this.drawGraph.bind(this);
     this.initSimulation = this.initSimulation.bind(this);
     this.loadNeighbors = this.loadNeighbors.bind(this);
+    this.refresh = this.refresh.bind(this);
     this.updateColors = this.updateColors.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.handleGraphOptionsChange = this.handleGraphOptionsChange.bind(this);
@@ -148,7 +153,13 @@ class GraphComponent extends Component {
       filteredSearch,
       edges,
     } = this.props;
-    const { propsMap, expandable, graphOptions } = this.state;
+    const {
+      propsMap,
+      expandable,
+      graphOptions,
+      initState,
+    } = this.state;
+
     const simulation = d3.forceSimulation();
     // Defines what edge keys to look for.
     const expandedEdgeTypes = edges.reduce((r, e) => {
@@ -161,7 +172,9 @@ class GraphComponent extends Component {
     if (!displayed || displayed.length === 0) {
       validDisplayed = [Object.keys(data)[0]];
     }
+
     const stringifiedSearch = queryString.stringify(filteredSearch);
+
     this.setState({
       expandedEdgeTypes,
       schema,
@@ -175,31 +188,52 @@ class GraphComponent extends Component {
       const storedData = util.getGraphData(stringifiedSearch);
       const storedOptions = util.getGraphOptions();
 
-      if (
-        storedData
-        && (!displayed || displayed.length === 0)
-      ) {
-        const {
-          graphObjects,
-          nodes,
-        } = storedData;
-        delete storedData.filteredSearch;
-        nodes.forEach((node) => {
-          util.loadColorProps(allColumns, node.data, propsMap);
-          util.expanded(expandedEdgeTypes, graphObjects, node.data['@rid'], expandable);
-        });
-        this.setState(
-          {
-            ...storedData,
-          },
-        );
-      } else {
+      if (displayed && displayed.length !== 0) {
         validDisplayed.forEach((key, i) => {
           this.processData(
             data[key],
             GraphComponent.positionInit(0, 0, i, validDisplayed.length),
             0,
           );
+        });
+      } else if (initState) {
+        const {
+          graphObjects,
+          nodes,
+          links,
+        } = initState;
+        nodes.forEach((node) => {
+          util.loadColorProps(allColumns, node.data, propsMap);
+          util.expanded(expandedEdgeTypes, graphObjects, node.data['@rid'], expandable);
+        });
+
+        this.setState({
+          graphObjects: Object.assign({}, graphObjects),
+          nodes: nodes.slice(),
+          links: links.slice(),
+        });
+      } else if (
+        storedData && storedData.filteredSearch === stringifiedSearch
+      ) {
+        const {
+          graphObjects,
+          nodes,
+          links,
+        } = storedData;
+        delete storedData.filteredSearch;
+
+        nodes.forEach((node) => {
+          util.loadColorProps(allColumns, node.data, propsMap);
+          util.expanded(expandedEdgeTypes, graphObjects, node.data['@rid'], expandable);
+        });
+
+        this.setState({
+          ...storedData,
+          initState: {
+            graphObjects: Object.assign({}, graphObjects),
+            nodes: nodes.slice(),
+            links: links.slice(),
+          },
         });
       }
 
@@ -270,7 +304,7 @@ class GraphComponent extends Component {
 
     delete expandable[node.data['@rid']];
     util.loadGraphData(filteredSearch, { nodes, links, graphObjects });
-    this.setState({ expandable, actionsNode: null });
+    this.setState({ expandable, actionsNode: null, refreshable: true });
   }
 
   /**
@@ -512,14 +546,8 @@ class GraphComponent extends Component {
 
   /**
    * Renders nodes and links to the graph.
-   * @param {boolean} reset - Reset flag to determine whether or not to re-
-   * initialize node positions.
    */
-  drawGraph(reset) {
-    if (reset) {
-      this.setState({ nodes: [], links: [], graphObjects: {} }, this.componentDidMount);
-    }
-
+  drawGraph() {
     const {
       nodes,
       links,
@@ -550,6 +578,22 @@ class GraphComponent extends Component {
   }
 
   /**
+   * Restarts simulation with initial nodes and links present. These are determined by the
+   * first state rendered when the component mounts.
+   */
+  refresh() {
+    const { handleDetailDrawerClose } = this.props;
+    this.initSimulation();
+    this.setState({
+      nodes: [],
+      links: [],
+      graphObjects: {},
+      refreshable: false,
+    }, this.componentDidMount);
+    handleDetailDrawerClose();
+  }
+
+  /**
    * Updates color scheme for the graph, for nodes or links.
    * @param {string} type - Object type (nodes or links)
    */
@@ -575,16 +619,24 @@ class GraphComponent extends Component {
       }
     });
 
-    if (
-      (Object.keys(colors).length > PALLETE_SIZES[PALLETE_SIZES.length - 1]
-        && Object.keys(propsMap[type]).length !== 1)
-      || (propsMap[type][key]
-        && (propsMap[type][key].length === 0
-          || (propsMap[type][key].length === 1 && propsMap[type][key].includes('null'))))
-      || (key && !propsMap[type][key])
-    ) {
+    const tooManyUniques = (Object.keys(colors).length > PALLETE_SIZES[PALLETE_SIZES.length - 1]
+      && Object.keys(propsMap[type]).length !== 1);
+    const noUniques = propsMap[type][key]
+      && (propsMap[type][key].length === 0
+        || (propsMap[type][key].length === 1 && propsMap[type][key].includes('null')));
+    const notDefined = key && !propsMap[type][key];
+
+    if (tooManyUniques || noUniques || notDefined) {
+      let snackbarMessage = '';
+      if (tooManyUniques) {
+        snackbarMessage = `${GRAPH_UNIQUE_LIMIT} (${graphOptions[`${type}Color`]})`;
+      }
+      if (noUniques || notDefined) {
+        snackbarMessage = `${GRAPH_NO_UNIQUES} (${graphOptions[`${type}Color`]})`;
+      }
+
       graphOptions[`${type}Color`] = '';
-      this.setState({ graphOptions, snackbarOpen: true }, () => this.updateColors(type));
+      this.setState({ graphOptions, snackbarMessage }, () => this.updateColors(type));
     } else {
       const pallette = util.getPallette(Object.keys(colors).length, type);
       Object.keys(colors).forEach((color, i) => { colors[color] = pallette[i]; });
@@ -727,6 +779,7 @@ class GraphComponent extends Component {
       graphObjects,
       actionsNode: null,
       propsMap,
+      refreshable: true,
     }, () => {
       this.updateColors('nodes');
       this.updateColors('links');
@@ -760,16 +813,16 @@ class GraphComponent extends Component {
       simulation,
       graphOptionsOpen,
       propsMap,
-      snackbarOpen,
+      snackbarMessage,
       mainHelp,
       advancedHelp,
+      refreshable,
     } = this.state;
 
     const {
       classes,
       handleTableRedirect,
       detail,
-      handleDetailDrawerClose,
       handleDetailDrawerOpen,
     } = this.props;
 
@@ -1145,16 +1198,16 @@ class GraphComponent extends Component {
     const snackbar = (
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        open={snackbarOpen}
-        onClose={() => this.setState({ snackbarOpen: false })}
+        open={!!snackbarMessage}
+        onClose={() => this.setState({ snackbarMessage: null })}
         autoHideDuration={6000}
         message={(
           <span>
-            Too many subgroups, choose new coloring property.
+            {snackbarMessage}
           </span>
         )}
         action={(
-          <Button color="secondary" onClick={() => this.setState({ snackbarOpen: false })}>
+          <Button color="secondary" onClick={() => this.setState({ snackbarMessage: null })}>
             Ok
           </Button>
         )}
@@ -1267,9 +1320,6 @@ class GraphComponent extends Component {
               id="graph-options-btn"
               color="primary"
               onClick={this.handleOptionsPanelOpen}
-              style={{
-                margin: 'auto 8px',
-              }}
             >
               <BuildIcon />
             </IconButton>
@@ -1278,14 +1328,8 @@ class GraphComponent extends Component {
           <Tooltip placement="top" title="Restart simulation with initial nodes">
             <IconButton
               color="primary"
-              onClick={() => {
-                this.initSimulation();
-                this.drawGraph(true);
-                handleDetailDrawerClose();
-              }}
-              style={{
-                margin: 'auto 8px',
-              }}
+              onClick={this.refresh}
+              disabled={!refreshable}
             >
               <RefreshIcon />
             </IconButton>

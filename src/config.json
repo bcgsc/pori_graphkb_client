@@ -216,5 +216,9 @@
         "description": "Choose which edge properties to color edges based on. Eligible properties are those with 20 or fewer different unique values throughout the displayed edges."
       }
     ]
+  },
+  "NOTIFICATIONS": {
+    "GRAPH_UNIQUE_LIMIT": "Too many subgroups, choose new coloring property.",
+    "GRAPH_NO_UNIQUES": "No distinct subgroups, choose new coloring property."
   }
 }

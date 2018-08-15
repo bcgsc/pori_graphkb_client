@@ -163,7 +163,7 @@ describe('Graph View Test', () => {
   /**
    * Tests whether or not graph objects are properly stored in localstorage.
    */
-  it.only('Persistent graph objects', () => {
+  it('Persistent graph objects', () => {
     getClass('Disease');
     cy.get('circle.node').click({ force: true });
     cy.contains('(Expand)').click({ force: true });

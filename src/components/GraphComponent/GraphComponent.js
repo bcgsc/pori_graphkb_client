@@ -120,7 +120,6 @@ class GraphComponent extends Component {
     this.loadNeighbors = this.loadNeighbors.bind(this);
     this.refresh = this.refresh.bind(this);
     this.updateColors = this.updateColors.bind(this);
-    this.refresh = this.refresh.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.handleGraphOptionsChange = this.handleGraphOptionsChange.bind(this);
     this.handleOptionsPanelOpen = this.handleOptionsPanelOpen.bind(this);
@@ -440,42 +439,6 @@ class GraphComponent extends Component {
   }
 
   /**
-   * Resizes svg window and reinitializes the simulation.
-   */
-  handleResize() {
-    if (this.wrapper) {
-      this.setState(
-        {
-          width: this.wrapper.clientWidth,
-          height: this.wrapper.clientHeight,
-        }, this.initSimulation,
-      );
-    }
-  }
-
-  /**
-   * Toggles Auto Collision Radius feature.
-   */
-  handleCheckbox() {
-    const { graphOptions } = this.state;
-    graphOptions.autoCollisionRadius = !graphOptions.autoCollisionRadius;
-  }
-
-  /**
-   * Opens graph options dialog.
-   */
-  handleOptionsPanelOpen() {
-    this.setState({ graphOptionsOpen: true });
-  }
-
-  /**
-   * Closes graph options dialog.
-   */
-  handleOptionsPanelClose() {
-    this.setState({ graphOptionsOpen: false });
-  }
-
-  /**
    * Initializes simulation rules and properties. Updates simulation component state.
    */
   initSimulation() {
@@ -574,7 +537,6 @@ class GraphComponent extends Component {
    */
   refresh() {
     const { handleDetailDrawerClose } = this.props;
-    this.initSimulation();
     this.setState({
       nodes: [],
       links: [],
@@ -637,6 +599,42 @@ class GraphComponent extends Component {
       this.setState({ graphOptions });
     }
     /* eslint-enable */
+  }
+
+  /**
+   * Resizes svg window and reinitializes the simulation.
+   */
+  handleResize() {
+    if (this.wrapper) {
+      this.setState(
+        {
+          width: this.wrapper.clientWidth,
+          height: this.wrapper.clientHeight,
+        }, this.initSimulation,
+      );
+    }
+  }
+
+  /**
+   * Toggles Auto Collision Radius feature.
+   */
+  handleCheckbox() {
+    const { graphOptions } = this.state;
+    graphOptions.autoCollisionRadius = !graphOptions.autoCollisionRadius;
+  }
+
+  /**
+   * Opens graph options dialog.
+   */
+  handleOptionsPanelOpen() {
+    this.setState({ graphOptionsOpen: true });
+  }
+
+  /**
+   * Closes graph options dialog.
+   */
+  handleOptionsPanelClose() {
+    this.setState({ graphOptionsOpen: false });
   }
 
   /**
@@ -721,6 +719,7 @@ class GraphComponent extends Component {
       graphOptions,
       filteredSearch,
     } = this.state;
+
     const { handleDetailDrawerClose } = this.props;
     if (nodes.length === 1) return;
     const i = nodes.indexOf(actionsNode);
@@ -821,6 +820,7 @@ class GraphComponent extends Component {
       graphObjects,
       links,
       expandable,
+      refreshable: true,
     }, () => {
       this.updateColors('nodes');
       this.updateColors('links');
@@ -1356,13 +1356,15 @@ class GraphComponent extends Component {
           </Tooltip>
 
           <Tooltip placement="top" title="Restart simulation with initial nodes">
-            <IconButton
-              color="primary"
-              onClick={this.refresh}
-              disabled={!refreshable}
-            >
-              <RefreshIcon />
-            </IconButton>
+            <div>
+              <IconButton
+                color="primary"
+                onClick={this.refresh}
+                disabled={!refreshable}
+              >
+                <RefreshIcon />
+              </IconButton>
+            </div>
           </Tooltip>
         </div>
 

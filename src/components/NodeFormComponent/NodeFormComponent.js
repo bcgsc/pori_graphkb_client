@@ -967,7 +967,7 @@ class NodeFormComponent extends Component {
                               />
                             </div>
                           </TableCell>
-                          <TableCell padding="dense">
+                          <TableCell padding="dense" style={{ transform: 'translate(0, 1px)' }}>
                             <ResourceSelectComponent
                               value={relationship.source}
                               onChange={this.handleRelationship}

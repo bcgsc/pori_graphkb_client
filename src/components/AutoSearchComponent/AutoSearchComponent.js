@@ -37,7 +37,10 @@ class AutoSearchComponent extends Component {
       lastRid: null,
     };
     const { property } = props;
-    this.callApi = _.debounce(this.callApi.bind(this), property.length > 1 ? LONG_DEBOUNCE_TIME : DEBOUNCE_TIME);
+    this.callApi = _.debounce(
+      this.callApi.bind(this),
+      property.length > 1 ? LONG_DEBOUNCE_TIME : DEBOUNCE_TIME,
+    );
     this.refreshOptions = this.refreshOptions.bind(this);
   }
 
@@ -167,33 +170,33 @@ class AutoSearchComponent extends Component {
                   onFocus: () => this.setState({ noRidFlag: false }),
                   onBlur: () => this.setState({ noRidFlag: !!(!lastRid && value) }),
                 }),
-                endAdornment: endAdornment ? (
+                endAdornment: endAdornment && (
                   <InputAdornment position="end">
                     {endAdornment}
                   </InputAdornment>
-                ) : null,
+                ),
               }}
             />
             {(isOpen || loading) && !emptyFlag
-              ? (
-                <Paper className="droptions">
-                  <List>
-                    {loading
-                      ? (<CircularProgress color="primary" size={20} id="autosearch-spinner" />)
-                      : autoSearchResults(inputValue, getItemProps, setState, getInputProps)}
-                  </List>
-                </Paper>
-              ) : null}
-            {emptyFlag ? (
+            && (
+            <Paper className="droptions">
+              <List>
+                {loading
+                  ? (<CircularProgress color="primary" size={20} id="autosearch-spinner" />)
+                  : autoSearchResults(inputValue, getItemProps, setState, getInputProps)}
+              </List>
+            </Paper>
+            )}
+            {emptyFlag && (
               <Typography variant="caption" color="error">
                 No Results
               </Typography>
-            ) : null}
-            {noRidFlag && !emptyFlag ? (
+            )}
+            {noRidFlag && !emptyFlag && (
               <Typography variant="caption" color="error">
                 Select an option
               </Typography>
-            ) : null}
+            )}
           </div>)
         }
       </Downshift>

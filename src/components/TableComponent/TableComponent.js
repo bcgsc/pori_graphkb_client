@@ -170,7 +170,7 @@ class TableComponent extends Component {
     const { data } = this.props;
 
     let newOrder = 'desc';
-    const newProperty = order === 'asc' && orderBy === column.id ? null : column.id;
+    const newProperty = (order !== 'asc' || orderBy !== column.id) && column.id;
     if (orderBy === column.id && order === 'desc') {
       newOrder = 'asc';
     }
@@ -208,7 +208,7 @@ class TableComponent extends Component {
     const { orderBy, order } = this.state;
     const { displayed, data } = this.props;
     let newOrder = fOrder || 'desc';
-    const newProperty = order === 'asc' && orderBy === 'displayed' && !fOrder ? null : 'displayed';
+    const newProperty = !(order === 'asc' && orderBy === 'displayed' && !fOrder) && 'displayed';
     if (orderBy === 'displayed' && order === 'desc' && !fOrder) {
       newOrder = 'asc';
     }
@@ -416,7 +416,7 @@ class TableComponent extends Component {
           id="hide-selected"
         >
           Hide Selected Rows
-          {displayed.length !== 0 ? ` (${displayed.length})` : null}
+          {displayed.length !== 0 && ` (${displayed.length})`}
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -427,7 +427,7 @@ class TableComponent extends Component {
           disabled={hidden.length === 0}
         >
           Show Hidden Rows
-          {hidden.length !== 0 ? ` (${hidden.length})` : null}
+          {hidden.length !== 0 && ` (${hidden.length})`}
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -463,7 +463,7 @@ class TableComponent extends Component {
                 )}
                 label={column.label}
               />
-              {column.sortBy ? (
+              {column.sortBy && (
                 <div style={{ marginLeft: '32px' }}>
                   <Typography variant="caption">
                     Sort By:
@@ -484,7 +484,7 @@ class TableComponent extends Component {
                     ))}
                   </RadioGroup>
                 </div>
-              ) : null}
+              )}
               <Divider />
             </div>
           ))}
@@ -543,6 +543,7 @@ class TableComponent extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
+
               {pageData.map((n) => {
                 const isSelected = this.isSelected(n['@rid']);
                 const active = toggle === n['@rid'];
@@ -564,7 +565,7 @@ class TableComponent extends Component {
                   </TableRow>
                 ) : null;
                 return !hidden.includes(n['@rid'])
-                  ? (
+                  && (
                     <React.Fragment key={n['@rid'] || Math.random()}>
                       <TableRow
                         selected={isSelected}
@@ -607,9 +608,8 @@ class TableComponent extends Component {
                       </TableRow>
                       {detail}
                     </React.Fragment>
-                  ) : null;
-              })
-              }
+                  );
+              })}
             </TableBody>
           </Table>
         </div>
@@ -642,13 +642,12 @@ class TableComponent extends Component {
               </IconButton>
             </div>
           </Tooltip>
-          {!completedNext ? (
+          {!completedNext && (
             <div style={{ display: 'flex', justifyItems: 'center' }}>
               <CircularProgress size={20} color="primary" id="new-data-spinner" />
               <Typography variant="caption" style={{ margin: 'auto' }}>loading more results...</Typography>
             </div>
-          ) : null
-          }
+          )}
           <Tooltip
             title="Select ontologies to display in graph form"
             placement="left"

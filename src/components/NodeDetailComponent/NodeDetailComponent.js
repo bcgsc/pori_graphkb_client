@@ -88,6 +88,7 @@ class NodeDetailComponent extends Component {
       children,
       variant,
       handleNewQuery,
+      detailEdge,
     } = this.props;
 
     if (!V) return null;
@@ -164,7 +165,7 @@ class NodeDetailComponent extends Component {
                     {`${util.antiCamelCase(key)}:`}
                   </Typography>
                   {!isOpen
-                    ? (
+                    && (
                       <Typography
                         variant="subheading"
                         color="textSecondary"
@@ -172,17 +173,17 @@ class NodeDetailComponent extends Component {
                       >
                         {preview}
                       </Typography>
-                    ) : null}
+                    )}
                 </div>
                 {!isOpen
-                  ? (
+                  && (
                     <div className="length-box">
                       <Typography
                         variant="subheading"
                       >
                         {value.length}
                       </Typography>
-                    </div>) : null}
+                    </div>)}
               </ExpansionPanelSummary>
               <ExpansionPanelDetails style={{ display: 'block' }}>
                 {content}
@@ -229,7 +230,7 @@ class NodeDetailComponent extends Component {
               {`${util.antiCamelCase(key)}:`}
             </Typography>
             {!isOpen
-              ? (
+              && (
                 <Typography
                   variant="subheading"
                   color="textSecondary"
@@ -237,7 +238,7 @@ class NodeDetailComponent extends Component {
                 >
                   {preview}
                 </Typography>
-              ) : null}
+              )}
             <Tooltip title="This refers to another database record">
               <div className="node-icon length-box">
                 <BookmarkIcon />
@@ -295,8 +296,7 @@ class NodeDetailComponent extends Component {
                   {formatProperty('sourceId', relatedNode.sourceId, id)}
                   {formatProperty('name', relatedNode.name, id)}
                   {edge.source && edge.source.name
-                    ? formatProperty('source', edge.source.name, id)
-                    : null}
+                    && formatProperty('source', edge.source.name, id)}
                 </ExpansionPanelDetails>
               </ExpansionPanel>
             ));
@@ -322,25 +322,24 @@ class NodeDetailComponent extends Component {
               >
                 {`${label}:`}
               </Typography>
-              {!isOpen
-                ? (
-                  <React.Fragment>
+              {!isOpen && (
+                <React.Fragment>
+                  <Typography
+                    variant="subheading"
+                    color="textSecondary"
+                    className="preview"
+                  >
+                    {preview.join(', ')}
+                  </Typography>
+                  <div className="length-box">
                     <Typography
                       variant="subheading"
-                      color="textSecondary"
-                      className="preview"
                     >
-                      {preview.join(', ')}
+                      {filteredNode[key].length}
                     </Typography>
-                    <div className="length-box">
-                      <Typography
-                        variant="subheading"
-                      >
-                        {filteredNode[key].length}
-                      </Typography>
-                    </div>
-                  </React.Fragment>
-                ) : null}
+                  </div>
+                </React.Fragment>
+              )}
             </ExpansionPanelSummary>
             <ExpansionPanelDetails style={{ display: 'block' }}>
               {content}
@@ -362,11 +361,13 @@ class NodeDetailComponent extends Component {
       <Card style={{ height: '100%', overflowY: 'auto' }}>
         <div className="node-edit-btn">
           {children}
-          <IconButton
-            onClick={() => handleNodeEditStart(node['@rid'], node['@class'])}
-          >
-            <EditIcon />
-          </IconButton>
+          {!detailEdge ? (
+            <IconButton
+              onClick={() => handleNodeEditStart(node['@rid'], node['@class'])}
+            >
+              <EditIcon />
+            </IconButton>
+          ) : null}
         </div>
         <div className={`node-properties ${className}`}>
           <Card className="properties">
@@ -378,17 +379,19 @@ class NodeDetailComponent extends Component {
               {Object.keys(filteredNode).map(key => formatProperty(key, filteredNode[key], ''))}
             </CardContent>
           </Card>
-          <Card className="properties">
-            <CardContent>
-              <Typography paragraph variant="title" component="h1">
-                Relationships:
-                <Divider />
-              </Typography>
-              {relationships.length !== 0 ? relationships : (
-                <Typography variant="caption" style={{ margin: 'auto' }}>No relationships</Typography>
-              )}
-            </CardContent>
-          </Card>
+          {(variant !== 'graph' || relationships.length !== 0) && (
+            <Card className="properties">
+              <CardContent>
+                <Typography paragraph variant="title" component="h1">
+                  Relationships:
+                  <Divider />
+                </Typography>
+                {relationships.length !== 0 ? relationships : (
+                  <Typography variant="caption" style={{ margin: 'auto' }}>No relationships</Typography>
+                )}
+              </CardContent>
+            </Card>
+          )}
         </div>
       </Card>
     );
@@ -401,12 +404,14 @@ NodeDetailComponent.propTypes = {
   handleNewQuery: PropTypes.func.isRequired,
   children: PropTypes.node,
   variant: PropTypes.string,
+  detailEdge: PropTypes.bool,
 };
 
 NodeDetailComponent.defaultProps = {
   node: null,
   children: null,
   variant: 'table',
+  detailEdge: false,
 };
 
 export default NodeDetailComponent;

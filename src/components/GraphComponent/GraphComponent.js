@@ -68,24 +68,14 @@ const styles = {
   },
 };
 
-const END_ARROW_SIZE = {
-  d: `M0,0,L0,${ARROW_WIDTH} L ${ARROW_LENGTH}, ${ARROW_WIDTH / 2} z`,
-  refX: 2 * ARROW_LENGTH + 2,
-  refY: ARROW_WIDTH / 2,
-};
-
+// Component specific constants.
 const AUTO_SPACE_COEFFICIENT = 2.8;
+const SNACKBAR_AUTOHIDE_DURATION = 6000;
 
 /**
  * Component for displaying query results in force directed graph form.
  */
 class GraphComponent extends Component {
-  static positionInit(x, y, i, n) {
-    const newX = NODE_INIT_RADIUS * Math.cos((2 * Math.PI * i - Math.PI / 6) / n) + x;
-    const newY = NODE_INIT_RADIUS * Math.sin((2 * Math.PI * i - Math.PI / 6) / n) + y;
-    return { x: newX, y: newY };
-  }
-
   constructor(props) {
     super(props);
     this.state = {
@@ -117,22 +107,25 @@ class GraphComponent extends Component {
       advancedHelp: false,
       expandable: {},
       actionsNode: null,
-      expansions: [],
+      actionsNodeIsEdge: false,
     };
 
     this.drawGraph = this.drawGraph.bind(this);
     this.initSimulation = this.initSimulation.bind(this);
     this.loadNeighbors = this.loadNeighbors.bind(this);
     this.updateColors = this.updateColors.bind(this);
+    this.refresh = this.refresh.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.handleGraphOptionsChange = this.handleGraphOptionsChange.bind(this);
     this.handleOptionsPanelOpen = this.handleOptionsPanelOpen.bind(this);
     this.handleOptionsPanelClose = this.handleOptionsPanelClose.bind(this);
     this.handleActionsRing = this.handleActionsRing.bind(this);
     this.handleNodeHide = this.handleNodeHide.bind(this);
+    this.handleLinkHide = this.handleLinkHide.bind(this);
     this.handleGraphColorsChange = this.handleGraphColorsChange.bind(this);
     this.handleHelpOpen = this.handleHelpOpen.bind(this);
     this.handleHelpClose = this.handleHelpClose.bind(this);
+    this.handleLinkClick = this.handleLinkClick.bind(this);
   }
 
   /**
@@ -171,7 +164,7 @@ class GraphComponent extends Component {
       validDisplayed.forEach((key, i) => {
         this.processData(
           data[key],
-          GraphComponent.positionInit(0, 0, i, validDisplayed.length),
+          util.positionInit(0, 0, i, validDisplayed.length),
           0,
         );
       });
@@ -181,7 +174,6 @@ class GraphComponent extends Component {
         this.setState({ graphOptions });
       }
       this.drawGraph();
-      this.setState({ expandId: validDisplayed[0] });
       window.addEventListener('resize', this.handleResize);
       this.updateColors('nodes');
       this.updateColors('links');
@@ -321,11 +313,7 @@ class GraphComponent extends Component {
               const link = {
                 source: outRid,
                 target: inRid,
-                data: {
-                  source: edge.source,
-                  '@class': edge['@class'],
-                  '@rid': edge['@rid'],
-                },
+                data: edge,
               };
               links.push(link);
               graphObjects[link.data['@rid']] = link;
@@ -346,7 +334,7 @@ class GraphComponent extends Component {
               // Checks if node is already rendered
               if (outRid && !graphObjects[outRid]) {
                 // Initializes position of new child
-                const positionInit = GraphComponent.positionInit(
+                const positionInit = util.positionInit(
                   position.x,
                   position.y,
                   j += 1,
@@ -359,7 +347,7 @@ class GraphComponent extends Component {
                 );
               }
               if (inRid && !graphObjects[inRid]) {
-                const positionInit = GraphComponent.positionInit(
+                const positionInit = util.positionInit(
                   position.x,
                   position.y,
                   j += 1,
@@ -412,13 +400,11 @@ class GraphComponent extends Component {
    * Resizes svg window and reinitializes the simulation.
    */
   handleResize() {
-    let w;
-    let h;
     const n = this.wrapper;
 
     if (n) {
-      w = n.clientWidth;
-      h = n.clientHeight;
+      const w = n.clientWidth;
+      const h = n.clientHeight;
       const { graphOptions } = this.state;
       graphOptions.width = w;
       graphOptions.height = h;
@@ -484,8 +470,8 @@ class GraphComponent extends Component {
     );
 
     const container = d3.select(this.zoom);
-
     const svg = d3.select(this.graph);
+
     svg
       .attr('width', graphOptions.width)
       .attr('height', graphOptions.height)
@@ -499,6 +485,7 @@ class GraphComponent extends Component {
           );
         }))
       .on('dblclick.zoom', null);
+
     this.setState({ simulation, svg });
   }
 
@@ -507,11 +494,7 @@ class GraphComponent extends Component {
    * @param {boolean} reset - Reset flag to determine whether or not to re-
    * initialize node positions.
    */
-  drawGraph(reset) {
-    if (reset) {
-      this.setState({ nodes: [], links: [], graphObjects: [] }, this.componentDidMount);
-    }
-
+  drawGraph() {
     const {
       nodes,
       links,
@@ -585,17 +568,36 @@ class GraphComponent extends Component {
   }
 
   /**
-   * Updates node colors or retrieves node neighbors.
+   * Handles node clicks from user.
    * @param {Event} e - User click event.
    * @param {Object} node - Clicked simulation node.
    */
   async handleClick(e, node) {
     const { handleClick, handleDetailDrawerOpen } = this.props;
 
+    // Prematurely loads neighbor data.
     await handleClick(node.data['@rid'], node.data['@class']);
 
+    // Update contents of detail drawer if open.
     handleDetailDrawerOpen(node);
-    this.setState({ expandId: node.data['@rid'], actionsNode: node });
+
+    // Sets clicked object as actions node.
+    this.setState({ actionsNode: node, actionsNodeIsEdge: false });
+  }
+
+  /**
+   * Handles link clicks from user.
+   * @param {Event} e - User click event.
+   * @param {Object} link - Clicked simulation link.
+   */
+  handleLinkClick(e, link) {
+    const { handleDetailDrawerOpen } = this.props;
+
+    // Update contents of detail drawer if open.
+    handleDetailDrawerOpen(link, false, true);
+
+    // Sets clicked object as actions node.
+    this.setState({ actionsNode: link, actionsNodeIsEdge: true });
   }
 
   /**
@@ -711,8 +713,38 @@ class GraphComponent extends Component {
       links,
       graphObjects,
       actionsNode: null,
-      expandId: null,
       propsMap,
+    }, () => {
+      this.updateColors('nodes');
+      this.updateColors('links');
+      handleDetailDrawerClose();
+    });
+  }
+
+  /**
+   * Hides link from the graph view.
+   */
+  handleLinkHide() {
+    const {
+      actionsNode,
+      links,
+      graphObjects,
+      expandable,
+    } = this.state;
+    const { handleDetailDrawerClose } = this.props;
+
+    const i = links.indexOf(actionsNode);
+    links.splice(i, 1);
+    delete graphObjects[actionsNode.data['@rid']];
+
+    expandable[actionsNode.source.data['@rid']] = true;
+    expandable[actionsNode.target.data['@rid']] = true;
+
+    this.setState({
+      actionsNode: null,
+      graphObjects,
+      links,
+      expandable,
     }, () => {
       this.updateColors('nodes');
       this.updateColors('links');
@@ -735,6 +767,12 @@ class GraphComponent extends Component {
     this.setState({ advancedHelp: false, mainHelp: false });
   }
 
+  refresh() {
+    const { handleDetailDrawerClose } = this.props;
+    this.setState({ nodes: [], links: [], graphObjects: {} }, this.componentDidMount);
+    handleDetailDrawerClose();
+  }
+
   render() {
     const {
       nodes,
@@ -748,13 +786,13 @@ class GraphComponent extends Component {
       snackbarOpen,
       mainHelp,
       advancedHelp,
+      actionsNodeIsEdge,
     } = this.state;
 
     const {
       classes,
       handleTableRedirect,
       detail,
-      handleDetailDrawerClose,
       handleDetailDrawerOpen,
     } = this.props;
 
@@ -1031,7 +1069,7 @@ class GraphComponent extends Component {
         }
       >
         <div className="legend-wrapper">
-          {graphOptions.nodesLegend && graphOptions.nodesColor ? (
+          {graphOptions.nodesLegend && graphOptions.nodesColor && (
             <Paper>
               <div className="close-btn">
                 <IconButton
@@ -1063,7 +1101,7 @@ class GraphComponent extends Component {
                       <ListItemText primary={util.antiCamelCase(key)} />
                     </ListItem>
                   ))}
-                  {(propsMap.nodes[graphOptions.nodesColor] || []).includes('null') ? (
+                  {(propsMap.nodes[graphOptions.nodesColor] || []).includes('null') && (
                     <ListItem key="null">
                       <ListItemIcon>
                         <div
@@ -1073,11 +1111,11 @@ class GraphComponent extends Component {
                       </ListItemIcon>
                       <ListItemText primary="Null" />
                     </ListItem>
-                  ) : null}
+                  )}
                 </List>
               </div>
-            </Paper>) : null}
-          {!!(graphOptions.linksLegend && graphOptions.linksColor) && links.length !== 0 ? (
+            </Paper>)}
+          {!!(graphOptions.linksLegend && graphOptions.linksColor) && links.length !== 0 && (
             <Paper>
               <div className="close-btn">
                 <IconButton
@@ -1095,7 +1133,7 @@ class GraphComponent extends Component {
               <div className="legend-content">
                 <Typography variant="subheading">Edges</Typography>
                 <Typography variant="caption">
-                  {graphOptions.linksColor ? `(${util.antiCamelCase(graphOptions.linksColor)})` : ''}
+                  {graphOptions.linksColor && `(${util.antiCamelCase(graphOptions.linksColor)})`}
                 </Typography>
                 <List className="node-colors" dense>
                   {Object.keys(graphOptions.linksColors).map(key => (
@@ -1109,7 +1147,7 @@ class GraphComponent extends Component {
                       <ListItemText primary={util.antiCamelCase(key)} />
                     </ListItem>
                   ))}
-                  {(propsMap.links[graphOptions.linksColor] || []).includes('null') ? (
+                  {(propsMap.links[graphOptions.linksColor] || []).includes('null') && (
                     <ListItem key="null">
                       <ListItemIcon>
                         <div
@@ -1119,10 +1157,10 @@ class GraphComponent extends Component {
                       </ListItemIcon>
                       <ListItemText primary="Null" />
                     </ListItem>
-                  ) : null}
+                  )}
                 </List>
               </div>
-            </Paper>) : null}
+            </Paper>)}
         </div>
       </Popper>
     );
@@ -1132,7 +1170,7 @@ class GraphComponent extends Component {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         open={snackbarOpen}
         onClose={() => this.setState({ snackbarOpen: false })}
-        autoHideDuration={6000}
+        autoHideDuration={SNACKBAR_AUTOHIDE_DURATION}
         message={(
           <span>
             Too many subgroups, choose new coloring property.
@@ -1144,16 +1182,27 @@ class GraphComponent extends Component {
           </Button>
         )}
       />
-
     );
 
-    const actionsRing = () => {
-      const options = [
+    const actionsRingOptions = actionsNodeIsEdge
+      ? [
+        {
+          name: 'Details',
+          icon: <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />,
+          action: () => handleDetailDrawerOpen(actionsNode, true, true),
+          disabled: link => link.data['@rid'] === (detail || {})['@rid'],
+        },
+        {
+          name: 'Hide',
+          icon: <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" />,
+          action: this.handleLinkHide,
+          disabled: false,
+        }] : [
         {
           name: 'Details',
           icon: <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />,
           action: () => handleDetailDrawerOpen(actionsNode, true),
-          disabled: node => node.data['@rid'] === detail,
+          disabled: node => node.data['@rid'] === (detail || {})['@rid'],
         },
         {
           name: 'Close',
@@ -1173,62 +1222,40 @@ class GraphComponent extends Component {
           disabled: () => nodes.length === 1,
         },
       ];
-      return (
-        <GraphActionsNode
-          options={options}
-          handleActionsRing={this.handleActionsRing}
-          actionsNode={actionsNode}
-        />
-      );
-    };
 
-    const linksDisplay = links.map((link) => {
-      let linkColorKey = '';
-      if (graphOptions.linksColor && graphOptions.linksColor.includes('.')) {
-        const keys = graphOptions.linksColor.split('.');
-        linkColorKey = (link.data[keys[0]] || {})[keys[1]];
-      } else if (graphOptions.linksColor) {
-        linkColorKey = link.data[graphOptions.linksColor];
-      }
-      const color = graphOptions.linksColors[linkColorKey];
+    const actionsRing = (
+      <GraphActionsNode
+        actionsNode={actionsNode}
+        options={actionsRingOptions}
+        handleActionsRing={this.handleActionsRing}
+        edge={actionsNodeIsEdge}
+      />
+    );
 
-      return (
-        <GraphLink
-          key={link.data['@rid']}
-          link={link}
-          detail={detail}
-          labelKey={graphOptions.linkLabelProp}
-          color={color}
-        />
-      );
-    });
+    const linksDisplay = links.map(link => (
+      <GraphLink
+        key={link.data['@rid']}
+        link={link}
+        detail={detail}
+        labelKey={graphOptions.linkLabelProp}
+        color={util.getColor(link, graphOptions.linksColor, graphOptions.linksColors)}
+        handleClick={e => this.handleLinkClick(e, link)}
+        actionsNode={actionsNode}
+      />));
 
-    const nodesDisplay = nodes.map((node) => {
-      let nodeColorKey = '';
-      if (graphOptions.nodesColor && graphOptions.nodesColor.includes('.')) {
-        const keys = graphOptions.nodesColor.split('.');
-        nodeColorKey = (node.data[keys[0]] || {})[keys[1]];
-      } else if (graphOptions.nodesColor) {
-        nodeColorKey = node.data[graphOptions.nodesColor];
-      }
-      const color = graphOptions.nodesColors[nodeColorKey];
-
-      const isExpandable = expandable[node.data['@rid']];
-      return (
-        <GraphNode
-          key={`node${node.data['@rid']}`}
-          node={node}
-          simulation={simulation}
-          color={color}
-          r={NODE_RADIUS}
-          handleClick={e => this.handleClick(e, node)}
-          expandable={isExpandable}
-          actionsRing={actionsNode === node ? actionsRing() : null}
-          label={graphOptions.nodeLabelProp}
-          detail={detail}
-        />
-      );
-    });
+    const nodesDisplay = nodes.map(node => (
+      <GraphNode
+        key={node.data['@rid']}
+        node={node}
+        detail={detail}
+        actionsNode={actionsNode}
+        labelKey={graphOptions.nodeLabelProp}
+        color={util.getColor(node, graphOptions.nodesColor, graphOptions.nodesColors)}
+        handleClick={e => this.handleClick(e, node)}
+        expandable={expandable[node.data['@rid']]}
+        simulation={simulation}
+      />
+    ));
 
     return (
       <div className="graph-wrapper">
@@ -1263,11 +1290,7 @@ class GraphComponent extends Component {
           <Tooltip placement="top" title="Restart simulation with initial nodes">
             <IconButton
               color="primary"
-              onClick={() => {
-                this.initSimulation();
-                this.drawGraph(true);
-                handleDetailDrawerClose();
-              }}
+              onClick={this.refresh}
               style={{
                 margin: 'auto 8px',
               }}
@@ -1280,24 +1303,31 @@ class GraphComponent extends Component {
         <div className="svg-wrapper" ref={(node) => { this.wrapper = node; }}>
           <svg
             ref={(node) => { this.graph = node; }}
-            onClick={() => this.setState({ actionsNode: null })}
+            onClick={(e) => {
+              if (e.target === this.graph) {
+                this.setState({ actionsNode: null });
+              }
+            }}
           >
             <defs>
               <marker
                 id="endArrow"
                 markerWidth={ARROW_LENGTH}
                 markerHeight={ARROW_WIDTH}
-                refX={END_ARROW_SIZE.refX}
-                refY={END_ARROW_SIZE.refY}
+                refY={ARROW_WIDTH / 2}
                 orient="auto"
                 markerUnits="strokeWidth"
               >
-                <path d={END_ARROW_SIZE.d} fill="#555" />
+                <path
+                  d={`M0,0,L0,${ARROW_WIDTH} L ${ARROW_LENGTH}, ${ARROW_WIDTH / 2} z`}
+                  fill="#555"
+                />
               </marker>
             </defs>
             <g ref={(node) => { this.zoom = node; }}>
               {linksDisplay}
               {nodesDisplay}
+              {actionsRing}
             </g>
           </svg>
         </div>
@@ -1317,7 +1347,7 @@ class GraphComponent extends Component {
   * the database schema.
   * @param {Array} ontologyTypes - Array containing individual schemas for each Ontology
   * subclass as defined by the schema.
-  * @param {string} detail - record ID of node currently selected for detail viewing.
+  * @param {Object} detail - record ID of node currently selected for detail viewing.
   * @param {Array} allColumns - list of all unique properties on all nodes returned in
   * initial query.
   */
@@ -1330,7 +1360,7 @@ GraphComponent.propTypes = {
   handleTableRedirect: PropTypes.func.isRequired,
   handleNewColumns: PropTypes.func.isRequired,
   schema: PropTypes.object.isRequired,
-  detail: PropTypes.string,
+  detail: PropTypes.object,
   allColumns: PropTypes.array,
 };
 

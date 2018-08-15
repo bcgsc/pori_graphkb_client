@@ -68,7 +68,7 @@ class ErrorView extends Component {
           </Link>
         </div>
         {stacktrace
-          ? (
+          && (
             <div className="error-content stacktrace">
               <Tooltip
                 title="Copied!"
@@ -89,7 +89,7 @@ class ErrorView extends Component {
               <Typography variant="subheading" id="stacktrace-text">
                 {stacktrace}
               </Typography>
-            </div>) : null}
+            </div>)}
       </div>
     );
   }

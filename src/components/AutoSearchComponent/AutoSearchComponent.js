@@ -175,36 +175,36 @@ class AutoSearchComponent extends Component {
                     fontSize: dense ? '0.8125rem' : '',
                   },
                 }),
-                endAdornment: endAdornment ? (
+                endAdornment: endAdornment && (
                   <InputAdornment position="end">
                     {endAdornment}
                   </InputAdornment>
-                ) : null,
+                ),
               }}
               style={{
                 fontSize: dense ? '0.8125rem' : '',
               }}
             />
             {(isOpen || loading) && !emptyFlag
-              ? (
-                <Paper className="droptions">
-                  <List>
-                    {loading
-                      ? (<CircularProgress color="primary" size={20} id="autosearch-spinner" />)
-                      : autoSearchResults(inputValue, getItemProps, setState, getInputProps)}
-                  </List>
-                </Paper>
-              ) : null}
-            {emptyFlag ? (
+            && (
+            <Paper className="droptions">
+              <List>
+                {loading
+                  ? (<CircularProgress color="primary" size={20} id="autosearch-spinner" />)
+                  : autoSearchResults(inputValue, getItemProps, setState, getInputProps)}
+              </List>
+            </Paper>
+            )}
+            {emptyFlag && (
               <Typography variant="caption" color="error">
                 No Results
               </Typography>
-            ) : null}
-            {noRidFlag && !emptyFlag ? (
+            )}
+            {noRidFlag && !emptyFlag && (
               <Typography variant="caption" color="error">
                 Select an option
               </Typography>
-            ) : null}
+            )}
           </div>)
         }
       </Downshift>

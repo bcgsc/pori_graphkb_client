@@ -150,6 +150,8 @@ $mediumBreakpoint: 500px;
         bottom: 0;
         padding-bottom: 16px;
         background-color: #f8f8f8;
+        border: none;
+        height: 48px;
     }
 }
 
@@ -170,7 +172,7 @@ th {
     position: relative;
     width: 100%;
     .param-section {
-        flex: 0 0 50%;
+        flex: 0 1 50%;
     }
     @media (max-width: $breakpoint) {
         flex-direction: column;

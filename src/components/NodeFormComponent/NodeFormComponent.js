@@ -229,17 +229,19 @@ class NodeFormComponent extends Component {
       if (originalNode[type]) {
         originalNode[type].forEach((edge) => {
           if (edge['@class'] !== 'Implies') { // TODO: remove filter for implies edges.
-            relationships.push({
-              '@rid': edge['@rid'],
-              in: edge.in['@rid'],
-              out: edge.out['@rid'],
-              '@class': edge['@class'],
-              name:
-                edge.out['@rid'] === originalNode['@rid'] ? edge.in.name : edge.out.name,
-              sourceId:
-                edge.out['@rid'] === originalNode['@rid'] ? edge.in.sourceId : edge.out.sourceId,
-              source: edge.source['@rid'] || edge.source,
-            });
+            if (!relationships.find(r => r['@rid'] === edge['@rid'])) {
+              relationships.push({
+                '@rid': edge['@rid'],
+                in: edge.in['@rid'],
+                out: edge.out['@rid'],
+                '@class': edge['@class'],
+                name:
+                  edge.out['@rid'] === originalNode['@rid'] ? edge.in.name : edge.out.name,
+                sourceId:
+                  edge.out['@rid'] === originalNode['@rid'] ? edge.in.sourceId : edge.out.sourceId,
+                source: edge.source['@rid'] || edge.source,
+              });
+            }
           }
         });
       }
@@ -892,7 +894,7 @@ class NodeFormComponent extends Component {
                             ? util.getEdgeLabel(`in_${r['@class']}`)
                             : util.getEdgeLabel(`out_${r['@class']}`);
                           return (
-                            <TableRow key={`${r['@class']}${r.in}${r.out}${r.source}`}>
+                            <TableRow key={r['@rid'] || `${r['@class']}${r.in}${r.out}${r.source}`}>
                               <TableCell padding="checkbox">
                                 <IconButton
                                   onClick={() => this.handleRelationshipDelete(r)}

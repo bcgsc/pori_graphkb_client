@@ -769,7 +769,7 @@ class GraphComponent extends Component {
 
   refresh() {
     const { handleDetailDrawerClose } = this.props;
-    this.setState({ nodes: [], links: [], graphObjects: [] }, this.componentDidMount);
+    this.setState({ nodes: [], links: [], graphObjects: {} }, this.componentDidMount);
     handleDetailDrawerClose();
   }
 

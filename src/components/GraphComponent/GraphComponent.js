@@ -189,6 +189,8 @@ class GraphComponent extends Component {
             0,
           );
         });
+        const { nodes, links, graphObjects } = this.state;
+        util.loadGraphData(stringifiedSearch, { nodes, links, graphObjects });
       } else if (initState) {
         const {
           graphObjects,
@@ -584,7 +586,7 @@ class GraphComponent extends Component {
       if (tooManyUniques) {
         snackbarMessage = `${GRAPH_UNIQUE_LIMIT} (${graphOptions[`${type}Color`]})`;
       }
-      if (noUniques || notDefined) {
+      if (noUniques) {
         snackbarMessage = `${GRAPH_NO_UNIQUES} (${graphOptions[`${type}Color`]})`;
       }
 
@@ -965,34 +967,6 @@ class GraphComponent extends Component {
                 })}
               </Select>
             </FormControl>
-          </div>
-          <div className="main-options-wrapper">
-            <FormControl className="graph-option">
-              <InputLabel htmlFor="linkLabelProp">Label edges by</InputLabel>
-              <Select
-                input={<Input name="linkLabelProp" id="linkLabelProp" />}
-                onChange={this.handleGraphOptionsChange}
-                value={graphOptions.linkLabelProp}
-              >
-                <MenuItem value="">None</MenuItem>
-                <MenuItem value="@class">Class</MenuItem>
-                <MenuItem value="source.name">Source Name</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl className="graph-option">
-              <InputLabel htmlFor="linksColor">Color edges by</InputLabel>
-              <Select
-                input={<Input name="linksColor" id="linksColor" />}
-                onChange={e => this.handleGraphColorsChange(e, 'links')}
-                value={graphOptions.linksColor}
-              >
-                <MenuItem value="">None</MenuItem>
-                <MenuItem value="@class">Class</MenuItem>
-                <MenuItem value="source.name">Source Name</MenuItem>
-              </Select>
-            </FormControl>
-          </div>
-          <div className="main-options-wrapper">
             <FormControl className="graph-option">
               <FormControlLabel
                 classes={{
@@ -1011,10 +985,45 @@ class GraphComponent extends Component {
                     }
                     name="nodesLegend"
                     checked={!!(graphOptions.nodesLegend && graphOptions.nodesColor)}
+                    disabled={!graphOptions.nodesColor}
                   />
                 )}
                 label="Show Nodes Coloring Legend"
               />
+            </FormControl>
+          </div>
+          <div className="main-options-wrapper">
+            <FormControl className="graph-option">
+              <InputLabel htmlFor="linkLabelProp">Label edges by</InputLabel>
+              <Select
+                input={<Input name="linkLabelProp" id="linkLabelProp" />}
+                onChange={this.handleGraphOptionsChange}
+                value={graphOptions.linkLabelProp}
+                disabled={
+                  links.length === 0
+                  || (links.length === 1 && links[0].source === links[0].target)
+                }
+              >
+                <MenuItem value="">None</MenuItem>
+                <MenuItem value="@class">Class</MenuItem>
+                <MenuItem value="source.name">Source Name</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl className="graph-option">
+              <InputLabel htmlFor="linksColor">Color edges by</InputLabel>
+              <Select
+                input={<Input name="linksColor" id="linksColor" />}
+                onChange={e => this.handleGraphColorsChange(e, 'links')}
+                value={graphOptions.linksColor}
+                disabled={
+                  links.length === 0
+                  || (links.length === 1 && links[0].source === links[0].target)
+                }
+              >
+                <MenuItem value="">None</MenuItem>
+                <MenuItem value="@class">Class</MenuItem>
+                <MenuItem value="source.name">Source Name</MenuItem>
+              </Select>
             </FormControl>
             <FormControl>
               <FormControlLabel
@@ -1038,6 +1047,11 @@ class GraphComponent extends Component {
                       && graphOptions.linksColor
                       && links.length !== 0
                     )}
+                    disabled={
+                      !graphOptions.linksColor
+                      || links.length === 0
+                      || (links.length === 1 && links[0].source === links[0].target)
+                    }
                   />
                 )}
                 label="Show Links Coloring Legend"

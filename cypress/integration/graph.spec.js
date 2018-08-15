@@ -70,11 +70,11 @@ describe('Graph View Test', () => {
     cy.contains('(Expand)').click({ force: true });
     cy.get('#graph-options-btn').click();
     cy.get('div.main-options-wrapper div.graph-option').each((div, i) => {
-      if (i === 2) {
+      if (i === 3) {
         cy.wrap(div).click();
       }
     });
-    cy.get('ul li[data-value="@class"').click();
+    cy.get('ul li[data-value="@class"]').click();
     cy.get('#options-close-btn').click();
     cy.contains('DeprecatedBy');
     cy.contains('AliasOf');

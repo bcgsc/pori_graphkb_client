@@ -175,6 +175,13 @@ describe('Graph View Test', () => {
       cy.get('circle.node').then((refreshedNodes) => {
         expect(refreshedNodes.length).to.eq(nodes.length);
       });
+
+      cy.get('circle.node:first').click({ force: true });
+      cy.contains('(Hide)').click({ force: true });
+      cy.get('button[title="Restart simulation with initial nodes"]').click();
+      cy.get('circle.node').then((refreshedNodes) => {
+        expect(refreshedNodes.length).to.eq(nodes.length);
+      });
     });
   });
 });

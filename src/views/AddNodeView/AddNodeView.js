@@ -15,10 +15,10 @@ class AddNodeView extends Component {
       completedFlag: false,
     };
 
-    this.handleFinishAdd = this.handleFinishAdd.bind(this);
+    this.handleNodeFinish = this.handleNodeFinish.bind(this);
   }
 
-  handleFinishAdd() {
+  handleNodeFinish() {
     this.setState({ completedFlag: true });
   }
 
@@ -32,7 +32,7 @@ class AddNodeView extends Component {
     return (
       <NodeFormComponent
         variant="add"
-        handleNodeFinishEdit={this.handleFinishAdd}
+        handleNodeFinish={this.handleNodeFinish}
       />
     );
   }

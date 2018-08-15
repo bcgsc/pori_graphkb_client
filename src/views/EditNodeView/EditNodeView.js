@@ -17,8 +17,7 @@ class EditNodeView extends Component {
       node: null,
     };
 
-    this.handleNodeDelete = this.handleNodeDelete.bind(this);
-    this.handleNodeFinishEdit = this.handleNodeFinishEdit.bind(this);
+    this.handleNodeFinish = this.handleNodeFinish.bind(this);
   }
 
   /**
@@ -34,17 +33,9 @@ class EditNodeView extends Component {
   }
 
   /**
-   * Sets return flag to navigate to query page.
-   */
-  handleNodeDelete() {
-    const { history } = this.props;
-    history.push('/query');
-  }
-
-  /**
    * Sets completed flag to navigate back to previous query.
    */
-  handleNodeFinishEdit() {
+  handleNodeFinish() {
     const { history } = this.props;
     history.push('/query');
   }
@@ -60,8 +51,7 @@ class EditNodeView extends Component {
         <NodeFormComponent
           variant="edit"
           node={node}
-          handleNodeDelete={this.handleNodeDelete}
-          handleNodeFinishEdit={this.handleNodeFinishEdit}
+          handleNodeFinish={this.handleNodeFinish}
         />
       );
     }

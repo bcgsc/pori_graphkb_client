@@ -78,7 +78,7 @@ class GraphNode extends PureComponent {
       obj = node.data[labelKey.split('.')[0]];
     }
     if (obj[key] && obj[key].length > MAX_LABEL_LENGTH) {
-      obj[key] = `${obj[key].substring(0, MAX_LABEL_LENGTH).trim()}...`;
+      obj[key] = `${obj[key].substring(0, MAX_LABEL_LENGTH - 4).trim()}...`;
     }
     let opacity = DEFAULT_OPACITY;
     if ((detail && detail['@rid'] !== node.data['@rid'])

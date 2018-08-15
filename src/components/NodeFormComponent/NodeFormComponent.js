@@ -27,6 +27,8 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Snackbar,
+  CircularProgress,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
@@ -50,86 +52,7 @@ class NodeFormComponent extends Component {
       edgeTypes: [],
       sources: [],
       newNodeClass: 'Disease',
-      relationships: [
-        {
-          '@class': 'AliasOf',
-          name: 'melanoma',
-          sourceId: 'mel',
-          in: '#32:12',
-          out: -1,
-          source: '#15:0',
-        },
-        {
-          '@class': 'SubclassOf',
-          name: 'melanoma',
-          sourceId: 'mel',
-          in: '#32:12',
-          out: -1,
-          source: '#15:2',
-        },
-        {
-          '@class': 'TargetOf',
-          name: 'melanoma',
-          sourceId: 'mel',
-          in: '#32:12',
-          out: -1,
-          source: '#15:1',
-        },
-        {
-          '@class': 'Implies',
-          name: 'melanoma',
-          sourceId: 'mel',
-          in: -1,
-          out: '#32:12',
-          source: '#15:3',
-        }, {
-          '@class': 'AliasOf',
-          name: 'melanoma',
-          sourceId: 'mel',
-          in: -1,
-          out: '#32:12',
-          source: '#15:0',
-        },
-        {
-          '@class': 'SubclassOf',
-          name: 'melanoma',
-          sourceId: 'mel',
-          in: -1,
-          out: '#32:12',
-          source: '#15:2',
-        },
-        {
-          '@class': 'TargetOf',
-          name: 'melanoma',
-          sourceId: 'mel',
-          in: -1,
-          out: '#32:12',
-          source: '#15:1',
-        },
-        {
-          '@class': 'Implies',
-          name: 'melanoma',
-          sourceId: 'mel',
-          in: '#32:12',
-          out: -1,
-          source: '#15:3',
-        },
-        {
-          '@class': 'Implies',
-          name: 'melanoma',
-          sourceId: 'mel',
-          in: '#32:12',
-          out: -1,
-          source: '#15:4',
-        },
-        {
-          '@class': 'TargetOf',
-          name: 'melanoma',
-          sourceId: 'mel',
-          in: -1,
-          out: '#32:12',
-          source: '#15:6',
-        }],
+      relationships: [],
       relationship: {
         '@class': '',
         name: '',
@@ -188,7 +111,7 @@ class NodeFormComponent extends Component {
       } = prop;
       switch (type) {
         case 'embeddedset':
-          form[name] = originalNode[name] || ['doid#do_agr_slim', 'doid#do_gold'];
+          form[name] = originalNode[name] || [];
           break;
         case 'link':
           form[`${name}.@rid`] = (originalNode[name] || '')['@rid'] || '';
@@ -445,29 +368,28 @@ class NodeFormComponent extends Component {
    * Submits form.
    * @param {Event} e - Submit event.
    */
-  handleSubmit(e) {
+  async handleSubmit(e) {
     e.preventDefault();
     const { variant } = this.props;
-
+    this.setState({ loading: true, snackbarOpen: true });
     if (variant === 'edit') {
-      this.editSubmit();
+      await this.editSubmit();
     } else {
-      this.addSubmit();
+      await this.addSubmit();
     }
+    this.setState({ loading: false });
   }
 
   /**
    * Deletes target node.
    */
   async handleDeleteNode() {
+    this.setState({ snackbarOpen: true, loading: true });
+    this.handleDialogClose();
     const { originalNode } = this.state;
-    const { handleNodeDelete } = this.props;
     const { route } = await api.getClass(originalNode['@class']);
-    api.delete(
-      `${route}/${originalNode['@rid'].slice(1)}`,
-    ).then(() => {
-      handleNodeDelete();
-    });
+    await api.delete(`${route}/${originalNode['@rid'].slice(1)}`);
+    this.setState({ loading: false });
   }
 
   /**
@@ -494,7 +416,6 @@ class NodeFormComponent extends Component {
       relationships,
       editableProps,
     } = this.state;
-    const { handleNodeFinishEdit } = this.props;
 
     const changedEdges = [];
 
@@ -540,7 +461,6 @@ class NodeFormComponent extends Component {
     const { route } = await api.getClass(originalNode['@class']);
 
     await api.patch(`${route}/${originalNode['@rid'].slice(1)}`, { ...payload });
-    handleNodeFinishEdit();
   }
 
   /**
@@ -553,7 +473,6 @@ class NodeFormComponent extends Component {
       newNodeClass,
       editableProps,
     } = this.state;
-    const { handleNodeFinishEdit } = this.props;
 
     const newEdges = [];
     const payload = util.parsePayload(form, editableProps);
@@ -574,8 +493,6 @@ class NodeFormComponent extends Component {
         source: relationship.source,
       }));
     }
-    await Promise.all(newEdges);
-    handleNodeFinishEdit();
   }
 
   render() {
@@ -593,8 +510,10 @@ class NodeFormComponent extends Component {
       errorFlag,
       ontologyTypes,
       schema,
+      loading,
+      snackbarOpen,
     } = this.state;
-    const { variant, handleNodeFinishEdit } = this.props;
+    const { variant, handleNodeFinish } = this.props;
 
     // Wait for form to get initialized
     if (!form) return null;
@@ -623,11 +542,14 @@ class NodeFormComponent extends Component {
           <DialogActions style={{ justifyContent: 'center' }}>
             <Button
               onClick={this.handleDialogClose}
+              color="primary"
+              size="large"
             >
               No
             </Button>
             <Button
               onClick={this.handleDeleteNode}
+              size="large"
             >
               Yes
             </Button>
@@ -770,9 +692,24 @@ class NodeFormComponent extends Component {
       );
     };
 
+    const snackbar = (
+      <Snackbar
+        message={loading ? <CircularProgress size={30} color="secondary" /> : 'Completed!'}
+        open={snackbarOpen}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        onClose={handleNodeFinish}
+        action={!loading && (
+          <Button color="secondary" onClick={handleNodeFinish}>
+            Ok
+          </Button>
+        )}
+      />
+    );
+
     return (
       <div className="node-form-wrapper">
         {dialog}
+        {snackbar}
         <form onSubmit={this.handleSubmit}>
           <div className="form-grid">
             <Paper className="form-header" elevation={4}>
@@ -783,7 +720,7 @@ class NodeFormComponent extends Component {
               <div className="form-cancel-btn">
                 <Button
                   color="default"
-                  onClick={handleNodeFinishEdit}
+                  onClick={handleNodeFinish}
                   variant="outlined"
                 >
                   Cancel
@@ -1016,22 +953,19 @@ class NodeFormComponent extends Component {
 
 NodeFormComponent.defaultProps = {
   variant: 'edit',
-  handleNodeDelete: null,
-  handleNodeFinishEdit: null,
+  handleNodeFinish: null,
   node: null,
 };
 
 /**
 * @param {Object} node - node object.
 * @param {string} variant - specifies form type/function.
-* @param {function} handleNodeDelete - parent method triggered on node delete.
-* @param {function} handleNodeFinishEdit - parent method triggered when node is edited.
+* @param {function} handleNodeFinish - parent method triggered when node is edited or deleted.
     */
 NodeFormComponent.propTypes = {
   node: PropTypes.object,
   variant: PropTypes.string,
-  handleNodeDelete: PropTypes.func,
-  handleNodeFinishEdit: PropTypes.func,
+  handleNodeFinish: PropTypes.func,
 };
 
 export default NodeFormComponent;

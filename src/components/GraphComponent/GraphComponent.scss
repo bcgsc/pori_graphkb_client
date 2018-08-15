@@ -31,6 +31,9 @@ $toolbar-height: 64px;
         background-color: rgba($md-secondary-light, 0.5);
         margin: auto 24px auto 8px,
     }
+    button {
+        margin: 8px;
+    }
 }
 
 .transition-left {

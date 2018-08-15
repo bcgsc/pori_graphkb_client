@@ -1,9 +1,12 @@
+import * as jc from 'json-cycle';
 import config from '../config.json';
 
 const { DEFAULT_PROPS } = config;
 const { PALLETE_SIZES } = config.GRAPH_DEFAULTS;
 const { NODE_INIT_RADIUS } = config.GRAPH_PROPERTIES;
 const ACRONYMS = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
+const GRAPH_OBJECTS_KEY = 'graphObjects';
+const GRAPH_OPTIONS_KEY = 'graphOptions';
 
 /**
  * Handles miscellaneous tasks.
@@ -178,6 +181,109 @@ export default class util {
       list.push(`#${color.substr(color.length - 6)}`);
     }
     return list;
+  }
+
+  static loadGraphOptions(data) {
+    localStorage.setItem(GRAPH_OPTIONS_KEY, JSON.stringify(data));
+  }
+
+  static getGraphOptions() {
+    const data = localStorage.getItem(GRAPH_OPTIONS_KEY);
+    if (data) {
+      const obj = JSON.parse(data);
+      return obj;
+    }
+    return null;
+  }
+
+  /**
+   * Saves current graph state into localstorage, identified by the url search parameters.
+   * @param {Object} search - collection of search parameters.
+   * @param {Object} data - graph data to be stored.
+   */
+  static loadGraphData(search, data) {
+    data.filteredSearch = search;
+    localStorage.setItem(GRAPH_OBJECTS_KEY, JSON.stringify(jc.decycle(data)));
+  }
+
+  /**
+   * Retrieves graph data from localstorage for the input search parameters.
+   * @param {Object} search - collection of search parameters .
+   */
+  static getGraphData(search) {
+    const data = localStorage.getItem(GRAPH_OBJECTS_KEY);
+    if (data) {
+      const obj = jc.retrocycle(JSON.parse(data));
+      if (obj.filteredSearch === search) {
+        return obj;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Updates valid properties and color mappings for graph objects.
+   * @param {Array} newColumns - Current list of valid properties
+   * @param {Object} node - new node object to be processed.
+   * @param {Object} propsMap - Property map containing color mappings.
+   */
+  static loadColorProps(newColumns, node, propsMap) {
+    // Iterate over all props.
+    newColumns.forEach((prop) => {
+      let obj = node;
+      let key = prop;
+
+      // Nested prop condition
+      if (prop.includes('.')) {
+        key = prop.split('.')[1];
+        obj = node[prop.split('.')[0]] || {};
+      }
+
+      if (obj[key] && (obj[key].length < 50 || key === 'name') && !Array.isArray(obj[key])) {
+        if (propsMap.nodes[prop] === undefined) {
+          propsMap.nodes[prop] = [obj[key]];
+        } else if (
+          propsMap.nodes[prop] // If null, fails here
+          && !propsMap.nodes[prop].includes(obj[key])
+        ) {
+          propsMap.nodes[prop].push(obj[key]);
+        }
+      } else if (propsMap.nodes[prop] && !propsMap.nodes[prop].includes('null')) {
+        // This null represents nodes that do not contain specified property.
+        propsMap.nodes[prop].push('null');
+      }
+      // Permanently removes certain properties from being eligible to display
+      // due to content length.
+      if (obj[key] && obj[key].length >= 50 && key !== 'name') {
+        propsMap.nodes[prop] = null;
+      }
+    });
+    return propsMap;
+  }
+
+  /**
+   * Updates expandable map for input rid.
+   * @param {Array} expandedEdgeTypes - List of valid edge types.
+   * @param {Object} graphObjects - Collection of all graph objects.
+   * @param {string} rid - identifier for input node.
+   * @param {Object} expandable - Expandable flags map.
+   */
+  static expanded(expandedEdgeTypes, graphObjects, rid, expandable) {
+    let targetFlag = false;
+    expandedEdgeTypes.forEach((e) => {
+      if (graphObjects[rid][e]) {
+        graphObjects[rid][e].forEach((l) => {
+          if (
+            !graphObjects[l['@rid'] || l]
+            && !((l.in || {})['@class'] === 'Statement' || (l.out || {})['@class'] === 'Statement')
+          ) {
+            targetFlag = true;
+          }
+        });
+      }
+    });
+    expandable[rid] = targetFlag;
+    return expandable;
   }
 
   /**

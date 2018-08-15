@@ -7,6 +7,7 @@ import config from '../../config.json';
 const { NODE_RADIUS } = config.GRAPH_PROPERTIES;
 const DEFAULT_OPACITY = 1;
 const FADED_OPACITY = 0.6;
+const MAX_LABEL_LENGTH = 25;
 
 /**
  * Component used to display graph nodes and apply draggable behavior to them through d3.
@@ -76,7 +77,9 @@ class GraphNode extends PureComponent {
       key = labelKey.split('.')[1];
       obj = node.data[labelKey.split('.')[0]];
     }
-
+    if (obj[key] && obj[key].length > MAX_LABEL_LENGTH) {
+      obj[key] = `${obj[key].substring(0, MAX_LABEL_LENGTH).trim()}...`;
+    }
     let opacity = DEFAULT_OPACITY;
     if ((detail && detail['@rid'] !== node.data['@rid'])
       || (actionsNode && actionsNode.data['@rid'] !== node.data['@rid'])

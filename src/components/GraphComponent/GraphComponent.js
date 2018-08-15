@@ -1001,7 +1001,7 @@ class GraphComponent extends Component {
                 value={graphOptions.linkLabelProp}
                 disabled={
                   links.length === 0
-                  || (links.find(link => link.source !== link.target).length === 0)
+                  || (links.filter(link => link.source !== link.target).length === 0)
                 }
               >
                 <MenuItem value="">None</MenuItem>
@@ -1017,7 +1017,7 @@ class GraphComponent extends Component {
                 value={graphOptions.linksColor}
                 disabled={
                   links.length === 0
-                  || (links.find(link => link.source !== link.target).length === 0)
+                  || (links.filter(link => link.source !== link.target).length === 0)
                 }
               >
                 <MenuItem value="">None</MenuItem>
@@ -1050,7 +1050,7 @@ class GraphComponent extends Component {
                     disabled={
                       !graphOptions.linksColor
                       || links.length === 0
-                      || (links.find(link => link.source !== link.target).length === 0)
+                      || (links.filter(link => link.source !== link.target).length === 0)
                     }
                   />
                 )}

@@ -143,14 +143,13 @@ $mediumBreakpoint: 500px;
 }
 
 #relationship-add {
-    background-color: unset;
+    background-color: #f8f8f8;
     position: sticky;
     bottom: 0;
-    background-color: #f8f8f8;
     td {
-        padding-bottom: 16px;
         position: sticky;
         bottom: 0;
+        padding-bottom: 16px;
         background-color: #f8f8f8;
     }
 }

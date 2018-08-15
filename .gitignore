@@ -34,4 +34,5 @@ testem.log
 Thumbs.db
 
 *.css
+index.css
 .eslintrc.json

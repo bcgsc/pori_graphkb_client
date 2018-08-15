@@ -70,7 +70,7 @@ export default class util {
    */
   static getEdgeLabel(str) {
     const edgeType = str.split('_')[1];
-    let retstr = edgeType;
+    let retstr = edgeType || str;
 
     if (str.startsWith('in_')) {
       switch (edgeType.slice(edgeType.length - 2, edgeType.length)) {

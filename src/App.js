@@ -28,7 +28,7 @@ import EditNodeView from './views/EditNodeView/EditNodeView';
 import AddNodeView from './views/AddNodeView/AddNodeView';
 import LoginView from './views/LoginView/LoginView';
 import NodeDetailView from './views/NodeDetailView/NodeDetailView';
-import UserView from './views/UserView/UserView';
+import FeedbackView from './views/FeedbackView/FeedbackView';
 import auth from './services/auth';
 import history from './services/history';
 
@@ -119,7 +119,7 @@ class App extends Component {
         <Route path="/edit/:rid" component={EditNodeView} />
         <Route path="/ontology/:rid" component={NodeDetailView} />
         <Route path="/data" component={DataView} />
-        <Route path="/admin" component={UserView} />
+        <Route path="/feedback" component={FeedbackView} />
         <Redirect from="*" to="/query" />
       </Switch>
     );
@@ -170,10 +170,7 @@ class App extends Component {
                     }}
                   >
                     <Card className="user-menu">
-                      <MenuItem>
-                        Settings
-                      </MenuItem>
-                      <MenuItem>
+                      <MenuItem onClick={() => { history.push('/feedback'); this.handleClose(); }}>
                         Feedback
                       </MenuItem>
                       <MenuItem onClick={this.handleLogOut}>

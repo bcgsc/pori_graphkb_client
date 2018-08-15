@@ -2,7 +2,6 @@
 function getName(name) {
   cy.get('input').type(`${name}{enter}`);
   cy.url().should('includes', `/table?name=~${name}`);
-  cy.wait(1000);
 }
 
 describe('Table Test', () => {
@@ -11,7 +10,7 @@ describe('Table Test', () => {
     cy.url().should('includes', '/login');
     cy.get('input[name=username]').type(Cypress.env('USER'));
     cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
-    cy.url({ timeout: 8000 }).should('includes', '/query');
+    cy.url().should('includes', '/query');
   });
 
   /**
@@ -78,6 +77,16 @@ describe('Table Test', () => {
   });
 
   /**
+   * Check all checkbox
+   */
+  it('Check-all', () => {
+    getName('dis');
+    cy.get('table thead tr th:first input[type=checkbox]').click();
+    cy.get('#ellipsis-menu').click();
+    cy.contains('Hide Selected Rows (50)');
+  });
+
+  /**
    * Tests download as TSV button.
    */
   it('Ellipsis menu: Download as TSV', () => {
@@ -108,7 +117,7 @@ describe('Table Test', () => {
         cy.get('#hide-selected').click();
         cy.contains(total - hiddenRows);
         cy.get('#ellipsis-menu').click();
-        cy.contains(`Show hidden rows (${hiddenRows})`).click();
+        cy.contains(`Show Hidden Rows (${hiddenRows})`).click();
         cy.contains(`1-50 of ${total}`);
       });
     });
@@ -136,7 +145,6 @@ describe('Table Test', () => {
    */
   it('Subsequent Pagination', () => {
     getName('dis');
-    cy.wait(500);
     cy.get('div.pag div div div button').each((button, i) => {
       // Chooses second button.
       if (i !== 0) {

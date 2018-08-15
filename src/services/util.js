@@ -2,6 +2,7 @@ import config from '../config.json';
 
 const { DEFAULT_PROPS } = config;
 const { PALLETE_SIZES } = config.GRAPH_DEFAULTS;
+const { NODE_INIT_RADIUS } = config.GRAPH_PROPERTIES;
 const ACRONYMS = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
 
 /**
@@ -177,5 +178,36 @@ export default class util {
       list.push(`#${color.substr(color.length - 6)}`);
     }
     return list;
+  }
+
+  /**
+   * Initializes group of nodes around input coordinates. Returns coordinate for
+   * the i'th member of group of n elements.
+   * @param {number} x - x coordinate of parent node.
+   * @param {number} y - y coordinate of parent node.
+   * @param {number} i - index of current element.
+   * @param {number} n - total group size.
+   */
+  static positionInit(x, y, i, n) {
+    const newX = NODE_INIT_RADIUS * Math.cos((2 * Math.PI * i - Math.PI / 6) / n) + x;
+    const newY = NODE_INIT_RADIUS * Math.sin((2 * Math.PI * i - Math.PI / 6) / n) + y;
+    return { x: newX, y: newY };
+  }
+
+  /**
+   * Selects color for input graph object based on graph state.
+   * @param {Object} obj - object to be colored.
+   * @param {string} objColor - property to map color onto.
+   * @param {Object} objColors - map of colors for each property.
+   */
+  static getColor(obj, objColor, objColors) {
+    let colorKey = '';
+    if (objColor && objColor.includes('.')) {
+      const keys = objColor.split('.');
+      colorKey = (obj.data[keys[0]] || {})[keys[1]];
+    } else if (objColor) {
+      colorKey = obj.data[objColor];
+    }
+    return objColors[colorKey];
   }
 }

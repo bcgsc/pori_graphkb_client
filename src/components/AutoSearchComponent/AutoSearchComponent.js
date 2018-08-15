@@ -216,11 +216,11 @@ class AutoSearchComponent extends Component {
                 No Results
               </Typography>
             ) : null}
-            {noRidFlag && !emptyFlag ? (
+            {noRidFlag && !emptyFlag && (
               <Typography variant="caption" color="error">
                 Select an option
               </Typography>
-            ) : null}
+            )}
           </div>)
         }
       </Downshift>

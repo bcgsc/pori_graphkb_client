@@ -30,6 +30,7 @@ function ResourceSelectComponent(props) {
     required,
     id,
     error,
+    dense,
   } = props;
 
   const resourcesDisplay = resources.map(resource => children(resource));
@@ -44,7 +45,14 @@ function ResourceSelectComponent(props) {
       }}
       id={id}
     >
-      <InputLabel htmlFor="resource-select" required={required} error={error}>
+      <InputLabel
+        htmlFor="resource-select"
+        required={required}
+        error={error}
+        style={{
+          fontSize: dense ? '0.8125rem' : '',
+        }}
+      >
         {label}
       </InputLabel>
       <Select
@@ -54,6 +62,9 @@ function ResourceSelectComponent(props) {
         inputProps={{
           name,
           id: 'resource-select',
+        }}
+        style={{
+          fontSize: dense ? '0.8125rem' : '',
         }}
       >
         {resourcesDisplay}
@@ -72,6 +83,7 @@ ResourceSelectComponent.propTypes = {
   required: PropTypes.bool,
   error: PropTypes.bool,
   id: PropTypes.string,
+  dense: PropTypes.bool,
 };
 
 ResourceSelectComponent.defaultProps = {
@@ -87,6 +99,7 @@ ResourceSelectComponent.defaultProps = {
   required: false,
   error: false,
   id: '',
+  dense: false,
 };
 
 export default ResourceSelectComponent;

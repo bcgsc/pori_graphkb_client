@@ -77,8 +77,9 @@ class GraphNode extends PureComponent {
       key = labelKey.split('.')[1];
       obj = node.data[labelKey.split('.')[0]];
     }
-    if (obj[key] && obj[key].length > MAX_LABEL_LENGTH) {
-      obj[key] = `${obj[key].substring(0, MAX_LABEL_LENGTH - 4).trim()}...`;
+    let label = obj && obj[key];
+    if (label && label.length > MAX_LABEL_LENGTH) {
+      label = `${label.substring(0, MAX_LABEL_LENGTH - 4).trim()}...`;
     }
     let opacity = DEFAULT_OPACITY;
     if ((detail && detail['@rid'] !== node.data['@rid'])
@@ -98,7 +99,7 @@ class GraphNode extends PureComponent {
           }}
         >
           <tspan className="node-name" dy={28}>
-            {obj && obj[key]}
+            {label}
           </tspan>
         </text>
         <circle

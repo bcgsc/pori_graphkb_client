@@ -674,12 +674,13 @@ class GraphComponent extends Component {
   /**
    * Updates graph options, re-initializes simulation, and re-renders objects.
    * @param {Event} e - User input event.
+   * @param {boolean} adv - Advanced option flag.
    */
-  handleGraphOptionsChange(e) {
-    const { graphOptions } = this.state;
+  handleGraphOptionsChange(e, adv) {
+    const { graphOptions, refreshable } = this.state;
     graphOptions[e.target.name] = e.target.value;
     util.loadGraphOptions({ graphOptions });
-    this.setState({ graphOptions }, () => {
+    this.setState({ graphOptions, refreshable: adv || refreshable }, () => {
       this.initSimulation();
       this.drawGraph();
     });
@@ -1076,7 +1077,7 @@ class GraphComponent extends Component {
                   type="number"
                   id="linkStrength"
                   value={graphOptions.linkStrength}
-                  onChange={this.handleGraphOptionsChange}
+                  onChange={e => this.handleGraphOptionsChange(e, true)}
                   inputProps={{
                     max: 1,
                     step: 0.001,
@@ -1093,7 +1094,7 @@ class GraphComponent extends Component {
                   type="number"
                   id="chargeStrength"
                   value={graphOptions.chargeStrength}
-                  onChange={this.handleGraphOptionsChange}
+                  onChange={e => this.handleGraphOptionsChange(e, true)}
                   inputProps={{
                     max: 1000,
                     step: 1,
@@ -1110,7 +1111,7 @@ class GraphComponent extends Component {
                   id="collisionRadius"
                   type="number"
                   value={graphOptions.collisionRadius}
-                  onChange={this.handleGraphOptionsChange}
+                  onChange={e => this.handleGraphOptionsChange(e, true)}
                   inputProps={{
                     max: 100,
                     step: 1,
@@ -1131,8 +1132,7 @@ class GraphComponent extends Component {
                           value: e.target.checked,
                           name: e.target.name,
                         },
-                      })
-                      }
+                      }, true)}
                       name="autoCollisionRadius"
                       checked={graphOptions.autoCollisionRadius}
                     />

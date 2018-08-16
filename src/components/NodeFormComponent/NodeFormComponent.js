@@ -5,7 +5,6 @@ import {
   TextField,
   List,
   ListItem,
-  ListItemText,
   IconButton,
   MenuItem,
   Button,
@@ -20,12 +19,20 @@ import {
   DialogActions,
   DialogTitle,
   Tooltip,
-  ListItemSecondaryAction,
   Paper,
   InputAdornment,
+  Chip,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Snackbar,
+  CircularProgress,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
 import HelpIcon from '@material-ui/icons/Help';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
@@ -49,13 +56,14 @@ class NodeFormComponent extends Component {
       relationships: [],
       relationship: {
         '@class': '',
-        targetName: '',
-        targetSourceId: '',
+        name: '',
+        sourceId: '',
         in: '',
         out: -1,
         source: '',
       },
       subset: '',
+      deletedSubsets: [],
       deleteDialog: false,
       errorFlag: false,
     };
@@ -63,10 +71,12 @@ class NodeFormComponent extends Component {
     this.handleFormChange = this.handleFormChange.bind(this);
     this.handleSubsetAdd = this.handleSubsetAdd.bind(this);
     this.handleSubsetDelete = this.handleSubsetDelete.bind(this);
+    this.handleSubsetUndo = this.handleSubsetUndo.bind(this);
     this.handleRelationshipAdd = this.handleRelationshipAdd.bind(this);
     this.handleRelationship = this.handleRelationship.bind(this);
     this.handleRelationshipDirection = this.handleRelationshipDirection.bind(this);
     this.handleRelationshipDelete = this.handleRelationshipDelete.bind(this);
+    this.handleRelationshipUndo = this.handleRelationshipUndo.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDeleteNode = this.handleDeleteNode.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -105,7 +115,7 @@ class NodeFormComponent extends Component {
       } = prop;
       switch (type) {
         case 'embeddedset':
-          form[name] = originalNode[name] || [];
+          form[name] = (originalNode[name] || []).slice();
           break;
         case 'link':
           form[`${name}.@rid`] = (originalNode[name] || '')['@rid'] || '';
@@ -146,18 +156,19 @@ class NodeFormComponent extends Component {
       if (originalNode[type]) {
         originalNode[type].forEach((edge) => {
           if (edge['@class'] !== 'Implies') { // TODO: remove filter for implies edges.
-            relationships.push({
-              '@rid': edge['@rid'],
-              in: edge.in['@rid'],
-              out: edge.out['@rid'],
-              '@class': edge['@class'],
-              targetName:
-                edge.out['@rid'] === originalNode['@rid'] ? edge.in.name : edge.out.name,
-              targetSourceId:
-                edge.out['@rid'] === originalNode['@rid'] ? edge.in.sourceId : edge.out.sourceId,
-              source: edge.source['@rid'] || edge.source,
-              key: type,
-            });
+            if (!relationships.find(r => r['@rid'] === edge['@rid'])) {
+              relationships.push({
+                '@rid': edge['@rid'],
+                in: edge.in['@rid'],
+                out: edge.out['@rid'],
+                '@class': edge['@class'],
+                name:
+                  edge.out['@rid'] === originalNode['@rid'] ? edge.in.name : edge.out.name,
+                sourceId:
+                  edge.out['@rid'] === originalNode['@rid'] ? edge.in.sourceId : edge.out.sourceId,
+                source: edge.source['@rid'] || edge.source,
+              });
+            }
           }
         });
       }
@@ -257,11 +268,22 @@ class NodeFormComponent extends Component {
    * @param {string} subset - Subset to be deleted.
    */
   handleSubsetDelete(subset) {
-    const { form } = this.state;
+    const { form, originalNode, deletedSubsets } = this.state;
+    const { variant } = this.props;
     if (form.subsets.indexOf(subset) !== -1) {
       form.subsets.splice(form.subsets.indexOf(subset), 1);
+      if (variant === 'edit' && originalNode.subsets.includes(subset)) {
+        deletedSubsets.push(subset);
+      }
     }
-    this.setState({ form });
+    this.setState({ form, deletedSubsets });
+  }
+
+  handleSubsetUndo(subset) {
+    const { form, deletedSubsets } = this.state;
+    deletedSubsets.splice(deletedSubsets.indexOf(subset), 1);
+    form.subsets.push(subset);
+    this.setState({ form, deletedSubsets });
   }
 
   /**
@@ -296,12 +318,11 @@ class NodeFormComponent extends Component {
           errorFlag: false,
           relationship: {
             '@class': '',
-            targetName: '',
-            targetSourceId: '',
+            name: '',
+            sourceId: '',
             in: '',
             out: originalNode['@rid'],
             source: '',
-            key: '',
           },
         });
       }
@@ -315,10 +336,21 @@ class NodeFormComponent extends Component {
    * @param {Object} relationship - Relationship to be deleted
    */
   handleRelationshipDelete(relationship) {
-    const { relationships } = this.state;
-    if (relationships.indexOf(relationship) !== -1) {
+    const { relationships, originalNode } = this.state;
+    const { variant } = this.props;
+    if (variant === 'edit' && originalNode.relationships.find(r => r['@rid'] === relationship['@rid'])) {
+      relationship.deleted = true;
+    } else if (relationships.indexOf(relationship) !== -1) {
       relationships.splice(relationships.indexOf(relationship), 1);
     }
+    this.setState({ relationships }, () => console.log(relationships));
+  }
+
+  handleRelationshipUndo(relationship) {
+    const { relationships } = this.state;
+    const rel = relationships.find(r => r['@rid'] === relationship['@rid']);
+    delete rel.deleted;
+
     this.setState({ relationships });
   }
 
@@ -337,7 +369,7 @@ class NodeFormComponent extends Component {
       }
     }
     if (e.target.sourceId) {
-      relationship.targetSourceId = e.target.sourceId;
+      relationship.sourceId = e.target.sourceId;
     }
     this.setState({ relationship, errorFlag: false });
   }
@@ -362,14 +394,20 @@ class NodeFormComponent extends Component {
    * Submits form.
    * @param {Event} e - Submit event.
    */
-  handleSubmit(e) {
+  async handleSubmit(e) {
     e.preventDefault();
     const { variant } = this.props;
+    this.setState({ loading: true, snackbarOpen: true });
 
-    if (variant === 'edit') {
-      this.editSubmit();
+    if (window.Cypress) {
+      this.setState({ loading: false });
     } else {
-      this.addSubmit();
+      if (variant === 'edit') {
+        await this.editSubmit();
+      } else {
+        await this.addSubmit();
+      }
+      this.setState({ loading: false });
     }
   }
 
@@ -377,14 +415,12 @@ class NodeFormComponent extends Component {
    * Deletes target node.
    */
   async handleDeleteNode() {
+    this.setState({ snackbarOpen: true, loading: true });
+    this.handleDialogClose();
     const { originalNode } = this.state;
-    const { handleNodeDelete } = this.props;
     const { route } = await api.getClass(originalNode['@class']);
-    api.delete(
-      `${route}/${originalNode['@rid'].slice(1)}`,
-    ).then(() => {
-      handleNodeDelete();
-    });
+    await api.delete(`${route}/${originalNode['@rid'].slice(1)}`);
+    this.setState({ loading: false });
   }
 
   /**
@@ -411,7 +447,6 @@ class NodeFormComponent extends Component {
       relationships,
       editableProps,
     } = this.state;
-    const { handleNodeFinishEdit } = this.props;
 
     const changedEdges = [];
 
@@ -419,14 +454,13 @@ class NodeFormComponent extends Component {
 
     // Deletes edges that are no longer present on the edited node.
     originalNode.relationships.forEach((initRelationship) => {
-      if (
-        !relationships.find(
-          r => r.out === initRelationship.out
-            && r.in === initRelationship.in
-            && r['@class'] === initRelationship['@class']
-            && r.source === initRelationship.source,
-        )
-      ) {
+      const matched = relationships.find(
+        r => r.out === initRelationship.out
+          && r.in === initRelationship.in
+          && r['@class'] === initRelationship['@class']
+          && r.source === initRelationship.source,
+      );
+      if (!matched || matched.deleted) {
         changedEdges.push(api.delete(
           `/${initRelationship['@class'].toLowerCase()}/${initRelationship['@rid'].slice(1)}`,
         ));
@@ -457,7 +491,6 @@ class NodeFormComponent extends Component {
     const { route } = await api.getClass(originalNode['@class']);
 
     await api.patch(`${route}/${originalNode['@rid'].slice(1)}`, { ...payload });
-    handleNodeFinishEdit();
   }
 
   /**
@@ -470,7 +503,6 @@ class NodeFormComponent extends Component {
       newNodeClass,
       editableProps,
     } = this.state;
-    const { handleNodeFinishEdit } = this.props;
 
     const newEdges = [];
     const payload = util.parsePayload(form, editableProps);
@@ -491,8 +523,6 @@ class NodeFormComponent extends Component {
         source: relationship.source,
       }));
     }
-    await Promise.all(newEdges);
-    handleNodeFinishEdit();
   }
 
   render() {
@@ -510,8 +540,11 @@ class NodeFormComponent extends Component {
       errorFlag,
       ontologyTypes,
       schema,
+      loading,
+      snackbarOpen,
+      deletedSubsets,
     } = this.state;
-    const { variant, handleNodeFinishEdit } = this.props;
+    const { variant, handleNodeFinish } = this.props;
 
     // Wait for form to get initialized
     if (!form) return null;
@@ -540,11 +573,14 @@ class NodeFormComponent extends Component {
           <DialogActions style={{ justifyContent: 'center' }}>
             <Button
               onClick={this.handleDialogClose}
+              color="primary"
+              size="large"
             >
               No
             </Button>
             <Button
               onClick={this.handleDeleteNode}
+              size="large"
             >
               Yes
             </Button>
@@ -663,51 +699,24 @@ class NodeFormComponent extends Component {
      * Formats model subsets into list form.
      */
     const subsets = (form.subsets || []).map(s => (
-      <ListItem
+      <Chip
+        label={s}
+        deleteIcon={<CloseIcon />}
+        onDelete={() => this.handleSubsetDelete(s)}
         key={s}
-        className="form-list"
-      >
-        <ListItemText primary={s} style={{ overflow: 'auto' }} />
-        <ListItemSecondaryAction>
-          <IconButton
-            onClick={() => this.handleSubsetDelete(s)}
-          >
-            <CloseIcon color="error" />
-          </IconButton>
-        </ListItemSecondaryAction>
-      </ListItem>
+        className="subset-chip"
+      />
     ));
 
-    /**
-     * Formats model relationships into list form.
-     */
-    const rships = relationships.map((r) => {
-      const sourceName = sources.find(
-        s => s['@rid'] === r.source,
-      ).name;
-      const typeName = r.in === originalNode['@rid']
-        ? `has${r['@class'].slice(0, r['@class'].length - 2)}`
-        : r['@class'];
-      return (
-        <ListItem
-          key={`${r.key}: ${r['@rid']}`}
-          className="relationship-item"
-        >
-          <ListItemText
-            primary={`${typeName}: ${r.targetSourceId}`}
-            secondary={sourceName}
-            style={{ overflow: 'auto' }}
-          />
-          <ListItemSecondaryAction>
-            <IconButton
-              onClick={() => this.handleRelationshipDelete(r)}
-            >
-              <CloseIcon color="error" />
-            </IconButton>
-          </ListItemSecondaryAction>
-        </ListItem>
-      );
-    });
+    subsets.push(...deletedSubsets.map(s => (
+      <Chip
+        label={s}
+        deleteIcon={<RefreshIcon />}
+        onDelete={() => this.handleSubsetUndo(s)}
+        key={s}
+        className="subset-chip deleted-chip"
+      />
+    )));
 
     /**
       * Formats valid edge types.
@@ -724,9 +733,24 @@ class NodeFormComponent extends Component {
       );
     };
 
+    const snackbar = (
+      <Snackbar
+        message={loading ? <CircularProgress size={30} color="secondary" /> : 'Completed!'}
+        open={snackbarOpen}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        onClose={handleNodeFinish}
+        action={!loading && (
+          <Button color="secondary" onClick={handleNodeFinish}>
+            Ok
+          </Button>
+        )}
+      />
+    );
+
     return (
       <div className="node-form-wrapper">
         {dialog}
+        {snackbar}
         <form onSubmit={this.handleSubmit}>
           <div className="form-grid">
             <Paper className="form-header" elevation={4}>
@@ -737,144 +761,223 @@ class NodeFormComponent extends Component {
               <div className="form-cancel-btn">
                 <Button
                   color="default"
-                  onClick={handleNodeFinishEdit}
+                  onClick={handleNodeFinish}
                   variant="outlined"
                 >
                   Cancel
                 </Button>
               </div>
             </Paper>
-            <Paper className="param-section" elevation={4}>
-              <Typography variant="title">
-                Basic Parameters
-              </Typography>
-              {variant === 'add'
-                && (
-                  <div className="class-select">
-                    <ResourceSelectComponent
-                      value={newNodeClass}
-                      onChange={this.handleClassChange}
-                      name="newNodeClass"
-                      label="Class"
-                      resources={ontologyTypes}
-                    >
-                      {resource => (
-                        <MenuItem key={resource.name} value={resource.name}>
-                          {resource.name}
-                        </MenuItem>
-                      )}
-                    </ResourceSelectComponent>
+            <div className="flexbox">
+              <Paper className="param-section" elevation={4}>
+                <Typography variant="title">
+                  Basic Parameters
+                </Typography>
+                {variant === 'edit' ? (
+                  <div style={{ padding: '8px 24px' }}>
+                    <Typography variant="subheading">
+                      Class:
+                    </Typography>
+                    <Typography variant="caption">
+                      {originalNode['@class']}
+                    </Typography>
+
                   </div>
-                )}
-              <List component="nav">
-                {Object.keys(form)
-                  .filter(key => !key.includes('.'))
-                  .map(key => formatInputSection(key, form[key]))
-                }
-              </List>
-            </Paper>
-            <Paper className="param-section" elevation={4}>
-              <Typography variant="title">
-                Subsets
-              </Typography>
-              <ListItem className="input-wrapper form-list">
-                <TextField
-                  id="subset-temp"
-                  label="Add a Subset"
-                  value={subset}
-                  onChange={this.handleChange}
-                  className="text-input"
-                  name="subset"
-                  onKeyDown={(e) => {
-                    if (e.keyCode === 13) {
-                      this.handleSubsetAdd(e);
-                    }
-                  }}
-                />
-                <IconButton color="primary" onClick={this.handleSubsetAdd}>
-                  <AddIcon />
-                </IconButton>
-              </ListItem>
-              <List className="list">
-                {subsets}
-              </List>
-              <Typography variant="title">
-                Relationships
-              </Typography>
-              <List component="nav">
-                <ListItem
-                  className="input-wrapper relationship-add-wrapper form-list"
-                  onKeyDown={(e) => {
-                    if (e.keyCode === 13) this.handleRelationshipAdd(e);
-                  }}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      flexGrow: '1',
-                    }}
-                  >
-                    <ResourceSelectComponent
-                      value={relationship.source}
-                      onChange={this.handleRelationship}
-                      name="source"
-                      label="Source"
-                      resources={sources}
-                      error={errorFlag}
-                    />
-                    <div style={{ display: 'flex', width: '100%' }}>
-                      <div className="relationship-dir-type">
-                        <IconButton
-                          disableRipple
-                          name="direction"
-                          onClick={this.handleRelationshipDirection}
-                          color="primary"
-                        >
-                          <TrendingFlatIcon
-                            className={
-                              relationship.in === originalNode['@rid']
-                                ? 'relationship-in'
-                                : 'relationship-out'
-                            }
-                          />
-                        </IconButton>
-                        <ResourceSelectComponent
-                          value={relationship['@class']}
-                          onChange={this.handleRelationship}
-                          name="@class"
-                          label="Type"
-                          resources={edgeTypes}
-                          error={errorFlag}
-                          id="relationship-type"
-                        >
-                          {edgeTypesDisplay}
-                        </ResourceSelectComponent>
-                      </div>
-                      <div className="search-wrap">
-                        <AutoSearchComponent
-                          value={relationship.targetName}
-                          onChange={this.handleRelationship}
-                          placeholder="Target Name"
-                          limit={10}
-                          name="targetName"
-                          error={errorFlag}
-                        />
-                      </div>
+                )
+                  : (
+                    <div className="class-select">
+                      <ResourceSelectComponent
+                        value={newNodeClass}
+                        onChange={this.handleClassChange}
+                        name="newNodeClass"
+                        label="Class"
+                        resources={ontologyTypes}
+                      >
+                        {resource => (
+                          <MenuItem key={resource.name} value={resource.name}>
+                            {resource.name}
+                          </MenuItem>
+                        )}
+                      </ResourceSelectComponent>
                     </div>
+                  )}
+                <List component="nav">
+                  {Object.keys(form)
+                    .filter(key => !key.includes('.'))
+                    .map(key => formatInputSection(key, form[key]))
+                  }
+                </List>
+              </Paper>
+              <Paper className="param-section" id="forms-lists" elevation={4}>
+                <Paper className="subsets-wrapper">
+                  <Typography variant="title">
+                    Subsets
+                  </Typography>
+                  <div className="input-wrapper">
+                    <TextField
+                      id="subset-temp"
+                      label="Add a Subset"
+                      value={subset}
+                      onChange={this.handleChange}
+                      className="text-input"
+                      name="subset"
+                      onKeyDown={(e) => {
+                        if (e.keyCode === 13) {
+                          this.handleSubsetAdd(e);
+                        }
+                      }}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton color="primary" onClick={this.handleSubsetAdd}>
+                              <AddIcon />
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
                   </div>
-                  <IconButton
-                    style={{ margin: 'auto 0 auto 8px' }}
-                    color="primary"
-                    onClick={this.handleRelationshipAdd}
-                    id="relationship-add"
-                  >
-                    <AddIcon />
-                  </IconButton>
-                </ListItem>
-                {rships}
-              </List>
-            </Paper>
+                  <List className="list">
+                    {subsets}
+                  </List>
+                </Paper>
+                <Paper className="relationships-wrapper">
+                  <Typography variant="title">
+                    Relationships
+                  </Typography>
+                  <div style={{ overflow: 'auto' }}>
+                    <Table className="form-table">
+                      <TableHead className="form-table-header">
+                        <TableRow>
+                          <TableCell padding="checkbox" />
+                          <TableCell padding="dense">
+                            Class
+                          </TableCell>
+
+                          <TableCell padding="dense">
+                            Related Record
+                          </TableCell>
+                          <TableCell padding="dense">
+                            Source
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {relationships.map((r) => {
+                          const sourceName = sources.find(
+                            s => s['@rid'] === r.source,
+                          ).name;
+                          const typeName = r.in === originalNode['@rid']
+                            ? util.getEdgeLabel(`in_${r['@class']}`)
+                            : util.getEdgeLabel(`out_${r['@class']}`);
+                          return (
+                            <TableRow
+                              key={r['@rid'] || `${r['@class']}${r.in}${r.out}${r.source}`}
+                              className={r.deleted && 'deleted'}
+                            >
+                              <TableCell padding="checkbox">
+                                {!r.deleted ? (
+                                  <IconButton
+                                    onClick={() => this.handleRelationshipDelete(r)}
+                                    style={{ position: 'unset' }}
+                                    disableRipple
+                                  >
+                                    <CloseIcon color="error" />
+                                  </IconButton>)
+                                  : (
+                                    <IconButton
+                                      onClick={() => this.handleRelationshipUndo(r)}
+                                      style={{ position: 'unset' }}
+                                      disableRipple
+                                      color="primary"
+                                    >
+                                      <RefreshIcon />
+                                    </IconButton>
+                                  )
+                                }
+                              </TableCell>
+                              <TableCell padding="dense">
+                                {typeName}
+                              </TableCell>
+                              <TableCell padding="dense">
+                                {util.getPreview(r)}
+                              </TableCell>
+                              <TableCell padding="dense">
+                                {sourceName}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                        <TableRow id="relationship-add">
+                          <TableCell padding="checkbox">
+                            <IconButton
+                              color="primary"
+                              onClick={this.handleRelationshipAdd}
+                            >
+                              <AddIcon />
+                            </IconButton>
+                          </TableCell>
+                          <TableCell padding="dense">
+                            <div className="relationship-dir-type">
+                              <IconButton
+                                disableRipple
+                                name="direction"
+                                onClick={this.handleRelationshipDirection}
+                                color="primary"
+                              >
+                                <TrendingFlatIcon
+                                  className={
+                                    relationship.in === originalNode['@rid']
+                                      ? 'relationship-in'
+                                      : ''
+                                  }
+                                />
+                              </IconButton>
+                              <ResourceSelectComponent
+                                value={relationship['@class']}
+                                onChange={this.handleRelationship}
+                                name="@class"
+                                label="Type"
+                                resources={edgeTypes}
+                                error={errorFlag}
+                                id="relationship-type"
+                                dense
+                              >
+                                {edgeTypesDisplay}
+                              </ResourceSelectComponent>
+                            </div>
+                          </TableCell>
+                          <TableCell padding="dense">
+                            <div className="search-wrap">
+                              <AutoSearchComponent
+                                value={relationship.name}
+                                onChange={this.handleRelationship}
+                                placeholder="Target Name"
+                                limit={10}
+                                name="name"
+                                error={errorFlag}
+                                dense
+                              />
+                            </div>
+                          </TableCell>
+                          <TableCell padding="dense" style={{ transform: 'translate(0, 1px)' }}>
+                            <ResourceSelectComponent
+                              value={relationship.source}
+                              onChange={this.handleRelationship}
+                              name="source"
+                              label="Source"
+                              resources={sources}
+                              error={errorFlag}
+                              dense
+                            />
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </div>
+                </Paper>
+              </Paper>
+            </div>
             <Paper className="form-btns" elevation={4}>
               {variant === 'edit' && (
                 <Button
@@ -906,22 +1009,19 @@ class NodeFormComponent extends Component {
 
 NodeFormComponent.defaultProps = {
   variant: 'edit',
-  handleNodeDelete: null,
-  handleNodeFinishEdit: null,
+  handleNodeFinish: null,
   node: null,
 };
 
 /**
-  * @param {Object} node - node object.
-  * @param {string} variant - specifies form type/function.
-  * @param {function} handleNodeDelete - parent method triggered on node delete.
-  * @param {function} handleNodeFinishEdit - parent method triggered when node is edited.
-  */
+* @param {Object} node - node object.
+* @param {string} variant - specifies form type/function.
+* @param {function} handleNodeFinish - parent method triggered when node is edited or deleted.
+    */
 NodeFormComponent.propTypes = {
   node: PropTypes.object,
   variant: PropTypes.string,
-  handleNodeDelete: PropTypes.func,
-  handleNodeFinishEdit: PropTypes.func,
+  handleNodeFinish: PropTypes.func,
 };
 
 export default NodeFormComponent;

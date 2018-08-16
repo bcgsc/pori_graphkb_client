@@ -296,7 +296,7 @@ class NodeDetailComponent extends Component {
                   {formatProperty('sourceId', relatedNode.sourceId, id)}
                   {formatProperty('name', relatedNode.name, id)}
                   {edge.source && edge.source.name
-                  && formatProperty('source', edge.source.name, id)}
+                    && formatProperty('source', edge.source.name, id)}
                 </ExpansionPanelDetails>
               </ExpansionPanel>
             ));
@@ -361,13 +361,13 @@ class NodeDetailComponent extends Component {
       <Card style={{ height: '100%', overflowY: 'auto' }}>
         <div className="node-edit-btn">
           {children}
-          {!detailEdge && (
+          {!detailEdge ? (
             <IconButton
               onClick={() => handleNodeEditStart(node['@rid'], node['@class'])}
             >
               <EditIcon />
             </IconButton>
-          )}
+          ) : null}
         </div>
         <div className={`node-properties ${className}`}>
           <Card className="properties">

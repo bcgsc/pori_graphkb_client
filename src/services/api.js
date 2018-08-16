@@ -11,6 +11,7 @@ const {
 } = config;
 const API_BASE_URL = `http://${HOST}:${PORT}/api/v${VERSION}`;
 const CACHE_EXPIRY = 8;
+
 /**
  * Wrapper for api, handles all requests and special functions.
  */

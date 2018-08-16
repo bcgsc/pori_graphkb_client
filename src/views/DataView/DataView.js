@@ -301,7 +301,7 @@ class DataView extends Component {
         const response = await api.get(`/ontologies/${node.data['@rid'].slice(1)}?neighbors=3`);
         data[node.data['@rid']] = jc.retrocycle(response.result);
       }
-      this.setState({ detail: data[node.data['@rid']] });
+      this.setState({ detail: data[node.data['@rid']], detailEdge: false });
     }
   }
 

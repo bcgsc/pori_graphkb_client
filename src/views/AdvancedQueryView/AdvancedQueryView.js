@@ -112,9 +112,13 @@ class AdvancedQueryView extends Component {
     const editableProps = (await api.getClass(newNodeClass)).properties;
     const { form } = this.state;
     editableProps.forEach((prop) => {
-      const { name } = prop;
-      if (!form[name]) {
-        form[name] = '';
+      const { name, type, defaultValue } = prop;
+      if (form[name] === undefined) {
+        if (type === 'boolean') {
+          form[name] = defaultValue.toString() === 'true';
+        } else {
+          form[name] = '';
+        }
       }
     });
     editableProps.push(...config.ONTOLOGY_QUERY_PARAMS);

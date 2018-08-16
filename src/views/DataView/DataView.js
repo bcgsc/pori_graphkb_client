@@ -105,9 +105,10 @@ class DataView extends Component {
       });
 
       if (cycled.length >= filteredSearch.limit || DEFAULT_LIMIT) {
-        filteredSearch.skip = filteredSearch.limit || DEFAULT_LIMIT;
+        const nextFilteredSearch = Object.assign({}, filteredSearch);
+        nextFilteredSearch.skip = filteredSearch.limit || DEFAULT_LIMIT;
         this.setState({
-          next: () => api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`),
+          next: () => api.get(`${route}?${queryString.stringify(nextFilteredSearch)}&neighbors=3`),
           moreResults: true,
         });
       }
@@ -343,6 +344,7 @@ class DataView extends Component {
       detail,
       schema,
       moreResults,
+      filteredSearch,
       edges,
       detailEdge,
       completedNext,
@@ -394,6 +396,7 @@ class DataView extends Component {
         edges={edges}
         detail={detail}
         allColumns={allColumns}
+        filteredSearch={filteredSearch}
         handleNewColumns={this.handleNewColumns}
       />
     );

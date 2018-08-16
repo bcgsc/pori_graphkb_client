@@ -18,7 +18,6 @@
     "prop-types": "^15.6.2",
     "query-string": "^6.1.0",
     "react": "^16.4.0",
-    "react-color": "^2.14.1",
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.4.0",
     "react-router-dom": "^4.4.0-alpha.0",

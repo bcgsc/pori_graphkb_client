@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { withStyles } from '@material-ui/core/styles';
-import queryString from 'query-string';
+import * as qs from 'querystring';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import NodeDetailComponent from '../../components/NodeDetailComponent/NodeDetailComponent';
@@ -86,7 +86,7 @@ class DataView extends Component {
     const { history } = this.props;
 
     const schema = await api.getSchema();
-    const filteredSearch = queryString.parse(history.location.search);
+    const filteredSearch = qs.parse(history.location.search);
     let route = '/ontologies';
 
     if (filteredSearch['@class'] && schema[filteredSearch['@class']]) {
@@ -96,7 +96,7 @@ class DataView extends Component {
     let allColumns = ['@rid', '@class'];
 
     try {
-      const data = await api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`);
+      const data = await api.get(`${route}?${qs.stringify(filteredSearch).slice(3)}&neighbors=3`);
       const cycled = jc.retrocycle(data.result);
 
       cycled.forEach((ontologyTerm) => {
@@ -108,7 +108,7 @@ class DataView extends Component {
         const nextFilteredSearch = Object.assign({}, filteredSearch);
         nextFilteredSearch.skip = filteredSearch.limit || DEFAULT_LIMIT;
         this.setState({
-          next: () => api.get(`${route}?${queryString.stringify(nextFilteredSearch)}&neighbors=3`),
+          next: () => api.get(`${route}?${qs.stringify(nextFilteredSearch).slice(3)}&neighbors=3`),
           moreResults: true,
         });
       }
@@ -225,7 +225,7 @@ class DataView extends Component {
           const newSkip = Number(filteredSearch.skip)
             + Number((filteredSearch.limit || DEFAULT_LIMIT));
           filteredSearch.skip = newSkip;
-          newNext = () => api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`);
+          newNext = () => api.get(`${route}?${qs.encode(filteredSearch)}&neighbors=3`);
           moreResults = true;
         }
         this.setState({

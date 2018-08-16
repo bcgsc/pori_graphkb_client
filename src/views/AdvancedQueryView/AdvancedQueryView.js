@@ -19,7 +19,7 @@ import {
   Snackbar,
 } from '@material-ui/core/';
 import HelpIcon from '@material-ui/icons/Help';
-import queryString from 'query-string';
+import * as qs from 'querystring';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
 import AutoSearchComponent from '../../components/AutoSearchComponent/AutoSearchComponent';
 import api from '../../services/api';
@@ -164,7 +164,7 @@ class AdvancedQueryView extends Component {
     params.push(...config.ONTOLOGY_QUERY_PARAMS);
     const payload = util.parsePayload(form, editableProps, params);
 
-    return queryString.stringify(payload);
+    return qs.stringify(payload);
   }
 
   render() {

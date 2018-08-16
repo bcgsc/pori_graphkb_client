@@ -79,13 +79,13 @@ function GraphLink(props) {
     <g>
       <path
         className="link-widen"
-        d={`M${start.x} ${start.y}L${end.x} ${end.y}`}
+        d={`M${start.x || 0} ${start.y || 0}L${end.x || 0} ${end.y || 0}`}
         onClick={handleClick}
       />
       <path
         className="link"
         id={`link${link.data['@rid']}`}
-        d={`M${start.x} ${start.y}L${end.x} ${end.y}`}
+        d={`M${start.x || 0} ${start.y || 0}L${end.x || 0} ${end.y || 0}`}
         markerEnd={marker}
         style={{ opacity, strokeOpacity: opacity }}
         fill={color}

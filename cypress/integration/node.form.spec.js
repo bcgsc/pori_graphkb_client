@@ -32,8 +32,12 @@ describe('Node Form Test', () => {
         cy.contains('SubClassOf').should('not.exist');
         cy.contains('hasSubClass');
 
-        cy.get('div.relationships-wrapper input[name=name]').type('angiosarcoma');
-        cy.get('div.droptions ul li:first').wait(1000).click({ force: true });
+        cy.get('div.relationships-wrapper input[name=name]').type('angiosarcoma').wait(500);
+        cy.contains('pediatric angiosarcoma').click();
+
+        cy.get('div.relationships-wrapper input[name=name]').type('{backspace}').wait(500);
+        cy.contains('pediatric angiosarcoma').click();
+
         cy.get('#relationship-add td button[type=button]:first').click();
         cy.get('tbody tr').then(list => expect(list.length).to.be.eq(2));
       }

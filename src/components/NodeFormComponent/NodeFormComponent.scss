@@ -134,6 +134,15 @@ $mediumBreakpoint: 500px;
     margin: 3px;
 }
 
+.list {
+    .deleted-chip {
+        background-color: lighten($md-warn, 25%);
+    }
+    .deleted-chip:focus {
+        background-color: lighten($md-warn, 22%);
+    }
+}
+
 .form-table-header {
     tr th {
         background-color: #f8f8f8;
@@ -200,4 +209,19 @@ th {
     margin-bottom: 8px;
     display: flex;
     flex-direction: column;
+}
+
+tr.deleted {
+    td {
+        background-color: lighten($md-warn, 25%);
+        position: relative;
+    }
+    td:before {
+        content: ' ';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        border-bottom: 1px solid $md-warn;
+    }
 }

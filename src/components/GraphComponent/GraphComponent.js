@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './GraphComponent.css';
 import * as d3 from 'd3';
+import queryString from 'query-string';
 import {
   Checkbox,
   FormControlLabel,
@@ -54,6 +55,8 @@ const {
 
 const { GRAPH_ADVANCED, GRAPH_MAIN } = config.DESCRIPTIONS;
 
+const { GRAPH_UNIQUE_LIMIT, GRAPH_NO_UNIQUES } = config.NOTIFICATIONS;
+
 const styles = {
   paper: {
     width: '500px',
@@ -82,13 +85,15 @@ class GraphComponent extends Component {
       nodes: [],
       links: [],
       graphObjects: {},
+      expandable: {},
       propsMap: { nodes: {}, links: {} },
       expandedEdgeTypes: [],
+      actionsNode: null,
       simulation: null,
       svg: undefined,
+      width: 0,
+      height: 0,
       graphOptions: {
-        width: 0,
-        height: 0,
         defaultColor: DEFAULT_NODE_COLOR,
         linkStrength: LINK_STRENGTH,
         chargeStrength: CHARGE_STRENGTH,
@@ -105,16 +110,16 @@ class GraphComponent extends Component {
       graphOptionsOpen: false,
       mainHelp: false,
       advancedHelp: false,
-      expandable: {},
-      actionsNode: null,
+      refreshable: false,
+      initState: null,
       actionsNodeIsEdge: false,
     };
 
     this.drawGraph = this.drawGraph.bind(this);
     this.initSimulation = this.initSimulation.bind(this);
     this.loadNeighbors = this.loadNeighbors.bind(this);
-    this.updateColors = this.updateColors.bind(this);
     this.refresh = this.refresh.bind(this);
+    this.updateColors = this.updateColors.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.handleGraphOptionsChange = this.handleGraphOptionsChange.bind(this);
     this.handleOptionsPanelOpen = this.handleOptionsPanelOpen.bind(this);
@@ -138,9 +143,16 @@ class GraphComponent extends Component {
       data,
       schema,
       allColumns,
+      filteredSearch,
       edges,
     } = this.props;
-    const { graphOptions } = this.state;
+    const {
+      propsMap,
+      expandable,
+      graphOptions,
+      initState,
+    } = this.state;
+
     const simulation = d3.forceSimulation();
     // Defines what edge keys to look for.
     const expandedEdgeTypes = edges.reduce((r, e) => {
@@ -150,33 +162,92 @@ class GraphComponent extends Component {
     }, []);
 
     let validDisplayed = displayed;
-    if (!validDisplayed || validDisplayed.length === 0) {
+    if (!displayed || displayed.length === 0) {
       validDisplayed = [Object.keys(data)[0]];
     }
+
+    const stringifiedSearch = queryString.stringify(filteredSearch);
+
     this.setState({
       expandedEdgeTypes,
       schema,
-      graphOptions,
       simulation,
       allColumns,
+      filteredSearch: stringifiedSearch,
     }, () => {
       this.handleResize();
-      validDisplayed.forEach((key, i) => {
-        this.processData(
-          data[key],
-          util.positionInit(0, 0, i, validDisplayed.length),
-          0,
-        );
-      });
-      const { propsMap } = this.state;
-      if (propsMap.nodes.length !== 0) {
-        graphOptions.nodesLegend = true;
-        this.setState({ graphOptions });
-      }
-      this.drawGraph();
       window.addEventListener('resize', this.handleResize);
-      this.updateColors('nodes');
-      this.updateColors('links');
+
+      const storedData = util.getGraphData(stringifiedSearch);
+      const storedOptions = util.getGraphOptions();
+
+      if (displayed && displayed.length !== 0) {
+        validDisplayed.forEach((key, i) => {
+          this.processData(
+            data[key],
+            util.positionInit(0, 0, i, validDisplayed.length),
+            0,
+          );
+        });
+        const { nodes, links, graphObjects } = this.state;
+        util.loadGraphData(stringifiedSearch, { nodes, links, graphObjects });
+      } else if (initState) {
+        const {
+          graphObjects,
+          nodes,
+          links,
+        } = initState;
+        nodes.forEach((node) => {
+          util.loadColorProps(allColumns, node.data, propsMap);
+          util.expanded(expandedEdgeTypes, graphObjects, node.data['@rid'], expandable);
+        });
+
+        this.setState({
+          graphObjects: Object.assign({}, graphObjects),
+          nodes: nodes.slice(),
+          links: links.slice(),
+        });
+      } else if (
+        storedData && storedData.filteredSearch === stringifiedSearch
+      ) {
+        const {
+          graphObjects,
+          nodes,
+          links,
+        } = storedData;
+        delete storedData.filteredSearch;
+
+        nodes.forEach((node) => {
+          util.loadColorProps(allColumns, node.data, propsMap);
+          util.expanded(expandedEdgeTypes, graphObjects, node.data['@rid'], expandable);
+        });
+
+        this.setState({
+          ...storedData,
+          initState: {
+            graphObjects: Object.assign({}, graphObjects),
+            nodes: nodes.slice(),
+            links: links.slice(),
+          },
+        });
+      }
+
+      if (storedOptions) {
+        this.setState({ ...storedOptions }, () => {
+          this.drawGraph();
+          this.updateColors('nodes');
+          this.updateColors('links');
+        });
+      } else {
+        if (propsMap.nodes.length !== 0) {
+          graphOptions.nodesLegend = true;
+        }
+        this.setState({ graphOptions }, () => {
+          this.drawGraph();
+          this.updateColors('nodes');
+          this.updateColors('links');
+        });
+      }
     });
   }
 
@@ -184,13 +255,21 @@ class GraphComponent extends Component {
    * Removes all event listeners.
    */
   componentWillUnmount() {
-    const { svg, simulation } = this.state;
+    const {
+      svg,
+      simulation,
+      graphObjects,
+      nodes,
+      links,
+      filteredSearch,
+    } = this.state;
     // remove all event listeners
     svg.call(d3.zoom()
       .on('zoom', null))
       .on('dblclick.zoom', null);
     simulation.on('tick', null);
     window.removeEventListener('resize', this.handleResize);
+    util.loadGraphData(filteredSearch, { nodes, links, graphObjects });
   }
 
   /**
@@ -200,6 +279,10 @@ class GraphComponent extends Component {
   loadNeighbors(node) {
     const {
       expandable,
+      filteredSearch,
+      nodes,
+      links,
+      graphObjects,
     } = this.state;
     const { data } = this.props;
 
@@ -215,7 +298,8 @@ class GraphComponent extends Component {
     }
 
     delete expandable[node.data['@rid']];
-    this.setState({ expandable, actionsNode: null });
+    util.loadGraphData(filteredSearch, { nodes, links, graphObjects });
+    this.setState({ expandable, actionsNode: null, refreshable: true });
   }
 
   /**
@@ -252,37 +336,9 @@ class GraphComponent extends Component {
         y: position.y,
       });
       graphObjects[node['@rid']] = node;
-      // Iterate over all props.
-      allColumns.forEach((prop) => {
-        let obj = node;
-        let key = prop;
-
-        // Nested prop condition
-        if (prop.includes('.')) {
-          key = prop.split('.')[1];
-          obj = node[prop.split('.')[0]] || {};
-        }
-
-        if (obj[key] && (obj[key].length < 50 || key === 'name') && !Array.isArray(obj[key])) {
-          if (propsMap.nodes[prop] === undefined) {
-            propsMap.nodes[prop] = [obj[key]];
-          } else if (
-            propsMap.nodes[prop] // If null, fails here
-            && !propsMap.nodes[prop].includes(obj[key])
-          ) {
-            propsMap.nodes[prop].push(obj[key]);
-          }
-        } else if (propsMap.nodes[prop] && !propsMap.nodes[prop].includes('null')) {
-          // This null represents nodes that do not contain specified property.
-          propsMap.nodes[prop].push('null');
-        }
-        // Permanently removes certain properties from being eligible to display
-        // due to content length.
-        if (obj[key] && obj[key].length >= 50 && key !== 'name') {
-          propsMap.nodes[prop] = null;
-        }
-      });
+      util.loadColorProps(allColumns, node, propsMap);
     }
+
     let flag = false;
     expandedEdgeTypes.forEach((edgeType) => {
       if (node[edgeType] && node[edgeType].length !== 0) {
@@ -363,20 +419,7 @@ class GraphComponent extends Component {
 
               // Updates expanded on target node.
               if (expandable[targetRid]) {
-                let targetFlag = false;
-                expandedEdgeTypes.forEach((e) => {
-                  if (graphObjects[targetRid][e]) {
-                    graphObjects[targetRid][e].forEach((l) => {
-                      if (
-                        !graphObjects[l['@rid'] || l]
-                        && !((l.in || {})['@class'] === 'Statement' || (l.out || {})['@class'] === 'Statement')
-                      ) {
-                        targetFlag = true;
-                      }
-                    });
-                  }
-                });
-                expandable[targetRid] = targetFlag;
+                util.expanded(expandedEdgeTypes, graphObjects, targetRid, expandable);
               }
             } else {
               // If there are unrendered edges, set expandable flag.
@@ -387,6 +430,7 @@ class GraphComponent extends Component {
       }
     });
     expandable[node['@rid']] = flag;
+
     this.setState({
       expandable,
       nodes,
@@ -397,48 +441,15 @@ class GraphComponent extends Component {
   }
 
   /**
-   * Resizes svg window and reinitializes the simulation.
-   */
-  handleResize() {
-    const n = this.wrapper;
-
-    if (n) {
-      const w = n.clientWidth;
-      const h = n.clientHeight;
-      const { graphOptions } = this.state;
-      graphOptions.width = w;
-      graphOptions.height = h;
-      this.setState({ graphOptions }, this.initSimulation);
-    }
-  }
-
-  /**
-   * Toggles Auto Collision Radius feature.
-   */
-  handleCheckbox() {
-    const { graphOptions } = this.state;
-    graphOptions.autoCollisionRadius = !graphOptions.autoCollisionRadius;
-  }
-
-  /**
-   * Opens graph options dialog.
-   */
-  handleOptionsPanelOpen() {
-    this.setState({ graphOptionsOpen: true });
-  }
-
-  /**
-   * Closes graph options dialog.
-   */
-  handleOptionsPanelClose() {
-    this.setState({ graphOptionsOpen: false });
-  }
-
-  /**
    * Initializes simulation rules and properties. Updates simulation component state.
    */
   initSimulation() {
-    const { simulation, graphOptions } = this.state;
+    const {
+      simulation,
+      graphOptions,
+      width,
+      height,
+    } = this.state;
 
     simulation.force(
       'link',
@@ -464,8 +475,8 @@ class GraphComponent extends Component {
     ).force(
       'center',
       d3.forceCenter(
-        graphOptions.width / 2,
-        graphOptions.height / 2,
+        width / 2,
+        height / 2,
       ),
     );
 
@@ -473,8 +484,8 @@ class GraphComponent extends Component {
     const svg = d3.select(this.graph);
 
     svg
-      .attr('width', graphOptions.width)
-      .attr('height', graphOptions.height)
+      .attr('width', width)
+      .attr('height', height)
       .call(d3.zoom()
         .scaleExtent([0.2, 10])
         .on('zoom', () => {
@@ -491,8 +502,6 @@ class GraphComponent extends Component {
 
   /**
    * Renders nodes and links to the graph.
-   * @param {boolean} reset - Reset flag to determine whether or not to re-
-   * initialize node positions.
    */
   drawGraph() {
     const {
@@ -525,6 +534,21 @@ class GraphComponent extends Component {
   }
 
   /**
+   * Restarts simulation with initial nodes and links present. These are determined by the
+   * first state rendered when the component mounts.
+   */
+  refresh() {
+    const { handleDetailDrawerClose } = this.props;
+    this.setState({
+      nodes: [],
+      links: [],
+      graphObjects: {},
+      refreshable: false,
+    }, this.componentDidMount);
+    handleDetailDrawerClose();
+  }
+
+  /**
    * Updates color scheme for the graph, for nodes or links.
    * @param {string} type - Object type (nodes or links)
    */
@@ -550,21 +574,69 @@ class GraphComponent extends Component {
       }
     });
 
-    if (
-      Object.keys(colors).length <= PALLETE_SIZES[PALLETE_SIZES.length - 1]
-      || Object.keys(propsMap[type]).length === 1
-    ) {
+    const tooManyUniques = (Object.keys(colors).length > PALLETE_SIZES[PALLETE_SIZES.length - 1]
+      && Object.keys(propsMap[type]).length !== 1);
+    const noUniques = propsMap[type][key]
+      && (propsMap[type][key].length === 0
+        || (propsMap[type][key].length === 1 && propsMap[type][key].includes('null')));
+    const notDefined = key && !propsMap[type][key];
+
+    if (tooManyUniques || noUniques || notDefined) {
+      let snackbarMessage = '';
+      if (tooManyUniques) {
+        snackbarMessage = `${GRAPH_UNIQUE_LIMIT} (${graphOptions[`${type}Color`]})`;
+      }
+      if (noUniques) {
+        snackbarMessage = `${GRAPH_NO_UNIQUES} (${graphOptions[`${type}Color`]})`;
+      }
+
+      graphOptions[`${type}Color`] = '';
+      this.setState({ graphOptions, snackbarMessage }, () => this.updateColors(type));
+    } else {
       const pallette = util.getPallette(Object.keys(colors).length, type);
       Object.keys(colors).forEach((color, i) => { colors[color] = pallette[i]; });
 
       graphOptions[`${type}Colors`] = colors;
       graphOptions[`${type}Pallette`] = pallette;
       this.setState({ graphOptions });
-    } else {
-      graphOptions[`${type}Color`] = '';
-      this.setState({ graphOptions, snackbarOpen: true }, () => this.updateColors(type));
     }
     /* eslint-enable */
+  }
+
+  /**
+   * Resizes svg window and reinitializes the simulation.
+   */
+  handleResize() {
+    if (this.wrapper) {
+      this.setState(
+        {
+          width: this.wrapper.clientWidth,
+          height: this.wrapper.clientHeight,
+        }, this.initSimulation,
+      );
+    }
+  }
+
+  /**
+   * Toggles Auto Collision Radius feature.
+   */
+  handleCheckbox() {
+    const { graphOptions } = this.state;
+    graphOptions.autoCollisionRadius = !graphOptions.autoCollisionRadius;
+  }
+
+  /**
+   * Opens graph options dialog.
+   */
+  handleOptionsPanelOpen() {
+    this.setState({ graphOptionsOpen: true });
+  }
+
+  /**
+   * Closes graph options dialog.
+   */
+  handleOptionsPanelClose() {
+    this.setState({ graphOptionsOpen: false });
   }
 
   /**
@@ -580,7 +652,6 @@ class GraphComponent extends Component {
 
     // Update contents of detail drawer if open.
     handleDetailDrawerOpen(node);
-
     // Sets clicked object as actions node.
     this.setState({ actionsNode: node, actionsNodeIsEdge: false });
   }
@@ -607,6 +678,7 @@ class GraphComponent extends Component {
   handleGraphOptionsChange(e) {
     const { graphOptions } = this.state;
     graphOptions[e.target.name] = e.target.value;
+    util.loadGraphOptions({ graphOptions });
     this.setState({ graphOptions }, () => {
       this.initSimulation();
       this.drawGraph();
@@ -621,6 +693,7 @@ class GraphComponent extends Component {
   handleGraphColorsChange(e, type) {
     const { graphOptions } = this.state;
     graphOptions[`${type}Color`] = e.target.value;
+    util.loadGraphOptions({ graphOptions });
     this.setState({ graphOptions }, () => this.updateColors(type));
   }
 
@@ -646,7 +719,9 @@ class GraphComponent extends Component {
       propsMap,
       allColumns,
       graphOptions,
+      filteredSearch,
     } = this.state;
+
     const { handleDetailDrawerClose } = this.props;
     if (nodes.length === 1) return;
     const i = nodes.indexOf(actionsNode);
@@ -714,10 +789,12 @@ class GraphComponent extends Component {
       graphObjects,
       actionsNode: null,
       propsMap,
+      refreshable: true,
     }, () => {
       this.updateColors('nodes');
       this.updateColors('links');
       handleDetailDrawerClose();
+      util.loadGraphData(filteredSearch, { nodes, links, graphObjects });
     });
   }
 
@@ -745,6 +822,7 @@ class GraphComponent extends Component {
       graphObjects,
       links,
       expandable,
+      refreshable: true,
     }, () => {
       this.updateColors('nodes');
       this.updateColors('links');
@@ -767,12 +845,6 @@ class GraphComponent extends Component {
     this.setState({ advancedHelp: false, mainHelp: false });
   }
 
-  refresh() {
-    const { handleDetailDrawerClose } = this.props;
-    this.setState({ nodes: [], links: [], graphObjects: {} }, this.componentDidMount);
-    handleDetailDrawerClose();
-  }
-
   render() {
     const {
       nodes,
@@ -783,9 +855,10 @@ class GraphComponent extends Component {
       simulation,
       graphOptionsOpen,
       propsMap,
-      snackbarOpen,
+      snackbarMessage,
       mainHelp,
       advancedHelp,
+      refreshable,
       actionsNodeIsEdge,
     } = this.state;
 
@@ -894,34 +967,6 @@ class GraphComponent extends Component {
                 })}
               </Select>
             </FormControl>
-          </div>
-          <div className="main-options-wrapper">
-            <FormControl className="graph-option">
-              <InputLabel htmlFor="linkLabelProp">Label edges by</InputLabel>
-              <Select
-                input={<Input name="linkLabelProp" id="linkLabelProp" />}
-                onChange={this.handleGraphOptionsChange}
-                value={graphOptions.linkLabelProp}
-              >
-                <MenuItem value="">None</MenuItem>
-                <MenuItem value="@class">Class</MenuItem>
-                <MenuItem value="source.name">Source Name</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl className="graph-option">
-              <InputLabel htmlFor="linksColor">Color edges by</InputLabel>
-              <Select
-                input={<Input name="linksColor" id="linksColor" />}
-                onChange={e => this.handleGraphColorsChange(e, 'links')}
-                value={graphOptions.linksColor}
-              >
-                <MenuItem value="">None</MenuItem>
-                <MenuItem value="@class">Class</MenuItem>
-                <MenuItem value="source.name">Source Name</MenuItem>
-              </Select>
-            </FormControl>
-          </div>
-          <div className="main-options-wrapper">
             <FormControl className="graph-option">
               <FormControlLabel
                 classes={{
@@ -940,10 +985,45 @@ class GraphComponent extends Component {
                     }
                     name="nodesLegend"
                     checked={!!(graphOptions.nodesLegend && graphOptions.nodesColor)}
+                    disabled={!graphOptions.nodesColor}
                   />
                 )}
                 label="Show Nodes Coloring Legend"
               />
+            </FormControl>
+          </div>
+          <div className="main-options-wrapper">
+            <FormControl className="graph-option">
+              <InputLabel htmlFor="linkLabelProp">Label edges by</InputLabel>
+              <Select
+                input={<Input name="linkLabelProp" id="linkLabelProp" />}
+                onChange={this.handleGraphOptionsChange}
+                value={graphOptions.linkLabelProp}
+                disabled={
+                  links.length === 0
+                  || (links.filter(link => link.source !== link.target).length === 0)
+                }
+              >
+                <MenuItem value="">None</MenuItem>
+                <MenuItem value="@class">Class</MenuItem>
+                <MenuItem value="source.name">Source Name</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl className="graph-option">
+              <InputLabel htmlFor="linksColor">Color edges by</InputLabel>
+              <Select
+                input={<Input name="linksColor" id="linksColor" />}
+                onChange={e => this.handleGraphColorsChange(e, 'links')}
+                value={graphOptions.linksColor}
+                disabled={
+                  links.length === 0
+                  || (links.filter(link => link.source !== link.target).length === 0)
+                }
+              >
+                <MenuItem value="">None</MenuItem>
+                <MenuItem value="@class">Class</MenuItem>
+                <MenuItem value="source.name">Source Name</MenuItem>
+              </Select>
             </FormControl>
             <FormControl>
               <FormControlLabel
@@ -967,6 +1047,11 @@ class GraphComponent extends Component {
                       && graphOptions.linksColor
                       && links.length !== 0
                     )}
+                    disabled={
+                      !graphOptions.linksColor
+                      || links.length === 0
+                      || (links.filter(link => link.source !== link.target).length === 0)
+                    }
                   />
                 )}
                 label="Show Links Coloring Legend"
@@ -1168,16 +1253,16 @@ class GraphComponent extends Component {
     const snackbar = (
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        open={snackbarOpen}
-        onClose={() => this.setState({ snackbarOpen: false })}
+        open={!!snackbarMessage}
+        onClose={() => this.setState({ snackbarMessage: null })}
         autoHideDuration={SNACKBAR_AUTOHIDE_DURATION}
         message={(
           <span>
-            Too many subgroups, choose new coloring property.
+            {snackbarMessage}
           </span>
         )}
         action={(
-          <Button color="secondary" onClick={() => this.setState({ snackbarOpen: false })}>
+          <Button color="secondary" onClick={() => this.setState({ snackbarMessage: null })}>
             Ok
           </Button>
         )}
@@ -1279,24 +1364,21 @@ class GraphComponent extends Component {
               id="graph-options-btn"
               color="primary"
               onClick={this.handleOptionsPanelOpen}
-              style={{
-                margin: 'auto 8px',
-              }}
             >
               <BuildIcon />
             </IconButton>
           </Tooltip>
 
           <Tooltip placement="top" title="Restart simulation with initial nodes">
-            <IconButton
-              color="primary"
-              onClick={this.refresh}
-              style={{
-                margin: 'auto 8px',
-              }}
-            >
-              <RefreshIcon />
-            </IconButton>
+            <div>
+              <IconButton
+                color="primary"
+                onClick={this.refresh}
+                disabled={!refreshable}
+              >
+                <RefreshIcon />
+              </IconButton>
+            </div>
           </Tooltip>
         </div>
 

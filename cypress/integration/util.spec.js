@@ -220,4 +220,21 @@ describe('util methods test', () => {
       }
     });
   });
+
+  it('loadGraphData and getGraphData', () => {
+    const key = 'testSearch';
+
+    const data1 = { message: 'hello' };
+    const data2 = { message: 'goodbye' };
+    data1.reference = data2;
+    data2.reference = data1;
+    util.loadGraphData(key, { data1 });
+
+    expect(localStorage.getItem('graphObjects')).to.not.eq(null);
+
+    const graphData = util.getGraphData(key);
+    expect(graphData.filteredSearch).to.eq(key);
+    expect(graphData.data1.message).to.eq(data1.message);
+    expect(graphData.data1.reference).to.deep.eq(data2);
+  });
 });

@@ -53,7 +53,7 @@ describe('Graph View Test', () => {
     });
 
     cy.get('circle.node:first').click({ force: true });
-    cy.contains('(Hide)').click().then(() => {
+    cy.contains('(Hide)').click({ force: true }).then(() => {
       cy.get('circle').then((array) => {
         expect(array.length).to.be.lessThan(nodes);
       });
@@ -70,11 +70,11 @@ describe('Graph View Test', () => {
     cy.contains('(Expand)').click({ force: true });
     cy.get('#graph-options-btn').click();
     cy.get('div.main-options-wrapper div.graph-option').each((div, i) => {
-      if (i === 2) {
+      if (i === 3) {
         cy.wrap(div).click();
       }
     });
-    cy.get('ul li[data-value="@class"').click();
+    cy.get('ul li[data-value="@class"]').click();
     cy.get('#options-close-btn').click();
     cy.contains('DeprecatedBy');
     cy.contains('AliasOf');
@@ -156,6 +156,31 @@ describe('Graph View Test', () => {
               cy.contains('Too many subgroups, choose new coloring property.').should('not.exist');
             }
           });
+      });
+    });
+  });
+
+  /**
+   * Tests whether or not graph objects are properly stored in localstorage.
+   */
+  it('Persistent graph objects', () => {
+    getClass('Disease');
+    cy.get('circle.node').click({ force: true });
+    cy.contains('(Expand)').click({ force: true });
+    cy.get('circle.node').then((nodes) => {
+      /* eslint-disable no-unused-expressions */
+      expect(localStorage.getItem('graphObjects')).to.not.be.null;
+      /* eslint-enable */
+      cy.reload();
+      cy.get('circle.node').then((refreshedNodes) => {
+        expect(refreshedNodes.length).to.eq(nodes.length);
+      });
+
+      cy.get('circle.node:first').click({ force: true });
+      cy.contains('(Hide)').click({ force: true });
+      cy.get('div.toolbar div[title="Restart simulation with initial nodes"] button').click();
+      cy.get('circle.node').then((refreshedNodes) => {
+        expect(refreshedNodes.length).to.eq(nodes.length);
       });
     });
   });

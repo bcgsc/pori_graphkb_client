@@ -17,16 +17,25 @@ class ErrorView extends Component {
     super(props);
     this.state = {
       tooltip: false,
+      body: null,
+      status: null,
     };
   }
 
-  render() {
-    const { tooltip } = this.state;
+  componentDidMount() {
     const { history } = this.props;
     const { state } = history.location;
-    if (!state || (!state.status && !state.body)) history.push('/query');
-    const { status, body } = state;
+    if (!state || !(state.status || state.body)) {
+      history.push('/query');
+    } else {
+      const { status, body } = state;
+      this.setState({ body, status });
+    }
+  }
 
+  render() {
+    const { tooltip, body, status } = this.state;
+    if (!body || !status) return null;
     const {
       error,
       message,

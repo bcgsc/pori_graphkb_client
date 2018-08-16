@@ -343,7 +343,7 @@ class NodeFormComponent extends Component {
     } else if (relationships.indexOf(relationship) !== -1) {
       relationships.splice(relationships.indexOf(relationship), 1);
     }
-    this.setState({ relationships }, () => console.log(relationships));
+    this.setState({ relationships });
   }
 
   handleRelationshipUndo(relationship) {

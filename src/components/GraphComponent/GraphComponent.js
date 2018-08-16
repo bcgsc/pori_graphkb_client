@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './GraphComponent.css';
 import * as d3 from 'd3';
-import queryString from 'query-string';
+import qs from 'querystring';
 import {
   Checkbox,
   FormControlLabel,
@@ -166,7 +166,7 @@ class GraphComponent extends Component {
       validDisplayed = [Object.keys(data)[0]];
     }
 
-    const stringifiedSearch = queryString.stringify(filteredSearch);
+    const stringifiedSearch = qs.stringify(filteredSearch);
 
     this.setState({
       expandedEdgeTypes,

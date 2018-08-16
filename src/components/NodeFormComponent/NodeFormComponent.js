@@ -32,6 +32,7 @@ import {
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
+import RefreshIcon from '@material-ui/icons/Refresh';
 import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
 import HelpIcon from '@material-ui/icons/Help';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
@@ -62,6 +63,7 @@ class NodeFormComponent extends Component {
         source: '',
       },
       subset: '',
+      deletedSubsets: [],
       deleteDialog: false,
       errorFlag: false,
     };
@@ -69,10 +71,12 @@ class NodeFormComponent extends Component {
     this.handleFormChange = this.handleFormChange.bind(this);
     this.handleSubsetAdd = this.handleSubsetAdd.bind(this);
     this.handleSubsetDelete = this.handleSubsetDelete.bind(this);
+    this.handleSubsetUndo = this.handleSubsetUndo.bind(this);
     this.handleRelationshipAdd = this.handleRelationshipAdd.bind(this);
     this.handleRelationship = this.handleRelationship.bind(this);
     this.handleRelationshipDirection = this.handleRelationshipDirection.bind(this);
     this.handleRelationshipDelete = this.handleRelationshipDelete.bind(this);
+    this.handleRelationshipUndo = this.handleRelationshipUndo.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleDeleteNode = this.handleDeleteNode.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -111,7 +115,7 @@ class NodeFormComponent extends Component {
       } = prop;
       switch (type) {
         case 'embeddedset':
-          form[name] = originalNode[name] || [];
+          form[name] = (originalNode[name] || []).slice();
           break;
         case 'link':
           form[`${name}.@rid`] = (originalNode[name] || '')['@rid'] || '';
@@ -264,11 +268,22 @@ class NodeFormComponent extends Component {
    * @param {string} subset - Subset to be deleted.
    */
   handleSubsetDelete(subset) {
-    const { form } = this.state;
+    const { form, originalNode, deletedSubsets } = this.state;
+    const { variant } = this.props;
     if (form.subsets.indexOf(subset) !== -1) {
       form.subsets.splice(form.subsets.indexOf(subset), 1);
+      if (variant === 'edit' && originalNode.subsets.includes(subset)) {
+        deletedSubsets.push(subset);
+      }
     }
-    this.setState({ form });
+    this.setState({ form, deletedSubsets });
+  }
+
+  handleSubsetUndo(subset) {
+    const { form, deletedSubsets } = this.state;
+    deletedSubsets.splice(deletedSubsets.indexOf(subset), 1);
+    form.subsets.push(subset);
+    this.setState({ form, deletedSubsets });
   }
 
   /**
@@ -321,10 +336,21 @@ class NodeFormComponent extends Component {
    * @param {Object} relationship - Relationship to be deleted
    */
   handleRelationshipDelete(relationship) {
-    const { relationships } = this.state;
-    if (relationships.indexOf(relationship) !== -1) {
+    const { relationships, originalNode } = this.state;
+    const { variant } = this.props;
+    if (variant === 'edit' && originalNode.relationships.find(r => r['@rid'] === relationship['@rid'])) {
+      relationship.deleted = true;
+    } else if (relationships.indexOf(relationship) !== -1) {
       relationships.splice(relationships.indexOf(relationship), 1);
     }
+    this.setState({ relationships }, () => console.log(relationships));
+  }
+
+  handleRelationshipUndo(relationship) {
+    const { relationships } = this.state;
+    const rel = relationships.find(r => r['@rid'] === relationship['@rid']);
+    delete rel.deleted;
+
     this.setState({ relationships });
   }
 
@@ -428,14 +454,13 @@ class NodeFormComponent extends Component {
 
     // Deletes edges that are no longer present on the edited node.
     originalNode.relationships.forEach((initRelationship) => {
-      if (
-        !relationships.find(
-          r => r.out === initRelationship.out
-            && r.in === initRelationship.in
-            && r['@class'] === initRelationship['@class']
-            && r.source === initRelationship.source,
-        )
-      ) {
+      const matched = relationships.find(
+        r => r.out === initRelationship.out
+          && r.in === initRelationship.in
+          && r['@class'] === initRelationship['@class']
+          && r.source === initRelationship.source,
+      );
+      if (!matched || matched.deleted) {
         changedEdges.push(api.delete(
           `/${initRelationship['@class'].toLowerCase()}/${initRelationship['@rid'].slice(1)}`,
         ));
@@ -517,6 +542,7 @@ class NodeFormComponent extends Component {
       schema,
       loading,
       snackbarOpen,
+      deletedSubsets,
     } = this.state;
     const { variant, handleNodeFinish } = this.props;
 
@@ -682,6 +708,16 @@ class NodeFormComponent extends Component {
       />
     ));
 
+    subsets.push(...deletedSubsets.map(s => (
+      <Chip
+        label={s}
+        deleteIcon={<RefreshIcon />}
+        onDelete={() => this.handleSubsetUndo(s)}
+        key={s}
+        className="subset-chip deleted-chip"
+      />
+    )));
+
     /**
       * Formats valid edge types.
       * @param {Object} edgeType - Edge type object.
@@ -831,19 +867,34 @@ class NodeFormComponent extends Component {
                           const sourceName = sources.find(
                             s => s['@rid'] === r.source,
                           ).name;
-
                           const typeName = r.in === originalNode['@rid']
                             ? util.getEdgeLabel(`in_${r['@class']}`)
                             : util.getEdgeLabel(`out_${r['@class']}`);
                           return (
-                            <TableRow key={r['@rid'] || `${r['@class']}${r.in}${r.out}${r.source}`}>
+                            <TableRow
+                              key={r['@rid'] || `${r['@class']}${r.in}${r.out}${r.source}`}
+                              className={r.deleted && 'deleted'}
+                            >
                               <TableCell padding="checkbox">
-                                <IconButton
-                                  onClick={() => this.handleRelationshipDelete(r)}
-                                  style={{ position: 'unset' }}
-                                >
-                                  <CloseIcon color="error" />
-                                </IconButton>
+                                {!r.deleted ? (
+                                  <IconButton
+                                    onClick={() => this.handleRelationshipDelete(r)}
+                                    style={{ position: 'unset' }}
+                                    disableRipple
+                                  >
+                                    <CloseIcon color="error" />
+                                  </IconButton>)
+                                  : (
+                                    <IconButton
+                                      onClick={() => this.handleRelationshipUndo(r)}
+                                      style={{ position: 'unset' }}
+                                      disableRipple
+                                      color="primary"
+                                    >
+                                      <RefreshIcon />
+                                    </IconButton>
+                                  )
+                                }
                               </TableCell>
                               <TableCell padding="dense">
                                 {typeName}

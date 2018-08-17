@@ -10,24 +10,19 @@ import NodeFormComponent from '../../components/NodeFormComponent/NodeFormCompon
 class AddNodeView extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      completedFlag: false,
-    };
 
     this.handleNodeFinish = this.handleNodeFinish.bind(this);
   }
 
+  /**
+   * Triggered when the user hits the submit button.
+   */
   handleNodeFinish() {
-    this.setState({ completedFlag: true });
+    const { history } = this.props;
+    history.push('/query');
   }
 
   render() {
-    const {
-      completedFlag,
-    } = this.state;
-
-    if (completedFlag) return <Redirect push to="/query" />;
-
     return (
       <NodeFormComponent
         variant="add"

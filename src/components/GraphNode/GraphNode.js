@@ -10,17 +10,20 @@ const FADED_OPACITY = 0.6;
 const MAX_LABEL_LENGTH = 25;
 
 /**
- * Component used to display graph nodes and apply draggable behavior to them through d3.
+ * Component used to display graph nodes and apply draggable behavior to them
+ * through d3.
  */
 class GraphNode extends PureComponent {
   /**
    * Initializes node element and applies drag behavior to it.
    */
   componentDidMount() {
-    const { node } = this.props;
-    const nodeElement = d3.select(this.node);
-    nodeElement.call(d3.drag()
-      .on('start', () => this.dragstarted(node)));
+    const { node, applyDrag } = this.props;
+    if (applyDrag) {
+      const nodeElement = d3.select(this.node);
+      nodeElement.call(d3.drag()
+        .on('start', () => applyDrag(node)));
+    }
   }
 
   /**
@@ -32,33 +35,6 @@ class GraphNode extends PureComponent {
       .on('start', null));
   }
 
-  /**
-   * Applies drag behavior to node.
-   * @param {Object} node - node to be dragged.
-   */
-  dragstarted(node) {
-    const { simulation } = this.props;
-    d3.event.sourceEvent.stopPropagation();
-
-    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-
-    /* eslint-disable */
-    function dragged() {
-      node.fx = d3.event.x;
-      node.fy = d3.event.y;
-    }
-
-    function ended() {
-      if (!d3.event.active) simulation.alphaTarget(0);
-      node.fx = null;
-      node.fy = null;
-    }
-    /* eslint-enable */
-
-    d3.event
-      .on('drag', dragged)
-      .on('end', ended);
-  }
 
   render() {
     const {
@@ -66,8 +42,7 @@ class GraphNode extends PureComponent {
       handleClick,
       color,
       labelKey,
-      detail,
-      actionsNode,
+      faded,
     } = this.props;
 
     // Extract label
@@ -82,9 +57,7 @@ class GraphNode extends PureComponent {
       label = `${label.substring(0, MAX_LABEL_LENGTH - 4).trim()}...`;
     }
     let opacity = DEFAULT_OPACITY;
-    if ((detail && detail['@rid'] !== node.data['@rid'])
-      || (actionsNode && actionsNode.data['@rid'] !== node.data['@rid'])
-    ) {
+    if (faded) {
       opacity = FADED_OPACITY;
     }
 

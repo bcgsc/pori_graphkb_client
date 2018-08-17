@@ -40,19 +40,12 @@ function GraphLink(props) {
   }
 
   let opacity = DEFAULT_OPACITY;
-  if (detail) {
-    if (detail['@rid'] === link.data['@rid']) {
-      opacity = SELECTED_OPACITY;
-    } else {
-      opacity = FADED_OPACITY;
-    }
+
+  if (bold) {
+    opacity = SELECTED_OPACITY;
   }
-  if (actionsNode) {
-    if (actionsNode.data['@rid'] === link.data['@rid']) {
-      opacity = SELECTED_OPACITY;
-    } else {
-      opacity = FADED_OPACITY;
-    }
+  if (faded) {
+    opacity = FADED_OPACITY;
   }
 
   const dx = link.target.x - link.source.x;
@@ -115,26 +108,44 @@ function GraphLink(props) {
   );
 }
 
-/**
- * @param {Object} link - Graph link object.
- * @param {Object} detail - record currently displayed in the detail drawer.
- * @param {bool} linkHighlighting - flag for enabling link highlight on hover.
- */
 GraphLink.propTypes = {
+  /**
+   * @param {Object} link - Graph link object.
+   */
   link: PropTypes.object.isRequired,
-  detail: PropTypes.object,
+  /**
+   * @param {boolean} faded - Flag for fading link.
+   */
+  faded: PropTypes.bool,
+  /**
+   * @param {string} labelKey - property to label link by.
+   */
   labelKey: PropTypes.string,
+  /**
+   * @param {string} color - color of link. CSS color syntax(es).
+   */
   color: PropTypes.string,
+  /**
+   * @param {function} handleClick - handler for clicking link.
+   */
   handleClick: PropTypes.func,
-  actionsNode: PropTypes.object,
+  /**
+   * @param {boolean} bold - Flag for boldening link.
+   */
+  bold: PropTypes.bool,
+  /**
+   * @param {string} marker - SVG end marker identifier.
+   */
+  marker: PropTypes.string,
 };
 
 GraphLink.defaultProps = {
-  detail: null,
+  faded: false,
+  bold: false,
   labelKey: null,
   color: '#999',
   handleClick: null,
-  actionsNode: null,
+  marker: '',
 };
 
 export default GraphLink;

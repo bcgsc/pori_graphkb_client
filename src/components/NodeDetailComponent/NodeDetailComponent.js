@@ -265,17 +265,17 @@ class NodeDetailComponent extends Component {
     /**
      * Formats and lists relationship (edge) fields.
      */
-    const listEdges = (key) => {
+    const listEdge = (key) => {
       const label = util.getEdgeLabel(key);
       const isOpen = nestedExpanded.includes(label);
       if (filteredNode[key] && filteredNode[key].length !== 0) {
-        const preview = [];
+        const previews = [];
         const content = filteredNode[key].reduce((r, edge) => {
           const id = `${label}.${edge['@rid']}`;
           const relatedNode = edge.in && edge.in['@rid'] === node['@rid'] ? edge.out : edge.in;
           if (relatedNode['@class'] !== 'Statement') { // Statement flag
             const edgeOpen = nestedExpanded.includes(id);
-            preview.push(util.getPreview(relatedNode));
+            previews.push(util.getPreview(relatedNode));
             r.push((
               <ExpansionPanel
                 key={id}

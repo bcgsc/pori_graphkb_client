@@ -148,15 +148,15 @@ const getTSVRepresentation = (value, key) => {
     } else if (key.startsWith('out_')) {
       list = value.map(obj => obj.in['@rid'] || obj.in);
     } else {
-      list = value.map(obj => this.getTSVRepresentation(obj, key));
+      list = value.map(obj => getTSVRepresentation(obj, key));
     }
     return list.join(', ');
   }
   if (key.includes('.')) {
     const newKey = key.split('.')[1];
-    return this.getTSVRepresentation(value[newKey], newKey);
+    return getTSVRepresentation(value[newKey], newKey);
   }
-  return this.getPreview(value);
+  return getPreview(value);
 };
 
 /**

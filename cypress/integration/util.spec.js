@@ -44,6 +44,13 @@ describe('util methods test', () => {
     testObjs.forEach(testObj => expect(util.getPreview(testObj)).to.eq('pass'));
   });
 
+  it('expandEdges', () => {
+    const testEdges = ['one', 'blargh', 'subclassof'];
+    const expectedEdges = ['in_one', 'out_one', 'in_blargh', 'out_blargh', 'in_subclassof', 'out_subclassof'];
+
+    util.expandEdges(testEdges).forEach((edge, i) => expect(edge).to.eq(expectedEdges[i]));
+  });
+
   it('getEdgeLabel', () => {
     const testEdges = [
       'in_AliasOf',
@@ -236,5 +243,34 @@ describe('util methods test', () => {
     expect(graphData.filteredSearch).to.eq(key);
     expect(graphData.data1.message).to.eq(data1.message);
     expect(graphData.data1.reference).to.deep.eq(data2);
+  });
+
+  it('loadColorProps', () => {
+    const testColumns = ['name', 'sourceId', 'source'];
+    const testData = [
+      { name: 'one', sourceId: 'sourceOne', source: 'test' },
+      { name: 'three', sourceId: 'sourceThree', source: 'test' },
+      { name: 'two', sourceId: 'sourceTwo', source: 'test' },
+      { name: 'notname', sourceId: 'notSourceId', source: 'nottest' },
+      { name: 'knowledgebase', sourceId: 'kb', source: 'bcgsc' },
+    ];
+    const testPropsMap = { nodes: {} };
+
+    testData.forEach(node => util.loadColorProps(testColumns, node, testPropsMap));
+    Object.keys(testPropsMap.nodes).forEach((key) => {
+      if (key === 'name') {
+        testPropsMap.nodes.name.forEach((name) => {
+          expect(['one', 'three', 'two', 'notname', 'knowledgebase']).to.contain(name);
+        });
+      } else if (key === 'sourceId') {
+        testPropsMap.nodes.sourceId.forEach((sourceId) => {
+          expect(['sourceOne', 'sourceThree', 'sourceTwo', 'notSourceId', 'kb']).to.contain(sourceId);
+        });
+      } else if (key === 'source') {
+        testPropsMap.nodes.source.forEach((source) => {
+          expect(['test', 'nottest', 'bcgsc']).to.contain(source);
+        });
+      }
+    });
   });
 });

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './GraphComponent.css';
 import * as d3 from 'd3';
-import qs from 'querystring';
+import qs from 'qs';
 import {
   Checkbox,
   FormControlLabel,

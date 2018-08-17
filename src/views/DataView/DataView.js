@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { withStyles } from '@material-ui/core/styles';
-import * as qs from 'querystring';
+import qs from 'qs';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import NodeDetailComponent from '../../components/NodeDetailComponent/NodeDetailComponent';
@@ -94,7 +94,6 @@ class DataView extends Component {
     }
 
     let allProps = ['@rid', '@class'];
-
     try {
       const data = await api.get(`${route}?${qs.stringify(filteredSearch).slice(3)}&neighbors=3`);
       const cycled = jc.retrocycle(data.result);

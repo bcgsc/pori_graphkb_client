@@ -24,9 +24,16 @@ const DEBOUNCE_TIME = 300;
 const LONG_DEBOUNCE_TIME = 600;
 
 const PROGRESS_SPINNER_SIZE = 20;
+const MAX_HEIGHT_FACTOR = 15;
 
 /**
- * Autocomplete search component for querying ease of use.
+ * Autocomplete search component for querying ease of use. Text input component
+ * that makes small (default limit 30) calls to the api when the user types.
+ * Includes a debounce time to prevent large volumes of api calls.
+ *
+ * Results are displayed in a menu anchored below the input text field,
+ * inheriting its width and with a max-height proportional to the specified
+ * limit.
  */
 class AutoSearchComponent extends Component {
   constructor(props) {
@@ -56,7 +63,7 @@ class AutoSearchComponent extends Component {
   }
 
   /**
-   * Calls debounced api call with user input value as parameter.
+   * Calls api with user input value as parameter.
    * @param {Event} e - user input event.
    */
   refreshOptions(e) {
@@ -65,8 +72,9 @@ class AutoSearchComponent extends Component {
   }
 
   /**
-   * Calls the api to and sets the state to show returned records, and to set error flags.
-   * @param {string} value - query value to be sent to the api.
+   * Queries the api endpoint specified in the component props. Matches records
+   * with the property specified in component props similar to the input value.
+   * @param {string} value - value to be sent to the api.
    */
   callApi(value) {
     const {
@@ -197,26 +205,33 @@ class AutoSearchComponent extends Component {
               {...getMenuProps()}
             >
               <Paper
-                className="droptions"
+                className={`droptions ${dense ? 'dense' : ''}`}
                 style={{
                   width: this.popperNode
                     ? this.popperNode.clientWidth
                     : null,
+                  maxHeight: `${MAX_HEIGHT_FACTOR * limit}px`,
                 }}
               >
                 <List dense={dense}>
                   {loading
-                    ? (<CircularProgress color="primary" size={PROGRESS_SPINNER_SIZE} id="autosearch-spinner" />)
+                    ? (
+                      <CircularProgress
+                        color="primary"
+                        size={PROGRESS_SPINNER_SIZE}
+                        id="autosearch-spinner"
+                      />
+                    )
                     : autoSearchResults(inputValue, getItemProps, setState)}
                 </List>
               </Paper>
             </Popper>
-            {emptyFlag ? (
+            {emptyFlag ? ( // Indicator for empty query
               <Typography variant="caption" color="error">
                 No Results
               </Typography>
             ) : null}
-            {noRidFlag && !emptyFlag && (
+            {noRidFlag && !emptyFlag && ( // Indicator for unselected option
               <Typography variant="caption" color="error">
                 Select an option
               </Typography>
@@ -228,33 +243,63 @@ class AutoSearchComponent extends Component {
   }
 }
 
-/**
-* @param {number} limit - entry number limit when querying the database.
-* @param {string} name - name of input for event parsing.
-* @param {string} endpoint - api endpoint identifier.
-* @param {string} property - api property identifier.
-* @param {string} placeholder - placeholder for text input.
-* @param {string} value - specified value for two way binding.
-* @param {string} label - label for text input.
-* @param {bool} required - required flag for text input indicator.
-* @param {func} onChange - parent method for handling change events
-* @param {func} children - component for display display query results.
-* @param {bool} disabled - disabled flag.
-  */
 AutoSearchComponent.propTypes = {
+  /**
+   * @param {number} limit - database return record limit.
+   */
   limit: PropTypes.number,
+  /**
+   * @param {string} name - name of input for event parsing.
+   */
   name: PropTypes.string.isRequired,
+  /**
+   * @param {string} endpoint - api endpoint identifier.
+   */
   endpoint: PropTypes.string,
+  /**
+   * @param {string} property - api property identifier.
+   */
   property: PropTypes.array,
+  /**
+   * @param {string} placeholder - placeholder for text input.
+   */
   placeholder: PropTypes.string,
+  /**
+   * @param {string} value - specified value for two way binding.
+   */
   value: PropTypes.string,
+  /**
+   * @param {string} label - label for text input.
+   */
   label: PropTypes.string,
+  /**
+   * @param {bool} required - required flag for text input indicator.
+   */
   required: PropTypes.bool,
+  /**
+   * @param {bool} error - error flag for text input.
+   */
   error: PropTypes.bool,
+  /**
+   * @param {func} onChange - parent method for handling change events
+   */
   onChange: PropTypes.func,
+  /**
+   * @param {function} children - Function that yields the component for
+   * display display query results.
+   */
   children: PropTypes.func,
+  /**
+   * @param {bool} disabled - disabled flag for text input.
+   */
   disabled: PropTypes.bool,
+  /**
+   * @param {Object} endAdornment - component to adorn the end of input text field with.
+   */
   endAdornment: PropTypes.object,
+  /**
+   * @param {bool} dense - dense variant flag. If true, font sizes are decreased.
+   */
   dense: PropTypes.bool,
 };
 

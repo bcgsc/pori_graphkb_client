@@ -42,8 +42,11 @@ export default class util {
 
   /**
    * Returns a representative field of a given object. Defaults to:
-   * sourceId, then name, then if neither are present, the first primitive
+   * name, then sourceId, then if neither are present, the first primitive
    * type field in the object.
+   * eg.  {name: 'bob', ...other} => 'bob'
+   *      {sourceId: '123', color: 'blue'} => '123'
+   *      {colors: ['red', 'green], height: '6ft'} => '6ft'
    * @param {Object} obj - target data object.
    */
   static getPreview(obj) {
@@ -60,6 +63,19 @@ export default class util {
       preview = obj[prop];
     }
     return preview;
+  }
+
+  /**
+   * Expands edges to field property names, with either 'in_' or 'out_'
+   * appended to them.
+   * @param {Array} edges - list of edge classes.
+   */
+  static expandEdges(edges) {
+    return edges.reduce((r, e) => {
+      r.push(`in_${e}`);
+      r.push(`out_${e}`);
+      return r;
+    }, []);
   }
 
   /**
@@ -134,8 +150,8 @@ export default class util {
   /**
    * Prepares a payload to be sent to the server for a POST, PATCH, or GET requst.
    * @param {Object} form - unprocessed form object containing user data.
-   * @param {*} editableProps - List of valid properties for given form.
-   * @param {*} exceptions - List of extra parameters not specified in editableProps.
+   * @param {Array} editableProps - List of valid properties for given form.
+   * @param {Array} exceptions - List of extra parameters not specified in editableProps.
    */
   static parsePayload(form, editableProps, exceptions) {
     const payload = Object.assign({}, form);
@@ -165,6 +181,8 @@ export default class util {
 
   /**
    * Returns pallette of colors for displaying objects of given type.
+   * @param {number} n - number of elements in collection.
+   * @param {string} type - object type ['link', 'node'].
    */
   static getPallette(n, type) {
     const baseName = `${type.toUpperCase().slice(0, type.length - 1)}_COLORS_`;
@@ -183,10 +201,17 @@ export default class util {
     return list;
   }
 
+  /**
+   * Loads graph options state into localstorage.
+   * @param {Object} data - graph options data.
+   */
   static loadGraphOptions(data) {
     localStorage.setItem(GRAPH_OPTIONS_KEY, JSON.stringify(data));
   }
 
+  /**
+   * Retrieves stored graph options data from localstorage.
+   */
   static getGraphOptions() {
     const data = localStorage.getItem(GRAPH_OPTIONS_KEY);
     if (data) {
@@ -239,7 +264,9 @@ export default class util {
         obj = node[prop.split('.')[0]] || {};
       }
 
-      if (obj[key] && (obj[key].length < 50 || key === 'name') && !Array.isArray(obj[key])) {
+      if (obj[key] && (obj[key].length < 50 || key === 'name')
+        && !Array.isArray(obj[key])
+      ) {
         if (propsMap.nodes[prop] === undefined) {
           propsMap.nodes[prop] = [obj[key]];
         } else if (

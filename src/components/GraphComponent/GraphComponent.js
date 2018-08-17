@@ -77,6 +77,7 @@ const SNACKBAR_AUTOHIDE_DURATION = 6000;
 
 /**
  * Component for displaying query results in force directed graph form.
+ * Implements a d3 force-directed graph: https://github.com/d3/d3-force.
  */
 class GraphComponent extends Component {
   constructor(props) {
@@ -181,7 +182,16 @@ class GraphComponent extends Component {
       const storedData = util.getGraphData(stringifiedSearch);
       const storedOptions = util.getGraphOptions();
 
-      if (displayed && displayed.length !== 0) {
+      /**
+       * Initialization priority:
+       *
+       * 1. Checked rows from tableview always override stored state.
+       * 2. Initial state is checked. This will never be chosen on the
+       *    component's first load.
+       * 3. Stored state will be loaded if the query parameters match those of
+       *    the last stored state.
+       */
+      if ((displayed && displayed.length !== 0) || (!initState && !storedData)) {
         validDisplayed.forEach((key, i) => {
           this.processData(
             data[key],
@@ -189,6 +199,7 @@ class GraphComponent extends Component {
             0,
           );
         });
+
         const { nodes, links, graphObjects } = this.state;
         util.loadGraphData(stringifiedSearch, { nodes, links, graphObjects });
       } else if (initState) {
@@ -207,9 +218,7 @@ class GraphComponent extends Component {
           nodes: nodes.slice(),
           links: links.slice(),
         });
-      } else if (
-        storedData && storedData.filteredSearch === stringifiedSearch
-      ) {
+      } else if (storedData && storedData.filteredSearch === stringifiedSearch) {
         const {
           graphObjects,
           nodes,
@@ -303,8 +312,8 @@ class GraphComponent extends Component {
   }
 
   /**
-   * Processes node data and updates state with new nodes and links.
-   * Returns updated nodes, links, and graphObjects. Also updates expandable flags.
+   * Processes node data and updates state with new nodes and links. Also
+   * updates expandable flags.
    * @param {Object} node - Node object as returned by the api.
    * @param {Object} position - Object containing x and y position of input node.
    * @param {number} depth - Recursion base case flag.
@@ -319,6 +328,7 @@ class GraphComponent extends Component {
       propsMap,
     } = this.state;
 
+    // From DataView.js
     const { data, handleNewColumns } = this.props;
 
     if (data[node['@rid']]) {
@@ -339,7 +349,10 @@ class GraphComponent extends Component {
       util.loadColorProps(allColumns, node, propsMap);
     }
 
-    let flag = false;
+    /**
+     * Cycles through all potential edges as defined by the schema, and expands
+     * those edges if present on the node.
+     */
     expandedEdgeTypes.forEach((edgeType) => {
       if (node[edgeType] && node[edgeType].length !== 0) {
         // stores total number of edges and initializes count for position calculating.
@@ -423,13 +436,12 @@ class GraphComponent extends Component {
               }
             } else {
               // If there are unrendered edges, set expandable flag.
-              flag = true;
+              expandable[node['@rid']] = true;
             }
           }
         });
       }
     });
-    expandable[node['@rid']] = flag;
 
     this.setState({
       expandable,
@@ -604,17 +616,11 @@ class GraphComponent extends Component {
   }
 
   /**
-   * Resizes svg window and reinitializes the simulation.
+   * Handles user selections within the actions ring.
    */
-  handleResize() {
-    if (this.wrapper) {
-      this.setState(
-        {
-          width: this.wrapper.clientWidth,
-          height: this.wrapper.clientHeight,
-        }, this.initSimulation,
-      );
-    }
+  handleActionsRing(action) {
+    action();
+    this.setState({ actionsNode: null });
   }
 
   /**
@@ -623,20 +629,6 @@ class GraphComponent extends Component {
   handleCheckbox() {
     const { graphOptions } = this.state;
     graphOptions.autoCollisionRadius = !graphOptions.autoCollisionRadius;
-  }
-
-  /**
-   * Opens graph options dialog.
-   */
-  handleOptionsPanelOpen() {
-    this.setState({ graphOptionsOpen: true });
-  }
-
-  /**
-   * Closes graph options dialog.
-   */
-  handleOptionsPanelClose() {
-    this.setState({ graphOptionsOpen: false });
   }
 
   /**
@@ -657,18 +649,15 @@ class GraphComponent extends Component {
   }
 
   /**
-   * Handles link clicks from user.
-   * @param {Event} e - User click event.
-   * @param {Object} link - Clicked simulation link.
+   * Handles color sort property changes.
+   * @param {Event} e - property change event.
+   * @param {string} type - defines which graph object type to change [nodes, links].
    */
-  handleLinkClick(e, link) {
-    const { handleDetailDrawerOpen } = this.props;
-
-    // Update contents of detail drawer if open.
-    handleDetailDrawerOpen(link, false, true);
-
-    // Sets clicked object as actions node.
-    this.setState({ actionsNode: link, actionsNodeIsEdge: true });
+  handleGraphColorsChange(e, type) {
+    const { graphOptions } = this.state;
+    graphOptions[`${type}Color`] = e.target.value;
+    util.loadGraphOptions({ graphOptions });
+    this.setState({ graphOptions }, () => this.updateColors(type));
   }
 
   /**
@@ -687,23 +676,65 @@ class GraphComponent extends Component {
   }
 
   /**
-   * Handles color sort property changes.
-   * @param {Event} e - property change event.
-   * @param {string} type - defines which graph object type to change [nodes, links].
+   * Closes additional help dialog.
    */
-  handleGraphColorsChange(e, type) {
-    const { graphOptions } = this.state;
-    graphOptions[`${type}Color`] = e.target.value;
-    util.loadGraphOptions({ graphOptions });
-    this.setState({ graphOptions }, () => this.updateColors(type));
+  handleHelpClose() {
+    this.setState({ advancedHelp: false, mainHelp: false });
   }
 
   /**
-   * Handles user selections within the actions ring.
+   * Opens additional help dialog.
+   * @param {string} helpType - ['main', 'advanced'].
    */
-  handleActionsRing(action) {
-    action();
-    this.setState({ actionsNode: null });
+  handleHelpOpen(helpType) {
+    this.setState({ [`${helpType}Help`]: true });
+  }
+
+  /**
+   * Handles link clicks from user.
+   * @param {Event} e - User click event.
+   * @param {Object} link - Clicked simulation link.
+   */
+  handleLinkClick(e, link) {
+    const { handleDetailDrawerOpen } = this.props;
+
+    // Update contents of detail drawer if open.
+    handleDetailDrawerOpen(link, false, true);
+
+    // Sets clicked object as actions node.
+    this.setState({ actionsNode: link, actionsNodeIsEdge: true });
+  }
+
+  /**
+   * Hides link from the graph view.
+   */
+  handleLinkHide() {
+    const {
+      actionsNode,
+      links,
+      graphObjects,
+      expandable,
+    } = this.state;
+    const { handleDetailDrawerClose } = this.props;
+
+    const i = links.indexOf(actionsNode);
+    links.splice(i, 1);
+    delete graphObjects[actionsNode.data['@rid']];
+
+    expandable[actionsNode.source.data['@rid']] = true;
+    expandable[actionsNode.target.data['@rid']] = true;
+
+    this.setState({
+      actionsNode: null,
+      graphObjects,
+      links,
+      expandable,
+      refreshable: true,
+    }, () => {
+      this.updateColors('nodes');
+      this.updateColors('links');
+      handleDetailDrawerClose();
+    });
   }
 
   /**
@@ -800,50 +831,31 @@ class GraphComponent extends Component {
   }
 
   /**
-   * Hides link from the graph view.
+   * Closes graph options dialog.
    */
-  handleLinkHide() {
-    const {
-      actionsNode,
-      links,
-      graphObjects,
-      expandable,
-    } = this.state;
-    const { handleDetailDrawerClose } = this.props;
-
-    const i = links.indexOf(actionsNode);
-    links.splice(i, 1);
-    delete graphObjects[actionsNode.data['@rid']];
-
-    expandable[actionsNode.source.data['@rid']] = true;
-    expandable[actionsNode.target.data['@rid']] = true;
-
-    this.setState({
-      actionsNode: null,
-      graphObjects,
-      links,
-      expandable,
-      refreshable: true,
-    }, () => {
-      this.updateColors('nodes');
-      this.updateColors('links');
-      handleDetailDrawerClose();
-    });
+  handleOptionsPanelClose() {
+    this.setState({ graphOptionsOpen: false });
   }
 
   /**
-   * Opens additional help dialog.
-   * @param {string} helpType - ['main', 'advanced'].
+   * Opens graph options dialog.
    */
-  handleHelpOpen(helpType) {
-    this.setState({ [`${helpType}Help`]: true });
+  handleOptionsPanelOpen() {
+    this.setState({ graphOptionsOpen: true });
   }
 
   /**
-   * Closes additional help dialog.
+   * Resizes svg window and reinitializes the simulation.
    */
-  handleHelpClose() {
-    this.setState({ advancedHelp: false, mainHelp: false });
+  handleResize() {
+    if (this.wrapper) {
+      this.setState(
+        {
+          width: this.wrapper.clientWidth,
+          height: this.wrapper.clientHeight,
+        }, this.initSimulation,
+      );
+    }
   }
 
   render() {

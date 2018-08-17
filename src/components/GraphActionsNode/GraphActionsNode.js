@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './GraphActionsNode.css';
 import config from '../../config.json';
 
 const {
@@ -16,7 +15,8 @@ const SCALE = 0.8;
 const OPACITY = 0.9;
 
 /**
- * Component for displaying ring-shaped panel containing possible actions for selected node.
+ * Component for displaying ring-shaped panel containing possible actions for
+ * selected node. This component handles geometry and rendering ONLY.
  */
 function GraphActionsNode(props) {
   const {
@@ -111,20 +111,33 @@ function GraphActionsNode(props) {
 }
 
 /**
- * @param {array} options - List of options, each must be in the form:
- *    option: {
- *      name: [string]
- *      icon: [svg element]
- *      action: [(any) => any]
- *      disabled?: [(any) => boolean}
- *    }
- * @param {function} handleActionsRing - Parent method on actions ring click event.
- * @param {object} actionsNode - Currently selected node.
+
+
  */
 GraphActionsNode.propTypes = {
+  /**
+   * @param {array} options - List of options, each must be in the form:
+   *    option: {
+   *      name: [string]
+   *      icon: [svg element]
+   *      action: [(any) => any]
+   *      disabled?: [(any) => boolean}
+   *    }
+   */
   options: PropTypes.array,
+  /**
+   * @param {function} handleActionsRing - Parent method on actions ring click
+   * event.
+   */
   handleActionsRing: PropTypes.func,
+  /**
+   * @param {Object} actionsNode - Currently selected object.
+   */
   actionsNode: PropTypes.object,
+  /**
+   * @param {boolean} edge - yes/no flag determining whether selected object is
+   * an edge or not
+   */
   edge: PropTypes.bool,
 };
 

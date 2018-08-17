@@ -1,7 +1,14 @@
 .droptions {
-    max-height: 200px;
     overflow: auto;
-    z-index:10000;
+}
+
+.dense {
+    span {
+        font-size: 0.8125rem;
+    }
+    p {
+        font-size: 0.75rem;
+    }
 }
 
 .autosearch-wrapper {

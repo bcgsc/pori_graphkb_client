@@ -13,7 +13,14 @@ const GRAPH_OPTIONS_KEY = 'graphOptions';
  */
 export default class util {
   /**
-   * Un-camelCase's input string.
+   * Un-camelCase's input string and capitalizes each word. Also applies
+   * capitalization to defined acronyms.
+   * @example
+   * > antiCamelCase('sourceId')
+   * > 'Source ID'
+   * @example
+   * > anticamelCase('genomeScience')
+   * > 'Genome Science'
    * @param {string} str - camelCase'd string.
    */
   static antiCamelCase(str) {
@@ -44,9 +51,15 @@ export default class util {
    * Returns a representative field of a given object. Defaults to:
    * name, then sourceId (defined in config.json: DEFAULT_PROPS), then if
    * neither are present, the first primitive type field in the object.
-   * eg.  {name: 'bob', ...other} => 'bob'
-   *      {sourceId: '123', color: 'blue'} => '123'
-   *      {colors: ['red', 'green], height: '6ft'} => '6ft'
+   * @example
+   * > util.getPreview({name: 'bob', ...other})
+   * > 'bob'
+   * @example
+   * > util.getPreview({sourceId: '123', color: 'blue'})
+   * > '123'
+   * @example
+   * > util.getPreview({colors: ['red', 'green], height: '6ft'})
+   * > '6ft'
    * @param {Object} obj - target data object.
    */
   static getPreview(obj) {

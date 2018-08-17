@@ -7,27 +7,29 @@ const LABEL_BASELINE_SHIFT = 4;
 const SELECTED_OPACITY = 1;
 const DEFAULT_OPACITY = 0.7;
 const FADED_OPACITY = 0.4;
+const START_OFFSET = '20%';
+
 const { NODE_RADIUS, ARROW_LENGTH } = config.GRAPH_PROPERTIES;
 
 /**
- * Display component for graph link objects.
- * @param {Object} props.link - Graph link object to be displayed.
+ * Display component for graph link objects. Rendered as a straight link from a
+ * source node to a target. With an arrow marker on the end, hovering just
+ * outside the target node bounds.
  */
 function GraphLink(props) {
   const {
     link,
-    detail,
-    labelKey,
+    bold,
+    faded,
     color,
+    labelKey,
+    marker,
     handleClick,
-    actionsNode,
   } = props;
 
   if (link.source === link.target) return null;
 
   const left = link.source.x < link.target.x;
-
-  const marker = 'url(#endArrow)';
 
   let label = '';
   if (labelKey && labelKey.includes('.')) {
@@ -101,7 +103,7 @@ function GraphLink(props) {
         >
           <textPath
             href={`#link${link.data['@rid']}`}
-            startOffset="20%"
+            startOffset={START_OFFSET}
             side={left ? 'left' : 'right'}
             baselineShift={LABEL_BASELINE_SHIFT}
           >

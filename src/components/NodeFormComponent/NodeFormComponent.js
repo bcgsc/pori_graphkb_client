@@ -73,34 +73,35 @@ class NodeFormComponent extends Component {
       errorFlag: false,
     };
 
+    this.handleChange = this.handleChange.bind(this);
+    this.handleClassChange = this.handleClassChange.bind(this);
+    this.handleDeleteNode = this.handleDeleteNode.bind(this);
+    this.handleDialogClose = this.handleDialogClose.bind(this);
+    this.handleDialogOpen = this.handleDialogOpen.bind(this);
     this.handleFormChange = this.handleFormChange.bind(this);
+    this.handleRelationship = this.handleRelationship.bind(this);
+    this.handleRelationshipAdd = this.handleRelationshipAdd.bind(this);
+    this.handleRelationshipDelete = this.handleRelationshipDelete.bind(this);
+    this.handleRelationshipDirection = this.handleRelationshipDirection.bind(this);
+    this.handleRelationshipUndo = this.handleRelationshipUndo.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.handleSubsetAdd = this.handleSubsetAdd.bind(this);
     this.handleSubsetDelete = this.handleSubsetDelete.bind(this);
     this.handleSubsetUndo = this.handleSubsetUndo.bind(this);
-    this.handleRelationshipAdd = this.handleRelationshipAdd.bind(this);
-    this.handleRelationship = this.handleRelationship.bind(this);
-    this.handleRelationshipDirection = this.handleRelationshipDirection.bind(this);
-    this.handleRelationshipDelete = this.handleRelationshipDelete.bind(this);
-    this.handleRelationshipUndo = this.handleRelationshipUndo.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleDeleteNode = this.handleDeleteNode.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleClassChange = this.handleClassChange.bind(this);
-    this.handleDialogClose = this.handleDialogClose.bind(this);
-    this.handleDialogOpen = this.handleDialogOpen.bind(this);
   }
 
   /**
-   * Loads sources and edge types from the api, initializes fields if form is an edit variant.
+   * Loads sources and edge types from the api, initializes fields if form is
+   * an edit variant.
    */
   async componentDidMount() {
     const sources = await api.getSources();
     const schema = await api.getSchema();
     const { node } = this.props;
-    const { relationships, relationship } = this.state;
+    const { relationships, relationship, newNodeClass } = this.state;
 
     let originalNode = { '@rid': -1 };
-    let nodeClass = 'Disease'; // default
+    let nodeClass = newNodeClass;
 
     if (node) {
       originalNode = node;
@@ -154,26 +155,24 @@ class NodeFormComponent extends Component {
       }
     });
     const edgeTypes = api.getEdges(schema);
-    const expandedEdgeTypes = edgeTypes.reduce((r, e) => {
-      r.push(`in_${e}`);
-      r.push(`out_${e}`);
-      return r;
-    }, []);
+    const expandedEdgeTypes = util.expandEdges(edgeTypes);
 
     expandedEdgeTypes.forEach((type) => {
       if (originalNode[type]) {
         originalNode[type].forEach((edge) => {
-          if (edge['@class'] !== 'Implies') { // TODO: remove filter for implies edges.
+          const targetNode = edge.out['@rid'] === originalNode['@rid']
+            ? edge.in
+            : edge.out;
+
+          if (targetNode['@class'] !== 'Statement') { // TODO: remove filter for Statements.
             if (!relationships.find(r => r['@rid'] === edge['@rid'])) {
               relationships.push({
                 '@rid': edge['@rid'],
                 in: edge.in['@rid'],
                 out: edge.out['@rid'],
                 '@class': edge['@class'],
-                name:
-                  edge.out['@rid'] === originalNode['@rid'] ? edge.in.name : edge.out.name,
-                sourceId:
-                  edge.out['@rid'] === originalNode['@rid'] ? edge.in.sourceId : edge.out.sourceId,
+                name: targetNode.name,
+                sourceId: targetNode.sourceId,
                 source: edge.source['@rid'] || edge.source,
               });
             }
@@ -749,7 +748,7 @@ class NodeFormComponent extends Component {
 
     const snackbar = (
       <Snackbar
-        message={loading ? <CircularProgress size={30} color="secondary" /> : 'Completed!'}
+        message={loading ? <CircularProgress size={SNACKBAR_SPINNER_SIZE} color="secondary" /> : 'Completed!'}
         open={snackbarOpen}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         onClose={handleNodeFinish}
@@ -940,9 +939,9 @@ class NodeFormComponent extends Component {
                               >
                                 <TrendingFlatIcon
                                   className={
-                                    relationship.in === originalNode['@rid']
+                                    (relationship.in === originalNode['@rid'])
                                       ? 'relationship-in'
-                                      : ''
+                                      : null
                                   }
                                 />
                               </IconButton>

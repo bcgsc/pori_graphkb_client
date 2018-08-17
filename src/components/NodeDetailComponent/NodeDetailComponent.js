@@ -339,7 +339,7 @@ class NodeDetailComponent extends Component {
                     color="textSecondary"
                     className="preview"
                   >
-                    {preview.join(', ')}
+                    {previews.join(', ')}
                   </Typography>
                   <div className="length-box">
                     <Typography
@@ -360,7 +360,7 @@ class NodeDetailComponent extends Component {
     };
 
     const relationships = expandedEdgeTypes.reduce((r, e) => {
-      const rendered = listEdges(e);
+      const rendered = listEdge(e);
       if (rendered) r.push(rendered);
       return r;
     }, []);
@@ -386,7 +386,8 @@ class NodeDetailComponent extends Component {
                 Properties:
                 <Divider />
               </Typography>
-              {Object.keys(filteredNode).map(key => formatProperty(key, filteredNode[key], ''))}
+              {Object.keys(filteredNode)
+                .map(key => formatProperty(key, filteredNode[key], ''))}
             </CardContent>
           </Card>
           {(variant !== 'graph' || relationships.length !== 0) && (
@@ -397,7 +398,9 @@ class NodeDetailComponent extends Component {
                   <Divider />
                 </Typography>
                 {relationships.length !== 0 ? relationships : (
-                  <Typography variant="caption" style={{ margin: 'auto' }}>No relationships</Typography>
+                  <Typography variant="caption" style={{ margin: 'auto' }}>
+                    No relationships
+                  </Typography>
                 )}
               </CardContent>
             </Card>

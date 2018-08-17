@@ -1,3 +1,7 @@
+/**
+ * @module /components/NodeFormComponent
+ */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './NodeFormComponent.css';

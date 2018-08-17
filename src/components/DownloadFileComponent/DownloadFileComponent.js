@@ -1,8 +1,13 @@
+
+/**
+ * @module /components/DownloadFileComponent
+ */
 import React from 'react';
 import PropTypes from 'prop-types';
 
 /**
  * Wrapper component to enable downloading of content.
+ * @param {Object} props - component properties.
  */
 function DownloadFileComponent(props) {
   const {

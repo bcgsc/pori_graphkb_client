@@ -1,3 +1,7 @@
+/**
+ * @module /views/EditNodeView
+ */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as jc from 'json-cycle';

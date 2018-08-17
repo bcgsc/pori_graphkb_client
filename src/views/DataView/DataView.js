@@ -1,3 +1,7 @@
+/**
+ * @module /views/DataView
+ */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './DataView.css';

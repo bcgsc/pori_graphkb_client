@@ -8,9 +8,6 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 
 /**
  * View for displaying uncaught error messages.
- * @param {Object} props - properties passed into the component.
- * @param {Object} props.history - history property for the route and passed state.
- * @param {Object} props.history.location.state - passed state from originator of redirect.
  */
 class ErrorView extends Component {
   constructor(props) {
@@ -104,10 +101,10 @@ class ErrorView extends Component {
   }
 }
 
-/**
-* @param {Object} history - Application routing history object.
-  */
 ErrorView.propTypes = {
+  /**
+   * @param {Object} history - Application routing history object.
+   */
   history: PropTypes.object.isRequired,
 };
 

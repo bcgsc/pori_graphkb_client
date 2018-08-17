@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
-import './AddNodeView.css';
+import PropTypes from 'prop-types';
 import NodeFormComponent from '../../components/NodeFormComponent/NodeFormComponent';
 
 /**
@@ -37,5 +36,12 @@ class AddNodeView extends Component {
     );
   }
 }
+
+AddNodeView.propTypes = {
+  /**
+   * @param {Object} history - history state object.
+   */
+  history: PropTypes.object.isRequired,
+};
 
 export default AddNodeView;

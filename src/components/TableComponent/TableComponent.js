@@ -34,11 +34,14 @@ import AddIcon from '@material-ui/icons/Add';
 import NodeDetailComponent from '../NodeDetailComponent/NodeDetailComponent';
 import DownloadFileComponent from '../DownloadFileComponent/DownloadFileComponent';
 import util from '../../services/util';
+import config from '../../config.json';
 
 const NEXT_CUTOFF = 0.8;
+const { ROWS_PER_PAGE, TSV_FILENAME } = config.TABLE_PROPERTIES;
 
 /**
- * Component to display query results in table form.
+ * Component to display query results in table form. Controls state for
+ * ellipsis menu, table rows/columns, and table paginator.
  */
 class TableComponent extends Component {
   constructor(props) {
@@ -136,6 +139,41 @@ class TableComponent extends Component {
   }
 
   /**
+   * builds tsv data and prompts the browser to download file.
+   * @param {Array} fData - forced data to be put into tsv.
+   */
+  createTSV(fData) {
+    const { data, hidden, allProps } = this.props;
+    const rows = [];
+    const rids = fData || Object.keys(data);
+    rows.push(allProps.map(column => util.getEdgeLabel(column)).join('\t'));
+    rids.forEach((rid) => {
+      const row = [];
+      if (!hidden.includes(rid)) {
+        allProps.forEach((column) => {
+          if (column.includes('.')) {
+            row.push(util.getTSVRepresentation(data[rid][column.split('.')[0]], column));
+          } else {
+            row.push(util.getTSVRepresentation(data[rid][column], column));
+          }
+        });
+
+        rows.push(row.join('\t'));
+      }
+    });
+    return rows.join('\n');
+  }
+
+  /**
+   * Returns true if node identifier is the currently selected id.
+   * @param {string} rid - Target node identifier.
+   */
+  isSelected(rid) {
+    const { selectedId } = this.props;
+    return selectedId === rid;
+  }
+
+  /**
    * Updates page to display.
    * @param {Event} event - Triggered event.
    * @param {number} page - New page number.
@@ -158,6 +196,58 @@ class TableComponent extends Component {
    */
   handleChangeRowsPerPage(event) {
     this.setState({ rowsPerPage: event.target.value });
+  }
+
+  /**
+   * Closes table actions menu.
+   */
+  handleClose() {
+    this.setState({ anchorEl: null });
+  }
+
+  /**
+   * Selects/deselects a column for displaying on the table.
+   * @param {number} i - Table column index.
+   */
+  handleColumnCheck(i) {
+    const { tableColumns } = this.state;
+    tableColumns[i].checked = !tableColumns[i].checked;
+    this.setState({ tableColumns });
+  }
+
+  /**
+   * Closes column selection dialog.
+   */
+  handleColumnClose() {
+    this.setState({ columnSelect: false });
+  }
+
+  /**
+   * Opens column selection dialog.
+   */
+  handleColumnOpen() {
+    this.setState({ columnSelect: true });
+  }
+
+  /**
+   * Expands row of input node to view details. If node is already expanded,
+   * collapses it.
+   * @param {string} rid - Node identifier.
+   */
+  handleDetailToggle(rid) {
+    const { toggle } = this.state;
+    if (toggle === rid) this.setState({ toggle: '' });
+    else {
+      this.setState({ toggle: rid });
+    }
+  }
+
+  /**
+   * Opens table actions menu.
+   * @param {Event} e - Open menu button event.
+   */
+  handleOpen(e) {
+    this.setState({ anchorEl: e.currentTarget });
   }
 
   /**
@@ -201,7 +291,19 @@ class TableComponent extends Component {
   }
 
   /**
-   * Sorts table by whether or not row is checked. Toggles output order based on current state.
+   * sets a new subproperty to sort by.
+   * @param {string} sortBy - new property for column to be sorted by.
+   * @param {number} i - column index.
+   */
+  handleSortByChange(sortBy, i) {
+    const { tableColumns } = this.state;
+    tableColumns[i].sortBy = sortBy;
+    this.setState({ tableColumns });
+  }
+
+  /**
+   * Sorts table by whether or not row is checked. Toggles output order based
+   * on current state.
    * @param {string} fOrder - forced output order.
    */
   handleSortByChecked(fOrder) {
@@ -234,103 +336,6 @@ class TableComponent extends Component {
         sortedData: Object.keys(data).map(k => data[k]).sort(sort),
       },
     );
-  }
-
-  /**
-   * Expands row of input node to view details. If node is already expanded, collapses it.
-   * @param {string} rid - Node identifier.
-   */
-  handleDetailToggle(rid) {
-    const { toggle } = this.state;
-    if (toggle === rid) this.setState({ toggle: '' });
-    else {
-      this.setState({ toggle: rid });
-    }
-  }
-
-  /**
-   * Opens table actions menu.
-   * @param {Event} e - Open menu button event.
-   */
-  handleOpen(e) {
-    this.setState({ anchorEl: e.currentTarget });
-  }
-
-  /**
-   * Closes table actions menu.
-   */
-  handleClose() {
-    this.setState({ anchorEl: null });
-  }
-
-  /**
-   * Opens column selection dialog.
-   */
-  handleColumnOpen() {
-    this.setState({ columnSelect: true });
-  }
-
-  /**
-   * Selects/deselects a column for displaying on the table.
-   * @param {number} i - Table column index.
-   */
-  handleColumnCheck(i) {
-    const { tableColumns } = this.state;
-    tableColumns[i].checked = !tableColumns[i].checked;
-    this.setState({ tableColumns });
-  }
-
-  /**
-   * sets a new subproperty to sort by.
-   * @param {string} sortBy - new property for column to be sorted by.
-   * @param {number} i - column index.
-   */
-  handleSortByChange(sortBy, i) {
-    const { tableColumns } = this.state;
-    tableColumns[i].sortBy = sortBy;
-    this.setState({ tableColumns });
-  }
-
-  /**
-   * Closes column selection dialog.
-   */
-  handleColumnClose() {
-    this.setState({ columnSelect: false });
-  }
-
-  /**
-   * builds tsv data and prompts the browser to download file.
-   * @param {Array} fData - forced data to be put into tsv.
-   */
-  createTSV(fData) {
-    const { data, hidden, allColumns } = this.props;
-    const rows = [];
-    const rids = fData || Object.keys(data);
-    rows.push(allColumns.map(column => util.getEdgeLabel(column)).join('\t'));
-    rids.forEach((rid) => {
-      const row = [];
-      if (!hidden.includes(rid)) {
-        allColumns.forEach((column) => {
-          if (column.includes('.')) {
-            row.push(util.getTSVRepresentation(data[rid][column.split('.')[0]], column));
-          } else {
-            row.push(util.getTSVRepresentation(data[rid][column], column));
-          }
-        });
-
-        rows.push(row.join('\t'));
-      }
-    });
-    return rows.join('\n');
-  }
-
-  /**
-   * Returns true if node identifier is the currently selected id.
-   * @param {string} rid - Target node identifier.
-   */
-  isSelected(rid) {
-    const { selectedId } = this.props;
-    return selectedId === rid;
   }
 
   render() {
@@ -387,7 +392,7 @@ class TableComponent extends Component {
         <DownloadFileComponent
           mediaType="text/tab-separated-values"
           rawFileContent={this.createTSV}
-          fileName="download.tsv"
+          fileName={TSV_FILENAME}
           id="download-tsv"
         >
           <MenuItem
@@ -400,7 +405,7 @@ class TableComponent extends Component {
         <DownloadFileComponent
           mediaType="text/tab-separated-values"
           rawFileContent={() => this.createTSV(displayed)}
-          fileName="download.tsv"
+          fileName={TSV_FILENAME}
           id="download-tsv"
         >
           <MenuItem
@@ -543,7 +548,6 @@ class TableComponent extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-
               {pageData.map((n) => {
                 const isSelected = this.isSelected(n['@rid']);
                 const active = toggle === n['@rid'];
@@ -668,35 +672,81 @@ class TableComponent extends Component {
   }
 }
 
-/**
-* @param {Object} data - Object containing query results.
-* @param {Array} displayed - Array of displayed nodes.
-* @param {Array} hidden - Array of hidden nodes.
-* @param {string} selectedId - Selected node identifier.
-* @param {function} handleCheckAll - Method triggered when all rows are checked.
-* @param {function} handleNodeEditStart - Method triggered when user requests to edit a node.
-* @param {function} handleClick - Method triggered when a row is clicked.
-* @param {function} handleCheckbox - Method triggered when a single row is checked.
-* @param {function} handleHideSelected - Method for hiding selected rows from the view.
-* @param {function} handleShowAllNodes - Method for returning previously hidden rows to the view.
-* @param {Array} allColumns - all non-base columns represented throughout the query results.
-    */
 TableComponent.propTypes = {
+  /**
+   * @param {Object} data - Object containing query results.
+   */
   data: PropTypes.object.isRequired,
+  /**
+   * @param {Array} displayed - Array of displayed nodes.
+   */
   displayed: PropTypes.array.isRequired,
+  /**
+   * @param {string} selectedId - Selected node identifier.
+   */
   selectedId: PropTypes.string,
+  /**
+   * @param {function} handleCheckAll - Method triggered when all rows are
+   * checked.
+   */
   handleCheckAll: PropTypes.func.isRequired,
+  /**
+   * @param {function} handleNodeEditStart - Method triggered when user
+   * requests to edit a node.
+   */
   handleNodeEditStart: PropTypes.func.isRequired,
+  /**
+   * @param {function} handleClick - Method triggered when a row is clicked.
+   */
   handleClick: PropTypes.func.isRequired,
+  /**
+   * @param {function} handleCheckbox - Method triggered when a single row is
+   * checked.
+   */
   handleCheckbox: PropTypes.func.isRequired,
+  /**
+   * @param {function} handleHideSelected - Method for hiding selected rows
+   * from the view.
+   */
   handleHideSelected: PropTypes.func.isRequired,
+  /**
+   * @param {function} handleShowAllNodes - Method for returning previously
+   * hidden rows to the view.
+   */
   handleShowAllNodes: PropTypes.func.isRequired,
+  /**
+   * @param {function} handleNewQuery - Handles new querying with new
+   * parameters.
+   */
   handleNewQuery: PropTypes.func,
+  /**
+   * @param {function} handleGraphRedirect - Handles routing to graph
+   * component.
+   */
   handleGraphRedirect: PropTypes.func.isRequired,
+  /**
+   * @param {function} handleSubsequentPagination - parent function to handle
+   * subsequent api calls.
+   */
   handleSubsequentPagination: PropTypes.func,
+  /**
+   * @param {Array} hidden - Array of hidden nodes.
+   */
   hidden: PropTypes.array,
-  allColumns: PropTypes.array,
+  /**
+   * @param {Array} allProps - all non-base columns represented throughout the
+   * query results.
+   */
+  allProps: PropTypes.array,
+  /**
+   * @param {boolean} moreResults - Flag to tell component there could be more
+   * results to the query.
+   */
   moreResults: PropTypes.bool,
+  /**
+   * @param {boolean} completedNext - Flag for whether or not component has
+   * completed the current subsequent query.
+   */
   completedNext: PropTypes.bool.isRequired,
 };
 

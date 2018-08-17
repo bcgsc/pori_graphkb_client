@@ -23,10 +23,11 @@ import SearchIcon from '@material-ui/icons/Search';
 import api from '../../services/api';
 import util from '../../services/util';
 
+const MAX_NESTED_DEPTH = 2;
+
 /**
- * Component to view details of a selected node.
- * @param {Object} props - Component properties passed in by parent.
- * @param {Object} props.node - Node object selected for detail.
+ * Component to view details of a selected node. Can be adapted to display in
+ * both the table view and the graph view.
  */
 class NodeDetailComponent extends Component {
   constructor(props) {
@@ -46,13 +47,8 @@ class NodeDetailComponent extends Component {
   async componentDidMount() {
     const schema = await api.getSchema();
     const { V } = schema;
-    const ontologyEdges = api.getEdges(schema);
     // Accounts for in and out edgetypes.
-    const expandedEdgeTypes = ontologyEdges ? ontologyEdges.reduce((r, e) => {
-      r.push(`in_${e}`);
-      r.push(`out_${e}`);
-      return r;
-    }, []) : [];
+    const expandedEdgeTypes = util.expandEdges(api.getEdges(schema));
     this.setState({
       V,
       expandedEdgeTypes,
@@ -96,23 +92,27 @@ class NodeDetailComponent extends Component {
     Object.keys(V.properties).forEach((key) => { if (key !== '@class') delete filteredNode[key]; });
 
     /**
-   * Formats node properties based on type.
-   * @param {string} key - node property key.
-   * @param {any} value - node property value.
-   */
+     * Formats node properties based on type.
+     * @param {string} key - node property key.
+     * @param {any} value - node property value.
+     */
     const formatProperty = (key, value, prefix) => {
       const id = `${prefix ? `${prefix}.` : ''}${key}`;
-      /* Checks if value is falsy, if it is an edge property, or if the depth
-        of nested values is exceeded. (2) */
+      /**
+       * Checks if value is falsy, if it is an edge property, or if the depth
+       * of nested values is exceeded (2).
+       */
       if (
         !value
         || expandedEdgeTypes.find(edge => edge === key)
         || value.length === 0
-        || (id.match(/\./g) || []).length > 2
+        || (id.match(/\./g) || []).length > MAX_NESTED_DEPTH
       ) {
         return null;
       }
-      const isOpen = nestedExpanded.includes(id);
+
+
+      /*  PRIMITIVE PROPERTY  */
       if (typeof value !== 'object') {
         return (
           <React.Fragment key={id}>
@@ -125,9 +125,14 @@ class NodeDetailComponent extends Component {
           </React.Fragment>
         );
       }
+
+      const isOpen = nestedExpanded.includes(id);
+
+
       // TODO: handle case where field is array of objects that aren't edges.
+      /*  ARRAY PROPERTY   */
       if (Array.isArray(value)) {
-        if (!((id.match(/\./g) || []).length === 2)) {
+        if (!((id.match(/\./g) || []).length === MAX_NESTED_DEPTH)) {
           const preview = value.join(', ');
           const content = (
             <List style={{ paddingTop: '0' }}>
@@ -135,7 +140,10 @@ class NodeDetailComponent extends Component {
                 <ListItem
                   dense
                   key={`${id}${item}`}
-                  onClick={() => handleNewQuery(`${key.includes('.') ? key.split('.')[key.split('.').length - 1] : key}=${encodeURIComponent(item)}`)}
+                  onClick={() => handleNewQuery(`${key.includes('.')
+                    ? key.split('.')[key.split('.').length - 1]
+                    : key}=${encodeURIComponent(item)}`)
+                  }
                   className="list-icon"
                 >
                   <ListItemIcon>
@@ -193,6 +201,8 @@ class NodeDetailComponent extends Component {
         }
       }
 
+
+      /*  OBJECT PROPERTY   */
       const nestedObject = Object.assign({}, value);
       Object.keys(V.properties).forEach((vk) => {
         if (vk !== '@class') delete nestedObject[vk];
@@ -399,11 +409,31 @@ class NodeDetailComponent extends Component {
 }
 
 NodeDetailComponent.propTypes = {
+  /**
+   * @param {Object} node - node to be displayed.
+   */
   node: PropTypes.object,
-  handleNodeEditStart: PropTypes.func.isRequired,
+  /**
+   * @param {function} handleNodeEditStart - function to handle request to edit
+   * selected node
+   */
+  handleNodeEditStart: PropTypes.func,
+  /**
+   * @param {function} handleNewQuery - funcion to handle new database query.
+   */
   handleNewQuery: PropTypes.func.isRequired,
+  /**
+   * @param {Node} children - Additional buttons to render in the sidebar of
+   * the component.
+   */
   children: PropTypes.node,
+  /**
+   * @param {string} variant - variant indicator for component.
+   */
   variant: PropTypes.string,
+  /**
+   * @param {boolean} detailEdge - specifies if node is an edge.
+   */
   detailEdge: PropTypes.bool,
 };
 
@@ -412,6 +442,7 @@ NodeDetailComponent.defaultProps = {
   children: null,
   variant: 'table',
   detailEdge: false,
+  handleNodeEditStart: null,
 };
 
 export default NodeDetailComponent;

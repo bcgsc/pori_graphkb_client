@@ -128,15 +128,13 @@ GraphNode.defaultProps = {
   handleClick: null,
   color: '#26328C',
   labelKey: 'name',
-  detail: null,
-  actionsNode: null,
+  faded: false,
+  applyDrag: null,
 };
 
 /**
- * @param {Object} node - Node to be rendered.
- * @param {function} handleClick - Parent method on node click event.
  * @param {bool} expandable - Expandable flag.
- * @param {string} color - Color of node.
+
  * @param {number} r - Node radius.
  * @param {Object} simulation - parent simulation that node is a member of.
  * @param {Array} actionsRing - Array of svg components making up the node actions ring
@@ -145,13 +143,30 @@ GraphNode.defaultProps = {
  * @param {Object} detail - node identifier for node who's details are currently displayed.
  */
 GraphNode.propTypes = {
+  /**
+   * @param {Object} node - Node to be rendered.
+   */
   node: PropTypes.object.isRequired,
+  /**
+   * @param {function} handleClick - Parent method on node click event.
+   */
   handleClick: PropTypes.func,
+  /**
+   * @param {string} color - Color of node.
+   */
   color: PropTypes.string,
-  simulation: PropTypes.object.isRequired,
+  /**
+   * @param {function} applyDrag - Function to apply drag functionality to node.
+   */
+  applyDrag: PropTypes.func,
+  /**
+   * @param {string} labelKey - Property to label node by.
+   */
   labelKey: PropTypes.string,
-  detail: PropTypes.object,
-  actionsNode: PropTypes.object,
+  /**
+   * @param {boolean} faded - flag for whether or not node is faded.
+   */
+  faded: PropTypes.bool,
 };
 
 export default GraphNode;

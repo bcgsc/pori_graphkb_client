@@ -74,15 +74,46 @@ function ResourceSelectComponent(props) {
 }
 
 ResourceSelectComponent.propTypes = {
+  /**
+   * @param {Array} resources - List of resources to be selected from.
+   */
   resources: PropTypes.array,
+  /**
+   * @param {any} value - Parent property to bind output data to.
+   */
   value: PropTypes.any.isRequired,
+  /**
+   * @param {function} onChange - Parent function to trigger on item select.
+   */
   onChange: PropTypes.func,
+  /**
+   * @param {string} name - DOM node name property.
+   */
   name: PropTypes.string,
+  /**
+   * @param {string} label - Component label text.
+   */
   label: PropTypes.string,
+  /**
+   * @param {function} children - Function to produce list items.
+   */
   children: PropTypes.func,
+  /**
+   * @param {boolean} required - Required flag for input component.
+   */
   required: PropTypes.bool,
+  /**
+   * @param {boolean} error - Error flag for input component.
+   */
   error: PropTypes.bool,
+  /**
+   * @param {string} id - CSS selector id for root component.
+   */
   id: PropTypes.string,
+  /**
+   * @param {boolean} dense - Flag for dense variant, which has smaller font
+   * size.
+   */
   dense: PropTypes.bool,
 };
 

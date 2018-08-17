@@ -120,6 +120,7 @@ class AutoSearchComponent extends Component {
       endAdornment,
       error,
       dense,
+      limit,
     } = this.props;
 
     const autoSearchResults = (

@@ -58,27 +58,26 @@ class TableComponent extends Component {
       tableColumns: [],
     };
 
-    this.handleDetailToggle = this.handleDetailToggle.bind(this);
-    this.handleRequestSort = this.handleRequestSort.bind(this);
-    this.handleSortByChecked = this.handleSortByChecked.bind(this);
+    this.createTSV = this.createTSV.bind(this);
     this.handleChangePage = this.handleChangePage.bind(this);
     this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
-    this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.handleColumnOpen = this.handleColumnOpen.bind(this);
-    this.handleColumnClose = this.handleColumnClose.bind(this);
     this.handleColumnCheck = this.handleColumnCheck.bind(this);
+    this.handleColumnClose = this.handleColumnClose.bind(this);
+    this.handleColumnOpen = this.handleColumnOpen.bind(this);
+    this.handleDetailToggle = this.handleDetailToggle.bind(this);
+    this.handleOpen = this.handleOpen.bind(this);
+    this.handleRequestSort = this.handleRequestSort.bind(this);
     this.handleSortByChange = this.handleSortByChange.bind(this);
-
-    this.createTSV = this.createTSV.bind(this);
+    this.handleSortByChecked = this.handleSortByChecked.bind(this);
   }
 
   /**
    * Initializes table columns.
    */
   componentDidMount() {
-    const { allColumns } = this.props;
-    const tableColumns = allColumns.reduce((r, column) => {
+    const { allProps } = this.props;
+    const tableColumns = allProps.reduce((r, column) => {
       if (column.startsWith('in_') || column.startsWith('out_') || column === '@rid') return r;
       if (!column.includes('.')) {
         r.push({
@@ -508,11 +507,7 @@ class TableComponent extends Component {
           <Table>
             <TableHead className="table-head">
               <TableRow>
-                <TableCell
-                  classes={{
-                    root: 'selected-col',
-                  }}
-                >
+                <TableCell padding="dense">
                   <Checkbox
                     color="secondary"
                     onChange={e => handleCheckAll(e, pageData)}
@@ -579,11 +574,7 @@ class TableComponent extends Component {
                           selected: 'selected-override',
                         }}
                       >
-                        <TableCell
-                          classes={{
-                            root: 'selected-col',
-                          }}
-                        >
+                        <TableCell padding="dense">
                           <Checkbox
                             onChange={() => handleCheckbox(n['@rid'])}
                             checked={displayed.includes(n['@rid'])}
@@ -602,9 +593,7 @@ class TableComponent extends Component {
                         <TableCell>
                           <IconButton
                             onClick={() => this.handleDetailToggle(n['@rid'])}
-                            className={
-                              active ? 'detail-btn-active' : 'detail-btn'
-                            }
+                            className={`detail-btn ${active ? 'active' : ''}`}
                           >
                             <KeyboardArrowDownIcon />
                           </IconButton>
@@ -625,7 +614,7 @@ class TableComponent extends Component {
             page={page}
             onChangePage={this.handleChangePage}
             onChangeRowsPerPage={this.handleChangeRowsPerPage}
-            rowsPerPageOptions={[25, 50, 100]}
+            rowsPerPageOptions={ROWS_PER_PAGE}
             component="div"
           />
           <Tooltip
@@ -752,7 +741,7 @@ TableComponent.propTypes = {
 
 TableComponent.defaultProps = {
   selectedId: null,
-  allColumns: [],
+  allProps: [],
   hidden: [],
   handleNewQuery: null,
   handleSubsequentPagination: null,

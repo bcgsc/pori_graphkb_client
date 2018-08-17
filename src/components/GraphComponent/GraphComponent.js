@@ -44,6 +44,7 @@ const {
   ARROW_LENGTH,
   NODE_INIT_RADIUS,
   NODE_RADIUS,
+  ZOOM_BOUNDS,
 } = config.GRAPH_PROPERTIES;
 
 const {
@@ -74,6 +75,7 @@ const styles = {
 // Component specific constants.
 const AUTO_SPACE_COEFFICIENT = 2.8;
 const SNACKBAR_AUTOHIDE_DURATION = 6000;
+const MARKER_ID = 'endArrow';
 
 /**
  * Component for displaying query results in force directed graph form.
@@ -90,7 +92,7 @@ class GraphComponent extends Component {
       propsMap: { nodes: {}, links: {} },
       expandedEdgeTypes: [],
       actionsNode: null,
-      simulation: null,
+      simulation: d3.forceSimulation(),
       svg: undefined,
       width: 0,
       height: 0,
@@ -143,7 +145,7 @@ class GraphComponent extends Component {
       displayed,
       data,
       schema,
-      allColumns,
+      allProps,
       filteredSearch,
       edges,
     } = this.props;
@@ -172,8 +174,7 @@ class GraphComponent extends Component {
     this.setState({
       expandedEdgeTypes,
       schema,
-      simulation,
-      allColumns,
+      allProps,
       filteredSearch: stringifiedSearch,
     }, () => {
       this.handleResize();
@@ -337,7 +338,7 @@ class GraphComponent extends Component {
       // Node properties haven't been processed.
       handleNewColumns(node);
     }
-    const { allColumns } = this.props;
+    const { allProps } = this.props;
 
     if (!graphObjects[node['@rid']]) {
       nodes.push({
@@ -357,7 +358,7 @@ class GraphComponent extends Component {
       if (node[edgeType] && node[edgeType].length !== 0) {
         // stores total number of edges and initializes count for position calculating.
         const n = node[edgeType].length;
-        let j = 0;
+        let i = 0;
 
         // Looks through each edge of certain type.
         node[edgeType].forEach((edge) => {
@@ -406,7 +407,7 @@ class GraphComponent extends Component {
                 const positionInit = util.positionInit(
                   position.x,
                   position.y,
-                  j += 1,
+                  i += 1,
                   n,
                 );
                 this.processData(
@@ -419,7 +420,7 @@ class GraphComponent extends Component {
                 const positionInit = util.positionInit(
                   position.x,
                   position.y,
-                  j += 1,
+                  i += 1,
                   n,
                 );
                 this.processData(
@@ -749,7 +750,7 @@ class GraphComponent extends Component {
       expandedEdgeTypes,
       expandable,
       propsMap,
-      allColumns,
+      allProps,
       graphOptions,
       filteredSearch,
     } = this.state;
@@ -778,7 +779,7 @@ class GraphComponent extends Component {
       }
     });
 
-    allColumns.forEach((prop) => {
+    allProps.forEach((prop) => {
       let obj = actionsNode.data;
       let key = prop;
 
@@ -1405,7 +1406,7 @@ class GraphComponent extends Component {
           >
             <defs>
               <marker
-                id="endArrow"
+                id={MARKER_ID}
                 markerWidth={ARROW_LENGTH}
                 markerHeight={ARROW_WIDTH}
                 refY={ARROW_WIDTH / 2}
@@ -1430,39 +1431,56 @@ class GraphComponent extends Component {
   }
 }
 
-/**
-  * @param {function} handleClick - Parent component method triggered when a
-  * graph object is clicked.
-  * @param {Object} data - Parent state data.
-  * @param {function} handleDetailDrawerOpen - Method to handle opening of detail drawer.
-  * @param {function} handleDetailDrawerClose - Method to handle closing of detail drawer.
-  * @param {function} handleTableRedirect - Method to handle a redirect to the table view.
-  * @param {Array} edgeTypes - Array containing all the different edge types as defined by
-  * the database schema.
-  * @param {Array} ontologyTypes - Array containing individual schemas for each Ontology
-  * subclass as defined by the schema.
-  * @param {Object} detail - record ID of node currently selected for detail viewing.
-  * @param {Array} allColumns - list of all unique properties on all nodes returned in
-  * initial query.
-  */
 GraphComponent.propTypes = {
+  /**
+   * @param {function} handleClick - Parent component method triggered when a
+   * graph object is clicked.
+   */
   handleClick: PropTypes.func,
+  /**
+   * @param {Object} data - Parent state data.
+   */
   data: PropTypes.object.isRequired,
+  /**
+   * @param {Object} classes - Classes data for material ui withStyles().
+   */
   classes: PropTypes.object,
+  /**
+   * @param {function} handleDetailDrawerOpen - Method to handle opening of detail drawer.
+   */
   handleDetailDrawerOpen: PropTypes.func.isRequired,
+  /**
+   * @param {function} handleDetailDrawerClose - Method to handle closing of detail drawer.
+   */
   handleDetailDrawerClose: PropTypes.func.isRequired,
+  /**
+   * @param {function} handleTableRedirect - Method to handle a redirect to the table view.
+   */
   handleTableRedirect: PropTypes.func.isRequired,
+  /**
+   * @param {function} handleNewColumns - Updates valid properties in parent state.
+   */
   handleNewColumns: PropTypes.func.isRequired,
+  /**
+   * @param {Object} schema - Database schema.
+   */
   schema: PropTypes.object.isRequired,
+  /**
+   * @param {Object} detail - record ID of node currently selected for detail viewing.
+   */
   detail: PropTypes.object,
-  allColumns: PropTypes.array,
+  /**
+   * @param {Array} allProps - list of all unique properties on all nodes returned in
+   * initial query.
+   */
+  allProps: PropTypes.array,
 };
 
 GraphComponent.defaultProps = {
   handleClick: null,
   classes: null,
   detail: null,
-  allColumns: [],
+  allProps: [],
 };
 
 export default withStyles(styles)(GraphComponent);

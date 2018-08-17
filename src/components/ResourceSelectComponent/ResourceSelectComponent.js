@@ -8,6 +8,8 @@ import {
   Select,
 } from '@material-ui/core';
 
+const identifier = Math.random() * 100;
+
 /**
  * Component to select resources from a list of defined options.
  * @param {Object} props - Properties passed in by parent component.
@@ -46,7 +48,7 @@ function ResourceSelectComponent(props) {
       id={id}
     >
       <InputLabel
-        htmlFor="resource-select"
+        htmlFor={`resource-select${identifier}`}
         required={required}
         error={error}
         style={{
@@ -61,7 +63,7 @@ function ResourceSelectComponent(props) {
         error={error}
         inputProps={{
           name,
-          id: 'resource-select',
+          id: `resource-select${identifier}`,
         }}
         style={{
           fontSize: dense ? '0.8125rem' : '',

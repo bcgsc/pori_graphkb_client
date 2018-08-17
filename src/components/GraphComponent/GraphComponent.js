@@ -118,6 +118,7 @@ class GraphComponent extends Component {
       actionsNodeIsEdge: false,
     };
 
+    this.applyDrag = this.applyDrag.bind(this);
     this.drawGraph = this.drawGraph.bind(this);
     this.initSimulation = this.initSimulation.bind(this);
     this.loadNeighbors = this.loadNeighbors.bind(this);
@@ -156,13 +157,8 @@ class GraphComponent extends Component {
       initState,
     } = this.state;
 
-    const simulation = d3.forceSimulation();
     // Defines what edge keys to look for.
-    const expandedEdgeTypes = edges.reduce((r, e) => {
-      r.push(`in_${e}`);
-      r.push(`out_${e}`);
-      return r;
-    }, []);
+    const expandedEdgeTypes = util.expandEdges(edges);
 
     let validDisplayed = displayed;
     if (!displayed || displayed.length === 0) {
@@ -210,7 +206,7 @@ class GraphComponent extends Component {
           links,
         } = initState;
         nodes.forEach((node) => {
-          util.loadColorProps(allColumns, node.data, propsMap);
+          util.loadColorProps(allProps, node.data, propsMap);
           util.expanded(expandedEdgeTypes, graphObjects, node.data['@rid'], expandable);
         });
 
@@ -228,7 +224,7 @@ class GraphComponent extends Component {
         delete storedData.filteredSearch;
 
         nodes.forEach((node) => {
-          util.loadColorProps(allColumns, node.data, propsMap);
+          util.loadColorProps(allProps, node.data, propsMap);
           util.expanded(expandedEdgeTypes, graphObjects, node.data['@rid'], expandable);
         });
 
@@ -280,6 +276,128 @@ class GraphComponent extends Component {
     simulation.on('tick', null);
     window.removeEventListener('resize', this.handleResize);
     util.loadGraphData(filteredSearch, { nodes, links, graphObjects });
+  }
+
+
+  /**
+   * Applies drag behavior to node.
+   * @param {Object} node - node to be dragged.
+   */
+  applyDrag(node) {
+    const { simulation } = this.state;
+    d3.event.sourceEvent.stopPropagation();
+
+    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+
+    /* eslint-disable */
+    function dragged() {
+      node.fx = d3.event.x;
+      node.fy = d3.event.y;
+    }
+
+    function ended() {
+      if (!d3.event.active) simulation.alphaTarget(0);
+      node.fx = null;
+      node.fy = null;
+    }
+    /* eslint-enable */
+
+    d3.event
+      .on('drag', dragged)
+      .on('end', ended);
+  }
+
+  /**
+   * Renders nodes and links to the graph.
+   */
+  drawGraph() {
+    const {
+      nodes,
+      links,
+      simulation,
+      graphOptions,
+    } = this.state;
+
+    simulation.nodes(nodes);
+
+    simulation.force(
+      'links',
+      d3
+        .forceLink(links)
+        .strength(graphOptions.linkStrength)
+        .id(d => d.data['@rid']),
+    );
+
+    const ticked = () => {
+      this.setState({
+        links,
+        nodes,
+      });
+    };
+
+    simulation.on('tick', ticked);
+    simulation.restart();
+    this.setState({ simulation, actionsNode: null });
+  }
+
+  /**
+   * Initializes simulation rules and properties. Updates simulation component state.
+   */
+  initSimulation() {
+    const {
+      simulation,
+      graphOptions,
+      width,
+      height,
+    } = this.state;
+
+    simulation.force(
+      'link',
+      d3.forceLink().id(d => d.data['@rid']),
+    ).force(
+      'collide',
+      d3.forceCollide((d) => {
+        if (graphOptions.autoCollisionRadius) {
+          let obj = d.data;
+          let key = graphOptions.nodeLabelProp;
+          if (key.includes('.')) {
+            key = key.split('.')[1];
+            obj = graphOptions.nodeLabelProp.split('.')[0] || {};
+          }
+          if (!obj[key] || obj[key].length === 0) return graphOptions.collisionRadius;
+          return Math.max(obj[key].length * AUTO_SPACE_COEFFICIENT, NODE_INIT_RADIUS);
+        }
+        return graphOptions.collisionRadius;
+      }),
+    ).force(
+      'charge',
+      d3.forceManyBody().strength(-graphOptions.chargeStrength),
+    ).force(
+      'center',
+      d3.forceCenter(
+        width / 2,
+        height / 2,
+      ),
+    );
+
+    const container = d3.select(this.zoom);
+    const svg = d3.select(this.graph);
+
+    svg
+      .attr('width', width)
+      .attr('height', height)
+      .call(d3.zoom()
+        .scaleExtent(ZOOM_BOUNDS)
+        .on('zoom', () => {
+          const { transform } = d3.event;
+          container.attr(
+            'transform',
+            `translate(${transform.x},${transform.y})scale(${transform.k})`,
+          );
+        }))
+      .on('dblclick.zoom', null);
+
+    this.setState({ simulation, svg });
   }
 
   /**
@@ -347,7 +465,7 @@ class GraphComponent extends Component {
         y: position.y,
       });
       graphObjects[node['@rid']] = node;
-      util.loadColorProps(allColumns, node, propsMap);
+      util.loadColorProps(allProps, node, propsMap);
     }
 
     /**
@@ -451,99 +569,6 @@ class GraphComponent extends Component {
       graphObjects,
       propsMap,
     });
-  }
-
-  /**
-   * Initializes simulation rules and properties. Updates simulation component state.
-   */
-  initSimulation() {
-    const {
-      simulation,
-      graphOptions,
-      width,
-      height,
-    } = this.state;
-
-    simulation.force(
-      'link',
-      d3.forceLink().id(d => d.data['@rid']),
-    ).force(
-      'collide',
-      d3.forceCollide((d) => {
-        if (graphOptions.autoCollisionRadius) {
-          let obj = d.data;
-          let key = graphOptions.nodeLabelProp;
-          if (key.includes('.')) {
-            key = key.split('.')[1];
-            obj = graphOptions.nodeLabelProp.split('.')[0] || {};
-          }
-          if (!obj[key] || obj[key].length === 0) return graphOptions.collisionRadius;
-          return Math.max(obj[key].length * AUTO_SPACE_COEFFICIENT, NODE_INIT_RADIUS);
-        }
-        return graphOptions.collisionRadius;
-      }),
-    ).force(
-      'charge',
-      d3.forceManyBody().strength(-graphOptions.chargeStrength),
-    ).force(
-      'center',
-      d3.forceCenter(
-        width / 2,
-        height / 2,
-      ),
-    );
-
-    const container = d3.select(this.zoom);
-    const svg = d3.select(this.graph);
-
-    svg
-      .attr('width', width)
-      .attr('height', height)
-      .call(d3.zoom()
-        .scaleExtent([0.2, 10])
-        .on('zoom', () => {
-          const { transform } = d3.event;
-          container.attr(
-            'transform',
-            `translate(${transform.x},${transform.y})scale(${transform.k})`,
-          );
-        }))
-      .on('dblclick.zoom', null);
-
-    this.setState({ simulation, svg });
-  }
-
-  /**
-   * Renders nodes and links to the graph.
-   */
-  drawGraph() {
-    const {
-      nodes,
-      links,
-      simulation,
-      graphOptions,
-    } = this.state;
-
-    simulation.nodes(nodes);
-
-    simulation.force(
-      'links',
-      d3
-        .forceLink(links)
-        .strength(graphOptions.linkStrength)
-        .id(d => d.data['@rid']),
-    );
-
-    const ticked = () => {
-      this.setState({
-        links,
-        nodes,
-      });
-    };
-
-    simulation.on('tick', ticked);
-    simulation.restart();
-    this.setState({ simulation, actionsNode: null });
   }
 
   /**
@@ -1334,24 +1359,33 @@ class GraphComponent extends Component {
       <GraphLink
         key={link.data['@rid']}
         link={link}
+        faded={
+          (detail && detail['@rid'] !== link.data['@rid'])
+          || (actionsNode && actionsNode.data['@rid'] !== link.data['@rid'])
+        }
+        bold={
+          (detail && detail['@rid'] === link.data['@rid'])
+          || (actionsNode && actionsNode.data['@rid'] === link.data['@rid'])
+        }
         detail={detail}
         labelKey={graphOptions.linkLabelProp}
         color={util.getColor(link, graphOptions.linksColor, graphOptions.linksColors)}
         handleClick={e => this.handleLinkClick(e, link)}
         actionsNode={actionsNode}
+        marker={`url(#${MARKER_ID})`}
       />));
 
     const nodesDisplay = nodes.map(node => (
       <GraphNode
         key={node.data['@rid']}
         node={node}
-        detail={detail}
-        actionsNode={actionsNode}
+        faded={(detail && detail['@rid'] !== node.data['@rid'])
+          || (actionsNode && actionsNode.data['@rid'] !== node.data['@rid'])}
         labelKey={graphOptions.nodeLabelProp}
         color={util.getColor(node, graphOptions.nodesColor, graphOptions.nodesColors)}
         handleClick={e => this.handleClick(e, node)}
         expandable={expandable[node.data['@rid']]}
-        simulation={simulation}
+        applyDrag={this.applyDrag}
       />
     ));
 

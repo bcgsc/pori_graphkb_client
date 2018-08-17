@@ -42,8 +42,8 @@ export default class util {
 
   /**
    * Returns a representative field of a given object. Defaults to:
-   * name, then sourceId, then if neither are present, the first primitive
-   * type field in the object.
+   * name, then sourceId (defined in config.json: DEFAULT_PROPS), then if
+   * neither are present, the first primitive type field in the object.
    * eg.  {name: 'bob', ...other} => 'bob'
    *      {sourceId: '123', color: 'blue'} => '123'
    *      {colors: ['red', 'green], height: '6ft'} => '6ft'

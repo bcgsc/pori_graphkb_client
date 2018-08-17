@@ -1,3 +1,7 @@
+/**
+ * @module /views/AdvancedQueryView
+ */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './AdvancedQueryView.css';
@@ -19,7 +23,7 @@ import {
   Snackbar,
 } from '@material-ui/core/';
 import HelpIcon from '@material-ui/icons/Help';
-import queryString from 'query-string';
+import * as qs from 'querystring';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
 import AutoSearchComponent from '../../components/AutoSearchComponent/AutoSearchComponent';
 import api from '../../services/api';
@@ -28,7 +32,8 @@ import config from '../../config';
 
 /**
  * View for in-depth database query building. Form submissions will route to
- * the data results route to display the returned data.
+ * the data results route to display the returned data. Forms are dynamically
+ * generated based off of the database schema.
  */
 class AdvancedQueryView extends Component {
   constructor(props) {
@@ -40,9 +45,9 @@ class AdvancedQueryView extends Component {
       message: '',
     };
 
+    this.bundle = this.bundle.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleClassChange = this.handleClassChange.bind(this);
-    this.bundle = this.bundle.bind(this);
     this.handleClose = this.handleClose.bind(this);
   }
 
@@ -104,6 +109,40 @@ class AdvancedQueryView extends Component {
   }
 
   /**
+   * Formats query string to be passed into url.
+   */
+  bundle() {
+    const { form, editableProps } = this.state;
+    const params = [{ name: '@class', type: 'string' }];
+    params.push(...config.ONTOLOGY_QUERY_PARAMS);
+    const payload = util.parsePayload(form, editableProps, params);
+
+    return qs.stringify(payload);
+  }
+
+  /**
+   * Updates main parameters after user input.
+   * @param {Event} e - User input event.
+   */
+  handleChange(e) {
+    const { form } = this.state;
+    form[e.target.name] = e.target.value;
+
+    if (e.target['@rid']) {
+      form[`${e.target.name}.@rid`] = e.target['@rid'];
+    } else if (form[`${e.target.name}.@rid`]) {
+      form[`${e.target.name}.@rid`] = '';
+    }
+    if (e.target.sourceId) {
+      form[`${e.target.name}.sourceId`] = e.target.sourceId;
+    } else if (form[`${e.target.name}.sourceId`]) {
+      form[`${e.target.name}.sourceId`] = '';
+    }
+
+    this.setState({ form });
+  }
+
+  /**
    * Re renders form input fields based on class editable properties.
    * @param {Event} e - Class selection event
    */
@@ -130,41 +169,10 @@ class AdvancedQueryView extends Component {
   }
 
   /**
-   * Updates main parameters after user input.
-   * @param {Event} e - User input event.
+   * Closes notification snackbar.
    */
-  handleChange(e) {
-    const { form } = this.state;
-    form[e.target.name] = e.target.value;
-
-    if (e.target['@rid']) {
-      form[`${e.target.name}.@rid`] = e.target['@rid'];
-    } else if (form[`${e.target.name}.@rid`]) {
-      form[`${e.target.name}.@rid`] = '';
-    }
-    if (e.target.sourceId) {
-      form[`${e.target.name}.sourceId`] = e.target.sourceId;
-    } else if (form[`${e.target.name}.sourceId`]) {
-      form[`${e.target.name}.sourceId`] = '';
-    }
-
-    this.setState({ form });
-  }
-
   handleClose() {
     this.setState({ message: '' });
-  }
-
-  /**
-  * Formats query string to be passed into url.
-  */
-  bundle() {
-    const { form, editableProps } = this.state;
-    const params = [{ name: '@class', type: 'string' }];
-    params.push(...config.ONTOLOGY_QUERY_PARAMS);
-    const payload = util.parsePayload(form, editableProps, params);
-
-    return queryString.stringify(payload);
   }
 
   render() {
@@ -348,10 +356,10 @@ class AdvancedQueryView extends Component {
   }
 }
 
-/**
-* @param {object} history - Application history state object.
-    */
 AdvancedQueryView.propTypes = {
+  /**
+   * @param {object} history - Application history state object.
+   */
   history: PropTypes.object.isRequired,
 };
 

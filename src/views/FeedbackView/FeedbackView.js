@@ -1,3 +1,7 @@
+/**
+ * @module /views/FeedbackView
+ */
+
 import React from 'react';
 import './FeedbackView.css';
 import { Typography, Paper } from '@material-ui/core';
@@ -5,6 +9,9 @@ import config from '../../config.json';
 
 const { FEEDBACK_EMAIL, FEEDBACK_HIPCHAT, JIRA_LINK } = config;
 
+/**
+ * Feedback page
+ */
 function FeedbackView() {
   const emailLink = <a href={`mailto:${FEEDBACK_EMAIL}`}>{FEEDBACK_EMAIL}</a>;
   const jiraLink = <a rel="noopener noreferrer" target="_blank" href={JIRA_LINK}>KBDEV</a>;

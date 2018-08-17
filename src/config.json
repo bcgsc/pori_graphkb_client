@@ -18,7 +18,11 @@
     "DETAILS_RING_RADIUS": 56,
     "FONT_SIZE": 7,
     "LABEL_V_MARGIN": 4,
-    "ICON_DIMS": 24
+    "ICON_DIMS": 24,
+    "ZOOM_BOUNDS": [
+      0.2,
+      10
+    ]
   },
   "GRAPH_DEFAULTS": {
     "LINK_STRENGTH": 0.03,
@@ -146,6 +150,14 @@
       "#7b2c4a",
       "#d8806c"
     ]
+  },
+  "TABLE_PROPERTIES": {
+    "ROWS_PER_PAGE": [
+      25,
+      50,
+      100
+    ],
+    "TSV_FILENAME": "download.tsv"
   },
   "DEFAULT_PROPS": [
     "name",

@@ -1,3 +1,7 @@
+/**
+ * @module /views/LoginView
+ */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './LoginView.css';
@@ -149,14 +153,18 @@ class LoginView extends Component {
   }
 }
 
-/**
- * @param {object} history -  Application history object.
- * @param {function} handleLogOut - Updates parent state on unauthorized user.
- * @param {function} handleAuthenticate - Updates parent state on successful login.
- */
 LoginView.propTypes = {
+  /**
+   * @param {object} history -  Application history object.
+   */
   history: PropTypes.object.isRequired,
+  /**
+   * @param {function} handleLogOut - Updates parent state on unauthorized user.
+   */
   handleLogOut: PropTypes.func.isRequired,
+  /**
+   * @param {function} handleAuthenticate - Updates parent state on successful login.
+   */
   handleAuthenticate: PropTypes.func.isRequired,
 };
 

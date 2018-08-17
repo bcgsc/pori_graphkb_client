@@ -1,7 +1,10 @@
+/**
+ * @module /views/EditNodeView
+ */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as jc from 'json-cycle';
-import './EditNodeView.css';
 import NodeFormComponent from '../../components/NodeFormComponent/NodeFormComponent';
 import api from '../../services/api';
 
@@ -59,12 +62,14 @@ class EditNodeView extends Component {
   }
 }
 
-/**
- * @param {Object} match - Match object for extracting URL parameters.
- * @param {Object} history - Application routing history object.
- */
 EditNodeView.propTypes = {
+  /**
+   * @param {Object} match - Match object for extracting URL parameters.
+   */
   match: PropTypes.object.isRequired,
+  /**
+   * @param {Object} history - Application routing history object.
+   */
   history: PropTypes.object.isRequired,
 };
 

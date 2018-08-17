@@ -1,3 +1,7 @@
+/**
+ * @module /views/AddNodeView
+ */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import NodeFormComponent from '../../components/NodeFormComponent/NodeFormComponent';

@@ -1,3 +1,8 @@
+
+/**
+ * @module /components/AutoSearchComponent
+ */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './AutoSearchComponent.css';
@@ -34,6 +39,7 @@ const MAX_HEIGHT_FACTOR = 15;
  * Results are displayed in a menu anchored below the input text field,
  * inheriting its width and with a max-height proportional to the specified
  * limit.
+ *
  */
 class AutoSearchComponent extends Component {
   constructor(props) {

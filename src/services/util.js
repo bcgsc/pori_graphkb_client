@@ -1,3 +1,8 @@
+/**
+ * Handles miscellaneous tasks.
+ * @module /services/util
+ */
+
 import * as jc from 'json-cycle';
 import config from '../config.json';
 
@@ -8,10 +13,7 @@ const ACRONYMS = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
 const GRAPH_OBJECTS_KEY = 'graphObjects';
 const GRAPH_OPTIONS_KEY = 'graphOptions';
 
-/**
- * Handles miscellaneous tasks.
- */
-export default class util {
+export default {
   /**
    * Un-camelCase's input string and capitalizes each word. Also applies
    * capitalization to defined acronyms.
@@ -23,7 +25,7 @@ export default class util {
    * > 'Genome Science'
    * @param {string} str - camelCase'd string.
    */
-  static antiCamelCase(str) {
+  antiCamelCase: (str) => {
     let accstr = str;
     if (accstr.startsWith('@')) accstr = accstr.slice(1);
     let words = [accstr];
@@ -45,7 +47,7 @@ export default class util {
 
     accstr = words.join(' ');
     return accstr.trim();
-  }
+  },
 
   /**
    * Returns a representative field of a given object. Defaults to:
@@ -62,7 +64,7 @@ export default class util {
    * > '6ft'
    * @param {Object} obj - target data object.
    */
-  static getPreview(obj) {
+  getPreview: (obj) => {
     let preview;
     DEFAULT_PROPS.forEach((prop) => {
       if (obj[prop]) {
@@ -76,20 +78,18 @@ export default class util {
       preview = obj[prop];
     }
     return preview;
-  }
+  },
 
   /**
    * Expands edges to field property names, with either 'in_' or 'out_'
    * appended to them.
    * @param {Array} edges - list of edge classes.
    */
-  static expandEdges(edges) {
-    return edges.reduce((r, e) => {
-      r.push(`in_${e}`);
-      r.push(`out_${e}`);
-      return r;
-    }, []);
-  }
+  expandEdges: edges => edges.reduce((r, e) => {
+    r.push(`in_${e}`);
+    r.push(`out_${e}`);
+    return r;
+  }, []),
 
   /**
    * Formatter meant for edge types given in the form:
@@ -100,7 +100,7 @@ export default class util {
    *
    * @param {string} str - string to be formatted.
    */
-  static getEdgeLabel(str) {
+  getEdgeLabel: (str) => {
     const edgeType = str.split('_')[1];
     let retstr = edgeType || str;
 
@@ -130,7 +130,7 @@ export default class util {
       }
     }
     return retstr;
-  }
+  },
 
   /**
    * Returns the plaintext representation of a value in order to be loaded into
@@ -138,7 +138,7 @@ export default class util {
    * @param {any} value - Value
    * @param {string} key - Object Key.
    */
-  static getTSVRepresentation(value, key) {
+  getTSVRepresentation: (value, key) => {
     if (typeof value !== 'object') {
       return (value || '').toString().replace(/[\r\n\t]/g, ' ');
     }
@@ -158,7 +158,7 @@ export default class util {
       return this.getTSVRepresentation(value[newKey], newKey);
     }
     return this.getPreview(value);
-  }
+  },
 
   /**
    * Prepares a payload to be sent to the server for a POST, PATCH, or GET requst.
@@ -166,7 +166,7 @@ export default class util {
    * @param {Array} editableProps - List of valid properties for given form.
    * @param {Array} exceptions - List of extra parameters not specified in editableProps.
    */
-  static parsePayload(form, editableProps, exceptions) {
+  parsePayload: (form, editableProps, exceptions) => {
     const payload = Object.assign({}, form);
     Object.keys(payload).forEach((key) => {
       if (!payload[key]) delete payload[key];
@@ -190,14 +190,14 @@ export default class util {
       }
     });
     return payload;
-  }
+  },
 
   /**
    * Returns pallette of colors for displaying objects of given type.
    * @param {number} n - number of elements in collection.
    * @param {string} type - object type ['link', 'node'].
    */
-  static getPallette(n, type) {
+  getPallette: (n, type) => {
     const baseName = `${type.toUpperCase().slice(0, type.length - 1)}_COLORS_`;
     const maxPalletteSize = PALLETE_SIZES[PALLETE_SIZES.length - 1];
     for (let i = 0; i < PALLETE_SIZES.length; i += 1) {
@@ -212,43 +212,43 @@ export default class util {
       list.push(`#${color.substr(color.length - 6)}`);
     }
     return list;
-  }
+  },
 
   /**
    * Loads graph options state into localstorage.
    * @param {Object} data - graph options data.
    */
-  static loadGraphOptions(data) {
+  loadGraphOptions: (data) => {
     localStorage.setItem(GRAPH_OPTIONS_KEY, JSON.stringify(data));
-  }
+  },
 
   /**
    * Retrieves stored graph options data from localstorage.
    */
-  static getGraphOptions() {
+  getGraphOptions: () => {
     const data = localStorage.getItem(GRAPH_OPTIONS_KEY);
     if (data) {
       const obj = JSON.parse(data);
       return obj;
     }
     return null;
-  }
+  },
 
   /**
    * Saves current graph state into localstorage, identified by the url search parameters.
    * @param {Object} search - collection of search parameters.
    * @param {Object} data - graph data to be stored.
    */
-  static loadGraphData(search, data) {
+  loadGraphData: (search, data) => {
     data.filteredSearch = search;
     localStorage.setItem(GRAPH_OBJECTS_KEY, JSON.stringify(jc.decycle(data)));
-  }
+  },
 
   /**
    * Retrieves graph data from localstorage for the input search parameters.
    * @param {Object} search - collection of search parameters .
    */
-  static getGraphData(search) {
+  getGraphData: (search) => {
     const data = localStorage.getItem(GRAPH_OBJECTS_KEY);
     if (data) {
       const obj = jc.retrocycle(JSON.parse(data));
@@ -257,7 +257,7 @@ export default class util {
       }
     }
     return null;
-  }
+  },
 
   /**
    * Updates valid properties and color mappings for graph objects.
@@ -265,7 +265,7 @@ export default class util {
    * @param {Object} node - new node object to be processed.
    * @param {Object} propsMap - Property map containing color mappings.
    */
-  static loadColorProps(newColumns, node, propsMap) {
+  loadColorProps: (newColumns, node, propsMap) => {
     // Iterate over all props.
     newColumns.forEach((prop) => {
       let obj = node;
@@ -299,7 +299,7 @@ export default class util {
       }
     });
     return propsMap;
-  }
+  },
 
   /**
    * Updates expandable map for input rid.
@@ -308,7 +308,7 @@ export default class util {
    * @param {string} rid - identifier for input node.
    * @param {Object} expandable - Expandable flags map.
    */
-  static expanded(expandedEdgeTypes, graphObjects, rid, expandable) {
+  expanded: (expandedEdgeTypes, graphObjects, rid, expandable) => {
     let targetFlag = false;
     expandedEdgeTypes.forEach((e) => {
       if (graphObjects[rid][e]) {
@@ -324,7 +324,7 @@ export default class util {
     });
     expandable[rid] = targetFlag;
     return expandable;
-  }
+  },
 
   /**
    * Initializes group of nodes around input coordinates. Returns coordinate for
@@ -334,11 +334,11 @@ export default class util {
    * @param {number} i - index of current element.
    * @param {number} n - total group size.
    */
-  static positionInit(x, y, i, n) {
+  positionInit: (x, y, i, n) => {
     const newX = NODE_INIT_RADIUS * Math.cos((2 * Math.PI * i - Math.PI / 6) / n) + x;
     const newY = NODE_INIT_RADIUS * Math.sin((2 * Math.PI * i - Math.PI / 6) / n) + y;
     return { x: newX, y: newY };
-  }
+  },
 
   /**
    * Selects color for input graph object based on graph state.
@@ -346,7 +346,7 @@ export default class util {
    * @param {string} objColor - property to map color onto.
    * @param {Object} objColors - map of colors for each property.
    */
-  static getColor(obj, objColor, objColors) {
+  getColor: (obj, objColor, objColors) => {
     let colorKey = '';
     if (objColor && objColor.includes('.')) {
       const keys = objColor.split('.');
@@ -355,5 +355,5 @@ export default class util {
       colorKey = obj.data[objColor];
     }
     return objColors[colorKey];
-  }
-}
+  },
+};

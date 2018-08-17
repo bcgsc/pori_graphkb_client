@@ -1,3 +1,7 @@
+/**
+ * @module /views/FeedbackView
+ */
+
 import React from 'react';
 import './FeedbackView.css';
 import { Typography, Paper } from '@material-ui/core';

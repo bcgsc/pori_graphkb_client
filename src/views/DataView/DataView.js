@@ -1,3 +1,7 @@
+/**
+ * @module /views/DataView
+ */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './DataView.css';
@@ -13,7 +17,7 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { withStyles } from '@material-ui/core/styles';
-import queryString from 'query-string';
+import qs from 'qs';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import NodeDetailComponent from '../../components/NodeDetailComponent/NodeDetailComponent';
@@ -47,7 +51,7 @@ class DataView extends Component {
       displayed: [],
       hidden: [],
       selectedId: null,
-      allColumns: [],
+      allProps: [],
       detail: null,
       next: null,
       completedNext: true,
@@ -86,21 +90,20 @@ class DataView extends Component {
     const { history } = this.props;
 
     const schema = await api.getSchema();
-    const filteredSearch = queryString.parse(history.location.search);
+    const filteredSearch = qs.parse(history.location.search);
     let route = '/ontologies';
 
     if (filteredSearch['@class'] && schema[filteredSearch['@class']]) {
       route = schema[filteredSearch['@class']].route || filteredSearch['@class'];
     }
 
-    let allColumns = ['@rid', '@class'];
-
+    let allProps = ['@rid', '@class'];
     try {
-      const data = await api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`);
+      const data = await api.get(`${route}?${qs.stringify(filteredSearch).slice(3)}&neighbors=3`);
       const cycled = jc.retrocycle(data.result);
 
       cycled.forEach((ontologyTerm) => {
-        allColumns = api.collectOntologyProps(ontologyTerm, allColumns, schema);
+        allProps = api.collectOntologyProps(ontologyTerm, allProps, schema);
         dataMap[ontologyTerm['@rid']] = ontologyTerm;
       });
 
@@ -108,7 +111,7 @@ class DataView extends Component {
         const nextFilteredSearch = Object.assign({}, filteredSearch);
         nextFilteredSearch.skip = filteredSearch.limit || DEFAULT_LIMIT;
         this.setState({
-          next: () => api.get(`${route}?${queryString.stringify(nextFilteredSearch)}&neighbors=3`),
+          next: () => api.get(`${route}?${qs.stringify(nextFilteredSearch).slice(3)}&neighbors=3`),
           moreResults: true,
         });
       }
@@ -116,7 +119,7 @@ class DataView extends Component {
         data: dataMap,
         selectedId: Object.keys(dataMap)[0],
         loginRedirect,
-        allColumns,
+        allProps,
         schema,
         filteredSearch,
         edges: api.getEdges(schema),
@@ -203,14 +206,14 @@ class DataView extends Component {
       next().then((nextData) => {
         const {
           data,
-          allColumns,
+          allProps,
           schema,
           filteredSearch,
         } = this.state;
         const cycled = jc.retrocycle(nextData.result);
-        let newColumns = allColumns;
+        let newColumns = allProps;
         cycled.forEach((ontologyTerm) => {
-          newColumns = api.collectOntologyProps(ontologyTerm, allColumns, schema);
+          newColumns = api.collectOntologyProps(ontologyTerm, allProps, schema);
           data[ontologyTerm['@rid']] = ontologyTerm;
         });
 
@@ -225,12 +228,12 @@ class DataView extends Component {
           const newSkip = Number(filteredSearch.skip)
             + Number((filteredSearch.limit || DEFAULT_LIMIT));
           filteredSearch.skip = newSkip;
-          newNext = () => api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`);
+          newNext = () => api.get(`${route}?${qs.encode(filteredSearch)}&neighbors=3`);
           moreResults = true;
         }
         this.setState({
           data,
-          allColumns: newColumns,
+          allProps: newColumns,
           next: newNext,
           filteredSearch,
           moreResults,
@@ -273,7 +276,7 @@ class DataView extends Component {
         displayed: [],
         hidden: [],
         selectedId: null,
-        allColumns: [],
+        allProps: [],
       }, this.componentDidMount);
     }
   }
@@ -330,8 +333,8 @@ class DataView extends Component {
    * @param {Object} node - newly added object.
    */
   handleNewColumns(node) {
-    const { allColumns, schema } = this.state;
-    this.setState({ allColumns: api.collectOntologyProps(node, allColumns, schema) });
+    const { allProps, schema } = this.state;
+    this.setState({ allProps: api.collectOntologyProps(node, allProps, schema) });
   }
 
   render() {
@@ -340,7 +343,7 @@ class DataView extends Component {
       data,
       displayed,
       hidden,
-      allColumns,
+      allProps,
       detail,
       schema,
       moreResults,
@@ -395,7 +398,7 @@ class DataView extends Component {
         schema={schema}
         edges={edges}
         detail={detail}
-        allColumns={allColumns}
+        allProps={allProps}
         filteredSearch={filteredSearch}
         handleNewColumns={this.handleNewColumns}
       />
@@ -408,7 +411,7 @@ class DataView extends Component {
         handleCheckbox={this.handleCheckbox}
         displayed={displayed}
         hidden={hidden}
-        allColumns={allColumns}
+        allProps={allProps}
         moreResults={moreResults}
         completedNext={completedNext}
         handleCheckAll={this.handleCheckAll}
@@ -462,12 +465,14 @@ class DataView extends Component {
   }
 }
 
-/**
- * @param {Object} history - Application routing history object.
- * @param {Object} classes - Classes provided by the @material-ui withStyles function
- */
 DataView.propTypes = {
+  /**
+   * @param {Object} history - Application routing history object.
+   */
   history: PropTypes.object.isRequired,
+  /**
+   * @param {Object} classes - Classes provided by the @material-ui withStyles function
+   */
   classes: PropTypes.object.isRequired,
 };
 

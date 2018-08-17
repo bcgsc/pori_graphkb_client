@@ -1,3 +1,7 @@
+/**
+ * @module /views/ErrorView
+ */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -8,25 +12,31 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 
 /**
  * View for displaying uncaught error messages.
- * @param {Object} props - properties passed into the component.
- * @param {Object} props.history - history property for the route and passed state.
- * @param {Object} props.history.location.state - passed state from originator of redirect.
  */
 class ErrorView extends Component {
   constructor(props) {
     super(props);
     this.state = {
       tooltip: false,
+      body: null,
+      status: null,
     };
   }
 
-  render() {
-    const { tooltip } = this.state;
+  componentDidMount() {
     const { history } = this.props;
     const { state } = history.location;
-    if (!state || (!state.status && !state.body)) history.push('/query');
-    const { status, body } = state;
+    if (!state || !(state.status || state.body)) {
+      history.push('/query');
+    } else {
+      const { status, body } = state;
+      this.setState({ body, status });
+    }
+  }
 
+  render() {
+    const { tooltip, body, status } = this.state;
+    if (!body || !status) return null;
     const {
       error,
       message,
@@ -95,10 +105,10 @@ class ErrorView extends Component {
   }
 }
 
-/**
-* @param {Object} history - Application routing history object.
-  */
 ErrorView.propTypes = {
+  /**
+   * @param {Object} history - Application routing history object.
+   */
   history: PropTypes.object.isRequired,
 };
 

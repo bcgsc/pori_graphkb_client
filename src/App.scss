@@ -6,6 +6,7 @@ $user-menu-width: 124px;
     button {
         margin: auto 0;
         color: white;
+        animation: fade-in(0.2s);
     }
     button:disabled {
         color: white;

@@ -1,8 +1,12 @@
+/**
+ * @module /components/GraphComponent
+ */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './GraphComponent.css';
 import * as d3 from 'd3';
-import queryString from 'query-string';
+import qs from 'qs';
 import {
   Checkbox,
   FormControlLabel,
@@ -44,6 +48,7 @@ const {
   ARROW_LENGTH,
   NODE_INIT_RADIUS,
   NODE_RADIUS,
+  ZOOM_BOUNDS,
 } = config.GRAPH_PROPERTIES;
 
 const {
@@ -74,9 +79,11 @@ const styles = {
 // Component specific constants.
 const AUTO_SPACE_COEFFICIENT = 2.8;
 const SNACKBAR_AUTOHIDE_DURATION = 6000;
+const MARKER_ID = 'endArrow';
 
 /**
  * Component for displaying query results in force directed graph form.
+ * Implements a d3 force-directed graph: https://github.com/d3/d3-force.
  */
 class GraphComponent extends Component {
   constructor(props) {
@@ -89,7 +96,7 @@ class GraphComponent extends Component {
       propsMap: { nodes: {}, links: {} },
       expandedEdgeTypes: [],
       actionsNode: null,
-      simulation: null,
+      simulation: d3.forceSimulation(),
       svg: undefined,
       width: 0,
       height: 0,
@@ -115,6 +122,7 @@ class GraphComponent extends Component {
       actionsNodeIsEdge: false,
     };
 
+    this.applyDrag = this.applyDrag.bind(this);
     this.drawGraph = this.drawGraph.bind(this);
     this.initSimulation = this.initSimulation.bind(this);
     this.loadNeighbors = this.loadNeighbors.bind(this);
@@ -142,7 +150,7 @@ class GraphComponent extends Component {
       displayed,
       data,
       schema,
-      allColumns,
+      allProps,
       filteredSearch,
       edges,
     } = this.props;
@@ -153,26 +161,20 @@ class GraphComponent extends Component {
       initState,
     } = this.state;
 
-    const simulation = d3.forceSimulation();
     // Defines what edge keys to look for.
-    const expandedEdgeTypes = edges.reduce((r, e) => {
-      r.push(`in_${e}`);
-      r.push(`out_${e}`);
-      return r;
-    }, []);
+    const expandedEdgeTypes = util.expandEdges(edges);
 
     let validDisplayed = displayed;
     if (!displayed || displayed.length === 0) {
       validDisplayed = [Object.keys(data)[0]];
     }
 
-    const stringifiedSearch = queryString.stringify(filteredSearch);
+    const stringifiedSearch = qs.stringify(filteredSearch);
 
     this.setState({
       expandedEdgeTypes,
       schema,
-      simulation,
-      allColumns,
+      allProps,
       filteredSearch: stringifiedSearch,
     }, () => {
       this.handleResize();
@@ -181,7 +183,16 @@ class GraphComponent extends Component {
       const storedData = util.getGraphData(stringifiedSearch);
       const storedOptions = util.getGraphOptions();
 
-      if (displayed && displayed.length !== 0) {
+      /**
+       * Initialization priority:
+       *
+       * 1. Checked rows from tableview always override stored state.
+       * 2. Initial state is checked. This will never be chosen on the
+       *    component's first load.
+       * 3. Stored state will be loaded if the query parameters match those of
+       *    the last stored state.
+       */
+      if ((displayed && displayed.length !== 0) || (!initState && !storedData)) {
         validDisplayed.forEach((key, i) => {
           this.processData(
             data[key],
@@ -189,6 +200,7 @@ class GraphComponent extends Component {
             0,
           );
         });
+
         const { nodes, links, graphObjects } = this.state;
         util.loadGraphData(stringifiedSearch, { nodes, links, graphObjects });
       } else if (initState) {
@@ -198,7 +210,7 @@ class GraphComponent extends Component {
           links,
         } = initState;
         nodes.forEach((node) => {
-          util.loadColorProps(allColumns, node.data, propsMap);
+          util.loadColorProps(allProps, node.data, propsMap);
           util.expanded(expandedEdgeTypes, graphObjects, node.data['@rid'], expandable);
         });
 
@@ -207,9 +219,7 @@ class GraphComponent extends Component {
           nodes: nodes.slice(),
           links: links.slice(),
         });
-      } else if (
-        storedData && storedData.filteredSearch === stringifiedSearch
-      ) {
+      } else if (storedData && storedData.filteredSearch === stringifiedSearch) {
         const {
           graphObjects,
           nodes,
@@ -218,7 +228,7 @@ class GraphComponent extends Component {
         delete storedData.filteredSearch;
 
         nodes.forEach((node) => {
-          util.loadColorProps(allColumns, node.data, propsMap);
+          util.loadColorProps(allProps, node.data, propsMap);
           util.expanded(expandedEdgeTypes, graphObjects, node.data['@rid'], expandable);
         });
 
@@ -272,172 +282,66 @@ class GraphComponent extends Component {
     util.loadGraphData(filteredSearch, { nodes, links, graphObjects });
   }
 
-  /**
-   * Calls the api and renders neighbor nodes of the input node onto the graph.
-   * @param {Object} node - d3 simulation node whose neighbors were requestsed.
-   */
-  loadNeighbors(node) {
-    const {
-      expandable,
-      filteredSearch,
-      nodes,
-      links,
-      graphObjects,
-    } = this.state;
-    const { data } = this.props;
 
-    if (expandable[node.data['@rid']] && data[node.data['@rid']]) {
-      this.processData(
-        data[node.data['@rid']],
-        { x: node.x, y: node.y },
-        1,
-      );
-      this.drawGraph();
-      this.updateColors('nodes');
-      this.updateColors('links');
+  /**
+   * Applies drag behavior to node.
+   * @param {Object} node - node to be dragged.
+   */
+  applyDrag(node) {
+    const { simulation } = this.state;
+    d3.event.sourceEvent.stopPropagation();
+
+    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+
+    /* eslint-disable */
+    function dragged() {
+      node.fx = d3.event.x;
+      node.fy = d3.event.y;
     }
 
-    delete expandable[node.data['@rid']];
-    util.loadGraphData(filteredSearch, { nodes, links, graphObjects });
-    this.setState({ expandable, actionsNode: null, refreshable: true });
+    function ended() {
+      if (!d3.event.active) simulation.alphaTarget(0);
+      node.fx = null;
+      node.fy = null;
+    }
+    /* eslint-enable */
+
+    d3.event
+      .on('drag', dragged)
+      .on('end', ended);
   }
 
   /**
-   * Processes node data and updates state with new nodes and links.
-   * Returns updated nodes, links, and graphObjects. Also updates expandable flags.
-   * @param {Object} node - Node object as returned by the api.
-   * @param {Object} position - Object containing x and y position of input node.
-   * @param {number} depth - Recursion base case flag.
+   * Renders nodes and links to the graph.
    */
-  processData(node, position, depth) {
+  drawGraph() {
     const {
-      expandedEdgeTypes,
-      expandable,
       nodes,
       links,
-      graphObjects,
-      propsMap,
+      simulation,
+      graphOptions,
     } = this.state;
 
-    const { data, handleNewColumns } = this.props;
+    simulation.nodes(nodes);
 
-    if (data[node['@rid']]) {
-      node = data[node['@rid']];
-    } else {
-      // Node properties haven't been processed.
-      handleNewColumns(node);
-    }
-    const { allColumns } = this.props;
+    simulation.force(
+      'links',
+      d3
+        .forceLink(links)
+        .strength(graphOptions.linkStrength)
+        .id(d => d.data['@rid']),
+    );
 
-    if (!graphObjects[node['@rid']]) {
-      nodes.push({
-        data: node,
-        x: position.x,
-        y: position.y,
+    const ticked = () => {
+      this.setState({
+        links,
+        nodes,
       });
-      graphObjects[node['@rid']] = node;
-      util.loadColorProps(allColumns, node, propsMap);
-    }
+    };
 
-    let flag = false;
-    expandedEdgeTypes.forEach((edgeType) => {
-      if (node[edgeType] && node[edgeType].length !== 0) {
-        // stores total number of edges and initializes count for position calculating.
-        const n = node[edgeType].length;
-        let j = 0;
-
-        // Looks through each edge of certain type.
-        node[edgeType].forEach((edge) => {
-          const edgeRid = edge['@rid'] || edge;
-
-          // Checks if edge is already rendered in the graph
-          if (!graphObjects[edgeRid]) {
-            const inRid = (edge.in || {})['@rid'] || edge.in;
-            const outRid = (edge.out || {})['@rid'] || edge.out;
-            const targetRid = inRid === node['@rid'] ? outRid : inRid;
-            // TODO: Remove once statements are stable.
-            if (edge.out['@class'] === 'Statement' || edge.in['@class'] === 'Statement') {
-              return;
-            }
-            if (
-              edge['@rid']
-              && inRid
-              && outRid
-              && (depth > 0 || graphObjects[targetRid])
-            ) {
-              // Initialize new link object and pushes to links list.
-              const link = {
-                source: outRid,
-                target: inRid,
-                data: edge,
-              };
-              links.push(link);
-              graphObjects[link.data['@rid']] = link;
-
-              if (!propsMap.links['source.name']) {
-                propsMap.links['source.name'] = [];
-              }
-              if (!propsMap.links['source.name'].includes(link.data.source.name)) {
-                propsMap.links['source.name'].push(link.data.source.name);
-              }
-              if (!propsMap.links['@class']) {
-                propsMap.links['@class'] = [];
-              }
-              if (!propsMap.links['@class'].includes(link.data['@class'])) {
-                propsMap.links['@class'].push(link.data['@class']);
-              }
-
-              // Checks if node is already rendered
-              if (outRid && !graphObjects[outRid]) {
-                // Initializes position of new child
-                const positionInit = util.positionInit(
-                  position.x,
-                  position.y,
-                  j += 1,
-                  n,
-                );
-                this.processData(
-                  edge.out,
-                  positionInit,
-                  depth - 1,
-                );
-              }
-              if (inRid && !graphObjects[inRid]) {
-                const positionInit = util.positionInit(
-                  position.x,
-                  position.y,
-                  j += 1,
-                  n,
-                );
-                this.processData(
-                  edge.in,
-                  positionInit,
-                  graphObjects,
-                  depth - 1,
-                );
-              }
-
-              // Updates expanded on target node.
-              if (expandable[targetRid]) {
-                util.expanded(expandedEdgeTypes, graphObjects, targetRid, expandable);
-              }
-            } else {
-              // If there are unrendered edges, set expandable flag.
-              flag = true;
-            }
-          }
-        });
-      }
-    });
-    expandable[node['@rid']] = flag;
-
-    this.setState({
-      expandable,
-      nodes,
-      links,
-      graphObjects,
-      propsMap,
-    });
+    simulation.on('tick', ticked);
+    simulation.restart();
+    this.setState({ simulation, actionsNode: null });
   }
 
   /**
@@ -487,7 +391,7 @@ class GraphComponent extends Component {
       .attr('width', width)
       .attr('height', height)
       .call(d3.zoom()
-        .scaleExtent([0.2, 10])
+        .scaleExtent(ZOOM_BOUNDS)
         .on('zoom', () => {
           const { transform } = d3.event;
           container.attr(
@@ -501,36 +405,174 @@ class GraphComponent extends Component {
   }
 
   /**
-   * Renders nodes and links to the graph.
+   * Calls the api and renders neighbor nodes of the input node onto the graph.
+   * @param {Object} node - d3 simulation node whose neighbors were requestsed.
    */
-  drawGraph() {
+  loadNeighbors(node) {
     const {
+      expandable,
+      filteredSearch,
       nodes,
       links,
-      simulation,
-      graphOptions,
+      graphObjects,
+    } = this.state;
+    const { data } = this.props;
+
+    if (expandable[node.data['@rid']] && data[node.data['@rid']]) {
+      this.processData(
+        data[node.data['@rid']],
+        { x: node.x, y: node.y },
+        1,
+      );
+      this.drawGraph();
+      this.updateColors('nodes');
+      this.updateColors('links');
+    }
+
+    delete expandable[node.data['@rid']];
+    util.loadGraphData(filteredSearch, { nodes, links, graphObjects });
+    this.setState({ expandable, actionsNode: null, refreshable: true });
+  }
+
+  /**
+   * Processes node data and updates state with new nodes and links. Also
+   * updates expandable flags.
+   * @param {Object} node - Node object as returned by the api.
+   * @param {Object} position - Object containing x and y position of input node.
+   * @param {number} depth - Recursion base case flag.
+   */
+  processData(node, position, depth) {
+    const {
+      expandedEdgeTypes,
+      expandable,
+      nodes,
+      links,
+      graphObjects,
+      propsMap,
     } = this.state;
 
-    simulation.nodes(nodes);
+    // From DataView.js
+    const { data, handleNewColumns } = this.props;
 
-    simulation.force(
-      'links',
-      d3
-        .forceLink(links)
-        .strength(graphOptions.linkStrength)
-        .id(d => d.data['@rid']),
-    );
+    if (data[node['@rid']]) {
+      node = data[node['@rid']];
+    } else {
+      // Node properties haven't been processed.
+      handleNewColumns(node);
+    }
+    const { allProps } = this.props;
 
-    const ticked = () => {
-      this.setState({
-        links,
-        nodes,
+    if (!graphObjects[node['@rid']]) {
+      nodes.push({
+        data: node,
+        x: position.x,
+        y: position.y,
       });
-    };
+      graphObjects[node['@rid']] = node;
+      util.loadColorProps(allProps, node, propsMap);
+    }
 
-    simulation.on('tick', ticked);
-    simulation.restart();
-    this.setState({ simulation, actionsNode: null });
+    /**
+     * Cycles through all potential edges as defined by the schema, and expands
+     * those edges if present on the node.
+     */
+    expandedEdgeTypes.forEach((edgeType) => {
+      if (node[edgeType] && node[edgeType].length !== 0) {
+        // stores total number of edges and initializes count for position calculating.
+        const n = node[edgeType].length;
+        let i = 0;
+
+        // Looks through each edge of certain type.
+        node[edgeType].forEach((edge) => {
+          const edgeRid = edge['@rid'] || edge;
+
+          // Checks if edge is already rendered in the graph
+          if (!graphObjects[edgeRid]) {
+            const inRid = (edge.in || {})['@rid'] || edge.in;
+            const outRid = (edge.out || {})['@rid'] || edge.out;
+            const targetRid = inRid === node['@rid'] ? outRid : inRid;
+            // TODO: Remove once statements are stable.
+            if (edge.out['@class'] === 'Statement' || edge.in['@class'] === 'Statement') {
+              return;
+            }
+            if (
+              edge['@rid']
+              && inRid
+              && outRid
+              && (depth > 0 || graphObjects[targetRid])
+            ) {
+              // Initialize new link object and pushes to links list.
+              const link = {
+                source: outRid,
+                target: inRid,
+                data: edge,
+              };
+              links.push(link);
+              graphObjects[link.data['@rid']] = link;
+
+              if (!propsMap.links['source.name']) {
+                propsMap.links['source.name'] = [];
+              }
+              if (!propsMap.links['source.name'].includes(link.data.source.name)) {
+                propsMap.links['source.name'].push(link.data.source.name);
+              }
+              if (!propsMap.links['@class']) {
+                propsMap.links['@class'] = [];
+              }
+              if (!propsMap.links['@class'].includes(link.data['@class'])) {
+                propsMap.links['@class'].push(link.data['@class']);
+              }
+
+              // Checks if node is already rendered
+              if (outRid && !graphObjects[outRid]) {
+                // Initializes position of new child
+                const positionInit = util.positionInit(
+                  position.x,
+                  position.y,
+                  i += 1,
+                  n,
+                );
+                this.processData(
+                  edge.out,
+                  positionInit,
+                  depth - 1,
+                );
+              }
+              if (inRid && !graphObjects[inRid]) {
+                const positionInit = util.positionInit(
+                  position.x,
+                  position.y,
+                  i += 1,
+                  n,
+                );
+                this.processData(
+                  edge.in,
+                  positionInit,
+                  graphObjects,
+                  depth - 1,
+                );
+              }
+
+              // Updates expanded on target node.
+              if (expandable[targetRid]) {
+                util.expanded(expandedEdgeTypes, graphObjects, targetRid, expandable);
+              }
+            } else {
+              // If there are unrendered edges, set expandable flag.
+              expandable[node['@rid']] = true;
+            }
+          }
+        });
+      }
+    });
+
+    this.setState({
+      expandable,
+      nodes,
+      links,
+      graphObjects,
+      propsMap,
+    });
   }
 
   /**
@@ -604,17 +646,11 @@ class GraphComponent extends Component {
   }
 
   /**
-   * Resizes svg window and reinitializes the simulation.
+   * Handles user selections within the actions ring.
    */
-  handleResize() {
-    if (this.wrapper) {
-      this.setState(
-        {
-          width: this.wrapper.clientWidth,
-          height: this.wrapper.clientHeight,
-        }, this.initSimulation,
-      );
-    }
+  handleActionsRing(action) {
+    action();
+    this.setState({ actionsNode: null });
   }
 
   /**
@@ -623,20 +659,6 @@ class GraphComponent extends Component {
   handleCheckbox() {
     const { graphOptions } = this.state;
     graphOptions.autoCollisionRadius = !graphOptions.autoCollisionRadius;
-  }
-
-  /**
-   * Opens graph options dialog.
-   */
-  handleOptionsPanelOpen() {
-    this.setState({ graphOptionsOpen: true });
-  }
-
-  /**
-   * Closes graph options dialog.
-   */
-  handleOptionsPanelClose() {
-    this.setState({ graphOptionsOpen: false });
   }
 
   /**
@@ -657,18 +679,15 @@ class GraphComponent extends Component {
   }
 
   /**
-   * Handles link clicks from user.
-   * @param {Event} e - User click event.
-   * @param {Object} link - Clicked simulation link.
+   * Handles color sort property changes.
+   * @param {Event} e - property change event.
+   * @param {string} type - defines which graph object type to change [nodes, links].
    */
-  handleLinkClick(e, link) {
-    const { handleDetailDrawerOpen } = this.props;
-
-    // Update contents of detail drawer if open.
-    handleDetailDrawerOpen(link, false, true);
-
-    // Sets clicked object as actions node.
-    this.setState({ actionsNode: link, actionsNodeIsEdge: true });
+  handleGraphColorsChange(e, type) {
+    const { graphOptions } = this.state;
+    graphOptions[`${type}Color`] = e.target.value;
+    util.loadGraphOptions({ graphOptions });
+    this.setState({ graphOptions }, () => this.updateColors(type));
   }
 
   /**
@@ -687,23 +706,65 @@ class GraphComponent extends Component {
   }
 
   /**
-   * Handles color sort property changes.
-   * @param {Event} e - property change event.
-   * @param {string} type - defines which graph object type to change [nodes, links].
+   * Closes additional help dialog.
    */
-  handleGraphColorsChange(e, type) {
-    const { graphOptions } = this.state;
-    graphOptions[`${type}Color`] = e.target.value;
-    util.loadGraphOptions({ graphOptions });
-    this.setState({ graphOptions }, () => this.updateColors(type));
+  handleHelpClose() {
+    this.setState({ advancedHelp: false, mainHelp: false });
   }
 
   /**
-   * Handles user selections within the actions ring.
+   * Opens additional help dialog.
+   * @param {string} helpType - ['main', 'advanced'].
    */
-  handleActionsRing(action) {
-    action();
-    this.setState({ actionsNode: null });
+  handleHelpOpen(helpType) {
+    this.setState({ [`${helpType}Help`]: true });
+  }
+
+  /**
+   * Handles link clicks from user.
+   * @param {Event} e - User click event.
+   * @param {Object} link - Clicked simulation link.
+   */
+  handleLinkClick(e, link) {
+    const { handleDetailDrawerOpen } = this.props;
+
+    // Update contents of detail drawer if open.
+    handleDetailDrawerOpen(link, false, true);
+
+    // Sets clicked object as actions node.
+    this.setState({ actionsNode: link, actionsNodeIsEdge: true });
+  }
+
+  /**
+   * Hides link from the graph view.
+   */
+  handleLinkHide() {
+    const {
+      actionsNode,
+      links,
+      graphObjects,
+      expandable,
+    } = this.state;
+    const { handleDetailDrawerClose } = this.props;
+
+    const i = links.indexOf(actionsNode);
+    links.splice(i, 1);
+    delete graphObjects[actionsNode.data['@rid']];
+
+    expandable[actionsNode.source.data['@rid']] = true;
+    expandable[actionsNode.target.data['@rid']] = true;
+
+    this.setState({
+      actionsNode: null,
+      graphObjects,
+      links,
+      expandable,
+      refreshable: true,
+    }, () => {
+      this.updateColors('nodes');
+      this.updateColors('links');
+      handleDetailDrawerClose();
+    });
   }
 
   /**
@@ -718,7 +779,7 @@ class GraphComponent extends Component {
       expandedEdgeTypes,
       expandable,
       propsMap,
-      allColumns,
+      allProps,
       graphOptions,
       filteredSearch,
     } = this.state;
@@ -747,7 +808,7 @@ class GraphComponent extends Component {
       }
     });
 
-    allColumns.forEach((prop) => {
+    allProps.forEach((prop) => {
       let obj = actionsNode.data;
       let key = prop;
 
@@ -800,50 +861,31 @@ class GraphComponent extends Component {
   }
 
   /**
-   * Hides link from the graph view.
+   * Closes graph options dialog.
    */
-  handleLinkHide() {
-    const {
-      actionsNode,
-      links,
-      graphObjects,
-      expandable,
-    } = this.state;
-    const { handleDetailDrawerClose } = this.props;
-
-    const i = links.indexOf(actionsNode);
-    links.splice(i, 1);
-    delete graphObjects[actionsNode.data['@rid']];
-
-    expandable[actionsNode.source.data['@rid']] = true;
-    expandable[actionsNode.target.data['@rid']] = true;
-
-    this.setState({
-      actionsNode: null,
-      graphObjects,
-      links,
-      expandable,
-      refreshable: true,
-    }, () => {
-      this.updateColors('nodes');
-      this.updateColors('links');
-      handleDetailDrawerClose();
-    });
+  handleOptionsPanelClose() {
+    this.setState({ graphOptionsOpen: false });
   }
 
   /**
-   * Opens additional help dialog.
-   * @param {string} helpType - ['main', 'advanced'].
+   * Opens graph options dialog.
    */
-  handleHelpOpen(helpType) {
-    this.setState({ [`${helpType}Help`]: true });
+  handleOptionsPanelOpen() {
+    this.setState({ graphOptionsOpen: true });
   }
 
   /**
-   * Closes additional help dialog.
+   * Resizes svg window and reinitializes the simulation.
    */
-  handleHelpClose() {
-    this.setState({ advancedHelp: false, mainHelp: false });
+  handleResize() {
+    if (this.wrapper) {
+      this.setState(
+        {
+          width: this.wrapper.clientWidth,
+          height: this.wrapper.clientHeight,
+        }, this.initSimulation,
+      );
+    }
   }
 
   render() {
@@ -1321,24 +1363,33 @@ class GraphComponent extends Component {
       <GraphLink
         key={link.data['@rid']}
         link={link}
+        faded={
+          (detail && detail['@rid'] !== link.data['@rid'])
+          || (actionsNode && actionsNode.data['@rid'] !== link.data['@rid'])
+        }
+        bold={
+          (detail && detail['@rid'] === link.data['@rid'])
+          || (actionsNode && actionsNode.data['@rid'] === link.data['@rid'])
+        }
         detail={detail}
         labelKey={graphOptions.linkLabelProp}
         color={util.getColor(link, graphOptions.linksColor, graphOptions.linksColors)}
         handleClick={e => this.handleLinkClick(e, link)}
         actionsNode={actionsNode}
+        marker={`url(#${MARKER_ID})`}
       />));
 
     const nodesDisplay = nodes.map(node => (
       <GraphNode
         key={node.data['@rid']}
         node={node}
-        detail={detail}
-        actionsNode={actionsNode}
+        faded={(detail && detail['@rid'] !== node.data['@rid'])
+          || (actionsNode && actionsNode.data['@rid'] !== node.data['@rid'])}
         labelKey={graphOptions.nodeLabelProp}
         color={util.getColor(node, graphOptions.nodesColor, graphOptions.nodesColors)}
         handleClick={e => this.handleClick(e, node)}
         expandable={expandable[node.data['@rid']]}
-        simulation={simulation}
+        applyDrag={this.applyDrag}
       />
     ));
 
@@ -1393,7 +1444,7 @@ class GraphComponent extends Component {
           >
             <defs>
               <marker
-                id="endArrow"
+                id={MARKER_ID}
                 markerWidth={ARROW_LENGTH}
                 markerHeight={ARROW_WIDTH}
                 refY={ARROW_WIDTH / 2}
@@ -1418,39 +1469,56 @@ class GraphComponent extends Component {
   }
 }
 
-/**
-  * @param {function} handleClick - Parent component method triggered when a
-  * graph object is clicked.
-  * @param {Object} data - Parent state data.
-  * @param {function} handleDetailDrawerOpen - Method to handle opening of detail drawer.
-  * @param {function} handleDetailDrawerClose - Method to handle closing of detail drawer.
-  * @param {function} handleTableRedirect - Method to handle a redirect to the table view.
-  * @param {Array} edgeTypes - Array containing all the different edge types as defined by
-  * the database schema.
-  * @param {Array} ontologyTypes - Array containing individual schemas for each Ontology
-  * subclass as defined by the schema.
-  * @param {Object} detail - record ID of node currently selected for detail viewing.
-  * @param {Array} allColumns - list of all unique properties on all nodes returned in
-  * initial query.
-  */
 GraphComponent.propTypes = {
+  /**
+   * @param {function} handleClick - Parent component method triggered when a
+   * graph object is clicked.
+   */
   handleClick: PropTypes.func,
+  /**
+   * @param {Object} data - Parent state data.
+   */
   data: PropTypes.object.isRequired,
+  /**
+   * @param {Object} classes - Classes data for material ui withStyles().
+   */
   classes: PropTypes.object,
+  /**
+   * @param {function} handleDetailDrawerOpen - Method to handle opening of detail drawer.
+   */
   handleDetailDrawerOpen: PropTypes.func.isRequired,
+  /**
+   * @param {function} handleDetailDrawerClose - Method to handle closing of detail drawer.
+   */
   handleDetailDrawerClose: PropTypes.func.isRequired,
+  /**
+   * @param {function} handleTableRedirect - Method to handle a redirect to the table view.
+   */
   handleTableRedirect: PropTypes.func.isRequired,
+  /**
+   * @param {function} handleNewColumns - Updates valid properties in parent state.
+   */
   handleNewColumns: PropTypes.func.isRequired,
+  /**
+   * @param {Object} schema - Database schema.
+   */
   schema: PropTypes.object.isRequired,
+  /**
+   * @param {Object} detail - record ID of node currently selected for detail viewing.
+   */
   detail: PropTypes.object,
-  allColumns: PropTypes.array,
+  /**
+   * @param {Array} allProps - list of all unique properties on all nodes returned in
+   * initial query.
+   */
+  allProps: PropTypes.array,
 };
 
 GraphComponent.defaultProps = {
   handleClick: null,
   classes: null,
   detail: null,
-  allColumns: [],
+  allProps: [],
 };
 
 export default withStyles(styles)(GraphComponent);

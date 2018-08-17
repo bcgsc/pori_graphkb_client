@@ -1,3 +1,7 @@
+/**
+ * @module /App
+ */
+
 import React, { Component } from 'react';
 import {
   Router,
@@ -128,21 +132,22 @@ class App extends Component {
         <Router history={history}>
           <div className="App">
             <AppBar position="static" className="banner">
-              <IconButton
-                color="inherit"
-                disabled={!loggedIn}
-                onClick={() => history.push('/query')}
-              >
-                <SearchIcon />
-              </IconButton>
-              <IconButton
-                color="inherit"
-                disabled={!loggedIn}
-                onClick={() => history.push('/add')}
-              >
-                <AddIcon />
-              </IconButton>
-
+              {loggedIn && (
+                <React.Fragment>
+                  <IconButton
+                    color="inherit"
+                    onClick={() => history.push('/query')}
+                  >
+                    <SearchIcon />
+                  </IconButton>
+                  <IconButton
+                    color="inherit"
+                    onClick={() => history.push('/add')}
+                  >
+                    <AddIcon />
+                  </IconButton>
+                </React.Fragment>
+              )}
               <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>
                 <div>
                   <Button
@@ -167,6 +172,9 @@ class App extends Component {
                     transformOrigin={{
                       vertical: 'top',
                       horizontal: 'right',
+                    }}
+                    PaperProps={{
+                      onMouseLeave: this.handleClose,
                     }}
                   >
                     <Card className="user-menu">

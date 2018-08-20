@@ -54,4 +54,11 @@ export default {
     return null;
   },
 
+  isAdmin: () => {
+    const token = localStorage.getItem(KB_TOKEN);
+    if (token && jwt.decode(token)) {
+      return !!jwt.decode(token).user.groups.find(group => group.name === 'admin');
+    }
+    return null;
+  },
 };

@@ -36,6 +36,9 @@ import {
   ListItemText,
   ListItemAvatar,
   ListItemSecondaryAction,
+  ExpansionPanel,
+  ExpansionPanelSummary,
+  ExpansionPanelDetails,
 } from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -44,6 +47,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import CancelIcon from '@material-ui/icons/Cancel';
 import api from '../../services/api';
 import auth from '../../services/auth';
+import util from '../../services/util';
 
 /**
  * View for editing or adding database users.
@@ -56,13 +60,13 @@ class AdminView extends Component {
       selected: [],
       userDialogOpen: false,
       deleteDialogOpen: false,
-      // New User
       newUserName: '',
       newUserGroups: [],
       timerId: null,
       date: '',
       error: false,
       selectedUser: null,
+      expanded: [],
     };
 
     this.addUser = this.addUser.bind(this);
@@ -74,8 +78,9 @@ class AdminView extends Component {
     this.handleCheckbox = this.handleCheckbox.bind(this);
     this.handleDeleteDialog = this.handleDeleteDialog.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
-    this.handleUserDialog = this.handleUserDialog.bind(this);
     this.handleNewUserGroup = this.handleNewUserGroup.bind(this);
+    this.handleUserDialog = this.handleUserDialog.bind(this);
+    this.handleUserGroupExpand = this.handleUserGroupExpand.bind(this);
   }
 
   async componentDidMount() {
@@ -208,6 +213,16 @@ class AdminView extends Component {
     this.setState({ newUserGroups });
   }
 
+  handleUserGroupExpand(rid) {
+    const { expanded } = this.state;
+    if (expanded.indexOf(rid) !== -1) {
+      expanded.splice(expanded.indexOf(rid), 1);
+    } else {
+      expanded.push(rid);
+    }
+    this.setState({ expanded });
+  }
+
   render() {
     const {
       users,
@@ -220,6 +235,7 @@ class AdminView extends Component {
       deleteDialogOpen,
       date,
       error,
+      expanded,
     } = this.state;
 
     if (!users) return null;
@@ -377,9 +393,9 @@ class AdminView extends Component {
           <Typography component="h1" variant="headline">Admin</Typography>
         </Paper>
         <Paper className="paper admin-users">
-          <div className="table-heading">
+          <div className="admin-section-heading">
             <Typography component="h2" variant="title">Users</Typography>
-            <div className="table-heading-btns">
+            <div className="admin-section-heading-btns">
               <IconButton
                 disabled={selected.length === 0}
                 onClick={this.handleDeleteDialog}
@@ -442,19 +458,34 @@ class AdminView extends Component {
               ))}
             </TableBody>
           </Table>
-          <div className="users-btns">
-            <Button
-              color="primary"
-              onClick={this.handleUserDialog}
-              variant="raised"
-              size="small"
-            >
-              Add New User
-            </Button>
-          </div>
         </Paper>
         <Paper className="paper admin-user-groups">
-          <Typography component="h2" variant="title">User Groups</Typography>
+          <div className="admin-section-heading">
+            <Typography component="h2" variant="title">User Groups</Typography>
+            <div className="admin-section-heading-btns">
+              <IconButton>
+                <AddIcon />
+              </IconButton>
+            </div>
+          </div>
+          {userGroups.map(userGroup => (
+            <ExpansionPanel
+              key={userGroup['@rid']}
+              expanded={expanded.includes(userGroup['@rid'])}
+              onChange={() => this.handleUserGroupExpand(userGroup['@rid'])}
+            >
+              <ExpansionPanelSummary expandIcon={<AddIcon />}>
+                {userGroup.name}
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>
+                <List>
+                  {Object.keys(userGroup.permissions)
+                    .map(permission => <Typography>{`${permission}: ${util.parsePermission(userGroup.permissions[permission])}`}</Typography>)
+                  }
+                </List>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+          ))}
         </Paper>
       </div>
     );

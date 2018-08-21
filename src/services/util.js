@@ -6,7 +6,7 @@
 import * as jc from 'json-cycle';
 import config from '../config.json';
 
-const { DEFAULT_PROPS } = config;
+const { DEFAULT_PROPS, PERMISSIONS } = config;
 const { PALLETE_SIZES } = config.GRAPH_DEFAULTS;
 const { NODE_INIT_RADIUS } = config.GRAPH_PROPERTIES;
 const ACRONYMS = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
@@ -356,6 +356,19 @@ const getColor = (obj, objColor, objColors) => {
   return objColors[colorKey];
 };
 
+const parsePermission = (permissionValue) => {
+  let pv = permissionValue;
+  let retstr = '';
+
+  for (let i = 0; i < PERMISSIONS.length; i += 1) {
+    if (pv % (2 ** (i + 1)) !== 0) {
+      retstr += PERMISSIONS[i];
+      pv -= (2 ** i);
+    }
+  }
+  return retstr || 'none';
+};
+
 export default {
   antiCamelCase,
   getPreview,
@@ -372,4 +385,5 @@ export default {
   expanded,
   positionInit,
   getColor,
+  parsePermission,
 };

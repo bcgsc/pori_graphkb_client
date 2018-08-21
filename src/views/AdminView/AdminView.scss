@@ -8,6 +8,21 @@
     h2 {
         font-weight: 300;
     }
+    .admin-section-heading {
+        display: flex;
+        h2 {
+            margin: auto 0;
+            flex-shrink: 0;
+        }
+        .admin-section-heading-btns {
+            display: flex;
+            flex-direction: row-reverse;
+            width: 100%;
+            button {
+                margin: auto 8px;
+            }
+        }
+    }
     .admin-headline {
         h1 {
             font-weight: 300;
@@ -15,20 +30,6 @@
     }
     .admin-users {
         max-height: 720px;
-        .table-heading {
-            display: flex;
-            h2 {
-                margin: auto 0;
-            }
-            .table-heading-btns {
-                display: flex;
-                flex-direction: row-reverse;
-                width: 100%;
-                button {
-                    margin: auto 8px;
-                }
-            }
-        }
         .users-btns {
             margin: 8px 0;
             display: flex;

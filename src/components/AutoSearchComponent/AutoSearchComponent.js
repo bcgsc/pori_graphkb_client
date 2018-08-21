@@ -97,7 +97,7 @@ class AutoSearchComponent extends Component {
     ).then((response) => {
       const results = [];
       response.forEach((query) => {
-        const cycled = jc.retrocycle(query.result);
+        const cycled = jc.retrocycle(query).result;
         results.push(...cycled);
       });
       const emptyFlag = !!(results.length === 0 && value);

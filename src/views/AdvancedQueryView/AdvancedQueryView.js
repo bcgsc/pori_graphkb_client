@@ -93,7 +93,7 @@ class AdvancedQueryView extends Component {
 
           break;
         case 'boolean':
-          form[name] = defaultValue.toString() === 'true';
+          form[name] = (defaultValue || '').toString() === 'true';
           break;
         default:
           form[name] = name === 'name' ? (history.location.state || {}).name : defaultValue || '';
@@ -104,7 +104,7 @@ class AdvancedQueryView extends Component {
       ontologyTypes,
       form,
       editableProps,
-      schema,
+      // schema,
     });
   }
 
@@ -181,7 +181,7 @@ class AdvancedQueryView extends Component {
       ontologyTypes,
       editableProps,
       message,
-      schema,
+      // schema,
     } = this.state;
     const { history } = this.props;
 
@@ -261,7 +261,7 @@ class AdvancedQueryView extends Component {
         // Decide which endpoint to query.
         let endpoint;
         if (linkedClass) {
-          endpoint = schema[linkedClass].route.slice(1);
+          endpoint = linkedClass.route.slice(1);
         }
 
         return (

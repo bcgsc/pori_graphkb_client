@@ -107,7 +107,7 @@ class DataView extends Component {
         dataMap[ontologyTerm['@rid']] = ontologyTerm;
       });
 
-      if (cycled.length >= filteredSearch.limit || DEFAULT_LIMIT) {
+      if (cycled.length >= (filteredSearch.limit || DEFAULT_LIMIT)) {
         const nextFilteredSearch = Object.assign({}, filteredSearch);
         nextFilteredSearch.skip = filteredSearch.limit || DEFAULT_LIMIT;
         this.setState({
@@ -224,11 +224,11 @@ class DataView extends Component {
 
         let newNext = null;
         let moreResults = false;
-        if (cycled.length >= (filteredSearch.limit || DEFAULT_LIMIT)) {
-          const newSkip = Number(filteredSearch.skip)
-            + Number((filteredSearch.limit || DEFAULT_LIMIT));
-          filteredSearch.skip = newSkip;
-          newNext = () => api.get(`${route}?${qs.stringify(filteredSearch)}&neighbors=3`);
+        const limit = filteredSearch.limit || DEFAULT_LIMIT;
+        const lastSkip = filteredSearch.skip || limit;
+        if (cycled.length >= limit) {
+          filteredSearch.skip = lastSkip + limit;
+          newNext = () => api.get(`${route}?${qs.stringify(filteredSearch).slice(3)}&neighbors=3`);
           moreResults = true;
         }
         this.setState({

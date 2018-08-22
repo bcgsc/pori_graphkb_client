@@ -228,7 +228,7 @@ class DataView extends Component {
           const newSkip = Number(filteredSearch.skip)
             + Number((filteredSearch.limit || DEFAULT_LIMIT));
           filteredSearch.skip = newSkip;
-          newNext = () => api.get(`${route}?${qs.encode(filteredSearch)}&neighbors=3`);
+          newNext = () => api.get(`${route}?${qs.stringify(filteredSearch)}&neighbors=3`);
           moreResults = true;
         }
         this.setState({

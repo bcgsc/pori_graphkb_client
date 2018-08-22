@@ -356,17 +356,31 @@ const getColor = (obj, objColor, objColors) => {
   return objColors[colorKey];
 };
 
+/**
+ * Parses permission value and converts to binary representation as a bit
+ * array, LSD at index 0.
+ *
+ * @param {number} permissionValue - Permission value as a decimal value.
+ *
+ * @example
+ * >parsePermission(7)
+ * [1, 1, 1, 0]
+ *
+ * @example
+ * >parsePermission(8)
+ * [0, 0, 0, 1]
+ */
 const parsePermission = (permissionValue) => {
   let pv = permissionValue;
-  let retstr = '';
+  const retstr = [0, 0, 0, 0];
 
   for (let i = 0; i < PERMISSIONS.length; i += 1) {
     if (pv % (2 ** (i + 1)) !== 0) {
-      retstr += PERMISSIONS[i];
+      retstr[i] = 1;
       pv -= (2 ** i);
     }
   }
-  return retstr || 'none';
+  return retstr;
 };
 
 export default {

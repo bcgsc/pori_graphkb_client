@@ -1,7 +1,7 @@
 {
-  "VERSION": "0.2.0",
+  "VERSION": "0.2.2",
   "HOST": "kbapi01",
-  "PORT": 8020,
+  "PORT": 8022,
   "KEYS": {
     "SOURCES": "sources",
     "SCHEMA": "schema",
@@ -237,7 +237,7 @@
     "GRAPH_NO_UNIQUES": "No distinct subgroups, choose new coloring property."
   },
   "PERMISSIONS": [
-    "MODIFY",
+    "DELETE",
     "UPDATE",
     "READ",
     "CREATE"

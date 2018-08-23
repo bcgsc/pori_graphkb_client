@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: views/QueryView/QueryView.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: views/QueryView/QueryView.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module /views/QueryView
+ */
+
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import './QueryView.css';
+import { Button, IconButton } from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
+import AutoSearchComponent from '../../components/AutoSearchComponent/AutoSearchComponent';
+
+/**
+ * View for simple search by name query. Form submissions are passed through the URL to
+ * the DataView module to handle the query transaction.
+ */
+class QueryView extends Component {
+  constructor(props) {
+    super(props);
+    const { state } = props.history.location;
+    const initName = state
+      &amp;&amp; state.mainParams
+      &amp;&amp; state.mainParams.name
+      ? state.mainParams.name
+      : '';
+
+    this.state = {
+      name: initName,
+      disabled: false,
+    };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleInvalid = this.handleInvalid.bind(this);
+  }
+
+  /**
+   * Sets redirect flag to true if there is a valid query (any string).
+   */
+  handleSubmit() {
+    const { name, disabled } = this.state;
+    const { history } = this.props;
+    if (name &amp;&amp; !disabled) {
+      history.push({
+        pathname: '/data/table',
+        search: `?name=~${name}`,
+      });
+    }
+  }
+
+  /**
+   * Updates state from user input.
+   * @param {Event} e - user input event.
+   */
+  handleChange(e) {
+    this.setState({ [e.target.name]: e.target.value, disabled: false });
+  }
+
+  /**
+   * Binds autosearch disabled flag to search button.
+   */
+  handleInvalid() {
+    this.setState({ disabled: true });
+  }
+
+  render() {
+    const {
+      name,
+    } = this.state;
+    const { history } = this.props;
+
+    return (
+      &lt;div className="search-wrapper">
+        &lt;div className="search-bar">
+          &lt;div
+            className="main-search"
+            onKeyUp={(e) => {
+              if (e.keyCode === 13) {
+                this.handleSubmit();
+              }
+            }}
+            role="textbox"
+            tabIndex={0}
+          >
+            &lt;AutoSearchComponent
+              value={name}
+              onChange={this.handleChange}
+              placeholder="Search by Name"
+              limit={30}
+              name="name"
+              onInvalid={this.handleInvalid}
+              onAction={this.handleSubmit}
+              endAdornment={(
+                &lt;IconButton id="search-btn" onClick={this.handleSubmit} color="primary">
+                  &lt;SearchIcon />
+                &lt;/IconButton>
+              )}
+            />
+          &lt;/div>
+        &lt;/div>
+        &lt;Button
+          variant="outlined"
+          color="secondary"
+          className="advanced-button"
+          onClick={() => history.push({ state: this.state, pathname: '/query/advanced' })}
+        >
+          Advanced Search
+        &lt;/Button>
+      &lt;/div>
+    );
+  }
+}
+
+QueryView.propTypes = {
+  /**
+   * @param {Object} history - Application routing history object.
+   */
+  history: PropTypes.object.isRequired,
+};
+
+export default QueryView;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-_App.html">/App</a></li><li><a href="module-_components_AutoSearchComponent.html">/components/AutoSearchComponent</a></li><li><a href="module-_components_DownloadFileComponent.html">/components/DownloadFileComponent</a></li><li><a href="module-_components_GraphActionsNode.html">/components/GraphActionsNode</a></li><li><a href="module-_components_GraphComponent.html">/components/GraphComponent</a></li><li><a href="module-_components_GraphLink.html">/components/GraphLink</a></li><li><a href="module-_components_GraphNode.html">/components/GraphNode</a></li><li><a href="module-_components_NodeDetailComponent.html">/components/NodeDetailComponent</a></li><li><a href="module-_components_NodeFormComponent.html">/components/NodeFormComponent</a></li><li><a href="module-_components_ResourceSelectComponent.html">/components/ResourceSelectComponent</a></li><li><a href="module-_components_TableComponent.html">/components/TableComponent</a></li><li><a href="module-_services_api.html">/services/api</a></li><li><a href="module-_services_auth.html">/services/auth</a></li><li><a href="module-_services_util.html">/services/util</a></li><li><a href="module-_views_AddNodeView.html">/views/AddNodeView</a></li><li><a href="module-_views_AdvancedQueryView.html">/views/AdvancedQueryView</a></li><li><a href="module-_views_DataView.html">/views/DataView</a></li><li><a href="module-_views_EditNodeView.html">/views/EditNodeView</a></li><li><a href="module-_views_ErrorView.html">/views/ErrorView</a></li><li><a href="module-_views_FeedbackView.html">/views/FeedbackView</a></li><li><a href="module-_views_LoginView.html">/views/LoginView</a></li><li><a href="module-_views_NodeDetailView.html">/views/NodeDetailView</a></li><li><a href="module-_views_QueryView.html">/views/QueryView</a></li><li><a href="module-services_history.html">services/history</a></li></ul><h3>Classes</h3><ul><li><a href="module-_App-App.html">App</a></li><li><a href="module-_components_AutoSearchComponent-AutoSearchComponent.html">AutoSearchComponent</a></li><li><a href="module-_components_GraphComponent-GraphComponent.html">GraphComponent</a></li><li><a href="module-_components_GraphNode-GraphNode.html">GraphNode</a></li><li><a href="module-_components_NodeDetailComponent-NodeDetailComponent.html">NodeDetailComponent</a></li><li><a href="module-_components_NodeFormComponent-NodeFormComponent.html">NodeFormComponent</a></li><li><a href="module-_components_TableComponent-TableComponent.html">TableComponent</a></li><li><a href="module-_views_AddNodeView-AddNodeView.html">AddNodeView</a></li><li><a href="module-_views_AdvancedQueryView-AdvancedQueryView.html">AdvancedQueryView</a></li><li><a href="module-_views_DataView-DataView.html">DataView</a></li><li><a href="module-_views_EditNodeView-EditNodeView.html">EditNodeView</a></li><li><a href="module-_views_ErrorView-ErrorView.html">ErrorView</a></li><li><a href="module-_views_LoginView-LoginView.html">LoginView</a></li><li><a href="module-_views_NodeDetailView-NodeDetailView.html">NodeDetailView</a></li><li><a href="module-_views_QueryView-QueryView.html">QueryView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Aug 17 2018 13:28:05 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

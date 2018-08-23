@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/GraphActionsNode/GraphActionsNode.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/GraphActionsNode/GraphActionsNode.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module /components/GraphActionsNode
+ */
+
+import React from 'react';
+import PropTypes from 'prop-types';
+import config from '../../config.json';
+
+const {
+  DETAILS_RING_RADIUS,
+  NODE_RADIUS,
+  FONT_SIZE,
+  LABEL_V_MARGIN,
+  ICON_DIMS,
+} = config.GRAPH_PROPERTIES;
+
+const ICON_POSITION_COEFFICIENT = 0.64;
+const SCALE = 0.8;
+const OPACITY = 0.9;
+
+/**
+ * Component for displaying ring-shaped panel containing possible actions for
+ * selected node. This component handles geometry and rendering ONLY.
+ */
+function GraphActionsNode(props) {
+  const {
+    options,
+    handleActionsRing,
+    actionsNode,
+    edge,
+  } = props;
+
+  if (!actionsNode) return null;
+
+  const translateX = edge
+    ? (actionsNode.target.x + actionsNode.source.x) / 2
+    : (actionsNode.x || 0);
+  const translateY = edge
+    ? (actionsNode.target.y + actionsNode.source.y) / 2
+    : (actionsNode.y);
+
+  const actionsRing = [];
+  options.forEach((option, i) => {
+    const l = options.length;
+    const offset = 1 / l * Math.PI;
+    const startAngle = (i + 1) / l * 2 * Math.PI + offset;
+    const endAngle = i / l * 2 * Math.PI + offset;
+
+    const start = {
+      x: DETAILS_RING_RADIUS * Math.cos(startAngle),
+      y: DETAILS_RING_RADIUS * Math.sin(startAngle),
+    };
+    const end = {
+      x: DETAILS_RING_RADIUS * Math.cos(endAngle),
+      y: DETAILS_RING_RADIUS * Math.sin(endAngle),
+    };
+
+    const innerRadius = edge ? 8 : NODE_RADIUS;
+    const innerEnd = {
+      x: innerRadius * Math.cos(startAngle),
+      y: innerRadius * Math.sin(startAngle),
+    };
+    const innerStart = {
+      x: innerRadius * Math.cos(endAngle),
+      y: innerRadius * Math.sin(endAngle),
+    };
+
+    const d = [
+      'M', start.x, start.y,
+      'A', DETAILS_RING_RADIUS, DETAILS_RING_RADIUS, 0, 0, 0, end.x, end.y,
+      'L', innerStart.x, innerStart.y,
+      'A', innerRadius, innerRadius, 0, 0, 1, innerEnd.x, innerEnd.y,
+      'L', start.x, start.y,
+    ].join(' ');
+
+    const angle = (2 * i + 1) / l * Math.PI + offset;
+    const dx = DETAILS_RING_RADIUS * Math.cos(angle) * ICON_POSITION_COEFFICIENT;
+    const dy = DETAILS_RING_RADIUS * Math.sin(angle) * ICON_POSITION_COEFFICIENT;
+
+    actionsRing.push((
+      &lt;g
+        style={{ cursor: 'pointer' }}
+        onClick={() => handleActionsRing(option.action)}
+        key={d}
+      >
+        &lt;path
+          d={d}
+          fill={`rgba(255,255,255,${OPACITY})`}
+          stroke="#ccc"
+        />
+        &lt;g
+          transform={`translate(${dx - ICON_DIMS * SCALE / 2}, ${dy - ICON_DIMS * SCALE / 2}) scale(${SCALE})`}
+          fill={option.disabled &amp;&amp; option.disabled(actionsNode) ? '#ccc' : '#555'}
+        >
+          {(option || '').icon}
+          &lt;text
+            textAnchor="middle"
+            dominantBaseline="central"
+            fontSize={FONT_SIZE}
+            dy={ICON_DIMS + LABEL_V_MARGIN} // add small margin vertically
+            dx={ICON_DIMS / 2} // center label horizontally
+          >
+            {`(${option.name})`}
+          &lt;/text>
+        &lt;/g>
+      &lt;/g>
+    ));
+  });
+
+  return (
+    &lt;g transform={`translate(${translateX},${translateY})`} className="actions-node">
+      {actionsRing}
+    &lt;/g>
+  );
+}
+
+/**
+
+
+ */
+GraphActionsNode.propTypes = {
+  /**
+   * @param {array} options - List of options, each must be in the form:
+   *    option: {
+   *      name: [string]
+   *      icon: [svg element]
+   *      action: [(any) => any]
+   *      disabled?: [(any) => boolean}
+   *    }
+   */
+  options: PropTypes.array,
+  /**
+   * @param {function} handleActionsRing - Parent method on actions ring click
+   * event.
+   */
+  handleActionsRing: PropTypes.func,
+  /**
+   * @param {Object} actionsNode - Currently selected object.
+   */
+  actionsNode: PropTypes.object,
+  /**
+   * @param {boolean} edge - yes/no flag determining whether selected object is
+   * an edge or not
+   */
+  edge: PropTypes.bool,
+};
+
+GraphActionsNode.defaultProps = {
+  options: [],
+  handleActionsRing: null,
+  actionsNode: null,
+  edge: false,
+};
+
+
+export default GraphActionsNode;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-_App.html">/App</a></li><li><a href="module-_components_AutoSearchComponent.html">/components/AutoSearchComponent</a></li><li><a href="module-_components_DownloadFileComponent.html">/components/DownloadFileComponent</a></li><li><a href="module-_components_GraphActionsNode.html">/components/GraphActionsNode</a></li><li><a href="module-_components_GraphComponent.html">/components/GraphComponent</a></li><li><a href="module-_components_GraphLink.html">/components/GraphLink</a></li><li><a href="module-_components_GraphNode.html">/components/GraphNode</a></li><li><a href="module-_components_NodeDetailComponent.html">/components/NodeDetailComponent</a></li><li><a href="module-_components_NodeFormComponent.html">/components/NodeFormComponent</a></li><li><a href="module-_components_ResourceSelectComponent.html">/components/ResourceSelectComponent</a></li><li><a href="module-_components_TableComponent.html">/components/TableComponent</a></li><li><a href="module-_services_api.html">/services/api</a></li><li><a href="module-_services_auth.html">/services/auth</a></li><li><a href="module-_services_util.html">/services/util</a></li><li><a href="module-_views_AddNodeView.html">/views/AddNodeView</a></li><li><a href="module-_views_AdvancedQueryView.html">/views/AdvancedQueryView</a></li><li><a href="module-_views_DataView.html">/views/DataView</a></li><li><a href="module-_views_EditNodeView.html">/views/EditNodeView</a></li><li><a href="module-_views_ErrorView.html">/views/ErrorView</a></li><li><a href="module-_views_FeedbackView.html">/views/FeedbackView</a></li><li><a href="module-_views_LoginView.html">/views/LoginView</a></li><li><a href="module-_views_NodeDetailView.html">/views/NodeDetailView</a></li><li><a href="module-_views_QueryView.html">/views/QueryView</a></li><li><a href="module-services_history.html">services/history</a></li></ul><h3>Classes</h3><ul><li><a href="module-_App-App.html">App</a></li><li><a href="module-_components_AutoSearchComponent-AutoSearchComponent.html">AutoSearchComponent</a></li><li><a href="module-_components_GraphComponent-GraphComponent.html">GraphComponent</a></li><li><a href="module-_components_GraphNode-GraphNode.html">GraphNode</a></li><li><a href="module-_components_NodeDetailComponent-NodeDetailComponent.html">NodeDetailComponent</a></li><li><a href="module-_components_NodeFormComponent-NodeFormComponent.html">NodeFormComponent</a></li><li><a href="module-_components_TableComponent-TableComponent.html">TableComponent</a></li><li><a href="module-_views_AddNodeView-AddNodeView.html">AddNodeView</a></li><li><a href="module-_views_AdvancedQueryView-AdvancedQueryView.html">AdvancedQueryView</a></li><li><a href="module-_views_DataView-DataView.html">DataView</a></li><li><a href="module-_views_EditNodeView-EditNodeView.html">EditNodeView</a></li><li><a href="module-_views_ErrorView-ErrorView.html">ErrorView</a></li><li><a href="module-_views_LoginView-LoginView.html">LoginView</a></li><li><a href="module-_views_NodeDetailView-NodeDetailView.html">NodeDetailView</a></li><li><a href="module-_views_QueryView-QueryView.html">QueryView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Aug 17 2018 13:28:05 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

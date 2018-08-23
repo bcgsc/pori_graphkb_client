@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/NodeDetailComponent/NodeDetailComponent.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/NodeDetailComponent/NodeDetailComponent.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module /components/NodeDetailComponent
+ */
+
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import './NodeDetailComponent.css';
+import {
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
+  Card,
+  Typography,
+  CardContent,
+  Divider,
+  ExpansionPanel,
+  ExpansionPanelDetails,
+  ExpansionPanelSummary,
+  ListItemIcon,
+  Tooltip,
+} from '@material-ui/core';
+import BookmarkIcon from '@material-ui/icons/Bookmark';
+import EditIcon from '@material-ui/icons/Edit';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import SearchIcon from '@material-ui/icons/Search';
+import api from '../../services/api';
+import util from '../../services/util';
+
+const MAX_NESTED_DEPTH = 2;
+
+/**
+ * Component to view details of a selected node. Can be adapted to display in
+ * both the table view and the graph view.
+ */
+class NodeDetailComponent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      V: null,
+      nestedExpanded: [],
+      expandedEdgeTypes: [],
+    };
+
+    this.handleNestedToggle = this.handleNestedToggle.bind(this);
+  }
+
+  /**
+   * Loads resources and filters node properties.
+   */
+  async componentDidMount() {
+    const schema = await api.getSchema();
+    const { V } = schema;
+    // Accounts for in and out edgetypes.
+    const expandedEdgeTypes = util.expandEdges(api.getEdges(schema));
+    this.setState({
+      V,
+      expandedEdgeTypes,
+    });
+  }
+
+  /**
+   * Toggles the open/closed state of a nested object drawer.
+   * @param {string} id - id of nested object.
+   */
+  handleNestedToggle(id) {
+    const { nestedExpanded } = this.state;
+
+    if (nestedExpanded.includes(id)) {
+      const newList = nestedExpanded.filter(n => !n.startsWith(id));
+      this.setState({ nestedExpanded: newList });
+    } else {
+      nestedExpanded.push(id);
+      this.setState({ nestedExpanded });
+    }
+  }
+
+  render() {
+    const {
+      V,
+      expandedEdgeTypes,
+      nestedExpanded,
+    } = this.state;
+
+    const {
+      handleNodeEditStart,
+      node,
+      children,
+      variant,
+      handleNewQuery,
+      detailEdge,
+    } = this.props;
+
+    if (!V) return null;
+    const filteredNode = Object.assign({}, node);
+    Object.keys(V.properties).forEach((key) => { if (key !== '@class') delete filteredNode[key]; });
+
+    /**
+     * Formats node properties based on type.
+     * @param {string} key - node property key.
+     * @param {any} value - node property value.
+     */
+    const formatProperty = (key, value, prefix) => {
+      const id = `${prefix ? `${prefix}.` : ''}${key}`;
+      /**
+       * Checks if value is falsy, if it is an edge property, or if the depth
+       * of nested values is exceeded (2).
+       */
+      if (
+        !value
+        || expandedEdgeTypes.find(edge => edge === key)
+        || value.length === 0
+        || (id.match(/\./g) || []).length > MAX_NESTED_DEPTH
+      ) {
+        return null;
+      }
+
+
+      /*  PRIMITIVE PROPERTY  */
+      if (typeof value !== 'object') {
+        return (
+          &lt;React.Fragment key={id}>
+            &lt;Typography variant="subheading">
+              {`${util.antiCamelCase(key)}:`}
+            &lt;/Typography>
+            &lt;Typography paragraph variant="body1" color="textSecondary">
+              {value.toString()}
+            &lt;/Typography>
+          &lt;/React.Fragment>
+        );
+      }
+
+      const isOpen = nestedExpanded.includes(id);
+
+
+      // TODO: handle case where field is array of objects that aren't edges.
+      /*  ARRAY PROPERTY   */
+      if (Array.isArray(value)) {
+        if (!((id.match(/\./g) || []).length === MAX_NESTED_DEPTH)) {
+          const preview = value.join(', ');
+          const content = (
+            &lt;List style={{ paddingTop: '0' }}>
+              {value.map(item => (
+                &lt;ListItem
+                  dense
+                  key={`${id}${item}`}
+                  onClick={() => handleNewQuery(`${key.includes('.')
+                    ? key.split('.')[key.split('.').length - 1]
+                    : key}=${encodeURIComponent(item)}`)
+                  }
+                  className="list-icon"
+                >
+                  &lt;ListItemIcon>
+                    &lt;SearchIcon />
+                  &lt;/ListItemIcon>
+                  &lt;ListItemText primary={item} />
+                &lt;/ListItem>
+              ))}
+            &lt;/List>
+          );
+          return (
+            &lt;ExpansionPanel
+              key={id}
+              expanded={isOpen}
+              onChange={() => this.handleNestedToggle(id)}
+              className="nested-container"
+            >
+              &lt;ExpansionPanelSummary
+                expandIcon={&lt;KeyboardArrowDownIcon />}
+                classes={{ content: 'preview-content' }}
+              >
+                &lt;div className="preview-wrap">
+                  &lt;Typography
+                    variant="subheading"
+                    className="preview-title"
+                  >
+                    {`${util.antiCamelCase(key)}:`}
+                  &lt;/Typography>
+                  {!isOpen
+                    &amp;&amp; (
+                      &lt;Typography
+                        variant="subheading"
+                        color="textSecondary"
+                        className="preview"
+                      >
+                        {preview}
+                      &lt;/Typography>
+                    )}
+                &lt;/div>
+                {!isOpen
+                  &amp;&amp; (
+                    &lt;div className="length-box">
+                      &lt;Typography
+                        variant="subheading"
+                      >
+                        {value.length}
+                      &lt;/Typography>
+                    &lt;/div>)}
+              &lt;/ExpansionPanelSummary>
+              &lt;ExpansionPanelDetails style={{ display: 'block' }}>
+                {content}
+              &lt;/ExpansionPanelDetails>
+            &lt;/ExpansionPanel>
+          );
+        }
+      }
+
+
+      /*  OBJECT PROPERTY   */
+      const nestedObject = Object.assign({}, value);
+      Object.keys(V.properties).forEach((vk) => {
+        if (vk !== '@class') delete nestedObject[vk];
+      });
+      const preview = util.getPreview(nestedObject);
+
+      if ((id.match(/\./g) || []).length === 2) {
+        return (
+          &lt;React.Fragment key={id}>
+            &lt;Typography variant="subheading">
+              {`${util.antiCamelCase(key)}:`}
+            &lt;/Typography>
+            &lt;Typography paragraph variant="caption">
+              {preview}
+            &lt;/Typography>
+          &lt;/React.Fragment>
+        );
+      }
+
+      return (
+        &lt;ExpansionPanel
+          key={id}
+          expanded={isOpen}
+          onChange={() => this.handleNestedToggle(id)}
+          className="nested-container"
+        >
+          &lt;ExpansionPanelSummary
+            expandIcon={&lt;KeyboardArrowDownIcon />}
+            classes={{ content: 'preview-content' }}
+          >
+            &lt;Typography
+              variant="subheading"
+              className="preview-title"
+            >
+              {`${util.antiCamelCase(key)}:`}
+            &lt;/Typography>
+            {!isOpen
+              &amp;&amp; (
+                &lt;Typography
+                  variant="subheading"
+                  color="textSecondary"
+                  className="preview"
+                >
+                  {preview}
+                &lt;/Typography>
+              )}
+            &lt;Tooltip title="This refers to another database record">
+              &lt;div className="node-icon length-box">
+                &lt;BookmarkIcon />
+              &lt;/div>
+            &lt;/Tooltip>
+          &lt;/ExpansionPanelSummary>
+          &lt;ExpansionPanelDetails style={{ display: 'block' }}>
+            {Object.keys(nestedObject).map(k => formatProperty(k, nestedObject[k], `${prefix ? `${prefix}.` : ''}${key}`))}
+          &lt;/ExpansionPanelDetails>
+        &lt;/ExpansionPanel>
+      );
+    };
+
+    /**
+     * Formats and lists relationship (edge) fields.
+     */
+    const listEdge = (key) => {
+      const label = util.getEdgeLabel(key);
+      const isOpen = nestedExpanded.includes(label);
+      if (filteredNode[key] &amp;&amp; filteredNode[key].length !== 0) {
+        const previews = [];
+        const content = filteredNode[key].reduce((r, edge) => {
+          const id = `${label}.${edge['@rid']}`;
+          const relatedNode = edge.in &amp;&amp; edge.in['@rid'] === node['@rid'] ? edge.out : edge.in;
+          if (relatedNode['@class'] !== 'Statement') { // Statement flag
+            const edgeOpen = nestedExpanded.includes(id);
+            previews.push(util.getPreview(relatedNode));
+            r.push((
+              &lt;ExpansionPanel
+                key={id}
+                expanded={edgeOpen}
+                onChange={() => this.handleNestedToggle(id)}
+                className="nested-container detail-edge"
+              >
+                &lt;ExpansionPanelSummary
+                  expandIcon={&lt;KeyboardArrowDownIcon />}
+                  classes={{ content: 'preview-content' }}
+                >
+                  &lt;div className="preview-wrap">
+                    &lt;Typography
+                      variant="subheading"
+                      className="preview-title"
+                    >
+                      {util.getPreview(relatedNode)}
+                    &lt;/Typography>
+                  &lt;/div>
+                  &lt;Tooltip title="This refers to another database record">
+                    &lt;div className="node-icon length-box">
+                      &lt;BookmarkIcon />
+                    &lt;/div>
+                  &lt;/Tooltip>
+                &lt;/ExpansionPanelSummary>
+                &lt;ExpansionPanelDetails style={{ display: 'block' }}>
+                  {formatProperty('@class', relatedNode['@class'], id)}
+                  {formatProperty('sourceId', relatedNode.sourceId, id)}
+                  {formatProperty('name', relatedNode.name, id)}
+                  {edge.source &amp;&amp; edge.source.name
+                    &amp;&amp; formatProperty('source', edge.source.name, id)}
+                &lt;/ExpansionPanelDetails>
+              &lt;/ExpansionPanel>
+            ));
+          }
+          return r;
+        }, []);
+        if (content.length === 0) return null;
+        return (
+          &lt;ExpansionPanel
+            key={label}
+            expanded={isOpen}
+            onChange={() => this.handleNestedToggle(label)}
+            className="nested-container"
+            id={label}
+          >
+            &lt;ExpansionPanelSummary
+              expandIcon={&lt;KeyboardArrowDownIcon />}
+              classes={{ content: 'preview-content' }}
+            >
+              &lt;Typography
+                variant="subheading"
+                className="preview-title"
+              >
+                {`${label}:`}
+              &lt;/Typography>
+              {!isOpen &amp;&amp; (
+                &lt;React.Fragment>
+                  &lt;Typography
+                    variant="subheading"
+                    color="textSecondary"
+                    className="preview"
+                  >
+                    {previews.join(', ')}
+                  &lt;/Typography>
+                  &lt;div className="length-box">
+                    &lt;Typography
+                      variant="subheading"
+                    >
+                      {filteredNode[key].length}
+                    &lt;/Typography>
+                  &lt;/div>
+                &lt;/React.Fragment>
+              )}
+            &lt;/ExpansionPanelSummary>
+            &lt;ExpansionPanelDetails style={{ display: 'block' }}>
+              {content}
+            &lt;/ExpansionPanelDetails>
+          &lt;/ExpansionPanel>
+        );
+      } return null;
+    };
+
+    const relationships = expandedEdgeTypes.reduce((r, e) => {
+      const rendered = listEdge(e);
+      if (rendered) r.push(rendered);
+      return r;
+    }, []);
+
+    const className = variant === 'table' ? 'detail-table' : 'detail-graph';
+
+    return (
+      &lt;Card style={{ height: '100%', overflowY: 'auto' }}>
+        &lt;div className="node-edit-btn">
+          {children}
+          {!detailEdge ? (
+            &lt;IconButton
+              onClick={() => handleNodeEditStart(node['@rid'], node['@class'])}
+            >
+              &lt;EditIcon />
+            &lt;/IconButton>
+          ) : null}
+        &lt;/div>
+        &lt;div className={`node-properties ${className}`}>
+          &lt;Card className="properties">
+            &lt;CardContent>
+              &lt;Typography paragraph variant="title" component="h1">
+                Properties:
+                &lt;Divider />
+              &lt;/Typography>
+              {Object.keys(filteredNode)
+                .map(key => formatProperty(key, filteredNode[key], ''))}
+            &lt;/CardContent>
+          &lt;/Card>
+          {(variant !== 'graph' || relationships.length !== 0) &amp;&amp; (
+            &lt;Card className="properties">
+              &lt;CardContent>
+                &lt;Typography paragraph variant="title" component="h1">
+                  Relationships:
+                  &lt;Divider />
+                &lt;/Typography>
+                {relationships.length !== 0 ? relationships : (
+                  &lt;Typography variant="caption" style={{ margin: 'auto' }}>
+                    No relationships
+                  &lt;/Typography>
+                )}
+              &lt;/CardContent>
+            &lt;/Card>
+          )}
+        &lt;/div>
+      &lt;/Card>
+    );
+  }
+}
+
+NodeDetailComponent.propTypes = {
+  /**
+   * @param {Object} node - node to be displayed.
+   */
+  node: PropTypes.object,
+  /**
+   * @param {function} handleNodeEditStart - function to handle request to edit
+   * selected node
+   */
+  handleNodeEditStart: PropTypes.func,
+  /**
+   * @param {function} handleNewQuery - funcion to handle new database query.
+   */
+  handleNewQuery: PropTypes.func.isRequired,
+  /**
+   * @param {Node} children - Additional buttons to render in the sidebar of
+   * the component.
+   */
+  children: PropTypes.node,
+  /**
+   * @param {string} variant - variant indicator for component.
+   */
+  variant: PropTypes.string,
+  /**
+   * @param {boolean} detailEdge - specifies if node is an edge.
+   */
+  detailEdge: PropTypes.bool,
+};
+
+NodeDetailComponent.defaultProps = {
+  node: null,
+  children: null,
+  variant: 'table',
+  detailEdge: false,
+  handleNodeEditStart: null,
+};
+
+export default NodeDetailComponent;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-_App.html">/App</a></li><li><a href="module-_components_AutoSearchComponent.html">/components/AutoSearchComponent</a></li><li><a href="module-_components_DownloadFileComponent.html">/components/DownloadFileComponent</a></li><li><a href="module-_components_GraphActionsNode.html">/components/GraphActionsNode</a></li><li><a href="module-_components_GraphComponent.html">/components/GraphComponent</a></li><li><a href="module-_components_GraphLink.html">/components/GraphLink</a></li><li><a href="module-_components_GraphNode.html">/components/GraphNode</a></li><li><a href="module-_components_NodeDetailComponent.html">/components/NodeDetailComponent</a></li><li><a href="module-_components_NodeFormComponent.html">/components/NodeFormComponent</a></li><li><a href="module-_components_ResourceSelectComponent.html">/components/ResourceSelectComponent</a></li><li><a href="module-_components_TableComponent.html">/components/TableComponent</a></li><li><a href="module-_services_api.html">/services/api</a></li><li><a href="module-_services_auth.html">/services/auth</a></li><li><a href="module-_services_util.html">/services/util</a></li><li><a href="module-_views_AddNodeView.html">/views/AddNodeView</a></li><li><a href="module-_views_AdvancedQueryView.html">/views/AdvancedQueryView</a></li><li><a href="module-_views_DataView.html">/views/DataView</a></li><li><a href="module-_views_EditNodeView.html">/views/EditNodeView</a></li><li><a href="module-_views_ErrorView.html">/views/ErrorView</a></li><li><a href="module-_views_FeedbackView.html">/views/FeedbackView</a></li><li><a href="module-_views_LoginView.html">/views/LoginView</a></li><li><a href="module-_views_NodeDetailView.html">/views/NodeDetailView</a></li><li><a href="module-_views_QueryView.html">/views/QueryView</a></li><li><a href="module-services_history.html">services/history</a></li></ul><h3>Classes</h3><ul><li><a href="module-_App-App.html">App</a></li><li><a href="module-_components_AutoSearchComponent-AutoSearchComponent.html">AutoSearchComponent</a></li><li><a href="module-_components_GraphComponent-GraphComponent.html">GraphComponent</a></li><li><a href="module-_components_GraphNode-GraphNode.html">GraphNode</a></li><li><a href="module-_components_NodeDetailComponent-NodeDetailComponent.html">NodeDetailComponent</a></li><li><a href="module-_components_NodeFormComponent-NodeFormComponent.html">NodeFormComponent</a></li><li><a href="module-_components_TableComponent-TableComponent.html">TableComponent</a></li><li><a href="module-_views_AddNodeView-AddNodeView.html">AddNodeView</a></li><li><a href="module-_views_AdvancedQueryView-AdvancedQueryView.html">AdvancedQueryView</a></li><li><a href="module-_views_DataView-DataView.html">DataView</a></li><li><a href="module-_views_EditNodeView-EditNodeView.html">EditNodeView</a></li><li><a href="module-_views_ErrorView-ErrorView.html">ErrorView</a></li><li><a href="module-_views_LoginView-LoginView.html">LoginView</a></li><li><a href="module-_views_NodeDetailView-NodeDetailView.html">NodeDetailView</a></li><li><a href="module-_views_QueryView-QueryView.html">QueryView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Aug 17 2018 13:28:05 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: App.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: App.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module /App
+ */
+
+import React, { Component } from 'react';
+import {
+  Router,
+  Route,
+  Redirect,
+  Switch,
+} from 'react-router-dom';
+import './App.css';
+import {
+  AppBar,
+  createMuiTheme,
+  MuiThemeProvider,
+  IconButton,
+  Button,
+  Typography,
+  MenuItem,
+  Popover,
+  Card,
+} from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
+import AddIcon from '@material-ui/icons/Add';
+import PersonIcon from '@material-ui/icons/Person';
+import QueryView from './views/QueryView/QueryView';
+import AdvancedQueryView from './views/AdvancedQueryView/AdvancedQueryView';
+import DataView from './views/DataView/DataView';
+import ErrorView from './views/ErrorView/ErrorView';
+import EditNodeView from './views/EditNodeView/EditNodeView';
+import AddNodeView from './views/AddNodeView/AddNodeView';
+import LoginView from './views/LoginView/LoginView';
+import NodeDetailView from './views/NodeDetailView/NodeDetailView';
+import FeedbackView from './views/FeedbackView/FeedbackView';
+import auth from './services/auth';
+import history from './services/history';
+
+const theme = createMuiTheme({
+  direction: 'ltr',
+  palette: {
+    primary: {
+      main: '#26328C',
+    },
+    secondary: {
+      main: '#54B198',
+      light: '#CCCFE2',
+    },
+    error: {
+      main: '#d32f2f',
+    },
+    text: {
+      primary: 'rgba(0,0,0,0.7)',
+      secondary: 'rgba(0,0,0,0.54)',
+    },
+  },
+});
+
+/**
+ * Entry point to application. Handles routing, app theme, and logged in state.
+ */
+class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      anchorEl: null,
+      loggedIn: (!!auth.getToken() &amp;&amp; !auth.isExpired()),
+    };
+
+    this.handleOpen = this.handleOpen.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleLogOut = this.handleLogOut.bind(this);
+    this.handleAuthenticate = this.handleAuthenticate.bind(this);
+  }
+
+  /**
+   * Opens user dropdown menu.
+   */
+  handleOpen() {
+    this.setState({ anchorEl: this.dropdown });
+  }
+
+  /**
+   * Closes user dropdown menu.
+   */
+  handleClose() {
+    this.setState({ anchorEl: null });
+  }
+
+  /**
+   * Clears authentication token and sets logged in status to false.
+   */
+  handleLogOut() {
+    auth.clearToken();
+    this.handleClose();
+    this.setState({ loggedIn: false });
+  }
+
+  /**
+   * Disables action buttons in headers and force redirects to /login.
+   */
+  handleAuthenticate() {
+    this.setState({ loggedIn: true });
+  }
+
+  render() {
+    const { anchorEl, loggedIn } = this.state;
+
+    const loginWithProps = () => (
+      &lt;LoginView
+        history={history}
+        handleLogOut={this.handleLogOut}
+        handleAuthenticate={this.handleAuthenticate}
+      />
+    );
+
+    const loggedInContent = (
+      &lt;Switch>
+        &lt;Route exact path="/query" component={QueryView} />
+        &lt;Route path="/query/advanced" component={AdvancedQueryView} />
+        &lt;Route path="/add" component={AddNodeView} />
+        &lt;Route path="/edit/:rid" component={EditNodeView} />
+        &lt;Route path="/ontology/:rid" component={NodeDetailView} />
+        &lt;Route path="/data" component={DataView} />
+        &lt;Route path="/feedback" component={FeedbackView} />
+        &lt;Redirect from="*" to="/query" />
+      &lt;/Switch>
+    );
+    return (
+      &lt;MuiThemeProvider theme={theme}>
+        &lt;Router history={history}>
+          &lt;div className="App">
+            &lt;AppBar position="static" className="banner">
+              {loggedIn &amp;&amp; (
+                &lt;React.Fragment>
+                  &lt;IconButton
+                    color="inherit"
+                    onClick={() => history.push('/query')}
+                  >
+                    &lt;SearchIcon />
+                  &lt;/IconButton>
+                  &lt;IconButton
+                    color="inherit"
+                    onClick={() => history.push('/add')}
+                  >
+                    &lt;AddIcon />
+                  &lt;/IconButton>
+                &lt;/React.Fragment>
+              )}
+              &lt;div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>
+                &lt;div>
+                  &lt;Button
+                    classes={{ root: 'user-btn' }}
+                    onClick={this.handleOpen}
+                    size="small"
+                    disabled={!loggedIn}
+                  >
+                    &lt;PersonIcon />
+                    &lt;Typography variant="body2">
+                      {auth.getUser() || 'Logged Out'}
+                    &lt;/Typography>
+                  &lt;/Button>
+                  &lt;Popover
+                    open={!!anchorEl}
+                    anchorEl={anchorEl}
+                    onClose={this.handleClose}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    PaperProps={{
+                      onMouseLeave: this.handleClose,
+                    }}
+                  >
+                    &lt;Card className="user-menu">
+                      &lt;MenuItem onClick={() => { history.push('/feedback'); this.handleClose(); }}>
+                        Feedback
+                      &lt;/MenuItem>
+                      &lt;MenuItem onClick={this.handleLogOut}>
+                        Logout
+                      &lt;/MenuItem>
+                    &lt;/Card>
+                  &lt;/Popover>
+                &lt;/div>
+              &lt;/div>
+            &lt;/AppBar>
+            &lt;section className="content">
+              &lt;div className="router-outlet">
+                &lt;Switch>
+                  &lt;Route path="/login" render={loginWithProps} />
+                  &lt;Route path="/error" component={ErrorView} />
+                  &lt;Route
+                    path="/"
+                    render={() => {
+                      if (!loggedIn) {
+                        return &lt;Redirect to="/login" />;
+                      }
+                      return loggedInContent;
+                    }}
+                  />
+                &lt;/Switch>
+              &lt;/div>
+            &lt;/section>
+          &lt;/div>
+        &lt;/Router>
+      &lt;/MuiThemeProvider>
+    );
+  }
+}
+
+export default App;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-_App.html">/App</a></li><li><a href="module-_components_AutoSearchComponent.html">/components/AutoSearchComponent</a></li><li><a href="module-_components_DownloadFileComponent.html">/components/DownloadFileComponent</a></li><li><a href="module-_components_GraphActionsNode.html">/components/GraphActionsNode</a></li><li><a href="module-_components_GraphComponent.html">/components/GraphComponent</a></li><li><a href="module-_components_GraphLink.html">/components/GraphLink</a></li><li><a href="module-_components_GraphNode.html">/components/GraphNode</a></li><li><a href="module-_components_NodeDetailComponent.html">/components/NodeDetailComponent</a></li><li><a href="module-_components_NodeFormComponent.html">/components/NodeFormComponent</a></li><li><a href="module-_components_ResourceSelectComponent.html">/components/ResourceSelectComponent</a></li><li><a href="module-_components_TableComponent.html">/components/TableComponent</a></li><li><a href="module-_services_api.html">/services/api</a></li><li><a href="module-_services_auth.html">/services/auth</a></li><li><a href="module-_services_util.html">/services/util</a></li><li><a href="module-_views_AddNodeView.html">/views/AddNodeView</a></li><li><a href="module-_views_AdvancedQueryView.html">/views/AdvancedQueryView</a></li><li><a href="module-_views_DataView.html">/views/DataView</a></li><li><a href="module-_views_EditNodeView.html">/views/EditNodeView</a></li><li><a href="module-_views_ErrorView.html">/views/ErrorView</a></li><li><a href="module-_views_FeedbackView.html">/views/FeedbackView</a></li><li><a href="module-_views_LoginView.html">/views/LoginView</a></li><li><a href="module-_views_NodeDetailView.html">/views/NodeDetailView</a></li><li><a href="module-_views_QueryView.html">/views/QueryView</a></li><li><a href="module-services_history.html">services/history</a></li></ul><h3>Classes</h3><ul><li><a href="module-_App-App.html">App</a></li><li><a href="module-_components_AutoSearchComponent-AutoSearchComponent.html">AutoSearchComponent</a></li><li><a href="module-_components_GraphComponent-GraphComponent.html">GraphComponent</a></li><li><a href="module-_components_GraphNode-GraphNode.html">GraphNode</a></li><li><a href="module-_components_NodeDetailComponent-NodeDetailComponent.html">NodeDetailComponent</a></li><li><a href="module-_components_NodeFormComponent-NodeFormComponent.html">NodeFormComponent</a></li><li><a href="module-_components_TableComponent-TableComponent.html">TableComponent</a></li><li><a href="module-_views_AddNodeView-AddNodeView.html">AddNodeView</a></li><li><a href="module-_views_AdvancedQueryView-AdvancedQueryView.html">AdvancedQueryView</a></li><li><a href="module-_views_DataView-DataView.html">DataView</a></li><li><a href="module-_views_EditNodeView-EditNodeView.html">EditNodeView</a></li><li><a href="module-_views_ErrorView-ErrorView.html">ErrorView</a></li><li><a href="module-_views_LoginView-LoginView.html">LoginView</a></li><li><a href="module-_views_NodeDetailView-NodeDetailView.html">NodeDetailView</a></li><li><a href="module-_views_QueryView-QueryView.html">QueryView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Aug 17 2018 13:28:05 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

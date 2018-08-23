@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: views/LoginView/LoginView.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: views/LoginView/LoginView.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module /views/LoginView
+ */
+
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import './LoginView.css';
+import {
+  Button,
+  Typography,
+  TextField,
+  Snackbar,
+} from '@material-ui/core';
+import api from '../../services/api';
+import auth from '../../services/auth';
+
+/**
+ * View to handle user authentication. Redirected to if at any point during use
+ * the application receives a 401 error code from the server. Logs in by posting
+ * user credentials to the api authentication endpoint, and stores the returned
+ * token in browser localstorage.
+ */
+class LoginView extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: '',
+      password: '',
+      invalid: false,
+      timedout: false,
+    };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  /**
+   * Checks if there is a timedout flag in passed state to notify user, then
+   * updates parent component if user is logged out with handleLogOut.
+   */
+  componentDidMount() {
+    const { history, handleLogOut } = this.props;
+    const { timedout } = history.location.state || {};
+    if (!auth.getToken()) {
+      handleLogOut();
+    }
+    this.setState({ timedout: !!timedout });
+  }
+
+  /**
+   * Updates component state based on user input.
+   * @param {Event} e - Change event triggered from user inputs.
+   */
+  handleChange(e) {
+    this.setState({ [e.target.name]: e.target.value, invalid: false });
+  }
+
+  /**
+   * Closes snackbar.
+   */
+  handleClose() {
+    this.setState({ timedout: false });
+  }
+
+  /**
+   * Makes authentication request to api.
+   * @param {Event} e - Submit event.
+   */
+  handleSubmit(e) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    const { username, password } = this.state;
+    const { history, handleAuthenticate } = this.props;
+
+    api
+      .post('/token', {
+        username,
+        password,
+      })
+      .then((response) => {
+        auth.loadToken(response.kbToken);
+        handleAuthenticate();
+        history.push('/query');
+      })
+      .catch((error) => {
+        if (error.status === 401) {
+          this.setState({ invalid: true });
+        }
+      });
+  }
+
+  /**
+   * Renders the component.
+   */
+  render() {
+    const {
+      username,
+      password,
+      invalid,
+      timedout,
+    } = this.state;
+
+    return (
+      &lt;div className="login-wrapper">
+        &lt;Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          open={timedout}
+          onClose={this.handleClose}
+          autoHideDuration={3000}
+          message={(
+            &lt;span>
+              Session timed out.
+            &lt;/span>
+          )}
+        />
+
+        &lt;form className="login-form" onSubmit={this.handleSubmit}>
+          &lt;TextField
+            className="login-input"
+            name="username"
+            value={username}
+            onChange={this.handleChange}
+            type="text"
+            label="Username"
+            required
+            error={invalid}
+          />
+          &lt;TextField
+            className="login-input"
+            name="password"
+            value={password}
+            onChange={this.handleChange}
+            type="password"
+            label="Password"
+            required
+            error={invalid}
+          />
+          &lt;Button type="submit" color="primary" variant="raised">
+            Login
+          &lt;/Button>
+          &lt;Typography variant="caption" id="caption">
+            Log in with your BC GSC web credentials
+          &lt;/Typography>
+          {invalid &amp;&amp; (
+            &lt;Typography variant="subheading" id="invalid-meessage">
+              Invalid Username or Password
+            &lt;/Typography>
+          )}
+        &lt;/form>
+      &lt;/div>
+    );
+  }
+}
+
+LoginView.propTypes = {
+  /**
+   * @param {object} history -  Application history object.
+   */
+  history: PropTypes.object.isRequired,
+  /**
+   * @param {function} handleLogOut - Updates parent state on unauthorized user.
+   */
+  handleLogOut: PropTypes.func.isRequired,
+  /**
+   * @param {function} handleAuthenticate - Updates parent state on successful login.
+   */
+  handleAuthenticate: PropTypes.func.isRequired,
+};
+
+export default LoginView;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-_App.html">/App</a></li><li><a href="module-_components_AutoSearchComponent.html">/components/AutoSearchComponent</a></li><li><a href="module-_components_DownloadFileComponent.html">/components/DownloadFileComponent</a></li><li><a href="module-_components_GraphActionsNode.html">/components/GraphActionsNode</a></li><li><a href="module-_components_GraphComponent.html">/components/GraphComponent</a></li><li><a href="module-_components_GraphLink.html">/components/GraphLink</a></li><li><a href="module-_components_GraphNode.html">/components/GraphNode</a></li><li><a href="module-_components_NodeDetailComponent.html">/components/NodeDetailComponent</a></li><li><a href="module-_components_NodeFormComponent.html">/components/NodeFormComponent</a></li><li><a href="module-_components_ResourceSelectComponent.html">/components/ResourceSelectComponent</a></li><li><a href="module-_components_TableComponent.html">/components/TableComponent</a></li><li><a href="module-_services_api.html">/services/api</a></li><li><a href="module-_services_auth.html">/services/auth</a></li><li><a href="module-_services_util.html">/services/util</a></li><li><a href="module-_views_AddNodeView.html">/views/AddNodeView</a></li><li><a href="module-_views_AdvancedQueryView.html">/views/AdvancedQueryView</a></li><li><a href="module-_views_DataView.html">/views/DataView</a></li><li><a href="module-_views_EditNodeView.html">/views/EditNodeView</a></li><li><a href="module-_views_ErrorView.html">/views/ErrorView</a></li><li><a href="module-_views_FeedbackView.html">/views/FeedbackView</a></li><li><a href="module-_views_LoginView.html">/views/LoginView</a></li><li><a href="module-_views_NodeDetailView.html">/views/NodeDetailView</a></li><li><a href="module-_views_QueryView.html">/views/QueryView</a></li><li><a href="module-services_history.html">services/history</a></li></ul><h3>Classes</h3><ul><li><a href="module-_App-App.html">App</a></li><li><a href="module-_components_AutoSearchComponent-AutoSearchComponent.html">AutoSearchComponent</a></li><li><a href="module-_components_GraphComponent-GraphComponent.html">GraphComponent</a></li><li><a href="module-_components_GraphNode-GraphNode.html">GraphNode</a></li><li><a href="module-_components_NodeDetailComponent-NodeDetailComponent.html">NodeDetailComponent</a></li><li><a href="module-_components_NodeFormComponent-NodeFormComponent.html">NodeFormComponent</a></li><li><a href="module-_components_TableComponent-TableComponent.html">TableComponent</a></li><li><a href="module-_views_AddNodeView-AddNodeView.html">AddNodeView</a></li><li><a href="module-_views_AdvancedQueryView-AdvancedQueryView.html">AdvancedQueryView</a></li><li><a href="module-_views_DataView-DataView.html">DataView</a></li><li><a href="module-_views_EditNodeView-EditNodeView.html">EditNodeView</a></li><li><a href="module-_views_ErrorView-ErrorView.html">ErrorView</a></li><li><a href="module-_views_LoginView-LoginView.html">LoginView</a></li><li><a href="module-_views_NodeDetailView-NodeDetailView.html">NodeDetailView</a></li><li><a href="module-_views_QueryView-QueryView.html">QueryView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Aug 17 2018 13:28:05 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

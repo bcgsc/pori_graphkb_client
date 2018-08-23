@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: views/ErrorView/ErrorView.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: views/ErrorView/ErrorView.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module /views/ErrorView
+ */
+
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import './ErrorView.css';
+import { Typography, Button, Tooltip } from '@material-ui/core';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+
+/**
+ * View for displaying uncaught error messages.
+ */
+class ErrorView extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      tooltip: false,
+      body: null,
+      status: null,
+    };
+  }
+
+  componentDidMount() {
+    const { history } = this.props;
+    const { state } = history.location;
+    if (!state || !(state.status || state.body)) {
+      history.push('/query');
+    } else {
+      const { status, body } = state;
+      this.setState({ body, status });
+    }
+  }
+
+  render() {
+    const { tooltip, body, status } = this.state;
+    if (!body || !status) return null;
+    const {
+      error,
+      message,
+      method,
+      name,
+      url,
+      stacktrace,
+    } = body;
+
+    const methodText = `${method ? `Method ${method}` : ''}${url ? `to url ${url}:` : ''}${message || ''}`;
+
+    return (
+      &lt;div className="error-wrapper">
+        &lt;Typography variant="display4" id="error-header">
+          Error
+        &lt;/Typography>
+        &lt;div className="error-content">
+          &lt;Typography variant="display2">
+            {`${status}: ${error || name}`}
+          &lt;/Typography>
+        &lt;/div>
+
+        &lt;div className="error-content">
+          &lt;Typography variant="title">
+            {!error ? '' : name}
+          &lt;/Typography>
+        &lt;/div>
+        &lt;div className="error-content">
+          &lt;Typography variant="subheading">
+            {methodText}
+          &lt;/Typography>
+        &lt;/div>
+        &lt;div id="spacer" />
+        &lt;div className="error-content" id="return-link">
+          &lt;Link to="/query">
+            &lt;Button variant="raised" color="primary">
+              Back
+            &lt;/Button>
+          &lt;/Link>
+        &lt;/div>
+        {stacktrace
+          &amp;&amp; (
+            &lt;div className="error-content stacktrace">
+              &lt;Tooltip
+                title="Copied!"
+                disableHoverListener
+                open={tooltip}
+                onClose={() => this.setState({ tooltip: false })}
+              >
+                &lt;CopyToClipboard text={stacktrace} id="copy-button">
+                  &lt;Button
+                    variant="outlined"
+                    onClick={() => this.setState({ tooltip: true })}
+                  >
+                    Copy To Clipboard
+                    &lt;AssignmentIcon />
+                  &lt;/Button>
+                &lt;/CopyToClipboard>
+              &lt;/Tooltip>
+              &lt;Typography variant="subheading" id="stacktrace-text">
+                {stacktrace}
+              &lt;/Typography>
+            &lt;/div>)}
+      &lt;/div>
+    );
+  }
+}
+
+ErrorView.propTypes = {
+  /**
+   * @param {Object} history - Application routing history object.
+   */
+  history: PropTypes.object.isRequired,
+};
+
+export default ErrorView;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-_App.html">/App</a></li><li><a href="module-_components_AutoSearchComponent.html">/components/AutoSearchComponent</a></li><li><a href="module-_components_DownloadFileComponent.html">/components/DownloadFileComponent</a></li><li><a href="module-_components_GraphActionsNode.html">/components/GraphActionsNode</a></li><li><a href="module-_components_GraphComponent.html">/components/GraphComponent</a></li><li><a href="module-_components_GraphLink.html">/components/GraphLink</a></li><li><a href="module-_components_GraphNode.html">/components/GraphNode</a></li><li><a href="module-_components_NodeDetailComponent.html">/components/NodeDetailComponent</a></li><li><a href="module-_components_NodeFormComponent.html">/components/NodeFormComponent</a></li><li><a href="module-_components_ResourceSelectComponent.html">/components/ResourceSelectComponent</a></li><li><a href="module-_components_TableComponent.html">/components/TableComponent</a></li><li><a href="module-_services_api.html">/services/api</a></li><li><a href="module-_services_auth.html">/services/auth</a></li><li><a href="module-_services_util.html">/services/util</a></li><li><a href="module-_views_AddNodeView.html">/views/AddNodeView</a></li><li><a href="module-_views_AdvancedQueryView.html">/views/AdvancedQueryView</a></li><li><a href="module-_views_DataView.html">/views/DataView</a></li><li><a href="module-_views_EditNodeView.html">/views/EditNodeView</a></li><li><a href="module-_views_ErrorView.html">/views/ErrorView</a></li><li><a href="module-_views_FeedbackView.html">/views/FeedbackView</a></li><li><a href="module-_views_LoginView.html">/views/LoginView</a></li><li><a href="module-_views_NodeDetailView.html">/views/NodeDetailView</a></li><li><a href="module-_views_QueryView.html">/views/QueryView</a></li><li><a href="module-services_history.html">services/history</a></li></ul><h3>Classes</h3><ul><li><a href="module-_App-App.html">App</a></li><li><a href="module-_components_AutoSearchComponent-AutoSearchComponent.html">AutoSearchComponent</a></li><li><a href="module-_components_GraphComponent-GraphComponent.html">GraphComponent</a></li><li><a href="module-_components_GraphNode-GraphNode.html">GraphNode</a></li><li><a href="module-_components_NodeDetailComponent-NodeDetailComponent.html">NodeDetailComponent</a></li><li><a href="module-_components_NodeFormComponent-NodeFormComponent.html">NodeFormComponent</a></li><li><a href="module-_components_TableComponent-TableComponent.html">TableComponent</a></li><li><a href="module-_views_AddNodeView-AddNodeView.html">AddNodeView</a></li><li><a href="module-_views_AdvancedQueryView-AdvancedQueryView.html">AdvancedQueryView</a></li><li><a href="module-_views_DataView-DataView.html">DataView</a></li><li><a href="module-_views_EditNodeView-EditNodeView.html">EditNodeView</a></li><li><a href="module-_views_ErrorView-ErrorView.html">ErrorView</a></li><li><a href="module-_views_LoginView-LoginView.html">LoginView</a></li><li><a href="module-_views_NodeDetailView-NodeDetailView.html">NodeDetailView</a></li><li><a href="module-_views_QueryView-QueryView.html">QueryView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Aug 17 2018 13:28:05 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

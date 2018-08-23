@@ -91,16 +91,15 @@ class DataView extends Component {
     const { history } = this.props;
 
     const schema = await api.getSchema();
-    const filteredSearch = qs.parse(history.location.search);
+    const filteredSearch = qs.parse(history.location.search.slice(1));
     let route = '/ontologies';
-
     if (filteredSearch['@class'] && schema[filteredSearch['@class']]) {
       route = schema[filteredSearch['@class']].route || filteredSearch['@class'];
     }
 
     let allProps = ['@rid', '@class'];
     try {
-      const data = await api.get(`${route}?${qs.stringify(filteredSearch).slice(3)}&neighbors=3`);
+      const data = await api.get(`${route}?${qs.stringify(filteredSearch)}&neighbors=3`);
       const cycled = jc.retrocycle(data.result);
 
       cycled.forEach((ontologyTerm) => {
@@ -112,7 +111,7 @@ class DataView extends Component {
         const nextFilteredSearch = Object.assign({}, filteredSearch);
         nextFilteredSearch.skip = filteredSearch.limit || DEFAULT_LIMIT;
         this.setState({
-          next: () => api.get(`${route}?${qs.stringify(nextFilteredSearch).slice(3)}&neighbors=3`),
+          next: () => api.get(`${route}?${qs.stringify(nextFilteredSearch)}&neighbors=3`),
           moreResults: true,
         });
       }
@@ -229,7 +228,7 @@ class DataView extends Component {
         const lastSkip = filteredSearch.skip || limit;
         if (cycled.length >= limit) {
           filteredSearch.skip = lastSkip + limit;
-          newNext = () => api.get(`${route}?${qs.stringify(filteredSearch).slice(3)}&neighbors=3`);
+          newNext = () => api.get(`${route}?${qs.stringify(filteredSearch)}&neighbors=3`);
           moreResults = true;
         }
         this.setState({

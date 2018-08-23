@@ -1,17 +1,17 @@
 /**
- * @module /views/AddNodeView
+ * @module /views/AddOntologyView
  */
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import NodeFormComponent from '../../components/NodeFormComponent/NodeFormComponent';
+import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
 
 /**
  * View for editing or adding database nodes. Includes a NodeFormComponent with the
  * 'add' variant. Submissions will post to the server, and redirect user to the home
  * query page.
  */
-class AddNodeView extends Component {
+class AddOntologyView extends Component {
   constructor(props) {
     super(props);
 
@@ -28,7 +28,7 @@ class AddNodeView extends Component {
 
   render() {
     return (
-      <NodeFormComponent
+      <OntologyFormComponent
         variant="add"
         handleNodeFinish={this.handleNodeFinish}
       />
@@ -36,11 +36,11 @@ class AddNodeView extends Component {
   }
 }
 
-AddNodeView.propTypes = {
+AddOntologyView.propTypes = {
   /**
    * @param {Object} history - history state object.
    */
   history: PropTypes.object.isRequired,
 };
 
-export default AddNodeView;
+export default AddOntologyView;

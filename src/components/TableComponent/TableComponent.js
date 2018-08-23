@@ -35,7 +35,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import AddIcon from '@material-ui/icons/Add';
-import NodeDetailComponent from '../NodeDetailComponent/NodeDetailComponent';
+import OntologyDetailComponent from '../OntologyDetailComponent/OntologyDetailComponent';
 import DownloadFileComponent from '../DownloadFileComponent/DownloadFileComponent';
 import util from '../../services/util';
 import config from '../../config.json';
@@ -559,7 +559,7 @@ class TableComponent extends Component {
                       in={active}
                       unmountOnExit
                     >
-                      <NodeDetailComponent
+                      <OntologyDetailComponent
                         node={n}
                         data={data}
                         handleNodeEditStart={handleNodeEditStart}

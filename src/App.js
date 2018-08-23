@@ -28,10 +28,10 @@ import QueryView from './views/QueryView/QueryView';
 import AdvancedQueryView from './views/AdvancedQueryView/AdvancedQueryView';
 import DataView from './views/DataView/DataView';
 import ErrorView from './views/ErrorView/ErrorView';
-import EditNodeView from './views/EditNodeView/EditNodeView';
-import AddNodeView from './views/AddNodeView/AddNodeView';
+import EditOntologyView from './views/EditOntologyView/EditOntologyView';
+import AddOntologyView from './views/AddOntologyView/AddOntologyView';
 import LoginView from './views/LoginView/LoginView';
-import NodeDetailView from './views/NodeDetailView/NodeDetailView';
+import OntologyDetailView from './views/OntologyDetailView/OntologyDetailView';
 import FeedbackView from './views/FeedbackView/FeedbackView';
 import auth from './services/auth';
 import history from './services/history';
@@ -119,9 +119,9 @@ class App extends Component {
       <Switch>
         <Route exact path="/query" component={QueryView} />
         <Route path="/query/advanced" component={AdvancedQueryView} />
-        <Route path="/add" component={AddNodeView} />
-        <Route path="/edit/:rid" component={EditNodeView} />
-        <Route path="/ontology/:rid" component={NodeDetailView} />
+        <Route path="/add" component={AddOntologyView} />
+        <Route path="/edit/:rid" component={EditOntologyView} />
+        <Route path="/ontology/:rid" component={OntologyDetailView} />
         <Route path="/data" component={DataView} />
         <Route path="/feedback" component={FeedbackView} />
         <Redirect from="*" to="/query" />

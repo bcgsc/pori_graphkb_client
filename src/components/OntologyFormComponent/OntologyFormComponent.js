@@ -1,10 +1,10 @@
 /**
- * @module /components/NodeFormComponent
+ * @module /components/OntologyFormComponent
  */
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './NodeFormComponent.css';
+import './OntologyFormComponent.css';
 import {
   TextField,
   List,
@@ -52,7 +52,7 @@ const SNACKBAR_SPINNER_SIZE = 30;
  * published to the database until the form is valid and submit button
  * has been clicked.
  */
-class NodeFormComponent extends Component {
+class OntologyFormComponent extends Component {
   constructor(props) {
     super(props);
 
@@ -1023,7 +1023,7 @@ class NodeFormComponent extends Component {
   }
 }
 
-NodeFormComponent.propTypes = {
+OntologyFormComponent.propTypes = {
   /**
    * @param {Object} node - node object to be edited.
    */
@@ -1039,10 +1039,10 @@ NodeFormComponent.propTypes = {
   handleNodeFinish: PropTypes.func,
 };
 
-NodeFormComponent.defaultProps = {
+OntologyFormComponent.defaultProps = {
   variant: 'edit',
   handleNodeFinish: null,
   node: null,
 };
 
-export default NodeFormComponent;
+export default OntologyFormComponent;

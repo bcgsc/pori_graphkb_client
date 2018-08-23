@@ -20,7 +20,7 @@ import { withStyles } from '@material-ui/core/styles';
 import qs from 'qs';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
-import NodeDetailComponent from '../../components/NodeDetailComponent/NodeDetailComponent';
+import OntologyDetailComponent from '../../components/OntologyDetailComponent/OntologyDetailComponent';
 import api from '../../services/api';
 
 const styles = {
@@ -371,7 +371,7 @@ class DataView extends Component {
         onClose={this.handleDetailDrawerClose}
         SlideProps={{ unmountOnExit: true }}
       >
-        <NodeDetailComponent
+        <OntologyDetailComponent
           variant="graph"
           node={detail}
           handleNodeEditStart={this.handleNodeEditStart}
@@ -382,7 +382,7 @@ class DataView extends Component {
           <IconButton onClick={this.handleDetailDrawerClose}>
             <CloseIcon color="action" />
           </IconButton>
-        </NodeDetailComponent>
+        </OntologyDetailComponent>
       </Drawer>
     );
 

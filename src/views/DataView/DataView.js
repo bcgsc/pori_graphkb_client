@@ -56,6 +56,7 @@ class DataView extends Component {
       next: null,
       completedNext: true,
       filteredSearch: null,
+      moreResults: false,
     };
 
     this.handleClick = this.handleClick.bind(this);

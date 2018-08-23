@@ -1,11 +1,11 @@
 /**
- * @module /views/EditNodeView
+ * @module /views/EditOntologyView
  */
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as jc from 'json-cycle';
-import NodeFormComponent from '../../components/NodeFormComponent/NodeFormComponent';
+import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
 import api from '../../services/api';
 
 /**
@@ -13,7 +13,7 @@ import api from '../../services/api';
  * selected. Selects node with record ID as passed in to the url (/edit/[rid]).
  * Redirects to the home query page on form submit, or to the error page.
  */
-class EditNodeView extends Component {
+class EditOntologyView extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -51,7 +51,7 @@ class EditNodeView extends Component {
 
     if (node) {
       return (
-        <NodeFormComponent
+        <OntologyFormComponent
           variant="edit"
           node={node}
           handleNodeFinish={this.handleNodeFinish}
@@ -62,7 +62,7 @@ class EditNodeView extends Component {
   }
 }
 
-EditNodeView.propTypes = {
+EditOntologyView.propTypes = {
   /**
    * @param {Object} match - Match object for extracting URL parameters.
    */
@@ -73,4 +73,4 @@ EditNodeView.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-export default EditNodeView;
+export default EditOntologyView;

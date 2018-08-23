@@ -1,10 +1,10 @@
 /**
- * @module /components/NodeDetailComponent
+ * @module /components/OntologyDetailComponent
  */
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './NodeDetailComponent.css';
+import './OntologyDetailComponent.css';
 import {
   List,
   ListItem,
@@ -33,7 +33,7 @@ const MAX_NESTED_DEPTH = 2;
  * Component to view details of a selected node. Can be adapted to display in
  * both the table view and the graph view.
  */
-class NodeDetailComponent extends Component {
+class OntologyDetailComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -415,7 +415,7 @@ class NodeDetailComponent extends Component {
   }
 }
 
-NodeDetailComponent.propTypes = {
+OntologyDetailComponent.propTypes = {
   /**
    * @param {Object} node - node to be displayed.
    */
@@ -444,7 +444,7 @@ NodeDetailComponent.propTypes = {
   detailEdge: PropTypes.bool,
 };
 
-NodeDetailComponent.defaultProps = {
+OntologyDetailComponent.defaultProps = {
   node: null,
   children: null,
   variant: 'table',
@@ -452,4 +452,4 @@ NodeDetailComponent.defaultProps = {
   handleNodeEditStart: null,
 };
 
-export default NodeDetailComponent;
+export default OntologyDetailComponent;

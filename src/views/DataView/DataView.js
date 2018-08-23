@@ -219,7 +219,6 @@ class DataView extends Component {
         let route = '/ontologies';
         if (filteredSearch['@class']) {
           route = schema[filteredSearch['@class']].route;
-          console.log(qs.stringify(filteredSearch));
         }
 
         let newNext = null;

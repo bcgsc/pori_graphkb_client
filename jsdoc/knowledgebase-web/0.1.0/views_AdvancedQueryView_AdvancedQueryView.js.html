@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: views/AdvancedQueryView/AdvancedQueryView.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: views/AdvancedQueryView/AdvancedQueryView.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module /views/AdvancedQueryView
+ */
+
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import './AdvancedQueryView.css';
+import {
+  TextField,
+  Button,
+  Typography,
+  MenuItem,
+  List,
+  ListItem,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  RadioGroup,
+  Radio,
+  Tooltip,
+  InputAdornment,
+  Paper,
+  Snackbar,
+} from '@material-ui/core/';
+import HelpIcon from '@material-ui/icons/Help';
+import * as qs from 'querystring';
+import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
+import AutoSearchComponent from '../../components/AutoSearchComponent/AutoSearchComponent';
+import api from '../../services/api';
+import util from '../../services/util';
+import config from '../../config';
+
+/**
+ * View for in-depth database query building. Form submissions will route to
+ * the data results route to display the returned data. Forms are dynamically
+ * generated based off of the database schema.
+ */
+class AdvancedQueryView extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      form: null,
+      ontologyTypes: [],
+      message: '',
+    };
+
+    this.bundle = this.bundle.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleClassChange = this.handleClassChange.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+  }
+
+  /**
+   * Initializes valid sources.
+   */
+  async componentDidMount() {
+    const { history } = this.props;
+
+    if (
+      history.location
+      &amp;&amp; history.location.state
+      &amp;&amp; history.location.state.body
+      &amp;&amp; history.location.state.body.message
+    ) {
+      this.setState({ message: history.location.state.body.message });
+    }
+
+    const form = {};
+    const schema = await api.getSchema();
+    const ontologyTypes = [{ name: '', properties: null, route: 'ontologies' }];
+    ontologyTypes.push(...api.getOntologies(schema));
+    form['@class'] = ontologyTypes[0].name;
+
+    const editableProps = (await api.getClass(form['@class'])).properties;
+    editableProps.push(...config.ONTOLOGY_QUERY_PARAMS);
+    editableProps.forEach((prop) => {
+      const {
+        name,
+        type,
+        linkedClass,
+        defaultValue,
+      } = prop;
+      switch (type) {
+        case 'link':
+          form[`${name}.@rid`] = '';
+          form[name] = '';
+
+          if (!linkedClass) {
+            form[`${name}.class`] = '';
+          }
+          form[`${name}.sourceId`] = '';
+
+          break;
+        case 'boolean':
+          form[name] = defaultValue.toString() === 'true';
+          break;
+        default:
+          form[name] = name === 'name' ? (history.location.state || {}).name : defaultValue || '';
+          break;
+      }
+    });
+    this.setState({
+      ontologyTypes,
+      form,
+      editableProps,
+      schema,
+    });
+  }
+
+  /**
+   * Formats query string to be passed into url.
+   */
+  bundle() {
+    const { form, editableProps } = this.state;
+    const params = [{ name: '@class', type: 'string' }];
+    params.push(...config.ONTOLOGY_QUERY_PARAMS);
+    const payload = util.parsePayload(form, editableProps, params);
+
+    return qs.stringify(payload);
+  }
+
+  /**
+   * Updates main parameters after user input.
+   * @param {Event} e - User input event.
+   */
+  handleChange(e) {
+    const { form } = this.state;
+    form[e.target.name] = e.target.value;
+
+    if (e.target['@rid']) {
+      form[`${e.target.name}.@rid`] = e.target['@rid'];
+    } else if (form[`${e.target.name}.@rid`]) {
+      form[`${e.target.name}.@rid`] = '';
+    }
+    if (e.target.sourceId) {
+      form[`${e.target.name}.sourceId`] = e.target.sourceId;
+    } else if (form[`${e.target.name}.sourceId`]) {
+      form[`${e.target.name}.sourceId`] = '';
+    }
+
+    this.setState({ form });
+  }
+
+  /**
+   * Re renders form input fields based on class editable properties.
+   * @param {Event} e - Class selection event
+   */
+  async handleClassChange(e) {
+    const newNodeClass = e.target.value;
+    const editableProps = (await api.getClass(newNodeClass)).properties;
+    const { form } = this.state;
+    editableProps.forEach((prop) => {
+      const { name, type, defaultValue } = prop;
+      if (form[name] === undefined) {
+        if (type === 'boolean') {
+          form[name] = defaultValue.toString() === 'true';
+        } else {
+          form[name] = '';
+        }
+      }
+    });
+    editableProps.push(...config.ONTOLOGY_QUERY_PARAMS);
+    form['@class'] = e.target.value;
+    this.setState({
+      form,
+      editableProps,
+    });
+  }
+
+  /**
+   * Closes notification snackbar.
+   */
+  handleClose() {
+    this.setState({ message: '' });
+  }
+
+  render() {
+    const {
+      form,
+      ontologyTypes,
+      editableProps,
+      message,
+      schema,
+    } = this.state;
+    const { history } = this.props;
+
+    if (!form) return null;
+
+    const formatInputSection = (key, value) => {
+      const property = editableProps.find(prop => prop.name === key);
+      if (!property) return null;
+
+      const {
+        type,
+        linkedClass,
+        description,
+      } = property;
+      if (typeof value !== 'object') {
+        // Radio group component for boolean types.
+        if (type === 'boolean') {
+          return (
+            &lt;ListItem className="input-wrapper" key={key}>
+              &lt;FormControl component="fieldset">
+                &lt;FormLabel>
+                  {util.antiCamelCase(key)}
+                &lt;/FormLabel>
+                &lt;RadioGroup
+                  name={key}
+                  onChange={this.handleChange}
+                  value={value.toString()}
+                  style={{ flexDirection: 'row' }}
+                >
+                  &lt;FormControlLabel value="true" control={&lt;Radio />} label="Yes" />
+                  &lt;FormControlLabel value="false" control={&lt;Radio />} label="No" />
+                &lt;/RadioGroup>
+              &lt;/FormControl>
+            &lt;/ListItem>
+          );
+        }
+
+        // For text fields, apply some final changes for number inputs.
+        if (type !== 'link') {
+          let t;
+          let step;
+          if (type === 'string') {
+            t = 'text';
+          } else if (type === 'integer' || type === 'long') {
+            t = 'number';
+            step = 1;
+          }
+
+          return (
+            &lt;ListItem className="input-wrapper" key={key}>
+              &lt;TextField
+                id={key}
+                label={util.antiCamelCase(key)}
+                value={value}
+                onChange={this.handleChange}
+                className="text-input"
+                name={key}
+                type={t || ''}
+                step={step || ''}
+                multiline={t === 'text'}
+                InputProps={{
+                  endAdornment: description &amp;&amp; (
+                    &lt;InputAdornment position="end">
+                      &lt;Tooltip title={description}>
+                        &lt;HelpIcon color="primary" />
+                      &lt;/Tooltip>
+                    &lt;/InputAdornment>
+                  ),
+                }}
+              />
+            &lt;/ListItem>
+          );
+        }
+        // If type is a link to another record, must find that record in the
+        // database and store its rid.
+
+        // Decide which endpoint to query.
+        let endpoint;
+        if (linkedClass) {
+          endpoint = schema[linkedClass].route.slice(1);
+        }
+
+        return (
+          &lt;ListItem key={key} style={{ display: 'block' }}>
+            &lt;div>
+              &lt;AutoSearchComponent
+                value={value}
+                onChange={this.handleChange}
+                name={key}
+                label={util.antiCamelCase(key)}
+                id={key}
+                limit={30}
+                endpoint={endpoint}
+                property={!linkedClass ? ['name', 'sourceId'] : undefined}
+              />
+            &lt;/div>
+          &lt;/ListItem>
+        );
+      }
+      if (Array.isArray(value)) {
+        return null;
+      }
+      return null;
+    };
+
+    return (
+      &lt;div className="adv-wrapper" elevation={4}>
+        &lt;Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          open={!!message}
+          onClose={this.handleClose}
+          autoHideDuration={3000}
+          message={(
+            &lt;span>
+              {message}
+            &lt;/span>
+          )}
+        />
+        &lt;Paper elevation={4} className="adv-header">
+          &lt;Typography variant="headline" id="adv-title">
+            Advanced Query
+          &lt;/Typography>
+        &lt;/Paper>
+        &lt;Paper elevation={4}>
+          &lt;List component="nav">
+            &lt;ListItem className="input-wrapper">
+              &lt;ResourceSelectComponent
+                value={form['@class']}
+                onChange={this.handleClassChange}
+                name="@class"
+                label="Class"
+                id="class-adv"
+                resources={ontologyTypes}
+              >
+                {resource => (
+                  &lt;MenuItem key={resource.name} value={resource.name}>
+                    {resource.name ? resource.name : '---'}
+                  &lt;/MenuItem>
+                )}
+              &lt;/ResourceSelectComponent>
+            &lt;/ListItem>
+            {Object.keys(form)
+              .filter(key => !key.includes('.'))
+              .map(key => formatInputSection(key, form[key]))
+            }
+          &lt;/List>
+        &lt;/Paper>
+        &lt;Paper elevation={4} id="adv-nav-buttons">
+          &lt;Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => history.push({ pathname: '/query', state: this.state })}
+            size="large"
+          >
+            Back
+          &lt;/Button>
+          &lt;Button
+            color="primary"
+            variant="raised"
+            id="search-button"
+            onClick={() => history.push({
+              pathname: '/data/table',
+              search: this.bundle(),
+            })}
+            size="large"
+          >
+            Search
+          &lt;/Button>
+        &lt;/Paper>
+      &lt;/div>
+    );
+  }
+}
+
+AdvancedQueryView.propTypes = {
+  /**
+   * @param {object} history - Application history state object.
+   */
+  history: PropTypes.object.isRequired,
+};
+
+export default AdvancedQueryView;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-_App.html">/App</a></li><li><a href="module-_components_AutoSearchComponent.html">/components/AutoSearchComponent</a></li><li><a href="module-_components_DownloadFileComponent.html">/components/DownloadFileComponent</a></li><li><a href="module-_components_GraphActionsNode.html">/components/GraphActionsNode</a></li><li><a href="module-_components_GraphComponent.html">/components/GraphComponent</a></li><li><a href="module-_components_GraphLink.html">/components/GraphLink</a></li><li><a href="module-_components_GraphNode.html">/components/GraphNode</a></li><li><a href="module-_components_NodeDetailComponent.html">/components/NodeDetailComponent</a></li><li><a href="module-_components_NodeFormComponent.html">/components/NodeFormComponent</a></li><li><a href="module-_components_ResourceSelectComponent.html">/components/ResourceSelectComponent</a></li><li><a href="module-_components_TableComponent.html">/components/TableComponent</a></li><li><a href="module-_services_api.html">/services/api</a></li><li><a href="module-_services_auth.html">/services/auth</a></li><li><a href="module-_services_util.html">/services/util</a></li><li><a href="module-_views_AddNodeView.html">/views/AddNodeView</a></li><li><a href="module-_views_AdvancedQueryView.html">/views/AdvancedQueryView</a></li><li><a href="module-_views_DataView.html">/views/DataView</a></li><li><a href="module-_views_EditNodeView.html">/views/EditNodeView</a></li><li><a href="module-_views_ErrorView.html">/views/ErrorView</a></li><li><a href="module-_views_FeedbackView.html">/views/FeedbackView</a></li><li><a href="module-_views_LoginView.html">/views/LoginView</a></li><li><a href="module-_views_NodeDetailView.html">/views/NodeDetailView</a></li><li><a href="module-_views_QueryView.html">/views/QueryView</a></li><li><a href="module-services_history.html">services/history</a></li></ul><h3>Classes</h3><ul><li><a href="module-_App-App.html">App</a></li><li><a href="module-_components_AutoSearchComponent-AutoSearchComponent.html">AutoSearchComponent</a></li><li><a href="module-_components_GraphComponent-GraphComponent.html">GraphComponent</a></li><li><a href="module-_components_GraphNode-GraphNode.html">GraphNode</a></li><li><a href="module-_components_NodeDetailComponent-NodeDetailComponent.html">NodeDetailComponent</a></li><li><a href="module-_components_NodeFormComponent-NodeFormComponent.html">NodeFormComponent</a></li><li><a href="module-_components_TableComponent-TableComponent.html">TableComponent</a></li><li><a href="module-_views_AddNodeView-AddNodeView.html">AddNodeView</a></li><li><a href="module-_views_AdvancedQueryView-AdvancedQueryView.html">AdvancedQueryView</a></li><li><a href="module-_views_DataView-DataView.html">DataView</a></li><li><a href="module-_views_EditNodeView-EditNodeView.html">EditNodeView</a></li><li><a href="module-_views_ErrorView-ErrorView.html">ErrorView</a></li><li><a href="module-_views_LoginView-LoginView.html">LoginView</a></li><li><a href="module-_views_NodeDetailView-NodeDetailView.html">NodeDetailView</a></li><li><a href="module-_views_QueryView-QueryView.html">QueryView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Aug 17 2018 13:28:05 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

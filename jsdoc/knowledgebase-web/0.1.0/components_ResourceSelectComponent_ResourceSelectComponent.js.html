@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/ResourceSelectComponent/ResourceSelectComponent.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/ResourceSelectComponent/ResourceSelectComponent.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @module /components/ResourceSelectComponent
+ */
+
+import React from 'react';
+import PropTypes from 'prop-types';
+import './ResourceSelectComponent.css';
+import {
+  InputLabel,
+  MenuItem,
+  FormControl,
+  Select,
+} from '@material-ui/core';
+
+const identifier = Math.random() * 100;
+
+/**
+ * Component to select resources from a list of defined options.
+ * @param {Object} props - Properties passed in by parent component.
+ * @param {Array} props.resources - Resource options.
+ * @param {Object} props.value - Value to bind component to.
+ * @param {function} props.onChange - Parent method triggered on change event.
+ * @param {string} props.name - Name for event parsing.
+ * @param {string} props.label - Label for input component.
+ * @param {function} props.children - Optional rendering function for options.
+ * @param {bool} props.required - Required flag for input component.
+ */
+function ResourceSelectComponent(props) {
+  const {
+    resources,
+    value,
+    onChange,
+    name,
+    label,
+    children,
+    required,
+    id,
+    error,
+    dense,
+  } = props;
+
+  const resourcesDisplay = resources.map(resource => children(resource));
+
+  return (
+    &lt;FormControl
+      className="resource-select"
+      style={{
+        width: '100%',
+        minWidth: `${label.length * 16}px`,
+        maxWidth: '100%',
+      }}
+      id={id}
+    >
+      &lt;InputLabel
+        htmlFor={`resource-select${identifier}`}
+        required={required}
+        error={error}
+        style={{
+          fontSize: dense ? '0.8125rem' : '',
+        }}
+      >
+        {label}
+      &lt;/InputLabel>
+      &lt;Select
+        value={value}
+        onChange={onChange}
+        error={error}
+        inputProps={{
+          name,
+          id: `resource-select${identifier}`,
+        }}
+        style={{
+          fontSize: dense ? '0.8125rem' : '',
+        }}
+      >
+        {resourcesDisplay}
+      &lt;/Select>
+    &lt;/FormControl>
+  );
+}
+
+ResourceSelectComponent.propTypes = {
+  /**
+   * @param {Array} resources - List of resources to be selected from.
+   */
+  resources: PropTypes.array,
+  /**
+   * @param {any} value - Parent property to bind output data to.
+   */
+  value: PropTypes.any.isRequired,
+  /**
+   * @param {function} onChange - Parent function to trigger on item select.
+   */
+  onChange: PropTypes.func,
+  /**
+   * @param {string} name - DOM node name property.
+   */
+  name: PropTypes.string,
+  /**
+   * @param {string} label - Component label text.
+   */
+  label: PropTypes.string,
+  /**
+   * @param {function} children - Function to produce list items.
+   */
+  children: PropTypes.func,
+  /**
+   * @param {boolean} required - Required flag for input component.
+   */
+  required: PropTypes.bool,
+  /**
+   * @param {boolean} error - Error flag for input component.
+   */
+  error: PropTypes.bool,
+  /**
+   * @param {string} id - CSS selector id for root component.
+   */
+  id: PropTypes.string,
+  /**
+   * @param {boolean} dense - Flag for dense variant, which has smaller font
+   * size.
+   */
+  dense: PropTypes.bool,
+};
+
+ResourceSelectComponent.defaultProps = {
+  children: resource => (
+    &lt;MenuItem key={resource.name} value={resource['@rid']}>
+      {resource.name}
+    &lt;/MenuItem>
+  ),
+  resources: [],
+  onChange: null,
+  name: '',
+  label: '',
+  required: false,
+  error: false,
+  id: '',
+  dense: false,
+};
+
+export default ResourceSelectComponent;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-_App.html">/App</a></li><li><a href="module-_components_AutoSearchComponent.html">/components/AutoSearchComponent</a></li><li><a href="module-_components_DownloadFileComponent.html">/components/DownloadFileComponent</a></li><li><a href="module-_components_GraphActionsNode.html">/components/GraphActionsNode</a></li><li><a href="module-_components_GraphComponent.html">/components/GraphComponent</a></li><li><a href="module-_components_GraphLink.html">/components/GraphLink</a></li><li><a href="module-_components_GraphNode.html">/components/GraphNode</a></li><li><a href="module-_components_NodeDetailComponent.html">/components/NodeDetailComponent</a></li><li><a href="module-_components_NodeFormComponent.html">/components/NodeFormComponent</a></li><li><a href="module-_components_ResourceSelectComponent.html">/components/ResourceSelectComponent</a></li><li><a href="module-_components_TableComponent.html">/components/TableComponent</a></li><li><a href="module-_services_api.html">/services/api</a></li><li><a href="module-_services_auth.html">/services/auth</a></li><li><a href="module-_services_util.html">/services/util</a></li><li><a href="module-_views_AddNodeView.html">/views/AddNodeView</a></li><li><a href="module-_views_AdvancedQueryView.html">/views/AdvancedQueryView</a></li><li><a href="module-_views_DataView.html">/views/DataView</a></li><li><a href="module-_views_EditNodeView.html">/views/EditNodeView</a></li><li><a href="module-_views_ErrorView.html">/views/ErrorView</a></li><li><a href="module-_views_FeedbackView.html">/views/FeedbackView</a></li><li><a href="module-_views_LoginView.html">/views/LoginView</a></li><li><a href="module-_views_NodeDetailView.html">/views/NodeDetailView</a></li><li><a href="module-_views_QueryView.html">/views/QueryView</a></li><li><a href="module-services_history.html">services/history</a></li></ul><h3>Classes</h3><ul><li><a href="module-_App-App.html">App</a></li><li><a href="module-_components_AutoSearchComponent-AutoSearchComponent.html">AutoSearchComponent</a></li><li><a href="module-_components_GraphComponent-GraphComponent.html">GraphComponent</a></li><li><a href="module-_components_GraphNode-GraphNode.html">GraphNode</a></li><li><a href="module-_components_NodeDetailComponent-NodeDetailComponent.html">NodeDetailComponent</a></li><li><a href="module-_components_NodeFormComponent-NodeFormComponent.html">NodeFormComponent</a></li><li><a href="module-_components_TableComponent-TableComponent.html">TableComponent</a></li><li><a href="module-_views_AddNodeView-AddNodeView.html">AddNodeView</a></li><li><a href="module-_views_AdvancedQueryView-AdvancedQueryView.html">AdvancedQueryView</a></li><li><a href="module-_views_DataView-DataView.html">DataView</a></li><li><a href="module-_views_EditNodeView-EditNodeView.html">EditNodeView</a></li><li><a href="module-_views_ErrorView-ErrorView.html">ErrorView</a></li><li><a href="module-_views_LoginView-LoginView.html">LoginView</a></li><li><a href="module-_views_NodeDetailView-NodeDetailView.html">NodeDetailView</a></li><li><a href="module-_views_QueryView-QueryView.html">QueryView</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Aug 17 2018 13:28:05 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

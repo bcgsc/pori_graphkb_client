@@ -1,5 +1,7 @@
 @import "globals";
 $user-menu-width: 124px;
+$banner-height: 56px;
+
 .banner {
     height: $banner-height;
     flex-direction: row !important;

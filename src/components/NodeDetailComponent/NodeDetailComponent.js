@@ -87,7 +87,6 @@ class NodeDetailComponent extends Component {
       node,
       children,
       variant,
-      handleNewQuery,
       detailEdge,
     } = this.props;
 
@@ -144,11 +143,6 @@ class NodeDetailComponent extends Component {
                 <ListItem
                   dense
                   key={`${id}${item}`}
-                  onClick={() => handleNewQuery(`${key.includes('.')
-                    ? key.split('.')[key.split('.').length - 1]
-                    : key}=${encodeURIComponent(item)}`)
-                  }
-                  className="list-icon"
                 >
                   <ListItemIcon>
                     <SearchIcon />
@@ -425,10 +419,6 @@ NodeDetailComponent.propTypes = {
    * selected node
    */
   handleNodeEditStart: PropTypes.func,
-  /**
-   * @param {function} handleNewQuery - funcion to handle new database query.
-   */
-  handleNewQuery: PropTypes.func.isRequired,
   /**
    * @param {Node} children - Additional buttons to render in the sidebar of
    * the component.

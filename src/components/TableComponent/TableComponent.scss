@@ -12,6 +12,9 @@ $flip-duration: 0.15s;
         left: 0;
         right: 0;
         bottom: calc(#{$paginator-height} - 1px);
+        table {
+            table-layout: fixed;
+        }
         .table-head {
             tr,
             th {

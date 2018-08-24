@@ -132,9 +132,13 @@ const loadSources = () => get('/sources').then((response) => {
   const now = new Date();
   const expiry = new Date(now);
   expiry.setHours(now.getHours() + CACHE_EXPIRY);
+  const sources = {
+    sources: cycled,
+    version: VERSION,
+    expiry: expiry.getTime(),
+  };
 
-  localStorage.setItem(`${KEYS.SOURCES}Expiry`, expiry.getTime());
-  localStorage.setItem(KEYS.SOURCES, JSON.stringify(list));
+  localStorage.setItem(KEYS.SOURCES, JSON.stringify(sources));
 
   return Promise.resolve(list);
 });
@@ -143,14 +147,18 @@ const loadSources = () => get('/sources').then((response) => {
  * Returns all valid sources.
  */
 const getSources = () => {
-  const sources = localStorage.getItem(KEYS.SOURCES);
-  const sourcesExpiry = localStorage.getItem(`${KEYS.SOURCES}Expiry`);
+  const sources = JSON.parse(localStorage.getItem(KEYS.SOURCES));
   if (
-    !sources || (sources && sourcesExpiry && sourcesExpiry < Date.now().valueOf())
+    !sources
+    || (sources
+      && sources.expiry
+      && sources.expiry < Date.now().valueOf()
+    )
+    || sources.version !== VERSION
   ) {
     return loadSources();
   }
-  return Promise.resolve(JSON.parse(sources));
+  return Promise.resolve(sources.sources);
 };
 
 /**
@@ -165,9 +173,9 @@ const loadSchema = () => get('/schema').then((response) => {
   const schema = {
     schema: cycled,
     version: VERSION,
+    expiry: expiry.getTime(),
   };
 
-  localStorage.setItem(`${KEYS.SCHEMA}Expiry`, expiry.getTime());
   localStorage.setItem(KEYS.SCHEMA, JSON.stringify(schema));
 
   return Promise.resolve(cycled);
@@ -178,13 +186,12 @@ const loadSchema = () => get('/schema').then((response) => {
  */
 const getSchema = () => {
   const schema = JSON.parse(localStorage.getItem(KEYS.SCHEMA) || '{}');
-  const schemaExpiry = localStorage.getItem(`${KEYS.SCHEMA}Expiry`);
   if (
     !schema
     || (
       schema
-      && schemaExpiry
-      && schemaExpiry < Date.now().valueOf()
+      && schema.expiry
+      && schema.expiry < Date.now().valueOf()
     )
     || schema.version !== VERSION
   ) {

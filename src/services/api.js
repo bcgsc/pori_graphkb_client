@@ -155,6 +155,7 @@ const getSources = () => {
       && sources.expiry < Date.now().valueOf()
     )
     || sources.version !== VERSION
+    || !sources.sources
   ) {
     return loadSources();
   }
@@ -194,6 +195,7 @@ const getSchema = () => {
       && schema.expiry < Date.now().valueOf()
     )
     || schema.version !== VERSION
+    || !schema.schema
   ) {
     return loadSchema();
   }

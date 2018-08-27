@@ -166,6 +166,21 @@ $mediumBreakpoint: 500px;
     }
 }
 
+.notification-drawer {
+    display: flex;
+    width: 100%;
+    .form-linear-progress {
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+    }
+    button {
+        color: white;
+        margin-left: 8px;
+    }
+}
+
 .input-wrapper {
     display: flex;
     width: inherit;

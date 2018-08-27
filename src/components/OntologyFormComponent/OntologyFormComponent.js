@@ -31,7 +31,8 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Snackbar,
+  LinearProgress,
+  Drawer,
   CircularProgress,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
@@ -39,12 +40,13 @@ import CloseIcon from '@material-ui/icons/Close';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
 import HelpIcon from '@material-ui/icons/Help';
+import CheckIcon from '@material-ui/icons/Check';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
 import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
 import api from '../../services/api';
 import util from '../../services/util';
 
-const SNACKBAR_SPINNER_SIZE = 30;
+const NOTIFICATION_SPINNER_SIZE = 16;
 
 /**
  * Component for editing or adding database nodes. Is also used to add or
@@ -331,7 +333,7 @@ class OntologyFormComponent extends Component {
    * Deletes target node.
    */
   async handleDeleteNode() {
-    this.setState({ snackbarOpen: true, loading: true });
+    this.setState({ notificationDrawerOpen: true, loading: true });
     this.handleDialogClose();
     const { originalNode } = this.state;
     const { route } = await api.getClass(originalNode['@class']);
@@ -491,18 +493,16 @@ class OntologyFormComponent extends Component {
   async handleSubmit(e) {
     e.preventDefault();
     const { variant } = this.props;
-    this.setState({ loading: true, snackbarOpen: true });
+    this.setState({ loading: true, notificationDrawerOpen: true });
 
-    if (window.Cypress) {
-      this.setState({ loading: false });
-    } else {
+    if (!window.Cypress) {
       if (variant === 'edit') {
         await this.editSubmit();
       } else {
         await this.addSubmit();
       }
-      this.setState({ loading: false });
     }
+    this.setState({ loading: false });
   }
 
   /**
@@ -558,7 +558,7 @@ class OntologyFormComponent extends Component {
       ontologyTypes,
       schema,
       loading,
-      snackbarOpen,
+      notificationDrawerOpen,
       deletedSubsets,
     } = this.state;
     const { variant, handleNodeFinish } = this.props;
@@ -750,24 +750,41 @@ class OntologyFormComponent extends Component {
       );
     };
 
-    const snackbar = (
-      <Snackbar
-        message={loading ? <CircularProgress size={SNACKBAR_SPINNER_SIZE} color="secondary" /> : 'Completed!'}
-        open={snackbarOpen}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+    const drawer = (
+      <Drawer
+        open={notificationDrawerOpen}
         onClose={handleNodeFinish}
-        action={!loading && (
-          <Button color="secondary" onClick={handleNodeFinish}>
-            Ok
+        anchor="bottom"
+        classes={{ paper: 'paper' }}
+      >
+        <div className="notification-drawer">
+          <div className="form-linear-progress">
+            <LinearProgress
+              color="secondary"
+              variant={loading ? 'indeterminate' : 'determinate'}
+              value={loading ? 0 : 100}
+            />
+          </div>
+          <Button
+            color="secondary"
+            onClick={handleNodeFinish}
+            disabled={loading}
+            variant="raised"
+            size="large"
+          >
+            {loading
+              ? <CircularProgress size={NOTIFICATION_SPINNER_SIZE} color="secondary" />
+              : <CheckIcon />
+            }
           </Button>
-        )}
-      />
+        </div>
+      </Drawer>
     );
 
     return (
       <div className="node-form-wrapper">
         {dialog}
-        {snackbar}
+        {drawer}
         <form onSubmit={this.handleSubmit}>
           <div className="form-grid">
             <Paper className="form-header" elevation={4}>

@@ -17,13 +17,11 @@ import {
   ExpansionPanel,
   ExpansionPanelDetails,
   ExpansionPanelSummary,
-  ListItemIcon,
   Tooltip,
 } from '@material-ui/core';
 import BookmarkIcon from '@material-ui/icons/Bookmark';
 import EditIcon from '@material-ui/icons/Edit';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import SearchIcon from '@material-ui/icons/Search';
 import api from '../../services/api';
 import util from '../../services/util';
 
@@ -144,9 +142,6 @@ class NodeDetailComponent extends Component {
                   dense
                   key={`${id}${item}`}
                 >
-                  <ListItemIcon>
-                    <SearchIcon />
-                  </ListItemIcon>
                   <ListItemText primary={item} />
                 </ListItem>
               ))}

@@ -53,7 +53,8 @@ describe('Node Form Test', () => {
     cy.get('textarea[name=sourceId][type=text]').type('test').wait(100);
     cy.get('#submit-btn').should('not.disabled');
     cy.get('#submit-btn').click();
-    cy.contains('Completed!');
+    cy.get('path[d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"]')
+      .should('exist');
   });
 
   it('Edit test', () => {
@@ -71,8 +72,9 @@ describe('Node Form Test', () => {
     cy.contains('Really Delete this Term?').should('exist');
     cy.get('div[role=dialog] button:first').click();
     cy.get('#submit-btn').click();
-    cy.contains('Completed!');
-    cy.get('div[role=alertdialog] button').click();
+    cy.get('path[d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"]')
+      .should('exist');
+    cy.get('div.notification-drawer button').click();
     cy.url().should('includes', '/query');
   });
 });

@@ -34,6 +34,7 @@
         }
     }
 }
+
 .preview-wrap {
     flex: 1;
     min-width: 0;
@@ -91,11 +92,12 @@
     padding: 1.1em;
     padding-right: 1px;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 50% 50%;
     grid-template-rows: 1fr;
     grid-column-gap: 10px;
     overflow: auto;
     min-height: calc(100% - 2.2em);
+    min-width: 0;
 }
 
 .detail-table {
@@ -119,4 +121,6 @@
 
 .properties {
     margin-bottom: 8px;
+    overflow: hidden;
+    min-width: 0;
 }

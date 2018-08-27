@@ -183,8 +183,9 @@ class TableComponent extends Component {
    */
   handleChangePage(event, page) {
     const { sortedData, rowsPerPage } = this.state;
+    const { moreResults } = this.props;
     const rows = (page + 1) * rowsPerPage;
-    if (rows >= NEXT_CUTOFF * sortedData.length) {
+    if (rows >= NEXT_CUTOFF * sortedData.length && moreResults) {
       const { handleSubsequentPagination } = this.props;
       if (handleSubsequentPagination) {
         handleSubsequentPagination();

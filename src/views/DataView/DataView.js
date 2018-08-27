@@ -92,7 +92,6 @@ class DataView extends Component {
     const schema = await api.getSchema();
     const filteredSearch = qs.parse(history.location.search.slice(1));
     let route = '/ontologies';
-
     if (filteredSearch['@class'] && schema[filteredSearch['@class']]) {
       route = schema[filteredSearch['@class']].route || filteredSearch['@class'];
       delete filteredSearch['@class'];
@@ -108,11 +107,11 @@ class DataView extends Component {
         dataMap[ontologyTerm['@rid']] = ontologyTerm;
       });
 
-      if (cycled.length >= filteredSearch.limit || DEFAULT_LIMIT) {
+      if (cycled.length >= (filteredSearch.limit || DEFAULT_LIMIT)) {
         const nextFilteredSearch = Object.assign({}, filteredSearch);
         nextFilteredSearch.skip = filteredSearch.limit || DEFAULT_LIMIT;
         this.setState({
-          next: () => api.get(`${route}?${qs.stringify(nextFilteredSearch).slice(3)}&neighbors=3`),
+          next: () => api.get(`${route}?${qs.stringify(nextFilteredSearch)}&neighbors=3`),
           moreResults: true,
         });
       }
@@ -225,11 +224,11 @@ class DataView extends Component {
 
         let newNext = null;
         let moreResults = false;
-        if (cycled.length >= (filteredSearch.limit || DEFAULT_LIMIT)) {
-          const newSkip = Number(filteredSearch.skip)
-            + Number((filteredSearch.limit || DEFAULT_LIMIT));
-          filteredSearch.skip = newSkip;
-          newNext = () => api.get(`${route}?${qs.encode(filteredSearch)}&neighbors=3`);
+        const limit = filteredSearch.limit || DEFAULT_LIMIT;
+        const lastSkip = filteredSearch.skip || limit;
+        if (cycled.length >= limit) {
+          filteredSearch.skip = lastSkip + limit;
+          newNext = () => api.get(`${route}?${qs.stringify(filteredSearch)}&neighbors=3`);
           moreResults = true;
         }
         this.setState({

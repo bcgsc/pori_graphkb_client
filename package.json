@@ -1,6 +1,6 @@
 {
   "name": "knowledgebase-web",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^1.5.0",

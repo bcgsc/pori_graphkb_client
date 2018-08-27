@@ -483,7 +483,7 @@ class AdminView extends Component {
             <TableRow>
               <TableCell padding="dense" />
               {PERMISSIONS.map(permission => (
-                <TableCell padding="checkbox">
+                <TableCell key={permission} padding="checkbox">
                   {`${permission.charAt(0)}${permission.slice(1).toLowerCase()}`}
                 </TableCell>
               ))}
@@ -491,7 +491,7 @@ class AdminView extends Component {
             <TableRow id="admin-sticky-row">
               <TableCell padding="dense" />
               {PERMISSIONS.map((p, i) => (
-                <TableCell padding="checkbox">
+                <TableCell key={p} padding="checkbox">
                   <Checkbox
                     onChange={e => this.handleUserGroupCheckAll(e, i, newUser)}
                     disabled={!isEditing}

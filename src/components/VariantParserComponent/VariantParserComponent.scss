@@ -1,0 +1,19 @@
+@import '../../globals';
+.variant-parser-wrapper {
+    display: flex;
+    button {
+        transition: all 0.15s;
+    }
+    .variant-parser-collapsed {
+        transform: rotate(180deg);
+    }
+}
+
+.positional-variant-wrapper {
+    column-count: 2;
+    padding: 0;
+    li {
+        display: inline-block;
+        width: 100%;
+    }
+}

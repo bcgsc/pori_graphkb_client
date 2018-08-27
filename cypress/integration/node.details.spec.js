@@ -34,7 +34,7 @@ describe('Node Detail ', () => {
     goToClass('Disease');
     cy.contains('Subsets:').click();
     cy.get('ul>li:first').click();
-    cy.url().should('includes', 'subsets=');
+    cy.url().should('not.includes', 'subsets=');
   });
 
   it('Graph view details', () => {

@@ -30,7 +30,7 @@ class EditOntologyView extends Component {
     const { match } = this.props;
     const { rid } = match.params;
     api.get(`/ontologies/${rid}?neighbors=3`).then((data) => {
-      const node = jc.retrocycle(data.result);
+      const node = jc.retrocycle(data).result;
       this.setState({ node });
     });
   }

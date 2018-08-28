@@ -172,8 +172,10 @@ const parsePayload = (form, editableProps, exceptions) => {
     // For link properties, must specify record id being linking to. Clear the rest.
     if (key.includes('.@rid')) {
       const nestedKey = key.split('.')[0];
-      if (editableProps.find(p => p.name === nestedKey)
-        || (exceptions && exceptions.find(p => p.name === nestedKey))
+      if (
+        (editableProps.find(p => p.name === nestedKey)
+          || (exceptions && exceptions.find(p => p.name === nestedKey)))
+        && payload[key]
       ) {
         // Sets top level property to the rid: ie.
         // 'source.@rid': #18:5 => 'source': #18:5

@@ -157,7 +157,9 @@ class AdminView extends Component {
    */
   async deleteUsers() {
     const { selected } = this.state;
-    selected.forEach(async (user) => { await api.delete(`/users/${user.slice(1)}`); });
+    const deletes = [];
+    selected.forEach((user) => { deletes.push(api.delete(`/users/${user.slice(1)}`)); });
+    await Promise.all(deletes);
     const newUsers = await api.get('/users?neighbors=1');
     this.setState({
       users: jc.retrocycle(newUsers).result,
@@ -644,28 +646,26 @@ class AdminView extends Component {
           Delete Users?
         </DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            <List>
-              {selected.map((rid) => {
-                const user = users.find(u => u['@rid'] === rid);
-                return (
-                  <ListItem key={rid}>
-                    <ListItemAvatar>
-                      <Avatar classes={{ colorDefault: 'avatar-colored' }}>
-                        {user.name.charAt(0).toUpperCase()}
-                      </Avatar>
-                    </ListItemAvatar>
-                    <ListItemSecondaryAction>
-                      <IconButton onClick={() => this.handleCheckbox(rid)}>
-                        <CancelIcon />
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                    <ListItemText primary={user.name} />
-                  </ListItem>
-                );
-              })}
-            </List>
-          </DialogContentText>
+          <List>
+            {selected.map((rid) => {
+              const user = users.find(u => u['@rid'] === rid);
+              return (
+                <ListItem key={rid}>
+                  <ListItemAvatar>
+                    <Avatar classes={{ colorDefault: 'avatar-colored' }}>
+                      {user.name.charAt(0).toUpperCase()}
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemSecondaryAction>
+                    <IconButton onClick={() => this.handleCheckbox(rid)}>
+                      <CancelIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                  <ListItemText primary={user.name} />
+                </ListItem>
+              );
+            })}
+          </List>
         </DialogContent>
         <DialogActions style={{ justifyContent: 'center' }}>
           <Button onClick={this.handleDeleteUsersDialog}>

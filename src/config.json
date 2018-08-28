@@ -1,7 +1,7 @@
 {
-  "VERSION": "0.2.2",
+  "VERSION": "0.3.0",
   "HOST": "kbapi01",
-  "PORT": 8022,
+  "PORT": 8030,
   "KEYS": {
     "SOURCES": "sources",
     "SCHEMA": "schema",

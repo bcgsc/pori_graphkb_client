@@ -346,6 +346,13 @@ class AdminView extends Component {
     const key = isNewUserGroup ? 'newUserGroup' : 'tempUserGroup';
     const temp = this.state[key];
     const rid = (temp['@rid'] || '').slice(1);
+    const { userGroups } = this.state;
+
+    if (userGroups.map(u => u.name.toLowerCase())
+      .includes(temp.name.toLowerCase()) || !temp.name
+    ) {
+      return;
+    }
 
     Object.keys(temp.permissions).forEach((pKey) => {
       const reducer = (accumulator, curr, i) => accumulator + curr * (2 ** i);
@@ -355,8 +362,8 @@ class AdminView extends Component {
     const payload = _.omit(temp, ['@rid', '@type', 'createdBy', 'createdAt', 'uuid', '@class']);
     await f(rid, payload);
     const response = await api.get('/usergroups');
-    const userGroups = jc.retrocycle(response).result;
-    userGroups.forEach((userGroup) => {
+    const newUserGroups = jc.retrocycle(response).result;
+    newUserGroups.forEach((userGroup) => {
       Object.keys(userGroup.permissions).forEach((pKey) => {
         userGroup.permissions[pKey] = util.parsePermission(userGroup.permissions[pKey]);
       });
@@ -370,7 +377,7 @@ class AdminView extends Component {
       [key]: isNewUserGroup
         ? newUserGroup
         : null,
-      userGroups: jc.retrocycle(response).result,
+      userGroups: newUserGroups,
     }, this.handleNewUserGroupDialog);
   }
 

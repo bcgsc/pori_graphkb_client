@@ -8,20 +8,11 @@ import PropTypes from 'prop-types';
 import './VariantParserComponent.css';
 import {
   TextField,
-  IconButton,
-  Collapse,
-  RadioGroup,
-  Radio,
-  FormLabel,
-  FormControl,
-  FormControlLabel,
 } from '@material-ui/core';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import * as jc from 'json-cycle';
 import _ from 'lodash';
 import api from '../../services/api';
-import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
-import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
+import Templater from '../../services/template';
 
 const DEBOUNCE_TIME = 300;
 
@@ -30,33 +21,21 @@ class VariantParserComponent extends Component {
     super(props);
     this.state = {
       invalidFlag: false,
-      collapsed: true,
       variant: null,
       positionalVariantSchema: null,
     };
     this.callApi = _.debounce(this.callApi.bind(this), DEBOUNCE_TIME);
     this.refreshOptions = this.refreshOptions.bind(this);
     this.handleLinkedProp = this.handleLinkedProp.bind(this);
+    this.handleVariantChange = this.handleVariantChange.bind(this);
   }
 
   async componentDidMount() {
     const schema = await api.getSchema();
     const positionalVariantSchema = (await api.getClass('PositionalVariant')).properties;
-    const variant = {};
-    const { V } = schema;
-    Object.values(positionalVariantSchema).forEach((property) => {
-      const { name, type, linkedClass } = property;
-      if ((type === 'embedded' || type === 'link') && linkedClass) {
-        if (!variant[name]) variant[name] = {};
-        Object.values(linkedClass.properties)
-          .filter(prop => !Object.keys(V.properties).includes(prop.name) || prop.name === '@class')
-          .forEach((linkedProperty) => {
-            variant[name][linkedProperty.name] = linkedProperty.type === 'boolean' ? false : '';
-          });
-      } else {
-        variant[name] = type === 'boolean' ? false : '';
-      }
-    });
+    const templater = new Templater(schema, this.handleVariantChange);
+    const variant = Templater.initModel({}, positionalVariantSchema);
+    console.log(Templater.initModel({}, positionalVariantSchema));
     const positions = Object.keys(schema)
       .filter(s => schema[s].inherits.includes('Position'))
       .map(s => schema[s]);
@@ -64,6 +43,7 @@ class VariantParserComponent extends Component {
     this.setState({
       positionalVariantSchema,
       variant,
+      templater,
     }, () => console.log(variant));
     this.callApi(this.props.value);
   }
@@ -100,7 +80,6 @@ class VariantParserComponent extends Component {
       console.log(error);
       this.setState({
         invalidFlag: true,
-        collapsed: true,
       });
     }
   }
@@ -114,12 +93,31 @@ class VariantParserComponent extends Component {
     this.setState({ variant }, () => console.log(this.state.variant));
   }
 
+  handleVariantChange(e) {
+    const { variant } = this.state;
+    const { name, value, sourceId } = e.target;
+    variant[name] = value;
+
+    if (e.target['@rid']) {
+      variant[`${name}.@rid`] = e.target['@rid'];
+    } else if (variant[`${name}.@rid`]) {
+      variant[`${name}.@rid`] = '';
+    }
+    if (sourceId) {
+      variant[`${name}.sourceId`] = sourceId;
+    } else if (variant[`${name}.sourceId`]) {
+      variant[`${name}.sourceId`] = '';
+    }
+
+    this.setState({ variant });
+  }
+
   render() {
     const {
       invalidFlag,
-      collapsed,
       variant,
       positionalVariantSchema,
+      templater,
     } = this.state;
     const {
       label,
@@ -132,87 +130,6 @@ class VariantParserComponent extends Component {
       placeholder,
       handleChange,
     } = this.props;
-
-    const positionalVariantDisplay = (
-      <ul className="positional-variant-wrapper">
-        {Object.values(positionalVariantSchema || {}).map((property) => {
-          if (variant !== undefined && variant[property.name] !== undefined) {
-            const { type, linkedClass } = property;
-            if ((type === 'embedded') && linkedClass) {
-              return Object.values(linkedClass.properties)
-                .map(linkedProp => variant[property.name][linkedProp.name] !== undefined
-                  && (
-                    <li key={property.name + linkedProp.name}>
-                      <TextField
-                        value={variant[property.name][linkedProp.name]}
-                        label={`${property.name} ${linkedProp.name}`}
-                      />
-                    </li>
-                  ));
-            }
-            if (type === 'link' && linkedClass) {
-              return (
-                <AutoSearchComponent
-                  key={property.name}
-                  value={variant[property.name].name}
-                  name={`${property.name}.name`}
-                  onChange={this.handleLinkedProp}
-                  endpoint={linkedClass.route.slice(1)}
-                  property={['name', 'sourceId']}
-                  label={property.name}
-                />
-              );
-            }
-            if (type === 'boolean') {
-              return (
-                <li key={property.name}>
-                  <FormControl component="fieldset">
-                    <FormLabel>
-                      {property.name}
-                    </FormLabel>
-                    <RadioGroup
-                      name={property.name}
-                      value={variant[property.name].toString()}
-                      style={{ flexDirection: 'row' }}
-                    >
-                      <FormControlLabel value="true" control={<Radio />} label="Yes" />
-                      <FormControlLabel value="false" control={<Radio />} label="No" />
-                    </RadioGroup>
-                  </FormControl>
-                </li>
-              );
-            }
-            return (
-              <li key={property.name}>
-                <TextField
-                  value={variant[property.name]}
-                  label={property.name}
-                />
-              </li>
-            );
-          }
-          return null;
-        })}
-      </ul>
-    );
-
-    const positionDisplay = () => (
-      <div>
-        <ResourceSelectComponent
-          resources={[]}
-        />
-        <IconButton>
-          <KeyboardArrowDownIcon />
-        </IconButton>
-
-        <Collapse>
-          <TextField />
-          <TextField />
-          <TextField />
-          <TextField />
-        </Collapse>
-      </div>
-    );
 
     return (
       <div>
@@ -228,16 +145,11 @@ class VariantParserComponent extends Component {
             disabled={disabled}
             value={value}
           />
-          <IconButton
-            disabled={disabled || !variant}
-            className={!collapsed ? 'variant-parser-collapsed' : ''}
-            onClick={() => this.setState({ collapsed: !collapsed })}
-          >
-            <KeyboardArrowDownIcon />
-          </IconButton>
         </div>
         <div className="paper">
-          {positionalVariantDisplay}
+          {templater
+            ? Object.values(templater.generateFields(variant, positionalVariantSchema))
+            : null}
         </div>
       </div>
     );

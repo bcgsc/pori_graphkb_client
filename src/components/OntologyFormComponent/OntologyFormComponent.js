@@ -153,7 +153,7 @@ class OntologyFormComponent extends Component {
           }
           break;
         case 'boolean':
-          form[name] = originalNode[name] || defaultValue.toString() === 'true';
+          form[name] = originalNode[name] || (defaultValue || '').toString() === 'true';
           break;
         default:
           form[name] = originalNode[name] || defaultValue || '';
@@ -199,7 +199,6 @@ class OntologyFormComponent extends Component {
       editableProps,
       newNodeClass: nodeClass,
       ontologyTypes: api.getOntologies(schema),
-      schema,
     });
   }
 
@@ -556,7 +555,6 @@ class OntologyFormComponent extends Component {
       newNodeClass,
       errorFlag,
       ontologyTypes,
-      schema,
       loading,
       notificationDrawerOpen,
       deletedSubsets,
@@ -685,7 +683,7 @@ class OntologyFormComponent extends Component {
         // Decide which endpoint to query.
         let endpoint;
         if (linkedClass) {
-          endpoint = schema[linkedClass].route.slice(1);
+          endpoint = linkedClass.route.slice(1);
         }
 
         return (

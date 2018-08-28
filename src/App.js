@@ -33,6 +33,7 @@ import AddOntologyView from './views/AddOntologyView/AddOntologyView';
 import LoginView from './views/LoginView/LoginView';
 import OntologyDetailView from './views/OntologyDetailView/OntologyDetailView';
 import FeedbackView from './views/FeedbackView/FeedbackView';
+import VariantFormView from './views/VariantFormView/VariantFormView';
 import auth from './services/auth';
 import history from './services/history';
 
@@ -124,6 +125,7 @@ class App extends Component {
         <Route path="/ontology/:rid" component={OntologyDetailView} />
         <Route path="/data" component={DataView} />
         <Route path="/feedback" component={FeedbackView} />
+        <Route path="/variant" component={VariantFormView} />
         <Redirect from="*" to="/query" />
       </Switch>
     );

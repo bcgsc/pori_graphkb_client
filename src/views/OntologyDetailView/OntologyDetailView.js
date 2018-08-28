@@ -36,7 +36,7 @@ class OntologyDetailView extends Component {
   componentDidMount() {
     const { match } = this.props;
     api.get(`/ontologies/${match.params.rid}?neighbors=3`).then((response) => {
-      const node = jc.retrocycle(response.result);
+      const node = jc.retrocycle(response).result;
       this.setState({ node });
     }).catch((error) => {
       if (error.status === 401) {

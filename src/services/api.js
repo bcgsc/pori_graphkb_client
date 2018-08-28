@@ -63,7 +63,6 @@ const fetchWithInterceptors = (endpoint, init) => {
         return Promise.reject(error);
       }
       if (error.status === 400) {
-        history.push({ pathname: '/query/advanced', state: error });
         return Promise.reject('Invalid Query');
       }
       history.push({ pathname: '/error', state: { status: error.status, body: error.body } });
@@ -227,12 +226,10 @@ const getClass = className => getSchema().then((schema) => {
  * @param {number} limit - Limit for number of returned matches.
  */
 const autoSearch = (endpoint, property, value, limit) => {
-  const results = [];
-  for (let i = 0; i < property.length; i += 1) {
-    const intResults = get(`/${endpoint}?${property[i]}=~${encodeURIComponent(value)}&limit=${limit}&neighbors=1&@class=!Publication`);
-    results.push(intResults);
-  }
-  return Promise.all(results);
+  if (value.length < 4) return Promise.resolve({ result: [] });
+  const query = property.map(p => `${p}=~${encodeURIComponent(value)}`).join('&');
+  const orStr = `or=${property.join(',')}`;
+  return get(`/${endpoint}?${query}&${orStr}&limit=${limit}&neighbors=1&@class=!Publication`);
 };
 
 /**
@@ -294,6 +291,8 @@ const getEdges = (schema) => {
   return list;
 };
 
+const variantParse = value => post('/parser/variant', { content: value });
+
 export default {
   getEdges,
   getOntologies,
@@ -307,4 +306,5 @@ export default {
   delete: del,
   patch,
   autoSearch,
+  variantParse,
 };

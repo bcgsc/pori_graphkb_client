@@ -1,3 +1,7 @@
+/**
+ * @module /components/ResourceSelectComponent
+ */
+
 import React from 'react';
 import PropTypes from 'prop-types';
 import './ResourceSelectComponent.css';
@@ -7,6 +11,8 @@ import {
   FormControl,
   Select,
 } from '@material-ui/core';
+
+const identifier = Math.random() * 100;
 
 /**
  * Component to select resources from a list of defined options.
@@ -30,6 +36,7 @@ function ResourceSelectComponent(props) {
     required,
     id,
     error,
+    dense,
   } = props;
 
   const resourcesDisplay = resources.map(resource => children(resource));
@@ -44,7 +51,14 @@ function ResourceSelectComponent(props) {
       }}
       id={id}
     >
-      <InputLabel htmlFor="resource-select" required={required} error={error}>
+      <InputLabel
+        htmlFor={`resource-select${identifier}`}
+        required={required}
+        error={error}
+        style={{
+          fontSize: dense ? '0.8125rem' : '',
+        }}
+      >
         {label}
       </InputLabel>
       <Select
@@ -53,7 +67,10 @@ function ResourceSelectComponent(props) {
         error={error}
         inputProps={{
           name,
-          id: 'resource-select',
+          id: `resource-select${identifier}`,
+        }}
+        style={{
+          fontSize: dense ? '0.8125rem' : '',
         }}
       >
         {resourcesDisplay}
@@ -63,15 +80,47 @@ function ResourceSelectComponent(props) {
 }
 
 ResourceSelectComponent.propTypes = {
+  /**
+   * @param {Array} resources - List of resources to be selected from.
+   */
   resources: PropTypes.array,
+  /**
+   * @param {any} value - Parent property to bind output data to.
+   */
   value: PropTypes.any.isRequired,
+  /**
+   * @param {function} onChange - Parent function to trigger on item select.
+   */
   onChange: PropTypes.func,
+  /**
+   * @param {string} name - DOM node name property.
+   */
   name: PropTypes.string,
+  /**
+   * @param {string} label - Component label text.
+   */
   label: PropTypes.string,
+  /**
+   * @param {function} children - Function to produce list items.
+   */
   children: PropTypes.func,
+  /**
+   * @param {boolean} required - Required flag for input component.
+   */
   required: PropTypes.bool,
+  /**
+   * @param {boolean} error - Error flag for input component.
+   */
   error: PropTypes.bool,
+  /**
+   * @param {string} id - CSS selector id for root component.
+   */
   id: PropTypes.string,
+  /**
+   * @param {boolean} dense - Flag for dense variant, which has smaller font
+   * size.
+   */
+  dense: PropTypes.bool,
 };
 
 ResourceSelectComponent.defaultProps = {
@@ -87,6 +136,7 @@ ResourceSelectComponent.defaultProps = {
   required: false,
   error: false,
   id: '',
+  dense: false,
 };
 
 export default ResourceSelectComponent;

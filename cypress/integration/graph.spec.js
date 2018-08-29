@@ -1,3 +1,9 @@
+/**
+ * Queries endpoint with given params and selects first record to load into
+ * graph view.
+ * @param {string} endpoint - database endpoint to query.
+ * @param {Object} params - query parameters as an object.
+ */
 function getClass(endpoint, params) {
   cy.contains('Advanced Search').click();
   cy.url().should('includes', '/query/advanced');
@@ -9,7 +15,7 @@ function getClass(endpoint, params) {
       cy.get(`textarea[name=${param}]`).type(params[[param]]);
     });
   }
-  cy.get('#search-button').click().wait(1000);
+  cy.get('#search-button').click();
   cy.get('table tbody tr:first input[type=checkbox]').click();
   cy.get('div.pag div.graph-btn').click();
 }
@@ -23,20 +29,23 @@ describe('Graph View Test', () => {
     cy.url().should('includes', '/query');
   });
 
+  /**
+   * Tests disease actions buttons and their actions.
+   */
   it('Diseases actions ring', () => {
     getClass('Disease');
     cy.get('circle.node').click({ force: true });
-    cy.contains('(Details)').click();
+    cy.contains('(Details)').click({ force: true });
     cy.contains('Properties:');
     cy.get('div.node-edit-btn button:first').click();
 
     cy.get('circle.node').click({ force: true });
-    cy.contains('(Close)').click();
+    cy.contains('(Close)').click({ force: true });
     cy.contains('(Close)').should('not.exist');
 
     let nodes = 1;
     cy.get('circle.node').click({ force: true });
-    cy.contains('(Expand)').click().then(() => {
+    cy.contains('(Expand)').click({ force: true }).then(() => {
       cy.get('circle').then((array) => {
         expect(array.length).to.be.greaterThan(nodes);
         nodes = array.length;
@@ -44,38 +53,44 @@ describe('Graph View Test', () => {
     });
 
     cy.get('circle.node:first').click({ force: true });
-    cy.contains('(Hide)').click().then(() => {
+    cy.contains('(Hide)').click({ force: true }).then(() => {
       cy.get('circle').then((array) => {
         expect(array.length).to.be.lessThan(nodes);
       });
     });
   });
 
+  /**
+   * Tests link hovering property for different classes of links.
+   */
   it('Features different edges', () => {
     const name = 'a1bg-as1';
     getClass('Feature', { name });
     cy.get('circle.node').click({ force: true });
-    cy.contains('(Expand)').click();
+    cy.contains('(Expand)').click({ force: true });
     cy.get('#graph-options-btn').click();
     cy.get('div.main-options-wrapper div.graph-option').each((div, i) => {
-      if (i === 2) {
+      if (i === 3) {
         cy.wrap(div).click();
       }
     });
-    cy.get('ul li[data-value="@class"').click();
+    cy.get('ul li[data-value="@class"]').click();
     cy.get('#options-close-btn').click();
     cy.contains('DeprecatedBy');
     cy.contains('AliasOf');
   });
 
+  /**
+   * Checks graph options panel.
+   */
   it('Graph options', () => {
     const name = 'a1bg-as1';
     getClass('Feature', { name });
     cy.contains('Feature');
     cy.contains('(Class)');
 
-    cy.get('circle.node').click();
-    cy.contains('(Expand)').click();
+    cy.get('circle.node').click({ force: true });
+    cy.contains('(Expand)').click({ force: true });
 
     cy.get('#graph-options-btn').click();
 
@@ -114,10 +129,14 @@ describe('Graph View Test', () => {
     cy.contains('gene');
   });
 
+  /**
+   * Tests if coloring scheme properly reverts to default coloring if there
+   * is too much color diversity of categorizing property among nodes.
+   */
   it('Unique property limit exceeding test', () => {
     getClass('Disease');
     cy.get('circle.node').click({ force: true });
-    cy.contains('(Expand)').click();
+    cy.contains('(Expand)').click({ force: true });
 
     cy.get('#graph-options-btn').click();
     cy.contains('Show Nodes Coloring Legend').click();
@@ -130,15 +149,38 @@ describe('Graph View Test', () => {
           .invoke('text')
           .then((text) => {
             if (text === 'polyp') {
-              cy.wrap(node).click();
-              cy.wrap(node).click();
-              cy.wrap(node).click();
-              cy.contains('(Expand)').click();
+              cy.wrap(node).click({ force: true });
+              cy.contains('(Expand)').click({ force: true });
               cy.contains('Too many subgroups, choose new coloring property.');
               cy.wait(6500);
               cy.contains('Too many subgroups, choose new coloring property.').should('not.exist');
             }
           });
+      });
+    });
+  });
+
+  /**
+   * Tests whether or not graph objects are properly stored in localstorage.
+   */
+  it('Persistent graph objects', () => {
+    getClass('Disease');
+    cy.get('circle.node').click({ force: true });
+    cy.contains('(Expand)').click({ force: true });
+    cy.get('circle.node').then((nodes) => {
+      /* eslint-disable no-unused-expressions */
+      expect(localStorage.getItem('graphObjects')).to.not.be.null;
+      /* eslint-enable */
+      cy.reload();
+      cy.get('circle.node').then((refreshedNodes) => {
+        expect(refreshedNodes.length).to.eq(nodes.length);
+      });
+
+      cy.get('circle.node:first').click({ force: true });
+      cy.contains('(Hide)').click({ force: true });
+      cy.get('div.toolbar div[title="Restart simulation with initial nodes"] button').click();
+      cy.get('circle.node').then((refreshedNodes) => {
+        expect(refreshedNodes.length).to.eq(nodes.length);
       });
     });
   });

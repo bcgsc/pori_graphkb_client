@@ -1,17 +1,19 @@
 .droptions {
-    width: inherit;
-    z-index: 1;
-    left: 0;
-    right: 0;
-    position: absolute;
-    max-height: 384px;
     overflow: auto;
+}
+
+.dense {
+    span {
+        font-size: 0.8125rem;
+    }
+    p {
+        font-size: 0.75rem;
+    }
 }
 
 .autosearch-wrapper {
     position: relative;
     flex-grow: 1;
-    min-height: 64px;
 }
 
 #autosearch-spinner {

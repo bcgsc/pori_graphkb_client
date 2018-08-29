@@ -1,3 +1,4 @@
+@import '../../globals';
 $data-view-collapse: 60em;
 .data-view {
     position: absolute;
@@ -6,7 +7,7 @@ $data-view-collapse: 60em;
     left: 0;
     right: 0;
     justify-content: center;
-    background-color: #f4f4f4;
+    background-color: $background-dark;
     display: flex;
     overflow: hidden;
 }

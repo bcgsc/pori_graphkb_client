@@ -1,3 +1,7 @@
+/**
+ * @module /views/QueryView
+ */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './QueryView.css';
@@ -106,10 +110,10 @@ class QueryView extends Component {
   }
 }
 
-/**
- * @param {Object} history - Application routing history object.
- */
 QueryView.propTypes = {
+  /**
+   * @param {Object} history - Application routing history object.
+   */
   history: PropTypes.object.isRequired,
 };
 

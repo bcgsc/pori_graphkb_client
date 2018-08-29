@@ -1,19 +1,67 @@
 @import "../../globals";
-.table-head {
-    tr,
-    th {
-        position: sticky;
+$paginator-height: 57px;
+$flip-duration: 0.15s;
+.data-table {
+    margin: 0 auto;
+    width: 100%;
+    overflow: auto;
+    .table-container {
+        position: absolute;
+        overflow: auto;
         top: 0;
-        background-color: #f8f8f8;
-        z-index: 2;
+        left: 0;
+        right: 0;
+        bottom: calc(#{$paginator-height} - 1px);
+        .table-head {
+            tr,
+            th {
+                position: sticky;
+                top: 0;
+                background-color: $background-light;
+                z-index: 2;
+            }
+            th:before {
+                content: "";
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                border-bottom: 1px solid rgba(224, 224, 224, 1);
+            }
+        }
     }
-    th:before {
-        content: "";
+    .pag {
         position: absolute;
         bottom: 0;
         left: 0;
-        width: 100%;
-        border-bottom: 1px solid rgba(224, 224, 224, 1);
+        right: 0;
+        background-color: $background-light;
+        height: $paginator-height;
+        display: flex;
+        border-top: 1px solid #ddd;
+        overflow-x: auto;
+        overflow-y: hidden;
+        .table-paginator {
+            display: flex;
+            float: left;
+            z-index: 1;
+        }
+        .paginator-spacing {
+            display: grid !important;
+            grid-template-columns: 0 100px 56px 120px 116px;
+        }
+        .graph-btn {
+            margin: auto 24px auto auto;
+            button {
+                transition: all 500ms;
+            }
+            button:enabled {
+                background-color: rgba($md-secondary-light, 0.5);
+            }
+        }
+        .more-results-btn {
+            margin: auto 0;
+        }
     }
 }
 
@@ -33,17 +81,11 @@
     width: 600px;
 }
 
-.data-table {
-    margin: 0 auto;
-    width: 100%;
-    overflow: auto;
-}
-
 .spacer-cell {
     position: sticky;
     left: 0;
     right: 0;
-    background-color: #f8f8f8;
+    background-color: $background-light;
     bottom: 0;
 }
 
@@ -57,75 +99,15 @@
     border-top: 1px solid rgba(224, 224, 224, 1);
 }
 
-.selected-col {
-    $w: 72px;
-    max-width: $w;
-    min-width: $w;
-    width: $w;
-}
-
-.selected-col {
-    $w: 72px;
-    max-width: $w;
-    min-width: $w;
-    width: $w;
-}
-
-$flip-duration: 0.15s;
-.detail-btn-active {
-    animation: turn $flip-duration forwards;
-}
-
-@keyframes turn {
-    from {
-        transform: rotate(0deg);
+.detail-btn {
+    svg {
+        transition: transform #{$flip-duration};
     }
-    to {
+}
+
+.active {
+    svg {
         transform: rotate(180deg);
-    }
-}
-
-$paginator-height: 57px;
-.table-container {
-    position: absolute;
-    overflow: auto;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: calc(#{$paginator-height} - 1px);
-}
-
-.pag {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: #f8f8f8;
-    height: $paginator-height;
-    display: flex;
-    border-top: 1px solid #ddd;
-    overflow-x: auto;
-    overflow-y: hidden;
-    .table-paginator {
-        display: flex;
-        float: left;
-        z-index: 1;
-    }
-    .paginator-spacing {
-        display: grid !important;
-        grid-template-columns: 0 100px 56px 120px 116px;
-    }
-    .graph-btn {
-        margin: auto 24px auto auto;
-        button {
-            transition: all 500ms;
-        }
-        button:enabled {
-            background-color: rgba($md-secondary-light, 0.5);
-        }
-    }
-    .more-results-btn {
-        margin: auto 0;
     }
 }
 

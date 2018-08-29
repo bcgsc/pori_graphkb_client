@@ -7,17 +7,27 @@
     "SCHEMA": "schema",
     "KB_TOKEN": "kbToken"
   },
+  "FEEDBACK_EMAIL": "ibeckie@bcgsc.ca",
+  "FEEDBACK_HIPCHAT": "@IsaacBeckie",
+  "JIRA_LINK": "https://www.bcgsc.ca/jira/projects/KBDEV",
   "GRAPH_PROPERTIES": {
     "ARROW_WIDTH": 3,
     "ARROW_LENGTH": 4,
     "NODE_INIT_RADIUS": 100,
     "NODE_RADIUS": 16,
-    "DETAILS_RING_RADIUS": 56
+    "DETAILS_RING_RADIUS": 56,
+    "FONT_SIZE": 7,
+    "LABEL_V_MARGIN": 4,
+    "ICON_DIMS": 24,
+    "ZOOM_BOUNDS": [
+      0.2,
+      10
+    ]
   },
   "GRAPH_DEFAULTS": {
     "LINK_STRENGTH": 0.02,
     "CHARGE_STRENGTH": 100,
-    "CHARGE_MAX": 750,
+    "CHARGE_MAX": 600,
     "DEFAULT_NODE_COLOR": "#26328C",
     "PALLETE_SIZES": [
       5,
@@ -142,6 +152,14 @@
       "#d8806c"
     ]
   },
+  "TABLE_PROPERTIES": {
+    "ROWS_PER_PAGE": [
+      25,
+      50,
+      100
+    ],
+    "TSV_FILENAME": "download.tsv"
+  },
   "DEFAULT_PROPS": [
     "name",
     "sourceId"
@@ -214,5 +232,9 @@
         "description": "Choose which edge properties to color edges based on. Eligible properties are those with 20 or fewer different unique values throughout the displayed edges."
       }
     ]
+  },
+  "NOTIFICATIONS": {
+    "GRAPH_UNIQUE_LIMIT": "Too many subgroups, choose new coloring property.",
+    "GRAPH_NO_UNIQUES": "No distinct subgroups, choose new coloring property."
   }
 }

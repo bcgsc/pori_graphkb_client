@@ -1,3 +1,7 @@
+/**
+ * @module /App
+ */
+
 import React, { Component } from 'react';
 import {
   Router,
@@ -28,7 +32,7 @@ import EditNodeView from './views/EditNodeView/EditNodeView';
 import AddNodeView from './views/AddNodeView/AddNodeView';
 import LoginView from './views/LoginView/LoginView';
 import NodeDetailView from './views/NodeDetailView/NodeDetailView';
-import UserView from './views/UserView/UserView';
+import FeedbackView from './views/FeedbackView/FeedbackView';
 import auth from './services/auth';
 import history from './services/history';
 
@@ -119,7 +123,7 @@ class App extends Component {
         <Route path="/edit/:rid" component={EditNodeView} />
         <Route path="/ontology/:rid" component={NodeDetailView} />
         <Route path="/data" component={DataView} />
-        <Route path="/admin" component={UserView} />
+        <Route path="/feedback" component={FeedbackView} />
         <Redirect from="*" to="/query" />
       </Switch>
     );
@@ -128,21 +132,22 @@ class App extends Component {
         <Router history={history}>
           <div className="App">
             <AppBar position="static" className="banner">
-              <IconButton
-                color="inherit"
-                disabled={!loggedIn}
-                onClick={() => history.push('/query')}
-              >
-                <SearchIcon />
-              </IconButton>
-              <IconButton
-                color="inherit"
-                disabled={!loggedIn}
-                onClick={() => history.push('/add')}
-              >
-                <AddIcon />
-              </IconButton>
-
+              {loggedIn && (
+                <React.Fragment>
+                  <IconButton
+                    color="inherit"
+                    onClick={() => history.push('/query')}
+                  >
+                    <SearchIcon />
+                  </IconButton>
+                  <IconButton
+                    color="inherit"
+                    onClick={() => history.push('/add')}
+                  >
+                    <AddIcon />
+                  </IconButton>
+                </React.Fragment>
+              )}
               <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>
                 <div>
                   <Button
@@ -168,12 +173,12 @@ class App extends Component {
                       vertical: 'top',
                       horizontal: 'right',
                     }}
+                    PaperProps={{
+                      onMouseLeave: this.handleClose,
+                    }}
                   >
                     <Card className="user-menu">
-                      <MenuItem>
-                        Settings
-                      </MenuItem>
-                      <MenuItem>
+                      <MenuItem onClick={() => { history.push('/feedback'); this.handleClose(); }}>
                         Feedback
                       </MenuItem>
                       <MenuItem onClick={this.handleLogOut}>

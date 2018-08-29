@@ -26,51 +26,6 @@
             flex-grow: 1;
         }
     }
-    .checkboxes {
-        flex-grow: 1;
-        margin: auto;
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-        grid-row-gap: 4px;
-    }
-    .related-checkboxes {
-        flex-grow: 1;
-        margin: auto;
-        min-width: 45vw;
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        align-content: center;
-    }
-    .checkbox {
-        display: block;
-        text-align: left;
-    }
-    @media (max-width: 1550px) {
-        .checkboxes {
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-        }
-    }
-    @media (max-width: 1172px) {
-        .checkboxes {
-            grid-template-columns: 1fr 1fr 1fr;
-        }
-    }
-    @media (max-width: 720px) {
-        .checkboxes {
-            grid-template-columns: 1fr;
-        }
-        .related-checkboxes {
-            grid-template-columns: 1fr;
-        }
-    }
-    @media (max-width: 700px) {
-        .checkboxes {
-            grid-template-columns: 1fr 1fr;
-        }
-        .related-checkboxes {
-            grid-template-columns: 1fr 1fr;
-        }
-    }
     .link {
         text-decoration: none;
         width: fit-content;

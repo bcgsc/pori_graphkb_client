@@ -33,42 +33,44 @@ const getHeaders = () => {
  * @param {string} endpoint - URL endpoint
  * @param {Object} init - Request properties.
  */
-const fetchWithInterceptors = (endpoint, init) => {
+const fetchWithInterceptors = async (endpoint, init) => {
   const initWithInterceptors = {
     ...init,
     headers: getHeaders(),
   };
-  return fetch(new Request(API_BASE_URL + endpoint, initWithInterceptors))
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
+  try {
+    const response = await fetch(new Request(API_BASE_URL + endpoint, initWithInterceptors));
+    if (response.ok) {
+      return response.json();
+    }
+
+    const error = {
+      ...(await response.json()),
+      status: response.status,
+      statusText: response.statusText,
+      url: response.url,
+    };
+    if (response.status === 401) {
+      let state = {};
+      if (auth.isExpired()) {
+        state = { timedout: true };
       }
-      return Promise.reject(response);
-    })
-    .catch(error => error.json().then(body => Promise.reject({
-      status: error.status,
-      body,
-    })))
-    .catch((error) => {
-      if (error.status === 401) {
-        let state = {};
-        if (auth.isExpired()) {
-          state = { timedout: true };
-        }
-        auth.clearToken();
-        if (history.location.pathname !== '/login') {
-          history.push({ pathname: '/login', state });
-          return Promise.reject('Unauthorized, redirecting...');
-        }
-        return Promise.reject(error);
+      auth.clearToken();
+      if (history.location.pathname !== '/login') {
+        history.push({ pathname: '/login', state });
+        return Promise.reject('Unauthorized, redirecting...');
       }
-      if (error.status === 400) {
-        history.push({ pathname: '/query/advanced', state: error });
-        return Promise.reject('Invalid Query');
-      }
-      history.push({ pathname: '/error', state: { status: error.status, body: error.body } });
-      return Promise.reject('Unexpected Error, redirecting...');
-    });
+      return Promise.reject(error);
+    }
+    if (response.status === 400) {
+      history.push({ pathname: '/query/advanced', state: error });
+      return Promise.reject('Invalid Query');
+    }
+    history.push({ pathname: '/error', state: error });
+    return Promise.reject('Unexpected Error, redirecting...');
+  } catch (error) {
+    return Promise.reject(error);
+  }
 };
 
 /**
@@ -124,7 +126,8 @@ const del = (endpoint) => {
 /**
  * Requests sources from api and loads into localstorage.
  */
-const loadSources = () => get('/sources').then((response) => {
+const loadSources = async () => {
+  const response = await get('/sources');
   const cycled = jc.retrocycle(response.result);
   const list = [];
   cycled.forEach(source => list.push(source));
@@ -141,7 +144,7 @@ const loadSources = () => get('/sources').then((response) => {
   localStorage.setItem(KEYS.SOURCES, JSON.stringify(sources));
 
   return Promise.resolve(list);
-});
+};
 
 /**
  * Returns all valid sources.
@@ -165,7 +168,8 @@ const getSources = () => {
 /**
  * Requests schema from api and loads into localstorage.
  */
-const loadSchema = () => get('/schema').then((response) => {
+const loadSchema = async () => {
+  const response = await get('/schema');
   const cycled = jc.retrocycle(response.schema);
   const now = new Date();
   const expiry = new Date(now);
@@ -180,7 +184,7 @@ const loadSchema = () => get('/schema').then((response) => {
   localStorage.setItem(KEYS.SCHEMA, JSON.stringify(schema));
 
   return Promise.resolve(cycled);
-});
+};
 
 /**
  * Returns the database schema.
@@ -206,7 +210,8 @@ const getSchema = () => {
  * Returns the editable properties of target ontology class.
  * @param {string} className - requested class name
  */
-const getClass = className => getSchema().then((schema) => {
+const getClass = async (className) => {
+  const schema = await getSchema();
   const VPropKeys = Object.keys(schema.V.properties);
   const classKey = (Object.keys(schema)
     .find(key => key.toLowerCase() === (className || '').toLowerCase()) || 'Ontology');
@@ -217,7 +222,7 @@ const getClass = className => getSchema().then((schema) => {
         ...schema[classKey].properties[prop],
       }));
   return Promise.resolve({ route: schema[classKey].route, properties: props });
-});
+};
 
 /**
  * Wrapper for autosearch method.
@@ -227,12 +232,10 @@ const getClass = className => getSchema().then((schema) => {
  * @param {number} limit - Limit for number of returned matches.
  */
 const autoSearch = (endpoint, property, value, limit) => {
-  const results = [];
-  for (let i = 0; i < property.length; i += 1) {
-    const intResults = get(`/${endpoint}?${property[i]}=~${encodeURIComponent(value)}&limit=${limit}&neighbors=1&@class=!Publication`);
-    results.push(intResults);
-  }
-  return Promise.all(results);
+  if (value.length < 4) return Promise.resolve({ result: [] });
+  const query = property.map(p => `${p}=~${encodeURIComponent(value)}`).join('&');
+  const orStr = `or=${property.join(',')}`;
+  return get(`/${endpoint}?${query}&${orStr}&limit=${limit}&neighbors=1&@class=!Publication`);
 };
 
 /**

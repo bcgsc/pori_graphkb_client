@@ -18,35 +18,36 @@ class ErrorView extends Component {
     super(props);
     this.state = {
       tooltip: false,
-      body: null,
-      status: null,
+      error: null,
     };
   }
 
   componentDidMount() {
     const { history } = this.props;
     const { state } = history.location;
-    if (!state || !(state.status || state.body)) {
+    if (!state) {
       history.push('/query');
     } else {
-      const { status, body } = state;
-      this.setState({ body, status });
+      this.setState({ error: state });
     }
   }
 
   render() {
-    const { tooltip, body, status } = this.state;
-    if (!body || !status) return null;
     const {
+      tooltip,
       error,
+    } = this.state;
+    if (!error) return null;
+    const {
       message,
-      method,
       name,
       url,
       stacktrace,
-    } = body;
+      status,
+      statusText,
+    } = error;
 
-    const methodText = `${method ? `Method ${method}` : ''}${url ? `to url ${url}:` : ''}${message || ''}`;
+    const methodText = `${statusText || ''} ${url ? `to url ${url}` : ''}`;
 
     return (
       <div className="error-wrapper">
@@ -55,18 +56,17 @@ class ErrorView extends Component {
         </Typography>
         <div className="error-content">
           <Typography variant="display2">
-            {`${status}: ${error || name}`}
-          </Typography>
-        </div>
-
-        <div className="error-content">
-          <Typography variant="title">
-            {!error ? '' : name}
+            {`${status}: ${name}`}
           </Typography>
         </div>
         <div className="error-content">
           <Typography variant="subheading">
             {methodText}
+          </Typography>
+        </div>
+        <div className="error-content">
+          <Typography variant="title">
+            {message}
           </Typography>
         </div>
         <div id="spacer" />
@@ -96,6 +96,9 @@ class ErrorView extends Component {
                   </Button>
                 </CopyToClipboard>
               </Tooltip>
+              <Typography variant="body2">
+                Stacktrace:
+              </Typography>
               <Typography variant="subheading" id="stacktrace-text">
                 {stacktrace}
               </Typography>

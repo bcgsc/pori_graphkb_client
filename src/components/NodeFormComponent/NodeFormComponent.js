@@ -123,8 +123,8 @@ class NodeFormComponent extends Component {
         name,
         type,
         linkedClass,
-        defaultValue,
       } = prop;
+      const defaultValue = prop.default || '';
 
       // TODO: maybe refactor this for edges pointing to ontologies/other
       // records that don't have names or source ids.
@@ -199,7 +199,6 @@ class NodeFormComponent extends Component {
       editableProps,
       newNodeClass: nodeClass,
       ontologyTypes: api.getOntologies(schema),
-      schema,
     });
   }
 
@@ -556,7 +555,6 @@ class NodeFormComponent extends Component {
       newNodeClass,
       errorFlag,
       ontologyTypes,
-      schema,
       loading,
       notificationDrawerOpen,
       deletedSubsets,
@@ -685,7 +683,7 @@ class NodeFormComponent extends Component {
         // Decide which endpoint to query.
         let endpoint;
         if (linkedClass) {
-          endpoint = schema[linkedClass].route.slice(1);
+          endpoint = linkedClass.route.slice(1);
         }
 
         return (

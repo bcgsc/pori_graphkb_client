@@ -102,7 +102,6 @@ describe('Table Test', () => {
   it('Ellipsis menu: hiding/returning rows', () => {
     getName('melanoma');
     cy.get('table tbody tr').then((array) => {
-      cy.contains(319);
       cy.contains('1-50').invoke('text').then((text) => {
         cy.log(text);
         const total = text.split('1-50 of ')[1];

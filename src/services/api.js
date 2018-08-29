@@ -33,42 +33,44 @@ const getHeaders = () => {
  * @param {string} endpoint - URL endpoint
  * @param {Object} init - Request properties.
  */
-const fetchWithInterceptors = (endpoint, init) => {
+const fetchWithInterceptors = async (endpoint, init) => {
   const initWithInterceptors = {
     ...init,
     headers: getHeaders(),
   };
-  return fetch(new Request(API_BASE_URL + endpoint, initWithInterceptors))
-    .then((response) => {
-      if (response.ok) {
-        return response.json();
+  try {
+    const response = await fetch(new Request(API_BASE_URL + endpoint, initWithInterceptors));
+    if (response.ok) {
+      return response.json();
+    }
+
+    const error = {
+      ...(await response.json()),
+      status: response.status,
+      statusText: response.statusText,
+      url: response.url,
+    };
+    if (response.status === 401) {
+      let state = {};
+      if (auth.isExpired()) {
+        state = { timedout: true };
       }
-      return Promise.reject(response);
-    })
-    .catch(error => error.json().then(body => Promise.reject({
-      status: error.status,
-      body,
-    })))
-    .catch((error) => {
-      if (error.status === 401) {
-        let state = {};
-        if (auth.isExpired()) {
-          state = { timedout: true };
-        }
-        auth.clearToken();
-        if (history.location.pathname !== '/login') {
-          history.push({ pathname: '/login', state });
-          return Promise.reject('Unauthorized, redirecting...');
-        }
-        return Promise.reject(error);
+      auth.clearToken();
+      if (history.location.pathname !== '/login') {
+        history.push({ pathname: '/login', state });
+        return Promise.reject('Unauthorized, redirecting...');
       }
-      if (error.status === 400) {
-        history.push({ pathname: '/query/advanced', state: error });
-        return Promise.reject('Invalid Query');
-      }
-      history.push({ pathname: '/error', state: { status: error.status, body: error.body } });
-      return Promise.reject('Unexpected Error, redirecting...');
-    });
+      return Promise.reject(error);
+    }
+    if (response.status === 400) {
+      history.push({ pathname: '/query/advanced', state: error });
+      return Promise.reject('Invalid Query');
+    }
+    history.push({ pathname: '/error', state: error });
+    return Promise.reject('Unexpected Error, redirecting...');
+  } catch (error) {
+    return Promise.reject(error);
+  }
 };
 
 /**

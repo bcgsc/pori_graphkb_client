@@ -17,13 +17,11 @@ import {
   ExpansionPanel,
   ExpansionPanelDetails,
   ExpansionPanelSummary,
-  ListItemIcon,
   Tooltip,
 } from '@material-ui/core';
 import BookmarkIcon from '@material-ui/icons/Bookmark';
 import EditIcon from '@material-ui/icons/Edit';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import SearchIcon from '@material-ui/icons/Search';
 import api from '../../services/api';
 import util from '../../services/util';
 
@@ -87,7 +85,6 @@ class NodeDetailComponent extends Component {
       node,
       children,
       variant,
-      handleNewQuery,
       detailEdge,
     } = this.props;
 
@@ -144,15 +141,7 @@ class NodeDetailComponent extends Component {
                 <ListItem
                   dense
                   key={`${id}${item}`}
-                  onClick={() => handleNewQuery(`${key.includes('.')
-                    ? key.split('.')[key.split('.').length - 1]
-                    : key}=${encodeURIComponent(item)}`)
-                  }
-                  className="list-icon"
                 >
-                  <ListItemIcon>
-                    <SearchIcon />
-                  </ListItemIcon>
                   <ListItemText primary={item} />
                 </ListItem>
               ))}
@@ -425,10 +414,6 @@ NodeDetailComponent.propTypes = {
    * selected node
    */
   handleNodeEditStart: PropTypes.func,
-  /**
-   * @param {function} handleNewQuery - funcion to handle new database query.
-   */
-  handleNewQuery: PropTypes.func.isRequired,
   /**
    * @param {Node} children - Additional buttons to render in the sidebar of
    * the component.

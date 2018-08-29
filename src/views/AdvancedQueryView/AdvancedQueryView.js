@@ -79,8 +79,8 @@ class AdvancedQueryView extends Component {
         name,
         type,
         linkedClass,
-        defaultValue,
       } = prop;
+      const defaultValue = prop.default || '';
       switch (type) {
         case 'link':
           form[`${name}.@rid`] = '';
@@ -96,7 +96,7 @@ class AdvancedQueryView extends Component {
           form[name] = defaultValue.toString() === 'true';
           break;
         default:
-          form[name] = name === 'name' ? (history.location.state || {}).name : defaultValue || '';
+          form[name] = name === 'name' ? (history.location.state || {}).name : defaultValue;
           break;
       }
     });
@@ -104,7 +104,6 @@ class AdvancedQueryView extends Component {
       ontologyTypes,
       form,
       editableProps,
-      schema,
     });
   }
 
@@ -151,7 +150,8 @@ class AdvancedQueryView extends Component {
     const editableProps = (await api.getClass(newNodeClass)).properties;
     const { form } = this.state;
     editableProps.forEach((prop) => {
-      const { name, type, defaultValue } = prop;
+      const { name, type } = prop;
+      const defaultValue = prop.default || '';
       if (form[name] === undefined) {
         if (type === 'boolean') {
           form[name] = defaultValue.toString() === 'true';
@@ -181,7 +181,6 @@ class AdvancedQueryView extends Component {
       ontologyTypes,
       editableProps,
       message,
-      schema,
     } = this.state;
     const { history } = this.props;
 
@@ -261,7 +260,7 @@ class AdvancedQueryView extends Component {
         // Decide which endpoint to query.
         let endpoint;
         if (linkedClass) {
-          endpoint = schema[linkedClass].route.slice(1);
+          endpoint = linkedClass.route.slice(1);
         }
 
         return (

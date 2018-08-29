@@ -357,7 +357,6 @@ class GraphComponent extends Component {
       width,
       height,
     } = this.state;
-    console.log(graphOptions);
     simulation.force(
       'link',
       d3.forceLink().id(d => d.data['@rid']),

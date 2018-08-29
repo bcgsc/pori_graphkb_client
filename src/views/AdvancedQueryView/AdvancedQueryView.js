@@ -56,7 +56,6 @@ class AdvancedQueryView extends Component {
    */
   async componentDidMount() {
     const { history } = this.props;
-    console.log(history.location.state);
     if (
       history.location
       && history.location.state

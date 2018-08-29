@@ -99,7 +99,7 @@ class DataView extends Component {
     let allProps = ['@rid', '@class'];
     try {
       const data = await api.get(`${route}?${qs.stringify(filteredSearch)}&neighbors=3`);
-      const cycled = jc.retrocycle(data.result);
+      const cycled = jc.retrocycle(data).result;
 
       cycled.forEach((ontologyTerm) => {
         allProps = api.collectOntologyProps(ontologyTerm, allProps, schema);
@@ -138,7 +138,7 @@ class DataView extends Component {
     if (!data[rid]) {
       const endpoint = `/ontologies/${rid.slice(1)}?neighbors=3`;
       const json = await api.get(endpoint);
-      data[rid] = jc.retrocycle(json.result);
+      data[rid] = jc.retrocycle(json).result;
       this.setState({ data });
     }
     this.setState({ selectedId: rid });
@@ -209,7 +209,7 @@ class DataView extends Component {
           schema,
           filteredSearch,
         } = this.state;
-        const cycled = jc.retrocycle(nextData.result);
+        const cycled = jc.retrocycle(nextData).result;
         let newColumns = allProps;
         cycled.forEach((ontologyTerm) => {
           newColumns = api.collectOntologyProps(ontologyTerm, allProps, schema);
@@ -301,7 +301,7 @@ class DataView extends Component {
     } else {
       if (!data[node.data['@rid']]) {
         const response = await api.get(`/ontologies/${node.data['@rid'].slice(1)}?neighbors=3`);
-        data[node.data['@rid']] = jc.retrocycle(response.result);
+        data[node.data['@rid']] = jc.retrocycle(response).result;
       }
       this.setState({ detail: data[node.data['@rid']], detailEdge: false });
     }

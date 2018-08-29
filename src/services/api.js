@@ -124,7 +124,8 @@ const del = (endpoint) => {
 /**
  * Requests sources from api and loads into localstorage.
  */
-const loadSources = () => get('/sources').then((response) => {
+const loadSources = async () => {
+  const response = await get('/sources');
   const cycled = jc.retrocycle(response.result);
   const list = [];
   cycled.forEach(source => list.push(source));
@@ -141,7 +142,7 @@ const loadSources = () => get('/sources').then((response) => {
   localStorage.setItem(KEYS.SOURCES, JSON.stringify(sources));
 
   return Promise.resolve(list);
-});
+};
 
 /**
  * Returns all valid sources.
@@ -165,7 +166,8 @@ const getSources = () => {
 /**
  * Requests schema from api and loads into localstorage.
  */
-const loadSchema = () => get('/schema').then((response) => {
+const loadSchema = async () => {
+  const response = await get('/schema');
   const cycled = jc.retrocycle(response.schema);
   const now = new Date();
   const expiry = new Date(now);
@@ -180,7 +182,7 @@ const loadSchema = () => get('/schema').then((response) => {
   localStorage.setItem(KEYS.SCHEMA, JSON.stringify(schema));
 
   return Promise.resolve(cycled);
-});
+};
 
 /**
  * Returns the database schema.
@@ -206,7 +208,8 @@ const getSchema = () => {
  * Returns the editable properties of target ontology class.
  * @param {string} className - requested class name
  */
-const getClass = className => getSchema().then((schema) => {
+const getClass = async (className) => {
+  const schema = await getSchema();
   const VPropKeys = Object.keys(schema.V.properties);
   const classKey = (Object.keys(schema)
     .find(key => key.toLowerCase() === (className || '').toLowerCase()) || 'Ontology');
@@ -217,7 +220,7 @@ const getClass = className => getSchema().then((schema) => {
         ...schema[classKey].properties[prop],
       }));
   return Promise.resolve({ route: schema[classKey].route, properties: props });
-});
+};
 
 /**
  * Wrapper for autosearch method.

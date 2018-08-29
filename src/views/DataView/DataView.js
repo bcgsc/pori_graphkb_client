@@ -137,8 +137,8 @@ class DataView extends Component {
     const { data } = this.state;
     if (!data[rid]) {
       const endpoint = `/ontologies/${rid.slice(1)}?neighbors=3`;
-      const json = await api.get(endpoint);
-      data[rid] = jc.retrocycle(json).result;
+      const response = await api.get(endpoint);
+      data[rid] = jc.retrocycle(response).result;
       this.setState({ data });
     }
     this.setState({ selectedId: rid });
@@ -198,11 +198,13 @@ class DataView extends Component {
   /**
    * Handles subsequent pagination call
    */
-  handleSubsequentPagination() {
+  async handleSubsequentPagination() {
     const { next } = this.state;
 
     if (next) {
-      next().then((nextData) => {
+      try {
+        this.setState({ next: null, moreResults: false, completedNext: false });
+        const nextData = await next();
         const {
           data,
           allProps,
@@ -238,9 +240,10 @@ class DataView extends Component {
           moreResults,
           completedNext: true,
         });
-      });
+      } catch (e) {
+        console.error(e);
+      }
     }
-    this.setState({ next: null, moreResults: false, completedNext: false });
     return next;
   }
 

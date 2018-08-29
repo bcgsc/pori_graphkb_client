@@ -56,14 +56,14 @@ class AdvancedQueryView extends Component {
    */
   async componentDidMount() {
     const { history } = this.props;
-
+    console.log(history.location.state);
     if (
       history.location
       && history.location.state
-      && history.location.state.body
-      && history.location.state.body.message
+      && history.location.state.message
     ) {
-      this.setState({ message: history.location.state.body.message });
+      const { message, name } = history.location.state;
+      this.setState({ message: `${name || ''}: ${message}` });
     }
 
     const form = {};
@@ -238,7 +238,7 @@ class AdvancedQueryView extends Component {
                 onChange={this.handleChange}
                 className="text-input"
                 name={key}
-                type={t || ''}
+                type={t || null}
                 step={step || ''}
                 multiline={t === 'text'}
                 InputProps={{

@@ -227,12 +227,10 @@ const getClass = className => getSchema().then((schema) => {
  * @param {number} limit - Limit for number of returned matches.
  */
 const autoSearch = (endpoint, property, value, limit) => {
-  const results = [];
-  for (let i = 0; i < property.length; i += 1) {
-    const intResults = get(`/${endpoint}?${property[i]}=~${encodeURIComponent(value)}&limit=${limit}&neighbors=1&@class=!Publication`);
-    results.push(intResults);
-  }
-  return Promise.all(results);
+  if (value.length < 4) return Promise.resolve({ result: [] });
+  const query = property.map(p => `${p}=~${encodeURIComponent(value)}`).join('&');
+  const orStr = `or=${property.join(',')}`;
+  return get(`/${endpoint}?${query}&${orStr}&limit=${limit}&neighbors=1&@class=!Publication`);
 };
 
 /**

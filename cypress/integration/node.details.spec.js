@@ -7,6 +7,14 @@ function goToClass(endpoint) {
   cy.get('table tbody tr td div div div div.node-properties').should('exist');
 }
 
+function getRecord(name, sourceId) {
+  cy.get('input[name=limit]').type('10');
+  cy.get('textarea[name=name]').type(name);
+  cy.get('textarea[name=sourceId]').type(sourceId);
+  cy.contains('Search').click();
+  cy.get('table tbody tr:first td button[tabindex=0]').click({ force: true });
+  cy.get('table tbody tr td div div div div.node-properties').should('exist');
+}
 
 describe('Node Detail ', () => {
   beforeEach(() => {
@@ -31,7 +39,7 @@ describe('Node Detail ', () => {
   });
 
   it('Subset links', () => {
-    goToClass('Disease');
+    getRecord('disease by infectious agent', 'doid:0050117');
     cy.contains('Subsets:').click();
     cy.get('ul>li:first').click();
     cy.url().should('not.includes', 'subsets=');
@@ -45,21 +53,16 @@ describe('Node Detail ', () => {
     cy.get('circle.node:first').click();
     cy.contains('(Details)').click();
     cy.contains('Properties:');
-    cy.get('div.node-properties').parent().scrollTo('bottom');
-    cy.contains('hasSubClass').click();
-    cy.get('div.node-properties').parent().scrollTo('bottom');
-    cy.contains('cancer-related condition').click();
-    cy.contains('c8278');
   });
 
   it('Detail Page details & edge drop down lists', () => {
-    cy.visit('/ontology/36:10795');
+    cy.visit('/ontology/36:10780');
     // Gets length indicator
     cy.get('div.length-box h3:first').invoke('text').then((length) => {
       // Expands dropdown list
       cy.get('div.length-box h3:first').parent().parent().click();
       // Counts child containers and asserts same length.
-      cy.get('#hasSubClass div div div div div.detail-edge')
+      cy.get('#hasAlias div div div div div.detail-edge')
         .should('have.length', length);
     });
   });

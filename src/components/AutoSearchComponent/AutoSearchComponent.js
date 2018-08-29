@@ -82,23 +82,26 @@ class AutoSearchComponent extends Component {
    * with the property specified in component props similar to the input value.
    * @param {string} value - value to be sent to the api.
    */
-  callApi(value) {
+  async callApi(value) {
     const {
       limit,
       endpoint,
       property,
     } = this.props;
 
-    api.autoSearch(
-      endpoint,
-      property,
-      value,
-      limit,
-    ).then((response) => {
+    try {
+      const response = await api.autoSearch(
+        endpoint,
+        property,
+        value,
+        limit,
+      );
       const results = jc.retrocycle(response).result;
       const emptyFlag = !!(results.length === 0 && value);
       this.setState({ options: results, emptyFlag, loading: false });
-    }).catch(() => { });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   render() {

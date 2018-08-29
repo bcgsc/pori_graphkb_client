@@ -26,13 +26,12 @@ class EditNodeView extends Component {
   /**
    * Initializes editing node and query on return.
    */
-  componentDidMount() {
+  async componentDidMount() {
     const { match } = this.props;
     const { rid } = match.params;
-    api.get(`/ontologies/${rid}?neighbors=3`).then((data) => {
-      const node = jc.retrocycle(data).result;
-      this.setState({ node });
-    });
+    const response = await api.get(`/ontologies/${rid}?neighbors=3`);
+    const node = jc.retrocycle(response).result;
+    this.setState({ node });
   }
 
   /**

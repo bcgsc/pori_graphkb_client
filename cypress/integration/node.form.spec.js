@@ -21,8 +21,7 @@ describe('Node Form Test', () => {
     cy.get('#relationship-add td div.resource-select').each((resourceSelect, i) => {
       if (i === 1) {
         cy.wrap(resourceSelect).click();
-        cy.get('div[role=document]');
-        cy.get('li[data-value="#15:12"]').click();
+        cy.get('div[role=document] li:first').click();
         cy.contains('test');
         cy.get('#relationship-type').click().wait(100).click();
         cy.contains('SubClassOf').click();
@@ -33,10 +32,10 @@ describe('Node Form Test', () => {
         cy.contains('hasSubClass');
 
         cy.get('div.relationships-wrapper input[name=name]').type('angiosarcoma').wait(500);
-        cy.contains('pediatric angiosarcoma').click();
+        cy.get('div[role=listbox] li:first').click();
 
         cy.get('div.relationships-wrapper input[name=name]').type('{backspace}').wait(500);
-        cy.contains('pediatric angiosarcoma').click();
+        cy.get('div[role=listbox] li:first').click();
 
         cy.get('#relationship-add td button[type=button]:first').click();
         cy.get('tbody tr').then(list => expect(list.length).to.be.eq(2));

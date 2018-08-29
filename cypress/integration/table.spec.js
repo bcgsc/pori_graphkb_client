@@ -81,7 +81,7 @@ describe('Table Test', () => {
    * Check all checkbox
    */
   it('Check-all', () => {
-    getName('dis');
+    getName('diso');
     cy.get('table thead tr th:first input[type=checkbox]').click();
     cy.get('#ellipsis-menu').click();
     cy.contains('Hide Selected Rows (50)');
@@ -145,7 +145,7 @@ describe('Table Test', () => {
    * Tests automatic loading of more records.
    */
   it('Subsequent Pagination', () => {
-    getName('dis');
+    getName('diso');
     cy.get('div.pag div div div button').each((button, i) => {
       // Chooses second button.
       if (i !== 0) {
@@ -164,7 +164,7 @@ describe('Table Test', () => {
    * Tests manual add button for loading more records.
    */
   it('Forced Subsequent Pagination', () => {
-    getName('dis');
+    getName('diso');
     cy.get('div.more-results-btn button').click();
     cy.contains('loading more results...');
     cy.contains('1000');

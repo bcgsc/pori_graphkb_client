@@ -69,6 +69,7 @@ $drawer-breakpoint: 768px;
     }
     .content {
         overflow-y: auto;
+        overflow-x: hidden;
         position: absolute;
         top: $banner-height;
         left: $closed-drawer-width;

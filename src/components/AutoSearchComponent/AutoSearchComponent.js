@@ -73,8 +73,10 @@ class AutoSearchComponent extends Component {
    * @param {Event} e - user input event.
    */
   refreshOptions(e) {
-    this.setState({ loading: true, emptyFlag: false, lastRid: null });
-    this.callApi(e.target.value);
+    if (![13, 16, 37, 38, 39, 40].includes(e.keyCode)) {
+      this.setState({ loading: true, emptyFlag: false, lastRid: null });
+      this.callApi(e.target.value);
+    }
   }
 
   /**
@@ -132,6 +134,7 @@ class AutoSearchComponent extends Component {
       inputValue,
       getItemProps,
       setState,
+      highlightedIndex,
       style,
     ) => options.map((item, index) => children(
       getItemProps,
@@ -139,6 +142,7 @@ class AutoSearchComponent extends Component {
       index,
       setState,
       style,
+      highlightedIndex,
     ));
 
     return (
@@ -166,6 +170,7 @@ class AutoSearchComponent extends Component {
           inputValue,
           setState,
           getMenuProps,
+          highlightedIndex,
         }) => (
           <div
             className="autosearch-wrapper"
@@ -184,7 +189,6 @@ class AutoSearchComponent extends Component {
                     onChange,
                     name,
                     disabled,
-                    onKeyUp: this.refreshOptions,
                     onFocus: () => this.setState({ noRidFlag: false }),
                     onBlur: () => this.setState({ noRidFlag: !!(!lastRid && value) }),
                     style: {
@@ -228,7 +232,7 @@ class AutoSearchComponent extends Component {
                         id="autosearch-spinner"
                       />
                     )
-                    : autoSearchResults(inputValue, getItemProps, setState)}
+                    : autoSearchResults(inputValue, getItemProps, setState, highlightedIndex)}
                 </List>
               </Paper>
             </Popper>
@@ -319,7 +323,7 @@ AutoSearchComponent.defaultProps = {
   required: false,
   error: false,
   dense: false,
-  children: (getItemProps, item, index) => ( // TODO: change this to be more flexible
+  children: (getItemProps, item, index, s, t, highlightedIndex) => (
     <MenuItem
       {...getItemProps({
         key: item['@rid'],
@@ -327,6 +331,7 @@ AutoSearchComponent.defaultProps = {
         item,
       })}
       style={{ whiteSpace: 'normal', height: 'unset' }}
+      selected={highlightedIndex === index}
     >
       <span>
         {util.getPreview(item)}

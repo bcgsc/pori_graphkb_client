@@ -1,3 +1,7 @@
+/**
+ * @module /views/LoginView
+ */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './LoginView.css';
@@ -138,26 +142,29 @@ class LoginView extends Component {
           <Typography variant="caption" id="caption">
             Log in with your BC GSC web credentials
           </Typography>
-          {invalid ? (
+          {invalid && (
             <Typography variant="subheading" id="invalid-meessage">
               Invalid Username or Password
             </Typography>
-          ) : null
-          }
+          )}
         </form>
       </div>
     );
   }
 }
 
-/**
- * @param {object} history -  Application history object.
- * @param {function} handleLogOut - Updates parent state on unauthorized user.
- * @param {function} handleAuthenticate - Updates parent state on successful login.
- */
 LoginView.propTypes = {
+  /**
+   * @param {object} history -  Application history object.
+   */
   history: PropTypes.object.isRequired,
+  /**
+   * @param {function} handleLogOut - Updates parent state on unauthorized user.
+   */
   handleLogOut: PropTypes.func.isRequired,
+  /**
+   * @param {function} handleAuthenticate - Updates parent state on successful login.
+   */
   handleAuthenticate: PropTypes.func.isRequired,
 };
 

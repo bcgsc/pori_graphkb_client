@@ -1,3 +1,7 @@
+/**
+ * @module /views/NodeDetailView
+ */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
@@ -23,6 +27,7 @@ class NodeDetailView extends Component {
 
     this.handleNodeDelete = this.handleNodeDelete.bind(this);
     this.handleNodeEdit = this.handleNodeEdit.bind(this);
+    this.handleNewQuery = this.handleNewQuery.bind(this);
   }
 
   /**
@@ -57,6 +62,15 @@ class NodeDetailView extends Component {
     history.goBack();
   }
 
+  /**
+   * Navigates to the table with the query string.
+   * @param {string} search - search string.
+   */
+  handleNewQuery(search) {
+    const { history } = this.props;
+    history.push(`/data/table?${search}`);
+  }
+
   render() {
     const {
       node,
@@ -86,6 +100,7 @@ class NodeDetailView extends Component {
         <NodeDetailComponent
           node={node}
           handleNodeEditStart={this.handleNodeEdit}
+          handleNewQuery={this.handleNewQuery}
         />
       );
     }
@@ -93,12 +108,14 @@ class NodeDetailView extends Component {
   }
 }
 
-/**
- * @param {Object} match - Match object for extracting URL parameters.
- * @param {Object} history - Application routing history object.
- */
 NodeDetailView.propTypes = {
+  /**
+   * @param {Object} match - Match object for extracting URL parameters.
+   */
   match: PropTypes.object.isRequired,
+  /**
+   * @param {Object} history - Application routing history object.
+   */
   history: PropTypes.object.isRequired,
 };
 

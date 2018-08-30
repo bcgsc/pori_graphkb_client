@@ -1,3 +1,7 @@
+/**
+ * @module /App
+ */
+
 import React, { Component } from 'react';
 import {
   Router,
@@ -20,11 +24,13 @@ import {
   List,
   ListItemText,
   ListItemIcon,
+  Divider,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
 import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
+import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import QueryView from './views/QueryView/QueryView';
 import AdvancedQueryView from './views/AdvancedQueryView/AdvancedQueryView';
 import DataView from './views/DataView/DataView';
@@ -33,7 +39,8 @@ import EditNodeView from './views/EditNodeView/EditNodeView';
 import AddNodeView from './views/AddNodeView/AddNodeView';
 import LoginView from './views/LoginView/LoginView';
 import NodeDetailView from './views/NodeDetailView/NodeDetailView';
-import UserView from './views/UserView/UserView';
+import FeedbackView from './views/FeedbackView/FeedbackView';
+import logo from './logo.png';
 import auth from './services/auth';
 import history from './services/history';
 
@@ -74,6 +81,7 @@ class App extends Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleLogOut = this.handleLogOut.bind(this);
     this.handleAuthenticate = this.handleAuthenticate.bind(this);
+    this.handleSideBarNavigate = this.handleSideBarNavigate.bind(this);
   }
 
   /**
@@ -106,6 +114,11 @@ class App extends Component {
     this.setState({ loggedIn: true });
   }
 
+  handleSideBarNavigate(route) {
+    history.push(route);
+    this.setState({ drawerOpen: false });
+  }
+
   render() {
     const { anchorEl, loggedIn, drawerOpen } = this.state;
 
@@ -120,14 +133,27 @@ class App extends Component {
     const drawer = (
       <Drawer
         variant="persistent"
-        open={drawerOpen}
+        open
         anchor="left"
         classes={{
-          paper: 'drawer',
+          paper: `drawer${drawerOpen ? '' : ' drawer-closed'}`,
         }}
       >
+        <div className="banner">
+          <div className="drawer-logo">
+            <img src={logo} alt="" />
+            <Typography variant="body1">Knowledge Base</Typography>
+            <IconButton
+              disabled={!loggedIn}
+              onClick={() => this.setState({ drawerOpen: false })}
+            >
+              <KeyboardBackspaceIcon />
+            </IconButton>
+          </div>
+        </div>
+        <Divider />
         <List dense>
-          <MenuItem onClick={() => history.push('/query')}>
+          <MenuItem onClick={() => this.handleSideBarNavigate('/query')}>
             <ListItemIcon>
               <SearchIcon />
             </ListItemIcon>
@@ -151,7 +177,7 @@ class App extends Component {
         <Route path="/edit/:rid" component={EditNodeView} />
         <Route path="/ontology/:rid" component={NodeDetailView} />
         <Route path="/data" component={DataView} />
-        <Route path="/admin" component={UserView} />
+        <Route path="/feedback" component={FeedbackView} />
         <Redirect from="*" to="/query" />
       </Switch>
     );
@@ -159,16 +185,20 @@ class App extends Component {
       <MuiThemeProvider theme={theme}>
         <Router history={history}>
           <div className="App">
-            {drawer}
-            <AppBar className={`banner ${drawerOpen ? 'drawer-shift' : ''}`}>
-              <IconButton
-                color="inherit"
-                disabled={!loggedIn}
-                onClick={() => this.setState({ drawerOpen: !drawerOpen })}
-              >
-                <MenuIcon />
-              </IconButton>
-
+            <AppBar
+              position="absolute"
+              className={`banner ${drawerOpen ? 'drawer-shift' : ''}`}
+            >
+              {!drawerOpen && (
+                <IconButton
+                  color="inherit"
+                  disabled={!loggedIn}
+                  onClick={() => this.setState({ drawerOpen: true })}
+                  className="appbar-btn"
+                >
+                  <MenuIcon />
+                </IconButton>
+              )}
               <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>
                 <div>
                   <Button
@@ -176,6 +206,7 @@ class App extends Component {
                     onClick={this.handleOpen}
                     size="small"
                     disabled={!loggedIn}
+                    className="appbar-btn"
                   >
                     <PersonIcon />
                     <Typography variant="body2">
@@ -188,18 +219,18 @@ class App extends Component {
                     onClose={this.handleClose}
                     anchorOrigin={{
                       vertical: 'bottom',
-                      horizontal: 'right',
+                      horizontal: 'left',
                     }}
                     transformOrigin={{
                       vertical: 'top',
-                      horizontal: 'right',
+                      horizontal: 'left',
+                    }}
+                    PaperProps={{
+                      onMouseLeave: this.handleClose,
                     }}
                   >
                     <Card className="user-menu">
-                      <MenuItem>
-                        Settings
-                      </MenuItem>
-                      <MenuItem>
+                      <MenuItem onClick={() => { history.push('/feedback'); this.handleClose(); }}>
                         Feedback
                       </MenuItem>
                       <MenuItem onClick={this.handleLogOut}>
@@ -210,6 +241,7 @@ class App extends Component {
                 </div>
               </div>
             </AppBar>
+            {drawer}
             <section className={`content ${drawerOpen ? 'drawer-shift' : ''}`}>
               <div className="router-outlet">
                 <Switch>

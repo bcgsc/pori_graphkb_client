@@ -1,3 +1,7 @@
+/**
+ * @module /views/DataView
+ */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './DataView.css';
@@ -13,12 +17,11 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import { withStyles } from '@material-ui/core/styles';
-import queryString from 'query-string';
+import qs from 'qs';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import NodeDetailComponent from '../../components/NodeDetailComponent/NodeDetailComponent';
 import api from '../../services/api';
-import util from '../../services/util';
 
 const styles = {
   paper: {
@@ -26,6 +29,8 @@ const styles = {
     '@media (max-width: 768px)': { width: 'calc(100% - 1px)' },
   },
 };
+
+const DEFAULT_LIMIT = 1000;
 
 /**
  * View for managing state of query results. Contains sub-routes for table view (/data/table)
@@ -46,8 +51,11 @@ class DataView extends Component {
       displayed: [],
       hidden: [],
       selectedId: null,
-      allColumns: [],
+      allProps: [],
       detail: null,
+      next: null,
+      completedNext: true,
+      filteredSearch: null,
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -57,10 +65,12 @@ class DataView extends Component {
     this.handleCheckAll = this.handleCheckAll.bind(this);
     this.handleHideSelected = this.handleHideSelected.bind(this);
     this.handleShowAllNodes = this.handleShowAllNodes.bind(this);
+    this.handleSubsequentPagination = this.handleSubsequentPagination.bind(this);
 
     // GraphComponent methods
     this.handleDetailDrawerOpen = this.handleDetailDrawerOpen.bind(this);
     this.handleDetailDrawerClose = this.handleDetailDrawerClose.bind(this);
+    this.handleNewColumns = this.handleNewColumns.bind(this);
 
     // NodeDetailComponent methods
     this.handleNodeEditStart = this.handleNodeEditStart.bind(this);
@@ -80,32 +90,41 @@ class DataView extends Component {
     const { history } = this.props;
 
     const schema = await api.getSchema();
-    const filteredSearch = queryString.parse(history.location.search);
+    const filteredSearch = qs.parse(history.location.search.slice(1));
     let route = '/ontologies';
-
-    if (filteredSearch['@class']) {
-      route = schema[filteredSearch['@class']].route;
+    if (filteredSearch['@class'] && schema[filteredSearch['@class']]) {
+      route = schema[filteredSearch['@class']].route || filteredSearch['@class'];
     }
 
-    let allColumns = ['@rid', '@class'];
-
+    let allProps = ['@rid', '@class'];
     try {
-      const data = await api.get(`${route}?${queryString.stringify(filteredSearch)}&neighbors=3`);
+      const data = await api.get(`${route}?${qs.stringify(filteredSearch)}&neighbors=3`);
       const cycled = jc.retrocycle(data.result);
 
       cycled.forEach((ontologyTerm) => {
-        allColumns = util.collectOntologyProps(ontologyTerm, allColumns, schema);
+        allProps = api.collectOntologyProps(ontologyTerm, allProps, schema);
         dataMap[ontologyTerm['@rid']] = ontologyTerm;
       });
+
+      if (cycled.length >= (filteredSearch.limit || DEFAULT_LIMIT)) {
+        const nextFilteredSearch = Object.assign({}, filteredSearch);
+        nextFilteredSearch.skip = filteredSearch.limit || DEFAULT_LIMIT;
+        this.setState({
+          next: () => api.get(`${route}?${qs.stringify(nextFilteredSearch)}&neighbors=3`),
+          moreResults: true,
+        });
+      }
       this.setState({
         data: dataMap,
         selectedId: Object.keys(dataMap)[0],
         loginRedirect,
-        allColumns,
+        allProps,
         schema,
+        filteredSearch,
+        edges: api.getEdges(schema),
       });
     } catch (e) {
-      // do nothing
+      console.error(e);
     }
   }
 
@@ -144,11 +163,10 @@ class DataView extends Component {
    * Adds all data entries to the list of displayed nodes.
    * @param {Event} e - Checkbox event.
    */
-  handleCheckAll(e) {
+  handleCheckAll(e, pageData) {
     let displayed;
-    const { data, hidden } = this.state;
     if (e.target.checked) {
-      displayed = Object.keys(data).filter(key => !hidden.includes(key));
+      displayed = pageData.map(d => d['@rid']);
     } else {
       displayed = [];
     }
@@ -175,6 +193,55 @@ class DataView extends Component {
 
     displayed.push(...hidden);
     this.setState({ displayed, hidden: [] });
+  }
+
+  /**
+   * Handles subsequent pagination call
+   */
+  handleSubsequentPagination() {
+    const { next } = this.state;
+
+    if (next) {
+      next().then((nextData) => {
+        const {
+          data,
+          allProps,
+          schema,
+          filteredSearch,
+        } = this.state;
+        const cycled = jc.retrocycle(nextData.result);
+        let newColumns = allProps;
+        cycled.forEach((ontologyTerm) => {
+          newColumns = api.collectOntologyProps(ontologyTerm, allProps, schema);
+          data[ontologyTerm['@rid']] = ontologyTerm;
+        });
+
+        let route = '/ontologies';
+        if (filteredSearch['@class']) {
+          route = schema[filteredSearch['@class']].route;
+        }
+
+        let newNext = null;
+        let moreResults = false;
+        const limit = filteredSearch.limit || DEFAULT_LIMIT;
+        const lastSkip = filteredSearch.skip || limit;
+        if (cycled.length >= limit) {
+          filteredSearch.skip = lastSkip + limit;
+          newNext = () => api.get(`${route}?${qs.stringify(filteredSearch)}&neighbors=3`);
+          moreResults = true;
+        }
+        this.setState({
+          data,
+          allProps: newColumns,
+          next: newNext,
+          filteredSearch,
+          moreResults,
+          completedNext: true,
+        });
+      });
+    }
+    this.setState({ next: null, moreResults: false, completedNext: false });
+    return next;
   }
 
   /**
@@ -208,7 +275,7 @@ class DataView extends Component {
         displayed: [],
         hidden: [],
         selectedId: null,
-        allColumns: [],
+        allProps: [],
       }, this.componentDidMount);
     }
   }
@@ -224,15 +291,20 @@ class DataView extends Component {
    * Updates data and opens detail drawer for the specified node.
    * @param {Object} node - Specified node.
    * @param {boolean} open - flag to open drawer, or to just update.
+   * @param {boolean} edge - flag to indicate edge record.
    */
-  async handleDetailDrawerOpen(node, open) {
+  async handleDetailDrawerOpen(node, open, edge) {
     const { data, detail } = this.state;
     if (!open && !detail) return;
-    if (!data[node.data['@rid']]) {
-      const response = await api.get(`/ontologies/${node.data['@rid'].slice(1)}?neighbors=3`);
-      data[node.data['@rid']] = jc.retrocycle(response.result);
+    if (edge) {
+      this.setState({ detail: node.data, detailEdge: true });
+    } else {
+      if (!data[node.data['@rid']]) {
+        const response = await api.get(`/ontologies/${node.data['@rid'].slice(1)}?neighbors=3`);
+        data[node.data['@rid']] = jc.retrocycle(response.result);
+      }
+      this.setState({ detail: data[node.data['@rid']], detailEdge: false });
     }
-    this.setState({ detail: node.data['@rid'] });
   }
 
   /**
@@ -248,11 +320,20 @@ class DataView extends Component {
    */
   handleTableRedirect() {
     const { history } = this.props;
-    this.setState({ detail: '' });
+    this.setState({ detail: null });
     history.push({
       pathname: '/data/table',
       search: history.location.search,
     });
+  }
+
+  /**
+   * Updates column list with field keys from new node.
+   * @param {Object} node - newly added object.
+   */
+  handleNewColumns(node) {
+    const { allProps, schema } = this.state;
+    this.setState({ allProps: api.collectOntologyProps(node, allProps, schema) });
   }
 
   render() {
@@ -261,9 +342,14 @@ class DataView extends Component {
       data,
       displayed,
       hidden,
-      allColumns,
+      allProps,
       detail,
       schema,
+      moreResults,
+      filteredSearch,
+      edges,
+      detailEdge,
+      completedNext,
     } = this.state;
 
     const {
@@ -286,10 +372,11 @@ class DataView extends Component {
       >
         <NodeDetailComponent
           variant="graph"
-          node={data[detail]}
+          node={detail}
           handleNodeEditStart={this.handleNodeEditStart}
           handleNewQuery={this.handleNewQuery}
           handleClose={this.handleDetailDrawerClose}
+          detailEdge={detailEdge}
         >
           <IconButton onClick={this.handleDetailDrawerClose}>
             <CloseIcon color="action" />
@@ -308,8 +395,11 @@ class DataView extends Component {
         handleDetailDrawerClose={this.handleDetailDrawerClose}
         handleTableRedirect={this.handleTableRedirect}
         schema={schema}
+        edges={edges}
         detail={detail}
-        allColumns={allColumns}
+        allProps={allProps}
+        filteredSearch={filteredSearch}
+        handleNewColumns={this.handleNewColumns}
       />
     );
     const TableWithProps = () => (
@@ -320,13 +410,16 @@ class DataView extends Component {
         handleCheckbox={this.handleCheckbox}
         displayed={displayed}
         hidden={hidden}
-        allColumns={allColumns}
+        allProps={allProps}
+        moreResults={moreResults}
+        completedNext={completedNext}
         handleCheckAll={this.handleCheckAll}
         handleNodeEditStart={this.handleNodeEditStart}
         handleHideSelected={this.handleHideSelected}
         handleShowAllNodes={this.handleShowAllNodes}
         handleNewQuery={this.handleNewQuery}
         handleGraphRedirect={this.handleGraphRedirect}
+        handleSubsequentPagination={this.handleSubsequentPagination}
       />
     );
     return (
@@ -334,7 +427,7 @@ class DataView extends Component {
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           open={Object.keys(data).length === 0}
-          onClose={history.goBack}
+          onClose={() => history.push('/query')}
           autoHideDuration={3000}
           message={(
             <span>
@@ -342,7 +435,7 @@ class DataView extends Component {
             </span>
           )}
           action={(
-            <Button color="secondary" onClick={history.goBack}>
+            <Button color="secondary" onClick={() => history.push('/query')}>
               Ok
             </Button>
           )}
@@ -371,12 +464,14 @@ class DataView extends Component {
   }
 }
 
-/**
- * @param {Object} history - Application routing history object.
- * @param {Object} classes - Classes provided by the @material-ui withStyles function
- */
 DataView.propTypes = {
+  /**
+   * @param {Object} history - Application routing history object.
+   */
   history: PropTypes.object.isRequired,
+  /**
+   * @param {Object} classes - Classes provided by the @material-ui withStyles function
+   */
   classes: PropTypes.object.isRequired,
 };
 

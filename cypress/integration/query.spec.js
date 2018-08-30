@@ -16,7 +16,6 @@ describe('Query Page Test', () => {
 
   it('AutoSearch valid input', () => {
     cy.get('input[type=text]').type('angiosarcoma');
-    cy.wait(700);
     cy.get('div.droptions ul li').each(($li) => {
       cy.wrap($li).contains('angiosarcoma');
     });
@@ -35,6 +34,7 @@ describe('Query Page Test', () => {
     cy.get('input[type=text]').type('AAAAAAAAAAAAAAAAAAAAAA');
     cy.contains('No Results');
     cy.get('#search-btn').click();
+    cy.wait(6500);
     cy.url().should('includes', '/query');
   });
 
@@ -51,7 +51,7 @@ describe('Query Page Test', () => {
     cy.get('textarea[name=sourceIdVersion]').type('!something');
     cy.get('input[name=limit]').type('100');
     cy.get('#search-button').click();
-    cy.url().should('includes', '/table?activeOnly=true&limit=100&longName=%21nothing%3F%23%29%24%28%23%24%25&name=pneumonitis&source=%2315%3A0&sourceId=ncit%3Ac113159&sourceIdVersion=%21something');
+    cy.url().should('includes', '/table?sourceId=ncit%3Ac113159&source=%2315%3A0&sourceIdVersion=!something&name=pneumonitis&longName=!nothing%3F%23)%24(%23%24%25&limit=100&activeOnly=true');
   });
 
   it('Other classes', () => {

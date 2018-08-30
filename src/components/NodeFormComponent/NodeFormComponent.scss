@@ -6,127 +6,212 @@ $mediumBreakpoint: 500px;
     overflow: auto;
     height: 100%;
     width: 100%;
-    display: flex;
-    flex-direction: column;
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    div.form-header {
-        display: flex;
-        .form-title {
-            padding: 8px;
-            height: 48px;
-        }
-        button {
-            float: right;
-            margin: auto 1em auto auto;
-        }
-    }
-    form {
+    .form-grid {
         flex-grow: 1;
-        width: 100%;
+        width: calc(80vw + 32px);
+        margin: 32px auto;
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-column-gap: 8px;
-        grid-template-rows: 1fr;
+        grid-template-columns: 1fr;
+        grid-row-gap: 1rem;
+        grid-template-rows: auto 1fr auto;
         @media (max-width: $breakpoint) {
-            grid-template-columns: 1fr;
+            grid-template-rows: auto auto auto auto;
+            grid-template-columns: 100%;
         }
-        .param-section {
-            padding: 20px;
-            padding-bottom: 40px;
-            flex-grow: 1;
-            .class-select {
-                margin-top: 12px;
+        .form-header {
+            grid-column-start: 1;
+            grid-column-end: 3;
+            @media (max-width: $breakpoint) {
+                grid-column-end: 2;
+            }
+            display: flex;
+            justify-items: center;
+            padding: 16px;
+            .form-cancel-btn {
+                display: flex;
+                justify-items: center;
+                margin: auto 0 auto auto;
+                button {
+                    margin: auto 0;
+                }
+            }
+            .form-title {
+                font-weight: 300;
             }
         }
-        .input-wrapper {
+        .flexbox {
             display: flex;
-            width: inherit;
-            .text-input {
-                flex: 1;
-            }
-        }
-        .relationship-dir-type {
-            height: 48px;
-            display: flex;
-            @media (max-width: $mediumBreakpoint) {
-                width: 100%;
-            }
-        }
-        .type-select {
-            min-width: 88px;
-            text-align: left;
-            flex: 1;
-        }
-        .search-wrap {
-            flex-grow: 1;
-            display: flex;
+            position: relative;
             width: 100%;
-            .autosearch-wrapper {
-                margin-top: 16px;
-            }
-        }
-        .relationship-add-wrapper {
-            @media (max-width: $mediumBreakpoint) {
+            @media (max-width: $breakpoint) {
                 flex-direction: column;
-                width: 100%;
+            }
+            .param-section {
+                flex: 0 1 50%;
+                padding: 20px;
+                padding-bottom: 40px;
+                max-height: 100%;
+                box-sizing: border-box;
+                .class-select {
+                    margin-top: 12px;
+                }
+            }
+            .forms-lists {
+                position: absolute;
+                left: 50%;
+                top: 0;
+                bottom: 0;
+                right: 0;
+                overflow: auto;
+                display: flex;
+                flex-direction: column;
+                @media (max-width: $breakpoint) {
+                    position: relative;
+                    left: unset;
+                    margin-top: 8px;
+                }
+                .subsets-wrapper {
+                    padding: 24px;
+                    margin-bottom: 8px;
+                    .subsets-list {
+                        .subset-chip {
+                            margin: 3px;
+                        }
+                        .deleted-chip {
+                            background-color: lighten($md-warn, 25%);
+                        }
+                        .deleted-chip:focus {
+                            background-color: lighten($md-warn, 22%);
+                        }
+                    }
+                }
+                .relationships-wrapper {
+                    padding: 24px;
+                    margin-bottom: 8px;
+                    display: flex;
+                    flex-direction: column;
+                    .form-table {
+                        .search-wrap {
+                            flex-grow: 1;
+                            display: flex;
+                            width: 100%;
+                            .autosearch-wrapper {
+                                transform: translate(0, 18px);
+                            }
+                        }
+                        .form-table-header {
+                            tr th {
+                                background-color: $background-light;
+                                border-bottom: solid 1px rgba(0, 0, 0, 0.34);
+                            }
+                        }
+                        .relationship-dir-type {
+                            display: flex;
+                            height: 48px;
+                            button {
+                                margin: auto;
+                                margin-right: 8px;
+                                svg {
+                                    transition: transform 0.1s;
+                                }
+                            }
+                            @media (max-width: $mediumBreakpoint) {
+                                width: 100%;
+                            }
+                        }
+                        tr:nth-child(even) {
+                            background: #e8e8e8;
+                        }
+                        tr,
+                        th {
+                            position: sticky;
+                            top: 0;
+                        }
+                        tr.deleted {
+                            td {
+                                background-color: lighten($md-warn, 25%);
+                                position: relative;
+                            }
+                            td:before {
+                                content: ' ';
+                                position: absolute;
+                                top: 50%;
+                                left: 0;
+                                width: 100%;
+                                border-bottom: 1px solid $md-warn;
+                            }
+                        }
+                    }
+                }
             }
         }
-        .submit-button {
-            position: fixed;
-            width: 200px;
-            right: 1%;
-            bottom: 1%;
+        .form-btns {
+            grid-column-start: 1;
+            grid-column-end: 3;
+            display: flex;
+            padding: 16px;
+            @media (max-width: $breakpoint) {
+                grid-column-end:2;
+            }
             button {
-                width: 100%;
+                display: flex;
+                margin: auto 0;
             }
         }
-        .delete-button {
-            position: fixed;
-            width: 200px;
-            left: 1%;
-            bottom: 1%;
-        }
     }
 }
 
-.relationship-in {
-    transform: rotate(180deg);
-    animation: flipr 0.1s linear;
-}
-
-.relationship-out {
-    animation: flip 0.1s linear;
-}
-
-.relationships-list {
-    max-height: 900px;
-    overflow: auto;
-}
-
-.relationship-detail {
-    li {
-        padding-left: 48px;
+.notification-drawer {
+    display: flex;
+    width: 100%;
+    .form-linear-progress {
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+    }
+    button {
+        color: white;
+        margin-left: 8px;
     }
 }
 
-@keyframes flip {
-    from {
-        transform: rotate(180deg);
-    }
-    to {
-        transform: rotate(0);
+.input-wrapper {
+    display: flex;
+    width: inherit;
+    .text-input {
+        flex: 1;
     }
 }
 
-@keyframes flipr {
-    from {
-        transform: rotate(0);
+#submit-btn {
+    margin-left: auto;
+    flex-shrink: 1;
+}
+
+#delete-btn {
+    margin-right: auto;
+    flex-shrink: 1;
+}
+
+#relationship-add {
+    background-color: $background-light;
+    position: sticky;
+    bottom: 0;
+    td {
+        position: sticky;
+        bottom: 0;
+        padding-bottom: 24px;
+        background-color: $background-light;
+        border: none;
+        height: 48px;
     }
-    to {
+    .relationship-in {
         transform: rotate(180deg);
     }
 }

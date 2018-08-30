@@ -1,6 +1,14 @@
+
+/**
+ * @module /components/DownloadFileComponent
+ */
 import React from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * Wrapper component to enable downloading of content.
+ * @param {Object} props - component properties.
+ */
 function DownloadFileComponent(props) {
   const {
     mediaType,
@@ -12,6 +20,9 @@ function DownloadFileComponent(props) {
     style,
   } = props;
 
+  /**
+   * Start download method.
+   */
   const onClick = () => {
     const file = rawFileContent();
     if (!file) return;
@@ -47,21 +58,34 @@ function DownloadFileComponent(props) {
   );
 }
 
-/**
- * @param {string} mediaType - File media type.
- * @param {function} rawFileContent - Raw file data.
- * @param {string} fileName - Filename of file to be downloaded.
- * @param {string} id - CSS identifier for styling.
- * @param {string} className - CSS class name for styling.
- * @param {object} style - Object of individual CSS properties for styling.
- */
 DownloadFileComponent.propTypes = {
+  /**
+   * @param {string} mediaType - File media type.
+   */
   mediaType: PropTypes.string,
+  /**
+   * @param {function} rawFileContent - Raw file data.
+   */
   rawFileContent: PropTypes.func,
+  /**
+   * @param {string} fileName - Filename of file to be downloaded.
+   */
   fileName: PropTypes.string,
+  /**
+   * @param {Node} children - Children components to be rendered beneath wrapper.
+   */
   children: PropTypes.node.isRequired,
+  /**
+   * @param {string} id - CSS identifier for styling.
+   */
   id: PropTypes.string,
+  /**
+   * @param {string} className - CSS class name for styling.
+   */
   className: PropTypes.string,
+  /**
+   * @param {object} style - Object of individual CSS properties for styling.
+   */
   style: PropTypes.object,
 };
 

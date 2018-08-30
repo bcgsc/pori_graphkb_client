@@ -31,6 +31,9 @@ $toolbar-height: 64px;
         background-color: rgba($md-secondary-light, 0.5);
         margin: auto 24px auto 8px,
     }
+    button {
+        margin: 8px;
+    }
 }
 
 .transition-left {
@@ -129,14 +132,33 @@ $toolbar-height: 64px;
     padding: 24px;
 }
 
+.advanced-title {
+    display: flex;
+    align-items: center;
+    svg {
+        margin-left: 8px;
+        cursor: pointer;
+    }
+    button {
+        margin-left: auto;
+        svg {
+            margin: 0;
+        }
+    }
+}
+
 .legend-wrapper {
     height: auto;
-    position: fixed;
-    top: calc(#{$banner-height} + 16px);
+    position: absolute;
+    top: 16px;
     left: 16px;
     overflow: auto;
     max-width: 25%;
     max-height: calc(100vh - 32px - #{$banner-height} - #{$toolbar-height});
+    padding: 2px;
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-row-gap: 8px;
     @media (max-width: 768px) {
         max-width: unset;
     }

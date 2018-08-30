@@ -34,4 +34,6 @@ testem.log
 Thumbs.db
 
 *.css
-config.js
+src/index.css
+.eslintrc.json
+jsdoc/*

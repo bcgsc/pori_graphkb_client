@@ -1,3 +1,7 @@
+/**
+ * @module /components/NodeDetailComponent
+ */
+
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './NodeDetailComponent.css';
@@ -13,20 +17,19 @@ import {
   ExpansionPanel,
   ExpansionPanelDetails,
   ExpansionPanelSummary,
-  ListItemIcon,
   Tooltip,
 } from '@material-ui/core';
 import BookmarkIcon from '@material-ui/icons/Bookmark';
 import EditIcon from '@material-ui/icons/Edit';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import SearchIcon from '@material-ui/icons/Search';
 import api from '../../services/api';
 import util from '../../services/util';
 
+const MAX_NESTED_DEPTH = 2;
+
 /**
- * Component to view details of a selected node.
- * @param {Object} props - Component properties passed in by parent.
- * @param {Object} props.node - Node object selected for detail.
+ * Component to view details of a selected node. Can be adapted to display in
+ * both the table view and the graph view.
  */
 class NodeDetailComponent extends Component {
   constructor(props) {
@@ -46,13 +49,8 @@ class NodeDetailComponent extends Component {
   async componentDidMount() {
     const schema = await api.getSchema();
     const { V } = schema;
-    const ontologyEdges = util.getEdges(schema);
     // Accounts for in and out edgetypes.
-    const expandedEdgeTypes = ontologyEdges ? ontologyEdges.reduce((r, e) => {
-      r.push(`in_${e}`);
-      r.push(`out_${e}`);
-      return r;
-    }, []) : [];
+    const expandedEdgeTypes = util.expandEdges(api.getEdges(schema));
     this.setState({
       V,
       expandedEdgeTypes,
@@ -87,7 +85,7 @@ class NodeDetailComponent extends Component {
       node,
       children,
       variant,
-      handleNewQuery,
+      detailEdge,
     } = this.props;
 
     if (!V) return null;
@@ -95,23 +93,27 @@ class NodeDetailComponent extends Component {
     Object.keys(V.properties).forEach((key) => { if (key !== '@class') delete filteredNode[key]; });
 
     /**
-   * Formats node properties based on type.
-   * @param {string} key - node property key.
-   * @param {any} value - node property value.
-   */
+     * Formats node properties based on type.
+     * @param {string} key - node property key.
+     * @param {any} value - node property value.
+     */
     const formatProperty = (key, value, prefix) => {
       const id = `${prefix ? `${prefix}.` : ''}${key}`;
-      /* Checks if value is falsy, if it is an edge property, or if the depth
-        of nested values is exceeded. (2) */
+      /**
+       * Checks if value is falsy, if it is an edge property, or if the depth
+       * of nested values is exceeded (2).
+       */
       if (
         !value
         || expandedEdgeTypes.find(edge => edge === key)
         || value.length === 0
-        || (id.match(/\./g) || []).length > 2
+        || (id.match(/\./g) || []).length > MAX_NESTED_DEPTH
       ) {
         return null;
       }
-      const isOpen = nestedExpanded.includes(id);
+
+
+      /*  PRIMITIVE PROPERTY  */
       if (typeof value !== 'object') {
         return (
           <React.Fragment key={id}>
@@ -124,22 +126,21 @@ class NodeDetailComponent extends Component {
           </React.Fragment>
         );
       }
+
+      const isOpen = nestedExpanded.includes(id);
+
       // TODO: handle case where field is array of objects that aren't edges.
+      /*  ARRAY PROPERTY   */
       if (Array.isArray(value)) {
-        if (!((id.match(/\./g) || []).length === 2)) {
+        if (!((id.match(/\./g) || []).length === MAX_NESTED_DEPTH)) {
           const preview = value.join(', ');
           const content = (
             <List style={{ paddingTop: '0' }}>
-              {value.map(item => (
+              {value.sort((a, b) => a > b ? 1 : -1).map(item => (
                 <ListItem
                   dense
                   key={`${id}${item}`}
-                  onClick={() => handleNewQuery(`subsets=${item}`)}
-                  className="list-icon"
                 >
-                  <ListItemIcon>
-                    <SearchIcon />
-                  </ListItemIcon>
                   <ListItemText primary={item} />
                 </ListItem>
               ))}
@@ -164,7 +165,7 @@ class NodeDetailComponent extends Component {
                     {`${util.antiCamelCase(key)}:`}
                   </Typography>
                   {!isOpen
-                    ? (
+                    && (
                       <Typography
                         variant="subheading"
                         color="textSecondary"
@@ -172,17 +173,17 @@ class NodeDetailComponent extends Component {
                       >
                         {preview}
                       </Typography>
-                    ) : null}
+                    )}
                 </div>
                 {!isOpen
-                  ? (
+                  && (
                     <div className="length-box">
                       <Typography
                         variant="subheading"
                       >
                         {value.length}
                       </Typography>
-                    </div>) : null}
+                    </div>)}
               </ExpansionPanelSummary>
               <ExpansionPanelDetails style={{ display: 'block' }}>
                 {content}
@@ -190,25 +191,10 @@ class NodeDetailComponent extends Component {
             </ExpansionPanel>
           );
         }
-        return (
-          <React.Fragment key={id}>
-            <Typography variant="subheading">
-              {`${util.antiCamelCase(key)}:`}
-            </Typography>
-            <Typography paragraph variant="caption">
-              {((id.match(/\./g) || []).length === 2 && value.length > 1)
-                ? (
-                  <span>
-                    <br />
-                    . . .
-                  </span>
-                ) : null}
-              {value[0].toString()}
-            </Typography>
-          </React.Fragment>
-        );
       }
 
+
+      /*  OBJECT PROPERTY   */
       const nestedObject = Object.assign({}, value);
       Object.keys(V.properties).forEach((vk) => {
         if (vk !== '@class') delete nestedObject[vk];
@@ -246,7 +232,7 @@ class NodeDetailComponent extends Component {
               {`${util.antiCamelCase(key)}:`}
             </Typography>
             {!isOpen
-              ? (
+              && (
                 <Typography
                   variant="subheading"
                   color="textSecondary"
@@ -254,7 +240,7 @@ class NodeDetailComponent extends Component {
                 >
                   {preview}
                 </Typography>
-              ) : null}
+              )}
             <Tooltip title="This refers to another database record">
               <div className="node-icon length-box">
                 <BookmarkIcon />
@@ -271,23 +257,23 @@ class NodeDetailComponent extends Component {
     /**
      * Formats and lists relationship (edge) fields.
      */
-    const listEdges = (key) => {
+    const listEdge = (key) => {
       const label = util.getEdgeLabel(key);
       const isOpen = nestedExpanded.includes(label);
       if (filteredNode[key] && filteredNode[key].length !== 0) {
-        const preview = [];
+        const previews = [];
         const content = filteredNode[key].reduce((r, edge) => {
           const id = `${label}.${edge['@rid']}`;
           const relatedNode = edge.in && edge.in['@rid'] === node['@rid'] ? edge.out : edge.in;
-          if (relatedNode['@class'] !== 'Statement') {
+          if (relatedNode['@class'] !== 'Statement') { // Statement flag
             const edgeOpen = nestedExpanded.includes(id);
-            preview.push(util.getPreview(relatedNode));
+            previews.push(util.getPreview(relatedNode));
             r.push((
               <ExpansionPanel
                 key={id}
                 expanded={edgeOpen}
                 onChange={() => this.handleNestedToggle(id)}
-                className="nested-container"
+                className="nested-container detail-edge"
               >
                 <ExpansionPanelSummary
                   expandIcon={<KeyboardArrowDownIcon />}
@@ -300,16 +286,6 @@ class NodeDetailComponent extends Component {
                     >
                       {util.getPreview(relatedNode)}
                     </Typography>
-                    {!edgeOpen && variant === 'table'
-                      ? (
-                        <Typography
-                          variant="subheading"
-                          color="textSecondary"
-                          className="preview"
-                        >
-                          {relatedNode.name || ''}
-                        </Typography>
-                      ) : null}
                   </div>
                   <Tooltip title="This refers to another database record">
                     <div className="node-icon length-box">
@@ -322,8 +298,7 @@ class NodeDetailComponent extends Component {
                   {formatProperty('sourceId', relatedNode.sourceId, id)}
                   {formatProperty('name', relatedNode.name, id)}
                   {edge.source && edge.source.name
-                    ? formatProperty('source', edge.source.name, id)
-                    : null}
+                    && formatProperty('source', edge.source.name, id)}
                 </ExpansionPanelDetails>
               </ExpansionPanel>
             ));
@@ -337,6 +312,7 @@ class NodeDetailComponent extends Component {
             expanded={isOpen}
             onChange={() => this.handleNestedToggle(label)}
             className="nested-container"
+            id={label}
           >
             <ExpansionPanelSummary
               expandIcon={<KeyboardArrowDownIcon />}
@@ -348,25 +324,24 @@ class NodeDetailComponent extends Component {
               >
                 {`${label}:`}
               </Typography>
-              {!isOpen
-                ? (
-                  <React.Fragment>
+              {!isOpen && (
+                <React.Fragment>
+                  <Typography
+                    variant="subheading"
+                    color="textSecondary"
+                    className="preview"
+                  >
+                    {previews.join(', ')}
+                  </Typography>
+                  <div className="length-box">
                     <Typography
                       variant="subheading"
-                      color="textSecondary"
-                      className="preview"
                     >
-                      {preview.join(', ')}
+                      {filteredNode[key].length}
                     </Typography>
-                    <div className="length-box">
-                      <Typography
-                        variant="subheading"
-                      >
-                        {filteredNode[key].length}
-                      </Typography>
-                    </div>
-                  </React.Fragment>
-                ) : null}
+                  </div>
+                </React.Fragment>
+              )}
             </ExpansionPanelSummary>
             <ExpansionPanelDetails style={{ display: 'block' }}>
               {content}
@@ -377,7 +352,7 @@ class NodeDetailComponent extends Component {
     };
 
     const relationships = expandedEdgeTypes.reduce((r, e) => {
-      const rendered = listEdges(e);
+      const rendered = listEdge(e);
       if (rendered) r.push(rendered);
       return r;
     }, []);
@@ -388,11 +363,13 @@ class NodeDetailComponent extends Component {
       <Card style={{ height: '100%', overflowY: 'auto' }}>
         <div className="node-edit-btn">
           {children}
-          <IconButton
-            onClick={() => handleNodeEditStart(node['@rid'], node['@class'])}
-          >
-            <EditIcon />
-          </IconButton>
+          {!detailEdge ? (
+            <IconButton
+              onClick={() => handleNodeEditStart(node['@rid'], node['@class'])}
+            >
+              <EditIcon />
+            </IconButton>
+          ) : null}
         </div>
         <div className={`node-properties ${className}`}>
           <Card className="properties">
@@ -401,20 +378,25 @@ class NodeDetailComponent extends Component {
                 Properties:
                 <Divider />
               </Typography>
-              {Object.keys(filteredNode).map(key => formatProperty(key, filteredNode[key], ''))}
+              {Object.keys(filteredNode)
+                .map(key => formatProperty(key, filteredNode[key], ''))}
             </CardContent>
           </Card>
-          <Card className="properties">
-            <CardContent>
-              <Typography paragraph variant="title" component="h1">
-                Relationships:
-                <Divider />
-              </Typography>
-              {relationships.length !== 0 ? relationships : (
-                <Typography variant="caption" style={{ margin: 'auto' }}>No relationships</Typography>
-              )}
-            </CardContent>
-          </Card>
+          {(variant !== 'graph' || relationships.length !== 0) && (
+            <Card className="properties">
+              <CardContent>
+                <Typography paragraph variant="title" component="h1">
+                  Relationships:
+                  <Divider />
+                </Typography>
+                {relationships.length !== 0 ? relationships : (
+                  <Typography variant="caption" style={{ margin: 'auto' }}>
+                    No relationships
+                  </Typography>
+                )}
+              </CardContent>
+            </Card>
+          )}
         </div>
       </Card>
     );
@@ -422,17 +404,36 @@ class NodeDetailComponent extends Component {
 }
 
 NodeDetailComponent.propTypes = {
+  /**
+   * @param {Object} node - node to be displayed.
+   */
   node: PropTypes.object,
-  handleNodeEditStart: PropTypes.func.isRequired,
-  handleNewQuery: PropTypes.func.isRequired,
+  /**
+   * @param {function} handleNodeEditStart - function to handle request to edit
+   * selected node
+   */
+  handleNodeEditStart: PropTypes.func,
+  /**
+   * @param {Node} children - Additional buttons to render in the sidebar of
+   * the component.
+   */
   children: PropTypes.node,
+  /**
+   * @param {string} variant - variant indicator for component.
+   */
   variant: PropTypes.string,
+  /**
+   * @param {boolean} detailEdge - specifies if node is an edge.
+   */
+  detailEdge: PropTypes.bool,
 };
 
 NodeDetailComponent.defaultProps = {
   node: null,
   children: null,
   variant: 'table',
+  detailEdge: false,
+  handleNodeEditStart: null,
 };
 
 export default NodeDetailComponent;

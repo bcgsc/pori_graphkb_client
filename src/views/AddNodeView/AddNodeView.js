@@ -1,6 +1,9 @@
+/**
+ * @module /views/AddNodeView
+ */
+
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
-import './AddNodeView.css';
+import PropTypes from 'prop-types';
 import NodeFormComponent from '../../components/NodeFormComponent/NodeFormComponent';
 
 /**
@@ -11,31 +14,33 @@ import NodeFormComponent from '../../components/NodeFormComponent/NodeFormCompon
 class AddNodeView extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      completedFlag: false,
-    };
 
-    this.handleFinishAdd = this.handleFinishAdd.bind(this);
+    this.handleNodeFinish = this.handleNodeFinish.bind(this);
   }
 
-  handleFinishAdd() {
-    this.setState({ completedFlag: true });
+  /**
+   * Triggered when the user hits the submit button.
+   */
+  handleNodeFinish() {
+    const { history } = this.props;
+    history.push('/query');
   }
 
   render() {
-    const {
-      completedFlag,
-    } = this.state;
-
-    if (completedFlag) return <Redirect push to="/query" />;
-
     return (
       <NodeFormComponent
         variant="add"
-        handleNodeFinishEdit={this.handleFinishAdd}
+        handleNodeFinish={this.handleNodeFinish}
       />
     );
   }
 }
+
+AddNodeView.propTypes = {
+  /**
+   * @param {Object} history - history state object.
+   */
+  history: PropTypes.object.isRequired,
+};
 
 export default AddNodeView;

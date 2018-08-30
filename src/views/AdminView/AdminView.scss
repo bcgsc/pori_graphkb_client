@@ -63,10 +63,11 @@
             }
         }
     }
-    tbody {
-        tr:nth-child(even) {
-            background: #e8e8e8;
-        }
+}
+
+tbody {
+    tr:nth-child(odd) {
+        background: #e8e8e8;
     }
 }
 
@@ -233,4 +234,8 @@ div {
             }
         }
     }
+}
+
+.new-usergroup-dialog {
+    min-width: 50%;
 }

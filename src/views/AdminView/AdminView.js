@@ -348,18 +348,26 @@ class AdminView extends Component {
     const rid = (temp['@rid'] || '').slice(1);
     const { userGroups } = this.state;
 
-    if (userGroups.map(u => u.name.toLowerCase())
-      .includes(temp.name.toLowerCase()) || !temp.name
+    if (
+      (userGroups
+        .map(u => u.name.toLowerCase())
+        .includes(temp.name.toLowerCase())
+      || !temp.name)
+      && isNewUserGroup
     ) {
       return;
     }
+    const tempPermissions = {};
+    Object.keys(temp.permissions)
+      .filter(pKey => pKey !== '@type' && pKey !== '@class')
+      .forEach((pKey) => {
+        const reducer = (accumulator, curr, i) => accumulator + curr * (2 ** i);
+        tempPermissions[pKey] = temp.permissions[pKey].reduce(reducer);
+      });
 
-    Object.keys(temp.permissions).forEach((pKey) => {
-      const reducer = (accumulator, curr, i) => accumulator + curr * (2 ** i);
-      temp.permissions[pKey] = temp.permissions[pKey].reduce(reducer);
-    });
+    const payload = _.omit(temp, ['@rid', '@type', 'createdBy', 'createdAt', 'uuid', '@class', 'permissions']);
+    payload.permissions = tempPermissions;
 
-    const payload = _.omit(temp, ['@rid', '@type', 'createdBy', 'createdAt', 'uuid', '@class']);
     await f(rid, payload);
     const response = await api.get('/usergroups');
     const newUserGroups = jc.retrocycle(response).result;
@@ -378,7 +386,7 @@ class AdminView extends Component {
         ? newUserGroup
         : null,
       userGroups: newUserGroups,
-    }, this.handleNewUserGroupDialog);
+    }, isNewUserGroup ? this.handleNewUserGroupDialog : null);
   }
 
   /**
@@ -419,6 +427,12 @@ class AdminView extends Component {
             this.setState({ date: new Date() });
           }, 1000,
         ),
+      });
+    }
+    if (userDialogOpen) {
+      this.setState({
+        newUserName: '',
+        newUserGroups: [],
       });
     }
     this.setState({ userDialogOpen: !userDialogOpen });
@@ -690,7 +704,7 @@ class AdminView extends Component {
         open={newUserGroupDialog}
         onClose={this.handleNewUserGroupDialog}
         classes={{
-          paper: '',
+          paper: 'new-usergroup-dialog',
         }}
         maxWidth={false}
       >

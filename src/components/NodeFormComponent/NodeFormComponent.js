@@ -309,8 +309,8 @@ class NodeFormComponent extends Component {
       const {
         name,
         type,
-        defaultValue,
       } = prop;
+      const defaultValue = prop.default || '';
       if (!form[name]) {
         switch (type) {
           case 'embeddedset':

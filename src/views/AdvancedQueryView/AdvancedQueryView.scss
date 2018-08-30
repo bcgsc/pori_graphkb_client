@@ -1,19 +1,22 @@
 .adv-wrapper {
-    text-align: center;
-    margin: auto;
-    width: 80vw;
-    vertical-align: middle;
-    margin-bottom: 16px;
-    padding: 16px;
-    margin-top: 16px;
-    #adv-title {
-        margin: 16px;
+    margin: 32px auto;
+    width: calc(80vw + 32px);
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-row-gap: 1rem;
+    .adv-header {
+        padding: 16px;
+        #adv-title {
+            font-weight: 300;
+            height: 37px;
+        }
     }
     #adv-nav-buttons {
         display: flex;
         justify-content: center;
-        a {
-            text-decoration: none;
+        padding: 16px;
+        button {
+            margin: auto 12px;
         }
     }
     .input-wrapper {
@@ -22,54 +25,6 @@
         .text-input {
             flex-grow: 1;
         }
-    }
-    .checkboxes {
-        flex-grow: 1;
-        margin: auto;
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-        grid-row-gap: 4px;
-    }
-    .related-checkboxes {
-        flex-grow: 1;
-        margin: auto;
-        min-width: 45vw;
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-        align-content: center;
-    }
-    .checkbox {
-        display: block;
-        text-align: left;
-    }
-    @media (max-width: 1550px) {
-        .checkboxes {
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-        }
-    }
-    @media (max-width: 1172px) {
-        .checkboxes {
-            grid-template-columns: 1fr 1fr 1fr;
-        }
-    }
-    @media (max-width: 720px) {
-        .checkboxes {
-            grid-template-columns: 1fr;
-        }
-        .related-checkboxes {
-            grid-template-columns: 1fr;
-        }
-    }
-    @media (max-width: 700px) {
-        .checkboxes {
-            grid-template-columns: 1fr 1fr;
-        }
-        .related-checkboxes {
-            grid-template-columns: 1fr 1fr;
-        }
-    }
-    button {
-        margin: 8px;
     }
     .link {
         text-decoration: none;

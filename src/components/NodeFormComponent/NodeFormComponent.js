@@ -309,8 +309,8 @@ class NodeFormComponent extends Component {
       const {
         name,
         type,
-        defaultValue,
       } = prop;
+      const defaultValue = prop.default || '';
       if (!form[name]) {
         switch (type) {
           case 'embeddedset':
@@ -713,15 +713,17 @@ class NodeFormComponent extends Component {
     /**
      * Formats model subsets into list form.
      */
-    const subsets = (form.subsets || []).map(s => (
-      <Chip
-        label={s}
-        deleteIcon={<CloseIcon />}
-        onDelete={() => this.handleSubsetDelete(s)}
-        key={s}
-        className="subset-chip"
-      />
-    ));
+    const subsets = (form.subsets || [])
+      .sort((a, b) => a > b ? 1 : -1)
+      .map(s => (
+        <Chip
+          label={s}
+          deleteIcon={<CloseIcon />}
+          onDelete={() => this.handleSubsetDelete(s)}
+          key={s}
+          className="subset-chip"
+        />
+      ));
 
     subsets.push(...deletedSubsets.map(s => (
       <Chip

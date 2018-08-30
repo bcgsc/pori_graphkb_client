@@ -14,7 +14,7 @@ $drawer-breakpoint: 768px;
         z-index: calc(#{$drawer-z-index} + 1);
         left: 0;
         .appbar-btn {
-            margin: auto 0;
+            margin: auto 4px;
             color: white;
             animation: fade-in(0.2s);
         }

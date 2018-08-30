@@ -138,12 +138,12 @@ class NodeDetailComponent extends Component {
           const content = (
             <List style={{ paddingTop: '0' }}>
               {value.map(item => (
-                <ListItem
-                  dense
-                  key={`${id}${item}`}
-                >
-                  <ListItemText primary={item} />
-                </ListItem>
+                <React.Fragment key={`${id}${item}`}>
+                  <ListItem dense>
+                    <ListItemText primary={item} />
+                  </ListItem>
+                  <Divider />
+                </React.Fragment>
               ))}
             </List>
           );

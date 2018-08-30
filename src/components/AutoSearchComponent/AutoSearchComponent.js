@@ -189,6 +189,7 @@ class AutoSearchComponent extends Component {
                     onChange,
                     name,
                     disabled,
+                    onKeyUp: this.refreshOptions,
                     onFocus: () => this.setState({ noRidFlag: false }),
                     onBlur: () => this.setState({ noRidFlag: !!(!lastRid && value) }),
                     style: {

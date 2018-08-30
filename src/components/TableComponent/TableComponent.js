@@ -549,7 +549,7 @@ class TableComponent extends Component {
             </TableHead>
             <TableBody>
               {pageData.map((n) => {
-                const isSelected = this.isSelected(n['@rid']);
+                const isSelected = displayed.includes(n['@rid']);
                 const active = toggle === n['@rid'];
                 const detail = active ? (
                   <TableRow>

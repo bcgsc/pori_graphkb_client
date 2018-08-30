@@ -32,6 +32,9 @@ $flip-duration: 0.15s;
                 border-bottom: 1px solid rgba(224, 224, 224, 1);
             }
         }
+        .selected-override {
+            background-color: rgba($md-secondary-light, 0.5);
+        }
     }
     .pag {
         position: absolute;
@@ -68,16 +71,12 @@ $flip-duration: 0.15s;
     }
 }
 
-.selected-override {
-    background-color: rgba(214, 219, 245, 0.7) !important;
-}
-
 .cursor-override {
     cursor: pointer;
 }
 
 .cursor-override:hover {
-    background-color: rgba(227, 230, 248, 0.4);
+    background-color: rgba($md-secondary-light, 0.1);
 }
 
 .column-dialog {

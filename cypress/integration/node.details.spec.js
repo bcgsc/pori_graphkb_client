@@ -56,13 +56,13 @@ describe('Node Detail ', () => {
   });
 
   it('Detail Page details & edge drop down lists', () => {
-    cy.visit('/ontology/36:10780');
+    cy.visit('/ontology/36:10750');
     // Gets length indicator
     cy.get('div.length-box h3:first').invoke('text').then((length) => {
       // Expands dropdown list
       cy.get('div.length-box h3:first').parent().parent().click();
       // Counts child containers and asserts same length.
-      cy.get('#hasAlias div div div div div.detail-edge')
+      cy.get('#AliasOf div div div div div.detail-edge')
         .should('have.length', length);
     });
   });

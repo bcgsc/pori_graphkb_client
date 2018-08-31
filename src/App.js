@@ -159,7 +159,7 @@ class App extends Component {
             </ListItemIcon>
             <ListItemText primary="Query" />
           </MenuItem>
-          <MenuItem onClick={() => history.push('/add')}>
+          <MenuItem onClick={() => this.handleSideBarNavigate('/add')}>
             <ListItemIcon>
               <AddIcon />
             </ListItemIcon>

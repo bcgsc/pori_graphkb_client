@@ -61,7 +61,7 @@ $drawer-breakpoint: 768px;
             button {
                 margin: auto;
                 margin-right: 8px;
-            }                
+            }
         }
     }
     .user-menu {
@@ -101,6 +101,7 @@ $drawer-breakpoint: 768px;
         width: $drawer-width;
         z-index: $drawer-z-index;
         transition: width #{$transition-speed};
+        animation: fade-in();
         @media (max-width: $drawer-breakpoint) {
             width: calc(100vw - 1px);
         }
@@ -110,5 +111,8 @@ $drawer-breakpoint: 768px;
         @media (max-width: $drawer-breakpoint) {
             width: 0;
         }
+    }
+    .no-drawer {
+        left: 0;
     }
 }

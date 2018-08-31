@@ -7,5 +7,9 @@ describe('Admin Page Test', () => {
     cy.url().should('includes', '/query');
   });
 
-  it('Query, add node, and logout buttons', () => {});
+  it('Open Admin Page', () => {
+    cy.get('div.user-dropdown').click();
+    cy.contains('Admin').click();
+    cy.url().includes('/admin');
+  });
 });

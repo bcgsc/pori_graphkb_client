@@ -189,10 +189,9 @@ class App extends Component {
               position="absolute"
               className={`banner ${drawerOpen ? 'drawer-shift' : ''}`}
             >
-              {!drawerOpen && (
+              {!drawerOpen && loggedIn && (
                 <IconButton
                   color="inherit"
-                  disabled={!loggedIn}
                   onClick={() => this.setState({ drawerOpen: true })}
                   className="appbar-btn"
                 >

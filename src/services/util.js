@@ -241,8 +241,8 @@ const getGraphOptions = () => {
  * @param {Object} data - graph data to be stored.
  */
 const loadGraphData = (search, data) => {
-  data.filteredSearch = search;
-  localStorage.setItem(GRAPH_OBJECTS_KEY, JSON.stringify(jc.decycle(data)));
+  const newData = Object.assign({ filteredSearch: search }, data);
+  localStorage.setItem(GRAPH_OBJECTS_KEY, JSON.stringify(jc.decycle(newData)));
 };
 
 /**
@@ -274,7 +274,7 @@ const loadColorProps = (newColumns, node, propsMap) => {
 
     // Nested prop condition
     if (prop.includes('.')) {
-      key = prop.split('.')[1];
+      ([, key] = prop.split('.'));
       obj = node[prop.split('.')[0]] || {};
     }
 
@@ -310,6 +310,7 @@ const loadColorProps = (newColumns, node, propsMap) => {
  * @param {Object} expandable - Expandable flags map.
  */
 const expanded = (expandedEdgeTypes, graphObjects, rid, expandable) => {
+  const newExpandable = Object.assign({}, expandable);
   let targetFlag = false;
   expandedEdgeTypes.forEach((e) => {
     if (graphObjects[rid][e]) {
@@ -323,8 +324,8 @@ const expanded = (expandedEdgeTypes, graphObjects, rid, expandable) => {
       });
     }
   });
-  expandable[rid] = targetFlag;
-  return expandable;
+  newExpandable[rid] = targetFlag;
+  return newExpandable;
 };
 
 /**

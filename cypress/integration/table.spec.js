@@ -71,6 +71,13 @@ describe('Table Test', () => {
     cy.get('table thead tr th:first input[type=checkbox]').click();
     cy.get('#ellipsis-menu').click();
     cy.contains('Hide Selected Rows (50)');
+    cy.get('table tbody tr').then((array) => {
+      cy.wrap(array).each((row, i) => {
+        if (i !== 0 && i !== array.length - 1) {
+          cy.wrap(row).should('have.css', 'background-color', 'rgba(160, 235, 216, 0.5)');
+        }
+      });
+    });
   });
 
   /**

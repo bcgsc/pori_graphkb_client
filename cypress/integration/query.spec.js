@@ -51,7 +51,17 @@ describe('Query Page Test', () => {
     cy.get('textarea[name=sourceIdVersion]').type('!something');
     cy.get('input[name=limit]').type('100');
     cy.get('#search-button').click();
-    cy.url().should('includes', '/table?sourceId=ncit%3Ac113159&source=%2315%3A0&sourceIdVersion=!something&name=pneumonitis&longName=!nothing%3F%23)%24(%23%24%25&limit=100&activeOnly=true');
+    [
+      '/table',
+      'sourceId=ncit%3Ac113159',
+      'source=%2315%3A0',
+      'sourceIdVersion=!something',
+      'name=pneumonitis',
+      'longName=!nothing%3F%23)%24(%23%24%25',
+      'limit=100',
+    ].forEach((val) => {
+      cy.url().should('includes', val);
+    });
   });
 
   it('Other classes', () => {

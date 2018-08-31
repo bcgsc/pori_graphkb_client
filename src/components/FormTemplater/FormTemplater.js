@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   ListItem,
   FormControl,
@@ -11,13 +12,17 @@ import {
   Tooltip,
 } from '@material-ui/core';
 import HelpIcon from '@material-ui/icons/Help';
-import AutoSearchComponent from '../components/AutoSearchComponent/AutoSearchComponent';
-import util from './util';
+import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
+import util from '../../services/util';
 
-export default class Templater {
-  constructor(schema, handleChange) {
-    this.schema = schema;
-    this.handleChange = handleChange;
+class FormTemplater extends Component {
+  /**
+   * Given a schema class object, find all other classes that inherit it.
+   */
+  getSubClasses(abstractClass) {
+    const { schema } = this.props;
+    return Object.values(schema)
+      .filter(kbClass => kbClass.inherits.includes(abstractClass));
   }
 
   /**
@@ -25,58 +30,9 @@ export default class Templater {
    * @param {Object} linkedClass - property object class
    */
   isAbstract(linkedClass) {
-    return Object.values(this.schema)
+    const { schema } = this.props;
+    return Object.values(schema)
       .some(kbClass => kbClass.inherits.includes(linkedClass));
-  }
-
-  /**
-   * Given a schema class object, find all other classes that inherit it.
-   */
-  getSubClasses(abstractClass) {
-    return Object.values(this.schema)
-      .filter(kbClass => kbClass.inherits.includes(abstractClass));
-  }
-
-  static initModel(model, kbClass) {
-    const newModel = Object.assign({}, model);
-    Object.values(kbClass).forEach((property) => {
-      const {
-        name,
-        type,
-        linkedClass,
-      } = property;
-      const defaultValue = property.default;
-      switch (type) {
-        case 'embeddedset':
-          newModel[name] = model[name] || [];
-          break;
-        case 'link':
-          newModel[name] = (model[name] || '').name || '';
-          newModel[`${name}.@rid`] = (model[name] || '')['@rid'] || '';
-          newModel[`${name}.sourceId`] = (model[name] || '').sourceId || '';
-          if (!linkedClass) {
-            newModel[`${name}.class`] = (model[name] || '')['@class'] || '';
-          }
-          break;
-        case 'integer' || 'long':
-          newModel[name] = model[name] || '';
-          break;
-        case 'boolean':
-          newModel[name] = model[name] !== undefined
-            ? model[name]
-            : (defaultValue || '').toString() === 'true';
-          break;
-        case 'embedded':
-          if (linkedClass && linkedClass.properties) {
-            newModel[name] = model[name] || this.initModel({}, property.linkedClass.properties);
-          }
-          break;
-        default:
-          newModel[name] = model[name] || '';
-          break;
-      }
-    });
-    return newModel;
   }
 
   /**
@@ -85,9 +41,15 @@ export default class Templater {
    * @param {Object} kbClass - Filtered schema object containing ONLY and ALL classes to be
    * rendered. (Schema.properties)
    */
-  generateFields(model, kbClass) {
-    const fields = {};
-    Object.values(kbClass).forEach((property) => {
+  render() {
+    const {
+      model,
+      kbClass,
+      handleChange,
+      excludedProps,
+    } = this.props;
+    const fields = [];
+    Object.values(kbClass || {}).forEach((property) => {
       const {
         name,
         type,
@@ -95,9 +57,10 @@ export default class Templater {
         linkedClass,
         description,
       } = property;
+      if (!excludedProps.includes(name)) { fields[name] = null; }
       // Radio group component for boolean types.
       if (type === 'boolean') {
-        fields[name] = (
+        fields.push(
           <ListItem className="input-wrapper" key={name}>
             <FormControl component="fieldset" required={mandatory}>
               <FormLabel>
@@ -105,7 +68,7 @@ export default class Templater {
               </FormLabel>
               <RadioGroup
                 name={name}
-                onChange={this.handleChange}
+                onChange={handleChange}
                 value={model[name].toString()}
                 style={{ flexDirection: 'row' }}
               >
@@ -113,7 +76,7 @@ export default class Templater {
                 <FormControlLabel value="false" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
-          </ListItem>
+          </ListItem>,
         );
       } else if (type === 'link') {
         // If type is a link to another record, must find that record in the
@@ -125,12 +88,12 @@ export default class Templater {
           endpoint = linkedClass.route.slice(1);
         }
 
-        fields[name] = (
+        fields.push(
           <ListItem key={name} style={{ display: 'block' }}>
             <div>
               <AutoSearchComponent
                 value={model[name]}
-                onChange={this.handleChange}
+                onChange={handleChange}
                 name={name}
                 label={util.antiCamelCase(name)}
                 limit={30}
@@ -139,11 +102,9 @@ export default class Templater {
                 property={!linkedClass ? ['name', 'sourceId'] : undefined}
               />
             </div>
-          </ListItem>
-        );
-      }
-      // } else if (type === 'embedded') { } // ONCE isAbstract is ready.
-      else {
+          </ListItem>,
+        );// } else if (type === 'embedded') { } // ONCE isAbstract is ready.
+      } else {
         // For text fields, apply some final changes for number inputs.
         let t;
         let step;
@@ -154,12 +115,12 @@ export default class Templater {
           step = 1;
         }
 
-        fields[name] = (
+        fields.push(
           <ListItem className="input-wrapper" key={name}>
             <TextField
               label={util.antiCamelCase(name)}
               value={model[name]}
-              onChange={this.handleChange}
+              onChange={handleChange}
               className="text-input"
               name={name}
               type={t || ''}
@@ -176,10 +137,24 @@ export default class Templater {
                 ),
               }}
             />
-          </ListItem>
+          </ListItem>,
         );
       }
     });
     return fields;
   }
 }
+
+FormTemplater.propTypes = {
+  schema: PropTypes.object.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  model: PropTypes.object.isRequired,
+  kbClass: PropTypes.any.isRequired,
+  excludedProps: PropTypes.array,
+};
+
+FormTemplater.defaultProps = {
+  excludedProps: [],
+};
+
+export default FormTemplater;

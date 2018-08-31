@@ -11,8 +11,9 @@ import {
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
 import _ from 'lodash';
+import FormTemplater from '../FormTemplater/FormTemplater';
 import api from '../../services/api';
-import Templater from '../../services/template';
+import util from '../../services/util';
 
 const DEBOUNCE_TIME = 300;
 
@@ -33,9 +34,8 @@ class VariantParserComponent extends Component {
   async componentDidMount() {
     const schema = await api.getSchema();
     const positionalVariantSchema = (await api.getClass('PositionalVariant')).properties;
-    const templater = new Templater(schema, this.handleVariantChange);
-    const variant = Templater.initModel({}, positionalVariantSchema);
-    console.log(Templater.initModel({}, positionalVariantSchema));
+    const variant = util.initModel({}, positionalVariantSchema);
+    console.log(util.initModel({}, positionalVariantSchema));
     const positions = Object.keys(schema)
       .filter(s => schema[s].inherits.includes('Position'))
       .map(s => schema[s]);
@@ -43,7 +43,7 @@ class VariantParserComponent extends Component {
     this.setState({
       positionalVariantSchema,
       variant,
-      templater,
+      schema,
     }, () => console.log(variant));
     this.callApi(this.props.value);
   }
@@ -117,7 +117,7 @@ class VariantParserComponent extends Component {
       invalidFlag,
       variant,
       positionalVariantSchema,
-      templater,
+      schema,
     } = this.state;
     const {
       label,
@@ -147,9 +147,12 @@ class VariantParserComponent extends Component {
           />
         </div>
         <div className="paper">
-          {templater
-            ? Object.values(templater.generateFields(variant, positionalVariantSchema))
-            : null}
+          <FormTemplater
+            schema={schema}
+            onChange={this.handleVariantChange}
+            model={variant}
+            kbClass={positionalVariantSchema}
+          />
         </div>
       </div>
     );

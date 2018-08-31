@@ -18,7 +18,7 @@ import * as qs from 'querystring';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
 import api from '../../services/api';
 import util from '../../services/util';
-import Templater from '../../services/template';
+import FormTemplater from '../../components/FormTemplater/FormTemplater';
 import config from '../../config';
 
 /**
@@ -62,15 +62,13 @@ class AdvancedQueryView extends Component {
     ontologyTypes.push(...api.getOntologies(schema));
     const editableProps = (await api.getClass(ontologyTypes[0].name)).properties;
     editableProps.push(...config.ONTOLOGY_QUERY_PARAMS);
-    const form = Templater.initModel({ '@class': ontologyTypes[0].name }, editableProps);
-    const templater = new Templater(schema, this.handleChange);
-    console.log(form);
+    const form = util.initModel({ '@class': ontologyTypes[0].name }, editableProps);
     form.subsets = '';
     this.setState({
       ontologyTypes,
       form,
       editableProps,
-      templater,
+      schema,
     });
   }
 
@@ -147,7 +145,7 @@ class AdvancedQueryView extends Component {
       ontologyTypes,
       editableProps,
       message,
-      templater,
+      schema,
     } = this.state;
     const { history } = this.props;
 
@@ -189,10 +187,12 @@ class AdvancedQueryView extends Component {
                 )}
               </ResourceSelectComponent>
             </ListItem>
-            {templater
-              ? Object.values(templater.generateFields(form, editableProps))
-              : null
-            }
+            <FormTemplater
+              model={form}
+              kbClass={editableProps}
+              handleChange={this.handleChange}
+              schema={schema}
+            />
           </List>
         </Paper>
         <Paper elevation={4} id="adv-nav-buttons">

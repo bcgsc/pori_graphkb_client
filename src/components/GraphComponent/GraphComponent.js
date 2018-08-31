@@ -293,7 +293,6 @@ class GraphComponent extends Component {
 
     if (!d3.event.active) simulation.alphaTarget(0.3).restart();
 
-    /* eslint-disable */
     function dragged() {
       node.fx = d3.event.x;
       node.fy = d3.event.y;
@@ -304,7 +303,6 @@ class GraphComponent extends Component {
       node.fx = null;
       node.fy = null;
     }
-    /* eslint-enable */
 
     d3.event
       .on('drag', dragged)

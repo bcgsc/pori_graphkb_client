@@ -18,6 +18,7 @@ import util from '../../services/util';
 class FormTemplater extends Component {
   /**
    * Given a schema class object, find all other classes that inherit it.
+   * @param {string} abstractClass - property class key.
    */
   getSubClasses(abstractClass) {
     const { schema } = this.props;
@@ -27,7 +28,7 @@ class FormTemplater extends Component {
 
   /**
    * Given a schema class object, determine whether it is abstract or not.
-   * @param {Object} linkedClass - property object class
+   * @param {string} linkedClass - property class key.
    */
   isAbstract(linkedClass) {
     const { schema } = this.props;
@@ -146,6 +147,14 @@ class FormTemplater extends Component {
   }
 }
 
+/**
+ * @param {Object} schema - Knowledgebase db schema.
+ * @param {function} handleChange - Model updating function
+ * @param {Object} model - Model object.
+ * @param {Array} kbClass - Form object schema.
+ * @param {Array} excludedProps - List of propstrings to be excluded from
+ * generation.
+ */
 FormTemplater.propTypes = {
   schema: PropTypes.object.isRequired,
   handleChange: PropTypes.func.isRequired,

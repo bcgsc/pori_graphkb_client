@@ -642,7 +642,6 @@ class GraphComponent extends Component {
       graphOptions[`${type}Pallette`] = pallette;
       this.setState({ graphOptions });
     }
-    /* eslint-enable */
   }
 
   /**

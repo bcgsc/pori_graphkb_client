@@ -17,7 +17,15 @@ describe('Admin Page Test', () => {
     cy.get('div.admin-users table tbody tr').then((array) => {
       const { length } = array;
       cy.get('div.admin-users table thead tr th:first').click();
-      cy.get('div.admin-section-heading-btns button:first').contains(length);
+      cy.get('div.admin-section-heading-btns button').each((btn, i) => {
+        if (i === 0) {
+          cy.wrap(btn).contains(length);
+        } else if (i === 1) {
+          cy.wrap(btn).click();
+          cy.contains('New User');
+          cy.contains('Cancel').click();
+        }
+      });
     });
     cy.get('div.admin-user-groups div[role=button]').each((row, i) => {
       if (i === 1) {

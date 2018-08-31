@@ -358,6 +358,48 @@ const getColor = (obj, objColor, objColors) => {
   return objColors[colorKey];
 };
 
+const initModel = (model, kbClass) => {
+  const newModel = Object.assign({}, model);
+  Object.values(kbClass).forEach((property) => {
+    const {
+      name,
+      type,
+      linkedClass,
+    } = property;
+    const defaultValue = property.default;
+    switch (type) {
+      case 'embeddedset':
+        newModel[name] = model[name] || [];
+        break;
+      case 'link':
+        newModel[name] = (model[name] || '').name || '';
+        newModel[`${name}.@rid`] = (model[name] || '')['@rid'] || '';
+        newModel[`${name}.sourceId`] = (model[name] || '').sourceId || '';
+        if (!linkedClass) {
+          newModel[`${name}.class`] = (model[name] || '')['@class'] || '';
+        }
+        break;
+      case 'integer' || 'long':
+        newModel[name] = model[name] || '';
+        break;
+      case 'boolean':
+        newModel[name] = model[name] !== undefined
+          ? model[name]
+          : (defaultValue || '').toString() === 'true';
+        break;
+      case 'embedded':
+        if (linkedClass && linkedClass.properties) {
+          newModel[name] = model[name] || initModel({}, property.linkedClass.properties);
+        }
+        break;
+      default:
+        newModel[name] = model[name] || '';
+        break;
+    }
+  });
+  return newModel;
+};
+
 export default {
   antiCamelCase,
   getPreview,
@@ -374,4 +416,5 @@ export default {
   expanded,
   positionInit,
   getColor,
+  initModel,
 };

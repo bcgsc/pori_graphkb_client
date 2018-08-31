@@ -37,7 +37,7 @@ import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectCo
 import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
 import api from '../../services/api';
 import util from '../../services/util';
-import Templater from '../../services/template';
+import FormTemplater from '../FormTemplater/FormTemplater';
 
 const NOTIFICATION_SPINNER_SIZE = 16;
 
@@ -107,10 +107,8 @@ class OntologyFormComponent extends Component {
       nodeClass = node['@class'];
       relationship.out = node['@rid'];
     }
-    const templater = new Templater(schema, this.handleFormChange);
     const editableProps = (await api.getClass(nodeClass)).properties;
-    const form = Templater.initModel(originalNode, editableProps);
-    console.log(form);
+    const form = util.initModel(originalNode, editableProps);
 
     const edgeTypes = api.getEdges(schema);
     const expandedEdgeTypes = util.expandEdges(edgeTypes);
@@ -150,8 +148,7 @@ class OntologyFormComponent extends Component {
       edgeTypes,
       editableProps,
       newNodeClass: nodeClass,
-      ontologyTypes: api.getOntologies(schema),
-      templater,
+      schema,
     });
   }
 
@@ -259,7 +256,7 @@ class OntologyFormComponent extends Component {
     const editableProps = (await api.getClass(e.target.value)).properties;
     const { form } = this.state;
     this.setState({
-      form: Templater.initModel(form, editableProps),
+      form: util.initModel(form, editableProps),
       editableProps,
       newNodeClass: e.target.value,
     });
@@ -491,11 +488,10 @@ class OntologyFormComponent extends Component {
       deleteDialog,
       newNodeClass,
       errorFlag,
-      ontologyTypes,
       loading,
       notificationDrawerOpen,
       deletedSubsets,
-      templater,
+      schema,
     } = this.state;
     const { variant, handleNodeFinish } = this.props;
 
@@ -610,7 +606,6 @@ class OntologyFormComponent extends Component {
         </div>
       </Drawer>
     );
-    const fields = templater.generateFields(form, editableProps);
     return (
       <div className="node-form-wrapper">
         {dialog}
@@ -654,7 +649,7 @@ class OntologyFormComponent extends Component {
                         onChange={this.handleClassChange}
                         name="newNodeClass"
                         label="Class"
-                        resources={ontologyTypes}
+                        resources={api.getOntologies(schema)}
                       >
                         {resource => (
                           <MenuItem key={resource.name} value={resource.name}>
@@ -665,10 +660,17 @@ class OntologyFormComponent extends Component {
                     </div>
                   )}
                 <List component="nav">
-                  {fields ? Object.keys(fields)
+                  <FormTemplater
+                    model={form}
+                    kbClass={editableProps}
+                    schema={schema}
+                    handleChange={this.handleFormChange}
+                    excludedProps={['subsets']}
+                  />
+                  {/* {fields ? Object.keys(fields)
                     .filter(k => k !== 'subsets')
                     .map(k => fields[k])
-                    : null}
+                    : null} */}
                   {/* {Object.keys(form)
                     .filter(key => !key.includes('.'))
                     .map(key => formatInputSection(key, form[key]))

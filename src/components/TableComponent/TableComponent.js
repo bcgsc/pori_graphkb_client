@@ -3,6 +3,7 @@
  */
 
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import './TableComponent.css';
 import {
@@ -30,11 +31,15 @@ import {
   Divider,
   Tooltip,
   CircularProgress,
+  Popover,
+  TextField,
+  Paper,
 } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import AddIcon from '@material-ui/icons/Add';
+import FilterListIcon from '@material-ui/icons/FilterList';
 import NodeDetailComponent from '../NodeDetailComponent/NodeDetailComponent';
 import DownloadFileComponent from '../DownloadFileComponent/DownloadFileComponent';
 import util from '../../services/util';
@@ -60,9 +65,15 @@ class TableComponent extends Component {
       sortedData: Object.keys(props.data).map(key => props.data[key]),
       columnSelect: false,
       tableColumns: [],
+      tableHeadRefs: [],
+      columnFilterStrings: [],
+      tempFilterIndex: '',
     };
 
     this.createTSV = this.createTSV.bind(this);
+    this.openFilter = this.openFilter.bind(this);
+    this.setRef = this.setRef.bind(this);
+    this.updateFilterStrings = this.updateFilterStrings.bind(this);
     this.handleChangePage = this.handleChangePage.bind(this);
     this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -107,6 +118,7 @@ class TableComponent extends Component {
       }
       return r;
     }, []);
+    const columnFilterStrings = new Array(tableColumns.length).map(() => '');
 
     // Set default order for columns.
     tableColumns.sort((a, b) => {
@@ -122,7 +134,7 @@ class TableComponent extends Component {
       return 1;
     });
 
-    this.setState({ tableColumns });
+    this.setState({ tableColumns, columnFilterStrings });
   }
 
   /**
@@ -138,6 +150,15 @@ class TableComponent extends Component {
           sortedData: Object.keys(nextProps.data).map(k => nextProps.data[k]).sort(s),
         });
       }
+    }
+  }
+
+  setRef(node, i) {
+    const { tableHeadRefs } = this.state;
+    if (!tableHeadRefs[i]) {
+      /* eslint-disable-next-line react/no-find-dom-node */
+      tableHeadRefs[i] = ReactDOM.findDOMNode(node);
+      this.setState({ tableHeadRefs });
     }
   }
 
@@ -174,6 +195,17 @@ class TableComponent extends Component {
   isSelected(rid) {
     const { selectedId } = this.props;
     return selectedId === rid;
+  }
+
+  openFilter(i) {
+    const { tableHeadRefs } = this.state;
+    this.setState({ filterPopoverNode: tableHeadRefs[i], tempFilterIndex: i });
+  }
+
+  updateFilterStrings(e) {
+    const { columnFilterStrings, tempFilterIndex } = this.state;
+    columnFilterStrings[tempFilterIndex] = e.target.value;
+    this.setState({ columnFilterStrings });
   }
 
   /**
@@ -353,6 +385,9 @@ class TableComponent extends Component {
       anchorEl,
       columnSelect,
       tableColumns,
+      filterPopoverNode,
+      tempFilterIndex,
+      columnFilterStrings,
     } = this.state;
 
     const {
@@ -505,9 +540,35 @@ class TableComponent extends Component {
         </DialogActions>
       </Dialog>
     );
+
+    const filterPopover = (
+      <Popover
+        anchorEl={filterPopoverNode}
+        open={!!filterPopoverNode}
+        onClose={() => this.setState({ filterPopoverNode: null })}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+      >
+        <Paper className="paper">
+          <TextField
+            label="Filter"
+            value={columnFilterStrings[tempFilterIndex]}
+            onChange={e => this.updateFilterStrings(e)}
+          />
+        </Paper>
+      </Popover>
+    );
+
     return (
       <section className="data-table">
         {columnDialog}
+        {filterPopover}
         <div className="table-container">
           <Table>
             <TableHead className="table-head">
@@ -523,10 +584,14 @@ class TableComponent extends Component {
                     direction={order}
                   />
                 </TableCell>
-                {tableColumns.map((col) => {
+                {tableColumns.map((col, i) => {
                   if (col.checked) {
                     return (
-                      <TableCell key={col.id}>
+                      <TableCell
+                        key={col.id}
+                        padding="dense"
+                        ref={node => this.setRef(node, i)}
+                      >
                         <TableSortLabel
                           active={col.id === orderBy}
                           onClick={() => this.handleRequestSort(col)}
@@ -534,6 +599,11 @@ class TableComponent extends Component {
                         >
                           {col.label}
                         </TableSortLabel>
+                        <div className="filter-btn">
+                          <IconButton onClick={() => this.openFilter(i)}>
+                            <FilterListIcon />
+                          </IconButton>
+                        </div>
                       </TableCell>
                     );
                   }
@@ -548,66 +618,76 @@ class TableComponent extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {pageData.map((n) => {
-                const isSelected = this.isSelected(n['@rid']);
-                const active = toggle === n['@rid'];
-                const detail = active ? (
-                  <TableRow>
-                    <Collapse
-                      colSpan={numCols + 2}
-                      component="td"
-                      in={active}
-                      unmountOnExit
-                    >
-                      <NodeDetailComponent
-                        node={n}
-                        data={data}
-                        handleNodeEditStart={handleNodeEditStart}
-                        handleNewQuery={handleNewQuery}
-                      />
-                    </Collapse>
-                  </TableRow>
-                ) : null;
-                return !hidden.includes(n['@rid'])
-                  && (
-                    <React.Fragment key={n['@rid'] || Math.random()}>
-                      <TableRow
-                        selected={isSelected}
-                        onClick={() => handleClick(n['@rid'])}
-                        classes={{
-                          root: 'cursor-override',
-                          selected: 'selected-override',
-                        }}
+              {pageData
+                .filter((n) => {
+                  let flag = true;
+                  columnFilterStrings.forEach((filt, i) => {
+                    if (!n[tableColumns[i].id].includes(filt)) {
+                      flag = false;
+                    }
+                  });
+                  return flag;
+                })
+                .map((n) => {
+                  const isSelected = this.isSelected(n['@rid']);
+                  const active = toggle === n['@rid'];
+                  const detail = active ? (
+                    <TableRow>
+                      <Collapse
+                        colSpan={numCols + 2}
+                        component="td"
+                        in={active}
+                        unmountOnExit
                       >
-                        <TableCell padding="dense">
-                          <Checkbox
-                            onChange={() => handleCheckbox(n['@rid'])}
-                            checked={displayed.includes(n['@rid'])}
-                          />
-                        </TableCell>
-                        {tableColumns.map((col) => {
-                          if (col.checked) {
-                            return (
-                              <TableCell key={col.id}>
-                                {col.sortBy ? (n[col.id] || '')[col.sortBy] : (n[col.id] || '').toString()}
-                              </TableCell>
-                            );
-                          }
-                          return null;
-                        })}
-                        <TableCell>
-                          <IconButton
-                            onClick={() => this.handleDetailToggle(n['@rid'])}
-                            className={`detail-btn ${active ? 'active' : ''}`}
-                          >
-                            <KeyboardArrowDownIcon />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                      {detail}
-                    </React.Fragment>
-                  );
-              })}
+                        <NodeDetailComponent
+                          node={n}
+                          data={data}
+                          handleNodeEditStart={handleNodeEditStart}
+                          handleNewQuery={handleNewQuery}
+                        />
+                      </Collapse>
+                    </TableRow>
+                  ) : null;
+                  return !hidden.includes(n['@rid'])
+                    && (
+                      <React.Fragment key={n['@rid'] || Math.random()}>
+                        <TableRow
+                          selected={isSelected}
+                          onClick={() => handleClick(n['@rid'])}
+                          classes={{
+                            root: 'cursor-override',
+                            selected: 'selected-override',
+                          }}
+                        >
+                          <TableCell padding="dense">
+                            <Checkbox
+                              onChange={() => handleCheckbox(n['@rid'])}
+                              checked={displayed.includes(n['@rid'])}
+                            />
+                          </TableCell>
+                          {tableColumns.map((col) => {
+                            if (col.checked) {
+                              return (
+                                <TableCell key={col.id}>
+                                  {col.sortBy ? (n[col.id] || '')[col.sortBy] : (n[col.id] || '').toString()}
+                                </TableCell>
+                              );
+                            }
+                            return null;
+                          })}
+                          <TableCell>
+                            <IconButton
+                              onClick={() => this.handleDetailToggle(n['@rid'])}
+                              className={`detail-btn ${active ? 'active' : ''}`}
+                            >
+                              <KeyboardArrowDownIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                        {detail}
+                      </React.Fragment>
+                    );
+                })}
             </TableBody>
           </Table>
         </div>

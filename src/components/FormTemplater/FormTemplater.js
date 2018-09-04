@@ -94,18 +94,16 @@ class FormTemplater extends Component {
 
           fields.push(
             <ListItem component="div" key={name} style={{ display: 'block' }}>
-              <div>
-                <AutoSearchComponent
-                  value={model[name]}
-                  onChange={onChange}
-                  name={name}
-                  label={util.antiCamelCase(name)}
-                  limit={30}
-                  endpoint={endpoint}
-                  required={mandatory}
-                  property={!linkedClass ? ['name', 'sourceId'] : undefined}
-                />
-              </div>
+              <AutoSearchComponent
+                value={model[name]}
+                onChange={onChange}
+                name={name}
+                label={util.antiCamelCase(name)}
+                limit={30}
+                endpoint={endpoint}
+                required={mandatory}
+                property={!linkedClass ? ['name', 'sourceId'] : undefined}
+              />
             </ListItem>,
           );
         } else if (type === 'embedded') {
@@ -153,6 +151,7 @@ class FormTemplater extends Component {
           fields.push(
             <ListItem component="div" key={name}>
               <TextField
+                style={{ width: '100%' }}
                 label={util.antiCamelCase(name)}
                 value={model[name]}
                 onChange={onChange}

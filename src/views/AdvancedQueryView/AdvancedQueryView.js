@@ -60,7 +60,7 @@ class AdvancedQueryView extends Component {
     const schema = await api.getSchema();
     const ontologyTypes = [{ name: '', properties: null, route: 'ontologies' }];
     ontologyTypes.push(...api.getOntologies(schema));
-    const editableProps = (util.getClass(ontologyTypes[0].name, schema)).properties;
+    const editableProps = (util.getClass(ontologyTypes[0].name || 'Ontology', schema)).properties;
     editableProps.push(...config.ONTOLOGY_QUERY_PARAMS);
     const form = util.initModel({ '@class': ontologyTypes[0].name }, editableProps);
     form.subsets = '';
@@ -113,7 +113,7 @@ class AdvancedQueryView extends Component {
   async handleClassChange(e) {
     const { form, schema } = this.state;
     const newNodeClass = e.target.value;
-    const editableProps = (util.getClass(newNodeClass, schema)).properties;
+    const editableProps = (util.getClass(newNodeClass || 'Ontology', schema)).properties;
     editableProps.forEach((prop) => {
       const { name, type, defaultValue } = prop;
       if (form[name] === undefined) {

@@ -163,6 +163,7 @@
     "name",
     "sourceId"
   ],
+  "DEFAULT_NEIGBORS": 3,
   "ONTOLOGY_QUERY_PARAMS": [
     {
       "name": "neighbors",

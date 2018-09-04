@@ -22,6 +22,9 @@ import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import NodeDetailComponent from '../../components/NodeDetailComponent/NodeDetailComponent';
 import api from '../../services/api';
+import config from '../../config.json';
+
+const { DEFAULT_NEIGBORS } = config;
 
 const styles = {
   paper: {
@@ -98,7 +101,7 @@ class DataView extends Component {
 
     let allProps = ['@rid', '@class'];
     try {
-      const data = await api.get(`${route}?${qs.stringify(filteredSearch)}&neighbors=3`);
+      const data = await api.get(`${route}?${qs.stringify(filteredSearch)}&neighbors=${DEFAULT_NEIGBORS}`);
       const cycled = jc.retrocycle(data).result;
 
       cycled.forEach((ontologyTerm) => {
@@ -110,7 +113,7 @@ class DataView extends Component {
         const nextFilteredSearch = Object.assign({}, filteredSearch);
         nextFilteredSearch.skip = filteredSearch.limit || DEFAULT_LIMIT;
         this.setState({
-          next: () => api.get(`${route}?${qs.stringify(nextFilteredSearch)}&neighbors=3`),
+          next: () => api.get(`${route}?${qs.stringify(nextFilteredSearch)}&neighbors=${DEFAULT_NEIGBORS}`),
           moreResults: true,
         });
       }
@@ -136,7 +139,7 @@ class DataView extends Component {
   async handleClick(rid) {
     const { data } = this.state;
     if (!data[rid]) {
-      const endpoint = `/ontologies/${rid.slice(1)}?neighbors=3`;
+      const endpoint = `/ontologies/${rid.slice(1)}?neighbors=${DEFAULT_NEIGBORS}`;
       const response = await api.get(endpoint);
       data[rid] = jc.retrocycle(response).result;
       this.setState({ data });
@@ -229,7 +232,7 @@ class DataView extends Component {
         const lastSkip = filteredSearch.skip || limit;
         if (cycled.length >= limit) {
           filteredSearch.skip = lastSkip + limit;
-          newNext = () => api.get(`${route}?${qs.stringify(filteredSearch)}&neighbors=3`);
+          newNext = () => api.get(`${route}?${qs.stringify(filteredSearch)}&neighbors=${DEFAULT_NEIGBORS}`);
           moreResults = true;
         }
         this.setState({
@@ -303,7 +306,7 @@ class DataView extends Component {
       this.setState({ detail: node.data, detailEdge: true });
     } else {
       if (!data[node.data['@rid']]) {
-        const response = await api.get(`/ontologies/${node.data['@rid'].slice(1)}?neighbors=3`);
+        const response = await api.get(`/ontologies/${node.data['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGBORS}`);
         data[node.data['@rid']] = jc.retrocycle(response).result;
       }
       this.setState({ detail: data[node.data['@rid']], detailEdge: false });

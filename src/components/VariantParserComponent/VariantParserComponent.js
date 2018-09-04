@@ -93,22 +93,22 @@ class VariantParserComponent extends Component {
     this.setState({ variant }, () => console.log(this.state.variant));
   }
 
-  handleVariantChange(e) {
+  handleVariantChange(e, nested) {
     const { variant } = this.state;
-    const { name, value, sourceId } = e.target;
+    const { name, value } = e.target;
+    if (nested) {
+      variant[nested][name] = value;
+    }
     variant[name] = value;
 
-    if (e.target['@rid']) {
-      variant[`${name}.@rid`] = e.target['@rid'];
-    } else if (variant[`${name}.@rid`]) {
-      variant[`${name}.@rid`] = '';
-    }
-    if (sourceId) {
-      variant[`${name}.sourceId`] = sourceId;
-    } else if (variant[`${name}.sourceId`]) {
-      variant[`${name}.sourceId`] = '';
-    }
-
+    console.log(e.target)
+    Object.keys(e.target).filter(k => k !== 'name' && k !== 'value' && !k.startsWith('_')).forEach((key) => {
+      if (nested) {
+        variant[nested][`${name}.${key}`] = e.target[key];
+      }
+      variant[`${name}.${key}`] = e.target[key];
+    });
+    console.log(variant);
     this.setState({ variant });
   }
 

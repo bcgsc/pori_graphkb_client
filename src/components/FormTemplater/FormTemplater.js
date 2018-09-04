@@ -10,9 +10,11 @@ import {
   Radio,
   InputAdornment,
   Tooltip,
+  MenuItem,
 } from '@material-ui/core';
 import HelpIcon from '@material-ui/icons/Help';
 import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
+import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
 import util from '../../services/util';
 
 class FormTemplater extends Component {
@@ -104,8 +106,34 @@ class FormTemplater extends Component {
                 />
               </div>
             </ListItem>,
-          );// } else if (type === 'embedded') { } // ONCE isAbstract is ready.
-        } else {
+          );
+        } else if (type === 'embedded') {
+          let classSelector = null;
+          if (this.isAbstract(linkedClass.name)) {
+            classSelector = (
+              <ResourceSelectComponent
+                name="@class"
+                onChange={e => onChange(e, name)}
+                resources={this.getSubClasses(linkedClass.name)}
+                label={`${name} Class`}
+                value={model[name]['@class']}
+              >
+                {resource => (
+                  <MenuItem key={resource.name} value={resource.name}>
+                    {resource.name}
+                  </MenuItem>
+                )}
+              </ResourceSelectComponent>
+            );
+          }
+
+          fields.push(
+            <ListItem key={name} style={{ display: 'block' }}>
+              {classSelector}
+            </ListItem>
+          )
+        }
+        else {
           // For text fields, apply some final changes for number inputs.
           let t;
           let step;

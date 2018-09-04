@@ -76,7 +76,6 @@ describe('Graph View Test', () => {
     });
     cy.get('ul li[data-value="@class"]').click();
     cy.get('#options-close-btn').click();
-    cy.contains('DeprecatedBy');
     cy.contains('AliasOf');
   });
 

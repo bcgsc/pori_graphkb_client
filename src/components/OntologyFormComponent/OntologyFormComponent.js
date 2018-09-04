@@ -664,17 +664,9 @@ class OntologyFormComponent extends Component {
                     model={form}
                     kbClass={editableProps}
                     schema={schema}
-                    handleChange={this.handleFormChange}
+                    onChange={this.handleFormChange}
                     excludedProps={['subsets']}
                   />
-                  {/* {fields ? Object.keys(fields)
-                    .filter(k => k !== 'subsets')
-                    .map(k => fields[k])
-                    : null} */}
-                  {/* {Object.keys(form)
-                    .filter(key => !key.includes('.'))
-                    .map(key => formatInputSection(key, form[key]))
-                  } */}
                 </List>
               </Paper>
               <Paper className="param-section forms-lists" elevation={4}>

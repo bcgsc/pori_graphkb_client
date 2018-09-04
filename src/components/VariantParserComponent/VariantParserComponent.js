@@ -147,12 +147,16 @@ class VariantParserComponent extends Component {
           />
         </div>
         <div className="paper">
-          <FormTemplater
-            schema={schema}
-            onChange={this.handleVariantChange}
-            model={variant}
-            kbClass={positionalVariantSchema}
-          />
+          {schema
+            && (
+              <FormTemplater
+                schema={schema}
+                onChange={this.handleVariantChange}
+                model={variant}
+                kbClass={positionalVariantSchema}
+              />
+            )
+          }
         </div>
       </div>
     );

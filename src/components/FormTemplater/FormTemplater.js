@@ -46,7 +46,7 @@ class FormTemplater extends Component {
     const {
       model,
       kbClass,
-      handleChange,
+      onChange,
       excludedProps,
     } = this.props;
     const fields = [];
@@ -69,7 +69,7 @@ class FormTemplater extends Component {
                 </FormLabel>
                 <RadioGroup
                   name={name}
-                  onChange={handleChange}
+                  onChange={onChange}
                   value={model[name].toString()}
                   style={{ flexDirection: 'row' }}
                 >
@@ -94,7 +94,7 @@ class FormTemplater extends Component {
               <div>
                 <AutoSearchComponent
                   value={model[name]}
-                  onChange={handleChange}
+                  onChange={onChange}
                   name={name}
                   label={util.antiCamelCase(name)}
                   limit={30}
@@ -121,7 +121,7 @@ class FormTemplater extends Component {
               <TextField
                 label={util.antiCamelCase(name)}
                 value={model[name]}
-                onChange={handleChange}
+                onChange={onChange}
                 className="text-input"
                 name={name}
                 type={t || ''}
@@ -149,7 +149,7 @@ class FormTemplater extends Component {
 
 /**
  * @param {Object} schema - Knowledgebase db schema.
- * @param {function} handleChange - Model updating function
+ * @param {function} onChange - Model updating function
  * @param {Object} model - Model object.
  * @param {Array} kbClass - Form object schema.
  * @param {Array} excludedProps - List of propstrings to be excluded from
@@ -157,7 +157,7 @@ class FormTemplater extends Component {
  */
 FormTemplater.propTypes = {
   schema: PropTypes.object.isRequired,
-  handleChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
   model: PropTypes.object.isRequired,
   kbClass: PropTypes.any.isRequired,
   excludedProps: PropTypes.array,

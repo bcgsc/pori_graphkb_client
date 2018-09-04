@@ -190,7 +190,7 @@ class AdvancedQueryView extends Component {
             <FormTemplater
               model={form}
               kbClass={editableProps}
-              handleChange={this.handleChange}
+              onChange={this.handleChange}
               schema={schema}
             />
           </List>

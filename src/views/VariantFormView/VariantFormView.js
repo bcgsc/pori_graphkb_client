@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import './VariantFormView.css';
-import * as jc from 'json-cycle';
 import { Paper, Typography } from '@material-ui/core';
-import test from '../../test.json';
 import VariantParserComponent from '../../components/VariantParserComponent/VariantParserComponent';
 
 class VariantFormView extends Component {
@@ -12,7 +10,6 @@ class VariantFormView extends Component {
       shorthandString: '',
       name: 'chr1:y.p11.1_p12del',
     };
-    console.log(jc.retrocycle(test.result));
     this.handleChange = this.handleChange.bind(this);
   }
 

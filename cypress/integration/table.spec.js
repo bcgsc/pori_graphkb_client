@@ -15,22 +15,6 @@ describe('Table Test', () => {
   });
 
   /**
-   * Tests selected row visuals.
-   */
-  it('Selected indicator', () => {
-    getName('melanoma');
-    cy.contains('Rows per page');
-    cy.get('table tbody tr:first').should('has.css', 'background-color', 'rgba(214, 219, 245, 0.7)');
-    cy.get('table tbody tr').then((array) => {
-      cy.wrap(array).each((row, i) => {
-        if (i !== 0 && i !== array.length - 1) {
-          cy.wrap(row).click().should('has.css', 'background-color', 'rgba(214, 219, 245, 0.7)');
-        }
-      });
-    });
-  });
-
-  /**
    * Tests checkboxes visuals.
    */
   it('Checkboxes', () => {
@@ -41,6 +25,8 @@ describe('Table Test', () => {
           cy.wrap(row).children('td:first').children().click()
             .children('span:first')
             .should('have.css', 'color', 'rgb(84, 177, 152)');
+
+          cy.wrap(row).should('have.css', 'background-color', 'rgba(160, 235, 216, 0.5)');
         }
       });
     });
@@ -85,6 +71,13 @@ describe('Table Test', () => {
     cy.get('table thead tr th:first input[type=checkbox]').click();
     cy.get('#ellipsis-menu').click();
     cy.contains('Hide Selected Rows (50)');
+    cy.get('table tbody tr').then((array) => {
+      cy.wrap(array).each((row, i) => {
+        if (i !== 0 && i !== array.length - 1) {
+          cy.wrap(row).should('have.css', 'background-color', 'rgba(160, 235, 216, 0.5)');
+        }
+      });
+    });
   });
 
   /**

@@ -7,6 +7,9 @@ import PropTypes from 'prop-types';
 import * as jc from 'json-cycle';
 import NodeFormComponent from '../../components/NodeFormComponent/NodeFormComponent';
 import api from '../../services/api';
+import config from '../../config.json';
+
+const { DEFAULT_NEIGHBORS } = config;
 
 /**
  * View for record editing. Contains a form component with the 'edit' variant
@@ -26,13 +29,12 @@ class EditNodeView extends Component {
   /**
    * Initializes editing node and query on return.
    */
-  componentDidMount() {
+  async componentDidMount() {
     const { match } = this.props;
     const { rid } = match.params;
-    api.get(`/ontologies/${rid}?neighbors=3`).then((data) => {
-      const node = jc.retrocycle(data.result);
-      this.setState({ node });
-    });
+    const response = await api.get(`/ontologies/${rid}?neighbors=${DEFAULT_NEIGHBORS}`);
+    const node = jc.retrocycle(response).result;
+    this.setState({ node });
   }
 
   /**

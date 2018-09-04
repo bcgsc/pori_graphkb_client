@@ -9,7 +9,7 @@ import NodeFormComponent from '../../components/NodeFormComponent/NodeFormCompon
 import api from '../../services/api';
 import config from '../../config.json';
 
-const { DEFAULT_NEIGBORS } = config;
+const { DEFAULT_NEIGHBORS } = config;
 
 /**
  * View for record editing. Contains a form component with the 'edit' variant
@@ -32,7 +32,7 @@ class EditNodeView extends Component {
   async componentDidMount() {
     const { match } = this.props;
     const { rid } = match.params;
-    const response = await api.get(`/ontologies/${rid}?neighbors=${DEFAULT_NEIGBORS}`);
+    const response = await api.get(`/ontologies/${rid}?neighbors=${DEFAULT_NEIGHBORS}`);
     const node = jc.retrocycle(response).result;
     this.setState({ node });
   }

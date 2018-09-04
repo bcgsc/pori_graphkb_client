@@ -123,8 +123,8 @@ class NodeFormComponent extends Component {
         name,
         type,
         linkedClass,
-        defaultValue,
       } = prop;
+      const defaultValue = prop.default || '';
 
       // TODO: maybe refactor this for edges pointing to ontologies/other
       // records that don't have names or source ids.
@@ -199,7 +199,6 @@ class NodeFormComponent extends Component {
       editableProps,
       newNodeClass: nodeClass,
       ontologyTypes: api.getOntologies(schema),
-      // schema,
     });
   }
 
@@ -310,8 +309,8 @@ class NodeFormComponent extends Component {
       const {
         name,
         type,
-        defaultValue,
       } = prop;
+      const defaultValue = prop.default || '';
       if (!form[name]) {
         switch (type) {
           case 'embeddedset':
@@ -556,7 +555,6 @@ class NodeFormComponent extends Component {
       newNodeClass,
       errorFlag,
       ontologyTypes,
-      // schema,
       loading,
       notificationDrawerOpen,
       deletedSubsets,
@@ -715,15 +713,17 @@ class NodeFormComponent extends Component {
     /**
      * Formats model subsets into list form.
      */
-    const subsets = (form.subsets || []).map(s => (
-      <Chip
-        label={s}
-        deleteIcon={<CloseIcon />}
-        onDelete={() => this.handleSubsetDelete(s)}
-        key={s}
-        className="subset-chip"
-      />
-    ));
+    const subsets = (form.subsets || [])
+      .sort((a, b) => a > b ? 1 : -1)
+      .map(s => (
+        <Chip
+          label={s}
+          deleteIcon={<CloseIcon />}
+          onDelete={() => this.handleSubsetDelete(s)}
+          key={s}
+          className="subset-chip"
+        />
+      ));
 
     subsets.push(...deletedSubsets.map(s => (
       <Chip

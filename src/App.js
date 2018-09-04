@@ -24,6 +24,7 @@ import {
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
 import PersonIcon from '@material-ui/icons/Person';
+import DNAIcon from './components/DNAIcon/DNAIcon';
 import QueryView from './views/QueryView/QueryView';
 import AdvancedQueryView from './views/AdvancedQueryView/AdvancedQueryView';
 import DataView from './views/DataView/DataView';
@@ -147,6 +148,12 @@ class App extends Component {
                     onClick={() => history.push('/add')}
                   >
                     <AddIcon />
+                  </IconButton>
+                  <IconButton
+                    color="inherit"
+                    onClick={() => history.push('/variants')}
+                  >
+                    <DNAIcon />
                   </IconButton>
                 </React.Fragment>
               )}

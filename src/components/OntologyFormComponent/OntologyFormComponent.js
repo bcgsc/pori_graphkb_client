@@ -8,21 +8,14 @@ import './OntologyFormComponent.css';
 import {
   TextField,
   List,
-  ListItem,
   IconButton,
   MenuItem,
   Button,
   Typography,
-  RadioGroup,
-  Radio,
-  FormControlLabel,
-  FormControl,
-  FormLabel,
   Dialog,
   DialogContent,
   DialogActions,
   DialogTitle,
-  Tooltip,
   Paper,
   InputAdornment,
   Chip,
@@ -39,12 +32,12 @@ import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
-import HelpIcon from '@material-ui/icons/Help';
 import CheckIcon from '@material-ui/icons/Check';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
 import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
 import api from '../../services/api';
 import util from '../../services/util';
+import FormTemplater from '../FormTemplater/FormTemplater';
 
 const NOTIFICATION_SPINNER_SIZE = 16;
 
@@ -114,52 +107,9 @@ class OntologyFormComponent extends Component {
       nodeClass = node['@class'];
       relationship.out = node['@rid'];
     }
-
     const editableProps = (await api.getClass(nodeClass)).properties;
-    const form = {};
+    const form = util.initModel(originalNode, editableProps);
 
-    editableProps.forEach((prop) => {
-      const {
-        name,
-        type,
-        linkedClass,
-        defaultValue,
-      } = prop;
-
-      // TODO: maybe refactor this for edges pointing to ontologies/other
-      // records that don't have names or source ids.
-      switch (type) {
-        case 'embeddedset':
-          form[name] = (originalNode[name] || []).slice();
-          break;
-        case 'link':
-          form[`${name}.@rid`] = (originalNode[name] || '')['@rid'] || '';
-          form[name] = (originalNode[name] || '').name || '';
-
-          if (!linkedClass) {
-            form[`${name}.class`] = (originalNode[name] || '')['@class'] || '';
-          }
-
-          if ((originalNode[name] || '').sourceId) {
-            form[`${name}.sourceId`] = (originalNode[name] || '').sourceId || '';
-          }
-
-          break;
-        case 'integer' || 'long':
-          if (originalNode[name] === 0) {
-            form[name] = 0;
-          } else {
-            form[name] = originalNode[name] || defaultValue || '';
-          }
-          break;
-        case 'boolean':
-          form[name] = originalNode[name] || (defaultValue || '').toString() === 'true';
-          break;
-        default:
-          form[name] = originalNode[name] || defaultValue || '';
-          break;
-      }
-    });
     const edgeTypes = api.getEdges(schema);
     const expandedEdgeTypes = util.expandEdges(edgeTypes);
 
@@ -198,7 +148,7 @@ class OntologyFormComponent extends Component {
       edgeTypes,
       editableProps,
       newNodeClass: nodeClass,
-      ontologyTypes: api.getOntologies(schema),
+      schema,
     });
   }
 
@@ -305,27 +255,11 @@ class OntologyFormComponent extends Component {
   async handleClassChange(e) {
     const editableProps = (await api.getClass(e.target.value)).properties;
     const { form } = this.state;
-    editableProps.forEach((prop) => {
-      const {
-        name,
-        type,
-        defaultValue,
-      } = prop;
-      if (!form[name]) {
-        switch (type) {
-          case 'embeddedset':
-            form[name] = [];
-            break;
-          case 'boolean':
-            form[name] = defaultValue.toString() === 'true';
-            break;
-          default:
-            form[name] = '';
-            break;
-        }
-      }
+    this.setState({
+      form: util.initModel(form, editableProps),
+      editableProps,
+      newNodeClass: e.target.value,
     });
-    this.setState({ form, editableProps, newNodeClass: e.target.value });
   }
 
   /**
@@ -554,10 +488,10 @@ class OntologyFormComponent extends Component {
       deleteDialog,
       newNodeClass,
       errorFlag,
-      ontologyTypes,
       loading,
       notificationDrawerOpen,
       deletedSubsets,
+      schema,
     } = this.state;
     const { variant, handleNodeFinish } = this.props;
 
@@ -603,112 +537,6 @@ class OntologyFormComponent extends Component {
         </DialogContent>
       </Dialog>
     );
-
-    /**
-     * Renders input component to fit property's importance and type.
-     */
-    const formatInputSection = (key, value) => {
-      const property = editableProps.find(prop => prop.name === key);
-      if (!property) return null;
-
-      const {
-        type,
-        mandatory,
-        linkedClass,
-        description,
-      } = property;
-      if (typeof value !== 'object') {
-        // Radio group component for boolean types.
-        if (type === 'boolean') {
-          return (
-            <ListItem className="input-wrapper" key={key}>
-              <FormControl component="fieldset" required={mandatory}>
-                <FormLabel>
-                  {util.antiCamelCase(key)}
-                </FormLabel>
-                <RadioGroup
-                  name={key}
-                  onChange={this.handleFormChange}
-                  value={value.toString()}
-                  style={{ flexDirection: 'row' }}
-                >
-                  <FormControlLabel value="true" control={<Radio />} label="Yes" />
-                  <FormControlLabel value="false" control={<Radio />} label="No" />
-                </RadioGroup>
-              </FormControl>
-            </ListItem>
-          );
-        }
-
-        // For text fields, apply some final changes for number inputs.
-        if (type !== 'link') {
-          let t;
-          let step;
-          if (type === 'string') {
-            t = 'text';
-          } else if (type === 'integer' || type === 'long') {
-            t = 'number';
-            step = 1;
-          }
-
-          return (
-            <ListItem className="input-wrapper" key={key}>
-              <TextField
-                id={key}
-                label={util.antiCamelCase(key)}
-                value={value}
-                onChange={this.handleFormChange}
-                className="text-input"
-                name={key}
-                type={t || ''}
-                step={step || ''}
-                required={mandatory}
-                multiline={t === 'text'}
-                InputProps={{
-                  endAdornment: description && (
-                    <InputAdornment position="end">
-                      <Tooltip title={description}>
-                        <HelpIcon color="primary" />
-                      </Tooltip>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </ListItem>
-          );
-        }
-        // If type is a link to another record, must find that record in the
-        // database and store its rid.
-
-        // Decide which endpoint to query.
-        let endpoint;
-        if (linkedClass) {
-          endpoint = linkedClass.route.slice(1);
-        }
-
-        return (
-          <ListItem key={key} style={{ display: 'block' }}>
-            <div>
-              <AutoSearchComponent
-                value={value}
-                onChange={this.handleFormChange}
-                name={key}
-                label={util.antiCamelCase(key)}
-                id={key}
-                limit={30}
-                endpoint={endpoint}
-                required={mandatory}
-                property={!linkedClass ? ['name', 'sourceId'] : undefined}
-              />
-            </div>
-          </ListItem>
-        );
-      }
-      if (Array.isArray(value)) {
-        return null;
-      }
-      return null;
-    };
 
     /**
      * Formats model subsets into list form.
@@ -778,7 +606,6 @@ class OntologyFormComponent extends Component {
         </div>
       </Drawer>
     );
-
     return (
       <div className="node-form-wrapper">
         {dialog}
@@ -822,7 +649,7 @@ class OntologyFormComponent extends Component {
                         onChange={this.handleClassChange}
                         name="newNodeClass"
                         label="Class"
-                        resources={ontologyTypes}
+                        resources={api.getOntologies(schema)}
                       >
                         {resource => (
                           <MenuItem key={resource.name} value={resource.name}>
@@ -833,10 +660,21 @@ class OntologyFormComponent extends Component {
                     </div>
                   )}
                 <List component="nav">
-                  {Object.keys(form)
+                  <FormTemplater
+                    model={form}
+                    kbClass={editableProps}
+                    schema={schema}
+                    handleChange={this.handleFormChange}
+                    excludedProps={['subsets']}
+                  />
+                  {/* {fields ? Object.keys(fields)
+                    .filter(k => k !== 'subsets')
+                    .map(k => fields[k])
+                    : null} */}
+                  {/* {Object.keys(form)
                     .filter(key => !key.includes('.'))
                     .map(key => formatInputSection(key, form[key]))
-                  }
+                  } */}
                 </List>
               </Paper>
               <Paper className="param-section forms-lists" elevation={4}>
@@ -884,7 +722,6 @@ class OntologyFormComponent extends Component {
                           <TableCell padding="dense">
                             Class
                           </TableCell>
-
                           <TableCell padding="dense">
                             Related Record
                           </TableCell>

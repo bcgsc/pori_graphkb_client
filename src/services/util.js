@@ -172,8 +172,10 @@ const parsePayload = (form, editableProps, exceptions) => {
     // For link properties, must specify record id being linking to. Clear the rest.
     if (key.includes('.@rid')) {
       const nestedKey = key.split('.')[0];
-      if (editableProps.find(p => p.name === nestedKey)
-        || (exceptions && exceptions.find(p => p.name === nestedKey))
+      if (
+        (editableProps.find(p => p.name === nestedKey)
+          || (exceptions && exceptions.find(p => p.name === nestedKey)))
+        && payload[key]
       ) {
         // Sets top level property to the rid: ie.
         // 'source.@rid': #18:5 => 'source': #18:5
@@ -239,8 +241,8 @@ const getGraphOptions = () => {
  * @param {Object} data - graph data to be stored.
  */
 const loadGraphData = (search, data) => {
-  data.filteredSearch = search;
-  localStorage.setItem(GRAPH_OBJECTS_KEY, JSON.stringify(jc.decycle(data)));
+  const newData = Object.assign({ filteredSearch: search }, data);
+  localStorage.setItem(GRAPH_OBJECTS_KEY, JSON.stringify(jc.decycle(newData)));
 };
 
 /**
@@ -272,7 +274,7 @@ const loadColorProps = (newColumns, node, propsMap) => {
 
     // Nested prop condition
     if (prop.includes('.')) {
-      key = prop.split('.')[1];
+      ([, key] = prop.split('.'));
       obj = node[prop.split('.')[0]] || {};
     }
 
@@ -308,6 +310,7 @@ const loadColorProps = (newColumns, node, propsMap) => {
  * @param {Object} expandable - Expandable flags map.
  */
 const expanded = (expandedEdgeTypes, graphObjects, rid, expandable) => {
+  const newExpandable = Object.assign({}, expandable);
   let targetFlag = false;
   expandedEdgeTypes.forEach((e) => {
     if (graphObjects[rid][e]) {
@@ -321,8 +324,8 @@ const expanded = (expandedEdgeTypes, graphObjects, rid, expandable) => {
       });
     }
   });
-  expandable[rid] = targetFlag;
-  return expandable;
+  newExpandable[rid] = targetFlag;
+  return newExpandable;
 };
 
 /**
@@ -356,6 +359,48 @@ const getColor = (obj, objColor, objColors) => {
   return objColors[colorKey];
 };
 
+const initModel = (model, kbClass) => {
+  const newModel = Object.assign({}, model);
+  Object.values(kbClass).forEach((property) => {
+    const {
+      name,
+      type,
+      linkedClass,
+    } = property;
+    const defaultValue = property.default;
+    switch (type) {
+      case 'embeddedset':
+        newModel[name] = model[name] || [];
+        break;
+      case 'link':
+        newModel[name] = (model[name] || '').name || '';
+        newModel[`${name}.@rid`] = (model[name] || '')['@rid'] || '';
+        newModel[`${name}.sourceId`] = (model[name] || '').sourceId || '';
+        if (!linkedClass) {
+          newModel[`${name}.class`] = (model[name] || '')['@class'] || '';
+        }
+        break;
+      case 'integer' || 'long':
+        newModel[name] = model[name] || '';
+        break;
+      case 'boolean':
+        newModel[name] = model[name] !== undefined
+          ? model[name]
+          : (defaultValue || '').toString() === 'true';
+        break;
+      case 'embedded':
+        if (linkedClass && linkedClass.properties) {
+          newModel[name] = model[name] || initModel({}, property.linkedClass.properties);
+        }
+        break;
+      default:
+        newModel[name] = model[name] || '';
+        break;
+    }
+  });
+  return newModel;
+};
+
 export default {
   antiCamelCase,
   getPreview,
@@ -372,4 +417,5 @@ export default {
   expanded,
   positionInit,
   getColor,
+  initModel,
 };

@@ -101,7 +101,6 @@ class VariantParserComponent extends Component {
     }
     variant[name] = value;
 
-    console.log(e.target);
     Object.keys(e.target)
       .filter(k => k !== 'name' && k !== 'value' && !k.startsWith('_'))
       .forEach((key) => {
@@ -110,7 +109,6 @@ class VariantParserComponent extends Component {
         }
         variant[`${name}.${key}`] = e.target[key];
       });
-    console.log(variant);
     this.setState({ variant });
   }
 

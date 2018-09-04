@@ -65,7 +65,7 @@ class FormTemplater extends Component {
         // Radio group component for boolean types.
         if (type === 'boolean') {
           fields.push(
-            <ListItem className="input-wrapper" key={name}>
+            <ListItem component="div" key={name}>
               <FormControl component="fieldset" required={mandatory}>
                 <FormLabel>
                   {util.antiCamelCase(name)}
@@ -93,7 +93,7 @@ class FormTemplater extends Component {
           }
 
           fields.push(
-            <ListItem key={name} style={{ display: 'block' }}>
+            <ListItem component="div" key={name} style={{ display: 'block' }}>
               <div>
                 <AutoSearchComponent
                   value={model[name]}
@@ -128,7 +128,7 @@ class FormTemplater extends Component {
             );
           }
           fields.push(
-            <ListItem key={name} style={{ display: 'block' }}>
+            <ListItem component="div" key={name} style={{ display: 'block' }}>
               {classSelector}
               <FormTemplater
                 onChange={e => onChange(e, name)}
@@ -151,12 +151,11 @@ class FormTemplater extends Component {
           }
 
           fields.push(
-            <ListItem className="input-wrapper" key={name}>
+            <ListItem component="div" key={name}>
               <TextField
                 label={util.antiCamelCase(name)}
                 value={model[name]}
                 onChange={onChange}
-                className="text-input"
                 name={name}
                 type={t || ''}
                 step={step || ''}

@@ -30,6 +30,7 @@ const LONG_DEBOUNCE_TIME = 600;
 
 const PROGRESS_SPINNER_SIZE = 20;
 const MAX_HEIGHT_FACTOR = 15;
+const ACTION_KEYCODES = [13, 16, 37, 38, 39, 40];
 
 /**
  * Autocomplete search component for querying ease of use. Text input component
@@ -73,7 +74,7 @@ class AutoSearchComponent extends Component {
    * @param {Event} e - user input event.
    */
   refreshOptions(e) {
-    if (![13, 16, 37, 38, 39, 40].includes(e.keyCode)) {
+    if (!ACTION_KEYCODES.includes(e.keyCode)) {
       this.setState({ loading: true, emptyFlag: false, lastRid: null });
       this.callApi(e.target.value);
     }

@@ -22,6 +22,14 @@ $flip-duration: 0.15s;
                 top: 0;
                 background-color: $background-light;
                 z-index: 2;
+                .filter-btn {
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    right: 0;
+                    margin: auto;
+                    height: fit-content;
+                }
             }
             th:before {
                 content: "";
@@ -29,7 +37,7 @@ $flip-duration: 0.15s;
                 bottom: 0;
                 left: 0;
                 width: 100%;
-                border-bottom: 1px solid rgba(224, 224, 224, 1);
+                border-bottom: 1px solid #e0e0e0;
             }
         }
     }
@@ -117,4 +125,9 @@ $flip-duration: 0.15s;
 #new-data-spinner {
     display: block;
     margin: auto 8px;
+}
+
+.filter-icon {
+    margin: auto;
+    margin-right: 0;
 }

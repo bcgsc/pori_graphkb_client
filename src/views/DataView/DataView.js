@@ -53,7 +53,6 @@ class DataView extends Component {
       data: null,
       displayed: [],
       hidden: [],
-      selectedId: null,
       allProps: [],
       detail: null,
       next: null,
@@ -119,7 +118,6 @@ class DataView extends Component {
       }
       this.setState({
         data: dataMap,
-        selectedId: Object.keys(dataMap)[0],
         loginRedirect,
         allProps,
         schema,
@@ -144,7 +142,6 @@ class DataView extends Component {
       data[rid] = jc.retrocycle(response).result;
       this.setState({ data });
     }
-    this.setState({ selectedId: rid });
   }
 
   /**
@@ -180,11 +177,8 @@ class DataView extends Component {
    * Clears displayed array.
    */
   handleHideSelected() {
-    const { displayed, hidden, selectedId } = this.state;
+    const { displayed, hidden } = this.state;
     hidden.push(...displayed);
-
-    if (displayed.includes(selectedId)) this.setState({ selectedId: null });
-
     this.setState({ hidden, displayed: [] });
   }
 
@@ -280,7 +274,6 @@ class DataView extends Component {
         data: null,
         displayed: [],
         hidden: [],
-        selectedId: null,
         allProps: [],
       }, this.componentDidMount);
     }
@@ -344,7 +337,6 @@ class DataView extends Component {
 
   render() {
     const {
-      selectedId,
       data,
       displayed,
       hidden,
@@ -411,7 +403,6 @@ class DataView extends Component {
     const TableWithProps = () => (
       <TableComponent
         data={data}
-        selectedId={selectedId}
         handleClick={this.handleClick}
         handleCheckbox={this.handleCheckbox}
         displayed={displayed}

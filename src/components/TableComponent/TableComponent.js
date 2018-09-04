@@ -168,15 +168,6 @@ class TableComponent extends Component {
   }
 
   /**
-   * Returns true if node identifier is the currently selected id.
-   * @param {string} rid - Target node identifier.
-   */
-  isSelected(rid) {
-    const { selectedId } = this.props;
-    return selectedId === rid;
-  }
-
-  /**
    * Updates page to display.
    * @param {Event} event - Triggered event.
    * @param {number} page - New page number.
@@ -549,7 +540,7 @@ class TableComponent extends Component {
             </TableHead>
             <TableBody>
               {pageData.map((n) => {
-                const isSelected = this.isSelected(n['@rid']);
+                const isSelected = displayed.includes(n['@rid']);
                 const active = toggle === n['@rid'];
                 const detail = active ? (
                   <TableRow>
@@ -676,10 +667,6 @@ TableComponent.propTypes = {
    */
   displayed: PropTypes.array.isRequired,
   /**
-   * @param {string} selectedId - Selected node identifier.
-   */
-  selectedId: PropTypes.string,
-  /**
    * @param {function} handleCheckAll - Method triggered when all rows are
    * checked.
    */
@@ -745,7 +732,6 @@ TableComponent.propTypes = {
 };
 
 TableComponent.defaultProps = {
-  selectedId: null,
   allProps: [],
   hidden: [],
   handleNewQuery: null,

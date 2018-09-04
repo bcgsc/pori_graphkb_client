@@ -33,7 +33,7 @@ class VariantParserComponent extends Component {
 
   async componentDidMount() {
     const schema = await api.getSchema();
-    const positionalVariantSchema = (await api.getClass('PositionalVariant')).properties;
+    const positionalVariantSchema = (util.getClass('PositionalVariant', schema)).properties;
     const variant = util.initModel({}, positionalVariantSchema);
     console.log(util.initModel({}, positionalVariantSchema));
     const positions = Object.keys(schema)
@@ -101,13 +101,15 @@ class VariantParserComponent extends Component {
     }
     variant[name] = value;
 
-    console.log(e.target)
-    Object.keys(e.target).filter(k => k !== 'name' && k !== 'value' && !k.startsWith('_')).forEach((key) => {
-      if (nested) {
-        variant[nested][`${name}.${key}`] = e.target[key];
-      }
-      variant[`${name}.${key}`] = e.target[key];
-    });
+    console.log(e.target);
+    Object.keys(e.target)
+      .filter(k => k !== 'name' && k !== 'value' && !k.startsWith('_'))
+      .forEach((key) => {
+        if (nested) {
+          variant[nested][`${name}.${key}`] = e.target[key];
+        }
+        variant[`${name}.${key}`] = e.target[key];
+      });
     console.log(variant);
     this.setState({ variant });
   }

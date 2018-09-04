@@ -48,10 +48,13 @@ class FormTemplater extends Component {
     const {
       model,
       kbClass,
+      schema,
       onChange,
       excludedProps,
     } = this.props;
     const fields = [];
+    console.log(model);
+    console.log(kbClass);
     Object.values(kbClass || {}).forEach((property) => {
       const {
         name,
@@ -126,14 +129,21 @@ class FormTemplater extends Component {
               </ResourceSelectComponent>
             );
           }
-
+          console.log(name);
+          console.log(model[name]['@class']);
           fields.push(
             <ListItem key={name} style={{ display: 'block' }}>
               {classSelector}
-            </ListItem>
-          )
-        }
-        else {
+              <FormTemplater
+                onChange={onChange}
+                schema={schema}
+                kbClass={(util.getClass(model[name]['@class'], schema)).properties}
+                model={model[name]}
+                excludedProps={['@class']}
+              />
+            </ListItem>,
+          );
+        } else {
           // For text fields, apply some final changes for number inputs.
           let t;
           let step;

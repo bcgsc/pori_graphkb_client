@@ -202,23 +202,6 @@ const getSchema = () => {
 };
 
 /**
- * Returns the editable properties of target ontology class.
- * @param {string} className - requested class name
- */
-const getClass = className => getSchema().then((schema) => {
-  const VPropKeys = Object.keys(schema.V.properties);
-  const classKey = (Object.keys(schema)
-    .find(key => key.toLowerCase() === (className || '').toLowerCase()) || 'Ontology');
-  const props = Object.keys(schema[classKey].properties)
-    .filter(prop => !VPropKeys.includes(prop))
-    .map(prop => (
-      {
-        ...schema[classKey].properties[prop],
-      }));
-  return Promise.resolve({ route: schema[classKey].route, properties: props });
-});
-
-/**
  * Wrapper for autosearch method.
  * @param {string} endpoint - URL endpoint.
  * @param {string} property - Property to query.
@@ -298,7 +281,6 @@ export default {
   getOntologies,
   collectOntologyProps,
   getHeaders,
-  getClass,
   getSchema,
   getSources,
   get,

@@ -53,8 +53,6 @@ class FormTemplater extends Component {
       excludedProps,
     } = this.props;
     const fields = [];
-    console.log(model);
-    console.log(kbClass);
     Object.values(kbClass || {}).forEach((property) => {
       const {
         name,
@@ -117,7 +115,7 @@ class FormTemplater extends Component {
               <ResourceSelectComponent
                 name="@class"
                 onChange={e => onChange(e, name)}
-                resources={this.getSubClasses(linkedClass.name)}
+                resources={[{ name: '- - -' }, ...this.getSubClasses(linkedClass.name)]}
                 label={`${name} Class`}
                 value={model[name]['@class']}
               >
@@ -129,13 +127,11 @@ class FormTemplater extends Component {
               </ResourceSelectComponent>
             );
           }
-          console.log(name);
-          console.log(model[name]['@class']);
           fields.push(
             <ListItem key={name} style={{ display: 'block' }}>
               {classSelector}
               <FormTemplater
-                onChange={onChange}
+                onChange={e => onChange(e, name)}
                 schema={schema}
                 kbClass={(util.getClass(model[name]['@class'], schema)).properties}
                 model={model[name]}
@@ -197,12 +193,13 @@ FormTemplater.propTypes = {
   schema: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
   model: PropTypes.object.isRequired,
-  kbClass: PropTypes.any.isRequired,
+  kbClass: PropTypes.any,
   excludedProps: PropTypes.array,
 };
 
 FormTemplater.defaultProps = {
   excludedProps: [],
+  kbClass: {},
 };
 
 export default FormTemplater;

@@ -107,7 +107,7 @@ class OntologyFormComponent extends Component {
       nodeClass = node['@class'];
       relationship.out = node['@rid'];
     }
-    const editableProps = (api.getClass(nodeClass, schema)).properties;
+    const editableProps = (util.getClass(nodeClass, schema)).properties;
     const form = util.initModel(originalNode, editableProps);
 
     const edgeTypes = api.getEdges(schema);

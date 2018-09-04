@@ -15,6 +15,8 @@ describe('App Bar Test', () => {
         cy.url().should('includes', '/query');
       } else if (i === 1) {
         cy.url().should('includes', '/add');
+      } else if (i === 2) {
+        cy.url().should('includes', '/variant');
       } else {
         cy.contains('Logout');
       }

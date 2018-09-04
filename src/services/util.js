@@ -412,10 +412,7 @@ const getClass = (className, schema) => {
   if (!classKey) return {};
   const props = Object.keys(schema[classKey].properties)
     .filter(prop => !VPropKeys.includes(prop))
-    .map(prop => (
-      {
-        ...schema[classKey].properties[prop],
-      }));
+    .map(prop => schema[classKey].properties[prop]);
   return { route: schema[classKey].route, properties: props };
 };
 

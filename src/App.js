@@ -151,7 +151,7 @@ class App extends Component {
                   </IconButton>
                   <IconButton
                     color="inherit"
-                    onClick={() => history.push('/variants')}
+                    onClick={() => history.push('/variant')}
                   >
                     <DNAIcon />
                   </IconButton>

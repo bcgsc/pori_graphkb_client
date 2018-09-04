@@ -6,28 +6,19 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './AdvancedQueryView.css';
 import {
-  TextField,
   Button,
   Typography,
   MenuItem,
   List,
   ListItem,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  RadioGroup,
-  Radio,
-  Tooltip,
-  InputAdornment,
   Paper,
   Snackbar,
 } from '@material-ui/core/';
-import HelpIcon from '@material-ui/icons/Help';
 import * as qs from 'querystring';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
-import AutoSearchComponent from '../../components/AutoSearchComponent/AutoSearchComponent';
 import api from '../../services/api';
 import util from '../../services/util';
+import FormTemplater from '../../components/FormTemplater/FormTemplater';
 import config from '../../config';
 
 /**
@@ -66,44 +57,18 @@ class AdvancedQueryView extends Component {
       this.setState({ message: history.location.state.body.message });
     }
 
-    const form = {};
     const schema = await api.getSchema();
     const ontologyTypes = [{ name: '', properties: null, route: 'ontologies' }];
     ontologyTypes.push(...api.getOntologies(schema));
-    form['@class'] = ontologyTypes[0].name;
-
-    const editableProps = (await api.getClass(form['@class'])).properties;
+    const editableProps = (await api.getClass(ontologyTypes[0].name)).properties;
     editableProps.push(...config.ONTOLOGY_QUERY_PARAMS);
-    editableProps.forEach((prop) => {
-      const {
-        name,
-        type,
-        linkedClass,
-        defaultValue,
-      } = prop;
-      switch (type) {
-        case 'link':
-          form[`${name}.@rid`] = '';
-          form[name] = '';
-
-          if (!linkedClass) {
-            form[`${name}.class`] = '';
-          }
-          form[`${name}.sourceId`] = '';
-
-          break;
-        case 'boolean':
-          form[name] = (defaultValue || '').toString() === 'true';
-          break;
-        default:
-          form[name] = name === 'name' ? (history.location.state || {}).name : defaultValue || '';
-          break;
-      }
-    });
+    const form = util.initModel({ '@class': ontologyTypes[0].name }, editableProps);
+    form.subsets = '';
     this.setState({
       ontologyTypes,
       form,
       editableProps,
+      schema,
     });
   }
 
@@ -180,110 +145,11 @@ class AdvancedQueryView extends Component {
       ontologyTypes,
       editableProps,
       message,
+      schema,
     } = this.state;
     const { history } = this.props;
 
     if (!form) return null;
-
-    const formatInputSection = (key, value) => {
-      const property = editableProps.find(prop => prop.name === key);
-      if (!property) return null;
-
-      const {
-        type,
-        linkedClass,
-        description,
-      } = property;
-      if (typeof value !== 'object') {
-        // Radio group component for boolean types.
-        if (type === 'boolean') {
-          return (
-            <ListItem className="input-wrapper" key={key}>
-              <FormControl component="fieldset">
-                <FormLabel>
-                  {util.antiCamelCase(key)}
-                </FormLabel>
-                <RadioGroup
-                  name={key}
-                  onChange={this.handleChange}
-                  value={value.toString()}
-                  style={{ flexDirection: 'row' }}
-                >
-                  <FormControlLabel value="true" control={<Radio />} label="Yes" />
-                  <FormControlLabel value="false" control={<Radio />} label="No" />
-                </RadioGroup>
-              </FormControl>
-            </ListItem>
-          );
-        }
-
-        // For text fields, apply some final changes for number inputs.
-        if (type !== 'link') {
-          let t;
-          let step;
-          if (type === 'string') {
-            t = 'text';
-          } else if (type === 'integer' || type === 'long') {
-            t = 'number';
-            step = 1;
-          }
-
-          return (
-            <ListItem className="input-wrapper" key={key}>
-              <TextField
-                id={key}
-                label={util.antiCamelCase(key)}
-                value={value}
-                onChange={this.handleChange}
-                className="text-input"
-                name={key}
-                type={t || ''}
-                step={step || ''}
-                multiline={t === 'text'}
-                InputProps={{
-                  endAdornment: description && (
-                    <InputAdornment position="end">
-                      <Tooltip title={description}>
-                        <HelpIcon color="primary" />
-                      </Tooltip>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </ListItem>
-          );
-        }
-        // If type is a link to another record, must find that record in the
-        // database and store its rid.
-
-        // Decide which endpoint to query.
-        let endpoint;
-        if (linkedClass) {
-          endpoint = linkedClass.route.slice(1);
-        }
-
-        return (
-          <ListItem key={key} style={{ display: 'block' }}>
-            <div>
-              <AutoSearchComponent
-                value={value}
-                onChange={this.handleChange}
-                name={key}
-                label={util.antiCamelCase(key)}
-                id={key}
-                limit={30}
-                endpoint={endpoint}
-                property={!linkedClass ? ['name', 'sourceId'] : undefined}
-              />
-            </div>
-          </ListItem>
-        );
-      }
-      if (Array.isArray(value)) {
-        return null;
-      }
-      return null;
-    };
 
     return (
       <div className="adv-wrapper" elevation={4}>
@@ -321,10 +187,12 @@ class AdvancedQueryView extends Component {
                 )}
               </ResourceSelectComponent>
             </ListItem>
-            {Object.keys(form)
-              .filter(key => !key.includes('.'))
-              .map(key => formatInputSection(key, form[key]))
-            }
+            <FormTemplater
+              model={form}
+              kbClass={editableProps}
+              handleChange={this.handleChange}
+              schema={schema}
+            />
           </List>
         </Paper>
         <Paper elevation={4} id="adv-nav-buttons">

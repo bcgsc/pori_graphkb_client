@@ -401,6 +401,24 @@ const initModel = (model, kbClass) => {
   return newModel;
 };
 
+/**
+ * Returns the editable properties of target ontology class.
+ * @param {string} className - requested class name
+ */
+const getClass = (className, schema) => {
+  const VPropKeys = Object.keys(schema.V.properties);
+  const classKey = (Object.keys(schema)
+    .find(key => key.toLowerCase() === (className || '').toLowerCase()));
+  if (!classKey) return {};
+  const props = Object.keys(schema[classKey].properties)
+    .filter(prop => !VPropKeys.includes(prop))
+    .map(prop => (
+      {
+        ...schema[classKey].properties[prop],
+      }));
+  return { route: schema[classKey].route, properties: props };
+};
+
 export default {
   antiCamelCase,
   getPreview,
@@ -418,4 +436,5 @@ export default {
   positionInit,
   getColor,
   initModel,
+  getClass,
 };

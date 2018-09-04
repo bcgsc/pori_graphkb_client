@@ -107,7 +107,7 @@ class OntologyFormComponent extends Component {
       nodeClass = node['@class'];
       relationship.out = node['@rid'];
     }
-    const editableProps = (await api.getClass(nodeClass)).properties;
+    const editableProps = (api.getClass(nodeClass, schema)).properties;
     const form = util.initModel(originalNode, editableProps);
 
     const edgeTypes = api.getEdges(schema);
@@ -161,11 +161,12 @@ class OntologyFormComponent extends Component {
       relationships,
       newNodeClass,
       editableProps,
+      schema,
     } = this.state;
 
     const newEdges = [];
     const payload = util.parsePayload(form, editableProps);
-    const { route } = await api.getClass(newNodeClass);
+    const { route } = util.getClass(newNodeClass, schema);
     const response = await api.post(`${route}`, { ...payload });
 
     for (let i = 0; i < relationships.length; i += 1) {
@@ -193,6 +194,7 @@ class OntologyFormComponent extends Component {
       originalNode,
       relationships,
       editableProps,
+      schema,
     } = this.state;
 
     const changedEdges = [];
@@ -235,7 +237,7 @@ class OntologyFormComponent extends Component {
     await Promise.all(changedEdges);
 
     const payload = util.parsePayload(form, editableProps);
-    const { route } = await api.getClass(originalNode['@class']);
+    const { route } = util.getClass(originalNode['@class'], schema);
 
     await api.patch(`${route}/${originalNode['@rid'].slice(1)}`, { ...payload });
   }
@@ -253,8 +255,8 @@ class OntologyFormComponent extends Component {
    * @param {Event} e - User class selection event.
    */
   async handleClassChange(e) {
-    const editableProps = (await api.getClass(e.target.value)).properties;
-    const { form } = this.state;
+    const { form, schema } = this.state;
+    const editableProps = (util.getClass(e.target.value, schema)).properties;
     this.setState({
       form: util.initModel(form, editableProps),
       editableProps,
@@ -268,8 +270,8 @@ class OntologyFormComponent extends Component {
   async handleDeleteNode() {
     this.setState({ notificationDrawerOpen: true, loading: true });
     this.handleDialogClose();
-    const { originalNode } = this.state;
-    const { route } = await api.getClass(originalNode['@class']);
+    const { originalNode, schema } = this.state;
+    const { route } = util.getClass(originalNode['@class'], schema);
     await api.delete(`${route}/${originalNode['@rid'].slice(1)}`);
     this.setState({ loading: false });
   }

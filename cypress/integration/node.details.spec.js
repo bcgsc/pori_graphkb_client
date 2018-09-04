@@ -42,8 +42,8 @@ describe('Node Detail ', () => {
     cy.get('table tbody tr:first input[type=checkbox]').click();
     cy.get('div.graph-btn button:first').click();
     cy.url().should('includes', '/graph');
-    cy.get('circle.node:first').click();
-    cy.contains('(Details)').click();
+    cy.get('circle.node:first').click({ force: true });
+    cy.contains('(Details)').click({ force: true });
     cy.contains('Properties:');
     cy.get('div.node-properties').parent().scrollTo('bottom');
     cy.contains('hasSubClass').click();

@@ -30,7 +30,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
 import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
-import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import QueryView from './views/QueryView/QueryView';
 import AdvancedQueryView from './views/AdvancedQueryView/AdvancedQueryView';
 import DataView from './views/DataView/DataView';
@@ -141,14 +141,14 @@ class App extends Component {
       >
         <div className="banner">
           <div className="drawer-logo">
-            <img src={logo} alt="" />
-            <Typography variant="body1">Knowledge Base</Typography>
             <IconButton
               disabled={!loggedIn}
               onClick={() => this.setState({ drawerOpen: false })}
             >
-              <KeyboardBackspaceIcon />
+              <ChevronLeftIcon />
             </IconButton>
+            <img src={logo} alt="" />
+            <Typography variant="body1">Knowledge Base</Typography>
           </div>
         </div>
         <Divider />

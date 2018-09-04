@@ -53,14 +53,14 @@ $drawer-breakpoint: 768px;
             img {
                 width: 24px;
                 height: 24px;
-                margin: auto 16px;
+                margin: auto 4px;
+                margin-right: 8px;
             }
             p {
                 margin: auto 0;
             }
             button {
-                margin: auto;
-                margin-right: 8px;
+                margin: auto 4px;
             }
         }
     }

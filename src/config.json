@@ -1,7 +1,7 @@
 {
-  "VERSION": "0.1.0",
+  "VERSION": "0.4.0",
   "HOST": "kbapi01",
-  "PORT": 8010,
+  "PORT": 8040,
   "KEYS": {
     "SOURCES": "sources",
     "SCHEMA": "schema",
@@ -163,6 +163,7 @@
     "name",
     "sourceId"
   ],
+  "DEFAULT_NEIGHBORS": 3,
   "ONTOLOGY_QUERY_PARAMS": [
     {
       "name": "neighbors",

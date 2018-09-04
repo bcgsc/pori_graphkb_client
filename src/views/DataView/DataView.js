@@ -22,6 +22,9 @@ import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import NodeDetailComponent from '../../components/NodeDetailComponent/NodeDetailComponent';
 import api from '../../services/api';
+import config from '../../config.json';
+
+const { DEFAULT_NEIGHBORS } = config;
 
 const styles = {
   paper: {
@@ -97,8 +100,8 @@ class DataView extends Component {
 
     let allProps = ['@rid', '@class'];
     try {
-      const data = await api.get(`${route}?${qs.stringify(filteredSearch)}&neighbors=3`);
-      const cycled = jc.retrocycle(data.result);
+      const data = await api.get(`${route}?${qs.stringify(filteredSearch)}&neighbors=${DEFAULT_NEIGHBORS}`);
+      const cycled = jc.retrocycle(data).result;
 
       cycled.forEach((ontologyTerm) => {
         allProps = api.collectOntologyProps(ontologyTerm, allProps, schema);
@@ -109,7 +112,7 @@ class DataView extends Component {
         const nextFilteredSearch = Object.assign({}, filteredSearch);
         nextFilteredSearch.skip = filteredSearch.limit || DEFAULT_LIMIT;
         this.setState({
-          next: () => api.get(`${route}?${qs.stringify(nextFilteredSearch)}&neighbors=3`),
+          next: () => api.get(`${route}?${qs.stringify(nextFilteredSearch)}&neighbors=${DEFAULT_NEIGHBORS}`),
           moreResults: true,
         });
       }
@@ -134,9 +137,9 @@ class DataView extends Component {
   async handleClick(rid) {
     const { data } = this.state;
     if (!data[rid]) {
-      const endpoint = `/ontologies/${rid.slice(1)}?neighbors=3`;
-      const json = await api.get(endpoint);
-      data[rid] = jc.retrocycle(json.result);
+      const endpoint = `/ontologies/${rid.slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`;
+      const response = await api.get(endpoint);
+      data[rid] = jc.retrocycle(response).result;
       this.setState({ data });
     }
   }
@@ -192,18 +195,20 @@ class DataView extends Component {
   /**
    * Handles subsequent pagination call
    */
-  handleSubsequentPagination() {
+  async handleSubsequentPagination() {
     const { next } = this.state;
 
     if (next) {
-      next().then((nextData) => {
+      try {
+        this.setState({ next: null, moreResults: false, completedNext: false });
+        const nextData = await next();
         const {
           data,
           allProps,
           schema,
           filteredSearch,
         } = this.state;
-        const cycled = jc.retrocycle(nextData.result);
+        const cycled = jc.retrocycle(nextData).result;
         let newColumns = allProps;
         cycled.forEach((ontologyTerm) => {
           newColumns = api.collectOntologyProps(ontologyTerm, allProps, schema);
@@ -221,7 +226,7 @@ class DataView extends Component {
         const lastSkip = filteredSearch.skip || limit;
         if (cycled.length >= limit) {
           filteredSearch.skip = lastSkip + limit;
-          newNext = () => api.get(`${route}?${qs.stringify(filteredSearch)}&neighbors=3`);
+          newNext = () => api.get(`${route}?${qs.stringify(filteredSearch)}&neighbors=${DEFAULT_NEIGHBORS}`);
           moreResults = true;
         }
         this.setState({
@@ -232,9 +237,10 @@ class DataView extends Component {
           moreResults,
           completedNext: true,
         });
-      });
+      } catch (e) {
+        console.error(e);
+      }
     }
-    this.setState({ next: null, moreResults: false, completedNext: false });
     return next;
   }
 
@@ -293,8 +299,8 @@ class DataView extends Component {
       this.setState({ detail: node.data, detailEdge: true });
     } else {
       if (!data[node.data['@rid']]) {
-        const response = await api.get(`/ontologies/${node.data['@rid'].slice(1)}?neighbors=3`);
-        data[node.data['@rid']] = jc.retrocycle(response.result);
+        const response = await api.get(`/ontologies/${node.data['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
+        data[node.data['@rid']] = jc.retrocycle(response).result;
       }
       this.setState({ detail: data[node.data['@rid']], detailEdge: false });
     }

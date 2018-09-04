@@ -137,14 +137,16 @@ class NodeDetailComponent extends Component {
           const preview = value.join(', ');
           const content = (
             <List style={{ paddingTop: '0' }}>
-              {value.sort((a, b) => a > b ? 1 : -1).map(item => (
-                <ListItem
-                  dense
-                  key={`${id}${item}`}
-                >
-                  <ListItemText primary={item} />
-                </ListItem>
-              ))}
+              {value
+                .sort((a, b) => a > b ? 1 : -1)
+                .map(item => (
+                  <React.Fragment key={`${id}${item}`}>
+                    <ListItem dense>
+                      <ListItemText primary={item} />
+                    </ListItem>
+                    <Divider />
+                  </React.Fragment>
+                ))}
             </List>
           );
           return (

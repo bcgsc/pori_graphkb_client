@@ -50,6 +50,7 @@ class FormTemplater extends Component {
       kbClass,
       schema,
       onChange,
+      onClassChange,
       excludedProps,
     } = this.props;
     const fields = [];
@@ -72,7 +73,7 @@ class FormTemplater extends Component {
                 </FormLabel>
                 <RadioGroup
                   name={name}
-                  onChange={onChange}
+                  onChange={(e) => onChange(e)}
                   value={model[name].toString()}
                   style={{ flexDirection: 'row' }}
                 >
@@ -108,12 +109,13 @@ class FormTemplater extends Component {
           );
         } else if (type === 'embedded') {
           let classSelector = null;
+          const handleClassChange  = onClassChange ? onClassChange : onChange;
           if (this.isAbstract(linkedClass.name)) {
             classSelector = (
               <ResourceSelectComponent
                 name="@class"
-                onChange={e => onChange(e, name)}
-                resources={[{ name: '- - -' }, ...this.getSubClasses(linkedClass.name)]}
+                onChange={e => handleClassChange(e, name)}
+                resources={[{ name: '' }, ...this.getSubClasses(linkedClass.name)]}
                 label={`${name} Class`}
                 value={model[name]['@class']}
               >
@@ -190,6 +192,7 @@ class FormTemplater extends Component {
 FormTemplater.propTypes = {
   schema: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
+  onClassChange: PropTypes.func,
   model: PropTypes.object.isRequired,
   kbClass: PropTypes.any,
   excludedProps: PropTypes.array,
@@ -198,6 +201,7 @@ FormTemplater.propTypes = {
 FormTemplater.defaultProps = {
   excludedProps: [],
   kbClass: {},
+  onClassChange: null,
 };
 
 export default FormTemplater;

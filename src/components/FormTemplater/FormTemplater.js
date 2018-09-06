@@ -19,26 +19,6 @@ import util from '../../services/util';
 
 class FormTemplater extends Component {
   /**
-   * Given a schema class object, find all other classes that inherit it.
-   * @param {string} abstractClass - property class key.
-   */
-  getSubClasses(abstractClass) {
-    const { schema } = this.props;
-    return Object.values(schema)
-      .filter(kbClass => kbClass.inherits.includes(abstractClass));
-  }
-
-  /**
-   * Given a schema class object, determine whether it is abstract or not.
-   * @param {string} linkedClass - property class key.
-   */
-  isAbstract(linkedClass) {
-    const { schema } = this.props;
-    return Object.values(schema)
-      .some(kbClass => kbClass.inherits.includes(linkedClass));
-  }
-
-  /**
    * Creates DOM models to be rendered.
    * @param {Object} model - Object to which data will be bound.
    * @param {Object} kbClass - Filtered schema object containing ONLY and ALL classes to be
@@ -110,12 +90,12 @@ class FormTemplater extends Component {
         } else if (type === 'embedded') {
           let classSelector = null;
           const handleClassChange  = onClassChange ? onClassChange : onChange;
-          if (this.isAbstract(linkedClass.name)) {
+          if (util.isAbstract(linkedClass.name, schema)) {
             classSelector = (
               <ResourceSelectComponent
                 name="@class"
                 onChange={e => handleClassChange(e, name)}
-                resources={[{ name: '' }, ...this.getSubClasses(linkedClass.name)]}
+                resources={[{ name: '' }, ...util.getSubClasses(linkedClass.name, schema)]}
                 label={`${name} Class`}
                 value={model[name]['@class']}
               >

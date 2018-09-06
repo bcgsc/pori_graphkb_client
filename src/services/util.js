@@ -416,6 +416,24 @@ const getClass = (className, schema) => {
   return { route: schema[classKey].route, properties: props };
 };
 
+/**
+* Given a schema class object, determine whether it is abstract or not.
+* @param {string} linkedClass - property class key.
+* @param {Object} schema - database schema
+*/
+const isAbstract = (linkedClass, schema) =>
+  Object.values(schema)
+    .some(kbClass => kbClass.inherits.includes(linkedClass));
+
+/**
+* Given a schema class object, find all other classes that inherit it.
+* @param {string} abstractClass - property class key.
+* @param {Object} schema - database schema
+*/
+const getSubClasses = (abstractClass, schema) =>
+  Object.values(schema)
+    .filter(kbClass => kbClass.inherits.includes(abstractClass));
+
 export default {
   antiCamelCase,
   getPreview,
@@ -434,4 +452,6 @@ export default {
   getColor,
   initModel,
   getClass,
+  isAbstract,
+  getSubClasses
 };

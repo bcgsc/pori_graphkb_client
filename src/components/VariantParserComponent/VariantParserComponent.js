@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
 import _ from 'lodash';
+import kbp from 'knowledgebase-parser';
 import FormTemplater from '../FormTemplater/FormTemplater';
 import api from '../../services/api';
 import util from '../../services/util';
@@ -29,6 +30,7 @@ class VariantParserComponent extends Component {
     this.refreshOptions = this.refreshOptions.bind(this);
     this.handleLinkedProp = this.handleLinkedProp.bind(this);
     this.handleVariantChange = this.handleVariantChange.bind(this);
+    console.log(kbp.variant.parse('FEATURE:p.G12D'));
   }
 
   async componentDidMount() {

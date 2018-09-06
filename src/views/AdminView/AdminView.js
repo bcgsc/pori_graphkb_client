@@ -352,7 +352,7 @@ class AdminView extends Component {
       (userGroups
         .map(u => u.name.toLowerCase())
         .includes(temp.name.toLowerCase())
-      || !temp.name)
+        || !temp.name)
       && isNewUserGroup
     ) {
       return;
@@ -647,7 +647,10 @@ class AdminView extends Component {
             <Button onClick={this.handleUserDialog}>
               Cancel
             </Button>
-            <Button onClick={edit ? this.editUser : this.addUser}>
+            <Button
+              onClick={edit ? this.editUser : this.addUser}
+              disabled={(isTaken && !isSelected) || error}
+            >
               {edit ? 'Confirm Changes' : 'Add User'}
             </Button>
           </DialogActions>
@@ -699,34 +702,50 @@ class AdminView extends Component {
       </Dialog>
     );
 
-    const userGroupDialog = (
-      <Dialog
-        open={newUserGroupDialog}
-        onClose={this.handleNewUserGroupDialog}
-        classes={{
-          paper: 'new-usergroup-dialog',
-        }}
-        maxWidth={false}
-      >
-        <DialogTitle>
-          New User Group
+    const userGroupDialog = () => {
+      const isTaken = userGroups.map(u => u.name.toLowerCase()).includes(newUserGroup.name.toLowerCase());
+      return (
+        <Dialog
+          open={newUserGroupDialog}
+          onClose={this.handleNewUserGroupDialog}
+          classes={{
+            paper: 'new-usergroup-dialog',
+          }}
+          maxWidth={false}
+        >
+          <DialogTitle>
+            New User Group
         </DialogTitle>
-        <DialogContent>
-          <TextField
-            name="name"
-            value={newUserGroup.name}
-            onChange={e => this.handleNewUserGroupChange(e, true)}
-            label="Name"
-            placeholder="Enter Group Name"
-          />
-          {userGroupPanel(newUserGroup, true, true)}
-        </DialogContent>
-        <DialogActions style={{ justifyContent: 'center' }}>
-          <Button onClick={() => this.handlePermissionsCommit(true)}>Add</Button>
-          <Button onClick={this.handleNewUserGroupDialog}>Cancel</Button>
-        </DialogActions>
-      </Dialog>
-    );
+          <DialogContent>
+            <FormControl
+              error={isTaken || error}
+            >
+              <TextField
+                name="name"
+                value={newUserGroup.name}
+                onChange={e => this.handleNewUserGroupChange(e, true)}
+                label="Name"
+                placeholder="Enter Group Name"
+                error={isTaken || error}
+              />
+              {(isTaken || error)
+                && <FormHelperText>UserGroup name already exists</FormHelperText>
+              }
+            </FormControl>
+            {userGroupPanel(newUserGroup, true, true)}
+          </DialogContent>
+          <DialogActions style={{ justifyContent: 'center' }}>
+            <Button
+              disabled={isTaken || error}
+              onClick={() => this.handlePermissionsCommit(true)}
+            >
+              Add
+            </Button>
+            <Button onClick={this.handleNewUserGroupDialog}>Cancel</Button>
+          </DialogActions>
+        </Dialog>
+      )
+    };
 
     const deleteUserGroupDialog = (
       <Dialog
@@ -759,7 +778,7 @@ class AdminView extends Component {
       <div className="admin-wrapper">
         {userDialog(!!selectedUser)}
         {deleteUsersDialog}
-        {userGroupDialog}
+        {userGroupDialog()}
         {deleteUserGroupDialog}
         <Paper className="paper admin-headline">
           <Typography component="h1" variant="headline">Admin</Typography>
@@ -842,8 +861,14 @@ class AdminView extends Component {
           </div>
           {userGroups.map((userGroup) => {
             const isEditing = tempUserGroup && userGroup['@rid'] === tempUserGroup['@rid'];
+            let isTaken = false;
+            let isSelected;
             if (isEditing) {
+              isSelected = userGroup.name === tempUserGroup.name;
               userGroup = tempUserGroup;
+              isTaken = userGroups
+                .map(u => u.name.toLowerCase())
+                .includes(userGroup.name.toLowerCase());
             }
 
             return (
@@ -879,14 +904,23 @@ class AdminView extends Component {
                               >
                                 Cancel
                               </Button>
-                              <TextField
-                                name="name"
-                                value={userGroup.name}
-                                onChange={e => this.handleTempUserGroupChange(e, false)}
-                                label="Name"
-                                placeholder="Enter Group Name"
-                                style={{ marginRight: 'auto' }}
-                              />
+
+                              <FormControl
+                                error={(isTaken && !isSelected) || error}
+                              >
+                                <TextField
+                                  name="name"
+                                  value={userGroup.name}
+                                  onChange={e => this.handleTempUserGroupChange(e, false)}
+                                  label="Name"
+                                  placeholder="Enter Group Name"
+                                  style={{ marginRight: 'auto' }}
+                                  error={(isTaken && !isSelected) || error}
+                                />
+                                {((isTaken && !isSelected) || error)
+                                  && <FormHelperText>UserGroup name already exists</FormHelperText>
+                                }
+                              </FormControl>
                             </React.Fragment>
                           ) : (
                             <React.Fragment>

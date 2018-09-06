@@ -459,8 +459,12 @@ class AdminView extends Component {
     const { newUserGroup, tempUserGroup, schema } = this.state;
     Object.keys((isNewUserGroup ? newUserGroup : tempUserGroup).permissions).forEach((pKey) => {
       const isEdge = schema[pKey].inherits.includes('E');
+      const isAbstract = util.isAbstract(pKey, schema);
       (isNewUserGroup ? newUserGroup : tempUserGroup)
-        .permissions[pKey][i] = (e.target.checked && !(isEdge && i === 1)) ? 1 : 0;
+        .permissions[pKey][i] = (e.target.checked
+          && !(isEdge && i === 1))
+          && !(isAbstract && i !== 2)
+           ? 1 : 0;
     });
     this.setState({ newUserGroup, tempUserGroup });
   }
@@ -533,6 +537,7 @@ class AdminView extends Component {
             {permissionKeys
               .map(permission => {
                 const isEdge = schema[permission].inherits.includes('E');
+                const isAbstract = util.isAbstract(permission, schema);
                 return (
                   <TableRow key={permission} className="permissions-view">
                     <TableCell padding="dense">
@@ -549,7 +554,11 @@ class AdminView extends Component {
                             newUser,
                           )}
                           checked={!!p}
-                          disabled={!isEditing || (isEdge && j === 1)}
+                          disabled={
+                            !isEditing
+                            || (isEdge && j === 1)
+                            || (isAbstract && j !== 2)
+                          }
                         />
                       </TableCell>
                     ))}

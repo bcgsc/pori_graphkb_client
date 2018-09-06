@@ -73,7 +73,7 @@ class AutoSearchComponent extends Component {
    * @param {Event} e - user input event.
    */
   refreshOptions(e) {
-    this.setState({ loading: true, emptyFlag: false, lastRid: null });
+    this.setState({ loading: true, emptyFlag: false });
     this.callApi(e.target.value);
   }
 

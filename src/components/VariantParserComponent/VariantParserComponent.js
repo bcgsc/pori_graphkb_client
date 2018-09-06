@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './VariantParserComponent.css';
 import {
-  TextField,
+  TextField, Button,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
 import _ from 'lodash';
@@ -26,11 +26,11 @@ class VariantParserComponent extends Component {
       variant: null,
       positionalVariantSchema: null,
     };
-    this.callApi = _.debounce(this.callApi.bind(this), DEBOUNCE_TIME);
+    this.parseString = _.debounce(this.parseString.bind(this), DEBOUNCE_TIME);
     this.refreshOptions = this.refreshOptions.bind(this);
-    this.handleLinkedProp = this.handleLinkedProp.bind(this);
     this.handleVariantChange = this.handleVariantChange.bind(this);
-    console.log(kbp.variant.parse('FEATURE:p.G12D'));
+    this.onClassChange = this.onClassChange.bind(this);
+    this.submitVariant = this.submitVariant.bind(this);
   }
 
   async componentDidMount() {
@@ -38,23 +38,19 @@ class VariantParserComponent extends Component {
     const positionalVariantSchema = (util.getClass('PositionalVariant', schema)).properties;
     const variant = util.initModel({}, positionalVariantSchema);
     console.log(util.initModel({}, positionalVariantSchema));
-    const positions = Object.keys(schema)
-      .filter(s => schema[s].inherits.includes('Position'))
-      .map(s => schema[s]);
-    console.log(positions);
     this.setState({
       positionalVariantSchema,
       variant,
       schema,
     }, () => console.log(variant));
-    this.callApi(this.props.value);
+    this.parseString(this.props.value);
   }
 
   /**
    * Cancels debounce method to avoid memory leaks.
    */
   componentWillUnmount() {
-    this.callApi.cancel();
+    this.parseString.cancel();
     this.render = null;
   }
 
@@ -64,7 +60,7 @@ class VariantParserComponent extends Component {
    */
   refreshOptions(e) {
     this.setState({ invalidFlag: false });
-    this.callApi(e.target.value);
+    this.parseString(e.target.value);
   }
 
   /**
@@ -72,36 +68,77 @@ class VariantParserComponent extends Component {
    * with the property specified in component props similar to the input value.
    * @param {string} value - value to be sent to the api.
    */
-  async callApi(value) {
+  async parseString(value) {
+    const { variant, positionalVariantSchema } = this.state;
     try {
-      const { variant } = this.state;
-      const response = jc.retrocycle(await api.variantParse(value)).result;
-      const newV = Object.assign(variant, response);
+      const response = kbp.variant.parse(value);
+      // Split response into link data and non-link data
+      const linkProps = Object.values(positionalVariantSchema)
+        .filter(prop => prop.type === 'link');
+
+      linkProps.forEach(async (prop) => {
+        const { name, linkedClass } = prop;
+        if (response[name] && linkedClass && linkedClass.route) {
+          const data = await api.get(`${linkedClass.route}?name=${response[name]}`);
+          const cycled = jc.retrocycle(data).result;
+          if (cycled.length === 1) {
+            variant[name] = cycled[0].name;
+            variant[`${name}.@rid`] = cycled[0]['@rid'];
+            this.setState({ variant });
+          } else if (cycled.length > 1) {
+            // add multiple modals?
+          } else if (cycled.length === 0) {
+            console.log(`Referenced ${name} term '${response[name]}' not found`);
+            this.setState({
+              invalidFlag: true,
+            });
+          }
+        }
+      });
+      const newV = Object.assign(variant, _.omit(response, ...linkProps.map(prop => prop.name)));
       this.setState({ variant: newV });
     } catch (error) {
       console.log(error);
+      const variant = util.initModel({}, positionalVariantSchema);
       this.setState({
-        invalidFlag: true,
+        variant, invalidFlag: true,
       });
     }
   }
 
-  handleLinkedProp(e) {
-    const { variant } = this.state;
-    const name = e.target.name.split('.');
-    if (name.length === 2) {
-      variant[name[0]][name[1]] = e.target.value;
+  /**
+   * Handles changes in an embedded property's class.
+   * @param {Event} e - new class selection event.
+   * @param {string} nested - nested property key.
+   */
+  onClassChange(e, nested) {
+    const { schema, variant } = this.state;
+    const { name, value } = e.target;
+    variant[nested][name] = value;
+    const newClass = util.getClass(value, schema).properties;
+    if (newClass) {
+      newClass.forEach(prop => {
+        if (!variant[prop.name]) {
+          variant[nested][prop.name] = '';
+        }
+      });
+    } else {
+      variant[nested] = { '@class': '' };
     }
-    this.setState({ variant }, () => console.log(this.state.variant));
+
+    this.setState({ variant });
+
   }
 
   handleVariantChange(e, nested) {
+    const { handleChange } = this.props;
     const { variant } = this.state;
     const { name, value } = e.target;
     if (nested) {
       variant[nested][name] = value;
+    } else {
+      variant[name] = value;
     }
-    variant[name] = value;
 
     Object.keys(e.target)
       .filter(k => k !== 'name' && k !== 'value' && !k.startsWith('_'))
@@ -111,7 +148,39 @@ class VariantParserComponent extends Component {
         }
         variant[`${name}.${key}`] = e.target[key];
       });
+    try {
+      const filteredVariant = {};
+      Object.keys(variant).forEach((k) => {
+        if (typeof variant[k] === 'object') {
+          if (variant[k]['@class']) {
+            filteredVariant[k] = variant[k];
+          }
+        } else {
+          filteredVariant[k] = variant[k];
+        }
+      });
+      const shorthand = new kbp.variant.VariantNotation(filteredVariant);
+      console.log(shorthand, variant[name]);
+      const newShorthand = kbp.variant.parse(shorthand.toString());
+      handleChange({ target: { value: newShorthand.toString(), name: 'name' } });
+      this.setState({ invalidFlag: false });
+    } catch (error) {
+      console.log(error);
+      this.setState({ invalidFlag: true });
+    }
     this.setState({ variant });
+  }
+
+  async submitVariant() {
+    const { variant, positionalVariantSchema } = this.state;
+    Object.keys(variant).forEach((k) => {
+      if(typeof variant[k] === 'object' && !variant[k]['@class']){
+        delete variant[k];
+      }
+    });
+    const payload = util.parsePayload(variant, positionalVariantSchema)
+    const response = await api.post('/positionalvariants', payload);
+    console.log(response);
   }
 
   render() {
@@ -135,6 +204,7 @@ class VariantParserComponent extends Component {
 
     return (
       <div>
+        <Button onClick={this.submitVariant}>Submit</Button>
         <div className="variant-parser-wrapper">
           <TextField
             fullWidth
@@ -154,6 +224,7 @@ class VariantParserComponent extends Component {
               <FormTemplater
                 schema={schema}
                 onChange={this.handleVariantChange}
+                onClassChange={this.onClassChange}
                 model={variant}
                 kbClass={positionalVariantSchema}
               />

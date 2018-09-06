@@ -114,11 +114,15 @@ class AdminView extends Component {
     const userGroups = jc.retrocycle(cycledUserGroups).result;
     userGroups.forEach((userGroup) => {
       Object.keys(userGroup.permissions).forEach((key) => {
-        userGroup.permissions[key] = util.parsePermission(userGroup.permissions[key]);
+        if (key !== '@class' && key !== '@type') {
+          userGroup.permissions[key] = util.parsePermission(userGroup.permissions[key]);
+        } else {
+          delete userGroup.permissions[key];
+        }
       });
     });
     Object.keys(schema).forEach((obj) => { newUserGroup.permissions[obj] = [0, 0, 0, 0]; });
-    this.setState({ users, userGroups, newUserGroup });
+    this.setState({ users, userGroups, newUserGroup, schema });
   }
 
   /**
@@ -452,10 +456,11 @@ class AdminView extends Component {
    * @param {boolean} isNewUserGroup - new UserGroup flag.
    */
   handleUserGroupCheckAll(e, i, isNewUserGroup) {
-    const { newUserGroup, tempUserGroup } = this.state;
+    const { newUserGroup, tempUserGroup, schema } = this.state;
     Object.keys((isNewUserGroup ? newUserGroup : tempUserGroup).permissions).forEach((pKey) => {
+      const isEdge = schema[pKey].inherits.includes('E');
       (isNewUserGroup ? newUserGroup : tempUserGroup)
-        .permissions[pKey][i] = e.target.checked ? 1 : 0;
+        .permissions[pKey][i] = (e.target.checked && !(isEdge && i === 1)) ? 1 : 0;
     });
     this.setState({ newUserGroup, tempUserGroup });
   }
@@ -492,6 +497,7 @@ class AdminView extends Component {
       tempUserGroup,
       newUserGroupDialog,
       deletedUserGroup,
+      schema,
     } = this.state;
 
     if (!users) return null;
@@ -525,28 +531,31 @@ class AdminView extends Component {
           </TableHead>
           <TableBody>
             {permissionKeys
-              .map(permission => (
-                <TableRow key={permission} className="permissions-view">
-                  <TableCell padding="dense">
-                    <Typography variant="body1" component="p">
-                      {permission}:
+              .map(permission => {
+                const isEdge = schema[permission].inherits.includes('E');
+                return (
+                  <TableRow key={permission} className="permissions-view">
+                    <TableCell padding="dense">
+                      <Typography variant="body1" component="p">
+                        {permission}:
                     </Typography>
-                  </TableCell>
-                  {userGroup.permissions[permission].map((p, j) => (
-                    <TableCell padding="checkbox" key={`${userGroup.name}${permission}${j.toString()}`}>
-                      <Checkbox
-                        onChange={() => this.handlePermissionsChange(
-                          permission,
-                          j, p,
-                          newUser,
-                        )}
-                        checked={!!p}
-                        disabled={!isEditing}
-                      />
                     </TableCell>
-                  ))}
-                </TableRow>
-              ))}
+                    {userGroup.permissions[permission].map((p, j) => (
+                      <TableCell padding="checkbox" key={`${userGroup.name}${permission}${j.toString()}`}>
+                        <Checkbox
+                          onChange={() => this.handlePermissionsChange(
+                            permission,
+                            j, p,
+                            newUser,
+                          )}
+                          checked={!!p}
+                          disabled={!isEditing || (isEdge && j === 1)}
+                        />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                )
+              })}
           </TableBody>
         </Table>
       );

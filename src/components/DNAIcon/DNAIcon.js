@@ -1,13 +1,14 @@
 import React from 'react';
 
-function DNAIcon() {
+function DNAIcon(props) {
   return (
     <svg
+      className={props.className}
       focusable="false"
       viewBox="0 0 24 24"
       aria-hidden
       style={{
-        fill: '#ffffff',
+        fill: 'rgba(0, 0, 0, 0.54)',
         width: '1em',
         height: '1em',
         display: 'inline-block',

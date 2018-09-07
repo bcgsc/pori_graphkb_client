@@ -23,7 +23,6 @@ import {
   InputLabel,
   Input,
   FormControl,
-  Popper,
   ListItemIcon,
   ListItemText,
   Divider,
@@ -1186,12 +1185,10 @@ class GraphComponent extends Component {
     );
 
     const legend = (
-      <Popper
-        open={
-          !!(graphOptions.nodesLegend && graphOptions.nodesColor)
-          || !!(graphOptions.linksLegend && graphOptions.linksColor)
-        }
-      >
+      !!(graphOptions.nodesLegend && graphOptions.nodesColor)
+      || !!(graphOptions.linksLegend && graphOptions.linksColor)
+    )
+      && (
         <div className="legend-wrapper">
           {graphOptions.nodesLegend && graphOptions.nodesColor && (
             <Paper>
@@ -1286,8 +1283,7 @@ class GraphComponent extends Component {
               </div>
             </Paper>)}
         </div>
-      </Popper>
-    );
+      );
 
     const snackbar = (
       <Snackbar
@@ -1395,7 +1391,6 @@ class GraphComponent extends Component {
         {snackbar}
         {helpPanel}
         {graphOptionsPanel}
-        {legend}
         <div className={`toolbar ${detail ? 'transition-left' : ''}`}>
           <Tooltip placement="top" title="Return to table view">
             <IconButton
@@ -1461,6 +1456,8 @@ class GraphComponent extends Component {
             </g>
           </svg>
         </div>
+        {legend}
+
       </div>
     );
   }

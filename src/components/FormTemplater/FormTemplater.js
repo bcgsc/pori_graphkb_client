@@ -32,6 +32,7 @@ class FormTemplater extends Component {
       onChange,
       onClassChange,
       excludedProps,
+      fieldComponent,
     } = this.props;
     const fields = [];
     Object.values(kbClass || {}).forEach((property) => {
@@ -46,7 +47,7 @@ class FormTemplater extends Component {
         // Radio group component for boolean types.
         if (type === 'boolean') {
           fields.push(
-            <ListItem component="div" key={name}>
+            <ListItem component={fieldComponent} key={name}>
               <FormControl component="fieldset" required={mandatory}>
                 <FormLabel>
                   {util.antiCamelCase(name)}
@@ -74,7 +75,7 @@ class FormTemplater extends Component {
           }
 
           fields.push(
-            <ListItem component="div" key={name} style={{ display: 'block' }}>
+            <ListItem component={fieldComponent} key={name}>
               <AutoSearchComponent
                 value={model[name]}
                 onChange={onChange}
@@ -101,14 +102,14 @@ class FormTemplater extends Component {
               >
                 {resource => (
                   <MenuItem key={resource.name} value={resource.name}>
-                    {resource.name}
+                    {resource.name || 'None'}
                   </MenuItem>
                 )}
               </ResourceSelectComponent>
             );
           }
           fields.push(
-            <ListItem component="div" key={name} style={{ display: 'block' }}>
+            <ListItem component={fieldComponent} key={name}>
               {classSelector}
               <FormTemplater
                 onChange={e => onChange(e, name)}
@@ -116,6 +117,7 @@ class FormTemplater extends Component {
                 kbClass={(util.getClass(model[name]['@class'], schema)).properties}
                 model={model[name]}
                 excludedProps={['@class']}
+                fieldComponent="div"
               />
             </ListItem>,
           );
@@ -131,7 +133,7 @@ class FormTemplater extends Component {
           }
 
           fields.push(
-            <ListItem component="div" key={name}>
+            <ListItem component={fieldComponent} key={name}>
               <TextField
                 style={{ width: '100%' }}
                 label={util.antiCamelCase(name)}
@@ -176,12 +178,14 @@ FormTemplater.propTypes = {
   model: PropTypes.object.isRequired,
   kbClass: PropTypes.any,
   excludedProps: PropTypes.array,
+  fieldComponent: PropTypes.string,
 };
 
 FormTemplater.defaultProps = {
   excludedProps: [],
   kbClass: {},
   onClassChange: null,
+  fieldComponent: 'li',
 };
 
 export default FormTemplater;

@@ -7,7 +7,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './VariantParserComponent.css';
 import {
-  TextField, Button,
+  TextField, Button, Paper,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
 import _ from 'lodash';
@@ -43,7 +43,6 @@ class VariantParserComponent extends Component {
       variant,
       schema,
     }, () => console.log(variant));
-    this.parseString(this.props.value);
   }
 
   /**
@@ -71,7 +70,7 @@ class VariantParserComponent extends Component {
   async parseString(value) {
     const { variant, positionalVariantSchema } = this.state;
     try {
-      const response = kbp.variant.parse(value);
+      const response = kbp.variant.parse(value.trim());
       // Split response into link data and non-link data
       const linkProps = Object.values(positionalVariantSchema)
         .filter(prop => prop.type === 'link');
@@ -159,8 +158,8 @@ class VariantParserComponent extends Component {
           filteredVariant[k] = variant[k];
         }
       });
+      console.log(filteredVariant)
       const shorthand = new kbp.variant.VariantNotation(filteredVariant);
-      console.log(shorthand, variant[name]);
       const newShorthand = kbp.variant.parse(shorthand.toString());
       handleChange({ target: { value: newShorthand.toString(), name: 'name' } });
       this.setState({ invalidFlag: false });
@@ -174,7 +173,7 @@ class VariantParserComponent extends Component {
   async submitVariant() {
     const { variant, positionalVariantSchema } = this.state;
     Object.keys(variant).forEach((k) => {
-      if(typeof variant[k] === 'object' && !variant[k]['@class']){
+      if (typeof variant[k] === 'object' && !variant[k]['@class']) {
         delete variant[k];
       }
     });
@@ -191,34 +190,29 @@ class VariantParserComponent extends Component {
       schema,
     } = this.state;
     const {
-      label,
       required,
       error,
       name,
       value,
       disabled,
-      // dense,
-      placeholder,
       handleChange,
     } = this.props;
 
     return (
       <div>
-        <Button onClick={this.submitVariant}>Submit</Button>
-        <div className="variant-parser-wrapper">
+        <div className="variant-parser-wrapper paper">
           <TextField
             fullWidth
             error={error || invalidFlag}
-            label={label}
             required={required}
             name={name}
             onChange={(e) => { handleChange(e); this.refreshOptions(e); }}
-            placeholder={placeholder}
+            label={'HGVS nomenclature'}
             disabled={disabled}
             value={value}
           />
         </div>
-        <div className="paper">
+        <div className="paper parser-form-grid">
           {schema
             && (
               <FormTemplater
@@ -230,6 +224,15 @@ class VariantParserComponent extends Component {
               />
             )
           }
+        </div>
+        <div>
+          <Button
+            color="primary"
+            variant="raised"
+            onClick={this.submitVariant}
+          >
+            Submit
+          </Button>
         </div>
       </div>
     );

@@ -47,14 +47,13 @@ class AdvancedQueryView extends Component {
    */
   async componentDidMount() {
     const { history } = this.props;
-
     if (
       history.location
       && history.location.state
-      && history.location.state.body
-      && history.location.state.body.message
+      && history.location.state.message
     ) {
-      this.setState({ message: history.location.state.body.message });
+      const { message, name } = history.location.state;
+      this.setState({ message: `${name || ''}: ${message}` });
     }
 
     const schema = await api.getSchema();
@@ -115,7 +114,8 @@ class AdvancedQueryView extends Component {
     const newNodeClass = e.target.value;
     const editableProps = (util.getClass(newNodeClass || 'Ontology', schema)).properties;
     editableProps.forEach((prop) => {
-      const { name, type, defaultValue } = prop;
+      const { name, type } = prop;
+      const defaultValue = prop.default || '';
       if (form[name] === undefined) {
         if (type === 'boolean') {
           form[name] = defaultValue.toString() === 'true';

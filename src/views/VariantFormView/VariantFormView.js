@@ -8,7 +8,6 @@ class VariantFormView extends Component {
     super(props);
     this.state = {
       shorthandString: '',
-      name: 'chr1:y.p11.1_p12del',
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -18,18 +17,18 @@ class VariantFormView extends Component {
   }
 
   render() {
-    const { shorthandString, name } = this.state;
+    const { shorthandString } = this.state;
     return (
       <div className="variant-wrapper">
         <Paper elevation={4} className="paper variant-headline">
-          <Typography variant="headline">{shorthandString}Variant Form</Typography>
+          <Typography variant="headline">Variant Form</Typography>
         </Paper>
 
         <Paper elevation={4} className="paper variant-body">
           <VariantParserComponent
             handleChange={this.handleChange}
-            name="name"
-            value={name}
+            name="shorthandString"
+            value={shorthandString}
           />
         </Paper>
       </div>

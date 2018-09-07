@@ -33,18 +33,19 @@ class OntologyDetailView extends Component {
   /**
    * Initializes editing node and query on return.
    */
-  componentDidMount() {
+  async componentDidMount() {
     const { match } = this.props;
-    api.get(`/ontologies/${match.params.rid}?neighbors=3`).then((response) => {
+    try {
+      const response = await api.get(`/ontologies/${match.params.rid}?neighbors=3`);
       const node = jc.retrocycle(response).result;
       this.setState({ node });
-    }).catch((error) => {
+    } catch (error) {
       if (error.status === 401) {
         this.setState({ loginRedirect: true });
       } else {
         this.setState({ error });
       }
-    });
+    }
   }
 
   /**

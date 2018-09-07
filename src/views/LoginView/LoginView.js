@@ -66,28 +66,26 @@ class LoginView extends Component {
    * Makes authentication request to api.
    * @param {Event} e - Submit event.
    */
-  handleSubmit(e) {
+  async handleSubmit(e) {
     e.stopPropagation();
     e.preventDefault();
 
     const { username, password } = this.state;
     const { history, handleAuthenticate } = this.props;
 
-    api
-      .post('/token', {
+    try {
+      const response = await api.post('/token', {
         username,
         password,
-      })
-      .then((response) => {
-        auth.loadToken(response.kbToken);
-        handleAuthenticate();
-        history.push('/query');
-      })
-      .catch((error) => {
-        if (error.status === 401) {
-          this.setState({ invalid: true });
-        }
       });
+      auth.loadToken(response.kbToken);
+      handleAuthenticate();
+      history.push('/query');
+    } catch (error) {
+      if (error.status === 401) {
+        this.setState({ invalid: true });
+      }
+    }
   }
 
   /**

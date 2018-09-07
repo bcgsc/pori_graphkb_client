@@ -30,6 +30,7 @@ const LONG_DEBOUNCE_TIME = 600;
 
 const PROGRESS_SPINNER_SIZE = 20;
 const MAX_HEIGHT_FACTOR = 15;
+const ACTION_KEYCODES = [13, 16, 37, 38, 39, 40];
 
 /**
  * Autocomplete search component for querying ease of use. Text input component
@@ -73,8 +74,10 @@ class AutoSearchComponent extends Component {
    * @param {Event} e - user input event.
    */
   refreshOptions(e) {
-    this.setState({ loading: true, emptyFlag: false });
-    this.callApi(e.target.value);
+    if (!ACTION_KEYCODES.includes(e.keyCode)) {
+      this.setState({ loading: true, emptyFlag: false, lastRid: null });
+      this.callApi(e.target.value);
+    }
   }
 
   /**
@@ -82,23 +85,26 @@ class AutoSearchComponent extends Component {
    * with the property specified in component props similar to the input value.
    * @param {string} value - value to be sent to the api.
    */
-  callApi(value) {
+  async callApi(value) {
     const {
       limit,
       endpoint,
       property,
     } = this.props;
 
-    api.autoSearch(
-      endpoint,
-      property,
-      value,
-      limit,
-    ).then((response) => {
+    try {
+      const response = await api.autoSearch(
+        endpoint,
+        property,
+        value,
+        limit,
+      );
       const results = jc.retrocycle(response).result;
       const emptyFlag = !!(results.length === 0 && value);
       this.setState({ options: results, emptyFlag, loading: false });
-    }).catch(() => { });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   render() {
@@ -129,6 +135,7 @@ class AutoSearchComponent extends Component {
       inputValue,
       getItemProps,
       setState,
+      highlightedIndex,
       style,
     ) => options.map((item, index) => children(
       getItemProps,
@@ -136,6 +143,7 @@ class AutoSearchComponent extends Component {
       index,
       setState,
       style,
+      highlightedIndex,
     ));
 
     return (
@@ -163,6 +171,7 @@ class AutoSearchComponent extends Component {
           inputValue,
           setState,
           getMenuProps,
+          highlightedIndex,
         }) => (
           <div
             className="autosearch-wrapper"
@@ -225,7 +234,7 @@ class AutoSearchComponent extends Component {
                         id="autosearch-spinner"
                       />
                     )
-                    : autoSearchResults(inputValue, getItemProps, setState)}
+                    : autoSearchResults(inputValue, getItemProps, setState, highlightedIndex)}
                 </List>
               </Paper>
             </Popper>
@@ -316,7 +325,7 @@ AutoSearchComponent.defaultProps = {
   required: false,
   error: false,
   dense: false,
-  children: (getItemProps, item, index) => ( // TODO: change this to be more flexible
+  children: (getItemProps, item, index, s, t, highlightedIndex) => (
     <MenuItem
       {...getItemProps({
         key: item['@rid'],
@@ -324,6 +333,7 @@ AutoSearchComponent.defaultProps = {
         item,
       })}
       style={{ whiteSpace: 'normal', height: 'unset' }}
+      selected={highlightedIndex === index}
     >
       <span>
         {util.getPreview(item)}

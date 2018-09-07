@@ -9,11 +9,11 @@
     }
 }
 
-.positional-variant-wrapper {
-    column-count: 2;
-    padding: 0;
+.parser-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
     li {
-        display: inline-block;
-        width: 100%;
+        display: block;
     }
 }

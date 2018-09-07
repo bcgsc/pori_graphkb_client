@@ -22,7 +22,8 @@
         "no-param-reassign": "warn",
         "react/jsx-one-expression-per-line": 0,
         "prefer-destructuring": "warn",
-        "react/destructuring-assignment": "warn"
+        "react/destructuring-assignment": "warn",
+        "no-confusing-arrow": "warn"
     },
     "env": {
         "browser": true,

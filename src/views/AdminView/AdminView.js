@@ -464,7 +464,7 @@ class AdminView extends Component {
         .permissions[pKey][i] = (e.target.checked
           && !(isEdge && i === 1))
           && !(isAbstract && i !== 2)
-           ? 1 : 0;
+          ? 1 : 0;
     });
     this.setState({ newUserGroup, tempUserGroup });
   }
@@ -511,9 +511,9 @@ class AdminView extends Component {
         .filter(k => k !== '@class' && k !== '@type')
         .sort((a, b) => a > b ? 1 : -1);
       const list = (
-        <Table>
-          <TableHead>
-            <TableRow>
+        <Table className="admin-table">
+          <TableHead >
+            <TableRow id="admin-sticky-row">
               <TableCell padding="dense" />
               {PERMISSIONS.map(permission => (
                 <TableCell key={permission} padding="checkbox">
@@ -827,7 +827,7 @@ class AdminView extends Component {
               </IconButton>
             </div>
           </div>
-          <Table>
+          <Table className="admin-table">
             <TableHead>
               <TableRow id="admin-sticky-row">
                 <TableCell padding="checkbox">

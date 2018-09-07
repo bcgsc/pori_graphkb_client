@@ -508,7 +508,6 @@ class AdminView extends Component {
 
     const userGroupPanel = (userGroup, isEditing, newUser) => {
       const permissionKeys = Object.keys(userGroup.permissions)
-        .filter(k => k !== '@class' && k !== '@type')
         .sort((a, b) => a > b ? 1 : -1);
       const list = (
         <Table className="admin-table">

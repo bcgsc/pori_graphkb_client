@@ -203,11 +203,11 @@ class VariantParserComponent extends Component {
         <div className="variant-parser-wrapper paper">
 
           <FormControl
-            error={!!(error || invalidFlag)}
+            error={!!(error || invalidFlag) && value}
             fullWidth
           >
             <TextField
-              error={!!(error || invalidFlag)}
+              error={!!(error || invalidFlag) && value}
               required={required}
               name={name}
               onChange={(e) => { handleChange(e); this.refreshOptions(e); }}
@@ -215,7 +215,7 @@ class VariantParserComponent extends Component {
               disabled={disabled}
               value={value}
             />
-            {(error || invalidFlag)
+            {(error || invalidFlag) && value
               && <FormHelperText>{invalidFlag}</FormHelperText>
             }
           </FormControl>

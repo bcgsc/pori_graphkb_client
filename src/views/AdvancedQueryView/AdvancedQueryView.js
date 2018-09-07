@@ -92,7 +92,7 @@ class AdvancedQueryView extends Component {
 
           break;
         case 'boolean':
-          form[name] = defaultValue.toString() === 'true';
+          form[name] = (defaultValue || '').toString() === 'true';
           break;
         default:
           form[name] = name === 'name' ? (history.location.state || {}).name : defaultValue;

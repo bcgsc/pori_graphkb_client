@@ -35,5 +35,4 @@ Thumbs.db
 
 *.css
 src/index.css
-.eslintrc.json
 jsdoc/*

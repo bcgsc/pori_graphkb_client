@@ -15,3 +15,8 @@
         display: inline-block;
     }
 }
+
+#variant-form-submit {
+    display: flex;
+    flex-direction: row-reverse;
+}

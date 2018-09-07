@@ -8,6 +8,9 @@ import { Redirect } from 'react-router-dom';
 import * as jc from 'json-cycle';
 import NodeDetailComponent from '../../components/NodeDetailComponent/NodeDetailComponent';
 import api from '../../services/api';
+import config from '../../config.json';
+
+const { DEFAULT_NEIGHBORS } = config;
 
 /**
  * Fullscreen view for record details. Selects record with identifier passed in through
@@ -36,7 +39,7 @@ class NodeDetailView extends Component {
   async componentDidMount() {
     const { match } = this.props;
     try {
-      const response = await api.get(`/ontologies/${match.params.rid}?neighbors=3`);
+      const response = await api.get(`/ontologies/${match.params.rid}?neighbors=${DEFAULT_NEIGHBORS}`);
       const node = jc.retrocycle(response).result;
       this.setState({ node });
     } catch (error) {

@@ -546,19 +546,18 @@ class AdminView extends Component {
                     </TableCell>
                     {userGroup.permissions[permission].map((p, j) => (
                       <TableCell padding="checkbox" key={`${userGroup.name}${permission}${j.toString()}`}>
-                        <Checkbox
-                          onChange={() => this.handlePermissionsChange(
-                            permission,
-                            j, p,
-                            newUser,
-                          )}
-                          checked={!!p}
-                          disabled={
-                            !isEditing
-                            || (isEdge && j === 1)
-                            || (isAbstract && j !== 2)
-                          }
-                        />
+                        {(
+                          !(isEdge && j === 1)
+                          && !(isAbstract && j !== 2)
+                        ) && (
+                            <Checkbox
+                              onChange={() => this.handlePermissionsChange(
+                                permission,
+                                j, p,
+                                newUser,
+                              )}
+                              checked={!!p}
+                            />)}
                       </TableCell>
                     ))}
                   </TableRow>

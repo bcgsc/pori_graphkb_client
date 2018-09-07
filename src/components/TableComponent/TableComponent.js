@@ -70,6 +70,7 @@ class TableComponent extends Component {
       tempFilterIndex: '',
     };
 
+    this.clearFilters = this.clearFilters.bind(this);
     this.createTSV = this.createTSV.bind(this);
     this.openFilter = this.openFilter.bind(this);
     this.setRef = this.setRef.bind(this);
@@ -160,6 +161,12 @@ class TableComponent extends Component {
       tableHeadRefs[i] = ReactDOM.findDOMNode(node);
       this.setState({ tableHeadRefs });
     }
+  }
+
+  clearFilters() {
+    const { tableColumns } = this.state;
+    const columnFilterStrings = new Array(tableColumns.length).map(() => '');
+    this.setState({ columnFilterStrings });
   }
 
   /**
@@ -422,11 +429,17 @@ class TableComponent extends Component {
         }}
       >
         <MenuItem
+          onClick={() => { this.handleClose(); this.clearFilters(); }}
+          id="clear-filters"
+        >
+          Clear Filters
+        </MenuItem>
+        <MenuItem
           onClick={() => { this.handleClose(); handleGraphRedirect(); }}
           disabled={displayed.length === 0}
           id="view-as-graph"
         >
-          View selected as graph
+          View Selected in Graph
         </MenuItem>
         <DownloadFileComponent
           mediaType="text/tab-separated-values"
@@ -451,7 +464,7 @@ class TableComponent extends Component {
             onClick={() => { this.handleClose(); }}
             disabled={displayed.length === 0}
           >
-            Download selected as TSV
+            Download Selected as TSV
           </MenuItem>
         </DownloadFileComponent>
         <MenuItem

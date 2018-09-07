@@ -162,10 +162,10 @@ const getTSVRepresentation = (value, key) => {
 /**
  * Prepares a payload to be sent to the server for a POST, PATCH, or GET requst.
  * @param {Object} form - unprocessed form object containing user data.
- * @param {Array} editableProps - List of valid properties for given form.
+ * @param {Array} objectSchema - List of valid properties for given form.
  * @param {Array} exceptions - List of extra parameters not specified in editableProps.
  */
-const parsePayload = (form, editableProps, exceptions) => {
+const parsePayload = (form, objectSchema, exceptions) => {
   const payload = Object.assign({}, form);
   Object.keys(payload).forEach((key) => {
     if (!payload[key]) delete payload[key];
@@ -173,7 +173,7 @@ const parsePayload = (form, editableProps, exceptions) => {
     if (key.includes('.@rid')) {
       const nestedKey = key.split('.')[0];
       if (
-        (editableProps.find(p => p.name === nestedKey)
+        (objectSchema.find(p => p.name === nestedKey)
           || (exceptions && exceptions.find(p => p.name === nestedKey)))
         && payload[key]
       ) {
@@ -184,7 +184,7 @@ const parsePayload = (form, editableProps, exceptions) => {
       }
     }
     // Clears out all other unknown fields.
-    if (!editableProps.find(p => p.name === key)) {
+    if (!objectSchema.find(p => p.name === key)) {
       if (!exceptions || !exceptions.find(p => p.name === key)) {
         delete payload[key];
       }

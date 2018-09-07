@@ -127,9 +127,14 @@ class VariantParserComponent extends Component {
     }
 
     this.setState({ variant });
-
   }
 
+  /**
+   * Fired whenever the variant form fields (excluding the shorthand input) are
+   * modified. 
+   * @param {Event} e - user input event
+   * @param {string} nested - nested property key
+   */
   handleVariantChange(e, nested) {
     const { handleChange } = this.props;
     const { variant } = this.state;
@@ -170,6 +175,9 @@ class VariantParserComponent extends Component {
     this.setState({ variant });
   }
 
+  /**
+   * Submits a POST request to the server with current variant data.
+   */
   async submitVariant() {
     const { variant, positionalVariantSchema } = this.state;
     Object.keys(variant).forEach((k) => {

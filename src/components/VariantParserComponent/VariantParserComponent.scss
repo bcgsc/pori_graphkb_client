@@ -10,10 +10,8 @@
 }
 
 .parser-form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
+    column-count: 2;
     li {
-        display: block;
+        display: inline-block;
     }
 }

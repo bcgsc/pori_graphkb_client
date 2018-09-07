@@ -7,7 +7,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './VariantParserComponent.css';
 import {
-  TextField, Button, Paper,
+  TextField,
+  Button,
+  FormControl,
+  FormHelperText,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
 import _ from 'lodash';
@@ -22,7 +25,7 @@ class VariantParserComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      invalidFlag: false,
+      invalidFlag: '',
       variant: null,
       positionalVariantSchema: null,
     };
@@ -58,7 +61,7 @@ class VariantParserComponent extends Component {
    * @param {Event} e - user input event.
    */
   refreshOptions(e) {
-    this.setState({ invalidFlag: false });
+    this.setState({ invalidFlag: '' });
     this.parseString(e.target.value);
   }
 
@@ -87,9 +90,9 @@ class VariantParserComponent extends Component {
           } else if (cycled.length > 1) {
             // add multiple modals?
           } else if (cycled.length === 0) {
-            console.log(`Referenced ${name} term '${response[name]}' not found`);
+            console.log();
             this.setState({
-              invalidFlag: true,
+              invalidFlag: `Referenced ${name} term '${response[name]}' not found`,
             });
           }
         }
@@ -97,10 +100,8 @@ class VariantParserComponent extends Component {
       const newV = Object.assign(variant, _.omit(response, ...linkProps.map(prop => prop.name)));
       this.setState({ variant: newV });
     } catch (error) {
-      console.log(error);
-      const variant = util.initModel({}, positionalVariantSchema);
       this.setState({
-        variant, invalidFlag: true,
+        variant, invalidFlag: error.message,
       });
     }
   }
@@ -162,10 +163,9 @@ class VariantParserComponent extends Component {
       const shorthand = new kbp.variant.VariantNotation(filteredVariant);
       const newShorthand = kbp.variant.parse(shorthand.toString());
       handleChange({ target: { value: newShorthand.toString(), name: 'name' } });
-      this.setState({ invalidFlag: false });
+      this.setState({ invalidFlag: '' });
     } catch (error) {
-      console.log(error);
-      this.setState({ invalidFlag: true });
+      this.setState({ invalidFlag: error.message });
     }
     this.setState({ variant });
   }
@@ -201,16 +201,24 @@ class VariantParserComponent extends Component {
     return (
       <div>
         <div className="variant-parser-wrapper paper">
-          <TextField
+
+          <FormControl
+            error={!!(error || invalidFlag)}
             fullWidth
-            error={error || invalidFlag}
-            required={required}
-            name={name}
-            onChange={(e) => { handleChange(e); this.refreshOptions(e); }}
-            label={'HGVS nomenclature'}
-            disabled={disabled}
-            value={value}
-          />
+          >
+            <TextField
+              error={!!(error || invalidFlag)}
+              required={required}
+              name={name}
+              onChange={(e) => { handleChange(e); this.refreshOptions(e); }}
+              label={'HGVS nomenclature'}
+              disabled={disabled}
+              value={value}
+            />
+            {(error || invalidFlag)
+              && <FormHelperText>{invalidFlag}</FormHelperText>
+            }
+          </FormControl>
         </div>
         <div className="paper parser-form-grid">
           {schema

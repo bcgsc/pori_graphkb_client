@@ -20,7 +20,7 @@ describe('Query Page Test', () => {
       cy.wrap($li).contains('angiosarcoma');
     });
 
-    cy.get('div.droptions ul li:first span:first').click();
+    cy.get('div.droptions ul li:first span:first').click({ force: true });
 
     cy.get('input[type=text]').then((inputText) => {
       cy.get('#search-btn').click();
@@ -45,19 +45,35 @@ describe('Query Page Test', () => {
     cy.url().should('includes', '/query/advanced');
     cy.get('textarea[name=name]').type(name);
     cy.get('input[name=source]').type('ncit');
-    cy.get('ul li:first').click();
+    cy.get('div.droptions ul li:first').click();
     cy.get('textarea[name=sourceId]').type(sourceId);
     cy.get('textarea[name=longName]').type('!nothing?#)$(#$%');
     cy.get('textarea[name=sourceIdVersion]').type('!something');
     cy.get('input[name=limit]').type('100');
     cy.get('#search-button').click();
-    cy.url().should('includes', '/table?sourceId=ncit%3Ac113159&source=%2315%3A0&sourceIdVersion=!something&name=pneumonitis&longName=!nothing%3F%23)%24(%23%24%25&limit=100&activeOnly=true');
+    [
+      '/table',
+      'sourceId=ncit%3Ac113159',
+      'source=',
+      'sourceIdVersion=!something',
+      'name=pneumonitis',
+      'longName=!nothing%3F%23)%24(%23%24%25',
+      'limit=100',
+    ].forEach(t => cy.url().should('includes', t));
   });
 
   it('Other classes', () => {
     cy.contains('Advanced Search').click();
     cy.get('#class-adv').click();
-    const endpoints = ['Feature', 'AnatomicalEntity', 'Pathway', 'Therapy', 'Disease', 'Publication'];
+    const endpoints = [
+      'Feature',
+      'AnatomicalEntity',
+      'Pathway',
+      'Therapy',
+      'Disease',
+      'Publication',
+    ];
+
     endpoints.sort(
       () => {
         if (Math.random() > 0.5) {

@@ -521,7 +521,7 @@ class AdminView extends Component {
                 </TableCell>
               ))}
             </TableRow>
-            <TableRow id="admin-sticky-row">
+            <TableRow>
               <TableCell padding="dense" />
               {PERMISSIONS.map((p, i) => (
                 <TableCell key={p} padding="checkbox">

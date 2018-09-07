@@ -17,6 +17,9 @@ import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
 import util from '../../services/util';
 
+/**
+ * Templater component that generates input fields based off of a given schema.
+ */
 class FormTemplater extends Component {
   /**
    * Creates DOM models to be rendered.
@@ -170,6 +173,8 @@ class FormTemplater extends Component {
  * @param {Array} kbClass - Form object schema.
  * @param {Array} excludedProps - List of propstrings to be excluded from
  * generation.
+ * @param {string} fieldComponent - Component to pass to material UI ListItem
+ * component
  */
 FormTemplater.propTypes = {
   schema: PropTypes.object.isRequired,

@@ -1,3 +1,4 @@
+@import '../../globals';
 .feedback-wrapper {
     overflow: auto;
     height: 100%;
@@ -7,6 +8,10 @@
     left: 0;
     right: 0;
     bottom: 0;
+    a {
+        text-decoration: none;
+        color: $md-secondary-color;
+    }
 }
 
 .feedback {

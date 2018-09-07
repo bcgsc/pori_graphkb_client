@@ -564,7 +564,6 @@ class TableComponent extends Component {
         </Paper>
       </Popover>
     );
-
     return (
       <section className="data-table">
         {columnDialog}
@@ -622,7 +621,11 @@ class TableComponent extends Component {
                 .filter((n) => {
                   let flag = true;
                   columnFilterStrings.forEach((filt, i) => {
-                    if (!n[tableColumns[i].id].includes(filt)) {
+                    let cell = n[tableColumns[i].id] || '';
+                    if (cell && tableColumns[i].sortBy) {
+                      cell = cell[tableColumns[i].sortBy];
+                    }
+                    if (!cell.includes(filt)) {
                       flag = false;
                     }
                   });
@@ -756,10 +759,6 @@ TableComponent.propTypes = {
    */
   displayed: PropTypes.array.isRequired,
   /**
-   * @param {string} selectedId - Selected node identifier.
-   */
-  selectedId: PropTypes.string,
-  /**
    * @param {function} handleCheckAll - Method triggered when all rows are
    * checked.
    */
@@ -825,7 +824,6 @@ TableComponent.propTypes = {
 };
 
 TableComponent.defaultProps = {
-  selectedId: null,
   allProps: [],
   hidden: [],
   handleNewQuery: null,

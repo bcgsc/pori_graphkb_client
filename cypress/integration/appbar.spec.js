@@ -9,7 +9,7 @@ describe('App Bar Test', () => {
   });
 
   it('Query, add node, and logout buttons', () => {
-    cy.get('header button').each((button, i) => {
+    cy.get('div.drawer ul li').each((button, i) => {
       cy.wrap(button).click();
       if (i === 0) {
         cy.url().should('includes', '/query');

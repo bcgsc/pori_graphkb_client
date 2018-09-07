@@ -129,7 +129,6 @@ class NodeDetailComponent extends Component {
 
       const isOpen = nestedExpanded.includes(id);
 
-
       // TODO: handle case where field is array of objects that aren't edges.
       /*  ARRAY PROPERTY   */
       if (Array.isArray(value)) {

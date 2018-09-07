@@ -1,61 +1,118 @@
 @import "globals";
 $user-menu-width: 124px;
-
-.banner {
-    height: $banner-height;
-    flex-direction: row !important;
-    button {
-        margin: auto 0;
-        color: white;
-        animation: fade-in(0.2s);
-    }
-    button:disabled {
-        color: white;
-    }
-    .user-dropdown {
+$transition-speed: 0.3s;
+$drawer-width: 220px;
+$closed-drawer-width: 56px;
+$drawer-z-index: 100;
+$drawer-breakpoint: 768px;
+.App {
+    .banner {
+        height: $banner-height;
+        flex-direction: row !important;
+        transition: all #{$transition-speed};
         float: right;
-        margin: auto;
-        margin-right: 2%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        min-width: $user-menu-width;
-        div {
-            margin: auto 0;
-        }
-        .user-btn {
+        z-index: calc(#{$drawer-z-index} + 1);
+        left: 0;
+        .appbar-btn {
+            margin: auto 4px;
             color: white;
-            svg {
-                font-size: 32px;
-                margin-right: 4px;
+            animation: fade-in(0.2s);
+        }
+        .appbar-btn:disabled {
+            color: white;
+        }
+        .user-dropdown {
+            float: right;
+            margin: auto;
+            margin-right: 2%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: $user-menu-width;
+            div {
+                margin: auto 0;
             }
-            span aside {
+            .user-btn {
                 color: white;
+                svg {
+                    font-size: 32px;
+                    margin-right: 4px;
+                }
+                span aside {
+                    color: white;
+                }
+            }
+        }
+        .drawer-logo {
+            display: flex;
+            height: 24px;
+            height: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            img {
+                width: 24px;
+                height: 24px;
+                margin: auto 4px;
+                margin-right: 8px;
+            }
+            p {
+                margin: auto 0;
+            }
+            button {
+                margin: auto 4px;
             }
         }
     }
-}
-
-.user-menu {
-    width: $user-menu-width;
-}
-
-.content {
-    overflow-y: auto;
-    position: absolute;
-    top: $banner-height;
-    left: 0;
-    right: 0;
-    margin: auto;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.03);
-}
-
-.router-outlet {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 5px;
-    bottom: 0;
+    .user-menu {
+        width: $user-menu-width;
+    }
+    .content {
+        overflow-y: auto;
+        overflow-x: hidden;
+        position: absolute;
+        top: $banner-height;
+        left: $closed-drawer-width;
+        right: 0;
+        margin: auto;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.03);
+        transition: all #{$transition-speed};
+        @media (max-width: $drawer-breakpoint) {
+            left: 0;
+        }
+    }
+    .drawer-shift {
+        width: calc(100% - #{$drawer-width});
+        left: $drawer-width;
+        @media (max-width: $drawer-breakpoint) {
+            width: 0;
+            left: 100vw;
+        }
+    }
+    .router-outlet {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 5px;
+        bottom: 0;
+    }
+    .drawer {
+        width: $drawer-width;
+        z-index: $drawer-z-index;
+        transition: width #{$transition-speed};
+        animation: fade-in();
+        @media (max-width: $drawer-breakpoint) {
+            width: calc(100vw - 1px);
+        }
+    }
+    .drawer-closed {
+        width: $closed-drawer-width;
+        @media (max-width: $drawer-breakpoint) {
+            width: 0;
+        }
+    }
+    .no-drawer {
+        left: 0;
+    }
 }

@@ -20,7 +20,7 @@ describe('Query Page Test', () => {
       cy.wrap($li).contains('angiosarcoma');
     });
 
-    cy.get('div.droptions ul li:first span:first').click();
+    cy.get('div.droptions ul li:first span:first').click({ force: true });
 
     cy.get('input[type=text]').then((inputText) => {
       cy.get('#search-btn').click();
@@ -45,7 +45,7 @@ describe('Query Page Test', () => {
     cy.url().should('includes', '/query/advanced');
     cy.get('textarea[name=name]').type(name);
     cy.get('input[name=source]').type('ncit');
-    cy.get('ul li:first').click();
+    cy.get('div.droptions ul li:first').click();
     cy.get('textarea[name=sourceId]').type(sourceId);
     cy.get('textarea[name=longName]').type('!nothing?#)$(#$%');
     cy.get('textarea[name=sourceIdVersion]').type('!something');

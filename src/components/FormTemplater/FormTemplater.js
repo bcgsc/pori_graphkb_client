@@ -40,7 +40,8 @@ class FormTemplater extends Component {
       sort,
     } = this.props;
     const fields = [];
-    Object.values(kbClass || {}).forEach((property) => {
+
+    const formatFormField = (property) => {
       const {
         name,
         type,
@@ -48,10 +49,11 @@ class FormTemplater extends Component {
         linkedClass,
         description,
       } = property;
+
       if (!excludedProps.includes(name)) {
         // Radio group component for boolean types.
         if (type === 'boolean') {
-          fields.push(
+          return (
             <ListItem component={fieldComponent} key={name}>
               <FormControl
                 component="fieldset"
@@ -71,9 +73,10 @@ class FormTemplater extends Component {
                   <FormControlLabel value="false" control={<Radio />} label="No" />
                 </RadioGroup>
               </FormControl>
-            </ListItem>,
+            </ListItem>
           );
-        } else if (type === 'link') {
+        }
+        if (type === 'link') {
           // If type is a link to another record, must find that record in the
           // database and store its rid.
 
@@ -83,7 +86,7 @@ class FormTemplater extends Component {
             endpoint = linkedClass.route.slice(1);
           }
 
-          fields.push(
+          return (
             <ListItem component={fieldComponent} key={name}>
               <AutoSearchComponent
                 error={errorFields.includes(name)}
@@ -96,9 +99,10 @@ class FormTemplater extends Component {
                 required={mandatory}
                 property={!linkedClass ? ['name', 'sourceId'] : undefined}
               />
-            </ListItem>,
+            </ListItem>
           );
-        } else if (type === 'embedded') {
+        }
+        if (type === 'embedded') {
           let classSelector = null;
           const handleClassChange = onClassChange || onChange;
           if (util.isAbstract(linkedClass.name, schema)) {
@@ -119,7 +123,7 @@ class FormTemplater extends Component {
               </ResourceSelectComponent>
             );
           }
-          fields.push(
+          return (
             <ListItem component={fieldComponent} key={name}>
               {classSelector}
               <FormTemplater
@@ -131,48 +135,53 @@ class FormTemplater extends Component {
                 fieldComponent="div"
                 errorFields={errorFields.map(errorField => errorField.replace(`${name}.`, ''))}
               />
-            </ListItem>,
-          );
-        } else {
-          // For text fields, apply some final changes for number inputs.
-          let t;
-          let step;
-          if (type === 'string') {
-            t = 'text';
-          } else if (type === 'integer' || type === 'long') {
-            t = 'number';
-            step = 1;
-          }
-
-          fields.push(
-            <ListItem component={fieldComponent} key={name}>
-              <TextField
-                style={{ width: '100%' }}
-                label={util.antiCamelCase(name)}
-                value={model[name]}
-                onChange={onChange}
-                name={name}
-                type={t || ''}
-                step={step || ''}
-                required={mandatory}
-                multiline={t === 'text'}
-                error={errorFields.includes(name)}
-                InputProps={{
-                  endAdornment: description && (
-                    <InputAdornment position="end">
-                      <Tooltip title={description}>
-                        <HelpIcon color="primary" />
-                      </Tooltip>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </ListItem>,
+            </ListItem>
           );
         }
+
+        // For text fields, apply some final changes for number inputs.
+        let t;
+        let step;
+        if (type === 'string') {
+          t = 'text';
+        } else if (type === 'integer' || type === 'long') {
+          t = 'number';
+          step = 1;
+        }
+
+        return (
+          <ListItem component={fieldComponent} key={name}>
+            <TextField
+              style={{ width: '100%' }}
+              label={util.antiCamelCase(name)}
+              value={model[name]}
+              onChange={onChange}
+              name={name}
+              type={t || ''}
+              step={step || ''}
+              required={mandatory}
+              multiline={t === 'text'}
+              error={errorFields.includes(name)}
+              InputProps={{
+                endAdornment: description && (
+                  <InputAdornment position="end">
+                    <Tooltip title={description}>
+                      <HelpIcon color="primary" />
+                    </Tooltip>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </ListItem>
+        );
       }
+      return null;
+    };
+
+    Object.values(kbClass || {}).sort(sort).forEach((property) => {
+      fields.push(formatFormField(property));
     });
-    return fields.sort(sort);
+    return fields;
   }
 }
 

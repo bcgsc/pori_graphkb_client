@@ -29,9 +29,9 @@ import {
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
 import PersonIcon from '@material-ui/icons/Person';
-import DNAIcon from './components/DNAIcon/DNAIcon';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import DNAIcon from './components/DNAIcon/DNAIcon';
 import QueryView from './views/QueryView/QueryView';
 import AdvancedQueryView from './views/AdvancedQueryView/AdvancedQueryView';
 import DataView from './views/DataView/DataView';

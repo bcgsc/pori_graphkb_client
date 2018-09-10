@@ -106,6 +106,7 @@ class VariantParserComponent extends Component {
       const newV = Object.assign(variant, _.omit(response, ...linkProps.map(prop => prop.name)));
       this.setState({ variant: newV });
     } catch (error) {
+      console.log(error.input);
       this.setState({
         variant,
         invalidFlag: error.message,
@@ -199,6 +200,7 @@ class VariantParserComponent extends Component {
       this.setState({ invalidFlag: '' }, () => this.parseString(newShorthand.toString()));
     } catch (error) {
       // Error.field(s) ?
+      console.log(error.content);
       this.setState({
         invalidFlag: error.message,
         errorFields: [],
@@ -242,6 +244,7 @@ class VariantParserComponent extends Component {
       const order = [
         'type',
         'reference1',
+        'reference2',
         'break1Start',
         'break1End',
         'break2Start',

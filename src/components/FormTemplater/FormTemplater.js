@@ -57,7 +57,7 @@ class FormTemplater extends Component {
                 </FormLabel>
                 <RadioGroup
                   name={name}
-                  onChange={(e) => onChange(e)}
+                  onChange={e => onChange(e)}
                   value={model[name].toString()}
                   style={{ flexDirection: 'row' }}
                 >
@@ -93,7 +93,7 @@ class FormTemplater extends Component {
           );
         } else if (type === 'embedded') {
           let classSelector = null;
-          const handleClassChange  = onClassChange ? onClassChange : onChange;
+          const handleClassChange = onClassChange || onChange;
           if (util.isAbstract(linkedClass.name, schema)) {
             classSelector = (
               <ResourceSelectComponent

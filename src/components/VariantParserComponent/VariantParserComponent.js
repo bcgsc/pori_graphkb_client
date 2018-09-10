@@ -32,7 +32,7 @@ class VariantParserComponent extends Component {
     this.parseString = _.debounce(this.parseString.bind(this), DEBOUNCE_TIME);
     this.refreshOptions = this.refreshOptions.bind(this);
     this.handleVariantChange = this.handleVariantChange.bind(this);
-    this.onClassChange = this.onClassChange.bind(this);
+    this.handleClassChange = this.handleClassChange.bind(this);
     this.submitVariant = this.submitVariant.bind(this);
     this.updateShorthand = this.updateShorthand.bind(this);
   }
@@ -111,7 +111,7 @@ class VariantParserComponent extends Component {
    * @param {Event} e - new class selection event.
    * @param {string} nested - nested property key.
    */
-  onClassChange(e, nested) {
+  handleClassChange(e, nested) {
     const { schema, variant, positionalVariantSchema } = this.state;
     const { name, value } = e.target;
     variant[nested][name] = value;
@@ -123,7 +123,7 @@ class VariantParserComponent extends Component {
         .filter(p => p.linkedClass && p.linkedClass.name === abstractClass)
         .map(p => p.name);
       varKeys.forEach((key) => {
-        newClass.forEach(prop => {
+        newClass.forEach((prop) => {
           if (variant[key]['@class']) {
             variant[key]['@class'] = value;
             if (!variant[key][prop.name]) {
@@ -131,7 +131,7 @@ class VariantParserComponent extends Component {
             }
           }
         });
-      })
+      });
     } else {
       variant[nested] = { '@class': '' };
     }
@@ -141,7 +141,7 @@ class VariantParserComponent extends Component {
 
   /**
    * Fired whenever the variant form fields (excluding the shorthand input) are
-   * modified. 
+   * modified.
    * @param {Event} e - user input event
    * @param {string} nested - nested property key
    */
@@ -200,8 +200,10 @@ class VariantParserComponent extends Component {
         delete variant[k];
       }
     });
-    const payload = util.parsePayload(variant, positionalVariantSchema)
+    const payload = util.parsePayload(variant, positionalVariantSchema);
     const response = await api.post('/positionalvariants', payload);
+    alert('done');
+    console.log(response);
   }
 
   render() {
@@ -232,7 +234,7 @@ class VariantParserComponent extends Component {
               required={required}
               name={name}
               onChange={(e) => { handleChange(e); this.refreshOptions(e); }}
-              label={'HGVS nomenclature'}
+              label="HGVS nomenclature"
               disabled={disabled}
               value={value}
             />
@@ -247,7 +249,7 @@ class VariantParserComponent extends Component {
               <FormTemplater
                 schema={schema}
                 onChange={this.handleVariantChange}
-                onClassChange={this.onClassChange}
+                onClassChange={this.handleClassChange}
                 model={variant}
                 kbClass={positionalVariantSchema}
                 excludedProps={['break1Repr', 'break2Repr']}
@@ -276,17 +278,9 @@ VariantParserComponent.propTypes = {
    */
   name: PropTypes.string.isRequired,
   /**
-   * @param {string} placeholder - placeholder for text input.
-   */
-  placeholder: PropTypes.string,
-  /**
    * @param {string} value - specified value for two way binding.
    */
   value: PropTypes.string,
-  /**
-   * @param {string} label - label for text input.
-   */
-  label: PropTypes.string,
   /**
    * @param {bool} required - required flag for text input indicator.
    */
@@ -300,19 +294,16 @@ VariantParserComponent.propTypes = {
    */
   disabled: PropTypes.bool,
   /**
-   * @param {bool} dense - dense variant flag. If true, font sizes are decreased.
+   * @param {function} handleChange - function for passing state upwards on
+   * change of shorthand string.
    */
-  // dense: PropTypes.bool,
   handleChange: PropTypes.func.isRequired,
 };
 
 VariantParserComponent.defaultProps = {
-  placeholder: '',
   value: '',
-  label: '',
   required: false,
   error: false,
-  // dense: false,
   disabled: false,
 };
 

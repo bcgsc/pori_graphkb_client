@@ -24,13 +24,13 @@ class VariantFormView extends Component {
           <Typography variant="headline">Variant Form</Typography>
         </Paper>
 
-        <Paper elevation={4} className="paper variant-body">
+        <div className="variant-body">
           <VariantParserComponent
             handleChange={this.handleChange}
             name="shorthandString"
             value={shorthandString}
           />
-        </Paper>
+        </div>
       </div>
     );
   }

@@ -1,23 +1,30 @@
 @import '../../globals';
 .variant-parser-wrapper {
+    display: grid;
+    grid-row-gap: 1rem;
+  .variant-parser-shorthand {
     display: flex;
     height: 68px;
     button {
-        transition: all 0.15s;
+      transition: all 0.15s;
     }
     .variant-parser-collapsed {
-        transform: rotate(180deg);
+      transform: rotate(180deg);
     }
-}
+  }
 
-.parser-form-grid {
+  .parser-form-grid {
     column-count: 2;
-    li {
-        display: inline-block;
+    @media (max-width: 768px) {
+      column-count: unset;
     }
-}
+    li {
+      display: inline-block;
+    }
+  }
 
-#variant-form-submit {
+  #variant-form-submit {
     display: flex;
     flex-direction: row-reverse;
+  }
 }

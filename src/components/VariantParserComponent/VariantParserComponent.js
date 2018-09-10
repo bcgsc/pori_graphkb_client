@@ -11,6 +11,7 @@ import {
   Button,
   FormControl,
   FormHelperText,
+  Paper,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
 import _ from 'lodash';
@@ -106,7 +107,11 @@ class VariantParserComponent extends Component {
       const newV = Object.assign(variant, _.omit(response, ...linkProps.map(prop => prop.name)));
       this.setState({ variant: newV });
     } catch (error) {
-      console.log(error.input);
+      Object.keys((error.content && error.content.parsed) || {}).forEach((key) => {
+        if (variant[key] !== undefined && variant[key] !== null) {
+          variant[key] = error.content.parsed[key];
+        }
+      });
       this.setState({
         variant,
         invalidFlag: error.message,
@@ -184,8 +189,6 @@ class VariantParserComponent extends Component {
       Object.keys(variant).forEach((k) => {
         if (typeof variant[k] === 'object') {
           if (variant[k]['@class']) {
-            console.log(variant[k]['@class']);
-            console.log(kbp.position.CLASS_PREFIX[variant[k]['@class']]);
             filteredVariant[k] = variant[k];
             filteredVariant.prefix = kbp.position.CLASS_PREFIX[variant[k]['@class']];
           }
@@ -193,14 +196,13 @@ class VariantParserComponent extends Component {
           filteredVariant[k] = variant[k];
         }
       });
-      console.log(filteredVariant);
       shorthand = new kbp.variant.VariantNotation(filteredVariant);
       const newShorthand = kbp.variant.parse(shorthand.toString());
       handleChange({ target: { value: newShorthand.toString(), name } });
       this.setState({ invalidFlag: '' }, () => this.parseString(newShorthand.toString()));
     } catch (error) {
       // Error.field(s) ?
-      console.log(error.content);
+      console.log(shorthand.toString());
       this.setState({
         invalidFlag: error.message,
         errorFields: [],
@@ -263,8 +265,8 @@ class VariantParserComponent extends Component {
     };
 
     return (
-      <div>
-        <div className="variant-parser-wrapper paper">
+      <div className="variant-parser-wrapper">
+        <Paper elevation={4} className="variant-parser-shorthand paper">
           <FormControl
             error={!!((error || invalidFlag) && value)}
             fullWidth
@@ -282,8 +284,8 @@ class VariantParserComponent extends Component {
               && <FormHelperText>{invalidFlag}</FormHelperText>
             }
           </FormControl>
-        </div>
-        <div className="paper parser-form-grid">
+        </Paper>
+        <Paper elevation={4} className="paper parser-form-grid">
           {schema
             && (
               <FormTemplater
@@ -295,11 +297,15 @@ class VariantParserComponent extends Component {
                 excludedProps={['break1Repr', 'break2Repr']}
                 errorFields={errorFields}
                 sort={sortFields}
+                groups={{
+                  break1: ['break1Start', 'break1End'],
+                  break2: ['break2Start', 'break2End'],
+                }}
               />
             )
           }
-        </div>
-        <div id="variant-form-submit">
+        </Paper>
+        <Paper className="paper" elevation={4} id="variant-form-submit">
           <Button
             color="primary"
             variant="raised"
@@ -307,7 +313,7 @@ class VariantParserComponent extends Component {
           >
             Submit
           </Button>
-        </div>
+        </Paper>
       </div>
     );
   }

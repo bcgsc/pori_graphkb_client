@@ -37,6 +37,7 @@ class FormTemplater extends Component {
       excludedProps,
       fieldComponent,
       errorFields,
+      sort,
     } = this.props;
     const fields = [];
     Object.values(kbClass || {}).forEach((property) => {
@@ -171,7 +172,7 @@ class FormTemplater extends Component {
         }
       }
     });
-    return fields;
+    return fields.sort(sort);
   }
 }
 
@@ -184,6 +185,9 @@ class FormTemplater extends Component {
  * generation.
  * @param {string} fieldComponent - Component to pass to material UI ListItem
  * component
+ * @param {Array} errorFields - list of field keys that are causing errors in
+ * parent component.
+ * @param {function} sort - Sorting function for form fields.
  */
 FormTemplater.propTypes = {
   schema: PropTypes.object.isRequired,
@@ -194,6 +198,7 @@ FormTemplater.propTypes = {
   excludedProps: PropTypes.array,
   fieldComponent: PropTypes.string,
   errorFields: PropTypes.array,
+  sort: PropTypes.func,
 };
 
 FormTemplater.defaultProps = {
@@ -202,6 +207,7 @@ FormTemplater.defaultProps = {
   onClassChange: null,
   fieldComponent: 'li',
   errorFields: [],
+  sort: () => 1,
 };
 
 export default FormTemplater;

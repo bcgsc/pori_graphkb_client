@@ -201,9 +201,7 @@ class VariantParserComponent extends Component {
       }
     });
     const payload = util.parsePayload(variant, positionalVariantSchema);
-    const response = await api.post('/positionalvariants', payload);
-    alert('done');
-    console.log(response);
+    await api.post('/positionalvariants', payload);
   }
 
   render() {

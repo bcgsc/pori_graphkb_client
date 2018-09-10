@@ -49,14 +49,6 @@ class VariantParserComponent extends Component {
   }
 
   /**
-   * Cancels debounce method to avoid memory leaks.
-   */
-  componentWillUnmount() {
-    this.parseString.cancel();
-    this.render = null;
-  }
-
-  /**
    * Calls api with user input value as parameter.
    * @param {Event} e - user input event.
    */
@@ -204,7 +196,7 @@ class VariantParserComponent extends Component {
       shorthand = new kbp.variant.VariantNotation(filteredVariant);
       const newShorthand = kbp.variant.parse(shorthand.toString());
       handleChange({ target: { value: newShorthand.toString(), name } });
-      this.setState({ invalidFlag: '' });
+      this.setState({ invalidFlag: '' }, () => this.parseString(newShorthand.toString()));
     } catch (error) {
       // Error.field(s) ?
       this.setState({

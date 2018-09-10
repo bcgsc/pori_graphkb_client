@@ -1,0 +1,12 @@
+.form-templater-group-wrapper{
+  display: inline-block;
+  width: 100%;
+  .form-templater-row-grid {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr;
+    @media (max-width: 425px) {
+      display: block;
+    }
+  }
+}

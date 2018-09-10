@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import './FormTemplater.css';
 import {
   ListItem,
   FormControl,
@@ -38,10 +39,12 @@ class FormTemplater extends Component {
       fieldComponent,
       errorFields,
       sort,
+      groups,
     } = this.props;
     const fields = [];
 
     const formatFormField = (property) => {
+      if (!property) return null;
       const {
         name,
         type,
@@ -133,6 +136,7 @@ class FormTemplater extends Component {
               excludedProps={['@class']}
               fieldComponent="div"
               errorFields={errorFields.map(errorField => errorField.replace(`${name}.`, ''))}
+              groups={groups}
             />
           </ListItem>
         );
@@ -174,13 +178,31 @@ class FormTemplater extends Component {
         </ListItem>
       );
     };
-
-    Object.values(kbClass || {})
+    const completedGroups = {};
+    const sortedProps = Object.values(kbClass || {})
       .filter(p => !excludedProps.includes(p.name))
-      .sort(sort)
-      .forEach((property) => {
-        fields.push(formatFormField(property));
+      .sort(sort);
+
+    sortedProps.forEach((property) => {
+      Object.keys(groups).forEach((key) => {
+        if (
+          groups[key].includes(property.name)
+          && !Object.values(completedGroups).some(g => g.includes(property.name))
+        ) {
+          fields.push((
+            <div className="form-templater-group-wrapper" key={key}>
+              <div className="form-templater-row-grid">
+                {groups[key].map(k => formatFormField(sortedProps.find(p => p.name === k)))}
+              </div>
+            </div>
+          ));
+          completedGroups[key] = groups[key].slice();
+        }
       });
+      if (!Object.values(completedGroups).some(g => g.includes(property.name))) {
+        fields.push(formatFormField(property));
+      }
+    });
     return fields;
   }
 }

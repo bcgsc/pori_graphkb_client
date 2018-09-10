@@ -5,12 +5,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './ResourceSelectComponent.css';
-import {
-  InputLabel,
-  MenuItem,
-  FormControl,
-  Select,
-} from '@material-ui/core';
+import { InputLabel, MenuItem, FormControl, Select } from '@material-ui/core';
 
 const identifier = Math.random() * 100;
 
@@ -42,15 +37,7 @@ function ResourceSelectComponent(props) {
   const resourcesDisplay = resources.map(resource => children(resource));
 
   return (
-    <FormControl
-      className="resource-select"
-      style={{
-        width: '100%',
-        minWidth: `${label.length * 16}px`,
-        maxWidth: '100%',
-      }}
-      id={id}
-    >
+    <FormControl className="resource-select" id={id}>
       <InputLabel
         htmlFor={`resource-select${identifier}`}
         required={required}

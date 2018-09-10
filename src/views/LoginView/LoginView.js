@@ -41,7 +41,7 @@ class LoginView extends Component {
   componentDidMount() {
     const { history, handleLogOut } = this.props;
     const { timedout } = history.location.state || {};
-    if (!auth.getToken()) {
+    if (!auth.getToken() || auth.isExpired()) {
       handleLogOut();
     }
     this.setState({ timedout: !!timedout });

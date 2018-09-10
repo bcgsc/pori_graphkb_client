@@ -73,7 +73,7 @@ class VariantParserComponent extends Component {
    * @param {string} value - value to be sent to the api.
    */
   async parseString(value) {
-    const { variant, positionalVariantSchema } = this.state;
+    const { variant, positionalVariantSchema, schema } = this.state;
     try {
       const response = kbp.variant.parse(value.trim());
       // Split response into link data and non-link data
@@ -96,6 +96,19 @@ class VariantParserComponent extends Component {
               invalidFlag: `Referenced ${name} term '${response[name]}' not found`,
             });
           }
+        }
+      });
+
+      const nestProps = Object.values(positionalVariantSchema)
+        .filter(prop => prop.type === 'embedded');
+
+      nestProps.forEach((prop) => {
+        const { name } = prop;
+        if (response[name] && response[name]['@class']) {
+          (util.getClass(response[name]['@class'], schema)).properties
+            .forEach((classProp) => {
+              response[name][classProp.name] = response[name][classProp.name] || '';
+            });
         }
       });
       const newV = Object.assign(variant, _.omit(response, ...linkProps.map(prop => prop.name)));
@@ -172,25 +185,33 @@ class VariantParserComponent extends Component {
   updateShorthand() {
     const { variant } = this.state;
     const { handleChange, name } = this.props;
+    let shorthand = '';
     try {
       const filteredVariant = {};
       Object.keys(variant).forEach((k) => {
         if (typeof variant[k] === 'object') {
           if (variant[k]['@class']) {
+            console.log(variant[k]['@class']);
+            console.log(kbp.position.CLASS_PREFIX[variant[k]['@class']]);
             filteredVariant[k] = variant[k];
             filteredVariant.prefix = kbp.position.CLASS_PREFIX[variant[k]['@class']];
           }
-        } else {
+        } else if (k !== 'prefix') {
           filteredVariant[k] = variant[k];
         }
       });
-      const shorthand = new kbp.variant.VariantNotation(filteredVariant);
+      console.log(filteredVariant);
+      shorthand = new kbp.variant.VariantNotation(filteredVariant);
       const newShorthand = kbp.variant.parse(shorthand.toString());
       handleChange({ target: { value: newShorthand.toString(), name } });
       this.setState({ invalidFlag: '' });
     } catch (error) {
       // Error.field(s) ?
-      this.setState({ invalidFlag: error.message, errorFields: [] });
+      this.setState({
+        invalidFlag: error.message,
+        errorFields: [],
+      });
+      handleChange({ target: { value: shorthand.toString(), name } });
     }
   }
 

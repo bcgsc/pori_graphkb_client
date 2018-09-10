@@ -19,8 +19,6 @@ import FormTemplater from '../FormTemplater/FormTemplater';
 import api from '../../services/api';
 import util from '../../services/util';
 
-const DEBOUNCE_TIME = 300;
-
 class VariantParserComponent extends Component {
   constructor(props) {
     super(props);
@@ -30,7 +28,7 @@ class VariantParserComponent extends Component {
       positionalVariantSchema: null,
       errorFields: [],
     };
-    this.parseString = _.debounce(this.parseString.bind(this), DEBOUNCE_TIME);
+    this.parseString = this.parseString.bind(this);
     this.refreshOptions = this.refreshOptions.bind(this);
     this.handleVariantChange = this.handleVariantChange.bind(this);
     this.handleClassChange = this.handleClassChange.bind(this);
@@ -107,7 +105,9 @@ class VariantParserComponent extends Component {
         if (response[name] && response[name]['@class']) {
           (util.getClass(response[name]['@class'], schema)).properties
             .forEach((classProp) => {
-              response[name][classProp.name] = response[name][classProp.name] || '';
+              response[name][classProp.name] = response[name][classProp.name] === undefined
+                || response[name][classProp.name] === null
+                ? '' : response[name][classProp.name];
             });
         }
       });

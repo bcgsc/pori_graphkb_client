@@ -28,6 +28,7 @@ class VariantParserComponent extends Component {
       invalidFlag: '',
       variant: null,
       positionalVariantSchema: null,
+      errorFields: [],
     };
     this.parseString = _.debounce(this.parseString.bind(this), DEBOUNCE_TIME);
     this.refreshOptions = this.refreshOptions.bind(this);
@@ -101,7 +102,9 @@ class VariantParserComponent extends Component {
       this.setState({ variant: newV });
     } catch (error) {
       this.setState({
-        variant, invalidFlag: error.message,
+        variant,
+        invalidFlag: error.message,
+        errorFields: [],
       });
     }
   }
@@ -186,7 +189,8 @@ class VariantParserComponent extends Component {
       handleChange({ target: { value: newShorthand.toString(), name } });
       this.setState({ invalidFlag: '' });
     } catch (error) {
-      this.setState({ invalidFlag: error.message });
+      // Error.field(s) ?
+      this.setState({ invalidFlag: error.message, errorFields: [] });
     }
   }
 
@@ -210,6 +214,7 @@ class VariantParserComponent extends Component {
       variant,
       positionalVariantSchema,
       schema,
+      errorFields,
     } = this.state;
     const {
       required,
@@ -251,6 +256,7 @@ class VariantParserComponent extends Component {
                 model={variant}
                 kbClass={positionalVariantSchema}
                 excludedProps={['break1Repr', 'break2Repr']}
+                errorFields={errorFields}
               />
             )
           }
@@ -260,7 +266,6 @@ class VariantParserComponent extends Component {
             color="primary"
             variant="raised"
             onClick={this.submitVariant}
-
           >
             Submit
           </Button>

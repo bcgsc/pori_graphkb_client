@@ -238,6 +238,27 @@ class VariantParserComponent extends Component {
       handleChange,
     } = this.props;
 
+    const sortFields = (a, b) => {
+      const order = [
+        'type',
+        'reference1',
+        'break1Start',
+        'break1End',
+        'break2Start',
+        'break2End',
+      ];
+      if (order.indexOf(b.name) === -1) {
+        return -1;
+      }
+      if (order.indexOf(a.name) === -1) {
+        return 1;
+      }
+      if (order.indexOf(a.name) < order.indexOf(b.name)) {
+        return -1;
+      }
+      return 1;
+    };
+
     return (
       <div>
         <div className="variant-parser-wrapper paper">
@@ -270,6 +291,7 @@ class VariantParserComponent extends Component {
                 kbClass={positionalVariantSchema}
                 excludedProps={['break1Repr', 'break2Repr']}
                 errorFields={errorFields}
+                sort={sortFields}
               />
             )
           }

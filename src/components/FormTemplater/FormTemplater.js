@@ -36,6 +36,7 @@ class FormTemplater extends Component {
       onClassChange,
       excludedProps,
       fieldComponent,
+      errorFields,
     } = this.props;
     const fields = [];
     Object.values(kbClass || {}).forEach((property) => {
@@ -51,7 +52,11 @@ class FormTemplater extends Component {
         if (type === 'boolean') {
           fields.push(
             <ListItem component={fieldComponent} key={name}>
-              <FormControl component="fieldset" required={mandatory}>
+              <FormControl
+                component="fieldset"
+                required={mandatory}
+                error={errorFields.includes(name)}
+              >
                 <FormLabel>
                   {util.antiCamelCase(name)}
                 </FormLabel>
@@ -80,6 +85,7 @@ class FormTemplater extends Component {
           fields.push(
             <ListItem component={fieldComponent} key={name}>
               <AutoSearchComponent
+                error={errorFields.includes(name)}
                 value={model[name]}
                 onChange={onChange}
                 name={name}
@@ -102,6 +108,7 @@ class FormTemplater extends Component {
                 resources={[{ name: '' }, ...util.getSubClasses(linkedClass.name, schema)]}
                 label={`${name} Class`}
                 value={model[name]['@class']}
+                error={errorFields.includes(name)}
               >
                 {resource => (
                   <MenuItem key={resource.name} value={resource.name}>
@@ -121,6 +128,7 @@ class FormTemplater extends Component {
                 model={model[name]}
                 excludedProps={['@class']}
                 fieldComponent="div"
+                errorFields={errorFields.map(errorField => errorField.replace(`${name}.`, ''))}
               />
             </ListItem>,
           );
@@ -147,6 +155,7 @@ class FormTemplater extends Component {
                 step={step || ''}
                 required={mandatory}
                 multiline={t === 'text'}
+                error={errorFields.includes(name)}
                 InputProps={{
                   endAdornment: description && (
                     <InputAdornment position="end">
@@ -184,6 +193,7 @@ FormTemplater.propTypes = {
   kbClass: PropTypes.any,
   excludedProps: PropTypes.array,
   fieldComponent: PropTypes.string,
+  errorFields: PropTypes.array,
 };
 
 FormTemplater.defaultProps = {
@@ -191,6 +201,7 @@ FormTemplater.defaultProps = {
   kbClass: {},
   onClassChange: null,
   fieldComponent: 'li',
+  errorFields: [],
 };
 
 export default FormTemplater;

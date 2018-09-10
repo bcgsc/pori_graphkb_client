@@ -50,137 +50,137 @@ class FormTemplater extends Component {
         description,
       } = property;
 
-      if (!excludedProps.includes(name)) {
-        // Radio group component for boolean types.
-        if (type === 'boolean') {
-          return (
-            <ListItem component={fieldComponent} key={name}>
-              <FormControl
-                component="fieldset"
-                required={mandatory}
-                error={errorFields.includes(name)}
-              >
-                <FormLabel>
-                  {util.antiCamelCase(name)}
-                </FormLabel>
-                <RadioGroup
-                  name={name}
-                  onChange={e => onChange(e)}
-                  value={model[name].toString()}
-                  style={{ flexDirection: 'row' }}
-                >
-                  <FormControlLabel value="true" control={<Radio />} label="Yes" />
-                  <FormControlLabel value="false" control={<Radio />} label="No" />
-                </RadioGroup>
-              </FormControl>
-            </ListItem>
-          );
-        }
-        if (type === 'link') {
-          // If type is a link to another record, must find that record in the
-          // database and store its rid.
-
-          // Decide which endpoint to query.
-          let endpoint;
-          if (linkedClass) {
-            endpoint = linkedClass.route.slice(1);
-          }
-
-          return (
-            <ListItem component={fieldComponent} key={name}>
-              <AutoSearchComponent
-                error={errorFields.includes(name)}
-                value={model[name]}
-                onChange={onChange}
+      // Radio group component for boolean types.
+      if (type === 'boolean') {
+        return (
+          <ListItem component={fieldComponent} key={name}>
+            <FormControl
+              component="fieldset"
+              required={mandatory}
+              error={errorFields.includes(name)}
+            >
+              <FormLabel>
+                {util.antiCamelCase(name)}
+              </FormLabel>
+              <RadioGroup
                 name={name}
-                label={util.antiCamelCase(name)}
-                limit={30}
-                endpoint={endpoint}
-                required={mandatory}
-                property={!linkedClass ? ['name', 'sourceId'] : undefined}
-              />
-            </ListItem>
-          );
-        }
-        if (type === 'embedded') {
-          let classSelector = null;
-          const handleClassChange = onClassChange || onChange;
-          if (util.isAbstract(linkedClass.name, schema)) {
-            classSelector = (
-              <ResourceSelectComponent
-                name="@class"
-                onChange={e => handleClassChange(e, name)}
-                resources={[{ name: '' }, ...util.getSubClasses(linkedClass.name, schema)]}
-                label={`${name} Class`}
-                value={model[name]['@class']}
-                error={errorFields.includes(name)}
+                onChange={e => onChange(e)}
+                value={model[name].toString()}
+                style={{ flexDirection: 'row' }}
               >
-                {resource => (
-                  <MenuItem key={resource.name} value={resource.name}>
-                    {resource.name || 'None'}
-                  </MenuItem>
-                )}
-              </ResourceSelectComponent>
-            );
-          }
-          return (
-            <ListItem component={fieldComponent} key={name}>
-              {classSelector}
-              <FormTemplater
-                onChange={e => onChange(e, name)}
-                schema={schema}
-                kbClass={(util.getClass(model[name]['@class'], schema)).properties}
-                model={model[name]}
-                excludedProps={['@class']}
-                fieldComponent="div"
-                errorFields={errorFields.map(errorField => errorField.replace(`${name}.`, ''))}
-              />
-            </ListItem>
-          );
-        }
+                <FormControlLabel value="true" control={<Radio />} label="Yes" />
+                <FormControlLabel value="false" control={<Radio />} label="No" />
+              </RadioGroup>
+            </FormControl>
+          </ListItem>
+        );
+      }
+      if (type === 'link') {
+        // If type is a link to another record, must find that record in the
+        // database and store its rid.
 
-        // For text fields, apply some final changes for number inputs.
-        let t;
-        let step;
-        if (type === 'string') {
-          t = 'text';
-        } else if (type === 'integer' || type === 'long') {
-          t = 'number';
-          step = 1;
+        // Decide which endpoint to query.
+        let endpoint;
+        if (linkedClass) {
+          endpoint = linkedClass.route.slice(1);
         }
 
         return (
           <ListItem component={fieldComponent} key={name}>
-            <TextField
-              style={{ width: '100%' }}
-              label={util.antiCamelCase(name)}
+            <AutoSearchComponent
+              error={errorFields.includes(name)}
               value={model[name]}
               onChange={onChange}
               name={name}
-              type={t || ''}
-              step={step || ''}
+              label={util.antiCamelCase(name)}
+              limit={30}
+              endpoint={endpoint}
               required={mandatory}
-              multiline={t === 'text'}
-              error={errorFields.includes(name)}
-              InputProps={{
-                endAdornment: description && (
-                  <InputAdornment position="end">
-                    <Tooltip title={description}>
-                      <HelpIcon color="primary" />
-                    </Tooltip>
-                  </InputAdornment>
-                ),
-              }}
+              property={!linkedClass ? ['name', 'sourceId'] : undefined}
             />
           </ListItem>
         );
       }
-      return null;
+      if (type === 'embedded') {
+        let classSelector = null;
+        const handleClassChange = onClassChange || onChange;
+        if (util.isAbstract(linkedClass.name, schema)) {
+          classSelector = (
+            <ResourceSelectComponent
+              name="@class"
+              onChange={e => handleClassChange(e, name)}
+              resources={[{ name: '' }, ...util.getSubClasses(linkedClass.name, schema)]}
+              label={`${name} Class`}
+              value={model[name]['@class']}
+              error={errorFields.includes(name)}
+            >
+              {resource => (
+                <MenuItem key={resource.name} value={resource.name}>
+                  {resource.name || 'None'}
+                </MenuItem>
+              )}
+            </ResourceSelectComponent>
+          );
+        }
+        return (
+          <ListItem component={fieldComponent} key={name}>
+            {classSelector}
+            <FormTemplater
+              onChange={e => onChange(e, name)}
+              schema={schema}
+              kbClass={(util.getClass(model[name]['@class'], schema)).properties}
+              model={model[name]}
+              excludedProps={['@class']}
+              fieldComponent="div"
+              errorFields={errorFields.map(errorField => errorField.replace(`${name}.`, ''))}
+            />
+          </ListItem>
+        );
+      }
+
+      // For text fields, apply some final changes for number inputs.
+      let t;
+      let step;
+      if (type === 'string') {
+        t = 'text';
+      } else if (type === 'integer' || type === 'long') {
+        t = 'number';
+        step = 1;
+      }
+
+      return (
+        <ListItem component={fieldComponent} key={name}>
+          <TextField
+            style={{ width: '100%' }}
+            label={util.antiCamelCase(name)}
+            value={model[name]}
+            onChange={onChange}
+            name={name}
+            type={t || ''}
+            step={step || ''}
+            required={mandatory}
+            multiline={t === 'text'}
+            error={errorFields.includes(name)}
+            InputProps={{
+              endAdornment: description && (
+                <InputAdornment position="end">
+                  <Tooltip title={description}>
+                    <HelpIcon color="primary" />
+                  </Tooltip>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </ListItem>
+      );
     };
 
-    Object.values(kbClass || {}).sort(sort).forEach((property) => {
-      fields.push(formatFormField(property));
-    });
+    Object.values(kbClass || {})
+      .filter(p => !excludedProps.includes(p.name))
+      .sort(sort)
+      .forEach((property) => {
+        fields.push(formatFormField(property));
+      });
     return fields;
   }
 }

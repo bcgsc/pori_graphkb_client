@@ -345,6 +345,10 @@ VariantParserComponent.propTypes = {
    * change of shorthand string.
    */
   handleChange: PropTypes.func.isRequired,
+  /**
+   * @param {function} handleFinish - function for handling form finishing.
+   */
+  handleFinish: PropTypes.func.isRequired,
 };
 
 VariantParserComponent.defaultProps = {

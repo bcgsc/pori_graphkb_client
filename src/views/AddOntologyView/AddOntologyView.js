@@ -15,7 +15,7 @@ class AddOntologyView extends Component {
   constructor(props) {
     super(props);
 
-    this.handleNodeFinish = this.handleNodeFinish.bind(this);
+    this.handleFinish = this.handleFinish.bind(this);
   }
 
   /**
@@ -30,7 +30,7 @@ class AddOntologyView extends Component {
     return (
       <OntologyFormComponent
         variant="add"
-        handleNodeFinish={this.handleNodeFinish}
+        handleFinish={this.handleFinish}
       />
     );
   }

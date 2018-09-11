@@ -495,7 +495,7 @@ class OntologyFormComponent extends Component {
       deletedSubsets,
       schema,
     } = this.state;
-    const { variant, handleNodeFinish } = this.props;
+    const { variant, handleFinish } = this.props;
 
     // Wait for form to get initialized
     if (!form) return null;
@@ -583,7 +583,7 @@ class OntologyFormComponent extends Component {
     const drawer = (
       <Drawer
         open={notificationDrawerOpen}
-        onClose={handleNodeFinish}
+        onClose={handleFinish}
         anchor="bottom"
         classes={{ paper: 'paper' }}
       >
@@ -597,7 +597,7 @@ class OntologyFormComponent extends Component {
           </div>
           <Button
             color="secondary"
-            onClick={handleNodeFinish}
+            onClick={handleFinish}
             disabled={loading}
             variant="raised"
             size="large"
@@ -624,7 +624,7 @@ class OntologyFormComponent extends Component {
               <div className="form-cancel-btn">
                 <Button
                   color="default"
-                  onClick={handleNodeFinish}
+                  onClick={handleFinish}
                   variant="outlined"
                 >
                   Cancel
@@ -884,12 +884,12 @@ OntologyFormComponent.propTypes = {
    * @param {function} handleNodeFinish - parent method triggered when node is
    * edited or deleted.
    */
-  handleNodeFinish: PropTypes.func,
+  handleFinish: PropTypes.func,
 };
 
 OntologyFormComponent.defaultProps = {
   variant: 'edit',
-  handleNodeFinish: null,
+  handleFinish: null,
   node: null,
 };
 

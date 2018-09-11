@@ -23,7 +23,7 @@ class EditOntologyView extends Component {
       node: null,
     };
 
-    this.handleNodeFinish = this.handleNodeFinish.bind(this);
+    this.handleFinish = this.handleFinish.bind(this);
   }
 
   /**
@@ -40,7 +40,7 @@ class EditOntologyView extends Component {
   /**
    * Sets completed flag to navigate back to previous query.
    */
-  handleNodeFinish() {
+  handleFinish() {
     const { history } = this.props;
     history.push('/query');
   }
@@ -56,7 +56,7 @@ class EditOntologyView extends Component {
         <OntologyFormComponent
           variant="edit"
           node={node}
-          handleNodeFinish={this.handleNodeFinish}
+          handleFinish={this.handleFinish}
         />
       );
     }

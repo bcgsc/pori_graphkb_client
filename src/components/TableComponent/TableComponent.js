@@ -195,15 +195,6 @@ class TableComponent extends Component {
     return rows.join('\n');
   }
 
-  /**
-   * Returns true if node identifier is the currently selected id.
-   * @param {string} rid - Target node identifier.
-   */
-  isSelected(rid) {
-    const { selectedId } = this.props;
-    return selectedId === rid;
-  }
-
   openFilter(i) {
     const { tableHeadRefs } = this.state;
     this.setState({ filterPopoverNode: tableHeadRefs[i], tempFilterIndex: i });
@@ -211,6 +202,7 @@ class TableComponent extends Component {
 
   updateFilterStrings(e) {
     const { columnFilterStrings, tempFilterIndex } = this.state;
+    console.log(columnFilterStrings, tempFilterIndex);
     columnFilterStrings[tempFilterIndex] = e.target.value;
     this.setState({ columnFilterStrings });
   }
@@ -645,7 +637,7 @@ class TableComponent extends Component {
                   return flag;
                 })
                 .map((n) => {
-                  const isSelected = this.isSelected(n['@rid']);
+                  const isSelected = displayed.includes(n['@rid']);
                   const active = toggle === n['@rid'];
                   const detail = active ? (
                     <TableRow>

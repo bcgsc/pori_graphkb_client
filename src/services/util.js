@@ -6,7 +6,7 @@
 import * as jc from 'json-cycle';
 import config from '../config.json';
 
-const { DEFAULT_PROPS } = config;
+const { DEFAULT_PROPS, PERMISSIONS } = config;
 const { PALLETE_SIZES } = config.GRAPH_DEFAULTS;
 const { NODE_INIT_RADIUS } = config.GRAPH_PROPERTIES;
 const ACRONYMS = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
@@ -356,6 +356,52 @@ const getColor = (obj, objColor, objColors) => {
   return objColors[colorKey];
 };
 
+/**
+ * Parses permission value and converts to binary representation as a bit
+ * array, LSD at index 0.
+ *
+ * @param {number} permissionValue - Permission value as a decimal value.
+ *
+ * @example
+ * >parsePermission(7)
+ * [1, 1, 1, 0]
+ *
+ * @example
+ * >parsePermission(8)
+ * [0, 0, 0, 1]
+ */
+const parsePermission = (permissionValue) => {
+  let pv = permissionValue;
+  const retstr = [0, 0, 0, 0];
+
+  for (let i = 0; i < PERMISSIONS.length; i += 1) {
+    if (pv % (2 ** (i + 1)) !== 0) {
+      retstr[i] = 1;
+      pv -= (2 ** i);
+    }
+  }
+  return retstr;
+};
+
+
+/**
+* Given a schema class object, determine whether it is abstract or not.
+* @param {string} linkedClass - property class key.
+* @param {Object} schema - database schema
+*/
+const isAbstract = (linkedClass, schema) =>
+  Object.values(schema)
+    .some(kbClass => kbClass.inherits.includes(linkedClass));
+
+/**
+* Given a schema class object, find all other classes that inherit it.
+* @param {string} abstractClass - property class key.
+* @param {Object} schema - database schema
+*/
+const getSubClasses = (abstractClass, schema) =>
+  Object.values(schema)
+    .filter(kbClass => kbClass.inherits.includes(abstractClass));
+
 export default {
   antiCamelCase,
   getPreview,
@@ -372,4 +418,7 @@ export default {
   expanded,
   positionInit,
   getColor,
+  parsePermission,
+  isAbstract,
+  getSubClasses,
 };

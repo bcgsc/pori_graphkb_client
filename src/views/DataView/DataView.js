@@ -96,6 +96,7 @@ class DataView extends Component {
     let route = '/ontologies';
     if (filteredSearch['@class'] && schema[filteredSearch['@class']]) {
       route = schema[filteredSearch['@class']].route || filteredSearch['@class'];
+      delete filteredSearch['@class'];
     }
 
     let allProps = ['@rid', '@class'];

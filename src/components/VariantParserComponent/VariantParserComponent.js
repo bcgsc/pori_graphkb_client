@@ -221,11 +221,20 @@ class VariantParserComponent extends Component {
    * Submits a POST request to the server with current variant data.
    */
   async submitVariant() {
-    const { variant, positionalVariantSchema } = this.state;
+    const { variant, positionalVariantSchema, schema } = this.state;
     const copy = Object.assign({}, variant);
     Object.keys(copy).forEach((k) => {
-      if (typeof copy[k] === 'object' && !copy[k]['@class']) {
-        delete copy[k];
+      if (typeof copy[k] === 'object') {
+        if (!copy[k]['@class']) {
+          delete copy[k];
+        } else {
+          const nestedProps = (util.getClass(copy[k]['@class'], schema)).properties;
+          nestedProps.forEach((prop) => {
+            if (prop.type === 'integer' && !copy[k][prop.name]) {
+              copy[k][prop.name] = Number(copy[k][prop.name]);
+            }
+          });
+        }
       }
     });
     const payload = util.parsePayload(copy, positionalVariantSchema);

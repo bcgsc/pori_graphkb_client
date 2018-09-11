@@ -11,6 +11,7 @@ class VariantFormView extends Component {
       shorthandString: '',
     };
     this.handleChange = this.handleChange.bind(this);
+    this.handleFinish = this.handleFinish.bind(this);
   }
 
   handleChange(e) {

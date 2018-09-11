@@ -426,8 +426,25 @@ class TableComponent extends Component {
     } = this.props;
 
     const numCols = tableColumns.filter(c => c.checked).length;
-    const pageData = sortedData
+    const filteredData = sortedData
       .filter(n => !hidden.includes(n['@rid']))
+      .filter(n => !columnFilterStrings.some((filt, i) => {
+        if (filt) {
+          let cell = n[tableColumns[i].id] || '';
+          if (cell && tableColumns[i].sortBy) {
+            cell = cell[tableColumns[i].sortBy];
+          }
+          if (Array.isArray(cell)) {
+            if (!cell.some(el => el.includes(filt))) {
+              return true;
+            }
+          } else if (!cell.includes(filt)) {
+            return true;
+          }
+        }
+        return false;
+      }));
+    const pageData = filteredData
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
     const menu = (
@@ -642,21 +659,7 @@ class TableComponent extends Component {
             </TableHead>
             <TableBody>
               {pageData
-                .filter((n) => {
-                  let flag = true;
-                  columnFilterStrings.forEach((filt, i) => {
-                    if (filt) {
-                      let cell = n[tableColumns[i].id] || '';
-                      if (cell && tableColumns[i].sortBy) {
-                        cell = cell[tableColumns[i].sortBy];
-                      }
-                      if (!cell.includes(filt)) {
-                        flag = false;
-                      }
-                    }
-                  });
-                  return flag;
-                })
+
                 .map((n) => {
                   const isSelected = displayed.includes(n['@rid']);
                   const active = toggle === n['@rid'];
@@ -723,7 +726,7 @@ class TableComponent extends Component {
         <div className="pag">
           <TablePagination
             classes={{ root: 'table-paginator', toolbar: 'paginator-spacing' }}
-            count={sortedData.length - hidden.length}
+            count={filteredData.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onChangePage={this.handleChangePage}

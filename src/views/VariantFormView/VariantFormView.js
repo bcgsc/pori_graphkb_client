@@ -15,15 +15,24 @@ class VariantFormView extends Component {
     this.handleFinish = this.handleFinish.bind(this);
   }
 
+  /**
+   * Takes action on a variant form cancel. Navigates to previously visited page.
+   */
   handleCancel() {
     const { history } = this.props;
     history.back();
   }
 
+  /**
+   * Updates shorthandstring.
+   */
   handleChange(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
 
+  /**
+   * Takes action on a successful variant submission. Navigates to query page.
+   */
   handleFinish() {
     const { history } = this.props;
     history.push('/query');

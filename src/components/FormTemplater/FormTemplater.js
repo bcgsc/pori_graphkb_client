@@ -169,9 +169,11 @@ class FormTemplater extends Component {
       let step;
       if (type === 'string') {
         t = 'text';
-      } else if (type === 'integer' || type === 'long') {
+      } else if (type === 'integer') {
         t = 'number';
         step = 1;
+      } else if (type === 'long') {
+        t = 'number';
       }
 
       return (
@@ -182,8 +184,6 @@ class FormTemplater extends Component {
             value={model[name]}
             onChange={onChange}
             name={name}
-            type={t || ''}
-            step={step || ''}
             required={mandatory}
             multiline={t === 'text'}
             error={errorFields.includes(name)}
@@ -195,6 +195,8 @@ class FormTemplater extends Component {
                   </Tooltip>
                 </InputAdornment>
               ),
+              type: t || '',
+              step: step || '',
             }}
           />
         </ListItem>

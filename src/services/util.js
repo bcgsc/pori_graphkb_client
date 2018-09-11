@@ -366,6 +366,7 @@ const initModel = (model, kbClass) => {
       name,
       type,
       linkedClass,
+      min,
     } = property;
     const defaultValue = property.default;
     switch (type) {
@@ -381,7 +382,7 @@ const initModel = (model, kbClass) => {
         }
         break;
       case 'integer' || 'long':
-        newModel[name] = model[name] || '';
+        newModel[name] = model[name] || min > 0 ? min : '';
         break;
       case 'boolean':
         newModel[name] = model[name] !== undefined

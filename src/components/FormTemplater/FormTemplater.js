@@ -51,6 +51,7 @@ class FormTemplater extends Component {
         mandatory,
         linkedClass,
         description,
+        choices,
       } = property;
 
       // Radio group component for boolean types.
@@ -141,6 +142,27 @@ class FormTemplater extends Component {
           </ListItem>
         );
       }
+      if (choices) {
+        return (
+          <ListItem component={fieldComponent} key={name}>
+            <ResourceSelectComponent
+              name={name}
+              onChange={e => onChange(e)}
+              resources={choices}
+              label={util.antiCamelCase(name)}
+              value={model[name]}
+              error={errorFields.includes(name)}
+            >
+              {resource => (
+                <MenuItem key={resource} value={resource}>
+                  {util.antiCamelCase(resource) || 'None'}
+                </MenuItem>
+              )}
+            </ResourceSelectComponent>
+          </ListItem>
+        );
+      }
+
 
       // For text fields, apply some final changes for number inputs.
       let t;

@@ -41,6 +41,7 @@ class VariantParserComponent extends Component {
     this.handleClassChange = this.handleClassChange.bind(this);
     this.submitVariant = this.submitVariant.bind(this);
     this.updateShorthand = this.updateShorthand.bind(this);
+    this.updateErrorFields = this.updateErrorFields.bind(this);
   }
 
   async componentDidMount() {
@@ -118,10 +119,10 @@ class VariantParserComponent extends Component {
           variant[key] = error.content.parsed[key];
         }
       });
+      this.updateErrorFields(error);
       this.setState({
         variant,
         invalidFlag: error.message,
-        errorFields: [],
       });
     }
   }
@@ -202,13 +203,39 @@ class VariantParserComponent extends Component {
       handleChange({ target: { value: newShorthand.toString().replace('?', ''), name } });
       this.setState({ invalidFlag: '' }, () => this.parseString(newShorthand.toString()));
     } catch (error) {
-      // Error.field(s) ?
+      this.updateErrorFields(error);
       this.setState({
         invalidFlag: error.message,
-        errorFields: [],
       });
       handleChange({ target: { value: shorthand.toString(), name } });
     }
+  }
+
+  updateErrorFields(error) {
+    const { variant } = this.state;
+    const errorFields = [];
+    if (error.content) {
+      const { violatedAttr } = error.content;
+      if (violatedAttr) {
+        if (violatedAttr === 'break1' || violatedAttr === 'break2') {
+          if (
+            variant[`${violatedAttr}Start`]
+            && variant[`${violatedAttr}Start`]['@class']
+          ) {
+            errorFields.push(`${violatedAttr}Start`);
+          }
+          if (
+            variant[`${violatedAttr}End`]
+            && variant[`${violatedAttr}End`]['@class']
+          ) {
+            errorFields.push(`${violatedAttr}End`);
+          }
+        } else if (variant[violatedAttr] !== undefined) {
+          errorFields.push(violatedAttr);
+        }
+      }
+    }
+    this.setState({ errorFields });
   }
 
   /**

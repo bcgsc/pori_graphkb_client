@@ -70,6 +70,7 @@ class TableComponent extends Component {
       tempFilterIndex: '',
     };
 
+    this.clearFilter = this.clearFilter.bind(this);
     this.clearFilters = this.clearFilters.bind(this);
     this.createTSV = this.createTSV.bind(this);
     this.openFilter = this.openFilter.bind(this);
@@ -169,15 +170,20 @@ class TableComponent extends Component {
     }
   }
 
+  clearFilter(i) {
+    const { columnFilterStrings } = this.state;
+    columnFilterStrings[i] = '';
+    this.setState({ columnFilterStrings });
+  }
+
   /**
    * Sets all filter strings to the empty string.
    */
   clearFilters() {
-    const { tableColumns, columnFilterStrings } = this.state;
+    const { tableColumns } = this.state;
     for (let i = 0; i < tableColumns.length; i += 1) {
-      columnFilterStrings[i] = '';
+      this.clearFilter(i);
     }
-    this.setState({ columnFilterStrings });
   }
 
   /**
@@ -595,6 +601,7 @@ class TableComponent extends Component {
           vertical: 'top',
           horizontal: 'right',
         }}
+        id="filter-popover"
       >
         <Paper className="paper">
           <TextField
@@ -640,7 +647,12 @@ class TableComponent extends Component {
                           {col.label}
                         </TableSortLabel>
                         <div className="filter-btn">
-                          <IconButton onClick={() => this.openFilter(i)}>
+                          <IconButton
+                            onClick={e => !e.ctrlKey
+                              ? this.openFilter(i)
+                              : this.clearFilter(i)
+                            }
+                          >
                             <FilterListIcon />
                           </IconButton>
                         </div>

@@ -155,19 +155,28 @@ class App extends Component {
         </div>
         <Divider />
         <List dense>
-          <MenuItem onClick={() => this.handleSideBarNavigate('/query')}>
+          <MenuItem
+            id="link-search"
+            onClick={() => this.handleSideBarNavigate('/query')}
+          >
             <ListItemIcon>
               <SearchIcon />
             </ListItemIcon>
             <ListItemText primary="Query" />
           </MenuItem>
-          <MenuItem onClick={() => this.handleSideBarNavigate('/add')}>
+          <MenuItem
+            id="link-add"
+            onClick={() => this.handleSideBarNavigate('/add')}
+          >
             <ListItemIcon>
               <AddIcon />
             </ListItemIcon>
             <ListItemText primary="Add Ontology" />
           </MenuItem>
-          <MenuItem onClick={() => this.handleSideBarNavigate('/variant')}>
+          <MenuItem
+            id="link-variant"
+            onClick={() => this.handleSideBarNavigate('/variant')}
+          >
             <ListItemIcon>
               <DNAIcon />
             </ListItemIcon>

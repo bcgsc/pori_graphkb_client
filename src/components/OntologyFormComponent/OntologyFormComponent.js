@@ -495,7 +495,11 @@ class OntologyFormComponent extends Component {
       deletedSubsets,
       schema,
     } = this.state;
-    const { variant, handleFinish } = this.props;
+    const {
+      variant,
+      handleFinish,
+      handleCancel,
+    } = this.props;
 
     // Wait for form to get initialized
     if (!form) return null;
@@ -624,7 +628,7 @@ class OntologyFormComponent extends Component {
               <div className="form-cancel-btn">
                 <Button
                   color="default"
-                  onClick={handleFinish}
+                  onClick={handleCancel}
                   variant="outlined"
                 >
                   Cancel
@@ -885,11 +889,16 @@ OntologyFormComponent.propTypes = {
    * edited or deleted.
    */
   handleFinish: PropTypes.func,
+  /**
+   * @param {function} handleCancel - parent method triggered when form action is cancelled.
+   */
+  handleCancel: PropTypes.func,
 };
 
 OntologyFormComponent.defaultProps = {
   variant: 'edit',
   handleFinish: null,
+  handleCancel: null,
   node: null,
 };
 

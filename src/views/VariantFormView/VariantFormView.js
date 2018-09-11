@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './VariantFormView.css';
 import PropTypes from 'prop-types';
-import { Paper, Typography } from '@material-ui/core';
+import { Paper, Typography, Button } from '@material-ui/core';
 import VariantParserComponent from '../../components/VariantParserComponent/VariantParserComponent';
 
 class VariantFormView extends Component {
@@ -10,8 +10,14 @@ class VariantFormView extends Component {
     this.state = {
       shorthandString: '',
     };
+    this.handleCancel = this.handleCancel.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
+  }
+
+  handleCancel() {
+    const { history } = this.props;
+    history.back();
   }
 
   handleChange(e) {
@@ -29,6 +35,15 @@ class VariantFormView extends Component {
       <div className="variant-wrapper">
         <Paper elevation={4} className="paper variant-headline">
           <Typography variant="headline">Variant Form</Typography>
+          <div className="variant-cancel-btn">
+            <Button
+              color="default"
+              onClick={this.handleCancel}
+              variant="outlined"
+            >
+              Cancel
+            </Button>
+          </div>
         </Paper>
 
         <div className="variant-body">

@@ -10,7 +10,12 @@
 
 .variant-headline {
     height: 37px;
+    display: flex;
     h1 {
         font-weight: 300;
+    }
+    .variant-cancel-btn{
+        margin: auto;
+        margin-right: 0;
     }
 }

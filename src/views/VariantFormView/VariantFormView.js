@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './VariantFormView.css';
+import PropTypes from 'prop-types';
 import { Paper, Typography } from '@material-ui/core';
 import VariantParserComponent from '../../components/VariantParserComponent/VariantParserComponent';
 
@@ -16,6 +17,11 @@ class VariantFormView extends Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
+  handleFinish() {
+    const { history } = this.props;
+    history.push('/query');
+  }
+
   render() {
     const { shorthandString } = this.state;
     return (
@@ -29,6 +35,7 @@ class VariantFormView extends Component {
             handleChange={this.handleChange}
             name="shorthandString"
             value={shorthandString}
+            handleFinish={this.handleFinish}
           />
         </div>
       </div>
@@ -36,5 +43,8 @@ class VariantFormView extends Component {
   }
 }
 
+VariantFormView.propTypes = {
+  history: PropTypes.object.isRequired,
+};
 
 export default VariantFormView;

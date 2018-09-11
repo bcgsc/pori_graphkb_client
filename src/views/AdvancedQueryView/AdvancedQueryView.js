@@ -9,7 +9,6 @@ import {
   Button,
   Typography,
   MenuItem,
-  List,
   ListItem,
   Paper,
   Snackbar,
@@ -188,32 +187,31 @@ class AdvancedQueryView extends Component {
             Advanced Query
           </Typography>
         </Paper>
-        <Paper elevation={4}>
-          <List component="nav">
-            <ListItem className="input-wrapper">
-              <ResourceSelectComponent
-                value={form['@class']}
-                onChange={this.handleClassChange}
-                name="@class"
-                label="Class"
-                id="class-adv"
-                resources={ontologyTypes}
-              >
-                {resource => (
-                  <MenuItem key={resource.name} value={resource.name}>
-                    {resource.name ? resource.name : '---'}
-                  </MenuItem>
-                )}
-              </ResourceSelectComponent>
-            </ListItem>
-            <FormTemplater
-              model={form}
-              kbClass={editableProps}
-              onChange={this.handleChange}
-              schema={schema}
-              sort={sortFields}
-            />
-          </List>
+        <Paper elevation={4} className="adv-grid paper">
+          <ListItem className="input-wrapper">
+            <ResourceSelectComponent
+              value={form['@class']}
+              onChange={this.handleClassChange}
+              name="@class"
+              label="Class"
+              id="class-adv"
+              resources={ontologyTypes}
+            >
+              {resource => (
+                <MenuItem key={resource.name} value={resource.name}>
+                  {resource.name ? resource.name : '---'}
+                </MenuItem>
+              )}
+            </ResourceSelectComponent>
+          </ListItem>
+          <FormTemplater
+            model={form}
+            kbClass={editableProps}
+            onChange={this.handleChange}
+            schema={schema}
+            sort={sortFields}
+            ignoreRequired
+          />
         </Paper>
         <Paper elevation={4} id="adv-nav-buttons">
           <Button

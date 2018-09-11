@@ -12,7 +12,11 @@ import {
   FormControl,
   FormHelperText,
   Paper,
+  Drawer,
+  LinearProgress,
+  CircularProgress,
 } from '@material-ui/core';
+import CheckIcon from '@material-ui/icons/Check';
 import * as jc from 'json-cycle';
 import _ from 'lodash';
 import kbp from 'knowledgebase-parser';
@@ -20,13 +24,15 @@ import FormTemplater from '../FormTemplater/FormTemplater';
 import api from '../../services/api';
 import util from '../../services/util';
 
+const NOTIFICATION_SPINNER_SIZE = 16;
+
 class VariantParserComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       invalidFlag: '',
       variant: null,
-      positionalVariantSchema: null,
+      positionalVariantSchema: [],
       errorFields: [],
     };
     this.parseString = this.parseString.bind(this);
@@ -216,13 +222,16 @@ class VariantParserComponent extends Component {
    */
   async submitVariant() {
     const { variant, positionalVariantSchema } = this.state;
-    Object.keys(variant).forEach((k) => {
-      if (typeof variant[k] === 'object' && !variant[k]['@class']) {
-        delete variant[k];
+    const copy = Object.assign({}, variant);
+    Object.keys(copy).forEach((k) => {
+      if (typeof copy[k] === 'object' && !copy[k]['@class']) {
+        delete copy[k];
       }
     });
-    const payload = util.parsePayload(variant, positionalVariantSchema);
+    const payload = util.parsePayload(copy, positionalVariantSchema);
+    this.setState({ loading: true, notificationDrawerOpen: true });
     await api.post('/positionalvariants', payload);
+    this.setState({ loading: false });
   }
 
   render() {
@@ -232,6 +241,8 @@ class VariantParserComponent extends Component {
       positionalVariantSchema,
       schema,
       errorFields,
+      notificationDrawerOpen,
+      loading,
     } = this.state;
     const {
       required,
@@ -240,7 +251,19 @@ class VariantParserComponent extends Component {
       value,
       disabled,
       handleChange,
+      handleFinish,
     } = this.props;
+
+    let formIsInvalid = false;
+    positionalVariantSchema.forEach((prop) => {
+      if (prop.mandatory) {
+        if (prop.type === 'link' && (!variant[prop.name] || !variant[`${prop.name}.@rid`])) {
+          formIsInvalid = true;
+        } else if (prop.type !== 'boolean' && !variant[prop.name]) {
+          formIsInvalid = true;
+        }
+      }
+    });
 
     const sortFields = (a, b) => {
       const order = [
@@ -264,8 +287,40 @@ class VariantParserComponent extends Component {
       return 1;
     };
 
+    const drawer = (
+      <Drawer
+        open={notificationDrawerOpen}
+        onClose={handleFinish}
+        anchor="bottom"
+        classes={{ paper: 'paper' }}
+      >
+        <div className="notification-drawer">
+          <div className="form-linear-progress">
+            <LinearProgress
+              color="secondary"
+              variant={loading ? 'indeterminate' : 'determinate'}
+              value={loading ? 0 : 100}
+            />
+          </div>
+          <Button
+            color="secondary"
+            onClick={handleFinish}
+            disabled={loading}
+            variant="raised"
+            size="large"
+          >
+            {loading
+              ? <CircularProgress size={NOTIFICATION_SPINNER_SIZE} color="secondary" />
+              : <CheckIcon />
+            }
+          </Button>
+        </div>
+      </Drawer>
+    );
+
     return (
       <div className="variant-parser-wrapper">
+        {drawer}
         <Paper elevation={4} className="variant-parser-shorthand paper">
           <FormControl
             error={!!((error || invalidFlag) && value)}
@@ -310,6 +365,7 @@ class VariantParserComponent extends Component {
             color="primary"
             variant="raised"
             onClick={this.submitVariant}
+            disabled={formIsInvalid || invalidFlag}
           >
             Submit
           </Button>

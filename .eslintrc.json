@@ -19,11 +19,11 @@
             }
         ],
         "prefer-promise-reject-errors": 0,
-        "no-param-reassign": "warn",
+        "no-param-reassign": 1,
         "react/jsx-one-expression-per-line": 0,
-        "prefer-destructuring": "warn",
-        "react/destructuring-assignment": "warn",
-        "no-confusing-arrow": "warn"
+        "prefer-destructuring": 1,
+        "react/destructuring-assignment": 1,
+        "no-confusing-arrow": 1
     },
     "env": {
         "browser": true,

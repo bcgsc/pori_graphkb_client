@@ -143,14 +143,9 @@ class VariantParserComponent extends Component {
         .filter(p => p.linkedClass && p.linkedClass.name === abstractClass)
         .map(p => p.name);
       varKeys.forEach((key) => {
-        newClass.forEach((prop) => {
-          if (variant[key]['@class']) {
-            variant[key]['@class'] = value;
-            if (!variant[key][prop.name]) {
-              variant[key][prop.name] = '';
-            }
-          }
-        });
+        if (variant[key]['@class']) {
+          variant[key] = util.initModel(variant[nested], newClass);
+        }
       });
     } else {
       variant[nested] = { '@class': '' };
@@ -204,11 +199,10 @@ class VariantParserComponent extends Component {
       });
       shorthand = new kbp.variant.VariantNotation(filteredVariant);
       const newShorthand = kbp.variant.parse(shorthand.toString());
-      handleChange({ target: { value: newShorthand.toString(), name } });
+      handleChange({ target: { value: newShorthand.toString().replace('?', ''), name } });
       this.setState({ invalidFlag: '' }, () => this.parseString(newShorthand.toString()));
     } catch (error) {
       // Error.field(s) ?
-      console.log(shorthand.toString());
       this.setState({
         invalidFlag: error.message,
         errorFields: [],
@@ -374,7 +368,7 @@ class VariantParserComponent extends Component {
             color="primary"
             variant="raised"
             onClick={this.submitVariant}
-            disabled={formIsInvalid || invalidFlag}
+            disabled={formIsInvalid}
           >
             Submit
           </Button>

@@ -21,7 +21,7 @@ class AddOntologyView extends Component {
   /**
    * Triggered when the user hits the submit button.
    */
-  handleNodeFinish() {
+  handleFinish() {
     const { history } = this.props;
     history.push('/query');
   }

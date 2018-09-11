@@ -52,6 +52,8 @@ class FormTemplater extends Component {
         linkedClass,
         description,
         choices,
+        min,
+        max,
       } = property;
 
       // Radio group component for boolean types.
@@ -176,6 +178,20 @@ class FormTemplater extends Component {
         t = 'number';
       }
 
+      const invalid = () => {
+        let range = false;
+        if (t === 'number') {
+          if (min) {
+            range = !range && model[name] < min;
+          }
+          if (max) {
+            range = !range && model[name] > max;
+          }
+        }
+        return errorFields.includes(name) || range;
+      };
+
+      /* eslint-disable react/jsx-no-duplicate-props */
       return (
         <ListItem component={fieldComponent} key={name}>
           <TextField
@@ -186,7 +202,7 @@ class FormTemplater extends Component {
             name={name}
             required={mandatory}
             multiline={t === 'text'}
-            error={errorFields.includes(name)}
+            error={invalid()}
             InputProps={{
               endAdornment: description && (
                 <InputAdornment position="end">
@@ -195,13 +211,19 @@ class FormTemplater extends Component {
                   </Tooltip>
                 </InputAdornment>
               ),
+
+            }}
+            inputProps={{
               type: t || '',
               step: step || '',
+              min: min || undefined,
+              max: max || undefined,
             }}
           />
         </ListItem>
       );
     };
+    /* eslint-enable react/jsx-no-duplicate-props */
     const completedpairs = {};
     const sortedProps = Object.values(kbClass || {})
       .filter(p => !excludedProps.includes(p.name))

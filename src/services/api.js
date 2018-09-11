@@ -214,8 +214,11 @@ const getSchema = () => {
  * @param {number} limit - Limit for number of returned matches.
  */
 const autoSearch = (endpoint, property, value, limit) => {
-  if (value.length < 4) return Promise.resolve({ result: [] });
-  const query = property.map(p => `${p}=~${encodeURIComponent(value)}`).join('&');
+  const re = new RegExp(/:|\\|;|,|\.|\/|\||\+|\*|=|!|\?|\[|\]|\(|\)/, 'g');
+  if (value.replace(re, '').length < 4) return Promise.resolve({ result: [] });
+  const query = property
+    .map(p => `${p}=~${encodeURIComponent(value.replace(re, ''))}`)
+    .join('&');
   const orStr = `or=${property.join(',')}`;
   return get(`/${endpoint}?${query}&${orStr}&limit=${limit}&neighbors=1&@class=!Publication`);
 };

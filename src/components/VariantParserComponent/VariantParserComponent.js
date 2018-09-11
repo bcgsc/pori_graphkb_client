@@ -61,7 +61,7 @@ class VariantParserComponent extends Component {
    * @param {Event} e - user input event.
    */
   refreshOptions(e) {
-    this.setState({ invalidFlag: '' });
+    this.setState({ invalidFlag: '', errorFields: [] });
     this.parseString(e.target.value);
   }
 
@@ -152,7 +152,7 @@ class VariantParserComponent extends Component {
       variant[nested] = { '@class': '' };
     }
 
-    this.setState({ variant }, this.updateShorthand);
+    this.setState({ variant, errorFields: [] }, this.updateShorthand);
   }
 
   /**
@@ -179,7 +179,7 @@ class VariantParserComponent extends Component {
         variant[`${name}.${key}`] = e.target[key];
       });
 
-    this.setState({ variant }, this.updateShorthand);
+    this.setState({ variant, errorFields: [] }, this.updateShorthand);
   }
 
   updateShorthand() {
@@ -201,7 +201,7 @@ class VariantParserComponent extends Component {
       shorthand = new kbp.variant.VariantNotation(filteredVariant);
       const newShorthand = kbp.variant.parse(shorthand.toString());
       handleChange({ target: { value: newShorthand.toString().replace('?', ''), name } });
-      this.setState({ invalidFlag: '' }, () => this.parseString(newShorthand.toString()));
+      this.setState({ invalidFlag: '' });
     } catch (error) {
       this.updateErrorFields(error);
       this.setState({
@@ -214,7 +214,7 @@ class VariantParserComponent extends Component {
   updateErrorFields(error) {
     const { variant } = this.state;
     const errorFields = [];
-    if (error.content) {
+    if (error && error.content) {
       const { violatedAttr } = error.content;
       if (violatedAttr) {
         if (violatedAttr === 'break1' || violatedAttr === 'break2') {

@@ -39,7 +39,7 @@ class FormTemplater extends Component {
       fieldComponent,
       errorFields,
       sort,
-      groups,
+      pairs,
     } = this.props;
     const fields = [];
 
@@ -136,7 +136,7 @@ class FormTemplater extends Component {
               excludedProps={['@class']}
               fieldComponent="div"
               errorFields={errorFields.map(errorField => errorField.replace(`${name}.`, ''))}
-              groups={groups}
+              pairs={pairs}
             />
           </ListItem>
         );
@@ -178,28 +178,28 @@ class FormTemplater extends Component {
         </ListItem>
       );
     };
-    const completedGroups = {};
+    const completedpairs = {};
     const sortedProps = Object.values(kbClass || {})
       .filter(p => !excludedProps.includes(p.name))
       .sort(sort);
 
     sortedProps.forEach((property) => {
-      Object.keys(groups).forEach((key) => {
+      Object.keys(pairs).forEach((key) => {
         if (
-          groups[key].includes(property.name)
-          && !Object.values(completedGroups).some(g => g.includes(property.name))
+          pairs[key].includes(property.name)
+          && !Object.values(completedpairs).some(g => g.includes(property.name))
         ) {
           fields.push((
             <div className="form-templater-group-wrapper" key={key}>
               <div className="form-templater-row-grid">
-                {groups[key].map(k => formatFormField(sortedProps.find(p => p.name === k)))}
+                {pairs[key].map(k => formatFormField(sortedProps.find(p => p.name === k)))}
               </div>
             </div>
           ));
-          completedGroups[key] = groups[key].slice();
+          completedpairs[key] = pairs[key].slice();
         }
       });
-      if (!Object.values(completedGroups).some(g => g.includes(property.name))) {
+      if (!Object.values(completedpairs).some(g => g.includes(property.name))) {
         fields.push(formatFormField(property));
       }
     });
@@ -219,6 +219,7 @@ class FormTemplater extends Component {
  * @param {Array} errorFields - list of field keys that are causing errors in
  * parent component.
  * @param {function} sort - Sorting function for form fields.
+ * @param {Object} pairs - group definitions for grid.
  */
 FormTemplater.propTypes = {
   schema: PropTypes.object.isRequired,
@@ -230,6 +231,7 @@ FormTemplater.propTypes = {
   fieldComponent: PropTypes.string,
   errorFields: PropTypes.array,
   sort: PropTypes.func,
+  pairs: PropTypes.object,
 };
 
 FormTemplater.defaultProps = {
@@ -239,6 +241,7 @@ FormTemplater.defaultProps = {
   fieldComponent: 'li',
   errorFields: [],
   sort: () => 1,
+  pairs: {},
 };
 
 export default FormTemplater;

@@ -297,7 +297,7 @@ class VariantParserComponent extends Component {
                 excludedProps={['break1Repr', 'break2Repr']}
                 errorFields={errorFields}
                 sort={sortFields}
-                groups={{
+                pairs={{
                   break1: ['break1Start', 'break1End'],
                   break2: ['break2Start', 'break2End'],
                 }}

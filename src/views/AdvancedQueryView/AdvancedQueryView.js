@@ -151,6 +151,25 @@ class AdvancedQueryView extends Component {
 
     if (!form) return null;
 
+    const sortFields = (a, b) => {
+      const order = [
+        'name',
+        'sourceId',
+        'source',
+        'subsets',
+      ];
+      if (order.indexOf(b.name) === -1) {
+        return -1;
+      }
+      if (order.indexOf(a.name) === -1) {
+        return 1;
+      }
+      if (order.indexOf(a.name) < order.indexOf(b.name)) {
+        return -1;
+      }
+      return 1;
+    };
+
     return (
       <div className="adv-wrapper" elevation={4}>
         <Snackbar
@@ -192,6 +211,7 @@ class AdvancedQueryView extends Component {
               kbClass={editableProps}
               onChange={this.handleChange}
               schema={schema}
+              sort={sortFields}
             />
           </List>
         </Paper>

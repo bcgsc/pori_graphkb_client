@@ -163,4 +163,11 @@ describe('Table Test', () => {
     cy.get('div.more-results-btn button').should('disabled');
     cy.contains('2000');
   });
+
+  /**
+   * Tests table filters
+   */
+  it('Filters', () => {
+
+  });
 });

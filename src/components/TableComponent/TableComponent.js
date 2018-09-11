@@ -119,7 +119,10 @@ class TableComponent extends Component {
       }
       return r;
     }, []);
-    const columnFilterStrings = new Array(tableColumns.length).map(() => '');
+    const columnFilterStrings = [];
+    for (let i = 0; i < tableColumns.length; i += 1) {
+      columnFilterStrings.push('');
+    }
 
     // Set default order for columns.
     tableColumns.sort((a, b) => {
@@ -154,6 +157,9 @@ class TableComponent extends Component {
     }
   }
 
+  /**
+   * Stores DOM references in component state.
+   */
   setRef(node, i) {
     const { tableHeadRefs } = this.state;
     if (!tableHeadRefs[i]) {
@@ -163,9 +169,14 @@ class TableComponent extends Component {
     }
   }
 
+  /**
+   * Sets all filter strings to the empty string.
+   */
   clearFilters() {
-    const { tableColumns } = this.state;
-    const columnFilterStrings = new Array(tableColumns.length).map(() => '');
+    const { tableColumns, columnFilterStrings } = this.state;
+    for (let i = 0; i < tableColumns.length; i += 1) {
+      columnFilterStrings[i] = '';
+    }
     this.setState({ columnFilterStrings });
   }
 
@@ -195,14 +206,21 @@ class TableComponent extends Component {
     return rows.join('\n');
   }
 
+  /**
+   * Opens filter input box at a column header.
+   * @param {number} i - column index.
+   */
   openFilter(i) {
     const { tableHeadRefs } = this.state;
     this.setState({ filterPopoverNode: tableHeadRefs[i], tempFilterIndex: i });
   }
 
+  /**
+   * Updates currently editing filter string.
+   * @param {Event} e - User input event.
+   */
   updateFilterStrings(e) {
     const { columnFilterStrings, tempFilterIndex } = this.state;
-    console.log(columnFilterStrings, tempFilterIndex);
     columnFilterStrings[tempFilterIndex] = e.target.value;
     this.setState({ columnFilterStrings });
   }
@@ -247,6 +265,7 @@ class TableComponent extends Component {
   handleColumnCheck(i) {
     const { tableColumns } = this.state;
     tableColumns[i].checked = !tableColumns[i].checked;
+    this.clearFilters();
     this.setState({ tableColumns });
   }
 
@@ -626,12 +645,14 @@ class TableComponent extends Component {
                 .filter((n) => {
                   let flag = true;
                   columnFilterStrings.forEach((filt, i) => {
-                    let cell = n[tableColumns[i].id] || '';
-                    if (cell && tableColumns[i].sortBy) {
-                      cell = cell[tableColumns[i].sortBy];
-                    }
-                    if (!cell.includes(filt)) {
-                      flag = false;
+                    if (filt) {
+                      let cell = n[tableColumns[i].id] || '';
+                      if (cell && tableColumns[i].sortBy) {
+                        cell = cell[tableColumns[i].sortBy];
+                      }
+                      if (!cell.includes(filt)) {
+                        flag = false;
+                      }
                     }
                   });
                   return flag;

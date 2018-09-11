@@ -40,6 +40,7 @@ import AddNodeView from './views/AddNodeView/AddNodeView';
 import LoginView from './views/LoginView/LoginView';
 import NodeDetailView from './views/NodeDetailView/NodeDetailView';
 import FeedbackView from './views/FeedbackView/FeedbackView';
+import AdminView from './views/AdminView/AdminView';
 import logo from './logo.png';
 import auth from './services/auth';
 import history from './services/history';
@@ -76,7 +77,6 @@ class App extends Component {
       loggedIn: (!!auth.getToken() && !auth.isExpired()),
       drawerOpen: false,
     };
-
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleLogOut = this.handleLogOut.bind(this);
@@ -178,6 +178,7 @@ class App extends Component {
         <Route path="/ontology/:rid" component={NodeDetailView} />
         <Route path="/data" component={DataView} />
         <Route path="/feedback" component={FeedbackView} />
+        <Route path="/admin" component={AdminView} />
         <Redirect from="*" to="/query" />
       </Switch>
     );
@@ -232,6 +233,11 @@ class App extends Component {
                       <MenuItem onClick={() => { history.push('/feedback'); this.handleClose(); }}>
                         Feedback
                       </MenuItem>
+                      {auth.isAdmin() && (
+                        <MenuItem onClick={() => { history.push('/admin'); this.handleClose(); }}>
+                          Admin
+                        </MenuItem>
+                      )}
                       <MenuItem onClick={this.handleLogOut}>
                         Logout
                       </MenuItem>

@@ -11,6 +11,10 @@
             height: 37px;
         }
     }
+    .adv-grid{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
     #adv-nav-buttons {
         display: flex;
         justify-content: center;

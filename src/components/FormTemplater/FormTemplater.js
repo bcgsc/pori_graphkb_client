@@ -40,6 +40,7 @@ class FormTemplater extends Component {
       errorFields,
       sort,
       pairs,
+      ignoreRequired,
     } = this.props;
     const fields = [];
 
@@ -48,14 +49,13 @@ class FormTemplater extends Component {
       const {
         name,
         type,
-        mandatory,
         linkedClass,
         description,
         choices,
         min,
         max,
       } = property;
-
+      const mandatory = property.mandatory && !ignoreRequired;
       // Radio group component for boolean types.
       if (type === 'boolean') {
         return (
@@ -278,6 +278,7 @@ FormTemplater.propTypes = {
   errorFields: PropTypes.array,
   sort: PropTypes.func,
   pairs: PropTypes.object,
+  ignoreRequired: PropTypes.bool,
 };
 
 FormTemplater.defaultProps = {
@@ -288,6 +289,7 @@ FormTemplater.defaultProps = {
   errorFields: [],
   sort: () => 1,
   pairs: {},
+  ignoreRequired: false,
 };
 
 export default FormTemplater;

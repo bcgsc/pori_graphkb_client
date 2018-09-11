@@ -31,6 +31,7 @@ class AddOntologyView extends Component {
       <OntologyFormComponent
         variant="add"
         handleFinish={this.handleFinish}
+        handleCancel={this.handleFinish}
       />
     );
   }

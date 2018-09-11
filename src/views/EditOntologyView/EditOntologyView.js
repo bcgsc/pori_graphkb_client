@@ -24,6 +24,7 @@ class EditOntologyView extends Component {
     };
 
     this.handleFinish = this.handleFinish.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
   }
 
   /**
@@ -38,7 +39,15 @@ class EditOntologyView extends Component {
   }
 
   /**
-   * Sets completed flag to navigate back to previous query.
+   * Navigates back to previous view.
+   */
+  handleCancel() {
+    const { history } = this.props;
+    history.back();
+  }
+
+  /**
+   * Navigates back to query page.
    */
   handleFinish() {
     const { history } = this.props;

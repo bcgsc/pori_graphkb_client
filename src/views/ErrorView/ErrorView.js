@@ -71,9 +71,9 @@ class ErrorView extends Component {
         </div>
         <div id="spacer" />
         <div className="error-content" id="return-link">
-            <Button variant="raised" color="primary" onClick={() => history.goBack()}>
-              Back
-            </Button>
+          <Button variant="raised" color="primary" onClick={history.back}>
+            Back
+          </Button>
         </div>
         {stacktrace
           && (

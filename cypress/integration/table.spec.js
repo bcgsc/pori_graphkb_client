@@ -167,7 +167,34 @@ describe('Table Test', () => {
   /**
    * Tests table filters
    */
-  it('Filters', () => {
+  it('Filtering', () => {
+    getName('diso');
 
+    cy.contains('1-50').invoke('text').then((text) => {
+      cy.log(text);
+      const total = text.split('1-50 of ')[1];
+      cy.get('div.filter-btn').each((button, i) => {
+        if (i === 2) {
+          cy.wrap(button).click();
+          cy.get('div[role=document] input').type('disor');
+          cy.get('table tbody tr').then((array) => {
+            if (array.length < 50) {
+              cy.contains(`1-${array.length} of ${array.length}`);
+              cy.expect(array.length).to.be.lt(total);
+            } else {
+              cy.contains('1-50').invoke('text').then((t) => {
+                const newTotal = Number(t.split('1-50 of ')[1]);
+                cy.expect(newTotal).to.be.lt(total);
+              });
+            }
+
+            cy.get('#filter-popover').click();
+            cy.get('#ellipsis-menu').click();
+            cy.contains('Clear Filters').click();
+            cy.contains(`1-50 of ${total}`);
+          });
+        }
+      });
+    });
   });
 });

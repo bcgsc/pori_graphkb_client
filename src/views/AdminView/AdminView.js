@@ -122,7 +122,12 @@ class AdminView extends Component {
       });
     });
     Object.keys(schema).forEach((obj) => { newUserGroup.permissions[obj] = [0, 0, 0, 0]; });
-    this.setState({ users, userGroups, newUserGroup, schema });
+    this.setState({
+      users,
+      userGroups,
+      newUserGroup,
+      schema,
+    });
   }
 
   /**
@@ -511,7 +516,7 @@ class AdminView extends Component {
         .sort((a, b) => a > b ? 1 : -1);
       const list = (
         <Table className="admin-table">
-          <TableHead >
+          <TableHead>
             <TableRow id="admin-sticky-row">
               <TableCell padding="dense" />
               {PERMISSIONS.map(permission => (
@@ -534,7 +539,7 @@ class AdminView extends Component {
           </TableHead>
           <TableBody>
             {permissionKeys
-              .map(permission => {
+              .map((permission) => {
                 const isEdge = schema[permission].inherits.includes('E');
                 const isAbstract = util.isAbstract(permission, schema);
                 return (
@@ -542,14 +547,15 @@ class AdminView extends Component {
                     <TableCell padding="dense">
                       <Typography variant="body1" component="p">
                         {permission}:
-                    </Typography>
+                      </Typography>
                     </TableCell>
                     {userGroup.permissions[permission].map((p, j) => (
                       <TableCell padding="checkbox" key={`${userGroup.name}${permission}${j.toString()}`}>
                         {(
                           !(isEdge && j === 1)
                           && !(isAbstract && j !== 2)
-                        ) && (
+                        )
+                          && (
                             <Checkbox
                               onChange={() => this.handlePermissionsChange(
                                 permission,
@@ -561,7 +567,7 @@ class AdminView extends Component {
                       </TableCell>
                     ))}
                   </TableRow>
-                )
+                );
               })}
           </TableBody>
         </Table>
@@ -719,7 +725,9 @@ class AdminView extends Component {
     );
 
     const userGroupDialog = () => {
-      const isTaken = userGroups.map(u => u.name.toLowerCase()).includes(newUserGroup.name.toLowerCase());
+      const isTaken = userGroups
+        .map(u => u.name.toLowerCase())
+        .includes(newUserGroup.name.toLowerCase());
       return (
         <Dialog
           open={newUserGroupDialog}
@@ -731,7 +739,7 @@ class AdminView extends Component {
         >
           <DialogTitle>
             New User Group
-        </DialogTitle>
+          </DialogTitle>
           <DialogContent>
             <FormControl
               error={isTaken || error}
@@ -760,7 +768,7 @@ class AdminView extends Component {
             <Button onClick={this.handleNewUserGroupDialog}>Cancel</Button>
           </DialogActions>
         </Dialog>
-      )
+      );
     };
 
     const deleteUserGroupDialog = (

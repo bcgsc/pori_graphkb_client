@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 function DNAIcon(props) {
   return (
@@ -27,4 +28,13 @@ function DNAIcon(props) {
     </svg>
   );
 }
+
+DNAIcon.propTypes = {
+  className: PropTypes.string,
+};
+
+DNAIcon.defaultProps = {
+  className: null,
+};
+
 export default DNAIcon;

@@ -466,14 +466,14 @@ class TableComponent extends Component {
           onClick={() => { this.handleClose(); this.clearFilters(); }}
           id="clear-filters"
         >
-          Clear All Filters
+          Clear all filters
         </MenuItem>
         <MenuItem
           onClick={() => { this.handleClose(); handleGraphRedirect(); }}
           disabled={displayed.length === 0}
           id="view-as-graph"
         >
-          View Selected in Graph
+          View selected in Graph
         </MenuItem>
         <DownloadFileComponent
           mediaType="text/tab-separated-values"
@@ -498,7 +498,7 @@ class TableComponent extends Component {
             onClick={() => { this.handleClose(); }}
             disabled={displayed.length === 0}
           >
-            Download Selected as TSV
+            Download selected as TSV
           </MenuItem>
         </DownloadFileComponent>
         <MenuItem
@@ -506,7 +506,7 @@ class TableComponent extends Component {
           disabled={displayed.length === 0}
           id="hide-selected"
         >
-          Hide Selected Rows
+          Hide selected rows
           {displayed.length !== 0 && ` (${displayed.length})`}
         </MenuItem>
         <MenuItem
@@ -517,7 +517,7 @@ class TableComponent extends Component {
           }}
           disabled={hidden.length === 0}
         >
-          Show Hidden Rows
+          Show hidden rows
           {hidden.length !== 0 && ` (${hidden.length})`}
         </MenuItem>
         <MenuItem
@@ -527,7 +527,7 @@ class TableComponent extends Component {
           }}
           id="column-edit"
         >
-          Edit Visible Columns
+          Edit visible columns
         </MenuItem>
       </Menu>
     );

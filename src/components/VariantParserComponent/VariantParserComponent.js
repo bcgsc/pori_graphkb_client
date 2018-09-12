@@ -40,8 +40,9 @@ class VariantParserComponent extends Component {
     this.handleVariantChange = this.handleVariantChange.bind(this);
     this.handleClassChange = this.handleClassChange.bind(this);
     this.submitVariant = this.submitVariant.bind(this);
-    this.updateShorthand = this.updateShorthand.bind(this);
     this.updateErrorFields = this.updateErrorFields.bind(this);
+    this.updateLinkProps = this.updateLinkProps.bind(this);
+    this.updateShorthand = this.updateShorthand.bind(this);
   }
 
   async componentDidMount() {
@@ -74,32 +75,11 @@ class VariantParserComponent extends Component {
     try {
       const response = kbp.variant.parse(value.trim());
       // Split response into link data and non-link data
-      const linkProps = Object.values(positionalVariantSchema)
-        .filter(prop => prop.type === 'link');
+      const linkProps = this.updateLinkProps(response);
 
-      linkProps.forEach(async (prop) => {
-        const { name, linkedClass } = prop;
-        if (response[name] && linkedClass && linkedClass.route) {
-          const data = await api.get(`${linkedClass.route}?name=${response[name]}`);
-          const cycled = jc.retrocycle(data).result;
-          if (cycled.length === 1) {
-            variant[name] = cycled[0].name;
-            variant[`${name}.@rid`] = cycled[0]['@rid'];
-            this.setState({ variant });
-          } else if (cycled.length > 1) {
-            // add multiple modals?
-          } else if (cycled.length === 0) {
-            this.setState({
-              invalidFlag: `Referenced ${name} term '${response[name]}' not found`,
-            });
-          }
-        }
-      });
+      const embeddedProps = util.getPropOfType(positionalVariantSchema, 'embedded');
 
-      const nestProps = Object.values(positionalVariantSchema)
-        .filter(prop => prop.type === 'embedded');
-
-      nestProps.forEach((prop) => {
+      embeddedProps.forEach((prop) => {
         const { name } = prop;
         if (response[name] && response[name]['@class']) {
           (util.getClass(response[name]['@class'], schema)).properties
@@ -113,17 +93,45 @@ class VariantParserComponent extends Component {
       const newV = Object.assign(variant, _.omit(response, ...linkProps.map(prop => prop.name)));
       this.setState({ variant: newV });
     } catch (error) {
-      Object.keys((error.content && error.content.parsed) || {}).forEach((key) => {
-        if (variant[key] !== undefined && variant[key] !== null) {
-          variant[key] = error.content.parsed[key];
-        }
-      });
+      if (error.content && error.content.parsed) {
+        this.updateLinkProps(error.content.parsed);
+        Object.keys(error.content.parsed).forEach((key) => {
+          if (variant[key] !== undefined && variant[key] !== null) {
+            variant[key] = error.content.parsed[key];
+          }
+        });
+      }
+
       this.updateErrorFields(error);
       this.setState({
-        variant,
         invalidFlag: error.message,
       });
     }
+  }
+
+  updateLinkProps(parsed) {
+    const { variant, positionalVariantSchema } = this.state;
+    const linkProps = util.getPropOfType(positionalVariantSchema, 'link');
+
+    linkProps.forEach(async (prop) => {
+      const { name, linkedClass } = prop;
+      if (parsed[name] && linkedClass && linkedClass.route) {
+        const data = await api.get(`${linkedClass.route}?name=${parsed[name]}`);
+        const cycled = jc.retrocycle(data).result;
+        if (cycled.length === 1) {
+          variant[name] = cycled[0].name;
+          variant[`${name}.@rid`] = cycled[0]['@rid'];
+          this.setState({ variant });
+        } else if (cycled.length > 1) {
+          // add multiple modals?
+        } else if (cycled.length === 0) {
+          this.setState({
+            invalidFlag: `Referenced ${name} term '${parsed[name]}' not found`,
+          });
+        }
+      }
+    });
+    return linkProps;
   }
 
   /**
@@ -133,8 +141,7 @@ class VariantParserComponent extends Component {
    */
   handleClassChange(e, nested) {
     const { schema, variant, positionalVariantSchema } = this.state;
-    const { name, value } = e.target;
-    variant[nested][name] = value;
+    const { value } = e.target;
     const newClass = util.getClass(value, schema).properties;
     if (newClass) {
       const abstractClass = positionalVariantSchema
@@ -143,8 +150,8 @@ class VariantParserComponent extends Component {
         .filter(p => p.linkedClass && p.linkedClass.name === abstractClass)
         .map(p => p.name);
       varKeys.forEach((key) => {
-        if (variant[key]['@class']) {
-          variant[key] = util.initModel(variant[nested], newClass);
+        if ((variant[key]['@class'] && variant[key]['@class'] !== value) || key === nested) {
+          variant[key] = util.initModel({ '@class': value }, newClass);
         }
       });
     } else {
@@ -183,7 +190,7 @@ class VariantParserComponent extends Component {
   updateShorthand() {
     const { variant } = this.state;
     const { handleChange, name } = this.props;
-    let shorthand = '';
+    let shorthand = new kbp.variant.VariantNotation(variant);
     try {
       const filteredVariant = {};
       Object.keys(variant).forEach((k) => {
@@ -196,15 +203,16 @@ class VariantParserComponent extends Component {
           filteredVariant[k] = variant[k];
         }
       });
+      console.log(filteredVariant);
       shorthand = new kbp.variant.VariantNotation(filteredVariant);
-      const newShorthand = kbp.variant.parse(shorthand.toString());
-      handleChange({ target: { value: newShorthand.toString().replace('?', ''), name } });
+      shorthand = kbp.variant.parse(shorthand.toString());
       this.setState({ invalidFlag: '' });
     } catch (error) {
+      console.log(error);
       this.updateErrorFields(error);
-      this.setState({
-        invalidFlag: error.message,
-      });
+      this.setState({ invalidFlag: error.message });
+    } finally {
+      console.log(shorthand.toString());
       handleChange({ target: { value: shorthand.toString(), name } });
     }
   }
@@ -342,60 +350,58 @@ class VariantParserComponent extends Component {
     );
 
     return (
-      <form onSubmit={this.submitVariant}>
-        <div className="variant-parser-wrapper">
-          {drawer}
-          <Paper elevation={4} className="variant-parser-shorthand paper">
-            <FormControl
+      <div className="variant-parser-wrapper">
+        {drawer}
+        <Paper elevation={4} className="variant-parser-shorthand paper">
+          <FormControl
+            error={!!((error || invalidFlag) && value)}
+            fullWidth
+          >
+            <TextField
               error={!!((error || invalidFlag) && value)}
-              fullWidth
-            >
-              <TextField
-                error={!!((error || invalidFlag) && value)}
-                required={required}
-                name={name}
-                onChange={(e) => { handleChange(e); this.refreshOptions(e); }}
-                label="HGVS nomenclature"
-                disabled={disabled}
-                value={value}
-              />
-              {((error || invalidFlag) && value)
-                && <FormHelperText>{invalidFlag}</FormHelperText>
-              }
-            </FormControl>
-          </Paper>
-          <Paper elevation={4} className="paper parser-form-grid">
-            {schema
-              && (
-                <FormTemplater
-                  schema={schema}
-                  onChange={this.handleVariantChange}
-                  onClassChange={this.handleClassChange}
-                  model={variant}
-                  kbClass={positionalVariantSchema}
-                  excludedProps={['break1Repr', 'break2Repr']}
-                  errorFields={errorFields}
-                  sort={sortFields}
-                  pairs={{
-                    break1: ['break1Start', 'break1End'],
-                    break2: ['break2Start', 'break2End'],
-                  }}
-                />
-              )
+              required={required}
+              name={name}
+              onChange={(e) => { handleChange(e); this.refreshOptions(e); }}
+              label="HGVS nomenclature"
+              disabled={disabled}
+              value={value}
+            />
+            {((error || invalidFlag) && value)
+              && <FormHelperText>{invalidFlag}</FormHelperText>
             }
-          </Paper>
-          <Paper className="paper" elevation={4} id="variant-form-submit">
-            <Button
-              type="submit"
-              color="primary"
-              variant="raised"
-              disabled={formIsInvalid}
-            >
-              Submit
-            </Button>
-          </Paper>
-        </div>
-      </form>
+          </FormControl>
+        </Paper>
+        <Paper elevation={4} className="paper parser-form-grid">
+          {schema
+            && (
+              <FormTemplater
+                schema={schema}
+                onChange={this.handleVariantChange}
+                onClassChange={this.handleClassChange}
+                model={variant}
+                kbClass={positionalVariantSchema}
+                excludedProps={['break1Repr', 'break2Repr']}
+                errorFields={errorFields}
+                sort={sortFields}
+                pairs={{
+                  break1: ['break1Start', 'break1End'],
+                  break2: ['break2Start', 'break2End'],
+                }}
+              />
+            )
+          }
+        </Paper>
+        <Paper className="paper" elevation={4} id="variant-form-submit">
+          <Button
+            onClick={this.submitVariant}
+            color="primary"
+            variant="raised"
+            disabled={!!(formIsInvalid || invalidFlag)}
+          >
+            Submit
+          </Button>
+        </Paper>
+      </div>
     );
   }
 }

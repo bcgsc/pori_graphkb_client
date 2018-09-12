@@ -12,6 +12,7 @@ import {
   InputAdornment,
   Tooltip,
   MenuItem,
+  Typography,
 } from '@material-ui/core';
 import HelpIcon from '@material-ui/icons/Help';
 import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
@@ -78,6 +79,11 @@ class FormTemplater extends Component {
                 <FormControlLabel value="false" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
+            {description && (
+              <Tooltip title={description}>
+                <HelpIcon color="primary" className="form-templater-help-icon" />
+              </Tooltip>
+            )}
           </ListItem>
         );
       }
@@ -104,11 +110,20 @@ class FormTemplater extends Component {
               required={mandatory}
               property={!linkedClass ? ['name', 'sourceId'] : undefined}
             />
+            {description && (
+              <Tooltip title={description}>
+                <HelpIcon color="primary" className="form-templater-help-icon" />
+              </Tooltip>
+            )}
           </ListItem>
         );
       }
       if (type === 'embedded') {
-        let classSelector = null;
+        let classSelector = (
+          <Typography variant="subheading">
+            {util.antiCamelCase(name)}
+          </Typography>
+        );
         const handleClassChange = onClassChange || onChange;
         if (util.isAbstract(linkedClass.name, schema)) {
           classSelector = (
@@ -116,7 +131,7 @@ class FormTemplater extends Component {
               name="@class"
               onChange={e => handleClassChange(e, name)}
               resources={[{ name: '' }, ...util.getSubClasses(linkedClass.name, schema)]}
-              label={`${name} Class`}
+              label={`${util.antiCamelCase(name)} Class`}
               value={model[name]['@class']}
               error={errorFields.includes(name)}
             >
@@ -126,11 +141,20 @@ class FormTemplater extends Component {
                 </MenuItem>
               )}
             </ResourceSelectComponent>
+
           );
         }
+
         return (
           <ListItem component={fieldComponent} key={name}>
-            {classSelector}
+            <div className="form-templater-embedded-selector">
+              {classSelector}
+              {description && (
+                <Tooltip title={description}>
+                  <HelpIcon color="primary" className="form-templater-help-icon" />
+                </Tooltip>
+              )}
+            </div>
             <FormTemplater
               onChange={e => onChange(e, name)}
               schema={schema}
@@ -150,7 +174,7 @@ class FormTemplater extends Component {
             <ResourceSelectComponent
               name={name}
               onChange={e => onChange(e)}
-              resources={choices}
+              resources={[...choices, '']}
               label={util.antiCamelCase(name)}
               value={model[name]}
               error={errorFields.includes(name)}

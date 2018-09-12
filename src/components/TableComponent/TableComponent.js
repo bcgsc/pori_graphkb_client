@@ -47,6 +47,12 @@ import config from '../../config.json';
 
 const NEXT_CUTOFF = 0.8;
 const { ROWS_PER_PAGE, TSV_FILENAME } = config.TABLE_PROPERTIES;
+const DEFAULT_COLUMN_ORDER = [
+  '@class',
+  'source',
+  'sourceId',
+  'name',
+];
 
 /**
  * Component to display query results in table form. Controls state for
@@ -127,13 +133,13 @@ class TableComponent extends Component {
 
     // Set default order for columns.
     tableColumns.sort((a, b) => {
-      if (a.id === 'source') {
+      if (DEFAULT_COLUMN_ORDER.indexOf(b.id) === -1) {
         return -1;
       }
-      if (a.id === 'sourceId' && b.id !== 'source') {
-        return -1;
+      if (DEFAULT_COLUMN_ORDER.indexOf(a.id) === -1) {
+        return 1;
       }
-      if (a.id === 'name' && b.id !== 'source' && b.id !== 'sourceId') {
+      if (DEFAULT_COLUMN_ORDER.indexOf(a.id) < DEFAULT_COLUMN_ORDER.indexOf(b.id)) {
         return -1;
       }
       return 1;

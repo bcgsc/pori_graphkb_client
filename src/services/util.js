@@ -461,6 +461,14 @@ const isAbstract = (linkedClass, schema) => Object.values(schema)
 const getSubClasses = (abstractClass, schema) => Object.values(schema)
   .filter(kbClass => kbClass.inherits.includes(abstractClass));
 
+  /**
+   * Returns a list of object class properties that are of a given type.
+   * @param {Array} kbClass - Knowledgebase class object as defined in the schema.
+   * @param {string} type - KB class type.
+   */
+const getPropOfType = (kbClass, type) => Object.values(kbClass)
+  .filter(prop => prop.type === type);
+
 export default {
   antiCamelCase,
   getPreview,
@@ -482,4 +490,5 @@ export default {
   isAbstract,
   getSubClasses,
   parsePermission,
+  getPropOfType,
 };

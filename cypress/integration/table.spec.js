@@ -190,7 +190,7 @@ describe('Table Test', () => {
 
             cy.get('#filter-popover').click();
             cy.get('#ellipsis-menu').click();
-            cy.contains('Clear Filters').click();
+            cy.contains('Clear all filters').click();
             cy.contains(`1-50 of ${total}`);
           });
         }

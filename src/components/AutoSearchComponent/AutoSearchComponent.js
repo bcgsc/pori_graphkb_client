@@ -57,6 +57,8 @@ class AutoSearchComponent extends Component {
       this.callApi.bind(this),
       property.length > 1 ? LONG_DEBOUNCE_TIME : DEBOUNCE_TIME,
     );
+    this.handleBlur = this.handleBlur.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.refreshOptions = this.refreshOptions.bind(this);
     this.setRef = (node) => { this.popperNode = node; };
   }
@@ -67,6 +69,32 @@ class AutoSearchComponent extends Component {
   componentWillUnmount() {
     this.callApi.cancel();
     this.render = null;
+  }
+
+  handleBlur() {
+    const { value } = this.props;
+    const { lastRid, options } = this.state;
+    const perfectMatch = options.length === 1
+      ? options[0]
+      : options
+        .find(option => option.name === value || option.sourceId === value);
+    if (perfectMatch) {
+      this.handleChange(perfectMatch);
+    }
+    this.setState({ noRidFlag: !!(!lastRid && value && !perfectMatch) });
+  }
+
+  handleChange(e) {
+    const { onChange, name } = this.props;
+    onChange({
+      target: {
+        value: e.name || e.sourceId,
+        sourceId: e.sourceId,
+        '@rid': e['@rid'],
+        name,
+      },
+    });
+    this.setState({ lastRid: e['@rid'] });
   }
 
   /**
@@ -112,7 +140,6 @@ class AutoSearchComponent extends Component {
       options,
       emptyFlag,
       noRidFlag,
-      lastRid,
       loading,
     } = this.state;
 
@@ -148,17 +175,7 @@ class AutoSearchComponent extends Component {
 
     return (
       <Downshift
-        onChange={(e) => {
-          onChange({
-            target: {
-              value: e.name || e.sourceId,
-              sourceId: e.sourceId,
-              '@rid': e['@rid'],
-              name,
-            },
-          });
-          this.setState({ lastRid: e['@rid'] });
-        }}
+        onChange={this.handleChange}
         itemToString={(item) => {
           if (item) return item.name;
           return null;
@@ -192,7 +209,7 @@ class AutoSearchComponent extends Component {
                     disabled,
                     onKeyUp: this.refreshOptions,
                     onFocus: () => this.setState({ noRidFlag: false }),
-                    onBlur: () => this.setState({ noRidFlag: !!(!lastRid && value) }),
+                    onBlur: this.handleBlur,
                     style: {
                       fontSize: dense ? '0.8125rem' : '',
                     },
@@ -248,8 +265,7 @@ class AutoSearchComponent extends Component {
                 Select an option
               </Typography>
             )}
-          </div>)
-        }
+          </div>)}
       </Downshift>
     );
   }

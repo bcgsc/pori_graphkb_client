@@ -178,7 +178,6 @@ class VariantParserComponent extends Component {
         }
         variant[`${name}.${key}`] = e.target[key];
       });
-
     this.setState({ variant, errorFields: [] }, this.updateShorthand);
   }
 

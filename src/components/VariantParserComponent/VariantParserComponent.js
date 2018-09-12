@@ -66,8 +66,7 @@ class VariantParserComponent extends Component {
   }
 
   /**
-   * Queries the api endpoint specified in the component props. Matches records
-   * with the property specified in component props similar to the input value.
+   * Parses shorthand string and updates form fields with response.
    * @param {string} value - value to be sent to the api.
    */
   async parseString(value) {
@@ -240,7 +239,8 @@ class VariantParserComponent extends Component {
   /**
    * Submits a POST request to the server with current variant data.
    */
-  async submitVariant() {
+  async submitVariant(e) {
+    e.preventDefault();
     const { variant, positionalVariantSchema, schema } = this.state;
     const copy = Object.assign({}, variant);
     Object.keys(copy).forEach((k) => {
@@ -348,58 +348,60 @@ class VariantParserComponent extends Component {
     );
 
     return (
-      <div className="variant-parser-wrapper">
-        {drawer}
-        <Paper elevation={4} className="variant-parser-shorthand paper">
-          <FormControl
-            error={!!((error || invalidFlag) && value)}
-            fullWidth
-          >
-            <TextField
+      <form onSubmit={this.submitVariant}>
+        <div className="variant-parser-wrapper">
+          {drawer}
+          <Paper elevation={4} className="variant-parser-shorthand paper">
+            <FormControl
               error={!!((error || invalidFlag) && value)}
-              required={required}
-              name={name}
-              onChange={(e) => { handleChange(e); this.refreshOptions(e); }}
-              label="HGVS nomenclature"
-              disabled={disabled}
-              value={value}
-            />
-            {((error || invalidFlag) && value)
-              && <FormHelperText>{invalidFlag}</FormHelperText>
-            }
-          </FormControl>
-        </Paper>
-        <Paper elevation={4} className="paper parser-form-grid">
-          {schema
-            && (
-              <FormTemplater
-                schema={schema}
-                onChange={this.handleVariantChange}
-                onClassChange={this.handleClassChange}
-                model={variant}
-                kbClass={positionalVariantSchema}
-                excludedProps={['break1Repr', 'break2Repr']}
-                errorFields={errorFields}
-                sort={sortFields}
-                pairs={{
-                  break1: ['break1Start', 'break1End'],
-                  break2: ['break2Start', 'break2End'],
-                }}
+              fullWidth
+            >
+              <TextField
+                error={!!((error || invalidFlag) && value)}
+                required={required}
+                name={name}
+                onChange={(e) => { handleChange(e); this.refreshOptions(e); }}
+                label="HGVS nomenclature"
+                disabled={disabled}
+                value={value}
               />
-            )
-          }
-        </Paper>
-        <Paper className="paper" elevation={4} id="variant-form-submit">
-          <Button
-            color="primary"
-            variant="raised"
-            onClick={this.submitVariant}
-            disabled={formIsInvalid}
-          >
-            Submit
-          </Button>
-        </Paper>
-      </div>
+              {((error || invalidFlag) && value)
+                && <FormHelperText>{invalidFlag}</FormHelperText>
+              }
+            </FormControl>
+          </Paper>
+          <Paper elevation={4} className="paper parser-form-grid">
+            {schema
+              && (
+                <FormTemplater
+                  schema={schema}
+                  onChange={this.handleVariantChange}
+                  onClassChange={this.handleClassChange}
+                  model={variant}
+                  kbClass={positionalVariantSchema}
+                  excludedProps={['break1Repr', 'break2Repr']}
+                  errorFields={errorFields}
+                  sort={sortFields}
+                  pairs={{
+                    break1: ['break1Start', 'break1End'],
+                    break2: ['break2Start', 'break2End'],
+                  }}
+                />
+              )
+            }
+          </Paper>
+          <Paper className="paper" elevation={4} id="variant-form-submit">
+            <Button
+              type="submit"
+              color="primary"
+              variant="raised"
+              disabled={formIsInvalid}
+            >
+              Submit
+            </Button>
+          </Paper>
+        </div>
+      </form>
     );
   }
 }

@@ -466,7 +466,7 @@ class TableComponent extends Component {
           onClick={() => { this.handleClose(); this.clearFilters(); }}
           id="clear-filters"
         >
-          Clear Filters
+          Clear All Filters
         </MenuItem>
         <MenuItem
           onClick={() => { this.handleClose(); handleGraphRedirect(); }}
@@ -647,14 +647,22 @@ class TableComponent extends Component {
                           {col.label}
                         </TableSortLabel>
                         <div className="filter-btn">
-                          <IconButton
-                            onClick={e => !e.ctrlKey
-                              ? this.openFilter(i)
-                              : this.clearFilter(i)
+                          <Tooltip
+                            title={columnFilterStrings[i]
+                              ? 'Ctrl + click to clear'
+                              : 'Filter this column'
                             }
                           >
-                            <FilterListIcon />
-                          </IconButton>
+                            <IconButton
+                              color={columnFilterStrings[i] ? 'primary' : 'default'}
+                              onClick={e => !e.ctrlKey
+                                ? this.openFilter(i)
+                                : this.clearFilter(i)
+                              }
+                            >
+                              <FilterListIcon />
+                            </IconButton>
+                          </Tooltip>
                         </div>
                       </TableCell>
                     );

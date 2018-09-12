@@ -216,16 +216,10 @@ class VariantParserComponent extends Component {
       const { violatedAttr } = error.content;
       if (violatedAttr) {
         if (violatedAttr === 'break1' || violatedAttr === 'break2') {
-          if (
-            variant[`${violatedAttr}Start`]
-            && variant[`${violatedAttr}Start`]['@class']
-          ) {
+          if (variant[`${violatedAttr}Start`]) {
             errorFields.push(`${violatedAttr}Start`);
           }
-          if (
-            variant[`${violatedAttr}End`]
-            && variant[`${violatedAttr}End`]['@class']
-          ) {
+          if (variant[`${violatedAttr}End`]) {
             errorFields.push(`${violatedAttr}End`);
           }
         } else if (variant[violatedAttr] !== undefined) {

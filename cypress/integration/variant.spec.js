@@ -37,10 +37,9 @@ describe('Variant Form Test', () => {
     cy.get('#break1 li:first div.resource-select').click();
     cy.get('div li[data-value="ProteinPosition"]').click();
     cy.contains('ProteinPosition').should('exist');
-    cy.get('#break2 li:first div.resource-select').click();
-    cy.wait(100);
-    cy.get('#break2 li:first div.resource-select').click();
-    cy.get('div li[data-value="CytobandPosition"').click();
+    cy.wait(500);
+    cy.get('#break2 li:first div.resource-select div[role=button]').click();
+    cy.get('div li[data-value="CytobandPosition"]').click();
     cy.contains('ProteinPosition').should('not.exist');
     cy.contains('CytobandPosition').should('exist');
     cy.contains('Failed to parse the initial position').should('exist');

@@ -53,7 +53,7 @@ class GraphNode extends PureComponent {
     let obj = node.data;
     let key = labelKey;
     if (labelKey.includes('.')) {
-      key = labelKey.split('.')[1];
+      [, key] = labelKey.split('.');
       obj = node.data[labelKey.split('.')[0]];
     }
     let label = obj && obj[key];

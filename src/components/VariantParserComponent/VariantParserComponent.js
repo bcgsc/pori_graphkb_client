@@ -25,6 +25,15 @@ import api from '../../services/api';
 import util from '../../services/util';
 
 const NOTIFICATION_SPINNER_SIZE = 16;
+const DEFAULT_ORDER = [
+  'type',
+  'reference1',
+  'reference2',
+  'break1Start',
+  'break1End',
+  'break2Start',
+  'break2End',
+];
 
 class VariantParserComponent extends Component {
   constructor(props) {
@@ -36,7 +45,6 @@ class VariantParserComponent extends Component {
       errorFields: [],
     };
     this.parseString = this.parseString.bind(this);
-    this.refreshOptions = this.refreshOptions.bind(this);
     this.handleVariantChange = this.handleVariantChange.bind(this);
     this.handleClassChange = this.handleClassChange.bind(this);
     this.submitVariant = this.submitVariant.bind(this);
@@ -58,20 +66,14 @@ class VariantParserComponent extends Component {
   }
 
   /**
-   * Calls api with user input value as parameter.
+   * Parses shorthand string and updates form fields with response.
    * @param {Event} e - user input event.
    */
-  refreshOptions(e) {
-    this.setState({ invalidFlag: '', errorFields: [] });
-    this.parseString(e.target.value);
-  }
-
-  /**
-   * Parses shorthand string and updates form fields with response.
-   * @param {string} value - value to be sent to the api.
-   */
-  async parseString(value) {
+  async parseString(e) {
     const { variant, positionalVariantSchema, schema } = this.state;
+    const { handleChange } = this.props;
+    handleChange(e);
+    const { value } = e.target;
     try {
       const response = kbp.variant.parse(value.trim());
       // Split response into link data and non-link data
@@ -91,7 +93,7 @@ class VariantParserComponent extends Component {
         }
       });
       const newV = Object.assign(variant, _.omit(response, ...linkProps.map(prop => prop.name)));
-      this.setState({ variant: newV });
+      this.setState({ variant: newV, invalidFlag: '', errorFields: [] });
     } catch (error) {
       if (error.content && error.content.parsed) {
         this.updateLinkProps(error.content.parsed);
@@ -246,14 +248,18 @@ class VariantParserComponent extends Component {
     const { variant, positionalVariantSchema, schema } = this.state;
     const copy = Object.assign({}, variant);
     Object.keys(copy).forEach((k) => {
-      if (typeof copy[k] === 'object') {
+      if (typeof copy[k] === 'object') { // more flexible
         if (!copy[k]['@class']) {
           delete copy[k];
         } else {
           const nestedProps = (util.getClass(copy[k]['@class'], schema)).properties;
           nestedProps.forEach((prop) => {
-            if (prop.type === 'integer' && !copy[k][prop.name]) {
-              copy[k][prop.name] = Number(copy[k][prop.name]);
+            if (!copy[k][prop.name]) {
+              if (prop.type === 'integer' && prop.mandatory) {
+                copy[k][prop.name] = Number(copy[k][prop.name]);
+              } else {
+                delete copy[k][prop.name];
+              }
             }
           });
         }
@@ -281,7 +287,6 @@ class VariantParserComponent extends Component {
       name,
       value,
       disabled,
-      handleChange,
       handleFinish,
     } = this.props;
 
@@ -297,22 +302,13 @@ class VariantParserComponent extends Component {
     });
 
     const sortFields = (a, b) => {
-      const order = [
-        'type',
-        'reference1',
-        'reference2',
-        'break1Start',
-        'break1End',
-        'break2Start',
-        'break2End',
-      ];
-      if (order.indexOf(b.name) === -1) {
+      if (DEFAULT_ORDER.indexOf(b.name) === -1) {
         return -1;
       }
-      if (order.indexOf(a.name) === -1) {
+      if (DEFAULT_ORDER.indexOf(a.name) === -1) {
         return 1;
       }
-      if (order.indexOf(a.name) < order.indexOf(b.name)) {
+      if (DEFAULT_ORDER.indexOf(a.name) < DEFAULT_ORDER.indexOf(b.name)) {
         return -1;
       }
       return 1;
@@ -349,24 +345,26 @@ class VariantParserComponent extends Component {
       </Drawer>
     );
 
+    const shorthandError = !!((error || invalidFlag) && value);
+
     return (
       <div className="variant-parser-wrapper">
         {drawer}
         <Paper elevation={4} className="variant-parser-shorthand paper">
           <FormControl
-            error={!!((error || invalidFlag) && value)}
+            error={shorthandError}
             fullWidth
           >
             <TextField
-              error={!!((error || invalidFlag) && value)}
+              error={shorthandError}
               required={required}
               name={name}
-              onChange={(e) => { handleChange(e); this.refreshOptions(e); }}
+              onChange={this.parseString}
               label="HGVS nomenclature"
               disabled={disabled}
               value={value}
             />
-            {((error || invalidFlag) && value)
+            {shorthandError
               && <FormHelperText>{invalidFlag}</FormHelperText>
             }
           </FormControl>

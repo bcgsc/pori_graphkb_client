@@ -214,13 +214,27 @@ const getSchema = () => {
  * @param {number} limit - Limit for number of returned matches.
  */
 const autoSearch = (endpoint, property, value, limit) => {
-  const re = new RegExp(/:|\\|;|,|\.|\/|\||\+|\*|=|!|\?|\[|\]|\(|\)/, 'g');
+  const re = new RegExp(/:|\\|;|,|\.|\/|\||\+|\*|=|!|\?|\[|\]|\(|\)|"|'/, 'g');
+  const literalRe = new RegExp(/^['"].*['"]$/);
   if (value.replace(re, '').length < 4) return Promise.resolve({ result: [] });
-  const query = property
-    .map(p => `${p}=~${encodeURIComponent(value.replace(re, ''))}`)
-    .join('&');
+
   const orStr = `or=${property.join(',')}`;
-  return get(`/${endpoint}?${query}&${orStr}&limit=${limit}&neighbors=1&@class=!Publication`);
+  let extras = `limit=${limit}&neighbors=1`;
+
+  let query;
+
+  if (value.match(literalRe)) {
+    query = property
+      .map(p => `${p}=${encodeURIComponent(value.replace(re, ''))}`)
+      .join('&');
+  } else {
+    query = property
+      .map(p => `${p}=~${encodeURIComponent(value.replace(re, ''))}`)
+      .join('&');
+    extras += '&@class=!Publication';
+  }
+
+  return get(`/${endpoint}?${query}&${orStr}&${extras}`);
 };
 
 /**

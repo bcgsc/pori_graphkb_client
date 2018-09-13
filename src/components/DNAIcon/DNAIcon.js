@@ -2,9 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 function DNAIcon(props) {
+  const { className } = props;
   return (
     <svg
-      className={props.className}
+      className={className}
       focusable="false"
       viewBox="0 0 24 24"
       aria-hidden

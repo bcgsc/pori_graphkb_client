@@ -122,7 +122,11 @@ class App extends Component {
   }
 
   render() {
-    const { anchorEl, loggedIn, drawerOpen } = this.state;
+    const {
+      anchorEl,
+      loggedIn,
+      drawerOpen,
+    } = this.state;
 
     const loginWithProps = () => (
       <LoginView

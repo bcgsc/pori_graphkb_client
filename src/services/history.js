@@ -16,8 +16,12 @@ const history = createBrowserHistory();
  */
 history.listen((location) => {
   history.prevState = location.pathname;
-  if ((!auth.getToken() || auth.isExpired()) && location.pathname !== '/login') {
-    history.push('/login');
+  if (location.pathname !== '/login') {
+    if (!auth.getToken()) {
+      history.push('/login');
+    } else if (auth.isExpired()) {
+      history.push('/login', { timedout: true });
+    }
   }
 });
 

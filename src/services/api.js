@@ -214,7 +214,7 @@ const getSchema = () => {
  * @param {number} limit - Limit for number of returned matches.
  */
 const autoSearch = (endpoint, property, value, limit) => {
-  const re = new RegExp(/:|\\|;|,|\.|\/|\||\+|\*|=|!|\?|\[|\]|\(|\)|"|'/, 'g');
+  const re = new RegExp(/:|\\|;|,|\.|\/|\||\+|\*|=|!|\?|\[|\]|\(|\)/, 'g');
   const literalRe = new RegExp(/^['"].*['"]$/);
   if (value.replace(re, '').length < 4) return Promise.resolve({ result: [] });
 
@@ -225,7 +225,7 @@ const autoSearch = (endpoint, property, value, limit) => {
 
   if (value.match(literalRe)) {
     query = property
-      .map(p => `${p}=${encodeURIComponent(value.replace(re, ''))}`)
+      .map(p => `${p}=${encodeURIComponent(value.slice(1, value.length - 1).replace(re, ''))}`)
       .join('&');
   } else {
     query = property

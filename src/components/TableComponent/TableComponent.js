@@ -39,7 +39,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import AddIcon from '@material-ui/icons/Add';
-import FilterListIcon from '@material-ui/icons/FilterList';
+import FilterIcon from '../FilterIcon/FilterIcon';
 import NodeDetailComponent from '../NodeDetailComponent/NodeDetailComponent';
 import DownloadFileComponent from '../DownloadFileComponent/DownloadFileComponent';
 import util from '../../services/util';
@@ -101,6 +101,7 @@ class TableComponent extends Component {
   componentDidMount() {
     const { allProps } = this.props;
     const tableColumns = allProps.reduce((r, column) => {
+      const [key, nested] = column.split('.');
       if (column.startsWith('in_') || column.startsWith('out_') || column === '@rid') return r;
       if (!column.includes('.')) {
         r.push({
@@ -110,18 +111,18 @@ class TableComponent extends Component {
           sortBy: null,
           sortable: null,
         });
-      } else if (column.split('.')[1] !== 'source') {
-        const col = r.find(c => c.id === column.split('.')[0]);
+      } else if (nested !== 'source') {
+        const col = r.find(c => c.id === key);
         if (!col) {
           r.push({
-            id: column.split('.')[0],
-            label: util.antiCamelCase(column.split('.')[0]),
-            checked: column.split('.')[0] === 'source',
-            sortBy: column.split('.')[1],
-            sortable: [column.split('.')[1]],
+            id: key,
+            label: util.antiCamelCase(key),
+            checked: key === 'source',
+            sortBy: nested,
+            sortable: [nested],
           });
         } else {
-          col.sortable.push(column.split('.')[1]);
+          col.sortable.push(nested);
         }
       }
       return r;
@@ -666,7 +667,7 @@ class TableComponent extends Component {
                                 : this.clearFilter(i)
                               }
                             >
-                              <FilterListIcon />
+                              <FilterIcon />
                             </IconButton>
                           </Tooltip>
                         </div>

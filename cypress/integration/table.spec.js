@@ -177,23 +177,8 @@ describe('Table Test', () => {
         if (i === 2) {
           cy.wrap(button).click();
           cy.get('ul.filter-list div[role=button]:first').click();
-          cy.get('div[role=document] input').type('disor');
-          cy.get('table tbody tr').then((array) => {
-            if (array.length < 50) {
-              cy.contains(`1-${array.length} of ${array.length}`);
-              cy.expect(array.length).to.be.lt(total);
-            } else {
-              cy.contains('1-50').invoke('text').then((t) => {
-                const newTotal = Number(t.split('1-50 of ')[1]);
-                cy.expect(newTotal).to.be.lt(total);
-              });
-            }
-
-            cy.get('#filter-popover').click();
-            cy.get('#ellipsis-menu').click();
-            cy.contains('Clear all filters').click();
-            cy.contains(`1-50 of ${total}`);
-          });
+          cy.get('#filter-popover ul.filter-list li>div>div>input[type=text]').type('disor');
+          cy.get('ul.filter-list>div>div').then(array => cy.expect(array.length).to.be.lt(1000));
         }
       });
     });

@@ -42,9 +42,14 @@ describe('Variant Form Test', () => {
     cy.get('div li[data-value="CytobandPosition"]').click();
     cy.contains('ProteinPosition').should('not.exist');
     cy.contains('CytobandPosition').should('exist');
-    cy.contains('Failed to parse the initial position').should('exist');
+    cy.contains('cytoband arm must be p or q ()').should('exist');
     cy.get('#break1 textarea[name=arm]').type('p');
     cy.get('#break2 textarea[name=arm]').type('p');
-    cy.contains('Failed to parse the initial position').should('not.exist');
+    cy.contains('cytoband arm must be p or q ()').should('not.exist');
+    cy.contains('minorBand must be a positive integer ()');
+    cy.get('#break1 input[name=minorBand]').type('23');
+    cy.get('#break2 input[name=minorBand]').type('52');
+    cy.contains('minorBand must be a positive integer ()').should('not.exist');
+
   });
 });

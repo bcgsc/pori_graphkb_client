@@ -167,7 +167,7 @@ describe('Table Test', () => {
   /**
    * Tests table filters
    */
-  it('Filtering', () => {
+  it.only('Filtering', () => {
     getName('diso');
 
     cy.contains('1-50').invoke('text').then((text) => {
@@ -176,6 +176,7 @@ describe('Table Test', () => {
       cy.get('div.filter-btn').each((button, i) => {
         if (i === 2) {
           cy.wrap(button).click();
+          cy.get('ul.filter-list div[role=button]:first').click();
           cy.get('div[role=document] input').type('disor');
           cy.get('table tbody tr').then((array) => {
             if (array.length < 50) {

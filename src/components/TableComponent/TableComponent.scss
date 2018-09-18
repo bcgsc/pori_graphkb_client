@@ -125,7 +125,20 @@ $flip-duration: 0.15s;
     display: block;
     margin: auto 8px;
 }
-
+#filter-popover{
+    .filter-list{
+        width: 500px;
+        @media (max-width: 600px) {
+            width: auto;
+        }
+    }
+    .filter-exclusions-list{
+        max-height: 40vh;
+        overflow: auto;
+        background-color: $background-light;
+        padding: 0;
+    }
+}
 .filter-icon {
     margin: auto;
     margin-right: 0;

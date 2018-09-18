@@ -34,11 +34,18 @@ import {
   Popover,
   TextField,
   Paper,
+  List,
+  ListItem,
+  ListItemText,
+  InputAdornment,
 } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import AddIcon from '@material-ui/icons/Add';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import SearchIcon from '@material-ui/icons/Search';
 import FilterIcon from '../FilterIcon/FilterIcon';
 import NodeDetailComponent from '../NodeDetailComponent/NodeDetailComponent';
 import DownloadFileComponent from '../DownloadFileComponent/DownloadFileComponent';
@@ -74,6 +81,10 @@ class TableComponent extends Component {
       tableHeadRefs: [],
       columnFilterStrings: [],
       tempFilterIndex: '',
+      columnFilterExclusions: [],
+      filterOptions: [],
+      filterSearchOpen: false,
+      exclusionsOpen: false,
     };
 
     this.clearFilter = this.clearFilter.bind(this);
@@ -81,7 +92,8 @@ class TableComponent extends Component {
     this.createTSV = this.createTSV.bind(this);
     this.openFilter = this.openFilter.bind(this);
     this.setRef = this.setRef.bind(this);
-    this.updateFilterStrings = this.updateFilterStrings.bind(this);
+    this.handleFilterStrings = this.handleFilterStrings.bind(this);
+    this.handleFilterExclusions = this.handleFilterExclusions.bind(this);
     this.handleChangePage = this.handleChangePage.bind(this);
     this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -96,6 +108,8 @@ class TableComponent extends Component {
   }
 
   /**
+   * React componentDidMount lifecycle
+   *
    * Initializes table columns.
    */
   componentDidMount() {
@@ -128,8 +142,10 @@ class TableComponent extends Component {
       return r;
     }, []);
     const columnFilterStrings = [];
+    const columnFilterExclusions = [];
     for (let i = 0; i < tableColumns.length; i += 1) {
       columnFilterStrings.push('');
+      columnFilterExclusions.push([]);
     }
 
     // Set default order for columns.
@@ -146,24 +162,25 @@ class TableComponent extends Component {
       return 1;
     });
 
-    this.setState({ tableColumns, columnFilterStrings });
+    this.setState({ tableColumns, columnFilterStrings, columnFilterExclusions });
   }
 
   /**
-   * Checks for new arriving data.
-   * @param {Object} nextProps - new properties object
+   * React getDerivedStateFromProps lifecycle
+   *
+   * Checks for new arriving data, and updates table accordingly if necessary.
+   * @param {Object} props - new properties object
+   * @param {Object} state - current state on update.
    */
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.data) {
-      const { sortedData, sort } = this.state;
-      if (Object.keys(nextProps.data).length > sortedData.length) {
-        const s = sort || (() => 1);
-        this.setState({
-          sortedData: Object.keys(nextProps.data).map(k => nextProps.data[k]).sort(s),
-        });
-      }
+  static getDerivedStateFromProps(props, state) {
+    const { sortedData, sort } = state;
+    if (Object.keys(props.data).length > sortedData.length) {
+      const s = sort || (() => 1);
+      return { sortedData: Object.values(props.data).sort(s) };
     }
+    return null;
   }
+
 
   /**
    * Stores DOM references in component state.
@@ -178,9 +195,10 @@ class TableComponent extends Component {
   }
 
   clearFilter(i) {
-    const { columnFilterStrings } = this.state;
+    const { columnFilterStrings, columnFilterExclusions } = this.state;
     columnFilterStrings[i] = '';
-    this.setState({ columnFilterStrings });
+    columnFilterExclusions[i] = [];
+    this.setState({ columnFilterStrings, columnFilterExclusions });
   }
 
   /**
@@ -224,15 +242,35 @@ class TableComponent extends Component {
    * @param {number} i - column index.
    */
   openFilter(i) {
-    const { tableHeadRefs } = this.state;
-    this.setState({ filterPopoverNode: tableHeadRefs[i], tempFilterIndex: i });
+    const { tableHeadRefs, tableColumns } = this.state;
+    const { data } = this.props;
+    const filterOptions = Object.keys(data).reduce((array, key) => {
+      const column = tableColumns[i];
+      let value;
+      if (column.sortBy) {
+        value = data[key][column.id][column.sortBy];
+      } else {
+        value = data[key][column.id];
+      }
+      if (!array.includes(value)) {
+        array.push(value);
+      }
+      return array;
+    }, []);
+    this.setState({
+      filterPopoverNode: tableHeadRefs[i],
+      tempFilterIndex: i,
+      filterOptions,
+      filterSearchOpen: false,
+      exclusionsOpen: false,
+    });
   }
 
   /**
    * Updates currently editing filter string.
    * @param {Event} e - User input event.
    */
-  updateFilterStrings(e) {
+  handleFilterStrings(e) {
     const { columnFilterStrings, tempFilterIndex } = this.state;
     columnFilterStrings[tempFilterIndex] = e.target.value;
     this.setState({ columnFilterStrings });
@@ -309,6 +347,17 @@ class TableComponent extends Component {
     }
   }
 
+  handleFilterExclusions(option) {
+    const { columnFilterExclusions, tempFilterIndex } = this.state;
+    const i = columnFilterExclusions[tempFilterIndex].indexOf(option);
+    if (i !== -1) {
+      columnFilterExclusions[tempFilterIndex].splice(i, 1);
+    } else {
+      columnFilterExclusions[tempFilterIndex].push(option);
+    }
+    this.setState({ columnFilterExclusions });
+  }
+
   /**
    * Opens table actions menu.
    * @param {Event} e - Open menu button event.
@@ -352,6 +401,11 @@ class TableComponent extends Component {
         order: newOrder,
         orderBy: newProperty,
         sortedData: Object.keys(data).map(k => data[k]).sort(sort),
+        /**
+         * React getDerivedStateFromProps passes state as parameter, causing
+         * eslint to not recognize this.state.sort s use as a class field.
+         */
+        /* eslint-disable-next-line */
         sort,
       },
     );
@@ -419,6 +473,10 @@ class TableComponent extends Component {
       filterPopoverNode,
       tempFilterIndex,
       columnFilterStrings,
+      columnFilterExclusions,
+      filterOptions,
+      exclusionsOpen,
+      filterSearchOpen,
     } = this.state;
 
     const {
@@ -441,6 +499,19 @@ class TableComponent extends Component {
     const numCols = tableColumns.filter(c => c.checked).length;
     const filteredData = sortedData
       .filter(n => !hidden.includes(n['@rid']))
+      .filter(n => !columnFilterExclusions.some((exclusions, i) => {
+        let cell = n[tableColumns[i].id] || '';
+        if (cell && tableColumns[i].sortBy) {
+          cell = cell[tableColumns[i].sortBy];
+        }
+        if (Array.isArray(cell)) {
+          return false;
+        }
+        if (exclusions.includes(cell)) {
+          return true;
+        }
+        return false;
+      }))
       .filter(n => !columnFilterStrings.some((filt, i) => {
         if (filt) {
           let cell = n[tableColumns[i].id] || '';
@@ -611,11 +682,57 @@ class TableComponent extends Component {
         id="filter-popover"
       >
         <Paper className="paper">
-          <TextField
-            label="Filter"
-            value={columnFilterStrings[tempFilterIndex]}
-            onChange={e => this.updateFilterStrings(e)}
-          />
+          <List className="filter-list">
+            <ListItem
+              button
+              onClick={() => this.setState({ filterSearchOpen: !filterSearchOpen })}
+            >
+              <ListItemText primary="Search" />
+              {filterSearchOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+            </ListItem>
+            <Collapse in={filterSearchOpen} timeout="auto">
+              <ListItem dense>
+                <TextField
+                  value={columnFilterStrings[tempFilterIndex]}
+                  onChange={e => this.handleFilterStrings(e)}
+                  fullWidth
+                  margin="none"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment><SearchIcon /></InputAdornment>
+                    ),
+                  }}
+                />
+              </ListItem>
+            </Collapse>
+            <ListItem
+              button
+              onClick={() => this.setState({ exclusionsOpen: !exclusionsOpen })}
+            >
+              <ListItemText primary="Exclusions" />
+              {exclusionsOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+            </ListItem>
+            <Collapse in={exclusionsOpen} timeout="auto" unmountOnExit>
+              <List component="div" dense disablePading className="filter-exclusions-list">
+                {filterOptions.map(option => (
+                  <ListItem
+                    dense
+                    key={option}
+                    value={option}
+                    button
+                    onClick={() => this.handleFilterExclusions(option)}
+                  >
+                    <Checkbox
+                      checked={columnFilterExclusions[tempFilterIndex]
+                        && !columnFilterExclusions[tempFilterIndex].includes(option)
+                      }
+                    />
+                    <ListItemText primary={option} />
+                  </ListItem>
+                ))}
+              </List>
+            </Collapse>
+          </List>
         </Paper>
       </Popover>
     );
@@ -639,6 +756,9 @@ class TableComponent extends Component {
                   />
                 </TableCell>
                 {tableColumns.map((col, i) => {
+                  const filterActive = columnFilterExclusions[i].length > 0
+                    || columnFilterStrings[i];
+
                   if (col.checked) {
                     return (
                       <TableCell
@@ -655,13 +775,13 @@ class TableComponent extends Component {
                         </TableSortLabel>
                         <div className="filter-btn">
                           <Tooltip
-                            title={columnFilterStrings[i]
+                            title={filterActive
                               ? 'Ctrl + click to clear'
                               : 'Filter this column'
                             }
                           >
                             <IconButton
-                              color={columnFilterStrings[i] ? 'primary' : 'default'}
+                              color={filterActive ? 'primary' : 'default'}
                               onClick={e => !e.ctrlKey
                                 ? this.openFilter(i)
                                 : this.clearFilter(i)
@@ -686,7 +806,6 @@ class TableComponent extends Component {
             </TableHead>
             <TableBody>
               {pageData
-
                 .map((n) => {
                   const isSelected = displayed.includes(n['@rid']);
                   const active = toggle === n['@rid'];

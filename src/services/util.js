@@ -359,6 +359,11 @@ const getColor = (obj, objColor, objColors) => {
   return objColors[colorKey];
 };
 
+/**
+ * Initializes a new instance of given kbClass.
+ * @param {Object} model - existing model to keep existing values from.
+ * @param {Object} kbClass - Knowledge base class schema.
+ */
 const initModel = (model, kbClass) => {
   const newModel = Object.assign({}, model);
   Object.values(kbClass).forEach((property) => {
@@ -461,11 +466,11 @@ const isAbstract = (linkedClass, schema) => Object.values(schema)
 const getSubClasses = (abstractClass, schema) => Object.values(schema)
   .filter(kbClass => kbClass.inherits.includes(abstractClass));
 
-  /**
-   * Returns a list of object class properties that are of a given type.
-   * @param {Array} kbClass - Knowledgebase class object as defined in the schema.
-   * @param {string} type - KB class type.
-   */
+/**
+ * Returns a list of object class properties that are of a given type.
+ * @param {Array} kbClass - Knowledgebase class object as defined in the schema.
+ * @param {string} type - KB class type.
+ */
 const getPropOfType = (kbClass, type) => Object.values(kbClass)
   .filter(prop => prop.type === type);
 

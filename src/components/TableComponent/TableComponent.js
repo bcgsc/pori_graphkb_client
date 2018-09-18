@@ -43,8 +43,6 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import AddIcon from '@material-ui/icons/Add';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import SearchIcon from '@material-ui/icons/Search';
 import FilterIcon from '../FilterIcon/FilterIcon';
 import NodeDetailComponent from '../NodeDetailComponent/NodeDetailComponent';
@@ -83,8 +81,6 @@ class TableComponent extends Component {
       tempFilterIndex: '',
       columnFilterExclusions: [],
       filterOptions: [],
-      filterSearchOpen: false,
-      exclusionsOpen: false,
     };
 
     this.clearFilter = this.clearFilter.bind(this);
@@ -105,6 +101,7 @@ class TableComponent extends Component {
     this.handleRequestSort = this.handleRequestSort.bind(this);
     this.handleSortByChange = this.handleSortByChange.bind(this);
     this.handleSortByChecked = this.handleSortByChecked.bind(this);
+    this.handleFilterCheckAll = this.handleFilterCheckAll.bind(this);
   }
 
   /**
@@ -246,11 +243,9 @@ class TableComponent extends Component {
     const { data } = this.props;
     const filterOptions = Object.keys(data).reduce((array, key) => {
       const column = tableColumns[i];
-      let value;
-      if (column.sortBy) {
-        value = data[key][column.id][column.sortBy];
-      } else {
-        value = data[key][column.id];
+      let value = data[key][column.id] || 'null';
+      if (value && value !== 'null' && column.sortBy) {
+        value = value[column.sortBy];
       }
       if (!array.includes(value)) {
         array.push(value);
@@ -278,10 +273,10 @@ class TableComponent extends Component {
 
   /**
    * Updates page to display.
-   * @param {Event} event - Triggered event.
+   * @param {Event} e - Triggered event.
    * @param {number} page - New page number.
    */
-  handleChangePage(event, page) {
+  handleChangePage(e, page) {
     const { sortedData, rowsPerPage } = this.state;
     const { moreResults } = this.props;
     const rows = (page + 1) * rowsPerPage;
@@ -354,6 +349,16 @@ class TableComponent extends Component {
       columnFilterExclusions[tempFilterIndex].splice(i, 1);
     } else {
       columnFilterExclusions[tempFilterIndex].push(option);
+    }
+    this.setState({ columnFilterExclusions });
+  }
+
+  handleFilterCheckAll(options) {
+    const { columnFilterExclusions, tempFilterIndex } = this.state;
+    if (columnFilterExclusions[tempFilterIndex].length === 0) {
+      columnFilterExclusions[tempFilterIndex] = options.slice();
+    } else {
+      columnFilterExclusions[tempFilterIndex] = [];
     }
     this.setState({ columnFilterExclusions });
   }
@@ -475,8 +480,6 @@ class TableComponent extends Component {
       columnFilterStrings,
       columnFilterExclusions,
       filterOptions,
-      exclusionsOpen,
-      filterSearchOpen,
     } = this.state;
 
     const {
@@ -500,31 +503,18 @@ class TableComponent extends Component {
     const filteredData = sortedData
       .filter(n => !hidden.includes(n['@rid']))
       .filter(n => !columnFilterExclusions.some((exclusions, i) => {
-        let cell = n[tableColumns[i].id] || '';
-        if (cell && tableColumns[i].sortBy) {
+        let cell = n[tableColumns[i].id] === undefined
+          || n[tableColumns[i].id] === null
+          ? 'null' : n[tableColumns[i].id];
+
+        if (cell && cell !== 'null' && tableColumns[i].sortBy) {
           cell = cell[tableColumns[i].sortBy];
         }
         if (Array.isArray(cell)) {
           return false;
         }
-        if (exclusions.includes(cell)) {
+        if (exclusions.includes(cell.toString())) {
           return true;
-        }
-        return false;
-      }))
-      .filter(n => !columnFilterStrings.some((filt, i) => {
-        if (filt) {
-          let cell = n[tableColumns[i].id] || '';
-          if (cell && tableColumns[i].sortBy) {
-            cell = cell[tableColumns[i].sortBy];
-          }
-          if (Array.isArray(cell)) {
-            if (!cell.some(el => el.includes(filt))) {
-              return true;
-            }
-          } else if (!cell.includes(filt)) {
-            return true;
-          }
         }
         return false;
       }));
@@ -665,7 +655,6 @@ class TableComponent extends Component {
         </DialogActions>
       </Dialog>
     );
-
     const filterPopover = (
       <Popover
         anchorEl={filterPopoverNode}
@@ -683,55 +672,64 @@ class TableComponent extends Component {
       >
         <Paper className="paper">
           <List className="filter-list">
-            <ListItem
-              button
-              onClick={() => this.setState({ filterSearchOpen: !filterSearchOpen })}
-            >
-              <ListItemText primary="Search" />
-              {filterSearchOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+            <ListItem dense>
+              <TextField
+                value={columnFilterStrings[tempFilterIndex]}
+                onChange={e => this.handleFilterStrings(e)}
+                fullWidth
+                margin="none"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment><SearchIcon /></InputAdornment>
+                  ),
+                }}
+              />
             </ListItem>
-            <Collapse in={filterSearchOpen} timeout="auto">
-              <ListItem dense>
-                <TextField
-                  value={columnFilterStrings[tempFilterIndex]}
-                  onChange={e => this.handleFilterStrings(e)}
-                  fullWidth
-                  margin="none"
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment><SearchIcon /></InputAdornment>
-                    ),
-                  }}
+            <ListItem>
+            </ListItem>
+            <List component="div" dense disablePadding className="filter-exclusions-list">
+              <ListItem
+                dense
+                button
+                onClick={() => this.handleFilterCheckAll(filterOptions)}
+              >
+                <Checkbox
+                  checked={columnFilterExclusions[tempFilterIndex]
+                    && columnFilterExclusions[tempFilterIndex].length === 0
+                  }
                 />
+                <ListItemText primary={columnFilterExclusions[tempFilterIndex]
+                  && columnFilterExclusions[tempFilterIndex].length === 0 ? 'Deselect All' : 'Select All'} />
               </ListItem>
-            </Collapse>
-            <ListItem
-              button
-              onClick={() => this.setState({ exclusionsOpen: !exclusionsOpen })}
-            >
-              <ListItemText primary="Exclusions" />
-              {exclusionsOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-            </ListItem>
-            <Collapse in={exclusionsOpen} timeout="auto" unmountOnExit>
-              <List component="div" dense disablePading className="filter-exclusions-list">
-                {filterOptions.map(option => (
-                  <ListItem
-                    dense
-                    key={option}
-                    value={option}
-                    button
-                    onClick={() => this.handleFilterExclusions(option)}
-                  >
-                    <Checkbox
-                      checked={columnFilterExclusions[tempFilterIndex]
-                        && !columnFilterExclusions[tempFilterIndex].includes(option)
-                      }
-                    />
-                    <ListItemText primary={option} />
-                  </ListItem>
-                ))}
-              </List>
-            </Collapse>
+              {filterOptions
+                .filter(o => {
+                  const option = util.castToExist(o);
+                  return option.includes(columnFilterStrings[tempFilterIndex])
+                })
+                .sort((a, b) => {
+                  if (util.castToExist(a) === 'null') return -1;
+                  if (util.castToExist(b) === 'null') return 1;
+
+                })
+                .map(o => {
+                  const option = util.castToExist(o);
+                  return (
+                    <ListItem
+                      dense
+                      key={option}
+                      button
+                      onClick={() => this.handleFilterExclusions(option)}
+                    >
+                      <Checkbox
+                        checked={columnFilterExclusions[tempFilterIndex]
+                          && !columnFilterExclusions[tempFilterIndex].includes(option)
+                        }
+                      />
+                      <ListItemText primary={option} />
+                    </ListItem>
+                  );
+                })}
+            </List>
           </List>
         </Paper>
       </Popover>
@@ -847,7 +845,7 @@ class TableComponent extends Component {
                             if (col.checked) {
                               return (
                                 <TableCell key={col.id}>
-                                  {col.sortBy ? (n[col.id] || '')[col.sortBy] : (n[col.id] || '').toString()}
+                                  {col.sortBy ? util.castToExist((n[col.id] || '')[col.sortBy]) : util.castToExist(n[col.id])}
                                 </TableCell>
                               );
                             }

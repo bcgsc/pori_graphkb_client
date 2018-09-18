@@ -35,4 +35,5 @@ Thumbs.db
 
 *.css
 src/index.css
-jsdoc/*
+/jsdoc
+/cypress/videos

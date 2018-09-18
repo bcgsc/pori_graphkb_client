@@ -18,7 +18,6 @@ import {
 } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 import * as jc from 'json-cycle';
-import _ from 'lodash';
 import kbp from 'knowledgebase-parser';
 import FormTemplater from '../FormTemplater/FormTemplater';
 import api from '../../services/api';
@@ -49,7 +48,7 @@ class VariantParserComponent extends Component {
     this.handleClassChange = this.handleClassChange.bind(this);
     this.submitVariant = this.submitVariant.bind(this);
     this.updateErrorFields = this.updateErrorFields.bind(this);
-    this.updateLinkProps = this.updateLinkProps.bind(this);
+    this.extractLinkProps = this.extractLinkProps.bind(this);
     this.updateShorthand = this.updateShorthand.bind(this);
   }
 
@@ -74,56 +73,75 @@ class VariantParserComponent extends Component {
     const { handleChange } = this.props;
     handleChange(e);
     const { value } = e.target;
-    try {
-      const response = kbp.variant.parse(value.trim());
-      // Split response into link data and non-link data
-      const linkProps = this.updateLinkProps(response);
+    if (!value) {
+      this.setState({ variant: util.initModel({}, positionalVariantSchema) });
+    } else {
+      try {
+        const response = kbp.variant.parse(value.trim());
+        // Split response into link data and non-link data
+        const linkProps = this.extractLinkProps(response);
 
-      const embeddedProps = util.getPropOfType(positionalVariantSchema, 'embedded');
+        const embeddedProps = util.getPropOfType(positionalVariantSchema, 'embedded');
 
-      embeddedProps.forEach((prop) => {
-        const { name } = prop;
-        if (response[name] && response[name]['@class']) {
-          (util.getClass(response[name]['@class'], schema)).properties
-            .forEach((classProp) => {
-              response[name][classProp.name] = response[name][classProp.name] === undefined
-                || response[name][classProp.name] === null
-                ? '' : response[name][classProp.name];
-            });
-        }
-      });
-      const newV = Object.assign(variant, _.omit(response, ...linkProps.map(prop => prop.name)));
-      this.setState({ variant: newV, invalidFlag: '', errorFields: [] });
-    } catch (error) {
-      if (error.content && error.content.parsed) {
-        this.updateLinkProps(error.content.parsed);
-        Object.keys(error.content.parsed).forEach((key) => {
-          if (variant[key] !== undefined && variant[key] !== null) {
-            variant[key] = error.content.parsed[key];
+        embeddedProps.forEach((prop) => {
+          const { name } = prop;
+          if (response[name] && response[name].name) {
+            (util.getClass(response[name].name, schema)).properties
+              .forEach((classProp) => {
+                variant[name][classProp.name] = response[name][classProp.name] === undefined
+                  || response[name][classProp.name] === null
+                  ? '' : response[name][classProp.name];
+              });
+            response[name]['@class'] = response[name].name;
+          } else {
+            response[name] = { '@class': '' };
           }
         });
-      }
 
-      this.updateErrorFields(error);
-      this.setState({
-        invalidFlag: error.message,
-      });
+        this.setState({
+          variant: Object.assign(util.initModel({}, positionalVariantSchema),
+            { ...response, ...linkProps }),
+          invalidFlag: '',
+          errorFields: [],
+        });
+      } catch (error) {
+        if (error.content && error.content.parsed) {
+          Object.keys(error.content.parsed).forEach((key) => {
+            if (variant[key] !== undefined && variant[key] !== null) {
+              variant[key] = error.content.parsed[key];
+            }
+          });
+          this.setState({
+            variant: Object.assign(variant, this.extractLinkProps(error.content.parsed)),
+          });
+        }
+
+        this.updateErrorFields(error);
+        this.setState({
+          invalidFlag: error.message,
+        });
+      }
     }
   }
 
-  updateLinkProps(parsed) {
-    const { variant, positionalVariantSchema } = this.state;
+  /**
+   * Validates link properties by checking the database for exact matches.
+   * Returns a sub-object of PositionalVariant containing the fields in need of
+   * update, with their validated properties.
+   * @param {Object} parsed - Parsed variant from kbp.
+   */
+  extractLinkProps(parsed) {
+    const { positionalVariantSchema } = this.state;
     const linkProps = util.getPropOfType(positionalVariantSchema, 'link');
-
+    const newValues = {};
     linkProps.forEach(async (prop) => {
       const { name, linkedClass } = prop;
       if (parsed[name] && linkedClass && linkedClass.route) {
         const data = await api.get(`${linkedClass.route}?name=${parsed[name]}`);
         const cycled = jc.retrocycle(data).result;
         if (cycled.length === 1) {
-          variant[name] = cycled[0].name;
-          variant[`${name}.@rid`] = cycled[0]['@rid'];
-          this.setState({ variant });
+          newValues[name] = cycled[0].name;
+          newValues[`${name}.@rid`] = cycled[0]['@rid'];
         } else if (cycled.length > 1) {
           // add multiple modals?
         } else if (cycled.length === 0) {
@@ -133,7 +151,7 @@ class VariantParserComponent extends Component {
         }
       }
     });
-    return linkProps;
+    return newValues;
   }
 
   /**
@@ -189,10 +207,13 @@ class VariantParserComponent extends Component {
     this.setState({ variant, errorFields: [] }, this.updateShorthand);
   }
 
+  /**
+   * Pipes changes of the variant form fields to the shorthand string form.
+   */
   updateShorthand() {
     const { variant } = this.state;
-    const { handleChange, name } = this.props;
-    let shorthand = new kbp.variant.VariantNotation(variant);
+    const { handleChange, name, value } = this.props;
+    let shorthand = value;
     try {
       const filteredVariant = {};
       Object.keys(variant).forEach((k) => {
@@ -201,24 +222,25 @@ class VariantParserComponent extends Component {
             filteredVariant[k] = variant[k];
             filteredVariant.prefix = kbp.position.CLASS_PREFIX[variant[k]['@class']];
           }
-        } else if (k !== 'prefix') {
+        } else if (k !== 'prefix' && variant[k]) {
           filteredVariant[k] = variant[k];
         }
       });
-      console.log(filteredVariant);
       shorthand = new kbp.variant.VariantNotation(filteredVariant);
       shorthand = kbp.variant.parse(shorthand.toString());
       this.setState({ invalidFlag: '' });
     } catch (error) {
-      console.log(error);
       this.updateErrorFields(error);
       this.setState({ invalidFlag: error.message });
     } finally {
-      console.log(shorthand.toString());
       handleChange({ target: { value: shorthand.toString(), name } });
     }
   }
 
+  /**
+   * Assigns blame to violatedAttr input fields in the form.
+   * @param {kbp.error.ErrorMixin} error - Error object from kbp.
+   */
   updateErrorFields(error) {
     const { variant } = this.state;
     const errorFields = [];
@@ -308,10 +330,9 @@ class VariantParserComponent extends Component {
       if (DEFAULT_ORDER.indexOf(a.name) === -1) {
         return 1;
       }
-      if (DEFAULT_ORDER.indexOf(a.name) < DEFAULT_ORDER.indexOf(b.name)) {
-        return -1;
-      }
-      return 1;
+      return DEFAULT_ORDER.indexOf(a.name) < DEFAULT_ORDER.indexOf(b.name)
+        ? -1
+        : 1;
     };
 
     const drawer = (
@@ -345,7 +366,7 @@ class VariantParserComponent extends Component {
       </Drawer>
     );
 
-    const shorthandError = !!((error || invalidFlag) && value);
+    const shorthandError = !!(error || invalidFlag);
 
     return (
       <div className="variant-parser-wrapper">

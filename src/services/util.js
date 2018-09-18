@@ -402,6 +402,11 @@ const getSubClasses = (abstractClass, schema) =>
   Object.values(schema)
     .filter(kbClass => kbClass.inherits.includes(abstractClass));
 
+const castToExist = (obj) => {
+  return obj === undefined || obj === null ? 'null' : obj.toString();
+
+}
+
 export default {
   antiCamelCase,
   getPreview,
@@ -421,4 +426,5 @@ export default {
   parsePermission,
   isAbstract,
   getSubClasses,
+  castToExist,
 };

@@ -79,8 +79,7 @@ class VariantParserComponent extends Component {
       try {
         const response = kbp.variant.parse(value.trim());
         // Split response into link data and non-link data
-        const linkProps = this.extractLinkProps(response);
-
+        const linkProps = await this.extractLinkProps(response);
         const embeddedProps = util.getPropOfType(positionalVariantSchema, 'embedded');
 
         embeddedProps.forEach((prop) => {
@@ -98,6 +97,8 @@ class VariantParserComponent extends Component {
           }
         });
 
+        console.log(Object.assign(util.initModel({}, positionalVariantSchema),
+          { ...response, ...linkProps }));
         this.setState({
           variant: Object.assign(util.initModel({}, positionalVariantSchema),
             { ...response, ...linkProps }),
@@ -112,7 +113,7 @@ class VariantParserComponent extends Component {
             }
           });
           this.setState({
-            variant: Object.assign(variant, this.extractLinkProps(error.content.parsed)),
+            variant: Object.assign(variant, await this.extractLinkProps(error.content.parsed)),
           });
         }
 
@@ -130,11 +131,11 @@ class VariantParserComponent extends Component {
    * update, with their validated properties.
    * @param {Object} parsed - Parsed variant from kbp.
    */
-  extractLinkProps(parsed) {
+  async extractLinkProps(parsed) {
     const { positionalVariantSchema } = this.state;
     const linkProps = util.getPropOfType(positionalVariantSchema, 'link');
     const newValues = {};
-    linkProps.forEach(async (prop) => {
+    await Promise.all(linkProps.map(async (prop) => {
       const { name, linkedClass } = prop;
       if (parsed[name] && linkedClass && linkedClass.route) {
         const data = await api.get(`${linkedClass.route}?name=${parsed[name]}`);
@@ -150,7 +151,8 @@ class VariantParserComponent extends Component {
           });
         }
       }
-    });
+    }));
+
     return newValues;
   }
 

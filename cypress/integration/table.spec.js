@@ -167,20 +167,16 @@ describe('Table Test', () => {
   /**
    * Tests table filters
    */
-  it.only('Filtering', () => {
+  it('Filtering', () => {
     getName('diso');
 
-    cy.contains('1-50').invoke('text').then((text) => {
-      cy.log(text);
-      const total = text.split('1-50 of ')[1];
-      cy.get('div.filter-btn').each((button, i) => {
-        if (i === 2) {
-          cy.wrap(button).click();
-          cy.get('ul.filter-list div[role=button]:first').click();
-          cy.get('#filter-popover ul.filter-list li>div>div>input[type=text]').type('disor');
-          cy.get('ul.filter-list>div>div').then(array => cy.expect(array.length).to.be.lt(1000));
-        }
-      });
+    cy.get('div.filter-btn').each((button, i) => {
+      if (i === 2) {
+        cy.wrap(button).click();
+        cy.get('ul.filter-list div[role=button]:first').click();
+        cy.get('#filter-popover ul.filter-list li>div>div>input[type=text]').type('disor');
+        cy.get('ul.filter-list>div>div').then(array => cy.expect(array.length).to.be.lt(1000));
+      }
     });
   });
 });

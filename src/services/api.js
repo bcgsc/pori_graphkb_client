@@ -214,9 +214,9 @@ const getSchema = () => {
  * @param {number} limit - Limit for number of returned matches.
  */
 const autoSearch = (endpoint, property, value, limit) => {
-  const re = new RegExp(/:|\\|;|,|\.|\/|\||\+|\*|=|!|\?|\[|\]|\(|\)/, 'g');
+  const re = new RegExp(/[\s|\r|\n|\t|:|\\|;|,|.|/|||+|*|=|!|?|[|\]|(|)]+/, 'g');
   const literalRe = new RegExp(/^['"].*['"]$/);
-  if (value.replace(re, '').length < 4) return Promise.resolve({ result: [] });
+  if (value.trim().split(re).some(s => s.length < 4)) return Promise.resolve({ result: [] });
 
   const orStr = `or=${property.join(',')}`;
   let extras = `limit=${limit}&neighbors=1`;
@@ -225,11 +225,11 @@ const autoSearch = (endpoint, property, value, limit) => {
 
   if (value.match(literalRe)) {
     query = property
-      .map(p => `${p}=${encodeURIComponent(value.slice(1, value.length - 1).replace(re, ''))}`)
+      .map(p => `${p}=${encodeURIComponent(value.slice(1, value.length - 1).replace(re, '').trim())}`)
       .join('&');
   } else {
     query = property
-      .map(p => `${p}=~${encodeURIComponent(value.replace(re, ''))}`)
+      .map(p => `${p}=~${encodeURIComponent(value.replace(re, '').trim())}`)
       .join('&');
     extras += '&@class=!Publication';
   }

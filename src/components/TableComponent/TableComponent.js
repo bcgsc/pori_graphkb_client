@@ -686,6 +686,7 @@ class TableComponent extends Component {
         </DialogActions>
       </Dialog>
     );
+
     const filterPopover = (
       <Popover
         anchorEl={filterPopoverNode}

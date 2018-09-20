@@ -234,8 +234,7 @@
     ]
   },
   "NOTIFICATIONS": {
-    "GRAPH_UNIQUE_LIMIT": "Too many subgroups, choose new coloring property.",
-    "GRAPH_NO_UNIQUES": "No distinct subgroups, choose new coloring property."
+    "GRAPH_UNIQUE_LIMIT": "Too many subgroups, choose new coloring property."
   },
   "PERMISSIONS": [
     "DELETE",

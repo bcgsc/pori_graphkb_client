@@ -805,7 +805,7 @@ class TableComponent extends Component {
                         >
                           {col.label}
                         </TableSortLabel>
-                        <Fade in={hoveringHeader === i || filterActive}>
+                        <Fade in={hoveringHeader === i || filterActive || tempFilterIndex === i}>
                           <div className="filter-btn">
                             <Tooltip
                               title={filterActive

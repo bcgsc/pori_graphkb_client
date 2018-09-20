@@ -250,12 +250,12 @@ class TableComponent extends Component {
     const { data } = this.props;
     const column = tableColumns[i];
     const filterOptions = Object.values(data).reduce((array, datum) => {
-      let value = util.castToExist(datum[column.id]);
-      if (value && value !== 'null' && column.sortBy) {
+      let value = datum[column.id];
+      if (value && column.sortBy) {
         value = value[column.sortBy];
       }
-      if (!array.includes(value)) {
-        array.push(value);
+      if (!array.includes(util.castToExist(value))) {
+        array.push(util.castToExist(value));
       }
       return array;
     }, []);

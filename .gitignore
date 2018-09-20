@@ -37,3 +37,4 @@ Thumbs.db
 src/index.css
 /jsdoc
 /cypress/videos
+/cypress/screenshots

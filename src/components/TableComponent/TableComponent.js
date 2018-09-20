@@ -38,6 +38,7 @@ import {
   ListItem,
   ListItemText,
   InputAdornment,
+  Fade,
 } from '@material-ui/core';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import TimelineIcon from '@material-ui/icons/Timeline';
@@ -97,6 +98,8 @@ class TableComponent extends Component {
     this.handleColumnClose = this.handleColumnClose.bind(this);
     this.handleColumnOpen = this.handleColumnOpen.bind(this);
     this.handleDetailToggle = this.handleDetailToggle.bind(this);
+    this.handleHeaderMouseEnter = this.handleHeaderMouseEnter.bind(this);
+    this.handleHeaderMouseLeave = this.handleHeaderMouseLeave.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
     this.handleRequestSort = this.handleRequestSort.bind(this);
     this.handleSortByChange = this.handleSortByChange.bind(this);
@@ -191,6 +194,10 @@ class TableComponent extends Component {
     }
   }
 
+  /**
+   * Clears all filter values for specified column.
+   * @param {number} i - column index.
+   */
   clearFilter(i) {
     const { columnFilterStrings, columnFilterExclusions } = this.state;
     columnFilterStrings[i] = '';
@@ -241,9 +248,9 @@ class TableComponent extends Component {
   openFilter(i) {
     const { tableHeadRefs, tableColumns } = this.state;
     const { data } = this.props;
-    const filterOptions = Object.keys(data).reduce((array, key) => {
-      const column = tableColumns[i];
-      let value = data[key][column.id] || 'null';
+    const column = tableColumns[i];
+    const filterOptions = Object.values(data).reduce((array, datum) => {
+      let value = util.castToExist(datum[column.id]);
       if (value && value !== 'null' && column.sortBy) {
         value = value[column.sortBy];
       }
@@ -256,8 +263,6 @@ class TableComponent extends Component {
       filterPopoverNode: tableHeadRefs[i],
       tempFilterIndex: i,
       filterOptions,
-      filterSearchOpen: false,
-      exclusionsOpen: false,
     });
   }
 
@@ -342,6 +347,11 @@ class TableComponent extends Component {
     }
   }
 
+  /**
+   * Toggles filtering/not filtering of a certain option in the currently
+   * filtering column.
+   * @param {string} option - Option to be toggled.
+   */
   handleFilterExclusions(option) {
     const { columnFilterExclusions, tempFilterIndex } = this.state;
     const i = columnFilterExclusions[tempFilterIndex].indexOf(option);
@@ -353,6 +363,10 @@ class TableComponent extends Component {
     this.setState({ columnFilterExclusions });
   }
 
+  /**
+   * Toggles filters from selecting all/deselecting all options.
+   * @param {Array} options - current array of filter options.
+   */
   handleFilterCheckAll(options) {
     const { columnFilterExclusions, tempFilterIndex } = this.state;
     if (columnFilterExclusions[tempFilterIndex].length === 0) {
@@ -361,6 +375,22 @@ class TableComponent extends Component {
       columnFilterExclusions[tempFilterIndex] = [];
     }
     this.setState({ columnFilterExclusions });
+  }
+
+  /**
+   * Handles mouse enter event on a table column header, setting the state to
+   * the header index.
+   * @param {number} i - column header index.
+   */
+  handleHeaderMouseEnter(i) {
+    this.setState({ hoveringHeader: i });
+  }
+
+  /**
+   * Handles mouse leaving event on a table column header, clearing the state.
+   */
+  handleHeaderMouseLeave() {
+    this.setState({ hoveringHeader: null });
   }
 
   /**
@@ -480,6 +510,7 @@ class TableComponent extends Component {
       columnFilterStrings,
       columnFilterExclusions,
       filterOptions,
+      hoveringHeader,
     } = this.state;
 
     const {
@@ -685,33 +716,36 @@ class TableComponent extends Component {
                 }}
               />
             </ListItem>
-            <ListItem>
+            <ListItem
+              button
+              dense
+              onClick={() => this.handleFilterCheckAll(filterOptions)}
+              id="select-all-checkbox"
+              classes={{
+                root: 'filter-item-background',
+              }}
+            >
+              <Checkbox
+                checked={columnFilterExclusions[tempFilterIndex]
+                  && columnFilterExclusions[tempFilterIndex].length === 0
+                }
+              />
+              <ListItemText primary={columnFilterExclusions[tempFilterIndex]
+                && columnFilterExclusions[tempFilterIndex].length === 0 ? 'Deselect All' : 'Select All'}
+              />
             </ListItem>
             <List component="div" dense disablePadding className="filter-exclusions-list">
-              <ListItem
-                dense
-                button
-                onClick={() => this.handleFilterCheckAll(filterOptions)}
-              >
-                <Checkbox
-                  checked={columnFilterExclusions[tempFilterIndex]
-                    && columnFilterExclusions[tempFilterIndex].length === 0
-                  }
-                />
-                <ListItemText primary={columnFilterExclusions[tempFilterIndex]
-                  && columnFilterExclusions[tempFilterIndex].length === 0 ? 'Deselect All' : 'Select All'} />
-              </ListItem>
               {filterOptions
-                .filter(o => {
+                .filter((o) => {
+                  const filter = columnFilterStrings[tempFilterIndex];
+                  return util.castToExist(o).includes(filter);
+                })
+                .sort((o) => {
                   const option = util.castToExist(o);
-                  return option.includes(columnFilterStrings[tempFilterIndex])
+                  if (option === 'null') return -1;
+                  return 1;
                 })
-                .sort((a, b) => {
-                  if (util.castToExist(a) === 'null') return -1;
-                  if (util.castToExist(b) === 'null') return 1;
-
-                })
-                .map(o => {
+                .map((o) => {
                   const option = util.castToExist(o);
                   return (
                     <ListItem
@@ -754,15 +788,15 @@ class TableComponent extends Component {
                   />
                 </TableCell>
                 {tableColumns.map((col, i) => {
-                  const filterActive = columnFilterExclusions[i].length > 0
-                    || columnFilterStrings[i];
-
+                  const filterActive = columnFilterExclusions[i].length > 0;
                   if (col.checked) {
                     return (
                       <TableCell
                         key={col.id}
                         padding="dense"
                         ref={node => this.setRef(node, i)}
+                        onMouseEnter={() => this.handleHeaderMouseEnter(i)}
+                        onMouseLeave={() => this.handleHeaderMouseLeave(i)}
                       >
                         <TableSortLabel
                           active={col.id === orderBy}
@@ -771,24 +805,26 @@ class TableComponent extends Component {
                         >
                           {col.label}
                         </TableSortLabel>
-                        <div className="filter-btn">
-                          <Tooltip
-                            title={filterActive
-                              ? 'Ctrl + click to clear'
-                              : 'Filter this column'
-                            }
-                          >
-                            <IconButton
-                              color={filterActive ? 'primary' : 'default'}
-                              onClick={e => !e.ctrlKey
-                                ? this.openFilter(i)
-                                : this.clearFilter(i)
+                        <Fade in={hoveringHeader === i || filterActive || tempFilterIndex === i}>
+                          <div className="filter-btn">
+                            <Tooltip
+                              title={filterActive
+                                ? 'Ctrl + click to clear'
+                                : 'Filter this column'
                               }
                             >
-                              <FilterIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </div>
+                              <IconButton
+                                color={filterActive ? 'secondary' : 'default'}
+                                onClick={e => !e.ctrlKey
+                                  ? this.openFilter(i)
+                                  : this.clearFilter(i)
+                                }
+                              >
+                                <FilterIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </div>
+                        </Fade>
                       </TableCell>
                     );
                   }

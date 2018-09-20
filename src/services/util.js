@@ -259,48 +259,6 @@ const getGraphData = (search) => {
 };
 
 /**
- * Updates valid properties and color mappings for graph objects.
- * @param {Array} newColumns - Current list of valid properties
- * @param {Object} node - new node object to be processed.
- * @param {Object} propsMap - Property map containing color mappings.
- */
-const loadColorProps = (newColumns, node, propsMap) => {
-  // Iterate over all props.
-  newColumns.forEach((prop) => {
-    let obj = node;
-    let key = prop;
-
-    // Nested prop condition
-    if (prop.includes('.')) {
-      key = prop.split('.')[1];
-      obj = node[prop.split('.')[0]] || {};
-    }
-
-    if (obj[key] && (obj[key].length < 50 || key === 'name')
-      && !Array.isArray(obj[key])
-    ) {
-      if (propsMap.nodes[prop] === undefined) {
-        propsMap.nodes[prop] = [obj[key]];
-      } else if (
-        propsMap.nodes[prop] // If null, fails here
-        && !propsMap.nodes[prop].includes(obj[key])
-      ) {
-        propsMap.nodes[prop].push(obj[key]);
-      }
-    } else if (propsMap.nodes[prop] && !propsMap.nodes[prop].includes('null')) {
-      // This null represents nodes that do not contain specified property.
-      propsMap.nodes[prop].push('null');
-    }
-    // Permanently removes certain properties from being eligible to display
-    // due to content length.
-    if (obj[key] && obj[key].length >= 50 && key !== 'name') {
-      propsMap.nodes[prop] = null;
-    }
-  });
-  return propsMap;
-};
-
-/**
  * Updates expandable map for input rid.
  * @param {Array} expandedEdgeTypes - List of valid edge types.
  * @param {Object} graphObjects - Collection of all graph objects.
@@ -389,23 +347,18 @@ const parsePermission = (permissionValue) => {
 * @param {string} linkedClass - property class key.
 * @param {Object} schema - database schema
 */
-const isAbstract = (linkedClass, schema) =>
-  Object.values(schema)
-    .some(kbClass => kbClass.inherits.includes(linkedClass));
+const isAbstract = (linkedClass, schema) => Object.values(schema)
+  .some(kbClass => kbClass.inherits.includes(linkedClass));
 
 /**
 * Given a schema class object, find all other classes that inherit it.
 * @param {string} abstractClass - property class key.
 * @param {Object} schema - database schema
 */
-const getSubClasses = (abstractClass, schema) =>
-  Object.values(schema)
-    .filter(kbClass => kbClass.inherits.includes(abstractClass));
+const getSubClasses = (abstractClass, schema) => Object.values(schema)
+  .filter(kbClass => kbClass.inherits.includes(abstractClass));
 
-const castToExist = (obj) => {
-  return obj === undefined || obj === null ? 'null' : obj.toString();
-
-}
+const castToExist = obj => obj === undefined || obj === null ? 'null' : obj.toString();
 
 export default {
   antiCamelCase,
@@ -419,7 +372,6 @@ export default {
   loadGraphOptions,
   loadGraphData,
   getGraphData,
-  loadColorProps,
   expanded,
   positionInit,
   getColor,

@@ -126,18 +126,24 @@ $flip-duration: 0.15s;
     margin: auto 8px;
 }
 #filter-popover{
-    .filter-list{
-        width: 500px;
-        @media (max-width: 600px) {
-            width: auto;
-        }
-    }
+    width: 20rem;
     .filter-exclusions-list{
         max-height: 40vh;
         overflow: auto;
-        background-color: $background-light;
         padding: 0;
     }
+    .filter-item-background {
+        background-color: $background-light;
+    }
+    .filter-item-background:hover{
+        background-color: #e6e6e6;
+    }
+}
+#select-all-checkbox{
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
 }
 .filter-icon {
     margin: auto;

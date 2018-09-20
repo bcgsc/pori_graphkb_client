@@ -239,11 +239,10 @@ class TableComponent extends Component {
    * @param {number} i - column index.
    */
   openFilter(i) {
-    const { tableHeadRefs, tableColumns } = this.state;
-    const { data } = this.props;
-    const filterOptions = Object.keys(data).reduce((array, key) => {
+    const { tableHeadRefs, tableColumns, sortedData } = this.state;
+    const filterOptions = Object.values(sortedData).reduce((array, datum) => {
       const column = tableColumns[i];
-      let value = data[key][column.id] || 'null';
+      let value = datum[column.id] || 'null';
       if (value && value !== 'null' && column.sortBy) {
         value = value[column.sortBy];
       }
@@ -256,8 +255,6 @@ class TableComponent extends Component {
       filterPopoverNode: tableHeadRefs[i],
       tempFilterIndex: i,
       filterOptions,
-      filterSearchOpen: false,
-      exclusionsOpen: false,
     });
   }
 
@@ -655,6 +652,7 @@ class TableComponent extends Component {
         </DialogActions>
       </Dialog>
     );
+
     const filterPopover = (
       <Popover
         anchorEl={filterPopoverNode}
@@ -685,33 +683,35 @@ class TableComponent extends Component {
                 }}
               />
             </ListItem>
-            <ListItem>
-            </ListItem>
             <List component="div" dense disablePadding className="filter-exclusions-list">
               <ListItem
-                dense
                 button
                 onClick={() => this.handleFilterCheckAll(filterOptions)}
+                id="select-all-checkbox"
+                classes={{
+                  root: 'filter-item-background',
+                }}
               >
                 <Checkbox
                   checked={columnFilterExclusions[tempFilterIndex]
                     && columnFilterExclusions[tempFilterIndex].length === 0
                   }
                 />
-                <ListItemText primary={columnFilterExclusions[tempFilterIndex]
-                  && columnFilterExclusions[tempFilterIndex].length === 0 ? 'Deselect All' : 'Select All'} />
+                <ListItemText>
+                  <Typography variant="subheading">
+                    {columnFilterExclusions[tempFilterIndex]
+                      && columnFilterExclusions[tempFilterIndex].length === 0 ? 'Deselect All' : 'Select All'}
+                  </Typography>
+                </ListItemText>
               </ListItem>
               {filterOptions
-                .filter(o => {
+                .sort((o) => {
                   const option = util.castToExist(o);
-                  return option.includes(columnFilterStrings[tempFilterIndex])
+                  if (option.includes(columnFilterStrings[tempFilterIndex])) return -1;
+                  if (option === 'null') return -1;
+                  return 1;
                 })
-                .sort((a, b) => {
-                  if (util.castToExist(a) === 'null') return -1;
-                  if (util.castToExist(b) === 'null') return 1;
-
-                })
-                .map(o => {
+                .map((o) => {
                   const option = util.castToExist(o);
                   return (
                     <ListItem
@@ -754,9 +754,7 @@ class TableComponent extends Component {
                   />
                 </TableCell>
                 {tableColumns.map((col, i) => {
-                  const filterActive = columnFilterExclusions[i].length > 0
-                    || columnFilterStrings[i];
-
+                  const filterActive = columnFilterExclusions[i].length > 0;
                   if (col.checked) {
                     return (
                       <TableCell

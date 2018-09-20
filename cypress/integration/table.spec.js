@@ -170,10 +170,9 @@ describe('Table Test', () => {
   it('Filtering', () => {
     getName('diso');
 
-    cy.get('div.filter-btn').each((button, i) => {
+    cy.get('div.filter-btn button').each((button, i) => {
       if (i === 2) {
-        cy.wrap(button).click();
-        cy.get('ul.filter-list div[role=button]:first').click();
+        cy.wrap(button).click({ force: true });
         cy.get('#filter-popover ul.filter-list li>div>div>input[type=text]').type('disor');
         cy.get('ul.filter-list>div>div').then(array => cy.expect(array.length).to.be.lt(1000));
       }

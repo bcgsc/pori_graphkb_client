@@ -865,6 +865,13 @@ class GraphComponent extends Component {
 
     if (!simulation) return null;
 
+    const linkLegendDisabled = (
+      !graphOptions.linksColor
+      || links.length === 0
+      || (links.length === 1
+        && links[0].source === links[0].target)
+    );
+
     const helpPanel = (
       <Dialog
         open={advancedHelp || mainHelp}
@@ -1036,16 +1043,10 @@ class GraphComponent extends Component {
                     })
                     }
                     name="linksLegend"
-                    checked={!!(
+                    checked={
                       graphOptions.linksLegend
-                      && graphOptions.linksColor
-                      && links.length !== 0
-                    )}
-                    disabled={
-                      !graphOptions.linksColor
-                      || links.length === 0
-                      || (links.filter(link => link.source !== link.target).length === 0)
-                    }
+                      && !linkLegendDisabled}
+                    disabled={linkLegendDisabled}
                   />
                 )}
                 label="Show Links Coloring Legend"
@@ -1191,52 +1192,54 @@ class GraphComponent extends Component {
                 </List>
               </div>
             </Paper>)}
-          {!!(graphOptions.linksLegend && graphOptions.linksColor) && links.length !== 0 && (
-            <Paper>
-              <div className="close-btn">
-                <IconButton
-                  name="linksLegend"
-                  onClick={() => this.handleGraphOptionsChange({
-                    target: {
-                      value: false,
-                      name: 'linksLegend',
-                    },
-                  })}
-                >
-                  <CloseIcon />
-                </IconButton>
-              </div>
-              <div className="legend-content">
-                <Typography variant="subheading">Edges</Typography>
-                <Typography variant="caption">
-                  {graphOptions.linksColor && `(${util.antiCamelCase(graphOptions.linksColor)})`}
-                </Typography>
-                <List className="node-colors" dense>
-                  {Object.keys(graphOptions.linksColors).map(key => (
-                    <ListItem key={key}>
-                      <ListItemIcon>
-                        <div
-                          style={{ backgroundColor: graphOptions.linksColors[key] }}
-                          className="color-chip"
-                        />
-                      </ListItemIcon>
-                      <ListItemText primary={util.antiCamelCase(key)} />
-                    </ListItem>
-                  ))}
-                  {(propsMap.linkProps[graphOptions.linksColor] || []).includes('null') && (
-                    <ListItem key="null">
-                      <ListItemIcon>
-                        <div
-                          style={{ backgroundColor: graphOptions.defaultColor }}
-                          className="color-chip"
-                        />
-                      </ListItemIcon>
-                      <ListItemText primary="Null" />
-                    </ListItem>
-                  )}
-                </List>
-              </div>
-            </Paper>)}
+          {!linkLegendDisabled
+            && graphOptions.linksLegend
+            && (
+              <Paper>
+                <div className="close-btn">
+                  <IconButton
+                    name="linksLegend"
+                    onClick={() => this.handleGraphOptionsChange({
+                      target: {
+                        value: false,
+                        name: 'linksLegend',
+                      },
+                    })}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                </div>
+                <div className="legend-content">
+                  <Typography variant="subheading">Edges</Typography>
+                  <Typography variant="caption">
+                    {graphOptions.linksColor && `(${util.antiCamelCase(graphOptions.linksColor)})`}
+                  </Typography>
+                  <List className="node-colors" dense>
+                    {Object.keys(graphOptions.linksColors).map(key => (
+                      <ListItem key={key}>
+                        <ListItemIcon>
+                          <div
+                            style={{ backgroundColor: graphOptions.linksColors[key] }}
+                            className="color-chip"
+                          />
+                        </ListItemIcon>
+                        <ListItemText primary={util.antiCamelCase(key)} />
+                      </ListItem>
+                    ))}
+                    {(propsMap.linkProps[graphOptions.linksColor] || []).includes('null') && (
+                      <ListItem key="null">
+                        <ListItemIcon>
+                          <div
+                            style={{ backgroundColor: graphOptions.defaultColor }}
+                            className="color-chip"
+                          />
+                        </ListItemIcon>
+                        <ListItemText primary="Null" />
+                      </ListItem>
+                    )}
+                  </List>
+                </div>
+              </Paper>)}
         </div>
       );
 

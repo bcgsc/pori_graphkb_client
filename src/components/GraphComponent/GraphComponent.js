@@ -60,7 +60,7 @@ const {
 
 const { GRAPH_ADVANCED, GRAPH_MAIN } = config.DESCRIPTIONS;
 
-const { GRAPH_UNIQUE_LIMIT, GRAPH_NO_UNIQUES } = config.NOTIFICATIONS;
+const { GRAPH_UNIQUE_LIMIT } = config.NOTIFICATIONS;
 
 const styles = {
   paper: {
@@ -93,7 +93,6 @@ class GraphComponent extends Component {
       links: [],
       graphObjects: {},
       expandable: {},
-      propsMap: new PropsMap(),
       expandedEdgeTypes: [],
       actionsNode: null,
       simulation: d3.forceSimulation(),
@@ -121,6 +120,8 @@ class GraphComponent extends Component {
       initState: null,
       actionsNodeIsEdge: false,
     };
+
+    this.propsMap = new PropsMap();
 
     this.applyDrag = this.applyDrag.bind(this);
     this.drawGraph = this.drawGraph.bind(this);
@@ -155,11 +156,11 @@ class GraphComponent extends Component {
       edges,
     } = this.props;
     const {
-      propsMap,
       expandable,
       graphOptions,
       initState,
     } = this.state;
+    this.propsMap = new PropsMap();
 
     // Defines what edge keys to look for.
     const expandedEdgeTypes = util.expandEdges(edges);
@@ -210,11 +211,11 @@ class GraphComponent extends Component {
           links,
         } = initState;
         nodes.forEach((node) => {
-          propsMap.loadNode(node.data, allProps);
+          this.propsMap.loadNode(node.data, allProps);
           util.expanded(expandedEdgeTypes, graphObjects, node.data['@rid'], expandable);
         });
 
-        links.forEach(link => propsMap.loadLink(link.data));
+        links.forEach(link => this.propsMap.loadLink(link.data));
 
         this.setState({
           graphObjects: Object.assign({}, graphObjects),
@@ -229,10 +230,10 @@ class GraphComponent extends Component {
         } = storedData;
         delete storedData.filteredSearch;
         nodes.forEach((node) => {
-          propsMap.loadNode(node.data, allProps);
+          this.propsMap.loadNode(node.data, allProps);
           util.expanded(expandedEdgeTypes, graphObjects, node.data['@rid'], expandable);
         });
-        links.forEach(link => propsMap.loadLink(link.data));
+        links.forEach(link => this.propsMap.loadLink(link.data));
 
         this.setState({
           ...storedData,
@@ -251,7 +252,7 @@ class GraphComponent extends Component {
           this.updateColors('link');
         });
       } else {
-        if (propsMap.nodeProps.length !== 0) {
+        if (this.propsMap.nodeProps.length !== 0) {
           graphOptions.nodesLegend = true;
         }
         this.setState({ graphOptions }, () => {
@@ -450,7 +451,6 @@ class GraphComponent extends Component {
       nodes,
       links,
       graphObjects,
-      propsMap,
     } = this.state;
 
     // From DataView.js
@@ -471,7 +471,7 @@ class GraphComponent extends Component {
         y: position.y,
       });
       graphObjects[node['@rid']] = node;
-      propsMap.loadNode(node, allProps);
+      this.propsMap.loadNode(node, allProps);
     }
 
     /**
@@ -511,7 +511,7 @@ class GraphComponent extends Component {
               };
               links.push(link);
               graphObjects[link.data['@rid']] = link;
-              propsMap.loadLink(link.data);
+              this.propsMap.loadLink(link.data);
               // Checks if node is already rendered
               if (outRid && !graphObjects[outRid]) {
                 // Initializes position of new child
@@ -560,7 +560,6 @@ class GraphComponent extends Component {
       nodes,
       links,
       graphObjects,
-      propsMap,
     });
   }
 
@@ -585,7 +584,7 @@ class GraphComponent extends Component {
    */
   updateColors(type) {
     const objs = this.state[`${type}s`];
-    const { graphOptions, propsMap } = this.state;
+    const { graphOptions } = this.state;
     const key = graphOptions[`${type}sColor`];
     const colors = {};
     console.log(key);
@@ -605,7 +604,7 @@ class GraphComponent extends Component {
         colors[obj.data[key]] = '';
       }
     });
-    const props = propsMap[`${type}Props`];
+    const props = this.propsMap[`${type}Props`];
     const tooManyUniques = (Object.keys(colors).length > PALLETE_SIZES[PALLETE_SIZES.length - 1]
       && Object.keys(props).length !== 1);
     const noUniques = props[key]
@@ -617,9 +616,6 @@ class GraphComponent extends Component {
       let snackbarMessage = '';
       if (tooManyUniques) {
         snackbarMessage = `${GRAPH_UNIQUE_LIMIT} (${graphOptions[`${type}sColor`]})`;
-      }
-      if (noUniques) {
-        snackbarMessage = `${GRAPH_NO_UNIQUES} (${graphOptions[`${type}sColor`]})`;
       }
 
       graphOptions[`${type}sColor`] = '';
@@ -768,7 +764,6 @@ class GraphComponent extends Component {
       links,
       expandedEdgeTypes,
       expandable,
-      propsMap,
       allProps,
       filteredSearch,
     } = this.state;
@@ -790,7 +785,7 @@ class GraphComponent extends Component {
             const targetRid = link.source.data['@rid'] === actionsNode.data['@rid']
               ? link.target.data['@rid'] : link.source.data['@rid'];
             links.splice(j, 1);
-            propsMap.removeLink(link.data, links);
+            this.propsMap.removeLink(link.data, links);
             delete graphObjects[edgeRid];
             expandable[targetRid] = true;
           }
@@ -798,7 +793,7 @@ class GraphComponent extends Component {
       }
     });
 
-    propsMap.removeNode(actionsNode.data, nodes, allProps);
+    this.propsMap.removeNode(actionsNode.data, nodes, allProps);
 
     this.setState({
       expandable,
@@ -806,7 +801,6 @@ class GraphComponent extends Component {
       links,
       graphObjects,
       actionsNode: null,
-      propsMap,
       refreshable: true,
     }, () => {
       this.updateColors('node');
@@ -853,13 +847,14 @@ class GraphComponent extends Component {
       graphOptions,
       simulation,
       graphOptionsOpen,
-      propsMap,
       snackbarMessage,
       mainHelp,
       advancedHelp,
       refreshable,
       actionsNodeIsEdge,
     } = this.state;
+
+    const { propsMap } = this;
 
     const {
       classes,

@@ -690,7 +690,7 @@ class TableComponent extends Component {
       <Popover
         anchorEl={filterPopoverNode}
         open={!!filterPopoverNode}
-        onClose={() => this.setState({ filterPopoverNode: null })}
+        onClose={() => this.setState({ filterPopoverNode: null, tempFilterIndex: null })}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',

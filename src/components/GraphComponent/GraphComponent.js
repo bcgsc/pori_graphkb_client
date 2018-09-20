@@ -251,7 +251,7 @@ class GraphComponent extends Component {
           this.updateColors('link');
         });
       } else {
-        if (propsMap.nodes.length !== 0) {
+        if (propsMap.nodeProps.length !== 0) {
           graphOptions.nodesLegend = true;
         }
         this.setState({ graphOptions }, () => {

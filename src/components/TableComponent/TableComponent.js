@@ -777,7 +777,7 @@ class TableComponent extends Component {
                             }
                           >
                             <IconButton
-                              color={filterActive ? 'primary' : 'default'}
+                              color={filterActive ? 'secondary' : 'default'}
                               onClick={e => !e.ctrlKey
                                 ? this.openFilter(i)
                                 : this.clearFilter(i)

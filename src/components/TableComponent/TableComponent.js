@@ -716,27 +716,25 @@ class TableComponent extends Component {
                 }}
               />
             </ListItem>
+            <ListItem
+              button
+              dense
+              onClick={() => this.handleFilterCheckAll(filterOptions)}
+              id="select-all-checkbox"
+              classes={{
+                root: 'filter-item-background',
+              }}
+            >
+              <Checkbox
+                checked={columnFilterExclusions[tempFilterIndex]
+                  && columnFilterExclusions[tempFilterIndex].length === 0
+                }
+              />
+              <ListItemText primary={columnFilterExclusions[tempFilterIndex]
+                && columnFilterExclusions[tempFilterIndex].length === 0 ? 'Deselect All' : 'Select All'}
+              />
+            </ListItem>
             <List component="div" dense disablePadding className="filter-exclusions-list">
-              <ListItem
-                button
-                onClick={() => this.handleFilterCheckAll(filterOptions)}
-                id="select-all-checkbox"
-                classes={{
-                  root: 'filter-item-background',
-                }}
-              >
-                <Checkbox
-                  checked={columnFilterExclusions[tempFilterIndex]
-                    && columnFilterExclusions[tempFilterIndex].length === 0
-                  }
-                />
-                <ListItemText>
-                  <Typography variant="subheading">
-                    {columnFilterExclusions[tempFilterIndex]
-                      && columnFilterExclusions[tempFilterIndex].length === 0 ? 'Deselect All' : 'Select All'}
-                  </Typography>
-                </ListItemText>
-              </ListItem>
               {filterOptions
                 .filter((o) => {
                   const filter = columnFilterStrings[tempFilterIndex];

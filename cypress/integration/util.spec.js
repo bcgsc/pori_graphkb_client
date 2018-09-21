@@ -1,7 +1,4 @@
 import util from '../../src/services/util';
-import config from '../../src/config.json';
-
-const { GRAPH_DEFAULTS } = config;
 
 describe('util methods test', () => {
   it('antiCamelCase', () => {
@@ -195,53 +192,5 @@ describe('util methods test', () => {
         expect(filtered[key]).to.eq(output[i][key]);
       });
     });
-  });
-
-  it('getPallette', () => {
-    const testPallettes = [
-      { n: 5, type: 'nodes' },
-      { n: 0, type: 'nodes' },
-      { n: 6, type: 'links' },
-      { n: 10, type: 'links' },
-      { n: 11, type: 'links' },
-      { n: 18, type: 'nodes' },
-      { n: 28, type: 'nodes' },
-      { n: 20, type: 'nodes' },
-    ];
-    const outputs = [
-      GRAPH_DEFAULTS.NODE_COLORS_5,
-      GRAPH_DEFAULTS.NODE_COLORS_5,
-      GRAPH_DEFAULTS.LINK_COLORS_10,
-      GRAPH_DEFAULTS.LINK_COLORS_10,
-      GRAPH_DEFAULTS.LINK_COLORS_15,
-      GRAPH_DEFAULTS.NODE_COLORS_20,
-      '',
-      GRAPH_DEFAULTS.NODE_COLORS_20,
-    ];
-    testPallettes.forEach((testPallette, i) => {
-      const { n, type } = testPallette;
-      if (n <= 20) {
-        expect(util.getPallette(n, type)).to.eq(outputs[i]);
-      } else {
-        expect(util.getPallette(n, type).length).to.eq(n);
-      }
-    });
-  });
-
-  it('loadGraphData and getGraphData', () => {
-    const key = 'testSearch';
-
-    const data1 = { message: 'hello' };
-    const data2 = { message: 'goodbye' };
-    data1.reference = data2;
-    data2.reference = data1;
-    util.loadGraphData(key, { data1 });
-
-    expect(localStorage.getItem('graphObjects')).to.not.eq(null);
-
-    const graphData = util.getGraphData(key);
-    expect(graphData.filteredSearch).to.eq(key);
-    expect(graphData.data1.message).to.eq(data1.message);
-    expect(graphData.data1.reference).to.deep.eq(data2);
   });
 });

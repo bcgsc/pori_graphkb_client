@@ -11,7 +11,6 @@ const { PALLETE_SIZE } = config.GRAPH_DEFAULTS;
 const { NODE_INIT_RADIUS } = config.GRAPH_PROPERTIES;
 const ACRONYMS = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
 const GRAPH_OBJECTS_KEY = 'graphObjects';
-const GRAPH_OPTIONS_KEY = 'graphOptions';
 
 /**
  * Un-camelCase's input string and capitalizes each word. Also applies
@@ -211,26 +210,6 @@ const getPallette = (n, type) => {
 };
 
 /**
- * Loads graph options state into localstorage.
- * @param {Object} data - graph options data.
- */
-const loadGraphOptions = (data) => {
-  localStorage.setItem(GRAPH_OPTIONS_KEY, JSON.stringify(data));
-};
-
-/**
- * Retrieves stored graph options data from localstorage.
- */
-const getGraphOptions = () => {
-  const data = localStorage.getItem(GRAPH_OPTIONS_KEY);
-  if (data) {
-    const obj = JSON.parse(data);
-    return obj;
-  }
-  return null;
-};
-
-/**
  * Saves current graph state into localstorage, identified by the url search parameters.
  * @param {Object} search - collection of search parameters.
  * @param {Object} data - graph data to be stored.
@@ -375,8 +354,6 @@ export default {
   getTSVRepresentation,
   parsePayload,
   getPallette,
-  getGraphOptions,
-  loadGraphOptions,
   loadGraphData,
   getGraphData,
   expanded,

@@ -36,8 +36,8 @@ import BuildIcon from '@material-ui/icons/Build';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import HelpIcon from '@material-ui/icons/Help';
 import { withStyles } from '@material-ui/core/styles';
-import GraphLink from '../GraphLink/GraphLink';
-import GraphNode from '../GraphNode/GraphNode';
+import GraphLinkDisplay from '../GraphLinkDisplay/GraphLinkDisplay';
+import GraphNodeDisplay from '../GraphNodeDisplay/GraphNodeDisplay';
 import util from '../../services/util';
 import PropsMap from './kbgraph';
 import config from '../../config.json';
@@ -1310,17 +1310,9 @@ class GraphComponent extends Component {
     );
 
     const linksDisplay = links.map(link => (
-      <GraphLink
-        key={link.data['@rid']}
+      <GraphLinkDisplay
+        key={link.getId()}
         link={link}
-        faded={
-          (detail && detail['@rid'] !== link.data['@rid'])
-          || (actionsNode && actionsNode.data['@rid'] !== link.data['@rid'])
-        }
-        bold={
-          (detail && detail['@rid'] === link.data['@rid'])
-          || (actionsNode && actionsNode.data['@rid'] === link.data['@rid'])
-        }
         detail={detail}
         labelKey={graphOptions.linkLabelProp}
         color={util.getColor(link, graphOptions.linksColor, graphOptions.linksColors)}
@@ -1330,15 +1322,13 @@ class GraphComponent extends Component {
       />));
 
     const nodesDisplay = nodes.map(node => (
-      <GraphNode
-        key={node.data['@rid']}
+      <GraphNodeDisplay
+        key={node.getId()}
         node={node}
-        faded={(detail && detail['@rid'] !== node.data['@rid'])
-          || (actionsNode && actionsNode.data['@rid'] !== node.data['@rid'])}
         labelKey={graphOptions.nodeLabelProp}
         color={util.getColor(node, graphOptions.nodesColor, graphOptions.nodesColors)}
         handleClick={e => this.handleClick(e, node)}
-        expandable={expandable[node.data['@rid']]}
+        expandable={expandable[node.getId()]}
         applyDrag={this.applyDrag}
       />
     ));

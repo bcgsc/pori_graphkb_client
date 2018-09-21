@@ -71,6 +71,11 @@ class AutoSearchComponent extends Component {
     this.render = null;
   }
 
+  /**
+   * Updates the parent value with a value if there is a perfect match or only
+   * 1 result for the specified query string. Disabled if user is using literal
+   * syntax.
+   */
   handleBlur() {
     const { value } = this.props;
     const { lastRid, options } = this.state;
@@ -84,6 +89,10 @@ class AutoSearchComponent extends Component {
     this.setState({ noRidFlag: !!(!lastRid && value && !perfectMatch) });
   }
 
+  /**
+   * Updates the parent value with value from a selected item.
+   * @param {Event} e - User input event.
+   */
   handleChange(e) {
     const { onChange, name } = this.props;
     onChange({

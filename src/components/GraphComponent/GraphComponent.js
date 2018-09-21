@@ -234,8 +234,7 @@ class GraphComponent extends Component {
       if (storedOptions) {
         this.setState({ graphOptions: storedOptions }, () => {
           this.drawGraph();
-          this.updateColors('node');
-          this.updateColors('link');
+          this.updateColors();
         });
       } else {
         if (this.propsMap.nodeProps.length !== 0) {
@@ -243,8 +242,7 @@ class GraphComponent extends Component {
         }
         this.setState({ graphOptions }, () => {
           this.drawGraph();
-          this.updateColors('node');
-          this.updateColors('link');
+          this.updateColors();
         });
       }
     });
@@ -557,54 +555,54 @@ class GraphComponent extends Component {
 
   /**
    * Updates color scheme for the graph, for nodes or links.
-   * @param {string} type - Object type (nodes or links)
    */
-  updateColors(type) {
-    const objs = this.state[`${type}s`];
-    const { graphOptions } = this.state;
-    const key = graphOptions[`${type}sColor`];
-    const colors = {};
+  updateColors() {
+    ['node', 'link'].forEach((type) => {
+      const objs = this.state[`${type}s`];
+      const { graphOptions } = this.state;
+      const key = graphOptions[`${type}sColor`];
+      const colors = {};
 
-    objs.forEach((obj) => {
-      if (key.includes('.')) {
-        const [prop, nestedProp] = key.split('.');
-        if (
-          obj.data[prop]
-          && obj.data[prop][nestedProp]
-          && !colors[obj.data[prop][nestedProp]]
-        ) {
-          colors[obj.data[prop][nestedProp]] = '';
+      objs.forEach((obj) => {
+        if (key.includes('.')) {
+          const [prop, nestedProp] = key.split('.');
+          if (
+            obj.data[prop]
+            && obj.data[prop][nestedProp]
+            && !colors[obj.data[prop][nestedProp]]
+          ) {
+            colors[obj.data[prop][nestedProp]] = '';
+          }
         }
-      }
-      if (obj.data[key] && !colors[obj.data[key]]) {
-        colors[obj.data[key]] = '';
+        if (obj.data[key] && !colors[obj.data[key]]) {
+          colors[obj.data[key]] = '';
+        }
+      });
+      const props = this.propsMap[`${type}Props`];
+      const tooManyUniques = (Object.keys(colors).length > PALLETE_SIZE
+        && Object.keys(props).length !== 1);
+      const noUniques = props[key]
+        && (props[key].length === 0
+          || (props[key].length === 1 && props[key].includes('null')));
+      const notDefined = key && !props[key];
+
+      if (tooManyUniques || noUniques || notDefined) {
+        let snackbarMessage = '';
+        if (tooManyUniques) {
+          snackbarMessage = `${GRAPH_UNIQUE_LIMIT} (${graphOptions[`${type}sColor`]})`;
+        }
+
+        graphOptions[`${type}sColor`] = '';
+        this.setState({ graphOptions, snackbarMessage }, () => this.updateColors());
+      } else {
+        const pallette = util.getPallette(Object.keys(colors).length, `${type}s`);
+        Object.keys(colors).forEach((color, i) => { colors[color] = pallette[i]; });
+
+        graphOptions[`${type}sColors`] = colors;
+        graphOptions[`${type}sPallette`] = pallette;
+        this.setState({ graphOptions });
       }
     });
-    const props = this.propsMap[`${type}Props`];
-    const tooManyUniques = (Object.keys(colors).length > PALLETE_SIZE
-      && Object.keys(props).length !== 1);
-    const noUniques = props[key]
-      && (props[key].length === 0
-        || (props[key].length === 1 && props[key].includes('null')));
-    const notDefined = key && !props[key];
-
-    if (tooManyUniques || noUniques || notDefined) {
-      let snackbarMessage = '';
-      if (tooManyUniques) {
-        snackbarMessage = `${GRAPH_UNIQUE_LIMIT} (${graphOptions[`${type}sColor`]})`;
-      }
-
-      graphOptions[`${type}sColor`] = '';
-      this.setState({ graphOptions, snackbarMessage }, () => this.updateColors(type));
-    } else {
-      const pallette = util.getPallette(Object.keys(colors).length, `${type}s`);
-      Object.keys(colors).forEach((color, i) => { colors[color] = pallette[i]; });
-
-      graphOptions[`${type}sColors`] = colors;
-      graphOptions[`${type}sPallette`] = pallette;
-      this.setState({ graphOptions });
-    }
-    /* eslint-enable */
   }
 
   /**
@@ -704,8 +702,7 @@ class GraphComponent extends Component {
       expandable,
       refreshable: true,
     }, () => {
-      this.updateColors('node');
-      this.updateColors('link');
+      this.updateColors();
       handleDetailDrawerClose();
     });
   }

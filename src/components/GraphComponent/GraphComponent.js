@@ -39,7 +39,12 @@ import { withStyles } from '@material-ui/core/styles';
 import GraphLinkDisplay from '../GraphLinkDisplay/GraphLinkDisplay';
 import GraphNodeDisplay from '../GraphNodeDisplay/GraphNodeDisplay';
 import util from '../../services/util';
-import PropsMap from './kbgraph';
+import {
+  PropsMap,
+  GraphOptions,
+  GraphNode,
+  GraphLink,
+} from './kbgraph';
 import config from '../../config.json';
 import GraphActionsNode from '../GraphActionsNode/GraphActionsNode';
 
@@ -47,19 +52,10 @@ const {
   ARROW_WIDTH,
   ARROW_LENGTH,
   NODE_INIT_RADIUS,
-  NODE_RADIUS,
   ZOOM_BOUNDS,
 } = config.GRAPH_PROPERTIES;
-
-const {
-  LINK_STRENGTH,
-  CHARGE_STRENGTH,
-  DEFAULT_NODE_COLOR,
-  PALLETE_SIZE,
-} = config.GRAPH_DEFAULTS;
-
+const { PALLETE_SIZE } = config.GRAPH_DEFAULTS;
 const { GRAPH_ADVANCED, GRAPH_MAIN } = config.DESCRIPTIONS;
-
 const { GRAPH_UNIQUE_LIMIT } = config.NOTIFICATIONS;
 
 const styles = {
@@ -99,20 +95,7 @@ class GraphComponent extends Component {
       svg: undefined,
       width: 0,
       height: 0,
-      graphOptions: {
-        defaultColor: DEFAULT_NODE_COLOR,
-        linkStrength: LINK_STRENGTH,
-        chargeStrength: CHARGE_STRENGTH,
-        collisionRadius: NODE_RADIUS,
-        autoCollisionRadius: false,
-        linkHighlighting: true,
-        nodeLabelProp: 'name',
-        linkLabelProp: '',
-        nodesColor: '@class',
-        linksColor: '',
-        nodesColors: {},
-        linksColors: {},
-      },
+      graphOptions: new GraphOptions(),
       graphOptionsOpen: false,
       mainHelp: false,
       advancedHelp: false,
@@ -182,7 +165,7 @@ class GraphComponent extends Component {
       window.addEventListener('resize', this.handleResize);
 
       const storedData = util.getGraphData(stringifiedSearch);
-      const storedOptions = util.getGraphOptions();
+      const storedOptions = GraphOptions.retrieve();
 
       /**
        * Initialization priority:
@@ -212,7 +195,7 @@ class GraphComponent extends Component {
         } = initState;
         nodes.forEach((node) => {
           this.propsMap.loadNode(node.data, allProps);
-          util.expanded(expandedEdgeTypes, graphObjects, node.data['@rid'], expandable);
+          util.expanded(expandedEdgeTypes, graphObjects, node.getId(), expandable);
         });
 
         links.forEach(link => this.propsMap.loadLink(link.data));
@@ -225,18 +208,24 @@ class GraphComponent extends Component {
       } else if (storedData && storedData.filteredSearch === stringifiedSearch) {
         const {
           graphObjects,
+        } = storedData;
+        let { nodes, links } = storedData;
+        delete storedData.filteredSearch;
+
+        nodes = nodes.map((n) => {
+          this.propsMap.loadNode(n.data, allProps);
+          util.expanded(expandedEdgeTypes, graphObjects, n.data['@rid'], expandable);
+          return new GraphNode(n.data, n.x, n.y);
+        });
+
+        links = links.map((link) => {
+          this.propsMap.loadLink(link.data);
+          return new GraphLink(link.data, link.source.data['@rid'], link.target.data['@rid']);
+        });
+        this.setState({
+          graphObjects,
           nodes,
           links,
-        } = storedData;
-        delete storedData.filteredSearch;
-        nodes.forEach((node) => {
-          this.propsMap.loadNode(node.data, allProps);
-          util.expanded(expandedEdgeTypes, graphObjects, node.data['@rid'], expandable);
-        });
-        links.forEach(link => this.propsMap.loadLink(link.data));
-
-        this.setState({
-          ...storedData,
           initState: {
             graphObjects: Object.assign({}, graphObjects),
             nodes: nodes.slice(),
@@ -246,7 +235,7 @@ class GraphComponent extends Component {
       }
 
       if (storedOptions) {
-        this.setState({ ...storedOptions }, () => {
+        this.setState({ graphOptions: storedOptions }, () => {
           this.drawGraph();
           this.updateColors('node');
           this.updateColors('link');
@@ -332,7 +321,7 @@ class GraphComponent extends Component {
       d3
         .forceLink(links)
         .strength(graphOptions.linkStrength)
-        .id(d => d.data['@rid']),
+        .id(d => d.getId()),
     );
 
     const ticked = () => {
@@ -360,7 +349,7 @@ class GraphComponent extends Component {
 
     simulation.force(
       'link',
-      d3.forceLink().id(d => d.data['@rid']),
+      d3.forceLink().id(d => d.getId()),
     ).force(
       'collide',
       d3.forceCollide((d) => {
@@ -368,7 +357,7 @@ class GraphComponent extends Component {
           let obj = d.data;
           let key = graphOptions.nodeLabelProp;
           if (key.includes('.')) {
-            key = key.split('.')[1];
+            [, key] = key.split('.');
             obj = graphOptions.nodeLabelProp.split('.')[0] || {};
           }
           if (!obj[key] || obj[key].length === 0) return graphOptions.collisionRadius;
@@ -421,9 +410,9 @@ class GraphComponent extends Component {
     } = this.state;
     const { data } = this.props;
 
-    if (expandable[node.data['@rid']] && data[node.data['@rid']]) {
+    if (expandable[node.getId()] && data[node.getId()]) {
       this.processData(
-        data[node.data['@rid']],
+        data[node.getId()],
         { x: node.x, y: node.y },
         1,
       );
@@ -432,7 +421,7 @@ class GraphComponent extends Component {
       this.updateColors('link');
     }
 
-    delete expandable[node.data['@rid']];
+    delete expandable[node.getId()];
     util.loadGraphData(filteredSearch, { nodes, links, graphObjects });
     this.setState({ expandable, actionsNode: null, refreshable: true });
   }
@@ -465,11 +454,7 @@ class GraphComponent extends Component {
     const { allProps } = this.props;
 
     if (!graphObjects[node['@rid']]) {
-      nodes.push({
-        data: node,
-        x: position.x,
-        y: position.y,
-      });
+      nodes.push(new GraphNode(node, position.x, position.y));
       graphObjects[node['@rid']] = node;
       this.propsMap.loadNode(node, allProps);
     }
@@ -498,19 +483,15 @@ class GraphComponent extends Component {
               return;
             }
             if (
-              edge['@rid']
+              edgeRid
               && inRid
               && outRid
               && (depth > 0 || graphObjects[targetRid])
             ) {
               // Initialize new link object and pushes to links list.
-              const link = {
-                source: outRid,
-                target: inRid,
-                data: edge,
-              };
+              const link = new GraphLink(edge, outRid, inRid);
               links.push(link);
-              graphObjects[link.data['@rid']] = link;
+              graphObjects[link.getId()] = link;
               this.propsMap.loadLink(link.data);
               // Checks if node is already rendered
               if (outRid && !graphObjects[outRid]) {
@@ -655,7 +636,7 @@ class GraphComponent extends Component {
     const { handleClick, handleDetailDrawerOpen } = this.props;
 
     // Prematurely loads neighbor data.
-    await handleClick(node.data['@rid'], node.data['@class']);
+    await handleClick(node.getId());
 
     // Update contents of detail drawer if open.
     handleDetailDrawerOpen(node);
@@ -1241,7 +1222,6 @@ class GraphComponent extends Component {
               </Paper>)}
         </div>
       );
-
     const snackbar = (
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
@@ -1267,7 +1247,7 @@ class GraphComponent extends Component {
           name: 'Details',
           icon: <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />,
           action: () => handleDetailDrawerOpen(actionsNode, true, true),
-          disabled: link => link.data['@rid'] === (detail || {})['@rid'],
+          disabled: link => link.getId() === (detail || {})['@rid'],
         },
         {
           name: 'Hide',
@@ -1279,7 +1259,7 @@ class GraphComponent extends Component {
           name: 'Details',
           icon: <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />,
           action: () => handleDetailDrawerOpen(actionsNode, true),
-          disabled: node => node.data['@rid'] === (detail || {})['@rid'],
+          disabled: node => node.getId() === (detail || {})['@rid'],
         },
         {
           name: 'Close',
@@ -1290,7 +1270,7 @@ class GraphComponent extends Component {
           name: 'Expand',
           icon: <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />,
           action: () => this.loadNeighbors(actionsNode),
-          disabled: node => !expandable[node.data['@rid']],
+          disabled: node => !expandable[node.getId()],
         },
         {
           name: 'Hide',
@@ -1404,7 +1384,6 @@ class GraphComponent extends Component {
           </svg>
         </div>
         {legend}
-
       </div>
     );
   }

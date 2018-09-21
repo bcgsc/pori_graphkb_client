@@ -1,3 +1,5 @@
+import config from '../../config.json';
+
 const DEFAULT_NODE_VPROPS = [
   'source.name',
   '@class',
@@ -8,13 +10,83 @@ const DEFAULT_LINK_VPROPS = [
   '@class',
 ];
 
+const GRAPH_OPTIONS_KEY = 'graphOptions';
+const MAX_LABEL_LENGTH = 25;
+
+const {
+  LINK_STRENGTH,
+  CHARGE_STRENGTH,
+  DEFAULT_NODE_COLOR,
+  COLLISION_RADIUS,
+} = config.GRAPH_DEFAULTS;
+
+class GraphNode {
+  constructor(data, x, y) {
+    this.data = data || {};
+    this.x = x || 0;
+    this.y = y || 0;
+  }
+
+  getId() {
+    return this.data['@rid'];
+  }
+
+  getLabel(labelKey) {
+    let obj = this.data;
+    let key = labelKey;
+    if (labelKey.includes('.')) {
+      [, key] = labelKey.split('.');
+      obj = this.data[labelKey.split('.')[0]];
+    }
+    const label = obj && obj[key];
+    if (label && label.length > MAX_LABEL_LENGTH) {
+      return `${label.substring(0, MAX_LABEL_LENGTH - 4).trim()}...`;
+    }
+    return label;
+  }
+}
+
+class GraphLink {
+  constructor(data, source, target) {
+    this.data = data || {};
+    this.source = source;
+    this.target = target;
+  }
+
+  getId() {
+    return this.data['@rid'];
+  }
+
+  getOutRid() {
+    return typeof this.source === 'string' ? this.source : this.source.data['@rid'];
+  }
+
+  getInRid() {
+    return typeof this.target === 'string' ? this.target : this.target.data['@rid'];
+  }
+
+  getLabel(labelKey) {
+    let obj = this.data;
+    let key = labelKey;
+    if (labelKey.includes('.')) {
+      [, key] = labelKey.split('.');
+      obj = this.data[labelKey.split('.')[0]];
+    }
+    const label = obj && obj[key];
+    if (label && label.length > MAX_LABEL_LENGTH) {
+      return `${label.substring(0, MAX_LABEL_LENGTH - 4).trim()}...`;
+    }
+    return label;
+  }
+}
+
 
 /**
  * Class to define graph props maps, which keeps track of the different
  * properties that graph objects can be colored by, and the different entries
  * in of each.
  */
-export default class PropsMap {
+class PropsMap {
   constructor() {
     this.nodeProps = {};
     this.linkProps = {};
@@ -115,3 +187,67 @@ export default class PropsMap {
     });
   }
 }
+
+
+class GraphOptions {
+  constructor(props) {
+    const initial = props === undefined || props === null ? {} : props;
+    this.defaultColor = initial.defaultColor || DEFAULT_NODE_COLOR;
+    this.linkStrength = initial.linkStrength || LINK_STRENGTH;
+    this.chargeStrength = initial.chargeStrength || CHARGE_STRENGTH;
+    this.collisionRadius = initial.collisionRadius || COLLISION_RADIUS;
+    this.autoCollisionRadius = !!initial.autoCollisionRadius;
+    this.linkHighlighting = initial.linkHighlighting === null
+      || initial.linkHighlighting === undefined
+      ? true
+      : initial.linkHighlighting;
+    this.nodeLabelProp = initial.nodeLabelProp || 'name';
+    this.linkLabelProp = initial.linkLabelProp || '';
+    this.nodesColor = initial.nodesColor || '@class';
+    this.linksColor = initial.linksColor || '';
+    this.nodesColors = initial.nodesColors || {};
+    this.linksColors = initial.linksColors || {};
+    this.nodesLegend = !!initial.nodesLegend;
+    this.linksLegend = !!initial.linksLegend;
+  }
+
+  /**
+   * Loads graph options state into localstorage.
+   */
+  load() {
+    localStorage.setItem(GRAPH_OPTIONS_KEY, JSON.stringify({
+      defaultColor: this.defaultColor,
+      linkStrength: this.linkStrength,
+      chargeStrength: this.chargeStrength,
+      collisionRadius: this.collisionRadius,
+      autoCollisionRadius: this.autoCollisionRadius,
+      linkHighlighting: this.linkHighlighting,
+      nodeLabelProp: this.nodeLabelProp,
+      nodesColor: this.nodesColor,
+      linksColor: this.linksColor,
+      nodesColors: this.nodesColors,
+      linksColors: this.linksColors,
+      nodesLegend: this.nodesLegend,
+      linksLegend: this.linksLegend,
+    }));
+  }
+
+  /**
+   * Retrieves stored graph options data from localstorage.
+   */
+  static retrieve() {
+    const data = localStorage.getItem(GRAPH_OPTIONS_KEY);
+    if (data) {
+      const obj = JSON.parse(data);
+      return new GraphOptions(obj);
+    }
+    return null;
+  }
+}
+
+export {
+  GraphOptions,
+  PropsMap,
+  GraphNode,
+  GraphLink,
+};

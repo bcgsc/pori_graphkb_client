@@ -114,14 +114,11 @@ class GraphComponent extends Component {
     this.updateColors = this.updateColors.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.handleGraphOptionsChange = this.handleGraphOptionsChange.bind(this);
-    this.handleOptionsPanelOpen = this.handleOptionsPanelOpen.bind(this);
-    this.handleOptionsPanelClose = this.handleOptionsPanelClose.bind(this);
     this.handleActionsRing = this.handleActionsRing.bind(this);
     this.handleNodeHide = this.handleNodeHide.bind(this);
     this.handleLinkHide = this.handleLinkHide.bind(this);
-    this.handleGraphColorsChange = this.handleGraphColorsChange.bind(this);
-    this.handleHelpOpen = this.handleHelpOpen.bind(this);
-    this.handleHelpClose = this.handleHelpClose.bind(this);
+    this.handleDialogOpen = this.handleDialogOpen.bind(this);
+    this.handleDialogClose = this.handleDialogClose.bind(this);
     this.handleLinkClick = this.handleLinkClick.bind(this);
   }
 
@@ -273,7 +270,6 @@ class GraphComponent extends Component {
     window.removeEventListener('resize', this.handleResize);
     util.loadGraphData(filteredSearch, { nodes, links, graphObjects });
   }
-
 
   /**
    * Applies drag behavior to node.
@@ -620,14 +616,6 @@ class GraphComponent extends Component {
   }
 
   /**
-   * Toggles Auto Collision Radius feature.
-   */
-  handleCheckbox() {
-    const { graphOptions } = this.state;
-    graphOptions.autoCollisionRadius = !graphOptions.autoCollisionRadius;
-  }
-
-  /**
    * Handles node clicks from user.
    * @param {Event} e - User click event.
    * @param {Object} node - Clicked simulation node.
@@ -645,18 +633,6 @@ class GraphComponent extends Component {
   }
 
   /**
-   * Handles color sort property changes.
-   * @param {Event} e - property change event.
-   * @param {string} type - defines which graph object type to change [nodes, links].
-   */
-  handleGraphColorsChange(e, type) {
-    const { graphOptions } = this.state;
-    graphOptions[`${type}sColor`] = e.target.value;
-    util.loadGraphOptions({ graphOptions });
-    this.setState({ graphOptions }, () => this.updateColors(type));
-  }
-
-  /**
    * Updates graph options, re-initializes simulation, and re-renders objects.
    * @param {Event} e - User input event.
    * @param {boolean} adv - Advanced option flag.
@@ -664,26 +640,27 @@ class GraphComponent extends Component {
   handleGraphOptionsChange(e, adv) {
     const { graphOptions, refreshable } = this.state;
     graphOptions[e.target.name] = e.target.value;
-    util.loadGraphOptions({ graphOptions });
+    graphOptions.load();
     this.setState({ graphOptions, refreshable: adv || refreshable }, () => {
       this.initSimulation();
       this.drawGraph();
+      this.updateColors();
     });
   }
 
   /**
    * Closes additional help dialog.
    */
-  handleHelpClose() {
-    this.setState({ advancedHelp: false, mainHelp: false });
+  handleDialogClose(key) {
+    this.setState({ [key]: false });
   }
 
   /**
    * Opens additional help dialog.
-   * @param {string} helpType - ['main', 'advanced'].
+   * @param {string} key - ['main', 'advanced'].
    */
-  handleHelpOpen(helpType) {
-    this.setState({ [`${helpType}Help`]: true });
+  handleDialogOpen(key) {
+    this.setState({ [key]: true });
   }
 
   /**
@@ -783,25 +760,10 @@ class GraphComponent extends Component {
       actionsNode: null,
       refreshable: true,
     }, () => {
-      this.updateColors('node');
-      this.updateColors('link');
+      this.updateColors();
       handleDetailDrawerClose();
       util.loadGraphData(filteredSearch, { nodes, links, graphObjects });
     });
-  }
-
-  /**
-   * Closes graph options dialog.
-   */
-  handleOptionsPanelClose() {
-    this.setState({ graphOptionsOpen: false });
-  }
-
-  /**
-   * Opens graph options dialog.
-   */
-  handleOptionsPanelOpen() {
-    this.setState({ graphOptionsOpen: true });
   }
 
   /**
@@ -851,22 +813,22 @@ class GraphComponent extends Component {
       || (links.length === 1
         && links[0].source === links[0].target)
     );
-
+    const helpOpen = advancedHelp || mainHelp;
     const helpPanel = (
       <Dialog
-        open={advancedHelp || mainHelp}
-        onClose={() => this.handleHelpClose()}
+        open={helpOpen}
+        onClose={() => this.handleDialogClose(advancedHelp ? 'advancedHelp' : 'mainHelp')}
       >
-        <DialogTitle disableTypography className="advanced-title">
+        <DialogTitle disableTypography className="help-title">
           <Typography variant="headline">
-            {advancedHelp ? 'Advanced Graph Options Help' : 'Graph Options Help'}
+            {helpOpen && (advancedHelp ? 'Advanced Graph Options Help' : 'Graph Options Help')}
           </Typography>
-          <IconButton onClick={() => this.handleHelpClose()}>
+          <IconButton onClick={() => this.handleDialogClose(advancedHelp ? 'advancedHelp' : 'mainHelp')}>
             <CloseIcon />
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          {(advancedHelp ? GRAPH_ADVANCED : GRAPH_MAIN).map(help => (
+          {helpOpen && (advancedHelp ? GRAPH_ADVANCED : GRAPH_MAIN).map(help => (
             <React.Fragment key={help.title}>
               <Typography variant="title" gutterBottom>
                 {help.title}
@@ -883,20 +845,22 @@ class GraphComponent extends Component {
     const graphOptionsPanel = (
       <Dialog
         open={graphOptionsOpen}
-        onClose={this.handleOptionsPanelClose}
+        onClose={() => this.handleDialogClose('graphOptionsOpen')}
         classes={{
           paper: 'options-panel-wrapper',
         }}
       >
         <IconButton
-          onClick={this.handleOptionsPanelClose}
+          onClick={() => this.handleDialogClose('graphOptionsOpen')}
           id="options-close-btn"
         >
           <CloseIcon />
         </IconButton>
-        <DialogTitle className="advanced-title" disableTypography>
+        <DialogTitle className="options-title" disableTypography>
           <Typography variant="title">Graph Options</Typography>
-          <HelpIcon color="primary" onClick={() => this.handleHelpOpen('main')} />
+          <IconButton color="primary" onClick={() => this.handleDialogOpen('mainHelp')}>
+            <HelpIcon />
+          </IconButton>
         </DialogTitle>
         <DialogContent>
           <div className="main-options-wrapper">
@@ -928,7 +892,7 @@ class GraphComponent extends Component {
               <Select
                 name="nodesColor"
                 input={<Input name="nodesColor" id="nodesColor" />}
-                onChange={e => this.handleGraphColorsChange(e, 'node')}
+                onChange={this.handleGraphOptionsChange}
                 value={graphOptions.nodesColor}
               >
                 <MenuItem value="">None</MenuItem>
@@ -993,8 +957,9 @@ class GraphComponent extends Component {
             <FormControl className="graph-option">
               <InputLabel htmlFor="linksColor">Color edges by</InputLabel>
               <Select
+                name="linksColor"
                 input={<Input name="linksColor" id="linksColor" />}
-                onChange={e => this.handleGraphColorsChange(e, 'link')}
+                onChange={this.handleGraphOptionsChange}
                 value={graphOptions.linksColor}
                 disabled={
                   links.length === 0
@@ -1034,13 +999,15 @@ class GraphComponent extends Component {
             </FormControl>
           </div>
           <Divider />
+          <div className="options-title">
+            <Typography variant="title">
+              Advanced Graph Options
+            </Typography>
+            <IconButton onClick={() => this.handleDialogOpen('advancedHelp')} color="primary">
+              <HelpIcon />
+            </IconButton>
+          </div>
           <div className="advanced-options-wrapper">
-            <div className="advanced-title">
-              <Typography variant="title">
-                Advanced Graph Options
-              </Typography>
-              <HelpIcon color="primary" onClick={() => this.handleHelpOpen('advanced')} />
-            </div>
             <div className="advanced-options-grid">
               <div className="graph-input-wrapper">
                 <InputLabel htmlFor="linkStrength" style={{ fontSize: '0.75rem' }}>
@@ -1333,7 +1300,7 @@ class GraphComponent extends Component {
             <IconButton
               id="graph-options-btn"
               color="primary"
-              onClick={this.handleOptionsPanelOpen}
+              onClick={() => this.handleDialogOpen('graphOptionsOpen')}
             >
               <BuildIcon />
             </IconButton>

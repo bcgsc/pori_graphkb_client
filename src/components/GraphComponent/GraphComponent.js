@@ -39,7 +39,7 @@ import { withStyles } from '@material-ui/core/styles';
 import GraphLink from '../GraphLink/GraphLink';
 import GraphNode from '../GraphNode/GraphNode';
 import util from '../../services/util';
-import PropsMap from '../../services/kbgraph';
+import PropsMap from './kbgraph';
 import config from '../../config.json';
 import GraphActionsNode from '../GraphActionsNode/GraphActionsNode';
 

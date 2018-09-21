@@ -587,7 +587,6 @@ class GraphComponent extends Component {
     const { graphOptions } = this.state;
     const key = graphOptions[`${type}sColor`];
     const colors = {};
-    console.log(key);
 
     objs.forEach((obj) => {
       if (key.includes('.')) {

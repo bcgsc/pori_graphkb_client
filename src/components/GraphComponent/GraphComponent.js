@@ -55,7 +55,7 @@ const {
   LINK_STRENGTH,
   CHARGE_STRENGTH,
   DEFAULT_NODE_COLOR,
-  PALLETE_SIZES,
+  PALLETE_SIZE,
 } = config.GRAPH_DEFAULTS;
 
 const { GRAPH_ADVANCED, GRAPH_MAIN } = config.DESCRIPTIONS;
@@ -604,7 +604,7 @@ class GraphComponent extends Component {
       }
     });
     const props = this.propsMap[`${type}Props`];
-    const tooManyUniques = (Object.keys(colors).length > PALLETE_SIZES[PALLETE_SIZES.length - 1]
+    const tooManyUniques = (Object.keys(colors).length > PALLETE_SIZE
       && Object.keys(props).length !== 1);
     const noUniques = props[key]
       && (props[key].length === 0

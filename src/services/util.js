@@ -7,7 +7,7 @@ import * as jc from 'json-cycle';
 import config from '../config.json';
 
 const { DEFAULT_PROPS, PERMISSIONS } = config;
-const { PALLETE_SIZES } = config.GRAPH_DEFAULTS;
+const { PALLETE_SIZE } = config.GRAPH_DEFAULTS;
 const { NODE_INIT_RADIUS } = config.GRAPH_PROPERTIES;
 const ACRONYMS = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
 const GRAPH_OBJECTS_KEY = 'graphObjects';
@@ -197,17 +197,14 @@ const parsePayload = (form, editableProps, exceptions) => {
  * @param {string} type - object type ['link', 'node'].
  */
 const getPallette = (n, type) => {
-  const baseName = `${type.toUpperCase().slice(0, type.length - 1)}_COLORS_`;
-  const maxPalletteSize = PALLETE_SIZES[PALLETE_SIZES.length - 1];
-  for (let i = 0; i < PALLETE_SIZES.length; i += 1) {
-    if (n <= PALLETE_SIZES[i]) {
-      return config.GRAPH_DEFAULTS[baseName + PALLETE_SIZES[i]];
-    }
+  const baseName = `${type.toUpperCase().slice(0, type.length - 1)}_COLORS`;
+  if (n <= PALLETE_SIZE) {
+    return config.GRAPH_DEFAULTS[baseName];
   }
 
-  const list = config.GRAPH_DEFAULTS[baseName + maxPalletteSize];
-  for (let i = maxPalletteSize; i < n; i += 1) {
-    const color = `000000${Math.round(Math.random() * (255 ** 3)).toString(16)}`;
+  const list = config.GRAPH_DEFAULTS[baseName];
+  for (let i = PALLETE_SIZE; i < n; i += 1) {
+    const color = Math.round(Math.random() * (255 ** 3)).toString(16);
     list.push(`#${color.substr(color.length - 6)}`);
   }
   return list;
@@ -358,7 +355,17 @@ const isAbstract = (linkedClass, schema) => Object.values(schema)
 const getSubClasses = (abstractClass, schema) => Object.values(schema)
   .filter(kbClass => kbClass.inherits.includes(abstractClass));
 
-const castToExist = obj => obj === undefined || obj === null ? 'null' : obj.toString();
+/**
+ * Casts a value to string form with minimal formatting. Sets the value to
+ * 'null' if the value is null or undefined.
+ * @param {any} obj - Object to be formatted.
+ */
+const castToExist = (obj) => {
+  if (Array.isArray(obj)) {
+    return obj.join(', ');
+  }
+  return obj === undefined || obj === null ? 'null' : obj.toString();
+};
 
 export default {
   antiCamelCase,

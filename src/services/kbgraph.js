@@ -33,34 +33,10 @@ export default class PropsMap {
 
 
   _removeObj(type, graphObj, graphObjs, validProps) {
-    const props = this[`${type}Props`];
-    validProps.forEach((prop) => {
-      let obj;
-      let key;
-      let superKey;
-      if (prop.includes('.')) {
-        [superKey, key] = prop.split('.');
-        obj = graphObj[superKey];
-      } else {
-        key = prop;
-        obj = graphObj;
-      }
-
-      if (
-        props[prop]
-        && obj
-        && !graphObjs.find((n) => {
-          let nObj = n.data;
-
-          // Nested prop condition
-          if (prop.includes('.')) {
-            nObj = n.data[prop.split('.')[0]] || {};
-          }
-          return nObj[key] === obj[key];
-        })
-      ) {
-        const j = props[prop].indexOf(obj[key]);
-        props[prop].splice(j, 1);
+    this[`${type}Props`] = {};
+    graphObjs.forEach((g) => {
+      if (g.data !== graphObj) {
+        this._loadObj(type, g.data, validProps);
       }
     });
   }

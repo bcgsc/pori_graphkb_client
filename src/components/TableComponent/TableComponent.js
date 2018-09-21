@@ -541,10 +541,8 @@ class TableComponent extends Component {
         if (cell && cell !== 'null' && tableColumns[i].sortBy) {
           cell = cell[tableColumns[i].sortBy];
         }
-        if (Array.isArray(cell)) {
-          return false;
-        }
-        if (exclusions.includes(cell.toString())) {
+
+        if (exclusions.includes(util.castToExist(cell))) {
           return true;
         }
         return false;
@@ -686,11 +684,12 @@ class TableComponent extends Component {
         </DialogActions>
       </Dialog>
     );
+
     const filterPopover = (
       <Popover
         anchorEl={filterPopoverNode}
         open={!!filterPopoverNode}
-        onClose={() => this.setState({ filterPopoverNode: null, tempFilterIndex: null })}
+        onClose={() => this.setState({ filterPopoverNode: null })}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',
@@ -745,6 +744,7 @@ class TableComponent extends Component {
                   if (option === 'null') return -1;
                   return 1;
                 })
+                .slice(0, 100)
                 .map((o) => {
                   const option = util.castToExist(o);
                   return (
@@ -805,7 +805,13 @@ class TableComponent extends Component {
                         >
                           {col.label}
                         </TableSortLabel>
-                        <Fade in={hoveringHeader === i || filterActive || tempFilterIndex === i}>
+                        <Fade
+                          in={
+                            hoveringHeader === i
+                            || filterActive
+                            || (filterPopoverNode && tempFilterIndex === i)
+                          }
+                        >
                           <div className="filter-btn">
                             <Tooltip
                               title={filterActive
@@ -815,10 +821,13 @@ class TableComponent extends Component {
                             >
                               <IconButton
                                 color={filterActive ? 'secondary' : 'default'}
-                                onClick={e => !e.ctrlKey
-                                  ? this.openFilter(i)
-                                  : this.clearFilter(i)
-                                }
+                                onClick={(e) => {
+                                  if (!e.ctrlKey) {
+                                    this.openFilter(i);
+                                  } else {
+                                    this.clearFilter(i);
+                                  }
+                                }}
                               >
                                 <FilterIcon />
                               </IconButton>

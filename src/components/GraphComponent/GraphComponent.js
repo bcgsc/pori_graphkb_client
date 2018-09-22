@@ -156,7 +156,7 @@ class GraphComponent extends Component {
       if ((displayed && displayed.length !== 0) || (!initState && !storedData)) {
         validDisplayed.forEach((key, i) => {
           this.processData(
-            data[key],
+            data[key].data,
             util.positionInit(0, 0, i, validDisplayed.length),
             0,
           );
@@ -427,12 +427,11 @@ class GraphComponent extends Component {
       links,
       graphObjects,
     } = this.state;
-
     // From DataView.js
     const { data, handleNewColumns } = this.props;
 
-    if (data[node['@rid']]) {
-      node = data[node['@rid']];
+    if (data[node['@rid'] || data[node.getId()]]) {
+      node = data[node['@rid'] || data[node.getId()]].data;
     } else {
       // Node properties haven't been processed.
       handleNewColumns(node);
@@ -799,283 +798,22 @@ class GraphComponent extends Component {
     if (!simulation) return null;
 
     const linkLegendDisabled = (
-      !graphOptions.linksColor
-      || links.length === 0
-      || (links.length === 1
-        && links[0].source === links[0].target)
-    );
-    const helpOpen = advancedHelp || mainHelp;
-    const helpPanel = (
-      <Dialog
-        open={helpOpen}
-        onClose={() => this.handleDialogClose(advancedHelp ? 'advancedHelp' : 'mainHelp')}
-      >
-        <DialogTitle disableTypography className="help-title">
-          <Typography variant="headline">
-            {helpOpen && (advancedHelp ? 'Advanced Graph Options Help' : 'Graph Options Help')}
-          </Typography>
-          <IconButton onClick={() => this.handleDialogClose(advancedHelp ? 'advancedHelp' : 'mainHelp')}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          {helpOpen && (advancedHelp ? GRAPH_ADVANCED : GRAPH_MAIN).map(help => (
-            <React.Fragment key={help.title}>
-              <Typography variant="title" gutterBottom>
-                {help.title}
-              </Typography>
-              <Typography variant="body1" paragraph>
-                {help.description}
-              </Typography>
-            </React.Fragment>
-          ))}
-        </DialogContent>
-      </Dialog>
-    );
-
-    const graphOptionsPanel = (
-      <Dialog
-        open={graphOptionsOpen}
-        onClose={() => this.handleDialogClose('graphOptionsOpen')}
-        classes={{
-          paper: 'options-panel-wrapper',
-        }}
-      >
-        <IconButton
-          onClick={() => this.handleDialogClose('graphOptionsOpen')}
-          id="options-close-btn"
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogTitle className="options-title" disableTypography>
-          <Typography variant="title">Graph Options</Typography>
-          <IconButton color="primary" onClick={() => this.handleDialogOpen('mainHelp')}>
-            <HelpIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <div className="main-options-wrapper">
-            <FormControl className="graph-option">
-              <InputLabel htmlFor="nodeLabelProp">Label nodes by</InputLabel>
-              <Select
-                name="nodeLabelProp"
-                input={<Input name="nodeLabelProp" id="nodeLabelProp" />}
-                onChange={this.handleGraphOptionsChange}
-                value={graphOptions.nodeLabelProp}
-              >
-                <MenuItem value="">None</MenuItem>
-                {Object.keys(propsMap.nodeProps).map((prop) => {
-                  if (propsMap.nodeProps[prop]
-                    && !(propsMap.nodeProps[prop].length === 1 && propsMap.nodeProps[prop].includes('null'))
-                  ) {
-                    return (
-                      <MenuItem value={prop} key={prop}>
-                        {util.antiCamelCase(prop)}
-                      </MenuItem>
-                    );
-                  }
-                  return null;
-                })}
-              </Select>
-            </FormControl>
-            <FormControl className="graph-option">
-              <InputLabel htmlFor="nodesColor">Color nodes by</InputLabel>
-              <Select
-                name="nodesColor"
-                input={<Input name="nodesColor" id="nodesColor" />}
-                onChange={this.handleGraphOptionsChange}
-                value={graphOptions.nodesColor}
-              >
-                <MenuItem value="">None</MenuItem>
-                {Object.keys(propsMap.nodeProps).map((prop) => {
-                  if (
-                    propsMap.nodeProps[prop]
-                    && propsMap.nodeProps[prop].length <= 20
-                    && !(propsMap.nodeProps[prop].length === 1 && propsMap.nodeProps[prop].includes('null'))
-                  ) {
-                    return (
-                      <MenuItem value={prop} key={prop}>
-                        {util.antiCamelCase(prop)}
-                      </MenuItem>
-                    );
-                  }
-                  return null;
-                })}
-              </Select>
-            </FormControl>
-            <FormControl className="graph-option">
-              <FormControlLabel
-                classes={{
-                  root: classes.root,
-                  label: classes.label,
-                }}
-                control={(
-                  <Checkbox
-                    color="secondary"
-                    onChange={e => this.handleGraphOptionsChange({
-                      target: {
-                        value: e.target.checked,
-                        name: e.target.name,
-                      },
-                    })
-                    }
-                    name="nodesLegend"
-                    checked={!!(graphOptions.nodesLegend && graphOptions.nodesColor)}
-                    disabled={!graphOptions.nodesColor}
-                  />
-                )}
-                label="Show Nodes Coloring Legend"
-              />
-            </FormControl>
-          </div>
-          <div className="main-options-wrapper">
-            <FormControl className="graph-option">
-              <InputLabel htmlFor="linkLabelProp">Label edges by</InputLabel>
-              <Select
-                input={<Input name="linkLabelProp" id="linkLabelProp" />}
-                onChange={this.handleGraphOptionsChange}
-                value={graphOptions.linkLabelProp}
-                disabled={
-                  links.length === 0
-                  || (links.filter(link => link.source !== link.target).length === 0)
-                }
-              >
-                <MenuItem value="">None</MenuItem>
-                <MenuItem value="@class">Class</MenuItem>
-                <MenuItem value="source.name">Source Name</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl className="graph-option">
-              <InputLabel htmlFor="linksColor">Color edges by</InputLabel>
-              <Select
-                name="linksColor"
-                input={<Input name="linksColor" id="linksColor" />}
-                onChange={this.handleGraphOptionsChange}
-                value={graphOptions.linksColor}
-                disabled={
-                  links.length === 0
-                  || (links.filter(link => link.source !== link.target).length === 0)
-                }
-              >
-                <MenuItem value="">None</MenuItem>
-                <MenuItem value="@class">Class</MenuItem>
-                <MenuItem value="source.name">Source Name</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl>
-              <FormControlLabel
-                classes={{
-                  root: classes.root,
-                  label: classes.label,
-                }}
-                control={(
-                  <Checkbox
-                    color="secondary"
-                    onChange={e => this.handleGraphOptionsChange({
-                      target: {
-                        value: e.target.checked,
-                        name: e.target.name,
-                      },
-                    })
-                    }
-                    name="linksLegend"
-                    checked={
-                      graphOptions.linksLegend
-                      && !linkLegendDisabled}
-                    disabled={linkLegendDisabled}
-                  />
-                )}
-                label="Show Links Coloring Legend"
-              />
-            </FormControl>
-          </div>
-          <Divider />
-          <div className="options-title">
-            <Typography variant="title">
-              Advanced Graph Options
-            </Typography>
-            <IconButton onClick={() => this.handleDialogOpen('advancedHelp')} color="primary">
-              <HelpIcon />
-            </IconButton>
-          </div>
-          <div className="advanced-options-wrapper">
-            <div className="advanced-options-grid">
-              <div className="graph-input-wrapper">
-                <InputLabel htmlFor="linkStrength" style={{ fontSize: '0.75rem' }}>
-                  Link Strength
-                </InputLabel>
-                <Input
-                  name="linkStrength"
-                  type="number"
-                  id="linkStrength"
-                  value={graphOptions.linkStrength}
-                  onChange={e => this.handleGraphOptionsChange(e, true)}
-                  inputProps={{
-                    max: 1,
-                    step: 0.001,
-                  }}
-                />
-              </div>
-              <div className="graph-input-wrapper">
-                <InputLabel htmlFor="chargeStrength" style={{ fontSize: '0.75rem' }}>
-                  Charge Strength
-                </InputLabel>
-                <Input
-                  label="Charge Strength"
-                  name="chargeStrength"
-                  type="number"
-                  id="chargeStrength"
-                  value={graphOptions.chargeStrength}
-                  onChange={e => this.handleGraphOptionsChange(e, true)}
-                  inputProps={{
-                    max: 1000,
-                    step: 1,
-                  }}
-                />
-              </div>
-              <div className="graph-input-wrapper">
-                <InputLabel htmlFor="collisionRadius" style={{ fontSize: '0.75rem' }}>
-                  Collision Radius
-                </InputLabel>
-                <Input
-                  label="Collision Radius"
-                  name="collisionRadius"
-                  id="collisionRadius"
-                  type="number"
-                  value={graphOptions.collisionRadius}
-                  onChange={e => this.handleGraphOptionsChange(e, true)}
-                  inputProps={{
-                    max: 100,
-                    step: 1,
-                  }}
-                />
-              </div>
-              <div>
-                <FormControlLabel
-                  classes={{
-                    root: classes.root,
-                    label: classes.label,
-                  }}
-                  control={(
-                    <Checkbox
-                      color="secondary"
-                      onChange={e => this.handleGraphOptionsChange({
-                        target: {
-                          value: e.target.checked,
-                          name: e.target.name,
-                        },
-                      }, true)}
-                      name="autoCollisionRadius"
-                      checked={graphOptions.autoCollisionRadius}
-                    />
-                  )}
-                  label="Auto Space Nodes"
-                />
-              </div>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      links.length === 0
+      || links.filter((l) => {
+        let source;
+        let target;
+        if (typeof l.source === 'object') {
+          source = l.source.data['@rid'];
+        } else {
+          source = l.source;
+        }
+        if (typeof l.target === 'object') {
+          target = l.target.data['@rid'];
+        } else {
+          target = l.target;
+        }
+        return source !== target;
+      }).length === 0
     );
 
     const legend = (

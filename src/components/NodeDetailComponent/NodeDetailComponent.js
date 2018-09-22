@@ -89,7 +89,7 @@ class NodeDetailComponent extends Component {
     } = this.props;
 
     if (!V) return null;
-    const filteredNode = Object.assign({}, node);
+    const filteredNode = Object.assign({}, (node || {}).data);
     Object.keys(V.properties).forEach((key) => { if (key !== '@class') delete filteredNode[key]; });
 
     /**
@@ -266,7 +266,7 @@ class NodeDetailComponent extends Component {
         const previews = [];
         const content = filteredNode[key].reduce((r, edge) => {
           const id = `${label}.${edge['@rid']}`;
-          const relatedNode = edge.in && edge.in['@rid'] === node['@rid'] ? edge.out : edge.in;
+          const relatedNode = edge.in && edge.in['@rid'] === node.getId() ? edge.out : edge.in;
           if (relatedNode['@class'] !== 'Statement') { // Statement flag
             const edgeOpen = nestedExpanded.includes(id);
             previews.push(util.getPreview(relatedNode));
@@ -367,7 +367,7 @@ class NodeDetailComponent extends Component {
           {children}
           {!detailEdge ? (
             <IconButton
-              onClick={() => handleNodeEditStart(node['@rid'], node['@class'])}
+              onClick={() => handleNodeEditStart(node.getId(), node.data['@class'])}
             >
               <EditIcon />
             </IconButton>

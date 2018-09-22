@@ -91,6 +91,7 @@ class GraphComponent extends Component {
     this.drawGraph = this.drawGraph.bind(this);
     this.initSimulation = this.initSimulation.bind(this);
     this.loadNeighbors = this.loadNeighbors.bind(this);
+    this.handleExpandRequest = this.handleExpandRequest.bind(this);
     this.refresh = this.refresh.bind(this);
     this.updateColors = this.updateColors.bind(this);
     this.handleResize = this.handleResize.bind(this);
@@ -101,6 +102,7 @@ class GraphComponent extends Component {
     this.handleDialogOpen = this.handleDialogOpen.bind(this);
     this.handleDialogClose = this.handleDialogClose.bind(this);
     this.handleLinkClick = this.handleLinkClick.bind(this);
+    this.handleExpandExclusion = this.handleExpandExclusion.bind(this);
   }
 
   /**
@@ -393,23 +395,47 @@ class GraphComponent extends Component {
       nodes,
       links,
       graphObjects,
+      expandExclusions,
     } = this.state;
     const { data } = this.props;
-
     if (expandable[node.getId()] && data[node.getId()]) {
       this.processData(
-        data[node.getId()],
+        data[node.getId()].data,
         { x: node.x, y: node.y },
         1,
+        expandExclusions,
       );
       this.drawGraph();
-      this.updateColors('node');
-      this.updateColors('link');
+      this.updateColors();
     }
-
-    delete expandable[node.getId()];
+    if (!data[node.getId()].getEdges().some(edge => !links.find(l => l.getId() === edge['@rid']))) {
+      delete expandable[node.getId()];
+    }
     util.loadGraphData(filteredSearch, { nodes, links, graphObjects });
-    this.setState({ expandable, actionsNode: null, refreshable: true });
+    this.setState({
+      expandable,
+      actionsNode: null,
+      refreshable: true,
+      expandExclusions: [],
+    });
+  }
+
+  handleExpandRequest(node) {
+    const {
+      expandable,
+      links,
+    } = this.state;
+    const { data } = this.props;
+    if (expandable[node.getId()] && data[node.getId()]) {
+      if (data[node.getId()]
+        .getEdges()
+        .filter(edge => !(links.find(l => l.getId() === edge['@rid']))).length > 10
+      ) {
+        this.setState({ expansionDialogOpen: true, expandNode: data[node.getId()] });
+      } else {
+        this.loadNeighbors(node);
+      }
+    }
   }
 
   /**
@@ -419,7 +445,7 @@ class GraphComponent extends Component {
    * @param {Object} position - Object containing x and y position of input node.
    * @param {number} depth - Recursion base case flag.
    */
-  processData(node, position, depth) {
+  processData(node, position, depth, exclusions = []) {
     const {
       expandedEdgeTypes,
       expandable,
@@ -459,7 +485,7 @@ class GraphComponent extends Component {
           const edgeRid = edge['@rid'] || edge;
 
           // Checks if edge is already rendered in the graph
-          if (!graphObjects[edgeRid]) {
+          if (!graphObjects[edgeRid] && !exclusions.includes(edgeRid)) {
             const inRid = (edge.in || {})['@rid'] || edge.in;
             const outRid = (edge.out || {})['@rid'] || edge.out;
             const targetRid = inRid === node['@rid'] ? outRid : inRid;
@@ -491,6 +517,7 @@ class GraphComponent extends Component {
                   edge.out,
                   positionInit,
                   depth - 1,
+                  exclusions,
                 );
               }
               if (inRid && !graphObjects[inRid]) {
@@ -503,8 +530,8 @@ class GraphComponent extends Component {
                 this.processData(
                   edge.in,
                   positionInit,
-                  graphObjects,
                   depth - 1,
+                  exclusions,
                 );
               }
 
@@ -643,7 +670,7 @@ class GraphComponent extends Component {
    * Closes additional help dialog.
    */
   handleDialogClose(key) {
-    this.setState({ [key]: false });
+    return () => this.setState({ [key]: false, expandExclusions: [] });
   }
 
   /**
@@ -768,6 +795,17 @@ class GraphComponent extends Component {
         }, this.initSimulation,
       );
     }
+  }
+
+  handleExpandExclusion(rid) {
+    const { expandExclusions } = this.state;
+    const i = expandExclusions.indexOf(rid);
+    if (i === -1) {
+      expandExclusions.push(rid);
+    } else {
+      expandExclusions.splice(i, 1);
+    }
+    this.setState({ expandExclusions });
   }
 
   render() {
@@ -916,9 +954,63 @@ class GraphComponent extends Component {
                     )}
                   </List>
                 </div>
-              </Paper>)}
+              </Paper>
+            )}
         </div>
       );
+    const expansionDialog = expandNode && (
+      <Dialog
+        open={expansionDialogOpen}
+        onClose={this.handleDialogClose('expansionDialogOpen')}
+      >
+        <DialogTitle>Select Edges to Expand</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Typography variant="subheading">
+              Edge Types
+            </Typography>
+            <List dense>
+              {expandNode.getEdgeTypes().map(edge => <ListItem>{edge}</ListItem>)}
+            </List>
+            <List dense>
+              {expandNode.getEdges().map((edge) => {
+                const inRid = edge.in['@rid'];
+                const target = inRid === expandNode.getId() ? edge.out : edge.in;
+
+                if (target['@rid'] === expandNode.getId() || links.find(l => l.getId() === edge['@rid'])) {
+                  return null;
+                }
+
+                return (
+                  <ListItem
+                    key={edge['@rid']}
+                    button
+                    onClick={() => this.handleExpandExclusion(edge['@rid'])}
+                  >
+                    <Checkbox checked={!expandExclusions.includes(edge['@rid'])} />
+                    <ListItemText primary={target.name} secondary={target.sourceId} />
+                  </ListItem>
+                );
+              })}
+            </List>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.handleDialogClose('expansionDialogOpen')}>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              this.loadNeighbors(actionsNode, expandExclusions);
+              this.setState({ expansionDialogOpen: false });
+            }}
+          >
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+
     const snackbar = (
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}

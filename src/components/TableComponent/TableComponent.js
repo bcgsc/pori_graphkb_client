@@ -113,7 +113,7 @@ class TableComponent extends Component {
    * Initializes table columns.
    */
   componentDidMount() {
-    const { allProps } = this.props;
+    const { allProps, storedFilters } = this.props;
     const tableColumns = allProps.reduce((r, column) => {
       const [key, nested] = column.split('.');
       if (column.startsWith('in_') || column.startsWith('out_') || column === '@rid') return r;
@@ -142,12 +142,14 @@ class TableComponent extends Component {
       return r;
     }, []);
     const columnFilterStrings = [];
-    const columnFilterExclusions = [];
+    let columnFilterExclusions = [];
     for (let i = 0; i < tableColumns.length; i += 1) {
       columnFilterStrings.push('');
       columnFilterExclusions.push([]);
     }
-
+    if (storedFilters && storedFilters.length > 0) {
+      columnFilterExclusions = storedFilters;
+    }
     // Set default order for columns.
     tableColumns.sort((a, b) => {
       if (DEFAULT_COLUMN_ORDER.indexOf(b.id) === -1) {
@@ -566,7 +568,7 @@ class TableComponent extends Component {
           Clear all filters
         </MenuItem>
         <MenuItem
-          onClick={() => { this.handleClose(); handleGraphRedirect(); }}
+          onClick={() => { this.handleClose(); handleGraphRedirect(columnFilterExclusions); }}
           disabled={displayed.length === 0}
           id="view-as-graph"
         >
@@ -955,7 +957,7 @@ class TableComponent extends Component {
               <IconButton
                 color="secondary"
                 disabled={displayed.length === 0}
-                onClick={handleGraphRedirect}
+                onClick={() => handleGraphRedirect(columnFilterExclusions)}
               >
                 <TimelineIcon />
               </IconButton>
@@ -1039,11 +1041,17 @@ TableComponent.propTypes = {
    * completed the current subsequent query.
    */
   completedNext: PropTypes.bool.isRequired,
+  /**
+   * @param {Array} storedFilters - filters stored for current session.
+   * Accessed on component init and stored on navigate to table.
+   */
+  storedFilters: PropTypes.array,
 };
 
 TableComponent.defaultProps = {
   allProps: [],
   hidden: [],
+  storedFilters: [],
   handleNewQuery: null,
   handleSubsequentPagination: null,
   moreResults: false,

@@ -56,6 +56,7 @@ class DataView extends Component {
       displayed: [],
       hidden: [],
       allProps: [],
+      storedFilters: [],
       detail: null,
       next: null,
       completedNext: true,
@@ -314,15 +315,16 @@ class DataView extends Component {
   }
 
   /**
-   * Handles redirect to graph from table.
+   * Handles redirect to table to graph.
    */
-  handleGraphRedirect() {
+  handleGraphRedirect(filters) {
     const { history } = this.props;
+    this.setState({ storedFilters: filters });
     history.push({ pathname: '/data/graph', search: history.location.search });
   }
 
   /**
-   * Handles redirect to table from graph.
+   * Handles redirect to graph to table.
    */
   handleTableRedirect() {
     const { history } = this.props;
@@ -355,6 +357,7 @@ class DataView extends Component {
       edges,
       detailEdge,
       completedNext,
+      storedFilters,
     } = this.state;
 
     const {
@@ -417,6 +420,7 @@ class DataView extends Component {
         allProps={allProps}
         moreResults={moreResults}
         completedNext={completedNext}
+        storedFilters={storedFilters}
         handleCheckAll={this.handleCheckAll}
         handleNodeEditStart={this.handleNodeEditStart}
         handleHideSelected={this.handleHideSelected}

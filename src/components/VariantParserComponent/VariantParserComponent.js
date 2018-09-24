@@ -38,6 +38,7 @@ class VariantParserComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      shorthand: '',
       invalidFlag: '',
       variant: null,
       positionalVariantSchema: [],
@@ -70,9 +71,8 @@ class VariantParserComponent extends Component {
    */
   async parseString(e) {
     const { variant, positionalVariantSchema, schema } = this.state;
-    const { handleChange } = this.props;
-    handleChange(e);
     const { value } = e.target;
+    this.setState({ shorthand: value });
     if (!value) {
       this.setState({ variant: util.initModel({}, positionalVariantSchema) });
     } else {
@@ -214,8 +214,7 @@ class VariantParserComponent extends Component {
    */
   updateShorthand() {
     const { variant } = this.state;
-    const { handleChange, name, value } = this.props;
-    let shorthand = value;
+    let { shorthand } = this.state;
     try {
       const filteredVariant = {};
       Object.keys(variant).forEach((k) => {
@@ -235,7 +234,7 @@ class VariantParserComponent extends Component {
       this.updateErrorFields(error);
       this.setState({ invalidFlag: error.message });
     } finally {
-      handleChange({ target: { value: shorthand.toString(), name } });
+      this.setState({ shorthand: shorthand.toString() });
     }
   }
 
@@ -297,6 +296,7 @@ class VariantParserComponent extends Component {
 
   render() {
     const {
+      shorthand,
       invalidFlag,
       variant,
       positionalVariantSchema,
@@ -308,8 +308,6 @@ class VariantParserComponent extends Component {
     const {
       required,
       error,
-      name,
-      value,
       disabled,
       handleFinish,
     } = this.props;
@@ -381,11 +379,11 @@ class VariantParserComponent extends Component {
             <TextField
               error={shorthandError}
               required={required}
-              name={name}
+              name="shorthand"
               onChange={this.parseString}
               label="HGVS nomenclature"
               disabled={disabled}
-              value={value}
+              value={shorthand}
             />
             {shorthandError
               && <FormHelperText>{invalidFlag}</FormHelperText>
@@ -429,14 +427,6 @@ class VariantParserComponent extends Component {
 
 VariantParserComponent.propTypes = {
   /**
-   * @param {string} name - name of input for event parsing.
-   */
-  name: PropTypes.string.isRequired,
-  /**
-   * @param {string} value - specified value for two way binding.
-   */
-  value: PropTypes.string,
-  /**
    * @param {bool} required - required flag for text input indicator.
    */
   required: PropTypes.bool,
@@ -449,18 +439,12 @@ VariantParserComponent.propTypes = {
    */
   disabled: PropTypes.bool,
   /**
-   * @param {function} handleChange - function for passing state upwards on
-   * change of shorthand string.
-   */
-  handleChange: PropTypes.func.isRequired,
-  /**
    * @param {function} handleFinish - function for handling form finishing.
    */
   handleFinish: PropTypes.func.isRequired,
 };
 
 VariantParserComponent.defaultProps = {
-  value: '',
   required: false,
   error: false,
   disabled: false,

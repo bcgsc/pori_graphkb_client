@@ -10,7 +10,7 @@ describe('Variant Form Test', () => {
   });
 
   it('Editing shorthand', () => {
-    cy.get('input[name=shorthandString]')
+    cy.get('input[name=shorthand]')
       .click()
       .type('kras:y.p12.2_p13.3del');
     cy.get('input[name=type]').should('have.value', 'deletion');

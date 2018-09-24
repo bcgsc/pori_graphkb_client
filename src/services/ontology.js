@@ -32,8 +32,8 @@ export default class Ontology {
 
   getEdgeTypes() {
     return edges.reduce((array, edge) => {
-      if (this[edge] && this[edge].length > 0) {
-        array.push(edge);
+      if (this[edge] && this[edge].length > 0 && !array.includes(this[edge][0]['@class'])) {
+        array.push(this[edge][0]['@class']);
       }
       return array;
     }, []);

@@ -23,7 +23,7 @@ import {
   DialogContent,
   Checkbox,
   DialogActions,
-  DialogContentText,
+  Divider,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import ViewListIcon from '@material-ui/icons/ViewList';
@@ -56,6 +56,7 @@ const { GRAPH_UNIQUE_LIMIT } = config.NOTIFICATIONS;
 const AUTO_SPACE_COEFFICIENT = 2.8;
 const SNACKBAR_AUTOHIDE_DURATION = 6000;
 const MARKER_ID = 'endArrow';
+const DIALOG_FADEOUT_TIME = 150;
 
 /**
  * Component for displaying query results in force directed graph form.
@@ -103,6 +104,8 @@ class GraphComponent extends Component {
     this.handleDialogClose = this.handleDialogClose.bind(this);
     this.handleLinkClick = this.handleLinkClick.bind(this);
     this.handleExpandExclusion = this.handleExpandExclusion.bind(this);
+    this.handleExpandByClass = this.handleExpandByClass.bind(this);
+    this.handleExpandCheckAll = this.handleExpandCheckAll.bind(this);
   }
 
   /**
@@ -669,7 +672,8 @@ class GraphComponent extends Component {
    * Closes additional help dialog.
    */
   handleDialogClose(key) {
-    return () => this.setState({ [key]: false, expandExclusions: [] });
+    return () => this.setState({ [key]: false },
+      () => setTimeout(() => this.setState({ expandExclusions: [] }), DIALOG_FADEOUT_TIME));
   }
 
   /**
@@ -796,15 +800,41 @@ class GraphComponent extends Component {
     }
   }
 
-  handleExpandExclusion(rid) {
+  handleExpandExclusion(rids) {
     const { expandExclusions } = this.state;
-    const i = expandExclusions.indexOf(rid);
+    const i = expandExclusions.indexOf(rids);
     if (i === -1) {
-      expandExclusions.push(rid);
+      expandExclusions.push(rids);
     } else {
       expandExclusions.splice(i, 1);
     }
     this.setState({ expandExclusions });
+  }
+
+  handleExpandCheckAll() {
+    const { expandExclusions, expandNode } = this.state;
+    const allEdges = expandNode.getEdges().map(e => e['@rid']);
+    let newExpandExclusions = [];
+    if (expandExclusions.length !== allEdges.length) {
+      newExpandExclusions = allEdges;
+    }
+    this.setState({ expandExclusions: newExpandExclusions });
+  }
+
+  handleExpandByClass(cls) {
+    return () => {
+      const { expandNode, actionsNode } = this.state;
+      const expandExclusions = [];
+      expandNode.getEdges().forEach((edge) => {
+        if (edge['@class'] !== cls) {
+          expandExclusions.push(edge['@rid']);
+        }
+      });
+      this.setState({
+        expandExclusions,
+        expansionDialogOpen: false,
+      }, () => this.loadNeighbors(actionsNode));
+    };
   }
 
   render() {
@@ -961,28 +991,54 @@ class GraphComponent extends Component {
       <Dialog
         open={expansionDialogOpen}
         onClose={this.handleDialogClose('expansionDialogOpen')}
-        maxWidth={false}
+        maxWidth="md"
+        fullWidth
       >
         <DialogTitle>Select Edges to Expand</DialogTitle>
         <DialogContent>
           <Typography variant="subheading">
-            Edge Types
+            Expand by Edge Types:
           </Typography>
-          <List dense>
-            {expandNode.getEdgeTypes().map(edge => (
+          <List dense className="expand-links-types">
+            {expandNode.getEdges().reduce((array, edge) => {
+              if (!array.includes(edge['@class']) && !links.find(l => l.getId() === edge['@rid'])) {
+                array.push(edge['@class']);
+              }
+              return array;
+            }, []).map(edge => (
               <ListItem
                 key={edge}
+                className="expand-links-type"
               >
-                <Checkbox />
-                <ListItemText primary={util.getEdgeLabel(edge)} />
+                <Button variant="contained" color="primary" onClick={this.handleExpandByClass(edge)}>
+                  {util.getEdgeLabel(edge)}
+                </Button>
               </ListItem>
             ))}
           </List>
-          <List dense>
+          <Typography variant="subheading">
+            Select Individual Links:
+          </Typography>
+          <ListItem
+            button
+            onClick={this.handleExpandCheckAll}
+            className="expand-links-link"
+          >
+            <Checkbox checked={!(expandExclusions.length === expandNode.getEdges().length)} />
+            <ListItemText>
+              <Typography variant="subheading">
+                {expandExclusions.length === expandNode.getEdges().length
+                  ? 'Select All' : 'Deselect All'}
+              </Typography>
+            </ListItemText>
+          </ListItem>
+          <Divider />
+          <List dense className="expand-links-list">
             {expandNode.getEdges().map((edge) => {
               const inRid = edge.in['@rid'];
               const target = inRid === expandNode.getId() ? edge.out : edge.in;
-              if (target['@rid'] === expandNode.getId() || links.find(l => l.getId() === edge['@rid'])) {
+              if (target['@rid'] === expandNode.getId()
+                || links.find(l => l.getId() === edge['@rid'])) {
                 return null;
               }
               return (
@@ -990,6 +1046,7 @@ class GraphComponent extends Component {
                   key={edge['@rid']}
                   button
                   onClick={() => this.handleExpandExclusion(edge['@rid'])}
+                  className="expand-links-link"
                 >
                   <Checkbox checked={!expandExclusions.includes(edge['@rid'])} />
                   <ListItemText>
@@ -1008,8 +1065,8 @@ class GraphComponent extends Component {
           </Button>
           <Button
             onClick={() => {
-              this.loadNeighbors(actionsNode, expandExclusions);
               this.setState({ expansionDialogOpen: false });
+              setTimeout(() => this.loadNeighbors(actionsNode), DIALOG_FADEOUT_TIME);
             }}
           >
             Confirm

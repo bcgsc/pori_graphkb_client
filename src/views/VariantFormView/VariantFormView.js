@@ -7,11 +7,7 @@ import VariantParserComponent from '../../components/VariantParserComponent/Vari
 class VariantFormView extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      shorthandString: '',
-    };
     this.handleCancel = this.handleCancel.bind(this);
-    this.handleChange = this.handleChange.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
   }
 
@@ -24,13 +20,6 @@ class VariantFormView extends Component {
   }
 
   /**
-   * Updates shorthandstring.
-   */
-  handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
-  }
-
-  /**
    * Takes action on a successful variant submission. Navigates to query page.
    */
   handleFinish() {
@@ -39,7 +28,6 @@ class VariantFormView extends Component {
   }
 
   render() {
-    const { shorthandString } = this.state;
     return (
       <div className="variant-wrapper">
         <Paper elevation={4} className="paper variant-headline">
@@ -57,9 +45,6 @@ class VariantFormView extends Component {
 
         <div className="variant-body">
           <VariantParserComponent
-            handleChange={this.handleChange}
-            name="shorthandString"
-            value={shorthandString}
             handleFinish={this.handleFinish}
           />
         </div>

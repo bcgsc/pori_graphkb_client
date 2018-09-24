@@ -402,7 +402,10 @@ const getSubClasses = (abstractClass, schema) => Object.values(schema)
 
 const castToExist = (obj) => {
   if (Array.isArray(obj)) {
-    return obj.join(', ');
+    if (obj.length > 0) {
+      return obj.join(', ');
+    }
+    return 'null';
   }
   return obj === undefined || obj === null ? 'null' : obj.toString();
 };

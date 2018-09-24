@@ -4,7 +4,7 @@ let edges = [];
 
 export default class Ontology {
   constructor(data) {
-    this.data = data;
+    Object.keys(data).forEach((k) => { this[k] = data[k]; });
   }
 
   static loadEdges(newEdges) {
@@ -12,13 +12,13 @@ export default class Ontology {
   }
 
   getId() {
-    return this.data['@rid'];
+    return this['@rid'];
   }
 
   getEdges() {
     return edges.reduce((array, edge) => {
-      if (this.data[edge] && this.data[edge].length > 0) {
-        array.push(...this.data[edge].filter((e) => {
+      if (this[edge] && this[edge].length > 0) {
+        array.push(...this[edge].filter((e) => {
           const inRid = e.in['@rid'];
           const outRid = e.out['@rid'];
           return (inRid !== this.getId() || outRid !== this.getId())
@@ -32,7 +32,7 @@ export default class Ontology {
 
   getEdgeTypes() {
     return edges.reduce((array, edge) => {
-      if (this.data[edge] && this.data[edge].length > 0) {
+      if (this[edge] && this[edge].length > 0) {
         array.push(edge);
       }
       return array;

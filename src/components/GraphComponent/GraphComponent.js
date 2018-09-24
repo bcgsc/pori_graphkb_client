@@ -158,7 +158,7 @@ class GraphComponent extends Component {
       if ((displayed && displayed.length !== 0) || (!initState && !storedData)) {
         validDisplayed.forEach((key, i) => {
           this.processData(
-            data[key].data,
+            data[key],
             util.positionInit(0, 0, i, validDisplayed.length),
             0,
           );
@@ -190,7 +190,6 @@ class GraphComponent extends Component {
         } = storedData;
         let { nodes, links } = storedData;
         delete storedData.filteredSearch;
-
         nodes = nodes.map((n) => {
           this.propsMap.loadNode(n.data, allProps);
           util.expanded(expandedEdgeTypes, graphObjects, n.data['@rid'], expandable);
@@ -400,7 +399,7 @@ class GraphComponent extends Component {
     const { data } = this.props;
     if (expandable[node.getId()] && data[node.getId()]) {
       this.processData(
-        data[node.getId()].data,
+        data[node.getId()],
         { x: node.x, y: node.y },
         1,
         expandExclusions,
@@ -457,7 +456,7 @@ class GraphComponent extends Component {
     const { data, handleNewColumns } = this.props;
 
     if (data[node['@rid'] || data[node.getId()]]) {
-      node = data[node['@rid'] || data[node.getId()]].data;
+      node = data[node['@rid'] || data[node.getId()]];
     } else {
       // Node properties haven't been processed.
       handleNewColumns(node);
@@ -983,7 +982,6 @@ class GraphComponent extends Component {
             {expandNode.getEdges().map((edge) => {
               const inRid = edge.in['@rid'];
               const target = inRid === expandNode.getId() ? edge.out : edge.in;
-              const source = target.source.name || expandNode.data.source.name;
               if (target['@rid'] === expandNode.getId() || links.find(l => l.getId() === edge['@rid'])) {
                 return null;
               }
@@ -997,7 +995,7 @@ class GraphComponent extends Component {
                   <ListItemText>
                     <Typography variant="body2">{target.name}</Typography>
                     <Typography variant="body1">{target.sourceId}</Typography>
-                    <Typography variant="caption">{source}</Typography>
+                    <Typography variant="caption">{target.source.name || expandNode.source.name}</Typography>
                   </ListItemText>
                 </ListItem>
               );

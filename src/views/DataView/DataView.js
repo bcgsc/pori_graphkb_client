@@ -103,7 +103,6 @@ class DataView extends Component {
       omitted.push('@class');
     }
 
-
     let allProps = ['@rid', '@class'];
     try {
       const data = await api.get(`${route}?${qs.stringify(_.omit(filteredSearch, omitted))}&neighbors=${DEFAULT_NEIGHBORS}`);

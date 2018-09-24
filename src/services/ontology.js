@@ -21,7 +21,9 @@ export default class Ontology {
         array.push(...this.data[edge].filter((e) => {
           const inRid = e.in['@rid'];
           const outRid = e.out['@rid'];
-          return inRid !== this.getId() || outRid !== this.getId();
+          return (inRid !== this.getId() || outRid !== this.getId())
+            && e.in['@class'] !== 'Statement'
+            && e.out['@class'] !== 'Statement';
         }));
       }
       return array;

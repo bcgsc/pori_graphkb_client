@@ -962,38 +962,47 @@ class GraphComponent extends Component {
       <Dialog
         open={expansionDialogOpen}
         onClose={this.handleDialogClose('expansionDialogOpen')}
+        maxWidth={false}
       >
         <DialogTitle>Select Edges to Expand</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            <Typography variant="subheading">
-              Edge Types
-            </Typography>
-            <List dense>
-              {expandNode.getEdgeTypes().map(edge => <ListItem>{edge}</ListItem>)}
-            </List>
-            <List dense>
-              {expandNode.getEdges().map((edge) => {
-                const inRid = edge.in['@rid'];
-                const target = inRid === expandNode.getId() ? edge.out : edge.in;
-
-                if (target['@rid'] === expandNode.getId() || links.find(l => l.getId() === edge['@rid'])) {
-                  return null;
-                }
-
-                return (
-                  <ListItem
-                    key={edge['@rid']}
-                    button
-                    onClick={() => this.handleExpandExclusion(edge['@rid'])}
-                  >
-                    <Checkbox checked={!expandExclusions.includes(edge['@rid'])} />
-                    <ListItemText primary={target.name} secondary={target.sourceId} />
-                  </ListItem>
-                );
-              })}
-            </List>
-          </DialogContentText>
+          <Typography variant="subheading">
+            Edge Types
+          </Typography>
+          <List dense>
+            {expandNode.getEdgeTypes().map(edge => (
+              <ListItem
+                key={edge}
+              >
+                <Checkbox />
+                <ListItemText primary={util.getEdgeLabel(edge)} />
+              </ListItem>
+            ))}
+          </List>
+          <List dense>
+            {expandNode.getEdges().map((edge) => {
+              const inRid = edge.in['@rid'];
+              const target = inRid === expandNode.getId() ? edge.out : edge.in;
+              const source = target.source.name || expandNode.data.source.name;
+              if (target['@rid'] === expandNode.getId() || links.find(l => l.getId() === edge['@rid'])) {
+                return null;
+              }
+              return (
+                <ListItem
+                  key={edge['@rid']}
+                  button
+                  onClick={() => this.handleExpandExclusion(edge['@rid'])}
+                >
+                  <Checkbox checked={!expandExclusions.includes(edge['@rid'])} />
+                  <ListItemText>
+                    <Typography variant="body2">{target.name}</Typography>
+                    <Typography variant="body1">{target.sourceId}</Typography>
+                    <Typography variant="caption">{source}</Typography>
+                  </ListItemText>
+                </ListItem>
+              );
+            })}
+          </List>
         </DialogContent>
         <DialogActions>
           <Button onClick={this.handleDialogClose('expansionDialogOpen')}>

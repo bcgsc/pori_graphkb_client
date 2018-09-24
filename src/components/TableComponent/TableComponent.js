@@ -536,9 +536,9 @@ class TableComponent extends Component {
     const filteredData = sortedData
       .filter(n => !hidden.includes(n.getId()))
       .filter(n => !columnFilterExclusions.some((exclusions, i) => {
-        let cell = n.data[tableColumns[i].id] === undefined
-          || n.data[tableColumns[i].id] === null
-          ? 'null' : n.data[tableColumns[i].id];
+        let cell = n[tableColumns[i].id] === undefined
+          || n[tableColumns[i].id] === null
+          ? 'null' : n[tableColumns[i].id];
 
         if (cell && cell !== 'null' && tableColumns[i].sortBy) {
           cell = cell[tableColumns[i].sortBy];
@@ -892,7 +892,7 @@ class TableComponent extends Component {
                             if (col.checked) {
                               return (
                                 <TableCell key={col.id}>
-                                  {col.sortBy ? util.castToExist((n.data[col.id] || '')[col.sortBy]) : util.castToExist(n.data[col.id])}
+                                  {col.sortBy ? util.castToExist((n[col.id] || '')[col.sortBy]) : util.castToExist(n[col.id])}
                                 </TableCell>
                               );
                             }

@@ -194,3 +194,13 @@ $toolbar-height: 64px;
     border-radius: 4px;
     cursor: pointer;
 }
+.expand-links-types{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+.expand-links-list{
+    column-count: 3;
+    .expand-links-link{
+        display: inline-flex;
+    }
+}

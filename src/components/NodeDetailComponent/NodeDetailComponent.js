@@ -89,7 +89,7 @@ class NodeDetailComponent extends Component {
     } = this.props;
 
     if (!V) return null;
-    const filteredNode = Object.assign({}, (node || {}).data);
+    const filteredNode = Object.assign({}, node);
     Object.keys(V.properties).forEach((key) => { if (key !== '@class') delete filteredNode[key]; });
 
     /**

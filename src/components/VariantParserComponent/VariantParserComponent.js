@@ -201,8 +201,10 @@ class VariantParserComponent extends Component {
     const { name, value } = e.target;
     if (nested) {
       variant[nested][name] = value;
+      variant[nested][`${name}.@rid`] = e.target['@rid'];
     } else {
       variant[name] = value;
+      variant[`${name}.@rid`] = e.target['@rid'];
     }
 
     Object.keys(e.target)

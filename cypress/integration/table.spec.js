@@ -70,7 +70,7 @@ describe('Table Test', () => {
     getName('diso');
     cy.get('table thead tr th:first input[type=checkbox]').click();
     cy.get('#ellipsis-menu').click();
-    cy.contains('Hide Selected Rows (50)');
+    cy.contains('Hide selected rows (50)');
     cy.get('table tbody tr').then((array) => {
       cy.wrap(array).each((row, i) => {
         if (i !== 0 && i !== array.length - 1) {
@@ -110,7 +110,7 @@ describe('Table Test', () => {
         cy.get('#hide-selected').click();
         cy.contains(total - hiddenRows);
         cy.get('#ellipsis-menu').click();
-        cy.contains(`Show Hidden Rows (${hiddenRows})`).click();
+        cy.contains(`Show hidden rows (${hiddenRows})`).click();
         cy.contains(`1-50 of ${total}`);
       });
     });
@@ -162,5 +162,30 @@ describe('Table Test', () => {
     cy.contains('1000');
     cy.get('div.more-results-btn button').should('disabled');
     cy.contains('2000');
+  });
+
+  /**
+   * Tests table filters
+   */
+  it('Filtering', () => {
+    getName('diso');
+
+    cy.get('div.filter-btn button').each((button, i) => {
+      if (i === 2) {
+        cy.wrap(button).click({ force: true });
+        cy.get('ul.filter-list>div>div').then((array) => {
+          const l = array.length;
+          cy.get('#filter-popover ul.filter-list li>div>div>input[type=text]')
+            .type('disease or disorder');
+          cy.get('ul.filter-list>div>div').then(a => cy.expect(a.length).to.be.lt(l));
+          cy.get('ul.filter-list>div>div').each(btn => cy.wrap(btn).click());
+          cy.get('tbody>tr>td:first input[type=checkbox]').click({ force: true });
+          cy.get('#filter-popover').click(0, 0);
+          cy.get('div.pag div.graph-btn button').click();
+          cy.get('div.toolbar button.table-btn').click();
+          cy.get('tbody>tr').then(a => cy.expect(a.length).to.be.lt(50));
+        });
+      }
+    });
   });
 });

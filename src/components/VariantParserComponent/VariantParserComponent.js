@@ -74,7 +74,11 @@ class VariantParserComponent extends Component {
     const { value } = e.target;
     this.setState({ shorthand: value });
     if (!value) {
-      this.setState({ variant: util.initModel({}, positionalVariantSchema) });
+      this.setState({
+        variant: util.initModel({}, positionalVariantSchema),
+        errorFields: [],
+        invalidFlag: null,
+      });
     } else {
       try {
         const response = kbp.variant.parse(value.trim());
@@ -146,8 +150,11 @@ class VariantParserComponent extends Component {
         } else if (cycled.length > 1) {
           // add multiple modals?
         } else if (cycled.length === 0) {
+          const { errorFields } = this.state;
+          errorFields.push(name);
           this.setState({
             invalidFlag: `Referenced ${name} term '${parsed[name]}' not found`,
+            errorFields,
           });
         }
       }
@@ -243,8 +250,7 @@ class VariantParserComponent extends Component {
    * @param {kbp.error.ErrorMixin} error - Error object from kbp.
    */
   updateErrorFields(error) {
-    const { variant } = this.state;
-    const errorFields = [];
+    const { errorFields, variant } = this.state;
     if (error && error.content) {
       const { violatedAttr } = error.content;
       if (violatedAttr) {

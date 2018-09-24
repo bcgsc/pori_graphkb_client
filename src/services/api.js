@@ -220,7 +220,6 @@ const autoSearch = (endpoint, property, value, limit) => {
 
   const orStr = `or=${property.join(',')}`;
   let extras = `limit=${limit}&neighbors=1`;
-
   let query;
 
   if (value.match(literalRe)) {

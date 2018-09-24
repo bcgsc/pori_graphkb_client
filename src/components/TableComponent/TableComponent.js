@@ -476,13 +476,13 @@ class TableComponent extends Component {
     const sort = (a, b) => {
       if (!newProperty) return 1;
       if (newOrder === 'desc') {
-        return displayed.includes(b['@rid'])
-          < displayed.includes(a['@rid'])
+        return displayed.includes(b.getId())
+          < displayed.includes(a.getId())
           ? -1
           : 1;
       }
-      return displayed.includes(a['@rid'])
-        < displayed.includes(b['@rid'])
+      return displayed.includes(a.getId())
+        < displayed.includes(b.getId())
         ? -1
         : 1;
     };
@@ -534,7 +534,7 @@ class TableComponent extends Component {
 
     const numCols = tableColumns.filter(c => c.checked).length;
     const filteredData = sortedData
-      .filter(n => !hidden.includes(n['@rid']))
+      .filter(n => !hidden.includes(n.getId()))
       .filter(n => !columnFilterExclusions.some((exclusions, i) => {
         let cell = n[tableColumns[i].id] === undefined
           || n[tableColumns[i].id] === null
@@ -850,6 +850,7 @@ class TableComponent extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
+<<<<<<< HEAD
               {pageData.map((n) => {
                 const isSelected = displayed.includes(n['@rid']);
                 const active = toggle === n['@rid'];
@@ -910,6 +911,69 @@ class TableComponent extends Component {
                     </React.Fragment>
                   );
               })}
+=======
+              {pageData
+                .map((n) => {
+                  const isSelected = displayed.includes(n.getId());
+                  const active = toggle === n.getId();
+                  const detail = active ? (
+                    <TableRow>
+                      <Collapse
+                        colSpan={numCols + 2}
+                        component="td"
+                        in={active}
+                        unmountOnExit
+                      >
+                        <NodeDetailComponent
+                          node={n}
+                          data={data}
+                          handleNodeEditStart={handleNodeEditStart}
+                          handleNewQuery={handleNewQuery}
+                        />
+                      </Collapse>
+                    </TableRow>
+                  ) : null;
+                  return !hidden.includes(n.getId())
+                    && (
+                      <React.Fragment key={n.getId() || Math.random()}>
+                        <TableRow
+                          selected={isSelected}
+                          onClick={() => handleClick(n.getId())}
+                          classes={{
+                            root: 'cursor-override',
+                            selected: 'selected-override',
+                          }}
+                        >
+                          <TableCell padding="dense">
+                            <Checkbox
+                              onChange={() => handleCheckbox(n.getId())}
+                              checked={displayed.includes(n.getId())}
+                            />
+                          </TableCell>
+                          {tableColumns.map((col) => {
+                            if (col.checked) {
+                              return (
+                                <TableCell key={col.id}>
+                                  {col.sortBy ? util.castToExist((n[col.id] || '')[col.sortBy]) : util.castToExist(n[col.id])}
+                                </TableCell>
+                              );
+                            }
+                            return null;
+                          })}
+                          <TableCell>
+                            <IconButton
+                              onClick={() => this.handleDetailToggle(n.getId())}
+                              className={`detail-btn ${active ? 'active' : ''}`}
+                            >
+                              <KeyboardArrowDownIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                        {detail}
+                      </React.Fragment>
+                    );
+                })}
+>>>>>>> 2d3499b3f72d50350cd65d06dc94291ed0b296f7
             </TableBody>
           </Table>
         </div>

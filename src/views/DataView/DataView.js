@@ -23,6 +23,7 @@ import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import OntologyDetailComponent from '../../components/OntologyDetailComponent/OntologyDetailComponent';
 import api from '../../services/api';
+import Ontology from '../../services/ontology';
 import config from '../../config.json';
 
 const { DEFAULT_NEIGHBORS } = config;
@@ -103,7 +104,6 @@ class DataView extends Component {
       omitted.push('@class');
     }
 
-
     let allProps = ['@rid', '@class'];
     try {
       const data = await api.get(`${route}?${qs.stringify(_.omit(filteredSearch, omitted))}&neighbors=${DEFAULT_NEIGHBORS}`);
@@ -111,7 +111,7 @@ class DataView extends Component {
 
       cycled.forEach((ontologyTerm) => {
         allProps = api.collectOntologyProps(ontologyTerm, allProps, schema);
-        dataMap[ontologyTerm['@rid']] = ontologyTerm;
+        dataMap[ontologyTerm['@rid']] = new Ontology(ontologyTerm);
       });
 
       if (cycled.length >= (filteredSearch.limit || DEFAULT_LIMIT)) {
@@ -121,6 +121,7 @@ class DataView extends Component {
           moreResults: true,
         });
       }
+      Ontology.loadEdges(api.getEdges(schema));
       this.setState({
         data: dataMap,
         loginRedirect,
@@ -144,7 +145,7 @@ class DataView extends Component {
     if (!data[rid]) {
       const endpoint = `/ontologies/${rid.slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`;
       const response = await api.get(endpoint);
-      data[rid] = jc.retrocycle(response).result;
+      data[rid] = new Ontology(jc.retrocycle(response).result);
       this.setState({ data });
     }
   }
@@ -217,7 +218,7 @@ class DataView extends Component {
         let newColumns = allProps;
         cycled.forEach((ontologyTerm) => {
           newColumns = api.collectOntologyProps(ontologyTerm, allProps, schema);
-          data[ontologyTerm['@rid']] = ontologyTerm;
+          data[ontologyTerm['@rid']] = new Ontology(ontologyTerm);
         });
 
         let route = '/ontologies';

@@ -88,9 +88,7 @@ $toolbar-height: 64px;
     top: 0;
 }
 
-.options-panel-wrapper {
-    width: 100%;
-}
+
 
 .options-grid {
     display: grid;
@@ -130,19 +128,29 @@ $toolbar-height: 64px;
 
 .advanced-options-wrapper {
     padding: 24px;
+    padding-top: 0;
 }
 
-.advanced-title {
+.help-title{
     display: flex;
     align-items: center;
-    svg {
-        margin-left: 8px;
-        cursor: pointer;
-    }
     button {
         margin-left: auto;
-        svg {
-            margin: 0;
+    }
+}
+
+.options-panel-wrapper {
+    width: 100%;
+    .options-title {
+        padding: 24px 24px 20px;
+        padding-right: 56px;
+        display: flex;
+        align-items: center;
+        button {
+            margin-left: auto;
+            svg {
+                margin: 0;
+            }
         }
     }
 }
@@ -185,4 +193,14 @@ $toolbar-height: 64px;
     border: 1px solid rgba(0, 0, 0, 0.54);
     border-radius: 4px;
     cursor: pointer;
+}
+.expand-links-types{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+.expand-links-list{
+    column-count: 3;
+    .expand-links-link{
+        display: inline-flex;
+    }
 }

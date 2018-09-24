@@ -8,6 +8,7 @@ import { Redirect } from 'react-router-dom';
 import * as jc from 'json-cycle';
 import OntologyDetailComponent from '../../components/OntologyDetailComponent/OntologyDetailComponent';
 import api from '../../services/api';
+import Ontology from '../../services/ontology';
 import config from '../../config.json';
 
 const { DEFAULT_NEIGHBORS } = config;
@@ -40,7 +41,7 @@ class OntologyDetailView extends Component {
     const { match } = this.props;
     try {
       const response = await api.get(`/ontologies/${match.params.rid}?neighbors=${DEFAULT_NEIGHBORS}`);
-      const node = jc.retrocycle(response).result;
+      const node = new Ontology(jc.retrocycle(response).result);
       this.setState({ node });
     } catch (error) {
       if (error.status === 401) {

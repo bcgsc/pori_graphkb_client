@@ -23,7 +23,7 @@ describe('Node Form Test', () => {
         cy.wrap(resourceSelect).click();
         cy.get('div[role=document] li:first').click();
         cy.contains('test');
-        cy.get('#relationship-type').click().wait(100).click();
+        cy.get('#relationship-type div[role=button]').click();
         cy.contains('SubClassOf').click();
         cy.contains('SubClassOf');
 

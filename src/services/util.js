@@ -474,6 +474,16 @@ const getSubClasses = (abstractClass, schema) => Object.values(schema)
 const getPropOfType = (kbClass, type) => Object.values(kbClass)
   .filter(prop => prop.type === type);
 
+const castToExist = (obj) => {
+  if (Array.isArray(obj)) {
+    if (obj.length > 0) {
+      return obj.join(', ');
+    }
+    return 'null';
+  }
+  return obj === undefined || obj === null ? 'null' : obj.toString();
+};
+
 export default {
   antiCamelCase,
   getPreview,
@@ -496,4 +506,5 @@ export default {
   getSubClasses,
   parsePermission,
   getPropOfType,
+  castToExist,
 };

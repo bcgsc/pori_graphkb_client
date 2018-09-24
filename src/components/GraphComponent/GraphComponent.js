@@ -800,17 +800,25 @@ class GraphComponent extends Component {
     }
   }
 
-  handleExpandExclusion(rids) {
+  /**
+   * Toggles a specified edge ID from the exclusions list.
+   * @param {string} rid - edge ID to be pushed/popped from the expand
+   * exclusions list.
+   */
+  handleExpandExclusion(rid) {
     const { expandExclusions } = this.state;
-    const i = expandExclusions.indexOf(rids);
+    const i = expandExclusions.indexOf(rid);
     if (i === -1) {
-      expandExclusions.push(rids);
+      expandExclusions.push(rid);
     } else {
       expandExclusions.splice(i, 1);
     }
     this.setState({ expandExclusions });
   }
 
+  /**
+   * Selects/Deselects all options in the expand node dialog.
+   */
   handleExpandCheckAll() {
     const { expandExclusions, expandNode } = this.state;
     const allEdges = expandNode.getEdges().map(e => e['@rid']);
@@ -821,6 +829,10 @@ class GraphComponent extends Component {
     this.setState({ expandExclusions: newExpandExclusions });
   }
 
+  /**
+   * Expands all links of specified class on the expand node.
+   * @param {string} cls - KB edge class name to be expanded.
+   */
   handleExpandByClass(cls) {
     return () => {
       const { expandNode, actionsNode } = this.state;
@@ -1068,6 +1080,7 @@ class GraphComponent extends Component {
               this.setState({ expansionDialogOpen: false });
               setTimeout(() => this.loadNeighbors(actionsNode), DIALOG_FADEOUT_TIME);
             }}
+            id="expand-dialog-submit"
           >
             Confirm
           </Button>

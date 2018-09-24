@@ -367,7 +367,7 @@ class NodeDetailComponent extends Component {
           {children}
           {!detailEdge ? (
             <IconButton
-              onClick={() => handleNodeEditStart(node.getId(), node.data['@class'])}
+              onClick={() => handleNodeEditStart(node.getId(), node['@class'])}
             >
               <EditIcon />
             </IconButton>

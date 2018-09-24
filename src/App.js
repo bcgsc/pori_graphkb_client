@@ -269,7 +269,7 @@ class App extends Component {
               </div>
             </AppBar>
             {loggedIn && drawer}
-            <section className={`content ${(drawerOpen && loggedIn) && 'drawer-shift'} ${!loggedIn && 'no-drawer'}`}>
+            <section className={`content ${(drawerOpen ? loggedIn : '') && 'drawer-shift'} ${!loggedIn ? 'no-drawer' : ''}`}>
               <div className="router-outlet">
                 <Switch>
                   <Route path="/login" render={loginWithProps} />

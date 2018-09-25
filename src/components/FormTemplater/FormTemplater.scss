@@ -11,10 +11,14 @@
     }
   }
 }
+.form-templater-autosearch {
+  display: flex;
+}
 .form-templater-help-icon{
   margin: auto;
   margin-left: 24px;
 }
 .form-templater-embedded-selector{
   display: flex;
+  flex-grow: 1;
 }

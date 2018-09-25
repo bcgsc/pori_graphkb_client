@@ -799,7 +799,7 @@ class AdminView extends Component {
     );
 
     return (
-      <div className="admin-wrapper">
+      <div className="view-wrapper">
         {userDialog(!!selectedUser)}
         {deleteUsersDialog}
         {userGroupDialog()}

@@ -170,7 +170,7 @@ class AdvancedQueryView extends Component {
     };
 
     return (
-      <div className="adv-wrapper" elevation={4}>
+      <div className="view-wrapper" elevation={4}>
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           open={!!message}

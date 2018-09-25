@@ -835,17 +835,14 @@ class GraphComponent extends Component {
    */
   handleExpandByClass(cls) {
     return () => {
-      const { expandNode, actionsNode } = this.state;
+      const { expandNode } = this.state;
       const expandExclusions = [];
       expandNode.getEdges().forEach((edge) => {
         if (edge['@class'] !== cls) {
           expandExclusions.push(edge['@rid']);
         }
       });
-      this.setState({
-        expandExclusions,
-        expansionDialogOpen: false,
-      }, () => this.loadNeighbors(actionsNode));
+      this.setState({ expandExclusions });
     };
   }
 
@@ -1022,7 +1019,11 @@ class GraphComponent extends Component {
                 key={edge}
                 className="expand-links-type"
               >
-                <Button variant="contained" color="primary" onClick={this.handleExpandByClass(edge)}>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={this.handleExpandByClass(edge)}
+                >
                   {util.getEdgeLabel(edge)}
                 </Button>
               </ListItem>

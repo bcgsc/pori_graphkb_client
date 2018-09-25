@@ -9,10 +9,16 @@
     @media (max-width: 425px) {
       display: block;
     }
+    > li{
+      display: inline-block !important;
+    }
+
   }
 }
+
 .form-templater-autosearch {
   display: flex;
+  width: 100%;
 }
 .form-templater-help-icon{
   margin: auto;

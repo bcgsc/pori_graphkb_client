@@ -619,7 +619,7 @@ class OntologyFormComponent extends Component {
         {dialog}
         {drawer}
         <form onSubmit={this.handleSubmit}>
-          <div className="form-grid">
+          <div className="view-wrapper form-grid">
             <Paper className="form-header" elevation={4}>
               <Typography variant="headline" className="form-title">
                 {variant === 'edit' ? 'Edit Ontology Term'
@@ -777,7 +777,7 @@ class OntologyFormComponent extends Component {
                           );
                         })}
                         <TableRow id="relationship-add">
-                          <TableCell padding="checkbox">
+                          <TableCell padding="checkbox" id="add-btn-cell">
                             <IconButton
                               color="primary"
                               onClick={this.handleRelationshipAdd}

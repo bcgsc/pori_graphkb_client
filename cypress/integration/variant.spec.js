@@ -10,23 +10,28 @@ describe('Variant Form Test', () => {
   });
 
   it('Editing shorthand', () => {
+    const reference1 = 'kras';
+    const prefix = 'y';
+    const break1 = { arm: 'p', majorBand: '12', minorBand: '2' };
+    const break2 = { arm: 'p', majorBand: '13', minorBand: '3' };
+    const type = { shorthand: 'del', name: 'deletion' };
     cy.get('input[name=shorthand]')
       .click()
-      .type('kras:y.p12.2_p13.3del');
-    cy.get('input[name=type]').should('have.value', 'deletion');
-    cy.get('input[name=reference1]').should('have.value', 'kras');
+      .type(`${reference1}:${prefix}.${break1.arm}${break1.majorBand}.${break1.minorBand}_${break2.arm}${break2.majorBand}.${break2.minorBand}${type.shorthand}`);
+    cy.get('input[name=type]').should('have.value', type.name);
+    cy.get('input[name=reference1]').should('have.value', reference1);
 
     cy.get('#break1 li:first input')
       .should('have.value', 'CytobandPosition');
-    cy.get('#break1 input[name=minorBand]').should('have.value', '2');
-    cy.get('#break1 input[name=majorBand]').should('have.value', '12');
-    cy.get('#break1 textarea[name=arm]').should('have.value', 'p');
+    cy.get('#break1 input[name=minorBand]').should('have.value', break1.minorBand);
+    cy.get('#break1 input[name=majorBand]').should('have.value', break1.majorBand);
+    cy.get('#break1 textarea[name=arm]').should('have.value', break1.arm);
 
     cy.get('#break2 li:first input')
       .should('have.value', 'CytobandPosition');
-    cy.get('#break2 input[name=minorBand]').should('have.value', '3');
-    cy.get('#break2 input[name=majorBand]').should('have.value', '13');
-    cy.get('#break2 textarea[name=arm]').should('have.value', 'p');
+    cy.get('#break2 input[name=minorBand]').should('have.value', break1.minorBand);
+    cy.get('#break2 input[name=majorBand]').should('have.value', break1.majorBand);
+    cy.get('#break2 textarea[name=arm]').should('have.value', break1.arm);
   });
 
   it('Editing form', () => {
@@ -50,6 +55,5 @@ describe('Variant Form Test', () => {
     cy.get('#break1 input[name=minorBand]').type('23');
     cy.get('#break2 input[name=minorBand]').type('52');
     cy.contains('minorBand must be a positive integer ()').should('not.exist');
-
   });
 });

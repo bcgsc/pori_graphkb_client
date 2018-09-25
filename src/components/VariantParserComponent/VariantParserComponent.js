@@ -41,7 +41,7 @@ class VariantParserComponent extends Component {
       shorthand: '',
       invalidFlag: '',
       variant: null,
-      positionalVariantSchema: [],
+      classSchema: [],
       errorFields: [],
     };
     this.parseString = this.parseString.bind(this);
@@ -55,11 +55,11 @@ class VariantParserComponent extends Component {
 
   async componentDidMount() {
     const schema = await api.getSchema();
-    const positionalVariantSchema = (util.getClass('PositionalVariant', schema)).properties;
-    const variant = util.initModel({}, positionalVariantSchema);
-    console.log(util.initModel({}, positionalVariantSchema));
+    const classSchema = (util.getClass('PositionalVariant', schema)).properties;
+    const variant = util.initModel({}, classSchema);
+    console.log(util.initModel({}, classSchema));
     this.setState({
-      positionalVariantSchema,
+      classSchema,
       variant,
       schema,
     });
@@ -70,12 +70,12 @@ class VariantParserComponent extends Component {
    * @param {Event} e - user input event.
    */
   async parseString(e) {
-    const { variant, positionalVariantSchema, schema } = this.state;
+    const { variant, classSchema, schema } = this.state;
     const { value } = e.target;
     this.setState({ shorthand: value });
     if (!value) {
       this.setState({
-        variant: util.initModel({}, positionalVariantSchema),
+        variant: util.initModel({}, classSchema),
         errorFields: [],
         invalidFlag: null,
       });
@@ -84,7 +84,7 @@ class VariantParserComponent extends Component {
         const response = kbp.variant.parse(value.trim());
         // Split response into link data and non-link data
         const linkProps = await this.extractLinkProps(response);
-        const embeddedProps = util.getPropOfType(positionalVariantSchema, 'embedded');
+        const embeddedProps = util.getPropOfType(classSchema, 'embedded');
 
         embeddedProps.forEach((prop) => {
           const { name } = prop;
@@ -101,10 +101,10 @@ class VariantParserComponent extends Component {
           }
         });
 
-        console.log(Object.assign(util.initModel({}, positionalVariantSchema),
+        console.log(Object.assign(util.initModel({}, classSchema),
           { ...response, ...linkProps }));
         this.setState({
-          variant: Object.assign(util.initModel({}, positionalVariantSchema),
+          variant: Object.assign(util.initModel({}, classSchema),
             { ...response, ...linkProps }),
           invalidFlag: '',
           errorFields: [],
@@ -136,8 +136,8 @@ class VariantParserComponent extends Component {
    * @param {Object} parsed - Parsed variant from kbp.
    */
   async extractLinkProps(parsed) {
-    const { positionalVariantSchema } = this.state;
-    const linkProps = util.getPropOfType(positionalVariantSchema, 'link');
+    const { classSchema } = this.state;
+    const linkProps = util.getPropOfType(classSchema, 'link');
     const newValues = {};
     await Promise.all(linkProps.map(async (prop) => {
       const { name, linkedClass } = prop;
@@ -169,13 +169,13 @@ class VariantParserComponent extends Component {
    * @param {string} nested - nested property key.
    */
   handleClassChange(e, nested) {
-    const { schema, variant, positionalVariantSchema } = this.state;
+    const { schema, variant, classSchema } = this.state;
     const { value } = e.target;
     const newClass = util.getClass(value, schema).properties;
     if (newClass) {
-      const abstractClass = positionalVariantSchema
+      const abstractClass = classSchema
         .find(p => p.name === nested).linkedClass.name;
-      const varKeys = positionalVariantSchema
+      const varKeys = classSchema
         .filter(p => p.linkedClass && p.linkedClass.name === abstractClass)
         .map(p => p.name);
       varKeys.forEach((key) => {
@@ -276,7 +276,7 @@ class VariantParserComponent extends Component {
    */
   async submitVariant(e) {
     e.preventDefault();
-    const { variant, positionalVariantSchema, schema } = this.state;
+    const { variant, classSchema, schema } = this.state;
     const copy = Object.assign({}, variant);
     Object.keys(copy).forEach((k) => {
       if (typeof copy[k] === 'object') { // more flexible
@@ -296,7 +296,7 @@ class VariantParserComponent extends Component {
         }
       }
     });
-    const payload = util.parsePayload(copy, positionalVariantSchema);
+    const payload = util.parsePayload(copy, classSchema);
     this.setState({ loading: true, notificationDrawerOpen: true });
     await api.post('/positionalvariants', payload);
     this.setState({ loading: false });
@@ -307,7 +307,7 @@ class VariantParserComponent extends Component {
       shorthand,
       invalidFlag,
       variant,
-      positionalVariantSchema,
+      classSchema,
       schema,
       errorFields,
       notificationDrawerOpen,
@@ -321,7 +321,7 @@ class VariantParserComponent extends Component {
     } = this.props;
 
     let formIsInvalid = false;
-    positionalVariantSchema.forEach((prop) => {
+    classSchema.forEach((prop) => {
       if (prop.mandatory) {
         if (prop.type === 'link' && (!variant[prop.name] || !variant[`${prop.name}.@rid`])) {
           formIsInvalid = true;
@@ -406,7 +406,7 @@ class VariantParserComponent extends Component {
                 onChange={this.handleVariantChange}
                 onClassChange={this.handleClassChange}
                 model={variant}
-                kbClass={positionalVariantSchema}
+                kbClass={classSchema}
                 excludedProps={['break1Repr', 'break2Repr']}
                 errorFields={errorFields}
                 sort={sortFields}

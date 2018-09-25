@@ -98,7 +98,11 @@ class FormTemplater extends Component {
         }
 
         return (
-          <ListItem component={fieldComponent} key={name}>
+          <ListItem
+            className="form-templater-autosearch"
+            component={fieldComponent}
+            key={name}
+          >
             <AutoSearchComponent
               error={errorFields.includes(name)}
               value={model[name]}

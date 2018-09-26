@@ -111,7 +111,8 @@ class AdminView extends Component {
     const schema = await api.getSchema();
     const users = jc.retrocycle(cycledUsers).result;
     const userGroups = jc.retrocycle(cycledUserGroups).result;
-    userGroups.forEach((userGroup) => {
+    userGroups.forEach((u, i) => {
+      const userGroup = userGroups[i];
       Object.keys(userGroup.permissions).forEach((key) => {
         if (key !== '@class' && key !== '@type') {
           userGroup.permissions[key] = util.parsePermission(userGroup.permissions[key]);
@@ -119,6 +120,7 @@ class AdminView extends Component {
           delete userGroup.permissions[key];
         }
       });
+      userGroups[i] = userGroup;
     });
     Object.keys(schema).forEach((obj) => { newUserGroup.permissions[obj] = [0, 0, 0, 0]; });
     this.setState({
@@ -182,10 +184,12 @@ class AdminView extends Component {
   async deleteUserGroup(userGroup) {
     await api.delete(`/usergroups/${userGroup['@rid'].slice(1)}`);
     const userGroups = jc.retrocycle(await api.get('/usergroups')).result;
-    userGroups.forEach((ug) => {
+    userGroups.forEach((u, i) => {
+      const ug = userGroups[i];
       Object.keys(ug.permissions).forEach((key) => {
         ug.permissions[key] = util.parsePermission(ug.permissions[key]);
       });
+      userGroups[i] = ug;
     });
     this.setState({ userGroups }, this.handleDeleteUserGroup);
   }
@@ -335,10 +339,12 @@ class AdminView extends Component {
    */
   handlePermissionsChange(permissionKey, permission, currValue, isNewUserGroup) {
     const { newUserGroup, tempUserGroup } = this.state;
-
     if (!(isNewUserGroup ? newUserGroup : tempUserGroup)) return;
-    (isNewUserGroup ? newUserGroup : tempUserGroup)
-      .permissions[permissionKey][permission] = currValue ? 0 : 1;
+    if (isNewUserGroup) {
+      newUserGroup.permissions[permissionKey][permission] = currValue ? 0 : 1;
+    } else {
+      tempUserGroup.permissions[permissionKey][permission] = currValue ? 0 : 1;
+    }
     this.setState({ isNewUserGroup, tempUserGroup });
   }
 
@@ -379,10 +385,12 @@ class AdminView extends Component {
     await f(rid, payload);
     const response = await api.get('/usergroups');
     const newUserGroups = jc.retrocycle(response).result;
-    newUserGroups.forEach((userGroup) => {
+    newUserGroups.forEach((u, i) => {
+      const userGroup = newUserGroups[i];
       Object.keys(userGroup.permissions).forEach((pKey) => {
         userGroup.permissions[pKey] = util.parsePermission(userGroup.permissions[pKey]);
       });
+      newUserGroups[i] = userGroup;
     });
 
     const newUserGroup = { name: '', permissions: {} };
@@ -464,11 +472,17 @@ class AdminView extends Component {
     Object.keys((isNewUserGroup ? newUserGroup : tempUserGroup).permissions).forEach((pKey) => {
       const isEdge = schema[pKey].inherits.includes('E');
       const isAbstract = util.isAbstract(pKey, schema);
-      (isNewUserGroup ? newUserGroup : tempUserGroup)
-        .permissions[pKey][i] = (e.target.checked
+      if (isNewUserGroup) {
+        newUserGroup.permissions[pKey][i] = (e.target.checked
           && !(isEdge && i === 1))
           && !(isAbstract && i !== 2)
           ? 1 : 0;
+      } else {
+        tempUserGroup.permissions[pKey][i] = (e.target.checked
+          && !(isEdge && i === 1))
+          && !(isAbstract && i !== 2)
+          ? 1 : 0;
+      }
     });
     this.setState({ newUserGroup, tempUserGroup });
   }
@@ -562,6 +576,7 @@ class AdminView extends Component {
                                 newUser,
                               )}
                               checked={!!p}
+                              disabled={!isEditing}
                             />)}
                       </TableCell>
                     ))}
@@ -882,7 +897,8 @@ class AdminView extends Component {
               </IconButton>
             </div>
           </div>
-          {userGroups.map((userGroup) => {
+          {userGroups.map((u) => {
+            let userGroup = u;
             const isEditing = tempUserGroup && userGroup['@rid'] === tempUserGroup['@rid'];
             let isTaken = false;
             let isSelected;
@@ -890,7 +906,7 @@ class AdminView extends Component {
               isSelected = userGroup.name === tempUserGroup.name;
               userGroup = tempUserGroup;
               isTaken = userGroups
-                .map(u => u.name.toLowerCase())
+                .map(uG => uG.name.toLowerCase())
                 .includes(userGroup.name.toLowerCase());
             }
 

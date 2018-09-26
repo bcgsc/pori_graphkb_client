@@ -109,11 +109,11 @@ class QueryView extends Component {
     );
   }
 }
-
+/**
+ * @namespace
+ * @param {Object} history - Application routing history object.
+ */
 QueryView.propTypes = {
-  /**
-   * @param {Object} history - Application routing history object.
-   */
   history: PropTypes.object.isRequired,
 };
 

@@ -405,28 +405,21 @@ class OntologyDetailComponent extends Component {
   }
 }
 
+/**
+ * @namespace
+ * @param {Object} node - node to be displayed.
+ * @param {function} handleNodeEditStart - function to handle request to edit
+ * selected node.
+ * @param {Node} children - Additional buttons to render in the sidebar of
+ * the component.
+ * @param {string} variant - variant indicator for component.
+ * @param {boolean} detailEdge - specifies if node is an edge.
+ */
 OntologyDetailComponent.propTypes = {
-  /**
-   * @param {Object} node - node to be displayed.
-   */
   node: PropTypes.object,
-  /**
-   * @param {function} handleNodeEditStart - function to handle request to edit
-   * selected node
-   */
   handleNodeEditStart: PropTypes.func,
-  /**
-   * @param {Node} children - Additional buttons to render in the sidebar of
-   * the component.
-   */
   children: PropTypes.node,
-  /**
-   * @param {string} variant - variant indicator for component.
-   */
   variant: PropTypes.string,
-  /**
-   * @param {boolean} detailEdge - specifies if node is an edge.
-   */
   detailEdge: PropTypes.bool,
 };
 

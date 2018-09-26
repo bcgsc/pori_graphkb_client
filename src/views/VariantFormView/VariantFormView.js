@@ -53,6 +53,10 @@ class VariantFormView extends Component {
   }
 }
 
+/**
+ * @namespace
+ * @param {Object} history - Application routing history object.
+ */
 VariantFormView.propTypes = {
   history: PropTypes.object.isRequired,
 };

@@ -121,38 +121,25 @@ function GraphLinkDisplay(props) {
   );
 }
 
+/**
+ * @namespace
+ * @param {Object} link - Graph link object.
+ * @param {Object} detail - Node currently opened in detail drawer.
+ * @param {string} labelKey - property to label link by.
+ * @param {string} color - color of link. CSS color syntax(es).
+ * @param {function} handleClick - handler for clicking link.
+ * @param {Object} actionsNode - Node decorator object.
+ * @param {string} marker - SVG end marker identifier.
+ * @param {string} filter - current filter string value.
+ */
 GraphLinkDisplay.propTypes = {
-  /**
-   * @param {Object} link - Graph link object.
-   */
   link: PropTypes.object.isRequired,
-  /**
-   * @param {Object} detail - Node currently opened in detail drawer.
-   */
   detail: PropTypes.object,
-  /**
-   * @param {string} labelKey - property to label link by.
-   */
   labelKey: PropTypes.string,
-  /**
-   * @param {string} color - color of link. CSS color syntax(es).
-   */
   color: PropTypes.string,
-  /**
-   * @param {function} handleClick - handler for clicking link.
-   */
   handleClick: PropTypes.func,
-  /**
-   * @param {Object} actionsNode - Node decorator object.
-   */
   actionsNode: PropTypes.object,
-  /**
-   * @param {string} marker - SVG end marker identifier.
-   */
   marker: PropTypes.string,
-  /**
-   * @param {string} filter - current filter string value.
-   */
   filter: PropTypes.string,
 };
 

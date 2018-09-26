@@ -433,22 +433,17 @@ class VariantParserComponent extends Component {
   }
 }
 
+/**
+ * @namespace
+ * @param {bool} required - required flag for text input indicator.
+ * @param {bool} error - error flag for text input.
+ * @param {bool} disabled - disabled flag for text input.
+ * @param {function} handleFinish - function for handling form finishing.
+ */
 VariantParserComponent.propTypes = {
-  /**
-   * @param {bool} required - required flag for text input indicator.
-   */
   required: PropTypes.bool,
-  /**
-   * @param {bool} error - error flag for text input.
-   */
   error: PropTypes.bool,
-  /**
-   * @param {bool} disabled - disabled flag for text input.
-   */
   disabled: PropTypes.bool,
-  /**
-   * @param {function} handleFinish - function for handling form finishing.
-   */
   handleFinish: PropTypes.func.isRequired,
 };
 

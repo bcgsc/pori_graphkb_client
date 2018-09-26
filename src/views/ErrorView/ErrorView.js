@@ -105,11 +105,11 @@ class ErrorView extends Component {
     );
   }
 }
-
+/**
+ * @namespace
+ * @param {Object} history - Application routing history object.
+ */
 ErrorView.propTypes = {
-  /**
-   * @param {Object} history - Application routing history object.
-   */
   history: PropTypes.object.isRequired,
 };
 

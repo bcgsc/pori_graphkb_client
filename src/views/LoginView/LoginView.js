@@ -152,9 +152,9 @@ class LoginView extends Component {
 
 /**
  * @namespace
- * @param {object} history -  Application history object.
- * @param {function} handleLogOut - Updates parent state on unauthorized user.
- * @param {function} handleAuthenticate - Updates parent state on successful login.
+ * @property {object} history -  Application history object.
+ * @property {function} handleLogOut - Updates parent state on unauthorized user.
+ * @property {function} handleAuthenticate - Updates parent state on successful login.
  */
 LoginView.propTypes = {
   history: PropTypes.object.isRequired,

@@ -115,15 +115,15 @@ function GraphActionsNode(props) {
 
 /**
  * @namespace
- * @param {array} options - List of options, each must be in the form:
+ * @property {array} options - List of options, each must be in the form:
  *    option: {
  *      name: [string]
  *      icon: [svg element]
  *      action: [(any) => any]
  *      disabled?: [(any) => boolean}
  *    }
- * @param {Object} actionsNode - Currently selected object.
- * @param {boolean} edge - yes/no flag determining whether selected object is
+ * @property {Object} actionsNode - Currently selected object.
+ * @property {boolean} edge - yes/no flag determining whether selected object is
  * an edge or not
  */
 GraphActionsNode.propTypes = {

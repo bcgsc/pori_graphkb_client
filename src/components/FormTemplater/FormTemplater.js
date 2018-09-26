@@ -283,18 +283,18 @@ class FormTemplater extends Component {
 
 /**
  * @namespace
- * @param {Object} schema - Knowledgebase db schema.
- * @param {function} onChange - Model updating function
- * @param {Object} model - Model object.
- * @param {Array} kbClass - Form object schema.
- * @param {Array} excludedProps - List of propstrings to be excluded from
+ * @property {Object} schema - Knowledgebase db schema.
+ * @property {function} onChange - Model updating function
+ * @property {Object} model - Model object.
+ * @property {Array} kbClass - Form object schema.
+ * @property {Array} excludedProps - List of propstrings to be excluded from
  * generation.
- * @param {string} fieldComponent - Component to pass to material UI ListItem
+ * @property {string} fieldComponent - Component to pass to material UI ListItem
  * component
- * @param {Array} errorFields - list of field keys that are causing errors in
+ * @property {Array} errorFields - list of field keys that are causing errors in
  * parent component.
- * @param {function} sort - Sorting function for form fields.
- * @param {Object} pairs - group definitions for grid.
+ * @property {function} sort - Sorting function for form fields.
+ * @property {Object} pairs - group definitions for grid.
  */
 FormTemplater.propTypes = {
   schema: PropTypes.object.isRequired,

@@ -877,11 +877,11 @@ class OntologyFormComponent extends Component {
 
 /**
  * @namespace
- * @param {Object} node - node object to be edited.
- * @param {string} variant - specifies form type/function.
- * @param {function} handleNodeFinish - parent method triggered when node is
+ * @property {Object} node - node object to be edited.
+ * @property {string} variant - specifies form type/function.
+ * @property {function} handleNodeFinish - parent method triggered when node is
  * edited or deleted.
- * @param {function} handleCancel - parent method triggered when form action is cancelled.
+ * @property {function} handleCancel - parent method triggered when form action is cancelled.
  */
 OntologyFormComponent.propTypes = {
   node: PropTypes.object,

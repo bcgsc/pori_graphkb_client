@@ -123,14 +123,14 @@ function GraphLinkDisplay(props) {
 
 /**
  * @namespace
- * @param {Object} link - Graph link object.
- * @param {Object} detail - Node currently opened in detail drawer.
- * @param {string} labelKey - property to label link by.
- * @param {string} color - color of link. CSS color syntax(es).
- * @param {function} handleClick - handler for clicking link.
- * @param {Object} actionsNode - Node decorator object.
- * @param {string} marker - SVG end marker identifier.
- * @param {string} filter - current filter string value.
+ * @property {Object} link - Graph link object.
+ * @property {Object} detail - Node currently opened in detail drawer.
+ * @property {string} labelKey - property to label link by.
+ * @property {string} color - color of link. CSS color syntax(es).
+ * @property {function} handleClick - handler for clicking link.
+ * @property {Object} actionsNode - Node decorator object.
+ * @property {string} marker - SVG end marker identifier.
+ * @property {string} filter - current filter string value.
  */
 GraphLinkDisplay.propTypes = {
   link: PropTypes.object.isRequired,

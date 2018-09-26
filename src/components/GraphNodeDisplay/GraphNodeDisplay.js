@@ -99,14 +99,14 @@ class GraphNodeDisplay extends PureComponent {
 
 /**
  * @namespace
- * @param {Object} node - Node to be rendered.
- * @param {function} handleClick - Parent method on node click event.
- * @param {string} color - Color of node.
- * @param {function} applyDrag - Function to apply drag functionality to node.
- * @param {string} labelKey - Property to label node by.
- * @param {Object} actionsNode - Node decorator object.
- * @param {Object} detail - Node currently opened in detail drawer.
- * @param {string} filter - current filter string value.
+ * @property {Object} node - Node to be rendered.
+ * @property {function} handleClick - Parent method on node click event.
+ * @property {string} color - Color of node.
+ * @property {function} applyDrag - Function to apply drag functionality to node.
+ * @property {string} labelKey - Property to label node by.
+ * @property {Object} actionsNode - Node decorator object.
+ * @property {Object} detail - Node currently opened in detail drawer.
+ * @property {string} filter - current filter string value.
  */
 GraphNodeDisplay.propTypes = {
   node: PropTypes.object.isRequired,

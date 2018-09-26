@@ -107,7 +107,7 @@ class ErrorView extends Component {
 }
 /**
  * @namespace
- * @param {Object} history - Application routing history object.
+ * @property {Object} history - Application routing history object.
  */
 ErrorView.propTypes = {
   history: PropTypes.object.isRequired,

@@ -1269,16 +1269,16 @@ class GraphComponent extends Component {
 
 /**
  * @namespace
- * @param {function} handleClick - Parent component method triggered when a
+ * @property {function} handleClick - Parent component method triggered when a
  * graph object is clicked.
- * @param {Object} data - Parent state data.
- * @param {function} handleDetailDrawerOpen - Method to handle opening of detail drawer.
- * @param {function} handleDetailDrawerClose - Method to handle closing of detail drawer.
- * @param {function} handleTableRedirect - Method to handle a redirect to the table view.
- * @param {function} handleNewColumns - Updates valid properties in parent state.
- * @param {Object} schema - Database schema.
- * @param {Object} detail - record ID of node currently selected for detail viewing.
- * @param {Array} allProps - list of all unique properties on all nodes returned in
+ * @property {Object} data - Parent state data.
+ * @property {function} handleDetailDrawerOpen - Method to handle opening of detail drawer.
+ * @property {function} handleDetailDrawerClose - Method to handle closing of detail drawer.
+ * @property {function} handleTableRedirect - Method to handle a redirect to the table view.
+ * @property {function} handleNewColumns - Updates valid properties in parent state.
+ * @property {Object} schema - Database schema.
+ * @property {Object} detail - record ID of node currently selected for detail viewing.
+ * @property {Array} allProps - list of all unique properties on all nodes returned in
  * initial query.
  */
 GraphComponent.propTypes = {

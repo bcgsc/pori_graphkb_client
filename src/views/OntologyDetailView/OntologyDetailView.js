@@ -115,8 +115,8 @@ class OntologyDetailView extends Component {
 
 /**
  * @namespace
- * @param {Object} match - Match object for extracting URL parameters.
- * @param {Object} history - Application routing history object.
+ * @property {Object} match - Match object for extracting URL parameters.
+ * @property {Object} history - Application routing history object.
  */
 OntologyDetailView.propTypes = {
   match: PropTypes.object.isRequired,

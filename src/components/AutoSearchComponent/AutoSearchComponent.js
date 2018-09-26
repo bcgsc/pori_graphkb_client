@@ -282,21 +282,21 @@ class AutoSearchComponent extends Component {
 
 /**
  * @namespace
- * @param {number} limit - database return record limit.
- * @param {string} name - name of input for event parsing.
- * @param {string} endpoint - api endpoint identifier.
- * @param {string} property - api property identifier.
- * @param {string} placeholder - placeholder for text input.
- * @param {string} value - specified value for two way binding.
- * @param {string} label - label for text input.
- * @param {bool} required - required flag for text input indicator.
- * @param {bool} error - error flag for text input.
- * @param {func} onChange - parent method for handling change events
- * @param {function} children - Function that yields the component for
+ * @property {number} limit - database return record limit.
+ * @property {string} name - name of input for event parsing.
+ * @property {string} endpoint - api endpoint identifier.
+ * @property {string} property - api property identifier.
+ * @property {string} placeholder - placeholder for text input.
+ * @property {string} value - specified value for two way binding.
+ * @property {string} label - label for text input.
+ * @property {bool} required - required flag for text input indicator.
+ * @property {bool} error - error flag for text input.
+ * @property {func} onChange - parent method for handling change events
+ * @property {function} children - Function that yields the component for
  * display display query results.
- * @param {bool} disabled - disabled flag for text input.
- * @param {Object} endAdornment - component to adorn the end of input text field with.
- * @param {bool} dense - dense variant flag. If true, font sizes are decreased.
+ * @property {bool} disabled - disabled flag for text input.
+ * @property {Object} endAdornment - component to adorn the end of input text field with.
+ * @property {bool} dense - dense variant flag. If true, font sizes are decreased.
  *
  */
 AutoSearchComponent.propTypes = {

@@ -38,7 +38,7 @@ class AddOntologyView extends Component {
 
 /**
  * @namespace
- * @param {Object} history - history state object.
+ * @property {Object} history - history state object.
  */
 AddOntologyView.propTypes = {
   history: PropTypes.object.isRequired,

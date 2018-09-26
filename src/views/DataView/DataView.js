@@ -474,8 +474,8 @@ class DataView extends Component {
 
 /**
  * @namespace
- * @param {Object} history - Application routing history object.
- * @param {Object} classes - Classes provided by the @material-ui withStyles function
+ * @property {Object} history - Application routing history object.
+ * @property {Object} classes - Classes provided by the @material-ui withStyles function
  */
 DataView.propTypes = {
   history: PropTypes.object.isRequired,

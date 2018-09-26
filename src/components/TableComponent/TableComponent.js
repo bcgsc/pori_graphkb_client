@@ -970,33 +970,33 @@ class TableComponent extends Component {
 
 /**
  * @namespace
- * @param {Object} data - Object containing query results.
- * @param {Array} displayed - Array of displayed nodes.
- * @param {function} handleCheckAll - Method triggered when all rows are
+ * @property {Object} data - Object containing query results.
+ * @property {Array} displayed - Array of displayed nodes.
+ * @property {function} handleCheckAll - Method triggered when all rows are
  * checked.
- * @param {function} handleNodeEditStart - Method triggered when user
+ * @property {function} handleNodeEditStart - Method triggered when user
  * requests to edit a node.
- * @param {function} handleClick - Method triggered when a row is clicked.
- * @param {function} handleCheckbox - Method triggered when a single row is
+ * @property {function} handleClick - Method triggered when a row is clicked.
+ * @property {function} handleCheckbox - Method triggered when a single row is
  * checked.
- * @param {function} handleHideSelected - Method for hiding selected rows
+ * @property {function} handleHideSelected - Method for hiding selected rows
  * from the view.
- * @param {function} handleShowAllNodes - Method for returning previously
+ * @property {function} handleShowAllNodes - Method for returning previously
  * hidden rows to the view.
- * @param {function} handleNewQuery - Handles new querying with new
+ * @property {function} handleNewQuery - Handles new querying with new
  * parameters.
- * @param {function} handleGraphRedirect - Handles routing to graph
+ * @property {function} handleGraphRedirect - Handles routing to graph
  * component.
- * @param {function} handleSubsequentPagination - parent function to handle
+ * @property {function} handleSubsequentPagination - parent function to handle
  * subsequent api calls.
- * @param {Array} hidden - Array of hidden nodes.
- * @param {Array} allProps - all non-base columns represented throughout the
+ * @property {Array} hidden - Array of hidden nodes.
+ * @property {Array} allProps - all non-base columns represented throughout the
  * query results.
- * @param {boolean} moreResults - Flag to tell component there could be more
+ * @property {boolean} moreResults - Flag to tell component there could be more
  * results to the query.
- * @param {boolean} completedNext - Flag for whether or not component has
+ * @property {boolean} completedNext - Flag for whether or not component has
  * completed the current subsequent query.
- * @param {Array} storedFilters - filters stored for current session.
+ * @property {Array} storedFilters - filters stored for current session.
  * Accessed on component init and stored on navigate to table.
  */
 TableComponent.propTypes = {

@@ -57,6 +57,7 @@ const AUTO_SPACE_COEFFICIENT = 2.8;
 const SNACKBAR_AUTOHIDE_DURATION = 6000;
 const MARKER_ID = 'endArrow';
 const DIALOG_FADEOUT_TIME = 150;
+const HEAVILY_CONNECTED = 10;
 
 /**
  * Component for displaying query results in force directed graph form.
@@ -431,7 +432,7 @@ class GraphComponent extends Component {
     if (expandable[node.getId()] && data[node.getId()]) {
       if (data[node.getId()]
         .getEdges()
-        .filter(edge => !(links.find(l => l.getId() === edge['@rid']))).length > 10
+        .filter(edge => !(links.find(l => l.getId() === edge['@rid']))).length > HEAVILY_CONNECTED
       ) {
         this.setState({ expansionDialogOpen: true, expandNode: data[node.getId()] });
       } else {

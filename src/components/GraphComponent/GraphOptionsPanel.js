@@ -221,6 +221,7 @@ export default class GraphOptionsPanel extends Component {
                       name="linksLegend"
                       checked={
                         graphOptions.linksLegend
+                        && graphOptions.linksColor
                         && !linkLegendDisabled}
                       disabled={linkLegendDisabled || !graphOptions.linksColor}
                     />

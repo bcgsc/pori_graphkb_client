@@ -207,12 +207,12 @@ class GraphComponent extends Component {
           if (typeof l.source === 'object') {
             source = l.source.data['@rid'];
           } else {
-            source = l.source;
+            ({ source } = l);
           }
           if (typeof l.target === 'object') {
             target = l.target.data['@rid'];
           } else {
-            target = l.target;
+            ({ target } = l);
           }
           return new GraphLink(l.data, source, target);
         });
@@ -276,16 +276,16 @@ class GraphComponent extends Component {
 
     if (!d3.event.active) simulation.alphaTarget(0.3).restart();
 
-    function dragged() {
-      node.fx = d3.event.x;
-      node.fy = d3.event.y;
-    }
+    const dragged = () => {
+      node.fx = d3.event.x; // eslint-disable-line no-param-reassign
+      node.fy = d3.event.y; // eslint-disable-line no-param-reassign
+    };
 
-    function ended() {
+    const ended = () => {
       if (!d3.event.active) simulation.alphaTarget(0);
-      node.fx = null;
-      node.fy = null;
-    }
+      node.fx = null; // eslint-disable-line no-param-reassign
+      node.fy = null; // eslint-disable-line no-param-reassign
+    };
 
     d3.event
       .on('drag', dragged)
@@ -458,7 +458,7 @@ class GraphComponent extends Component {
     const { data, handleNewColumns } = this.props;
 
     if (data[node['@rid'] || data[node.getId()]]) {
-      node = data[node['@rid'] || data[node.getId()]];
+      node = data[node['@rid'] || data[node.getId()]]; // eslint-disable-line no-param-reassign
     } else {
       // Node properties haven't been processed.
       handleNewColumns(node);
@@ -880,12 +880,12 @@ class GraphComponent extends Component {
         if (typeof l.source === 'object') {
           source = l.source.data['@rid'];
         } else {
-          source = l.source;
+          ({ source } = l);
         }
         if (typeof l.target === 'object') {
           target = l.target.data['@rid'];
         } else {
-          target = l.target;
+          ({ target } = l);
         }
         return source !== target;
       }).length === 0

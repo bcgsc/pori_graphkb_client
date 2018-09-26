@@ -14,8 +14,7 @@ import OntologyFormComponent from '../../components/OntologyFormComponent/Ontolo
 class AddOntologyView extends Component {
   constructor(props) {
     super(props);
-
-    this.handleFinish = this.handleFinish.bind(this);
+    this.handleNodeFinish = this.handleNodeFinish.bind(this);
   }
 
   /**

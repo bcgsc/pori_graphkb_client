@@ -116,6 +116,10 @@ class App extends Component {
     this.setState({ loggedIn: true });
   }
 
+  /**
+   * Handle route navigation.
+   * @param {string} route - path string.
+   */
   handleSideBarNavigate(route) {
     history.push(route);
     this.setState({ drawerOpen: false });

@@ -1,4 +1,3 @@
-
 /**
  * @module /components/VariantParserComponent
  */
@@ -237,13 +236,19 @@ class VariantParserComponent extends Component {
         }
       });
       shorthand = new kbp.variant.VariantNotation(filteredVariant);
+      if (shorthand.break1Repr) {
+        variant.break1Repr = shorthand.break1Repr;
+      }
+      if (shorthand.break2Repr) {
+        variant.break2Repr = shorthand.break2Repr;
+      }
       shorthand = kbp.variant.parse(shorthand.toString());
       this.setState({ invalidFlag: '' });
     } catch (error) {
       this.updateErrorFields(error);
       this.setState({ invalidFlag: error.message });
     } finally {
-      this.setState({ shorthand: shorthand.toString() });
+      this.setState({ shorthand: shorthand.toString(), variant });
     }
   }
 

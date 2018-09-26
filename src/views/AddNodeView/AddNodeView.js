@@ -14,7 +14,6 @@ import NodeFormComponent from '../../components/NodeFormComponent/NodeFormCompon
 class AddNodeView extends Component {
   constructor(props) {
     super(props);
-
     this.handleNodeFinish = this.handleNodeFinish.bind(this);
   }
 

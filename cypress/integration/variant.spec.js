@@ -29,9 +29,9 @@ describe('Variant Form Test', () => {
 
     cy.get('#break2 li:first input')
       .should('have.value', 'CytobandPosition');
-    cy.get('#break2 input[name=minorBand]').should('have.value', break1.minorBand);
-    cy.get('#break2 input[name=majorBand]').should('have.value', break1.majorBand);
-    cy.get('#break2 textarea[name=arm]').should('have.value', break1.arm);
+    cy.get('#break2 input[name=minorBand]').should('have.value', break2.minorBand);
+    cy.get('#break2 input[name=majorBand]').should('have.value', break2.majorBand);
+    cy.get('#break2 textarea[name=arm]').should('have.value', break2.arm);
   });
 
   it('Editing form', () => {

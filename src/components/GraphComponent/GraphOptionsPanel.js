@@ -200,7 +200,6 @@ export default class GraphOptionsPanel extends Component {
                   onChange={handleGraphOptionsChange}
                   value={graphOptions.linksColor}
                   disabled={linkLegendDisabled}
-
                 >
                   <MenuItem value="">None</MenuItem>
                   <MenuItem value="@class">Class</MenuItem>
@@ -223,7 +222,7 @@ export default class GraphOptionsPanel extends Component {
                       checked={
                         graphOptions.linksLegend
                         && !linkLegendDisabled}
-                      disabled={linkLegendDisabled}
+                      disabled={linkLegendDisabled || !graphOptions.linksColor}
                     />
                   )}
                   label="Show Links Coloring Legend"

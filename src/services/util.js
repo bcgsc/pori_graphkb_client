@@ -7,11 +7,10 @@ import * as jc from 'json-cycle';
 import config from '../config.json';
 
 const { DEFAULT_PROPS, PERMISSIONS } = config;
-const { PALLETE_SIZES } = config.GRAPH_DEFAULTS;
+const { PALLETE_SIZE } = config.GRAPH_DEFAULTS;
 const { NODE_INIT_RADIUS } = config.GRAPH_PROPERTIES;
 const ACRONYMS = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
 const GRAPH_OBJECTS_KEY = 'graphObjects';
-const GRAPH_OPTIONS_KEY = 'graphOptions';
 
 /**
  * Un-camelCase's input string and capitalizes each word. Also applies
@@ -197,40 +196,17 @@ const parsePayload = (form, editableProps, exceptions) => {
  * @param {string} type - object type ['link', 'node'].
  */
 const getPallette = (n, type) => {
-  const baseName = `${type.toUpperCase().slice(0, type.length - 1)}_COLORS_`;
-  const maxPalletteSize = PALLETE_SIZES[PALLETE_SIZES.length - 1];
-  for (let i = 0; i < PALLETE_SIZES.length; i += 1) {
-    if (n <= PALLETE_SIZES[i]) {
-      return config.GRAPH_DEFAULTS[baseName + PALLETE_SIZES[i]];
-    }
+  const baseName = `${type.toUpperCase().slice(0, type.length - 1)}_COLORS`;
+  if (n <= PALLETE_SIZE) {
+    return config.GRAPH_DEFAULTS[baseName];
   }
 
-  const list = config.GRAPH_DEFAULTS[baseName + maxPalletteSize];
-  for (let i = maxPalletteSize; i < n; i += 1) {
-    const color = `000000${Math.round(Math.random() * (255 ** 3)).toString(16)}`;
+  const list = config.GRAPH_DEFAULTS[baseName];
+  for (let i = PALLETE_SIZE; i < n; i += 1) {
+    const color = Math.round(Math.random() * (255 ** 3)).toString(16);
     list.push(`#${color.substr(color.length - 6)}`);
   }
   return list;
-};
-
-/**
- * Loads graph options state into localstorage.
- * @param {Object} data - graph options data.
- */
-const loadGraphOptions = (data) => {
-  localStorage.setItem(GRAPH_OPTIONS_KEY, JSON.stringify(data));
-};
-
-/**
- * Retrieves stored graph options data from localstorage.
- */
-const getGraphOptions = () => {
-  const data = localStorage.getItem(GRAPH_OPTIONS_KEY);
-  if (data) {
-    const obj = JSON.parse(data);
-    return obj;
-  }
-  return null;
 };
 
 /**
@@ -256,48 +232,6 @@ const getGraphData = (search) => {
     }
   }
   return null;
-};
-
-/**
- * Updates valid properties and color mappings for graph objects.
- * @param {Array} newColumns - Current list of valid properties
- * @param {Object} node - new node object to be processed.
- * @param {Object} propsMap - Property map containing color mappings.
- */
-const loadColorProps = (newColumns, node, propsMap) => {
-  // Iterate over all props.
-  newColumns.forEach((prop) => {
-    let obj = node;
-    let key = prop;
-
-    // Nested prop condition
-    if (prop.includes('.')) {
-      key = prop.split('.')[1];
-      obj = node[prop.split('.')[0]] || {};
-    }
-
-    if (obj[key] && (obj[key].length < 50 || key === 'name')
-      && !Array.isArray(obj[key])
-    ) {
-      if (propsMap.nodes[prop] === undefined) {
-        propsMap.nodes[prop] = [obj[key]];
-      } else if (
-        propsMap.nodes[prop] // If null, fails here
-        && !propsMap.nodes[prop].includes(obj[key])
-      ) {
-        propsMap.nodes[prop].push(obj[key]);
-      }
-    } else if (propsMap.nodes[prop] && !propsMap.nodes[prop].includes('null')) {
-      // This null represents nodes that do not contain specified property.
-      propsMap.nodes[prop].push('null');
-    }
-    // Permanently removes certain properties from being eligible to display
-    // due to content length.
-    if (obj[key] && obj[key].length >= 50 && key !== 'name') {
-      propsMap.nodes[prop] = null;
-    }
-  });
-  return propsMap;
 };
 
 /**
@@ -400,6 +334,11 @@ const isAbstract = (linkedClass, schema) => Object.values(schema)
 const getSubClasses = (abstractClass, schema) => Object.values(schema)
   .filter(kbClass => kbClass.inherits.includes(abstractClass));
 
+/**
+ * Casts a value to string form with minimal formatting. Sets the value to
+ * 'null' if the value is null or undefined.
+ * @param {any} obj - Object to be formatted.
+ */
 const castToExist = (obj) => {
   if (Array.isArray(obj)) {
     if (obj.length > 0) {
@@ -418,11 +357,8 @@ export default {
   getTSVRepresentation,
   parsePayload,
   getPallette,
-  getGraphOptions,
-  loadGraphOptions,
   loadGraphData,
   getGraphData,
-  loadColorProps,
   expanded,
   positionInit,
   getColor,

@@ -11,9 +11,9 @@ describe('Node Form Test', () => {
     cy.visit('/add');
     cy.contains('Disease');
     cy.get('#submit-btn').should('disabled');
-    cy.get('input[name=source][type=text]').type('test').wait(100);
+    cy.get('input[name=source][type=text]').type('ncit').wait(100);
     cy.get('div.droptions ul li:first').click();
-    cy.get('textarea[name=sourceId][type=text]').type('test').wait(100);
+    cy.get('textarea[name=sourceId][type=text]').type('ncit').wait(100);
     cy.get('#submit-btn').should('not.disabled');
 
     cy.get('input[name=subset]').type('cypress{enter}');
@@ -22,7 +22,7 @@ describe('Node Form Test', () => {
       if (i === 1) {
         cy.wrap(resourceSelect).click();
         cy.get('div[role=document] li:first').click();
-        cy.contains('test');
+        cy.contains('ncit');
         cy.get('#relationship-type div[role=button]').click();
         cy.contains('SubClassOf').click();
         cy.contains('SubClassOf');
@@ -47,9 +47,9 @@ describe('Node Form Test', () => {
     cy.visit('/add');
     cy.contains('Disease');
     cy.get('#submit-btn').should('disabled');
-    cy.get('input[name=source][type=text]').type('test').wait(100);
+    cy.get('input[name=source][type=text]').type('ncit').wait(100);
     cy.get('div.droptions ul li:first').click();
-    cy.get('textarea[name=sourceId][type=text]').type('test').wait(100);
+    cy.get('textarea[name=sourceId][type=text]').type('ncit').wait(100);
     cy.get('#submit-btn').should('not.disabled');
     cy.get('#submit-btn').click();
     cy.get('path[d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"]')
@@ -59,7 +59,7 @@ describe('Node Form Test', () => {
   it('Edit test', () => {
     cy.get('button.advanced-button').click();
     cy.url().should('includes', '/query/advanced');
-    cy.get('input[name=source]').type('test');
+    cy.get('input[name=source]').type('ncit');
     cy.get('div.droptions li:first').click();
     cy.get('#search-button').click();
     cy.get('button.detail-btn:first').click();

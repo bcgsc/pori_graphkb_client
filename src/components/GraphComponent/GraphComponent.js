@@ -1003,6 +1003,10 @@ class GraphComponent extends Component {
         onClose={this.handleDialogClose('expansionDialogOpen')}
         maxWidth="md"
         fullWidth
+        classes={{
+          root: 'expansion-root',
+          paper: 'expansion-dialog',
+        }}
       >
         <DialogTitle>Select Edges to Expand</DialogTitle>
         <DialogContent>

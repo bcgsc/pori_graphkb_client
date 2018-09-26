@@ -167,9 +167,6 @@ $toolbar-height: 64px;
     display: grid;
     grid-template-rows: auto;
     grid-row-gap: 8px;
-    @media (max-width: 768px) {
-        max-width: unset;
-    }
     .close-btn {
         display: flex;
         flex-direction: row-reverse;
@@ -194,13 +191,51 @@ $toolbar-height: 64px;
     border-radius: 4px;
     cursor: pointer;
 }
+
 .expand-links-types{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    
 }
 .expand-links-list{
     column-count: 3;
     .expand-links-link{
         display: inline-flex;
+    }
+}
+
+@media (max-width: 768px) {
+    .legend-wrapper {
+        max-width: unset;
+    }
+    .expand-links-types {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .expand-links-list {
+        column-count: 2;
+    }
+}
+@media(max-width: 650px) {
+    .expand-links-list {
+        column-count: unset;
+    }
+}
+@media(max-width: 400px) {
+    .expansion-root{
+        .expansion-dialog {
+            margin: 0;
+            max-height: 100vh;
+            height: 100vh;
+            border-radius: 0;
+        }
+
+        .expand-links-types {
+            grid-template-columns: repeat(1, 1fr);
+            >li {
+                button {
+                    margin: auto;
+                }
+            }
+        }
     }
 }

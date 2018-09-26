@@ -46,6 +46,8 @@ describe('Graph View Test', () => {
     let nodes = 1;
     cy.get('circle.node').click({ force: true });
     cy.contains('(Expand)').click({ force: true }).then(() => {
+      cy.get('#expand-dialog-submit').click();
+      cy.wait(150);
       cy.get('circle').then((array) => {
         expect(array.length).to.be.greaterThan(nodes);
         nodes = array.length;
@@ -136,6 +138,8 @@ describe('Graph View Test', () => {
     getClass('Disease');
     cy.get('circle.node').click({ force: true });
     cy.contains('(Expand)').click({ force: true });
+    cy.get('#expand-dialog-submit').click();
+    cy.wait(150);
 
     cy.get('#graph-options-btn').click();
     cy.contains('Show Nodes Coloring Legend').click();
@@ -150,6 +154,8 @@ describe('Graph View Test', () => {
             if (text === 'polyp') {
               cy.wrap(node).click({ force: true });
               cy.contains('(Expand)').click({ force: true });
+              cy.get('#expand-dialog-submit').click({ force: true });
+              cy.wait(150);
               cy.contains('Too many subgroups, choose new coloring property.');
               cy.wait(6500);
               cy.contains('Too many subgroups, choose new coloring property.').should('not.exist');
@@ -166,6 +172,8 @@ describe('Graph View Test', () => {
     getClass('Disease');
     cy.get('circle.node').click({ force: true });
     cy.contains('(Expand)').click({ force: true });
+    cy.get('#expand-dialog-submit').click();
+    cy.wait(150);
     cy.get('circle.node').then((nodes) => {
       /* eslint-disable no-unused-expressions */
       expect(localStorage.getItem('graphObjects')).to.not.be.null;

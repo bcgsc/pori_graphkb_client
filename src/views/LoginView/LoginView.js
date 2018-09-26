@@ -112,7 +112,6 @@ class LoginView extends Component {
             </span>
           )}
         />
-
         <form className="login-form" onSubmit={this.handleSubmit}>
           <TextField
             className="login-input"

@@ -282,6 +282,7 @@ class FormTemplater extends Component {
 }
 
 /**
+ * @namespace
  * @param {Object} schema - Knowledgebase db schema.
  * @param {function} onChange - Model updating function
  * @param {Object} model - Model object.

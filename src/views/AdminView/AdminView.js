@@ -40,7 +40,6 @@ import {
   ExpansionPanelSummary,
   ExpansionPanelDetails,
 } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
 import PersonIcon from '@material-ui/icons/Person';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
@@ -970,6 +969,4 @@ class AdminView extends Component {
   }
 }
 
-AdminView.propTypes = {};
-
-export default withStyles({})(AdminView);
+export default AdminView;

@@ -968,82 +968,53 @@ class TableComponent extends Component {
   }
 }
 
+/**
+ * @namespace
+ * @param {Object} data - Object containing query results.
+ * @param {Array} displayed - Array of displayed nodes.
+ * @param {function} handleCheckAll - Method triggered when all rows are
+ * checked.
+ * @param {function} handleNodeEditStart - Method triggered when user
+ * requests to edit a node.
+ * @param {function} handleClick - Method triggered when a row is clicked.
+ * @param {function} handleCheckbox - Method triggered when a single row is
+ * checked.
+ * @param {function} handleHideSelected - Method for hiding selected rows
+ * from the view.
+ * @param {function} handleShowAllNodes - Method for returning previously
+ * hidden rows to the view.
+ * @param {function} handleNewQuery - Handles new querying with new
+ * parameters.
+ * @param {function} handleGraphRedirect - Handles routing to graph
+ * component.
+ * @param {function} handleSubsequentPagination - parent function to handle
+ * subsequent api calls.
+ * @param {Array} hidden - Array of hidden nodes.
+ * @param {Array} allProps - all non-base columns represented throughout the
+ * query results.
+ * @param {boolean} moreResults - Flag to tell component there could be more
+ * results to the query.
+ * @param {boolean} completedNext - Flag for whether or not component has
+ * completed the current subsequent query.
+ * @param {Array} storedFilters - filters stored for current session.
+ * Accessed on component init and stored on navigate to table.
+ */
 TableComponent.propTypes = {
-  /**
-   * @param {Object} data - Object containing query results.
-   */
   data: PropTypes.object.isRequired,
-  /**
-   * @param {Array} displayed - Array of displayed nodes.
-   */
   displayed: PropTypes.array.isRequired,
-  /**
-   * @param {function} handleCheckAll - Method triggered when all rows are
-   * checked.
-   */
   handleCheckAll: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleNodeEditStart - Method triggered when user
-   * requests to edit a node.
-   */
   handleNodeEditStart: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleClick - Method triggered when a row is clicked.
-   */
   handleClick: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleCheckbox - Method triggered when a single row is
-   * checked.
-   */
   handleCheckbox: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleHideSelected - Method for hiding selected rows
-   * from the view.
-   */
   handleHideSelected: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleShowAllNodes - Method for returning previously
-   * hidden rows to the view.
-   */
   handleShowAllNodes: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleNewQuery - Handles new querying with new
-   * parameters.
-   */
   handleNewQuery: PropTypes.func,
-  /**
-   * @param {function} handleGraphRedirect - Handles routing to graph
-   * component.
-   */
   handleGraphRedirect: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleSubsequentPagination - parent function to handle
-   * subsequent api calls.
-   */
   handleSubsequentPagination: PropTypes.func,
-  /**
-   * @param {Array} hidden - Array of hidden nodes.
-   */
   hidden: PropTypes.array,
-  /**
-   * @param {Array} allProps - all non-base columns represented throughout the
-   * query results.
-   */
   allProps: PropTypes.array,
-  /**
-   * @param {boolean} moreResults - Flag to tell component there could be more
-   * results to the query.
-   */
   moreResults: PropTypes.bool,
-  /**
-   * @param {boolean} completedNext - Flag for whether or not component has
-   * completed the current subsequent query.
-   */
   completedNext: PropTypes.bool.isRequired,
-  /**
-   * @param {Array} storedFilters - filters stored for current session.
-   * Accessed on component init and stored on navigate to table.
-   */
   storedFilters: PropTypes.array,
 };
 

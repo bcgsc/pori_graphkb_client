@@ -240,10 +240,11 @@ class AdvancedQueryView extends Component {
   }
 }
 
+/**
+ * @namespace
+ * @param {object} history - Application history state object.
+ */
 AdvancedQueryView.propTypes = {
-  /**
-   * @param {object} history - Application history state object.
-   */
   history: PropTypes.object.isRequired,
 };
 

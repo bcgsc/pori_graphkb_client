@@ -1267,44 +1267,29 @@ class GraphComponent extends Component {
   }
 }
 
+/**
+ * @namespace
+ * @param {function} handleClick - Parent component method triggered when a
+ * graph object is clicked.
+ * @param {Object} data - Parent state data.
+ * @param {function} handleDetailDrawerOpen - Method to handle opening of detail drawer.
+ * @param {function} handleDetailDrawerClose - Method to handle closing of detail drawer.
+ * @param {function} handleTableRedirect - Method to handle a redirect to the table view.
+ * @param {function} handleNewColumns - Updates valid properties in parent state.
+ * @param {Object} schema - Database schema.
+ * @param {Object} detail - record ID of node currently selected for detail viewing.
+ * @param {Array} allProps - list of all unique properties on all nodes returned in
+ * initial query.
+ */
 GraphComponent.propTypes = {
-  /**
-   * @param {function} handleClick - Parent component method triggered when a
-   * graph object is clicked.
-   */
   handleClick: PropTypes.func,
-  /**
-   * @param {Object} data - Parent state data.
-   */
   data: PropTypes.object.isRequired,
-  /**
-   * @param {function} handleDetailDrawerOpen - Method to handle opening of detail drawer.
-   */
   handleDetailDrawerOpen: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleDetailDrawerClose - Method to handle closing of detail drawer.
-   */
   handleDetailDrawerClose: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleTableRedirect - Method to handle a redirect to the table view.
-   */
   handleTableRedirect: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleNewColumns - Updates valid properties in parent state.
-   */
   handleNewColumns: PropTypes.func.isRequired,
-  /**
-   * @param {Object} schema - Database schema.
-   */
   schema: PropTypes.object.isRequired,
-  /**
-   * @param {Object} detail - record ID of node currently selected for detail viewing.
-   */
   detail: PropTypes.object,
-  /**
-   * @param {Array} allProps - list of all unique properties on all nodes returned in
-   * initial query.
-   */
   allProps: PropTypes.array,
 };
 

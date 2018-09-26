@@ -98,47 +98,24 @@ class GraphNodeDisplay extends PureComponent {
 }
 
 /**
- * @param {bool} expandable - Expandable flag.
-
- * @param {number} r - Node radius.
- * @param {Object} simulation - parent simulation that node is a member of.
- * @param {Array} actionsRing - Array of svg components making up the node actions ring
- * surrounding a selected node.
- * @param {string} labelKey - property to display as label.
- * @param {Object} detail - node identifier for node who's details are currently displayed.
+ * @namespace
+ * @param {Object} node - Node to be rendered.
+ * @param {function} handleClick - Parent method on node click event.
+ * @param {string} color - Color of node.
+ * @param {function} applyDrag - Function to apply drag functionality to node.
+ * @param {string} labelKey - Property to label node by.
+ * @param {Object} actionsNode - Node decorator object.
+ * @param {Object} detail - Node currently opened in detail drawer.
+ * @param {string} filter - current filter string value.
  */
 GraphNodeDisplay.propTypes = {
-  /**
-   * @param {Object} node - Node to be rendered.
-   */
   node: PropTypes.object.isRequired,
-  /**
-   * @param {function} handleClick - Parent method on node click event.
-   */
   handleClick: PropTypes.func,
-  /**
-   * @param {string} color - Color of node.
-   */
   color: PropTypes.string,
-  /**
-   * @param {function} applyDrag - Function to apply drag functionality to node.
-   */
   applyDrag: PropTypes.func,
-  /**
-   * @param {string} labelKey - Property to label node by.
-   */
   labelKey: PropTypes.string,
-  /**
-   * @param {Object} actionsNode - Node decorator object.
-   */
   actionsNode: PropTypes.object,
-  /**
-   * @param {Object} detail - Node currently opened in detail drawer.
-   */
   detail: PropTypes.object,
-  /**
-   * @param {string} filter - current filter string value.
-   */
   filter: PropTypes.string,
 };
 

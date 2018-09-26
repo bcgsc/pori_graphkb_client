@@ -280,63 +280,39 @@ class AutoSearchComponent extends Component {
   }
 }
 
+/**
+ * @namespace
+ * @param {number} limit - database return record limit.
+ * @param {string} name - name of input for event parsing.
+ * @param {string} endpoint - api endpoint identifier.
+ * @param {string} property - api property identifier.
+ * @param {string} placeholder - placeholder for text input.
+ * @param {string} value - specified value for two way binding.
+ * @param {string} label - label for text input.
+ * @param {bool} required - required flag for text input indicator.
+ * @param {bool} error - error flag for text input.
+ * @param {func} onChange - parent method for handling change events
+ * @param {function} children - Function that yields the component for
+ * display display query results.
+ * @param {bool} disabled - disabled flag for text input.
+ * @param {Object} endAdornment - component to adorn the end of input text field with.
+ * @param {bool} dense - dense variant flag. If true, font sizes are decreased.
+ *
+ */
 AutoSearchComponent.propTypes = {
-  /**
-   * @param {number} limit - database return record limit.
-   */
   limit: PropTypes.number,
-  /**
-   * @param {string} name - name of input for event parsing.
-   */
   name: PropTypes.string.isRequired,
-  /**
-   * @param {string} endpoint - api endpoint identifier.
-   */
   endpoint: PropTypes.string,
-  /**
-   * @param {string} property - api property identifier.
-   */
   property: PropTypes.array,
-  /**
-   * @param {string} placeholder - placeholder for text input.
-   */
   placeholder: PropTypes.string,
-  /**
-   * @param {string} value - specified value for two way binding.
-   */
   value: PropTypes.string,
-  /**
-   * @param {string} label - label for text input.
-   */
   label: PropTypes.string,
-  /**
-   * @param {bool} required - required flag for text input indicator.
-   */
   required: PropTypes.bool,
-  /**
-   * @param {bool} error - error flag for text input.
-   */
   error: PropTypes.bool,
-  /**
-   * @param {func} onChange - parent method for handling change events
-   */
   onChange: PropTypes.func,
-  /**
-   * @param {function} children - Function that yields the component for
-   * display display query results.
-   */
   children: PropTypes.func,
-  /**
-   * @param {bool} disabled - disabled flag for text input.
-   */
   disabled: PropTypes.bool,
-  /**
-   * @param {Object} endAdornment - component to adorn the end of input text field with.
-   */
   endAdornment: PropTypes.object,
-  /**
-   * @param {bool} dense - dense variant flag. If true, font sizes are decreased.
-   */
   dense: PropTypes.bool,
 };
 

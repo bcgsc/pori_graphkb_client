@@ -415,6 +415,7 @@ class VariantParserComponent extends Component {
                 pairs={{
                   break1: ['break1Start', 'break1End'],
                   break2: ['break2Start', 'break2End'],
+                  untemplated: ['untemplatedSeq', 'untemplatedSeqSize'],
                 }}
               />
             )

@@ -81,7 +81,7 @@ class FormTemplater extends Component {
             </FormControl>
             {description && (
               <Tooltip title={description}>
-                <HelpIcon color="primary" className="form-templater-help-icon" />
+                <HelpIcon color="primary" className="form-templater-help-icon radio" />
               </Tooltip>
             )}
           </ListItem>

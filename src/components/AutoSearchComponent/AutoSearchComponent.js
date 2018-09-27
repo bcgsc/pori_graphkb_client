@@ -346,7 +346,7 @@ AutoSearchComponent.defaultProps = {
   ),
   onChange: null,
   disabled: false,
-  endAdornment: <SearchIcon />,
+  endAdornment: <SearchIcon style={{ cursor: 'default' }} />,
 };
 
 export default AutoSearchComponent;

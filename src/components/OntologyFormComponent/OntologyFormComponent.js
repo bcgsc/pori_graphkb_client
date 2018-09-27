@@ -27,6 +27,9 @@ import {
   LinearProgress,
   Drawer,
   CircularProgress,
+  ListItem,
+  ListItemText,
+  Divider,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
@@ -640,34 +643,40 @@ class OntologyFormComponent extends Component {
                 <Typography variant="title">
                   Basic Parameters
                 </Typography>
-                {variant === 'edit' ? (
-                  <div style={{ padding: '8px 24px' }}>
-                    <Typography variant="subheading">
-                      Class:
-                    </Typography>
-                    <Typography variant="caption">
-                      {originalNode['@class']}
-                    </Typography>
-                  </div>
-                )
-                  : (
-                    <div className="class-select">
-                      <ResourceSelectComponent
-                        value={newNodeClass}
-                        onChange={this.handleClassChange}
-                        name="newNodeClass"
-                        label="Class"
-                        resources={api.getOntologies(schema)}
-                      >
-                        {resource => (
-                          <MenuItem key={resource.name} value={resource.name}>
-                            {resource.name}
-                          </MenuItem>
-                        )}
-                      </ResourceSelectComponent>
-                    </div>
-                  )}
                 <List component="nav">
+                  {variant === 'edit' ? (
+                    <React.Fragment>
+                      <ListItem>
+                        <ListItemText
+                          primary="Class:"
+                          secondary={originalNode['@class']}
+                          secondaryTypographyProps={{ variant: 'title', color: 'default' }}
+                        />
+                      </ListItem>
+                      <Divider />
+                    </React.Fragment>
+                  )
+                    : (
+                      <React.Fragment>
+                        <ListItem>
+                          <ResourceSelectComponent
+                            value={newNodeClass}
+                            onChange={this.handleClassChange}
+                            name="newNodeClass"
+                            label="Class"
+                            variant="filled"
+                            resources={api.getOntologies(schema)}
+                          >
+                            {resource => (
+                              <MenuItem key={resource.name} value={resource.name}>
+                                {resource.name}
+                              </MenuItem>
+                            )}
+                          </ResourceSelectComponent>
+                        </ListItem>
+                        <Divider />
+                      </React.Fragment>
+                    )}
                   <FormTemplater
                     model={form}
                     kbClass={editableProps}

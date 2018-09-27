@@ -11,6 +11,7 @@ import {
   FormControl,
   Select,
 } from '@material-ui/core';
+import util from '../../services/util';
 
 /**
  * Component to select resources from a list of defined options.
@@ -92,7 +93,7 @@ ResourceSelectComponent.propTypes = {
 ResourceSelectComponent.defaultProps = {
   children: resource => (
     <MenuItem key={resource.name} value={resource['@rid']}>
-      {resource.name}
+      {util.antiCamelCase(resource.name)}
     </MenuItem>
   ),
   resources: [],

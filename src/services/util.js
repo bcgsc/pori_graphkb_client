@@ -9,7 +9,7 @@ import config from '../config.json';
 const { DEFAULT_PROPS, PERMISSIONS } = config;
 const { PALLETE_SIZE } = config.GRAPH_DEFAULTS;
 const { NODE_INIT_RADIUS } = config.GRAPH_PROPERTIES;
-const ACRONYMS = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
+const ACRONYMS = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url', 'cds'];
 const GRAPH_OBJECTS_KEY = 'graphObjects';
 
 /**
@@ -32,7 +32,7 @@ const antiCamelCase = (str) => {
   }
 
   words.forEach((word, i) => {
-    words[i] = word.replace(/[A-Z]/g, match => ` ${match}`).trim();
+    words[i] = word.replace(/[A-Z]+|[0-9]+/g, match => ` ${match}`).trim();
   });
 
   ACRONYMS.forEach((acronym) => {

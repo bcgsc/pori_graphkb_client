@@ -22,13 +22,13 @@ describe('Variant Form Test', () => {
     cy.get('input[name=reference1]').should('have.value', reference1);
 
     cy.get('#break1 li:first input')
-      .should('have.value', 'CytobandPosition');
+      .should('have.value', 'Cytoband Position');
     cy.get('#break1 input[name=minorBand]').should('have.value', break1.minorBand);
     cy.get('#break1 input[name=majorBand]').should('have.value', break1.majorBand);
     cy.get('#break1 textarea[name=arm]').should('have.value', break1.arm);
 
     cy.get('#break2 li:first input')
-      .should('have.value', 'CytobandPosition');
+      .should('have.value', 'Cytoband Position');
     cy.get('#break2 input[name=minorBand]').should('have.value', break2.minorBand);
     cy.get('#break2 input[name=majorBand]').should('have.value', break2.majorBand);
     cy.get('#break2 textarea[name=arm]').should('have.value', break2.arm);
@@ -40,13 +40,13 @@ describe('Variant Form Test', () => {
     cy.get('input[name=reference1]').type('kras');
     cy.get('div.droptions li:first').click();
     cy.get('#break1 li:first div.resource-select').click();
-    cy.get('div li[data-value="ProteinPosition"]').click();
-    cy.contains('ProteinPosition').should('exist');
+    cy.get('div li[data-value="Protein Position"]').click();
+    cy.contains('Protein Position').should('exist');
     cy.wait(500);
     cy.get('#break2 li:first div.resource-select div[role=button]').click();
-    cy.get('div li[data-value="CytobandPosition"]').click();
-    cy.contains('ProteinPosition').should('not.exist');
-    cy.contains('CytobandPosition').should('exist');
+    cy.get('div li[data-value="Cytoband Position"]').click();
+    cy.contains('Protein Position').should('not.exist');
+    cy.contains('Cytoband Position').should('exist');
     cy.contains('cytoband arm must be p or q ()').should('exist');
     cy.get('#break1 textarea[name=arm]').type('p');
     cy.get('#break2 textarea[name=arm]').type('p');

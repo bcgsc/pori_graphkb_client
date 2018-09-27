@@ -19,7 +19,7 @@
     @media (max-width: 768px) {
       column-count: unset;
     }
-    li {
+    >* {
       display: inline-flex;
     }
   }

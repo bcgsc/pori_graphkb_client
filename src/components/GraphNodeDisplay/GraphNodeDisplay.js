@@ -52,8 +52,8 @@ class GraphNodeDisplay extends PureComponent {
 
     const label = node.getLabel(labelKey);
 
-    const faded = (detail && detail['@rid'] !== node.data['@rid'])
-      || (actionsNode && actionsNode.data['@rid'] !== node.data['@rid'])
+    const faded = (detail && detail['@rid'] !== node.getId())
+      || (actionsNode && actionsNode.getId() !== node.getId())
       || (filter && !label.includes(filter.toLowerCase()));
 
     let opacity = DEFAULT_OPACITY;

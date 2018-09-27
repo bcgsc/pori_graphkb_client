@@ -123,10 +123,10 @@ class GraphComponent extends Component {
       edges,
     } = this.props;
     const {
-      expandable,
       graphOptions,
       initState,
     } = this.state;
+    let { expandable } = this.state;
     this.propsMap = new PropsMap();
 
     // Defines what edge keys to look for.
@@ -178,7 +178,7 @@ class GraphComponent extends Component {
         } = initState;
         nodes.forEach((node) => {
           this.propsMap.loadNode(node.data, allProps);
-          util.expanded(expandedEdgeTypes, graphObjects, node.getId(), expandable);
+          expandable = util.expanded(expandedEdgeTypes, graphObjects, node.getId(), expandable);
         });
 
         links.forEach(link => this.propsMap.loadLink(link.data));
@@ -196,7 +196,7 @@ class GraphComponent extends Component {
         delete storedData.filteredSearch;
         nodes = nodes.map((n) => {
           this.propsMap.loadNode(n.data, allProps);
-          util.expanded(expandedEdgeTypes, graphObjects, n.data['@rid'], expandable);
+          expandable = util.expanded(expandedEdgeTypes, graphObjects, n.data['@rid'], expandable);
           return new GraphNode(n.data, n.x, n.y);
         });
 
@@ -229,7 +229,10 @@ class GraphComponent extends Component {
       }
 
       if (storedOptions) {
-        this.setState({ graphOptions: storedOptions }, () => {
+        this.setState({
+          graphOptions: storedOptions,
+          expandable,
+        }, () => {
           this.drawGraph();
           this.updateColors();
         });
@@ -237,7 +240,10 @@ class GraphComponent extends Component {
         if (this.propsMap.nodeProps.length !== 0) {
           graphOptions.nodesLegend = true;
         }
-        this.setState({ graphOptions }, () => {
+        this.setState({
+          graphOptions,
+          expandable,
+        }, () => {
           this.drawGraph();
           this.updateColors();
         });
@@ -421,6 +427,11 @@ class GraphComponent extends Component {
     });
   }
 
+  /**
+   * Determines whether to quickly selected load node neighbors or open the
+   * expansion dialog panel.
+   * @param {Object} node - d3 simulation node to be expanded.
+   */
   handleExpandRequest(node) {
     const {
       expandable,
@@ -1175,6 +1186,7 @@ class GraphComponent extends Component {
       <GraphNodeDisplay
         key={node.getId()}
         node={node}
+        detail={detail}
         labelKey={graphOptions.nodeLabelProp}
         color={util.getColor(node, graphOptions.nodesColor, graphOptions.nodesColors)}
         handleClick={e => this.handleClick(e, node)}

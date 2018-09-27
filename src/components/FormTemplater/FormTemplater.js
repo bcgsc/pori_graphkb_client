@@ -142,7 +142,7 @@ class FormTemplater extends Component {
             >
               {resource => (
                 <MenuItem key={resource.name} value={resource.name}>
-                  {resource.name || 'None'}
+                  {util.antiCamelCase(resource.name || 'None')}
                 </MenuItem>
               )}
             </ResourceSelectComponent>

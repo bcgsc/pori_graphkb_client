@@ -26,9 +26,9 @@ const NOTIFICATION_SPINNER_SIZE = 16;
 const DEFAULT_ORDER = [
   'type',
   'reference1',
-  'reference2',
   'break1Start',
   'break1End',
+  'reference2',
   'break2Start',
   'break2End',
 ];
@@ -391,7 +391,7 @@ class VariantParserComponent extends Component {
               required={required}
               name="shorthand"
               onChange={this.parseString}
-              label="HGVS nomenclature"
+              label="HGVS Nomenclature"
               disabled={disabled}
               value={shorthand}
             />

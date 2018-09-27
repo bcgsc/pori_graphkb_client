@@ -265,11 +265,11 @@ class FormTemplater extends Component {
           && !Object.values(completedpairs).some(g => g.includes(property.name))
         ) {
           fields.push((
-            <div className="form-templater-group-wrapper" key={key} id={key}>
+            <ListItem component="div" className="form-templater-group-wrapper" key={key} id={key}>
               <div className="form-templater-row-grid">
                 {pairs[key].map(k => formatFormField(sortedProps.find(p => p.name === k)))}
               </div>
-            </div>
+            </ListItem>
           ));
           completedpairs[key] = pairs[key].slice();
         }

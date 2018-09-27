@@ -56,7 +56,6 @@ class VariantParserComponent extends Component {
     const schema = await api.getSchema();
     const classSchema = (util.getClass('PositionalVariant', schema)).properties;
     const variant = util.initModel({}, classSchema);
-    console.log(util.initModel({}, classSchema));
     this.setState({
       classSchema,
       variant,
@@ -100,30 +99,30 @@ class VariantParserComponent extends Component {
           }
         });
 
-        console.log(Object.assign(util.initModel({}, classSchema),
-          { ...response, ...linkProps }));
         this.setState({
           variant: Object.assign(util.initModel({}, classSchema),
-            { ...response, ...linkProps }),
-          invalidFlag: '',
-          errorFields: [],
+            { ...response, ...linkProps.props }),
+          invalidFlag: linkProps.invalidFlag,
+          errorFields: linkProps.errorFields,
         });
       } catch (error) {
+        let invalidFlag = '';
         if (error.content && error.content.parsed) {
           Object.keys(error.content.parsed).forEach((key) => {
             if (variant[key] !== undefined && variant[key] !== null) {
               variant[key] = error.content.parsed[key];
             }
           });
+          const linkProps = await this.extractLinkProps(error.content.parsed);
+          ({ invalidFlag } = linkProps);
           this.setState({
-            variant: Object.assign(variant, await this.extractLinkProps(error.content.parsed)),
+            variant: Object.assign(variant, linkProps.props),
+            errorFields: linkProps.errorFields,
           });
         }
 
         this.updateErrorFields(error);
-        this.setState({
-          invalidFlag: error.message,
-        });
+        this.setState({ invalidFlag: error.message || invalidFlag });
       }
     }
   }
@@ -138,6 +137,8 @@ class VariantParserComponent extends Component {
     const { classSchema } = this.state;
     const linkProps = util.getPropOfType(classSchema, 'link');
     const newValues = {};
+    let invalidFlag = '';
+    const errorFields = [];
     await Promise.all(linkProps.map(async (prop) => {
       const { name, linkedClass } = prop;
       if (parsed[name] && linkedClass && linkedClass.route) {
@@ -149,17 +150,13 @@ class VariantParserComponent extends Component {
         } else if (cycled.length > 1) {
           // add multiple modals?
         } else if (cycled.length === 0) {
-          const { errorFields } = this.state;
           errorFields.push(name);
-          this.setState({
-            invalidFlag: `Referenced ${name} term '${parsed[name]}' not found`,
-            errorFields,
-          });
+          invalidFlag = `Referenced ${name} term '${parsed[name]}' not found`;
         }
       }
     }));
 
-    return newValues;
+    return { props: newValues, invalidFlag, errorFields };
   }
 
   /**

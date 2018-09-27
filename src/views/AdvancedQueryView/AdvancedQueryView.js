@@ -199,7 +199,7 @@ class AdvancedQueryView extends Component {
             >
               {resource => (
                 <MenuItem key={resource.name} value={resource.name}>
-                  {resource.name ? resource.name : '---'}
+                  {resource.name ? util.antiCamelCase(resource.name) : '---'}
                 </MenuItem>
               )}
             </ResourceSelectComponent>

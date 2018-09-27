@@ -113,12 +113,13 @@ class FormTemplater extends Component {
               endpoint={endpoint}
               required={mandatory}
               property={!linkedClass ? ['name', 'sourceId'] : undefined}
+              endAdornment={description ? (
+                <Tooltip title={description}>
+                  <HelpIcon color="primary" style={{ cursor: 'default' }} />
+                </Tooltip>
+              ) : undefined}
             />
-            {description && (
-              <Tooltip title={description}>
-                <HelpIcon color="primary" className="form-templater-help-icon" />
-              </Tooltip>
-            )}
+
           </ListItem>
         );
       }
@@ -235,7 +236,7 @@ class FormTemplater extends Component {
               endAdornment: description && (
                 <InputAdornment position="end">
                   <Tooltip title={description}>
-                    <HelpIcon color="primary" />
+                    <HelpIcon color="primary" style={{ cursor: 'default' }} />
                   </Tooltip>
                 </InputAdornment>
               ),

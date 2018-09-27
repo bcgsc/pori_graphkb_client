@@ -306,11 +306,11 @@ class DataView extends Component {
     if (edge) {
       this.setState({ detail: node.data, detailEdge: true });
     } else {
-      if (!data[node.data['@rid']]) {
-        const response = await api.get(`/ontologies/${node.data['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
-        data[node.data['@rid']] = jc.retrocycle(response).result;
+      if (!data[node.getId()]) {
+        const response = await api.get(`/ontologies/${node.getId().slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
+        data[node.getId()] = jc.retrocycle(response).result;
       }
-      this.setState({ detail: data[node.data['@rid']], detailEdge: false });
+      this.setState({ detail: data[node.getId()], detailEdge: false });
     }
   }
 

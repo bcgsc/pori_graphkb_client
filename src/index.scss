@@ -6,3 +6,6 @@ body {
   font-family: sans-serif;
   overflow-x: hidden;
 }
+* {
+  transition: visibility 0.01s;
+}

@@ -14,6 +14,7 @@
   }
 
   .parser-form-grid {
+    display: block;
     column-count: 2;
     min-width: 0;
     @media (max-width: 768px) {

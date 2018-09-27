@@ -251,9 +251,6 @@ class App extends Component {
                       vertical: 'top',
                       horizontal: 'left',
                     }}
-                    PaperProps={{
-                      onMouseLeave: this.handleClose,
-                    }}
                   >
                     <Card className="user-menu">
                       <MenuItem onClick={() => { history.push('/feedback'); this.handleClose(); }}>

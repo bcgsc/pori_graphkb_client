@@ -4,12 +4,15 @@
   .form-templater-row-grid {
     display: grid;
     grid-template-rows: 1fr;
-    grid-template-columns: 50% 50%;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 1.75rem;
     width: 100%;
+    box-sizing: border-box;
     @media (max-width: 425px) {
       display: block;
     }
-    > li{
+    > *{
+      padding: 0;
       display: inline-block !important;
     }
 

@@ -790,7 +790,7 @@ class TableComponent extends Component {
                   />
                 </TableCell>
                 {tableColumns.map((col, i) => {
-                  const filterActive = columnFilterExclusions[i].length > 0;
+                  const filterActive = (columnFilterExclusions[i] || []).length > 0;
                   if (col.checked) {
                     return (
                       <TableCell

@@ -669,7 +669,7 @@ class OntologyFormComponent extends Component {
                           >
                             {resource => (
                               <MenuItem key={resource.name} value={resource.name}>
-                                {resource.name}
+                                {util.antiCamelCase(resource.name)}
                               </MenuItem>
                             )}
                           </ResourceSelectComponent>

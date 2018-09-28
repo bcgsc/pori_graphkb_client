@@ -345,7 +345,7 @@ class AdminView extends Component {
     } else {
       tempUserGroup.permissions[permissionKey][permission] = currValue ? 0 : 1;
     }
-    this.setState({ isNewUserGroup, tempUserGroup });
+    this.setState({ tempUserGroup });
   }
 
   /**
@@ -358,7 +358,7 @@ class AdminView extends Component {
       : (rid, payload) => api.patch(`/usergroups/${rid}`, payload);
 
     const key = isNewUserGroup ? 'newUserGroup' : 'tempUserGroup';
-    const temp = this.state[key];
+    const { [key]: temp } = this.state;
     const rid = (temp['@rid'] || '').slice(1);
     const { userGroups } = this.state;
 

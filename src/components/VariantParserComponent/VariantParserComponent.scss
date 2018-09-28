@@ -22,7 +22,7 @@
     > * {
       display: inline-flex;
       -webkit-column-break-inside: avoid;
-      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
     }
   }
 

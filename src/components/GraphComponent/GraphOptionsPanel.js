@@ -94,6 +94,7 @@ export default class GraphOptionsPanel extends Component {
           classes={{
             paper: 'options-panel-wrapper',
           }}
+          scroll="body"
         >
           <IconButton
             onClick={handleDialogClose('graphOptionsOpen')}
@@ -278,7 +279,6 @@ export default class GraphOptionsPanel extends Component {
                   Collision Radius
                 </InputLabel>
                 <Input
-                  label="Collision Radius"
                   name="collisionRadius"
                   id="collisionRadius"
                   type="number"
@@ -306,6 +306,21 @@ export default class GraphOptionsPanel extends Component {
                     />
                   )}
                   label="Auto Space Nodes"
+                />
+              </div>
+              <div className="graph-input-wrapper">
+                <InputLabel htmlFor="collisionRadius" style={{ fontSize: '0.75rem' }}>
+                  Max Charge Distance
+                </InputLabel>
+                <Input
+                  name="chargeMax"
+                  id="chargeMax"
+                  type="number"
+                  value={graphOptions.chargeMax}
+                  onChange={e => handleGraphOptionsChange(e, true)}
+                  inputProps={{
+                    step: 1,
+                  }}
                 />
               </div>
             </div>

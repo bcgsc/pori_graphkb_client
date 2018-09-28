@@ -26,8 +26,8 @@
   },
   "GRAPH_DEFAULTS": {
     "LINK_STRENGTH": 0.02,
-    "CHARGE_STRENGTH": 100,
-    "CHARGE_MAX": 600,
+    "CHARGE_STRENGTH": 200,
+    "CHARGE_MAX": 500,
     "COLLISION_RADIUS": 16,
     "DEFAULT_NODE_COLOR": "#26328C",
     "PALLETE_SIZE": 20,
@@ -137,6 +137,10 @@
       {
         "title": "Auto Space Nodes Option",
         "description": "Spaces nodes based on label length, in order to help label readability."
+      },
+      {
+        "title": "Max Charge Distance",
+        "description": "Defines the maximum distance at which the charge force will be applied to the nodes."
       }
     ],
     "GRAPH_MAIN": [

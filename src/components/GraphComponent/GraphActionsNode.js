@@ -25,7 +25,6 @@ const OPACITY = 0.9;
 function GraphActionsNode(props) {
   const {
     options,
-    handleActionsRing,
     actionsNode,
     edge,
   } = props;
@@ -80,7 +79,7 @@ function GraphActionsNode(props) {
     actionsRing.push((
       <g
         style={{ cursor: 'pointer' }}
-        onClick={() => handleActionsRing(option.action)}
+        onClick={option.action}
         key={d}
       >
         <path
@@ -130,11 +129,6 @@ GraphActionsNode.propTypes = {
    */
   options: PropTypes.array,
   /**
-   * @param {function} handleActionsRing - Parent method on actions ring click
-   * event.
-   */
-  handleActionsRing: PropTypes.func,
-  /**
    * @param {Object} actionsNode - Currently selected object.
    */
   actionsNode: PropTypes.object,
@@ -147,7 +141,6 @@ GraphActionsNode.propTypes = {
 
 GraphActionsNode.defaultProps = {
   options: [],
-  handleActionsRing: null,
   actionsNode: null,
   edge: false,
 };

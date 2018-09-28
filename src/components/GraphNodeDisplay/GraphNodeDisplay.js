@@ -1,23 +1,22 @@
 /**
- * @module /components/GraphNode
+ * @module /components/GraphNodeDisplay
  */
 
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import './GraphNode.css';
+import './GraphNodeDisplay.css';
 import * as d3 from 'd3';
 import config from '../../config.json';
 
 const { NODE_RADIUS } = config.GRAPH_PROPERTIES;
 const DEFAULT_OPACITY = 1;
 const FADED_OPACITY = 0.6;
-const MAX_LABEL_LENGTH = 25;
 
 /**
  * Component used to display graph nodes and apply draggable behavior to them
  * through d3.
  */
-class GraphNode extends PureComponent {
+class GraphNodeDisplay extends PureComponent {
   /**
    * Initializes node element and applies drag behavior to it.
    */
@@ -46,20 +45,17 @@ class GraphNode extends PureComponent {
       handleClick,
       color,
       labelKey,
-      faded,
+      actionsNode,
+      detail,
+      filter,
     } = this.props;
 
-    // Extract label
-    let obj = node.data;
-    let key = labelKey;
-    if (labelKey.includes('.')) {
-      key = labelKey.split('.')[1];
-      obj = node.data[labelKey.split('.')[0]];
-    }
-    let label = obj && obj[key];
-    if (label && label.length > MAX_LABEL_LENGTH) {
-      label = `${label.substring(0, MAX_LABEL_LENGTH - 4).trim()}...`;
-    }
+    const label = node.getLabel(labelKey);
+
+    const faded = (detail && detail['@rid'] !== node.data['@rid'])
+      || (actionsNode && actionsNode.data['@rid'] !== node.data['@rid'])
+      || (filter && !label.includes(filter.toLowerCase()));
+
     let opacity = DEFAULT_OPACITY;
     if (faded) {
       opacity = FADED_OPACITY;
@@ -101,14 +97,6 @@ class GraphNode extends PureComponent {
   }
 }
 
-GraphNode.defaultProps = {
-  handleClick: null,
-  color: '#26328C',
-  labelKey: 'name',
-  faded: false,
-  applyDrag: null,
-};
-
 /**
  * @param {bool} expandable - Expandable flag.
 
@@ -119,7 +107,7 @@ GraphNode.defaultProps = {
  * @param {string} labelKey - property to display as label.
  * @param {Object} detail - node identifier for node who's details are currently displayed.
  */
-GraphNode.propTypes = {
+GraphNodeDisplay.propTypes = {
   /**
    * @param {Object} node - Node to be rendered.
    */
@@ -141,9 +129,28 @@ GraphNode.propTypes = {
    */
   labelKey: PropTypes.string,
   /**
-   * @param {boolean} faded - flag for whether or not node is faded.
+   * @param {Object} actionsNode - Node decorator object.
    */
-  faded: PropTypes.bool,
+  actionsNode: PropTypes.object,
+  /**
+   * @param {Object} detail - Node currently opened in detail drawer.
+   */
+  detail: PropTypes.object,
+  /**
+   * @param {string} filter - current filter string value.
+   */
+  filter: PropTypes.string,
 };
 
-export default GraphNode;
+GraphNodeDisplay.defaultProps = {
+  handleClick: null,
+  color: '#26328C',
+  labelKey: 'name',
+  actionsNode: null,
+  applyDrag: null,
+  detail: null,
+  filter: '',
+};
+
+
+export default GraphNodeDisplay;

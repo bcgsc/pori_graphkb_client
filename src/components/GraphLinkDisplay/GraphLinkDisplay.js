@@ -1,10 +1,10 @@
 /**
- * @module /components/GraphLink
+ * @module /components/GraphLinkDisplay
  */
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import './GraphLink.css';
+import './GraphLinkDisplay.css';
 import config from '../../config.json';
 
 const LABEL_BASELINE_SHIFT = 4;
@@ -20,15 +20,16 @@ const { NODE_RADIUS, ARROW_LENGTH } = config.GRAPH_PROPERTIES;
  * source node to a target. With an arrow marker on the end, hovering just
  * outside the target node bounds.
  */
-function GraphLink(props) {
+function GraphLinkDisplay(props) {
   const {
     link,
-    bold,
-    faded,
     color,
     labelKey,
     marker,
     handleClick,
+    detail,
+    actionsNode,
+    filter,
   } = props;
 
   if (link.source === link.target) return null;
@@ -42,6 +43,14 @@ function GraphLink(props) {
   } else if (labelKey) {
     label = link.data[labelKey];
   }
+
+  const faded = (detail && detail['@rid'] !== link.data['@rid'])
+    || (actionsNode && actionsNode.data['@rid'] !== link.data['@rid'])
+    || (filter && !label.includes(filter.toLowerCase()));
+  const bold = (detail && detail['@rid'] === link.data['@rid'])
+    || (actionsNode && actionsNode.data['@rid'] === link.data['@rid'])
+    || (filter && label.includes(filter.toLowerCase()));
+
 
   let opacity = DEFAULT_OPACITY;
 
@@ -112,15 +121,15 @@ function GraphLink(props) {
   );
 }
 
-GraphLink.propTypes = {
+GraphLinkDisplay.propTypes = {
   /**
    * @param {Object} link - Graph link object.
    */
   link: PropTypes.object.isRequired,
   /**
-   * @param {boolean} faded - Flag for fading link.
+   * @param {Object} detail - Node currently opened in detail drawer.
    */
-  faded: PropTypes.bool,
+  detail: PropTypes.object,
   /**
    * @param {string} labelKey - property to label link by.
    */
@@ -134,22 +143,27 @@ GraphLink.propTypes = {
    */
   handleClick: PropTypes.func,
   /**
-   * @param {boolean} bold - Flag for boldening link.
+   * @param {Object} actionsNode - Node decorator object.
    */
-  bold: PropTypes.bool,
+  actionsNode: PropTypes.object,
   /**
    * @param {string} marker - SVG end marker identifier.
    */
   marker: PropTypes.string,
+  /**
+   * @param {string} filter - current filter string value.
+   */
+  filter: PropTypes.string,
 };
 
-GraphLink.defaultProps = {
-  faded: false,
-  bold: false,
+GraphLinkDisplay.defaultProps = {
+  detail: null,
+  actionsNode: null,
   labelKey: null,
   color: '#999',
   handleClick: null,
   marker: '',
+  filter: '',
 };
 
-export default GraphLink;
+export default GraphLinkDisplay;

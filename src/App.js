@@ -20,10 +20,17 @@ import {
   MenuItem,
   Popover,
   Card,
+  Drawer,
+  List,
+  ListItemText,
+  ListItemIcon,
+  Divider,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
 import PersonIcon from '@material-ui/icons/Person';
+import MenuIcon from '@material-ui/icons/Menu';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import QueryView from './views/QueryView/QueryView';
 import AdvancedQueryView from './views/AdvancedQueryView/AdvancedQueryView';
 import DataView from './views/DataView/DataView';
@@ -33,6 +40,8 @@ import AddNodeView from './views/AddNodeView/AddNodeView';
 import LoginView from './views/LoginView/LoginView';
 import NodeDetailView from './views/NodeDetailView/NodeDetailView';
 import FeedbackView from './views/FeedbackView/FeedbackView';
+import AdminView from './views/AdminView/AdminView';
+import logo from './logo.png';
 import auth from './services/auth';
 import history from './services/history';
 
@@ -66,12 +75,13 @@ class App extends Component {
     this.state = {
       anchorEl: null,
       loggedIn: (!!auth.getToken() && !auth.isExpired()),
+      drawerOpen: false,
     };
-
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleLogOut = this.handleLogOut.bind(this);
     this.handleAuthenticate = this.handleAuthenticate.bind(this);
+    this.handleSideBarNavigate = this.handleSideBarNavigate.bind(this);
   }
 
   /**
@@ -104,8 +114,13 @@ class App extends Component {
     this.setState({ loggedIn: true });
   }
 
+  handleSideBarNavigate(route) {
+    history.push(route);
+    this.setState({ drawerOpen: false });
+  }
+
   render() {
-    const { anchorEl, loggedIn } = this.state;
+    const { anchorEl, loggedIn, drawerOpen } = this.state;
 
     const loginWithProps = () => (
       <LoginView
@@ -113,6 +128,45 @@ class App extends Component {
         handleLogOut={this.handleLogOut}
         handleAuthenticate={this.handleAuthenticate}
       />
+    );
+
+    const drawer = (
+      <Drawer
+        variant="persistent"
+        open
+        anchor="left"
+        classes={{
+          paper: `drawer${drawerOpen ? '' : ' drawer-closed'}`,
+        }}
+      >
+        <div className="banner">
+          <div className="drawer-logo">
+            <IconButton
+              disabled={!loggedIn}
+              onClick={() => this.setState({ drawerOpen: false })}
+            >
+              <ChevronLeftIcon />
+            </IconButton>
+            <img src={logo} alt="" />
+            <Typography variant="body1">Knowledge Base</Typography>
+          </div>
+        </div>
+        <Divider />
+        <List dense>
+          <MenuItem onClick={() => this.handleSideBarNavigate('/query')}>
+            <ListItemIcon>
+              <SearchIcon />
+            </ListItemIcon>
+            <ListItemText primary="Query" />
+          </MenuItem>
+          <MenuItem onClick={() => this.handleSideBarNavigate('/add')}>
+            <ListItemIcon>
+              <AddIcon />
+            </ListItemIcon>
+            <ListItemText primary="Add Ontology" />
+          </MenuItem>
+        </List>
+      </Drawer>
     );
 
     const loggedInContent = (
@@ -124,6 +178,7 @@ class App extends Component {
         <Route path="/ontology/:rid" component={NodeDetailView} />
         <Route path="/data" component={DataView} />
         <Route path="/feedback" component={FeedbackView} />
+        <Route path="/admin" component={AdminView} />
         <Redirect from="*" to="/query" />
       </Switch>
     );
@@ -131,22 +186,18 @@ class App extends Component {
       <MuiThemeProvider theme={theme}>
         <Router history={history}>
           <div className="App">
-            <AppBar position="static" className="banner">
-              {loggedIn && (
-                <React.Fragment>
-                  <IconButton
-                    color="inherit"
-                    onClick={() => history.push('/query')}
-                  >
-                    <SearchIcon />
-                  </IconButton>
-                  <IconButton
-                    color="inherit"
-                    onClick={() => history.push('/add')}
-                  >
-                    <AddIcon />
-                  </IconButton>
-                </React.Fragment>
+            <AppBar
+              position="absolute"
+              className={`banner ${drawerOpen ? 'drawer-shift' : ''}`}
+            >
+              {!drawerOpen && loggedIn && (
+                <IconButton
+                  color="inherit"
+                  onClick={() => this.setState({ drawerOpen: true })}
+                  className="appbar-btn"
+                >
+                  <MenuIcon />
+                </IconButton>
               )}
               <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>
                 <div>
@@ -155,6 +206,7 @@ class App extends Component {
                     onClick={this.handleOpen}
                     size="small"
                     disabled={!loggedIn}
+                    className="appbar-btn"
                   >
                     <PersonIcon />
                     <Typography variant="body2">
@@ -167,11 +219,11 @@ class App extends Component {
                     onClose={this.handleClose}
                     anchorOrigin={{
                       vertical: 'bottom',
-                      horizontal: 'right',
+                      horizontal: 'left',
                     }}
                     transformOrigin={{
                       vertical: 'top',
-                      horizontal: 'right',
+                      horizontal: 'left',
                     }}
                     PaperProps={{
                       onMouseLeave: this.handleClose,
@@ -181,6 +233,11 @@ class App extends Component {
                       <MenuItem onClick={() => { history.push('/feedback'); this.handleClose(); }}>
                         Feedback
                       </MenuItem>
+                      {auth.isAdmin() && (
+                        <MenuItem onClick={() => { history.push('/admin'); this.handleClose(); }}>
+                          Admin
+                        </MenuItem>
+                      )}
                       <MenuItem onClick={this.handleLogOut}>
                         Logout
                       </MenuItem>
@@ -189,7 +246,8 @@ class App extends Component {
                 </div>
               </div>
             </AppBar>
-            <section className="content">
+            {loggedIn && drawer}
+            <section className={`content ${(drawerOpen ? loggedIn : '') && 'drawer-shift'} ${!loggedIn ? 'no-drawer' : ''}`}>
               <div className="router-outlet">
                 <Switch>
                   <Route path="/login" render={loginWithProps} />

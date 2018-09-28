@@ -383,15 +383,18 @@ class OntologyFormComponent extends Component {
 
   /**
    * Deletes a relationship from state relationship list.
-   * @param {Object} relationship - Relationship to be deleted
+   * @param {number} i - Relationship index to be deleted
    */
-  handleRelationshipDelete(relationship) {
+  handleRelationshipDelete(i) {
     const { relationships, originalNode } = this.state;
     const { variant } = this.props;
-    if (variant === 'edit' && originalNode.relationships.find(r => r['@rid'] === relationship['@rid'])) {
-      relationship.deleted = true;
-    } else if (relationships.indexOf(relationship) !== -1) {
-      relationships.splice(relationships.indexOf(relationship), 1);
+    if (
+      variant === 'edit'
+      && originalNode.relationships.find(r => r['@rid'] === relationships[i]['@rid'])
+    ) {
+      relationships[i].deleted = true;
+    } else {
+      relationships.splice(i, 1);
     }
     this.setState({ relationships });
   }
@@ -740,7 +743,7 @@ class OntologyFormComponent extends Component {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {relationships.map((r) => {
+                        {relationships.map((r, i) => {
                           const sourceName = sources.find(
                             s => s['@rid'] === r.source,
                           ).name;
@@ -755,7 +758,7 @@ class OntologyFormComponent extends Component {
                               <TableCell padding="checkbox">
                                 {!r.deleted ? (
                                   <IconButton
-                                    onClick={() => this.handleRelationshipDelete(r)}
+                                    onClick={() => this.handleRelationshipDelete(i)}
                                     style={{ position: 'unset' }}
                                     disableRipple
                                   >

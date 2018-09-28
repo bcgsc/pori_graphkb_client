@@ -41,7 +41,7 @@ class LoginView extends Component {
   componentDidMount() {
     const { history, handleLogOut } = this.props;
     const { timedout } = history.location.state || {};
-    if (!auth.getToken()) {
+    if (!auth.getToken() || auth.isExpired()) {
       handleLogOut();
     }
     this.setState({ timedout: !!timedout });
@@ -112,7 +112,6 @@ class LoginView extends Component {
             </span>
           )}
         />
-
         <form className="login-form" onSubmit={this.handleSubmit}>
           <TextField
             className="login-input"
@@ -151,18 +150,15 @@ class LoginView extends Component {
   }
 }
 
+/**
+ * @namespace
+ * @property {object} history -  Application history object.
+ * @property {function} handleLogOut - Updates parent state on unauthorized user.
+ * @property {function} handleAuthenticate - Updates parent state on successful login.
+ */
 LoginView.propTypes = {
-  /**
-   * @param {object} history -  Application history object.
-   */
   history: PropTypes.object.isRequired,
-  /**
-   * @param {function} handleLogOut - Updates parent state on unauthorized user.
-   */
   handleLogOut: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleAuthenticate - Updates parent state on successful login.
-   */
   handleAuthenticate: PropTypes.func.isRequired,
 };
 

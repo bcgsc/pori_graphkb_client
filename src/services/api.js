@@ -207,24 +207,6 @@ const getSchema = () => {
 };
 
 /**
- * Returns the editable properties of target ontology class.
- * @param {string} className - requested class name
- */
-const getClass = async (className) => {
-  const schema = await getSchema();
-  const VPropKeys = Object.keys(schema.V.properties);
-  const classKey = (Object.keys(schema)
-    .find(key => key.toLowerCase() === (className || '').toLowerCase()) || 'Ontology');
-  const props = Object.keys(schema[classKey].properties)
-    .filter(prop => !VPropKeys.includes(prop))
-    .map(prop => (
-      {
-        ...schema[classKey].properties[prop],
-      }));
-  return Promise.resolve({ route: schema[classKey].route, properties: props });
-};
-
-/**
  * Wrapper for autosearch method.
  * @param {string} endpoint - URL endpoint.
  * @param {string} property - Property to query.
@@ -232,10 +214,26 @@ const getClass = async (className) => {
  * @param {number} limit - Limit for number of returned matches.
  */
 const autoSearch = (endpoint, property, value, limit) => {
-  if (value.length < 4) return Promise.resolve({ result: [] });
-  const query = property.map(p => `${p}=~${encodeURIComponent(value)}`).join('&');
+  const re = new RegExp(/[\s|\r|\n|\t|:|\\|;|,|.|/|||+|*|=|!|?|[|\]|(|)]+/, 'g');
+  const literalRe = new RegExp(/^['"].*['"]$/);
+  if (value.trim().split(re).some(s => s.length < 4)) return Promise.resolve({ result: [] });
+
   const orStr = `or=${property.join(',')}`;
-  return get(`/${endpoint}?${query}&${orStr}&limit=${limit}&neighbors=1&@class=!Publication`);
+  let extras = `limit=${limit}&neighbors=1`;
+  let query;
+
+  if (value.match(literalRe)) {
+    query = property
+      .map(p => `${p}=${encodeURIComponent(value.slice(1, value.length - 1).replace(re, '').trim())}`)
+      .join('&');
+  } else {
+    query = property
+      .map(p => `${p}=~${encodeURIComponent(value.replace(re, '').trim())}`)
+      .join('&');
+    extras += '&@class=!Publication';
+  }
+
+  return get(`/${endpoint}?${query}&${orStr}&${extras}`);
 };
 
 /**
@@ -297,12 +295,12 @@ const getEdges = (schema) => {
   return list;
 };
 
+
 export default {
   getEdges,
   getOntologies,
   collectOntologyProps,
   getHeaders,
-  getClass,
   getSchema,
   getSources,
   get,

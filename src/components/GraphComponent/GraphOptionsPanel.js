@@ -316,6 +316,15 @@ export default class GraphOptionsPanel extends Component {
   }
 }
 
+/**
+ * @namespace
+ * @property {Object} graphOptions - Graph options object.
+ * @property {PropsMap} propsMap - Graph coloringpropsmap.
+ * @property {boolean} graphOptionsOpen - dialog open flag.
+ * @property {boolean} linkLegendDisabled - link legend disabled flag.
+ * @property {function} handleDialogClose - function for closing dialog.
+ * @property {function} handleGraphOptionsChange - function for field changing.
+ */
 GraphOptionsPanel.propTypes = {
   graphOptions: PropTypes.object,
   propsMap: PropTypes.object,

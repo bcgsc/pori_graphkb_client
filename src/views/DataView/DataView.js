@@ -21,7 +21,7 @@ import qs from 'qs';
 import _ from 'lodash';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
-import NodeDetailComponent from '../../components/NodeDetailComponent/NodeDetailComponent';
+import OntologyDetailComponent from '../../components/OntologyDetailComponent/OntologyDetailComponent';
 import api from '../../services/api';
 import Ontology from '../../services/ontology';
 import config from '../../config.json';
@@ -61,6 +61,7 @@ class DataView extends Component {
       next: null,
       completedNext: true,
       filteredSearch: null,
+      moreResults: false,
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -305,11 +306,11 @@ class DataView extends Component {
     if (edge) {
       this.setState({ detail: node.data, detailEdge: true });
     } else {
-      if (!data[node.data['@rid']]) {
-        const response = await api.get(`/ontologies/${node.data['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
-        data[node.data['@rid']] = jc.retrocycle(response).result;
+      if (!data[node.getId()]) {
+        const response = await api.get(`/ontologies/${node.getId().slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
+        data[node.getId()] = jc.retrocycle(response).result;
       }
-      this.setState({ detail: data[node.data['@rid']], detailEdge: false });
+      this.setState({ detail: data[node.getId()], detailEdge: false });
     }
   }
 
@@ -377,7 +378,7 @@ class DataView extends Component {
         onClose={this.handleDetailDrawerClose}
         SlideProps={{ unmountOnExit: true }}
       >
-        <NodeDetailComponent
+        <OntologyDetailComponent
           variant="graph"
           node={detail}
           handleNodeEditStart={this.handleNodeEditStart}
@@ -388,7 +389,7 @@ class DataView extends Component {
           <IconButton onClick={this.handleDetailDrawerClose}>
             <CloseIcon color="action" />
           </IconButton>
-        </NodeDetailComponent>
+        </OntologyDetailComponent>
       </Drawer>
     );
 
@@ -471,14 +472,13 @@ class DataView extends Component {
   }
 }
 
+/**
+ * @namespace
+ * @property {Object} history - Application routing history object.
+ * @property {Object} classes - Classes provided by the @material-ui withStyles function
+ */
 DataView.propTypes = {
-  /**
-   * @param {Object} history - Application routing history object.
-   */
   history: PropTypes.object.isRequired,
-  /**
-   * @param {Object} classes - Classes provided by the @material-ui withStyles function
-   */
   classes: PropTypes.object.isRequired,
 };
 

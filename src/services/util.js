@@ -9,7 +9,7 @@ import config from '../config.json';
 const { DEFAULT_PROPS, PERMISSIONS } = config;
 const { PALLETE_SIZE } = config.GRAPH_DEFAULTS;
 const { NODE_INIT_RADIUS } = config.GRAPH_PROPERTIES;
-const ACRONYMS = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
+const ACRONYMS = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url', 'cds'];
 const GRAPH_OBJECTS_KEY = 'graphObjects';
 
 /**
@@ -32,7 +32,7 @@ const antiCamelCase = (str) => {
   }
 
   words.forEach((word, i) => {
-    words[i] = word.replace(/[A-Z]/g, match => ` ${match}`).trim();
+    words[i] = word.replace(/[A-Z]+|[0-9]+/g, match => ` ${match}`).trim();
   });
 
   ACRONYMS.forEach((acronym) => {
@@ -161,18 +161,20 @@ const getTSVRepresentation = (value, key) => {
 /**
  * Prepares a payload to be sent to the server for a POST, PATCH, or GET requst.
  * @param {Object} form - unprocessed form object containing user data.
- * @param {Array} editableProps - List of valid properties for given form.
+ * @param {Array} objectSchema - List of valid properties for given form.
  * @param {Array} exceptions - List of extra parameters not specified in editableProps.
  */
-const parsePayload = (form, editableProps, exceptions) => {
+const parsePayload = (form, objectSchema, exceptions) => {
   const payload = Object.assign({}, form);
   Object.keys(payload).forEach((key) => {
     if (!payload[key]) delete payload[key];
     // For link properties, must specify record id being linking to. Clear the rest.
     if (key.includes('.@rid')) {
       const nestedKey = key.split('.')[0];
-      if (editableProps.find(p => p.name === nestedKey)
-        || (exceptions && exceptions.find(p => p.name === nestedKey))
+      if (
+        (objectSchema.find(p => p.name === nestedKey)
+          || (exceptions && exceptions.find(p => p.name === nestedKey)))
+        && payload[key]
       ) {
         // Sets top level property to the rid: ie.
         // 'source.@rid': #18:5 => 'source': #18:5
@@ -181,7 +183,7 @@ const parsePayload = (form, editableProps, exceptions) => {
       }
     }
     // Clears out all other unknown fields.
-    if (!editableProps.find(p => p.name === key)) {
+    if (!objectSchema.find(p => p.name === key)) {
       if (!exceptions || !exceptions.find(p => p.name === key)) {
         delete payload[key];
       }
@@ -215,8 +217,8 @@ const getPallette = (n, type) => {
  * @param {Object} data - graph data to be stored.
  */
 const loadGraphData = (search, data) => {
-  data.filteredSearch = search;
-  localStorage.setItem(GRAPH_OBJECTS_KEY, JSON.stringify(jc.decycle(data)));
+  const newData = Object.assign({ filteredSearch: search }, data);
+  localStorage.setItem(GRAPH_OBJECTS_KEY, JSON.stringify(jc.decycle(newData)));
 };
 
 /**
@@ -242,6 +244,7 @@ const getGraphData = (search) => {
  * @param {Object} expandable - Expandable flags map.
  */
 const expanded = (expandedEdgeTypes, graphObjects, rid, expandable) => {
+  const newExpandable = Object.assign({}, expandable);
   let targetFlag = false;
   expandedEdgeTypes.forEach((e) => {
     if (graphObjects[rid][e]) {
@@ -255,8 +258,8 @@ const expanded = (expandedEdgeTypes, graphObjects, rid, expandable) => {
       });
     }
   });
-  expandable[rid] = targetFlag;
-  return expandable;
+  newExpandable[rid] = targetFlag;
+  return newExpandable;
 };
 
 /**
@@ -288,6 +291,69 @@ const getColor = (obj, objColor, objColors) => {
     colorKey = obj.data[objColor];
   }
   return objColors[colorKey];
+};
+
+/**
+ * Initializes a new instance of given kbClass.
+ * @param {Object} model - existing model to keep existing values from.
+ * @param {Object} kbClass - Knowledge base class schema.
+ */
+const initModel = (model, kbClass) => {
+  const newModel = Object.assign({}, model);
+  Object.values(kbClass).forEach((property) => {
+    const {
+      name,
+      type,
+      linkedClass,
+      min,
+    } = property;
+    const defaultValue = property.default;
+    switch (type) {
+      case 'embeddedset':
+        newModel[name] = model[name] || [];
+        break;
+      case 'link':
+        newModel[name] = (model[name] || '').name || '';
+        newModel[`${name}.@rid`] = (model[name] || '')['@rid'] || '';
+        newModel[`${name}.sourceId`] = (model[name] || '').sourceId || '';
+        if (!linkedClass) {
+          newModel[`${name}.class`] = (model[name] || '')['@class'] || '';
+        }
+        break;
+      case 'integer' || 'long':
+        newModel[name] = model[name] || min > 0 ? min : '';
+        break;
+      case 'boolean':
+        newModel[name] = model[name] !== undefined
+          ? model[name]
+          : (defaultValue || '').toString() === 'true';
+        break;
+      case 'embedded':
+        if (linkedClass && linkedClass.properties) {
+          newModel[name] = model[name] || initModel({}, property.linkedClass.properties);
+        }
+        break;
+      default:
+        newModel[name] = model[name] || '';
+        break;
+    }
+  });
+  return newModel;
+};
+
+/**
+ * Returns the editable properties of target ontology class.
+ * @param {string} className - requested class name
+ */
+const getClass = (className, schema) => {
+  const VPropKeys = Object.keys(schema.V.properties);
+  const classKey = (Object.keys(schema)
+    .find(key => key.toLowerCase() === (className || '').toLowerCase()));
+  if (!classKey) return {};
+  const props = Object.keys(schema[classKey].properties)
+    .filter(prop => !VPropKeys.includes(prop))
+    .map(prop => schema[classKey].properties[prop]);
+  return { route: schema[classKey].route, properties: props };
 };
 
 /**
@@ -335,6 +401,14 @@ const getSubClasses = (abstractClass, schema) => Object.values(schema)
   .filter(kbClass => kbClass.inherits.includes(abstractClass));
 
 /**
+ * Returns a list of object class properties that are of a given type.
+ * @param {Array} kbClass - Knowledgebase class object as defined in the schema.
+ * @param {string} type - KB class type.
+ */
+const getPropOfType = (kbClass, type) => Object.values(kbClass)
+  .filter(prop => prop.type === type);
+
+/**
  * Casts a value to string form with minimal formatting. Sets the value to
  * 'null' if the value is null or undefined.
  * @param {any} obj - Object to be formatted.
@@ -362,8 +436,11 @@ export default {
   expanded,
   positionInit,
   getColor,
-  parsePermission,
+  initModel,
+  getClass,
   isAbstract,
   getSubClasses,
+  parsePermission,
+  getPropOfType,
   castToExist,
 };

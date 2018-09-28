@@ -122,10 +122,10 @@ class GraphComponent extends Component {
       edges,
     } = this.props;
     const {
-      expandable,
       graphOptions,
       initState,
     } = this.state;
+    let { expandable } = this.state;
     this.propsMap = new PropsMap();
 
     // Defines what edge keys to look for.
@@ -177,7 +177,7 @@ class GraphComponent extends Component {
         } = initState;
         nodes.forEach((node) => {
           this.propsMap.loadNode(node.data, allProps);
-          util.expanded(expandedEdgeTypes, graphObjects, node.getId(), expandable);
+          expandable = util.expanded(expandedEdgeTypes, graphObjects, node.getId(), expandable);
         });
 
         links.forEach(link => this.propsMap.loadLink(link.data));
@@ -195,7 +195,7 @@ class GraphComponent extends Component {
         delete storedData.filteredSearch;
         nodes = nodes.map((n) => {
           this.propsMap.loadNode(n.data, allProps);
-          util.expanded(expandedEdgeTypes, graphObjects, n.data['@rid'], expandable);
+          expandable = util.expanded(expandedEdgeTypes, graphObjects, n.data['@rid'], expandable);
           return new GraphNode(n.data, n.x, n.y);
         });
 
@@ -206,12 +206,12 @@ class GraphComponent extends Component {
           if (typeof l.source === 'object') {
             source = l.source.data['@rid'];
           } else {
-            source = l.source;
+            ({ source } = l);
           }
           if (typeof l.target === 'object') {
             target = l.target.data['@rid'];
           } else {
-            target = l.target;
+            ({ target } = l);
           }
           return new GraphLink(l.data, source, target);
         });
@@ -228,7 +228,10 @@ class GraphComponent extends Component {
       }
 
       if (storedOptions) {
-        this.setState({ graphOptions: storedOptions }, () => {
+        this.setState({
+          graphOptions: storedOptions,
+          expandable,
+        }, () => {
           this.drawGraph();
           this.updateColors();
         });
@@ -236,7 +239,10 @@ class GraphComponent extends Component {
         if (this.propsMap.nodeProps.length !== 0) {
           graphOptions.nodesLegend = true;
         }
-        this.setState({ graphOptions }, () => {
+        this.setState({
+          graphOptions,
+          expandable,
+        }, () => {
           this.drawGraph();
           this.updateColors();
         });
@@ -275,18 +281,16 @@ class GraphComponent extends Component {
 
     if (!d3.event.active) simulation.alphaTarget(0.3).restart();
 
-    /* eslint-disable */
-    function dragged() {
-      node.fx = d3.event.x;
-      node.fy = d3.event.y;
-    }
+    const dragged = () => {
+      node.fx = d3.event.x; // eslint-disable-line no-param-reassign
+      node.fy = d3.event.y; // eslint-disable-line no-param-reassign
+    };
 
-    function ended() {
+    const ended = () => {
       if (!d3.event.active) simulation.alphaTarget(0);
-      node.fx = null;
-      node.fy = null;
-    }
-    /* eslint-enable */
+      node.fx = null; // eslint-disable-line no-param-reassign
+      node.fy = null; // eslint-disable-line no-param-reassign
+    };
 
     d3.event
       .on('drag', dragged)
@@ -423,6 +427,11 @@ class GraphComponent extends Component {
     });
   }
 
+  /**
+   * Determines whether to quickly selected load node neighbors or open the
+   * expansion dialog panel.
+   * @param {Object} node - d3 simulation node to be expanded.
+   */
   handleExpandRequest(node) {
     const {
       expandable,
@@ -460,7 +469,7 @@ class GraphComponent extends Component {
     const { data, handleNewColumns } = this.props;
 
     if (data[node['@rid'] || data[node.getId()]]) {
-      node = data[node['@rid'] || data[node.getId()]];
+      node = data[node['@rid'] || data[node.getId()]]; // eslint-disable-line no-param-reassign
     } else {
       // Node properties haven't been processed.
       handleNewColumns(node);
@@ -882,12 +891,12 @@ class GraphComponent extends Component {
         if (typeof l.source === 'object') {
           source = l.source.data['@rid'];
         } else {
-          source = l.source;
+          ({ source } = l);
         }
         if (typeof l.target === 'object') {
           target = l.target.data['@rid'];
         } else {
-          target = l.target;
+          ({ target } = l);
         }
         return source !== target;
       }).length === 0
@@ -1177,6 +1186,7 @@ class GraphComponent extends Component {
       <GraphNodeDisplay
         key={node.getId()}
         node={node}
+        detail={detail}
         labelKey={graphOptions.nodeLabelProp}
         color={util.getColor(node, graphOptions.nodesColor, graphOptions.nodesColors)}
         handleClick={e => this.handleClick(e, node)}
@@ -1269,44 +1279,29 @@ class GraphComponent extends Component {
   }
 }
 
+/**
+ * @namespace
+ * @property {function} handleClick - Parent component method triggered when a
+ * graph object is clicked.
+ * @property {Object} data - Parent state data.
+ * @property {function} handleDetailDrawerOpen - Method to handle opening of detail drawer.
+ * @property {function} handleDetailDrawerClose - Method to handle closing of detail drawer.
+ * @property {function} handleTableRedirect - Method to handle a redirect to the table view.
+ * @property {function} handleNewColumns - Updates valid properties in parent state.
+ * @property {Object} schema - Database schema.
+ * @property {Object} detail - record ID of node currently selected for detail viewing.
+ * @property {Array} allProps - list of all unique properties on all nodes returned in
+ * initial query.
+ */
 GraphComponent.propTypes = {
-  /**
-   * @param {function} handleClick - Parent component method triggered when a
-   * graph object is clicked.
-   */
   handleClick: PropTypes.func,
-  /**
-   * @param {Object} data - Parent state data.
-   */
   data: PropTypes.object.isRequired,
-  /**
-   * @param {function} handleDetailDrawerOpen - Method to handle opening of detail drawer.
-   */
   handleDetailDrawerOpen: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleDetailDrawerClose - Method to handle closing of detail drawer.
-   */
   handleDetailDrawerClose: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleTableRedirect - Method to handle a redirect to the table view.
-   */
   handleTableRedirect: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleNewColumns - Updates valid properties in parent state.
-   */
   handleNewColumns: PropTypes.func.isRequired,
-  /**
-   * @param {Object} schema - Database schema.
-   */
   schema: PropTypes.object.isRequired,
-  /**
-   * @param {Object} detail - record ID of node currently selected for detail viewing.
-   */
   detail: PropTypes.object,
-  /**
-   * @param {Array} allProps - list of all unique properties on all nodes returned in
-   * initial query.
-   */
   allProps: PropTypes.array,
 };
 

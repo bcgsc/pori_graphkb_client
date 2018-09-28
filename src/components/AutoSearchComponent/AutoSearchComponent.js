@@ -57,6 +57,8 @@ class AutoSearchComponent extends Component {
       this.callApi.bind(this),
       property.length > 1 ? LONG_DEBOUNCE_TIME : DEBOUNCE_TIME,
     );
+    this.handleBlur = this.handleBlur.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.refreshOptions = this.refreshOptions.bind(this);
     this.setRef = (node) => { this.popperNode = node; };
   }
@@ -67,6 +69,41 @@ class AutoSearchComponent extends Component {
   componentWillUnmount() {
     this.callApi.cancel();
     this.render = null;
+  }
+
+  /**
+   * Updates the parent value with a value if there is a perfect match or only
+   * 1 result for the specified query string. Disabled if user is using literal
+   * syntax.
+   */
+  handleBlur() {
+    const { value } = this.props;
+    const { lastRid, options } = this.state;
+    const perfectMatch = options.length === 1
+      ? options[0]
+      : options
+        .find(option => option.name === value || option.sourceId === value);
+    if (perfectMatch) {
+      this.handleChange(perfectMatch);
+    }
+    this.setState({ noRidFlag: !!(!lastRid && value && !perfectMatch) });
+  }
+
+  /**
+   * Updates the parent value with value from a selected item.
+   * @param {Event} e - User input event.
+   */
+  handleChange(e) {
+    const { onChange, name } = this.props;
+    onChange({
+      target: {
+        value: e.name || e.sourceId,
+        sourceId: e.sourceId,
+        '@rid': e['@rid'],
+        name,
+      },
+    });
+    this.setState({ lastRid: e['@rid'] });
   }
 
   /**
@@ -112,7 +149,6 @@ class AutoSearchComponent extends Component {
       options,
       emptyFlag,
       noRidFlag,
-      lastRid,
       loading,
     } = this.state;
 
@@ -148,17 +184,7 @@ class AutoSearchComponent extends Component {
 
     return (
       <Downshift
-        onChange={(e) => {
-          onChange({
-            target: {
-              value: e.name || e.sourceId,
-              sourceId: e.sourceId,
-              '@rid': e['@rid'],
-              name,
-            },
-          });
-          this.setState({ lastRid: e['@rid'] });
-        }}
+        onChange={this.handleChange}
         itemToString={(item) => {
           if (item) return item.name;
           return null;
@@ -192,7 +218,7 @@ class AutoSearchComponent extends Component {
                     disabled,
                     onKeyUp: this.refreshOptions,
                     onFocus: () => this.setState({ noRidFlag: false }),
-                    onBlur: () => this.setState({ noRidFlag: !!(!lastRid && value) }),
+                    onBlur: this.handleBlur,
                     style: {
                       fontSize: dense ? '0.8125rem' : '',
                     },
@@ -248,70 +274,45 @@ class AutoSearchComponent extends Component {
                 Select an option
               </Typography>
             )}
-          </div>)
-        }
+          </div>)}
       </Downshift>
     );
   }
 }
 
+/**
+ * @namespace
+ * @property {number} limit - database return record limit.
+ * @property {string} name - name of input for event parsing.
+ * @property {string} endpoint - api endpoint identifier.
+ * @property {string} property - api property identifier.
+ * @property {string} placeholder - placeholder for text input.
+ * @property {string} value - specified value for two way binding.
+ * @property {string} label - label for text input.
+ * @property {bool} required - required flag for text input indicator.
+ * @property {bool} error - error flag for text input.
+ * @property {func} onChange - parent method for handling change events
+ * @property {function} children - Function that yields the component for
+ * display display query results.
+ * @property {bool} disabled - disabled flag for text input.
+ * @property {Object} endAdornment - component to adorn the end of input text field with.
+ * @property {bool} dense - dense variant flag. If true, font sizes are decreased.
+ *
+ */
 AutoSearchComponent.propTypes = {
-  /**
-   * @param {number} limit - database return record limit.
-   */
   limit: PropTypes.number,
-  /**
-   * @param {string} name - name of input for event parsing.
-   */
   name: PropTypes.string.isRequired,
-  /**
-   * @param {string} endpoint - api endpoint identifier.
-   */
   endpoint: PropTypes.string,
-  /**
-   * @param {string} property - api property identifier.
-   */
   property: PropTypes.array,
-  /**
-   * @param {string} placeholder - placeholder for text input.
-   */
   placeholder: PropTypes.string,
-  /**
-   * @param {string} value - specified value for two way binding.
-   */
   value: PropTypes.string,
-  /**
-   * @param {string} label - label for text input.
-   */
   label: PropTypes.string,
-  /**
-   * @param {bool} required - required flag for text input indicator.
-   */
   required: PropTypes.bool,
-  /**
-   * @param {bool} error - error flag for text input.
-   */
   error: PropTypes.bool,
-  /**
-   * @param {func} onChange - parent method for handling change events
-   */
   onChange: PropTypes.func,
-  /**
-   * @param {function} children - Function that yields the component for
-   * display display query results.
-   */
   children: PropTypes.func,
-  /**
-   * @param {bool} disabled - disabled flag for text input.
-   */
   disabled: PropTypes.bool,
-  /**
-   * @param {Object} endAdornment - component to adorn the end of input text field with.
-   */
   endAdornment: PropTypes.object,
-  /**
-   * @param {bool} dense - dense variant flag. If true, font sizes are decreased.
-   */
   dense: PropTypes.bool,
 };
 
@@ -345,7 +346,7 @@ AutoSearchComponent.defaultProps = {
   ),
   onChange: null,
   disabled: false,
-  endAdornment: <SearchIcon />,
+  endAdornment: <SearchIcon style={{ cursor: 'default' }} />,
 };
 
 export default AutoSearchComponent;

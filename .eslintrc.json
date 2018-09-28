@@ -23,7 +23,7 @@
         "react/jsx-one-expression-per-line": 0,
         "prefer-destructuring": "warn",
         "react/destructuring-assignment": "warn",
-        "no-confusing-arrow": "warn",
+        "no-confusing-arrow": 0,
         "no-underscore-dangle": 0
     },
     "env": {

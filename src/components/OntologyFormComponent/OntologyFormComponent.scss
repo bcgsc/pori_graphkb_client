@@ -13,12 +13,6 @@ $mediumBreakpoint: 500px;
     bottom: 0;
     .form-grid {
         flex-grow: 1;
-        width: calc(80vw + 32px);
-        margin: 32px auto;
-        display: grid;
-        grid-template-columns: 1fr;
-        grid-row-gap: 1rem;
-        grid-template-rows: auto 1fr auto;
         @media (max-width: $breakpoint) {
             grid-template-rows: auto;
             grid-template-columns: 100%;
@@ -45,6 +39,8 @@ $mediumBreakpoint: 500px;
             }
         }
         .flexbox {
+            grid-column-end: 3;
+            grid-column-start: 1;
             display: flex;
             position: relative;
             width: 100%;
@@ -197,6 +193,14 @@ $mediumBreakpoint: 500px;
 #delete-btn {
     margin-right: auto;
     flex-shrink: 1;
+}
+
+#add-btn-cell{
+    padding: 0;
+    display: flex;
+    button {
+        margin: auto;
+    }
 }
 
 #relationship-add {

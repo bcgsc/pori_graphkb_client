@@ -1,28 +1,21 @@
 /**
- * @module /components/NodeFormComponent
+ * @module /components/OntologyFormComponent
  */
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './NodeFormComponent.css';
+import './OntologyFormComponent.css';
 import {
   TextField,
   List,
-  ListItem,
   IconButton,
   MenuItem,
   Button,
   Typography,
-  RadioGroup,
-  Radio,
-  FormControlLabel,
-  FormControl,
-  FormLabel,
   Dialog,
   DialogContent,
   DialogActions,
   DialogTitle,
-  Tooltip,
   Paper,
   InputAdornment,
   Chip,
@@ -34,17 +27,20 @@ import {
   LinearProgress,
   Drawer,
   CircularProgress,
+  ListItem,
+  ListItemText,
+  Divider,
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
-import HelpIcon from '@material-ui/icons/Help';
 import CheckIcon from '@material-ui/icons/Check';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
 import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
 import api from '../../services/api';
 import util from '../../services/util';
+import FormTemplater from '../FormTemplater/FormTemplater';
 
 const NOTIFICATION_SPINNER_SIZE = 16;
 
@@ -54,7 +50,7 @@ const NOTIFICATION_SPINNER_SIZE = 16;
  * published to the database until the form is valid and submit button
  * has been clicked.
  */
-class NodeFormComponent extends Component {
+class OntologyFormComponent extends Component {
   constructor(props) {
     super(props);
 
@@ -114,52 +110,9 @@ class NodeFormComponent extends Component {
       nodeClass = node['@class'];
       relationship.out = node['@rid'];
     }
+    const editableProps = (util.getClass(nodeClass, schema)).properties;
+    const form = util.initModel(originalNode, editableProps);
 
-    const editableProps = (await api.getClass(nodeClass)).properties;
-    const form = {};
-
-    editableProps.forEach((prop) => {
-      const {
-        name,
-        type,
-        linkedClass,
-      } = prop;
-      const defaultValue = prop.default || '';
-
-      // TODO: maybe refactor this for edges pointing to ontologies/other
-      // records that don't have names or source ids.
-      switch (type) {
-        case 'embeddedset':
-          form[name] = (originalNode[name] || []).slice();
-          break;
-        case 'link':
-          form[`${name}.@rid`] = (originalNode[name] || '')['@rid'] || '';
-          form[name] = (originalNode[name] || '').name || '';
-
-          if (!linkedClass) {
-            form[`${name}.class`] = (originalNode[name] || '')['@class'] || '';
-          }
-
-          if ((originalNode[name] || '').sourceId) {
-            form[`${name}.sourceId`] = (originalNode[name] || '').sourceId || '';
-          }
-
-          break;
-        case 'integer' || 'long':
-          if (originalNode[name] === 0) {
-            form[name] = 0;
-          } else {
-            form[name] = originalNode[name] || defaultValue || '';
-          }
-          break;
-        case 'boolean':
-          form[name] = originalNode[name] || (defaultValue || '').toString() === 'true';
-          break;
-        default:
-          form[name] = originalNode[name] || defaultValue || '';
-          break;
-      }
-    });
     const edgeTypes = api.getEdges(schema);
     const expandedEdgeTypes = util.expandEdges(edgeTypes);
 
@@ -198,7 +151,7 @@ class NodeFormComponent extends Component {
       edgeTypes,
       editableProps,
       newNodeClass: nodeClass,
-      ontologyTypes: api.getOntologies(schema),
+      schema,
     });
   }
 
@@ -211,11 +164,12 @@ class NodeFormComponent extends Component {
       relationships,
       newNodeClass,
       editableProps,
+      schema,
     } = this.state;
 
     const newEdges = [];
     const payload = util.parsePayload(form, editableProps);
-    const { route } = await api.getClass(newNodeClass);
+    const { route } = util.getClass(newNodeClass, schema);
     const response = await api.post(`${route}`, { ...payload });
 
     for (let i = 0; i < relationships.length; i += 1) {
@@ -243,6 +197,7 @@ class NodeFormComponent extends Component {
       originalNode,
       relationships,
       editableProps,
+      schema,
     } = this.state;
 
     const changedEdges = [];
@@ -285,7 +240,7 @@ class NodeFormComponent extends Component {
     await Promise.all(changedEdges);
 
     const payload = util.parsePayload(form, editableProps);
-    const { route } = await api.getClass(originalNode['@class']);
+    const { route } = util.getClass(originalNode['@class'], schema);
 
     await api.patch(`${route}/${originalNode['@rid'].slice(1)}`, { ...payload });
   }
@@ -303,29 +258,13 @@ class NodeFormComponent extends Component {
    * @param {Event} e - User class selection event.
    */
   async handleClassChange(e) {
-    const editableProps = (await api.getClass(e.target.value)).properties;
-    const { form } = this.state;
-    editableProps.forEach((prop) => {
-      const {
-        name,
-        type,
-      } = prop;
-      const defaultValue = prop.default || '';
-      if (!form[name]) {
-        switch (type) {
-          case 'embeddedset':
-            form[name] = [];
-            break;
-          case 'boolean':
-            form[name] = (defaultValue || '').toString() === 'true';
-            break;
-          default:
-            form[name] = '';
-            break;
-        }
-      }
+    const { form, schema } = this.state;
+    const editableProps = (util.getClass(e.target.value, schema)).properties;
+    this.setState({
+      form: util.initModel(form, editableProps),
+      editableProps,
+      newNodeClass: e.target.value,
     });
-    this.setState({ form, editableProps, newNodeClass: e.target.value });
   }
 
   /**
@@ -334,8 +273,8 @@ class NodeFormComponent extends Component {
   async handleDeleteNode() {
     this.setState({ notificationDrawerOpen: true, loading: true });
     this.handleDialogClose();
-    const { originalNode } = this.state;
-    const { route } = await api.getClass(originalNode['@class']);
+    const { originalNode, schema } = this.state;
+    const { route } = util.getClass(originalNode['@class'], schema);
     await api.delete(`${route}/${originalNode['@rid'].slice(1)}`);
     this.setState({ loading: false });
   }
@@ -554,12 +493,16 @@ class NodeFormComponent extends Component {
       deleteDialog,
       newNodeClass,
       errorFlag,
-      ontologyTypes,
       loading,
       notificationDrawerOpen,
       deletedSubsets,
+      schema,
     } = this.state;
-    const { variant, handleNodeFinish } = this.props;
+    const {
+      variant,
+      handleFinish,
+      handleCancel,
+    } = this.props;
 
     // Wait for form to get initialized
     if (!form) return null;
@@ -605,112 +548,6 @@ class NodeFormComponent extends Component {
     );
 
     /**
-     * Renders input component to fit property's importance and type.
-     */
-    const formatInputSection = (key, value) => {
-      const property = editableProps.find(prop => prop.name === key);
-      if (!property) return null;
-
-      const {
-        type,
-        mandatory,
-        linkedClass,
-        description,
-      } = property;
-      if (typeof value !== 'object') {
-        // Radio group component for boolean types.
-        if (type === 'boolean') {
-          return (
-            <ListItem className="input-wrapper" key={key}>
-              <FormControl component="fieldset" required={mandatory}>
-                <FormLabel>
-                  {util.antiCamelCase(key)}
-                </FormLabel>
-                <RadioGroup
-                  name={key}
-                  onChange={this.handleFormChange}
-                  value={value.toString()}
-                  style={{ flexDirection: 'row' }}
-                >
-                  <FormControlLabel value="true" control={<Radio />} label="Yes" />
-                  <FormControlLabel value="false" control={<Radio />} label="No" />
-                </RadioGroup>
-              </FormControl>
-            </ListItem>
-          );
-        }
-
-        // For text fields, apply some final changes for number inputs.
-        if (type !== 'link') {
-          let t;
-          let step;
-          if (type === 'string') {
-            t = 'text';
-          } else if (type === 'integer' || type === 'long') {
-            t = 'number';
-            step = 1;
-          }
-
-          return (
-            <ListItem className="input-wrapper" key={key}>
-              <TextField
-                id={key}
-                label={util.antiCamelCase(key)}
-                value={value}
-                onChange={this.handleFormChange}
-                className="text-input"
-                name={key}
-                type={t || ''}
-                step={step || ''}
-                required={mandatory}
-                multiline={t === 'text'}
-                InputProps={{
-                  endAdornment: description && (
-                    <InputAdornment position="end">
-                      <Tooltip title={description}>
-                        <HelpIcon color="primary" />
-                      </Tooltip>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </ListItem>
-          );
-        }
-        // If type is a link to another record, must find that record in the
-        // database and store its rid.
-
-        // Decide which endpoint to query.
-        let endpoint;
-        if (linkedClass) {
-          endpoint = linkedClass.route.slice(1);
-        }
-
-        return (
-          <ListItem key={key} style={{ display: 'block' }}>
-            <div>
-              <AutoSearchComponent
-                value={value}
-                onChange={this.handleFormChange}
-                name={key}
-                label={util.antiCamelCase(key)}
-                id={key}
-                limit={30}
-                endpoint={endpoint}
-                required={mandatory}
-                property={!linkedClass ? ['name', 'sourceId'] : undefined}
-              />
-            </div>
-          </ListItem>
-        );
-      }
-      if (Array.isArray(value)) {
-        return null;
-      }
-      return null;
-    };
-
-    /**
      * Formats model subsets into list form.
      */
     const subsets = (form.subsets || [])
@@ -753,7 +590,7 @@ class NodeFormComponent extends Component {
     const drawer = (
       <Drawer
         open={notificationDrawerOpen}
-        onClose={handleNodeFinish}
+        onClose={handleFinish}
         anchor="bottom"
         classes={{ paper: 'paper' }}
       >
@@ -767,7 +604,7 @@ class NodeFormComponent extends Component {
           </div>
           <Button
             color="secondary"
-            onClick={handleNodeFinish}
+            onClick={handleFinish}
             disabled={loading}
             variant="raised"
             size="large"
@@ -780,13 +617,12 @@ class NodeFormComponent extends Component {
         </div>
       </Drawer>
     );
-
     return (
       <div className="node-form-wrapper">
         {dialog}
         {drawer}
         <form onSubmit={this.handleSubmit}>
-          <div className="form-grid">
+          <div className="view-wrapper form-grid">
             <Paper className="form-header" elevation={4}>
               <Typography variant="headline" className="form-title">
                 {variant === 'edit' ? 'Edit Ontology Term'
@@ -795,7 +631,7 @@ class NodeFormComponent extends Component {
               <div className="form-cancel-btn">
                 <Button
                   color="default"
-                  onClick={handleNodeFinish}
+                  onClick={handleCancel}
                   variant="outlined"
                 >
                   Cancel
@@ -807,38 +643,47 @@ class NodeFormComponent extends Component {
                 <Typography variant="title">
                   Basic Parameters
                 </Typography>
-                {variant === 'edit' ? (
-                  <div style={{ padding: '8px 24px' }}>
-                    <Typography variant="subheading">
-                      Class:
-                    </Typography>
-                    <Typography variant="caption">
-                      {originalNode['@class']}
-                    </Typography>
-                  </div>
-                )
-                  : (
-                    <div className="class-select">
-                      <ResourceSelectComponent
-                        value={newNodeClass}
-                        onChange={this.handleClassChange}
-                        name="newNodeClass"
-                        label="Class"
-                        resources={ontologyTypes}
-                      >
-                        {resource => (
-                          <MenuItem key={resource.name} value={resource.name}>
-                            {resource.name}
-                          </MenuItem>
-                        )}
-                      </ResourceSelectComponent>
-                    </div>
-                  )}
                 <List component="nav">
-                  {Object.keys(form)
-                    .filter(key => !key.includes('.'))
-                    .map(key => formatInputSection(key, form[key]))
-                  }
+                  {variant === 'edit' ? (
+                    <React.Fragment>
+                      <ListItem>
+                        <ListItemText
+                          primary="Class:"
+                          secondary={originalNode['@class']}
+                          secondaryTypographyProps={{ variant: 'title', color: 'default' }}
+                        />
+                      </ListItem>
+                      <Divider />
+                    </React.Fragment>
+                  )
+                    : (
+                      <React.Fragment>
+                        <ListItem>
+                          <ResourceSelectComponent
+                            value={newNodeClass}
+                            onChange={this.handleClassChange}
+                            name="newNodeClass"
+                            label="Class"
+                            variant="filled"
+                            resources={api.getOntologies(schema)}
+                          >
+                            {resource => (
+                              <MenuItem key={resource.name} value={resource.name}>
+                                {resource.name}
+                              </MenuItem>
+                            )}
+                          </ResourceSelectComponent>
+                        </ListItem>
+                        <Divider />
+                      </React.Fragment>
+                    )}
+                  <FormTemplater
+                    model={form}
+                    kbClass={editableProps}
+                    schema={schema}
+                    onChange={this.handleFormChange}
+                    excludedProps={['subsets']}
+                  />
                 </List>
               </Paper>
               <Paper className="param-section forms-lists" elevation={4}>
@@ -886,7 +731,6 @@ class NodeFormComponent extends Component {
                           <TableCell padding="dense">
                             Class
                           </TableCell>
-
                           <TableCell padding="dense">
                             Related Record
                           </TableCell>
@@ -942,7 +786,7 @@ class NodeFormComponent extends Component {
                           );
                         })}
                         <TableRow id="relationship-add">
-                          <TableCell padding="checkbox">
+                          <TableCell padding="checkbox" id="add-btn-cell">
                             <IconButton
                               color="primary"
                               onClick={this.handleRelationshipAdd}
@@ -1040,26 +884,26 @@ class NodeFormComponent extends Component {
   }
 }
 
-NodeFormComponent.propTypes = {
-  /**
-   * @param {Object} node - node object to be edited.
-   */
+/**
+ * @namespace
+ * @property {Object} node - node object to be edited.
+ * @property {string} variant - specifies form type/function.
+ * @property {function} handleNodeFinish - parent method triggered when node is
+ * edited or deleted.
+ * @property {function} handleCancel - parent method triggered when form action is cancelled.
+ */
+OntologyFormComponent.propTypes = {
   node: PropTypes.object,
-  /**
-   * @param {string} variant - specifies form type/function.
-   */
   variant: PropTypes.string,
-  /**
-   * @param {function} handleNodeFinish - parent method triggered when node is
-   * edited or deleted.
-   */
-  handleNodeFinish: PropTypes.func,
+  handleFinish: PropTypes.func,
+  handleCancel: PropTypes.func,
 };
 
-NodeFormComponent.defaultProps = {
+OntologyFormComponent.defaultProps = {
   variant: 'edit',
-  handleNodeFinish: null,
+  handleFinish: null,
+  handleCancel: null,
   node: null,
 };
 
-export default NodeFormComponent;
+export default OntologyFormComponent;

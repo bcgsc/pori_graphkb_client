@@ -18,10 +18,12 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 import { withStyles } from '@material-ui/core/styles';
 import qs from 'qs';
+import _ from 'lodash';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import NodeDetailComponent from '../../components/NodeDetailComponent/NodeDetailComponent';
 import api from '../../services/api';
+import Ontology from '../../services/ontology';
 import config from '../../config.json';
 
 const { DEFAULT_NEIGHBORS } = config;
@@ -54,6 +56,7 @@ class DataView extends Component {
       displayed: [],
       hidden: [],
       allProps: [],
+      storedFilters: [],
       detail: null,
       next: null,
       completedNext: true,
@@ -94,28 +97,30 @@ class DataView extends Component {
     const schema = await api.getSchema();
     const filteredSearch = qs.parse(history.location.search.slice(1));
     let route = '/ontologies';
+    const omitted = [];
     if (filteredSearch['@class'] && schema[filteredSearch['@class']]) {
       route = schema[filteredSearch['@class']].route || filteredSearch['@class'];
+      omitted.push('@class');
     }
 
     let allProps = ['@rid', '@class'];
     try {
-      const data = await api.get(`${route}?${qs.stringify(filteredSearch)}&neighbors=${DEFAULT_NEIGHBORS}`);
+      const data = await api.get(`${route}?${qs.stringify(_.omit(filteredSearch, omitted))}&neighbors=${DEFAULT_NEIGHBORS}`);
       const cycled = jc.retrocycle(data).result;
 
       cycled.forEach((ontologyTerm) => {
         allProps = api.collectOntologyProps(ontologyTerm, allProps, schema);
-        dataMap[ontologyTerm['@rid']] = ontologyTerm;
+        dataMap[ontologyTerm['@rid']] = new Ontology(ontologyTerm);
       });
 
       if (cycled.length >= (filteredSearch.limit || DEFAULT_LIMIT)) {
-        const nextFilteredSearch = Object.assign({}, filteredSearch);
-        nextFilteredSearch.skip = filteredSearch.limit || DEFAULT_LIMIT;
+        filteredSearch.skip = filteredSearch.limit || DEFAULT_LIMIT;
         this.setState({
-          next: () => api.get(`${route}?${qs.stringify(nextFilteredSearch)}&neighbors=${DEFAULT_NEIGHBORS}`),
+          next: () => api.get(`${route}?${qs.stringify(_.omit(filteredSearch, omitted))}&neighbors=${DEFAULT_NEIGHBORS}`),
           moreResults: true,
         });
       }
+      Ontology.loadEdges(api.getEdges(schema));
       this.setState({
         data: dataMap,
         loginRedirect,
@@ -139,7 +144,7 @@ class DataView extends Component {
     if (!data[rid]) {
       const endpoint = `/ontologies/${rid.slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`;
       const response = await api.get(endpoint);
-      data[rid] = jc.retrocycle(response).result;
+      data[rid] = new Ontology(jc.retrocycle(response).result);
       this.setState({ data });
     }
   }
@@ -212,12 +217,14 @@ class DataView extends Component {
         let newColumns = allProps;
         cycled.forEach((ontologyTerm) => {
           newColumns = api.collectOntologyProps(ontologyTerm, allProps, schema);
-          data[ontologyTerm['@rid']] = ontologyTerm;
+          data[ontologyTerm['@rid']] = new Ontology(ontologyTerm);
         });
 
         let route = '/ontologies';
-        if (filteredSearch['@class']) {
-          route = schema[filteredSearch['@class']].route;
+        const omitted = [];
+        if (filteredSearch['@class'] && schema[filteredSearch['@class']]) {
+          route = schema[filteredSearch['@class']].route || filteredSearch['@class'];
+          omitted.push('@class');
         }
 
         let newNext = null;
@@ -225,8 +232,8 @@ class DataView extends Component {
         const limit = filteredSearch.limit || DEFAULT_LIMIT;
         const lastSkip = filteredSearch.skip || limit;
         if (cycled.length >= limit) {
-          filteredSearch.skip = lastSkip + limit;
-          newNext = () => api.get(`${route}?${qs.stringify(filteredSearch)}&neighbors=${DEFAULT_NEIGHBORS}`);
+          filteredSearch.skip = Number(lastSkip) + Number(limit);
+          newNext = () => api.get(`${route}?${qs.stringify(_.omit(filteredSearch, omitted))}&neighbors=${DEFAULT_NEIGHBORS}`);
           moreResults = true;
         }
         this.setState({
@@ -307,15 +314,16 @@ class DataView extends Component {
   }
 
   /**
-   * Handles redirect to graph from table.
+   * Handles redirect to table to graph.
    */
-  handleGraphRedirect() {
+  handleGraphRedirect(filters) {
     const { history } = this.props;
+    this.setState({ storedFilters: filters });
     history.push({ pathname: '/data/graph', search: history.location.search });
   }
 
   /**
-   * Handles redirect to table from graph.
+   * Handles redirect to graph to table.
    */
   handleTableRedirect() {
     const { history } = this.props;
@@ -348,6 +356,7 @@ class DataView extends Component {
       edges,
       detailEdge,
       completedNext,
+      storedFilters,
     } = this.state;
 
     const {
@@ -410,6 +419,7 @@ class DataView extends Component {
         allProps={allProps}
         moreResults={moreResults}
         completedNext={completedNext}
+        storedFilters={storedFilters}
         handleCheckAll={this.handleCheckAll}
         handleNodeEditStart={this.handleNodeEditStart}
         handleHideSelected={this.handleHideSelected}

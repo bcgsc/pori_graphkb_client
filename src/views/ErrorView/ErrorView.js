@@ -4,7 +4,6 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import './ErrorView.css';
 import { Typography, Button, Tooltip } from '@material-ui/core';
@@ -37,6 +36,7 @@ class ErrorView extends Component {
       tooltip,
       error,
     } = this.state;
+    const { history } = this.props;
     if (!error) return null;
     const {
       message,
@@ -71,11 +71,9 @@ class ErrorView extends Component {
         </div>
         <div id="spacer" />
         <div className="error-content" id="return-link">
-          <Link to="/query">
-            <Button variant="raised" color="primary">
+            <Button variant="raised" color="primary" onClick={() => history.goBack()}>
               Back
             </Button>
-          </Link>
         </div>
         {stacktrace
           && (

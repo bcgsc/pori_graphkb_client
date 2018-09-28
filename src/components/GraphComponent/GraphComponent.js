@@ -52,7 +52,7 @@ const { PALLETE_SIZE } = config.GRAPH_DEFAULTS;
 const { GRAPH_UNIQUE_LIMIT } = config.NOTIFICATIONS;
 
 // Component specific constants.
-const AUTO_SPACE_COEFFICIENT = 2.8;
+const AUTO_SPACE_COEFFICIENT = 2;
 const SNACKBAR_AUTOHIDE_DURATION = 6000;
 const MARKER_ID = 'endArrow';
 const DIALOG_FADEOUT_TIME = 150;
@@ -361,8 +361,8 @@ class GraphComponent extends Component {
     ).force(
       'charge',
       d3.forceManyBody()
-        .distanceMax(graphOptions.chargeMax)
-        .strength(-graphOptions.chargeStrength),
+        .strength(-graphOptions.chargeStrength)
+        .distanceMax(graphOptions.chargeMax),
     ).force(
       'center',
       d3.forceCenter(

@@ -45,8 +45,8 @@ import TimelineIcon from '@material-ui/icons/Timeline';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import AddIcon from '@material-ui/icons/Add';
 import SearchIcon from '@material-ui/icons/Search';
+import OntologyDetailComponent from '../OntologyDetailComponent/OntologyDetailComponent';
 import FilterIcon from '../FilterIcon/FilterIcon';
-import NodeDetailComponent from '../NodeDetailComponent/NodeDetailComponent';
 import DownloadFileComponent from '../DownloadFileComponent/DownloadFileComponent';
 import util from '../../services/util';
 import config from '../../config.json';
@@ -850,67 +850,66 @@ class TableComponent extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {pageData
-                .map((n) => {
-                  const isSelected = displayed.includes(n.getId());
-                  const active = toggle === n.getId();
-                  const detail = active ? (
-                    <TableRow>
-                      <Collapse
-                        colSpan={numCols + 2}
-                        component="td"
-                        in={active}
-                        unmountOnExit
+              {pageData.map((n) => {
+                const isSelected = displayed.includes(n.getId());
+                const active = toggle === n.getId();
+                const detail = active ? (
+                  <TableRow>
+                    <Collapse
+                      colSpan={numCols + 2}
+                      component="td"
+                      in={active}
+                      unmountOnExit
+                    >
+                      <OntologyDetailComponent
+                        node={n}
+                        data={data}
+                        handleNodeEditStart={handleNodeEditStart}
+                        handleNewQuery={handleNewQuery}
+                      />
+                    </Collapse>
+                  </TableRow>
+                ) : null;
+                return !hidden.includes(n.getId())
+                  && (
+                    <React.Fragment key={n.getId() || Math.random()}>
+                      <TableRow
+                        selected={isSelected}
+                        onClick={() => handleClick(n.getId())}
+                        classes={{
+                          root: 'cursor-override',
+                          selected: 'selected-override',
+                        }}
                       >
-                        <NodeDetailComponent
-                          node={n}
-                          data={data}
-                          handleNodeEditStart={handleNodeEditStart}
-                          handleNewQuery={handleNewQuery}
-                        />
-                      </Collapse>
-                    </TableRow>
-                  ) : null;
-                  return !hidden.includes(n.getId())
-                    && (
-                      <React.Fragment key={n.getId() || Math.random()}>
-                        <TableRow
-                          selected={isSelected}
-                          onClick={() => handleClick(n.getId())}
-                          classes={{
-                            root: 'cursor-override',
-                            selected: 'selected-override',
-                          }}
-                        >
-                          <TableCell padding="dense">
-                            <Checkbox
-                              onChange={() => handleCheckbox(n.getId())}
-                              checked={displayed.includes(n.getId())}
-                            />
-                          </TableCell>
-                          {tableColumns.map((col) => {
-                            if (col.checked) {
-                              return (
-                                <TableCell key={col.id}>
-                                  {col.sortBy ? util.castToExist((n[col.id] || '')[col.sortBy]) : util.castToExist(n[col.id])}
-                                </TableCell>
-                              );
-                            }
-                            return null;
-                          })}
-                          <TableCell>
-                            <IconButton
-                              onClick={() => this.handleDetailToggle(n.getId())}
-                              className={`detail-btn ${active ? 'active' : ''}`}
-                            >
-                              <KeyboardArrowDownIcon />
-                            </IconButton>
-                          </TableCell>
-                        </TableRow>
-                        {detail}
-                      </React.Fragment>
-                    );
-                })}
+                        <TableCell padding="dense">
+                          <Checkbox
+                            onChange={() => handleCheckbox(n.getId())}
+                            checked={displayed.includes(n.getId())}
+                          />
+                        </TableCell>
+                        {tableColumns.map((col) => {
+                          if (col.checked) {
+                            return (
+                              <TableCell key={col.id}>
+                                {col.sortBy ? util.castToExist((n[col.id] || '')[col.sortBy]) : util.castToExist(n[col.id])}
+                              </TableCell>
+                            );
+                          }
+                          return null;
+                        })}
+                        <TableCell>
+                          <IconButton
+                            onClick={() => this.handleDetailToggle(n.getId())}
+                            className={`detail-btn ${active ? 'active' : ''}`}
+                          >
+                            <KeyboardArrowDownIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                      {detail}
+                    </React.Fragment>
+                  );
+              })}
             </TableBody>
           </Table>
         </div>
@@ -969,82 +968,53 @@ class TableComponent extends Component {
   }
 }
 
+/**
+ * @namespace
+ * @property {Object} data - Object containing query results.
+ * @property {Array} displayed - Array of displayed nodes.
+ * @property {function} handleCheckAll - Method triggered when all rows are
+ * checked.
+ * @property {function} handleNodeEditStart - Method triggered when user
+ * requests to edit a node.
+ * @property {function} handleClick - Method triggered when a row is clicked.
+ * @property {function} handleCheckbox - Method triggered when a single row is
+ * checked.
+ * @property {function} handleHideSelected - Method for hiding selected rows
+ * from the view.
+ * @property {function} handleShowAllNodes - Method for returning previously
+ * hidden rows to the view.
+ * @property {function} handleNewQuery - Handles new querying with new
+ * parameters.
+ * @property {function} handleGraphRedirect - Handles routing to graph
+ * component.
+ * @property {function} handleSubsequentPagination - parent function to handle
+ * subsequent api calls.
+ * @property {Array} hidden - Array of hidden nodes.
+ * @property {Array} allProps - all non-base columns represented throughout the
+ * query results.
+ * @property {boolean} moreResults - Flag to tell component there could be more
+ * results to the query.
+ * @property {boolean} completedNext - Flag for whether or not component has
+ * completed the current subsequent query.
+ * @property {Array} storedFilters - filters stored for current session.
+ * Accessed on component init and stored on navigate to table.
+ */
 TableComponent.propTypes = {
-  /**
-   * @param {Object} data - Object containing query results.
-   */
   data: PropTypes.object.isRequired,
-  /**
-   * @param {Array} displayed - Array of displayed nodes.
-   */
   displayed: PropTypes.array.isRequired,
-  /**
-   * @param {function} handleCheckAll - Method triggered when all rows are
-   * checked.
-   */
   handleCheckAll: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleNodeEditStart - Method triggered when user
-   * requests to edit a node.
-   */
   handleNodeEditStart: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleClick - Method triggered when a row is clicked.
-   */
   handleClick: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleCheckbox - Method triggered when a single row is
-   * checked.
-   */
   handleCheckbox: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleHideSelected - Method for hiding selected rows
-   * from the view.
-   */
   handleHideSelected: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleShowAllNodes - Method for returning previously
-   * hidden rows to the view.
-   */
   handleShowAllNodes: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleNewQuery - Handles new querying with new
-   * parameters.
-   */
   handleNewQuery: PropTypes.func,
-  /**
-   * @param {function} handleGraphRedirect - Handles routing to graph
-   * component.
-   */
   handleGraphRedirect: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleSubsequentPagination - parent function to handle
-   * subsequent api calls.
-   */
   handleSubsequentPagination: PropTypes.func,
-  /**
-   * @param {Array} hidden - Array of hidden nodes.
-   */
   hidden: PropTypes.array,
-  /**
-   * @param {Array} allProps - all non-base columns represented throughout the
-   * query results.
-   */
   allProps: PropTypes.array,
-  /**
-   * @param {boolean} moreResults - Flag to tell component there could be more
-   * results to the query.
-   */
   moreResults: PropTypes.bool,
-  /**
-   * @param {boolean} completedNext - Flag for whether or not component has
-   * completed the current subsequent query.
-   */
   completedNext: PropTypes.bool.isRequired,
-  /**
-   * @param {Array} storedFilters - filters stored for current session.
-   * Accessed on component init and stored on navigate to table.
-   */
   storedFilters: PropTypes.array,
 };
 

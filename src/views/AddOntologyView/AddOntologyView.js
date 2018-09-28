@@ -1,45 +1,47 @@
 /**
- * @module /views/AddNodeView
+ * @module /views/AddOntologyView
  */
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import NodeFormComponent from '../../components/NodeFormComponent/NodeFormComponent';
+import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
 
 /**
  * View for editing or adding database nodes. Includes a NodeFormComponent with the
  * 'add' variant. Submissions will post to the server, and redirect user to the home
  * query page.
  */
-class AddNodeView extends Component {
+class AddOntologyView extends Component {
   constructor(props) {
     super(props);
-    this.handleNodeFinish = this.handleNodeFinish.bind(this);
+    this.handleFinish = this.handleFinish.bind(this);
   }
 
   /**
    * Triggered when the user hits the submit button.
    */
-  handleNodeFinish() {
+  handleFinish() {
     const { history } = this.props;
     history.push('/query');
   }
 
   render() {
     return (
-      <NodeFormComponent
+      <OntologyFormComponent
         variant="add"
-        handleNodeFinish={this.handleNodeFinish}
+        handleFinish={this.handleFinish}
+        handleCancel={this.handleFinish}
       />
     );
   }
 }
 
-AddNodeView.propTypes = {
-  /**
-   * @param {Object} history - history state object.
-   */
+/**
+ * @namespace
+ * @property {Object} history - history state object.
+ */
+AddOntologyView.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-export default AddNodeView;
+export default AddOntologyView;

@@ -200,7 +200,6 @@ export default class GraphOptionsPanel extends Component {
                   onChange={handleGraphOptionsChange}
                   value={graphOptions.linksColor}
                   disabled={linkLegendDisabled}
-
                 >
                   <MenuItem value="">None</MenuItem>
                   <MenuItem value="@class">Class</MenuItem>
@@ -222,8 +221,9 @@ export default class GraphOptionsPanel extends Component {
                       name="linksLegend"
                       checked={
                         graphOptions.linksLegend
+                        && graphOptions.linksColor
                         && !linkLegendDisabled}
-                      disabled={linkLegendDisabled}
+                      disabled={linkLegendDisabled || !graphOptions.linksColor}
                     />
                   )}
                   label="Show Links Coloring Legend"
@@ -316,6 +316,15 @@ export default class GraphOptionsPanel extends Component {
   }
 }
 
+/**
+ * @namespace
+ * @property {Object} graphOptions - Graph options object.
+ * @property {PropsMap} propsMap - Graph coloringpropsmap.
+ * @property {boolean} graphOptionsOpen - dialog open flag.
+ * @property {boolean} linkLegendDisabled - link legend disabled flag.
+ * @property {function} handleDialogClose - function for closing dialog.
+ * @property {function} handleGraphOptionsChange - function for field changing.
+ */
 GraphOptionsPanel.propTypes = {
   graphOptions: PropTypes.object,
   propsMap: PropTypes.object,

@@ -1,11 +1,11 @@
 /**
- * @module /views/EditNodeView
+ * @module /views/EditOntologyView
  */
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as jc from 'json-cycle';
-import NodeFormComponent from '../../components/NodeFormComponent/NodeFormComponent';
+import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
 import api from '../../services/api';
 import config from '../../config.json';
 
@@ -16,14 +16,15 @@ const { DEFAULT_NEIGHBORS } = config;
  * selected. Selects node with record ID as passed in to the url (/edit/[rid]).
  * Redirects to the home query page on form submit, or to the error page.
  */
-class EditNodeView extends Component {
+class EditOntologyView extends Component {
   constructor(props) {
     super(props);
     this.state = {
       node: null,
     };
 
-    this.handleNodeFinish = this.handleNodeFinish.bind(this);
+    this.handleFinish = this.handleFinish.bind(this);
+    this.handleCancel = this.handleCancel.bind(this);
   }
 
   /**
@@ -38,9 +39,17 @@ class EditNodeView extends Component {
   }
 
   /**
-   * Sets completed flag to navigate back to previous query.
+   * Navigates back to previous view.
    */
-  handleNodeFinish() {
+  handleCancel() {
+    const { history } = this.props;
+    history.back();
+  }
+
+  /**
+   * Navigates back to query page.
+   */
+  handleFinish() {
     const { history } = this.props;
     history.push('/query');
   }
@@ -53,10 +62,10 @@ class EditNodeView extends Component {
 
     if (node) {
       return (
-        <NodeFormComponent
+        <OntologyFormComponent
           variant="edit"
           node={node}
-          handleNodeFinish={this.handleNodeFinish}
+          handleFinish={this.handleFinish}
         />
       );
     }
@@ -64,15 +73,14 @@ class EditNodeView extends Component {
   }
 }
 
-EditNodeView.propTypes = {
-  /**
-   * @param {Object} match - Match object for extracting URL parameters.
-   */
+/**
+ * @namespace
+ * @property {Object} match - Match object for extracting URL parameters.
+ * @property {Object} history - Application routing history object.
+ */
+EditOntologyView.propTypes = {
   match: PropTypes.object.isRequired,
-  /**
-   * @param {Object} history - Application routing history object.
-   */
   history: PropTypes.object.isRequired,
 };
 
-export default EditNodeView;
+export default EditOntologyView;

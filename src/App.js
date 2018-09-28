@@ -31,15 +31,17 @@ import AddIcon from '@material-ui/icons/Add';
 import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import DNAIcon from './components/DNAIcon/DNAIcon';
 import QueryView from './views/QueryView/QueryView';
 import AdvancedQueryView from './views/AdvancedQueryView/AdvancedQueryView';
 import DataView from './views/DataView/DataView';
 import ErrorView from './views/ErrorView/ErrorView';
-import EditNodeView from './views/EditNodeView/EditNodeView';
-import AddNodeView from './views/AddNodeView/AddNodeView';
+import EditOntologyView from './views/EditOntologyView/EditOntologyView';
+import AddOntologyView from './views/AddOntologyView/AddOntologyView';
 import LoginView from './views/LoginView/LoginView';
-import NodeDetailView from './views/NodeDetailView/NodeDetailView';
+import OntologyDetailView from './views/OntologyDetailView/OntologyDetailView';
 import FeedbackView from './views/FeedbackView/FeedbackView';
+import VariantFormView from './views/VariantFormView/VariantFormView';
 import AdminView from './views/AdminView/AdminView';
 import logo from './logo.png';
 import auth from './services/auth';
@@ -114,13 +116,21 @@ class App extends Component {
     this.setState({ loggedIn: true });
   }
 
+  /**
+   * Handle route navigation.
+   * @param {string} route - path string.
+   */
   handleSideBarNavigate(route) {
     history.push(route);
     this.setState({ drawerOpen: false });
   }
 
   render() {
-    const { anchorEl, loggedIn, drawerOpen } = this.state;
+    const {
+      anchorEl,
+      loggedIn,
+      drawerOpen,
+    } = this.state;
 
     const loginWithProps = () => (
       <LoginView
@@ -153,17 +163,32 @@ class App extends Component {
         </div>
         <Divider />
         <List dense>
-          <MenuItem onClick={() => this.handleSideBarNavigate('/query')}>
+          <MenuItem
+            id="link-search"
+            onClick={() => this.handleSideBarNavigate('/query')}
+          >
             <ListItemIcon>
               <SearchIcon />
             </ListItemIcon>
             <ListItemText primary="Query" />
           </MenuItem>
-          <MenuItem onClick={() => this.handleSideBarNavigate('/add')}>
+          <MenuItem
+            id="link-add"
+            onClick={() => this.handleSideBarNavigate('/add')}
+          >
             <ListItemIcon>
               <AddIcon />
             </ListItemIcon>
             <ListItemText primary="Add Ontology" />
+          </MenuItem>
+          <MenuItem
+            id="link-variant"
+            onClick={() => this.handleSideBarNavigate('/variant')}
+          >
+            <ListItemIcon>
+              <DNAIcon />
+            </ListItemIcon>
+            <ListItemText primary="Add Variant" />
           </MenuItem>
         </List>
       </Drawer>
@@ -173,11 +198,12 @@ class App extends Component {
       <Switch>
         <Route exact path="/query" component={QueryView} />
         <Route path="/query/advanced" component={AdvancedQueryView} />
-        <Route path="/add" component={AddNodeView} />
-        <Route path="/edit/:rid" component={EditNodeView} />
-        <Route path="/ontology/:rid" component={NodeDetailView} />
+        <Route path="/add" component={AddOntologyView} />
+        <Route path="/edit/:rid" component={EditOntologyView} />
+        <Route path="/ontology/:rid" component={OntologyDetailView} />
         <Route path="/data" component={DataView} />
         <Route path="/feedback" component={FeedbackView} />
+        <Route path="/variant" component={VariantFormView} />
         <Route path="/admin" component={AdminView} />
         <Redirect from="*" to="/query" />
       </Switch>
@@ -224,9 +250,6 @@ class App extends Component {
                     transformOrigin={{
                       vertical: 'top',
                       horizontal: 'left',
-                    }}
-                    PaperProps={{
-                      onMouseLeave: this.handleClose,
                     }}
                   >
                     <Card className="user-menu">

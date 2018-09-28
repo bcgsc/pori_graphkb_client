@@ -2,8 +2,18 @@ import util from '../../src/services/util';
 
 describe('util methods test', () => {
   it('antiCamelCase', () => {
-    const testStrings = ['testString', 'acronymTestId', '@atSymbolTest', 'Unchangedtest'];
-    const outputs = ['Test String', 'Acronym Test ID', 'At Symbol Test', 'Unchangedtest'];
+    const testStrings = [
+      'testString',
+      'acronymTestId',
+      '@atSymbolTest',
+      'Unchangedtest',
+    ];
+    const outputs = [
+      'Test String',
+      'Acronym Test ID',
+      'At Symbol Test',
+      'Unchangedtest',
+    ];
     testStrings.forEach((test, i) => {
       const output = util.antiCamelCase(test);
       expect(output).to.eq(outputs[i]);
@@ -42,8 +52,19 @@ describe('util methods test', () => {
   });
 
   it('expandEdges', () => {
-    const testEdges = ['one', 'blargh', 'subclassof'];
-    const expectedEdges = ['in_one', 'out_one', 'in_blargh', 'out_blargh', 'in_subclassof', 'out_subclassof'];
+    const testEdges = [
+      'one',
+      'blargh',
+      'subclassof',
+    ];
+    const expectedEdges = [
+      'in_one',
+      'out_one',
+      'in_blargh',
+      'out_blargh',
+      'in_subclassof',
+      'out_subclassof',
+    ];
 
     util.expandEdges(testEdges).forEach((edge, i) => expect(edge).to.eq(expectedEdges[i]));
   });

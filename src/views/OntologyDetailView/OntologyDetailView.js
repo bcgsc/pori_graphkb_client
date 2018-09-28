@@ -1,12 +1,12 @@
 /**
- * @module /views/NodeDetailView
+ * @module /views/OntologyDetailView
  */
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 import * as jc from 'json-cycle';
-import NodeDetailComponent from '../../components/NodeDetailComponent/NodeDetailComponent';
+import OntologyDetailComponent from '../../components/OntologyDetailComponent/OntologyDetailComponent';
 import api from '../../services/api';
 import Ontology from '../../services/ontology';
 import config from '../../config.json';
@@ -17,7 +17,7 @@ const { DEFAULT_NEIGHBORS } = config;
  * Fullscreen view for record details. Selects record with identifier passed in through
  * the route URL.
  */
-class NodeDetailView extends Component {
+class OntologyDetailView extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -102,7 +102,7 @@ class NodeDetailView extends Component {
     // TODO: add children buttons props.
     if (node) {
       return (
-        <NodeDetailComponent
+        <OntologyDetailComponent
           node={node}
           handleNodeEditStart={this.handleNodeEdit}
           handleNewQuery={this.handleNewQuery}
@@ -113,15 +113,14 @@ class NodeDetailView extends Component {
   }
 }
 
-NodeDetailView.propTypes = {
-  /**
-   * @param {Object} match - Match object for extracting URL parameters.
-   */
+/**
+ * @namespace
+ * @property {Object} match - Match object for extracting URL parameters.
+ * @property {Object} history - Application routing history object.
+ */
+OntologyDetailView.propTypes = {
   match: PropTypes.object.isRequired,
-  /**
-   * @param {Object} history - Application routing history object.
-   */
   history: PropTypes.object.isRequired,
 };
 
-export default NodeDetailView;
+export default OntologyDetailView;

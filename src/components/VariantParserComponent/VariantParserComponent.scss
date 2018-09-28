@@ -1,0 +1,33 @@
+@import '../../globals';
+.variant-parser-wrapper {
+    display: grid;
+    grid-row-gap: 1rem;
+  .variant-parser-shorthand {
+    display: flex;
+    height: 68px;
+    button {
+      transition: all 0.15s;
+    }
+    .variant-parser-collapsed {
+      transform: rotate(180deg);
+    }
+  }
+
+  .parser-form-grid {
+    column-count: 2;
+    min-width: 0;
+    @media (max-width: 768px) {
+      column-count: unset;
+    }
+    > * {
+      display: inline-flex;
+      -webkit-column-break-inside: avoid;
+      backface-visibility: hidden;
+    }
+  }
+
+  #variant-form-submit {
+    display: flex;
+    flex-direction: row-reverse;
+  }
+}

@@ -20,8 +20,10 @@
     @media (max-width: 768px) {
       column-count: unset;
     }
-    li {
+    > * {
       display: inline-flex;
+      -webkit-column-break-inside: avoid;
+      backface-visibility: hidden;
     }
   }
 

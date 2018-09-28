@@ -1,5 +1,4 @@
 .form-templater-group-wrapper{
-  display: inline-block;
   width: 100%;
   .form-templater-row-grid {
     display: grid;
@@ -13,7 +12,7 @@
     }
     > *{
       padding: 0;
-      display: inline-block !important;
+      display: inline-block;
     }
 
   }

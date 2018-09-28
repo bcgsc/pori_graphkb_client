@@ -41,12 +41,12 @@ describe('Variant Form Test', () => {
     cy.get('div.droptions li:first').click();
     cy.get('#break1 li:first div.resource-select').click();
     cy.get('div li[data-value="ProteinPosition"]').click();
-    cy.contains('ProteinPosition').should('exist');
+    cy.contains('Protein Position').should('exist');
     cy.wait(500);
     cy.get('#break2 li:first div.resource-select div[role=button]').click();
     cy.get('div li[data-value="CytobandPosition"]').click();
-    cy.contains('ProteinPosition').should('not.exist');
-    cy.contains('CytobandPosition').should('exist');
+    cy.contains('Protein Position').should('not.exist');
+    cy.contains('Cytoband Position').should('exist');
     cy.contains('cytoband arm must be p or q ()').should('exist');
     cy.get('#break1 textarea[name=arm]').type('p');
     cy.get('#break2 textarea[name=arm]').type('p');

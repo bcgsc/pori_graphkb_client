@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import './DataView.css';
 import * as jc from 'json-cycle';
 import { Route, Redirect, Switch } from 'react-router-dom';
+/* eslint-disable */
 import {
   CircularProgress,
   Drawer,
@@ -22,6 +23,7 @@ import _ from 'lodash';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import OntologyDetailComponent from '../../components/OntologyDetailComponent/OntologyDetailComponent';
+import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
 import api from '../../services/api';
 import Ontology from '../../services/ontology';
 import config from '../../config.json';
@@ -355,42 +357,20 @@ class DataView extends Component {
       moreResults,
       filteredSearch,
       edges,
+      /* eslint-disable-next-line */
       detailEdge,
       completedNext,
       storedFilters,
     } = this.state;
 
     const {
-      classes,
       history,
     } = this.props;
 
     if (!data) return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
 
     const detailDrawer = (
-      <Drawer
-        variant="persistent"
-        anchor="right"
-        open={!!detail}
-        classes={{
-          paper: classes.paper,
-        }}
-        onClose={this.handleDetailDrawerClose}
-        SlideProps={{ unmountOnExit: true }}
-      >
-        <OntologyDetailComponent
-          variant="graph"
-          node={detail}
-          handleNodeEditStart={this.handleNodeEditStart}
-          handleNewQuery={this.handleNewQuery}
-          handleClose={this.handleDetailDrawerClose}
-          detailEdge={detailEdge}
-        >
-          <IconButton onClick={this.handleDetailDrawerClose}>
-            <CloseIcon color="action" />
-          </IconButton>
-        </OntologyDetailComponent>
-      </Drawer>
+      <DetailDrawer />
     );
 
     const GraphWithProps = () => (
@@ -479,7 +459,6 @@ class DataView extends Component {
  */
 DataView.propTypes = {
   history: PropTypes.object.isRequired,
-  classes: PropTypes.object.isRequired,
 };
 
 export default withStyles(styles)(DataView);

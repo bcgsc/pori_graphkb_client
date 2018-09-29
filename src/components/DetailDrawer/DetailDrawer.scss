@@ -1,0 +1,17 @@
+@import '../../globals';
+
+.detail-root{
+  width: 320px;
+}
+.detail-headline {
+  display: flex;
+  >h1 {
+    margin: auto 0;
+  }
+  >button {
+    margin-left: auto;
+  }
+}
+
+.detail-important {
+}

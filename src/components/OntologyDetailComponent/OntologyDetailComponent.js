@@ -12,7 +12,6 @@ import {
   IconButton,
   Card,
   Typography,
-  CardContent,
   Divider,
   ExpansionPanel,
   ExpansionPanelDetails,
@@ -374,30 +373,24 @@ class OntologyDetailComponent extends Component {
           ) : null}
         </div>
         <div className={`node-properties ${className}`}>
-          <Card className="properties">
-            <CardContent>
-              <Typography paragraph variant="title" component="h1">
-                Properties:
-                <Divider />
-              </Typography>
-              {Object.keys(filteredNode)
-                .map(key => formatProperty(key, filteredNode[key], ''))}
-            </CardContent>
-          </Card>
+          <Typography paragraph variant="title" component="h1">
+            Properties:
+          </Typography>
+          <Divider />
+          {Object.keys(filteredNode)
+            .map(key => formatProperty(key, filteredNode[key], ''))}
           {(variant !== 'graph' || relationships.length !== 0) && (
-            <Card className="properties">
-              <CardContent>
-                <Typography paragraph variant="title" component="h1">
-                  Relationships:
-                  <Divider />
+            <React.Fragment>
+              <Typography paragraph variant="title" component="h1">
+                Relationships:
+              </Typography>
+              <Divider />
+              {relationships.length !== 0 ? relationships : (
+                <Typography variant="caption" style={{ margin: 'auto' }}>
+                  No relationships
                 </Typography>
-                {relationships.length !== 0 ? relationships : (
-                  <Typography variant="caption" style={{ margin: 'auto' }}>
-                    No relationships
-                  </Typography>
-                )}
-              </CardContent>
-            </Card>
+              )}
+            </React.Fragment>
           )}
         </div>
       </Card>

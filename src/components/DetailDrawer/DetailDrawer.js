@@ -1,7 +1,6 @@
 /**
  * @module /components/OntologyDetailComponent
  */
-/* eslint-disable */
 
 import React, { Component } from 'react';
 import './DetailDrawer.css';
@@ -14,71 +13,364 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  ListSubheader,
+  Collapse,
+  Button,
+  Tooltip,
 } from '@material-ui/core';
-// import EditIcon from '@material-ui/icons/Edit';
-import CloseIcon from '@material-ui/icons/Close';
-import TitleIcon from '@material-ui/icons/Title';
+import EditIcon from '@material-ui/icons/Edit';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import LabelIcon from '@material-ui/icons/Label';
+import LabelTwoToneIcon from '@material-ui/icons/LabelTwoTone';
+import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import LabelImportantIcon from '@material-ui/icons/LabelImportant';
 import BookmarkIcon from '@material-ui/icons/Bookmark';
+import LinkIcon from '@material-ui/icons/Link';
+import ClassIcon from '@material-ui/icons/Class';
+import DescriptionIcon from '@material-ui/icons/Description';
+import ListAltIcon from '@material-ui/icons/ListAlt';
+import DateRangeIcon from '@material-ui/icons/DateRange';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
+import LocalOfferIcon from '@material-ui/icons/LocalOffer';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import LocationCityIcon from '@material-ui/icons/LocationCity';
+import BacteriaIcon from '../../icons/BacteriaIcon/BacteriaIcon';
+import OpenBookIcon from '../../icons/OpenBookIcon/OpenBookIcon';
+import WWWIcon from '../../icons/WWWIcon/WWWIcon';
+import util from '../../services/util';
+import Ontology from '../../services/ontology';
 
+const PROP_TO_ICON = {
+  name: <LabelIcon />,
+  sourceId: <LabelImportantIcon />,
+  source: <BookmarkIcon />,
+  description: <DescriptionIcon />,
+  subsets: <ListAltIcon />,
+  longName: <LabelTwoToneIcon />,
+  sourceIdVersion: <LocalOfferIcon />,
+  biotype: <BacteriaIcon />,
+  journalName: <OpenBookIcon />,
+  year: <DateRangeIcon />,
+  startYear: <DateRangeIcon />,
+  endYear: <DateRangeIcon />,
+  city: <LocationCityIcon />,
+  country: <LocationOnIcon />,
+  url: <WWWIcon />,
+  dependency: <AssignmentOutlinedIcon />,
+  '@class': <ClassIcon />,
+};
+
+const IDENTIFIERS = ['@class', 'name', 'sourceId', 'source.name'];
+const MAX_STRING_LENGTH = 64;
 
 class DetailDrawer extends Component {
+  static getIcon(key) {
+    return (
+      <div>
+        <Tooltip title={util.antiCamelCase(key)}>
+          {PROP_TO_ICON[key] || <AssignmentIcon />}
+        </Tooltip>
+      </div>
+    );
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      opened: [],
+    };
+    this.formatIdentifiers = this.formatIdentifiers.bind(this);
+    this.formatOtherProps = this.formatOtherProps.bind(this);
+    this.formatRelationships = this.formatRelationships.bind(this);
+    this.handleExpand = this.handleExpand.bind(this);
+  }
+
+  formatLongValue(key, value, isStatic) {
+    const { opened } = this.state;
+    const listItemProps = isStatic === true
+      ? {}
+      : { button: true, onClick: () => this.handleExpand(key) };
+    const collapseProps = isStatic === true
+      ? { in: true }
+      : { in: !!opened.includes(key) };
+    let itemIcon = null;
+    if (isStatic !== true) {
+      itemIcon = !opened.includes(key)
+        ? <ExpandMoreIcon />
+        : <ExpandLessIcon />;
+    }
+    return (
+      <React.Fragment key={key}>
+        <ListItem {...listItemProps}>
+          <ListItemIcon>
+            {DetailDrawer.getIcon(key)}
+          </ListItemIcon>
+          <ListItemText primary={util.antiCamelCase(key)} />
+          {itemIcon}
+        </ListItem>
+        <Collapse {...collapseProps}>
+          <ListItem dense>
+            <ListItemText>
+              {util.formatStr(value)}
+            </ListItemText>
+          </ListItem>
+        </Collapse>
+      </React.Fragment>
+    );
+  }
+
+  formatIdentifiers(node) {
+    if (!node) return null;
+    return (
+      <List>
+        {IDENTIFIERS.map((prop) => {
+          const [key, nestedKey] = prop.split('.');
+          const value = nestedKey ? node[key][nestedKey] : node[key];
+          if (value) {
+            if (value.toString().length <= MAX_STRING_LENGTH) {
+              return (
+                <ListItem key={key}>
+                  <ListItemIcon>
+                    {DetailDrawer.getIcon(key)}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={util.formatStr(value)}
+                    secondary={util.antiCamelCase(key)}
+                  />
+                </ListItem>
+              );
+            }
+            return this.formatLongValue(key, value, true);
+          }
+          return null;
+        })}
+      </List>
+    );
+  }
+
+  formatOtherProps(node) {
+    if (!node) return null;
+    const { opened } = this.state;
+    const { schema } = this.props;
+    const { properties } = util.getClass(node['@class'], schema);
+    let isEmpty = true;
+    const propsList = properties
+      .filter(prop => !IDENTIFIERS.map(id => id.split('.')[0]).includes(prop.name))
+      .map((prop) => {
+        const { name, type } = prop;
+        if (!node[name]) return null;
+        isEmpty = false;
+        if (type === 'string' || type === 'integer') {
+          if (node[name].toString().length <= MAX_STRING_LENGTH) {
+            return (
+              <ListItem key={name}>
+                <ListItemIcon>
+                  {DetailDrawer.getIcon(name)}
+                </ListItemIcon>
+                <ListItemText
+                  primary={util.formatStr(node[name])}
+                  secondary={util.antiCamelCase(name)}
+                />
+              </ListItem>
+            );
+          }
+          return this.formatLongValue(name, node[name]);
+        }
+        if (type === 'embeddedset') {
+          return (
+            <React.Fragment key={name}>
+              <ListItem button onClick={() => this.handleExpand(name)}>
+                <ListItemIcon>
+                  {DetailDrawer.getIcon(name)}
+                </ListItemIcon>
+                <ListItemText primary={util.antiCamelCase(name)} />
+                {!opened.includes(name) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+              </ListItem>
+              <Collapse in={!!opened.includes(name)}>
+                <List disablePadding dense>
+                  {node[name].map(item => (
+                    <ListItem key={item}>
+                      <ListItemText inset primary={util.formatStr(item)} />
+                    </ListItem>
+                  ))}
+                </List>
+              </Collapse>
+            </React.Fragment>
+          );
+        }
+        if (type === 'link') {
+          return (
+            <React.Fragment key={name}>
+              <ListItem button onClick={() => this.handleExpand(name)}>
+                <ListItemIcon>
+                  {DetailDrawer.getIcon(name)}
+                </ListItemIcon>
+                <ListItemText primary={util.antiCamelCase(name)} />
+                {!opened.includes(name) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+              </ListItem>
+              <Collapse in={!!opened.includes(name)}>
+                <List disablePadding dense className="detail-nested-list">
+                  {this.formatIdentifiers(node[name])}
+                </List>
+              </Collapse>
+            </React.Fragment>
+          );
+        }
+        return null;
+      });
+    return !isEmpty ? (
+      <List>
+        {propsList}
+      </List>
+    ) : null;
+  }
+
+  formatRelationships(node) {
+    if (!node) return null;
+    const { opened } = this.state;
+    if (!(node instanceof Ontology)) {
+      node = new Ontology(node);
+    }
+    const edges = node.getEdges();
+    if (!edges || edges.length === 0) return null;
+    return (
+      <List>
+        {edges.map((edge) => {
+          const isOpen = opened.includes(edge['@rid']);
+          const linkedOntology = edge.in && edge.in['@rid'] === node.getId() ? edge.out : edge.in;
+          return (
+            <React.Fragment key={edge['@rid']}>
+              <ListItem
+                button
+                onClick={() => this.handleExpand(edge['@rid'])}
+              >
+                <ListItemIcon>
+                  <div>
+                    <LinkIcon />
+                  </div>
+                </ListItemIcon>
+                <ListItemText
+                  primary={util.getPreview(linkedOntology)}
+                  secondary={util.getEdgeLabel(edge['@class'])}
+                />
+                {!isOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+              </ListItem>
+              <Collapse in={!!isOpen}>
+                <List disablePadding className="detail-nested-list">
+                  <ListSubheader>
+                    Link Properties
+                  </ListSubheader>
+                  {this.formatIdentifiers(edge)}
+                  <ListSubheader>
+                    Linked Ontology
+                  </ListSubheader>
+                  {this.formatIdentifiers(linkedOntology)}
+                </List>
+              </Collapse>
+            </React.Fragment>);
+        })}
+      </List>
+    );
+  }
+
+  handleExpand(key) {
+    const { opened } = this.state;
+    if (opened.includes(key)) {
+      opened.splice(opened.indexOf(key), 1);
+    } else {
+      opened.push(key);
+    }
+    this.setState({ opened });
+  }
+
   render() {
+    const {
+      node,
+      onClose,
+      isEdge,
+      handleNodeEditStart,
+    } = this.props;
+    const identifiers = this.formatIdentifiers(node);
+    const otherProps = this.formatOtherProps(node);
+    const relationships = this.formatRelationships(node);
     return (
       <Drawer
-        open
+        open={!!node}
         anchor="right"
-        variant="persistent"
-        classes={{ paper: 'detail-root' }}
+        variant="permanent"
+        id="detail-drawer"
+        classes={{ paper: `detail-root ${!node ? 'detail-closed' : ''}` }}
       >
-        <div className="detail-headline paper">
-          <Typography variant="title" component="h1">
-            Properties:
-          </Typography>
-          <IconButton>
-            <CloseIcon />
-          </IconButton>
-        </div>
-        <Divider />
-        <div className="detail-important paper">
-          <Typography
-            variant="body1"
-            color="textSecondary"
-            component="h5"
-          >
-            Important
-          </Typography>
-          <List>
-            <ListItem>
-              <ListItemIcon>
-                <LabelIcon />
-              </ListItemIcon>
-              <ListItemText primary="disease or disorder" secondary="name" />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <LabelImportantIcon />
-              </ListItemIcon>
-              <ListItemText primary="c2991" secondary="sourceId" />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <BookmarkIcon />
-              </ListItemIcon>
-              <ListItemText primary="ncit" secondary="source" />
-            </ListItem>
-          </List>
-        </div>
-        <Divider />
-        <div className="detail-other paper">
-          <Typography
-            variant="body1"
-            color="textSecondary"
-            component="h5"
-          >
-            Other
-          </Typography>
+        <div className="detail-content">
+          <div className="detail-heading">
+            <div className="detail-headline">
+              <Typography variant="title" component="h1">
+                Properties:
+              </Typography>
+              <IconButton onClick={onClose}>
+                <ChevronRightIcon />
+              </IconButton>
+            </div>
+            <div className="detail-edit-btn">
+              <Button
+                onClick={handleNodeEditStart}
+                variant="outlined"
+              >
+                Edit Ontology&nbsp;
+                <EditIcon />
+              </Button>
+            </div>
+          </div>
+          <Divider />
+          <div className="detail-important paper">
+            <Typography
+              variant="body1"
+              color="textSecondary"
+              component="h5"
+            >
+              Identifiers
+            </Typography>
+          </div>
+          {identifiers}
+          <Divider />
+          {otherProps && (
+            <React.Fragment>
+              <div className="detail-other paper">
+                <Typography
+                  variant="body1"
+                  color="textSecondary"
+                  component="h5"
+                >
+                  Other
+                </Typography>
+              </div>
+              {otherProps}
+              <Divider />
+            </React.Fragment>
+          )}
+          {!isEdge && (
+            <React.Fragment>
+              <div className="paper">
+                <Typography
+                  variant="body1"
+                  color="textSecondary"
+                  component="h5"
+                >
+                  Relationships
+                </Typography>
+              </div>
+              {relationships || (
+                <ListItem dense>
+                  <ListItemText
+                    primaryTypographyProps={{ color: 'textSecondary' }}
+                    primary="None"
+                  />
+                </ListItem>
+              )}
+            </React.Fragment>
+          )}
         </div>
       </Drawer>
     );

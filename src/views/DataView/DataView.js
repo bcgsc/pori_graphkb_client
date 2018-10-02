@@ -7,22 +7,17 @@ import PropTypes from 'prop-types';
 import './DataView.css';
 import * as jc from 'json-cycle';
 import { Route, Redirect, Switch } from 'react-router-dom';
-/* eslint-disable */
 import {
   CircularProgress,
-  Drawer,
-  IconButton,
   Snackbar,
   Button,
   Typography,
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
 import { withStyles } from '@material-ui/core/styles';
 import qs from 'qs';
 import _ from 'lodash';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
-import OntologyDetailComponent from '../../components/OntologyDetailComponent/OntologyDetailComponent';
 import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
 import api from '../../services/api';
 import Ontology from '../../services/ontology';

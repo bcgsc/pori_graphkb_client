@@ -773,7 +773,7 @@ class TableComponent extends Component {
       <section className="data-table">
         {columnDialog}
         {filterPopover}
-        <div className="table-container">
+        <div className={`table-container ${detail ? 'table-drawer-open' : ''}`}>
           <Table>
             <TableHead className="table-head">
               <TableRow>

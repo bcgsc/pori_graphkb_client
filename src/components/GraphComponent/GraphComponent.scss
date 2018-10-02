@@ -1,5 +1,5 @@
 @import "../../globals";
-$toolbar-height: 64px;
+@import "../../dataview";
 .graph-wrapper {
     position: absolute;
     top: 0;
@@ -27,6 +27,8 @@ $toolbar-height: 64px;
     overflow-y: hidden;
     flex-direction: row-reverse;
     transition: padding 255ms;
+    z-index: calc(#{$drawer-z-index} + 1);
+    background: $background-dark;
     .table-btn {
         background-color: rgba($md-secondary-light, 0.5);
         margin: auto 24px auto 8px,
@@ -34,10 +36,6 @@ $toolbar-height: 64px;
     button {
         margin: 8px;
     }
-}
-
-.transition-left {
-    padding-right: 500px;
 }
 
 #options-close-btn {

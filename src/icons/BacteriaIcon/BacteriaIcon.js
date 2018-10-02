@@ -1,7 +1,7 @@
 import React from 'react';
 import SVGIcon from '@material-ui/core/SvgIcon';
 
-function BioTypeIcon(props) {
+function BacteriaIcon(props) {
   return (
     <SVGIcon {...props}>
       <g>
@@ -14,4 +14,4 @@ function BioTypeIcon(props) {
   );
 }
 
-export default BioTypeIcon;
+export default BacteriaIcon;

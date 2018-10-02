@@ -31,7 +31,7 @@ import AddIcon from '@material-ui/icons/Add';
 import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import DNAIcon from './components/DNAIcon/DNAIcon';
+import DNAIcon from './icons/DNAIcon/DNAIcon';
 import QueryView from './views/QueryView/QueryView';
 import AdvancedQueryView from './views/AdvancedQueryView/AdvancedQueryView';
 import DataView from './views/DataView/DataView';
@@ -206,7 +206,6 @@ class App extends Component {
         <Route path="/feedback" component={FeedbackView} />
         <Route path="/variant" component={VariantFormView} />
         <Route path="/admin" component={AdminView} />
-        <Route path="/icons" component={iconsview} />
         <Redirect from="*" to="/query" />
       </Switch>
     );
@@ -275,6 +274,7 @@ class App extends Component {
             <section className={`content ${(drawerOpen ? loggedIn : '') && 'drawer-shift'} ${!loggedIn ? 'no-drawer' : ''}`}>
               <div className="router-outlet">
                 <Switch>
+                  <Route path="/icons" component={iconsview} />
                   <Route path="/login" render={loginWithProps} />
                   <Route path="/error" component={ErrorView} />
                   <Route

@@ -82,7 +82,6 @@ class DataView extends Component {
 
     // NodeDetailComponent methods
     this.handleNodeEditStart = this.handleNodeEditStart.bind(this);
-    this.handleNewQuery = this.handleNewQuery.bind(this);
 
     // Routing methods
     this.handleGraphRedirect = this.handleGraphRedirect.bind(this);
@@ -256,36 +255,12 @@ class DataView extends Component {
 
   /**
    * Sets selected ID to input node identifier and opens edit drawer.
-   * @param {string} rid - Target node rid.
    */
-  handleNodeEditStart(rid) {
-    const { data } = this.state;
+  handleNodeEditStart() {
+    const { detail } = this.state;
     const { history } = this.props;
-    history.push({
-      pathname: `/edit/${rid.slice(1)}`,
-      state: {
-        node: data[rid],
-      },
-    });
-  }
-
-  /**
-   * Re initializes the component and loads a new query into the search.
-   * @param {string} search - new search string
-   */
-  handleNewQuery(search) {
-    const { history } = this.props;
-    const { location } = history;
-
-    if (location.search.split('?')[1] !== search) {
-      history.push(`/data/table?${search}`);
-      this.setState({
-        loginRedirect: false,
-        data: null,
-        displayed: [],
-        hidden: [],
-        allProps: [],
-      }, this.componentDidMount);
+    if (detail) {
+      history.push(`/edit/${detail.getId().slice(1)}`);
     }
   }
 
@@ -321,7 +296,7 @@ class DataView extends Component {
    */
   handleGraphRedirect(filters) {
     const { history } = this.props;
-    this.setState({ storedFilters: filters });
+    this.setState({ storedFilters: filters, detail: null });
     history.push({ pathname: '/data/graph', search: history.location.search });
   }
 
@@ -370,7 +345,14 @@ class DataView extends Component {
     if (!data) return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
 
     const detailDrawer = (
-      <DetailDrawer />
+      <DetailDrawer
+        node={detail}
+        schema={schema}
+        open={!!detail}
+        onClose={this.handleDetailDrawerClose}
+        isEdge={detailEdge}
+        handleNodeEditStart={this.handleNodeEditStart}
+      />
     );
 
     const GraphWithProps = () => (
@@ -378,7 +360,6 @@ class DataView extends Component {
         data={data}
         handleClick={this.handleClick}
         displayed={displayed}
-        handleNodeEditStart={this.handleNodeEditStart}
         handleDetailDrawerOpen={this.handleDetailDrawerOpen}
         handleDetailDrawerClose={this.handleDetailDrawerClose}
         handleTableRedirect={this.handleTableRedirect}
@@ -393,21 +374,21 @@ class DataView extends Component {
     const TableWithProps = () => (
       <TableComponent
         data={data}
+        detail={detail}
+        displayed={displayed}
+        handleCheckAll={this.handleCheckAll}
         handleClick={this.handleClick}
         handleCheckbox={this.handleCheckbox}
-        displayed={displayed}
+        handleHideSelected={this.handleHideSelected}
+        handleShowAllNodes={this.handleShowAllNodes}
+        handleGraphRedirect={this.handleGraphRedirect}
+        handleSubsequentPagination={this.handleSubsequentPagination}
+        handleDetailDrawerOpen={this.handleDetailDrawerOpen}
         hidden={hidden}
         allProps={allProps}
         moreResults={moreResults}
         completedNext={completedNext}
         storedFilters={storedFilters}
-        handleCheckAll={this.handleCheckAll}
-        handleNodeEditStart={this.handleNodeEditStart}
-        handleHideSelected={this.handleHideSelected}
-        handleShowAllNodes={this.handleShowAllNodes}
-        handleNewQuery={this.handleNewQuery}
-        handleGraphRedirect={this.handleGraphRedirect}
-        handleSubsequentPagination={this.handleSubsequentPagination}
       />
     );
     return (
@@ -428,7 +409,6 @@ class DataView extends Component {
             </Button>
           )}
         />
-        {detailDrawer}
         {Object.keys(data).length !== 0
           ? (
             <Switch>
@@ -448,6 +428,7 @@ class DataView extends Component {
             </div>
           )
         }
+        {detailDrawer}
       </div>);
   }
 }

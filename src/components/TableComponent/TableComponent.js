@@ -15,7 +15,6 @@ import {
   TablePagination,
   TableSortLabel,
   IconButton,
-  Collapse,
   FormControlLabel,
   Typography,
   RadioGroup,
@@ -40,7 +39,7 @@ import {
   InputAdornment,
   Fade,
 } from '@material-ui/core';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import AddIcon from '@material-ui/icons/Add';
@@ -502,7 +501,6 @@ class TableComponent extends Component {
       orderBy,
       order,
       sortedData,
-      toggle,
       anchorEl,
       columnSelect,
       tableColumns,
@@ -515,23 +513,20 @@ class TableComponent extends Component {
     } = this.state;
 
     const {
-      data,
       handleCheckAll,
       displayed,
-      handleNodeEditStart,
       handleClick,
       handleCheckbox,
       hidden,
       handleShowAllNodes,
       handleHideSelected,
-      handleNewQuery,
       handleGraphRedirect,
       handleSubsequentPagination,
+      handleDetailDrawerOpen,
       moreResults,
       completedNext,
+      detail,
     } = this.props;
-
-    const numCols = tableColumns.filter(c => c.checked).length;
     const filteredData = sortedData
       .filter(n => !hidden.includes(n.getId()))
       .filter(n => !columnFilterExclusions.some((exclusions, i) => {
@@ -851,24 +846,6 @@ class TableComponent extends Component {
             <TableBody>
               {pageData.map((n) => {
                 const isSelected = displayed.includes(n.getId());
-                const active = toggle === n.getId();
-                const detail = active ? (
-                  <TableRow>
-                    <Collapse
-                      colSpan={numCols + 2}
-                      component="td"
-                      in={active}
-                      unmountOnExit
-                    >
-                      <OntologyDetailComponent
-                        node={n}
-                        data={data}
-                        handleNodeEditStart={handleNodeEditStart}
-                        handleNewQuery={handleNewQuery}
-                      />
-                    </Collapse>
-                  </TableRow>
-                ) : null;
                 return !hidden.includes(n.getId())
                   && (
                     <React.Fragment key={n.getId() || Math.random()}>
@@ -890,7 +867,9 @@ class TableComponent extends Component {
                           if (col.checked) {
                             return (
                               <TableCell key={col.id}>
-                                {col.sortBy ? util.castToExist((n[col.id] || '')[col.sortBy]) : util.castToExist(n[col.id])}
+                                {util.formatStr(col.sortBy
+                                  ? util.castToExist((n[col.id] || '')[col.sortBy])
+                                  : util.castToExist(n[col.id]))}
                               </TableCell>
                             );
                           }
@@ -898,14 +877,17 @@ class TableComponent extends Component {
                         })}
                         <TableCell>
                           <IconButton
-                            onClick={() => this.handleDetailToggle(n.getId())}
-                            className={`detail-btn ${active ? 'active' : ''}`}
+                            color={
+                              detail === n
+                                ? 'secondary'
+                                : 'default'
+                            }
+                            onClick={() => handleDetailDrawerOpen(n, true)}
                           >
-                            <KeyboardArrowDownIcon />
+                            <AssignmentIcon />
                           </IconButton>
                         </TableCell>
                       </TableRow>
-                      {detail}
                     </React.Fragment>
                   );
               })}
@@ -1000,16 +982,16 @@ class TableComponent extends Component {
  */
 TableComponent.propTypes = {
   data: PropTypes.object.isRequired,
+  detail: PropTypes.object,
   displayed: PropTypes.array.isRequired,
   handleCheckAll: PropTypes.func.isRequired,
-  handleNodeEditStart: PropTypes.func.isRequired,
   handleClick: PropTypes.func.isRequired,
   handleCheckbox: PropTypes.func.isRequired,
   handleHideSelected: PropTypes.func.isRequired,
   handleShowAllNodes: PropTypes.func.isRequired,
-  handleNewQuery: PropTypes.func,
   handleGraphRedirect: PropTypes.func.isRequired,
   handleSubsequentPagination: PropTypes.func,
+  handleDetailDrawerOpen: PropTypes.func,
   hidden: PropTypes.array,
   allProps: PropTypes.array,
   moreResults: PropTypes.bool,
@@ -1018,11 +1000,12 @@ TableComponent.propTypes = {
 };
 
 TableComponent.defaultProps = {
+  detail: null,
   allProps: [],
   hidden: [],
   storedFilters: [],
-  handleNewQuery: null,
   handleSubsequentPagination: null,
+  handleDetailDrawerOpen: null,
   moreResults: false,
 };
 

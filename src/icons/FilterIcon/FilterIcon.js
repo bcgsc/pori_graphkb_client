@@ -1,9 +1,9 @@
 import React from 'react';
 import SVGIcon from '@material-ui/core/SvgIcon';
 
-function FilterIcon() {
+function FilterIcon(props) {
   return (
-    <SVGIcon>
+    <SVGIcon {...props}>
       <g>
         <path
           strokeWidth="0.2"

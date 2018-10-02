@@ -19,9 +19,13 @@ import DateRangeIcon from '@material-ui/icons/DateRange';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import LocationCityIcon from '@material-ui/icons/LocationCity';
-import BioTypeIcon from '../../components/BioTypeIcon/BioTypeIcon';
-import OpenBookIcon from '../../components/OpenBookIcon/OpenBookIcon';
-import WWWIcon from '../../components/WWWIcon/WWWIcon';
+import HelpIcon from '@material-ui/icons/Help';
+import BacteriaIcon from '../../icons/BacteriaIcon/BacteriaIcon';
+import DNAIcon from '../../icons/DNAIcon/DNAIcon';
+import FlaskIcon from '../../icons/FlaskIcon/FlaskIcon';
+import MoleculeIcon from '../../icons/MoleculeIcon/MoleculeIcon';
+import OpenBookIcon from '../../icons/OpenBookIcon/OpenBookIcon';
+import WWWIcon from '../../icons/WWWIcon/WWWIcon';
 import util from '../../services/util';
 
 const PROP_TO_ICON = {
@@ -32,7 +36,7 @@ const PROP_TO_ICON = {
   subsets: <ListAltIcon />,
   longName: <LabelTwoToneIcon />,
   sourceIdVersion: <LocalOfferIcon />,
-  biotype: <BioTypeIcon />,
+  biotype: <BacteriaIcon />,
   journalName: <OpenBookIcon />,
   year: <DateRangeIcon />,
   startYear: <DateRangeIcon />,
@@ -42,6 +46,10 @@ const PROP_TO_ICON = {
   url: <WWWIcon />,
   dependency: <AssignmentOutlinedIcon />,
   '@class': <ClassIcon />,
+  molecularFormula: <MoleculeIcon />,
+  mechanismOfAction: <FlaskIcon />,
+  help: <HelpIcon />,
+  variant: <DNAIcon />,
 };
 
 /**

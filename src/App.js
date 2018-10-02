@@ -43,6 +43,7 @@ import OntologyDetailView from './views/OntologyDetailView/OntologyDetailView';
 import FeedbackView from './views/FeedbackView/FeedbackView';
 import VariantFormView from './views/VariantFormView/VariantFormView';
 import AdminView from './views/AdminView/AdminView';
+import iconsview from './views/iconsview/iconsview';
 import logo from './logo.png';
 import auth from './services/auth';
 import history from './services/history';
@@ -205,6 +206,7 @@ class App extends Component {
         <Route path="/feedback" component={FeedbackView} />
         <Route path="/variant" component={VariantFormView} />
         <Route path="/admin" component={AdminView} />
+        <Route path="/icons" component={iconsview} />
         <Redirect from="*" to="/query" />
       </Switch>
     );

@@ -12,6 +12,25 @@ const { NODE_INIT_RADIUS } = config.GRAPH_PROPERTIES;
 const ACRONYMS = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url', 'cds'];
 const GRAPH_OBJECTS_KEY = 'graphObjects';
 
+
+/**
+ * Parses a string and capitalizes known acronyms.
+ * @param {string | Array<string>} str - String to be parsed.
+ */
+const parseAcronyms = (str) => {
+  let words = str;
+  if (!Array.isArray(str)) {
+    words = str.split(' ');
+  }
+  ACRONYMS.forEach((acronym) => {
+    const re = new RegExp(`[^\\w]*${acronym}(?!\\w)`, 'ig');
+    words.forEach((word, i) => {
+      words[i] = word.replace(re, match => match.toUpperCase());
+    });
+  });
+  return words.join(' ');
+};
+
 /**
  * Un-camelCase's input string and capitalizes each word. Also applies
  * capitalization to defined acronyms.
@@ -24,7 +43,7 @@ const GRAPH_OBJECTS_KEY = 'graphObjects';
  * @param {string} str - camelCase'd string.
  */
 const antiCamelCase = (str) => {
-  let accstr = str;
+  let accstr = str.toString();
   if (accstr.startsWith('@')) accstr = accstr.slice(1);
   let words = [accstr];
   if (accstr.includes('.')) {
@@ -35,16 +54,15 @@ const antiCamelCase = (str) => {
     words[i] = word.replace(/[A-Z]+|[0-9]+/g, match => ` ${match}`).trim();
   });
 
-  ACRONYMS.forEach((acronym) => {
-    const re = new RegExp(`[^\\w]*${acronym}(?!\\w)`, 'ig');
-    words.forEach((word, i) => {
-      const w = word.replace(re, match => match.toUpperCase());
-      words[i] = w.charAt(0).toUpperCase() + w.slice(1);
-    });
-  });
+  accstr = parseAcronyms(words).trim();
+  return accstr.charAt(0).toUpperCase() + accstr.slice(1);
+};
 
-  accstr = words.join(' ');
-  return accstr.trim();
+
+const formatStr = (str) => {
+  const re = /\.\s\w/g;
+  const ret = parseAcronyms(str).trim().replace(re, match => `${match.toUpperCase()}`);
+  return ret.charAt(0).toUpperCase() + ret.slice(1);
 };
 
 /**
@@ -75,7 +93,7 @@ const getPreview = (obj) => {
     const prop = Object.keys(obj).find(key => typeof obj[key] !== 'object');
     preview = obj[prop];
   }
-  return preview;
+  return formatStr(preview);
 };
 
 /**
@@ -443,4 +461,5 @@ export default {
   parsePermission,
   getPropOfType,
   castToExist,
+  formatStr,
 };

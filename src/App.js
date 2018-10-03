@@ -157,12 +157,10 @@ class App extends Component {
             >
               <ChevronLeftIcon />
             </IconButton>
-            <img src={logo} alt="" />
-            <Typography variant="body1">Knowledge Base</Typography>
           </div>
         </div>
         <Divider />
-        <List dense>
+        <List className="drawer-links">
           <MenuItem
             id="link-search"
             onClick={() => this.handleSideBarNavigate('/query')}
@@ -191,6 +189,15 @@ class App extends Component {
             <ListItemText primary="Add Variant" />
           </MenuItem>
         </List>
+        <div className="drawer-footer">
+          <Divider />
+          <MenuItem>
+            <ListItemIcon>
+              <img src={logo} alt="" />
+            </ListItemIcon>
+            <ListItemText primary="Knowledge Base" />
+          </MenuItem>
+        </div>
       </Drawer>
     );
 

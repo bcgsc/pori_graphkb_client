@@ -592,7 +592,6 @@ class OntologyFormComponent extends Component {
         open={notificationDrawerOpen}
         onClose={handleFinish}
         anchor="bottom"
-        classes={{ paper: 'paper' }}
       >
         <div className="notification-drawer">
           <div className="form-linear-progress">
@@ -669,7 +668,7 @@ class OntologyFormComponent extends Component {
                           >
                             {resource => (
                               <MenuItem key={resource.name} value={resource.name}>
-                                {resource.name}
+                                {util.antiCamelCase(resource.name)}
                               </MenuItem>
                             )}
                           </ResourceSelectComponent>

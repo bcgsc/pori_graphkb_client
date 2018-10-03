@@ -6,14 +6,11 @@
     text-decoration: none;
     color: $md-secondary-color;
   }
-  .feedback {
-    padding: 16px;
-  }
 
   .feedback-header {
-    height: 37px;
-    h1 {
-      font-weight: 300;
-    }
+    @include page-header;
+  }
+  .feedback-body {
+    @include paper;
   }
 }

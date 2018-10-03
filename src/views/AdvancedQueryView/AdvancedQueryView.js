@@ -187,7 +187,7 @@ class AdvancedQueryView extends Component {
             Advanced Query
           </Typography>
         </Paper>
-        <Paper elevation={4} className="adv-grid paper">
+        <Paper elevation={4} className="adv-grid">
           <ListItem className="input-wrapper">
             <ResourceSelectComponent
               value={form['@class']}

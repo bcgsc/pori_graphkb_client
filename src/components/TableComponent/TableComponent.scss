@@ -137,6 +137,9 @@ $flip-duration: 0.15s;
 }
 #filter-popover {
   width: 20rem;
+  .filter-wrapper {
+    @include paper;
+  }
   .filter-exclusions-list {
     max-height: 40vh;
     overflow: auto;

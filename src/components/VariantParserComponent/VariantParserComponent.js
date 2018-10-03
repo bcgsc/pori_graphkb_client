@@ -350,7 +350,6 @@ class VariantParserComponent extends Component {
         open={notificationDrawerOpen}
         onClose={handleFinish}
         anchor="bottom"
-        classes={{ paper: 'paper' }}
       >
         <div className="notification-drawer">
           <div className="form-linear-progress">
@@ -381,7 +380,7 @@ class VariantParserComponent extends Component {
     return (
       <div className="variant-parser-wrapper">
         {drawer}
-        <Paper elevation={4} className="variant-parser-shorthand paper">
+        <Paper elevation={4} className="variant-parser-shorthand">
           <FormControl
             error={shorthandError}
             fullWidth
@@ -400,7 +399,7 @@ class VariantParserComponent extends Component {
             }
           </FormControl>
         </Paper>
-        <Paper elevation={4} className="paper parser-form-grid">
+        <Paper elevation={4} className="parser-form-grid">
           {schema
             && (
               <FormTemplater
@@ -421,7 +420,7 @@ class VariantParserComponent extends Component {
             )
           }
         </Paper>
-        <Paper className="paper" elevation={4} id="variant-form-submit">
+        <Paper elevation={4} id="variant-form-submit">
           <Button
             onClick={this.submitVariant}
             color="primary"

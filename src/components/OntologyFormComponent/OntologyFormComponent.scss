@@ -31,14 +31,12 @@ $mediumBreakpoint: 500px;
       }
     }
     .form-header {
+      @include page-header;
       grid-column-start: 1;
       grid-column-end: 3;
       @media (max-width: $breakpoint) {
         grid-column-end: 2;
       }
-      display: flex;
-      justify-items: center;
-      padding: 16px;
       .form-cancel-btn {
         display: flex;
         justify-items: center;
@@ -46,9 +44,6 @@ $mediumBreakpoint: 500px;
         button {
           margin: auto 0;
         }
-      }
-      .form-title {
-        font-weight: 300;
       }
     }
     .flexbox {
@@ -186,8 +181,10 @@ $mediumBreakpoint: 500px;
 }
 
 .notification-drawer {
+  @include paper;
   display: flex;
   width: 100%;
+  box-sizing: border-box;
   .form-linear-progress {
     flex-grow: 1;
     display: flex;

@@ -2,11 +2,7 @@
 .variant-wrapper {
   @include view-wrapper;
   .variant-headline {
-    height: 37px;
-    display: flex;
-    h1 {
-      font-weight: 300;
-    }
+    @include page-header;
     .variant-cancel-btn {
       margin: auto;
       margin-right: 0;

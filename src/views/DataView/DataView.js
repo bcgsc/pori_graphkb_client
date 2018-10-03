@@ -9,32 +9,20 @@ import * as jc from 'json-cycle';
 import { Route, Redirect, Switch } from 'react-router-dom';
 import {
   CircularProgress,
-  Drawer,
-  IconButton,
   Snackbar,
   Button,
   Typography,
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import { withStyles } from '@material-ui/core/styles';
 import qs from 'qs';
 import _ from 'lodash';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
-import OntologyDetailComponent from '../../components/OntologyDetailComponent/OntologyDetailComponent';
+import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
 import api from '../../services/api';
 import Ontology from '../../services/ontology';
 import config from '../../config.json';
 
 const { DEFAULT_NEIGHBORS } = config;
-
-const styles = {
-  paper: {
-    width: '500px',
-    '@media (max-width: 768px)': { width: 'calc(100% - 1px)' },
-  },
-};
-
 const DEFAULT_LIMIT = 1000;
 
 /**
@@ -80,7 +68,6 @@ class DataView extends Component {
 
     // NodeDetailComponent methods
     this.handleNodeEditStart = this.handleNodeEditStart.bind(this);
-    this.handleNewQuery = this.handleNewQuery.bind(this);
 
     // Routing methods
     this.handleGraphRedirect = this.handleGraphRedirect.bind(this);
@@ -254,36 +241,12 @@ class DataView extends Component {
 
   /**
    * Sets selected ID to input node identifier and opens edit drawer.
-   * @param {string} rid - Target node rid.
    */
-  handleNodeEditStart(rid) {
-    const { data } = this.state;
+  handleNodeEditStart() {
+    const { detail } = this.state;
     const { history } = this.props;
-    history.push({
-      pathname: `/edit/${rid.slice(1)}`,
-      state: {
-        node: data[rid],
-      },
-    });
-  }
-
-  /**
-   * Re initializes the component and loads a new query into the search.
-   * @param {string} search - new search string
-   */
-  handleNewQuery(search) {
-    const { history } = this.props;
-    const { location } = history;
-
-    if (location.search.split('?')[1] !== search) {
-      history.push(`/data/table?${search}`);
-      this.setState({
-        loginRedirect: false,
-        data: null,
-        displayed: [],
-        hidden: [],
-        allProps: [],
-      }, this.componentDidMount);
+    if (detail) {
+      history.push(`/edit/${detail.getId().slice(1)}`);
     }
   }
 
@@ -319,7 +282,7 @@ class DataView extends Component {
    */
   handleGraphRedirect(filters) {
     const { history } = this.props;
-    this.setState({ storedFilters: filters });
+    this.setState({ storedFilters: filters, detail: null });
     history.push({ pathname: '/data/graph', search: history.location.search });
   }
 
@@ -355,42 +318,27 @@ class DataView extends Component {
       moreResults,
       filteredSearch,
       edges,
+      /* eslint-disable-next-line */
       detailEdge,
       completedNext,
       storedFilters,
     } = this.state;
 
     const {
-      classes,
       history,
     } = this.props;
 
     if (!data) return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
 
     const detailDrawer = (
-      <Drawer
-        variant="persistent"
-        anchor="right"
+      <DetailDrawer
+        node={detail}
+        schema={schema}
         open={!!detail}
-        classes={{
-          paper: classes.paper,
-        }}
         onClose={this.handleDetailDrawerClose}
-        SlideProps={{ unmountOnExit: true }}
-      >
-        <OntologyDetailComponent
-          variant="graph"
-          node={detail}
-          handleNodeEditStart={this.handleNodeEditStart}
-          handleNewQuery={this.handleNewQuery}
-          handleClose={this.handleDetailDrawerClose}
-          detailEdge={detailEdge}
-        >
-          <IconButton onClick={this.handleDetailDrawerClose}>
-            <CloseIcon color="action" />
-          </IconButton>
-        </OntologyDetailComponent>
-      </Drawer>
+        isEdge={detailEdge}
+        handleNodeEditStart={this.handleNodeEditStart}
+      />
     );
 
     const GraphWithProps = () => (
@@ -398,7 +346,6 @@ class DataView extends Component {
         data={data}
         handleClick={this.handleClick}
         displayed={displayed}
-        handleNodeEditStart={this.handleNodeEditStart}
         handleDetailDrawerOpen={this.handleDetailDrawerOpen}
         handleDetailDrawerClose={this.handleDetailDrawerClose}
         handleTableRedirect={this.handleTableRedirect}
@@ -413,21 +360,21 @@ class DataView extends Component {
     const TableWithProps = () => (
       <TableComponent
         data={data}
+        detail={detail}
+        displayed={displayed}
+        handleCheckAll={this.handleCheckAll}
         handleClick={this.handleClick}
         handleCheckbox={this.handleCheckbox}
-        displayed={displayed}
+        handleHideSelected={this.handleHideSelected}
+        handleShowAllNodes={this.handleShowAllNodes}
+        handleGraphRedirect={this.handleGraphRedirect}
+        handleSubsequentPagination={this.handleSubsequentPagination}
+        handleDetailDrawerOpen={this.handleDetailDrawerOpen}
         hidden={hidden}
         allProps={allProps}
         moreResults={moreResults}
         completedNext={completedNext}
         storedFilters={storedFilters}
-        handleCheckAll={this.handleCheckAll}
-        handleNodeEditStart={this.handleNodeEditStart}
-        handleHideSelected={this.handleHideSelected}
-        handleShowAllNodes={this.handleShowAllNodes}
-        handleNewQuery={this.handleNewQuery}
-        handleGraphRedirect={this.handleGraphRedirect}
-        handleSubsequentPagination={this.handleSubsequentPagination}
       />
     );
     return (
@@ -448,7 +395,6 @@ class DataView extends Component {
             </Button>
           )}
         />
-        {detailDrawer}
         {Object.keys(data).length !== 0
           ? (
             <Switch>
@@ -468,6 +414,7 @@ class DataView extends Component {
             </div>
           )
         }
+        {detailDrawer}
       </div>);
   }
 }
@@ -475,11 +422,9 @@ class DataView extends Component {
 /**
  * @namespace
  * @property {Object} history - Application routing history object.
- * @property {Object} classes - Classes provided by the @material-ui withStyles function
  */
 DataView.propTypes = {
   history: PropTypes.object.isRequired,
-  classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(DataView);
+export default DataView;

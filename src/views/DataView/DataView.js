@@ -13,7 +13,6 @@ import {
   Button,
   Typography,
 } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
 import qs from 'qs';
 import _ from 'lodash';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
@@ -24,14 +23,6 @@ import Ontology from '../../services/ontology';
 import config from '../../config.json';
 
 const { DEFAULT_NEIGHBORS } = config;
-
-const styles = {
-  paper: {
-    width: '500px',
-    '@media (max-width: 768px)': { width: 'calc(100% - 1px)' },
-  },
-};
-
 const DEFAULT_LIMIT = 1000;
 
 /**
@@ -431,10 +422,9 @@ class DataView extends Component {
 /**
  * @namespace
  * @property {Object} history - Application routing history object.
- * @property {Object} classes - Classes provided by the @material-ui withStyles function
  */
 DataView.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(DataView);
+export default DataView;

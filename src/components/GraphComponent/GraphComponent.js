@@ -117,7 +117,6 @@ class GraphComponent extends Component {
     const {
       displayed,
       data,
-      schema,
       allProps,
       filteredSearch,
       edges,
@@ -140,7 +139,6 @@ class GraphComponent extends Component {
 
     this.setState({
       expandedEdgeTypes,
-      schema,
       allProps,
       filteredSearch: stringifiedSearch,
     }, () => {
@@ -595,7 +593,7 @@ class GraphComponent extends Component {
    */
   updateColors() {
     ['node', 'link'].forEach((type) => {
-      const objs = this.state[`${type}s`];
+      const { [`${type}s`]: objs } = this.state;
       const { graphOptions } = this.state;
       const key = graphOptions[`${type}sColor`];
       const colors = {};
@@ -1313,7 +1311,6 @@ class GraphComponent extends Component {
  * @property {function} handleDetailDrawerClose - Method to handle closing of detail drawer.
  * @property {function} handleTableRedirect - Method to handle a redirect to the table view.
  * @property {function} handleNewColumns - Updates valid properties in parent state.
- * @property {Object} schema - Database schema.
  * @property {Object} detail - record ID of node currently selected for detail viewing.
  * @property {Array} allProps - list of all unique properties on all nodes returned in
  * initial query.
@@ -1325,7 +1322,6 @@ GraphComponent.propTypes = {
   handleDetailDrawerClose: PropTypes.func.isRequired,
   handleTableRedirect: PropTypes.func.isRequired,
   handleNewColumns: PropTypes.func.isRequired,
-  schema: PropTypes.object.isRequired,
   detail: PropTypes.object,
   allProps: PropTypes.array,
 };

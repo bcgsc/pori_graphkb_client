@@ -95,6 +95,7 @@ class GraphComponent extends Component {
     this.loadNeighbors = this.loadNeighbors.bind(this);
     this.handleExpandRequest = this.handleExpandRequest.bind(this);
     this.refresh = this.refresh.bind(this);
+    this.pauseGraph = this.pauseGraph.bind(this);
     this.updateColors = this.updateColors.bind(this);
     this.handleResize = this.handleResize.bind(this);
     this.handleGraphOptionsChange = this.handleGraphOptionsChange.bind(this);
@@ -443,11 +444,17 @@ class GraphComponent extends Component {
         .getEdges()
         .filter(edge => !(links.find(l => l.getId() === edge['@rid']))).length > HEAVILY_CONNECTED
       ) {
-        this.setState({ expansionDialogOpen: true, expandNode: data[node.getId()] });
+        this.setState({ expandNode: data[node.getId()] },
+          this.handleDialogOpen('expansionDialogOpen'));
       } else {
         this.loadNeighbors(node);
       }
     }
+  }
+
+  pauseGraph() {
+    const { simulation } = this.state;
+    simulation.on('tick', null);
   }
 
   /**
@@ -683,7 +690,10 @@ class GraphComponent extends Component {
    */
   handleDialogClose(key) {
     return () => this.setState({ [key]: false },
-      () => setTimeout(() => this.setState({ expandExclusions: [] }), DIALOG_FADEOUT_TIME));
+      () => {
+        this.drawGraph();
+        setTimeout(() => this.setState({ expandExclusions: [] }), DIALOG_FADEOUT_TIME);
+      });
   }
 
   /**
@@ -691,7 +701,9 @@ class GraphComponent extends Component {
    * @param {string} key - ['main', 'advanced'].
    */
   handleDialogOpen(key) {
-    return () => this.setState({ [key]: true });
+    return () => this.setState({ [key]: true }, () => {
+      this.pauseGraph();
+    });
   }
 
   /**
@@ -910,24 +922,26 @@ class GraphComponent extends Component {
         <div className="legend-wrapper">
           {graphOptions.nodesLegend && graphOptions.nodesColor && (
             <Paper>
-              <div className="close-btn">
-                <IconButton
-                  name="nodesLegend"
-                  onClick={() => this.handleGraphOptionsChange({
-                    target: {
-                      value: false,
-                      name: 'nodesLegend',
-                    },
-                  })}
-                >
-                  <CloseIcon />
-                </IconButton>
-              </div>
               <div className="legend-content">
-                <Typography variant="subheading">Nodes</Typography>
-                <Typography variant="caption">
-                  {graphOptions.nodesColor ? `(${util.antiCamelCase(graphOptions.nodesColor)})` : ''}
-                </Typography>
+                <div className="legend-header">
+                  <div className="legend-header-text">
+                    <Typography variant="subheading">Nodes</Typography>
+                    <Typography variant="caption">
+                      {graphOptions.nodesColor ? `(${util.antiCamelCase(graphOptions.nodesColor)})` : ''}
+                    </Typography>
+                  </div>
+                  <IconButton
+                    name="nodesLegend"
+                    onClick={() => this.handleGraphOptionsChange({
+                      target: {
+                        value: false,
+                        name: 'nodesLegend',
+                      },
+                    })}
+                  >
+                    <CloseIcon />
+                  </IconButton>
+                </div>
                 <List className="node-colors" dense>
                   {Object.keys(graphOptions.nodesColors).map(key => (
                     <ListItem key={key}>
@@ -959,24 +973,26 @@ class GraphComponent extends Component {
             && graphOptions.linksColor
             && (
               <Paper>
-                <div className="close-btn">
-                  <IconButton
-                    name="linksLegend"
-                    onClick={() => this.handleGraphOptionsChange({
-                      target: {
-                        value: false,
-                        name: 'linksLegend',
-                      },
-                    })}
-                  >
-                    <CloseIcon />
-                  </IconButton>
-                </div>
                 <div className="legend-content">
-                  <Typography variant="subheading">Edges</Typography>
-                  <Typography variant="caption">
-                    {graphOptions.linksColor && `(${util.antiCamelCase(graphOptions.linksColor)})`}
-                  </Typography>
+                  <div className="legend-header">
+                    <div className="legend-header-text">
+                      <Typography variant="subheading">Edges</Typography>
+                      <Typography variant="caption">
+                        {graphOptions.linksColor && `(${util.antiCamelCase(graphOptions.linksColor)})`}
+                      </Typography>
+                    </div>
+                    <IconButton
+                      name="linksLegend"
+                      onClick={() => this.handleGraphOptionsChange({
+                        target: {
+                          value: false,
+                          name: 'linksLegend',
+                        },
+                      })}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                  </div>
                   <List className="node-colors" dense>
                     {Object.keys(graphOptions.linksColors).map(key => (
                       <ListItem key={key}>

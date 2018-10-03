@@ -6,7 +6,7 @@ import App from './App';
 
 spy(App.prototype, 'componentDidMount');
 
-describe('<Foo />', () => {
+describe('test', () => {
   it('calls componentDidMount', () => {
     mount(<App />);
     expect(App.prototype.componentDidMount).to.have.property('callCount', 0);

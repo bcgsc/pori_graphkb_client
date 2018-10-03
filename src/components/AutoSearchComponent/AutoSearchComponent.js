@@ -203,7 +203,7 @@ class AutoSearchComponent extends Component {
             className="autosearch-wrapper"
             style={{ minHeight: dense ? '48px' : '64px' }}
           >
-            <div ref={this.setRef}>
+            <div className="autosearch-popper-node" ref={this.setRef}>
               <TextField
                 fullWidth
                 error={emptyFlag || noRidFlag || error}
@@ -301,7 +301,7 @@ class AutoSearchComponent extends Component {
  */
 AutoSearchComponent.propTypes = {
   limit: PropTypes.number,
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   endpoint: PropTypes.string,
   property: PropTypes.array,
   placeholder: PropTypes.string,
@@ -321,7 +321,8 @@ AutoSearchComponent.defaultProps = {
   endpoint: 'ontologies',
   property: ['name'],
   placeholder: '',
-  value: '',
+  name: undefined,
+  value: undefined,
   label: '',
   required: false,
   error: false,
@@ -344,7 +345,7 @@ AutoSearchComponent.defaultProps = {
       </span>
     </MenuItem>
   ),
-  onChange: null,
+  onChange: () => { },
   disabled: false,
   endAdornment: <SearchIcon style={{ cursor: 'default' }} />,
 };

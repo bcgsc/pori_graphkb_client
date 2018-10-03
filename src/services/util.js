@@ -52,7 +52,7 @@ const parseAcronyms = (str) => {
     words = str.split(' ');
   }
   ACRONYMS.forEach((acronym) => {
-    const re = new RegExp(`[^\\w]*${acronym}(?!\\w)`, 'ig');
+    const re = new RegExp(`^${acronym}*$`, 'ig');
     words.forEach((word, i) => {
       words[i] = word.replace(re, match => match.toUpperCase());
     });
@@ -86,9 +86,15 @@ const antiCamelCase = (str) => {
     words = accstr.split('.');
   }
 
-  words.forEach((word, i) => {
-    words[i] = word.replace(/[A-Z]+|[0-9]+/g, match => ` ${match}`).trim();
-  });
+  words = words.reduce((array, word) => {
+    const newWords = word.replace(/[A-Z]+|[0-9]+/g, match => ` ${match}`);
+    if (newWords) {
+      array.push(...newWords.split(' '));
+    } else {
+      array.push(word);
+    }
+    return array;
+  }, []);
 
   accstr = parseAcronyms(words).trim();
   return accstr.charAt(0).toUpperCase() + accstr.slice(1);

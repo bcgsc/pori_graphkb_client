@@ -1255,7 +1255,7 @@ class GraphComponent extends Component {
           </Tooltip>
 
           <Tooltip placement="top" title="Restart simulation with initial nodes">
-            <div>
+            <div className="refresh-wrapper">
               <IconButton
                 color="primary"
                 onClick={this.refresh}

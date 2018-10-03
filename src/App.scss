@@ -65,15 +65,6 @@ $drawer-breakpoint: 768px;
       height: 100%;
       overflow: hidden;
       white-space: nowrap;
-      img {
-        width: 24px;
-        height: 24px;
-        margin: auto 4px;
-        margin-right: 8px;
-      }
-      p {
-        margin: auto 0;
-      }
       button {
         margin: auto 4px;
       }
@@ -117,8 +108,36 @@ $drawer-breakpoint: 768px;
     z-index: calc(#{$drawer-z-index} + 2);
     transition: width #{$transition-speed};
     animation: fade-in();
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
     @media (max-width: $drawer-breakpoint) {
       width: calc(100vw - 1px);
+    }
+    .drawer-links {
+      position: relative;
+      bottom: 56px;
+      top: 0;
+      flex-grow: 1;
+    }
+    .drawer-footer {
+      position: sticky;
+      background: $background-light;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      top: auto;
+      flex-shrink: 0;
+      white-space: nowrap;
+      height: 57px;
+      li {
+        height: 56px;
+        box-sizing: border-box;
+      }
+      img {
+        width: 24px;
+        height: 24px;
+      }
     }
   }
   .drawer-closed {

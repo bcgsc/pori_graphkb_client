@@ -1022,102 +1022,111 @@ class GraphComponent extends Component {
             )}
         </div>
       );
-    const expansionDialog = expandNode && (
-      <Dialog
-        open={expansionDialogOpen}
-        onClose={this.handleDialogClose('expansionDialogOpen')}
-        maxWidth="md"
-        fullWidth
-        classes={{
-          root: 'expansion-root',
-          paper: 'expansion-dialog',
-        }}
-      >
-        <DialogTitle>Select Edges to Expand</DialogTitle>
-        <DialogContent>
-          <Typography variant="subheading">
-            Expand by Edge Types:
-          </Typography>
-          <List dense className="expand-links-types">
-            {expandNode.getEdges().reduce((array, edge) => {
-              if (!array.includes(edge['@class']) && !links.find(l => l.getId() === edge['@rid'])) {
-                array.push(edge['@class']);
-              }
-              return array;
-            }, []).map(edge => (
-              <ListItem
-                key={edge}
-                className="expand-links-type"
-              >
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  onClick={this.handleExpandByClass(edge)}
-                >
-                  {util.getEdgeLabel(edge)}
-                </Button>
-              </ListItem>
-            ))}
-          </List>
-          <Typography variant="subheading">
-            Select Individual Links:
-          </Typography>
-          <ListItem
-            button
-            onClick={this.handleExpandCheckAll}
-            className="expand-links-link"
-          >
-            <Checkbox checked={!(expandExclusions.length === expandNode.getEdges().length)} />
-            <ListItemText>
-              <Typography variant="subheading">
-                {expandExclusions.length === expandNode.getEdges().length
-                  ? 'Select All' : 'Deselect All'}
-              </Typography>
-            </ListItemText>
-          </ListItem>
-          <Divider />
-          <List dense className="expand-links-list">
-            {expandNode.getEdges().map((edge) => {
-              const inRid = edge.in['@rid'];
-              const target = inRid === expandNode.getId() ? edge.out : edge.in;
-              if (target['@rid'] === expandNode.getId()
-                || links.find(l => l.getId() === edge['@rid'])) {
-                return null;
-              }
-              return (
+    const expansionDialog = (node) => {
+      if (!node) {
+        return null;
+      }
+      const edges = node.getEdges();
+      return (
+        <Dialog
+          open={expansionDialogOpen}
+          onClose={this.handleDialogClose('expansionDialogOpen')}
+          maxWidth="md"
+          fullWidth
+          classes={{
+            root: 'expansion-root',
+            paper: 'expansion-dialog',
+          }}
+        >
+          <DialogTitle>Select Edges to Expand</DialogTitle>
+          <DialogContent>
+            <Typography variant="subheading">
+              Expand by Edge Types:
+            </Typography>
+            <List dense className="expand-links-types">
+              {edges.reduce((array, edge) => {
+                if (
+                  !array.includes(edge['@class'])
+                  && !links.find(l => l.getId() === edge['@rid'])
+                ) {
+                  array.push(edge['@class']);
+                }
+                return array;
+              }, []).map(edge => (
                 <ListItem
-                  key={edge['@rid']}
-                  button
-                  onClick={() => this.handleExpandExclusion(edge['@rid'])}
-                  className="expand-links-link"
+                  key={edge}
+                  className="expand-links-type"
                 >
-                  <Checkbox checked={!expandExclusions.includes(edge['@rid'])} />
-                  <ListItemText>
-                    <Typography variant="body2">{target.name}</Typography>
-                    <Typography variant="body1">{target.sourceId}</Typography>
-                    <Typography variant="caption">{target.source.name || expandNode.source.name}</Typography>
-                  </ListItemText>
+                  <Button
+                    variant="outlined"
+                    color="secondary"
+                    onClick={this.handleExpandByClass(edge)}
+                  >
+                    {util.getEdgeLabel(edge)}
+                  </Button>
                 </ListItem>
-              );
-            })}
-          </List>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={this.handleDialogClose('expansionDialogOpen')}>
-            Cancel
-          </Button>
-          <Button
-            onClick={() => {
-              this.setState({ expansionDialogOpen: false });
-              setTimeout(() => this.loadNeighbors(actionsNode), DIALOG_FADEOUT_TIME);
-            }}
-            id="expand-dialog-submit"
-          >
-            Confirm
-          </Button>
-        </DialogActions>
-      </Dialog>
-    );
+              ))}
+            </List>
+            <Typography variant="subheading">
+              Select Individual Links:
+            </Typography>
+            <ListItem
+              button
+              onClick={this.handleExpandCheckAll}
+              className="expand-links-link"
+            >
+              <Checkbox checked={!(expandExclusions.length === edges.length)} />
+              <ListItemText>
+                <Typography variant="subheading">
+                  {expandExclusions.length === edges.length
+                    ? 'Select All' : 'Deselect All'}
+                </Typography>
+              </ListItemText>
+            </ListItem>
+            <Divider />
+            <List dense className="expand-links-list">
+              {edges.map((edge) => {
+                const inRid = edge.in['@rid'];
+                const target = inRid === node.getId() ? edge.out : edge.in;
+                if (target['@rid'] === node.getId()
+                  || links.find(l => l.getId() === edge['@rid'])) {
+                  return null;
+                }
+                return (
+                  <ListItem
+                    key={edge['@rid']}
+                    button
+                    onClick={() => this.handleExpandExclusion(edge['@rid'])}
+                    className="expand-links-link"
+                  >
+                    <Checkbox checked={!expandExclusions.includes(edge['@rid'])} />
+                    <ListItemText>
+                      <Typography variant="body2">{target.name}</Typography>
+                      <Typography variant="body1">{target.sourceId}</Typography>
+                      <Typography variant="caption">{target.source.name || node.source.name}</Typography>
+                    </ListItemText>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleDialogClose('expansionDialogOpen')}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                this.setState({ expansionDialogOpen: false });
+                setTimeout(() => this.loadNeighbors(actionsNode), DIALOG_FADEOUT_TIME);
+              }}
+              id="expand-dialog-submit"
+            >
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
+      );
+    };
 
     const snackbar = (
       <Snackbar
@@ -1214,7 +1223,7 @@ class GraphComponent extends Component {
     return (
       <div className="graph-wrapper">
         {snackbar}
-        {expansionDialog}
+        {expansionDialog(expandNode)}
         <GraphOptionsPanel
           linkLegendDisabled={linkLegendDisabled}
           graphOptionsOpen={graphOptionsOpen}

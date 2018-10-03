@@ -59,7 +59,7 @@ $flip-duration: 0.15s;
     left: 0;
     right: 0;
     background-color: $background-light;
-    height: $toolbar-height;
+    height: calc(#{$toolbar-height} - 1px);
     display: flex;
     border-top: 1px solid #ddd;
     overflow-x: auto;

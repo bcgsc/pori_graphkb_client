@@ -1,0 +1,56 @@
+@import "../../globals";
+@import "../../dataview";
+
+#detail-drawer {
+  z-index: $drawer-z-index;
+}
+.detail-root {
+  width: $detail-drawer-width;
+  transition: all #{$detail-drawer-transition};
+  @media (max-width: 425px) {
+    width: $detail-drawer-width-md;
+  }
+  @media (max-width: 375px) {
+    width: 100vw;
+    min-width: 320px;
+  }
+  .detail-content {
+    height: calc(100vh - #{$banner-height} - #{$toolbar-height});
+    overflow: auto;
+    position: absolute;
+    top: $banner-height;
+  }
+}
+.detail-closed {
+  width: 0;
+  @media (max-width: 375px) {
+    min-width: 0;
+  }
+}
+.detail-heading {
+  padding-top: 20px;
+  .detail-edit-btn {
+    text-align: center;
+    padding: 16px;
+  }
+  .detail-headline {
+    display: flex;
+    padding: 0 16px;
+    flex-shrink: 0;
+    > h1 {
+      margin: auto 0;
+    }
+    > button {
+      margin-left: auto;
+    }
+  }
+}
+
+.detail-nested-list {
+  margin-left: 32px !important;
+}
+
+.detail-relationships {
+  .detail-listitem-btn:hover {
+  }
+}

@@ -31,7 +31,7 @@ import AddIcon from '@material-ui/icons/Add';
 import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import DNAIcon from './components/DNAIcon/DNAIcon';
+import DNAIcon from './icons/DNAIcon/DNAIcon';
 import QueryView from './views/QueryView/QueryView';
 import AdvancedQueryView from './views/AdvancedQueryView/AdvancedQueryView';
 import DataView from './views/DataView/DataView';
@@ -39,10 +39,10 @@ import ErrorView from './views/ErrorView/ErrorView';
 import EditOntologyView from './views/EditOntologyView/EditOntologyView';
 import AddOntologyView from './views/AddOntologyView/AddOntologyView';
 import LoginView from './views/LoginView/LoginView';
-import OntologyDetailView from './views/OntologyDetailView/OntologyDetailView';
 import FeedbackView from './views/FeedbackView/FeedbackView';
 import VariantFormView from './views/VariantFormView/VariantFormView';
 import AdminView from './views/AdminView/AdminView';
+import iconsview from './views/iconsview/iconsview';
 import logo from './logo.png';
 import auth from './services/auth';
 import history from './services/history';
@@ -157,12 +157,10 @@ class App extends Component {
             >
               <ChevronLeftIcon />
             </IconButton>
-            <img src={logo} alt="" />
-            <Typography variant="body1">Knowledge Base</Typography>
           </div>
         </div>
         <Divider />
-        <List dense>
+        <List className="drawer-links">
           <MenuItem
             id="link-search"
             onClick={() => this.handleSideBarNavigate('/query')}
@@ -191,6 +189,15 @@ class App extends Component {
             <ListItemText primary="Add Variant" />
           </MenuItem>
         </List>
+        <div className="drawer-footer">
+          <Divider />
+          <MenuItem>
+            <ListItemIcon>
+              <img src={logo} alt="" />
+            </ListItemIcon>
+            <ListItemText primary="Knowledge Base" />
+          </MenuItem>
+        </div>
       </Drawer>
     );
 
@@ -200,7 +207,6 @@ class App extends Component {
         <Route path="/query/advanced" component={AdvancedQueryView} />
         <Route path="/add" component={AddOntologyView} />
         <Route path="/edit/:rid" component={EditOntologyView} />
-        <Route path="/ontology/:rid" component={OntologyDetailView} />
         <Route path="/data" component={DataView} />
         <Route path="/feedback" component={FeedbackView} />
         <Route path="/variant" component={VariantFormView} />
@@ -225,6 +231,9 @@ class App extends Component {
                   <MenuIcon />
                 </IconButton>
               )}
+              <div className="appbar-title">
+                <Typography variant="title">Knowledge Base</Typography>
+              </div>
               <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>
                 <div>
                   <Button
@@ -273,6 +282,7 @@ class App extends Component {
             <section className={`content ${(drawerOpen ? loggedIn : '') && 'drawer-shift'} ${!loggedIn ? 'no-drawer' : ''}`}>
               <div className="router-outlet">
                 <Switch>
+                  <Route path="/icons" component={iconsview} />
                   <Route path="/login" render={loginWithProps} />
                   <Route path="/error" component={ErrorView} />
                   <Route

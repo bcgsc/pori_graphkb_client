@@ -16,6 +16,7 @@ $success:#48a648;
 ***************/
 
 $banner-height: 56px;
+$drawer-z-index: 100;
 /***********
     FONTS
 ***********/
@@ -47,7 +48,7 @@ sans-serif;
     display: flex;
 }
 
-.view-wrapper {
+@mixin view-wrapper {
     margin: 32px auto;
     width: calc(80vw + 32px);
     display: grid;

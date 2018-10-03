@@ -9,9 +9,38 @@ import config from '../config.json';
 const { DEFAULT_PROPS, PERMISSIONS } = config;
 const { PALLETE_SIZE } = config.GRAPH_DEFAULTS;
 const { NODE_INIT_RADIUS } = config.GRAPH_PROPERTIES;
-const ACRONYMS = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url', 'cds'];
-const GRAPH_OBJECTS_KEY = 'graphObjects';
+const ACRONYMS = [
+  'id',
+  'uuid',
+  'ncit',
+  'uberon',
+  'doid',
+  'url',
+  'cds',
+  'hgnc',
+  'bcgsc',
+  'fda',
+  'null',
+];
 
+const GRAPH_OBJECTS_KEY = 'graphObjects';
+const DEFAULT_CUTOFF = 25;
+
+
+/**
+ * Casts a value to string form with minimal formatting. Sets the value to
+ * 'null' if the value is null or undefined.
+ * @param {any} obj - Object to be formatted.
+ */
+const castToExist = (obj) => {
+  if (Array.isArray(obj)) {
+    if (obj.length > 0) {
+      return obj.join(', ');
+    }
+    return 'null';
+  }
+  return obj === undefined || obj === null ? 'null' : obj.toString();
+};
 
 /**
  * Parses a string and capitalizes known acronyms.
@@ -29,6 +58,13 @@ const parseAcronyms = (str) => {
     });
   });
   return words.join(' ');
+};
+
+const shortenString = (str, cutoff = DEFAULT_CUTOFF) => {
+  if (str && str.length > cutoff) {
+    return `${str.substring(0, cutoff - 4).trim()}...`;
+  }
+  return str;
 };
 
 /**
@@ -60,8 +96,10 @@ const antiCamelCase = (str) => {
 
 
 const formatStr = (str) => {
-  const re = /\.\s\w/g;
-  const ret = parseAcronyms(str).trim().replace(re, match => `${match.toUpperCase()}`);
+  const newSentence = /\.\s\w/g;
+  const ret = parseAcronyms(castToExist(str))
+    .trim()
+    .replace(newSentence, match => match.toUpperCase());
   return ret.charAt(0).toUpperCase() + ret.slice(1);
 };
 
@@ -426,21 +464,6 @@ const getSubClasses = (abstractClass, schema) => Object.values(schema)
 const getPropOfType = (kbClass, type) => Object.values(kbClass)
   .filter(prop => prop.type === type);
 
-/**
- * Casts a value to string form with minimal formatting. Sets the value to
- * 'null' if the value is null or undefined.
- * @param {any} obj - Object to be formatted.
- */
-const castToExist = (obj) => {
-  if (Array.isArray(obj)) {
-    if (obj.length > 0) {
-      return obj.join(', ');
-    }
-    return 'null';
-  }
-  return obj === undefined || obj === null ? 'null' : obj.toString();
-};
-
 export default {
   antiCamelCase,
   getPreview,
@@ -462,4 +485,5 @@ export default {
   getPropOfType,
   castToExist,
   formatStr,
+  shortenString,
 };

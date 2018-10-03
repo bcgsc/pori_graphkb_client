@@ -224,6 +224,9 @@ class App extends Component {
                   <MenuIcon />
                 </IconButton>
               )}
+              <div className="appbar-title">
+                <Typography variant="title">Knowledge Base</Typography>
+              </div>
               <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>
                 <div>
                   <Button

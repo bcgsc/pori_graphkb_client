@@ -797,7 +797,6 @@ class OntologyFormComponent extends Component {
                           <TableCell padding="dense">
                             <div className="relationship-dir-type">
                               <IconButton
-                                disableRipple
                                 name="direction"
                                 onClick={this.handleRelationshipDirection}
                                 color="primary"

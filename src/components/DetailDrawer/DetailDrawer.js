@@ -20,47 +20,12 @@ import {
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import LabelIcon from '@material-ui/icons/Label';
-import LabelTwoToneIcon from '@material-ui/icons/LabelTwoTone';
-import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
-import AssignmentIcon from '@material-ui/icons/Assignment';
-import LabelImportantIcon from '@material-ui/icons/LabelImportant';
-import BookmarkIcon from '@material-ui/icons/Bookmark';
-import LinkIcon from '@material-ui/icons/Link';
-import ClassIcon from '@material-ui/icons/Class';
-import DescriptionIcon from '@material-ui/icons/Description';
-import ListAltIcon from '@material-ui/icons/ListAlt';
-import DateRangeIcon from '@material-ui/icons/DateRange';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
-import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import LocationCityIcon from '@material-ui/icons/LocationCity';
-import BacteriaIcon from '../../icons/BacteriaIcon/BacteriaIcon';
-import OpenBookIcon from '../../icons/OpenBookIcon/OpenBookIcon';
-import WWWIcon from '../../icons/WWWIcon/WWWIcon';
 import util from '../../services/util';
 import Ontology from '../../services/ontology';
+import icons from '../../icons/icons';
 
-const PROP_TO_ICON = {
-  name: <LabelIcon />,
-  sourceId: <LabelImportantIcon />,
-  source: <BookmarkIcon />,
-  description: <DescriptionIcon />,
-  subsets: <ListAltIcon />,
-  longName: <LabelTwoToneIcon />,
-  sourceIdVersion: <LocalOfferIcon />,
-  biotype: <BacteriaIcon />,
-  journalName: <OpenBookIcon />,
-  year: <DateRangeIcon />,
-  startYear: <DateRangeIcon />,
-  endYear: <DateRangeIcon />,
-  city: <LocationCityIcon />,
-  country: <LocationOnIcon />,
-  url: <WWWIcon />,
-  dependency: <AssignmentOutlinedIcon />,
-  '@class': <ClassIcon />,
-};
 
 const IDENTIFIERS = ['@class', 'name', 'sourceId', 'source.name'];
 const MAX_STRING_LENGTH = 64;
@@ -70,7 +35,7 @@ class DetailDrawer extends Component {
     return (
       <div>
         <Tooltip title={util.antiCamelCase(key)}>
-          {PROP_TO_ICON[key] || <AssignmentIcon />}
+          {icons.getIcon(key)}
         </Tooltip>
       </div>
     );
@@ -248,7 +213,7 @@ class DetailDrawer extends Component {
               >
                 <ListItemIcon>
                   <div>
-                    <LinkIcon />
+                    {icons.getIcon('edges')}
                   </div>
                 </ListItemIcon>
                 <ListItemText

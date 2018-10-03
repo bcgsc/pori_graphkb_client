@@ -99,6 +99,7 @@ $drawer-breakpoint: 768px;
   }
   .drawer-shift {
     left: $drawer-width;
+    overflow: hidden;
     @media (max-width: $drawer-breakpoint) {
       width: 0;
       left: 100vw;

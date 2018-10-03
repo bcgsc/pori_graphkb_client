@@ -1,34 +1,37 @@
-@import '../../globals';
-.adv-header {
+@import "../../globals";
+.adv-wrapper {
+  @include view-wrapper;
+  .adv-header {
     padding: 16px;
     #adv-title {
-        font-weight: 300;
-        height: 37px;
+      font-weight: 300;
+      height: 37px;
     }
-}
-.adv-grid{
+  }
+  .adv-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     @media (max-width: 768px) {
-        grid-template-columns: 1fr;
+      grid-template-columns: 1fr;
     }
-}
-#adv-nav-buttons {
+  }
+  #adv-nav-buttons {
     display: flex;
     justify-content: center;
     padding: 16px;
     button {
-        margin: auto 12px;
+      margin: auto 12px;
     }
-}
-.input-wrapper {
+  }
+  .input-wrapper {
     display: flex;
     width: 100%;
     .text-input {
-        flex-grow: 1;
+      flex-grow: 1;
     }
-}
-.link {
+  }
+  .link {
     text-decoration: none;
     width: fit-content;
+  }
 }

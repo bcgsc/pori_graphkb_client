@@ -29,7 +29,7 @@ class VariantFormView extends Component {
 
   render() {
     return (
-      <div className="view-wrapper">
+      <div className="variant-wrapper">
         <Paper elevation={4} className="paper variant-headline">
           <Typography variant="headline">Variant Form</Typography>
           <div className="variant-cancel-btn">

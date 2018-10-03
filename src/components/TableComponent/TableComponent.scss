@@ -15,6 +15,7 @@ $flip-duration: 0.15s;
     bottom: calc(#{$toolbar-height} - 1px);
     transition: all #{$detail-drawer-transition};
     table {
+      min-width: 540px;
       table-layout: fixed;
     }
     .table-head {
@@ -46,8 +47,11 @@ $flip-duration: 0.15s;
       background-color: rgba($md-secondary-light, 0.5);
     }
   }
-  .table-drawer-open{
-      right: $detail-drawer-width;
+  .table-drawer-open {
+    right: $detail-drawer-width;
+    @media (max-width: 768px) {
+      right: 0;
+    }
   }
   .pag {
     position: absolute;

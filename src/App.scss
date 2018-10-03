@@ -7,16 +7,30 @@ $drawer-breakpoint: 768px;
 .App {
   .banner {
     height: $banner-height;
-    flex-direction: row !important;
+    flex-direction: row;
+    justify-content: center;
     transition: all #{$transition-speed};
     float: right;
     z-index: calc(#{$drawer-z-index} + 3);
     left: 0;
     right: 0;
+    color: white;
     width: auto;
+    .appbar-title {
+      max-width: 100%;
+      margin: auto 16px;
+      transition: all 0.5s;
+      overflow: hidden;
+      white-space: nowrap;
+      @media (max-width: 425px) {
+        max-width: 0;
+      }
+      > * {
+        color: white;
+      }
+    }
     .appbar-btn {
       margin: auto 4px;
-      color: white;
       animation: fade-in(0.2s);
     }
     .appbar-btn:disabled {

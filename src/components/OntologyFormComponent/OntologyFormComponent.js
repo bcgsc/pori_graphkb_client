@@ -622,7 +622,7 @@ class OntologyFormComponent extends Component {
         {dialog}
         {drawer}
         <form onSubmit={this.handleSubmit}>
-          <div className="view-wrapper form-grid">
+          <div className="form-grid">
             <Paper className="form-header" elevation={4}>
               <Typography variant="headline" className="form-title">
                 {variant === 'edit' ? 'Edit Ontology Term'

@@ -91,8 +91,8 @@ $drawer-breakpoint: 768px;
     left: $drawer-width;
     overflow: hidden;
     @media (max-width: $drawer-breakpoint) {
-      width: 0;
-      left: 100vw;
+      left: 0;
+      z-index: calc(#{$drawer-z-index} - 1);
     }
   }
   .router-outlet {
@@ -111,7 +111,7 @@ $drawer-breakpoint: 768px;
     flex-direction: column;
     height: 100vh;
     @media (max-width: $drawer-breakpoint) {
-      width: calc(100vw - 1px);
+      width: calc(100vw - 56px);
     }
     .drawer-links {
       position: relative;

@@ -2,32 +2,33 @@
 @import "../../dataview";
 
 #detail-drawer {
-  z-index: $drawer-z-index;
+  .detail-root {
+    width: $detail-drawer-width;
+    transition: all #{$detail-drawer-transition};
+    z-index: $drawer-z-index;
+    @media (max-width: 425px) {
+      width: $detail-drawer-width-md;
+    }
+    @media (max-width: 375px) {
+      width: 100vw;
+      min-width: 320px;
+    }
+    .detail-content {
+      height: calc(100vh - #{$banner-height} - #{$toolbar-height});
+      overflow: auto;
+      position: absolute;
+      top: $banner-height;
+      width: 100%;
+    }
+  }
+  .detail-closed {
+    width: 0;
+    @media (max-width: 375px) {
+      min-width: 0;
+    }
+  }
 }
-.detail-root {
-  width: $detail-drawer-width;
-  transition: all #{$detail-drawer-transition};
-  @media (max-width: 425px) {
-    width: $detail-drawer-width-md;
-  }
-  @media (max-width: 375px) {
-    width: 100vw;
-    min-width: 320px;
-  }
-  .detail-content {
-    height: calc(100vh - #{$banner-height} - #{$toolbar-height});
-    overflow: auto;
-    position: absolute;
-    top: $banner-height;
-    width: 100%;
-  }
-}
-.detail-closed {
-  width: 0;
-  @media (max-width: 375px) {
-    min-width: 0;
-  }
-}
+
 .detail-heading {
   padding-top: 20px;
   .detail-edit-btn {

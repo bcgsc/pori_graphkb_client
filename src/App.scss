@@ -92,7 +92,6 @@ $drawer-breakpoint: 768px;
     overflow: hidden;
     @media (max-width: $drawer-breakpoint) {
       left: 0;
-      z-index: calc(#{$drawer-z-index} - 1);
     }
   }
   .router-outlet {
@@ -104,7 +103,7 @@ $drawer-breakpoint: 768px;
   }
   .drawer {
     width: $drawer-width;
-    z-index: calc(#{$drawer-z-index} + 2);
+    z-index: calc(#{$drawer-z-index} + 3);
     transition: width #{$transition-speed};
     animation: fade-in();
     display: flex;

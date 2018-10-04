@@ -14,13 +14,12 @@ $mediumBreakpoint: 500px;
   .form-grid {
     flex-grow: 1;
     @include view-wrapper;
-    @media(max-width: 425px){
-      .flexbox>div{
+    @media (max-width: 425px) {
+      .flexbox > div {
         margin: 0;
         box-shadow: none;
         border-radius: 0;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.26);
-
+        border-bottom: 1px solid rgba(0, 0, 0, 0.26);
       }
     }
     @media (max-width: $breakpoint) {

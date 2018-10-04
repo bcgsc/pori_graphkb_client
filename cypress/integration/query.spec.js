@@ -17,7 +17,7 @@ describe('Query Page Test', () => {
   it('AutoSearch valid input', () => {
     cy.get('input[type=text]').type('angiosarcoma');
     cy.get('div.droptions ul li').each(($li) => {
-      cy.wrap($li).contains('angiosarcoma');
+      cy.wrap($li).contains('ngiosarcoma');
     });
 
     cy.get('div.droptions ul li:first span:first').click({ force: true });
@@ -85,7 +85,7 @@ describe('Query Page Test', () => {
 
     endpoints.forEach((endpoint) => {
       cy.get(`ul li[data-value=${endpoint}]`).click();
-      cy.contains(endpoint);
+      cy.contains(endpoint.match(/[A-Z]/, m => ` ${m}`).trim());
       cy.get('#class-adv').click();
     });
     cy.get(`ul li[data-value=${endpoints[endpoints.length - 1]}]`).click();

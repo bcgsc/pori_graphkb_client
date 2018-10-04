@@ -48,7 +48,7 @@ describe('util methods test', () => {
       },
     ];
 
-    testObjs.forEach(testObj => expect(util.getPreview(testObj)).to.eq('pass'));
+    testObjs.forEach(testObj => expect(util.getPreview(testObj)).to.eq('Pass'));
   });
 
   it('expandEdges', () => {
@@ -114,7 +114,7 @@ describe('util methods test', () => {
       },
     ];
     testTSVs.forEach((testTSV) => {
-      expect(util.getTSVRepresentation(testTSV.key, 'key')).to.eq('pass');
+      expect(util.getTSVRepresentation(testTSV.key, 'key').toLowerCase()).to.eq('pass');
     });
 
     const arrayTestTSVs = [

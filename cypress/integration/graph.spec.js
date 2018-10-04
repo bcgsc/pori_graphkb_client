@@ -36,8 +36,9 @@ describe('Graph View Test', () => {
     getClass('Disease');
     cy.get('circle.node').click({ force: true });
     cy.contains('(Details)').click({ force: true });
-    cy.contains('Properties:');
-    cy.get('div.node-edit-btn button:first').click();
+    cy.contains('Properties:').should('exist');
+    cy.get('div.detail-heading div.detail-headline>button').click();
+    cy.contains('Properties:').should('not.visible');
 
     cy.get('circle.node').click({ force: true });
     cy.contains('(Close)').click({ force: true });
@@ -104,8 +105,8 @@ describe('Graph View Test', () => {
     cy.get('li[data-value="source.name"]').click();
     cy.get('#options-close-btn').click();
     cy.get('div.legend-wrapper').should('exist');
-    cy.contains('Hgnc');
-    cy.contains('(Source Name)');
+    cy.contains('HGNC');
+    cy.contains('(Source name)');
 
     cy.get('#graph-options-btn').click();
     cy.get('div.main-options-wrapper div.graph-option').each((div, i) => {

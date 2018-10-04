@@ -9,16 +9,23 @@ describe('App Bar Test', () => {
   });
 
   it('Query, add node, and logout buttons', () => {
-    cy.get('div.drawer ul li').each((button, i) => {
+    cy.get('div.drawer ul>li').each((button, i) => {
       cy.wrap(button).click();
       if (i === 0) {
         cy.url().should('includes', '/query');
       } else if (i === 1) {
-        cy.url().should('includes', '/add');
-      } else if (i === 2) {
-        cy.url().should('includes', '/variant');
-      } else {
-        cy.contains('Logout');
+        cy.contains('Ontology');
+        cy.contains('Variant');
+        cy.get('div.drawer ul>div>div>div>li').each((nestedButton, j) => {
+          if (j === 0) {
+            cy.wrap(nestedButton).click();
+            cy.url().should('includes', '/add');
+          } else if (j === 1) {
+            cy.wrap(button).click();
+            cy.wrap(nestedButton).click();
+            cy.url().should('includes', '/variant');
+          }
+        });
       }
     });
   });

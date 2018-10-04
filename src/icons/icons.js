@@ -15,6 +15,7 @@ import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import LocationCityIcon from '@material-ui/icons/LocationCity';
 import HelpIcon from '@material-ui/icons/Help';
 // import BacteriaIcon from './BacteriaIcon/BacteriaIcon';
+import ChromosomeIcon from './ChromosomeIcon/ChromosomeIcon';
 import DNAIcon from './DNAIcon/DNAIcon';
 import FlaskIcon from './FlaskIcon/FlaskIcon';
 import MoleculeIcon from './MoleculeIcon/MoleculeIcon';
@@ -45,6 +46,7 @@ const PROP_TO_ICON = {
   biotype: <DNAIcon />,
   edges: <LinkIcon />,
   default: <AssignmentIcon />,
+  chromosome: <ChromosomeIcon />,
 };
 
 const getIcon = key => PROP_TO_ICON[key] || PROP_TO_ICON.default;

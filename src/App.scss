@@ -138,6 +138,7 @@ $drawer-breakpoint: 768px;
   }
   .drawer-closed {
     width: $closed-drawer-width;
+    z-index: $drawer-z-index;
     @media (max-width: $drawer-breakpoint) {
       width: 0;
     }

@@ -59,15 +59,14 @@ $drawer-breakpoint: 768px;
         }
       }
     }
-    .drawer-logo {
-      display: flex;
-      height: 24px;
-      height: 100%;
-      overflow: hidden;
-      white-space: nowrap;
-      button {
-        margin: auto 4px;
-      }
+  }
+  .drawer-logo {
+    display: flex;
+    overflow: hidden;
+    white-space: nowrap;
+    button {
+      margin: auto;
+      margin-left: 8px;
     }
   }
   .user-menu {
@@ -128,15 +127,13 @@ $drawer-breakpoint: 768px;
       right: 0;
       top: auto;
       flex-shrink: 0;
-      white-space: nowrap;
       height: 57px;
       li {
         height: 56px;
         box-sizing: border-box;
-      }
-      img {
-        width: 24px;
-        height: 24px;
+        white-space: nowrap;
+        padding: 12px 16px;
+        overflow: hidden;
       }
     }
   }
@@ -149,4 +146,11 @@ $drawer-breakpoint: 768px;
   .no-drawer {
     left: 0;
   }
+}
+#bcc-logo {
+  width: 24px;
+  height: 24px;
+}
+#bcc-label {
+  height: 32px;
 }

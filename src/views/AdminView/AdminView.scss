@@ -23,12 +23,11 @@ h2 {
   }
 }
 .admin-headline {
-  h1 {
-    font-weight: 300;
-  }
+  @include page-header;
 }
 .admin-users {
   max-height: 720px;
+  @include paper;
   .users-btns {
     margin: 8px 0;
     display: flex;
@@ -39,6 +38,7 @@ h2 {
   }
 }
 .admin-user-groups {
+  @include paper;
   .editedGroup {
     h3 {
       animation: fade-in(0.1s);
@@ -165,6 +165,7 @@ div {
       flex: 1 0 50%;
     }
     .new-user-preview {
+      @include paper;
       flex: 1 0 50%;
       box-sizing: border-box;
       overflow: hidden;

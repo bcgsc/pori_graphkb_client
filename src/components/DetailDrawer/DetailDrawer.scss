@@ -49,8 +49,8 @@
 .detail-nested-list {
   margin-left: 32px !important;
 }
-
+.detail-important,
+.detail-other,
 .detail-relationships {
-  .detail-listitem-btn:hover {
-  }
+  @include paper;
 }

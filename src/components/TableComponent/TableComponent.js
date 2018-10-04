@@ -696,7 +696,7 @@ class TableComponent extends Component {
         }}
         id="filter-popover"
       >
-        <Paper className="paper">
+        <Paper className="filter-wrapper">
           <List className="filter-list">
             <ListItem dense>
               <TextField

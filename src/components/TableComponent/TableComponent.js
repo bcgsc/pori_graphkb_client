@@ -866,7 +866,7 @@ class TableComponent extends Component {
                         {tableColumns.map((col) => {
                           if (col.checked) {
                             return (
-                              <TableCell key={col.id}>
+                              <TableCell classes={{ root: 'cell' }} key={col.id}>
                                 {util.formatStr(col.sortBy
                                   ? util.castToExist((n[col.id] || '')[col.sortBy])
                                   : util.castToExist(n[col.id]))}

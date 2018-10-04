@@ -623,10 +623,6 @@ class OntologyFormComponent extends Component {
         <form onSubmit={this.handleSubmit}>
           <div className="form-grid">
             <Paper className="form-header" elevation={4}>
-              <Typography variant="headline" className="form-title">
-                {variant === 'edit' ? 'Edit Ontology Term'
-                  : 'Add New Ontology Term'}
-              </Typography>
               <div className="form-cancel-btn">
                 <Button
                   color="default"
@@ -636,6 +632,10 @@ class OntologyFormComponent extends Component {
                   Cancel
                 </Button>
               </div>
+              <Typography variant="headline" className="form-title">
+                {variant === 'edit' ? 'Edit Ontology Term'
+                  : 'Add New Ontology Term'}
+              </Typography>
             </Paper>
             <div className="flexbox">
               <Paper className="param-section" elevation={4}>

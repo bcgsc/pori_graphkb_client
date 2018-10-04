@@ -214,7 +214,7 @@ const getSchema = () => {
  * @param {number} limit - Limit for number of returned matches.
  */
 const autoSearch = (endpoint, property, value, limit) => {
-  const re = new RegExp(/[\s|\r|\n|\t|:|\\|;|,|.|/|||+|*|=|!|?|[|\]|(|)]+/, 'g');
+  const re = new RegExp(/[\r|\n|\t|:|\\|;|,|.|/|||+|*|=|!|?|[|\]|(|)]+/, 'g');
   const literalRe = new RegExp(/^['"].*['"]$/);
   if (value.trim().split(re).some(s => s.length < 4)) return Promise.resolve({ result: [] });
 

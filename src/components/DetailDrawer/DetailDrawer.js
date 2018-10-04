@@ -289,7 +289,7 @@ class DetailDrawer extends Component {
             </div>
           </div>
           <Divider />
-          <div className="detail-important paper">
+          <div className="detail-important">
             <Typography
               variant="body1"
               color="textSecondary"
@@ -302,7 +302,7 @@ class DetailDrawer extends Component {
           <Divider />
           {otherProps && (
             <React.Fragment>
-              <div className="detail-other paper">
+              <div className="detail-other">
                 <Typography
                   variant="body1"
                   color="textSecondary"
@@ -317,7 +317,7 @@ class DetailDrawer extends Component {
           )}
           {!isEdge && (
             <React.Fragment>
-              <div className="paper">
+              <div className="detail-relationships">
                 <Typography
                   variant="body1"
                   color="textSecondary"
@@ -327,8 +327,9 @@ class DetailDrawer extends Component {
                 </Typography>
               </div>
               {relationships || (
-                <ListItem dense>
+                <ListItem>
                   <ListItemText
+                    inset
                     primaryTypographyProps={{ color: 'textSecondary' }}
                     primary="None"
                   />

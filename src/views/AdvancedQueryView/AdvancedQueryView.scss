@@ -2,13 +2,10 @@
 .adv-wrapper {
   @include view-wrapper;
   .adv-header {
-    padding: 16px;
-    #adv-title {
-      font-weight: 300;
-      height: 37px;
-    }
+    @include page-header;
   }
   .adv-grid {
+    @include paper;
     display: grid;
     grid-template-columns: 1fr 1fr;
     @media (max-width: 768px) {
@@ -16,9 +13,9 @@
     }
   }
   #adv-nav-buttons {
+    @include paper;
     display: flex;
     justify-content: center;
-    padding: 16px;
     button {
       margin: auto 12px;
     }

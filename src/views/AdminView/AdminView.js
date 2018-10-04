@@ -639,7 +639,7 @@ class AdminView extends Component {
                 </FormGroup>
               </FormControl>
             </div>
-            <Paper className="paper new-user-preview">
+            <Paper className="new-user-preview">
               <div className="preview-name">
                 <Avatar classes={{ colorDefault: newUserName ? 'avatar-colored' : '' }}>
                   {newUserName.charAt(0).toUpperCase() || <PersonIcon />}
@@ -816,10 +816,10 @@ class AdminView extends Component {
         {deleteUsersDialog}
         {userGroupDialog()}
         {deleteUserGroupDialog}
-        <Paper className="paper admin-headline">
+        <Paper className="admin-headline">
           <Typography component="h1" variant="headline">Admin</Typography>
         </Paper>
-        <Paper className="paper admin-users">
+        <Paper className="admin-users">
           <div className="admin-section-heading">
             <Typography component="h2" variant="title">Users</Typography>
             <div className="admin-section-heading-btns">
@@ -886,7 +886,7 @@ class AdminView extends Component {
             </TableBody>
           </Table>
         </Paper>
-        <Paper className="paper admin-user-groups">
+        <Paper className="admin-user-groups">
           <div className="admin-section-heading">
             <Typography component="h2" variant="title">User Groups</Typography>
             <div className="admin-section-heading-btns">

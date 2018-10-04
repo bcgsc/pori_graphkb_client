@@ -17,6 +17,11 @@ $flip-duration: 0.15s;
     table {
       min-width: 540px;
       table-layout: fixed;
+      .cell {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
     .table-head {
       tr,

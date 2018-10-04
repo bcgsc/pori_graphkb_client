@@ -150,7 +150,7 @@ describe('util methods test', () => {
           output += ', ';
         }
       });
-      expect(util.getTSVRepresentation(list, testTSV.testKey)).to.eq(output);
+      expect(util.getTSVRepresentation(list, testTSV.testKey).toLowerCase()).to.eq(output);
     });
 
     const nestedTestTSVs = [
@@ -172,7 +172,7 @@ describe('util methods test', () => {
       },
     ];
     nestedTestTSVs.forEach((testTSV) => {
-      expect(util.getTSVRepresentation(testTSV[testTSV.testKey.split('.')[0]], testTSV.testKey)).to.eq('pass');
+      expect(util.getTSVRepresentation(testTSV[testTSV.testKey.split('.')[0]], testTSV.testKey).toLowerCase()).to.eq('pass');
     });
   });
 

@@ -59,18 +59,19 @@ $drawer-breakpoint: 768px;
         }
       }
     }
-    .drawer-logo {
-      display: flex;
-      height: 24px;
-      height: 100%;
-      overflow: hidden;
-      white-space: nowrap;
-      button {
-        margin: auto 4px;
-      }
+  }
+  .drawer-logo {
+    display: flex;
+    overflow: hidden;
+    white-space: nowrap;
+    button {
+      margin: auto;
+      margin-left: 8px;
     }
   }
-
+  .user-menu {
+    width: $user-menu-width;
+  }
   .content {
     overflow-y: auto;
     overflow-x: hidden;
@@ -90,8 +91,7 @@ $drawer-breakpoint: 768px;
     left: $drawer-width;
     overflow: hidden;
     @media (max-width: $drawer-breakpoint) {
-      width: 0;
-      left: 100vw;
+      left: 0;
     }
   }
   .router-outlet {
@@ -103,14 +103,14 @@ $drawer-breakpoint: 768px;
   }
   .drawer {
     width: $drawer-width;
-    z-index: calc(#{$drawer-z-index} + 2);
+    z-index: calc(#{$drawer-z-index} + 3);
     transition: width #{$transition-speed};
     animation: fade-in();
     display: flex;
     flex-direction: column;
     height: 100vh;
     @media (max-width: $drawer-breakpoint) {
-      width: calc(100vw - 1px);
+      width: calc(100vw - 56px);
     }
     .drawer-links {
       position: relative;
@@ -126,20 +126,19 @@ $drawer-breakpoint: 768px;
       right: 0;
       top: auto;
       flex-shrink: 0;
-      white-space: nowrap;
       height: 57px;
       li {
         height: 56px;
         box-sizing: border-box;
-      }
-      img {
-        width: 24px;
-        height: 24px;
+        white-space: nowrap;
+        padding: 12px 16px;
+        overflow: hidden;
       }
     }
   }
   .drawer-closed {
     width: $closed-drawer-width;
+    z-index: $drawer-z-index;
     @media (max-width: $drawer-breakpoint) {
       width: 0;
     }
@@ -147,6 +146,13 @@ $drawer-breakpoint: 768px;
   .no-drawer {
     left: 0;
   }
+}
+#bcc-logo {
+  width: 24px;
+  height: 24px;
+}
+#bcc-label {
+  height: 32px;
 }
 .user-menu {
   width: $user-menu-width;

@@ -75,9 +75,10 @@ $flip-duration: 0.15s;
       grid-template-columns: 0 100px 56px 120px 116px;
     }
     .graph-btn {
-      margin: auto 24px auto auto;
+      margin: auto 0 auto auto;
       button {
         transition: all 500ms;
+        margin-right: 24px;
       }
       button:enabled {
         background-color: rgba($md-secondary-light, 0.5);

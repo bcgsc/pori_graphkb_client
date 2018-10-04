@@ -14,7 +14,7 @@ import LocationOnIcon from '@material-ui/icons/LocationOn';
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import LocationCityIcon from '@material-ui/icons/LocationCity';
 import HelpIcon from '@material-ui/icons/Help';
-import BacteriaIcon from './BacteriaIcon/BacteriaIcon';
+// import BacteriaIcon from './BacteriaIcon/BacteriaIcon';
 import DNAIcon from './DNAIcon/DNAIcon';
 import FlaskIcon from './FlaskIcon/FlaskIcon';
 import MoleculeIcon from './MoleculeIcon/MoleculeIcon';
@@ -29,7 +29,7 @@ const PROP_TO_ICON = {
   subsets: <ListAltIcon />,
   longName: <LabelTwoToneIcon />,
   sourceIdVersion: <LocalOfferIcon />,
-  biotype: <BacteriaIcon />,
+  // biotype: <BacteriaIcon />,
   journalName: <OpenBookIcon />,
   year: <DateRangeIcon />,
   startYear: <DateRangeIcon />,
@@ -42,7 +42,7 @@ const PROP_TO_ICON = {
   molecularFormula: <MoleculeIcon />,
   mechanismOfAction: <FlaskIcon />,
   help: <HelpIcon />,
-  variant: <DNAIcon />,
+  biotype: <DNAIcon />,
   edges: <LinkIcon />,
   default: <AssignmentIcon />,
 };

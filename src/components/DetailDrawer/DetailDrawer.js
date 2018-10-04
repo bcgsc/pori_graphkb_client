@@ -327,8 +327,9 @@ class DetailDrawer extends Component {
                 </Typography>
               </div>
               {relationships || (
-                <ListItem dense>
+                <ListItem>
                   <ListItemText
+                    inset
                     primaryTypographyProps={{ color: 'textSecondary' }}
                     primary="None"
                   />

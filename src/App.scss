@@ -103,7 +103,7 @@ $drawer-breakpoint: 768px;
   }
   .drawer {
     width: $drawer-width;
-    z-index: calc(#{$drawer-z-index} + 3);
+    z-index: calc(#{$drawer-z-index} + 4);
     transition: width #{$transition-speed};
     animation: fade-in();
     display: flex;
@@ -138,7 +138,7 @@ $drawer-breakpoint: 768px;
   }
   .drawer-closed {
     width: $closed-drawer-width;
-    z-index: $drawer-z-index;
+    z-index: calc(#{$drawer-z-index} + 2);
     @media (max-width: $drawer-breakpoint) {
       width: 0;
     }

@@ -13,7 +13,6 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  ListSubheader,
   Collapse,
   Button,
   Tooltip,
@@ -204,7 +203,7 @@ class DetailDrawer extends Component {
       <List>
         {edges.map((edge) => {
           const isOpen = opened.includes(edge['@rid']);
-          const linkedOntology = edge.in && edge.in['@rid'] === node.getId() ? edge.out : edge.in;
+          const isIn = edge.in && edge.in['@rid'] === node.getId();
           return (
             <React.Fragment key={edge['@rid']}>
               <ListItem
@@ -217,21 +216,31 @@ class DetailDrawer extends Component {
                   </div>
                 </ListItemIcon>
                 <ListItemText
-                  primary={util.getPreview(linkedOntology)}
-                  secondary={util.getEdgeLabel(edge['@class'])}
+                  primary={util.getPreview(isIn ? edge.out : edge.in)}
+                  secondary={util.getEdgeLabel(`${isIn ? 'in' : 'out'}_${edge['@class']}`)}
                 />
                 {!isOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
               </ListItem>
-              <Collapse in={!!isOpen}>
-                <List disablePadding className="detail-nested-list">
-                  <ListSubheader>
-                    Link Properties
-                  </ListSubheader>
-                  {this.formatIdentifiers(edge)}
-                  <ListSubheader>
-                    Linked Ontology
-                  </ListSubheader>
-                  {this.formatIdentifiers(linkedOntology)}
+              <Collapse in={!!isOpen} unmountOnExit>
+                <List dense disablePadding className="detail-nested-list">
+                  <ListItem>
+                    <ListItemText
+                      primary="Link Properties"
+                      primaryTypographyProps={{
+                        variant: 'title',
+                      }}
+                    />
+                  </ListItem>
+                  {this.formatIdentifiers(edge, true)}
+                  <ListItem>
+                    <ListItemText
+                      primary="Linked Ontology"
+                      primaryTypographyProps={{
+                        variant: 'title',
+                      }}
+                    />
+                  </ListItem>
+                  {this.formatIdentifiers(isIn ? edge.out : edge.in, true)}
                 </List>
               </Collapse>
             </React.Fragment>);

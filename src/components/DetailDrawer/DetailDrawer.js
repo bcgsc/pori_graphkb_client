@@ -22,7 +22,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import util from '../../services/util';
-import Ontology from '../../services/ontology';
+import { Ontology } from '../../services/ontology';
 import icons from '../../icons/icons';
 
 

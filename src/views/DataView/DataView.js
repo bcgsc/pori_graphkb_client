@@ -19,7 +19,7 @@ import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
 import api from '../../services/api';
-import Ontology from '../../services/ontology';
+import { Ontology, OntologyEdge } from '../../services/ontology';
 import config from '../../config.json';
 
 const { DEFAULT_NEIGHBORS } = config;
@@ -267,7 +267,7 @@ class DataView extends Component {
     const { data, detail } = this.state;
     if (!open && !detail) return;
     if (edge) {
-      this.setState({ detail: node.data, detailEdge: true });
+      this.setState({ detail: new OntologyEdge(node.data), detailEdge: true });
     } else {
       if (!data[node.getId()]) {
         const response = await api.get(`/ontologies/${node.getId().slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);

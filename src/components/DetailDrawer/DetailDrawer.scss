@@ -49,7 +49,11 @@
 }
 
 .detail-nested-list {
-  margin-left: 32px !important;
+  > li,
+  > div,
+  > ul {
+    margin-left: 32px;
+  }
 }
 .detail-important,
 .detail-other,

@@ -44,6 +44,7 @@ import TimelineIcon from '@material-ui/icons/Timeline';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import AddIcon from '@material-ui/icons/Add';
 import SearchIcon from '@material-ui/icons/Search';
+import SortIcon from '@material-ui/icons/Sort';
 import FilterIcon from '../../icons/FilterIcon/FilterIcon';
 import DownloadFileComponent from '../DownloadFileComponent/DownloadFileComponent';
 import util from '../../services/util';
@@ -772,7 +773,7 @@ class TableComponent extends Component {
           <Table>
             <TableHead className="table-head">
               <TableRow>
-                <TableCell padding="dense">
+                <TableCell padding="checkbox">
                   <Checkbox
                     color="secondary"
                     onChange={e => handleCheckAll(e, pageData)}
@@ -781,7 +782,9 @@ class TableComponent extends Component {
                     active={orderBy === 'displayed'}
                     onClick={() => this.handleSortByChecked()}
                     direction={order}
-                  />
+                  >
+                    <SortIcon />
+                  </TableSortLabel>
                 </TableCell>
                 {tableColumns.map((col, i) => {
                   const filterActive = columnFilterExclusions[i].length > 0;
@@ -835,7 +838,7 @@ class TableComponent extends Component {
                   }
                   return null;
                 })}
-                <TableCell style={{ zIndex: 1 }}>
+                <TableCell style={{ zIndex: 1 }} padding="checkbox">
                   <IconButton onClick={this.handleOpen} id="ellipsis-menu">
                     <MoreHorizIcon color="action" />
                   </IconButton>
@@ -857,7 +860,7 @@ class TableComponent extends Component {
                           selected: 'selected-override',
                         }}
                       >
-                        <TableCell padding="dense">
+                        <TableCell padding="checkbox">
                           <Checkbox
                             onChange={() => handleCheckbox(n.getId())}
                             checked={displayed.includes(n.getId())}
@@ -875,7 +878,7 @@ class TableComponent extends Component {
                           }
                           return null;
                         })}
-                        <TableCell>
+                        <TableCell padding="checkbox">
                           <IconButton
                             color={
                               detail === n

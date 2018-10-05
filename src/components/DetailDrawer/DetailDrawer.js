@@ -51,6 +51,15 @@ class DetailDrawer extends Component {
     this.handleExpand = this.handleExpand.bind(this);
   }
 
+  componentDidUpdate(prevProps) {
+    const { node: prevNode } = prevProps;
+    const { node } = this.props;
+    if ((!node && prevNode) || (prevNode && node && prevNode.getId() !== node.getId())) {
+      /* eslint-disable-next-line react/no-did-update-set-state */
+      this.setState({ opened: [] });
+    }
+  }
+
   formatLongValue(key, value, isStatic) {
     const { opened } = this.state;
     const listItemProps = isStatic === true
@@ -74,7 +83,7 @@ class DetailDrawer extends Component {
           <ListItemText primary={util.antiCamelCase(key)} />
           {itemIcon}
         </ListItem>
-        <Collapse {...collapseProps}>
+        <Collapse {...collapseProps} unmountOnExit>
           <ListItem dense>
             <ListItemText>
               {util.formatStr(value)}
@@ -85,10 +94,10 @@ class DetailDrawer extends Component {
     );
   }
 
-  formatIdentifiers(node) {
+  formatIdentifiers(node, dense) {
     if (!node) return null;
     return (
-      <List>
+      <List className="detail-identifiers" dense={dense}>
         {IDENTIFIERS.map((prop) => {
           const [key, nestedKey] = prop.split('.');
           const value = nestedKey ? node[key][nestedKey] : node[key];
@@ -152,7 +161,7 @@ class DetailDrawer extends Component {
                 <ListItemText primary={util.antiCamelCase(name)} />
                 {!opened.includes(name) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
               </ListItem>
-              <Collapse in={!!opened.includes(name)}>
+              <Collapse in={!!opened.includes(name)} unmountOnExit>
                 <List disablePadding dense>
                   {node[name].map(item => (
                     <ListItem key={item}>
@@ -174,7 +183,7 @@ class DetailDrawer extends Component {
                 <ListItemText primary={util.antiCamelCase(name)} />
                 {!opened.includes(name) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
               </ListItem>
-              <Collapse in={!!opened.includes(name)}>
+              <Collapse in={!!opened.includes(name)} unmountOnExit>
                 <List disablePadding dense className="detail-nested-list">
                   {this.formatIdentifiers(node[name])}
                 </List>

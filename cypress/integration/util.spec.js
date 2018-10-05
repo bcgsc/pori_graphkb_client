@@ -37,13 +37,13 @@ describe('util methods test', () => {
       },
       {
         source:
-          {
-            id: 'fail',
-          },
+        {
+          id: 'fail',
+        },
         nam:
-          {
-            name: 'fail',
-          },
+        {
+          name: 'fail',
+        },
         blargh: 'pass',
       },
     ];
@@ -106,11 +106,11 @@ describe('util methods test', () => {
       },
       {
         key:
-          {
-            failfail: 'fail',
-            name: 'pass',
-            fail: 'fail',
-          },
+        {
+          failfail: 'fail',
+          name: 'pass',
+          fail: 'fail',
+        },
       },
     ];
     testTSVs.forEach((testTSV) => {
@@ -172,7 +172,12 @@ describe('util methods test', () => {
       },
     ];
     nestedTestTSVs.forEach((testTSV) => {
-      expect(util.getTSVRepresentation(testTSV[testTSV.testKey.split('.')[0]], testTSV.testKey).toLowerCase()).to.eq('pass');
+      expect(util
+        .getTSVRepresentation(
+          testTSV[testTSV.testKey.split('.')[0]],
+          testTSV.testKey,
+        ).toLowerCase())
+        .to.eq('pass');
     });
   });
 

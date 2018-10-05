@@ -428,13 +428,13 @@ class GraphComponent extends Component {
         data[node.getId()],
         { x: node.x, y: node.y },
         1,
-        expandExclusions,
         {
           nodes,
           links,
           graphObjects,
           expandable,
         },
+        expandExclusions,
       ));
       this.drawGraph();
       this.updateColors();
@@ -484,7 +484,7 @@ class GraphComponent extends Component {
    * @param {Object} position - Object containing x and y position of input node.
    * @param {number} depth - Recursion base case flag.
    */
-  processData(node, position, depth, exclusions = [], prevstate) {
+  processData(node, position, depth, prevstate, exclusions = []) {
     const { expandedEdgeTypes } = this.state;
     let {
       nodes,
@@ -561,13 +561,13 @@ class GraphComponent extends Component {
                   edge.out,
                   positionInit,
                   depth - 1,
-                  exclusions,
                   {
                     nodes,
                     links,
                     expandable,
                     graphObjects,
                   },
+                  exclusions,
                 ));
               }
               if (inRid && !graphObjects[inRid]) {
@@ -586,13 +586,13 @@ class GraphComponent extends Component {
                   edge.in,
                   positionInit,
                   depth - 1,
-                  exclusions,
                   {
                     nodes,
                     links,
                     expandable,
                     graphObjects,
                   },
+                  exclusions,
                 ));
               }
 

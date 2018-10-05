@@ -85,7 +85,7 @@ describe('Query Page Test', () => {
 
     endpoints.forEach((endpoint) => {
       cy.get(`ul li[data-value=${endpoint}]`).click();
-      cy.contains(endpoint);
+      cy.contains(endpoint.replace(/[A-Z]/g, m => ` ${m}`).trim());
       cy.get('#class-adv').click();
     });
     cy.get(`ul li[data-value=${endpoints[endpoints.length - 1]}]`).click();

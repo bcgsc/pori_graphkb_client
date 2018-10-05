@@ -602,7 +602,6 @@ class GraphComponent extends Component {
               }
             } else {
               // If there are unrendered edges, set expandable flag.
-              if (node['@rid'] === '#33:50425') console.log(expandable);
               expandable[node['@rid']] = true;
             }
           }

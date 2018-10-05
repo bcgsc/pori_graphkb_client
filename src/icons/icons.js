@@ -45,11 +45,12 @@ const PROP_TO_ICON = {
   help: <HelpIcon />,
   biotype: <DNAIcon />,
   edges: <LinkIcon />,
-  default: <AssignmentIcon />,
+  in: <AssignmentIcon />,
+  out: <AssignmentIcon />,
   chromosome: <ChromosomeIcon />,
 };
 
-const getIcon = key => PROP_TO_ICON[key] || PROP_TO_ICON.default;
+const getIcon = key => PROP_TO_ICON[key] || <div style={{ height: 24, width: 24 }} />;
 const getAllIcons = () => Object.entries(PROP_TO_ICON);
 
 export default {

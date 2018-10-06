@@ -96,7 +96,7 @@ class DetailDrawer extends Component {
                   </ListItemIcon>)}
                 <ListItemText>
                   <div className="detail-identifiers">
-                    <Typography variant="subheading" color="primary">
+                    <Typography variant="subheading" color={nested ? 'textSecondary' : 'primary'}>
                       {util.antiCamelCase(key)}
                     </Typography>
                     <Typography>
@@ -228,9 +228,10 @@ class DetailDrawer extends Component {
               </ListItem>
               <Collapse in={!!opened.includes(name)} unmountOnExit>
                 <List disablePadding dense className="detail-nested-list">
-                  {this.formatIdentifiers(node[name])}
+                  {this.formatIdentifiers(node[name], true)}
                 </List>
               </Collapse>
+              <Divider />
             </React.Fragment>
           );
         }

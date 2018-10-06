@@ -67,6 +67,9 @@
   .detail-nested-subheader {
     margin-left: 56px;
   }
+  hr:last-child {
+    display: none;
+  }
 }
 .detail-important,
 .detail-other,

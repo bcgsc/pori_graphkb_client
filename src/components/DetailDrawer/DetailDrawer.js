@@ -15,40 +15,30 @@ import {
   ListItemText,
   Collapse,
   Button,
-  Tooltip,
+  ListSubheader,
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import LinkIcon from '@material-ui/icons/Link';
 import util from '../../services/util';
 import { Ontology } from '../../services/ontology';
-import icons from '../../icons/icons';
 
 
 const IDENTIFIERS = ['@class', 'name', 'sourceId', 'source.name'];
 const MAX_STRING_LENGTH = 64;
 
 class DetailDrawer extends Component {
-  static getIcon(key) {
-    return (
-      <div>
-        <Tooltip title={util.antiCamelCase(key)}>
-          {icons.getIcon(key)}
-        </Tooltip>
-      </div>
-    );
-  }
-
   constructor(props) {
     super(props);
     this.state = {
       opened: [],
     };
-    this.formatIdentifiers = this.formatIdentifiers.bind(this);
     this.formatOtherProps = this.formatOtherProps.bind(this);
     this.formatRelationships = this.formatRelationships.bind(this);
     this.handleExpand = this.handleExpand.bind(this);
+    this.handleLinkExpand = this.handleLinkExpand.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -58,6 +48,75 @@ class DetailDrawer extends Component {
       /* eslint-disable-next-line react/no-did-update-set-state */
       this.setState({ opened: [] });
     }
+  }
+
+  formatIdentifiers(node, nested) {
+    if (!node) return null;
+    const { schema } = this.props;
+    const { opened } = this.state;
+    return (
+      IDENTIFIERS.map((prop) => {
+        const [key, nestedKey] = prop.split('.');
+        const value = nestedKey ? node[key][nestedKey] : node[key];
+        const expanded = nestedKey ? (
+          util.getClass(key, schema).properties.map(nestedProp => (
+            node[key][nestedProp.name] && (
+              <React.Fragment key={nestedProp.name}>
+                <Collapse in={opened.includes(`${node['@rid']}${prop}`)} unmountOnExit>
+                  <ListItem>
+                    {nested && (
+                      <ListItemIcon>
+                        <div style={{ width: 24, height: 24 }} />
+                      </ListItemIcon>)}
+                    <ListItemText>
+                      <div className="detail-identifiers">
+                        <Typography color="textSecondary" className="detail-identifiers-nested">
+                          {util.antiCamelCase(nestedProp.name)}
+                        </Typography>
+                        <Typography>
+                          {util.formatStr(node[key][nestedProp.name])}
+                        </Typography>
+                      </div>
+                    </ListItemText>
+                  </ListItem>
+                </Collapse>
+              </React.Fragment>
+            )))
+        ) : null;
+        if (value) {
+          return (
+            <React.Fragment key={prop}>
+              <ListItem
+                button={!!nestedKey}
+                onClick={nestedKey ? () => this.handleExpand(`${node['@rid']}${prop}`) : undefined}
+              >
+                {nested && (
+                  <ListItemIcon>
+                    <div style={{ width: 24, height: 24 }} />
+                  </ListItemIcon>)}
+                <ListItemText>
+                  <div className="detail-identifiers">
+                    <Typography variant="subheading" color="primary">
+                      {util.antiCamelCase(key)}
+                    </Typography>
+                    <Typography>
+                      {util.formatStr(value)}
+                    </Typography>
+                  </div>
+                </ListItemText>
+                {nestedKey
+                  && (!opened.includes(`${node['@rid']}${prop}`)
+                    ? <ExpandMoreIcon />
+                    : <ExpandLessIcon />)}
+              </ListItem>
+              {expanded}
+              <Divider />
+            </React.Fragment>
+          );
+        }
+        return null;
+      })
+    );
   }
 
   formatLongValue(key, value, isStatic) {
@@ -77,10 +136,12 @@ class DetailDrawer extends Component {
     return (
       <React.Fragment key={key}>
         <ListItem {...listItemProps}>
-          <ListItemIcon>
-            {DetailDrawer.getIcon(key)}
-          </ListItemIcon>
-          <ListItemText primary={util.antiCamelCase(key)} />
+          <ListItemText
+            primaryTypographyProps={{
+              color: 'primary',
+            }}
+            primary={util.antiCamelCase(key)}
+          />
           {itemIcon}
         </ListItem>
         <Collapse {...collapseProps} unmountOnExit>
@@ -90,36 +151,8 @@ class DetailDrawer extends Component {
             </ListItemText>
           </ListItem>
         </Collapse>
+        <Divider />
       </React.Fragment>
-    );
-  }
-
-  formatIdentifiers(node, dense) {
-    if (!node) return null;
-    return (
-      <List className="detail-identifiers" dense={dense}>
-        {IDENTIFIERS.map((prop) => {
-          const [key, nestedKey] = prop.split('.');
-          const value = nestedKey ? node[key][nestedKey] : node[key];
-          if (value) {
-            if (value.toString().length <= MAX_STRING_LENGTH) {
-              return (
-                <ListItem key={key}>
-                  <ListItemIcon>
-                    {DetailDrawer.getIcon(key)}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={util.formatStr(value)}
-                    secondary={util.antiCamelCase(key)}
-                  />
-                </ListItem>
-              );
-            }
-            return this.formatLongValue(key, value, true);
-          }
-          return null;
-        })}
-      </List>
     );
   }
 
@@ -138,15 +171,21 @@ class DetailDrawer extends Component {
         if (type === 'string' || type === 'integer') {
           if (node[name].toString().length <= MAX_STRING_LENGTH) {
             return (
-              <ListItem key={name}>
-                <ListItemIcon>
-                  {DetailDrawer.getIcon(name)}
-                </ListItemIcon>
-                <ListItemText
-                  primary={util.formatStr(node[name])}
-                  secondary={util.antiCamelCase(name)}
-                />
-              </ListItem>
+              <React.Fragment key={name}>
+                <ListItem>
+                  <ListItemText>
+                    <div className="detail-identifiers">
+                      <Typography variant="subheading" color="primary">
+                        {util.antiCamelCase(name)}
+                      </Typography>
+                      <Typography>
+                        {util.formatStr(node[name])}
+                      </Typography>
+                    </div>
+                  </ListItemText>
+                </ListItem>
+                <Divider />
+              </React.Fragment>
             );
           }
           return this.formatLongValue(name, node[name]);
@@ -155,10 +194,12 @@ class DetailDrawer extends Component {
           return (
             <React.Fragment key={name}>
               <ListItem button onClick={() => this.handleExpand(name)}>
-                <ListItemIcon>
-                  {DetailDrawer.getIcon(name)}
-                </ListItemIcon>
-                <ListItemText primary={util.antiCamelCase(name)} />
+                <ListItemText
+                  primary={util.antiCamelCase(name)}
+                  primaryTypographyProps={{
+                    color: 'primary',
+                  }}
+                />
                 {!opened.includes(name) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
               </ListItem>
               <Collapse in={!!opened.includes(name)} unmountOnExit>
@@ -177,10 +218,12 @@ class DetailDrawer extends Component {
           return (
             <React.Fragment key={name}>
               <ListItem button onClick={() => this.handleExpand(name)}>
-                <ListItemIcon>
-                  {DetailDrawer.getIcon(name)}
-                </ListItemIcon>
-                <ListItemText primary={util.antiCamelCase(name)} />
+                <ListItemText
+                  primary={util.antiCamelCase(name)}
+                  primaryTypographyProps={{
+                    color: 'primary',
+                  }}
+                />
                 {!opened.includes(name) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
               </ListItem>
               <Collapse in={!!opened.includes(name)} unmountOnExit>
@@ -193,16 +236,14 @@ class DetailDrawer extends Component {
         }
         return null;
       });
-    return !isEmpty ? (
-      <List>
-        {propsList}
-      </List>
-    ) : null;
+    return !isEmpty
+      ? propsList
+      : null;
   }
 
   formatRelationships(node) {
     if (!node) return null;
-    const { opened } = this.state;
+    const { linkOpen } = this.state;
     if (!(node instanceof Ontology)) {
       node = new Ontology(node);
     }
@@ -211,20 +252,23 @@ class DetailDrawer extends Component {
     return (
       <List>
         {edges.map((edge) => {
-          const isOpen = opened.includes(edge['@rid']);
+          const isOpen = linkOpen === edge['@rid'];
           const isIn = edge.in && edge.in['@rid'] === node.getId();
           return (
             <React.Fragment key={edge['@rid']}>
               <ListItem
                 button
-                onClick={() => this.handleExpand(edge['@rid'])}
+                onClick={() => this.handleLinkExpand(edge['@rid'])}
               >
                 <ListItemIcon>
-                  <div>
-                    {icons.getIcon('edges')}
+                  <div style={{ display: 'inline-flex' }}>
+                    <LinkIcon color={isOpen ? 'secondary' : 'action'} />
                   </div>
                 </ListItemIcon>
                 <ListItemText
+                  primaryTypographyProps={{
+                    color: isOpen ? 'secondary' : 'default',
+                  }}
                   primary={util.getPreview(isIn ? edge.out : edge.in)}
                   secondary={util.getEdgeLabel(`${isIn ? 'in' : 'out'}_${edge['@class']}`)}
                 />
@@ -232,23 +276,13 @@ class DetailDrawer extends Component {
               </ListItem>
               <Collapse in={!!isOpen} unmountOnExit>
                 <List dense disablePadding className="detail-nested-list">
-                  <ListItem>
-                    <ListItemText
-                      primary="Link Properties"
-                      primaryTypographyProps={{
-                        variant: 'title',
-                      }}
-                    />
-                  </ListItem>
+                  <ListSubheader className="detail-nested-subheader">
+                    Link Properties
+                  </ListSubheader>
                   {this.formatIdentifiers(edge, true)}
-                  <ListItem>
-                    <ListItemText
-                      primary="Linked Ontology"
-                      primaryTypographyProps={{
-                        variant: 'title',
-                      }}
-                    />
-                  </ListItem>
+                  <ListSubheader className="detail-nested-subheader">
+                    Linked Ontology
+                  </ListSubheader>
                   {this.formatIdentifiers(isIn ? edge.out : edge.in, true)}
                 </List>
               </Collapse>
@@ -266,6 +300,15 @@ class DetailDrawer extends Component {
       opened.push(key);
     }
     this.setState({ opened });
+  }
+
+  handleLinkExpand(key) {
+    const { linkOpen } = this.state;
+    if (linkOpen === key) {
+      this.setState({ linkOpen: null });
+    } else {
+      this.setState({ linkOpen: key });
+    }
   }
 
   render() {
@@ -307,43 +350,17 @@ class DetailDrawer extends Component {
             </div>
           </div>
           <Divider />
-          <div className="detail-important">
-            <Typography
-              variant="body1"
-              color="textSecondary"
-              component="h5"
-            >
-              Identifiers
-            </Typography>
-          </div>
           {identifiers}
-          <Divider />
           {otherProps && (
             <React.Fragment>
-              <div className="detail-other">
-                <Typography
-                  variant="body1"
-                  color="textSecondary"
-                  component="h5"
-                >
-                  Other
-                </Typography>
-              </div>
               {otherProps}
-              <Divider />
             </React.Fragment>
           )}
           {!isEdge && (
             <React.Fragment>
-              <div className="detail-relationships">
-                <Typography
-                  variant="body1"
-                  color="textSecondary"
-                  component="h5"
-                >
-                  Relationships
-                </Typography>
-              </div>
+              <ListSubheader className="detail-relationships-subheader">
+                Relationships
+              </ListSubheader>
               {relationships || (
                 <ListItem>
                   <ListItemText

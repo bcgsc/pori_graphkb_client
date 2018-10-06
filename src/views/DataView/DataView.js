@@ -90,10 +90,11 @@ class DataView extends Component {
       route = schema[filteredSearch['@class']].route || filteredSearch['@class'];
       omitted.push('@class');
     }
+    filteredSearch.neighbors = filteredSearch.neighbors || DEFAULT_NEIGHBORS;
 
     let allProps = ['@rid', '@class'];
     try {
-      const data = await api.get(`${route}?${qs.stringify(_.omit(filteredSearch, omitted))}&neighbors=${DEFAULT_NEIGHBORS}`);
+      const data = await api.get(`${route}?${qs.stringify(_.omit(filteredSearch, omitted))}`);
       const cycled = jc.retrocycle(data).result;
 
       cycled.forEach((ontologyTerm) => {
@@ -104,7 +105,7 @@ class DataView extends Component {
       if (cycled.length >= (filteredSearch.limit || DEFAULT_LIMIT)) {
         filteredSearch.skip = filteredSearch.limit || DEFAULT_LIMIT;
         this.setState({
-          next: () => api.get(`${route}?${qs.stringify(_.omit(filteredSearch, omitted))}&neighbors=${DEFAULT_NEIGHBORS}`),
+          next: () => api.get(`${route}?${qs.stringify(_.omit(filteredSearch, omitted))}`),
           moreResults: true,
         });
       }

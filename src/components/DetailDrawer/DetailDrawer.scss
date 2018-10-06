@@ -20,6 +20,20 @@
       position: absolute;
       top: $banner-height;
       width: 100%;
+      .detail-relationships-subheader {
+        z-index: 1;
+        background: $background-light;
+      }
+    }
+    .detail-identifiers {
+      display: grid;
+      grid-template-columns: 144px 32px auto;
+      .detail-identifiers-nested {
+        margin-left: 32px;
+      }
+      > *:nth-child(even) {
+        grid-column-start: 3;
+      }
     }
   }
   .detail-closed {
@@ -50,10 +64,8 @@
 }
 
 .detail-nested-list {
-  > li,
-  > div,
-  > ul {
-    margin-left: 32px;
+  .detail-nested-subheader {
+    margin-left: 56px;
   }
 }
 .detail-important,

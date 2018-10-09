@@ -39,6 +39,7 @@ import {
   InputAdornment,
   Fade,
 } from '@material-ui/core';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import AddIcon from '@material-ui/icons/Add';
@@ -873,7 +874,13 @@ class TableComponent extends Component {
                           }
                           return null;
                         })}
-                        <TableCell padding="checkbox" />
+                        <TableCell padding="checkbox">
+                          {detail && detail.getId() === n.getId() && (
+                            <Fade in>
+                              <AssignmentIcon color="action" />
+                            </Fade>
+                          )}
+                        </TableCell>
                       </TableRow>
                     </React.Fragment>
                   );

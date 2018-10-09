@@ -1,16 +1,16 @@
-@import '../../globals';
+@import "../../globals";
 
-a {
+.feedback-wrapper {
+  @include view-wrapper;
+  a {
     text-decoration: none;
     color: $md-secondary-color;
-}
-.feedback {
-    padding: 16px;
-}
+  }
 
-.feedback-header {
-    height: 37px;
-    h1 {
-        font-weight: 300;
-    }
+  .feedback-header {
+    @include page-header;
+  }
+  .feedback-body {
+    @include paper;
+  }
 }

@@ -66,6 +66,7 @@ class EditOntologyView extends Component {
           variant="edit"
           node={node}
           handleFinish={this.handleFinish}
+          handleCancel={this.handleCancel}
         />
       );
     }

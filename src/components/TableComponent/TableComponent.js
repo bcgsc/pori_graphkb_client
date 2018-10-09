@@ -516,7 +516,6 @@ class TableComponent extends Component {
     const {
       handleCheckAll,
       displayed,
-      handleClick,
       handleCheckbox,
       hidden,
       handleShowAllNodes,
@@ -552,9 +551,6 @@ class TableComponent extends Component {
         anchorEl={anchorEl}
         open={!!anchorEl}
         onClose={this.handleClose}
-        MenuListProps={{
-          onMouseLeave: this.handleClose,
-        }}
       >
         <MenuItem
           onClick={() => { this.handleClose(); this.clearFilters(); }}
@@ -854,7 +850,7 @@ class TableComponent extends Component {
                     <React.Fragment key={n.getId() || Math.random()}>
                       <TableRow
                         selected={isSelected}
-                        onClick={() => handleClick(n.getId())}
+                        onClick={() => handleDetailDrawerOpen(n, true)}
                         classes={{
                           root: 'cursor-override',
                           selected: 'selected-override',
@@ -862,7 +858,7 @@ class TableComponent extends Component {
                       >
                         <TableCell padding="checkbox">
                           <Checkbox
-                            onChange={() => handleCheckbox(n.getId())}
+                            onClick={e => handleCheckbox(e, n.getId())}
                             checked={displayed.includes(n.getId())}
                           />
                         </TableCell>
@@ -879,16 +875,11 @@ class TableComponent extends Component {
                           return null;
                         })}
                         <TableCell padding="checkbox">
-                          <IconButton
-                            color={
-                              detail === n
-                                ? 'secondary'
-                                : 'default'
-                            }
-                            onClick={() => handleDetailDrawerOpen(n, true)}
-                          >
-                            <AssignmentIcon />
-                          </IconButton>
+                          {detail && detail.getId() === n.getId() && (
+                            <Fade in>
+                              <AssignmentIcon color="action" />
+                            </Fade>
+                          )}
                         </TableCell>
                       </TableRow>
                     </React.Fragment>
@@ -988,7 +979,6 @@ TableComponent.propTypes = {
   detail: PropTypes.object,
   displayed: PropTypes.array.isRequired,
   handleCheckAll: PropTypes.func.isRequired,
-  handleClick: PropTypes.func.isRequired,
   handleCheckbox: PropTypes.func.isRequired,
   handleHideSelected: PropTypes.func.isRequired,
   handleShowAllNodes: PropTypes.func.isRequired,

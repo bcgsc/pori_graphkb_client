@@ -142,7 +142,8 @@ class DataView extends Component {
    * Adds node identifier to list of displayed nodes.
    * @param {string} rid - Checked node identifier.
    */
-  handleCheckbox(rid) {
+  handleCheckbox(e, rid) {
+    e.stopPropagation();
     const { displayed } = this.state;
     const i = displayed.indexOf(rid);
     if (i === -1) {

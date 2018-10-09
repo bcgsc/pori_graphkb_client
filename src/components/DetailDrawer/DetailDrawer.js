@@ -46,7 +46,7 @@ class DetailDrawer extends Component {
     const { node } = this.props;
     if ((!node && prevNode) || (prevNode && node && prevNode.getId() !== node.getId())) {
       /* eslint-disable-next-line react/no-did-update-set-state */
-      this.setState({ opened: [] });
+      this.setState({ opened: [], linkOpen: null });
     }
   }
 
@@ -96,7 +96,7 @@ class DetailDrawer extends Component {
                   </ListItemIcon>)}
                 <ListItemText>
                   <div className="detail-identifiers">
-                    <Typography variant="subheading" color={nested ? 'textSecondary' : 'primary'}>
+                    <Typography variant="subheading" color={nested ? 'textSecondary' : 'default'}>
                       {util.antiCamelCase(key)}
                     </Typography>
                     <Typography>
@@ -136,12 +136,7 @@ class DetailDrawer extends Component {
     return (
       <React.Fragment key={key}>
         <ListItem {...listItemProps}>
-          <ListItemText
-            primaryTypographyProps={{
-              color: 'primary',
-            }}
-            primary={util.antiCamelCase(key)}
-          />
+          <ListItemText primary={util.antiCamelCase(key)} />
           {itemIcon}
         </ListItem>
         <Collapse {...collapseProps} unmountOnExit>
@@ -179,7 +174,7 @@ class DetailDrawer extends Component {
                 <ListItem>
                   <ListItemText>
                     <div className="detail-identifiers">
-                      <Typography variant="subheading" color="primary">
+                      <Typography variant="subheading">
                         {util.antiCamelCase(name)}
                       </Typography>
                       <Typography>
@@ -198,12 +193,7 @@ class DetailDrawer extends Component {
           return (
             <React.Fragment key={name}>
               <ListItem button onClick={() => this.handleExpand(name)}>
-                <ListItemText
-                  primary={util.antiCamelCase(name)}
-                  primaryTypographyProps={{
-                    color: 'primary',
-                  }}
-                />
+                <ListItemText primary={util.antiCamelCase(name)} />
                 {!opened.includes(name) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
               </ListItem>
               <Collapse in={!!opened.includes(name)} unmountOnExit>
@@ -215,6 +205,7 @@ class DetailDrawer extends Component {
                   ))}
                 </List>
               </Collapse>
+              <Divider />
             </React.Fragment>
           );
         }
@@ -222,12 +213,7 @@ class DetailDrawer extends Component {
           return (
             <React.Fragment key={name}>
               <ListItem button onClick={() => this.handleExpand(name)}>
-                <ListItemText
-                  primary={util.antiCamelCase(name)}
-                  primaryTypographyProps={{
-                    color: 'primary',
-                  }}
-                />
+                <ListItemText primary={util.antiCamelCase(name)} />
                 {!opened.includes(name) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
               </ListItem>
               <Collapse in={!!opened.includes(name)} unmountOnExit>
@@ -281,11 +267,17 @@ class DetailDrawer extends Component {
               </ListItem>
               <Collapse in={!!isOpen} unmountOnExit>
                 <List dense disablePadding className="detail-nested-list">
-                  <ListSubheader className="detail-nested-subheader">
+                  <ListSubheader
+                    className="detail-nested-subheader"
+                    color="inherit"
+                  >
                     Link Properties
                   </ListSubheader>
                   {this.formatIdentifiers(edge, true)}
-                  <ListSubheader className="detail-nested-subheader">
+                  <ListSubheader
+                    className="detail-nested-subheader"
+                    color="inherit"
+                  >
                     Linked Ontology
                   </ListSubheader>
                   {this.formatIdentifiers(isIn ? edge.out : edge.in, true)}
@@ -308,9 +300,9 @@ class DetailDrawer extends Component {
   }
 
   handleLinkExpand(key) {
-    const { linkOpen } = this.state;
+    const { linkOpen, opened } = this.state;
     if (linkOpen === key) {
-      this.setState({ linkOpen: null });
+      this.setState({ linkOpen: null, opened: opened.filter(o => !o.includes(key)) });
     } else {
       this.setState({ linkOpen: key });
     }

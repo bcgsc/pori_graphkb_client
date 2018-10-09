@@ -100,6 +100,24 @@ const antiCamelCase = (str) => {
   return accstr.charAt(0).toUpperCase() + accstr.slice(1);
 };
 
+const parseKBType = (obj) => {
+  if (typeof obj === 'object') {
+    if (Object.keys(obj).includes('@rid')) {
+      return 'link';
+    }
+    return 'embedded';
+  }
+  if (typeof obj === 'number') {
+    if (Number.isInteger(obj)) {
+      return 'integer';
+    }
+    return 'float';
+  }
+  if (Array.isArray(obj)) {
+    return 'embeddedest';
+  }
+  return 'string';
+};
 
 const formatStr = (str) => {
   const newSentence = /\.\s\w/g;
@@ -492,4 +510,5 @@ export default {
   castToExist,
   formatStr,
   shortenString,
+  parseKBType,
 };

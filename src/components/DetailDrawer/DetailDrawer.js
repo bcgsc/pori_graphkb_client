@@ -92,7 +92,7 @@ class DetailDrawer extends Component {
       <List>
         {IDENTIFIERS.map((prop) => {
           const [key, nestedKey] = prop.split('.');
-          const value = nestedKey ? node[key][nestedKey] : node[key];
+          const value = nestedKey ? (node[key] || {})[nestedKey] : node[key];
           if (value) {
             if (value.toString().length <= MAX_STRING_LENGTH) {
               return (
@@ -119,7 +119,11 @@ class DetailDrawer extends Component {
     if (!node) return null;
     const { opened } = this.state;
     const { schema } = this.props;
-    const { properties } = util.getClass(node['@class'], schema);
+    let properties = Object.keys(node)
+      .map(key => ({ name: key, type: util.parseKBType(node[key]) }));
+    if (schema) {
+      ({ properties } = util.getClass(node['@class'], schema));
+    }
     let isEmpty = true;
     const propsList = properties
       .filter(prop => !IDENTIFIERS.map(id => id.split('.')[0]).includes(prop.name))

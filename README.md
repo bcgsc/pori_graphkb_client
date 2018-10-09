@@ -7,7 +7,7 @@ This is the front end for the Knowledge Base database. Users can query the datab
 ### Querying
 The query page allows users to search records by name, with action buttons to view the results in either table or graph form. This simple query will also return records with names that contain the input string.
 
-The advanced querying page allows users to specify additional search parameters. The disease schema can be found [here](http://kbapi01:8008/api/v0.0.8/spec/#/Disease/get_diseases):
+The advanced querying page allows users to specify additional search parameters. The disease schema can be found [here](http://kbapi01:8061/api/v0.6.1/spec/#/Disease/get_diseases):
 
 ### Data View
 
@@ -19,7 +19,7 @@ In graph form, nodes can be expanded by clicking them if they are the currently 
 
 Records can be edited via the table view by clicking on the clipboard icon in the top right of the details dropdown. Records can be added via the add node form, which can be accessed by the add icon in the application header.
 
-For more info on the database api, look [here](http://kbapi01:8008/api/v0.0.8/spec):
+For more info on the database api, look [here](http://kbapi01:8061/api/v0.6.1/spec):
 
 
 ## Testing
@@ -38,11 +38,3 @@ $ export CYPRESS_USER='myusername'
 $ export CYPRESS_PASSWORD='mysupersecretpassword'
 $ npm run cypress:open
 ```
-
-## Knowledgebase Parser integration
-
-GSC is currently working on setting up an internal npm registry for module sharing between our applications. If you get errors thrown on compilation similar to:
-```
-Module parse failed: Unexpected token (XX:YY) You may need an appropriate loader to handle this file type.
-```
-Follow the steps [here](https://www.bcgsc.ca/jira/browse/KBDEV-191?focusedCommentId=991360&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-991360):

@@ -43,6 +43,12 @@ import util from '../../services/util';
 import FormTemplater from '../FormTemplater/FormTemplater';
 
 const NOTIFICATION_SPINNER_SIZE = 16;
+const DEFAULT_ORDER = [
+  'name',
+  'sourceId',
+  'source',
+  'description',
+];
 
 /**
  * Component for editing or adding database nodes. Is also used to add or
@@ -519,6 +525,18 @@ class OntologyFormComponent extends Component {
       }
     });
 
+    const sortFields = (a, b) => {
+      if (DEFAULT_ORDER.indexOf(b.name) === -1) {
+        return -1;
+      }
+      if (DEFAULT_ORDER.indexOf(a.name) === -1) {
+        return 1;
+      }
+      return DEFAULT_ORDER.indexOf(a.name) < DEFAULT_ORDER.indexOf(b.name)
+        ? -1
+        : 1;
+    };
+
     const dialog = (
       <Dialog
         onClose={this.handleDialogClose}
@@ -623,10 +641,6 @@ class OntologyFormComponent extends Component {
         <form onSubmit={this.handleSubmit}>
           <div className="form-grid">
             <Paper className="form-header" elevation={4}>
-              <Typography variant="headline" className="form-title">
-                {variant === 'edit' ? 'Edit Ontology Term'
-                  : 'Add New Ontology Term'}
-              </Typography>
               <div className="form-cancel-btn">
                 <Button
                   color="default"
@@ -636,6 +650,10 @@ class OntologyFormComponent extends Component {
                   Cancel
                 </Button>
               </div>
+              <Typography variant="headline" className="form-title">
+                {variant === 'edit' ? 'Edit Ontology Term'
+                  : 'Add New Ontology Term'}
+              </Typography>
             </Paper>
             <div className="flexbox">
               <Paper className="param-section" elevation={4}>
@@ -682,6 +700,7 @@ class OntologyFormComponent extends Component {
                     schema={schema}
                     onChange={this.handleFormChange}
                     excludedProps={['subsets']}
+                    sort={sortFields}
                   />
                 </List>
               </Paper>

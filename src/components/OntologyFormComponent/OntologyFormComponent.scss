@@ -13,22 +13,18 @@ $mediumBreakpoint: 500px;
   bottom: 0;
   .form-grid {
     flex-grow: 1;
-    transition: all 0.5s;
     @include view-wrapper;
+    @media (max-width: 425px) {
+      .flexbox > div {
+        margin: 0;
+        box-shadow: none;
+        border-radius: 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.26);
+      }
+    }
     @media (max-width: $breakpoint) {
       grid-template-rows: auto;
       grid-template-columns: 100%;
-    }
-    @media (max-width: 425px) {
-      margin: 0;
-      width: 100%;
-      grid-row-gap: 0;
-      > div,
-      .flexbox > div {
-        border-radius: 0;
-        box-shadow: none;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.26);
-      }
     }
     .form-header {
       @include page-header;
@@ -42,7 +38,7 @@ $mediumBreakpoint: 500px;
         justify-items: center;
         margin: auto 0 auto auto;
         button {
-          margin: auto 0;
+          margin-left: auto;
         }
       }
     }

@@ -49,6 +49,21 @@ $roboto: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
   @media (max-width: 768px) {
     width: calc(100vw - 32px);
   }
+  @include paper-collapse;
+}
+
+@mixin paper-collapse {
+  transition: all 0.5s;
+  @media (max-width: 425px) {
+    margin: 0;
+    width: 100%;
+    grid-row-gap: 0;
+    > div {
+      border-radius: 0;
+      box-shadow: none;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.26);
+    }
+  }
 }
 
 @mixin page-header {
@@ -56,9 +71,15 @@ $roboto: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
   height: 37px;
   display: flex;
   justify-items: center;
+  flex-direction: row-reverse;
   h1 {
     margin: auto 0;
     font-weight: 300;
+    margin-right: auto;
+  }
+  @media (max-width: 425px) {
+    display: block;
+    height: auto;
   }
 }
 

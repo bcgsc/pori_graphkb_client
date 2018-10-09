@@ -5,6 +5,7 @@ h2 {
 }
 .admin-wrapper {
   @include view-wrapper;
+  grid-template-columns: 100%;
 }
 .admin-section-heading {
   display: flex;
@@ -61,10 +62,12 @@ h2 {
     }
   }
 }
-
-.admin-table {
-  tr:nth-child(odd) {
-    background: #e8e8e8;
+.admin-table-wrapper {
+  overflow: auto;
+  .admin-table {
+    tr:nth-child(odd) {
+      background: #e8e8e8;
+    }
   }
 }
 

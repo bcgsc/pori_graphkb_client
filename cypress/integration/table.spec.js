@@ -37,10 +37,10 @@ describe('Table Test', () => {
    */
   it('Expand details', () => {
     getName('melanoma');
-    cy.get('table tbody tr:first td button[tabindex=0]').click({ force: true });
-    cy.get('table tbody tr td div div div div.node-properties').should('exist');
-    cy.get('table tbody tr:first td button[tabindex=0]').click({ force: true });
-    cy.contains('Class:').should('not.exist');
+    cy.get('table tbody tr:first td button').click({ force: true });
+    cy.get('#detail-drawer').should('exist');
+    cy.get('div.detail-heading div.detail-headline>button').click();
+    cy.contains('Properties:').should('not.visible');
   });
 
   /**

@@ -96,7 +96,7 @@ class DetailDrawer extends Component {
                   </ListItemIcon>)}
                 <ListItemText>
                   <div className="detail-identifiers">
-                    <Typography variant="subheading" color={nested ? 'textSecondary' : 'primary'}>
+                    <Typography variant="subheading" color={nested ? 'textSecondary' : ''}>
                       {util.antiCamelCase(key)}
                     </Typography>
                     <Typography>
@@ -136,12 +136,7 @@ class DetailDrawer extends Component {
     return (
       <React.Fragment key={key}>
         <ListItem {...listItemProps}>
-          <ListItemText
-            primaryTypographyProps={{
-              color: 'primary',
-            }}
-            primary={util.antiCamelCase(key)}
-          />
+          <ListItemText primary={util.antiCamelCase(key)} />
           {itemIcon}
         </ListItem>
         <Collapse {...collapseProps} unmountOnExit>
@@ -175,7 +170,7 @@ class DetailDrawer extends Component {
                 <ListItem>
                   <ListItemText>
                     <div className="detail-identifiers">
-                      <Typography variant="subheading" color="primary">
+                      <Typography variant="subheading">
                         {util.antiCamelCase(name)}
                       </Typography>
                       <Typography>
@@ -196,9 +191,6 @@ class DetailDrawer extends Component {
               <ListItem button onClick={() => this.handleExpand(name)}>
                 <ListItemText
                   primary={util.antiCamelCase(name)}
-                  primaryTypographyProps={{
-                    color: 'primary',
-                  }}
                 />
                 {!opened.includes(name) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
               </ListItem>
@@ -220,9 +212,6 @@ class DetailDrawer extends Component {
               <ListItem button onClick={() => this.handleExpand(name)}>
                 <ListItemText
                   primary={util.antiCamelCase(name)}
-                  primaryTypographyProps={{
-                    color: 'primary',
-                  }}
                 />
                 {!opened.includes(name) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
               </ListItem>
@@ -277,11 +266,17 @@ class DetailDrawer extends Component {
               </ListItem>
               <Collapse in={!!isOpen} unmountOnExit>
                 <List dense disablePadding className="detail-nested-list">
-                  <ListSubheader className="detail-nested-subheader">
+                  <ListSubheader
+                    className="detail-nested-subheader"
+                    color="inherit"
+                  >
                     Link Properties
                   </ListSubheader>
                   {this.formatIdentifiers(edge, true)}
-                  <ListSubheader className="detail-nested-subheader">
+                  <ListSubheader
+                    className="detail-nested-subheader"
+                    color="inherit"
+                  >
                     Linked Ontology
                   </ListSubheader>
                   {this.formatIdentifiers(isIn ? edge.out : edge.in, true)}

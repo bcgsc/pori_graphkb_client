@@ -295,11 +295,11 @@ class DetailDrawer extends Component {
   }
 
   handleLinkExpand(key) {
-    const { linkOpen } = this.state;
+    const { linkOpen, opened } = this.state;
     if (linkOpen === key) {
-      this.setState({ linkOpen: null });
+      this.setState({ linkOpen: null, opened: opened.filter(o => !o.includes(key)) });
     } else {
-      this.setState({ linkOpen: key, opened: [] });
+      this.setState({ linkOpen: key });
     }
   }
 
@@ -350,6 +350,7 @@ class DetailDrawer extends Component {
           )}
           {!isEdge && (
             <React.Fragment>
+              <Divider />
               <ListSubheader className="detail-relationships-subheader">
                 Relationships
               </ListSubheader>

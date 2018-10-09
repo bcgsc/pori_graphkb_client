@@ -54,6 +54,7 @@
     "dotenv": "^4.0.0",
     "dotenv-expand": "^4.2.0",
     "enzyme": "^3.6.0",
+    "enzyme-adapter-react-16": "^1.6.0",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-loader": "^1.9.0",
@@ -88,7 +89,9 @@
       "src/**/*.{js,jsx,mjs}"
     ],
     "setupFiles": [
-      "<rootDir>/config/polyfills.js"
+      "<rootDir>/config/polyfills.js",
+      "<rootDir>/config/jest/browserMock.js",
+      "<rootDir>/config/jest/enzymeInit.js"
     ],
     "testMatch": [
       "<rootDir>/src/**/__tests__/**/*.{js,jsx,mjs}",

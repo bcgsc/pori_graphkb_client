@@ -356,11 +356,7 @@ class DetailDrawer extends Component {
           </div>
           <Divider />
           {identifiers}
-          {otherProps && (
-            <React.Fragment>
-              {otherProps}
-            </React.Fragment>
-          )}
+          {otherProps}
           {!isEdge && (
             <React.Fragment>
               <ListSubheader className="detail-relationships-subheader">

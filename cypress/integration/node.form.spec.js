@@ -62,7 +62,7 @@ describe('Node Form Test', () => {
     cy.get('input[name=source]').type('ncit');
     cy.get('div.droptions li:first').click();
     cy.get('#search-button').click();
-    cy.get('table tbody tr:first td button').click({ force: true });
+    cy.get('table tbody tr:first').click({ force: true });
     cy.get('div.detail-edit-btn button').click();
     cy.url().should('includes', '/edit');
     cy.get('textarea[name=sourceId]').invoke('text').should('not.empty');

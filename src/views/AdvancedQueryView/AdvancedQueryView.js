@@ -170,7 +170,7 @@ class AdvancedQueryView extends Component {
     };
 
     return (
-      <div className="view-wrapper" elevation={4}>
+      <div className="adv-wrapper" elevation={4}>
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           open={!!message}
@@ -187,7 +187,7 @@ class AdvancedQueryView extends Component {
             Advanced Query
           </Typography>
         </Paper>
-        <Paper elevation={4} className="adv-grid paper">
+        <Paper elevation={4} className="adv-grid">
           <ListItem className="input-wrapper">
             <ResourceSelectComponent
               value={form['@class']}
@@ -199,7 +199,7 @@ class AdvancedQueryView extends Component {
             >
               {resource => (
                 <MenuItem key={resource.name} value={resource.name}>
-                  {resource.name ? resource.name : '---'}
+                  {resource.name ? util.antiCamelCase(resource.name) : '---'}
                 </MenuItem>
               )}
             </ResourceSelectComponent>

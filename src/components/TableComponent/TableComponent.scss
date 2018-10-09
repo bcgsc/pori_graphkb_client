@@ -1,151 +1,172 @@
 @import "../../globals";
-$paginator-height: 57px;
+@import "../../dataview";
+
 $flip-duration: 0.15s;
 .data-table {
-    margin: 0 auto;
-    width: 100%;
+  margin: 0 auto;
+  width: 100%;
+  overflow: auto;
+  .table-container {
+    position: absolute;
     overflow: auto;
-    .table-container {
-        position: absolute;
-        overflow: auto;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: calc(#{$paginator-height} - 1px);
-        table {
-            table-layout: fixed;
-        }
-        .table-head {
-            tr,
-            th {
-                position: sticky;
-                top: 0;
-                background-color: $background-light;
-                z-index: 2;
-                .filter-btn {
-                    position: absolute;
-                    top: 0;
-                    bottom: 0;
-                    right: 0;
-                    margin: auto;
-                    height: fit-content;
-                }
-            }
-            th:before {
-                content: "";
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                border-bottom: 1px solid #e0e0e0;
-            }
-        }
-        .selected-override {
-            background-color: rgba($md-secondary-light, 0.5);
-        }
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: calc(#{$toolbar-height} - 1px);
+    transition: all #{$detail-drawer-transition};
+    table {
+      min-width: 540px;
+      table-layout: fixed;
+      .cell {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding: 4px 24px;
+      }
     }
-    .pag {
+    .table-head {
+      tr,
+      th {
+        position: sticky;
+        top: 0;
+        background-color: $background-light;
+        z-index: 2;
+        .filter-btn {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          right: 0;
+          margin: auto;
+          height: fit-content;
+        }
+      }
+      th:before {
+        content: "";
         position: absolute;
         bottom: 0;
         left: 0;
-        right: 0;
-        background-color: $background-light;
-        height: $paginator-height;
-        display: flex;
-        border-top: 1px solid #ddd;
-        overflow-x: auto;
-        overflow-y: hidden;
-        .table-paginator {
-            display: flex;
-            float: left;
-            z-index: 1;
-        }
-        .paginator-spacing {
-            display: grid !important;
-            grid-template-columns: 0 100px 56px 120px 116px;
-        }
-        .graph-btn {
-            margin: auto 24px auto auto;
-            button {
-                transition: all 500ms;
-            }
-            button:enabled {
-                background-color: rgba($md-secondary-light, 0.5);
-            }
-        }
-        .more-results-btn {
-            margin: auto 0;
-        }
+        width: 100%;
+        border-bottom: 1px solid #e0e0e0;
+      }
     }
-}
-
-.cursor-override {
-    cursor: pointer;
-}
-
-.cursor-override:hover {
-    background-color: rgba($md-secondary-light, 0.1);
-}
-
-.column-dialog {
-    width: 600px;
-}
-
-.spacer-cell {
-    position: sticky;
+    .selected-override {
+      background-color: rgba($md-secondary-light, 0.5);
+    }
+  }
+  .table-drawer-open {
+    right: $detail-drawer-width;
+    @media (max-width: 768px) {
+      right: 0;
+    }
+  }
+  .pag {
+    position: absolute;
+    bottom: 0;
     left: 0;
     right: 0;
     background-color: $background-light;
-    bottom: 0;
+    height: calc(#{$toolbar-height} - 1px);
+    display: flex;
+    border-top: 1px solid #ddd;
+    overflow-x: auto;
+    overflow-y: hidden;
+    z-index: calc(#{$drawer-z-index} + 1);
+    .table-paginator {
+      display: flex;
+      float: left;
+      z-index: 1;
+    }
+    .paginator-spacing {
+      display: grid !important;
+      grid-template-columns: 0 100px 56px 120px 116px;
+    }
+    .graph-btn {
+      margin: auto 0 auto auto;
+      button {
+        transition: all 500ms;
+        margin-right: 24px;
+      }
+      button:enabled {
+        background-color: rgba($md-secondary-light, 0.5);
+      }
+    }
+    .more-results-btn {
+      margin: auto 0;
+    }
+  }
+}
+
+.cursor-override {
+  cursor: pointer;
+}
+
+.cursor-override:hover {
+  background-color: rgba($md-secondary-light, 0.1);
+}
+
+.column-dialog {
+  width: 600px;
+}
+
+.spacer-cell {
+  position: sticky;
+  left: 0;
+  right: 0;
+  background-color: $background-light;
+  bottom: 0;
 }
 
 .spacer-cell:before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    border-top: 1px solid rgba(224, 224, 224, 1);
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid rgba(224, 224, 224, 1);
 }
 
 .detail-btn {
-    svg {
-        transition: transform #{$flip-duration};
-    }
+  svg {
+    transition: transform #{$flip-duration};
+  }
 }
 
 .active {
-    svg {
-        transform: rotate(180deg);
-    }
+  svg {
+    transform: rotate(180deg);
+  }
 }
 
 #new-data-spinner {
-    display: block;
-    margin: auto 8px;
+  display: block;
+  margin: auto 8px;
 }
-#filter-popover{
-    width: 20rem;
-    .filter-exclusions-list{
-        max-height: 40vh;
-        overflow: auto;
-        padding: 0;
-    }
-    .filter-item-background {
-        background-color: $background-light;
-    }
-    .filter-item-background:hover{
-        background-color: #e6e6e6;
-    }
+#filter-popover {
+  width: 20rem;
+  .filter-wrapper {
+    @include paper;
+  }
+  .filter-exclusions-list {
+    max-height: 40vh;
+    overflow: auto;
+    padding: 0;
+  }
+  .filter-item-background {
+    background-color: $background-light;
+  }
+  .filter-item-background:hover {
+    background-color: #e6e6e6;
+  }
 }
-#select-all-checkbox{
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    border-bottom: 1px solid rgba(0,0,0,0.2);
+#select-all-checkbox {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
 }
 .filter-icon {
-    margin: auto;
-    margin-right: 0;
+  margin: auto;
+  margin-right: 0;
 }

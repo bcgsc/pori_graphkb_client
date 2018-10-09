@@ -57,6 +57,22 @@ const { PERMISSIONS } = config;
  * View for editing or adding database users.
  */
 class AdminView extends Component {
+  static initializeUserGroups(userGroups) {
+    userGroups.forEach((u, i) => {
+      const userGroup = userGroups[i];
+      Object.keys(userGroup.permissions).forEach((pKey) => {
+        if (pKey !== '@class' && pKey !== '@type') {
+          userGroup.permissions[pKey] = util.parsePermission(userGroup.permissions[pKey]);
+        } else {
+          delete userGroup.permissions[pKey];
+        }
+      });
+      userGroups[i] = userGroup;
+    });
+
+    return userGroups;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -110,18 +126,8 @@ class AdminView extends Component {
     const cycledUserGroups = await api.get('/usergroups');
     const schema = await api.getSchema();
     const users = jc.retrocycle(cycledUsers).result;
-    const userGroups = jc.retrocycle(cycledUserGroups).result;
-    userGroups.forEach((u, i) => {
-      const userGroup = userGroups[i];
-      Object.keys(userGroup.permissions).forEach((key) => {
-        if (key !== '@class' && key !== '@type') {
-          userGroup.permissions[key] = util.parsePermission(userGroup.permissions[key]);
-        } else {
-          delete userGroup.permissions[key];
-        }
-      });
-      userGroups[i] = userGroup;
-    });
+    const userGroups = AdminView.initializeUserGroups(jc.retrocycle(cycledUserGroups).result);
+
     Object.keys(schema).forEach((obj) => { newUserGroup.permissions[obj] = [0, 0, 0, 0]; });
     this.setState({
       users,
@@ -183,14 +189,12 @@ class AdminView extends Component {
    */
   async deleteUserGroup(userGroup) {
     await api.delete(`/usergroups/${userGroup['@rid'].slice(1)}`);
-    const userGroups = jc.retrocycle(await api.get('/usergroups')).result;
-    userGroups.forEach((u, i) => {
-      const ug = userGroups[i];
-      Object.keys(ug.permissions).forEach((key) => {
-        ug.permissions[key] = util.parsePermission(ug.permissions[key]);
-      });
-      userGroups[i] = ug;
-    });
+    const userGroups = AdminView.initializeUserGroups(
+      jc.retrocycle(
+        await api.get('/usergroups'),
+      ).result,
+    );
+
     this.setState({ userGroups }, this.handleDeleteUserGroup);
   }
 
@@ -345,7 +349,7 @@ class AdminView extends Component {
     } else {
       tempUserGroup.permissions[permissionKey][permission] = currValue ? 0 : 1;
     }
-    this.setState({ isNewUserGroup, tempUserGroup });
+    this.setState({ tempUserGroup });
   }
 
   /**
@@ -358,7 +362,7 @@ class AdminView extends Component {
       : (rid, payload) => api.patch(`/usergroups/${rid}`, payload);
 
     const key = isNewUserGroup ? 'newUserGroup' : 'tempUserGroup';
-    const temp = this.state[key];
+    const { [key]: temp } = this.state;
     const rid = (temp['@rid'] || '').slice(1);
     const { userGroups } = this.state;
 
@@ -384,16 +388,9 @@ class AdminView extends Component {
 
     await f(rid, payload);
     const response = await api.get('/usergroups');
-    const newUserGroups = jc.retrocycle(response).result;
-    newUserGroups.forEach((u, i) => {
-      const userGroup = newUserGroups[i];
-      Object.keys(userGroup.permissions).forEach((pKey) => {
-        userGroup.permissions[pKey] = util.parsePermission(userGroup.permissions[pKey]);
-      });
-      newUserGroups[i] = userGroup;
-    });
-
+    const newUserGroups = AdminView.initializeUserGroups(jc.retrocycle(response).result);
     const newUserGroup = { name: '', permissions: {} };
+
     const schema = await api.getSchema();
     Object.keys(schema).forEach((obj) => { newUserGroup.permissions[obj] = [0, 0, 0, 0]; });
 
@@ -404,6 +401,7 @@ class AdminView extends Component {
       userGroups: newUserGroups,
     }, isNewUserGroup ? this.handleNewUserGroupDialog : null);
   }
+
 
   /**
    * Stages a UserGroup for editing by shallow copying it to the temp UserGroup
@@ -641,7 +639,7 @@ class AdminView extends Component {
                 </FormGroup>
               </FormControl>
             </div>
-            <Paper className="paper new-user-preview">
+            <Paper className="new-user-preview">
               <div className="preview-name">
                 <Avatar classes={{ colorDefault: newUserName ? 'avatar-colored' : '' }}>
                   {newUserName.charAt(0).toUpperCase() || <PersonIcon />}
@@ -813,15 +811,15 @@ class AdminView extends Component {
     );
 
     return (
-      <div className="view-wrapper">
+      <div className="admin-wrapper">
         {userDialog(!!selectedUser)}
         {deleteUsersDialog}
         {userGroupDialog()}
         {deleteUserGroupDialog}
-        <Paper className="paper admin-headline">
+        <Paper className="admin-headline">
           <Typography component="h1" variant="headline">Admin</Typography>
         </Paper>
-        <Paper className="paper admin-users">
+        <Paper className="admin-users">
           <div className="admin-section-heading">
             <Typography component="h2" variant="title">Users</Typography>
             <div className="admin-section-heading-btns">
@@ -847,48 +845,50 @@ class AdminView extends Component {
               </IconButton>
             </div>
           </div>
-          <Table className="admin-table">
-            <TableHead>
-              <TableRow id="admin-sticky-row">
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    onChange={this.handleCheckAllUsers}
-                    checked={selected.length === users.length}
-                  />
-                </TableCell>
-                <TableCell padding="dense">RID</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Created At</TableCell>
-                <TableCell>Groups</TableCell>
-                <TableCell padding="checkbox" />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {users.map(user => (
-                <TableRow key={user['@rid']}>
+          <div className="admin-table-wrapper">
+            <Table className="admin-table">
+              <TableHead>
+                <TableRow id="admin-sticky-row">
                   <TableCell padding="checkbox">
                     <Checkbox
-                      onChange={() => this.handleCheckbox(user['@rid'])}
-                      checked={selected.includes(user['@rid'])}
+                      onChange={this.handleCheckAllUsers}
+                      checked={selected.length === users.length}
                     />
                   </TableCell>
-                  <TableCell padding="dense">{user['@rid']}</TableCell>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell>
-                    {new Date(user.createdAt).toLocaleString()}
-                  </TableCell>
-                  <TableCell>{user.groups.map(g => g.name).join(', ')}</TableCell>
-                  <TableCell padding="checkbox">
-                    <IconButton onClick={() => this.handleEdit(user)}>
-                      <EditIcon />
-                    </IconButton>
-                  </TableCell>
+                  <TableCell padding="dense">RID</TableCell>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Created At</TableCell>
+                  <TableCell>Groups</TableCell>
+                  <TableCell padding="checkbox" />
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {users.map(user => (
+                  <TableRow key={user['@rid']}>
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        onChange={() => this.handleCheckbox(user['@rid'])}
+                        checked={selected.includes(user['@rid'])}
+                      />
+                    </TableCell>
+                    <TableCell padding="dense">{user['@rid']}</TableCell>
+                    <TableCell>{user.name}</TableCell>
+                    <TableCell>
+                      {new Date(user.createdAt).toLocaleString()}
+                    </TableCell>
+                    <TableCell>{user.groups.map(g => g.name).join(', ')}</TableCell>
+                    <TableCell padding="checkbox">
+                      <IconButton onClick={() => this.handleEdit(user)}>
+                        <EditIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </Paper>
-        <Paper className="paper admin-user-groups">
+        <Paper className="admin-user-groups">
           <div className="admin-section-heading">
             <Typography component="h2" variant="title">User Groups</Typography>
             <div className="admin-section-heading-btns">

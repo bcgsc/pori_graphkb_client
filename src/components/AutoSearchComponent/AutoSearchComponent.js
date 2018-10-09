@@ -203,7 +203,7 @@ class AutoSearchComponent extends Component {
             className="autosearch-wrapper"
             style={{ minHeight: dense ? '48px' : '64px' }}
           >
-            <div ref={this.setRef}>
+            <div className="autosearch-popper-node" ref={this.setRef}>
               <TextField
                 fullWidth
                 error={emptyFlag || noRidFlag || error}
@@ -237,32 +237,34 @@ class AutoSearchComponent extends Component {
               />
             </div>
             <Popper
-              open={(isOpen || loading) && !emptyFlag}
+              open
               anchorEl={this.popperNode}
               placement="bottom-start"
-              {...getMenuProps()}
             >
-              <Paper
-                className={`droptions ${dense ? 'dense' : ''}`}
-                style={{
-                  width: this.popperNode
-                    ? this.popperNode.clientWidth
-                    : null,
-                  maxHeight: `${MAX_HEIGHT_FACTOR * limit}px`,
-                }}
-              >
-                <List dense={dense}>
-                  {loading
-                    ? (
-                      <CircularProgress
-                        color="primary"
-                        size={PROGRESS_SPINNER_SIZE}
-                        id="autosearch-spinner"
-                      />
-                    )
-                    : autoSearchResults(inputValue, getItemProps, setState, highlightedIndex)}
-                </List>
-              </Paper>
+              {(isOpen || loading) && !emptyFlag && (
+                <div {...getMenuProps()}>
+                  <Paper
+                    className={`droptions ${dense ? 'dense' : ''}`}
+                    style={{
+                      width: this.popperNode
+                        ? this.popperNode.clientWidth
+                        : null,
+                      maxHeight: `${MAX_HEIGHT_FACTOR * limit}px`,
+                    }}
+                  >
+                    <List dense={dense}>
+                      {loading
+                        ? (
+                          <CircularProgress
+                            color="primary"
+                            size={PROGRESS_SPINNER_SIZE}
+                            id="autosearch-spinner"
+                          />
+                        )
+                        : autoSearchResults(inputValue, getItemProps, setState, highlightedIndex)}
+                    </List>
+                  </Paper>
+                </div>)}
             </Popper>
             {emptyFlag ? ( // Indicator for empty query
               <Typography variant="caption" color="error">
@@ -301,7 +303,7 @@ class AutoSearchComponent extends Component {
  */
 AutoSearchComponent.propTypes = {
   limit: PropTypes.number,
-  name: PropTypes.string.isRequired,
+  name: PropTypes.string,
   endpoint: PropTypes.string,
   property: PropTypes.array,
   placeholder: PropTypes.string,
@@ -321,7 +323,8 @@ AutoSearchComponent.defaultProps = {
   endpoint: 'ontologies',
   property: ['name'],
   placeholder: '',
-  value: '',
+  name: undefined,
+  value: undefined,
   label: '',
   required: false,
   error: false,
@@ -344,7 +347,7 @@ AutoSearchComponent.defaultProps = {
       </span>
     </MenuItem>
   ),
-  onChange: null,
+  onChange: () => { },
   disabled: false,
   endAdornment: <SearchIcon style={{ cursor: 'default' }} />,
 };

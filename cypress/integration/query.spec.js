@@ -17,7 +17,7 @@ describe('Query Page Test', () => {
   it('AutoSearch valid input', () => {
     cy.get('input[type=text]').type('angiosarcoma');
     cy.get('div.droptions ul li').each(($li) => {
-      cy.wrap($li).contains('angiosarcoma');
+      cy.wrap($li).contains('ngiosarcoma');
     });
 
     cy.get('div.droptions ul li:first span:first').click({ force: true });

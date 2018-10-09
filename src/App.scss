@@ -91,8 +91,7 @@ $drawer-breakpoint: 768px;
     left: $drawer-width;
     overflow: hidden;
     @media (max-width: $drawer-breakpoint) {
-      width: 0;
-      left: 100vw;
+      left: 0;
     }
   }
   .router-outlet {
@@ -104,14 +103,14 @@ $drawer-breakpoint: 768px;
   }
   .drawer {
     width: $drawer-width;
-    z-index: calc(#{$drawer-z-index} + 2);
+    z-index: calc(#{$drawer-z-index} + 4);
     transition: width #{$transition-speed};
     animation: fade-in();
     display: flex;
     flex-direction: column;
     height: 100vh;
     @media (max-width: $drawer-breakpoint) {
-      width: calc(100vw - 1px);
+      width: calc(100vw - 56px);
     }
     .drawer-links {
       position: relative;
@@ -139,6 +138,7 @@ $drawer-breakpoint: 768px;
   }
   .drawer-closed {
     width: $closed-drawer-width;
+    z-index: calc(#{$drawer-z-index} + 2);
     @media (max-width: $drawer-breakpoint) {
       width: 0;
     }
@@ -153,4 +153,7 @@ $drawer-breakpoint: 768px;
 }
 #bcc-label {
   height: 32px;
+}
+.user-menu {
+  width: $user-menu-width;
 }

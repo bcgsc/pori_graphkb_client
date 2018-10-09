@@ -2,6 +2,7 @@
 .variant-parser-wrapper {
   display: grid;
   grid-row-gap: 1rem;
+  @include paper-collapse;
   .variant-parser-shorthand {
     @include paper;
     display: flex;

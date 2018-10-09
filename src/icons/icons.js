@@ -3,8 +3,8 @@ import LabelIcon from '@material-ui/icons/Label';
 import LabelTwoToneIcon from '@material-ui/icons/LabelTwoTone';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 import AssignmentIcon from '@material-ui/icons/Assignment';
-import LabelImportantIcon from '@material-ui/icons/LabelImportant';
-import BookmarkIcon from '@material-ui/icons/Bookmark';
+// import LabelImportantIcon from '@material-ui/icons/LabelImportant';
+// import BookmarkIcon from '@material-ui/icons/Bookmark';
 import LinkIcon from '@material-ui/icons/Link';
 import ClassIcon from '@material-ui/icons/Class';
 import DescriptionIcon from '@material-ui/icons/Description';
@@ -24,8 +24,8 @@ import WWWIcon from './WWWIcon/WWWIcon';
 
 const PROP_TO_ICON = {
   name: <LabelIcon />,
-  sourceId: <LabelImportantIcon />,
-  source: <BookmarkIcon />,
+  // sourceId: <LabelImportantIcon />,
+  // source: <BookmarkIcon />,
   description: <DescriptionIcon />,
   subsets: <ListAltIcon />,
   longName: <LabelTwoToneIcon />,
@@ -45,11 +45,12 @@ const PROP_TO_ICON = {
   help: <HelpIcon />,
   biotype: <DNAIcon />,
   edges: <LinkIcon />,
-  default: <AssignmentIcon />,
+  in: <AssignmentIcon />,
+  out: <AssignmentIcon />,
   chromosome: <ChromosomeIcon />,
 };
 
-const getIcon = key => PROP_TO_ICON[key] || PROP_TO_ICON.default;
+const getIcon = key => PROP_TO_ICON[key] || <div style={{ height: 24, width: 24 }} />;
 const getAllIcons = () => Object.entries(PROP_TO_ICON);
 
 export default {

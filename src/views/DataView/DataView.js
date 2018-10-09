@@ -19,7 +19,7 @@ import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
 import api from '../../services/api';
-import Ontology from '../../services/ontology';
+import { Ontology, OntologyEdge } from '../../services/ontology';
 import config from '../../config.json';
 
 const { DEFAULT_NEIGHBORS } = config;
@@ -90,10 +90,11 @@ class DataView extends Component {
       route = schema[filteredSearch['@class']].route || filteredSearch['@class'];
       omitted.push('@class');
     }
+    filteredSearch.neighbors = filteredSearch.neighbors || DEFAULT_NEIGHBORS;
 
     let allProps = ['@rid', '@class'];
     try {
-      const data = await api.get(`${route}?${qs.stringify(_.omit(filteredSearch, omitted))}&neighbors=${DEFAULT_NEIGHBORS}`);
+      const data = await api.get(`${route}?${qs.stringify(_.omit(filteredSearch, omitted))}`);
       const cycled = jc.retrocycle(data).result;
 
       cycled.forEach((ontologyTerm) => {
@@ -104,7 +105,7 @@ class DataView extends Component {
       if (cycled.length >= (filteredSearch.limit || DEFAULT_LIMIT)) {
         filteredSearch.skip = filteredSearch.limit || DEFAULT_LIMIT;
         this.setState({
-          next: () => api.get(`${route}?${qs.stringify(_.omit(filteredSearch, omitted))}&neighbors=${DEFAULT_NEIGHBORS}`),
+          next: () => api.get(`${route}?${qs.stringify(_.omit(filteredSearch, omitted))}`),
           moreResults: true,
         });
       }
@@ -141,7 +142,8 @@ class DataView extends Component {
    * Adds node identifier to list of displayed nodes.
    * @param {string} rid - Checked node identifier.
    */
-  handleCheckbox(rid) {
+  handleCheckbox(e, rid) {
+    e.stopPropagation();
     const { displayed } = this.state;
     const i = displayed.indexOf(rid);
     if (i === -1) {
@@ -267,7 +269,7 @@ class DataView extends Component {
     const { data, detail } = this.state;
     if (!open && !detail) return;
     if (edge) {
-      this.setState({ detail: node.data, detailEdge: true });
+      this.setState({ detail: new OntologyEdge(node.data), detailEdge: true });
     } else {
       if (!data[node.getId()]) {
         const response = await api.get(`/ontologies/${node.getId().slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);

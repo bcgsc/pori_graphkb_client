@@ -46,7 +46,7 @@ class DetailDrawer extends Component {
     const { node } = this.props;
     if ((!node && prevNode) || (prevNode && node && prevNode.getId() !== node.getId())) {
       /* eslint-disable-next-line react/no-did-update-set-state */
-      this.setState({ opened: [] });
+      this.setState({ opened: [], linkOpen: null });
     }
   }
 
@@ -189,9 +189,7 @@ class DetailDrawer extends Component {
           return (
             <React.Fragment key={name}>
               <ListItem button onClick={() => this.handleExpand(name)}>
-                <ListItemText
-                  primary={util.antiCamelCase(name)}
-                />
+                <ListItemText primary={util.antiCamelCase(name)} />
                 {!opened.includes(name) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
               </ListItem>
               <Collapse in={!!opened.includes(name)} unmountOnExit>
@@ -210,9 +208,7 @@ class DetailDrawer extends Component {
           return (
             <React.Fragment key={name}>
               <ListItem button onClick={() => this.handleExpand(name)}>
-                <ListItemText
-                  primary={util.antiCamelCase(name)}
-                />
+                <ListItemText primary={util.antiCamelCase(name)} />
                 {!opened.includes(name) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
               </ListItem>
               <Collapse in={!!opened.includes(name)} unmountOnExit>
@@ -303,7 +299,7 @@ class DetailDrawer extends Component {
     if (linkOpen === key) {
       this.setState({ linkOpen: null });
     } else {
-      this.setState({ linkOpen: key });
+      this.setState({ linkOpen: key, opened: [] });
     }
   }
 

@@ -96,7 +96,7 @@ class DetailDrawer extends Component {
                   </ListItemIcon>)}
                 <ListItemText>
                   <div className="detail-identifiers">
-                    <Typography variant="subheading" color={nested ? 'textSecondary' : ''}>
+                    <Typography variant="subheading" color={nested ? 'textSecondary' : 'default'}>
                       {util.antiCamelCase(key)}
                     </Typography>
                     <Typography>
@@ -201,6 +201,7 @@ class DetailDrawer extends Component {
                   ))}
                 </List>
               </Collapse>
+              <Divider />
             </React.Fragment>
           );
         }
@@ -350,7 +351,6 @@ class DetailDrawer extends Component {
           )}
           {!isEdge && (
             <React.Fragment>
-              <Divider />
               <ListSubheader className="detail-relationships-subheader">
                 Relationships
               </ListSubheader>

@@ -133,7 +133,7 @@ class GraphComponent extends Component {
     const expandedEdgeTypes = util.expandEdges(edges);
     let validDisplayed = displayed;
     if (!displayed || displayed.length === 0) {
-      validDisplayed = [Object.keys(data)[0]];
+      validDisplayed = Object.keys(data)[0] ? [Object.keys(data)[0]] : [];
     }
 
     const stringifiedSearch = qs.stringify(filteredSearch);
@@ -1041,7 +1041,7 @@ class GraphComponent extends Component {
               Expand by Edge Types:
             </Typography>
             <List dense className="expand-links-types">
-              {edges.reduce((array, edge) => {
+              {(edges || []).reduce((array, edge) => {
                 if (
                   !array.includes(edge['@class'])
                   && !links.find(l => l.getId() === edge['@rid'])
@@ -1323,12 +1323,14 @@ GraphComponent.propTypes = {
   handleNewColumns: PropTypes.func.isRequired,
   detail: PropTypes.object,
   allProps: PropTypes.array,
+  edges: PropTypes.array,
 };
 
 GraphComponent.defaultProps = {
   handleClick: null,
   detail: null,
   allProps: [],
+  edges: [],
 };
 
 export default GraphComponent;

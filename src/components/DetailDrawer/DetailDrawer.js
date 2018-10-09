@@ -57,9 +57,13 @@ class DetailDrawer extends Component {
     return (
       IDENTIFIERS.map((prop) => {
         const [key, nestedKey] = prop.split('.');
-        const value = nestedKey ? node[key][nestedKey] : node[key];
+        const value = nestedKey ? (node[key] || {})[nestedKey] : node[key];
+        let properties = Object.keys(node).map(k => ({ name: k }));
+        if (schema) {
+          ({ properties } = util.getClass(key, schema));
+        }
         const expanded = nestedKey ? (
-          util.getClass(key, schema).properties.map(nestedProp => (
+          properties.map(nestedProp => (
             node[key][nestedProp.name] && (
               <React.Fragment key={nestedProp.name}>
                 <Collapse in={opened.includes(`${node['@rid']}${prop}`)} unmountOnExit>

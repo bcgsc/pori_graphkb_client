@@ -240,29 +240,30 @@ class AutoSearchComponent extends Component {
               open={(isOpen || loading) && !emptyFlag}
               anchorEl={this.popperNode}
               placement="bottom-start"
-              {...getMenuProps()}
             >
-              <Paper
-                className={`droptions ${dense ? 'dense' : ''}`}
-                style={{
-                  width: this.popperNode
-                    ? this.popperNode.clientWidth
-                    : null,
-                  maxHeight: `${MAX_HEIGHT_FACTOR * limit}px`,
-                }}
-              >
-                <List dense={dense}>
-                  {loading
-                    ? (
-                      <CircularProgress
-                        color="primary"
-                        size={PROGRESS_SPINNER_SIZE}
-                        id="autosearch-spinner"
-                      />
-                    )
-                    : autoSearchResults(inputValue, getItemProps, setState, highlightedIndex)}
-                </List>
-              </Paper>
+              <div {...getMenuProps()}>
+                <Paper
+                  className={`droptions ${dense ? 'dense' : ''}`}
+                  style={{
+                    width: this.popperNode
+                      ? this.popperNode.clientWidth
+                      : null,
+                    maxHeight: `${MAX_HEIGHT_FACTOR * limit}px`,
+                  }}
+                >
+                  <List dense={dense}>
+                    {loading
+                      ? (
+                        <CircularProgress
+                          color="primary"
+                          size={PROGRESS_SPINNER_SIZE}
+                          id="autosearch-spinner"
+                        />
+                      )
+                      : autoSearchResults(inputValue, getItemProps, setState, highlightedIndex)}
+                  </List>
+                </Paper>
+              </div>
             </Popper>
             {emptyFlag ? ( // Indicator for empty query
               <Typography variant="caption" color="error">

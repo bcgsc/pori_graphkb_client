@@ -237,33 +237,34 @@ class AutoSearchComponent extends Component {
               />
             </div>
             <Popper
-              open={(isOpen || loading) && !emptyFlag}
+              open
               anchorEl={this.popperNode}
               placement="bottom-start"
             >
-              <div {...getMenuProps()}>
-                <Paper
-                  className={`droptions ${dense ? 'dense' : ''}`}
-                  style={{
-                    width: this.popperNode
-                      ? this.popperNode.clientWidth
-                      : null,
-                    maxHeight: `${MAX_HEIGHT_FACTOR * limit}px`,
-                  }}
-                >
-                  <List dense={dense}>
-                    {loading
-                      ? (
-                        <CircularProgress
-                          color="primary"
-                          size={PROGRESS_SPINNER_SIZE}
-                          id="autosearch-spinner"
-                        />
-                      )
-                      : autoSearchResults(inputValue, getItemProps, setState, highlightedIndex)}
-                  </List>
-                </Paper>
-              </div>
+              {(isOpen || loading) && !emptyFlag && (
+                <div {...getMenuProps()}>
+                  <Paper
+                    className={`droptions ${dense ? 'dense' : ''}`}
+                    style={{
+                      width: this.popperNode
+                        ? this.popperNode.clientWidth
+                        : null,
+                      maxHeight: `${MAX_HEIGHT_FACTOR * limit}px`,
+                    }}
+                  >
+                    <List dense={dense}>
+                      {loading
+                        ? (
+                          <CircularProgress
+                            color="primary"
+                            size={PROGRESS_SPINNER_SIZE}
+                            id="autosearch-spinner"
+                          />
+                        )
+                        : autoSearchResults(inputValue, getItemProps, setState, highlightedIndex)}
+                    </List>
+                  </Paper>
+                </div>)}
             </Popper>
             {emptyFlag ? ( // Indicator for empty query
               <Typography variant="caption" color="error">

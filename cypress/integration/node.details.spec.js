@@ -3,7 +3,7 @@ function goToClass(endpoint) {
   cy.contains(endpoint).click();
   cy.get('input[name=limit]').type('10');
   cy.contains('Search').click();
-  cy.get('table tbody tr:first td button').click({ force: true });
+  cy.get('table tbody tr:first').click({ force: true });
   cy.get('#detail-drawer').should('exist');
 }
 
@@ -12,7 +12,7 @@ function getRecord(name, sourceId) {
   cy.get('textarea[name=name]').type(name);
   cy.get('textarea[name=sourceId]').type(sourceId);
   cy.contains('Search').click();
-  cy.get('table tbody tr:first td button').click({ force: true });
+  cy.get('table tbody tr:first').click({ force: true });
   cy.get('#detail-drawer').should('exist');
 }
 

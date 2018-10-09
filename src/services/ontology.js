@@ -2,7 +2,18 @@ import util from './util';
 
 let edges = [];
 
-export default class Ontology {
+
+const OntologyEdge = class {
+  constructor(data) {
+    Object.keys(data).forEach((k) => { this[k] = data[k]; });
+  }
+
+  getId() {
+    return this['@rid'];
+  }
+};
+
+const Ontology = class {
   constructor(data) {
     Object.keys(data).forEach((k) => { this[k] = data[k]; });
   }
@@ -38,4 +49,9 @@ export default class Ontology {
       return array;
     }, []);
   }
-}
+};
+
+export {
+  Ontology,
+  OntologyEdge,
+};

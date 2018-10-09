@@ -9,8 +9,63 @@ import config from '../config.json';
 const { DEFAULT_PROPS, PERMISSIONS } = config;
 const { PALLETE_SIZE } = config.GRAPH_DEFAULTS;
 const { NODE_INIT_RADIUS } = config.GRAPH_PROPERTIES;
-const ACRONYMS = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url', 'cds'];
+const ACRONYMS = [
+  'id',
+  'uuid',
+  'ncit',
+  'uberon',
+  'doid',
+  'url',
+  'cds',
+  'hgnc',
+  'bcgsc',
+  'fda',
+  'null',
+];
+
 const GRAPH_OBJECTS_KEY = 'graphObjects';
+const DEFAULT_CUTOFF = 25;
+
+
+/**
+ * Casts a value to string form with minimal formatting. Sets the value to
+ * 'null' if the value is null or undefined.
+ * @param {any} obj - Object to be formatted.
+ */
+const castToExist = (obj) => {
+  if (Array.isArray(obj)) {
+    if (obj.length > 0) {
+      return obj.join(', ');
+    }
+    return 'null';
+  }
+  return obj === undefined || obj === null ? 'null' : obj.toString();
+};
+
+/**
+ * Parses a string and capitalizes known acronyms.
+ * @param {string | Array<string>} str - String to be parsed.
+ */
+const parseAcronyms = (str) => {
+  let words = str;
+  if (!Array.isArray(str)) {
+    words = str.split(' ');
+  }
+  ACRONYMS.forEach((acronym) => {
+    const re = new RegExp(`^${acronym}*$`, 'ig');
+    words.forEach((word, i) => {
+      words[i] = word.replace(re, match => match.toUpperCase());
+    });
+  });
+  return words.join(' ');
+};
+
+const shortenString = (str, cutoff = DEFAULT_CUTOFF) => {
+  if (str && str.length > cutoff) {
+    return `${str.substring(0, cutoff - 4).trim()}...`;
+  }
+  return str;
+};
 
 /**
  * Un-camelCase's input string and capitalizes each word. Also applies
@@ -24,27 +79,34 @@ const GRAPH_OBJECTS_KEY = 'graphObjects';
  * @param {string} str - camelCase'd string.
  */
 const antiCamelCase = (str) => {
-  let accstr = str;
+  let accstr = str.toString();
   if (accstr.startsWith('@')) accstr = accstr.slice(1);
   let words = [accstr];
   if (accstr.includes('.')) {
     words = accstr.split('.');
   }
 
-  words.forEach((word, i) => {
-    words[i] = word.replace(/[A-Z]+|[0-9]+/g, match => ` ${match}`).trim();
-  });
+  words = words.reduce((array, word) => {
+    const newWords = word.replace(/[A-Z]+|[0-9]+/g, match => ` ${match}`);
+    if (newWords) {
+      array.push(...newWords.split(' '));
+    } else {
+      array.push(word);
+    }
+    return array;
+  }, []);
 
-  ACRONYMS.forEach((acronym) => {
-    const re = new RegExp(`[^\\w]*${acronym}(?!\\w)`, 'ig');
-    words.forEach((word, i) => {
-      const w = word.replace(re, match => match.toUpperCase());
-      words[i] = w.charAt(0).toUpperCase() + w.slice(1);
-    });
-  });
+  accstr = parseAcronyms(words).trim();
+  return accstr.charAt(0).toUpperCase() + accstr.slice(1);
+};
 
-  accstr = words.join(' ');
-  return accstr.trim();
+
+const formatStr = (str) => {
+  const newSentence = /\.\s\w/g;
+  const ret = parseAcronyms(castToExist(str))
+    .trim()
+    .replace(newSentence, match => match.toUpperCase());
+  return ret.charAt(0).toUpperCase() + ret.slice(1);
 };
 
 /**
@@ -75,7 +137,7 @@ const getPreview = (obj) => {
     const prop = Object.keys(obj).find(key => typeof obj[key] !== 'object');
     preview = obj[prop];
   }
-  return preview;
+  return formatStr(preview);
 };
 
 /**
@@ -408,21 +470,6 @@ const getSubClasses = (abstractClass, schema) => Object.values(schema)
 const getPropOfType = (kbClass, type) => Object.values(kbClass)
   .filter(prop => prop.type === type);
 
-/**
- * Casts a value to string form with minimal formatting. Sets the value to
- * 'null' if the value is null or undefined.
- * @param {any} obj - Object to be formatted.
- */
-const castToExist = (obj) => {
-  if (Array.isArray(obj)) {
-    if (obj.length > 0) {
-      return obj.join(', ');
-    }
-    return 'null';
-  }
-  return obj === undefined || obj === null ? 'null' : obj.toString();
-};
-
 export default {
   antiCamelCase,
   getPreview,
@@ -443,4 +490,6 @@ export default {
   parsePermission,
   getPropOfType,
   castToExist,
+  formatStr,
+  shortenString,
 };

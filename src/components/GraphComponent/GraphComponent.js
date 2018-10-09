@@ -1324,6 +1324,7 @@ GraphComponent.propTypes = {
   detail: PropTypes.object,
   allProps: PropTypes.array,
   edges: PropTypes.array,
+  displayed: PropTypes.array,
 };
 
 GraphComponent.defaultProps = {
@@ -1331,6 +1332,7 @@ GraphComponent.defaultProps = {
   detail: null,
   allProps: [],
   edges: [],
+  displayed: [],
 };
 
 export default GraphComponent;

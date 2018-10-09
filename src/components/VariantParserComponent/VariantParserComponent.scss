@@ -16,6 +16,7 @@
   }
 
   .parser-form-grid {
+    display: block;
     @include paper;
     column-count: 2;
     min-width: 0;

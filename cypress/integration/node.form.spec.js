@@ -37,7 +37,7 @@ describe('Node Form Test', () => {
         cy.get('div.relationships-wrapper input[name=name]').type('{backspace}').wait(500);
         cy.get('div[role=listbox] li:first').click();
 
-        cy.get('#relationship-add[type=button]:first').click();
+        cy.get('#relationship-add td button[type=button]:first').click();
         cy.get('tbody tr').then(list => expect(list.length).to.be.eq(2));
       }
     });

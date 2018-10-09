@@ -159,15 +159,26 @@ class GraphComponent extends Component {
        *    the last stored state.
        */
       if ((displayed && displayed.length !== 0) || (!initState && !storedData)) {
+        let { nodes, links, graphObjects } = this.state;
+
         validDisplayed.forEach((key, i) => {
-          this.processData(
+          ({
+            nodes,
+            links,
+            graphObjects,
+            expandable,
+          } = this.processData(
             data[key],
             util.positionInit(0, 0, i, validDisplayed.length),
             0,
-          );
+            {
+              nodes,
+              links,
+              graphObjects,
+              expandable,
+            },
+          ));
         });
-
-        const { nodes, links, graphObjects } = this.state;
         util.loadGraphData(stringifiedSearch, { nodes, links, graphObjects });
       } else if (initState) {
         const {
@@ -396,21 +407,34 @@ class GraphComponent extends Component {
    */
   loadNeighbors(node) {
     const {
-      expandable,
       filteredSearch,
+      expandExclusions,
+    } = this.state;
+    let {
       nodes,
       links,
       graphObjects,
-      expandExclusions,
+      expandable,
     } = this.state;
     const { data } = this.props;
     if (expandable[node.getId()] && data[node.getId()]) {
-      this.processData(
+      ({
+        nodes,
+        links,
+        graphObjects,
+        expandable,
+      } = this.processData(
         data[node.getId()],
         { x: node.x, y: node.y },
         1,
+        {
+          nodes,
+          links,
+          graphObjects,
+          expandable,
+        },
         expandExclusions,
-      );
+      ));
       this.drawGraph();
       this.updateColors();
     }
@@ -423,6 +447,9 @@ class GraphComponent extends Component {
       actionsNode: null,
       refreshable: true,
       expandExclusions: [],
+      nodes,
+      links,
+      graphObjects,
     });
   }
 
@@ -462,14 +489,14 @@ class GraphComponent extends Component {
    * @param {Object} position - Object containing x and y position of input node.
    * @param {number} depth - Recursion base case flag.
    */
-  processData(node, position, depth, exclusions = []) {
-    const {
-      expandedEdgeTypes,
-      expandable,
+  processData(node, position, depth, prevstate, exclusions = []) {
+    const { expandedEdgeTypes } = this.state;
+    let {
       nodes,
       links,
       graphObjects,
-    } = this.state;
+      expandable,
+    } = prevstate;
     // From DataView.js
     const { data, handleNewColumns } = this.props;
 
@@ -530,12 +557,23 @@ class GraphComponent extends Component {
                   i += 1,
                   n,
                 );
-                this.processData(
+                ({
+                  nodes,
+                  links,
+                  expandable,
+                  graphObjects,
+                } = this.processData(
                   edge.out,
                   positionInit,
                   depth - 1,
+                  {
+                    nodes,
+                    links,
+                    expandable,
+                    graphObjects,
+                  },
                   exclusions,
-                );
+                ));
               }
               if (inRid && !graphObjects[inRid]) {
                 const positionInit = util.positionInit(
@@ -544,17 +582,28 @@ class GraphComponent extends Component {
                   i += 1,
                   n,
                 );
-                this.processData(
+                ({
+                  nodes,
+                  links,
+                  expandable,
+                  graphObjects,
+                } = this.processData(
                   edge.in,
                   positionInit,
                   depth - 1,
+                  {
+                    nodes,
+                    links,
+                    expandable,
+                    graphObjects,
+                  },
                   exclusions,
-                );
+                ));
               }
 
               // Updates expanded on target node.
               if (expandable[targetRid]) {
-                util.expanded(expandedEdgeTypes, graphObjects, targetRid, expandable);
+                expandable = util.expanded(expandedEdgeTypes, graphObjects, targetRid, expandable);
               }
             } else {
               // If there are unrendered edges, set expandable flag.
@@ -564,13 +613,12 @@ class GraphComponent extends Component {
         });
       }
     });
-
-    this.setState({
+    return {
       expandable,
       nodes,
       links,
       graphObjects,
-    });
+    };
   }
 
   /**

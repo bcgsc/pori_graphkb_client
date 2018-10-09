@@ -1,8 +1,10 @@
-@import '../../globals';
+@import "../../globals";
 .variant-parser-wrapper {
-    display: grid;
-    grid-row-gap: 1rem;
+  display: grid;
+  grid-row-gap: 1rem;
+  @include paper-collapse;
   .variant-parser-shorthand {
+    @include paper;
     display: flex;
     height: 68px;
     button {
@@ -14,6 +16,7 @@
   }
 
   .parser-form-grid {
+    @include paper;
     column-count: 2;
     min-width: 0;
     @media (max-width: 768px) {
@@ -29,5 +32,6 @@
   #variant-form-submit {
     display: flex;
     flex-direction: row-reverse;
+    @include paper;
   }
 }

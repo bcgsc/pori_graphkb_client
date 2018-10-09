@@ -5,6 +5,7 @@ h2 {
 }
 .admin-wrapper {
   @include view-wrapper;
+  grid-template-columns: 100%;
 }
 .admin-section-heading {
   display: flex;
@@ -23,12 +24,11 @@ h2 {
   }
 }
 .admin-headline {
-  h1 {
-    font-weight: 300;
-  }
+  @include page-header;
 }
 .admin-users {
   max-height: 720px;
+  @include paper;
   .users-btns {
     margin: 8px 0;
     display: flex;
@@ -39,6 +39,7 @@ h2 {
   }
 }
 .admin-user-groups {
+  @include paper;
   .editedGroup {
     h3 {
       animation: fade-in(0.1s);
@@ -61,10 +62,12 @@ h2 {
     }
   }
 }
-
-.admin-table {
-  tr:nth-child(odd) {
-    background: #e8e8e8;
+.admin-table-wrapper {
+  overflow: auto;
+  .admin-table {
+    tr:nth-child(odd) {
+      background: #e8e8e8;
+    }
   }
 }
 
@@ -165,6 +168,7 @@ div {
       flex: 1 0 50%;
     }
     .new-user-preview {
+      @include paper;
       flex: 1 0 50%;
       box-sizing: border-box;
       overflow: hidden;

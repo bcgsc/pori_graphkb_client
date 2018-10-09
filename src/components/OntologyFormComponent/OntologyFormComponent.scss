@@ -13,42 +13,33 @@ $mediumBreakpoint: 500px;
   bottom: 0;
   .form-grid {
     flex-grow: 1;
-    transition: all 0.5s;
     @include view-wrapper;
+    @media (max-width: 425px) {
+      .flexbox > div {
+        margin: 0;
+        box-shadow: none;
+        border-radius: 0;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.26);
+      }
+    }
     @media (max-width: $breakpoint) {
       grid-template-rows: auto;
       grid-template-columns: 100%;
     }
-    @media (max-width: 425px) {
-      margin: 0;
-      width: 100%;
-      grid-row-gap: 0;
-      > div,
-      .flexbox > div {
-        border-radius: 0;
-        box-shadow: none;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.26);
-      }
-    }
     .form-header {
+      @include page-header;
       grid-column-start: 1;
       grid-column-end: 3;
       @media (max-width: $breakpoint) {
         grid-column-end: 2;
       }
-      display: flex;
-      justify-items: center;
-      padding: 16px;
       .form-cancel-btn {
         display: flex;
         justify-items: center;
         margin: auto 0 auto auto;
         button {
-          margin: auto 0;
+          margin-left: auto;
         }
-      }
-      .form-title {
-        font-weight: 300;
       }
     }
     .flexbox {
@@ -186,8 +177,10 @@ $mediumBreakpoint: 500px;
 }
 
 .notification-drawer {
+  @include paper;
   display: flex;
   width: 100%;
+  box-sizing: border-box;
   .form-linear-progress {
     flex-grow: 1;
     display: flex;

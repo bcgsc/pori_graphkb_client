@@ -639,7 +639,7 @@ class AdminView extends Component {
                 </FormGroup>
               </FormControl>
             </div>
-            <Paper className="paper new-user-preview">
+            <Paper className="new-user-preview">
               <div className="preview-name">
                 <Avatar classes={{ colorDefault: newUserName ? 'avatar-colored' : '' }}>
                   {newUserName.charAt(0).toUpperCase() || <PersonIcon />}
@@ -816,10 +816,10 @@ class AdminView extends Component {
         {deleteUsersDialog}
         {userGroupDialog()}
         {deleteUserGroupDialog}
-        <Paper className="paper admin-headline">
+        <Paper className="admin-headline">
           <Typography component="h1" variant="headline">Admin</Typography>
         </Paper>
-        <Paper className="paper admin-users">
+        <Paper className="admin-users">
           <div className="admin-section-heading">
             <Typography component="h2" variant="title">Users</Typography>
             <div className="admin-section-heading-btns">
@@ -845,48 +845,50 @@ class AdminView extends Component {
               </IconButton>
             </div>
           </div>
-          <Table className="admin-table">
-            <TableHead>
-              <TableRow id="admin-sticky-row">
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    onChange={this.handleCheckAllUsers}
-                    checked={selected.length === users.length}
-                  />
-                </TableCell>
-                <TableCell padding="dense">RID</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Created At</TableCell>
-                <TableCell>Groups</TableCell>
-                <TableCell padding="checkbox" />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {users.map(user => (
-                <TableRow key={user['@rid']}>
+          <div className="admin-table-wrapper">
+            <Table className="admin-table">
+              <TableHead>
+                <TableRow id="admin-sticky-row">
                   <TableCell padding="checkbox">
                     <Checkbox
-                      onChange={() => this.handleCheckbox(user['@rid'])}
-                      checked={selected.includes(user['@rid'])}
+                      onChange={this.handleCheckAllUsers}
+                      checked={selected.length === users.length}
                     />
                   </TableCell>
-                  <TableCell padding="dense">{user['@rid']}</TableCell>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell>
-                    {new Date(user.createdAt).toLocaleString()}
-                  </TableCell>
-                  <TableCell>{user.groups.map(g => g.name).join(', ')}</TableCell>
-                  <TableCell padding="checkbox">
-                    <IconButton onClick={() => this.handleEdit(user)}>
-                      <EditIcon />
-                    </IconButton>
-                  </TableCell>
+                  <TableCell padding="dense">RID</TableCell>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Created At</TableCell>
+                  <TableCell>Groups</TableCell>
+                  <TableCell padding="checkbox" />
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {users.map(user => (
+                  <TableRow key={user['@rid']}>
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                        onChange={() => this.handleCheckbox(user['@rid'])}
+                        checked={selected.includes(user['@rid'])}
+                      />
+                    </TableCell>
+                    <TableCell padding="dense">{user['@rid']}</TableCell>
+                    <TableCell>{user.name}</TableCell>
+                    <TableCell>
+                      {new Date(user.createdAt).toLocaleString()}
+                    </TableCell>
+                    <TableCell>{user.groups.map(g => g.name).join(', ')}</TableCell>
+                    <TableCell padding="checkbox">
+                      <IconButton onClick={() => this.handleEdit(user)}>
+                        <EditIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </Paper>
-        <Paper className="paper admin-user-groups">
+        <Paper className="admin-user-groups">
           <div className="admin-section-heading">
             <Typography component="h2" variant="title">User Groups</Typography>
             <div className="admin-section-heading-btns">

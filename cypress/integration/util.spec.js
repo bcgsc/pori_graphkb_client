@@ -37,18 +37,18 @@ describe('util methods test', () => {
       },
       {
         source:
-          {
-            id: 'fail',
-          },
+        {
+          id: 'fail',
+        },
         nam:
-          {
-            name: 'fail',
-          },
+        {
+          name: 'fail',
+        },
         blargh: 'pass',
       },
     ];
 
-    testObjs.forEach(testObj => expect(util.getPreview(testObj)).to.eq('pass'));
+    testObjs.forEach(testObj => expect(util.getPreview(testObj)).to.eq('Pass'));
   });
 
   it('expandEdges', () => {
@@ -106,15 +106,15 @@ describe('util methods test', () => {
       },
       {
         key:
-          {
-            failfail: 'fail',
-            name: 'pass',
-            fail: 'fail',
-          },
+        {
+          failfail: 'fail',
+          name: 'pass',
+          fail: 'fail',
+        },
       },
     ];
     testTSVs.forEach((testTSV) => {
-      expect(util.getTSVRepresentation(testTSV.key, 'key')).to.eq('pass');
+      expect(util.getTSVRepresentation(testTSV.key, 'key').toLowerCase()).to.eq('pass');
     });
 
     const arrayTestTSVs = [
@@ -150,7 +150,7 @@ describe('util methods test', () => {
           output += ', ';
         }
       });
-      expect(util.getTSVRepresentation(list, testTSV.testKey)).to.eq(output);
+      expect(util.getTSVRepresentation(list, testTSV.testKey).toLowerCase()).to.eq(output);
     });
 
     const nestedTestTSVs = [
@@ -172,7 +172,12 @@ describe('util methods test', () => {
       },
     ];
     nestedTestTSVs.forEach((testTSV) => {
-      expect(util.getTSVRepresentation(testTSV[testTSV.testKey.split('.')[0]], testTSV.testKey)).to.eq('pass');
+      expect(util
+        .getTSVRepresentation(
+          testTSV[testTSV.testKey.split('.')[0]],
+          testTSV.testKey,
+        ).toLowerCase())
+        .to.eq('pass');
     });
   });
 

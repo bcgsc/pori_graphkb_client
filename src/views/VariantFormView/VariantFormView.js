@@ -30,8 +30,7 @@ class VariantFormView extends Component {
   render() {
     return (
       <div className="variant-wrapper">
-        <Paper elevation={4} className="paper variant-headline">
-          <Typography variant="headline">Variant Form</Typography>
+        <Paper elevation={4} className="variant-headline">
           <div className="variant-cancel-btn">
             <Button
               color="default"
@@ -41,6 +40,7 @@ class VariantFormView extends Component {
               Cancel
             </Button>
           </div>
+          <Typography variant="headline">Variant Form</Typography>
         </Paper>
 
         <div className="variant-body">

@@ -2,15 +2,15 @@
     PALLETTE
 ***************/
 
-$md-primary-color: #26328C;
-$md-primary-variant: #1F2B65;
-$md-secondary-color: #54B198;
-$md-secondary-variant: #1F6552;
+$md-primary-color: #26328c;
+$md-primary-variant: #1f2b65;
+$md-secondary-color: #54b198;
+$md-secondary-variant: #1f6552;
 $md-secondary-light: #a0ebd8;
 $md-warn: #d32f2f;
 $background-light: #f8f8f8;
 $background-dark: #f4f4f4;
-$success:#48a648;
+$success: #48a648;
 /***************
     VARIABLES
 ***************/
@@ -21,42 +21,66 @@ $drawer-z-index: 100;
     FONTS
 ***********/
 
-$roboto: -apple-system,
-BlinkMacSystemFont,
-'Segoe UI',
-Roboto,
-Oxygen,
-Ubuntu,
-Cantarell,
-'Open Sans',
-'Helvetica Neue',
-sans-serif;
+$roboto: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+  Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 /**************
     CLASSES
 **************/
 
-.paper {
-    padding: 16px;
+@mixin paper {
+  padding: 16px;
 }
 
-.icon-link {
-    text-decoration: none;
-    font-size: 0;
-    margin: auto 0;
-    padding: 0;
-    color: unset;
-    display: flex;
+@mixin icon-link {
+  text-decoration: none;
+  font-size: 0;
+  margin: auto 0;
+  padding: 0;
+  color: unset;
+  display: flex;
 }
 
 @mixin view-wrapper {
-    margin: 32px auto;
-    width: calc(80vw + 32px);
-    display: grid;
-    grid-template-rows: auto 1fr;
-    grid-row-gap: 1rem;
-    @media (max-width: 768px) {
-        width: calc(100vw - 32px);
+  margin: 32px auto;
+  width: calc(80vw + 32px);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  grid-row-gap: 1rem;
+  @media (max-width: 768px) {
+    width: calc(100vw - 32px);
+  }
+  @include paper-collapse;
+}
+
+@mixin paper-collapse {
+  transition: all 0.5s;
+  @media (max-width: 425px) {
+    margin: 0;
+    width: 100%;
+    grid-row-gap: 0;
+    > div {
+      border-radius: 0;
+      box-shadow: none;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.26);
     }
+  }
+}
+
+@mixin page-header {
+  padding: 16px;
+  height: 37px;
+  display: flex;
+  justify-items: center;
+  flex-direction: row-reverse;
+  h1 {
+    margin: auto 0;
+    font-weight: 300;
+    margin-right: auto;
+  }
+  @media (max-width: 425px) {
+    display: block;
+    height: auto;
+  }
 }
 
 /***************
@@ -64,14 +88,14 @@ sans-serif;
 ****************/
 
 @function fade-in($duration: 0.6s) {
-    @return fade-in #{$duration} ease-out;
+  @return fade-in #{$duration} ease-out;
 }
 
 @keyframes fade-in {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

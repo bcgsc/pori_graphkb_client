@@ -657,7 +657,6 @@ class GraphComponent extends Component {
    */
   async handleClick(e, node) {
     const { handleClick, handleDetailDrawerOpen } = this.props;
-
     // Prematurely loads neighbor data.
     await handleClick(node.getId());
 

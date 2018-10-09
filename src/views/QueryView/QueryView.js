@@ -42,7 +42,7 @@ class QueryView extends Component {
     if (name && !disabled) {
       history.push({
         pathname: '/data/table',
-        search: `?name=~${name}`,
+        search: `?name=~${name.trim()}`,
       });
     }
   }

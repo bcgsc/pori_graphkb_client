@@ -37,7 +37,7 @@ describe('Node Form Test', () => {
         cy.get('div.relationships-wrapper input[name=name]').type('{backspace}').wait(500);
         cy.get('div[role=listbox] li:first').click();
 
-        cy.get('#relationship-add td button[type=button]:first').click();
+        cy.get('#relationship-add[type=button]:first').click();
         cy.get('tbody tr').then(list => expect(list.length).to.be.eq(2));
       }
     });
@@ -62,7 +62,7 @@ describe('Node Form Test', () => {
     cy.get('input[name=source]').type('ncit');
     cy.get('div.droptions li:first').click();
     cy.get('#search-button').click();
-    cy.get('table tbody tr:first td button').click({ force: true });
+    cy.get('table tbody tr:first').click({ force: true });
     cy.get('div.detail-edit-btn button').click();
     cy.url().should('includes', '/edit');
     cy.get('textarea[name=sourceId]').invoke('text').should('not.empty');

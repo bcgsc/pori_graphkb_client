@@ -1,4 +1,5 @@
-import util from '../../src/services/util';
+import { expect } from 'chai';
+import util from '../util';
 
 describe('util methods test', () => {
   it('antiCamelCase', () => {

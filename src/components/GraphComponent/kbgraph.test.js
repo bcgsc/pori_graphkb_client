@@ -1,4 +1,5 @@
-import { PropsMap } from '../../src/components/GraphComponent/kbgraph';
+import { expect } from 'chai';
+import { PropsMap } from './kbgraph';
 
 it('loadColorProps', () => {
   const testColumns = ['name', 'sourceId', 'source'];

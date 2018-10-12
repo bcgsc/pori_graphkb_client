@@ -90,12 +90,10 @@ class TableComponent extends Component {
     this.setRef = this.setRef.bind(this);
     this.handleFilterStrings = this.handleFilterStrings.bind(this);
     this.handleFilterExclusions = this.handleFilterExclusions.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.handleChangePage = this.handleChangePage.bind(this);
-    this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleColumnCheck = this.handleColumnCheck.bind(this);
-    this.handleColumnClose = this.handleColumnClose.bind(this);
-    this.handleColumnOpen = this.handleColumnOpen.bind(this);
     this.handleDetailToggle = this.handleDetailToggle.bind(this);
     this.handleHeaderMouseEnter = this.handleHeaderMouseEnter.bind(this);
     this.handleHeaderMouseLeave = this.handleHeaderMouseLeave.bind(this);
@@ -317,6 +315,10 @@ class TableComponent extends Component {
     this.setState({ columnFilterStrings });
   }
 
+  handleChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
+  }
+
   /**
    * Updates page to display.
    * @param {Event} e - Triggered event.
@@ -333,14 +335,6 @@ class TableComponent extends Component {
       }
     }
     this.setState({ page });
-  }
-
-  /**
-   * Updates page rows per page property.
-   * @param {Event} event - Rows per page change event.
-   */
-  handleChangeRowsPerPage(event) {
-    this.setState({ rowsPerPage: event.target.value });
   }
 
   /**
@@ -361,19 +355,6 @@ class TableComponent extends Component {
     this.setState({ tableColumns });
   }
 
-  /**
-   * Closes column selection dialog.
-   */
-  handleColumnClose() {
-    this.setState({ columnSelect: false });
-  }
-
-  /**
-   * Opens column selection dialog.
-   */
-  handleColumnOpen() {
-    this.setState({ columnSelect: true });
-  }
 
   /**
    * Expands row of input node to view details. If node is already expanded,
@@ -653,7 +634,7 @@ class TableComponent extends Component {
         <MenuItem
           onClick={() => {
             this.handleClose();
-            this.handleColumnOpen();
+            this.handleChange({ target: { name: columnSelect, value: true } });
           }}
           id="column-edit"
         >
@@ -665,7 +646,7 @@ class TableComponent extends Component {
     const columnDialog = (
       <Dialog
         open={columnSelect}
-        onClose={this.handleColumnClose}
+        onClose={() => this.handleChange({ target: { name: columnSelect, value: false } })}
         classes={{ paper: 'column-dialog' }}
       >
         <DialogTitle id="column-dialog-title">
@@ -711,7 +692,7 @@ class TableComponent extends Component {
           ))}
         </DialogContent>
         <DialogActions id="column-dialog-actions">
-          <Button onClick={this.handleColumnClose} color="primary">
+          <Button onClick={() => this.handleChange({ target: { name: columnSelect, value: false } })} color="primary">
             Done
           </Button>
         </DialogActions>
@@ -934,8 +915,9 @@ class TableComponent extends Component {
             count={filteredData.length}
             rowsPerPage={rowsPerPage}
             page={page}
+            name="rowsPerPage"
             onChangePage={this.handleChangePage}
-            onChangeRowsPerPage={this.handleChangeRowsPerPage}
+            onChangeRowsPerPage={e => this.handleChange({ target: { name: 'rowsPerPage', value: e.target.value } })}
             rowsPerPageOptions={ROWS_PER_PAGE}
             component="div"
           />

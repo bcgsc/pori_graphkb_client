@@ -211,6 +211,18 @@ class GraphOptions {
     this.linksLegend = !!initial.linksLegend;
   }
 
+  getColor(obj, type) {
+    const { [`${type}Color`]: objColor, [`${type}Colors`]: objColors } = this;
+    let colorKey = '';
+    if (objColor && objColor.includes('.')) {
+      const keys = objColor.split('.');
+      colorKey = (obj.data[keys[0]] || {})[keys[1]];
+    } else if (objColor) {
+      colorKey = obj.data[objColor];
+    }
+    return objColors[colorKey];
+  }
+
   /**
    * Loads graph options state into localstorage.
    */

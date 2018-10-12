@@ -14,7 +14,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import qs from 'qs';
-import _ from 'lodash';
+import omit from 'lodash.omit';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
@@ -24,6 +24,7 @@ import config from '../../config.json';
 
 const { DEFAULT_NEIGHBORS } = config;
 const DEFAULT_LIMIT = 1000;
+const BUCKETS = 10;
 
 /**
  * View for managing state of query results. Contains sub-routes for table view (/data/table)
@@ -36,10 +37,14 @@ const DEFAULT_LIMIT = 1000;
  *
  */
 class DataView extends Component {
+  static async makeApiQuery(route, queryParams, omitted = []) {
+    const response = await api.get(`${route}?${qs.stringify(omit(queryParams, omitted))}`);
+    return Promise.resolve(jc.retrocycle(response).result);
+  }
+
   constructor(props) {
     super(props);
     this.state = {
-      loginRedirect: false,
       data: null,
       displayed: [],
       hidden: [],
@@ -53,6 +58,8 @@ class DataView extends Component {
     };
 
     this.handleClick = this.handleClick.bind(this);
+    this.processData = this.processData.bind(this);
+    this.prepareNextPagination = this.prepareNextPagination.bind(this);
 
     // TableComponent methods
     this.handleCheckbox = this.handleCheckbox.bind(this);
@@ -78,8 +85,6 @@ class DataView extends Component {
    * Queries the api and loads results into component state.
    */
   async componentDidMount() {
-    const dataMap = {};
-    const { loginRedirect } = this.state;
     const { history } = this.props;
 
     const schema = await api.getSchema();
@@ -91,35 +96,51 @@ class DataView extends Component {
       omitted.push('@class');
     }
     filteredSearch.neighbors = filteredSearch.neighbors || DEFAULT_NEIGHBORS;
-
-    let allProps = ['@rid', '@class'];
-    try {
-      const data = await api.get(`${route}?${qs.stringify(_.omit(filteredSearch, omitted))}`);
-      const cycled = jc.retrocycle(data).result;
-
-      cycled.forEach((ontologyTerm) => {
-        allProps = api.collectOntologyProps(ontologyTerm, allProps, schema);
-        dataMap[ontologyTerm['@rid']] = new Ontology(ontologyTerm);
-      });
-
-      if (cycled.length >= (filteredSearch.limit || DEFAULT_LIMIT)) {
-        filteredSearch.skip = filteredSearch.limit || DEFAULT_LIMIT;
-        this.setState({
-          next: () => api.get(`${route}?${qs.stringify(_.omit(filteredSearch, omitted))}`),
-          moreResults: true,
+    const limit = filteredSearch.limit || DEFAULT_LIMIT;
+    for (let i = 0; i < BUCKETS; i += 1) {
+      filteredSearch.limit = limit / BUCKETS;
+      filteredSearch.skip = i * limit / BUCKETS || undefined;
+      DataView.makeApiQuery(route, filteredSearch, omitted)
+        .then((data) => {
+          this.processData(data, schema);
         });
-      }
-      Ontology.loadEdges(api.getEdges(schema));
+    }
+    filteredSearch.limit = limit;
+    filteredSearch.skip = undefined;
+    this.prepareNextPagination(route, filteredSearch, { length: limit }, omitted);
+    Ontology.loadEdges(api.getEdges(schema));
+
+    this.setState({
+      schema,
+      filteredSearch,
+      edges: api.getEdges(schema),
+    });
+  }
+
+
+  processData(queryResults, schema) {
+    let { allProps, data } = this.state;
+    if (!data) {
+      data = {};
+    }
+    if (!allProps) {
+      allProps = ['@rid', '@class'];
+    }
+
+    queryResults.forEach((ontologyTerm) => {
+      allProps = api.collectOntologyProps(ontologyTerm, allProps, schema);
+      data[ontologyTerm['@rid']] = new Ontology(ontologyTerm);
+    });
+    this.setState({ data, allProps });
+  }
+
+  prepareNextPagination(route, queryParams, prevResult, omitted = []) {
+    if (prevResult.length >= (queryParams.limit || DEFAULT_LIMIT)) {
+      queryParams.skip = queryParams.limit || DEFAULT_LIMIT;
       this.setState({
-        data: dataMap,
-        loginRedirect,
-        allProps,
-        schema,
-        filteredSearch,
-        edges: api.getEdges(schema),
+        next: () => DataView.makeApiQuery(route, queryParams, omitted),
+        moreResults: true,
       });
-    } catch (e) {
-      console.error(e);
     }
   }
 
@@ -209,7 +230,6 @@ class DataView extends Component {
           newColumns = api.collectOntologyProps(ontologyTerm, allProps, schema);
           data[ontologyTerm['@rid']] = new Ontology(ontologyTerm);
         });
-
         let route = '/ontologies';
         const omitted = [];
         if (filteredSearch['@class'] && schema[filteredSearch['@class']]) {
@@ -223,7 +243,7 @@ class DataView extends Component {
         const lastSkip = filteredSearch.skip || limit;
         if (cycled.length >= limit) {
           filteredSearch.skip = Number(lastSkip) + Number(limit);
-          newNext = () => api.get(`${route}?${qs.stringify(_.omit(filteredSearch, omitted))}&neighbors=${DEFAULT_NEIGHBORS}`);
+          newNext = () => DataView.makeApiQuery(route, filteredSearch, omitted);
           moreResults = true;
         }
         this.setState({

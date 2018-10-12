@@ -1246,7 +1246,7 @@ class GraphComponent extends Component {
         link={link}
         detail={detail}
         labelKey={graphOptions.linkLabelProp}
-        color={util.getColor(link, graphOptions.linksColor, graphOptions.linksColors)}
+        color={graphOptions.getColor(link, 'links')}
         handleClick={e => this.handleLinkClick(e, link)}
         actionsNode={actionsNode}
         marker={`url(#${MARKER_ID})`}
@@ -1258,7 +1258,7 @@ class GraphComponent extends Component {
         node={node}
         detail={detail}
         labelKey={graphOptions.nodeLabelProp}
-        color={util.getColor(node, graphOptions.nodesColor, graphOptions.nodesColors)}
+        color={graphOptions.getColor(node, 'nodes')}
         handleClick={e => this.handleClick(e, node)}
         expandable={expandable[node.getId()]}
         applyDrag={this.applyDrag}

@@ -19,7 +19,7 @@ import {
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import * as jc from 'json-cycle';
-import _ from 'lodash';
+import debounce from 'lodash.debounce';
 import api from '../../services/api';
 import util from '../../services/util';
 
@@ -53,7 +53,7 @@ class AutoSearchComponent extends Component {
       lastRid: null,
     };
     const { property } = props;
-    this.callApi = _.debounce(
+    this.callApi = debounce(
       this.callApi.bind(this),
       property.length > 1 ? LONG_DEBOUNCE_TIME : DEBOUNCE_TIME,
     );

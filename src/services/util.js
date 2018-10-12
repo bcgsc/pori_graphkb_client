@@ -357,23 +357,6 @@ const positionInit = (x, y, i, n) => {
 };
 
 /**
- * Selects color for input graph object based on graph state.
- * @param {Object} obj - object to be colored.
- * @param {string} objColor - property to map color onto.
- * @param {Object} objColors - map of colors for each property.
- */
-const getColor = (obj, objColor, objColors) => {
-  let colorKey = '';
-  if (objColor && objColor.includes('.')) {
-    const keys = objColor.split('.');
-    colorKey = (obj.data[keys[0]] || {})[keys[1]];
-  } else if (objColor) {
-    colorKey = obj.data[objColor];
-  }
-  return objColors[colorKey];
-};
-
-/**
  * Initializes a new instance of given kbClass.
  * @param {Object} model - existing model to keep existing values from.
  * @param {Object} kbClass - Knowledge base class schema.
@@ -426,7 +409,7 @@ const initModel = (model, kbClass) => {
  * @param {string} className - requested class name
  */
 const getClass = (className, schema) => {
-  const VPropKeys = Object.keys(schema.V.properties);
+  const VPropKeys = schema.V ? Object.keys(schema.V.properties) : [];
   const classKey = (Object.keys(schema)
     .find(key => key.toLowerCase() === (className || '').toLowerCase()));
   if (!classKey) return {};
@@ -482,7 +465,7 @@ const getSubClasses = (abstractClass, schema) => Object.values(schema)
 
 /**
  * Returns a list of object class properties that are of a given type.
- * @param {Array} kbClass - Knowledgebase class object as defined in the schema.
+ * @param {Object} kbClass - Knowledgebase class object as defined in the schema.
  * @param {string} type - KB class type.
  */
 const getPropOfType = (kbClass, type) => Object.values(kbClass)
@@ -500,7 +483,6 @@ export default {
   getGraphData,
   expanded,
   positionInit,
-  getColor,
   initModel,
   getClass,
   isAbstract,

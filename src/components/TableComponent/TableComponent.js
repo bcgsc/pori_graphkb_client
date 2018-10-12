@@ -176,12 +176,23 @@ class TableComponent extends Component {
   static getDerivedStateFromProps(props, state) {
     const { sortedData, sort } = state;
     if (Object.keys(props.data).length > sortedData.length) {
-      const s = sort || (() => 1);
-      return { sortedData: Object.values(props.data).sort(s) };
+      if (sort) {
+        return { sortedData: Object.values(props.data).sort(sort) };
+      }
+      return { sortedData: Object.values(props.data) };
     }
     return null;
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    const { sortedData, page } = this.state;
+    const { detail } = this.state;
+    const nextPageData = this.pageData(nextState.page, nextState.sortedData).map(n => n['@rid']);
+    const currPageData = this.pageData(page, sortedData).map(n => n['@rid']);
+    return nextPageData.some(n => !currPageData.includes(n))
+      || nextState.sortedData.length > sortedData.length
+      || detail !== nextProps.detail;
+  }
 
   /**
    * Stores DOM references in component state.
@@ -193,6 +204,35 @@ class TableComponent extends Component {
       tableHeadRefs[i] = ReactDOM.findDOMNode(node);
       this.setState({ tableHeadRefs });
     }
+  }
+
+  pageData(page, data) {
+    const {
+      hidden,
+    } = this.props;
+    const {
+      columnFilterExclusions,
+      rowsPerPage,
+      tableColumns,
+    } = this.state;
+    const filteredData = data
+      .filter(n => !hidden.includes(n.getId()))
+      .filter(n => !columnFilterExclusions.some((exclusions, i) => {
+        let cell = n[tableColumns[i].id] === undefined
+          || n[tableColumns[i].id] === null
+          ? 'null' : n[tableColumns[i].id];
+
+        if (cell && cell !== 'null' && tableColumns[i].sortBy) {
+          cell = cell[tableColumns[i].sortBy];
+        }
+
+        if (exclusions.includes(util.castToExist(cell))) {
+          return true;
+        }
+        return false;
+      }));
+    return filteredData
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   }
 
   /**

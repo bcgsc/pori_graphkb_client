@@ -2,7 +2,6 @@ import util from './util';
 
 let edges = [];
 
-
 const OntologyEdge = class {
   constructor(data) {
     Object.keys(data).forEach((k) => { this[k] = data[k]; });

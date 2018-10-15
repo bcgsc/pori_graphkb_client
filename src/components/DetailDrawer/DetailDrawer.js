@@ -34,6 +34,7 @@ class DetailDrawer extends Component {
     super(props);
     this.state = {
       opened: [],
+      linkOpen: null,
     };
     this.formatOtherProps = this.formatOtherProps.bind(this);
     this.formatRelationships = this.formatRelationships.bind(this);
@@ -44,7 +45,14 @@ class DetailDrawer extends Component {
   componentDidUpdate(prevProps) {
     const { node: prevNode } = prevProps;
     const { node } = this.props;
-    if ((!node && prevNode) || (prevNode && node && prevNode.getId() !== node.getId())) {
+    if (
+      (!node && prevNode)
+      || (
+        prevNode instanceof Ontology
+        && node instanceof Ontology
+        && prevNode.getId() !== node.getId()
+      )
+    ) {
       /* eslint-disable-next-line react/no-did-update-set-state */
       this.setState({ opened: [], linkOpen: null });
     }
@@ -58,8 +66,9 @@ class DetailDrawer extends Component {
       IDENTIFIERS.map((prop) => {
         const [key, nestedKey] = prop.split('.');
         const value = nestedKey ? (node[key] || {})[nestedKey] : node[key];
-        let properties = Object.keys(node).map(k => ({ name: k }));
+        let properties = Object.keys(node[key] || {}).map(k => ({ name: k }));
         if (schema) {
+          // If property is a class in the schema, we can grab its properties.
           ({ properties } = util.getClass(key, schema));
         }
         const expanded = nestedKey ? (
@@ -88,35 +97,38 @@ class DetailDrawer extends Component {
             )))
         ) : null;
         if (value) {
-          return (
-            <React.Fragment key={prop}>
-              <ListItem
-                button={!!nestedKey}
-                onClick={nestedKey ? () => this.handleExpand(`${node['@rid']}${prop}`) : undefined}
-              >
-                {nested && (
-                  <ListItemIcon>
-                    <div style={{ width: 24, height: 24 }} />
-                  </ListItemIcon>)}
-                <ListItemText>
-                  <div className="detail-identifiers">
-                    <Typography variant="subheading" color={nested ? 'textSecondary' : 'default'}>
-                      {util.antiCamelCase(key)}
-                    </Typography>
-                    <Typography>
-                      {util.formatStr(value)}
-                    </Typography>
-                  </div>
-                </ListItemText>
-                {nestedKey
-                  && (!opened.includes(`${node['@rid']}${prop}`)
-                    ? <ExpandMoreIcon />
-                    : <ExpandLessIcon />)}
-              </ListItem>
-              {expanded}
-              <Divider />
-            </React.Fragment>
-          );
+          if (value.toString().length <= MAX_STRING_LENGTH) {
+            return (
+              <React.Fragment key={prop}>
+                <ListItem
+                  button={!!nestedKey}
+                  onClick={nestedKey ? () => this.handleExpand(`${node['@rid']}${prop}`) : undefined}
+                >
+                  {nested && (
+                    <ListItemIcon>
+                      <div style={{ width: 24, height: 24 }} />
+                    </ListItemIcon>)}
+                  <ListItemText>
+                    <div className="detail-identifiers">
+                      <Typography variant="subheading" color={nested ? 'textSecondary' : 'default'}>
+                        {util.antiCamelCase(key)}
+                      </Typography>
+                      <Typography>
+                        {util.formatStr(value)}
+                      </Typography>
+                    </div>
+                  </ListItemText>
+                  {nestedKey
+                    && (!opened.includes(`${node['@rid']}${prop}`)
+                      ? <ExpandMoreIcon />
+                      : <ExpandLessIcon />)}
+                </ListItem>
+                {expanded}
+                <Divider />
+              </React.Fragment>
+            );
+          }
+          return this.formatLongValue(key, value, true);
         }
         return null;
       })
@@ -166,7 +178,9 @@ class DetailDrawer extends Component {
     }
     let isEmpty = true;
     const propsList = properties
-      .filter(prop => !IDENTIFIERS.map(id => id.split('.')[0]).includes(prop.name))
+      .filter(prop => !IDENTIFIERS.map(id => id.split('.')[0]).includes(prop.name)
+        && !prop.name.startsWith('in_')
+        && !prop.name.startsWith('out_'))
       .map((prop) => {
         const { name, type } = prop;
         if (!node[name]) return null;

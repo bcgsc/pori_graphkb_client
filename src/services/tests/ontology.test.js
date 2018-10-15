@@ -2,6 +2,11 @@ import { expect } from 'chai';
 import { Ontology, OntologyEdge } from '../ontology';
 
 describe('ontology methods test', () => {
+  beforeAll(() => {
+    const edges = ['AliasOf', 'SubClassOf'];
+    Ontology.loadEdges(edges);
+  });
+
   it('OntologyEdge', () => {
     const data = {
       '@rid': 'pass',
@@ -31,9 +36,6 @@ describe('ontology methods test', () => {
   });
 
   it('Ontology loadEdges', () => {
-    const edges = ['AliasOf', 'SubClassOf'];
-    Ontology.loadEdges(edges);
-
     const data = {
       name: 'fail',
       '@rid': 'pass',

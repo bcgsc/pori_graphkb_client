@@ -15,6 +15,14 @@ const localStorageMock = (() => {
   };
 })();
 
+const URLMock = (() => ({
+  createObjectURL: value => value,
+}))();
+
 Object.defineProperty(window, 'localStorage', {
   value: localStorageMock,
+});
+
+Object.defineProperty(window, 'URL', {
+  value: URLMock,
 });

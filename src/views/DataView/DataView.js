@@ -98,12 +98,22 @@ class DataView extends Component {
     filteredSearch.neighbors = filteredSearch.neighbors || DEFAULT_NEIGHBORS;
     const limit = filteredSearch.limit || DEFAULT_LIMIT;
     for (let i = 0; i < BUCKETS; i += 1) {
-      filteredSearch.limit = limit / BUCKETS;
-      filteredSearch.skip = i * limit / BUCKETS || undefined;
-      DataView.makeApiQuery(route, filteredSearch, omitted)
-        .then((data) => {
-          this.processData(data, schema);
-        });
+      if (limit <= BUCKETS) {
+        filteredSearch.limit = limit;
+        delete filteredSearch.skip;
+        DataView.makeApiQuery(route, filteredSearch, omitted)
+          .then((data) => {
+            this.processData(data, schema);
+          });
+        i = BUCKETS;
+      } else {
+        filteredSearch.limit = limit / BUCKETS;
+        filteredSearch.skip = i * limit / BUCKETS || undefined;
+        DataView.makeApiQuery(route, filteredSearch, omitted)
+          .then((data) => {
+            this.processData(data, schema);
+          });
+      }
     }
     filteredSearch.limit = limit;
     filteredSearch.skip = undefined;

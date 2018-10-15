@@ -25,4 +25,18 @@ describe('<DetailDrawer />', () => {
     expect(wrapper.hasClass('foo'));
     expect(wrapper.children().hasClass('bar'));
   });
+  it('simulate', () => {
+    const mock = jest.fn();
+    mock.mockReturnValueOnce(10);
+
+    wrapper = shallow((
+      <DownloadFileComponent
+        className="foo"
+        rawFileContent={mock}
+      >
+        <button type="button" className="bar" />
+      </DownloadFileComponent>
+    ));
+    wrapper.simulate('click');
+  });
 });

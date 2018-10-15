@@ -57,4 +57,16 @@ describe('<AutoSearchComponent />', () => {
     expect(onChange.mock.calls.length).to.be.gt(0);
     expect(AutoSearchComponent.prototype.refreshOptions).to.have.property('callCount', 1);
   });
+
+  it('componentWillUnmount', () => {
+    const onChange = jest.fn();
+    AutoSearchComponent.prototype.callApi = jest.fn();
+
+    wrapper = mount((
+      <AutoSearchComponent
+        onChange={onChange}
+      />
+    ));
+    wrapper.unmount();
+  });
 });

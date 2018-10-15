@@ -25,6 +25,7 @@ describe('<DetailDrawer />', () => {
     expect(wrapper.hasClass('foo'));
     expect(wrapper.children().hasClass('bar'));
   });
+
   it('simulate', () => {
     const mock = jest.fn();
     mock.mockReturnValueOnce(10);
@@ -37,6 +38,23 @@ describe('<DetailDrawer />', () => {
         <button type="button" className="bar" />
       </DownloadFileComponent>
     ));
+    wrapper.simulate('click');
+    wrapper.simulate('keyup', { keyCode: 13 });
+  });
+
+  it('IE', () => {
+    const mock = jest.fn();
+    mock.mockReturnValueOnce(10);
+
+    wrapper = shallow((
+      <DownloadFileComponent
+        className="foo"
+        rawFileContent={mock}
+      >
+        <button type="button" className="bar" />
+      </DownloadFileComponent>
+    ));
+    window.navigator.msSaveBlob = () => { };
     wrapper.simulate('click');
   });
 });

@@ -163,7 +163,7 @@ class FormTemplater extends Component {
             <FormTemplater
               onChange={e => onChange(e, name)}
               schema={schema}
-              kbClass={(util.getClass(model[name]['@class'], schema)).properties}
+              kbClass={(util.getClass((model[name] || {})['@class'], schema)).properties}
               model={model[name]}
               excludedProps={['@class']}
               fieldComponent="div"
@@ -252,7 +252,6 @@ class FormTemplater extends Component {
         </ListItem>
       );
     };
-    /* eslint-enable react/jsx-no-duplicate-props */
     const completedpairs = {};
     const sortedProps = Object.values(kbClass || {})
       .filter(p => !excludedProps.includes(p.name))

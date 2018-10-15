@@ -457,7 +457,7 @@ const parsePermission = (permissionValue) => {
 * @param {Object} schema - database schema
 */
 const isAbstract = (linkedClass, schema) => Object.values(schema)
-  .some(kbClass => kbClass.inherits.includes(linkedClass));
+  .some(kbClass => (kbClass.inherits || []).includes(linkedClass));
 
 /**
 * Given a schema class object, find all other classes that inherit it.
@@ -465,7 +465,7 @@ const isAbstract = (linkedClass, schema) => Object.values(schema)
 * @param {Object} schema - database schema
 */
 const getSubClasses = (abstractClass, schema) => Object.values(schema)
-  .filter(kbClass => kbClass.inherits.includes(abstractClass));
+  .filter(kbClass => (kbClass.inherits || []).includes(abstractClass));
 
 /**
  * Returns a list of object class properties that are of a given type.

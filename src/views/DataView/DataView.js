@@ -24,7 +24,7 @@ import config from '../../config.json';
 
 const { DEFAULT_NEIGHBORS } = config;
 const DEFAULT_LIMIT = 1000;
-const BUCKETS = 10;
+const BUCKETS = 4;
 
 /**
  * View for managing state of query results. Contains sub-routes for table view (/data/table)
@@ -220,35 +220,27 @@ class DataView extends Component {
         const nextData = await next();
         const {
           data,
-          allProps,
           schema,
           filteredSearch,
         } = this.state;
-        const cycled = jc.retrocycle(nextData).result;
-        let newColumns = allProps;
-        cycled.forEach((ontologyTerm) => {
-          newColumns = api.collectOntologyProps(ontologyTerm, allProps, schema);
-          data[ontologyTerm['@rid']] = new Ontology(ontologyTerm);
-        });
+        this.processData(nextData, schema);
         let route = '/ontologies';
         const omitted = [];
         if (filteredSearch['@class'] && schema[filteredSearch['@class']]) {
           route = schema[filteredSearch['@class']].route || filteredSearch['@class'];
           omitted.push('@class');
         }
-
         let newNext = null;
         let moreResults = false;
         const limit = filteredSearch.limit || DEFAULT_LIMIT;
         const lastSkip = filteredSearch.skip || limit;
-        if (cycled.length >= limit) {
+        if (nextData.length >= limit) {
           filteredSearch.skip = Number(lastSkip) + Number(limit);
           newNext = () => DataView.makeApiQuery(route, filteredSearch, omitted);
           moreResults = true;
         }
         this.setState({
           data,
-          allProps: newColumns,
           next: newNext,
           filteredSearch,
           moreResults,

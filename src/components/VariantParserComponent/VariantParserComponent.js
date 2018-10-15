@@ -42,6 +42,7 @@ class VariantParserComponent extends Component {
       variant: null,
       classSchema: [],
       errorFields: [],
+      schema: null,
     };
     this.parseString = this.parseString.bind(this);
     this.handleVariantChange = this.handleVariantChange.bind(this);
@@ -321,6 +322,10 @@ class VariantParserComponent extends Component {
       disabled,
       handleFinish,
     } = this.props;
+
+    if (!schema) {
+      return null;
+    }
 
     let formIsInvalid = false;
     classSchema.forEach((prop) => {

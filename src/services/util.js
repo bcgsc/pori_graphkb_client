@@ -101,12 +101,6 @@ const antiCamelCase = (str) => {
 };
 
 const parseKBType = (obj) => {
-  if (typeof obj === 'object') {
-    if (Object.keys(obj).includes('@rid')) {
-      return 'link';
-    }
-    return 'embedded';
-  }
   if (typeof obj === 'number') {
     if (Number.isInteger(obj)) {
       return 'integer';
@@ -114,7 +108,13 @@ const parseKBType = (obj) => {
     return 'float';
   }
   if (Array.isArray(obj)) {
-    return 'embeddedest';
+    return 'embeddedset';
+  }
+  if (typeof obj === 'object') {
+    if (Object.keys(obj).includes('@rid')) {
+      return 'link';
+    }
+    return 'embedded';
   }
   return 'string';
 };
@@ -298,7 +298,11 @@ const getPallette = (n, type) => {
  */
 const loadGraphData = (search, data) => {
   const newData = Object.assign({ filteredSearch: search }, data);
-  localStorage.setItem(GRAPH_OBJECTS_KEY, JSON.stringify(jc.decycle(newData)));
+  try {
+    localStorage.setItem(GRAPH_OBJECTS_KEY, JSON.stringify(jc.decycle(newData)));
+  } catch (e) {
+    console.error('localstorage quota exceeded');
+  }
 };
 
 /**

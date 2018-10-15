@@ -18,6 +18,7 @@ const {
   CHARGE_STRENGTH,
   DEFAULT_NODE_COLOR,
   COLLISION_RADIUS,
+  CHARGE_MAX,
 } = config.GRAPH_DEFAULTS;
 
 class GraphNode {
@@ -209,6 +210,7 @@ class GraphOptions {
     this.linksColors = initial.linksColors || {};
     this.nodesLegend = !!initial.nodesLegend;
     this.linksLegend = !!initial.linksLegend;
+    this.chargeMax = initial.chargeMax || CHARGE_MAX;
   }
 
   /**

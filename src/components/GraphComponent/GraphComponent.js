@@ -51,9 +51,8 @@ const {
 const { PALLETE_SIZE } = config.GRAPH_DEFAULTS;
 const { GRAPH_UNIQUE_LIMIT } = config.NOTIFICATIONS;
 
-
 // Component specific constants.
-const AUTO_SPACE_COEFFICIENT = 2.8;
+const AUTO_SPACE_COEFFICIENT = 2;
 const SNACKBAR_AUTOHIDE_DURATION = 6000;
 const MARKER_ID = 'endArrow';
 const DIALOG_FADEOUT_TIME = 150;
@@ -118,7 +117,6 @@ class GraphComponent extends Component {
     const {
       displayed,
       data,
-      schema,
       allProps,
       filteredSearch,
       edges,
@@ -141,7 +139,6 @@ class GraphComponent extends Component {
 
     this.setState({
       expandedEdgeTypes,
-      schema,
       allProps,
       filteredSearch: stringifiedSearch,
     }, () => {
@@ -342,7 +339,6 @@ class GraphComponent extends Component {
       width,
       height,
     } = this.state;
-
     simulation.force(
       'link',
       d3.forceLink().id(d => d.getId()),
@@ -363,7 +359,9 @@ class GraphComponent extends Component {
       }),
     ).force(
       'charge',
-      d3.forceManyBody().strength(-graphOptions.chargeStrength),
+      d3.forceManyBody()
+        .strength(-graphOptions.chargeStrength)
+        .distanceMax(graphOptions.chargeMax),
     ).force(
       'center',
       d3.forceCenter(
@@ -595,7 +593,7 @@ class GraphComponent extends Component {
    */
   updateColors() {
     ['node', 'link'].forEach((type) => {
-      const objs = this.state[`${type}s`];
+      const { [`${type}s`]: objs } = this.state;
       const { graphOptions } = this.state;
       const key = graphOptions[`${type}sColor`];
       const colors = {};
@@ -1312,7 +1310,6 @@ class GraphComponent extends Component {
  * @property {function} handleDetailDrawerClose - Method to handle closing of detail drawer.
  * @property {function} handleTableRedirect - Method to handle a redirect to the table view.
  * @property {function} handleNewColumns - Updates valid properties in parent state.
- * @property {Object} schema - Database schema.
  * @property {Object} detail - record ID of node currently selected for detail viewing.
  * @property {Array} allProps - list of all unique properties on all nodes returned in
  * initial query.
@@ -1324,7 +1321,6 @@ GraphComponent.propTypes = {
   handleDetailDrawerClose: PropTypes.func.isRequired,
   handleTableRedirect: PropTypes.func.isRequired,
   handleNewColumns: PropTypes.func.isRequired,
-  schema: PropTypes.object.isRequired,
   detail: PropTypes.object,
   allProps: PropTypes.array,
 };

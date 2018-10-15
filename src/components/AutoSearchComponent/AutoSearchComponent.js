@@ -168,7 +168,6 @@ class AutoSearchComponent extends Component {
     } = this.props;
 
     const autoSearchResults = (
-      inputValue,
       getItemProps,
       setState,
       highlightedIndex,
@@ -194,7 +193,6 @@ class AutoSearchComponent extends Component {
           getInputProps,
           getItemProps,
           isOpen,
-          inputValue,
           setState,
           getMenuProps,
           highlightedIndex,
@@ -261,7 +259,7 @@ class AutoSearchComponent extends Component {
                             id="autosearch-spinner"
                           />
                         )
-                        : autoSearchResults(inputValue, getItemProps, setState, highlightedIndex)}
+                        : autoSearchResults(getItemProps, setState, highlightedIndex)}
                     </List>
                   </Paper>
                 </div>)}

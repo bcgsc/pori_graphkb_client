@@ -191,6 +191,18 @@ class PropsMap {
 
 
 class GraphOptions {
+  /**
+   * Retrieves stored graph options data from localstorage.
+   */
+  static retrieve() {
+    const data = localStorage.getItem(GRAPH_OPTIONS_KEY);
+    if (data) {
+      const obj = JSON.parse(data);
+      return new GraphOptions(obj);
+    }
+    return null;
+  }
+
   constructor(props) {
     const initial = props === undefined || props === null ? {} : props;
     this.defaultColor = initial.defaultColor || DEFAULT_NODE_COLOR;
@@ -244,18 +256,6 @@ class GraphOptions {
       nodesLegend: this.nodesLegend,
       linksLegend: this.linksLegend,
     }));
-  }
-
-  /**
-   * Retrieves stored graph options data from localstorage.
-   */
-  static retrieve() {
-    const data = localStorage.getItem(GRAPH_OPTIONS_KEY);
-    if (data) {
-      const obj = JSON.parse(data);
-      return new GraphOptions(obj);
-    }
-    return null;
   }
 }
 

@@ -157,3 +157,8 @@ $drawer-breakpoint: 768px;
 .user-menu {
   width: $user-menu-width;
 }
+
+::selection {
+  background: $md-primary-color;
+  color: white;
+}

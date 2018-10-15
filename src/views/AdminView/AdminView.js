@@ -491,13 +491,17 @@ class AdminView extends Component {
    * @param {string} rid - UserGroup record identifier.
    */
   handleUserGroupExpand(rid) {
-    const { expanded } = this.state;
+    const { expanded, tempUserGroup } = this.state;
+    let cancelFlag = false;
     if (expanded.indexOf(rid) !== -1) {
       expanded.splice(expanded.indexOf(rid), 1);
+      if (tempUserGroup && tempUserGroup['@rid'] === rid) {
+        cancelFlag = true;
+      }
     } else {
       expanded.push(rid);
     }
-    this.setState({ expanded });
+    this.setState({ expanded, tempUserGroup: cancelFlag ? tempUserGroup : null });
   }
 
   render() {

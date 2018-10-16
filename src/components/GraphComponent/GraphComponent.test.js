@@ -92,7 +92,7 @@ describe('<GraphComponent />', () => {
         handleTableRedirect={() => { }}
         handleNewColumns={() => { }}
         displayed={['#1', '#2', '#3', '#4']}
-        edges={['AliasOf']}
+        edgeTypes={['AliasOf']}
       />,
     );
 

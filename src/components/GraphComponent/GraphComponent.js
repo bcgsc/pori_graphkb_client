@@ -119,7 +119,7 @@ class GraphComponent extends Component {
       data,
       allProps,
       filteredSearch,
-      edges,
+      edgeTypes,
     } = this.props;
     const {
       graphOptions,
@@ -129,7 +129,7 @@ class GraphComponent extends Component {
     this.propsMap = new PropsMap();
 
     // Defines what edge keys to look for.
-    const expandedEdgeTypes = util.expandEdges(edges);
+    const expandedEdgeTypes = util.expandEdges(edgeTypes);
     let validDisplayed = displayed;
     if (!displayed || displayed.length === 0) {
       validDisplayed = Object.keys(data)[0] ? [Object.keys(data)[0]] : [];
@@ -160,6 +160,7 @@ class GraphComponent extends Component {
       if ((displayed && displayed.length !== 0) || (!initState && !storedData)) {
         let { nodes, links, graphObjects } = this.state;
 
+        /* Case 1, iterate through specified rids. */
         validDisplayed.forEach((key, i) => {
           ({
             nodes,
@@ -185,6 +186,7 @@ class GraphComponent extends Component {
           nodes,
           links,
         } = initState;
+        /* Case 2, iterate through component state field containing graph state. */
         nodes.forEach((node) => {
           this.propsMap.loadNode(node.data, allProps);
           expandable = util.expanded(expandedEdgeTypes, graphObjects, node.getId(), expandable);
@@ -202,6 +204,7 @@ class GraphComponent extends Component {
           graphObjects,
         } = storedData;
         let { nodes, links } = storedData;
+        /* Case 3, fetch state saved in localStorage. */
         delete storedData.filteredSearch;
         nodes = nodes.map((n) => {
           this.propsMap.loadNode(n.data, allProps);
@@ -1371,7 +1374,7 @@ GraphComponent.propTypes = {
   handleNewColumns: PropTypes.func.isRequired,
   detail: PropTypes.object,
   allProps: PropTypes.array,
-  edges: PropTypes.array,
+  edgeTypes: PropTypes.array,
   displayed: PropTypes.array,
 };
 
@@ -1379,7 +1382,7 @@ GraphComponent.defaultProps = {
   handleClick: null,
   detail: null,
   allProps: [],
-  edges: [],
+  edgeTypes: [],
   displayed: [],
 };
 

@@ -450,6 +450,18 @@ const parsePermission = (permissionValue) => {
   return retstr;
 };
 
+/**
+  * Returns all valid ontology types.
+  */
+const getOntologies = (schema) => {
+  const list = [];
+  Object.keys(schema).forEach((key) => {
+    if ((schema[key].inherits || []).includes('Ontology')) {
+      list.push({ name: key, properties: schema[key].properties, route: schema[key].route });
+    }
+  });
+  return list;
+};
 
 /**
 * Given a schema class object, determine whether it is abstract or not.
@@ -509,4 +521,6 @@ export default {
   formatStr,
   shortenString,
   parseKBType,
+  getOntologies,
+  sortFields,
 };

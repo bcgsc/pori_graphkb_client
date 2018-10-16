@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import * as jc from 'json-cycle';
 import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
 import api from '../../services/api';
+import util from '../../services/util';
 import config from '../../config.json';
 
 const { DEFAULT_NEIGHBORS } = config;
@@ -21,8 +22,11 @@ class EditOntologyView extends Component {
     super(props);
     this.state = {
       node: null,
+      schema: null,
+      sources: [],
+      edgeTypes: [],
     };
-
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
   }

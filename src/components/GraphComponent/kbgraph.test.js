@@ -96,6 +96,17 @@ describe('kbgraph', () => {
     expect(GraphOptions.retrieve()).to.deep.equals(graphOptions);
   });
 
+  it('getColor', () => {
+    const props = {
+      defaultColor: 'black',
+      autoCollisionRadius: false,
+      collisionRadius: 16,
+      linksColor: 'source.name',
+    };
+    const graphOptions = new GraphOptions(props);
+    graphOptions.getColor({ data: { source: { name: 'hello' } } }, 'links');
+  });
+
   it('GraphNode', () => {
     const data = { name: 'test name', '@rid': 'pass' };
     const graphNode = new GraphNode(data);

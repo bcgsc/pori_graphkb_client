@@ -4,8 +4,6 @@ import { mount } from 'enzyme';
 import { spy } from 'sinon';
 import GraphComponent from './GraphComponent';
 
-spy(GraphComponent.prototype, 'componentDidMount');
-
 const mockData = {
   '#1': {
     '@rid': '#1',
@@ -50,9 +48,13 @@ const mockData = {
   },
 };
 
-
 describe('<GraphComponent />', () => {
   let wrapper;
+
+  beforeAll(() => {
+    spy(GraphComponent.prototype, 'componentDidMount');
+  });
+
   it('init', () => {
     wrapper = mount(
       <GraphComponent
@@ -66,7 +68,7 @@ describe('<GraphComponent />', () => {
     expect(GraphComponent.prototype.componentDidMount).to.have.property('callCount', 1);
   });
 
-  it('', () => {
+  it('with displayed nodes', () => {
     wrapper = mount(
       <GraphComponent
         data={mockData}
@@ -83,7 +85,7 @@ describe('<GraphComponent />', () => {
     expect(wrapper.find('svg circle.node')).to.have.lengthOf(3);
   });
 
-  it('', () => {
+  it('with displayed links', () => {
     wrapper = mount(
       <GraphComponent
         data={mockData}
@@ -98,5 +100,46 @@ describe('<GraphComponent />', () => {
 
     expect(wrapper.find('svg circle.node')).to.have.lengthOf(4);
     expect(wrapper.find('svg path.link')).to.have.lengthOf(1);
+  });
+
+  it('toolbar', () => {
+    wrapper = mount(
+      <GraphComponent
+        data={mockData}
+        handleDetailDrawerOpen={() => { }}
+        handleDetailDrawerClose={() => { }}
+        handleTableRedirect={() => { }}
+        handleNewColumns={() => { }}
+        displayed={['#1', '#2', '#3', '#4']}
+        edges={['AliasOf']}
+      />,
+    );
+
+    wrapper.find('div.toolbar button.table-btn').simulate('click');
+    wrapper.find('div.toolbar button#graph-options-btn').simulate('click');
+    wrapper.find('input#linkStrength').simulate('change');
+    wrapper.find('div.toolbar .refresh-wrapper button').simulate('click');
+  });
+
+  it('clicking nodes and links', () => {
+    const handleClick = jest.fn();
+    const handleDetailDrawerOpen = jest.fn();
+
+    wrapper = mount(
+      <GraphComponent
+        data={mockData}
+        handleDetailDrawerOpen={handleDetailDrawerOpen}
+        handleDetailDrawerClose={() => { }}
+        handleTableRedirect={() => { }}
+        handleNewColumns={() => { }}
+        handleClick={handleClick}
+        displayed={['#1', '#2', '#3', '#4']}
+        edges={['AliasOf']}
+      />,
+    );
+    wrapper.find('circle.node').first().simulate('click');
+    wrapper.find('path.link').first().simulate('click');
+    expect(handleClick.mock.calls.length).to.eq(1);
+    expect(handleDetailDrawerOpen.mock.calls.length).to.eq(1);
   });
 });

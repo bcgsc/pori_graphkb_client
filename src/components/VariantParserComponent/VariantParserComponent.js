@@ -11,18 +11,14 @@ import {
   FormControl,
   FormHelperText,
   Paper,
-  Drawer,
-  LinearProgress,
-  CircularProgress,
 } from '@material-ui/core';
-import CheckIcon from '@material-ui/icons/Check';
 import * as jc from 'json-cycle';
 import kbp from 'knowledgebase-parser';
 import FormTemplater from '../FormTemplater/FormTemplater';
 import api from '../../services/api';
 import util from '../../services/util';
+import NotificationDrawer from '../NotificationDrawer/NotificationDrawer';
 
-const NOTIFICATION_SPINNER_SIZE = 16;
 const DEFAULT_ORDER = [
   'type',
   'reference1',
@@ -338,53 +334,15 @@ class VariantParserComponent extends Component {
       }
     });
 
-    const sortFields = (a, b) => {
-      if (DEFAULT_ORDER.indexOf(b.name) === -1) {
-        return -1;
-      }
-      if (DEFAULT_ORDER.indexOf(a.name) === -1) {
-        return 1;
-      }
-      return DEFAULT_ORDER.indexOf(a.name) < DEFAULT_ORDER.indexOf(b.name)
-        ? -1
-        : 1;
-    };
-
-    const drawer = (
-      <Drawer
-        open={notificationDrawerOpen}
-        onClose={handleFinish}
-        anchor="bottom"
-      >
-        <div className="notification-drawer">
-          <div className="form-linear-progress">
-            <LinearProgress
-              color="secondary"
-              variant={loading ? 'indeterminate' : 'determinate'}
-              value={loading ? 0 : 100}
-            />
-          </div>
-          <Button
-            color="secondary"
-            onClick={handleFinish}
-            disabled={loading}
-            variant="raised"
-            size="large"
-          >
-            {loading
-              ? <CircularProgress size={NOTIFICATION_SPINNER_SIZE} color="secondary" />
-              : <CheckIcon />
-            }
-          </Button>
-        </div>
-      </Drawer>
-    );
-
     const shorthandError = !!(error || invalidFlag);
 
     return (
       <div className="variant-parser-wrapper">
-        {drawer}
+        <NotificationDrawer
+          open={notificationDrawerOpen}
+          handleFinish={handleFinish}
+          loading={loading}
+        />
         <Paper elevation={4} className="variant-parser-shorthand">
           <FormControl
             error={shorthandError}

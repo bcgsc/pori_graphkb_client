@@ -142,4 +142,33 @@ describe('<GraphComponent />', () => {
     expect(handleClick.mock.calls.length).to.eq(1);
     expect(handleDetailDrawerOpen.mock.calls.length).to.eq(1);
   });
+
+  it('Different init types', () => {
+    wrapper = mount(
+      <GraphComponent
+        data={mockData}
+        handleDetailDrawerOpen={() => { }}
+        handleDetailDrawerClose={() => { }}
+        handleTableRedirect={() => { }}
+        handleNewColumns={() => { }}
+        handleClick={() => { }}
+        displayed={['#1', '#2', '#3', '#4']}
+        edgeTypes={['AliasOf']}
+      />,
+    );
+    wrapper = mount(
+      <GraphComponent
+        data={mockData}
+        handleDetailDrawerOpen={() => { }}
+        handleDetailDrawerClose={() => { }}
+        handleTableRedirect={() => { }}
+        handleNewColumns={() => { }}
+        handleClick={() => { }}
+        edgeTypes={['AliasOf']}
+      />,
+    );
+    expect(wrapper.find('circle.node')).to.have.lengthOf(4);
+    wrapper.find('circle.node').first().simulate('click');
+    wrapper.find('#close').simulate('click');
+  });
 });

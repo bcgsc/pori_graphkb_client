@@ -373,7 +373,7 @@ class VariantParserComponent extends Component {
                 kbClass={classSchema}
                 excludedProps={['break1Repr', 'break2Repr']}
                 errorFields={errorFields}
-                sort={sortFields}
+                sort={util.sortFields(DEFAULT_ORDER)}
                 pairs={{
                   break1: ['break1Start', 'break1End'],
                   break2: ['break2Start', 'break2End'],

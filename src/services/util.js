@@ -475,6 +475,18 @@ const getSubClasses = (abstractClass, schema) => Object.values(schema)
 const getPropOfType = (kbClass, type) => Object.values(kbClass)
   .filter(prop => prop.type === type);
 
+const sortFields = (order = []) => (a, b) => {
+  if (order.indexOf(b.name) === -1) {
+    return -1;
+  }
+  if (order.indexOf(a.name) === -1) {
+    return 1;
+  }
+  return order.indexOf(a.name) < order.indexOf(b.name)
+    ? -1
+    : 1;
+};
+
 export default {
   antiCamelCase,
   getPreview,

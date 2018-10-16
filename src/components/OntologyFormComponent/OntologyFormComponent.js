@@ -44,7 +44,7 @@ const DEFAULT_ORDER = [
   'source',
   'description',
 ];
-
+const DEFAULT_NODE_CLASS = 'Disease';
 /**
  * Component for editing or adding database nodes. Is also used to add or
  * delete edges from the database. All changes are staged and not

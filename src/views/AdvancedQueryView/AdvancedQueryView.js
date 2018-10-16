@@ -20,6 +20,13 @@ import util from '../../services/util';
 import FormTemplater from '../../components/FormTemplater/FormTemplater';
 import config from '../../config';
 
+const DEFAULT_ORDER = [
+  'name',
+  'sourceId',
+  'source',
+  'subsets',
+];
+
 /**
  * View for in-depth database query building. Form submissions will route to
  * the data results route to display the returned data. Forms are dynamically
@@ -209,7 +216,7 @@ class AdvancedQueryView extends Component {
             kbClass={editableProps}
             onChange={this.handleChange}
             schema={schema}
-            sort={sortFields}
+            sort={util.sortFields(DEFAULT_ORDER)}
             ignoreRequired
           />
         </Paper>

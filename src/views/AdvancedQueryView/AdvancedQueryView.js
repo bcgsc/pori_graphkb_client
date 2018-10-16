@@ -63,16 +63,13 @@ class AdvancedQueryView extends Component {
     }
 
     const schema = await api.getSchema();
-    const ontologyTypes = [{ name: '', properties: null, route: 'ontologies' }];
-    ontologyTypes.push(...api.getOntologies(schema));
-    const editableProps = (util.getClass(ontologyTypes[0].name || 'Ontology', schema)).properties;
-    editableProps.push(...config.ONTOLOGY_QUERY_PARAMS);
-    const form = util.initModel({ '@class': ontologyTypes[0].name }, editableProps);
+    const ontologyTypes = [{ name: 'Ontology', properties: null, route: 'ontologies' }];
+    ontologyTypes.push(...util.getOntologies(schema));
+    const form = util.initModel({}, 'Ontology', schema);
     form.subsets = '';
     this.setState({
       ontologyTypes,
       form,
-      editableProps,
       schema,
     });
   }
@@ -110,31 +107,16 @@ class AdvancedQueryView extends Component {
     this.setState({ form });
   }
 
+
   /**
    * Re renders form input fields based on class editable properties.
-   * @param {Event} e - Class selection event
+   * @param {Event} e - User class selection event.
    */
   async handleClassChange(e) {
     const { form, schema } = this.state;
-    const newNodeClass = e.target.value;
-    const editableProps = (util.getClass(newNodeClass || 'Ontology', schema)).properties;
-    editableProps.forEach((prop) => {
-      const { name, type } = prop;
-      const defaultValue = prop.default || '';
-      if (form[name] === undefined) {
-        if (type === 'boolean') {
-          form[name] = defaultValue.toString() === 'true';
-        } else {
-          form[name] = '';
-        }
-      }
-    });
-    editableProps.push(...config.ONTOLOGY_QUERY_PARAMS);
-    form['@class'] = e.target.value;
-    this.setState({
-      form,
-      editableProps,
-    });
+    const newForm = util.initModel(form, e.target.value || 'Ontology', schema);
+    newForm.subsets = Array.isArray(newForm.subsets) ? newForm.subsets.join('') : newForm.subsets || '';
+    this.setState({ form: newForm });
   }
 
   /**
@@ -148,7 +130,6 @@ class AdvancedQueryView extends Component {
     const {
       form,
       ontologyTypes,
-      editableProps,
       message,
       schema,
     } = this.state;

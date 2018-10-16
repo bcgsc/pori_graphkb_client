@@ -361,13 +361,33 @@ const positionInit = (x, y, i, n) => {
 };
 
 /**
+ * Returns the editable properties of target ontology class.
+ * @param {string} className - requested class name
+ */
+const getClass = (className, schema) => {
+  const VPropKeys = schema.V ? Object.keys(schema.V.properties) : [];
+  const classKey = (Object.keys(schema)
+    .find(key => key.toLowerCase() === (className || '').toLowerCase()));
+  if (!classKey) return {};
+  const props = Object.keys(schema[classKey].properties)
+    .filter(prop => !VPropKeys.includes(prop))
+    .map(prop => schema[classKey].properties[prop]);
+  return { route: schema[classKey].route, properties: props };
+};
+
+/**
  * Initializes a new instance of given kbClass.
  * @param {Object} model - existing model to keep existing values from.
- * @param {Object} kbClass - Knowledge base class schema.
+ * @param {string} kbClass - Knowledge base class key.
+ * @param {Object} schema - Knowledge base schema.
  */
-const initModel = (model, kbClass) => {
+const initModel = (model, kbClass, schema) => {
+  const editableProps = schema && kbClass
+    ? (getClass(kbClass, schema)).properties
+    : [];
   const newModel = Object.assign({}, model);
-  Object.values(kbClass).forEach((property) => {
+  newModel['@class'] = kbClass;
+  Object.values(editableProps).forEach((property) => {
     const {
       name,
       type,
@@ -406,21 +426,6 @@ const initModel = (model, kbClass) => {
     }
   });
   return newModel;
-};
-
-/**
- * Returns the editable properties of target ontology class.
- * @param {string} className - requested class name
- */
-const getClass = (className, schema) => {
-  const VPropKeys = schema.V ? Object.keys(schema.V.properties) : [];
-  const classKey = (Object.keys(schema)
-    .find(key => key.toLowerCase() === (className || '').toLowerCase()));
-  if (!classKey) return {};
-  const props = Object.keys(schema[classKey].properties)
-    .filter(prop => !VPropKeys.includes(prop))
-    .map(prop => schema[classKey].properties[prop]);
-  return { route: schema[classKey].route, properties: props };
 };
 
 /**

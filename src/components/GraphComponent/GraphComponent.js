@@ -6,7 +6,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './GraphComponent.css';
 import * as d3 from 'd3';
-import qs from 'qs';
 import {
   IconButton,
   List,
@@ -118,7 +117,7 @@ class GraphComponent extends Component {
       displayed,
       data,
       allProps,
-      filteredSearch,
+      localStorageKey,
       edgeTypes,
     } = this.props;
     const {
@@ -135,17 +134,15 @@ class GraphComponent extends Component {
       validDisplayed = Object.keys(data)[0] ? [Object.keys(data)[0]] : [];
     }
 
-    const stringifiedSearch = qs.stringify(filteredSearch);
-
     this.setState({
       expandedEdgeTypes,
       allProps,
-      filteredSearch: stringifiedSearch,
+      localStorageKey,
     }, () => {
       this.handleResize();
       window.addEventListener('resize', this.handleResize);
 
-      const storedData = util.getGraphData(stringifiedSearch);
+      const storedData = util.getGraphData(localStorageKey);
       const storedOptions = GraphOptions.retrieve();
 
       /**
@@ -179,7 +176,7 @@ class GraphComponent extends Component {
             },
           ));
         });
-        util.loadGraphData(stringifiedSearch, { nodes, links, graphObjects });
+        util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
       } else if (initState) {
         const {
           graphObjects,
@@ -199,13 +196,13 @@ class GraphComponent extends Component {
           nodes: nodes.slice(),
           links: links.slice(),
         });
-      } else if (storedData && storedData.filteredSearch === stringifiedSearch) {
+      } else if (storedData && storedData.localStorageKey === localStorageKey) {
         const {
           graphObjects,
         } = storedData;
         let { nodes, links } = storedData;
         /* Case 3, fetch state saved in localStorage. */
-        delete storedData.filteredSearch;
+        delete storedData.localStorageKey;
         nodes = nodes.map((n) => {
           this.propsMap.loadNode(n.data, allProps);
           expandable = util.expanded(expandedEdgeTypes, graphObjects, n.data['@rid'], expandable);
@@ -273,7 +270,7 @@ class GraphComponent extends Component {
       graphObjects,
       nodes,
       links,
-      filteredSearch,
+      localStorageKey,
     } = this.state;
     // remove all event listeners
     svg.call(d3.zoom()
@@ -281,7 +278,7 @@ class GraphComponent extends Component {
       .on('dblclick.zoom', null);
     simulation.on('tick', null);
     window.removeEventListener('resize', this.handleResize);
-    util.loadGraphData(filteredSearch, { nodes, links, graphObjects });
+    util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
   }
 
   /**
@@ -410,7 +407,7 @@ class GraphComponent extends Component {
    */
   loadNeighbors(node) {
     const {
-      filteredSearch,
+      localStorageKey,
       expandExclusions,
     } = this.state;
     let {
@@ -444,7 +441,7 @@ class GraphComponent extends Component {
     if (!data[node.getId()].getEdges().some(edge => !links.find(l => l.getId() === edge['@rid']))) {
       delete expandable[node.getId()];
     }
-    util.loadGraphData(filteredSearch, { nodes, links, graphObjects });
+    util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
     this.setState({
       expandable,
       actionsNode: null,
@@ -812,7 +809,7 @@ class GraphComponent extends Component {
       expandedEdgeTypes,
       expandable,
       allProps,
-      filteredSearch,
+      localStorageKey,
     } = this.state;
 
     const { handleDetailDrawerClose } = this.props;
@@ -852,7 +849,7 @@ class GraphComponent extends Component {
     }, () => {
       this.updateColors();
       handleDetailDrawerClose();
-      util.loadGraphData(filteredSearch, { nodes, links, graphObjects });
+      util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
     });
   }
 

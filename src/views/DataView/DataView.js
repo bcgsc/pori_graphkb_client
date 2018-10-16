@@ -363,7 +363,7 @@ class DataView extends Component {
         edgeTypes={edges}
         detail={detail}
         allProps={allProps}
-        filteredSearch={filteredSearch}
+        localStorageKey={qs.stringify(filteredSearch)}
         handleNewColumns={this.handleNewColumns}
       />
     );

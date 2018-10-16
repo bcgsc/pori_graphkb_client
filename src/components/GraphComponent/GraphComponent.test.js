@@ -77,7 +77,7 @@ describe('<GraphComponent />', () => {
         handleTableRedirect={() => { }}
         handleNewColumns={() => { }}
         displayed={['#1', '#2', '#3']}
-        edges={['AliasOf']}
+        edgeTypes={['AliasOf']}
       />,
     );
 
@@ -111,7 +111,7 @@ describe('<GraphComponent />', () => {
         handleTableRedirect={() => { }}
         handleNewColumns={() => { }}
         displayed={['#1', '#2', '#3', '#4']}
-        edges={['AliasOf']}
+        edgeTypes={['AliasOf']}
       />,
     );
 
@@ -134,7 +134,7 @@ describe('<GraphComponent />', () => {
         handleNewColumns={() => { }}
         handleClick={handleClick}
         displayed={['#1', '#2', '#3', '#4']}
-        edges={['AliasOf']}
+        edgeTypes={['AliasOf']}
       />,
     );
     wrapper.find('circle.node').first().simulate('click');

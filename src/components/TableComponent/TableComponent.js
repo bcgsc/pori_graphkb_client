@@ -148,18 +148,7 @@ class TableComponent extends Component {
       columnFilterExclusions = storedFilters;
     }
     // Set default order for columns.
-    tableColumns.sort((a, b) => {
-      if (DEFAULT_COLUMN_ORDER.indexOf(b.id) === -1) {
-        return -1;
-      }
-      if (DEFAULT_COLUMN_ORDER.indexOf(a.id) === -1) {
-        return 1;
-      }
-      if (DEFAULT_COLUMN_ORDER.indexOf(a.id) < DEFAULT_COLUMN_ORDER.indexOf(b.id)) {
-        return -1;
-      }
-      return 1;
-    });
+    tableColumns.sort(util.sortFields(DEFAULT_COLUMN_ORDER));
 
     this.setState({ tableColumns, columnFilterStrings, columnFilterExclusions });
   }

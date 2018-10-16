@@ -24,7 +24,6 @@ import config from '../../config.json';
 
 const { DEFAULT_NEIGHBORS } = config;
 const DEFAULT_LIMIT = 1000;
-const BUCKETS = 4;
 
 /**
  * View for managing state of query results. Contains sub-routes for table view (/data/table)
@@ -96,28 +95,10 @@ class DataView extends Component {
       omitted.push('@class');
     }
     filteredSearch.neighbors = filteredSearch.neighbors || DEFAULT_NEIGHBORS;
-    const limit = filteredSearch.limit || DEFAULT_LIMIT;
-    for (let i = 0; i < BUCKETS; i += 1) {
-      if (limit <= BUCKETS) {
-        filteredSearch.limit = limit;
-        delete filteredSearch.skip;
-        DataView.makeApiQuery(route, filteredSearch, omitted)
-          .then((data) => {
-            this.processData(data, schema);
-          });
-        i = BUCKETS;
-      } else {
-        filteredSearch.limit = limit / BUCKETS;
-        filteredSearch.skip = i * limit / BUCKETS || undefined;
-        DataView.makeApiQuery(route, filteredSearch, omitted)
-          .then((data) => {
-            this.processData(data, schema);
-          });
-      }
-    }
-    filteredSearch.limit = limit;
-    filteredSearch.skip = undefined;
-    this.prepareNextPagination(route, filteredSearch, { length: limit }, omitted);
+    filteredSearch.limit = filteredSearch.limit || DEFAULT_LIMIT;
+    const data = await DataView.makeApiQuery(route, filteredSearch, omitted);
+    this.processData(data, schema);
+    this.prepareNextPagination(route, filteredSearch, data, omitted);
     Ontology.loadEdges(api.getEdges(schema));
 
     this.setState({
@@ -145,11 +126,18 @@ class DataView extends Component {
   }
 
   prepareNextPagination(route, queryParams, prevResult, omitted = []) {
-    if (prevResult.length >= (queryParams.limit || DEFAULT_LIMIT)) {
-      queryParams.skip = queryParams.limit || DEFAULT_LIMIT;
+    const nextQueryParams = queryParams;
+    if (prevResult.length >= queryParams.limit) {
+      nextQueryParams.skip = Number(queryParams.limit) + Number(queryParams.skip || 0);
       this.setState({
-        next: () => DataView.makeApiQuery(route, queryParams, omitted),
+        next: () => DataView.makeApiQuery(route, nextQueryParams, omitted),
         moreResults: true,
+        filteredSearch: nextQueryParams,
+      });
+    } else {
+      this.setState({
+        next: null,
+        moreResults: false,
       });
     }
   }
@@ -222,38 +210,37 @@ class DataView extends Component {
    * Handles subsequent pagination call
    */
   async handleSubsequentPagination() {
-    const { next } = this.state;
+    const {
+      next,
+      data,
+      schema,
+      filteredSearch,
+    } = this.state;
 
     if (next) {
       try {
-        this.setState({ next: null, moreResults: false, completedNext: false });
+        this.setState({
+          next: null,
+          moreResults: false,
+          completedNext: false,
+        });
+
         const nextData = await next();
-        const {
-          data,
-          schema,
-          filteredSearch,
-        } = this.state;
+
         this.processData(nextData, schema);
+
         let route = '/ontologies';
         const omitted = [];
+
         if (filteredSearch['@class'] && schema[filteredSearch['@class']]) {
           route = schema[filteredSearch['@class']].route || filteredSearch['@class'];
           omitted.push('@class');
         }
-        let newNext = null;
-        let moreResults = false;
-        const limit = filteredSearch.limit || DEFAULT_LIMIT;
-        const lastSkip = filteredSearch.skip || limit;
-        if (nextData.length >= limit) {
-          filteredSearch.skip = Number(lastSkip) + Number(limit);
-          newNext = () => DataView.makeApiQuery(route, filteredSearch, omitted);
-          moreResults = true;
-        }
+
+        this.prepareNextPagination(route, filteredSearch, nextData, omitted);
+
         this.setState({
           data,
-          next: newNext,
-          filteredSearch,
-          moreResults,
           completedNext: true,
         });
       } catch (e) {
@@ -373,7 +360,7 @@ class DataView extends Component {
         handleDetailDrawerOpen={this.handleDetailDrawerOpen}
         handleDetailDrawerClose={this.handleDetailDrawerClose}
         handleTableRedirect={this.handleTableRedirect}
-        edges={edges}
+        edgeTypes={edges}
         detail={detail}
         allProps={allProps}
         filteredSearch={filteredSearch}

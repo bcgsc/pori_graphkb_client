@@ -319,7 +319,7 @@ FormTemplater.defaultProps = {
   onClassChange: null,
   fieldComponent: 'li',
   errorFields: [],
-  sort: () => 1,
+  sort: () => 0,
   pairs: {},
   ignoreRequired: false,
 };

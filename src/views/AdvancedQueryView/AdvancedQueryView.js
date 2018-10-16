@@ -85,7 +85,6 @@ class AdvancedQueryView extends Component {
     const params = [{ name: '@class', type: 'string' }];
     params.push(...config.ONTOLOGY_QUERY_PARAMS);
     const payload = util.parsePayload(form, editableProps, params);
-
     return qs.stringify(payload);
   }
 

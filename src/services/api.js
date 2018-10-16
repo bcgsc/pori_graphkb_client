@@ -270,19 +270,6 @@ const collectOntologyProps = (ontologyTerm, allColumns, schema) => {
 };
 
 /**
-  * Returns all valid ontology types.
-  */
-const getOntologies = (schema) => {
-  const list = [];
-  Object.keys(schema).forEach((key) => {
-    if (schema[key].inherits.includes('Ontology')) {
-      list.push({ name: key, properties: schema[key].properties, route: schema[key].route });
-    }
-  });
-  return list;
-};
-
-/**
   * Returns all valid edge types.
   */
 const getEdges = (schema) => {
@@ -298,7 +285,6 @@ const getEdges = (schema) => {
 
 export default {
   getEdges,
-  getOntologies,
   collectOntologyProps,
   getHeaders,
   getSchema,

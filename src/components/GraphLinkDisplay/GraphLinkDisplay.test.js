@@ -15,6 +15,9 @@ const mockData = {
   data: {
     '@rid': '#1',
     name: 'link',
+    source: {
+      name: 'link source',
+    },
   },
 };
 
@@ -33,6 +36,7 @@ describe('<GraphLinkDisplay />', () => {
   });
 
   it('with label', () => {
+    mockData.source.y = mockData.target.y;
     wrapper = shallow(
       <GraphLinkDisplay
         link={mockData}
@@ -41,5 +45,32 @@ describe('<GraphLinkDisplay />', () => {
     );
     expect(wrapper.type()).to.equal('g');
     expect(wrapper.children('text').text()).to.equal('link');
+  });
+
+  it('detail', () => {
+    mockData.source.x = mockData.target.x;
+    const detail = { '@rid': '#2' };
+    wrapper = shallow(
+      <GraphLinkDisplay
+        link={mockData}
+        labelKey="source.name"
+        detail={detail}
+        actionsNode={{ data: detail }}
+      />,
+    );
+
+    expect(wrapper.find('path.link').props().style.strokeOpacity).to.eq(0.4);
+  });
+
+  it('invalid link', () => {
+    mockData.source = mockData.target;
+    wrapper = shallow(
+      <GraphLinkDisplay
+        link={mockData}
+        labelKey="source.name"
+        detail={mockData}
+      />,
+    );
+    expect(!wrapper.find('path.link'));
   });
 });

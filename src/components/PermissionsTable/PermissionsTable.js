@@ -27,6 +27,7 @@ function PermissionsTable(props) {
 
   const permissionKeys = Object.keys(userGroup.permissions)
     .sort((a, b) => a > b ? 1 : -1);
+
   const list = (
     <Table className="alternating-table">
       <TableHead>
@@ -89,7 +90,8 @@ function PermissionsTable(props) {
   return (
     <div className="user-group-grid">
       {list}
-    </div>);
+    </div>
+  );
 }
 
 PermissionsTable.propTypes = {

@@ -78,9 +78,11 @@ class AdvancedQueryView extends Component {
    * Formats query string to be passed into url.
    */
   bundle() {
-    const { form, editableProps } = this.state;
+    const { form, schema } = this.state;
     const params = [{ name: '@class', type: 'string' }];
     params.push(...config.ONTOLOGY_QUERY_PARAMS);
+    const editableProps = util.getClass(form['@class'], schema).properties || [];
+    editableProps.push(...config.ONTOLOGY_QUERY_PARAMS);
     const payload = util.parsePayload(form, editableProps, params);
     return qs.stringify(payload);
   }
@@ -137,24 +139,8 @@ class AdvancedQueryView extends Component {
 
     if (!form) return null;
 
-    const sortFields = (a, b) => {
-      const order = [
-        'name',
-        'sourceId',
-        'source',
-        'subsets',
-      ];
-      if (order.indexOf(b.name) === -1) {
-        return -1;
-      }
-      if (order.indexOf(a.name) === -1) {
-        return 1;
-      }
-      if (order.indexOf(a.name) < order.indexOf(b.name)) {
-        return -1;
-      }
-      return 1;
-    };
+    const editableProps = (util.getClass(form['@class'], schema)).properties || [];
+    editableProps.push(...config.ONTOLOGY_QUERY_PARAMS);
 
     return (
       <div className="adv-wrapper" elevation={4}>

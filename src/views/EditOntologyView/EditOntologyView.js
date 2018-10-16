@@ -39,7 +39,77 @@ class EditOntologyView extends Component {
     const { rid } = match.params;
     const response = await api.get(`/ontologies/${rid}?neighbors=${DEFAULT_NEIGHBORS}`);
     const node = jc.retrocycle(response).result;
-    this.setState({ node });
+    const sources = await api.getSources();
+    const schema = await api.getSchema();
+    const edgeTypes = api.getEdges(schema);
+    this.setState({
+      node,
+      schema,
+      sources,
+      edgeTypes,
+    });
+  }
+
+
+  /**
+   * Adds new edges and deletes specified ones, then patches property changes to the api.
+   */
+  async handleSubmit(form, relationships, originalNode) {
+    const { schema } = this.state;
+
+    const changedEdges = [];
+
+    /* Checks for differences in original node and submitted form. */
+
+    // Deletes edges that are no longer present on the edited node.
+    originalNode.relationships.forEach((relationship) => {
+      const matched = relationships.find(
+        r => r.out === relationship.out
+          && r.in === relationship.in
+          && r['@class'] === relationship['@class']
+          && r.source === relationship.source,
+      );
+      if (!matched || matched.deleted) {
+        changedEdges.push(api.delete(
+          `/${relationship['@class'].toLowerCase()}/${relationship['@rid'].slice(1)}`,
+        ));
+      }
+    });
+
+    // Adds new edges that were not present on the original node.
+    relationships.forEach((relationship) => {
+      if (
+        !originalNode.relationships.find(
+          r => r.out === relationship.out
+            && r.in === relationship.in
+            && r['@class'] === relationship['@class']
+            && r.source === relationship.source,
+        )
+      ) {
+        changedEdges.push(api.post(`/${relationship['@class'].toLowerCase()}`, {
+          in: relationship.in,
+          out: relationship.out,
+          source: relationship.source,
+        }));
+      }
+    });
+
+    await Promise.all(changedEdges);
+
+    const payload = util.parsePayload(form, util.getClass(originalNode['@class'], schema).properties);
+    const { route } = util.getClass(originalNode['@class'], schema);
+
+    await api.patch(`${route}/${originalNode['@rid'].slice(1)}`, { ...payload });
+  }
+
+  /**
+   * Deletes target node.
+   */
+  async handleDeleteNode() {
+    this.handleDialogClose();
+    const { originalNode, schema } = this.state;
+    const { route } = util.getClass(originalNode['@class'], schema);
+    await api.delete(`${route}/${originalNode['@rid'].slice(1)}`);
   }
 
   /**
@@ -61,16 +131,23 @@ class EditOntologyView extends Component {
   render() {
     const {
       node,
+      schema,
+      sources,
+      edgeTypes,
     } = this.state;
 
 
-    if (node) {
+    if (node && schema) {
       return (
         <OntologyFormComponent
           variant="edit"
           node={node}
+          handleSubmit={this.handleSubmit}
           handleFinish={this.handleFinish}
           handleCancel={this.handleCancel}
+          schema={schema}
+          sources={sources}
+          edgeTypes={edgeTypes}
         />
       );
     }

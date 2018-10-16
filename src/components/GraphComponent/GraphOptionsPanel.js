@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
   Checkbox,
@@ -22,7 +22,7 @@ import config from '../../config.json';
 
 const { GRAPH_ADVANCED, GRAPH_MAIN } = config.DESCRIPTIONS;
 
-export default class GraphOptionsPanel extends Component {
+export default class GraphOptionsPanel extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -104,7 +104,11 @@ export default class GraphOptionsPanel extends Component {
           </IconButton>
           <DialogTitle className="options-title" disableTypography>
             <Typography variant="title">Graph Options</Typography>
-            <IconButton color="primary" onClick={() => this.handleHelpOpen('mainHelp')}>
+            <IconButton
+              color="primary"
+              onClick={() => this.handleHelpOpen('mainHelp')}
+              id="main-help-btn"
+            >
               <HelpIcon />
             </IconButton>
           </DialogTitle>
@@ -119,7 +123,7 @@ export default class GraphOptionsPanel extends Component {
                   value={graphOptions.nodeLabelProp}
                 >
                   <MenuItem value="">None</MenuItem>
-                  {Object.keys(propsMap.nodeProps).map((prop) => {
+                  {Object.keys(propsMap.nodeProps || {}).map((prop) => {
                     if (propsMap.nodeProps[prop]
                       && !(propsMap.nodeProps[prop].length === 1 && propsMap.nodeProps[prop].includes('null'))
                     ) {
@@ -142,7 +146,7 @@ export default class GraphOptionsPanel extends Component {
                   value={graphOptions.nodesColor}
                 >
                   <MenuItem value="">None</MenuItem>
-                  {Object.keys(propsMap.nodeProps).map((prop) => {
+                  {Object.keys(propsMap.nodeProps || {}).map((prop) => {
                     if (
                       propsMap.nodeProps[prop]
                       && propsMap.nodeProps[prop].length <= 20
@@ -235,7 +239,11 @@ export default class GraphOptionsPanel extends Component {
           <Divider />
           <div className="options-title">
             <Typography variant="title">Advanced Graph Options</Typography>
-            <IconButton onClick={() => this.handleHelpOpen('advancedHelp')} color="primary">
+            <IconButton
+              onClick={() => this.handleHelpOpen('advancedHelp')}
+              color="primary"
+              id="advanced-help-btn"
+            >
               <HelpIcon />
             </IconButton>
           </div>

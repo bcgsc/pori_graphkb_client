@@ -24,9 +24,6 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  LinearProgress,
-  Drawer,
-  CircularProgress,
   ListItem,
   ListItemText,
   Divider,
@@ -35,21 +32,19 @@ import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
-import CheckIcon from '@material-ui/icons/Check';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
 import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
-import api from '../../services/api';
 import util from '../../services/util';
 import FormTemplater from '../FormTemplater/FormTemplater';
+import NotificationDrawer from '../NotificationDrawer/NotificationDrawer';
 
-const NOTIFICATION_SPINNER_SIZE = 16;
 const DEFAULT_ORDER = [
   'name',
   'sourceId',
   'source',
   'description',
 ];
-
+const DEFAULT_NODE_CLASS = 'Disease';
 /**
  * Component for editing or adding database nodes. Is also used to add or
  * delete edges from the database. All changes are staged and not
@@ -63,9 +58,6 @@ class OntologyFormComponent extends Component {
     this.state = {
       originalNode: null,
       form: null,
-      edgeTypes: [],
-      sources: [],
-      newNodeClass: 'Disease',
       relationships: [],
       relationship: {
         '@class': '',
@@ -103,23 +95,19 @@ class OntologyFormComponent extends Component {
    * an edit variant.
    */
   async componentDidMount() {
-    const sources = await api.getSources();
-    const schema = await api.getSchema();
-    const { node } = this.props;
-    const { relationships, relationship, newNodeClass } = this.state;
+    const { node, edgeTypes, schema } = this.props;
+    const { relationships, relationship } = this.state;
 
     let originalNode = { '@rid': -1 };
-    let nodeClass = newNodeClass;
+    let nodeClass = DEFAULT_NODE_CLASS;
 
     if (node) {
       originalNode = node;
       nodeClass = node['@class'];
       relationship.out = node['@rid'];
     }
-    const editableProps = (util.getClass(nodeClass, schema)).properties;
-    const form = util.initModel(originalNode, editableProps);
 
-    const edgeTypes = api.getEdges(schema);
+    const form = util.initModel(originalNode, nodeClass, schema);
     const expandedEdgeTypes = util.expandEdges(edgeTypes);
 
     expandedEdgeTypes.forEach((type) => {
@@ -153,102 +141,7 @@ class OntologyFormComponent extends Component {
       form,
       relationships,
       originalNode,
-      sources,
-      edgeTypes,
-      editableProps,
-      newNodeClass: nodeClass,
-      schema,
     });
-  }
-
-  /**
-   * Posts new node to the api, then posts all new edges.
-   */
-  async addSubmit() {
-    const {
-      form,
-      relationships,
-      newNodeClass,
-      editableProps,
-      schema,
-    } = this.state;
-
-    const newEdges = [];
-    const payload = util.parsePayload(form, editableProps);
-    const { route } = util.getClass(newNodeClass, schema);
-    const response = await api.post(`${route}`, { ...payload });
-
-    for (let i = 0; i < relationships.length; i += 1) {
-      const relationship = relationships[i];
-      if (relationship.in === -1) {
-        relationship.in = response.result['@rid'];
-      } else {
-        relationship.out = response.result['@rid'];
-      }
-
-      newEdges.push(api.post(`/${relationship['@class'].toLowerCase()}`, {
-        in: relationship.in,
-        out: relationship.out,
-        source: relationship.source,
-      }));
-    }
-  }
-
-  /**
-   * Adds new edges and deletes specified ones, then patches property changes to the api.
-   */
-  async editSubmit() {
-    const {
-      form,
-      originalNode,
-      relationships,
-      editableProps,
-      schema,
-    } = this.state;
-
-    const changedEdges = [];
-
-    /* Checks for differences in original node and submitted form. */
-
-    // Deletes edges that are no longer present on the edited node.
-    originalNode.relationships.forEach((initRelationship) => {
-      const matched = relationships.find(
-        r => r.out === initRelationship.out
-          && r.in === initRelationship.in
-          && r['@class'] === initRelationship['@class']
-          && r.source === initRelationship.source,
-      );
-      if (!matched || matched.deleted) {
-        changedEdges.push(api.delete(
-          `/${initRelationship['@class'].toLowerCase()}/${initRelationship['@rid'].slice(1)}`,
-        ));
-      }
-    });
-
-    // Adds new edges that were not present on the original node.
-    relationships.forEach((currRelationship) => {
-      if (
-        !originalNode.relationships.find(
-          r => r.out === currRelationship.out
-            && r.in === currRelationship.in
-            && r['@class'] === currRelationship['@class']
-            && r.source === currRelationship.source,
-        )
-      ) {
-        changedEdges.push(api.post(`/${currRelationship['@class'].toLowerCase()}`, {
-          in: currRelationship.in,
-          out: currRelationship.out,
-          source: currRelationship.source,
-        }));
-      }
-    });
-
-    await Promise.all(changedEdges);
-
-    const payload = util.parsePayload(form, editableProps);
-    const { route } = util.getClass(originalNode['@class'], schema);
-
-    await api.patch(`${route}/${originalNode['@rid'].slice(1)}`, { ...payload });
   }
 
   /**
@@ -265,25 +158,18 @@ class OntologyFormComponent extends Component {
    */
   async handleClassChange(e) {
     const { form, schema } = this.state;
-    const editableProps = (util.getClass(e.target.value, schema)).properties;
-    this.setState({
-      form: util.initModel(form, editableProps),
-      editableProps,
-      newNodeClass: e.target.value,
-    });
+    this.setState({ form: util.initModel(form, e.target.value, schema) });
   }
 
   /**
-   * Deletes target node.
-   */
+ * Deletes target node.
+ */
   async handleDeleteNode() {
     this.setState({ notificationDrawerOpen: true, loading: true });
     this.handleDialogClose();
-    const { originalNode, schema } = this.state;
-    const { route } = util.getClass(originalNode['@class'], schema);
-    await api.delete(`${route}/${originalNode['@rid'].slice(1)}`);
     this.setState({ loading: false });
   }
+
 
   /**
    * Closes node deletion dialog.
@@ -439,16 +325,11 @@ class OntologyFormComponent extends Component {
    */
   async handleSubmit(e) {
     e.preventDefault();
-    const { variant } = this.props;
+    const { form, relationships, originalNode } = this.state;
+    const { handleSubmit } = this.props;
     this.setState({ loading: true, notificationDrawerOpen: true });
 
-    if (!window.Cypress) {
-      if (variant === 'edit') {
-        await this.editSubmit();
-      } else {
-        await this.addSubmit();
-      }
-    }
+    await handleSubmit(form, relationships, originalNode);
     this.setState({ loading: false });
   }
 
@@ -482,6 +363,10 @@ class OntologyFormComponent extends Component {
     this.setState({ form, deletedSubsets });
   }
 
+  /**
+   * Reverts a subset that is staged for deletion.
+   * @param {string} subset - deleted subset to be reverted.
+   */
   handleSubsetUndo(subset) {
     const { form, deletedSubsets } = this.state;
     deletedSubsets.splice(deletedSubsets.indexOf(subset), 1);
@@ -493,21 +378,19 @@ class OntologyFormComponent extends Component {
     const {
       form,
       originalNode,
-      sources,
-      edgeTypes,
-      editableProps,
       relationship,
       relationships,
       subset,
       deleteDialog,
-      newNodeClass,
       errorFlag,
       loading,
       notificationDrawerOpen,
       deletedSubsets,
-      schema,
     } = this.state;
     const {
+      sources,
+      schema,
+      edgeTypes,
       variant,
       handleFinish,
       handleCancel,
@@ -515,6 +398,8 @@ class OntologyFormComponent extends Component {
 
     // Wait for form to get initialized
     if (!form) return null;
+
+    const editableProps = (util.getClass(form['@class'], schema)).properties;
 
     // Validates form
     let formIsInvalid = false;
@@ -527,18 +412,6 @@ class OntologyFormComponent extends Component {
         }
       }
     });
-
-    const sortFields = (a, b) => {
-      if (DEFAULT_ORDER.indexOf(b.name) === -1) {
-        return -1;
-      }
-      if (DEFAULT_ORDER.indexOf(a.name) === -1) {
-        return 1;
-      }
-      return DEFAULT_ORDER.indexOf(a.name) < DEFAULT_ORDER.indexOf(b.name)
-        ? -1
-        : 1;
-    };
 
     const dialog = (
       <Dialog
@@ -608,39 +481,14 @@ class OntologyFormComponent extends Component {
       );
     };
 
-    const drawer = (
-      <Drawer
-        open={notificationDrawerOpen}
-        onClose={handleFinish}
-        anchor="bottom"
-      >
-        <div className="notification-drawer">
-          <div className="form-linear-progress">
-            <LinearProgress
-              color="secondary"
-              variant={loading ? 'indeterminate' : 'determinate'}
-              value={loading ? 0 : 100}
-            />
-          </div>
-          <Button
-            color="secondary"
-            onClick={handleFinish}
-            disabled={loading}
-            variant="raised"
-            size="large"
-          >
-            {loading
-              ? <CircularProgress size={NOTIFICATION_SPINNER_SIZE} color="secondary" />
-              : <CheckIcon />
-            }
-          </Button>
-        </div>
-      </Drawer>
-    );
     return (
       <div className="node-form-wrapper">
         {dialog}
-        {drawer}
+        <NotificationDrawer
+          open={notificationDrawerOpen}
+          loading={loading}
+          handleFinish={handleFinish}
+        />
         <form onSubmit={this.handleSubmit}>
           <div className="form-grid">
             <Paper className="form-header" elevation={4}>
@@ -680,12 +528,12 @@ class OntologyFormComponent extends Component {
                       <React.Fragment>
                         <ListItem>
                           <ResourceSelectComponent
-                            value={newNodeClass}
+                            value={form['@class']}
                             onChange={this.handleClassChange}
                             name="newNodeClass"
                             label="Class"
                             variant="filled"
-                            resources={api.getOntologies(schema)}
+                            resources={util.getOntologies(schema)}
                           >
                             {resource => (
                               <MenuItem key={resource.name} value={resource.name}>
@@ -703,7 +551,7 @@ class OntologyFormComponent extends Component {
                     schema={schema}
                     onChange={this.handleFormChange}
                     excludedProps={['subsets']}
-                    sort={sortFields}
+                    sort={util.sortFields(DEFAULT_ORDER)}
                   />
                 </List>
               </Paper>
@@ -913,16 +761,23 @@ class OntologyFormComponent extends Component {
  * @property {function} handleCancel - parent method triggered when form action is cancelled.
  */
 OntologyFormComponent.propTypes = {
+  sources: PropTypes.array,
+  schema: PropTypes.object.isRequired,
+  edgeTypes: PropTypes.array,
   node: PropTypes.object,
   variant: PropTypes.string,
   handleFinish: PropTypes.func,
   handleCancel: PropTypes.func,
+  handleSubmit: PropTypes.func,
 };
 
 OntologyFormComponent.defaultProps = {
+  sources: [],
+  edgeTypes: [],
   variant: 'edit',
   handleFinish: null,
   handleCancel: null,
+  handleSubmit: null,
   node: null,
 };
 

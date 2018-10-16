@@ -261,18 +261,23 @@ describe('util methods test', () => {
   });
 
   it('initModel', () => {
-    const testClass = [
-      { name: 'name', type: 'string' },
-      { name: 'source', type: 'embeddedset' },
-      { name: 'alias', type: 'link' },
-      { name: 'num', type: 'integer' },
-    ];
+    const testSchema = {
+      testClass: {
+        properties: [
+          { name: 'name', type: 'string' },
+          { name: 'source', type: 'embeddedset' },
+          { name: 'alias', type: 'link' },
+          { name: 'num', type: 'integer' },
+        ],
+      },
+    };
+
 
     const testModel = {
       name: 'hello',
     };
-    const result = util.initModel(testModel, testClass);
-    expect(Object.keys(result).length).to.eq(7);
+    const result = util.initModel(testModel, 'testClass', testSchema);
+    expect(Object.keys(result).length).to.eq(8); // + 2 fields for link, + 1 for @class
     expect(result.name).to.eq('hello');
     expect(Array.isArray(result.source));
     expect(result.source.length).to.eq(0);

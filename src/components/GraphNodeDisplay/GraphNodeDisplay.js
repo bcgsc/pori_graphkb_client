@@ -111,7 +111,7 @@ class GraphNodeDisplay extends PureComponent {
  * @property {string} filter - current filter string value.
  */
 GraphNodeDisplay.propTypes = {
-  node: PropTypes.object.isRequired,
+  node: PropTypes.object,
   handleClick: PropTypes.func,
   color: PropTypes.string,
   applyDrag: PropTypes.func,
@@ -122,6 +122,7 @@ GraphNodeDisplay.propTypes = {
 };
 
 GraphNodeDisplay.defaultProps = {
+  node: null,
   handleClick: null,
   color: '#26328C',
   labelKey: 'name',

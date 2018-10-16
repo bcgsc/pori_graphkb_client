@@ -373,7 +373,7 @@ class DataView extends Component {
         handleDetailDrawerOpen={this.handleDetailDrawerOpen}
         handleDetailDrawerClose={this.handleDetailDrawerClose}
         handleTableRedirect={this.handleTableRedirect}
-        edges={edges}
+        edgeTypes={edges}
         detail={detail}
         allProps={allProps}
         filteredSearch={filteredSearch}

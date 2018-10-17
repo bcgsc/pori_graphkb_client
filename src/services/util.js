@@ -397,7 +397,7 @@ const initModel = (model, kbClass, schema) => {
     const defaultValue = property.default;
     switch (type) {
       case 'embeddedset':
-        newModel[name] = model[name] || [];
+        newModel[name] = model[name] ? model[name].slice() : [];
         break;
       case 'link':
         newModel[name] = (model[name] || '').name || '';
@@ -417,7 +417,9 @@ const initModel = (model, kbClass, schema) => {
         break;
       case 'embedded':
         if (linkedClass && linkedClass.properties) {
-          newModel[name] = model[name] || initModel({}, property.linkedClass.properties);
+          newModel[name] = model[name]
+            ? Object.assign({}, model[name])
+            : initModel({}, property.linkedClass.properties);
         }
         break;
       default:

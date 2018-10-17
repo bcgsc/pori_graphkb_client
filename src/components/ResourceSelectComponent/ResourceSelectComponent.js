@@ -102,7 +102,7 @@ ResourceSelectComponent.defaultProps = {
   label: '',
   required: false,
   error: false,
-  id: '',
+  id: undefined,
   dense: false,
 };
 

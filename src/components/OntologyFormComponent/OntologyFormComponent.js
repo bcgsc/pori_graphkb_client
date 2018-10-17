@@ -109,7 +109,6 @@ class OntologyFormComponent extends Component {
 
     const form = util.initModel(originalNode, nodeClass, schema);
     const expandedEdgeTypes = util.expandEdges(edgeTypes);
-
     expandedEdgeTypes.forEach((type) => {
       if (originalNode[type]) {
         originalNode[type].forEach((edge) => {
@@ -575,7 +574,10 @@ class OntologyFormComponent extends Component {
                       InputProps={{
                         endAdornment: (
                           <InputAdornment position="end">
-                            <IconButton color="primary" onClick={this.handleSubsetAdd}>
+                            <IconButton
+                              color="primary"
+                              onClick={this.handleSubsetAdd}
+                            >
                               <AddIcon />
                             </IconButton>
                           </InputAdornment>
@@ -626,6 +628,7 @@ class OntologyFormComponent extends Component {
                                     onClick={() => this.handleRelationshipDelete(i)}
                                     style={{ position: 'unset' }}
                                     disableRipple
+                                    className="delete-btn"
                                   >
                                     <CloseIcon color="error" />
                                   </IconButton>)
@@ -713,6 +716,7 @@ class OntologyFormComponent extends Component {
                               resources={sources}
                               error={errorFlag}
                               dense
+                              id="relationship-source"
                             />
                           </TableCell>
                         </TableRow>

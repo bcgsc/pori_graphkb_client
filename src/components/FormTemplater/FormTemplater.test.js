@@ -10,32 +10,43 @@ describe('<FormTemplater />', () => {
     name: {
       name: 'name',
       type: 'string',
+      mandatory: true,
     },
     otherProp: {
       name: 'otherProp',
       type: 'integer',
+      description: 'blargh',
+      max: 10,
+      min: 1,
+      mandatory: true,
     },
     floatProp: {
       name: 'floatProp',
       type: 'long',
+      description: 'blargh',
     },
     boolProp: {
       name: 'bool monkey madness',
       type: 'boolean',
+      description: 'blargh',
     },
     choiceProp: {
       name: 'choices',
       type: 'string',
       choices: ['choice one', 'blargh', 'node js interactive', 'sonic'],
+      mandatory: true,
     },
     linkProp: {
       name: 'linkProp',
       type: 'link',
+      description: 'blargh',
     },
     linkedClassProp: {
       name: 'linkedClassProp',
       type: 'link',
       linkedClass: { name: 'V', route: '/v' },
+      description: 'blargh',
+      mandatory: true,
     },
     embeddedProp: {
       name: 'embeddedProp',
@@ -83,6 +94,7 @@ describe('<FormTemplater />', () => {
         kbClass={mockClass}
         onChange={() => { }}
         fieldComponent="div"
+        ignoreRequired
       />,
     );
     expect(wrapper.children()).to.have.lengthOf(Object.keys(mockClass).length);

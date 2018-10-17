@@ -169,6 +169,22 @@ describe('<GraphComponent />', () => {
     );
     expect(wrapper.find('circle.node')).to.have.lengthOf(4);
     wrapper.find('circle.node').first().simulate('click');
-    wrapper.find('#close').simulate('click');
+  });
+
+  it('svg click handling', () => {
+    wrapper = mount(
+      <GraphComponent
+        data={mockData}
+        handleDetailDrawerOpen={() => { }}
+        handleDetailDrawerClose={() => { }}
+        handleTableRedirect={() => { }}
+        handleNewColumns={() => { }}
+        handleClick={() => { }}
+        edgeTypes={['AliasOf']}
+        localStorageKey="test"
+      />,
+    );
+    wrapper.find('div.svg-wrapper svg').simulate('click');
+    expect(!wrapper.state().actionsNode);
   });
 });

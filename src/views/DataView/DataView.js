@@ -329,7 +329,6 @@ class DataView extends Component {
       moreResults,
       filteredSearch,
       edges,
-      /* eslint-disable-next-line */
       detailEdge,
       completedNext,
       storedFilters,
@@ -351,7 +350,6 @@ class DataView extends Component {
         handleNodeEditStart={this.handleNodeEditStart}
       />
     );
-
     const GraphWithProps = () => (
       <GraphComponent
         data={data}
@@ -405,7 +403,7 @@ class DataView extends Component {
             </Button>
           )}
         />
-        {Object.keys(data).length !== 0
+        {Object.keys(data).length !== 0 && qs.stringify(filteredSearch) && edges
           ? (
             <Switch>
               <Route exact path="/data/table" render={TableWithProps} />

@@ -532,7 +532,6 @@ class OntologyFormComponent extends Component {
                             onChange={this.handleClassChange}
                             name="newNodeClass"
                             label="Class"
-                            variant="filled"
                             resources={util.getOntologies(schema)}
                           >
                             {resource => (

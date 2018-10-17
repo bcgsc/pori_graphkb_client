@@ -297,7 +297,7 @@ const getPallette = (n, type) => {
  * @param {Object} data - graph data to be stored.
  */
 const loadGraphData = (search, data) => {
-  const newData = Object.assign({ filteredSearch: search }, data);
+  const newData = Object.assign({ localStorageKey: search }, data);
   try {
     localStorage.setItem(GRAPH_OBJECTS_KEY, JSON.stringify(jc.decycle(newData)));
   } catch (e) {
@@ -313,7 +313,7 @@ const getGraphData = (search) => {
   const data = localStorage.getItem(GRAPH_OBJECTS_KEY);
   if (data) {
     const obj = jc.retrocycle(JSON.parse(data));
-    if (obj.filteredSearch === search) {
+    if (obj.localStorageKey === search) {
       return obj;
     }
   }

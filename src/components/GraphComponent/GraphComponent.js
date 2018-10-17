@@ -126,7 +126,6 @@ class GraphComponent extends Component {
     } = this.state;
     let { expandable } = this.state;
     this.propsMap = new PropsMap();
-
     // Defines what edge keys to look for.
     const expandedEdgeTypes = util.expandEdges(edgeTypes);
     let validDisplayed = displayed;
@@ -137,7 +136,6 @@ class GraphComponent extends Component {
     this.setState({
       expandedEdgeTypes,
       allProps,
-      localStorageKey,
     }, () => {
       this.handleResize();
       window.addEventListener('resize', this.handleResize);
@@ -270,8 +268,8 @@ class GraphComponent extends Component {
       graphObjects,
       nodes,
       links,
-      localStorageKey,
     } = this.state;
+    const { localStorageKey } = this.props;
     // remove all event listeners
     svg.call(d3.zoom()
       .on('zoom', null))
@@ -406,10 +404,8 @@ class GraphComponent extends Component {
    * @param {Object} node - d3 simulation node whose neighbors were requestsed.
    */
   loadNeighbors(node) {
-    const {
-      localStorageKey,
-      expandExclusions,
-    } = this.state;
+    const { expandExclusions } = this.state;
+    const { localStorageKey } = this.props;
     let {
       nodes,
       links,
@@ -809,8 +805,8 @@ class GraphComponent extends Component {
       expandedEdgeTypes,
       expandable,
       allProps,
-      localStorageKey,
     } = this.state;
+    const { localStorageKey } = this.props;
 
     const { handleDetailDrawerClose } = this.props;
     if (nodes.length === 1) return;
@@ -1373,6 +1369,7 @@ GraphComponent.propTypes = {
   allProps: PropTypes.array,
   edgeTypes: PropTypes.array,
   displayed: PropTypes.array,
+  localStorageKey: PropTypes.string,
 };
 
 GraphComponent.defaultProps = {
@@ -1381,6 +1378,7 @@ GraphComponent.defaultProps = {
   allProps: [],
   edgeTypes: [],
   displayed: [],
+  localStorageKey: '',
 };
 
 export default GraphComponent;

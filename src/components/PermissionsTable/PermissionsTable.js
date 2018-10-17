@@ -24,8 +24,8 @@ function PermissionsTable(props) {
     handleCheckAll,
     handleChange,
   } = props;
-
-  const permissionKeys = Object.keys(userGroup.permissions)
+  const { permissions } = (userGroup || {});
+  const permissionKeys = Object.keys(permissions || {})
     .sort((a, b) => a > b ? 1 : -1);
 
   const list = (
@@ -54,7 +54,7 @@ function PermissionsTable(props) {
       <TableBody>
         {permissionKeys
           .map((permission) => {
-            const isEdge = schema[permission].inherits.includes('E');
+            const isEdge = (schema[permission].inherits || []).includes('E');
             const isAbstract = util.isAbstract(permission, schema);
             return (
               <TableRow key={permission} className="permissions-view">

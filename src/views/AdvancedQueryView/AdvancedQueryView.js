@@ -65,8 +65,10 @@ class AdvancedQueryView extends Component {
     const schema = await api.getSchema();
     const ontologyTypes = [{ name: 'Ontology', properties: null, route: 'ontologies' }];
     ontologyTypes.push(...util.getOntologies(schema));
-    const form = util.initModel({}, 'Ontology', schema);
+
+    const form = util.initModel({}, 'Ontology', schema, config.ONTOLOGY_QUERY_PARAMS);
     form.subsets = '';
+
     this.setState({
       ontologyTypes,
       form,
@@ -116,7 +118,7 @@ class AdvancedQueryView extends Component {
    */
   async handleClassChange(e) {
     const { form, schema } = this.state;
-    const newForm = util.initModel(form, e.target.value || 'Ontology', schema);
+    const newForm = util.initModel(form, e.target.value || 'Ontology', schema, config.ONTOLOGY_QUERY_PARAMS);
     newForm.subsets = Array.isArray(newForm.subsets) ? newForm.subsets.join('') : newForm.subsets || '';
     this.setState({ form: newForm });
   }

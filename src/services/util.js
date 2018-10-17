@@ -381,10 +381,11 @@ const getClass = (className, schema) => {
  * @param {string} kbClass - Knowledge base class key.
  * @param {Object} schema - Knowledge base schema.
  */
-const initModel = (model, kbClass, schema) => {
+const initModel = (model, kbClass, schema, extraProps = []) => {
   const editableProps = schema && kbClass
     ? (getClass(kbClass, schema)).properties
     : [];
+  editableProps.push(...extraProps);
   const newModel = Object.assign({}, model);
   newModel['@class'] = kbClass;
   Object.values(editableProps).forEach((property) => {

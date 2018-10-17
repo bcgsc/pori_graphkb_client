@@ -225,10 +225,6 @@ class DataView extends Component {
           completedNext: false,
         });
 
-        const nextData = await next();
-
-        this.processData(nextData, schema);
-
         let route = '/ontologies';
         const omitted = [];
 
@@ -237,6 +233,9 @@ class DataView extends Component {
           omitted.push('@class');
         }
 
+        const nextData = await next();
+
+        this.processData(nextData, schema);
         this.prepareNextPagination(route, filteredSearch, nextData, omitted);
 
         this.setState({

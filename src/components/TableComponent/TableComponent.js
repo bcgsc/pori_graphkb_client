@@ -173,12 +173,11 @@ class TableComponent extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const { sortedData, page } = this.state;
-    const { detail } = this.state;
     const nextPageData = this.pageData(nextState.page, nextState.sortedData).map(n => n['@rid']);
     const currPageData = this.pageData(page, sortedData).map(n => n['@rid']);
     return nextPageData.some(n => !currPageData.includes(n))
       || nextState.sortedData.length > sortedData.length
-      || detail !== nextProps.detail;
+      || (undefined !== nextProps.detail);
   }
 
   /**
@@ -623,7 +622,7 @@ class TableComponent extends Component {
         <MenuItem
           onClick={() => {
             this.handleClose();
-            this.handleChange({ target: { name: columnSelect, value: true } });
+            this.handleChange({ target: { name: 'columnSelect', value: true } });
           }}
           id="column-edit"
         >
@@ -635,7 +634,7 @@ class TableComponent extends Component {
     const columnDialog = (
       <Dialog
         open={columnSelect}
-        onClose={() => this.handleChange({ target: { name: columnSelect, value: false } })}
+        onClose={() => this.handleChange({ target: { name: 'columnSelect', value: false } })}
         classes={{ paper: 'column-dialog' }}
       >
         <DialogTitle id="column-dialog-title">
@@ -681,7 +680,7 @@ class TableComponent extends Component {
           ))}
         </DialogContent>
         <DialogActions id="column-dialog-actions">
-          <Button onClick={() => this.handleChange({ target: { name: columnSelect, value: false } })} color="primary">
+          <Button onClick={() => this.handleChange({ target: { name: 'columnSelect', value: false } })} color="primary">
             Done
           </Button>
         </DialogActions>
@@ -736,7 +735,12 @@ class TableComponent extends Component {
                 && columnFilterExclusions[tempFilterIndex].length === 0 ? 'Deselect All' : 'Select All'}
               />
             </ListItem>
-            <List component="div" dense disablePadding className="filter-exclusions-list">
+            <List
+              component="div"
+              dense
+              disablePadding
+              className="filter-exclusions-list"
+            >
               {filterOptions
                 .filter((o) => {
                   const filter = columnFilterStrings[tempFilterIndex];
@@ -962,7 +966,6 @@ class TableComponent extends Component {
  * checked.
  * @property {function} handleNodeEditStart - Method triggered when user
  * requests to edit a node.
- * @property {function} handleClick - Method triggered when a row is clicked.
  * @property {function} handleCheckbox - Method triggered when a single row is
  * checked.
  * @property {function} handleHideSelected - Method for hiding selected rows
@@ -988,18 +991,18 @@ class TableComponent extends Component {
 TableComponent.propTypes = {
   data: PropTypes.object.isRequired,
   detail: PropTypes.object,
-  displayed: PropTypes.array.isRequired,
+  displayed: PropTypes.array,
   handleCheckAll: PropTypes.func.isRequired,
   handleCheckbox: PropTypes.func.isRequired,
   handleHideSelected: PropTypes.func.isRequired,
   handleShowAllNodes: PropTypes.func.isRequired,
   handleGraphRedirect: PropTypes.func.isRequired,
+  handleDetailDrawerOpen: PropTypes.func.isRequired,
   handleSubsequentPagination: PropTypes.func,
-  handleDetailDrawerOpen: PropTypes.func,
   hidden: PropTypes.array,
   allProps: PropTypes.array,
   moreResults: PropTypes.bool,
-  completedNext: PropTypes.bool.isRequired,
+  completedNext: PropTypes.bool,
   storedFilters: PropTypes.array,
 };
 
@@ -1009,8 +1012,9 @@ TableComponent.defaultProps = {
   hidden: [],
   storedFilters: [],
   handleSubsequentPagination: null,
-  handleDetailDrawerOpen: null,
   moreResults: false,
+  displayed: [],
+  completedNext: true,
 };
 
 export default TableComponent;

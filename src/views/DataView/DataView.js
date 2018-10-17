@@ -100,7 +100,6 @@ class DataView extends Component {
     this.processData(data, schema);
     this.prepareNextPagination(route, filteredSearch, data, omitted);
     Ontology.loadEdges(api.getEdges(schema));
-
     this.setState({
       schema,
       filteredSearch,
@@ -114,7 +113,7 @@ class DataView extends Component {
     if (!data) {
       data = {};
     }
-    if (!allProps) {
+    if (!allProps || allProps.length === 0) {
       allProps = ['@rid', '@class'];
     }
 
@@ -122,6 +121,7 @@ class DataView extends Component {
       allProps = api.collectOntologyProps(ontologyTerm, allProps, schema);
       data[ontologyTerm['@rid']] = new Ontology(ontologyTerm);
     });
+
     this.setState({ data, allProps });
   }
 

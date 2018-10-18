@@ -63,8 +63,8 @@ const theme = createMuiTheme({
       main: '#d32f2f',
     },
     text: {
-      primary: 'rgba(0,0,0,0.7)',
-      secondary: 'rgba(0,0,0,0.54)',
+      primary: 'rgba(0, 0, 0, 0.7)',
+      secondary: 'rgba(0, 0, 0, 0.54)',
     },
   },
   typography: {

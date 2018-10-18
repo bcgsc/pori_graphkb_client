@@ -171,6 +171,11 @@ class TableComponent extends Component {
     return null;
   }
 
+  /**
+   * Lifecycle method for determining whether component re renders.
+   * @param {Object} nextProps - Incoming props object.
+   * @param {Object} nextState - Incoming state object.
+   */
   shouldComponentUpdate(nextProps, nextState) {
     const { sortedData, page } = this.state;
     const nextPageData = this.pageData(nextState.page, nextState.sortedData).map(n => n['@rid']);
@@ -190,35 +195,6 @@ class TableComponent extends Component {
       tableHeadRefs[i] = ReactDOM.findDOMNode(node);
       this.setState({ tableHeadRefs });
     }
-  }
-
-  pageData(page, data) {
-    const {
-      hidden,
-    } = this.props;
-    const {
-      columnFilterExclusions,
-      rowsPerPage,
-      tableColumns,
-    } = this.state;
-    const filteredData = data
-      .filter(n => !hidden.includes(n.getId()))
-      .filter(n => !columnFilterExclusions.some((exclusions, i) => {
-        let cell = n[tableColumns[i].id] === undefined
-          || n[tableColumns[i].id] === null
-          ? 'null' : n[tableColumns[i].id];
-
-        if (cell && cell !== 'null' && tableColumns[i].sortBy) {
-          cell = cell[tableColumns[i].sortBy];
-        }
-
-        if (exclusions.includes(util.castToExist(cell))) {
-          return true;
-        }
-        return false;
-      }));
-    return filteredData
-      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   }
 
   /**
@@ -293,6 +269,41 @@ class TableComponent extends Component {
     });
   }
 
+
+  /**
+   * Parses current page data to be displayed.
+   * @param {number} page - page number.
+   * @param {Array} data - query results data map.
+   */
+  pageData(page, data) {
+    const {
+      hidden,
+    } = this.props;
+    const {
+      columnFilterExclusions,
+      rowsPerPage,
+      tableColumns,
+    } = this.state;
+    const filteredData = data
+      .filter(n => !hidden.includes(n.getId()))
+      .filter(n => !columnFilterExclusions.some((exclusions, i) => {
+        let cell = n[tableColumns[i].id] === undefined
+          || n[tableColumns[i].id] === null
+          ? 'null' : n[tableColumns[i].id];
+
+        if (cell && cell !== 'null' && tableColumns[i].sortBy) {
+          cell = cell[tableColumns[i].sortBy];
+        }
+
+        if (exclusions.includes(util.castToExist(cell))) {
+          return true;
+        }
+        return false;
+      }));
+    return filteredData
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  }
+
   /**
    * Updates currently editing filter string.
    * @param {Event} e - User input event.
@@ -303,6 +314,10 @@ class TableComponent extends Component {
     this.setState({ columnFilterStrings });
   }
 
+  /**
+   * General state update handler.
+   * @param {Event} e - user change event.
+   */
   handleChange(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
@@ -554,7 +569,6 @@ class TableComponent extends Component {
       }));
     const pageData = filteredData
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-
     const menu = (
       <Menu
         anchorEl={anchorEl}

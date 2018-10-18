@@ -33,10 +33,17 @@ export default class GraphOptionsPanel extends PureComponent {
     this.handleHelpClose = this.handleHelpClose.bind(this);
   }
 
+  /**
+   * Opens help drawer.
+   * @param {['mainHelp' | 'advancedHelp']} key - help type state key.
+   */
   handleHelpOpen(key) {
     this.setState({ [key]: true });
   }
 
+  /**
+   * Closes both help drawers.
+   */
   handleHelpClose() {
     this.setState({ mainHelp: false, advancedHelp: false });
   }

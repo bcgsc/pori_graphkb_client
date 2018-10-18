@@ -14,7 +14,6 @@ import util from '../../services/util';
  * query page.
  */
 class AddOntologyView extends Component {
-  /* eslint-disable */
   constructor(props) {
     super(props);
     this.state = {
@@ -26,6 +25,9 @@ class AddOntologyView extends Component {
     this.handleFinish = this.handleFinish.bind(this);
   }
 
+  /**
+   * Collects schema, sources, and knowledgebase edge types.
+   */
   async componentDidMount() {
     try {
       const schema = await api.getSchema();
@@ -40,8 +42,8 @@ class AddOntologyView extends Component {
   }
 
   /**
-  * Posts new node to the api, then posts all new edges.
-  */
+   * Posts new node to the api, then posts all new edges.
+   */
   async handleSubmit(form, relationships) {
     const { schema } = this.state;
 
@@ -67,6 +69,9 @@ class AddOntologyView extends Component {
     await Promise.all(newEdges);
   }
 
+  /**
+   * Navigates user back to query page.
+   */
   handleFinish() {
     const { history } = this.props;
     history.push('/query');

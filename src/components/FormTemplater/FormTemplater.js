@@ -118,7 +118,6 @@ function FormTemplater(props) {
               </Tooltip>
             ) : undefined}
           />
-
         </ListItem>
       );
     }
@@ -286,6 +285,8 @@ function FormTemplater(props) {
  * @namespace
  * @property {Object} schema - Knowledgebase db schema.
  * @property {function} onChange - Model updating function
+ * @property {function} onClassChange - Function for updating embedded prop
+ * classes.
  * @property {Object} model - Model object.
  * @property {Array} kbClass - Form object schema.
  * @property {Array} excludedProps - List of propstrings to be excluded from
@@ -296,6 +297,8 @@ function FormTemplater(props) {
  * parent component.
  * @property {function} sort - Sorting function for form fields.
  * @property {Object} pairs - group definitions for grid.
+ * @property {bool} ignoreRequired - if true, form does not apply required
+ * state to mandatory fields.
  */
 FormTemplater.propTypes = {
   schema: PropTypes.object.isRequired,

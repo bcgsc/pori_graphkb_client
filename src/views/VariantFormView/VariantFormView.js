@@ -17,6 +17,9 @@ class VariantFormView extends Component {
     this.submitVariant = this.submitVariant.bind(this);
   }
 
+  /**
+   * Loads api schema into component state.
+   */
   async componentDidMount() {
     const schema = await api.getSchema();
     this.setState({ schema });

@@ -242,6 +242,7 @@ describe('<TableComponent />', () => {
     wrapper.find('div[role="document"] ul[role="menu"] li#column-edit').simulate('click');
     wrapper.find('#name input[type="checkbox"]').simulate('change');
     expect(TableComponent.prototype.handleColumnCheck).to.have.property('callCount', 1);
+    wrapper.find('input[type="radio"]').simulate('change');
     wrapper.find('#column-dialog-actions button').simulate('click');
     expect(wrapper.state().tableColumns.find(t => t.id === 'name'))
       .to.have.property('checked', false);

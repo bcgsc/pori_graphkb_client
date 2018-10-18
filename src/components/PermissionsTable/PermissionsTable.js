@@ -15,6 +15,10 @@ import config from '../../config.json';
 
 const { PERMISSIONS } = config;
 
+/**
+ * Table to display permissions state for a certain user group.
+ * @param {Object} props - Component props.
+ */
 function PermissionsTable(props) {
   const {
     userGroup,
@@ -94,6 +98,15 @@ function PermissionsTable(props) {
   );
 }
 
+/**
+ * @namespace
+ * @property {Object} userGroup - Input usergroup object.
+ * @property {boolean} disabled - If true, all table inputs are disabled.
+ * @property {string} stateKey - Parent component state key for userobject.
+ * @property {Object} schema - Knowledgebase db schema.
+ * @property {function} handleCheckAll - Handler for when all checkbox is changed.
+ * @property {function} handleChange - Handler for when single checkbox is changed.
+ */
 PermissionsTable.propTypes = {
   userGroup: PropTypes.object,
   disabled: PropTypes.bool,

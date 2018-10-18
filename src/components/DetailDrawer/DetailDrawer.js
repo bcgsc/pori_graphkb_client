@@ -1,8 +1,8 @@
 /**
  * @module /components/OntologyDetailComponent
  */
-
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './DetailDrawer.css';
 import {
   Typography,
@@ -42,6 +42,10 @@ class DetailDrawer extends Component {
     this.handleLinkExpand = this.handleLinkExpand.bind(this);
   }
 
+  /**
+   * Closes all expanded list properties.
+   * @param {Object} prevProps - Component's previous props.
+   */
   componentDidUpdate(prevProps) {
     const { node: prevNode } = prevProps;
     const { node } = this.props;
@@ -58,6 +62,11 @@ class DetailDrawer extends Component {
     }
   }
 
+  /**
+   * Formats specific identifier properties of input ontology.
+   * @param {Object} node - Ontology being displayed.
+   * @param {boolean} nested - Nested flag.
+   */
   formatIdentifiers(node, nested) {
     if (!node) return null;
     const { schema } = this.props;
@@ -135,6 +144,12 @@ class DetailDrawer extends Component {
     );
   }
 
+  /**
+   * Formats a key/value pair as a collapsible list item.
+   * @param {string} key - property key.
+   * @param {any} value - property value.
+   * @param {boolean} isStatic - if true, locks list item open.
+   */
   formatLongValue(key, value, isStatic) {
     const { opened } = this.state;
     const listItemProps = isStatic === true
@@ -167,6 +182,10 @@ class DetailDrawer extends Component {
     );
   }
 
+  /**
+   * Formats non-identifier, non-relationship properties.
+   * @param {Object} node - Ontology being displayed.
+   */
   formatOtherProps(node) {
     if (!node) return null;
     const { opened } = this.state;
@@ -250,6 +269,10 @@ class DetailDrawer extends Component {
       : null;
   }
 
+  /**
+   * Formats ontology relationships.
+   * @param {Object} node - Ontology being displayed.
+   */
   formatRelationships(node) {
     if (!node) return null;
     const { linkOpen } = this.state;
@@ -307,6 +330,10 @@ class DetailDrawer extends Component {
     );
   }
 
+  /**
+   * Toggles collapsed list item.
+   * @param {string} key - list item key.
+   */
   handleExpand(key) {
     const { opened } = this.state;
     if (opened.includes(key)) {
@@ -317,6 +344,10 @@ class DetailDrawer extends Component {
     this.setState({ opened });
   }
 
+  /**
+   * Toggles collapsed link list item.
+   * @param {string} key - list item key.
+   */
   handleLinkExpand(key) {
     const { linkOpen, opened } = this.state;
     if (linkOpen === key) {
@@ -388,5 +419,28 @@ class DetailDrawer extends Component {
     );
   }
 }
+
+/**
+ * @namespace
+ * @property {Object} schema - Knowledgebase schema object.
+ * @property {Object} node - Ontology to be displayed in drawer.
+ * @property {function} onClose - Function triggered on @material-ui/Drawer onClose event.
+ * @property {function} handleNodeEditStart - Function triggered on node edit button click.
+ * @property {bool} isEdge - Flag for edge classes.
+ */
+DetailDrawer.propTypes = {
+  schema: PropTypes.object.isRequired,
+  node: PropTypes.object,
+  onClose: PropTypes.func,
+  isEdge: PropTypes.bool,
+  handleNodeEditStart: PropTypes.func,
+};
+
+DetailDrawer.defaultProps = {
+  node: null,
+  onClose: null,
+  isEdge: false,
+  handleNodeEditStart: PropTypes.func,
+};
 
 export default DetailDrawer;

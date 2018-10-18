@@ -68,8 +68,14 @@ class VariantParserComponent extends Component {
     this.setState({ shorthand: value });
     const classSchema = util.getClass('PositionalVariant', schema).properties;
     if (!value) {
+      const newVariant = util.initModel({}, 'PositionalVariant', schema);
+      Object.keys(newVariant).forEach((k) => {
+        if (typeof newVariant[k] === 'object' && newVariant[k]['@class']) {
+          newVariant[k]['@class'] = '';
+        }
+      });
       this.setState({
-        variant: util.initModel({}, 'PositionalVariant', schema),
+        variant: newVariant,
         errorFields: [],
         invalidFlag: null,
       });
@@ -385,6 +391,8 @@ class VariantParserComponent extends Component {
  * @property {bool} error - error flag for text input.
  * @property {bool} disabled - disabled flag for text input.
  * @property {function} handleFinish - function for handling form finishing.
+ * @property {function} handleSubmit - function for handling form submission.
+ * @property {Object} schema - Knowledgebase schema object.
  */
 VariantParserComponent.propTypes = {
   required: PropTypes.bool,

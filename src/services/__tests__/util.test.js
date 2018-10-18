@@ -268,16 +268,24 @@ describe('util methods test', () => {
           { name: 'source', type: 'embeddedset' },
           { name: 'alias', type: 'link' },
           { name: 'num', type: 'integer' },
+          {
+            name: 'embedded prop',
+            type: 'embedded',
+            linkedClass: {
+              properties: {},
+              name: 'other class',
+            },
+          },
+          { name: 'bool prop', type: 'boolean' },
         ],
       },
     };
-
 
     const testModel = {
       name: 'hello',
     };
     const result = util.initModel(testModel, 'testClass', testSchema);
-    expect(Object.keys(result).length).to.eq(8); // + 2 fields for link, + 1 for @class
+    expect(Object.keys(result).length).to.eq(10); // + 3 fields for link, + 1 for @class
     expect(result.name).to.eq('hello');
     expect(Array.isArray(result.source));
     expect(result.source.length).to.eq(0);

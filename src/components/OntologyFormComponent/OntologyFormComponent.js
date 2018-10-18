@@ -759,16 +759,21 @@ class OntologyFormComponent extends Component {
  * @namespace
  * @property {Object} node - node object to be edited.
  * @property {string} variant - specifies form type/function.
- * @property {function} handleNodeFinish - parent method triggered when node is
- * edited or deleted.
- * @property {function} handleCancel - parent method triggered when form action is cancelled.
+ * @property {Array} sources - List of Knowledgebase ontology sources.
+ * @property {Object} schema - Knowledgebase db schema.
+ * @property {Array} edgeTypes - List of Knowledgebase ontology edge classes.
+ * @property {function} handleFinish - Function triggered when node is edited
+ * or deleted.
+ * @property {function} handleCancel - Function triggered when form action is
+ * cancelled.
+ * @property {function} handleSubmit - Function triggered when form is submitted.
  */
 OntologyFormComponent.propTypes = {
+  node: PropTypes.object,
+  variant: PropTypes.oneOf(['edit', 'add']),
   sources: PropTypes.array,
   schema: PropTypes.object.isRequired,
   edgeTypes: PropTypes.array,
-  node: PropTypes.object,
-  variant: PropTypes.string,
   handleFinish: PropTypes.func,
   handleCancel: PropTypes.func,
   handleSubmit: PropTypes.func,

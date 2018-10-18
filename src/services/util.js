@@ -383,8 +383,8 @@ const getClass = (className, schema) => {
  */
 const initModel = (model, kbClass, schema, extraProps = []) => {
   const editableProps = schema && kbClass
-    ? (getClass(kbClass, schema)).properties
-    : [];
+    && (getClass(kbClass, schema)).properties;
+  if (!editableProps) return {};
   editableProps.push(...extraProps);
   const newModel = Object.assign({}, model);
   newModel['@class'] = kbClass;

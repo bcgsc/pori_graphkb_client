@@ -14,6 +14,7 @@
     "knowledgebase-parser": "git+ssh://git@svn.bcgsc.ca:7999/vdb/knowledgebase_parser.git#v0.3.2",
     "lodash.debounce": "^4.0.8",
     "lodash.omit": "^4.5.0",
+    "object-assign": "4.1.1",
     "promise": "8.0.1",
     "prop-types": "^15.6.2",
     "qs": "^6.5.2",

@@ -14,7 +14,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import qs from 'qs';
-import _ from 'lodash';
+import omit from 'lodash.omit';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
@@ -94,7 +94,7 @@ class DataView extends Component {
 
     let allProps = ['@rid', '@class'];
     try {
-      const data = await api.get(`${route}?${qs.stringify(_.omit(filteredSearch, omitted))}`);
+      const data = await api.get(`${route}?${qs.stringify(omit(filteredSearch, omitted))}`);
       const cycled = jc.retrocycle(data).result;
 
       cycled.forEach((ontologyTerm) => {
@@ -105,7 +105,7 @@ class DataView extends Component {
       if (cycled.length >= (filteredSearch.limit || DEFAULT_LIMIT)) {
         filteredSearch.skip = filteredSearch.limit || DEFAULT_LIMIT;
         this.setState({
-          next: () => api.get(`${route}?${qs.stringify(_.omit(filteredSearch, omitted))}`),
+          next: () => api.get(`${route}?${qs.stringify(omit(filteredSearch, omitted))}`),
           moreResults: true,
         });
       }
@@ -223,7 +223,7 @@ class DataView extends Component {
         const lastSkip = filteredSearch.skip || limit;
         if (cycled.length >= limit) {
           filteredSearch.skip = Number(lastSkip) + Number(limit);
-          newNext = () => api.get(`${route}?${qs.stringify(_.omit(filteredSearch, omitted))}&neighbors=${DEFAULT_NEIGHBORS}`);
+          newNext = () => api.get(`${route}?${qs.stringify(omit(filteredSearch, omitted))}&neighbors=${DEFAULT_NEIGHBORS}`);
           moreResults = true;
         }
         this.setState({

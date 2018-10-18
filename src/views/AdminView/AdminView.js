@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import './AdminView.css';
 import * as jc from 'json-cycle';
-import _ from 'lodash';
+import omit from 'lodash.omit';
 import {
   Paper,
   Typography,
@@ -46,12 +46,10 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import CancelIcon from '@material-ui/icons/Cancel';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import PermissionsTable from '../../components/PermissionsTable/PermissionsTable';
 import api from '../../services/api';
 import auth from '../../services/auth';
 import util from '../../services/util';
-import config from '../../config.json';
-
-const { PERMISSIONS } = config;
 
 /**
  * View for editing or adding database users.
@@ -102,17 +100,12 @@ class AdminView extends Component {
     this.handleCheckAllUsers = this.handleCheckAllUsers.bind(this);
     this.handleCheckbox = this.handleCheckbox.bind(this);
     this.handleDeleteUserGroup = this.handleDeleteUserGroup.bind(this);
-    this.handleDeleteUsersDialog = this.handleDeleteUsersDialog.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
     this.handleNewUserGroup = this.handleNewUserGroup.bind(this);
-    this.handleNewUserGroupChange = this.handleNewUserGroupChange.bind(this);
-    this.handleNewUserGroupDialog = this.handleNewUserGroupDialog.bind(this);
     this.handlePermissionsChange = this.handlePermissionsChange.bind(this);
     this.handlePermissionsCommit = this.handlePermissionsCommit.bind(this);
     this.handlePermissionsEdit = this.handlePermissionsEdit.bind(this);
-    this.handleTempUserGroupChange = this.handleTempUserGroupChange.bind(this);
     this.handleUserDialog = this.handleUserDialog.bind(this);
-    this.handleUserGroupCancel = this.handleUserGroupCancel.bind(this);
     this.handleUserGroupCheckAll = this.handleUserGroupCheckAll.bind(this);
     this.handleUserGroupExpand = this.handleUserGroupExpand.bind(this);
   }
@@ -180,7 +173,8 @@ class AdminView extends Component {
     this.setState({
       users: jc.retrocycle(newUsers).result,
       selected: [],
-    }, this.handleDeleteUsersDialog);
+      deleteDialogOpen: false,
+    });
   }
 
   /**
@@ -278,14 +272,6 @@ class AdminView extends Component {
   }
 
   /**
-   * Toggles the delete user dialog.
-   */
-  handleDeleteUsersDialog() {
-    const { deleteDialogOpen } = this.state;
-    this.setState({ deleteDialogOpen: !deleteDialogOpen });
-  }
-
-  /**
    * Copies over user object to temporary model that can be edited, and
    * opens the user editing dialog.
    * @param {Object} user - user object to be edited.
@@ -315,22 +301,10 @@ class AdminView extends Component {
     this.setState({ newUserGroups });
   }
 
-  /**
-   * Updates new UserGroup model with user input.
-   * @param {Event} e - user input event.
-   */
-  handleNewUserGroupChange(e) {
-    const { newUserGroup } = this.state;
-    newUserGroup[e.target.name] = e.target.value;
-    this.setState({ newUserGroup });
-  }
-
-  /**
-   * Toggles new usergroup dialog.
-   */
-  handleNewUserGroupDialog() {
-    const { newUserGroupDialog } = this.state;
-    this.setState({ newUserGroupDialog: !newUserGroupDialog });
+  handleNestedChange(e, nKey) {
+    const { [nKey]: obj } = this.state;
+    this.state[nKey][e.target.name] = e.target.value;
+    this.setState({ [nKey]: obj });
   }
 
   /**
@@ -339,17 +313,13 @@ class AdminView extends Component {
    * @param {string} permissionKey - Permission property key.
    * @param {number} permission - index of permission type([D, U, R, C]).
    * @param {number} currValue - bit representing permission status.
-   * @param {boolean} isNewUserGroup - new UserGroup flag.
+   * @param {string} key - key of group to be edited.
    */
-  handlePermissionsChange(permissionKey, permission, currValue, isNewUserGroup) {
-    const { newUserGroup, tempUserGroup } = this.state;
-    if (!(isNewUserGroup ? newUserGroup : tempUserGroup)) return;
-    if (isNewUserGroup) {
-      newUserGroup.permissions[permissionKey][permission] = currValue ? 0 : 1;
-    } else {
-      tempUserGroup.permissions[permissionKey][permission] = currValue ? 0 : 1;
-    }
-    this.setState({ tempUserGroup });
+  handlePermissionsChange(permissionKey, permission, currValue, key) {
+    const { [key]: userGroup } = this.state;
+    if (!userGroup) return;
+    userGroup.permissions[permissionKey][permission] = currValue ? 0 : 1;
+    this.setState({ [key]: userGroup });
   }
 
   /**
@@ -383,7 +353,7 @@ class AdminView extends Component {
         tempPermissions[pKey] = temp.permissions[pKey].reduce(reducer);
       });
 
-    const payload = _.omit(temp, ['@rid', '@type', 'createdBy', 'createdAt', 'uuid', '@class', 'permissions']);
+    const payload = omit(temp, ['@rid', '@type', 'createdBy', 'createdAt', 'uuid', '@class', 'permissions']);
     payload.permissions = tempPermissions;
 
     await f(rid, payload);
@@ -399,7 +369,8 @@ class AdminView extends Component {
         ? newUserGroup
         : null,
       userGroups: newUserGroups,
-    }, isNewUserGroup ? this.handleNewUserGroupDialog : null);
+      newUserGroupDialog: false,
+    });
   }
 
 
@@ -412,16 +383,6 @@ class AdminView extends Component {
     const permissions = Object.assign({}, userGroup.permissions);
     Object.keys(permissions).forEach((key) => { permissions[key] = permissions[key].slice(); });
     const tempUserGroup = { ...userGroup, permissions };
-    this.setState({ tempUserGroup });
-  }
-
-  /**
-   * Updates temporary UserGroup model with a user input value.
-   * @param {Event} e - User input event.
-   */
-  handleTempUserGroupChange(e) {
-    const { tempUserGroup } = this.state;
-    tempUserGroup[e.target.name] = e.target.value;
     this.setState({ tempUserGroup });
   }
 
@@ -453,36 +414,22 @@ class AdminView extends Component {
   }
 
   /**
-   * Clears temporary UserGroup model.
-   */
-  handleUserGroupCancel() {
-    this.setState({ tempUserGroup: null });
-  }
-
-  /**
    * Checks/unchecks one column of UserGroup permissions.
    * @param {Event} e - user input checkbox event.
    * @param {number} i - Column index ([D, U, R, C]).
-   * @param {boolean} isNewUserGroup - new UserGroup flag.
+   * @param {string} key - which object to edit.
    */
-  handleUserGroupCheckAll(e, i, isNewUserGroup) {
-    const { newUserGroup, tempUserGroup, schema } = this.state;
-    Object.keys((isNewUserGroup ? newUserGroup : tempUserGroup).permissions).forEach((pKey) => {
+  handleUserGroupCheckAll(e, i, key) {
+    const { [key]: userGroup, schema } = this.state;
+    Object.keys((userGroup).permissions).forEach((pKey) => {
       const isEdge = schema[pKey].inherits.includes('E');
       const isAbstract = util.isAbstract(pKey, schema);
-      if (isNewUserGroup) {
-        newUserGroup.permissions[pKey][i] = (e.target.checked
-          && !(isEdge && i === 1))
-          && !(isAbstract && i !== 2)
-          ? 1 : 0;
-      } else {
-        tempUserGroup.permissions[pKey][i] = (e.target.checked
-          && !(isEdge && i === 1))
-          && !(isAbstract && i !== 2)
-          ? 1 : 0;
-      }
+      userGroup.permissions[pKey][i] = (e.target.checked
+        && !(isEdge && i === 1))
+        && !(isAbstract && i !== 2)
+        ? 1 : 0;
     });
-    this.setState({ newUserGroup, tempUserGroup });
+    this.setState({ [key]: userGroup });
   }
 
   /**
@@ -525,74 +472,6 @@ class AdminView extends Component {
     } = this.state;
 
     if (!users) return null;
-
-    const userGroupPanel = (userGroup, isEditing, newUser) => {
-      const permissionKeys = Object.keys(userGroup.permissions)
-        .sort((a, b) => a > b ? 1 : -1);
-      const list = (
-        <Table className="admin-table">
-          <TableHead>
-            <TableRow id="admin-sticky-row">
-              <TableCell padding="dense" />
-              {PERMISSIONS.map(permission => (
-                <TableCell key={permission} padding="checkbox">
-                  {`${permission.charAt(0)}${permission.slice(1).toLowerCase()}`}
-                </TableCell>
-              ))}
-            </TableRow>
-            <TableRow>
-              <TableCell padding="dense" />
-              {PERMISSIONS.map((p, i) => (
-                <TableCell key={p} padding="checkbox">
-                  <Checkbox
-                    onChange={e => this.handleUserGroupCheckAll(e, i, newUser)}
-                    disabled={!isEditing}
-                  />
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {permissionKeys
-              .map((permission) => {
-                const isEdge = schema[permission].inherits.includes('E');
-                const isAbstract = util.isAbstract(permission, schema);
-                return (
-                  <TableRow key={permission} className="permissions-view">
-                    <TableCell padding="dense">
-                      <Typography variant="body1" component="p">
-                        {permission}:
-                      </Typography>
-                    </TableCell>
-                    {userGroup.permissions[permission].map((p, j) => (
-                      <TableCell padding="checkbox" key={`${userGroup.name}${permission}${j.toString()}`}>
-                        {(
-                          !(isEdge && j === 1)
-                          && !(isAbstract && j !== 2)
-                        )
-                          && (
-                            <Checkbox
-                              onChange={() => this.handlePermissionsChange(
-                                permission,
-                                j, p,
-                                newUser,
-                              )}
-                              checked={!!p}
-                              disabled={!isEditing}
-                            />)}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-      );
-      return (
-        <div className="user-group-grid">
-          {list}
-        </div>);
-    };
 
     const userDialog = (edit) => {
       const isTaken = users.map(u => u.name.toLowerCase()).includes(newUserName.toLowerCase());
@@ -648,19 +527,19 @@ class AdminView extends Component {
                 <Avatar classes={{ colorDefault: newUserName ? 'avatar-colored' : '' }}>
                   {newUserName.charAt(0).toUpperCase() || <PersonIcon />}
                 </Avatar>
-                <Typography component="h3" variant="subheading">
+                <Typography component="h3" variant="subtitle1">
                   {newUserName || <Typography color="textSecondary">[New User]</Typography>}
                 </Typography>
               </div>
               <div className="preview-metadata">
                 <div className="metadata-line">
-                  <Typography variant="body2" component="h4">Created By:</Typography>
+                  <Typography variant="body1" component="h4">Created By:</Typography>
                   <Typography variant="caption" component="p">
                     {edit ? (selectedUser.createdBy || {}).name : auth.getUser()}
                   </Typography>
                 </div>
                 <div className="metadata-line">
-                  <Typography variant="body2" component="h4">Created At:</Typography>
+                  <Typography variant="body1" component="h4">Created At:</Typography>
                   <Typography variant="caption" component="p">
                     {edit ? new Date(selectedUser.createdAt).toLocaleString()
                       : date.toLocaleString()}
@@ -668,7 +547,7 @@ class AdminView extends Component {
                 </div>
               </div>
               <div className={`preview-groups ${newUserGroups.length === 0 && 'no-groups'}`}>
-                <Typography variant="body2" component="h4">
+                <Typography variant="body1" component="h4">
                   Groups:
                 </Typography>
                 {newUserGroups.length !== 0 ? newUserGroups.map(group => (
@@ -699,7 +578,7 @@ class AdminView extends Component {
     const deleteUsersDialog = (
       <Dialog
         open={deleteDialogOpen && selected.length !== 0}
-        onClose={this.handleDeleteUsersDialog}
+        onClose={() => this.handleChange({ target: { name: 'deleteDialogOpen', value: false } })}
         classes={{
           paper: 'delete-dialog',
         }}
@@ -730,7 +609,7 @@ class AdminView extends Component {
           </List>
         </DialogContent>
         <DialogActions style={{ justifyContent: 'center' }}>
-          <Button onClick={this.handleDeleteUsersDialog}>
+          <Button onClick={() => this.handleChange({ target: { name: 'deleteDialogOpen', value: false } })}>
             Cancel
           </Button>
           <Button onClick={() => this.deleteUsers()}>
@@ -747,7 +626,7 @@ class AdminView extends Component {
       return (
         <Dialog
           open={newUserGroupDialog}
-          onClose={this.handleNewUserGroupDialog}
+          onClose={() => this.handleChange({ target: { name: 'newUserGroupDialog', value: false } })}
           classes={{
             paper: 'new-usergroup-dialog',
           }}
@@ -763,7 +642,7 @@ class AdminView extends Component {
               <TextField
                 name="name"
                 value={newUserGroup.name}
-                onChange={e => this.handleNewUserGroupChange(e, true)}
+                onChange={e => this.handleNestedChange(e, 'newUserGroup')}
                 label="Name"
                 placeholder="Enter Group Name"
                 error={isTaken || error}
@@ -772,7 +651,13 @@ class AdminView extends Component {
                 && <FormHelperText>UserGroup name already exists</FormHelperText>
               }
             </FormControl>
-            {userGroupPanel(newUserGroup, true, true)}
+            <PermissionsTable
+              userGroup={newUserGroup}
+              stateKey="newUserGroup"
+              schema={schema}
+              handleChange={this.handlePermissionsChange}
+              handleCheckAll={this.handleUserGroupCheckAll}
+            />
           </DialogContent>
           <DialogActions style={{ justifyContent: 'center' }}>
             <Button
@@ -781,7 +666,7 @@ class AdminView extends Component {
             >
               Add
             </Button>
-            <Button onClick={this.handleNewUserGroupDialog}>Cancel</Button>
+            <Button onClick={() => this.handleChange({ target: { name: 'newUserGroupDialog', value: false } })}>Cancel</Button>
           </DialogActions>
         </Dialog>
       );
@@ -821,15 +706,15 @@ class AdminView extends Component {
         {userGroupDialog()}
         {deleteUserGroupDialog}
         <Paper className="admin-headline">
-          <Typography component="h1" variant="headline">Admin</Typography>
+          <Typography component="h1" variant="h5">Admin</Typography>
         </Paper>
         <Paper className="admin-users">
           <div className="admin-section-heading">
-            <Typography component="h2" variant="title">Users</Typography>
+            <Typography component="h2" variant="h6">Users</Typography>
             <div className="admin-section-heading-btns">
               <IconButton
                 disabled={selected.length === 0}
-                onClick={this.handleDeleteUsersDialog}
+                onClick={() => this.handleChange({ target: { name: 'deleteDialogOpen', value: false } })}
               >
                 {selected.length === 0 ? <DeleteIcon />
                   : (
@@ -896,7 +781,7 @@ class AdminView extends Component {
           <div className="admin-section-heading">
             <Typography component="h2" variant="title">User Groups</Typography>
             <div className="admin-section-heading-btns">
-              <IconButton onClick={this.handleNewUserGroupDialog}>
+              <IconButton onClick={() => this.handleChange({ target: { name: 'newUserGroupDialog', value: true } })}>
                 <AddIcon />
               </IconButton>
             </div>
@@ -920,6 +805,7 @@ class AdminView extends Component {
                 expanded={expanded.includes(userGroup['@rid'])}
                 className={isEditing ? 'editedGroup' : ''}
                 onChange={() => this.handleUserGroupExpand(userGroup['@rid'])}
+                CollapseProps={{ unmountOnExit: true }}
               >
                 <ExpansionPanelSummary
                   expandIcon={<KeyboardArrowDownIcon />}
@@ -941,7 +827,7 @@ class AdminView extends Component {
                                 Confirm
                               </Button>
                               <Button
-                                onClick={this.handleUserGroupCancel}
+                                onClick={() => this.handleChange({ target: { name: 'tempUserGroup', value: null } })}
                                 size="small"
                                 variant="outlined"
                               >
@@ -954,7 +840,7 @@ class AdminView extends Component {
                                 <TextField
                                   name="name"
                                   value={userGroup.name}
-                                  onChange={e => this.handleTempUserGroupChange(e, false)}
+                                  onChange={e => this.handleNestedChange(e, 'tempUserGroup')}
                                   label="Name"
                                   placeholder="Enter Group Name"
                                   style={{ marginRight: 'auto' }}
@@ -973,11 +859,18 @@ class AdminView extends Component {
                               <IconButton onClick={() => this.handleDeleteUserGroup(userGroup)}>
                                 <DeleteIcon />
                               </IconButton>
-                              <Typography component="h3" variant="subheading">Permissions</Typography>
+                              <Typography component="h3" variant="subtitle1">Permissions</Typography>
                             </React.Fragment>
                           )}
                       </div>
-                      {userGroupPanel(userGroup, isEditing)}
+                      <PermissionsTable
+                        userGroup={userGroup}
+                        stateKey="tempUserGroup"
+                        disabled={!isEditing}
+                        schema={schema}
+                        handleChange={this.handlePermissionsChange}
+                        handleCheckAll={this.handleUserGroupCheckAll}
+                      />
                     </ExpansionPanelDetails>
                   ) : null}
               </ExpansionPanel>

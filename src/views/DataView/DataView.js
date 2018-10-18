@@ -415,7 +415,7 @@ class DataView extends Component {
             </Switch>
           ) : (
             <div className="no-results-msg">
-              <Typography variant="headline">
+              <Typography variant="h5">
                 No Results
               </Typography>
             </div>

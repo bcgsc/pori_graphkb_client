@@ -124,7 +124,7 @@ function FormTemplater(props) {
     }
     if (type === 'embedded') {
       let classSelector = (
-        <Typography variant="subheading">
+        <Typography variant="subtitle1">
           {util.antiCamelCase(name)}
         </Typography>
       );

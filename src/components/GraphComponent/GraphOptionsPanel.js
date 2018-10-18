@@ -63,7 +63,7 @@ export default class GraphOptionsPanel extends PureComponent {
         onClose={this.handleHelpClose}
       >
         <DialogTitle disableTypography className="help-title">
-          <Typography variant="headline">
+          <Typography variant="h5">
             {helpOpen && (advancedHelp ? 'Advanced Graph Options Help' : 'Graph Options Help')}
           </Typography>
           <IconButton onClick={this.handleHelpClose}>
@@ -73,10 +73,10 @@ export default class GraphOptionsPanel extends PureComponent {
         <DialogContent>
           {helpOpen && (advancedHelp ? GRAPH_ADVANCED : GRAPH_MAIN).map(help => (
             <React.Fragment key={help.title}>
-              <Typography variant="title" gutterBottom>
+              <Typography variant="h6" gutterBottom>
                 {help.title}
               </Typography>
-              <Typography variant="body1" paragraph>
+              <Typography paragraph>
                 {help.description}
               </Typography>
             </React.Fragment>
@@ -103,7 +103,7 @@ export default class GraphOptionsPanel extends PureComponent {
             <CloseIcon />
           </IconButton>
           <DialogTitle className="options-title" disableTypography>
-            <Typography variant="title">Graph Options</Typography>
+            <Typography variant="h6">Graph Options</Typography>
             <IconButton
               color="primary"
               onClick={() => this.handleHelpOpen('mainHelp')}
@@ -238,7 +238,7 @@ export default class GraphOptionsPanel extends PureComponent {
           </DialogContent>
           <Divider />
           <div className="options-title">
-            <Typography variant="title">Advanced Graph Options</Typography>
+            <Typography variant="h6">Advanced Graph Options</Typography>
             <IconButton
               onClick={() => this.handleHelpOpen('advancedHelp')}
               color="primary"

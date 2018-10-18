@@ -966,7 +966,7 @@ class GraphComponent extends Component {
               <div className="legend-content">
                 <div className="legend-header">
                   <div className="legend-header-text">
-                    <Typography variant="subheading">Nodes</Typography>
+                    <Typography variant="subtitle1">Nodes</Typography>
                     <Typography variant="caption">
                       {graphOptions.nodesColor ? `(${util.antiCamelCase(graphOptions.nodesColor)})` : ''}
                     </Typography>
@@ -1017,7 +1017,7 @@ class GraphComponent extends Component {
                 <div className="legend-content">
                   <div className="legend-header">
                     <div className="legend-header-text">
-                      <Typography variant="subheading">Edges</Typography>
+                      <Typography variant="subtitle1">Edges</Typography>
                       <Typography variant="caption">
                         {graphOptions.linksColor && `(${util.antiCamelCase(graphOptions.linksColor)})`}
                       </Typography>
@@ -1081,7 +1081,7 @@ class GraphComponent extends Component {
         >
           <DialogTitle>Select Edges to Expand</DialogTitle>
           <DialogContent>
-            <Typography variant="subheading">
+            <Typography variant="subtitle1">
               Expand by Edge Types:
             </Typography>
             <List dense className="expand-links-types">
@@ -1108,7 +1108,7 @@ class GraphComponent extends Component {
                 </ListItem>
               ))}
             </List>
-            <Typography variant="subheading">
+            <Typography variant="subtitle1">
               Select Individual Links:
             </Typography>
             <ListItem
@@ -1118,7 +1118,7 @@ class GraphComponent extends Component {
             >
               <Checkbox checked={!(expandExclusions.length === edges.length)} />
               <ListItemText>
-                <Typography variant="subheading">
+                <Typography variant="subtitle1">
                   {expandExclusions.length === edges.length
                     ? 'Select All' : 'Deselect All'}
                 </Typography>
@@ -1142,8 +1142,8 @@ class GraphComponent extends Component {
                   >
                     <Checkbox checked={!expandExclusions.includes(edge['@rid'])} />
                     <ListItemText>
-                      <Typography variant="body2">{target.name}</Typography>
-                      <Typography variant="body1">{target.sourceId}</Typography>
+                      <Typography variant="body1">{target.name}</Typography>
+                      <Typography>{target.sourceId}</Typography>
                       <Typography variant="caption">{target.source.name || node.source.name}</Typography>
                     </ListItemText>
                   </ListItem>

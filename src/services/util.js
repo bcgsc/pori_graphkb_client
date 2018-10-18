@@ -420,7 +420,7 @@ const initModel = (model, kbClass, schema, extraProps = []) => {
         if (linkedClass && linkedClass.properties) {
           newModel[name] = model[name]
             ? Object.assign({}, model[name])
-            : initModel({}, property.linkedClass.properties);
+            : initModel({}, property.linkedClass.name, schema);
         }
         break;
       default:

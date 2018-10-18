@@ -145,10 +145,8 @@ function FormTemplater(props) {
               </MenuItem>
             )}
           </ResourceSelectComponent>
-
         );
       }
-
       return (
         <ListItem component={fieldComponent} key={name}>
           <div className="form-templater-embedded-selector">

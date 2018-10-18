@@ -158,7 +158,7 @@ class AdvancedQueryView extends Component {
           )}
         />
         <Paper elevation={4} className="adv-header">
-          <Typography variant="headline" id="adv-title">
+          <Typography variant="h5" id="adv-title">
             Advanced Query
           </Typography>
         </Paper>
@@ -199,7 +199,7 @@ class AdvancedQueryView extends Component {
           </Button>
           <Button
             color="primary"
-            variant="raised"
+            variant="contained"
             id="search-button"
             onClick={() => history.push({
               pathname: '/data/table',

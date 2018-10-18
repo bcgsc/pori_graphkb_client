@@ -82,7 +82,7 @@ class VariantFormView extends Component {
               Cancel
             </Button>
           </div>
-          <Typography variant="headline">Variant Form</Typography>
+          <Typography variant="h5">Variant Form</Typography>
         </Paper>
 
         <div className="variant-body">

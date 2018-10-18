@@ -527,19 +527,19 @@ class AdminView extends Component {
                 <Avatar classes={{ colorDefault: newUserName ? 'avatar-colored' : '' }}>
                   {newUserName.charAt(0).toUpperCase() || <PersonIcon />}
                 </Avatar>
-                <Typography component="h3" variant="subheading">
+                <Typography component="h3" variant="subtitle1">
                   {newUserName || <Typography color="textSecondary">[New User]</Typography>}
                 </Typography>
               </div>
               <div className="preview-metadata">
                 <div className="metadata-line">
-                  <Typography variant="body2" component="h4">Created By:</Typography>
+                  <Typography variant="body1" component="h4">Created By:</Typography>
                   <Typography variant="caption" component="p">
                     {edit ? (selectedUser.createdBy || {}).name : auth.getUser()}
                   </Typography>
                 </div>
                 <div className="metadata-line">
-                  <Typography variant="body2" component="h4">Created At:</Typography>
+                  <Typography variant="body1" component="h4">Created At:</Typography>
                   <Typography variant="caption" component="p">
                     {edit ? new Date(selectedUser.createdAt).toLocaleString()
                       : date.toLocaleString()}
@@ -547,7 +547,7 @@ class AdminView extends Component {
                 </div>
               </div>
               <div className={`preview-groups ${newUserGroups.length === 0 && 'no-groups'}`}>
-                <Typography variant="body2" component="h4">
+                <Typography variant="body1" component="h4">
                   Groups:
                 </Typography>
                 {newUserGroups.length !== 0 ? newUserGroups.map(group => (
@@ -706,11 +706,11 @@ class AdminView extends Component {
         {userGroupDialog()}
         {deleteUserGroupDialog}
         <Paper className="admin-headline">
-          <Typography component="h1" variant="headline">Admin</Typography>
+          <Typography component="h1" variant="h5">Admin</Typography>
         </Paper>
         <Paper className="admin-users">
           <div className="admin-section-heading">
-            <Typography component="h2" variant="title">Users</Typography>
+            <Typography component="h2" variant="h6">Users</Typography>
             <div className="admin-section-heading-btns">
               <IconButton
                 disabled={selected.length === 0}
@@ -859,7 +859,7 @@ class AdminView extends Component {
                               <IconButton onClick={() => this.handleDeleteUserGroup(userGroup)}>
                                 <DeleteIcon />
                               </IconButton>
-                              <Typography component="h3" variant="subheading">Permissions</Typography>
+                              <Typography component="h3" variant="subtitle1">Permissions</Typography>
                             </React.Fragment>
                           )}
                       </div>

@@ -368,7 +368,7 @@ class VariantParserComponent extends Component {
           <Button
             onClick={this.submitVariant}
             color="primary"
-            variant="raised"
+            variant="contained"
             disabled={!!(formIsInvalid || invalidFlag)}
           >
             Submit

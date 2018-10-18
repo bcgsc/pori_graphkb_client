@@ -500,14 +500,14 @@ class OntologyFormComponent extends Component {
                   Cancel
                 </Button>
               </div>
-              <Typography variant="headline" className="form-title">
+              <Typography variant="h5" className="form-title">
                 {variant === 'edit' ? 'Edit Ontology Term'
                   : 'Add New Ontology Term'}
               </Typography>
             </Paper>
             <div className="flexbox">
               <Paper className="param-section" elevation={4}>
-                <Typography variant="title">
+                <Typography variant="h6">
                   Basic Parameters
                 </Typography>
                 <List component="nav">
@@ -517,7 +517,7 @@ class OntologyFormComponent extends Component {
                         <ListItemText
                           primary="Class:"
                           secondary={originalNode['@class']}
-                          secondaryTypographyProps={{ variant: 'title', color: 'default' }}
+                          secondaryTypographyProps={{ variant: 'h6', color: 'default' }}
                         />
                       </ListItem>
                       <Divider />
@@ -555,7 +555,7 @@ class OntologyFormComponent extends Component {
               </Paper>
               <Paper className="param-section forms-lists" elevation={4}>
                 <Paper className="subsets-wrapper">
-                  <Typography variant="title">
+                  <Typography variant="h6">
                     Subsets
                   </Typography>
                   <div className="input-wrapper">
@@ -590,7 +590,7 @@ class OntologyFormComponent extends Component {
                   </List>
                 </Paper>
                 <Paper className="relationships-wrapper">
-                  <Typography variant="title">
+                  <Typography variant="h6">
                     Relationships
                   </Typography>
                   <div style={{ overflow: 'auto' }}>
@@ -729,7 +729,7 @@ class OntologyFormComponent extends Component {
             <Paper className="form-btns" elevation={4}>
               {variant === 'edit' && (
                 <Button
-                  variant="raised"
+                  variant="contained"
                   onClick={this.handleDialogOpen}
                   id="delete-btn"
                   size="large"
@@ -739,7 +739,7 @@ class OntologyFormComponent extends Component {
               )}
               <Button
                 type="submit"
-                variant="raised"
+                variant="contained"
                 color="primary"
                 disabled={formIsInvalid}
                 id="submit-btn"

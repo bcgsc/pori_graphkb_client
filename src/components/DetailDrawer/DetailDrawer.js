@@ -110,7 +110,7 @@ class DetailDrawer extends Component {
                     </ListItemIcon>)}
                   <ListItemText>
                     <div className="detail-identifiers">
-                      <Typography variant="subheading" color={nested ? 'textSecondary' : 'default'}>
+                      <Typography variant="subtitle1" color={nested ? 'textSecondary' : 'default'}>
                         {util.antiCamelCase(key)}
                       </Typography>
                       <Typography>
@@ -192,7 +192,7 @@ class DetailDrawer extends Component {
                 <ListItem>
                   <ListItemText>
                     <div className="detail-identifiers">
-                      <Typography variant="subheading">
+                      <Typography variant="subtitle1">
                         {util.antiCamelCase(name)}
                       </Typography>
                       <Typography>
@@ -347,7 +347,7 @@ class DetailDrawer extends Component {
         <div className="detail-content">
           <div className="detail-heading">
             <div className="detail-headline">
-              <Typography variant="title" component="h1">
+              <Typography variant="h6" component="h1">
                 Properties:
               </Typography>
               <IconButton onClick={onClose}>

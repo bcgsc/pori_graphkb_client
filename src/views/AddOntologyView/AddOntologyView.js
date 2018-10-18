@@ -26,14 +26,16 @@ class AddOntologyView extends Component {
   }
 
   async componentDidMount() {
-    const sources = await api.getSources();
-    const schema = await api.getSchema();
-    const edgeTypes = api.getEdges(schema);
-    this.setState({
-      schema,
-      sources,
-      edgeTypes,
-    });
+    try {
+      const schema = await api.getSchema();
+      const sources = await api.getSources();
+      const edgeTypes = api.getEdges(schema);
+      this.setState({
+        schema,
+        sources,
+        edgeTypes,
+      });
+    } catch (e) { console.log(e); }
   }
 
   /**

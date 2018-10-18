@@ -36,7 +36,7 @@ function NotificationDrawer(props) {
           color="secondary"
           onClick={handleFinish}
           disabled={loading}
-          variant="raised"
+          variant="contained"
           size="large"
         >
           {loading

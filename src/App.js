@@ -67,6 +67,9 @@ const theme = createMuiTheme({
       secondary: 'rgba(0,0,0,0.54)',
     },
   },
+  typography: {
+    useNextVariants: true,
+  },
 });
 
 /**
@@ -266,7 +269,7 @@ class App extends Component {
                 </IconButton>
               )}
               <div className="appbar-title">
-                <Typography variant="title">Knowledge Base</Typography>
+                <Typography variant="h6">Knowledge Base</Typography>
               </div>
               <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>
                 <div>

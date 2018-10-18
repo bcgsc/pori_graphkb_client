@@ -112,6 +112,11 @@ describe('<VariantParserComponent />', () => {
   it('invalid form', () => {
     const handleSubmit = jest.fn();
     mockSchema.PositionalVariant.properties.name.mandatory = true;
+    mockSchema.PositionalVariant.properties.link = {
+      name: 'link',
+      type: 'link',
+      mandatory: true,
+    };
     wrapper = mount(
       <VariantParserComponent
         handleFinish={() => { }}
@@ -124,6 +129,27 @@ describe('<VariantParserComponent />', () => {
   });
 
   it('violated attributes', async () => {
+    mockSchema.PositionalVariant.properties.break1Start = {
+      type: 'embedded',
+      name: 'break1Start',
+      linkedClass: {
+        name: 'embed',
+        properties: {},
+      },
+    };
+    mockSchema.PositionalVariant.properties.break1End = {
+      type: 'embedded',
+      name: 'break1End',
+      linkedClass: {
+        name: 'embed',
+        properties: {},
+      },
+    };
+    mockSchema.PositionalVariant.properties.type = {
+      type: 'link',
+      name: 'type',
+    };
+
     const handleSubmit = jest.fn();
     wrapper = mount(
       <VariantParserComponent
@@ -132,7 +158,27 @@ describe('<VariantParserComponent />', () => {
         schema={mockSchema}
       />,
     );
-    wrapper.setState({ variant: { break1Start: 'something' } });
     wrapper.find('input[name="shorthand"]').simulate('change', { target: { value: 'brca2:p.g_12del' } });
+    wrapper.find('input[name="shorthand"]').simulate('change', { target: { value: 'brca2:p.g11_12daal' } });
+    wrapper.setState({
+      variant: {
+        break1Repr: 'p.g11',
+        break1Start: {
+          '@class': 'ProteinPosition',
+          pos: 11,
+          refAA: 'g',
+        },
+        break2Repr: 'p.?12',
+        break2Start: {
+          '@class': 'ProteinPosition',
+          pos: 12,
+          refAA: '',
+        },
+        reference1: 'brca2',
+        type: 'deletion',
+      },
+    });
+    wrapper.find('textarea[name="name"]').simulate('change');
+    expect(wrapper.state().shorthand).to.eq('brca2:p.g11_?12del');
   });
 });

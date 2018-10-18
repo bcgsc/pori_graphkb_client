@@ -11,6 +11,10 @@ import CheckIcon from '@material-ui/icons/Check';
 
 const NOTIFICATION_SPINNER_SIZE = 16;
 
+/**
+ * Component with notification drawer for when user submits a form.
+ * @param {Object} props - Component props.
+ */
 function NotificationDrawer(props) {
   const {
     open,
@@ -54,6 +58,12 @@ function NotificationDrawer(props) {
   );
 }
 
+/**
+ * @namespace
+ * @property {boolean} loading - Flag to tell if request is loading.
+ * @property {boolean} open - Flag for opening the drawer.
+ * @property {function} handleFinish - Callback for successful submission.
+ */
 NotificationDrawer.propTypes = {
   loading: PropTypes.bool,
   open: PropTypes.bool,

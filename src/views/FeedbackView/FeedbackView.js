@@ -18,7 +18,7 @@ function FeedbackView() {
   return (
     <div className="feedback-wrapper">
       <Paper className="feedback-header" elevation={4}>
-        <Typography component="h1" variant="h5">Feedback</Typography>
+        <Typography variant="h5">Feedback</Typography>
       </Paper>
       <Paper className="feedback-body" elevation={4}>
         <Typography variant="subtitle1" paragraph>Questions</Typography>

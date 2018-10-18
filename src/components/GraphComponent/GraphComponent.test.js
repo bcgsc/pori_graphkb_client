@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { spy } from 'sinon';
 import GraphComponent from './GraphComponent';
+import { GraphNode, GraphLink } from './kbgraph';
 
 const mockData = {
   '#1': {
@@ -141,6 +142,65 @@ describe('<GraphComponent />', () => {
     wrapper.find('path.link').first().simulate('click');
     expect(handleClick.mock.calls.length).to.eq(1);
     expect(handleDetailDrawerOpen.mock.calls.length).to.eq(1);
+
+    const actionsNode = new GraphNode({
+      x: 0,
+      y: 0,
+      data: {
+        '@rid': '#4',
+        name: 'linked',
+        sourceId: 'test-4',
+        in_AliasOf: [{
+          '@rid': '#76',
+          in: {
+            '@rid': '#1',
+          },
+          out: {
+            '@rid': '#4',
+          },
+        }],
+      },
+    });
+
+    wrapper.setState({
+      actionsNode,
+      actionsNodeIsEdge: false,
+    });
+    wrapper.find('#expand').simulate('click');
+    wrapper.find('#details').simulate('click');
+    wrapper.setState({ actionsNode });
+    wrapper.find('#hide').simulate('click');
+    wrapper.setState({ actionsNode });
+    wrapper.find('#close').simulate('click');
+
+    const actionsLink = new GraphLink({},
+      {
+        x: 0,
+        y: 0,
+        data: {
+          '@rid': '#4',
+          name: 'linked',
+          sourceId: 'test-4',
+        },
+      },
+      {
+        x: 0,
+        y: 0,
+        data: {
+          '@rid': '#3',
+          name: 'linked',
+        },
+      });
+    wrapper.setState({
+      actionsNode: actionsLink,
+      actionsNodeIsEdge: true,
+    });
+    wrapper.find('#details').simulate('click');
+    wrapper.setState({
+      actionsNode: actionsLink,
+      actionsNodeIsEdge: true,
+    });
+    wrapper.find('#hide').simulate('click');
   });
 
   it('Different init types', () => {

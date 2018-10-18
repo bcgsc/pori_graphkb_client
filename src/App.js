@@ -281,7 +281,7 @@ class App extends Component {
                     className="appbar-btn"
                   >
                     <PersonIcon />
-                    <Typography variant="body2">
+                    <Typography color="inherit">
                       {auth.getUser() || 'Logged Out'}
                     </Typography>
                   </Button>

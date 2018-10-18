@@ -281,7 +281,7 @@ class GraphComponent extends Component {
 
   /**
    * Applies drag behavior to node.
-   * @param {Object} node - node to be dragged.
+   * @param {GraphNode} node - node to be dragged.
    */
   applyDrag(node) {
     const { simulation } = this.state;
@@ -401,7 +401,7 @@ class GraphComponent extends Component {
 
   /**
    * Calls the api and renders neighbor nodes of the input node onto the graph.
-   * @param {Object} node - d3 simulation node whose neighbors were requestsed.
+   * @param {GraphNode} node - d3 simulation node whose neighbors were requestsed.
    */
   loadNeighbors(node) {
     const { expandExclusions } = this.state;
@@ -452,7 +452,7 @@ class GraphComponent extends Component {
   /**
    * Determines whether to quickly selected load node neighbors or open the
    * expansion dialog panel.
-   * @param {Object} node - d3 simulation node to be expanded.
+   * @param {GraphNode} node - d3 simulation node to be expanded.
    */
   handleExpandRequest(node) {
     const {
@@ -473,6 +473,10 @@ class GraphComponent extends Component {
     }
   }
 
+  /**
+   * Pauses d3 force simulation by making simulation 'tick' event handler a
+   * noop.
+   */
   pauseGraph() {
     const { simulation } = this.state;
     simulation.on('tick', null);
@@ -482,8 +486,11 @@ class GraphComponent extends Component {
    * Processes node data and updates state with new nodes and links. Also
    * updates expandable flags.
    * @param {Object} node - Node object as returned by the api.
-   * @param {Object} position - Object containing x and y position of input node.
+   * @param {Object} position - Object containing x and y position of node.
    * @param {number} depth - Recursion base case flag.
+   * @param {Object} prevstate - Object containing nodes, links,
+   * graphobjects, and expandable map, from previous state.
+   * @param {Array} exclusions - List of edge ID's to be ignored on expansion.
    */
   processData(node, position, depth, prevstate, exclusions = []) {
     const { expandedEdgeTypes } = this.state;
@@ -1349,23 +1356,27 @@ class GraphComponent extends Component {
  * @namespace
  * @property {function} handleClick - Parent component method triggered when a
  * graph object is clicked.
- * @property {Object} data - Parent state data.
  * @property {function} handleDetailDrawerOpen - Method to handle opening of detail drawer.
  * @property {function} handleDetailDrawerClose - Method to handle closing of detail drawer.
  * @property {function} handleTableRedirect - Method to handle a redirect to the table view.
  * @property {function} handleNewColumns - Updates valid properties in parent state.
  * @property {Object} detail - record ID of node currently selected for detail viewing.
+ * @property {Object} data - Parent state data.
  * @property {Array} allProps - list of all unique properties on all nodes returned in
  * initial query.
+ * @property {Array} edgeTypes - list of valid edge classes.
+ * @property {Array} displayed - list of initial record ID's to be displayed in graph.
+ * @property {string} localStorageKey - key to identify graph session data with in
+ * localStorage.
  */
 GraphComponent.propTypes = {
   handleClick: PropTypes.func,
-  data: PropTypes.object.isRequired,
   handleDetailDrawerOpen: PropTypes.func.isRequired,
   handleDetailDrawerClose: PropTypes.func.isRequired,
   handleTableRedirect: PropTypes.func.isRequired,
   handleNewColumns: PropTypes.func.isRequired,
   detail: PropTypes.object,
+  data: PropTypes.object.isRequired,
   allProps: PropTypes.array,
   edgeTypes: PropTypes.array,
   displayed: PropTypes.array,

@@ -127,23 +127,27 @@ const del = (endpoint) => {
  * Requests sources from api and loads into localstorage.
  */
 const loadSources = async () => {
-  const response = await get('/sources');
-  const cycled = jc.retrocycle(response.result);
-  const list = [];
-  cycled.forEach(source => list.push(source));
+  try {
+    const response = await get('/sources');
+    const cycled = jc.retrocycle(response.result);
+    const list = [];
+    cycled.forEach(source => list.push(source));
 
-  const now = new Date();
-  const expiry = new Date(now);
-  expiry.setHours(now.getHours() + CACHE_EXPIRY);
-  const sources = {
-    sources: cycled,
-    version: VERSION,
-    expiry: expiry.getTime(),
-  };
+    const now = new Date();
+    const expiry = new Date(now);
+    expiry.setHours(now.getHours() + CACHE_EXPIRY);
+    const sources = {
+      sources: cycled,
+      version: VERSION,
+      expiry: expiry.getTime(),
+    };
 
-  localStorage.setItem(KEYS.SOURCES, JSON.stringify(sources));
+    localStorage.setItem(KEYS.SOURCES, JSON.stringify(sources));
 
-  return Promise.resolve(list);
+    return Promise.resolve(list);
+  } catch (e) {
+    return Promise.reject(e);
+  }
 };
 
 /**
@@ -169,21 +173,25 @@ const getSources = () => {
  * Requests schema from api and loads into localstorage.
  */
 const loadSchema = async () => {
-  const response = await get('/schema');
-  const cycled = jc.retrocycle(response.schema);
-  const now = new Date();
-  const expiry = new Date(now);
-  expiry.setHours(now.getHours() + CACHE_EXPIRY);
+  try {
+    const response = await get('/schema');
+    const cycled = jc.retrocycle(response.schema);
+    const now = new Date();
+    const expiry = new Date(now);
+    expiry.setHours(now.getHours() + CACHE_EXPIRY);
 
-  const schema = {
-    schema: cycled,
-    version: VERSION,
-    expiry: expiry.getTime(),
-  };
+    const schema = {
+      schema: cycled,
+      version: VERSION,
+      expiry: expiry.getTime(),
+    };
 
-  localStorage.setItem(KEYS.SCHEMA, JSON.stringify(schema));
+    localStorage.setItem(KEYS.SCHEMA, JSON.stringify(schema));
 
-  return Promise.resolve(cycled);
+    return Promise.resolve(cycled);
+  } catch (e) {
+    return Promise.reject(e);
+  }
 };
 
 /**
@@ -270,19 +278,6 @@ const collectOntologyProps = (ontologyTerm, allColumns, schema) => {
 };
 
 /**
-  * Returns all valid ontology types.
-  */
-const getOntologies = (schema) => {
-  const list = [];
-  Object.keys(schema).forEach((key) => {
-    if (schema[key].inherits.includes('Ontology')) {
-      list.push({ name: key, properties: schema[key].properties, route: schema[key].route });
-    }
-  });
-  return list;
-};
-
-/**
   * Returns all valid edge types.
   */
 const getEdges = (schema) => {
@@ -298,7 +293,6 @@ const getEdges = (schema) => {
 
 export default {
   getEdges,
-  getOntologies,
   collectOntologyProps,
   getHeaders,
   getSchema,

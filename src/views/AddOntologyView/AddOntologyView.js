@@ -5,16 +5,32 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
-
+import api from '../../services/api';
 /**
  * View for editing or adding database nodes. Includes a NodeFormComponent with the
  * 'add' variant. Submissions will post to the server, and redirect user to the home
  * query page.
  */
 class AddOntologyView extends Component {
+  /* eslint-disable */
   constructor(props) {
     super(props);
     this.handleFinish = this.handleFinish.bind(this);
+  }
+
+  async componentDidMount() {
+    try {
+      const schema = await api.getSchema();
+      const sources = await api.getSources();
+      const edgeTypes = api.getEdges(schema);
+      this.setState({
+        schema,
+        sources,
+        edgeTypes,
+      });
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   /**

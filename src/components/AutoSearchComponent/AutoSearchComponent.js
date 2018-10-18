@@ -19,7 +19,7 @@ import {
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import * as jc from 'json-cycle';
-import _ from 'lodash';
+import debounce from 'lodash.debounce';
 import api from '../../services/api';
 import util from '../../services/util';
 
@@ -53,7 +53,7 @@ class AutoSearchComponent extends Component {
       lastRid: null,
     };
     const { property } = props;
-    this.callApi = _.debounce(
+    this.callApi = debounce(
       this.callApi.bind(this),
       property.length > 1 ? LONG_DEBOUNCE_TIME : DEBOUNCE_TIME,
     );
@@ -168,7 +168,6 @@ class AutoSearchComponent extends Component {
     } = this.props;
 
     const autoSearchResults = (
-      inputValue,
       getItemProps,
       setState,
       highlightedIndex,
@@ -186,15 +185,14 @@ class AutoSearchComponent extends Component {
       <Downshift
         onChange={this.handleChange}
         itemToString={(item) => {
-          if (item) return item.name;
-          return null;
+          if (item && item.name) return item.name;
+          return util.castToExist(item);
         }}
       >
         {({
           getInputProps,
           getItemProps,
           isOpen,
-          inputValue,
           setState,
           getMenuProps,
           highlightedIndex,
@@ -261,7 +259,7 @@ class AutoSearchComponent extends Component {
                             id="autosearch-spinner"
                           />
                         )
-                        : autoSearchResults(inputValue, getItemProps, setState, highlightedIndex)}
+                        : autoSearchResults(getItemProps, setState, highlightedIndex)}
                     </List>
                   </Paper>
                 </div>)}

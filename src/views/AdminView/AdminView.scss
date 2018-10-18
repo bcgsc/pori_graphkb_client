@@ -71,63 +71,11 @@ h2 {
   }
 }
 
-$dot-spacing: 0 3px;
-$dot-size: 24px;
-.user-group-grid {
-  // display: grid;
-  // grid-template-columns: 1fr 1fr 1fr;
-  // grid-column-gap: 16px;
-  max-height: 600px;
-  overflow-y: auto;
-  ul {
-    column-count: 3;
-    @media (max-width: 1024px) {
-      column-count: 2;
-    }
-    li {
-      display: inline-block;
-      width: 100%;
-    }
-    svg {
-      fill: rgba(255, 255, 255, 0.54); // margin: $dot-spacing;
-      font-size: calc(#{$dot-size} - 4px);
-      margin: auto;
-    }
-  }
-  .permissions-icons {
-    // display: flex;
-    flex-direction: row-reverse;
-  }
-  .permissions-view {
-    margin: 3px 0; // display: flex;
-    .permissions-dots {
-      margin-left: auto;
-      display: flex;
-      justify-content: space-evenly;
-      .dot {
-        display: flex;
-        box-sizing: border-box;
-        border-radius: 50%;
-        height: $dot-size;
-        width: $dot-size;
-        background: radial-gradient(#ccc, #bbb);
-        margin: $dot-spacing;
-        transition: all 100ms;
-      }
-      .active-dot {
-        background: $md-secondary-color;
-        border: 1px solid darken($md-secondary-color, 10%);
-        box-shadow: #ccc 2px 2px;
-      }
-    }
-    .editing {
-      .dot {
-        cursor: pointer;
-      }
-    }
-  }
-}
 
+
+.permissions-icons {
+  flex-direction: row-reverse;
+}
 .paper {
   padding: 16px;
 }

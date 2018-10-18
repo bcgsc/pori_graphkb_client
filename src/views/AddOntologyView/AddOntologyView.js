@@ -14,6 +14,7 @@ import util from '../../services/util';
  * query page.
  */
 class AddOntologyView extends Component {
+  /* eslint-disable */
   constructor(props) {
     super(props);
     this.state = {

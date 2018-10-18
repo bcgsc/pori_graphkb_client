@@ -185,8 +185,8 @@ class AutoSearchComponent extends Component {
       <Downshift
         onChange={this.handleChange}
         itemToString={(item) => {
-          if (item) return item.name;
-          return null;
+          if (item && item.name) return item.name;
+          return util.castToExist(item);
         }}
       >
         {({

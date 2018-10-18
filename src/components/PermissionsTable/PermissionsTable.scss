@@ -1,0 +1,39 @@
+@import '../../globals';
+
+.alternating-table {
+  tr:nth-child(odd) {
+    background: #e8e8e8;
+  }
+}
+
+#sticky-row {
+  position: sticky;
+  top: -1px;
+  background: $background-light;
+  border: none;
+  th {
+    position: sticky;
+    top: -1px;
+    background: $background-light;
+    z-index: 1;
+  }
+}
+
+.user-group-grid {
+  max-height: 600px;
+  overflow-y: auto;
+  ul {
+    column-count: 3;
+    @media (max-width: 1024px) {
+      column-count: 2;
+    }
+    li {
+      display: inline-block;
+      width: 100%;
+    }
+  }
+}
+
+.permissions-view {
+  margin: 3px 0;
+}

@@ -31,7 +31,7 @@
     "start-js": "node scripts/start.js",
     "start": "npm-run-all -p watch-css start-js",
     "build": "npm run build-css && node scripts/build.js",
-    "test": "node scripts/test.js --env=jsdom",
+    "test": "cypress run && jest --env=jsdom",
     "test:unit": "node scripts/test.js --env=jsdom",
     "test:e2e": "cypress run",
     "test:ci": "jest \"^((?!api).)*$\" --env=jsdom --ci",

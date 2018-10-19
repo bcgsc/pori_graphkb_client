@@ -438,7 +438,7 @@ class DataView extends Component {
             </div>
           )
         }
-        {detailDrawer}
+        {schema && detailDrawer}
       </div>);
   }
 }

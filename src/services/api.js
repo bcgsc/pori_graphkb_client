@@ -294,7 +294,6 @@ const getEdges = (schema) => {
 export default {
   getEdges,
   collectOntologyProps,
-  getHeaders,
   getSchema,
   getSources,
   get,

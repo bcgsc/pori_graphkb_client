@@ -155,8 +155,9 @@ class OntologyFormComponent extends Component {
    * Re renders form input fields based on class editable properties.
    * @param {Event} e - User class selection event.
    */
-  async handleClassChange(e) {
-    const { form, schema } = this.state;
+  handleClassChange(e) {
+    const { form } = this.state;
+    const { schema } = this.props;
     this.setState({ form: util.initModel(form, e.target.value, schema) });
   }
 

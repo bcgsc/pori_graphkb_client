@@ -1,7 +1,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import { mount } from 'enzyme';
-import FormTemplater from './FormTemplater';
+import FormTemplater from '../FormTemplater/FormTemplater';
 
 describe('<FormTemplater />', () => {
   let wrapper;

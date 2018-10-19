@@ -2,7 +2,7 @@ import React from 'react';
 import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { FormControl } from '@material-ui/core';
-import ResourceSelectComponent from './ResourceSelectComponent';
+import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
 
 const mockData = [
   { name: 'opt-1', '@rid': '#1' },

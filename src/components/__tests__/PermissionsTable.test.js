@@ -1,7 +1,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import { mount } from 'enzyme';
-import PermissionsTable from './PermissionsTable';
+import PermissionsTable from '../PermissionsTable/PermissionsTable';
 
 const testSchema = {
   Disease: { inherits: ['Ontology'] },

@@ -2,8 +2,8 @@ import React from 'react';
 import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { spy } from 'sinon';
-import GraphComponent from './GraphComponent';
-import { GraphNode, GraphLink } from './kbgraph';
+import GraphComponent from '../GraphComponent/GraphComponent';
+import { GraphNode, GraphLink } from '../GraphComponent/kbgraph';
 
 const mockData = {
   '#1': {

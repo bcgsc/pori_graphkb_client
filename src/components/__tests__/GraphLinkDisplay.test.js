@@ -1,7 +1,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import { shallow } from 'enzyme';
-import GraphLinkDisplay from './GraphLinkDisplay';
+import GraphLinkDisplay from '../GraphLinkDisplay/GraphLinkDisplay';
 
 const mockData = {
   target: {

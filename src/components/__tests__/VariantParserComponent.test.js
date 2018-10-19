@@ -2,7 +2,7 @@ import React from 'react';
 import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { spy } from 'sinon';
-import VariantParserComponent from './VariantParserComponent';
+import VariantParserComponent from '../VariantParserComponent/VariantParserComponent';
 
 
 const mockClass = {

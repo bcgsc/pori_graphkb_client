@@ -226,7 +226,7 @@ class DetailDrawer extends Component {
           }
           return this.formatLongValue(name, node[name]);
         }
-        if (type === 'embeddedset') {
+        if (type === 'embeddedset' && node[name].length !== 0) {
           return (
             <React.Fragment key={name}>
               <ListItem button onClick={() => this.handleExpand(name)}>

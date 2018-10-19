@@ -22,7 +22,6 @@
     "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.4.0",
     "react-router-dom": "^4.4.0-alpha.0",
-    "react-router-native": "^4.3.0-rc.3",
     "resolve": "1.6.0",
     "webfontloader": "^1.6.28"
   },

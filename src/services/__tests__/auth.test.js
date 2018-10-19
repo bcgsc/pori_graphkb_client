@@ -21,7 +21,8 @@ describe('auth methods test', () => {
 
   it('expired', () => {
     auth.loadToken(FAKE_JWT);
-    expect(auth.isExpired());
+    /* eslint-disable-next-line */
+    expect(auth.isExpired()).to.be.true;
   });
 
   it('clearToken', () => {

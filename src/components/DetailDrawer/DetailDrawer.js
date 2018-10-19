@@ -429,7 +429,7 @@ class DetailDrawer extends Component {
  * @property {bool} isEdge - Flag for edge classes.
  */
 DetailDrawer.propTypes = {
-  schema: PropTypes.object.isRequired,
+  schema: PropTypes.object,
   node: PropTypes.object,
   onClose: PropTypes.func,
   isEdge: PropTypes.bool,
@@ -437,6 +437,7 @@ DetailDrawer.propTypes = {
 };
 
 DetailDrawer.defaultProps = {
+  schema: {},
   node: null,
   onClose: null,
   isEdge: false,

@@ -45,6 +45,7 @@ describe('ontology methods test', () => {
         '@rid': 'fail',
       },
       in_AliasOf: [{
+        '@class': 'AliasOf',
         '@rid': '#135',
         in: {
           '@rid': 'pass',
@@ -54,6 +55,7 @@ describe('ontology methods test', () => {
         },
       }],
       out_SubClassOf: [{
+        '@class': 'SubClassOf',
         '@rid': '#5252',
         in: {
           '@rid': 'pass',
@@ -65,5 +67,6 @@ describe('ontology methods test', () => {
     };
     const o = new Ontology(data);
     expect(o.getEdges()).to.have.length(2);
+    expect(o.getEdgeTypes()).to.have.length(2);
   });
 });

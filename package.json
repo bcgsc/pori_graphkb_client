@@ -33,6 +33,8 @@
     "start": "npm-run-all -p watch-css start-js",
     "build": "npm run build-css && node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
+    "test:unit": "node scripts/test.js --env=jsdom",
+    "test:e2e": "cypress run",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "jsdoc": "jsdoc -r src -R README.md -d jsdoc --package package.json",

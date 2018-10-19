@@ -437,7 +437,7 @@ DetailDrawer.propTypes = {
 };
 
 DetailDrawer.defaultProps = {
-  schema: {},
+  schema: null,
   node: null,
   onClose: null,
   isEdge: false,

@@ -19,8 +19,6 @@ describe('api methods test', () => {
     } catch (e) {
       expect(e).to.eq('Unauthorized, redirecting...');
     }
-
-    expect(true).to.eq(true);
   });
 
   it('can get schema', async () => {

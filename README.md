@@ -24,17 +24,28 @@ For more info on the database api, look [here](http://kbapi01:8061/api/v0.6.1/sp
 
 ## Testing
 
-End to end tests are made using cypress.io.
+Unit tests are made using Jest and Enzyme,end to end tests are made using Cypress.
 
-To run tests:
-* `npm run cypress:open`
+#### To run tests:
 
-This will open the cypress dashboard, which will list the available tests for the application. Clicking on an will open a new browser tab and run the suite.
+##### Jest Unit tests
+In terminal before running any test commands:
+```
+$ export JEST_USER='myusername'
+$ export JEST_PASSWORD='mysupersecretpassword'
+```
 
-#### Important: to run the authentication tests, you must set your password via the USER and PASSWORD environment variables in the same terminal you run cypress:open in:
+* `npm run test` or `npm run test:unit`
 
+##### Cypress Integration tests
+In terminal before running any test commands:
 ```
 $ export CYPRESS_USER='myusername'
 $ export CYPRESS_PASSWORD='mysupersecretpassword'
-$ npm run cypress:open
 ```
+
+Running all end to end tests:
+* `npm run cypress:run` or `npm run test:e2e`
+
+Opening cypress dashboard, run individual tests in mock browser.
+* `npm run cypress:open`

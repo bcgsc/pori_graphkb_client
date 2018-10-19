@@ -2,7 +2,7 @@ import React from 'react';
 import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { spy } from 'sinon';
-import TableComponent from './TableComponent';
+import TableComponent from '../TableComponent/TableComponent';
 import { Ontology } from '../../services/ontology';
 
 const mockData = {

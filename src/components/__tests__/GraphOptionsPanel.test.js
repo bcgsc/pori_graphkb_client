@@ -3,8 +3,8 @@ import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { spy } from 'sinon';
 import { Dialog } from '@material-ui/core';
-import GraphOptionsPanel from './GraphOptionsPanel';
-import { PropsMap, GraphOptions } from './kbgraph';
+import GraphOptionsPanel from '../GraphComponent/GraphOptionsPanel';
+import { PropsMap, GraphOptions } from '../GraphComponent/kbgraph';
 
 describe('<GraphOptionsPanel />', () => {
   let wrapper;

@@ -4,7 +4,7 @@ import { mount } from 'enzyme';
 import { spy } from 'sinon';
 import { TextField } from '@material-ui/core';
 import Downshift from 'downshift';
-import AutoSearchComponent from './AutoSearchComponent';
+import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
 
 spy(AutoSearchComponent.prototype, 'refreshOptions');
 

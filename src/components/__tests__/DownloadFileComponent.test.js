@@ -1,7 +1,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import { shallow } from 'enzyme';
-import DownloadFileComponent from './DownloadFileComponent';
+import DownloadFileComponent from '../DownloadFileComponent/DownloadFileComponent';
 
 describe('<DetailDrawer />', () => {
   let wrapper;

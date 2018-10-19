@@ -4,7 +4,7 @@ import {
   GraphNode,
   GraphLink,
   GraphOptions,
-} from './kbgraph';
+} from '../GraphComponent/kbgraph';
 
 describe('kbgraph', () => {
   const testColumns = ['name', 'sourceId', 'source'];

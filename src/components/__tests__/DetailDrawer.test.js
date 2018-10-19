@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { mount, shallow } from 'enzyme';
 import { spy } from 'sinon';
 import { Drawer } from '@material-ui/core';
-import DetailDrawer from './DetailDrawer';
+import DetailDrawer from '../DetailDrawer/DetailDrawer';
 import { Ontology } from '../../services/ontology';
 
 describe('<DetailDrawer />', () => {

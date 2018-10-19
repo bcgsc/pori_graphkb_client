@@ -2,7 +2,7 @@ import React from 'react';
 import { expect } from 'chai';
 import { spy } from 'sinon';
 import { mount } from 'enzyme';
-import OntologyFormComponent from './OntologyFormComponent';
+import OntologyFormComponent from '../OntologyFormComponent/OntologyFormComponent';
 
 const testSchema = {
   Disease: {

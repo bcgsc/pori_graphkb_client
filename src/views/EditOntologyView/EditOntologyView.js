@@ -8,7 +8,7 @@ import * as jc from 'json-cycle';
 import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
 import api from '../../services/api';
 import util from '../../services/util';
-import config from '../../config.json';
+import config from '../../static/config';
 import { withSchema } from '../../services/SchemaContext';
 
 const { DEFAULT_NEIGHBORS } = config;

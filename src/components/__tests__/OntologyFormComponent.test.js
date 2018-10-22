@@ -58,14 +58,20 @@ describe('<OntologyFormComponent />', () => {
     spy(OntologyFormComponent.prototype, 'componentDidMount');
   });
 
-  it('structure', () => {
+  beforeEach(() => {
+    OntologyFormComponent.prototype.componentDidMount.callCount = 0;
+  });
+
+  it('does not crash', () => {
     wrapper = mount(
       <OntologyFormComponent schema={testSchema} />,
     );
     expect(wrapper.type()).to.equal(OntologyFormComponent);
+    expect(OntologyFormComponent.prototype.componentDidMount).to.have.property('callCount', 1);
+    OntologyFormComponent.prototype.componentDidMount.callCount = 0;
   });
 
-  it('onChange simulation', () => {
+  it('onChange simulations trigger handlers', () => {
     wrapper = mount(
       <OntologyFormComponent
         variant="add"
@@ -83,7 +89,7 @@ describe('<OntologyFormComponent />', () => {
     });
   });
 
-  it('with initial node', () => {
+  it('does not crash in edit variant with node, calls componentDidMount', () => {
     wrapper = mount(
       <OntologyFormComponent
         variant="edit"
@@ -94,10 +100,10 @@ describe('<OntologyFormComponent />', () => {
       />,
     );
 
-    expect(OntologyFormComponent.prototype.componentDidMount).to.have.property('callCount', 3);
+    expect(OntologyFormComponent.prototype.componentDidMount).to.have.property('callCount', 1);
   });
 
-  it('subset deletion', () => {
+  it('subset deletion successfully removes chip', () => {
     wrapper = mount(
       <OntologyFormComponent
         variant="add"
@@ -108,10 +114,10 @@ describe('<OntologyFormComponent />', () => {
     wrapper.find('input#subset-temp')
       .simulate('keydown', { keyCode: 13 });
     wrapper.find('.subset-chip svg').simulate('click');
-    expect(!wrapper.find('.subset-chip'));
+    expect(wrapper.find('.subset-chip')).to.have.lengthOf(0);
   });
 
-  it('subset undo', () => {
+  it('displays right chips + classes after subset delete undo', () => {
     testNode.subsets = ['test'];
     wrapper = mount(
       <OntologyFormComponent
@@ -130,7 +136,7 @@ describe('<OntologyFormComponent />', () => {
     expect(wrapper.find('.deleted-chip')).to.have.lengthOf(0);
   });
 
-  it('relationships', () => {
+  it('form does not add empty relationship, modifies staged new relationship correctly', () => {
     wrapper = mount(
       <OntologyFormComponent
         variant="edit"
@@ -178,7 +184,7 @@ describe('<OntologyFormComponent />', () => {
     expect(wrapper.find('tr.deleted')).to.have.lengthOf(0);
   });
 
-  it('validation and submission', () => {
+  it('validation and submission calls correct handlers', () => {
     const handleFinish = jest.fn();
     const handleCancel = jest.fn();
     const handleSubmit = jest.fn();

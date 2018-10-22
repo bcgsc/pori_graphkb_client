@@ -14,9 +14,9 @@ const mockData = [
 
 describe('<ResourceSelectComponent />', () => {
   let wrapper;
-  const val = '';
+  const val = 'best';
 
-  it('structure', () => {
+  it('renders FormControl child correctly', () => {
     wrapper = mount(
       <ResourceSelectComponent
         resources={mockData}
@@ -26,7 +26,7 @@ describe('<ResourceSelectComponent />', () => {
     expect(wrapper.children().type()).to.equal(FormControl);
   });
 
-  it('other props', () => {
+  it('props are passed down correctly', () => {
     wrapper = mount(
       <ResourceSelectComponent
         resources={mockData}
@@ -35,5 +35,6 @@ describe('<ResourceSelectComponent />', () => {
       />,
     );
     expect(wrapper.find('input#resource-select-test').props().name).to.equal('test');
+    expect(wrapper.find('input#resource-select-test').props().value).to.equal('best');
   });
 });

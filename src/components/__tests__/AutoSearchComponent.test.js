@@ -11,14 +11,14 @@ spy(AutoSearchComponent.prototype, 'refreshOptions');
 describe('<AutoSearchComponent />', () => {
   let wrapper;
 
-  it('structure', () => {
+  it('should correctly render a Downshift component, with nested div and a TextField', () => {
     wrapper = mount(<AutoSearchComponent />);
     expect(wrapper.children().type()).to.equal(Downshift);
     expect(wrapper.children().children().type()).to.equal('div');
     expect(wrapper.find('.autosearch-popper-node').children().type()).to.equal(TextField);
   });
 
-  it('allows props', () => {
+  it('allows props to be correctly distributed', () => {
     wrapper = mount((
       <AutoSearchComponent
         name="testName"
@@ -32,7 +32,7 @@ describe('<AutoSearchComponent />', () => {
     expect(wrapper.find('input').props().disabled).to.equal(true);
   });
 
-  it('focusing', () => {
+  it('focuses input component', () => {
     wrapper = mount((
       <AutoSearchComponent />
     ));
@@ -41,10 +41,9 @@ describe('<AutoSearchComponent />', () => {
     expect(wrapper.find('input').matchesElement(focusedEl));
   });
 
-  it('input events', () => {
+  it('input events trigger handlers', () => {
     // Mocks
     const onChange = jest.fn();
-    AutoSearchComponent.prototype.callApi = jest.fn();
 
     wrapper = mount((
       <AutoSearchComponent
@@ -54,16 +53,19 @@ describe('<AutoSearchComponent />', () => {
     ));
     wrapper.setState({ options: [{ '@rid': '#1', lame: 'test' }, { '@rid': '#3', name: 'test' }] });
     wrapper.simulate('change');
+
     wrapper.find('input').simulate('change', { target: { '@rid': '#5', value: 'test' } });
     wrapper.find('input').simulate('focus');
     wrapper.find('input').simulate('keyup');
+
     wrapper.setState({ options: [{ name: 'test' }] });
     wrapper.find('input').simulate('blur');
+
     expect(onChange.mock.calls.length).to.be.gt(0);
     expect(AutoSearchComponent.prototype.refreshOptions).to.have.property('callCount', 1);
   });
 
-  it('loading', () => {
+  it('loading results displays spinner', () => {
     const onChange = jest.fn();
     wrapper = mount((
       <AutoSearchComponent
@@ -77,7 +79,7 @@ describe('<AutoSearchComponent />', () => {
     expect(wrapper.find('#autosearch-spinner')).to.exist;
   });
 
-  it('componentWillUnmount', () => {
+  it('componentWillUnmount doesn\'t crash', () => {
     const onChange = jest.fn();
 
     wrapper = mount((

@@ -6,7 +6,7 @@ import DownloadFileComponent from '../DownloadFileComponent/DownloadFileComponen
 describe('<DetailDrawer />', () => {
   let wrapper;
 
-  it('init', () => {
+  it('renders child and wrapper correctly', () => {
     wrapper = shallow((
       <DownloadFileComponent>
         <button type="button" />
@@ -16,7 +16,7 @@ describe('<DetailDrawer />', () => {
     expect(wrapper.children().type()).to.eq('button');
   });
 
-  it('classes', () => {
+  it('applies classes to children and wrapper properly', () => {
     wrapper = shallow((
       <DownloadFileComponent className="foo">
         <button type="button" className="bar" />
@@ -26,7 +26,7 @@ describe('<DetailDrawer />', () => {
     expect(wrapper.children().hasClass('bar'));
   });
 
-  it('simulate', () => {
+  it('calls passed in file content function', () => {
     const mock = jest.fn();
     mock.mockReturnValueOnce(10);
 
@@ -42,7 +42,7 @@ describe('<DetailDrawer />', () => {
     wrapper.simulate('keyup', { keyCode: 13 });
   });
 
-  it('IE', () => {
+  it('IE browser doesn\'t crash everything (downloads correctly)', () => {
     const mock = jest.fn();
     mock.mockReturnValueOnce(10);
 
@@ -56,5 +56,6 @@ describe('<DetailDrawer />', () => {
     ));
     window.navigator.msSaveBlob = () => { };
     wrapper.simulate('click');
+    expect(mock.mock.calls.length).to.eq(1);
   });
 });

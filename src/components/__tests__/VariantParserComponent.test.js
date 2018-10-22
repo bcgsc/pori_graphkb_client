@@ -78,7 +78,7 @@ describe('<VariantParserComponent />', () => {
     spy(VariantParserComponent.prototype, 'componentDidMount');
   });
 
-  it('init', () => {
+  it('calls componentDidMount and doesn\' die', () => {
     const handleFinish = jest.fn();
     wrapper = mount(
       <VariantParserComponent
@@ -89,7 +89,7 @@ describe('<VariantParserComponent />', () => {
     expect(VariantParserComponent.prototype.componentDidMount).to.have.property('callCount', 1);
   });
 
-  it('simulations', () => {
+  it('correctly calls handlers on shorthand change and form fields', () => {
     const handleSubmit = jest.fn();
     wrapper = mount(
       <VariantParserComponent
@@ -109,7 +109,7 @@ describe('<VariantParserComponent />', () => {
     expect(handleSubmit.mock.calls.length).to.eq(1);
   });
 
-  it('invalid form', () => {
+  it('disables submit button if form state is invalid', () => {
     const handleSubmit = jest.fn();
     mockSchema.PositionalVariant.properties.name.mandatory = true;
     mockSchema.PositionalVariant.properties.link = {
@@ -128,7 +128,7 @@ describe('<VariantParserComponent />', () => {
       .to.have.property('disabled');
   });
 
-  it('violated attributes', async () => {
+  it('correctly updates shorthand', () => {
     mockSchema.PositionalVariant.properties.break1Start = {
       type: 'embedded',
       name: 'break1Start',

@@ -7,7 +7,7 @@ describe('ontology methods test', () => {
     Ontology.loadEdges(edges);
   });
 
-  it('OntologyEdge', () => {
+  it('OntologyEdge getId', () => {
     const data = {
       '@rid': 'pass',
       '#rid': 'fail',

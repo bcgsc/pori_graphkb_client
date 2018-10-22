@@ -362,7 +362,8 @@ const positionInit = (x, y, i, n) => {
 
 /**
  * Returns the editable properties of target ontology class.
- * @param {string} className - requested class name
+ * @param {string} className - requested class name.
+ * @param {Object} schema - Knowledge base schema.
  */
 const getClass = (className, schema) => {
   const VPropKeys = schema.V ? Object.keys(schema.V.properties) : [];

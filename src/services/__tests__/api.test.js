@@ -10,7 +10,7 @@ describe('api methods test', () => {
     expect(jwt.decode(kbToken).user.name).to.eq(user);
   });
 
-  it('cant get token', async () => {
+  it('can\'t get token', async () => {
     const user = process.env.USER;
     const password = process.env.PASSWORD;
 

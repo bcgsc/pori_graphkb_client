@@ -1,19 +1,19 @@
 /**
  * @module /views/AddOntologyView
  */
-
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
 import api from '../../services/api';
 import util from '../../services/util';
+import { withSchema } from '../../services/SchemaContext';
 
 /**
  * View for editing or adding database nodes. Includes a NodeFormComponent with the
  * 'add' variant. Submissions will post to the server, and redirect user to the home
  * query page.
  */
-class AddOntologyView extends Component {
+class AddOntologyViewBase extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -101,9 +101,21 @@ class AddOntologyView extends Component {
 /**
  * @namespace
  * @property {Object} history - history state object.
+ * @property {Object} schema - Knowledgebase schema object.
  */
-AddOntologyView.propTypes = {
+AddOntologyViewBase.propTypes = {
   history: PropTypes.object.isRequired,
 };
 
-export default AddOntologyView;
+const AddOntologyView = withSchema(AddOntologyViewBase);
+
+/**
+ * Export consumer component and regular component for testing.
+ */
+export {
+  AddOntologyView,
+  AddOntologyViewBase,
+};
+
+
+export default AddOntologyViewBase;

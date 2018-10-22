@@ -15,10 +15,10 @@ import {
 } from '@material-ui/core/';
 import * as qs from 'querystring';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
-import api from '../../services/api';
 import util from '../../services/util';
 import FormTemplater from '../../components/FormTemplater/FormTemplater';
 import config from '../../config';
+import { withSchema } from '../../services/SchemaContext';
 
 const DEFAULT_ORDER = [
   'name',
@@ -32,7 +32,7 @@ const DEFAULT_ORDER = [
  * the data results route to display the returned data. Forms are dynamically
  * generated based off of the database schema.
  */
-class AdvancedQueryView extends Component {
+class AdvancedQueryViewBase extends Component {
   constructor(props) {
     super(props);
 
@@ -52,7 +52,7 @@ class AdvancedQueryView extends Component {
    * Initializes valid sources.
    */
   async componentDidMount() {
-    const { history } = this.props;
+    const { history, schema } = this.props;
     if (
       history.location
       && history.location.state
@@ -62,7 +62,6 @@ class AdvancedQueryView extends Component {
       this.setState({ message: `${name || ''}: ${message}` });
     }
 
-    const schema = await api.getSchema();
     const ontologyTypes = [{ name: 'Ontology', properties: null, route: 'ontologies' }];
     ontologyTypes.push(...util.getOntologies(schema));
 
@@ -72,7 +71,6 @@ class AdvancedQueryView extends Component {
     this.setState({
       ontologyTypes,
       form,
-      schema,
     });
   }
 
@@ -80,7 +78,8 @@ class AdvancedQueryView extends Component {
    * Formats query string to be passed into url.
    */
   bundle() {
-    const { form, schema } = this.state;
+    const { form } = this.state;
+    const { schema } = this.props;
     const params = [{ name: '@class', type: 'string' }];
     params.push(...config.ONTOLOGY_QUERY_PARAMS);
     const editableProps = util.getClass(form['@class'], schema).properties || [];
@@ -117,7 +116,8 @@ class AdvancedQueryView extends Component {
    * @param {Event} e - User class selection event.
    */
   async handleClassChange(e) {
-    const { form, schema } = this.state;
+    const { form } = this.state;
+    const { schema } = this.state;
     const newForm = util.initModel(form, e.target.value || 'Ontology', schema, config.ONTOLOGY_QUERY_PARAMS);
     newForm.subsets = Array.isArray(newForm.subsets) ? newForm.subsets.join('') : newForm.subsets || '';
     this.setState({ form: newForm });
@@ -135,9 +135,8 @@ class AdvancedQueryView extends Component {
       form,
       ontologyTypes,
       message,
-      schema,
     } = this.state;
-    const { history } = this.props;
+    const { history, schema } = this.props;
 
     if (!form) return null;
 
@@ -217,10 +216,20 @@ class AdvancedQueryView extends Component {
 
 /**
  * @namespace
- * @property {object} history - Application history state object.
+ * @property {Object} history - Application history state object.
+ * @property {Object} schema - Knowledgebase schema object.
  */
-AdvancedQueryView.propTypes = {
+AdvancedQueryViewBase.propTypes = {
   history: PropTypes.object.isRequired,
+  schema: PropTypes.object.isRequired,
 };
 
-export default AdvancedQueryView;
+const AdvancedQueryView = withSchema(AdvancedQueryViewBase);
+
+/**
+ * Export consumer component and regular component for testing.
+ */
+export {
+  AdvancedQueryView,
+  AdvancedQueryViewBase,
+};

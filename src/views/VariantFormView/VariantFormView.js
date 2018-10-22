@@ -5,24 +5,14 @@ import { Paper, Typography, Button } from '@material-ui/core';
 import VariantParserComponent from '../../components/VariantParserComponent/VariantParserComponent';
 import util from '../../services/util';
 import api from '../../services/api';
+import { withSchema } from '../../services/SchemaContext';
 
-class VariantFormView extends Component {
+class VariantFormViewBase extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      schema: null,
-    };
     this.handleCancel = this.handleCancel.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
     this.submitVariant = this.submitVariant.bind(this);
-  }
-
-  /**
-   * Loads api schema into component state.
-   */
-  async componentDidMount() {
-    const schema = await api.getSchema();
-    this.setState({ schema });
   }
 
   /**
@@ -45,7 +35,7 @@ class VariantFormView extends Component {
    * Submits a POST request to the server with current variant data.
    */
   async submitVariant(variant) {
-    const { schema } = this.state;
+    const { schema } = this.props;
     const copy = Object.assign({}, variant);
     const classSchema = util.getClass('PositionalVariant', schema).properties;
     Object.keys(copy).forEach((k) => {
@@ -71,7 +61,7 @@ class VariantFormView extends Component {
   }
 
   render() {
-    const { schema } = this.state;
+    const { schema } = this.props;
     if (!schema) return null;
     return (
       <div className="variant-wrapper">
@@ -103,9 +93,16 @@ class VariantFormView extends Component {
 /**
  * @namespace
  * @property {Object} history - Application routing history object.
+ * @property {Object} schema - Knowledgebase schema object.
  */
-VariantFormView.propTypes = {
+VariantFormViewBase.propTypes = {
   history: PropTypes.object.isRequired,
+  schema: PropTypes.object.isRequired,
 };
 
-export default VariantFormView;
+const VariantFormView = withSchema(VariantFormViewBase);
+
+export {
+  VariantFormViewBase,
+  VariantFormView,
+};

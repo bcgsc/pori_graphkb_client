@@ -34,7 +34,7 @@
     "test": "cypress run && jest --env=jsdom",
     "test:unit": "node scripts/test.js --env=jsdom",
     "test:e2e": "cypress run --config video=false",
-    "test:ci": "jest \"^((?!api).)*$\" --env=jsdom --ci",
+    "test:ci": "jest \"^((?!api).)*$\" --env=jsdom --ci && bamboo-jest-coverage-parser",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "jsdoc": "jsdoc -r src -R README.md -d jsdoc --package package.json",
@@ -50,6 +50,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react-app": "^3.1.1",
     "babel-runtime": "6.26.0",
+    "bamboo-mocha-jest-code-coverage": "^1.0.0",
     "case-sensitive-paths-webpack-plugin": "^2.1.1",
     "chai": "^4.2.0",
     "chalk": "^1.1.3",
@@ -93,7 +94,7 @@
     "collectCoverage": true,
     "collectCoverageFrom": [
       "src/components/**/*.{js,jsx,mjs}",
-      "src/services/**/*.{js,jsx,mjs}"
+      "src/services/**/^((?!api).)*$.{js,jsx,mjs}"
     ],
     "setupFiles": [
       "<rootDir>/config/polyfills.js",

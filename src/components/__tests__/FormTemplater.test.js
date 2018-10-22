@@ -74,7 +74,7 @@ describe('<FormTemplater />', () => {
   };
 
 
-  it('init', () => {
+  it('successfully renders the correct number of list items', () => {
     wrapper = mount(
       <FormTemplater
         schema={mockSchema}
@@ -86,7 +86,7 @@ describe('<FormTemplater />', () => {
     expect(wrapper.find('li')).to.have.lengthOf(Object.keys(mockClass).length);
   });
 
-  it('different component', () => {
+  it('correctly renders different list component', () => {
     wrapper = mount(
       <FormTemplater
         schema={mockSchema}
@@ -102,7 +102,7 @@ describe('<FormTemplater />', () => {
       .forEach(child => expect(child.children().props().component).to.equal('div'));
   });
 
-  it('grouping', () => {
+  it('successfully groups two properties into single vertical space', () => {
     wrapper = mount(
       <FormTemplater
         schema={mockSchema}
@@ -115,6 +115,6 @@ describe('<FormTemplater />', () => {
       />,
     );
 
-    expect(wrapper.find('.form-templater-group-wrapper'));
+    expect(wrapper.find('.form-templater-group-wrapper')).to.have.length.gte(1);
   });
 });

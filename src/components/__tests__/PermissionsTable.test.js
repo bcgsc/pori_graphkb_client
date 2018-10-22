@@ -22,7 +22,7 @@ const testUserGroup = {
 describe('<PermissionsTable />', () => {
   let wrapper;
 
-  it('structure', () => {
+  it('correctly renders wrapper table without any rows', () => {
     wrapper = mount(
       <PermissionsTable schema={testSchema} />,
     );
@@ -30,7 +30,7 @@ describe('<PermissionsTable />', () => {
     expect(wrapper.find('tr.permissions-view')).to.have.lengthOf(0);
   });
 
-  it('with usergroup', () => {
+  it('renders correct number of rows with an input usergroup', () => {
     wrapper = mount(
       <PermissionsTable
         schema={testSchema}
@@ -39,7 +39,8 @@ describe('<PermissionsTable />', () => {
     );
     expect(wrapper.find('tr.permissions-view')).to.have.lengthOf(4);
   });
-  it('event functions', () => {
+
+  it('event functions are triggered correctly on checkbox changes', () => {
     const handleChange = jest.fn();
     const handleCheckAll = jest.fn();
     wrapper = mount(

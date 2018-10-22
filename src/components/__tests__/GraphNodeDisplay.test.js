@@ -19,7 +19,7 @@ const mockData = new GraphNode(
 describe('<GraphNodeDisplay />', () => {
   let wrapper;
 
-  it('structure', () => {
+  it('renders children correctly', () => {
     wrapper = shallow(
       <GraphNodeDisplay
         node={mockData}
@@ -29,7 +29,7 @@ describe('<GraphNodeDisplay />', () => {
     expect(wrapper.children().first().type()).to.equal('text');
   });
 
-  it('with label', () => {
+  it('renders correct label correctly', () => {
     wrapper = shallow(
       <GraphNodeDisplay
         node={mockData}
@@ -40,7 +40,7 @@ describe('<GraphNodeDisplay />', () => {
     expect(wrapper.children('text').text()).to.equal('node');
   });
 
-  it('detail', () => {
+  it('mutes node if not selected for detail viewing', () => {
     const detail = { '@rid': '#2' };
     wrapper = shallow(
       <GraphNodeDisplay
@@ -54,7 +54,7 @@ describe('<GraphNodeDisplay />', () => {
     expect(wrapper.find('circle.node').props().style.opacity).to.eq(0.6);
   });
 
-  it('invalid node', () => {
+  it('does not render invalid node', () => {
     wrapper = shallow(
       <GraphNodeDisplay
         node={null}
@@ -62,11 +62,11 @@ describe('<GraphNodeDisplay />', () => {
         detail={mockData}
       />,
     );
-    expect(!wrapper.find('circle.node'));
+    expect(wrapper.find('circle.node')).to.have.lengthOf(0);
     wrapper.unmount();
   });
 
-  it('applyDrag', () => {
+  it('successfully applies drag function to node !d3 and enzyme simulate don\'t play well together :(', () => {
     const applyDrag = jest.fn();
     wrapper = mount(
       <GraphNodeDisplay

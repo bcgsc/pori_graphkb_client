@@ -82,7 +82,7 @@ describe('<TableComponent />', () => {
     spy(TableComponent.prototype, 'handleColumnCheck');
   });
 
-  it('init', () => {
+  it('correctly calls componentDidMount and does not blow up', () => {
     wrapper = mount(
       <TableComponent
         data={{}}
@@ -99,7 +99,7 @@ describe('<TableComponent />', () => {
     expect(TableComponent.prototype.componentDidMount).to.have.property('callCount', 1);
   });
 
-  it('with data', () => {
+  it('renders correct number of rows given input data', () => {
     wrapper = mount(
       <TableComponent
         data={mockData}
@@ -118,7 +118,7 @@ describe('<TableComponent />', () => {
     expect(wrapper.find('tbody tr')).to.have.lengthOf(4);
   });
 
-  it('table header and row change simulations', () => {
+  it('table header and row change simulations trigger correct handlers', () => {
     const handleDetailDrawerOpen = jest.fn();
     const handleCheckbox = jest.fn();
     const handleCheckAll = jest.fn();
@@ -181,7 +181,7 @@ describe('<TableComponent />', () => {
     expect(handleGraphRedirect.mock.calls.length).to.eq(1);
   });
 
-  it('pagination', () => {
+  it('pagination triggers handlers correctly', () => {
     const handleSubsequentPagination = jest.fn();
     wrapper = mount(
       <TableComponent
@@ -221,7 +221,7 @@ describe('<TableComponent />', () => {
     expect(TableComponent.prototype.handleChange).to.have.property('callCount', 1);
   });
 
-  it('column dialog', () => {
+  it('column dialog is opened correctly', () => {
     wrapper = mount(
       <TableComponent
         data={mockData}

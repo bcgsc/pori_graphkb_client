@@ -6,7 +6,7 @@ import {
   GraphOptions,
 } from '../GraphComponent/kbgraph';
 
-describe('kbgraph', () => {
+describe('kbgraph method i/o validations', () => {
   const testColumns = ['name', 'sourceId', 'source'];
   const testData = [
     { name: 'one', sourceId: 'sourceOne', source: 'test' },

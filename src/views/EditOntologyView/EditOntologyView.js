@@ -23,7 +23,6 @@ class EditOntologyViewBase extends Component {
     super(props);
     this.state = {
       node: null,
-      schema: null,
       sources: [],
       edgeTypes: [],
     };
@@ -54,7 +53,7 @@ class EditOntologyViewBase extends Component {
    * Adds new edges and deletes specified ones, then patches property changes to the api.
    */
   async handleSubmit(form, relationships, originalNode) {
-    const { schema } = this.state;
+    const { schema } = this.props;
 
     const changedEdges = [];
 
@@ -106,7 +105,8 @@ class EditOntologyViewBase extends Component {
    */
   async handleDeleteNode() {
     this.handleDialogClose();
-    const { originalNode, schema } = this.state;
+    const { originalNode } = this.state;
+    const { schema } = this.props;
     const { route } = util.getClass(originalNode['@class'], schema);
     await api.delete(`${route}/${originalNode['@rid'].slice(1)}`);
   }
@@ -130,13 +130,12 @@ class EditOntologyViewBase extends Component {
   render() {
     const {
       node,
-      schema,
       sources,
       edgeTypes,
     } = this.state;
+    const { schema } = this.props;
 
-
-    if (node && schema) {
+    if (node) {
       return (
         <OntologyFormComponent
           variant="edit"

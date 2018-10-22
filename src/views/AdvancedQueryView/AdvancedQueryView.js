@@ -117,7 +117,7 @@ class AdvancedQueryViewBase extends Component {
    */
   async handleClassChange(e) {
     const { form } = this.state;
-    const { schema } = this.state;
+    const { schema } = this.props;
     const newForm = util.initModel(form, e.target.value || 'Ontology', schema, config.ONTOLOGY_QUERY_PARAMS);
     newForm.subsets = Array.isArray(newForm.subsets) ? newForm.subsets.join('') : newForm.subsets || '';
     this.setState({ form: newForm });

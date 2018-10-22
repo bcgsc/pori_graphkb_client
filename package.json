@@ -94,7 +94,7 @@
     "collectCoverage": true,
     "collectCoverageFrom": [
       "src/components/**/*.{js,jsx,mjs}",
-      "src/services/**/^((?!api).)*$.{js,jsx,mjs}"
+      "src/services/**/!(api).{js,jsx,mjs}"
     ],
     "setupFiles": [
       "<rootDir>/config/polyfills.js",

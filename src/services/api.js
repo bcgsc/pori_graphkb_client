@@ -4,7 +4,7 @@
  */
 import * as jc from 'json-cycle';
 import auth from './auth';
-import config from '../config.json';
+import config from '../static/config.json';
 import history from './history';
 
 const {

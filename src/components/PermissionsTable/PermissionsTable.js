@@ -11,7 +11,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import util from '../../services/util';
-import config from '../../config.json';
+import config from '../../static/config.json';
 
 const { PERMISSIONS } = config;
 const KEY_MAPPER = 'CRUD';

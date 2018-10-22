@@ -6,7 +6,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import './GraphNodeDisplay.css';
 import * as d3 from 'd3';
-import config from '../../config.json';
+import config from '../../static/config.json';
 import { GraphNode } from '../GraphComponent/kbgraph';
 
 const { NODE_RADIUS } = config.GRAPH_PROPERTIES;
@@ -38,7 +38,6 @@ class GraphNodeDisplay extends PureComponent {
     nodeElement.call(d3.drag()
       .on('start', null));
   }
-
 
   render() {
     const {

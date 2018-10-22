@@ -46,8 +46,8 @@ import {
   QueryView,
   VariantFormView,
 } from './views';
-import logo from './logo.png';
-import label from './image.png';
+import logo from './static/logo.png';
+import title from './static/title.png';
 import auth from './services/auth';
 import history from './services/history';
 import api from './services/api';
@@ -130,6 +130,7 @@ class App extends Component {
 
   /**
    * Disables action buttons in headers and force redirects to /login.
+   * setState call required so component is re rendered.
    */
   handleAuthenticate() {
     this.setState({ loggedIn: true });
@@ -243,7 +244,7 @@ class App extends Component {
             <ListItemIcon>
               <img id="bcc-logo" src={logo} alt="" />
             </ListItemIcon>
-            <img id="bcc-label" src={label} alt="" />
+            <img id="bcc-label" src={title} alt="" />
           </ListItem>
         </div>
       </Drawer>

@@ -21,7 +21,7 @@ import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
 import api from '../../services/api';
 import { Ontology, OntologyEdge } from '../../services/ontology';
 import { withSchema } from '../../services/SchemaContext';
-import config from '../../config.json';
+import config from '../../static/config';
 
 const { DEFAULT_NEIGHBORS } = config;
 const DEFAULT_LIMIT = 1000;

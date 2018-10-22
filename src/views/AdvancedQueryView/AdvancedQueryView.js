@@ -17,7 +17,7 @@ import * as qs from 'querystring';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
 import util from '../../services/util';
 import FormTemplater from '../../components/FormTemplater/FormTemplater';
-import config from '../../config';
+import config from '../../static/config';
 import { withSchema } from '../../services/SchemaContext';
 
 const DEFAULT_ORDER = [

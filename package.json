@@ -11,7 +11,7 @@
     "history": "^4.7.2",
     "json-cycle": "^1.3.0",
     "jsonwebtoken": "^8.3.0",
-    "knowledgebase-parser": "git+ssh://git@svn.bcgsc.ca:7999/vdb/knowledgebase_parser.git#v0.3.2",
+    "knowledgebase-parser": "git+ssh://git@svn.bcgsc.ca:7999/vdb/knowledgebase_parser.git#v0.3.4",
     "lodash.debounce": "^4.0.8",
     "lodash.omit": "^4.5.0",
     "object-assign": "4.1.1",
@@ -94,7 +94,7 @@
     "collectCoverage": true,
     "collectCoverageFrom": [
       "src/components/**/*.{js,jsx,mjs}",
-      "src/services/**/^((?!api).)*$.{js,jsx,mjs}"
+      "src/services/**/!(api).{js,jsx,mjs}"
     ],
     "setupFiles": [
       "<rootDir>/config/polyfills.js",

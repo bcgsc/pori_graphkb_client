@@ -168,8 +168,7 @@ describe('Table Test', () => {
    * Tests table filters
    */
   it('Filtering', () => {
-    getName('diso');
-
+    cy.visit('/data/table?name=~diso&@class=Disease');
     cy.get('div.filter-btn button').each((button, i) => {
       if (i === 2) {
         cy.wrap(button).click({ force: true });

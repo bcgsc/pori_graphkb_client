@@ -17,8 +17,7 @@ class AddOntologyViewBase extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      schema: null,
-      sources: null,
+      sources: [],
       edgeTypes: [],
     };
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -29,12 +28,11 @@ class AddOntologyViewBase extends Component {
    * Collects schema, sources, and knowledgebase edge types.
    */
   async componentDidMount() {
+    const { schema } = this.props;
     try {
-      const schema = await api.getSchema();
       const sources = await api.getSources();
       const edgeTypes = api.getEdges(schema);
       this.setState({
-        schema,
         sources,
         edgeTypes,
       });
@@ -45,7 +43,7 @@ class AddOntologyViewBase extends Component {
    * Posts new node to the api, then posts all new edges.
    */
   async handleSubmit(form, relationships) {
-    const { schema } = this.state;
+    const { schema } = this.props;
 
     const newEdges = [];
     const payload = util.parsePayload(form, util.getClass(form['@class'], schema).properties);
@@ -79,10 +77,10 @@ class AddOntologyViewBase extends Component {
 
   render() {
     const {
-      schema,
       sources,
       edgeTypes,
     } = this.state;
+    const { schema } = this.props;
 
     return schema && (
       <OntologyFormComponent
@@ -105,6 +103,7 @@ class AddOntologyViewBase extends Component {
  */
 AddOntologyViewBase.propTypes = {
   history: PropTypes.object.isRequired,
+  schema: PropTypes.object.isRequired,
 };
 
 const AddOntologyView = withSchema(AddOntologyViewBase);

@@ -12,7 +12,7 @@ import icons from '../../icons/icons';
 /**
  * Feedback page
  */
-function iconsview() {
+function IconsView() {
   return (
     <List style={{ columnCount: 3 }}>
       {icons.getAllIcons().map(pair => (
@@ -29,4 +29,4 @@ function iconsview() {
   );
 }
 
-export default iconsview;
+export default IconsView;

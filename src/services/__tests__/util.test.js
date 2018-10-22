@@ -27,7 +27,7 @@ const schema = {
   },
 };
 
-describe('util methods test', () => {
+describe('validate outputs for util methods', () => {
   it('antiCamelCase', () => {
     const testStrings = [
       'testString',

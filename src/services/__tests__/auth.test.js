@@ -19,26 +19,25 @@ describe('auth methods test', () => {
     expect(auth.getToken()).to.eq('pass');
   });
 
-  it('expired', () => {
+  it('detects expired token', () => {
     auth.loadToken(FAKE_JWT);
-    /* eslint-disable-next-line */
-    expect(auth.isExpired()).to.be.true;
+    expect(auth.isExpired()).to.eq(true);
   });
 
-  it('clearToken', () => {
+  it('clearToken clears token', () => {
     const token = 'pass';
     auth.loadToken(token);
     expect(auth.getToken()).to.eq('pass');
     auth.clearToken();
-    expect(!auth.getToken());
+    expect(auth.getToken()).to.eq(null);
   });
 
-  it('getUser', () => {
+  it('getUser gets user', () => {
     auth.loadToken(FAKE_JWT);
     expect(auth.getUser()).to.eq('test user');
   });
 
-  it('isAdmin', () => {
-    expect(!auth.isAdmin());
+  it('detects if user is admin', () => {
+    expect(auth.isAdmin()).to.eq(false);
   });
 });

@@ -5,7 +5,7 @@ import auth from '../auth';
 const FAKE_JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjAsInBheWxvYWQiOiJoZWxvIiwidXNlciI6eyJuYW1lIjoidGVzdCB1c2VyIiwiZ3JvdXBzIjpbeyJuYW1lIjoibm90IGFkbWluIn1dfX0.hxrVtALihqyaT4SDDQZCMmpE33uFkHnaQz1ZCCQntyo';
 
 describe('history methods test', () => {
-  it('redirect', () => {
+  it('redirects state to login', () => {
     history.push('/state');
     expect(history.prevState).to.eq('/login');
     history.back();

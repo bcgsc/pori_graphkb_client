@@ -21,14 +21,14 @@ describe('<DetailDrawer />', () => {
     spy(DetailDrawer.prototype, 'handleLinkExpand');
   });
 
-  it('init', () => {
+  it('inits and calls field formatting functions', () => {
     wrapper = shallow(<DetailDrawer />);
     expect(DetailDrawer.prototype.formatRelationships).to.have.property('callCount', 1);
     expect(DetailDrawer.prototype.formatIdentifiers).to.have.property('callCount', 1);
     expect(DetailDrawer.prototype.formatOtherProps).to.have.property('callCount', 1);
   });
 
-  it('with test node', () => {
+  it('does not crash with test node', () => {
     const node = {
       name: 'test node',
       sourceId: 'test sourceId',
@@ -42,13 +42,13 @@ describe('<DetailDrawer />', () => {
     expect(wrapper.children().type()).to.equal(Drawer);
   });
 
-  it('componentDidUpdate is called', () => {
+  it('does not crash when componentDidUpdate is called', () => {
     wrapper = mount(<DetailDrawer />);
     wrapper.setState({});
     expect(DetailDrawer.prototype.componentDidUpdate).to.have.property('callCount', 1);
   });
 
-  it('passed in methods', () => {
+  it('triggers passed in handlers on events', () => {
     const node = {
       name: 'test node',
       sourceId: 'test sourceId',
@@ -73,9 +73,11 @@ describe('<DetailDrawer />', () => {
     expect(handleNodeEditStart.mock.calls.length).to.eq(1);
   });
 
-  it('formatLongValue', () => {
+  it('formatLongValue function is triggered on long inputs only', () => {
     const node = {
+      // 1st long field
       name: 'test node. this is a long value so that formatlongvalue is called and this test passes, ASHDhkdjhjsdhkJAHDSkjhsdkajsdhaksjdhakjshda blargh blargh',
+      // 2nd long field
       longName: 'test node. this is a long value so that formatlongvalue is called and this test passes, ASHDhkdjhjsdhkJAHDSkjhsdkajsdhaksjdhakjshda blargh blargh',
       sourceId: 'test sourceId',
       source: {
@@ -87,7 +89,7 @@ describe('<DetailDrawer />', () => {
     expect(DetailDrawer.prototype.formatLongValue).to.have.property('callCount', 2);
   });
 
-  it('expand', () => {
+  it('clicking expanding list items triggers handler', () => {
     const node = {
       '@rid': '#135',
       name: 'test node best node',
@@ -100,7 +102,7 @@ describe('<DetailDrawer />', () => {
     expect(DetailDrawer.prototype.handleExpand).to.have.property('callCount', 2);
   });
 
-  it('relationships', () => {
+  it('initializes relationships and properly applies handlers to DOM nodes', () => {
     const node = {
       '@rid': '#135',
       name: 'test node best node',
@@ -125,11 +127,13 @@ describe('<DetailDrawer />', () => {
     wrapper.find('div[role="button"]').first().simulate('click');
     expect(DetailDrawer.prototype.handleLinkExpand).to.have.property('callCount', 2);
   });
-  it('link props', () => {
+
+  it('expect detail-nested-list class to be rendered for nested property', () => {
     const node = {
       '@rid': '#135',
       name: 'test node best node',
       sourceId: 'test sourceId',
+      '@class': 'test',
       dependency: {
         '@rid': '#4213',
         name: 'dependency one',
@@ -138,7 +142,17 @@ describe('<DetailDrawer />', () => {
         },
       },
     };
-    wrapper = mount(<DetailDrawer node={node} />);
-    expect(wrapper.find('.detail-nested-list'));
+
+    const testSchema = {
+      test: {
+        properties: [
+          { name: 'dependency', type: 'link' },
+        ],
+      },
+    };
+
+    wrapper = mount(<DetailDrawer node={node} schema={testSchema} />);
+    wrapper.find('div[role="button"]').first().simulate('click');
+    expect(wrapper.find('.detail-nested-list')).to.have.length.gt(0);
   });
 });

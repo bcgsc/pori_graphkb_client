@@ -25,7 +25,7 @@ const mockData = {
 describe('<GraphLinkDisplay />', () => {
   let wrapper;
 
-  it('structure', () => {
+  it('renders svg g element with nested paths', () => {
     wrapper = shallow(
       <GraphLinkDisplay
         link={mockData}
@@ -35,7 +35,7 @@ describe('<GraphLinkDisplay />', () => {
     wrapper.children().forEach(child => expect(child.type()).to.equal('path'));
   });
 
-  it('with label', () => {
+  it('renders label correctly', () => {
     mockData.source.y = mockData.target.y;
     wrapper = shallow(
       <GraphLinkDisplay
@@ -47,7 +47,7 @@ describe('<GraphLinkDisplay />', () => {
     expect(wrapper.children('text').text()).to.equal('link');
   });
 
-  it('detail', () => {
+  it('reduces opacity if link is not selected for detail viewing', () => {
     mockData.source.x = mockData.target.x;
     const detail = { '@rid': '#2' };
     wrapper = shallow(
@@ -71,6 +71,6 @@ describe('<GraphLinkDisplay />', () => {
         detail={mockData}
       />,
     );
-    expect(!wrapper.find('path.link'));
+    expect(wrapper.find('path.link')).to.have.lengthOf(0);
   });
 });

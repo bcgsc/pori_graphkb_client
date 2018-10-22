@@ -50,7 +50,7 @@ class VariantParserComponent extends Component {
     const { schema } = this.props;
     const variant = util.initModel({}, 'PositionalVariant', schema);
     Object.keys(variant).forEach((k) => {
-      if (typeof variant[k] === 'object' && variant[k]['@class']) {
+      if (typeof variant[k] === 'object' && variant[k]['@class'] && util.isAbstract(variant[k]['@class'], schema)) {
         variant[k]['@class'] = '';
       }
     });

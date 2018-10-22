@@ -18,7 +18,7 @@ describe('<GraphOptionsPanel />', () => {
     spy(GraphOptionsPanel.prototype, 'handleHelpClose');
   });
 
-  it('init', () => {
+  it('renders md dialog as first child', () => {
     const propsMap = new PropsMap();
     testNodes.forEach(t => propsMap.loadNode(t));
     wrapper = mount(
@@ -34,7 +34,7 @@ describe('<GraphOptionsPanel />', () => {
     expect(wrapper.children().first().type()).to.eq(Dialog);
   });
 
-  it('not open', () => {
+  it('passes on open prop to child dialog', () => {
     wrapper = mount(
       <GraphOptionsPanel
         graphOptionsOpen={false}
@@ -51,7 +51,7 @@ describe('<GraphOptionsPanel />', () => {
     });
   });
 
-  it('close dialog', () => {
+  it('closing dialog triggers handler', () => {
     const handleDialogClose = jest.fn();
     const handleGraphOptionsChange = jest.fn();
     wrapper = mount(
@@ -68,7 +68,7 @@ describe('<GraphOptionsPanel />', () => {
     expect(handleDialogClose.mock.calls.length).to.eq(2);
   });
 
-  it('help dialog', () => {
+  it('help dialog is opened and rendered on button clicks', () => {
     wrapper = mount(
       <GraphOptionsPanel
         graphOptionsOpen
@@ -91,7 +91,8 @@ describe('<GraphOptionsPanel />', () => {
     expect(GraphOptionsPanel.prototype.handleHelpClose).to.have.property('callCount', 2);
   });
 
-  it('advanced options changes', () => {
+  it('advanced options changes are triggered', () => {
+    const handleGraphOptionsChange = jest.fn();
     wrapper = mount(
       <GraphOptionsPanel
         graphOptionsOpen
@@ -99,7 +100,7 @@ describe('<GraphOptionsPanel />', () => {
         propsMap={new PropsMap()}
         linkLegendDisabled={false}
         handleDialogClose={() => { }}
-        handleGraphOptionsChange={() => { }}
+        handleGraphOptionsChange={handleGraphOptionsChange}
       />,
     );
     wrapper.find('div.advanced-options-wrapper input')
@@ -107,5 +108,7 @@ describe('<GraphOptionsPanel />', () => {
 
     wrapper.find('div.main-options-wrapper input')
       .forEach(input => input.simulate('change'));
+
+    expect(handleGraphOptionsChange.mock.calls.length).to.be.gt(0);
   });
 });

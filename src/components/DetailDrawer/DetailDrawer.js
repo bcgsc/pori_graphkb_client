@@ -276,6 +276,8 @@ class DetailDrawer extends Component {
   formatRelationships(node) {
     if (!node) return null;
     const { linkOpen } = this.state;
+
+    // Checks subclasses
     if (!(node instanceof classes.Record)) {
       node = new classes.Record(node);
     }

@@ -52,6 +52,7 @@ import auth from './services/auth';
 import history from './services/history';
 import api from './services/api';
 import { SchemaContext } from './components/SchemaContext/SchemaContext';
+import classes from './models/classes';
 
 const theme = createMuiTheme({
   direction: 'ltr',
@@ -102,6 +103,7 @@ class App extends Component {
 
   async componentDidMount() {
     const schema = await api.getSchema();
+    classes.Record.loadEdges(schema.getEdges());
     this.setState({ schema });
   }
 

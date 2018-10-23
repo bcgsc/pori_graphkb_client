@@ -25,8 +25,6 @@ import LinkIcon from '@material-ui/icons/Link';
 import util from '../../services/util';
 import classes from '../../models/classes';
 
-
-const IDENTIFIERS = ['@class', 'name', 'sourceId', 'source.name'];
 const MAX_STRING_LENGTH = 64;
 
 class DetailDrawer extends Component {
@@ -69,41 +67,42 @@ class DetailDrawer extends Component {
    */
   formatIdentifiers(node, nested) {
     if (!node) return null;
-    const { schema } = this.props;
+    const { schema, identifiers } = this.props;
     const { opened } = this.state;
     return (
-      IDENTIFIERS.map((prop) => {
+      identifiers.map((prop) => {
         const [key, nestedKey] = prop.split('.');
         const value = nestedKey ? (node[key] || {})[nestedKey] : node[key];
         let properties = Object.keys(node[key] || {}).map(k => ({ name: k }));
-        if (schema && schema.getClass(key)) {
+        if (schema && node[key] && schema.getClass(node[key]['@class'])) {
           // If property is a class in the schema, we can grab its properties.
-          ({ properties } = schema.getClass(key));
+          ({ properties } = schema.getClass(node[key]['@class']));
         }
         const expanded = nestedKey ? (
-          properties.map(nestedProp => (
-            (node[key] || {})[nestedProp.name] && (
-              <React.Fragment key={nestedProp.name}>
-                <Collapse in={opened.includes(`${node['@rid']}${prop}`)} unmountOnExit>
-                  <ListItem>
-                    {nested && (
-                      <ListItemIcon>
-                        <div style={{ width: 24, height: 24 }} />
-                      </ListItemIcon>)}
-                    <ListItemText>
-                      <div className="detail-identifiers">
-                        <Typography color="textSecondary" className="detail-identifiers-nested">
-                          {util.antiCamelCase(nestedProp.name)}
-                        </Typography>
-                        <Typography>
-                          {util.formatStr(node[key][nestedProp.name])}
-                        </Typography>
-                      </div>
-                    </ListItemText>
-                  </ListItem>
-                </Collapse>
-              </React.Fragment>
-            )))
+          <Collapse
+            in={opened.includes(`${node['@rid']}${prop}`)}
+            unmountOnExit
+          >
+            {properties.map(nestedProp => (
+              (node[key] || {})[nestedProp.name] && (
+                <ListItem key={nestedProp.name}>
+                  {nested && (
+                    <ListItemIcon>
+                      <div style={{ width: 24, height: 24 }} />
+                    </ListItemIcon>)}
+                  <ListItemText>
+                    <div className="detail-identifiers">
+                      <Typography color="textSecondary" className="detail-identifiers-nested">
+                        {util.antiCamelCase(nestedProp.name)}
+                      </Typography>
+                      <Typography>
+                        {util.formatStr(node[key][nestedProp.name])}
+                      </Typography>
+                    </div>
+                  </ListItemText>
+                </ListItem>
+              )))}
+          </Collapse>
         ) : null;
         if (value) {
           if (value.toString().length <= MAX_STRING_LENGTH) {
@@ -189,7 +188,7 @@ class DetailDrawer extends Component {
   formatOtherProps(node) {
     if (!node) return null;
     const { opened } = this.state;
-    const { schema } = this.props;
+    const { schema, identifiers } = this.props;
     let properties = Object.keys(node)
       .map(key => ({ name: key, type: util.parseKBType(node[key]) }));
     if (schema && schema.getClass(node['@class'])) {
@@ -197,7 +196,7 @@ class DetailDrawer extends Component {
     }
     let isEmpty = true;
     const propsList = properties
-      .filter(prop => !IDENTIFIERS.map(id => id.split('.')[0]).includes(prop.name)
+      .filter(prop => !identifiers.map(id => id.split('.')[0]).includes(prop.name)
         && !prop.name.startsWith('in_')
         && !prop.name.startsWith('out_'))
       .map((prop) => {
@@ -436,6 +435,7 @@ DetailDrawer.propTypes = {
   onClose: PropTypes.func,
   isEdge: PropTypes.bool,
   handleNodeEditStart: PropTypes.func,
+  identifiers: PropTypes.array,
 };
 
 DetailDrawer.defaultProps = {
@@ -444,6 +444,7 @@ DetailDrawer.defaultProps = {
   onClose: null,
   isEdge: false,
   handleNodeEditStart: PropTypes.func,
+  identifiers: [],
 };
 
 export default DetailDrawer;

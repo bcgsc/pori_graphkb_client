@@ -110,15 +110,20 @@ class TableComponent extends Component {
    * Initializes table columns.
    */
   componentDidMount() {
-    const { allProps, storedFilters } = this.props;
+    const {
+      allProps,
+      storedFilters,
+      defaultOrder,
+    } = this.props;
+
     const tableColumns = allProps.reduce((r, column) => {
       const [key, nested] = column.split('.');
-      if (column.startsWith('in_') || column.startsWith('out_') || column === '@rid') return r;
-      if (!column.includes('.')) {
+      if (key.startsWith('in_') || key.startsWith('out_') || key === '@rid') return r;
+      if (!nested) {
         r.push({
-          id: column,
-          label: util.antiCamelCase(column),
-          checked: column === 'name' || column === 'sourceId',
+          id: key,
+          label: util.antiCamelCase(key),
+          checked: defaultOrder.includes(key),
           sortBy: null,
           sortable: null,
         });
@@ -128,16 +133,21 @@ class TableComponent extends Component {
           r.push({
             id: key,
             label: util.antiCamelCase(key),
-            checked: key === 'source',
+            checked: defaultOrder.includes(column),
             sortBy: nested,
             sortable: [nested],
           });
         } else {
           col.sortable.push(nested);
+          if (defaultOrder.includes(column)) {
+            col.checked = true;
+            col.sortBy = nested;
+          }
         }
       }
       return r;
     }, []);
+
     const columnFilterStrings = [];
     let columnFilterExclusions = [];
     for (let i = 0; i < tableColumns.length; i += 1) {
@@ -148,8 +158,7 @@ class TableComponent extends Component {
       columnFilterExclusions = storedFilters;
     }
     // Set default order for columns.
-    tableColumns.sort(util.sortFields(DEFAULT_COLUMN_ORDER));
-
+    tableColumns.sort(util.sortFields(defaultOrder.map(d => d.split('.')[0]), 'id'));
     this.setState({ tableColumns, columnFilterStrings, columnFilterExclusions });
   }
 
@@ -907,7 +916,7 @@ class TableComponent extends Component {
                         <TableCell padding="checkbox">
                           {detail && detail.getId() === n.getId() && (
                             <Fade in>
-                              <AssignmentIcon color="action" />
+                              <AssignmentIcon color="action" style={{ width: 48 }} />
                             </Fade>
                           )}
                         </TableCell>
@@ -1020,6 +1029,7 @@ TableComponent.propTypes = {
   moreResults: PropTypes.bool,
   completedNext: PropTypes.bool,
   storedFilters: PropTypes.array,
+  defaultOrder: PropTypes.array,
 };
 
 TableComponent.defaultProps = {
@@ -1030,6 +1040,7 @@ TableComponent.defaultProps = {
   handleSubsequentPagination: null,
   moreResults: false,
   displayed: [],
+  defaultOrder: DEFAULT_COLUMN_ORDER,
   completedNext: true,
 };
 

@@ -393,14 +393,21 @@ const parsePermission = (permissionValue) => {
 const getPropOfType = (kbClass, type) => Object.values(kbClass)
   .filter(prop => prop.type === type);
 
-const sortFields = (order = []) => (a, b) => {
-  if (order.indexOf(b.name) === -1) {
+  /**
+   * Sorting method to pass into Array.sort().
+   * @param {Array} order - order for props to be sorted in.
+   * @param {string} prop - nested property to sort objects by.
+   */
+const sortFields = (order = [], prop = 'name') => (a, b) => {
+  const sortA = prop ? a[prop] : a;
+  const sortB = prop ? b[prop] : b;
+  if (order.indexOf(sortB) === -1) {
     return -1;
   }
-  if (order.indexOf(a.name) === -1) {
+  if (order.indexOf(sortA) === -1) {
     return 1;
   }
-  return order.indexOf(a.name) < order.indexOf(b.name)
+  return order.indexOf(sortA) < order.indexOf(sortB)
     ? -1
     : 1;
 };

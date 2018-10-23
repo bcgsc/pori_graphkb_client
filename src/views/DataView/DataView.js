@@ -18,13 +18,26 @@ import omit from 'lodash.omit';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
+import { withSchema } from '../../components/SchemaContext/SchemaContext';
 import api from '../../services/api';
 import classes from '../../models/classes';
-import { withSchema } from '../../components/SchemaContext/SchemaContext';
 import config from '../../static/config';
 
 const { DEFAULT_NEIGHBORS } = config;
 const DEFAULT_LIMIT = 1000;
+const DEFAULT_ORDERS = {
+  Ontology: [
+    '@class',
+    'name',
+    'sourceId',
+    'source.name',
+  ],
+  PositionalVariant: [
+    'type.name',
+    'break1Repr',
+    'reference1.name',
+  ],
+};
 
 /**
  * View for managing state of query results. Contains sub-routes for table view (/data/table)
@@ -352,6 +365,8 @@ class DataViewBase extends Component {
 
     if (!data) return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
     const edges = schema.getEdges();
+    const cls = filteredSearch && filteredSearch['@class'];
+    const defaultOrders = DEFAULT_ORDERS[cls] || DEFAULT_ORDERS.Ontology;
     const detailDrawer = (
       <DetailDrawer
         node={detail}
@@ -360,6 +375,7 @@ class DataViewBase extends Component {
         onClose={this.handleDetailDrawerClose}
         isEdge={detailEdge}
         handleNodeEditStart={this.handleNodeEditStart}
+        identifiers={defaultOrders}
       />
     );
     const GraphWithProps = () => (
@@ -395,6 +411,7 @@ class DataViewBase extends Component {
         moreResults={moreResults}
         completedNext={completedNext}
         storedFilters={storedFilters}
+        defaultOrder={defaultOrders}
       />
     );
     return (

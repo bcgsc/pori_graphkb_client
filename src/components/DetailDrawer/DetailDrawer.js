@@ -23,7 +23,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import LinkIcon from '@material-ui/icons/Link';
 import util from '../../services/util';
-import { Record } from '../../models/classes';
+import classes from '../../models/classes';
 
 
 const IDENTIFIERS = ['@class', 'name', 'sourceId', 'source.name'];
@@ -52,8 +52,8 @@ class DetailDrawer extends Component {
     if (
       (!node && prevNode)
       || (
-        prevNode instanceof Record
-        && node instanceof Record
+        prevNode instanceof classes.Record
+        && node instanceof classes.Record
         && prevNode.getId() !== node.getId()
       )
     ) {
@@ -276,8 +276,8 @@ class DetailDrawer extends Component {
   formatRelationships(node) {
     if (!node) return null;
     const { linkOpen } = this.state;
-    if (!(node instanceof Record)) {
-      node = new Record(node);
+    if (!(node instanceof classes.Record)) {
+      node = new classes.Record(node);
     }
     const edges = node.getEdges();
     if (!edges || edges.length === 0) return null;

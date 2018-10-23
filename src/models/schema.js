@@ -135,8 +135,20 @@ class Schema {
       .some(kbClass => (kbClass.inherits || []).includes(linkedClass));
   }
 
+  /**
+   * Checks if a KB class is an edge.
+   * @param {string} cls - class key.
+   */
   isEdge(cls) {
     return (this.schema[cls].inherits || []).includes('E');
+  }
+
+  /**
+   * Checks if a KB class is an Ontology.
+   * @param {string} cls - class key.
+   */
+  isOntology(cls) {
+    return (this.schema[cls].inherits || []).includes('Ontology');
   }
 
   /**

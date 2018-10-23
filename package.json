@@ -34,7 +34,7 @@
     "test": "cypress run && jest --env=jsdom",
     "test:unit": "node scripts/test.js --env=jsdom",
     "test:e2e": "cypress run --config video=false",
-    "test:ci": "npm run build-css && jest \"^((?!api).)*$\" --env=jsdom --ci && bamboo-jest-coverage-parser",
+    "test:ci": "npm run build-css && jest \"^((?!api).)*$\" --env=jsdom --ci",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "jsdoc": "jsdoc -r src -R README.md -d jsdoc --package package.json",
@@ -72,6 +72,7 @@
     "file-loader": "^1.1.5",
     "html-webpack-plugin": "^2.30.1",
     "jest": "20.0.4",
+    "jest-bamboo-formatter": "^1.0.1",
     "jsdoc": "^3.5.5",
     "lighthouse": "^3.2.1",
     "node-sass-chokidar": "^1.3.3",
@@ -119,6 +120,7 @@
       "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
       "^(?!.*\\.(js|jsx|mjs|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
     },
+    "testResultsProcessor": "node_modules/jest-bamboo-formatter",
     "transformIgnorePatterns": [
       "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$"
     ],

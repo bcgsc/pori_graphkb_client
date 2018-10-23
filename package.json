@@ -3,7 +3,7 @@
   "version": "0.3.1",
   "private": true,
   "dependencies": {
-    "@material-ui/core": "^3.2.2",
+    "@material-ui/core": "3.2.2",
     "@material-ui/icons": "^3.0.1",
     "d3": "^5.5.0",
     "downshift": "^2.2.0",
@@ -11,7 +11,7 @@
     "history": "^4.7.2",
     "json-cycle": "^1.3.0",
     "jsonwebtoken": "^8.3.0",
-    "knowledgebase-parser": "git+ssh://git@svn.bcgsc.ca:7999/vdb/knowledgebase_parser.git#v0.3.2",
+    "knowledgebase-parser": "git+ssh://git@svn.bcgsc.ca:7999/vdb/knowledgebase_parser.git#v0.3.4",
     "lodash.debounce": "^4.0.8",
     "lodash.omit": "^4.5.0",
     "object-assign": "4.1.1",
@@ -34,7 +34,7 @@
     "test": "cypress run && jest --env=jsdom",
     "test:unit": "node scripts/test.js --env=jsdom",
     "test:e2e": "cypress run --config video=false",
-    "test:ci": "jest \"^((?!api).)*$\" --env=jsdom --ci && bamboo-jest-coverage-parser",
+    "test:ci": "npm run build-css && jest \"^((?!api).)*$\" --env=jsdom --ci",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "jsdoc": "jsdoc -r src -R README.md -d jsdoc --package package.json",
@@ -50,7 +50,6 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react-app": "^3.1.1",
     "babel-runtime": "6.26.0",
-    "bamboo-mocha-jest-code-coverage": "^1.0.0",
     "case-sensitive-paths-webpack-plugin": "^2.1.1",
     "chai": "^4.2.0",
     "chalk": "^1.1.3",
@@ -72,6 +71,8 @@
     "file-loader": "^1.1.5",
     "html-webpack-plugin": "^2.30.1",
     "jest": "20.0.4",
+    "jest-bamboo-formatter": "^1.0.1",
+    "jest-junit": "^5.2.0",
     "jsdoc": "^3.5.5",
     "lighthouse": "^3.2.1",
     "node-sass-chokidar": "^1.3.3",
@@ -92,9 +93,25 @@
   },
   "jest": {
     "collectCoverage": true,
+    "coverageDirectory": "coverage",
     "collectCoverageFrom": [
       "src/components/**/*.{js,jsx,mjs}",
-      "src/services/**/^((?!api).)*$.{js,jsx,mjs}"
+      "src/services/**/!(api).{js,jsx,mjs}"
+    ],
+    "coverageReporters": [
+      "text",
+      "json",
+      "json-summary",
+      "lcov"
+    ],
+    "reporters": [
+      "default",
+      [
+        "jest-junit",
+        {
+          "output": "./coverage/junit.xml"
+        }
+      ]
     ],
     "setupFiles": [
       "<rootDir>/config/polyfills.js",
@@ -115,9 +132,6 @@
     "transformIgnorePatterns": [
       "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$"
     ],
-    "moduleNameMapper": {
-      "^react-native$": "react-native-web"
-    },
     "moduleFileExtensions": [
       "web.js",
       "js",

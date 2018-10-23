@@ -1,8 +1,8 @@
 /**
  * @module /components/OntologyDetailComponent
  */
-
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './DetailDrawer.css';
 import {
   Typography,
@@ -34,6 +34,7 @@ class DetailDrawer extends Component {
     super(props);
     this.state = {
       opened: [],
+      linkOpen: null,
     };
     this.formatOtherProps = this.formatOtherProps.bind(this);
     this.formatRelationships = this.formatRelationships.bind(this);
@@ -41,15 +42,31 @@ class DetailDrawer extends Component {
     this.handleLinkExpand = this.handleLinkExpand.bind(this);
   }
 
+  /**
+   * Closes all expanded list properties.
+   * @param {Object} prevProps - Component's previous props.
+   */
   componentDidUpdate(prevProps) {
     const { node: prevNode } = prevProps;
     const { node } = this.props;
-    if ((!node && prevNode) || (prevNode && node && prevNode.getId() !== node.getId())) {
+    if (
+      (!node && prevNode)
+      || (
+        prevNode instanceof Ontology
+        && node instanceof Ontology
+        && prevNode.getId() !== node.getId()
+      )
+    ) {
       /* eslint-disable-next-line react/no-did-update-set-state */
       this.setState({ opened: [], linkOpen: null });
     }
   }
 
+  /**
+   * Formats specific identifier properties of input ontology.
+   * @param {Object} node - Ontology being displayed.
+   * @param {boolean} nested - Nested flag.
+   */
   formatIdentifiers(node, nested) {
     if (!node) return null;
     const { schema } = this.props;
@@ -57,9 +74,14 @@ class DetailDrawer extends Component {
     return (
       IDENTIFIERS.map((prop) => {
         const [key, nestedKey] = prop.split('.');
-        const value = nestedKey ? node[key][nestedKey] : node[key];
+        const value = nestedKey ? (node[key] || {})[nestedKey] : node[key];
+        let properties = Object.keys(node[key] || {}).map(k => ({ name: k }));
+        if (schema && util.getClass(key, schema).properties) {
+          // If property is a class in the schema, we can grab its properties.
+          ({ properties } = util.getClass(key, schema));
+        }
         const expanded = nestedKey ? (
-          util.getClass(key, schema).properties.map(nestedProp => (
+          properties.map(nestedProp => (
             node[key][nestedProp.name] && (
               <React.Fragment key={nestedProp.name}>
                 <Collapse in={opened.includes(`${node['@rid']}${prop}`)} unmountOnExit>
@@ -84,41 +106,50 @@ class DetailDrawer extends Component {
             )))
         ) : null;
         if (value) {
-          return (
-            <React.Fragment key={prop}>
-              <ListItem
-                button={!!nestedKey}
-                onClick={nestedKey ? () => this.handleExpand(`${node['@rid']}${prop}`) : undefined}
-              >
-                {nested && (
-                  <ListItemIcon>
-                    <div style={{ width: 24, height: 24 }} />
-                  </ListItemIcon>)}
-                <ListItemText>
-                  <div className="detail-identifiers">
-                    <Typography variant="subheading" color={nested ? 'textSecondary' : 'default'}>
-                      {util.antiCamelCase(key)}
-                    </Typography>
-                    <Typography>
-                      {util.formatStr(value)}
-                    </Typography>
-                  </div>
-                </ListItemText>
-                {nestedKey
-                  && (!opened.includes(`${node['@rid']}${prop}`)
-                    ? <ExpandMoreIcon />
-                    : <ExpandLessIcon />)}
-              </ListItem>
-              {expanded}
-              <Divider />
-            </React.Fragment>
-          );
+          if (value.toString().length <= MAX_STRING_LENGTH) {
+            return (
+              <React.Fragment key={prop}>
+                <ListItem
+                  button={!!nestedKey}
+                  onClick={nestedKey ? () => this.handleExpand(`${node['@rid']}${prop}`) : undefined}
+                >
+                  {nested && (
+                    <ListItemIcon>
+                      <div style={{ width: 24, height: 24 }} />
+                    </ListItemIcon>)}
+                  <ListItemText>
+                    <div className="detail-identifiers">
+                      <Typography variant="subtitle1" color={nested ? 'textSecondary' : 'default'}>
+                        {util.antiCamelCase(key)}
+                      </Typography>
+                      <Typography>
+                        {util.formatStr(value)}
+                      </Typography>
+                    </div>
+                  </ListItemText>
+                  {nestedKey
+                    && (!opened.includes(`${node['@rid']}${prop}`)
+                      ? <ExpandMoreIcon />
+                      : <ExpandLessIcon />)}
+                </ListItem>
+                {expanded}
+                <Divider />
+              </React.Fragment>
+            );
+          }
+          return this.formatLongValue(key, value, true);
         }
         return null;
       })
     );
   }
 
+  /**
+   * Formats a key/value pair as a collapsible list item.
+   * @param {string} key - property key.
+   * @param {any} value - property value.
+   * @param {boolean} isStatic - if true, locks list item open.
+   */
   formatLongValue(key, value, isStatic) {
     const { opened } = this.state;
     const listItemProps = isStatic === true
@@ -151,14 +182,24 @@ class DetailDrawer extends Component {
     );
   }
 
+  /**
+   * Formats non-identifier, non-relationship properties.
+   * @param {Object} node - Ontology being displayed.
+   */
   formatOtherProps(node) {
     if (!node) return null;
     const { opened } = this.state;
     const { schema } = this.props;
-    const { properties } = util.getClass(node['@class'], schema);
+    let properties = Object.keys(node)
+      .map(key => ({ name: key, type: util.parseKBType(node[key]) }));
+    if (schema) {
+      ({ properties } = util.getClass(node['@class'], schema));
+    }
     let isEmpty = true;
     const propsList = properties
-      .filter(prop => !IDENTIFIERS.map(id => id.split('.')[0]).includes(prop.name))
+      .filter(prop => !IDENTIFIERS.map(id => id.split('.')[0]).includes(prop.name)
+        && !prop.name.startsWith('in_')
+        && !prop.name.startsWith('out_'))
       .map((prop) => {
         const { name, type } = prop;
         if (!node[name]) return null;
@@ -170,7 +211,7 @@ class DetailDrawer extends Component {
                 <ListItem>
                   <ListItemText>
                     <div className="detail-identifiers">
-                      <Typography variant="subheading">
+                      <Typography variant="subtitle1">
                         {util.antiCamelCase(name)}
                       </Typography>
                       <Typography>
@@ -185,7 +226,7 @@ class DetailDrawer extends Component {
           }
           return this.formatLongValue(name, node[name]);
         }
-        if (type === 'embeddedset') {
+        if (type === 'embeddedset' && node[name].length !== 0) {
           return (
             <React.Fragment key={name}>
               <ListItem button onClick={() => this.handleExpand(name)}>
@@ -228,6 +269,10 @@ class DetailDrawer extends Component {
       : null;
   }
 
+  /**
+   * Formats ontology relationships.
+   * @param {Object} node - Ontology being displayed.
+   */
   formatRelationships(node) {
     if (!node) return null;
     const { linkOpen } = this.state;
@@ -285,6 +330,10 @@ class DetailDrawer extends Component {
     );
   }
 
+  /**
+   * Toggles collapsed list item.
+   * @param {string} key - list item key.
+   */
   handleExpand(key) {
     const { opened } = this.state;
     if (opened.includes(key)) {
@@ -295,6 +344,10 @@ class DetailDrawer extends Component {
     this.setState({ opened });
   }
 
+  /**
+   * Toggles collapsed link list item.
+   * @param {string} key - list item key.
+   */
   handleLinkExpand(key) {
     const { linkOpen, opened } = this.state;
     if (linkOpen === key) {
@@ -325,7 +378,7 @@ class DetailDrawer extends Component {
         <div className="detail-content">
           <div className="detail-heading">
             <div className="detail-headline">
-              <Typography variant="title" component="h1">
+              <Typography variant="h6" component="h1">
                 Properties:
               </Typography>
               <IconButton onClick={onClose}>
@@ -344,11 +397,7 @@ class DetailDrawer extends Component {
           </div>
           <Divider />
           {identifiers}
-          {otherProps && (
-            <React.Fragment>
-              {otherProps}
-            </React.Fragment>
-          )}
+          {otherProps}
           {!isEdge && (
             <React.Fragment>
               <ListSubheader className="detail-relationships-subheader">
@@ -370,5 +419,29 @@ class DetailDrawer extends Component {
     );
   }
 }
+
+/**
+ * @namespace
+ * @property {Object} schema - Knowledgebase schema object.
+ * @property {Object} node - Ontology to be displayed in drawer.
+ * @property {function} onClose - Function triggered on @material-ui/Drawer onClose event.
+ * @property {function} handleNodeEditStart - Function triggered on node edit button click.
+ * @property {bool} isEdge - Flag for edge classes.
+ */
+DetailDrawer.propTypes = {
+  schema: PropTypes.object,
+  node: PropTypes.object,
+  onClose: PropTypes.func,
+  isEdge: PropTypes.bool,
+  handleNodeEditStart: PropTypes.func,
+};
+
+DetailDrawer.defaultProps = {
+  schema: null,
+  node: null,
+  onClose: null,
+  isEdge: false,
+  handleNodeEditStart: PropTypes.func,
+};
 
 export default DetailDrawer;

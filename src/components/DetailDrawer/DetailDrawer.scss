@@ -3,6 +3,7 @@
 
 #detail-drawer {
   .detail-root {
+    word-break: break-word;
     width: $detail-drawer-width;
     max-width: $detail-drawer-max-width;
     transition: all #{$detail-drawer-transition};
@@ -33,6 +34,7 @@
       }
       > *:nth-child(even) {
         grid-column-start: 3;
+        margin: auto 0;
       }
     }
   }

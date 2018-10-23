@@ -7,7 +7,7 @@ This is the front end for the Knowledge Base database. Users can query the datab
 ### Querying
 The query page allows users to search records by name, with action buttons to view the results in either table or graph form. This simple query will also return records with names that contain the input string.
 
-The advanced querying page allows users to specify additional search parameters. The disease schema can be found [here](http://kbapi01:8008/api/v0.0.8/spec/#/Disease/get_diseases):
+The advanced querying page allows users to specify additional search parameters. The disease schema can be found [here](http://kbapi01:8061/api/v0.6.1/spec/#/Disease/get_diseases):
 
 ### Data View
 
@@ -19,30 +19,42 @@ In graph form, nodes can be expanded by clicking them if they are the currently 
 
 Records can be edited via the table view by clicking on the clipboard icon in the top right of the details dropdown. Records can be added via the add node form, which can be accessed by the add icon in the application header.
 
-For more info on the database api, look [here](http://kbapi01:8008/api/v0.0.8/spec):
+For more info on the database api, look [here](http://kbapi01:8061/api/v0.6.1/spec):
 
 
 ## Testing
+Unit tests are made using Jest and Enzyme, end to end tests are made using Cypress.
 
-End to end tests are made using cypress.io.
+#### Running Tests
+In terminal before running any test commands:
 
-To run tests:
+```
+$ export USER='myusername'
+$ export PASSWORD='mysupersecretpassword'
+```
+
+##### Jest Unit tests
+* `npm run test:unit`
+
+##### Cypress Integration tests
+Running all end to end tests:
+* `npm run cypress:run` or `npm run test:e2e`
+
+Opening cypress dashboard, run individual tests in mock browser.
 * `npm run cypress:open`
 
-This will open the cypress dashboard, which will list the available tests for the application. Clicking on an will open a new browser tab and run the suite.
+##### Run everything (takes a long time)
+* `npm run test`
 
-#### Important: to run the authentication tests, you must set your password via the USER and PASSWORD environment variables in the same terminal you run cypress:open in:
+##### Continuous Integration testing
+* `npm run test:ci`
 
+#### Coverage Reports
+The files generated for jest coverage reports are stored in the `/coverage` directory:
 ```
-$ export CYPRESS_USER='myusername'
-$ export CYPRESS_PASSWORD='mysupersecretpassword'
-$ npm run cypress:open
+|- /coverage
+|---- /clover.xml - clover report
+|---- /junit.xml - junit-formatted report
+|---- /lcov-report
+|------- /**/*.html - lcov-formatted reports for each file.
 ```
-
-## Knowledgebase Parser integration
-
-GSC is currently working on setting up an internal npm registry for module sharing between our applications. If you get errors thrown on compilation similar to:
-```
-Module parse failed: Unexpected token (XX:YY) You may need an appropriate loader to handle this file type.
-```
-Follow the steps [here](https://www.bcgsc.ca/jira/browse/KBDEV-191?focusedCommentId=991360&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-991360):

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import {
   Checkbox,
@@ -22,7 +22,7 @@ import config from '../../config.json';
 
 const { GRAPH_ADVANCED, GRAPH_MAIN } = config.DESCRIPTIONS;
 
-export default class GraphOptionsPanel extends Component {
+export default class GraphOptionsPanel extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -33,10 +33,17 @@ export default class GraphOptionsPanel extends Component {
     this.handleHelpClose = this.handleHelpClose.bind(this);
   }
 
+  /**
+   * Opens help drawer.
+   * @param {['mainHelp' | 'advancedHelp']} key - help type state key.
+   */
   handleHelpOpen(key) {
     this.setState({ [key]: true });
   }
 
+  /**
+   * Closes both help drawers.
+   */
   handleHelpClose() {
     this.setState({ mainHelp: false, advancedHelp: false });
   }
@@ -63,7 +70,7 @@ export default class GraphOptionsPanel extends Component {
         onClose={this.handleHelpClose}
       >
         <DialogTitle disableTypography className="help-title">
-          <Typography variant="headline">
+          <Typography variant="h5">
             {helpOpen && (advancedHelp ? 'Advanced Graph Options Help' : 'Graph Options Help')}
           </Typography>
           <IconButton onClick={this.handleHelpClose}>
@@ -73,10 +80,10 @@ export default class GraphOptionsPanel extends Component {
         <DialogContent>
           {helpOpen && (advancedHelp ? GRAPH_ADVANCED : GRAPH_MAIN).map(help => (
             <React.Fragment key={help.title}>
-              <Typography variant="title" gutterBottom>
+              <Typography variant="h6" gutterBottom>
                 {help.title}
               </Typography>
-              <Typography variant="body1" paragraph>
+              <Typography paragraph>
                 {help.description}
               </Typography>
             </React.Fragment>
@@ -103,8 +110,12 @@ export default class GraphOptionsPanel extends Component {
             <CloseIcon />
           </IconButton>
           <DialogTitle className="options-title" disableTypography>
-            <Typography variant="title">Graph Options</Typography>
-            <IconButton color="primary" onClick={() => this.handleHelpOpen('mainHelp')}>
+            <Typography variant="h6">Graph Options</Typography>
+            <IconButton
+              color="primary"
+              onClick={() => this.handleHelpOpen('mainHelp')}
+              id="main-help-btn"
+            >
               <HelpIcon />
             </IconButton>
           </DialogTitle>
@@ -119,7 +130,7 @@ export default class GraphOptionsPanel extends Component {
                   value={graphOptions.nodeLabelProp}
                 >
                   <MenuItem value="">None</MenuItem>
-                  {Object.keys(propsMap.nodeProps).map((prop) => {
+                  {Object.keys(propsMap.nodeProps || {}).map((prop) => {
                     if (propsMap.nodeProps[prop]
                       && !(propsMap.nodeProps[prop].length === 1 && propsMap.nodeProps[prop].includes('null'))
                     ) {
@@ -142,7 +153,7 @@ export default class GraphOptionsPanel extends Component {
                   value={graphOptions.nodesColor}
                 >
                   <MenuItem value="">None</MenuItem>
-                  {Object.keys(propsMap.nodeProps).map((prop) => {
+                  {Object.keys(propsMap.nodeProps || {}).map((prop) => {
                     if (
                       propsMap.nodeProps[prop]
                       && propsMap.nodeProps[prop].length <= 20
@@ -234,8 +245,12 @@ export default class GraphOptionsPanel extends Component {
           </DialogContent>
           <Divider />
           <div className="options-title">
-            <Typography variant="title">Advanced Graph Options</Typography>
-            <IconButton onClick={() => this.handleHelpOpen('advancedHelp')} color="primary">
+            <Typography variant="h6">Advanced Graph Options</Typography>
+            <IconButton
+              onClick={() => this.handleHelpOpen('advancedHelp')}
+              color="primary"
+              id="advanced-help-btn"
+            >
               <HelpIcon />
             </IconButton>
           </div>

@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 import './GraphNodeDisplay.css';
 import * as d3 from 'd3';
 import config from '../../config.json';
+import { GraphNode } from '../GraphComponent/kbgraph';
 
 const { NODE_RADIUS } = config.GRAPH_PROPERTIES;
 const DEFAULT_OPACITY = 1;
@@ -50,7 +51,8 @@ class GraphNodeDisplay extends PureComponent {
       filter,
     } = this.props;
 
-    const label = node.getLabel(labelKey);
+    if (!node) return null;
+    const label = node instanceof GraphNode ? node.getLabel(labelKey) : node.data[labelKey];
 
     const faded = (detail && detail['@rid'] !== node.getId())
       || (actionsNode && actionsNode.getId() !== node.getId())
@@ -109,7 +111,7 @@ class GraphNodeDisplay extends PureComponent {
  * @property {string} filter - current filter string value.
  */
 GraphNodeDisplay.propTypes = {
-  node: PropTypes.object.isRequired,
+  node: PropTypes.object,
   handleClick: PropTypes.func,
   color: PropTypes.string,
   applyDrag: PropTypes.func,
@@ -120,6 +122,7 @@ GraphNodeDisplay.propTypes = {
 };
 
 GraphNodeDisplay.defaultProps = {
+  node: null,
   handleClick: null,
   color: '#26328C',
   labelKey: 'name',

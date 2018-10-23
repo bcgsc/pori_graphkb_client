@@ -14,7 +14,11 @@ import util from '../../services/util';
 import config from '../../config.json';
 
 const { PERMISSIONS } = config;
-
+const KEY_MAPPER = 'CRUD';
+/**
+ * Table to display permissions state for a certain user group.
+ * @param {Object} props - Component props.
+ */
 function PermissionsTable(props) {
   const {
     userGroup,
@@ -64,7 +68,7 @@ function PermissionsTable(props) {
                   </Typography>
                 </TableCell>
                 {userGroup.permissions[permission].map((p, j) => (
-                  <TableCell padding="checkbox" key={`${userGroup.name}${permission}${j.toString()}`}>
+                  <TableCell padding="checkbox" key={`${userGroup.name}${permission}${KEY_MAPPER[j]}`}>
                     {(
                       !(isEdge && j === 1)
                       && !(isAbstract && j !== 2)
@@ -94,6 +98,15 @@ function PermissionsTable(props) {
   );
 }
 
+/**
+ * @namespace
+ * @property {Object} userGroup - Input usergroup object.
+ * @property {boolean} disabled - If true, all table inputs are disabled.
+ * @property {string} stateKey - Parent component state key for userobject.
+ * @property {Object} schema - Knowledgebase db schema.
+ * @property {function} handleCheckAll - Handler for when all checkbox is changed.
+ * @property {function} handleChange - Handler for when single checkbox is changed.
+ */
 PermissionsTable.propTypes = {
   userGroup: PropTypes.object,
   disabled: PropTypes.bool,

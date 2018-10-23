@@ -51,9 +51,6 @@ describe('Node Form Test', () => {
     cy.get('div.droptions ul li:first').click();
     cy.get('textarea[name=sourceId][type=text]').type('ncit').wait(100);
     cy.get('#submit-btn').should('not.disabled');
-    cy.get('#submit-btn').click();
-    cy.get('path[d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"]')
-      .should('exist');
   });
 
   it('Edit test', () => {

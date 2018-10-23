@@ -159,6 +159,6 @@ $drawer-breakpoint: 768px;
 }
 
 ::selection {
-  background: $md-primary-color;
+  background: rgba($md-primary-color, 0.9);
   color: white;
 }

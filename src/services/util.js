@@ -100,6 +100,24 @@ const antiCamelCase = (str) => {
   return accstr.charAt(0).toUpperCase() + accstr.slice(1);
 };
 
+const parseKBType = (obj) => {
+  if (typeof obj === 'number') {
+    if (Number.isInteger(obj)) {
+      return 'integer';
+    }
+    return 'float';
+  }
+  if (Array.isArray(obj)) {
+    return 'embeddedset';
+  }
+  if (typeof obj === 'object') {
+    if (Object.keys(obj).includes('@rid')) {
+      return 'link';
+    }
+    return 'embedded';
+  }
+  return 'string';
+};
 
 const formatStr = (str) => {
   const newSentence = /\.\s\w/g;
@@ -279,8 +297,12 @@ const getPallette = (n, type) => {
  * @param {Object} data - graph data to be stored.
  */
 const loadGraphData = (search, data) => {
-  const newData = Object.assign({ filteredSearch: search }, data);
-  localStorage.setItem(GRAPH_OBJECTS_KEY, JSON.stringify(jc.decycle(newData)));
+  const newData = Object.assign({ localStorageKey: search }, data);
+  try {
+    localStorage.setItem(GRAPH_OBJECTS_KEY, JSON.stringify(jc.decycle(newData)));
+  } catch (e) {
+    console.error('localstorage quota exceeded');
+  }
 };
 
 /**
@@ -291,7 +313,7 @@ const getGraphData = (search) => {
   const data = localStorage.getItem(GRAPH_OBJECTS_KEY);
   if (data) {
     const obj = jc.retrocycle(JSON.parse(data));
-    if (obj.filteredSearch === search) {
+    if (obj.localStorageKey === search) {
       return obj;
     }
   }
@@ -339,30 +361,35 @@ const positionInit = (x, y, i, n) => {
 };
 
 /**
- * Selects color for input graph object based on graph state.
- * @param {Object} obj - object to be colored.
- * @param {string} objColor - property to map color onto.
- * @param {Object} objColors - map of colors for each property.
+ * Returns the editable properties of target ontology class.
+ * @param {string} className - requested class name.
+ * @param {Object} schema - Knowledge base schema.
  */
-const getColor = (obj, objColor, objColors) => {
-  let colorKey = '';
-  if (objColor && objColor.includes('.')) {
-    const keys = objColor.split('.');
-    colorKey = (obj.data[keys[0]] || {})[keys[1]];
-  } else if (objColor) {
-    colorKey = obj.data[objColor];
-  }
-  return objColors[colorKey];
+const getClass = (className, schema) => {
+  const VPropKeys = schema.V ? Object.keys(schema.V.properties) : [];
+  const classKey = (Object.keys(schema)
+    .find(key => key.toLowerCase() === (className || '').toLowerCase()));
+  if (!classKey) return {};
+  const props = Object.keys(schema[classKey].properties)
+    .filter(prop => !VPropKeys.includes(prop))
+    .map(prop => schema[classKey].properties[prop]);
+  return { route: schema[classKey].route, properties: props };
 };
 
 /**
  * Initializes a new instance of given kbClass.
  * @param {Object} model - existing model to keep existing values from.
- * @param {Object} kbClass - Knowledge base class schema.
+ * @param {string} kbClass - Knowledge base class key.
+ * @param {Object} schema - Knowledge base schema.
  */
-const initModel = (model, kbClass) => {
+const initModel = (model, kbClass, schema, extraProps = []) => {
+  const editableProps = schema && kbClass
+    && (getClass(kbClass, schema)).properties;
+  if (!editableProps) return {};
+  editableProps.push(...extraProps);
   const newModel = Object.assign({}, model);
-  Object.values(kbClass).forEach((property) => {
+  newModel['@class'] = kbClass;
+  Object.values(editableProps).forEach((property) => {
     const {
       name,
       type,
@@ -372,7 +399,7 @@ const initModel = (model, kbClass) => {
     const defaultValue = property.default;
     switch (type) {
       case 'embeddedset':
-        newModel[name] = model[name] || [];
+        newModel[name] = model[name] ? model[name].slice() : [];
         break;
       case 'link':
         newModel[name] = (model[name] || '').name || '';
@@ -392,7 +419,9 @@ const initModel = (model, kbClass) => {
         break;
       case 'embedded':
         if (linkedClass && linkedClass.properties) {
-          newModel[name] = model[name] || initModel({}, property.linkedClass.properties);
+          newModel[name] = model[name]
+            ? Object.assign({}, model[name])
+            : initModel({}, property.linkedClass.name, schema);
         }
         break;
       default:
@@ -401,21 +430,6 @@ const initModel = (model, kbClass) => {
     }
   });
   return newModel;
-};
-
-/**
- * Returns the editable properties of target ontology class.
- * @param {string} className - requested class name
- */
-const getClass = (className, schema) => {
-  const VPropKeys = Object.keys(schema.V.properties);
-  const classKey = (Object.keys(schema)
-    .find(key => key.toLowerCase() === (className || '').toLowerCase()));
-  if (!classKey) return {};
-  const props = Object.keys(schema[classKey].properties)
-    .filter(prop => !VPropKeys.includes(prop))
-    .map(prop => schema[classKey].properties[prop]);
-  return { route: schema[classKey].route, properties: props };
 };
 
 /**
@@ -445,6 +459,18 @@ const parsePermission = (permissionValue) => {
   return retstr;
 };
 
+/**
+  * Returns all valid ontology types.
+  */
+const getOntologies = (schema) => {
+  const list = [];
+  Object.keys(schema).forEach((key) => {
+    if ((schema[key].inherits || []).includes('Ontology')) {
+      list.push({ name: key, properties: schema[key].properties, route: schema[key].route });
+    }
+  });
+  return list;
+};
 
 /**
 * Given a schema class object, determine whether it is abstract or not.
@@ -452,7 +478,7 @@ const parsePermission = (permissionValue) => {
 * @param {Object} schema - database schema
 */
 const isAbstract = (linkedClass, schema) => Object.values(schema)
-  .some(kbClass => kbClass.inherits.includes(linkedClass));
+  .some(kbClass => (kbClass.inherits || []).includes(linkedClass));
 
 /**
 * Given a schema class object, find all other classes that inherit it.
@@ -460,15 +486,27 @@ const isAbstract = (linkedClass, schema) => Object.values(schema)
 * @param {Object} schema - database schema
 */
 const getSubClasses = (abstractClass, schema) => Object.values(schema)
-  .filter(kbClass => kbClass.inherits.includes(abstractClass));
+  .filter(kbClass => (kbClass.inherits || []).includes(abstractClass));
 
 /**
  * Returns a list of object class properties that are of a given type.
- * @param {Array} kbClass - Knowledgebase class object as defined in the schema.
+ * @param {Object} kbClass - Knowledgebase class object as defined in the schema.
  * @param {string} type - KB class type.
  */
 const getPropOfType = (kbClass, type) => Object.values(kbClass)
   .filter(prop => prop.type === type);
+
+const sortFields = (order = []) => (a, b) => {
+  if (order.indexOf(b.name) === -1) {
+    return -1;
+  }
+  if (order.indexOf(a.name) === -1) {
+    return 1;
+  }
+  return order.indexOf(a.name) < order.indexOf(b.name)
+    ? -1
+    : 1;
+};
 
 export default {
   antiCamelCase,
@@ -482,7 +520,6 @@ export default {
   getGraphData,
   expanded,
   positionInit,
-  getColor,
   initModel,
   getClass,
   isAbstract,
@@ -492,4 +529,7 @@ export default {
   castToExist,
   formatStr,
   shortenString,
+  parseKBType,
+  getOntologies,
+  sortFields,
 };

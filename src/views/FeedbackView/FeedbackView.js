@@ -18,17 +18,17 @@ function FeedbackView() {
   return (
     <div className="feedback-wrapper">
       <Paper className="feedback-header" elevation={4}>
-        <Typography component="h1" variant="headline">Feedback</Typography>
+        <Typography variant="h5">Feedback</Typography>
       </Paper>
       <Paper className="feedback-body" elevation={4}>
-        <Typography variant="subheading" paragraph>Questions</Typography>
-        <Typography variant="body1" paragraph>
+        <Typography variant="subtitle1" paragraph>Questions</Typography>
+        <Typography paragraph>
           Email questions to: {emailLink}, or send through HipChat to {FEEDBACK_HIPCHAT}.
         </Typography>
       </Paper>
       <Paper className="feedback-body" elevation={4}>
-        <Typography variant="subheading" paragraph>Feature Requests and Bug reports</Typography>
-        <Typography variant="body1" paragraph>
+        <Typography variant="subtitle1" paragraph>Feature Requests and Bug reports</Typography>
+        <Typography paragraph>
           Create JIRA tickets for feature requests, bug reports, and big
             questions that might require more discussion, under the {jiraLink} project.
         </Typography>

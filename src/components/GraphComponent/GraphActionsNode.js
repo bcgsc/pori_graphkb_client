@@ -80,7 +80,8 @@ function GraphActionsNode(props) {
       <g
         style={{ cursor: 'pointer' }}
         onClick={option.action}
-        key={d}
+        key={option.name}
+        id={option.name.toLowerCase()}
       >
         <path
           d={d}

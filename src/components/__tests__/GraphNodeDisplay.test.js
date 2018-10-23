@@ -1,7 +1,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import { mount, shallow } from 'enzyme';
-import GraphNodeDisplay from '../GraphNodeDisplay/GraphNodeDisplay';
+import GraphNodeDisplay from '../GraphComponent/GraphNodeDisplay/GraphNodeDisplay';
 import { GraphNode } from '../GraphComponent/kbgraph';
 
 const mockData = new GraphNode(

@@ -95,8 +95,8 @@
     "collectCoverage": true,
     "coverageDirectory": "coverage",
     "collectCoverageFrom": [
-      "src/components/**/*.{js,jsx,mjs}",
-      "src/services/**/!(api|SchemaContext).{js,jsx,mjs}"
+      "src/components/**/!(SchemaContext).{js,jsx,mjs}",
+      "src/services/**/!(api).{js,jsx,mjs}"
     ],
     "coverageReporters": [
       "text",

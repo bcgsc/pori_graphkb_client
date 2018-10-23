@@ -4,14 +4,15 @@ import { mount, shallow } from 'enzyme';
 import { spy } from 'sinon';
 import { Drawer } from '@material-ui/core';
 import DetailDrawer from '../DetailDrawer/DetailDrawer';
-import { Record, Schema } from '../../services/knowledgebase';
+import classes from '../../models/classes';
+import Schema from '../../models/schema';
 
 describe('<DetailDrawer />', () => {
   let wrapper;
 
   beforeAll(() => {
     const edges = ['AliasOf', 'SubClassOf'];
-    Record.loadEdges(edges);
+    classes.Record.loadEdges(edges);
     spy(DetailDrawer.prototype, 'formatRelationships');
     spy(DetailDrawer.prototype, 'formatIdentifiers');
     spy(DetailDrawer.prototype, 'formatOtherProps');

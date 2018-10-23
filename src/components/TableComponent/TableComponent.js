@@ -54,7 +54,7 @@ const NEXT_CUTOFF = 0.8;
 const { ROWS_PER_PAGE, TSV_FILENAME } = config.TABLE_PROPERTIES;
 const DEFAULT_COLUMN_ORDER = [
   '@class',
-  'source',
+  'source.name',
   'sourceId',
   'name',
 ];

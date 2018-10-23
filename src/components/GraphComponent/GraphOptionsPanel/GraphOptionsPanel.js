@@ -17,8 +17,8 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import HelpIcon from '@material-ui/icons/Help';
-import util from '../../services/util';
-import config from '../../static/config.json';
+import util from '../../../services/util';
+import config from '../../../static/config.json';
 
 const { GRAPH_ADVANCED, GRAPH_MAIN } = config.DESCRIPTIONS;
 

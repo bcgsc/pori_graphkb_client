@@ -28,10 +28,10 @@ import CloseIcon from '@material-ui/icons/Close';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import BuildIcon from '@material-ui/icons/Build';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import GraphActionsNode from './GraphActionsNode';
-import GraphOptionsPanel from './GraphOptionsPanel';
-import GraphLinkDisplay from '../GraphLinkDisplay/GraphLinkDisplay';
-import GraphNodeDisplay from '../GraphNodeDisplay/GraphNodeDisplay';
+import GraphActionsNode from './GraphActionsNode/GraphActionsNode';
+import GraphOptionsPanel from './GraphOptionsPanel/GraphOptionsPanel';
+import GraphLinkDisplay from './GraphLinkDisplay/GraphLinkDisplay';
+import GraphNodeDisplay from './GraphNodeDisplay/GraphNodeDisplay';
 import util from '../../services/util';
 import config from '../../static/config.json';
 import {

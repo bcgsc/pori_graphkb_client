@@ -29,7 +29,7 @@ describe('<GraphNodeDisplay />', () => {
     expect(wrapper.children().first().type()).to.equal('text');
   });
 
-  it('renders correct label correctly', () => {
+  it('renders correct label', () => {
     wrapper = shallow(
       <GraphNodeDisplay
         node={mockData}
@@ -66,7 +66,7 @@ describe('<GraphNodeDisplay />', () => {
     wrapper.unmount();
   });
 
-  it('successfully applies drag function to node !d3 and enzyme simulate don\'t play well together :(', () => {
+  it('successfully applies drag function to node (doesn\'t test triggering)', () => {
     const applyDrag = jest.fn();
     wrapper = mount(
       <GraphNodeDisplay

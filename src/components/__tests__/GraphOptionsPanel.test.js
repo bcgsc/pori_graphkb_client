@@ -51,7 +51,7 @@ describe('<GraphOptionsPanel />', () => {
     });
   });
 
-  it('closing dialog triggers handler', () => {
+  it('triggers the handler when dialog closes', () => {
     const handleDialogClose = jest.fn();
     const handleGraphOptionsChange = jest.fn();
     wrapper = mount(
@@ -68,7 +68,7 @@ describe('<GraphOptionsPanel />', () => {
     expect(handleDialogClose.mock.calls.length).to.eq(2);
   });
 
-  it('help dialog is opened and rendered on button clicks', () => {
+  it('opens and renders help dialog when help buttons are clicked', () => {
     wrapper = mount(
       <GraphOptionsPanel
         graphOptionsOpen

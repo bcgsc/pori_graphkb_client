@@ -301,9 +301,14 @@ class AdminView extends Component {
     this.setState({ newUserGroups });
   }
 
+  /**
+   * Handles change of a nested property.
+   * @param {Event} e - user change event.
+   * @param {string} nKey - state nested key.
+   */
   handleNestedChange(e, nKey) {
     const { [nKey]: obj } = this.state;
-    this.state[nKey][e.target.name] = e.target.value;
+    obj[e.target.name] = e.target.value;
     this.setState({ [nKey]: obj });
   }
 
@@ -706,7 +711,7 @@ class AdminView extends Component {
         {userGroupDialog()}
         {deleteUserGroupDialog}
         <Paper className="admin-headline">
-          <Typography component="h1" variant="h5">Admin</Typography>
+          <Typography variant="h5">Admin</Typography>
         </Paper>
         <Paper className="admin-users">
           <div className="admin-section-heading">
@@ -779,7 +784,7 @@ class AdminView extends Component {
         </Paper>
         <Paper className="admin-user-groups">
           <div className="admin-section-heading">
-            <Typography component="h2" variant="title">User Groups</Typography>
+            <Typography component="h2" variant="h6">User Groups</Typography>
             <div className="admin-section-heading-btns">
               <IconButton onClick={() => this.handleChange({ target: { name: 'newUserGroupDialog', value: true } })}>
                 <AddIcon />

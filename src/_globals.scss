@@ -1,7 +1,8 @@
 /***************
     PALLETTE
 ***************/
-
+$bc-cancer-primary: #0dbfd5;
+$bc-cancer-secondary: #905aa6;
 $md-primary-color: #26328c;
 $md-primary-variant: #1f2b65;
 $md-secondary-color: #54b198;
@@ -72,7 +73,7 @@ $roboto: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
   display: flex;
   justify-items: center;
   flex-direction: row-reverse;
-  h1 {
+  h5 {
     margin: auto 0;
     font-weight: 300;
     margin-right: auto;

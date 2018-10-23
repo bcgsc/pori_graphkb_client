@@ -20,6 +20,13 @@ import util from '../../services/util';
 import FormTemplater from '../../components/FormTemplater/FormTemplater';
 import config from '../../config';
 
+const DEFAULT_ORDER = [
+  'name',
+  'sourceId',
+  'source',
+  'subsets',
+];
+
 /**
  * View for in-depth database query building. Form submissions will route to
  * the data results route to display the returned data. Forms are dynamically
@@ -56,16 +63,15 @@ class AdvancedQueryView extends Component {
     }
 
     const schema = await api.getSchema();
-    const ontologyTypes = [{ name: '', properties: null, route: 'ontologies' }];
-    ontologyTypes.push(...api.getOntologies(schema));
-    const editableProps = (util.getClass(ontologyTypes[0].name || 'Ontology', schema)).properties;
-    editableProps.push(...config.ONTOLOGY_QUERY_PARAMS);
-    const form = util.initModel({ '@class': ontologyTypes[0].name }, editableProps);
+    const ontologyTypes = [{ name: 'Ontology', properties: null, route: 'ontologies' }];
+    ontologyTypes.push(...util.getOntologies(schema));
+
+    const form = util.initModel({}, 'Ontology', schema, config.ONTOLOGY_QUERY_PARAMS);
     form.subsets = '';
+
     this.setState({
       ontologyTypes,
       form,
-      editableProps,
       schema,
     });
   }
@@ -74,11 +80,12 @@ class AdvancedQueryView extends Component {
    * Formats query string to be passed into url.
    */
   bundle() {
-    const { form, editableProps } = this.state;
+    const { form, schema } = this.state;
     const params = [{ name: '@class', type: 'string' }];
     params.push(...config.ONTOLOGY_QUERY_PARAMS);
+    const editableProps = util.getClass(form['@class'], schema).properties || [];
+    editableProps.push(...config.ONTOLOGY_QUERY_PARAMS);
     const payload = util.parsePayload(form, editableProps, params);
-
     return qs.stringify(payload);
   }
 
@@ -104,31 +111,16 @@ class AdvancedQueryView extends Component {
     this.setState({ form });
   }
 
+
   /**
    * Re renders form input fields based on class editable properties.
-   * @param {Event} e - Class selection event
+   * @param {Event} e - User class selection event.
    */
   async handleClassChange(e) {
     const { form, schema } = this.state;
-    const newNodeClass = e.target.value;
-    const editableProps = (util.getClass(newNodeClass || 'Ontology', schema)).properties;
-    editableProps.forEach((prop) => {
-      const { name, type } = prop;
-      const defaultValue = prop.default || '';
-      if (form[name] === undefined) {
-        if (type === 'boolean') {
-          form[name] = defaultValue.toString() === 'true';
-        } else {
-          form[name] = '';
-        }
-      }
-    });
-    editableProps.push(...config.ONTOLOGY_QUERY_PARAMS);
-    form['@class'] = e.target.value;
-    this.setState({
-      form,
-      editableProps,
-    });
+    const newForm = util.initModel(form, e.target.value || 'Ontology', schema, config.ONTOLOGY_QUERY_PARAMS);
+    newForm.subsets = Array.isArray(newForm.subsets) ? newForm.subsets.join('') : newForm.subsets || '';
+    this.setState({ form: newForm });
   }
 
   /**
@@ -142,7 +134,6 @@ class AdvancedQueryView extends Component {
     const {
       form,
       ontologyTypes,
-      editableProps,
       message,
       schema,
     } = this.state;
@@ -150,24 +141,8 @@ class AdvancedQueryView extends Component {
 
     if (!form) return null;
 
-    const sortFields = (a, b) => {
-      const order = [
-        'name',
-        'sourceId',
-        'source',
-        'subsets',
-      ];
-      if (order.indexOf(b.name) === -1) {
-        return -1;
-      }
-      if (order.indexOf(a.name) === -1) {
-        return 1;
-      }
-      if (order.indexOf(a.name) < order.indexOf(b.name)) {
-        return -1;
-      }
-      return 1;
-    };
+    const editableProps = (util.getClass(form['@class'], schema)).properties || [];
+    editableProps.push(...config.ONTOLOGY_QUERY_PARAMS);
 
     return (
       <div className="adv-wrapper" elevation={4}>
@@ -183,7 +158,7 @@ class AdvancedQueryView extends Component {
           )}
         />
         <Paper elevation={4} className="adv-header">
-          <Typography variant="headline" id="adv-title">
+          <Typography variant="h5" id="adv-title">
             Advanced Query
           </Typography>
         </Paper>
@@ -209,7 +184,7 @@ class AdvancedQueryView extends Component {
             kbClass={editableProps}
             onChange={this.handleChange}
             schema={schema}
-            sort={sortFields}
+            sort={util.sortFields(DEFAULT_ORDER)}
             ignoreRequired
           />
         </Paper>
@@ -224,7 +199,7 @@ class AdvancedQueryView extends Component {
           </Button>
           <Button
             color="primary"
-            variant="raised"
+            variant="contained"
             id="search-button"
             onClick={() => history.push({
               pathname: '/data/table',

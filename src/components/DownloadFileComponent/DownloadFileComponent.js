@@ -23,7 +23,9 @@ function DownloadFileComponent(props) {
    * Start download method.
    */
   const onClick = () => {
-    const file = rawFileContent();
+    const file = typeof rawFileContent === 'function'
+      ? rawFileContent()
+      : rawFileContent;
     if (!file) return;
 
     if (window.Cypress) return;
@@ -69,7 +71,7 @@ function DownloadFileComponent(props) {
  */
 DownloadFileComponent.propTypes = {
   mediaType: PropTypes.string,
-  rawFileContent: PropTypes.func,
+  rawFileContent: PropTypes.any,
   fileName: PropTypes.string,
   children: PropTypes.node.isRequired,
   id: PropTypes.string,

@@ -133,14 +133,14 @@ class LoginView extends Component {
             required
             error={invalid}
           />
-          <Button type="submit" color="primary" variant="raised">
+          <Button type="submit" color="primary" variant="contained">
             Login
           </Button>
           <Typography variant="caption" id="caption">
             Log in with your BC GSC web credentials
           </Typography>
           {invalid && (
-            <Typography variant="subheading" id="invalid-meessage">
+            <Typography variant="subtitle1" id="invalid-meessage">
               Invalid Username or Password
             </Typography>
           )}

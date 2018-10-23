@@ -51,27 +51,27 @@ class ErrorView extends Component {
 
     return (
       <div className="error-wrapper">
-        <Typography variant="display4" id="error-header">
+        <Typography variant="h1" id="error-header">
           Error
         </Typography>
         <div className="error-content">
-          <Typography variant="display2">
+          <Typography variant="h3">
             {`${status}: ${name}`}
           </Typography>
         </div>
         <div className="error-content">
-          <Typography variant="subheading">
+          <Typography variant="subtitle1">
             {methodText}
           </Typography>
         </div>
         <div className="error-content">
-          <Typography variant="title">
+          <Typography variant="h6">
             {message}
           </Typography>
         </div>
         <div id="spacer" />
         <div className="error-content" id="return-link">
-          <Button variant="raised" color="primary" onClick={history.back}>
+          <Button variant="contained" color="primary" onClick={history.back}>
             Back
           </Button>
         </div>
@@ -94,10 +94,10 @@ class ErrorView extends Component {
                   </Button>
                 </CopyToClipboard>
               </Tooltip>
-              <Typography variant="body2">
+              <Typography variant="body1">
                 Stacktrace:
               </Typography>
-              <Typography variant="subheading" id="stacktrace-text">
+              <Typography variant="subtitle1" id="stacktrace-text">
                 {stacktrace}
               </Typography>
             </div>)}

@@ -36,10 +36,20 @@ const DEFAULT_LIMIT = 1000;
  *
  */
 class DataView extends Component {
+  /**
+   * Makes API GET call to specified endpoint, with specified query parameters.
+   * @param {string} route - API endpoint.
+   * @param {Object} queryParams - Query parameters object.
+   * @param {Array} omitted - List of parameters to strip from API call.
+   */
+  static async makeApiQuery(route, queryParams, omitted = []) {
+    const response = await api.get(`${route}?${qs.stringify(omit(queryParams, omitted))}`);
+    return Promise.resolve(jc.retrocycle(response).result);
+  }
+
   constructor(props) {
     super(props);
     this.state = {
-      loginRedirect: false,
       data: null,
       displayed: [],
       hidden: [],
@@ -53,6 +63,8 @@ class DataView extends Component {
     };
 
     this.handleClick = this.handleClick.bind(this);
+    this.processData = this.processData.bind(this);
+    this.prepareNextPagination = this.prepareNextPagination.bind(this);
 
     // TableComponent methods
     this.handleCheckbox = this.handleCheckbox.bind(this);
@@ -78,8 +90,6 @@ class DataView extends Component {
    * Queries the api and loads results into component state.
    */
   async componentDidMount() {
-    const dataMap = {};
-    const { loginRedirect } = this.state;
     const { history } = this.props;
 
     const schema = await api.getSchema();
@@ -91,35 +101,61 @@ class DataView extends Component {
       omitted.push('@class');
     }
     filteredSearch.neighbors = filteredSearch.neighbors || DEFAULT_NEIGHBORS;
+    filteredSearch.limit = filteredSearch.limit || DEFAULT_LIMIT;
+    const data = await DataView.makeApiQuery(route, filteredSearch, omitted);
+    this.processData(data, schema);
+    this.prepareNextPagination(route, filteredSearch, data, omitted);
+    Ontology.loadEdges(api.getEdges(schema));
+    this.setState({
+      schema,
+      filteredSearch,
+      edges: api.getEdges(schema),
+    });
+  }
 
-    let allProps = ['@rid', '@class'];
-    try {
-      const data = await api.get(`${route}?${qs.stringify(omit(filteredSearch, omitted))}`);
-      const cycled = jc.retrocycle(data).result;
+  /**
+   * Processes ontology data and updates properties map.
+   * @param {Array} queryResults - List of returned records.
+   * @param {Object} schema - Knowledgebase db schema.
+   */
+  processData(queryResults, schema) {
+    let { allProps, data } = this.state;
+    if (!data) {
+      data = {};
+    }
+    if (!allProps || allProps.length === 0) {
+      allProps = ['@rid', '@class'];
+    }
 
-      cycled.forEach((ontologyTerm) => {
-        allProps = api.collectOntologyProps(ontologyTerm, allProps, schema);
-        dataMap[ontologyTerm['@rid']] = new Ontology(ontologyTerm);
-      });
+    queryResults.forEach((ontologyTerm) => {
+      allProps = api.collectOntologyProps(ontologyTerm, allProps, schema);
+      data[ontologyTerm['@rid']] = new Ontology(ontologyTerm);
+    });
 
-      if (cycled.length >= (filteredSearch.limit || DEFAULT_LIMIT)) {
-        filteredSearch.skip = filteredSearch.limit || DEFAULT_LIMIT;
-        this.setState({
-          next: () => api.get(`${route}?${qs.stringify(omit(filteredSearch, omitted))}`),
-          moreResults: true,
-        });
-      }
-      Ontology.loadEdges(api.getEdges(schema));
+    this.setState({ data, allProps });
+  }
+
+  /**
+   * Prepares next query function.
+   * @param {string} route - API route.
+   * @param {Object} queryParams - Query parameters key/value pairs.
+   * @param {Array} prevResult - Previous query results.
+   * @param {Array} omitted - List of property keys to omit during next query.
+   */
+  prepareNextPagination(route, queryParams, prevResult, omitted = []) {
+    const nextQueryParams = queryParams;
+    if (prevResult.length >= queryParams.limit) {
+      nextQueryParams.skip = Number(queryParams.limit) + Number(queryParams.skip || 0);
       this.setState({
-        data: dataMap,
-        loginRedirect,
-        allProps,
-        schema,
-        filteredSearch,
-        edges: api.getEdges(schema),
+        next: () => DataView.makeApiQuery(route, nextQueryParams, omitted),
+        moreResults: true,
+        filteredSearch: nextQueryParams,
       });
-    } catch (e) {
-      console.error(e);
+    } else {
+      this.setState({
+        next: null,
+        moreResults: false,
+      });
     }
   }
 
@@ -191,47 +227,36 @@ class DataView extends Component {
    * Handles subsequent pagination call
    */
   async handleSubsequentPagination() {
-    const { next } = this.state;
+    const {
+      next,
+      data,
+      schema,
+      filteredSearch,
+    } = this.state;
 
     if (next) {
       try {
-        this.setState({ next: null, moreResults: false, completedNext: false });
-        const nextData = await next();
-        const {
-          data,
-          allProps,
-          schema,
-          filteredSearch,
-        } = this.state;
-        const cycled = jc.retrocycle(nextData).result;
-        let newColumns = allProps;
-        cycled.forEach((ontologyTerm) => {
-          newColumns = api.collectOntologyProps(ontologyTerm, allProps, schema);
-          data[ontologyTerm['@rid']] = new Ontology(ontologyTerm);
+        this.setState({
+          next: null,
+          moreResults: false,
+          completedNext: false,
         });
 
         let route = '/ontologies';
         const omitted = [];
+
         if (filteredSearch['@class'] && schema[filteredSearch['@class']]) {
           route = schema[filteredSearch['@class']].route || filteredSearch['@class'];
           omitted.push('@class');
         }
 
-        let newNext = null;
-        let moreResults = false;
-        const limit = filteredSearch.limit || DEFAULT_LIMIT;
-        const lastSkip = filteredSearch.skip || limit;
-        if (cycled.length >= limit) {
-          filteredSearch.skip = Number(lastSkip) + Number(limit);
-          newNext = () => api.get(`${route}?${qs.stringify(omit(filteredSearch, omitted))}&neighbors=${DEFAULT_NEIGHBORS}`);
-          moreResults = true;
-        }
+        const nextData = await next();
+
+        this.processData(nextData, schema);
+        this.prepareNextPagination(route, filteredSearch, nextData, omitted);
+
         this.setState({
           data,
-          allProps: newColumns,
-          next: newNext,
-          filteredSearch,
-          moreResults,
           completedNext: true,
         });
       } catch (e) {
@@ -320,7 +345,6 @@ class DataView extends Component {
       moreResults,
       filteredSearch,
       edges,
-      /* eslint-disable-next-line */
       detailEdge,
       completedNext,
       storedFilters,
@@ -342,7 +366,6 @@ class DataView extends Component {
         handleNodeEditStart={this.handleNodeEditStart}
       />
     );
-
     const GraphWithProps = () => (
       <GraphComponent
         data={data}
@@ -351,10 +374,10 @@ class DataView extends Component {
         handleDetailDrawerOpen={this.handleDetailDrawerOpen}
         handleDetailDrawerClose={this.handleDetailDrawerClose}
         handleTableRedirect={this.handleTableRedirect}
-        edges={edges}
+        edgeTypes={edges}
         detail={detail}
         allProps={allProps}
-        filteredSearch={filteredSearch}
+        localStorageKey={qs.stringify(filteredSearch)}
         handleNewColumns={this.handleNewColumns}
       />
     );
@@ -396,7 +419,7 @@ class DataView extends Component {
             </Button>
           )}
         />
-        {Object.keys(data).length !== 0
+        {Object.keys(data).length !== 0 && qs.stringify(filteredSearch) && edges
           ? (
             <Switch>
               <Route exact path="/data/table" render={TableWithProps} />
@@ -409,13 +432,13 @@ class DataView extends Component {
             </Switch>
           ) : (
             <div className="no-results-msg">
-              <Typography variant="headline">
+              <Typography variant="h5">
                 No Results
               </Typography>
             </div>
           )
         }
-        {detailDrawer}
+        {schema && detailDrawer}
       </div>);
   }
 }

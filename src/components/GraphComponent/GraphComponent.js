@@ -6,7 +6,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './GraphComponent.css';
 import * as d3 from 'd3';
-import qs from 'qs';
 import {
   IconButton,
   List,
@@ -118,8 +117,8 @@ class GraphComponent extends Component {
       displayed,
       data,
       allProps,
-      filteredSearch,
-      edges,
+      localStorageKey,
+      edgeTypes,
     } = this.props;
     const {
       graphOptions,
@@ -127,25 +126,21 @@ class GraphComponent extends Component {
     } = this.state;
     let { expandable } = this.state;
     this.propsMap = new PropsMap();
-
     // Defines what edge keys to look for.
-    const expandedEdgeTypes = util.expandEdges(edges);
+    const expandedEdgeTypes = util.expandEdges(edgeTypes);
     let validDisplayed = displayed;
     if (!displayed || displayed.length === 0) {
-      validDisplayed = [Object.keys(data)[0]];
+      validDisplayed = Object.keys(data)[0] ? [Object.keys(data)[0]] : [];
     }
-
-    const stringifiedSearch = qs.stringify(filteredSearch);
 
     this.setState({
       expandedEdgeTypes,
       allProps,
-      filteredSearch: stringifiedSearch,
     }, () => {
       this.handleResize();
       window.addEventListener('resize', this.handleResize);
 
-      const storedData = util.getGraphData(stringifiedSearch);
+      const storedData = util.getGraphData(localStorageKey);
       const storedOptions = GraphOptions.retrieve();
 
       /**
@@ -160,6 +155,7 @@ class GraphComponent extends Component {
       if ((displayed && displayed.length !== 0) || (!initState && !storedData)) {
         let { nodes, links, graphObjects } = this.state;
 
+        /* Case 1, iterate through specified rids. */
         validDisplayed.forEach((key, i) => {
           ({
             nodes,
@@ -178,13 +174,14 @@ class GraphComponent extends Component {
             },
           ));
         });
-        util.loadGraphData(stringifiedSearch, { nodes, links, graphObjects });
+        util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
       } else if (initState) {
         const {
           graphObjects,
           nodes,
           links,
         } = initState;
+        /* Case 2, iterate through component state field containing graph state. */
         nodes.forEach((node) => {
           this.propsMap.loadNode(node.data, allProps);
           expandable = util.expanded(expandedEdgeTypes, graphObjects, node.getId(), expandable);
@@ -197,12 +194,13 @@ class GraphComponent extends Component {
           nodes: nodes.slice(),
           links: links.slice(),
         });
-      } else if (storedData && storedData.filteredSearch === stringifiedSearch) {
+      } else if (storedData && storedData.localStorageKey === localStorageKey) {
         const {
           graphObjects,
         } = storedData;
         let { nodes, links } = storedData;
-        delete storedData.filteredSearch;
+        /* Case 3, fetch state saved in localStorage. */
+        delete storedData.localStorageKey;
         nodes = nodes.map((n) => {
           this.propsMap.loadNode(n.data, allProps);
           expandable = util.expanded(expandedEdgeTypes, graphObjects, n.data['@rid'], expandable);
@@ -270,20 +268,20 @@ class GraphComponent extends Component {
       graphObjects,
       nodes,
       links,
-      filteredSearch,
     } = this.state;
+    const { localStorageKey } = this.props;
     // remove all event listeners
     svg.call(d3.zoom()
       .on('zoom', null))
       .on('dblclick.zoom', null);
     simulation.on('tick', null);
     window.removeEventListener('resize', this.handleResize);
-    util.loadGraphData(filteredSearch, { nodes, links, graphObjects });
+    util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
   }
 
   /**
    * Applies drag behavior to node.
-   * @param {Object} node - node to be dragged.
+   * @param {GraphNode} node - node to be dragged.
    */
   applyDrag(node) {
     const { simulation } = this.state;
@@ -403,13 +401,11 @@ class GraphComponent extends Component {
 
   /**
    * Calls the api and renders neighbor nodes of the input node onto the graph.
-   * @param {Object} node - d3 simulation node whose neighbors were requestsed.
+   * @param {GraphNode} node - d3 simulation node whose neighbors were requestsed.
    */
   loadNeighbors(node) {
-    const {
-      filteredSearch,
-      expandExclusions,
-    } = this.state;
+    const { expandExclusions } = this.state;
+    const { localStorageKey } = this.props;
     let {
       nodes,
       links,
@@ -441,7 +437,7 @@ class GraphComponent extends Component {
     if (!data[node.getId()].getEdges().some(edge => !links.find(l => l.getId() === edge['@rid']))) {
       delete expandable[node.getId()];
     }
-    util.loadGraphData(filteredSearch, { nodes, links, graphObjects });
+    util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
     this.setState({
       expandable,
       actionsNode: null,
@@ -456,7 +452,7 @@ class GraphComponent extends Component {
   /**
    * Determines whether to quickly selected load node neighbors or open the
    * expansion dialog panel.
-   * @param {Object} node - d3 simulation node to be expanded.
+   * @param {GraphNode} node - d3 simulation node to be expanded.
    */
   handleExpandRequest(node) {
     const {
@@ -477,6 +473,10 @@ class GraphComponent extends Component {
     }
   }
 
+  /**
+   * Pauses d3 force simulation by making simulation 'tick' event handler a
+   * noop.
+   */
   pauseGraph() {
     const { simulation } = this.state;
     simulation.on('tick', null);
@@ -486,8 +486,11 @@ class GraphComponent extends Component {
    * Processes node data and updates state with new nodes and links. Also
    * updates expandable flags.
    * @param {Object} node - Node object as returned by the api.
-   * @param {Object} position - Object containing x and y position of input node.
+   * @param {Object} position - Object containing x and y position of node.
    * @param {number} depth - Recursion base case flag.
+   * @param {Object} prevstate - Object containing nodes, links,
+   * graphobjects, and expandable map, from previous state.
+   * @param {Array} exclusions - List of edge ID's to be ignored on expansion.
    */
   processData(node, position, depth, prevstate, exclusions = []) {
     const { expandedEdgeTypes } = this.state;
@@ -809,8 +812,8 @@ class GraphComponent extends Component {
       expandedEdgeTypes,
       expandable,
       allProps,
-      filteredSearch,
     } = this.state;
+    const { localStorageKey } = this.props;
 
     const { handleDetailDrawerClose } = this.props;
     if (nodes.length === 1) return;
@@ -849,7 +852,7 @@ class GraphComponent extends Component {
     }, () => {
       this.updateColors();
       handleDetailDrawerClose();
-      util.loadGraphData(filteredSearch, { nodes, links, graphObjects });
+      util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
     });
   }
 
@@ -970,7 +973,7 @@ class GraphComponent extends Component {
               <div className="legend-content">
                 <div className="legend-header">
                   <div className="legend-header-text">
-                    <Typography variant="subheading">Nodes</Typography>
+                    <Typography variant="subtitle1">Nodes</Typography>
                     <Typography variant="caption">
                       {graphOptions.nodesColor ? `(${util.antiCamelCase(graphOptions.nodesColor)})` : ''}
                     </Typography>
@@ -1021,7 +1024,7 @@ class GraphComponent extends Component {
                 <div className="legend-content">
                   <div className="legend-header">
                     <div className="legend-header-text">
-                      <Typography variant="subheading">Edges</Typography>
+                      <Typography variant="subtitle1">Edges</Typography>
                       <Typography variant="caption">
                         {graphOptions.linksColor && `(${util.antiCamelCase(graphOptions.linksColor)})`}
                       </Typography>
@@ -1085,11 +1088,11 @@ class GraphComponent extends Component {
         >
           <DialogTitle>Select Edges to Expand</DialogTitle>
           <DialogContent>
-            <Typography variant="subheading">
+            <Typography variant="subtitle1">
               Expand by Edge Types:
             </Typography>
             <List dense className="expand-links-types">
-              {edges.reduce((array, edge) => {
+              {(edges || []).reduce((array, edge) => {
                 if (
                   !array.includes(edge['@class'])
                   && !links.find(l => l.getId() === edge['@rid'])
@@ -1112,7 +1115,7 @@ class GraphComponent extends Component {
                 </ListItem>
               ))}
             </List>
-            <Typography variant="subheading">
+            <Typography variant="subtitle1">
               Select Individual Links:
             </Typography>
             <ListItem
@@ -1122,7 +1125,7 @@ class GraphComponent extends Component {
             >
               <Checkbox checked={!(expandExclusions.length === edges.length)} />
               <ListItemText>
-                <Typography variant="subheading">
+                <Typography variant="subtitle1">
                   {expandExclusions.length === edges.length
                     ? 'Select All' : 'Deselect All'}
                 </Typography>
@@ -1146,8 +1149,8 @@ class GraphComponent extends Component {
                   >
                     <Checkbox checked={!expandExclusions.includes(edge['@rid'])} />
                     <ListItemText>
-                      <Typography variant="body2">{target.name}</Typography>
-                      <Typography variant="body1">{target.sourceId}</Typography>
+                      <Typography variant="body1">{target.name}</Typography>
+                      <Typography>{target.sourceId}</Typography>
                       <Typography variant="caption">{target.source.name || node.source.name}</Typography>
                     </ListItemText>
                   </ListItem>
@@ -1246,7 +1249,7 @@ class GraphComponent extends Component {
         link={link}
         detail={detail}
         labelKey={graphOptions.linkLabelProp}
-        color={util.getColor(link, graphOptions.linksColor, graphOptions.linksColors)}
+        color={graphOptions.getColor(link, 'links')}
         handleClick={e => this.handleLinkClick(e, link)}
         actionsNode={actionsNode}
         marker={`url(#${MARKER_ID})`}
@@ -1258,7 +1261,7 @@ class GraphComponent extends Component {
         node={node}
         detail={detail}
         labelKey={graphOptions.nodeLabelProp}
-        color={util.getColor(node, graphOptions.nodesColor, graphOptions.nodesColors)}
+        color={graphOptions.getColor(node, 'nodes')}
         handleClick={e => this.handleClick(e, node)}
         expandable={expandable[node.getId()]}
         applyDrag={this.applyDrag}
@@ -1353,30 +1356,40 @@ class GraphComponent extends Component {
  * @namespace
  * @property {function} handleClick - Parent component method triggered when a
  * graph object is clicked.
- * @property {Object} data - Parent state data.
  * @property {function} handleDetailDrawerOpen - Method to handle opening of detail drawer.
  * @property {function} handleDetailDrawerClose - Method to handle closing of detail drawer.
  * @property {function} handleTableRedirect - Method to handle a redirect to the table view.
  * @property {function} handleNewColumns - Updates valid properties in parent state.
  * @property {Object} detail - record ID of node currently selected for detail viewing.
+ * @property {Object} data - Parent state data.
  * @property {Array} allProps - list of all unique properties on all nodes returned in
  * initial query.
+ * @property {Array} edgeTypes - list of valid edge classes.
+ * @property {Array} displayed - list of initial record ID's to be displayed in graph.
+ * @property {string} localStorageKey - key to identify graph session data with in
+ * localStorage.
  */
 GraphComponent.propTypes = {
   handleClick: PropTypes.func,
-  data: PropTypes.object.isRequired,
   handleDetailDrawerOpen: PropTypes.func.isRequired,
   handleDetailDrawerClose: PropTypes.func.isRequired,
   handleTableRedirect: PropTypes.func.isRequired,
   handleNewColumns: PropTypes.func.isRequired,
   detail: PropTypes.object,
+  data: PropTypes.object.isRequired,
   allProps: PropTypes.array,
+  edgeTypes: PropTypes.array,
+  displayed: PropTypes.array,
+  localStorageKey: PropTypes.string,
 };
 
 GraphComponent.defaultProps = {
   handleClick: null,
   detail: null,
   allProps: [],
+  edgeTypes: [],
+  displayed: [],
+  localStorageKey: '',
 };
 
 export default GraphComponent;

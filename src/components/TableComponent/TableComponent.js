@@ -90,12 +90,10 @@ class TableComponent extends Component {
     this.setRef = this.setRef.bind(this);
     this.handleFilterStrings = this.handleFilterStrings.bind(this);
     this.handleFilterExclusions = this.handleFilterExclusions.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.handleChangePage = this.handleChangePage.bind(this);
-    this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleColumnCheck = this.handleColumnCheck.bind(this);
-    this.handleColumnClose = this.handleColumnClose.bind(this);
-    this.handleColumnOpen = this.handleColumnOpen.bind(this);
     this.handleDetailToggle = this.handleDetailToggle.bind(this);
     this.handleHeaderMouseEnter = this.handleHeaderMouseEnter.bind(this);
     this.handleHeaderMouseLeave = this.handleHeaderMouseLeave.bind(this);
@@ -150,18 +148,7 @@ class TableComponent extends Component {
       columnFilterExclusions = storedFilters;
     }
     // Set default order for columns.
-    tableColumns.sort((a, b) => {
-      if (DEFAULT_COLUMN_ORDER.indexOf(b.id) === -1) {
-        return -1;
-      }
-      if (DEFAULT_COLUMN_ORDER.indexOf(a.id) === -1) {
-        return 1;
-      }
-      if (DEFAULT_COLUMN_ORDER.indexOf(a.id) < DEFAULT_COLUMN_ORDER.indexOf(b.id)) {
-        return -1;
-      }
-      return 1;
-    });
+    tableColumns.sort(util.sortFields(DEFAULT_COLUMN_ORDER));
 
     this.setState({ tableColumns, columnFilterStrings, columnFilterExclusions });
   }
@@ -176,12 +163,27 @@ class TableComponent extends Component {
   static getDerivedStateFromProps(props, state) {
     const { sortedData, sort } = state;
     if (Object.keys(props.data).length > sortedData.length) {
-      const s = sort || (() => 1);
-      return { sortedData: Object.values(props.data).sort(s) };
+      if (sort) {
+        return { sortedData: Object.values(props.data).sort(sort) };
+      }
+      return { sortedData: Object.values(props.data) };
     }
     return null;
   }
 
+  /**
+   * Lifecycle method for determining whether component re renders.
+   * @param {Object} nextProps - Incoming props object.
+   * @param {Object} nextState - Incoming state object.
+   */
+  shouldComponentUpdate(nextProps, nextState) {
+    const { sortedData, page } = this.state;
+    const nextPageData = this.pageData(nextState.page, nextState.sortedData).map(n => n['@rid']);
+    const currPageData = this.pageData(page, sortedData).map(n => n['@rid']);
+    return nextPageData.some(n => !currPageData.includes(n))
+      || nextState.sortedData.length > sortedData.length
+      || (undefined !== nextProps.detail);
+  }
 
   /**
    * Stores DOM references in component state.
@@ -267,6 +269,41 @@ class TableComponent extends Component {
     });
   }
 
+
+  /**
+   * Parses current page data to be displayed.
+   * @param {number} page - page number.
+   * @param {Array} data - query results data map.
+   */
+  pageData(page, data) {
+    const {
+      hidden,
+    } = this.props;
+    const {
+      columnFilterExclusions,
+      rowsPerPage,
+      tableColumns,
+    } = this.state;
+    const filteredData = data
+      .filter(n => !hidden.includes(n.getId()))
+      .filter(n => !columnFilterExclusions.some((exclusions, i) => {
+        let cell = n[tableColumns[i].id] === undefined
+          || n[tableColumns[i].id] === null
+          ? 'null' : n[tableColumns[i].id];
+
+        if (cell && cell !== 'null' && tableColumns[i].sortBy) {
+          cell = cell[tableColumns[i].sortBy];
+        }
+
+        if (exclusions.includes(util.castToExist(cell))) {
+          return true;
+        }
+        return false;
+      }));
+    return filteredData
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  }
+
   /**
    * Updates currently editing filter string.
    * @param {Event} e - User input event.
@@ -275,6 +312,14 @@ class TableComponent extends Component {
     const { columnFilterStrings, tempFilterIndex } = this.state;
     columnFilterStrings[tempFilterIndex] = e.target.value;
     this.setState({ columnFilterStrings });
+  }
+
+  /**
+   * General state update handler.
+   * @param {Event} e - user change event.
+   */
+  handleChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
   }
 
   /**
@@ -296,14 +341,6 @@ class TableComponent extends Component {
   }
 
   /**
-   * Updates page rows per page property.
-   * @param {Event} event - Rows per page change event.
-   */
-  handleChangeRowsPerPage(event) {
-    this.setState({ rowsPerPage: event.target.value });
-  }
-
-  /**
    * Closes table actions menu.
    */
   handleClose() {
@@ -321,19 +358,6 @@ class TableComponent extends Component {
     this.setState({ tableColumns });
   }
 
-  /**
-   * Closes column selection dialog.
-   */
-  handleColumnClose() {
-    this.setState({ columnSelect: false });
-  }
-
-  /**
-   * Opens column selection dialog.
-   */
-  handleColumnOpen() {
-    this.setState({ columnSelect: true });
-  }
 
   /**
    * Expands row of input node to view details. If node is already expanded,
@@ -545,7 +569,6 @@ class TableComponent extends Component {
       }));
     const pageData = filteredData
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-
     const menu = (
       <Menu
         anchorEl={anchorEl}
@@ -613,7 +636,7 @@ class TableComponent extends Component {
         <MenuItem
           onClick={() => {
             this.handleClose();
-            this.handleColumnOpen();
+            this.handleChange({ target: { name: 'columnSelect', value: true } });
           }}
           id="column-edit"
         >
@@ -625,7 +648,7 @@ class TableComponent extends Component {
     const columnDialog = (
       <Dialog
         open={columnSelect}
-        onClose={this.handleColumnClose}
+        onClose={() => this.handleChange({ target: { name: 'columnSelect', value: false } })}
         classes={{ paper: 'column-dialog' }}
       >
         <DialogTitle id="column-dialog-title">
@@ -671,7 +694,7 @@ class TableComponent extends Component {
           ))}
         </DialogContent>
         <DialogActions id="column-dialog-actions">
-          <Button onClick={this.handleColumnClose} color="primary">
+          <Button onClick={() => this.handleChange({ target: { name: 'columnSelect', value: false } })} color="primary">
             Done
           </Button>
         </DialogActions>
@@ -726,7 +749,12 @@ class TableComponent extends Component {
                 && columnFilterExclusions[tempFilterIndex].length === 0 ? 'Deselect All' : 'Select All'}
               />
             </ListItem>
-            <List component="div" dense disablePadding className="filter-exclusions-list">
+            <List
+              component="div"
+              dense
+              disablePadding
+              className="filter-exclusions-list"
+            >
               {filterOptions
                 .filter((o) => {
                   const filter = columnFilterStrings[tempFilterIndex];
@@ -894,8 +922,9 @@ class TableComponent extends Component {
             count={filteredData.length}
             rowsPerPage={rowsPerPage}
             page={page}
+            name="rowsPerPage"
             onChangePage={this.handleChangePage}
-            onChangeRowsPerPage={this.handleChangeRowsPerPage}
+            onChangeRowsPerPage={e => this.handleChange({ target: { name: 'rowsPerPage', value: e.target.value } })}
             rowsPerPageOptions={ROWS_PER_PAGE}
             component="div"
           />
@@ -951,7 +980,6 @@ class TableComponent extends Component {
  * checked.
  * @property {function} handleNodeEditStart - Method triggered when user
  * requests to edit a node.
- * @property {function} handleClick - Method triggered when a row is clicked.
  * @property {function} handleCheckbox - Method triggered when a single row is
  * checked.
  * @property {function} handleHideSelected - Method for hiding selected rows
@@ -977,18 +1005,18 @@ class TableComponent extends Component {
 TableComponent.propTypes = {
   data: PropTypes.object.isRequired,
   detail: PropTypes.object,
-  displayed: PropTypes.array.isRequired,
+  displayed: PropTypes.array,
   handleCheckAll: PropTypes.func.isRequired,
   handleCheckbox: PropTypes.func.isRequired,
   handleHideSelected: PropTypes.func.isRequired,
   handleShowAllNodes: PropTypes.func.isRequired,
   handleGraphRedirect: PropTypes.func.isRequired,
+  handleDetailDrawerOpen: PropTypes.func.isRequired,
   handleSubsequentPagination: PropTypes.func,
-  handleDetailDrawerOpen: PropTypes.func,
   hidden: PropTypes.array,
   allProps: PropTypes.array,
   moreResults: PropTypes.bool,
-  completedNext: PropTypes.bool.isRequired,
+  completedNext: PropTypes.bool,
   storedFilters: PropTypes.array,
 };
 
@@ -998,8 +1026,9 @@ TableComponent.defaultProps = {
   hidden: [],
   storedFilters: [],
   handleSubsequentPagination: null,
-  handleDetailDrawerOpen: null,
   moreResults: false,
+  displayed: [],
+  completedNext: true,
 };
 
 export default TableComponent;

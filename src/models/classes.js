@@ -17,6 +17,10 @@ class Record {
     Object.keys(data).forEach((k) => { this[k] = data[k]; });
   }
 
+  static getIdentifiers() {
+    return [this['@rid']];
+  }
+
   static loadEdges(newEdges) {
     edges = util.expandEdges(newEdges);
   }
@@ -48,7 +52,48 @@ class Record {
   }
 }
 
-export {
+class Ontology extends Record {
+  /**
+   * @override
+   */
+  static getIdentifiers() {
+    const { name, sourceId, source } = this;
+    const ids = [];
+    if (name) { ids.push(name); }
+    if (sourceId) { ids.push(sourceId); }
+    if (source && source.name) { ids.push(source.name); }
+    return ids;
+  }
+}
+
+class PositionalVariant extends Record {
+  /**
+   * @override
+   */
+  static getIdentifiers() {
+    const { type, sourceId, source } = this;
+    const ids = [];
+    if (type && type.name) { ids.push(type.name); }
+    if (sourceId) { ids.push(sourceId); }
+    if (source && source.name) { ids.push(source.name); }
+    return ids;
+  }
+}
+
+const classes = {
   Record,
   Edge,
+  Ontology,
+  PositionalVariant,
 };
+
+const newRecord = (obj) => {
+  if (obj['@class'] && classes[obj['@class']]) {
+    return new classes[obj['@class']](obj);
+  }
+  return new Record(obj);
+};
+
+classes.newRecord = newRecord;
+
+export default classes;

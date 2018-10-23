@@ -19,7 +19,7 @@ import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
 import api from '../../services/api';
-import { Record, Edge } from '../../models/classes';
+import classes from '../../models/classes';
 import { withSchema } from '../../components/SchemaContext/SchemaContext';
 import config from '../../static/config';
 
@@ -106,11 +106,7 @@ class DataViewBase extends Component {
     const data = await DataViewBase.makeApiQuery(route, filteredSearch, omitted);
     this.processData(data);
     this.prepareNextPagination(route, filteredSearch, data, omitted);
-    Record.loadEdges(schema.getEdges());
-    this.setState({
-      filteredSearch,
-      edges: schema.getEdges(),
-    });
+    this.setState({ filteredSearch });
   }
 
   /**
@@ -130,7 +126,7 @@ class DataViewBase extends Component {
 
     queryResults.forEach((ontologyTerm) => {
       allProps = schema.collectOntologyProps(ontologyTerm, allProps);
-      data[ontologyTerm['@rid']] = new Record(ontologyTerm);
+      data[ontologyTerm['@rid']] = classes.newRecord(ontologyTerm);
     });
 
     this.setState({ data, allProps });
@@ -168,9 +164,9 @@ class DataViewBase extends Component {
   async handleClick(rid) {
     const { data } = this.state;
     if (!data[rid]) {
-      const endpoint = `/ontologies/${rid.slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`;
+      const endpoint = `/ontologies/${rid.slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`; // change
       const response = await api.get(endpoint);
-      data[rid] = new Record(jc.retrocycle(response).result);
+      data[rid] = classes.newRecord(jc.retrocycle(response).result);
       this.setState({ data });
     }
   }
@@ -294,7 +290,7 @@ class DataViewBase extends Component {
     const { data, detail } = this.state;
     if (!open && !detail) return;
     if (edge) {
-      this.setState({ detail: new Edge(node.data), detailEdge: true });
+      this.setState({ detail: new classes.Edge(node.data), detailEdge: true });
     } else {
       if (!data[node.getId()]) {
         const response = await api.get(`/ontologies/${node.getId().slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
@@ -344,7 +340,6 @@ class DataViewBase extends Component {
       detail,
       moreResults,
       filteredSearch,
-      edges,
       detailEdge,
       completedNext,
       storedFilters,
@@ -356,7 +351,7 @@ class DataViewBase extends Component {
     } = this.props;
 
     if (!data) return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
-
+    const edges = schema.getEdges();
     const detailDrawer = (
       <DetailDrawer
         node={detail}

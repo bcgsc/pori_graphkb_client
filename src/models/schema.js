@@ -1,55 +1,6 @@
-import util from './util';
-
-let edges = [];
-
-class Edge {
-  constructor(data) {
-    Object.keys(data).forEach((k) => { this[k] = data[k]; });
-  }
-
-  getId() {
-    return this['@rid'];
-  }
-}
-
-class Record {
-  constructor(data) {
-    Object.keys(data).forEach((k) => { this[k] = data[k]; });
-  }
-
-  static loadEdges(newEdges) {
-    edges = util.expandEdges(newEdges);
-  }
-
-  getId() {
-    return this['@rid'];
-  }
-
-  getEdges() {
-    return edges.reduce((array, edge) => {
-      if (this[edge] && this[edge].length > 0) {
-        array.push(...this[edge].filter((e) => {
-          const inRid = e.in['@rid'];
-          const outRid = e.out['@rid'];
-          return (inRid !== this.getId() || outRid !== this.getId())
-            && e.in['@class'] !== 'Statement'
-            && e.out['@class'] !== 'Statement';
-        }));
-      }
-      return array;
-    }, []);
-  }
-
-  getEdgeTypes() {
-    return edges.reduce((array, edge) => {
-      if (this[edge] && this[edge].length > 0 && !array.includes(this[edge][0]['@class'])) {
-        array.push(this[edge][0]['@class']);
-      }
-      return array;
-    }, []);
-  }
-}
-
+/**
+ * Knowledgebase schema.
+ */
 class Schema {
   /**
    * Returns a list of object class properties that are of a given type.
@@ -74,7 +25,8 @@ class Schema {
   }
 
   /**
-   * Returns the editable properties of target ontology class.
+   * Returns route and properties of a certain knowledgebase class
+   * (most useful data).
    * @param {string} className - requested class name.
    */
   getClass(className) {
@@ -183,6 +135,10 @@ class Schema {
       .some(kbClass => (kbClass.inherits || []).includes(linkedClass));
   }
 
+  isEdge(cls) {
+    return (this.schema[cls].inherits || []).includes('E');
+  }
+
   /**
   * Given a schema class object, find all other classes that inherit it.
   * @param {string} abstractClass - property class key.
@@ -192,10 +148,40 @@ class Schema {
     return Object.values(this.schema)
       .filter(kbClass => (kbClass.inherits || []).includes(abstractClass));
   }
+
+  /**
+ * Updates allColumns list with any new properties from ontologyTerm.
+ * @param {Object} ontologyTerm - new node who's properties will be parsed.
+ * @param {Array} allColumns - current list of all collected properties.
+ * @param {Object} schema - api schema.
+ */
+  collectOntologyProps(ontologyTerm, allColumns) {
+    const { schema } = this;
+    const { properties } = this.getClass(ontologyTerm['@class'], schema);
+    properties.forEach((prop) => {
+      if (prop.name !== '@class' && !allColumns.includes(prop.name)) {
+        if (ontologyTerm[prop.name]) {
+          if (prop.type === 'link' || prop.type === 'embedded') {
+            const nestedProperties = this.getClass(ontologyTerm[prop.name]['@class']).properties;
+            if (prop.linkedClass && this.isAbstract(prop.linkedClass.name)) {
+              nestedProperties.push({ name: '@class' });
+            }
+            (nestedProperties || []).forEach((nestedProp) => {
+              if (
+                ontologyTerm[prop.name][nestedProp.name]
+                && !allColumns.includes(`${prop.name}.${nestedProp.name}`)
+              ) {
+                allColumns.push(`${prop.name}.${nestedProp.name}`);
+              }
+            });
+          } else {
+            allColumns.push(prop.name);
+          }
+        }
+      }
+    });
+    return allColumns;
+  }
 }
 
-export {
-  Record,
-  Edge,
-  Schema,
-};
+export default Schema;

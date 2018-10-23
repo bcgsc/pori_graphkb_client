@@ -6,7 +6,7 @@ import {
   List,
 } from '@material-ui/core';
 import util from '../../services/util';
-import icons from '../../icons/icons';
+import icons from '../../static/icons/icons';
 
 
 /**

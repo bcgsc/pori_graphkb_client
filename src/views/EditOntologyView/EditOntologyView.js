@@ -9,7 +9,7 @@ import OntologyFormComponent from '../../components/OntologyFormComponent/Ontolo
 import api from '../../services/api';
 import util from '../../services/util';
 import config from '../../static/config';
-import { withSchema } from '../../services/SchemaContext';
+import { withSchema } from '../../components/SchemaContext/SchemaContext';
 
 const { DEFAULT_NEIGHBORS } = config;
 
@@ -40,7 +40,7 @@ class EditOntologyViewBase extends Component {
     const response = await api.get(`/ontologies/${rid}?neighbors=${DEFAULT_NEIGHBORS}`);
     const node = jc.retrocycle(response).result;
     const sources = await api.getSources();
-    const edgeTypes = api.getEdges(schema);
+    const edgeTypes = schema.getEdges();
     this.setState({
       node,
       sources,
@@ -93,9 +93,8 @@ class EditOntologyViewBase extends Component {
     });
 
     await Promise.all(changedEdges);
-
-    const payload = util.parsePayload(form, util.getClass(originalNode['@class'], schema).properties);
-    const { route } = util.getClass(originalNode['@class'], schema);
+    const { route, properties } = schema.getClass(originalNode['@class']);
+    const payload = util.parsePayload(form, properties);
 
     await api.patch(`${route}/${originalNode['@rid'].slice(1)}`, { ...payload });
   }
@@ -107,7 +106,7 @@ class EditOntologyViewBase extends Component {
     this.handleDialogClose();
     const { originalNode } = this.state;
     const { schema } = this.props;
-    const { route } = util.getClass(originalNode['@class'], schema);
+    const { route } = schema.getClass(originalNode['@class']);
     await api.delete(`${route}/${originalNode['@rid'].slice(1)}`);
   }
 

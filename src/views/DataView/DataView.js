@@ -19,8 +19,8 @@ import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
 import api from '../../services/api';
-import { Ontology, OntologyEdge } from '../../services/ontology';
-import { withSchema } from '../../services/SchemaContext';
+import { Record, Edge } from '../../models/classes';
+import { withSchema } from '../../components/SchemaContext/SchemaContext';
 import config from '../../static/config';
 
 const { DEFAULT_NEIGHBORS } = config;
@@ -96,19 +96,20 @@ class DataViewBase extends Component {
     const filteredSearch = qs.parse(history.location.search.slice(1));
     let route = '/ontologies';
     const omitted = [];
-    if (filteredSearch['@class'] && schema[filteredSearch['@class']]) {
-      route = schema[filteredSearch['@class']].route || filteredSearch['@class'];
+    const kbClass = schema.getClass(filteredSearch['@class']);
+    if (kbClass) {
+      ({ route } = kbClass);
       omitted.push('@class');
     }
     filteredSearch.neighbors = filteredSearch.neighbors || DEFAULT_NEIGHBORS;
     filteredSearch.limit = filteredSearch.limit || DEFAULT_LIMIT;
     const data = await DataViewBase.makeApiQuery(route, filteredSearch, omitted);
-    this.processData(data, schema);
+    this.processData(data);
     this.prepareNextPagination(route, filteredSearch, data, omitted);
-    Ontology.loadEdges(api.getEdges(schema));
+    Record.loadEdges(schema.getEdges());
     this.setState({
       filteredSearch,
-      edges: api.getEdges(schema),
+      edges: schema.getEdges(),
     });
   }
 
@@ -117,8 +118,9 @@ class DataViewBase extends Component {
    * @param {Array} queryResults - List of returned records.
    * @param {Object} schema - Knowledgebase db schema.
    */
-  processData(queryResults, schema) {
+  processData(queryResults) {
     let { allProps, data } = this.state;
+    const { schema } = this.props;
     if (!data) {
       data = {};
     }
@@ -127,8 +129,8 @@ class DataViewBase extends Component {
     }
 
     queryResults.forEach((ontologyTerm) => {
-      allProps = api.collectOntologyProps(ontologyTerm, allProps, schema);
-      data[ontologyTerm['@rid']] = new Ontology(ontologyTerm);
+      allProps = schema.collectOntologyProps(ontologyTerm, allProps);
+      data[ontologyTerm['@rid']] = new Record(ontologyTerm);
     });
 
     this.setState({ data, allProps });
@@ -168,7 +170,7 @@ class DataViewBase extends Component {
     if (!data[rid]) {
       const endpoint = `/ontologies/${rid.slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`;
       const response = await api.get(endpoint);
-      data[rid] = new Ontology(jc.retrocycle(response).result);
+      data[rid] = new Record(jc.retrocycle(response).result);
       this.setState({ data });
     }
   }
@@ -242,15 +244,15 @@ class DataViewBase extends Component {
 
         let route = '/ontologies';
         const omitted = [];
-
-        if (filteredSearch['@class'] && schema[filteredSearch['@class']]) {
-          route = schema[filteredSearch['@class']].route || filteredSearch['@class'];
+        const kbClass = schema.getClass(filteredSearch['@class']);
+        if (kbClass) {
+          ({ route } = kbClass);
           omitted.push('@class');
         }
 
         const nextData = await next();
 
-        this.processData(nextData, schema);
+        this.processData(nextData);
         this.prepareNextPagination(route, filteredSearch, nextData, omitted);
 
         this.setState({
@@ -292,7 +294,7 @@ class DataViewBase extends Component {
     const { data, detail } = this.state;
     if (!open && !detail) return;
     if (edge) {
-      this.setState({ detail: new OntologyEdge(node.data), detailEdge: true });
+      this.setState({ detail: new Edge(node.data), detailEdge: true });
     } else {
       if (!data[node.getId()]) {
         const response = await api.get(`/ontologies/${node.getId().slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
@@ -330,7 +332,7 @@ class DataViewBase extends Component {
   handleNewColumns(node) {
     const { allProps } = this.state;
     const { schema } = this.props;
-    this.setState({ allProps: api.collectOntologyProps(node, allProps, schema) });
+    this.setState({ allProps: schema.collectOntologyProps(node, allProps) });
   }
 
   render() {

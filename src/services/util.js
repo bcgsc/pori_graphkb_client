@@ -333,10 +333,7 @@ const expanded = (expandedEdgeTypes, graphObjects, rid, expandable) => {
   expandedEdgeTypes.forEach((e) => {
     if (graphObjects[rid][e]) {
       graphObjects[rid][e].forEach((l) => {
-        if (
-          !graphObjects[l['@rid'] || l]
-          && !((l.in || {})['@class'] === 'Statement' || (l.out || {})['@class'] === 'Statement')
-        ) {
+        if (!graphObjects[l['@rid'] || l]) {
           targetFlag = true;
         }
       });
@@ -358,78 +355,6 @@ const positionInit = (x, y, i, n) => {
   const newX = NODE_INIT_RADIUS * Math.cos((2 * Math.PI * i - Math.PI / 6) / n) + x;
   const newY = NODE_INIT_RADIUS * Math.sin((2 * Math.PI * i - Math.PI / 6) / n) + y;
   return { x: newX, y: newY };
-};
-
-/**
- * Returns the editable properties of target ontology class.
- * @param {string} className - requested class name.
- * @param {Object} schema - Knowledge base schema.
- */
-const getClass = (className, schema) => {
-  const VPropKeys = schema.V ? Object.keys(schema.V.properties) : [];
-  const classKey = (Object.keys(schema)
-    .find(key => key.toLowerCase() === (className || '').toLowerCase()));
-  if (!classKey) return {};
-  const props = Object.keys(schema[classKey].properties)
-    .filter(prop => !VPropKeys.includes(prop))
-    .map(prop => schema[classKey].properties[prop]);
-  return { route: schema[classKey].route, properties: props };
-};
-
-/**
- * Initializes a new instance of given kbClass.
- * @param {Object} model - existing model to keep existing values from.
- * @param {string} kbClass - Knowledge base class key.
- * @param {Object} schema - Knowledge base schema.
- */
-const initModel = (model, kbClass, schema, extraProps = []) => {
-  const editableProps = schema && kbClass
-    && (getClass(kbClass, schema)).properties;
-  if (!editableProps) return {};
-  editableProps.push(...extraProps);
-  const newModel = Object.assign({}, model);
-  newModel['@class'] = kbClass;
-  Object.values(editableProps).forEach((property) => {
-    const {
-      name,
-      type,
-      linkedClass,
-      min,
-    } = property;
-    const defaultValue = property.default;
-    switch (type) {
-      case 'embeddedset':
-        newModel[name] = model[name] ? model[name].slice() : [];
-        break;
-      case 'link':
-        newModel[name] = (model[name] || '').name || '';
-        newModel[`${name}.@rid`] = (model[name] || '')['@rid'] || '';
-        newModel[`${name}.sourceId`] = (model[name] || '').sourceId || '';
-        if (!linkedClass) {
-          newModel[`${name}.class`] = (model[name] || '')['@class'] || '';
-        }
-        break;
-      case 'integer' || 'long':
-        newModel[name] = model[name] || min > 0 ? min : '';
-        break;
-      case 'boolean':
-        newModel[name] = model[name] !== undefined
-          ? model[name]
-          : (defaultValue || '').toString() === 'true';
-        break;
-      case 'embedded':
-        if (linkedClass && linkedClass.properties) {
-          newModel[name] = model[name]
-            ? Object.assign({}, model[name])
-            : initModel({}, property.linkedClass.name, schema);
-        }
-        break;
-      default:
-        newModel[name] = model[name] || '';
-        break;
-    }
-  });
-  return newModel;
 };
 
 /**
@@ -459,34 +384,6 @@ const parsePermission = (permissionValue) => {
   return retstr;
 };
 
-/**
-  * Returns all valid ontology types.
-  */
-const getOntologies = (schema) => {
-  const list = [];
-  Object.keys(schema).forEach((key) => {
-    if ((schema[key].inherits || []).includes('Ontology')) {
-      list.push({ name: key, properties: schema[key].properties, route: schema[key].route });
-    }
-  });
-  return list;
-};
-
-/**
-* Given a schema class object, determine whether it is abstract or not.
-* @param {string} linkedClass - property class key.
-* @param {Object} schema - database schema
-*/
-const isAbstract = (linkedClass, schema) => Object.values(schema)
-  .some(kbClass => (kbClass.inherits || []).includes(linkedClass));
-
-/**
-* Given a schema class object, find all other classes that inherit it.
-* @param {string} abstractClass - property class key.
-* @param {Object} schema - database schema
-*/
-const getSubClasses = (abstractClass, schema) => Object.values(schema)
-  .filter(kbClass => (kbClass.inherits || []).includes(abstractClass));
 
 /**
  * Returns a list of object class properties that are of a given type.
@@ -520,16 +417,11 @@ export default {
   getGraphData,
   expanded,
   positionInit,
-  initModel,
-  getClass,
-  isAbstract,
-  getSubClasses,
   parsePermission,
   getPropOfType,
   castToExist,
   formatStr,
   shortenString,
   parseKBType,
-  getOntologies,
   sortFields,
 };

@@ -5,7 +5,7 @@ import { Paper, Typography, Button } from '@material-ui/core';
 import VariantParserComponent from '../../components/VariantParserComponent/VariantParserComponent';
 import util from '../../services/util';
 import api from '../../services/api';
-import { withSchema } from '../../services/SchemaContext';
+import { withSchema } from '../../components/SchemaContext/SchemaContext';
 
 class VariantFormViewBase extends Component {
   constructor(props) {
@@ -37,13 +37,13 @@ class VariantFormViewBase extends Component {
   async submitVariant(variant) {
     const { schema } = this.props;
     const copy = Object.assign({}, variant);
-    const classSchema = util.getClass('PositionalVariant', schema).properties;
+    const classSchema = schema.getClass('PositionalVariant').properties;
     Object.keys(copy).forEach((k) => {
       if (typeof copy[k] === 'object') { // more flexible
         if (!copy[k]['@class']) {
           delete copy[k];
         } else {
-          const nestedProps = util.getClass(copy[k]['@class'], schema).properties;
+          const nestedProps = schema.getClass(copy[k]['@class']).properties;
           nestedProps.forEach((prop) => {
             if (!copy[k][prop.name]) {
               if (prop.type === 'integer' && prop.mandatory) {

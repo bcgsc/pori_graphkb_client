@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
   Checkbox,
@@ -22,7 +22,7 @@ import config from '../../static/config.json';
 
 const { GRAPH_ADVANCED, GRAPH_MAIN } = config.DESCRIPTIONS;
 
-export default class GraphOptionsPanel extends PureComponent {
+export default class GraphOptionsPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {

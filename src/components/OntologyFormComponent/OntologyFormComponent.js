@@ -34,9 +34,9 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
 import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
-import util from '../../services/util';
 import FormTemplater from '../FormTemplater/FormTemplater';
 import NotificationDrawer from '../NotificationDrawer/NotificationDrawer';
+import util from '../../services/util';
 
 const DEFAULT_ORDER = [
   'name',
@@ -107,7 +107,7 @@ class OntologyFormComponent extends Component {
       relationship.out = node['@rid'];
     }
 
-    const form = util.initModel(originalNode, nodeClass, schema);
+    const form = schema.initModel(originalNode, nodeClass);
     const expandedEdgeTypes = util.expandEdges(edgeTypes);
     expandedEdgeTypes.forEach((type) => {
       if (originalNode[type]) {
@@ -116,18 +116,16 @@ class OntologyFormComponent extends Component {
             ? edge.in
             : edge.out;
 
-          if (targetNode['@class'] !== 'Statement') { // TODO: remove filter for Statements.
-            if (!relationships.find(r => r['@rid'] === edge['@rid'])) {
-              relationships.push({
-                '@rid': edge['@rid'],
-                in: edge.in['@rid'],
-                out: edge.out['@rid'],
-                '@class': edge['@class'],
-                name: targetNode.name,
-                sourceId: targetNode.sourceId,
-                source: edge.source['@rid'] || edge.source,
-              });
-            }
+          if (!relationships.find(r => r['@rid'] === edge['@rid'])) {
+            relationships.push({
+              '@rid': edge['@rid'],
+              in: edge.in['@rid'],
+              out: edge.out['@rid'],
+              '@class': edge['@class'],
+              name: targetNode.name,
+              sourceId: targetNode.sourceId,
+              source: edge.source['@rid'] || edge.source,
+            });
           }
         });
       }
@@ -158,7 +156,7 @@ class OntologyFormComponent extends Component {
   handleClassChange(e) {
     const { form } = this.state;
     const { schema } = this.props;
-    this.setState({ form: util.initModel(form, e.target.value, schema) });
+    this.setState({ form: schema.initModel(form, e.target.value) });
   }
 
   /**
@@ -399,8 +397,7 @@ class OntologyFormComponent extends Component {
     // Wait for form to get initialized
     if (!form) return null;
 
-    const editableProps = (util.getClass(form['@class'], schema)).properties;
-
+    const editableProps = (schema.getClass(form['@class'])).properties;
     // Validates form
     let formIsInvalid = false;
     editableProps.forEach((prop) => {
@@ -532,7 +529,7 @@ class OntologyFormComponent extends Component {
                             onChange={this.handleClassChange}
                             name="newNodeClass"
                             label="Class"
-                            resources={util.getOntologies(schema)}
+                            resources={schema.getOntologies()}
                           >
                             {resource => (
                               <MenuItem key={resource.name} value={resource.name}>
@@ -546,7 +543,7 @@ class OntologyFormComponent extends Component {
                     )}
                   <FormTemplater
                     model={form}
-                    kbClass={editableProps}
+                    propSchemas={editableProps}
                     schema={schema}
                     onChange={this.handleFormChange}
                     excludedProps={['subsets']}

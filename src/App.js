@@ -51,7 +51,7 @@ import title from './static/title.png';
 import auth from './services/auth';
 import history from './services/history';
 import api from './services/api';
-import { SchemaContext } from './services/SchemaContext';
+import { SchemaContext } from './components/SchemaContext/SchemaContext';
 
 const theme = createMuiTheme({
   direction: 'ltr',

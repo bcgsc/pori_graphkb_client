@@ -1,13 +1,13 @@
 import { expect } from 'chai';
-import { Ontology, OntologyEdge } from '../ontology';
+import { Record, Edge } from '../classes';
 
 describe('ontology methods test', () => {
   beforeAll(() => {
     const edges = ['AliasOf', 'SubClassOf'];
-    Ontology.loadEdges(edges);
+    Record.loadEdges(edges);
   });
 
-  it('OntologyEdge getId', () => {
+  it('Edge getId', () => {
     const data = {
       '@rid': 'pass',
       '#rid': 'fail',
@@ -15,12 +15,12 @@ describe('ontology methods test', () => {
         '@rid': 'fail',
       },
     };
-    const o = new OntologyEdge(data);
+    const o = new Edge(data);
 
     expect(o.getId()).to.eq('pass');
   });
 
-  it('Ontology getId', () => {
+  it('Record getId', () => {
     const data = {
       name: 'fail',
       '@rid': 'pass',
@@ -30,12 +30,12 @@ describe('ontology methods test', () => {
         '@rid': 'fail',
       },
     };
-    const o = new Ontology(data);
+    const o = new Record(data);
 
     expect(o.getId()).to.eq('pass');
   });
 
-  it('Ontology loadEdges', () => {
+  it('Record loadEdges', () => {
     const data = {
       name: 'fail',
       '@rid': 'pass',
@@ -65,7 +65,7 @@ describe('ontology methods test', () => {
         },
       }],
     };
-    const o = new Ontology(data);
+    const o = new Record(data);
     expect(o.getEdges()).to.have.length(2);
     expect(o.getEdgeTypes()).to.have.length(2);
   });

@@ -25,7 +25,7 @@ For more info on the database api, look [here](http://kbapi01:8061/api/v0.6.1/sp
 ## Testing
 Unit tests are made using Jest and Enzyme, end to end tests are made using Cypress.
 
-#### To run tests:
+#### Running Tests
 In terminal before running any test commands:
 
 ```
@@ -48,3 +48,13 @@ Opening cypress dashboard, run individual tests in mock browser.
 
 ##### Continuous Integration testing
 * `npm run test:ci`
+
+#### Coverage Reports
+The files generated for jest coverage reports are stored in the `/coverage` directory:
+```
+|- /coverage
+|---- /clover.xml - clover report
+|---- /junit.xml - junit-formatted report
+|---- /lcov-report
+|------- /**/*.html - lcov-formatted reports for each file.
+```

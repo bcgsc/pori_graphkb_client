@@ -23,7 +23,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import LinkIcon from '@material-ui/icons/Link';
 import util from '../../services/util';
-import { Ontology } from '../../services/ontology';
+import { Record } from '../../models/classes';
 
 
 const IDENTIFIERS = ['@class', 'name', 'sourceId', 'source.name'];
@@ -52,8 +52,8 @@ class DetailDrawer extends Component {
     if (
       (!node && prevNode)
       || (
-        prevNode instanceof Ontology
-        && node instanceof Ontology
+        prevNode instanceof Record
+        && node instanceof Record
         && prevNode.getId() !== node.getId()
       )
     ) {
@@ -76,13 +76,13 @@ class DetailDrawer extends Component {
         const [key, nestedKey] = prop.split('.');
         const value = nestedKey ? (node[key] || {})[nestedKey] : node[key];
         let properties = Object.keys(node[key] || {}).map(k => ({ name: k }));
-        if (schema && util.getClass(key, schema).properties) {
+        if (schema && schema.getClass(key)) {
           // If property is a class in the schema, we can grab its properties.
-          ({ properties } = util.getClass(key, schema));
+          ({ properties } = schema.getClass(key));
         }
         const expanded = nestedKey ? (
           properties.map(nestedProp => (
-            node[key][nestedProp.name] && (
+            (node[key] || {})[nestedProp.name] && (
               <React.Fragment key={nestedProp.name}>
                 <Collapse in={opened.includes(`${node['@rid']}${prop}`)} unmountOnExit>
                   <ListItem>
@@ -192,8 +192,8 @@ class DetailDrawer extends Component {
     const { schema } = this.props;
     let properties = Object.keys(node)
       .map(key => ({ name: key, type: util.parseKBType(node[key]) }));
-    if (schema) {
-      ({ properties } = util.getClass(node['@class'], schema));
+    if (schema && schema.getClass(node['@class'])) {
+      ({ properties } = schema.getClass(node['@class']));
     }
     let isEmpty = true;
     const propsList = properties
@@ -276,8 +276,8 @@ class DetailDrawer extends Component {
   formatRelationships(node) {
     if (!node) return null;
     const { linkOpen } = this.state;
-    if (!(node instanceof Ontology)) {
-      node = new Ontology(node);
+    if (!(node instanceof Record)) {
+      node = new Record(node);
     }
     const edges = node.getEdges();
     if (!edges || edges.length === 0) return null;

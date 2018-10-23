@@ -1,8 +1,8 @@
-import util from './util';
+import util from '../services/util';
 
 let edges = [];
 
-const OntologyEdge = class {
+class Edge {
   constructor(data) {
     Object.keys(data).forEach((k) => { this[k] = data[k]; });
   }
@@ -10,9 +10,9 @@ const OntologyEdge = class {
   getId() {
     return this['@rid'];
   }
-};
+}
 
-const Ontology = class {
+class Record {
   constructor(data) {
     Object.keys(data).forEach((k) => { this[k] = data[k]; });
   }
@@ -31,9 +31,7 @@ const Ontology = class {
         array.push(...this[edge].filter((e) => {
           const inRid = e.in['@rid'];
           const outRid = e.out['@rid'];
-          return (inRid !== this.getId() || outRid !== this.getId())
-            && e.in['@class'] !== 'Statement'
-            && e.out['@class'] !== 'Statement';
+          return (inRid !== this.getId() || outRid !== this.getId());
         }));
       }
       return array;
@@ -48,9 +46,9 @@ const Ontology = class {
       return array;
     }, []);
   }
-};
+}
 
 export {
-  Ontology,
-  OntologyEdge,
+  Record,
+  Edge,
 };

@@ -48,10 +48,10 @@ import EditIcon from '@material-ui/icons/Edit';
 import CancelIcon from '@material-ui/icons/Cancel';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import PermissionsTable from '../../components/PermissionsTable/PermissionsTable';
+import { withSchema } from '../../components/SchemaContext/SchemaContext';
 import api from '../../services/api';
 import auth from '../../services/auth';
 import util from '../../services/util';
-import { withSchema } from '../../services/SchemaContext';
 
 /**
  * View for editing or adding database users.

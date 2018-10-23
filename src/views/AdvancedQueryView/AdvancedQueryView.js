@@ -18,7 +18,7 @@ import ResourceSelectComponent from '../../components/ResourceSelectComponent/Re
 import util from '../../services/util';
 import FormTemplater from '../../components/FormTemplater/FormTemplater';
 import config from '../../static/config';
-import { withSchema } from '../../services/SchemaContext';
+import { withSchema } from '../../components/SchemaContext/SchemaContext';
 
 const DEFAULT_ORDER = [
   'name',
@@ -63,9 +63,9 @@ class AdvancedQueryViewBase extends Component {
     }
 
     const ontologyTypes = [{ name: 'Ontology', properties: null, route: 'ontologies' }];
-    ontologyTypes.push(...util.getOntologies(schema));
+    ontologyTypes.push(...schema.getOntologies());
 
-    const form = util.initModel({}, 'Ontology', schema, config.ONTOLOGY_QUERY_PARAMS);
+    const form = schema.initModel({}, 'Ontology', config.ONTOLOGY_QUERY_PARAMS);
     form.subsets = '';
 
     this.setState({
@@ -82,9 +82,9 @@ class AdvancedQueryViewBase extends Component {
     const { schema } = this.props;
     const params = [{ name: '@class', type: 'string' }];
     params.push(...config.ONTOLOGY_QUERY_PARAMS);
-    const editableProps = util.getClass(form['@class'], schema).properties || [];
-    editableProps.push(...config.ONTOLOGY_QUERY_PARAMS);
-    const payload = util.parsePayload(form, editableProps, params);
+    const props = schema.getClass(form['@class']).properties || [];
+    props.push(...config.ONTOLOGY_QUERY_PARAMS);
+    const payload = util.parsePayload(form, props, params);
     return qs.stringify(payload);
   }
 
@@ -118,7 +118,7 @@ class AdvancedQueryViewBase extends Component {
   async handleClassChange(e) {
     const { form } = this.state;
     const { schema } = this.props;
-    const newForm = util.initModel(form, e.target.value || 'Ontology', schema, config.ONTOLOGY_QUERY_PARAMS);
+    const newForm = schema.initModel(form, e.target.value || 'Ontology', config.ONTOLOGY_QUERY_PARAMS);
     newForm.subsets = Array.isArray(newForm.subsets) ? newForm.subsets.join('') : newForm.subsets || '';
     this.setState({ form: newForm });
   }
@@ -139,9 +139,8 @@ class AdvancedQueryViewBase extends Component {
     const { history, schema } = this.props;
 
     if (!form) return null;
-
-    const editableProps = (util.getClass(form['@class'], schema)).properties || [];
-    editableProps.push(...config.ONTOLOGY_QUERY_PARAMS);
+    const props = schema.getClass(form['@class']).properties || [];
+    props.push(...config.ONTOLOGY_QUERY_PARAMS);
 
     return (
       <div className="adv-wrapper" elevation={4}>
@@ -180,7 +179,7 @@ class AdvancedQueryViewBase extends Component {
           </ListItem>
           <FormTemplater
             model={form}
-            kbClass={editableProps}
+            propSchemas={props}
             onChange={this.handleChange}
             schema={schema}
             sort={util.sortFields(DEFAULT_ORDER)}

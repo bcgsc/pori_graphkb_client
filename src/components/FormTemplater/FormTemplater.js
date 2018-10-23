@@ -26,12 +26,12 @@ function FormTemplater(props) {
   /**
    * Creates DOM models to be rendered.
    * @param {Object} model - Object to which data will be bound.
-   * @param {Object} kbClass - Filtered schema object containing ONLY and ALL classes to be
+   * @param {Object} propSchemas - Filtered schema object containing ONLY and ALL classes to be
    * rendered. (Schema.properties)
    */
   const {
     model,
-    kbClass,
+    propSchemas,
     schema,
     onChange,
     onClassChange,
@@ -122,18 +122,20 @@ function FormTemplater(props) {
       );
     }
     if (type === 'embedded') {
+      const kbClass = (schema.getClass((model[name] || {})['@class']));
       let classSelector = (
         <Typography variant="subtitle1">
           {util.antiCamelCase(name)}
         </Typography>
       );
       const handleClassChange = onClassChange || onChange;
-      if (util.isAbstract(linkedClass.name, schema)) {
+      if (schema.isAbstract(linkedClass.name)) {
         classSelector = (
           <ResourceSelectComponent
             name="@class"
             onChange={e => handleClassChange(e, name)}
-            resources={[{ name: '' }, ...util.getSubClasses(linkedClass.name, schema)]}
+            required={mandatory}
+            resources={[{ name: '' }, ...schema.getSubClasses(linkedClass.name)]}
             label={`${util.antiCamelCase(name)} Class`}
             value={(model[name] || { '@class': '' })['@class']}
             error={errorFields.includes(name)}
@@ -159,7 +161,7 @@ function FormTemplater(props) {
           <FormTemplater
             onChange={e => onChange(e, name)}
             schema={schema}
-            kbClass={(util.getClass((model[name] || {})['@class'], schema)).properties}
+            propSchemas={kbClass ? kbClass.properties : []}
             model={model[name] || {}}
             excludedProps={['@class']}
             fieldComponent="div"
@@ -174,6 +176,7 @@ function FormTemplater(props) {
         <ListItem component={fieldComponent} key={name}>
           <ResourceSelectComponent
             name={name}
+            required={mandatory}
             onChange={e => onChange(e)}
             resources={[...choices, '']}
             label={util.antiCamelCase(name)}
@@ -249,7 +252,7 @@ function FormTemplater(props) {
     );
   };
   const completedpairs = {};
-  const sortedProps = Object.values(kbClass || {})
+  const sortedProps = Object.values(propSchemas || {})
     .filter(p => !excludedProps.includes(p.name))
     .sort(sort);
 
@@ -288,7 +291,7 @@ function FormTemplater(props) {
  * @property {function} onClassChange - Function for updating embedded prop
  * classes.
  * @property {Object} model - Model object.
- * @property {Array} kbClass - Form object schema.
+ * @property {Array} propSchemas - Form object schema.
  * @property {Array} excludedProps - List of propstrings to be excluded from
  * generation.
  * @property {string} fieldComponent - Component to pass to material UI ListItem
@@ -305,7 +308,7 @@ FormTemplater.propTypes = {
   onChange: PropTypes.func.isRequired,
   onClassChange: PropTypes.func,
   model: PropTypes.object.isRequired,
-  kbClass: PropTypes.any,
+  propSchemas: PropTypes.any,
   excludedProps: PropTypes.array,
   fieldComponent: PropTypes.string,
   errorFields: PropTypes.array,
@@ -316,7 +319,7 @@ FormTemplater.propTypes = {
 
 FormTemplater.defaultProps = {
   excludedProps: [],
-  kbClass: {},
+  propSchemas: {},
   onClassChange: null,
   fieldComponent: 'li',
   errorFields: [],

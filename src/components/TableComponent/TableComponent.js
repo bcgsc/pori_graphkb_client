@@ -45,9 +45,9 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import AddIcon from '@material-ui/icons/Add';
 import SearchIcon from '@material-ui/icons/Search';
 import SortIcon from '@material-ui/icons/Sort';
-import FilterIcon from '../../icons/FilterIcon/FilterIcon';
 import DownloadFileComponent from '../DownloadFileComponent/DownloadFileComponent';
 import util from '../../services/util';
+import FilterIcon from '../../static/icons/FilterIcon/FilterIcon';
 import config from '../../static/config.json';
 
 const NEXT_CUTOFF = 0.8;
@@ -567,8 +567,10 @@ class TableComponent extends Component {
         }
         return false;
       }));
+
     const pageData = filteredData
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
     const menu = (
       <Menu
         anchorEl={anchorEl}

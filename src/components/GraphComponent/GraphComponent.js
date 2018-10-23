@@ -28,18 +28,18 @@ import CloseIcon from '@material-ui/icons/Close';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import BuildIcon from '@material-ui/icons/Build';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import GraphActionsNode from './GraphActionsNode';
+import GraphOptionsPanel from './GraphOptionsPanel';
 import GraphLinkDisplay from '../GraphLinkDisplay/GraphLinkDisplay';
 import GraphNodeDisplay from '../GraphNodeDisplay/GraphNodeDisplay';
 import util from '../../services/util';
+import config from '../../static/config.json';
 import {
   PropsMap,
   GraphOptions,
   GraphNode,
   GraphLink,
 } from './kbgraph';
-import config from '../../static/config.json';
-import GraphActionsNode from './GraphActionsNode';
-import GraphOptionsPanel from './GraphOptionsPanel';
 
 const {
   ARROW_WIDTH,
@@ -536,10 +536,7 @@ class GraphComponent extends Component {
             const inRid = (edge.in || {})['@rid'] || edge.in;
             const outRid = (edge.out || {})['@rid'] || edge.out;
             const targetRid = inRid === node['@rid'] ? outRid : inRid;
-            // TODO: Remove once statements are stable.
-            if (edge.out['@class'] === 'Statement' || edge.in['@class'] === 'Statement') {
-              return;
-            }
+
             if (
               edgeRid
               && inRid

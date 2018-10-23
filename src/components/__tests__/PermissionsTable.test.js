@@ -2,13 +2,14 @@ import React from 'react';
 import { expect } from 'chai';
 import { mount } from 'enzyme';
 import PermissionsTable from '../PermissionsTable/PermissionsTable';
+import { Schema } from '../../services/knowledgebase';
 
-const testSchema = {
+const testSchema = new Schema({
   Disease: { inherits: ['Ontology'] },
   AliasOf: { inherits: ['E'] },
   E: {},
   Ontology: { inherits: ['V'] },
-};
+});
 
 const testUserGroup = {
   permissions: {

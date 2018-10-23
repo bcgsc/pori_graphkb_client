@@ -3,8 +3,9 @@ import { expect } from 'chai';
 import { spy } from 'sinon';
 import { mount } from 'enzyme';
 import OntologyFormComponent from '../OntologyFormComponent/OntologyFormComponent';
+import { Schema } from '../../services/knowledgebase';
 
-const testSchema = {
+const testSchema = new Schema({
   Disease: {
     inherits: ['Ontology'],
     properties: [
@@ -16,7 +17,7 @@ const testSchema = {
       { name: 'linkprop', type: 'link', mandatory: true },
     ],
   },
-};
+});
 
 const testSources = [
   { '@rid': '#source', name: 'test source' },

@@ -3,10 +3,10 @@ import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { spy } from 'sinon';
 import TableComponent from '../TableComponent/TableComponent';
-import { Ontology } from '../../services/ontology';
+import { Record } from '../../services/knowledgebase';
 
 const mockData = {
-  '#1': new Ontology({
+  '#1': new Record({
     '@rid': '#1',
     name: 'test one',
     sourceId: 'test-1',
@@ -20,7 +20,7 @@ const mockData = {
       },
     }],
   }),
-  '#2': new Ontology({
+  '#2': new Record({
     '@rid': '#2',
     name: 'test two',
     sourceId: 'test-2',
@@ -28,12 +28,12 @@ const mockData = {
       name: 'test source',
     },
   }),
-  '#3': new Ontology({
+  '#3': new Record({
     '@rid': '#3',
     name: 'test three',
     sourceId: 'test-3',
   }),
-  '#4': new Ontology({
+  '#4': new Record({
     '@rid': '#4',
     name: 'linked',
     sourceId: 'test-4',
@@ -51,7 +51,7 @@ const mockData = {
 
 const bigMockData = {};
 for (let i = 0; i < 200; i += 1) {
-  bigMockData[`#${i}`] = new Ontology({
+  bigMockData[`#${i}`] = new Record({
     '@rid': `#${i}`,
     name: `a${i}a`,
     sourceId: `b${i}b`,

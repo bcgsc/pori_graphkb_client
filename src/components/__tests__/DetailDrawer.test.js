@@ -4,14 +4,14 @@ import { mount, shallow } from 'enzyme';
 import { spy } from 'sinon';
 import { Drawer } from '@material-ui/core';
 import DetailDrawer from '../DetailDrawer/DetailDrawer';
-import { Ontology } from '../../services/ontology';
+import { Record, Schema } from '../../services/knowledgebase';
 
 describe('<DetailDrawer />', () => {
   let wrapper;
 
   beforeAll(() => {
     const edges = ['AliasOf', 'SubClassOf'];
-    Ontology.loadEdges(edges);
+    Record.loadEdges(edges);
     spy(DetailDrawer.prototype, 'formatRelationships');
     spy(DetailDrawer.prototype, 'formatIdentifiers');
     spy(DetailDrawer.prototype, 'formatOtherProps');
@@ -143,13 +143,13 @@ describe('<DetailDrawer />', () => {
       },
     };
 
-    const testSchema = {
+    const testSchema = new Schema({
       test: {
         properties: [
           { name: 'dependency', type: 'link' },
         ],
       },
-    };
+    });
 
     wrapper = mount(<DetailDrawer node={node} schema={testSchema} />);
     wrapper.find('div[role="button"]').first().simulate('click');

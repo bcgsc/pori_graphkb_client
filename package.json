@@ -50,7 +50,6 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react-app": "^3.1.1",
     "babel-runtime": "6.26.0",
-    "bamboo-mocha-jest-code-coverage": "^1.0.0",
     "case-sensitive-paths-webpack-plugin": "^2.1.1",
     "chai": "^4.2.0",
     "chalk": "^1.1.3",
@@ -73,6 +72,7 @@
     "html-webpack-plugin": "^2.30.1",
     "jest": "20.0.4",
     "jest-bamboo-formatter": "^1.0.1",
+    "jest-junit": "^5.2.0",
     "jsdoc": "^3.5.5",
     "lighthouse": "^3.2.1",
     "node-sass-chokidar": "^1.3.3",
@@ -104,6 +104,15 @@
       "json-summary",
       "lcov"
     ],
+    "reporters": [
+      "default",
+      [
+        "jest-junit",
+        {
+          "output": "./coverage/junit.xml"
+        }
+      ]
+    ],
     "setupFiles": [
       "<rootDir>/config/polyfills.js",
       "<rootDir>/config/jest/browserMock.js",
@@ -120,13 +129,9 @@
       "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
       "^(?!.*\\.(js|jsx|mjs|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
     },
-    "testResultsProcessor": "node_modules/jest-bamboo-formatter",
     "transformIgnorePatterns": [
       "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$"
     ],
-    "moduleNameMapper": {
-      "^react-native$": "react-native-web"
-    },
     "moduleFileExtensions": [
       "web.js",
       "js",

@@ -3,8 +3,9 @@ import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { spy } from 'sinon';
 import TableComponent from '../TableComponent/TableComponent';
-import { Record } from '../../services/knowledgebase';
+import classes from '../../models/classes';
 
+const { Record } = classes;
 const mockData = {
   '#1': new Record({
     '@rid': '#1',
@@ -150,7 +151,6 @@ describe('<TableComponent />', () => {
 
     wrapper.find('thead tr th span[role="button"] svg')
       .forEach(btn => btn.simulate('click'));
-
     wrapper.find('thead tr th').forEach((btn, i) => {
       if (i !== 0) {
         btn.simulate('mouseenter');

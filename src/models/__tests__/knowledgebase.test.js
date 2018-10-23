@@ -1,10 +1,10 @@
 import { expect } from 'chai';
-import { Record, Edge } from '../classes';
+import classes from '../classes';
 
 describe('ontology methods test', () => {
   beforeAll(() => {
     const edges = ['AliasOf', 'SubClassOf'];
-    Record.loadEdges(edges);
+    classes.Record.loadEdges(edges);
   });
 
   it('Edge getId', () => {
@@ -15,7 +15,7 @@ describe('ontology methods test', () => {
         '@rid': 'fail',
       },
     };
-    const o = new Edge(data);
+    const o = new classes.Edge(data);
 
     expect(o.getId()).to.eq('pass');
   });
@@ -30,7 +30,7 @@ describe('ontology methods test', () => {
         '@rid': 'fail',
       },
     };
-    const o = new Record(data);
+    const o = new classes.Record(data);
 
     expect(o.getId()).to.eq('pass');
   });
@@ -65,7 +65,7 @@ describe('ontology methods test', () => {
         },
       }],
     };
-    const o = new Record(data);
+    const o = new classes.Record(data);
     expect(o.getEdges()).to.have.length(2);
     expect(o.getEdgeTypes()).to.have.length(2);
   });

@@ -2,7 +2,7 @@ import React from 'react';
 import { expect } from 'chai';
 import { mount } from 'enzyme';
 import PermissionsTable from '../PermissionsTable/PermissionsTable';
-import { Schema } from '../../services/knowledgebase';
+import Schema from '../../models/schema';
 
 const testSchema = new Schema({
   Disease: { inherits: ['Ontology'] },

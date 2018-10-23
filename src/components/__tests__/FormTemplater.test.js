@@ -2,7 +2,7 @@ import React from 'react';
 import { expect } from 'chai';
 import { mount } from 'enzyme';
 import FormTemplater from '../FormTemplater/FormTemplater';
-import { Schema } from '../../services/knowledgebase';
+import Schema from '../../models/schema';
 
 describe('<FormTemplater />', () => {
   let wrapper;

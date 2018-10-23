@@ -92,6 +92,7 @@
   },
   "jest": {
     "collectCoverage": true,
+    "coverageDirectory": "coverage",
     "collectCoverageFrom": [
       "src/components/**/*.{js,jsx,mjs}",
       "src/services/**/!(api).{js,jsx,mjs}"

@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { spy } from 'sinon';
 import VariantParserComponent from '../VariantParserComponent/VariantParserComponent';
-import { Schema } from '../../services/knowledgebase';
+import Schema from '../../models/schema';
 
 
 const mockClass = {
@@ -54,35 +54,39 @@ const mockClass = {
     linkedClass: { name: 'V', route: '/V' },
   },
 };
-const mockSchema = new Schema({
-  PositionalVariant: {
-    name: 'PositionalVariant',
-    properties: { name: { name: 'name', type: 'string' } },
-  },
-  test: {
-    name: 'test',
-    properties: mockClass,
-  },
-  V: { name: 'V', properties: {} },
-  child: {
-    name: 'child',
-    properties: { name: { name: 'name', type: 'string' } },
-    inherits: ['V'],
-    route: '/child',
-  },
-  embedded: {
-    name: 'embedded',
-    properties: { name: { name: 'embeddedName', type: 'string' } },
-    inherits: [],
-    route: '/embedded',
-  },
-});
+let mockSchema;
 
 describe('<VariantParserComponent />', () => {
   let wrapper;
 
   beforeAll(() => {
     spy(VariantParserComponent.prototype, 'componentDidMount');
+  });
+
+  beforeEach(() => {
+    mockSchema = new Schema({
+      PositionalVariant: {
+        name: 'PositionalVariant',
+        properties: { name: { name: 'name', type: 'string' } },
+      },
+      test: {
+        name: 'test',
+        properties: mockClass,
+      },
+      V: { name: 'V', properties: {} },
+      child: {
+        name: 'child',
+        properties: { name: { name: 'name', type: 'string' } },
+        inherits: ['V'],
+        route: '/child',
+      },
+      embedded: {
+        name: 'embedded',
+        properties: { name: { name: 'embeddedName', type: 'string' } },
+        inherits: [],
+        route: '/embedded',
+      },
+    });
   });
 
   it('calls componentDidMount and doesn\' die', () => {
@@ -199,6 +203,10 @@ describe('<VariantParserComponent />', () => {
         inherits: [],
         route: '/embedded',
       },
+    };
+    mockSchema.schema.PositionalVariant.properties.type = {
+      type: 'link',
+      name: 'type',
     };
     wrapper = mount(
       <VariantParserComponent

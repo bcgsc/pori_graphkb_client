@@ -96,6 +96,12 @@
       "src/components/**/*.{js,jsx,mjs}",
       "src/services/**/!(api).{js,jsx,mjs}"
     ],
+    "coverageReporters": [
+      "text",
+      "json",
+      "json-summary",
+      "lcov"
+    ],
     "setupFiles": [
       "<rootDir>/config/polyfills.js",
       "<rootDir>/config/jest/browserMock.js",

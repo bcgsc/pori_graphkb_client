@@ -53,35 +53,39 @@ const mockClass = {
     linkedClass: { name: 'V', route: '/V' },
   },
 };
-const mockSchema = {
-  PositionalVariant: {
-    name: 'PositionalVariant',
-    properties: { name: { name: 'name', type: 'string' } },
-  },
-  test: {
-    name: 'test',
-    properties: mockClass,
-  },
-  V: { name: 'V', properties: {} },
-  child: {
-    name: 'child',
-    properties: { name: { name: 'name', type: 'string' } },
-    inherits: ['V'],
-    route: '/child',
-  },
-  embedded: {
-    name: 'embedded',
-    properties: { name: { name: 'embeddedName', type: 'string' } },
-    inherits: [],
-    route: '/embedded',
-  },
-};
+let mockSchema;
 
 describe('<VariantParserComponent />', () => {
   let wrapper;
 
   beforeAll(() => {
     spy(VariantParserComponent.prototype, 'componentDidMount');
+  });
+
+  beforeEach(() => {
+    mockSchema = {
+      PositionalVariant: {
+        name: 'PositionalVariant',
+        properties: { name: { name: 'name', type: 'string' } },
+      },
+      test: {
+        name: 'test',
+        properties: mockClass,
+      },
+      V: { name: 'V', properties: {} },
+      child: {
+        name: 'child',
+        properties: { name: { name: 'name', type: 'string' } },
+        inherits: ['V'],
+        route: '/child',
+      },
+      embedded: {
+        name: 'embedded',
+        properties: { name: { name: 'embeddedName', type: 'string' } },
+        inherits: [],
+        route: '/embedded',
+      },
+    };
   });
 
   it('calls componentDidMount and doesn\' die', () => {
@@ -198,6 +202,10 @@ describe('<VariantParserComponent />', () => {
         inherits: [],
         route: '/embedded',
       },
+    };
+    mockSchema.PositionalVariant.properties.type = {
+      type: 'link',
+      name: 'type',
     };
     wrapper = mount(
       <VariantParserComponent

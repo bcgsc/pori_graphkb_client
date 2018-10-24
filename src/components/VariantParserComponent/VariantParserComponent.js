@@ -28,6 +28,12 @@ const DEFAULT_ORDER = [
   'break2Start',
   'break2End',
 ];
+
+const IGNORED_FIELDS = [
+  'germline',
+  'zygosity',
+];
+
 class VariantParserComponent extends Component {
   constructor(props) {
     super(props);
@@ -221,7 +227,11 @@ class VariantParserComponent extends Component {
         }
         variant[`${name}.${key}`] = e.target[key];
       });
-    this.setState({ variant, errorFields: [] }, this.updateShorthand);
+    this.setState({ variant, errorFields: [] }, () => {
+      if (!IGNORED_FIELDS.includes(name)) {
+        this.updateShorthand();
+      }
+    });
   }
 
   /**

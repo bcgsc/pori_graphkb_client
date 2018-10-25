@@ -4,7 +4,7 @@
  */
 
 import * as jwt from 'jsonwebtoken';
-import config from '../config.json';
+import config from '../static/config.json';
 
 const { KEYS } = config;
 const { KB_TOKEN } = KEYS;

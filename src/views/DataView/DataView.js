@@ -20,7 +20,8 @@ import TableComponent from '../../components/TableComponent/TableComponent';
 import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
 import api from '../../services/api';
 import { Ontology, OntologyEdge } from '../../services/ontology';
-import config from '../../config.json';
+import { withSchema } from '../../services/SchemaContext';
+import config from '../../static/config';
 
 const { DEFAULT_NEIGHBORS } = config;
 const DEFAULT_LIMIT = 1000;
@@ -35,7 +36,7 @@ const DEFAULT_LIMIT = 1000;
  * individual record GETs throughout the user's session.
  *
  */
-class DataView extends Component {
+class DataViewBase extends Component {
   /**
    * Makes API GET call to specified endpoint, with specified query parameters.
    * @param {string} route - API endpoint.
@@ -90,9 +91,8 @@ class DataView extends Component {
    * Queries the api and loads results into component state.
    */
   async componentDidMount() {
-    const { history } = this.props;
+    const { history, schema } = this.props;
 
-    const schema = await api.getSchema();
     const filteredSearch = qs.parse(history.location.search.slice(1));
     let route = '/ontologies';
     const omitted = [];
@@ -102,12 +102,11 @@ class DataView extends Component {
     }
     filteredSearch.neighbors = filteredSearch.neighbors || DEFAULT_NEIGHBORS;
     filteredSearch.limit = filteredSearch.limit || DEFAULT_LIMIT;
-    const data = await DataView.makeApiQuery(route, filteredSearch, omitted);
+    const data = await DataViewBase.makeApiQuery(route, filteredSearch, omitted);
     this.processData(data, schema);
     this.prepareNextPagination(route, filteredSearch, data, omitted);
     Ontology.loadEdges(api.getEdges(schema));
     this.setState({
-      schema,
       filteredSearch,
       edges: api.getEdges(schema),
     });
@@ -147,7 +146,7 @@ class DataView extends Component {
     if (prevResult.length >= queryParams.limit) {
       nextQueryParams.skip = Number(queryParams.limit) + Number(queryParams.skip || 0);
       this.setState({
-        next: () => DataView.makeApiQuery(route, nextQueryParams, omitted),
+        next: () => DataViewBase.makeApiQuery(route, nextQueryParams, omitted),
         moreResults: true,
         filteredSearch: nextQueryParams,
       });
@@ -218,7 +217,6 @@ class DataView extends Component {
    */
   handleShowAllNodes() {
     const { displayed, hidden } = this.state;
-
     displayed.push(...hidden);
     this.setState({ displayed, hidden: [] });
   }
@@ -230,9 +228,9 @@ class DataView extends Component {
     const {
       next,
       data,
-      schema,
       filteredSearch,
     } = this.state;
+    const { schema } = this.props;
 
     if (next) {
       try {
@@ -330,7 +328,8 @@ class DataView extends Component {
    * @param {Object} node - newly added object.
    */
   handleNewColumns(node) {
-    const { allProps, schema } = this.state;
+    const { allProps } = this.state;
+    const { schema } = this.props;
     this.setState({ allProps: api.collectOntologyProps(node, allProps, schema) });
   }
 
@@ -341,7 +340,6 @@ class DataView extends Component {
       hidden,
       allProps,
       detail,
-      schema,
       moreResults,
       filteredSearch,
       edges,
@@ -351,6 +349,7 @@ class DataView extends Component {
     } = this.state;
 
     const {
+      schema,
       history,
     } = this.props;
 
@@ -446,9 +445,16 @@ class DataView extends Component {
 /**
  * @namespace
  * @property {Object} history - Application routing history object.
+ * @property {Object} schema - Knowledgebase schema object.
  */
-DataView.propTypes = {
+DataViewBase.propTypes = {
   history: PropTypes.object.isRequired,
+  schema: PropTypes.object.isRequired,
 };
 
-export default DataView;
+const DataView = withSchema(DataViewBase);
+
+export {
+  DataView,
+  DataViewBase,
+};

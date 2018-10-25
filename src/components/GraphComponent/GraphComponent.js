@@ -37,7 +37,7 @@ import {
   GraphNode,
   GraphLink,
 } from './kbgraph';
-import config from '../../config.json';
+import config from '../../static/config.json';
 import GraphActionsNode from './GraphActionsNode';
 import GraphOptionsPanel from './GraphOptionsPanel';
 

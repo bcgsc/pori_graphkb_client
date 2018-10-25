@@ -3,6 +3,7 @@
  */
 
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './AdminView.css';
 import * as jc from 'json-cycle';
 import omit from 'lodash.omit';
@@ -50,11 +51,12 @@ import PermissionsTable from '../../components/PermissionsTable/PermissionsTable
 import api from '../../services/api';
 import auth from '../../services/auth';
 import util from '../../services/util';
+import { withSchema } from '../../services/SchemaContext';
 
 /**
  * View for editing or adding database users.
  */
-class AdminView extends Component {
+class AdminViewBase extends Component {
   static initializeUserGroups(userGroups) {
     userGroups.forEach((u, i) => {
       const userGroup = userGroups[i];
@@ -115,18 +117,17 @@ class AdminView extends Component {
    */
   async componentDidMount() {
     const { newUserGroup } = this.state;
+    const { schema } = this.props;
     const cycledUsers = await api.get('/users?neighbors=1');
     const cycledUserGroups = await api.get('/usergroups');
-    const schema = await api.getSchema();
     const users = jc.retrocycle(cycledUsers).result;
-    const userGroups = AdminView.initializeUserGroups(jc.retrocycle(cycledUserGroups).result);
+    const userGroups = AdminViewBase.initializeUserGroups(jc.retrocycle(cycledUserGroups).result);
 
     Object.keys(schema).forEach((obj) => { newUserGroup.permissions[obj] = [0, 0, 0, 0]; });
     this.setState({
       users,
       userGroups,
       newUserGroup,
-      schema,
     });
   }
 
@@ -183,7 +184,7 @@ class AdminView extends Component {
    */
   async deleteUserGroup(userGroup) {
     await api.delete(`/usergroups/${userGroup['@rid'].slice(1)}`);
-    const userGroups = AdminView.initializeUserGroups(
+    const userGroups = AdminViewBase.initializeUserGroups(
       jc.retrocycle(
         await api.get('/usergroups'),
       ).result,
@@ -332,14 +333,14 @@ class AdminView extends Component {
    * @param {boolean} isNewUserGroup - new UserGroup flag.
    */
   async handlePermissionsCommit(isNewUserGroup) {
+    const { schema } = this.props;
     const f = isNewUserGroup
       ? (rid, payload) => api.post('/usergroups', payload)
       : (rid, payload) => api.patch(`/usergroups/${rid}`, payload);
 
     const key = isNewUserGroup ? 'newUserGroup' : 'tempUserGroup';
-    const { [key]: temp } = this.state;
+    const { [key]: temp, userGroups } = this.state;
     const rid = (temp['@rid'] || '').slice(1);
-    const { userGroups } = this.state;
 
     if (
       (userGroups
@@ -363,10 +364,9 @@ class AdminView extends Component {
 
     await f(rid, payload);
     const response = await api.get('/usergroups');
-    const newUserGroups = AdminView.initializeUserGroups(jc.retrocycle(response).result);
+    const newUserGroups = AdminViewBase.initializeUserGroups(jc.retrocycle(response).result);
     const newUserGroup = { name: '', permissions: {} };
 
-    const schema = await api.getSchema();
     Object.keys(schema).forEach((obj) => { newUserGroup.permissions[obj] = [0, 0, 0, 0]; });
 
     this.setState({
@@ -425,7 +425,8 @@ class AdminView extends Component {
    * @param {string} key - which object to edit.
    */
   handleUserGroupCheckAll(e, i, key) {
-    const { [key]: userGroup, schema } = this.state;
+    const { [key]: userGroup } = this.state;
+    const { schema } = this.props;
     Object.keys((userGroup).permissions).forEach((pKey) => {
       const isEdge = schema[pKey].inherits.includes('E');
       const isAbstract = util.isAbstract(pKey, schema);
@@ -473,8 +474,8 @@ class AdminView extends Component {
       tempUserGroup,
       newUserGroupDialog,
       deletedUserGroup,
-      schema,
     } = this.state;
+    const { schema } = this.props;
 
     if (!users) return null;
 
@@ -887,4 +888,20 @@ class AdminView extends Component {
   }
 }
 
-export default AdminView;
+/**
+ * @namespace
+ * @property {Object} schema - Knowledgebase schema object.
+ */
+AdminViewBase.propTypes = {
+  schema: PropTypes.object.isRequired,
+};
+
+const AdminView = withSchema(AdminViewBase);
+
+/**
+ * Export consumer component and regular component for testing.
+ */
+export {
+  AdminView,
+  AdminViewBase,
+};

@@ -48,7 +48,7 @@ import SortIcon from '@material-ui/icons/Sort';
 import FilterIcon from '../../icons/FilterIcon/FilterIcon';
 import DownloadFileComponent from '../DownloadFileComponent/DownloadFileComponent';
 import util from '../../services/util';
-import config from '../../config.json';
+import config from '../../static/config.json';
 
 const NEXT_CUTOFF = 0.8;
 const { ROWS_PER_PAGE, TSV_FILENAME } = config.TABLE_PROPERTIES;

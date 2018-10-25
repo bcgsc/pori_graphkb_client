@@ -1,4 +1,4 @@
-import config from '../../config.json';
+import config from '../../static/config.json';
 
 const DEFAULT_NODE_VPROPS = [
   'source.name',

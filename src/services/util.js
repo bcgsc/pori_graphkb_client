@@ -4,7 +4,7 @@
  */
 
 import * as jc from 'json-cycle';
-import config from '../config.json';
+import config from '../static/config.json';
 
 const { DEFAULT_PROPS, PERMISSIONS } = config;
 const { PALLETE_SIZE } = config.GRAPH_DEFAULTS;

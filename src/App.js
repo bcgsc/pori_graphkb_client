@@ -33,21 +33,25 @@ import AddIcon from '@material-ui/icons/Add';
 import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import QueryView from './views/QueryView/QueryView';
-import AdvancedQueryView from './views/AdvancedQueryView/AdvancedQueryView';
-import DataView from './views/DataView/DataView';
-import ErrorView from './views/ErrorView/ErrorView';
-import EditOntologyView from './views/EditOntologyView/EditOntologyView';
-import AddOntologyView from './views/AddOntologyView/AddOntologyView';
-import LoginView from './views/LoginView/LoginView';
-import FeedbackView from './views/FeedbackView/FeedbackView';
-import VariantFormView from './views/VariantFormView/VariantFormView';
-import AdminView from './views/AdminView/AdminView';
-import iconsview from './views/iconsview/iconsview';
-import logo from './logo.png';
-import label from './image.png';
+import {
+  AddOntologyView,
+  AdminView,
+  AdvancedQueryView,
+  DataView,
+  EditOntologyView,
+  ErrorView,
+  FeedbackView,
+  IconsView,
+  LoginView,
+  QueryView,
+  VariantFormView,
+} from './views';
+import logo from './static/logo.png';
+import title from './static/title.png';
 import auth from './services/auth';
 import history from './services/history';
+import api from './services/api';
+import { SchemaContext } from './services/SchemaContext';
 
 const theme = createMuiTheme({
   direction: 'ltr',
@@ -84,6 +88,7 @@ class App extends Component {
       loggedIn: (!!auth.getToken() && !auth.isExpired()),
       drawerOpen: false,
       expanded: [],
+      schema: null,
     };
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -93,6 +98,11 @@ class App extends Component {
     this.handleSideBarNavigate = this.handleSideBarNavigate.bind(this);
     this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
     this.handleDrawerClose = this.handleDrawerClose.bind(this);
+  }
+
+  async componentDidMount() {
+    const schema = await api.getSchema();
+    this.setState({ schema });
   }
 
   /**
@@ -120,6 +130,7 @@ class App extends Component {
 
   /**
    * Disables action buttons in headers and force redirects to /login.
+   * setState call required so component is re rendered.
    */
   handleAuthenticate() {
     this.setState({ loggedIn: true });
@@ -160,6 +171,7 @@ class App extends Component {
       loggedIn,
       drawerOpen,
       expanded,
+      schema,
     } = this.state;
 
     const loginWithProps = () => (
@@ -232,7 +244,7 @@ class App extends Component {
             <ListItemIcon>
               <img id="bcc-logo" src={logo} alt="" />
             </ListItemIcon>
-            <img id="bcc-label" src={label} alt="" />
+            <img id="bcc-label" src={title} alt="" />
           </ListItem>
         </div>
       </Drawer>
@@ -251,92 +263,94 @@ class App extends Component {
         <Redirect from="*" to="/query" />
       </Switch>
     );
-    return (
-      <MuiThemeProvider theme={theme}>
-        <Router history={history}>
-          <div className="App">
-            <AppBar
-              position="absolute"
-              className={`banner ${drawerOpen ? 'drawer-shift' : ''}`}
-            >
-              {!drawerOpen && loggedIn && (
-                <IconButton
-                  color="inherit"
-                  onClick={this.handleDrawerOpen}
-                  className="appbar-btn"
-                >
-                  <MenuIcon />
-                </IconButton>
-              )}
-              <div className="appbar-title">
-                <Typography variant="h6">Knowledge Base</Typography>
-              </div>
-              <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>
-                <div>
-                  <Button
-                    classes={{ root: 'user-btn' }}
-                    onClick={this.handleOpen}
-                    size="small"
-                    disabled={!loggedIn}
+    return schema && (
+      <SchemaContext.Provider value={schema}>
+        <MuiThemeProvider theme={theme}>
+          <Router history={history}>
+            <div className="App">
+              <AppBar
+                position="absolute"
+                className={`banner ${drawerOpen ? 'drawer-shift' : ''}`}
+              >
+                {!drawerOpen && loggedIn && (
+                  <IconButton
+                    color="inherit"
+                    onClick={this.handleDrawerOpen}
                     className="appbar-btn"
                   >
-                    <PersonIcon />
-                    <Typography color="inherit">
-                      {auth.getUser() || 'Logged Out'}
-                    </Typography>
-                  </Button>
-                  <Popover
-                    open={!!anchorEl}
-                    anchorEl={anchorEl}
-                    onClose={this.handleClose}
-                    anchorOrigin={{
-                      vertical: 'bottom',
-                      horizontal: 'left',
-                    }}
-                    transformOrigin={{
-                      vertical: 'top',
-                      horizontal: 'left',
-                    }}
-                  >
-                    <Card className="user-menu">
-                      <MenuItem onClick={() => { history.push('/feedback'); this.handleClose(); }}>
-                        Feedback
-                      </MenuItem>
-                      {auth.isAdmin() && (
-                        <MenuItem onClick={() => { history.push('/admin'); this.handleClose(); }}>
-                          Admin
-                        </MenuItem>
-                      )}
-                      <MenuItem onClick={this.handleLogOut}>
-                        Logout
-                      </MenuItem>
-                    </Card>
-                  </Popover>
+                    <MenuIcon />
+                  </IconButton>
+                )}
+                <div className="appbar-title">
+                  <Typography variant="h6">Knowledge Base</Typography>
                 </div>
-              </div>
-            </AppBar>
-            {loggedIn && drawer}
-            <section className={`content ${(drawerOpen ? loggedIn : '') && 'drawer-shift'} ${!loggedIn ? 'no-drawer' : ''}`}>
-              <div className="router-outlet">
-                <Switch>
-                  <Route path="/icons" component={iconsview} />
-                  <Route path="/login" render={loginWithProps} />
-                  <Route path="/error" component={ErrorView} />
-                  <Route
-                    path="/"
-                    render={() => {
-                      if (!loggedIn) {
-                        return <Redirect to="/login" />;
-                      }
-                      return loggedInContent;
-                    }}
-                  />
-                </Switch>
-              </div>
-            </section>
-          </div>
-        </Router>
-      </MuiThemeProvider>
+                <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>
+                  <div>
+                    <Button
+                      classes={{ root: 'user-btn' }}
+                      onClick={this.handleOpen}
+                      size="small"
+                      disabled={!loggedIn}
+                      className="appbar-btn"
+                    >
+                      <PersonIcon />
+                      <Typography color="inherit">
+                        {auth.getUser() || 'Logged Out'}
+                      </Typography>
+                    </Button>
+                    <Popover
+                      open={!!anchorEl}
+                      anchorEl={anchorEl}
+                      onClose={this.handleClose}
+                      anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                      }}
+                      transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
+                      }}
+                    >
+                      <Card className="user-menu">
+                        <MenuItem onClick={() => { history.push('/feedback'); this.handleClose(); }}>
+                          Feedback
+                        </MenuItem>
+                        {auth.isAdmin() && (
+                          <MenuItem onClick={() => { history.push('/admin'); this.handleClose(); }}>
+                            Admin
+                          </MenuItem>
+                        )}
+                        <MenuItem onClick={this.handleLogOut}>
+                          Logout
+                        </MenuItem>
+                      </Card>
+                    </Popover>
+                  </div>
+                </div>
+              </AppBar>
+              {loggedIn && drawer}
+              <section className={`content ${(drawerOpen ? loggedIn : '') && 'drawer-shift'} ${!loggedIn ? 'no-drawer' : ''}`}>
+                <div className="router-outlet">
+                  <Switch>
+                    <Route path="/icons" component={IconsView} />
+                    <Route path="/login" render={loginWithProps} />
+                    <Route path="/error" component={ErrorView} />
+                    <Route
+                      path="/"
+                      render={() => {
+                        if (!loggedIn) {
+                          return <Redirect to="/login" />;
+                        }
+                        return loggedInContent;
+                      }}
+                    />
+                  </Switch>
+                </div>
+              </section>
+            </div>
+          </Router>
+        </MuiThemeProvider>
+      </SchemaContext.Provider>
     );
   }
 }

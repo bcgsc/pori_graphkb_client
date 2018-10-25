@@ -1,0 +1,15 @@
+@import "../../globals";
+.variant-wrapper {
+  @include view-wrapper;
+  .variant-headline {
+    @include page-header;
+    .variant-cancel-btn {
+      margin: auto;
+      margin-right: 0;
+      display: flex;
+      button{
+        margin-left: auto;
+      }
+    }
+  }
+}

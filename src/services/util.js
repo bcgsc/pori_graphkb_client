@@ -217,7 +217,18 @@ const getTSVRepresentation = (value, key) => {
 const parsePayload = (form, objectSchema, exceptions) => {
   const payload = Object.assign({}, form);
   Object.keys(payload).forEach((key) => {
-    if (!payload[key]) delete payload[key];
+    if (!payload[key]) {
+      delete payload[key];
+    }
+    if (typeof payload[key] === 'object') {
+      Object.keys(payload[key]).forEach((k) => {
+        if (payload[key][k]) {
+          payload[`${key}[${k}]`] = payload[key][k];
+        }
+      });
+      delete payload[key];
+    }
+
     // For link properties, must specify record id being linking to. Clear the rest.
     if (key.includes('.@rid')) {
       const nestedKey = key.split('.')[0];
@@ -232,6 +243,7 @@ const parsePayload = (form, objectSchema, exceptions) => {
         delete payload[key];
       }
     }
+
     // Clears out all other unknown fields.
     if (!objectSchema.find(p => p.name === key)) {
       if (!exceptions || !exceptions.find(p => p.name === key)) {

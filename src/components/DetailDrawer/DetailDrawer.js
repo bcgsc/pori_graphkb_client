@@ -415,7 +415,7 @@ class DetailDrawer extends Component {
                 onClick={handleNodeEditStart}
                 variant="outlined"
               >
-                Edit &nbsp;
+                Edit {node.constructor.name}&nbsp;
                 <EditIcon />
               </Button>
             </div>
@@ -447,12 +447,12 @@ class DetailDrawer extends Component {
 
 /**
  * @namespace
-* @property {Object} schema - Knowledgebase schema object.
-* @property {Object} node - Ontology to be displayed in drawer.
-* @property {function} onClose - Function triggered on @material-ui/Drawer onClose event.
-* @property {function} handleNodeEditStart - Function triggered on node edit button click.
-* @property {bool} isEdge - Flag for edge classes.
-    */
+ * @property {Object} schema - Knowledgebase schema object.
+ * @property {Object} node - Ontology to be displayed in drawer.
+ * @property {function} onClose - Function triggered on @material-ui/Drawer onClose event.
+ * @property {function} handleNodeEditStart - Function triggered on node edit button click.
+ * @property {bool} isEdge - Flag for edge classes.
+ */
 DetailDrawer.propTypes = {
   schema: PropTypes.object,
   node: PropTypes.object,

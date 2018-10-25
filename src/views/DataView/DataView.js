@@ -266,9 +266,18 @@ class DataViewBase extends Component {
    */
   handleNodeEditStart() {
     const { detail } = this.state;
-    const { history } = this.props;
+    const { history, schema } = this.props;
     if (detail) {
-      history.push(`/edit/${detail.getId().slice(1)}`);
+      let route;
+      console.log(detail);
+      if (schema.isOntology(detail['@class'])) {
+        route = 'ontology';
+      } else if (detail['@class'] === 'PositionalVariant') {
+        route = 'variant';
+      } else if (detail['@class'] === 'Statement') {
+        route = 'statement';
+      }
+      history.push(`/edit/${route}/${detail.getId().slice(1)}`);
     }
   }
 

@@ -260,7 +260,7 @@ class DetailDrawer extends Component {
             </React.Fragment>
           );
         }
-        if (type === 'link') {
+        if (type === 'link' || type === 'embedded') {
           return (
             <React.Fragment key={name}>
               <ListItem button onClick={() => this.handleExpand(name)}>

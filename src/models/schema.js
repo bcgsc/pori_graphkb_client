@@ -49,13 +49,13 @@ class Schema {
  * @param {string} kbClass - Knowledge base class key.
  * @param {Object} schema - Knowledge base schema.
  */
-  initModel(model, kbClass, extraProps = []) {
+  initModel(model, kbClass, extraProps = [], ignoreClass) {
     const editableProps = kbClass
       && (this.getClass(kbClass) || {}).properties;
     if (!editableProps) return null;
     editableProps.push(...extraProps);
     const newModel = Object.assign({}, model);
-    newModel['@class'] = kbClass;
+    newModel['@class'] = ignoreClass ? '' : kbClass;
     Object.values(editableProps).forEach((property) => {
       const {
         name,
@@ -88,7 +88,7 @@ class Schema {
           if (linkedClass && linkedClass.properties) {
             newModel[name] = model[name]
               ? Object.assign({}, model[name])
-              : this.initModel({}, property.linkedClass.name);
+              : this.initModel({}, property.linkedClass.name, [], true);
           }
           break;
         default:
@@ -205,6 +205,11 @@ class Schema {
     return allColumns;
   }
 
+  /**
+   * Parses an input object and casts it to a KB class.
+   * @param {Object} obj - input object to be parsed.
+   * @param {boolean} ignoreNested - stop flag for recursive child construction.
+   */
   newRecord(obj, ignoreNested = false) {
     if (obj) {
       if (obj['@class']) {

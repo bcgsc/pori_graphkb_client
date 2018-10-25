@@ -55,16 +55,6 @@ class VariantParserComponent extends Component {
   componentDidMount() {
     const { schema } = this.props;
     const variant = schema.initModel({}, 'PositionalVariant');
-    Object.keys(variant).forEach((k) => {
-      if (
-        variant[k]
-        && typeof variant[k] === 'object'
-        && variant[k]['@class']
-        && schema.isAbstract(variant[k]['@class'])
-      ) {
-        variant[k]['@class'] = '';
-      }
-    });
     this.setState({ variant });
   }
 
@@ -183,8 +173,7 @@ class VariantParserComponent extends Component {
     const { schema } = this.props;
     const { value } = e.target;
     const classSchema = schema.getClass('PositionalVariant').properties;
-    const newClass = schema.getClass(value).properties;
-    if (newClass) {
+    if (schema.getClass(value)) {
       const abstractClass = classSchema
         .find(p => p.name === nested).linkedClass.name;
       const varKeys = classSchema

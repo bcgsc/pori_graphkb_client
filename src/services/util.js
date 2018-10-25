@@ -128,37 +128,6 @@ const formatStr = (str) => {
 };
 
 /**
- * Returns a representative field of a given object. Defaults to:
- * name, then sourceId (defined in config.json: DEFAULT_PROPS), then if
- * neither are present, the first primitive type field in the object.
- * @example
- * > util.getPreview({name: 'bob', ...other})
- * > 'bob'
- * @example
- * > util.getPreview({sourceId: '123', color: 'blue'})
- * > '123'
- * @example
- * > util.getPreview({colors: ['red', 'green], height: '6ft'})
- * > '6ft'
- * @param {Object} obj - target data object.
- */
-const getPreview = (obj) => {
-  let preview;
-  DEFAULT_PROPS.forEach((prop) => {
-    if (obj[prop]) {
-      if (!preview) {
-        preview = obj[prop];
-      }
-    }
-  });
-  if (!preview) {
-    const prop = Object.keys(obj).find(key => typeof obj[key] !== 'object');
-    preview = obj[prop];
-  }
-  return formatStr(preview);
-};
-
-/**
  * Expands edges to field property names, with either 'in_' or 'out_'
  * appended to them.
  * @param {Array} edges - list of edge classes.
@@ -235,7 +204,7 @@ const getTSVRepresentation = (value, key) => {
     const newKey = key.split('.')[1];
     return getTSVRepresentation(value[newKey], newKey);
   }
-  return getPreview(value);
+  return castToExist(value);
 };
 
 /**
@@ -393,11 +362,11 @@ const parsePermission = (permissionValue) => {
 const getPropOfType = (kbClass, type) => Object.values(kbClass)
   .filter(prop => prop.type === type);
 
-  /**
-   * Sorting method to pass into Array.sort().
-   * @param {Array} order - order for props to be sorted in.
-   * @param {string} prop - nested property to sort objects by.
-   */
+/**
+ * Sorting method to pass into Array.sort().
+ * @param {Array} order - order for props to be sorted in.
+ * @param {string} prop - nested property to sort objects by.
+ */
 const sortFields = (order = [], prop = 'name') => (a, b) => {
   const sortA = prop ? a[prop] : a;
   const sortB = prop ? b[prop] : b;
@@ -414,7 +383,6 @@ const sortFields = (order = [], prop = 'name') => (a, b) => {
 
 export default {
   antiCamelCase,
-  getPreview,
   expandEdges,
   getEdgeLabel,
   getTSVRepresentation,

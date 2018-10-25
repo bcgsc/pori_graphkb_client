@@ -186,7 +186,6 @@ class DetailDrawer extends Component {
    * @param {Object} node - Ontology being displayed.
    */
   formatOtherProps(node) {
-    if (!node) return null;
     const { opened } = this.state;
     const { schema, identifiers } = this.props;
     let properties = Object.keys(node)
@@ -365,6 +364,7 @@ class DetailDrawer extends Component {
       isEdge,
       handleNodeEditStart,
     } = this.props;
+    if (!node) return null;
     const identifiers = this.formatIdentifiers(node);
     const otherProps = this.formatOtherProps(node);
     const relationships = this.formatRelationships(node);
@@ -379,8 +379,8 @@ class DetailDrawer extends Component {
         <div className="detail-content">
           <div className="detail-heading">
             <div className="detail-headline">
-              <Typography variant="h6" component="h1">
-                Properties:
+              <Typography variant="h4" component="h1">
+                {node.getPreview()}
               </Typography>
               <IconButton onClick={onClose}>
                 <ChevronRightIcon />
@@ -391,7 +391,7 @@ class DetailDrawer extends Component {
                 onClick={handleNodeEditStart}
                 variant="outlined"
               >
-                Edit Ontology&nbsp;
+                Edit &nbsp;
                 <EditIcon />
               </Button>
             </div>
@@ -423,12 +423,12 @@ class DetailDrawer extends Component {
 
 /**
  * @namespace
- * @property {Object} schema - Knowledgebase schema object.
- * @property {Object} node - Ontology to be displayed in drawer.
- * @property {function} onClose - Function triggered on @material-ui/Drawer onClose event.
- * @property {function} handleNodeEditStart - Function triggered on node edit button click.
- * @property {bool} isEdge - Flag for edge classes.
- */
+* @property {Object} schema - Knowledgebase schema object.
+* @property {Object} node - Ontology to be displayed in drawer.
+* @property {function} onClose - Function triggered on @material-ui/Drawer onClose event.
+* @property {function} handleNodeEditStart - Function triggered on node edit button click.
+* @property {bool} isEdge - Flag for edge classes.
+    */
 DetailDrawer.propTypes = {
   schema: PropTypes.object,
   node: PropTypes.object,

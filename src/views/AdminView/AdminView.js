@@ -367,7 +367,7 @@ class AdminViewBase extends Component {
     const newUserGroups = AdminViewBase.initializeUserGroups(jc.retrocycle(response).result);
     const newUserGroup = { name: '', permissions: {} };
 
-    Object.keys(schema).forEach((obj) => { newUserGroup.permissions[obj] = [0, 0, 0, 0]; });
+    Object.keys(schema.schema).forEach((obj) => { newUserGroup.permissions[obj] = [0, 0, 0, 0]; });
 
     this.setState({
       [key]: isNewUserGroup
@@ -428,8 +428,8 @@ class AdminViewBase extends Component {
     const { [key]: userGroup } = this.state;
     const { schema } = this.props;
     Object.keys((userGroup).permissions).forEach((pKey) => {
-      const isEdge = schema[pKey].inherits.includes('E');
-      const isAbstract = util.isAbstract(pKey, schema);
+      const isEdge = schema.isEdge(pKey);
+      const isAbstract = schema.isAbstract(pKey);
       userGroup.permissions[pKey][i] = (e.target.checked
         && !(isEdge && i === 1))
         && !(isAbstract && i !== 2)

@@ -646,7 +646,7 @@ class OntologyFormComponent extends Component {
                                 {typeName}
                               </TableCell>
                               <TableCell padding="dense">
-                                {util.getPreview(r)}
+                                {r.name || r.sourceId}
                               </TableCell>
                               <TableCell padding="dense">
                                 {sourceName}

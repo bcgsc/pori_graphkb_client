@@ -84,10 +84,6 @@
     ],
     "TSV_FILENAME": "download.tsv"
   },
-  "DEFAULT_PROPS": [
-    "name",
-    "sourceId"
-  ],
   "DEFAULT_NEIGHBORS": 3,
   "ONTOLOGY_QUERY_PARAMS": [
     {

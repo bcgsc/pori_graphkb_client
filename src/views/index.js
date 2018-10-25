@@ -8,7 +8,8 @@ import FeedbackView from './FeedbackView/FeedbackView';
 import IconsView from './IconsView/IconsView';
 import LoginView from './LoginView/LoginView';
 import QueryView from './QueryView/QueryView';
-import { VariantFormView } from './VariantFormView/VariantFormView';
+import { AddVariantView } from './AddVariantView/AddVariantView';
+import { EditVariantView } from './EditVariantView/EditVariantView';
 
 export {
   AdvancedQueryView,
@@ -21,5 +22,6 @@ export {
   IconsView,
   LoginView,
   QueryView,
-  VariantFormView,
+  AddVariantView,
+  EditVariantView,
 };

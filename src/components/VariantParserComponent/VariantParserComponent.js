@@ -53,8 +53,10 @@ class VariantParserComponent extends Component {
   }
 
   componentDidMount() {
-    const { schema } = this.props;
-    const variant = schema.initModel({}, 'PositionalVariant');
+    const { schema, initVariant } = this.props;
+    const variant = initVariant
+      ? schema.initModel(initVariant, 'PositionalVariant')
+      : schema.initModel({}, 'PositionalVariant');
     Object.keys(variant).forEach((k) => {
       if (
         variant[k]
@@ -65,7 +67,8 @@ class VariantParserComponent extends Component {
         variant[k]['@class'] = '';
       }
     });
-    this.setState({ variant });
+    const shorthand = initVariant ? initVariant.getPreview() : '';
+    this.setState({ variant, shorthand });
   }
 
   /**
@@ -183,8 +186,7 @@ class VariantParserComponent extends Component {
     const { schema } = this.props;
     const { value } = e.target;
     const classSchema = schema.getClass('PositionalVariant').properties;
-    const newClass = schema.getClass(value).properties;
-    if (newClass) {
+    if (schema.getClass(value)) {
       const abstractClass = classSchema
         .find(p => p.name === nested).linkedClass.name;
       const varKeys = classSchema
@@ -240,11 +242,12 @@ class VariantParserComponent extends Component {
   updateShorthand() {
     const { variant } = this.state;
     let { shorthand } = this.state;
+    const { schema } = this.props;
     try {
       const filteredVariant = {};
       Object.keys(variant).forEach((k) => {
         if (typeof variant[k] === 'object') {
-          if (variant[k]['@class']) {
+          if (variant[k]['@class'] && schema.isPosition(variant[k]['@class'])) {
             filteredVariant[k] = variant[k];
             filteredVariant.prefix = kbp.position.CLASS_PREFIX[variant[k]['@class']];
           }
@@ -416,9 +419,11 @@ VariantParserComponent.propTypes = {
   handleFinish: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func,
   schema: PropTypes.object.isRequired,
+  initVariant: PropTypes.object,
 };
 
 VariantParserComponent.defaultProps = {
+  initVariant: null,
   required: false,
   error: false,
   disabled: false,

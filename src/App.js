@@ -44,7 +44,8 @@ import {
   IconsView,
   LoginView,
   QueryView,
-  VariantFormView,
+  AddVariantView,
+  EditVariantView,
 } from './views';
 import logo from './static/logo.png';
 import title from './static/title.png';
@@ -226,13 +227,13 @@ class App extends Component {
           <Collapse in={expanded === 'add' && drawerOpen}>
             <MenuItem
               id="link-add"
-              onClick={() => this.handleSideBarNavigate('/add')}
+              onClick={() => this.handleSideBarNavigate('/add/ontology')}
             >
               <ListItemText inset primary="Ontology" />
             </MenuItem>
             <MenuItem
               id="link-variant"
-              onClick={() => this.handleSideBarNavigate('/variant')}
+              onClick={() => this.handleSideBarNavigate('/add/variant')}
             >
               <ListItemText inset primary="Variant" />
             </MenuItem>
@@ -254,11 +255,13 @@ class App extends Component {
       <Switch>
         <Route exact path="/query" component={QueryView} />
         <Route path="/query/advanced" component={AdvancedQueryView} />
-        <Route path="/add" component={AddOntologyView} />
-        <Route path="/edit/:rid" component={EditOntologyView} />
+        <Route path="/add/ontology" component={AddOntologyView} />
+        <Route path="/add/variant" component={AddVariantView} />
+        <Route exact path="/edit/ontology/:rid" component={EditOntologyView} />
+        <Route exact path="/edit/variant/:rid" component={EditVariantView} />
+        <Route exact path="/edit/statement/:rid" component={EditOntologyView} />
         <Route path="/data" component={DataView} />
         <Route path="/feedback" component={FeedbackView} />
-        <Route path="/variant" component={VariantFormView} />
         <Route path="/admin" component={AdminView} />
         <Redirect from="*" to="/query" />
       </Switch>

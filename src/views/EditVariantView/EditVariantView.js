@@ -1,18 +1,33 @@
 import React, { Component } from 'react';
-import './VariantFormView.css';
+import './EditVariantView.css';
 import PropTypes from 'prop-types';
 import { Paper, Typography, Button } from '@material-ui/core';
+import * as jc from 'json-cycle';
 import VariantParserComponent from '../../components/VariantParserComponent/VariantParserComponent';
+import { withSchema } from '../../components/SchemaContext/SchemaContext';
 import util from '../../services/util';
 import api from '../../services/api';
-import { withSchema } from '../../components/SchemaContext/SchemaContext';
 
-class VariantFormViewBase extends Component {
+class EditVariantViewBase extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      variant: null,
+    };
     this.handleCancel = this.handleCancel.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
     this.submitVariant = this.submitVariant.bind(this);
+  }
+
+  async componentDidMount() {
+    const { match, schema } = this.props;
+    const { rid } = match.params;
+    const { route } = schema.get('PositionalVariant');
+    const response = await api.get(`${route}/${rid}?neighbors=3`);
+    const variant = schema.newRecord(jc.retrocycle(response).result);
+    this.setState({
+      variant,
+    });
   }
 
   /**
@@ -57,12 +72,13 @@ class VariantFormViewBase extends Component {
       }
     });
     const payload = util.parsePayload(copy, classSchema);
-    await api.post('/positionalvariants', payload);
+    await api.patch(`/positionalvariants/${variant['@rid'].slice(1)}`, payload);
   }
 
   render() {
     const { schema } = this.props;
-    if (!schema) return null;
+    const { variant } = this.state;
+    if (!variant) return null;
     return (
       <div className="variant-wrapper">
         <Paper elevation={4} className="variant-headline">
@@ -75,7 +91,7 @@ class VariantFormViewBase extends Component {
               Cancel
             </Button>
           </div>
-          <Typography variant="h5">Variant Form</Typography>
+          <Typography variant="h5">Edit Variant Form</Typography>
         </Paper>
 
         <div className="variant-body">
@@ -83,6 +99,7 @@ class VariantFormViewBase extends Component {
             handleFinish={this.handleFinish}
             handleSubmit={this.submitVariant}
             schema={schema}
+            initVariant={variant}
           />
         </div>
       </div>
@@ -95,14 +112,14 @@ class VariantFormViewBase extends Component {
  * @property {Object} history - Application routing history object.
  * @property {Object} schema - Knowledgebase schema object.
  */
-VariantFormViewBase.propTypes = {
+EditVariantViewBase.propTypes = {
   history: PropTypes.object.isRequired,
   schema: PropTypes.object.isRequired,
 };
 
-const VariantFormView = withSchema(VariantFormViewBase);
+const EditVariantView = withSchema(EditVariantViewBase);
 
 export {
-  VariantFormViewBase,
-  VariantFormView,
+  EditVariantViewBase,
+  EditVariantView,
 };

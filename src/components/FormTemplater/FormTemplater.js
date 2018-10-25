@@ -23,12 +23,6 @@ import util from '../../services/util';
  * Templater component that generates input fields based off of a given schema.
  */
 function FormTemplater(props) {
-  /**
-   * Creates DOM models to be rendered.
-   * @param {Object} model - Object to which data will be bound.
-   * @param {Object} propSchemas - Filtered schema object containing ONLY and ALL classes to be
-   * rendered. (Schema.properties)
-   */
   const {
     model,
     propSchemas,

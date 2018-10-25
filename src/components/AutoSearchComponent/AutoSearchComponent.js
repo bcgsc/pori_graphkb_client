@@ -338,7 +338,7 @@ AutoSearchComponent.defaultProps = {
       selected={highlightedIndex === index}
     >
       <span>
-        {util.getPreview(item)}
+        {item.name || item.sourceId}
         <Typography color="textSecondary" variant="body1">
           {item.source && item.source.name ? item.source.name : ''}
         </Typography>

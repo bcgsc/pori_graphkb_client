@@ -25,19 +25,6 @@ import config from '../../static/config';
 
 const { DEFAULT_NEIGHBORS } = config;
 const DEFAULT_LIMIT = 1000;
-const DEFAULT_ORDERS = {
-  Ontology: [
-    '@class',
-    'name',
-    'sourceId',
-    'source.name',
-  ],
-  PositionalVariant: [
-    'type.name',
-    'break1Repr',
-    'reference1.name',
-  ],
-};
 
 /**
  * View for managing state of query results. Contains sub-routes for table view (/data/table)
@@ -137,9 +124,9 @@ class DataViewBase extends Component {
       allProps = ['@rid', '@class'];
     }
 
-    queryResults.forEach((ontologyTerm) => {
-      allProps = schema.collectOntologyProps(ontologyTerm, allProps);
-      data[ontologyTerm['@rid']] = classes.newRecord(ontologyTerm);
+    queryResults.forEach((record) => {
+      allProps = schema.collectOntologyProps(record, allProps);
+      data[record['@rid']] = schema.newRecord(record);
     });
 
     this.setState({ data, allProps });
@@ -179,8 +166,7 @@ class DataViewBase extends Component {
     if (!data[rid]) {
       const endpoint = `/ontologies/${rid.slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`; // change
       const response = await api.get(endpoint);
-      data[rid] = classes.newRecord(jc.retrocycle(response).result);
-      this.setState({ data });
+      this.processData([jc.retrocycle(response).result]);
     }
   }
 
@@ -366,7 +352,7 @@ class DataViewBase extends Component {
     if (!data) return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
     const edges = schema.getEdges();
     const cls = filteredSearch && filteredSearch['@class'];
-    const defaultOrders = DEFAULT_ORDERS[cls] || DEFAULT_ORDERS.Ontology;
+    const defaultOrders = (classes[cls] || classes.Ontology).getIdentifiers();
     const detailDrawer = (
       <DetailDrawer
         node={detail}

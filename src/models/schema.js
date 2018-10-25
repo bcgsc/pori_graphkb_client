@@ -1,3 +1,5 @@
+import classes from './classes';
+
 /**
  * Knowledgebase schema.
  */
@@ -152,6 +154,14 @@ class Schema {
   }
 
   /**
+   * Checks if a KB class is a Position.
+   * @param {string} cls - class key.
+   */
+  isPosition(cls) {
+    return (this.schema[cls].inherits || []).includes('Position');
+  }
+
+  /**
   * Given a schema class object, find all other classes that inherit it.
   * @param {string} abstractClass - property class key.
   * @param {Object} schema - database schema
@@ -193,6 +203,28 @@ class Schema {
       }
     });
     return allColumns;
+  }
+
+  newRecord(obj, ignoreNested = false) {
+    if (obj) {
+      if (obj['@class']) {
+        if (classes[obj['@class']]) {
+          return new classes[obj['@class']](obj, this, ignoreNested);
+        }
+        if (this.isEdge(obj['@class'])) {
+          return new classes.Edge(obj, this, ignoreNested);
+        }
+        if (this.isOntology(obj['@class'])) {
+          return new classes.Ontology(obj, this, ignoreNested);
+        }
+        if (this.isPosition(obj['@class'])) {
+          return new classes.Position(obj, this, ignoreNested);
+        }
+        return new classes.V(obj, this, ignoreNested);
+      }
+      return new classes.Record(obj, this, ignoreNested);
+    }
+    return null;
   }
 }
 

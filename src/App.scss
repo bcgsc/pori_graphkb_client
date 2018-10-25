@@ -1,9 +1,10 @@
 @import "globals";
+
 $user-menu-width: 124px;
 $transition-speed: 0.3s;
 $drawer-width: 220px;
 $closed-drawer-width: 56px;
-$drawer-breakpoint: 768px;
+$drawer-breakpoint: 1024px;
 .App {
   .banner {
     height: $banner-height;
@@ -159,6 +160,6 @@ $drawer-breakpoint: 768px;
 }
 
 ::selection {
-  background: rgba($md-primary-color, 0.9);
+  background: rgba($md-primary-color, 0.8);
   color: white;
 }

@@ -6,7 +6,7 @@
 import * as jc from 'json-cycle';
 import config from '../static/config.json';
 
-const { DEFAULT_PROPS, PERMISSIONS } = config;
+const { PERMISSIONS } = config;
 const { PALLETE_SIZE } = config.GRAPH_DEFAULTS;
 const { NODE_INIT_RADIUS } = config.GRAPH_PROPERTIES;
 const ACRONYMS = [
@@ -21,6 +21,7 @@ const ACRONYMS = [
   'bcgsc',
   'fda',
   'null',
+  'rid',
 ];
 
 const GRAPH_OBJECTS_KEY = 'graphObjects';

@@ -66,42 +66,58 @@ class DetailDrawer extends Component {
    * @param {boolean} nested - Nested flag.
    */
   formatIdentifiers(node, nested) {
-    if (!node) return null;
-    const { schema, identifiers } = this.props;
+    const { schema } = this.props;
     const { opened } = this.state;
+    if (!(node instanceof classes.Record)) {
+      node = schema.newRecord(node);
+    }
+    const identifiers = node.constructor.getIdentifiers();
+
     return (
       identifiers.map((prop) => {
         const [key, nestedKey] = prop.split('.');
         const value = nestedKey ? (node[key] || {})[nestedKey] : node[key];
-        let properties = Object.keys(node[key] || {}).map(k => ({ name: k }));
+        let properties = Object.keys(node[key] || {});
         if (schema && node[key] && schema.getClass(node[key]['@class'])) {
           // If property is a class in the schema, we can grab its properties.
-          ({ properties } = schema.getClass(node[key]['@class']));
+          properties = schema.getClass(node[key]['@class']).properties.map(k => k.name);
+        }
+        if (node[key] instanceof classes.Record) {
+          properties = node[key].constructor.getIdentifiers();
         }
         const expanded = nestedKey ? (
           <Collapse
             in={opened.includes(`${node['@rid']}${prop}`)}
             unmountOnExit
           >
-            {properties.map(nestedProp => (
-              (node[key] || {})[nestedProp.name] && (
-                <ListItem key={nestedProp.name}>
-                  {nested && (
-                    <ListItemIcon>
-                      <div style={{ width: 24, height: 24 }} />
-                    </ListItemIcon>)}
-                  <ListItemText>
-                    <div className="detail-identifiers">
-                      <Typography color="textSecondary" className="detail-identifiers-nested">
-                        {util.antiCamelCase(nestedProp.name)}
-                      </Typography>
-                      <Typography>
-                        {util.formatStr(node[key][nestedProp.name])}
-                      </Typography>
-                    </div>
-                  </ListItemText>
-                </ListItem>
-              )))}
+            <List className="detail-nested-list">
+              {properties.map((nestedProp) => {
+                if (!node[key]) return null;
+                const [nestedPropKey, veryNestedKey] = nestedProp.split('.');
+                const nestedValue = veryNestedKey
+                  ? (node[key][nestedPropKey] || {})[veryNestedKey]
+                  : node[key][nestedPropKey];
+                return (
+                  nestedValue && (
+                    <ListItem key={nestedProp}>
+                      {nested && (
+                        <ListItemIcon>
+                          <div style={{ width: 24, height: 24 }} />
+                        </ListItemIcon>)}
+                      <ListItemText>
+                        <div className="detail-identifiers">
+                          <Typography color="textSecondary" className="detail-identifiers-nested">
+                            {util.antiCamelCase(nestedPropKey)}
+                          </Typography>
+                          <Typography>
+                            {util.formatStr(nestedValue)}
+                          </Typography>
+                        </div>
+                      </ListItemText>
+                    </ListItem>
+                  ));
+              })}
+            </List>
           </Collapse>
         ) : null;
         if (value) {
@@ -272,20 +288,22 @@ class DetailDrawer extends Component {
    * @param {Object} node - Ontology being displayed.
    */
   formatRelationships(node) {
-    if (!node) return null;
     const { linkOpen } = this.state;
+    const { schema } = this.props;
 
     // Checks subclasses
     if (!(node instanceof classes.Record)) {
-      node = new classes.Record(node);
+      node = schema.newRecord(node);
     }
     const edges = node.getEdges();
+
     if (!edges || edges.length === 0) return null;
     return (
       <List>
         {edges.map((edge) => {
           const isOpen = linkOpen === edge['@rid'];
           const isIn = edge.in && edge.in['@rid'] === node.getId();
+          const targetNode = schema.newRecord(isIn ? edge.out : edge.in);
           return (
             <React.Fragment key={edge['@rid']}>
               <ListItem
@@ -301,28 +319,34 @@ class DetailDrawer extends Component {
                   primaryTypographyProps={{
                     color: isOpen ? 'secondary' : 'default',
                   }}
-                  primary={util.getPreview(isIn ? edge.out : edge.in)}
+                  primary={targetNode.getPreview()}
                   secondary={util.getEdgeLabel(`${isIn ? 'in' : 'out'}_${edge['@class']}`)}
                 />
                 {!isOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
               </ListItem>
               <Collapse in={!!isOpen} unmountOnExit>
-                <List dense disablePadding className="detail-nested-list">
+                <List
+                  dense
+                  disablePadding
+                  className="detail-nested-list"
+                >
+                  <Divider />
                   <ListSubheader
                     className="detail-nested-subheader"
-                    color="inherit"
+                    color="primary"
                   >
                     Link Properties
                   </ListSubheader>
                   {this.formatIdentifiers(edge, true)}
                   <ListSubheader
                     className="detail-nested-subheader"
-                    color="inherit"
+                    color="primary"
                   >
-                    Linked Ontology
+                    Linked Record
                   </ListSubheader>
                   {this.formatIdentifiers(isIn ? edge.out : edge.in, true)}
                 </List>
+                <Divider />
               </Collapse>
             </React.Fragment>);
         })}

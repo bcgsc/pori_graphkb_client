@@ -1,5 +1,5 @@
 /**
- * @module /views/EditOntologyView
+ * @module /views/EditOntologyViewBase
  */
 
 import React, { Component } from 'react';
@@ -8,7 +8,8 @@ import * as jc from 'json-cycle';
 import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
 import api from '../../services/api';
 import util from '../../services/util';
-import config from '../../config.json';
+import config from '../../static/config';
+import { withSchema } from '../../services/SchemaContext';
 
 const { DEFAULT_NEIGHBORS } = config;
 
@@ -17,12 +18,11 @@ const { DEFAULT_NEIGHBORS } = config;
  * selected. Selects node with record ID as passed in to the url (/edit/[rid]).
  * Redirects to the home query page on form submit, or to the error page.
  */
-class EditOntologyView extends Component {
+class EditOntologyViewBase extends Component {
   constructor(props) {
     super(props);
     this.state = {
       node: null,
-      schema: null,
       sources: [],
       edgeTypes: [],
     };
@@ -35,16 +35,14 @@ class EditOntologyView extends Component {
    * Initializes editing node and query on return.
    */
   async componentDidMount() {
-    const { match } = this.props;
+    const { match, schema } = this.props;
     const { rid } = match.params;
     const response = await api.get(`/ontologies/${rid}?neighbors=${DEFAULT_NEIGHBORS}`);
     const node = jc.retrocycle(response).result;
     const sources = await api.getSources();
-    const schema = await api.getSchema();
     const edgeTypes = api.getEdges(schema);
     this.setState({
       node,
-      schema,
       sources,
       edgeTypes,
     });
@@ -55,7 +53,7 @@ class EditOntologyView extends Component {
    * Adds new edges and deletes specified ones, then patches property changes to the api.
    */
   async handleSubmit(form, relationships, originalNode) {
-    const { schema } = this.state;
+    const { schema } = this.props;
 
     const changedEdges = [];
 
@@ -107,7 +105,8 @@ class EditOntologyView extends Component {
    */
   async handleDeleteNode() {
     this.handleDialogClose();
-    const { originalNode, schema } = this.state;
+    const { originalNode } = this.state;
+    const { schema } = this.props;
     const { route } = util.getClass(originalNode['@class'], schema);
     await api.delete(`${route}/${originalNode['@rid'].slice(1)}`);
   }
@@ -131,13 +130,12 @@ class EditOntologyView extends Component {
   render() {
     const {
       node,
-      schema,
       sources,
       edgeTypes,
     } = this.state;
+    const { schema } = this.props;
 
-
-    if (node && schema) {
+    if (node) {
       return (
         <OntologyFormComponent
           variant="edit"
@@ -159,10 +157,17 @@ class EditOntologyView extends Component {
  * @namespace
  * @property {Object} match - Match object for extracting URL parameters.
  * @property {Object} history - Application routing history object.
+ * @property {Object} schema - Knowledgebase schema object.
  */
-EditOntologyView.propTypes = {
+EditOntologyViewBase.propTypes = {
   match: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
+  schema: PropTypes.object.isRequired,
 };
 
-export default EditOntologyView;
+const EditOntologyView = withSchema(EditOntologyViewBase);
+
+export {
+  EditOntologyView,
+  EditOntologyViewBase,
+};

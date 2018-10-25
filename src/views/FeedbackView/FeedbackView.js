@@ -5,7 +5,7 @@
 import React from 'react';
 import './FeedbackView.css';
 import { Typography, Paper } from '@material-ui/core';
-import config from '../../config.json';
+import config from '../../static/config';
 
 const { FEEDBACK_EMAIL, FEEDBACK_HIPCHAT, JIRA_LINK } = config;
 

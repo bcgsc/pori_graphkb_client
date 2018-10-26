@@ -349,10 +349,12 @@ class DataViewBase extends Component {
       history,
     } = this.props;
 
-    if (!data) return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
+    if (!data) {
+      return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
+    }
     const edges = schema.getEdges();
     const cls = filteredSearch && filteredSearch['@class'];
-    const defaultOrders = (classes[cls] || classes.Ontology).getIdentifiers();
+    const defaultOrders = schema.getClassConstructor(cls).getIdentifiers();
     const detailDrawer = (
       <DetailDrawer
         node={detail}

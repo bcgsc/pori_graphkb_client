@@ -78,10 +78,7 @@ class DetailDrawer extends Component {
         const [key, nestedKey] = prop.split('.');
         const value = nestedKey ? (node[key] || {})[nestedKey] : node[key];
         let properties = Object.keys(node[key] || {});
-        if (schema && node[key] && schema.getClass(node[key]['@class'])) {
-          // If property is a class in the schema, we can grab its properties.
-          properties = schema.getClass(node[key]['@class']).properties.map(k => k.name);
-        }
+
         if (node[key] instanceof classes.Record) {
           properties = node[key].constructor.getIdentifiers();
         }
@@ -203,7 +200,9 @@ class DetailDrawer extends Component {
    */
   formatOtherProps(node) {
     const { opened } = this.state;
-    const { schema, identifiers } = this.props;
+    const { schema } = this.props;
+    const identifiers = node.constructor.getIdentifiers();
+
     let properties = Object.keys(node)
       .map(key => ({ name: key, type: util.parseKBType(node[key]) }));
     if (schema && schema.getClass(node['@class'])) {

@@ -354,7 +354,7 @@ class DataViewBase extends Component {
     }
     const edges = schema.getEdges();
     const cls = filteredSearch && filteredSearch['@class'];
-    const defaultOrders = schema.getClassConstructor(cls).getIdentifiers();
+    const defaultOrders = schema.getClassConstructor(cls || 'Ontology').getIdentifiers();
     const detailDrawer = (
       <DetailDrawer
         node={detail}

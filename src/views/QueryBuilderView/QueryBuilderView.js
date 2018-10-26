@@ -46,7 +46,7 @@ class QueryBuilderViewBase extends Component {
   bundle() {
     const { params } = this.state;
     const props = Object.keys(params).map(p => ({ name: p }));
-    const payload = util.parsePayload(params, props);
+    const payload = util.parsePayload(params, props, [], true);
     return qs.stringify(payload);
   }
 
@@ -188,7 +188,10 @@ class QueryBuilderViewBase extends Component {
 
     const input = nested => (
       <div className="qbv-input">
-        <Switch onClick={() => this.toggleNested(nested.join('.'))} />
+        <Switch
+          onClick={() => this.toggleNested(nested.join('.'))}
+          checked={tempNested[nested.join('.')]}
+        />
         <input
           placeholder="Key"
           value={tempNames[nested.join('.')]}
@@ -288,12 +291,14 @@ class QueryBuilderViewBase extends Component {
           <Typography variant="h5">Query Builder</Typography>
         </Paper>
         <Paper className="qbv-body">
-          <List className="qbv-tree">
-            {format('query', params, [])}
-          </List>
           <div className="qbv-json">
             {jsonFormat('query', params, [])}
           </div>
+        </Paper>
+        <Paper className="qbv-body">
+          <List className="qbv-tree">
+            {format('query', params, [])}
+          </List>
           <Button
             id="qbv-submit"
             onClick={this.handleSubmit}

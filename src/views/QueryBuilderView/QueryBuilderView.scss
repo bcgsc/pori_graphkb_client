@@ -8,17 +8,19 @@
   .qbv-body {
     @include paper;
     display: flex;
-    height: 100%;
 
     .qbv-tree {
       overflow: auto;
-      width: 50%;
       li {
         height: 64px;
         display: flex;
       }
       .qbv-input {
+        display: flex;
         padding: 8px 24px;
+        input {
+          margin: auto 4px;
+        }
       }
     }
 
@@ -31,10 +33,11 @@
       margin: 16px;
       padding: 16px;
       border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
       box-sizing: border-box;
-      width: 50%;
       font-family: "Courier New", Courier, monospace;
       overflow: auto;
+      width: 100%;
 
       .qbv-json-key {
         color: $md-primary-color;

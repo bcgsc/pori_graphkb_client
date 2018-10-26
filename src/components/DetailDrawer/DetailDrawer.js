@@ -63,9 +63,9 @@ class DetailDrawer extends Component {
   /**
    * Formats specific identifier properties of input ontology.
    * @param {Object} node - Ontology being displayed.
-   * @param {boolean} nested - Nested flag.
+   * @param {boolean} isNested - Nested flag.
    */
-  formatIdentifiers(node, nested) {
+  formatIdentifiers(node, isNested) {
     const { schema } = this.props;
     const { opened } = this.state;
     if (!(node instanceof classes.Record)) {
@@ -97,7 +97,7 @@ class DetailDrawer extends Component {
                 return (
                   nestedValue && (
                     <ListItem key={nestedProp}>
-                      {nested && (
+                      {isNested && (
                         <ListItemIcon>
                           <div style={{ width: 24, height: 24 }} />
                         </ListItemIcon>)}
@@ -125,13 +125,13 @@ class DetailDrawer extends Component {
                   button={!!nestedKey}
                   onClick={nestedKey ? () => this.handleExpand(`${node['@rid']}${prop}`) : undefined}
                 >
-                  {nested && (
+                  {isNested && (
                     <ListItemIcon>
                       <div style={{ width: 24, height: 24 }} />
                     </ListItemIcon>)}
                   <ListItemText>
                     <div className="detail-identifiers">
-                      <Typography variant="subtitle1" color={nested ? 'textSecondary' : 'default'}>
+                      <Typography variant="subtitle1" color={isNested ? 'textSecondary' : 'default'}>
                         {util.antiCamelCase(key)}
                       </Typography>
                       <Typography>
@@ -149,7 +149,7 @@ class DetailDrawer extends Component {
               </React.Fragment>
             );
           }
-          return this.formatLongValue(key, value, true);
+          return this.formatLongValue(key, value, true, isNested);
         }
         return null;
       })
@@ -161,8 +161,9 @@ class DetailDrawer extends Component {
    * @param {string} key - property key.
    * @param {any} value - property value.
    * @param {boolean} isStatic - if true, locks list item open.
+   * @param {boolean} isNested - if true, list item is indented.
    */
-  formatLongValue(key, value, isStatic) {
+  formatLongValue(key, value, isStatic, isNested) {
     const { opened } = this.state;
     const listItemProps = isStatic === true
       ? {}
@@ -179,11 +180,23 @@ class DetailDrawer extends Component {
     return (
       <React.Fragment key={key}>
         <ListItem {...listItemProps}>
-          <ListItemText primary={util.antiCamelCase(key)} />
+          {isNested && (
+            <ListItemIcon>
+              <div style={{ width: 24, height: 24 }} />
+            </ListItemIcon>)}
+          <ListItemText>
+            <Typography variant="subtitle1" color={isNested ? 'textSecondary' : 'default'}>
+              {util.antiCamelCase(key)}
+            </Typography>
+          </ListItemText>
           {itemIcon}
         </ListItem>
         <Collapse {...collapseProps} unmountOnExit>
           <ListItem dense>
+            {isNested && (
+              <ListItemIcon>
+                <div style={{ width: 24, height: 24 }} />
+              </ListItemIcon>)}
             <ListItemText>
               {util.formatStr(value)}
             </ListItemText>

@@ -215,8 +215,10 @@ describe('<VariantParserComponent />', () => {
         schema={mockSchema}
       />,
     );
-    wrapper.find('textarea[name="embeddedName"]').simulate('change', { target: { name: 'embeddedName', value: 'pass' } });
-    expect(wrapper.find('textarea[name="embeddedName"]').props().value).to.eq('pass');
-    wrapper.find('input[name="type"]').simulate('change', { target: { name: 'type', value: 'pass', '@rid': '#1234' } });
+    wrapper.find('textarea[name="name"]')
+      .simulate('change', { target: { name: 'name', value: 'pass' } });
+    expect(wrapper.find('textarea[name="name"]').props().value).to.eq('pass');
+    wrapper.find('input[name="type"]')
+      .simulate('change', { target: { name: 'type', value: 'pass', '@rid': '#1234' } });
   });
 });

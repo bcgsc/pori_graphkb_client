@@ -5,10 +5,10 @@ import PermissionsTable from '../PermissionsTable/PermissionsTable';
 import Schema from '../../models/schema';
 
 const testSchema = new Schema({
-  Disease: { inherits: ['Ontology'] },
-  AliasOf: { inherits: ['E'] },
-  E: {},
-  Ontology: { inherits: ['V'] },
+  Disease: { name: 'Disease', inherits: ['Ontology'] },
+  AliasOf: { name: 'AliasOf', inherits: ['E'] },
+  E: { name: 'E' },
+  Ontology: { name: 'Ontology', inherits: ['V'] },
 });
 
 const testUserGroup = {

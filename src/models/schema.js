@@ -133,7 +133,7 @@ class Schema {
     const { schema } = this;
     const list = [];
     Object.keys(schema).forEach((key) => {
-      if (schema[key].inherits.includes('E')) {
+      if ((schema[key].inherits || []).includes('E')) {
         list.push(key);
       }
     });
@@ -183,7 +183,7 @@ class Schema {
   }
 
   isOfType(cls, type) {
-    return this.get(cls) && (this.get(cls).inherits || []).includes(type);
+    return (this.get(cls) && (this.get(cls).inherits || []).includes(type)) || cls === type;
   }
 
   /**

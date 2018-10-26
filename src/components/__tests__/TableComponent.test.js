@@ -4,10 +4,18 @@ import { mount } from 'enzyme';
 import { spy } from 'sinon';
 import TableComponent from '../TableComponent/TableComponent';
 import classes from '../../models/classes';
+import Schema from '../../models/schema';
 
-const { Record } = classes;
+const { V } = classes;
+const mockSchema = new Schema({
+  AliasOf: {
+    name: 'AliasOf',
+    inherits: ['E'],
+  },
+});
+
 const mockData = {
-  '#1': new Record({
+  '#1': new V({
     '@rid': '#1',
     name: 'test one',
     sourceId: 'test-1',
@@ -20,21 +28,21 @@ const mockData = {
         '@rid': '#4',
       },
     }],
-  }),
-  '#2': new Record({
+  }, mockSchema),
+  '#2': new V({
     '@rid': '#2',
     name: 'test two',
     sourceId: 'test-2',
     source: {
       name: 'test source',
     },
-  }),
-  '#3': new Record({
+  }, mockSchema),
+  '#3': new V({
     '@rid': '#3',
     name: 'test three',
     sourceId: 'test-3',
-  }),
-  '#4': new Record({
+  }, mockSchema),
+  '#4': new V({
     '@rid': '#4',
     name: 'linked',
     sourceId: 'test-4',
@@ -47,16 +55,16 @@ const mockData = {
         '@rid': '#4',
       },
     }],
-  }),
+  }, mockSchema),
 };
 
 const bigMockData = {};
 for (let i = 0; i < 200; i += 1) {
-  bigMockData[`#${i}`] = new Record({
+  bigMockData[`#${i}`] = new V({
     '@rid': `#${i}`,
     name: `a${i}a`,
     sourceId: `b${i}b`,
-  });
+  }, mockSchema);
 }
 
 const allProps = [

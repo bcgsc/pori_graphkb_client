@@ -40,6 +40,14 @@ const castToExist = (obj) => {
     }
     return 'null';
   }
+  if (typeof obj === 'object') {
+    return Object.entries(obj).find((e) => {
+      const [k, v] = e;
+      return (
+        (typeof v !== 'object' || typeof v !== 'function')
+        && !k.startsWith('@'));
+    })[1].toString();
+  }
   return obj === undefined || obj === null ? 'null' : obj.toString();
 };
 

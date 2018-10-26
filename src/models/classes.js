@@ -112,7 +112,9 @@ class Ontology extends V {
    * @override
    */
   getPreview() {
-    return this.name || this.sourceId;
+    return this.name
+      || this.sourceId
+      || Object.values(this).find(v => typeof v !== 'object' && typeof v !== 'function');
   }
 }
 

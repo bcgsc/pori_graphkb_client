@@ -15,27 +15,28 @@ import {
   Dialog,
   Paper,
   Typography,
+  Switch,
 } from '@material-ui/core';
 import * as qs from 'querystring';
 import AddIcon from '@material-ui/icons/Add';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import { withSchema } from '../../components/SchemaContext/SchemaContext';
 import util from '../../services/util';
 import api from '../../services/api';
-
-const TYPES = ['nested', 'value'];
 
 class QueryBuilderViewBase extends Component {
   constructor(props) {
     super(props);
     this.state = {
       params: {},
-      tempNested: { query: 'value' },
+      tempNested: { query: false },
       tempNames: { query: '' },
       tempValues: { query: '' },
       specOpen: false,
     };
 
     this.bundle = this.bundle.bind(this);
+    this.toggleNested = this.toggleNested.bind(this);
     this.handleAdd = this.handleAdd.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -50,6 +51,12 @@ class QueryBuilderViewBase extends Component {
     const payload = util.parsePayload(params, props);
     console.log(payload);
     return qs.stringify(payload);
+  }
+
+  toggleNested(key) {
+    const { tempNested } = this.state;
+    tempNested[key] = !tempNested[key];
+    this.setState({ tempNested });
   }
 
   handleChange(e) {
@@ -79,7 +86,7 @@ class QueryBuilderViewBase extends Component {
     } = this.state;
     if (
       !tempNames[k]
-      || (tempNested === 'value' && !tempValues[k])
+      || (!tempNested[k] && !tempValues[k])
       || tempNames[k].includes(' ')
     ) {
       return;
@@ -88,7 +95,7 @@ class QueryBuilderViewBase extends Component {
     keys.push(tempNames[k]);
     const recursiveUpdate = (obj, keys, i) => {
       if (i === keys.length - 1) {
-        obj[keys[i]] = tempNested[k] === 'nested' ? {} : tempValues[k];
+        obj[keys[i]] = tempNested[k] ? {} : tempValues[k];
       } else {
         obj[keys[i]] = recursiveUpdate(obj[keys[i]], keys, i + 1);
       }
@@ -98,10 +105,10 @@ class QueryBuilderViewBase extends Component {
 
     tempNames[`${k}.${tempNames[k]}`] = '';
     tempValues[`${k}.${tempNames[k]}`] = '';
-    tempNested[`${k}.${tempNames[k]}`] = 'value';
+    tempNested[`${k}.${tempNames[k]}`] = false;
     tempNames[k] = '';
     tempValues[k] = '';
-    tempNested[k] = 'value';
+    tempNested[k] = false;
 
     this.setState({
       params,
@@ -158,22 +165,16 @@ class QueryBuilderViewBase extends Component {
 
     const input = (nested) => (
       <div className="qbv-input">
-        <Select
-          value={tempNested[nested.join('.')]}
-          onChange={this.handleNested('tempNested')}
-          name={nested.join('.')}
-        >
-          {TYPES.map(t => <MenuItem key={t} value={t}>{t}</MenuItem>)}
-        </Select>
-        <Input
+        <Switch onClick={() => this.toggleNested(nested.join('.'))} />
+        <input
           placeholder="Key"
           value={tempNames[nested.join('.')]}
           name={nested.join('.')}
           onChange={this.handleNested('tempNames')}
         />
-        {tempNested[nested.join('.')] === 'value'
+        {!tempNested[nested.join('.')]
           && (
-            <Input
+            <input
               placeholder="Value"
               onChange={this.handleNested('tempValues')}
               value={tempValues[nested.join('.')]}

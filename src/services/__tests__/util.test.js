@@ -1,5 +1,14 @@
 import { expect } from 'chai';
 import util from '../util';
+import classes from '../../models/classes';
+import Schema from '../../models/schema';
+
+const { Ontology } = classes;
+const mockSchema = new Schema({
+  cls1: {
+    inherits: ['Ontology'],
+  },
+});
 
 describe('validate outputs for util methods', () => {
   it('antiCamelCase', () => {
@@ -19,37 +28,6 @@ describe('validate outputs for util methods', () => {
       const output = util.antiCamelCase(test);
       expect(output).to.eq(outputs[i]);
     });
-  });
-
-  it('getPreview', () => {
-    const testObjs = [
-      {
-        sourceId: 'fail',
-        name: 'pass',
-        blargh: 'fail',
-      },
-      {
-        name: 'pass',
-        sourceId: 'fail',
-      },
-      {
-        name: 'pass',
-        sourceEyeDee: 'fail',
-      },
-      {
-        source:
-        {
-          id: 'fail',
-        },
-        nam:
-        {
-          name: 'fail',
-        },
-        blargh: 'pass',
-      },
-    ];
-
-    testObjs.forEach(testObj => expect(util.getPreview(testObj)).to.eq('Pass'));
   });
 
   it('expandEdges', () => {
@@ -100,19 +78,19 @@ describe('validate outputs for util methods', () => {
 
   it('getTSVRepresentation', () => {
     const testTSVs = [
-      {
+      new Ontology({
         name: 'fail',
         sourceId: 'fail',
         key: 'pass',
-      },
-      {
+      }, mockSchema),
+      new Ontology({
         key:
         {
-          failfail: 'fail',
           name: 'pass',
+          failfail: 'fail',
           fail: 'fail',
         },
-      },
+      }, mockSchema),
     ];
     testTSVs.forEach((testTSV) => {
       expect(util.getTSVRepresentation(testTSV.key, 'key').toLowerCase()).to.eq('pass');

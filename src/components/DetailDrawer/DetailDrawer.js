@@ -386,6 +386,7 @@ class DetailDrawer extends Component {
       onClose,
       isEdge,
       handleNodeEditStart,
+      schema,
     } = this.props;
     if (!node) return null;
     const identifiers = this.formatIdentifiers(node);
@@ -410,13 +411,15 @@ class DetailDrawer extends Component {
               </IconButton>
             </div>
             <div className="detail-edit-btn">
-              <Button
-                onClick={handleNodeEditStart}
-                variant="outlined"
-              >
-                Edit &nbsp;
-                <EditIcon />
-              </Button>
+              {schema.isOntology(node['@class']) && (
+                <Button
+                  onClick={handleNodeEditStart}
+                  variant="outlined"
+                >
+                  Edit &nbsp;
+                  <EditIcon />
+                </Button>
+              )}
             </div>
           </div>
           <Divider />

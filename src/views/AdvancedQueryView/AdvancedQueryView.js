@@ -190,6 +190,12 @@ class AdvancedQueryViewBase extends Component {
           )}
         />
         <Paper elevation={4} className="adv-header">
+          <Button
+            onClick={() => history.push('/query/advanced/builder')}
+            variant="outlined"
+          >
+            Query Builder
+          </Button>
           <Typography variant="h5" id="adv-title">
             Advanced Query
           </Typography>

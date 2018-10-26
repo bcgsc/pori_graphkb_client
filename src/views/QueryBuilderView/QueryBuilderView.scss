@@ -1,0 +1,46 @@
+@import "../../globals";
+.qbv {
+  display: flex;
+  height: 100%;
+  .qbv-tree {
+    overflow: auto;
+    width: 50%;
+    li {
+      height: 64px;
+      display: flex;
+    }
+    .qbv-input {
+      padding: 8px 24px;
+    }
+  }
+
+  .qbv-nest {
+    margin-left: 1rem;
+    display: block;
+  }
+
+  .qbv-json {
+    margin: 16px;
+    padding: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    width: 50%;
+    font-family: "Courier New", Courier, monospace;
+    overflow: auto;
+
+    .qbv-json-key {
+      color: $md-primary-color;
+    }
+    .qbv-json-value {
+      color: $md-secondary-color;
+    }
+    .qbv-json-close-brace {
+      display: block;
+    }
+  }
+  #qbv-submit {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+  }
+}

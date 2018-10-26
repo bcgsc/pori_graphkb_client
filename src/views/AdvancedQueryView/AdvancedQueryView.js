@@ -63,18 +63,7 @@ class AdvancedQueryViewBase extends Component {
       this.setState({ message: `${name || ''}: ${message}` });
     }
 
-    const classes = [
-      {
-        name: 'Ontology',
-        properties: null,
-        route: 'ontologies',
-      },
-      {
-        name: 'Variant',
-        properties: null,
-        route: 'variants',
-      },
-    ];
+    const classes = [];
     classes.push(...schema.getOntologies());
     classes.push(...schema.getVariants());
     classes.push(schema.get('Statement'));
@@ -98,7 +87,7 @@ class AdvancedQueryViewBase extends Component {
     params.push(...config.ONTOLOGY_QUERY_PARAMS);
     const props = schema.getClass(form['@class']).properties || [];
     props.push(...config.ONTOLOGY_QUERY_PARAMS);
-    const payload = util.parsePayload(form, props, params);
+    const payload = util.parsePayload(form, props, params, true);
     return qs.stringify(payload);
   }
 

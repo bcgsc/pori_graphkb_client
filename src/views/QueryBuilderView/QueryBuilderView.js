@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './QueryBuilderView.css';
-/* eslint-disable */
 import {
   Button,
-  Input,
   IconButton,
-  Select,
-  MenuItem,
   List,
   ListItem,
   ListItemText,
@@ -19,7 +15,6 @@ import {
 } from '@material-ui/core';
 import * as qs from 'querystring';
 import AddIcon from '@material-ui/icons/Add';
-import AssignmentIcon from '@material-ui/icons/Assignment';
 import { withSchema } from '../../components/SchemaContext/SchemaContext';
 import util from '../../services/util';
 import api from '../../services/api';
@@ -45,38 +40,59 @@ class QueryBuilderViewBase extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  /**
+   * Bundles query params into a string.
+   */
   bundle() {
     const { params } = this.state;
     const props = Object.keys(params).map(p => ({ name: p }));
     const payload = util.parsePayload(params, props);
-    console.log(payload);
     return qs.stringify(payload);
   }
 
+  /**
+   * Toggles staged param type between key-value pair and nested property key.
+   * @param {string} key - nested param key.
+   */
   toggleNested(key) {
     const { tempNested } = this.state;
     tempNested[key] = !tempNested[key];
     this.setState({ tempNested });
   }
 
+  /**
+   * Handles change of a state property.
+   * @param {Event} e - User input event.
+   */
   handleChange(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
 
+  /**
+   * Toggles kb spec iframe dialog.
+   */
   handleSpecToggle() {
     const { specOpen } = this.state;
-    this.setState({ specOpen: !specOpen })
+    this.setState({ specOpen: !specOpen });
   }
 
+  /**
+   * Handles change of a nested state property.
+   * @param {string} type - state key.
+   */
   handleNested(type) {
     return (e) => {
       const { [type]: temp } = this.state;
       const { name, value } = e.target;
       temp[name] = value;
       this.setState({ [type]: temp });
-    }
+    };
   }
 
+  /**
+   * Adds temp param to the query.
+   * @param {string} k - Nested property key.
+   */
   handleAdd(k) {
     const {
       tempNested,
@@ -93,14 +109,14 @@ class QueryBuilderViewBase extends Component {
     }
     const keys = k.split('.').slice(1);
     keys.push(tempNames[k]);
-    const recursiveUpdate = (obj, keys, i) => {
-      if (i === keys.length - 1) {
-        obj[keys[i]] = tempNested[k] ? {} : tempValues[k];
+    const recursiveUpdate = (obj, rKeys, i) => {
+      if (i === rKeys.length - 1) {
+        obj[rKeys[i]] = tempNested[k] ? {} : tempValues[k];
       } else {
-        obj[keys[i]] = recursiveUpdate(obj[keys[i]], keys, i + 1);
+        obj[rKeys[i]] = recursiveUpdate(obj[rKeys[i]], rKeys, i + 1);
       }
       return obj;
-    }
+    };
     recursiveUpdate(params, keys, 0);
 
     tempNames[`${k}.${tempNames[k]}`] = '';
@@ -118,6 +134,10 @@ class QueryBuilderViewBase extends Component {
     });
   }
 
+  /**
+   * Deletes a parameter from the staged query.
+   * @param {string} k - Nested property key.
+   */
   handleDelete(k) {
     const {
       params,
@@ -126,18 +146,18 @@ class QueryBuilderViewBase extends Component {
       tempNested,
     } = this.state;
     const keys = k.split('.').slice(1);
-    const recursiveUpdate = (obj, keys, i) => {
-      if (i === keys.length - 1) {
-        delete obj[keys[i]];
+    const recursiveUpdate = (obj, rKeys, i) => {
+      if (i === rKeys.length - 1) {
+        delete obj[rKeys[i]];
       } else {
-        obj[keys[i]] = recursiveUpdate(obj[keys[i]], keys, i + 1);
+        obj[rKeys[i]] = recursiveUpdate(obj[rKeys[i]], rKeys, i + 1);
       }
       return obj;
-    }
+    };
     delete tempNames[k];
     delete tempValues[k];
     delete tempNested[k];
-    recursiveUpdate(params, keys, 0)
+    recursiveUpdate(params, keys, 0);
     this.setState({
       params,
       tempNames,
@@ -146,6 +166,9 @@ class QueryBuilderViewBase extends Component {
     });
   }
 
+  /**
+   * Bundles query and navigates to query results page.
+   */
   handleSubmit() {
     const { history } = this.props;
     history.push({
@@ -163,7 +186,7 @@ class QueryBuilderViewBase extends Component {
       specOpen,
     } = this.state;
 
-    const input = (nested) => (
+    const input = nested => (
       <div className="qbv-input">
         <Switch onClick={() => this.toggleNested(nested.join('.'))} />
         <input
@@ -212,40 +235,43 @@ class QueryBuilderViewBase extends Component {
             </List>
           </React.Fragment>
         );
-      } else {
-        return (
-          <ListItem key={k}>
-            <ListItemText primary={value} secondary={k} />
-            <ListItemSecondaryAction>
-              <Button onClick={() => this.handleDelete(newNested.join('.'))}>delete</Button>
-            </ListItemSecondaryAction>
-          </ListItem>
-        )
       }
-    }
+      return (
+        <ListItem key={k}>
+          <ListItemText primary={value} secondary={k} />
+          <ListItemSecondaryAction>
+            <Button onClick={() => this.handleDelete(newNested.join('.'))}>delete</Button>
+          </ListItemSecondaryAction>
+        </ListItem>
+      );
+    };
 
     const jsonFormat = (k, value, nested) => {
       const newNested = [...nested, k];
       if (typeof value === 'object') {
         return (
           <React.Fragment key={k}>
-            <span className="qbv-json-key">{k}</span><span>:&nbsp;</span><span >{'{'}</span>
+            <span className="qbv-json-key">{k}</span><span>:&nbsp;</span><span>{'{'}</span>
             <div className="qbv-nest">
               {Object.keys(value).map(nestedK => jsonFormat(nestedK, value[nestedK], newNested))}
             </div>
             <span className="qbv-json-close-brace">{'}'}</span>
           </React.Fragment>
         );
-      } else {
-        return (
-          <div key={k}>
-            <span className="qbv-json-key">{k}</span>:&nbsp;<span className="qbv-json-value">"{value}"</span>,
-          </div>
-        )
       }
-    }
+      return (
+        <div key={k}>
+          <span className="qbv-json-key">
+            {k}
+          </span>
+          :&nbsp;
+          <span className="qbv-json-value">&quot;{value}&quot;</span>
+          ,
+        </div>
+      );
+    };
 
-    const iFrame = <iframe src={`${api.API_BASE_URL}/spec/#/`} />;
+    const iFrame = <iframe title="api spec" src={`${api.API_BASE_URL}/spec/#/`} />;
     return (
       <div className="qbv">
         <Dialog
@@ -275,7 +301,7 @@ class QueryBuilderViewBase extends Component {
             color="primary"
           >
             Submit
-        </Button>
+          </Button>
         </Paper>
       </div>
     );

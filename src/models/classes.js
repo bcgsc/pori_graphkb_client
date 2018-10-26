@@ -23,29 +23,25 @@ class Record {
     }
   }
 
+  /**
+   * Returns list of strings representing the main fields used to identify the
+   * record.
+   */
   static getIdentifiers() {
     return ['@rid'];
   }
 
+  /**
+   * Returns record id.
+   */
   getId() {
     return this['@rid'];
   }
 
 
   /**
-   * Returns a representative field of a given object. Defaults to:
-   * name, then sourceId (defined in config.json: DEFAULT_PROPS), then if
-   * neither are present, the first primitive type field in the object.
-   * @example
-   * > util.getPreview({name: 'bob', ...other})
-   * > 'bob'
-   * @example
-   * > util.getPreview({sourceId: '123', color: 'blue'})
-   * > '123'
-   * @example
-   * > util.getPreview({colors: ['red', 'green], height: '6ft'})
-   * > '6ft'
-   * @param {Object} obj - target data object.
+   * Returns a representative field of a given object. Defaults to first
+   * identifier field, then to first non object field.
    */
   getPreview() {
     let preview;
@@ -67,6 +63,9 @@ class Record {
 }
 
 class V extends Record {
+  /**
+   * Returns edges connected to vertex.
+   */
   getEdges() {
     return edges.reduce((array, edge) => {
       if (this[edge] && this[edge].length > 0) {
@@ -80,6 +79,9 @@ class V extends Record {
     }, []);
   }
 
+  /**
+   * Returns edge types that are connected to vertex.
+   */
   getEdgeTypes() {
     return edges.reduce((array, edge) => {
       if (this[edge] && this[edge].length > 0 && !array.includes(this[edge][0]['@class'])) {
@@ -217,6 +219,9 @@ class Position extends V {
 }
 
 class Publication extends Ontology {
+  /**
+   * @override
+   */
   getPreview() {
     return `${util.formatStr(this.source.name)}: ${this.sourceId}`;
   }

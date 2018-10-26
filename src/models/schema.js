@@ -23,7 +23,9 @@ class Schema {
    * @param {string} cls - class name;
    */
   get(cls) {
-    return this.schema[cls] || null;
+    const match = Object.values(this.schema)
+      .find(s => s.name.toLowerCase() === (cls || '').toLowerCase());
+    return match || null;
   }
 
   /**
@@ -106,7 +108,18 @@ class Schema {
     const { schema } = this;
     const list = [];
     Object.keys(schema).forEach((key) => {
-      if ((schema[key].inherits || []).includes('Ontology')) {
+      if (this.isOntology(key)) {
+        list.push({ name: key, properties: schema[key].properties, route: schema[key].route });
+      }
+    });
+    return list;
+  }
+
+  getVariants() {
+    const { schema } = this;
+    const list = [];
+    Object.keys(schema).forEach((key) => {
+      if (this.isVariant(key)) {
         list.push({ name: key, properties: schema[key].properties, route: schema[key].route });
       }
     });
@@ -142,7 +155,7 @@ class Schema {
    * @param {string} cls - class key.
    */
   isEdge(cls) {
-    return (this.schema[cls].inherits || []).includes('E');
+    return this.isOfType(cls, 'E');
   }
 
   /**
@@ -150,7 +163,7 @@ class Schema {
    * @param {string} cls - class key.
    */
   isOntology(cls) {
-    return (this.schema[cls].inherits || []).includes('Ontology');
+    return this.isOfType(cls, 'Ontology');
   }
 
   /**
@@ -158,7 +171,19 @@ class Schema {
    * @param {string} cls - class key.
    */
   isPosition(cls) {
-    return (this.schema[cls].inherits || []).includes('Position');
+    return this.isOfType(cls, 'Position');
+  }
+
+  /**
+   * Checks if a KB class is a Variant.
+   * @param {string} cls - class key.
+   */
+  isVariant(cls) {
+    return this.isOfType(cls, 'Variant');
+  }
+
+  isOfType(cls, type) {
+    return this.get(cls) && (this.get(cls).inherits || []).includes(type);
   }
 
   /**

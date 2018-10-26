@@ -9,10 +9,12 @@ describe('App Bar Test', () => {
   });
 
   it('Query, add node, and logout buttons', () => {
+    cy.get('header.banner>button').click();
     cy.get('div.drawer ul>li').each((button, i) => {
       cy.wrap(button).click();
       if (i === 0) {
         cy.url().should('includes', '/query');
+        cy.get('header.banner>button').click();
       } else if (i === 1) {
         cy.contains('Ontology');
         cy.contains('Variant');
@@ -25,6 +27,7 @@ describe('App Bar Test', () => {
             cy.wrap(nestedButton).click();
             cy.url().should('includes', '/variant');
           }
+          cy.get('header.banner>button').click();
         });
       }
     });

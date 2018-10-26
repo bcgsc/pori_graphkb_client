@@ -230,13 +230,13 @@ const getTSVRepresentation = (value, key) => {
  * @param {Array} objectSchema - List of valid properties for given form.
  * @param {Array} exceptions - List of extra parameters not specified in editableProps.
  */
-const parsePayload = (form, objectSchema, exceptions) => {
+const parsePayload = (form, objectSchema, exceptions, isQuery = false) => {
   const payload = Object.assign({}, form);
   Object.keys(payload).forEach((key) => {
     if (!payload[key]) {
       delete payload[key];
     }
-    if (typeof payload[key] === 'object') {
+    if (typeof payload[key] === 'object' && isQuery) {
       Object.keys(payload[key]).forEach((k) => {
         if (payload[key][k]) {
           payload[`${key}[${k}]`] = payload[key][k];

@@ -95,8 +95,8 @@ class EditOntologyViewBase extends Component {
     await Promise.all(changedEdges);
     const { route, properties } = schema.getClass(originalNode['@class']);
     const payload = util.parsePayload(form, properties);
-
-    await api.patch(`${route}/${originalNode['@rid'].slice(1)}`, { ...payload });
+    console.log(payload);
+    await api.patch(`${route}/${originalNode['@rid'].slice(1)}`, payload);
   }
 
   /**

@@ -103,8 +103,13 @@ class DataViewBase extends Component {
     }
     filteredSearch.neighbors = filteredSearch.neighbors || DEFAULT_NEIGHBORS;
     filteredSearch.limit = filteredSearch.limit || DEFAULT_LIMIT;
+    const start = performance.now();
     const data = await DataViewBase.makeApiQuery(route, filteredSearch, omitted);
+    const afterData = performance.now();
+    console.log(`call took ${afterData - start}`);
     this.processData(data);
+    const afterProcess = performance.now();
+    console.log(`processing took ${afterProcess - afterData}`);
     this.prepareNextPagination(route, filteredSearch, data, omitted);
     this.setState({ filteredSearch });
   }

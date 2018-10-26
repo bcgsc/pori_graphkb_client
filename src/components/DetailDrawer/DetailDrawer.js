@@ -405,6 +405,15 @@ class DetailDrawer extends Component {
     const identifiers = this.formatIdentifiers(node);
     const otherProps = this.formatOtherProps(node);
     const relationships = this.formatRelationships(node);
+    let preview;
+    let errorMessage;
+    try {
+      preview = node.getPreview();
+      // Only for kbp nodes so far.
+    } catch (e) {
+      preview = 'Invalid variant';
+      errorMessage = e.message;
+    }
     return (
       <Drawer
         open={!!node}
@@ -416,9 +425,16 @@ class DetailDrawer extends Component {
         <div className="detail-content">
           <div className="detail-heading">
             <div className="detail-headline">
-              <Typography variant="h4" component="h1">
-                {node.getPreview()}
-              </Typography>
+              <div>
+                <Typography variant="h4" component="h1">
+                  {preview}
+                </Typography>
+                {errorMessage && (
+                  <Typography color="error" variant="subtitle2">
+                    {errorMessage}
+                  </Typography>
+                )}
+              </div>
               <IconButton onClick={onClose}>
                 <ChevronRightIcon />
               </IconButton>

@@ -3,10 +3,7 @@ import PropTypes from 'prop-types';
 import './QueryBuilderView.css';
 /* eslint-disable */
 import {
-  TextField,
   Button,
-  Typography,
-  TableRow,
   Input,
   IconButton,
   Select,
@@ -15,11 +12,15 @@ import {
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
+  Dialog,
+  Paper,
+  Typography,
 } from '@material-ui/core';
 import * as qs from 'querystring';
 import AddIcon from '@material-ui/icons/Add';
 import { withSchema } from '../../components/SchemaContext/SchemaContext';
 import util from '../../services/util';
+import api from '../../services/api';
 
 const TYPES = ['nested', 'value'];
 
@@ -31,6 +32,7 @@ class QueryBuilderViewBase extends Component {
       tempNested: { query: 'value' },
       tempNames: { query: '' },
       tempValues: { query: '' },
+      specOpen: false,
     };
 
     this.bundle = this.bundle.bind(this);
@@ -38,6 +40,7 @@ class QueryBuilderViewBase extends Component {
     this.handleDelete = this.handleDelete.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleNested = this.handleNested.bind(this);
+    this.handleSpecToggle = this.handleSpecToggle.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -51,6 +54,11 @@ class QueryBuilderViewBase extends Component {
 
   handleChange(e) {
     this.setState({ [e.target.name]: e.target.value });
+  }
+
+  handleSpecToggle() {
+    const { specOpen } = this.state;
+    this.setState({ specOpen: !specOpen })
   }
 
   handleNested(type) {
@@ -145,6 +153,7 @@ class QueryBuilderViewBase extends Component {
       tempNested,
       tempNames,
       tempValues,
+      specOpen,
     } = this.state;
 
     const input = (nested) => (
@@ -235,22 +244,38 @@ class QueryBuilderViewBase extends Component {
       }
     }
 
+    const iFrame = <iframe src={`${api.API_BASE_URL}/spec/#/`} />;
     return (
       <div className="qbv">
-        <List className="qbv-tree">
-          {format('query', params, [])}
-        </List>
-        <div className="qbv-json">
-          {jsonFormat('query', params, [])}
-        </div>
-        <Button
-          id="qbv-submit"
-          onClick={this.handleSubmit}
-          variant="contained"
-          color="primary"
+        <Dialog
+          open={specOpen}
+          maxWidth="lg"
+          fullWidth
+          classes={{ paper: 'qbv-swagger-iframe' }}
+          onClose={this.handleSpecToggle}
         >
-          Submit
+          {iFrame}
+        </Dialog>
+        <Paper className="qbv-header" elevation={4}>
+          <Button variant="outlined" onClick={this.handleSpecToggle}>Help</Button>
+          <Typography variant="h5">Query Builder</Typography>
+        </Paper>
+        <Paper className="qbv-body">
+          <List className="qbv-tree">
+            {format('query', params, [])}
+          </List>
+          <div className="qbv-json">
+            {jsonFormat('query', params, [])}
+          </div>
+          <Button
+            id="qbv-submit"
+            onClick={this.handleSubmit}
+            variant="contained"
+            color="primary"
+          >
+            Submit
         </Button>
+        </Paper>
       </div>
     );
   }

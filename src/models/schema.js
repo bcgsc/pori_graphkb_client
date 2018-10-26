@@ -249,11 +249,33 @@ class Schema {
         if (this.isPosition(obj['@class'])) {
           return new classes.Position(obj, this, ignoreNested);
         }
+        if (this.isVariant(obj['@class'])) {
+          return new classes.Variant(obj, this, ignoreNested);
+        }
         return new classes.V(obj, this, ignoreNested);
       }
       return new classes.Record(obj, this, ignoreNested);
     }
     return null;
+  }
+
+  getClassConstructor(cls) {
+    if (classes[cls]) {
+      return classes[cls];
+    }
+    if (this.isEdge(cls)) {
+      return classes.Edge;
+    }
+    if (this.isOntology(cls)) {
+      return classes.Ontology;
+    }
+    if (this.isPosition(cls)) {
+      return classes.Position;
+    }
+    if (this.isVariant(cls)) {
+      return classes.Variant;
+    }
+    return classes.V;
   }
 }
 

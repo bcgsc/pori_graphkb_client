@@ -1,0 +1,278 @@
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import './QueryBuilderView.css';
+/* eslint-disable */
+import {
+  TextField,
+  Button,
+  Typography,
+  TableRow,
+  Input,
+  IconButton,
+  Select,
+  MenuItem,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+} from '@material-ui/core';
+import * as qs from 'querystring';
+import AddIcon from '@material-ui/icons/Add';
+import { withSchema } from '../../components/SchemaContext/SchemaContext';
+import util from '../../services/util';
+
+const TYPES = ['nested', 'value'];
+
+class QueryBuilderViewBase extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      params: {},
+      tempNested: { query: 'value' },
+      tempNames: { query: '' },
+      tempValues: { query: '' },
+    };
+
+    this.bundle = this.bundle.bind(this);
+    this.handleAdd = this.handleAdd.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleNested = this.handleNested.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  bundle() {
+    const { params } = this.state;
+    const props = Object.keys(params).map(p => ({ name: p }));
+    const payload = util.parsePayload(params, props);
+    console.log(payload);
+    return qs.stringify(payload);
+  }
+
+  handleChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
+  }
+
+  handleNested(type) {
+    return (e) => {
+      const { [type]: temp } = this.state;
+      const { name, value } = e.target;
+      temp[name] = value;
+      this.setState({ [type]: temp });
+    }
+  }
+
+  handleAdd(k) {
+    const {
+      tempNested,
+      tempNames,
+      tempValues,
+      params,
+    } = this.state;
+    if (
+      !tempNames[k]
+      || (tempNested === 'value' && !tempValues[k])
+      || tempNames[k].includes(' ')
+    ) {
+      return;
+    }
+    const keys = k.split('.').slice(1);
+    keys.push(tempNames[k]);
+    const recursiveUpdate = (obj, keys, i) => {
+      if (i === keys.length - 1) {
+        obj[keys[i]] = tempNested[k] === 'nested' ? {} : tempValues[k];
+      } else {
+        obj[keys[i]] = recursiveUpdate(obj[keys[i]], keys, i + 1);
+      }
+      return obj;
+    }
+    recursiveUpdate(params, keys, 0);
+
+    tempNames[`${k}.${tempNames[k]}`] = '';
+    tempValues[`${k}.${tempNames[k]}`] = '';
+    tempNested[`${k}.${tempNames[k]}`] = 'value';
+    tempNames[k] = '';
+    tempValues[k] = '';
+    tempNested[k] = 'value';
+
+    this.setState({
+      params,
+      tempNames,
+      tempValues,
+      tempNested,
+    });
+  }
+
+  handleDelete(k) {
+    const {
+      params,
+      tempNames,
+      tempValues,
+      tempNested,
+    } = this.state;
+    const keys = k.split('.').slice(1);
+    const recursiveUpdate = (obj, keys, i) => {
+      if (i === keys.length - 1) {
+        delete obj[keys[i]];
+      } else {
+        obj[keys[i]] = recursiveUpdate(obj[keys[i]], keys, i + 1);
+      }
+      return obj;
+    }
+    delete tempNames[k];
+    delete tempValues[k];
+    delete tempNested[k];
+    recursiveUpdate(params, keys, 0)
+    this.setState({
+      params,
+      tempNames,
+      tempValues,
+      tempNested,
+    });
+  }
+
+  handleSubmit() {
+    const { history } = this.props;
+    history.push({
+      pathname: '/data/table',
+      search: this.bundle(),
+    });
+  }
+
+  render() {
+    const {
+      params,
+      tempNested,
+      tempNames,
+      tempValues,
+    } = this.state;
+
+    const input = (nested) => (
+      <div className="qbv-input">
+        <Select
+          value={tempNested[nested.join('.')]}
+          onChange={this.handleNested('tempNested')}
+          name={nested.join('.')}
+        >
+          {TYPES.map(t => <MenuItem key={t} value={t}>{t}</MenuItem>)}
+        </Select>
+        <Input
+          placeholder="Key"
+          value={tempNames[nested.join('.')]}
+          name={nested.join('.')}
+          onChange={this.handleNested('tempNames')}
+        />
+        {tempNested[nested.join('.')] === 'value'
+          && (
+            <Input
+              placeholder="Value"
+              onChange={this.handleNested('tempValues')}
+              value={tempValues[nested.join('.')]}
+              name={nested.join('.')}
+            />
+          )}
+        <IconButton onClick={() => this.handleAdd(nested.join('.'))}>
+          <AddIcon />
+        </IconButton>
+      </div>
+    );
+
+    const format = (k, value, nested) => {
+      const newNested = [...nested, k];
+      if (typeof value === 'object') {
+        return (
+          <React.Fragment key={k}>
+            <ListItem>
+              <ListItemText primary={k} />
+              {k !== 'query' && (
+                <ListItemSecondaryAction>
+                  <Button onClick={() => this.handleDelete(newNested.join('.'))}>
+                    delete
+                  </Button>
+                </ListItemSecondaryAction>
+              )}
+            </ListItem>
+            <List
+              className="qbv-nest"
+              dense
+              disablePadding
+            >
+              {Object.keys(value).map(nestedK => format(nestedK, value[nestedK], newNested))}
+              {input(newNested)}
+            </List>
+          </React.Fragment>
+        );
+      } else {
+        return (
+          <ListItem key={k}>
+            <ListItemText primary={value} secondary={k} />
+            <ListItemSecondaryAction>
+              <Button onClick={() => this.handleDelete(newNested.join('.'))}>delete</Button>
+            </ListItemSecondaryAction>
+          </ListItem>
+        )
+      }
+    }
+
+    const jsonFormat = (k, value, nested) => {
+      const newNested = [...nested, k];
+      if (typeof value === 'object') {
+        return (
+          <React.Fragment key={k}>
+            <span className="qbv-json-key">{k}</span><span>:&nbsp;</span><span >{'{'}</span>
+            <div className="qbv-nest">
+              {Object.keys(value).map(nestedK => jsonFormat(nestedK, value[nestedK], newNested))}
+            </div>
+            <span className="qbv-json-close-brace">{'}'}</span>
+          </React.Fragment>
+        );
+      } else {
+        return (
+          <div key={k}>
+            <span className="qbv-json-key">{k}</span>:&nbsp;<span className="qbv-json-value">"{value}"</span>,
+          </div>
+        )
+      }
+    }
+
+    return (
+      <div className="qbv">
+        <List className="qbv-tree">
+          {format('query', params, [])}
+        </List>
+        <div className="qbv-json">
+          {jsonFormat('query', params, [])}
+        </div>
+        <Button
+          id="qbv-submit"
+          onClick={this.handleSubmit}
+          variant="contained"
+          color="primary"
+        >
+          Submit
+        </Button>
+      </div>
+    );
+  }
+}
+
+/**
+ * @namespace
+ * @property {Object} history - Application history state object.
+ * @property {Object} schema - Knowledgebase schema object.
+ */
+/* eslint-disable */
+QueryBuilderViewBase.propTypes = {
+  history: PropTypes.object.isRequired,
+  schema: PropTypes.object.isRequired,
+};
+
+const QueryBuilderView = withSchema(QueryBuilderViewBase);
+
+/**
+ * Export consumer component and regular component for testing.
+ */
+export {
+  QueryBuilderView,
+  QueryBuilderViewBase,
+};

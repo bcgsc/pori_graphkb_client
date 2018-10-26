@@ -45,6 +45,7 @@ import {
   LoginView,
   QueryView,
   VariantFormView,
+  QueryBuilderView,
 } from './views';
 import logo from './static/logo.png';
 import title from './static/title.png';
@@ -253,7 +254,8 @@ class App extends Component {
     const loggedInContent = (
       <Switch>
         <Route exact path="/query" component={QueryView} />
-        <Route path="/query/advanced" component={AdvancedQueryView} />
+        <Route exact path="/query/advanced" component={AdvancedQueryView} />
+        <Route exact path="/query/advanced/builder" component={QueryBuilderView} />
         <Route path="/add" component={AddOntologyView} />
         <Route path="/edit/:rid" component={EditOntologyView} />
         <Route path="/data" component={DataView} />

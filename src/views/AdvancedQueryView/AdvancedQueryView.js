@@ -38,7 +38,7 @@ class AdvancedQueryViewBase extends Component {
 
     this.state = {
       form: null,
-      ontologyTypes: [],
+      classes: [],
       message: '',
     };
 
@@ -63,16 +63,27 @@ class AdvancedQueryViewBase extends Component {
       this.setState({ message: `${name || ''}: ${message}` });
     }
 
-    const ontologyTypes = [{ name: 'Ontology', properties: null, route: 'ontologies' }];
-    ontologyTypes.push(...schema.getOntologies());
-    ontologyTypes.push(schema.get('PositionalVariant'));
-    ontologyTypes.push(schema.get('Statement'));
+    const classes = [
+      {
+        name: 'Ontology',
+        properties: null,
+        route: 'ontologies',
+      },
+      {
+        name: 'Variant',
+        properties: null,
+        route: 'variants',
+      },
+    ];
+    classes.push(...schema.getOntologies());
+    classes.push(...schema.getVariants());
+    classes.push(schema.get('Statement'));
 
     const form = schema.initModel({}, 'Ontology', config.ONTOLOGY_QUERY_PARAMS);
     form.subsets = '';
 
     this.setState({
-      ontologyTypes,
+      classes,
       form,
     });
   }
@@ -167,7 +178,7 @@ class AdvancedQueryViewBase extends Component {
   render() {
     const {
       form,
-      ontologyTypes,
+      classes,
       message,
     } = this.state;
     const { history, schema } = this.props;
@@ -208,7 +219,7 @@ class AdvancedQueryViewBase extends Component {
               name="@class"
               label="Class"
               id="class-adv"
-              resources={ontologyTypes}
+              resources={classes}
             >
               {resource => (
                 <MenuItem key={resource.name} value={resource.name}>

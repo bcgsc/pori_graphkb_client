@@ -197,25 +197,24 @@ class Schema {
   }
 
   /**
- * Updates allColumns list with any new properties from ontologyTerm.
- * @param {Object} ontologyTerm - new node who's properties will be parsed.
- * @param {Array} allColumns - current list of all collected properties.
- * @param {Object} schema - api schema.
- */
-  collectOntologyProps(ontologyTerm, allColumns) {
+   * Updates allColumns list with any new properties from ontologyTerm.
+   * @param {Object} term - new node who's properties will be parsed.
+   * @param {Array} allColumns - current list of all collected properties.
+   */
+  collectOntologyProps(term, allColumns) {
     const { schema } = this;
-    const { properties } = this.getClass(ontologyTerm['@class'], schema);
+    const { properties } = this.getClass(term['@class'], schema);
     properties.forEach((prop) => {
-      if (prop.name !== '@class' && !allColumns.includes(prop.name)) {
-        if (ontologyTerm[prop.name]) {
+      if (!allColumns.includes(prop.name)) {
+        if (term[prop.name]) {
           if (prop.type === 'link' || prop.type === 'embedded') {
-            const nestedProperties = this.getClass(ontologyTerm[prop.name]['@class']).properties;
+            const nestedProperties = this.getClass(term[prop.name]['@class']).properties;
             if (prop.linkedClass && this.isAbstract(prop.linkedClass.name)) {
               nestedProperties.push({ name: '@class' });
             }
             (nestedProperties || []).forEach((nestedProp) => {
               if (
-                ontologyTerm[prop.name][nestedProp.name]
+                term[prop.name][nestedProp.name]
                 && !allColumns.includes(`${prop.name}.${nestedProp.name}`)
               ) {
                 allColumns.push(`${prop.name}.${nestedProp.name}`);

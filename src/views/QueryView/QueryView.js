@@ -101,10 +101,12 @@ class QueryView extends Component {
     this.setState({ disabled: true });
   }
 
+  /**
+   * Updates variant state based on shorthand string.
+   */
   handleVariantParse() {
     const { str } = this.state;
     try {
-      console.log(kbp.variant.parse(str));
       this.setState({
         variant: kbp.variant.parse(str),
         variantError: '',
@@ -124,9 +126,7 @@ class QueryView extends Component {
       str,
       tab,
       variantError,
-      variant,
     } = this.state;
-    console.log(variant);
     const { history } = this.props;
 
     return (

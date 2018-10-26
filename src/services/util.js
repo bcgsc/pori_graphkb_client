@@ -109,6 +109,10 @@ const antiCamelCase = (str) => {
   return accstr.charAt(0).toUpperCase() + accstr.slice(1);
 };
 
+/**
+ * Infers the KB type string of a JS object.
+ * @param {any} obj - input object.
+ */
 const parseKBType = (obj) => {
   if (typeof obj === 'number') {
     if (Number.isInteger(obj)) {
@@ -119,7 +123,7 @@ const parseKBType = (obj) => {
   if (Array.isArray(obj)) {
     return 'embeddedset';
   }
-  if (typeof obj === 'object') {
+  if (obj && typeof obj === 'object') {
     if (Object.keys(obj).includes('@rid')) {
       return 'link';
     }
@@ -128,6 +132,10 @@ const parseKBType = (obj) => {
   return 'string';
 };
 
+/**
+ * Capitalizes sentences in input string.
+ * @param {string} str - input string.
+ */
 const formatStr = (str) => {
   const newSentence = /\.\s\w/g;
   const ret = parseAcronyms(castToExist(str))

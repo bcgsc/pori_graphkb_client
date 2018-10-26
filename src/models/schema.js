@@ -102,7 +102,7 @@ class Schema {
   }
 
   /**
-   * Returns all valid ontology types.
+   * Returns all ontology types.
    */
   getOntologies() {
     const { schema } = this;
@@ -115,6 +115,9 @@ class Schema {
     return list;
   }
 
+  /**
+   * Returns all variant types.
+   */
   getVariants() {
     const { schema } = this;
     const list = [];
@@ -182,6 +185,11 @@ class Schema {
     return this.isOfType(cls, 'Variant');
   }
 
+  /**
+   * Checks if class is of given abstract type.
+   * @param {string} cls - class string to be checked.
+   * @param {string} type - supertype string.
+   */
   isOfType(cls, type) {
     return (this.get(cls) && (this.get(cls).inherits || []).includes(type)) || cls === type;
   }
@@ -259,6 +267,10 @@ class Schema {
     return null;
   }
 
+  /**
+   * Returns class object for given class.
+   * @param {string} cls - Class string.
+   */
   getClassConstructor(cls) {
     if (classes[cls]) {
       return classes[cls];

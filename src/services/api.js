@@ -245,8 +245,6 @@ const autoSearch = (endpoint, property, value, limit) => {
   return get(`/${endpoint}?${query}&${orStr}&${extras}`);
 };
 
-const getSpec = () => get('/spec/#');
-
 export default {
   getSchema,
   getSources,
@@ -255,5 +253,5 @@ export default {
   delete: del,
   patch,
   autoSearch,
-  getSpec,
+  API_BASE_URL,
 };

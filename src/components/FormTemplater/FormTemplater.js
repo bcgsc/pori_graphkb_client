@@ -52,6 +52,7 @@ function FormTemplater(props) {
     const mandatory = property.mandatory && !ignoreRequired;
     // Radio group component for boolean types.
     if (type === 'boolean') {
+      const bool = model[name] === undefined || model[name] === null ? '' : model[name];
       return (
         <ListItem component={fieldComponent} key={name}>
           <FormControl
@@ -65,7 +66,7 @@ function FormTemplater(props) {
             <RadioGroup
               name={name}
               onChange={e => onChange(e)}
-              value={(model[name] || '').toString()}
+              value={bool.toString()}
               style={{ flexDirection: 'row' }}
             >
               <FormControlLabel value="true" control={<Radio />} label="Yes" />

@@ -316,6 +316,12 @@ class DetailDrawer extends Component {
           const isOpen = linkOpen === edge['@rid'];
           const isIn = edge.in && edge.in['@rid'] === node.getId();
           const targetNode = schema.newRecord(isIn ? edge.out : edge.in);
+          let preview;
+          try {
+            preview = targetNode.getPreview();
+          } catch (e) {
+            preview = 'Invalid variant';
+          }
           return (
             <React.Fragment key={edge['@rid']}>
               <ListItem
@@ -331,7 +337,7 @@ class DetailDrawer extends Component {
                   primaryTypographyProps={{
                     color: isOpen ? 'secondary' : 'default',
                   }}
-                  primary={targetNode.getPreview()}
+                  primary={preview}
                   secondary={util.getEdgeLabel(`${isIn ? 'in' : 'out'}_${edge['@class']}`)}
                 />
                 {!isOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}

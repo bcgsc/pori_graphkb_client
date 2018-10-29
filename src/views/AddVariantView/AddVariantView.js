@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './AddVariantView.css';
 import PropTypes from 'prop-types';
 import { Paper, Typography, Button } from '@material-ui/core';
-import VariantParserComponent from '../../components/VariantParserComponent/VariantParserComponent';
+import PositionalVariantParser from '../../components/PositionalVariantParser/PositionalVariantParser';
 import util from '../../services/util';
 import api from '../../services/api';
 import { withSchema } from '../../components/SchemaContext/SchemaContext';
@@ -79,7 +79,7 @@ class AddVariantViewBase extends Component {
         </Paper>
 
         <div className="variant-body">
-          <VariantParserComponent
+          <PositionalVariantParser
             handleFinish={this.handleFinish}
             handleSubmit={this.submitVariant}
             schema={schema}

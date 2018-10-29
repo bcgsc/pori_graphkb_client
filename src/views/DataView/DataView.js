@@ -271,7 +271,6 @@ class DataViewBase extends Component {
     const { history, schema } = this.props;
     if (detail) {
       let route;
-      console.log(detail);
       if (schema.isOntology(detail['@class'])) {
         route = 'ontology';
       } else if (detail['@class'] === 'PositionalVariant') {

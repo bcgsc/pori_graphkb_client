@@ -1,0 +1,25 @@
+@import "../../globals";
+
+.embedded-list-wrapper {
+  padding: 24px;
+  margin-bottom: 8px;
+  .embedded-list {
+    .embedded-list-chip {
+      margin: 3px;
+    }
+    .deleted-chip {
+      background-color: lighten($md-warn, 25%);
+    }
+    .deleted-chip:focus {
+      background-color: lighten($md-warn, 22%);
+    }
+  }
+
+  .embedded-list-input {
+    display: flex;
+    width: inherit;
+    > * {
+      flex: 1;
+    }
+  }
+}

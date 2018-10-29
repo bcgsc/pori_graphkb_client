@@ -40,7 +40,7 @@ const castToExist = (obj) => {
     }
     return 'null';
   }
-  if (typeof obj === 'object') {
+  if (obj && typeof obj === 'object') {
     return Object.entries(obj).find((e) => {
       const [k, v] = e;
       return (

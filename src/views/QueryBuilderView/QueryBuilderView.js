@@ -197,6 +197,7 @@ class QueryBuilderViewBase extends Component {
           value={tempNames[nested.join('.')]}
           name={nested.join('.')}
           onChange={this.handleNested('tempNames')}
+          onKeyUp={e => e.keyCode === 13 ? this.handleAdd(nested.join('.')) : null}
         />
         {!tempNested[nested.join('.')]
           && (
@@ -205,6 +206,7 @@ class QueryBuilderViewBase extends Component {
               onChange={this.handleNested('tempValues')}
               value={tempValues[nested.join('.')]}
               name={nested.join('.')}
+              onKeyUp={e => e.keyCode === 13 ? this.handleAdd(nested.join('.')) : null}
             />
           )}
         <IconButton onClick={() => this.handleAdd(nested.join('.'))}>
@@ -258,7 +260,7 @@ class QueryBuilderViewBase extends Component {
             <div className="qbv-nest">
               {Object.keys(value).map(nestedK => jsonFormat(nestedK, value[nestedK], newNested))}
             </div>
-            <span className="qbv-json-close-brace">{'}'}</span>
+            <span className="qbv-json-close-brace">{'}'}{k !== 'query' && ','}</span>
           </React.Fragment>
         );
       }

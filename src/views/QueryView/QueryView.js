@@ -57,28 +57,31 @@ class QueryView extends Component {
       variantError,
     } = this.state;
     const { history } = this.props;
+    let search;
+    const re = new RegExp(/[\r|\n|\t|:|\\|;|,|.|/|||+|*|=|!|?|[|\]|(|)]+/, 'g');
     if (tab === 'ontology') {
       if (str && !disabled) {
-        history.push({
-          pathname: '/data/table',
-          search: `?name=~${str.trim()}`,
-        });
+        search = `?name=${str.replace(re, '').length > 4 ? '~' : ''}${str.trim()}`;
       }
     } else if (tab === 'variant' && str && !variantError) {
-      let search = '?@class=PositionalVariant';
+      search = '?@class=PositionalVariant';
       Object.keys(variant).forEach((key) => {
+        const val = `${variant[key]}`.replace(re, '').length > 4 ? `~${variant[key]}` : variant[key];
         if (key !== 'prefix' && key !== 'multiFeature') {
           if (key === 'reference1' || key === 'reference2' || key === 'type') {
-            search += `&${key}[name]=${variant[key]}`;
-          } else if (typeof variant[key] === 'object') {
-            Object.keys(variant[key]).forEach((nestedKey) => {
-              search += `&${key}[${nestedKey}]=${variant[key][nestedKey]}`;
+            search += `&${key}[name]=${val}`;
+          } else if (typeof val === 'object') {
+            Object.keys(val).forEach((nestedKey) => {
+              search += `&${key}[${nestedKey}]=${val[nestedKey]}`;
             });
           } else {
-            search += `&${key}=${variant[key]}`;
+            search += `&${key}=${val}`;
           }
         }
       });
+    }
+
+    if (search) {
       history.push({
         pathname: '/data/table',
         search,

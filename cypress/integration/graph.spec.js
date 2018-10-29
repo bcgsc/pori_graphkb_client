@@ -36,7 +36,7 @@ describe('Graph View Test', () => {
     getClass('Disease');
     cy.get('circle.node').click({ force: true });
     cy.contains('(Details)').click({ force: true });
-    cy.contains('Properties:').should('exist');
+    cy.contains('Edit').should('exist');
     cy.get('div.detail-heading div.detail-headline>button').click();
     cy.contains('Properties:').should('not.visible');
 

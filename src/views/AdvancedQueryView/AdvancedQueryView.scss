@@ -6,10 +6,12 @@
   }
   .adv-grid {
     @include paper;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    column-count: 2;
     @media (max-width: 768px) {
-      grid-template-columns: 1fr;
+      column-count: unset;
+    }
+    > li {
+      display: inline-block;
     }
   }
   #adv-nav-buttons {

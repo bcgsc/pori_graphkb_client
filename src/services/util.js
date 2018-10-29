@@ -40,6 +40,14 @@ const castToExist = (obj) => {
     }
     return 'null';
   }
+  if (obj && typeof obj === 'object') {
+    return Object.entries(obj).find((e) => {
+      const [k, v] = e;
+      return (
+        (typeof v !== 'object' || typeof v !== 'function')
+        && !k.startsWith('@'));
+    })[1].toString();
+  }
   return obj === undefined || obj === null ? 'null' : obj.toString();
 };
 
@@ -101,6 +109,10 @@ const antiCamelCase = (str) => {
   return accstr.charAt(0).toUpperCase() + accstr.slice(1);
 };
 
+/**
+ * Infers the KB type string of a JS object.
+ * @param {any} obj - input object.
+ */
 const parseKBType = (obj) => {
   if (typeof obj === 'number') {
     if (Number.isInteger(obj)) {
@@ -111,7 +123,7 @@ const parseKBType = (obj) => {
   if (Array.isArray(obj)) {
     return 'embeddedset';
   }
-  if (typeof obj === 'object') {
+  if (obj && typeof obj === 'object') {
     if (Object.keys(obj).includes('@rid')) {
       return 'link';
     }
@@ -120,12 +132,16 @@ const parseKBType = (obj) => {
   return 'string';
 };
 
+/**
+ * Capitalizes sentences in input string.
+ * @param {string} str - input string.
+ */
 const formatStr = (str) => {
   const newSentence = /\.\s\w/g;
   const ret = parseAcronyms(castToExist(str))
     .trim()
     .replace(newSentence, match => match.toUpperCase());
-  return ret.charAt(0).toUpperCase() + ret.slice(1);
+  return ret;
 };
 
 /**
@@ -214,10 +230,21 @@ const getTSVRepresentation = (value, key) => {
  * @param {Array} objectSchema - List of valid properties for given form.
  * @param {Array} exceptions - List of extra parameters not specified in editableProps.
  */
-const parsePayload = (form, objectSchema, exceptions) => {
+const parsePayload = (form, objectSchema, exceptions, isQuery = false) => {
   const payload = Object.assign({}, form);
   Object.keys(payload).forEach((key) => {
-    if (!payload[key]) delete payload[key];
+    if (!payload[key]) {
+      delete payload[key];
+    }
+    if (typeof payload[key] === 'object' && isQuery) {
+      Object.keys(payload[key]).forEach((k) => {
+        if (payload[key][k]) {
+          payload[`${key}[${k}]`] = payload[key][k];
+        }
+      });
+      delete payload[key];
+    }
+
     // For link properties, must specify record id being linking to. Clear the rest.
     if (key.includes('.@rid')) {
       const nestedKey = key.split('.')[0];
@@ -232,6 +259,7 @@ const parsePayload = (form, objectSchema, exceptions) => {
         delete payload[key];
       }
     }
+
     // Clears out all other unknown fields.
     if (!objectSchema.find(p => p.name === key)) {
       if (!exceptions || !exceptions.find(p => p.name === key)) {

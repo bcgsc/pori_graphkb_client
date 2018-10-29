@@ -253,4 +253,5 @@ export default {
   delete: del,
   patch,
   autoSearch,
+  API_BASE_URL,
 };

@@ -23,7 +23,9 @@ class Schema {
    * @param {string} cls - class name;
    */
   get(cls) {
-    return this.schema[cls] || null;
+    const match = Object.values(this.schema)
+      .find(s => s.name.toLowerCase() === (cls || '').toLowerCase());
+    return match || null;
   }
 
   /**
@@ -49,13 +51,13 @@ class Schema {
  * @param {string} kbClass - Knowledge base class key.
  * @param {Object} schema - Knowledge base schema.
  */
-  initModel(model, kbClass, extraProps = []) {
+  initModel(model, kbClass, extraProps = [], ignoreClass) {
     const editableProps = kbClass
       && (this.getClass(kbClass) || {}).properties;
     if (!editableProps) return null;
     editableProps.push(...extraProps);
     const newModel = Object.assign({}, model);
-    newModel['@class'] = kbClass;
+    newModel['@class'] = ignoreClass ? '' : kbClass;
     Object.values(editableProps).forEach((property) => {
       const {
         name,
@@ -88,7 +90,7 @@ class Schema {
           if (linkedClass && linkedClass.properties) {
             newModel[name] = model[name]
               ? Object.assign({}, model[name])
-              : this.initModel({}, property.linkedClass.name);
+              : this.initModel({}, property.linkedClass.name, [], true);
           }
           break;
         default:
@@ -100,13 +102,27 @@ class Schema {
   }
 
   /**
-   * Returns all valid ontology types.
+   * Returns all ontology types.
    */
   getOntologies() {
     const { schema } = this;
     const list = [];
     Object.keys(schema).forEach((key) => {
-      if ((schema[key].inherits || []).includes('Ontology')) {
+      if (this.isOntology(key)) {
+        list.push({ name: key, properties: schema[key].properties, route: schema[key].route });
+      }
+    });
+    return list;
+  }
+
+  /**
+   * Returns all variant types.
+   */
+  getVariants() {
+    const { schema } = this;
+    const list = [];
+    Object.keys(schema).forEach((key) => {
+      if (this.isVariant(key)) {
         list.push({ name: key, properties: schema[key].properties, route: schema[key].route });
       }
     });
@@ -120,7 +136,7 @@ class Schema {
     const { schema } = this;
     const list = [];
     Object.keys(schema).forEach((key) => {
-      if (schema[key].inherits.includes('E')) {
+      if ((schema[key].inherits || []).includes('E')) {
         list.push(key);
       }
     });
@@ -142,7 +158,7 @@ class Schema {
    * @param {string} cls - class key.
    */
   isEdge(cls) {
-    return (this.schema[cls].inherits || []).includes('E');
+    return this.isOfType(cls, 'E');
   }
 
   /**
@@ -150,7 +166,7 @@ class Schema {
    * @param {string} cls - class key.
    */
   isOntology(cls) {
-    return (this.schema[cls].inherits || []).includes('Ontology');
+    return this.isOfType(cls, 'Ontology');
   }
 
   /**
@@ -158,7 +174,24 @@ class Schema {
    * @param {string} cls - class key.
    */
   isPosition(cls) {
-    return (this.schema[cls].inherits || []).includes('Position');
+    return this.isOfType(cls, 'Position');
+  }
+
+  /**
+   * Checks if a KB class is a Variant.
+   * @param {string} cls - class key.
+   */
+  isVariant(cls) {
+    return this.isOfType(cls, 'Variant');
+  }
+
+  /**
+   * Checks if class is of given abstract type.
+   * @param {string} cls - class string to be checked.
+   * @param {string} type - supertype string.
+   */
+  isOfType(cls, type) {
+    return (this.get(cls) && (this.get(cls).inherits || []).includes(type)) || cls === type;
   }
 
   /**
@@ -172,25 +205,24 @@ class Schema {
   }
 
   /**
- * Updates allColumns list with any new properties from ontologyTerm.
- * @param {Object} ontologyTerm - new node who's properties will be parsed.
- * @param {Array} allColumns - current list of all collected properties.
- * @param {Object} schema - api schema.
- */
-  collectOntologyProps(ontologyTerm, allColumns) {
+   * Updates allColumns list with any new properties from ontologyTerm.
+   * @param {Object} term - new node who's properties will be parsed.
+   * @param {Array} allColumns - current list of all collected properties.
+   */
+  collectOntologyProps(term, allColumns) {
     const { schema } = this;
-    const { properties } = this.getClass(ontologyTerm['@class'], schema);
+    const { properties } = this.getClass(term['@class'], schema);
     properties.forEach((prop) => {
-      if (prop.name !== '@class' && !allColumns.includes(prop.name)) {
-        if (ontologyTerm[prop.name]) {
+      if (!allColumns.includes(prop.name)) {
+        if (term[prop.name]) {
           if (prop.type === 'link' || prop.type === 'embedded') {
-            const nestedProperties = this.getClass(ontologyTerm[prop.name]['@class']).properties;
+            const nestedProperties = this.getClass(term[prop.name]['@class']).properties;
             if (prop.linkedClass && this.isAbstract(prop.linkedClass.name)) {
               nestedProperties.push({ name: '@class' });
             }
             (nestedProperties || []).forEach((nestedProp) => {
               if (
-                ontologyTerm[prop.name][nestedProp.name]
+                term[prop.name][nestedProp.name]
                 && !allColumns.includes(`${prop.name}.${nestedProp.name}`)
               ) {
                 allColumns.push(`${prop.name}.${nestedProp.name}`);
@@ -205,6 +237,11 @@ class Schema {
     return allColumns;
   }
 
+  /**
+   * Parses an input object and casts it to a KB class.
+   * @param {Object} obj - input object to be parsed.
+   * @param {boolean} ignoreNested - stop flag for recursive child construction.
+   */
   newRecord(obj, ignoreNested = false) {
     if (obj) {
       if (obj['@class']) {
@@ -220,11 +257,37 @@ class Schema {
         if (this.isPosition(obj['@class'])) {
           return new classes.Position(obj, this, ignoreNested);
         }
+        if (this.isVariant(obj['@class'])) {
+          return new classes.Variant(obj, this, ignoreNested);
+        }
         return new classes.V(obj, this, ignoreNested);
       }
       return new classes.Record(obj, this, ignoreNested);
     }
     return null;
+  }
+
+  /**
+   * Returns class object for given class.
+   * @param {string} cls - Class string.
+   */
+  getClassConstructor(cls) {
+    if (classes[cls]) {
+      return classes[cls];
+    }
+    if (this.isEdge(cls)) {
+      return classes.Edge;
+    }
+    if (this.isOntology(cls)) {
+      return classes.Ontology;
+    }
+    if (this.isPosition(cls)) {
+      return classes.Position;
+    }
+    if (this.isVariant(cls)) {
+      return classes.Variant;
+    }
+    return classes.V;
   }
 }
 

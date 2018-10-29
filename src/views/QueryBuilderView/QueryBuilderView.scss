@@ -1,0 +1,75 @@
+@import "../../globals";
+.qbv {
+  display: flex;
+  @include view-wrapper;
+  .qbv-header {
+    @include page-header;
+  }
+  .qbv-body {
+    @include paper;
+    display: flex;
+
+    .qbv-tree {
+      overflow: auto;
+      li {
+        height: 64px;
+        display: flex;
+      }
+      .qbv-input {
+        display: flex;
+        padding: 8px 24px;
+        input {
+          margin: auto 4px;
+        }
+      }
+    }
+
+    .qbv-nest {
+      margin-left: 1rem;
+      display: block;
+    }
+
+    .qbv-json {
+      margin: 16px;
+      padding: 16px;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-family: "Courier New", Courier, monospace;
+      overflow: auto;
+      width: 100%;
+
+      .qbv-json-key {
+        color: $md-primary-color;
+      }
+      .qbv-json-value {
+        color: $md-secondary-color;
+      }
+      .qbv-json-close-brace {
+        display: block;
+      }
+    }
+    #qbv-submit {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+    }
+  }
+}
+
+.qbv-swagger-iframe {
+  height: 80vh;
+  iframe {
+    height: 100%;
+  }
+}
+
+.feedback-wrapper {
+  a {
+    text-decoration: none;
+    color: $md-secondary-color;
+  }
+  .feedback-body {
+    @include paper;
+  }
+}

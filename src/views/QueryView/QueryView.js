@@ -5,7 +5,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './QueryView.css';
-import { Button, IconButton } from '@material-ui/core';
+import {
+  Button,
+  IconButton,
+  Tab,
+  Tabs,
+  TextField,
+  InputAdornment,
+} from '@material-ui/core';
+import kbp from 'knowledgebase-parser';
 import SearchIcon from '@material-ui/icons/Search';
 import AutoSearchComponent from '../../components/AutoSearchComponent/AutoSearchComponent';
 
@@ -24,25 +32,59 @@ class QueryView extends Component {
       : '';
 
     this.state = {
-      name: initName,
+      str: initName,
       disabled: false,
+      tab: 'ontology',
+      variantError: '',
+      variant: {},
     };
 
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
     this.handleInvalid = this.handleInvalid.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleVariantParse = this.handleVariantParse.bind(this);
   }
 
   /**
    * Sets redirect flag to true if there is a valid query (any string).
    */
   handleSubmit() {
-    const { name, disabled } = this.state;
+    const {
+      str,
+      disabled,
+      tab,
+      variant,
+      variantError,
+    } = this.state;
     const { history } = this.props;
-    if (name && !disabled) {
+    let search;
+    const re = new RegExp(/[\r|\n|\t|:|\\|;|,|.|/|||+|*|=|!|?|[|\]|(|)]+/, 'g');
+    if (tab === 'ontology') {
+      if (str && !disabled) {
+        search = `?name=${str.replace(re, '').length > 4 ? '~' : ''}${str.trim()}`;
+      }
+    } else if (tab === 'variant' && str && !variantError) {
+      search = '?@class=PositionalVariant';
+      Object.keys(variant).forEach((key) => {
+        const val = `${variant[key]}`.replace(re, '').length > 4 ? `~${variant[key]}` : variant[key];
+        if (key !== 'prefix' && key !== 'multiFeature') {
+          if (key === 'reference1' || key === 'reference2' || key === 'type') {
+            search += `&${key}[name]=${val}`;
+          } else if (typeof val === 'object') {
+            Object.keys(val).forEach((nestedKey) => {
+              search += `&${key}[${nestedKey}]=${val[nestedKey]}`;
+            });
+          } else {
+            search += `&${key}=${val}`;
+          }
+        }
+      });
+    }
+
+    if (search) {
       history.push({
         pathname: '/data/table',
-        search: `?name=~${name.trim()}`,
+        search,
       });
     }
   }
@@ -62,14 +104,47 @@ class QueryView extends Component {
     this.setState({ disabled: true });
   }
 
+  /**
+   * Updates variant state based on shorthand string.
+   */
+  handleVariantParse() {
+    const { str } = this.state;
+    try {
+      this.setState({
+        variant: kbp.variant.parse(str),
+        variantError: '',
+      });
+    } catch (e) {
+      // If anything is parsed, use that..
+      const update = { variantError: str ? e.message : '' };
+      if (e.content && e.content.parsed) {
+        update.variant = e.content.parsed;
+      }
+      this.setState(update);
+    }
+  }
+
   render() {
     const {
-      name,
+      str,
+      tab,
+      variantError,
     } = this.state;
     const { history } = this.props;
 
     return (
       <div className="search-wrapper">
+        <div className="search-tabs">
+          <Tabs
+            fullWidth
+            value={tab}
+            onChange={(_, v) => this.handleChange({ target: { value: v, name: 'tab' } })}
+            color="primary"
+          >
+            <Tab value="ontology" label="Ontologies" />
+            <Tab value="variant" label="Variants" />
+          </Tabs>
+        </div>
         <div className="search-bar">
           <div
             className="main-search"
@@ -81,20 +156,45 @@ class QueryView extends Component {
             role="textbox"
             tabIndex={0}
           >
-            <AutoSearchComponent
-              value={name}
-              onChange={this.handleChange}
-              placeholder="Search by Name"
-              limit={30}
-              name="name"
-              onInvalid={this.handleInvalid}
-              onAction={this.handleSubmit}
-              endAdornment={(
-                <IconButton id="search-btn" onClick={this.handleSubmit} color="primary">
-                  <SearchIcon />
-                </IconButton>
-              )}
-            />
+            {tab === 'ontology' && (
+              <AutoSearchComponent
+                value={str}
+                onChange={this.handleChange}
+                placeholder="Search by Name"
+                limit={30}
+                name="str"
+                onInvalid={this.handleInvalid}
+                onAction={this.handleSubmit}
+                endAdornment={(
+                  <IconButton id="search-btn" onClick={this.handleSubmit} color="primary">
+                    <SearchIcon />
+                  </IconButton>
+                )}
+              />
+            )}
+            {tab === 'variant' && (
+              <div style={{ height: 64 }}>
+                <TextField
+                  placeholder="Search by HGVS Shorthand"
+                  fullWidth
+                  value={str}
+                  name="str"
+                  onChange={this.handleChange}
+                  onKeyUp={this.handleVariantParse}
+                  error={!!variantError}
+                  helperText={variantError}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment>
+                        <IconButton id="search-btn" onClick={this.handleSubmit} color="primary">
+                          <SearchIcon />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </div>
+            )}
           </div>
         </div>
         <Button

@@ -159,12 +159,14 @@ class DataViewBase extends Component {
   /**
    * Triggered function for when a node object is clicked in a child component.
    * Sets the state selected ID to clicked node.
-   * @param {string} rid - Clicked node identifier.
+   * @param {Object} node - Clicked node identifier.
    */
-  async handleClick(rid) {
+  async handleClick(node) {
     const { data } = this.state;
-    if (!data[rid]) {
-      const endpoint = `/ontologies/${rid.slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`; // change
+    const { schema } = this.props;
+    if (!data[node.getId()]) {
+      const { route } = schema.get(node.data['@class']);
+      const endpoint = `${route || '/ontologies'}/${node.getId().slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`; // change
       const response = await api.get(endpoint);
       this.processData([jc.retrocycle(response).result]);
     }
@@ -358,10 +360,12 @@ class DataViewBase extends Component {
       history,
     } = this.props;
 
-    if (!data) return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
+    if (!data) {
+      return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
+    }
     const edges = schema.getEdges();
     const cls = filteredSearch && filteredSearch['@class'];
-    const defaultOrders = (classes[cls] || classes.Ontology).getIdentifiers();
+    const defaultOrders = schema.getClassConstructor(cls || 'Ontology').getIdentifiers();
     const detailDrawer = (
       <DetailDrawer
         node={detail}
@@ -394,7 +398,6 @@ class DataViewBase extends Component {
         detail={detail}
         displayed={displayed}
         handleCheckAll={this.handleCheckAll}
-        handleClick={this.handleClick}
         handleCheckbox={this.handleCheckbox}
         handleHideSelected={this.handleHideSelected}
         handleShowAllNodes={this.handleShowAllNodes}

@@ -46,6 +46,7 @@ import {
   QueryView,
   AddVariantView,
   EditVariantView,
+  QueryBuilderView,
 } from './views';
 import logo from './static/logo.png';
 import title from './static/title.png';
@@ -254,12 +255,12 @@ class App extends Component {
     const loggedInContent = (
       <Switch>
         <Route exact path="/query" component={QueryView} />
-        <Route path="/query/advanced" component={AdvancedQueryView} />
+        <Route exact path="/query/advanced" component={AdvancedQueryView} />
+        <Route exact path="/query/advanced/builder" component={QueryBuilderView} />
         <Route path="/add/ontology" component={AddOntologyView} />
         <Route path="/add/variant" component={AddVariantView} />
         <Route exact path="/edit/ontology/:rid" component={EditOntologyView} />
         <Route exact path="/edit/variant/:rid" component={EditVariantView} />
-        <Route exact path="/edit/statement/:rid" component={EditOntologyView} />
         <Route path="/data" component={DataView} />
         <Route path="/feedback" component={FeedbackView} />
         <Route path="/admin" component={AdminView} />
@@ -285,7 +286,7 @@ class App extends Component {
                   </IconButton>
                 )}
                 <div className="appbar-title">
-                  <Typography variant="h6">Knowledge Base</Typography>
+                  <Typography variant="h6">GraphKB</Typography>
                 </div>
                 <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>
                   <div>

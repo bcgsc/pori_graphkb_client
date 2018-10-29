@@ -100,6 +100,7 @@
       "src/models/**/*.{js,jsx,mjs}"
     ],
     "coverageReporters": [
+      "clover",
       "text",
       "json",
       "json-summary",

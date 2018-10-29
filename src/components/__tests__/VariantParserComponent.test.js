@@ -80,6 +80,11 @@ describe('<VariantParserComponent />', () => {
         inherits: ['V'],
         route: '/child',
       },
+      ProteinPosition: {
+        name: 'ProteinPosition',
+        inherits: ['Position'],
+        properties: {},
+      },
       embedded: {
         name: 'embedded',
         properties: { name: { name: 'embeddedName', type: 'string' } },

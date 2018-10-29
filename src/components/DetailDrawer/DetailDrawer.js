@@ -63,9 +63,9 @@ class DetailDrawer extends Component {
   /**
    * Formats specific identifier properties of input ontology.
    * @param {Object} node - Ontology being displayed.
-   * @param {boolean} nested - Nested flag.
+   * @param {boolean} isNested - Nested flag.
    */
-  formatIdentifiers(node, nested) {
+  formatIdentifiers(node, isNested) {
     const { schema } = this.props;
     const { opened } = this.state;
     if (!(node instanceof classes.Record)) {
@@ -78,10 +78,7 @@ class DetailDrawer extends Component {
         const [key, nestedKey] = prop.split('.');
         const value = nestedKey ? (node[key] || {})[nestedKey] : node[key];
         let properties = Object.keys(node[key] || {});
-        if (schema && node[key] && schema.getClass(node[key]['@class'])) {
-          // If property is a class in the schema, we can grab its properties.
-          properties = schema.getClass(node[key]['@class']).properties.map(k => k.name);
-        }
+
         if (node[key] instanceof classes.Record) {
           properties = node[key].constructor.getIdentifiers();
         }
@@ -100,7 +97,7 @@ class DetailDrawer extends Component {
                 return (
                   nestedValue && (
                     <ListItem key={nestedProp}>
-                      {nested && (
+                      {isNested && (
                         <ListItemIcon>
                           <div style={{ width: 24, height: 24 }} />
                         </ListItemIcon>)}
@@ -128,13 +125,13 @@ class DetailDrawer extends Component {
                   button={!!nestedKey}
                   onClick={nestedKey ? () => this.handleExpand(`${node['@rid']}${prop}`) : undefined}
                 >
-                  {nested && (
+                  {isNested && (
                     <ListItemIcon>
                       <div style={{ width: 24, height: 24 }} />
                     </ListItemIcon>)}
                   <ListItemText>
                     <div className="detail-identifiers">
-                      <Typography variant="subtitle1" color={nested ? 'textSecondary' : 'default'}>
+                      <Typography variant="subtitle1" color={isNested ? 'textSecondary' : 'default'}>
                         {util.antiCamelCase(key)}
                       </Typography>
                       <Typography>
@@ -152,7 +149,7 @@ class DetailDrawer extends Component {
               </React.Fragment>
             );
           }
-          return this.formatLongValue(key, value, true);
+          return this.formatLongValue(key, value, true, isNested);
         }
         return null;
       })
@@ -164,8 +161,9 @@ class DetailDrawer extends Component {
    * @param {string} key - property key.
    * @param {any} value - property value.
    * @param {boolean} isStatic - if true, locks list item open.
+   * @param {boolean} isNested - if true, list item is indented.
    */
-  formatLongValue(key, value, isStatic) {
+  formatLongValue(key, value, isStatic, isNested) {
     const { opened } = this.state;
     const listItemProps = isStatic === true
       ? {}
@@ -182,11 +180,23 @@ class DetailDrawer extends Component {
     return (
       <React.Fragment key={key}>
         <ListItem {...listItemProps}>
-          <ListItemText primary={util.antiCamelCase(key)} />
+          {isNested && (
+            <ListItemIcon>
+              <div style={{ width: 24, height: 24 }} />
+            </ListItemIcon>)}
+          <ListItemText>
+            <Typography variant="subtitle1" color={isNested ? 'textSecondary' : 'default'}>
+              {util.antiCamelCase(key)}
+            </Typography>
+          </ListItemText>
           {itemIcon}
         </ListItem>
         <Collapse {...collapseProps} unmountOnExit>
           <ListItem dense>
+            {isNested && (
+              <ListItemIcon>
+                <div style={{ width: 24, height: 24 }} />
+              </ListItemIcon>)}
             <ListItemText>
               {util.formatStr(value)}
             </ListItemText>
@@ -203,7 +213,9 @@ class DetailDrawer extends Component {
    */
   formatOtherProps(node) {
     const { opened } = this.state;
-    const { schema, identifiers } = this.props;
+    const { schema } = this.props;
+    const identifiers = node.constructor.getIdentifiers();
+
     let properties = Object.keys(node)
       .map(key => ({ name: key, type: util.parseKBType(node[key]) }));
     if (schema && schema.getClass(node['@class'])) {
@@ -304,6 +316,12 @@ class DetailDrawer extends Component {
           const isOpen = linkOpen === edge['@rid'];
           const isIn = edge.in && edge.in['@rid'] === node.getId();
           const targetNode = schema.newRecord(isIn ? edge.out : edge.in);
+          let preview;
+          try {
+            preview = targetNode.getPreview();
+          } catch (e) {
+            preview = 'Invalid variant';
+          }
           return (
             <React.Fragment key={edge['@rid']}>
               <ListItem
@@ -319,7 +337,7 @@ class DetailDrawer extends Component {
                   primaryTypographyProps={{
                     color: isOpen ? 'secondary' : 'default',
                   }}
-                  primary={targetNode.getPreview()}
+                  primary={preview}
                   secondary={util.getEdgeLabel(`${isIn ? 'in' : 'out'}_${edge['@class']}`)}
                 />
                 {!isOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
@@ -392,6 +410,15 @@ class DetailDrawer extends Component {
     const identifiers = this.formatIdentifiers(node);
     const otherProps = this.formatOtherProps(node);
     const relationships = this.formatRelationships(node);
+    let preview;
+    let errorMessage;
+    try {
+      preview = node.getPreview();
+      // Only for kbp nodes so far.
+    } catch (e) {
+      preview = 'Invalid variant';
+      errorMessage = e.message;
+    }
     return (
       <Drawer
         open={!!node}
@@ -403,9 +430,16 @@ class DetailDrawer extends Component {
         <div className="detail-content">
           <div className="detail-heading">
             <div className="detail-headline">
-              <Typography variant="h4" component="h1">
-                {node.getPreview()}
-              </Typography>
+              <div>
+                <Typography variant="h4" component="h1">
+                  {preview}
+                </Typography>
+                {errorMessage && (
+                  <Typography color="error" variant="subtitle2">
+                    {errorMessage}
+                  </Typography>
+                )}
+              </div>
               <IconButton onClick={onClose}>
                 <ChevronRightIcon />
               </IconButton>

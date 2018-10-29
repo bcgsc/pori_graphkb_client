@@ -38,13 +38,14 @@ class AdvancedQueryViewBase extends Component {
 
     this.state = {
       form: null,
-      ontologyTypes: [],
+      classes: [],
       message: '',
     };
 
     this.bundle = this.bundle.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleClassChange = this.handleClassChange.bind(this);
+    this.handleNestedClassChange = this.handleNestedClassChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
   }
 
@@ -62,14 +63,15 @@ class AdvancedQueryViewBase extends Component {
       this.setState({ message: `${name || ''}: ${message}` });
     }
 
-    const ontologyTypes = [{ name: 'Ontology', properties: null, route: 'ontologies' }];
-    ontologyTypes.push(...schema.getOntologies());
+    const classes = [];
+    classes.push(...schema.getOntologies());
+    classes.push(...schema.getVariants());
 
     const form = schema.initModel({}, 'Ontology', config.ONTOLOGY_QUERY_PARAMS);
     form.subsets = '';
 
     this.setState({
-      ontologyTypes,
+      classes,
       form,
     });
   }
@@ -84,7 +86,7 @@ class AdvancedQueryViewBase extends Component {
     params.push(...config.ONTOLOGY_QUERY_PARAMS);
     const props = schema.getClass(form['@class']).properties || [];
     props.push(...config.ONTOLOGY_QUERY_PARAMS);
-    const payload = util.parsePayload(form, props, params);
+    const payload = util.parsePayload(form, props, params, true);
     return qs.stringify(payload);
   }
 
@@ -92,19 +94,23 @@ class AdvancedQueryViewBase extends Component {
    * Updates main parameters after user input.
    * @param {Event} e - User input event.
    */
-  handleChange(e) {
+  handleChange(e, nested) {
     const { form } = this.state;
-    form[e.target.name] = e.target.value;
+    const {
+      name,
+      value,
+      '@rid': rid,
+      sourceId,
+    } = e.target;
 
-    if (e.target['@rid']) {
-      form[`${e.target.name}.@rid`] = e.target['@rid'];
-    } else if (form[`${e.target.name}.@rid`]) {
-      form[`${e.target.name}.@rid`] = '';
-    }
-    if (e.target.sourceId) {
-      form[`${e.target.name}.sourceId`] = e.target.sourceId;
-    } else if (form[`${e.target.name}.sourceId`]) {
-      form[`${e.target.name}.sourceId`] = '';
+    if (nested) {
+      form[nested][name] = value;
+      form[nested][`${name}.@rid`] = rid || '';
+      form[nested][`${name}.sourceId`] = sourceId || '';
+    } else {
+      form[name] = value;
+      form[`${name}.@rid`] = rid || '';
+      form[`${name}.sourceId`] = sourceId || '';
     }
 
     this.setState({ form });
@@ -124,6 +130,33 @@ class AdvancedQueryViewBase extends Component {
   }
 
   /**
+ * Handles changes in an embedded property's class.
+ * @param {Event} e - new class selection event.
+ * @param {string} nested - nested property key.
+ */
+  handleNestedClassChange(e, nested) {
+    const { form } = this.state;
+    const { schema } = this.props;
+    const { value } = e.target;
+    const classSchema = schema.getClass(form['@class']).properties;
+    if (schema.getClass(value)) {
+      const abstractClass = classSchema
+        .find(p => p.name === nested).linkedClass.name;
+      const varKeys = classSchema
+        .filter(p => p.linkedClass && p.linkedClass.name === abstractClass)
+        .map(p => p.name);
+      varKeys.forEach((key) => {
+        if ((form[key]['@class'] && form[key]['@class'] !== value) || key === nested) {
+          form[key] = schema.initModel({}, value);
+        }
+      });
+    } else {
+      form[nested] = { '@class': '' };
+    }
+    this.setState({ form });
+  }
+
+  /**
    * Closes notification snackbar.
    */
   handleClose() {
@@ -133,7 +166,7 @@ class AdvancedQueryViewBase extends Component {
   render() {
     const {
       form,
-      ontologyTypes,
+      classes,
       message,
     } = this.state;
     const { history, schema } = this.props;
@@ -156,6 +189,12 @@ class AdvancedQueryViewBase extends Component {
           )}
         />
         <Paper elevation={4} className="adv-header">
+          <Button
+            onClick={() => history.push('/query/advanced/builder')}
+            variant="outlined"
+          >
+            Query Builder
+          </Button>
           <Typography variant="h5" id="adv-title">
             Advanced Query
           </Typography>
@@ -168,7 +207,7 @@ class AdvancedQueryViewBase extends Component {
               name="@class"
               label="Class"
               id="class-adv"
-              resources={ontologyTypes}
+              resources={classes}
             >
               {resource => (
                 <MenuItem key={resource.name} value={resource.name}>
@@ -184,6 +223,7 @@ class AdvancedQueryViewBase extends Component {
             schema={schema}
             sort={util.sortFields(DEFAULT_ORDER)}
             ignoreRequired
+            onClassChange={this.handleNestedClassChange}
           />
         </Paper>
         <Paper elevation={4} id="adv-nav-buttons">

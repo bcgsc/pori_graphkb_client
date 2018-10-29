@@ -23,29 +23,25 @@ class Record {
     }
   }
 
+  /**
+   * Returns list of strings representing the main fields used to identify the
+   * record.
+   */
   static getIdentifiers() {
     return ['@rid'];
   }
 
+  /**
+   * Returns record id.
+   */
   getId() {
     return this['@rid'];
   }
 
 
   /**
-   * Returns a representative field of a given object. Defaults to:
-   * name, then sourceId (defined in config.json: DEFAULT_PROPS), then if
-   * neither are present, the first primitive type field in the object.
-   * @example
-   * > util.getPreview({name: 'bob', ...other})
-   * > 'bob'
-   * @example
-   * > util.getPreview({sourceId: '123', color: 'blue'})
-   * > '123'
-   * @example
-   * > util.getPreview({colors: ['red', 'green], height: '6ft'})
-   * > '6ft'
-   * @param {Object} obj - target data object.
+   * Returns a representative field of a given object. Defaults to first
+   * identifier field, then to first non object field.
    */
   getPreview() {
     let preview;
@@ -67,6 +63,9 @@ class Record {
 }
 
 class V extends Record {
+  /**
+   * Returns edges connected to vertex.
+   */
   getEdges() {
     return edges.reduce((array, edge) => {
       if (this[edge] && this[edge].length > 0) {
@@ -80,6 +79,9 @@ class V extends Record {
     }, []);
   }
 
+  /**
+   * Returns edge types that are connected to vertex.
+   */
   getEdgeTypes() {
     return edges.reduce((array, edge) => {
       if (this[edge] && this[edge].length > 0 && !array.includes(this[edge][0]['@class'])) {
@@ -112,18 +114,49 @@ class Ontology extends V {
    * @override
    */
   getPreview() {
-    return this.name || this.sourceId;
+    return this.name
+      || this.sourceId
+      || Object.values(this).find(v => typeof v !== 'object' && typeof v !== 'function');
   }
 }
 
-class PositionalVariant extends V {
+class Variant extends V {
   /**
    * @override
    */
   static getIdentifiers() {
-    return ['@class', 'type.name', 'reference1.name', 'reference2.name'];
+    return ['@class', 'type.name', 'reference1.name', 'break1Repr', 'reference2.name', 'break2Repr'];
   }
 
+  /**
+   * @override
+   */
+  getPreview() {
+    const {
+      type,
+      reference1,
+      reference2,
+    } = this;
+    const t = type.name || type.sourceId;
+    const r1 = reference1 ? reference1.name || reference1.sourceId : '';
+    const r1t = reference1 ? reference1.biotype || '' : '';
+    const r2 = reference2 ? reference2.name || reference2.sourceId : '';
+    const r2t = reference2 ? reference2.biotype || '' : '';
+    return `${t} variant on ${r1t && `${r1t} `}${r1}${r2 && ` and ${r1t && `${r2t} `}${r2}`}`;
+  }
+}
+
+class PositionalVariant extends Variant {
+  /**
+   * @override
+   */
+  static getIdentifiers() {
+    return Variant.getIdentifiers().slice(1);
+  }
+
+  /**
+   * @override
+   */
   getPreview() {
     const notation = {};
     Object.keys(this).forEach((key) => {
@@ -155,6 +188,16 @@ class Statement extends V {
   static getIdentifiers() {
     return ['appliesTo.name', 'relevance.name', 'source.name'];
   }
+
+  /**
+   * @override
+   */
+  getPreview() {
+    const { relevance, appliesTo } = this;
+    const rel = relevance ? util.formatStr(relevance.name || relevance.sourceId) : undefined;
+    const appl = appliesTo ? util.formatStr(appliesTo.name || appliesTo.sourceId) : undefined;
+    return `${rel}${appl ? ` to ${appl}` : ''}`;
+  }
 }
 
 class Source extends V {
@@ -171,11 +214,14 @@ class Position extends V {
    * @override
    */
   static getIdentifiers() {
-    return ['@class', 'pos', 'refAA'];
+    return ['@class', 'pos', 'refAA', 'arm', 'majorBand', 'minorBand'];
   }
 }
 
 class Publication extends Ontology {
+  /**
+   * @override
+   */
   getPreview() {
     return `${util.formatStr(this.source.name)}: ${this.sourceId}`;
   }
@@ -186,11 +232,12 @@ const classes = {
   V,
   Edge,
   Ontology,
-  PositionalVariant,
+  Variant,
   Statement,
   Source,
   Position,
   Publication,
+  PositionalVariant,
 };
 
 export default classes;

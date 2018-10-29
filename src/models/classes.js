@@ -139,9 +139,9 @@ class Variant extends V {
     } = this;
     const t = type.name || type.sourceId;
     const r1 = reference1 ? reference1.name || reference1.sourceId : '';
-    const r1t = reference1 ? reference1.biotype : '';
+    const r1t = reference1 ? reference1.biotype || '' : '';
     const r2 = reference2 ? reference2.name || reference2.sourceId : '';
-    const r2t = reference2 ? reference2.biotype : '';
+    const r2t = reference2 ? reference2.biotype || '' : '';
     return `${t} variant on ${r1t && `${r1t} `}${r1}${r2 && ` and ${r1t && `${r2t} `}${r2}`}`;
   }
 }
@@ -194,8 +194,8 @@ class Statement extends V {
    */
   getPreview() {
     const { relevance, appliesTo } = this;
-    const rel = util.formatStr(relevance.name || relevance.sourceId);
-    const appl = appliesTo && util.formatStr(appliesTo.name || appliesTo.sourceId);
+    const rel = relevance ? util.formatStr(relevance.name || relevance.sourceId) : undefined;
+    const appl = appliesTo ? util.formatStr(appliesTo.name || appliesTo.sourceId) : undefined;
     return `${rel}${appl ? ` to ${appl}` : ''}`;
   }
 }

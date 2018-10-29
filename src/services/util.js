@@ -141,7 +141,7 @@ const formatStr = (str) => {
   const ret = parseAcronyms(castToExist(str))
     .trim()
     .replace(newSentence, match => match.toUpperCase());
-  return ret.charAt(0).toUpperCase() + ret.slice(1);
+  return ret;
 };
 
 /**

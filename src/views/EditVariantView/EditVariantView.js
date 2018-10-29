@@ -3,7 +3,7 @@ import './EditVariantView.css';
 import PropTypes from 'prop-types';
 import { Paper, Typography, Button } from '@material-ui/core';
 import * as jc from 'json-cycle';
-import VariantParserComponent from '../../components/VariantParserComponent/VariantParserComponent';
+import PositionalVariantParser from '../../components/PositionalVariantParser/PositionalVariantParser';
 import { withSchema } from '../../components/SchemaContext/SchemaContext';
 import util from '../../services/util';
 import api from '../../services/api';
@@ -22,7 +22,7 @@ class EditVariantViewBase extends Component {
   async componentDidMount() {
     const { match, schema } = this.props;
     const { rid } = match.params;
-    const { route } = schema.get('PositionalVariant');
+    const { route } = schema.get('Variant');
     const response = await api.get(`${route}/${rid}?neighbors=3`);
     const variant = schema.newRecord(jc.retrocycle(response).result);
     this.setState({
@@ -52,7 +52,7 @@ class EditVariantViewBase extends Component {
   async submitVariant(variant) {
     const { schema } = this.props;
     const copy = Object.assign({}, variant);
-    const classSchema = schema.getClass('PositionalVariant').properties;
+    const { properties, route } = schema.getClass(variant['@class']);
     Object.keys(copy).forEach((k) => {
       if (typeof copy[k] === 'object') { // more flexible
         if (!copy[k]['@class']) {
@@ -71,8 +71,8 @@ class EditVariantViewBase extends Component {
         }
       }
     });
-    const payload = util.parsePayload(copy, classSchema);
-    await api.patch(`/positionalvariants/${variant['@rid'].slice(1)}`, payload);
+    const payload = util.parsePayload(copy, properties);
+    await api.patch(`${route}/${variant['@rid'].slice(1)}`, payload);
   }
 
   render() {
@@ -95,7 +95,7 @@ class EditVariantViewBase extends Component {
         </Paper>
 
         <div className="variant-body">
-          <VariantParserComponent
+          <PositionalVariantParser
             handleFinish={this.handleFinish}
             handleSubmit={this.submitVariant}
             schema={schema}

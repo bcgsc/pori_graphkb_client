@@ -1,10 +1,10 @@
 /**
- * @module /components/VariantParserComponent
+ * @module /components/PositionalVariantParser
  */
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './VariantParserComponent.css';
+import './PositionalVariantParser.css';
 import {
   TextField,
   Button,
@@ -34,7 +34,7 @@ const IGNORED_FIELDS = [
   'zygosity',
 ];
 
-class VariantParserComponent extends Component {
+class PositionalVariantParser extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -71,7 +71,7 @@ class VariantParserComponent extends Component {
     const { schema } = this.props;
     const { value } = e.target;
     this.setState({ shorthand: value });
-    const classSchema = schema.getClass('PositionalVariant').properties;
+    const { properties } = schema.getClass('PositionalVariant');
     if (!value) {
       const newVariant = schema.initModel({}, 'PositionalVariant');
       Object.keys(newVariant).forEach((k) => {
@@ -89,7 +89,7 @@ class VariantParserComponent extends Component {
         const response = kbp.variant.parse(value.trim());
         // Split response into link data and non-link data
         const linkProps = await this.extractLinkProps(response);
-        const embeddedProps = util.getPropOfType(classSchema, 'embedded');
+        const embeddedProps = util.getPropOfType(properties, 'embedded');
 
         embeddedProps.forEach((prop) => {
           const { name } = prop;
@@ -403,7 +403,7 @@ class VariantParserComponent extends Component {
  * @property {function} handleSubmit - function for handling form submission.
  * @property {Object} schema - Knowledgebase schema object.
  */
-VariantParserComponent.propTypes = {
+PositionalVariantParser.propTypes = {
   required: PropTypes.bool,
   error: PropTypes.bool,
   disabled: PropTypes.bool,
@@ -413,7 +413,7 @@ VariantParserComponent.propTypes = {
   initVariant: PropTypes.object,
 };
 
-VariantParserComponent.defaultProps = {
+PositionalVariantParser.defaultProps = {
   initVariant: null,
   required: false,
   error: false,
@@ -421,4 +421,4 @@ VariantParserComponent.defaultProps = {
   handleSubmit: () => { },
 };
 
-export default VariantParserComponent;
+export default PositionalVariantParser;

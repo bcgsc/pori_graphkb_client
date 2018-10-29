@@ -6,7 +6,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './OntologyFormComponent.css';
 import {
-  TextField,
   List,
   IconButton,
   MenuItem,
@@ -17,8 +16,6 @@ import {
   DialogActions,
   DialogTitle,
   Paper,
-  InputAdornment,
-  Chip,
   Table,
   TableHead,
   TableBody,
@@ -36,6 +33,7 @@ import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectCo
 import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
 import FormTemplater from '../FormTemplater/FormTemplater';
 import NotificationDrawer from '../NotificationDrawer/NotificationDrawer';
+import EmbeddedListForm from '../EmbeddedListForm/EmbeddedListForm';
 import util from '../../services/util';
 
 const DEFAULT_ORDER = [
@@ -67,8 +65,6 @@ class OntologyFormComponent extends Component {
         out: -1,
         source: '',
       },
-      subset: '',
-      deletedSubsets: [],
       deleteDialog: false,
       errorFlag: false,
     };
@@ -87,7 +83,6 @@ class OntologyFormComponent extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleSubsetAdd = this.handleSubsetAdd.bind(this);
     this.handleSubsetDelete = this.handleSubsetDelete.bind(this);
-    this.handleSubsetUndo = this.handleSubsetUndo.bind(this);
   }
 
   /**
@@ -331,18 +326,10 @@ class OntologyFormComponent extends Component {
     this.setState({ loading: false });
   }
 
-  /**
-   * Adds new subset to state list. Clears subset field.
-   * @param {Event} e - User request subset add event.
-   */
-  handleSubsetAdd(e) {
-    e.preventDefault();
-    const { form, subset } = this.state;
-
-    if (subset && !form.subsets.includes(subset.toLowerCase())) {
-      form.subsets.push(subset);
-      this.setState({ form, subset: '' });
-    }
+  handleSubsetAdd(val) {
+    const { form } = this.state;
+    form.subsets.push(val);
+    this.setState({ form });
   }
 
   /**
@@ -350,26 +337,9 @@ class OntologyFormComponent extends Component {
    * @param {string} subset - Subset to be deleted.
    */
   handleSubsetDelete(subset) {
-    const { form, originalNode, deletedSubsets } = this.state;
-    const { variant } = this.props;
-    if (form.subsets.indexOf(subset) !== -1) {
-      form.subsets.splice(form.subsets.indexOf(subset), 1);
-      if (variant === 'edit' && originalNode.subsets.includes(subset)) {
-        deletedSubsets.push(subset);
-      }
-    }
-    this.setState({ form, deletedSubsets });
-  }
-
-  /**
-   * Reverts a subset that is staged for deletion.
-   * @param {string} subset - deleted subset to be reverted.
-   */
-  handleSubsetUndo(subset) {
-    const { form, deletedSubsets } = this.state;
-    deletedSubsets.splice(deletedSubsets.indexOf(subset), 1);
-    form.subsets.push(subset);
-    this.setState({ form, deletedSubsets });
+    const { form } = this.state;
+    form.subsets.splice(form.subsets.indexOf(subset), 1);
+    this.setState({ form });
   }
 
   render() {
@@ -378,12 +348,10 @@ class OntologyFormComponent extends Component {
       originalNode,
       relationship,
       relationships,
-      subset,
       deleteDialog,
       errorFlag,
       loading,
       notificationDrawerOpen,
-      deletedSubsets,
     } = this.state;
     const {
       sources,
@@ -437,31 +405,6 @@ class OntologyFormComponent extends Component {
         </DialogContent>
       </Dialog>
     );
-
-    /**
-     * Formats model subsets into list form.
-     */
-    const subsets = (form.subsets || [])
-      .sort((a, b) => a > b ? 1 : -1)
-      .map(s => (
-        <Chip
-          label={s}
-          deleteIcon={<CloseIcon />}
-          onDelete={() => this.handleSubsetDelete(s)}
-          key={s}
-          className="subset-chip"
-        />
-      ));
-
-    subsets.push(...deletedSubsets.map(s => (
-      <Chip
-        label={s}
-        deleteIcon={<RefreshIcon />}
-        onDelete={() => this.handleSubsetUndo(s)}
-        key={s}
-        className="subset-chip deleted-chip"
-      />
-    )));
 
     /**
       * Formats valid edge types.
@@ -552,41 +495,16 @@ class OntologyFormComponent extends Component {
                 </List>
               </Paper>
               <Paper className="param-section forms-lists" elevation={4}>
-                <Paper className="subsets-wrapper">
-                  <Typography variant="h6">
-                    Subsets
-                  </Typography>
-                  <div className="input-wrapper">
-                    <TextField
-                      id="subset-temp"
-                      label="Add a Subset"
-                      value={subset}
-                      onChange={this.handleChange}
-                      className="text-input"
-                      name="subset"
-                      onKeyDown={(e) => {
-                        if (e.keyCode === 13) {
-                          this.handleSubsetAdd(e);
-                        }
-                      }}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton
-                              color="primary"
-                              onClick={this.handleSubsetAdd}
-                            >
-                              <AddIcon />
-                            </IconButton>
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </div>
-                  <List className="subsets-list">
-                    {subsets}
-                  </List>
-                </Paper>
+                <EmbeddedListForm
+                  list={form.subsets}
+                  initList={originalNode && originalNode.subsets}
+                  undoable={variant === 'edit'}
+                  onAdd={this.handleSubsetAdd}
+                  onDelete={this.handleSubsetDelete}
+                  onUndo={this.handleSubsetAdd}
+                  title="Subsets"
+                  label="Add a Subset"
+                />
                 <Paper className="relationships-wrapper">
                   <Typography variant="h6">
                     Relationships
@@ -732,7 +650,7 @@ class OntologyFormComponent extends Component {
                   id="delete-btn"
                   size="large"
                 >
-                  Delete Ontology
+                  Delete
                 </Button>
               )}
               <Button
@@ -743,7 +661,7 @@ class OntologyFormComponent extends Component {
                 id="submit-btn"
                 size="large"
               >
-                {variant === 'edit' ? 'Confirm Changes' : 'Submit Ontology'}
+                {variant === 'edit' ? 'Confirm Changes' : 'Submit'}
               </Button>
             </Paper>
           </div>

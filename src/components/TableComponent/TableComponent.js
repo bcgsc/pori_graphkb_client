@@ -571,10 +571,7 @@ class TableComponent extends Component {
           cell = cell[tableColumns[i].sortBy];
         }
 
-        if (exclusions.includes(util.castToExist(cell))) {
-          return true;
-        }
-        return false;
+        return exclusions.includes(util.castToExist(cell));
       }));
 
     const pageData = filteredData

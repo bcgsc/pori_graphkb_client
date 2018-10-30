@@ -147,6 +147,15 @@ class TableComponent extends Component {
       }
       return r;
     }, []);
+    if (defaultOrder.includes('preview')) {
+      tableColumns.push({
+        id: 'preview',
+        checked: true,
+        label: 'Preview',
+        sortBy: null,
+        sortable: null,
+      });
+    }
 
     const columnFilterStrings = [];
     let columnFilterExclusions = [];
@@ -571,10 +580,7 @@ class TableComponent extends Component {
           cell = cell[tableColumns[i].sortBy];
         }
 
-        if (exclusions.includes(util.castToExist(cell))) {
-          return true;
-        }
-        return false;
+        return exclusions.includes(util.castToExist(cell));
       }));
 
     const pageData = filteredData
@@ -903,11 +909,20 @@ class TableComponent extends Component {
                         </TableCell>
                         {tableColumns.map((col) => {
                           if (col.checked) {
+                            let val = util.formatStr(col.sortBy
+                              ? util.castToExist((n[col.id] || '')[col.sortBy])
+                              : util.castToExist(n[col.id]));
+
+                            if (col.id === 'preview') {
+                              try {
+                                val = n.getPreview();
+                              } catch (e) {
+                                val = 'Invalid Variant';
+                              }
+                            }
                             return (
                               <TableCell classes={{ root: 'cell' }} key={col.id}>
-                                {util.formatStr(col.sortBy
-                                  ? util.castToExist((n[col.id] || '')[col.sortBy])
-                                  : util.castToExist(n[col.id]))}
+                                {val}
                               </TableCell>
                             );
                           }

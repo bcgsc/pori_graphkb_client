@@ -131,7 +131,7 @@ class Variant extends V {
    * record.
    */
   static getIdentifiers() {
-    return ['@class', 'type.name', 'reference1.name', 'preview', 'reference2.name'];
+    return ['@class', 'type.name', 'reference1.name', 'reference2.name'];
   }
 
   /**
@@ -160,7 +160,9 @@ class PositionalVariant extends Variant {
    * record.
    */
   static getIdentifiers() {
-    return Variant.getIdentifiers().slice(1);
+    const ids = Variant.getIdentifiers().slice(1);
+    ids.push('preview');
+    return ids;
   }
 
   /**

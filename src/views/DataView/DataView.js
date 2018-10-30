@@ -48,6 +48,29 @@ class DataViewBase extends Component {
     return Promise.resolve(jc.retrocycle(response).result);
   }
 
+  /**
+   * Prepares next query function.
+   * @param {string} route - API route.
+   * @param {Object} queryParams - Query parameters key/value pairs.
+   * @param {Array} prevResult - Previous query results.
+   * @param {Array} omitted - List of property keys to omit during next query.
+   */
+  static prepareNextPagination(route, queryParams, prevResult, omitted = []) {
+    const nextQueryParams = queryParams;
+    if (prevResult.length >= queryParams.limit) {
+      nextQueryParams.skip = Number(queryParams.limit) + Number(queryParams.skip || 0);
+      return {
+        next: () => DataViewBase.makeApiQuery(route, nextQueryParams, omitted),
+        moreResults: true,
+        filteredSearch: nextQueryParams,
+      };
+    }
+    return {
+      next: null,
+      moreResults: false,
+    };
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -65,7 +88,6 @@ class DataViewBase extends Component {
 
     this.handleClick = this.handleClick.bind(this);
     this.processData = this.processData.bind(this);
-    this.prepareNextPagination = this.prepareNextPagination.bind(this);
 
     // TableComponent methods
     this.handleCheckbox = this.handleCheckbox.bind(this);
@@ -93,20 +115,38 @@ class DataViewBase extends Component {
   async componentDidMount() {
     const { history, schema } = this.props;
 
-    const filteredSearch = qs.parse(history.location.search.slice(1));
+    const queryParams = qs.parse(history.location.search.slice(1));
     let route = '/ontologies';
     const omitted = [];
-    const kbClass = schema.getClass(filteredSearch['@class']);
+    const kbClass = schema.getClass(queryParams['@class']);
     if (kbClass) {
       ({ route } = kbClass);
       omitted.push('@class');
     }
-    filteredSearch.neighbors = filteredSearch.neighbors || DEFAULT_NEIGHBORS;
-    filteredSearch.limit = filteredSearch.limit || DEFAULT_LIMIT;
-    const data = await DataViewBase.makeApiQuery(route, filteredSearch, omitted);
-    this.processData(data);
-    this.prepareNextPagination(route, filteredSearch, data, omitted);
-    this.setState({ filteredSearch });
+    queryParams.neighbors = queryParams.neighbors || DEFAULT_NEIGHBORS;
+    queryParams.limit = queryParams.limit || DEFAULT_LIMIT;
+    const start = performance.now();
+    const response = await DataViewBase.makeApiQuery(route, queryParams, omitted);
+    const afterCall = performance.now();
+    const { data, allProps } = this.processData(response);
+    const afterProcess = performance.now();
+    const {
+      next,
+      moreResults,
+      filteredSearch,
+    } = DataViewBase.prepareNextPagination(route, queryParams, response, omitted);
+    const afterPrepNext = performance.now();
+
+    console.log(`api call: ${afterCall - start}`);
+    console.log(`processing data: ${afterProcess - afterCall}`);
+    console.log(`prepared next call: ${afterPrepNext - afterProcess}`);
+    this.setState({
+      filteredSearch: filteredSearch || queryParams,
+      moreResults,
+      next,
+      data,
+      allProps,
+    });
   }
 
   /**
@@ -129,31 +169,7 @@ class DataViewBase extends Component {
       data[record['@rid']] = schema.newRecord(record);
     });
 
-    this.setState({ data, allProps });
-  }
-
-  /**
-   * Prepares next query function.
-   * @param {string} route - API route.
-   * @param {Object} queryParams - Query parameters key/value pairs.
-   * @param {Array} prevResult - Previous query results.
-   * @param {Array} omitted - List of property keys to omit during next query.
-   */
-  prepareNextPagination(route, queryParams, prevResult, omitted = []) {
-    const nextQueryParams = queryParams;
-    if (prevResult.length >= queryParams.limit) {
-      nextQueryParams.skip = Number(queryParams.limit) + Number(queryParams.skip || 0);
-      this.setState({
-        next: () => DataViewBase.makeApiQuery(route, nextQueryParams, omitted),
-        moreResults: true,
-        filteredSearch: nextQueryParams,
-      });
-    } else {
-      this.setState({
-        next: null,
-        moreResults: false,
-      });
-    }
+    return { data, allProps };
   }
 
   /**
@@ -168,7 +184,7 @@ class DataViewBase extends Component {
       const { route } = schema.get(node.data['@class']);
       const endpoint = `${route || '/ontologies'}/${node.getId().slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`; // change
       const response = await api.get(endpoint);
-      this.processData([jc.retrocycle(response).result]);
+      this.setState({ ...this.processData([jc.retrocycle(response).result]) });
     }
   }
 
@@ -226,7 +242,6 @@ class DataViewBase extends Component {
   async handleSubsequentPagination() {
     const {
       next,
-      data,
       filteredSearch,
     } = this.state;
     const { schema } = this.props;
@@ -249,11 +264,9 @@ class DataViewBase extends Component {
 
         const nextData = await next();
 
-        this.processData(nextData);
-        this.prepareNextPagination(route, filteredSearch, nextData, omitted);
-
         this.setState({
-          data,
+          ...this.processData(nextData),
+          ...DataViewBase.prepareNextPagination(route, filteredSearch, nextData, omitted),
           completedNext: true,
         });
       } catch (e) {

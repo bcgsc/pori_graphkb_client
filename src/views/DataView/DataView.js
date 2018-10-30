@@ -44,8 +44,14 @@ class DataViewBase extends Component {
    * @param {Array} omitted - List of parameters to strip from API call.
    */
   static async makeApiQuery(route, queryParams, omitted = []) {
+    const start = performance.now();
     const response = await api.get(`${route}?${qs.stringify(omit(queryParams, omitted))}`);
-    return Promise.resolve(jc.retrocycle(response).result);
+    const now = performance.now();
+    console.log(`response: ${now - start}`);
+    const list = jc.retrocycle(response).result;
+    const end = performance.now();
+    console.log(`retrocycle: ${end - now}`);
+    return list;
   }
 
   /**

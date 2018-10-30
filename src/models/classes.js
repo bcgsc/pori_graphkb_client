@@ -97,7 +97,7 @@ class Edge extends Record {
    * @override
    */
   static getIdentifiers() {
-    return ['@class', 'source.name'];
+    return ['@class', 'level.sourceId', 'summary', 'source.name'];
   }
 }
 

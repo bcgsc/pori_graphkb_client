@@ -162,6 +162,7 @@ function FormTemplater(props) {
             fieldComponent="div"
             errorFields={errorFields.map(errorField => errorField.replace(`${name}.`, ''))}
             pairs={pairs}
+            ignoreRequired={ignoreRequired}
           />
         </ListItem>
       );
@@ -225,7 +226,7 @@ function FormTemplater(props) {
           name={name}
           required={mandatory}
           multiline={t === 'text'}
-          error={invalid()}
+          error={invalid() && !ignoreRequired}
           InputProps={{
             endAdornment: description && (
               <InputAdornment position="end">

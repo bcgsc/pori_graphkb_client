@@ -83,9 +83,9 @@ class AdvancedQueryViewBase extends Component {
     const { schema } = this.props;
     const params = [{ name: '@class', type: 'string' }];
     params.push(...config.ONTOLOGY_QUERY_PARAMS);
-    const props = schema.getClass(form['@class']).properties || [];
-    props.push(...config.ONTOLOGY_QUERY_PARAMS);
-    const payload = util.parsePayload(form, props, params, true);
+    const schemaClass = schema.getClass(form['@class']).properties || [];
+    schemaClass.push(...config.ONTOLOGY_QUERY_PARAMS);
+    const payload = util.parsePayload(form, schemaClass, params, true);
     return qs.stringify(payload);
   }
 

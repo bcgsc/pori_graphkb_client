@@ -2,15 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './EmbeddedListForm.css';
 import {
-  Paper,
-  Typography,
   TextField,
   Chip,
-  InputAdornment,
   IconButton,
-  List,
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import CancelIcon from '@material-ui/icons/Cancel';
 import AddIcon from '@material-ui/icons/Add';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
@@ -20,8 +16,10 @@ class EmbeddedListForm extends Component {
     this.state = {
       deleted: [],
       temp: '',
+      initList: props.list.slice(),
     };
     this.handleChange = this.handleChange.bind(this);
+    this.handleAdd = this.handleAdd.bind(this);
   }
 
   /**
@@ -30,11 +28,19 @@ class EmbeddedListForm extends Component {
  */
   handleAdd(e) {
     e.preventDefault();
-    const { onAdd, list } = this.props;
-    const { temp } = this.state;
+    const {
+      list,
+      name,
+      onChange,
+    } = this.props;
+
+    const {
+      temp,
+    } = this.state;
 
     if (temp && !list.includes(temp.toLowerCase())) {
-      onAdd(temp);
+      list.push(temp);
+      onChange({ target: { name, value: list } });
       this.setState({ temp: '' });
     }
   }
@@ -44,16 +50,19 @@ class EmbeddedListForm extends Component {
    * @param {string} val - Subset to be deleted.
    */
   handleDelete(val) {
-    const { deleted } = this.state;
+    const {
+      deleted,
+      initList,
+    } = this.state;
     const {
       list,
-      undoable,
-      initList,
-      onDelete,
+      onChange,
+      name,
     } = this.props;
     if (list.indexOf(val) !== -1) {
-      onDelete(val);
-      if (undoable && initList.includes(val)) {
+      list.splice(list.indexOf(val), 1);
+      onChange({ target: { name, value: list } });
+      if (initList && initList.includes(val)) {
         deleted.push(val);
       }
     }
@@ -65,10 +74,15 @@ class EmbeddedListForm extends Component {
    * @param {string} val - deleted subset to be reverted.
    */
   handleUndo(val) {
-    const { onUndo } = this.props;
+    const {
+      name,
+      onChange,
+      list,
+    } = this.props;
     const { deleted } = this.state;
     deleted.splice(deleted.indexOf(val), 1);
-    if (onUndo) onUndo(val);
+    list.push(val);
+    onChange({ target: { name, value: list } });
     this.setState({ deleted });
   }
 
@@ -83,16 +97,14 @@ class EmbeddedListForm extends Component {
     } = this.state;
     const {
       list,
-      title,
       label,
     } = this.props;
 
     const embeddedList = list
-      .sort((a, b) => a > b ? 1 : -1)
       .map(s => (
         <Chip
           label={s}
-          deleteIcon={<CloseIcon />}
+          deleteIcon={<CancelIcon />}
           onDelete={() => this.handleDelete(s)}
           key={s}
           className="embedded-list-chip"
@@ -109,61 +121,55 @@ class EmbeddedListForm extends Component {
       />
     )));
     return (
-      <Paper className="embedded-list-wrapper">
-        <Typography variant="h6">
-          {title}
-        </Typography>
-        <div className="embedded-list-input">
-          <TextField
-            id={`${title}-temp`}
-            label={label}
-            value={temp}
-            onChange={this.handleChange}
-            onKeyDown={(e) => {
-              if (e.keyCode === 13) {
-                this.handleAdd(e);
-              }
-            }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    color="primary"
-                    onClick={this.handleAdd}
-                  >
-                    <AddIcon />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
+      <div className="embedded-list-wrapper">
+        <TextField
+          className="embedded-list-textfield"
+          id={`${label}-temp`}
+          label={label}
+          value={temp}
+          onChange={this.handleChange}
+          onKeyDown={(e) => {
+            if (e.keyCode === 13) {
+              this.handleAdd(e);
+            }
+            if (e.keyCode === 8 && !temp) {
+              this.handleDelete(list[list.length - 1]);
+            }
+          }}
+          InputProps={{
+            classes: {
+              root: 'embedded-list-field',
+            },
+            inputProps: {
+              className: 'embedded-list-input',
+            },
+            startAdornment: embeddedList,
+          }}
+        />
+        <div className="embedded-list-btns">
+          <IconButton
+            color="primary"
+            onClick={this.handleAdd}
+          >
+            <AddIcon />
+          </IconButton>
         </div>
-        <List className="embedded-list">
-          {embeddedList}
-        </List>
-      </Paper>
+      </div>
     );
   }
 }
 
 EmbeddedListForm.propTypes = {
-  onAdd: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  onUndo: PropTypes.func,
+  onChange: PropTypes.func.isRequired,
   list: PropTypes.array,
-  initList: PropTypes.array,
-  undoable: PropTypes.bool,
   label: PropTypes.string,
-  title: PropTypes.string,
+  name: PropTypes.string,
 };
 
 EmbeddedListForm.defaultProps = {
-  onUndo: null,
   list: [],
-  initList: [],
-  undoable: false,
   label: '',
-  title: '',
+  name: '',
 };
 
 export default EmbeddedListForm;

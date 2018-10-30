@@ -84,77 +84,60 @@ $mediumBreakpoint: 500px;
             box-shadow: none;
           }
         }
-        .subsets-wrapper {
-          padding: 24px;
-          margin-bottom: 8px;
-          .subsets-list {
-            .subset-chip {
-              margin: 3px;
-            }
-            .deleted-chip {
-              background-color: lighten($md-warn, 25%);
-            }
-            .deleted-chip:focus {
-              background-color: lighten($md-warn, 22%);
+        padding: 24px;
+        margin-bottom: 8px;
+        display: flex;
+        flex-direction: column;
+        .form-table {
+          .search-wrap {
+            flex-grow: 1;
+            display: flex;
+            width: 100%;
+            min-width: 160px;
+            .autosearch-wrapper {
+              transform: translate(0, 18px);
             }
           }
-        }
-        .relationships-wrapper {
-          padding: 24px;
-          margin-bottom: 8px;
-          display: flex;
-          flex-direction: column;
-          .form-table {
-            .search-wrap {
-              flex-grow: 1;
-              display: flex;
+          .form-table-header {
+            tr th {
+              background-color: $background-light;
+              border-bottom: solid 1px rgba(0, 0, 0, 0.34);
+            }
+          }
+          .relationship-dir-type {
+            display: flex;
+            height: 48px;
+            button {
+              margin: auto;
+              margin-right: 8px;
+              svg {
+                transition: transform 0.1s;
+              }
+            }
+            @media (max-width: $mediumBreakpoint) {
               width: 100%;
-              min-width: 160px;
-              .autosearch-wrapper {
-                transform: translate(0, 18px);
-              }
             }
-            .form-table-header {
-              tr th {
-                background-color: $background-light;
-                border-bottom: solid 1px rgba(0, 0, 0, 0.34);
-              }
+          }
+          tr:nth-child(even) {
+            background: #e8e8e8;
+          }
+          tr,
+          th {
+            position: sticky;
+            top: 0;
+          }
+          tr.deleted {
+            td {
+              background-color: lighten($md-warn, 25%);
+              position: relative;
             }
-            .relationship-dir-type {
-              display: flex;
-              height: 48px;
-              button {
-                margin: auto;
-                margin-right: 8px;
-                svg {
-                  transition: transform 0.1s;
-                }
-              }
-              @media (max-width: $mediumBreakpoint) {
-                width: 100%;
-              }
-            }
-            tr:nth-child(even) {
-              background: #e8e8e8;
-            }
-            tr,
-            th {
-              position: sticky;
-              top: 0;
-            }
-            tr.deleted {
-              td {
-                background-color: lighten($md-warn, 25%);
-                position: relative;
-              }
-              td:before {
-                content: " ";
-                position: absolute;
-                top: 50%;
-                left: 0;
-                width: 100%;
-                border-bottom: 1px solid $md-warn;
-              }
+            td:before {
+              content: " ";
+              position: absolute;
+              top: 50%;
+              left: 0;
+              width: 100%;
+              border-bottom: 1px solid $md-warn;
             }
           }
         }

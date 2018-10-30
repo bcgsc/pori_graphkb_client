@@ -17,6 +17,7 @@ import {
 import HelpIcon from '@material-ui/icons/Help';
 import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
+import EmbeddedListForm from '../EmbeddedListForm/EmbeddedListForm';
 import util from '../../services/util';
 
 /**
@@ -163,6 +164,18 @@ function FormTemplater(props) {
             errorFields={errorFields.map(errorField => errorField.replace(`${name}.`, ''))}
             pairs={pairs}
             ignoreRequired={ignoreRequired}
+          />
+        </ListItem>
+      );
+    }
+    if (type === 'embeddedset') {
+      return (
+        <ListItem component={fieldComponent} key={name}>
+          <EmbeddedListForm
+            list={model[name]}
+            onChange={onChange}
+            name={name}
+            label={util.antiCamelCase(name)}
           />
         </ListItem>
       );

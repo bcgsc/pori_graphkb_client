@@ -33,7 +33,6 @@ import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectCo
 import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
 import FormTemplater from '../FormTemplater/FormTemplater';
 import NotificationDrawer from '../NotificationDrawer/NotificationDrawer';
-import EmbeddedListForm from '../EmbeddedListForm/EmbeddedListForm';
 import util from '../../services/util';
 
 const DEFAULT_ORDER = [
@@ -81,8 +80,6 @@ class OntologyFormComponent extends Component {
     this.handleRelationshipDirection = this.handleRelationshipDirection.bind(this);
     this.handleRelationshipUndo = this.handleRelationshipUndo.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleSubsetAdd = this.handleSubsetAdd.bind(this);
-    this.handleSubsetDelete = this.handleSubsetDelete.bind(this);
   }
 
   /**
@@ -326,21 +323,6 @@ class OntologyFormComponent extends Component {
     this.setState({ loading: false });
   }
 
-  handleSubsetAdd(val) {
-    const { form } = this.state;
-    form.subsets.push(val);
-    this.setState({ form });
-  }
-
-  /**
-   * Deletes subset from state subset list.
-   * @param {string} subset - Subset to be deleted.
-   */
-  handleSubsetDelete(subset) {
-    const { form } = this.state;
-    form.subsets.splice(form.subsets.indexOf(subset), 1);
-    this.setState({ form });
-  }
 
   render() {
     const {
@@ -489,157 +471,144 @@ class OntologyFormComponent extends Component {
                     propSchemas={editableProps}
                     schema={schema}
                     onChange={this.handleFormChange}
-                    excludedProps={['subsets']}
                     sort={util.sortFields(DEFAULT_ORDER)}
                   />
                 </List>
               </Paper>
               <Paper className="param-section forms-lists" elevation={4}>
-                <EmbeddedListForm
-                  list={form.subsets}
-                  initList={originalNode && originalNode.subsets}
-                  undoable={variant === 'edit'}
-                  onAdd={this.handleSubsetAdd}
-                  onDelete={this.handleSubsetDelete}
-                  onUndo={this.handleSubsetAdd}
-                  title="Subsets"
-                  label="Add a Subset"
-                />
-                <Paper className="relationships-wrapper">
-                  <Typography variant="h6">
-                    Relationships
-                  </Typography>
-                  <div style={{ overflow: 'auto' }}>
-                    <Table className="form-table">
-                      <TableHead className="form-table-header">
-                        <TableRow>
-                          <TableCell padding="checkbox" />
-                          <TableCell padding="dense">
-                            Class
-                          </TableCell>
-                          <TableCell padding="dense">
-                            Related Record
-                          </TableCell>
-                          <TableCell padding="dense">
-                            Source
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {relationships.map((r, i) => {
-                          const sourceName = sources.find(
-                            s => s['@rid'] === r.source,
-                          ).name;
-                          const typeName = r.in === originalNode['@rid']
-                            ? util.getEdgeLabel(`in_${r['@class']}`)
-                            : util.getEdgeLabel(`out_${r['@class']}`);
-                          return (
-                            <TableRow
-                              key={r['@rid'] || `${r['@class']}${r.in}${r.out}${r.source}`}
-                              className={r.deleted && 'deleted'}
-                            >
-                              <TableCell padding="checkbox">
-                                {!r.deleted ? (
+                <Typography variant="h6">
+                  Relationships
+                </Typography>
+                <div style={{ overflow: 'auto' }}>
+                  <Table className="form-table">
+                    <TableHead className="form-table-header">
+                      <TableRow>
+                        <TableCell padding="checkbox" />
+                        <TableCell padding="dense">
+                          Class
+                        </TableCell>
+                        <TableCell padding="dense">
+                          Related Record
+                        </TableCell>
+                        <TableCell padding="dense">
+                          Source
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {relationships.map((r, i) => {
+                        const sourceName = sources.find(
+                          s => s['@rid'] === r.source,
+                        ).name;
+                        const typeName = r.in === originalNode['@rid']
+                          ? util.getEdgeLabel(`in_${r['@class']}`)
+                          : util.getEdgeLabel(`out_${r['@class']}`);
+                        return (
+                          <TableRow
+                            key={r['@rid'] || `${r['@class']}${r.in}${r.out}${r.source}`}
+                            className={r.deleted && 'deleted'}
+                          >
+                            <TableCell padding="checkbox">
+                              {!r.deleted ? (
+                                <IconButton
+                                  onClick={() => this.handleRelationshipDelete(i)}
+                                  style={{ position: 'unset' }}
+                                  disableRipple
+                                  className="delete-btn"
+                                >
+                                  <CloseIcon color="error" />
+                                </IconButton>)
+                                : (
                                   <IconButton
-                                    onClick={() => this.handleRelationshipDelete(i)}
+                                    onClick={() => this.handleRelationshipUndo(r)}
                                     style={{ position: 'unset' }}
                                     disableRipple
-                                    className="delete-btn"
+                                    color="primary"
                                   >
-                                    <CloseIcon color="error" />
-                                  </IconButton>)
-                                  : (
-                                    <IconButton
-                                      onClick={() => this.handleRelationshipUndo(r)}
-                                      style={{ position: 'unset' }}
-                                      disableRipple
-                                      color="primary"
-                                    >
-                                      <RefreshIcon />
-                                    </IconButton>
-                                  )
-                                }
-                              </TableCell>
-                              <TableCell padding="checkbox">
-                                {typeName}
-                              </TableCell>
-                              <TableCell padding="checkbox">
-                                {r.name || r.sourceId}
-                              </TableCell>
-                              <TableCell padding="checkbox">
-                                {sourceName}
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })}
-                        <TableRow id="relationship-add">
-                          <TableCell padding="checkbox" id="add-btn-cell">
+                                    <RefreshIcon />
+                                  </IconButton>
+                                )
+                              }
+                            </TableCell>
+                            <TableCell padding="checkbox">
+                              {typeName}
+                            </TableCell>
+                            <TableCell padding="checkbox">
+                              {r.name || r.sourceId}
+                            </TableCell>
+                            <TableCell padding="checkbox">
+                              {sourceName}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                      <TableRow id="relationship-add">
+                        <TableCell padding="checkbox" id="add-btn-cell">
+                          <IconButton
+                            color="primary"
+                            onClick={this.handleRelationshipAdd}
+                          >
+                            <AddIcon />
+                          </IconButton>
+                        </TableCell>
+                        <TableCell padding="checkbox">
+                          <div className="relationship-dir-type">
                             <IconButton
+                              name="direction"
+                              onClick={this.handleRelationshipDirection}
                               color="primary"
-                              onClick={this.handleRelationshipAdd}
                             >
-                              <AddIcon />
-                            </IconButton>
-                          </TableCell>
-                          <TableCell padding="checkbox">
-                            <div className="relationship-dir-type">
-                              <IconButton
-                                name="direction"
-                                onClick={this.handleRelationshipDirection}
-                                color="primary"
-                              >
-                                <TrendingFlatIcon
-                                  className={
-                                    (relationship.in === originalNode['@rid'])
-                                      ? 'relationship-in'
-                                      : null
-                                  }
-                                />
-                              </IconButton>
-                              <ResourceSelectComponent
-                                value={relationship['@class']}
-                                onChange={this.handleRelationship}
-                                name="@class"
-                                label="Type"
-                                resources={edgeTypes}
-                                error={errorFlag}
-                                id="relationship-type"
-                                dense
-                              >
-                                {edgeTypesDisplay}
-                              </ResourceSelectComponent>
-                            </div>
-                          </TableCell>
-                          <TableCell padding="checkbox">
-                            <div className="search-wrap">
-                              <AutoSearchComponent
-                                value={relationship.name}
-                                onChange={this.handleRelationship}
-                                placeholder="Target Name"
-                                limit={10}
-                                name="name"
-                                error={errorFlag}
-                                dense
+                              <TrendingFlatIcon
+                                className={
+                                  (relationship.in === originalNode['@rid'])
+                                    ? 'relationship-in'
+                                    : null
+                                }
                               />
-                            </div>
-                          </TableCell>
-                          <TableCell padding="checkbox" style={{ transform: 'translate(0, 1px)' }}>
+                            </IconButton>
                             <ResourceSelectComponent
-                              value={relationship.source}
+                              value={relationship['@class']}
                               onChange={this.handleRelationship}
-                              name="source"
-                              label="Source"
-                              resources={sources}
+                              name="@class"
+                              label="Type"
+                              resources={edgeTypes}
+                              error={errorFlag}
+                              id="relationship-type"
+                              dense
+                            >
+                              {edgeTypesDisplay}
+                            </ResourceSelectComponent>
+                          </div>
+                        </TableCell>
+                        <TableCell padding="checkbox">
+                          <div className="search-wrap">
+                            <AutoSearchComponent
+                              value={relationship.name}
+                              onChange={this.handleRelationship}
+                              placeholder="Target Name"
+                              limit={10}
+                              name="name"
                               error={errorFlag}
                               dense
-                              id="relationship-source"
                             />
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </div>
-                </Paper>
+                          </div>
+                        </TableCell>
+                        <TableCell padding="checkbox" style={{ transform: 'translate(0, 1px)' }}>
+                          <ResourceSelectComponent
+                            value={relationship.source}
+                            onChange={this.handleRelationship}
+                            name="source"
+                            label="Source"
+                            resources={sources}
+                            error={errorFlag}
+                            dense
+                            id="relationship-source"
+                          />
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </div>
               </Paper>
             </div>
             <Paper className="form-btns" elevation={4}>

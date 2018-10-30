@@ -529,7 +529,7 @@ class OntologyFormComponent extends Component {
                             onChange={this.handleClassChange}
                             name="newNodeClass"
                             label="Class"
-                            resources={schema.getOntologies()}
+                            resources={schema.getOntologies().filter(o => o.name !== 'Ontology')}
                           >
                             {resource => (
                               <MenuItem key={resource.name} value={resource.name}>

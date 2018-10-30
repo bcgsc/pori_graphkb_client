@@ -560,13 +560,13 @@ class OntologyFormComponent extends Component {
                                   )
                                 }
                               </TableCell>
-                              <TableCell padding="dense">
+                              <TableCell padding="checkbox">
                                 {typeName}
                               </TableCell>
-                              <TableCell padding="dense">
+                              <TableCell padding="checkbox">
                                 {r.name || r.sourceId}
                               </TableCell>
-                              <TableCell padding="dense">
+                              <TableCell padding="checkbox">
                                 {sourceName}
                               </TableCell>
                             </TableRow>
@@ -581,7 +581,7 @@ class OntologyFormComponent extends Component {
                               <AddIcon />
                             </IconButton>
                           </TableCell>
-                          <TableCell padding="dense">
+                          <TableCell padding="checkbox">
                             <div className="relationship-dir-type">
                               <IconButton
                                 name="direction"
@@ -610,7 +610,7 @@ class OntologyFormComponent extends Component {
                               </ResourceSelectComponent>
                             </div>
                           </TableCell>
-                          <TableCell padding="dense">
+                          <TableCell padding="checkbox">
                             <div className="search-wrap">
                               <AutoSearchComponent
                                 value={relationship.name}
@@ -623,7 +623,7 @@ class OntologyFormComponent extends Component {
                               />
                             </div>
                           </TableCell>
-                          <TableCell padding="dense" style={{ transform: 'translate(0, 1px)' }}>
+                          <TableCell padding="checkbox" style={{ transform: 'translate(0, 1px)' }}>
                             <ResourceSelectComponent
                               value={relationship.source}
                               onChange={this.handleRelationship}

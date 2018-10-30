@@ -68,7 +68,6 @@ class AdvancedQueryViewBase extends Component {
     classes.push(...schema.getVariants());
 
     const form = schema.initModel({}, 'Ontology', config.ONTOLOGY_QUERY_PARAMS);
-    form.subsets = '';
 
     this.setState({
       classes,

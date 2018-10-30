@@ -182,9 +182,6 @@ describe('ontology methods test', () => {
     const testBadRecord = new Source({ anythingElse: 'pass' });
     expect(testBadRecord.getPreview()).to.eq('pass');
 
-    const varIds = Variant.getIdentifiers();
-    expect(PositionalVariant.getIdentifiers()).to.deep.eq(varIds.slice(1));
-
     const testVariants = new Variant({
       type: {
         '@class': 'Vocabulary',

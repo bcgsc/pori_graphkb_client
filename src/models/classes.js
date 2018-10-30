@@ -40,8 +40,7 @@ class Record {
 
 
   /**
-   * Returns a representative field of a given object. Defaults to first
-   * identifier field, then to first non object field.
+   * Returns a string preview for the record.
    */
   getPreview() {
     let preview;
@@ -95,6 +94,8 @@ class V extends Record {
 class Edge extends Record {
   /**
    * @override
+   * Returns list of strings representing the main fields used to identify the
+   * record.
    */
   static getIdentifiers() {
     return ['@class', 'source.name'];
@@ -105,6 +106,8 @@ class Edge extends Record {
 class Ontology extends V {
   /**
    * @override
+   * Returns list of strings representing the main fields used to identify the
+   * record.
    */
   static getIdentifiers() {
     return ['@class', 'name', 'sourceId', 'source.name'];
@@ -112,6 +115,7 @@ class Ontology extends V {
 
   /**
    * @override
+   * Returns a string preview for the record.
    */
   getPreview() {
     return this.name
@@ -123,13 +127,16 @@ class Ontology extends V {
 class Variant extends V {
   /**
    * @override
+   * Returns list of strings representing the main fields used to identify the
+   * record.
    */
   static getIdentifiers() {
-    return ['@class', 'type.name', 'reference1.name', 'break1Repr', 'reference2.name', 'break2Repr'];
+    return ['@class', 'type.name', 'reference1.name', 'preview', 'reference2.name'];
   }
 
   /**
    * @override
+   * Returns a string preview for the record.
    */
   getPreview() {
     const {
@@ -149,6 +156,8 @@ class Variant extends V {
 class PositionalVariant extends Variant {
   /**
    * @override
+   * Returns list of strings representing the main fields used to identify the
+   * record.
    */
   static getIdentifiers() {
     return Variant.getIdentifiers().slice(1);
@@ -156,6 +165,7 @@ class PositionalVariant extends Variant {
 
   /**
    * @override
+   * Returns a string preview for the record.
    */
   getPreview() {
     const notation = {};
@@ -184,6 +194,8 @@ class PositionalVariant extends Variant {
 class Statement extends V {
   /**
    * @override
+   * Returns list of strings representing the main fields used to identify the
+   * record.
    */
   static getIdentifiers() {
     return ['appliesTo.name', 'relevance.name', 'source.name'];
@@ -191,6 +203,7 @@ class Statement extends V {
 
   /**
    * @override
+   * Returns a string preview for the record.
    */
   getPreview() {
     const { relevance, appliesTo } = this;
@@ -203,6 +216,8 @@ class Statement extends V {
 class Source extends V {
   /**
    * @override
+   * Returns list of strings representing the main fields used to identify the
+   * record.
    */
   static getIdentifiers() {
     return ['name'];
@@ -212,6 +227,8 @@ class Source extends V {
 class Position extends V {
   /**
    * @override
+   * Returns list of strings representing the main fields used to identify the
+   * record.
    */
   static getIdentifiers() {
     return ['@class', 'pos', 'refAA', 'arm', 'majorBand', 'minorBand'];
@@ -221,6 +238,7 @@ class Position extends V {
 class Publication extends Ontology {
   /**
    * @override
+   * Returns a string preview for the record.
    */
   getPreview() {
     return `${util.formatStr(this.source.name)}: ${this.sourceId}`;

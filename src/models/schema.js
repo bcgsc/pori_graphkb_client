@@ -71,11 +71,11 @@ class Schema {
           newModel[name] = model[name] ? model[name].slice() : [];
           break;
         case 'link':
-          newModel[name] = (model[name] || '').name || '';
-          newModel[`${name}.@rid`] = (model[name] || '')['@rid'] || '';
-          newModel[`${name}.sourceId`] = (model[name] || '').sourceId || '';
+          newModel[name] = model[name] || '';
+          newModel[`${name}.@rid`] = model[`${name}.@rid`] || '';
+          newModel[`${name}.sourceId`] = model[`${name}.sourceId`] || '';
           if (!linkedClass) {
-            newModel[`${name}.class`] = (model[name] || '')['@class'] || '';
+            newModel[`${name}.class`] = model[`${name}.class`] || '';
           }
           break;
         case 'integer' || 'long':
@@ -130,7 +130,7 @@ class Schema {
   }
 
   /**
-   * Returns all valid edge types.
+   * Returns a list of strings containing all valid edge class names.
    */
   getEdges() {
     const { schema } = this;

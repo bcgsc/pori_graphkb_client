@@ -58,15 +58,16 @@ class QueryView extends Component {
     } = this.state;
     const { history } = this.props;
     let search;
-    const re = new RegExp(/[\r|\n|\t|:|\\|;|,|.|/|||+|*|=|!|?|[|\]|(|)]+/, 'g');
+    const re = new RegExp(/[\r|\n|\t|\s|:|\\|;|,|.|/|||+|*|=|!|?|[|\]|(|)]+/, 'g');
     if (tab === 'ontology') {
       if (str && !disabled) {
-        search = `?name=${str.replace(re, '').length > 4 ? '~' : ''}${str.trim()}`;
+        const m = !!str.match(re) || str.replace(re, '').trim().length > 4;
+        search = `?name=${!m ? '~' : ''}${str.trim()}`;
       }
     } else if (tab === 'variant' && str && !variantError) {
       search = '?@class=PositionalVariant';
       Object.keys(variant).forEach((key) => {
-        const val = `${variant[key]}`.replace(re, '').length > 4 ? `~${variant[key]}` : variant[key];
+        const val = `${variant[key]}`.match(re, '') || `${variant[key]}`.length < 4 ? variant[key] : `~${variant[key]}`;
         if (key !== 'prefix' && key !== 'multiFeature') {
           if (key === 'reference1' || key === 'reference2' || key === 'type') {
             search += `&${key}[name]=${val}`;
@@ -80,7 +81,6 @@ class QueryView extends Component {
         }
       });
     }
-
     if (search) {
       history.push({
         pathname: '/data/table',
@@ -138,7 +138,10 @@ class QueryView extends Component {
           <Tabs
             fullWidth
             value={tab}
-            onChange={(_, v) => this.handleChange({ target: { value: v, name: 'tab' } })}
+            onChange={(_, v) => {
+              this.handleChange({ target: { value: v, name: 'tab' } });
+              this.handleVariantParse();
+            }}
             color="primary"
           >
             <Tab value="ontology" label="Ontologies" />

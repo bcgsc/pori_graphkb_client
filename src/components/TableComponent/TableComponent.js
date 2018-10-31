@@ -569,6 +569,7 @@ class TableComponent extends Component {
       completedNext,
       detail,
     } = this.props;
+
     const filteredData = sortedData
       .filter(n => !hidden.includes(n.getId()))
       .filter(n => !columnFilterExclusions.some((exclusions, i) => {
@@ -915,7 +916,7 @@ class TableComponent extends Component {
 
                             if (col.id === 'preview') {
                               try {
-                                val = n.getPreview();
+                                ([, val] = n.getPreview().split(':'));
                               } catch (e) {
                                 val = 'Invalid Variant';
                               }

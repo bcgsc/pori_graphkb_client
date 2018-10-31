@@ -1,0 +1,55 @@
+@import "../../globals";
+
+.relationships-form-wrapper {
+  display: block;
+  .relationships-temp-fields {
+    position: relative;
+    border: 1px solid rgba(0, 0, 0, 0.27);
+    border-radius: 4px;
+    box-sizing: border-box;
+    @include paper;
+    padding-top: 0;
+    padding-bottom: 32px;
+    margin-bottom: 44px;
+
+    #relationships-form-submit {
+      position: absolute;
+      bottom: -28px;
+      z-index: 0;
+      right: 0;
+      left: 0;
+      margin: auto;
+      svg {
+        color: white;
+      }
+    }
+
+    legend {
+      h6 {
+        font-weight: 400;
+      }
+    }
+    .relationships-temp-btns {
+      display: flex;
+      > * {
+        margin: auto;
+      }
+      .relationship-direction-btn {
+        margin-right: 8px;
+        svg {
+          transition: transform 0.1s;
+        }
+      }
+      .relationship-in {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  .relationships-expansion {
+    column-count: 2;
+    > li {
+      display: inline-flex;
+    }
+  }
+}

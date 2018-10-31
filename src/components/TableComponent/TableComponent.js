@@ -569,6 +569,7 @@ class TableComponent extends Component {
       completedNext,
       detail,
     } = this.props;
+
     const filteredData = sortedData
       .filter(n => !hidden.includes(n.getId()))
       .filter(n => !columnFilterExclusions.some((exclusions, i) => {

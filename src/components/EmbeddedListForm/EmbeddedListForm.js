@@ -143,7 +143,7 @@ class EmbeddedListForm extends Component {
             inputProps: {
               className: 'embedded-list-input',
             },
-            startAdornment: embeddedList,
+            startAdornment: embeddedList.length > 0 ? embeddedList : undefined,
           }}
         />
         <div className="embedded-list-btns">

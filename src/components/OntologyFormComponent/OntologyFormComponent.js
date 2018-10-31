@@ -34,6 +34,7 @@ import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
 import FormTemplater from '../FormTemplater/FormTemplater';
 import NotificationDrawer from '../NotificationDrawer/NotificationDrawer';
 import util from '../../services/util';
+import RelationshipsForm from '../RelationshipsForm/RelationshipsForm';
 
 const DEFAULT_ORDER = [
   'name',
@@ -430,7 +431,7 @@ class OntologyFormComponent extends Component {
             </Paper>
             <div className="flexbox">
               <Paper className="param-section" elevation={4}>
-                <Typography variant="h6">
+                <Typography variant="h5">
                   Basic Parameters
                 </Typography>
                 <List component="nav">
@@ -476,7 +477,7 @@ class OntologyFormComponent extends Component {
                 </List>
               </Paper>
               <Paper className="param-section forms-lists" elevation={4}>
-                <Typography variant="h6">
+                <Typography variant="h5">
                   Relationships
                 </Typography>
                 <div style={{ overflow: 'auto' }}>
@@ -609,6 +610,11 @@ class OntologyFormComponent extends Component {
                     </TableBody>
                   </Table>
                 </div>
+
+                <RelationshipsForm
+                  schema={schema}
+                  relationships={[]}
+                />
               </Paper>
             </div>
             <Paper className="form-btns" elevation={4}>

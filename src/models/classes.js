@@ -186,9 +186,9 @@ class PositionalVariant extends Variant {
           notation[key] = this[key];
         } else if (key === 'type') {
           notation[key] = this[key].sourceId;
-        } else {
-          notation[key] = this[key];
         }
+      } else {
+        notation[key] = this[key];
       }
     });
     return (new kbp.variant.VariantNotation(notation)).toString();

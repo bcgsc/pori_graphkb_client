@@ -13,13 +13,25 @@
     padding-bottom: 32px;
     margin-bottom: 44px;
 
-    #relationships-form-submit {
+    .relationship-submit-wrapper {
       position: absolute;
       bottom: -18.5px;
       z-index: 0;
       right: 16px;
       margin: auto;
       display: block;
+      &::before {
+        content: "";
+        display: block;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        top: 0;
+        left: 0;
+      }
+    }
+    #relationships-form-submit {
       svg {
         color: white;
       }

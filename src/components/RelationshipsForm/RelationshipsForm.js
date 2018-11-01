@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './RelationshipsForm.css';
@@ -16,7 +15,6 @@ import {
   Button,
   ListItemText,
 } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
@@ -28,6 +26,13 @@ import util from '../../services/util';
 
 const DEFAULT_RELATIONSHIPS_PROPSLENGTH = 13;
 
+/**
+ * Displays all of a relationships key/value pairs to be displayed in table
+ * expanding row.
+ * @param {Object} r - relationship object to be displayed.
+ * @param {boolean} isIn - flag for whether current editing node is on the 'in'
+ * side of the relationship.
+ */
 const getRelationshipDetails = (r, isIn) => {
   const targetNode = isIn
     ? 'out'
@@ -51,7 +56,7 @@ const getRelationshipDetails = (r, isIn) => {
       ))}
     </div>
   );
-}
+};
 
 class RelationshipsForm extends Component {
   constructor(props) {
@@ -73,13 +78,15 @@ class RelationshipsForm extends Component {
     this.handleExpand = this.handleExpand.bind(this);
   }
 
+  /**
+   * Initializes temp relationship model and edge classes.
+   */
   componentDidMount() {
     const { schema, nodeRid } = this.props;
     const edges = schema.getEdges();
     const model = schema.initModel({}, edges[0]);
     model['in.@rid'] = nodeRid;
     model['@rid'] = this.applyTestId();
-    console.log(model);
     this.setState({ model, edges });
   }
 
@@ -103,42 +110,30 @@ class RelationshipsForm extends Component {
       to,
     } = this.state;
 
-    const editableProps = (schema.getClass(model['@class'])).properties;
-
-    let formIsInvalid = false;
-    editableProps.forEach((prop) => {
-      if (prop.mandatory) {
-        if (prop.type === 'link' && (!model[prop.name] || !model[`${prop.name}.@rid`])) {
-          formIsInvalid = true;
-        } else if (prop.type !== 'boolean' && !model[prop.name]) {
-          formIsInvalid = true;
-        }
-      }
-    });
-
-    if (!formIsInvalid && (model.out || model.in)) {
-      if (model && !relationships.find(r => r['@rid'] === model['@rid'])) {
-        relationships.push(model);
-        onChange && onChange({ target: { name, value: relationships } });
-        const newModel = schema.initModel({}, edges[0]);
-        model[`${to ? 'out' : 'in'}.@rid`] = nodeRid;
-        newModel['@rid'] = this.applyTestId();
-        this.setState({ model: newModel });
-      }
+    if (model && !relationships.find(r => r['@rid'] === model['@rid'])) {
+      relationships.push(model);
+      onChange({ target: { name, value: relationships } });
+      const newModel = schema.initModel({}, edges[0]);
+      model[`${to ? 'out' : 'in'}.@rid`] = nodeRid;
+      newModel['@rid'] = this.applyTestId();
+      this.setState({ model: newModel });
     }
   }
 
   /**
    * Deletes subset from state relationship list.
+   * @param {Event} e - User delete button event click.
    * @param {string} rid - relationship id to be deleted.
    */
-  handleDelete(rid) {
+  handleDelete(e, rid) {
+    e.stopPropagation();
     const {
       originalRelationships,
     } = this.state;
     const {
       relationships,
       onChange,
+      name,
     } = this.props;
     const targetRelationship = relationships.find(r => r['@rid'] === rid);
     if (targetRelationship) {
@@ -146,22 +141,28 @@ class RelationshipsForm extends Component {
         targetRelationship.deleted = true;
       } else {
         relationships.splice(relationships.indexOf(targetRelationship), 1);
-        onChange && onChange({ target: { name, value: relationships } });
       }
+      onChange({ target: { name, value: relationships } });
     }
-    this.setState({ relationships });
   }
 
   /**
    * Reverts a subset that is staged for deletion.
+   * @param {Event} e - User undo button click event.
    * @param {string} rid - deleted subset to be reverted.
    */
-  handleUndo(rid) {
-    const { relationships } = this.props;
+  handleUndo(e, rid) {
+    e.stopPropagation();
+
+    const { relationships, name, onChange } = this.props;
     relationships.find(r => r['@rid'] === rid).deleted = false;
-    this.setState({ relationships });
+    onChange({ target: { name, value: relationships } });
   }
 
+  /**
+   * Handles change in temp relationship model.
+   * @param {Event} e - User change event.
+   */
   handleChange(e) {
     const { model } = this.state;
     const { name, value, sourceId } = e.target;
@@ -182,6 +183,11 @@ class RelationshipsForm extends Component {
     this.setState({ model });
   }
 
+  /**
+   * Handles changes in the temp relationship model's class, causing a
+   * reinitialization of the model.
+   * @param {Event} e - class change event.
+   */
   handleClassChange(e) {
     const { model } = this.state;
     const { schema } = this.props;
@@ -191,6 +197,19 @@ class RelationshipsForm extends Component {
     this.setState({ model: newModel });
   }
 
+  /**
+   * Handles switch in direction of temp relationship.
+   * @example
+   * > rel1 = {
+   * >   in: nodeA,
+   * >   out: nodeB,
+   * > };
+   * > handleDirection();
+   * > rel1 = {
+   * >   in: nodeB,
+   * >   out: nodeA,
+   * > };
+   */
   handleDirection() {
     const { to, model } = this.state;
 
@@ -212,6 +231,11 @@ class RelationshipsForm extends Component {
     this.setState({ to: !to, model });
   }
 
+  /**
+   * Expands a relationship table row to show more details. Only applicable to
+   * relationships that have more properties than the standard in, out, source.
+   * @param {string} rid - ID of the relationship to be expanded.
+   */
   handleExpand(rid) {
     const { expanded } = this.state;
     this.setState({
@@ -219,6 +243,10 @@ class RelationshipsForm extends Component {
     });
   }
 
+  /**
+   * Increments the internal testId counter and returns the current formatted
+   * id.
+   */
   applyTestId() {
     const id = this.testId;
     this.testId += 1;
@@ -242,6 +270,16 @@ class RelationshipsForm extends Component {
     if (!model) return null;
     const editableProps = (schema.getClass(model['@class'])).properties;
 
+    let formIsInvalid = false;
+    editableProps.forEach((prop) => {
+      if (prop.mandatory) {
+        if (prop.type === 'link' && (!model[prop.name] || !model[`${prop.name}.@rid`])) {
+          formIsInvalid = true;
+        } else if (prop.type !== 'boolean' && !model[prop.name]) {
+          formIsInvalid = true;
+        }
+      }
+    });
     return (
       <div className="relationships-form-wrapper">
         <fieldset className="relationships-temp-fields">
@@ -266,7 +304,7 @@ class RelationshipsForm extends Component {
               onChange={this.handleClassChange}
               name="@class"
             >
-              {(resource) => (
+              {resource => (
                 <MenuItem key={resource} value={resource}>
                   {to ? schema.get(resource).name : schema.get(resource).reverseName}
                 </MenuItem>
@@ -279,6 +317,7 @@ class RelationshipsForm extends Component {
               value={to ? model.in : model.out}
               onChange={this.handleChange}
               name={to ? 'in' : 'out'}
+              required
             />
           </ListItem>
           <FormTemplater
@@ -289,14 +328,17 @@ class RelationshipsForm extends Component {
             excludedProps={['in', 'out']}
             disablePadding
           />
-          <Button
-            color="primary"
-            variant="contained"
-            onClick={this.handleAdd}
-            id="relationships-form-submit"
-          >
-            Add Relationship
-          </Button>
+          <div className="relationship-submit-wrapper">
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={this.handleAdd}
+              id="relationships-form-submit"
+              disabled={formIsInvalid || !(model['in.@rid'] && model['out.@rid'])}
+            >
+              Add Relationship
+            </Button>
+          </div>
         </fieldset>
         <div className={`relationships-form-table-wrapper ${minimized ? 'relationships-table-minimized' : ''}`}>
           <Typography variant="h5">Relationships</Typography>
@@ -308,13 +350,13 @@ class RelationshipsForm extends Component {
                 <TableCell padding="checkbox" />
                 <TableCell padding="dense">
                   Class
-              </TableCell>
+                </TableCell>
                 <TableCell padding="dense">
                   Related Record
-              </TableCell>
+                </TableCell>
                 <TableCell padding="dense">
                   Source
-              </TableCell>
+                </TableCell>
                 <TableCell padding="checkbox">
                   <Button
                     className={`relationships-minimize-btn ${minimized ? '' : 'minimize-open'}`}
@@ -329,8 +371,8 @@ class RelationshipsForm extends Component {
               {relationships.length > 0
                 ? relationships.map((r) => {
                   const buttonFn = r.deleted
-                    ? () => this.handleUndo(r['@rid'])
-                    : () => this.handleDelete(r['@rid']);
+                    ? e => this.handleUndo(e, r['@rid'])
+                    : e => this.handleDelete(e, r['@rid']);
                   const ButtonIcon = r.deleted
                     ? <RefreshIcon color="primary" />
                     : <CloseIcon color="error" />;
@@ -370,11 +412,13 @@ class RelationshipsForm extends Component {
                           {shouldExpand && <KeyboardArrowDownIcon />}
                         </TableCell>
                       </TableRow>
-                      <TableRow style={{
-                        display: expanded === r['@rid'] ? undefined : 'none',
-                        height: 0,
-                        background: '#fff',
-                      }}>
+                      <TableRow
+                        style={{
+                          display: expanded === r['@rid'] ? undefined : 'none',
+                          height: 0,
+                          background: '#fff',
+                        }}
+                      >
                         <TableCell colSpan={5}>
                           <Collapse
                             in={expanded === r['@rid']}
@@ -400,17 +444,26 @@ class RelationshipsForm extends Component {
   }
 }
 
+/**
+ * @namespace
+ * @property {function} onChange - function to handle changes to the
+ * relationships list.
+ * @property {Object} schema - Knowledgebase db schema.
+ * @property {Array} relationships - list of current relationships to be edited.
+ * @property {string} name - property key name of relationships on parent
+ * component.
+ * @property {string} nodeRid - record ID of input node.
+ */
 RelationshipsForm.propTypes = {
-  onChange: PropTypes.func,
-  list: PropTypes.array,
-  label: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
+  schema: PropTypes.object.isRequired,
+  relationships: PropTypes.array,
   name: PropTypes.string,
   nodeRid: PropTypes.string,
 };
 
 RelationshipsForm.defaultProps = {
-  onChange: () => { },
-  list: [],
+  relationships: [],
   label: '',
   name: '',
   nodeRid: '#node_rid',

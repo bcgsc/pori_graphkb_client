@@ -213,7 +213,8 @@ class PositionalVariantParser extends Component {
         .filter(p => p.linkedClass && p.linkedClass.name === abstractClass)
         .map(p => p.name);
       varKeys.forEach((key) => {
-        if ((variant[key]['@class'] && variant[key]['@class'] !== value) || key === nested) {
+        if ((variant[key]['@class'] && variant[key]['@class'] !== value)
+          || (key === nested && !variant[key]['@class'])) {
           variant[key] = schema.initModel({}, value);
         }
       });

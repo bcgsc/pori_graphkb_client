@@ -1,7 +1,8 @@
 @import "../../globals";
 
 .relationships-form-wrapper {
-  display: block;
+  display: flex;
+  flex-direction: column;
   .relationships-temp-fields {
     position: relative;
     border: 1px solid rgba(0, 0, 0, 0.27);
@@ -14,11 +15,11 @@
 
     #relationships-form-submit {
       position: absolute;
-      bottom: -28px;
+      bottom: -18.5px;
       z-index: 0;
-      right: 0;
-      left: 0;
+      right: 16px;
       margin: auto;
+      display: block;
       svg {
         color: white;
       }
@@ -45,7 +46,63 @@
       }
     }
   }
-
+  .relationships-form-table-wrapper {
+    overflow: auto;
+    transition: all 0.3s;
+    min-height: 0;
+    max-height: 100vh;
+    .relationships-form-table {
+      .relationships-table-header {
+        tr th {
+          background-color: $background-light;
+        }
+        .relationships-minimize-btn {
+          display: none;
+          svg {
+            transition: transform 0.1s;
+            transform: rotate(180deg);
+          }
+          @media (max-width: 1300px) {
+            display: block;
+          }
+        }
+        .minimize-open {
+          svg {
+            transform: unset;
+          }
+        }
+      }
+      tr,
+      th {
+        position: sticky;
+        top: 0;
+      }
+      tr {
+        td {
+          transition: background-color 0.3s;
+        }
+      }
+      tr.deleted {
+        td {
+          background-color: lighten($md-warn, 35%);
+          position: relative;
+        }
+      }
+      .relationship-expand-btn {
+        svg {
+          transition: transform 0.1s;
+        }
+      }
+      .expand-btn-collapsed {
+        svg {
+          transform: rotate(90deg);
+        }
+      }
+    }
+  }
+  .relationships-table-minimized {
+    max-height: 500px;
+  }
   .relationships-expansion {
     column-count: 2;
     > li {

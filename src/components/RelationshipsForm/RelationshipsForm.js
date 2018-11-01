@@ -376,10 +376,11 @@ class RelationshipsForm extends Component {
                   const ButtonIcon = r.deleted
                     ? <RefreshIcon color="primary" />
                     : <CloseIcon color="error" />;
-
                   const shouldExpand = Object.keys(r)
                     .filter(k => k !== 'deleted').length > DEFAULT_RELATIONSHIPS_PROPSLENGTH;
+
                   const isIn = r['in.@rid'] === nodeRid;
+
                   return (
                     <React.Fragment key={r['@rid']}>
                       <TableRow

@@ -98,7 +98,7 @@ class DetailDrawer extends Component {
                   nestedValue && (
                     <ListItem key={nestedProp}>
                       {isNested && (
-                        <ListItemIcon>
+                        <ListItemIcon className="nested-spacer">
                           <div style={{ width: 24, height: 24 }} />
                         </ListItemIcon>)}
                       <ListItemText>
@@ -126,7 +126,7 @@ class DetailDrawer extends Component {
                   onClick={nestedKey ? () => this.handleExpand(`${node['@rid']}${prop}`) : undefined}
                 >
                   {isNested && (
-                    <ListItemIcon>
+                    <ListItemIcon className="nested-spacer">
                       <div style={{ width: 24, height: 24 }} />
                     </ListItemIcon>)}
                   <ListItemText>
@@ -181,7 +181,7 @@ class DetailDrawer extends Component {
       <React.Fragment key={key}>
         <ListItem {...listItemProps}>
           {isNested && (
-            <ListItemIcon>
+            <ListItemIcon className="nested-spacer">
               <div style={{ width: 24, height: 24 }} />
             </ListItemIcon>)}
           <ListItemText>
@@ -194,7 +194,7 @@ class DetailDrawer extends Component {
         <Collapse {...collapseProps} unmountOnExit>
           <ListItem dense>
             {isNested && (
-              <ListItemIcon>
+              <ListItemIcon className="nested-spacer">
                 <div style={{ width: 24, height: 24 }} />
               </ListItemIcon>)}
             <ListItemText>

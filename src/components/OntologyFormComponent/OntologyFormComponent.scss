@@ -29,6 +29,9 @@ $mediumBreakpoint: 500px;
         flex-direction: column;
         grid-column-end: 2;
       }
+      @media (max-width: 425px) {
+        margin-bottom: 0;
+      }
       $form-bias: 50%;
       .param-section {
         flex: 0 0 calc(#{$form-bias} - 0.5rem);

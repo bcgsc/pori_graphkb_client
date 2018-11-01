@@ -15,6 +15,7 @@ import {
 import * as jc from 'json-cycle';
 import kbp from 'knowledgebase-parser';
 import NotificationDrawer from '../NotificationDrawer/NotificationDrawer';
+import RelationshipsForm from '../RelationshipsForm/RelationshipsForm';
 import FormTemplater from '../FormTemplater/FormTemplater';
 import api from '../../services/api';
 import util from '../../services/util';
@@ -42,10 +43,13 @@ class PositionalVariantParser extends Component {
       invalidFlag: '',
       variant: null,
       errorFields: [],
+      relationships: [],
+      originalRelationships: [],
     };
     this.parseString = this.parseString.bind(this);
     this.handleVariantChange = this.handleVariantChange.bind(this);
     this.handleClassChange = this.handleClassChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.submitVariant = this.submitVariant.bind(this);
     this.updateErrorFields = this.updateErrorFields.bind(this);
     this.extractLinkProps = this.extractLinkProps.bind(this);
@@ -58,8 +62,33 @@ class PositionalVariantParser extends Component {
       ? schema.initModel(initVariant, 'PositionalVariant')
       : schema.initModel({}, 'PositionalVariant');
 
+    const relationships = [];
+    const expandedEdgeTypes = util.expandEdges(schema.getEdges());
+    expandedEdgeTypes.forEach((type) => {
+      if (initVariant[type]) {
+        initVariant[type].forEach((edge) => {
+          if (!relationships.find(r => r['@rid'] === edge['@rid'])) {
+            relationships.push(
+              schema.initModel(
+                edge,
+                edge['@class'],
+                [{ name: '@rid', type: 'string' }],
+                false,
+                true,
+              ),
+            );
+          }
+        });
+      }
+    });
+
     const shorthand = initVariant ? initVariant.getPreview() : '';
-    this.setState({ variant, shorthand });
+    this.setState({
+      variant,
+      shorthand,
+      relationships,
+      originalRelationships: relationships.slice(),
+    });
   }
 
   /**
@@ -105,10 +134,10 @@ class PositionalVariantParser extends Component {
             response[name] = { '@class': '' };
           }
         });
-
+        const newVariant = Object.assign(schema.initModel(variant, 'PositionalVariant'),
+          { ...response, ...linkProps.props });
         this.setState({
-          variant: Object.assign(schema.initModel(variant, 'PositionalVariant'),
-            { ...response, ...linkProps.props }),
+          variant: newVariant,
           invalidFlag: linkProps.invalidFlag,
           errorFields: linkProps.errorFields,
         });
@@ -193,6 +222,10 @@ class PositionalVariantParser extends Component {
     }
 
     this.setState({ variant, errorFields: [] }, this.updateShorthand);
+  }
+
+  handleChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
   }
 
   /**
@@ -291,12 +324,13 @@ class PositionalVariantParser extends Component {
    * Opens notification drawer and triggers parent submit component.
    * @param {Event} e - submit button click event.
    */
+  /* eslint-disable */
   async submitVariant(e) {
     e.preventDefault();
     this.setState({ loading: true, notificationDrawerOpen: true });
-    const { variant } = this.state;
+    const { variant, relationships, originalRelationships } = this.state;
     const { handleSubmit } = this.props;
-    await handleSubmit(variant);
+    await handleSubmit(variant, relationships, originalRelationships);
     this.setState({ loading: false });
   }
 
@@ -308,6 +342,7 @@ class PositionalVariantParser extends Component {
       errorFields,
       notificationDrawerOpen,
       loading,
+      relationships,
     } = this.state;
     const {
       required,
@@ -315,6 +350,7 @@ class PositionalVariantParser extends Component {
       disabled,
       schema,
       handleFinish,
+      initVariant,
     } = this.props;
 
     if (!variant) return null;
@@ -339,46 +375,60 @@ class PositionalVariantParser extends Component {
           handleFinish={handleFinish}
           loading={loading}
         />
-        <Paper elevation={4} className="variant-parser-shorthand">
-          <FormControl
-            error={shorthandError}
-            fullWidth
-          >
-            <TextField
-              error={shorthandError}
-              required={required}
-              name="shorthand"
-              onChange={this.parseString}
-              label="HGVS Nomenclature"
-              disabled={disabled}
-              value={shorthand}
+        <div className="flexbox">
+          <div className="variant-parser">
+            <Paper elevation={4} className="variant-parser-shorthand">
+              <FormControl
+                error={shorthandError}
+                fullWidth
+              >
+                <TextField
+                  error={shorthandError}
+                  required={required}
+                  name="shorthand"
+                  onChange={this.parseString}
+                  label="HGVS Nomenclature"
+                  disabled={disabled}
+                  value={shorthand}
+                />
+                {shorthandError
+                  && <FormHelperText>{invalidFlag}</FormHelperText>
+                }
+              </FormControl>
+            </Paper>
+            <Paper elevation={4} className="parser-form-grid">
+              {schema
+                && (
+                  <FormTemplater
+                    disablePadding
+                    schema={schema}
+                    onChange={this.handleVariantChange}
+                    onClassChange={this.handleClassChange}
+                    model={variant}
+                    propSchemas={classSchema}
+                    excludedProps={['break1Repr', 'break2Repr']}
+                    errorFields={errorFields}
+                    sort={util.sortFields(DEFAULT_ORDER)}
+                    pairs={{
+                      break1: ['break1Start', 'break1End'],
+                      break2: ['break2Start', 'break2End'],
+                      untemplated: ['untemplatedSeq', 'untemplatedSeqSize'],
+                    }}
+                  />
+                )
+              }
+            </Paper>
+          </div>
+          <Paper elevation={4} className="variant-relationships">
+            <RelationshipsForm
+              relationships={relationships}
+              name="relationships"
+              onChange={this.handleChange}
+              schema={schema}
+              nodeRid={initVariant ? initVariant['@rid'] : undefined}
             />
-            {shorthandError
-              && <FormHelperText>{invalidFlag}</FormHelperText>
-            }
-          </FormControl>
-        </Paper>
-        <Paper elevation={4} className="parser-form-grid">
-          {schema
-            && (
-              <FormTemplater
-                schema={schema}
-                onChange={this.handleVariantChange}
-                onClassChange={this.handleClassChange}
-                model={variant}
-                propSchemas={classSchema}
-                excludedProps={['break1Repr', 'break2Repr']}
-                errorFields={errorFields}
-                sort={util.sortFields(DEFAULT_ORDER)}
-                pairs={{
-                  break1: ['break1Start', 'break1End'],
-                  break2: ['break2Start', 'break2End'],
-                  untemplated: ['untemplatedSeq', 'untemplatedSeqSize'],
-                }}
-              />
-            )
-          }
-        </Paper>
+          </Paper>
+        </div>
         <Paper elevation={4} id="variant-form-submit">
           <Button
             onClick={this.submitVariant}

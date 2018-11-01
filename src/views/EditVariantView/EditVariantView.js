@@ -49,8 +49,11 @@ class EditVariantViewBase extends Component {
   /**
    * Submits a POST request to the server with current variant data.
    */
-  async submitVariant(variant) {
+  async submitVariant(variant, relationships, originalRelationships) {
     const { schema } = this.props;
+
+    await api.patchEdges(originalRelationships, relationships, schema);
+
     const copy = Object.assign({}, variant);
     const { properties, route } = schema.getClass(variant['@class']);
     Object.keys(copy).forEach((k) => {

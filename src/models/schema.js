@@ -49,7 +49,9 @@ class Schema {
  * Initializes a new instance of given kbClass.
  * @param {Object} model - existing model to keep existing values from.
  * @param {string} kbClass - Knowledge base class key.
- * @param {Object} schema - Knowledge base schema.
+ * @param {Array} extraProps - Extra props to initialize on model.
+ * @param {boolean} ignoreClass - flag to omit '@class' prop on new model.
+ * @param {boolean} stripProps - flag to strip old props from model.
  */
   initModel(model, kbClass, extraProps = [], ignoreClass = false, stripProps = false) {
     const editableProps = kbClass
@@ -72,12 +74,16 @@ class Schema {
           break;
         case 'link':
           if (model[name] && typeof model[name] === 'object') {
-            newModel[name] = model[name].name || '';
-            newModel[`${name}.@rid`] = model[name]['@rid'] || '';
-            newModel[`${name}.sourceId`] = model[name].sourceId || '';
+            let preview = model[name].name;
             if (!linkedClass) {
               newModel[`${name}.class`] = model[name]['@class'] || '';
             }
+            if (model[name]['@class']) {
+              preview = this.newRecord(model[name]).getPreview();
+            }
+            newModel[name] = preview || '';
+            newModel[`${name}.@rid`] = model[name]['@rid'] || '';
+            newModel[`${name}.sourceId`] = model[name].sourceId || '';
           } else {
             newModel[name] = model[name] || '';
             newModel[`${name}.@rid`] = model[`${name}.@rid`] || '';
@@ -88,7 +94,9 @@ class Schema {
           }
           break;
         case 'integer' || 'long':
-          newModel[name] = model[name] || min > 0 ? min : '';
+          newModel[name] = model[name] !== undefined
+            ? model[name]
+            : min || '';
           break;
         case 'boolean':
           newModel[name] = model[name] !== undefined

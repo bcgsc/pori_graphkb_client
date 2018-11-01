@@ -55,33 +55,7 @@ class EditOntologyViewBase extends Component {
   async handleSubmit(form, relationships, originalNode) {
     const { schema } = this.props;
 
-    const changedEdges = [];
-
-    /* Checks for differences in original node and submitted form. */
-
-    // Deletes edges that are no longer present on the edited node.
-    originalNode.relationships.forEach((relationship) => {
-      const matched = relationships.find(r => r['@rid'] === relationship['@rid']);
-      if (!matched || matched.deleted) {
-        const { route } = schema.getClass(relationship['@class']);
-        changedEdges.push(api.delete(
-          `${route}/${relationship['@rid'].slice(1)}`,
-        ));
-      }
-    });
-
-    // Adds new edges that were not present on the original node.
-    relationships.forEach((relationship) => {
-      if (
-        !originalNode.relationships.find(r => r['@rid'] === relationship['@rid'])
-      ) {
-        const { properties, route } = schema.getClass(relationship['@class']);
-        const payload = util.parsePayload(relationship, properties, [], false);
-        changedEdges.push(api.post(route, payload));
-      }
-    });
-
-    await Promise.all(changedEdges);
+    await api.patchEdges(originalNode.relationships, relationships, schema);
     const { route, properties } = schema.getClass(originalNode['@class']);
     const payload = util.parsePayload(form, properties);
     await api.patch(`${route}/${originalNode['@rid'].slice(1)}`, payload);

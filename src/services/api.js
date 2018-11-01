@@ -4,6 +4,7 @@
  */
 import * as jc from 'json-cycle';
 import auth from './auth';
+import util from './util';
 import config from '../static/config.json';
 import history from './history';
 import Schema from '../models/schema';
@@ -246,6 +247,61 @@ const autoSearch = (endpoint, property, value, limit) => {
   return get(`/${endpoint}?${query}&${orStr}&${extras}`);
 };
 
+/**
+ * Replaces placeholder RIDs and posts a list of edges.
+ * @param {Array} edges - new edges to post.
+ * @param {Object} schema - Knowledgebase db schema.
+ * @param {string} rid - Record id to post edges to.
+ */
+const submitEdges = (edges, schema, rid = '') => {
+  const newEdges = [];
+  for (let i = 0; i < edges.length; i += 1) {
+    const { properties, route } = schema.getClass(edges[i]['@class']);
+    const edge = util.parsePayload(edges[i], properties);
+    if (edge.in === '#node_rid') {
+      edge.in = rid;
+    } else if (edge.out === '#node_rid') {
+      edge.out = rid;
+    }
+
+    newEdges.push(post(route, edge));
+  }
+  return Promise.all(newEdges);
+};
+
+/**
+ * Calculates difference in edges and posts/deletes them.
+ * @param {Array} originalEdges - list of original relationshps
+ * @param {Array} newEdges - list of current relationships
+ * @param {Object} schema - Knowledgebase db schema.
+ */
+const patchEdges = (originalEdges, newEdges, schema) => {
+  const changedEdges = [];
+  /* Checks for differences in original node and submitted form. */
+
+  // Deletes edges that are no longer present on the edited node.
+  originalEdges.forEach((edge) => {
+    const matched = newEdges.find(r => r['@rid'] === edge['@rid']);
+    if (!matched || matched.deleted) {
+      const { route } = schema.getClass(edge['@class']);
+      changedEdges.push(del(
+        `${route}/${edge['@rid'].slice(1)}`,
+      ));
+    }
+  });
+
+  // Adds new edges that were not present on the original node.
+  newEdges.forEach((relationship) => {
+    if (!originalEdges.find(r => r['@rid'] === relationship['@rid'])) {
+      const { properties, route } = schema.getClass(relationship['@class']);
+      const payload = util.parsePayload(relationship, properties);
+      changedEdges.push(post(route, payload));
+    }
+  });
+
+  return Promise.all(changedEdges);
+};
+
 export default {
   getSchema,
   getSources,
@@ -255,4 +311,6 @@ export default {
   patch,
   autoSearch,
   API_BASE_URL,
+  submitEdges,
+  patchEdges,
 };

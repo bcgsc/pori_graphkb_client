@@ -196,6 +196,7 @@ class OntologyFormComponent extends Component {
       schema,
       variant,
       handleFinish,
+      classes,
     } = this.props;
 
     // Wait for form to get initialized
@@ -277,7 +278,7 @@ class OntologyFormComponent extends Component {
                           onChange={this.handleClassChange}
                           name="newNodeClass"
                           label="Class"
-                          resources={schema.getOntologies().filter(o => o.name !== 'Ontology')}
+                          resources={classes || schema.getOntologies().filter(o => o.name !== 'Ontology')}
                         >
                           {resource => (
                             <MenuItem key={resource.name} value={resource.name}>
@@ -357,6 +358,7 @@ OntologyFormComponent.propTypes = {
   edgeTypes: PropTypes.array,
   handleFinish: PropTypes.func,
   handleSubmit: PropTypes.func,
+  classes: PropTypes.array,
 };
 
 OntologyFormComponent.defaultProps = {
@@ -365,6 +367,7 @@ OntologyFormComponent.defaultProps = {
   handleFinish: null,
   handleSubmit: null,
   node: null,
+  classes: null,
 };
 
 export default OntologyFormComponent;

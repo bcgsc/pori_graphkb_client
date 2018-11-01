@@ -24,6 +24,7 @@ $mediumBreakpoint: 500px;
       display: flex;
       position: relative;
       width: 100%;
+      margin-bottom: 1rem;
       @media (max-width: $breakpoint) {
         flex-direction: column;
         grid-column-end: 2;

@@ -108,16 +108,15 @@ class EditVariantViewBase extends Component {
                 initVariant={variant}
               />)
             : (
-              <Paper>
-                <OntologyFormComponent
-                  variant="edit"
-                  node={variant}
-                  handleSubmit={this.submitVariant}
-                  handleFinish={this.handleFinish}
-                  handleCancel={this.handleFinish}
-                  schema={schema}
-                />
-              </Paper>)}
+              <OntologyFormComponent
+                variant="edit"
+                node={variant}
+                handleSubmit={this.submitVariant}
+                handleFinish={this.handleFinish}
+                handleCancel={this.handleFinish}
+                schema={schema}
+              />
+            )}
         </div>
       </div>
     );

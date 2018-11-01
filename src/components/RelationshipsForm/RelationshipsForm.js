@@ -111,14 +111,17 @@ class RelationshipsForm extends Component {
     const {
       originalRelationships,
     } = this.state;
-    const { relationships } = this.props;
+    const {
+      relationships,
+      onChange,
+    } = this.props;
     const targetRelationship = relationships.find(r => r['@rid'] === rid);
     if (targetRelationship) {
       if (originalRelationships && originalRelationships.find(r => r['@rid'] === rid)) {
         targetRelationship.deleted = true;
       } else {
         relationships.splice(relationships.indexOf(targetRelationship), 1);
-        onChange({ target: { name, value: relationships } });
+        onChange && onChange({ target: { name, value: relationships } });
       }
     }
     this.setState({ relationships });

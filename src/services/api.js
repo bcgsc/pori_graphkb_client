@@ -227,9 +227,9 @@ const autoSearch = (endpoint, property, value, limit) => {
   if (!value || !value.trim()) return { result: [] };
 
   // Matches Knowledgebase api separator characters
-  const re = new RegExp(/[\r|\n|\s|\t|:|\\|;|,|.|/|||+|*|=|!|?|[|\]|(|)]+/, 'g');
+  const pattern = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
   const literalRe = new RegExp(/^['"].*['"]$/);
-  const m = !!value.match(re) || value.replace(re, '').trim().length < 4;
+  const m = !!value.match(pattern) || value.replace(pattern, '').trim().length < 4;
 
   const orStr = `or=${property.join(',')}`;
   let extras = `limit=${limit}&neighbors=1`;

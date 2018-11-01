@@ -442,6 +442,7 @@ class OntologyFormComponent extends Component {
                 <RelationshipsForm
                   schema={schema}
                   relationships={relationships}
+                  nodeRid={form['@rid']}
                 />
               </Paper>
             </div>

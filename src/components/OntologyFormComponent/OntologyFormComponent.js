@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import './OntologyFormComponent.css';
 import {
   List,
-  IconButton,
   MenuItem,
   Button,
   Typography,
@@ -16,21 +15,11 @@ import {
   DialogActions,
   DialogTitle,
   Paper,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
   ListItem,
   ListItemText,
   Divider,
 } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import CloseIcon from '@material-ui/icons/Close';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
-import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
 import FormTemplater from '../FormTemplater/FormTemplater';
 import NotificationDrawer from '../NotificationDrawer/NotificationDrawer';
 import util from '../../services/util';
@@ -66,7 +55,6 @@ class OntologyFormComponent extends Component {
         source: '',
       },
       deleteDialog: false,
-      errorFlag: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -105,25 +93,21 @@ class OntologyFormComponent extends Component {
     expandedEdgeTypes.forEach((type) => {
       if (originalNode[type]) {
         originalNode[type].forEach((edge) => {
-          const targetNode = edge.out['@rid'] === originalNode['@rid']
-            ? edge.in
-            : edge.out;
-
           if (!relationships.find(r => r['@rid'] === edge['@rid'])) {
-            relationships.push({
-              '@rid': edge['@rid'],
-              in: edge.in['@rid'],
-              out: edge.out['@rid'],
-              '@class': edge['@class'],
-              name: targetNode.name,
-              sourceId: targetNode.sourceId,
-              source: edge.source['@rid'] || edge.source,
-            });
+            relationships.push(
+              schema.initModel(
+                edge,
+                edge['@class'],
+                [{ name: '@rid', type: 'string' }],
+                false,
+                true,
+              ),
+            );
           }
         });
       }
     });
-
+    console.log(relationships);
     // Shallow copy the array to avoid mutating it.
     originalNode.relationships = relationships.slice(0);
 
@@ -216,7 +200,7 @@ class OntologyFormComponent extends Component {
     if (e.target.sourceId) {
       relationship.sourceId = e.target.sourceId;
     }
-    this.setState({ relationship, errorFlag: false });
+    this.setState({ relationship });
   }
 
   /**
@@ -248,7 +232,6 @@ class OntologyFormComponent extends Component {
         this.setState({
           form,
           relationships,
-          errorFlag: false,
           relationship: {
             '@class': '',
             name: '',
@@ -259,8 +242,6 @@ class OntologyFormComponent extends Component {
           },
         });
       }
-    } else {
-      this.setState({ errorFlag: true });
     }
   }
 
@@ -295,7 +276,7 @@ class OntologyFormComponent extends Component {
       relationship.out = relationship.in;
       relationship.in = originalNode['@rid'];
     }
-    this.setState({ relationship, errorFlag: false });
+    this.setState({ relationship });
   }
 
   /**
@@ -329,17 +310,13 @@ class OntologyFormComponent extends Component {
     const {
       form,
       originalNode,
-      relationship,
       relationships,
       deleteDialog,
-      errorFlag,
       loading,
       notificationDrawerOpen,
     } = this.state;
     const {
-      sources,
       schema,
-      edgeTypes,
       variant,
       handleFinish,
       handleCancel,
@@ -388,21 +365,6 @@ class OntologyFormComponent extends Component {
         </DialogContent>
       </Dialog>
     );
-
-    /**
-      * Formats valid edge types.
-      * @param {Object} edgeType - Edge type object.
-      */
-    const edgeTypesDisplay = (edgeType) => {
-      const inOut = relationship.in === originalNode['@rid']
-        ? util.getEdgeLabel(`in_${edgeType}`)
-        : util.getEdgeLabel(`out_${edgeType}`);
-      return (
-        <MenuItem key={edgeType} value={edgeType}>
-          {inOut}
-        </MenuItem>
-      );
-    };
 
     return (
       <div className="node-form-wrapper">
@@ -477,143 +439,9 @@ class OntologyFormComponent extends Component {
                 </List>
               </Paper>
               <Paper className="param-section forms-lists" elevation={4}>
-                <Typography variant="h5">
-                  Relationships
-                </Typography>
-                <div style={{ overflow: 'auto' }}>
-                  <Table className="form-table">
-                    <TableHead className="form-table-header">
-                      <TableRow>
-                        <TableCell padding="checkbox" />
-                        <TableCell padding="dense">
-                          Class
-                        </TableCell>
-                        <TableCell padding="dense">
-                          Related Record
-                        </TableCell>
-                        <TableCell padding="dense">
-                          Source
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {relationships.map((r, i) => {
-                        const sourceName = sources.find(
-                          s => s['@rid'] === r.source,
-                        ).name;
-                        const typeName = r.in === originalNode['@rid']
-                          ? util.getEdgeLabel(`in_${r['@class']}`)
-                          : util.getEdgeLabel(`out_${r['@class']}`);
-                        return (
-                          <TableRow
-                            key={r['@rid'] || `${r['@class']}${r.in}${r.out}${r.source}`}
-                            className={r.deleted && 'deleted'}
-                          >
-                            <TableCell padding="checkbox">
-                              {!r.deleted ? (
-                                <IconButton
-                                  onClick={() => this.handleRelationshipDelete(i)}
-                                  style={{ position: 'unset' }}
-                                  disableRipple
-                                  className="delete-btn"
-                                >
-                                  <CloseIcon color="error" />
-                                </IconButton>)
-                                : (
-                                  <IconButton
-                                    onClick={() => this.handleRelationshipUndo(r)}
-                                    style={{ position: 'unset' }}
-                                    disableRipple
-                                    color="primary"
-                                  >
-                                    <RefreshIcon />
-                                  </IconButton>
-                                )
-                              }
-                            </TableCell>
-                            <TableCell padding="checkbox">
-                              {typeName}
-                            </TableCell>
-                            <TableCell padding="checkbox">
-                              {r.name || r.sourceId}
-                            </TableCell>
-                            <TableCell padding="checkbox">
-                              {sourceName}
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                      <TableRow id="relationship-add">
-                        <TableCell padding="checkbox" id="add-btn-cell">
-                          <IconButton
-                            color="primary"
-                            onClick={this.handleRelationshipAdd}
-                          >
-                            <AddIcon />
-                          </IconButton>
-                        </TableCell>
-                        <TableCell padding="checkbox">
-                          <div className="relationship-dir-type">
-                            <IconButton
-                              name="direction"
-                              onClick={this.handleRelationshipDirection}
-                              color="primary"
-                            >
-                              <TrendingFlatIcon
-                                className={
-                                  (relationship.in === originalNode['@rid'])
-                                    ? 'relationship-in'
-                                    : null
-                                }
-                              />
-                            </IconButton>
-                            <ResourceSelectComponent
-                              value={relationship['@class']}
-                              onChange={this.handleRelationship}
-                              name="@class"
-                              label="Type"
-                              resources={edgeTypes}
-                              error={errorFlag}
-                              id="relationship-type"
-                              dense
-                            >
-                              {edgeTypesDisplay}
-                            </ResourceSelectComponent>
-                          </div>
-                        </TableCell>
-                        <TableCell padding="checkbox">
-                          <div className="search-wrap">
-                            <AutoSearchComponent
-                              value={relationship.name}
-                              onChange={this.handleRelationship}
-                              placeholder="Target Name"
-                              limit={10}
-                              name="name"
-                              error={errorFlag}
-                              dense
-                            />
-                          </div>
-                        </TableCell>
-                        <TableCell padding="checkbox" style={{ transform: 'translate(0, 1px)' }}>
-                          <ResourceSelectComponent
-                            value={relationship.source}
-                            onChange={this.handleRelationship}
-                            name="source"
-                            label="Source"
-                            resources={sources}
-                            error={errorFlag}
-                            dense
-                            id="relationship-source"
-                          />
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </div>
-
                 <RelationshipsForm
                   schema={schema}
-                  relationships={[]}
+                  relationships={relationships}
                 />
               </Paper>
             </div>
@@ -662,7 +490,6 @@ class OntologyFormComponent extends Component {
 OntologyFormComponent.propTypes = {
   node: PropTypes.object,
   variant: PropTypes.oneOf(['edit', 'add']),
-  sources: PropTypes.array,
   schema: PropTypes.object.isRequired,
   edgeTypes: PropTypes.array,
   handleFinish: PropTypes.func,
@@ -671,7 +498,6 @@ OntologyFormComponent.propTypes = {
 };
 
 OntologyFormComponent.defaultProps = {
-  sources: [],
   edgeTypes: [],
   variant: 'edit',
   handleFinish: null,

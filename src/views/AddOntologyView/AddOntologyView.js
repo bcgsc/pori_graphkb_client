@@ -42,7 +42,10 @@ class AddOntologyViewBase extends Component {
         sources,
         edgeTypes,
       });
-    } catch (e) { console.log(e); }
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e);
+    }
   }
 
   /**

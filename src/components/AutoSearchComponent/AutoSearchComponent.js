@@ -138,6 +138,7 @@ class AutoSearchComponent extends Component {
       const emptyFlag = !!(results.length === 0 && value);
       this.setState({ options: results, emptyFlag, loading: false });
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(error);
     }
   }

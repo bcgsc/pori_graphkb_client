@@ -62,14 +62,15 @@ class DetailDrawer extends Component {
 
   /**
    * Formats specific identifier properties of input ontology.
-   * @param {Object} node - Ontology being displayed.
+   * @param {Object} inputNode - Ontology being displayed.
    * @param {boolean} isNested - Nested flag.
    */
-  formatIdentifiers(node, isNested) {
+  formatIdentifiers(inputNode, isNested) {
     const { schema } = this.props;
     const { opened } = this.state;
-    if (!(node instanceof classes.Record)) {
-      node = schema.newRecord(node);
+    let node = inputNode;
+    if (!(inputNode instanceof classes.Record)) {
+      node = schema.newRecord(inputNode);
     }
     const identifiers = node.constructor.getIdentifiers();
 
@@ -297,15 +298,15 @@ class DetailDrawer extends Component {
 
   /**
    * Formats ontology relationships.
-   * @param {Object} node - Ontology being displayed.
+   * @param {Object} inputNode - Ontology being displayed.
    */
-  formatRelationships(node) {
+  formatRelationships(inputNode) {
     const { linkOpen } = this.state;
     const { schema } = this.props;
-
+    let node = inputNode;
     // Checks subclasses
-    if (!(node instanceof classes.Record)) {
-      node = schema.newRecord(node);
+    if (!(inputNode instanceof classes.Record)) {
+      node = schema.newRecord(inputNode);
     }
     const edges = node.getEdges();
 

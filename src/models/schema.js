@@ -49,7 +49,6 @@ class Schema {
  * Initializes a new instance of given kbClass.
  * @param {Object} model - existing model to keep existing values from.
  * @param {string} kbClass - Knowledge base class key.
- * @param {Object} schema - Knowledge base schema.
  */
   initModel(model, kbClass, extraProps = [], ignoreClass) {
     const editableProps = kbClass
@@ -146,7 +145,6 @@ class Schema {
   /**
    * Given a schema class object, determine whether it is abstract or not.
    * @param {string} linkedClass - property class key.
-   * @param {Object} schema - database schema
    */
   isAbstract(linkedClass) {
     return Object.values(this.schema)
@@ -197,7 +195,6 @@ class Schema {
   /**
   * Given a schema class object, find all other classes that inherit it.
   * @param {string} abstractClass - property class key.
-  * @param {Object} schema - database schema
   */
   getSubClasses(abstractClass) {
     return Object.values(this.schema)

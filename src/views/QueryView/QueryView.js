@@ -60,16 +60,16 @@ class QueryView extends Component {
     let search;
 
     // Matches Knowledgebase api separator characters
-    const re = new RegExp(/[\r|\n|\t|\s|:|\\|;|,|.|/|||+|*|=|!|?|[|\]|(|)]+/, 'g');
+    const pattern = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
     if (tab === 'ontology') {
       if (str && !disabled) {
-        const m = !!str.match(re) || str.replace(re, '').trim().length > 4;
+        const m = !!str.match(pattern) || str.replace(pattern, '').trim().length > 4;
         search = `?name=${!m ? '~' : ''}${str.trim()}`;
       }
     } else if (tab === 'variant' && str && !variantError) {
       search = '?@class=PositionalVariant';
       Object.keys(variant).forEach((key) => {
-        const val = `${variant[key]}`.match(re, '') || `${variant[key]}`.length < 4 ? variant[key] : `~${variant[key]}`;
+        const val = `${variant[key]}`.match(pattern, '') || `${variant[key]}`.length < 4 ? variant[key] : `~${variant[key]}`;
         if (key !== 'prefix' && key !== 'multiFeature') {
           if (key === 'reference1' || key === 'reference2' || key === 'type') {
             search += `&${key}[name]=${val}`;

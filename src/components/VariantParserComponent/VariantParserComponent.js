@@ -29,7 +29,7 @@ const DEFAULT_ORDER = [
   'break2End',
 ];
 
-const IGNORED_FIELDS = [
+const SHORTHAND_EXCLUDED = [
   'germline',
   'zygosity',
 ];
@@ -217,7 +217,7 @@ class VariantParserComponent extends Component {
         variant[`${name}.${key}`] = e.target[key];
       });
     this.setState({ variant, errorFields: [] }, () => {
-      if (!IGNORED_FIELDS.includes(name)) {
+      if (!SHORTHAND_EXCLUDED.includes(name)) {
         this.updateShorthand();
       }
     });

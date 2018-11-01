@@ -38,6 +38,7 @@ class RelationshipsForm extends Component {
       edges: [],
       originalRelationships: relationships && relationships.slice(),
       expanded: null,
+      minimized: false,
     };
     this.testId = 0;
     this.handleAdd = this.handleAdd.bind(this);
@@ -185,7 +186,9 @@ class RelationshipsForm extends Component {
 
   handleExpand(rid) {
     const { expanded } = this.state;
-    this.setState({ expanded: expanded === rid ? null : rid });
+    this.setState({
+      expanded: expanded === rid ? null : rid,
+    });
   }
 
   applyTestId() {
@@ -194,12 +197,39 @@ class RelationshipsForm extends Component {
     return `#TEST:${id}`;
   }
 
+  getRelationshipDetails(r) {
+    const { nodeRid } = this.props;
+    const targetNode = nodeRid === r['out.@rid']
+      ? 'in'
+      : 'out';
+    return (
+      <div className="relationships-expansion">
+        {Object.keys(r).filter(k => (
+          !k.includes('.')
+          && k !== 'deleted'
+          && !r[k].toString().startsWith('#TEST')
+          && k !== (targetNode === 'in' ? 'out' : 'in')
+        )).map(k => (
+          <ListItem key={k}>
+            <ListItemText
+              primary={(k === 'in' || k === 'out')
+                ? r[targetNode] || r[`${targetNode}.sourceId`]
+                : r[k].toString()}
+              secondary={util.antiCamelCase(k)}
+            />
+          </ListItem>
+        ))}
+      </div>
+    );
+  }
+
   render() {
     const {
       model,
       edges,
       to,
       expanded,
+      minimized,
     } = this.state;
     const {
       schema,
@@ -257,92 +287,103 @@ class RelationshipsForm extends Component {
             disablePadding
           />
           <Button
-            color="secondary"
-            variant="fab"
+            color="primary"
+            variant="contained"
             onClick={this.handleAdd}
             id="relationships-form-submit"
           >
-            <AddIcon />
+            Add Relationship
           </Button>
         </fieldset>
-        <Table className="form-table">
-          <TableHead className="form-table-header">
-            <TableRow>
-              <TableCell padding="checkbox" />
-              <TableCell padding="dense">
-                Class
+        <div className={`relationships-form-table-wrapper ${minimized ? 'relationships-table-minimized' : ''}`}>
+          <Table className="relationships-form-table">
+            <TableHead
+              className="relationships-table-header"
+            >
+              <TableRow>
+                <TableCell padding="checkbox" />
+                <TableCell padding="dense">
+                  Class
               </TableCell>
-              <TableCell padding="dense">
-                Related Record
+                <TableCell padding="dense">
+                  Related Record
               </TableCell>
-              <TableCell padding="dense">
-                Source
+                <TableCell padding="dense">
+                  Source
               </TableCell>
-              <TableCell padding="checkbox" />
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {relationships.map((r, i) => {
-              const buttonFn = r.deleted
-                ? () => this.handleUndo(r['@rid'])
-                : () => this.handleDelete(r['@rid']);
+                <TableCell padding="checkbox">
+                  <Button
+                    className={`relationships-minimize-btn ${minimized ? '' : 'minimize-open'}`}
+                    onClick={() => this.setState({ minimized: !minimized })}
+                  >
+                    <KeyboardArrowDownIcon />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {relationships.map((r) => {
+                const buttonFn = r.deleted
+                  ? () => this.handleUndo(r['@rid'])
+                  : () => this.handleDelete(r['@rid']);
+                const ButtonIcon = r.deleted
+                  ? RefreshIcon
+                  : CloseIcon;
+                const iconProps = r.deleted
+                  ? { color: 'primary' }
+                  : { color: 'error' };
 
-              const ButtonIcon = r.deleted
-                ? RefreshIcon
-                : CloseIcon;
-              const iconProps = r.deleted
-                ? { color: 'primary' }
-                : { color: 'error' };
-              return (
-                <React.Fragment key={r['@rid']}>
-                  <TableRow>
-                    <TableCell padding="checkbox">
-                      <IconButton
-                        onClick={buttonFn}
-                        style={{ position: 'unset' }}
-                        disableRipple
-                      >
-                        <ButtonIcon {...iconProps} />
-                      </IconButton>
-                    </TableCell>
-                    <TableCell padding="dense">
-                      {r['@class']}
-                    </TableCell>
-                    <TableCell padding="dense">
-                      {r.out || r['out.sourceId'] || r.in || r['in.sourceId']}
-                    </TableCell>
-                    <TableCell padding="dense">
-                      {r.source}
-                    </TableCell>
-                    <TableCell>
-                      {Object.keys(r).length > DEFAULT_RELATIONSHIPS_PROPSLENGTH
-                        && (
-                          <KeyboardArrowDownIcon
-                            onClick={() => this.handleExpand(r['@rid'])}
-                          />)}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell colSpan={5}>
-                      <Collapse in={expanded === r['@rid']}>
-                        <div className="relationships-expansion">
-                          {Object.keys(r).filter(k => (
-                            !k.includes('.')
-                            && !r[k].startsWith('#TEST')
-                          )).map(k => (
-                            <ListItem key={k}>
-                              <ListItemText primary={r[k]} secondary={util.antiCamelCase(k)} />
-                            </ListItem>
-                          ))}
-                        </div>
-                      </Collapse>
-                    </TableCell>
-                  </TableRow>
-                </React.Fragment>
-              );
-            })}
-          </TableBody>
-        </Table>
+                const shouldExpand = Object.keys(r)
+                  .filter(k => k !== 'deleted').length > DEFAULT_RELATIONSHIPS_PROPSLENGTH;
+                return (
+                  <React.Fragment key={r['@rid']}>
+                    <TableRow
+                      className={r.deleted ? 'deleted' : ''}
+                      onClick={shouldExpand
+                        ? () => this.handleExpand(r['@rid'])
+                        : null}
+                    >
+                      <TableCell padding="checkbox">
+                        <IconButton
+                          onClick={buttonFn}
+                          style={{ position: 'unset' }}
+                          disableRipple
+                        >
+                          <ButtonIcon {...iconProps} />
+                        </IconButton>
+                      </TableCell>
+                      <TableCell padding="dense">
+                        {r['@class']}
+                      </TableCell>
+                      <TableCell padding="dense">
+                        {r.out || r['out.sourceId'] || r.in || r['in.sourceId']}
+                      </TableCell>
+                      <TableCell padding="dense">
+                        {r.source}
+                      </TableCell>
+                      <TableCell className={`relationship-expand-btn ${expanded === r['@rid'] ? '' : 'expand-btn-collapsed'}`}>
+                        {shouldExpand && <KeyboardArrowDownIcon />}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow style={{
+                      display: expanded === r['@rid'] ? undefined : 'none',
+                      height: 0,
+                      background: '#fff',
+                    }}>
+                      <TableCell colSpan={5}>
+                        <Collapse
+                          in={expanded === r['@rid']}
+                        >
+                          {this.getRelationshipDetails(r)}
+                        </Collapse>
+                      </TableCell>
+                    </TableRow>
+                  </React.Fragment>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     );
   }

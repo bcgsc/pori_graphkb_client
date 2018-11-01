@@ -2,38 +2,91 @@
 .variant-parser-wrapper {
   display: grid;
   grid-row-gap: 1rem;
-  @include paper-collapse;
-  .variant-parser-shorthand {
-    @include paper;
-    display: flex;
-    height: 68px;
-    button {
-      transition: all 0.15s;
-    }
-    .variant-parser-collapsed {
-      transform: rotate(180deg);
-    }
-  }
+  grid-column-gap: 1rem;
 
-  .parser-form-grid {
-    display: block;
-    @include paper;
-    padding-bottom: 24px;
-    column-count: 2;
-    min-width: 0;
-    @media (max-width: 768px) {
-      column-count: unset;
+  @include paper-collapse;
+  .flexbox {
+    grid-column-start: 1;
+    grid-column-end: end;
+    display: flex;
+    position: relative;
+    width: 100%;
+    @media (max-width: 1300px) {
+      flex-direction: column;
     }
-    > * {
-      display: inline-flex;
-      -webkit-column-break-inside: avoid;
-      backface-visibility: hidden;
+    $form-bias: 55%;
+    .variant-parser {
+      flex: 0 1 calc(#{$form-bias} - 0.5rem);
+      box-sizing: border-box;
+      .variant-parser-shorthand {
+        @include paper;
+        display: flex;
+        height: 68px;
+        margin-bottom: 1rem;
+        @media (max-width: 1300px) {
+          grid-column-end: end;
+        }
+        button {
+          transition: all 0.15s;
+        }
+        .variant-parser-collapsed {
+          transform: rotate(180deg);
+        }
+      }
+      .parser-form-grid {
+        display: block;
+        @include paper;
+        padding-bottom: 24px;
+        column-count: 2;
+        min-width: 0;
+        @media (max-width: 768px) {
+          column-count: unset;
+        }
+        @media (max-width: 1300px) {
+          grid-column-end: end;
+        }
+        > * {
+          display: inline-flex;
+          -webkit-column-break-inside: avoid;
+          backface-visibility: hidden;
+        }
+      }
+    }
+    .variant-relationships {
+      @include paper;
+      box-sizing: border-box;
+      position: absolute;
+      left: calc(#{$form-bias} + 0.5rem);
+      top: 0;
+      bottom: 0;
+      right: 0;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s;
+      @media (max-width: 1300px) {
+        position: relative;
+        left: unset;
+        margin-top: 8px;
+      }
     }
   }
 
   #variant-form-submit {
+    grid-column-start: 1;
+    grid-column-end: end;
     display: flex;
     flex-direction: row-reverse;
     @include paper;
+  }
+}
+
+@media (max-width: 1300px) {
+  .variant-parser-wrapper {
+    grid-template-columns: 1fr;
+    > * {
+      grid-column-start: 1;
+      grid-column-end: end;
+    }
   }
 }

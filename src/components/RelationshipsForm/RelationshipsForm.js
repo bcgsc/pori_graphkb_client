@@ -114,7 +114,7 @@ class RelationshipsForm extends Component {
       relationships.push(model);
       onChange({ target: { name, value: relationships } });
       const newModel = schema.initModel({}, edges[0]);
-      model[`${to ? 'out' : 'in'}.@rid`] = nodeRid;
+      newModel[`${to ? 'out' : 'in'}.@rid`] = nodeRid;
       newModel['@rid'] = this.applyTestId();
       this.setState({ model: newModel });
     }
@@ -340,8 +340,8 @@ class RelationshipsForm extends Component {
             </Button>
           </div>
         </fieldset>
+        <Typography variant="h5">Relationships</Typography>
         <div className={`relationships-form-table-wrapper ${minimized ? 'relationships-table-minimized' : ''}`}>
-          <Typography variant="h5">Relationships</Typography>
           <Table className="relationships-form-table">
             <TableHead
               className="relationships-table-header"
@@ -380,6 +380,7 @@ class RelationshipsForm extends Component {
                   const shouldExpand = Object.keys(r)
                     .filter(k => k !== 'deleted').length > DEFAULT_RELATIONSHIPS_PROPSLENGTH;
                   const isIn = r['in.@rid'] === nodeRid;
+                  console.log(r);
                   return (
                     <React.Fragment key={r['@rid']}>
                       <TableRow

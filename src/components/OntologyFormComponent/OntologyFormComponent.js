@@ -46,14 +46,6 @@ class OntologyFormComponent extends Component {
       originalNode: null,
       form: null,
       relationships: [],
-      relationship: {
-        '@class': '',
-        name: '',
-        sourceId: '',
-        in: '',
-        out: -1,
-        source: '',
-      },
       deleteDialog: false,
     };
 
@@ -63,11 +55,6 @@ class OntologyFormComponent extends Component {
     this.handleDialogClose = this.handleDialogClose.bind(this);
     this.handleDialogOpen = this.handleDialogOpen.bind(this);
     this.handleFormChange = this.handleFormChange.bind(this);
-    this.handleRelationship = this.handleRelationship.bind(this);
-    this.handleRelationshipAdd = this.handleRelationshipAdd.bind(this);
-    this.handleRelationshipDelete = this.handleRelationshipDelete.bind(this);
-    this.handleRelationshipDirection = this.handleRelationshipDirection.bind(this);
-    this.handleRelationshipUndo = this.handleRelationshipUndo.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -77,15 +64,14 @@ class OntologyFormComponent extends Component {
    */
   async componentDidMount() {
     const { node, edgeTypes, schema } = this.props;
-    const { relationships, relationship } = this.state;
+    const { relationships } = this.state;
 
-    let originalNode = { '@rid': -1 };
+    let originalNode = {};
     let nodeClass = DEFAULT_NODE_CLASS;
 
     if (node) {
       originalNode = node;
       nodeClass = node['@class'];
-      relationship.out = node['@rid'];
     }
 
     const form = schema.initModel(originalNode, nodeClass);
@@ -107,7 +93,6 @@ class OntologyFormComponent extends Component {
         });
       }
     });
-    console.log(relationships);
     // Shallow copy the array to avoid mutating it.
     originalNode.relationships = relationships.slice(0);
 
@@ -181,114 +166,6 @@ class OntologyFormComponent extends Component {
     }
 
     this.setState({ form });
-  }
-
-  /**
-   * Updates staged relationship object from user input.
-   * @param {Event} e - User input event.
-   */
-  handleRelationship(e) {
-    const { originalNode, relationship } = this.state;
-    relationship[e.target.name] = e.target.value;
-    if (e.target['@rid']) {
-      if (relationship.in === originalNode['@rid']) {
-        relationship.out = e.target['@rid'];
-      } else {
-        relationship.in = e.target['@rid'];
-      }
-    }
-    if (e.target.sourceId) {
-      relationship.sourceId = e.target.sourceId;
-    }
-    this.setState({ relationship });
-  }
-
-  /**
-   * Validates and then adds a new relationship to state list.
-   * Clears relationship fields.
-   * @param {Event} e - User request relationship add event.
-   */
-  handleRelationshipAdd(e) {
-    e.preventDefault();
-    const {
-      form,
-      originalNode,
-      relationship,
-      relationships,
-    } = this.state;
-    if (
-      relationship.in
-      && relationship.out
-      && relationship['@class']
-      && relationship.source
-    ) {
-      if (
-        !relationships.find(r => r.out === relationship.out
-          && r.in === relationship.in
-          && r['@class'] === relationship['@class']
-          && r.source === relationship.source)
-      ) {
-        relationships.push(relationship);
-        this.setState({
-          form,
-          relationships,
-          relationship: {
-            '@class': '',
-            name: '',
-            sourceId: '',
-            in: '',
-            out: originalNode['@rid'],
-            source: '',
-          },
-        });
-      }
-    }
-  }
-
-  /**
-   * Deletes a relationship from state relationship list.
-   * @param {number} i - Relationship index to be deleted
-   */
-  handleRelationshipDelete(i) {
-    const { relationships, originalNode } = this.state;
-    const { variant } = this.props;
-    if (
-      variant === 'edit'
-      && originalNode.relationships.find(r => r['@rid'] === relationships[i]['@rid'])
-    ) {
-      relationships[i].deleted = true;
-    } else {
-      relationships.splice(i, 1);
-    }
-    this.setState({ relationships });
-  }
-
-  /**
-   * Updates staged relationship direction by swapping in/out properties.
-   */
-  handleRelationshipDirection() {
-    const { relationship, originalNode } = this.state;
-
-    if (relationship.in === originalNode['@rid']) {
-      relationship.in = relationship.out;
-      relationship.out = originalNode['@rid'];
-    } else {
-      relationship.out = relationship.in;
-      relationship.in = originalNode['@rid'];
-    }
-    this.setState({ relationship });
-  }
-
-  /**
-   * Removes a relationship from being staged for deletion.
-   * @param {Object} relationship - relationship to be rolled back.
-   */
-  handleRelationshipUndo(relationship) {
-    const { relationships } = this.state;
-    const rel = relationships.find(r => r['@rid'] === relationship['@rid']);
-    delete rel.deleted;
-
-    this.setState({ relationships });
   }
 
   /**
@@ -374,7 +251,7 @@ class OntologyFormComponent extends Component {
           loading={loading}
           handleFinish={handleFinish}
         />
-        <form onSubmit={this.handleSubmit}>
+        <div>
           <div className="form-grid">
             <Paper className="form-header" elevation={4}>
               <div className="form-cancel-btn">
@@ -443,6 +320,8 @@ class OntologyFormComponent extends Component {
                   schema={schema}
                   relationships={relationships}
                   nodeRid={form['@rid']}
+                  name="relationships"
+                  onChange={this.handleChange}
                 />
               </Paper>
             </div>
@@ -459,6 +338,7 @@ class OntologyFormComponent extends Component {
               )}
               <Button
                 type="submit"
+                onClick={this.handleSubmit}
                 variant="contained"
                 color="primary"
                 disabled={formIsInvalid}
@@ -469,7 +349,7 @@ class OntologyFormComponent extends Component {
               </Button>
             </Paper>
           </div>
-        </form>
+        </div>
       </div>
     );
   }

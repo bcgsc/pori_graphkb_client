@@ -58,6 +58,8 @@ class QueryView extends Component {
     } = this.state;
     const { history } = this.props;
     let search;
+
+    // Matches Knowledgebase api separator characters
     const re = new RegExp(/[\r|\n|\t|\s|:|\\|;|,|.|/|||+|*|=|!|?|[|\]|(|)]+/, 'g');
     if (tab === 'ontology') {
       if (str && !disabled) {

@@ -224,6 +224,8 @@ const getSchema = () => {
  */
 const autoSearch = (endpoint, property, value, limit) => {
   if (!value || !value.trim()) return { result: [] };
+
+  // Matches Knowledgebase api separator characters
   const re = new RegExp(/[\r|\n|\s|\t|:|\\|;|,|.|/|||+|*|=|!|?|[|\]|(|)]+/, 'g');
   const literalRe = new RegExp(/^['"].*['"]$/);
   const m = !!value.match(re) || value.replace(re, '').trim().length < 4;

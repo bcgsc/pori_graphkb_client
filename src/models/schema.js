@@ -51,12 +51,12 @@ class Schema {
  * @param {string} kbClass - Knowledge base class key.
  * @param {Object} schema - Knowledge base schema.
  */
-  initModel(model, kbClass, extraProps = [], ignoreClass) {
+  initModel(model, kbClass, extraProps = [], ignoreClass = false, stripProps = false) {
     const editableProps = kbClass
       && (this.getClass(kbClass) || {}).properties;
     if (!editableProps) return null;
     editableProps.push(...extraProps);
-    const newModel = Object.assign({}, model);
+    const newModel = stripProps ? {} : Object.assign({}, model);
     newModel['@class'] = ignoreClass ? '' : kbClass;
     Object.values(editableProps).forEach((property) => {
       const {
@@ -71,11 +71,20 @@ class Schema {
           newModel[name] = model[name] ? model[name].slice() : [];
           break;
         case 'link':
-          newModel[name] = model[name] || '';
-          newModel[`${name}.@rid`] = model[`${name}.@rid`] || '';
-          newModel[`${name}.sourceId`] = model[`${name}.sourceId`] || '';
-          if (!linkedClass) {
-            newModel[`${name}.class`] = model[`${name}.class`] || '';
+          if (model[name] && typeof model[name] === 'object') {
+            newModel[name] = model[name].name || '';
+            newModel[`${name}.@rid`] = model[name]['@rid'] || '';
+            newModel[`${name}.sourceId`] = model[name].sourceId || '';
+            if (!linkedClass) {
+              newModel[`${name}.class`] = model[name]['@class'] || '';
+            }
+          } else {
+            newModel[name] = model[name] || '';
+            newModel[`${name}.@rid`] = model[`${name}.@rid`] || '';
+            newModel[`${name}.sourceId`] = model[`${name}.sourceId`] || '';
+            if (!linkedClass) {
+              newModel[`${name}.class`] = model[`${name}.class`] || '';
+            }
           }
           break;
         case 'integer' || 'long':

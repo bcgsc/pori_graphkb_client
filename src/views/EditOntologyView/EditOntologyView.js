@@ -61,15 +61,11 @@ class EditOntologyViewBase extends Component {
 
     // Deletes edges that are no longer present on the edited node.
     originalNode.relationships.forEach((relationship) => {
-      const matched = relationships.find(
-        r => r.out === relationship.out
-          && r.in === relationship.in
-          && r['@class'] === relationship['@class']
-          && r.source === relationship.source,
-      );
+      const matched = relationships.find(r => r['@rid'] === relationship['@rid']);
       if (!matched || matched.deleted) {
+        const { route } = schema.getClass(relationship['@class']);
         changedEdges.push(api.delete(
-          `/${relationship['@class'].toLowerCase()}/${relationship['@rid'].slice(1)}`,
+          `${route}/${relationship['@rid'].slice(1)}`,
         ));
       }
     });
@@ -77,18 +73,11 @@ class EditOntologyViewBase extends Component {
     // Adds new edges that were not present on the original node.
     relationships.forEach((relationship) => {
       if (
-        !originalNode.relationships.find(
-          r => r.out === relationship.out
-            && r.in === relationship.in
-            && r['@class'] === relationship['@class']
-            && r.source === relationship.source,
-        )
+        !originalNode.relationships.find(r => r['@rid'] === relationship['@rid'])
       ) {
-        changedEdges.push(api.post(`/${relationship['@class'].toLowerCase()}`, {
-          in: relationship.in,
-          out: relationship.out,
-          source: relationship.source,
-        }));
+        const { properties, route } = schema.getClass(relationship['@class']);
+        const payload = util.parsePayload(relationship, properties, [], false);
+        changedEdges.push(api.post(route, payload));
       }
     });
 

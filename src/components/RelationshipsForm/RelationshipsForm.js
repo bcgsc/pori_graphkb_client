@@ -380,7 +380,6 @@ class RelationshipsForm extends Component {
                   const shouldExpand = Object.keys(r)
                     .filter(k => k !== 'deleted').length > DEFAULT_RELATIONSHIPS_PROPSLENGTH;
                   const isIn = r['in.@rid'] === nodeRid;
-                  console.log(r);
                   return (
                     <React.Fragment key={r['@rid']}>
                       <TableRow

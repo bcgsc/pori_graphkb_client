@@ -68,7 +68,7 @@ class RelationshipsForm extends Component {
       edges: [],
       originalRelationships: relationships && relationships.slice(),
       expanded: null,
-      minimized: false,
+      minimized: true,
     };
     this.testId = 0;
     this.handleAdd = this.handleAdd.bind(this);

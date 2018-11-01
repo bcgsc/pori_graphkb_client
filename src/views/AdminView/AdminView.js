@@ -58,6 +58,7 @@ import util from '../../services/util';
  */
 class AdminViewBase extends Component {
   static initializeUserGroups(userGroups) {
+    const newUserGroups = [];
     userGroups.forEach((u, i) => {
       const userGroup = userGroups[i];
       Object.keys(userGroup.permissions).forEach((pKey) => {
@@ -67,10 +68,10 @@ class AdminViewBase extends Component {
           delete userGroup.permissions[pKey];
         }
       });
-      userGroups[i] = userGroup;
+      newUserGroups.push(userGroup);
     });
 
-    return userGroups;
+    return newUserGroups;
   }
 
   constructor(props) {

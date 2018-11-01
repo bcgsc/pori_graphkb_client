@@ -299,6 +299,7 @@ const loadGraphData = (search, data) => {
   try {
     localStorage.setItem(GRAPH_OBJECTS_KEY, JSON.stringify(jc.decycle(newData)));
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error('localstorage quota exceeded');
   }
 };

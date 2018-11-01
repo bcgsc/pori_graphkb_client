@@ -53,10 +53,11 @@ class EditVariantViewBase extends Component {
    */
   async submitVariant(variant, relationships, originalRelationships) {
     const { schema } = this.props;
+    let oRelationships = originalRelationships;
     if (!Array.isArray(originalRelationships) && originalRelationships instanceof classes.Record) {
-      originalRelationships = originalRelationships.relationships;
+      oRelationships = originalRelationships.relationships.slice();
     }
-    await api.patchEdges(originalRelationships || [], relationships, schema);
+    await api.patchEdges(oRelationships || [], relationships, schema);
 
     const copy = Object.assign({}, variant);
     const { properties, route } = schema.getClass(variant['@class']);

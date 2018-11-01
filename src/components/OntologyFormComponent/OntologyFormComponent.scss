@@ -29,8 +29,9 @@ $mediumBreakpoint: 500px;
         flex-direction: column;
         grid-column-end: 2;
       }
+      $form-bias: 50%;
       .param-section {
-        flex: 0 1 50%;
+        flex: 0 0 calc(#{$form-bias} - 0.5rem);
         padding: 20px;
         padding-bottom: 40px;
         max-height: 100%;
@@ -42,7 +43,7 @@ $mediumBreakpoint: 500px;
       }
       .forms-lists {
         position: absolute;
-        left: 50%;
+        left: calc(#{$form-bias} + 0.5rem);
         top: 0;
         bottom: 0;
         right: 0;

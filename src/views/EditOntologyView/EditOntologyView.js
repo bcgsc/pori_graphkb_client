@@ -4,12 +4,18 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import './EditOntologyView.css';
+import {
+  Paper,
+  Button,
+  Typography,
+} from '@material-ui/core';
 import * as jc from 'json-cycle';
 import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
+import { withSchema } from '../../components/SchemaContext/SchemaContext';
 import api from '../../services/api';
 import util from '../../services/util';
 import config from '../../static/config';
-import { withSchema } from '../../components/SchemaContext/SchemaContext';
 
 const { DEFAULT_NEIGHBORS } = config;
 
@@ -98,16 +104,32 @@ class EditOntologyViewBase extends Component {
 
     if (node) {
       return (
-        <OntologyFormComponent
-          variant="edit"
-          node={node}
-          handleSubmit={this.handleSubmit}
-          handleFinish={this.handleFinish}
-          handleCancel={this.handleCancel}
-          schema={schema}
-          sources={sources}
-          edgeTypes={edgeTypes}
-        />
+        <div className="edit-form-wrapper">
+          <Paper className="form-header" elevation={4}>
+            <div className="form-cancel-btn">
+              <Button
+                color="default"
+                onClick={this.handleFinish}
+                variant="outlined"
+              >
+                Cancel
+              </Button>
+            </div>
+            <Typography variant="h5" className="form-title">
+              Edit Ontology Term
+            </Typography>
+          </Paper>
+          <OntologyFormComponent
+            variant="edit"
+            node={node}
+            handleSubmit={this.handleSubmit}
+            handleFinish={this.handleFinish}
+            handleCancel={this.handleCancel}
+            schema={schema}
+            sources={sources}
+            edgeTypes={edgeTypes}
+          />
+        </div>
       );
     }
     return null;

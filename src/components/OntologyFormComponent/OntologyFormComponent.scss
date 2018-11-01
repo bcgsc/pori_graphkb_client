@@ -3,17 +3,8 @@ $breakpoint: 1300px;
 $relationshipBreakpoint: 1586px;
 $mediumBreakpoint: 500px;
 .node-form-wrapper {
-  overflow-x: hidden;
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   .form-grid {
     flex-grow: 1;
-    @include view-wrapper;
     @media (max-width: 425px) {
       .flexbox > div {
         margin: 0;
@@ -26,22 +17,7 @@ $mediumBreakpoint: 500px;
       grid-template-rows: auto;
       grid-template-columns: 100%;
     }
-    .form-header {
-      @include page-header;
-      grid-column-start: 1;
-      grid-column-end: 3;
-      @media (max-width: $breakpoint) {
-        grid-column-end: 2;
-      }
-      .form-cancel-btn {
-        display: flex;
-        justify-items: center;
-        margin: auto 0 auto auto;
-        button {
-          margin-left: auto;
-        }
-      }
-    }
+
     .flexbox {
       grid-column-end: 3;
       grid-column-start: 1;

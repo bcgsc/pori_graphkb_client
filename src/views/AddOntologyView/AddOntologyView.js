@@ -3,6 +3,12 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import './AddOntologyView.css';
+import {
+  Paper,
+  Button,
+  Typography,
+} from '@material-ui/core';
 import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
 import api from '../../services/api';
 import util from '../../services/util';
@@ -68,15 +74,30 @@ class AddOntologyViewBase extends Component {
     const { schema } = this.props;
 
     return schema && (
-      <OntologyFormComponent
-        variant="add"
-        schema={schema}
-        sources={sources}
-        edgeTypes={edgeTypes}
-        handleSubmit={this.handleSubmit}
-        handleFinish={this.handleFinish}
-        handleCancel={this.handleFinish}
-      />
+      <div className="add-form-wrapper">
+        <Paper className="form-header" elevation={4}>
+          <div className="form-cancel-btn">
+            <Button
+              color="default"
+              onClick={this.handleFinish}
+              variant="outlined"
+            >
+              Cancel
+            </Button>
+          </div>
+          <Typography variant="h5" className="form-title">
+            Add New Ontology Term
+          </Typography>
+        </Paper>
+        <OntologyFormComponent
+          variant="add"
+          schema={schema}
+          sources={sources}
+          edgeTypes={edgeTypes}
+          handleSubmit={this.handleSubmit}
+          handleFinish={this.handleFinish}
+        />
+      </div>
     );
   }
 }

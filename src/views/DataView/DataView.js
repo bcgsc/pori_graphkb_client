@@ -292,7 +292,7 @@ class DataViewBase extends Component {
       let route;
       if (schema.isOntology(detail['@class'])) {
         route = 'ontology';
-      } else if (detail['@class'] === 'PositionalVariant') {
+      } else if (schema.isVariant(detail['@class'])) {
         route = 'variant';
       } else if (detail['@class'] === 'Statement') {
         route = 'statement';

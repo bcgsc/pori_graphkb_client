@@ -7,6 +7,7 @@ import PositionalVariantParser from '../../components/PositionalVariantParser/Po
 import { withSchema } from '../../components/SchemaContext/SchemaContext';
 import util from '../../services/util';
 import api from '../../services/api';
+import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
 
 class EditVariantViewBase extends Component {
   constructor(props) {
@@ -98,12 +99,25 @@ class EditVariantViewBase extends Component {
         </Paper>
 
         <div className="variant-body">
-          <PositionalVariantParser
-            handleFinish={this.handleFinish}
-            handleSubmit={this.submitVariant}
-            schema={schema}
-            initVariant={variant}
-          />
+          {variant['@class'] === 'PositionalVariant'
+            ? (
+              <PositionalVariantParser
+                handleFinish={this.handleFinish}
+                handleSubmit={this.submitVariant}
+                schema={schema}
+                initVariant={variant}
+              />)
+            : (
+              <Paper>
+                <OntologyFormComponent
+                  variant="edit"
+                  node={variant}
+                  handleSubmit={this.submitVariant}
+                  handleFinish={this.handleFinish}
+                  handleCancel={this.handleFinish}
+                  schema={schema}
+                />
+              </Paper>)}
         </div>
       </div>
     );
@@ -112,9 +126,9 @@ class EditVariantViewBase extends Component {
 
 /**
  * @namespace
- * @property {Object} history - Application routing history object.
- * @property {Object} schema - Knowledgebase schema object.
- */
+* @property {Object} history - Application routing history object.
+* @property {Object} schema - Knowledgebase schema object.
+    */
 EditVariantViewBase.propTypes = {
   history: PropTypes.object.isRequired,
   schema: PropTypes.object.isRequired,

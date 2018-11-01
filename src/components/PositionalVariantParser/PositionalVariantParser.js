@@ -63,24 +63,26 @@ class PositionalVariantParser extends Component {
       : schema.initModel({}, 'PositionalVariant');
 
     const relationships = [];
-    const expandedEdgeTypes = util.expandEdges(schema.getEdges());
-    expandedEdgeTypes.forEach((type) => {
-      if (initVariant[type]) {
-        initVariant[type].forEach((edge) => {
-          if (!relationships.find(r => r['@rid'] === edge['@rid'])) {
-            relationships.push(
-              schema.initModel(
-                edge,
-                edge['@class'],
-                [{ name: '@rid', type: 'string' }],
-                false,
-                true,
-              ),
-            );
-          }
-        });
-      }
-    });
+    if (initVariant) {
+      const expandedEdgeTypes = util.expandEdges(schema.getEdges());
+      expandedEdgeTypes.forEach((type) => {
+        if (initVariant[type]) {
+          initVariant[type].forEach((edge) => {
+            if (!relationships.find(r => r['@rid'] === edge['@rid'])) {
+              relationships.push(
+                schema.initModel(
+                  edge,
+                  edge['@class'],
+                  [{ name: '@rid', type: 'string' }],
+                  false,
+                  true,
+                ),
+              );
+            }
+          });
+        }
+      });
+    }
 
     const shorthand = initVariant ? initVariant.getPreview() : '';
     this.setState({

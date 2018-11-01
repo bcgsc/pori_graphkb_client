@@ -42,13 +42,12 @@ $roboto: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
 }
 
 @mixin view-wrapper {
-  margin: 32px auto;
-  width: calc(86vw + 32px);
+  margin: 32px;
   display: grid;
   grid-template-rows: auto 1fr;
   grid-row-gap: 1rem;
   @media (max-width: 768px) {
-    width: calc(100vw - 32px);
+    margin: 16px;
   }
   @include paper-collapse;
 }

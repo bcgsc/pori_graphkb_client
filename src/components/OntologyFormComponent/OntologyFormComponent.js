@@ -196,7 +196,6 @@ class OntologyFormComponent extends Component {
       schema,
       variant,
       handleFinish,
-      handleCancel,
     } = this.props;
 
     // Wait for form to get initialized
@@ -251,104 +250,87 @@ class OntologyFormComponent extends Component {
           loading={loading}
           handleFinish={handleFinish}
         />
-        <div>
-          <div className="form-grid">
-            <Paper className="form-header" elevation={4}>
-              <div className="form-cancel-btn">
-                <Button
-                  color="default"
-                  onClick={handleCancel}
-                  variant="outlined"
-                >
-                  Cancel
-                </Button>
-              </div>
-              <Typography variant="h5" className="form-title">
-                {variant === 'edit' ? 'Edit Ontology Term'
-                  : 'Add New Ontology Term'}
+        <div className="form-grid">
+          <div className="flexbox">
+            <Paper className="param-section" elevation={4}>
+              <Typography variant="h5">
+                Basic Parameters
               </Typography>
-            </Paper>
-            <div className="flexbox">
-              <Paper className="param-section" elevation={4}>
-                <Typography variant="h5">
-                  Basic Parameters
-                </Typography>
-                <List component="nav">
-                  {variant === 'edit' ? (
+              <List component="nav">
+                {variant === 'edit' ? (
+                  <React.Fragment>
+                    <ListItem>
+                      <ListItemText
+                        primary="Class:"
+                        secondary={originalNode['@class']}
+                        secondaryTypographyProps={{ variant: 'h6', color: 'default' }}
+                      />
+                    </ListItem>
+                    <Divider />
+                  </React.Fragment>
+                )
+                  : (
                     <React.Fragment>
                       <ListItem>
-                        <ListItemText
-                          primary="Class:"
-                          secondary={originalNode['@class']}
-                          secondaryTypographyProps={{ variant: 'h6', color: 'default' }}
-                        />
+                        <ResourceSelectComponent
+                          value={form['@class']}
+                          onChange={this.handleClassChange}
+                          name="newNodeClass"
+                          label="Class"
+                          resources={schema.getOntologies().filter(o => o.name !== 'Ontology')}
+                        >
+                          {resource => (
+                            <MenuItem key={resource.name} value={resource.name}>
+                              {util.antiCamelCase(resource.name)}
+                            </MenuItem>
+                          )}
+                        </ResourceSelectComponent>
                       </ListItem>
                       <Divider />
                     </React.Fragment>
-                  )
-                    : (
-                      <React.Fragment>
-                        <ListItem>
-                          <ResourceSelectComponent
-                            value={form['@class']}
-                            onChange={this.handleClassChange}
-                            name="newNodeClass"
-                            label="Class"
-                            resources={schema.getOntologies().filter(o => o.name !== 'Ontology')}
-                          >
-                            {resource => (
-                              <MenuItem key={resource.name} value={resource.name}>
-                                {util.antiCamelCase(resource.name)}
-                              </MenuItem>
-                            )}
-                          </ResourceSelectComponent>
-                        </ListItem>
-                        <Divider />
-                      </React.Fragment>
-                    )}
-                  <FormTemplater
-                    model={form}
-                    propSchemas={editableProps}
-                    schema={schema}
-                    onChange={this.handleFormChange}
-                    sort={util.sortFields(DEFAULT_ORDER)}
-                  />
-                </List>
-              </Paper>
-              <Paper className="param-section forms-lists" elevation={4}>
-                <RelationshipsForm
+                  )}
+                <FormTemplater
+                  model={form}
+                  propSchemas={editableProps}
                   schema={schema}
-                  relationships={relationships}
-                  nodeRid={form['@rid']}
-                  name="relationships"
-                  onChange={this.handleChange}
+                  onChange={this.handleFormChange}
+                  sort={util.sortFields(DEFAULT_ORDER)}
                 />
-              </Paper>
-            </div>
-            <Paper className="form-btns" elevation={4}>
-              {variant === 'edit' && (
-                <Button
-                  variant="contained"
-                  onClick={this.handleDialogOpen}
-                  id="delete-btn"
-                  size="large"
-                >
-                  Delete
-                </Button>
-              )}
-              <Button
-                type="submit"
-                onClick={this.handleSubmit}
-                variant="contained"
-                color="primary"
-                disabled={formIsInvalid}
-                id="submit-btn"
-                size="large"
-              >
-                {variant === 'edit' ? 'Confirm Changes' : 'Submit'}
-              </Button>
+              </List>
+            </Paper>
+            <Paper className="param-section forms-lists" elevation={4}>
+              <RelationshipsForm
+                schema={schema}
+                relationships={relationships}
+                nodeRid={form['@rid']}
+                name="relationships"
+                onChange={this.handleChange}
+              />
             </Paper>
           </div>
+          <Paper className="form-btns" elevation={4}>
+            {variant === 'edit' && (
+              <Button
+                variant="contained"
+                onClick={this.handleDialogOpen}
+                id="delete-btn"
+                size="large"
+              >
+                Delete
+              </Button>
+            )}
+            <Button
+              type="submit"
+              onClick={this.handleSubmit}
+              variant="contained"
+              color="primary"
+              disabled={formIsInvalid}
+              id="submit-btn"
+              size="large"
+            >
+              {variant === 'edit' ? 'Confirm Changes' : 'Submit'}
+            </Button>
+          </Paper>
         </div>
       </div>
     );
@@ -374,7 +356,6 @@ OntologyFormComponent.propTypes = {
   schema: PropTypes.object.isRequired,
   edgeTypes: PropTypes.array,
   handleFinish: PropTypes.func,
-  handleCancel: PropTypes.func,
   handleSubmit: PropTypes.func,
 };
 
@@ -382,7 +363,6 @@ OntologyFormComponent.defaultProps = {
   edgeTypes: [],
   variant: 'edit',
   handleFinish: null,
-  handleCancel: null,
   handleSubmit: null,
   node: null,
 };

@@ -5,9 +5,10 @@ import { Paper, Typography, Button } from '@material-ui/core';
 import * as jc from 'json-cycle';
 import PositionalVariantParser from '../../components/PositionalVariantParser/PositionalVariantParser';
 import { withSchema } from '../../components/SchemaContext/SchemaContext';
+import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
 import util from '../../services/util';
 import api from '../../services/api';
-import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
+import classes from '../../models/classes';
 
 class EditVariantViewBase extends Component {
   constructor(props) {
@@ -52,8 +53,10 @@ class EditVariantViewBase extends Component {
    */
   async submitVariant(variant, relationships, originalRelationships) {
     const { schema } = this.props;
-
-    await api.patchEdges(originalRelationships, relationships, schema);
+    if (!Array.isArray(originalRelationships) && originalRelationships instanceof classes.Record) {
+      originalRelationships = originalRelationships.relationships;
+    }
+    await api.patchEdges(originalRelationships || [], relationships, schema);
 
     const copy = Object.assign({}, variant);
     const { properties, route } = schema.getClass(variant['@class']);

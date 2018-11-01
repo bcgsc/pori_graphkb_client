@@ -61,7 +61,7 @@ class EditOntologyViewBase extends Component {
   async handleSubmit(form, relationships, originalNode) {
     const { schema } = this.props;
 
-    await api.patchEdges(originalNode.relationships, relationships, schema);
+    await api.patchEdges(originalNode.relationships || [], relationships, schema);
     const { route, properties } = schema.getClass(originalNode['@class']);
     const payload = util.parsePayload(form, properties);
     await api.patch(`${route}/${originalNode['@rid'].slice(1)}`, payload);

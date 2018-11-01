@@ -49,21 +49,18 @@ class AddOntologyViewBase extends Component {
     const kbClass = schema.getClass(form['@class']);
     const payload = util.parsePayload(form, kbClass.properties);
     const { route } = kbClass;
-    const response = await api.post(`${route}`, { ...payload });
+    const response = await api.post(route, { ...payload });
 
     for (let i = 0; i < relationships.length; i += 1) {
-      const relationship = relationships[i];
-      if (relationship.in === -1) {
+      const { properties, route: edgeRoute } = schema.getClass(relationships[i]['@class']);
+      const relationship = util.parsePayload(relationships[i], properties);
+      if (relationship.in === '#node_rid') {
         relationship.in = response.result['@rid'];
       } else {
         relationship.out = response.result['@rid'];
       }
 
-      newEdges.push(api.post(`/${relationship['@class'].toLowerCase()}`, {
-        in: relationship.in,
-        out: relationship.out,
-        source: relationship.source,
-      }));
+      newEdges.push(api.post(edgeRoute, relationship));
     }
     await Promise.all(newEdges);
   }

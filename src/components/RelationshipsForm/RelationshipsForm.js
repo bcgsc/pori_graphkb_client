@@ -48,9 +48,10 @@ class RelationshipsForm extends Component {
   }
 
   componentDidMount() {
-    const { schema } = this.props;
+    const { schema, nodeRid } = this.props;
     const edges = schema.getEdges();
     const model = schema.initModel({}, edges[0]);
+    model['in.@rid'] = nodeRid;
     model['@rid'] = this.applyTestId();
     console.log(model);
     this.setState({ model, edges });
@@ -67,11 +68,13 @@ class RelationshipsForm extends Component {
       name,
       onChange,
       schema,
+      nodeRid,
     } = this.props;
 
     const {
       model,
       edges,
+      to,
     } = this.state;
 
     const editableProps = (schema.getClass(model['@class'])).properties;
@@ -92,6 +95,7 @@ class RelationshipsForm extends Component {
         relationships.push(model);
         onChange && onChange({ target: { name, value: relationships } });
         const newModel = schema.initModel({}, edges[0]);
+        model[`${to ? 'out' : 'in'}.@rid`] = nodeRid;
         newModel['@rid'] = this.applyTestId();
         this.setState({ model: newModel });
       }
@@ -349,6 +353,7 @@ RelationshipsForm.propTypes = {
   list: PropTypes.array,
   label: PropTypes.string,
   name: PropTypes.string,
+  nodeRid: PropTypes.string,
 };
 
 RelationshipsForm.defaultProps = {
@@ -356,6 +361,7 @@ RelationshipsForm.defaultProps = {
   list: [],
   label: '',
   name: '',
+  nodeRid: '#node_rid',
 };
 
 export default RelationshipsForm;

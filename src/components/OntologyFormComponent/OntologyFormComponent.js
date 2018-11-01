@@ -63,7 +63,7 @@ class OntologyFormComponent extends Component {
    * an edit variant.
    */
   async componentDidMount() {
-    const { node, edgeTypes, schema } = this.props;
+    const { node, schema } = this.props;
     const { relationships } = this.state;
 
     let originalNode = {};
@@ -75,7 +75,7 @@ class OntologyFormComponent extends Component {
     }
 
     const form = schema.initModel(originalNode, nodeClass);
-    const expandedEdgeTypes = util.expandEdges(edgeTypes);
+    const expandedEdgeTypes = util.expandEdges(schema.getEdges());
     expandedEdgeTypes.forEach((type) => {
       if (originalNode[type]) {
         originalNode[type].forEach((edge) => {
@@ -355,14 +355,12 @@ OntologyFormComponent.propTypes = {
   node: PropTypes.object,
   variant: PropTypes.oneOf(['edit', 'add']),
   schema: PropTypes.object.isRequired,
-  edgeTypes: PropTypes.array,
   handleFinish: PropTypes.func,
   handleSubmit: PropTypes.func,
   classes: PropTypes.array,
 };
 
 OntologyFormComponent.defaultProps = {
-  edgeTypes: [],
   variant: 'edit',
   handleFinish: null,
   handleSubmit: null,

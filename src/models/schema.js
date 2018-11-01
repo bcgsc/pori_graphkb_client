@@ -39,7 +39,7 @@ class Schema {
     const classKey = (Object.keys(schema)
       .find(key => key.toLowerCase() === (className || '').toLowerCase()));
     if (!classKey) return null;
-    const props = Object.keys(schema[classKey].properties)
+    const props = Object.keys(schema[classKey].properties || [])
       .filter(prop => !VPropKeys.includes(prop))
       .map(prop => schema[classKey].properties[prop]);
     return { route: schema[classKey].route, properties: props };

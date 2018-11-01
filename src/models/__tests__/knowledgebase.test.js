@@ -152,7 +152,7 @@ describe('ontology methods test', () => {
       },
     }, mockSchema);
     expect(testEdge.getPreview()).to.eq('pass');
-    expect(Edge.getIdentifiers()).to.deep.eq(['@class', 'source.name']);
+    expect(Edge.getIdentifiers()).to.deep.eq(['@class', 'level.sourceId', 'summary', 'source.name']);
 
     const testSource = new Source({ name: 'pass', anythingElse: 'fail' });
     expect(testSource.getPreview()).to.eq('pass');
@@ -235,6 +235,8 @@ describe('ontology methods test', () => {
     expect(mockSchema.getClassConstructor('cls1')).to.eq(Ontology);
     expect(mockSchema.getClassConstructor('test')).to.eq(V);
     expect(mockSchema.getClassConstructor('PositionalVariant')).to.eq(PositionalVariant);
+    expect(mockSchema.getClassConstructor('AliasOf')).to.eq(Edge);
+    expect(mockSchema.getClassConstructor('pos')).to.eq(Position);
     expect(mockSchema.newRecord('')).to.eq(null);
     expect(mockSchema.newRecord({ '@class': 'pos' }).constructor.name).to.eq('Position');
     expect(mockSchema.newRecord({ '@class': 'cls1' }).constructor.name).to.eq('Ontology');
@@ -254,5 +256,9 @@ describe('ontology methods test', () => {
     );
     const expected = ['name', 'boolprop', 'linkprop.name'];
     expect(props.some(prop => !expected.includes(prop))).to.eq(false);
+  });
+
+  it('gets variants', () => {
+    expect(mockSchema.getVariants().length).to.eq(1);
   });
 });

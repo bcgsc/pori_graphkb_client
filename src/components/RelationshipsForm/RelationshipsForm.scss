@@ -12,7 +12,6 @@
     padding-top: 0;
     padding-bottom: 32px;
     margin-bottom: 44px;
-
     .relationship-submit-wrapper {
       position: absolute;
       bottom: -18.5px;
@@ -88,6 +87,7 @@
       th {
         position: sticky;
         top: 0;
+        z-index: 1;
       }
       tr {
         td {

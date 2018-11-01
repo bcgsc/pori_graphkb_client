@@ -124,7 +124,7 @@ class EmbeddedListForm extends Component {
       <div className="embedded-list-wrapper">
         <TextField
           className="embedded-list-textfield"
-          id={`${label}-temp`}
+          id={`${label.toLowerCase()}-temp`}
           label={label}
           value={temp}
           onChange={this.handleChange}

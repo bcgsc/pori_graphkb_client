@@ -24,7 +24,7 @@ import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectCo
 import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
 import util from '../../services/util';
 
-const DEFAULT_RELATIONSHIPS_PROPSLENGTH = 3;
+const DEFAULT_RELATIONSHIPS_PROPSLENGTH = 10;
 
 class RelationshipsForm extends Component {
   constructor(props) {
@@ -32,7 +32,7 @@ class RelationshipsForm extends Component {
     const { relationships } = props;
     this.state = {
       model: null,
-      to: false,
+      forward: true,
       edges: [],
       originalRelationships: relationships && relationships.slice(),
       expanded: null,
@@ -53,7 +53,7 @@ class RelationshipsForm extends Component {
     const { schema, nodeRid, edgeTypes } = this.props;
     const edges = edgeTypes || schema.getEdges();
     const model = schema.initModel({}, edges[0]);
-    model['in.data'] = { '@rid': nodeRid };
+    model['out.data'] = { '@rid': nodeRid };
     model['@rid'] = this.applyTestId();
     this.setState({ model, edges });
   }
@@ -75,14 +75,14 @@ class RelationshipsForm extends Component {
     const {
       model,
       edges,
-      to,
+      forward,
     } = this.state;
 
     if (model && !relationships.find(r => r['@rid'] === model['@rid'])) {
       relationships.push(model);
       onChange({ target: { name, value: relationships } });
       const newModel = schema.initModel({}, edges[0]);
-      newModel[`${to ? 'out' : 'in'}.data`] = { '@rid': nodeRid };
+      newModel[`${forward ? 'out' : 'in'}.data`] = { '@rid': nodeRid };
       newModel['@rid'] = this.applyTestId();
       this.setState({ model: newModel });
     }
@@ -170,7 +170,7 @@ class RelationshipsForm extends Component {
    * > };
    */
   handleDirection() {
-    const { to, model } = this.state;
+    const { forward, model } = this.state;
 
     const temp = {};
 
@@ -187,7 +187,7 @@ class RelationshipsForm extends Component {
         model[`in${k !== 'out' ? `.${k.split('.')[1]}` : ''}`] = temp[k];
       }
     });
-    this.setState({ to: !to, model });
+    this.setState({ forward: !forward, model });
   }
 
   /**
@@ -248,7 +248,7 @@ class RelationshipsForm extends Component {
     const {
       model,
       edges,
-      to,
+      forward,
       expanded,
       minimized,
     } = this.state;
@@ -286,7 +286,7 @@ class RelationshipsForm extends Component {
               className="relationship-direction-btn"
             >
               <TrendingFlatIcon
-                className={to ? 'relationship-in' : ''}
+                className={forward ? 'relationship-in' : ''}
               />
             </IconButton>
             <ResourceSelectComponent
@@ -297,7 +297,7 @@ class RelationshipsForm extends Component {
             >
               {resource => (
                 <MenuItem key={resource} value={resource}>
-                  {to ? schema.get(resource).name : schema.get(resource).reverseName}
+                  {forward ? schema.get(resource).name : schema.get(resource).reverseName}
                 </MenuItem>
               )}
             </ResourceSelectComponent>
@@ -305,9 +305,9 @@ class RelationshipsForm extends Component {
           <ListItem disableGutters>
             <AutoSearchComponent
               label="Target Record"
-              value={to ? model.in : model.out}
+              value={forward ? model.in : model.out}
               onChange={this.handleChange}
-              name={to ? 'in' : 'out'}
+              name={forward ? 'in' : 'out'}
               required
             />
           </ListItem>
@@ -367,8 +367,13 @@ class RelationshipsForm extends Component {
                   const ButtonIcon = r.deleted
                     ? <RefreshIcon color="primary" />
                     : <CloseIcon color="error" />;
-                  const shouldExpand = schema.getClass(r['@class']).properties
-                    .filter(k => r[k.name] !== undefined)
+                  const {
+                    properties,
+                    name,
+                    reverseName,
+                  } = schema.get(r['@class']);
+                  const shouldExpand = Object.keys(properties)
+                    .filter(k => r[k] !== undefined)
                     .length > DEFAULT_RELATIONSHIPS_PROPSLENGTH;
 
                   const isIn = r['in.data']['@rid'] === nodeRid;
@@ -380,6 +385,7 @@ class RelationshipsForm extends Component {
                         onClick={shouldExpand
                           ? () => this.handleExpand(r['@rid'])
                           : null}
+                        style={{ cursor: shouldExpand ? 'pointer' : undefined }}
                       >
                         <TableCell padding="checkbox">
                           <IconButton
@@ -391,11 +397,11 @@ class RelationshipsForm extends Component {
                           </IconButton>
                         </TableCell>
                         <TableCell padding="dense">
-                          {r['@class']}
+                          {isIn ? reverseName : name}
                         </TableCell>
                         <TableCell padding="dense">
                           {isIn
-                            ? (r.out)
+                            ? r.out
                             : r.in}
                         </TableCell>
                         <TableCell padding="dense">

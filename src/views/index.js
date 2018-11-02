@@ -10,6 +10,7 @@ import LoginView from './LoginView/LoginView';
 import QueryView from './QueryView/QueryView';
 import { AddVariantView } from './AddVariantView/AddVariantView';
 import { EditVariantView } from './EditVariantView/EditVariantView';
+import { EditStatementView } from './EditStatementView/EditStatementView';
 import { QueryBuilderView } from './QueryBuilderView/QueryBuilderView';
 
 export {
@@ -26,4 +27,5 @@ export {
   AddVariantView,
   EditVariantView,
   QueryBuilderView,
+  EditStatementView,
 };

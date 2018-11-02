@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -6,7 +5,6 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
-import * as jc from 'json-cycle';
 import { withSchema } from '../../components/SchemaContext/SchemaContext';
 import api from '../../services/api';
 import util from '../../services/util';
@@ -15,9 +13,6 @@ import StatementFormComponent from '../../components/StatementFormComponent/Stat
 class AddStatementViewBase extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      node: null,
-    };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
   }
@@ -34,7 +29,7 @@ class AddStatementViewBase extends Component {
     const relationshipPayloads = relationships.map((r) => {
       const { properties: rProperties } = schema.getClass(r['@class']);
       const rPayload = util.parsePayload(r, rProperties, [{ name: '@class' }]);
-      Object.keys(rPayload).forEach(k => {
+      Object.keys(rPayload).forEach((k) => {
         if (!rPayload[k] || rPayload[k] === '#node_rid') {
           delete rPayload[k];
           if (k === 'in' && rPayload.out) {
@@ -65,7 +60,7 @@ class AddStatementViewBase extends Component {
               variant="outlined"
             >
               Cancel
-              </Button>
+            </Button>
           </div>
           <Typography variant="h5" className="form-title">
             Add Statement
@@ -80,6 +75,16 @@ class AddStatementViewBase extends Component {
     );
   }
 }
+
+/**
+ * @namespace
+ * @property {Object} history - App routing history object.
+ * @property {Object} schema - Knowledgebase db schema.
+ */
+AddStatementViewBase.propTypes = {
+  history: PropTypes.object.isRequired,
+  schema: PropTypes.object.isRequired,
+};
 
 const AddStatementView = withSchema(AddStatementViewBase);
 

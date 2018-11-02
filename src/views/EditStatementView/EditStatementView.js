@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -8,8 +7,8 @@ import {
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
 import { withSchema } from '../../components/SchemaContext/SchemaContext';
-import FormTemplater from '../../components/FormTemplater/FormTemplater';
 import api from '../../services/api';
+import util from '../../services/util';
 import StatementFormComponent from '../../components/StatementFormComponent/StatementFormComponent';
 
 class EditStatementViewBase extends Component {
@@ -18,25 +17,44 @@ class EditStatementViewBase extends Component {
     this.state = {
       node: null,
     };
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleFinish = this.handleFinish.bind(this);
   }
 
+  /**
+   * Makes call to api to retrieve statement with RID specified in url.
+   */
   async componentDidMount() {
     const { match, schema } = this.props;
     const { rid } = match.params;
-    const { route, properties } = schema.get('Statement');
+    const { route } = schema.get('Statement');
     const response = await api.get(`${route}/${rid}?neighbors=3`);
     const node = jc.retrocycle(response).result;
-    console.log(schema.newRecord(node));
-    console.log(properties);
-    this.setState({ node: schema.newRecord(node) })
+    this.setState({ node: schema.newRecord(node) });
   }
 
+  /**
+   * Navigates away from page.
+   */
   handleFinish() {
-
+    const { history } = this.props;
+    history.back();
   }
 
-  handleSubmit() {
+  /**
+   * PATCHes the updated node to the server and posts/deletes the difference in
+   * relationship arrays.
+   * @param {Object} form - Form object containing core record parameters.
+   * @param {Array} relationships - New list of relationships.
+   * @param {Array} originalRelationships - Original list of relationships.
+   */
+  async handleSubmit(form, relationships, originalRelationships) {
+    const { schema } = this.props;
 
+    await api.patchEdges(originalRelationships || [], relationships, schema);
+    const { route, properties } = schema.getClass(form['@class']);
+    const payload = util.parsePayload(form, properties);
+    await api.patch(`${route}/${form['@rid'].slice(1)}`, payload);
   }
 
   render() {
@@ -52,7 +70,7 @@ class EditStatementViewBase extends Component {
               variant="outlined"
             >
               Cancel
-              </Button>
+            </Button>
           </div>
           <Typography variant="h5" className="form-title">
             Edit Statement
@@ -61,11 +79,23 @@ class EditStatementViewBase extends Component {
         <StatementFormComponent
           schema={schema}
           node={node}
+          onSubmit={this.handleSubmit}
+          handleFinish={this.handleFinish}
         />
       </div>
     );
   }
 }
+
+/**
+ * @namespace
+ * @property {Object} history - App routing history object.
+ * @property {Object} schema - Knowledgebase db schema.
+ */
+EditStatementViewBase.propTypes = {
+  history: PropTypes.object.isRequired,
+  schema: PropTypes.object.isRequired,
+};
 
 const EditStatementView = withSchema(EditStatementViewBase);
 

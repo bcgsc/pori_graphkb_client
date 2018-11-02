@@ -39,6 +39,7 @@ import {
   AdvancedQueryView,
   DataView,
   EditOntologyView,
+  EditStatementView,
   ErrorView,
   FeedbackView,
   IconsView,
@@ -259,8 +260,9 @@ class App extends Component {
         <Route exact path="/query/advanced/builder" component={QueryBuilderView} />
         <Route path="/add/ontology" component={AddOntologyView} />
         <Route path="/add/variant" component={AddVariantView} />
-        <Route exact path="/edit/ontology/:rid" component={EditOntologyView} />
-        <Route exact path="/edit/variant/:rid" component={EditVariantView} />
+        <Route path="/edit/ontology/:rid" component={EditOntologyView} />
+        <Route path="/edit/variant/:rid" component={EditVariantView} />
+        <Route path="/edit/statement/:rid" component={EditStatementView} />
         <Route path="/data" component={DataView} />
         <Route path="/feedback" component={FeedbackView} />
         <Route path="/admin" component={AdminView} />

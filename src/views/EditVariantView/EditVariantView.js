@@ -62,7 +62,7 @@ class EditVariantViewBase extends Component {
     const copy = Object.assign({}, variant);
     const { properties, route } = schema.getClass(variant['@class']);
     Object.keys(copy).forEach((k) => {
-      if (typeof copy[k] === 'object') { // more flexible
+      if (copy[k] && typeof copy[k] === 'object') {
         if (!copy[k]['@class']) {
           delete copy[k];
         } else {

@@ -75,24 +75,13 @@ class OntologyFormComponent extends Component {
     }
 
     const form = schema.initModel(originalNode, nodeClass);
-    const expandedEdgeTypes = util.expandEdges(schema.getEdges());
-    expandedEdgeTypes.forEach((type) => {
-      if (originalNode[type]) {
-        originalNode[type].forEach((edge) => {
-          if (!relationships.find(r => r['@rid'] === edge['@rid'])) {
-            relationships.push(
-              schema.initModel(
-                edge,
-                edge['@class'],
-                [{ name: '@rid', type: 'string' }],
-                false,
-                true,
-              ),
-            );
-          }
-        });
-      }
-    });
+
+    if (originalNode.getEdges) {
+      originalNode.getEdges().forEach((edge) => {
+        relationships.push(schema.initModel(edge, edge['@class']));
+      });
+    }
+
     // Shallow copy the array to avoid mutating it.
     originalNode.relationships = relationships.slice(0);
 
@@ -151,20 +140,12 @@ class OntologyFormComponent extends Component {
    */
   handleFormChange(e) {
     const { form } = this.state;
-    const { name, value, sourceId } = e.target;
+    const { schema } = this.props;
+    const { name, value } = e.target;
     form[name] = value;
-
-    if (e.target['@rid']) {
-      form[`${name}.@rid`] = e.target['@rid'];
-    } else if (form[`${name}.@rid`]) {
-      form[`${name}.@rid`] = '';
+    if (name.includes('.data') && value) {
+      form[name.split('.')[0]] = schema.newRecord(value).getPreview();
     }
-    if (sourceId) {
-      form[`${name}.sourceId`] = sourceId;
-    } else if (form[`${name}.sourceId`]) {
-      form[`${name}.sourceId`] = '';
-    }
-
     this.setState({ form });
   }
 
@@ -207,7 +188,7 @@ class OntologyFormComponent extends Component {
     let formIsInvalid = false;
     editableProps.forEach((prop) => {
       if (prop.mandatory) {
-        if (prop.type === 'link' && (!form[prop.name] || !form[`${prop.name}.@rid`])) {
+        if (prop.type === 'link' && !(form[`${prop.name}.data`] && form[`${prop.name}.data`]['@rid'])) {
           formIsInvalid = true;
         } else if (prop.type !== 'boolean' && !form[prop.name]) {
           formIsInvalid = true;

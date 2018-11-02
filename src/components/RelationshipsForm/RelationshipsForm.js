@@ -24,39 +24,7 @@ import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectCo
 import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
 import util from '../../services/util';
 
-const DEFAULT_RELATIONSHIPS_PROPSLENGTH = 13;
-
-/**
- * Displays all of a relationships key/value pairs to be displayed in table
- * expanding row.
- * @param {Object} r - relationship object to be displayed.
- * @param {boolean} isIn - flag for whether current editing node is on the 'in'
- * side of the relationship.
- */
-const getRelationshipDetails = (r, isIn) => {
-  const targetNode = isIn
-    ? 'out'
-    : 'in';
-  return (
-    <div className="relationships-expansion">
-      {Object.keys(r).filter(k => (
-        !k.includes('.')
-        && k !== 'deleted'
-        && k !== '@rid'
-        && k !== (isIn ? 'in' : 'out')
-      )).map(k => (
-        <ListItem key={k}>
-          <ListItemText
-            primary={(k === 'in' || k === 'out')
-              ? r[targetNode] || r[`${targetNode}.sourceId`]
-              : r[k].toString()}
-            secondary={util.antiCamelCase(k)}
-          />
-        </ListItem>
-      ))}
-    </div>
-  );
-};
+const DEFAULT_RELATIONSHIPS_PROPSLENGTH = 3;
 
 class RelationshipsForm extends Component {
   constructor(props) {
@@ -68,7 +36,7 @@ class RelationshipsForm extends Component {
       edges: [],
       originalRelationships: relationships && relationships.slice(),
       expanded: null,
-      minimized: true,
+      minimized: false,
     };
     this.testId = 0;
     this.handleAdd = this.handleAdd.bind(this);
@@ -82,18 +50,18 @@ class RelationshipsForm extends Component {
    * Initializes temp relationship model and edge classes.
    */
   componentDidMount() {
-    const { schema, nodeRid } = this.props;
-    const edges = schema.getEdges();
+    const { schema, nodeRid, edgeTypes } = this.props;
+    const edges = edgeTypes || schema.getEdges();
     const model = schema.initModel({}, edges[0]);
-    model['in.@rid'] = nodeRid;
+    model['in.data'] = { '@rid': nodeRid };
     model['@rid'] = this.applyTestId();
     this.setState({ model, edges });
   }
 
   /**
- * Adds new subset to state list. Clears subset field.
- * @param {Event} e - User request subset add event.
- */
+   * Adds new subset to state list. Clears subset field.
+   * @param {Event} e - User request subset add event.
+   */
   handleAdd(e) {
     e.preventDefault();
     const {
@@ -114,7 +82,7 @@ class RelationshipsForm extends Component {
       relationships.push(model);
       onChange({ target: { name, value: relationships } });
       const newModel = schema.initModel({}, edges[0]);
-      newModel[`${to ? 'out' : 'in'}.@rid`] = nodeRid;
+      newModel[`${to ? 'out' : 'in'}.data`] = { '@rid': nodeRid };
       newModel['@rid'] = this.applyTestId();
       this.setState({ model: newModel });
     }
@@ -165,21 +133,12 @@ class RelationshipsForm extends Component {
    */
   handleChange(e) {
     const { model } = this.state;
-    const { name, value, sourceId } = e.target;
-
+    const { schema } = this.props;
+    const { name, value } = e.target;
     model[name] = value;
-
-    if (e.target['@rid']) {
-      model[`${name}.@rid`] = e.target['@rid'];
-    } else if (model[`${name}.@rid`]) {
-      model[`${name}.@rid`] = '';
+    if (name.includes('.data') && value) {
+      model[name.split('.')[0]] = schema.newRecord(value).getPreview();
     }
-    if (sourceId) {
-      model[`${name}.sourceId`] = sourceId;
-    } else if (model[`${name}.sourceId`]) {
-      model[`${name}.sourceId`] = '';
-    }
-
     this.setState({ model });
   }
 
@@ -253,6 +212,38 @@ class RelationshipsForm extends Component {
     return `#TEST:${id}`;
   }
 
+  /**
+   * Displays all of a relationships key/value pairs to be displayed in table
+   * expanding row.
+   * @param {Object} r - relationship object to be displayed.
+   * @param {boolean} isIn - flag for whether current editing node is on the 'in'
+   * side of the relationship.
+   */
+  relationshipDetails(r, isIn) {
+    const { schema } = this.props;
+    const targetNode = isIn
+      ? 'out'
+      : 'in';
+    return (
+      <div className="relationships-expansion">
+        {schema.getClass(r['@class']).properties.filter(k => (
+          k.name !== (isIn ? 'in' : 'out')
+          && r[k.name]
+        )).map(k => (
+          <ListItem key={k.name}>
+            <ListItemText
+              primary={(k.name === 'in' || k.name === 'out')
+                ? r[targetNode]
+                : r[k.name]}
+              secondary={util.antiCamelCase(k.name)}
+            />
+          </ListItem>
+        ))}
+      </div>
+    );
+  }
+
+
   render() {
     const {
       model,
@@ -273,7 +264,7 @@ class RelationshipsForm extends Component {
     let formIsInvalid = false;
     editableProps.forEach((prop) => {
       if (prop.mandatory) {
-        if (prop.type === 'link' && (!model[prop.name] || !model[`${prop.name}.@rid`])) {
+        if (prop.type === 'link' && (!model[`${prop.name}.data`] || !model[`${prop.name}.data`]['@rid'])) {
           formIsInvalid = true;
         } else if (prop.type !== 'boolean' && !model[prop.name]) {
           formIsInvalid = true;
@@ -334,7 +325,7 @@ class RelationshipsForm extends Component {
               variant="contained"
               onClick={this.handleAdd}
               id="relationships-form-submit"
-              disabled={formIsInvalid || !(model['in.@rid'] && model['out.@rid'])}
+              disabled={formIsInvalid || !(model['in.data'] && model['out.data'])}
             >
               Add Relationship
             </Button>
@@ -376,10 +367,11 @@ class RelationshipsForm extends Component {
                   const ButtonIcon = r.deleted
                     ? <RefreshIcon color="primary" />
                     : <CloseIcon color="error" />;
-                  const shouldExpand = Object.keys(r)
-                    .filter(k => k !== 'deleted').length > DEFAULT_RELATIONSHIPS_PROPSLENGTH;
+                  const shouldExpand = schema.getClass(r['@class']).properties
+                    .filter(k => r[k.name] !== undefined)
+                    .length > DEFAULT_RELATIONSHIPS_PROPSLENGTH;
 
-                  const isIn = r['in.@rid'] === nodeRid;
+                  const isIn = r['in.data']['@rid'] === nodeRid;
 
                   return (
                     <React.Fragment key={r['@rid']}>
@@ -403,8 +395,8 @@ class RelationshipsForm extends Component {
                         </TableCell>
                         <TableCell padding="dense">
                           {isIn
-                            ? (r.out || r['out.sourceId'])
-                            : r.in || r['in.sourceId']}
+                            ? (r.out)
+                            : r.in}
                         </TableCell>
                         <TableCell padding="dense">
                           {r.source}
@@ -424,7 +416,7 @@ class RelationshipsForm extends Component {
                           <Collapse
                             in={expanded === r['@rid']}
                           >
-                            {getRelationshipDetails(r, isIn)}
+                            {this.relationshipDetails(r, isIn)}
                           </Collapse>
                         </TableCell>
                       </TableRow>
@@ -461,13 +453,14 @@ RelationshipsForm.propTypes = {
   relationships: PropTypes.array,
   name: PropTypes.string,
   nodeRid: PropTypes.string,
+  edgeTypes: PropTypes.array,
 };
 
 RelationshipsForm.defaultProps = {
   relationships: [],
-  label: '',
   name: '',
   nodeRid: '#node_rid',
+  edgeTypes: null,
 };
 
 export default RelationshipsForm;

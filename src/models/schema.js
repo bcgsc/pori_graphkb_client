@@ -73,25 +73,14 @@ class Schema {
           newModel[name] = model[name] ? model[name].slice() : [];
           break;
         case 'link':
-          if (model[name] && typeof model[name] === 'object') {
-            let preview = model[name].name;
-            if (!linkedClass) {
-              newModel[`${name}.class`] = model[name]['@class'] || '';
-            }
-            if (model[name]['@class']) {
-              preview = this.newRecord(model[name]).getPreview();
-            }
-            newModel[name] = preview || '';
-            newModel[`${name}.@rid`] = model[name]['@rid'] || '';
-            newModel[`${name}.sourceId`] = model[name].sourceId || '';
+          if (model[`${name}.data`]) {
+            newModel[`${name}.data`] = this.newRecord(model[`${name}.data`]);
+          } else if (model[name] && model[name]['@class']) {
+            newModel[`${name}.data`] = this.newRecord(model[name]);
           } else {
-            newModel[name] = model[name] || '';
-            newModel[`${name}.@rid`] = model[`${name}.@rid`] || '';
-            newModel[`${name}.sourceId`] = model[`${name}.sourceId`] || '';
-            if (!linkedClass) {
-              newModel[`${name}.class`] = model[`${name}.class`] || '';
-            }
+            newModel[`${name}.data`] = null;
           }
+          newModel[name] = (newModel[`${name}.data`] && newModel[`${name}.data`].getPreview()) || '';
           break;
         case 'integer' || 'long':
           newModel[name] = model[name] !== undefined
@@ -107,7 +96,7 @@ class Schema {
           if (linkedClass && linkedClass.properties) {
             newModel[name] = model[name]
               ? Object.assign({}, model[name])
-              : this.initModel({}, property.linkedClass.name, [], true);
+              : this.initModel({}, linkedClass.name, [], true);
           }
           break;
         default:

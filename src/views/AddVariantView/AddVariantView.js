@@ -40,7 +40,7 @@ class AddVariantViewBase extends Component {
     const classSchema = schema.getClass('PositionalVariant').properties;
     // Strips away empty break objects and casts number props to numbers.
     Object.keys(copy).forEach((k) => {
-      if (typeof copy[k] === 'object') { // more flexible
+      if (typeof copy[k] === 'object' && copy[k]) { // more flexible
         if (!copy[k]['@class']) {
           delete copy[k];
         } else {

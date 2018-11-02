@@ -237,16 +237,21 @@ const parsePayload = (form, objectSchema, exceptions, isQuery = false) => {
       delete payload[key];
     }
     if (typeof payload[key] === 'object' && isQuery) {
-      Object.keys(payload[key]).forEach((k) => {
-        if (payload[key][k]) {
-          payload[`${key}[${k}]`] = payload[key][k];
+      let objKey = key;
+      if (key.includes('.data')) {
+        [objKey] = key.split('.');
+      }
+
+      Object.keys(payload[objKey]).forEach((k) => {
+        if (payload[objKey][k]) {
+          payload[`${objKey}[${k}]`] = payload[objKey][k];
         }
       });
-      delete payload[key];
+      delete payload[objKey];
     }
 
     // For link properties, must specify record id being linking to. Clear the rest.
-    if (key.includes('.@rid')) {
+    if (key.includes('.data')) {
       const nestedKey = key.split('.')[0];
       if (
         (objectSchema.find(p => p.name === nestedKey)
@@ -255,7 +260,7 @@ const parsePayload = (form, objectSchema, exceptions, isQuery = false) => {
       ) {
         // Sets top level property to the rid: ie.
         // 'source.@rid': #18:5 => 'source': #18:5
-        payload[key.split('.')[0]] = payload[key];
+        payload[key.split('.')[0]] = payload[key]['@rid'] || payload[key];
         delete payload[key];
       }
     }

@@ -63,24 +63,9 @@ class PositionalVariantParser extends Component {
       : schema.initModel({}, 'PositionalVariant');
 
     const relationships = [];
-    if (initVariant) {
-      const expandedEdgeTypes = util.expandEdges(schema.getEdges());
-      expandedEdgeTypes.forEach((type) => {
-        if (initVariant[type]) {
-          initVariant[type].forEach((edge) => {
-            if (!relationships.find(r => r['@rid'] === edge['@rid'])) {
-              relationships.push(
-                schema.initModel(
-                  edge,
-                  edge['@class'],
-                  [{ name: '@rid', type: 'string' }],
-                  false,
-                  true,
-                ),
-              );
-            }
-          });
-        }
+    if (initVariant && initVariant.getEdges) {
+      initVariant.getEdges().forEach((edge) => {
+        relationships.push(schema.initModel(edge, edge['@class']));
       });
     }
 
@@ -362,7 +347,7 @@ class PositionalVariantParser extends Component {
     let formIsInvalid = false;
     (classSchema || []).forEach((prop) => {
       if (prop.mandatory) {
-        if (prop.type === 'link' && (!variant[prop.name] || !variant[`${prop.name}.@rid`])) {
+        if (prop.type === 'link' && (!variant[`${prop.name}.data`] || !variant[`${prop.name}.data`]['@rid'])) {
           formIsInvalid = true;
         } else if (prop.type !== 'boolean' && !variant[prop.name]) {
           formIsInvalid = true;

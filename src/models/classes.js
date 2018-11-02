@@ -42,20 +42,13 @@ class Record {
    * Returns a string preview for the record.
    */
   getPreview() {
-    let preview;
+    let preview = '';
     this.constructor.getIdentifiers().forEach((prop) => {
       const [key, nestedKey] = prop.split('.');
       if (this[key] && !preview) {
         preview = nestedKey ? this[key][nestedKey] : this[key];
       }
     });
-    if (!preview) {
-      const prop = Object.keys(this).find(key => (
-        typeof this[key] !== 'object'
-        && typeof this[key] !== 'function'
-      ));
-      preview = this[prop];
-    }
     return util.formatStr(preview);
   }
 }

@@ -44,7 +44,7 @@ class EditOntologyViewBase extends Component {
     const { match, schema } = this.props;
     const { rid } = match.params;
     const response = await api.get(`/ontologies/${rid}?neighbors=${DEFAULT_NEIGHBORS}`);
-    const node = jc.retrocycle(response).result;
+    const node = schema.newRecord(jc.retrocycle(response).result);
     const sources = await api.getSources();
     const edgeTypes = schema.getEdges();
     this.setState({

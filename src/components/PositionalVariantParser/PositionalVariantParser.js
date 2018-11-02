@@ -130,6 +130,8 @@ class PositionalVariantParser extends Component {
         });
       } catch (error) {
         let invalidFlag = '';
+        let newVariant = variant;
+        let newErrorFields = [];
         if (error.content && error.content.parsed) {
           Object.keys(error.content.parsed).forEach((key) => {
             if (variant[key] !== undefined && variant[key] !== null) {
@@ -138,14 +140,15 @@ class PositionalVariantParser extends Component {
           });
           const linkProps = await this.extractLinkProps(error.content.parsed);
           ({ invalidFlag } = linkProps);
-          this.setState({
-            variant: Object.assign(variant, linkProps.props),
-            errorFields: linkProps.errorFields,
-          });
+          newVariant = Object.assign(variant, linkProps.props);
+          newErrorFields = linkProps.errorFields;
         }
 
-        this.updateErrorFields(error);
-        this.setState({ invalidFlag: error.message || invalidFlag });
+        this.setState({
+          invalidFlag: error.message || invalidFlag,
+          errorFields: this.updateErrorFields(error, newErrorFields),
+          variant: newVariant,
+        });
       }
     }
   }
@@ -208,8 +211,7 @@ class PositionalVariantParser extends Component {
     } else {
       variant[nested] = { '@class': '' };
     }
-
-    this.setState({ variant, errorFields: [] }, this.updateShorthand);
+    this.updateShorthand(variant);
   }
 
   handleChange(e) {
@@ -224,41 +226,36 @@ class PositionalVariantParser extends Component {
    */
   handleVariantChange(e, nested) {
     const { variant } = this.state;
+    const { schema } = this.props;
     const { name, value } = e.target;
     if (nested) {
       variant[nested][name] = value;
-      variant[nested][`${name}.@rid`] = e.target['@rid'];
+      if (name.includes('.data') && value) {
+        variant[nested][name.split('.')[0]] = schema.newRecord(value).getPreview();
+      }
     } else {
       variant[name] = value;
-      variant[`${name}.@rid`] = e.target['@rid'];
-    }
-
-    Object.keys(e.target)
-      .filter(k => k !== 'name' && k !== 'value' && !k.startsWith('_'))
-      .forEach((key) => {
-        if (nested) {
-          variant[nested][`${name}.${key}`] = e.target[key];
-        }
-        variant[`${name}.${key}`] = e.target[key];
-      });
-    this.setState({ variant, errorFields: [] }, () => {
-      if (!SHORTHAND_EXCLUDED.includes(name)) {
-        this.updateShorthand();
+      if (name.includes('.data') && value) {
+        variant[name.split('.')[0]] = schema.newRecord(value).getPreview();
       }
-    });
+    }
+    if (!SHORTHAND_EXCLUDED.includes(name)) {
+      this.updateShorthand(variant);
+    } else {
+      this.setState({ variant, errorFields: [] });
+    }
   }
 
   /**
    * Pipes changes of the variant form fields to the shorthand string form.
    */
-  updateShorthand() {
-    const { variant } = this.state;
+  updateShorthand(variant) {
     let { shorthand } = this.state;
     const { schema } = this.props;
     try {
       const filteredVariant = {};
       Object.keys(variant).forEach((k) => {
-        if (typeof variant[k] === 'object') {
+        if (variant[k] && typeof variant[k] === 'object') {
           if (variant[k]['@class'] && schema.isPosition(variant[k]['@class'])) {
             filteredVariant[k] = variant[k];
             filteredVariant.prefix = kbp.position.CLASS_PREFIX[variant[k]['@class']];
@@ -275,12 +272,19 @@ class PositionalVariantParser extends Component {
         variant.break2Repr = shorthand.break2Repr;
       }
       shorthand = kbp.variant.parse(shorthand.toString());
-      this.setState({ invalidFlag: '' });
+      this.setState({
+        invalidFlag: '',
+        shorthand: shorthand.toString(),
+        variant,
+        errorFields: [],
+      });
     } catch (error) {
-      this.updateErrorFields(error);
-      this.setState({ invalidFlag: error.message });
-    } finally {
-      this.setState({ shorthand: shorthand.toString(), variant });
+      this.setState({
+        shorthand: shorthand.toString(),
+        invalidFlag: error.message,
+        variant,
+        errorFields: this.updateErrorFields(error, []),
+      });
     }
   }
 
@@ -288,8 +292,8 @@ class PositionalVariantParser extends Component {
    * Assigns blame to violatedAttr input fields in the form.
    * @param {kbp.error.ErrorMixin} error - Error object from kbp.
    */
-  updateErrorFields(error) {
-    const { errorFields, variant } = this.state;
+  updateErrorFields(error, errorFields) {
+    const { variant } = this.state;
     if (error && error.content) {
       const { violatedAttr } = error.content;
       if (violatedAttr) {
@@ -305,7 +309,7 @@ class PositionalVariantParser extends Component {
         }
       }
     }
-    this.setState({ errorFields });
+    return errorFields;
   }
 
   /**

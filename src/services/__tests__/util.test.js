@@ -123,7 +123,7 @@ describe('validate outputs for util methods', () => {
     arrayTestTSVs.forEach((testTSV) => {
       const list = testTSV[testTSV.testKey];
       let output = '';
-      list.forEach((listItem, i) => {
+      list.forEach((_, i) => {
         output += 'pass';
         if (i < list.length - 1) {
           output += ', ';
@@ -176,9 +176,13 @@ describe('validate outputs for util methods', () => {
         filteredOut: '',
       },
       {
-        'name.@rid': 'name',
+        'name.data': {
+          '@rid': 'name',
+        },
         name: 'fail',
-        's.@rid': 'fail',
+        's.data': {
+          '@rid': 'fail',
+        },
       },
     ];
     const output = [

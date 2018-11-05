@@ -14,6 +14,7 @@ import {
   InputAdornment,
 } from '@material-ui/core';
 import kbp from 'knowledgebase-parser';
+import omit from 'lodash.omit';
 import SearchIcon from '@material-ui/icons/Search';
 import AutoSearchComponent from '../../components/AutoSearchComponent/AutoSearchComponent';
 
@@ -37,6 +38,7 @@ class QueryView extends Component {
       tab: 'ontology',
       variantError: '',
       variant: {},
+      queryable: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -54,7 +56,7 @@ class QueryView extends Component {
       disabled,
       tab,
       variant,
-      variantError,
+      queryable,
     } = this.state;
     const { history } = this.props;
     let search;
@@ -66,7 +68,7 @@ class QueryView extends Component {
         const m = !!str.match(pattern) || str.replace(pattern, '').trim().length > 4;
         search = `?name=${!m ? '~' : ''}${str.trim()}`;
       }
-    } else if (tab === 'variant' && str && !variantError) {
+    } else if (tab === 'variant' && str && queryable) {
       search = '?@class=PositionalVariant';
       Object.keys(variant).forEach((key) => {
         const val = `${variant[key]}`.match(pattern, '') || `${variant[key]}`.length < 4 ? variant[key] : `~${variant[key]}`;
@@ -118,9 +120,13 @@ class QueryView extends Component {
       });
     } catch (e) {
       // If anything is parsed, use that..
-      const update = { variantError: str ? e.message : '' };
+      const update = { variantError: str ? e.message : '', queryable: false };
       if (e.content && e.content.parsed) {
-        update.variant = e.content.parsed;
+        const parsed = omit(e.content.parsed, 'variantString');
+        if (Object.keys(parsed) !== 0) {
+          update.variant = parsed;
+          update.queryable = true;
+        }
       }
       this.setState(update);
     }
@@ -131,6 +137,7 @@ class QueryView extends Component {
       str,
       tab,
       variantError,
+      queryable,
     } = this.state;
     const { history } = this.props;
 
@@ -186,7 +193,7 @@ class QueryView extends Component {
                   name="str"
                   onChange={this.handleChange}
                   onKeyUp={this.handleVariantParse}
-                  error={!!variantError}
+                  error={(variantError && !queryable)}
                   helperText={variantError}
                   InputProps={{
                     endAdornment: (

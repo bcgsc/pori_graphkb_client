@@ -222,6 +222,12 @@ class AdvancedQueryViewBase extends Component {
             sort={util.sortFields(DEFAULT_ORDER)}
             ignoreRequired
             onClassChange={this.handleNestedClassChange}
+            pairs={{
+              range: ['start', 'end'],
+              sourceId: ['sourceId', 'sourceIdVersion'],
+              trialRange: ['startYear', 'completionYear'],
+              location: ['country', 'city'],
+            }}
           />
         </Paper>
         <Paper elevation={4} id="adv-nav-buttons">

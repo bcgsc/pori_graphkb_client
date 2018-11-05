@@ -256,6 +256,7 @@ class RelationshipsForm extends Component {
       schema,
       relationships,
       nodeRid,
+      emptyMsg,
     } = this.props;
 
     if (!model) return null;
@@ -376,7 +377,7 @@ class RelationshipsForm extends Component {
                     .filter(k => r[k] !== undefined)
                     .length > DEFAULT_RELATIONSHIPS_PROPSLENGTH;
 
-                  const isIn = r['in.data']['@rid'] === nodeRid;
+                  const isIn = (r['in.data'] || {})['@rid'] === nodeRid;
 
                   return (
                     <React.Fragment key={r['@rid']}>
@@ -431,7 +432,7 @@ class RelationshipsForm extends Component {
                 }) : (
                   <TableRow>
                     <TableCell colSpan={5} className="relationships-empty-placeholder">
-                      <Typography variant="overline">No Relationships</Typography>
+                      <Typography variant="overline">{emptyMsg}</Typography>
                     </TableCell>
                   </TableRow>
                 )}
@@ -460,6 +461,7 @@ RelationshipsForm.propTypes = {
   name: PropTypes.string,
   nodeRid: PropTypes.string,
   edgeTypes: PropTypes.array,
+  emptyMsg: PropTypes.string,
 };
 
 RelationshipsForm.defaultProps = {
@@ -467,6 +469,7 @@ RelationshipsForm.defaultProps = {
   name: '',
   nodeRid: '#node_rid',
   edgeTypes: null,
+  emptyMsg: 'No Relationships',
 };
 
 export default RelationshipsForm;

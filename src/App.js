@@ -240,6 +240,12 @@ class App extends Component {
             >
               <ListItemText inset primary="Variant" />
             </MenuItem>
+            <MenuItem
+              id="link-statement"
+              onClick={() => this.handleSideBarNavigate('/add/statement')}
+            >
+              <ListItemText inset primary="Statement" />
+            </MenuItem>
           </Collapse>
         </List>
         <div className="drawer-footer">

@@ -79,7 +79,7 @@ class AddVariantViewBase extends Component {
               Cancel
             </Button>
           </div>
-          <Typography variant="h5">Variant Form</Typography>
+          <Typography variant="h5">Add New Variant</Typography>
         </Paper>
 
         <div className="variant-body">

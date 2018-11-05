@@ -118,7 +118,7 @@ describe('<PositionalVariantParser />', () => {
     expect(wrapper.type()).to.eq(PositionalVariantParser);
     wrapper.find('input[name="shorthand"]').simulate('change', { target: { value: 'test test' } });
     expect(wrapper.find('input[name="shorthand"]').props().value).to.eq('test test');
-    wrapper.find('textarea[name="name"]').simulate('change', { target: { value: 'test name' } });
+    wrapper.find('textarea[name="name"]').simulate('change', { target: { name: 'name', value: 'test name' } });
 
     wrapper.find('input[name="shorthand"]').simulate('change', { target: { value: 'brca2:p.g12del' } });
     wrapper.setState({ invalidFlag: false });

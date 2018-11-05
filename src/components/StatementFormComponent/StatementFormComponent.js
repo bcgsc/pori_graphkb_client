@@ -4,7 +4,6 @@ import './StatementFormComponent.css';
 import {
   Button,
   Paper,
-  Tooltip,
   Typography,
 } from '@material-ui/core';
 import FormTemplater from '../FormTemplater/FormTemplater';
@@ -89,11 +88,11 @@ class StatementFormComponent extends Component {
     const {
       schema,
       handleFinish,
+      onDelete,
       node,
     } = this.props;
 
     if (!form) return null;
-    let error;
     let formIsInvalid = false;
     schema.getClass('Statement').properties.forEach((prop) => {
       if (prop.mandatory) {
@@ -110,7 +109,6 @@ class StatementFormComponent extends Component {
       || !relationships.some(r => r['@class'] === 'Implies' && !r.deleted)
     ) {
       formIsInvalid = true;
-      error = 'Statements need at least 1 ImpliedBy edge and 1 SupportedBy edge';
     }
 
     return (
@@ -159,23 +157,31 @@ class StatementFormComponent extends Component {
               onChange={this.handleChange}
               name="relationships"
               edgeTypes={['Implies', 'SupportedBy']}
+              emptyMsg="Statements need at least 1 Implication edge and 1 Support edge"
             />
           </Paper>
         </div>
         <Paper className="statement-form-btns">
-          <Tooltip open={!!error} title={error} placement="left">
-            <div>
-              <Button
-                onClick={this.handleSubmit}
-                variant="contained"
-                color="primary"
-                size="large"
-                disabled={formIsInvalid}
-              >
-                Submit
-              </Button>
-            </div>
-          </Tooltip>
+          <Button
+            onClick={this.handleSubmit}
+            variant="contained"
+            color="primary"
+            size="large"
+            id="statement-submit-btn"
+            disabled={formIsInvalid}
+          >
+            Submit
+          </Button>
+          {node && (
+            <Button
+              onClick={onDelete}
+              variant="contained"
+              size="large"
+              id="statement-delete-btn"
+            >
+              Delete
+            </Button>
+          )}
         </Paper>
       </div>
     );
@@ -196,13 +202,14 @@ StatementFormComponent.propTypes = {
   node: PropTypes.object,
   onSubmit: PropTypes.func,
   handleFinish: PropTypes.func,
+  onDelete: PropTypes.func,
 };
-
 
 StatementFormComponent.defaultProps = {
   node: null,
   onSubmit: null,
   handleFinish: null,
+  onDelete: null,
 };
 
 export default StatementFormComponent;

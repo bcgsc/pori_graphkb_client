@@ -1,10 +1,8 @@
 import React from 'react';
 import { expect } from 'chai';
-import { spy } from 'sinon';
 import { mount } from 'enzyme';
 import RelationshipsForm from '../RelationshipsForm/RelationshipsForm';
 import Schema from '../../models/schema';
-import classes from '../../models/classes';
 
 const testSchema = new Schema({
   AliasOf: {
@@ -53,24 +51,55 @@ describe('<RelationshipsForm />', () => {
     expect(wrapper.find('#relationships-form-submit').first().props().disabled).to.eq(true);
     expect(wrapper.find('table.relationships-form-table tr')).to.have.lengthOf(2);
 
-    wrapper.find('input[name="out"]')
-      .simulate('change', { target: { value: 'test', '@rid': '#9', sourceId: 'testId' } });
-    wrapper.find('button.relationship-direction-btn').simulate('click');
     wrapper.find('input[name="in"]')
-      .simulate('change', { target: { value: 'test', '@rid': '#9', sourceId: 'testId' } });
+      .simulate('change', {
+        target: {
+          name: 'in.data',
+          value: 'test',
+          '@rid': '#9',
+          sourceId: 'testId',
+        },
+      });
+    wrapper.find('button.relationship-direction-btn').simulate('click');
+    wrapper.find('input[name="out"]')
+      .simulate('change', {
+        target: {
+          name: 'out.data',
+          value: 'test',
+          '@rid': '#9',
+          sourceId: 'testId',
+        },
+      });
 
     wrapper.find('button.relationship-direction-btn').simulate('click');
-    wrapper.find('div.resource-select input').simulate('change', { target: { value: 'test type' } });
-    wrapper.find('input[name="source"]').simulate('change', { target: { value: 'test source' } });
+    wrapper.find('div.resource-select input').simulate('change', {
+      target: {
+        value: 'test type',
+      },
+    });
+    wrapper.find('input[name="source"]').simulate('change', {
+      target: {
+        name: 'source',
+        value: 'test source',
+      },
+    });
 
     wrapper.setState({
       model: {
         '@class': 'AliasOf',
         in: 'test relationship',
-        'in.sourceId': 'test relationship id',
-        'in.@rid': '#1',
-        'out.@rid': '#23',
-        'source.@rid': '#source',
+        'in.data': {
+          name: 'test relationship',
+          sourceId: 'test relationship id',
+          '@rid': '#1',
+        },
+        'out.data': {
+          '@rid': '#23',
+        },
+        'source.data': {
+          '@rid': '#source',
+        },
+        source: 'test',
         '@rid': 'test:01',
       },
     });
@@ -91,8 +120,9 @@ describe('<RelationshipsForm />', () => {
       />,
     );
 
-    wrapper.find('button.relationships-minimize-btn').simulate('click');
     expect(wrapper.find('button.minimize-open')).to.have.lengthOf(1);
+    wrapper.find('button.relationships-minimize-btn').simulate('click');
+    expect(wrapper.find('button.minimize-open')).to.have.lengthOf(0);
   });
 
   it('initial relationships', () => {
@@ -103,8 +133,10 @@ describe('<RelationshipsForm />', () => {
         relationships={[
           {
             '@class': 'AliasOf',
-            'in.@rid': '#2',
-            'out.@rid': '#6',
+            in: 'in',
+            'in.data': { '@rid': '#2' },
+            'out.data': { '@rid': '#6' },
+            out: 'out',
             '@rid': '#5',
           },
         ]}

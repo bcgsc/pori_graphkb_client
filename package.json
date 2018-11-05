@@ -1,6 +1,6 @@
 {
   "name": "knowledgebase-web",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "private": true,
   "dependencies": {
     "@material-ui/core": "3.2.2",
@@ -11,7 +11,7 @@
     "history": "^4.7.2",
     "json-cycle": "^1.3.0",
     "jsonwebtoken": "^8.3.0",
-    "knowledgebase-parser": "git+ssh://git@svn.bcgsc.ca:7999/vdb/knowledgebase_parser.git#v0.3.4",
+    "knowledgebase-parser": "git+ssh://git@svn.bcgsc.ca:7999/vdb/knowledgebase_parser.git#v0.3.5",
     "lodash.debounce": "^4.0.8",
     "lodash.omit": "^4.5.0",
     "object-assign": "4.1.1",
@@ -59,7 +59,7 @@
     "dotenv-expand": "^4.2.0",
     "enzyme": "^3.6.0",
     "enzyme-adapter-react-16": "^1.6.0",
-    "eslint": "^4.19.1",
+    "eslint": "^5.7.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-loader": "^1.9.0",
     "eslint-plugin-cypress": "^2.0.1",
@@ -95,10 +95,12 @@
     "collectCoverage": true,
     "coverageDirectory": "coverage",
     "collectCoverageFrom": [
-      "src/components/**/*.{js,jsx,mjs}",
-      "src/services/**/!(api).{js,jsx,mjs}"
+      "src/components/**/!(SchemaContext).{js,jsx,mjs}",
+      "src/services/**/!(api).{js,jsx,mjs}",
+      "src/models/**/*.{js,jsx,mjs}"
     ],
     "coverageReporters": [
+      "clover",
       "text",
       "json",
       "json-summary",

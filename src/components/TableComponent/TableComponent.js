@@ -45,16 +45,16 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import AddIcon from '@material-ui/icons/Add';
 import SearchIcon from '@material-ui/icons/Search';
 import SortIcon from '@material-ui/icons/Sort';
-import FilterIcon from '../../icons/FilterIcon/FilterIcon';
 import DownloadFileComponent from '../DownloadFileComponent/DownloadFileComponent';
 import util from '../../services/util';
+import FilterIcon from '../../static/icons/FilterIcon/FilterIcon';
 import config from '../../static/config.json';
 
 const NEXT_CUTOFF = 0.8;
 const { ROWS_PER_PAGE, TSV_FILENAME } = config.TABLE_PROPERTIES;
 const DEFAULT_COLUMN_ORDER = [
   '@class',
-  'source',
+  'source.name',
   'sourceId',
   'name',
 ];
@@ -110,15 +110,20 @@ class TableComponent extends Component {
    * Initializes table columns.
    */
   componentDidMount() {
-    const { allProps, storedFilters } = this.props;
+    const {
+      allProps,
+      storedFilters,
+      defaultOrder,
+    } = this.props;
+
     const tableColumns = allProps.reduce((r, column) => {
       const [key, nested] = column.split('.');
-      if (column.startsWith('in_') || column.startsWith('out_') || column === '@rid') return r;
-      if (!column.includes('.')) {
+      if (key.startsWith('in_') || key.startsWith('out_') || key === '@rid') return r;
+      if (!nested) {
         r.push({
-          id: column,
-          label: util.antiCamelCase(column),
-          checked: column === 'name' || column === 'sourceId',
+          id: key,
+          label: util.antiCamelCase(key),
+          checked: defaultOrder.includes(key),
           sortBy: null,
           sortable: null,
         });
@@ -128,16 +133,30 @@ class TableComponent extends Component {
           r.push({
             id: key,
             label: util.antiCamelCase(key),
-            checked: key === 'source',
+            checked: defaultOrder.includes(column),
             sortBy: nested,
             sortable: [nested],
           });
         } else {
           col.sortable.push(nested);
+          if (defaultOrder.includes(column)) {
+            col.checked = true;
+            col.sortBy = nested;
+          }
         }
       }
       return r;
     }, []);
+    if (defaultOrder.includes('preview')) {
+      tableColumns.push({
+        id: 'preview',
+        checked: true,
+        label: 'Preview',
+        sortBy: null,
+        sortable: null,
+      });
+    }
+
     const columnFilterStrings = [];
     let columnFilterExclusions = [];
     for (let i = 0; i < tableColumns.length; i += 1) {
@@ -148,8 +167,7 @@ class TableComponent extends Component {
       columnFilterExclusions = storedFilters;
     }
     // Set default order for columns.
-    tableColumns.sort(util.sortFields(DEFAULT_COLUMN_ORDER));
-
+    tableColumns.sort(util.sortFields(defaultOrder.map(d => d.split('.')[0]), 'id'));
     this.setState({ tableColumns, columnFilterStrings, columnFilterExclusions });
   }
 
@@ -551,6 +569,7 @@ class TableComponent extends Component {
       completedNext,
       detail,
     } = this.props;
+
     const filteredData = sortedData
       .filter(n => !hidden.includes(n.getId()))
       .filter(n => !columnFilterExclusions.some((exclusions, i) => {
@@ -562,13 +581,12 @@ class TableComponent extends Component {
           cell = cell[tableColumns[i].sortBy];
         }
 
-        if (exclusions.includes(util.castToExist(cell))) {
-          return true;
-        }
-        return false;
+        return exclusions.includes(util.castToExist(cell));
       }));
+
     const pageData = filteredData
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
     const menu = (
       <Menu
         anchorEl={anchorEl}
@@ -892,11 +910,20 @@ class TableComponent extends Component {
                         </TableCell>
                         {tableColumns.map((col) => {
                           if (col.checked) {
+                            let val = util.formatStr(col.sortBy
+                              ? util.castToExist((n[col.id] || '')[col.sortBy])
+                              : util.castToExist(n[col.id]));
+
+                            if (col.id === 'preview') {
+                              try {
+                                ([, val] = n.getPreview().split(':'));
+                              } catch (e) {
+                                val = 'Invalid Variant';
+                              }
+                            }
                             return (
                               <TableCell classes={{ root: 'cell' }} key={col.id}>
-                                {util.formatStr(col.sortBy
-                                  ? util.castToExist((n[col.id] || '')[col.sortBy])
-                                  : util.castToExist(n[col.id]))}
+                                {val}
                               </TableCell>
                             );
                           }
@@ -905,7 +932,7 @@ class TableComponent extends Component {
                         <TableCell padding="checkbox">
                           {detail && detail.getId() === n.getId() && (
                             <Fade in>
-                              <AssignmentIcon color="action" />
+                              <AssignmentIcon color="action" style={{ width: 48 }} />
                             </Fade>
                           )}
                         </TableCell>
@@ -1018,6 +1045,7 @@ TableComponent.propTypes = {
   moreResults: PropTypes.bool,
   completedNext: PropTypes.bool,
   storedFilters: PropTypes.array,
+  defaultOrder: PropTypes.array,
 };
 
 TableComponent.defaultProps = {
@@ -1028,6 +1056,7 @@ TableComponent.defaultProps = {
   handleSubsequentPagination: null,
   moreResults: false,
   displayed: [],
+  defaultOrder: DEFAULT_COLUMN_ORDER,
   completedNext: true,
 };
 

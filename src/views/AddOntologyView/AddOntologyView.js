@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
 import api from '../../services/api';
 import util from '../../services/util';
-import { withSchema } from '../../services/SchemaContext';
+import { withSchema } from '../../components/SchemaContext/SchemaContext';
 
 /**
  * View for editing or adding database nodes. Includes a NodeFormComponent with the
@@ -31,7 +31,7 @@ class AddOntologyViewBase extends Component {
     const { schema } = this.props;
     try {
       const sources = await api.getSources();
-      const edgeTypes = api.getEdges(schema);
+      const edgeTypes = schema.getEdges();
       this.setState({
         sources,
         edgeTypes,
@@ -46,8 +46,9 @@ class AddOntologyViewBase extends Component {
     const { schema } = this.props;
 
     const newEdges = [];
-    const payload = util.parsePayload(form, util.getClass(form['@class'], schema).properties);
-    const { route } = util.getClass(form['@class'], schema);
+    const kbClass = schema.getClass(form['@class']);
+    const payload = util.parsePayload(form, kbClass.properties);
+    const { route } = kbClass;
     const response = await api.post(`${route}`, { ...payload });
 
     for (let i = 0; i < relationships.length; i += 1) {

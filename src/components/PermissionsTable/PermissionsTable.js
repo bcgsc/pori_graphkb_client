@@ -10,7 +10,6 @@ import {
   Checkbox,
   Typography,
 } from '@material-ui/core';
-import util from '../../services/util';
 import config from '../../static/config.json';
 
 const { PERMISSIONS } = config;
@@ -58,8 +57,8 @@ function PermissionsTable(props) {
       <TableBody>
         {permissionKeys
           .map((permission) => {
-            const isEdge = (schema[permission].inherits || []).includes('E');
-            const isAbstract = util.isAbstract(permission, schema);
+            const isEdge = schema.isEdge(permission);
+            const isAbstract = schema.isAbstract(permission);
             return (
               <TableRow key={permission} className="permissions-view">
                 <TableCell padding="dense">

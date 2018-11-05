@@ -6,6 +6,7 @@ import * as jc from 'json-cycle';
 import auth from './auth';
 import config from '../static/config.json';
 import history from './history';
+import Schema from '../models/schema';
 
 const {
   VERSION,
@@ -188,7 +189,7 @@ const loadSchema = async () => {
 
     localStorage.setItem(KEYS.SCHEMA, JSON.stringify(schema));
 
-    return Promise.resolve(cycled);
+    return Promise.resolve(new Schema(cycled));
   } catch (e) {
     return Promise.reject(e);
   }
@@ -211,7 +212,7 @@ const getSchema = () => {
   ) {
     return loadSchema();
   }
-  return Promise.resolve(schema.schema);
+  return Promise.resolve(new Schema(schema.schema));
 };
 
 /**
@@ -222,9 +223,12 @@ const getSchema = () => {
  * @param {number} limit - Limit for number of returned matches.
  */
 const autoSearch = (endpoint, property, value, limit) => {
-  const re = new RegExp(/[\r|\n|\t|:|\\|;|,|.|/|||+|*|=|!|?|[|\]|(|)]+/, 'g');
+  if (!value || !value.trim()) return { result: [] };
+
+  // Matches Knowledgebase api separator characters
+  const pattern = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
   const literalRe = new RegExp(/^['"].*['"]$/);
-  if (value.trim().split(re).some(s => s.length < 4)) return Promise.resolve({ result: [] });
+  const m = !!value.match(pattern) || value.replace(pattern, '').trim().length < 4;
 
   const orStr = `or=${property.join(',')}`;
   let extras = `limit=${limit}&neighbors=1`;
@@ -232,11 +236,11 @@ const autoSearch = (endpoint, property, value, limit) => {
 
   if (value.match(literalRe)) {
     query = property
-      .map(p => `${p}=${encodeURIComponent(value.slice(1, value.length - 1).replace(re, '').trim())}`)
+      .map(p => `${p}=${encodeURIComponent(value.slice(1, value.length - 1).trim())}`)
       .join('&');
   } else {
     query = property
-      .map(p => `${p}=~${encodeURIComponent(value.replace(re, '').trim())}`)
+      .map(p => `${p}=${!m ? '~' : ''}${encodeURIComponent(value.trim())}`)
       .join('&');
     extras += '&@class=!Publication';
   }
@@ -244,56 +248,7 @@ const autoSearch = (endpoint, property, value, limit) => {
   return get(`/${endpoint}?${query}&${orStr}&${extras}`);
 };
 
-/**
- * Updates allColumns list with any new properties from ontologyTerm.
- * @param {Object} ontologyTerm - new node who's properties will be parsed.
- * @param {Array} allColumns - current list of all collected properties.
- * @param {Object} schema - api schema.
- */
-const collectOntologyProps = (ontologyTerm, allColumns, schema) => {
-  const { properties } = schema[ontologyTerm['@class']];
-  const { V } = schema;
-  Object.keys(ontologyTerm).forEach((prop) => {
-    if (!V.properties[prop] && prop !== '@class' && !allColumns.includes(prop)) {
-      const endpointProp = properties[prop];
-      if (endpointProp && endpointProp.type === 'link') {
-        Object.keys(ontologyTerm[prop]).forEach((nestedProp) => {
-          if (
-            !V.properties[nestedProp]
-            && !allColumns.includes(`${prop}.${nestedProp}`)
-            && !nestedProp.startsWith('in_')
-            && !nestedProp.startsWith('out_')
-            && !(endpointProp.linkedClass && nestedProp === '@class')
-            && (properties[nestedProp] || {}).type !== 'link'
-          ) {
-            allColumns.push(`${prop}.${nestedProp}`);
-          }
-        });
-      } else {
-        allColumns.push(prop);
-      }
-    }
-  });
-  return allColumns;
-};
-
-/**
-  * Returns all valid edge types.
-  */
-const getEdges = (schema) => {
-  const list = [];
-  Object.keys(schema).forEach((key) => {
-    if (schema[key].inherits.includes('E')) {
-      list.push(key);
-    }
-  });
-  return list;
-};
-
-
 export default {
-  getEdges,
-  collectOntologyProps,
   getSchema,
   getSources,
   get,
@@ -301,4 +256,5 @@ export default {
   delete: del,
   patch,
   autoSearch,
+  API_BASE_URL,
 };

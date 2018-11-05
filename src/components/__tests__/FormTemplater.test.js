@@ -2,6 +2,7 @@ import React from 'react';
 import { expect } from 'chai';
 import { mount } from 'enzyme';
 import FormTemplater from '../FormTemplater/FormTemplater';
+import Schema from '../../models/schema';
 
 describe('<FormTemplater />', () => {
   let wrapper;
@@ -54,7 +55,7 @@ describe('<FormTemplater />', () => {
       linkedClass: { name: 'V', route: '/V' },
     },
   };
-  const mockSchema = {
+  const mockSchema = new Schema({
     test: {
       name: 'test',
       properties: mockClass,
@@ -66,7 +67,7 @@ describe('<FormTemplater />', () => {
       inherits: ['V'],
       route: '/child',
     },
-  };
+  });
 
   const mockModel = {
     name: '',
@@ -79,7 +80,7 @@ describe('<FormTemplater />', () => {
       <FormTemplater
         schema={mockSchema}
         model={mockModel}
-        kbClass={mockClass}
+        propSchemas={mockClass}
         onChange={() => { }}
       />,
     );
@@ -91,7 +92,7 @@ describe('<FormTemplater />', () => {
       <FormTemplater
         schema={mockSchema}
         model={mockModel}
-        kbClass={mockClass}
+        propSchemas={mockClass}
         onChange={() => { }}
         fieldComponent="div"
         ignoreRequired
@@ -107,7 +108,7 @@ describe('<FormTemplater />', () => {
       <FormTemplater
         schema={mockSchema}
         model={mockModel}
-        kbClass={mockClass}
+        propSchemas={mockClass}
         onChange={() => { }}
         onClassChange={() => { }}
         fieldComponent="div"

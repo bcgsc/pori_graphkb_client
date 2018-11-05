@@ -14,10 +14,10 @@ import {
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
 import kbp from 'knowledgebase-parser';
+import NotificationDrawer from '../NotificationDrawer/NotificationDrawer';
 import FormTemplater from '../FormTemplater/FormTemplater';
 import api from '../../services/api';
 import util from '../../services/util';
-import NotificationDrawer from '../NotificationDrawer/NotificationDrawer';
 
 const DEFAULT_ORDER = [
   'type',
@@ -28,6 +28,12 @@ const DEFAULT_ORDER = [
   'break2Start',
   'break2End',
 ];
+
+const SHORTHAND_EXCLUDED = [
+  'germline',
+  'zygosity',
+];
+
 class VariantParserComponent extends Component {
   constructor(props) {
     super(props);
@@ -48,12 +54,7 @@ class VariantParserComponent extends Component {
 
   componentDidMount() {
     const { schema } = this.props;
-    const variant = util.initModel({}, 'PositionalVariant', schema);
-    Object.keys(variant).forEach((k) => {
-      if (typeof variant[k] === 'object' && variant[k]['@class'] && util.isAbstract(variant[k]['@class'], schema)) {
-        variant[k]['@class'] = '';
-      }
-    });
+    const variant = schema.initModel({}, 'PositionalVariant');
     this.setState({ variant });
   }
 
@@ -66,9 +67,9 @@ class VariantParserComponent extends Component {
     const { schema } = this.props;
     const { value } = e.target;
     this.setState({ shorthand: value });
-    const classSchema = util.getClass('PositionalVariant', schema).properties;
+    const classSchema = schema.getClass('PositionalVariant').properties;
     if (!value) {
-      const newVariant = util.initModel({}, 'PositionalVariant', schema);
+      const newVariant = schema.initModel({}, 'PositionalVariant');
       Object.keys(newVariant).forEach((k) => {
         if (typeof newVariant[k] === 'object' && newVariant[k]['@class']) {
           newVariant[k]['@class'] = '';
@@ -89,7 +90,7 @@ class VariantParserComponent extends Component {
         embeddedProps.forEach((prop) => {
           const { name } = prop;
           if (response[name] && response[name].name) {
-            util.getClass(response[name].name, schema).properties
+            schema.getClass(response[name].name).properties
               .forEach((classProp) => {
                 response[name][classProp.name] = response[name][classProp.name] === undefined
                   || response[name][classProp.name] === null
@@ -102,7 +103,7 @@ class VariantParserComponent extends Component {
         });
 
         this.setState({
-          variant: Object.assign(util.initModel(variant, 'PositionalVariant', schema),
+          variant: Object.assign(schema.initModel(variant, 'PositionalVariant'),
             { ...response, ...linkProps.props }),
           invalidFlag: linkProps.invalidFlag,
           errorFields: linkProps.errorFields,
@@ -137,7 +138,7 @@ class VariantParserComponent extends Component {
    */
   async extractLinkProps(parsed) {
     const { schema } = this.props;
-    const classSchema = util.getClass('PositionalVariant', schema).properties;
+    const classSchema = schema.getClass('PositionalVariant').properties;
     const linkProps = util.getPropOfType(classSchema, 'link');
     const newValues = {};
     let invalidFlag = '';
@@ -171,9 +172,8 @@ class VariantParserComponent extends Component {
     const { variant } = this.state;
     const { schema } = this.props;
     const { value } = e.target;
-    const classSchema = util.getClass('PositionalVariant', schema).properties;
-    const newClass = util.getClass(value, schema).properties;
-    if (newClass) {
+    const classSchema = schema.getClass('PositionalVariant').properties;
+    if (schema.getClass(value)) {
       const abstractClass = classSchema
         .find(p => p.name === nested).linkedClass.name;
       const varKeys = classSchema
@@ -181,7 +181,7 @@ class VariantParserComponent extends Component {
         .map(p => p.name);
       varKeys.forEach((key) => {
         if ((variant[key]['@class'] && variant[key]['@class'] !== value) || key === nested) {
-          variant[key] = util.initModel({}, value, schema);
+          variant[key] = schema.initModel({}, value);
         }
       });
     } else {
@@ -216,7 +216,11 @@ class VariantParserComponent extends Component {
         }
         variant[`${name}.${key}`] = e.target[key];
       });
-    this.setState({ variant, errorFields: [] }, this.updateShorthand);
+    this.setState({ variant, errorFields: [] }, () => {
+      if (!SHORTHAND_EXCLUDED.includes(name)) {
+        this.updateShorthand();
+      }
+    });
   }
 
   /**
@@ -309,7 +313,7 @@ class VariantParserComponent extends Component {
     } = this.props;
 
     if (!variant) return null;
-    const classSchema = util.getClass('PositionalVariant', schema).properties;
+    const classSchema = schema.getClass('PositionalVariant').properties;
 
     let formIsInvalid = false;
     (classSchema || []).forEach((prop) => {
@@ -357,7 +361,7 @@ class VariantParserComponent extends Component {
                 onChange={this.handleVariantChange}
                 onClassChange={this.handleClassChange}
                 model={variant}
-                kbClass={classSchema}
+                propSchemas={classSchema}
                 excludedProps={['break1Repr', 'break2Repr']}
                 errorFields={errorFields}
                 sort={util.sortFields(DEFAULT_ORDER)}

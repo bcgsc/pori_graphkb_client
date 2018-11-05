@@ -1,31 +1,14 @@
 import { expect } from 'chai';
 import util from '../util';
+import classes from '../../models/classes';
+import Schema from '../../models/schema';
 
-
-const schema = {
-  classOne: {
-    properties: {
-      name: { name: 'name', type: 'string' },
-      day: { name: 'day', type: 'integer' },
-      hour: { name: 'hour', type: 'string' },
-      foo: { name: 'foo', type: 'link' },
-      bar: { name: 'bar', type: 'link' },
-    },
-    inherits: ['classTwo', 'V'],
-    route: 'root',
+const { Ontology } = classes;
+const mockSchema = new Schema({
+  cls1: {
+    inherits: ['Ontology'],
   },
-  classTwo: {
-    properties: {
-      name: 'name',
-      day: 'day',
-      minute: 'minute',
-      second: 'second',
-      foo: 'foo',
-    },
-    route: 'pass',
-    inherits: [],
-  },
-};
+});
 
 describe('validate outputs for util methods', () => {
   it('antiCamelCase', () => {
@@ -45,37 +28,6 @@ describe('validate outputs for util methods', () => {
       const output = util.antiCamelCase(test);
       expect(output).to.eq(outputs[i]);
     });
-  });
-
-  it('getPreview', () => {
-    const testObjs = [
-      {
-        sourceId: 'fail',
-        name: 'pass',
-        blargh: 'fail',
-      },
-      {
-        name: 'pass',
-        sourceId: 'fail',
-      },
-      {
-        name: 'pass',
-        sourceEyeDee: 'fail',
-      },
-      {
-        source:
-        {
-          id: 'fail',
-        },
-        nam:
-        {
-          name: 'fail',
-        },
-        blargh: 'pass',
-      },
-    ];
-
-    testObjs.forEach(testObj => expect(util.getPreview(testObj)).to.eq('Pass'));
   });
 
   it('expandEdges', () => {
@@ -126,19 +78,19 @@ describe('validate outputs for util methods', () => {
 
   it('getTSVRepresentation', () => {
     const testTSVs = [
-      {
+      new Ontology({
         name: 'fail',
         sourceId: 'fail',
         key: 'pass',
-      },
-      {
+      }, mockSchema),
+      new Ontology({
         key:
         {
-          failfail: 'fail',
           name: 'pass',
+          failfail: 'fail',
           fail: 'fail',
         },
-      },
+      }, mockSchema),
     ];
     testTSVs.forEach((testTSV) => {
       expect(util.getTSVRepresentation(testTSV.key, 'key').toLowerCase()).to.eq('pass');
@@ -260,52 +212,6 @@ describe('validate outputs for util methods', () => {
     });
   });
 
-  it('initModel', () => {
-    const testSchema = {
-      testClass: {
-        properties: [
-          { name: 'name', type: 'string' },
-          { name: 'source', type: 'embeddedset' },
-          { name: 'alias', type: 'link' },
-          { name: 'num', type: 'integer' },
-          {
-            name: 'embedded prop',
-            type: 'embedded',
-            linkedClass: {
-              properties: {},
-              name: 'other class',
-            },
-          },
-          { name: 'bool prop', type: 'boolean' },
-        ],
-      },
-    };
-
-    const testModel = {
-      name: 'hello',
-    };
-    const result = util.initModel(testModel, 'testClass', testSchema);
-    expect(Object.keys(result).length).to.eq(10); // + 3 fields for link, + 1 for @class
-    expect(result.name).to.eq('hello');
-    expect(Array.isArray(result.source));
-    expect(result.source.length).to.eq(0);
-  });
-
-  it('getClass', () => {
-    expect(util.getClass('classOne', schema).properties.length).to.eq(5);
-    schema.V = {
-      properties: {
-        day: 'day',
-        minute: 'minute',
-        second: 'second',
-        bar: 'bar',
-      },
-      inherits: [],
-    };
-    expect(util.getClass('classOne', schema).properties.length).to.eq(3);
-    expect(util.getClass('classTwo', schema).properties.length).to.eq(2);
-  });
-
   it('parsePermission', () => {
     const test = [
       { val: 6, result: [0, 1, 1, 0] },
@@ -318,16 +224,16 @@ describe('validate outputs for util methods', () => {
     test.forEach(testCase => expect(util.parsePermission(testCase.val)).to.eql(testCase.result));
   });
 
-  it('isAbstract, getSubClasses', () => {
-    expect(util.isAbstract('classTwo', schema));
-    expect(!util.isAbstract('classOne', schema));
-    expect(util.getSubClasses('classTwo', schema).length).to.eq(1);
-  });
-
   it('getPropOfType', () => {
-    const classOne = util.getClass('classOne', schema).properties;
+    const classOne = [
+      { name: 'name', type: 'string' },
+      { name: 'day', type: 'integer' },
+      { name: 'hour', type: 'string' },
+      { name: 'foo', type: 'link' },
+      { name: 'bar', type: 'link' },
+    ];
     expect(util.getPropOfType(classOne, 'string').length).to.eq(2);
-    expect(util.getPropOfType(classOne, 'link').length).to.eq(1);
+    expect(util.getPropOfType(classOne, 'link').length).to.eq(2);
     expect(util.getPropOfType(classOne, 'nothing').length).to.eq(0);
   });
 });

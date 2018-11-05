@@ -35,7 +35,7 @@ describe('Node Detail ', () => {
   it('Subset links', () => {
     getRecord('disease by infectious agent', 'doid:0050117');
     cy.contains('Subsets').click();
-    cy.get('ul>li:first').click();
+    cy.contains('Doid#').click();
     cy.url().should('not.includes', 'subsets=');
   });
 
@@ -46,6 +46,6 @@ describe('Node Detail ', () => {
     cy.url().should('includes', '/graph');
     cy.get('circle.node:first').click({ force: true });
     cy.contains('(Details)').click({ force: true });
-    cy.contains('Properties:');
+    cy.contains('Edit');
   });
 });

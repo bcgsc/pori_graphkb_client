@@ -7,7 +7,6 @@ const withSchema = Child => props => (
   </SchemaContext.Consumer>
 );
 export {
-  /* eslint-disable */
   SchemaContext,
   withSchema,
 };

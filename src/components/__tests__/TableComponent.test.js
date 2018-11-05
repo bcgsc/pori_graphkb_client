@@ -3,10 +3,19 @@ import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { spy } from 'sinon';
 import TableComponent from '../TableComponent/TableComponent';
-import { Ontology } from '../../services/ontology';
+import classes from '../../models/classes';
+import Schema from '../../models/schema';
+
+const { V } = classes;
+const mockSchema = new Schema({
+  AliasOf: {
+    name: 'AliasOf',
+    inherits: ['E'],
+  },
+});
 
 const mockData = {
-  '#1': new Ontology({
+  '#1': new V({
     '@rid': '#1',
     name: 'test one',
     sourceId: 'test-1',
@@ -19,21 +28,21 @@ const mockData = {
         '@rid': '#4',
       },
     }],
-  }),
-  '#2': new Ontology({
+  }, mockSchema),
+  '#2': new V({
     '@rid': '#2',
     name: 'test two',
     sourceId: 'test-2',
     source: {
       name: 'test source',
     },
-  }),
-  '#3': new Ontology({
+  }, mockSchema),
+  '#3': new V({
     '@rid': '#3',
     name: 'test three',
     sourceId: 'test-3',
-  }),
-  '#4': new Ontology({
+  }, mockSchema),
+  '#4': new V({
     '@rid': '#4',
     name: 'linked',
     sourceId: 'test-4',
@@ -46,16 +55,16 @@ const mockData = {
         '@rid': '#4',
       },
     }],
-  }),
+  }, mockSchema),
 };
 
 const bigMockData = {};
 for (let i = 0; i < 200; i += 1) {
-  bigMockData[`#${i}`] = new Ontology({
+  bigMockData[`#${i}`] = new V({
     '@rid': `#${i}`,
     name: `a${i}a`,
     sourceId: `b${i}b`,
-  });
+  }, mockSchema);
 }
 
 const allProps = [
@@ -150,7 +159,6 @@ describe('<TableComponent />', () => {
 
     wrapper.find('thead tr th span[role="button"] svg')
       .forEach(btn => btn.simulate('click'));
-
     wrapper.find('thead tr th').forEach((btn, i) => {
       if (i !== 0) {
         btn.simulate('mouseenter');

@@ -28,7 +28,7 @@
     }
     .detail-identifiers {
       display: grid;
-      grid-template-columns: 144px 32px auto;
+      grid-template-columns: 164px 32px auto;
       .detail-identifiers-nested {
         margin-left: 32px;
       }
@@ -68,6 +68,7 @@
 .detail-nested-list {
   .detail-nested-subheader {
     margin-left: 56px;
+    z-index: 0;
   }
   hr:last-child {
     display: none;

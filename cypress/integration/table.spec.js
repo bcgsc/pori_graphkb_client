@@ -129,7 +129,7 @@ describe('Table Test', () => {
     cy.get('#deprecated input[type=checkbox]').click();
     cy.get('#column-dialog-actions button').click();
     cy.get('thead tr th').then((array) => {
-      cy.expect(array.length).to.eq(7);
+      cy.expect(array.length).to.eq(8);
     });
   });
 
@@ -167,11 +167,10 @@ describe('Table Test', () => {
   /**
    * Tests table filters
    */
-  it('Filtering', () => {
-    getName('diso');
-
+  it.only('Filtering', () => {
+    cy.visit('/data/table?name=~diso&@class=Disease');
     cy.get('div.filter-btn button').each((button, i) => {
-      if (i === 2) {
+      if (i === 1) {
         cy.wrap(button).click({ force: true });
         cy.get('ul.filter-list>div>div').then((array) => {
           const l = array.length;

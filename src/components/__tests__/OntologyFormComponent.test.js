@@ -3,9 +3,12 @@ import { expect } from 'chai';
 import { spy } from 'sinon';
 import { mount } from 'enzyme';
 import OntologyFormComponent from '../OntologyFormComponent/OntologyFormComponent';
+import Schema from '../../models/schema';
+import classes from '../../models/classes';
 
-const testSchema = {
+const testSchema = new Schema({
   Disease: {
+    name: 'Disease',
     inherits: ['Ontology'],
     properties: [
       { name: 'name', type: 'string', mandatory: true },
@@ -16,13 +19,13 @@ const testSchema = {
       { name: 'linkprop', type: 'link', mandatory: true },
     ],
   },
-};
+});
 
 const testSources = [
   { '@rid': '#source', name: 'test source' },
 ];
 
-const testNode = {
+const testNode = new classes.Ontology({
   '@class': 'Disease',
   '@rid': '#1',
   name: 'tset',
@@ -46,7 +49,7 @@ const testNode = {
       source: '#source',
     },
   ],
-};
+}, testSchema);
 
 describe('<OntologyFormComponent />', () => {
   let wrapper;

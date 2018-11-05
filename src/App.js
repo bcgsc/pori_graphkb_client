@@ -45,13 +45,14 @@ import {
   LoginView,
   QueryView,
   VariantFormView,
+  QueryBuilderView,
 } from './views';
 import logo from './static/logo.png';
 import title from './static/title.png';
 import auth from './services/auth';
 import history from './services/history';
 import api from './services/api';
-import { SchemaContext } from './services/SchemaContext';
+import { SchemaContext } from './components/SchemaContext/SchemaContext';
 
 const theme = createMuiTheme({
   direction: 'ltr',
@@ -253,7 +254,8 @@ class App extends Component {
     const loggedInContent = (
       <Switch>
         <Route exact path="/query" component={QueryView} />
-        <Route path="/query/advanced" component={AdvancedQueryView} />
+        <Route exact path="/query/advanced" component={AdvancedQueryView} />
+        <Route exact path="/query/advanced/builder" component={QueryBuilderView} />
         <Route path="/add" component={AddOntologyView} />
         <Route path="/edit/:rid" component={EditOntologyView} />
         <Route path="/data" component={DataView} />
@@ -282,7 +284,7 @@ class App extends Component {
                   </IconButton>
                 )}
                 <div className="appbar-title">
-                  <Typography variant="h6">Knowledge Base</Typography>
+                  <Typography variant="h6">GraphKB</Typography>
                 </div>
                 <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>
                   <div>

@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { spy } from 'sinon';
 import VariantParserComponent from '../VariantParserComponent/VariantParserComponent';
+import Schema from '../../models/schema';
 
 
 const mockClass = {
@@ -63,7 +64,7 @@ describe('<VariantParserComponent />', () => {
   });
 
   beforeEach(() => {
-    mockSchema = {
+    mockSchema = new Schema({
       PositionalVariant: {
         name: 'PositionalVariant',
         properties: { name: { name: 'name', type: 'string' } },
@@ -85,7 +86,7 @@ describe('<VariantParserComponent />', () => {
         inherits: [],
         route: '/embedded',
       },
-    };
+    });
   });
 
   it('calls componentDidMount and doesn\' die', () => {
@@ -121,8 +122,8 @@ describe('<VariantParserComponent />', () => {
 
   it('disables submit button if form state is invalid', () => {
     const handleSubmit = jest.fn();
-    mockSchema.PositionalVariant.properties.name.mandatory = true;
-    mockSchema.PositionalVariant.properties.link = {
+    mockSchema.schema.PositionalVariant.properties.name.mandatory = true;
+    mockSchema.schema.PositionalVariant.properties.link = {
       name: 'link',
       type: 'link',
       mandatory: true,
@@ -139,7 +140,7 @@ describe('<VariantParserComponent />', () => {
   });
 
   it('correctly updates shorthand', () => {
-    mockSchema.PositionalVariant.properties.break1Start = {
+    mockSchema.schema.PositionalVariant.properties.break1Start = {
       type: 'embedded',
       name: 'break1Start',
       linkedClass: {
@@ -147,7 +148,7 @@ describe('<VariantParserComponent />', () => {
         properties: {},
       },
     };
-    mockSchema.PositionalVariant.properties.break1End = {
+    mockSchema.schema.PositionalVariant.properties.break1End = {
       type: 'embedded',
       name: 'break1End',
       linkedClass: {
@@ -155,7 +156,7 @@ describe('<VariantParserComponent />', () => {
         properties: {},
       },
     };
-    mockSchema.PositionalVariant.properties.type = {
+    mockSchema.schema.PositionalVariant.properties.type = {
       type: 'link',
       name: 'type',
     };
@@ -193,7 +194,7 @@ describe('<VariantParserComponent />', () => {
   });
 
   it('handles nested properties changing', () => {
-    mockSchema.PositionalVariant.properties.break1Start = {
+    mockSchema.schema.PositionalVariant.properties.break1Start = {
       type: 'embedded',
       name: 'break1Start',
       linkedClass: {
@@ -203,7 +204,7 @@ describe('<VariantParserComponent />', () => {
         route: '/embedded',
       },
     };
-    mockSchema.PositionalVariant.properties.type = {
+    mockSchema.schema.PositionalVariant.properties.type = {
       type: 'link',
       name: 'type',
     };
@@ -214,8 +215,10 @@ describe('<VariantParserComponent />', () => {
         schema={mockSchema}
       />,
     );
-    wrapper.find('textarea[name="embeddedName"]').simulate('change', { target: { name: 'embeddedName', value: 'pass' } });
-    expect(wrapper.find('textarea[name="embeddedName"]').props().value).to.eq('pass');
-    wrapper.find('input[name="type"]').simulate('change', { target: { name: 'type', value: 'pass', '@rid': '#1234' } });
+    wrapper.find('textarea[name="name"]')
+      .simulate('change', { target: { name: 'name', value: 'pass' } });
+    expect(wrapper.find('textarea[name="name"]').props().value).to.eq('pass');
+    wrapper.find('input[name="type"]')
+      .simulate('change', { target: { name: 'type', value: 'pass', '@rid': '#1234' } });
   });
 });

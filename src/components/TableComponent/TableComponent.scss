@@ -55,7 +55,7 @@ $flip-duration: 0.15s;
   }
   .table-drawer-open {
     right: $detail-drawer-width;
-    @media (max-width: 768px) {
+    @media (max-width: calc(540px + #{$detail-drawer-width})) {
       right: 0;
     }
   }

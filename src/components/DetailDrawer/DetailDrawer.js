@@ -23,10 +23,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import LinkIcon from '@material-ui/icons/Link';
 import util from '../../services/util';
-import { Ontology } from '../../services/ontology';
+import classes from '../../models/classes';
 
-
-const IDENTIFIERS = ['@class', 'name', 'sourceId', 'source.name'];
 const MAX_STRING_LENGTH = 64;
 
 class DetailDrawer extends Component {
@@ -52,8 +50,8 @@ class DetailDrawer extends Component {
     if (
       (!node && prevNode)
       || (
-        prevNode instanceof Ontology
-        && node instanceof Ontology
+        prevNode instanceof classes.Record
+        && node instanceof classes.Record
         && prevNode.getId() !== node.getId()
       )
     ) {
@@ -65,45 +63,59 @@ class DetailDrawer extends Component {
   /**
    * Formats specific identifier properties of input ontology.
    * @param {Object} node - Ontology being displayed.
-   * @param {boolean} nested - Nested flag.
+   * @param {boolean} isNested - Nested flag.
    */
-  formatIdentifiers(node, nested) {
-    if (!node) return null;
+  formatIdentifiers(node, isNested) {
     const { schema } = this.props;
     const { opened } = this.state;
+    if (!(node instanceof classes.Record)) {
+      node = schema.newRecord(node);
+    }
+    const identifiers = node.constructor.getIdentifiers();
+
     return (
-      IDENTIFIERS.map((prop) => {
+      identifiers.map((prop) => {
         const [key, nestedKey] = prop.split('.');
         const value = nestedKey ? (node[key] || {})[nestedKey] : node[key];
-        let properties = Object.keys(node[key] || {}).map(k => ({ name: k }));
-        if (schema && util.getClass(key, schema).properties) {
-          // If property is a class in the schema, we can grab its properties.
-          ({ properties } = util.getClass(key, schema));
+        let properties = Object.keys(node[key] || {});
+
+        if (node[key] instanceof classes.Record) {
+          properties = node[key].constructor.getIdentifiers();
         }
         const expanded = nestedKey ? (
-          properties.map(nestedProp => (
-            node[key][nestedProp.name] && (
-              <React.Fragment key={nestedProp.name}>
-                <Collapse in={opened.includes(`${node['@rid']}${prop}`)} unmountOnExit>
-                  <ListItem>
-                    {nested && (
-                      <ListItemIcon>
-                        <div style={{ width: 24, height: 24 }} />
-                      </ListItemIcon>)}
-                    <ListItemText>
-                      <div className="detail-identifiers">
-                        <Typography color="textSecondary" className="detail-identifiers-nested">
-                          {util.antiCamelCase(nestedProp.name)}
-                        </Typography>
-                        <Typography>
-                          {util.formatStr(node[key][nestedProp.name])}
-                        </Typography>
-                      </div>
-                    </ListItemText>
-                  </ListItem>
-                </Collapse>
-              </React.Fragment>
-            )))
+          <Collapse
+            in={opened.includes(`${node['@rid']}${prop}`)}
+            unmountOnExit
+          >
+            <List className="detail-nested-list">
+              {properties.map((nestedProp) => {
+                if (!node[key]) return null;
+                const [nestedPropKey, veryNestedKey] = nestedProp.split('.');
+                const nestedValue = veryNestedKey
+                  ? (node[key][nestedPropKey] || {})[veryNestedKey]
+                  : node[key][nestedPropKey];
+                return (
+                  nestedValue && (
+                    <ListItem key={nestedProp}>
+                      {isNested && (
+                        <ListItemIcon>
+                          <div style={{ width: 24, height: 24 }} />
+                        </ListItemIcon>)}
+                      <ListItemText>
+                        <div className="detail-identifiers">
+                          <Typography color="textSecondary" className="detail-identifiers-nested">
+                            {util.antiCamelCase(nestedPropKey)}
+                          </Typography>
+                          <Typography>
+                            {util.formatStr(nestedValue)}
+                          </Typography>
+                        </div>
+                      </ListItemText>
+                    </ListItem>
+                  ));
+              })}
+            </List>
+          </Collapse>
         ) : null;
         if (value) {
           if (value.toString().length <= MAX_STRING_LENGTH) {
@@ -113,13 +125,13 @@ class DetailDrawer extends Component {
                   button={!!nestedKey}
                   onClick={nestedKey ? () => this.handleExpand(`${node['@rid']}${prop}`) : undefined}
                 >
-                  {nested && (
+                  {isNested && (
                     <ListItemIcon>
                       <div style={{ width: 24, height: 24 }} />
                     </ListItemIcon>)}
                   <ListItemText>
                     <div className="detail-identifiers">
-                      <Typography variant="subtitle1" color={nested ? 'textSecondary' : 'default'}>
+                      <Typography variant="subtitle1" color={isNested ? 'textSecondary' : 'default'}>
                         {util.antiCamelCase(key)}
                       </Typography>
                       <Typography>
@@ -137,7 +149,7 @@ class DetailDrawer extends Component {
               </React.Fragment>
             );
           }
-          return this.formatLongValue(key, value, true);
+          return this.formatLongValue(key, value, true, isNested);
         }
         return null;
       })
@@ -149,8 +161,9 @@ class DetailDrawer extends Component {
    * @param {string} key - property key.
    * @param {any} value - property value.
    * @param {boolean} isStatic - if true, locks list item open.
+   * @param {boolean} isNested - if true, list item is indented.
    */
-  formatLongValue(key, value, isStatic) {
+  formatLongValue(key, value, isStatic, isNested) {
     const { opened } = this.state;
     const listItemProps = isStatic === true
       ? {}
@@ -167,11 +180,23 @@ class DetailDrawer extends Component {
     return (
       <React.Fragment key={key}>
         <ListItem {...listItemProps}>
-          <ListItemText primary={util.antiCamelCase(key)} />
+          {isNested && (
+            <ListItemIcon>
+              <div style={{ width: 24, height: 24 }} />
+            </ListItemIcon>)}
+          <ListItemText>
+            <Typography variant="subtitle1" color={isNested ? 'textSecondary' : 'default'}>
+              {util.antiCamelCase(key)}
+            </Typography>
+          </ListItemText>
           {itemIcon}
         </ListItem>
         <Collapse {...collapseProps} unmountOnExit>
           <ListItem dense>
+            {isNested && (
+              <ListItemIcon>
+                <div style={{ width: 24, height: 24 }} />
+              </ListItemIcon>)}
             <ListItemText>
               {util.formatStr(value)}
             </ListItemText>
@@ -187,17 +212,18 @@ class DetailDrawer extends Component {
    * @param {Object} node - Ontology being displayed.
    */
   formatOtherProps(node) {
-    if (!node) return null;
     const { opened } = this.state;
     const { schema } = this.props;
+    const identifiers = node.constructor.getIdentifiers();
+
     let properties = Object.keys(node)
       .map(key => ({ name: key, type: util.parseKBType(node[key]) }));
-    if (schema) {
-      ({ properties } = util.getClass(node['@class'], schema));
+    if (schema && schema.getClass(node['@class'])) {
+      ({ properties } = schema.getClass(node['@class']));
     }
     let isEmpty = true;
     const propsList = properties
-      .filter(prop => !IDENTIFIERS.map(id => id.split('.')[0]).includes(prop.name)
+      .filter(prop => !identifiers.map(id => id.split('.')[0]).includes(prop.name)
         && !prop.name.startsWith('in_')
         && !prop.name.startsWith('out_'))
       .map((prop) => {
@@ -246,7 +272,7 @@ class DetailDrawer extends Component {
             </React.Fragment>
           );
         }
-        if (type === 'link') {
+        if (type === 'link' || type === 'embedded') {
           return (
             <React.Fragment key={name}>
               <ListItem button onClick={() => this.handleExpand(name)}>
@@ -274,18 +300,28 @@ class DetailDrawer extends Component {
    * @param {Object} node - Ontology being displayed.
    */
   formatRelationships(node) {
-    if (!node) return null;
     const { linkOpen } = this.state;
-    if (!(node instanceof Ontology)) {
-      node = new Ontology(node);
+    const { schema } = this.props;
+
+    // Checks subclasses
+    if (!(node instanceof classes.Record)) {
+      node = schema.newRecord(node);
     }
     const edges = node.getEdges();
+
     if (!edges || edges.length === 0) return null;
     return (
       <List>
         {edges.map((edge) => {
           const isOpen = linkOpen === edge['@rid'];
           const isIn = edge.in && edge.in['@rid'] === node.getId();
+          const targetNode = schema.newRecord(isIn ? edge.out : edge.in);
+          let preview;
+          try {
+            preview = targetNode.getPreview();
+          } catch (e) {
+            preview = 'Invalid variant';
+          }
           return (
             <React.Fragment key={edge['@rid']}>
               <ListItem
@@ -301,28 +337,34 @@ class DetailDrawer extends Component {
                   primaryTypographyProps={{
                     color: isOpen ? 'secondary' : 'default',
                   }}
-                  primary={util.getPreview(isIn ? edge.out : edge.in)}
+                  primary={preview}
                   secondary={util.getEdgeLabel(`${isIn ? 'in' : 'out'}_${edge['@class']}`)}
                 />
                 {!isOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
               </ListItem>
               <Collapse in={!!isOpen} unmountOnExit>
-                <List dense disablePadding className="detail-nested-list">
+                <List
+                  dense
+                  disablePadding
+                  className="detail-nested-list"
+                >
+                  <Divider />
                   <ListSubheader
                     className="detail-nested-subheader"
-                    color="inherit"
+                    color="primary"
                   >
                     Link Properties
                   </ListSubheader>
                   {this.formatIdentifiers(edge, true)}
                   <ListSubheader
                     className="detail-nested-subheader"
-                    color="inherit"
+                    color="primary"
                   >
-                    Linked Ontology
+                    Linked Record
                   </ListSubheader>
                   {this.formatIdentifiers(isIn ? edge.out : edge.in, true)}
                 </List>
+                <Divider />
               </Collapse>
             </React.Fragment>);
         })}
@@ -363,10 +405,21 @@ class DetailDrawer extends Component {
       onClose,
       isEdge,
       handleNodeEditStart,
+      schema,
     } = this.props;
+    if (!node) return null;
     const identifiers = this.formatIdentifiers(node);
     const otherProps = this.formatOtherProps(node);
     const relationships = this.formatRelationships(node);
+    let preview;
+    let errorMessage;
+    try {
+      preview = node.getPreview();
+      // Only for kbp nodes so far.
+    } catch (e) {
+      preview = 'Invalid variant';
+      errorMessage = e.message;
+    }
     return (
       <Drawer
         open={!!node}
@@ -378,21 +431,30 @@ class DetailDrawer extends Component {
         <div className="detail-content">
           <div className="detail-heading">
             <div className="detail-headline">
-              <Typography variant="h6" component="h1">
-                Properties:
-              </Typography>
+              <div>
+                <Typography variant="h4" component="h1">
+                  {preview}
+                </Typography>
+                {errorMessage && (
+                  <Typography color="error" variant="subtitle2">
+                    {errorMessage}
+                  </Typography>
+                )}
+              </div>
               <IconButton onClick={onClose}>
                 <ChevronRightIcon />
               </IconButton>
             </div>
             <div className="detail-edit-btn">
-              <Button
-                onClick={handleNodeEditStart}
-                variant="outlined"
-              >
-                Edit Ontology&nbsp;
-                <EditIcon />
-              </Button>
+              {schema.isOntology(node['@class']) && (
+                <Button
+                  onClick={handleNodeEditStart}
+                  variant="outlined"
+                >
+                  Edit &nbsp;
+                  <EditIcon />
+                </Button>
+              )}
             </div>
           </div>
           <Divider />
@@ -434,6 +496,7 @@ DetailDrawer.propTypes = {
   onClose: PropTypes.func,
   isEdge: PropTypes.bool,
   handleNodeEditStart: PropTypes.func,
+  identifiers: PropTypes.array,
 };
 
 DetailDrawer.defaultProps = {
@@ -442,6 +505,7 @@ DetailDrawer.defaultProps = {
   onClose: null,
   isEdge: false,
   handleNodeEditStart: PropTypes.func,
+  identifiers: [],
 };
 
 export default DetailDrawer;

@@ -6,7 +6,7 @@
 import * as jc from 'json-cycle';
 import config from '../static/config.json';
 
-const { DEFAULT_PROPS, PERMISSIONS } = config;
+const { PERMISSIONS } = config;
 const { PALLETE_SIZE } = config.GRAPH_DEFAULTS;
 const { NODE_INIT_RADIUS } = config.GRAPH_PROPERTIES;
 const ACRONYMS = [
@@ -21,6 +21,7 @@ const ACRONYMS = [
   'bcgsc',
   'fda',
   'null',
+  'rid',
 ];
 
 const GRAPH_OBJECTS_KEY = 'graphObjects';
@@ -38,6 +39,14 @@ const castToExist = (obj) => {
       return obj.join(', ');
     }
     return 'null';
+  }
+  if (obj && typeof obj === 'object') {
+    return Object.entries(obj).find((e) => {
+      const [k, v] = e;
+      return (
+        (typeof v !== 'object' || typeof v !== 'function')
+        && !k.startsWith('@'));
+    })[1].toString();
   }
   return obj === undefined || obj === null ? 'null' : obj.toString();
 };
@@ -100,6 +109,10 @@ const antiCamelCase = (str) => {
   return accstr.charAt(0).toUpperCase() + accstr.slice(1);
 };
 
+/**
+ * Infers the KB type string of a JS object.
+ * @param {any} obj - input object.
+ */
 const parseKBType = (obj) => {
   if (typeof obj === 'number') {
     if (Number.isInteger(obj)) {
@@ -110,7 +123,7 @@ const parseKBType = (obj) => {
   if (Array.isArray(obj)) {
     return 'embeddedset';
   }
-  if (typeof obj === 'object') {
+  if (obj && typeof obj === 'object') {
     if (Object.keys(obj).includes('@rid')) {
       return 'link';
     }
@@ -119,43 +132,16 @@ const parseKBType = (obj) => {
   return 'string';
 };
 
+/**
+ * Capitalizes sentences in input string.
+ * @param {string} str - input string.
+ */
 const formatStr = (str) => {
   const newSentence = /\.\s\w/g;
   const ret = parseAcronyms(castToExist(str))
     .trim()
     .replace(newSentence, match => match.toUpperCase());
-  return ret.charAt(0).toUpperCase() + ret.slice(1);
-};
-
-/**
- * Returns a representative field of a given object. Defaults to:
- * name, then sourceId (defined in config.json: DEFAULT_PROPS), then if
- * neither are present, the first primitive type field in the object.
- * @example
- * > util.getPreview({name: 'bob', ...other})
- * > 'bob'
- * @example
- * > util.getPreview({sourceId: '123', color: 'blue'})
- * > '123'
- * @example
- * > util.getPreview({colors: ['red', 'green], height: '6ft'})
- * > '6ft'
- * @param {Object} obj - target data object.
- */
-const getPreview = (obj) => {
-  let preview;
-  DEFAULT_PROPS.forEach((prop) => {
-    if (obj[prop]) {
-      if (!preview) {
-        preview = obj[prop];
-      }
-    }
-  });
-  if (!preview) {
-    const prop = Object.keys(obj).find(key => typeof obj[key] !== 'object');
-    preview = obj[prop];
-  }
-  return formatStr(preview);
+  return ret;
 };
 
 /**
@@ -235,7 +221,7 @@ const getTSVRepresentation = (value, key) => {
     const newKey = key.split('.')[1];
     return getTSVRepresentation(value[newKey], newKey);
   }
-  return getPreview(value);
+  return castToExist(value);
 };
 
 /**
@@ -244,10 +230,21 @@ const getTSVRepresentation = (value, key) => {
  * @param {Array} objectSchema - List of valid properties for given form.
  * @param {Array} exceptions - List of extra parameters not specified in editableProps.
  */
-const parsePayload = (form, objectSchema, exceptions) => {
+const parsePayload = (form, objectSchema, exceptions, isQuery = false) => {
   const payload = Object.assign({}, form);
   Object.keys(payload).forEach((key) => {
-    if (!payload[key]) delete payload[key];
+    if (!payload[key]) {
+      delete payload[key];
+    }
+    if (typeof payload[key] === 'object' && isQuery) {
+      Object.keys(payload[key]).forEach((k) => {
+        if (payload[key][k]) {
+          payload[`${key}[${k}]`] = payload[key][k];
+        }
+      });
+      delete payload[key];
+    }
+
     // For link properties, must specify record id being linking to. Clear the rest.
     if (key.includes('.@rid')) {
       const nestedKey = key.split('.')[0];
@@ -262,6 +259,7 @@ const parsePayload = (form, objectSchema, exceptions) => {
         delete payload[key];
       }
     }
+
     // Clears out all other unknown fields.
     if (!objectSchema.find(p => p.name === key)) {
       if (!exceptions || !exceptions.find(p => p.name === key)) {
@@ -333,10 +331,7 @@ const expanded = (expandedEdgeTypes, graphObjects, rid, expandable) => {
   expandedEdgeTypes.forEach((e) => {
     if (graphObjects[rid][e]) {
       graphObjects[rid][e].forEach((l) => {
-        if (
-          !graphObjects[l['@rid'] || l]
-          && !((l.in || {})['@class'] === 'Statement' || (l.out || {})['@class'] === 'Statement')
-        ) {
+        if (!graphObjects[l['@rid'] || l]) {
           targetFlag = true;
         }
       });
@@ -358,78 +353,6 @@ const positionInit = (x, y, i, n) => {
   const newX = NODE_INIT_RADIUS * Math.cos((2 * Math.PI * i - Math.PI / 6) / n) + x;
   const newY = NODE_INIT_RADIUS * Math.sin((2 * Math.PI * i - Math.PI / 6) / n) + y;
   return { x: newX, y: newY };
-};
-
-/**
- * Returns the editable properties of target ontology class.
- * @param {string} className - requested class name.
- * @param {Object} schema - Knowledge base schema.
- */
-const getClass = (className, schema) => {
-  const VPropKeys = schema.V ? Object.keys(schema.V.properties) : [];
-  const classKey = (Object.keys(schema)
-    .find(key => key.toLowerCase() === (className || '').toLowerCase()));
-  if (!classKey) return {};
-  const props = Object.keys(schema[classKey].properties)
-    .filter(prop => !VPropKeys.includes(prop))
-    .map(prop => schema[classKey].properties[prop]);
-  return { route: schema[classKey].route, properties: props };
-};
-
-/**
- * Initializes a new instance of given kbClass.
- * @param {Object} model - existing model to keep existing values from.
- * @param {string} kbClass - Knowledge base class key.
- * @param {Object} schema - Knowledge base schema.
- */
-const initModel = (model, kbClass, schema, extraProps = []) => {
-  const editableProps = schema && kbClass
-    && (getClass(kbClass, schema)).properties;
-  if (!editableProps) return {};
-  editableProps.push(...extraProps);
-  const newModel = Object.assign({}, model);
-  newModel['@class'] = kbClass;
-  Object.values(editableProps).forEach((property) => {
-    const {
-      name,
-      type,
-      linkedClass,
-      min,
-    } = property;
-    const defaultValue = property.default;
-    switch (type) {
-      case 'embeddedset':
-        newModel[name] = model[name] ? model[name].slice() : [];
-        break;
-      case 'link':
-        newModel[name] = (model[name] || '').name || '';
-        newModel[`${name}.@rid`] = (model[name] || '')['@rid'] || '';
-        newModel[`${name}.sourceId`] = (model[name] || '').sourceId || '';
-        if (!linkedClass) {
-          newModel[`${name}.class`] = (model[name] || '')['@class'] || '';
-        }
-        break;
-      case 'integer' || 'long':
-        newModel[name] = model[name] || min > 0 ? min : '';
-        break;
-      case 'boolean':
-        newModel[name] = model[name] !== undefined
-          ? model[name]
-          : (defaultValue || '').toString() === 'true';
-        break;
-      case 'embedded':
-        if (linkedClass && linkedClass.properties) {
-          newModel[name] = model[name]
-            ? Object.assign({}, model[name])
-            : initModel({}, property.linkedClass.name, schema);
-        }
-        break;
-      default:
-        newModel[name] = model[name] || '';
-        break;
-    }
-  });
-  return newModel;
 };
 
 /**
@@ -459,34 +382,6 @@ const parsePermission = (permissionValue) => {
   return retstr;
 };
 
-/**
-  * Returns all valid ontology types.
-  */
-const getOntologies = (schema) => {
-  const list = [];
-  Object.keys(schema).forEach((key) => {
-    if ((schema[key].inherits || []).includes('Ontology')) {
-      list.push({ name: key, properties: schema[key].properties, route: schema[key].route });
-    }
-  });
-  return list;
-};
-
-/**
-* Given a schema class object, determine whether it is abstract or not.
-* @param {string} linkedClass - property class key.
-* @param {Object} schema - database schema
-*/
-const isAbstract = (linkedClass, schema) => Object.values(schema)
-  .some(kbClass => (kbClass.inherits || []).includes(linkedClass));
-
-/**
-* Given a schema class object, find all other classes that inherit it.
-* @param {string} abstractClass - property class key.
-* @param {Object} schema - database schema
-*/
-const getSubClasses = (abstractClass, schema) => Object.values(schema)
-  .filter(kbClass => (kbClass.inherits || []).includes(abstractClass));
 
 /**
  * Returns a list of object class properties that are of a given type.
@@ -496,21 +391,27 @@ const getSubClasses = (abstractClass, schema) => Object.values(schema)
 const getPropOfType = (kbClass, type) => Object.values(kbClass)
   .filter(prop => prop.type === type);
 
-const sortFields = (order = []) => (a, b) => {
-  if (order.indexOf(b.name) === -1) {
+/**
+ * Sorting method to pass into Array.sort().
+ * @param {Array} order - order for props to be sorted in.
+ * @param {string} prop - nested property to sort objects by.
+ */
+const sortFields = (order = [], prop = 'name') => (a, b) => {
+  const sortA = prop ? a[prop] : a;
+  const sortB = prop ? b[prop] : b;
+  if (order.indexOf(sortB) === -1) {
     return -1;
   }
-  if (order.indexOf(a.name) === -1) {
+  if (order.indexOf(sortA) === -1) {
     return 1;
   }
-  return order.indexOf(a.name) < order.indexOf(b.name)
+  return order.indexOf(sortA) < order.indexOf(sortB)
     ? -1
     : 1;
 };
 
 export default {
   antiCamelCase,
-  getPreview,
   expandEdges,
   getEdgeLabel,
   getTSVRepresentation,
@@ -520,16 +421,11 @@ export default {
   getGraphData,
   expanded,
   positionInit,
-  initModel,
-  getClass,
-  isAbstract,
-  getSubClasses,
   parsePermission,
   getPropOfType,
   castToExist,
   formatStr,
   shortenString,
   parseKBType,
-  getOntologies,
   sortFields,
 };

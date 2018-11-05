@@ -1,18 +1,27 @@
 @import "../../globals";
 
 .search-wrapper {
-  min-width: 50vw;
+  min-width: 500px;
   max-width: 60vw;
   position: absolute;
   left: 0;
   right: 0;
   top: 35vh;
   margin: auto;
-
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  padding-bottom: 16px;
+  @media(max-width: 768px){
+    left: 8px;
+    right: 8px;
+    max-width: unset;
+    min-width: unset;
+  }
   .search-bar {
     width: 100%;
     display: flex;
-
+    padding: 16px;
+    box-sizing: border-box;
     .search-box {
       flex-grow: 1;
     }
@@ -22,16 +31,17 @@
     .main-search {
       flex-grow: 1;
     }
-    
+
     @media (max-width: 25em) {
       flex-direction: column;
-      button {
-        margin-top: 8px;
-      }
       .main-search {
         width: 100%;
       }
     }
+  }
+
+  .kb-section-indicator {
+    text-align: center;
   }
 
   .advanced-button {

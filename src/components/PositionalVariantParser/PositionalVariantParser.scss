@@ -21,8 +21,6 @@
       box-sizing: border-box;
       .variant-parser-shorthand {
         @include paper;
-        display: flex;
-        height: 68px;
         margin-bottom: 1rem;
         @media(max-width: 425px){
           margin-bottom: 0;
@@ -39,7 +37,6 @@
         display: block;
         @include paper;
         padding-bottom: 24px;
-        column-count: 2;
         min-width: 0;
         @media (max-width: 768px) {
           column-count: unset;

@@ -1,4 +1,4 @@
-.form-templater-group-wrapper{
+.form-templater-group-wrapper {
   width: 100%;
   .form-templater-row-grid {
     display: grid;
@@ -10,10 +10,10 @@
     @media (max-width: 425px) {
       display: block;
     }
-    > *{
+    > * {
       padding: 0;
       display: inline-block;
-      * {
+      > * {
         text-overflow: ellipsis;
         overflow: hidden;
         label {
@@ -29,14 +29,14 @@
   display: flex;
   width: 100%;
 }
-.form-templater-help-icon{
+.form-templater-help-icon {
   margin: auto;
   margin-left: 24px;
 }
 .radio {
   margin-top: 28px;
 }
-.form-templater-embedded-selector{
+.form-templater-embedded-selector {
   display: flex;
   flex-grow: 1;
 }

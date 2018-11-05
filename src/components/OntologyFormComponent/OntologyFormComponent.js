@@ -63,12 +63,11 @@ class OntologyFormComponent extends Component {
    * an edit variant.
    */
   async componentDidMount() {
-    const { node, schema } = this.props;
+    const { node, schema, classes } = this.props;
     const { relationships } = this.state;
 
-    let originalNode = {};
-    let nodeClass = DEFAULT_NODE_CLASS;
-
+    let nodeClass = classes ? classes[0] : DEFAULT_NODE_CLASS;
+    let originalNode = { '@class': nodeClass };
     if (node) {
       originalNode = node;
       nodeClass = node['@class'];
@@ -239,7 +238,7 @@ class OntologyFormComponent extends Component {
                 Basic Parameters
               </Typography>
               <List component="nav">
-                {variant === 'edit' ? (
+                {variant === 'edit' || (classes && classes.length === 1) ? (
                   <React.Fragment>
                     <ListItem>
                       <ListItemText
@@ -277,6 +276,12 @@ class OntologyFormComponent extends Component {
                   schema={schema}
                   onChange={this.handleFormChange}
                   sort={util.sortFields(DEFAULT_ORDER)}
+                  pairs={{
+                    range: ['start', 'end'],
+                    sourceId: ['sourceId', 'sourceIdVersion'],
+                    trialRange: ['startYear', 'completionYear'],
+                    location: ['country', 'city'],
+                  }}
                 />
               </List>
             </Paper>

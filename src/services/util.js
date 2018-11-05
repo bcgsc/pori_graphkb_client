@@ -22,6 +22,7 @@ const ACRONYMS = [
   'fda',
   'null',
   'rid',
+  'iupac',
 ];
 
 const GRAPH_OBJECTS_KEY = 'graphObjects';

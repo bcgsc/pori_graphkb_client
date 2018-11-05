@@ -10,6 +10,9 @@ import {
   MenuItem,
   FormControl,
   Select,
+  FilledInput,
+  OutlinedInput,
+  Input,
 } from '@material-ui/core';
 import util from '../../services/util';
 
@@ -29,12 +32,23 @@ function ResourceSelectComponent(props) {
     id,
     error,
     dense,
+    variant,
   } = props;
 
   const resourcesDisplay = resources.map(resource => children(resource));
-
+  let InputComponent = Input;
+  if (variant === 'outlined') {
+    InputComponent = OutlinedInput;
+  }
+  if (variant === 'filled') {
+    InputComponent = FilledInput;
+  }
   return (
-    <FormControl className="resource-select" id={id}>
+    <FormControl
+      className="resource-select"
+      id={id}
+      variant={variant}
+    >
       <InputLabel
         htmlFor={`resource-select-${name}`}
         required={required}
@@ -49,10 +63,7 @@ function ResourceSelectComponent(props) {
         value={value}
         onChange={onChange}
         error={error}
-        inputProps={{
-          name,
-          id: `resource-select-${name}`,
-        }}
+        input={<InputComponent name={name} id={`resource-select-${name}`} />}
         style={{
           fontSize: dense ? '0.8125rem' : '',
         }}
@@ -88,12 +99,13 @@ ResourceSelectComponent.propTypes = {
   error: PropTypes.bool,
   id: PropTypes.string,
   dense: PropTypes.bool,
+  variant: PropTypes.string,
 };
 
 ResourceSelectComponent.defaultProps = {
   children: resource => (
-    <MenuItem key={resource.name} value={resource['@rid']}>
-      {util.antiCamelCase(resource.name)}
+    <MenuItem key={resource} value={resource}>
+      {util.antiCamelCase(resource)}
     </MenuItem>
   ),
   resources: [],
@@ -104,6 +116,7 @@ ResourceSelectComponent.defaultProps = {
   error: false,
   id: undefined,
   dense: false,
+  variant: 'standard',
 };
 
 export default ResourceSelectComponent;

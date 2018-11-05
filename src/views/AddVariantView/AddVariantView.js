@@ -3,6 +3,7 @@ import './AddVariantView.css';
 import PropTypes from 'prop-types';
 import { Paper, Typography, Button } from '@material-ui/core'; /*eslint-disable*/
 import PositionalVariantParser from '../../components/PositionalVariantParser/PositionalVariantParser';
+import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
 import util from '../../services/util';
 import api from '../../services/api';
 import { withSchema } from '../../components/SchemaContext/SchemaContext';
@@ -37,7 +38,7 @@ class AddVariantViewBase extends Component {
   async submitVariant(variant, relationships) {
     const { schema } = this.props;
     const copy = Object.assign({}, variant);
-    const classSchema = schema.getClass('PositionalVariant').properties;
+    const { properties, route } = schema.getClass(variant['@class']);
     // Strips away empty break objects and casts number props to numbers.
     Object.keys(copy).forEach((k) => {
       if (typeof copy[k] === 'object' && copy[k]) { // more flexible
@@ -57,9 +58,9 @@ class AddVariantViewBase extends Component {
         }
       }
     });
-    const payload = util.parsePayload(copy, classSchema);
-    
-    const response = await api.post('/positionalvariants', payload);
+    const payload = util.parsePayload(copy, properties);
+
+    const response = await api.post(route, payload);
 
     await api.submitEdges(relationships, schema, response.result['@rid']);
   }
@@ -83,11 +84,11 @@ class AddVariantViewBase extends Component {
         </Paper>
 
         <div className="variant-body">
-          <PositionalVariantParser
+          {true && (<PositionalVariantParser
             handleFinish={this.handleFinish}
             handleSubmit={this.submitVariant}
             schema={schema}
-          />
+          />)}
         </div>
       </div>
     );

@@ -11,6 +11,7 @@ import {
   FormControl,
   FormHelperText,
   Paper,
+  ListItem,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
 import kbp from 'knowledgebase-parser';
@@ -19,6 +20,7 @@ import RelationshipsForm from '../RelationshipsForm/RelationshipsForm';
 import FormTemplater from '../FormTemplater/FormTemplater';
 import api from '../../services/api';
 import util from '../../services/util';
+import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
 
 const DEFAULT_ORDER = [
   'type',
@@ -45,6 +47,7 @@ class PositionalVariantParser extends Component {
       errorFields: [],
       relationships: [],
       originalRelationships: [],
+      nodeClass: 'PositionalVariant',
     };
     this.parseString = this.parseString.bind(this);
     this.handleVariantChange = this.handleVariantChange.bind(this);
@@ -58,9 +61,10 @@ class PositionalVariantParser extends Component {
 
   componentDidMount() {
     const { schema, initVariant } = this.props;
+    const { nodeClass } = this.state;
     const variant = initVariant
-      ? schema.initModel(initVariant, 'PositionalVariant')
-      : schema.initModel({}, 'PositionalVariant');
+      ? schema.initModel(initVariant, initVariant['@class'])
+      : schema.initModel({}, nodeClass);
 
     const relationships = [];
     if (initVariant && initVariant.getEdges) {
@@ -215,7 +219,15 @@ class PositionalVariantParser extends Component {
   }
 
   handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
+    const { variant } = this.state;
+    const { schema } = this.props;
+    const { name, value } = e.target;
+    const update = { [name]: value };
+    if (name === 'nodeClass') {
+      update.variant = schema.initModel(variant, value);
+    }
+
+    this.setState(update);
   }
 
   /**
@@ -335,6 +347,7 @@ class PositionalVariantParser extends Component {
       notificationDrawerOpen,
       loading,
       relationships,
+      nodeClass,
     } = this.state;
     const {
       required,
@@ -346,9 +359,9 @@ class PositionalVariantParser extends Component {
     } = this.props;
 
     if (!variant) return null;
-    const classSchema = schema.getClass('PositionalVariant').properties;
-
-    let formIsInvalid = false;
+    const classSchema = schema.getClass(nodeClass).properties;
+    const isPositional = nodeClass === 'PositionalVariant';
+    let formIsInvalid = !!(invalidFlag && isPositional);
     (classSchema || []).forEach((prop) => {
       if (prop.mandatory) {
         if (prop.type === 'link' && (!variant[`${prop.name}.data`] || !variant[`${prop.name}.data`]['@rid'])) {
@@ -369,37 +382,50 @@ class PositionalVariantParser extends Component {
         />
         <div className="flexbox">
           <div className="variant-parser">
+
             <Paper elevation={4} className="variant-parser-shorthand">
-              <FormControl
-                error={shorthandError}
-                fullWidth
-              >
-                <TextField
-                  error={shorthandError}
-                  required={required}
-                  name="shorthand"
-                  onChange={this.parseString}
-                  label="HGVS Nomenclature"
-                  disabled={disabled}
-                  value={shorthand}
+              <ListItem>
+                <ResourceSelectComponent
+                  resources={['PositionalVariant', 'CategoryVariant']}
+                  name="nodeClass"
+                  value={nodeClass}
+                  onChange={this.handleChange}
+                  label="Class"
                 />
-                {shorthandError
-                  && <FormHelperText>{invalidFlag}</FormHelperText>
-                }
-              </FormControl>
+              </ListItem>
+              {isPositional && (
+                <ListItem>
+                  <FormControl
+                    error={shorthandError}
+                    fullWidth
+                  >
+                    <TextField
+                      error={shorthandError}
+                      required={required}
+                      name="shorthand"
+                      onChange={this.parseString}
+                      label="HGVS Nomenclature"
+                      disabled={disabled}
+                      value={shorthand}
+                    />
+                    {shorthandError
+                      && <FormHelperText>{invalidFlag}</FormHelperText>
+                    }
+                  </FormControl>
+                </ListItem>
+              )}
             </Paper>
             <Paper elevation={4} className="parser-form-grid">
               {schema
                 && (
                   <FormTemplater
-                    disablePadding
                     schema={schema}
                     onChange={this.handleVariantChange}
                     onClassChange={this.handleClassChange}
                     model={variant}
                     propSchemas={classSchema}
                     excludedProps={['break1Repr', 'break2Repr']}
-                    errorFields={errorFields}
+                    errorFields={isPositional ? errorFields : []}
                     sort={util.sortFields(DEFAULT_ORDER)}
                     pairs={{
                       break1: ['break1Start', 'break1End'],
@@ -426,7 +452,7 @@ class PositionalVariantParser extends Component {
             onClick={this.submitVariant}
             color="primary"
             variant="contained"
-            disabled={!!(formIsInvalid || invalidFlag)}
+            disabled={formIsInvalid}
           >
             Submit
           </Button>

@@ -136,7 +136,7 @@ class RelationshipsForm extends Component {
     const { schema } = this.props;
     const { name, value } = e.target;
     model[name] = value;
-    if (name.includes('.data') && value) {
+    if (name && name.includes('.data') && value) {
       model[name.split('.')[0]] = schema.newRecord(value).getPreview();
     }
     this.setState({ model });

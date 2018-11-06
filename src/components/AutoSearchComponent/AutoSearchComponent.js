@@ -75,7 +75,7 @@ class AutoSearchComponent extends Component {
    * syntax.
    */
   handleBlur() {
-    this.setState({ selected: false });
+    this.setState({ loading: false, options: [] });
   }
 
   /**
@@ -111,9 +111,9 @@ class AutoSearchComponent extends Component {
       if (selected) {
         value = `${propValue}${value}`;
       }
-
       this.handleChange(null);
-      onChange({ target: { [name]: value } });
+      onChange({ target: { name, value } });
+      this.setState({ loading: true, emptyFlag: false, selected: false });
       this.callApi(value);
     }
   }
@@ -131,7 +131,6 @@ class AutoSearchComponent extends Component {
     } = this.props;
 
     try {
-      this.setState({ loading: true, emptyFlag: false, selected: false });
       const response = await api.autoSearch(
         endpoint,
         property,
@@ -214,10 +213,10 @@ class AutoSearchComponent extends Component {
                   InputProps={{
                     ...getInputProps({
                       placeholder,
-                      value: selected ? value : '',
+                      value: selected ? ' ' : value,
                       name,
                       disabled,
-                      onKeyUp: this.refreshOptions,
+                      onChange: this.refreshOptions,
                       onBlur: this.handleBlur,
                       style: {
                         fontSize: dense ? '0.8125rem' : '',

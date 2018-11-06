@@ -352,15 +352,7 @@ class App extends Component {
                     <Route path="/icons" component={IconsView} />
                     <Route path="/login" render={loginWithProps} />
                     <Route path="/error" component={ErrorView} />
-                    <Route
-                      path="/"
-                      render={() => {
-                        if (!loggedIn) {
-                          return <Redirect to="/login" />;
-                        }
-                        return loggedInContent;
-                      }}
-                    />
+                    {loggedIn ? <Route path="/" render={() => loggedInContent} /> : <Redirect push to="/login" />}
                   </Switch>
                 </div>
               </section>

@@ -104,9 +104,17 @@ class AutoSearchComponent extends Component {
    */
   refreshOptions(e) {
     if (!ACTION_KEYCODES.includes(e.keyCode)) {
-      this.setState({ loading: true, emptyFlag: false, selected: false });
+      const { selected } = this.state;
+      const { value: propValue, name, onChange } = this.props;
+      let { value } = e.target;
+
+      if (selected) {
+        value = `${propValue}${value}`;
+      }
+
       this.handleChange(null);
-      this.callApi(e.target.value);
+      onChange({ target: { [name]: value } });
+      this.callApi(value);
     }
   }
 
@@ -123,6 +131,7 @@ class AutoSearchComponent extends Component {
     } = this.props;
 
     try {
+      this.setState({ loading: true, emptyFlag: false, selected: false });
       const response = await api.autoSearch(
         endpoint,
         property,
@@ -148,7 +157,6 @@ class AutoSearchComponent extends Component {
 
     const {
       children,
-      onChange,
       name,
       placeholder,
       value,
@@ -207,7 +215,6 @@ class AutoSearchComponent extends Component {
                     ...getInputProps({
                       placeholder,
                       value: selected ? value : '',
-                      onChange,
                       name,
                       disabled,
                       onKeyUp: this.refreshOptions,
@@ -285,7 +292,6 @@ class AutoSearchComponent extends Component {
  * @property {bool} disabled - disabled flag for text input.
  * @property {Object} endAdornment - component to adorn the end of input text field with.
  * @property {bool} dense - dense variant flag. If true, font sizes are decreased.
- *
  */
 AutoSearchComponent.propTypes = {
   limit: PropTypes.number,

@@ -295,7 +295,6 @@ function FormTemplater(props) {
         && !Object.values(completedpairs).some(g => g.includes(property.name))
       ) {
         const isHalf = pairs[key].filter(k => sortedProps.find(p => p.name === k)).length === 1;
-        console.log(sortedProps, pairs[key]);
         if (isHalf) {
           fields.push(pairs[key]
             .filter(k => sortedProps.find(p => p.name === k))

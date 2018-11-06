@@ -8,7 +8,8 @@
     width: 100%;
     box-sizing: border-box;
     @media (max-width: 425px) {
-      display: block;
+      grid-template-columns: 1fr;
+      grid-row-gap: 1rem;
     }
     > * {
       padding: 0;

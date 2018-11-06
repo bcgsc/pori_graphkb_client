@@ -307,10 +307,11 @@ class DataViewBase extends Component {
    * @param {boolean} edge - flag to indicate edge record.
    */
   async handleDetailDrawerOpen(node, open, edge) {
+    const { schema } = this.props;
     const { data, detail } = this.state;
     if (!open && !detail) return;
     if (edge) {
-      this.setState({ detail: new classes.Edge(node.data), detailEdge: true });
+      this.setState({ detail: new classes.Edge(node.data, schema), detailEdge: true });
     } else {
       if (!data[node.getId()]) {
         const response = await api.get(`/ontologies/${node.getId().slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);

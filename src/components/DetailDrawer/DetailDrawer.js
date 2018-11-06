@@ -410,7 +410,7 @@ class DetailDrawer extends Component {
     if (!node) return null;
     const identifiers = this.formatIdentifiers(node);
     const otherProps = this.formatOtherProps(node);
-    const relationships = this.formatRelationships(node);
+    const relationships = !isEdge && this.formatRelationships(node);
     let preview;
     let errorMessage;
     try {

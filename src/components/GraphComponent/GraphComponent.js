@@ -26,7 +26,7 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import ViewListIcon from '@material-ui/icons/ViewList';
-import BuildIcon from '@material-ui/icons/Build';
+import SettingsIcon from '@material-ui/icons/Settings';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import GraphActionsNode from './GraphActionsNode/GraphActionsNode';
 import GraphOptionsPanel from './GraphOptionsPanel/GraphOptionsPanel';
@@ -1295,7 +1295,7 @@ class GraphComponent extends Component {
               color="primary"
               onClick={this.handleDialogOpen('graphOptionsOpen')}
             >
-              <BuildIcon />
+              <SettingsIcon />
             </IconButton>
           </Tooltip>
 

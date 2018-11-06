@@ -213,7 +213,14 @@ class IconsView extends Component {
                       </ListItem>
                     ))}
                     <ListItem>
-                      <Button onClick={this.handleQuery} style={{ marginLeft: 'auto' }} variant="contained" color="primary">Query</Button>
+                      <Button
+                        onClick={this.handleQuery}
+                        style={{ marginLeft: 'auto' }}
+                        variant="contained"
+                        color="primary"
+                      >
+                        Query
+                      </Button>
                     </ListItem>
                   </List>)}
                 {query && !loading && (
@@ -226,8 +233,8 @@ class IconsView extends Component {
                   </List>
                 )}
                 {query && loading && (
-                  <div style={{ display: 'flex' }}>
-                    <CircularProgress style={{ margin: '8px auto' }} />
+                  <div style={{ display: 'flex', overflow: 'hidden' }}>
+                    <CircularProgress size={34} style={{ margin: '8px auto' }} />
                   </div>
                 )}
               </Paper>

@@ -1,22 +1,26 @@
 .droptions {
-    overflow: auto;
+  overflow: auto;
 }
 
 .dense {
-    span {
-        font-size: 0.8125rem;
-    }
-    p {
-        font-size: 0.75rem;
-    }
+  span {
+    font-size: 0.8125rem;
+  }
+  p {
+    font-size: 0.75rem;
+  }
 }
 
 .autosearch-wrapper {
-    position: relative;
-    flex-grow: 1;
+  position: relative;
+  flex-grow: 1;
+}
+
+.autosearch-popper-node {
+  display: flex;
 }
 
 #autosearch-spinner {
-    margin: auto;
-    display: block;
+  margin: auto;
+  display: block;
 }

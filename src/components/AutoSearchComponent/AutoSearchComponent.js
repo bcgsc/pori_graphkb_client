@@ -14,6 +14,7 @@ import {
   CircularProgress,
   InputAdornment,
   Popper,
+  Chip,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import * as jc from 'json-cycle';
@@ -46,9 +47,8 @@ class AutoSearchComponent extends Component {
     this.state = {
       options: [],
       emptyFlag: false,
-      noRidFlag: false,
       loading: false,
-      lastRid: null,
+      selected: false,
     };
     const { property } = props;
     this.callApi = debounce(
@@ -75,16 +75,7 @@ class AutoSearchComponent extends Component {
    * syntax.
    */
   handleBlur() {
-    const { value } = this.props;
-    const { lastRid, options } = this.state;
-    const perfectMatch = options.length === 1
-      ? options[0]
-      : options
-        .find(option => option.name === value || option.sourceId === value);
-    if (perfectMatch) {
-      this.handleChange(perfectMatch);
-    }
-    this.setState({ noRidFlag: !!(!lastRid && value && !perfectMatch) });
+    this.setState({ selected: false });
   }
 
   /**
@@ -103,7 +94,7 @@ class AutoSearchComponent extends Component {
       },
     });
     if (selectedRecord && selectedRecord['@rid']) {
-      this.setState({ lastRid: selectedRecord['@rid'] });
+      this.setState({ selected: !!selectedRecord['@rid'] });
     }
   }
 
@@ -113,7 +104,7 @@ class AutoSearchComponent extends Component {
    */
   refreshOptions(e) {
     if (!ACTION_KEYCODES.includes(e.keyCode)) {
-      this.setState({ loading: true, emptyFlag: false, lastRid: null });
+      this.setState({ loading: true, emptyFlag: false, selected: false });
       this.handleChange(null);
       this.callApi(e.target.value);
     }
@@ -151,7 +142,7 @@ class AutoSearchComponent extends Component {
     const {
       options,
       emptyFlag,
-      noRidFlag,
+      selected,
       loading,
     } = this.state;
 
@@ -209,18 +200,17 @@ class AutoSearchComponent extends Component {
               <div className="autosearch-popper-node" ref={this.setRef}>
                 <TextField
                   fullWidth
-                  error={emptyFlag || noRidFlag || error}
+                  error={emptyFlag || error}
                   label={label}
                   required={required}
                   InputProps={{
                     ...getInputProps({
                       placeholder,
-                      value,
+                      value: selected ? value : '',
                       onChange,
                       name,
                       disabled,
                       onKeyUp: this.refreshOptions,
-                      onFocus: () => this.setState({ noRidFlag: false }),
                       onBlur: this.handleBlur,
                       style: {
                         fontSize: dense ? '0.8125rem' : '',
@@ -233,7 +223,9 @@ class AutoSearchComponent extends Component {
                         {endAdornment}
                       </InputAdornment>
                     ) : null,
+                    startAdornment: selected ? (<Chip label={value} />) : null,
                   }}
+                  helperText={emptyFlag && 'No Results'}
                   style={{
                     fontSize: dense ? '0.8125rem' : '',
                   }}
@@ -252,7 +244,7 @@ class AutoSearchComponent extends Component {
                         width: this.popperNode
                           ? this.popperNode.clientWidth
                           : null,
-                        maxHeight: `${MAX_HEIGHT_FACTOR * limit}px`,
+                        maxHeight: MAX_HEIGHT_FACTOR * limit,
                       }}
                     >
                       <List dense={dense}>
@@ -269,16 +261,6 @@ class AutoSearchComponent extends Component {
                     </Paper>
                   </div>)}
               </Popper>
-              {emptyFlag ? ( // Indicator for empty query
-                <Typography variant="caption" color="error">
-                  No Results
-                </Typography>
-              ) : null}
-              {noRidFlag && !emptyFlag && ( // Indicator for unselected option
-                <Typography variant="caption" color="error">
-                  Select an option
-                </Typography>
-              )}
             </div>);
         }}
       </Downshift>

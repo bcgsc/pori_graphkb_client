@@ -96,6 +96,7 @@ class AdvancedQueryViewBase extends Component {
    */
   handleChange(e, nested) {
     const { form } = this.state;
+    const { schema } = this.props;
     const {
       name,
       value,
@@ -107,10 +108,16 @@ class AdvancedQueryViewBase extends Component {
       form[nested][name] = value;
       form[nested][`${name}.@rid`] = rid || '';
       form[nested][`${name}.sourceId`] = sourceId || '';
+      if (name.includes('.data') && value) {
+        form[nested][name.split('.')[0]] = schema.newRecord(value).getPreview();
+      }
     } else {
       form[name] = value;
       form[`${name}.@rid`] = rid || '';
       form[`${name}.sourceId`] = sourceId || '';
+      if (name.includes('.data') && value) {
+        form[name.split('.')[0]] = schema.newRecord(value).getPreview();
+      }
     }
 
     this.setState({ form });

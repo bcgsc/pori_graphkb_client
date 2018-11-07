@@ -53,10 +53,10 @@ describe('<RelationshipsForm />', () => {
     expect(wrapper.find('#relationships-form-submit').first().props().disabled).to.eq(true);
     expect(wrapper.find('table.relationships-form-table tr')).to.have.lengthOf(2);
 
-    wrapper.find('input[name="out"]')
+    wrapper.find('input[name="in"]')
       .simulate('change', { target: { value: 'test', '@rid': '#9', sourceId: 'testId' } });
     wrapper.find('button.relationship-direction-btn').simulate('click');
-    wrapper.find('input[name="in"]')
+    wrapper.find('input[name="out"]')
       .simulate('change', { target: { value: 'test', '@rid': '#9', sourceId: 'testId' } });
 
     wrapper.find('button.relationship-direction-btn').simulate('click');
@@ -91,8 +91,9 @@ describe('<RelationshipsForm />', () => {
       />,
     );
 
-    wrapper.find('button.relationships-minimize-btn').simulate('click');
     expect(wrapper.find('button.minimize-open')).to.have.lengthOf(1);
+    wrapper.find('button.relationships-minimize-btn').simulate('click');
+    expect(wrapper.find('button.minimize-open')).to.have.lengthOf(0);
   });
 
   it('initial relationships', () => {

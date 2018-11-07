@@ -7,13 +7,13 @@ const FAKE_JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjAsInBheWxvYWQiO
 describe('history methods test', () => {
   it('redirects state to login', () => {
     history.push('/state');
-    expect(history.prevState).to.eq('/login');
+    setTimeout(() => expect(history.prevState).to.eq('/login'), 0);
     history.back();
-    expect(history.prevState).to.eq('/login');
+    setTimeout(() => expect(history.prevState).to.eq('/login'), 0);
 
     history.prevState = '';
     history.back();
-    expect(history.prevState).to.eq('/login');
+    setTimeout(() => expect(history.prevState).to.eq('/login'), 0);
 
     auth.loadToken(FAKE_JWT);
     history.push('/state');

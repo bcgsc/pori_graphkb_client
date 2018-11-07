@@ -432,6 +432,7 @@ class DetailDrawer extends Component {
           <div className="detail-heading">
             <div className="detail-headline">
               <div>
+                <Typography variant="subtitle1">{node && node.getId()}</Typography>
                 <Typography variant="h4" component="h1">
                   {preview}
                 </Typography>
@@ -482,12 +483,12 @@ class DetailDrawer extends Component {
 
 /**
  * @namespace
- * @property {Object} schema - Knowledgebase schema object.
- * @property {Object} node - Ontology to be displayed in drawer.
- * @property {function} onClose - Function triggered on @material-ui/Drawer onClose event.
- * @property {function} handleNodeEditStart - Function triggered on node edit button click.
- * @property {bool} isEdge - Flag for edge classes.
- */
+* @property {Object} schema - Knowledgebase schema object.
+* @property {Object} node - Ontology to be displayed in drawer.
+* @property {function} onClose - Function triggered on @material-ui/Drawer onClose event.
+* @property {function} handleNodeEditStart - Function triggered on node edit button click.
+* @property {bool} isEdge - Flag for edge classes.
+    */
 DetailDrawer.propTypes = {
   schema: PropTypes.object,
   node: PropTypes.object,

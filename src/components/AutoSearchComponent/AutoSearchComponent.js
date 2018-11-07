@@ -14,11 +14,11 @@ import {
   CircularProgress,
   InputAdornment,
   Popper,
-  Chip,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import * as jc from 'json-cycle';
 import debounce from 'lodash.debounce';
+import RecordChip from '../RecordChip/RecordChip';
 import api from '../../services/api';
 import util from '../../services/util';
 
@@ -48,7 +48,6 @@ class AutoSearchComponent extends Component {
       options: [],
       emptyFlag: false,
       loading: false,
-      selected: false,
     };
     const { property } = props;
     this.callApi = debounce(
@@ -57,6 +56,7 @@ class AutoSearchComponent extends Component {
     );
     this.handleBlur = this.handleBlur.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleClear = this.handleClear.bind(this);
     this.refreshOptions = this.refreshOptions.bind(this);
     this.setRef = (node) => { this.popperNode = node; };
   }
@@ -93,9 +93,11 @@ class AutoSearchComponent extends Component {
         name: `${name}.data`,
       },
     });
-    if (selectedRecord && selectedRecord['@rid']) {
-      this.setState({ selected: !!selectedRecord['@rid'] });
-    }
+  }
+
+  handleClear() {
+    const { name, onChange } = this.props;
+    onChange({ target: { value: null, name: `${name}.data` } });
   }
 
   /**
@@ -113,7 +115,7 @@ class AutoSearchComponent extends Component {
       }
       this.handleChange(null);
       onChange({ target: { name, value } });
-      this.setState({ loading: true, emptyFlag: false, selected: false });
+      this.setState({ loading: true, emptyFlag: false });
       this.callApi(value);
     }
   }
@@ -150,7 +152,6 @@ class AutoSearchComponent extends Component {
     const {
       options,
       emptyFlag,
-      selected,
       loading,
     } = this.state;
 
@@ -166,6 +167,7 @@ class AutoSearchComponent extends Component {
       error,
       dense,
       limit,
+      selected,
     } = this.props;
 
     const autoSearchResults = (
@@ -215,13 +217,14 @@ class AutoSearchComponent extends Component {
                       placeholder,
                       value: selected ? ' ' : value,
                       name,
-                      disabled,
+                      disabled: disabled || selected,
                       onChange: this.refreshOptions,
                       onBlur: this.handleBlur,
                       style: {
                         fontSize: dense ? '0.8125rem' : '',
                       },
                     }),
+                    disableUnderline: selected,
                     endAdornment: endAdornment ? (
                       <InputAdornment
                         position="end"
@@ -229,7 +232,10 @@ class AutoSearchComponent extends Component {
                         {endAdornment}
                       </InputAdornment>
                     ) : null,
-                    startAdornment: selected ? (<Chip label={value} />) : null,
+                    startAdornment: selected
+                      ? (
+                        <RecordChip label={value} onDelete={this.handleClear} />
+                      ) : null,
                   }}
                   helperText={emptyFlag && 'No Results'}
                   style={{
@@ -307,6 +313,7 @@ AutoSearchComponent.propTypes = {
   disabled: PropTypes.bool,
   endAdornment: PropTypes.object,
   dense: PropTypes.bool,
+  selected: PropTypes.bool,
 };
 
 AutoSearchComponent.defaultProps = {
@@ -320,6 +327,7 @@ AutoSearchComponent.defaultProps = {
   required: false,
   error: false,
   dense: false,
+  selected: false,
   children: (getItemProps, item, index, s, t, highlightedIndex) => (
     <MenuItem
       {...getItemProps({

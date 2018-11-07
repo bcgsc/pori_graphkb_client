@@ -27,7 +27,7 @@ describe('<FormTemplater />', () => {
       description: 'blargh',
     },
     boolProp: {
-      name: 'bool monkey madness',
+      name: 'boolProp',
       type: 'boolean',
       description: 'blargh',
     },
@@ -70,6 +70,7 @@ describe('<FormTemplater />', () => {
   });
 
   const mockModel = {
+    '@class': 'test',
     name: '',
     otherProp: '',
   };

@@ -1,10 +1,8 @@
 import React from 'react';
 import { expect } from 'chai';
-import { spy } from 'sinon';
 import { mount } from 'enzyme';
 import RelationshipsForm from '../RelationshipsForm/RelationshipsForm';
 import Schema from '../../models/schema';
-import classes from '../../models/classes';
 
 const testSchema = new Schema({
   AliasOf: {

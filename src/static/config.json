@@ -1,7 +1,5 @@
 {
-  "VERSION": "0.4.0",
-  "HOST": "kbapi01",
-  "PORT": 8040,
+  "API_BASE_URL":"http://kbapi01:8040/api/v0.4.0",
   "KEYS": {
     "SOURCES": "sources",
     "SCHEMA": "schema",

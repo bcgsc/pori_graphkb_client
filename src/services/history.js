@@ -18,9 +18,9 @@ history.listen((location) => {
   history.prevState = location.pathname;
   if (location.pathname !== '/login') {
     if (!auth.getToken()) {
-      history.push('/login');
+      setTimeout(() => history.push('/login'), 0);
     } else if (auth.isExpired()) {
-      history.push('/login', { timedout: true });
+      setTimeout(history.push('/login', { timedout: true }), 0);
     }
   }
 });

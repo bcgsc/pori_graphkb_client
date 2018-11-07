@@ -67,10 +67,16 @@ describe('<RelationshipsForm />', () => {
       model: {
         '@class': 'AliasOf',
         in: 'test relationship',
-        'in.sourceId': 'test relationship id',
-        'in.@rid': '#1',
-        'out.@rid': '#23',
-        'source.@rid': '#source',
+        'in.data': {
+          sourceId: 'test relationship id',
+          '@rid': '#1',
+        },
+        'out.data': {
+          '@rid': '#23',
+        },
+        'source.data': {
+          '@rid': '#source',
+        },
         '@rid': 'test:01',
       },
     });
@@ -104,8 +110,12 @@ describe('<RelationshipsForm />', () => {
         relationships={[
           {
             '@class': 'AliasOf',
-            'in.@rid': '#2',
-            'out.@rid': '#6',
+            'in.data': {
+              '@rid': '#2',
+            },
+            'out.data': {
+              '@rid': '#6',
+            },
             '@rid': '#5',
           },
         ]}

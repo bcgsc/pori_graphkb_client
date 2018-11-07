@@ -39,7 +39,6 @@ const ACTION_KEYCODES = [13, 16, 37, 38, 39, 40];
  * Results are displayed in a menu anchored below the input text field,
  * inheriting its width and with a max-height proportional to the specified
  * limit.
- *
  */
 class AutoSearchComponent extends Component {
   constructor(props) {
@@ -70,9 +69,7 @@ class AutoSearchComponent extends Component {
   }
 
   /**
-   * Updates the parent value with a value if there is a perfect match or only
-   * 1 result for the specified query string. Disabled if user is using literal
-   * syntax.
+   * Clears loading states.
    */
   handleBlur() {
     this.setState({ loading: false, options: [] });

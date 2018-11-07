@@ -10,12 +10,9 @@ import history from './history';
 import Schema from '../models/schema';
 
 const {
-  VERSION,
   KEYS,
-  PORT,
-  HOST,
+  API_BASE_URL,
 } = config;
-const API_BASE_URL = `http://${HOST}:${PORT}/api/v${VERSION}`;
 const CACHE_EXPIRY = 8;
 
 /**
@@ -140,7 +137,7 @@ const loadSources = async () => {
     expiry.setHours(now.getHours() + CACHE_EXPIRY);
     const sources = {
       sources: cycled,
-      version: VERSION,
+      version: API_BASE_URL,
       expiry: expiry.getTime(),
     };
 
@@ -163,7 +160,7 @@ const getSources = () => {
       && sources.expiry
       && sources.expiry < Date.now().valueOf()
     )
-    || sources.version !== VERSION
+    || sources.version !== API_BASE_URL
     || !sources.sources
   ) {
     return loadSources();
@@ -184,7 +181,7 @@ const loadSchema = async () => {
 
     const schema = {
       schema: cycled,
-      version: VERSION,
+      version: API_BASE_URL,
       expiry: expiry.getTime(),
     };
 
@@ -208,7 +205,7 @@ const getSchema = () => {
       && schema.expiry
       && schema.expiry < Date.now().valueOf()
     )
-    || schema.version !== VERSION
+    || schema.version !== API_BASE_URL
     || !schema.schema
   ) {
     return loadSchema();

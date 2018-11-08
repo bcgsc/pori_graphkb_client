@@ -176,7 +176,7 @@ describe('ontology methods test', () => {
       },
       untemplatedSeq: 'a',
     }, mockSchema, true);
-    expect(testPositionalVariant.getPreview()).to.eq('kras:g.1del');
+    expect(testPositionalVariant.getPreview().toLowerCase()).to.eq('kras:g.1del');
     expect(Position.getIdentifiers()).to.deep.eq(['@class', 'pos', 'refAA', 'arm', 'majorBand', 'minorBand']);
 
     const testBadRecord = new Source({ anythingElse: 'pass' });

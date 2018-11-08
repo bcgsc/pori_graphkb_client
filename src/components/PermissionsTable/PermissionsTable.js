@@ -9,7 +9,7 @@ import {
   TableBody,
   Checkbox,
 } from '@material-ui/core';
-import config from '../../static/config.json';
+import config from '../../static/config';
 
 const { PERMISSIONS } = config;
 const KEY_MAPPER = 'CRUD';

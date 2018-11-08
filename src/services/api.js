@@ -5,7 +5,7 @@
 import * as jc from 'json-cycle';
 import auth from './auth';
 import util from './util';
-import config from '../static/config.json';
+import config from '../static/config';
 import history from './history';
 import Schema from '../models/schema';
 

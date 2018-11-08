@@ -305,7 +305,7 @@ class RelationshipsForm extends Component {
           </ListItem>
           <ListItem disableGutters>
             <AutoSearchComponent
-              selected={!!(forward ? model['in.data'] : model['out.data'])}
+              selected={schema.newRecord(forward ? model['in.data'] : model['out.data'])}
               label="Target Record"
               value={forward ? model.in : model.out}
               onChange={this.handleChange}

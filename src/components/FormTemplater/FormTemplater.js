@@ -107,7 +107,7 @@ function FormTemplater(props) {
           <AutoSearchComponent
             error={errorFields.includes(name)}
             value={model[name]}
-            selected={!!model[`${name}.data`]}
+            selected={schema.newRecord(model[`${name}.data`])}
             onChange={onChange}
             name={name}
             label={util.antiCamelCase(name)}

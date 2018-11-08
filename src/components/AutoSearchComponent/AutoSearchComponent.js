@@ -168,19 +168,8 @@ class AutoSearchComponent extends Component {
       selected,
     } = this.props;
 
-    const autoSearchResults = (
-      getItemProps,
-      setState,
-      highlightedIndex,
-      style,
-    ) => options.map((item, index) => children(
-      getItemProps,
-      item,
-      index,
-      setState,
-      style,
-      highlightedIndex,
-    ));
+    const autoSearchResults = downshiftProps => options
+      .map((item, index) => children(item, index, downshiftProps));
 
     return (
       <Downshift
@@ -193,11 +182,8 @@ class AutoSearchComponent extends Component {
         {(downshiftProps) => {
           const {
             getInputProps,
-            getItemProps,
             isOpen,
-            setState,
             getMenuProps,
-            highlightedIndex,
           } = downshiftProps;
           return (
             <div className="autosearch-wrapper">
@@ -209,7 +195,7 @@ class AutoSearchComponent extends Component {
                   required={required}
                   placeholder={placeholder}
                   name={name}
-                  disabled={disabled || selected}
+                  disabled={disabled || !!selected}
                   onBlur={this.handleBlur}
                   helperText={emptyFlag && 'No Results'}
                   InputProps={{
@@ -217,7 +203,7 @@ class AutoSearchComponent extends Component {
                       onChange: this.refreshOptions,
                       value: selected ? ' ' : value,
                     }),
-                    disableUnderline: selected,
+                    disableUnderline: !!selected,
                     endAdornment: endAdornment ? (
                       <InputAdornment
                         position="end"
@@ -228,8 +214,8 @@ class AutoSearchComponent extends Component {
                     startAdornment: selected
                       ? (
                         <RecordChip
-                          label={value}
                           onDelete={this.handleClear}
+                          record={selected}
                         />
                       ) : null,
                   }}
@@ -258,7 +244,7 @@ class AutoSearchComponent extends Component {
                               id="autosearch-spinner"
                             />
                           )
-                          : autoSearchResults(getItemProps, setState, highlightedIndex)}
+                          : autoSearchResults(downshiftProps)}
                       </List>
                     </Paper>
                   </div>)}
@@ -272,36 +258,38 @@ class AutoSearchComponent extends Component {
 
 /**
  * @namespace
- * @property {number} limit - database return record limit.
  * @property {string} name - name of input for event parsing.
+ * @property {string} value - specified value for two way binding.
+ * @property {function} onChange - parent method for handling change events
+ * @property {number} limit - database return record limit.
  * @property {string} endpoint - api endpoint identifier.
  * @property {string} property - api property identifier.
  * @property {string} placeholder - placeholder for text input.
- * @property {string} value - specified value for two way binding.
  * @property {string} label - label for text input.
  * @property {bool} required - required flag for text input indicator.
  * @property {bool} error - error flag for text input.
- * @property {func} onChange - parent method for handling change events
  * @property {function} children - Function that yields the component for
  * display display query results.
  * @property {bool} disabled - disabled flag for text input.
- * @property {Object} endAdornment - component to adorn the end of input text field with.
+ * @property {Object} endAdornment - component to adorn the end of input text
+ * field with.
+ * @property {Record} selected - Last selected record.
  */
 AutoSearchComponent.propTypes = {
-  limit: PropTypes.number,
   name: PropTypes.string,
+  value: PropTypes.string,
+  onChange: PropTypes.func,
+  limit: PropTypes.number,
   endpoint: PropTypes.string,
   property: PropTypes.array,
   placeholder: PropTypes.string,
-  value: PropTypes.string,
   label: PropTypes.string,
   required: PropTypes.bool,
   error: PropTypes.bool,
-  onChange: PropTypes.func,
   children: PropTypes.func,
   disabled: PropTypes.bool,
   endAdornment: PropTypes.object,
-  selected: PropTypes.bool,
+  selected: PropTypes.object,
 };
 
 AutoSearchComponent.defaultProps = {
@@ -314,16 +302,16 @@ AutoSearchComponent.defaultProps = {
   label: '',
   required: false,
   error: false,
-  selected: false,
-  children: (getItemProps, item, index, s, t, highlightedIndex) => (
+  selected: null,
+  children: (item, index, downshiftProps) => (
     <MenuItem
-      {...getItemProps({
+      {...downshiftProps.getItemProps({
         key: item['@rid'],
         index,
         item,
       })}
       style={{ whiteSpace: 'normal', height: 'unset' }}
-      selected={highlightedIndex === index}
+      selected={downshiftProps.highlightedIndex === index}
     >
       <span>
         {item.name || item.sourceId}

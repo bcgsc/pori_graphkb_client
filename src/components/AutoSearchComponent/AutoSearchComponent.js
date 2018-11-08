@@ -104,16 +104,17 @@ class AutoSearchComponent extends Component {
   refreshOptions(e) {
     if (!ACTION_KEYCODES.includes(e.keyCode)) {
       const { selected } = this.state;
-      const { value: propValue, name, onChange } = this.props;
-      let { value } = e.target;
+      const { value: propValue, onChange } = this.props;
+      const { value, name } = e.target;
+      let val = value;
 
       if (selected) {
-        value = `${propValue}${value}`;
+        val = `${propValue}${value}`;
       }
       this.handleChange(null);
-      onChange({ target: { name, value } });
+      onChange({ target: { name, value: val } });
       this.setState({ loading: true, emptyFlag: false });
-      this.callApi(value);
+      this.callApi(val);
     }
   }
 

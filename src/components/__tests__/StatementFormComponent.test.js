@@ -181,7 +181,17 @@ describe('<StatementFormComponent />', () => {
     });
     expect(wrapper.state().form.relevance).to.eq('test');
 
-    wrapper.find('input[name="relevance"]').simulate('change', { target: { name: 'relevance.data', value: { name: 'test', '@class': 'test', '@rid': 'pass' } } });
+    wrapper.find('input[name="relevance"]').simulate('change', {
+      target: {
+        name: 'relevance.data',
+        value: {
+          name: 'test',
+          '@class': 'test',
+          '@rid': 'pass',
+        },
+      },
+    });
+
     expect(wrapper.state().form.relevance).to.eq('pass');
   });
 

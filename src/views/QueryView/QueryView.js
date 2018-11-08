@@ -98,7 +98,12 @@ class QueryView extends Component {
    * @param {Event} e - user input event.
    */
   handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value, disabled: false });
+    const { name, value } = e.target;
+    if (name && name.includes('.data')) {
+      this.setState({ [name.split('.data')[0]]: value && (value.name || value.sourceId) });
+    } else {
+      this.setState({ [name]: value, disabled: false });
+    }
   }
 
   /**

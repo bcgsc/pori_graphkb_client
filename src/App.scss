@@ -23,7 +23,7 @@ $drawer-breakpoint: 1024px;
       transition: all 0.5s;
       overflow: hidden;
       white-space: nowrap;
-      @media (max-width: 425px) {
+      @media (max-width: $breakpoint-mobile) {
         max-width: 0;
       }
       * {

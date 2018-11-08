@@ -129,7 +129,6 @@ class AutoSearchComponent extends Component {
       endpoint,
       property,
     } = this.props;
-
     try {
       const response = await api.autoSearch(
         endpoint,

@@ -3,7 +3,7 @@
 .relationships-form-wrapper {
   display: flex;
   flex-direction: column;
-  >h5 {
+  > h5 {
     margin-left: 16px;
   }
   .relationships-temp-fields {
@@ -79,7 +79,7 @@
             transition: transform 0.1s;
             transform: rotate(180deg);
           }
-          @media (max-width: 1300px) {
+          @media (max-width: $breakpoint-lg) {
             display: block;
           }
         }

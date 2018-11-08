@@ -15,7 +15,7 @@ class EmbeddedListForm extends Component {
     super(props);
     this.state = {
       deleted: [],
-      temp: '',
+      tempElement: '',
       initList: props.list.slice(),
     };
     this.handleChange = this.handleChange.bind(this);
@@ -23,9 +23,9 @@ class EmbeddedListForm extends Component {
   }
 
   /**
- * Adds new subset to state list. Clears subset field.
- * @param {Event} e - User request subset add event.
- */
+   * Adds new element to state list. Clears temporary element field.
+   * @param {Event} e - User element add event (button click or Enter keypress)
+   */
   handleAdd(e) {
     e.preventDefault();
     const {
@@ -35,19 +35,19 @@ class EmbeddedListForm extends Component {
     } = this.props;
 
     const {
-      temp,
+      tempElement,
     } = this.state;
 
-    if (temp && !list.includes(temp.toLowerCase())) {
-      list.push(temp);
+    if (tempElement && !list.includes(tempElement.toLowerCase())) {
+      list.push(tempElement);
       onChange({ target: { name, value: list } });
-      this.setState({ temp: '' });
+      this.setState({ tempElement: '' });
     }
   }
 
   /**
-   * Deletes subset from state subset list.
-   * @param {string} val - Subset to be deleted.
+   * Deletes element from state list.
+   * @param {string} val - element to be deleted.
    */
   handleDelete(val) {
     const {
@@ -70,8 +70,8 @@ class EmbeddedListForm extends Component {
   }
 
   /**
-   * Reverts a subset that is staged for deletion.
-   * @param {string} val - deleted subset to be reverted.
+   * Reverts a element that is staged for deletion.
+   * @param {string} val - deleted element to be reverted.
    */
   handleUndo(val) {
     const {
@@ -86,14 +86,18 @@ class EmbeddedListForm extends Component {
     this.setState({ deleted });
   }
 
+  /**
+   * Handles user changes to component state.
+   * @param {Event} e - User change event.
+   */
   handleChange(e) {
-    this.setState({ temp: e.target.value });
+    this.setState({ tempElement: e.target.value });
   }
 
   render() {
     const {
       deleted,
-      temp,
+      tempElement,
     } = this.state;
     const {
       list,
@@ -126,13 +130,13 @@ class EmbeddedListForm extends Component {
           className="embedded-list-textfield"
           id={`${label.toLowerCase()}-temp`}
           label={label}
-          value={temp}
+          value={tempElement}
           onChange={this.handleChange}
           onKeyDown={(e) => {
             if (e.keyCode === 13) {
               this.handleAdd(e);
             }
-            if (e.keyCode === 8 && !temp) {
+            if (e.keyCode === 8 && !tempElement) {
               this.handleDelete(list[list.length - 1]);
             }
           }}

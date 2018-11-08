@@ -195,7 +195,7 @@ class Statement extends V {
    * record.
    */
   static getIdentifiers() {
-    return ['appliesTo.name', 'relevance.name', 'source.name'];
+    return ['appliesTo.name', 'relevance.name', 'source.name', 'reviewStatus'];
   }
 
   /**

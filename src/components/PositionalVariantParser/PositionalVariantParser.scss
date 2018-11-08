@@ -11,7 +11,7 @@
     display: flex;
     position: relative;
     width: 100%;
-    @media (max-width: 1300px) {
+    @media (max-width: $breakpoint-lg) {
       flex-direction: column;
     }
     $form-bias: 60%;
@@ -22,7 +22,7 @@
       .variant-parser-shorthand {
         @include paper;
         margin-bottom: 1rem;
-        @media(max-width: 425px){
+        @media(max-width: $breakpoint-mobile){
           margin-bottom: 0;
         }
 
@@ -38,7 +38,7 @@
         @include paper;
         padding-bottom: 24px;
         min-width: 0;
-        @media (max-width: 768px) {
+        @media (max-width: $breakpoint-tablet) {
           column-count: unset;
         }
         > * {
@@ -47,7 +47,7 @@
           backface-visibility: hidden;
         }
       }
-      @media (max-width: 1300px) {
+      @media (max-width: $breakpoint-lg) {
         width: auto;
       }
     }
@@ -63,12 +63,12 @@
       display: flex;
       flex-direction: column;
       transition: all 0.3s;
-      @media (max-width: 1300px) {
+      @media (max-width: $breakpoint-lg) {
         position: relative;
         left: unset;
         margin-top: 8px;
       }
-      @media(max-width: 425px){
+      @media(max-width: $breakpoint-mobile){
         margin-top: 0;
       }
     }
@@ -83,7 +83,7 @@
   }
 }
 
-@media (max-width: 1300px) {
+@media (max-width: $breakpoint-lg) {
   .variant-parser-wrapper {
     grid-template-columns: 1fr;
     > * {

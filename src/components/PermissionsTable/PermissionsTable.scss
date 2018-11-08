@@ -1,4 +1,4 @@
-@import '../../globals';
+@import "../../globals";
 
 .alternating-table {
   tr:nth-child(odd) {
@@ -22,16 +22,6 @@
 .user-group-grid {
   max-height: 600px;
   overflow-y: auto;
-  ul {
-    column-count: 3;
-    @media (max-width: 1024px) {
-      column-count: 2;
-    }
-    li {
-      display: inline-block;
-      width: 100%;
-    }
-  }
 }
 
 .permissions-view {

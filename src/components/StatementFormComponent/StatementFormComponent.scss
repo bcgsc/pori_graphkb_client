@@ -28,6 +28,7 @@
       word-break: break-word;
     }
     .statement-form-params {
+      @include paper;
       flex-grow: 1;
       margin-top: 1rem;
     }

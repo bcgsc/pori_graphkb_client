@@ -164,7 +164,6 @@ class AutoSearchComponent extends Component {
       disabled,
       endAdornment,
       error,
-      dense,
       limit,
       selected,
     } = this.props;
@@ -201,27 +200,22 @@ class AutoSearchComponent extends Component {
             highlightedIndex,
           } = downshiftProps;
           return (
-            <div
-              className="autosearch-wrapper"
-              style={{ minHeight: dense ? '48px' : '64px' }}
-            >
+            <div className="autosearch-wrapper">
               <div className="autosearch-popper-node" ref={this.setRef}>
                 <TextField
                   fullWidth
                   error={emptyFlag || error}
                   label={label}
                   required={required}
+                  placeholder={placeholder}
+                  name={name}
+                  disabled={disabled || selected}
+                  onBlur={this.handleBlur}
+                  helperText={emptyFlag && 'No Results'}
                   InputProps={{
                     ...getInputProps({
-                      placeholder,
-                      value: selected ? ' ' : value,
-                      name,
-                      disabled: disabled || selected,
                       onChange: this.refreshOptions,
-                      onBlur: this.handleBlur,
-                      style: {
-                        fontSize: dense ? '0.8125rem' : '',
-                      },
+                      value: selected ? ' ' : value,
                     }),
                     disableUnderline: selected,
                     endAdornment: endAdornment ? (
@@ -233,12 +227,11 @@ class AutoSearchComponent extends Component {
                     ) : null,
                     startAdornment: selected
                       ? (
-                        <RecordChip label={value} onDelete={this.handleClear} />
+                        <RecordChip
+                          label={value}
+                          onDelete={this.handleClear}
+                        />
                       ) : null,
-                  }}
-                  helperText={emptyFlag && 'No Results'}
-                  style={{
-                    fontSize: dense ? '0.8125rem' : '',
                   }}
                 />
               </div>
@@ -250,15 +243,13 @@ class AutoSearchComponent extends Component {
                 {(isOpen || loading) && !emptyFlag && (
                   <div {...getMenuProps()}>
                     <Paper
-                      className={`droptions ${dense ? 'dense' : ''}`}
+                      className="droptions"
                       style={{
-                        width: this.popperNode
-                          ? this.popperNode.clientWidth
-                          : null,
+                        width: this.popperNode && this.popperNode.clientWidth,
                         maxHeight: MAX_HEIGHT_FACTOR * limit,
                       }}
                     >
-                      <List dense={dense}>
+                      <List>
                         {loading
                           ? (
                             <CircularProgress
@@ -295,7 +286,6 @@ class AutoSearchComponent extends Component {
  * display display query results.
  * @property {bool} disabled - disabled flag for text input.
  * @property {Object} endAdornment - component to adorn the end of input text field with.
- * @property {bool} dense - dense variant flag. If true, font sizes are decreased.
  */
 AutoSearchComponent.propTypes = {
   limit: PropTypes.number,
@@ -311,7 +301,6 @@ AutoSearchComponent.propTypes = {
   children: PropTypes.func,
   disabled: PropTypes.bool,
   endAdornment: PropTypes.object,
-  dense: PropTypes.bool,
   selected: PropTypes.bool,
 };
 
@@ -325,7 +314,6 @@ AutoSearchComponent.defaultProps = {
   label: '',
   required: false,
   error: false,
-  dense: false,
   selected: false,
   children: (getItemProps, item, index, s, t, highlightedIndex) => (
     <MenuItem

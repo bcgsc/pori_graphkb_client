@@ -216,7 +216,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: $breakpoint-tablet) {
   .legend-wrapper {
     max-width: unset;
   }
@@ -232,7 +232,7 @@
     grid-template-columns: 1fr;
   }
 }
-@media (max-width: 400px) {
+@media (max-width: $breakpoint-mobile) {
   .expansion-root {
     .expansion-dialog {
       margin: 0;

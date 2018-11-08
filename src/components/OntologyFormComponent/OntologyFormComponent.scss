@@ -1,11 +1,10 @@
 @import "../../globals";
-$breakpoint: 1300px;
 $relationshipBreakpoint: 1586px;
 $mediumBreakpoint: 500px;
 .node-form-wrapper {
   .form-grid {
     flex-grow: 1;
-    @media (max-width: 425px) {
+    @media (max-width: $breakpoint-mobile) {
       .flexbox > div {
         margin: 0;
         box-shadow: none;
@@ -13,7 +12,7 @@ $mediumBreakpoint: 500px;
         border-bottom: 1px solid rgba(0, 0, 0, 0.26);
       }
     }
-    @media (max-width: $breakpoint) {
+    @media (max-width: $breakpoint-lg) {
       grid-template-rows: auto;
       grid-template-columns: 100%;
     }
@@ -25,11 +24,11 @@ $mediumBreakpoint: 500px;
       position: relative;
       width: 100%;
       margin-bottom: 1rem;
-      @media (max-width: $breakpoint) {
+      @media (max-width: $breakpoint-lg) {
         flex-direction: column;
         grid-column-end: 2;
       }
-      @media (max-width: 425px) {
+      @media (max-width: $breakpoint-mobile) {
         margin-bottom: 0;
       }
       $form-bias: 50%;
@@ -54,12 +53,12 @@ $mediumBreakpoint: 500px;
         display: flex;
         flex-direction: column;
         transition: all 0.3s;
-        @media (max-width: $breakpoint) {
+        @media (max-width: $breakpoint-lg) {
           position: relative;
           left: unset;
           margin-top: 8px;
         }
-        @media (max-width: 425px) {
+        @media (max-width: $breakpoint-mobile) {
           padding: 0;
           > div {
             border-radius: 0;
@@ -76,7 +75,7 @@ $mediumBreakpoint: 500px;
       grid-column-end: 3;
       display: flex;
       padding: 16px;
-      @media (max-width: $breakpoint) {
+      @media (max-width: $breakpoint-lg) {
         grid-column-end: 2;
       }
       button {

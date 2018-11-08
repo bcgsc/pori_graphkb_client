@@ -52,8 +52,7 @@ class OntologyFormComponent extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleClassChange = this.handleClassChange.bind(this);
     this.handleDeleteNode = this.handleDeleteNode.bind(this);
-    this.handleDialogClose = this.handleDialogClose.bind(this);
-    this.handleDialogOpen = this.handleDialogOpen.bind(this);
+    this.handleDialog = this.handleDialog.bind(this);
     this.handleFormChange = this.handleFormChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -110,27 +109,22 @@ class OntologyFormComponent extends Component {
   }
 
   /**
- * Deletes target node.
- */
+   * Deletes target node.
+   */
   async handleDeleteNode() {
+    const { handleDelete } = this.props;
     this.setState({ notificationDrawerOpen: true, loading: true });
-    this.handleDialogClose();
+    this.handleDialog(false)();
+    await handleDelete();
     this.setState({ loading: false });
   }
 
-
   /**
-   * Closes node deletion dialog.
+   * Sets the open state of the delete dialog.
+   * @param {boolean} val - Open state of delete dialog.
    */
-  handleDialogClose() {
-    this.setState({ deleteDialog: false });
-  }
-
-  /**
-   * Opens node deletion dialog.
-   */
-  handleDialogOpen() {
-    this.setState({ deleteDialog: true });
+  handleDialog(val) {
+    return () => this.setState({ deleteDialog: val });
   }
 
   /**
@@ -197,7 +191,7 @@ class OntologyFormComponent extends Component {
 
     const dialog = (
       <Dialog
-        onClose={this.handleDialogClose}
+        onClose={this.handleDialog(false)}
         open={deleteDialog}
       >
         <DialogTitle>
@@ -206,7 +200,7 @@ class OntologyFormComponent extends Component {
         <DialogContent>
           <DialogActions style={{ justifyContent: 'center' }}>
             <Button
-              onClick={this.handleDialogClose}
+              onClick={this.handleDialog(false)}
               color="primary"
               size="large"
             >
@@ -299,7 +293,7 @@ class OntologyFormComponent extends Component {
             {variant === 'edit' && (
               <Button
                 variant="contained"
-                onClick={this.handleDialogOpen}
+                onClick={this.handleDialog(true)}
                 id="delete-btn"
                 size="large"
               >
@@ -333,9 +327,10 @@ class OntologyFormComponent extends Component {
  * @property {Array} edgeTypes - List of Knowledgebase ontology edge classes.
  * @property {function} handleFinish - Function triggered when node is edited
  * or deleted.
- * @property {function} handleCancel - Function triggered when form action is
- * cancelled.
- * @property {function} handleSubmit - Function triggered when form is submitted.
+ * @property {function} handleSubmit - Function triggered when form is
+ * submitted.
+ * @property {function} handleDelete - Function triggered when ontology is
+ * deleted.
  */
 OntologyFormComponent.propTypes = {
   node: PropTypes.object,
@@ -343,6 +338,7 @@ OntologyFormComponent.propTypes = {
   schema: PropTypes.object.isRequired,
   handleFinish: PropTypes.func,
   handleSubmit: PropTypes.func,
+  handleDelete: PropTypes.func,
   classes: PropTypes.array,
 };
 
@@ -350,6 +346,7 @@ OntologyFormComponent.defaultProps = {
   variant: 'edit',
   handleFinish: null,
   handleSubmit: null,
+  handleDelete: null,
   node: null,
   classes: null,
 };

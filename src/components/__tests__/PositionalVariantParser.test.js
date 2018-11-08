@@ -196,7 +196,7 @@ describe('<PositionalVariantParser />', () => {
       },
     });
     wrapper.find('textarea[name="name"]').simulate('change');
-    expect(wrapper.state().shorthand).to.eq('brca2:p.g11_?12del');
+    expect(wrapper.state().shorthand.toLowerCase()).to.eq('brca2:p.g11_?12del');
   });
 
   it('handles nested properties changing', () => {

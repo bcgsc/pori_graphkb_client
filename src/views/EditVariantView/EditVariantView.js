@@ -14,7 +14,7 @@ class EditVariantViewBase extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      variant: null,
+      node: null,
     };
     this.handleCancel = this.handleCancel.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
@@ -26,9 +26,9 @@ class EditVariantViewBase extends Component {
     const { rid } = match.params;
     const { route } = schema.get('Variant');
     const response = await api.get(`${route}/${rid}?neighbors=3`);
-    const variant = schema.newRecord(jc.retrocycle(response).result);
+    const node = schema.newRecord(jc.retrocycle(response).result);
     this.setState({
-      variant,
+      node,
     });
   }
 
@@ -38,6 +38,16 @@ class EditVariantViewBase extends Component {
   handleCancel() {
     const { history } = this.props;
     history.back();
+  }
+
+  /**
+   * Sends DELETE call to api for this node.
+   */
+  async handleDelete() {
+    const { node } = this.state;
+    const { schema } = this.props;
+    const { route } = schema.getClass(node['@class']);
+    await api.delete(`${route}/${node['@rid'].slice(1)}`);
   }
 
   /**
@@ -85,8 +95,8 @@ class EditVariantViewBase extends Component {
 
   render() {
     const { schema } = this.props;
-    const { variant } = this.state;
-    if (!variant) return null;
+    const { node } = this.state;
+    if (!node) return null;
     return (
       <div className="variant-wrapper">
         <Paper elevation={4} className="variant-headline">
@@ -103,21 +113,22 @@ class EditVariantViewBase extends Component {
         </Paper>
 
         <div className="variant-body">
-          {variant['@class'] === 'PositionalVariant'
+          {node['@class'] === 'PositionalVariant'
             ? (
               <PositionalVariantParser
                 handleFinish={this.handleFinish}
                 handleSubmit={this.submitVariant}
+                handleDelete={this.handleDelete}
                 schema={schema}
-                initVariant={variant}
+                initVariant={node}
               />)
             : (
               <OntologyFormComponent
                 variant="edit"
-                node={variant}
+                node={node}
                 handleSubmit={this.submitVariant}
                 handleFinish={this.handleFinish}
-                handleCancel={this.handleFinish}
+                handleDelete={this.handleDelete}
                 schema={schema}
               />
             )}

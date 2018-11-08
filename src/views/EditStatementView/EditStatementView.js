@@ -17,8 +17,9 @@ class EditStatementViewBase extends Component {
     this.state = {
       node: null,
     };
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   /**
@@ -31,6 +32,16 @@ class EditStatementViewBase extends Component {
     const response = await api.get(`${route}/${rid}?neighbors=3`);
     const node = jc.retrocycle(response).result;
     this.setState({ node: schema.newRecord(node) });
+  }
+
+  /**
+   * Sends DELETE call to api for this node.
+   */
+  async handleDelete() {
+    const { node } = this.state;
+    const { schema } = this.props;
+    const { route } = schema.getClass(node['@class']);
+    await api.delete(`${route}/${node['@rid'].slice(1)}`);
   }
 
   /**
@@ -81,6 +92,7 @@ class EditStatementViewBase extends Component {
           node={node}
           onSubmit={this.handleSubmit}
           handleFinish={this.handleFinish}
+          handleDelete={this.handleDelete}
         />
       </div>
     );

@@ -1,7 +1,6 @@
 /**
  * @module /components/PositionalVariantParser
  */
-
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './PositionalVariantParser.css';
@@ -12,6 +11,10 @@ import {
   FormHelperText,
   Paper,
   ListItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
 import kbp from 'knowledgebase-parser';
@@ -48,11 +51,14 @@ class PositionalVariantParser extends Component {
       relationships: [],
       originalRelationships: [],
       nodeClass: 'PositionalVariant',
+      deleteDialog: false,
     };
     this.parseString = this.parseString.bind(this);
     this.handleVariantChange = this.handleVariantChange.bind(this);
     this.handleClassChange = this.handleClassChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleDialog = this.handleDialog.bind(this);
+    this.handleDeleteNode = this.handleDeleteNode.bind(this);
     this.submitVariant = this.submitVariant.bind(this);
     this.updateErrorFields = this.updateErrorFields.bind(this);
     this.extractLinkProps = this.extractLinkProps.bind(this);
@@ -231,6 +237,24 @@ class PositionalVariantParser extends Component {
   }
 
   /**
+   * Deletes target node.
+   */
+  async handleDeleteNode() {
+    const { handleDelete } = this.props;
+    this.setState({ notificationDrawerOpen: true, loading: true });
+    this.handleDialog(false)();
+    await handleDelete();
+    this.setState({ loading: false });
+  }
+
+  /**
+   * Opens node deletion dialog.
+   */
+  handleDialog(val) {
+    return () => this.setState({ deleteDialog: val });
+  }
+
+  /**
    * Fired whenever the variant form fields (excluding the shorthand input) are
    * modified.
    * @param {Event} e - user input event
@@ -348,6 +372,7 @@ class PositionalVariantParser extends Component {
       loading,
       relationships,
       nodeClass,
+      deleteDialog,
     } = this.state;
     const {
       required,
@@ -373,8 +398,37 @@ class PositionalVariantParser extends Component {
     });
     const shorthandError = !!(error || invalidFlag);
 
+    const dialog = (
+      <Dialog
+        onClose={this.handleDialog(false)}
+        open={deleteDialog}
+      >
+        <DialogTitle>
+          Really Delete this Term?
+        </DialogTitle>
+        <DialogContent>
+          <DialogActions style={{ justifyContent: 'center' }}>
+            <Button
+              onClick={this.handleDialog(false)}
+              color="primary"
+              size="large"
+            >
+              No
+            </Button>
+            <Button
+              onClick={this.handleDeleteNode}
+              size="large"
+            >
+              Yes
+            </Button>
+          </DialogActions>
+        </DialogContent>
+      </Dialog>
+    );
+
     return (
       <div className="variant-parser-wrapper">
+        {dialog}
         <NotificationDrawer
           open={notificationDrawerOpen}
           handleFinish={handleFinish}
@@ -448,6 +502,16 @@ class PositionalVariantParser extends Component {
           </Paper>
         </div>
         <Paper elevation={4} id="variant-form-submit">
+          {initVariant && (
+            <Button
+              variant="contained"
+              onClick={this.handleDialog(true)}
+              id="delete-btn"
+              size="large"
+            >
+              Delete
+            </Button>
+          )}
           <Button
             onClick={this.submitVariant}
             color="primary"

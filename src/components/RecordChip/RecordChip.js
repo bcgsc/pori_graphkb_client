@@ -8,6 +8,10 @@ import {
   Divider,
   Card,
   CardContent,
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
 } from '@material-ui/core';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 
@@ -21,10 +25,17 @@ class RecordChip extends Component {
     this.handlePopoverClose = this.handlePopoverClose.bind(this);
   }
 
+  /**
+   * Closes popover.
+   */
   handlePopoverClose() {
     this.setState({ anchorEl: null });
   }
 
+  /**
+   * Opens popover.
+   * @param {Event} e - User click event.
+   */
   handlePopoverOpen(e) {
     this.setState({ anchorEl: e.currentTarget });
   }
@@ -54,20 +65,39 @@ class RecordChip extends Component {
             <CardContent className="record-chip-panel">
               <Typography variant="h6" gutterBottom>{record.getPreview()}</Typography>
               <Divider />
-              <div className="record-chip-panel-row">
-                <Typography variant="subtitle1">@class</Typography>
-                <Typography variant="subtitle2">{record['@class']}</Typography>
-              </div>
-              <div className="record-chip-panel-row">
-                <Typography variant="subtitle1">@rid</Typography>
-                <Typography variant="subtitle2">{record.getId()}</Typography>
-              </div>
-              {record.source && (
-                <div className="record-chip-panel-row">
-                  <Typography variant="subtitle1">Source</Typography>
-                  <Typography variant="subtitle2">{record.source && record.source.name}</Typography>
-                </div>
-              )}
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell padding="checkbox">
+                      <Typography variant="body2">@class</Typography>
+                    </TableCell>
+                    <TableCell />
+                    <TableCell padding="checkbox">
+                      {record['@class']}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell padding="checkbox">
+                      <Typography variant="body2">@rid</Typography>
+                    </TableCell>
+                    <TableCell />
+                    <TableCell padding="checkbox">
+                      {record.getId()}
+                    </TableCell>
+                  </TableRow>
+                  {record.source && (
+                    <TableRow>
+                      <TableCell padding="checkbox">
+                        <Typography variant="body2">Source</Typography>
+                      </TableCell>
+                      <TableCell />
+                      <TableCell padding="checkbox">
+                        {record.source && record.source.name}
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
             </CardContent>
           </Card>
         </Popover>

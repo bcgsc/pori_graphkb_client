@@ -53,7 +53,7 @@ class RelationshipsForm extends Component {
     const { schema, nodeRid, edgeTypes } = this.props;
     const edges = edgeTypes || schema.getEdges();
     const model = schema.initModel({}, edges[0]);
-    model['out.@rid'] = nodeRid;
+    model['out.data'] = { '@rid': nodeRid };
     model['@rid'] = this.applyTestId();
     this.setState({ model, edges });
   }
@@ -82,7 +82,7 @@ class RelationshipsForm extends Component {
       relationships.push(model);
       onChange({ target: { name, value: relationships } });
       const newModel = schema.initModel({}, edges[0]);
-      newModel[`${forward ? 'out' : 'in'}.@rid`] = nodeRid;
+      newModel[`${forward ? 'out' : 'in'}.data`] = { '@rid': nodeRid };
       newModel['@rid'] = this.applyTestId();
       this.setState({ model: newModel });
     }
@@ -133,17 +133,11 @@ class RelationshipsForm extends Component {
    */
   handleChange(e) {
     const { model } = this.state;
-    const { name, value, sourceId } = e.target;
+    const { schema } = this.props;
+    const { name, value } = e.target;
     model[name] = value;
-    if (e.target['@rid']) {
-      model[`${name}.@rid`] = e.target['@rid'];
-    } else if (model[`${name}.@rid`]) {
-      model[`${name}.@rid`] = '';
-    }
-    if (sourceId) {
-      model[`${name}.sourceId`] = sourceId;
-    } else if (model[`${name}.sourceId`]) {
-      model[`${name}.sourceId`] = '';
+    if (name && name.includes('.data') && value) {
+      model[name.split('.')[0]] = schema.newRecord(value).getPreview();
     }
     this.setState({ model });
   }
@@ -271,7 +265,7 @@ class RelationshipsForm extends Component {
     let formIsInvalid = false;
     editableProps.forEach((prop) => {
       if (prop.mandatory) {
-        if (prop.type === 'link' && (!model[prop.name] || !model[`${prop.name}.@rid`])) {
+        if (prop.type === 'link' && (!model[`${prop.name}.data`] || !model[`${prop.name}.data`]['@rid'])) {
           formIsInvalid = true;
         } else if (prop.type !== 'boolean' && !model[prop.name]) {
           formIsInvalid = true;
@@ -332,7 +326,7 @@ class RelationshipsForm extends Component {
               variant="contained"
               onClick={this.handleAdd}
               id="relationships-form-submit"
-              disabled={formIsInvalid || !(model['in.@rid'] && model['out.@rid'])}
+              disabled={formIsInvalid || !(model['in.data'] && model['out.data'])}
             >
               Add Relationship
             </Button>
@@ -383,7 +377,7 @@ class RelationshipsForm extends Component {
                     .filter(k => r[k] !== undefined)
                     .length > DEFAULT_RELATIONSHIPS_PROPSLENGTH;
 
-                  const isIn = r['in.@rid'] === nodeRid;
+                  const isIn = (r['in.data'] || {})['@rid'] === nodeRid;
 
                   return (
                     <React.Fragment key={r['@rid']}>

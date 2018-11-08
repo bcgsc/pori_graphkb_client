@@ -145,7 +145,6 @@ class StatementFormComponent extends Component {
                 propSchemas={schema.getClass('Statement').properties}
                 onChange={this.handleChange}
                 excludedProps={node ? undefined : ['reviewStatus', 'reviewComment']}
-
               />
             </Paper>
           </div>

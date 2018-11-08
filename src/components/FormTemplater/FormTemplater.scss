@@ -1,4 +1,6 @@
-.form-templater-group-wrapper{
+@import "../../globals";
+
+.form-templater-group-wrapper {
   width: 100%;
   .form-templater-row-grid {
     display: grid;
@@ -7,10 +9,10 @@
     grid-column-gap: 1.75rem;
     width: 100%;
     box-sizing: border-box;
-    @media (max-width: 425px) {
+    @media (max-width: $breakpoint-mobile) {
       display: block;
     }
-    > *{
+    > * {
       padding: 0;
       display: inline-block;
       * {
@@ -29,14 +31,14 @@
   display: flex;
   width: 100%;
 }
-.form-templater-help-icon{
+.form-templater-help-icon {
   margin: auto;
   margin-left: 24px;
 }
 .radio {
   margin-top: 28px;
 }
-.form-templater-embedded-selector{
+.form-templater-embedded-selector {
   display: flex;
   flex-grow: 1;
 }

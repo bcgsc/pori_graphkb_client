@@ -637,7 +637,8 @@ class AdminViewBase extends Component {
           classes={{
             paper: 'new-usergroup-dialog',
           }}
-          maxWidth={false}
+          maxWidth="lg"
+          fullWidth
         >
           <DialogTitle>
             New User Group

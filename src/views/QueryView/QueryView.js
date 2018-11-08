@@ -63,19 +63,32 @@ class QueryView extends Component {
     const pattern = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
     if (tab === 'ontology') {
       if (str && !disabled) {
-        const m = !!str.match(pattern) || str.replace(pattern, '').trim().length > 4;
-        search = `?name=${!m ? '~' : ''}${str.trim()}`;
+        const m = !!(
+          str.match(pattern)
+          && str.split(pattern).some(chunk => chunk.length < 4)
+        ) || str.trim().length < 4;
+        search = `?name=${!m ? '~' : ''}${encodeURIComponent(str.trim())}`;
       }
     } else if (tab === 'variant' && str && !variantError) {
       search = '?@class=PositionalVariant';
       Object.keys(variant).forEach((key) => {
-        const val = `${variant[key]}`.match(pattern, '') || `${variant[key]}`.length < 4 ? variant[key] : `~${variant[key]}`;
+        let val = encodeURIComponent((
+          `${variant[key]}`.match(pattern)
+          && `${variant[key]}`.split(pattern).some(chunk => chunk && chunk.length < 4)
+        ) || `${variant[key]}`.trim().length < 4 ? variant[key] : `~${variant[key]}`);
+
         if (key !== 'prefix' && key !== 'multiFeature') {
           if (key === 'reference1' || key === 'reference2' || key === 'type') {
             search += `&${key}[name]=${val}`;
-          } else if (typeof val === 'object') {
-            Object.keys(val).forEach((nestedKey) => {
-              search += `&${key}[${nestedKey}]=${val[nestedKey]}`;
+          } else if (typeof variant[key] === 'object') {
+            Object.keys(variant[key]).forEach((nestedKey) => {
+              val = encodeURIComponent((
+                `${variant[key][nestedKey]}`.match(pattern)
+                && `${variant[key][nestedKey]}`.split(pattern).some(chunk => chunk && chunk.length < 4)
+              ) || `${variant[key][nestedKey]}`.trim().length < 4
+                ? variant[key][nestedKey]
+                : `~${variant[key][nestedKey]}`);
+              search += `&${key}[${nestedKey}]=${val}`;
             });
           } else {
             search += `&${key}=${val}`;

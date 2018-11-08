@@ -24,7 +24,7 @@ import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectCo
 import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
 import util from '../../services/util';
 
-const DEFAULT_RELATIONSHIPS_PROPSLENGTH = 10;
+const DEFAULT_RELATIONSHIPS_PROPSLENGTH = 3;
 
 class RelationshipsForm extends Component {
   constructor(props) {
@@ -370,14 +370,12 @@ class RelationshipsForm extends Component {
                     ? <RefreshIcon color="primary" />
                     : <CloseIcon color="error" />;
                   const {
-                    properties,
                     name,
                     reverseName,
                   } = schema.get(r['@class']);
-                  const shouldExpand = Object.keys(properties)
-                    .filter(k => r[k] !== undefined)
+                  const shouldExpand = schema.getClass(r['@class']).properties
+                    .filter(k => r[k.name] !== undefined && !(r[`${k.name}.data`] && r[`${k.name}.data`] === null))
                     .length > DEFAULT_RELATIONSHIPS_PROPSLENGTH;
-
                   const isIn = (r['in.data'] || {})['@rid'] === nodeRid;
 
                   return (

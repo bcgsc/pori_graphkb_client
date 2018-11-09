@@ -4,23 +4,24 @@ import { mount } from 'enzyme';
 import { spy } from 'sinon';
 import { TextField } from '@material-ui/core';
 import Downshift from 'downshift';
-import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
+import AutoSearchSingle from '../AutoSearchSingle/AutoSearchSingle';
+import AutoSearchBase from '../AutoSearchBase/AutoSearchBase';
 
-spy(AutoSearchComponent.prototype, 'refreshOptions');
+spy(AutoSearchSingle.prototype, 'refreshOptions');
 
-describe('<AutoSearchComponent />', () => {
+describe('<AutoSearchSingle />', () => {
   let wrapper;
 
   it('should correctly render a Downshift component, with nested div and a TextField', () => {
-    wrapper = mount(<AutoSearchComponent />);
-    expect(wrapper.children().type()).to.equal(Downshift);
-    expect(wrapper.children().children().type()).to.equal('div');
+    wrapper = mount(<AutoSearchSingle />);
+    expect(wrapper.children().type()).to.equal(AutoSearchBase);
+    expect(wrapper.children().children().type()).to.equal(Downshift);
     expect(wrapper.find('.autosearch-popper-node').children().type()).to.equal(TextField);
   });
 
   it('allows props to be correctly distributed', () => {
     wrapper = mount((
-      <AutoSearchComponent
+      <AutoSearchSingle
         name="testName"
         label="testLabel"
         placeholder="testPlaceHolder"
@@ -34,7 +35,7 @@ describe('<AutoSearchComponent />', () => {
 
   it('focuses input component', () => {
     wrapper = mount((
-      <AutoSearchComponent />
+      <AutoSearchSingle />
     ));
     wrapper.simulate('click');
     const focusedEl = document.activeElement;
@@ -46,7 +47,7 @@ describe('<AutoSearchComponent />', () => {
     const onChange = jest.fn();
 
     wrapper = mount((
-      <AutoSearchComponent
+      <AutoSearchSingle
         onChange={onChange}
         value="test"
       />
@@ -62,13 +63,13 @@ describe('<AutoSearchComponent />', () => {
     wrapper.find('input').simulate('blur');
 
     expect(onChange.mock.calls.length).to.be.gt(0);
-    expect(AutoSearchComponent.prototype.refreshOptions).to.have.property('callCount', 1);
+    expect(AutoSearchSingle.prototype.refreshOptions).to.have.property('callCount', 1);
   });
 
   it('loading results displays spinner', () => {
     const onChange = jest.fn();
     wrapper = mount((
-      <AutoSearchComponent
+      <AutoSearchSingle
         onChange={onChange}
         dense
       />
@@ -83,7 +84,7 @@ describe('<AutoSearchComponent />', () => {
     const onChange = jest.fn();
 
     wrapper = mount((
-      <AutoSearchComponent
+      <AutoSearchSingle
         onChange={onChange}
         dense
       />

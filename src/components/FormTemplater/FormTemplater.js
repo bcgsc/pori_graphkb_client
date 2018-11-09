@@ -15,7 +15,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import HelpIcon from '@material-ui/icons/Help';
-import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
+import AutoSearchSingle from '../AutoSearchSingle/AutoSearchSingle';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
 import EmbeddedListForm from '../EmbeddedListForm/EmbeddedListForm';
 import util from '../../services/util';
@@ -106,7 +106,7 @@ function FormTemplater(props) {
           key={name}
           disableGutters={disablePadding}
         >
-          <AutoSearchComponent
+          <AutoSearchSingle
             error={errorFields.includes(name)}
             value={model[name]}
             selected={schema.newRecord(model[`${name}.data`])}

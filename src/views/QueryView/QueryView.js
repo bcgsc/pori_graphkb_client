@@ -68,11 +68,9 @@ class QueryViewBase extends Component {
     const pattern = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
     if (tab === 'ontology') {
       if (str && !disabled) {
-        const m = !!(
-          str.match(pattern)
-          && str.split(pattern).some(chunk => chunk.length < 4)
-        ) || str.trim().length < 4;
-        search = `?name=${!m ? '~' : ''}${encodeURIComponent(str.trim())}`;
+        const trimmed = String(str).trim().toLowerCase();
+        const matched = !trimmed.split(pattern).some(chunk => chunk.length < 4);
+        search = `?name=${matched ? '~' : ''}${encodeURIComponent(trimmed)}`;
       }
     } else if (tab === 'variant' && str && queryable) {
       ['type', 'reference1', 'reference2'].forEach((k) => { variant[k] = { name: variant[k] }; });

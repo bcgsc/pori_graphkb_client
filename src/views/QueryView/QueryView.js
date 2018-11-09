@@ -16,7 +16,7 @@ import {
 import kbp from 'knowledgebase-parser';
 import omit from 'lodash.omit';
 import SearchIcon from '@material-ui/icons/Search';
-import AutoSearchComponent from '../../components/AutoSearchComponent/AutoSearchComponent';
+import AutoSearchSingle from '../../components/AutoSearchSingle/AutoSearchSingle';
 
 /**
  * View for simple search by name query. Form submissions are passed through the URL to
@@ -187,7 +187,7 @@ class QueryView extends Component {
             tabIndex={0}
           >
             {tab === 'ontology' && (
-              <AutoSearchComponent
+              <AutoSearchSingle
                 value={str}
                 onChange={this.handleChange}
                 placeholder="Search by Name"

@@ -21,7 +21,7 @@ import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import FormTemplater from '../FormTemplater/FormTemplater';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
-import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
+import AutoSearchSingle from '../AutoSearchSingle/AutoSearchSingle';
 import util from '../../services/util';
 
 const DEFAULT_RELATIONSHIPS_PROPSLENGTH = 3;
@@ -304,7 +304,7 @@ class RelationshipsForm extends Component {
             </ResourceSelectComponent>
           </ListItem>
           <ListItem disableGutters>
-            <AutoSearchComponent
+            <AutoSearchSingle
               selected={schema.newRecord(forward ? model['in.data'] : model['out.data'])}
               label="Target Record"
               value={forward ? model.in : model.out}

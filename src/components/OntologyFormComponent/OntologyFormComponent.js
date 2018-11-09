@@ -10,10 +10,6 @@ import {
   MenuItem,
   Button,
   Typography,
-  Dialog,
-  DialogContent,
-  DialogActions,
-  DialogTitle,
   Paper,
   ListItem,
   ListItemText,
@@ -24,6 +20,7 @@ import FormTemplater from '../FormTemplater/FormTemplater';
 import NotificationDrawer from '../NotificationDrawer/NotificationDrawer';
 import util from '../../services/util';
 import RelationshipsForm from '../RelationshipsForm/RelationshipsForm';
+import DeleteRecordDialog from '../DeleteRecordDialog/DeleteRecordDialog';
 
 const DEFAULT_ORDER = [
   'name',
@@ -114,7 +111,7 @@ class OntologyFormComponent extends Component {
   async handleDeleteNode() {
     const { handleDelete } = this.props;
     this.setState({ notificationDrawerOpen: true, loading: true });
-    this.handleDialog(false)();
+    this.handleDialog(false);
     await handleDelete();
     this.setState({ loading: false });
   }
@@ -124,7 +121,7 @@ class OntologyFormComponent extends Component {
    * @param {boolean} val - Open state of delete dialog.
    */
   handleDialog(val) {
-    return () => this.setState({ deleteDialog: val });
+    this.setState({ deleteDialog: val });
   }
 
   /**
@@ -189,37 +186,13 @@ class OntologyFormComponent extends Component {
       }
     });
 
-    const dialog = (
-      <Dialog
-        onClose={this.handleDialog(false)}
-        open={deleteDialog}
-      >
-        <DialogTitle>
-          Really Delete this Term?
-        </DialogTitle>
-        <DialogContent>
-          <DialogActions style={{ justifyContent: 'center' }}>
-            <Button
-              onClick={this.handleDialog(false)}
-              color="primary"
-              size="large"
-            >
-              No
-            </Button>
-            <Button
-              onClick={this.handleDeleteNode}
-              size="large"
-            >
-              Yes
-            </Button>
-          </DialogActions>
-        </DialogContent>
-      </Dialog>
-    );
-
     return (
       <div className="node-form-wrapper">
-        {dialog}
+        <DeleteRecordDialog
+          open={deleteDialog}
+          onDelete={this.handleDeleteNode}
+          handleDialog={this.handleDialog}
+        />
         <NotificationDrawer
           open={notificationDrawerOpen}
           loading={loading}
@@ -293,7 +266,7 @@ class OntologyFormComponent extends Component {
             {variant === 'edit' && (
               <Button
                 variant="contained"
-                onClick={this.handleDialog(true)}
+                onClick={() => this.handleDialog(true)}
                 id="delete-btn"
                 size="large"
               >

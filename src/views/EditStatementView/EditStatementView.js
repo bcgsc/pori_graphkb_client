@@ -92,7 +92,7 @@ class EditStatementViewBase extends Component {
           node={node}
           onSubmit={this.handleSubmit}
           handleFinish={this.handleFinish}
-          handleDelete={this.handleDelete}
+          onDelete={this.handleDelete}
         />
       </div>
     );

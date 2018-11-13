@@ -75,7 +75,7 @@ class QueryView extends Component {
       Object.keys(variant).forEach((key) => {
         let val = encodeURIComponent((
           `${variant[key]}`.match(pattern)
-          && `${variant[key]}`.split(pattern).some(chunk => chunk && chunk.length < 4)
+          && `${variant[key]}`.split(pattern).some(chunk => chunk.length < 4)
         ) || `${variant[key]}`.trim().length < 4 ? variant[key] : `~${variant[key]}`);
 
         if (key !== 'prefix' && key !== 'multiFeature') {

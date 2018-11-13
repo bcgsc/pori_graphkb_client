@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import './AddVariantView.css';
 import PropTypes from 'prop-types';
-import { Paper, Typography, Button } from '@material-ui/core'; /*eslint-disable*/
+import { Paper, Typography, Button } from '@material-ui/core';
 import PositionalVariantParser from '../../components/PositionalVariantParser/PositionalVariantParser';
-import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
 import util from '../../services/util';
 import api from '../../services/api';
 import { withSchema } from '../../components/SchemaContext/SchemaContext';

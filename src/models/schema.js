@@ -111,12 +111,13 @@ class Schema {
 
   /**
    * Returns all ontology types.
+   * @param {boolean} subOnly - flag for checking only subclasses.
    */
-  getOntologies() {
+  getOntologies(subOnly) {
     const { schema } = this;
     const list = [];
     Object.keys(schema).forEach((key) => {
-      if (this.isOntology(key)) {
+      if (this.isOntology(key, subOnly)) {
         list.push({ name: key, properties: schema[key].properties, route: schema[key].route });
       }
     });
@@ -125,12 +126,13 @@ class Schema {
 
   /**
    * Returns all variant types.
+   * @param {boolean} subOnly - flag for checking only subclasses.
    */
-  getVariants() {
+  getVariants(subOnly) {
     const { schema } = this;
     const list = [];
     Object.keys(schema).forEach((key) => {
-      if (this.isVariant(key)) {
+      if (this.isVariant(key, subOnly)) {
         list.push({ name: key, properties: schema[key].properties, route: schema[key].route });
       }
     });
@@ -163,42 +165,48 @@ class Schema {
   /**
    * Checks if a KB class is an edge.
    * @param {string} cls - class key.
+   * @param {boolean} subOnly - flag for checking only subclasses.
    */
-  isEdge(cls) {
-    return this.isOfType(cls, 'E');
+  isEdge(cls, subOnly) {
+    return this.isOfType(cls, 'E', subOnly);
   }
 
   /**
    * Checks if a KB class is an Ontology.
    * @param {string} cls - class key.
+   * @param {boolean} subOnly - flag for checking only subclasses.
    */
-  isOntology(cls) {
-    return this.isOfType(cls, 'Ontology');
+  isOntology(cls, subOnly) {
+    return this.isOfType(cls, 'Ontology', subOnly);
   }
 
   /**
    * Checks if a KB class is a Position.
    * @param {string} cls - class key.
+   * @param {boolean} subOnly - flag for checking only subclasses.
    */
-  isPosition(cls) {
-    return this.isOfType(cls, 'Position');
+  isPosition(cls, subOnly) {
+    return this.isOfType(cls, 'Position', subOnly);
   }
 
   /**
    * Checks if a KB class is a Variant.
    * @param {string} cls - class key.
+   * @param {boolean} subOnly - flag for checking only subclasses.
    */
-  isVariant(cls) {
-    return this.isOfType(cls, 'Variant');
+  isVariant(cls, subOnly) {
+    return this.isOfType(cls, 'Variant', subOnly);
   }
 
   /**
    * Checks if class is of given abstract type.
    * @param {string} cls - class string to be checked.
    * @param {string} type - supertype string.
+   * @param {boolean} subOnly - flag for checking only subclasses.
    */
-  isOfType(cls, type) {
-    return (this.get(cls) && (this.get(cls).inherits || []).includes(type)) || cls === type;
+  isOfType(cls, type, subOnly = false) {
+    return (this.get(cls) && (this.get(cls).inherits || []).includes(type))
+      || (cls === type && !subOnly);
   }
 
   /**

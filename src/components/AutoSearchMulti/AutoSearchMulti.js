@@ -253,7 +253,11 @@ class AutoSearchMulti extends Component {
     const endAdornment = (
       <Tooltip title="Additional Query Parameters">
         <div>
-          <IconButton onClick={this.handleOpenPopover} disabled={!!selected || disabled}>
+          <IconButton
+            onClick={this.handleOpenPopover}
+            disabled={!!selected || disabled}
+            className="popover-open-btn"
+          >
             <OpenInNewIcon />
           </IconButton>
         </div>
@@ -264,12 +268,44 @@ class AutoSearchMulti extends Component {
 
     return (
       <React.Fragment>
+        <AutoSearchBase
+          options={options}
+          value={value}
+          selected={selected}
+          loading={loading}
+          TextFieldProps={TextFieldProps}
+          DownshiftProps={DownshiftProps}
+          onChange={this.refreshOptions}
+          onClear={this.handleClear}
+          onSelect={this.handleChange}
+          endAdornment={endAdornment}
+        >
+          {(item, index, downshiftProps) => (
+            <MenuItem
+              {...downshiftProps.getItemProps({
+                key: item['@rid'],
+                index,
+                item,
+              })}
+              style={{ whiteSpace: 'normal', height: 'unset' }}
+              selected={downshiftProps.highlightedIndex === index}
+            >
+              <span>
+                {schema.newRecord(item).getPreview()}
+                <Typography color="textSecondary" variant="body1">
+                  {item.source && item.source.name ? item.source.name : ''}
+                </Typography>
+              </span>
+            </MenuItem>
+          )}
+        </AutoSearchBase>
         <Popover
           anchorEl={anchorEl}
           open={!!anchorEl}
           onClose={() => this.handleOpenPopover(null)}
           anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          TransitionProps={{ unmountOnExit: true }}
         >
           <div className="autosearch-multi-popover">
             <CardContent>
@@ -318,37 +354,6 @@ class AutoSearchMulti extends Component {
             </CardActions>
           </div>
         </Popover>
-        <AutoSearchBase
-          options={options}
-          value={value}
-          selected={selected}
-          loading={loading}
-          TextFieldProps={TextFieldProps}
-          DownshiftProps={DownshiftProps}
-          onChange={this.refreshOptions}
-          onClear={this.handleClear}
-          onSelect={this.handleChange}
-          endAdornment={endAdornment}
-        >
-          {(item, index, downshiftProps) => (
-            <MenuItem
-              {...downshiftProps.getItemProps({
-                key: item['@rid'],
-                index,
-                item,
-              })}
-              style={{ whiteSpace: 'normal', height: 'unset' }}
-              selected={downshiftProps.highlightedIndex === index}
-            >
-              <span>
-                {schema.newRecord(item).getPreview()}
-                <Typography color="textSecondary" variant="body1">
-                  {item.source && item.source.name ? item.source.name : ''}
-                </Typography>
-              </span>
-            </MenuItem>
-          )}
-        </AutoSearchBase>
       </React.Fragment>
     );
   }

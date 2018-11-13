@@ -226,10 +226,7 @@ const autoSearch = (endpoint, property, value, limit) => {
   // Matches Knowledgebase api separator characters
   const pattern = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
   const literalRe = new RegExp(/^['"].*['"]$/);
-  const m = !!(
-    value.match(pattern)
-    && value.split(pattern).some(chunk => chunk && chunk.length < 4)
-  ) || value.trim().length < 4;
+  const m = !!(value.split(pattern).some(chunk => chunk && chunk.length < 4));
 
   const orStr = `or=${property.join(',')}`;
   let extras = `limit=${limit}&neighbors=1`;

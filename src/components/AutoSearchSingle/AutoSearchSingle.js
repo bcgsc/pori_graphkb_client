@@ -209,8 +209,8 @@ class AutoSearchSingle extends Component {
  * @property {string} property - api property identifier.
  * @property {string} placeholder - placeholder for text input.
  * @property {string} label - label for text input.
- * @property {bool} required - required flag for text input indicator.
- * @property {bool} error - error flag for text input.
+ * @property {boolean} required - required flag for text input indicator.
+ * @property {boolean} error - error flag for text input.
  * @property {function} children - Function that yields the component for
  * display display query results.
  * @property {bool} disabled - disabled flag for text input.

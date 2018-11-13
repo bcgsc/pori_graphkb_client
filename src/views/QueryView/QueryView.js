@@ -14,7 +14,6 @@ import {
   InputAdornment,
 } from '@material-ui/core';
 import kbp from 'knowledgebase-parser';
-import omit from 'lodash.omit';
 import SearchIcon from '@material-ui/icons/Search';
 import AutoSearchComponent from '../../components/AutoSearchComponent/AutoSearchComponent';
 
@@ -135,8 +134,8 @@ class QueryView extends Component {
       // If anything is parsed, use that..
       const update = { variantError: str ? e.message : '', queryable: false };
       if (e.content && e.content.parsed) {
-        const parsed = omit(e.content.parsed, 'variantString');
-        if (Object.keys(parsed) !== 0) {
+        const { variantString, ...parsed } = e.content.parsed;
+        if (Object.keys(parsed).length !== 0) {
           update.variant = parsed;
           update.queryable = true;
         }

@@ -55,6 +55,7 @@ class AutoSearchBase extends Component {
     } = TextFieldProps;
 
     const { onBlur, onFocus } = InputProps || {};
+    console.log(selected);
     return (
       <Downshift
         {...DownshiftProps}

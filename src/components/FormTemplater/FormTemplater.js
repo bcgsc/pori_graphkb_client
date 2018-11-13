@@ -101,8 +101,35 @@ function FormTemplater(props) {
       let endpoint;
       if (linkedClass) {
         endpoint = linkedClass.route.slice(1);
+        return (
+          <ListItem
+            className="form-templater-autosearch"
+            component={fieldComponent}
+            key={name}
+            disableGutters={disablePadding}
+          >
+            <AutoSearchSingle
+              error={errorFields.includes(name)}
+              disabled={disabledFields.includes(name)}
+              value={model[name]}
+              selected={schema.newRecord(model[`${name}.data`])}
+              onChange={onChange}
+              name={name}
+              label={util.antiCamelCase(name)}
+              limit={30}
+              endpoint={endpoint}
+              required={mandatory}
+              property={!linkedClass ? ['name', 'sourceId'] : undefined}
+              disablePortal={disablePortal}
+              endAdornment={description ? (
+                <Tooltip title={description}>
+                  <HelpIcon color="primary" style={{ cursor: 'default' }} />
+                </Tooltip>
+              ) : undefined}
+            />
+          </ListItem>
+        );
       }
-
       return (
         <ListItem
           className="form-templater-autosearch"

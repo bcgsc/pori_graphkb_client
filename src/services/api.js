@@ -228,7 +228,7 @@ const autoSearch = (endpoint, property, value, limit) => {
   const literalRe = new RegExp(/^['"].*['"]$/);
   const m = !!(
     value.match(pattern)
-    && value.split(pattern).some(chunk => chunk && chunk.length < 4)
+    && value.split(pattern).some(chunk => chunk.length < 4)
   ) || value.trim().length < 4;
 
   const orStr = `or=${property.join(',')}`;

@@ -22,7 +22,9 @@ const PROGRESS_SPINNER_SIZE = 20;
 class AutoSearchBase extends Component {
   constructor(props) {
     super(props);
-    this.setRef = (node) => { this.popperNode = node; };
+    this.setRef = (node) => {
+      this.popperNode = node;
+    };
   }
 
   render() {
@@ -39,6 +41,7 @@ class AutoSearchBase extends Component {
       endAdornment,
       TextFieldProps,
       DownshiftProps,
+      disablePortal,
     } = this.props;
 
     const autoSearchResults = downshiftProps => options
@@ -51,6 +54,7 @@ class AutoSearchBase extends Component {
       ...otherTextFieldProps
     } = TextFieldProps;
 
+    const { onBlur, onFocus } = InputProps || {};
     return (
       <Downshift
         {...DownshiftProps}
@@ -73,10 +77,13 @@ class AutoSearchBase extends Component {
                   error={empty || error}
                   disabled={disabled || !!selected}
                   helperText={empty && 'No Results'}
+                  style={{ minWidth: selected && 0 }}
                   InputProps={{
                     ...InputProps,
                     ...getInputProps({
                       onChange,
+                      onBlur,
+                      onFocus,
                       value: selected ? ' ' : value,
                     }),
                     disableUnderline: !!selected,
@@ -101,8 +108,10 @@ class AutoSearchBase extends Component {
                 open
                 anchorEl={this.popperNode}
                 placement="bottom-start"
+                disablePortal={disablePortal}
+                style={{ zIndex: 1600 }}
               >
-                {(isOpen || loading) && (
+                {(isOpen || loading) && !empty && (
                   <div {...getMenuProps()}>
                     <Paper
                       className="droptions"
@@ -162,6 +171,7 @@ AutoSearchBase.propTypes = {
   onClear: PropTypes.func,
   TextFieldProps: PropTypes.object,
   DownshiftProps: PropTypes.object,
+  disablePortal: PropTypes.bool,
 };
 
 AutoSearchBase.defaultProps = {
@@ -190,6 +200,7 @@ AutoSearchBase.defaultProps = {
   onClear: undefined,
   TextFieldProps: {},
   DownshiftProps: {},
+  disablePortal: false,
 };
 
 export default AutoSearchBase;

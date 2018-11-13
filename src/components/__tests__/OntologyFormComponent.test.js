@@ -154,4 +154,24 @@ describe('<OntologyFormComponent />', () => {
 
     wrapper.setState({ notificationDrawerOpen: false });
   });
+
+  it('delete dialog appears', () => {
+    wrapper = mount(
+      <OntologyFormComponent
+        variant="edit"
+        schema={testSchema}
+        node={testNode}
+        sources={testSources}
+        edgeTypes={['AliasOf']}
+      />,
+    );
+    wrapper.find('#delete-btn').first().simulate('click');
+    wrapper.setState({ deleteDialog: true });
+    expect(wrapper.find('#confirm-delete')).to.have.length.gte(1);
+
+    wrapper.find('#cancel-delete').first().simulate('click');
+    expect(wrapper.state().deleteDialog).to.eq(false);
+    wrapper.setState({ deleteDialog: true });
+    wrapper.find('#confirm-delete').first().simulate('click');
+  });
 });

@@ -32,15 +32,17 @@ class Schema {
    * Returns route and properties of a certain knowledgebase class
    * (most useful data).
    * @param {string} className - requested class name.
+   * @param {Array<string>} extraProps - Extra props to be returned in the
+   * class properties list.
    */
-  getClass(className) {
+  getClass(className, extraProps = []) {
     const { schema } = this;
     const VPropKeys = schema.V ? Object.keys(schema.V.properties) : [];
     const classKey = (Object.keys(schema)
       .find(key => key.toLowerCase() === (className || '').toLowerCase()));
     if (!classKey) return null;
     const props = Object.keys(schema[classKey].properties || [])
-      .filter(prop => !VPropKeys.includes(prop))
+      .filter(prop => !VPropKeys.includes(prop) || extraProps.includes(prop))
       .map(prop => schema[classKey].properties[prop]);
     return { route: schema[classKey].route, properties: props };
   }
@@ -55,7 +57,7 @@ class Schema {
  */
   initModel(model, kbClass, extraProps = [], ignoreClass = false, stripProps = false) {
     const editableProps = kbClass
-      && (this.getClass(kbClass) || {}).properties;
+      && (this.getClass(kbClass, extraProps) || {}).properties;
     if (!editableProps) return null;
     editableProps.push(...extraProps);
     const newModel = stripProps ? {} : Object.assign({}, model);

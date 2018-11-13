@@ -126,7 +126,6 @@ class AutoSearchComponent extends Component {
       endpoint,
       property,
     } = this.props;
-
     try {
       const response = await api.autoSearch(
         endpoint,
@@ -136,8 +135,10 @@ class AutoSearchComponent extends Component {
       );
       const results = jc.retrocycle(response).result;
       const emptyFlag = !!(results.length === 0 && value);
+
       this.setState({ options: results, emptyFlag, loading: false });
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error(error);
     }
   }
@@ -187,92 +188,95 @@ class AutoSearchComponent extends Component {
           return util.castToExist(item);
         }}
       >
-        {({
-          getInputProps,
-          getItemProps,
-          isOpen,
-          setState,
-          getMenuProps,
-          highlightedIndex,
-        }) => (
-          <div
-            className="autosearch-wrapper"
-            style={{ minHeight: dense ? '48px' : '64px' }}
-          >
-            <div className="autosearch-popper-node" ref={this.setRef}>
-              <TextField
-                fullWidth
-                error={emptyFlag || noRidFlag || error}
-                label={label}
-                required={required}
-                InputProps={{
-                  ...getInputProps({
-                    placeholder,
-                    value,
-                    onChange,
-                    name,
-                    disabled,
-                    onKeyUp: this.refreshOptions,
-                    onFocus: () => this.setState({ noRidFlag: false }),
-                    onBlur: this.handleBlur,
-                    style: {
-                      fontSize: dense ? '0.8125rem' : '',
-                    },
-                  }),
-                  endAdornment: endAdornment ? (
-                    <InputAdornment
-                      position="end"
-                    >
-                      {endAdornment}
-                    </InputAdornment>
-                  ) : null,
-                }}
-                style={{
-                  fontSize: dense ? '0.8125rem' : '',
-                }}
-              />
-            </div>
-            <Popper
-              open
-              anchorEl={this.popperNode}
-              placement="bottom-start"
+        {(downshiftProps) => {
+          const {
+            getInputProps,
+            getItemProps,
+            isOpen,
+            setState,
+            getMenuProps,
+            highlightedIndex,
+          } = downshiftProps;
+          return (
+            <div
+              className="autosearch-wrapper"
+              style={{ minHeight: dense ? '48px' : '64px' }}
             >
-              {(isOpen || loading) && !emptyFlag && (
-                <div {...getMenuProps()}>
-                  <Paper
-                    className={`droptions ${dense ? 'dense' : ''}`}
-                    style={{
-                      width: this.popperNode
-                        ? this.popperNode.clientWidth
-                        : null,
-                      maxHeight: `${MAX_HEIGHT_FACTOR * limit}px`,
-                    }}
-                  >
-                    <List dense={dense}>
-                      {loading
-                        ? (
-                          <CircularProgress
-                            color="primary"
-                            size={PROGRESS_SPINNER_SIZE}
-                            id="autosearch-spinner"
-                          />
-                        )
-                        : autoSearchResults(getItemProps, setState, highlightedIndex)}
-                    </List>
-                  </Paper>
-                </div>)}
-            </Popper>
-            {emptyFlag ? ( // Indicator for empty query
-              <Typography variant="caption" color="error">
-                No Results
-              </Typography>
-            ) : null}
-            {noRidFlag && !emptyFlag && ( // Indicator for unselected option
-              <Typography variant="caption" color="error">
-                Select an option
-              </Typography>
-            )}
-          </div>)}
+              <div className="autosearch-popper-node" ref={this.setRef}>
+                <TextField
+                  fullWidth
+                  error={emptyFlag || noRidFlag || error}
+                  label={label}
+                  required={required}
+                  InputProps={{
+                    ...getInputProps({
+                      placeholder,
+                      value,
+                      onChange,
+                      name,
+                      disabled,
+                      onKeyUp: this.refreshOptions,
+                      onFocus: () => this.setState({ noRidFlag: false }),
+                      onBlur: this.handleBlur,
+                      style: {
+                        fontSize: dense ? '0.8125rem' : '',
+                      },
+                    }),
+                    endAdornment: endAdornment ? (
+                      <InputAdornment
+                        position="end"
+                      >
+                        {endAdornment}
+                      </InputAdornment>
+                    ) : null,
+                  }}
+                  style={{
+                    fontSize: dense ? '0.8125rem' : '',
+                  }}
+                />
+              </div>
+              <Popper
+                open
+                anchorEl={this.popperNode}
+                placement="bottom-start"
+              >
+                {(isOpen || loading) && !emptyFlag && (
+                  <div {...getMenuProps()}>
+                    <Paper
+                      className={`droptions ${dense ? 'dense' : ''}`}
+                      style={{
+                        width: this.popperNode
+                          ? this.popperNode.clientWidth
+                          : null,
+                        maxHeight: `${MAX_HEIGHT_FACTOR * limit}px`,
+                      }}
+                    >
+                      <List dense={dense}>
+                        {loading
+                          ? (
+                            <CircularProgress
+                              color="primary"
+                              size={PROGRESS_SPINNER_SIZE}
+                              id="autosearch-spinner"
+                            />
+                          )
+                          : autoSearchResults(getItemProps, setState, highlightedIndex)}
+                      </List>
+                    </Paper>
+                  </div>)}
+              </Popper>
+              {emptyFlag ? ( // Indicator for empty query
+                <Typography variant="caption" color="error">
+                  No Results
+                </Typography>
+              ) : null}
+              {noRidFlag && !emptyFlag && ( // Indicator for unselected option
+                <Typography variant="caption" color="error">
+                  Select an option
+                </Typography>
+              )}
+            </div>);
+        }}
       </Downshift>
     );
   }

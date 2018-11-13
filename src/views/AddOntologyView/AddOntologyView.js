@@ -3,6 +3,12 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import './AddOntologyView.css';
+import {
+  Paper,
+  Button,
+  Typography,
+} from '@material-ui/core';
 import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
 import api from '../../services/api';
 import util from '../../services/util';
@@ -36,7 +42,10 @@ class AddOntologyViewBase extends Component {
         sources,
         edgeTypes,
       });
-    } catch (e) { console.log(e); }
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e);
+    }
   }
 
   /**
@@ -45,27 +54,11 @@ class AddOntologyViewBase extends Component {
   async handleSubmit(form, relationships) {
     const { schema } = this.props;
 
-    const newEdges = [];
     const kbClass = schema.getClass(form['@class']);
     const payload = util.parsePayload(form, kbClass.properties);
     const { route } = kbClass;
-    const response = await api.post(`${route}`, { ...payload });
-
-    for (let i = 0; i < relationships.length; i += 1) {
-      const relationship = relationships[i];
-      if (relationship.in === -1) {
-        relationship.in = response.result['@rid'];
-      } else {
-        relationship.out = response.result['@rid'];
-      }
-
-      newEdges.push(api.post(`/${relationship['@class'].toLowerCase()}`, {
-        in: relationship.in,
-        out: relationship.out,
-        source: relationship.source,
-      }));
-    }
-    await Promise.all(newEdges);
+    const response = await api.post(route, { ...payload });
+    await api.submitEdges(relationships, schema, response.result['@rid']);
   }
 
   /**
@@ -84,15 +77,30 @@ class AddOntologyViewBase extends Component {
     const { schema } = this.props;
 
     return schema && (
-      <OntologyFormComponent
-        variant="add"
-        schema={schema}
-        sources={sources}
-        edgeTypes={edgeTypes}
-        handleSubmit={this.handleSubmit}
-        handleFinish={this.handleFinish}
-        handleCancel={this.handleFinish}
-      />
+      <div className="add-form-wrapper">
+        <Paper className="form-header" elevation={4}>
+          <div className="form-cancel-btn">
+            <Button
+              color="default"
+              onClick={this.handleFinish}
+              variant="outlined"
+            >
+              Cancel
+            </Button>
+          </div>
+          <Typography variant="h5" className="form-title">
+            Add New Ontology Term
+          </Typography>
+        </Paper>
+        <OntologyFormComponent
+          variant="add"
+          schema={schema}
+          sources={sources}
+          edgeTypes={edgeTypes}
+          handleSubmit={this.handleSubmit}
+          handleFinish={this.handleFinish}
+        />
+      </div>
     );
   }
 }

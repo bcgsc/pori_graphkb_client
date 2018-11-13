@@ -2,7 +2,7 @@ import React from 'react';
 import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { spy } from 'sinon';
-import VariantParserComponent from '../VariantParserComponent/VariantParserComponent';
+import PositionalVariantParser from '../PositionalVariantParser/PositionalVariantParser';
 import Schema from '../../models/schema';
 
 
@@ -56,11 +56,11 @@ const mockClass = {
 };
 let mockSchema;
 
-describe('<VariantParserComponent />', () => {
+describe('<PositionalVariantParser />', () => {
   let wrapper;
 
   beforeAll(() => {
-    spy(VariantParserComponent.prototype, 'componentDidMount');
+    spy(PositionalVariantParser.prototype, 'componentDidMount');
   });
 
   beforeEach(() => {
@@ -80,36 +80,42 @@ describe('<VariantParserComponent />', () => {
         inherits: ['V'],
         route: '/child',
       },
+      ProteinPosition: {
+        name: 'ProteinPosition',
+        inherits: ['Position'],
+        properties: {},
+      },
       embedded: {
         name: 'embedded',
         properties: { name: { name: 'embeddedName', type: 'string' } },
         inherits: [],
         route: '/embedded',
       },
+      E: { name: 'E', inherits: ['E'] },
     });
   });
 
-  it('calls componentDidMount and doesn\' die', () => {
+  it('calls componentDidMount and doesn\'t die', () => {
     const handleFinish = jest.fn();
     wrapper = mount(
-      <VariantParserComponent
+      <PositionalVariantParser
         handleFinish={handleFinish}
         schema={mockSchema}
       />,
     );
-    expect(VariantParserComponent.prototype.componentDidMount).to.have.property('callCount', 1);
+    expect(PositionalVariantParser.prototype.componentDidMount).to.have.property('callCount', 1);
   });
 
   it('correctly calls handlers on shorthand change and form fields', () => {
     const handleSubmit = jest.fn();
     wrapper = mount(
-      <VariantParserComponent
+      <PositionalVariantParser
         handleFinish={() => { }}
         handleSubmit={handleSubmit}
         schema={mockSchema}
       />,
     );
-    expect(wrapper.type()).to.eq(VariantParserComponent);
+    expect(wrapper.type()).to.eq(PositionalVariantParser);
     wrapper.find('input[name="shorthand"]').simulate('change', { target: { value: 'test test' } });
     expect(wrapper.find('input[name="shorthand"]').props().value).to.eq('test test');
     wrapper.find('textarea[name="name"]').simulate('change', { target: { value: 'test name' } });
@@ -129,7 +135,7 @@ describe('<VariantParserComponent />', () => {
       mandatory: true,
     };
     wrapper = mount(
-      <VariantParserComponent
+      <PositionalVariantParser
         handleFinish={() => { }}
         handleSubmit={handleSubmit}
         schema={mockSchema}
@@ -163,7 +169,7 @@ describe('<VariantParserComponent />', () => {
 
     const handleSubmit = jest.fn();
     wrapper = mount(
-      <VariantParserComponent
+      <PositionalVariantParser
         handleFinish={() => { }}
         handleSubmit={handleSubmit}
         schema={mockSchema}
@@ -209,7 +215,7 @@ describe('<VariantParserComponent />', () => {
       name: 'type',
     };
     wrapper = mount(
-      <VariantParserComponent
+      <PositionalVariantParser
         handleFinish={() => { }}
         handleSubmit={() => { }}
         schema={mockSchema}

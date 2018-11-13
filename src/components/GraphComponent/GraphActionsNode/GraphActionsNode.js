@@ -4,7 +4,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import config from '../../../static/config.json';
+import config from '../../../static/config';
 
 const {
   DETAILS_RING_RADIUS,

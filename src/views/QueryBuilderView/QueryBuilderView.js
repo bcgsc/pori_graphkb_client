@@ -110,12 +110,13 @@ class QueryBuilderViewBase extends Component {
     const keys = k.split('.').slice(1);
     keys.push(tempNames[k]);
     const recursiveUpdate = (obj, rKeys, i) => {
+      const rObj = obj;
       if (i === rKeys.length - 1) {
-        obj[rKeys[i]] = tempNested[k] ? {} : tempValues[k];
+        rObj[rKeys[i]] = tempNested[k] ? {} : tempValues[k];
       } else {
-        obj[rKeys[i]] = recursiveUpdate(obj[rKeys[i]], rKeys, i + 1);
+        rObj[rKeys[i]] = recursiveUpdate(obj[rKeys[i]], rKeys, i + 1);
       }
-      return obj;
+      return rObj;
     };
     recursiveUpdate(params, keys, 0);
 
@@ -147,12 +148,13 @@ class QueryBuilderViewBase extends Component {
     } = this.state;
     const keys = k.split('.').slice(1);
     const recursiveUpdate = (obj, rKeys, i) => {
+      const rObj = obj;
       if (i === rKeys.length - 1) {
-        delete obj[rKeys[i]];
+        delete rObj[rKeys[i]];
       } else {
-        obj[rKeys[i]] = recursiveUpdate(obj[rKeys[i]], rKeys, i + 1);
+        rObj[rKeys[i]] = recursiveUpdate(obj[rKeys[i]], rKeys, i + 1);
       }
-      return obj;
+      return rObj;
     };
     delete tempNames[k];
     delete tempValues[k];

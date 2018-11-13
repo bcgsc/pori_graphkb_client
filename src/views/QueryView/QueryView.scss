@@ -11,9 +11,9 @@
   border-radius: 4px;
   border: 1px solid rgba(0, 0, 0, 0.2);
   padding-bottom: 16px;
-  @media(max-width: 768px){
-    left: 8px;
-    right: 8px;
+  @media(max-width: $breakpoint-tablet){
+    left: 16px;
+    right: 16px;
     max-width: unset;
     min-width: unset;
   }
@@ -32,7 +32,7 @@
       flex-grow: 1;
     }
 
-    @media (max-width: 25em) {
+    @media (max-width: $breakpoint-mobile) {
       flex-direction: column;
       .main-search {
         width: 100%;

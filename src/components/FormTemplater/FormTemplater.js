@@ -17,6 +17,7 @@ import {
 import HelpIcon from '@material-ui/icons/Help';
 import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
+import EmbeddedListForm from '../EmbeddedListForm/EmbeddedListForm';
 import util from '../../services/util';
 
 /**
@@ -35,6 +36,7 @@ function FormTemplater(props) {
     sort,
     pairs,
     ignoreRequired,
+    disablePadding,
   } = props;
   const fields = [];
 
@@ -52,8 +54,15 @@ function FormTemplater(props) {
     const mandatory = property.mandatory && !ignoreRequired;
     // Radio group component for boolean types.
     if (type === 'boolean') {
+      // If boolean property is not present on the model, initialize it as
+      // neither true nor false, otherwise use the value of the model.
+      const boolValue = model[name] === undefined || model[name] === null ? '' : model[name];
       return (
-        <ListItem component={fieldComponent} key={name}>
+        <ListItem
+          component={fieldComponent}
+          key={name}
+          disableGutters={disablePadding}
+        >
           <FormControl
             component="fieldset"
             required={mandatory}
@@ -65,7 +74,7 @@ function FormTemplater(props) {
             <RadioGroup
               name={name}
               onChange={e => onChange(e)}
-              value={(model[name] || '').toString()}
+              value={boolValue.toString()}
               style={{ flexDirection: 'row' }}
             >
               <FormControlLabel value="true" control={<Radio />} label="Yes" />
@@ -95,6 +104,7 @@ function FormTemplater(props) {
           className="form-templater-autosearch"
           component={fieldComponent}
           key={name}
+          disableGutters={disablePadding}
         >
           <AutoSearchComponent
             error={errorFields.includes(name)}
@@ -143,7 +153,11 @@ function FormTemplater(props) {
         );
       }
       return (
-        <ListItem component={fieldComponent} key={name}>
+        <ListItem
+          component={fieldComponent}
+          key={name}
+          disableGutters={disablePadding}
+        >
           <div className="form-templater-embedded-selector">
             {classSelector}
             {description && (
@@ -161,13 +175,34 @@ function FormTemplater(props) {
             fieldComponent="div"
             errorFields={errorFields.map(errorField => errorField.replace(`${name}.`, ''))}
             pairs={pairs}
+            ignoreRequired={ignoreRequired}
+          />
+        </ListItem>
+      );
+    }
+    if (type === 'embeddedset') {
+      return (
+        <ListItem
+          component={fieldComponent}
+          key={name}
+          disableGutters={disablePadding}
+        >
+          <EmbeddedListForm
+            list={model[name]}
+            onChange={onChange}
+            name={name}
+            label={util.antiCamelCase(name)}
           />
         </ListItem>
       );
     }
     if (choices) {
       return (
-        <ListItem component={fieldComponent} key={name}>
+        <ListItem
+          component={fieldComponent}
+          key={name}
+          disableGutters={disablePadding}
+        >
           <ResourceSelectComponent
             name={name}
             required={mandatory}
@@ -215,7 +250,11 @@ function FormTemplater(props) {
 
     /* eslint-disable react/jsx-no-duplicate-props */
     return (
-      <ListItem component={fieldComponent} key={name}>
+      <ListItem
+        component={fieldComponent}
+        key={name}
+        disableGutters={disablePadding}
+      >
         <TextField
           style={{ width: '100%' }}
           label={util.antiCamelCase(name)}
@@ -224,7 +263,7 @@ function FormTemplater(props) {
           name={name}
           required={mandatory}
           multiline={t === 'text'}
-          error={invalid()}
+          error={invalid() && !ignoreRequired}
           InputProps={{
             endAdornment: description && (
               <InputAdornment position="end">
@@ -262,6 +301,7 @@ function FormTemplater(props) {
             component="div"
             className="form-templater-group-wrapper"
             id={key}
+            disableGutters={disablePadding}
           >
             <div className="form-templater-row-grid">
               {pairs[key].map(k => formatFormField(sortedProps.find(p => p.name === k)))}
@@ -296,6 +336,8 @@ function FormTemplater(props) {
  * @property {Object} pairs - group definitions for grid.
  * @property {bool} ignoreRequired - if true, form does not apply required
  * state to mandatory fields.
+ * @property {bool} disablePadding - if true, disables left and right padding
+ * in ListItems.
  */
 FormTemplater.propTypes = {
   schema: PropTypes.object.isRequired,
@@ -309,6 +351,7 @@ FormTemplater.propTypes = {
   sort: PropTypes.func,
   pairs: PropTypes.object,
   ignoreRequired: PropTypes.bool,
+  disablePadding: PropTypes.bool,
 };
 
 FormTemplater.defaultProps = {
@@ -320,6 +363,7 @@ FormTemplater.defaultProps = {
   sort: () => 0,
   pairs: {},
   ignoreRequired: false,
+  disablePadding: false,
 };
 
 export default FormTemplater;

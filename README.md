@@ -21,6 +21,15 @@ Records can be edited via the table view by clicking on the clipboard icon in th
 
 For more info on the database api, look [here](http://kbapi01:8061/api/v0.6.1/spec):
 
+## Installation and development
+To install dependencies, run
+```
+$ npm install
+```
+then run the app with
+```
+npm start
+```
 
 ## Testing
 Unit tests are made using Jest and Enzyme, end to end tests are made using Cypress.

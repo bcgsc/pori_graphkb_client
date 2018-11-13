@@ -7,7 +7,7 @@
   .adv-grid {
     @include paper;
     column-count: 2;
-    @media (max-width: 768px) {
+    @media (max-width: $breakpoint-tablet) {
       column-count: unset;
     }
     > li {

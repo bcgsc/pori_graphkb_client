@@ -39,7 +39,7 @@ class Schema {
     const classKey = (Object.keys(schema)
       .find(key => key.toLowerCase() === (className || '').toLowerCase()));
     if (!classKey) return null;
-    const props = Object.keys(schema[classKey].properties)
+    const props = Object.keys(schema[classKey].properties || [])
       .filter(prop => !VPropKeys.includes(prop))
       .map(prop => schema[classKey].properties[prop]);
     return { route: schema[classKey].route, properties: props };
@@ -49,13 +49,16 @@ class Schema {
  * Initializes a new instance of given kbClass.
  * @param {Object} model - existing model to keep existing values from.
  * @param {string} kbClass - Knowledge base class key.
+ * @param {Array} extraProps - Extra props to initialize on model.
+ * @param {boolean} ignoreClass - flag to omit '@class' prop on new model.
+ * @param {boolean} stripProps - flag to strip old props from model.
  */
-  initModel(model, kbClass, extraProps = [], ignoreClass) {
+  initModel(model, kbClass, extraProps = [], ignoreClass = false, stripProps = false) {
     const editableProps = kbClass
       && (this.getClass(kbClass) || {}).properties;
     if (!editableProps) return null;
     editableProps.push(...extraProps);
-    const newModel = Object.assign({}, model);
+    const newModel = stripProps ? {} : Object.assign({}, model);
     newModel['@class'] = ignoreClass ? '' : kbClass;
     Object.values(editableProps).forEach((property) => {
       const {
@@ -70,15 +73,30 @@ class Schema {
           newModel[name] = model[name] ? model[name].slice() : [];
           break;
         case 'link':
-          newModel[name] = (model[name] || '').name || '';
-          newModel[`${name}.@rid`] = (model[name] || '')['@rid'] || '';
-          newModel[`${name}.sourceId`] = (model[name] || '').sourceId || '';
-          if (!linkedClass) {
-            newModel[`${name}.class`] = (model[name] || '')['@class'] || '';
+          if (model[name] && typeof model[name] === 'object') {
+            let preview = model[name].name;
+            if (!linkedClass) {
+              newModel[`${name}.class`] = model[name]['@class'] || '';
+            }
+            if (model[name]['@class']) {
+              preview = this.newRecord(model[name]).getPreview();
+            }
+            newModel[name] = preview || '';
+            newModel[`${name}.@rid`] = model[name]['@rid'] || '';
+            newModel[`${name}.sourceId`] = model[name].sourceId || '';
+          } else {
+            newModel[name] = model[name] || '';
+            newModel[`${name}.@rid`] = model[`${name}.@rid`] || '';
+            newModel[`${name}.sourceId`] = model[`${name}.sourceId`] || '';
+            if (!linkedClass) {
+              newModel[`${name}.class`] = model[`${name}.class`] || '';
+            }
           }
           break;
         case 'integer' || 'long':
-          newModel[name] = model[name] || min > 0 ? min : '';
+          newModel[name] = model[name] !== undefined
+            ? model[name]
+            : min || '';
           break;
         case 'boolean':
           newModel[name] = model[name] !== undefined
@@ -129,7 +147,7 @@ class Schema {
   }
 
   /**
-   * Returns all valid edge types.
+   * Returns a list of strings containing all valid edge class names.
    */
   getEdges() {
     const { schema } = this;

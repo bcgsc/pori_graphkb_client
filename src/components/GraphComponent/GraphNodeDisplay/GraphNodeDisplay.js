@@ -6,7 +6,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import './GraphNodeDisplay.css';
 import * as d3 from 'd3';
-import config from '../../../static/config.json';
+import config from '../../../static/config';
 import { GraphNode } from '../kbgraph';
 
 const { NODE_RADIUS } = config.GRAPH_PROPERTIES;

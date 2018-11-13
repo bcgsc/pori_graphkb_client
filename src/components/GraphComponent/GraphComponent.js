@@ -33,7 +33,7 @@ import GraphOptionsPanel from './GraphOptionsPanel/GraphOptionsPanel';
 import GraphLinkDisplay from './GraphLinkDisplay/GraphLinkDisplay';
 import GraphNodeDisplay from './GraphNodeDisplay/GraphNodeDisplay';
 import util from '../../services/util';
-import config from '../../static/config.json';
+import config from '../../static/config';
 import {
   PropsMap,
   GraphOptions,

@@ -12,14 +12,18 @@ import {
   CardActions,
   Button,
   Tooltip,
-  Select,
+  ListItem,
 } from '@material-ui/core';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import * as jc from 'json-cycle';
+import * as qs from 'querystring';
 import debounce from 'lodash.debounce';
+import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
 import AutoSearchBase from '../AutoSearchBase/AutoSearchBase';
 import FormTemplater from '../FormTemplater/FormTemplater';
 import api from '../../services/api';
+import util from '../../services/util';
+import './AutoSearchMulti.css';
 
 const DEBOUNCE_TIME = 300;
 
@@ -27,6 +31,7 @@ const DEBOUNCE_TIME = 300;
 const LONG_DEBOUNCE_TIME = 600;
 
 const ACTION_KEYCODES = [13, 16, 37, 38, 39, 40];
+const EXTRA_FORM_PROPS = ['@rid'];
 
 /**
  * Autosearch component meant for querying a single property of a single route.
@@ -44,18 +49,21 @@ class AutoSearchMulti extends Component {
       options: [],
       loading: false,
       anchorEl: null,
-      cls: 'Ontology',
+      cls: '',
       model: null,
+      downshiftOpen: false,
     };
     const { property } = props;
     this.callApi = debounce(
       this.callApi.bind(this),
       property.length > 1 ? LONG_DEBOUNCE_TIME : DEBOUNCE_TIME,
     );
+    this.handleBlur = this.handleBlur.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleClear = this.handleClear.bind(this);
     this.handleClassChange = this.handleClassChange.bind(this);
     this.handleOpenPopover = this.handleOpenPopover.bind(this);
+    this.handleQuery = this.handleQuery.bind(this);
     this.refreshOptions = this.refreshOptions.bind(this);
     this.setRef = (node) => { this.popperNode = node; };
   }
@@ -63,7 +71,7 @@ class AutoSearchMulti extends Component {
   componentDidMount() {
     const { schema } = this.props;
     const { cls } = this.state;
-    this.setState({ model: schema.initModel({}, cls) });
+    this.setState({ model: schema.initModel({}, cls, EXTRA_FORM_PROPS) || {} });
   }
 
   /**
@@ -78,7 +86,7 @@ class AutoSearchMulti extends Component {
    * Clears loading states.
    */
   handleBlur() {
-    this.setState({ loading: false, options: [] });
+    this.setState({ loading: false, options: [], downshiftOpen: false });
   }
 
   /**
@@ -96,16 +104,58 @@ class AutoSearchMulti extends Component {
         name: `${name}.data`,
       },
     });
+    this.setState({ downshiftOpen: false });
   }
 
   handleOpenPopover(e) {
-    this.setState({ anchorEl: e ? e.currentTarget : null });
+    this.setState({ anchorEl: e ? e.currentTarget : null, downshiftOpen: false });
+  }
+
+  async handleQuery() {
+    const { model, cls } = this.state;
+    const { schema } = this.props;
+    const pattern = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
+
+    const { route, properties } = schema.getClass(cls, EXTRA_FORM_PROPS);
+    const payload = util.parsePayload(model, properties, [], true);
+    Object.keys(payload).forEach((k) => {
+      const trimmed = String(payload[k]).trim().toLowerCase();
+      if (!trimmed.split(pattern).some(chunk => chunk.length < 4)) {
+        payload[k] = `~${trimmed}`;
+      } else {
+        payload[k] = trimmed;
+      }
+    });
+
+    this.setState({
+      options: [],
+      loading: true,
+      anchorEl: null,
+      downshiftOpen: true,
+    });
+
+    try {
+      const response = await api.get(`${route}?${qs.stringify(payload)}&neighbors=3&limit=30`);
+      const { result } = jc.retrocycle(response);
+
+      this.setState({
+        options: result,
+        loading: false,
+        model: schema.initModel({}, cls, EXTRA_FORM_PROPS) || {},
+      });
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
   }
 
   handleClassChange(e) {
     const { schema } = this.props;
     const { model } = this.state;
-    this.setState({ cls: e.target.value, model: schema.initModel(model, e.target.value) });
+    this.setState({
+      cls: e.target.value,
+      model: schema.initModel(model, e.target.value, EXTRA_FORM_PROPS),
+    });
   }
 
   /**
@@ -133,7 +183,7 @@ class AutoSearchMulti extends Component {
       }
       this.handleChange(null);
       onChange({ target: { name, value: val } });
-      this.setState({ loading: true });
+      this.setState({ loading: true, downshiftOpen: true });
       this.callApi(val);
     }
   }
@@ -172,6 +222,7 @@ class AutoSearchMulti extends Component {
       anchorEl,
       cls,
       model,
+      downshiftOpen,
     } = this.state;
 
     const {
@@ -193,21 +244,23 @@ class AutoSearchMulti extends Component {
       required,
       disabled,
       error,
+      InputProps: {
+        onBlur: this.handleBlur,
+      },
     };
+    const DownshiftProps = { isOpen: downshiftOpen };
 
     const endAdornment = (
       <Tooltip title="Additional Query Parameters">
         <div>
-          <IconButton onClick={this.handleOpenPopover} disabled={!!selected}>
+          <IconButton onClick={this.handleOpenPopover} disabled={!!selected || disabled}>
             <OpenInNewIcon />
           </IconButton>
         </div>
       </Tooltip>
     );
 
-    const { properties, route } = schema.getClass(cls);
-    const excludedProps = properties.map(p => p.name)
-      .filter(p => !schema.getClassConstructor(cls).getIdentifiers().find(id => id.split('.')[0] === p));
+    const { properties } = schema.getClass(cls, EXTRA_FORM_PROPS) || {};
 
     return (
       <React.Fragment>
@@ -218,23 +271,36 @@ class AutoSearchMulti extends Component {
           anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
-          <div>
+          <div className="autosearch-multi-popover">
             <CardContent>
-              <Select
-                value={cls}
-                onChange={this.handleClassChange}
-              >
-                <MenuItem value="Ontology">Ontology</MenuItem>
-                <MenuItem value="Variant">Variant</MenuItem>
-                <MenuItem value="Statement">Statement</MenuItem>
-              </Select>
-              {route}
+              <ListItem>
+                <ResourceSelectComponent
+                  value={cls}
+                  onChange={this.handleClassChange}
+                  fullWidth
+                  label="Class"
+                  resources={[
+                    ...schema.getOntologies(true).map(o => o.name),
+                    ...schema.getVariants(true).map(v => v.name),
+                    'Statement',
+                  ]}
+                >
+                  {v => (
+                    <MenuItem key={v} value={v}>{v}</MenuItem>
+                  )}
+                </ResourceSelectComponent>
+              </ListItem>
               {model && (
                 <FormTemplater
                   schema={schema}
                   model={model}
                   propSchemas={properties}
-                  excludedProps={excludedProps}
+                  disabledFields={model['@rid']
+                    ? properties.map(p => p.name).filter(p => p !== '@rid')
+                    : undefined}
+                  sort={util.sortFields(EXTRA_FORM_PROPS)}
+                  dense
+                  ignoreRequired
                   onChange={(e) => {
                     model[e.target.name] = e.target.value;
                     this.setState({ model });
@@ -245,6 +311,7 @@ class AutoSearchMulti extends Component {
               <Button
                 variant="contained"
                 color="primary"
+                onClick={this.handleQuery}
               >
                 Query
               </Button>
@@ -257,6 +324,7 @@ class AutoSearchMulti extends Component {
           selected={selected}
           loading={loading}
           TextFieldProps={TextFieldProps}
+          DownshiftProps={DownshiftProps}
           onChange={this.refreshOptions}
           onClear={this.handleClear}
           onSelect={this.handleChange}
@@ -273,7 +341,7 @@ class AutoSearchMulti extends Component {
               selected={downshiftProps.highlightedIndex === index}
             >
               <span>
-                {item.name || item.sourceId}
+                {schema.newRecord(item).getPreview()}
                 <Typography color="textSecondary" variant="body1">
                   {item.source && item.source.name ? item.source.name : ''}
                 </Typography>

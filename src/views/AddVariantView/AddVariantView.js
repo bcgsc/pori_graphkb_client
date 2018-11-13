@@ -84,11 +84,11 @@ class AddVariantViewBase extends Component {
         </Paper>
 
         <div className="variant-body">
-          {true && (<PositionalVariantParser
+          <PositionalVariantParser
             handleFinish={this.handleFinish}
             handleSubmit={this.submitVariant}
             schema={schema}
-          />)}
+          />
         </div>
       </div>
     );

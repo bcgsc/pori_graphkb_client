@@ -34,12 +34,14 @@ function DeleteRecordDialog(props) {
             onClick={() => handleDialog(false)}
             color="primary"
             size="large"
+            id="cancel-delete"
           >
             Cancel
           </Button>
           <Button
             onClick={onDelete}
             size="large"
+            id="confirm-delete"
           >
             Delete
           </Button>

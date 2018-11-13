@@ -14,6 +14,7 @@ import {
   TableCell,
 } from '@material-ui/core';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
+import util from '../../services/util';
 
 class RecordChip extends Component {
   constructor(props) {
@@ -52,6 +53,8 @@ class RecordChip extends Component {
       className = `${className} ${other.className}`;
     }
 
+    const id = record.getPreview ? record.getPreview() : util.castToExist(record);
+
     return (
       <React.Fragment>
         <Popover
@@ -63,7 +66,9 @@ class RecordChip extends Component {
         >
           <Card>
             <CardContent className="record-chip-panel">
-              <Typography variant="h6" gutterBottom>{record.getPreview()}</Typography>
+              <Typography variant="h6" gutterBottom>
+                {id}
+              </Typography>
               <Divider />
               <Table>
                 <TableBody>
@@ -76,15 +81,16 @@ class RecordChip extends Component {
                       {record['@class']}
                     </TableCell>
                   </TableRow>
-                  <TableRow>
-                    <TableCell padding="checkbox">
-                      <Typography variant="body2">@rid</Typography>
-                    </TableCell>
-                    <TableCell />
-                    <TableCell padding="checkbox">
-                      {record.getId()}
-                    </TableCell>
-                  </TableRow>
+                  {record.getId && (
+                    <TableRow>
+                      <TableCell padding="checkbox">
+                        <Typography variant="body2">@rid</Typography>
+                      </TableCell>
+                      <TableCell />
+                      <TableCell padding="checkbox">
+                        {record.getId()}
+                      </TableCell>
+                    </TableRow>)}
                   {record.source && (
                     <TableRow>
                       <TableCell padding="checkbox">
@@ -103,7 +109,7 @@ class RecordChip extends Component {
         </Popover>
         <Chip
           {...other}
-          label={record.getPreview()}
+          label={id}
           className={className}
           clickable
           avatar={<Avatar><AssignmentOutlinedIcon /></Avatar>}

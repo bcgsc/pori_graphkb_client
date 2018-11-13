@@ -38,10 +38,10 @@ class EmbeddedListForm extends Component {
       tempElement,
     } = this.state;
 
-    if (tempElement && !list.includes(tempElement.toLowerCase())) {
+    if (tempElement.trim() && !list.includes(tempElement.toLowerCase())) {
       list.push(tempElement);
       onChange({ target: { name, value: list } });
-      this.setState({ tempElement: '' });
+      this.setState({ tempElement: ' ' });
     }
   }
 

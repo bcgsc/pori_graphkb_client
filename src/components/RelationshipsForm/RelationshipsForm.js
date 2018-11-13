@@ -21,7 +21,6 @@ import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import FormTemplater from '../FormTemplater/FormTemplater';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
-// import AutoSearchSingle from '../AutoSearchSingle/AutoSearchSingle';
 import AutoSearchMulti from '../AutoSearchMulti/AutoSearchMulti';
 import util from '../../services/util';
 

@@ -19,6 +19,9 @@ import RecordChip from '../RecordChip/RecordChip';
 
 const PROGRESS_SPINNER_SIZE = 20;
 
+/**
+ * Base component for all autosearch components.
+ */
 class AutoSearchBase extends Component {
   constructor(props) {
     super(props);

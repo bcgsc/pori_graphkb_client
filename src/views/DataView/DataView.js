@@ -45,8 +45,7 @@ class DataViewBase extends Component {
    */
   static async makeApiQuery(route, queryParams, omitted = []) {
     const response = await api.get(`${route}?${qs.stringify(omit(queryParams, omitted))}`);
-    const list = jc.retrocycle(response).result;
-    return list;
+    return jc.retrocycle(response).result;
   }
 
   /**

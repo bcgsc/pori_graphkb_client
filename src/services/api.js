@@ -14,6 +14,7 @@ const {
   API_BASE_URL,
 } = config;
 const CACHE_EXPIRY = 8;
+const KB_SEP_CHARS = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
 
 /**
  * Appends global headers to outgoing request.
@@ -224,12 +225,8 @@ const autoSearch = (endpoint, property, value, limit) => {
   if (!value || !value.trim()) return { result: [] };
 
   // Matches Knowledgebase api separator characters
-  const pattern = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
   const literalRe = new RegExp(/^['"].*['"]$/);
-  const m = !!(
-    value.match(pattern)
-    && value.split(pattern).some(chunk => chunk.length < 4)
-  ) || value.trim().length < 4;
+  const m = !!(value.split(KB_SEP_CHARS).some(chunk => chunk.length < 4));
 
   const orStr = `or=${property.join(',')}`;
   let extras = `limit=${limit}&neighbors=1`;

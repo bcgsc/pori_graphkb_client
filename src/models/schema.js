@@ -229,8 +229,8 @@ class Schema {
       if (!allColumns.includes(prop.name)) {
         if (record[prop.name]) {
           if (prop.type === 'link' || prop.type === 'embedded') {
-            const nestedProperties = this.get(record[prop.name]['@class']).properties;
-            Object.values(nestedProperties || []).forEach((nestedProp) => {
+            const nestedProperties = this.getClass(record[prop.name]['@class']).properties;
+            (nestedProperties || []).forEach((nestedProp) => {
               if (
                 record[prop.name][nestedProp.name]
                 && !allColumns.includes(`${prop.name}.${nestedProp.name}`)

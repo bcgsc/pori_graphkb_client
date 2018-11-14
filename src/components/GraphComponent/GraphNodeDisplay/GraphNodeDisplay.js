@@ -52,7 +52,6 @@ class GraphNodeDisplay extends PureComponent {
 
     if (!node) return null;
     const label = node instanceof GraphNode ? node.getLabel(labelKey) : node.data[labelKey];
-
     const faded = (detail && detail['@rid'] !== node.getId())
       || (actionsNode && actionsNode.getId() !== node.getId())
       || (filter && !label.includes(filter.toLowerCase()));

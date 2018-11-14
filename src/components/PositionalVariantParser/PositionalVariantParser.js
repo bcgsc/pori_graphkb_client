@@ -13,7 +13,7 @@ import {
   ListItem,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
-import kbp from 'knowledgebase-parser';
+import kbp from '@bcgsc/knowledgebase-parser';
 import NotificationDrawer from '../NotificationDrawer/NotificationDrawer';
 import RelationshipsForm from '../RelationshipsForm/RelationshipsForm';
 import FormTemplater from '../FormTemplater/FormTemplater';

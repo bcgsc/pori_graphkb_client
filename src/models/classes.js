@@ -1,4 +1,4 @@
-import kbp from 'knowledgebase-parser';
+import kbp from '@bcgsc/knowledgebase-parser';
 import util from '../services/util';
 
 let edges = [];

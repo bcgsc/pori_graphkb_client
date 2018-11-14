@@ -13,7 +13,7 @@ import {
   TextField,
   InputAdornment,
 } from '@material-ui/core';
-import kbp from 'knowledgebase-parser';
+import kbp from '@bcgsc/knowledgebase-parser';
 import * as qs from 'querystring';
 import omit from 'lodash.omit';
 import SearchIcon from '@material-ui/icons/Search';

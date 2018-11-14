@@ -27,6 +27,8 @@ const DEFAULT_ORDER = [
   'subsets',
 ];
 
+const SNACKBAR_DURATION = 6000;
+
 /**
  * View for in-depth database query building. Form submissions will route to
  * the data results route to display the returned data. Forms are dynamically
@@ -187,7 +189,7 @@ class AdvancedQueryViewBase extends Component {
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           open={!!message}
           onClose={this.handleClose}
-          autoHideDuration={3000}
+          autoHideDuration={SNACKBAR_DURATION}
           message={(
             <span>
               {message}

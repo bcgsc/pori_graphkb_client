@@ -38,7 +38,6 @@ class Record {
     return this['@rid'];
   }
 
-
   /**
    * Returns a string preview for the record.
    */
@@ -60,6 +59,7 @@ class Record {
     return util.formatStr(preview);
   }
 }
+
 
 class V extends Record {
   /**
@@ -98,7 +98,7 @@ class Edge extends Record {
    * record.
    */
   static getIdentifiers() {
-    return ['@class', 'source.name'];
+    return ['@class', 'level.sourceId', 'summary', 'source.name'];
   }
 }
 
@@ -123,6 +123,7 @@ class Ontology extends V {
       || Object.values(this).find(v => typeof v !== 'object' && typeof v !== 'function');
   }
 }
+
 
 class Variant extends V {
   /**
@@ -152,6 +153,7 @@ class Variant extends V {
     return `${t} variant on ${r1t && `${r1t} `}${r1}${r2 && ` and ${r1t && `${r2t} `}${r2}`}`;
   }
 }
+
 
 class PositionalVariant extends Variant {
   /**
@@ -193,6 +195,7 @@ class PositionalVariant extends Variant {
   }
 }
 
+
 class Statement extends V {
   /**
    * @override
@@ -215,6 +218,7 @@ class Statement extends V {
   }
 }
 
+
 class Source extends V {
   /**
    * @override
@@ -225,6 +229,7 @@ class Source extends V {
     return ['name'];
   }
 }
+
 
 class Position extends V {
   /**
@@ -237,6 +242,7 @@ class Position extends V {
   }
 }
 
+
 class Publication extends Ontology {
   /**
    * @override
@@ -247,7 +253,7 @@ class Publication extends Ontology {
   }
 }
 
-const classes = {
+export default {
   Record,
   V,
   Edge,
@@ -259,5 +265,3 @@ const classes = {
   Publication,
   PositionalVariant,
 };
-
-export default classes;

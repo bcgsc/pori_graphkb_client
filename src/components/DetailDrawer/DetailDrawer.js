@@ -62,14 +62,15 @@ class DetailDrawer extends Component {
 
   /**
    * Formats specific identifier properties of input ontology.
-   * @param {Object} node - Ontology being displayed.
+   * @param {Object} inputNode - Ontology being displayed.
    * @param {boolean} isNested - Nested flag.
    */
-  formatIdentifiers(node, isNested) {
+  formatIdentifiers(inputNode, isNested) {
     const { schema } = this.props;
     const { opened } = this.state;
-    if (!(node instanceof classes.Record)) {
-      node = schema.newRecord(node);
+    let node = inputNode;
+    if (!(inputNode instanceof classes.Record)) {
+      node = schema.newRecord(inputNode);
     }
     const identifiers = node.constructor.getIdentifiers();
 
@@ -98,7 +99,7 @@ class DetailDrawer extends Component {
                   nestedValue && (
                     <ListItem key={nestedProp}>
                       {isNested && (
-                        <ListItemIcon>
+                        <ListItemIcon className="nested-spacer">
                           <div style={{ width: 24, height: 24 }} />
                         </ListItemIcon>)}
                       <ListItemText>
@@ -126,7 +127,7 @@ class DetailDrawer extends Component {
                   onClick={nestedKey ? () => this.handleExpand(`${node['@rid']}${prop}`) : undefined}
                 >
                   {isNested && (
-                    <ListItemIcon>
+                    <ListItemIcon className="nested-spacer">
                       <div style={{ width: 24, height: 24 }} />
                     </ListItemIcon>)}
                   <ListItemText>
@@ -181,7 +182,7 @@ class DetailDrawer extends Component {
       <React.Fragment key={key}>
         <ListItem {...listItemProps}>
           {isNested && (
-            <ListItemIcon>
+            <ListItemIcon className="nested-spacer">
               <div style={{ width: 24, height: 24 }} />
             </ListItemIcon>)}
           <ListItemText>
@@ -194,7 +195,7 @@ class DetailDrawer extends Component {
         <Collapse {...collapseProps} unmountOnExit>
           <ListItem dense>
             {isNested && (
-              <ListItemIcon>
+              <ListItemIcon className="nested-spacer">
                 <div style={{ width: 24, height: 24 }} />
               </ListItemIcon>)}
             <ListItemText>
@@ -297,15 +298,15 @@ class DetailDrawer extends Component {
 
   /**
    * Formats ontology relationships.
-   * @param {Object} node - Ontology being displayed.
+   * @param {Object} inputNode - Ontology being displayed.
    */
-  formatRelationships(node) {
+  formatRelationships(inputNode) {
     const { linkOpen } = this.state;
     const { schema } = this.props;
-
+    let node = inputNode;
     // Checks subclasses
-    if (!(node instanceof classes.Record)) {
-      node = schema.newRecord(node);
+    if (!(inputNode instanceof classes.Record)) {
+      node = schema.newRecord(inputNode);
     }
     const edges = node.getEdges();
 
@@ -405,7 +406,6 @@ class DetailDrawer extends Component {
       onClose,
       isEdge,
       handleNodeEditStart,
-      schema,
     } = this.props;
     if (!node) return null;
     const identifiers = this.formatIdentifiers(node);
@@ -446,15 +446,13 @@ class DetailDrawer extends Component {
               </IconButton>
             </div>
             <div className="detail-edit-btn">
-              {schema.isOntology(node['@class']) && (
-                <Button
-                  onClick={handleNodeEditStart}
-                  variant="outlined"
-                >
-                  Edit &nbsp;
-                  <EditIcon />
-                </Button>
-              )}
+              <Button
+                onClick={handleNodeEditStart}
+                variant="outlined"
+              >
+                Edit {node.constructor.name}&nbsp;
+                <EditIcon />
+              </Button>
             </div>
           </div>
           <Divider />

@@ -44,13 +44,8 @@ class DataViewBase extends Component {
    * @param {Array} omitted - List of parameters to strip from API call.
    */
   static async makeApiQuery(route, queryParams, omitted = []) {
-    const start = performance.now();
     const response = await api.get(`${route}?${qs.stringify(omit(queryParams, omitted))}`);
-    const now = performance.now();
-    console.log(`response: ${now - start}`);
     const list = jc.retrocycle(response).result;
-    const end = performance.now();
-    console.log(`retrocycle: ${end - now}`);
     return list;
   }
 
@@ -131,21 +126,14 @@ class DataViewBase extends Component {
     }
     queryParams.neighbors = queryParams.neighbors || DEFAULT_NEIGHBORS;
     queryParams.limit = queryParams.limit || DEFAULT_LIMIT;
-    const start = performance.now();
     const response = await DataViewBase.makeApiQuery(route, queryParams, omitted);
-    const afterCall = performance.now();
     const { data, allProps } = this.processData(response);
-    const afterProcess = performance.now();
     const {
       next,
       moreResults,
       filteredSearch,
     } = DataViewBase.prepareNextPagination(route, queryParams, response, omitted);
-    const afterPrepNext = performance.now();
 
-    console.log(`api call: ${afterCall - start}`);
-    console.log(`processing data: ${afterProcess - afterCall}`);
-    console.log(`prepared next call: ${afterPrepNext - afterProcess}`);
     this.setState({
       filteredSearch: filteredSearch || queryParams,
       moreResults,
@@ -276,6 +264,7 @@ class DataViewBase extends Component {
           completedNext: true,
         });
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.error(e);
       }
     }
@@ -287,9 +276,17 @@ class DataViewBase extends Component {
    */
   handleNodeEditStart() {
     const { detail } = this.state;
-    const { history } = this.props;
+    const { history, schema } = this.props;
     if (detail) {
-      history.push(`/edit/${detail.getId().slice(1)}`);
+      let route;
+      if (schema.isOntology(detail['@class'])) {
+        route = 'ontology';
+      } else if (schema.isVariant(detail['@class'])) {
+        route = 'variant';
+      } else if (detail['@class'] === 'Statement') {
+        route = 'statement';
+      }
+      history.push(`/edit/${route}/${detail.getId().slice(1)}`);
     }
   }
 

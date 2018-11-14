@@ -18,6 +18,10 @@ $success: #48a648;
 
 $banner-height: 56px;
 $drawer-z-index: 100;
+
+$breakpoint-lg: 1300px;
+$breakpoint-tablet: 768px;
+$breakpoint-mobile: 425px;
 /***********
     FONTS
 ***********/
@@ -42,20 +46,19 @@ $roboto: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
 }
 
 @mixin view-wrapper {
-  margin: 32px auto;
-  width: calc(86vw + 32px);
+  margin: 32px;
   display: grid;
   grid-template-rows: auto 1fr;
   grid-row-gap: 1rem;
-  @media (max-width: 768px) {
-    width: calc(100vw - 32px);
+  @media (max-width: $breakpoint-tablet) {
+    margin: 16px;
   }
   @include paper-collapse;
 }
 
 @mixin paper-collapse {
   transition: all 0.5s;
-  @media (max-width: 425px) {
+  @media (max-width: $breakpoint-mobile) {
     margin: 0;
     width: 100%;
     grid-row-gap: 0;
@@ -78,7 +81,7 @@ $roboto: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
     font-weight: 300;
     margin-right: auto;
   }
-  @media (max-width: 425px) {
+  @media (max-width: $breakpoint-mobile) {
     display: block;
     height: auto;
   }

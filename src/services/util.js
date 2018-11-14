@@ -4,7 +4,7 @@
  */
 
 import * as jc from 'json-cycle';
-import config from '../static/config.json';
+import config from '../static/config';
 
 const { PERMISSIONS } = config;
 const { PALLETE_SIZE } = config.GRAPH_DEFAULTS;
@@ -299,6 +299,7 @@ const loadGraphData = (search, data) => {
   try {
     localStorage.setItem(GRAPH_OBJECTS_KEY, JSON.stringify(jc.decycle(newData)));
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error('localstorage quota exceeded');
   }
 };

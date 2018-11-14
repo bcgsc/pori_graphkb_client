@@ -68,7 +68,6 @@ class AdvancedQueryViewBase extends Component {
     classes.push(...schema.getVariants());
 
     const form = schema.initModel({}, 'Ontology', config.ONTOLOGY_QUERY_PARAMS);
-    form.subsets = '';
 
     this.setState({
       classes,
@@ -84,9 +83,9 @@ class AdvancedQueryViewBase extends Component {
     const { schema } = this.props;
     const params = [{ name: '@class', type: 'string' }];
     params.push(...config.ONTOLOGY_QUERY_PARAMS);
-    const props = schema.getClass(form['@class']).properties || [];
-    props.push(...config.ONTOLOGY_QUERY_PARAMS);
-    const payload = util.parsePayload(form, props, params, true);
+    const schemaClass = schema.getClass(form['@class']).properties || [];
+    schemaClass.push(...config.ONTOLOGY_QUERY_PARAMS);
+    const payload = util.parsePayload(form, schemaClass, params, true);
     return qs.stringify(payload);
   }
 
@@ -125,7 +124,6 @@ class AdvancedQueryViewBase extends Component {
     const { form } = this.state;
     const { schema } = this.props;
     const newForm = schema.initModel(form, e.target.value || 'Ontology', config.ONTOLOGY_QUERY_PARAMS);
-    newForm.subsets = Array.isArray(newForm.subsets) ? newForm.subsets.join('') : newForm.subsets || '';
     this.setState({ form: newForm });
   }
 

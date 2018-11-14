@@ -15,7 +15,6 @@ import {
 } from '@material-ui/core';
 import kbp from '@bcgsc/knowledgebase-parser';
 import * as qs from 'querystring';
-import omit from 'lodash.omit';
 import SearchIcon from '@material-ui/icons/Search';
 import AutoSearchSingle from '../../components/AutoSearchSingle/AutoSearchSingle';
 import { withSchema } from '../../components/SchemaContext/SchemaContext';
@@ -197,8 +196,8 @@ class QueryViewBase extends Component {
       // If anything is parsed, use that..
       const update = { variantError: str ? e.message : '', queryable: false };
       if (e.content && e.content.parsed) {
-        const parsed = omit(e.content.parsed, 'variantString');
-        if (Object.keys(parsed) !== 0) {
+        const { variantString, ...parsed } = e.content.parsed;
+        if (Object.keys(parsed).length !== 0) {
           update.variant = parsed;
           update.queryable = true;
         }

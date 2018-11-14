@@ -17,6 +17,6 @@ describe('history methods test', () => {
 
     auth.loadToken(FAKE_JWT);
     history.push('/state');
-    expect(history.location.state).to.deep.eq({ timedout: true });
+    setTimeout(() => expect(history.location.state).to.deep.eq({ timedout: true }));
   });
 });

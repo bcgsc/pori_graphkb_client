@@ -77,7 +77,10 @@ class DetailDrawer extends Component {
     return (
       identifiers.map((prop) => {
         const [key, nestedKey] = prop.split('.');
-        const value = nestedKey ? (node[key] || {})[nestedKey] : node[key];
+        let value = nestedKey ? (node[key] || {})[nestedKey] : node[key];
+        if (key === 'preview') {
+          value = node.getPreview();
+        }
         let properties = Object.keys(node[key] || {});
 
         if (node[key] instanceof classes.Record) {

@@ -34,13 +34,9 @@ const ACTION_KEYCODES = [13, 16, 37, 38, 39, 40];
 const EXTRA_FORM_PROPS = ['@rid'];
 
 /**
- * Autosearch component meant for querying a single property of a single route.
- * Best suited for ontologies, or classes with a single easily searchable
- * property.
- *
- * When used for forms, component will emit the currently typed string with the
- * target name of the input "name" prop, and will emit the selected item with
- * the target name "[name].data".
+ * Autosearch component meant for a wide range of possible classes and/or
+ * endpoints. Main use is in relationships target selector fields and
+ * dependency link properties.
  */
 class AutoSearchMulti extends Component {
   constructor(props) {
@@ -68,6 +64,9 @@ class AutoSearchMulti extends Component {
     this.setRef = (node) => { this.popperNode = node; };
   }
 
+  /**
+   * Initializes temp model for querying.
+   */
   componentDidMount() {
     const { schema } = this.props;
     const { cls } = this.state;
@@ -107,10 +106,17 @@ class AutoSearchMulti extends Component {
     this.setState({ downshiftOpen: false });
   }
 
+  /**
+   * Opens/closes popover, and closes downshift component.
+   * @param {Event} e - Popover event.
+   */
   handleOpenPopover(e) {
     this.setState({ anchorEl: e ? e.currentTarget : null, downshiftOpen: false });
   }
 
+  /**
+   * Sends query to api using the temp model as the set of query parameters.
+   */
   async handleQuery() {
     const { model, cls } = this.state;
     const { schema } = this.props;
@@ -149,6 +155,11 @@ class AutoSearchMulti extends Component {
     }
   }
 
+  /**
+   * Handles the update of the model class by reinitializing model and changing
+   * class state variable.
+   * @param {Event} e - New class select event.
+   */
   handleClassChange(e) {
     const { schema } = this.props;
     const { model } = this.state;

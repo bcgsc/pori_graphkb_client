@@ -165,7 +165,7 @@ describe('<TableComponent />', () => {
         btn.simulate('mouseleave');
       }
     });
-    expect(TableComponent.prototype.handleHeaderMouseLeave).to.have.property('callCount', 3);
+    expect(TableComponent.prototype.handleHeaderMouseLeave).to.have.property('callCount', 4);
 
     wrapper.find('thead tr th button[title="Filter this column"]').first().simulate('click');
 

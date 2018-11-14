@@ -15,6 +15,7 @@ import {
 } from '@material-ui/core';
 import qs from 'qs';
 import omit from 'lodash.omit';
+import gscSchema from '@bcgsc/knowledgebase-schema';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
@@ -108,6 +109,7 @@ class DataViewBase extends Component {
     // Routing methods
     this.handleGraphRedirect = this.handleGraphRedirect.bind(this);
     this.handleTableRedirect = this.handleTableRedirect.bind(this);
+    console.log(gscSchema);
   }
 
   /**

@@ -297,7 +297,7 @@ class App extends Component {
                   </IconButton>
                 )}
                 <div className="appbar-title">
-                  <Link to="/query">
+                  <Link to="/query" onClick={this.handleDrawerClose}>
                     <Typography variant="h6">GraphKB</Typography>
                   </Link>
                 </div>

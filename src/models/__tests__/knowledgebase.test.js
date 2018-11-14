@@ -159,7 +159,7 @@ describe('ontology methods test', () => {
 
     const testStatement = new Statement({ relevance: { name: 'is the answer' }, appliesTo: { name: 'this test' } });
     expect(testStatement.getPreview()).to.eq('is the answer to this test');
-    expect(Statement.getIdentifiers()).to.deep.eq(['appliesTo.name', 'relevance.name', 'source.name', 'reviewStatus']);
+    expect(Statement.getIdentifiers()).to.deep.eq(['preview', 'source.name', 'reviewStatus']);
 
     const testPositionalVariant = new PositionalVariant({
       type: {

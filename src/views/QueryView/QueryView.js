@@ -12,6 +12,7 @@ import {
   Tabs,
   TextField,
   InputAdornment,
+  Typography,
 } from '@material-ui/core';
 import kbp from 'knowledgebase-parser';
 import * as qs from 'querystring';
@@ -293,9 +294,10 @@ class QueryViewBase extends Component {
                   name="relevance"
                   endpoint={schema.getClass('Vocabulary').route.slice(1)}
                   onChange={this.handleChange}
+                  className="query-statement-textfield"
                   endAdornment={null}
                 />
-                <span className="query-statements-to">to</span>
+                <Typography color="textSecondary" className="query-statements-to">to</Typography>
                 <AutoSearchSingle
                   placeholder="Applies To"
                   fullWidth
@@ -303,6 +305,7 @@ class QueryViewBase extends Component {
                   name="appliesTo"
                   endpoint={schema.getClass('Ontology').route.slice(1)}
                   onChange={this.handleChange}
+                  className="query-statement-textfield"
                   endAdornment={(
                     <InputAdornment>
                       <IconButton id="search-btn" onClick={this.handleSubmit} color="primary">

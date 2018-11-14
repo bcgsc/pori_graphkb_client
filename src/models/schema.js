@@ -220,22 +220,19 @@ class Schema {
 
   /**
    * Updates allColumns list with any new properties from ontologyTerm.
-   * @param {Object} term - new node who's properties will be parsed.
+   * @param {Object} record - new node who's properties will be parsed.
    * @param {Array} allColumns - current list of all collected properties.
    */
-  collectOntologyProps(term, allColumns) {
-    const { properties } = this.getClass(term['@class']);
-    properties.forEach((prop) => {
+  collectOntologyProps(record, allColumns) {
+    const { properties } = this.get(record['@class']);
+    Object.values(properties).forEach((prop) => {
       if (!allColumns.includes(prop.name)) {
-        if (term[prop.name]) {
+        if (record[prop.name]) {
           if (prop.type === 'link' || prop.type === 'embedded') {
-            const nestedProperties = this.getClass(term[prop.name]['@class']).properties;
-            if (prop.linkedClass && this.isAbstract(prop.linkedClass.name)) {
-              nestedProperties.push({ name: '@class' });
-            }
-            (nestedProperties || []).forEach((nestedProp) => {
+            const nestedProperties = this.get(record[prop.name]['@class']).properties;
+            Object.values(nestedProperties || []).forEach((nestedProp) => {
               if (
-                term[prop.name][nestedProp.name]
+                record[prop.name][nestedProp.name]
                 && !allColumns.includes(`${prop.name}.${nestedProp.name}`)
               ) {
                 allColumns.push(`${prop.name}.${nestedProp.name}`);

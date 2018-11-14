@@ -26,7 +26,7 @@ import util from '../../services/util';
 import classes from '../../models/classes';
 
 const MAX_STRING_LENGTH = 64;
-
+const DATE_KEYS = ['createdAt', 'deletedAt'];
 class DetailDrawer extends Component {
   constructor(props) {
     super(props);
@@ -220,10 +220,10 @@ class DetailDrawer extends Component {
     let properties = Object.keys(node)
       .map(key => ({ name: key, type: util.parseKBType(node[key]) }));
     if (schema && schema.getClass(node['@class'])) {
-      ({ properties } = schema.getClass(node['@class']));
+      ({ properties } = schema.get(node['@class']));
     }
     let isEmpty = true;
-    const propsList = properties
+    const propsList = Object.values(properties)
       .filter(prop => !identifiers.map(id => id.split('.')[0]).includes(prop.name)
         && !prop.name.startsWith('in_')
         && !prop.name.startsWith('out_'))
@@ -231,28 +231,6 @@ class DetailDrawer extends Component {
         const { name, type } = prop;
         if (!node[name]) return null;
         isEmpty = false;
-        if (type === 'string' || type === 'integer') {
-          if (node[name].toString().length <= MAX_STRING_LENGTH) {
-            return (
-              <React.Fragment key={name}>
-                <ListItem>
-                  <ListItemText>
-                    <div className="detail-identifiers">
-                      <Typography variant="subtitle1">
-                        {util.antiCamelCase(name)}
-                      </Typography>
-                      <Typography>
-                        {util.formatStr(node[name])}
-                      </Typography>
-                    </div>
-                  </ListItemText>
-                </ListItem>
-                <Divider />
-              </React.Fragment>
-            );
-          }
-          return this.formatLongValue(name, node[name]);
-        }
         if (type === 'embeddedset' && node[name].length !== 0) {
           return (
             <React.Fragment key={name}>
@@ -289,7 +267,28 @@ class DetailDrawer extends Component {
             </React.Fragment>
           );
         }
-        return null;
+        if (node[name].toString().length <= MAX_STRING_LENGTH) {
+          return (
+            <React.Fragment key={name}>
+              <ListItem>
+                <ListItemText>
+                  <div className="detail-identifiers">
+                    <Typography variant="subtitle1">
+                      {util.antiCamelCase(name)}
+                    </Typography>
+                    <Typography>
+                      {DATE_KEYS.includes(name)
+                        ? (new Date(node[name])).toLocaleString()
+                        : util.formatStr(node[name])}
+                    </Typography>
+                  </div>
+                </ListItemText>
+              </ListItem>
+              <Divider />
+            </React.Fragment>
+          );
+        }
+        return this.formatLongValue(name, node[name]);
       });
     return !isEmpty
       ? propsList

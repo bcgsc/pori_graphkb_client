@@ -53,6 +53,7 @@ import config from '../../static/config';
 const NEXT_CUTOFF = 0.8;
 const { ROWS_PER_PAGE, TSV_FILENAME } = config.TABLE_PROPERTIES;
 const DEFAULT_COLUMN_ORDER = [
+  '@rid',
   '@class',
   'source.name',
   'sourceId',
@@ -115,10 +116,9 @@ class TableComponent extends Component {
       storedFilters,
       defaultOrder,
     } = this.props;
-
     const tableColumns = allProps.reduce((r, column) => {
       const [key, nested] = column.split('.');
-      if (key.startsWith('in_') || key.startsWith('out_') || key === '@rid') return r;
+      if (key.startsWith('in_') || key.startsWith('out_')) return r;
       if (!nested) {
         r.push({
           id: key,

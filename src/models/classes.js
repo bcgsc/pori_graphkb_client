@@ -53,6 +53,16 @@ class Record {
   }
 }
 
+class User extends Record {
+  /**
+   * @override
+   * Returns list of strings representing the main fields used to identify the
+   * record.
+   */
+  static getIdentifiers() {
+    return ['name', '@rid'];
+  }
+}
 
 class V extends Record {
   /**
@@ -265,4 +275,5 @@ export default {
   Position,
   Publication,
   PositionalVariant,
+  User,
 };

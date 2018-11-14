@@ -1,20 +1,10 @@
 @import "../../globals";
-$breakpoint: 1300px;
 $relationshipBreakpoint: 1586px;
 $mediumBreakpoint: 500px;
 .node-form-wrapper {
-  overflow-x: hidden;
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   .form-grid {
     flex-grow: 1;
-    @include view-wrapper;
-    @media (max-width: 425px) {
+    @media (max-width: $breakpoint-mobile) {
       .flexbox > div {
         margin: 0;
         box-shadow: none;
@@ -22,41 +12,32 @@ $mediumBreakpoint: 500px;
         border-bottom: 1px solid rgba(0, 0, 0, 0.26);
       }
     }
-    @media (max-width: $breakpoint) {
+    @media (max-width: $breakpoint-lg) {
       grid-template-rows: auto;
       grid-template-columns: 100%;
     }
-    .form-header {
-      @include page-header;
-      grid-column-start: 1;
-      grid-column-end: 3;
-      @media (max-width: $breakpoint) {
-        grid-column-end: 2;
-      }
-      .form-cancel-btn {
-        display: flex;
-        justify-items: center;
-        margin: auto 0 auto auto;
-        button {
-          margin-left: auto;
-        }
-      }
-    }
+
     .flexbox {
       grid-column-end: 3;
       grid-column-start: 1;
       display: flex;
       position: relative;
       width: 100%;
-      @media (max-width: $breakpoint) {
+      margin-bottom: 1rem;
+      @media (max-width: $breakpoint-lg) {
         flex-direction: column;
         grid-column-end: 2;
       }
+      @media (max-width: $breakpoint-mobile) {
+        margin-bottom: 0;
+      }
+      $form-bias: 50%;
       .param-section {
-        flex: 0 1 50%;
+        flex: 0 0 calc(#{$form-bias} - 0.5rem);
         padding: 20px;
         padding-bottom: 40px;
         max-height: 100%;
+        min-height: 750px;
         box-sizing: border-box;
         .class-select {
           margin-top: 12px;
@@ -64,7 +45,7 @@ $mediumBreakpoint: 500px;
       }
       .forms-lists {
         position: absolute;
-        left: 50%;
+        left: calc(#{$form-bias} + 0.5rem);
         top: 0;
         bottom: 0;
         right: 0;
@@ -72,92 +53,21 @@ $mediumBreakpoint: 500px;
         display: flex;
         flex-direction: column;
         transition: all 0.3s;
-        @media (max-width: $breakpoint) {
+        @media (max-width: $breakpoint-lg) {
           position: relative;
           left: unset;
           margin-top: 8px;
         }
-        @media (max-width: 425px) {
+        @media (max-width: $breakpoint-mobile) {
           padding: 0;
           > div {
             border-radius: 0;
             box-shadow: none;
           }
         }
-        .subsets-wrapper {
-          padding: 24px;
-          margin-bottom: 8px;
-          .subsets-list {
-            .subset-chip {
-              margin: 3px;
-            }
-            .deleted-chip {
-              background-color: lighten($md-warn, 25%);
-            }
-            .deleted-chip:focus {
-              background-color: lighten($md-warn, 22%);
-            }
-          }
-        }
-        .relationships-wrapper {
-          padding: 24px;
-          margin-bottom: 8px;
-          display: flex;
-          flex-direction: column;
-          .form-table {
-            .search-wrap {
-              flex-grow: 1;
-              display: flex;
-              width: 100%;
-              min-width: 160px;
-              .autosearch-wrapper {
-                transform: translate(0, 18px);
-              }
-            }
-            .form-table-header {
-              tr th {
-                background-color: $background-light;
-                border-bottom: solid 1px rgba(0, 0, 0, 0.34);
-              }
-            }
-            .relationship-dir-type {
-              display: flex;
-              height: 48px;
-              button {
-                margin: auto;
-                margin-right: 8px;
-                svg {
-                  transition: transform 0.1s;
-                }
-              }
-              @media (max-width: $mediumBreakpoint) {
-                width: 100%;
-              }
-            }
-            tr:nth-child(even) {
-              background: #e8e8e8;
-            }
-            tr,
-            th {
-              position: sticky;
-              top: 0;
-            }
-            tr.deleted {
-              td {
-                background-color: lighten($md-warn, 25%);
-                position: relative;
-              }
-              td:before {
-                content: " ";
-                position: absolute;
-                top: 50%;
-                left: 0;
-                width: 100%;
-                border-bottom: 1px solid $md-warn;
-              }
-            }
-          }
-        }
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
       }
     }
     .form-btns {
@@ -165,7 +75,7 @@ $mediumBreakpoint: 500px;
       grid-column-end: 3;
       display: flex;
       padding: 16px;
-      @media (max-width: $breakpoint) {
+      @media (max-width: $breakpoint-lg) {
         grid-column-end: 2;
       }
       button {

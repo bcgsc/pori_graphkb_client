@@ -8,9 +8,8 @@ import {
   TableCell,
   TableBody,
   Checkbox,
-  Typography,
 } from '@material-ui/core';
-import config from '../../static/config.json';
+import config from '../../static/config';
 
 const { PERMISSIONS } = config;
 const KEY_MAPPER = 'CRUD';
@@ -62,9 +61,7 @@ function PermissionsTable(props) {
             return (
               <TableRow key={permission} className="permissions-view">
                 <TableCell padding="dense">
-                  <Typography variant="body1" component="p">
-                    {permission}:
-                  </Typography>
+                  {permission}:
                 </TableCell>
                 {userGroup.permissions[permission].map((p, j) => (
                   <TableCell padding="checkbox" key={`${userGroup.name}${permission}${KEY_MAPPER[j]}`}>

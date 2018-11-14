@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import './VariantFormView.css';
+import './AddVariantView.css';
 import PropTypes from 'prop-types';
-import { Paper, Typography, Button } from '@material-ui/core';
-import VariantParserComponent from '../../components/VariantParserComponent/VariantParserComponent';
+import { Paper, Typography, Button } from '@material-ui/core'; /*eslint-disable*/
+import PositionalVariantParser from '../../components/PositionalVariantParser/PositionalVariantParser';
 import util from '../../services/util';
 import api from '../../services/api';
 import { withSchema } from '../../components/SchemaContext/SchemaContext';
 
-class VariantFormViewBase extends Component {
+class AddVariantViewBase extends Component {
   constructor(props) {
     super(props);
     this.handleCancel = this.handleCancel.bind(this);
@@ -34,10 +34,11 @@ class VariantFormViewBase extends Component {
   /**
    * Submits a POST request to the server with current variant data.
    */
-  async submitVariant(variant) {
+  async submitVariant(variant, relationships) {
     const { schema } = this.props;
     const copy = Object.assign({}, variant);
     const classSchema = schema.getClass('PositionalVariant').properties;
+    // Strips away empty break objects and casts number props to numbers.
     Object.keys(copy).forEach((k) => {
       if (typeof copy[k] === 'object') { // more flexible
         if (!copy[k]['@class']) {
@@ -57,7 +58,10 @@ class VariantFormViewBase extends Component {
       }
     });
     const payload = util.parsePayload(copy, classSchema);
-    await api.post('/positionalvariants', payload);
+    
+    const response = await api.post('/positionalvariants', payload);
+
+    await api.submitEdges(relationships, schema, response.result['@rid']);
   }
 
   render() {
@@ -79,7 +83,7 @@ class VariantFormViewBase extends Component {
         </Paper>
 
         <div className="variant-body">
-          <VariantParserComponent
+          <PositionalVariantParser
             handleFinish={this.handleFinish}
             handleSubmit={this.submitVariant}
             schema={schema}
@@ -95,14 +99,14 @@ class VariantFormViewBase extends Component {
  * @property {Object} history - Application routing history object.
  * @property {Object} schema - Knowledgebase schema object.
  */
-VariantFormViewBase.propTypes = {
+AddVariantViewBase.propTypes = {
   history: PropTypes.object.isRequired,
   schema: PropTypes.object.isRequired,
 };
 
-const VariantFormView = withSchema(VariantFormViewBase);
+const AddVariantView = withSchema(AddVariantViewBase);
 
 export {
-  VariantFormViewBase,
-  VariantFormView,
+  AddVariantViewBase,
+  AddVariantView,
 };

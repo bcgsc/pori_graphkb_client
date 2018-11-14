@@ -128,7 +128,7 @@ class PositionalVariantParser extends Component {
             response[name] = { '@class': '' };
           }
         });
-        const newVariant = Object.assign(schema.initModel(variant, 'PositionalVariant'),
+        const newVariant = Object.assign(schema.initModel({}, 'PositionalVariant'),
           { ...response, ...linkProps.props });
         this.setState({
           variant: newVariant,

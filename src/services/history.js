@@ -20,7 +20,7 @@ history.listen((location) => {
     if (!auth.getToken()) {
       setTimeout(() => history.push('/login'), 0);
     } else if (auth.isExpired()) {
-      setTimeout(history.push('/login', { timedout: true }), 0);
+      setTimeout(() => history.push('/login', { timedout: true }), 0);
     }
   }
 });

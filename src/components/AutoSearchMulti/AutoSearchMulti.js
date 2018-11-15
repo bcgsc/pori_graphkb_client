@@ -338,22 +338,29 @@ class AutoSearchMulti extends Component {
                 </ResourceSelectComponent>
               </ListItem>
               {model && (
-                <FormTemplater
-                  schema={schema}
-                  model={model}
-                  appendToKeys={cls}
-                  propSchemas={properties}
-                  disabledFields={model['@rid']
-                    ? properties.map(p => p.name).filter(p => p !== '@rid')
-                    : undefined}
-                  sort={util.sortFields(EXTRA_FORM_PROPS)}
-                  dense
-                  ignoreRequired
-                  onChange={(e) => {
-                    model[e.target.name] = e.target.value;
-                    this.setState({ model });
-                  }}
-                />)}
+                <div className="autosearch-multi-form-templater">
+                  <FormTemplater
+                    schema={schema}
+                    model={model}
+                    appendToKeys={cls}
+                    propSchemas={properties}
+                    disabledFields={model['@rid']
+                      ? properties.map(p => p.name).filter(p => p !== '@rid')
+                      : undefined}
+                    sort={util.sortFields(EXTRA_FORM_PROPS)}
+                    dense
+                    ignoreRequired
+                    onChange={(e, nested) => {
+                      if (nested) {
+                        model[nested][e.target.name] = e.target.value;
+                      } else {
+                        model[e.target.name] = e.target.value;
+                      }
+                      this.setState({ model });
+                    }}
+                  />
+                </div>
+              )}
             </CardContent>
             <CardActions>
               <Button

@@ -125,7 +125,7 @@ class AutoSearchMulti extends Component {
     const { route, properties } = schema.getClass(cls, EXTRA_FORM_PROPS);
     const payload = util.parsePayload(model, properties, [], true);
     Object.keys(payload).forEach((k) => {
-      const trimmed = String(payload[k]).trim().toLowerCase();
+      const trimmed = String(payload[k]).trim();
       if (!trimmed.split(pattern).some(chunk => chunk.length < 4)) {
         payload[k] = `~${trimmed}`;
       } else {

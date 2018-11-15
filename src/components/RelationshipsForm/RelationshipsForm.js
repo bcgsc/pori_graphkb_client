@@ -257,6 +257,7 @@ class RelationshipsForm extends Component {
       relationships,
       nodeRid,
       emptyMsg,
+      empty,
     } = this.props;
 
     if (!model) return null;
@@ -360,82 +361,82 @@ class RelationshipsForm extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {relationships.length > 0
-                ? relationships.map((r) => {
-                  const buttonFn = r.deleted
-                    ? e => this.handleUndo(e, r['@rid'])
-                    : e => this.handleDelete(e, r['@rid']);
-                  const ButtonIcon = r.deleted
-                    ? <RefreshIcon color="primary" />
-                    : <CloseIcon color="error" />;
-                  const {
-                    properties,
-                    name,
-                    reverseName,
-                  } = schema.get(r['@class']);
-                  const shouldExpand = Object.keys(properties)
-                    .filter(k => r[k] !== undefined)
-                    .length > DEFAULT_RELATIONSHIPS_PROPSLENGTH;
+              {relationships.map((r) => {
+                const buttonFn = r.deleted
+                  ? e => this.handleUndo(e, r['@rid'])
+                  : e => this.handleDelete(e, r['@rid']);
+                const ButtonIcon = r.deleted
+                  ? <RefreshIcon color="primary" />
+                  : <CloseIcon color="error" />;
+                const {
+                  properties,
+                  name,
+                  reverseName,
+                } = schema.get(r['@class']);
+                const shouldExpand = Object.keys(properties)
+                  .filter(k => r[k] !== undefined)
+                  .length > DEFAULT_RELATIONSHIPS_PROPSLENGTH;
 
-                  const isIn = (r['in.data'] || {})['@rid'] === nodeRid;
+                const isIn = (r['in.data'] || {})['@rid'] === nodeRid;
 
-                  return (
-                    <React.Fragment key={r['@rid']}>
-                      <TableRow
-                        className={r.deleted ? 'deleted' : ''}
-                        onClick={shouldExpand
-                          ? () => this.handleExpand(r['@rid'])
-                          : null}
-                        style={{ cursor: shouldExpand ? 'pointer' : undefined }}
-                      >
-                        <TableCell padding="checkbox">
-                          <IconButton
-                            onClick={buttonFn}
-                            style={{ position: 'unset' }}
-                            disableRipple
-                          >
-                            {ButtonIcon}
-                          </IconButton>
-                        </TableCell>
-                        <TableCell padding="dense">
-                          {isIn ? reverseName : name}
-                        </TableCell>
-                        <TableCell padding="dense">
-                          {isIn
-                            ? r.out
-                            : r.in}
-                        </TableCell>
-                        <TableCell padding="dense">
-                          {r.source}
-                        </TableCell>
-                        <TableCell className={`relationship-expand-btn ${expanded === r['@rid'] ? '' : 'expand-btn-collapsed'}`}>
-                          {shouldExpand && <KeyboardArrowDownIcon />}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow
-                        style={{
-                          display: expanded === r['@rid'] ? undefined : 'none',
-                          height: 0,
-                          background: '#fff',
-                        }}
-                      >
-                        <TableCell colSpan={5}>
-                          <Collapse
-                            in={expanded === r['@rid']}
-                          >
-                            {this.relationshipDetails(r, isIn)}
-                          </Collapse>
-                        </TableCell>
-                      </TableRow>
-                    </React.Fragment>
-                  );
-                }) : (
-                  <TableRow>
-                    <TableCell colSpan={5} className="relationships-empty-placeholder">
-                      <Typography variant="overline">{emptyMsg}</Typography>
-                    </TableCell>
-                  </TableRow>
-                )}
+                return (
+                  <React.Fragment key={r['@rid']}>
+                    <TableRow
+                      className={r.deleted ? 'deleted' : ''}
+                      onClick={shouldExpand
+                        ? () => this.handleExpand(r['@rid'])
+                        : null}
+                      style={{ cursor: shouldExpand ? 'pointer' : undefined }}
+                    >
+                      <TableCell padding="checkbox">
+                        <IconButton
+                          onClick={buttonFn}
+                          style={{ position: 'unset' }}
+                          disableRipple
+                        >
+                          {ButtonIcon}
+                        </IconButton>
+                      </TableCell>
+                      <TableCell padding="dense">
+                        {isIn ? reverseName : name}
+                      </TableCell>
+                      <TableCell padding="dense">
+                        {isIn
+                          ? r.out
+                          : r.in}
+                      </TableCell>
+                      <TableCell padding="dense">
+                        {r.source}
+                      </TableCell>
+                      <TableCell className={`relationship-expand-btn ${expanded === r['@rid'] ? '' : 'expand-btn-collapsed'}`}>
+                        {shouldExpand && <KeyboardArrowDownIcon />}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow
+                      style={{
+                        display: expanded === r['@rid'] ? undefined : 'none',
+                        height: 0,
+                        background: '#fff',
+                      }}
+                    >
+                      <TableCell colSpan={5}>
+                        <Collapse
+                          in={expanded === r['@rid']}
+                        >
+                          {this.relationshipDetails(r, isIn)}
+                        </Collapse>
+                      </TableCell>
+                    </TableRow>
+                  </React.Fragment>
+                );
+              })}
+              {(relationships.length > 0 || empty) && (
+                <TableRow>
+                  <TableCell colSpan={5} className="relationships-empty-placeholder">
+                    <Typography variant="overline">{emptyMsg}</Typography>
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </div>
@@ -462,6 +463,7 @@ RelationshipsForm.propTypes = {
   nodeRid: PropTypes.string,
   edgeTypes: PropTypes.array,
   emptyMsg: PropTypes.string,
+  empty: PropTypes.bool,
 };
 
 RelationshipsForm.defaultProps = {
@@ -470,6 +472,7 @@ RelationshipsForm.defaultProps = {
   nodeRid: '#node_rid',
   edgeTypes: null,
   emptyMsg: 'No Relationships',
+  empty: false,
 };
 
 export default RelationshipsForm;

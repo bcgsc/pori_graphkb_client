@@ -49,7 +49,7 @@ describe('<RelationshipsForm />', () => {
       />,
     );
     expect(wrapper.find('#relationships-form-submit').first().props().disabled).to.eq(true);
-    expect(wrapper.find('table.relationships-form-table tr')).to.have.lengthOf(2);
+    expect(wrapper.find('table.relationships-form-table tr')).to.have.lengthOf(1);
 
     wrapper.find('input[name="in"]')
       .simulate('change', {

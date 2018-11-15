@@ -341,6 +341,7 @@ class AutoSearchMulti extends Component {
                 <FormTemplater
                   schema={schema}
                   model={model}
+                  appendToKeys={cls}
                   propSchemas={properties}
                   disabledFields={model['@rid']
                     ? properties.map(p => p.name).filter(p => p !== '@rid')

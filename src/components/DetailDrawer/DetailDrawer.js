@@ -34,7 +34,7 @@ class DetailDrawer extends Component {
       opened: [],
       linkOpen: null,
     };
-    this.formatOtherProps = this.formatOtherProps.bind(this);
+    this.formatProps = this.formatProps.bind(this);
     this.formatRelationships = this.formatRelationships.bind(this);
     this.handleExpand = this.handleExpand.bind(this);
     this.handleLinkExpand = this.handleLinkExpand.bind(this);
@@ -215,7 +215,7 @@ class DetailDrawer extends Component {
    * Formats non-identifier, non-relationship properties.
    * @param {Object} node - Ontology being displayed.
    */
-  formatOtherProps(node) {
+  formatProps(node) {
     const { opened } = this.state;
     const { schema } = this.props;
     const identifiers = node.constructor.getIdentifiers();
@@ -223,7 +223,7 @@ class DetailDrawer extends Component {
     let properties = Object.keys(node)
       .map(key => ({ name: key, type: util.parseKBType(node[key]) }));
     if (schema && schema.getClass(node['@class'])) {
-      ({ properties } = schema.get(node['@class']));
+      ({ properties } = schema.getClass(node['@class']));
     }
     let isEmpty = true;
     const propsList = Object.values(properties)
@@ -412,7 +412,7 @@ class DetailDrawer extends Component {
     } = this.props;
     if (!node) return null;
     const identifiers = this.formatIdentifiers(node);
-    const otherProps = this.formatOtherProps(node);
+    const otherProps = this.formatProps(node);
     const relationships = !isEdge && this.formatRelationships(node);
     let preview;
     let errorMessage;
@@ -464,6 +464,10 @@ class DetailDrawer extends Component {
           <Divider />
           {identifiers}
           {otherProps}
+          <ListSubheader>
+            Metadata
+          </ListSubheader>
+
           {!isEdge && (
             <React.Fragment>
               <ListSubheader className="detail-relationships-subheader">

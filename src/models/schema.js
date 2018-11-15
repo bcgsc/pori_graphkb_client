@@ -28,6 +28,10 @@ class Schema {
     return match || null;
   }
 
+  getMetadata() {
+    return this.schema.V;
+  }
+
   /**
    * Returns route and properties of a certain knowledgebase class
    * (most useful data).

@@ -94,6 +94,8 @@ class StatementFormComponent extends Component {
 
     if (!form) return null;
     let formIsInvalid = false;
+    const oneOfEachEdge = relationships.some(r => r['@class'] === 'SupportedBy' && !r.deleted)
+      && relationships.some(r => r['@class'] === 'Implies' && !r.deleted);
     schema.getClass('Statement').properties.forEach((prop) => {
       if (prop.mandatory) {
         if (prop.type === 'link' && !(form[`${prop.name}.data`] && form[`${prop.name}.data`]['@rid'])) {
@@ -104,10 +106,7 @@ class StatementFormComponent extends Component {
       }
     });
 
-    if (
-      !relationships.some(r => r['@class'] === 'SupportedBy' && !r.deleted)
-      || !relationships.some(r => r['@class'] === 'Implies' && !r.deleted)
-    ) {
+    if (!oneOfEachEdge) {
       formIsInvalid = true;
     }
 
@@ -158,6 +157,7 @@ class StatementFormComponent extends Component {
               name="relationships"
               edgeTypes={['Implies', 'SupportedBy']}
               emptyMsg="Statements need at least 1 Implication edge and 1 Support edge"
+              empty={!oneOfEachEdge}
             />
           </Paper>
         </div>

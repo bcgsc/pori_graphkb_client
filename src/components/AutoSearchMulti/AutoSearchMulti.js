@@ -123,6 +123,11 @@ class AutoSearchMulti extends Component {
     const pattern = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
 
     const { route, properties } = schema.getClass(cls, EXTRA_FORM_PROPS);
+    Object.keys(model).forEach((k) => {
+      if (k.includes('.data')) {
+        model[k.split('.data')[0]] = '';
+      }
+    });
     const payload = util.parsePayload(model, properties, [], true);
     Object.keys(payload).forEach((k) => {
       const trimmed = String(payload[k]).trim();

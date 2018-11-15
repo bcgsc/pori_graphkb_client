@@ -67,7 +67,7 @@ class QueryViewBase extends Component {
     const pattern = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
     if (tab === 'ontology') {
       if (str && !disabled) {
-        const trimmed = String(str).trim().toLowerCase();
+        const trimmed = String(str).trim();
         const matched = !trimmed.split(pattern).some(chunk => chunk.length < 4);
         search = `?name=${matched ? '~' : ''}${encodeURIComponent(trimmed)}`;
       }
@@ -80,7 +80,7 @@ class QueryViewBase extends Component {
         true,
       );
       Object.keys(payload).forEach((k) => {
-        const trimmed = String(payload[k]).trim().toLowerCase();
+        const trimmed = String(payload[k]).trim();
         if (!trimmed.split(pattern).some(chunk => chunk.length < 4)) {
           payload[k] = `~${trimmed}`;
         } else {

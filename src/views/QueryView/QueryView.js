@@ -110,15 +110,16 @@ class QueryViewBase extends Component {
       let trimmed = [relevance, appliesTo].map(v => String(v).trim().toLowerCase());
       const matched = trimmed.map(t => !t.split(KB_SEP_CHARS).some(chunk => chunk.length < 4));
       trimmed = trimmed.map((t, i) => matched[i] ? `~${t}` : t);
-      let search = '?@class=Statement';
+      let search = ['?@class=Statement'];
       if (trimmed[0]) {
         // Cast string to linked property name
-        search += `&relevance[name]=${encodeURIComponent(trimmed[0])}`;
+        search.push(`relevance[name]=${encodeURIComponent(trimmed[0])}`);
       }
       if (trimmed[1]) {
         // Cast string to linked property name
-        search += `${trimmed[0] && '&'}appliesTo[name]=${encodeURIComponent(trimmed[1])}`;
+        search.push(`appliesTo[name]=${encodeURIComponent(trimmed[1])}`);
       }
+      search = search.join('&');
       history.push({
         pathname: '/data/table',
         search,

@@ -122,7 +122,7 @@ class AutoSearchMulti extends Component {
     const { schema } = this.props;
     const pattern = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
 
-    const { properties } = schema.getProperties(cls, EXTRA_FORM_PROPS);
+    const properties = schema.getProperties(cls, EXTRA_FORM_PROPS);
     const payload = util.parsePayload(model, properties, [], true);
     Object.keys(payload).forEach((k) => {
       const trimmed = String(payload[k]).trim();

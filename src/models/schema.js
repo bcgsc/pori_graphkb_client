@@ -16,6 +16,7 @@ class Schema {
   }
 
   getPreview(obj) {
+    if (!obj['@class'] || !this.schema[obj['@class']]) return null;
     return this.schema[obj['@class']].getPreview(obj);
   }
 

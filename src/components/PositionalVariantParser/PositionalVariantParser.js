@@ -387,12 +387,9 @@ class PositionalVariantParser extends Component {
     const classSchema = schema.getProperties(nodeClass);
     const isPositional = nodeClass === 'PositionalVariant';
     let formIsInvalid = !!(invalidFlag && isPositional);
-    console.log(formIsInvalid);
-    console.log(variant);
     (classSchema || []).forEach((prop) => {
       if (prop.mandatory) {
         if (prop.type === 'link' && (!variant[`${prop.name}.data`] || !variant[`${prop.name}.data`]['@rid'])) {
-          console.log(prop.name);
           formIsInvalid = true;
         } else if (prop.type !== 'boolean' && !variant[prop.name]) {
           formIsInvalid = true;

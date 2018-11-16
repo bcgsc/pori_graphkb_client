@@ -69,7 +69,7 @@ class DetailDrawer extends Component {
         const [key, nestedKey] = prop.split('.');
         let value = nestedKey ? (node[key] || {})[nestedKey] : node[key];
         if (key === 'preview') {
-          value = node.getPreview();
+          value = schema.getPreview(node);
         }
         let properties = Object.keys(node[key] || {});
 

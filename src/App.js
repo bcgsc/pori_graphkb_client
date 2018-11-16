@@ -34,6 +34,7 @@ import AddIcon from '@material-ui/icons/Add';
 import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import schema from './schema/src/schema';
 import {
   AddOntologyView,
   AddStatementView,
@@ -56,8 +57,9 @@ import title from './static/title.png';
 import auth from './services/auth';
 import history from './services/history';
 import api from './services/api';
+import Schema from './models/schema';
 import { SchemaContext } from './components/SchemaContext/SchemaContext';
-
+/*eslint-disable*/
 const theme = createMuiTheme({
   direction: 'ltr',
   palette: {
@@ -279,7 +281,7 @@ class App extends Component {
       </Switch>
     );
     return schema && (
-      <SchemaContext.Provider value={schema}>
+      <SchemaContext.Provider value={new Schema(schema)}>
         <MuiThemeProvider theme={theme}>
           <Router history={history}>
             <div className="App">

@@ -71,8 +71,8 @@ class PositionalVariantParser extends Component {
       : schema.initModel({}, nodeClass);
 
     const relationships = [];
-    if (initVariant && initVariant.getEdges) {
-      initVariant.getEdges().forEach((edge) => {
+    if (initVariant) {
+      schema.getEdges(initVariant).forEach((edge) => {
         relationships.push(schema.initModel(edge, edge['@class']));
       });
     }
@@ -178,12 +178,12 @@ class PositionalVariantParser extends Component {
     const errorFields = [];
     await Promise.all(linkProps.map(async (prop) => {
       const { name, linkedClass } = prop;
-      if (parsed[name] && linkedClass && linkedClass.route) {
-        const data = await api.get(`${linkedClass.route}?name=${parsed[name]}&neighbors=1`);
+      if (parsed[name] && linkedClass && linkedClass.routeName) {
+        const data = await api.get(`${linkedClass.routeName}?name=${parsed[name]}&neighbors=1`);
         const cycled = jc.retrocycle(data).result;
         if (cycled.length === 1) {
           [newValues[`${name}.data`]] = cycled;
-          newValues[name] = schema.newRecord(cycled[0]).getPreview();
+          newValues[name] = schema.getPreview(cycled[0]);
         } else if (cycled.length > 1) {
           // add multiple modals?
         } else if (cycled.length === 0) {

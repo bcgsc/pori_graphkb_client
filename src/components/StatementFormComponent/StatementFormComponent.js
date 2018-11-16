@@ -39,7 +39,7 @@ class StatementFormComponent extends Component {
 
     const form = schema.initModel(originalNode, 'Statement');
     if (node) {
-      node.getEdges().forEach((edge) => {
+      schema.getEdges(node).forEach((edge) => {
         relationships.push(schema.initModel(edge, edge['@class']));
       });
     } else {
@@ -96,7 +96,7 @@ class StatementFormComponent extends Component {
     const { name, value } = e.target;
     form[name] = value;
     if (name.includes('.data') && value) {
-      form[name.split('.')[0]] = schema.newRecord(value).getPreview();
+      form[name.split('.')[0]] = schema.getPreview(value);
     }
     this.setState({ form });
   }

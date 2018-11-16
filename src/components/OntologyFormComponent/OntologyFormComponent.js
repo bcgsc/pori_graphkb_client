@@ -71,8 +71,8 @@ class OntologyFormComponent extends Component {
 
     const form = schema.initModel(originalNode, nodeClass);
 
-    if (originalNode.getEdges) {
-      originalNode.getEdges().forEach((edge) => {
+    if (originalNode) {
+      schema.getEdges(originalNode).forEach((edge) => {
         relationships.push(schema.initModel(edge, edge['@class']));
       });
     }
@@ -134,7 +134,7 @@ class OntologyFormComponent extends Component {
     const { name, value } = e.target;
     form[name] = value;
     if (name.includes('.data') && value) {
-      form[name.split('.')[0]] = schema.newRecord(value).getPreview();
+      form[name.split('.')[0]] = schema.getPreview(value);
     }
     this.setState({ form });
   }

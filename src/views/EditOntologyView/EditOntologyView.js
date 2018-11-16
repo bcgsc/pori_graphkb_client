@@ -29,7 +29,6 @@ class EditOntologyViewBase extends Component {
     super(props);
     this.state = {
       node: null,
-      sources: [],
       edgeTypes: [],
     };
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -45,12 +44,10 @@ class EditOntologyViewBase extends Component {
     const { match, schema } = this.props;
     const { rid } = match.params;
     const response = await api.get(`/ontologies/${rid}?neighbors=${DEFAULT_NEIGHBORS}`);
-    const node = schema.newRecord(jc.retrocycle(response).result);
-    const sources = await api.getSources();
+    const node = jc.retrocycle(response).result;
     const edgeTypes = schema.getEdges();
     this.setState({
       node,
-      sources,
       edgeTypes,
     });
   }
@@ -74,7 +71,7 @@ class EditOntologyViewBase extends Component {
   async handleDelete() {
     const { node } = this.state;
     const { schema } = this.props;
-    const { route } = schema.getClass(node['@class']);
+    const route = schema.getRoute(node['@class']);
     await api.delete(`${route}/${node['@rid'].slice(1)}`);
   }
 
@@ -97,7 +94,6 @@ class EditOntologyViewBase extends Component {
   render() {
     const {
       node,
-      sources,
       edgeTypes,
     } = this.state;
     const { schema } = this.props;
@@ -126,7 +122,6 @@ class EditOntologyViewBase extends Component {
             handleFinish={this.handleFinish}
             handleDelete={this.handleDelete}
             schema={schema}
-            sources={sources}
             edgeTypes={edgeTypes}
           />
         </div>

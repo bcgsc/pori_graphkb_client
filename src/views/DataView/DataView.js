@@ -307,17 +307,20 @@ class DataViewBase extends Component {
   async handleDetailDrawerOpen(node, open, edge) {
     const { data, detail } = this.state;
     if (!open && !detail) return;
+    if (node.data) {
+      node = node.data;
+    }
     if (edge) {
       this.setState({
-        detail: node.data,
+        detail: node,
         detailEdge: true,
       });
     } else {
-      if (!data[node.data['@rid']]) {
-        const response = await api.get(`/ontologies/${node.data['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
-        data[node.data['@rid']] = jc.retrocycle(response).result;
+      if (!data[node['@rid']]) {
+        const response = await api.get(`/ontologies/${node['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
+        data[node['@rid']] = jc.retrocycle(response).result;
       }
-      this.setState({ detail: data[node.data['@rid']], detailEdge: false });
+      this.setState({ detail: data[node['@rid']], detailEdge: false });
     }
   }
 

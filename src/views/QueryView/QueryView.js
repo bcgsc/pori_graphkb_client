@@ -170,7 +170,7 @@ class QueryViewBase extends Component {
     const { schema } = this.props;
     const { name, value } = e.target;
     if (name && name.includes('.data') && value) {
-      this.setState({ [name.split('.data')[0]]: schema.newRecord(value).getPreview() });
+      this.setState({ [name.split('.data')[0]]: schema.getPreview(value) });
     } else {
       this.setState({ [name]: value, disabled: false });
     }

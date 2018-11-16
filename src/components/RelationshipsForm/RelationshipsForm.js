@@ -369,7 +369,7 @@ class RelationshipsForm extends Component {
                     : e => this.handleDelete(e, r['@rid']);
                   const ButtonIcon = r.deleted
                     ? <RefreshIcon color="primary" />
-                    : <CloseIcon color="error" />;
+                    : <CloseIcon />;
                   const {
                     name,
                     reverseName,

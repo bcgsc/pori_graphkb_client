@@ -116,7 +116,7 @@ class AutoSearchMulti extends Component {
     const { schema } = this.props;
     const pattern = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
 
-    const { route, properties } = schema.getClass(cls, EXTRA_FORM_PROPS);
+    const { properties } = schema.getProperties(cls, EXTRA_FORM_PROPS);
     const payload = util.parsePayload(model, properties, [], true);
     Object.keys(payload).forEach((k) => {
       const trimmed = String(payload[k]).trim().toLowerCase();
@@ -135,7 +135,7 @@ class AutoSearchMulti extends Component {
     });
 
     try {
-      const response = await api.get(`${route}?${qs.stringify(payload)}&neighbors=3&limit=30`);
+      const response = await api.get(`${schema.get(cls).routeName}?${qs.stringify(payload)}&neighbors=3&limit=30`);
       const { result } = jc.retrocycle(response);
 
       this.setState({
@@ -264,7 +264,7 @@ class AutoSearchMulti extends Component {
       </Tooltip>
     );
 
-    const { properties } = schema.getClass(cls, EXTRA_FORM_PROPS) || {};
+    const properties = schema.getProperties(cls, EXTRA_FORM_PROPS) || [];
 
     return (
       <React.Fragment>
@@ -279,6 +279,7 @@ class AutoSearchMulti extends Component {
           onClear={this.handleClear}
           onSelect={this.handleChange}
           endAdornment={endAdornment}
+          schema={schema}
         >
           {(item, index, downshiftProps) => (
             <MenuItem

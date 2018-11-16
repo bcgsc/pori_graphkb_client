@@ -412,7 +412,7 @@ class GraphComponent extends Component {
       graphObjects,
       expandable,
     } = this.state;
-    const { data } = this.props;
+    const { data, schema } = this.props;
     if (expandable[node.getId()] && data[node.getId()]) {
       ({
         nodes,
@@ -434,7 +434,7 @@ class GraphComponent extends Component {
       this.drawGraph();
       this.updateColors();
     }
-    if (!data[node.getId()].getEdges().some(edge => !links.find(l => l.getId() === edge['@rid']))) {
+    if (!schema.getEdges(data[node.getId()]).some(edge => !links.find(l => l.getId() === edge['@rid']))) {
       delete expandable[node.getId()];
     }
     util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
@@ -459,10 +459,9 @@ class GraphComponent extends Component {
       expandable,
       links,
     } = this.state;
-    const { data } = this.props;
+    const { data, schema } = this.props;
     if (expandable[node.getId()] && data[node.getId()]) {
-      if (data[node.getId()]
-        .getEdges()
+      if (schema.getEdges(data[node.getId()])
         .filter(edge => !(links.find(l => l.getId() === edge['@rid']))).length > HEAVILY_CONNECTED
       ) {
         this.setState({ expandNode: data[node.getId()] },
@@ -888,7 +887,8 @@ class GraphComponent extends Component {
    */
   handleExpandCheckAll() {
     const { expandExclusions, expandNode } = this.state;
-    const allEdges = expandNode.getEdges().map(e => e['@rid']);
+    const { schema } = this.props;
+    const allEdges = schema.getEdges(expandNode).map(e => e['@rid']);
     let newExpandExclusions = [];
     if (expandExclusions.length !== allEdges.length) {
       newExpandExclusions = allEdges;
@@ -903,8 +903,9 @@ class GraphComponent extends Component {
   handleExpandByClass(cls) {
     return () => {
       const { expandNode } = this.state;
+      const { schema } = this.props;
       const expandExclusions = [];
-      expandNode.getEdges().forEach((edge) => {
+      schema.getEdges(expandNode).forEach((edge) => {
         if (edge['@class'] !== cls) {
           expandExclusions.push(edge['@rid']);
         }
@@ -936,6 +937,7 @@ class GraphComponent extends Component {
       handleTableRedirect,
       detail,
       handleDetailDrawerOpen,
+      schema,
     } = this.props;
 
     if (!simulation) return null;
@@ -1071,7 +1073,7 @@ class GraphComponent extends Component {
       if (!node) {
         return null;
       }
-      const edges = node.getEdges();
+      const edges = schema.getEdges(node);
       return (
         <Dialog
           open={expansionDialogOpen}
@@ -1132,8 +1134,8 @@ class GraphComponent extends Component {
             <List dense className="expand-links-list">
               {edges.map((edge) => {
                 const inRid = edge.in['@rid'];
-                const target = inRid === node.getId() ? edge.out : edge.in;
-                if (target['@rid'] === node.getId()
+                const target = inRid === node['@rid'] ? edge.out : edge.in;
+                if (target['@rid'] === node['@rid']
                   || links.find(l => l.getId() === edge['@rid'])) {
                   return null;
                 }
@@ -1365,6 +1367,7 @@ class GraphComponent extends Component {
  * @property {Array} displayed - list of initial record ID's to be displayed in graph.
  * @property {string} localStorageKey - key to identify graph session data with in
  * localStorage.
+ * @property {Object} schema - KnowledgeBase Schema.
  */
 GraphComponent.propTypes = {
   handleClick: PropTypes.func,
@@ -1378,6 +1381,7 @@ GraphComponent.propTypes = {
   edgeTypes: PropTypes.array,
   displayed: PropTypes.array,
   localStorageKey: PropTypes.string,
+  schema: PropTypes.object.isRequired,
 };
 
 GraphComponent.defaultProps = {

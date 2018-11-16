@@ -76,7 +76,7 @@ class PositionalVariantParser extends Component {
       });
     }
 
-    const shorthand = initVariant ? initVariant.getPreview() : '';
+    const shorthand = initVariant ? schema.getPreview(initVariant) : '';
     this.setState({
       variant,
       shorthand,
@@ -94,7 +94,7 @@ class PositionalVariantParser extends Component {
     const { schema } = this.props;
     const { value } = e.target;
     this.setState({ shorthand: value });
-    const { properties } = schema.getClass('PositionalVariant');
+    const properties = schema.getProperties('PositionalVariant');
     if (!value) {
       const newVariant = schema.initModel({}, 'PositionalVariant');
       Object.keys(newVariant).forEach((k) => {
@@ -117,7 +117,7 @@ class PositionalVariantParser extends Component {
         embeddedProps.forEach((prop) => {
           const { name } = prop;
           if (response[name] && response[name].name) {
-            schema.getClass(response[name].name).properties
+            schema.getProperties(response[name].name)
               .forEach((classProp) => {
                 response[name][classProp.name] = response[name][classProp.name] === undefined
                   || response[name][classProp.name] === null
@@ -168,7 +168,7 @@ class PositionalVariantParser extends Component {
    */
   async extractLinkProps(parsed) {
     const { schema } = this.props;
-    const classSchema = schema.getClass('PositionalVariant').properties;
+    const classSchema = schema.getProperties('PositionalVariant');
     const linkProps = util.getPropOfType(classSchema, 'link');
     const newValues = {};
     let invalidFlag = '';
@@ -202,8 +202,8 @@ class PositionalVariantParser extends Component {
     const { variant } = this.state;
     const { schema } = this.props;
     const { value } = e.target;
-    const classSchema = schema.getClass('PositionalVariant').properties;
-    if (schema.getClass(value)) {
+    const classSchema = schema.getProperties('PositionalVariant');
+    if (schema.getProperties(value)) {
       const abstractClass = classSchema
         .find(p => p.name === nested).linkedClass.name;
       const varKeys = classSchema
@@ -264,12 +264,12 @@ class PositionalVariantParser extends Component {
     if (nested) {
       variant[nested][name] = value;
       if (name.includes('.data') && value) {
-        variant[nested][name.split('.')[0]] = schema.newRecord(value).getPreview();
+        variant[nested][name.split('.')[0]] = schema.getPreview(value);
       }
     } else {
       variant[name] = value;
       if (name.includes('.data') && value) {
-        variant[name.split('.')[0]] = schema.newRecord(value).getPreview();
+        variant[name.split('.')[0]] = schema.getPreview(value);
       }
     }
     if (!SHORTHAND_EXCLUDED.includes(name)) {
@@ -381,7 +381,7 @@ class PositionalVariantParser extends Component {
     } = this.props;
 
     if (!variant) return null;
-    const classSchema = schema.getClass(nodeClass).properties;
+    const classSchema = schema.getProperties(nodeClass);
     const isPositional = nodeClass === 'PositionalVariant';
     let formIsInvalid = !!(invalidFlag && isPositional);
     (classSchema || []).forEach((prop) => {

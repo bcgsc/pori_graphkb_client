@@ -15,13 +15,12 @@ import {
 } from '@material-ui/core';
 import qs from 'qs';
 import omit from 'lodash.omit';
-import gscSchema from '@bcgsc/knowledgebase-schema';
+import SCHEMA_DEFN from '../../schema/src/schema';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
 import { withSchema } from '../../components/SchemaContext/SchemaContext';
 import api from '../../services/api';
-import classes from '../../models/classes';
 import config from '../../static/config';
 
 const { DEFAULT_NEIGHBORS } = config;
@@ -109,21 +108,21 @@ class DataViewBase extends Component {
     // Routing methods
     this.handleGraphRedirect = this.handleGraphRedirect.bind(this);
     this.handleTableRedirect = this.handleTableRedirect.bind(this);
-    console.log(gscSchema);
+    console.log(SCHEMA_DEFN);
   }
 
   /**
    * Queries the api and loads results into component state.
    */
   async componentDidMount() {
-    const { history, schema } = this.props;
+    const { history } = this.props;
 
     const queryParams = qs.parse(history.location.search.slice(1));
     let route = '/ontologies';
     const omitted = [];
-    const kbClass = schema.getClass(queryParams['@class']);
+    const kbClass = SCHEMA_DEFN[queryParams['@class']];
     if (kbClass) {
-      ({ route } = kbClass);
+      ({ routeName: route } = kbClass);
       omitted.push('@class');
     }
     queryParams.neighbors = queryParams.neighbors || DEFAULT_NEIGHBORS;
@@ -161,8 +160,9 @@ class DataViewBase extends Component {
     }
 
     queryResults.forEach((record) => {
+      console.log(SCHEMA_DEFN[record['@class']].getPreview(record));
       allProps = schema.collectOntologyProps(record, allProps);
-      data[record['@rid']] = schema.newRecord(record);
+      data[record['@rid']] = record;
     });
 
     return { data, allProps };
@@ -175,10 +175,9 @@ class DataViewBase extends Component {
    */
   async handleClick(node) {
     const { data } = this.state;
-    const { schema } = this.props;
-    if (!data[node.getId()]) {
-      const { route } = schema.get(node.data['@class']);
-      const endpoint = `${route || '/ontologies'}/${node.getId().slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`; // change
+    if (!data[node.data['@rid']]) {
+      const { routeName } = SCHEMA_DEFN[node.data['@class']];
+      const endpoint = `${routeName || '/ontologies'}/${node.data['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`; // change
       const response = await api.get(endpoint);
       this.setState({ ...this.processData([jc.retrocycle(response).result]) });
     }
@@ -240,7 +239,6 @@ class DataViewBase extends Component {
       next,
       filteredSearch,
     } = this.state;
-    const { schema } = this.props;
 
     if (next) {
       try {
@@ -252,9 +250,9 @@ class DataViewBase extends Component {
 
         let route = '/ontologies';
         const omitted = [];
-        const kbClass = schema.getClass(filteredSearch['@class']);
+        const kbClass = SCHEMA_DEFN[filteredSearch['@class']];
         if (kbClass) {
-          ({ route } = kbClass);
+          ({ routeName: route } = kbClass);
           omitted.push('@class');
         }
 
@@ -278,17 +276,18 @@ class DataViewBase extends Component {
    */
   handleNodeEditStart() {
     const { detail } = this.state;
-    const { history, schema } = this.props;
+    const { history } = this.props;
     if (detail) {
       let route;
-      if (schema.isOntology(detail['@class'])) {
+      const { inherits } = SCHEMA_DEFN[detail['@class']];
+      if (inherits && inherits.includes('Ontology')) {
         route = 'ontology';
-      } else if (schema.isVariant(detail['@class'])) {
+      } else if (inherits && inherits.includes('Variant')) {
         route = 'variant';
       } else if (detail['@class'] === 'Statement') {
         route = 'statement';
       }
-      history.push(`/edit/${route}/${detail.getId().slice(1)}`);
+      history.push(`/edit/${route}/${detail['@rid'].slice(1)}`);
     }
   }
 
@@ -306,17 +305,19 @@ class DataViewBase extends Component {
    * @param {boolean} edge - flag to indicate edge record.
    */
   async handleDetailDrawerOpen(node, open, edge) {
-    const { schema } = this.props;
     const { data, detail } = this.state;
     if (!open && !detail) return;
     if (edge) {
-      this.setState({ detail: new classes.Edge(node.data, schema), detailEdge: true });
+      this.setState({
+        detail: node.data,
+        detailEdge: true,
+      });
     } else {
-      if (!data[node.getId()]) {
-        const response = await api.get(`/ontologies/${node.getId().slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
-        data[node.getId()] = jc.retrocycle(response).result;
+      if (!data[node.data['@rid']]) {
+        const response = await api.get(`/ontologies/${node.data['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
+        data[node.data['@rid']] = jc.retrocycle(response).result;
       }
-      this.setState({ detail: data[node.getId()], detailEdge: false });
+      this.setState({ detail: data[node.data['@rid']], detailEdge: false });
     }
   }
 
@@ -375,7 +376,7 @@ class DataViewBase extends Component {
     }
     const edges = schema.getEdges();
     const cls = filteredSearch && filteredSearch['@class'];
-    const defaultOrders = schema.getClassConstructor(cls || 'Ontology').getIdentifiers();
+    const defaultOrders = SCHEMA_DEFN[cls || 'Ontology'].identifiers;
     const detailDrawer = (
       <DetailDrawer
         node={detail}
@@ -400,6 +401,7 @@ class DataViewBase extends Component {
         allProps={allProps}
         localStorageKey={qs.stringify(filteredSearch)}
         handleNewColumns={this.handleNewColumns}
+        schema={schema}
       />
     );
     const TableWithProps = () => (
@@ -420,6 +422,7 @@ class DataViewBase extends Component {
         completedNext={completedNext}
         storedFilters={storedFilters}
         defaultOrder={defaultOrders}
+        schema={schema}
       />
     );
     return (

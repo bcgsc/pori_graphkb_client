@@ -173,7 +173,7 @@ class OntologyFormComponent extends Component {
     // Wait for form to get initialized
     if (!form) return null;
 
-    const editableProps = (schema.getClass(form['@class'])).properties;
+    const editableProps = schema.getProperties(form['@class']);
     // Validates form
     let formIsInvalid = false;
     editableProps.forEach((prop) => {

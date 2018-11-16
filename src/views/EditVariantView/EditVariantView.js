@@ -8,7 +8,6 @@ import { withSchema } from '../../components/SchemaContext/SchemaContext';
 import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
 import util from '../../services/util';
 import api from '../../services/api';
-import classes from '../../models/classes';
 
 class EditVariantViewBase extends Component {
   constructor(props) {
@@ -24,9 +23,9 @@ class EditVariantViewBase extends Component {
   async componentDidMount() {
     const { match, schema } = this.props;
     const { rid } = match.params;
-    const { route } = schema.get('Variant');
+    const { routeName: route } = schema.get('Variant');
     const response = await api.get(`${route}/${rid}?neighbors=3`);
-    const node = schema.newRecord(jc.retrocycle(response).result);
+    const node = jc.retrocycle(response).result;
     this.setState({
       node,
     });
@@ -64,7 +63,7 @@ class EditVariantViewBase extends Component {
   async submitVariant(variant, relationships, originalRelationships) {
     const { schema } = this.props;
     let oRelationships = originalRelationships;
-    if (!Array.isArray(originalRelationships) && originalRelationships instanceof classes.Record) {
+    if (!Array.isArray(originalRelationships)) {
       oRelationships = originalRelationships.relationships.slice();
     }
     await api.patchEdges(oRelationships || [], relationships, schema);

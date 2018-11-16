@@ -228,10 +228,10 @@ const getTSVRepresentation = (value, key) => {
 /**
  * Prepares a payload to be sent to the server for a POST, PATCH, or GET requst.
  * @param {Object} form - unprocessed form object containing user data.
- * @param {Array} objectSchema - List of valid properties for given form.
+ * @param {Array} properties - List of valid properties for given form.
  * @param {Array} extraProps - List of extra parameters not specified in objectSchema.
  */
-const parsePayload = (form, objectSchema, extraProps, isQuery = false) => {
+const parsePayload = (form, properties, extraProps, isQuery = false) => {
   const payload = Object.assign({}, form);
   Object.keys(payload).forEach((key) => {
     if (!payload[key]) {
@@ -255,7 +255,7 @@ const parsePayload = (form, objectSchema, extraProps, isQuery = false) => {
     if (key.includes('.data')) {
       const nestedKey = key.split('.')[0];
       if (
-        (objectSchema.find(p => p.name === nestedKey)
+        (properties.find(p => p.name === nestedKey)
           || (extraProps && extraProps.includes(nestedKey)))
         && payload[key]
       ) {
@@ -267,7 +267,7 @@ const parsePayload = (form, objectSchema, extraProps, isQuery = false) => {
     }
 
     // Clears out all other unknown fields.
-    if (!objectSchema.find(p => p.name === key)) {
+    if (!properties.find(p => p.name === key)) {
       if (!extraProps || !extraProps.includes(key)) {
         delete payload[key];
       }

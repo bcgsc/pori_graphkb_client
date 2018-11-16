@@ -86,7 +86,7 @@ class AdvancedQueryViewBase extends Component {
     const { schema } = this.props;
     const params = ['@class'];
     params.push(...config.ONTOLOGY_QUERY_PARAMS.map(oqp => oqp.name));
-    const schemaClass = schema.getClass(form['@class']).properties || [];
+    const schemaClass = schema.getProperties(form['@class']) || [];
     schemaClass.push(...config.ONTOLOGY_QUERY_PARAMS);
     const payload = util.parsePayload(form, schemaClass, params, true);
     return qs.stringify(payload);
@@ -146,8 +146,8 @@ class AdvancedQueryViewBase extends Component {
     const { form } = this.state;
     const { schema } = this.props;
     const { value } = e.target;
-    const classSchema = schema.getClass(form['@class']).properties;
-    if (schema.getClass(value)) {
+    const classSchema = schema.getProperties(form['@class']);
+    if (schema.getProperties(value)) {
       const abstractClass = classSchema
         .find(p => p.name === nested).linkedClass.name;
       const varKeys = classSchema
@@ -180,7 +180,7 @@ class AdvancedQueryViewBase extends Component {
     const { history, schema } = this.props;
 
     if (!form) return null;
-    const props = schema.getClass(form['@class']).properties || [];
+    const props = schema.getProperties(form['@class']) || [];
     props.push(...config.ONTOLOGY_QUERY_PARAMS);
 
     return (

@@ -328,8 +328,8 @@ class AutoSearchMulti extends Component {
                   fullWidth
                   label="Class"
                   resources={[
-                    ...schema.getOntologies(true).map(o => o.name),
-                    ...schema.getVariants(true).map(v => v.name),
+                    ...schema.getOntologies().map(o => o.name),
+                    ...schema.getVariants().map(v => v.name),
                     'Statement',
                   ]}
                 >

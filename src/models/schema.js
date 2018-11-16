@@ -109,7 +109,7 @@ class Schema {
    */
   getOntologies(subOnly) {
     const { schema } = this;
-    const list = schema.Ontology.subclasses;
+    const list = schema.Ontology.subclasses.slice();
     if (!subOnly) list.push(schema.Ontology);
     return list;
   }
@@ -120,7 +120,7 @@ class Schema {
    */
   getVariants(subOnly) {
     const { schema } = this;
-    const list = schema.Variant.subclasses;
+    const list = schema.Variant.subclasses.slice();
     if (!subOnly) list.push(schema.Variant);
     return list;
   }
@@ -130,7 +130,7 @@ class Schema {
    */
   getEdges(node = null) {
     const { schema } = this;
-    const list = schema.E.subclasses.map(classModel => classModel.name);
+    const list = schema.E.subclasses.slice().map(classModel => classModel.name);
     if (node) {
       const edges = [];
       Object.keys(node)

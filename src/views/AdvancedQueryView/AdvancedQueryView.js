@@ -242,22 +242,22 @@ class AdvancedQueryViewBase extends Component {
         </Paper>
         <Paper elevation={4} id="adv-nav-buttons">
           <Button
-            variant="outlined"
             color="secondary"
-            onClick={() => history.push({ pathname: '/query', state: this.state })}
+            variant="outlined"
             size="large"
+            onClick={() => history.push({ pathname: '/query' })}
           >
             Back
           </Button>
           <Button
             color="primary"
             variant="contained"
+            size="large"
             id="search-button"
             onClick={() => history.push({
               pathname: '/data/table',
               search: this.bundle(),
             })}
-            size="large"
           >
             Search
           </Button>

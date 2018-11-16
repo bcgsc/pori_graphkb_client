@@ -34,7 +34,7 @@ import AddIcon from '@material-ui/icons/Add';
 import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import schema from './schema/src/schema';
+import SCHEMA_DEFN from './schema/src/schema';
 import {
   AddOntologyView,
   AddStatementView,
@@ -281,7 +281,7 @@ class App extends Component {
       </Switch>
     );
     return schema && (
-      <SchemaContext.Provider value={new Schema(schema)}>
+      <SchemaContext.Provider value={new Schema(SCHEMA_DEFN)}>
         <MuiThemeProvider theme={theme}>
           <Router history={history}>
             <div className="App">
@@ -299,7 +299,7 @@ class App extends Component {
                   </IconButton>
                 )}
                 <div className="appbar-title">
-                  <Link to="/query">
+                  <Link to="/query" onClick={this.handleDrawerClose}>
                     <Typography variant="h6">GraphKB</Typography>
                   </Link>
                 </div>

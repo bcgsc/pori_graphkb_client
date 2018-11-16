@@ -124,7 +124,8 @@ class AdminViewBase extends Component {
     const users = jc.retrocycle(cycledUsers).result;
     const userGroups = AdminViewBase.initializeUserGroups(jc.retrocycle(cycledUserGroups).result);
 
-    Object.keys(schema.schema).forEach((obj) => { newUserGroup.permissions[obj] = [0, 0, 0, 0]; });
+    Object.keys(schema.schema)
+      .forEach((obj) => { newUserGroup.permissions[obj] = [0, 0, 0, 0]; });
     this.setState({
       users,
       userGroups,

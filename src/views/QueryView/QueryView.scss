@@ -30,6 +30,15 @@
     }
     .main-search {
       flex-grow: 1;
+      .query-statements-to {
+        margin: 4px 8px;
+        margin-bottom: auto;
+        color: rgba(0, 0, 0, 0.42);
+        font-size: 16px;
+      }
+      .query-statement-textfield{
+        flex-basis: 50%;
+      }
     }
 
     @media (max-width: $breakpoint-mobile) {
@@ -60,8 +69,4 @@
   text-decoration: none;
   text-decoration-color: white;
   color: white;
-}
-
-.query-statements-to {
-  margin: 8px;
 }

@@ -52,7 +52,6 @@ class RecordChip extends Component {
     if (other.className) {
       className = `${className} ${other.className}`;
     }
-
     const id = schema ? schema.getPreview(record) : Object.values(record).find(v => typeof v === 'string');
 
     return (
@@ -81,14 +80,14 @@ class RecordChip extends Component {
                       {record['@class']}
                     </TableCell>
                   </TableRow>
-                  {record.getId && (
+                  {record['@rid'] && (
                     <TableRow>
                       <TableCell padding="checkbox">
                         <Typography variant="body2">@rid</Typography>
                       </TableCell>
                       <TableCell />
                       <TableCell padding="checkbox">
-                        {record.getId()}
+                        {record['@rid']}
                       </TableCell>
                     </TableRow>)}
                   {record.source && (

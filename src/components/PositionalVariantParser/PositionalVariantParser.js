@@ -98,7 +98,7 @@ class PositionalVariantParser extends Component {
     if (!value) {
       const newVariant = schema.initModel({}, 'PositionalVariant');
       Object.keys(newVariant).forEach((k) => {
-        if (typeof newVariant[k] === 'object' && newVariant[k]['@class']) {
+        if (newVariant[k] && typeof newVariant[k] === 'object' && newVariant[k]['@class']) {
           newVariant[k]['@class'] = '';
         }
       });
@@ -178,11 +178,11 @@ class PositionalVariantParser extends Component {
     await Promise.all(linkProps.map(async (prop) => {
       const { name, linkedClass } = prop;
       if (parsed[name] && linkedClass && linkedClass.route) {
-        const data = await api.get(`${linkedClass.route}?name=${parsed[name]}`);
+        const data = await api.get(`${linkedClass.route}?name=${parsed[name]}&neighbors=1`);
         const cycled = jc.retrocycle(data).result;
         if (cycled.length === 1) {
-          newValues[name] = cycled[0].name;
-          newValues[`${name}.@rid`] = cycled[0]['@rid'];
+          [newValues[`${name}.data`]] = cycled;
+          newValues[name] = schema.newRecord(cycled[0]).getPreview();
         } else if (cycled.length > 1) {
           // add multiple modals?
         } else if (cycled.length === 0) {
@@ -386,9 +386,12 @@ class PositionalVariantParser extends Component {
     const classSchema = schema.getClass(nodeClass).properties;
     const isPositional = nodeClass === 'PositionalVariant';
     let formIsInvalid = !!(invalidFlag && isPositional);
+    console.log(formIsInvalid);
+    console.log(variant);
     (classSchema || []).forEach((prop) => {
       if (prop.mandatory) {
         if (prop.type === 'link' && (!variant[`${prop.name}.data`] || !variant[`${prop.name}.data`]['@rid'])) {
+          console.log(prop.name);
           formIsInvalid = true;
         } else if (prop.type !== 'boolean' && !variant[prop.name]) {
           formIsInvalid = true;

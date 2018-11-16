@@ -145,7 +145,7 @@ class QueryViewBase extends Component {
         true,
       );
       Object.keys(payload).forEach((k) => {
-        const trimmed = String(payload[k]).trim().toLowerCase();
+        const trimmed = String(payload[k]).trim();
         if (!trimmed.split(KB_SEP_CHARS).some(chunk => chunk.length < 4)) {
           payload[k] = `~${trimmed}`;
         } else {

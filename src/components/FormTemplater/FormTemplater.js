@@ -26,6 +26,7 @@ import util from '../../services/util';
  */
 function FormTemplater(props) {
   const {
+    appendToKeys,
     model,
     propSchemas,
     schema,
@@ -63,7 +64,7 @@ function FormTemplater(props) {
       return (
         <ListItem
           component={fieldComponent}
-          key={name}
+          key={`${appendToKeys}.${name}`}
           disableGutters={disablePadding}
         >
           <FormControl
@@ -105,7 +106,7 @@ function FormTemplater(props) {
           <ListItem
             className="form-templater-autosearch"
             component={fieldComponent}
-            key={name}
+            key={`${appendToKeys}.${name}`}
             disableGutters={disablePadding}
           >
             <AutoSearchSingle
@@ -134,7 +135,7 @@ function FormTemplater(props) {
         <ListItem
           className="form-templater-autosearch"
           component={fieldComponent}
-          key={name}
+          key={`${appendToKeys}.${name}`}
           disableGutters={disablePadding}
         >
           <AutoSearchMulti
@@ -182,7 +183,7 @@ function FormTemplater(props) {
       return (
         <ListItem
           component={fieldComponent}
-          key={name}
+          key={`${appendToKeys}.${name}`}
           disableGutters={disablePadding}
         >
           <div className="form-templater-embedded-selector">
@@ -212,7 +213,7 @@ function FormTemplater(props) {
       return (
         <ListItem
           component={fieldComponent}
-          key={name}
+          key={`${appendToKeys}.${name}`}
           disableGutters={disablePadding}
         >
           <EmbeddedListForm
@@ -230,7 +231,7 @@ function FormTemplater(props) {
       return (
         <ListItem
           component={fieldComponent}
-          key={name}
+          key={`${appendToKeys}.${name}`}
           disableGutters={disablePadding}
         >
           <ResourceSelectComponent
@@ -283,7 +284,7 @@ function FormTemplater(props) {
     return (
       <ListItem
         component={fieldComponent}
-        key={name}
+        key={`${appendToKeys}.${name}`}
         disableGutters={disablePadding}
       >
         <TextField
@@ -336,7 +337,7 @@ function FormTemplater(props) {
         } else {
           fields.push((
             <ListItem
-              key={key}
+              key={`${appendToKeys}.${key}`}
               component="div"
               className="form-templater-group-wrapper"
               id={key}

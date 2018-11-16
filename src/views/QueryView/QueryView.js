@@ -14,7 +14,7 @@ import {
   InputAdornment,
   Typography,
 } from '@material-ui/core';
-import kbp from 'knowledgebase-parser';
+import kbp from '@bcgsc/knowledgebase-parser';
 import * as qs from 'querystring';
 import SearchIcon from '@material-ui/icons/Search';
 import AutoSearchSingle from '../../components/AutoSearchSingle/AutoSearchSingle';
@@ -110,15 +110,16 @@ class QueryViewBase extends Component {
       let trimmed = [relevance, appliesTo].map(v => String(v).trim().toLowerCase());
       const matched = trimmed.map(t => !t.split(KB_SEP_CHARS).some(chunk => chunk.length < 4));
       trimmed = trimmed.map((t, i) => matched[i] ? `~${t}` : t);
-      let search = '?@class=Statement';
+      let search = ['?@class=Statement'];
       if (trimmed[0]) {
         // Cast string to linked property name
-        search += `&relevance[name]=${encodeURIComponent(trimmed[0])}`;
+        search.push(`relevance[name]=${encodeURIComponent(trimmed[0])}`);
       }
       if (trimmed[1]) {
         // Cast string to linked property name
-        search += `${trimmed[0] && '&'}appliesTo[name]=${encodeURIComponent(trimmed[1])}`;
+        search.push(`appliesTo[name]=${encodeURIComponent(trimmed[1])}`);
       }
+      search = search.join('&');
       history.push({
         pathname: '/data/table',
         search,
@@ -140,12 +141,12 @@ class QueryViewBase extends Component {
       ['type', 'reference1', 'reference2'].forEach((k) => { variant[k] = { name: variant[k] }; });
       const payload = util.parsePayload(
         variant,
-        schema.getClass('PositionalVariant').properties.filter(p => !p.name.includes('Repr')),
+        schema.getProperties('PositionalVariant').filter(p => !p.name.includes('Repr')),
         [],
         true,
       );
       Object.keys(payload).forEach((k) => {
-        const trimmed = String(payload[k]).trim();
+        const trimmed = String(payload[k]).trim().toLowerCase();
         if (!trimmed.split(KB_SEP_CHARS).some(chunk => chunk.length < 4)) {
           payload[k] = `~${trimmed}`;
         } else {
@@ -170,7 +171,7 @@ class QueryViewBase extends Component {
     const { schema } = this.props;
     const { name, value } = e.target;
     if (name && name.includes('.data') && value) {
-      this.setState({ [name.split('.data')[0]]: schema.newRecord(value).getPreview() });
+      this.setState({ [name.split('.data')[0]]: schema.getPreview(value) });
     } else {
       this.setState({ [name]: value, disabled: false });
     }
@@ -292,7 +293,7 @@ class QueryViewBase extends Component {
                   fullWidth
                   value={relevance}
                   name="relevance"
-                  endpoint={schema.getClass('Vocabulary').route.slice(1)}
+                  endpoint={schema.getRoute('Vocabulary').slice(1)}
                   onChange={this.handleChange}
                   className="query-statement-textfield"
                   endAdornment={null}
@@ -303,7 +304,7 @@ class QueryViewBase extends Component {
                   fullWidth
                   value={appliesTo}
                   name="appliesTo"
-                  endpoint={schema.getClass('Ontology').route.slice(1)}
+                  endpoint={schema.getRoute('Ontology').slice(1)}
                   onChange={this.handleChange}
                   className="query-statement-textfield"
                   endAdornment={(

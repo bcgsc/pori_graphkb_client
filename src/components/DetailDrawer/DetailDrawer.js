@@ -308,7 +308,7 @@ class DetailDrawer extends Component {
           const targetNode = isIn ? edge.out : edge.in;
           let preview;
           try {
-            preview = schema.get(targetNode['@class']).getPreview(node);
+            preview = schema.getPreview(targetNode);
           } catch (e) {
             preview = 'Invalid variant';
           }

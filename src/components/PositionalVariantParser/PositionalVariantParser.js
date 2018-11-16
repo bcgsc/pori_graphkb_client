@@ -35,6 +35,7 @@ const DEFAULT_ORDER = [
 const SHORTHAND_EXCLUDED = [
   'germline',
   'zygosity',
+  'assembly',
 ];
 
 class PositionalVariantParser extends Component {

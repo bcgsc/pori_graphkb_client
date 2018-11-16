@@ -295,7 +295,6 @@ class OntologyFormComponent extends Component {
  * @namespace
  * @property {Object} node - node object to be edited.
  * @property {string} variant - specifies form type/function.
- * @property {Array} sources - List of Knowledgebase ontology sources.
  * @property {Object} schema - Knowledgebase db schema.
  * @property {Array} edgeTypes - List of Knowledgebase ontology edge classes.
  * @property {function} handleFinish - Function triggered when node is edited

@@ -303,7 +303,7 @@ class AutoSearchMulti extends Component {
               selected={downshiftProps.highlightedIndex === index}
             >
               <span>
-                {schema.newRecord(item).getPreview()}
+                {schema.getPreview(item)}
                 <Typography color="textSecondary" variant="body1">
                   {item.source && item.source.name ? item.source.name : ''}
                 </Typography>

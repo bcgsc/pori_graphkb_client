@@ -153,6 +153,7 @@ class AutoSearchSingle extends Component {
       selected,
       disablePortal,
       schema,
+      className,
     } = this.props;
 
     const TextFieldProps = {
@@ -166,6 +167,7 @@ class AutoSearchSingle extends Component {
 
     return (
       <AutoSearchBase
+        className={className}
         options={options}
         value={value}
         selected={selected}
@@ -221,6 +223,7 @@ class AutoSearchSingle extends Component {
  * @property {Record} selected - Last selected record.
  */
 AutoSearchSingle.propTypes = {
+  className: PropTypes.string,
   name: PropTypes.string,
   value: PropTypes.string,
   onChange: PropTypes.func,
@@ -238,6 +241,7 @@ AutoSearchSingle.propTypes = {
 };
 
 AutoSearchSingle.defaultProps = {
+  className: '',
   limit: 30,
   endpoint: 'ontologies',
   property: ['name'],

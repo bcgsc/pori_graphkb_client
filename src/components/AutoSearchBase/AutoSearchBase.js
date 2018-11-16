@@ -19,6 +19,9 @@ import RecordChip from '../RecordChip/RecordChip';
 
 const PROGRESS_SPINNER_SIZE = 20;
 
+/**
+ * Base component for all autosearch components.
+ */
 class AutoSearchBase extends Component {
   constructor(props) {
     super(props);
@@ -29,6 +32,7 @@ class AutoSearchBase extends Component {
 
   render() {
     const {
+      className,
       children,
       value,
       selected,
@@ -70,7 +74,7 @@ class AutoSearchBase extends Component {
           } = downshiftProps;
           const empty = options.length === 0 && isOpen && !loading;
           return (
-            <div className="autosearch-wrapper">
+            <div className={`${className} autosearch-wrapper`}>
               <div className="autosearch-popper-node" ref={this.setRef}>
                 <TextField
                   {...otherTextFieldProps}
@@ -175,6 +179,7 @@ AutoSearchBase.propTypes = {
   DownshiftProps: PropTypes.object,
   disablePortal: PropTypes.bool,
   schema: PropTypes.object,
+  className: PropTypes.string,
 };
 
 AutoSearchBase.defaultProps = {
@@ -205,6 +210,7 @@ AutoSearchBase.defaultProps = {
   DownshiftProps: {},
   disablePortal: false,
   schema: null,
+  className: '',
 };
 
 export default AutoSearchBase;

@@ -137,7 +137,7 @@ class RelationshipsForm extends Component {
     const { name, value } = e.target;
     model[name] = value;
     if (name && name.includes('.data') && value) {
-      model[name.split('.')[0]] = schema.newRecord(value).getPreview();
+      model[name.split('.')[0]] = schema.getPreview(value);
     }
     this.setState({ model });
   }
@@ -226,7 +226,7 @@ class RelationshipsForm extends Component {
       : 'in';
     return (
       <div className="relationships-expansion">
-        {schema.getClass(r['@class']).properties.filter(k => (
+        {schema.getProperties(r['@class']).filter(k => (
           k.name !== (isIn ? 'in' : 'out')
           && r[k.name]
         )).map(k => (
@@ -260,7 +260,7 @@ class RelationshipsForm extends Component {
     } = this.props;
 
     if (!model) return null;
-    const editableProps = (schema.getClass(model['@class'])).properties;
+    const editableProps = (schema.getProperties(model['@class']));
 
     let formIsInvalid = false;
     editableProps.forEach((prop) => {
@@ -305,7 +305,7 @@ class RelationshipsForm extends Component {
           </ListItem>
           <ListItem disableGutters>
             <AutoSearchMulti
-              selected={schema.newRecord(forward ? model['in.data'] : model['out.data'])}
+              selected={forward ? model['in.data'] : model['out.data']}
               label="Target Record"
               value={forward ? model.in : model.out}
               onChange={this.handleChange}
@@ -374,7 +374,7 @@ class RelationshipsForm extends Component {
                     name,
                     reverseName,
                   } = schema.get(r['@class']);
-                  const shouldExpand = schema.getClass(r['@class']).properties
+                  const shouldExpand = schema.getProperties(r['@class'])
                     .filter(k => r[k.name] !== undefined && !(r[`${k.name}.data`] && r[`${k.name}.data`] === null))
                     .length > DEFAULT_RELATIONSHIPS_PROPSLENGTH;
                   const isIn = (r['in.data'] || {})['@rid'] === nodeRid;

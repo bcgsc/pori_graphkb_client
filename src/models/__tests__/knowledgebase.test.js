@@ -1,7 +1,8 @@
 import { expect } from 'chai';
-import classes from '../classes';
+// import classes from '../classes';
 import Schema from '../schema';
 
+const classes = {};
 const {
   Ontology,
   Edge,

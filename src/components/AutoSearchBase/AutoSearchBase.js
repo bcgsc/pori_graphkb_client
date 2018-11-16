@@ -42,6 +42,7 @@ class AutoSearchBase extends Component {
       TextFieldProps,
       DownshiftProps,
       disablePortal,
+      schema,
     } = this.props;
 
     const autoSearchResults = downshiftProps => options
@@ -99,6 +100,7 @@ class AutoSearchBase extends Component {
                         <RecordChip
                           onDelete={() => onClear ? onClear() : null}
                           record={selected}
+                          schema={schema}
                         />
                       ) : null,
                   }}
@@ -172,6 +174,7 @@ AutoSearchBase.propTypes = {
   TextFieldProps: PropTypes.object,
   DownshiftProps: PropTypes.object,
   disablePortal: PropTypes.bool,
+  schema: PropTypes.object,
 };
 
 AutoSearchBase.defaultProps = {
@@ -201,6 +204,7 @@ AutoSearchBase.defaultProps = {
   TextFieldProps: {},
   DownshiftProps: {},
   disablePortal: false,
+  schema: null,
 };
 
 export default AutoSearchBase;

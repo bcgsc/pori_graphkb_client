@@ -152,6 +152,7 @@ class AutoSearchSingle extends Component {
       error,
       selected,
       disablePortal,
+      schema,
     } = this.props;
 
     const TextFieldProps = {
@@ -175,6 +176,7 @@ class AutoSearchSingle extends Component {
         onSelect={this.handleChange}
         endAdornment={endAdornment}
         disablePortal={disablePortal}
+        schema={schema}
       >
         {(item, index, downshiftProps) => (
           <MenuItem
@@ -232,6 +234,7 @@ AutoSearchSingle.propTypes = {
   disabled: PropTypes.bool,
   selected: PropTypes.object,
   disablePortal: PropTypes.bool,
+  schema: PropTypes.object,
 };
 
 AutoSearchSingle.defaultProps = {
@@ -248,6 +251,7 @@ AutoSearchSingle.defaultProps = {
   onChange: () => { },
   disabled: false,
   disablePortal: false,
+  schema: null,
 };
 
 export default AutoSearchSingle;

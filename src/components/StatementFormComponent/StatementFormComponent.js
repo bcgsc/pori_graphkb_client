@@ -117,7 +117,7 @@ class StatementFormComponent extends Component {
 
     if (!form) return null;
     let formIsInvalid = false;
-    schema.getClass('Statement').properties.forEach((prop) => {
+    schema.getProperties('Statement').forEach((prop) => {
       if (prop.mandatory) {
         if (prop.type === 'link' && !(form[`${prop.name}.data`] && form[`${prop.name}.data`]['@rid'])) {
           formIsInvalid = true;
@@ -170,7 +170,7 @@ class StatementFormComponent extends Component {
               <FormTemplater
                 model={form}
                 schema={schema}
-                propSchemas={schema.getClass('Statement').properties}
+                propSchemas={schema.getProperties('Statement')}
                 onChange={this.handleChange}
                 excludedProps={node ? undefined : ['reviewStatus', 'reviewComment']}
               />

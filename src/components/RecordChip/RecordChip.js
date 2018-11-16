@@ -14,7 +14,6 @@ import {
   TableCell,
 } from '@material-ui/core';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
-import util from '../../services/util';
 
 class RecordChip extends Component {
   constructor(props) {
@@ -44,6 +43,7 @@ class RecordChip extends Component {
   render() {
     const {
       record,
+      schema,
       ...other
     } = this.props;
     const { anchorEl } = this.state;
@@ -53,7 +53,7 @@ class RecordChip extends Component {
       className = `${className} ${other.className}`;
     }
 
-    const id = record.getPreview ? record.getPreview() : util.castToExist(record);
+    const id = schema ? schema.getPreview(record) : Object.values(record).find(v => typeof v === 'string');
 
     return (
       <React.Fragment>

@@ -37,6 +37,7 @@ class RelationshipsForm extends Component {
       originalRelationships: relationships && relationships.slice(),
       expanded: null,
       minimized: false,
+      initState: null,
     };
     this.testId = 0;
     this.handleAdd = this.handleAdd.bind(this);
@@ -55,7 +56,8 @@ class RelationshipsForm extends Component {
     const model = schema.initModel({}, edges[0]);
     model['out.data'] = { '@rid': nodeRid };
     model['@rid'] = this.applyTestId();
-    this.setState({ model, edges });
+    const initState = Object.assign({}, model);
+    this.setState({ model, edges, initState });
   }
 
   /**
@@ -242,7 +244,7 @@ class RelationshipsForm extends Component {
       </div>
     );
   }
-
+  /* eslint-disable */
 
   render() {
     const {
@@ -251,13 +253,14 @@ class RelationshipsForm extends Component {
       forward,
       expanded,
       minimized,
+      initState,
     } = this.state;
     const {
       schema,
       relationships,
       nodeRid,
-      emptyMsg,
-      empty,
+      errorMsg,
+      error,
     } = this.props;
 
     if (!model) return null;
@@ -273,6 +276,9 @@ class RelationshipsForm extends Component {
         }
       }
     });
+
+    const isPristine = !Object.keys(model).some(key => model[key] !== initState[key]);
+
     return (
       <div className="relationships-form-wrapper">
         <fieldset className="relationships-temp-fields">
@@ -332,6 +338,7 @@ class RelationshipsForm extends Component {
               Add Relationship
             </Button>
           </div>
+          {!isPristine && error && <Typography color="error">{errorMsg}</Typography>}
         </fieldset>
         <Typography variant="h5">Relationships</Typography>
         <div className={`relationships-form-table-wrapper ${minimized ? 'relationships-table-minimized' : ''}`}>
@@ -367,7 +374,7 @@ class RelationshipsForm extends Component {
                   : e => this.handleDelete(e, r['@rid']);
                 const ButtonIcon = r.deleted
                   ? <RefreshIcon color="primary" />
-                  : <CloseIcon color="error" />;
+                  : <CloseIcon />;
                 const {
                   properties,
                   name,
@@ -430,10 +437,10 @@ class RelationshipsForm extends Component {
                   </React.Fragment>
                 );
               })}
-              {(relationships.length > 0 || empty) && (
+              {relationships.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={5} className="relationships-empty-placeholder">
-                    <Typography variant="overline">{emptyMsg}</Typography>
+                    <Typography variant="overline">No Relationships</Typography>
                   </TableCell>
                 </TableRow>
               )}
@@ -462,8 +469,8 @@ RelationshipsForm.propTypes = {
   name: PropTypes.string,
   nodeRid: PropTypes.string,
   edgeTypes: PropTypes.array,
-  emptyMsg: PropTypes.string,
-  empty: PropTypes.bool,
+  errorMsg: PropTypes.string,
+  error: PropTypes.bool,
 };
 
 RelationshipsForm.defaultProps = {
@@ -471,8 +478,6 @@ RelationshipsForm.defaultProps = {
   name: '',
   nodeRid: '#node_rid',
   edgeTypes: null,
-  emptyMsg: 'No Relationships',
-  empty: false,
 };
 
 export default RelationshipsForm;

@@ -156,8 +156,8 @@ class StatementFormComponent extends Component {
               onChange={this.handleChange}
               name="relationships"
               edgeTypes={['Implies', 'SupportedBy']}
-              emptyMsg="Statements need at least 1 Implication edge and 1 Support edge"
-              empty={!oneOfEachEdge}
+              errorMsg="Statements need at least 1 Implication edge and 1 Support edge"
+              error={!oneOfEachEdge && relationships.length > 0}
             />
           </Paper>
         </div>

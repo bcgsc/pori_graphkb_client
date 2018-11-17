@@ -26,10 +26,12 @@ class AddStatementViewBase extends Component {
     const { schema } = this.props;
     const route = schema.getRoute(form['@class']);
     const properties = schema.getProperties(form['@class']);
+
     const payload = util.parsePayload(form, properties);
     const relationshipPayloads = relationships.map((r) => {
       const relationshipProperties = schema.getProperties(r['@class'], ['@class']);
       const rPayload = util.parsePayload(r, relationshipProperties);
+
       Object.keys(rPayload).forEach((k) => {
         if (!rPayload[k] || rPayload[k] === '#node_rid') {
           delete rPayload[k];

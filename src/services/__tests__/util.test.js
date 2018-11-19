@@ -1,14 +1,5 @@
 import { expect } from 'chai';
 import util from '../util';
-import classes from '../../models/classes';
-import Schema from '../../models/schema';
-
-const { Ontology } = classes;
-const mockSchema = new Schema({
-  cls1: {
-    inherits: ['Ontology'],
-  },
-});
 
 describe('validate outputs for util methods', () => {
   it('antiCamelCase', () => {
@@ -78,19 +69,19 @@ describe('validate outputs for util methods', () => {
 
   it('getTSVRepresentation', () => {
     const testTSVs = [
-      new Ontology({
+      {
         name: 'fail',
         sourceId: 'fail',
         key: 'pass',
-      }, mockSchema),
-      new Ontology({
+      },
+      {
         key:
         {
           name: 'pass',
           failfail: 'fail',
           fail: 'fail',
         },
-      }, mockSchema),
+      },
     ];
     testTSVs.forEach((testTSV) => {
       expect(util.getTSVRepresentation(testTSV.key, 'key').toLowerCase()).to.eq('pass');
@@ -166,7 +157,8 @@ describe('validate outputs for util methods', () => {
       { name: 'blargh' },
       { name: 'sourceId' },
       { name: 'source' },
-      { name: 'class' },
+      { name: 'link', type: 'link' },
+      { name: 'embedded' },
     ];
     const testPayloads = [
       {
@@ -176,10 +168,10 @@ describe('validate outputs for util methods', () => {
         filteredOut: '',
       },
       {
-        'name.data': {
+        'link.data': {
           '@rid': 'name',
         },
-        name: 'fail',
+        link: 'fail',
         's.data': {
           '@rid': 'fail',
         },
@@ -191,16 +183,32 @@ describe('validate outputs for util methods', () => {
         blargh: 'blargh',
       },
       {
-        name: 'name',
+        link: 'name',
       },
     ];
 
+    const flattenedTest = {
+      name: 'test case',
+      blargh: null,
+      embedded: {
+        name: 'nested prop',
+        evenMoreNested: {
+          xyz: 'abc',
+        },
+      },
+    };
+    const flattened = {
+      name: 'test case',
+      'embedded[name]': 'nested prop',
+      'embedded[evenMoreNested][xyz]': 'abc',
+    };
+
     testPayloads.forEach((payload, i) => {
       const filtered = util.parsePayload(payload, testProps);
-      Object.keys(filtered).forEach((key) => {
-        expect(filtered[key]).to.eq(output[i][key]);
-      });
+      expect(filtered).to.deep.equal(output[i]);
     });
+
+    expect(util.parsePayload(flattenedTest, testProps, [], true)).to.eql(flattened);
   });
 
   it('getPallette', () => {

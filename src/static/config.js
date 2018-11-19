@@ -111,7 +111,7 @@ export default {
     {
       name: 'activeOnly',
       type: 'boolean',
-      defaultValue: 'true',
+      default: true,
     },
   ],
   DESCRIPTIONS: {

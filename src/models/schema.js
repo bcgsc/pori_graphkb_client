@@ -62,8 +62,8 @@ class Schema {
         type,
         linkedClass,
         min,
+        default: defaultValue,
       } = property;
-      const defaultValue = property.default;
       switch (type) {
         case 'embeddedset':
           newModel[name] = model[name] ? model[name].slice() : [];

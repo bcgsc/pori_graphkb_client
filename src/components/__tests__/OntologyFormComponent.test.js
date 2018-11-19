@@ -137,13 +137,13 @@ describe('<OntologyFormComponent />', () => {
         handleSubmit={handleSubmit}
       />,
     );
-    expect(wrapper.find('button#submit-btn[disabled]'));
+    expect(wrapper.find('button#submit-btn'));
     wrapper.find('nav textarea[name="name"]').simulate('change', { target: { value: 'test', name: 'name' } });
     const { form } = wrapper.state();
     form.linkprop = 'test link';
     form['linkprop.data'] = { '@rid': 'test rid' };
     wrapper.setState({ form });
-    expect(wrapper.find('.form-btns button[type="submit"]').props().disabled).to.eq(false);
+    expect(wrapper.find('.form-btns button#submit-btn').props().disabled).to.eq(false);
     wrapper.find('#submit-btn').first().simulate('click');
     expect(OntologyFormComponent.prototype.handleSubmit).to.have.property('callCount', 1);
     expect(handleSubmit.mock.calls.length).to.eq(1);

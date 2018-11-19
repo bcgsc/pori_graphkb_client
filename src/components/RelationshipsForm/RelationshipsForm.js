@@ -261,6 +261,7 @@ class RelationshipsForm extends Component {
       nodeRid,
       errorMsg,
       error,
+      overridePristine,
     } = this.props;
 
     if (!model) return null;
@@ -338,7 +339,7 @@ class RelationshipsForm extends Component {
               Add Relationship
             </Button>
           </div>
-          {!isPristine && error && <Typography color="error">{errorMsg}</Typography>}
+          {(!isPristine || overridePristine) && error && <Typography color="error">{errorMsg}</Typography>}
         </fieldset>
         <Typography variant="h5">Relationships</Typography>
         <div className={`relationships-form-table-wrapper ${minimized ? 'relationships-table-minimized' : ''}`}>
@@ -461,6 +462,7 @@ class RelationshipsForm extends Component {
  * @property {string} name - property key name of relationships on parent
  * component.
  * @property {string} nodeRid - record ID of input node.
+ * @property {boolean} overridePristine - flag to override form pristine check
  */
 RelationshipsForm.propTypes = {
   onChange: PropTypes.func.isRequired,
@@ -471,6 +473,7 @@ RelationshipsForm.propTypes = {
   edgeTypes: PropTypes.array,
   errorMsg: PropTypes.string,
   error: PropTypes.bool,
+  overridePristine: PropTypes.bool,
 };
 
 RelationshipsForm.defaultProps = {

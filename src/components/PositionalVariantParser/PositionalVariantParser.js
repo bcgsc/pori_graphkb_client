@@ -355,11 +355,31 @@ class PositionalVariantParser extends Component {
   /* eslint-disable */
   async submitVariant(e) {
     e.preventDefault();
-    this.setState({ loading: true, notificationDrawerOpen: true });
-    const { variant, relationships, originalRelationships } = this.state;
-    const { handleSubmit } = this.props;
-    await handleSubmit(variant, relationships, originalRelationships);
-    this.setState({ loading: false });
+    const { variant, relationships, originalRelationships, invalidFlag } = this.state;
+    const { handleSubmit, schema } = this.props;
+
+    const classSchema = schema.getClass('PositionalVariant').properties;
+    let formIsInvalid = !!(invalidFlag);
+    const errorFields = [];
+
+    (classSchema || []).forEach((prop) => {
+      if (prop.mandatory) {
+        if (prop.type === 'link' && (!variant[`${prop.name}.data`] || !variant[`${prop.name}.data`]['@rid'])) {
+          errorFields.push(prop.name);
+          formIsInvalid = true;
+        } else if (prop.type !== 'boolean' && !variant[prop.name]) {
+          errorFields.push(prop.name);
+          formIsInvalid = true;
+        }
+      }
+    });
+    if (formIsInvalid) {
+      this.setState({ errorFields });
+    } else {
+      this.setState({ loading: true, notificationDrawerOpen: true });
+      await handleSubmit(variant, relationships, originalRelationships);
+      this.setState({ loading: false });
+    }
   }
 
   render() {
@@ -386,16 +406,6 @@ class PositionalVariantParser extends Component {
     if (!variant) return null;
     const classSchema = schema.getClass(nodeClass).properties;
     const isPositional = nodeClass === 'PositionalVariant';
-    let formIsInvalid = !!(invalidFlag && isPositional);
-    (classSchema || []).forEach((prop) => {
-      if (prop.mandatory) {
-        if (prop.type === 'link' && (!variant[`${prop.name}.data`] || !variant[`${prop.name}.data`]['@rid'])) {
-          formIsInvalid = true;
-        } else if (prop.type !== 'boolean' && !variant[prop.name]) {
-          formIsInvalid = true;
-        }
-      }
-    });
     const shorthandError = !!(error || invalidFlag);
 
     const dialog = (
@@ -516,7 +526,6 @@ class PositionalVariantParser extends Component {
             onClick={this.submitVariant}
             color="primary"
             variant="contained"
-            disabled={formIsInvalid}
           >
             Submit
           </Button>

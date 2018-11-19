@@ -137,7 +137,7 @@ describe('<OntologyFormComponent />', () => {
         handleSubmit={handleSubmit}
       />,
     );
-    expect(wrapper.find('button#submit-btn[disabled]'));
+    expect(wrapper.find('button#submit-btn'));
     wrapper.find('nav textarea[name="name"]').simulate('change', { target: { value: 'test', name: 'name' } });
     const { form } = wrapper.state();
     form.linkprop = 'test link';

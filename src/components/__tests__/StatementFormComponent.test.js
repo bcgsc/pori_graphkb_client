@@ -121,7 +121,7 @@ describe('<StatementFormComponent />', () => {
       />,
     );
 
-    expect(wrapper.find('#statement-submit-btn').first().props().disabled).to.eq(true);
+    expect(wrapper.find('#statement-submit-btn').first().props().disabled).to.eq(undefined);
   });
 
   it('form validity', () => {
@@ -152,7 +152,7 @@ describe('<StatementFormComponent />', () => {
         },
       ],
     });
-    expect(wrapper.find('#statement-submit-btn').first().props().disabled).to.eq(true);
+    expect(wrapper.find('#statement-submit-btn').first().props().disabled).to.eq(undefined);
     wrapper.setState({
       relationships: [
         {
@@ -163,7 +163,7 @@ describe('<StatementFormComponent />', () => {
         },
       ],
     });
-    expect(wrapper.find('#statement-submit-btn').first().props().disabled).to.eq(false);
+    expect(wrapper.find('#statement-submit-btn').first().props().disabled).to.eq(undefined);
   });
 
   it('change handlers', () => {
@@ -194,7 +194,7 @@ describe('<StatementFormComponent />', () => {
         node={validNode}
       />,
     );
-    expect(wrapper.find('#statement-submit-btn').first().props().disabled).to.eq(false);
+    expect(wrapper.find('#statement-submit-btn').first().props().disabled).to.eq(undefined);
     wrapper.find('#statement-submit-btn').first().simulate('click');
     expect(mockSubmit.mock.calls.length).to.eq(1);
   });

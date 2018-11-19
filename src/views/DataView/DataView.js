@@ -160,7 +160,6 @@ class DataViewBase extends Component {
     }
 
     queryResults.forEach((record) => {
-      console.log(SCHEMA_DEFN[record['@class']].getPreview(record));
       allProps = schema.collectOntologyProps(record, allProps);
       data[record['@rid']] = record;
     });

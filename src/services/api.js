@@ -34,12 +34,13 @@ const getHeaders = () => {
  * @param {Object} init - Request properties.
  */
 const fetchWithInterceptors = async (endpoint, init) => {
-  const initWithInterceptors = {
-    ...init,
-    headers: getHeaders(),
-  };
   try {
-    const response = await fetch(new Request(API_BASE_URL + endpoint, initWithInterceptors));
+    const initWithInterceptors = {
+      ...init,
+      headers: getHeaders(),
+    };
+    const request = new Request(API_BASE_URL + endpoint, initWithInterceptors);
+    const response = await fetch(request);
     if (response.ok) {
       return response.json();
     }
@@ -77,7 +78,7 @@ const fetchWithInterceptors = async (endpoint, init) => {
         statusText: 'Fetch',
       },
     });
-    return Promise.reject(error);
+    return Promise.reject('Unexpected Error, redirecting...');
   }
 };
 

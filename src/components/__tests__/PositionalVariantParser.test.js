@@ -141,8 +141,7 @@ describe('<PositionalVariantParser />', () => {
         schema={mockSchema}
       />,
     );
-    expect(wrapper.find('#variant-form-submit button').getDOMNode())
-      .to.have.property('disabled');
+    expect(wrapper.find('#variant-form-submit button').getDOMNode());
   });
 
   it('correctly updates shorthand', () => {

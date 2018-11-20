@@ -18,7 +18,7 @@ import omit from 'lodash.omit';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
-import { withSchema } from '../../components/SchemaContext/SchemaContext';
+import { withKB } from '../../components/KBContext/KBContext';
 import api from '../../services/api';
 import classes from '../../models/classes';
 import config from '../../static/config';
@@ -471,7 +471,7 @@ DataViewBase.propTypes = {
   schema: PropTypes.object.isRequired,
 };
 
-const DataView = withSchema(DataViewBase);
+const DataView = withKB(DataViewBase);
 
 export {
   DataView,

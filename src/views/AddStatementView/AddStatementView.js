@@ -5,7 +5,7 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
-import { withSchema } from '../../components/SchemaContext/SchemaContext';
+import { withKB } from '../../components/KBContext/KBContext';
 import api from '../../services/api';
 import util from '../../services/util';
 import StatementFormComponent from '../../components/StatementFormComponent/StatementFormComponent';
@@ -86,7 +86,7 @@ AddStatementViewBase.propTypes = {
   schema: PropTypes.object.isRequired,
 };
 
-const AddStatementView = withSchema(AddStatementViewBase);
+const AddStatementView = withKB(AddStatementViewBase);
 
 export {
   AddStatementView,

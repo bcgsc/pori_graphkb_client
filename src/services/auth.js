@@ -49,7 +49,7 @@ export default {
   getUser: () => {
     const token = localStorage.getItem(KB_TOKEN);
     if (token && jwt.decode(token)) {
-      return jwt.decode(token).user.name;
+      return jwt.decode(token).user;
     }
     return null;
   },

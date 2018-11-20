@@ -48,7 +48,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import CancelIcon from '@material-ui/icons/Cancel';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import PermissionsTable from '../../components/PermissionsTable/PermissionsTable';
-import { withSchema } from '../../components/SchemaContext/SchemaContext';
+import { withKB } from '../../components/KBContext/KBContext';
 import api from '../../services/api';
 import auth from '../../services/auth';
 import util from '../../services/util';
@@ -898,7 +898,7 @@ AdminViewBase.propTypes = {
   schema: PropTypes.object.isRequired,
 };
 
-const AdminView = withSchema(AdminViewBase);
+const AdminView = withKB(AdminViewBase);
 
 /**
  * Export consumer component and regular component for testing.

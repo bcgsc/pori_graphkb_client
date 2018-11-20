@@ -15,7 +15,7 @@ import {
 } from '@material-ui/core';
 import * as qs from 'querystring';
 import AddIcon from '@material-ui/icons/Add';
-import { withSchema } from '../../components/SchemaContext/SchemaContext';
+import { withKB } from '../../components/KBContext/KBContext';
 import util from '../../services/util';
 import api from '../../services/api';
 
@@ -328,7 +328,7 @@ QueryBuilderViewBase.propTypes = {
   schema: PropTypes.object.isRequired,
 };
 
-const QueryBuilderView = withSchema(QueryBuilderViewBase);
+const QueryBuilderView = withKB(QueryBuilderViewBase);
 
 /**
  * Export consumer component and regular component for testing.

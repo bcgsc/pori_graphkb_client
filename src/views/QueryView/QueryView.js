@@ -17,7 +17,7 @@ import kbp from 'knowledgebase-parser';
 import * as qs from 'querystring';
 import SearchIcon from '@material-ui/icons/Search';
 import AutoSearchSingle from '../../components/AutoSearchSingle/AutoSearchSingle';
-import { withSchema } from '../../components/SchemaContext/SchemaContext';
+import { withKB } from '../../components/KBContext/KBContext';
 import util from '../../services/util';
 
 /**
@@ -240,7 +240,7 @@ QueryViewBase.propTypes = {
   schema: PropTypes.object.isRequired,
 };
 
-const QueryView = withSchema(QueryViewBase);
+const QueryView = withKB(QueryViewBase);
 
 export {
   QueryView,

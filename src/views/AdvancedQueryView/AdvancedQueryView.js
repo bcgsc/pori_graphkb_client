@@ -18,7 +18,7 @@ import ResourceSelectComponent from '../../components/ResourceSelectComponent/Re
 import util from '../../services/util';
 import FormTemplater from '../../components/FormTemplater/FormTemplater';
 import config from '../../static/config';
-import { withSchema } from '../../components/SchemaContext/SchemaContext';
+import { withKB } from '../../components/KBContext/KBContext';
 
 const DEFAULT_ORDER = [
   'name',
@@ -277,7 +277,7 @@ AdvancedQueryViewBase.propTypes = {
   schema: PropTypes.object.isRequired,
 };
 
-const AdvancedQueryView = withSchema(AdvancedQueryViewBase);
+const AdvancedQueryView = withKB(AdvancedQueryViewBase);
 
 /**
  * Export consumer component and regular component for testing.

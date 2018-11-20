@@ -6,7 +6,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
-import { withSchema } from '../../components/SchemaContext/SchemaContext';
+import { withKB } from '../../components/KBContext/KBContext';
 import api from '../../services/api';
 import util from '../../services/util';
 import StatementFormComponent from '../../components/StatementFormComponent/StatementFormComponent';
@@ -109,7 +109,7 @@ EditStatementViewBase.propTypes = {
   schema: PropTypes.object.isRequired,
 };
 
-const EditStatementView = withSchema(EditStatementViewBase);
+const EditStatementView = withKB(EditStatementViewBase);
 
 export {
   EditStatementView,

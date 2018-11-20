@@ -32,15 +32,17 @@ class Schema {
    * Returns route and properties of a certain knowledgebase class
    * (most useful data).
    * @param {string} className - requested class name.
+   * @param {Array<string>} extraProps - Extra props to be returned in the
+   * class properties list.
    */
-  getClass(className) {
+  getClass(className, extraProps = []) {
     const { schema } = this;
     const VPropKeys = schema.V ? Object.keys(schema.V.properties) : [];
     const classKey = (Object.keys(schema)
       .find(key => key.toLowerCase() === (className || '').toLowerCase()));
     if (!classKey) return null;
     const props = Object.keys(schema[classKey].properties || [])
-      .filter(prop => !VPropKeys.includes(prop))
+      .filter(prop => !VPropKeys.includes(prop) || extraProps.includes(prop))
       .map(prop => schema[classKey].properties[prop]);
     return { route: schema[classKey].route, properties: props };
   }
@@ -55,7 +57,7 @@ class Schema {
  */
   initModel(model, kbClass, extraProps = [], ignoreClass = false, stripProps = false) {
     const editableProps = kbClass
-      && (this.getClass(kbClass) || {}).properties;
+      && (this.getClass(kbClass, extraProps) || {}).properties;
     if (!editableProps) return null;
     editableProps.push(...extraProps);
     const newModel = stripProps ? {} : Object.assign({}, model);
@@ -109,12 +111,13 @@ class Schema {
 
   /**
    * Returns all ontology types.
+   * @param {boolean} subOnly - flag for checking only subclasses.
    */
-  getOntologies() {
+  getOntologies(subOnly) {
     const { schema } = this;
     const list = [];
     Object.keys(schema).forEach((key) => {
-      if (this.isOntology(key)) {
+      if (this.isOntology(key, subOnly)) {
         list.push({ name: key, properties: schema[key].properties, route: schema[key].route });
       }
     });
@@ -123,12 +126,13 @@ class Schema {
 
   /**
    * Returns all variant types.
+   * @param {boolean} subOnly - flag for checking only subclasses.
    */
-  getVariants() {
+  getVariants(subOnly) {
     const { schema } = this;
     const list = [];
     Object.keys(schema).forEach((key) => {
-      if (this.isVariant(key)) {
+      if (this.isVariant(key, subOnly)) {
         list.push({ name: key, properties: schema[key].properties, route: schema[key].route });
       }
     });
@@ -161,42 +165,48 @@ class Schema {
   /**
    * Checks if a KB class is an edge.
    * @param {string} cls - class key.
+   * @param {boolean} subOnly - flag for checking only subclasses.
    */
-  isEdge(cls) {
-    return this.isOfType(cls, 'E');
+  isEdge(cls, subOnly) {
+    return this.isOfType(cls, 'E', subOnly);
   }
 
   /**
    * Checks if a KB class is an Ontology.
    * @param {string} cls - class key.
+   * @param {boolean} subOnly - flag for checking only subclasses.
    */
-  isOntology(cls) {
-    return this.isOfType(cls, 'Ontology');
+  isOntology(cls, subOnly) {
+    return this.isOfType(cls, 'Ontology', subOnly);
   }
 
   /**
    * Checks if a KB class is a Position.
    * @param {string} cls - class key.
+   * @param {boolean} subOnly - flag for checking only subclasses.
    */
-  isPosition(cls) {
-    return this.isOfType(cls, 'Position');
+  isPosition(cls, subOnly) {
+    return this.isOfType(cls, 'Position', subOnly);
   }
 
   /**
    * Checks if a KB class is a Variant.
    * @param {string} cls - class key.
+   * @param {boolean} subOnly - flag for checking only subclasses.
    */
-  isVariant(cls) {
-    return this.isOfType(cls, 'Variant');
+  isVariant(cls, subOnly) {
+    return this.isOfType(cls, 'Variant', subOnly);
   }
 
   /**
    * Checks if class is of given abstract type.
    * @param {string} cls - class string to be checked.
    * @param {string} type - supertype string.
+   * @param {boolean} subOnly - flag for checking only subclasses.
    */
-  isOfType(cls, type) {
-    return (this.get(cls) && (this.get(cls).inherits || []).includes(type)) || cls === type;
+  isOfType(cls, type, subOnly = false) {
+    return (this.get(cls) && (this.get(cls).inherits || []).includes(type))
+      || (cls === type && !subOnly);
   }
 
   /**
@@ -214,8 +224,7 @@ class Schema {
    * @param {Array} allColumns - current list of all collected properties.
    */
   collectOntologyProps(term, allColumns) {
-    const { schema } = this;
-    const { properties } = this.getClass(term['@class'], schema);
+    const { properties } = this.getClass(term['@class']);
     properties.forEach((prop) => {
       if (!allColumns.includes(prop.name)) {
         if (term[prop.name]) {

@@ -38,10 +38,10 @@ class EmbeddedListForm extends Component {
       tempElement,
     } = this.state;
 
-    if (tempElement && !list.includes(tempElement.toLowerCase())) {
+    if (tempElement.trim() && !list.includes(tempElement.toLowerCase())) {
       list.push(tempElement);
       onChange({ target: { name, value: list } });
-      this.setState({ tempElement: '' });
+      this.setState({ tempElement: ' ' });
     }
   }
 
@@ -102,6 +102,8 @@ class EmbeddedListForm extends Component {
     const {
       list,
       label,
+      disabled,
+      error,
     } = this.props;
 
     const embeddedList = list
@@ -132,6 +134,8 @@ class EmbeddedListForm extends Component {
           label={label}
           value={tempElement}
           onChange={this.handleChange}
+          disabled={disabled}
+          error={error}
           onKeyDown={(e) => {
             if (e.keyCode === 13) {
               this.handleAdd(e);
@@ -154,6 +158,7 @@ class EmbeddedListForm extends Component {
           <IconButton
             color="primary"
             onClick={this.handleAdd}
+            disabled={disabled}
           >
             <AddIcon />
           </IconButton>
@@ -163,17 +168,30 @@ class EmbeddedListForm extends Component {
   }
 }
 
+/**
+ * @namespace
+ * @property {function} onChange - Parent component change handler.
+ * @property {Array<string>} list - Embedded set property as array.
+ * @property {string} label - TextField label.
+ * @property {string} name - Input name attribute.
+ * @property {boolean} error - TextField error flag.
+ * @property {boolean} disabled - Disabled flag.
+ */
 EmbeddedListForm.propTypes = {
   onChange: PropTypes.func.isRequired,
   list: PropTypes.array,
   label: PropTypes.string,
   name: PropTypes.string,
+  error: PropTypes.bool,
+  disabled: PropTypes.bool,
 };
 
 EmbeddedListForm.defaultProps = {
   list: [],
   label: '',
   name: '',
+  error: false,
+  disabled: false,
 };
 
 export default EmbeddedListForm;

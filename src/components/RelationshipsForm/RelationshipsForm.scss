@@ -69,6 +69,9 @@
       .relationships-table-header {
         tr th {
           background-color: $background-light;
+          position: sticky;
+          top: 0;
+          z-index: 0;
         }
         .relationships-minimize-btn {
           display: none;
@@ -85,12 +88,6 @@
             transform: unset;
           }
         }
-      }
-      tr,
-      th {
-        position: sticky;
-        top: 0;
-        z-index: 0;
       }
       tr {
         td {

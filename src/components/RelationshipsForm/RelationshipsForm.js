@@ -21,10 +21,10 @@ import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import FormTemplater from '../FormTemplater/FormTemplater';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
-import AutoSearchComponent from '../AutoSearchComponent/AutoSearchComponent';
+import AutoSearchMulti from '../AutoSearchMulti/AutoSearchMulti';
 import util from '../../services/util';
 
-const DEFAULT_RELATIONSHIPS_PROPSLENGTH = 10;
+const DEFAULT_RELATIONSHIPS_PROPSLENGTH = 3;
 
 class RelationshipsForm extends Component {
   constructor(props) {
@@ -279,7 +279,6 @@ class RelationshipsForm extends Component {
     });
 
     const isPristine = !Object.keys(model).some(key => model[key] !== initState[key]);
-
     return (
       <div className="relationships-form-wrapper">
         <fieldset className="relationships-temp-fields">
@@ -312,11 +311,13 @@ class RelationshipsForm extends Component {
             </ResourceSelectComponent>
           </ListItem>
           <ListItem disableGutters>
-            <AutoSearchComponent
+            <AutoSearchMulti
+              selected={schema.newRecord(forward ? model['in.data'] : model['out.data'])}
               label="Target Record"
               value={forward ? model.in : model.out}
               onChange={this.handleChange}
               name={forward ? 'in' : 'out'}
+              schema={schema}
               required
             />
           </ListItem>
@@ -377,12 +378,11 @@ class RelationshipsForm extends Component {
                   ? <RefreshIcon color="primary" />
                   : <CloseIcon />;
                 const {
-                  properties,
                   name,
                   reverseName,
                 } = schema.get(r['@class']);
-                const shouldExpand = Object.keys(properties)
-                  .filter(k => r[k] !== undefined)
+                const shouldExpand = schema.getClass(r['@class']).properties
+                  .filter(k => r[k.name] !== undefined)
                   .length > DEFAULT_RELATIONSHIPS_PROPSLENGTH;
 
                 const isIn = (r['in.data'] || {})['@rid'] === nodeRid;

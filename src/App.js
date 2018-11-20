@@ -8,6 +8,7 @@ import {
   Route,
   Redirect,
   Switch,
+  Link,
 } from 'react-router-dom';
 import './App.css';
 import {
@@ -296,7 +297,9 @@ class App extends Component {
                   </IconButton>
                 )}
                 <div className="appbar-title">
-                  <Typography variant="h6">GraphKB</Typography>
+                  <Link to="/query">
+                    <Typography variant="h6">GraphKB</Typography>
+                  </Link>
                 </div>
                 <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>
                   <div>
@@ -349,15 +352,7 @@ class App extends Component {
                     <Route path="/icons" component={IconsView} />
                     <Route path="/login" render={loginWithProps} />
                     <Route path="/error" component={ErrorView} />
-                    <Route
-                      path="/"
-                      render={() => {
-                        if (!loggedIn) {
-                          return <Redirect to="/login" />;
-                        }
-                        return loggedInContent;
-                      }}
-                    />
+                    {loggedIn ? <Route path="/" render={() => loggedInContent} /> : <Redirect push to="/login" />}
                   </Switch>
                 </div>
               </section>

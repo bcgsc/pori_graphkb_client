@@ -5,11 +5,11 @@
   position: relative;
   width: 100%;
   margin-bottom: 1rem;
-  @media (max-width: 1300px) {
+  @media (max-width: $breakpoint-lg) {
     flex-direction: column;
     grid-column-end: 2;
   }
-  @media (max-width: 425px) {
+  @media (max-width: $breakpoint-mobile) {
     margin-bottom: 0;
   }
   $form-bias: 50%;
@@ -20,7 +20,7 @@
     max-height: 100%;
     min-height: 800px;
     box-sizing: border-box;
-    @media (max-width: 1300px) {
+    @media (max-width: $breakpoint-lg) {
       min-height: 0;
     }
     .statement-preview {
@@ -28,6 +28,7 @@
       word-break: break-word;
     }
     .statement-form-params {
+      @include paper;
       flex-grow: 1;
       margin-top: 1rem;
     }
@@ -43,12 +44,12 @@
     display: flex;
     flex-direction: column;
     transition: all 0.3s;
-    @media (max-width: 1300px) {
+    @media (max-width: $breakpoint-lg) {
       position: relative;
       left: unset;
       margin-top: 8px;
     }
-    @media (max-width: 425px) {
+    @media (max-width: $breakpoint-mobile) {
       padding: 0;
       > div {
         border-radius: 0;

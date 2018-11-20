@@ -124,7 +124,12 @@ class Variant extends V {
    * record.
    */
   static getIdentifiers() {
-    return ['@class', 'type.name', 'reference1.name', 'reference2.name'];
+    return [
+      '@class',
+      'type.name',
+      'reference1.name',
+      'reference2.name',
+    ];
   }
 
   /**

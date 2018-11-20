@@ -45,7 +45,7 @@ class EditVariantViewBase extends Component {
   async handleDelete() {
     const { node } = this.state;
     const { schema } = this.props;
-    const { route } = schema.getClass(node['@class']);
+    const route = schema.getRoute(node['@class']);
     await api.delete(`${route}/${node['@rid'].slice(1)}`);
   }
 
@@ -69,13 +69,14 @@ class EditVariantViewBase extends Component {
     await api.patchEdges(oRelationships || [], relationships, schema);
 
     const copy = Object.assign({}, variant);
-    const { properties, route } = schema.getClass(variant['@class']);
+    const properties = schema.getProperties(variant['@class']);
+    const route = schema.getRoute(variant['@class']);
     Object.keys(copy).forEach((k) => {
       if (copy[k] && typeof copy[k] === 'object') {
         if (!copy[k]['@class']) {
           delete copy[k];
         } else {
-          const nestedProps = schema.getClass(copy[k]['@class']).properties;
+          const nestedProps = schema.getProperties(copy[k]['@class']);
           nestedProps.forEach((prop) => {
             if (!copy[k][prop.name]) {
               if (prop.type === 'integer' && prop.mandatory) {

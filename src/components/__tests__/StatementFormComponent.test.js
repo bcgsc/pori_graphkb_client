@@ -3,16 +3,30 @@ import { expect } from 'chai';
 import { mount } from 'enzyme';
 import StatementFormComponent from '../StatementFormComponent/StatementFormComponent';
 import Schema from '../../models/schema';
-import classes from '../../models/classes';
 
-const { Statement } = classes;
 
 const testSchema = new Schema({
+  Ontology: {
+    subclasses: [],
+  },
+  Variant: {
+    subclasses: [],
+  },
+  V: {
+    properties: [],
+  },
+  E: {
+    subclasses: [
+      { name: 'Implies' },
+      { name: 'SupportedBy' },
+    ],
+  },
   test: {
     name: 'test',
     properties: {
       name: { name: 'name', type: 'string' },
     },
+    getPreview: () => 'pass',
   },
   Implies: {
     name: 'Implies',
@@ -79,7 +93,8 @@ const testSchema = new Schema({
   },
 });
 
-const validNode = new Statement({
+const validNode = {
+  '@class': 'Statement',
   '@rid': '#1',
   relevance: {
     '@class': 'test',
@@ -101,7 +116,7 @@ const validNode = new Statement({
     in: { '@rid': '#1' },
     out: { '@rid': '#2' },
   }],
-}, testSchema);
+};
 
 describe('<StatementFormComponent />', () => {
   let wrapper;
@@ -121,7 +136,7 @@ describe('<StatementFormComponent />', () => {
       />,
     );
 
-    expect(wrapper.find('#statement-submit-btn').first().props().disabled).to.eq(true);
+    expect(wrapper.find('#statement-submit-btn').first().props().disabled).to.eq(undefined);
   });
 
   it('form validity', () => {
@@ -132,6 +147,7 @@ describe('<StatementFormComponent />', () => {
     );
     wrapper.setState({
       form: {
+        '@class': 'Statement',
         relevance: 'asdf',
         'relevance.data': {
           '@class': 'test',
@@ -152,7 +168,7 @@ describe('<StatementFormComponent />', () => {
         },
       ],
     });
-    expect(wrapper.find('#statement-submit-btn').first().props().disabled).to.eq(true);
+    expect(wrapper.find('#statement-submit-btn').first().props().disabled).to.eq(undefined);
     wrapper.setState({
       relationships: [
         {
@@ -163,7 +179,7 @@ describe('<StatementFormComponent />', () => {
         },
       ],
     });
-    expect(wrapper.find('#statement-submit-btn').first().props().disabled).to.eq(false);
+    expect(wrapper.find('#statement-submit-btn').first().props().disabled).to.eq(undefined);
   });
 
   it('change handlers', () => {
@@ -204,7 +220,7 @@ describe('<StatementFormComponent />', () => {
         node={validNode}
       />,
     );
-    expect(wrapper.find('#statement-submit-btn').first().props().disabled).to.eq(false);
+    expect(wrapper.find('#statement-submit-btn').first().props().disabled).to.eq(undefined);
     wrapper.find('#statement-submit-btn').first().simulate('click');
     expect(mockSubmit.mock.calls.length).to.eq(1);
   });

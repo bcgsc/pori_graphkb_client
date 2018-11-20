@@ -20,8 +20,10 @@ class Schema {
     return this.schema[obj['@class']].getPreview(obj);
   }
 
-  getMetadata() {
-    return this.schema.V;
+  getMetadata(className) {
+    const { identifiers } = this.schema[className];
+    return Object.values(this.schema.V.properties)
+      .filter(p => !identifiers.find(id => id.split('.')[0] === p.name));
   }
 
   /**

@@ -25,6 +25,10 @@ import util from '../../services/util';
 
 const MAX_STRING_LENGTH = 64;
 const DATE_KEYS = ['createdAt', 'deletedAt'];
+
+/**
+ * Component used to display a single record's details.
+ */
 class DetailDrawer extends Component {
   constructor(props) {
     super(props);
@@ -62,19 +66,22 @@ class DetailDrawer extends Component {
   formatIdentifiers(node, isNested) {
     const { schema } = this.props;
     if (!node['@class']) return null;
-    const { identifiers, properties: proppos } = schema.get(node['@class']);
+    const { identifiers, properties } = schema.get(node['@class']);
     return this.formatProps(node, identifiers.reduce((array, id) => {
       const [key, nestedKey] = id.split('.');
-      if (proppos[key]) {
-        if (nestedKey) {
-          array.push({ ...proppos[key], previewWith: nestedKey });
-        } else {
-          array.push(proppos[key]);
+      if (!schema.getMetadata().find(p => p.name === key)) {
+        if (properties[key]) {
+          if (nestedKey) {
+            array.push({ ...properties[key], previewWith: nestedKey });
+          } else {
+            array.push(properties[key]);
+          }
+        }
+        if (key === 'preview') {
+          array.push({ type: 'string', name: 'preview' });
         }
       }
-      if (key === 'preview') {
-        array.push({ type: 'string', name: 'preview' });
-      }
+
       return array;
     }, []), isNested);
   }
@@ -130,9 +137,12 @@ class DetailDrawer extends Component {
     );
   }
 
+  /**
+   * Formats record metadata.
+   */
   formatMetadata(node) {
     const { schema } = this.props;
-    return this.formatProps(node, schema.getMetadata(node['@class']), true);
+    return this.formatProps(node, schema.getMetadata(), true);
   }
 
   /**

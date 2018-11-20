@@ -5,6 +5,22 @@ import RelationshipsForm from '../RelationshipsForm/RelationshipsForm';
 import Schema from '../../models/schema';
 
 const testSchema = new Schema({
+  V: {
+    name: 'V',
+    properties: {},
+  },
+  Ontology: {
+    name: 'Ontology',
+    subclasses: [],
+  },
+  Variant: {
+    name: 'Variant',
+    subclasses: [],
+  },
+  E: {
+    name: 'E',
+    subclasses: [{ name: 'AliasOf' }],
+  },
   AliasOf: {
     name: 'AliasOf',
     inherits: ['E'],

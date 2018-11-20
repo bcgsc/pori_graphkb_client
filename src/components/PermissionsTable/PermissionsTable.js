@@ -56,8 +56,7 @@ function PermissionsTable(props) {
       <TableBody>
         {permissionKeys
           .map((permission) => {
-            const isEdge = schema.isEdge(permission);
-            const isAbstract = schema.isAbstract(permission);
+            const { isEdge, isAbstract } = schema.get(permission);
             return (
               <TableRow key={permission} className="permissions-view">
                 <TableCell padding="dense">

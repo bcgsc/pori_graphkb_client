@@ -45,17 +45,25 @@ describe('<FormTemplater />', () => {
     linkedClassProp: {
       name: 'linkedClassProp',
       type: 'link',
-      linkedClass: { name: 'V', route: '/v' },
+      linkedClass: { name: 'V', routeName: '/v' },
       description: 'blargh',
       mandatory: true,
     },
     embeddedProp: {
       name: 'embeddedProp',
       type: 'embedded',
-      linkedClass: { name: 'V', route: '/V' },
+      linkedClass: { name: 'V', routeName: '/V' },
     },
   };
   const mockSchema = new Schema({
+    Ontology: {
+      name: 'Ontology',
+      subclasses: [],
+    },
+    Variant: {
+      name: 'Variant',
+      subclasses: [],
+    },
     test: {
       name: 'test',
       properties: mockClass,
@@ -65,7 +73,7 @@ describe('<FormTemplater />', () => {
       name: 'child',
       properties: {},
       inherits: ['V'],
-      route: '/child',
+      routeName: '/child',
     },
   });
 

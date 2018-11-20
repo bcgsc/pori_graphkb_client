@@ -5,7 +5,7 @@ import { Paper, Typography, Button } from '@material-ui/core';
 import PositionalVariantParser from '../../components/PositionalVariantParser/PositionalVariantParser';
 import util from '../../services/util';
 import api from '../../services/api';
-import { withSchema } from '../../components/SchemaContext/SchemaContext';
+import { withKB } from '../../components/KBContext/KBContext';
 
 class AddVariantViewBase extends Component {
   constructor(props) {
@@ -37,14 +37,15 @@ class AddVariantViewBase extends Component {
   async submitVariant(variant, relationships) {
     const { schema } = this.props;
     const copy = Object.assign({}, variant);
-    const { properties, route } = schema.getClass(variant['@class']);
+    const properties = schema.getProperties(variant['@class']);
+    const route = schema.getRoute(variant['@class']);
     // Strips away empty break objects and casts number props to numbers.
     Object.keys(copy).forEach((k) => {
       if (typeof copy[k] === 'object' && copy[k]) { // more flexible
         if (!copy[k]['@class']) {
           delete copy[k];
         } else {
-          const nestedProps = schema.getClass(copy[k]['@class']).properties;
+          const nestedProps = schema.getProperties(copy[k]['@class']);
           nestedProps.forEach((prop) => {
             if (!copy[k][prop.name]) {
               if (prop.type === 'integer' && prop.mandatory) {
@@ -104,7 +105,7 @@ AddVariantViewBase.propTypes = {
   schema: PropTypes.object.isRequired,
 };
 
-const AddVariantView = withSchema(AddVariantViewBase);
+const AddVariantView = withKB(AddVariantViewBase);
 
 export {
   AddVariantViewBase,

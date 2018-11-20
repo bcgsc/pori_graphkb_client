@@ -2,3 +2,8 @@
   width: 360px;
   max-height: 640px;
 }
+.autosearch-multi-form-templater {
+  > li {
+    display: inline-block;
+  }
+}

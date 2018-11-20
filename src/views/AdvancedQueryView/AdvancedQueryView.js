@@ -69,7 +69,6 @@ class AdvancedQueryViewBase extends Component {
     classes.push(...schema.getOntologies());
     classes.push(...schema.getVariants());
     classes.push({ name: 'Statement' });
-
     const form = schema.initModel({}, 'Ontology', config.ONTOLOGY_QUERY_PARAMS);
 
     this.setState({
@@ -85,10 +84,9 @@ class AdvancedQueryViewBase extends Component {
     const { form } = this.state;
     const { schema } = this.props;
     const params = ['@class'];
-    params.push(...config.ONTOLOGY_QUERY_PARAMS.map(oqp => oqp.name));
-    const schemaClass = schema.getClass(form['@class']).properties || [];
-    schemaClass.push(...config.ONTOLOGY_QUERY_PARAMS);
-    const payload = util.parsePayload(form, schemaClass, params, true);
+    const properties = schema.getProperties(form['@class']) || [];
+    properties.push(...config.ONTOLOGY_QUERY_PARAMS);
+    const payload = util.parsePayload(form, properties, params, true);
     return qs.stringify(payload);
   }
 
@@ -102,23 +100,17 @@ class AdvancedQueryViewBase extends Component {
     const {
       name,
       value,
-      '@rid': rid,
-      sourceId,
     } = e.target;
 
     if (nested) {
       form[nested][name] = value;
-      form[nested][`${name}.@rid`] = rid || '';
-      form[nested][`${name}.sourceId`] = sourceId || '';
       if (name.includes('.data') && value) {
-        form[nested][name.split('.')[0]] = schema.newRecord(value).getPreview();
+        form[nested][name.split('.')[0]] = schema.getPreview(value);
       }
     } else {
       form[name] = value;
-      form[`${name}.@rid`] = rid || '';
-      form[`${name}.sourceId`] = sourceId || '';
       if (name.includes('.data') && value) {
-        form[name.split('.')[0]] = schema.newRecord(value).getPreview();
+        form[name.split('.')[0]] = schema.getPreview(value);
       }
     }
 
@@ -146,8 +138,8 @@ class AdvancedQueryViewBase extends Component {
     const { form } = this.state;
     const { schema } = this.props;
     const { value } = e.target;
-    const classSchema = schema.getClass(form['@class']).properties;
-    if (schema.getClass(value)) {
+    const classSchema = schema.getProperties(form['@class']);
+    if (schema.getProperties(value)) {
       const abstractClass = classSchema
         .find(p => p.name === nested).linkedClass.name;
       const varKeys = classSchema
@@ -180,7 +172,7 @@ class AdvancedQueryViewBase extends Component {
     const { history, schema } = this.props;
 
     if (!form) return null;
-    const props = schema.getClass(form['@class']).properties || [];
+    const props = schema.getProperties(form['@class']) || [];
     props.push(...config.ONTOLOGY_QUERY_PARAMS);
 
     return (
@@ -242,22 +234,22 @@ class AdvancedQueryViewBase extends Component {
         </Paper>
         <Paper elevation={4} id="adv-nav-buttons">
           <Button
-            variant="outlined"
             color="secondary"
-            onClick={() => history.push({ pathname: '/query', state: this.state })}
+            variant="outlined"
             size="large"
+            onClick={() => history.push({ pathname: '/query' })}
           >
             Back
           </Button>
           <Button
             color="primary"
             variant="contained"
+            size="large"
             id="search-button"
             onClick={() => history.push({
               pathname: '/data/table',
               search: this.bundle(),
             })}
-            size="large"
           >
             Search
           </Button>

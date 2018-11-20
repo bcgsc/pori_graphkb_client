@@ -297,7 +297,7 @@ class TableComponent extends Component {
       tableColumns,
     } = this.state;
     const filteredData = data
-      .filter(n => !hidden.includes(n.getId()))
+      .filter(n => !hidden.includes(n['@rid']))
       .filter(n => !columnFilterExclusions.some((exclusions, i) => {
         let cell = n[tableColumns[i].id] === undefined
           || n[tableColumns[i].id] === null
@@ -507,13 +507,13 @@ class TableComponent extends Component {
     const sort = (a, b) => {
       if (!newProperty) return 1;
       if (newOrder === 'desc') {
-        return displayed.includes(b.getId())
-          < displayed.includes(a.getId())
+        return displayed.includes(b['@rid'])
+          < displayed.includes(a['@rid'])
           ? -1
           : 1;
       }
-      return displayed.includes(a.getId())
-        < displayed.includes(b.getId())
+      return displayed.includes(a['@rid'])
+        < displayed.includes(b['@rid'])
         ? -1
         : 1;
     };
@@ -556,10 +556,11 @@ class TableComponent extends Component {
       moreResults,
       completedNext,
       detail,
+      schema,
     } = this.props;
 
     const filteredData = sortedData
-      .filter(n => !hidden.includes(n.getId()))
+      .filter(n => !hidden.includes(n['@rid']))
       .filter(n => !columnFilterExclusions.some((exclusions, i) => {
         let cell = n[tableColumns[i].id] === undefined
           || n[tableColumns[i].id] === null
@@ -832,10 +833,10 @@ class TableComponent extends Component {
             </TableHead>
             <TableBody>
               {pageData.map((n) => {
-                const isSelected = displayed.includes(n.getId());
-                return !hidden.includes(n.getId())
+                const isSelected = displayed.includes(n['@rid']);
+                return !hidden.includes(n['@rid'])
                   && (
-                    <React.Fragment key={n.getId() || Math.random()}>
+                    <React.Fragment key={n['@rid'] || Math.random()}>
                       <TableRow
                         selected={isSelected}
                         onClick={() => handleDetailDrawerOpen(n, true)}
@@ -846,8 +847,8 @@ class TableComponent extends Component {
                       >
                         <TableCell padding="checkbox">
                           <Checkbox
-                            onClick={e => handleCheckbox(e, n.getId())}
-                            checked={displayed.includes(n.getId())}
+                            onClick={e => handleCheckbox(e, n['@rid'])}
+                            checked={displayed.includes(n['@rid'])}
                           />
                         </TableCell>
                         {tableColumns.map((col) => {
@@ -858,10 +859,7 @@ class TableComponent extends Component {
 
                             if (col.id === 'preview') {
                               try {
-                                ([, val] = n.getPreview().split(':'));
-                                if (!val) {
-                                  val = n.getPreview();
-                                }
+                                ([, val] = schema.getPreview(n).split(':'));
                               } catch (e) {
                                 val = 'Invalid Variant';
                               }
@@ -875,7 +873,7 @@ class TableComponent extends Component {
                           return null;
                         })}
                         <TableCell padding="checkbox">
-                          {detail && detail.getId() === n.getId() && (
+                          {detail && detail['@rid'] === n['@rid'] && (
                             <Fade in>
                               <AssignmentIcon color="action" style={{ width: 48 }} />
                             </Fade>
@@ -991,6 +989,7 @@ TableComponent.propTypes = {
   completedNext: PropTypes.bool,
   storedFilters: PropTypes.array,
   defaultOrder: PropTypes.array,
+  schema: PropTypes.object.isRequired,
 };
 
 TableComponent.defaultProps = {

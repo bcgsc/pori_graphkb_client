@@ -3,19 +3,9 @@ import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { spy } from 'sinon';
 import TableComponent from '../TableComponent/TableComponent';
-import classes from '../../models/classes';
-import Schema from '../../models/schema';
-
-const { V } = classes;
-const mockSchema = new Schema({
-  AliasOf: {
-    name: 'AliasOf',
-    inherits: ['E'],
-  },
-});
 
 const mockData = {
-  '#1': new V({
+  '#1': {
     '@rid': '#1',
     name: 'test one',
     sourceId: 'test-1',
@@ -28,21 +18,21 @@ const mockData = {
         '@rid': '#4',
       },
     }],
-  }, mockSchema),
-  '#2': new V({
+  },
+  '#2': {
     '@rid': '#2',
     name: 'test two',
     sourceId: 'test-2',
     source: {
       name: 'test source',
     },
-  }, mockSchema),
-  '#3': new V({
+  },
+  '#3': {
     '@rid': '#3',
     name: 'test three',
     sourceId: 'test-3',
-  }, mockSchema),
-  '#4': new V({
+  },
+  '#4': {
     '@rid': '#4',
     name: 'linked',
     sourceId: 'test-4',
@@ -55,16 +45,16 @@ const mockData = {
         '@rid': '#4',
       },
     }],
-  }, mockSchema),
+  },
 };
 
 const bigMockData = {};
 for (let i = 0; i < 200; i += 1) {
-  bigMockData[`#${i}`] = new V({
+  bigMockData[`#${i}`] = {
     '@rid': `#${i}`,
     name: `a${i}a`,
     sourceId: `b${i}b`,
-  }, mockSchema);
+  };
 }
 
 const allProps = [

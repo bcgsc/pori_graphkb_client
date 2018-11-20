@@ -24,7 +24,7 @@ import icons from '../../static/icons/icons';
 
 
 /**
- * Feedback page
+ * This is scratch space to test out components and other stuff. Route is not exposed to users.
  */
 class IconsView extends Component {
   constructor(props) {

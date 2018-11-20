@@ -21,6 +21,8 @@ class StatementFormComponent extends Component {
       form: null,
       originalRelationships: null,
       deleteDialog: false,
+      errorFields: [],
+      relationshipsError: false,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -61,10 +63,37 @@ class StatementFormComponent extends Component {
    */
   async handleSubmit() {
     const { form, relationships, originalRelationships } = this.state;
-    const { onSubmit } = this.props;
-    this.setState({ loading: true, notificationDrawerOpen: true });
-    await onSubmit(form, relationships, originalRelationships);
-    this.setState({ loading: false });
+    const { onSubmit, schema } = this.props;
+
+    let formIsInvalid = false;
+    const errorFields = [];
+    const oneOfEachEdge = relationships.some(r => r['@class'] === 'SupportedBy' && !r.deleted)
+      && relationships.some(r => r['@class'] === 'Implies' && !r.deleted);
+    schema.getProperties('Statement').forEach((prop) => {
+      if (prop.mandatory) {
+        if (prop.type === 'link' && !(form[`${prop.name}.data`] && form[`${prop.name}.data`]['@rid'])) {
+          errorFields.push(prop.name);
+          formIsInvalid = true;
+        } else if (prop.type !== 'boolean' && !form[prop.name]) {
+          errorFields.push(prop.name);
+          formIsInvalid = true;
+        }
+      }
+    });
+    if (formIsInvalid || !oneOfEachEdge) {
+      const update = {};
+      if (formIsInvalid) {
+        update.errorFields = errorFields;
+      }
+      if (!oneOfEachEdge) {
+        update.relationshipsError = true;
+      }
+      this.setState(update);
+    } else {
+      this.setState({ loading: true, notificationDrawerOpen: true });
+      await onSubmit(form, relationships, originalRelationships);
+      this.setState({ loading: false });
+    }
   }
 
   /**
@@ -98,7 +127,7 @@ class StatementFormComponent extends Component {
     if (name.includes('.data') && value) {
       form[name.split('.')[0]] = schema.getPreview(value);
     }
-    this.setState({ form });
+    this.setState({ form, relationshipsError: false, errorFields: [] });
   }
 
   render() {
@@ -108,6 +137,8 @@ class StatementFormComponent extends Component {
       notificationDrawerOpen,
       loading,
       deleteDialog,
+      errorFields,
+      relationshipsError,
     } = this.state;
     const {
       schema,
@@ -116,22 +147,9 @@ class StatementFormComponent extends Component {
     } = this.props;
 
     if (!form) return null;
-    let formIsInvalid = false;
+
     const oneOfEachEdge = relationships.some(r => r['@class'] === 'SupportedBy' && !r.deleted)
       && relationships.some(r => r['@class'] === 'Implies' && !r.deleted);
-    schema.getProperties('Statement').forEach((prop) => {
-      if (prop.mandatory) {
-        if (prop.type === 'link' && !(form[`${prop.name}.data`] && form[`${prop.name}.data`]['@rid'])) {
-          formIsInvalid = true;
-        } else if (prop.type !== 'boolean' && !form[prop.name]) {
-          formIsInvalid = true;
-        }
-      }
-    });
-
-    if (!oneOfEachEdge) {
-      formIsInvalid = true;
-    }
 
     return (
       <div>
@@ -172,6 +190,7 @@ class StatementFormComponent extends Component {
                 propSchemas={schema.getProperties('Statement')}
                 onChange={this.handleChange}
                 excludedProps={node ? undefined : ['reviewStatus', 'reviewComment']}
+                errorFields={errorFields}
               />
             </Paper>
           </div>
@@ -184,7 +203,8 @@ class StatementFormComponent extends Component {
               name="relationships"
               edgeTypes={['Implies', 'SupportedBy']}
               errorMsg="Statements need at least 1 Implication edge and 1 Support edge"
-              error={!oneOfEachEdge && relationships.length > 0}
+              error={(!oneOfEachEdge && relationships.length > 0) || relationshipsError}
+              overridePristine={relationshipsError}
             />
           </Paper>
         </div>
@@ -195,7 +215,6 @@ class StatementFormComponent extends Component {
             color="primary"
             size="large"
             id="statement-submit-btn"
-            disabled={formIsInvalid}
           >
             Submit
           </Button>

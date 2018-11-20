@@ -44,6 +44,7 @@ class OntologyFormComponent extends Component {
       form: null,
       relationships: [],
       deleteDialog: false,
+      errorFields: [],
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -136,7 +137,7 @@ class OntologyFormComponent extends Component {
     if (name.includes('.data') && value) {
       form[name.split('.')[0]] = schema.getPreview(value);
     }
-    this.setState({ form });
+    this.setState({ form, errorFields: [] });
   }
 
   /**
@@ -146,11 +147,30 @@ class OntologyFormComponent extends Component {
   async handleSubmit(e) {
     e.preventDefault();
     const { form, relationships, originalNode } = this.state;
-    const { handleSubmit } = this.props;
-    this.setState({ loading: true, notificationDrawerOpen: true });
+    const { handleSubmit, schema } = this.props;
 
-    await handleSubmit(form, relationships, originalNode);
-    this.setState({ loading: false });
+    const editableProps = schema.getProperties(form['@class']);
+    // Validates form
+    let formIsInvalid = false;
+    const errorFields = [];
+    editableProps.forEach((prop) => {
+      if (prop.mandatory) {
+        if (prop.type === 'link' && !(form[`${prop.name}.data`] && form[`${prop.name}.data`]['@rid'])) {
+          errorFields.push(prop.name);
+          formIsInvalid = true;
+        } else if (prop.type !== 'boolean' && !form[prop.name]) {
+          errorFields.push(prop.name);
+          formIsInvalid = true;
+        }
+      }
+    });
+    if (formIsInvalid) {
+      this.setState({ errorFields });
+    } else {
+      this.setState({ loading: true, notificationDrawerOpen: true });
+      await handleSubmit(form, relationships, originalNode);
+      this.setState({ loading: false });
+    }
   }
 
 
@@ -162,6 +182,7 @@ class OntologyFormComponent extends Component {
       deleteDialog,
       loading,
       notificationDrawerOpen,
+      errorFields,
     } = this.state;
     const {
       schema,
@@ -174,17 +195,6 @@ class OntologyFormComponent extends Component {
     if (!form) return null;
 
     const editableProps = schema.getProperties(form['@class']);
-    // Validates form
-    let formIsInvalid = false;
-    editableProps.forEach((prop) => {
-      if (prop.mandatory) {
-        if (prop.type === 'link' && !(form[`${prop.name}.data`] && form[`${prop.name}.data`]['@rid'])) {
-          formIsInvalid = true;
-        } else if (prop.type !== 'boolean' && !form[prop.name]) {
-          formIsInvalid = true;
-        }
-      }
-    });
 
     return (
       <div className="node-form-wrapper">
@@ -249,6 +259,7 @@ class OntologyFormComponent extends Component {
                     trialRange: ['startYear', 'completionYear'],
                     location: ['country', 'city'],
                   }}
+                  errorFields={errorFields}
                 />
               </List>
             </Paper>
@@ -274,11 +285,9 @@ class OntologyFormComponent extends Component {
               </Button>
             )}
             <Button
-              type="submit"
               onClick={this.handleSubmit}
               variant="contained"
               color="primary"
-              disabled={formIsInvalid}
               id="submit-btn"
               size="large"
             >

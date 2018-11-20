@@ -8,6 +8,18 @@ import AutoSearchBase from '../AutoSearchBase/AutoSearchBase';
 import Schema from '../../models/schema';
 
 const testSchema = new Schema({
+  V: {
+    name: 'V',
+    properties: {},
+  },
+  Ontology: {
+    name: 'Ontology',
+    subclasses: [],
+  },
+  Variant: {
+    name: 'Variant',
+    subclasses: [],
+  },
   Disease: {
     name: 'Disease',
     inherits: ['Ontology'],

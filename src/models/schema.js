@@ -53,7 +53,7 @@ class Schema {
     const editableProps = kbClass
       && (this.getProperties(kbClass, extraProps) || {});
     if (!editableProps) return null;
-    editableProps.push(...extraProps);
+    extraProps.forEach((prop) => { editableProps[prop.name] = prop; });
     const newModel = stripProps ? {} : Object.assign({}, model);
     newModel['@class'] = ignoreClass ? '' : kbClass;
     Object.values(editableProps).forEach((property) => {
@@ -140,6 +140,10 @@ class Schema {
     }
 
     return list;
+  }
+
+  isPosition(cls) {
+    return this.schema[cls] && this.schema[cls].inherits.includes('Position');
   }
 
   /**

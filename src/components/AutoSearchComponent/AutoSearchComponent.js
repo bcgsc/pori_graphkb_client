@@ -89,19 +89,22 @@ class AutoSearchComponent extends Component {
 
   /**
    * Updates the parent value with value from a selected item.
-   * @param {Event} e - User input event.
+   * @param {Object} selectedRecord - Selected KB record.
    */
-  handleChange(e) {
-    const { onChange, name } = this.props;
+  handleChange(selectedRecord) {
+    const {
+      onChange,
+      name,
+    } = this.props;
     onChange({
       target: {
-        value: e.name || e.sourceId,
-        sourceId: e.sourceId,
-        '@rid': e['@rid'],
-        name,
+        value: selectedRecord,
+        name: `${name}.data`,
       },
     });
-    this.setState({ lastRid: e['@rid'] });
+    if (selectedRecord && selectedRecord['@rid']) {
+      this.setState({ lastRid: selectedRecord['@rid'] });
+    }
   }
 
   /**
@@ -111,6 +114,7 @@ class AutoSearchComponent extends Component {
   refreshOptions(e) {
     if (!ACTION_KEYCODES.includes(e.keyCode)) {
       this.setState({ loading: true, emptyFlag: false, lastRid: null });
+      this.handleChange(null);
       this.callApi(e.target.value);
     }
   }

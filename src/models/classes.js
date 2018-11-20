@@ -42,20 +42,13 @@ class Record {
    * Returns a string preview for the record.
    */
   getPreview() {
-    let preview;
+    let preview = '';
     this.constructor.getIdentifiers().forEach((prop) => {
       const [key, nestedKey] = prop.split('.');
       if (this[key] && !preview) {
         preview = nestedKey ? this[key][nestedKey] : this[key];
       }
     });
-    if (!preview) {
-      const prop = Object.keys(this).find(key => (
-        typeof this[key] !== 'object'
-        && typeof this[key] !== 'function'
-      ));
-      preview = this[prop];
-    }
     return util.formatStr(preview);
   }
 }
@@ -119,8 +112,7 @@ class Ontology extends V {
    */
   getPreview() {
     return this.name
-      || this.sourceId
-      || Object.values(this).find(v => typeof v !== 'object' && typeof v !== 'function');
+      || this.sourceId;
   }
 }
 
@@ -203,7 +195,7 @@ class Statement extends V {
    * record.
    */
   static getIdentifiers() {
-    return ['appliesTo.name', 'relevance.name', 'source.name'];
+    return ['appliesTo.name', 'relevance.name', 'source.name', 'reviewStatus'];
   }
 
   /**
@@ -227,6 +219,10 @@ class Source extends V {
    */
   static getIdentifiers() {
     return ['name'];
+  }
+
+  getPreview() {
+    return this.name;
   }
 }
 

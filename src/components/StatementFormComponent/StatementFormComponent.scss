@@ -1,0 +1,70 @@
+@import "../../globals";
+
+.statement-form-wrapper {
+  display: flex;
+  position: relative;
+  width: 100%;
+  margin-bottom: 1rem;
+  @media (max-width: 1300px) {
+    flex-direction: column;
+    grid-column-end: 2;
+  }
+  @media (max-width: 425px) {
+    margin-bottom: 0;
+  }
+  $form-bias: 50%;
+  .statement-form-node {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 calc(#{$form-bias} - 0.5rem);
+    max-height: 100%;
+    min-height: 800px;
+    box-sizing: border-box;
+    @media (max-width: 1300px) {
+      min-height: 0;
+    }
+    .statement-preview {
+      @include paper;
+      word-break: break-word;
+    }
+    .statement-form-params {
+      flex-grow: 1;
+      margin-top: 1rem;
+    }
+  }
+  .statement-form-relationships {
+    @include paper;
+    position: absolute;
+    left: calc(#{$form-bias} + 0.5rem);
+    top: 0;
+    bottom: 0;
+    right: 0;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s;
+    @media (max-width: 1300px) {
+      position: relative;
+      left: unset;
+      margin-top: 8px;
+    }
+    @media (max-width: 425px) {
+      padding: 0;
+      > div {
+        border-radius: 0;
+        box-shadow: none;
+      }
+    }
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+  }
+}
+.statement-form-btns {
+  display: flex;
+  flex-direction: row-reverse;
+  @include paper;
+}
+#statement-delete-btn {
+  margin-right: auto;
+}

@@ -47,13 +47,13 @@ class OntologyFormComponent extends Component {
       form: null,
       relationships: [],
       deleteDialog: false,
+      errorFields: [],
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleClassChange = this.handleClassChange.bind(this);
     this.handleDeleteNode = this.handleDeleteNode.bind(this);
-    this.handleDialogClose = this.handleDialogClose.bind(this);
-    this.handleDialogOpen = this.handleDialogOpen.bind(this);
+    this.handleDialog = this.handleDialog.bind(this);
     this.handleFormChange = this.handleFormChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -63,36 +63,24 @@ class OntologyFormComponent extends Component {
    * an edit variant.
    */
   async componentDidMount() {
-    const { node, schema } = this.props;
+    const { node, schema, classes } = this.props;
     const { relationships } = this.state;
 
-    let originalNode = {};
-    let nodeClass = DEFAULT_NODE_CLASS;
-
+    let nodeClass = classes ? classes[0] : DEFAULT_NODE_CLASS;
+    let originalNode = { '@class': nodeClass };
     if (node) {
       originalNode = node;
       nodeClass = node['@class'];
     }
 
     const form = schema.initModel(originalNode, nodeClass);
-    const expandedEdgeTypes = util.expandEdges(schema.getEdges());
-    expandedEdgeTypes.forEach((type) => {
-      if (originalNode[type]) {
-        originalNode[type].forEach((edge) => {
-          if (!relationships.find(r => r['@rid'] === edge['@rid'])) {
-            relationships.push(
-              schema.initModel(
-                edge,
-                edge['@class'],
-                [{ name: '@rid', type: 'string' }],
-                false,
-                true,
-              ),
-            );
-          }
-        });
-      }
-    });
+
+    if (originalNode.getEdges) {
+      originalNode.getEdges().forEach((edge) => {
+        relationships.push(schema.initModel(edge, edge['@class']));
+      });
+    }
+
     // Shallow copy the array to avoid mutating it.
     originalNode.relationships = relationships.slice(0);
 
@@ -122,27 +110,22 @@ class OntologyFormComponent extends Component {
   }
 
   /**
- * Deletes target node.
- */
+   * Deletes target node.
+   */
   async handleDeleteNode() {
+    const { handleDelete } = this.props;
     this.setState({ notificationDrawerOpen: true, loading: true });
-    this.handleDialogClose();
+    this.handleDialog(false)();
+    await handleDelete();
     this.setState({ loading: false });
   }
 
-
   /**
-   * Closes node deletion dialog.
+   * Sets the open state of the delete dialog.
+   * @param {boolean} val - Open state of delete dialog.
    */
-  handleDialogClose() {
-    this.setState({ deleteDialog: false });
-  }
-
-  /**
-   * Opens node deletion dialog.
-   */
-  handleDialogOpen() {
-    this.setState({ deleteDialog: true });
+  handleDialog(val) {
+    return () => this.setState({ deleteDialog: val });
   }
 
   /**
@@ -151,21 +134,13 @@ class OntologyFormComponent extends Component {
    */
   handleFormChange(e) {
     const { form } = this.state;
-    const { name, value, sourceId } = e.target;
+    const { schema } = this.props;
+    const { name, value } = e.target;
     form[name] = value;
-
-    if (e.target['@rid']) {
-      form[`${name}.@rid`] = e.target['@rid'];
-    } else if (form[`${name}.@rid`]) {
-      form[`${name}.@rid`] = '';
+    if (name.includes('.data') && value) {
+      form[name.split('.')[0]] = schema.newRecord(value).getPreview();
     }
-    if (sourceId) {
-      form[`${name}.sourceId`] = sourceId;
-    } else if (form[`${name}.sourceId`]) {
-      form[`${name}.sourceId`] = '';
-    }
-
-    this.setState({ form });
+    this.setState({ form, errorFields: [] });
   }
 
   /**
@@ -175,11 +150,30 @@ class OntologyFormComponent extends Component {
   async handleSubmit(e) {
     e.preventDefault();
     const { form, relationships, originalNode } = this.state;
-    const { handleSubmit } = this.props;
-    this.setState({ loading: true, notificationDrawerOpen: true });
+    const { handleSubmit, schema } = this.props;
 
-    await handleSubmit(form, relationships, originalNode);
-    this.setState({ loading: false });
+    const editableProps = (schema.getClass(form['@class'])).properties;
+    // Validates form
+    let formIsInvalid = false;
+    const errorFields = [];
+    editableProps.forEach((prop) => {
+      if (prop.mandatory) {
+        if (prop.type === 'link' && !(form[`${prop.name}.data`] && form[`${prop.name}.data`]['@rid'])) {
+          errorFields.push(prop.name);
+          formIsInvalid = true;
+        } else if (prop.type !== 'boolean' && !form[prop.name]) {
+          errorFields.push(prop.name);
+          formIsInvalid = true;
+        }
+      }
+    });
+    if (formIsInvalid) {
+      this.setState({ errorFields });
+    } else {
+      this.setState({ loading: true, notificationDrawerOpen: true });
+      await handleSubmit(form, relationships, originalNode);
+      this.setState({ loading: false });
+    }
   }
 
 
@@ -191,6 +185,7 @@ class OntologyFormComponent extends Component {
       deleteDialog,
       loading,
       notificationDrawerOpen,
+      errorFields,
     } = this.state;
     const {
       schema,
@@ -203,21 +198,10 @@ class OntologyFormComponent extends Component {
     if (!form) return null;
 
     const editableProps = (schema.getClass(form['@class'])).properties;
-    // Validates form
-    let formIsInvalid = false;
-    editableProps.forEach((prop) => {
-      if (prop.mandatory) {
-        if (prop.type === 'link' && (!form[prop.name] || !form[`${prop.name}.@rid`])) {
-          formIsInvalid = true;
-        } else if (prop.type !== 'boolean' && !form[prop.name]) {
-          formIsInvalid = true;
-        }
-      }
-    });
 
     const dialog = (
       <Dialog
-        onClose={this.handleDialogClose}
+        onClose={this.handleDialog(false)}
         open={deleteDialog}
       >
         <DialogTitle>
@@ -226,7 +210,7 @@ class OntologyFormComponent extends Component {
         <DialogContent>
           <DialogActions style={{ justifyContent: 'center' }}>
             <Button
-              onClick={this.handleDialogClose}
+              onClick={this.handleDialog(false)}
               color="primary"
               size="large"
             >
@@ -258,7 +242,7 @@ class OntologyFormComponent extends Component {
                 Basic Parameters
               </Typography>
               <List component="nav">
-                {variant === 'edit' ? (
+                {variant === 'edit' || (classes && classes.length === 1) ? (
                   <React.Fragment>
                     <ListItem>
                       <ListItemText
@@ -296,6 +280,13 @@ class OntologyFormComponent extends Component {
                   schema={schema}
                   onChange={this.handleFormChange}
                   sort={util.sortFields(DEFAULT_ORDER)}
+                  pairs={{
+                    range: ['start', 'end'],
+                    sourceId: ['sourceId', 'sourceIdVersion'],
+                    trialRange: ['startYear', 'completionYear'],
+                    location: ['country', 'city'],
+                  }}
+                  errorFields={errorFields}
                 />
               </List>
             </Paper>
@@ -313,7 +304,7 @@ class OntologyFormComponent extends Component {
             {variant === 'edit' && (
               <Button
                 variant="contained"
-                onClick={this.handleDialogOpen}
+                onClick={this.handleDialog(true)}
                 id="delete-btn"
                 size="large"
               >
@@ -325,7 +316,6 @@ class OntologyFormComponent extends Component {
               onClick={this.handleSubmit}
               variant="contained"
               color="primary"
-              disabled={formIsInvalid}
               id="submit-btn"
               size="large"
             >
@@ -347,9 +337,10 @@ class OntologyFormComponent extends Component {
  * @property {Array} edgeTypes - List of Knowledgebase ontology edge classes.
  * @property {function} handleFinish - Function triggered when node is edited
  * or deleted.
- * @property {function} handleCancel - Function triggered when form action is
- * cancelled.
- * @property {function} handleSubmit - Function triggered when form is submitted.
+ * @property {function} handleSubmit - Function triggered when form is
+ * submitted.
+ * @property {function} handleDelete - Function triggered when ontology is
+ * deleted.
  */
 OntologyFormComponent.propTypes = {
   node: PropTypes.object,
@@ -357,6 +348,7 @@ OntologyFormComponent.propTypes = {
   schema: PropTypes.object.isRequired,
   handleFinish: PropTypes.func,
   handleSubmit: PropTypes.func,
+  handleDelete: PropTypes.func,
   classes: PropTypes.array,
 };
 
@@ -364,6 +356,7 @@ OntologyFormComponent.defaultProps = {
   variant: 'edit',
   handleFinish: null,
   handleSubmit: null,
+  handleDelete: null,
   node: null,
   classes: null,
 };

@@ -1,7 +1,6 @@
 /**
  * @module /components/PositionalVariantParser
  */
-
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './PositionalVariantParser.css';
@@ -11,6 +10,11 @@ import {
   FormControl,
   FormHelperText,
   Paper,
+  ListItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
 import kbp from 'knowledgebase-parser';
@@ -19,6 +23,7 @@ import RelationshipsForm from '../RelationshipsForm/RelationshipsForm';
 import FormTemplater from '../FormTemplater/FormTemplater';
 import api from '../../services/api';
 import util from '../../services/util';
+import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
 
 const DEFAULT_ORDER = [
   'type',
@@ -45,11 +50,15 @@ class PositionalVariantParser extends Component {
       errorFields: [],
       relationships: [],
       originalRelationships: [],
+      nodeClass: 'PositionalVariant',
+      deleteDialog: false,
     };
     this.parseString = this.parseString.bind(this);
     this.handleVariantChange = this.handleVariantChange.bind(this);
     this.handleClassChange = this.handleClassChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleDialog = this.handleDialog.bind(this);
+    this.handleDeleteNode = this.handleDeleteNode.bind(this);
     this.submitVariant = this.submitVariant.bind(this);
     this.updateErrorFields = this.updateErrorFields.bind(this);
     this.extractLinkProps = this.extractLinkProps.bind(this);
@@ -58,29 +67,15 @@ class PositionalVariantParser extends Component {
 
   componentDidMount() {
     const { schema, initVariant } = this.props;
+    const { nodeClass } = this.state;
     const variant = initVariant
-      ? schema.initModel(initVariant, 'PositionalVariant')
-      : schema.initModel({}, 'PositionalVariant');
+      ? schema.initModel(initVariant, initVariant['@class'])
+      : schema.initModel({}, nodeClass);
 
     const relationships = [];
-    if (initVariant) {
-      const expandedEdgeTypes = util.expandEdges(schema.getEdges());
-      expandedEdgeTypes.forEach((type) => {
-        if (initVariant[type]) {
-          initVariant[type].forEach((edge) => {
-            if (!relationships.find(r => r['@rid'] === edge['@rid'])) {
-              relationships.push(
-                schema.initModel(
-                  edge,
-                  edge['@class'],
-                  [{ name: '@rid', type: 'string' }],
-                  false,
-                  true,
-                ),
-              );
-            }
-          });
-        }
+    if (initVariant && initVariant.getEdges) {
+      initVariant.getEdges().forEach((edge) => {
+        relationships.push(schema.initModel(edge, edge['@class']));
       });
     }
 
@@ -145,6 +140,8 @@ class PositionalVariantParser extends Component {
         });
       } catch (error) {
         let invalidFlag = '';
+        let newVariant = variant;
+        let newErrorFields = [];
         if (error.content && error.content.parsed) {
           Object.keys(error.content.parsed).forEach((key) => {
             if (variant[key] !== undefined && variant[key] !== null) {
@@ -153,14 +150,15 @@ class PositionalVariantParser extends Component {
           });
           const linkProps = await this.extractLinkProps(error.content.parsed);
           ({ invalidFlag } = linkProps);
-          this.setState({
-            variant: Object.assign(variant, linkProps.props),
-            errorFields: linkProps.errorFields,
-          });
+          newVariant = Object.assign(variant, linkProps.props);
+          newErrorFields = linkProps.errorFields;
         }
 
-        this.updateErrorFields(error);
-        this.setState({ invalidFlag: error.message || invalidFlag });
+        this.setState({
+          invalidFlag: error.message || invalidFlag,
+          errorFields: this.updateErrorFields(error, newErrorFields),
+          variant: newVariant,
+        });
       }
     }
   }
@@ -223,12 +221,37 @@ class PositionalVariantParser extends Component {
     } else {
       variant[nested] = { '@class': '' };
     }
-
-    this.setState({ variant, errorFields: [] }, this.updateShorthand);
+    this.updateShorthand(variant);
   }
 
   handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
+    const { variant } = this.state;
+    const { schema } = this.props;
+    const { name, value } = e.target;
+    const update = { [name]: value };
+    if (name === 'nodeClass') {
+      update.variant = schema.initModel(variant, value);
+    }
+
+    this.setState(update);
+  }
+
+  /**
+   * Deletes target node.
+   */
+  async handleDeleteNode() {
+    const { handleDelete } = this.props;
+    this.setState({ notificationDrawerOpen: true, loading: true });
+    this.handleDialog(false)();
+    await handleDelete();
+    this.setState({ loading: false });
+  }
+
+  /**
+   * Opens node deletion dialog.
+   */
+  handleDialog(val) {
+    return () => this.setState({ deleteDialog: val });
   }
 
   /**
@@ -239,41 +262,36 @@ class PositionalVariantParser extends Component {
    */
   handleVariantChange(e, nested) {
     const { variant } = this.state;
+    const { schema } = this.props;
     const { name, value } = e.target;
     if (nested) {
       variant[nested][name] = value;
-      variant[nested][`${name}.@rid`] = e.target['@rid'];
+      if (name.includes('.data') && value) {
+        variant[nested][name.split('.')[0]] = schema.newRecord(value).getPreview();
+      }
     } else {
       variant[name] = value;
-      variant[`${name}.@rid`] = e.target['@rid'];
-    }
-
-    Object.keys(e.target)
-      .filter(k => k !== 'name' && k !== 'value' && !k.startsWith('_'))
-      .forEach((key) => {
-        if (nested) {
-          variant[nested][`${name}.${key}`] = e.target[key];
-        }
-        variant[`${name}.${key}`] = e.target[key];
-      });
-    this.setState({ variant, errorFields: [] }, () => {
-      if (!SHORTHAND_EXCLUDED.includes(name)) {
-        this.updateShorthand();
+      if (name.includes('.data') && value) {
+        variant[name.split('.')[0]] = schema.newRecord(value).getPreview();
       }
-    });
+    }
+    if (!SHORTHAND_EXCLUDED.includes(name)) {
+      this.updateShorthand(variant);
+    } else {
+      this.setState({ variant, errorFields: [] });
+    }
   }
 
   /**
    * Pipes changes of the variant form fields to the shorthand string form.
    */
-  updateShorthand() {
-    const { variant } = this.state;
+  updateShorthand(variant) {
     let { shorthand } = this.state;
     const { schema } = this.props;
     try {
       const filteredVariant = {};
       Object.keys(variant).forEach((k) => {
-        if (typeof variant[k] === 'object') {
+        if (variant[k] && typeof variant[k] === 'object') {
           if (variant[k]['@class'] && schema.isPosition(variant[k]['@class'])) {
             filteredVariant[k] = variant[k];
             filteredVariant.prefix = kbp.position.CLASS_PREFIX[variant[k]['@class']];
@@ -290,12 +308,19 @@ class PositionalVariantParser extends Component {
         variant.break2Repr = shorthand.break2Repr;
       }
       shorthand = kbp.variant.parse(shorthand.toString());
-      this.setState({ invalidFlag: '' });
+      this.setState({
+        invalidFlag: '',
+        shorthand: shorthand.toString(),
+        variant,
+        errorFields: [],
+      });
     } catch (error) {
-      this.updateErrorFields(error);
-      this.setState({ invalidFlag: error.message });
-    } finally {
-      this.setState({ shorthand: shorthand.toString(), variant });
+      this.setState({
+        shorthand: shorthand.toString(),
+        invalidFlag: error.message,
+        variant,
+        errorFields: this.updateErrorFields(error, []),
+      });
     }
   }
 
@@ -303,8 +328,8 @@ class PositionalVariantParser extends Component {
    * Assigns blame to violatedAttr input fields in the form.
    * @param {kbp.error.ErrorMixin} error - Error object from kbp.
    */
-  updateErrorFields(error) {
-    const { errorFields, variant } = this.state;
+  updateErrorFields(error, errorFields) {
+    const { variant } = this.state;
     if (error && error.content) {
       const { violatedAttr } = error.content;
       if (violatedAttr) {
@@ -320,7 +345,7 @@ class PositionalVariantParser extends Component {
         }
       }
     }
-    this.setState({ errorFields });
+    return errorFields;
   }
 
   /**
@@ -330,11 +355,31 @@ class PositionalVariantParser extends Component {
   /* eslint-disable */
   async submitVariant(e) {
     e.preventDefault();
-    this.setState({ loading: true, notificationDrawerOpen: true });
-    const { variant, relationships, originalRelationships } = this.state;
-    const { handleSubmit } = this.props;
-    await handleSubmit(variant, relationships, originalRelationships);
-    this.setState({ loading: false });
+    const { variant, relationships, originalRelationships, invalidFlag } = this.state;
+    const { handleSubmit, schema } = this.props;
+
+    const classSchema = schema.getClass('PositionalVariant').properties;
+    let formIsInvalid = !!(invalidFlag);
+    const errorFields = [];
+
+    (classSchema || []).forEach((prop) => {
+      if (prop.mandatory) {
+        if (prop.type === 'link' && (!variant[`${prop.name}.data`] || !variant[`${prop.name}.data`]['@rid'])) {
+          errorFields.push(prop.name);
+          formIsInvalid = true;
+        } else if (prop.type !== 'boolean' && !variant[prop.name]) {
+          errorFields.push(prop.name);
+          formIsInvalid = true;
+        }
+      }
+    });
+    if (formIsInvalid) {
+      this.setState({ errorFields });
+    } else {
+      this.setState({ loading: true, notificationDrawerOpen: true });
+      await handleSubmit(variant, relationships, originalRelationships);
+      this.setState({ loading: false });
+    }
   }
 
   render() {
@@ -346,6 +391,8 @@ class PositionalVariantParser extends Component {
       notificationDrawerOpen,
       loading,
       relationships,
+      nodeClass,
+      deleteDialog,
     } = this.state;
     const {
       required,
@@ -357,22 +404,41 @@ class PositionalVariantParser extends Component {
     } = this.props;
 
     if (!variant) return null;
-    const classSchema = schema.getClass('PositionalVariant').properties;
-
-    let formIsInvalid = false;
-    (classSchema || []).forEach((prop) => {
-      if (prop.mandatory) {
-        if (prop.type === 'link' && (!variant[prop.name] || !variant[`${prop.name}.@rid`])) {
-          formIsInvalid = true;
-        } else if (prop.type !== 'boolean' && !variant[prop.name]) {
-          formIsInvalid = true;
-        }
-      }
-    });
+    const classSchema = schema.getClass(nodeClass).properties;
+    const isPositional = nodeClass === 'PositionalVariant';
     const shorthandError = !!(error || invalidFlag);
+
+    const dialog = (
+      <Dialog
+        onClose={this.handleDialog(false)}
+        open={deleteDialog}
+      >
+        <DialogTitle>
+          Really Delete this Term?
+        </DialogTitle>
+        <DialogContent>
+          <DialogActions style={{ justifyContent: 'center' }}>
+            <Button
+              onClick={this.handleDialog(false)}
+              color="primary"
+              size="large"
+            >
+              No
+            </Button>
+            <Button
+              onClick={this.handleDeleteNode}
+              size="large"
+            >
+              Yes
+            </Button>
+          </DialogActions>
+        </DialogContent>
+      </Dialog>
+    );
 
     return (
       <div className="variant-parser-wrapper">
+        {dialog}
         <NotificationDrawer
           open={notificationDrawerOpen}
           handleFinish={handleFinish}
@@ -380,37 +446,50 @@ class PositionalVariantParser extends Component {
         />
         <div className="flexbox">
           <div className="variant-parser">
+
             <Paper elevation={4} className="variant-parser-shorthand">
-              <FormControl
-                error={shorthandError}
-                fullWidth
-              >
-                <TextField
-                  error={shorthandError}
-                  required={required}
-                  name="shorthand"
-                  onChange={this.parseString}
-                  label="HGVS Nomenclature"
-                  disabled={disabled}
-                  value={shorthand}
+              <ListItem>
+                <ResourceSelectComponent
+                  resources={['PositionalVariant', 'CategoryVariant']}
+                  name="nodeClass"
+                  value={nodeClass}
+                  onChange={this.handleChange}
+                  label="Class"
                 />
-                {shorthandError
-                  && <FormHelperText>{invalidFlag}</FormHelperText>
-                }
-              </FormControl>
+              </ListItem>
+              {isPositional && (
+                <ListItem>
+                  <FormControl
+                    error={shorthandError}
+                    fullWidth
+                  >
+                    <TextField
+                      error={shorthandError}
+                      required={required}
+                      name="shorthand"
+                      onChange={this.parseString}
+                      label="HGVS Nomenclature"
+                      disabled={disabled}
+                      value={shorthand}
+                    />
+                    {shorthandError
+                      && <FormHelperText>{invalidFlag}</FormHelperText>
+                    }
+                  </FormControl>
+                </ListItem>
+              )}
             </Paper>
             <Paper elevation={4} className="parser-form-grid">
               {schema
                 && (
                   <FormTemplater
-                    disablePadding
                     schema={schema}
                     onChange={this.handleVariantChange}
                     onClassChange={this.handleClassChange}
                     model={variant}
                     propSchemas={classSchema}
                     excludedProps={['break1Repr', 'break2Repr']}
-                    errorFields={errorFields}
+                    errorFields={isPositional ? errorFields : []}
                     sort={util.sortFields(DEFAULT_ORDER)}
                     pairs={{
                       break1: ['break1Start', 'break1End'],
@@ -433,11 +512,20 @@ class PositionalVariantParser extends Component {
           </Paper>
         </div>
         <Paper elevation={4} id="variant-form-submit">
+          {initVariant && (
+            <Button
+              variant="contained"
+              onClick={this.handleDialog(true)}
+              id="delete-btn"
+              size="large"
+            >
+              Delete
+            </Button>
+          )}
           <Button
             onClick={this.submitVariant}
             color="primary"
             variant="contained"
-            disabled={!!(formIsInvalid || invalidFlag)}
           >
             Submit
           </Button>

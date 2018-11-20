@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import './DetailDrawer.css';
 import {
   Typography,
-  // IconButton,
   Drawer,
   Divider,
   List,

@@ -12,9 +12,12 @@ import {
   Paper,
   Typography,
   Switch,
+  Collapse,
 } from '@material-ui/core';
 import * as qs from 'querystring';
 import AddIcon from '@material-ui/icons/Add';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import { withKB } from '../../components/KBContext/KBContext';
 import util from '../../services/util';
 import api from '../../services/api';
@@ -28,6 +31,7 @@ class QueryBuilderViewBase extends Component {
       tempNames: { query: '' },
       tempValues: { query: '' },
       specOpen: false,
+      specBlurbOpen: false,
     };
 
     this.bundle = this.bundle.bind(this);
@@ -36,7 +40,7 @@ class QueryBuilderViewBase extends Component {
     this.handleDelete = this.handleDelete.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleNested = this.handleNested.bind(this);
-    this.handleSpecToggle = this.handleSpecToggle.bind(this);
+    this.handleToggle = this.handleToggle.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -71,7 +75,7 @@ class QueryBuilderViewBase extends Component {
   /**
    * Toggles kb spec iframe dialog.
    */
-  handleSpecToggle() {
+  handleToggle() {
     const { specOpen } = this.state;
     this.setState({ specOpen: !specOpen });
   }
@@ -186,6 +190,7 @@ class QueryBuilderViewBase extends Component {
       tempNames,
       tempValues,
       specOpen,
+      specBlurbOpen,
     } = this.state;
 
     const input = nested => (
@@ -286,12 +291,29 @@ class QueryBuilderViewBase extends Component {
           maxWidth="lg"
           fullWidth
           classes={{ paper: 'qbv-swagger-iframe' }}
-          onClose={this.handleSpecToggle}
+          onClose={this.handleToggle}
         >
+          <div>
+            <div style={{ display: 'flex', flexDirection: 'row', padding: '1rem' }}>
+              <Typography variant="h5">Help</Typography>
+              {specBlurbOpen
+                ? <ExpandLessIcon onClick={() => this.setState({ specBlurbOpen: false })} />
+                : <ExpandMoreIcon onClick={() => this.setState({ specBlurbOpen: true })} />}
+            </div>
+            <Collapse in={specBlurbOpen}>
+              <div style={{ padding: '1rem' }}>
+                Type key value pairs in the inputs to build your query. Use the
+                switch to add nested groups of parameters.
+                <br />
+                <br />
+                Here is the GraphKB specification for the api version in use.
+              </div>
+            </Collapse>
+          </div>
           {iFrame}
         </Dialog>
         <Paper className="qbv-header" elevation={4}>
-          <Button variant="outlined" onClick={this.handleSpecToggle}>Help</Button>
+          <Button variant="outlined" onClick={this.handleToggle}>Help</Button>
           <Typography variant="h5">Query Builder</Typography>
         </Paper>
         <Paper className="qbv-body">

@@ -8,6 +8,9 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import './ErrorView.css';
 import { Typography, Button, Tooltip } from '@material-ui/core';
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import config from '../../static/config';
+
+const { JIRA_LINK } = config;
 
 /**
  * View for displaying uncaught error messages.
@@ -24,11 +27,7 @@ class ErrorView extends Component {
   componentDidMount() {
     const { history } = this.props;
     const { state } = history.location;
-    if (!state) {
-      history.push('/query');
-    } else {
-      this.setState({ error: state });
-    }
+    this.setState({ error: state });
   }
 
   render() {
@@ -37,7 +36,19 @@ class ErrorView extends Component {
       error,
     } = this.state;
     const { history } = this.props;
-    if (!error) return null;
+    if (!error) {
+      return (
+        <div className="error-wrapper" style={{ padding: '40vh 0' }}>
+          <div className="error-content">
+            <Typography variant="h4">Looks like you don&apos;t have any errors! &#x263A;</Typography>
+          </div>
+          <div className="error-content" id="return-link">
+            <Button variant="contained" color="primary" onClick={history.back}>
+              Back
+            </Button>
+          </div>
+        </div>);
+    }
     const {
       message,
       name,
@@ -47,7 +58,7 @@ class ErrorView extends Component {
       statusText,
     } = error;
 
-    const methodText = `${statusText || ''} ${url ? `to url ${url}` : ''}`;
+    const jiraLink = <a rel="noopener noreferrer" target="_blank" href={JIRA_LINK}>KBDEV</a>;
 
     return (
       <div className="error-wrapper">
@@ -55,18 +66,36 @@ class ErrorView extends Component {
           Error
         </Typography>
         <div className="error-content">
-          <Typography variant="h3">
-            {`${status}: ${name}`}
-          </Typography>
+          {(status || name) && (
+            <Typography variant="h3">
+              {`${status}: ${name}`}
+            </Typography>
+          )}
         </div>
         <div className="error-content">
-          <Typography variant="subtitle1">
-            {methodText}
-          </Typography>
+          <div style={{ display: 'inline-flex', margin: 'auto' }}>
+            <Typography variant="subtitle1">
+              {statusText || ''}&nbsp;
+            </Typography>
+            {url && (
+              <React.Fragment>
+                <Typography variant="subtitle1">
+                  to URL&nbsp;
+                </Typography>
+                <Typography variant="subtitle1" color="error">
+                  {url}
+                </Typography>
+              </React.Fragment>)}
+          </div>
         </div>
         <div className="error-content">
           <Typography variant="h6">
             {message}
+          </Typography>
+        </div>
+        <div className="error-content">
+          <Typography paragraph>
+            Report this error in a JIRA ticket under the {jiraLink} project.
           </Typography>
         </div>
         <div id="spacer" />

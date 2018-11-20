@@ -56,7 +56,6 @@ import logo from './static/logo.png';
 import title from './static/title.png';
 import auth from './services/auth';
 import history from './services/history';
-import api from './services/api';
 import { KBContext } from './components/KBContext/KBContext';
 import Schema from './models/schema';
 
@@ -95,7 +94,6 @@ class App extends Component {
       loggedIn: (!!auth.getToken() && !auth.isExpired()),
       drawerOpen: false,
       expanded: [],
-      schema: null,
     };
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -105,11 +103,6 @@ class App extends Component {
     this.handleSideBarNavigate = this.handleSideBarNavigate.bind(this);
     this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
     this.handleDrawerClose = this.handleDrawerClose.bind(this);
-  }
-
-  async componentDidMount() {
-    const schema = await api.getSchema();
-    this.setState({ schema });
   }
 
   /**
@@ -178,7 +171,6 @@ class App extends Component {
       loggedIn,
       drawerOpen,
       expanded,
-      schema,
     } = this.state;
 
     const loginWithProps = () => (
@@ -280,7 +272,7 @@ class App extends Component {
         <Redirect from="*" to="/query" />
       </Switch>
     );
-    return schema && (
+    return (
       <KBContext.Provider value={{ schema: new Schema(SCHEMA_DEFN), user: auth.getUser() }}>
         <MuiThemeProvider theme={theme}>
           <Router history={history}>

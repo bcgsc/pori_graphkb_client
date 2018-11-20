@@ -141,7 +141,7 @@ class QueryViewBase extends Component {
       ['type', 'reference1', 'reference2'].forEach((k) => { variant[k] = { name: variant[k] }; });
       const payload = util.parsePayload(
         variant,
-        schema.getClass('PositionalVariant').properties.filter(p => !p.name.includes('Repr')),
+        schema.getProperties('PositionalVariant').filter(p => !p.name.includes('Repr')),
         [],
         true,
       );
@@ -171,7 +171,7 @@ class QueryViewBase extends Component {
     const { schema } = this.props;
     const { name, value } = e.target;
     if (name && name.includes('.data') && value) {
-      this.setState({ [name.split('.data')[0]]: schema.newRecord(value).getPreview() });
+      this.setState({ [name.split('.data')[0]]: schema.getPreview(value) });
     } else {
       this.setState({ [name]: value, disabled: false });
     }
@@ -293,7 +293,7 @@ class QueryViewBase extends Component {
                   fullWidth
                   value={relevance}
                   name="relevance"
-                  endpoint={schema.getClass('Vocabulary').route.slice(1)}
+                  endpoint={schema.getRoute('Vocabulary').slice(1)}
                   onChange={this.handleChange}
                   className="query-statement-textfield"
                   endAdornment={null}
@@ -304,7 +304,7 @@ class QueryViewBase extends Component {
                   fullWidth
                   value={appliesTo}
                   name="appliesTo"
-                  endpoint={schema.getClass('Ontology').route.slice(1)}
+                  endpoint={schema.getRoute('Ontology').slice(1)}
                   onChange={this.handleChange}
                   className="query-statement-textfield"
                   endAdornment={(

@@ -9,6 +9,7 @@ import {
 import FormTemplater from '../FormTemplater/FormTemplater';
 import RelationshipsForm from '../RelationshipsForm/RelationshipsForm';
 import NotificationDrawer from '../NotificationDrawer/NotificationDrawer';
+import DeleteRecordDialog from '../DeleteRecordDialog/DeleteRecordDialog';
 
 const DEFAULT_REVIEW_STATUS = 'pending';
 
@@ -19,11 +20,14 @@ class StatementFormComponent extends Component {
       relationships: [],
       form: null,
       originalRelationships: null,
+      deleteDialog: false,
       errorFields: [],
       relationshipsError: false,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleDialog = this.handleDialog.bind(this);
+    this.handleDeleteNode = this.handleDeleteNode.bind(this);
   }
 
   /**
@@ -63,10 +67,8 @@ class StatementFormComponent extends Component {
 
     let formIsInvalid = false;
     const errorFields = [];
-
     const oneOfEachEdge = relationships.some(r => r['@class'] === 'SupportedBy' && !r.deleted)
       && relationships.some(r => r['@class'] === 'Implies' && !r.deleted);
-
     schema.getClass('Statement').properties.forEach((prop) => {
       if (prop.mandatory) {
         if (prop.type === 'link' && !(form[`${prop.name}.data`] && form[`${prop.name}.data`]['@rid'])) {
@@ -95,6 +97,25 @@ class StatementFormComponent extends Component {
   }
 
   /**
+   * Sets the open state of the delete dialog.
+   * @param {boolean} val - Open state of delete dialog.
+   */
+  handleDialog(val) {
+    this.setState({ deleteDialog: val });
+  }
+
+  /**
+   * Deletes target node.
+   */
+  async handleDeleteNode() {
+    const { onDelete } = this.props;
+    this.setState({ notificationDrawerOpen: true, loading: true });
+    this.handleDialog(false);
+    await onDelete();
+    this.setState({ loading: false });
+  }
+
+  /**
    * Updates form model based off user input.
    * @param {Event} e - User input event.
    */
@@ -115,13 +136,13 @@ class StatementFormComponent extends Component {
       relationships,
       notificationDrawerOpen,
       loading,
+      deleteDialog,
       errorFields,
       relationshipsError,
     } = this.state;
     const {
       schema,
       handleFinish,
-      onDelete,
       node,
     } = this.props;
 
@@ -132,6 +153,11 @@ class StatementFormComponent extends Component {
 
     return (
       <div>
+        <DeleteRecordDialog
+          open={deleteDialog}
+          onDelete={this.handleDeleteNode}
+          handleDialog={this.handleDialog}
+        />
         <NotificationDrawer
           open={notificationDrawerOpen}
           loading={loading}
@@ -194,7 +220,7 @@ class StatementFormComponent extends Component {
           </Button>
           {node && (
             <Button
-              onClick={onDelete}
+              onClick={() => this.handleDialog(true)}
               variant="contained"
               size="large"
               id="statement-delete-btn"

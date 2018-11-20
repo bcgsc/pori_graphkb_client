@@ -143,7 +143,7 @@ describe('<OntologyFormComponent />', () => {
     form.linkprop = 'test link';
     form['linkprop.data'] = { '@rid': 'test rid' };
     wrapper.setState({ form });
-    expect(wrapper.find('.form-btns button[type="submit"]').props().disabled).to.eq(false);
+    expect(wrapper.find('.form-btns button#submit-btn').props().disabled).to.eq(false);
     wrapper.find('#submit-btn').first().simulate('click');
     expect(OntologyFormComponent.prototype.handleSubmit).to.have.property('callCount', 1);
     expect(handleSubmit.mock.calls.length).to.eq(1);
@@ -153,5 +153,25 @@ describe('<OntologyFormComponent />', () => {
     expect(handleFinish.mock.calls.length).to.eq(1);
 
     wrapper.setState({ notificationDrawerOpen: false });
+  });
+
+  it('delete dialog appears', () => {
+    wrapper = mount(
+      <OntologyFormComponent
+        variant="edit"
+        schema={testSchema}
+        node={testNode}
+        sources={testSources}
+        edgeTypes={['AliasOf']}
+      />,
+    );
+    wrapper.find('#delete-btn').first().simulate('click');
+    wrapper.setState({ deleteDialog: true });
+    expect(wrapper.find('#confirm-delete')).to.have.length.gte(1);
+
+    wrapper.find('#cancel-delete').first().simulate('click');
+    expect(wrapper.state().deleteDialog).to.eq(false);
+    wrapper.setState({ deleteDialog: true });
+    wrapper.find('#confirm-delete').first().simulate('click');
   });
 });

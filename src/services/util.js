@@ -229,9 +229,9 @@ const getTSVRepresentation = (value, key) => {
  * Prepares a payload to be sent to the server for a POST, PATCH, or GET requst.
  * @param {Object} form - unprocessed form object containing user data.
  * @param {Array} objectSchema - List of valid properties for given form.
- * @param {Array} exceptions - List of extra parameters not specified in editableProps.
+ * @param {Array} extraProps - List of extra parameters not specified in objectSchema.
  */
-const parsePayload = (form, objectSchema, exceptions, isQuery = false) => {
+const parsePayload = (form, objectSchema, extraProps, isQuery = false) => {
   const payload = Object.assign({}, form);
   Object.keys(payload).forEach((key) => {
     if (!payload[key]) {
@@ -243,7 +243,7 @@ const parsePayload = (form, objectSchema, exceptions, isQuery = false) => {
         [objKey] = key.split('.');
       }
 
-      Object.keys(payload[objKey]).forEach((k) => {
+      Object.keys(payload[key]).forEach((k) => {
         if (payload[objKey][k]) {
           payload[`${objKey}[${k}]`] = payload[objKey][k];
         }
@@ -256,7 +256,7 @@ const parsePayload = (form, objectSchema, exceptions, isQuery = false) => {
       const nestedKey = key.split('.')[0];
       if (
         (objectSchema.find(p => p.name === nestedKey)
-          || (exceptions && exceptions.find(p => p.name === nestedKey)))
+          || (extraProps && extraProps.includes(nestedKey)))
         && payload[key]
       ) {
         // Sets top level property to the rid: ie.
@@ -268,7 +268,7 @@ const parsePayload = (form, objectSchema, exceptions, isQuery = false) => {
 
     // Clears out all other unknown fields.
     if (!objectSchema.find(p => p.name === key)) {
-      if (!exceptions || !exceptions.find(p => p.name === key)) {
+      if (!extraProps || !extraProps.includes(key)) {
         delete payload[key];
       }
     }

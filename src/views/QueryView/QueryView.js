@@ -14,14 +14,17 @@ import {
   InputAdornment,
 } from '@material-ui/core';
 import kbp from 'knowledgebase-parser';
+import * as qs from 'querystring';
 import SearchIcon from '@material-ui/icons/Search';
-import AutoSearchComponent from '../../components/AutoSearchComponent/AutoSearchComponent';
+import AutoSearchSingle from '../../components/AutoSearchSingle/AutoSearchSingle';
+import { withSchema } from '../../components/SchemaContext/SchemaContext';
+import util from '../../services/util';
 
 /**
  * View for simple search by name query. Form submissions are passed through the URL to
  * the DataView module to handle the query transaction.
  */
-class QueryView extends Component {
+class QueryViewBase extends Component {
   constructor(props) {
     super(props);
     const { state } = props.history.location;
@@ -57,45 +60,35 @@ class QueryView extends Component {
       variant,
       queryable,
     } = this.state;
-    const { history } = this.props;
+    const { history, schema } = this.props;
     let search;
 
     // Matches Knowledgebase api separator characters
     const pattern = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
     if (tab === 'ontology') {
       if (str && !disabled) {
-        const m = !!(
-          str.match(pattern)
-          && str.split(pattern).some(chunk => chunk.length < 4)
-        ) || str.trim().length < 4;
-        search = `?name=${!m ? '~' : ''}${encodeURIComponent(str.trim())}`;
+        const trimmed = String(str).trim();
+        const matched = !trimmed.split(pattern).some(chunk => chunk.length < 4);
+        search = `?name=${matched ? '~' : ''}${encodeURIComponent(trimmed)}`;
       }
     } else if (tab === 'variant' && str && queryable) {
-      search = '?@class=PositionalVariant';
-      Object.keys(variant).forEach((key) => {
-        let val = encodeURIComponent((
-          `${variant[key]}`.match(pattern)
-          && `${variant[key]}`.split(pattern).some(chunk => chunk.length < 4)
-        ) || `${variant[key]}`.trim().length < 4 ? variant[key] : `~${variant[key]}`);
-
-        if (key !== 'prefix' && key !== 'multiFeature') {
-          if (key === 'reference1' || key === 'reference2' || key === 'type') {
-            search += `&${key}[name]=${val}`;
-          } else if (typeof variant[key] === 'object') {
-            Object.keys(variant[key]).forEach((nestedKey) => {
-              val = encodeURIComponent((
-                `${variant[key][nestedKey]}`.match(pattern)
-                && `${variant[key][nestedKey]}`.split(pattern).some(chunk => chunk && chunk.length < 4)
-              ) || `${variant[key][nestedKey]}`.trim().length < 4
-                ? variant[key][nestedKey]
-                : `~${variant[key][nestedKey]}`);
-              search += `&${key}[${nestedKey}]=${val}`;
-            });
-          } else {
-            search += `&${key}=${val}`;
-          }
+      ['type', 'reference1', 'reference2'].forEach((k) => { variant[k] = { name: variant[k] }; });
+      const payload = util.parsePayload(
+        variant,
+        schema.getClass('PositionalVariant').properties.filter(p => !p.name.includes('Repr')),
+        [],
+        true,
+      );
+      Object.keys(payload).forEach((k) => {
+        const trimmed = String(payload[k]).trim();
+        if (!trimmed.split(pattern).some(chunk => chunk.length < 4)) {
+          payload[k] = `~${trimmed}`;
+        } else {
+          payload[k] = trimmed;
         }
       });
+      payload['@class'] = 'PositionalVariant';
+      search = qs.stringify(payload);
     }
     if (search) {
       history.push({
@@ -110,7 +103,12 @@ class QueryView extends Component {
    * @param {Event} e - user input event.
    */
   handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value, disabled: false });
+    const { name, value } = e.target;
+    if (name && name.includes('.data')) {
+      this.setState({ [name.split('.data')[0]]: value && (value.name || value.sourceId) });
+    } else {
+      this.setState({ [name]: value, disabled: false });
+    }
   }
 
   /**
@@ -181,7 +179,7 @@ class QueryView extends Component {
             tabIndex={0}
           >
             {tab === 'ontology' && (
-              <AutoSearchComponent
+              <AutoSearchSingle
                 value={str}
                 onChange={this.handleChange}
                 placeholder="Search by Name"
@@ -197,7 +195,7 @@ class QueryView extends Component {
               />
             )}
             {tab === 'variant' && (
-              <div style={{ height: 64 }}>
+              <div>
                 <TextField
                   placeholder="Search by HGVS Shorthand"
                   fullWidth
@@ -205,7 +203,7 @@ class QueryView extends Component {
                   name="str"
                   onChange={this.handleChange}
                   onKeyUp={this.handleVariantParse}
-                  error={(variantError && !queryable)}
+                  error={!!(variantError && !queryable)}
                   helperText={variantError}
                   InputProps={{
                     endAdornment: (
@@ -237,8 +235,14 @@ class QueryView extends Component {
  * @namespace
  * @property {Object} history - Application routing history object.
  */
-QueryView.propTypes = {
+QueryViewBase.propTypes = {
   history: PropTypes.object.isRequired,
+  schema: PropTypes.object.isRequired,
 };
 
-export default QueryView;
+const QueryView = withSchema(QueryViewBase);
+
+export {
+  QueryView,
+  QueryViewBase,
+};

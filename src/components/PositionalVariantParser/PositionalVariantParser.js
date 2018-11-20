@@ -11,10 +11,6 @@ import {
   FormHelperText,
   Paper,
   ListItem,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
 import kbp from 'knowledgebase-parser';
@@ -24,6 +20,7 @@ import FormTemplater from '../FormTemplater/FormTemplater';
 import api from '../../services/api';
 import util from '../../services/util';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
+import DeleteRecordDialog from '../DeleteRecordDialog/DeleteRecordDialog';
 
 const DEFAULT_ORDER = [
   'type',
@@ -101,7 +98,7 @@ class PositionalVariantParser extends Component {
     if (!value) {
       const newVariant = schema.initModel({}, 'PositionalVariant');
       Object.keys(newVariant).forEach((k) => {
-        if (typeof newVariant[k] === 'object' && newVariant[k]['@class']) {
+        if (newVariant[k] && typeof newVariant[k] === 'object' && newVariant[k]['@class']) {
           newVariant[k]['@class'] = '';
         }
       });
@@ -179,11 +176,11 @@ class PositionalVariantParser extends Component {
     await Promise.all(linkProps.map(async (prop) => {
       const { name, linkedClass } = prop;
       if (parsed[name] && linkedClass && linkedClass.route) {
-        const data = await api.get(`${linkedClass.route}?name=${parsed[name]}`);
+        const data = await api.get(`${linkedClass.route}?name=${parsed[name]}&neighbors=1`);
         const cycled = jc.retrocycle(data).result;
         if (cycled.length === 1) {
-          newValues[name] = cycled[0].name;
-          newValues[`${name}.@rid`] = cycled[0]['@rid'];
+          [newValues[`${name}.data`]] = cycled;
+          newValues[name] = schema.newRecord(cycled[0]).getPreview();
         } else if (cycled.length > 1) {
           // add multiple modals?
         } else if (cycled.length === 0) {
@@ -242,7 +239,7 @@ class PositionalVariantParser extends Component {
   async handleDeleteNode() {
     const { handleDelete } = this.props;
     this.setState({ notificationDrawerOpen: true, loading: true });
-    this.handleDialog(false)();
+    this.handleDialog(false);
     await handleDelete();
     this.setState({ loading: false });
   }
@@ -251,7 +248,7 @@ class PositionalVariantParser extends Component {
    * Opens node deletion dialog.
    */
   handleDialog(val) {
-    return () => this.setState({ deleteDialog: val });
+    this.setState({ deleteDialog: val });
   }
 
   /**
@@ -408,37 +405,13 @@ class PositionalVariantParser extends Component {
     const isPositional = nodeClass === 'PositionalVariant';
     const shorthandError = !!(error || invalidFlag);
 
-    const dialog = (
-      <Dialog
-        onClose={this.handleDialog(false)}
-        open={deleteDialog}
-      >
-        <DialogTitle>
-          Really Delete this Term?
-        </DialogTitle>
-        <DialogContent>
-          <DialogActions style={{ justifyContent: 'center' }}>
-            <Button
-              onClick={this.handleDialog(false)}
-              color="primary"
-              size="large"
-            >
-              No
-            </Button>
-            <Button
-              onClick={this.handleDeleteNode}
-              size="large"
-            >
-              Yes
-            </Button>
-          </DialogActions>
-        </DialogContent>
-      </Dialog>
-    );
-
     return (
       <div className="variant-parser-wrapper">
-        {dialog}
+        <DeleteRecordDialog
+          open={deleteDialog}
+          onDelete={this.handleDeleteNode}
+          handleDialog={this.handleDialog}
+        />
         <NotificationDrawer
           open={notificationDrawerOpen}
           handleFinish={handleFinish}
@@ -512,16 +485,7 @@ class PositionalVariantParser extends Component {
           </Paper>
         </div>
         <Paper elevation={4} id="variant-form-submit">
-          {initVariant && (
-            <Button
-              variant="contained"
-              onClick={this.handleDialog(true)}
-              id="delete-btn"
-              size="large"
-            >
-              Delete
-            </Button>
-          )}
+
           <Button
             onClick={this.submitVariant}
             color="primary"
@@ -529,6 +493,16 @@ class PositionalVariantParser extends Component {
           >
             Submit
           </Button>
+          {initVariant && (
+            <Button
+              variant="contained"
+              onClick={() => this.handleDialog(true)}
+              id="delete-btn"
+              size="large"
+            >
+              Delete
+            </Button>
+          )}
         </Paper>
       </div>
     );

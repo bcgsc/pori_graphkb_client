@@ -26,7 +26,7 @@ $drawer-breakpoint: 1024px;
       @media (max-width: $breakpoint-mobile) {
         max-width: 0;
       }
-      > * {
+      * {
         color: white;
       }
     }

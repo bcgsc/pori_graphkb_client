@@ -7,7 +7,7 @@ import ErrorView from './ErrorView/ErrorView';
 import FeedbackView from './FeedbackView/FeedbackView';
 import IconsView from './IconsView/IconsView';
 import LoginView from './LoginView/LoginView';
-import QueryView from './QueryView/QueryView';
+import { QueryView } from './QueryView/QueryView';
 import { AddVariantView } from './AddVariantView/AddVariantView';
 import { EditVariantView } from './EditVariantView/EditVariantView';
 import { EditStatementView } from './EditStatementView/EditStatementView';

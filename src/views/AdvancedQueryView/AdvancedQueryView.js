@@ -84,8 +84,8 @@ class AdvancedQueryViewBase extends Component {
   bundle() {
     const { form } = this.state;
     const { schema } = this.props;
-    const params = [{ name: '@class', type: 'string' }];
-    params.push(...config.ONTOLOGY_QUERY_PARAMS);
+    const params = ['@class'];
+    params.push(...config.ONTOLOGY_QUERY_PARAMS.map(oqp => oqp.name));
     const schemaClass = schema.getClass(form['@class']).properties || [];
     schemaClass.push(...config.ONTOLOGY_QUERY_PARAMS);
     const payload = util.parsePayload(form, schemaClass, params, true);
@@ -98,6 +98,7 @@ class AdvancedQueryViewBase extends Component {
    */
   handleChange(e, nested) {
     const { form } = this.state;
+    const { schema } = this.props;
     const {
       name,
       value,
@@ -109,10 +110,16 @@ class AdvancedQueryViewBase extends Component {
       form[nested][name] = value;
       form[nested][`${name}.@rid`] = rid || '';
       form[nested][`${name}.sourceId`] = sourceId || '';
+      if (name.includes('.data') && value) {
+        form[nested][name.split('.')[0]] = schema.newRecord(value).getPreview();
+      }
     } else {
       form[name] = value;
       form[`${name}.@rid`] = rid || '';
       form[`${name}.sourceId`] = sourceId || '';
+      if (name.includes('.data') && value) {
+        form[name.split('.')[0]] = schema.newRecord(value).getPreview();
+      }
     }
 
     this.setState({ form });

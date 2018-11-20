@@ -9,12 +9,15 @@ import Schema from '../../models/schema';
 const testSchema = new Schema({
   test: {
     name: 'test',
-    properties: [
-      { name: 'dependency', type: 'link' },
-    ],
+    properties: {
+      dependency: { name: 'dependency', type: 'link' },
+      '@rid': { name: '@rid', type: 'string' },
+    },
     identifiers: ['@rid'],
+    getPreview: () => 'test',
   },
   E: {
+    properties: {},
     subclasses: [
       { name: 'AliasOf' },
     ],
@@ -23,19 +26,24 @@ const testSchema = new Schema({
     name: 'AliasOf',
     inherits: ['E'],
     identifiers: ['@rid'],
+    properties: {},
+    getPreview: () => 'aliasof',
   },
   V: {
     name: 'V',
-    properties: [],
+    properties: {},
   },
   Ontology: {
     name: 'Ontology',
-    properties: [
-      { name: 'name', type: 'string' },
-      { name: 'longName', type: 'string' },
-      { name: 'dependency', type: 'link' },
-    ],
+    properties: {
+      name: { name: 'name', type: 'string' },
+      sourceId: { name: 'sourceId', type: 'string' },
+      longName: { name: 'longName', type: 'string' },
+      dependency: { name: 'dependency', type: 'link' },
+      source: { name: 'source', type: 'link' },
+    },
     identifiers: ['@class', 'name', 'sourceId', 'source.name'],
+    getPreview: () => 'ontology',
   },
 });
 
@@ -73,7 +81,7 @@ describe('<DetailDrawer />', () => {
 
     wrapper = mount(<DetailDrawer node={node} schema={testSchema} />);
     expect(DetailDrawer.prototype.formatRelationships).to.have.property('callCount', 1);
-    expect(DetailDrawer.prototype.formatIdentifiers).to.have.property('callCount', 1);
+    expect(DetailDrawer.prototype.formatIdentifiers).to.have.property('callCount', 2);
     expect(DetailDrawer.prototype.formatOtherProps).to.have.property('callCount', 1);
     expect(wrapper.children().type()).to.equal(Drawer);
   });
@@ -103,7 +111,6 @@ describe('<DetailDrawer />', () => {
         schema={testSchema}
         onClose={onClose}
         handleNodeEditStart={handleNodeEditStart}
-        isEdge
       />
     ));
     wrapper.find('button').first().simulate('click');
@@ -168,8 +175,8 @@ describe('<DetailDrawer />', () => {
     };
     wrapper = mount(<DetailDrawer node={node} schema={testSchema} />);
     expect(DetailDrawer.prototype.formatRelationships.callCount).to.be.gt(1);
-    wrapper.find('div[role="button"]').first().simulate('click');
-    wrapper.find('div[role="button"]').first().simulate('click');
+    wrapper.find('div.detail-link-wrapper[role="button"]').first().simulate('click');
+    wrapper.find('div.detail-link-wrapper[role="button"]').first().simulate('click');
     expect(DetailDrawer.prototype.handleLinkExpand).to.have.property('callCount', 2);
   });
 

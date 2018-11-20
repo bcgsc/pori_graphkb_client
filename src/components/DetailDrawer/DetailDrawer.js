@@ -35,6 +35,7 @@ class DetailDrawer extends Component {
     };
     this.formatProps = this.formatProps.bind(this);
     this.formatRelationships = this.formatRelationships.bind(this);
+    this.formatMetadata = this.formatMetadata.bind(this);
     this.handleExpand = this.handleExpand.bind(this);
     this.handleLinkExpand = this.handleLinkExpand.bind(this);
   }
@@ -61,93 +62,21 @@ class DetailDrawer extends Component {
    */
   formatIdentifiers(node, isNested) {
     const { schema } = this.props;
-    const { opened } = this.state;
-    const { identifiers } = schema.get(node['@class']);
-
-    return (
-      identifiers.map((prop) => {
-        const [key, nestedKey] = prop.split('.');
-        let value = nestedKey ? (node[key] || {})[nestedKey] : node[key];
-        if (key === 'preview') {
-          value = schema.getPreview(node);
+    if (!node['@class']) return null;
+    const { identifiers, properties: proppos } = schema.get(node['@class']);
+    return this.formatProps(node, identifiers.map((id) => {
+      const [key, nestedKey] = id.split('.');
+      if (proppos[key]) {
+        if (nestedKey) {
+          return { ...proppos[key], previewWith: nestedKey };
         }
-        let properties = Object.keys(node[key] || {});
-
-        if (node[key] && typeof node[key] === 'object') {
-          properties = schema.get(node[key]['@class']).identifiers;
-        }
-        const expanded = nestedKey ? (
-          <Collapse
-            in={opened.includes(`${node['@rid']}${prop}`)}
-            unmountOnExit
-          >
-            <List className="detail-nested-list">
-              {properties.map((nestedProp) => {
-                if (!node[key]) return null;
-                const [nestedPropKey, veryNestedKey] = nestedProp.split('.');
-                const nestedValue = veryNestedKey
-                  ? (node[key][nestedPropKey] || {})[veryNestedKey]
-                  : node[key][nestedPropKey];
-                return (
-                  nestedValue && (
-                    <ListItem key={nestedProp}>
-                      {isNested && (
-                        <ListItemIcon className="nested-spacer">
-                          <div style={{ width: 24, height: 24 }} />
-                        </ListItemIcon>)}
-                      <ListItemText>
-                        <div className="detail-identifiers">
-                          <Typography color="textSecondary" className="detail-identifiers-nested">
-                            {util.antiCamelCase(nestedPropKey)}
-                          </Typography>
-                          <Typography>
-                            {util.formatStr(nestedValue)}
-                          </Typography>
-                        </div>
-                      </ListItemText>
-                    </ListItem>
-                  ));
-              })}
-            </List>
-          </Collapse>
-        ) : null;
-        if (value) {
-          if (value.toString().length <= MAX_STRING_LENGTH) {
-            return (
-              <React.Fragment key={prop}>
-                <ListItem
-                  button={!!nestedKey}
-                  onClick={nestedKey ? () => this.handleExpand(`${node['@rid']}${prop}`) : undefined}
-                >
-                  {isNested && (
-                    <ListItemIcon className="nested-spacer">
-                      <div style={{ width: 24, height: 24 }} />
-                    </ListItemIcon>)}
-                  <ListItemText>
-                    <div className="detail-identifiers">
-                      <Typography variant="subtitle1" color={isNested ? 'textSecondary' : 'default'}>
-                        {util.antiCamelCase(key)}
-                      </Typography>
-                      <Typography>
-                        {util.formatStr(value)}
-                      </Typography>
-                    </div>
-                  </ListItemText>
-                  {nestedKey
-                    && (!opened.includes(`${node['@rid']}${prop}`)
-                      ? <ExpandMoreIcon />
-                      : <ExpandLessIcon />)}
-                </ListItem>
-                {expanded}
-                <Divider />
-              </React.Fragment>
-            );
-          }
-          return this.formatLongValue(key, value, true, isNested);
-        }
-        return null;
-      })
-    );
+        return proppos[key];
+      }
+      if (key === 'preview') {
+        return { type: 'string', name: 'preview' };
+      }
+      return null;
+    }), isNested);
   }
 
   /**
@@ -201,12 +130,118 @@ class DetailDrawer extends Component {
     );
   }
 
+  formatMetadata(node) {
+    const { schema } = this.props;
+    return this.formatProps(node, schema.getMetadata(node['@class']), true);
+  }
+
   /**
    * Formats non-identifier, non-relationship properties.
    * @param {Object} node - Ontology being displayed.
    */
-  formatProps(node) {
+  formatProps(node, properties, isNested) {
+    const { schema } = this.props;
     const { opened } = this.state;
+
+    return properties.map((prop) => {
+      const { name, type, previewWith } = prop;
+      const value = name === 'preview' ? schema.getPreview(node) : node[name];
+      let nestedValue = null;
+      if (previewWith && value) {
+        nestedValue = value[previewWith];
+      }
+      if (!value) return null;
+      if (type === 'embeddedset' && value.length !== 0) {
+        return (
+          <React.Fragment key={name}>
+            <ListItem button onClick={() => this.handleExpand(name)}>
+              <ListItemText primary={util.antiCamelCase(name)} />
+              {!opened.includes(name) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+            </ListItem>
+            <Collapse in={!!opened.includes(name)} unmountOnExit>
+              <List disablePadding dense>
+                {value.map(item => (
+                  <ListItem key={item}>
+                    <ListItemText inset primary={util.formatStr(item)} />
+                  </ListItem>
+                ))}
+              </List>
+            </Collapse>
+            <Divider />
+          </React.Fragment>
+        );
+      }
+      if ((type === 'link' || type === 'embedded') && value['@class']) {
+        let previewStr;
+        let listItemProps = {};
+        if (isNested) {
+          previewStr = schema.getPreview(value);
+        } else {
+          listItemProps = { button: true, onClick: () => this.handleExpand(name) };
+          previewStr = nestedValue && (DATE_KEYS.includes(name)
+            ? (new Date(nestedValue)).toLocaleString()
+            : util.formatStr(nestedValue));
+        }
+        return (
+          <React.Fragment key={name}>
+            <ListItem {...listItemProps}>
+              {isNested && (
+                <ListItemIcon className="nested-spacer">
+                  <div style={{ width: 24, height: 24 }} />
+                </ListItemIcon>)}
+              <ListItemText>
+                <div className="detail-identifiers">
+                  <Typography variant="subtitle1">
+                    {util.antiCamelCase(name)}
+                  </Typography>
+                  <Typography>
+                    {previewStr}
+                  </Typography>
+                </div>
+              </ListItemText>
+              {!isNested && (!opened.includes(name) ? <ExpandMoreIcon /> : <ExpandLessIcon />)}
+            </ListItem>
+            {!isNested && (
+              <Collapse in={!!opened.includes(name)} unmountOnExit>
+                <List disablePadding dense className="detail-nested-list">
+                  {this.formatIdentifiers(value, true)}
+                </List>
+              </Collapse>
+            )}
+            <Divider />
+          </React.Fragment>
+        );
+      }
+      if (value.toString().length <= MAX_STRING_LENGTH) {
+        return (
+          <React.Fragment key={name}>
+            <ListItem>
+              {isNested && (
+                <ListItemIcon className="nested-spacer">
+                  <div style={{ width: 24, height: 24 }} />
+                </ListItemIcon>)}
+              <ListItemText>
+                <div className="detail-identifiers">
+                  <Typography variant="subtitle1">
+                    {util.antiCamelCase(name)}
+                  </Typography>
+                  <Typography>
+                    {DATE_KEYS.includes(name)
+                      ? (new Date(value)).toLocaleString()
+                      : util.formatStr(value)}
+                  </Typography>
+                </div>
+              </ListItemText>
+            </ListItem>
+            <Divider />
+          </React.Fragment>
+        );
+      }
+      return this.formatLongValue(name, value, true, isNested);
+    });
+  }
+
+  formatOtherProps(node) {
     const { schema } = this.props;
     const { identifiers } = schema.get(node['@class']);
 
@@ -215,77 +250,12 @@ class DetailDrawer extends Component {
     if (schema && schema.getProperties(node['@class'])) {
       properties = schema.getProperties(node['@class']);
     }
-    let isEmpty = true;
     const propsList = Object.values(properties)
       .filter(prop => !identifiers.map(id => id.split('.')[0]).includes(prop.name)
         && !prop.name.startsWith('in_')
-        && !prop.name.startsWith('out_'))
-      .map((prop) => {
-        const { name, type } = prop;
-        if (!node[name]) return null;
-        isEmpty = false;
-        if (type === 'embeddedset' && node[name].length !== 0) {
-          return (
-            <React.Fragment key={name}>
-              <ListItem button onClick={() => this.handleExpand(name)}>
-                <ListItemText primary={util.antiCamelCase(name)} />
-                {!opened.includes(name) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-              </ListItem>
-              <Collapse in={!!opened.includes(name)} unmountOnExit>
-                <List disablePadding dense>
-                  {node[name].map(item => (
-                    <ListItem key={item}>
-                      <ListItemText inset primary={util.formatStr(item)} />
-                    </ListItem>
-                  ))}
-                </List>
-              </Collapse>
-              <Divider />
-            </React.Fragment>
-          );
-        }
-        if (type === 'link' || type === 'embedded') {
-          return (
-            <React.Fragment key={name}>
-              <ListItem button onClick={() => this.handleExpand(name)}>
-                <ListItemText primary={util.antiCamelCase(name)} />
-                {!opened.includes(name) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-              </ListItem>
-              <Collapse in={!!opened.includes(name)} unmountOnExit>
-                <List disablePadding dense className="detail-nested-list">
-                  {this.formatIdentifiers(node[name], true)}
-                </List>
-              </Collapse>
-              <Divider />
-            </React.Fragment>
-          );
-        }
-        if (node[name].toString().length <= MAX_STRING_LENGTH) {
-          return (
-            <React.Fragment key={name}>
-              <ListItem>
-                <ListItemText>
-                  <div className="detail-identifiers">
-                    <Typography variant="subtitle1">
-                      {util.antiCamelCase(name)}
-                    </Typography>
-                    <Typography>
-                      {DATE_KEYS.includes(name)
-                        ? (new Date(node[name])).toLocaleString()
-                        : util.formatStr(node[name])}
-                    </Typography>
-                  </div>
-                </ListItemText>
-              </ListItem>
-              <Divider />
-            </React.Fragment>
-          );
-        }
-        return this.formatLongValue(name, node[name]);
-      });
-    return !isEmpty
-      ? propsList
-      : null;
+        && !prop.name.startsWith('out_'));
+
+    return this.formatProps(node, propsList);
   }
 
   /**
@@ -396,19 +366,25 @@ class DetailDrawer extends Component {
       handleNodeEditStart,
       schema,
     } = this.props;
+    const { opened } = this.state;
     if (!node) return null;
     const identifiers = this.formatIdentifiers(node);
-    const otherProps = this.formatProps(node);
+    const otherProps = this.formatOtherProps(node);
     const relationships = !isEdge && this.formatRelationships(node);
+    const metadata = this.formatMetadata(node);
+
+    const metadataIsOpen = opened.includes('metadata');
+
     let preview;
     let errorMessage;
     try {
-      preview = schema.get(node['@class']).getPreview(node);
+      preview = schema.getPreview(node);
       // Only for kbp nodes so far.
     } catch (e) {
       preview = 'Invalid variant';
       errorMessage = e.message;
     }
+
     return (
       <Drawer
         open={!!node}
@@ -421,7 +397,6 @@ class DetailDrawer extends Component {
           <div className="detail-heading">
             <div className="detail-headline">
               <div>
-                <Typography variant="subtitle1">{node && node['@rid']}</Typography>
                 <Typography variant="h4" component="h1">
                   {preview}
                 </Typography>
@@ -448,12 +423,30 @@ class DetailDrawer extends Component {
             </div>
           </div>
           <Divider />
+          <ListItem
+            button
+            onClick={() => this.handleExpand('metadata')}
+          >
+            <ListItemText
+              primaryTypographyProps={{
+                color: metadataIsOpen ? 'secondary' : 'default',
+              }}
+              primary="Metadata"
+            />
+            {!metadataIsOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+          </ListItem>
+          <Collapse in={!!metadataIsOpen} unmountOnExit>
+            <List
+              dense
+              disablePadding
+              className="detail-nested-list"
+            >
+              {metadata}
+            </List>
+          </Collapse>
+          <Divider />
           {identifiers}
           {otherProps}
-          <ListSubheader>
-            Metadata
-          </ListSubheader>
-
           {!isEdge && (
             <React.Fragment>
               <ListSubheader className="detail-relationships-subheader">

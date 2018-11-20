@@ -13,7 +13,7 @@ import {
   ListItem,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
-import kbp from 'knowledgebase-parser';
+import kbp from '@bcgsc/knowledgebase-parser';
 import NotificationDrawer from '../NotificationDrawer/NotificationDrawer';
 import RelationshipsForm from '../RelationshipsForm/RelationshipsForm';
 import FormTemplater from '../FormTemplater/FormTemplater';
@@ -35,6 +35,7 @@ const DEFAULT_ORDER = [
 const SHORTHAND_EXCLUDED = [
   'germline',
   'zygosity',
+  'assembly',
 ];
 
 class PositionalVariantParser extends Component {
@@ -70,13 +71,13 @@ class PositionalVariantParser extends Component {
       : schema.initModel({}, nodeClass);
 
     const relationships = [];
-    if (initVariant && initVariant.getEdges) {
-      initVariant.getEdges().forEach((edge) => {
+    if (initVariant) {
+      schema.getEdges(initVariant).forEach((edge) => {
         relationships.push(schema.initModel(edge, edge['@class']));
       });
     }
 
-    const shorthand = initVariant ? initVariant.getPreview() : '';
+    const shorthand = initVariant ? schema.getPreview(initVariant) : '';
     this.setState({
       variant,
       shorthand,
@@ -94,11 +95,11 @@ class PositionalVariantParser extends Component {
     const { schema } = this.props;
     const { value } = e.target;
     this.setState({ shorthand: value });
-    const { properties } = schema.getClass('PositionalVariant');
+    const properties = schema.getProperties('PositionalVariant');
     if (!value) {
       const newVariant = schema.initModel({}, 'PositionalVariant');
       Object.keys(newVariant).forEach((k) => {
-        if (typeof newVariant[k] === 'object' && newVariant[k]['@class']) {
+        if (newVariant[k] && typeof newVariant[k] === 'object' && newVariant[k]['@class']) {
           newVariant[k]['@class'] = '';
         }
       });
@@ -117,7 +118,7 @@ class PositionalVariantParser extends Component {
         embeddedProps.forEach((prop) => {
           const { name } = prop;
           if (response[name] && response[name].name) {
-            schema.getClass(response[name].name).properties
+            schema.getProperties(response[name].name)
               .forEach((classProp) => {
                 response[name][classProp.name] = response[name][classProp.name] === undefined
                   || response[name][classProp.name] === null
@@ -128,7 +129,9 @@ class PositionalVariantParser extends Component {
             response[name] = { '@class': '' };
           }
         });
-        const newVariant = Object.assign(schema.initModel(variant, 'PositionalVariant'),
+        const sparedProps = {};
+        SHORTHAND_EXCLUDED.forEach((s) => { sparedProps[s] = variant[s]; });
+        const newVariant = Object.assign(schema.initModel(sparedProps, 'PositionalVariant'),
           { ...response, ...linkProps.props });
         this.setState({
           variant: newVariant,
@@ -168,19 +171,19 @@ class PositionalVariantParser extends Component {
    */
   async extractLinkProps(parsed) {
     const { schema } = this.props;
-    const classSchema = schema.getClass('PositionalVariant').properties;
+    const classSchema = schema.getProperties('PositionalVariant');
     const linkProps = util.getPropOfType(classSchema, 'link');
     const newValues = {};
     let invalidFlag = '';
     const errorFields = [];
     await Promise.all(linkProps.map(async (prop) => {
       const { name, linkedClass } = prop;
-      if (parsed[name] && linkedClass && linkedClass.route) {
-        const data = await api.get(`${linkedClass.route}?name=${parsed[name]}`);
+      if (parsed[name] && linkedClass && linkedClass.routeName) {
+        const data = await api.get(`${linkedClass.routeName}?name=${parsed[name]}&neighbors=1`);
         const cycled = jc.retrocycle(data).result;
         if (cycled.length === 1) {
-          newValues[name] = cycled[0].name;
-          newValues[`${name}.@rid`] = cycled[0]['@rid'];
+          [newValues[`${name}.data`]] = cycled;
+          newValues[name] = schema.getPreview(cycled[0]);
         } else if (cycled.length > 1) {
           // add multiple modals?
         } else if (cycled.length === 0) {
@@ -202,8 +205,8 @@ class PositionalVariantParser extends Component {
     const { variant } = this.state;
     const { schema } = this.props;
     const { value } = e.target;
-    const classSchema = schema.getClass('PositionalVariant').properties;
-    if (schema.getClass(value)) {
+    const classSchema = schema.getProperties('PositionalVariant');
+    if (schema.getProperties(value)) {
       const abstractClass = classSchema
         .find(p => p.name === nested).linkedClass.name;
       const varKeys = classSchema
@@ -264,12 +267,12 @@ class PositionalVariantParser extends Component {
     if (nested) {
       variant[nested][name] = value;
       if (name.includes('.data') && value) {
-        variant[nested][name.split('.')[0]] = schema.newRecord(value).getPreview();
+        variant[nested][name.split('.')[0]] = schema.getPreview(value);
       }
     } else {
       variant[name] = value;
       if (name.includes('.data') && value) {
-        variant[name.split('.')[0]] = schema.newRecord(value).getPreview();
+        variant[name.split('.')[0]] = schema.getPreview(value);
       }
     }
     if (!SHORTHAND_EXCLUDED.includes(name)) {
@@ -352,11 +355,31 @@ class PositionalVariantParser extends Component {
   /* eslint-disable */
   async submitVariant(e) {
     e.preventDefault();
-    this.setState({ loading: true, notificationDrawerOpen: true });
-    const { variant, relationships, originalRelationships } = this.state;
-    const { handleSubmit } = this.props;
-    await handleSubmit(variant, relationships, originalRelationships);
-    this.setState({ loading: false });
+    const { variant, relationships, originalRelationships, invalidFlag } = this.state;
+    const { handleSubmit, schema } = this.props;
+
+    const classSchema = schema.getProperties('PositionalVariant');
+    let formIsInvalid = !!(invalidFlag);
+    const errorFields = [];
+
+    (classSchema || []).forEach((prop) => {
+      if (prop.mandatory) {
+        if (prop.type === 'link' && (!variant[`${prop.name}.data`] || !variant[`${prop.name}.data`]['@rid'])) {
+          errorFields.push(prop.name);
+          formIsInvalid = true;
+        } else if (prop.type !== 'boolean' && !variant[prop.name]) {
+          errorFields.push(prop.name);
+          formIsInvalid = true;
+        }
+      }
+    });
+    if (formIsInvalid) {
+      this.setState({ errorFields });
+    } else {
+      this.setState({ loading: true, notificationDrawerOpen: true });
+      await handleSubmit(variant, relationships, originalRelationships);
+      this.setState({ loading: false });
+    }
   }
 
   render() {
@@ -381,18 +404,8 @@ class PositionalVariantParser extends Component {
     } = this.props;
 
     if (!variant) return null;
-    const classSchema = schema.getClass(nodeClass).properties;
+    const classSchema = schema.getProperties(nodeClass);
     const isPositional = nodeClass === 'PositionalVariant';
-    let formIsInvalid = !!(invalidFlag && isPositional);
-    (classSchema || []).forEach((prop) => {
-      if (prop.mandatory) {
-        if (prop.type === 'link' && (!variant[`${prop.name}.data`] || !variant[`${prop.name}.data`]['@rid'])) {
-          formIsInvalid = true;
-        } else if (prop.type !== 'boolean' && !variant[prop.name]) {
-          formIsInvalid = true;
-        }
-      }
-    });
     const shorthandError = !!(error || invalidFlag);
 
     return (
@@ -480,7 +493,6 @@ class PositionalVariantParser extends Component {
             onClick={this.submitVariant}
             color="primary"
             variant="contained"
-            disabled={formIsInvalid}
           >
             Submit
           </Button>

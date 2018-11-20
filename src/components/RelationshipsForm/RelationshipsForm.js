@@ -37,6 +37,7 @@ class RelationshipsForm extends Component {
       originalRelationships: relationships && relationships.slice(),
       expanded: null,
       minimized: false,
+      initState: null,
     };
     this.testId = 0;
     this.handleAdd = this.handleAdd.bind(this);
@@ -55,7 +56,8 @@ class RelationshipsForm extends Component {
     const model = schema.initModel({}, edges[0]);
     model['out.data'] = { '@rid': nodeRid };
     model['@rid'] = this.applyTestId();
-    this.setState({ model, edges });
+    const initState = Object.assign({}, model);
+    this.setState({ model, edges, initState });
   }
 
   /**
@@ -137,7 +139,7 @@ class RelationshipsForm extends Component {
     const { name, value } = e.target;
     model[name] = value;
     if (name && name.includes('.data') && value) {
-      model[name.split('.')[0]] = schema.newRecord(value).getPreview();
+      model[name.split('.')[0]] = schema.getPreview(value);
     }
     this.setState({ model });
   }
@@ -226,7 +228,7 @@ class RelationshipsForm extends Component {
       : 'in';
     return (
       <div className="relationships-expansion">
-        {schema.getClass(r['@class']).properties.filter(k => (
+        {schema.getProperties(r['@class']).filter(k => (
           k.name !== (isIn ? 'in' : 'out')
           && r[k.name]
         )).map(k => (
@@ -242,7 +244,7 @@ class RelationshipsForm extends Component {
       </div>
     );
   }
-
+  /* eslint-disable */
 
   render() {
     const {
@@ -251,16 +253,19 @@ class RelationshipsForm extends Component {
       forward,
       expanded,
       minimized,
+      initState,
     } = this.state;
     const {
       schema,
       relationships,
       nodeRid,
-      emptyMsg,
+      errorMsg,
+      error,
+      overridePristine,
     } = this.props;
 
     if (!model) return null;
-    const editableProps = (schema.getClass(model['@class'])).properties;
+    const editableProps = schema.getProperties(model['@class']);
 
     let formIsInvalid = false;
     editableProps.forEach((prop) => {
@@ -272,6 +277,8 @@ class RelationshipsForm extends Component {
         }
       }
     });
+
+    const isPristine = !Object.keys(model).some(key => model[key] !== initState[key]);
     return (
       <div className="relationships-form-wrapper">
         <fieldset className="relationships-temp-fields">
@@ -305,7 +312,7 @@ class RelationshipsForm extends Component {
           </ListItem>
           <ListItem disableGutters>
             <AutoSearchMulti
-              selected={schema.newRecord(forward ? model['in.data'] : model['out.data'])}
+              selected={forward ? model['in.data'] : model['out.data']}
               label="Target Record"
               value={forward ? model.in : model.out}
               onChange={this.handleChange}
@@ -333,6 +340,7 @@ class RelationshipsForm extends Component {
               Add Relationship
             </Button>
           </div>
+          {(!isPristine || overridePristine) && error && <Typography color="error">{errorMsg}</Typography>}
         </fieldset>
         <Typography variant="h5">Relationships</Typography>
         <div className={`relationships-form-table-wrapper ${minimized ? 'relationships-table-minimized' : ''}`}>
@@ -362,80 +370,80 @@ class RelationshipsForm extends Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {relationships.length > 0
-                ? relationships.map((r) => {
-                  const buttonFn = r.deleted
-                    ? e => this.handleUndo(e, r['@rid'])
-                    : e => this.handleDelete(e, r['@rid']);
-                  const ButtonIcon = r.deleted
-                    ? <RefreshIcon color="primary" />
-                    : <CloseIcon color="error" />;
-                  const {
-                    name,
-                    reverseName,
-                  } = schema.get(r['@class']);
-                  const shouldExpand = schema.getClass(r['@class']).properties
-                    .filter(k => r[k.name] !== undefined && !(r[`${k.name}.data`] && r[`${k.name}.data`] === null))
-                    .length > DEFAULT_RELATIONSHIPS_PROPSLENGTH;
-                  const isIn = (r['in.data'] || {})['@rid'] === nodeRid;
+              {relationships.map((r) => {
+                const buttonFn = r.deleted
+                  ? e => this.handleUndo(e, r['@rid'])
+                  : e => this.handleDelete(e, r['@rid']);
+                const ButtonIcon = r.deleted
+                  ? <RefreshIcon color="primary" />
+                  : <CloseIcon />;
+                const {
+                  name,
+                  reverseName,
+                } = schema.get(r['@class']);
+                const shouldExpand = schema.getProperties(r['@class'])
+                  .filter(k => r[k.name] !== undefined && !(r[`${k.name}.data`] && r[`${k.name}.data`] === null))
+                  .length > DEFAULT_RELATIONSHIPS_PROPSLENGTH;
+                const isIn = (r['in.data'] || {})['@rid'] === nodeRid;
 
-                  return (
-                    <React.Fragment key={r['@rid']}>
-                      <TableRow
-                        className={r.deleted ? 'deleted' : ''}
-                        onClick={shouldExpand
-                          ? () => this.handleExpand(r['@rid'])
-                          : null}
-                        style={{ cursor: shouldExpand ? 'pointer' : undefined }}
-                      >
-                        <TableCell padding="checkbox">
-                          <IconButton
-                            onClick={buttonFn}
-                            style={{ position: 'unset' }}
-                            disableRipple
-                          >
-                            {ButtonIcon}
-                          </IconButton>
-                        </TableCell>
-                        <TableCell padding="dense">
-                          {isIn ? reverseName : name}
-                        </TableCell>
-                        <TableCell padding="dense">
-                          {isIn
-                            ? r.out
-                            : r.in}
-                        </TableCell>
-                        <TableCell padding="dense">
-                          {r.source}
-                        </TableCell>
-                        <TableCell className={`relationship-expand-btn ${expanded === r['@rid'] ? '' : 'expand-btn-collapsed'}`}>
-                          {shouldExpand && <KeyboardArrowDownIcon />}
-                        </TableCell>
-                      </TableRow>
-                      <TableRow
-                        style={{
-                          display: expanded === r['@rid'] ? undefined : 'none',
-                          height: 0,
-                          background: '#fff',
-                        }}
-                      >
-                        <TableCell colSpan={5}>
-                          <Collapse
-                            in={expanded === r['@rid']}
-                          >
-                            {this.relationshipDetails(r, isIn)}
-                          </Collapse>
-                        </TableCell>
-                      </TableRow>
-                    </React.Fragment>
-                  );
-                }) : (
-                  <TableRow>
-                    <TableCell colSpan={5} className="relationships-empty-placeholder">
-                      <Typography variant="overline">{emptyMsg}</Typography>
-                    </TableCell>
-                  </TableRow>
-                )}
+                return (
+                  <React.Fragment key={r['@rid']}>
+                    <TableRow
+                      className={r.deleted ? 'deleted' : ''}
+                      onClick={shouldExpand
+                        ? () => this.handleExpand(r['@rid'])
+                        : null}
+                      style={{ cursor: shouldExpand ? 'pointer' : undefined }}
+                    >
+                      <TableCell padding="checkbox">
+                        <IconButton
+                          onClick={buttonFn}
+                          style={{ position: 'unset' }}
+                          disableRipple
+                        >
+                          {ButtonIcon}
+                        </IconButton>
+                      </TableCell>
+                      <TableCell padding="dense">
+                        {isIn ? reverseName : name}
+                      </TableCell>
+                      <TableCell padding="dense">
+                        {isIn
+                          ? r.out
+                          : r.in}
+                      </TableCell>
+                      <TableCell padding="dense">
+                        {r.source}
+                      </TableCell>
+                      <TableCell className={`relationship-expand-btn ${expanded === r['@rid'] ? '' : 'expand-btn-collapsed'}`}>
+                        {shouldExpand && <KeyboardArrowDownIcon />}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow
+                      style={{
+                        display: expanded === r['@rid'] ? undefined : 'none',
+                        height: 0,
+                        background: '#fff',
+                      }}
+                    >
+                      <TableCell colSpan={5}>
+                        <Collapse
+                          in={expanded === r['@rid']}
+                        >
+                          {this.relationshipDetails(r, isIn)}
+                        </Collapse>
+                      </TableCell>
+                    </TableRow>
+                  </React.Fragment>
+                );
+              })}
+              {relationships.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={5} className="relationships-empty-placeholder">
+                    <Typography variant="overline">No Relationships</Typography>
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </div>
@@ -453,6 +461,7 @@ class RelationshipsForm extends Component {
  * @property {string} name - property key name of relationships on parent
  * component.
  * @property {string} nodeRid - record ID of input node.
+ * @property {boolean} overridePristine - flag to override form pristine check
  */
 RelationshipsForm.propTypes = {
   onChange: PropTypes.func.isRequired,
@@ -461,7 +470,9 @@ RelationshipsForm.propTypes = {
   name: PropTypes.string,
   nodeRid: PropTypes.string,
   edgeTypes: PropTypes.array,
-  emptyMsg: PropTypes.string,
+  errorMsg: PropTypes.string,
+  error: PropTypes.bool,
+  overridePristine: PropTypes.bool,
 };
 
 RelationshipsForm.defaultProps = {
@@ -469,7 +480,6 @@ RelationshipsForm.defaultProps = {
   name: '',
   nodeRid: '#node_rid',
   edgeTypes: null,
-  emptyMsg: 'No Relationships',
 };
 
 export default RelationshipsForm;

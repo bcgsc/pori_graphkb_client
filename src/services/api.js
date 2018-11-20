@@ -255,7 +255,7 @@ const autoSearch = (endpoint, property, value, limit) => {
 const submitEdges = (edges, schema, rid = '') => {
   const newEdges = [];
   for (let i = 0; i < edges.length; i += 1) {
-    const { properties, route } = schema.getClass(edges[i]['@class']);
+    const properties = schema.getProperties(edges[i]['@class']);
     const edge = util.parsePayload(edges[i], properties);
     if (edge.in === '#node_rid') {
       edge.in = rid;
@@ -263,7 +263,7 @@ const submitEdges = (edges, schema, rid = '') => {
       edge.out = rid;
     }
 
-    newEdges.push(post(route, edge));
+    newEdges.push(post(schema[edges[i]['@class']].routeName, edge));
   }
   return Promise.all(newEdges);
 };
@@ -282,9 +282,9 @@ const patchEdges = (originalEdges, newEdges, schema) => {
   originalEdges.forEach((edge) => {
     const matched = newEdges.find(r => r['@rid'] === edge['@rid']);
     if (!matched || matched.deleted) {
-      const { route } = schema.getClass(edge['@class']);
+      const { routeName } = schema.get(edge['@class']);
       changedEdges.push(del(
-        `${route}/${edge['@rid'].slice(1)}`,
+        `${routeName}/${edge['@rid'].slice(1)}`,
       ));
     }
   });
@@ -292,7 +292,8 @@ const patchEdges = (originalEdges, newEdges, schema) => {
   // Adds new edges that were not present on the original node.
   newEdges.forEach((relationship) => {
     if (!originalEdges.find(r => r['@rid'] === relationship['@rid'])) {
-      const { properties, route } = schema.getClass(relationship['@class']);
+      const properties = schema.getProperties(relationship['@class']);
+      const route = schema.getRoute(relationship['@class']);
       const payload = util.parsePayload(relationship, properties);
       changedEdges.push(post(route, payload));
     }

@@ -34,13 +34,9 @@ const ACTION_KEYCODES = [13, 16, 37, 38, 39, 40];
 const EXTRA_FORM_PROPS = ['@rid'];
 
 /**
- * Autosearch component meant for querying a single property of a single route.
- * Best suited for ontologies, or classes with a single easily searchable
- * property.
- *
- * When used for forms, component will emit the currently typed string with the
- * target name of the input "name" prop, and will emit the selected item with
- * the target name "[name].data".
+ * Autosearch component meant for a wide range of possible classes and/or
+ * endpoints. Main use is in relationships target selector fields and
+ * dependency link properties.
  */
 class AutoSearchMulti extends Component {
   constructor(props) {
@@ -68,6 +64,9 @@ class AutoSearchMulti extends Component {
     this.setRef = (node) => { this.popperNode = node; };
   }
 
+  /**
+   * Initializes temp model for querying.
+   */
   componentDidMount() {
     const { schema } = this.props;
     const { cls } = this.state;
@@ -107,19 +106,26 @@ class AutoSearchMulti extends Component {
     this.setState({ downshiftOpen: false });
   }
 
+  /**
+   * Opens/closes popover, and closes downshift component.
+   * @param {Event} e - Popover event.
+   */
   handleOpenPopover(e) {
     this.setState({ anchorEl: e ? e.currentTarget : null, downshiftOpen: false });
   }
 
+  /**
+   * Sends query to api using the temp model as the set of query parameters.
+   */
   async handleQuery() {
     const { model, cls } = this.state;
     const { schema } = this.props;
     const pattern = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
 
-    const { route, properties } = schema.getClass(cls, EXTRA_FORM_PROPS);
+    const properties = schema.getProperties(cls, EXTRA_FORM_PROPS);
     const payload = util.parsePayload(model, properties, [], true);
     Object.keys(payload).forEach((k) => {
-      const trimmed = String(payload[k]).trim().toLowerCase();
+      const trimmed = String(payload[k]).trim();
       if (!trimmed.split(pattern).some(chunk => chunk.length < 4)) {
         payload[k] = `~${trimmed}`;
       } else {
@@ -135,7 +141,7 @@ class AutoSearchMulti extends Component {
     });
 
     try {
-      const response = await api.get(`${route}?${qs.stringify(payload)}&neighbors=3&limit=30`);
+      const response = await api.get(`${schema.get(cls).routeName}?${qs.stringify(payload)}&neighbors=3&limit=30`);
       const { result } = jc.retrocycle(response);
 
       this.setState({
@@ -149,6 +155,11 @@ class AutoSearchMulti extends Component {
     }
   }
 
+  /**
+   * Handles the update of the model class by reinitializing model and changing
+   * class state variable.
+   * @param {Event} e - New class select event.
+   */
   handleClassChange(e) {
     const { schema } = this.props;
     const { model } = this.state;
@@ -264,7 +275,7 @@ class AutoSearchMulti extends Component {
       </Tooltip>
     );
 
-    const { properties } = schema.getClass(cls, EXTRA_FORM_PROPS) || {};
+    const properties = schema.getProperties(cls, EXTRA_FORM_PROPS) || [];
 
     return (
       <React.Fragment>
@@ -279,6 +290,7 @@ class AutoSearchMulti extends Component {
           onClear={this.handleClear}
           onSelect={this.handleChange}
           endAdornment={endAdornment}
+          schema={schema}
         >
           {(item, index, downshiftProps) => (
             <MenuItem
@@ -291,7 +303,7 @@ class AutoSearchMulti extends Component {
               selected={downshiftProps.highlightedIndex === index}
             >
               <span>
-                {schema.newRecord(item).getPreview()}
+                {schema.getPreview(item)}
                 <Typography color="textSecondary" variant="body1">
                   {item.source && item.source.name ? item.source.name : ''}
                 </Typography>
@@ -316,8 +328,8 @@ class AutoSearchMulti extends Component {
                   fullWidth
                   label="Class"
                   resources={[
-                    ...schema.getOntologies(true).map(o => o.name),
-                    ...schema.getVariants(true).map(v => v.name),
+                    ...schema.getOntologies().map(o => o.name),
+                    ...schema.getVariants().map(v => v.name),
                     'Statement',
                   ]}
                 >
@@ -327,21 +339,29 @@ class AutoSearchMulti extends Component {
                 </ResourceSelectComponent>
               </ListItem>
               {model && (
-                <FormTemplater
-                  schema={schema}
-                  model={model}
-                  propSchemas={properties}
-                  disabledFields={model['@rid']
-                    ? properties.map(p => p.name).filter(p => p !== '@rid')
-                    : undefined}
-                  sort={util.sortFields(EXTRA_FORM_PROPS)}
-                  dense
-                  ignoreRequired
-                  onChange={(e) => {
-                    model[e.target.name] = e.target.value;
-                    this.setState({ model });
-                  }}
-                />)}
+                <div className="autosearch-multi-form-templater">
+                  <FormTemplater
+                    schema={schema}
+                    model={model}
+                    appendToKeys={cls}
+                    propSchemas={properties}
+                    disabledFields={model['@rid']
+                      ? properties.map(p => p.name).filter(p => p !== '@rid')
+                      : undefined}
+                    sort={util.sortFields(EXTRA_FORM_PROPS)}
+                    dense
+                    ignoreRequired
+                    onChange={(e, nested) => {
+                      if (nested) {
+                        model[nested][e.target.name] = e.target.value;
+                      } else {
+                        model[e.target.name] = e.target.value;
+                      }
+                      this.setState({ model });
+                    }}
+                  />
+                </div>
+              )}
             </CardContent>
             <CardActions>
               <Button

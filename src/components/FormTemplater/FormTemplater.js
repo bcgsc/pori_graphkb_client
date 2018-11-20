@@ -26,6 +26,7 @@ import util from '../../services/util';
  */
 function FormTemplater(props) {
   const {
+    appendToKeys,
     model,
     propSchemas,
     schema,
@@ -63,7 +64,7 @@ function FormTemplater(props) {
       return (
         <ListItem
           component={fieldComponent}
-          key={name}
+          key={`${appendToKeys}.${name}`}
           disableGutters={disablePadding}
         >
           <FormControl
@@ -100,19 +101,19 @@ function FormTemplater(props) {
       // Decide which endpoint to query.
       let endpoint;
       if (linkedClass) {
-        endpoint = linkedClass.route.slice(1);
+        endpoint = linkedClass.routeName.slice(1);
         return (
           <ListItem
             className="form-templater-autosearch"
             component={fieldComponent}
-            key={name}
+            key={`${appendToKeys}.${name}`}
             disableGutters={disablePadding}
           >
             <AutoSearchSingle
               error={errorFields.includes(name)}
               disabled={disabledFields.includes(name)}
               value={model[name]}
-              selected={schema.newRecord(model[`${name}.data`])}
+              selected={model[`${name}.data`]}
               onChange={onChange}
               name={name}
               label={util.antiCamelCase(name)}
@@ -121,6 +122,7 @@ function FormTemplater(props) {
               required={mandatory}
               property={!linkedClass ? ['name', 'sourceId'] : undefined}
               disablePortal={disablePortal}
+              schema={schema}
               endAdornment={description ? (
                 <Tooltip title={description}>
                   <HelpIcon color="primary" style={{ cursor: 'default' }} />
@@ -134,14 +136,14 @@ function FormTemplater(props) {
         <ListItem
           className="form-templater-autosearch"
           component={fieldComponent}
-          key={name}
+          key={`${appendToKeys}.${name}`}
           disableGutters={disablePadding}
         >
           <AutoSearchMulti
             error={errorFields.includes(name)}
             disabled={disabledFields.includes(name)}
             value={model[name]}
-            selected={schema.newRecord(model[`${name}.data`])}
+            selected={model[`${name}.data`]}
             onChange={onChange}
             name={name}
             label={util.antiCamelCase(name)}
@@ -152,20 +154,20 @@ function FormTemplater(props) {
       );
     }
     if (type === 'embedded') {
-      const kbClass = (schema.getClass((model[name] || {})['@class']));
+      const properties = schema.getProperties((model[name] || {})['@class']);
       let classSelector = (
         <Typography variant="subtitle1">
           {util.antiCamelCase(name)}
         </Typography>
       );
       const handleClassChange = onClassChange || onChange;
-      if (schema.isAbstract(linkedClass.name)) {
+      if (linkedClass.isAbstract) {
         classSelector = (
           <ResourceSelectComponent
             name="@class"
             onChange={e => handleClassChange(e, name)}
             required={mandatory}
-            resources={[{ name: '' }, ...schema.getSubClasses(linkedClass.name)]}
+            resources={[{ name: '' }, ...linkedClass.subclasses]}
             label={`${util.antiCamelCase(name)} Class`}
             value={(model[name] || { '@class': '' })['@class']}
             error={errorFields.includes(name)}
@@ -182,7 +184,7 @@ function FormTemplater(props) {
       return (
         <ListItem
           component={fieldComponent}
-          key={name}
+          key={`${appendToKeys}.${name}`}
           disableGutters={disablePadding}
         >
           <div className="form-templater-embedded-selector">
@@ -196,7 +198,7 @@ function FormTemplater(props) {
           <FormTemplater
             onChange={e => onChange(e, name)}
             schema={schema}
-            propSchemas={kbClass ? kbClass.properties : []}
+            propSchemas={properties || []}
             model={model[name] || {}}
             excludedProps={['@class']}
             fieldComponent="div"
@@ -212,7 +214,7 @@ function FormTemplater(props) {
       return (
         <ListItem
           component={fieldComponent}
-          key={name}
+          key={`${appendToKeys}.${name}`}
           disableGutters={disablePadding}
         >
           <EmbeddedListForm
@@ -230,7 +232,7 @@ function FormTemplater(props) {
       return (
         <ListItem
           component={fieldComponent}
-          key={name}
+          key={`${appendToKeys}.${name}`}
           disableGutters={disablePadding}
         >
           <ResourceSelectComponent
@@ -283,7 +285,7 @@ function FormTemplater(props) {
     return (
       <ListItem
         component={fieldComponent}
-        key={name}
+        key={`${appendToKeys}.${name}`}
         disableGutters={disablePadding}
       >
         <TextField
@@ -336,7 +338,7 @@ function FormTemplater(props) {
         } else {
           fields.push((
             <ListItem
-              key={key}
+              key={`${appendToKeys}.${key}`}
               component="div"
               className="form-templater-group-wrapper"
               id={key}

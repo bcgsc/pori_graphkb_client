@@ -4,9 +4,20 @@ import { spy } from 'sinon';
 import { mount } from 'enzyme';
 import OntologyFormComponent from '../OntologyFormComponent/OntologyFormComponent';
 import Schema from '../../models/schema';
-import classes from '../../models/classes';
 
 const testSchema = new Schema({
+  V: {
+    name: 'V',
+    properties: [],
+  },
+  Ontology: {
+    name: 'Ontology',
+    subclasses: [{ name: 'Disease' }],
+  },
+  Variant: {
+    name: 'Variant',
+    subclasses: [],
+  },
   Disease: {
     name: 'Disease',
     inherits: ['Ontology'],
@@ -23,13 +34,17 @@ const testSchema = new Schema({
     name: 'edge',
     inherits: ['E'],
   },
+  E: {
+    name: 'E',
+    subclasses: [{ name: 'edge' }],
+  },
 });
 
 const testSources = [
   { '@rid': '#source', name: 'test source' },
 ];
 
-const testNode = new classes.Ontology({
+const testNode = {
   '@class': 'Disease',
   '@rid': '#1',
   name: 'tset',
@@ -53,7 +68,7 @@ const testNode = new classes.Ontology({
       source: '#source',
     },
   ],
-}, testSchema);
+};
 
 describe('<OntologyFormComponent />', () => {
   let wrapper;
@@ -137,13 +152,13 @@ describe('<OntologyFormComponent />', () => {
         handleSubmit={handleSubmit}
       />,
     );
-    expect(wrapper.find('button#submit-btn[disabled]'));
+    expect(wrapper.find('button#submit-btn'));
     wrapper.find('nav textarea[name="name"]').simulate('change', { target: { value: 'test', name: 'name' } });
     const { form } = wrapper.state();
     form.linkprop = 'test link';
     form['linkprop.data'] = { '@rid': 'test rid' };
     wrapper.setState({ form });
-    expect(wrapper.find('.form-btns button[type="submit"]').props().disabled).to.eq(false);
+    expect(wrapper.find('.form-btns button#submit-btn').props().disabled).to.eq(false);
     wrapper.find('#submit-btn').first().simulate('click');
     expect(OntologyFormComponent.prototype.handleSubmit).to.have.property('callCount', 1);
     expect(handleSubmit.mock.calls.length).to.eq(1);

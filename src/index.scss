@@ -1,5 +1,8 @@
-@import 'globals';
+@import "globals";
 
+/***************
+    PROPERTIES
+****************/
 body {
   margin: 0;
   padding: 0;
@@ -8,4 +11,7 @@ body {
 }
 * {
   transition: visibility 0.01s;
+}
+a {
+  text-decoration: none;
 }

@@ -34,6 +34,7 @@ import AddIcon from '@material-ui/icons/Add';
 import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import SCHEMA_DEFN from './schema/src/schema';
 import {
   AddOntologyView,
   AddStatementView,
@@ -57,6 +58,7 @@ import auth from './services/auth';
 import history from './services/history';
 import api from './services/api';
 import { KBContext } from './components/KBContext/KBContext';
+import Schema from './models/schema';
 
 const theme = createMuiTheme({
   direction: 'ltr',
@@ -279,7 +281,7 @@ class App extends Component {
       </Switch>
     );
     return schema && (
-      <KBContext.Provider value={{ schema, user: auth.getUser() }}>
+      <KBContext.Provider value={{ schema: new Schema(SCHEMA_DEFN), user: auth.getUser() }}>
         <MuiThemeProvider theme={theme}>
           <Router history={history}>
             <div className="App">
@@ -297,7 +299,7 @@ class App extends Component {
                   </IconButton>
                 )}
                 <div className="appbar-title">
-                  <Link to="/query">
+                  <Link to="/query" onClick={this.handleDrawerClose}>
                     <Typography variant="h6">GraphKB</Typography>
                   </Link>
                 </div>

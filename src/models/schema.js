@@ -150,6 +150,14 @@ class Schema {
     return this.schema[cls] && this.schema[cls].inherits.includes('Position');
   }
 
+  isOntology(cls) {
+    return this.schema[cls] && this.schema[cls].inherits.includes('Ontology');
+  }
+
+  isVariant(cls) {
+    return this.schema[cls] && this.schema[cls].inherits.includes('Variant');
+  }
+
   /**
    * Updates allColumns list with any new properties from ontologyTerm.
    * @param {Object} record - new node who's properties will be parsed.

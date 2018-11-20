@@ -160,7 +160,7 @@ class DetailDrawer extends Component {
         nestedValue = value[previewWith];
       }
       if (!value) return null;
-      if (type === 'embeddedset' && value.length !== 0) {
+      if ((type === 'embeddedset' || type === 'linkset') && value.length !== 0) {
         return (
           <React.Fragment key={name}>
             <ListItem button onClick={() => this.handleExpand(name)}>
@@ -169,7 +169,24 @@ class DetailDrawer extends Component {
             </ListItem>
             <Collapse in={!!opened.includes(name)} unmountOnExit>
               <List disablePadding dense>
-                {value.map(item => (
+                {type === 'linkset' && value.map(item => (
+                  <ListItem key={item['@rid']}>
+                    <ListItemIcon className="nested-spacer">
+                      <div style={{ width: 24, height: 24 }} />
+                    </ListItemIcon>
+                    <ListItemText>
+                      <div className="detail-identifiers">
+                        <Typography variant="subtitle1">
+                          {item['@class']}
+                        </Typography>
+                        <Typography>
+                          {schema.getPreview(item)}
+                        </Typography>
+                      </div>
+                    </ListItemText>
+                  </ListItem>
+                ))}
+                {type === 'embeddedset' && value.map(item => (
                   <ListItem key={item}>
                     <ListItemText inset primary={util.formatStr(item)} />
                   </ListItem>
@@ -415,15 +432,18 @@ class DetailDrawer extends Component {
               </Button>
             </div>
             <div className="detail-edit-btn">
-              {!isEdge && (
-                <Button
-                  onClick={handleNodeEditStart}
-                  variant="outlined"
-                >
-                  Edit {node['@class']}&nbsp;
-                  <EditIcon />
-                </Button>
-              )}
+              {(schema.isOntology(node['@class'])
+                || schema.isVariant(node['@class'])
+                || node['@class'] === 'Statement')
+                && (
+                  <Button
+                    onClick={handleNodeEditStart}
+                    variant="outlined"
+                  >
+                    Edit {node['@class']}&nbsp;
+                    <EditIcon />
+                  </Button>
+                )}
             </div>
           </div>
           <Divider />

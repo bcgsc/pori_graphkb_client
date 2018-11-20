@@ -64,19 +64,20 @@ class DetailDrawer extends Component {
     const { schema } = this.props;
     if (!node['@class']) return null;
     const { identifiers, properties: proppos } = schema.get(node['@class']);
-    return this.formatProps(node, identifiers.map((id) => {
+    return this.formatProps(node, identifiers.reduce((array, id) => {
       const [key, nestedKey] = id.split('.');
       if (proppos[key]) {
         if (nestedKey) {
-          return { ...proppos[key], previewWith: nestedKey };
+          array.push({ ...proppos[key], previewWith: nestedKey });
+        } else {
+          array.push(proppos[key]);
         }
-        return proppos[key];
       }
       if (key === 'preview') {
-        return { type: 'string', name: 'preview' };
+        array.push({ type: 'string', name: 'preview' });
       }
-      return null;
-    }), isNested);
+      return array;
+    }, []), isNested);
   }
 
   /**
@@ -142,7 +143,6 @@ class DetailDrawer extends Component {
   formatProps(node, properties, isNested) {
     const { schema } = this.props;
     const { opened } = this.state;
-
     return properties.map((prop) => {
       const { name, type, previewWith } = prop;
       const value = name === 'preview' ? schema.getPreview(node) : node[name];
@@ -286,6 +286,7 @@ class DetailDrawer extends Component {
               <ListItem
                 button
                 onClick={() => this.handleLinkExpand(edge['@rid'])}
+                className="detail-link-wrapper"
               >
                 <ListItemIcon>
                   <div style={{ display: 'inline-flex' }}>
@@ -308,17 +309,11 @@ class DetailDrawer extends Component {
                   className="detail-nested-list"
                 >
                   <Divider />
-                  <ListSubheader
-                    className="detail-nested-subheader"
-                    color="primary"
-                  >
+                  <ListSubheader disableSticky>
                     Link Properties
                   </ListSubheader>
                   {this.formatIdentifiers(edge, true)}
-                  <ListSubheader
-                    className="detail-nested-subheader"
-                    color="primary"
-                  >
+                  <ListSubheader disableSticky>
                     Linked Record
                   </ListSubheader>
                   {this.formatIdentifiers(isIn ? edge.out : edge.in, true)}

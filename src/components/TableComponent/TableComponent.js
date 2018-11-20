@@ -758,7 +758,7 @@ class TableComponent extends Component {
           <Table>
             <TableHead className="table-head">
               <TableRow>
-                <TableCell padding="checkbox">
+                <TableCell padding="checkbox" className="table-row-checkbox">
                   <Checkbox
                     color="secondary"
                     onChange={e => handleCheckAll(e, pageData)}
@@ -845,7 +845,7 @@ class TableComponent extends Component {
                           selected: 'selected-override',
                         }}
                       >
-                        <TableCell padding="checkbox">
+                        <TableCell padding="checkbox" className="table-row-checkbox">
                           <Checkbox
                             onClick={e => handleCheckbox(e, n['@rid'])}
                             checked={displayed.includes(n['@rid'])}

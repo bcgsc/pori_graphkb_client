@@ -118,7 +118,7 @@ class TableComponent extends Component {
 
     const tableColumns = allProps.reduce((r, column) => {
       const [key, nested] = column.split('.');
-      if (key.startsWith('in_') || key.startsWith('out_') || key === '@rid') return r;
+      if (key.startsWith('in_') || key.startsWith('out_')) return r;
       if (!nested) {
         r.push({
           id: key,

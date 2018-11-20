@@ -13,6 +13,7 @@ import {
   Typography,
   Switch,
   Collapse,
+  MenuItem,
 } from '@material-ui/core';
 import * as qs from 'querystring';
 import AddIcon from '@material-ui/icons/Add';
@@ -21,6 +22,7 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import { withKB } from '../../components/KBContext/KBContext';
 import util from '../../services/util';
 import api from '../../services/api';
+import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
 
 class QueryBuilderViewBase extends Component {
   constructor(props) {
@@ -32,6 +34,7 @@ class QueryBuilderViewBase extends Component {
       tempValues: { query: '' },
       specOpen: false,
       specBlurbOpen: false,
+      endpoint: 'Ontology',
     };
 
     this.bundle = this.bundle.bind(this);
@@ -48,7 +51,8 @@ class QueryBuilderViewBase extends Component {
    * Bundles query params into a string.
    */
   bundle() {
-    const { params } = this.state;
+    const { params, endpoint } = this.state;
+    params['@class'] = endpoint;
     const props = Object.keys(params).map(p => ({ name: p }));
     const payload = util.parsePayload(params, props, [], true);
     return qs.stringify(payload);
@@ -184,6 +188,7 @@ class QueryBuilderViewBase extends Component {
   }
 
   render() {
+    const { schema } = this.props;
     const {
       params,
       tempNested,
@@ -191,6 +196,7 @@ class QueryBuilderViewBase extends Component {
       tempValues,
       specOpen,
       specBlurbOpen,
+      endpoint,
     } = this.state;
 
     const input = nested => (
@@ -316,7 +322,17 @@ class QueryBuilderViewBase extends Component {
           <Button variant="outlined" onClick={this.handleToggle}>Help</Button>
           <Typography variant="h5">Query Builder</Typography>
         </Paper>
-        <Paper className="qbv-body">
+        <Paper className="qbv-body qbv-column-flex">
+          <ResourceSelectComponent
+            label="Endpoint"
+            name="endpoint"
+            resources={Object.values(schema.schema)
+              .filter(item => item.expose.GET && item.routeName)}
+            value={endpoint}
+            onChange={this.handleChange}
+          >
+            {item => <MenuItem key={item.name} value={item.name}>{item.routeName}</MenuItem>}
+          </ResourceSelectComponent>
           <div className="qbv-json">
             {jsonFormat('query', params, [])}
           </div>

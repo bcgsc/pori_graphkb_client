@@ -207,6 +207,9 @@ class DetailDrawer extends Component {
           previewStr = nestedValue && (DATE_KEYS.includes(name)
             ? (new Date(nestedValue)).toLocaleString()
             : util.formatStr(nestedValue));
+          if (type === 'embedded') {
+            previewStr = value['@class'];
+          }
         }
         return (
           <React.Fragment key={name}>
@@ -230,7 +233,8 @@ class DetailDrawer extends Component {
             {!isNested && (
               <Collapse in={!!opened.includes(name)} unmountOnExit>
                 <List disablePadding dense className="detail-nested-list">
-                  {this.formatIdentifiers(value, true)}
+                  {type === 'link' && this.formatIdentifiers(value, true)}
+                  {type === 'embedded' && this.formatOtherProps(value, true)}
                 </List>
               </Collapse>
             )}
@@ -267,7 +271,7 @@ class DetailDrawer extends Component {
     });
   }
 
-  formatOtherProps(node) {
+  formatOtherProps(node, isNested) {
     const { schema } = this.props;
     const { identifiers } = schema.get(node['@class']);
 
@@ -281,7 +285,7 @@ class DetailDrawer extends Component {
         && !prop.name.startsWith('in_')
         && !prop.name.startsWith('out_'));
 
-    return this.formatProps(node, propsList);
+    return this.formatProps(node, propsList, isNested);
   }
 
   /**

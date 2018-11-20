@@ -68,6 +68,7 @@ $breakpoint-sm: 375px;
       margin: auto 0;
     }
     > button {
+      flex-shrink: 0;
       margin: auto;
       margin-right: 0;
     }

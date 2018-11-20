@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import './DetailDrawer.css';
 import {
   Typography,
-  IconButton,
+  // IconButton,
   Drawer,
   Divider,
   List,
@@ -401,9 +401,9 @@ class DetailDrawer extends Component {
                   </Typography>
                 )}
               </div>
-              <IconButton onClick={onClose}>
+              <Button onClick={onClose} variant="fab" color="primary">
                 <ChevronRightIcon />
-              </IconButton>
+              </Button>
             </div>
             <div className="detail-edit-btn">
               {!isEdge && (

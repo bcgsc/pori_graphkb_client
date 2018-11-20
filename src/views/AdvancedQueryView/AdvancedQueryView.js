@@ -25,6 +25,15 @@ const DEFAULT_ORDER = [
   'sourceId',
   'source',
   'subsets',
+  'type',
+  'reference1',
+  'reference2',
+  'break1Start',
+  'break1End',
+  'break2Start',
+  'break2End',
+  'relevance',
+  'appliesTo',
 ];
 
 const SNACKBAR_DURATION = 6000;
@@ -130,10 +139,10 @@ class AdvancedQueryViewBase extends Component {
   }
 
   /**
- * Handles changes in an embedded property's class.
- * @param {Event} e - new class selection event.
- * @param {string} nested - nested property key.
- */
+   * Handles changes in an embedded property's class.
+   * @param {Event} e - new class selection event.
+   * @param {string} nested - nested property key.
+   */
   handleNestedClassChange(e, nested) {
     const { form } = this.state;
     const { schema } = this.props;

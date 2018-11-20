@@ -35,6 +35,7 @@ class EditOntologyViewBase extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   /**
@@ -44,7 +45,7 @@ class EditOntologyViewBase extends Component {
     const { match, schema } = this.props;
     const { rid } = match.params;
     const response = await api.get(`/ontologies/${rid}?neighbors=${DEFAULT_NEIGHBORS}`);
-    const node = jc.retrocycle(response).result;
+    const node = schema.newRecord(jc.retrocycle(response).result);
     const sources = await api.getSources();
     const edgeTypes = schema.getEdges();
     this.setState({
@@ -70,12 +71,11 @@ class EditOntologyViewBase extends Component {
   /**
    * Deletes target node.
    */
-  async handleDeleteNode() {
-    this.handleDialogClose();
-    const { originalNode } = this.state;
+  async handleDelete() {
+    const { node } = this.state;
     const { schema } = this.props;
-    const { route } = schema.getClass(originalNode['@class']);
-    await api.delete(`${route}/${originalNode['@rid'].slice(1)}`);
+    const { route } = schema.getClass(node['@class']);
+    await api.delete(`${route}/${node['@rid'].slice(1)}`);
   }
 
   /**
@@ -124,7 +124,7 @@ class EditOntologyViewBase extends Component {
             node={node}
             handleSubmit={this.handleSubmit}
             handleFinish={this.handleFinish}
-            handleCancel={this.handleCancel}
+            handleDelete={this.handleDelete}
             schema={schema}
             sources={sources}
             edgeTypes={edgeTypes}

@@ -14,15 +14,13 @@
     @media (max-width: $breakpoint-lg) {
       flex-direction: column;
     }
-    $form-bias: 55%;
+    $form-bias: 60%;
     .variant-parser {
       flex: 0 0 calc(#{$form-bias} - 0.5rem);
       width: calc(#{$form-bias} - 0.5rem);
       box-sizing: border-box;
       .variant-parser-shorthand {
         @include paper;
-        display: flex;
-        height: 68px;
         margin-bottom: 1rem;
         @media(max-width: $breakpoint-mobile){
           margin-bottom: 0;
@@ -39,7 +37,6 @@
         display: block;
         @include paper;
         padding-bottom: 24px;
-        column-count: 2;
         min-width: 0;
         @media (max-width: $breakpoint-tablet) {
           column-count: unset;

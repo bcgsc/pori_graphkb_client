@@ -139,7 +139,7 @@ describe('ontology methods test', () => {
       }, mockSchema),
     ];
 
-    testObjs.forEach(testObj => expect(testObj.getPreview()).to.eq('pass'));
+    testObjs.forEach((testObj, i) => expect(testObj.getPreview()).to.eq(i === 3 ? undefined : 'pass'));
   });
 
   it('returns correct identifiers', () => {
@@ -159,7 +159,7 @@ describe('ontology methods test', () => {
 
     const testStatement = new Statement({ relevance: { name: 'is the answer' }, appliesTo: { name: 'this test' } });
     expect(testStatement.getPreview()).to.eq('is the answer to this test');
-    expect(Statement.getIdentifiers()).to.deep.eq(['appliesTo.name', 'relevance.name', 'source.name']);
+    expect(Statement.getIdentifiers()).to.deep.eq(['appliesTo.name', 'relevance.name', 'source.name', 'reviewStatus']);
 
     const testPositionalVariant = new PositionalVariant({
       type: {
@@ -176,11 +176,11 @@ describe('ontology methods test', () => {
       },
       untemplatedSeq: 'a',
     }, mockSchema, true);
-    expect(testPositionalVariant.getPreview()).to.eq('kras:g.1del');
+    expect(testPositionalVariant.getPreview().toLowerCase()).to.eq('kras:g.1del');
     expect(Position.getIdentifiers()).to.deep.eq(['@class', 'pos', 'refAA', 'arm', 'majorBand', 'minorBand']);
 
     const testBadRecord = new Source({ anythingElse: 'pass' });
-    expect(testBadRecord.getPreview()).to.eq('pass');
+    expect(testBadRecord.getPreview()).to.eq(undefined);
 
     const testVariants = new Variant({
       type: {
@@ -211,9 +211,7 @@ describe('ontology methods test', () => {
       name: '',
       subsets: [],
       linkprop: '',
-      'linkprop.@rid': '',
-      'linkprop.sourceId': '',
-      'linkprop.class': '',
+      'linkprop.data': null,
       boolprop: false,
     });
 
@@ -223,9 +221,7 @@ describe('ontology methods test', () => {
       name: 'name',
       subsets: [],
       linkprop: '',
-      'linkprop.@rid': '',
-      'linkprop.sourceId': '',
-      'linkprop.class': '',
+      'linkprop.data': null,
       boolprop: true,
     });
   });

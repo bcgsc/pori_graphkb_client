@@ -27,6 +27,8 @@ const DEFAULT_ORDER = [
   'subsets',
 ];
 
+const SNACKBAR_DURATION = 6000;
+
 /**
  * View for in-depth database query building. Form submissions will route to
  * the data results route to display the returned data. Forms are dynamically
@@ -66,6 +68,7 @@ class AdvancedQueryViewBase extends Component {
     const classes = [];
     classes.push(...schema.getOntologies());
     classes.push(...schema.getVariants());
+    classes.push({ name: 'Statement' });
 
     const form = schema.initModel({}, 'Ontology', config.ONTOLOGY_QUERY_PARAMS);
 
@@ -179,7 +182,7 @@ class AdvancedQueryViewBase extends Component {
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           open={!!message}
           onClose={this.handleClose}
-          autoHideDuration={3000}
+          autoHideDuration={SNACKBAR_DURATION}
           message={(
             <span>
               {message}
@@ -222,6 +225,12 @@ class AdvancedQueryViewBase extends Component {
             sort={util.sortFields(DEFAULT_ORDER)}
             ignoreRequired
             onClassChange={this.handleNestedClassChange}
+            pairs={{
+              range: ['start', 'end'],
+              sourceId: ['sourceId', 'sourceIdVersion'],
+              trialRange: ['startYear', 'completionYear'],
+              location: ['country', 'city'],
+            }}
           />
         </Paper>
         <Paper elevation={4} id="adv-nav-buttons">

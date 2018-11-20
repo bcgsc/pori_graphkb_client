@@ -284,6 +284,7 @@ function FormTemplater(props) {
       </ListItem>
     );
   };
+
   const completedpairs = {};
   const sortedProps = Object.values(propSchemas || {})
     .filter(p => !excludedProps.includes(p.name))
@@ -295,19 +296,26 @@ function FormTemplater(props) {
         pairs[key].includes(property.name)
         && !Object.values(completedpairs).some(g => g.includes(property.name))
       ) {
-        fields.push((
-          <ListItem
-            key={key}
-            component="div"
-            className="form-templater-group-wrapper"
-            id={key}
-            disableGutters={disablePadding}
-          >
-            <div className="form-templater-row-grid">
-              {pairs[key].map(k => formatFormField(sortedProps.find(p => p.name === k)))}
-            </div>
-          </ListItem>
-        ));
+        const isHalf = pairs[key].filter(k => sortedProps.find(p => p.name === k)).length === 1;
+        if (isHalf) {
+          fields.push(pairs[key]
+            .filter(k => sortedProps.find(p => p.name === k))
+            .map(k => formatFormField(sortedProps.find(p => p.name === k))));
+        } else {
+          fields.push((
+            <ListItem
+              key={key}
+              component="div"
+              className="form-templater-group-wrapper"
+              id={key}
+              disableGutters={disablePadding}
+            >
+              <div className="form-templater-row-grid">
+                {pairs[key].map(k => formatFormField(sortedProps.find(p => p.name === k)))}
+              </div>
+            </ListItem>
+          ));
+        }
         completedpairs[key] = pairs[key].slice();
       }
     });

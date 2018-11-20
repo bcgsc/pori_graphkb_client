@@ -37,6 +37,7 @@ class QueryView extends Component {
       tab: 'ontology',
       variantError: '',
       variant: {},
+      queryable: false,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -54,7 +55,7 @@ class QueryView extends Component {
       disabled,
       tab,
       variant,
-      variantError,
+      queryable,
     } = this.state;
     const { history } = this.props;
     let search;
@@ -69,12 +70,12 @@ class QueryView extends Component {
         ) || str.trim().length < 4;
         search = `?name=${!m ? '~' : ''}${encodeURIComponent(str.trim())}`;
       }
-    } else if (tab === 'variant' && str && !variantError) {
+    } else if (tab === 'variant' && str && queryable) {
       search = '?@class=PositionalVariant';
       Object.keys(variant).forEach((key) => {
         let val = encodeURIComponent((
           `${variant[key]}`.match(pattern)
-          && `${variant[key]}`.split(pattern).some(chunk => chunk && chunk.length < 4)
+          && `${variant[key]}`.split(pattern).some(chunk => chunk.length < 4)
         ) || `${variant[key]}`.trim().length < 4 ? variant[key] : `~${variant[key]}`);
 
         if (key !== 'prefix' && key !== 'multiFeature') {
@@ -131,9 +132,13 @@ class QueryView extends Component {
       });
     } catch (e) {
       // If anything is parsed, use that..
-      const update = { variantError: str ? e.message : '' };
+      const update = { variantError: str ? e.message : '', queryable: false };
       if (e.content && e.content.parsed) {
-        update.variant = e.content.parsed;
+        const { variantString, ...parsed } = e.content.parsed;
+        if (Object.keys(parsed).length !== 0) {
+          update.variant = parsed;
+          update.queryable = true;
+        }
       }
       this.setState(update);
     }
@@ -144,6 +149,7 @@ class QueryView extends Component {
       str,
       tab,
       variantError,
+      queryable,
     } = this.state;
     const { history } = this.props;
 
@@ -199,7 +205,7 @@ class QueryView extends Component {
                   name="str"
                   onChange={this.handleChange}
                   onKeyUp={this.handleVariantParse}
-                  error={!!variantError}
+                  error={(variantError && !queryable)}
                   helperText={variantError}
                   InputProps={{
                     endAdornment: (

@@ -35,10 +35,12 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import {
   AddOntologyView,
+  AddStatementView,
   AdminView,
   AdvancedQueryView,
   DataView,
   EditOntologyView,
+  EditStatementView,
   ErrorView,
   FeedbackView,
   IconsView,
@@ -238,6 +240,12 @@ class App extends Component {
             >
               <ListItemText inset primary="Variant" />
             </MenuItem>
+            <MenuItem
+              id="link-statement"
+              onClick={() => this.handleSideBarNavigate('/add/statement')}
+            >
+              <ListItemText inset primary="Statement" />
+            </MenuItem>
           </Collapse>
         </List>
         <div className="drawer-footer">
@@ -259,8 +267,10 @@ class App extends Component {
         <Route exact path="/query/advanced/builder" component={QueryBuilderView} />
         <Route path="/add/ontology" component={AddOntologyView} />
         <Route path="/add/variant" component={AddVariantView} />
-        <Route exact path="/edit/ontology/:rid" component={EditOntologyView} />
-        <Route exact path="/edit/variant/:rid" component={EditVariantView} />
+        <Route path="/add/statement" component={AddStatementView} />
+        <Route path="/edit/ontology/:rid" component={EditOntologyView} />
+        <Route path="/edit/variant/:rid" component={EditVariantView} />
+        <Route path="/edit/statement/:rid" component={EditStatementView} />
         <Route path="/data" component={DataView} />
         <Route path="/feedback" component={FeedbackView} />
         <Route path="/admin" component={AdminView} />

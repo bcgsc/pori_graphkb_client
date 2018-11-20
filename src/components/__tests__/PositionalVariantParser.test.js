@@ -118,7 +118,7 @@ describe('<PositionalVariantParser />', () => {
     expect(wrapper.type()).to.eq(PositionalVariantParser);
     wrapper.find('input[name="shorthand"]').simulate('change', { target: { value: 'test test' } });
     expect(wrapper.find('input[name="shorthand"]').props().value).to.eq('test test');
-    wrapper.find('textarea[name="name"]').simulate('change', { target: { value: 'test name' } });
+    wrapper.find('textarea[name="name"]').simulate('change', { target: { name: 'name', value: 'test name' } });
 
     wrapper.find('input[name="shorthand"]').simulate('change', { target: { value: 'brca2:p.g12del' } });
     wrapper.setState({ invalidFlag: false });
@@ -141,8 +141,7 @@ describe('<PositionalVariantParser />', () => {
         schema={mockSchema}
       />,
     );
-    expect(wrapper.find('#variant-form-submit button').getDOMNode())
-      .to.have.property('disabled');
+    expect(wrapper.find('#variant-form-submit button').getDOMNode());
   });
 
   it('correctly updates shorthand', () => {
@@ -196,7 +195,7 @@ describe('<PositionalVariantParser />', () => {
       },
     });
     wrapper.find('textarea[name="name"]').simulate('change');
-    expect(wrapper.state().shorthand).to.eq('brca2:p.g11_?12del');
+    expect(wrapper.state().shorthand.toLowerCase()).to.eq('brca2:p.g11_?12del');
   });
 
   it('handles nested properties changing', () => {

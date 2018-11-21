@@ -59,6 +59,7 @@ $roboto: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
 @mixin paper-collapse {
   transition: all 0.5s;
   @media (max-width: $breakpoint-mobile) {
+    overflow: auto;
     margin: 0;
     width: 100%;
     grid-row-gap: 0;

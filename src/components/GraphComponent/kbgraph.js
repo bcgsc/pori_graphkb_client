@@ -21,13 +21,8 @@ const {
   CHARGE_MAX,
 } = config.GRAPH_DEFAULTS;
 
-class GraphNode {
-  constructor(data, x, y) {
-    this.data = data || {};
-    this.x = x || 0;
-    this.y = y || 0;
-  }
 
+class GraphObj {
   getId() {
     return this.data['@rid'];
   }
@@ -35,9 +30,10 @@ class GraphNode {
   getLabel(labelKey) {
     let obj = this.data;
     let key = labelKey;
+    let parentKey;
     if (labelKey.includes('.')) {
-      [, key] = labelKey.split('.');
-      obj = this.data[labelKey.split('.')[0]];
+      [parentKey, key] = labelKey.split('.');
+      obj = this.data[parentKey];
     }
     const label = obj && obj[key];
     if (label && label.length > MAX_LABEL_LENGTH) {
@@ -47,16 +43,23 @@ class GraphNode {
   }
 }
 
-class GraphLink {
+class GraphNode extends GraphObj {
+  constructor(data, x, y) {
+    super();
+    this.data = data || {};
+    this.x = x || 0;
+    this.y = y || 0;
+  }
+}
+
+class GraphLink extends GraphObj {
   constructor(data, source, target) {
+    super();
     this.data = data || {};
     this.source = source;
     this.target = target;
   }
 
-  getId() {
-    return this.data['@rid'];
-  }
 
   getOutRid() {
     return typeof this.source === 'string' ? this.source : this.source.data['@rid'];
@@ -64,20 +67,6 @@ class GraphLink {
 
   getInRid() {
     return typeof this.target === 'string' ? this.target : this.target.data['@rid'];
-  }
-
-  getLabel(labelKey) {
-    let obj = this.data;
-    let key = labelKey;
-    if (labelKey.includes('.')) {
-      [, key] = labelKey.split('.');
-      obj = this.data[labelKey.split('.')[0]];
-    }
-    const label = obj && obj[key];
-    if (label && label.length > MAX_LABEL_LENGTH) {
-      return `${label.substring(0, MAX_LABEL_LENGTH - 4).trim()}...`;
-    }
-    return label;
   }
 }
 
@@ -246,6 +235,7 @@ class GraphOptions {
       linkStrength: this.linkStrength,
       chargeStrength: this.chargeStrength,
       collisionRadius: this.collisionRadius,
+      chargeMax: this.chargeMax,
       autoCollisionRadius: this.autoCollisionRadius,
       linkHighlighting: this.linkHighlighting,
       nodeLabelProp: this.nodeLabelProp,

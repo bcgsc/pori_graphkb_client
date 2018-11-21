@@ -8,23 +8,10 @@ import './GraphComponent.css';
 import * as d3 from 'd3';
 import {
   IconButton,
-  List,
-  ListItem,
-  Typography,
-  Paper,
-  ListItemIcon,
-  ListItemText,
   Tooltip,
   Snackbar,
   Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Checkbox,
-  DialogActions,
-  Divider,
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import SettingsIcon from '@material-ui/icons/Settings';
 import RefreshIcon from '@material-ui/icons/Refresh';
@@ -40,6 +27,8 @@ import {
   GraphNode,
   GraphLink,
 } from './kbgraph';
+import GraphExpansionDialog from './GraphExpansionDialog/GraphExpansionDialog';
+import GraphLegend from './GraphLegend/GraphLegend';
 
 const {
   ARROW_WIDTH,
@@ -98,6 +87,7 @@ class GraphComponent extends Component {
     this.handleResize = this.handleResize.bind(this);
     this.handleGraphOptionsChange = this.handleGraphOptionsChange.bind(this);
     this.withClose = this.withClose.bind(this);
+    this.handleExpand = this.handleExpand.bind(this);
     this.handleNodeHide = this.handleNodeHide.bind(this);
     this.handleLinkHide = this.handleLinkHide.bind(this);
     this.handleDialogOpen = this.handleDialogOpen.bind(this);
@@ -749,6 +739,12 @@ class GraphComponent extends Component {
     });
   }
 
+  handleExpand() {
+    const { actionsNode } = this.state;
+    this.setState({ expansionDialogOpen: false });
+    setTimeout(() => this.loadNeighbors(actionsNode), DIALOG_FADEOUT_TIME);
+  }
+
   /**
    * Handles link clicks from user.
    * @param {Event} e - User click event.
@@ -959,220 +955,6 @@ class GraphComponent extends Component {
       }).length === 0
     );
 
-    const legend = (
-      !!(graphOptions.nodesLegend && graphOptions.nodesColor)
-      || !!(graphOptions.linksLegend && graphOptions.linksColor)
-    )
-      && (
-        <div className="legend-wrapper">
-          {graphOptions.nodesLegend && graphOptions.nodesColor && (
-            <Paper>
-              <div className="legend-content">
-                <div className="legend-header">
-                  <div className="legend-header-text">
-                    <Typography variant="subtitle1">Nodes</Typography>
-                    <Typography variant="caption">
-                      {graphOptions.nodesColor ? `(${util.antiCamelCase(graphOptions.nodesColor)})` : ''}
-                    </Typography>
-                  </div>
-                  <IconButton
-                    name="nodesLegend"
-                    onClick={() => this.handleGraphOptionsChange({
-                      target: {
-                        value: false,
-                        name: 'nodesLegend',
-                      },
-                    })}
-                  >
-                    <CloseIcon />
-                  </IconButton>
-                </div>
-                <List className="node-colors" dense>
-                  {Object.keys(graphOptions.nodesColors).map(key => (
-                    <ListItem key={key}>
-                      <ListItemIcon>
-                        <div
-                          style={{ backgroundColor: graphOptions.nodesColors[key] }}
-                          className="color-chip"
-                        />
-                      </ListItemIcon>
-                      <ListItemText primary={util.antiCamelCase(key)} />
-                    </ListItem>
-                  ))}
-                  {(propsMap.nodeProps[graphOptions.nodesColor] || []).includes('null') && (
-                    <ListItem key="null">
-                      <ListItemIcon>
-                        <div
-                          style={{ backgroundColor: graphOptions.defaultColor }}
-                          className="color-chip"
-                        />
-                      </ListItemIcon>
-                      <ListItemText primary="Null" />
-                    </ListItem>
-                  )}
-                </List>
-              </div>
-            </Paper>)}
-          {!linkLegendDisabled
-            && graphOptions.linksLegend
-            && graphOptions.linksColor
-            && (
-              <Paper>
-                <div className="legend-content">
-                  <div className="legend-header">
-                    <div className="legend-header-text">
-                      <Typography variant="subtitle1">Edges</Typography>
-                      <Typography variant="caption">
-                        {graphOptions.linksColor && `(${util.antiCamelCase(graphOptions.linksColor)})`}
-                      </Typography>
-                    </div>
-                    <IconButton
-                      name="linksLegend"
-                      onClick={() => this.handleGraphOptionsChange({
-                        target: {
-                          value: false,
-                          name: 'linksLegend',
-                        },
-                      })}
-                    >
-                      <CloseIcon />
-                    </IconButton>
-                  </div>
-                  <List className="node-colors" dense>
-                    {Object.keys(graphOptions.linksColors).map(key => (
-                      <ListItem key={key}>
-                        <ListItemIcon>
-                          <div
-                            style={{ backgroundColor: graphOptions.linksColors[key] }}
-                            className="color-chip"
-                          />
-                        </ListItemIcon>
-                        <ListItemText primary={util.antiCamelCase(key)} />
-                      </ListItem>
-                    ))}
-                    {(propsMap.linkProps[graphOptions.linksColor] || []).includes('null') && (
-                      <ListItem key="null">
-                        <ListItemIcon>
-                          <div
-                            style={{ backgroundColor: graphOptions.defaultColor }}
-                            className="color-chip"
-                          />
-                        </ListItemIcon>
-                        <ListItemText primary="Null" />
-                      </ListItem>
-                    )}
-                  </List>
-                </div>
-              </Paper>
-            )}
-        </div>
-      );
-    const expansionDialog = (node) => {
-      if (!node) {
-        return null;
-      }
-      const edges = schema.getEdges(node);
-      return (
-        <Dialog
-          open={expansionDialogOpen}
-          onClose={this.handleDialogClose('expansionDialogOpen')}
-          maxWidth="md"
-          fullWidth
-          classes={{
-            root: 'expansion-root',
-            paper: 'expansion-dialog',
-          }}
-        >
-          <DialogTitle>Select Edges to Expand</DialogTitle>
-          <DialogContent>
-            <Typography variant="subtitle1">
-              Expand by Edge Types:
-            </Typography>
-            <List dense className="expand-links-types">
-              {(edges || []).reduce((array, edge) => {
-                if (
-                  !array.includes(edge['@class'])
-                  && !links.find(l => l.getId() === edge['@rid'])
-                ) {
-                  array.push(edge['@class']);
-                }
-                return array;
-              }, []).map(edge => (
-                <ListItem
-                  key={edge}
-                  className="expand-links-type"
-                >
-                  <Button
-                    variant="outlined"
-                    color="secondary"
-                    onClick={this.handleExpandByClass(edge)}
-                  >
-                    {util.getEdgeLabel(edge)}
-                  </Button>
-                </ListItem>
-              ))}
-            </List>
-            <Typography variant="subtitle1">
-              Select Individual Links:
-            </Typography>
-            <ListItem
-              button
-              onClick={this.handleExpandCheckAll}
-              className="expand-links-link"
-            >
-              <Checkbox checked={!(expandExclusions.length === edges.length)} />
-              <ListItemText>
-                <Typography variant="subtitle1">
-                  {expandExclusions.length === edges.length
-                    ? 'Select All' : 'Deselect All'}
-                </Typography>
-              </ListItemText>
-            </ListItem>
-            <Divider />
-            <List dense className="expand-links-list">
-              {edges.map((edge) => {
-                const inRid = edge.in['@rid'];
-                const target = inRid === node['@rid'] ? edge.out : edge.in;
-                if (target['@rid'] === node['@rid']
-                  || links.find(l => l.getId() === edge['@rid'])) {
-                  return null;
-                }
-                return (
-                  <ListItem
-                    key={edge['@rid']}
-                    button
-                    onClick={() => this.handleExpandExclusion(edge['@rid'])}
-                    className="expand-links-link"
-                  >
-                    <Checkbox checked={!expandExclusions.includes(edge['@rid'])} />
-                    <ListItemText>
-                      <Typography variant="body1">{target.name}</Typography>
-                      <Typography>{target.sourceId}</Typography>
-                      <Typography variant="caption">{target.source.name || node.source.name}</Typography>
-                    </ListItemText>
-                  </ListItem>
-                );
-              })}
-            </List>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.handleDialogClose('expansionDialogOpen')}>
-              Cancel
-            </Button>
-            <Button
-              onClick={() => {
-                this.setState({ expansionDialogOpen: false });
-                setTimeout(() => this.loadNeighbors(actionsNode), DIALOG_FADEOUT_TIME);
-              }}
-              id="expand-dialog-submit"
-            >
-              Confirm
-            </Button>
-          </DialogActions>
-        </Dialog>
-      );
-    };
-
     const snackbar = (
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
@@ -1268,7 +1050,18 @@ class GraphComponent extends Component {
     return (
       <div className="graph-wrapper">
         {snackbar}
-        {expansionDialog(expandNode)}
+        <GraphExpansionDialog
+          schema={schema}
+          node={expandNode}
+          open={expansionDialogOpen}
+          onClose={this.handleDialogClose('expansionDialogOpen')}
+          links={links}
+          expandExclusions={expandExclusions}
+          onExpand={this.handleExpand}
+          handleExpandCheckAll={this.handleExpandCheckAll}
+          handleExpandExclusion={this.handleExpandExclusion}
+          handleExpandByClass={this.handleExpandByClass}
+        />
         <GraphOptionsPanel
           linkLegendDisabled={linkLegendDisabled}
           graphOptionsOpen={graphOptionsOpen}
@@ -1343,7 +1136,12 @@ class GraphComponent extends Component {
             </g>
           </svg>
         </div>
-        {legend}
+        <GraphLegend
+          graphOptions={graphOptions}
+          handleGraphOptionsChange={this.handleGraphOptionsChange}
+          disabled={linkLegendDisabled}
+          propsMap={propsMap}
+        />
       </div>
     );
   }

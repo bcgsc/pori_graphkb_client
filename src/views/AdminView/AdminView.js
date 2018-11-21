@@ -262,7 +262,11 @@ class AdminViewBase extends Component {
     } else {
       selected.splice(i, 1);
     }
-    this.setState({ selected });
+    const update = { selected };
+    if (selected.length === 0) {
+      update.deleteDialogOpen = false;
+    }
+    this.setState(update);
   }
 
   /**

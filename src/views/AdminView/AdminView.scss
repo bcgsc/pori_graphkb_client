@@ -130,31 +130,22 @@ div {
         }
         overflow: hidden;
       }
-      .preview-metadata {
-        box-sizing: border-box;
-        margin: 8px 0;
-        .metadata-line {
-          display: flex;
-          h4,
-          p {
-            margin: auto 0;
-          }
-          h4 {
-            flex: 0 1 35%;
-          }
-          p {
-            flex: 1 1;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            overflow: hidden;
+      .group-chip {
+        margin: 1px;
+      }
+      table {
+        margin-top: 1rem;
+        * {
+          white-space: nowrap;
+        }
+        @media (max-width: 375px) {
+          * {
+            white-space: unset;
           }
         }
       }
       .preview-groups {
         box-sizing: border-box;
-        .group-chip {
-          margin: 1px;
-        }
       }
       .no-groups {
         display: flex;
@@ -172,13 +163,17 @@ div {
       display: block;
     }
   }
-  @media (max-width: 600px) {
+  @media (max-width: 720px) {
     min-width: 80%;
     .new-user-dialog-content {
       flex-direction: column;
       .new-user-form {
         display: flex;
         flex-direction: column;
+        .new-user-group-checkboxes {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+        }
       }
     }
   }

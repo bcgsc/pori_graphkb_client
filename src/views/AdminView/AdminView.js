@@ -746,7 +746,7 @@ class AdminViewBase extends Component {
             <div className="admin-section-heading-btns">
               <IconButton
                 disabled={selected.length === 0}
-                onClick={() => this.handleChange({ target: { name: 'deleteDialogOpen', value: false } })}
+                onClick={() => this.handleChange({ target: { name: 'deleteDialogOpen', value: true } })}
               >
                 {selected.length === 0 ? <DeleteIcon />
                   : (

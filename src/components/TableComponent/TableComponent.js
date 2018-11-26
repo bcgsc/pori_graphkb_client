@@ -917,7 +917,7 @@ class TableComponent extends Component {
 
                             if (col.id === 'preview') {
                               try {
-                                ([, val] = schema.get(n['@class']).getPreview(n).split(':'));
+                                ([, val] = schema.getPreview(n).split(':'));
                               } catch (e) {
                                 val = 'Invalid Variant';
                               }

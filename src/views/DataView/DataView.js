@@ -15,7 +15,6 @@ import {
 } from '@material-ui/core';
 import qs from 'qs';
 import omit from 'lodash.omit';
-import SCHEMA_DEFN from '../../schema/src/schema';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
@@ -108,19 +107,18 @@ class DataViewBase extends Component {
     // Routing methods
     this.handleGraphRedirect = this.handleGraphRedirect.bind(this);
     this.handleTableRedirect = this.handleTableRedirect.bind(this);
-    console.log(SCHEMA_DEFN);
   }
 
   /**
    * Queries the api and loads results into component state.
    */
   async componentDidMount() {
-    const { history } = this.props;
+    const { history, schema } = this.props;
 
     const queryParams = qs.parse(history.location.search.slice(1));
     let route = '/ontologies';
     const omitted = [];
-    const kbClass = SCHEMA_DEFN[queryParams['@class']];
+    const kbClass = schema.get(queryParams['@class']);
     if (kbClass) {
       ({ routeName: route } = kbClass);
       omitted.push('@class');
@@ -173,9 +171,10 @@ class DataViewBase extends Component {
    * @param {Object} node - Clicked node identifier.
    */
   async handleClick(node) {
+    const { schema } = this.props;
     const { data } = this.state;
     if (!data[node.data['@rid']]) {
-      const { routeName } = SCHEMA_DEFN[node.data['@class']];
+      const routeName = schema.getRoute(node.data['@class']);
       const endpoint = `${routeName || '/ontologies'}/${node.data['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`; // change
       const response = await api.get(endpoint);
       this.setState({ ...this.processData([jc.retrocycle(response).result]) });
@@ -234,6 +233,7 @@ class DataViewBase extends Component {
    * Handles subsequent pagination call
    */
   async handleSubsequentPagination() {
+    const { schema } = this.props;
     const {
       next,
       filteredSearch,
@@ -249,7 +249,7 @@ class DataViewBase extends Component {
 
         let route = '/ontologies';
         const omitted = [];
-        const kbClass = SCHEMA_DEFN[filteredSearch['@class']];
+        const kbClass = schema.get(filteredSearch['@class']);
         if (kbClass) {
           ({ routeName: route } = kbClass);
           omitted.push('@class');
@@ -275,10 +275,10 @@ class DataViewBase extends Component {
    */
   handleNodeEditStart() {
     const { detail } = this.state;
-    const { history } = this.props;
+    const { history, schema } = this.props;
     if (detail) {
       let route;
-      const { inherits } = SCHEMA_DEFN[detail['@class']];
+      const { inherits } = schema.get(detail['@class']);
       if (inherits && inherits.includes('Ontology')) {
         route = 'ontology';
       } else if (inherits && inherits.includes('Variant')) {
@@ -378,7 +378,7 @@ class DataViewBase extends Component {
     }
     const edges = schema.getEdges();
     const cls = filteredSearch && filteredSearch['@class'];
-    const defaultOrders = SCHEMA_DEFN[cls || 'Ontology'].identifiers;
+    const defaultOrders = schema.get(cls || 'Ontology').identifiers;
     const detailDrawer = (
       <DetailDrawer
         node={detail}

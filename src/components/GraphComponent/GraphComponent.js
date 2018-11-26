@@ -1058,9 +1058,9 @@ class GraphComponent extends Component {
           links={links}
           expandExclusions={expandExclusions}
           onExpand={this.handleExpand}
-          handleExpandCheckAll={this.handleExpandCheckAll}
-          handleExpandExclusion={this.handleExpandExclusion}
-          handleExpandByClass={this.handleExpandByClass}
+          onExpandAll={this.handleExpandCheckAll}
+          onExpandExclusion={this.handleExpandExclusion}
+          onExpandByClass={this.handleExpandByClass}
         />
         <GraphOptionsPanel
           linkLegendDisabled={linkLegendDisabled}

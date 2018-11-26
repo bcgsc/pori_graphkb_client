@@ -90,7 +90,7 @@ const fetchWithInterceptors = async (endpoint, init) => {
 const patch = (endpoint, payload) => {
   const init = {
     method: 'PATCH',
-    body: JSON.stringify(payload),
+    body: jc.stringify(payload),
   };
   return fetchWithInterceptors(endpoint, init);
 };
@@ -114,7 +114,7 @@ const get = (endpoint) => {
 const post = (endpoint, payload) => {
   const init = {
     method: 'POST',
-    body: JSON.stringify(payload),
+    body: jc.stringify(payload),
   };
 
   return fetchWithInterceptors(endpoint, init);
@@ -151,7 +151,7 @@ const loadSources = async () => {
       expiry: expiry.getTime(),
     };
 
-    localStorage.setItem(KEYS.SOURCES, JSON.stringify(sources));
+    localStorage.setItem(KEYS.SOURCES, jc.stringify(sources));
 
     return Promise.resolve(list);
   } catch (e) {
@@ -195,7 +195,7 @@ const loadSchema = async () => {
       expiry: expiry.getTime(),
     };
 
-    localStorage.setItem(KEYS.SCHEMA, JSON.stringify(schema));
+    localStorage.setItem(KEYS.SCHEMA, jc.stringify(schema));
 
     return Promise.resolve(new Schema(cycled));
   } catch (e) {

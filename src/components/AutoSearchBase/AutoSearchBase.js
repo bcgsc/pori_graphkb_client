@@ -32,6 +32,7 @@ class AutoSearchBase extends Component {
 
   render() {
     const {
+      className,
       children,
       value,
       selected,
@@ -72,7 +73,7 @@ class AutoSearchBase extends Component {
           } = downshiftProps;
           const empty = options.length === 0 && isOpen && !loading;
           return (
-            <div className="autosearch-wrapper">
+            <div className={`${className} autosearch-wrapper`}>
               <div className="autosearch-popper-node" ref={this.setRef}>
                 <TextField
                   {...otherTextFieldProps}
@@ -175,6 +176,7 @@ AutoSearchBase.propTypes = {
   TextFieldProps: PropTypes.object,
   DownshiftProps: PropTypes.object,
   disablePortal: PropTypes.bool,
+  className: PropTypes.string,
 };
 
 AutoSearchBase.defaultProps = {
@@ -204,6 +206,7 @@ AutoSearchBase.defaultProps = {
   TextFieldProps: {},
   DownshiftProps: {},
   disablePortal: false,
+  className: '',
 };
 
 export default AutoSearchBase;

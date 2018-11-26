@@ -13,7 +13,7 @@ import {
   ListItem,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
-import kbp from 'knowledgebase-parser';
+import kbp from '@bcgsc/knowledgebase-parser';
 import NotificationDrawer from '../NotificationDrawer/NotificationDrawer';
 import RelationshipsForm from '../RelationshipsForm/RelationshipsForm';
 import FormTemplater from '../FormTemplater/FormTemplater';
@@ -128,7 +128,9 @@ class PositionalVariantParser extends Component {
             response[name] = { '@class': '' };
           }
         });
-        const newVariant = Object.assign(schema.initModel(variant, 'PositionalVariant'),
+        const sparedProps = {};
+        SHORTHAND_EXCLUDED.forEach((s) => { sparedProps[s] = variant[s]; });
+        const newVariant = Object.assign(schema.initModel(sparedProps, 'PositionalVariant'),
           { ...response, ...linkProps.props });
         this.setState({
           variant: newVariant,

@@ -146,7 +146,7 @@ module.exports = {
           // Process JS with Babel.
           {
             test: /\.(js|jsx|mjs)$/,
-            include: [paths.appSrc, path.resolve('node_modules/knowledgebase-parser')],
+            include: [paths.appSrc, path.resolve('node_modules/@bcgsc')],
             loader: require.resolve('babel-loader'),
             options: {
 

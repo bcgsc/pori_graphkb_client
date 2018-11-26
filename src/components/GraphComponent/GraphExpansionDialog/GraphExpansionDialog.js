@@ -28,9 +28,9 @@ function GraphExpansionDialog(props) {
     links,
     expandExclusions,
     onExpand,
-    handleExpandCheckAll,
-    handleExpandExclusion,
-    handleExpandByClass,
+    onExpandAll,
+    onExpandExclusion,
+    onExpandByClass,
   } = props;
 
   if (!node) {
@@ -70,7 +70,7 @@ function GraphExpansionDialog(props) {
               <Button
                 variant="outlined"
                 color="secondary"
-                onClick={handleExpandByClass(edge)}
+                onClick={onExpandByClass(edge)}
               >
                 {util.getEdgeLabel(edge)}
               </Button>
@@ -82,7 +82,7 @@ function GraphExpansionDialog(props) {
         </Typography>
         <ListItem
           button
-          onClick={handleExpandCheckAll}
+          onClick={onExpandAll}
           className="expand-links-link"
         >
           <Checkbox checked={!(expandExclusions.length === edges.length)} />
@@ -106,7 +106,7 @@ function GraphExpansionDialog(props) {
               <ListItem
                 key={edge['@rid']}
                 button
-                onClick={() => handleExpandExclusion(edge['@rid'])}
+                onClick={() => onExpandExclusion(edge['@rid'])}
                 className="expand-links-link"
               >
                 <Checkbox checked={!expandExclusions.includes(edge['@rid'])} />
@@ -143,9 +143,9 @@ GraphExpansionDialog.propTypes = {
   links: PropTypes.array,
   expandExclusions: PropTypes.array,
   onExpand: PropTypes.func.isRequired,
-  handleExpandCheckAll: PropTypes.func.isRequired,
-  handleExpandExclusion: PropTypes.func.isRequired,
-  handleExpandByClass: PropTypes.func.isRequired,
+  onExpandAll: PropTypes.func.isRequired,
+  onExpandExclusion: PropTypes.func.isRequired,
+  onExpandByClass: PropTypes.func.isRequired,
 };
 
 GraphExpansionDialog.defaultProps = {

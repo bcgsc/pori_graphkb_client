@@ -402,12 +402,9 @@ class AutoSearchMulti extends Component {
  * @property {string} label - label for text input.
  * @property {bool} required - required flag for text input indicator.
  * @property {bool} error - error flag for text input.
- * @property {function} children - Function that yields the component for
- * display display query results.
  * @property {bool} disabled - disabled flag for text input.
- * @property {Object} endAdornment - component to adorn the end of input text
- * field with.
  * @property {Record} selected - Last selected record.
+ * @property {Object} schema - Knowledgebase schema object.
  */
 AutoSearchMulti.propTypes = {
   name: PropTypes.string,

@@ -1,3 +1,6 @@
+/**
+ * @module /components/RecordChip
+ */
 import React, { Component } from 'react';
 import './RecordChip.css';
 import {
@@ -15,6 +18,10 @@ import {
 } from '@material-ui/core';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 
+/**
+ * Displays a record as a Material Chip. When clicked, opens a Popover
+ * containing some brief details about the record.
+ */
 class RecordChip extends Component {
   constructor(props) {
     super(props);

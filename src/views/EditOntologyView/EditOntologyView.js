@@ -1,5 +1,5 @@
 /**
- * @module /views/EditOntologyViewBase
+ * @module /views/EditOntologyView
  */
 
 import React, { Component } from 'react';
@@ -29,7 +29,6 @@ class EditOntologyViewBase extends Component {
     super(props);
     this.state = {
       node: null,
-      edgeTypes: [],
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
@@ -41,14 +40,12 @@ class EditOntologyViewBase extends Component {
    * Initializes editing node and query on return.
    */
   async componentDidMount() {
-    const { match, schema } = this.props;
+    const { match } = this.props;
     const { rid } = match.params;
     const response = await api.get(`/ontologies/${rid}?neighbors=${DEFAULT_NEIGHBORS}`);
     const node = jc.retrocycle(response).result;
-    const edgeTypes = schema.getEdges();
     this.setState({
       node,
-      edgeTypes,
     });
   }
 
@@ -95,7 +92,6 @@ class EditOntologyViewBase extends Component {
   render() {
     const {
       node,
-      edgeTypes,
     } = this.state;
     const { schema } = this.props;
 
@@ -123,7 +119,6 @@ class EditOntologyViewBase extends Component {
             handleFinish={this.handleFinish}
             handleDelete={this.handleDelete}
             schema={schema}
-            edgeTypes={edgeTypes}
           />
         </div>
       );

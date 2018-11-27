@@ -21,6 +21,9 @@ const {
   CHARGE_MAX,
 } = config.GRAPH_DEFAULTS;
 
+/**
+ * Represents a d3 force directed graph node.
+ */
 class GraphNode {
   constructor(data, x, y) {
     this.data = data || {};
@@ -28,10 +31,17 @@ class GraphNode {
     this.y = y || 0;
   }
 
+  /**
+   * Returns the underlying record ID.
+   */
   getId() {
     return this.data['@rid'];
   }
 
+  /**
+   * Finds suggested property value and displays it as this nodes label.
+   * @param {string} labelKey - Property key to display as node label.
+   */
   getLabel(labelKey) {
     let obj = this.data;
     let key = labelKey;
@@ -47,6 +57,9 @@ class GraphNode {
   }
 }
 
+/**
+ * Represents a d3 force directed graph link object.
+ */
 class GraphLink {
   constructor(data, source, target) {
     this.data = data || {};
@@ -54,18 +67,31 @@ class GraphLink {
     this.target = target;
   }
 
+  /**
+   * Returns the underlying record ID.
+   */
   getId() {
     return this.data['@rid'];
   }
 
+  /**
+   * Returns edge 'out' record ID.
+   */
   getOutRid() {
     return typeof this.source === 'string' ? this.source : this.source.data['@rid'];
   }
 
+  /**
+   * Returns edge 'out' record ID.
+   */
   getInRid() {
     return typeof this.target === 'string' ? this.target : this.target.data['@rid'];
   }
 
+  /**
+   * Finds suggested property value and displays it as this nodes label.
+   * @param {string} labelKey - Property key to display as node label.
+   */
   getLabel(labelKey) {
     let obj = this.data;
     let key = labelKey;
@@ -190,6 +216,9 @@ class PropsMap {
 }
 
 
+/**
+ * Represents possible graph options for the graph view.
+ */
 class GraphOptions {
   /**
    * Retrieves stored graph options data from localstorage.
@@ -225,6 +254,9 @@ class GraphOptions {
     this.chargeMax = initial.chargeMax || CHARGE_MAX;
   }
 
+  /**
+   * Returns the color of the given object, given the current color property.
+   */
   getColor(obj, type) {
     const { [`${type}Color`]: objColor, [`${type}Colors`]: objColors } = this;
     let colorKey = '';

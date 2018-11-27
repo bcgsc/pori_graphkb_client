@@ -223,6 +223,13 @@ class DetailDrawer extends Component {
         );
       }
       if (value.toString().length <= MAX_STRING_LENGTH) {
+        let Wrapper = React.Fragment;
+        const compProps = {};
+        if (name === 'url') {
+          Wrapper = 'a';
+          compProps.href = value;
+          compProps.target = '_blank';
+        }
         return (
           <React.Fragment key={name}>
             <ListItem>
@@ -235,11 +242,13 @@ class DetailDrawer extends Component {
                   <Typography variant="subtitle1">
                     {util.antiCamelCase(name)}
                   </Typography>
-                  <Typography>
-                    {DATE_KEYS.includes(name)
-                      ? (new Date(value)).toLocaleString()
-                      : util.formatStr(value)}
-                  </Typography>
+                  <Wrapper {...compProps}>
+                    <Typography>
+                      {DATE_KEYS.includes(name)
+                        ? (new Date(value)).toLocaleString()
+                        : util.formatStr(value)}
+                    </Typography>
+                  </Wrapper>
                 </div>
               </ListItemText>
             </ListItem>

@@ -1,3 +1,6 @@
+/**
+ * @module /views/EditStatementView
+ */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -11,6 +14,9 @@ import api from '../../services/api';
 import util from '../../services/util';
 import StatementFormComponent from '../../components/StatementFormComponent/StatementFormComponent';
 
+/**
+ * Route for editing existing Statement records.
+ */
 class EditStatementViewBase extends Component {
   constructor(props) {
     super(props);

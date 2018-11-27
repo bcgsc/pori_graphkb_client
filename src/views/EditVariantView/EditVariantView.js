@@ -1,3 +1,6 @@
+/**
+ * @module /views/EditVariantView
+ */
 import React, { Component } from 'react';
 import './EditVariantView.css';
 import PropTypes from 'prop-types';
@@ -9,6 +12,9 @@ import OntologyFormComponent from '../../components/OntologyFormComponent/Ontolo
 import util from '../../services/util';
 import api from '../../services/api';
 
+/**
+ * Route for editing existing Variant records.
+ */
 class EditVariantViewBase extends Component {
   constructor(props) {
     super(props);
@@ -20,6 +26,9 @@ class EditVariantViewBase extends Component {
     this.submitVariant = this.submitVariant.bind(this);
   }
 
+  /**
+   * Grabs target record and initializes state.
+   */
   async componentDidMount() {
     const { match, schema } = this.props;
     const { rid } = match.params;
@@ -140,9 +149,9 @@ class EditVariantViewBase extends Component {
 
 /**
  * @namespace
-* @property {Object} history - Application routing history object.
-* @property {Object} schema - Knowledgebase schema object.
-    */
+ * @property {Object} history - Application routing history object.
+ * @property {Object} schema - Knowledgebase schema object.
+ */
 EditVariantViewBase.propTypes = {
   history: PropTypes.object.isRequired,
   schema: PropTypes.object.isRequired,

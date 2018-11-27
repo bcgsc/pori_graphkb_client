@@ -1003,21 +1003,22 @@ class TableComponent extends Component {
 /**
  * @namespace
  * @property {Object} data - Object containing query results.
+ * @property {Object} detail - Record being displayed in detail view.
  * @property {Array} displayed - Array of displayed nodes.
  * @property {function} handleCheckAll - Method triggered when all rows are
  * checked.
- * @property {function} handleNodeEditStart - Method triggered when user
- * requests to edit a node.
  * @property {function} handleCheckbox - Method triggered when a single row is
  * checked.
  * @property {function} handleHideSelected - Method for hiding selected rows
  * from the view.
+ * @property {function} handleNodeEditStart - Method triggered when user
+ * requests to edit a node.
  * @property {function} handleShowAllNodes - Method for returning previously
  * hidden rows to the view.
- * @property {function} handleNewQuery - Handles new querying with new
- * parameters.
  * @property {function} handleGraphRedirect - Handles routing to graph
  * component.
+ * @property {function} handleDetailDrawerOpen - Handles opening of detail
+ * drawer to a given record.
  * @property {function} handleSubsequentPagination - parent function to handle
  * subsequent api calls.
  * @property {Array} hidden - Array of hidden nodes.
@@ -1029,6 +1030,8 @@ class TableComponent extends Component {
  * completed the current subsequent query.
  * @property {Array} storedFilters - filters stored for current session.
  * Accessed on component init and stored on navigate to table.
+ * @property {Array} defaultOrder - List of columns to display in order.
+ * @property {Object} schema - Knowledgebase schema object.
  */
 TableComponent.propTypes = {
   data: PropTypes.object.isRequired,

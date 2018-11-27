@@ -225,6 +225,24 @@ const getTSVRepresentation = (value, key) => {
   return castToExist(value);
 };
 
+/**
+ * "Flattens" an object into a depth 1 object.
+ * @param {Object} obj - Object to be flattened.
+ *
+ * @example
+ * > const obj = {
+ *     a: {
+ *       b: 'e',
+ *     },
+ *     d: 'e',
+ *   };
+ *
+ * > flatten(obj);
+ * > {
+ *     a[b]: 'e',
+ *     d: 'e',
+ *   }
+ */
 const flatten = (obj) => {
   const regex = /^[^[\]]+(?=(\[[^[\]]+\])*)/;
   const flattened = {};

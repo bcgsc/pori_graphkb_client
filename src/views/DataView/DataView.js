@@ -1,7 +1,6 @@
 /**
  * @module /views/DataView
  */
-
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './DataView.css';
@@ -307,7 +306,7 @@ class DataViewBase extends Component {
     const { data, detail } = this.state;
     if (!open && !detail) return;
     if (node.data) {
-      node = node.data;
+      node = node.data; // eslint-disable-line no-param-reassign
     }
     if (edge) {
       this.setState({

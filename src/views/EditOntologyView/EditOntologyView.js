@@ -1,5 +1,5 @@
 /**
- * @module /views/EditOntologyViewBase
+ * @module /views/EditOntologyView
  */
 
 import React, { Component } from 'react';

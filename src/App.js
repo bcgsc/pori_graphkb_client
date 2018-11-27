@@ -55,7 +55,6 @@ import logo from './static/logo.png';
 import title from './static/title.png';
 import auth from './services/auth';
 import history from './services/history';
-import api from './services/api';
 import Schema from './models/schema';
 import { SchemaContext } from './components/SchemaContext/SchemaContext';
 
@@ -94,7 +93,6 @@ class App extends Component {
       loggedIn: (!!auth.getToken() && !auth.isExpired()),
       drawerOpen: false,
       expanded: [],
-      schema: null,
     };
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -104,11 +102,6 @@ class App extends Component {
     this.handleSideBarNavigate = this.handleSideBarNavigate.bind(this);
     this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
     this.handleDrawerClose = this.handleDrawerClose.bind(this);
-  }
-
-  async componentDidMount() {
-    const schema = await api.getSchema();
-    this.setState({ schema });
   }
 
   /**
@@ -130,8 +123,7 @@ class App extends Component {
    */
   handleLogOut() {
     auth.clearToken();
-    this.handleClose();
-    this.setState({ loggedIn: false });
+    this.setState({ loggedIn: false, anchorEl: null });
   }
 
   /**
@@ -148,12 +140,14 @@ class App extends Component {
       if (expanded === item) {
         this.setState({ expanded: '' });
       } else {
-        this.setState({ expanded: item });
-        this.handleDrawerOpen();
+        this.setState({ expanded: item, drawerOpen: true });
       }
     };
   }
 
+  /**
+   * Opens the main navigation drawer.
+   */
   handleDrawerOpen() {
     this.setState({ drawerOpen: true });
   }
@@ -177,7 +171,6 @@ class App extends Component {
       loggedIn,
       drawerOpen,
       expanded,
-      schema,
     } = this.state;
 
     const loginWithProps = () => (
@@ -207,15 +200,17 @@ class App extends Component {
         </div>
         <Divider />
         <List className="drawer-links">
-          <MenuItem
-            id="link-search"
-            onClick={() => this.handleSideBarNavigate('/query')}
-          >
-            <ListItemIcon>
-              <SearchIcon />
-            </ListItemIcon>
-            <ListItemText primary="Query" />
-          </MenuItem>
+          <Link to="/query">
+            <MenuItem
+              id="link-search"
+              onClick={this.handleDrawerClose}
+            >
+              <ListItemIcon>
+                <SearchIcon />
+              </ListItemIcon>
+              <ListItemText primary="Query" />
+            </MenuItem>
+          </Link>
           <MenuItem onClick={this.handleDrawerExpand('add')}>
             <ListItemIcon>
               <div style={{ display: 'inline-flex' }}>
@@ -230,24 +225,30 @@ class App extends Component {
             />
           </MenuItem>
           <Collapse in={expanded === 'add' && drawerOpen}>
-            <MenuItem
-              id="link-add"
-              onClick={() => this.handleSideBarNavigate('/add/ontology')}
-            >
-              <ListItemText inset primary="Ontology" />
-            </MenuItem>
-            <MenuItem
-              id="link-variant"
-              onClick={() => this.handleSideBarNavigate('/add/variant')}
-            >
-              <ListItemText inset primary="Variant" />
-            </MenuItem>
-            <MenuItem
-              id="link-statement"
-              onClick={() => this.handleSideBarNavigate('/add/statement')}
-            >
-              <ListItemText inset primary="Statement" />
-            </MenuItem>
+            <Link to="/add/ontology">
+              <MenuItem
+                id="link-add"
+                onClick={this.handleDrawerClose}
+              >
+                <ListItemText inset primary="Ontology" />
+              </MenuItem>
+            </Link>
+            <Link to="/add/variant">
+              <MenuItem
+                id="link-variant"
+                onClick={this.handleDrawerClose}
+              >
+                <ListItemText inset primary="Variant" />
+              </MenuItem>
+            </Link>
+            <Link to="/add/statement">
+              <MenuItem
+                id="link-statement"
+                onClick={this.handleDrawerClose}
+              >
+                <ListItemText inset primary="Statement" />
+              </MenuItem>
+            </Link>
           </Collapse>
         </List>
         <div className="drawer-footer">
@@ -279,7 +280,7 @@ class App extends Component {
         <Redirect from="*" to="/query" />
       </Switch>
     );
-    return schema && (
+    return (
       <SchemaContext.Provider value={new Schema(SCHEMA_DEFN)}>
         <MuiThemeProvider theme={theme}>
           <Router history={history}>

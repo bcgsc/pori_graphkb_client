@@ -1,9 +1,55 @@
 # Contribution Guide
 
-### Style
 `knowledgebase_web` is built using `React.js` and `webpack`. Originally built using `create-react-app`, most of the configs originated from the boilerplate provided there. Linting is done with `eslint`, and follows a modified version of the Airbnb style guide.
 
-Testing is done with `Jest` with `enzyme`, and `cypress.io`.
+## Development
+To install dependencies, run
+```
+$ npm install
+```
+then run the app with
+```
+npm start
+```
+
+### Testing
+Unit tests are made using [Jest](https://jestjs.io/docs/en/getting-started.html) and [Enzyme](https://airbnb.io/enzyme/docs/api/), end to end tests are made using [Cypress](https://docs.cypress.io/guides/overview/why-cypress.html#In-a-nutshell).
+
+#### Running Tests
+In terminal before running any test commands:
+
+```
+$ export USER='myusername'
+$ export PASSWORD='mysupersecretpassword'
+```
+
+##### Jest Unit tests
+* `npm run test:unit`
+
+##### Cypress Integration tests
+Running all end to end tests:
+* `npm run cypress:run` or `npm run test:e2e`
+
+Opening cypress dashboard, run individual tests in mock browser.
+* `npm run cypress:open`
+
+##### Run everything (takes a long time)
+* `npm run test`
+
+##### Continuous Integration testing
+* `npm run test:ci`
+
+#### Coverage Reports
+The files generated for jest coverage reports are stored in the `/coverage` directory:
+```
+|- /coverage
+|---- /clover.xml - clover report
+|---- /junit.xml - junit-formatted report
+|---- /lcov-report
+|------- /**/*.html - lcov-formatted reports for each file.
+```
+
+### Style
 
 ##### App structure
 ```
@@ -36,4 +82,43 @@ Testing is done with `Jest` with `enzyme`, and `cypress.io`.
 | src/App.[js, scss] | `React` app root component |
 | src/index.[js, scss] | `webpack` bundle root script, simply renders `React` app root component and registers service worker. |
 | src/registerServiceWorker.js | Boilerplate script from `create-react-app` to register a template service worker to  the browser |
+|
 
+
+##### Branch conventions
+All changes should be made into their own branch and merged with a pull request, preferably with a linked KBDEV ticket in at least one of the commits. KBDEV maintainers should make branches on this repository, otherwise fork the repository into your own personal BitBucket account, and then make a pull request from there.
+
+Here are the naming conventions for the different types of branches used in this project.
+
+| branch type | description |
+|-|-|
+|feature/[`feature name`] | Branch for adding a new feature. Eg: `feature/stats-page`
+| improve/[`improvement name`] | Branch for refactoring or making minor-moderate under the hood changes. Eg: `improve/parsing-logic`|
+| release/[`version number(s)`] | Branch for releases. Can specify ranges of patch versions with "X" Eg: `release/v0.6.X` or `release/v1.0.0` |
+| bugfix/[`bug desc/ticket code`] | Branch for fixing bugs. Eg: `bugfix/KBDEV-1234` or `bugfix/query-crashing`|
+
+##### Coding Guidelines
+
+* Read the [GSC New Developer Guidelines wiki page](https://www.bcgsc.ca/wiki/display/DEVSU/General+Guidelines+for+New+Developers)
+* Lint everything. App will not compile if there are linting errors.
+* JSDoc all functions, classes, and `propTypes` declarations.
+* Follow `Material Design` when designing front end components.
+* Reuse dynamic components when applicable to generate class based layouts. `FormTemplater.js` and `DetailDrawer.js`, and the `initModel` function in the `src/models/schema.js` file all contain examples of using record class models to automatically generate scaffolding.
+* Some important  knowledge that should be learned before working on this project:
+  * [Knowledgebase spec](http://kbapi01:8061/api/v0.6.1/spec/) (how to build queries, class definitions)
+  * Schema specification can be found at http://kbapi01:8061/api/v0.6.1/schema, or the [knowledgebase schema repo](https://svn.bcgsc.ca/bitbucket/projects/VDB/repos/knowledgebase_schema/browse)
+  * [ReactJS basics](https://reactjs.org/tutorial/tutorial.html)
+  * [React Routing](https://reacttraining.com/react-router/web/guides/quick-start) as well as [integrating a custom history object into your app](https://stackoverflow.com/questions/42701129/how-to-push-to-history-in-react-router-v4/45849608#45849608)
+  * [ReactJS Context](https://reactjs.org/docs/context.html), which is used for providing `schema` and `user` data throughout other components in the application.
+  * The testing technologies linked above.
+  * [SASS](https://sass-lang.com/)
+  * [GraphComponent] : [d3 force directed graph](https://github.com/d3/d3-force). The learning curve for d3 is higher than for the other technologies since integrating with React can be a hassle. Try to use the existing code here as reference as you go.
+
+### Roadmap
+The target user base of the Knowledgebase GUI is researchers and clinicians. As such, addressing their needs/concerns will be the #1 priority when developing. Larger features such as different data display formats, new pages, and large architecture overhauls must be discussed with other members of the KBDEV and VARDB team.
+
+Some features I would like to see in the near future include:
+* Database diagnostics/statistics page
+  * This page was well in the works using d3 to create different charts (branch `feature/kb-stats`, but got lost in the backburner. More features should be integrated into both the front end and back end, but are not essential to the core purpose of the app, so are a relatively low priority task [KBDEV-164](https://www.bcgsc.ca/jira/browse/KBDEV-164).
+* Larger controls suite in Graph View
+  * As of now the graph view can display data nicely in a force-directed graph layout. One problem is that it can get cluttered easily if a user keeps expanding nodes to view its relatives. An undo button, mass selection and searchbar for nodes in graph, would allow users to better manage their graph nodes [KBDEV-283](https://www.bcgsc.ca/jira/projects/KBDEV/issues/KBDEV-283)

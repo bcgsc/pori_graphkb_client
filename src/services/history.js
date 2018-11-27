@@ -27,6 +27,9 @@ history.listen((location) => {
 
 history.prevState = '';
 
+/**
+ * Sends the user back a page, unless the previous page was an external site.
+ */
 history.back = () => {
   if (history.prevState) {
     history.goBack();

@@ -1,7 +1,6 @@
 /**
  * @module /views/QueryView
  */
-
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './QueryView.css';
@@ -333,6 +332,7 @@ class QueryViewBase extends Component {
 /**
  * @namespace
  * @property {Object} history - Application routing history object.
+ * @property {Object} schema - Knowledgebase schema object.
  */
 QueryViewBase.propTypes = {
   history: PropTypes.object.isRequired,

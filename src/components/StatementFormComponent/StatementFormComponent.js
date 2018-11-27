@@ -1,3 +1,6 @@
+/**
+ * @module /components/StatementFormComponent
+ */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './StatementFormComponent.css';
@@ -13,6 +16,10 @@ import DeleteRecordDialog from '../DeleteRecordDialog/DeleteRecordDialog';
 
 const DEFAULT_REVIEW_STATUS = 'pending';
 
+/**
+ * Form for Statement records. Shows shorthand as a mix of the appliesTo
+ * Ontology, relevance Vocabulary, as well as source and sourceId.
+ */
 class StatementFormComponent extends Component {
   constructor(props) {
     super(props);
@@ -156,7 +163,7 @@ class StatementFormComponent extends Component {
         <DeleteRecordDialog
           open={deleteDialog}
           onDelete={this.handleDeleteNode}
-          handleDialog={this.handleDialog}
+          onClose={() => this.handleDialog(false)}
         />
         <NotificationDrawer
           open={notificationDrawerOpen}

@@ -1,7 +1,6 @@
 /**
  * @module /components/OntologyFormComponent
  */
-
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './OntologyFormComponent.css';
@@ -141,7 +140,8 @@ class OntologyFormComponent extends Component {
   }
 
   /**
-   * Submits form.
+   * Validates form and calls submission parent method with the form and
+   * relationships data.
    * @param {Event} e - Submit event.
    */
   async handleSubmit(e) {
@@ -201,7 +201,7 @@ class OntologyFormComponent extends Component {
         <DeleteRecordDialog
           open={deleteDialog}
           onDelete={this.handleDeleteNode}
-          handleDialog={this.handleDialog}
+          onClose={() => this.handleDialog(false)}
         />
         <NotificationDrawer
           open={notificationDrawerOpen}

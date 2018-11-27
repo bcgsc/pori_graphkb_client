@@ -14,9 +14,7 @@ function DownloadFileComponent(props) {
     rawFileContent,
     fileName,
     children,
-    id,
-    className,
-    style,
+    ...others
   } = props;
 
   /**
@@ -50,9 +48,7 @@ function DownloadFileComponent(props) {
       onKeyUp={(e) => { if (e.keyCode === 13) onClick(); }}
       role="button"
       tabIndex={0}
-      id={id}
-      className={className}
-      style={style}
+      {...others}
     >
       {children}
     </div>
@@ -65,27 +61,18 @@ function DownloadFileComponent(props) {
  * @property {function} rawFileContent - Raw file data.
  * @property {string} fileName - Filename of file to be downloaded.
  * @property {Node} children - Children components to be rendered beneath wrapper.
- * @property {string} id - CSS identifier for styling.
- * @property {string} className - CSS class name for styling.
- * @property {object} style - Object of individual CSS properties for styling.
  */
 DownloadFileComponent.propTypes = {
   mediaType: PropTypes.string,
   rawFileContent: PropTypes.any,
   fileName: PropTypes.string,
   children: PropTypes.node.isRequired,
-  id: PropTypes.string,
-  className: PropTypes.string,
-  style: PropTypes.object,
 };
 
 DownloadFileComponent.defaultProps = {
   mediaType: 'text/plain;charset=US-ASCII',
   rawFileContent: null,
   fileName: 'download.txt',
-  id: undefined,
-  className: undefined,
-  style: undefined,
 };
 
 export default DownloadFileComponent;

@@ -1,7 +1,6 @@
 /**
  * @module /components/ResourceSelectComponent
  */
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import './ResourceSelectComponent.css';
@@ -87,6 +86,7 @@ function ResourceSelectComponent(props) {
  * @property {string} id - CSS selector id for root component.
  * @property {boolean} dense - Flag for dense variant, which has smaller font
  * size.
+ * @property {string} variant - Material UI Select variant (outlined, filled, standard)
  */
 ResourceSelectComponent.propTypes = {
   resources: PropTypes.array,
@@ -99,7 +99,7 @@ ResourceSelectComponent.propTypes = {
   error: PropTypes.bool,
   id: PropTypes.string,
   dense: PropTypes.bool,
-  variant: PropTypes.string,
+  variant: PropTypes.oneOf(['filled', 'outlined', 'standard']),
 };
 
 ResourceSelectComponent.defaultProps = {

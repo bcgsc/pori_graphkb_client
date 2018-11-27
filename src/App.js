@@ -1,7 +1,6 @@
 /**
  * @module /App
  */
-
 import React, { Component } from 'react';
 import {
   Router,
@@ -34,7 +33,7 @@ import AddIcon from '@material-ui/icons/Add';
 import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import SCHEMA_DEFN from './schema/src/schema';
+import { schema as SCHEMA_DEFN } from '@bcgsc/knowledgebase-schema';
 import {
   AddOntologyView,
   AddStatementView,
@@ -124,8 +123,7 @@ class App extends Component {
    */
   handleLogOut() {
     auth.clearToken();
-    this.handleClose();
-    this.setState({ loggedIn: false });
+    this.setState({ loggedIn: false, anchorEl: null });
   }
 
   /**
@@ -142,12 +140,14 @@ class App extends Component {
       if (expanded === item) {
         this.setState({ expanded: '' });
       } else {
-        this.setState({ expanded: item });
-        this.handleDrawerOpen();
+        this.setState({ expanded: item, drawerOpen: true });
       }
     };
   }
 
+  /**
+   * Opens the main navigation drawer.
+   */
   handleDrawerOpen() {
     this.setState({ drawerOpen: true });
   }
@@ -200,15 +200,17 @@ class App extends Component {
         </div>
         <Divider />
         <List className="drawer-links">
-          <MenuItem
-            id="link-search"
-            onClick={() => this.handleSideBarNavigate('/query')}
-          >
-            <ListItemIcon>
-              <SearchIcon />
-            </ListItemIcon>
-            <ListItemText primary="Query" />
-          </MenuItem>
+          <Link to="/query">
+            <MenuItem
+              id="link-search"
+              onClick={this.handleDrawerClose}
+            >
+              <ListItemIcon>
+                <SearchIcon />
+              </ListItemIcon>
+              <ListItemText primary="Query" />
+            </MenuItem>
+          </Link>
           <MenuItem onClick={this.handleDrawerExpand('add')}>
             <ListItemIcon>
               <div style={{ display: 'inline-flex' }}>
@@ -223,24 +225,30 @@ class App extends Component {
             />
           </MenuItem>
           <Collapse in={expanded === 'add' && drawerOpen}>
-            <MenuItem
-              id="link-add"
-              onClick={() => this.handleSideBarNavigate('/add/ontology')}
-            >
-              <ListItemText inset primary="Ontology" />
-            </MenuItem>
-            <MenuItem
-              id="link-variant"
-              onClick={() => this.handleSideBarNavigate('/add/variant')}
-            >
-              <ListItemText inset primary="Variant" />
-            </MenuItem>
-            <MenuItem
-              id="link-statement"
-              onClick={() => this.handleSideBarNavigate('/add/statement')}
-            >
-              <ListItemText inset primary="Statement" />
-            </MenuItem>
+            <Link to="/add/ontology">
+              <MenuItem
+                id="link-add"
+                onClick={this.handleDrawerClose}
+              >
+                <ListItemText inset primary="Ontology" />
+              </MenuItem>
+            </Link>
+            <Link to="/add/variant">
+              <MenuItem
+                id="link-variant"
+                onClick={this.handleDrawerClose}
+              >
+                <ListItemText inset primary="Variant" />
+              </MenuItem>
+            </Link>
+            <Link to="/add/statement">
+              <MenuItem
+                id="link-statement"
+                onClick={this.handleDrawerClose}
+              >
+                <ListItemText inset primary="Statement" />
+              </MenuItem>
+            </Link>
           </Collapse>
         </List>
         <div className="drawer-footer">

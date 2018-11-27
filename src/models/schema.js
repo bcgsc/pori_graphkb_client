@@ -15,6 +15,9 @@ class Schema {
     return this.schema[className];
   }
 
+  /**
+   * Returns preview of given object based on its '@class' value
+   */
   getPreview(obj) {
     if (!obj['@class'] || !this.schema[obj['@class']]) return null;
     return this.schema[obj['@class']].getPreview(obj);
@@ -41,18 +44,22 @@ class Schema {
       .map(prop => classModel.properties[prop]);
   }
 
+  /**
+   * Returns the URL route of a given class.
+   * @param {string} className - schema class to return the route of.
+   */
   getRoute(className) {
     return this.schema[className].routeName;
   }
 
   /**
- * Initializes a new instance of given kbClass.
- * @param {Object} model - existing model to keep existing values from.
- * @param {string} kbClass - Knowledge base class key.
- * @param {Array} extraProps - Extra props to initialize on model.
- * @param {boolean} ignoreClass - flag to omit '@class' prop on new model.
- * @param {boolean} stripProps - flag to strip old props from model.
- */
+   * Initializes a new instance of given kbClass.
+   * @param {Object} model - existing model to keep existing values from.
+   * @param {string} kbClass - Knowledge base class key.
+   * @param {Array} extraProps - Extra props to initialize on model.
+   * @param {boolean} ignoreClass - flag to omit '@class' prop on new model.
+   * @param {boolean} stripProps - flag to strip old props from model.
+   */
   initModel(model, kbClass, extraProps = [], ignoreClass = false, stripProps = false) {
     const editableProps = kbClass
       && (this.getProperties(kbClass, extraProps) || {});

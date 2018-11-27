@@ -1,3 +1,6 @@
+/**
+ * @module /views/AddVariantView
+ */
 import React, { Component } from 'react';
 import './AddVariantView.css';
 import PropTypes from 'prop-types';
@@ -7,6 +10,9 @@ import util from '../../services/util';
 import api from '../../services/api';
 import { withKB } from '../../components/KBContext/KBContext';
 
+/**
+ * Route for submitting Variant records to db.
+ */
 class AddVariantViewBase extends Component {
   constructor(props) {
     super(props);

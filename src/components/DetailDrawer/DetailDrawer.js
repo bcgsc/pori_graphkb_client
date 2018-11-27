@@ -27,7 +27,8 @@ const MAX_STRING_LENGTH = 64;
 const DATE_KEYS = ['createdAt', 'deletedAt'];
 
 /**
- * Component used to display a single record's details.
+ * Component used to display record details in a side drawer. Dynamically
+ * generates display based on record, and its corresponding schema entry.
  */
 class DetailDrawer extends Component {
   constructor(props) {
@@ -478,8 +479,8 @@ class DetailDrawer extends Component {
  * @property {Object} schema - Knowledgebase schema object.
  * @property {Object} node - Ontology to be displayed in drawer.
  * @property {function} onClose - Function triggered on @material-ui/Drawer onClose event.
- * @property {function} handleNodeEditStart - Function triggered on node edit button click.
  * @property {bool} isEdge - Flag for edge classes.
+ * @property {function} handleNodeEditStart - Function triggered on node edit button click.
  */
 DetailDrawer.propTypes = {
   schema: PropTypes.object,
@@ -487,7 +488,6 @@ DetailDrawer.propTypes = {
   onClose: PropTypes.func,
   isEdge: PropTypes.bool,
   handleNodeEditStart: PropTypes.func,
-  identifiers: PropTypes.array,
 };
 
 DetailDrawer.defaultProps = {
@@ -496,7 +496,6 @@ DetailDrawer.defaultProps = {
   onClose: null,
   isEdge: false,
   handleNodeEditStart: PropTypes.func,
-  identifiers: [],
 };
 
 export default DetailDrawer;

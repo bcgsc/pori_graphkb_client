@@ -28,7 +28,6 @@
     "react-dom": "^16.4.0",
     "react-router-dom": "^4.4.0-alpha.0",
     "resolve": "1.6.0",
-    "webfontloader": "^1.6.28",
     "whatwg-fetch": "2.0.3"
   },
   "scripts": {

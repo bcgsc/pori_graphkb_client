@@ -1,3 +1,6 @@
+/**
+ * @module /views/AddStatementView
+ */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -10,6 +13,9 @@ import api from '../../services/api';
 import util from '../../services/util';
 import StatementFormComponent from '../../components/StatementFormComponent/StatementFormComponent';
 
+/**
+ * Route for submitting Statement records to the db.
+ */
 class AddStatementViewBase extends Component {
   constructor(props) {
     super(props);
@@ -17,11 +23,19 @@ class AddStatementViewBase extends Component {
     this.handleFinish = this.handleFinish.bind(this);
   }
 
+  /**
+   * Navigates to query page on successful form submission.
+   */
   handleFinish() {
     const { history } = this.props;
     history.push('/query');
   }
 
+  /**
+   * Bundles payload and sends post request to server.
+   * @param {Object} form - Statement form data.
+   * @param {Array} relationships - Form staged relationships.
+   */
   async handleSubmit(form, relationships) {
     const { schema } = this.props;
     const route = schema.getRoute(form['@class']);

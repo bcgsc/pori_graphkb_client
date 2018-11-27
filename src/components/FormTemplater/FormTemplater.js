@@ -18,11 +18,12 @@ import HelpIcon from '@material-ui/icons/Help';
 import AutoSearchSingle from '../AutoSearchSingle/AutoSearchSingle';
 import AutoSearchMulti from '../AutoSearchMulti/AutoSearchMulti';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
-import EmbeddedListForm from '../EmbeddedListForm/EmbeddedListForm';
+import EmbeddedSetForm from '../EmbeddedSetForm/EmbeddedSetForm';
 import util from '../../services/util';
 
 /**
- * Templater component that generates input fields based off of a given schema.
+ * Templater component that generates input form fields based off of a given
+ * schema and binds them to a given model.
  */
 function FormTemplater(props) {
   const {
@@ -217,7 +218,7 @@ function FormTemplater(props) {
           key={`${appendToKeys}.${name}`}
           disableGutters={disablePadding}
         >
-          <EmbeddedListForm
+          <EmbeddedSetForm
             list={model[name]}
             onChange={onChange}
             name={name}
@@ -377,10 +378,12 @@ function FormTemplater(props) {
  * @property {Array} disabledFields - list of field keys that should be disabled.
  * @property {function} sort - Sorting function for form fields.
  * @property {Object} pairs - group definitions for grid.
- * @property {bool} ignoreRequired - if true, form does not apply required
+ * @property {boolean} ignoreRequired - if true, form does not apply required
  * state to mandatory fields.
- * @property {bool} disablePadding - if true, disables left and right padding
+ * @property {boolean} disablePadding - if true, disables left and right padding
  * in ListItems.
+ * @property {boolean} disablePortal - if true, disables portals for nested
+ * autosearch components.
  */
 FormTemplater.propTypes = {
   schema: PropTypes.object.isRequired,

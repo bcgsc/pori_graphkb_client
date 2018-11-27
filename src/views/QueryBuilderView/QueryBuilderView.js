@@ -1,3 +1,6 @@
+/**
+ * @module /views/QueryBuilderView
+ */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './QueryBuilderView.css';
@@ -24,6 +27,10 @@ import util from '../../services/util';
 import api from '../../services/api';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
 
+/**
+ * Freeform query builder where users can add key-value pairs or nested groups
+ * of key-value pairs.
+ */
 class QueryBuilderViewBase extends Component {
   constructor(props) {
     super(props);

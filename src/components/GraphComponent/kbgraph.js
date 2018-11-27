@@ -21,12 +21,21 @@ const {
   CHARGE_MAX,
 } = config.GRAPH_DEFAULTS;
 
-
+/**
+ * Represents an object in the d3 force directed graph.
+ */
 class GraphObj {
+  /**
+   * Returns the underlying record ID.
+   */
   getId() {
     return this.data['@rid'];
   }
 
+  /**
+   * Finds suggested property value and displays it as this nodes label.
+   * @param {string} labelKey - Property key to display as node label.
+   */
   getLabel(labelKey) {
     let obj = this.data;
     let key = labelKey;
@@ -43,6 +52,9 @@ class GraphObj {
   }
 }
 
+/**
+ * Represents a d3 force directed graph node.
+ */
 class GraphNode extends GraphObj {
   constructor(data, x, y) {
     super();
@@ -52,6 +64,9 @@ class GraphNode extends GraphObj {
   }
 }
 
+/**
+ * Represents a d3 force directed graph link object.
+ */
 class GraphLink extends GraphObj {
   constructor(data, source, target) {
     super();
@@ -60,11 +75,16 @@ class GraphLink extends GraphObj {
     this.target = target;
   }
 
-
+  /**
+   * Returns edge 'out' record ID.
+   */
   getOutRid() {
     return typeof this.source === 'string' ? this.source : this.source.data['@rid'];
   }
 
+  /**
+   * Returns edge 'out' record ID.
+   */
   getInRid() {
     return typeof this.target === 'string' ? this.target : this.target.data['@rid'];
   }
@@ -179,6 +199,9 @@ class PropsMap {
 }
 
 
+/**
+ * Represents possible graph options for the graph view.
+ */
 class GraphOptions {
   /**
    * Retrieves stored graph options data from localstorage.
@@ -214,6 +237,9 @@ class GraphOptions {
     this.chargeMax = initial.chargeMax || CHARGE_MAX;
   }
 
+  /**
+   * Returns the color of the given object, given the current color property.
+   */
   getColor(obj, type) {
     const { [`${type}Color`]: objColor, [`${type}Colors`]: objColors } = this;
     let colorKey = '';

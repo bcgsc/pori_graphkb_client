@@ -343,7 +343,7 @@ class DetailDrawer extends Component {
                   <ListSubheader disableSticky>
                     Link Properties
                   </ListSubheader>
-                  {this.formatIdentifiers(edge, true)}
+                  {this.formatMetadata(edge)}
                   <ListSubheader disableSticky>
                     Linked Record
                   </ListSubheader>

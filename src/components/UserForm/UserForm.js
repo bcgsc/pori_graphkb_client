@@ -42,6 +42,7 @@ class UserForm extends Component {
     this.handleUsersDelete = this.handleUsersDelete.bind(this);
     this.handleUserDialog = this.handleUserDialog.bind(this);
     this.handleUserEdit = this.handleUserEdit.bind(this);
+    this.handleExited = this.handleExited.bind(this);
   }
 
   /**
@@ -121,12 +122,6 @@ class UserForm extends Component {
         ),
       };
     }
-    if (userDialogOpen) {
-      update = Object.assign({
-        newUserName: '',
-        newUserGroups: [],
-      }, update);
-    }
     update.userDialogOpen = !userDialogOpen;
     this.setState(update);
   }
@@ -145,6 +140,9 @@ class UserForm extends Component {
     });
   }
 
+  handleExited() {
+    this.setState({ newUserName: '', newUserGroups: [] });
+  }
 
   /**
    * Toggles a usergroup in the new user form.
@@ -250,8 +248,8 @@ class UserForm extends Component {
           editUser={this.handleUserEdit}
           onChange={this.handleChange}
           onUserGroup={this.handleNewUserGroup}
+          onExited={this.handleExited}
         />
-
         <div className="admin-section-heading">
           <Typography component="h2" variant="h6">Users</Typography>
           <div className="admin-section-heading-btns">

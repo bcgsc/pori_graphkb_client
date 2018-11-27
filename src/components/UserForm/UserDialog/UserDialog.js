@@ -36,6 +36,7 @@ function UserDialog(props) {
     newUserGroups,
     onChange,
     onUserGroup,
+    ...other
   } = props;
 
 
@@ -59,6 +60,7 @@ function UserDialog(props) {
         paper: 'new-user-dialog',
       }}
       TransitionProps={{ unmountOnExit: true }}
+      {...other}
     >
       <DialogTitle>
         {selectedUser ? 'Edit User' : 'New User'}

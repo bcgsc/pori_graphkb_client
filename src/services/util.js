@@ -225,6 +225,24 @@ const getTSVRepresentation = (value, key) => {
   return castToExist(value);
 };
 
+/**
+ * "Flattens" an object into a depth 1 object.
+ * @param {Object} obj - Object to be flattened.
+ *
+ * @example
+ * > const obj = {
+ *     a: {
+ *       b: 'e',
+ *     },
+ *     d: 'e',
+ *   };
+ *
+ * > flatten(obj);
+ * > {
+ *     a[b]: 'e',
+ *     d: 'e',
+ *   }
+ */
 const flatten = (obj) => {
   const regex = /^[^[\]]+(?=(\[[^[\]]+\])*)/;
   const flattened = {};
@@ -248,7 +266,6 @@ const flatten = (obj) => {
 
 /**
  * Prepares a payload to be sent to the server for a POST, PATCH, or GET requst.
- * TODO: Modify for case with entire record w/ metadata.
  * @param {Object} form - unprocessed form object containing user data.
  * @param {Array} properties - List of valid properties for given form.
  * @param {Array} extraProps - List of extra parameters not specified in objectSchema.
@@ -262,7 +279,6 @@ const parsePayload = (form, properties, extraProps = [], isQuery = false) => {
       if (formLink && formLink['@rid']) {
         payload[name] = formLink['@rid'];
       }
-      /* eslint-disable-next-line eqeqeq */
     } else if (form[name] && !(defaultValue && form[name] === defaultValue)) {
       payload[name] = form[name];
     }

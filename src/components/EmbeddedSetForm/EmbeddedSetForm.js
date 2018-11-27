@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './EmbeddedListForm.css';
+import './EmbeddedSetForm.css';
 import {
   TextField,
   Chip,
@@ -10,7 +10,10 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import AddIcon from '@material-ui/icons/Add';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
-class EmbeddedListForm extends Component {
+/**
+ * Generated component for 'embeddedset' property types.
+ */
+class EmbeddedSetForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -177,7 +180,7 @@ class EmbeddedListForm extends Component {
  * @property {boolean} error - TextField error flag.
  * @property {boolean} disabled - Disabled flag.
  */
-EmbeddedListForm.propTypes = {
+EmbeddedSetForm.propTypes = {
   onChange: PropTypes.func.isRequired,
   list: PropTypes.array,
   label: PropTypes.string,
@@ -186,7 +189,7 @@ EmbeddedListForm.propTypes = {
   disabled: PropTypes.bool,
 };
 
-EmbeddedListForm.defaultProps = {
+EmbeddedSetForm.defaultProps = {
   list: [],
   label: '',
   name: '',
@@ -194,4 +197,4 @@ EmbeddedListForm.defaultProps = {
   disabled: false,
 };
 
-export default EmbeddedListForm;
+export default EmbeddedSetForm;

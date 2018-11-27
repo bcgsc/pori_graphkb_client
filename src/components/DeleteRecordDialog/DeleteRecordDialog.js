@@ -8,21 +8,20 @@ import {
   Button,
 } from '@material-ui/core';
 
-
 /**
  * Component for simple dialog that prompts the user before deleting a record.
  */
 function DeleteRecordDialog(props) {
   const {
     open,
-    handleDialog,
+    onClose,
     onDelete,
     message,
   } = props;
 
   return (
     <Dialog
-      onClose={() => handleDialog(false)}
+      onClose={onClose}
       open={open}
     >
       <DialogTitle>
@@ -31,7 +30,7 @@ function DeleteRecordDialog(props) {
       <DialogContent>
         <DialogActions style={{ justifyContent: 'center' }}>
           <Button
-            onClick={() => handleDialog(false)}
+            onClick={onClose}
             color="primary"
             size="large"
             id="cancel-delete"
@@ -51,15 +50,22 @@ function DeleteRecordDialog(props) {
   );
 }
 
+/**
+ * @namespace
+ * @property {boolean} open - Drawer open flag
+ * @property {function} onClose - Handler for closing of dialog.
+ * @property {function} onDelete - Handler for confirming delete of record.
+ * @property {string} message - Message to display in dialog title.
+ */
 DeleteRecordDialog.propTypes = {
   open: PropTypes.bool.isRequired,
-  handleDialog: PropTypes.func,
+  onClose: PropTypes.func,
   onDelete: PropTypes.func,
   message: PropTypes.string,
 };
 
 DeleteRecordDialog.defaultProps = {
-  handleDialog: undefined,
+  onClose: undefined,
   onDelete: undefined,
   message: 'Really Delete this Term?',
 };

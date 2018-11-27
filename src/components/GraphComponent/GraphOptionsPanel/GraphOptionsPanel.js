@@ -20,6 +20,9 @@ import util from '../../../services/util';
 
 const { GRAPH_ADVANCED, GRAPH_MAIN } = config.DESCRIPTIONS;
 
+/**
+ * Displays graph options in a dialog view.
+ */
 export default class GraphOptionsPanel extends Component {
   constructor(props) {
     super(props);

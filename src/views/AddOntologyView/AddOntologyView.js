@@ -22,30 +22,8 @@ import { withKB } from '../../components/KBContext/KBContext';
 class AddOntologyViewBase extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      sources: [],
-      edgeTypes: [],
-    };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
-  }
-
-  /**
-   * Collects schema, sources, and knowledgebase edge types.
-   */
-  async componentDidMount() {
-    const { schema } = this.props;
-    try {
-      const sources = await api.getSources();
-      const edgeTypes = schema.getEdges();
-      this.setState({
-        sources,
-        edgeTypes,
-      });
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
-    }
   }
 
   /**
@@ -70,10 +48,6 @@ class AddOntologyViewBase extends Component {
   }
 
   render() {
-    const {
-      sources,
-      edgeTypes,
-    } = this.state;
     const { schema } = this.props;
 
     return schema && (
@@ -95,8 +69,6 @@ class AddOntologyViewBase extends Component {
         <OntologyFormComponent
           variant="add"
           schema={schema}
-          sources={sources}
-          edgeTypes={edgeTypes}
           handleSubmit={this.handleSubmit}
           handleFinish={this.handleFinish}
         />

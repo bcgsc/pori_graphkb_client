@@ -38,6 +38,11 @@ const SHORTHAND_EXCLUDED = [
   'assembly',
 ];
 
+/**
+ * Form component for the Variant record class. Uses HGVS shorthand notation as
+ * well as standard form fields to build model if the subclass selected is
+ * PositionalVariant, otherwise form is a wrapper for an Ontology Form.
+ */
 class PositionalVariantParser extends Component {
   constructor(props) {
     super(props);
@@ -63,6 +68,9 @@ class PositionalVariantParser extends Component {
     this.updateShorthand = this.updateShorthand.bind(this);
   }
 
+  /**
+   * Initializes form and shorthand.
+   */
   componentDidMount() {
     const { schema, initVariant } = this.props;
     const { nodeClass } = this.state;
@@ -224,6 +232,11 @@ class PositionalVariantParser extends Component {
     this.updateShorthand(variant);
   }
 
+  /**
+   * Handles update of state variables. Refreshes form model if class is
+   * changed.
+   * @param {Event} e - Change event.
+   */
   handleChange(e) {
     const { variant } = this.state;
     const { schema } = this.props;
@@ -352,10 +365,14 @@ class PositionalVariantParser extends Component {
    * Opens notification drawer and triggers parent submit component.
    * @param {Event} e - submit button click event.
    */
-  /* eslint-disable */
   async submitVariant(e) {
     e.preventDefault();
-    const { variant, relationships, originalRelationships, invalidFlag } = this.state;
+    const {
+      variant,
+      relationships,
+      originalRelationships,
+      invalidFlag,
+    } = this.state;
     const { handleSubmit, schema } = this.props;
 
     const classSchema = schema.getProperties('PositionalVariant');
@@ -413,7 +430,7 @@ class PositionalVariantParser extends Component {
         <DeleteRecordDialog
           open={deleteDialog}
           onDelete={this.handleDeleteNode}
-          handleDialog={this.handleDialog}
+          onClose={() => this.handleDialog(false)}
         />
         <NotificationDrawer
           open={notificationDrawerOpen}

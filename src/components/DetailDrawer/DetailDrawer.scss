@@ -12,9 +12,6 @@ $breakpoint-sm: 375px;
     z-index: $drawer-z-index;
     @media (max-width: $breakpoint-mobile) {
       width: $detail-drawer-width-md;
-      .nested-spacer {
-        margin: 0;
-      }
     }
     @media (max-width: $breakpoint-sm) {
       width: 100vw;
@@ -33,9 +30,9 @@ $breakpoint-sm: 375px;
     }
     .detail-identifiers {
       display: grid;
-      grid-template-columns: 164px 32px auto;
-      @media(max-width: $breakpoint-mobile){
-        grid-template-columns: 144px 8px auto
+      grid-template-columns: 164px 24px auto;
+      @media (max-width: $breakpoint-mobile) {
+        grid-template-columns: 144px 8px auto;
       }
       .detail-identifiers-nested {
         margin-left: 32px;
@@ -45,6 +42,9 @@ $breakpoint-sm: 375px;
         margin: auto 0;
       }
     }
+    .detail-li-text {
+      padding: 0;
+    }
   }
   .detail-closed {
     width: 0;
@@ -52,6 +52,10 @@ $breakpoint-sm: 375px;
       min-width: 0;
     }
   }
+}
+
+.nested-spacer {
+  width: 1rem;
 }
 
 .detail-heading {

@@ -417,8 +417,8 @@ const getPropOfType = (kbClass, type) => Object.values(kbClass)
 
 /**
  * Sorting method to pass into Array.sort().
- * @param {Array} order - order for props to be sorted in.
- * @param {string} prop - nested property to sort objects by.
+ * @param {Array} [order=[]] - order for props to be sorted in.
+ * @param {string} [prop='name'] - nested property to sort objects by.
  */
 const sortFields = (order = [], prop = 'name') => (a, b) => {
   const sortA = prop ? a[prop] : a;

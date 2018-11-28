@@ -34,8 +34,8 @@ $breakpoint-sm: 375px;
     .detail-identifiers {
       display: grid;
       grid-template-columns: 164px 32px auto;
-      @media(max-width: $breakpoint-mobile){
-        grid-template-columns: 144px 8px auto
+      @media (max-width: $breakpoint-mobile) {
+        grid-template-columns: 144px 8px auto;
       }
       .detail-identifiers-nested {
         margin-left: 32px;
@@ -64,8 +64,8 @@ $breakpoint-sm: 375px;
     display: flex;
     padding: 0 16px;
     flex-shrink: 0;
-    > h1 {
-      margin: auto 0;
+    > div {
+      margin-right: auto;
     }
     > button {
       flex-shrink: 0;

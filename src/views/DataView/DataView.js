@@ -112,7 +112,6 @@ class DataViewBase extends Component {
    */
   async componentDidMount() {
     const { history, schema } = this.props;
-
     const queryParams = qs.parse(history.location.search.slice(1));
     let route = '/ontologies';
     const omitted = [];
@@ -152,14 +151,13 @@ class DataViewBase extends Component {
       data = {};
     }
     if (!allProps || allProps.length === 0) {
-      allProps = ['@rid', '@class'];
+      allProps = ['@rid', '@class', 'preview'];
     }
 
     queryResults.forEach((record) => {
       allProps = schema.collectOntologyProps(record, allProps);
       data[record['@rid']] = record;
     });
-
     return { data, allProps };
   }
 

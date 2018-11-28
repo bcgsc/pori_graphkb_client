@@ -110,12 +110,11 @@ class DetailDrawer extends Component {
     }
     return (
       <React.Fragment key={key}>
-        <ListItem {...listItemProps}>
+        <ListItem {...listItemProps} dense>
           {isNested && (
-            <ListItemIcon className="nested-spacer">
-              <div style={{ width: 24, height: 24 }} />
-            </ListItemIcon>)}
-          <ListItemText>
+            <div className="nested-spacer" />
+          )}
+          <ListItemText className="detail-li-text">
             <Typography variant="subtitle1" color={isNested ? 'textSecondary' : 'default'}>
               {util.antiCamelCase(key)}
             </Typography>
@@ -125,10 +124,9 @@ class DetailDrawer extends Component {
         <Collapse {...collapseProps} unmountOnExit>
           <ListItem dense>
             {isNested && (
-              <ListItemIcon className="nested-spacer">
-                <div style={{ width: 24, height: 24 }} />
-              </ListItemIcon>)}
-            <ListItemText>
+              <div className="nested-spacer" />
+            )}
+            <ListItemText className="detail-li-text">
               {util.formatStr(value)}
             </ListItemText>
           </ListItem>
@@ -140,15 +138,19 @@ class DetailDrawer extends Component {
 
   /**
    * Formats record metadata.
+   * @param {Object} node - Record to be formatted.
+   * @param {boolean} isNested - Nested flag.
    */
-  formatMetadata(node) {
+  formatMetadata(node, isNested) {
     const { schema } = this.props;
-    return this.formatProps(node, schema.getMetadata(), true);
+    return this.formatProps(node, schema.getMetadata(), isNested);
   }
 
   /**
-   * Formats non-identifier, non-relationship properties.
-   * @param {Object} node - Ontology being displayed.
+   * Formats properties, varying structure based on property type.
+   * @param {Object} node - Record being displayed.
+   * @param {Array} properties - List of properties to display.
+   * @param {boolean} isNested - Nested flag.
    */
   formatProps(node, properties, isNested) {
     const { schema } = this.props;
@@ -164,15 +166,23 @@ class DetailDrawer extends Component {
       if (type === 'embeddedset' && value.length !== 0) {
         return (
           <React.Fragment key={name}>
-            <ListItem button onClick={() => this.handleExpand(name)}>
-              <ListItemText primary={util.antiCamelCase(name)} />
+            <ListItem button onClick={() => this.handleExpand(name)} dense>
+              <ListItemText className="detail-li-text">
+                <Typography variant="subtitle1">
+                  {util.antiCamelCase(name)}
+                </Typography>
+              </ListItemText>
               {!opened.includes(name) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
             </ListItem>
             <Collapse in={!!opened.includes(name)} unmountOnExit>
               <List disablePadding dense>
                 {value.map(item => (
-                  <ListItem key={item}>
-                    <ListItemText inset primary={util.formatStr(item)} />
+                  <ListItem key={item} dense>
+                    <ListItemText
+                      className="detail-li-text"
+                      inset
+                      primary={util.formatStr(item)}
+                    />
                   </ListItem>
                 ))}
               </List>
@@ -194,12 +204,11 @@ class DetailDrawer extends Component {
         }
         return (
           <React.Fragment key={name}>
-            <ListItem {...listItemProps}>
+            <ListItem {...listItemProps} dense>
               {isNested && (
-                <ListItemIcon className="nested-spacer">
-                  <div style={{ width: 24, height: 24 }} />
-                </ListItemIcon>)}
-              <ListItemText>
+                <div className="nested-spacer" />
+              )}
+              <ListItemText className="detail-li-text">
                 <div className="detail-identifiers">
                   <Typography variant="subtitle1">
                     {util.antiCamelCase(name)}
@@ -232,12 +241,11 @@ class DetailDrawer extends Component {
         }
         return (
           <React.Fragment key={name}>
-            <ListItem>
+            <ListItem dense>
               {isNested && (
-                <ListItemIcon className="nested-spacer">
-                  <div style={{ width: 24, height: 24 }} />
-                </ListItemIcon>)}
-              <ListItemText>
+                <div className="nested-spacer" />
+              )}
+              <ListItemText className="detail-li-text">
                 <div className="detail-identifiers">
                   <Typography variant="subtitle1">
                     {util.antiCamelCase(name)}
@@ -260,7 +268,12 @@ class DetailDrawer extends Component {
     });
   }
 
-  formatOtherProps(node) {
+  /**
+   * Formats non-identifying, non-metadata properties of the input record.
+   * @param {Object} node - Record being displayed.
+   * @param {boolean} isNested - Nested flag.
+   */
+  formatOtherProps(node, isNested) {
     const { schema } = this.props;
     const { identifiers } = schema.get(node['@class']);
 
@@ -274,12 +287,12 @@ class DetailDrawer extends Component {
         && !prop.name.startsWith('in_')
         && !prop.name.startsWith('out_'));
 
-    return this.formatProps(node, propsList);
+    return this.formatProps(node, propsList, isNested);
   }
 
   /**
-   * Formats ontology relationships.
-   * @param {Object} inputNode - Ontology being displayed.
+   * Formats record relationships.
+   * @param {Object} node - Record being displayed.
    */
   formatRelationships(node) {
     const { linkOpen } = this.state;
@@ -306,6 +319,7 @@ class DetailDrawer extends Component {
                 button
                 onClick={() => this.handleLinkExpand(edge['@rid'])}
                 className="detail-link-wrapper"
+                dense
               >
                 <ListItemIcon>
                   <div style={{ display: 'inline-flex' }}>
@@ -313,10 +327,11 @@ class DetailDrawer extends Component {
                   </div>
                 </ListItemIcon>
                 <ListItemText
+                  className="detail-li-text"
                   primaryTypographyProps={{
                     color: isOpen ? 'secondary' : 'default',
                   }}
-                  primary={preview}
+                  primary={<Typography variant="subtitle1">{preview}</Typography>}
                   secondary={util.getEdgeLabel(`${isIn ? 'in' : 'out'}_${edge['@class']}`)}
                 />
                 {!isOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
@@ -331,7 +346,8 @@ class DetailDrawer extends Component {
                   <ListSubheader disableSticky>
                     Link Properties
                   </ListSubheader>
-                  {this.formatIdentifiers(edge, true)}
+                  {this.formatMetadata(edge, true)}
+                  {this.formatOtherProps(edge, true)}
                   <ListSubheader disableSticky>
                     Linked Record
                   </ListSubheader>
@@ -385,7 +401,7 @@ class DetailDrawer extends Component {
     const identifiers = this.formatIdentifiers(node);
     const otherProps = this.formatOtherProps(node);
     const relationships = !isEdge && this.formatRelationships(node);
-    const metadata = this.formatMetadata(node);
+    const metadata = this.formatMetadata(node, true);
 
     const metadataIsOpen = opened.includes('metadata');
 
@@ -440,12 +456,13 @@ class DetailDrawer extends Component {
           <ListItem
             button
             onClick={() => this.handleExpand('metadata')}
+            dense
           >
             <ListItemText
               primaryTypographyProps={{
                 color: metadataIsOpen ? 'secondary' : 'default',
               }}
-              primary="Metadata"
+              primary={<Typography variant="subtitle1">Metadata</Typography>}
             />
             {!metadataIsOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
           </ListItem>
@@ -467,7 +484,7 @@ class DetailDrawer extends Component {
                 Relationships
               </ListSubheader>
               {relationships || (
-                <ListItem>
+                <ListItem dense>
                   <ListItemText
                     inset
                     primaryTypographyProps={{ color: 'textSecondary' }}

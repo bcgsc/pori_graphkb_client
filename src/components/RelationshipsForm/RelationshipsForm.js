@@ -1,3 +1,6 @@
+/**
+ * @module /components/RelationshipsForm
+ */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './RelationshipsForm.css';
@@ -26,6 +29,9 @@ import util from '../../services/util';
 
 const DEFAULT_RELATIONSHIPS_PROPSLENGTH = 3;
 
+/**
+ * Form to manage a record's edges.
+ */
 class RelationshipsForm extends Component {
   constructor(props) {
     super(props);
@@ -244,7 +250,6 @@ class RelationshipsForm extends Component {
       </div>
     );
   }
-  /* eslint-disable */
 
   render() {
     const {
@@ -461,6 +466,9 @@ class RelationshipsForm extends Component {
  * @property {string} name - property key name of relationships on parent
  * component.
  * @property {string} nodeRid - record ID of input node.
+ * @property {string} errorMsg - Error message to display when error state is
+ * active.
+ * @property {boolean} error - Error flag.
  * @property {boolean} overridePristine - flag to override form pristine check
  */
 RelationshipsForm.propTypes = {
@@ -480,6 +488,9 @@ RelationshipsForm.defaultProps = {
   name: '',
   nodeRid: '#node_rid',
   edgeTypes: null,
+  errorMsg: '',
+  error: false,
+  overridePristine: false,
 };
 
 export default RelationshipsForm;

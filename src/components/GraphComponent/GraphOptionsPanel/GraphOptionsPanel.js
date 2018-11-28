@@ -36,7 +36,7 @@ export default class GraphOptionsPanel extends Component {
 
   /**
    * Opens help drawer.
-   * @param {['mainHelp' | 'advancedHelp']} key - help type state key.
+   * @param {string} key - help type state key.
    */
   handleHelpOpen(key) {
     this.setState({ [key]: true });

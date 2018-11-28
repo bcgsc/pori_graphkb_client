@@ -89,7 +89,7 @@ function UserDialog(props) {
                   <FormControlLabel
                     control={(
                       <Checkbox
-                        checked={newUserGroups.find(uG => uG['@rid'] === userGroup['@rid'])}
+                        checked={!!newUserGroups.find(uG => uG['@rid'] === userGroup['@rid'])}
                         onChange={() => onUserGroup(userGroup)}
                       />)}
                     label={userGroup.name}

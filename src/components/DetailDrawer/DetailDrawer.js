@@ -295,7 +295,7 @@ class DetailDrawer extends Component {
    * @param {Object} node - Record being displayed.
    */
   formatRelationships(node) {
-    const { linkOpen } = this.state;
+    const { linkOpen, opened } = this.state;
     const { schema } = this.props;
     // Checks subclasses
     const edges = schema.getEdges(node);
@@ -304,6 +304,7 @@ class DetailDrawer extends Component {
     return (
       <List>
         {edges.map((edge) => {
+          const metaOpen = opened.includes(`${edge['@rid']}meta`);
           const isOpen = linkOpen === edge['@rid'];
           const isIn = edge.in && edge.in['@rid'] === node['@rid'];
           const targetNode = isIn ? edge.out : edge.in;
@@ -343,12 +344,23 @@ class DetailDrawer extends Component {
                   className="detail-nested-list"
                 >
                   <Divider />
-                  <ListSubheader disableSticky>
+                  <ListSubheader disableSticky color="primary">
                     Link Properties
                   </ListSubheader>
-                  {this.formatMetadata(edge, true)}
                   {this.formatOtherProps(edge, true)}
-                  <ListSubheader disableSticky>
+                  <ListItem dense button onClick={() => this.handleExpand(`${edge['@rid']}meta`)}>
+                    <div className="nested-spacer" />
+                    <ListItemText className="detail-li-text">
+                      <Typography variant="subtitle1" color={metaOpen ? 'secondary' : 'default'}>
+                        Metadata
+                      </Typography>
+                    </ListItemText>
+                    {!metaOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+                  </ListItem>
+                  <Collapse in={!!metaOpen}>
+                    {this.formatMetadata(edge, true)}
+                  </Collapse>
+                  <ListSubheader disableSticky color="primary">
                     Linked Record
                   </ListSubheader>
                   {this.formatIdentifiers(isIn ? edge.out : edge.in, true)}

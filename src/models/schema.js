@@ -17,6 +17,7 @@ class Schema {
 
   /**
    * Returns preview of given object based on its '@class' value
+   * @param {Object} obj - Record to be parsed.
    */
   getPreview(obj) {
     if (!obj['@class'] || !this.schema[obj['@class']]) return null;
@@ -27,7 +28,7 @@ class Schema {
    * Returns route and properties of a certain knowledgebase class
    * (most useful data).
    * @param {string} className - requested class name.
-   * @param {Array<string>} extraProps - Extra props to be returned in the
+   * @param {Array<string>} [extraProps=[]] - Extra props to be returned in the
    * class properties list.
    */
   getProperties(className, extraProps = []) {
@@ -52,9 +53,9 @@ class Schema {
    * Initializes a new instance of given kbClass.
    * @param {Object} model - existing model to keep existing values from.
    * @param {string} kbClass - Knowledge base class key.
-   * @param {Array} extraProps - Extra props to initialize on model.
-   * @param {boolean} ignoreClass - flag to omit '@class' prop on new model.
-   * @param {boolean} stripProps - flag to strip old props from model.
+   * @param {Array} [extraProps=[]] - Extra props to initialize on model.
+   * @param {boolean} [ignoreClass=false] - flag to omit '@class' prop on new model.
+   * @param {boolean} [stripProps=false] - flag to strip old props from model.
    */
   initModel(model, kbClass, extraProps = [], ignoreClass = false, stripProps = false) {
     const editableProps = kbClass
@@ -112,7 +113,7 @@ class Schema {
 
   /**
    * Returns all ontology types.
-   * @param {boolean} subOnly - flag for checking only subclasses.
+   * @param {boolean} [subOnly=true] - flag for checking only subclasses.
    */
   getOntologies(subOnly) {
     const { schema } = this;
@@ -123,7 +124,7 @@ class Schema {
 
   /**
    * Returns all variant types.
-   * @param {boolean} subOnly - flag for checking only subclasses.
+   * @param {boolean} [subOnly=true] - flag for checking only subclasses.
    */
   getVariants(subOnly) {
     const { schema } = this;
@@ -134,6 +135,7 @@ class Schema {
 
   /**
    * Returns a list of strings containing all valid edge class names.
+   * @param {Object} [node=null] - Object to retrieve edges from if input.
    */
   getEdges(node = null) {
     const { schema } = this;
@@ -149,6 +151,10 @@ class Schema {
     return list;
   }
 
+  /**
+   * Returns true if the class inherits the 'Position' class.
+   * @param {string} cls - Class name string
+   */
   isPosition(cls) {
     return this.schema[cls] && this.schema[cls].inherits.includes('Position');
   }

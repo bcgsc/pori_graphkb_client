@@ -295,7 +295,7 @@ class DetailDrawer extends Component {
 
   /**
    * Formats ontology relationships.
-   * @param {Object} inputNode - Ontology being displayed.
+   * @param {Object} node - Ontology being displayed.
    */
   formatRelationships(node) {
     const { linkOpen } = this.state;

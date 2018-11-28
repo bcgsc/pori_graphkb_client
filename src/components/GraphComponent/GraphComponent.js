@@ -478,7 +478,7 @@ class GraphComponent extends Component {
    * @param {number} depth - Recursion base case flag.
    * @param {Object} prevstate - Object containing nodes, links,
    * graphobjects, and expandable map, from previous state.
-   * @param {Array} exclusions - List of edge ID's to be ignored on expansion.
+   * @param {Array} [exclusions=[]] - List of edge ID's to be ignored on expansion.
    */
   processData(node, position, depth, prevstate, exclusions = []) {
     const { expandedEdgeTypes } = this.state;

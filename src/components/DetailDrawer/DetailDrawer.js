@@ -179,9 +179,7 @@ class DetailDrawer extends Component {
               <List disablePadding dense>
                 {type === 'linkset' && value.map(item => (
                   <ListItem key={item['@rid']} dense>
-                    <ListItemIcon className="nested-spacer">
-                      <div style={{ width: 24, height: 24 }} />
-                    </ListItemIcon>
+                    <div className="nested-spacer" />
                     <ListItemText className="detail-li-text">
                       <div className="detail-identifiers">
                         <Typography variant="subtitle1">

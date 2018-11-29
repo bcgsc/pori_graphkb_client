@@ -473,8 +473,7 @@ class DetailDrawer extends Component {
               </Button>
             </div>
             <div className="detail-edit-btn">
-              {(schema.isOntology(node['@class'])
-                || schema.isVariant(node['@class'])
+              {(schema.isSubclass(node['@class'], ['Ontology', 'Variant'])
                 || node['@class'] === 'Statement')
                 && (
                   <Button

@@ -91,7 +91,7 @@ $drawer-breakpoint: 1024px;
   .drawer-shift {
     left: $drawer-width;
     overflow: hidden;
-    @media (max-width: $drawer-breakpoint) {
+    @media (max-width: $breakpoint-mobile) {
       left: 0;
     }
   }
@@ -110,9 +110,10 @@ $drawer-breakpoint: 1024px;
     display: flex;
     flex-direction: column;
     height: 100vh;
-    @media (max-width: $drawer-breakpoint) {
+    @media (max-width: $breakpoint-mobile) {
       width: calc(100vw - 56px);
     }
+
     .drawer-links {
       position: relative;
       bottom: 56px;

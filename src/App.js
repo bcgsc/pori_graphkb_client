@@ -356,7 +356,13 @@ class App extends Component {
               </AppBar>
               {loggedIn && drawer}
               <section className={`content ${(drawerOpen ? loggedIn : '') && 'drawer-shift'} ${!loggedIn ? 'no-drawer' : ''}`}>
-                <div className="router-outlet">
+                <div
+                  className="router-outlet"
+                  role="button"
+                  tabIndex={0}
+                  onClick={this.handleDrawerClose}
+                  onKeyDown={e => e.keyCode === 13 && this.handleDrawerClose()}
+                >
                   <Switch>
                     <Route path="/icons" component={IconsView} />
                     <Route path="/login" render={loginWithProps} />

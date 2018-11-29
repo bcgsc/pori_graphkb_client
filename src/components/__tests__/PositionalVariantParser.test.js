@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { spy } from 'sinon';
 import PositionalVariantParser from '../PositionalVariantParser/PositionalVariantParser';
-import Schema from '../../models/schema';
+import Schema from '../../services/schema';
 
 
 const mockClass = {

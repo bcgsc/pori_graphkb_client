@@ -2,7 +2,7 @@ import React from 'react';
 import { expect } from 'chai';
 import { mount } from 'enzyme';
 import UserGroupForm from '../UserGroupForm/UserGroupForm';
-import Schema from '../../models/schema';
+import Schema from '../../services/schema';
 
 const testUserGroups = [
   { '@rid': '#8', name: 'test usergroup', permissions: { Ontology: [0, 0, 0, 1] } },

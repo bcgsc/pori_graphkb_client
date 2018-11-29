@@ -242,7 +242,7 @@ class DetailDrawer extends Component {
             {!isNested && (
               <Collapse in={!!opened.includes(name)} unmountOnExit>
                 <List disablePadding dense className="detail-nested-list">
-                  {type === 'link' && this.formatIdentifiers(value, true)}
+                  {this.formatIdentifiers(value, true)}
                   {type === 'embedded' && this.formatOtherProps(value, true)}
                 </List>
               </Collapse>

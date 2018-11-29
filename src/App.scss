@@ -2,7 +2,7 @@
 
 $user-menu-width: 124px;
 $transition-speed: 0.3s;
-$drawer-width: 220px;
+$drawer-width: 240px;
 $closed-drawer-width: 56px;
 $drawer-breakpoint: 1024px;
 .App {
@@ -91,7 +91,7 @@ $drawer-breakpoint: 1024px;
   .drawer-shift {
     left: $drawer-width;
     overflow: hidden;
-    @media (max-width: $breakpoint-mobile) {
+    @media (max-width: 500px) {
       left: 0;
     }
   }

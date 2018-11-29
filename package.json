@@ -18,7 +18,6 @@
     "lodash.omit": "^4.5.0",
     "npm": "^6.4.1",
     "object-assign": "4.1.1",
-    "orientjs": "^2.2.11",
     "promise": "8.0.1",
     "prop-types": "^15.6.2",
     "qs": "^6.5.2",

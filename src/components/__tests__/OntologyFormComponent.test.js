@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { spy } from 'sinon';
 import { mount } from 'enzyme';
 import OntologyFormComponent from '../OntologyFormComponent/OntologyFormComponent';
-import Schema from '../../models/schema';
+import Schema from '../../services/schema';
 
 const testSchema = new Schema({
   V: {

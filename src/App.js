@@ -55,8 +55,8 @@ import logo from './static/logo.png';
 import title from './static/title.png';
 import auth from './services/auth';
 import history from './services/history';
-import Schema from './models/schema';
-import { SchemaContext } from './components/SchemaContext/SchemaContext';
+import Schema from './services/schema';
+import { KBContext } from './components/KBContext/KBContext';
 
 const theme = createMuiTheme({
   direction: 'ltr',
@@ -281,7 +281,7 @@ class App extends Component {
       </Switch>
     );
     return (
-      <SchemaContext.Provider value={new Schema(SCHEMA_DEFN)}>
+      <KBContext.Provider value={{ schema: new Schema(SCHEMA_DEFN), user: auth.getUser() }}>
         <MuiThemeProvider theme={theme}>
           <Router history={history}>
             <div className="App">
@@ -314,7 +314,7 @@ class App extends Component {
                     >
                       <PersonIcon />
                       <Typography color="inherit">
-                        {auth.getUser() || 'Logged Out'}
+                        {(auth.getUser() && auth.getUser().name) || 'Logged Out'}
                       </Typography>
                     </Button>
                     <Popover
@@ -361,7 +361,7 @@ class App extends Component {
             </div>
           </Router>
         </MuiThemeProvider>
-      </SchemaContext.Provider>
+      </KBContext.Provider>
     );
   }
 }

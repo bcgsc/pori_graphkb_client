@@ -65,6 +65,14 @@ const fetchWithInterceptors = async (endpoint, init) => {
     history.push({ pathname: '/error', state: error });
     return Promise.reject('Unexpected Error, redirecting...');
   } catch (error) {
+    history.push({
+      pathname: '/error',
+      state: {
+        message: error.message,
+        url: API_BASE_URL,
+        statusText: 'Fetch',
+      },
+    });
     return Promise.reject(error);
   }
 };

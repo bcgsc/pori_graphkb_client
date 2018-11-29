@@ -24,6 +24,10 @@ class Schema {
     return this.schema[obj['@class']].getPreview(obj);
   }
 
+  getMetadata() {
+    return Object.values(this.schema.V.properties);
+  }
+
   /**
    * Returns route and properties of a certain knowledgebase class
    * (most useful data).
@@ -36,9 +40,8 @@ class Schema {
     const VPropKeys = schema.V.properties;
     const classModel = schema[className];
     if (!classModel) return null;
-    return Object.keys(classModel.properties || [])
-      .filter(prop => !VPropKeys[prop] || extraProps.includes(prop))
-      .map(prop => classModel.properties[prop]);
+    return Object.values(classModel.properties || [])
+      .filter(prop => !VPropKeys[prop.name] || extraProps.includes(prop.name));
   }
 
   /**
@@ -113,9 +116,9 @@ class Schema {
 
   /**
    * Returns all ontology types.
-   * @param {boolean} [subOnly=true] - flag for checking only subclasses.
+   * @param {boolean} [subOnly=false] - flag for checking only subclasses.
    */
-  getOntologies(subOnly) {
+  getOntologies(subOnly = false) {
     const { schema } = this;
     const list = schema.Ontology.subclasses.slice();
     if (!subOnly) list.push(schema.Ontology);
@@ -124,9 +127,9 @@ class Schema {
 
   /**
    * Returns all variant types.
-   * @param {boolean} [subOnly=true] - flag for checking only subclasses.
+   * @param {boolean} [subOnly=false] - flag for checking only subclasses.
    */
-  getVariants(subOnly) {
+  getVariants(subOnly = false) {
     const { schema } = this;
     const list = schema.Variant.subclasses.slice();
     if (!subOnly) list.push(schema.Variant);
@@ -160,23 +163,23 @@ class Schema {
   }
 
   /**
-   * Updates allColumns list with any new properties from ontologyTerm.
-   * @param {Object} term - new node who's properties will be parsed.
+   * Updates allColumns list with any new properties from a record.
+   * @param {Object} record - new node who's properties will be parsed.
    * @param {Array} allColumns - current list of all collected properties.
    */
-  collectOntologyProps(term, allColumns) {
-    const properties = this.getProperties(term['@class']);
+  collectOntologyProps(record, allColumns) {
+    const properties = this.getProperties(record['@class']);
     properties.forEach((prop) => {
       if (!allColumns.includes(prop.name)) {
-        if (term[prop.name]) {
+        if (record[prop.name]) {
           if (prop.type === 'link' || prop.type === 'embedded') {
-            const nestedProperties = this.getProperties(term[prop.name]['@class']);
+            const nestedProperties = this.getProperties(record[prop.name]['@class']);
             if (prop.linkedClass && prop.linkedClass.isAbstract) {
               nestedProperties.push({ name: '@class' });
             }
             (nestedProperties || []).forEach((nestedProp) => {
               if (
-                term[prop.name][nestedProp.name]
+                record[prop.name][nestedProp.name]
                 && !allColumns.includes(`${prop.name}.${nestedProp.name}`)
               ) {
                 allColumns.push(`${prop.name}.${nestedProp.name}`);

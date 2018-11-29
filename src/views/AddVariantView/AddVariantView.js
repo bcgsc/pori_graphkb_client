@@ -8,7 +8,7 @@ import { Paper, Typography, Button } from '@material-ui/core';
 import PositionalVariantParser from '../../components/PositionalVariantParser/PositionalVariantParser';
 import util from '../../services/util';
 import api from '../../services/api';
-import { withSchema } from '../../components/SchemaContext/SchemaContext';
+import { withKB } from '../../components/KBContext/KBContext';
 
 /**
  * Route for submitting Variant records to db.
@@ -111,7 +111,7 @@ AddVariantViewBase.propTypes = {
   schema: PropTypes.object.isRequired,
 };
 
-const AddVariantView = withSchema(AddVariantViewBase);
+const AddVariantView = withKB(AddVariantViewBase);
 
 export {
   AddVariantViewBase,

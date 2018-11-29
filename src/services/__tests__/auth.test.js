@@ -34,7 +34,7 @@ describe('auth methods test', () => {
 
   it('getUser gets user', () => {
     auth.loadToken(FAKE_JWT);
-    expect(auth.getUser()).to.eq('test user');
+    expect(auth.getUser().name).to.eq('test user');
   });
 
   it('detects if user is admin', () => {

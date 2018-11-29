@@ -1,6 +1,18 @@
 .autosearch-multi-popover {
   width: 360px;
-  max-height: 640px;
+  height: 640px;
+  display: flex;
+  flex-direction: column;
+  > div {
+    overflow: auto;
+  }
+  .query-btn {
+    position: sticky;
+    bottom: 0;
+    height: 56px;
+    background: white;
+    border-top: 1px solid rgba(0, 0, 0, 0.26);
+  }
 }
 .autosearch-multi-form-templater {
   > li {

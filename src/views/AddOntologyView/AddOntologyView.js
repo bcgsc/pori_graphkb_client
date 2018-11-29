@@ -12,7 +12,7 @@ import {
 import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
 import api from '../../services/api';
 import util from '../../services/util';
-import { withSchema } from '../../components/SchemaContext/SchemaContext';
+import { withKB } from '../../components/KBContext/KBContext';
 
 /**
  * View for editing or adding database nodes. Includes a NodeFormComponent with the
@@ -87,7 +87,7 @@ AddOntologyViewBase.propTypes = {
   schema: PropTypes.object.isRequired,
 };
 
-const AddOntologyView = withSchema(AddOntologyViewBase);
+const AddOntologyView = withKB(AddOntologyViewBase);
 
 /**
  * Export consumer component and regular component for testing.

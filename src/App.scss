@@ -96,6 +96,11 @@ $drawer-breakpoint: 1024px;
     }
   }
   .router-outlet {
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+    border: none;
+    user-select: none;
+    text-decoration: none;
     position: absolute;
     left: 0;
     right: 0;

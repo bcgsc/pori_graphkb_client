@@ -338,14 +338,14 @@ class App extends Component {
                       }}
                     >
                       <Card className="user-menu">
-                        <Link to="/feedback" onClick={this.handleClose}>
-                          <MenuItem>
+                        <Link to="/feedback">
+                          <MenuItem onClick={this.handleClose}>
                             Feedback
                           </MenuItem>
                         </Link>
                         {auth.isAdmin() && (
-                          <Link to="/admin" onClick={this.handleClose}>
-                            <MenuItem>
+                          <Link to="/admin">
+                            <MenuItem onClick={this.handleClose}>
                               Admin
                             </MenuItem>
                           </Link>

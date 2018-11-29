@@ -122,12 +122,7 @@ class AutoSearchMulti extends Component {
     const { schema } = this.props;
     const pattern = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
 
-    const { route, properties } = schema.getClass(cls, EXTRA_FORM_PROPS);
-    Object.keys(model).forEach((k) => {
-      if (k.includes('.data')) {
-        model[k.split('.data')[0]] = '';
-      }
-    });
+    const properties = schema.getProperties(cls, EXTRA_FORM_PROPS);
     const payload = util.parsePayload(model, properties, [], true);
     Object.keys(payload).forEach((k) => {
       const trimmed = String(payload[k]).trim();
@@ -146,7 +141,7 @@ class AutoSearchMulti extends Component {
     });
 
     try {
-      const response = await api.get(`${route}?${qs.stringify(payload)}&neighbors=3&limit=30`);
+      const response = await api.get(`${schema.get(cls).routeName}?${qs.stringify(payload)}&neighbors=3&limit=30`);
       const { result } = jc.retrocycle(response);
 
       this.setState({
@@ -280,7 +275,7 @@ class AutoSearchMulti extends Component {
       </Tooltip>
     );
 
-    const { properties } = schema.getClass(cls, EXTRA_FORM_PROPS) || {};
+    const properties = schema.getProperties(cls, EXTRA_FORM_PROPS) || [];
 
     return (
       <React.Fragment>
@@ -295,6 +290,7 @@ class AutoSearchMulti extends Component {
           onClear={this.handleClear}
           onSelect={this.handleChange}
           endAdornment={endAdornment}
+          schema={schema}
         >
           {(item, index, downshiftProps) => (
             <MenuItem
@@ -307,7 +303,7 @@ class AutoSearchMulti extends Component {
               selected={downshiftProps.highlightedIndex === index}
             >
               <span>
-                {schema.newRecord(item).getPreview()}
+                {schema.getPreview(item)}
                 <Typography color="textSecondary" variant="body1">
                   {item.source && item.source.name ? item.source.name : ''}
                 </Typography>
@@ -332,8 +328,8 @@ class AutoSearchMulti extends Component {
                   fullWidth
                   label="Class"
                   resources={[
-                    ...schema.getOntologies(true).map(o => o.name),
-                    ...schema.getVariants(true).map(v => v.name),
+                    ...schema.getOntologies().map(o => o.name),
+                    ...schema.getVariants().map(v => v.name),
                     'Statement',
                   ]}
                 >
@@ -395,12 +391,9 @@ class AutoSearchMulti extends Component {
  * @property {string} label - label for text input.
  * @property {bool} required - required flag for text input indicator.
  * @property {bool} error - error flag for text input.
- * @property {function} children - Function that yields the component for
- * display display query results.
  * @property {bool} disabled - disabled flag for text input.
- * @property {Object} endAdornment - component to adorn the end of input text
- * field with.
  * @property {Record} selected - Last selected record.
+ * @property {Object} schema - Knowledgebase schema object.
  */
 AutoSearchMulti.propTypes = {
   name: PropTypes.string,

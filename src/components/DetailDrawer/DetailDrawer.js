@@ -23,10 +23,13 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import LinkIcon from '@material-ui/icons/Link';
 import util from '../../services/util';
-import classes from '../../models/classes';
 
 const MAX_STRING_LENGTH = 64;
 
+/**
+ * Component used to display record details in a side drawer. Dynamically
+ * generates display based on record, and its corresponding schema entry.
+ */
 class DetailDrawer extends Component {
   constructor(props) {
     super(props);
@@ -49,11 +52,6 @@ class DetailDrawer extends Component {
     const { node } = this.props;
     if (
       (!node && prevNode)
-      || (
-        prevNode instanceof classes.Record
-        && node instanceof classes.Record
-        && prevNode.getId() !== node.getId()
-      )
     ) {
       /* eslint-disable-next-line react/no-did-update-set-state */
       this.setState({ opened: [], linkOpen: null });
@@ -65,26 +63,22 @@ class DetailDrawer extends Component {
    * @param {Object} inputNode - Ontology being displayed.
    * @param {boolean} isNested - Nested flag.
    */
-  formatIdentifiers(inputNode, isNested) {
+  formatIdentifiers(node, isNested) {
     const { schema } = this.props;
     const { opened } = this.state;
-    let node = inputNode;
-    if (!(inputNode instanceof classes.Record)) {
-      node = schema.newRecord(inputNode);
-    }
-    const identifiers = node.constructor.getIdentifiers();
+    const { identifiers } = schema.get(node['@class']);
 
     return (
       identifiers.map((prop) => {
         const [key, nestedKey] = prop.split('.');
         let value = nestedKey ? (node[key] || {})[nestedKey] : node[key];
         if (key === 'preview') {
-          value = node.getPreview();
+          value = schema.getPreview(node);
         }
-        let properties = Object.keys(node[key] || {});
+        let nestedIdentifiers = Object.keys(node[key] || {});
 
-        if (node[key] instanceof classes.Record) {
-          properties = node[key].constructor.getIdentifiers();
+        if (node[key] && typeof node[key] === 'object') {
+          ({ identifiers: nestedIdentifiers } = schema.get(node[key]['@class']));
         }
         const expanded = nestedKey ? (
           <Collapse
@@ -92,7 +86,7 @@ class DetailDrawer extends Component {
             unmountOnExit
           >
             <List className="detail-nested-list">
-              {properties.map((nestedProp) => {
+              {nestedIdentifiers.map((nestedProp) => {
                 if (!node[key]) return null;
                 const [nestedPropKey, veryNestedKey] = nestedProp.split('.');
                 const nestedValue = veryNestedKey
@@ -218,12 +212,12 @@ class DetailDrawer extends Component {
   formatOtherProps(node) {
     const { opened } = this.state;
     const { schema } = this.props;
-    const identifiers = node.constructor.getIdentifiers();
+    const { identifiers } = schema.get(node['@class']);
 
     let properties = Object.keys(node)
       .map(key => ({ name: key, type: util.parseKBType(node[key]) }));
-    if (schema && schema.getClass(node['@class'])) {
-      ({ properties } = schema.getClass(node['@class']));
+    if (schema && schema.getProperties(node['@class'])) {
+      properties = schema.getProperties(node['@class']);
     }
     let isEmpty = true;
     const propsList = properties
@@ -301,28 +295,24 @@ class DetailDrawer extends Component {
 
   /**
    * Formats ontology relationships.
-   * @param {Object} inputNode - Ontology being displayed.
+   * @param {Object} node - Ontology being displayed.
    */
-  formatRelationships(inputNode) {
+  formatRelationships(node) {
     const { linkOpen } = this.state;
     const { schema } = this.props;
-    let node = inputNode;
     // Checks subclasses
-    if (!(inputNode instanceof classes.Record)) {
-      node = schema.newRecord(inputNode);
-    }
-    const edges = node.getEdges();
+    const edges = schema.getEdges(node);
 
     if (!edges || edges.length === 0) return null;
     return (
       <List>
         {edges.map((edge) => {
           const isOpen = linkOpen === edge['@rid'];
-          const isIn = edge.in && edge.in['@rid'] === node.getId();
-          const targetNode = schema.newRecord(isIn ? edge.out : edge.in);
+          const isIn = edge.in && edge.in['@rid'] === node['@rid'];
+          const targetNode = isIn ? edge.out : edge.in;
           let preview;
           try {
-            preview = targetNode.getPreview();
+            preview = schema.getPreview(targetNode);
           } catch (e) {
             preview = 'Invalid variant';
           }
@@ -409,6 +399,7 @@ class DetailDrawer extends Component {
       onClose,
       isEdge,
       handleNodeEditStart,
+      schema,
     } = this.props;
     if (!node) return null;
     const identifiers = this.formatIdentifiers(node);
@@ -417,7 +408,7 @@ class DetailDrawer extends Component {
     let preview;
     let errorMessage;
     try {
-      preview = node.getPreview();
+      preview = schema.get(node['@class']).getPreview(node);
       // Only for kbp nodes so far.
     } catch (e) {
       preview = 'Invalid variant';
@@ -435,7 +426,7 @@ class DetailDrawer extends Component {
           <div className="detail-heading">
             <div className="detail-headline">
               <div>
-                <Typography variant="subtitle1">{node && node.getId()}</Typography>
+                <Typography variant="subtitle1">{node && node['@rid']}</Typography>
                 <Typography variant="h4" component="h1">
                   {preview}
                 </Typography>
@@ -454,7 +445,7 @@ class DetailDrawer extends Component {
                 onClick={handleNodeEditStart}
                 variant="outlined"
               >
-                Edit {node.constructor.name}&nbsp;
+                Edit {node['@class']}&nbsp;
                 <EditIcon />
               </Button>
             </div>
@@ -489,8 +480,8 @@ class DetailDrawer extends Component {
  * @property {Object} schema - Knowledgebase schema object.
  * @property {Object} node - Ontology to be displayed in drawer.
  * @property {function} onClose - Function triggered on @material-ui/Drawer onClose event.
- * @property {function} handleNodeEditStart - Function triggered on node edit button click.
  * @property {bool} isEdge - Flag for edge classes.
+ * @property {function} handleNodeEditStart - Function triggered on node edit button click.
  */
 DetailDrawer.propTypes = {
   schema: PropTypes.object,
@@ -498,7 +489,6 @@ DetailDrawer.propTypes = {
   onClose: PropTypes.func,
   isEdge: PropTypes.bool,
   handleNodeEditStart: PropTypes.func,
-  identifiers: PropTypes.array,
 };
 
 DetailDrawer.defaultProps = {
@@ -507,7 +497,6 @@ DetailDrawer.defaultProps = {
   onClose: null,
   isEdge: false,
   handleNodeEditStart: PropTypes.func,
-  identifiers: [],
 };
 
 export default DetailDrawer;

@@ -54,6 +54,9 @@ export default {
     return null;
   },
 
+  /**
+   * Returns true if user is in the 'admin' usergroup.
+   */
   isAdmin: () => {
     const token = localStorage.getItem(KB_TOKEN);
     if (token && jwt.decode(token)) {

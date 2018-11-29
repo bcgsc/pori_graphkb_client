@@ -1,3 +1,6 @@
+/**
+ * @module /components/StatementFormComponent
+ */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './StatementFormComponent.css';
@@ -13,6 +16,10 @@ import DeleteRecordDialog from '../DeleteRecordDialog/DeleteRecordDialog';
 
 const DEFAULT_REVIEW_STATUS = 'pending';
 
+/**
+ * Form for Statement records. Shows shorthand as a mix of the appliesTo
+ * Ontology, relevance Vocabulary, as well as source and sourceId.
+ */
 class StatementFormComponent extends Component {
   constructor(props) {
     super(props);
@@ -41,7 +48,7 @@ class StatementFormComponent extends Component {
 
     const form = schema.initModel(originalNode, 'Statement');
     if (node) {
-      node.getEdges().forEach((edge) => {
+      schema.getEdges(node).forEach((edge) => {
         relationships.push(schema.initModel(edge, edge['@class']));
       });
     } else {
@@ -69,7 +76,7 @@ class StatementFormComponent extends Component {
     const errorFields = [];
     const oneOfEachEdge = relationships.some(r => r['@class'] === 'SupportedBy' && !r.deleted)
       && relationships.some(r => r['@class'] === 'Implies' && !r.deleted);
-    schema.getClass('Statement').properties.forEach((prop) => {
+    schema.getProperties('Statement').forEach((prop) => {
       if (prop.mandatory) {
         if (prop.type === 'link' && !(form[`${prop.name}.data`] && form[`${prop.name}.data`]['@rid'])) {
           errorFields.push(prop.name);
@@ -125,7 +132,7 @@ class StatementFormComponent extends Component {
     const { name, value } = e.target;
     form[name] = value;
     if (name.includes('.data') && value) {
-      form[name.split('.')[0]] = schema.newRecord(value).getPreview();
+      form[name.split('.')[0]] = schema.getPreview(value);
     }
     this.setState({ form, relationshipsError: false, errorFields: [] });
   }
@@ -156,7 +163,7 @@ class StatementFormComponent extends Component {
         <DeleteRecordDialog
           open={deleteDialog}
           onDelete={this.handleDeleteNode}
-          handleDialog={this.handleDialog}
+          onClose={() => this.handleDialog(false)}
         />
         <NotificationDrawer
           open={notificationDrawerOpen}
@@ -187,7 +194,7 @@ class StatementFormComponent extends Component {
               <FormTemplater
                 model={form}
                 schema={schema}
-                propSchemas={schema.getClass('Statement').properties}
+                propSchemas={schema.getProperties('Statement')}
                 onChange={this.handleChange}
                 excludedProps={node ? undefined : ['reviewStatus', 'reviewComment']}
                 errorFields={errorFields}

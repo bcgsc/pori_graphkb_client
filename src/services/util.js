@@ -226,54 +226,71 @@ const getTSVRepresentation = (value, key) => {
 };
 
 /**
- * Prepares a payload to be sent to the server for a POST, PATCH, or GET requst.
- * @param {Object} form - unprocessed form object containing user data.
- * @param {Array} objectSchema - List of valid properties for given form.
- * @param {Array} extraProps - List of extra parameters not specified in objectSchema.
+ * "Flattens" an object into a depth 1 object.
+ * @param {Object} obj - Object to be flattened.
+ *
+ * @example
+ * > const obj = {
+ *     a: {
+ *       b: 'e',
+ *     },
+ *     d: 'e',
+ *   };
+ *
+ * > flatten(obj);
+ * > {
+ *     a[b]: 'e',
+ *     d: 'e',
+ *   }
  */
-const parsePayload = (form, objectSchema, extraProps, isQuery = false) => {
-  const payload = Object.assign({}, form);
-  Object.keys(payload).forEach((key) => {
-    if (!payload[key]) {
-      delete payload[key];
-    }
-    if (typeof payload[key] === 'object' && isQuery) {
-      let objKey = key;
-      if (key.includes('.data')) {
-        [objKey] = key.split('.');
-      }
+const flatten = (obj) => {
+  const regex = /^[^[\]]+(?=(\[[^[\]]+\])*)/;
+  const flattened = {};
 
-      Object.keys(payload[key]).forEach((k) => {
-        if (payload[objKey][k]) {
-          payload[`${objKey}[${k}]`] = payload[objKey][k];
-        }
-      });
-      delete payload[objKey];
-    }
-
-    // For link properties, must specify record id being linking to. Clear the rest.
-    if (key.includes('.data')) {
-      const nestedKey = key.split('.')[0];
-      if (
-        (objectSchema.find(p => p.name === nestedKey)
-          || (extraProps && extraProps.includes(nestedKey)))
-        && payload[key]
-      ) {
-        // Sets top level property to the rid: ie.
-        // 'source.@rid': #18:5 => 'source': #18:5
-        payload[key.split('.')[0]] = payload[key]['@rid'] || payload[key];
-        delete payload[key];
-      }
-    }
-
-    // Clears out all other unknown fields.
-    if (!objectSchema.find(p => p.name === key)) {
-      if (!extraProps || !extraProps.includes(key)) {
-        delete payload[key];
+  Object.keys(obj).forEach((key) => {
+    let value = obj[key];
+    if (value !== null && value !== undefined && value !== '') {
+      if (typeof value === 'object') {
+        value = flatten(value);
+        Object.keys(value).forEach((k) => {
+          const flattenedKey = k.replace(regex, match => `${key}[${match}]`);
+          flattened[flattenedKey] = value[k];
+        });
+      } else {
+        flattened[key] = value;
       }
     }
   });
-  return payload;
+  return flattened;
+};
+
+/**
+ * Prepares a payload to be sent to the server for a POST, PATCH, or GET requst.
+ * @param {Object} form - unprocessed form object containing user data.
+ * @param {Array} properties - List of valid properties for given form.
+ * @param {Array} extraProps - List of extra parameters not specified in objectSchema.
+ */
+const parsePayload = (form, properties, extraProps = [], isQuery = false) => {
+  const payload = {};
+  properties.forEach((prop) => {
+    const { name, type, default: defaultValue } = prop;
+    if (type === 'link') {
+      const formLink = form[`${name}.data`];
+      if (formLink && formLink['@rid']) {
+        payload[name] = formLink['@rid'];
+      }
+    } else if (form[name] && !(defaultValue && form[name] === defaultValue)) {
+      payload[name] = form[name];
+    }
+  });
+
+  extraProps.forEach((name) => {
+    if (form[name]) {
+      payload[name] = form[name];
+    }
+  });
+
+  return isQuery ? flatten(payload) : payload;
 };
 
 /**
@@ -400,8 +417,8 @@ const getPropOfType = (kbClass, type) => Object.values(kbClass)
 
 /**
  * Sorting method to pass into Array.sort().
- * @param {Array} order - order for props to be sorted in.
- * @param {string} prop - nested property to sort objects by.
+ * @param {Array} [order=[]] - order for props to be sorted in.
+ * @param {string} [prop='name'] - nested property to sort objects by.
  */
 const sortFields = (order = [], prop = 'name') => (a, b) => {
   const sortA = prop ? a[prop] : a;

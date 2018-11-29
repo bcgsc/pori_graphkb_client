@@ -1,7 +1,6 @@
 /**
  * @module /components/OntologyFormComponent
  */
-
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './OntologyFormComponent.css';
@@ -72,8 +71,8 @@ class OntologyFormComponent extends Component {
 
     const form = schema.initModel(originalNode, nodeClass);
 
-    if (originalNode.getEdges) {
-      originalNode.getEdges().forEach((edge) => {
+    if (originalNode) {
+      schema.getEdges(originalNode).forEach((edge) => {
         relationships.push(schema.initModel(edge, edge['@class']));
       });
     }
@@ -135,13 +134,14 @@ class OntologyFormComponent extends Component {
     const { name, value } = e.target;
     form[name] = value;
     if (name.includes('.data') && value) {
-      form[name.split('.')[0]] = schema.newRecord(value).getPreview();
+      form[name.split('.')[0]] = schema.getPreview(value);
     }
     this.setState({ form, errorFields: [] });
   }
 
   /**
-   * Submits form.
+   * Validates form and calls submission parent method with the form and
+   * relationships data.
    * @param {Event} e - Submit event.
    */
   async handleSubmit(e) {
@@ -149,7 +149,7 @@ class OntologyFormComponent extends Component {
     const { form, relationships, originalNode } = this.state;
     const { handleSubmit, schema } = this.props;
 
-    const editableProps = (schema.getClass(form['@class'])).properties;
+    const editableProps = schema.getProperties(form['@class']);
     // Validates form
     let formIsInvalid = false;
     const errorFields = [];
@@ -194,14 +194,14 @@ class OntologyFormComponent extends Component {
     // Wait for form to get initialized
     if (!form) return null;
 
-    const editableProps = (schema.getClass(form['@class'])).properties;
+    const editableProps = schema.getProperties(form['@class']);
 
     return (
       <div className="node-form-wrapper">
         <DeleteRecordDialog
           open={deleteDialog}
           onDelete={this.handleDeleteNode}
-          handleDialog={this.handleDialog}
+          onClose={() => this.handleDialog(false)}
         />
         <NotificationDrawer
           open={notificationDrawerOpen}
@@ -304,7 +304,6 @@ class OntologyFormComponent extends Component {
  * @namespace
  * @property {Object} node - node object to be edited.
  * @property {string} variant - specifies form type/function.
- * @property {Array} sources - List of Knowledgebase ontology sources.
  * @property {Object} schema - Knowledgebase db schema.
  * @property {Array} edgeTypes - List of Knowledgebase ontology edge classes.
  * @property {function} handleFinish - Function triggered when node is edited

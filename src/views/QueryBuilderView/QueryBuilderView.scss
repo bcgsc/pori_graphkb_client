@@ -1,6 +1,6 @@
 @import "../../globals";
 
-$lightened-secondary: rgba($md-secondary-color, 0.5);
+$lightened-secondary: rgba($md-secondary-color, 0.2);
 .qbv {
   display: flex;
   @include view-wrapper;
@@ -11,6 +11,14 @@ $lightened-secondary: rgba($md-secondary-color, 0.5);
     $line-height: 32px;
     @include paper;
     display: flex;
+
+    .qbv-endpoint {
+      display: flex;
+      .qbv-complex-checkbox {
+        padding: 0 8px;
+        
+      }
+    }
 
     .formatted-close-btn {
       position: absolute;
@@ -26,7 +34,7 @@ $lightened-secondary: rgba($md-secondary-color, 0.5);
       border-radius: 2px;
       margin-left: 1rem;
       &:hover {
-        border: 1px solid #{$lightened-secondary};
+        background: $lightened-secondary;
       }
       > div {
         margin: auto 4px;
@@ -73,7 +81,7 @@ $lightened-secondary: rgba($md-secondary-color, 0.5);
         box-sizing: border-box;
         border-radius: 2px;
         &:hover {
-          border: 1px solid #{$lightened-secondary};
+          background: $lightened-secondary;
         }
         > span {
           display: inline-block;
@@ -104,17 +112,15 @@ $lightened-secondary: rgba($md-secondary-color, 0.5);
 
 .qbv-swagger-iframe {
   height: 80vh;
+  .qbv-help-blurb {
+    display: flex;
+    padding: 1rem;
+    > svg {
+      margin: auto;
+      margin-right: 0;
+    }
+  }
   iframe {
     height: 100%;
-  }
-}
-
-.feedback-wrapper {
-  a {
-    text-decoration: none;
-    color: $md-secondary-color;
-  }
-  .feedback-body {
-    @include paper;
   }
 }

@@ -15,9 +15,11 @@ import {
   Dialog,
   Paper,
   Typography,
+  FormControlLabel,
   Switch,
   Collapse,
   MenuItem,
+  Checkbox,
 } from '@material-ui/core';
 import * as qs from 'querystring';
 import AddIcon from '@material-ui/icons/Add';
@@ -43,6 +45,7 @@ class QueryBuilderViewBase extends Component {
       tempValues: { query: '' },
       specOpen: false,
       specBlurbOpen: false,
+      isComplex: false,
       endpoint: 'Ontology',
     };
 
@@ -60,8 +63,11 @@ class QueryBuilderViewBase extends Component {
    * Bundles query params into a string.
    */
   bundle() {
-    const { params, endpoint } = this.state;
+    const { params, endpoint, isComplex } = this.state;
     params['@class'] = endpoint;
+    if (isComplex) {
+      params.c = true;
+    }
     const props = Object.keys(params).map(p => ({ name: p }));
     const payload = util.parsePayload(params, props, [], true);
     return qs.stringify(payload);
@@ -206,6 +212,7 @@ class QueryBuilderViewBase extends Component {
       specOpen,
       specBlurbOpen,
       endpoint,
+      isComplex,
     } = this.state;
 
     const input = nested => (
@@ -250,6 +257,11 @@ class QueryBuilderViewBase extends Component {
           <React.Fragment key={k}>
             <div className="qbv-json-wrapper">
               <span className="qbv-json-key">{k}</span><span>:&nbsp;</span><span>{'{'}</span>
+              {k !== 'query' && (
+                <CloseIcon
+                  className="formatted-close-btn"
+                  onClick={() => this.handleDelete(newNested.join('.'))}
+                />)}
             </div>
             <div className="qbv-nest">
               {Object.keys(value).map(nestedK => jsonFormat(nestedK, value[nestedK], newNested))}
@@ -290,7 +302,7 @@ class QueryBuilderViewBase extends Component {
           onClose={this.handleToggle}
         >
           <div>
-            <div style={{ display: 'flex', flexDirection: 'row', padding: '1rem' }}>
+            <div className="qbv-help-blurb">
               <Typography variant="h5">Help</Typography>
               {specBlurbOpen
                 ? <ExpandLessIcon onClick={() => this.setState({ specBlurbOpen: false })} />
@@ -298,8 +310,10 @@ class QueryBuilderViewBase extends Component {
             </div>
             <Collapse in={specBlurbOpen}>
               <div style={{ padding: '1rem' }}>
-                Type key value pairs in the inputs to build your query. Use the
-                switch to add nested groups of parameters.
+                Build your query string as a JSON. Use the checkbox to toggle
+                between nested groups of parameters and standard key value
+                pairs. Specify your route and whether or not the query is
+                complex.
                 <br />
                 <br />
                 Here is the GraphKB specification for the api version in use.
@@ -313,16 +327,29 @@ class QueryBuilderViewBase extends Component {
           <Typography variant="h5">Query Builder</Typography>
         </Paper>
         <Paper className="qbv-body qbv-column-flex">
-          <ResourceSelectComponent
-            label="Endpoint"
-            name="endpoint"
-            resources={Object.values(schema.schema)
-              .filter(item => item.expose.GET && item.routeName)}
-            value={endpoint}
-            onChange={this.handleChange}
-          >
-            {item => <MenuItem key={item.name} value={item.name}>{item.routeName}</MenuItem>}
-          </ResourceSelectComponent>
+          <div className="qbv-endpoint">
+            <ResourceSelectComponent
+              label="Endpoint"
+              name="endpoint"
+              resources={Object.values(schema.schema)
+                .filter(item => item.expose.GET && item.routeName)}
+              value={endpoint}
+              onChange={this.handleChange}
+            >
+              {item => <MenuItem key={item.name} value={item.name}>{item.routeName + (isComplex ? '/search' : '')}</MenuItem>}
+            </ResourceSelectComponent>
+            <FormControlLabel
+              className="qbv-complex-checkbox"
+              control={(
+                <Checkbox
+                  checked={isComplex}
+                  name="isComplex"
+                  onChange={() => this.handleChange({ target: { name: 'isComplex', value: !isComplex } })}
+                />
+              )}
+              label="Complex"
+            />
+          </div>
           <div className="qbv-json">
             {jsonFormat('query', params, [])}
           </div>

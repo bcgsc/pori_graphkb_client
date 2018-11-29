@@ -40,9 +40,8 @@ class Schema {
     const VPropKeys = schema.V.properties;
     const classModel = schema[className];
     if (!classModel) return null;
-    return Object.keys(classModel.properties || [])
-      .filter(prop => !VPropKeys[prop] || extraProps.includes(prop))
-      .map(prop => classModel.properties[prop]);
+    return Object.values(classModel.properties || [])
+      .filter(prop => !VPropKeys[prop.name] || extraProps.includes(prop.name));
   }
 
   /**
@@ -117,9 +116,9 @@ class Schema {
 
   /**
    * Returns all ontology types.
-   * @param {boolean} [subOnly=true] - flag for checking only subclasses.
+   * @param {boolean} [subOnly=false] - flag for checking only subclasses.
    */
-  getOntologies(subOnly) {
+  getOntologies(subOnly = false) {
     const { schema } = this;
     const list = schema.Ontology.subclasses.slice();
     if (!subOnly) list.push(schema.Ontology);
@@ -128,9 +127,9 @@ class Schema {
 
   /**
    * Returns all variant types.
-   * @param {boolean} [subOnly=true] - flag for checking only subclasses.
+   * @param {boolean} [subOnly=false] - flag for checking only subclasses.
    */
-  getVariants(subOnly) {
+  getVariants(subOnly = false) {
     const { schema } = this;
     const list = schema.Variant.subclasses.slice();
     if (!subOnly) list.push(schema.Variant);
@@ -172,7 +171,7 @@ class Schema {
   }
 
   /**
-   * Updates allColumns list with any new properties from ontologyTerm.
+   * Updates allColumns list with any new properties from a record.
    * @param {Object} record - new node who's properties will be parsed.
    * @param {Array} allColumns - current list of all collected properties.
    */

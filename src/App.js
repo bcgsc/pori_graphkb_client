@@ -55,8 +55,8 @@ import logo from './static/logo.png';
 import title from './static/title.png';
 import auth from './services/auth';
 import history from './services/history';
+import Schema from './services/schema';
 import { KBContext } from './components/KBContext/KBContext';
-import Schema from './models/schema';
 
 const theme = createMuiTheme({
   direction: 'ltr',

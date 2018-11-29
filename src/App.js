@@ -338,13 +338,17 @@ class App extends Component {
                       }}
                     >
                       <Card className="user-menu">
-                        <MenuItem onClick={() => { history.push('/feedback'); this.handleClose(); }}>
-                          Feedback
-                        </MenuItem>
-                        {auth.isAdmin() && (
-                          <MenuItem onClick={() => { history.push('/admin'); this.handleClose(); }}>
-                            Admin
+                        <Link to="/feedback" onClick={this.handleClose}>
+                          <MenuItem>
+                            Feedback
                           </MenuItem>
+                        </Link>
+                        {auth.isAdmin() && (
+                          <Link to="/admin" onClick={this.handleClose}>
+                            <MenuItem>
+                              Admin
+                            </MenuItem>
+                          </Link>
                         )}
                         <MenuItem onClick={this.handleLogOut}>
                           Logout

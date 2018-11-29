@@ -57,6 +57,7 @@ class QueryBuilderViewBase extends Component {
     this.handleNested = this.handleNested.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleText = this.handleText.bind(this);
   }
 
   /**
@@ -202,6 +203,17 @@ class QueryBuilderViewBase extends Component {
     });
   }
 
+  handleText(e) {
+    try {
+      const json = JSON.parse(e.target.value);
+      this.setState({ params: json });
+    } catch (error) {
+      console.error(error.toString());
+    } finally {
+      this.setState({ text: e.target.value });
+    }
+  }
+
   render() {
     const { schema } = this.props;
     const {
@@ -213,6 +225,7 @@ class QueryBuilderViewBase extends Component {
       specBlurbOpen,
       endpoint,
       isComplex,
+      text,
     } = this.state;
 
     const input = nested => (
@@ -250,13 +263,19 @@ class QueryBuilderViewBase extends Component {
       </div>
     );
 
-    const jsonFormat = (k, value, nested) => {
+    const jsonFormat = (k, value, nested, isArray) => {
       const newNested = [...nested, k];
-      if (typeof value === 'object') {
+      if (value && typeof value === 'object') {
+        const nextArray = Array.isArray(value);
         return (
           <React.Fragment key={k}>
             <div className="qbv-json-wrapper">
-              <span className="qbv-json-key">{k}</span><span>:&nbsp;</span><span>{'{'}</span>
+              {!isArray && (
+                <React.Fragment>
+                  <span className="qbv-json-key">{k}</span>
+                  <span>:&nbsp;</span>
+                </React.Fragment>)}
+              <span>{nextArray ? '[' : '{'}</span>
               {k !== 'query' && (
                 <CloseIcon
                   className="formatted-close-btn"
@@ -264,11 +283,12 @@ class QueryBuilderViewBase extends Component {
                 />)}
             </div>
             <div className="qbv-nest">
-              {Object.keys(value).map(nestedK => jsonFormat(nestedK, value[nestedK], newNested))}
+              {Object.keys(value)
+                .map(nestedK => jsonFormat(nestedK, value[nestedK], newNested, nextArray))}
             </div>
-            {input(newNested)}
+            {/* {input(newNested)} */}
             <div className="qbv-json-wrapper">
-              <span className="qbv-json-close-brace">{'}'}{k !== 'query' && ','}</span>
+              <span className="qbv-json-close-brace">{nextArray ? ']' : '}'}{k !== 'query' && ','}</span>
             </div>
           </React.Fragment>
         );
@@ -276,10 +296,14 @@ class QueryBuilderViewBase extends Component {
       return (
         <div key={k} className="qbv-json-wrapper">
           <span>
-            <span className="qbv-json-key">
-              {k}
-            </span>
-            :&nbsp;
+            {!isArray && (
+              <React.Fragment>
+                <span className="qbv-json-key">
+                  {k}
+                </span>
+                :&nbsp;
+              </React.Fragment>
+            )}
             <span className="qbv-json-value">&quot;{value}&quot;</span>
             ,
           </span>
@@ -352,6 +376,18 @@ class QueryBuilderViewBase extends Component {
           </div>
           <div className="qbv-json">
             {jsonFormat('query', params, [])}
+            <textarea
+              value={text}
+              onChange={this.handleText}
+              onKeyDown={(e) => {
+                if (e.keyCode === 9) {
+                  e.preventDefault();
+                  this.handleText({ target: { value: `${text || ''}  ` } });
+                } else if (e.keyCode === 16) {
+                  this.shiftKey = true;
+                }
+              }}
+            />
           </div>
         </Paper>
         <Button

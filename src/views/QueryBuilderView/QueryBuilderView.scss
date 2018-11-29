@@ -16,7 +16,6 @@ $lightened-secondary: rgba($md-secondary-color, 0.2);
       display: flex;
       .qbv-complex-checkbox {
         padding: 0 8px;
-        
       }
     }
 
@@ -74,6 +73,11 @@ $lightened-secondary: rgba($md-secondary-color, 0.2);
       overflow: auto;
       width: 100%;
       margin-top: 1rem;
+      textarea {
+        width: 100%;
+        box-sizing: border-box;
+        min-height: 200px;
+      }
       .qbv-json-wrapper {
         position: relative;
         height: $line-height;

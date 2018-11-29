@@ -134,6 +134,10 @@ class App extends Component {
     this.setState({ loggedIn: true });
   }
 
+  /**
+   * Expands a list item in the main navigation drawer.
+   * @param {string} item - Item to expand in main navigation drawer.
+   */
   handleDrawerExpand(item) {
     return () => {
       const { expanded } = this.state;
@@ -152,6 +156,9 @@ class App extends Component {
     this.setState({ drawerOpen: true });
   }
 
+  /**
+   * Closes main navigation drawer.
+   */
   handleDrawerClose() {
     this.setState({ expanded: '', drawerOpen: false });
   }

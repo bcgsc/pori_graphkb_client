@@ -49,6 +49,9 @@ $flip-duration: 0.15s;
         border-bottom: 1px solid #e0e0e0;
       }
     }
+    .table-row-checkbox{
+      width: 96px;
+    }
     .selected-override {
       background-color: rgba($md-secondary-light, 0.5);
     }

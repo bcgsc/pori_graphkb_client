@@ -135,7 +135,6 @@ class GraphComponent extends Component {
 
     this.setState({
       expandedEdgeTypes,
-      allProps,
     }, () => {
       this.handleResize();
       window.addEventListener('resize', this.handleResize);
@@ -807,9 +806,8 @@ class GraphComponent extends Component {
       links,
       expandedEdgeTypes,
       expandable,
-      allProps,
     } = this.state;
-    const { localStorageKey } = this.props;
+    const { localStorageKey, allProps } = this.props;
 
     const { handleDetailDrawerClose } = this.props;
     if (nodes.length === 1) return;

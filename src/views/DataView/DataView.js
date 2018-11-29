@@ -17,7 +17,7 @@ import omit from 'lodash.omit';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
-import { withSchema } from '../../components/SchemaContext/SchemaContext';
+import { withKB } from '../../components/KBContext/KBContext';
 import api from '../../services/api';
 import config from '../../static/config';
 
@@ -43,8 +43,7 @@ class DataViewBase extends Component {
    */
   static async makeApiQuery(route, queryParams, omitted = []) {
     const response = await api.get(`${route}?${qs.stringify(omit(queryParams, omitted))}`);
-    const list = jc.retrocycle(response).result;
-    return list;
+    return jc.retrocycle(response).result;
   }
 
   /**
@@ -478,7 +477,7 @@ DataViewBase.propTypes = {
   schema: PropTypes.object.isRequired,
 };
 
-const DataView = withSchema(DataViewBase);
+const DataView = withKB(DataViewBase);
 
 export {
   DataView,

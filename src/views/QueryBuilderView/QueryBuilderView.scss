@@ -30,7 +30,6 @@
     }
 
     .qbv-json {
-      margin: 16px;
       padding: 16px;
       border: 1px solid rgba(0, 0, 0, 0.2);
       border-radius: 4px;
@@ -38,6 +37,7 @@
       font-family: "Courier New", Courier, monospace;
       overflow: auto;
       width: 100%;
+      margin-top: 1rem;
 
       .qbv-json-key {
         color: $md-primary-color;
@@ -49,11 +49,15 @@
         display: block;
       }
     }
+
     #qbv-submit {
       position: fixed;
-      bottom: 32px;
-      right: 32px;
+      bottom: 1rem;
+      right: 1rem;
     }
+  }
+  .qbv-column-flex {
+    flex-direction: column;
   }
 }
 

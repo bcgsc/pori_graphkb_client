@@ -1,6 +1,6 @@
 {
   "name": "knowledgebase-web",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "private": true,
   "dependencies": {
     "@bcgsc/knowledgebase-parser": "^0.4.1",
@@ -98,7 +98,7 @@
     "collectCoverage": true,
     "coverageDirectory": "coverage",
     "collectCoverageFrom": [
-      "src/components/**/!(SchemaContext).{js,jsx,mjs}",
+      "src/components/**/!(KBContext).{js,jsx,mjs}",
       "src/services/**/!(api).{js,jsx,mjs}",
       "src/models/**/*.{js,jsx,mjs}"
     ],

@@ -160,7 +160,7 @@ class Schema {
   /**
    * Checks if a ClassModel is a subclass of another ClassModel.
    * @param {string} cls - ClassModel name of child
-   * @param {string} parentCls - ClassModel name of parent
+   * @param {Array<string>} parentCls - ClassModel name of parent
    */
   isSubclass(cls, parentCls = []) {
     if (typeof parentCls === 'string') {

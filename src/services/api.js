@@ -74,7 +74,7 @@ const fetchWithInterceptors = async (endpoint, init) => {
         statusText: 'Fetch',
       },
     });
-    return Promise.reject('Unexpected Error, redirecting...');
+    throw new Error('Unexpected Error, redirecting...');
   }
 };
 

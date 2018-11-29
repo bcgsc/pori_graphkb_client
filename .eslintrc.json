@@ -18,16 +18,20 @@
                 "checkChildContextTypes": false
             }
         ],
+        "import/no-cycle": 1,
         "prefer-promise-reject-errors": 0,
         "no-param-reassign": "warn",
         "react/jsx-one-expression-per-line": 0,
         "prefer-destructuring": "warn",
-        "react/destructuring-assignment": "warn"
+        "react/destructuring-assignment": "warn",
+        "no-confusing-arrow": 0,
+        "no-underscore-dangle": 0
     },
     "env": {
         "browser": true,
         "node": true,
-        "cypress/globals": true
+        "cypress/globals": true,
+        "jest": true
     },
     "plugins": [
         "cypress"

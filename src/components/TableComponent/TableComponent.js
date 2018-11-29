@@ -3,6 +3,7 @@
  */
 
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import './TableComponent.css';
 import {
@@ -14,7 +15,6 @@ import {
   TablePagination,
   TableSortLabel,
   IconButton,
-  Collapse,
   FormControlLabel,
   Typography,
   RadioGroup,
@@ -30,18 +30,34 @@ import {
   Divider,
   Tooltip,
   CircularProgress,
+  Popover,
+  TextField,
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
+  InputAdornment,
+  Fade,
 } from '@material-ui/core';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import AddIcon from '@material-ui/icons/Add';
-import NodeDetailComponent from '../NodeDetailComponent/NodeDetailComponent';
+import SearchIcon from '@material-ui/icons/Search';
+import SortIcon from '@material-ui/icons/Sort';
 import DownloadFileComponent from '../DownloadFileComponent/DownloadFileComponent';
 import util from '../../services/util';
-import config from '../../config.json';
+import FilterIcon from '../../static/icons/FilterIcon/FilterIcon';
+import config from '../../static/config';
 
 const NEXT_CUTOFF = 0.8;
 const { ROWS_PER_PAGE, TSV_FILENAME } = config.TABLE_PROPERTIES;
+const DEFAULT_COLUMN_ORDER = [
+  '@class',
+  'source.name',
+  'sourceId',
+  'name',
+];
 
 /**
  * Component to display query results in table form. Controls state for
@@ -60,84 +76,163 @@ class TableComponent extends Component {
       sortedData: Object.keys(props.data).map(key => props.data[key]),
       columnSelect: false,
       tableColumns: [],
+      tableHeadRefs: [],
+      columnFilterStrings: [],
+      tempFilterIndex: '',
+      columnFilterExclusions: [],
+      filterOptions: [],
     };
 
+    this.clearFilter = this.clearFilter.bind(this);
+    this.clearFilters = this.clearFilters.bind(this);
     this.createTSV = this.createTSV.bind(this);
+    this.openFilter = this.openFilter.bind(this);
+    this.setRef = this.setRef.bind(this);
+    this.handleFilterStrings = this.handleFilterStrings.bind(this);
+    this.handleFilterExclusions = this.handleFilterExclusions.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.handleChangePage = this.handleChangePage.bind(this);
-    this.handleChangeRowsPerPage = this.handleChangeRowsPerPage.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleColumnCheck = this.handleColumnCheck.bind(this);
-    this.handleColumnClose = this.handleColumnClose.bind(this);
-    this.handleColumnOpen = this.handleColumnOpen.bind(this);
     this.handleDetailToggle = this.handleDetailToggle.bind(this);
+    this.handleHeaderMouseEnter = this.handleHeaderMouseEnter.bind(this);
+    this.handleHeaderMouseLeave = this.handleHeaderMouseLeave.bind(this);
     this.handleOpen = this.handleOpen.bind(this);
     this.handleRequestSort = this.handleRequestSort.bind(this);
     this.handleSortByChange = this.handleSortByChange.bind(this);
     this.handleSortByChecked = this.handleSortByChecked.bind(this);
+    this.handleFilterCheckAll = this.handleFilterCheckAll.bind(this);
   }
 
   /**
+   * React componentDidMount lifecycle
+   *
    * Initializes table columns.
    */
   componentDidMount() {
-    const { allProps } = this.props;
+    const {
+      allProps,
+      storedFilters,
+      defaultOrder,
+    } = this.props;
+
     const tableColumns = allProps.reduce((r, column) => {
-      if (column.startsWith('in_') || column.startsWith('out_') || column === '@rid') return r;
-      if (!column.includes('.')) {
+      const [key, nested] = column.split('.');
+      if (key.startsWith('in_') || key.startsWith('out_')) return r;
+      if (!nested) {
         r.push({
-          id: column,
-          label: util.antiCamelCase(column),
-          checked: column === 'name' || column === 'sourceId',
+          id: key,
+          label: util.antiCamelCase(key),
+          checked: defaultOrder.includes(key),
           sortBy: null,
           sortable: null,
         });
-      } else if (column.split('.')[1] !== 'source') {
-        const col = r.find(c => c.id === column.split('.')[0]);
+      } else if (nested !== 'source') {
+        const col = r.find(c => c.id === key);
         if (!col) {
           r.push({
-            id: column.split('.')[0],
-            label: util.antiCamelCase(column.split('.')[0]),
-            checked: column.split('.')[0] === 'source',
-            sortBy: column.split('.')[1],
-            sortable: [column.split('.')[1]],
+            id: key,
+            label: util.antiCamelCase(key),
+            checked: defaultOrder.includes(column),
+            sortBy: nested,
+            sortable: [nested],
           });
         } else {
-          col.sortable.push(column.split('.')[1]);
+          col.sortable.push(nested);
+          if (defaultOrder.includes(column)) {
+            col.checked = true;
+            col.sortBy = nested;
+          }
         }
       }
       return r;
     }, []);
+    if (defaultOrder.includes('preview')) {
+      tableColumns.push({
+        id: 'preview',
+        checked: true,
+        label: 'Preview',
+        sortBy: null,
+        sortable: null,
+      });
+    }
 
+    const columnFilterStrings = [];
+    let columnFilterExclusions = [];
+    for (let i = 0; i < tableColumns.length; i += 1) {
+      columnFilterStrings.push('');
+      columnFilterExclusions.push([]);
+    }
+    if (storedFilters && storedFilters.length > 0) {
+      columnFilterExclusions = storedFilters;
+    }
     // Set default order for columns.
-    tableColumns.sort((a, b) => {
-      if (a.id === 'source') {
-        return -1;
-      }
-      if (a.id === 'sourceId' && b.id !== 'source') {
-        return -1;
-      }
-      if (a.id === 'name' && b.id !== 'source' && b.id !== 'sourceId') {
-        return -1;
-      }
-      return 1;
-    });
-
-    this.setState({ tableColumns });
+    tableColumns.sort(util.sortFields(defaultOrder.map(d => d.split('.')[0]), 'id'));
+    this.setState({ tableColumns, columnFilterStrings, columnFilterExclusions });
   }
 
   /**
-   * Checks for new arriving data.
-   * @param {Object} nextProps - new properties object
+   * React getDerivedStateFromProps lifecycle
+   *
+   * Checks for new arriving data, and updates table accordingly if necessary.
+   * @param {Object} props - new properties object
+   * @param {Object} state - current state on update.
    */
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.data) {
-      const { sortedData, sort } = this.state;
-      if (Object.keys(nextProps.data).length > sortedData.length) {
-        const s = sort || (() => 1);
-        this.setState({
-          sortedData: Object.keys(nextProps.data).map(k => nextProps.data[k]).sort(s),
-        });
+  static getDerivedStateFromProps(props, state) {
+    const { sortedData, sort } = state;
+    if (Object.keys(props.data).length > sortedData.length) {
+      if (sort) {
+        return { sortedData: Object.values(props.data).sort(sort) };
       }
+      return { sortedData: Object.values(props.data) };
+    }
+    return null;
+  }
+
+  /**
+   * Lifecycle method for determining whether component re renders.
+   * @param {Object} nextProps - Incoming props object.
+   * @param {Object} nextState - Incoming state object.
+   */
+  shouldComponentUpdate(nextProps, nextState) {
+    const { sortedData, page } = this.state;
+    const nextPageData = this.pageData(nextState.page, nextState.sortedData).map(n => n['@rid']);
+    const currPageData = this.pageData(page, sortedData).map(n => n['@rid']);
+    return nextPageData.some(n => !currPageData.includes(n))
+      || nextState.sortedData.length > sortedData.length
+      || (undefined !== nextProps.detail);
+  }
+
+  /**
+   * Stores DOM references in component state.
+   */
+  setRef(node, i) {
+    const { tableHeadRefs } = this.state;
+    if (!tableHeadRefs[i]) {
+      /* eslint-disable-next-line react/no-find-dom-node */
+      tableHeadRefs[i] = ReactDOM.findDOMNode(node);
+      this.setState({ tableHeadRefs });
+    }
+  }
+
+  /**
+   * Clears all filter values for specified column.
+   * @param {number} i - column index.
+   */
+  clearFilter(i) {
+    const { columnFilterStrings, columnFilterExclusions } = this.state;
+    columnFilterStrings[i] = '';
+    columnFilterExclusions[i] = [];
+    this.setState({ columnFilterStrings, columnFilterExclusions });
+  }
+
+  /**
+   * Sets all filter strings to the empty string.
+   */
+  clearFilters() {
+    const { tableColumns } = this.state;
+    for (let i = 0; i < tableColumns.length; i += 1) {
+      this.clearFilter(i);
     }
   }
 
@@ -168,20 +263,89 @@ class TableComponent extends Component {
   }
 
   /**
-   * Returns true if node identifier is the currently selected id.
-   * @param {string} rid - Target node identifier.
+   * Opens filter input box at a column header.
+   * @param {number} i - column index.
    */
-  isSelected(rid) {
-    const { selectedId } = this.props;
-    return selectedId === rid;
+  openFilter(i) {
+    const { tableHeadRefs, tableColumns } = this.state;
+    const { data } = this.props;
+    const column = tableColumns[i];
+    const filterOptions = Object.values(data).reduce((array, datum) => {
+      let value = datum[column.id];
+      if (value && column.sortBy) {
+        value = value[column.sortBy];
+      }
+      if (!array.includes(util.castToExist(value))) {
+        array.push(util.castToExist(value));
+      }
+      return array;
+    }, []);
+    this.setState({
+      filterPopoverNode: tableHeadRefs[i],
+      tempFilterIndex: i,
+      filterOptions,
+    });
+  }
+
+
+  /**
+   * Parses current page data to be displayed.
+   * @param {number} page - page number.
+   * @param {Array} data - query results data map.
+   */
+  pageData(page, data) {
+    const {
+      hidden,
+    } = this.props;
+    const {
+      columnFilterExclusions,
+      rowsPerPage,
+      tableColumns,
+    } = this.state;
+    const filteredData = data
+      .filter(n => !hidden.includes(n['@rid']))
+      .filter(n => !columnFilterExclusions.some((exclusions, i) => {
+        let cell = n[tableColumns[i].id] === undefined
+          || n[tableColumns[i].id] === null
+          ? 'null' : n[tableColumns[i].id];
+
+        if (cell && cell !== 'null' && tableColumns[i].sortBy) {
+          cell = cell[tableColumns[i].sortBy];
+        }
+
+        if (exclusions.includes(util.castToExist(cell))) {
+          return true;
+        }
+        return false;
+      }));
+    return filteredData
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  }
+
+  /**
+   * Updates currently editing filter string.
+   * @param {Event} e - User input event.
+   */
+  handleFilterStrings(e) {
+    const { columnFilterStrings, tempFilterIndex } = this.state;
+    columnFilterStrings[tempFilterIndex] = e.target.value;
+    this.setState({ columnFilterStrings });
+  }
+
+  /**
+   * General state update handler.
+   * @param {Event} e - user change event.
+   */
+  handleChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
   }
 
   /**
    * Updates page to display.
-   * @param {Event} event - Triggered event.
+   * @param {Event} e - Triggered event.
    * @param {number} page - New page number.
    */
-  handleChangePage(event, page) {
+  handleChangePage(e, page) {
     const { sortedData, rowsPerPage } = this.state;
     const { moreResults } = this.props;
     const rows = (page + 1) * rowsPerPage;
@@ -192,14 +356,6 @@ class TableComponent extends Component {
       }
     }
     this.setState({ page });
-  }
-
-  /**
-   * Updates page rows per page property.
-   * @param {Event} event - Rows per page change event.
-   */
-  handleChangeRowsPerPage(event) {
-    this.setState({ rowsPerPage: event.target.value });
   }
 
   /**
@@ -216,22 +372,10 @@ class TableComponent extends Component {
   handleColumnCheck(i) {
     const { tableColumns } = this.state;
     tableColumns[i].checked = !tableColumns[i].checked;
+    this.clearFilters();
     this.setState({ tableColumns });
   }
 
-  /**
-   * Closes column selection dialog.
-   */
-  handleColumnClose() {
-    this.setState({ columnSelect: false });
-  }
-
-  /**
-   * Opens column selection dialog.
-   */
-  handleColumnOpen() {
-    this.setState({ columnSelect: true });
-  }
 
   /**
    * Expands row of input node to view details. If node is already expanded,
@@ -244,6 +388,52 @@ class TableComponent extends Component {
     else {
       this.setState({ toggle: rid });
     }
+  }
+
+  /**
+   * Toggles filtering/not filtering of a certain option in the currently
+   * filtering column.
+   * @param {string} option - Option to be toggled.
+   */
+  handleFilterExclusions(option) {
+    const { columnFilterExclusions, tempFilterIndex } = this.state;
+    const i = columnFilterExclusions[tempFilterIndex].indexOf(option);
+    if (i !== -1) {
+      columnFilterExclusions[tempFilterIndex].splice(i, 1);
+    } else {
+      columnFilterExclusions[tempFilterIndex].push(option);
+    }
+    this.setState({ columnFilterExclusions });
+  }
+
+  /**
+   * Toggles filters from selecting all/deselecting all options.
+   * @param {Array} options - current array of filter options.
+   */
+  handleFilterCheckAll(options) {
+    const { columnFilterExclusions, tempFilterIndex } = this.state;
+    if (columnFilterExclusions[tempFilterIndex].length === 0) {
+      columnFilterExclusions[tempFilterIndex] = options.slice();
+    } else {
+      columnFilterExclusions[tempFilterIndex] = [];
+    }
+    this.setState({ columnFilterExclusions });
+  }
+
+  /**
+   * Handles mouse enter event on a table column header, setting the state to
+   * the header index.
+   * @param {number} i - column header index.
+   */
+  handleHeaderMouseEnter(i) {
+    this.setState({ hoveringHeader: i });
+  }
+
+  /**
+   * Handles mouse leaving event on a table column header, clearing the state.
+   */
+  handleHeaderMouseLeave() {
+    this.setState({ hoveringHeader: null });
   }
 
   /**
@@ -289,6 +479,11 @@ class TableComponent extends Component {
         order: newOrder,
         orderBy: newProperty,
         sortedData: Object.keys(data).map(k => data[k]).sort(sort),
+        /**
+         * React getDerivedStateFromProps passes state as parameter, causing
+         * eslint to not recognize this.state.sort s use as a class field.
+         */
+        /* eslint-disable-next-line */
         sort,
       },
     );
@@ -349,32 +544,48 @@ class TableComponent extends Component {
       orderBy,
       order,
       sortedData,
-      toggle,
       anchorEl,
       columnSelect,
       tableColumns,
+      filterPopoverNode,
+      tempFilterIndex,
+      columnFilterStrings,
+      columnFilterExclusions,
+      filterOptions,
+      hoveringHeader,
     } = this.state;
 
     const {
-      data,
       handleCheckAll,
       displayed,
-      handleNodeEditStart,
-      handleClick,
       handleCheckbox,
       hidden,
       handleShowAllNodes,
       handleHideSelected,
-      handleNewQuery,
       handleGraphRedirect,
       handleSubsequentPagination,
+      handleDetailDrawerOpen,
       moreResults,
       completedNext,
+      detail,
+      schema,
     } = this.props;
 
-    const numCols = tableColumns.filter(c => c.checked).length;
-    const pageData = sortedData
+    const filteredData = sortedData
       .filter(n => !hidden.includes(n['@rid']))
+      .filter(n => !columnFilterExclusions.some((exclusions, i) => {
+        let cell = n[tableColumns[i].id] === undefined
+          || n[tableColumns[i].id] === null
+          ? 'null' : n[tableColumns[i].id];
+
+        if (cell && cell !== 'null' && tableColumns[i].sortBy) {
+          cell = cell[tableColumns[i].sortBy];
+        }
+
+        return exclusions.includes(util.castToExist(cell));
+      }));
+
+    const pageData = filteredData
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
     const menu = (
@@ -382,16 +593,19 @@ class TableComponent extends Component {
         anchorEl={anchorEl}
         open={!!anchorEl}
         onClose={this.handleClose}
-        MenuListProps={{
-          onMouseLeave: this.handleClose,
-        }}
       >
         <MenuItem
-          onClick={() => { this.handleClose(); handleGraphRedirect(); }}
+          onClick={() => { this.handleClose(); this.clearFilters(); }}
+          id="clear-filters"
+        >
+          Clear all filters
+        </MenuItem>
+        <MenuItem
+          onClick={() => { this.handleClose(); handleGraphRedirect(columnFilterExclusions); }}
           disabled={displayed.length === 0}
           id="view-as-graph"
         >
-          View selected as graph
+          View selected in Graph
         </MenuItem>
         <DownloadFileComponent
           mediaType="text/tab-separated-values"
@@ -424,7 +638,7 @@ class TableComponent extends Component {
           disabled={displayed.length === 0}
           id="hide-selected"
         >
-          Hide Selected Rows
+          Hide selected rows
           {displayed.length !== 0 && ` (${displayed.length})`}
         </MenuItem>
         <MenuItem
@@ -435,17 +649,17 @@ class TableComponent extends Component {
           }}
           disabled={hidden.length === 0}
         >
-          Show Hidden Rows
+          Show hidden rows
           {hidden.length !== 0 && ` (${hidden.length})`}
         </MenuItem>
         <MenuItem
           onClick={() => {
             this.handleClose();
-            this.handleColumnOpen();
+            this.handleChange({ target: { name: 'columnSelect', value: true } });
           }}
           id="column-edit"
         >
-          Edit Visible Columns
+          Edit visible columns
         </MenuItem>
       </Menu>
     );
@@ -453,7 +667,7 @@ class TableComponent extends Component {
     const columnDialog = (
       <Dialog
         open={columnSelect}
-        onClose={this.handleColumnClose}
+        onClose={() => this.handleChange({ target: { name: 'columnSelect', value: false } })}
         classes={{ paper: 'column-dialog' }}
       >
         <DialogTitle id="column-dialog-title">
@@ -499,20 +713,110 @@ class TableComponent extends Component {
           ))}
         </DialogContent>
         <DialogActions id="column-dialog-actions">
-          <Button onClick={this.handleColumnClose} color="primary">
+          <Button onClick={() => this.handleChange({ target: { name: 'columnSelect', value: false } })} color="primary">
             Done
           </Button>
         </DialogActions>
       </Dialog>
     );
+
+    const filterPopover = (
+      <Popover
+        anchorEl={filterPopoverNode}
+        open={!!filterPopoverNode}
+        onClose={() => this.setState({ filterPopoverNode: null })}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        id="filter-popover"
+      >
+        <Paper className="filter-wrapper">
+          <List className="filter-list">
+            <ListItem dense>
+              <TextField
+                value={columnFilterStrings[tempFilterIndex]}
+                onChange={e => this.handleFilterStrings(e)}
+                fullWidth
+                margin="none"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment><SearchIcon /></InputAdornment>
+                  ),
+                }}
+              />
+            </ListItem>
+            <ListItem
+              button
+              dense
+              onClick={() => this.handleFilterCheckAll(filterOptions)}
+              id="select-all-checkbox"
+              classes={{
+                root: 'filter-item-background',
+              }}
+            >
+              <Checkbox
+                checked={columnFilterExclusions[tempFilterIndex]
+                  && columnFilterExclusions[tempFilterIndex].length === 0
+                }
+              />
+              <ListItemText primary={columnFilterExclusions[tempFilterIndex]
+                && columnFilterExclusions[tempFilterIndex].length === 0 ? 'Deselect All' : 'Select All'}
+              />
+            </ListItem>
+            <List
+              component="div"
+              dense
+              disablePadding
+              className="filter-exclusions-list"
+            >
+              {filterOptions
+                .filter((o) => {
+                  const filter = columnFilterStrings[tempFilterIndex];
+                  return util.castToExist(o).includes(filter);
+                })
+                .sort((o) => {
+                  const option = util.castToExist(o);
+                  if (option === 'null') return -1;
+                  return 1;
+                })
+                .slice(0, 100)
+                .map((o) => {
+                  const option = util.castToExist(o);
+                  return (
+                    <ListItem
+                      dense
+                      key={option}
+                      button
+                      onClick={() => this.handleFilterExclusions(option)}
+                    >
+                      <Checkbox
+                        checked={columnFilterExclusions[tempFilterIndex]
+                          && !columnFilterExclusions[tempFilterIndex].includes(option)
+                        }
+                      />
+                      <ListItemText primary={option} />
+                    </ListItem>
+                  );
+                })}
+            </List>
+          </List>
+        </Paper>
+      </Popover>
+    );
     return (
       <section className="data-table">
         {columnDialog}
-        <div className="table-container">
+        {filterPopover}
+        <div className={`table-container ${detail ? 'table-drawer-open' : ''}`}>
           <Table>
             <TableHead className="table-head">
               <TableRow>
-                <TableCell padding="dense">
+                <TableCell padding="checkbox">
                   <Checkbox
                     color="secondary"
                     onChange={e => handleCheckAll(e, pageData)}
@@ -521,12 +825,21 @@ class TableComponent extends Component {
                     active={orderBy === 'displayed'}
                     onClick={() => this.handleSortByChecked()}
                     direction={order}
-                  />
+                  >
+                    <SortIcon />
+                  </TableSortLabel>
                 </TableCell>
-                {tableColumns.map((col) => {
+                {tableColumns.map((col, i) => {
+                  const filterActive = (columnFilterExclusions[i] || []).length > 0;
                   if (col.checked) {
                     return (
-                      <TableCell key={col.id}>
+                      <TableCell
+                        key={col.id}
+                        padding="dense"
+                        ref={node => this.setRef(node, i)}
+                        onMouseEnter={() => this.handleHeaderMouseEnter(i)}
+                        onMouseLeave={() => this.handleHeaderMouseLeave(i)}
+                      >
                         <TableSortLabel
                           active={col.id === orderBy}
                           onClick={() => this.handleRequestSort(col)}
@@ -534,12 +847,41 @@ class TableComponent extends Component {
                         >
                           {col.label}
                         </TableSortLabel>
+                        <Fade
+                          in={
+                            hoveringHeader === i
+                            || filterActive
+                            || (filterPopoverNode && tempFilterIndex === i)
+                          }
+                        >
+                          <div className="filter-btn">
+                            <Tooltip
+                              title={filterActive
+                                ? 'Ctrl + click to clear'
+                                : 'Filter this column'
+                              }
+                            >
+                              <IconButton
+                                color={filterActive ? 'secondary' : 'default'}
+                                onClick={(e) => {
+                                  if (!e.ctrlKey) {
+                                    this.openFilter(i);
+                                  } else {
+                                    this.clearFilter(i);
+                                  }
+                                }}
+                              >
+                                <FilterIcon />
+                              </IconButton>
+                            </Tooltip>
+                          </div>
+                        </Fade>
                       </TableCell>
                     );
                   }
                   return null;
                 })}
-                <TableCell style={{ zIndex: 1 }}>
+                <TableCell style={{ zIndex: 1 }} padding="checkbox">
                   <IconButton onClick={this.handleOpen} id="ellipsis-menu">
                     <MoreHorizIcon color="action" />
                   </IconButton>
@@ -549,62 +891,53 @@ class TableComponent extends Component {
             </TableHead>
             <TableBody>
               {pageData.map((n) => {
-                const isSelected = this.isSelected(n['@rid']);
-                const active = toggle === n['@rid'];
-                const detail = active ? (
-                  <TableRow>
-                    <Collapse
-                      colSpan={numCols + 2}
-                      component="td"
-                      in={active}
-                      unmountOnExit
-                    >
-                      <NodeDetailComponent
-                        node={n}
-                        data={data}
-                        handleNodeEditStart={handleNodeEditStart}
-                        handleNewQuery={handleNewQuery}
-                      />
-                    </Collapse>
-                  </TableRow>
-                ) : null;
+                const isSelected = displayed.includes(n['@rid']);
                 return !hidden.includes(n['@rid'])
                   && (
                     <React.Fragment key={n['@rid'] || Math.random()}>
                       <TableRow
                         selected={isSelected}
-                        onClick={() => handleClick(n['@rid'])}
+                        onClick={() => handleDetailDrawerOpen(n, true)}
                         classes={{
                           root: 'cursor-override',
                           selected: 'selected-override',
                         }}
                       >
-                        <TableCell padding="dense">
+                        <TableCell padding="checkbox">
                           <Checkbox
-                            onChange={() => handleCheckbox(n['@rid'])}
+                            onClick={e => handleCheckbox(e, n['@rid'])}
                             checked={displayed.includes(n['@rid'])}
                           />
                         </TableCell>
                         {tableColumns.map((col) => {
                           if (col.checked) {
+                            let val = util.formatStr(col.sortBy
+                              ? util.castToExist((n[col.id] || '')[col.sortBy])
+                              : util.castToExist(n[col.id]));
+
+                            if (col.id === 'preview') {
+                              try {
+                                ([, val] = schema.getPreview(n).split(':'));
+                              } catch (e) {
+                                val = 'Invalid Variant';
+                              }
+                            }
                             return (
-                              <TableCell key={col.id}>
-                                {col.sortBy ? (n[col.id] || '')[col.sortBy] : (n[col.id] || '').toString()}
+                              <TableCell classes={{ root: 'cell' }} key={col.id}>
+                                {val}
                               </TableCell>
                             );
                           }
                           return null;
                         })}
-                        <TableCell>
-                          <IconButton
-                            onClick={() => this.handleDetailToggle(n['@rid'])}
-                            className={`detail-btn ${active ? 'active' : ''}`}
-                          >
-                            <KeyboardArrowDownIcon />
-                          </IconButton>
+                        <TableCell padding="checkbox">
+                          {detail && detail['@rid'] === n['@rid'] && (
+                            <Fade in>
+                              <AssignmentIcon color="action" style={{ width: 48 }} />
+                            </Fade>
+                          )}
                         </TableCell>
                       </TableRow>
-                      {detail}
                     </React.Fragment>
                   );
               })}
@@ -614,11 +947,12 @@ class TableComponent extends Component {
         <div className="pag">
           <TablePagination
             classes={{ root: 'table-paginator', toolbar: 'paginator-spacing' }}
-            count={sortedData.length - hidden.length}
+            count={filteredData.length}
             rowsPerPage={rowsPerPage}
             page={page}
+            name="rowsPerPage"
             onChangePage={this.handleChangePage}
-            onChangeRowsPerPage={this.handleChangeRowsPerPage}
+            onChangeRowsPerPage={e => this.handleChange({ target: { name: 'rowsPerPage', value: e.target.value } })}
             rowsPerPageOptions={ROWS_PER_PAGE}
             component="div"
           />
@@ -654,7 +988,7 @@ class TableComponent extends Component {
               <IconButton
                 color="secondary"
                 disabled={displayed.length === 0}
-                onClick={handleGraphRedirect}
+                onClick={() => handleGraphRedirect(columnFilterExclusions)}
               >
                 <TimelineIcon />
               </IconButton>
@@ -666,91 +1000,69 @@ class TableComponent extends Component {
   }
 }
 
+/**
+ * @namespace
+ * @property {Object} data - Object containing query results.
+ * @property {Object} detail - Record being displayed in detail view.
+ * @property {Array} displayed - Array of displayed nodes.
+ * @property {function} handleCheckAll - Method triggered when all rows are
+ * checked.
+ * @property {function} handleCheckbox - Method triggered when a single row is
+ * checked.
+ * @property {function} handleHideSelected - Method for hiding selected rows
+ * from the view.
+ * @property {function} handleNodeEditStart - Method triggered when user
+ * requests to edit a node.
+ * @property {function} handleShowAllNodes - Method for returning previously
+ * hidden rows to the view.
+ * @property {function} handleGraphRedirect - Handles routing to graph
+ * component.
+ * @property {function} handleDetailDrawerOpen - Handles opening of detail
+ * drawer to a given record.
+ * @property {function} handleSubsequentPagination - parent function to handle
+ * subsequent api calls.
+ * @property {Array} hidden - Array of hidden nodes.
+ * @property {Array} allProps - all non-base columns represented throughout the
+ * query results.
+ * @property {boolean} moreResults - Flag to tell component there could be more
+ * results to the query.
+ * @property {boolean} completedNext - Flag for whether or not component has
+ * completed the current subsequent query.
+ * @property {Array} storedFilters - filters stored for current session.
+ * Accessed on component init and stored on navigate to table.
+ * @property {Array} defaultOrder - List of columns to display in order.
+ * @property {Object} schema - Knowledgebase schema object.
+ */
 TableComponent.propTypes = {
-  /**
-   * @param {Object} data - Object containing query results.
-   */
   data: PropTypes.object.isRequired,
-  /**
-   * @param {Array} displayed - Array of displayed nodes.
-   */
-  displayed: PropTypes.array.isRequired,
-  /**
-   * @param {string} selectedId - Selected node identifier.
-   */
-  selectedId: PropTypes.string,
-  /**
-   * @param {function} handleCheckAll - Method triggered when all rows are
-   * checked.
-   */
+  detail: PropTypes.object,
+  displayed: PropTypes.array,
   handleCheckAll: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleNodeEditStart - Method triggered when user
-   * requests to edit a node.
-   */
-  handleNodeEditStart: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleClick - Method triggered when a row is clicked.
-   */
-  handleClick: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleCheckbox - Method triggered when a single row is
-   * checked.
-   */
   handleCheckbox: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleHideSelected - Method for hiding selected rows
-   * from the view.
-   */
   handleHideSelected: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleShowAllNodes - Method for returning previously
-   * hidden rows to the view.
-   */
   handleShowAllNodes: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleNewQuery - Handles new querying with new
-   * parameters.
-   */
-  handleNewQuery: PropTypes.func,
-  /**
-   * @param {function} handleGraphRedirect - Handles routing to graph
-   * component.
-   */
   handleGraphRedirect: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleSubsequentPagination - parent function to handle
-   * subsequent api calls.
-   */
+  handleDetailDrawerOpen: PropTypes.func.isRequired,
   handleSubsequentPagination: PropTypes.func,
-  /**
-   * @param {Array} hidden - Array of hidden nodes.
-   */
   hidden: PropTypes.array,
-  /**
-   * @param {Array} allProps - all non-base columns represented throughout the
-   * query results.
-   */
   allProps: PropTypes.array,
-  /**
-   * @param {boolean} moreResults - Flag to tell component there could be more
-   * results to the query.
-   */
   moreResults: PropTypes.bool,
-  /**
-   * @param {boolean} completedNext - Flag for whether or not component has
-   * completed the current subsequent query.
-   */
-  completedNext: PropTypes.bool.isRequired,
+  completedNext: PropTypes.bool,
+  storedFilters: PropTypes.array,
+  defaultOrder: PropTypes.array,
+  schema: PropTypes.object.isRequired,
 };
 
 TableComponent.defaultProps = {
-  selectedId: null,
+  detail: null,
   allProps: [],
   hidden: [],
-  handleNewQuery: null,
+  storedFilters: [],
   handleSubsequentPagination: null,
   moreResults: false,
+  displayed: [],
+  defaultOrder: DEFAULT_COLUMN_ORDER,
+  completedNext: true,
 };
 
 export default TableComponent;

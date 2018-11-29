@@ -1,0 +1,29 @@
+@import "../../globals";
+
+.alternating-table {
+  tr:nth-child(odd) {
+    background: #e8e8e8;
+  }
+}
+
+#sticky-row {
+  position: sticky;
+  top: -1px;
+  background: $background-light;
+  border: none;
+  th {
+    position: sticky;
+    top: -1px;
+    background: $background-light;
+    z-index: 1;
+  }
+}
+
+.user-group-grid {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.permissions-view {
+  margin: 3px 0;
+}

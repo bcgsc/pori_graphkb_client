@@ -4,7 +4,6 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import './ErrorView.css';
 import { Typography, Button, Tooltip } from '@material-ui/core';
@@ -18,64 +17,66 @@ class ErrorView extends Component {
     super(props);
     this.state = {
       tooltip: false,
-      body: null,
-      status: null,
+      error: null,
     };
   }
 
+  /**
+   * Initializes error message, or redirects to query page if none is present.
+   */
   componentDidMount() {
     const { history } = this.props;
     const { state } = history.location;
-    if (!state || !(state.status || state.body)) {
+    if (!state) {
       history.push('/query');
     } else {
-      const { status, body } = state;
-      this.setState({ body, status });
+      this.setState({ error: state });
     }
   }
 
   render() {
-    const { tooltip, body, status } = this.state;
-    if (!body || !status) return null;
     const {
+      tooltip,
       error,
+    } = this.state;
+    const { history } = this.props;
+    if (!error) return null;
+    const {
       message,
-      method,
       name,
       url,
       stacktrace,
-    } = body;
+      status,
+      statusText,
+    } = error;
 
-    const methodText = `${method ? `Method ${method}` : ''}${url ? `to url ${url}:` : ''}${message || ''}`;
+    const methodText = `${statusText || ''} ${url ? `to url ${url}` : ''}`;
 
     return (
       <div className="error-wrapper">
-        <Typography variant="display4" id="error-header">
+        <Typography variant="h1" id="error-header">
           Error
         </Typography>
         <div className="error-content">
-          <Typography variant="display2">
-            {`${status}: ${error || name}`}
-          </Typography>
-        </div>
-
-        <div className="error-content">
-          <Typography variant="title">
-            {!error ? '' : name}
+          <Typography variant="h3">
+            {`${status}: ${name}`}
           </Typography>
         </div>
         <div className="error-content">
-          <Typography variant="subheading">
+          <Typography variant="subtitle1">
             {methodText}
+          </Typography>
+        </div>
+        <div className="error-content">
+          <Typography variant="h6">
+            {message}
           </Typography>
         </div>
         <div id="spacer" />
         <div className="error-content" id="return-link">
-          <Link to="/query">
-            <Button variant="raised" color="primary">
-              Back
-            </Button>
-          </Link>
+          <Button variant="contained" color="primary" onClick={history.back}>
+            Back
+          </Button>
         </div>
         {stacktrace
           && (
@@ -96,7 +97,10 @@ class ErrorView extends Component {
                   </Button>
                 </CopyToClipboard>
               </Tooltip>
-              <Typography variant="subheading" id="stacktrace-text">
+              <Typography variant="body1">
+                Stacktrace:
+              </Typography>
+              <Typography variant="subtitle1" id="stacktrace-text">
                 {stacktrace}
               </Typography>
             </div>)}
@@ -104,11 +108,11 @@ class ErrorView extends Component {
     );
   }
 }
-
+/**
+ * @namespace
+ * @property {Object} history - Application routing history object.
+ */
 ErrorView.propTypes = {
-  /**
-   * @param {Object} history - Application routing history object.
-   */
   history: PropTypes.object.isRequired,
 };
 

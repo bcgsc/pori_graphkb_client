@@ -1,0 +1,46 @@
+@import "../../globals";
+
+.form-templater-group-wrapper {
+  width: 100%;
+  .form-templater-row-grid {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: repeat(2, calc(50% - 0.875rem));
+    grid-column-gap: 1.75rem;
+    width: 100%;
+    box-sizing: border-box;
+    @media (max-width: $breakpoint-mobile) {
+      grid-template-columns: 1fr;
+      grid-row-gap: 1rem;
+      display: block;
+    }
+    > * {
+      padding: 0;
+      display: inline-block;
+      > * {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        label {
+          width: 100%;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+}
+
+.form-templater-autosearch {
+  display: flex;
+  width: 100%;
+}
+.form-templater-help-icon {
+  margin: auto;
+  margin-left: 24px;
+}
+.radio {
+  margin-top: 28px;
+}
+.form-templater-embedded-selector {
+  display: flex;
+  flex-grow: 1;
+}

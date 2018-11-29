@@ -4,7 +4,7 @@
  */
 
 import * as jwt from 'jsonwebtoken';
-import config from '../config.json';
+import config from '../static/config';
 
 const { KEYS } = config;
 const { KB_TOKEN } = KEYS;
@@ -54,4 +54,14 @@ export default {
     return null;
   },
 
+  /**
+   * Returns true if user is in the 'admin' usergroup.
+   */
+  isAdmin: () => {
+    const token = localStorage.getItem(KB_TOKEN);
+    if (token && jwt.decode(token)) {
+      return !!jwt.decode(token).user.groups.find(group => group.name === 'admin');
+    }
+    return null;
+  },
 };

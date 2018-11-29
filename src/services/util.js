@@ -4,14 +4,78 @@
  */
 
 import * as jc from 'json-cycle';
-import config from '../config.json';
+import config from '../static/config';
 
-const { DEFAULT_PROPS } = config;
-const { PALLETE_SIZES } = config.GRAPH_DEFAULTS;
+const { PERMISSIONS } = config;
+const { PALLETE_SIZE } = config.GRAPH_DEFAULTS;
 const { NODE_INIT_RADIUS } = config.GRAPH_PROPERTIES;
-const ACRONYMS = ['id', 'uuid', 'ncit', 'uberon', 'doid', 'url'];
+const ACRONYMS = [
+  'id',
+  'uuid',
+  'ncit',
+  'uberon',
+  'doid',
+  'url',
+  'cds',
+  'hgnc',
+  'bcgsc',
+  'fda',
+  'null',
+  'rid',
+  'iupac',
+];
+
 const GRAPH_OBJECTS_KEY = 'graphObjects';
-const GRAPH_OPTIONS_KEY = 'graphOptions';
+const DEFAULT_CUTOFF = 25;
+
+
+/**
+ * Casts a value to string form with minimal formatting. Sets the value to
+ * 'null' if the value is null or undefined.
+ * @param {any} obj - Object to be formatted.
+ */
+const castToExist = (obj) => {
+  if (Array.isArray(obj)) {
+    if (obj.length > 0) {
+      return obj.join(', ');
+    }
+    return 'null';
+  }
+  if (obj && typeof obj === 'object') {
+    return Object.entries(obj).find((e) => {
+      const [k, v] = e;
+      return (
+        (typeof v !== 'object' || typeof v !== 'function')
+        && !k.startsWith('@'));
+    })[1].toString();
+  }
+  return obj === undefined || obj === null ? 'null' : obj.toString();
+};
+
+/**
+ * Parses a string and capitalizes known acronyms.
+ * @param {string | Array<string>} str - String to be parsed.
+ */
+const parseAcronyms = (str) => {
+  let words = str;
+  if (!Array.isArray(str)) {
+    words = str.split(' ');
+  }
+  ACRONYMS.forEach((acronym) => {
+    const re = new RegExp(`^${acronym}*$`, 'ig');
+    words.forEach((word, i) => {
+      words[i] = word.replace(re, match => match.toUpperCase());
+    });
+  });
+  return words.join(' ');
+};
+
+const shortenString = (str, cutoff = DEFAULT_CUTOFF) => {
+  if (str && str.length > cutoff) {
+    return `${str.substring(0, cutoff - 4).trim()}...`;
+  }
+  return str;
+};
 
 /**
  * Un-camelCase's input string and capitalizes each word. Also applies
@@ -25,58 +89,60 @@ const GRAPH_OPTIONS_KEY = 'graphOptions';
  * @param {string} str - camelCase'd string.
  */
 const antiCamelCase = (str) => {
-  let accstr = str;
+  let accstr = str.toString();
   if (accstr.startsWith('@')) accstr = accstr.slice(1);
   let words = [accstr];
   if (accstr.includes('.')) {
     words = accstr.split('.');
   }
 
-  words.forEach((word, i) => {
-    words[i] = word.replace(/[A-Z]/g, match => ` ${match}`).trim();
-  });
+  words = words.reduce((array, word) => {
+    const newWords = word.replace(/[A-Z]+|[0-9]+/g, match => ` ${match}`);
+    if (newWords) {
+      array.push(...newWords.split(' '));
+    } else {
+      array.push(word);
+    }
+    return array;
+  }, []);
 
-  ACRONYMS.forEach((acronym) => {
-    const re = new RegExp(`[^\\w]*${acronym}(?!\\w)`, 'ig');
-    words.forEach((word, i) => {
-      const w = word.replace(re, match => match.toUpperCase());
-      words[i] = w.charAt(0).toUpperCase() + w.slice(1);
-    });
-  });
-
-  accstr = words.join(' ');
-  return accstr.trim();
+  accstr = parseAcronyms(words).trim();
+  return accstr.charAt(0).toUpperCase() + accstr.slice(1);
 };
 
 /**
- * Returns a representative field of a given object. Defaults to:
- * name, then sourceId (defined in config.json: DEFAULT_PROPS), then if
- * neither are present, the first primitive type field in the object.
- * @example
- * > util.getPreview({name: 'bob', ...other})
- * > 'bob'
- * @example
- * > util.getPreview({sourceId: '123', color: 'blue'})
- * > '123'
- * @example
- * > util.getPreview({colors: ['red', 'green], height: '6ft'})
- * > '6ft'
- * @param {Object} obj - target data object.
+ * Infers the KB type string of a JS object.
+ * @param {any} obj - input object.
  */
-const getPreview = (obj) => {
-  let preview;
-  DEFAULT_PROPS.forEach((prop) => {
-    if (obj[prop]) {
-      if (!preview) {
-        preview = obj[prop];
-      }
+const parseKBType = (obj) => {
+  if (typeof obj === 'number') {
+    if (Number.isInteger(obj)) {
+      return 'integer';
     }
-  });
-  if (!preview) {
-    const prop = Object.keys(obj).find(key => typeof obj[key] !== 'object');
-    preview = obj[prop];
+    return 'float';
   }
-  return preview;
+  if (Array.isArray(obj)) {
+    return 'embeddedset';
+  }
+  if (obj && typeof obj === 'object') {
+    if (Object.keys(obj).includes('@rid')) {
+      return 'link';
+    }
+    return 'embedded';
+  }
+  return 'string';
+};
+
+/**
+ * Capitalizes sentences in input string.
+ * @param {string} str - input string.
+ */
+const formatStr = (str) => {
+  const newSentence = /\.\s\w/g;
+  const ret = parseAcronyms(castToExist(str))
+    .trim()
+    .replace(newSentence, match => match.toUpperCase());
+  return ret;
 };
 
 /**
@@ -156,39 +222,75 @@ const getTSVRepresentation = (value, key) => {
     const newKey = key.split('.')[1];
     return getTSVRepresentation(value[newKey], newKey);
   }
-  return getPreview(value);
+  return castToExist(value);
+};
+
+/**
+ * "Flattens" an object into a depth 1 object.
+ * @param {Object} obj - Object to be flattened.
+ *
+ * @example
+ * > const obj = {
+ *     a: {
+ *       b: 'e',
+ *     },
+ *     d: 'e',
+ *   };
+ *
+ * > flatten(obj);
+ * > {
+ *     a[b]: 'e',
+ *     d: 'e',
+ *   }
+ */
+const flatten = (obj) => {
+  const regex = /^[^[\]]+(?=(\[[^[\]]+\])*)/;
+  const flattened = {};
+
+  Object.keys(obj).forEach((key) => {
+    let value = obj[key];
+    if (value !== null && value !== undefined && value !== '') {
+      if (typeof value === 'object') {
+        value = flatten(value);
+        Object.keys(value).forEach((k) => {
+          const flattenedKey = k.replace(regex, match => `${key}[${match}]`);
+          flattened[flattenedKey] = value[k];
+        });
+      } else {
+        flattened[key] = value;
+      }
+    }
+  });
+  return flattened;
 };
 
 /**
  * Prepares a payload to be sent to the server for a POST, PATCH, or GET requst.
  * @param {Object} form - unprocessed form object containing user data.
- * @param {Array} editableProps - List of valid properties for given form.
- * @param {Array} exceptions - List of extra parameters not specified in editableProps.
+ * @param {Array} properties - List of valid properties for given form.
+ * @param {Array} extraProps - List of extra parameters not specified in objectSchema.
  */
-const parsePayload = (form, editableProps, exceptions) => {
-  const payload = Object.assign({}, form);
-  Object.keys(payload).forEach((key) => {
-    if (!payload[key]) delete payload[key];
-    // For link properties, must specify record id being linking to. Clear the rest.
-    if (key.includes('.@rid')) {
-      const nestedKey = key.split('.')[0];
-      if (editableProps.find(p => p.name === nestedKey)
-        || (exceptions && exceptions.find(p => p.name === nestedKey))
-      ) {
-        // Sets top level property to the rid: ie.
-        // 'source.@rid': #18:5 => 'source': #18:5
-        payload[key.split('.')[0]] = payload[key];
-        delete payload[key];
+const parsePayload = (form, properties, extraProps = [], isQuery = false) => {
+  const payload = {};
+  properties.forEach((prop) => {
+    const { name, type, default: defaultValue } = prop;
+    if (type === 'link') {
+      const formLink = form[`${name}.data`];
+      if (formLink && formLink['@rid']) {
+        payload[name] = formLink['@rid'];
       }
-    }
-    // Clears out all other unknown fields.
-    if (!editableProps.find(p => p.name === key)) {
-      if (!exceptions || !exceptions.find(p => p.name === key)) {
-        delete payload[key];
-      }
+    } else if (form[name] && !(defaultValue && form[name] === defaultValue)) {
+      payload[name] = form[name];
     }
   });
-  return payload;
+
+  extraProps.forEach((name) => {
+    if (form[name]) {
+      payload[name] = form[name];
+    }
+  });
+
+  return isQuery ? flatten(payload) : payload;
 };
 
 /**
@@ -197,40 +299,17 @@ const parsePayload = (form, editableProps, exceptions) => {
  * @param {string} type - object type ['link', 'node'].
  */
 const getPallette = (n, type) => {
-  const baseName = `${type.toUpperCase().slice(0, type.length - 1)}_COLORS_`;
-  const maxPalletteSize = PALLETE_SIZES[PALLETE_SIZES.length - 1];
-  for (let i = 0; i < PALLETE_SIZES.length; i += 1) {
-    if (n <= PALLETE_SIZES[i]) {
-      return config.GRAPH_DEFAULTS[baseName + PALLETE_SIZES[i]];
-    }
+  const baseName = `${type.toUpperCase().slice(0, type.length - 1)}_COLORS`;
+  if (n <= PALLETE_SIZE) {
+    return config.GRAPH_DEFAULTS[baseName];
   }
 
-  const list = config.GRAPH_DEFAULTS[baseName + maxPalletteSize];
-  for (let i = maxPalletteSize; i < n; i += 1) {
-    const color = `000000${Math.round(Math.random() * (255 ** 3)).toString(16)}`;
+  const list = config.GRAPH_DEFAULTS[baseName];
+  for (let i = PALLETE_SIZE; i < n; i += 1) {
+    const color = Math.round(Math.random() * (255 ** 3)).toString(16);
     list.push(`#${color.substr(color.length - 6)}`);
   }
   return list;
-};
-
-/**
- * Loads graph options state into localstorage.
- * @param {Object} data - graph options data.
- */
-const loadGraphOptions = (data) => {
-  localStorage.setItem(GRAPH_OPTIONS_KEY, JSON.stringify(data));
-};
-
-/**
- * Retrieves stored graph options data from localstorage.
- */
-const getGraphOptions = () => {
-  const data = localStorage.getItem(GRAPH_OPTIONS_KEY);
-  if (data) {
-    const obj = JSON.parse(data);
-    return obj;
-  }
-  return null;
 };
 
 /**
@@ -239,8 +318,13 @@ const getGraphOptions = () => {
  * @param {Object} data - graph data to be stored.
  */
 const loadGraphData = (search, data) => {
-  data.filteredSearch = search;
-  localStorage.setItem(GRAPH_OBJECTS_KEY, JSON.stringify(jc.decycle(data)));
+  const newData = Object.assign({ localStorageKey: search }, data);
+  try {
+    localStorage.setItem(GRAPH_OBJECTS_KEY, JSON.stringify(jc.decycle(newData)));
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('localstorage quota exceeded');
+  }
 };
 
 /**
@@ -251,53 +335,11 @@ const getGraphData = (search) => {
   const data = localStorage.getItem(GRAPH_OBJECTS_KEY);
   if (data) {
     const obj = jc.retrocycle(JSON.parse(data));
-    if (obj.filteredSearch === search) {
+    if (obj.localStorageKey === search) {
       return obj;
     }
   }
   return null;
-};
-
-/**
- * Updates valid properties and color mappings for graph objects.
- * @param {Array} newColumns - Current list of valid properties
- * @param {Object} node - new node object to be processed.
- * @param {Object} propsMap - Property map containing color mappings.
- */
-const loadColorProps = (newColumns, node, propsMap) => {
-  // Iterate over all props.
-  newColumns.forEach((prop) => {
-    let obj = node;
-    let key = prop;
-
-    // Nested prop condition
-    if (prop.includes('.')) {
-      key = prop.split('.')[1];
-      obj = node[prop.split('.')[0]] || {};
-    }
-
-    if (obj[key] && (obj[key].length < 50 || key === 'name')
-      && !Array.isArray(obj[key])
-    ) {
-      if (propsMap.nodes[prop] === undefined) {
-        propsMap.nodes[prop] = [obj[key]];
-      } else if (
-        propsMap.nodes[prop] // If null, fails here
-        && !propsMap.nodes[prop].includes(obj[key])
-      ) {
-        propsMap.nodes[prop].push(obj[key]);
-      }
-    } else if (propsMap.nodes[prop] && !propsMap.nodes[prop].includes('null')) {
-      // This null represents nodes that do not contain specified property.
-      propsMap.nodes[prop].push('null');
-    }
-    // Permanently removes certain properties from being eligible to display
-    // due to content length.
-    if (obj[key] && obj[key].length >= 50 && key !== 'name') {
-      propsMap.nodes[prop] = null;
-    }
-  });
-  return propsMap;
 };
 
 /**
@@ -308,21 +350,19 @@ const loadColorProps = (newColumns, node, propsMap) => {
  * @param {Object} expandable - Expandable flags map.
  */
 const expanded = (expandedEdgeTypes, graphObjects, rid, expandable) => {
+  const newExpandable = Object.assign({}, expandable);
   let targetFlag = false;
   expandedEdgeTypes.forEach((e) => {
     if (graphObjects[rid][e]) {
       graphObjects[rid][e].forEach((l) => {
-        if (
-          !graphObjects[l['@rid'] || l]
-          && !((l.in || {})['@class'] === 'Statement' || (l.out || {})['@class'] === 'Statement')
-        ) {
+        if (!graphObjects[l['@rid'] || l]) {
           targetFlag = true;
         }
       });
     }
   });
-  expandable[rid] = targetFlag;
-  return expandable;
+  newExpandable[rid] = targetFlag;
+  return newExpandable;
 };
 
 /**
@@ -340,36 +380,76 @@ const positionInit = (x, y, i, n) => {
 };
 
 /**
- * Selects color for input graph object based on graph state.
- * @param {Object} obj - object to be colored.
- * @param {string} objColor - property to map color onto.
- * @param {Object} objColors - map of colors for each property.
+ * Parses permission value and converts to binary representation as a bit
+ * array, LSD at index 0.
+ *
+ * @param {number} permissionValue - Permission value as a decimal value.
+ *
+ * @example
+ * >parsePermission(7)
+ * [1, 1, 1, 0]
+ *
+ * @example
+ * >parsePermission(8)
+ * [0, 0, 0, 1]
  */
-const getColor = (obj, objColor, objColors) => {
-  let colorKey = '';
-  if (objColor && objColor.includes('.')) {
-    const keys = objColor.split('.');
-    colorKey = (obj.data[keys[0]] || {})[keys[1]];
-  } else if (objColor) {
-    colorKey = obj.data[objColor];
+const parsePermission = (permissionValue) => {
+  let pv = permissionValue;
+  const retstr = [0, 0, 0, 0];
+
+  for (let i = 0; i < PERMISSIONS.length; i += 1) {
+    if (pv % (2 ** (i + 1)) !== 0) {
+      retstr[i] = 1;
+      pv -= (2 ** i);
+    }
   }
-  return objColors[colorKey];
+  return retstr;
+};
+
+
+/**
+ * Returns a list of object class properties that are of a given type.
+ * @param {Object} kbClass - Knowledgebase class object as defined in the schema.
+ * @param {string} type - KB class type.
+ */
+const getPropOfType = (kbClass, type) => Object.values(kbClass)
+  .filter(prop => prop.type === type);
+
+/**
+ * Sorting method to pass into Array.sort().
+ * @param {Array} [order=[]] - order for props to be sorted in.
+ * @param {string} [prop='name'] - nested property to sort objects by.
+ */
+const sortFields = (order = [], prop = 'name') => (a, b) => {
+  const sortA = prop ? a[prop] : a;
+  const sortB = prop ? b[prop] : b;
+  if (order.indexOf(sortB) === -1) {
+    return -1;
+  }
+  if (order.indexOf(sortA) === -1) {
+    return 1;
+  }
+  return order.indexOf(sortA) < order.indexOf(sortB)
+    ? -1
+    : 1;
 };
 
 export default {
   antiCamelCase,
-  getPreview,
   expandEdges,
   getEdgeLabel,
   getTSVRepresentation,
   parsePayload,
   getPallette,
-  getGraphOptions,
-  loadGraphOptions,
   loadGraphData,
   getGraphData,
-  loadColorProps,
   expanded,
   positionInit,
-  getColor,
+  parsePermission,
+  getPropOfType,
+  castToExist,
+  formatStr,
+  shortenString,
+  parseKBType,
+  sortFields,
 };

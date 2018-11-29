@@ -6,48 +6,48 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './AdvancedQueryView.css';
 import {
-  TextField,
   Button,
   Typography,
   MenuItem,
-  List,
   ListItem,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  RadioGroup,
-  Radio,
-  Tooltip,
-  InputAdornment,
   Paper,
   Snackbar,
 } from '@material-ui/core/';
-import HelpIcon from '@material-ui/icons/Help';
 import * as qs from 'querystring';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
-import AutoSearchComponent from '../../components/AutoSearchComponent/AutoSearchComponent';
-import api from '../../services/api';
 import util from '../../services/util';
-import config from '../../config';
+import FormTemplater from '../../components/FormTemplater/FormTemplater';
+import config from '../../static/config';
+import { withSchema } from '../../components/SchemaContext/SchemaContext';
+
+const DEFAULT_ORDER = [
+  'name',
+  'sourceId',
+  'source',
+  'subsets',
+];
+
+const SNACKBAR_DURATION = 6000;
 
 /**
  * View for in-depth database query building. Form submissions will route to
  * the data results route to display the returned data. Forms are dynamically
  * generated based off of the database schema.
  */
-class AdvancedQueryView extends Component {
+class AdvancedQueryViewBase extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       form: null,
-      ontologyTypes: [],
+      classes: [],
       message: '',
     };
 
     this.bundle = this.bundle.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleClassChange = this.handleClassChange.bind(this);
+    this.handleNestedClassChange = this.handleNestedClassChange.bind(this);
     this.handleClose = this.handleClose.bind(this);
   }
 
@@ -55,56 +55,25 @@ class AdvancedQueryView extends Component {
    * Initializes valid sources.
    */
   async componentDidMount() {
-    const { history } = this.props;
-
+    const { history, schema } = this.props;
     if (
       history.location
       && history.location.state
-      && history.location.state.body
-      && history.location.state.body.message
+      && history.location.state.message
     ) {
-      this.setState({ message: history.location.state.body.message });
+      const { message, name } = history.location.state;
+      this.setState({ message: `${name || ''}: ${message}` });
     }
 
-    const form = {};
-    const schema = await api.getSchema();
-    const ontologyTypes = [{ name: '', properties: null, route: 'ontologies' }];
-    ontologyTypes.push(...api.getOntologies(schema));
-    form['@class'] = ontologyTypes[0].name;
+    const classes = [];
+    classes.push(...schema.getOntologies());
+    classes.push(...schema.getVariants());
+    classes.push({ name: 'Statement' });
+    const form = schema.initModel({}, 'Ontology', config.ONTOLOGY_QUERY_PARAMS);
 
-    const editableProps = (await api.getClass(form['@class'])).properties;
-    editableProps.push(...config.ONTOLOGY_QUERY_PARAMS);
-    editableProps.forEach((prop) => {
-      const {
-        name,
-        type,
-        linkedClass,
-        defaultValue,
-      } = prop;
-      switch (type) {
-        case 'link':
-          form[`${name}.@rid`] = '';
-          form[name] = '';
-
-          if (!linkedClass) {
-            form[`${name}.class`] = '';
-          }
-          form[`${name}.sourceId`] = '';
-
-          break;
-        case 'boolean':
-          form[name] = defaultValue.toString() === 'true';
-          break;
-        default:
-          form[name] = name === 'name' ? (history.location.state || {}).name : defaultValue || '';
-          break;
-      }
-    });
     this.setState({
-      ontologyTypes,
+      classes,
       form,
-      editableProps,
-      schema,
     });
   }
 
@@ -112,11 +81,12 @@ class AdvancedQueryView extends Component {
    * Formats query string to be passed into url.
    */
   bundle() {
-    const { form, editableProps } = this.state;
-    const params = [{ name: '@class', type: 'string' }];
-    params.push(...config.ONTOLOGY_QUERY_PARAMS);
-    const payload = util.parsePayload(form, editableProps, params);
-
+    const { form } = this.state;
+    const { schema } = this.props;
+    const params = ['@class'];
+    const properties = schema.getProperties(form['@class']) || [];
+    properties.push(...config.ONTOLOGY_QUERY_PARAMS);
+    const payload = util.parsePayload(form, properties, params, true);
     return qs.stringify(payload);
   }
 
@@ -124,48 +94,66 @@ class AdvancedQueryView extends Component {
    * Updates main parameters after user input.
    * @param {Event} e - User input event.
    */
-  handleChange(e) {
+  handleChange(e, nested) {
     const { form } = this.state;
-    form[e.target.name] = e.target.value;
+    const { schema } = this.props;
+    const {
+      name,
+      value,
+    } = e.target;
 
-    if (e.target['@rid']) {
-      form[`${e.target.name}.@rid`] = e.target['@rid'];
-    } else if (form[`${e.target.name}.@rid`]) {
-      form[`${e.target.name}.@rid`] = '';
-    }
-    if (e.target.sourceId) {
-      form[`${e.target.name}.sourceId`] = e.target.sourceId;
-    } else if (form[`${e.target.name}.sourceId`]) {
-      form[`${e.target.name}.sourceId`] = '';
+    if (nested) {
+      form[nested][name] = value;
+      if (name.includes('.data') && value) {
+        form[nested][name.split('.')[0]] = schema.getPreview(value);
+      }
+    } else {
+      form[name] = value;
+      if (name.includes('.data') && value) {
+        form[name.split('.')[0]] = schema.getPreview(value);
+      }
     }
 
     this.setState({ form });
   }
 
+
   /**
    * Re renders form input fields based on class editable properties.
-   * @param {Event} e - Class selection event
+   * @param {Event} e - User class selection event.
    */
   async handleClassChange(e) {
-    const newNodeClass = e.target.value;
-    const editableProps = (await api.getClass(newNodeClass)).properties;
     const { form } = this.state;
-    editableProps.forEach((prop) => {
-      const { name, type, defaultValue } = prop;
-      if (form[name] === undefined) {
-        if (type === 'boolean') {
-          form[name] = defaultValue.toString() === 'true';
-        } else {
-          form[name] = '';
+    const { schema } = this.props;
+    const newForm = schema.initModel(form, e.target.value || 'Ontology', config.ONTOLOGY_QUERY_PARAMS);
+    this.setState({ form: newForm });
+  }
+
+  /**
+ * Handles changes in an embedded property's class.
+ * @param {Event} e - new class selection event.
+ * @param {string} nested - nested property key.
+ */
+  handleNestedClassChange(e, nested) {
+    const { form } = this.state;
+    const { schema } = this.props;
+    const { value } = e.target;
+    const classSchema = schema.getProperties(form['@class']);
+    if (schema.getProperties(value)) {
+      const abstractClass = classSchema
+        .find(p => p.name === nested).linkedClass.name;
+      const varKeys = classSchema
+        .filter(p => p.linkedClass && p.linkedClass.name === abstractClass)
+        .map(p => p.name);
+      varKeys.forEach((key) => {
+        if ((form[key]['@class'] && form[key]['@class'] !== value) || key === nested) {
+          form[key] = schema.initModel({}, value);
         }
-      }
-    });
-    editableProps.push(...config.ONTOLOGY_QUERY_PARAMS);
-    form['@class'] = e.target.value;
-    this.setState({
-      form,
-      editableProps,
-    });
+      });
+    } else {
+      form[nested] = { '@class': '' };
+    }
+    this.setState({ form });
   }
 
   /**
@@ -178,114 +166,14 @@ class AdvancedQueryView extends Component {
   render() {
     const {
       form,
-      ontologyTypes,
-      editableProps,
+      classes,
       message,
-      schema,
     } = this.state;
-    const { history } = this.props;
+    const { history, schema } = this.props;
 
     if (!form) return null;
-
-    const formatInputSection = (key, value) => {
-      const property = editableProps.find(prop => prop.name === key);
-      if (!property) return null;
-
-      const {
-        type,
-        linkedClass,
-        description,
-      } = property;
-      if (typeof value !== 'object') {
-        // Radio group component for boolean types.
-        if (type === 'boolean') {
-          return (
-            <ListItem className="input-wrapper" key={key}>
-              <FormControl component="fieldset">
-                <FormLabel>
-                  {util.antiCamelCase(key)}
-                </FormLabel>
-                <RadioGroup
-                  name={key}
-                  onChange={this.handleChange}
-                  value={value.toString()}
-                  style={{ flexDirection: 'row' }}
-                >
-                  <FormControlLabel value="true" control={<Radio />} label="Yes" />
-                  <FormControlLabel value="false" control={<Radio />} label="No" />
-                </RadioGroup>
-              </FormControl>
-            </ListItem>
-          );
-        }
-
-        // For text fields, apply some final changes for number inputs.
-        if (type !== 'link') {
-          let t;
-          let step;
-          if (type === 'string') {
-            t = 'text';
-          } else if (type === 'integer' || type === 'long') {
-            t = 'number';
-            step = 1;
-          }
-
-          return (
-            <ListItem className="input-wrapper" key={key}>
-              <TextField
-                id={key}
-                label={util.antiCamelCase(key)}
-                value={value}
-                onChange={this.handleChange}
-                className="text-input"
-                name={key}
-                type={t || ''}
-                step={step || ''}
-                multiline={t === 'text'}
-                InputProps={{
-                  endAdornment: description && (
-                    <InputAdornment position="end">
-                      <Tooltip title={description}>
-                        <HelpIcon color="primary" />
-                      </Tooltip>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </ListItem>
-          );
-        }
-        // If type is a link to another record, must find that record in the
-        // database and store its rid.
-
-        // Decide which endpoint to query.
-        let endpoint;
-        if (linkedClass) {
-          endpoint = schema[linkedClass].route.slice(1);
-        }
-
-        return (
-          <ListItem key={key} style={{ display: 'block' }}>
-            <div>
-              <AutoSearchComponent
-                value={value}
-                onChange={this.handleChange}
-                name={key}
-                label={util.antiCamelCase(key)}
-                id={key}
-                limit={30}
-                endpoint={endpoint}
-                property={!linkedClass ? ['name', 'sourceId'] : undefined}
-              />
-            </div>
-          </ListItem>
-        );
-      }
-      if (Array.isArray(value)) {
-        return null;
-      }
-      return null;
-    };
+    const props = schema.getProperties(form['@class']) || [];
+    props.push(...config.ONTOLOGY_QUERY_PARAMS);
 
     return (
       <div className="adv-wrapper" elevation={4}>
@@ -293,7 +181,7 @@ class AdvancedQueryView extends Component {
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
           open={!!message}
           onClose={this.handleClose}
-          autoHideDuration={3000}
+          autoHideDuration={SNACKBAR_DURATION}
           message={(
             <span>
               {message}
@@ -301,52 +189,67 @@ class AdvancedQueryView extends Component {
           )}
         />
         <Paper elevation={4} className="adv-header">
-          <Typography variant="headline" id="adv-title">
+          <Button
+            onClick={() => history.push('/query/advanced/builder')}
+            variant="outlined"
+          >
+            Query Builder
+          </Button>
+          <Typography variant="h5" id="adv-title">
             Advanced Query
           </Typography>
         </Paper>
-        <Paper elevation={4}>
-          <List component="nav">
-            <ListItem className="input-wrapper">
-              <ResourceSelectComponent
-                value={form['@class']}
-                onChange={this.handleClassChange}
-                name="@class"
-                label="Class"
-                id="class-adv"
-                resources={ontologyTypes}
-              >
-                {resource => (
-                  <MenuItem key={resource.name} value={resource.name}>
-                    {resource.name ? resource.name : '---'}
-                  </MenuItem>
-                )}
-              </ResourceSelectComponent>
-            </ListItem>
-            {Object.keys(form)
-              .filter(key => !key.includes('.'))
-              .map(key => formatInputSection(key, form[key]))
-            }
-          </List>
+        <Paper elevation={4} className="adv-grid">
+          <ListItem className="input-wrapper">
+            <ResourceSelectComponent
+              value={form['@class']}
+              onChange={this.handleClassChange}
+              name="@class"
+              label="Class"
+              id="class-adv"
+              resources={classes}
+            >
+              {resource => (
+                <MenuItem key={resource.name} value={resource.name}>
+                  {resource.name ? util.antiCamelCase(resource.name) : '---'}
+                </MenuItem>
+              )}
+            </ResourceSelectComponent>
+          </ListItem>
+          <FormTemplater
+            model={form}
+            propSchemas={props}
+            onChange={this.handleChange}
+            schema={schema}
+            sort={util.sortFields(DEFAULT_ORDER)}
+            ignoreRequired
+            onClassChange={this.handleNestedClassChange}
+            pairs={{
+              range: ['start', 'end'],
+              sourceId: ['sourceId', 'sourceIdVersion'],
+              trialRange: ['startYear', 'completionYear'],
+              location: ['country', 'city'],
+            }}
+          />
         </Paper>
         <Paper elevation={4} id="adv-nav-buttons">
           <Button
-            variant="outlined"
             color="secondary"
-            onClick={() => history.push({ pathname: '/query', state: this.state })}
+            variant="outlined"
             size="large"
+            onClick={() => history.push({ pathname: '/query' })}
           >
             Back
           </Button>
           <Button
             color="primary"
-            variant="raised"
+            variant="contained"
+            size="large"
             id="search-button"
             onClick={() => history.push({
               pathname: '/data/table',
               search: this.bundle(),
             })}
-            size="large"
           >
             Search
           </Button>
@@ -356,11 +259,22 @@ class AdvancedQueryView extends Component {
   }
 }
 
-AdvancedQueryView.propTypes = {
-  /**
-   * @param {object} history - Application history state object.
-   */
+/**
+ * @namespace
+ * @property {Object} history - Application history state object.
+ * @property {Object} schema - Knowledgebase schema object.
+ */
+AdvancedQueryViewBase.propTypes = {
   history: PropTypes.object.isRequired,
+  schema: PropTypes.object.isRequired,
 };
 
-export default AdvancedQueryView;
+const AdvancedQueryView = withSchema(AdvancedQueryViewBase);
+
+/**
+ * Export consumer component and regular component for testing.
+ */
+export {
+  AdvancedQueryView,
+  AdvancedQueryViewBase,
+};

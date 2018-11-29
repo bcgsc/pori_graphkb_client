@@ -35,4 +35,7 @@ Thumbs.db
 
 *.css
 src/index.css
-.eslintrc.json
+/jsdoc
+/build
+/cypress/videos
+/cypress/screenshots

@@ -1,11 +1,10 @@
 /**
  * @module /views/FeedbackView
  */
-
 import React from 'react';
 import './FeedbackView.css';
 import { Typography, Paper } from '@material-ui/core';
-import config from '../../config.json';
+import config from '../../static/config';
 
 const { FEEDBACK_EMAIL, FEEDBACK_HIPCHAT, JIRA_LINK } = config;
 
@@ -17,24 +16,22 @@ function FeedbackView() {
   const jiraLink = <a rel="noopener noreferrer" target="_blank" href={JIRA_LINK}>KBDEV</a>;
   return (
     <div className="feedback-wrapper">
-      <div className="feedback-grid">
-        <Paper className="feedback feedback-header" elevation={4}>
-          <Typography component="h1" variant="headline">Feedback</Typography>
-        </Paper>
-        <Paper className="feedback feedback-body" elevation={4}>
-          <Typography variant="subheading" paragraph>Questions</Typography>
-          <Typography variant="body1" paragraph>
-            Email questions to: {emailLink}, or send through HipChat to {FEEDBACK_HIPCHAT}.
-          </Typography>
-        </Paper>
-        <Paper className="feedback feedback-body" elevation={4}>
-          <Typography variant="subheading" paragraph>Feature Requests and Bug reports</Typography>
-          <Typography variant="body1" paragraph>
-            Create JIRA tickets for feature requests, bug reports, and big
+      <Paper className="feedback-header" elevation={4}>
+        <Typography variant="h5">Feedback</Typography>
+      </Paper>
+      <Paper className="feedback-body" elevation={4}>
+        <Typography variant="subtitle1" paragraph>Questions</Typography>
+        <Typography paragraph>
+          Email questions to: {emailLink}, or send through HipChat to {FEEDBACK_HIPCHAT}.
+        </Typography>
+      </Paper>
+      <Paper className="feedback-body" elevation={4}>
+        <Typography variant="subtitle1" paragraph>Feature Requests and Bug reports</Typography>
+        <Typography paragraph>
+          Create JIRA tickets for feature requests, bug reports, and big
             questions that might require more discussion, under the {jiraLink} project.
-          </Typography>
-        </Paper>
-      </div>
+        </Typography>
+      </Paper>
     </div>
   );
 }

@@ -11,9 +11,9 @@ describe('Node Form Test', () => {
     cy.visit('/add');
     cy.contains('Disease');
     cy.get('#submit-btn').should('disabled');
-    cy.get('input[name=source][type=text]').type('test').wait(100);
+    cy.get('input[name=source][type=text]').type('ncit').wait(100);
     cy.get('div.droptions ul li:first').click();
-    cy.get('textarea[name=sourceId][type=text]').type('test').wait(100);
+    cy.get('textarea[name=sourceId][type=text]').type('ncit').wait(100);
     cy.get('#submit-btn').should('not.disabled');
 
     cy.get('input[name=subset]').type('cypress{enter}');
@@ -21,10 +21,9 @@ describe('Node Form Test', () => {
     cy.get('#relationship-add td div.resource-select').each((resourceSelect, i) => {
       if (i === 1) {
         cy.wrap(resourceSelect).click();
-        cy.get('div[role=document]');
-        cy.get('li[data-value="#15:12"]').click();
-        cy.contains('test');
-        cy.get('#relationship-type').click().wait(100).click();
+        cy.get('div[role=document] li:first').click();
+        cy.contains('ncit');
+        cy.get('#relationship-type div[role=button]').click();
         cy.contains('SubClassOf').click();
         cy.contains('SubClassOf');
 
@@ -33,10 +32,10 @@ describe('Node Form Test', () => {
         cy.contains('hasSubClass');
 
         cy.get('div.relationships-wrapper input[name=name]').type('angiosarcoma').wait(500);
-        cy.contains('pediatric angiosarcoma').click();
+        cy.get('div[role=listbox] li:first').click();
 
         cy.get('div.relationships-wrapper input[name=name]').type('{backspace}').wait(500);
-        cy.contains('pediatric angiosarcoma').click();
+        cy.get('div[role=listbox] li:first').click();
 
         cy.get('#relationship-add td button[type=button]:first').click();
         cy.get('tbody tr').then(list => expect(list.length).to.be.eq(2));
@@ -48,22 +47,20 @@ describe('Node Form Test', () => {
     cy.visit('/add');
     cy.contains('Disease');
     cy.get('#submit-btn').should('disabled');
-    cy.get('input[name=source][type=text]').type('test').wait(100);
+    cy.get('input[name=source][type=text]').type('ncit').wait(100);
     cy.get('div.droptions ul li:first').click();
-    cy.get('textarea[name=sourceId][type=text]').type('test').wait(100);
+    cy.get('textarea[name=sourceId][type=text]').type('ncit').wait(100);
     cy.get('#submit-btn').should('not.disabled');
-    cy.get('#submit-btn').click();
-    cy.contains('Completed!');
   });
 
   it('Edit test', () => {
     cy.get('button.advanced-button').click();
     cy.url().should('includes', '/query/advanced');
-    cy.get('input[name=source]').type('test');
+    cy.get('input[name=source]').type('ncit');
     cy.get('div.droptions li:first').click();
     cy.get('#search-button').click();
-    cy.get('button.detail-btn:first').click();
-    cy.get('div.node-edit-btn button').click();
+    cy.get('table tbody tr:first').click({ force: true });
+    cy.get('div.detail-edit-btn button').click();
     cy.url().should('includes', '/edit');
     cy.get('textarea[name=sourceId]').invoke('text').should('not.empty');
     cy.get('input[name=source]').should('not.have.value', '');
@@ -71,8 +68,9 @@ describe('Node Form Test', () => {
     cy.contains('Really Delete this Term?').should('exist');
     cy.get('div[role=dialog] button:first').click();
     cy.get('#submit-btn').click();
-    cy.contains('Completed!');
-    cy.get('div[role=alertdialog] button').click();
+    cy.get('path[d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"]')
+      .should('exist');
+    cy.get('div.notification-drawer button').click();
     cy.url().should('includes', '/query');
   });
 });

@@ -41,7 +41,7 @@ class LoginView extends Component {
   componentDidMount() {
     const { history, handleLogOut } = this.props;
     const { timedout } = history.location.state || {};
-    if (!auth.getToken()) {
+    if (!auth.getToken() || auth.isExpired()) {
       handleLogOut();
     }
     this.setState({ timedout: !!timedout });
@@ -66,28 +66,26 @@ class LoginView extends Component {
    * Makes authentication request to api.
    * @param {Event} e - Submit event.
    */
-  handleSubmit(e) {
+  async handleSubmit(e) {
     e.stopPropagation();
     e.preventDefault();
 
     const { username, password } = this.state;
     const { history, handleAuthenticate } = this.props;
 
-    api
-      .post('/token', {
+    try {
+      const response = await api.post('/token', {
         username,
         password,
-      })
-      .then((response) => {
-        auth.loadToken(response.kbToken);
-        handleAuthenticate();
-        history.push('/query');
-      })
-      .catch((error) => {
-        if (error.status === 401) {
-          this.setState({ invalid: true });
-        }
       });
+      auth.loadToken(response.kbToken);
+      handleAuthenticate();
+      history.push('/query');
+    } catch (error) {
+      if (error.status === 401) {
+        this.setState({ invalid: true });
+      }
+    }
   }
 
   /**
@@ -114,7 +112,6 @@ class LoginView extends Component {
             </span>
           )}
         />
-
         <form className="login-form" onSubmit={this.handleSubmit}>
           <TextField
             className="login-input"
@@ -136,14 +133,14 @@ class LoginView extends Component {
             required
             error={invalid}
           />
-          <Button type="submit" color="primary" variant="raised">
+          <Button type="submit" color="primary" variant="contained">
             Login
           </Button>
           <Typography variant="caption" id="caption">
             Log in with your BC GSC web credentials
           </Typography>
           {invalid && (
-            <Typography variant="subheading" id="invalid-meessage">
+            <Typography variant="subtitle1" id="invalid-meessage">
               Invalid Username or Password
             </Typography>
           )}
@@ -153,18 +150,15 @@ class LoginView extends Component {
   }
 }
 
+/**
+ * @namespace
+ * @property {object} history -  Application history object.
+ * @property {function} handleLogOut - Updates parent state on unauthorized user.
+ * @property {function} handleAuthenticate - Updates parent state on successful login.
+ */
 LoginView.propTypes = {
-  /**
-   * @param {object} history -  Application history object.
-   */
   history: PropTypes.object.isRequired,
-  /**
-   * @param {function} handleLogOut - Updates parent state on unauthorized user.
-   */
   handleLogOut: PropTypes.func.isRequired,
-  /**
-   * @param {function} handleAuthenticate - Updates parent state on successful login.
-   */
   handleAuthenticate: PropTypes.func.isRequired,
 };
 

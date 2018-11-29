@@ -1,7 +1,6 @@
 /**
  * @module /views/DataView
  */
-
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './DataView.css';
@@ -9,27 +8,20 @@ import * as jc from 'json-cycle';
 import { Route, Redirect, Switch } from 'react-router-dom';
 import {
   CircularProgress,
-  Drawer,
-  IconButton,
   Snackbar,
   Button,
   Typography,
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import { withStyles } from '@material-ui/core/styles';
 import qs from 'qs';
+import omit from 'lodash.omit';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
-import NodeDetailComponent from '../../components/NodeDetailComponent/NodeDetailComponent';
+import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
+import { withSchema } from '../../components/SchemaContext/SchemaContext';
 import api from '../../services/api';
+import config from '../../static/config';
 
-const styles = {
-  paper: {
-    width: '500px',
-    '@media (max-width: 768px)': { width: 'calc(100% - 1px)' },
-  },
-};
-
+const { DEFAULT_NEIGHBORS } = config;
 const DEFAULT_LIMIT = 1000;
 
 /**
@@ -42,23 +34,59 @@ const DEFAULT_LIMIT = 1000;
  * individual record GETs throughout the user's session.
  *
  */
-class DataView extends Component {
+class DataViewBase extends Component {
+  /**
+   * Makes API GET call to specified endpoint, with specified query parameters.
+   * @param {string} route - API endpoint.
+   * @param {Object} queryParams - Query parameters object.
+   * @param {Array} omitted - List of parameters to strip from API call.
+   */
+  static async makeApiQuery(route, queryParams, omitted = []) {
+    const response = await api.get(`${route}?${qs.stringify(omit(queryParams, omitted))}`);
+    const list = jc.retrocycle(response).result;
+    return list;
+  }
+
+  /**
+   * Prepares next query function.
+   * @param {string} route - API route.
+   * @param {Object} queryParams - Query parameters key/value pairs.
+   * @param {Array} prevResult - Previous query results.
+   * @param {Array} omitted - List of property keys to omit during next query.
+   */
+  static prepareNextPagination(route, queryParams, prevResult, omitted = []) {
+    const nextQueryParams = queryParams;
+    if (prevResult.length >= queryParams.limit) {
+      nextQueryParams.skip = Number(queryParams.limit) + Number(queryParams.skip || 0);
+      return {
+        next: () => DataViewBase.makeApiQuery(route, nextQueryParams, omitted),
+        moreResults: true,
+        filteredSearch: nextQueryParams,
+      };
+    }
+    return {
+      next: null,
+      moreResults: false,
+    };
+  }
+
   constructor(props) {
     super(props);
     this.state = {
-      loginRedirect: false,
       data: null,
       displayed: [],
       hidden: [],
-      selectedId: null,
       allProps: [],
+      storedFilters: [],
       detail: null,
       next: null,
       completedNext: true,
       filteredSearch: null,
+      moreResults: false,
     };
 
     this.handleClick = this.handleClick.bind(this);
+    this.processData = this.processData.bind(this);
 
     // TableComponent methods
     this.handleCheckbox = this.handleCheckbox.bind(this);
@@ -74,7 +102,6 @@ class DataView extends Component {
 
     // NodeDetailComponent methods
     this.handleNodeEditStart = this.handleNodeEditStart.bind(this);
-    this.handleNewQuery = this.handleNewQuery.bind(this);
 
     // Routing methods
     this.handleGraphRedirect = this.handleGraphRedirect.bind(this);
@@ -85,71 +112,80 @@ class DataView extends Component {
    * Queries the api and loads results into component state.
    */
   async componentDidMount() {
-    const dataMap = {};
-    const { loginRedirect } = this.state;
-    const { history } = this.props;
+    const { history, schema } = this.props;
 
-    const schema = await api.getSchema();
-    const filteredSearch = qs.parse(history.location.search);
+    const queryParams = qs.parse(history.location.search.slice(1));
     let route = '/ontologies';
+    const omitted = [];
+    const kbClass = schema.get(queryParams['@class']);
+    if (kbClass) {
+      ({ routeName: route } = kbClass);
+      omitted.push('@class');
+    }
+    queryParams.neighbors = queryParams.neighbors || DEFAULT_NEIGHBORS;
+    queryParams.limit = queryParams.limit || DEFAULT_LIMIT;
+    const response = await DataViewBase.makeApiQuery(route, queryParams, omitted);
+    const { data, allProps } = this.processData(response);
+    const {
+      next,
+      moreResults,
+      filteredSearch,
+    } = DataViewBase.prepareNextPagination(route, queryParams, response, omitted);
 
-    if (filteredSearch['@class'] && schema[filteredSearch['@class']]) {
-      route = schema[filteredSearch['@class']].route || filteredSearch['@class'];
+    this.setState({
+      filteredSearch: filteredSearch || queryParams,
+      moreResults,
+      next,
+      data,
+      allProps,
+    });
+  }
+
+  /**
+   * Processes ontology data and updates properties map.
+   * @param {Array} queryResults - List of returned records.
+   * @param {Object} schema - Knowledgebase db schema.
+   */
+  processData(queryResults) {
+    let { allProps, data } = this.state;
+    const { schema } = this.props;
+    if (!data) {
+      data = {};
+    }
+    if (!allProps || allProps.length === 0) {
+      allProps = ['@rid', '@class'];
     }
 
-    let allProps = ['@rid', '@class'];
-    try {
-      const data = await api.get(`${route}?${qs.stringify(filteredSearch).slice(3)}&neighbors=3`);
-      const cycled = jc.retrocycle(data.result);
+    queryResults.forEach((record) => {
+      allProps = schema.collectOntologyProps(record, allProps);
+      data[record['@rid']] = record;
+    });
 
-      cycled.forEach((ontologyTerm) => {
-        allProps = api.collectOntologyProps(ontologyTerm, allProps, schema);
-        dataMap[ontologyTerm['@rid']] = ontologyTerm;
-      });
-
-      if (cycled.length >= (filteredSearch.limit || DEFAULT_LIMIT)) {
-        const nextFilteredSearch = Object.assign({}, filteredSearch);
-        nextFilteredSearch.skip = filteredSearch.limit || DEFAULT_LIMIT;
-        this.setState({
-          next: () => api.get(`${route}?${qs.stringify(nextFilteredSearch).slice(3)}&neighbors=3`),
-          moreResults: true,
-        });
-      }
-      this.setState({
-        data: dataMap,
-        selectedId: Object.keys(dataMap)[0],
-        loginRedirect,
-        allProps,
-        schema,
-        filteredSearch,
-        edges: api.getEdges(schema),
-      });
-    } catch (e) {
-      console.error(e);
-    }
+    return { data, allProps };
   }
 
   /**
    * Triggered function for when a node object is clicked in a child component.
    * Sets the state selected ID to clicked node.
-   * @param {string} rid - Clicked node identifier.
+   * @param {Object} node - Clicked node identifier.
    */
-  async handleClick(rid) {
+  async handleClick(node) {
+    const { schema } = this.props;
     const { data } = this.state;
-    if (!data[rid]) {
-      const endpoint = `/ontologies/${rid.slice(1)}?neighbors=3`;
-      const json = await api.get(endpoint);
-      data[rid] = jc.retrocycle(json.result);
-      this.setState({ data });
+    if (!data[node.data['@rid']]) {
+      const routeName = schema.getRoute(node.data['@class']);
+      const endpoint = `${routeName || '/ontologies'}/${node.data['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`; // change
+      const response = await api.get(endpoint);
+      this.setState({ ...this.processData([jc.retrocycle(response).result]) });
     }
-    this.setState({ selectedId: rid });
   }
 
   /**
    * Adds node identifier to list of displayed nodes.
    * @param {string} rid - Checked node identifier.
    */
-  handleCheckbox(rid) {
+  handleCheckbox(e, rid) {
+    e.stopPropagation();
     const { displayed } = this.state;
     const i = displayed.indexOf(rid);
     if (i === -1) {
@@ -178,11 +214,8 @@ class DataView extends Component {
    * Clears displayed array.
    */
   handleHideSelected() {
-    const { displayed, hidden, selectedId } = this.state;
+    const { displayed, hidden } = this.state;
     hidden.push(...displayed);
-
-    if (displayed.includes(selectedId)) this.setState({ selectedId: null });
-
     this.setState({ hidden, displayed: [] });
   }
 
@@ -191,7 +224,6 @@ class DataView extends Component {
    */
   handleShowAllNodes() {
     const { displayed, hidden } = this.state;
-
     displayed.push(...hidden);
     this.setState({ displayed, hidden: [] });
   }
@@ -199,85 +231,61 @@ class DataView extends Component {
   /**
    * Handles subsequent pagination call
    */
-  handleSubsequentPagination() {
-    const { next } = this.state;
+  async handleSubsequentPagination() {
+    const { schema } = this.props;
+    const {
+      next,
+      filteredSearch,
+    } = this.state;
 
     if (next) {
-      next().then((nextData) => {
-        const {
-          data,
-          allProps,
-          schema,
-          filteredSearch,
-        } = this.state;
-        const cycled = jc.retrocycle(nextData.result);
-        let newColumns = allProps;
-        cycled.forEach((ontologyTerm) => {
-          newColumns = api.collectOntologyProps(ontologyTerm, allProps, schema);
-          data[ontologyTerm['@rid']] = ontologyTerm;
+      try {
+        this.setState({
+          next: null,
+          moreResults: false,
+          completedNext: false,
         });
 
         let route = '/ontologies';
-        if (filteredSearch['@class']) {
-          route = schema[filteredSearch['@class']].route;
+        const omitted = [];
+        const kbClass = schema.get(filteredSearch['@class']);
+        if (kbClass) {
+          ({ routeName: route } = kbClass);
+          omitted.push('@class');
         }
 
-        let newNext = null;
-        let moreResults = false;
-        const limit = filteredSearch.limit || DEFAULT_LIMIT;
-        const lastSkip = filteredSearch.skip || limit;
-        if (cycled.length >= limit) {
-          filteredSearch.skip = lastSkip + limit;
-          newNext = () => api.get(`${route}?${qs.stringify(filteredSearch).slice(3)}&neighbors=3`);
-          moreResults = true;
-        }
+        const nextData = await next();
+
         this.setState({
-          data,
-          allProps: newColumns,
-          next: newNext,
-          filteredSearch,
-          moreResults,
+          ...this.processData(nextData),
+          ...DataViewBase.prepareNextPagination(route, filteredSearch, nextData, omitted),
           completedNext: true,
         });
-      });
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error(e);
+      }
     }
-    this.setState({ next: null, moreResults: false, completedNext: false });
     return next;
   }
 
   /**
    * Sets selected ID to input node identifier and opens edit drawer.
-   * @param {string} rid - Target node rid.
    */
-  handleNodeEditStart(rid) {
-    const { data } = this.state;
-    const { history } = this.props;
-    history.push({
-      pathname: `/edit/${rid.slice(1)}`,
-      state: {
-        node: data[rid],
-      },
-    });
-  }
-
-  /**
-   * Re initializes the component and loads a new query into the search.
-   * @param {string} search - new search string
-   */
-  handleNewQuery(search) {
-    const { history } = this.props;
-    const { location } = history;
-
-    if (location.search.split('?')[1] !== search) {
-      history.push(`/data/table?${search}`);
-      this.setState({
-        loginRedirect: false,
-        data: null,
-        displayed: [],
-        hidden: [],
-        selectedId: null,
-        allProps: [],
-      }, this.componentDidMount);
+  handleNodeEditStart() {
+    const { detail } = this.state;
+    const { history, schema } = this.props;
+    if (detail) {
+      let route;
+      const { inherits } = schema.get(detail['@class']);
+      if (inherits && inherits.includes('Ontology')) {
+        route = 'ontology';
+      } else if (inherits && inherits.includes('Variant')) {
+        route = 'variant';
+      } else if (detail['@class'] === 'Statement') {
+        route = 'statement';
+      }
+      history.push(`/edit/${route}/${detail['@rid'].slice(1)}`);
     }
   }
 
@@ -297,27 +305,34 @@ class DataView extends Component {
   async handleDetailDrawerOpen(node, open, edge) {
     const { data, detail } = this.state;
     if (!open && !detail) return;
+    if (node.data) {
+      node = node.data; // eslint-disable-line no-param-reassign
+    }
     if (edge) {
-      this.setState({ detail: node.data, detailEdge: true });
+      this.setState({
+        detail: node,
+        detailEdge: true,
+      });
     } else {
-      if (!data[node.data['@rid']]) {
-        const response = await api.get(`/ontologies/${node.data['@rid'].slice(1)}?neighbors=3`);
-        data[node.data['@rid']] = jc.retrocycle(response.result);
+      if (!data[node['@rid']]) {
+        const response = await api.get(`/ontologies/${node['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
+        data[node['@rid']] = jc.retrocycle(response).result;
       }
-      this.setState({ detail: data[node.data['@rid']], detailEdge: false });
+      this.setState({ detail: data[node['@rid']], detailEdge: false });
     }
   }
 
   /**
-   * Handles redirect to graph from table.
+   * Handles redirect to table to graph.
    */
-  handleGraphRedirect() {
+  handleGraphRedirect(filters) {
     const { history } = this.props;
+    this.setState({ storedFilters: filters, detail: null });
     history.push({ pathname: '/data/graph', search: history.location.search });
   }
 
   /**
-   * Handles redirect to table from graph.
+   * Handles redirect to graph to table.
    */
   handleTableRedirect() {
     const { history } = this.props;
@@ -333,94 +348,82 @@ class DataView extends Component {
    * @param {Object} node - newly added object.
    */
   handleNewColumns(node) {
-    const { allProps, schema } = this.state;
-    this.setState({ allProps: api.collectOntologyProps(node, allProps, schema) });
+    const { allProps } = this.state;
+    const { schema } = this.props;
+    this.setState({ allProps: schema.collectOntologyProps(node, allProps) });
   }
 
   render() {
     const {
-      selectedId,
       data,
       displayed,
       hidden,
       allProps,
       detail,
-      schema,
       moreResults,
       filteredSearch,
-      edges,
       detailEdge,
       completedNext,
+      storedFilters,
     } = this.state;
 
     const {
-      classes,
+      schema,
       history,
     } = this.props;
 
-    if (!data) return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
-
+    if (!data) {
+      return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
+    }
+    const edges = schema.getEdges();
+    const cls = filteredSearch && filteredSearch['@class'];
+    const defaultOrders = schema.get(cls || 'Ontology').identifiers;
     const detailDrawer = (
-      <Drawer
-        variant="persistent"
-        anchor="right"
+      <DetailDrawer
+        node={detail}
+        schema={schema}
         open={!!detail}
-        classes={{
-          paper: classes.paper,
-        }}
         onClose={this.handleDetailDrawerClose}
-        SlideProps={{ unmountOnExit: true }}
-      >
-        <NodeDetailComponent
-          variant="graph"
-          node={detail}
-          handleNodeEditStart={this.handleNodeEditStart}
-          handleNewQuery={this.handleNewQuery}
-          handleClose={this.handleDetailDrawerClose}
-          detailEdge={detailEdge}
-        >
-          <IconButton onClick={this.handleDetailDrawerClose}>
-            <CloseIcon color="action" />
-          </IconButton>
-        </NodeDetailComponent>
-      </Drawer>
+        isEdge={detailEdge}
+        handleNodeEditStart={this.handleNodeEditStart}
+        identifiers={defaultOrders}
+      />
     );
-
     const GraphWithProps = () => (
       <GraphComponent
         data={data}
         handleClick={this.handleClick}
         displayed={displayed}
-        handleNodeEditStart={this.handleNodeEditStart}
         handleDetailDrawerOpen={this.handleDetailDrawerOpen}
         handleDetailDrawerClose={this.handleDetailDrawerClose}
         handleTableRedirect={this.handleTableRedirect}
-        schema={schema}
-        edges={edges}
+        edgeTypes={edges}
         detail={detail}
         allProps={allProps}
-        filteredSearch={filteredSearch}
+        localStorageKey={qs.stringify(filteredSearch)}
         handleNewColumns={this.handleNewColumns}
+        schema={schema}
       />
     );
     const TableWithProps = () => (
       <TableComponent
         data={data}
-        selectedId={selectedId}
-        handleClick={this.handleClick}
-        handleCheckbox={this.handleCheckbox}
+        detail={detail}
         displayed={displayed}
+        handleCheckAll={this.handleCheckAll}
+        handleCheckbox={this.handleCheckbox}
+        handleHideSelected={this.handleHideSelected}
+        handleShowAllNodes={this.handleShowAllNodes}
+        handleGraphRedirect={this.handleGraphRedirect}
+        handleSubsequentPagination={this.handleSubsequentPagination}
+        handleDetailDrawerOpen={this.handleDetailDrawerOpen}
         hidden={hidden}
         allProps={allProps}
         moreResults={moreResults}
         completedNext={completedNext}
-        handleCheckAll={this.handleCheckAll}
-        handleNodeEditStart={this.handleNodeEditStart}
-        handleHideSelected={this.handleHideSelected}
-        handleShowAllNodes={this.handleShowAllNodes}
-        handleNewQuery={this.handleNewQuery}
-        handleGraphRedirect={this.handleGraphRedirect}
-        handleSubsequentPagination={this.handleSubsequentPagination}
+        storedFilters={storedFilters}
+        defaultOrder={defaultOrders}
+        schema={schema}
       />
     );
     return (
@@ -441,8 +444,7 @@ class DataView extends Component {
             </Button>
           )}
         />
-        {detailDrawer}
-        {Object.keys(data).length !== 0
+        {Object.keys(data).length !== 0 && qs.stringify(filteredSearch) && edges
           ? (
             <Switch>
               <Route exact path="/data/table" render={TableWithProps} />
@@ -455,25 +457,30 @@ class DataView extends Component {
             </Switch>
           ) : (
             <div className="no-results-msg">
-              <Typography variant="headline">
+              <Typography variant="h5">
                 No Results
               </Typography>
             </div>
           )
         }
+        {schema && detailDrawer}
       </div>);
   }
 }
 
-DataView.propTypes = {
-  /**
-   * @param {Object} history - Application routing history object.
-   */
+/**
+ * @namespace
+ * @property {Object} history - Application routing history object.
+ * @property {Object} schema - Knowledgebase schema object.
+ */
+DataViewBase.propTypes = {
   history: PropTypes.object.isRequired,
-  /**
-   * @param {Object} classes - Classes provided by the @material-ui withStyles function
-   */
-  classes: PropTypes.object.isRequired,
+  schema: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(DataView);
+const DataView = withSchema(DataViewBase);
+
+export {
+  DataView,
+  DataViewBase,
+};

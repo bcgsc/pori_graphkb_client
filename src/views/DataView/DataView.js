@@ -46,6 +46,11 @@ class DataViewBase extends Component {
     return jc.retrocycle(response).result;
   }
 
+  static async makeComplexApiQuery(route, payload, omitted = []) {
+    const response = await api.post(route, omit(payload, omitted));
+    return jc.retrocycle(response).result;
+  }
+
   /**
    * Prepares next query function.
    * @param {string} route - API route.
@@ -113,6 +118,8 @@ class DataViewBase extends Component {
   async componentDidMount() {
     const { history, schema } = this.props;
     const queryParams = qs.parse(history.location.search.slice(1));
+    let isComplex = false;
+
     let route = '/ontologies';
     const omitted = [];
     const kbClass = schema.get(queryParams['@class']);
@@ -120,15 +127,35 @@ class DataViewBase extends Component {
       ({ routeName: route } = kbClass);
       omitted.push('@class');
     }
+
     queryParams.neighbors = queryParams.neighbors || DEFAULT_NEIGHBORS;
     queryParams.limit = queryParams.limit || DEFAULT_LIMIT;
-    const response = await DataViewBase.makeApiQuery(route, queryParams, omitted);
+
+    let response;
+    if (queryParams.c) {
+      // route += '/search';
+      isComplex = true;
+      delete queryParams.c;
+
+      response = await DataViewBase.makeApiQuery(route, queryParams, omitted);
+      // response = await DataViewBase.makeComplexApiQuery(route, queryParams, omitted);
+    } else {
+      response = await DataViewBase.makeApiQuery(route, queryParams, omitted);
+    }
+
     const { data, allProps } = this.processData(response);
+
     const {
       next,
       moreResults,
       filteredSearch,
-    } = DataViewBase.prepareNextPagination(route, queryParams, response, omitted);
+    } = !isComplex
+      ? DataViewBase.prepareNextPagination(route, queryParams, response, omitted)
+      : {
+        moreResults: false,
+        next: null,
+        filteredSearch: null,
+      };
 
     this.setState({
       filteredSearch: filteredSearch || queryParams,

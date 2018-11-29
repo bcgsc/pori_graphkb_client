@@ -2,11 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   IconButton,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogActions,
-  DialogContent,
   Avatar,
   List,
   ListItem,
@@ -15,6 +10,7 @@ import {
   ListItemSecondaryAction,
 } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
+import DeleteRecordDialog from '../../DeleteRecordDialog/DeleteRecordDialog';
 
 function UserDeleteDialog(props) {
   const {
@@ -27,48 +23,34 @@ function UserDeleteDialog(props) {
   } = props;
 
   return (
-    <Dialog
+    <DeleteRecordDialog
       open={open && selected.length !== 0}
       onClose={onClose}
-      classes={{
-        paper: 'delete-dialog',
-      }}
+      onDelete={onSubmit}
       TransitionProps={{ unmountOnExit: true }}
+      message="Delete Users?"
     >
-      <DialogTitle>
-        Delete Users?
-      </DialogTitle>
-      <DialogContent>
-        <List>
-          {selected.map((rid) => {
-            const user = users.find(u => u['@rid'] === rid);
-            return (
-              <ListItem key={rid}>
-                <ListItemAvatar>
-                  <Avatar classes={{ colorDefault: 'avatar-colored' }}>
-                    {user.name.charAt(0).toUpperCase()}
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemSecondaryAction>
-                  <IconButton onClick={() => onCancel(rid)}>
-                    <CancelIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
-                <ListItemText primary={user.name} />
-              </ListItem>
-            );
-          })}
-        </List>
-      </DialogContent>
-      <DialogActions style={{ justifyContent: 'center' }}>
-        <Button onClick={onClose}>
-          Cancel
-        </Button>
-        <Button onClick={onSubmit}>
-          Yes
-        </Button>
-      </DialogActions>
-    </Dialog>
+      <List>
+        {selected.map((rid) => {
+          const user = users.find(u => u['@rid'] === rid);
+          return (
+            <ListItem key={rid}>
+              <ListItemAvatar>
+                <Avatar classes={{ colorDefault: 'avatar-colored' }}>
+                  {user.name.charAt(0).toUpperCase()}
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemSecondaryAction>
+                <IconButton onClick={() => onCancel(rid)}>
+                  <CancelIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+              <ListItemText primary={user.name} />
+            </ListItem>
+          );
+        })}
+      </List>
+    </DeleteRecordDialog>
   );
 }
 

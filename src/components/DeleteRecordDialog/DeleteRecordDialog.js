@@ -17,6 +17,7 @@ function DeleteRecordDialog(props) {
     onClose,
     onDelete,
     message,
+    children,
   } = props;
 
   return (
@@ -28,6 +29,7 @@ function DeleteRecordDialog(props) {
         {message}
       </DialogTitle>
       <DialogContent>
+        {children}
         <DialogActions style={{ justifyContent: 'center' }}>
           <Button
             onClick={onClose}
@@ -62,12 +64,14 @@ DeleteRecordDialog.propTypes = {
   onClose: PropTypes.func,
   onDelete: PropTypes.func,
   message: PropTypes.string,
+  children: PropTypes.oneOf([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
 };
 
 DeleteRecordDialog.defaultProps = {
   onClose: undefined,
   onDelete: undefined,
   message: 'Really Delete this Term?',
+  children: null,
 };
 
 export default DeleteRecordDialog;

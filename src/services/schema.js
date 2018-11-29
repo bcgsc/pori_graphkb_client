@@ -24,6 +24,9 @@ class Schema {
     return this.schema[obj['@class']].getPreview(obj);
   }
 
+  /**
+   * Returns record metadata fields
+   */
   getMetadata() {
     return Object.values(this.schema.V.properties);
   }
@@ -155,19 +158,17 @@ class Schema {
   }
 
   /**
-   * Returns true if the class inherits the 'Position' class.
-   * @param {string} cls - Class name string
+   * Checks if a ClassModel is a subclass of another ClassModel.
+   * @param {string} cls - ClassModel name of child
+   * @param {string} parentCls - ClassModel name of parent
    */
-  isPosition(cls) {
-    return this.schema[cls] && this.schema[cls].inherits.includes('Position');
-  }
+  isSubclass(cls, parentCls = []) {
+    if (typeof parentCls === 'string') {
+      parentCls = [parentCls];
+    }
 
-  isOntology(cls) {
-    return this.schema[cls] && this.schema[cls].inherits.includes('Ontology');
-  }
-
-  isVariant(cls) {
-    return this.schema[cls] && this.schema[cls].inherits.includes('Variant');
+    return !!(this.schema[cls]
+      && this.schema[cls].inherits.some(inherited => parentCls.includes(inherited)));
   }
 
   /**

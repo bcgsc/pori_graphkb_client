@@ -15,12 +15,12 @@ import {
 import * as jc from 'json-cycle';
 import kbp from '@bcgsc/knowledgebase-parser';
 import NotificationDrawer from '../NotificationDrawer/NotificationDrawer';
+import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
+import DeleteRecordDialog from '../DeleteRecordDialog/DeleteRecordDialog';
 import RelationshipsForm from '../RelationshipsForm/RelationshipsForm';
 import FormTemplater from '../FormTemplater/FormTemplater';
 import api from '../../services/api';
 import util from '../../services/util';
-import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
-import DeleteRecordDialog from '../DeleteRecordDialog/DeleteRecordDialog';
 
 const DEFAULT_ORDER = [
   'type',

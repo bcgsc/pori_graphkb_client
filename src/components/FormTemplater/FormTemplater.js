@@ -18,11 +18,12 @@ import HelpIcon from '@material-ui/icons/Help';
 import AutoSearchSingle from '../AutoSearchSingle/AutoSearchSingle';
 import AutoSearchMulti from '../AutoSearchMulti/AutoSearchMulti';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
-import EmbeddedListForm from '../EmbeddedListForm/EmbeddedListForm';
+import EmbeddedSetForm from '../EmbeddedSetForm/EmbeddedSetForm';
 import util from '../../services/util';
 
 /**
- * Templater component that generates input fields based off of a given schema.
+ * Templater component that generates input form fields based off of a given
+ * schema and binds them to a given model.
  */
 function FormTemplater(props) {
   const {
@@ -101,7 +102,7 @@ function FormTemplater(props) {
       // Decide which endpoint to query.
       let endpoint;
       if (linkedClass) {
-        endpoint = linkedClass.route.slice(1);
+        endpoint = linkedClass.routeName.slice(1);
         return (
           <ListItem
             className="form-templater-autosearch"
@@ -113,7 +114,7 @@ function FormTemplater(props) {
               error={errorFields.includes(name)}
               disabled={disabledFields.includes(name)}
               value={model[name]}
-              selected={schema.newRecord(model[`${name}.data`])}
+              selected={model[`${name}.data`]}
               onChange={onChange}
               name={name}
               label={util.antiCamelCase(name)}
@@ -122,6 +123,7 @@ function FormTemplater(props) {
               required={mandatory}
               property={!linkedClass ? ['name', 'sourceId'] : undefined}
               disablePortal={disablePortal}
+              schema={schema}
               endAdornment={description ? (
                 <Tooltip title={description}>
                   <HelpIcon color="primary" style={{ cursor: 'default' }} />
@@ -142,7 +144,7 @@ function FormTemplater(props) {
             error={errorFields.includes(name)}
             disabled={disabledFields.includes(name)}
             value={model[name]}
-            selected={schema.newRecord(model[`${name}.data`])}
+            selected={model[`${name}.data`]}
             onChange={onChange}
             name={name}
             label={util.antiCamelCase(name)}
@@ -153,20 +155,20 @@ function FormTemplater(props) {
       );
     }
     if (type === 'embedded') {
-      const kbClass = (schema.getClass((model[name] || {})['@class']));
+      const properties = schema.getProperties((model[name] || {})['@class']);
       let classSelector = (
         <Typography variant="subtitle1">
           {util.antiCamelCase(name)}
         </Typography>
       );
       const handleClassChange = onClassChange || onChange;
-      if (schema.isAbstract(linkedClass.name)) {
+      if (linkedClass.isAbstract) {
         classSelector = (
           <ResourceSelectComponent
             name="@class"
             onChange={e => handleClassChange(e, name)}
             required={mandatory}
-            resources={[{ name: '' }, ...schema.getSubClasses(linkedClass.name)]}
+            resources={[{ name: '' }, ...linkedClass.subclasses]}
             label={`${util.antiCamelCase(name)} Class`}
             value={(model[name] || { '@class': '' })['@class']}
             error={errorFields.includes(name)}
@@ -197,7 +199,7 @@ function FormTemplater(props) {
           <FormTemplater
             onChange={e => onChange(e, name)}
             schema={schema}
-            propSchemas={kbClass ? kbClass.properties : []}
+            propSchemas={properties || []}
             model={model[name] || {}}
             excludedProps={['@class']}
             fieldComponent="div"
@@ -216,7 +218,7 @@ function FormTemplater(props) {
           key={`${appendToKeys}.${name}`}
           disableGutters={disablePadding}
         >
-          <EmbeddedListForm
+          <EmbeddedSetForm
             list={model[name]}
             onChange={onChange}
             name={name}
@@ -376,10 +378,12 @@ function FormTemplater(props) {
  * @property {Array} disabledFields - list of field keys that should be disabled.
  * @property {function} sort - Sorting function for form fields.
  * @property {Object} pairs - group definitions for grid.
- * @property {bool} ignoreRequired - if true, form does not apply required
+ * @property {boolean} ignoreRequired - if true, form does not apply required
  * state to mandatory fields.
- * @property {bool} disablePadding - if true, disables left and right padding
+ * @property {boolean} disablePadding - if true, disables left and right padding
  * in ListItems.
+ * @property {boolean} disablePortal - if true, disables portals for nested
+ * autosearch components.
  */
 FormTemplater.propTypes = {
   schema: PropTypes.object.isRequired,

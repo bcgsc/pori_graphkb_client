@@ -21,6 +21,9 @@ class ErrorView extends Component {
     };
   }
 
+  /**
+   * Initializes error message, or redirects to query page if none is present.
+   */
   componentDidMount() {
     const { history } = this.props;
     const { state } = history.location;

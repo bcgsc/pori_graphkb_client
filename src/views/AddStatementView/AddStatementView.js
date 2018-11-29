@@ -1,3 +1,6 @@
+/**
+ * @module /views/AddStatementView
+ */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -10,6 +13,9 @@ import api from '../../services/api';
 import util from '../../services/util';
 import StatementFormComponent from '../../components/StatementFormComponent/StatementFormComponent';
 
+/**
+ * Route for submitting Statement records to the db.
+ */
 class AddStatementViewBase extends Component {
   constructor(props) {
     super(props);
@@ -17,18 +23,29 @@ class AddStatementViewBase extends Component {
     this.handleFinish = this.handleFinish.bind(this);
   }
 
+  /**
+   * Navigates to query page on successful form submission.
+   */
   handleFinish() {
     const { history } = this.props;
     history.push('/query');
   }
 
+  /**
+   * Bundles payload and sends post request to server.
+   * @param {Object} form - Statement form data.
+   * @param {Array} relationships - Form staged relationships.
+   */
   async handleSubmit(form, relationships) {
     const { schema } = this.props;
-    const { route, properties } = schema.getClass(form['@class']);
+    const route = schema.getRoute(form['@class']);
+    const properties = schema.getProperties(form['@class']);
+
     const payload = util.parsePayload(form, properties);
     const relationshipPayloads = relationships.map((r) => {
-      const { properties: rProperties } = schema.getClass(r['@class'], ['@class']);
-      const rPayload = util.parsePayload(r, rProperties);
+      const relationshipProperties = schema.getProperties(r['@class'], ['@class']);
+      const rPayload = util.parsePayload(r, relationshipProperties);
+
       Object.keys(rPayload).forEach((k) => {
         if (!rPayload[k] || rPayload[k] === '#node_rid') {
           delete rPayload[k];

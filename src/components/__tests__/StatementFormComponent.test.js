@@ -3,16 +3,30 @@ import { expect } from 'chai';
 import { mount } from 'enzyme';
 import StatementFormComponent from '../StatementFormComponent/StatementFormComponent';
 import Schema from '../../models/schema';
-import classes from '../../models/classes';
 
-const { Statement } = classes;
 
 const testSchema = new Schema({
+  Ontology: {
+    subclasses: [],
+  },
+  Variant: {
+    subclasses: [],
+  },
+  V: {
+    properties: [],
+  },
+  E: {
+    subclasses: [
+      { name: 'Implies' },
+      { name: 'SupportedBy' },
+    ],
+  },
   test: {
     name: 'test',
     properties: {
       name: { name: 'name', type: 'string' },
     },
+    getPreview: () => 'pass',
   },
   Implies: {
     name: 'Implies',
@@ -79,7 +93,8 @@ const testSchema = new Schema({
   },
 });
 
-const validNode = new Statement({
+const validNode = {
+  '@class': 'Statement',
   '@rid': '#1',
   relevance: {
     '@class': 'test',
@@ -101,7 +116,7 @@ const validNode = new Statement({
     in: { '@rid': '#1' },
     out: { '@rid': '#2' },
   }],
-}, testSchema);
+};
 
 describe('<StatementFormComponent />', () => {
   let wrapper;
@@ -132,6 +147,7 @@ describe('<StatementFormComponent />', () => {
     );
     wrapper.setState({
       form: {
+        '@class': 'Statement',
         relevance: 'asdf',
         'relevance.data': {
           '@class': 'test',

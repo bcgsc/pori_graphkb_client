@@ -1,3 +1,6 @@
+/**
+ * @module /views/EditVariantView
+ */
 import React, { Component } from 'react';
 import './EditVariantView.css';
 import PropTypes from 'prop-types';
@@ -8,8 +11,10 @@ import { withSchema } from '../../components/SchemaContext/SchemaContext';
 import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
 import util from '../../services/util';
 import api from '../../services/api';
-import classes from '../../models/classes';
 
+/**
+ * Route for editing existing Variant records.
+ */
 class EditVariantViewBase extends Component {
   constructor(props) {
     super(props);
@@ -21,12 +26,15 @@ class EditVariantViewBase extends Component {
     this.submitVariant = this.submitVariant.bind(this);
   }
 
+  /**
+   * Grabs target record and initializes state.
+   */
   async componentDidMount() {
     const { match, schema } = this.props;
     const { rid } = match.params;
-    const { route } = schema.get('Variant');
+    const route = schema.getRoute('Variant');
     const response = await api.get(`${route}/${rid}?neighbors=3`);
-    const node = schema.newRecord(jc.retrocycle(response).result);
+    const node = jc.retrocycle(response).result;
     this.setState({
       node,
     });
@@ -46,7 +54,7 @@ class EditVariantViewBase extends Component {
   async handleDelete() {
     const { node } = this.state;
     const { schema } = this.props;
-    const { route } = schema.getClass(node['@class']);
+    const route = schema.getRoute(node['@class']);
     await api.delete(`${route}/${node['@rid'].slice(1)}`);
   }
 
@@ -64,19 +72,20 @@ class EditVariantViewBase extends Component {
   async submitVariant(variant, relationships, originalRelationships) {
     const { schema } = this.props;
     let oRelationships = originalRelationships;
-    if (!Array.isArray(originalRelationships) && originalRelationships instanceof classes.Record) {
+    if (!Array.isArray(originalRelationships)) {
       oRelationships = originalRelationships.relationships.slice();
     }
     await api.patchEdges(oRelationships || [], relationships, schema);
 
     const copy = Object.assign({}, variant);
-    const { properties, route } = schema.getClass(variant['@class']);
+    const route = schema.get(variant['@class']);
+    const properties = schema.getProperties(variant['@class']);
     Object.keys(copy).forEach((k) => {
       if (copy[k] && typeof copy[k] === 'object') {
         if (!copy[k]['@class']) {
           delete copy[k];
         } else {
-          const nestedProps = schema.getClass(copy[k]['@class']).properties;
+          const nestedProps = schema.getProperties(copy[k]['@class']);
           nestedProps.forEach((prop) => {
             if (!copy[k][prop.name]) {
               if (prop.type === 'integer' && prop.mandatory) {
@@ -140,9 +149,9 @@ class EditVariantViewBase extends Component {
 
 /**
  * @namespace
-* @property {Object} history - Application routing history object.
-* @property {Object} schema - Knowledgebase schema object.
-    */
+ * @property {Object} history - Application routing history object.
+ * @property {Object} schema - Knowledgebase schema object.
+ */
 EditVariantViewBase.propTypes = {
   history: PropTypes.object.isRequired,
   schema: PropTypes.object.isRequired,

@@ -35,8 +35,14 @@ const DEFAULT_ORDER = [
 const SHORTHAND_EXCLUDED = [
   'germline',
   'zygosity',
+  'assembly',
 ];
 
+/**
+ * Form component for the Variant record class. Uses HGVS shorthand notation as
+ * well as standard form fields to build model if the subclass selected is
+ * PositionalVariant, otherwise form is a wrapper for an Ontology Form.
+ */
 class PositionalVariantParser extends Component {
   constructor(props) {
     super(props);
@@ -62,6 +68,9 @@ class PositionalVariantParser extends Component {
     this.updateShorthand = this.updateShorthand.bind(this);
   }
 
+  /**
+   * Initializes form and shorthand.
+   */
   componentDidMount() {
     const { schema, initVariant } = this.props;
     const { nodeClass } = this.state;
@@ -70,13 +79,13 @@ class PositionalVariantParser extends Component {
       : schema.initModel({}, nodeClass);
 
     const relationships = [];
-    if (initVariant && initVariant.getEdges) {
-      initVariant.getEdges().forEach((edge) => {
+    if (initVariant) {
+      schema.getEdges(initVariant).forEach((edge) => {
         relationships.push(schema.initModel(edge, edge['@class']));
       });
     }
 
-    const shorthand = initVariant ? initVariant.getPreview() : '';
+    const shorthand = initVariant ? schema.getPreview(initVariant) : '';
     this.setState({
       variant,
       shorthand,
@@ -94,7 +103,7 @@ class PositionalVariantParser extends Component {
     const { schema } = this.props;
     const { value } = e.target;
     this.setState({ shorthand: value });
-    const { properties } = schema.getClass('PositionalVariant');
+    const properties = schema.getProperties('PositionalVariant');
     if (!value) {
       const newVariant = schema.initModel({}, 'PositionalVariant');
       Object.keys(newVariant).forEach((k) => {
@@ -117,7 +126,7 @@ class PositionalVariantParser extends Component {
         embeddedProps.forEach((prop) => {
           const { name } = prop;
           if (response[name] && response[name].name) {
-            schema.getClass(response[name].name).properties
+            schema.getProperties(response[name].name)
               .forEach((classProp) => {
                 response[name][classProp.name] = response[name][classProp.name] === undefined
                   || response[name][classProp.name] === null
@@ -170,19 +179,19 @@ class PositionalVariantParser extends Component {
    */
   async extractLinkProps(parsed) {
     const { schema } = this.props;
-    const classSchema = schema.getClass('PositionalVariant').properties;
+    const classSchema = schema.getProperties('PositionalVariant');
     const linkProps = util.getPropOfType(classSchema, 'link');
     const newValues = {};
     let invalidFlag = '';
     const errorFields = [];
     await Promise.all(linkProps.map(async (prop) => {
       const { name, linkedClass } = prop;
-      if (parsed[name] && linkedClass && linkedClass.route) {
-        const data = await api.get(`${linkedClass.route}?name=${parsed[name]}&neighbors=1`);
+      if (parsed[name] && linkedClass && linkedClass.routeName) {
+        const data = await api.get(`${linkedClass.routeName}?name=${parsed[name]}&neighbors=1`);
         const cycled = jc.retrocycle(data).result;
         if (cycled.length === 1) {
           [newValues[`${name}.data`]] = cycled;
-          newValues[name] = schema.newRecord(cycled[0]).getPreview();
+          newValues[name] = schema.getPreview(cycled[0]);
         } else if (cycled.length > 1) {
           // add multiple modals?
         } else if (cycled.length === 0) {
@@ -204,8 +213,8 @@ class PositionalVariantParser extends Component {
     const { variant } = this.state;
     const { schema } = this.props;
     const { value } = e.target;
-    const classSchema = schema.getClass('PositionalVariant').properties;
-    if (schema.getClass(value)) {
+    const classSchema = schema.getProperties('PositionalVariant');
+    if (schema.getProperties(value)) {
       const abstractClass = classSchema
         .find(p => p.name === nested).linkedClass.name;
       const varKeys = classSchema
@@ -223,6 +232,11 @@ class PositionalVariantParser extends Component {
     this.updateShorthand(variant);
   }
 
+  /**
+   * Handles update of state variables. Refreshes form model if class is
+   * changed.
+   * @param {Event} e - Change event.
+   */
   handleChange(e) {
     const { variant } = this.state;
     const { schema } = this.props;
@@ -266,12 +280,12 @@ class PositionalVariantParser extends Component {
     if (nested) {
       variant[nested][name] = value;
       if (name.includes('.data') && value) {
-        variant[nested][name.split('.')[0]] = schema.newRecord(value).getPreview();
+        variant[nested][name.split('.')[0]] = schema.getPreview(value);
       }
     } else {
       variant[name] = value;
       if (name.includes('.data') && value) {
-        variant[name.split('.')[0]] = schema.newRecord(value).getPreview();
+        variant[name.split('.')[0]] = schema.getPreview(value);
       }
     }
     if (!SHORTHAND_EXCLUDED.includes(name)) {
@@ -351,13 +365,17 @@ class PositionalVariantParser extends Component {
    * Opens notification drawer and triggers parent submit component.
    * @param {Event} e - submit button click event.
    */
-  /* eslint-disable */
   async submitVariant(e) {
     e.preventDefault();
-    const { variant, relationships, originalRelationships, invalidFlag } = this.state;
+    const {
+      variant,
+      relationships,
+      originalRelationships,
+      invalidFlag,
+    } = this.state;
     const { handleSubmit, schema } = this.props;
 
-    const classSchema = schema.getClass('PositionalVariant').properties;
+    const classSchema = schema.getProperties('PositionalVariant');
     let formIsInvalid = !!(invalidFlag);
     const errorFields = [];
 
@@ -403,7 +421,7 @@ class PositionalVariantParser extends Component {
     } = this.props;
 
     if (!variant) return null;
-    const classSchema = schema.getClass(nodeClass).properties;
+    const classSchema = schema.getProperties(nodeClass);
     const isPositional = nodeClass === 'PositionalVariant';
     const shorthandError = !!(error || invalidFlag);
 
@@ -412,7 +430,7 @@ class PositionalVariantParser extends Component {
         <DeleteRecordDialog
           open={deleteDialog}
           onDelete={this.handleDeleteNode}
-          handleDialog={this.handleDialog}
+          onClose={() => this.handleDialog(false)}
         />
         <NotificationDrawer
           open={notificationDrawerOpen}

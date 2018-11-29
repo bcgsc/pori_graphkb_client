@@ -20,7 +20,8 @@ import RecordChip from '../RecordChip/RecordChip';
 const PROGRESS_SPINNER_SIZE = 20;
 
 /**
- * Base component for all autosearch components.
+ * Base component for all autosearch components. Uses Downshift and Material-UI
+ * TextField components.
  */
 class AutoSearchBase extends Component {
   constructor(props) {
@@ -46,6 +47,7 @@ class AutoSearchBase extends Component {
       TextFieldProps,
       DownshiftProps,
       disablePortal,
+      schema,
     } = this.props;
 
     const autoSearchResults = downshiftProps => options
@@ -103,6 +105,7 @@ class AutoSearchBase extends Component {
                         <RecordChip
                           onDelete={() => onClear ? onClear() : null}
                           record={selected}
+                          schema={schema}
                         />
                       ) : null,
                   }}
@@ -146,33 +149,41 @@ class AutoSearchBase extends Component {
 
 /**
  * @namespace
+ * @property {Object} schema - Knowledgebase schema object.
  * @property {string} value - specified value for two way binding.
- * @property {function} onChange - parent method for handling change events
- * @property {number} limit - database return record limit.
- * @property {string} endpoint - api endpoint identifier.
- * @property {string} property - api property identifier.
- * @property {string} placeholder - placeholder for text input.
- * @property {string} label - label for text input.
- * @property {bool} required - required flag for text input indicator.
- * @property {bool} error - error flag for text input.
+ * @property {function} onChange - Handler for user typing event.
+ * @property {function} onSelect - Handler for selection of a displayed option.
+ * @property {function} onClear - Handler for clearing of selected value.
+ * @property {Object} selected - Last selected record object.
  * @property {function} children - Function that yields the component for
  * display display query results.
- * @property {bool} disabled - disabled flag for text input.
- * @property {Object} endAdornment - component to adorn the end of input text
+ * @property {boolean} loading - Flag to display loading progress indicator.
+ * @property {function} itemToString - Cast function to be applied to options.
+ * @property {Array<any>} options - list of items to be displayed as options
+ * when results panel is open.
+ * @property {Object} endAdornment - Component to adorn the end of input text
  * field with.
- * @property {Record} selected - Last selected record.
+ * @property {Object} TextFieldProps - Props to be passed on to the TextField
+ * component.
+ * @property {Object} DownShiftProps - Props to be passed on to the Downshift
+ * component.
+ * @property {boolean} disablePortal - Flag to disable the Portal in the Popper
+ * component (renders "inside" parent node).
+ * @property {string} className - className to be passed on to root div
+ * component.
  */
 AutoSearchBase.propTypes = {
-  children: PropTypes.func,
+  schema: PropTypes.object,
   value: PropTypes.string,
+  onChange: PropTypes.func,
+  onSelect: PropTypes.func,
+  onClear: PropTypes.func,
   selected: PropTypes.object,
+  children: PropTypes.func,
   loading: PropTypes.bool,
   itemToString: PropTypes.func,
   options: PropTypes.array,
   endAdornment: PropTypes.object,
-  onSelect: PropTypes.func,
-  onChange: PropTypes.func,
-  onClear: PropTypes.func,
   TextFieldProps: PropTypes.object,
   DownshiftProps: PropTypes.object,
   disablePortal: PropTypes.bool,
@@ -206,6 +217,7 @@ AutoSearchBase.defaultProps = {
   TextFieldProps: {},
   DownshiftProps: {},
   disablePortal: false,
+  schema: null,
   className: '',
 };
 

@@ -1,3 +1,6 @@
+/**
+ * @module /components/PermissionsTable
+ */
 import React from 'react';
 import PropTypes from 'prop-types';
 import './PermissionsTable.css';
@@ -13,6 +16,7 @@ import config from '../../static/config';
 
 const { PERMISSIONS } = config;
 const KEY_MAPPER = 'CRUD';
+
 /**
  * Table to display permissions state for a certain user group.
  * @param {Object} props - Component props.
@@ -56,8 +60,7 @@ function PermissionsTable(props) {
       <TableBody>
         {permissionKeys
           .map((permission) => {
-            const isEdge = schema.isEdge(permission);
-            const isAbstract = schema.isAbstract(permission);
+            const { isEdge, isAbstract } = schema.get(permission);
             return (
               <TableRow key={permission} className="permissions-view">
                 <TableCell padding="dense">

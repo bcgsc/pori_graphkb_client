@@ -22,30 +22,8 @@ import { withSchema } from '../../components/SchemaContext/SchemaContext';
 class AddOntologyViewBase extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      sources: [],
-      edgeTypes: [],
-    };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
-  }
-
-  /**
-   * Collects schema, sources, and knowledgebase edge types.
-   */
-  async componentDidMount() {
-    const { schema } = this.props;
-    try {
-      const sources = await api.getSources();
-      const edgeTypes = schema.getEdges();
-      this.setState({
-        sources,
-        edgeTypes,
-      });
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
-    }
   }
 
   /**
@@ -54,9 +32,9 @@ class AddOntologyViewBase extends Component {
   async handleSubmit(form, relationships) {
     const { schema } = this.props;
 
-    const kbClass = schema.getClass(form['@class']);
-    const payload = util.parsePayload(form, kbClass.properties);
-    const { route } = kbClass;
+    const properties = schema.getProperties(form['@class']);
+    const route = schema.getRoute(form['@class']);
+    const payload = util.parsePayload(form, properties);
     const response = await api.post(route, { ...payload });
     await api.submitEdges(relationships, schema, response.result['@rid']);
   }
@@ -70,10 +48,6 @@ class AddOntologyViewBase extends Component {
   }
 
   render() {
-    const {
-      sources,
-      edgeTypes,
-    } = this.state;
     const { schema } = this.props;
 
     return schema && (
@@ -95,8 +69,6 @@ class AddOntologyViewBase extends Component {
         <OntologyFormComponent
           variant="add"
           schema={schema}
-          sources={sources}
-          edgeTypes={edgeTypes}
           handleSubmit={this.handleSubmit}
           handleFinish={this.handleFinish}
         />

@@ -2,18 +2,14 @@
  * Wrapper for api, handles all requests and special functions.
  * @module /services/api
  */
-import * as jc from 'json-cycle';
 import auth from './auth';
 import util from './util';
 import config from '../static/config';
 import history from './history';
-import Schema from '../models/schema';
 
 const {
-  KEYS,
   API_BASE_URL,
 } = config;
-const CACHE_EXPIRY = 8;
 const KB_SEP_CHARS = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
 
 /**
@@ -124,97 +120,6 @@ const del = (endpoint) => {
 };
 
 /**
- * Requests sources from api and loads into localstorage.
- */
-const loadSources = async () => {
-  try {
-    const response = await get('/sources');
-    const cycled = jc.retrocycle(response.result);
-    const list = [];
-    cycled.forEach(source => list.push(source));
-
-    const now = new Date();
-    const expiry = new Date(now);
-    expiry.setHours(now.getHours() + CACHE_EXPIRY);
-    const sources = {
-      sources: cycled,
-      version: API_BASE_URL,
-      expiry: expiry.getTime(),
-    };
-
-    localStorage.setItem(KEYS.SOURCES, JSON.stringify(sources));
-
-    return Promise.resolve(list);
-  } catch (e) {
-    return Promise.reject(e);
-  }
-};
-
-/**
- * Returns all valid sources.
- */
-const getSources = () => {
-  const sources = JSON.parse(localStorage.getItem(KEYS.SOURCES));
-  if (
-    !sources
-    || (sources
-      && sources.expiry
-      && sources.expiry < Date.now().valueOf()
-    )
-    || sources.version !== API_BASE_URL
-    || !sources.sources
-  ) {
-    return loadSources();
-  }
-  return Promise.resolve(sources.sources);
-};
-
-/**
- * Requests schema from api and loads into localstorage.
- */
-const loadSchema = async () => {
-  try {
-    const response = await get('/schema');
-    const cycled = jc.retrocycle(response.schema);
-    const now = new Date();
-    const expiry = new Date(now);
-    expiry.setHours(now.getHours() + CACHE_EXPIRY);
-
-    const schema = {
-      schema: cycled,
-      version: API_BASE_URL,
-      expiry: expiry.getTime(),
-    };
-
-    localStorage.setItem(KEYS.SCHEMA, JSON.stringify(schema));
-
-    return Promise.resolve(new Schema(cycled));
-  } catch (e) {
-    return Promise.reject(e);
-  }
-};
-
-/**
- * Returns the database schema.
- */
-const getSchema = () => {
-  const schema = JSON.parse(localStorage.getItem(KEYS.SCHEMA) || '{}');
-  if (
-    !schema
-    || (
-      schema
-      && schema.expiry
-      && schema.expiry < Date.now().valueOf()
-    )
-    || schema.version !== API_BASE_URL
-    || !schema.schema
-  ) {
-    return loadSchema();
-  }
-  return Promise.resolve(new Schema(schema.schema));
-};
-
-/**
  * Wrapper for autosearch method.
  * @param {string} endpoint - URL endpoint.
  * @param {string} property - Property to query.
@@ -250,12 +155,12 @@ const autoSearch = (endpoint, property, value, limit) => {
  * Replaces placeholder RIDs and posts a list of edges.
  * @param {Array} edges - new edges to post.
  * @param {Object} schema - Knowledgebase db schema.
- * @param {string} rid - Record id to post edges to.
+ * @param {string} [rid=''] - Record id to post edges to.
  */
 const submitEdges = (edges, schema, rid = '') => {
   const newEdges = [];
   for (let i = 0; i < edges.length; i += 1) {
-    const { properties, route } = schema.getClass(edges[i]['@class']);
+    const properties = schema.getProperties(edges[i]['@class']);
     const edge = util.parsePayload(edges[i], properties);
     if (edge.in === '#node_rid') {
       edge.in = rid;
@@ -263,7 +168,7 @@ const submitEdges = (edges, schema, rid = '') => {
       edge.out = rid;
     }
 
-    newEdges.push(post(route, edge));
+    newEdges.push(post(schema[edges[i]['@class']].routeName, edge));
   }
   return Promise.all(newEdges);
 };
@@ -282,9 +187,9 @@ const patchEdges = (originalEdges, newEdges, schema) => {
   originalEdges.forEach((edge) => {
     const matched = newEdges.find(r => r['@rid'] === edge['@rid']);
     if (!matched || matched.deleted) {
-      const { route } = schema.getClass(edge['@class']);
+      const { routeName } = schema.get(edge['@class']);
       changedEdges.push(del(
-        `${route}/${edge['@rid'].slice(1)}`,
+        `${routeName}/${edge['@rid'].slice(1)}`,
       ));
     }
   });
@@ -292,7 +197,8 @@ const patchEdges = (originalEdges, newEdges, schema) => {
   // Adds new edges that were not present on the original node.
   newEdges.forEach((relationship) => {
     if (!originalEdges.find(r => r['@rid'] === relationship['@rid'])) {
-      const { properties, route } = schema.getClass(relationship['@class']);
+      const properties = schema.getProperties(relationship['@class']);
+      const route = schema.getRoute(relationship['@class']);
       const payload = util.parsePayload(relationship, properties);
       changedEdges.push(post(route, payload));
     }
@@ -302,8 +208,6 @@ const patchEdges = (originalEdges, newEdges, schema) => {
 };
 
 export default {
-  getSchema,
-  getSources,
   get,
   post,
   delete: del,

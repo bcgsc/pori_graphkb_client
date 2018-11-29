@@ -4,9 +4,20 @@ import { spy } from 'sinon';
 import { mount } from 'enzyme';
 import OntologyFormComponent from '../OntologyFormComponent/OntologyFormComponent';
 import Schema from '../../models/schema';
-import classes from '../../models/classes';
 
 const testSchema = new Schema({
+  V: {
+    name: 'V',
+    properties: [],
+  },
+  Ontology: {
+    name: 'Ontology',
+    subclasses: [{ name: 'Disease' }],
+  },
+  Variant: {
+    name: 'Variant',
+    subclasses: [],
+  },
   Disease: {
     name: 'Disease',
     inherits: ['Ontology'],
@@ -23,13 +34,17 @@ const testSchema = new Schema({
     name: 'edge',
     inherits: ['E'],
   },
+  E: {
+    name: 'E',
+    subclasses: [{ name: 'edge' }],
+  },
 });
 
 const testSources = [
   { '@rid': '#source', name: 'test source' },
 ];
 
-const testNode = new classes.Ontology({
+const testNode = {
   '@class': 'Disease',
   '@rid': '#1',
   name: 'tset',
@@ -53,7 +68,7 @@ const testNode = new classes.Ontology({
       source: '#source',
     },
   ],
-}, testSchema);
+};
 
 describe('<OntologyFormComponent />', () => {
   let wrapper;

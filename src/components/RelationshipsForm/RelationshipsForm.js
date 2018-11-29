@@ -1,3 +1,6 @@
+/**
+ * @module /components/RelationshipsForm
+ */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './RelationshipsForm.css';
@@ -26,6 +29,9 @@ import util from '../../services/util';
 
 const DEFAULT_RELATIONSHIPS_PROPSLENGTH = 3;
 
+/**
+ * Form to manage a record's edges.
+ */
 class RelationshipsForm extends Component {
   constructor(props) {
     super(props);
@@ -139,7 +145,7 @@ class RelationshipsForm extends Component {
     const { name, value } = e.target;
     model[name] = value;
     if (name && name.includes('.data') && value) {
-      model[name.split('.')[0]] = schema.newRecord(value).getPreview();
+      model[name.split('.')[0]] = schema.getPreview(value);
     }
     this.setState({ model });
   }
@@ -228,7 +234,7 @@ class RelationshipsForm extends Component {
       : 'in';
     return (
       <div className="relationships-expansion">
-        {schema.getClass(r['@class']).properties.filter(k => (
+        {schema.getProperties(r['@class']).filter(k => (
           k.name !== (isIn ? 'in' : 'out')
           && r[k.name]
         )).map(k => (
@@ -244,7 +250,6 @@ class RelationshipsForm extends Component {
       </div>
     );
   }
-  /* eslint-disable */
 
   render() {
     const {
@@ -265,7 +270,7 @@ class RelationshipsForm extends Component {
     } = this.props;
 
     if (!model) return null;
-    const editableProps = (schema.getClass(model['@class'])).properties;
+    const editableProps = schema.getProperties(model['@class']);
 
     let formIsInvalid = false;
     editableProps.forEach((prop) => {
@@ -312,7 +317,7 @@ class RelationshipsForm extends Component {
           </ListItem>
           <ListItem disableGutters>
             <AutoSearchMulti
-              selected={schema.newRecord(forward ? model['in.data'] : model['out.data'])}
+              selected={forward ? model['in.data'] : model['out.data']}
               label="Target Record"
               value={forward ? model.in : model.out}
               onChange={this.handleChange}
@@ -381,10 +386,9 @@ class RelationshipsForm extends Component {
                   name,
                   reverseName,
                 } = schema.get(r['@class']);
-                const shouldExpand = schema.getClass(r['@class']).properties
-                  .filter(k => r[k.name] !== undefined)
+                const shouldExpand = schema.getProperties(r['@class'])
+                  .filter(k => r[k.name] !== undefined && !(r[`${k.name}.data`] && r[`${k.name}.data`] === null))
                   .length > DEFAULT_RELATIONSHIPS_PROPSLENGTH;
-
                 const isIn = (r['in.data'] || {})['@rid'] === nodeRid;
 
                 return (
@@ -462,6 +466,9 @@ class RelationshipsForm extends Component {
  * @property {string} name - property key name of relationships on parent
  * component.
  * @property {string} nodeRid - record ID of input node.
+ * @property {string} errorMsg - Error message to display when error state is
+ * active.
+ * @property {boolean} error - Error flag.
  * @property {boolean} overridePristine - flag to override form pristine check
  */
 RelationshipsForm.propTypes = {
@@ -481,6 +488,9 @@ RelationshipsForm.defaultProps = {
   name: '',
   nodeRid: '#node_rid',
   edgeTypes: null,
+  errorMsg: '',
+  error: false,
+  overridePristine: false,
 };
 
 export default RelationshipsForm;

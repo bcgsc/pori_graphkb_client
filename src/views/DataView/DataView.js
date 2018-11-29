@@ -1,7 +1,6 @@
 /**
  * @module /views/DataView
  */
-
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './DataView.css';
@@ -20,7 +19,6 @@ import TableComponent from '../../components/TableComponent/TableComponent';
 import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
 import { withSchema } from '../../components/SchemaContext/SchemaContext';
 import api from '../../services/api';
-import classes from '../../models/classes';
 import config from '../../static/config';
 
 const { DEFAULT_NEIGHBORS } = config;
@@ -119,9 +117,9 @@ class DataViewBase extends Component {
     const queryParams = qs.parse(history.location.search.slice(1));
     let route = '/ontologies';
     const omitted = [];
-    const kbClass = schema.getClass(queryParams['@class']);
+    const kbClass = schema.get(queryParams['@class']);
     if (kbClass) {
-      ({ route } = kbClass);
+      ({ routeName: route } = kbClass);
       omitted.push('@class');
     }
     queryParams.neighbors = queryParams.neighbors || DEFAULT_NEIGHBORS;
@@ -160,7 +158,7 @@ class DataViewBase extends Component {
 
     queryResults.forEach((record) => {
       allProps = schema.collectOntologyProps(record, allProps);
-      data[record['@rid']] = schema.newRecord(record);
+      data[record['@rid']] = record;
     });
 
     return { data, allProps };
@@ -172,11 +170,11 @@ class DataViewBase extends Component {
    * @param {Object} node - Clicked node identifier.
    */
   async handleClick(node) {
-    const { data } = this.state;
     const { schema } = this.props;
-    if (!data[node.getId()]) {
-      const { route } = schema.get(node.data['@class']);
-      const endpoint = `${route || '/ontologies'}/${node.getId().slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`; // change
+    const { data } = this.state;
+    if (!data[node.data['@rid']]) {
+      const routeName = schema.getRoute(node.data['@class']);
+      const endpoint = `${routeName || '/ontologies'}/${node.data['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`; // change
       const response = await api.get(endpoint);
       this.setState({ ...this.processData([jc.retrocycle(response).result]) });
     }
@@ -234,11 +232,11 @@ class DataViewBase extends Component {
    * Handles subsequent pagination call
    */
   async handleSubsequentPagination() {
+    const { schema } = this.props;
     const {
       next,
       filteredSearch,
     } = this.state;
-    const { schema } = this.props;
 
     if (next) {
       try {
@@ -250,9 +248,9 @@ class DataViewBase extends Component {
 
         let route = '/ontologies';
         const omitted = [];
-        const kbClass = schema.getClass(filteredSearch['@class']);
+        const kbClass = schema.get(filteredSearch['@class']);
         if (kbClass) {
-          ({ route } = kbClass);
+          ({ routeName: route } = kbClass);
           omitted.push('@class');
         }
 
@@ -279,14 +277,15 @@ class DataViewBase extends Component {
     const { history, schema } = this.props;
     if (detail) {
       let route;
-      if (schema.isOntology(detail['@class'])) {
+      const { inherits } = schema.get(detail['@class']);
+      if (inherits && inherits.includes('Ontology')) {
         route = 'ontology';
-      } else if (schema.isVariant(detail['@class'])) {
+      } else if (inherits && inherits.includes('Variant')) {
         route = 'variant';
       } else if (detail['@class'] === 'Statement') {
         route = 'statement';
       }
-      history.push(`/edit/${route}/${detail.getId().slice(1)}`);
+      history.push(`/edit/${route}/${detail['@rid'].slice(1)}`);
     }
   }
 
@@ -304,17 +303,22 @@ class DataViewBase extends Component {
    * @param {boolean} edge - flag to indicate edge record.
    */
   async handleDetailDrawerOpen(node, open, edge) {
-    const { schema } = this.props;
     const { data, detail } = this.state;
     if (!open && !detail) return;
+    if (node.data) {
+      node = node.data; // eslint-disable-line no-param-reassign
+    }
     if (edge) {
-      this.setState({ detail: new classes.Edge(node.data, schema), detailEdge: true });
+      this.setState({
+        detail: node,
+        detailEdge: true,
+      });
     } else {
-      if (!data[node.getId()]) {
-        const response = await api.get(`/ontologies/${node.getId().slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
-        data[node.getId()] = jc.retrocycle(response).result;
+      if (!data[node['@rid']]) {
+        const response = await api.get(`/ontologies/${node['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
+        data[node['@rid']] = jc.retrocycle(response).result;
       }
-      this.setState({ detail: data[node.getId()], detailEdge: false });
+      this.setState({ detail: data[node['@rid']], detailEdge: false });
     }
   }
 
@@ -373,7 +377,7 @@ class DataViewBase extends Component {
     }
     const edges = schema.getEdges();
     const cls = filteredSearch && filteredSearch['@class'];
-    const defaultOrders = schema.getClassConstructor(cls || 'Ontology').getIdentifiers();
+    const defaultOrders = schema.get(cls || 'Ontology').identifiers;
     const detailDrawer = (
       <DetailDrawer
         node={detail}
@@ -398,6 +402,7 @@ class DataViewBase extends Component {
         allProps={allProps}
         localStorageKey={qs.stringify(filteredSearch)}
         handleNewColumns={this.handleNewColumns}
+        schema={schema}
       />
     );
     const TableWithProps = () => (
@@ -418,6 +423,7 @@ class DataViewBase extends Component {
         completedNext={completedNext}
         storedFilters={storedFilters}
         defaultOrder={defaultOrders}
+        schema={schema}
       />
     );
     return (

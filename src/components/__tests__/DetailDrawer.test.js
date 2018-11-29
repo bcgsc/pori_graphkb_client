@@ -5,7 +5,6 @@ import { spy } from 'sinon';
 import { Drawer } from '@material-ui/core';
 import DetailDrawer from '../DetailDrawer/DetailDrawer';
 import Schema from '../../models/schema';
-import classes from '../../models/classes';
 
 const testSchema = new Schema({
   test: {
@@ -13,10 +12,21 @@ const testSchema = new Schema({
     properties: [
       { name: 'dependency', type: 'link' },
     ],
+    identifiers: ['@rid'],
+  },
+  E: {
+    subclasses: [
+      { name: 'AliasOf' },
+    ],
   },
   AliasOf: {
     name: 'AliasOf',
     inherits: ['E'],
+    identifiers: ['@rid'],
+  },
+  V: {
+    name: 'V',
+    properties: [],
   },
   Ontology: {
     name: 'Ontology',
@@ -25,6 +35,7 @@ const testSchema = new Schema({
       { name: 'longName', type: 'string' },
       { name: 'dependency', type: 'link' },
     ],
+    identifiers: ['@class', 'name', 'sourceId', 'source.name'],
   },
 });
 
@@ -49,15 +60,16 @@ describe('<DetailDrawer />', () => {
   });
 
   it('does not crash with test node', () => {
-    const node = new classes.Ontology({
+    const node = {
       '@class': 'Ontology',
       name: 'test node',
       sourceId: 'test sourceId',
       source: {
+        '@class': 'Ontology',
         name: 'test source',
       },
       subsets: ['one', 'two', 'three'],
-    }, testSchema);
+    };
 
     wrapper = mount(<DetailDrawer node={node} schema={testSchema} />);
     expect(DetailDrawer.prototype.formatRelationships).to.have.property('callCount', 1);
@@ -73,14 +85,15 @@ describe('<DetailDrawer />', () => {
   });
 
   it('triggers passed in handlers on events', () => {
-    const node = new classes.Ontology({
+    const node = {
       '@class': 'Ontology',
       name: 'test node',
       sourceId: 'test sourceId',
       source: {
+        '@class': 'Ontology',
         name: 'test source',
       },
-    }, testSchema);
+    };
     const onClose = jest.fn();
     const handleNodeEditStart = jest.fn();
 
@@ -100,7 +113,7 @@ describe('<DetailDrawer />', () => {
   });
 
   it('formatLongValue function is triggered on long inputs only', () => {
-    const node = new classes.Ontology({
+    const node = {
       '@class': 'Ontology',
       // 1st long field
       name: 'test node. this is a long value so that formatlongvalue is called and this test passes, ASHDhkdjhjsdhkJAHDSkjhsdkajsdhaksjdhakjshda blargh blargh',
@@ -108,22 +121,23 @@ describe('<DetailDrawer />', () => {
       longName: 'test node. this is a long value so that formatlongvalue is called and this test passes, ASHDhkdjhjsdhkJAHDSkjhsdkajsdhaksjdhakjshda blargh blargh',
       sourceId: 'test sourceId',
       source: {
+        '@class': 'Ontology',
         name: 'test source',
       },
       subsets: ['one', 'two', 'three'],
-    }, testSchema);
+    };
     wrapper = mount(<DetailDrawer node={node} schema={testSchema} />);
     expect(DetailDrawer.prototype.formatLongValue).to.have.property('callCount', 2);
   });
 
   it('clicking expanding list items triggers handler', () => {
-    const node = new classes.Ontology({
+    const node = {
       '@class': 'Ontology',
       '@rid': '#135',
       name: 'test node best node',
       sourceId: 'test sourceId',
       longName: 'test node. this is a long value so that formatlongvalue is called and this test passes, ASHDhkdjhjsdhkJAHDSkjhsdkajsdhaksjdhakjshda blargh blargh',
-    }, testSchema);
+    };
     wrapper = mount(<DetailDrawer node={node} schema={testSchema} />);
     wrapper.find('div[role="button"]').simulate('click');
     wrapper.find('div[role="button"]').simulate('click');
@@ -131,17 +145,19 @@ describe('<DetailDrawer />', () => {
   });
 
   it('initializes relationships and properly applies handlers to DOM nodes', () => {
-    const node = new classes.Ontology({
+    const node = {
       '@class': 'Ontology',
       '@rid': '#135',
       name: 'test node best node',
       sourceId: 'test sourceId',
       in_AliasOf: [{
+        '@class': 'AliasOf',
         '@rid': '#141',
         in: {
           '@rid': '#135',
         },
         out: {
+          '@class': 'AliasOf',
           '@rid': '#136',
           source: {
             name: 'test source also',
@@ -149,7 +165,7 @@ describe('<DetailDrawer />', () => {
           name: 'hello',
         },
       }],
-    }, testSchema);
+    };
     wrapper = mount(<DetailDrawer node={node} schema={testSchema} />);
     expect(DetailDrawer.prototype.formatRelationships.callCount).to.be.gt(1);
     wrapper.find('div[role="button"]').first().simulate('click');
@@ -158,19 +174,21 @@ describe('<DetailDrawer />', () => {
   });
 
   it('expect detail-nested-list class to be rendered for nested property', () => {
-    const node = new classes.Ontology({
+    const node = {
       '@class': 'test',
       '@rid': '#135',
       name: 'test node best node',
       sourceId: 'test sourceId',
       dependency: {
+        '@class': 'Ontology',
         '@rid': '#4213',
         name: 'dependency one',
         source: {
+          '@class': 'Ontology',
           name: 'ncit',
         },
       },
-    }, testSchema);
+    };
 
     wrapper = mount(<DetailDrawer node={node} schema={testSchema} />);
     wrapper.find('div[role="button"]').first().simulate('click');

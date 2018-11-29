@@ -1,3 +1,6 @@
+/**
+ * @module /views/AddVariantView
+ */
 import React, { Component } from 'react';
 import './AddVariantView.css';
 import PropTypes from 'prop-types';
@@ -7,6 +10,9 @@ import util from '../../services/util';
 import api from '../../services/api';
 import { withSchema } from '../../components/SchemaContext/SchemaContext';
 
+/**
+ * Route for submitting Variant records to db.
+ */
 class AddVariantViewBase extends Component {
   constructor(props) {
     super(props);
@@ -37,14 +43,15 @@ class AddVariantViewBase extends Component {
   async submitVariant(variant, relationships) {
     const { schema } = this.props;
     const copy = Object.assign({}, variant);
-    const { properties, route } = schema.getClass(variant['@class']);
+    const properties = schema.getProperties(variant['@class']);
+    const route = schema.getRoute(variant['@class']);
     // Strips away empty break objects and casts number props to numbers.
     Object.keys(copy).forEach((k) => {
       if (typeof copy[k] === 'object' && copy[k]) { // more flexible
         if (!copy[k]['@class']) {
           delete copy[k];
         } else {
-          const nestedProps = schema.getClass(copy[k]['@class']).properties;
+          const nestedProps = schema.getProperties(copy[k]['@class']);
           nestedProps.forEach((prop) => {
             if (!copy[k][prop.name]) {
               if (prop.type === 'integer' && prop.mandatory) {

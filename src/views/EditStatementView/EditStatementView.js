@@ -1,3 +1,6 @@
+/**
+ * @module /views/EditStatementView
+ */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -11,6 +14,9 @@ import api from '../../services/api';
 import util from '../../services/util';
 import StatementFormComponent from '../../components/StatementFormComponent/StatementFormComponent';
 
+/**
+ * Route for editing existing Statement records.
+ */
 class EditStatementViewBase extends Component {
   constructor(props) {
     super(props);
@@ -28,10 +34,10 @@ class EditStatementViewBase extends Component {
   async componentDidMount() {
     const { match, schema } = this.props;
     const { rid } = match.params;
-    const { route } = schema.get('Statement');
+    const route = schema.getRoute('Statement');
     const response = await api.get(`${route}/${rid}?neighbors=3`);
     const node = jc.retrocycle(response).result;
-    this.setState({ node: schema.newRecord(node) });
+    this.setState({ node });
   }
 
   /**
@@ -40,7 +46,7 @@ class EditStatementViewBase extends Component {
   async handleDelete() {
     const { node } = this.state;
     const { schema } = this.props;
-    const { route } = schema.getClass(node['@class']);
+    const route = schema.getRoute(node['@class']);
     await api.delete(`${route}/${node['@rid'].slice(1)}`);
   }
 
@@ -63,7 +69,8 @@ class EditStatementViewBase extends Component {
     const { schema } = this.props;
 
     await api.patchEdges(originalRelationships || [], relationships, schema);
-    const { route, properties } = schema.getClass(form['@class']);
+    const properties = schema.getProperties(form['@class']);
+    const route = schema.getRoute(form['@class']);
     const payload = util.parsePayload(form, properties);
     await api.patch(`${route}/${form['@rid'].slice(1)}`, payload);
   }

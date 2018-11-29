@@ -65,6 +65,13 @@ describe('<PositionalVariantParser />', () => {
 
   beforeEach(() => {
     mockSchema = new Schema({
+      AliasOf: {
+        name: 'AliasOf',
+        properties: {
+          out: { name: 'out', type: 'link' },
+          in: { name: 'in', type: 'link' },
+        },
+      },
       PositionalVariant: {
         name: 'PositionalVariant',
         properties: { name: { name: 'name', type: 'string' } },
@@ -91,7 +98,15 @@ describe('<PositionalVariantParser />', () => {
         inherits: [],
         route: '/embedded',
       },
-      E: { name: 'E', inherits: ['E'] },
+      E: { name: 'E', inherits: ['E'], subclasses: [{ name: 'AliasOf' }] },
+      Ontology: {
+        name: 'Ontology',
+        subclasses: [],
+      },
+      Variant: {
+        name: 'Variant',
+        subclasses: [],
+      },
     });
   });
 
@@ -195,6 +210,23 @@ describe('<PositionalVariantParser />', () => {
       },
     });
     wrapper.find('textarea[name="name"]').simulate('change');
+    wrapper.instance().updateShorthand({
+      break1Repr: 'p.g11',
+      break1Start: {
+        '@class': 'ProteinPosition',
+        pos: 11,
+        refAA: 'g',
+      },
+      break2Repr: 'p.?12',
+      break2Start: {
+        '@class': 'ProteinPosition',
+        pos: 12,
+        refAA: '',
+      },
+      reference1: 'brca2',
+      type: 'deletion',
+    });
+    wrapper.update();
     expect(wrapper.state().shorthand.toLowerCase()).to.eq('brca2:p.g11_?12del');
   });
 

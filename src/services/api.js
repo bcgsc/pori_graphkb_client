@@ -158,7 +158,7 @@ const autoSearch = (endpoint, property, value, limit) => {
     extras += '&@class=!Publication';
   }
 
-  return get(`/${endpoint}?${query}&${orStr}&${extras}`);
+  return get(`${endpoint}?${query}&${orStr}&${extras}`);
 };
 
 /**

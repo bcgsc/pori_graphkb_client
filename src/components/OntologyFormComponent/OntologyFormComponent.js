@@ -149,7 +149,7 @@ class OntologyFormComponent extends Component {
     const { form, relationships, originalNode } = this.state;
     const { handleSubmit, schema } = this.props;
 
-    const editableProps = schema.getProperties(form['@class']);
+    const editableProps = schema.getProperties(form);
     // Validates form
     let formIsInvalid = false;
     const errorFields = [];
@@ -194,7 +194,7 @@ class OntologyFormComponent extends Component {
     // Wait for form to get initialized
     if (!form) return null;
 
-    const editableProps = schema.getProperties(form['@class']);
+    const editableProps = schema.getProperties(form);
 
     return (
       <div className="node-form-wrapper">

@@ -115,7 +115,7 @@ class DataViewBase extends Component {
     const queryParams = qs.parse(history.location.search.slice(1));
     let route = '/ontologies';
     const omitted = [];
-    const kbClass = schema.get(queryParams['@class']);
+    const kbClass = schema.get(queryParams);
     if (kbClass) {
       ({ routeName: route } = kbClass);
       omitted.push('@class');
@@ -170,7 +170,7 @@ class DataViewBase extends Component {
     const { schema } = this.props;
     const { data } = this.state;
     if (!data[node.data['@rid']]) {
-      const routeName = schema.getRoute(node.data['@class']);
+      const { routeName } = schema.get(node.data);
       const endpoint = `${routeName || '/ontologies'}/${node.data['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`; // change
       const response = await api.get(endpoint);
       this.setState({ ...this.processData([jc.retrocycle(response).result]) });
@@ -245,7 +245,7 @@ class DataViewBase extends Component {
 
         let route = '/ontologies';
         const omitted = [];
-        const kbClass = schema.get(filteredSearch['@class']);
+        const kbClass = schema.get(filteredSearch);
         if (kbClass) {
           ({ routeName: route } = kbClass);
           omitted.push('@class');
@@ -274,7 +274,7 @@ class DataViewBase extends Component {
     const { history, schema } = this.props;
     if (detail) {
       let route;
-      const { inherits } = schema.get(detail['@class']);
+      const { inherits } = schema.get(detail);
       if (inherits && inherits.includes('Ontology')) {
         route = 'ontology';
       } else if (inherits && inherits.includes('Variant')) {

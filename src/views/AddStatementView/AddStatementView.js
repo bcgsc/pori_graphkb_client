@@ -38,12 +38,12 @@ class AddStatementViewBase extends Component {
    */
   async handleSubmit(form, relationships) {
     const { schema } = this.props;
-    const route = schema.getRoute(form['@class']);
-    const properties = schema.getProperties(form['@class']);
+    const { routeName } = schema.get(form);
+    const properties = schema.getProperties(form);
 
     const payload = util.parsePayload(form, properties);
     const relationshipPayloads = relationships.map((r) => {
-      const relationshipProperties = schema.getProperties(r['@class'], ['@class']);
+      const relationshipProperties = schema.getProperties(r, ['@class']);
       const rPayload = util.parsePayload(r, relationshipProperties);
 
       Object.keys(rPayload).forEach((k) => {
@@ -62,7 +62,7 @@ class AddStatementViewBase extends Component {
     });
     payload.supportedBy = relationshipPayloads.filter(r => r['@class'] === 'SupportedBy');
     payload.impliedBy = relationshipPayloads.filter(r => r['@class'] === 'Implies');
-    await api.post(route, payload);
+    await api.post(routeName, payload);
   }
 
   render() {

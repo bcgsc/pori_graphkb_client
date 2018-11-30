@@ -49,10 +49,10 @@ class LoginView extends Component {
 
   /**
    * Updates component state based on user input.
-   * @param {Event} e - Change event triggered from user inputs.
+   * @param {Event} event - Change event triggered from user inputs.
    */
-  handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value, invalid: false });
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value, invalid: false });
   }
 
   /**
@@ -64,11 +64,11 @@ class LoginView extends Component {
 
   /**
    * Makes authentication request to api.
-   * @param {Event} e - Submit event.
+   * @param {Event} event - Submit event.
    */
-  async handleSubmit(e) {
-    e.stopPropagation();
-    e.preventDefault();
+  async handleSubmit(event) {
+    event.stopPropagation();
+    event.preventDefault();
 
     const { username, password } = this.state;
     const { history, handleAuthenticate } = this.props;

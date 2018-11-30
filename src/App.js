@@ -365,7 +365,7 @@ class App extends Component {
                   role="button"
                   tabIndex={0}
                   onClick={this.handleDrawerClose}
-                  onKeyDown={e => e.keyCode === 13 && this.handleDrawerClose()}
+                  onKeyDown={event => event.keyCode === 13 && this.handleDrawerClose()}
                 >
                   <Switch>
                     <Route path="/icons" component={IconsView} />

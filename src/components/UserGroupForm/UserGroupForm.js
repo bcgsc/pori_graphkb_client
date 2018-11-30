@@ -104,22 +104,26 @@ class UserGroupForm extends Component {
 
   /**
    * Checks/unchecks one column of UserGroup permissions.
-   * @param {Event} e - user input checkbox event.
-   * @param {number} i - Column index ([D, U, R, C]).
+   * @param {Event} event - user input checkbox event.
+   * @param {number} index - Column index ([D, U, R, C]).
    */
-  handlePermissionsCheckAll(e, i) {
+  handlePermissionsCheckAll(event, index) {
     const { tempUserGroupPermissions } = this.state;
     const { schema } = this.props;
     Object.keys(tempUserGroupPermissions).forEach((pKey) => {
       const { isEdge, isAbstract } = schema.get(pKey);
-      tempUserGroupPermissions[pKey][i] = (e.target.checked
-        && !(isEdge && i === 1))
-        && !(isAbstract && i !== 2)
+      tempUserGroupPermissions[pKey][index] = (event.target.checked
+        && !(isEdge && index === 1))
+        && !(isAbstract && index !== 2)
         ? 1 : 0;
     });
     this.setState({ tempUserGroupPermissions });
   }
 
+  /**
+   * Casts permissions temp object to decimal number to send to server.
+   * @param {Object} permissions - Permissions object from record.
+   */
   castPermissions(permissions) {
     const tempPermissions = {};
     const reducer = (accumulator, curr, i) => accumulator + curr * (2 ** i);
@@ -131,6 +135,10 @@ class UserGroupForm extends Component {
     return tempPermissions;
   }
 
+  /**
+   * Validates form and calls onEdit props function with usergroup name and
+   * permissions as payload.
+   */
   async handleUserGroupEdit() {
     const { onEdit } = this.props;
     const {
@@ -154,6 +162,10 @@ class UserGroupForm extends Component {
     });
   }
 
+  /**
+   * Validates form and calls onAdd props function with usergroup name and
+   * permissions as payload.
+   */
   async handleUserGroupSubmit() {
     const { onAdd, userGroups } = this.props;
     const {
@@ -191,6 +203,10 @@ class UserGroupForm extends Component {
     this.setState({ deletedUserGroup: deletedUserGroup ? null : userGroup });
   }
 
+  /**
+   * Toggles new UserGroup dialog between open and closed. Initializes temp
+   * usergroup permissions on open.
+   */
   handleUserGroupDialog() {
     const { schema } = this.props;
     const { newUserGroupDialog, tempUserGroupPermissions } = this.state;
@@ -208,8 +224,12 @@ class UserGroupForm extends Component {
     }
   }
 
-  handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
+  /**
+   * Updates state based on a user input event.
+   * @param {Event} event - User input event.
+   */
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   render() {

@@ -68,10 +68,10 @@ class RelationshipsForm extends Component {
 
   /**
    * Adds new subset to state list. Clears subset field.
-   * @param {Event} e - User request subset add event.
+   * @param {Event} event - User request subset add event.
    */
-  handleAdd(e) {
-    e.preventDefault();
+  handleAdd(event) {
+    event.preventDefault();
     const {
       relationships,
       name,
@@ -98,11 +98,11 @@ class RelationshipsForm extends Component {
 
   /**
    * Deletes subset from state relationship list.
-   * @param {Event} e - User delete button event click.
+   * @param {Event} event - User delete button event click.
    * @param {string} rid - relationship id to be deleted.
    */
-  handleDelete(e, rid) {
-    e.stopPropagation();
+  handleDelete(event, rid) {
+    event.stopPropagation();
     const {
       originalRelationships,
     } = this.state;
@@ -124,11 +124,11 @@ class RelationshipsForm extends Component {
 
   /**
    * Reverts a subset that is staged for deletion.
-   * @param {Event} e - User undo button click event.
+   * @param {Event} event - User undo button click event.
    * @param {string} rid - deleted subset to be reverted.
    */
-  handleUndo(e, rid) {
-    e.stopPropagation();
+  handleUndo(event, rid) {
+    event.stopPropagation();
 
     const { relationships, name, onChange } = this.props;
     relationships.find(r => r['@rid'] === rid).deleted = false;
@@ -137,12 +137,12 @@ class RelationshipsForm extends Component {
 
   /**
    * Handles change in temp relationship model.
-   * @param {Event} e - User change event.
+   * @param {Event} event - User change event.
    */
-  handleChange(e) {
+  handleChange(event) {
     const { model } = this.state;
     const { schema } = this.props;
-    const { name, value } = e.target;
+    const { name, value } = event.target;
     model[name] = value;
     if (name && name.includes('.data') && value) {
       model[name.split('.')[0]] = schema.getPreview(value);
@@ -153,12 +153,12 @@ class RelationshipsForm extends Component {
   /**
    * Handles changes in the temp relationship model's class, causing a
    * reinitialization of the model.
-   * @param {Event} e - class change event.
+   * @param {Event} event - class change event.
    */
-  handleClassChange(e) {
+  handleClassChange(event) {
     const { model } = this.state;
     const { schema } = this.props;
-    const { value } = e.target;
+    const { value } = event.target;
 
     const newModel = schema.initModel(model, value);
     this.setState({ model: newModel });

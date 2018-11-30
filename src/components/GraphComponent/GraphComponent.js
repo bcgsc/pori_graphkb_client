@@ -688,10 +688,10 @@ class GraphComponent extends Component {
 
   /**
    * Handles node clicks from user.
-   * @param {Event} e - User click event.
+   * @param {Event} event - User click event.
    * @param {Object} node - Clicked simulation node.
    */
-  async handleClick(e, node) {
+  async handleClick(event, node) {
     const { handleClick, handleDetailDrawerOpen } = this.props;
     // Prematurely loads neighbor data.
     await handleClick(node);
@@ -704,14 +704,14 @@ class GraphComponent extends Component {
 
   /**
    * Updates graph options, re-initializes simulation, and re-renders objects.
-   * @param {Event} e - User input event.
-   * @param {boolean} adv - Advanced option flag.
+   * @param {Event} event - User input event.
+   * @param {boolean} isAdvanced - Advanced option flag.
    */
-  handleGraphOptionsChange(e, adv) {
+  handleGraphOptionsChange(event, isAdvanced) {
     const { graphOptions, refreshable } = this.state;
-    graphOptions[e.target.name] = e.target.value;
+    graphOptions[event.target.name] = event.target.value;
     graphOptions.load();
-    this.setState({ graphOptions, refreshable: adv || refreshable }, () => {
+    this.setState({ graphOptions, refreshable: isAdvanced || refreshable }, () => {
       this.initSimulation();
       this.drawGraph();
       this.updateColors();
@@ -747,10 +747,10 @@ class GraphComponent extends Component {
 
   /**
    * Handles link clicks from user.
-   * @param {Event} e - User click event.
+   * @param {Event} event - User click event.
    * @param {Object} link - Clicked simulation link.
    */
-  handleLinkClick(e, link) {
+  handleLinkClick(event, link) {
     const { handleDetailDrawerOpen } = this.props;
 
     // Update contents of detail drawer if open.

@@ -41,10 +41,10 @@ class RecordChip extends Component {
 
   /**
    * Opens popover.
-   * @param {Event} e - User click event.
+   * @param {Event} event - User click event.
    */
-  handlePopoverOpen(e) {
-    this.setState({ anchorEl: e.currentTarget });
+  handlePopoverOpen(event) {
+    this.setState({ anchorEl: event.currentTarget });
   }
 
   render() {

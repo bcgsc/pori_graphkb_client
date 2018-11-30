@@ -101,15 +101,15 @@ class AdvancedQueryViewBase extends Component {
 
   /**
    * Updates main parameters after user input.
-   * @param {Event} e - User input event.
+   * @param {Event} event - User input event.
    */
-  handleChange(e, nested) {
+  handleChange(event, nested) {
     const { form } = this.state;
     const { schema } = this.props;
     const {
       name,
       value,
-    } = e.target;
+    } = event.target;
 
     if (nested) {
       form[nested][name] = value;
@@ -129,24 +129,24 @@ class AdvancedQueryViewBase extends Component {
 
   /**
    * Re renders form input fields based on class editable properties.
-   * @param {Event} e - User class selection event.
+   * @param {Event} event - User class selection event.
    */
-  async handleClassChange(e) {
+  async handleClassChange(event) {
     const { form } = this.state;
     const { schema } = this.props;
-    const newForm = schema.initModel(form, e.target.value || 'Ontology', config.ONTOLOGY_QUERY_PARAMS);
+    const newForm = schema.initModel(form, event.target.value || 'Ontology', config.ONTOLOGY_QUERY_PARAMS);
     this.setState({ form: newForm });
   }
 
   /**
    * Handles changes in an embedded property's class.
-   * @param {Event} e - new class selection event.
+   * @param {Event} event - new class selection event.
    * @param {string} nested - nested property key.
    */
-  handleNestedClassChange(e, nested) {
+  handleNestedClassChange(event, nested) {
     const { form } = this.state;
     const { schema } = this.props;
-    const { value } = e.target;
+    const { value } = event.target;
     const classSchema = schema.getProperties(form);
     if (schema.getProperties(value)) {
       const abstractClass = classSchema

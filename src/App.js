@@ -33,6 +33,7 @@ import AddIcon from '@material-ui/icons/Add';
 import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import { schema as SCHEMA_DEFN } from '@bcgsc/knowledgebase-schema';
 import {
   AddOntologyView,
@@ -50,12 +51,14 @@ import {
   AddVariantView,
   EditVariantView,
   QueryBuilderView,
+  TutorialView,
 } from './views';
 import logo from './static/logo.png';
 import title from './static/title.png';
 import auth from './services/auth';
 import history from './services/history';
 import Schema from './services/schema';
+import util from './services/util';
 import { KBContext } from './components/KBContext/KBContext';
 
 const theme = createMuiTheme({
@@ -172,6 +175,23 @@ class App extends Component {
     this.handleDrawerClose();
   }
 
+  renderNavLink(routeName, icon, label = util.antiCamelCase(routeName)) {
+    return (
+      <Link to={`/${routeName}`}>
+        <MenuItem
+          id={`link-${routeName}`}
+          onClick={this.handleDrawerClose}
+        >
+          {icon && (
+            <ListItemIcon>
+              {icon}
+            </ListItemIcon>)}
+          <ListItemText inset={!icon} primary={label} />
+        </MenuItem>
+      </Link>
+    );
+  }
+
   render() {
     const {
       anchorEl,
@@ -207,17 +227,7 @@ class App extends Component {
         </div>
         <Divider />
         <List className="drawer-links">
-          <Link to="/query">
-            <MenuItem
-              id="link-search"
-              onClick={this.handleDrawerClose}
-            >
-              <ListItemIcon>
-                <SearchIcon />
-              </ListItemIcon>
-              <ListItemText primary="Query" />
-            </MenuItem>
-          </Link>
+          {this.renderNavLink('query', <SearchIcon />)}
           <MenuItem onClick={this.handleDrawerExpand('add')}>
             <ListItemIcon>
               <div style={{ display: 'inline-flex' }}>
@@ -232,31 +242,11 @@ class App extends Component {
             />
           </MenuItem>
           <Collapse in={expanded === 'add' && drawerOpen}>
-            <Link to="/add/ontology">
-              <MenuItem
-                id="link-add"
-                onClick={this.handleDrawerClose}
-              >
-                <ListItemText inset primary="Ontology" />
-              </MenuItem>
-            </Link>
-            <Link to="/add/variant">
-              <MenuItem
-                id="link-variant"
-                onClick={this.handleDrawerClose}
-              >
-                <ListItemText inset primary="Variant" />
-              </MenuItem>
-            </Link>
-            <Link to="/add/statement">
-              <MenuItem
-                id="link-statement"
-                onClick={this.handleDrawerClose}
-              >
-                <ListItemText inset primary="Statement" />
-              </MenuItem>
-            </Link>
+            {this.renderNavLink('add/ontology', null, 'Ontology')}
+            {this.renderNavLink('add/variant', null, 'Variant')}
+            {this.renderNavLink('add/statement', null, 'Statement')}
           </Collapse>
+          {this.renderNavLink('tutorial', <HelpOutlineIcon />)}
         </List>
         <div className="drawer-footer">
           <Divider />
@@ -284,6 +274,7 @@ class App extends Component {
         <Route path="/data" component={DataView} />
         <Route path="/feedback" component={FeedbackView} />
         <Route path="/admin" component={AdminView} />
+        <Route path="/tutorial" component={TutorialView} />
         <Redirect from="*" to="/query" />
       </Switch>
     );

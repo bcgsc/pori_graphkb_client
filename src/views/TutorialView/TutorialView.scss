@@ -1,0 +1,19 @@
+@import "../../globals";
+
+.tutorial-wrapper {
+  @include view-wrapper;
+
+  .tutorial-header {
+    @include page-header;
+  }
+  .tutorial-body {
+    @include paper;
+  }
+  .form-list-item {
+    img {
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 2px;
+      max-width: 50%;
+    }
+  }
+}

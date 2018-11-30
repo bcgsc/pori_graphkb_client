@@ -462,7 +462,7 @@ class RelationshipsForm extends Component {
  * @property {function} onChange - function to handle changes to the
  * relationships list.
  * @property {Object} schema - Knowledgebase db schema.
- * @property {Array} relationships - list of current relationships to be edited.
+ * @property {Array.<Object>} relationships - list of current relationships to be edited.
  * @property {string} name - property key name of relationships on parent
  * component.
  * @property {string} nodeRid - record ID of input node.

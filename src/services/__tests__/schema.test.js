@@ -9,7 +9,6 @@ describe('Schema wrapper class tests', () => {
     it('gets classes properly', () => {
       Object.keys(SCHEMA_DEFN).forEach((key) => {
         expect(testSchema.get(key)).to.not.eq(undefined);
-        expect(testSchema.getRoute(key)).to.eq(testSchema.get(key).routeName);
       });
     });
     it('returns proper metadata fields', () => {

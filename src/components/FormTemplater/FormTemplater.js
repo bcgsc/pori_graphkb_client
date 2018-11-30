@@ -102,7 +102,7 @@ function FormTemplater(props) {
       // Decide which endpoint to query.
       let endpoint;
       if (linkedClass) {
-        endpoint = linkedClass.routeName.slice(1);
+        endpoint = linkedClass.routeName;
         return (
           <ListItem
             className="form-templater-autosearch"
@@ -155,7 +155,7 @@ function FormTemplater(props) {
       );
     }
     if (type === 'embedded') {
-      const properties = schema.getProperties((model[name] || {})['@class']);
+      const properties = schema.getProperties(model[name]);
       let classSelector = (
         <Typography variant="subtitle1">
           {util.antiCamelCase(name)}

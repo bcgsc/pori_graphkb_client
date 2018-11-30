@@ -234,7 +234,7 @@ class RelationshipsForm extends Component {
       : 'in';
     return (
       <div className="relationships-expansion">
-        {schema.getProperties(r['@class']).filter(k => (
+        {schema.getProperties(r).filter(k => (
           k.name !== (isIn ? 'in' : 'out')
           && r[k.name]
         )).map(k => (
@@ -270,7 +270,7 @@ class RelationshipsForm extends Component {
     } = this.props;
 
     if (!model) return null;
-    const editableProps = schema.getProperties(model['@class']);
+    const editableProps = schema.getProperties(model);
 
     let formIsInvalid = false;
     editableProps.forEach((prop) => {
@@ -385,8 +385,8 @@ class RelationshipsForm extends Component {
                 const {
                   name,
                   reverseName,
-                } = schema.get(r['@class']);
-                const shouldExpand = schema.getProperties(r['@class'])
+                } = schema.get(r);
+                const shouldExpand = schema.getProperties(r)
                   .filter(k => r[k.name] !== undefined && !(r[`${k.name}.data`] && r[`${k.name}.data`] === null))
                   .length > DEFAULT_RELATIONSHIPS_PROPSLENGTH;
                 const isIn = (r['in.data'] || {})['@rid'] === nodeRid;

@@ -292,7 +292,7 @@ class QueryViewBase extends Component {
                   fullWidth
                   value={relevance}
                   name="relevance"
-                  endpoint={schema.getRoute('Vocabulary').slice(1)}
+                  endpoint={schema.get('Vocabulary').routeName}
                   onChange={this.handleChange}
                   className="query-statement-textfield"
                   endAdornment={null}
@@ -303,7 +303,7 @@ class QueryViewBase extends Component {
                   fullWidth
                   value={appliesTo}
                   name="appliesTo"
-                  endpoint={schema.getRoute('Ontology').slice(1)}
+                  endpoint={schema.get('Ontology').routeName}
                   onChange={this.handleChange}
                   className="query-statement-textfield"
                   endAdornment={(

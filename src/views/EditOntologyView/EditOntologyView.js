@@ -57,10 +57,10 @@ class EditOntologyViewBase extends Component {
     const { schema } = this.props;
 
     await api.patchEdges(originalNode.relationships || [], relationships, schema);
-    const route = schema.getRoute(originalNode['@class']);
-    const properties = schema.getProperties(originalNode['@class']);
+    const { routeName } = schema.get(originalNode);
+    const properties = schema.getProperties(originalNode);
     const payload = util.parsePayload(form, properties);
-    await api.patch(`${route}/${originalNode['@rid'].slice(1)}`, payload);
+    await api.patch(`${routeName}/${originalNode['@rid'].slice(1)}`, payload);
   }
 
   /**
@@ -69,8 +69,8 @@ class EditOntologyViewBase extends Component {
   async handleDelete() {
     const { node } = this.state;
     const { schema } = this.props;
-    const route = schema.getRoute(node['@class']);
-    await api.delete(`${route}/${node['@rid'].slice(1)}`);
+    const { routeName } = schema.get(node);
+    await api.delete(`${routeName}/${node['@rid'].slice(1)}`);
   }
 
   /**

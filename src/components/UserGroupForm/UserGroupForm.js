@@ -213,12 +213,10 @@ class UserGroupForm extends Component {
   }
 
   render() {
-    /* eslint-disable */
     const {
       userGroups,
       schema,
     } = this.props;
-    /* eslint-enable */
     const {
       tempUserGroupName,
       tempUserGroupPermissions,

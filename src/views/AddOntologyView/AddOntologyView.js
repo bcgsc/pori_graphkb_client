@@ -32,10 +32,10 @@ class AddOntologyViewBase extends Component {
   async handleSubmit(form, relationships) {
     const { schema } = this.props;
 
-    const properties = schema.getProperties(form['@class']);
-    const route = schema.getRoute(form['@class']);
+    const properties = schema.getProperties(form);
+    const { routeName } = schema.get(form);
     const payload = util.parsePayload(form, properties);
-    const response = await api.post(route, { ...payload });
+    const response = await api.post(routeName, { ...payload });
     await api.submitEdges(relationships, schema, response.result['@rid']);
   }
 
@@ -50,7 +50,7 @@ class AddOntologyViewBase extends Component {
   render() {
     const { schema } = this.props;
 
-    return schema && (
+    return (
       <div className="add-form-wrapper">
         <Paper className="form-header" elevation={4}>
           <div className="form-cancel-btn">

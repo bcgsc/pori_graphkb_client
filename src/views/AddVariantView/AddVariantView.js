@@ -43,15 +43,15 @@ class AddVariantViewBase extends Component {
   async submitVariant(variant, relationships) {
     const { schema } = this.props;
     const copy = Object.assign({}, variant);
-    const properties = schema.getProperties(variant['@class']);
-    const route = schema.getRoute(variant['@class']);
+    const properties = schema.getProperties(variant);
+    const routeName = schema.get(variant);
     // Strips away empty break objects and casts number props to numbers.
     Object.keys(copy).forEach((k) => {
       if (typeof copy[k] === 'object' && copy[k]) { // more flexible
         if (!copy[k]['@class']) {
           delete copy[k];
         } else {
-          const nestedProps = schema.getProperties(copy[k]['@class']);
+          const nestedProps = schema.getProperties(copy[k]);
           nestedProps.forEach((prop) => {
             if (!copy[k][prop.name]) {
               if (prop.type === 'integer' && prop.mandatory) {
@@ -66,14 +66,13 @@ class AddVariantViewBase extends Component {
     });
     const payload = util.parsePayload(copy, properties);
 
-    const response = await api.post(route, payload);
+    const response = await api.post(routeName, payload);
 
     await api.submitEdges(relationships, schema, response.result['@rid']);
   }
 
   render() {
     const { schema } = this.props;
-    if (!schema) return null;
     return (
       <div className="variant-wrapper">
         <Paper elevation={4} className="variant-headline">

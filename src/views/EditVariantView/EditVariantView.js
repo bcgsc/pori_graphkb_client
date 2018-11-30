@@ -32,8 +32,8 @@ class EditVariantViewBase extends Component {
   async componentDidMount() {
     const { match, schema } = this.props;
     const { rid } = match.params;
-    const route = schema.getRoute('Variant');
-    const response = await api.get(`${route}/${rid}?neighbors=3`);
+    const { routeName } = schema.get('Variant');
+    const response = await api.get(`${routeName}/${rid}?neighbors=3`);
     const node = jc.retrocycle(response).result;
     this.setState({
       node,
@@ -54,8 +54,8 @@ class EditVariantViewBase extends Component {
   async handleDelete() {
     const { node } = this.state;
     const { schema } = this.props;
-    const route = schema.getRoute(node['@class']);
-    await api.delete(`${route}/${node['@rid'].slice(1)}`);
+    const { routeName } = schema.get(node);
+    await api.delete(`${routeName}/${node['@rid'].slice(1)}`);
   }
 
   /**
@@ -78,14 +78,14 @@ class EditVariantViewBase extends Component {
     await api.patchEdges(oRelationships || [], relationships, schema);
 
     const copy = Object.assign({}, variant);
-    const properties = schema.getProperties(variant['@class']);
-    const route = schema.getRoute(variant['@class']);
+    const properties = schema.getProperties(variant);
+    const { routeName } = schema.get(variant);
     Object.keys(copy).forEach((k) => {
       if (copy[k] && typeof copy[k] === 'object') {
         if (!copy[k]['@class']) {
           delete copy[k];
         } else {
-          const nestedProps = schema.getProperties(copy[k]['@class']);
+          const nestedProps = schema.getProperties(copy[k]);
           nestedProps.forEach((prop) => {
             if (!copy[k][prop.name]) {
               if (prop.type === 'integer' && prop.mandatory) {
@@ -99,7 +99,7 @@ class EditVariantViewBase extends Component {
       }
     });
     const payload = util.parsePayload(copy, properties);
-    await api.patch(`${route}/${variant['@rid'].slice(1)}`, payload);
+    await api.patch(`${routeName}/${variant['@rid'].slice(1)}`, payload);
   }
 
   render() {

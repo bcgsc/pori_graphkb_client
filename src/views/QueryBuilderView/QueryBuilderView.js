@@ -79,10 +79,10 @@ class QueryBuilderViewBase extends Component {
 
   /**
    * Handles change of a state property.
-   * @param {Event} e - User input event.
+   * @param {Event} event - User input event.
    */
-  handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   /**
@@ -98,9 +98,9 @@ class QueryBuilderViewBase extends Component {
    * @param {string} type - state key.
    */
   handleNested(type) {
-    return (e) => {
+    return (event) => {
       const { [type]: temp } = this.state;
-      const { name, value } = e.target;
+      const { name, value } = event.target;
       temp[name] = value;
       this.setState({ [type]: temp });
     };
@@ -222,7 +222,9 @@ class QueryBuilderViewBase extends Component {
             value={tempNames[nested.join('.')]}
             name={nested.join('.')}
             onChange={this.handleNested('tempNames')}
-            onKeyUp={e => e.keyCode === 13 ? this.handleAdd(nested.join('.')) : null}
+            onKeyUp={event => event.keyCode === 13
+              ? this.handleAdd(nested.join('.'))
+              : null}
           />
         </div>
         {!tempNested[nested.join('.')]
@@ -232,7 +234,9 @@ class QueryBuilderViewBase extends Component {
                 onChange={this.handleNested('tempValues')}
                 value={tempValues[nested.join('.')]}
                 name={nested.join('.')}
-                onKeyUp={e => e.keyCode === 13 ? this.handleAdd(nested.join('.')) : null}
+                onKeyUp={event => event.keyCode === 13
+                  ? this.handleAdd(nested.join('.'))
+                  : null}
               />
             </div>
           )}

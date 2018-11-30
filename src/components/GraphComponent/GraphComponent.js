@@ -488,7 +488,7 @@ class GraphComponent extends Component {
    * @param {number} depth - Recursion base case flag.
    * @param {Object} prevstate - Object containing nodes, links,
    * graphobjects, and expandable map, from previous state.
-   * @param {Array} [exclusions=[]] - List of edge ID's to be ignored on expansion.
+   * @param {Array.<string>} [exclusions=[]] - List of edge ID's to be ignored on expansion.
    */
   processData(node, position, depth, prevstate, exclusions = []) {
     const { expandedEdgeTypes } = this.state;
@@ -1359,10 +1359,10 @@ class GraphComponent extends Component {
  * @property {function} handleNewColumns - Updates valid properties in parent state.
  * @property {Object} detail - record ID of node currently selected for detail viewing.
  * @property {Object} data - Parent state data.
- * @property {Array} allProps - list of all unique properties on all nodes returned in
+ * @property {Array.<string>} allProps - list of all unique properties on all nodes returned in
  * initial query.
- * @property {Array} edgeTypes - list of valid edge classes.
- * @property {Array} displayed - list of initial record ID's to be displayed in graph.
+ * @property {Array.<string>} edgeTypes - list of valid edge classes.
+ * @property {Array.<string>} displayed - list of initial record ID's to be displayed in graph.
  * @property {string} localStorageKey - key to identify graph session data with in
  * localStorage.
  * @property {Object} schema - KnowledgeBase Schema.

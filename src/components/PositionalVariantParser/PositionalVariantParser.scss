@@ -69,6 +69,7 @@
         margin-top: 8px;
       }
       @media(max-width: $breakpoint-mobile){
+        box-shadow: none;
         margin-top: 0;
       }
     }

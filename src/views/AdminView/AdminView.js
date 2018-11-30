@@ -262,7 +262,11 @@ class AdminViewBase extends Component {
     } else {
       selected.splice(i, 1);
     }
-    this.setState({ selected });
+    const update = { selected };
+    if (selected.length === 0) {
+      update.deleteDialogOpen = false;
+    }
+    this.setState(update);
   }
 
   /**
@@ -489,7 +493,8 @@ class AdminViewBase extends Component {
         <Dialog
           open={userDialogOpen}
           onClose={this.handleUserDialog}
-          maxWidth={false}
+          maxWidth="md"
+          fullWidth
           classes={{
             paper: 'new-user-dialog',
           }}
@@ -515,7 +520,7 @@ class AdminViewBase extends Component {
               </FormControl>
               <FormControl component="fieldset">
                 <FormLabel component="legend">Groups</FormLabel>
-                <FormGroup>
+                <FormGroup className="new-user-group-checkboxes">
                   {userGroups.map(userGroup => (
                     <FormControlLabel
                       key={userGroup['@rid']}
@@ -538,33 +543,56 @@ class AdminViewBase extends Component {
                   {newUserName || <Typography color="textSecondary">[New User]</Typography>}
                 </Typography>
               </div>
-              <div className="preview-metadata">
-                <div className="metadata-line">
-                  <Typography variant="body1" component="h4">Created By:</Typography>
-                  <Typography variant="caption" component="p">
-                    {edit ? (selectedUser.createdBy || {}).name : auth.getUser()}
-                  </Typography>
-                </div>
-                <div className="metadata-line">
-                  <Typography variant="body1" component="h4">Created At:</Typography>
-                  <Typography variant="caption" component="p">
-                    {edit ? new Date(selectedUser.createdAt).toLocaleString()
-                      : date.toLocaleString()}
-                  </Typography>
-                </div>
-              </div>
-              <div className={`preview-groups ${newUserGroups.length === 0 && 'no-groups'}`}>
-                <Typography variant="body1" component="h4">
-                  Groups:
-                </Typography>
-                {newUserGroups.length !== 0 ? newUserGroups.map(group => (
-                  <Chip
-                    key={group}
-                    label={userGroups.find(g => g['@rid'] === group).name}
-                    className="group-chip"
-                    color="primary"
-                  />)) : <Typography component="p" variant="caption">No groups</Typography>}
-              </div>
+              <table>
+                <tbody>
+                  <tr>
+                    <td>
+                      <Typography variant="body1" component="h4">
+                        Created By:
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography variant="caption" component="p">
+                        {edit
+                          ? (selectedUser.createdBy || { name: 'none' }).name
+                          : auth.getUser().name}
+                      </Typography>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <Typography variant="body1" component="h4">
+                        Created At:
+                      </Typography>
+                    </td>
+                    <td>
+                      <Typography variant="caption" component="p">
+                        {edit ? new Date(selectedUser.createdAt).toLocaleString()
+                          : date.toLocaleString()}
+                      </Typography>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <Typography variant="body1" component="h4">
+                        Groups:
+                      </Typography>
+                    </td>
+                    <td />
+                  </tr>
+                  <tr>
+                    <td style={{ whiteSpace: 'normal' }} colSpan={2}>
+                      {newUserGroups.length !== 0 ? newUserGroups.map(group => (
+                        <Chip
+                          key={group}
+                          label={userGroups.find(g => g['@rid'] === group).name}
+                          className="group-chip"
+                          color="primary"
+                        />)) : <Typography component="p" variant="caption">No groups</Typography>}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </Paper>
           </DialogContent>
           <DialogActions style={{ justifyContent: 'center' }}>
@@ -722,7 +750,7 @@ class AdminViewBase extends Component {
             <div className="admin-section-heading-btns">
               <IconButton
                 disabled={selected.length === 0}
-                onClick={() => this.handleChange({ target: { name: 'deleteDialogOpen', value: false } })}
+                onClick={() => this.handleChange({ target: { name: 'deleteDialogOpen', value: true } })}
               >
                 {selected.length === 0 ? <DeleteIcon />
                   : (
@@ -754,7 +782,7 @@ class AdminViewBase extends Component {
                   </TableCell>
                   <TableCell padding="dense">RID</TableCell>
                   <TableCell>Name</TableCell>
-                  <TableCell>Created At</TableCell>
+                  <TableCell padding="dense">Created At</TableCell>
                   <TableCell>Groups</TableCell>
                   <TableCell padding="checkbox" />
                 </TableRow>
@@ -770,7 +798,7 @@ class AdminViewBase extends Component {
                     </TableCell>
                     <TableCell padding="dense">{user['@rid']}</TableCell>
                     <TableCell>{user.name}</TableCell>
-                    <TableCell>
+                    <TableCell padding="dense">
                       {new Date(user.createdAt).toLocaleString()}
                     </TableCell>
                     <TableCell>{user.groups.map(g => g.name).join(', ')}</TableCell>

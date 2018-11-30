@@ -5,9 +5,11 @@ This is the front end for the Knowledge Base database. Users can query the datab
 ### Querying
 The query page allows users to search records by name or shorthand. Submit the query by pressing `Enter` or by clicking on the search icon.
 
+#### Advanced Query and Query Builder
+
 The advanced querying page allows users to specify additional search parameters, depending on the specified record class. The query builder page allows any precise query to be constructed using JSON format. Use of the knowledgebase specification is recommended for beginners, and can be found [here](http://kbapi01:8061/api/v0.6.1/spec/).
 
-##### Example Query
+##### Example Query (Query Builder)
 ```
 {
   "@class": "Statement",

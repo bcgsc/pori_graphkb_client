@@ -243,7 +243,7 @@ AutoSearchSingle.propTypes = {
 AutoSearchSingle.defaultProps = {
   className: '',
   limit: 30,
-  endpoint: 'ontologies',
+  endpoint: '/ontologies',
   property: ['name'],
   placeholder: '',
   name: undefined,

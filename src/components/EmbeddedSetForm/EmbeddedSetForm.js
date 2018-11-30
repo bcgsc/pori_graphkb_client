@@ -174,7 +174,7 @@ class EmbeddedSetForm extends Component {
 /**
  * @namespace
  * @property {function} onChange - Parent component change handler.
- * @property {Array<string>} list - Embedded set property as array.
+ * @property {Array.<string>} list - Embedded set property as array.
  * @property {string} label - TextField label.
  * @property {string} name - Input name attribute.
  * @property {boolean} error - TextField error flag.

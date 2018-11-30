@@ -223,7 +223,7 @@ class TableComponent extends Component {
 
   /**
    * builds tsv data and prompts the browser to download file.
-   * @param {Array} fData - forced data to be put into tsv.
+   * @param {Array.<Object>} fData - forced data to be put into tsv.
    */
   createTSV(fData) {
     const { data, hidden, allProps } = this.props;
@@ -276,7 +276,7 @@ class TableComponent extends Component {
   /**
    * Parses current page data to be displayed.
    * @param {number} page - page number.
-   * @param {Array} data - query results data map.
+   * @param {Array.<Object>} data - query results data map.
    */
   pageData(page, data) {
     const {
@@ -389,7 +389,7 @@ class TableComponent extends Component {
 
   /**
    * Toggles filters from selecting all/deselecting all options.
-   * @param {Array} options - current array of filter options.
+   * @param {Array.<string>} options - current array of filter options.
    */
   handleFilterCheckAll(options) {
     const { columnFilterExclusions, tempFilterIndex } = this.state;
@@ -937,7 +937,7 @@ class TableComponent extends Component {
  * @namespace
  * @property {Object} data - Object containing query results.
  * @property {Object} detail - Record being displayed in detail view.
- * @property {Array} displayed - Array of displayed nodes.
+ * @property {Array.<string>} displayed - Array of displayed node rids.
  * @property {function} handleCheckAll - Method triggered when all rows are
  * checked.
  * @property {function} handleCheckbox - Method triggered when a single row is
@@ -954,16 +954,17 @@ class TableComponent extends Component {
  * drawer to a given record.
  * @property {function} handleSubsequentPagination - parent function to handle
  * subsequent api calls.
- * @property {Array} hidden - Array of hidden nodes.
- * @property {Array} allProps - all non-base columns represented throughout the
- * query results.
+ * @property {Array.<string>} hidden - Array of hidden node rids.
+ * @property {Array.<string>} allProps - all non-base columns represented
+ * throughout the query results.
  * @property {boolean} moreResults - Flag to tell component there could be more
  * results to the query.
  * @property {boolean} completedNext - Flag for whether or not component has
  * completed the current subsequent query.
- * @property {Array} storedFilters - filters stored for current session.
- * Accessed on component init and stored on navigate to table.
- * @property {Array} defaultOrder - List of columns to display in order.
+ * @property {Array.<Object>} storedFilters - filters stored for current
+ * session. Accessed on component init and stored on navigate to table.
+ * @property {Array.<string>} defaultOrder - List of columns to display in
+ * order.
  * @property {Object} schema - Knowledgebase schema object.
  */
 TableComponent.propTypes = {

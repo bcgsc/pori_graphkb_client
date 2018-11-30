@@ -162,7 +162,7 @@ const autoSearch = (endpoint, property, value, limit) => {
 
 /**
  * Replaces placeholder RIDs and posts a list of edges.
- * @param {Array} edges - new edges to post.
+ * @param {Array.<Object>} edges - new edges to post.
  * @param {Object} schema - Knowledgebase db schema.
  * @param {string} [rid=''] - Record id to post edges to.
  */

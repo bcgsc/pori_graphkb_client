@@ -1,7 +1,5 @@
 # Knowledge Base GUI
 
-## What you need to know
-
 This is the front end for the Knowledge Base database. Users can query the database, view results in a table or graph view, edit record properties, and add or delete records.
 
 ### Querying

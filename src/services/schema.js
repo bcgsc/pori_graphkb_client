@@ -24,6 +24,9 @@ class Schema {
     return this.schema[obj['@class']].getPreview(obj);
   }
 
+  /**
+   * Returns record metadata fields
+   */
   getMetadata() {
     return Object.values(this.schema.V.properties);
   }
@@ -32,7 +35,7 @@ class Schema {
    * Returns route and properties of a certain knowledgebase class
    * (most useful data).
    * @param {string} className - requested class name.
-   * @param {Array<string>} [extraProps=[]] - Extra props to be returned in the
+   * @param {Array.<string>} [extraProps=[]] - Extra props to be returned in the
    * class properties list.
    */
   getProperties(className, extraProps = []) {
@@ -56,7 +59,7 @@ class Schema {
    * Initializes a new instance of given kbClass.
    * @param {Object} model - existing model to keep existing values from.
    * @param {string} kbClass - Knowledge base class key.
-   * @param {Array} [extraProps=[]] - Extra props to initialize on model.
+   * @param {Array.<Object>} [extraProps=[]] - Extra props to initialize on model.
    * @param {boolean} [ignoreClass=false] - flag to omit '@class' prop on new model.
    * @param {boolean} [stripProps=false] - flag to strip old props from model.
    */
@@ -155,17 +158,23 @@ class Schema {
   }
 
   /**
-   * Returns true if the class inherits the 'Position' class.
-   * @param {string} cls - Class name string
+   * Checks if a ClassModel is a subclass of another ClassModel.
+   * @param {string} cls - ClassModel name of child
+   * @param {Array.<string>} parentCls - ClassModel name of parent
    */
-  isPosition(cls) {
-    return this.schema[cls] && this.schema[cls].inherits.includes('Position');
+  isSubclass(cls, parentCls = []) {
+    if (typeof parentCls === 'string') {
+      parentCls = [parentCls];
+    }
+
+    return !!(this.schema[cls]
+      && this.schema[cls].inherits.some(inherited => parentCls.includes(inherited)));
   }
 
   /**
    * Updates allColumns list with any new properties from a record.
    * @param {Object} record - new node who's properties will be parsed.
-   * @param {Array} allColumns - current list of all collected properties.
+   * @param {Array.<string>} allColumns - current list of all collected properties.
    */
   collectOntologyProps(record, allColumns) {
     const properties = this.getProperties(record['@class']);

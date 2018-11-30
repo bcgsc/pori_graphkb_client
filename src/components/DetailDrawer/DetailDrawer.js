@@ -149,7 +149,7 @@ class DetailDrawer extends Component {
   /**
    * Formats properties, varying structure based on property type.
    * @param {Object} node - Record being displayed.
-   * @param {Array} properties - List of properties to display.
+   * @param {Array.<Object>} properties - List of properties to display.
    * @param {boolean} isNested - Nested flag.
    */
   formatProps(node, properties, isNested) {
@@ -163,7 +163,8 @@ class DetailDrawer extends Component {
         nestedValue = value[previewWith];
       }
       if (!value) return null;
-      if (type === 'embeddedset' && value.length !== 0) {
+      if (type === 'embeddedset' || type === 'linkset') {
+        if (value.length === 0) return null;
         return (
           <React.Fragment key={name}>
             <ListItem button onClick={() => this.handleExpand(name)} dense>
@@ -176,11 +177,26 @@ class DetailDrawer extends Component {
             </ListItem>
             <Collapse in={!!opened.includes(name)} unmountOnExit>
               <List disablePadding dense>
-                {value.map(item => (
+                {type === 'linkset' && value.map(item => (
+                  <ListItem key={item['@rid']} dense>
+                    <div className="nested-spacer" />
+                    <ListItemText className="detail-li-text">
+                      <div className="detail-identifiers">
+                        <Typography variant="subtitle1">
+                          {item['@class']}
+                        </Typography>
+                        <Typography>
+                          {schema.getPreview(item)}
+                        </Typography>
+                      </div>
+                    </ListItemText>
+                  </ListItem>
+                ))}
+                {type === 'embeddedset' && value.map(item => (
                   <ListItem key={item} dense>
                     <ListItemText
-                      className="detail-li-text"
                       inset
+                      className="detail-li-text"
                       primary={util.formatStr(item)}
                     />
                   </ListItem>
@@ -201,6 +217,9 @@ class DetailDrawer extends Component {
           previewStr = nestedValue && (DATE_KEYS.includes(name)
             ? (new Date(nestedValue)).toLocaleString()
             : util.formatStr(nestedValue));
+          if (type === 'embedded') {
+            previewStr = value['@class'];
+          }
         }
         return (
           <React.Fragment key={name}>
@@ -224,6 +243,7 @@ class DetailDrawer extends Component {
               <Collapse in={!!opened.includes(name)} unmountOnExit>
                 <List disablePadding dense className="detail-nested-list">
                   {this.formatIdentifiers(value, true)}
+                  {type === 'embedded' && this.formatOtherProps(value, true)}
                 </List>
               </Collapse>
             )}
@@ -453,15 +473,17 @@ class DetailDrawer extends Component {
               </Button>
             </div>
             <div className="detail-edit-btn">
-              {!isEdge && (
-                <Button
-                  onClick={handleNodeEditStart}
-                  variant="outlined"
-                >
-                  Edit {node['@class']}&nbsp;
-                  <EditIcon />
-                </Button>
-              )}
+              {(schema.isSubclass(node['@class'], ['Ontology', 'Variant'])
+                || node['@class'] === 'Statement')
+                && (
+                  <Button
+                    onClick={handleNodeEditStart}
+                    variant="outlined"
+                  >
+                    Edit {node['@class']}&nbsp;
+                    <EditIcon />
+                  </Button>
+                )}
             </div>
           </div>
           <Divider />

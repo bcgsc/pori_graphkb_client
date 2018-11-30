@@ -39,7 +39,7 @@ class DataViewBase extends Component {
    * Makes API GET call to specified endpoint, with specified query parameters.
    * @param {string} route - API endpoint.
    * @param {Object} queryParams - Query parameters object.
-   * @param {Array} omitted - List of parameters to strip from API call.
+   * @param {Array.<string>} omitted - List of parameters to strip from API call.
    */
   static async makeApiQuery(route, queryParams, omitted = []) {
     const response = await api.get(`${route}?${qs.stringify(omit(queryParams, omitted))}`);
@@ -50,8 +50,8 @@ class DataViewBase extends Component {
    * Prepares next query function.
    * @param {string} route - API route.
    * @param {Object} queryParams - Query parameters key/value pairs.
-   * @param {Array} prevResult - Previous query results.
-   * @param {Array} omitted - List of property keys to omit during next query.
+   * @param {Array.<Object>} prevResult - Previous query results.
+   * @param {Array.<string>} omitted - List of property keys to omit during next query.
    */
   static prepareNextPagination(route, queryParams, prevResult, omitted = []) {
     const nextQueryParams = queryParams;
@@ -142,7 +142,7 @@ class DataViewBase extends Component {
 
   /**
    * Processes ontology data and updates properties map.
-   * @param {Array} queryResults - List of returned records.
+   * @param {Array.<Object>} queryResults - List of returned records.
    * @param {Object} schema - Knowledgebase db schema.
    */
   processData(queryResults) {

@@ -14,10 +14,12 @@ const testSchema = new Schema({
       '@rid': { name: '@rid', type: 'string' },
     },
     identifiers: ['@rid'],
+    inherits: ['Ontology'],
     getPreview: () => 'test',
   },
   E: {
     properties: {},
+    inherits: [],
     subclasses: [
       { name: 'AliasOf' },
     ],
@@ -31,10 +33,12 @@ const testSchema = new Schema({
   },
   V: {
     name: 'V',
+    inherits: [],
     properties: {},
   },
   Ontology: {
     name: 'Ontology',
+    inherits: ['Ontology'],
     properties: {
       name: { name: 'name', type: 'string' },
       sourceId: { name: 'sourceId', type: 'string' },

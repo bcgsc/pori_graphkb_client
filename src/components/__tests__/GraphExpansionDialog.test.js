@@ -55,7 +55,7 @@ const testNode = {
   }],
 };
 
-describe('KB Context provider and consumers', () => {
+describe('<GraphExpansionDialog />', () => {
   it('does not crash', () => {
     mount(
       <GraphExpansionDialog

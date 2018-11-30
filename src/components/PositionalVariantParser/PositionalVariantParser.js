@@ -305,7 +305,7 @@ class PositionalVariantParser extends Component {
       const filteredVariant = {};
       Object.keys(variant).forEach((k) => {
         if (variant[k] && typeof variant[k] === 'object') {
-          if (variant[k]['@class'] && schema.isPosition(variant[k]['@class'])) {
+          if (variant[k]['@class'] && schema.isSubclass(variant[k]['@class'], 'Position')) {
             filteredVariant[k] = variant[k];
             filteredVariant.prefix = kbp.position.CLASS_PREFIX[variant[k]['@class']];
           }

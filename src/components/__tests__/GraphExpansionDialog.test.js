@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import GraphExpansionDialog from '../GraphComponent/GraphExpansionDialog/GraphExpansionDialog';
-import Schema from '../../models/schema';
+import Schema from '../../services/schema';
 
 const testSchema = new Schema({
   V: {
@@ -55,7 +55,7 @@ const testNode = {
   }],
 };
 
-describe('KB Context provider and consumers', () => {
+describe('<GraphExpansionDialog />', () => {
   it('does not crash', () => {
     mount(
       <GraphExpansionDialog

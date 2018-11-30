@@ -4,7 +4,7 @@ import { mount, shallow } from 'enzyme';
 import { spy } from 'sinon';
 import { Drawer } from '@material-ui/core';
 import DetailDrawer from '../DetailDrawer/DetailDrawer';
-import Schema from '../../models/schema';
+import Schema from '../../services/schema';
 
 const testSchema = new Schema({
   test: {

@@ -149,7 +149,7 @@ class DetailDrawer extends Component {
   /**
    * Formats properties, varying structure based on property type.
    * @param {Object} node - Record being displayed.
-   * @param {Array} properties - List of properties to display.
+   * @param {Array.<Object>} properties - List of properties to display.
    * @param {boolean} isNested - Nested flag.
    */
   formatProps(node, properties, isNested) {
@@ -243,7 +243,7 @@ class DetailDrawer extends Component {
             {!isNested && (
               <Collapse in={!!opened.includes(name)} unmountOnExit>
                 <List disablePadding dense className="detail-nested-list">
-                  {type === 'link' && this.formatIdentifiers(value, true)}
+                  {this.formatIdentifiers(value, true)}
                   {type === 'embedded' && this.formatOtherProps(value, true)}
                 </List>
               </Collapse>
@@ -474,8 +474,7 @@ class DetailDrawer extends Component {
               </Button>
             </div>
             <div className="detail-edit-btn">
-              {(schema.isOntology(node['@class'])
-                || schema.isVariant(node['@class'])
+              {(schema.isSubclass(node['@class'], ['Ontology', 'Variant'])
                 || node['@class'] === 'Statement')
                 && (
                   <Button

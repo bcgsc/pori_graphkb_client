@@ -76,7 +76,7 @@ function ResourceSelectComponent(props) {
 
 /**
  * @namespace
- * @property {Array} resources - List of resources to be selected from.
+ * @property {Array.<any>} resources - List of resources to be selected from.
  * @property {any} value - Parent property to bind output data to.
  * @property {function} onChange - Parent function to trigger on item select.
  * @property {string} name - DOM node name property.

@@ -368,14 +368,14 @@ function FormTemplater(props) {
  * @property {function} onClassChange - Function for updating embedded prop
  * classes.
  * @property {Object} model - Model object.
- * @property {Array} propSchemas - Form object schema.
- * @property {Array} excludedProps - List of propstrings to be excluded from
- * generation.
+ * @property {Array.<Object>} propSchemas - Form object schema.
+ * @property {Array.<string>} excludedProps - List of prop strings to be
+ * excluded from form generation.
  * @property {string} fieldComponent - Component to pass to material UI ListItem
  * component
- * @property {Array} errorFields - list of field keys that are causing errors in
+ * @property {Array.<string>} errorFields - list of field keys that are causing errors in
  * parent component.
- * @property {Array} disabledFields - list of field keys that should be disabled.
+ * @property {Array.<string>} disabledFields - list of field keys that should be disabled.
  * @property {function} sort - Sorting function for form fields.
  * @property {Object} pairs - group definitions for grid.
  * @property {boolean} ignoreRequired - if true, form does not apply required

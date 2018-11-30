@@ -34,7 +34,7 @@ class AddStatementViewBase extends Component {
   /**
    * Bundles payload and sends post request to server.
    * @param {Object} form - Statement form data.
-   * @param {Array} relationships - Form staged relationships.
+   * @param {Array.<Object>} relationships - Form staged relationships.
    */
   async handleSubmit(form, relationships) {
     const { schema } = this.props;

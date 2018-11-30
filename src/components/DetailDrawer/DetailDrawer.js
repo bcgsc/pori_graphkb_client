@@ -149,7 +149,7 @@ class DetailDrawer extends Component {
   /**
    * Formats properties, varying structure based on property type.
    * @param {Object} node - Record being displayed.
-   * @param {Array} properties - List of properties to display.
+   * @param {Array.<Object>} properties - List of properties to display.
    * @param {boolean} isNested - Nested flag.
    */
   formatProps(node, properties, isNested) {

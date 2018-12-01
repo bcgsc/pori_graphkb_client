@@ -64,7 +64,7 @@ DeleteRecordDialog.propTypes = {
   onClose: PropTypes.func,
   onDelete: PropTypes.func,
   message: PropTypes.string,
-  children: PropTypes.oneOf([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
 };
 
 DeleteRecordDialog.defaultProps = {

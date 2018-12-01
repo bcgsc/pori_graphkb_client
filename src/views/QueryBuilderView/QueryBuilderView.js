@@ -47,6 +47,8 @@ class QueryBuilderViewBase extends Component {
       specBlurbOpen: false,
       isComplex: false,
       endpoint: 'Ontology',
+      text: '{\n  "example": "json payload"\n}',
+      error: '',
     };
 
     this.bundle = this.bundle.bind(this);
@@ -206,9 +208,9 @@ class QueryBuilderViewBase extends Component {
   handleText(e) {
     try {
       const json = JSON.parse(e.target.value);
-      this.setState({ params: json });
+      this.setState({ params: json, error: '' });
     } catch (error) {
-      console.error(error.toString());
+      this.setState({ error: error.toString() });
     } finally {
       this.setState({ text: e.target.value });
     }
@@ -217,103 +219,13 @@ class QueryBuilderViewBase extends Component {
   render() {
     const { schema } = this.props;
     const {
-      params,
-      tempNested,
-      tempNames,
-      tempValues,
       specOpen,
       specBlurbOpen,
       endpoint,
       isComplex,
       text,
+      error,
     } = this.state;
-
-    const input = nested => (
-      <div className="qbv-input">
-        <div className="input-checkbox">
-          <input
-            type="checkbox"
-            onChange={() => this.toggleNested(nested.join('.'))}
-            checked={tempNested[nested.join('.')]}
-          />
-        </div>
-        <div className={`input-key ${tempNested[nested.join('.')] && 'input-key-nested'}`}>
-          <input
-            value={tempNames[nested.join('.')]}
-            name={nested.join('.')}
-            onChange={this.handleNested('tempNames')}
-            onKeyUp={e => e.keyCode === 13 ? this.handleAdd(nested.join('.')) : null}
-          />
-        </div>
-        {!tempNested[nested.join('.')]
-          && (
-            <div className="input-value">
-              <input
-                onChange={this.handleNested('tempValues')}
-                value={tempValues[nested.join('.')]}
-                name={nested.join('.')}
-                onKeyUp={e => e.keyCode === 13 ? this.handleAdd(nested.join('.')) : null}
-              />
-            </div>
-          )}
-        <AddIcon
-          className="formatted-close-btn"
-          onClick={() => this.handleAdd(nested.join('.'))}
-        />
-      </div>
-    );
-
-    const jsonFormat = (k, value, nested, isArray) => {
-      const newNested = [...nested, k];
-      if (value && typeof value === 'object') {
-        const nextArray = Array.isArray(value);
-        return (
-          <React.Fragment key={k}>
-            <div className="qbv-json-wrapper">
-              {!isArray && (
-                <React.Fragment>
-                  <span className="qbv-json-key">{k}</span>
-                  <span>:&nbsp;</span>
-                </React.Fragment>)}
-              <span>{nextArray ? '[' : '{'}</span>
-              {k !== 'query' && (
-                <CloseIcon
-                  className="formatted-close-btn"
-                  onClick={() => this.handleDelete(newNested.join('.'))}
-                />)}
-            </div>
-            <div className="qbv-nest">
-              {Object.keys(value)
-                .map(nestedK => jsonFormat(nestedK, value[nestedK], newNested, nextArray))}
-            </div>
-            {/* {input(newNested)} */}
-            <div className="qbv-json-wrapper">
-              <span className="qbv-json-close-brace">{nextArray ? ']' : '}'}{k !== 'query' && ','}</span>
-            </div>
-          </React.Fragment>
-        );
-      }
-      return (
-        <div key={k} className="qbv-json-wrapper">
-          <span>
-            {!isArray && (
-              <React.Fragment>
-                <span className="qbv-json-key">
-                  {k}
-                </span>
-                :&nbsp;
-              </React.Fragment>
-            )}
-            <span className="qbv-json-value">&quot;{value}&quot;</span>
-            ,
-          </span>
-          <CloseIcon
-            className="formatted-close-btn"
-            onClick={() => this.handleDelete(newNested.join('.'))}
-          />
-        </div>
-      );
-    };
 
     const iFrame = <iframe title="api spec" src={`${api.API_BASE_URL}/spec/#/`} />;
     return (
@@ -334,10 +246,8 @@ class QueryBuilderViewBase extends Component {
             </div>
             <Collapse in={specBlurbOpen}>
               <div style={{ padding: '1rem' }}>
-                Build your query string as a JSON. Use the checkbox to toggle
-                between nested groups of parameters and standard key value
-                pairs. Specify your route and whether or not the query is
-                complex.
+                Build your query string as a JSON. Specify your route and
+                whether or not the query is complex.
                 <br />
                 <br />
                 Here is the GraphKB specification for the api version in use.
@@ -375,19 +285,16 @@ class QueryBuilderViewBase extends Component {
             />
           </div>
           <div className="qbv-json">
-            {jsonFormat('query', params, [])}
             <textarea
+              placeholder="Query Payload"
               value={text}
               onChange={this.handleText}
-              onKeyDown={(e) => {
-                if (e.keyCode === 9) {
-                  e.preventDefault();
-                  this.handleText({ target: { value: `${text || ''}  ` } });
-                } else if (e.keyCode === 16) {
-                  this.shiftKey = true;
-                }
-              }}
             />
+            {error && text && (
+              <Typography variant="caption" color="error">
+                {error}
+              </Typography>
+            )}
           </div>
         </Paper>
         <Button

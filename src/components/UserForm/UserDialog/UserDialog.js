@@ -134,7 +134,7 @@ function UserDialog(props) {
                 <td>
                   <Typography variant="caption" component="p">
                     {selectedUser ? new Date(selectedUser.createdAt).toLocaleString()
-                      : date.toLocaleString()}
+                      : date}
                   </Typography>
                 </td>
               </tr>

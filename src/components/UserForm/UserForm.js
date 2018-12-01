@@ -236,7 +236,7 @@ class UserForm extends Component {
         />
         <UserDialog
           open={userDialogOpen}
-          date={date}
+          date={date.toLocaleString()}
           users={users}
           userGroups={userGroups}
           selectedUser={selectedUser}

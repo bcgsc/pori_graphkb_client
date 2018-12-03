@@ -6,6 +6,11 @@ $lightened-secondary: rgba($md-secondary-color, 0.2);
   @include view-wrapper;
   .qbv-header {
     @include page-header;
+    > svg {
+      margin-top: auto;
+      margin-bottom: auto;
+      margin-right: 1rem;
+    }
   }
   .qbv-body {
     $line-height: 32px;

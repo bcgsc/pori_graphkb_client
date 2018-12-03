@@ -23,14 +23,13 @@ const KEY_MAPPER = 'CRUD';
  */
 function PermissionsTable(props) {
   const {
-    userGroup,
+    permissions,
     disabled,
     stateKey,
     schema,
     handleCheckAll,
     handleChange,
   } = props;
-  const { permissions } = (userGroup || {});
   const permissionKeys = Object.keys(permissions || {})
     .sort((a, b) => a > b ? 1 : -1);
 
@@ -66,8 +65,8 @@ function PermissionsTable(props) {
                 <TableCell padding="dense">
                   {permission}:
                 </TableCell>
-                {userGroup.permissions[permission].map((p, j) => (
-                  <TableCell padding="checkbox" key={`${userGroup.name}${permission}${KEY_MAPPER[j]}`}>
+                {permissions[permission].map((p, j) => (
+                  <TableCell padding="checkbox" key={`${permission}${KEY_MAPPER[j]}`}>
                     {(
                       !(isEdge && j === 1)
                       && !(isAbstract && j !== 2)
@@ -107,7 +106,7 @@ function PermissionsTable(props) {
  * @property {function} handleChange - Handler for when single checkbox is changed.
  */
 PermissionsTable.propTypes = {
-  userGroup: PropTypes.object,
+  permissions: PropTypes.object,
   disabled: PropTypes.bool,
   stateKey: PropTypes.string,
   schema: PropTypes.object,
@@ -116,7 +115,7 @@ PermissionsTable.propTypes = {
 };
 
 PermissionsTable.defaultProps = {
-  userGroup: null,
+  permissions: null,
   disabled: false,
   stateKey: '',
   schema: null,

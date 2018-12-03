@@ -8,17 +8,15 @@ import {
   DialogTitle,
   DialogContent,
   Typography,
-  Select,
-  MenuItem,
-  InputLabel,
-  Input,
   FormControl,
   Divider,
+  TextField,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import HelpIcon from '@material-ui/icons/Help';
-import util from '../../../services/util';
+import ResourceSelectComponent from '../../ResourceSelectComponent/ResourceSelectComponent';
 import config from '../../../static/config';
+import util from '../../../services/util';
 
 const { GRAPH_ADVANCED, GRAPH_MAIN } = config.DESCRIPTIONS;
 
@@ -38,7 +36,7 @@ export default class GraphOptionsPanel extends Component {
 
   /**
    * Opens help drawer.
-   * @param {['mainHelp' | 'advancedHelp']} key - help type state key.
+   * @param {string} key - help type state key.
    */
   handleHelpOpen(key) {
     this.setState({ [key]: true });
@@ -95,6 +93,21 @@ export default class GraphOptionsPanel extends Component {
       </Dialog>
     );
 
+    const nodeLabelBy = Object.keys(propsMap.nodeProps || {})
+      .filter(prop => propsMap.nodeProps[prop]
+        && !(propsMap.nodeProps[prop].length === 1 && propsMap.nodeProps[prop].includes('null')));
+    const nodeColorBy = Object.keys(propsMap.nodeProps || {})
+      .filter(prop => propsMap.nodeProps[prop]
+        && propsMap.nodeProps[prop].length <= 20
+        && !(propsMap.nodeProps[prop].length === 1 && propsMap.nodeProps[prop].includes('null')));
+
+    const advancedOptions = [
+      { name: 'collisionRadius', max: 100, step: 1 },
+      { name: 'linkStrength', max: 1, step: 0.001 },
+      { name: 'chargeStrength', max: 1000, step: 1 },
+      { name: 'chargeMax', step: 1, label: 'Max Charge Distance' },
+    ];
+
     return (
       <React.Fragment>
         {helpPanel}
@@ -124,54 +137,22 @@ export default class GraphOptionsPanel extends Component {
           </DialogTitle>
           <DialogContent>
             <div className="main-options-wrapper">
-              <FormControl className="graph-option">
-                <InputLabel htmlFor="nodeLabelProp">Label nodes by</InputLabel>
-                <Select
-                  name="nodeLabelProp"
-                  input={<Input name="nodeLabelProp" id="nodeLabelProp" />}
-                  onChange={handleGraphOptionsChange}
-                  value={graphOptions.nodeLabelProp}
-                >
-                  <MenuItem value="">None</MenuItem>
-                  {Object.keys(propsMap.nodeProps || {}).map((prop) => {
-                    if (propsMap.nodeProps[prop]
-                      && !(propsMap.nodeProps[prop].length === 1 && propsMap.nodeProps[prop].includes('null'))
-                    ) {
-                      return (
-                        <MenuItem value={prop} key={prop}>
-                          {util.antiCamelCase(prop)}
-                        </MenuItem>
-                      );
-                    }
-                    return null;
-                  })}
-                </Select>
-              </FormControl>
-              <FormControl className="graph-option">
-                <InputLabel htmlFor="nodesColor">Color nodes by</InputLabel>
-                <Select
-                  name="nodesColor"
-                  input={<Input name="nodesColor" id="nodesColor" />}
-                  onChange={handleGraphOptionsChange}
-                  value={graphOptions.nodesColor}
-                >
-                  <MenuItem value="">None</MenuItem>
-                  {Object.keys(propsMap.nodeProps || {}).map((prop) => {
-                    if (
-                      propsMap.nodeProps[prop]
-                      && propsMap.nodeProps[prop].length <= 20
-                      && !(propsMap.nodeProps[prop].length === 1 && propsMap.nodeProps[prop].includes('null'))
-                    ) {
-                      return (
-                        <MenuItem value={prop} key={prop}>
-                          {util.antiCamelCase(prop)}
-                        </MenuItem>
-                      );
-                    }
-                    return null;
-                  })}
-                </Select>
-              </FormControl>
+              <ResourceSelectComponent
+                className="graph-option"
+                label="Label nodes by"
+                name="nodeLabelProp"
+                onChange={handleGraphOptionsChange}
+                value={graphOptions.nodeLabelProp}
+                resources={['', ...nodeLabelBy]}
+              />
+              <ResourceSelectComponent
+                className="graph-option"
+                label="Color nodes by"
+                name="nodesColor"
+                onChange={handleGraphOptionsChange}
+                value={graphOptions.nodesColor}
+                resources={['', ...nodeColorBy]}
+              />
               <FormControl className="graph-option">
                 <FormControlLabel
                   control={(
@@ -194,33 +175,24 @@ export default class GraphOptionsPanel extends Component {
               </FormControl>
             </div>
             <div className="main-options-wrapper">
-              <FormControl className="graph-option">
-                <InputLabel htmlFor="linkLabelProp">Label edges by</InputLabel>
-                <Select
-                  input={<Input name="linkLabelProp" id="linkLabelProp" />}
-                  onChange={handleGraphOptionsChange}
-                  value={graphOptions.linkLabelProp}
-                  disabled={linkLegendDisabled}
-                >
-                  <MenuItem value="">None</MenuItem>
-                  <MenuItem value="@class">Class</MenuItem>
-                  <MenuItem value="source.name">Source Name</MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl className="graph-option">
-                <InputLabel htmlFor="linksColor">Color edges by</InputLabel>
-                <Select
-                  name="linksColor"
-                  input={<Input name="linksColor" id="linksColor" />}
-                  onChange={handleGraphOptionsChange}
-                  value={graphOptions.linksColor}
-                  disabled={linkLegendDisabled}
-                >
-                  <MenuItem value="">None</MenuItem>
-                  <MenuItem value="@class">Class</MenuItem>
-                  <MenuItem value="source.name">Source Name</MenuItem>
-                </Select>
-              </FormControl>
+              <ResourceSelectComponent
+                className="graph-option"
+                label="Label edges by"
+                name="linkLabelProp"
+                onChange={handleGraphOptionsChange}
+                value={graphOptions.linkLabelProp}
+                disabled={linkLegendDisabled}
+                resources={['', '@class', 'source.name']}
+              />
+              <ResourceSelectComponent
+                className="graph-option"
+                label="Color edges by"
+                name="linksColor"
+                onChange={handleGraphOptionsChange}
+                value={graphOptions.linksColor}
+                disabled={linkLegendDisabled}
+                resources={['', '@class', 'source.name']}
+              />
               <FormControl>
                 <FormControlLabel
                   control={(
@@ -259,55 +231,22 @@ export default class GraphOptionsPanel extends Component {
           </div>
           <DialogContent className="advanced-options-wrapper">
             <div className="advanced-options-grid">
-              <div className="graph-input-wrapper">
-                <InputLabel htmlFor="linkStrength" style={{ fontSize: '0.75rem' }}>
-                  Link Strength
-                </InputLabel>
-                <Input
-                  name="linkStrength"
-                  type="number"
-                  id="linkStrength"
-                  value={graphOptions.linkStrength}
-                  onChange={e => handleGraphOptionsChange(e, true)}
-                  inputProps={{
-                    max: 1,
-                    step: 0.001,
-                  }}
-                />
-              </div>
-              <div className="graph-input-wrapper">
-                <InputLabel htmlFor="chargeStrength" style={{ fontSize: '0.75rem' }}>
-                  Charge Strength
-                </InputLabel>
-                <Input
-                  label="Charge Strength"
-                  name="chargeStrength"
-                  type="number"
-                  id="chargeStrength"
-                  value={graphOptions.chargeStrength}
-                  onChange={e => handleGraphOptionsChange(e, true)}
-                  inputProps={{
-                    max: 1000,
-                    step: 1,
-                  }}
-                />
-              </div>
-              <div className="graph-input-wrapper">
-                <InputLabel htmlFor="collisionRadius" style={{ fontSize: '0.75rem' }}>
-                  Collision Radius
-                </InputLabel>
-                <Input
-                  name="collisionRadius"
-                  id="collisionRadius"
-                  type="number"
-                  value={graphOptions.collisionRadius}
-                  onChange={e => handleGraphOptionsChange(e, true)}
-                  inputProps={{
-                    max: 100,
-                    step: 1,
-                  }}
-                />
-              </div>
+              {advancedOptions.map(option => (
+                <div key={option.name} className="graph-input-wrapper">
+                  <TextField
+                    label={option.label || util.antiCamelCase(option.name)}
+                    name={option.name}
+                    type="number"
+                    id={option.name}
+                    value={graphOptions[option.name]}
+                    onChange={e => handleGraphOptionsChange(e, true)}
+                    inputProps={{
+                      max: option.max,
+                      step: option.step,
+                    }}
+                  />
+                </div>
+              ))}
               <div>
                 <FormControlLabel
                   control={(
@@ -324,21 +263,6 @@ export default class GraphOptionsPanel extends Component {
                     />
                   )}
                   label="Auto Space Nodes"
-                />
-              </div>
-              <div className="graph-input-wrapper">
-                <InputLabel htmlFor="collisionRadius" style={{ fontSize: '0.75rem' }}>
-                  Max Charge Distance
-                </InputLabel>
-                <Input
-                  name="chargeMax"
-                  id="chargeMax"
-                  type="number"
-                  value={graphOptions.chargeMax}
-                  onChange={e => handleGraphOptionsChange(e, true)}
-                  inputProps={{
-                    step: 1,
-                  }}
                 />
               </div>
             </div>

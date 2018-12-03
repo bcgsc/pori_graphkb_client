@@ -68,13 +68,14 @@ $breakpoint-sm: 375px;
     display: flex;
     padding: 0 16px;
     flex-shrink: 0;
-    > h1 {
-      margin: auto 0;
+    > div {
+      margin-right: auto;
     }
     > button {
       flex-shrink: 0;
       margin: auto;
       margin-right: 0;
+      margin-left: 8px;
     }
   }
 }

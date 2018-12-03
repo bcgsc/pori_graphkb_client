@@ -7,29 +7,31 @@ import PropTypes from 'prop-types';
 import './QueryBuilderView.css';
 import {
   Button,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
   Dialog,
   Paper,
   Typography,
   FormControlLabel,
-  Switch,
   Collapse,
   MenuItem,
   Checkbox,
 } from '@material-ui/core';
-import * as qs from 'querystring';
-import AddIcon from '@material-ui/icons/Add';
-import CloseIcon from '@material-ui/icons/Close';
+
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import * as qs from 'querystring';
+import { Link } from 'react-router-dom';
 import { withKB } from '../../components/KBContext/KBContext';
 import util from '../../services/util';
 import api from '../../services/api';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
+
+const COMMENT_REGEX = /\/\/.*(?!\\n)/g;
+
+const EXAMPLE_PAYLOAD = `// See help for more info about constructing payloads
+// This query yields -> GET [/endpoint]s WHERE example = "json payload"
+{
+    "example": "json payload"
+}`;
 
 /**
  * Freeform query builder where users can add key-value pairs or nested groups
@@ -47,7 +49,7 @@ class QueryBuilderViewBase extends Component {
       specBlurbOpen: false,
       isComplex: false,
       endpoint: 'Ontology',
-      text: '{\n  "example": "json payload"\n}',
+      text: EXAMPLE_PAYLOAD,
       error: '',
     };
 
@@ -207,7 +209,8 @@ class QueryBuilderViewBase extends Component {
 
   handleText(e) {
     try {
-      const json = JSON.parse(e.target.value);
+      const text = e.target.value.replace(COMMENT_REGEX, '');
+      const json = JSON.parse(text);
       this.setState({ params: json, error: '' });
     } catch (error) {
       this.setState({ error: error.toString() });
@@ -226,6 +229,14 @@ class QueryBuilderViewBase extends Component {
       text,
       error,
     } = this.state;
+
+    let comments = text.replace(/.(?!\\n)/g, ' ');
+
+    let match = COMMENT_REGEX.exec(text);
+    while (match) {
+      comments = `${comments.slice(0, match.index)}${match[0]}${comments.slice(match.index + match[0].length)}`;
+      match = COMMENT_REGEX.exec(text);
+    }
 
     const iFrame = <iframe title="api spec" src={`${api.API_BASE_URL}/spec/#/`} />;
     return (
@@ -246,8 +257,8 @@ class QueryBuilderViewBase extends Component {
             </div>
             <Collapse in={specBlurbOpen}>
               <div style={{ padding: '1rem' }}>
-                Build your query string as a JSON. Specify your route and
-                whether or not the query is complex.
+                Build your query string as a JSON object. Use the select to
+                specify your route and whether or not the query is complex.
                 <br />
                 <br />
                 Here is the GraphKB specification for the api version in use.
@@ -286,9 +297,17 @@ class QueryBuilderViewBase extends Component {
           </div>
           <div className="qbv-json">
             <textarea
+              value={comments}
+              className="comment-textarea"
+              readOnly
+            />
+            <textarea
+              className="field-textarea"
               placeholder="Query Payload"
               value={text}
               onChange={this.handleText}
+              style={{ zIndex: 4 }}
+              tabIndex={0}
             />
             {error && text && (
               <Typography variant="caption" color="error">
@@ -297,14 +316,20 @@ class QueryBuilderViewBase extends Component {
             )}
           </div>
         </Paper>
-        <Button
-          id="qbv-submit"
-          onClick={this.handleSubmit}
-          variant="contained"
-          color="primary"
-        >
-          Submit
-        </Button>
+        <div className="qbv-action-btns">
+          <Link to="/query/advanced">
+            <Button variant="contained">Back</Button>
+          </Link>
+
+          <Button
+            id="qbv-submit"
+            onClick={this.handleSubmit}
+            variant="contained"
+            color="primary"
+          >
+            Submit
+          </Button>
+        </div>
       </div>
     );
   }

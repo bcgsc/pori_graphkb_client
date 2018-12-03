@@ -32,7 +32,7 @@ const EXAMPLE_PAYLOAD = `// See help for more info about constructing payloads
 {
     "example": "json payload"
 }`;
-
+const LINE_HEIGHT_PX = 20;
 /**
  * Freeform query builder where users can add key-value pairs or nested groups
  * of key-value pairs.
@@ -62,6 +62,7 @@ class QueryBuilderViewBase extends Component {
     this.handleToggle = this.handleToggle.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleText = this.handleText.bind(this);
+    this.handleScroll = this.handleScroll.bind(this);
   }
 
   /**
@@ -201,10 +202,13 @@ class QueryBuilderViewBase extends Component {
    */
   handleSubmit() {
     const { history } = this.props;
-    history.push({
-      pathname: '/data/table',
-      search: this.bundle(),
-    });
+    const { error } = this.state;
+    if (!error) {
+      history.push({
+        pathname: '/data/table',
+        search: this.bundle(),
+      });
+    }
   }
 
   handleText(e) {
@@ -219,6 +223,10 @@ class QueryBuilderViewBase extends Component {
     }
   }
 
+  handleScroll() {
+    this.commentTextRef.scrollTop = this.typeTextRef.scrollTop;
+  }
+
   render() {
     const { schema } = this.props;
     const {
@@ -230,6 +238,7 @@ class QueryBuilderViewBase extends Component {
       error,
     } = this.state;
 
+    const numLines = text.split('\n').length;
     let comments = text.replace(/.(?!\\n)/g, ' ');
 
     let match = COMMENT_REGEX.exec(text);
@@ -300,14 +309,19 @@ class QueryBuilderViewBase extends Component {
               value={comments}
               className="comment-textarea"
               readOnly
+              tabIndex={-1}
+              ref={(node) => { this.commentTextRef = node; }}
+              style={{ height: LINE_HEIGHT_PX * (numLines + 2) }}
             />
             <textarea
               className="field-textarea"
               placeholder="Query Payload"
               value={text}
               onChange={this.handleText}
-              style={{ zIndex: 4 }}
               tabIndex={0}
+              onScroll={this.handleScroll}
+              ref={(node) => { this.typeTextRef = node; }}
+              style={{ height: LINE_HEIGHT_PX * (numLines + 2) }}
             />
             {error && text && (
               <Typography variant="caption" color="error">

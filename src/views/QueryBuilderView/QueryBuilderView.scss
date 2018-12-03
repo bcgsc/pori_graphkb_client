@@ -42,7 +42,7 @@ $lightened-secondary: rgba($md-secondary-color, 0.2);
         min-height: 200px;
         border: 1px solid rgba(0, 0, 0, 0.2);
         border-radius: 4px;
-        resize: vertical;
+        resize: none;
         font-family: "Roboto Mono", monospace;
         -webkit-tap-highlight-color: transparent;
         outline: none;

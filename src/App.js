@@ -134,6 +134,10 @@ class App extends Component {
     this.setState({ loggedIn: true });
   }
 
+  /**
+   * Expands a list item in the main navigation drawer.
+   * @param {string} item - Item to expand in main navigation drawer.
+   */
   handleDrawerExpand(item) {
     return () => {
       const { expanded } = this.state;
@@ -152,6 +156,9 @@ class App extends Component {
     this.setState({ drawerOpen: true });
   }
 
+  /**
+   * Closes main navigation drawer.
+   */
   handleDrawerClose() {
     this.setState({ expanded: '', drawerOpen: false });
   }
@@ -331,13 +338,17 @@ class App extends Component {
                       }}
                     >
                       <Card className="user-menu">
-                        <MenuItem onClick={() => { history.push('/feedback'); this.handleClose(); }}>
-                          Feedback
-                        </MenuItem>
-                        {auth.isAdmin() && (
-                          <MenuItem onClick={() => { history.push('/admin'); this.handleClose(); }}>
-                            Admin
+                        <Link to="/feedback">
+                          <MenuItem onClick={this.handleClose}>
+                            Feedback
                           </MenuItem>
+                        </Link>
+                        {auth.isAdmin() && (
+                          <Link to="/admin">
+                            <MenuItem onClick={this.handleClose}>
+                              Admin
+                            </MenuItem>
+                          </Link>
                         )}
                         <MenuItem onClick={this.handleLogOut}>
                           Logout
@@ -349,7 +360,13 @@ class App extends Component {
               </AppBar>
               {loggedIn && drawer}
               <section className={`content ${(drawerOpen ? loggedIn : '') && 'drawer-shift'} ${!loggedIn ? 'no-drawer' : ''}`}>
-                <div className="router-outlet">
+                <div
+                  className="router-outlet"
+                  role="button"
+                  tabIndex={0}
+                  onClick={this.handleDrawerClose}
+                  onKeyDown={e => e.keyCode === 13 && this.handleDrawerClose()}
+                >
                   <Switch>
                     <Route path="/icons" component={IconsView} />
                     <Route path="/login" render={loginWithProps} />

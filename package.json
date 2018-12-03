@@ -1,6 +1,6 @@
 {
   "name": "knowledgebase-web",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "private": true,
   "dependencies": {
     "@bcgsc/knowledgebase-parser": "^0.4.1",

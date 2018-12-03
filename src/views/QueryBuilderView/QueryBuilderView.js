@@ -1,6 +1,7 @@
 /**
  * @module /views/QueryBuilderView
  */
+/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './QueryBuilderView.css';
@@ -20,6 +21,7 @@ import {
 } from '@material-ui/core';
 import * as qs from 'querystring';
 import AddIcon from '@material-ui/icons/Add';
+import CloseIcon from '@material-ui/icons/Close';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import { withKB } from '../../components/KBContext/KBContext';
@@ -208,90 +210,71 @@ class QueryBuilderViewBase extends Component {
 
     const input = nested => (
       <div className="qbv-input">
-        <Switch
-          onClick={() => this.toggleNested(nested.join('.'))}
-          checked={tempNested[nested.join('.')]}
-        />
-        <input
-          placeholder="Key"
-          value={tempNames[nested.join('.')]}
-          name={nested.join('.')}
-          onChange={this.handleNested('tempNames')}
-          onKeyUp={e => e.keyCode === 13 ? this.handleAdd(nested.join('.')) : null}
-        />
+        <div className="input-checkbox">
+          <input
+            type="checkbox"
+            onChange={() => this.toggleNested(nested.join('.'))}
+            checked={tempNested[nested.join('.')]}
+          />
+        </div>
+        <div className={`input-key ${tempNested[nested.join('.')] && 'input-key-nested'}`}>
+          <input
+            value={tempNames[nested.join('.')]}
+            name={nested.join('.')}
+            onChange={this.handleNested('tempNames')}
+            onKeyUp={e => e.keyCode === 13 ? this.handleAdd(nested.join('.')) : null}
+          />
+        </div>
         {!tempNested[nested.join('.')]
           && (
-            <input
-              placeholder="Value"
-              onChange={this.handleNested('tempValues')}
-              value={tempValues[nested.join('.')]}
-              name={nested.join('.')}
-              onKeyUp={e => e.keyCode === 13 ? this.handleAdd(nested.join('.')) : null}
-            />
+            <div className="input-value">
+              <input
+                onChange={this.handleNested('tempValues')}
+                value={tempValues[nested.join('.')]}
+                name={nested.join('.')}
+                onKeyUp={e => e.keyCode === 13 ? this.handleAdd(nested.join('.')) : null}
+              />
+            </div>
           )}
-        <IconButton onClick={() => this.handleAdd(nested.join('.'))}>
-          <AddIcon />
-        </IconButton>
+        <AddIcon
+          className="formatted-close-btn"
+          onClick={() => this.handleAdd(nested.join('.'))}
+        />
       </div>
     );
-
-    const format = (k, value, nested) => {
-      const newNested = [...nested, k];
-      if (typeof value === 'object') {
-        return (
-          <React.Fragment key={k}>
-            <ListItem>
-              <ListItemText primary={k} />
-              {k !== 'query' && (
-                <ListItemSecondaryAction>
-                  <Button onClick={() => this.handleDelete(newNested.join('.'))}>
-                    delete
-                  </Button>
-                </ListItemSecondaryAction>
-              )}
-            </ListItem>
-            <List
-              className="qbv-nest"
-              dense
-              disablePadding
-            >
-              {Object.keys(value).map(nestedK => format(nestedK, value[nestedK], newNested))}
-              {input(newNested)}
-            </List>
-          </React.Fragment>
-        );
-      }
-      return (
-        <ListItem key={k}>
-          <ListItemText primary={value} secondary={k} />
-          <ListItemSecondaryAction>
-            <Button onClick={() => this.handleDelete(newNested.join('.'))}>delete</Button>
-          </ListItemSecondaryAction>
-        </ListItem>
-      );
-    };
 
     const jsonFormat = (k, value, nested) => {
       const newNested = [...nested, k];
       if (typeof value === 'object') {
         return (
           <React.Fragment key={k}>
-            <span className="qbv-json-key">{k}</span><span>:&nbsp;</span><span>{'{'}</span>
+            <div className="qbv-json-wrapper">
+              <span className="qbv-json-key">{k}</span><span>:&nbsp;</span><span>{'{'}</span>
+            </div>
             <div className="qbv-nest">
               {Object.keys(value).map(nestedK => jsonFormat(nestedK, value[nestedK], newNested))}
             </div>
-            <span className="qbv-json-close-brace">{'}'}{k !== 'query' && ','}</span>
+            {input(newNested)}
+            <div className="qbv-json-wrapper">
+              <span className="qbv-json-close-brace">{'}'}{k !== 'query' && ','}</span>
+            </div>
           </React.Fragment>
         );
       }
       return (
-        <div key={k}>
-          <span className="qbv-json-key">
-            {k}
+        <div key={k} className="qbv-json-wrapper">
+          <span>
+            <span className="qbv-json-key">
+              {k}
+            </span>
+            :&nbsp;
+            <span className="qbv-json-value">&quot;{value}&quot;</span>
+            ,
           </span>
-          :&nbsp;
-          <span className="qbv-json-value">&quot;{value}&quot;</span>
-          ,
+          <CloseIcon
+            className="formatted-close-btn"
+            onClick={() => this.handleDelete(newNested.join('.'))}
+          />
         </div>
       );
     };
@@ -344,19 +327,14 @@ class QueryBuilderViewBase extends Component {
             {jsonFormat('query', params, [])}
           </div>
         </Paper>
-        <Paper className="qbv-body">
-          <List className="qbv-tree">
-            {format('query', params, [])}
-          </List>
-          <Button
-            id="qbv-submit"
-            onClick={this.handleSubmit}
-            variant="contained"
-            color="primary"
-          >
-            Submit
-          </Button>
-        </Paper>
+        <Button
+          id="qbv-submit"
+          onClick={this.handleSubmit}
+          variant="contained"
+          color="primary"
+        >
+          Submit
+        </Button>
       </div>
     );
   }
@@ -367,7 +345,6 @@ class QueryBuilderViewBase extends Component {
  * @property {Object} history - Application history state object.
  * @property {Object} schema - Knowledgebase schema object.
  */
-/* eslint-disable */
 QueryBuilderViewBase.propTypes = {
   history: PropTypes.object.isRequired,
   schema: PropTypes.object.isRequired,

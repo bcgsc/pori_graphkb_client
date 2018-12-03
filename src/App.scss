@@ -2,7 +2,7 @@
 
 $user-menu-width: 124px;
 $transition-speed: 0.3s;
-$drawer-width: 220px;
+$drawer-width: 240px;
 $closed-drawer-width: 56px;
 $drawer-breakpoint: 1024px;
 .App {
@@ -91,11 +91,16 @@ $drawer-breakpoint: 1024px;
   .drawer-shift {
     left: $drawer-width;
     overflow: hidden;
-    @media (max-width: $drawer-breakpoint) {
+    @media (max-width: 500px) {
       left: 0;
     }
   }
   .router-outlet {
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+    border: none;
+    user-select: none;
+    text-decoration: none;
     position: absolute;
     left: 0;
     right: 0;
@@ -110,9 +115,10 @@ $drawer-breakpoint: 1024px;
     display: flex;
     flex-direction: column;
     height: 100vh;
-    @media (max-width: $drawer-breakpoint) {
+    @media (max-width: $breakpoint-mobile) {
       width: calc(100vw - 56px);
     }
+
     .drawer-links {
       position: relative;
       bottom: 56px;

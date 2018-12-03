@@ -194,6 +194,7 @@ class DetailDrawer extends Component {
                 ))}
                 {type === 'embeddedset' && value.map(item => (
                   <ListItem key={item} dense>
+                    <div className="nested-spacer" />
                     <ListItemText
                       inset
                       className="detail-li-text"

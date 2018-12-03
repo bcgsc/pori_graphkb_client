@@ -141,15 +141,6 @@ class TableComponent extends Component {
       }
       return currentColumns;
     }, []);
-    if (defaultOrder.includes('preview')) {
-      tableColumns.push({
-        id: 'preview',
-        checked: true,
-        label: 'Preview',
-        sortBy: null,
-        sortable: null,
-      });
-    }
 
     const columnFilterStrings = [];
     let columnFilterExclusions = [];
@@ -859,7 +850,7 @@ class TableComponent extends Component {
 
                             if (col.id === 'preview') {
                               try {
-                                ([, val] = schema.getPreview(n).split(':'));
+                                val = schema.getPreview(n);
                               } catch (e) {
                                 val = 'Invalid Variant';
                               }

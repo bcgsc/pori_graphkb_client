@@ -1,4 +1,6 @@
 @import "../../globals";
+
+$lightened-secondary: rgba($md-secondary-color, 0.5);
 .qbv {
   display: flex;
   @include view-wrapper;
@@ -6,21 +8,47 @@
     @include page-header;
   }
   .qbv-body {
+    $line-height: 32px;
     @include paper;
     display: flex;
 
-    .qbv-tree {
-      overflow: auto;
-      li {
-        height: 64px;
-        display: flex;
+    .formatted-close-btn {
+      position: absolute;
+      right: 0;
+      top: calc((#{$line-height} - 24px) / 2);
+    }
+
+    .qbv-input {
+      display: flex;
+      position: relative;
+      height: $line-height;
+      box-sizing: border-box;
+      border-radius: 2px;
+      margin-left: 1rem;
+      &:hover {
+        border: 1px solid #{$lightened-secondary};
       }
-      .qbv-input {
+      > div {
+        margin: auto 4px;
+      }
+
+      .input-key,
+      .input-value {
         display: flex;
-        padding: 8px 24px;
         input {
-          margin: auto 4px;
+          flex-basis: 48px;
+          min-width: 48px;
+          flex-shrink: 1;
+          flex-grow: 1;
         }
+      }
+
+      .input-key::after {
+        content: ":";
+        margin: auto;
+      }
+      .input-key-nested::after {
+        content: "";
       }
     }
 
@@ -38,23 +66,36 @@
       overflow: auto;
       width: 100%;
       margin-top: 1rem;
-
-      .qbv-json-key {
-        color: $md-primary-color;
-      }
-      .qbv-json-value {
-        color: $md-secondary-color;
-      }
-      .qbv-json-close-brace {
-        display: block;
+      .qbv-json-wrapper {
+        position: relative;
+        height: $line-height;
+        display: flex;
+        box-sizing: border-box;
+        border-radius: 2px;
+        &:hover {
+          border: 1px solid #{$lightened-secondary};
+        }
+        > span {
+          display: inline-block;
+          margin-top: auto;
+          margin-bottom: auto;
+        }
+        .qbv-json-key {
+          color: $md-primary-color;
+        }
+        .qbv-json-value {
+          color: $md-secondary-color;
+        }
+        .qbv-json-close-brace {
+          display: block;
+        }
       }
     }
-
-    #qbv-submit {
-      position: fixed;
-      bottom: 1rem;
-      right: 1rem;
-    }
+  }
+  #qbv-submit {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
   }
   .qbv-column-flex {
     flex-direction: column;

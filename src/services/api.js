@@ -2,6 +2,7 @@
  * Wrapper for api, handles all requests and special functions.
  * @module /services/api
  */
+import * as jc from 'json-cycle';
 import auth from './auth';
 import util from './util';
 import config from '../static/config';
@@ -86,7 +87,7 @@ const fetchWithInterceptors = async (endpoint, init) => {
 const patch = (endpoint, payload) => {
   const init = {
     method: 'PATCH',
-    body: JSON.stringify(payload),
+    body: jc.stringify(payload),
   };
   return fetchWithInterceptors(endpoint, init);
 };
@@ -110,7 +111,7 @@ const get = (endpoint) => {
 const post = (endpoint, payload) => {
   const init = {
     method: 'POST',
-    body: JSON.stringify(payload),
+    body: jc.stringify(payload),
   };
 
   return fetchWithInterceptors(endpoint, init);

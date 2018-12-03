@@ -14,10 +14,12 @@ import {
   Collapse,
   MenuItem,
   Checkbox,
+  IconButton,
+  Tooltip,
 } from '@material-ui/core';
-
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import HelpIcon from '@material-ui/icons/Help';
 import * as qs from 'querystring';
 import { Link } from 'react-router-dom';
 import { withKB } from '../../components/KBContext/KBContext';
@@ -47,7 +49,7 @@ class QueryBuilderViewBase extends Component {
       tempValues: { query: '' },
       specOpen: false,
       specBlurbOpen: false,
-      isComplex: false,
+      isComplex: true,
       endpoint: 'Ontology',
       text: EXAMPLE_PAYLOAD,
       error: '',
@@ -277,7 +279,9 @@ class QueryBuilderViewBase extends Component {
           {iFrame}
         </Dialog>
         <Paper className="qbv-header" elevation={4}>
-          <Button variant="outlined" onClick={this.handleToggle}>Help</Button>
+          <Tooltip title="Query building help">
+            <HelpIcon onClick={this.handleToggle} color="primary" />
+          </Tooltip>
           <Typography variant="h5">Query Builder</Typography>
         </Paper>
         <Paper className="qbv-body qbv-column-flex">

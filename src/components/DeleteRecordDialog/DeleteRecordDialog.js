@@ -24,6 +24,7 @@ function DeleteRecordDialog(props) {
     <Dialog
       onClose={onClose}
       open={open}
+      className="delete-dialog"
     >
       <DialogTitle>
         {message}

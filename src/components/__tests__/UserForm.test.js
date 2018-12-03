@@ -37,31 +37,32 @@ let addUser;
 let editUser;
 
 describe('<UserForm />', () => {
-  let wrapper;
+  const wrapper = mount(
+    <UserForm
+      deleteUsers={deleteUsers}
+      addUser={addUser}
+      editUser={editUser}
+      users={testUsers}
+    />,
+  );
 
   beforeEach(() => {
     deleteUsers = jest.fn();
     addUser = jest.fn();
     editUser = jest.fn();
-
-    wrapper = mount(
-      <UserForm
-        deleteUsers={deleteUsers}
-        addUser={addUser}
-        editUser={editUser}
-        users={testUsers}
-      />,
-    );
+    wrapper.unmount();
+    wrapper.mount();
+    wrapper.setProps({
+      deleteUsers,
+      addUser,
+      editUser,
+      users: testUsers,
+    });
+    wrapper.update();
   });
 
   it('correctly renders wrapper table without any rows', () => {
-    wrapper = mount(
-      <UserForm
-        deleteUsers={deleteUsers}
-        addUser={addUser}
-        editUser={editUser}
-      />,
-    );
+    wrapper.setProps({ users: undefined });
     expect(wrapper.type()).to.equal(UserForm);
     expect(wrapper.find('tbody tr')).to.have.lengthOf(0);
   });
@@ -78,7 +79,6 @@ describe('<UserForm />', () => {
   });
 
   it('opens delete user dialog', () => {
-    expect(wrapper.find('.delete-dialog')).to.have.lengthOf(0);
     wrapper.instance().handleCheckAllUsers();
     wrapper.instance().handleDeleteDialog();
     wrapper.update();
@@ -100,17 +100,6 @@ describe('<UserForm />', () => {
   });
 
   describe('calls prop methods', () => {
-    beforeEach(() => {
-      wrapper = mount(
-        <UserForm
-          deleteUsers={deleteUsers}
-          addUser={addUser}
-          editUser={editUser}
-          users={testUsers}
-        />,
-      );
-    });
-
     it('addUser', () => {
       wrapper.instance().handleUserAdd();
       expect(addUser.mock.calls.length).to.eq(0);

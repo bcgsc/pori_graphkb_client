@@ -24,7 +24,18 @@ $lightened-secondary: rgba($md-secondary-color, 0.2);
       overflow: auto;
       width: 100%;
       margin-top: 1rem;
+      position: relative;
+
+      .field-textarea {
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+      .comment-textarea {
+        color: rgb(0, 255, 0);
+      }
       textarea {
+        background: transparent;
         padding: 16px;
         width: 100%;
         box-sizing: border-box;
@@ -32,11 +43,12 @@ $lightened-secondary: rgba($md-secondary-color, 0.2);
         border: 1px solid rgba(0, 0, 0, 0.2);
         border-radius: 4px;
         resize: vertical;
-        font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+        font-family: "Roboto Mono", monospace;
         -webkit-tap-highlight-color: transparent;
         outline: none;
         user-select: none;
         line-height: 150%;
+        color: rgba(0, 0, 0, 0.55);
       }
       .qbv-json-wrapper {
         position: relative;
@@ -64,10 +76,16 @@ $lightened-secondary: rgba($md-secondary-color, 0.2);
       }
     }
   }
-  #qbv-submit {
+  .qbv-action-btns {
     position: fixed;
     bottom: 1rem;
     right: 1rem;
+    left: 1rem;
+    display: flex;
+
+    #qbv-submit {
+      margin-left: auto;
+    }
   }
   .qbv-column-flex {
     flex-direction: column;

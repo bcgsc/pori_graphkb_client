@@ -1,7 +1,6 @@
 /**
  * @module /views/QueryBuilderView
  */
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './QueryBuilderView.css';
@@ -14,7 +13,6 @@ import {
   Collapse,
   MenuItem,
   Checkbox,
-  IconButton,
   Tooltip,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -93,10 +91,10 @@ class QueryBuilderViewBase extends Component {
 
   /**
    * Handles change of a state property.
-   * @param {Event} e - User input event.
+   * @param {Event} event - User input event.
    */
-  handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   /**
@@ -112,9 +110,9 @@ class QueryBuilderViewBase extends Component {
    * @param {string} type - state key.
    */
   handleNested(type) {
-    return (e) => {
+    return (event) => {
       const { [type]: temp } = this.state;
-      const { name, value } = e.target;
+      const { name, value } = event.target;
       temp[name] = value;
       this.setState({ [type]: temp });
     };
@@ -213,18 +211,26 @@ class QueryBuilderViewBase extends Component {
     }
   }
 
-  handleText(e) {
+  /**
+   * Parses user input as JSON and sets error if malformed. Otherwise, update
+   * params object.
+   * @param {Event} event - User input event
+   */
+  handleText(event) {
     try {
-      const text = e.target.value.replace(COMMENT_REGEX, '');
+      const text = event.target.value.replace(COMMENT_REGEX, '');
       const json = JSON.parse(text);
       this.setState({ params: json, error: '' });
     } catch (error) {
       this.setState({ error: error.toString() });
     } finally {
-      this.setState({ text: e.target.value });
+      this.setState({ text: event.target.value });
     }
   }
 
+  /**
+   * Synchronizes comment textarea scroll with main payload textarea.
+   */
   handleScroll() {
     this.commentTextRef.scrollTop = this.typeTextRef.scrollTop;
   }

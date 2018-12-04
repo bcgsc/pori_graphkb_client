@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
-import { withSchema } from '../../components/SchemaContext/SchemaContext';
+import { withKB } from '../../components/KBContext/KBContext';
 import api from '../../services/api';
 import util from '../../services/util';
 import StatementFormComponent from '../../components/StatementFormComponent/StatementFormComponent';
@@ -62,8 +62,8 @@ class EditStatementViewBase extends Component {
    * PATCHes the updated node to the server and posts/deletes the difference in
    * relationship arrays.
    * @param {Object} form - Form object containing core record parameters.
-   * @param {Array} relationships - New list of relationships.
-   * @param {Array} originalRelationships - Original list of relationships.
+   * @param {Array.<Object>} relationships - New list of relationships.
+   * @param {Array.<Object>} originalRelationships - Original list of relationships.
    */
   async handleSubmit(form, relationships, originalRelationships) {
     const { schema } = this.props;
@@ -116,7 +116,7 @@ EditStatementViewBase.propTypes = {
   schema: PropTypes.object.isRequired,
 };
 
-const EditStatementView = withSchema(EditStatementViewBase);
+const EditStatementView = withKB(EditStatementViewBase);
 
 export {
   EditStatementView,

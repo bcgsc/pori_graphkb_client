@@ -31,6 +31,9 @@
       @include paper;
       flex-grow: 1;
       margin-top: 1rem;
+      @media (max-width: $breakpoint-mobile) {
+        margin: 0;
+      }
     }
   }
   .statement-form-relationships {
@@ -47,10 +50,11 @@
     @media (max-width: $breakpoint-lg) {
       position: relative;
       left: unset;
-      margin-top: 8px;
+      margin-top: 1rem;
     }
     @media (max-width: $breakpoint-mobile) {
-      padding: 0;
+      margin: 0;
+      box-shadow: none;
       > div {
         border-radius: 0;
         box-shadow: none;

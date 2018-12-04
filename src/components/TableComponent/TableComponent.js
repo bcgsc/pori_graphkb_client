@@ -15,19 +15,10 @@ import {
   TablePagination,
   TableSortLabel,
   IconButton,
-  FormControlLabel,
   Typography,
-  RadioGroup,
-  Radio,
   Checkbox,
   Menu,
   MenuItem,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  Divider,
   Tooltip,
   CircularProgress,
   Popover,
@@ -46,6 +37,7 @@ import AddIcon from '@material-ui/icons/Add';
 import SearchIcon from '@material-ui/icons/Search';
 import SortIcon from '@material-ui/icons/Sort';
 import DownloadFileComponent from '../DownloadFileComponent/DownloadFileComponent';
+import TableColumnDialog from './TableColumnDialog/TableColumnDialog';
 import util from '../../services/util';
 import FilterIcon from '../../static/icons/FilterIcon/FilterIcon';
 import config from '../../static/config';
@@ -53,6 +45,7 @@ import config from '../../static/config';
 const NEXT_CUTOFF = 0.8;
 const { ROWS_PER_PAGE, TSV_FILENAME } = config.TABLE_PROPERTIES;
 const DEFAULT_COLUMN_ORDER = [
+  '@rid',
   '@class',
   'source.name',
   'sourceId',
@@ -115,28 +108,29 @@ class TableComponent extends Component {
       storedFilters,
       defaultOrder,
     } = this.props;
-
-    const tableColumns = allProps.reduce((r, column) => {
+    const tableColumns = allProps.reduce((currentColumns, column) => {
       const [key, nested] = column.split('.');
-      if (key.startsWith('in_') || key.startsWith('out_')) return r;
+      if (key.startsWith('in_') || key.startsWith('out_')) return currentColumns;
+      const newColumn = {
+        id: key,
+        label: util.antiCamelCase(key),
+      };
       if (!nested) {
-        r.push({
-          id: key,
-          label: util.antiCamelCase(key),
+        Object.assign(newColumn, {
           checked: defaultOrder.includes(key),
           sortBy: null,
           sortable: null,
         });
+        currentColumns.push(newColumn);
       } else if (nested !== 'source') {
-        const col = r.find(c => c.id === key);
+        const col = currentColumns.find(c => c.id === key);
         if (!col) {
-          r.push({
-            id: key,
-            label: util.antiCamelCase(key),
+          Object.assign(newColumn, {
             checked: defaultOrder.includes(column),
             sortBy: nested,
             sortable: [nested],
           });
+          currentColumns.push(newColumn);
         } else {
           col.sortable.push(nested);
           if (defaultOrder.includes(column)) {
@@ -145,17 +139,8 @@ class TableComponent extends Component {
           }
         }
       }
-      return r;
+      return currentColumns;
     }, []);
-    if (defaultOrder.includes('preview')) {
-      tableColumns.push({
-        id: 'preview',
-        checked: true,
-        label: 'Preview',
-        sortBy: null,
-        sortable: null,
-      });
-    }
 
     const columnFilterStrings = [];
     let columnFilterExclusions = [];
@@ -238,7 +223,7 @@ class TableComponent extends Component {
 
   /**
    * builds tsv data and prompts the browser to download file.
-   * @param {Array} fData - forced data to be put into tsv.
+   * @param {Array.<Object>} fData - forced data to be put into tsv.
    */
   createTSV(fData) {
     const { data, hidden, allProps } = this.props;
@@ -291,7 +276,7 @@ class TableComponent extends Component {
   /**
    * Parses current page data to be displayed.
    * @param {number} page - page number.
-   * @param {Array} data - query results data map.
+   * @param {Array.<Object>} data - query results data map.
    */
   pageData(page, data) {
     const {
@@ -362,7 +347,7 @@ class TableComponent extends Component {
    * Closes table actions menu.
    */
   handleClose() {
-    this.setState({ anchorEl: null });
+    this.setState({ anchorEl: null, filterPopoverNode: null });
   }
 
   /**
@@ -376,7 +361,6 @@ class TableComponent extends Component {
     this.setState({ tableColumns });
   }
 
-
   /**
    * Expands row of input node to view details. If node is already expanded,
    * collapses it.
@@ -384,10 +368,7 @@ class TableComponent extends Component {
    */
   handleDetailToggle(rid) {
     const { toggle } = this.state;
-    if (toggle === rid) this.setState({ toggle: '' });
-    else {
-      this.setState({ toggle: rid });
-    }
+    this.setState({ toggle: toggle === rid ? '' : rid });
   }
 
   /**
@@ -408,7 +389,7 @@ class TableComponent extends Component {
 
   /**
    * Toggles filters from selecting all/deselecting all options.
-   * @param {Array} options - current array of filter options.
+   * @param {Array.<string>} options - current array of filter options.
    */
   handleFilterCheckAll(options) {
     const { columnFilterExclusions, tempFilterIndex } = this.state;
@@ -460,7 +441,7 @@ class TableComponent extends Component {
     }
 
     const sort = (a, b) => {
-      if (!newProperty) return 1;
+      if (!newProperty) return 0;
       const aValue = column.sortBy ? (a[newProperty] || {})[column.sortBy] : a[newProperty];
       const bValue = column.sortBy ? (b[newProperty] || {})[column.sortBy] : b[newProperty];
 
@@ -528,13 +509,11 @@ class TableComponent extends Component {
         : 1;
     };
 
-    this.setState(
-      {
-        order: newOrder,
-        orderBy: newProperty,
-        sortedData: Object.keys(data).map(k => data[k]).sort(sort),
-      },
-    );
+    this.setState({
+      order: newOrder,
+      orderBy: newProperty,
+      sortedData: Object.keys(data).map(k => data[k]).sort(sort),
+    });
   }
 
   render() {
@@ -614,7 +593,7 @@ class TableComponent extends Component {
           id="download-tsv"
         >
           <MenuItem
-            onClick={() => { this.handleClose(); }}
+            onClick={this.handleClose}
             disabled={sortedData.length === 0}
           >
             Download all as TSV
@@ -627,7 +606,7 @@ class TableComponent extends Component {
           id="download-tsv"
         >
           <MenuItem
-            onClick={() => { this.handleClose(); }}
+            onClick={this.handleClose}
             disabled={displayed.length === 0}
           >
             Download selected as TSV
@@ -665,66 +644,20 @@ class TableComponent extends Component {
     );
 
     const columnDialog = (
-      <Dialog
+      <TableColumnDialog
         open={columnSelect}
-        onClose={() => this.handleChange({ target: { name: 'columnSelect', value: false } })}
-        classes={{ paper: 'column-dialog' }}
-      >
-        <DialogTitle id="column-dialog-title">
-          Select Columns:
-        </DialogTitle>
-        <DialogContent>
-          {tableColumns.map((column, i) => (
-            <div key={column.id} id={column.id}>
-              <FormControlLabel
-                control={(
-                  <Checkbox
-                    checked={column.checked}
-                    onChange={() => this.handleColumnCheck(i)}
-                    color="primary"
-                  />
-                )}
-                label={column.label}
-              />
-              {column.sortBy && (
-                <div style={{ marginLeft: '32px' }}>
-                  <Typography variant="caption">
-                    Sort By:
-                  </Typography>
-                  <RadioGroup
-                    onChange={e => this.handleSortByChange(e.target.value, i)}
-                    value={column.sortBy}
-                    style={{ flexDirection: 'row' }}
-                  >
-                    {column.sortable.map(sort => (
-                      <FormControlLabel
-                        disabled={!column.checked}
-                        key={sort}
-                        value={sort}
-                        control={<Radio />}
-                        label={util.antiCamelCase(sort)}
-                      />
-                    ))}
-                  </RadioGroup>
-                </div>
-              )}
-              <Divider />
-            </div>
-          ))}
-        </DialogContent>
-        <DialogActions id="column-dialog-actions">
-          <Button onClick={() => this.handleChange({ target: { name: 'columnSelect', value: false } })} color="primary">
-            Done
-          </Button>
-        </DialogActions>
-      </Dialog>
+        handleChange={this.handleChange}
+        handleColumnCheck={this.handleColumnCheck}
+        handleSortByChange={this.handleSortByChange}
+        tableColumns={tableColumns}
+      />
     );
 
     const filterPopover = (
       <Popover
         anchorEl={filterPopoverNode}
         open={!!filterPopoverNode}
-        onClose={() => this.setState({ filterPopoverNode: null })}
+        onClose={this.handleClose}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'right',
@@ -816,7 +749,7 @@ class TableComponent extends Component {
           <Table>
             <TableHead className="table-head">
               <TableRow>
-                <TableCell padding="checkbox">
+                <TableCell padding="checkbox" className="table-row-checkbox">
                   <Checkbox
                     color="secondary"
                     onChange={e => handleCheckAll(e, pageData)}
@@ -903,7 +836,7 @@ class TableComponent extends Component {
                           selected: 'selected-override',
                         }}
                       >
-                        <TableCell padding="checkbox">
+                        <TableCell padding="checkbox" className="table-row-checkbox">
                           <Checkbox
                             onClick={e => handleCheckbox(e, n['@rid'])}
                             checked={displayed.includes(n['@rid'])}
@@ -917,7 +850,7 @@ class TableComponent extends Component {
 
                             if (col.id === 'preview') {
                               try {
-                                ([, val] = schema.getPreview(n).split(':'));
+                                val = schema.getPreview(n);
                               } catch (e) {
                                 val = 'Invalid Variant';
                               }
@@ -1004,7 +937,7 @@ class TableComponent extends Component {
  * @namespace
  * @property {Object} data - Object containing query results.
  * @property {Object} detail - Record being displayed in detail view.
- * @property {Array} displayed - Array of displayed nodes.
+ * @property {Array.<string>} displayed - Array of displayed node rids.
  * @property {function} handleCheckAll - Method triggered when all rows are
  * checked.
  * @property {function} handleCheckbox - Method triggered when a single row is
@@ -1021,16 +954,17 @@ class TableComponent extends Component {
  * drawer to a given record.
  * @property {function} handleSubsequentPagination - parent function to handle
  * subsequent api calls.
- * @property {Array} hidden - Array of hidden nodes.
- * @property {Array} allProps - all non-base columns represented throughout the
- * query results.
+ * @property {Array.<string>} hidden - Array of hidden node rids.
+ * @property {Array.<string>} allProps - all non-base columns represented
+ * throughout the query results.
  * @property {boolean} moreResults - Flag to tell component there could be more
  * results to the query.
  * @property {boolean} completedNext - Flag for whether or not component has
  * completed the current subsequent query.
- * @property {Array} storedFilters - filters stored for current session.
- * Accessed on component init and stored on navigate to table.
- * @property {Array} defaultOrder - List of columns to display in order.
+ * @property {Array.<Object>} storedFilters - filters stored for current
+ * session. Accessed on component init and stored on navigate to table.
+ * @property {Array.<string>} defaultOrder - List of columns to display in
+ * order.
  * @property {Object} schema - Knowledgebase schema object.
  */
 TableComponent.propTypes = {

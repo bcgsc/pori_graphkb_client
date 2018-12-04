@@ -32,6 +32,7 @@ function ResourceSelectComponent(props) {
     error,
     dense,
     variant,
+    className,
   } = props;
 
   const resourcesDisplay = resources.map(resource => children(resource));
@@ -44,7 +45,7 @@ function ResourceSelectComponent(props) {
   }
   return (
     <FormControl
-      className="resource-select"
+      className={`resource-select ${className}`}
       id={id}
       variant={variant}
     >
@@ -75,7 +76,7 @@ function ResourceSelectComponent(props) {
 
 /**
  * @namespace
- * @property {Array} resources - List of resources to be selected from.
+ * @property {Array.<any>} resources - List of resources to be selected from.
  * @property {any} value - Parent property to bind output data to.
  * @property {function} onChange - Parent function to trigger on item select.
  * @property {string} name - DOM node name property.
@@ -99,13 +100,14 @@ ResourceSelectComponent.propTypes = {
   error: PropTypes.bool,
   id: PropTypes.string,
   dense: PropTypes.bool,
-  variant: PropTypes.oneOf(['filled', 'outlined', 'standard']),
+  variant: PropTypes.string,
+  className: PropTypes.string,
 };
 
 ResourceSelectComponent.defaultProps = {
   children: resource => (
     <MenuItem key={resource} value={resource}>
-      {util.antiCamelCase(resource)}
+      {util.antiCamelCase(resource) || 'None'}
     </MenuItem>
   ),
   resources: [],
@@ -117,6 +119,7 @@ ResourceSelectComponent.defaultProps = {
   id: undefined,
   dense: false,
   variant: 'standard',
+  className: '',
 };
 
 export default ResourceSelectComponent;

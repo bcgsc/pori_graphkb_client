@@ -25,10 +25,17 @@ class Schema {
   }
 
   /**
+   * Returns record metadata fields
+   */
+  getMetadata() {
+    return Object.values(this.schema.V.properties);
+  }
+
+  /**
    * Returns route and properties of a certain knowledgebase class
    * (most useful data).
    * @param {string} className - requested class name.
-   * @param {Array<string>} [extraProps=[]] - Extra props to be returned in the
+   * @param {Array.<string>} [extraProps=[]] - Extra props to be returned in the
    * class properties list.
    */
   getProperties(className, extraProps = []) {
@@ -36,9 +43,8 @@ class Schema {
     const VPropKeys = schema.V.properties;
     const classModel = schema[className];
     if (!classModel) return null;
-    return Object.keys(classModel.properties || [])
-      .filter(prop => !VPropKeys[prop] || extraProps.includes(prop))
-      .map(prop => classModel.properties[prop]);
+    return Object.values(classModel.properties || [])
+      .filter(prop => !VPropKeys[prop.name] || extraProps.includes(prop.name));
   }
 
   /**
@@ -53,7 +59,7 @@ class Schema {
    * Initializes a new instance of given kbClass.
    * @param {Object} model - existing model to keep existing values from.
    * @param {string} kbClass - Knowledge base class key.
-   * @param {Array} [extraProps=[]] - Extra props to initialize on model.
+   * @param {Array.<Object>} [extraProps=[]] - Extra props to initialize on model.
    * @param {boolean} [ignoreClass=false] - flag to omit '@class' prop on new model.
    * @param {boolean} [stripProps=false] - flag to strip old props from model.
    */
@@ -113,9 +119,9 @@ class Schema {
 
   /**
    * Returns all ontology types.
-   * @param {boolean} [subOnly=true] - flag for checking only subclasses.
+   * @param {boolean} [subOnly=false] - flag for checking only subclasses.
    */
-  getOntologies(subOnly) {
+  getOntologies(subOnly = false) {
     const { schema } = this;
     const list = schema.Ontology.subclasses.slice();
     if (!subOnly) list.push(schema.Ontology);
@@ -124,9 +130,9 @@ class Schema {
 
   /**
    * Returns all variant types.
-   * @param {boolean} [subOnly=true] - flag for checking only subclasses.
+   * @param {boolean} [subOnly=false] - flag for checking only subclasses.
    */
-  getVariants(subOnly) {
+  getVariants(subOnly = false) {
     const { schema } = this;
     const list = schema.Variant.subclasses.slice();
     if (!subOnly) list.push(schema.Variant);
@@ -152,31 +158,37 @@ class Schema {
   }
 
   /**
-   * Returns true if the class inherits the 'Position' class.
-   * @param {string} cls - Class name string
+   * Checks if a ClassModel is a subclass of another ClassModel.
+   * @param {string} cls - ClassModel name of child
+   * @param {Array.<string>} parentCls - ClassModel name of parent
    */
-  isPosition(cls) {
-    return this.schema[cls] && this.schema[cls].inherits.includes('Position');
+  isSubclass(cls, parentCls = []) {
+    if (typeof parentCls === 'string') {
+      parentCls = [parentCls];
+    }
+
+    return !!(this.schema[cls]
+      && this.schema[cls].inherits.some(inherited => parentCls.includes(inherited)));
   }
 
   /**
-   * Updates allColumns list with any new properties from ontologyTerm.
-   * @param {Object} term - new node who's properties will be parsed.
-   * @param {Array} allColumns - current list of all collected properties.
+   * Updates allColumns list with any new properties from a record.
+   * @param {Object} record - new node who's properties will be parsed.
+   * @param {Array.<string>} allColumns - current list of all collected properties.
    */
-  collectOntologyProps(term, allColumns) {
-    const properties = this.getProperties(term['@class']);
+  collectOntologyProps(record, allColumns) {
+    const properties = this.getProperties(record['@class']);
     properties.forEach((prop) => {
       if (!allColumns.includes(prop.name)) {
-        if (term[prop.name]) {
+        if (record[prop.name]) {
           if (prop.type === 'link' || prop.type === 'embedded') {
-            const nestedProperties = this.getProperties(term[prop.name]['@class']);
+            const nestedProperties = this.getProperties(record[prop.name]['@class']);
             if (prop.linkedClass && prop.linkedClass.isAbstract) {
               nestedProperties.push({ name: '@class' });
             }
             (nestedProperties || []).forEach((nestedProp) => {
               if (
-                term[prop.name][nestedProp.name]
+                record[prop.name][nestedProp.name]
                 && !allColumns.includes(`${prop.name}.${nestedProp.name}`)
               ) {
                 allColumns.push(`${prop.name}.${nestedProp.name}`);

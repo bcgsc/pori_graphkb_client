@@ -1,6 +1,6 @@
 {
   "name": "knowledgebase-web",
-  "version": "0.7.0",
+  "version": "0.7.3",
   "private": true,
   "dependencies": {
     "@bcgsc/knowledgebase-parser": "^0.4.1",
@@ -27,7 +27,6 @@
     "react-dom": "^16.4.0",
     "react-router-dom": "^4.4.0-alpha.0",
     "resolve": "1.6.0",
-    "webfontloader": "^1.6.28",
     "whatwg-fetch": "2.0.3"
   },
   "scripts": {
@@ -98,7 +97,7 @@
     "collectCoverage": true,
     "coverageDirectory": "coverage",
     "collectCoverageFrom": [
-      "src/components/**/!(SchemaContext).{js,jsx,mjs}",
+      "src/components/**/!(KBContext).{js,jsx,mjs}",
       "src/services/**/!(api).{js,jsx,mjs}",
       "src/models/**/*.{js,jsx,mjs}"
     ],

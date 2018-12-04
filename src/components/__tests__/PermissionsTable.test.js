@@ -2,7 +2,7 @@ import React from 'react';
 import { expect } from 'chai';
 import { mount } from 'enzyme';
 import PermissionsTable from '../PermissionsTable/PermissionsTable';
-import Schema from '../../models/schema';
+import Schema from '../../services/schema';
 
 const testSchema = new Schema({
   Disease: { name: 'Disease', inherits: ['Ontology'] },
@@ -11,13 +11,11 @@ const testSchema = new Schema({
   Ontology: { name: 'Ontology', inherits: ['V'] },
 });
 
-const testUserGroup = {
-  permissions: {
-    Disease: [0, 0, 1, 0],
-    AliasOf: [1, 0, 1, 0],
-    E: [0, 0, 0, 0],
-    Ontology: [0, 0, 1, 1],
-  },
+const testPermissions = {
+  Disease: [0, 0, 1, 0],
+  AliasOf: [1, 0, 1, 0],
+  E: [0, 0, 0, 0],
+  Ontology: [0, 0, 1, 1],
 };
 
 describe('<PermissionsTable />', () => {
@@ -35,7 +33,7 @@ describe('<PermissionsTable />', () => {
     wrapper = mount(
       <PermissionsTable
         schema={testSchema}
-        userGroup={testUserGroup}
+        permissions={testPermissions}
       />,
     );
     expect(wrapper.find('tr.permissions-view')).to.have.lengthOf(4);
@@ -47,7 +45,7 @@ describe('<PermissionsTable />', () => {
     wrapper = mount(
       <PermissionsTable
         schema={testSchema}
-        userGroup={testUserGroup}
+        permissions={testPermissions}
         handleChange={handleChange}
         handleCheckAll={handleCheckAll}
       />,

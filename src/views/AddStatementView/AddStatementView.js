@@ -8,7 +8,7 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
-import { withSchema } from '../../components/SchemaContext/SchemaContext';
+import { withKB } from '../../components/KBContext/KBContext';
 import api from '../../services/api';
 import util from '../../services/util';
 import StatementFormComponent from '../../components/StatementFormComponent/StatementFormComponent';
@@ -34,7 +34,7 @@ class AddStatementViewBase extends Component {
   /**
    * Bundles payload and sends post request to server.
    * @param {Object} form - Statement form data.
-   * @param {Array} relationships - Form staged relationships.
+   * @param {Array.<Object>} relationships - Form staged relationships.
    */
   async handleSubmit(form, relationships) {
     const { schema } = this.props;
@@ -103,7 +103,7 @@ AddStatementViewBase.propTypes = {
   schema: PropTypes.object.isRequired,
 };
 
-const AddStatementView = withSchema(AddStatementViewBase);
+const AddStatementView = withKB(AddStatementViewBase);
 
 export {
   AddStatementView,

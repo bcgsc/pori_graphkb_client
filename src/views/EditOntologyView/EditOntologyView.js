@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
 import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
-import { withSchema } from '../../components/SchemaContext/SchemaContext';
+import { withKB } from '../../components/KBContext/KBContext';
 import api from '../../services/api';
 import util from '../../services/util';
 import config from '../../static/config';
@@ -139,7 +139,7 @@ EditOntologyViewBase.propTypes = {
   schema: PropTypes.object.isRequired,
 };
 
-const EditOntologyView = withSchema(EditOntologyViewBase);
+const EditOntologyView = withKB(EditOntologyViewBase);
 
 export {
   EditOntologyView,

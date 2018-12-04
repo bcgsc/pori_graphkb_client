@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { Paper, Typography, Button } from '@material-ui/core';
 import * as jc from 'json-cycle';
 import PositionalVariantParser from '../../components/PositionalVariantParser/PositionalVariantParser';
-import { withSchema } from '../../components/SchemaContext/SchemaContext';
+import { withKB } from '../../components/KBContext/KBContext';
 import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
 import util from '../../services/util';
 import api from '../../services/api';
@@ -78,8 +78,8 @@ class EditVariantViewBase extends Component {
     await api.patchEdges(oRelationships || [], relationships, schema);
 
     const copy = Object.assign({}, variant);
-    const route = schema.get(variant['@class']);
     const properties = schema.getProperties(variant['@class']);
+    const route = schema.getRoute(variant['@class']);
     Object.keys(copy).forEach((k) => {
       if (copy[k] && typeof copy[k] === 'object') {
         if (!copy[k]['@class']) {
@@ -157,7 +157,7 @@ EditVariantViewBase.propTypes = {
   schema: PropTypes.object.isRequired,
 };
 
-const EditVariantView = withSchema(EditVariantViewBase);
+const EditVariantView = withKB(EditVariantViewBase);
 
 export {
   EditVariantViewBase,

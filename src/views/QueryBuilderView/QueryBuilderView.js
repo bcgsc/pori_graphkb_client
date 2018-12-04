@@ -24,15 +24,40 @@ import { withKB } from '../../components/KBContext/KBContext';
 import util from '../../services/util';
 import api from '../../services/api';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
+import CodeInput from '../../components/CodeInput/CodeInput';
 
 const COMMENT_REGEX = /\/\/.*(?!\\n)/g;
 
 const EXAMPLE_PAYLOAD = `// See help for more info about constructing payloads
-// This query yields -> GET [/endpoint]s WHERE example = "json payload"
 {
-    "example": "json payload"
-}`;
-const LINE_HEIGHT_PX = 20;
+    "where": [
+        {
+            "attr": {
+                "type": "EDGE",
+                "edges": ["Implies"],
+                "direction": "in",
+                "child": {
+                    "attr": "vertex",
+                    "type": "LINK",
+                    "child": {
+                        "attr": "reference1",
+                        "type": "LINK",
+                        "child": "name"
+                    }
+                }
+            },
+            "value": "KRAS"
+        }
+    ]
+}
+// "Find all statements which are implied by a variant on the gene KRAS"`;
+
+
+const parseJSON = (string) => {
+  const text = string.replace(COMMENT_REGEX, '');
+  return JSON.parse(text);
+};
+
 /**
  * Freeform query builder where users can add key-value pairs or nested groups
  * of key-value pairs.
@@ -41,28 +66,20 @@ class QueryBuilderViewBase extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      params: {},
-      tempNested: { query: false },
-      tempNames: { query: '' },
-      tempValues: { query: '' },
       specOpen: false,
       specBlurbOpen: false,
       isComplex: true,
-      endpoint: 'Ontology',
+      endpoint: 'Statement',
       text: EXAMPLE_PAYLOAD,
       error: '',
+      params: parseJSON(EXAMPLE_PAYLOAD),
     };
 
     this.bundle = this.bundle.bind(this);
-    this.toggleNested = this.toggleNested.bind(this);
-    this.handleAdd = this.handleAdd.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handleNested = this.handleNested.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleText = this.handleText.bind(this);
-    this.handleScroll = this.handleScroll.bind(this);
   }
 
   /**
@@ -77,16 +94,6 @@ class QueryBuilderViewBase extends Component {
     const props = Object.keys(params).map(p => ({ name: p }));
     const payload = util.parsePayload(params, props, [], true);
     return qs.stringify(payload);
-  }
-
-  /**
-   * Toggles staged param type between key-value pair and nested property key.
-   * @param {string} key - nested param key.
-   */
-  toggleNested(key) {
-    const { tempNested } = this.state;
-    tempNested[key] = !tempNested[key];
-    this.setState({ tempNested });
   }
 
   /**
@@ -106,98 +113,6 @@ class QueryBuilderViewBase extends Component {
   }
 
   /**
-   * Handles change of a nested state property.
-   * @param {string} type - state key.
-   */
-  handleNested(type) {
-    return (event) => {
-      const { [type]: temp } = this.state;
-      const { name, value } = event.target;
-      temp[name] = value;
-      this.setState({ [type]: temp });
-    };
-  }
-
-  /**
-   * Adds temp param to the query.
-   * @param {string} k - Nested property key.
-   */
-  handleAdd(k) {
-    const {
-      tempNested,
-      tempNames,
-      tempValues,
-      params,
-    } = this.state;
-    if (
-      !tempNames[k]
-      || (!tempNested[k] && !tempValues[k])
-      || tempNames[k].includes(' ')
-    ) {
-      return;
-    }
-    const keys = k.split('.').slice(1);
-    keys.push(tempNames[k]);
-    const recursiveUpdate = (obj, rKeys, i) => {
-      const rObj = obj;
-      if (i === rKeys.length - 1) {
-        rObj[rKeys[i]] = tempNested[k] ? {} : tempValues[k];
-      } else {
-        rObj[rKeys[i]] = recursiveUpdate(obj[rKeys[i]], rKeys, i + 1);
-      }
-      return rObj;
-    };
-    recursiveUpdate(params, keys, 0);
-
-    tempNames[`${k}.${tempNames[k]}`] = '';
-    tempValues[`${k}.${tempNames[k]}`] = '';
-    tempNested[`${k}.${tempNames[k]}`] = false;
-    tempNames[k] = '';
-    tempValues[k] = '';
-    tempNested[k] = false;
-
-    this.setState({
-      params,
-      tempNames,
-      tempValues,
-      tempNested,
-    });
-  }
-
-  /**
-   * Deletes a parameter from the staged query.
-   * @param {string} k - Nested property key.
-   */
-  handleDelete(k) {
-    const {
-      params,
-      tempNames,
-      tempValues,
-      tempNested,
-    } = this.state;
-    const keys = k.split('.').slice(1);
-    const recursiveUpdate = (obj, rKeys, i) => {
-      const rObj = obj;
-      if (i === rKeys.length - 1) {
-        delete rObj[rKeys[i]];
-      } else {
-        rObj[rKeys[i]] = recursiveUpdate(obj[rKeys[i]], rKeys, i + 1);
-      }
-      return rObj;
-    };
-    delete tempNames[k];
-    delete tempValues[k];
-    delete tempNested[k];
-    recursiveUpdate(params, keys, 0);
-    this.setState({
-      params,
-      tempNames,
-      tempValues,
-      tempNested,
-    });
-  }
-
-  /**
    * Bundles query and navigates to query results page.
    */
   handleSubmit() {
@@ -211,6 +126,7 @@ class QueryBuilderViewBase extends Component {
     }
   }
 
+
   /**
    * Parses user input as JSON and sets error if malformed. Otherwise, update
    * params object.
@@ -218,9 +134,8 @@ class QueryBuilderViewBase extends Component {
    */
   handleText(event) {
     try {
-      const text = event.target.value.replace(COMMENT_REGEX, '');
-      const json = JSON.parse(text);
-      this.setState({ params: json, error: '' });
+      const params = parseJSON(event.target.value);
+      this.setState({ params, error: '' });
     } catch (error) {
       this.setState({ error: error.toString() });
     } finally {
@@ -228,12 +143,6 @@ class QueryBuilderViewBase extends Component {
     }
   }
 
-  /**
-   * Synchronizes comment textarea scroll with main payload textarea.
-   */
-  handleScroll() {
-    this.commentTextRef.scrollTop = this.typeTextRef.scrollTop;
-  }
 
   render() {
     const { schema } = this.props;
@@ -245,15 +154,6 @@ class QueryBuilderViewBase extends Component {
       text,
       error,
     } = this.state;
-
-    const numLines = text.split('\n').length;
-    let comments = text.replace(/.(?!\\n)/g, ' ');
-
-    let match = COMMENT_REGEX.exec(text);
-    while (match) {
-      comments = `${comments.slice(0, match.index)}${match[0]}${comments.slice(match.index + match[0].length)}`;
-      match = COMMENT_REGEX.exec(text);
-    }
 
     const iFrame = <iframe title="api spec" src={`${api.API_BASE_URL}/spec/#/`} />;
     return (
@@ -315,23 +215,17 @@ class QueryBuilderViewBase extends Component {
             />
           </div>
           <div className="qbv-json">
-            <textarea
-              value={comments}
-              className="comment-textarea"
-              readOnly
-              tabIndex={-1}
-              ref={(node) => { this.commentTextRef = node; }}
-              style={{ height: LINE_HEIGHT_PX * (numLines + 2) }}
-            />
-            <textarea
-              className="field-textarea"
+            <CodeInput
               placeholder="Query Payload"
               value={text}
               onChange={this.handleText}
               tabIndex={0}
-              onScroll={this.handleScroll}
-              ref={(node) => { this.typeTextRef = node; }}
-              style={{ height: LINE_HEIGHT_PX * (numLines + 2) }}
+              rules={[
+                { regex: COMMENT_REGEX, color: 'green', className: '' },
+                { regex: /"\w+"\s*:/g, color: 'purple', className: '' },
+                { regex: /"\w+"(?!\s*:)/g, color: 'blue', className: '' },
+                { regex: /"\w+"\s*:\s*("\w+")/g, color: 'orange', className: '' },
+              ]}
             />
             {error && text && (
               <Typography variant="caption" color="error">
@@ -340,7 +234,7 @@ class QueryBuilderViewBase extends Component {
             )}
           </div>
         </Paper>
-        <div className="qbv-action-btns">
+        <Paper className="qbv-action-btns">
           <Link to="/query/advanced">
             <Button variant="contained">Back</Button>
           </Link>
@@ -353,7 +247,7 @@ class QueryBuilderViewBase extends Component {
           >
             Submit
           </Button>
-        </div>
+        </Paper>
       </div>
     );
   }

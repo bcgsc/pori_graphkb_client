@@ -31,30 +31,6 @@ $lightened-secondary: rgba($md-secondary-color, 0.2);
       margin-top: 1rem;
       position: relative;
 
-      .field-textarea {
-        position: absolute;
-        left: 0;
-        top: 0;
-      }
-      .comment-textarea {
-        color: rgb(0, 255, 0);
-      }
-      textarea {
-        background: transparent;
-        padding: 16px;
-        width: 100%;
-        box-sizing: border-box;
-        min-height: 200px;
-        border: 1px solid rgba(0, 0, 0, 0.2);
-        border-radius: 4px;
-        resize: none;
-        font-family: "Roboto Mono", monospace;
-        -webkit-tap-highlight-color: transparent;
-        outline: none;
-        user-select: none;
-        line-height: 150%;
-        color: rgba(0, 0, 0, 0.55);
-      }
       .qbv-json-wrapper {
         position: relative;
         height: $line-height;
@@ -82,10 +58,7 @@ $lightened-secondary: rgba($md-secondary-color, 0.2);
     }
   }
   .qbv-action-btns {
-    position: fixed;
-    bottom: 1rem;
-    right: 1rem;
-    left: 1rem;
+    @include paper;
     display: flex;
 
     #qbv-submit {

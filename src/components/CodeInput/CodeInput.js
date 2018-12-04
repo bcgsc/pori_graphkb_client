@@ -94,7 +94,7 @@ class CodeInput extends Component {
         />
         {ruleVals.map((ruleText, i) => (
           <textarea
-            key={ruleText}
+            key={rules[i].regex.toString()}
             className={`field-textarea ${rules[i].className || ''}`}
             value={ruleText}
             readOnly

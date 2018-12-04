@@ -23,7 +23,7 @@ class CodeInput extends Component {
   }
 
   /**
-   * Synchronizes scrolling between all the different rule layers.
+   * Synchronizes scrolling between all rule layers.
    */
   handleScroll() {
     this.ruleTextRefs.forEach((r) => {

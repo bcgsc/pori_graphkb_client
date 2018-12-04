@@ -8,6 +8,7 @@ import {
   Typography,
   IconButton,
   Popover,
+  Paper,
   CardContent,
   CardActions,
   Button,
@@ -318,60 +319,70 @@ class AutoSearchMulti extends Component {
           anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
           TransitionProps={{ unmountOnExit: true }}
+          PaperProps={{
+            style: {
+              overflow: 'visible',
+              background: 'transparent',
+              border: 'none',
+              boxShadow: 'none',
+            },
+          }}
         >
           <div className="autosearch-multi-popover">
-            <CardContent>
-              <ListItem>
-                <ResourceSelectComponent
-                  value={cls}
-                  onChange={this.handleClassChange}
-                  fullWidth
-                  label="Class"
-                  resources={[
-                    ...schema.getOntologies().map(o => o.name),
-                    ...schema.getVariants().map(v => v.name),
-                    'Statement',
-                  ]}
+            <Paper elevation={20}>
+              <CardContent>
+                <ListItem>
+                  <ResourceSelectComponent
+                    value={cls}
+                    onChange={this.handleClassChange}
+                    fullWidth
+                    label="Class"
+                    resources={[
+                      ...schema.getOntologies().map(o => o.name),
+                      ...schema.getVariants().map(v => v.name),
+                      'Statement',
+                    ]}
+                  >
+                    {v => (
+                      <MenuItem key={v} value={v}>{v}</MenuItem>
+                    )}
+                  </ResourceSelectComponent>
+                </ListItem>
+                {model && (
+                  <div className="autosearch-multi-form-templater">
+                    <FormTemplater
+                      schema={schema}
+                      model={model}
+                      appendToKeys={cls}
+                      propSchemas={properties}
+                      disabledFields={model['@rid']
+                        ? properties.map(p => p.name).filter(p => p !== '@rid')
+                        : undefined}
+                      sort={util.sortFields(EXTRA_FORM_PROPS)}
+                      dense
+                      ignoreRequired
+                      onChange={(e, nested) => {
+                        if (nested) {
+                          model[nested][e.target.name] = e.target.value;
+                        } else {
+                          model[e.target.name] = e.target.value;
+                        }
+                        this.setState({ model });
+                      }}
+                    />
+                  </div>
+                )}
+              </CardContent>
+              <CardActions className="query-btn">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={this.handleQuery}
                 >
-                  {v => (
-                    <MenuItem key={v} value={v}>{v}</MenuItem>
-                  )}
-                </ResourceSelectComponent>
-              </ListItem>
-              {model && (
-                <div className="autosearch-multi-form-templater">
-                  <FormTemplater
-                    schema={schema}
-                    model={model}
-                    appendToKeys={cls}
-                    propSchemas={properties}
-                    disabledFields={model['@rid']
-                      ? properties.map(p => p.name).filter(p => p !== '@rid')
-                      : undefined}
-                    sort={util.sortFields(EXTRA_FORM_PROPS)}
-                    dense
-                    ignoreRequired
-                    onChange={(e, nested) => {
-                      if (nested) {
-                        model[nested][e.target.name] = e.target.value;
-                      } else {
-                        model[e.target.name] = e.target.value;
-                      }
-                      this.setState({ model });
-                    }}
-                  />
-                </div>
-              )}
-            </CardContent>
-            <CardActions>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={this.handleQuery}
-              >
-                Query
-              </Button>
-            </CardActions>
+                  Query
+                </Button>
+              </CardActions>
+            </Paper>
           </div>
         </Popover>
       </React.Fragment>

@@ -2,6 +2,7 @@
  * Wrapper for api, handles all requests and special functions.
  * @module /services/api
  */
+import * as jc from 'json-cycle';
 import auth from './auth';
 import util from './util';
 import config from '../static/config';
@@ -30,12 +31,13 @@ const getHeaders = () => {
  * @param {Object} init - Request properties.
  */
 const fetchWithInterceptors = async (endpoint, init) => {
-  const initWithInterceptors = {
-    ...init,
-    headers: getHeaders(),
-  };
   try {
-    const response = await fetch(new Request(API_BASE_URL + endpoint, initWithInterceptors));
+    const initWithInterceptors = {
+      ...init,
+      headers: getHeaders(),
+    };
+    const request = new Request(API_BASE_URL + endpoint, initWithInterceptors);
+    const response = await fetch(request);
     if (response.ok) {
       return response.json();
     }
@@ -63,9 +65,17 @@ const fetchWithInterceptors = async (endpoint, init) => {
       return Promise.reject('Invalid Query');
     }
     history.push({ pathname: '/error', state: error });
-    return Promise.reject('Unexpected Error, redirecting...');
+    throw new Error('Unexpected Error, redirecting...');
   } catch (error) {
-    return Promise.reject(error);
+    history.push({
+      pathname: '/error',
+      state: {
+        message: error.message,
+        url: API_BASE_URL,
+        statusText: 'Fetch',
+      },
+    });
+    throw new Error('Unexpected Error, redirecting...');
   }
 };
 
@@ -77,7 +87,7 @@ const fetchWithInterceptors = async (endpoint, init) => {
 const patch = (endpoint, payload) => {
   const init = {
     method: 'PATCH',
-    body: JSON.stringify(payload),
+    body: jc.stringify(payload),
   };
   return fetchWithInterceptors(endpoint, init);
 };
@@ -101,7 +111,7 @@ const get = (endpoint) => {
 const post = (endpoint, payload) => {
   const init = {
     method: 'POST',
-    body: JSON.stringify(payload),
+    body: jc.stringify(payload),
   };
 
   return fetchWithInterceptors(endpoint, init);
@@ -153,7 +163,7 @@ const autoSearch = (endpoint, property, value, limit) => {
 
 /**
  * Replaces placeholder RIDs and posts a list of edges.
- * @param {Array} edges - new edges to post.
+ * @param {Array.<Object>} edges - new edges to post.
  * @param {Object} schema - Knowledgebase db schema.
  * @param {string} [rid=''] - Record id to post edges to.
  */

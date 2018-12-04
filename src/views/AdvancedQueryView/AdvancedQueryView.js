@@ -18,13 +18,22 @@ import ResourceSelectComponent from '../../components/ResourceSelectComponent/Re
 import util from '../../services/util';
 import FormTemplater from '../../components/FormTemplater/FormTemplater';
 import config from '../../static/config';
-import { withSchema } from '../../components/SchemaContext/SchemaContext';
+import { withKB } from '../../components/KBContext/KBContext';
 
 const DEFAULT_ORDER = [
   'name',
   'sourceId',
   'source',
   'subsets',
+  'type',
+  'reference1',
+  'reference2',
+  'break1Start',
+  'break1End',
+  'break2Start',
+  'break2End',
+  'relevance',
+  'appliesTo',
 ];
 
 const SNACKBAR_DURATION = 6000;
@@ -130,10 +139,10 @@ class AdvancedQueryViewBase extends Component {
   }
 
   /**
- * Handles changes in an embedded property's class.
- * @param {Event} e - new class selection event.
- * @param {string} nested - nested property key.
- */
+   * Handles changes in an embedded property's class.
+   * @param {Event} e - new class selection event.
+   * @param {string} nested - nested property key.
+   */
   handleNestedClassChange(e, nested) {
     const { form } = this.state;
     const { schema } = this.props;
@@ -269,7 +278,7 @@ AdvancedQueryViewBase.propTypes = {
   schema: PropTypes.object.isRequired,
 };
 
-const AdvancedQueryView = withSchema(AdvancedQueryViewBase);
+const AdvancedQueryView = withKB(AdvancedQueryViewBase);
 
 /**
  * Export consumer component and regular component for testing.

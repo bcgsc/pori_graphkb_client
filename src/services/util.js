@@ -54,7 +54,7 @@ const castToExist = (obj) => {
 
 /**
  * Parses a string and capitalizes known acronyms.
- * @param {string | Array<string>} str - String to be parsed.
+ * @param {string | Array.<string>} str - String to be parsed.
  */
 const parseAcronyms = (str) => {
   let words = str;
@@ -148,11 +148,11 @@ const formatStr = (str) => {
 /**
  * Expands edges to field property names, with either 'in_' or 'out_'
  * appended to them.
- * @param {Array} edges - list of edge classes.
+ * @param {Array.<string>} edges - list of edge classes.
  */
-const expandEdges = edges => edges.reduce((r, e) => {
-  r.push(`in_${e}`);
-  r.push(`out_${e}`);
+const expandEdges = edges => edges.reduce((r, edge) => {
+  r.push(`in_${edge}`);
+  r.push(`out_${edge}`);
   return r;
 }, []);
 
@@ -267,8 +267,8 @@ const flatten = (obj) => {
 /**
  * Prepares a payload to be sent to the server for a POST, PATCH, or GET requst.
  * @param {Object} form - unprocessed form object containing user data.
- * @param {Array} properties - List of valid properties for given form.
- * @param {Array} extraProps - List of extra parameters not specified in objectSchema.
+ * @param {Array.<Object>} properties - List of valid properties for given form.
+ * @param {Array.<string>} extraProps - List of extra parameters not specified in objectSchema.
  */
 const parsePayload = (form, properties, extraProps = [], isQuery = false) => {
   const payload = {};
@@ -344,7 +344,7 @@ const getGraphData = (search) => {
 
 /**
  * Updates expandable map for input rid.
- * @param {Array} expandedEdgeTypes - List of valid edge types.
+ * @param {Array.<string>} expandedEdgeTypes - List of valid edge type keys.
  * @param {Object} graphObjects - Collection of all graph objects.
  * @param {string} rid - identifier for input node.
  * @param {Object} expandable - Expandable flags map.
@@ -352,9 +352,9 @@ const getGraphData = (search) => {
 const expanded = (expandedEdgeTypes, graphObjects, rid, expandable) => {
   const newExpandable = Object.assign({}, expandable);
   let targetFlag = false;
-  expandedEdgeTypes.forEach((e) => {
-    if (graphObjects[rid][e]) {
-      graphObjects[rid][e].forEach((l) => {
+  expandedEdgeTypes.forEach((edge) => {
+    if (graphObjects[rid][edge]) {
+      graphObjects[rid][edge].forEach((l) => {
         if (!graphObjects[l['@rid'] || l]) {
           targetFlag = true;
         }
@@ -417,7 +417,7 @@ const getPropOfType = (kbClass, type) => Object.values(kbClass)
 
 /**
  * Sorting method to pass into Array.sort().
- * @param {Array} [order=[]] - order for props to be sorted in.
+ * @param {Array.<string>} [order=[]] - order for props to be sorted in.
  * @param {string} [prop='name'] - nested property to sort objects by.
  */
 const sortFields = (order = [], prop = 'name') => (a, b) => {

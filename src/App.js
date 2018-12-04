@@ -55,8 +55,8 @@ import logo from './static/logo.png';
 import title from './static/title.png';
 import auth from './services/auth';
 import history from './services/history';
-import Schema from './models/schema';
-import { SchemaContext } from './components/SchemaContext/SchemaContext';
+import Schema from './services/schema';
+import { KBContext } from './components/KBContext/KBContext';
 
 const theme = createMuiTheme({
   direction: 'ltr',
@@ -134,6 +134,10 @@ class App extends Component {
     this.setState({ loggedIn: true });
   }
 
+  /**
+   * Expands a list item in the main navigation drawer.
+   * @param {string} item - Item to expand in main navigation drawer.
+   */
   handleDrawerExpand(item) {
     return () => {
       const { expanded } = this.state;
@@ -152,6 +156,9 @@ class App extends Component {
     this.setState({ drawerOpen: true });
   }
 
+  /**
+   * Closes main navigation drawer.
+   */
   handleDrawerClose() {
     this.setState({ expanded: '', drawerOpen: false });
   }
@@ -281,7 +288,7 @@ class App extends Component {
       </Switch>
     );
     return (
-      <SchemaContext.Provider value={new Schema(SCHEMA_DEFN)}>
+      <KBContext.Provider value={{ schema: new Schema(SCHEMA_DEFN), user: auth.getUser() }}>
         <MuiThemeProvider theme={theme}>
           <Router history={history}>
             <div className="App">
@@ -314,7 +321,7 @@ class App extends Component {
                     >
                       <PersonIcon />
                       <Typography color="inherit">
-                        {auth.getUser() || 'Logged Out'}
+                        {(auth.getUser() && auth.getUser().name) || 'Logged Out'}
                       </Typography>
                     </Button>
                     <Popover
@@ -331,13 +338,17 @@ class App extends Component {
                       }}
                     >
                       <Card className="user-menu">
-                        <MenuItem onClick={() => { history.push('/feedback'); this.handleClose(); }}>
-                          Feedback
-                        </MenuItem>
-                        {auth.isAdmin() && (
-                          <MenuItem onClick={() => { history.push('/admin'); this.handleClose(); }}>
-                            Admin
+                        <Link to="/feedback">
+                          <MenuItem onClick={this.handleClose}>
+                            Feedback
                           </MenuItem>
+                        </Link>
+                        {auth.isAdmin() && (
+                          <Link to="/admin">
+                            <MenuItem onClick={this.handleClose}>
+                              Admin
+                            </MenuItem>
+                          </Link>
                         )}
                         <MenuItem onClick={this.handleLogOut}>
                           Logout
@@ -349,7 +360,13 @@ class App extends Component {
               </AppBar>
               {loggedIn && drawer}
               <section className={`content ${(drawerOpen ? loggedIn : '') && 'drawer-shift'} ${!loggedIn ? 'no-drawer' : ''}`}>
-                <div className="router-outlet">
+                <div
+                  className="router-outlet"
+                  role="button"
+                  tabIndex={0}
+                  onClick={this.handleDrawerClose}
+                  onKeyDown={e => e.keyCode === 13 && this.handleDrawerClose()}
+                >
                   <Switch>
                     <Route path="/icons" component={IconsView} />
                     <Route path="/login" render={loginWithProps} />
@@ -361,7 +378,7 @@ class App extends Component {
             </div>
           </Router>
         </MuiThemeProvider>
-      </SchemaContext.Provider>
+      </KBContext.Provider>
     );
   }
 }

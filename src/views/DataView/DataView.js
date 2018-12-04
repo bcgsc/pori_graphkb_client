@@ -17,7 +17,7 @@ import omit from 'lodash.omit';
 import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
-import { withSchema } from '../../components/SchemaContext/SchemaContext';
+import { withKB } from '../../components/KBContext/KBContext';
 import api from '../../services/api';
 import config from '../../static/config';
 
@@ -39,20 +39,19 @@ class DataViewBase extends Component {
    * Makes API GET call to specified endpoint, with specified query parameters.
    * @param {string} route - API endpoint.
    * @param {Object} queryParams - Query parameters object.
-   * @param {Array} omitted - List of parameters to strip from API call.
+   * @param {Array.<string>} omitted - List of parameters to strip from API call.
    */
   static async makeApiQuery(route, queryParams, omitted = []) {
     const response = await api.get(`${route}?${qs.stringify(omit(queryParams, omitted))}`);
-    const list = jc.retrocycle(response).result;
-    return list;
+    return jc.retrocycle(response).result;
   }
 
   /**
    * Prepares next query function.
    * @param {string} route - API route.
    * @param {Object} queryParams - Query parameters key/value pairs.
-   * @param {Array} prevResult - Previous query results.
-   * @param {Array} omitted - List of property keys to omit during next query.
+   * @param {Array.<Object>} prevResult - Previous query results.
+   * @param {Array.<string>} omitted - List of property keys to omit during next query.
    */
   static prepareNextPagination(route, queryParams, prevResult, omitted = []) {
     const nextQueryParams = queryParams;
@@ -113,7 +112,6 @@ class DataViewBase extends Component {
    */
   async componentDidMount() {
     const { history, schema } = this.props;
-
     const queryParams = qs.parse(history.location.search.slice(1));
     let route = '/ontologies';
     const omitted = [];
@@ -143,7 +141,7 @@ class DataViewBase extends Component {
 
   /**
    * Processes ontology data and updates properties map.
-   * @param {Array} queryResults - List of returned records.
+   * @param {Array.<Object>} queryResults - List of returned records.
    * @param {Object} schema - Knowledgebase db schema.
    */
   processData(queryResults) {
@@ -153,14 +151,13 @@ class DataViewBase extends Component {
       data = {};
     }
     if (!allProps || allProps.length === 0) {
-      allProps = ['@rid', '@class'];
+      allProps = ['@rid', '@class', 'preview'];
     }
 
     queryResults.forEach((record) => {
       allProps = schema.collectOntologyProps(record, allProps);
       data[record['@rid']] = record;
     });
-
     return { data, allProps };
   }
 
@@ -478,7 +475,7 @@ DataViewBase.propTypes = {
   schema: PropTypes.object.isRequired,
 };
 
-const DataView = withSchema(DataViewBase);
+const DataView = withKB(DataViewBase);
 
 export {
   DataView,

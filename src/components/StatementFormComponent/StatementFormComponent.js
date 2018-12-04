@@ -208,7 +208,10 @@ class StatementFormComponent extends Component {
               nodeRid={form['@rid']}
               onChange={this.handleChange}
               name="relationships"
-              edgeTypes={['Implies', 'SupportedBy']}
+              edgeTypes={[
+                { name: 'Implies', direction: 'in', endpoint: '' },
+                { name: 'SupportedBy', direction: 'in', endpoint: '' },
+              ]}
               errorMsg="Statements need at least 1 Implication edge and 1 Support edge"
               error={(!oneOfEachEdge && relationships.length > 0) || relationshipsError}
               overridePristine={relationshipsError}

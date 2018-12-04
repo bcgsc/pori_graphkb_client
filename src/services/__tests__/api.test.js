@@ -20,9 +20,4 @@ describe('api methods test', () => {
       expect(e).to.eq('Unauthorized, redirecting...');
     }
   });
-
-  it('can get schema', async () => {
-    const schema = await api.getSchema();
-    expect(typeof schema).to.eq('object');
-  });
 });

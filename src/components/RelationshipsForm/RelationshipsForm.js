@@ -59,8 +59,14 @@ class RelationshipsForm extends Component {
   componentDidMount() {
     const { schema, nodeRid, edgeTypes } = this.props;
     const edges = edgeTypes || schema.getEdges();
-    const model = schema.initModel({}, edges[0]);
-    model['out.data'] = { '@rid': nodeRid };
+    let initEdge = edges[0];
+    let initKey = 'out.data';
+    if (typeof initEdge === 'object') {
+      initKey = `${initEdge.direction}.data`;
+      initEdge = initEdge.name;
+    }
+    const model = schema.initModel({}, initEdge);
+    model[initKey] = { '@rid': nodeRid };
     model['@rid'] = this.applyTestId();
     const initState = Object.assign({}, model);
     this.setState({ model, edges, initState });
@@ -89,8 +95,15 @@ class RelationshipsForm extends Component {
     if (model && !relationships.find(r => r['@rid'] === model['@rid'])) {
       relationships.push(model);
       onChange({ target: { name, value: relationships } });
-      const newModel = schema.initModel({}, edges[0]);
-      newModel[`${forward ? 'out' : 'in'}.data`] = { '@rid': nodeRid };
+      let initEdge = edges[0];
+      let direction = forward;
+      if (typeof initEdge === 'object') {
+        initEdge = initEdge.name;
+        direction = initEdge.direction === 'in';
+      }
+      const newModel = schema.initModel({}, initEdge);
+
+      newModel[`${direction ? 'out' : 'in'}.data`] = { '@rid': nodeRid };
       newModel['@rid'] = this.applyTestId();
       this.setState({ model: newModel });
     }
@@ -284,6 +297,19 @@ class RelationshipsForm extends Component {
     });
 
     const isPristine = !Object.keys(model).some(key => model[key] !== initState[key]);
+    let endpoint;
+    let direction = forward ? 'in' : 'out';
+    const edgeDetails = edges.find(e => typeof e === 'object' && e.name === model['@class']);
+    if (edgeDetails) {
+      if (edgeDetails.endpoint) {
+        ({ endpoint } = edgeDetails);
+      }
+      if (edgeDetails.direction) {
+        ({ direction } = edgeDetails);
+        direction = direction === 'in' ? 'out' : 'in';
+      }
+    }
+
     return (
       <div className="relationships-form-wrapper">
         <fieldset className="relationships-temp-fields">
@@ -293,35 +319,46 @@ class RelationshipsForm extends Component {
             </Typography>
           </legend>
           <ListItem disableGutters className="relationships-temp-btns">
-            <IconButton
-              onClick={this.handleDirection}
-              color="primary"
-              className="relationship-direction-btn"
-            >
-              <TrendingFlatIcon
-                className={forward ? 'relationship-in' : ''}
-              />
-            </IconButton>
+            {!(edgeDetails && edgeDetails.direction) && (
+              <IconButton
+                onClick={this.handleDirection}
+                color="primary"
+                className="relationship-direction-btn"
+              >
+                <TrendingFlatIcon
+                  className={`relationship-${direction}`}
+                />
+              </IconButton>
+            )}
             <ResourceSelectComponent
               resources={edges}
               value={model['@class']}
               onChange={this.handleClassChange}
               name="@class"
             >
-              {resource => (
-                <MenuItem key={resource} value={resource}>
-                  {forward ? schema.get(resource).name : schema.get(resource).reverseName}
-                </MenuItem>
-              )}
+              {(resource) => {
+                let name = resource;
+                let dir = direction;
+                if (typeof resource === 'object') {
+                  ({ name, direction: dir } = resource);
+                  dir = dir === 'out';
+                }
+                return (
+                  <MenuItem key={name} value={name}>
+                    {dir ? schema.get(name).name : schema.get(name).reverseName}
+                  </MenuItem>
+                );
+              }}
             </ResourceSelectComponent>
           </ListItem>
           <ListItem disableGutters>
             <AutoSearchMulti
-              selected={forward ? model['in.data'] : model['out.data']}
+              endpoint={endpoint}
+              selected={model[`${direction}.data`]}
               label="Target Record"
-              value={forward ? model.in : model.out}
+              value={model[direction]}
               onChange={this.handleChange}
-              name={forward ? 'in' : 'out'}
+              name={direction}
               schema={schema}
               required
             />

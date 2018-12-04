@@ -168,4 +168,5 @@ $drawer-breakpoint: 1024px;
 ::selection {
   background: rgba($md-primary-color, 0.8);
   color: white;
+  -webkit-text-fill-color: white;
 }

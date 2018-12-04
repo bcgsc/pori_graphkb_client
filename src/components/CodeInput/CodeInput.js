@@ -26,8 +26,12 @@ class CodeInput extends Component {
    * Synchronizes scrolling between all the different rule layers.
    */
   handleScroll() {
-    this.ruleTextRefs.forEach((r) => { r.scrollTop = this.typeTextRef.scrollTop; });
+    this.ruleTextRefs.forEach((r) => {
+      r.scrollTop = this.typeTextRef.scrollTop;
+      r.scrollLeft = this.typeTextRef.scrollLeft;
+    });
     this.textRef.scrollTop = this.typeTextRef.scrollTop;
+    this.textRef.scrollLeft = this.typeTextRef.scrollLeft;
   }
 
   render() {
@@ -70,6 +74,10 @@ class CodeInput extends Component {
         text = `${text.slice(0, index)}${spaces}${text.slice(index + length)}`;
         // Finds next match
         match = regex.exec(value);
+        // Validates match is not repeated for non g regexes
+        if (match && match.index === index) {
+          match = null;
+        }
       }
       // Pushes rule layer value
       ruleVals.push(ruleMatch);
@@ -124,6 +132,7 @@ class CodeInput extends Component {
  * component.
  * @property {string} rules.regex - Matching regex that is applied to the text.
  * IMPORTANT: will only match the LAST capture group defined in the regex.
+ * Using 'g' flag is recommended.
  * @property {string} rules.color - Color to color matches with.
  * @property {string} rules.className - Class name prop applied to matched
  * textarea.
@@ -145,7 +154,7 @@ CodeInput.defaultProps = {
   value: '',
   style: {},
   className: '',
-  rules: [{ reg: COMMENT_REGEX, color: 'green', className: '' }],
+  rules: [{ regex: COMMENT_REGEX, color: 'green', className: '' }],
 };
 
 export default CodeInput;

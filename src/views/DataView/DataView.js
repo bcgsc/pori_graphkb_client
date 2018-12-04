@@ -132,38 +132,44 @@ class DataViewBase extends Component {
     queryParams.limit = queryParams.limit || DEFAULT_LIMIT;
 
     let response;
-    if (queryParams.c) {
-      // route += '/search';
-      isComplex = true;
-      delete queryParams.c;
 
-      response = await DataViewBase.makeApiQuery(route, queryParams, omitted);
-      // response = await DataViewBase.makeComplexApiQuery(route, queryParams, omitted);
-    } else {
-      response = await DataViewBase.makeApiQuery(route, queryParams, omitted);
+    try {
+      if (queryParams.c) {
+        route += '/search';
+        isComplex = true;
+        delete queryParams.c;
+
+        // response = await DataViewBase.makeApiQuery(route, queryParams, omitted);
+        response = await DataViewBase.makeComplexApiQuery(route, queryParams, omitted);
+      } else {
+        response = await DataViewBase.makeApiQuery(route, queryParams, omitted);
+      }
+
+
+      const { data, allProps } = this.processData(response);
+
+      const {
+        next,
+        moreResults,
+        filteredSearch,
+      } = !isComplex
+        ? DataViewBase.prepareNextPagination(route, queryParams, response, omitted)
+        : {
+          moreResults: false,
+          next: null,
+          filteredSearch: null,
+        };
+
+      this.setState({
+        filteredSearch: filteredSearch || queryParams,
+        moreResults,
+        next,
+        data,
+        allProps,
+      });
+    } catch (error) {
+      console.error(error);
     }
-
-    const { data, allProps } = this.processData(response);
-
-    const {
-      next,
-      moreResults,
-      filteredSearch,
-    } = !isComplex
-      ? DataViewBase.prepareNextPagination(route, queryParams, response, omitted)
-      : {
-        moreResults: false,
-        next: null,
-        filteredSearch: null,
-      };
-
-    this.setState({
-      filteredSearch: filteredSearch || queryParams,
-      moreResults,
-      next,
-      data,
-      allProps,
-    });
   }
 
   /**

@@ -6,7 +6,7 @@ import config from '../../static/config';
 const LINE_HEIGHT_PX = 20;
 const COMMENT_REGEX = /\/\/.*(?!\\n)/g;
 
-const { NODE_COLORS } = config;
+const { NODE_COLORS } = config.GRAPH_DEFAULTS;
 
 
 /**

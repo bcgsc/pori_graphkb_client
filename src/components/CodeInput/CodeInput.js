@@ -56,6 +56,7 @@ class CodeInput extends Component {
     let newCursor;
     let changed = false;
 
+    // TAB key
     if (event.keyCode === 9) {
       changed = true;
 
@@ -75,6 +76,7 @@ class CodeInput extends Component {
         value = `${value.slice(0, selectionStart)}    ${value.slice(selectionEnd)}`;
         newCursor = selectionStart + 4;
       }
+      // BACKSPACE key
     } else if (event.keyCode === 8 && event.ctrlKey) {
       const oldLength = value.length;
       value = `${value.slice(0, selectionStart).trim()}${value.slice(selectionStart)}`;
@@ -82,6 +84,7 @@ class CodeInput extends Component {
       if (value.length - oldLength !== 0) {
         changed = true;
       }
+      // DELETE key
     } else if (event.keyCode === 46 && event.ctrlKey) {
       const index = value.slice(selectionStart).split('').findIndex((char) => {
         if (char.trim() || char === '\n') {
@@ -187,6 +190,7 @@ class CodeInput extends Component {
           placeholder="Query Payload"
           onScroll={this.handleScroll}
           ref={(node) => { this.typeTextRef = node; }}
+          id="typeTextArea"
           style={{ height: LINE_HEIGHT_PX * (numLines + 2), WebkitTextFillColor: 'transparent', ...style }}
         />
       </div>

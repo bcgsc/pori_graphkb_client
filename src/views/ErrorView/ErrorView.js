@@ -4,10 +4,11 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { Link } from 'react-router-dom';
 import './ErrorView.css';
 import { Typography, Button, Tooltip } from '@material-ui/core';
 import AssignmentIcon from '@material-ui/icons/Assignment';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import config from '../../static/config';
 
 const { JIRA_LINK } = config;
@@ -38,7 +39,6 @@ class ErrorView extends Component {
       tooltip,
       error,
     } = this.state;
-    const { history } = this.props;
     if (!error) {
       return (
         <div className="error-wrapper" style={{ padding: '40vh 0' }}>
@@ -46,9 +46,11 @@ class ErrorView extends Component {
             <Typography variant="h4">Looks like you don&apos;t have any errors! &#x263A;</Typography>
           </div>
           <div className="error-content" id="return-link">
-            <Button variant="contained" color="primary" onClick={history.back}>
-              Back
-            </Button>
+            <Link to="/">
+              <Button variant="contained" color="primary">
+                Home
+              </Button>
+            </Link>
           </div>
         </div>);
     }
@@ -103,9 +105,11 @@ class ErrorView extends Component {
         </div>
         <div id="spacer" />
         <div className="error-content" id="return-link">
-          <Button variant="contained" color="primary" onClick={history.back}>
-            Back
-          </Button>
+          <Link to="/">
+            <Button variant="contained" color="primary">
+              Home
+            </Button>
+          </Link>
         </div>
         {stacktrace
           && (

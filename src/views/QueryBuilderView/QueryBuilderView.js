@@ -222,9 +222,9 @@ class QueryBuilderViewBase extends Component {
               onChange={this.handleText}
               tabIndex={0}
               rules={[
-                { regex: /"\w+"[ \t]*:/g, color: 'purple', className: '' },
-                { regex: /"[\w\t ]+"(?![ \t]*:)/g, color: 'orange', className: '' },
+                { regex: /"[\w\t\-~!@#$`'%^&*()+=|\\{}[\];"<>,. ]+"(?![ \t]*:)/g, color: 'orange', className: '' },
                 { regex: /[^"\w*]([0-9]+)(?!\w*")/g, color: 'blue', className: '' },
+                { regex: /"\w+"[ \t]*:/g, color: 'purple', className: '' },
                 { regex: COMMENT_REGEX, color: 'green', className: '' },
               ]}
             />

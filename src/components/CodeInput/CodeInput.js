@@ -9,6 +9,9 @@ const COMMENT_REGEX = /\/\/.*(?!\\n)/g;
 const { NODE_COLORS } = config.GRAPH_DEFAULTS;
 
 
+const regexify = str => str.replace(/[.+*^()\\\][$]/g, match => `\\${match}`);
+
+
 /**
  * Component for multicolored inputs. Defaults to recognizing "// ... " comment
  * string format, but can have additional regexes added to recognize and color
@@ -75,24 +78,29 @@ class CodeInput extends Component {
       // Cycle through all instances of pattern
       let match = regex.exec(value);
       while (match) {
-        // Calculates additional offset within the total match and the intended
-        // capture group.
-        const offset = new RegExp(match[match.length - 1]).exec(match[0]).index;
-        const index = match.index + offset;
+        try {
+          // Calculates additional offset within the total match and the intended
+          // capture group.
+          const offset = match[0].match(regexify(match[match.length - 1])).index;
+          const index = match.index + offset;
 
-        // Prepares whitespace for replacing position in main text layer.
-        const { length } = match[match.length - 1];
-        let spaces = '';
-        for (let i = 0; i < length; i += 1) spaces += ' ';
+          // Prepares whitespace for replacing position in main text layer.
+          const { length } = match[match.length - 1];
+          let spaces = '';
+          for (let i = 0; i < length; i += 1) spaces += ' ';
 
-        // Fills in matched text in its designated color layer.
-        ruleMatch = `${ruleMatch.slice(0, index)}${match[match.length - 1]}${ruleMatch.slice(index + length)}`;
-        // Removes matched text from main text layer.
-        text = `${text.slice(0, index)}${spaces}${text.slice(index + length)}`;
-        // Finds next match
-        match = regex.exec(value);
-        // Validates match is not repeated for non g regexes
-        if (match && match.index === index) {
+          // Fills in matched text in its designated color layer.
+          ruleMatch = `${ruleMatch.slice(0, index)}${match[match.length - 1]}${ruleMatch.slice(index + length)}`;
+          // Removes matched text from main text layer.
+          text = `${text.slice(0, index)}${spaces}${text.slice(index + length)}`;
+          // Finds next match
+          match = regex.exec(value);
+          // Validates match is not repeated for non g regexes
+          if (match && match.index === index) {
+            match = null;
+          }
+        } catch (error) {
+          console.log(match);
           match = null;
         }
       }

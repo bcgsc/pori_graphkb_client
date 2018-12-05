@@ -8,7 +8,6 @@ const COMMENT_REGEX = /\/\/.*(?!\\n)/g;
 
 const { NODE_COLORS } = config.GRAPH_DEFAULTS;
 
-
 const regexify = str => str.replace(/[.+*^()\\\][$]/g, match => `\\${match}`);
 const findLineIndex = (value, index) => {
   let tempIndex = 0;
@@ -63,9 +62,9 @@ class CodeInput extends Component {
       if (event.shiftKey) {
         const lineIndex = findLineIndex(value, selectionStart);
         let tempIndex;
-        value.slice(lineIndex, lineIndex + 4).split('').some((char, i) => {
+        value.slice(lineIndex, lineIndex + 5).split('').some((char, i) => {
           tempIndex = i;
-          if (char.trim() || i === 3) {
+          if (char.trim() || i === 4) {
             return true;
           }
           return false;

@@ -22,6 +22,21 @@ import util from '../../services/util';
 
 const KB_SEP_CHARS = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
 
+const DEFAULT_PARAMS = [
+  'name',
+  'sourceId',
+].reduce((array, item) => {
+  array.push(
+    ...[
+      'inE(Implies).vertex.reference1',
+      'inE(Implies).vertex.reference2',
+      'inE(Implies).vertex.type',
+    ].map(str => `${str}.${item}`),
+  );
+
+  return array;
+}, ['name', 'sourceId']);
+
 /**
  * View for simple search by name query. Form submissions are passed through the URL to
  * the DataView module to handle the query transaction.
@@ -54,6 +69,7 @@ class QueryViewBase extends Component {
     this.submitOntology = this.submitOntology.bind(this);
     this.submitVariant = this.submitVariant.bind(this);
     this.submitStatement = this.submitStatement.bind(this);
+    this.submitStatementOrOntology = this.submitStatementOrOntology.bind(this);
   }
 
   /**
@@ -65,11 +81,40 @@ class QueryViewBase extends Component {
     } = this.state;
 
     if (tab === 'ontology') {
-      this.submitOntology();
+      this.submitStatementOrOntology();
     } else if (tab === 'variant') {
       this.submitVariant();
     } else if (tab === 'statement') {
       this.submitStatement();
+    }
+  }
+
+  submitStatementOrOntology() {
+    const {
+      str,
+      disabled,
+    } = this.state;
+    const { history } = this.props;
+    if (str && !disabled) {
+      const trimmed = String(str).trim().toLowerCase();
+      const payload = {
+        complex: encodeURIComponent(btoa(JSON.stringify({
+          where: [
+            {
+              operator: 'OR',
+              comparisons: DEFAULT_PARAMS.map(attr => (
+                { attr, operator: 'CONTAINSTEXT', value: trimmed }
+              )),
+            },
+          ],
+          neighbors: 3,
+          limit: 1000,
+        }))),
+      };
+      history.push({
+        pathname: '/data/table',
+        search: qs.stringify(payload),
+      });
     }
   }
 

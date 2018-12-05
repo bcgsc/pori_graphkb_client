@@ -120,29 +120,26 @@ class DataViewBase extends Component {
     const queryParams = qs.parse(history.location.search.slice(1));
     let isComplex = false;
 
-    let route = '/ontologies';
+    let { routeName } = schema.get('V');
     const omitted = [];
     const kbClass = schema.get(queryParams['@class']);
     if (kbClass) {
-      ({ routeName: route } = kbClass);
+      ({ routeName } = kbClass);
       omitted.push('@class');
     }
 
-    queryParams.neighbors = queryParams.neighbors || DEFAULT_NEIGHBORS;
-    queryParams.limit = queryParams.limit || DEFAULT_LIMIT;
-
     let response;
-
     try {
-      if (queryParams.c) {
-        route += '/search';
+      if (queryParams.complex) {
+        routeName += '/search';
         isComplex = true;
-        delete queryParams.c;
-
-        // response = await DataViewBase.makeApiQuery(route, queryParams, omitted);
-        response = await DataViewBase.makeComplexApiQuery(route, queryParams, omitted);
+        // Decode base64 encoded string.
+        const payload = JSON.parse(atob(decodeURIComponent(queryParams.complex)));
+        response = await DataViewBase.makeComplexApiQuery(routeName, payload, omitted);
       } else {
-        response = await DataViewBase.makeApiQuery(route, queryParams, omitted);
+        queryParams.neighbors = queryParams.neighbors || DEFAULT_NEIGHBORS;
+        queryParams.limit = queryParams.limit || DEFAULT_LIMIT;
+        response = await DataViewBase.makeApiQuery(routeName, queryParams, omitted);
       }
 
 
@@ -153,7 +150,7 @@ class DataViewBase extends Component {
         moreResults,
         filteredSearch,
       } = !isComplex
-        ? DataViewBase.prepareNextPagination(route, queryParams, response, omitted)
+        ? DataViewBase.prepareNextPagination(routeName, queryParams, response, omitted)
         : {
           moreResults: false,
           next: null,

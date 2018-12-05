@@ -1,3 +1,4 @@
+import AboutView from './AboutView/AboutView';
 import { AdvancedQueryView } from './AdvancedQueryView/AdvancedQueryView';
 import { AddOntologyView } from './AddOntologyView/AddOntologyView';
 import { AdminView } from './AdminView/AdminView';
@@ -15,6 +16,7 @@ import { QueryBuilderView } from './QueryBuilderView/QueryBuilderView';
 import { AddStatementView } from './AddStatementView/AddStatementView';
 
 export {
+  AboutView,
   AdvancedQueryView,
   AddOntologyView,
   AdminView,

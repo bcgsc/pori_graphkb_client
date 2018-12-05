@@ -19,6 +19,7 @@ class CodeInput extends Component {
   constructor(props) {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
+    this.handleTab = this.handleTab.bind(this);
     this.ruleTextRefs = [];
   }
 
@@ -32,6 +33,22 @@ class CodeInput extends Component {
     });
     this.textRef.scrollTop = this.typeTextRef.scrollTop;
     this.textRef.scrollLeft = this.typeTextRef.scrollLeft;
+  }
+
+  handleTab(event) {
+    const { onChange } = this.props;
+    let { value } = event.target;
+    const { selectionStart, selectionEnd } = event.target;
+
+    if (event.keyCode === 9) {
+      event.preventDefault();
+      value = `${value.slice(0, selectionStart)}    ${value.slice(selectionEnd)}`;
+      onChange({ target: { value } });
+      setTimeout(() => {
+        this.typeTextRef.selectionStart = selectionStart + 4;
+        this.typeTextRef.selectionEnd = selectionStart + 4;
+      }, 0);
+    }
   }
 
   render() {
@@ -110,6 +127,7 @@ class CodeInput extends Component {
         <textarea
           className={`field-textarea ${className}`}
           value={value}
+          onKeyDown={this.handleTab}
           {...other}
           placeholder="Query Payload"
           onScroll={this.handleScroll}

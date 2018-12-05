@@ -223,8 +223,8 @@ class QueryBuilderViewBase extends Component {
               rules={[
                 { regex: COMMENT_REGEX, color: 'green', className: '' },
                 { regex: /"\w+"\s*:/g, color: 'purple', className: '' },
-                { regex: /"\w+"(?!\s*:)/g, color: 'blue', className: '' },
-                { regex: /"\w+"\s*:\s*("\w+")/g, color: 'orange', className: '' },
+                { regex: /"\w+"(?!\s*:)/g, color: 'orange', className: '' },
+                { regex: /[^"\w*]([0-9]+)(?!\w*")/g, color: 'blue', className: '' },
               ]}
             />
             {error && text && (

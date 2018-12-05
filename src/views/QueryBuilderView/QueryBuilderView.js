@@ -133,13 +133,14 @@ class QueryBuilderViewBase extends Component {
    * @param {Event} event - User input event
    */
   handleText(event) {
+    const { value } = event.target;
     try {
-      const params = parseJSON(event.target.value);
+      const params = parseJSON(value);
       this.setState({ params, error: '' });
     } catch (error) {
       this.setState({ error: error.toString() });
     } finally {
-      this.setState({ text: event.target.value });
+      this.setState({ text: value });
     }
   }
 
@@ -221,10 +222,10 @@ class QueryBuilderViewBase extends Component {
               onChange={this.handleText}
               tabIndex={0}
               rules={[
-                { regex: COMMENT_REGEX, color: 'green', className: '' },
-                { regex: /"\w+"\s*:/g, color: 'purple', className: '' },
-                { regex: /"\w+"(?!\s*:)/g, color: 'orange', className: '' },
+                { regex: /"\w+"[ \t]*:/g, color: 'purple', className: '' },
+                { regex: /"[\w\t ]+"(?![ \t]*:)/g, color: 'orange', className: '' },
                 { regex: /[^"\w*]([0-9]+)(?!\w*")/g, color: 'blue', className: '' },
+                { regex: COMMENT_REGEX, color: 'green', className: '' },
               ]}
             />
             {error && text && (

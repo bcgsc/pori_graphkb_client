@@ -10,7 +10,19 @@ const { NODE_COLORS } = config.GRAPH_DEFAULTS;
 
 
 const regexify = str => str.replace(/[.+*^()\\\][$]/g, match => `\\${match}`);
-
+const findLineIndex = (value, index) => {
+  let tempIndex = 0;
+  value.split('').findIndex((char, i) => {
+    if (char === '\n' && i >= index) {
+      return true;
+    }
+    if (char === '\n') {
+      tempIndex = i;
+    }
+    return false;
+  });
+  return tempIndex + 1;
+};
 
 /**
  * Component for multicolored inputs. Defaults to recognizing "// ... " comment
@@ -42,14 +54,55 @@ class CodeInput extends Component {
     const { onChange } = this.props;
     let { value } = event.target;
     const { selectionStart, selectionEnd } = event.target;
+    let newCursor;
+    let changed = false;
 
     if (event.keyCode === 9) {
+      changed = true;
+
+      if (event.shiftKey) {
+        const lineIndex = findLineIndex(value, selectionStart);
+        let tempIndex;
+        value.slice(lineIndex, lineIndex + 4).split('').some((char, i) => {
+          tempIndex = i;
+          if (char.trim() || i === 3) {
+            return true;
+          }
+          return false;
+        });
+        value = `${value.slice(0, lineIndex)}${value.slice(lineIndex + tempIndex)}`;
+        newCursor = selectionStart - tempIndex;
+      } else {
+        value = `${value.slice(0, selectionStart)}    ${value.slice(selectionEnd)}`;
+        newCursor = selectionStart + 4;
+      }
+    } else if (event.keyCode === 8 && event.ctrlKey) {
+      const oldLength = value.length;
+      value = `${value.slice(0, selectionStart).trim()}${value.slice(selectionStart)}`;
+      newCursor = selectionStart + (value.length - oldLength);
+      if (value.length - oldLength !== 0) {
+        changed = true;
+      }
+    } else if (event.keyCode === 46 && event.ctrlKey) {
+      const index = value.slice(selectionStart).split('').findIndex((char) => {
+        if (char.trim() || char === '\n') {
+          return true;
+        }
+        return false;
+      });
+      if (index !== 0) {
+        changed = true;
+        value = `${value.slice(0, selectionStart)}${value.slice(selectionStart + index)}`;
+        newCursor = selectionStart;
+      }
+    }
+
+    if (changed) {
       event.preventDefault();
-      value = `${value.slice(0, selectionStart)}    ${value.slice(selectionEnd)}`;
       onChange({ target: { value } });
       setTimeout(() => {
-        this.typeTextRef.selectionStart = selectionStart + 4;
-        this.typeTextRef.selectionEnd = selectionStart + 4;
+        this.typeTextRef.selectionStart = newCursor;
+        this.typeTextRef.selectionEnd = newCursor;
       }, 0);
     }
   }
@@ -78,29 +131,24 @@ class CodeInput extends Component {
       // Cycle through all instances of pattern
       let match = regex.exec(value);
       while (match) {
-        try {
-          // Calculates additional offset within the total match and the intended
-          // capture group.
-          const offset = match[0].match(regexify(match[match.length - 1])).index;
-          const index = match.index + offset;
+        // Calculates additional offset within the total match and the intended
+        // capture group.
+        const offset = match[0].match(regexify(match[match.length - 1])).index;
+        const index = match.index + offset;
 
-          // Prepares whitespace for replacing position in main text layer.
-          const { length } = match[match.length - 1];
-          let spaces = '';
-          for (let i = 0; i < length; i += 1) spaces += ' ';
+        // Prepares whitespace for replacing position in main text layer.
+        const { length } = match[match.length - 1];
+        let spaces = '';
+        for (let i = 0; i < length; i += 1) spaces += ' ';
 
-          // Fills in matched text in its designated color layer.
-          ruleMatch = `${ruleMatch.slice(0, index)}${match[match.length - 1]}${ruleMatch.slice(index + length)}`;
-          // Removes matched text from main text layer.
-          text = `${text.slice(0, index)}${spaces}${text.slice(index + length)}`;
-          // Finds next match
-          match = regex.exec(value);
-          // Validates match is not repeated for non g regexes
-          if (match && match.index === index) {
-            match = null;
-          }
-        } catch (error) {
-          console.log(match);
+        // Fills in matched text in its designated color layer.
+        ruleMatch = `${ruleMatch.slice(0, index)}${match[match.length - 1]}${ruleMatch.slice(index + length)}`;
+        // Removes matched text from main text layer.
+        text = `${text.slice(0, index)}${spaces}${text.slice(index + length)}`;
+        // Finds next match
+        match = regex.exec(value);
+        // Validates match is not repeated for non g regexes
+        if (match && match.index === index) {
           match = null;
         }
       }

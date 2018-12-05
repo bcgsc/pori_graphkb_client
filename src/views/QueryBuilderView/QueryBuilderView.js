@@ -19,7 +19,6 @@ import HelpIcon from '@material-ui/icons/Help';
 import * as qs from 'querystring';
 import { Link } from 'react-router-dom';
 import { withKB } from '../../components/KBContext/KBContext';
-import util from '../../services/util';
 import api from '../../services/api';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
 import CodeInput from '../../components/CodeInput/CodeInput';
@@ -84,10 +83,12 @@ class QueryBuilderViewBase extends Component {
    */
   bundle() {
     const { params, endpoint } = this.state;
-    params['@class'] = params['@class'] || endpoint;
-    params.c = true;
-    const props = Object.keys(params).map(p => ({ name: p }));
-    const payload = util.parsePayload(params, props, [], true);
+    const cls = params['@class'] || endpoint;
+    delete params['@class'];
+    const payload = {
+      complex: encodeURIComponent(btoa(JSON.stringify(params))),
+      '@class': cls,
+    };
     return qs.stringify(payload);
   }
 

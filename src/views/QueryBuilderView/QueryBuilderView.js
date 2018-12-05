@@ -9,10 +9,8 @@ import {
   Dialog,
   Paper,
   Typography,
-  FormControlLabel,
   Collapse,
   MenuItem,
-  Checkbox,
   Tooltip,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -68,7 +66,6 @@ class QueryBuilderViewBase extends Component {
     this.state = {
       specOpen: false,
       specBlurbOpen: false,
-      isComplex: true,
       endpoint: 'Statement',
       text: EXAMPLE_PAYLOAD,
       error: '',
@@ -86,11 +83,9 @@ class QueryBuilderViewBase extends Component {
    * Bundles query params into a string.
    */
   bundle() {
-    const { params, endpoint, isComplex } = this.state;
-    params['@class'] = endpoint;
-    if (isComplex) {
-      params.c = true;
-    }
+    const { params, endpoint } = this.state;
+    params['@class'] = params['@class'] || endpoint;
+    params.c = true;
     const props = Object.keys(params).map(p => ({ name: p }));
     const payload = util.parsePayload(params, props, [], true);
     return qs.stringify(payload);
@@ -151,7 +146,6 @@ class QueryBuilderViewBase extends Component {
       specOpen,
       specBlurbOpen,
       endpoint,
-      isComplex,
       text,
       error,
     } = this.state;
@@ -201,19 +195,8 @@ class QueryBuilderViewBase extends Component {
               value={endpoint}
               onChange={this.handleChange}
             >
-              {item => <MenuItem key={item.name} value={item.name}>{item.routeName + (isComplex ? '/search' : '')}</MenuItem>}
+              {item => <MenuItem key={item.name} value={item.name}>{`${item.routeName}/search`}</MenuItem>}
             </ResourceSelectComponent>
-            <FormControlLabel
-              className="qbv-complex-checkbox"
-              control={(
-                <Checkbox
-                  checked={isComplex}
-                  name="isComplex"
-                  onChange={() => this.handleChange({ target: { name: 'isComplex', value: !isComplex } })}
-                />
-              )}
-              label="Complex"
-            />
           </div>
           <div className="qbv-json">
             <CodeInput

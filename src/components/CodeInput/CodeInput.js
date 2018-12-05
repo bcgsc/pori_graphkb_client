@@ -70,7 +70,7 @@ class CodeInput extends Component {
       const { regex } = rule;
 
       // Replace all characters with whitespace, but keep newline positions
-      let ruleMatch = value.replace(/.(?!\\n)/g, ' ');
+      let ruleMatch = value.replace(/[^\s]/g, ' ');
 
       // Cycle through all instances of pattern
       let match = regex.exec(value);

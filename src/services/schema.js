@@ -13,7 +13,7 @@ class Schema {
    */
   get(className) {
     return this.schema[className]
-      || Object.values(this.schema).find(model => model.reverseName === className);
+      || Object.values(this.schema).find(model => className && model.reverseName === className);
   }
 
   /**

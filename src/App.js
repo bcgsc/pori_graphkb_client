@@ -35,6 +35,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { schema as SCHEMA_DEFN } from '@bcgsc/knowledgebase-schema';
 import {
+  AboutView,
   AddOntologyView,
   AddStatementView,
   AdminView,
@@ -284,6 +285,7 @@ class App extends Component {
         <Route path="/data" component={DataView} />
         <Route path="/feedback" component={FeedbackView} />
         <Route path="/admin" component={AdminView} />
+        <Route path="/about" component={AboutView} />
         <Redirect from="*" to="/query" />
       </Switch>
     );

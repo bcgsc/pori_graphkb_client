@@ -1,71 +1,36 @@
 @import "../../globals";
 
-$lightened-secondary: rgba($md-secondary-color, 0.5);
+$lightened-secondary: rgba($md-secondary-color, 0.2);
 .qbv {
   display: flex;
   @include view-wrapper;
   .qbv-header {
     @include page-header;
+    > svg {
+      margin-top: auto;
+      margin-bottom: auto;
+      margin-right: 1rem;
+    }
   }
   .qbv-body {
     $line-height: 32px;
     @include paper;
     display: flex;
 
-    .formatted-close-btn {
-      position: absolute;
-      right: 0;
-      top: calc((#{$line-height} - 24px) / 2);
-    }
-
-    .qbv-input {
+    .qbv-endpoint {
       display: flex;
-      position: relative;
-      height: $line-height;
-      box-sizing: border-box;
-      border-radius: 2px;
-      margin-left: 1rem;
-      &:hover {
-        border: 1px solid #{$lightened-secondary};
+      .qbv-complex-checkbox {
+        padding: 0 8px;
       }
-      > div {
-        margin: auto 4px;
-      }
-
-      .input-key,
-      .input-value {
-        display: flex;
-        input {
-          flex-basis: 48px;
-          min-width: 48px;
-          flex-shrink: 1;
-          flex-grow: 1;
-        }
-      }
-
-      .input-key::after {
-        content: ":";
-        margin: auto;
-      }
-      .input-key-nested::after {
-        content: "";
-      }
-    }
-
-    .qbv-nest {
-      margin-left: 1rem;
-      display: block;
     }
 
     .qbv-json {
-      padding: 16px;
-      border: 1px solid rgba(0, 0, 0, 0.2);
-      border-radius: 4px;
       box-sizing: border-box;
-      font-family: "Courier New", Courier, monospace;
       overflow: auto;
       width: 100%;
       margin-top: 1rem;
+      position: relative;
+
       .qbv-json-wrapper {
         position: relative;
         height: $line-height;
@@ -73,7 +38,7 @@ $lightened-secondary: rgba($md-secondary-color, 0.5);
         box-sizing: border-box;
         border-radius: 2px;
         &:hover {
-          border: 1px solid #{$lightened-secondary};
+          background: $lightened-secondary;
         }
         > span {
           display: inline-block;
@@ -92,10 +57,13 @@ $lightened-secondary: rgba($md-secondary-color, 0.5);
       }
     }
   }
-  #qbv-submit {
-    position: fixed;
-    bottom: 1rem;
-    right: 1rem;
+  .qbv-action-btns {
+    @include paper;
+    display: flex;
+
+    #qbv-submit {
+      margin-left: auto;
+    }
   }
   .qbv-column-flex {
     flex-direction: column;
@@ -104,17 +72,15 @@ $lightened-secondary: rgba($md-secondary-color, 0.5);
 
 .qbv-swagger-iframe {
   height: 80vh;
+  .qbv-help-blurb {
+    display: flex;
+    padding: 1rem;
+    > svg {
+      margin: auto;
+      margin-right: 0;
+    }
+  }
   iframe {
     height: 100%;
-  }
-}
-
-.feedback-wrapper {
-  a {
-    text-decoration: none;
-    color: $md-secondary-color;
-  }
-  .feedback-body {
-    @include paper;
   }
 }

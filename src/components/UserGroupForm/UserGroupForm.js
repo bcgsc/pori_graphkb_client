@@ -1,5 +1,5 @@
-/* eslint-disable */
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   Paper,
   Typography,
@@ -17,10 +17,21 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import PermissionsTable from '../PermissionsTable/PermissionsTable';
-import UserGroupDeleteDialog from './UserGroupDeleteDialog/UserGroupDeleteDialog';
+import DeleteRecordDialog from '../DeleteRecordDialog/DeleteRecordDialog';
 import UserGroupDialog from './UserGroupDialog/UserGroupDialog';
 
 class UserGroupForm extends Component {
+  static castPermissions(permissions) {
+    const tempPermissions = {};
+    const reducer = (accumulator, curr, i) => accumulator + curr * (2 ** i);
+    Object.keys(permissions)
+      .filter(pKey => pKey !== '@type' && pKey !== '@class')
+      .forEach((pKey) => {
+        tempPermissions[pKey] = permissions[pKey].reduce(reducer);
+      });
+    return tempPermissions;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -120,17 +131,6 @@ class UserGroupForm extends Component {
     this.setState({ tempUserGroupPermissions });
   }
 
-  castPermissions(permissions) {
-    const tempPermissions = {};
-    const reducer = (accumulator, curr, i) => accumulator + curr * (2 ** i);
-    Object.keys(permissions)
-      .filter(pKey => pKey !== '@type' && pKey !== '@class')
-      .forEach((pKey) => {
-        tempPermissions[pKey] = permissions[pKey].reduce(reducer);
-      });
-    return tempPermissions;
-  }
-
   async handleUserGroupEdit() {
     const { onEdit } = this.props;
     const {
@@ -143,7 +143,7 @@ class UserGroupForm extends Component {
       return;
     }
 
-    const tempPermissions = this.castPermissions(tempUserGroupPermissions);
+    const tempPermissions = UserGroupForm.castPermissions(tempUserGroupPermissions);
     const payload = { name: tempUserGroupName, permissions: tempPermissions };
     const { '@rid': rid } = tempUserGroup;
     await onEdit(rid.slice(1), payload);
@@ -169,7 +169,7 @@ class UserGroupForm extends Component {
       return;
     }
 
-    const tempPermissions = this.castPermissions(tempUserGroupPermissions);
+    const tempPermissions = UserGroupForm.castPermissions(tempUserGroupPermissions);
     const payload = { name: tempUserGroupName, permissions: tempPermissions };
 
     await onAdd(payload);
@@ -230,11 +230,11 @@ class UserGroupForm extends Component {
 
     return (
       <Paper className="admin-user-groups">
-        <UserGroupDeleteDialog
+        <DeleteRecordDialog
           open={!!deletedUserGroup}
-          deletedUserGroup={deletedUserGroup}
           onClose={this.handleDeleteDialog}
-          onSubmit={this.handleUserGroupDelete}
+          onDelete={() => this.handleUserGroupDelete(deletedUserGroup)}
+          message={`Delete User Group "${(deletedUserGroup || '').name}"?`}
         />
         <UserGroupDialog
           userGroups={userGroups}
@@ -350,5 +350,13 @@ class UserGroupForm extends Component {
     );
   }
 }
+
+UserGroupForm.propTypes = {
+  schema: PropTypes.object,
+};
+
+UserGroupForm.defaultProps = {
+  schema: null,
+};
 
 export default UserGroupForm;

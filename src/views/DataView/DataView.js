@@ -135,6 +135,8 @@ class DataViewBase extends Component {
         isComplex = true;
         // Decode base64 encoded string.
         const payload = JSON.parse(atob(decodeURIComponent(queryParams.complex)));
+        payload.neighbors = Math.max(payload.neighbors || 0, DEFAULT_NEIGHBORS);
+        payload.limit = Math.min(payload.limit || 0, DEFAULT_LIMIT);
         response = await DataViewBase.makeComplexApiQuery(routeName, payload, omitted);
       } else {
         queryParams.neighbors = queryParams.neighbors || DEFAULT_NEIGHBORS;

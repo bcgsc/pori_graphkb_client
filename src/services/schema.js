@@ -121,9 +121,11 @@ class Schema {
   /**
    * Returns all queryable classModels.
    */
-  getQueryable() {
+  getQueryable(isAdmin) {
     const { schema } = this;
-    return Object.values(schema).filter(model => model.expose && model.expose.QUERY);
+    return Object.values(schema).filter(model => model.expose
+      && model.expose.QUERY
+      && (isAdmin || !['User', 'UserGroup'].includes(model.name)));
   }
 
   /**

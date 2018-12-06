@@ -27,6 +27,7 @@ import auth from '../../services/auth';
 const COMMENT_REGEX = /\/\/.*(?!\\n)/g;
 
 const EXAMPLE_PAYLOAD = `// See help for more info about constructing payloads
+// Example Query: "Find all statements which are implied by a variant on the gene KRAS"
 {
     "where": [
         {
@@ -47,8 +48,7 @@ const EXAMPLE_PAYLOAD = `// See help for more info about constructing payloads
             "value": "KRAS"
         }
     ]
-}
-// "Find all statements which are implied by a variant on the gene KRAS"`;
+}`;
 
 
 const parseJSON = (string) => {

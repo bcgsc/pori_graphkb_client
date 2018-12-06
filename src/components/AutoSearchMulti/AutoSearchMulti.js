@@ -284,7 +284,6 @@ class AutoSearchMulti extends Component {
         .values(schema.schema)
         .find(ml => ml.routeName === endpoint) || {}
     ).name;
-    console.log(endpointName);
     return (
       <React.Fragment>
         <AutoSearchBase

@@ -64,6 +64,9 @@ const fetchWithInterceptors = async (endpoint, init) => {
       history.push({ pathname: '/query/advanced', state: error });
       return Promise.reject('Invalid Query');
     }
+    if (response.status === 409) {
+      return Promise.reject(response);
+    }
     history.push({ pathname: '/error', state: error });
     throw new Error('Unexpected Error, redirecting...');
   } catch (error) {

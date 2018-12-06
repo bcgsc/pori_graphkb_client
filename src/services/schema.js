@@ -48,6 +48,15 @@ class Schema {
       .filter(prop => !VPropKeys[prop.name] || extraProps.includes(prop.name));
   }
 
+  getQueryProperties(className, extraProps = []) {
+    const { schema } = this;
+    const VPropKeys = schema.V.properties;
+    const classModel = this.get(className);
+    if (!classModel) return null;
+    return Object.values(classModel.queryProperties || [])
+      .filter(prop => !VPropKeys[prop.name] || extraProps.includes(prop.name));
+  }
+
   /**
    * Returns the URL route of a given class.
    * @param {string} className - schema class to return the route of.

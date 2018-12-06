@@ -284,15 +284,15 @@ const parsePayload = (form, properties = null, extraProps = [], isQuery = false)
         type,
         default: defaultValue,
         linkedClass,
-        isAbstract,
       } = prop;
       if (type === 'link') {
         const formLink = form[`${name}.data`];
         if (formLink && formLink['@rid']) {
           payload[name] = formLink['@rid'];
         }
-      } else if (type === 'embedded' && linkedClass && !isAbstract) {
-        delete payload['@class'];
+      } else if (type === 'embedded' && linkedClass && !linkedClass.isAbstract) {
+        const { '@class': cls, ...embedded } = form[name];
+        payload[name] = embedded;
       } else if (form[name] && !(defaultValue && form[name] === defaultValue)) {
         payload[name] = form[name];
       }

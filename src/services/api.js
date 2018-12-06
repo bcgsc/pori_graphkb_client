@@ -181,7 +181,7 @@ const submitEdges = (edges, schema, rid = '') => {
       edge.out = rid;
     }
 
-    newEdges.push(post(schema[edges[i]['@class']].routeName, edge));
+    newEdges.push(post(schema.get(edges[i]['@class']).routeName, edge));
   }
   return Promise.all(newEdges);
 };

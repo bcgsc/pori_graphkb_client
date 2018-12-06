@@ -170,11 +170,12 @@ class QueryBuilderViewBase extends Component {
             </div>
             <Collapse in={specBlurbOpen}>
               <div style={{ padding: '1rem' }}>
-                Build your query string as a JSON object. Use the select to
-                specify your route and whether or not the query is complex.
+                Build your query string as a JSON object. All queries sent
+                using this form will be complex POST queries.
                 <br />
                 <br />
                 Here is the GraphKB specification for the api version in use.
+                Follow complex POST syntax.
               </div>
             </Collapse>
           </div>

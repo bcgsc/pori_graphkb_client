@@ -338,7 +338,7 @@ class RelationshipsForm extends Component {
             >
               {(resource) => {
                 let name = resource;
-                let dir = direction;
+                let dir = direction === 'out';
                 if (typeof resource === 'object') {
                   ({ name, direction: dir } = resource);
                   dir = dir === 'out';

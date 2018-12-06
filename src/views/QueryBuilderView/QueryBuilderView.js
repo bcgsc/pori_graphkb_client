@@ -19,7 +19,6 @@ import HelpIcon from '@material-ui/icons/Help';
 import * as qs from 'querystring';
 import { Link } from 'react-router-dom';
 import { withKB } from '../../components/KBContext/KBContext';
-import util from '../../services/util';
 import api from '../../services/api';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
 import CodeInput from '../../components/CodeInput/CodeInput';
@@ -84,10 +83,12 @@ class QueryBuilderViewBase extends Component {
    */
   bundle() {
     const { params, endpoint } = this.state;
-    params['@class'] = params['@class'] || endpoint;
-    params.c = true;
-    const props = Object.keys(params).map(p => ({ name: p }));
-    const payload = util.parsePayload(params, props, [], true);
+    const cls = params['@class'] || endpoint;
+    delete params['@class'];
+    const payload = {
+      complex: encodeURIComponent(btoa(JSON.stringify(params))),
+      '@class': cls,
+    };
     return qs.stringify(payload);
   }
 
@@ -149,7 +150,6 @@ class QueryBuilderViewBase extends Component {
       text,
       error,
     } = this.state;
-
     const iFrame = <iframe title="api spec" src={`${api.API_BASE_URL}/spec/#/`} />;
     return (
       <div className="qbv">
@@ -191,11 +191,11 @@ class QueryBuilderViewBase extends Component {
               label="Endpoint"
               name="endpoint"
               resources={Object.values(schema.schema)
-                .filter(item => item.expose.GET && item.routeName)}
+                .filter(item => item.expose.QUERY && item.routeName)}
               value={endpoint}
               onChange={this.handleChange}
             >
-              {item => <MenuItem key={item.name} value={item.name}>{`${item.routeName}/search`}</MenuItem>}
+              {item => <MenuItem key={item.name} value={item.name}>{item.name}</MenuItem>}
             </ResourceSelectComponent>
           </div>
           <div className="qbv-json">

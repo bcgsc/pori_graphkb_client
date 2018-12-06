@@ -12,8 +12,6 @@ import {
 import './App.css';
 import {
   AppBar,
-  createMuiTheme,
-  MuiThemeProvider,
   IconButton,
   Button,
   Typography,
@@ -28,6 +26,10 @@ import {
   Divider,
   Collapse,
 } from '@material-ui/core';
+import {
+  createMuiTheme,
+  MuiThemeProvider,
+} from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
 import PersonIcon from '@material-ui/icons/Person';

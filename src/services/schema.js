@@ -12,7 +12,8 @@ class Schema {
    * @param {string} className - class name;
    */
   get(className) {
-    return this.schema[className];
+    return this.schema[className]
+      || Object.values(this.schema).find(model => model.reverseName === className);
   }
 
   /**
@@ -41,7 +42,7 @@ class Schema {
   getProperties(className, extraProps = []) {
     const { schema } = this;
     const VPropKeys = schema.V.properties;
-    const classModel = schema[className];
+    const classModel = this.get(className);
     if (!classModel) return null;
     return Object.values(classModel.properties || [])
       .filter(prop => !VPropKeys[prop.name] || extraProps.includes(prop.name));
@@ -69,7 +70,7 @@ class Schema {
     if (!editableProps) return null;
     extraProps.forEach((prop) => { editableProps[prop.name] = prop; });
     const newModel = stripProps ? {} : Object.assign({}, model);
-    newModel['@class'] = ignoreClass ? '' : kbClass;
+    newModel['@class'] = ignoreClass ? '' : this.get(kbClass).name;
     Object.values(editableProps).forEach((property) => {
       const {
         name,

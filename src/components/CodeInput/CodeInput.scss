@@ -1,0 +1,23 @@
+.code-input-root {
+  textarea {
+    background: transparent;
+    padding: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 200px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    resize: none;
+    font-family: "Roboto Mono", monospace;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+    line-height: 150%;
+    color: rgba(0, 0, 0, 0.55);
+    white-space: pre;
+  }
+  .field-textarea {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+}

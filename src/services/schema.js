@@ -48,6 +48,13 @@ class Schema {
       .filter(prop => !VPropKeys[prop.name] || extraProps.includes(prop.name));
   }
 
+  /**
+   * Returns route and query properties of a certain knowledgebase class
+   * (most useful data).
+   * @param {string} className - requested class name.
+   * @param {Array.<string>} [extraProps=[]] - Extra props to be returned in the
+   * class properties list.
+   */
   getQueryProperties(className, extraProps = []) {
     const { schema } = this;
     const VPropKeys = schema.V.properties;

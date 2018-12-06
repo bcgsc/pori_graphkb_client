@@ -156,6 +156,7 @@ function FormTemplater(props) {
     }
     if (type === 'embedded') {
       const properties = schema.getProperties((model[name] || {})['@class']);
+      console.log(model[name]);
       let classSelector = (
         <Typography variant="subtitle1">
           {util.antiCamelCase(name)}

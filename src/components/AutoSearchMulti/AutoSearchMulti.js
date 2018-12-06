@@ -247,6 +247,7 @@ class AutoSearchMulti extends Component {
       error,
       selected,
       schema,
+      endpoint,
     } = this.props;
 
     const TextFieldProps = {
@@ -277,6 +278,11 @@ class AutoSearchMulti extends Component {
     );
 
     const properties = schema.getProperties(cls, EXTRA_FORM_PROPS) || [];
+    const endpointName = (
+      Object
+        .values(schema.schema)
+        .find(ml => ml.routeName === endpoint) || {}
+    ).name;
 
     return (
       <React.Fragment>
@@ -337,11 +343,11 @@ class AutoSearchMulti extends Component {
                     onChange={this.handleClassChange}
                     fullWidth
                     label="Class"
-                    resources={[
-                      ...schema.getOntologies().map(o => o.name),
-                      ...schema.getVariants().map(v => v.name),
-                      'Statement',
-                    ]}
+                    resources={
+                      (endpointName
+                        ? schema.getSubclassesOf(endpointName)
+                        : schema.getQueryable()
+                      ).map(m => m.name)}
                   >
                     {v => (
                       <MenuItem key={v} value={v}>{v}</MenuItem>

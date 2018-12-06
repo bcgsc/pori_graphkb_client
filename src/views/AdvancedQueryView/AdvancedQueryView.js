@@ -88,7 +88,7 @@ class AdvancedQueryViewBase extends Component {
     const { form } = this.state;
     const { schema } = this.props;
     const params = ['@class'];
-    const properties = schema.getProperties(form['@class']) || [];
+    const properties = schema.getQueryProperties(form['@class']) || [];
     properties.push(...config.ONTOLOGY_QUERY_PARAMS);
     const payload = util.parsePayload(form, properties, params, true);
     return qs.stringify(payload);
@@ -175,7 +175,7 @@ class AdvancedQueryViewBase extends Component {
     const { history, schema } = this.props;
 
     if (!form) return null;
-    const props = schema.getProperties(form['@class']) || [];
+    const props = schema.getQueryProperties(form['@class']) || [];
     props.push(...config.ONTOLOGY_QUERY_PARAMS);
 
     return (
@@ -214,7 +214,7 @@ class AdvancedQueryViewBase extends Component {
             >
               {resource => (
                 <MenuItem key={resource.name} value={resource.name}>
-                  {resource.name ? util.antiCamelCase(resource.name) : '---'}
+                  {resource.name || '---'}
                 </MenuItem>
               )}
             </ResourceSelectComponent>
@@ -227,6 +227,7 @@ class AdvancedQueryViewBase extends Component {
             sort={util.sortFields(DEFAULT_ORDER)}
             ignoreRequired
             onClassChange={this.handleNestedClassChange}
+            disableLists // TODO: update once list syntax is defined
             pairs={{
               range: ['start', 'end'],
               sourceId: ['sourceId', 'sourceIdVersion'],

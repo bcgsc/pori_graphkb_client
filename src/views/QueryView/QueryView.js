@@ -7,11 +7,10 @@ import './QueryView.css';
 import {
   Button,
   IconButton,
-  Tab,
-  Tabs,
   TextField,
   InputAdornment,
-  Typography,
+  Checkbox,
+  FormControlLabel,
 } from '@material-ui/core';
 import kbp from '@bcgsc/knowledgebase-parser';
 import * as qs from 'querystring';
@@ -54,21 +53,17 @@ class QueryViewBase extends Component {
     this.state = {
       str: initName,
       disabled: false,
-      tab: 'ontology',
+      hgvs: false,
       variantError: '',
       variant: {},
       queryable: false,
-      relevance: '',
-      appliesTo: '',
     };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleInvalid = this.handleInvalid.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleVariantParse = this.handleVariantParse.bind(this);
-    this.submitOntology = this.submitOntology.bind(this);
     this.submitVariant = this.submitVariant.bind(this);
-    this.submitStatement = this.submitStatement.bind(this);
     this.submitStatementOrOntology = this.submitStatementOrOntology.bind(this);
   }
 
@@ -77,15 +72,13 @@ class QueryViewBase extends Component {
    */
   handleSubmit() {
     const {
-      tab,
+      hgvs,
     } = this.state;
 
-    if (tab === 'ontology') {
-      this.submitStatementOrOntology();
-    } else if (tab === 'variant') {
+    if (hgvs) {
       this.submitVariant();
-    } else if (tab === 'statement') {
-      this.submitStatement();
+    } else {
+      this.submitStatementOrOntology();
     }
   }
 
@@ -114,59 +107,6 @@ class QueryViewBase extends Component {
       history.push({
         pathname: '/data/table',
         search: qs.stringify(payload),
-      });
-    }
-  }
-
-  /**
-   * Submits string as ontology "name" property in query.
-   */
-  submitOntology() {
-    const {
-      str,
-      disabled,
-    } = this.state;
-    const { history } = this.props;
-
-    // Matches Knowledgebase api separator characters
-    if (str && !disabled) {
-      const trimmed = String(str).trim().toLowerCase();
-      const matched = !trimmed.split(KB_SEP_CHARS).some(chunk => chunk.length < 4);
-      const search = `?name=${matched ? '~' : ''}${encodeURIComponent(trimmed)}`;
-      history.push({
-        pathname: '/data/table',
-        search,
-      });
-    }
-  }
-
-  /**
-   * Sets the relevance and appliesTo strings to the corresponding link
-   * properties' "name" property.
-   */
-  submitStatement() {
-    const {
-      relevance,
-      appliesTo,
-    } = this.state;
-    const { history } = this.props;
-    if (relevance || appliesTo) {
-      let trimmed = [relevance, appliesTo].map(v => String(v).trim().toLowerCase());
-      const matched = trimmed.map(t => !t.split(KB_SEP_CHARS).some(chunk => chunk.length < 4));
-      trimmed = trimmed.map((t, i) => matched[i] ? `~${t}` : t);
-      let search = ['?@class=Statement'];
-      if (trimmed[0]) {
-        // Cast string to linked property name
-        search.push(`relevance[name]=${encodeURIComponent(trimmed[0])}`);
-      }
-      if (trimmed[1]) {
-        // Cast string to linked property name
-        search.push(`appliesTo[name]=${encodeURIComponent(trimmed[1])}`);
-      }
-      search = search.join('&');
-      history.push({
-        pathname: '/data/table',
-        search,
       });
     }
   }
@@ -255,31 +195,14 @@ class QueryViewBase extends Component {
   render() {
     const {
       str,
-      tab,
+      hgvs,
       variantError,
       queryable,
-      relevance,
-      appliesTo,
     } = this.state;
-    const { history, schema } = this.props;
+    const { history } = this.props;
 
     return (
       <div className="search-wrapper">
-        <div className="search-tabs">
-          <Tabs
-            fullWidth
-            value={tab}
-            onChange={(_, v) => {
-              this.handleChange({ target: { value: v, name: 'tab' } });
-              this.handleVariantParse();
-            }}
-            color="primary"
-          >
-            <Tab value="ontology" label="Ontologies" />
-            <Tab value="variant" label="Variants" />
-            <Tab value="statement" label="Statements" />
-          </Tabs>
-        </div>
         <div className="search-bar">
           <div
             className="main-search"
@@ -291,11 +214,11 @@ class QueryViewBase extends Component {
             role="textbox"
             tabIndex={0}
           >
-            {tab === 'ontology' && (
+            {!hgvs && (
               <AutoSearchSingle
                 value={str}
                 onChange={this.handleChange}
-                placeholder="Search by Name"
+                placeholder="Search by Keyword"
                 limit={30}
                 name="str"
                 onInvalid={this.handleInvalid}
@@ -307,7 +230,7 @@ class QueryViewBase extends Component {
                 )}
               />
             )}
-            {tab === 'variant' && (
+            {hgvs && (
               <div>
                 <TextField
                   placeholder="Search by HGVS Shorthand"
@@ -330,36 +253,13 @@ class QueryViewBase extends Component {
                 />
               </div>
             )}
-            {tab === 'statement' && (
-              <div style={{ display: 'flex' }}>
-                <AutoSearchSingle
-                  placeholder="Relevance"
-                  fullWidth
-                  value={relevance}
-                  name="relevance"
-                  endpoint={schema.getRoute('Vocabulary').slice(1)}
-                  onChange={this.handleChange}
-                  className="query-statement-textfield"
-                  endAdornment={null}
-                />
-                <Typography color="textSecondary" className="query-statements-to">to</Typography>
-                <AutoSearchSingle
-                  placeholder="Applies To"
-                  fullWidth
-                  value={appliesTo}
-                  name="appliesTo"
-                  endpoint={schema.getRoute('Ontology').slice(1)}
-                  onChange={this.handleChange}
-                  className="query-statement-textfield"
-                  endAdornment={(
-                    <InputAdornment>
-                      <IconButton id="search-btn" onClick={this.handleSubmit} color="primary">
-                        <SearchIcon />
-                      </IconButton>
-                    </InputAdornment>)}
-                />
-              </div>
-            )}
+            <FormControlLabel
+              control={<Checkbox />}
+              label="HGVS Shorthand"
+              checked={hgvs}
+              onChange={() => this.handleChange({ target: { value: !hgvs, name: 'hgvs' } })}
+              color="primary"
+            />
           </div>
         </div>
         <Button

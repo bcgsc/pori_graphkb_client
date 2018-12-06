@@ -16,6 +16,9 @@ import { withKB } from '../../components/KBContext/KBContext';
 class AddVariantViewBase extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      is409: false,
+    };
     this.handleCancel = this.handleCancel.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
     this.submitVariant = this.submitVariant.bind(this);
@@ -65,14 +68,20 @@ class AddVariantViewBase extends Component {
       }
     });
     const payload = util.parsePayload(copy, properties);
+    try {
+      const response = await api.post(route, payload);
 
-    const response = await api.post(route, payload);
-
-    await api.submitEdges(relationships, schema, response.result['@rid']);
+      await api.submitEdges(relationships, schema, response.result['@rid']);
+      return true;
+    } catch (error) {
+      this.setState({ is409: true });
+      return false;
+    }
   }
 
   render() {
     const { schema } = this.props;
+    const { is409 } = this.state;
     if (!schema) return null;
     return (
       <div className="variant-wrapper">
@@ -94,6 +103,7 @@ class AddVariantViewBase extends Component {
             handleFinish={this.handleFinish}
             handleSubmit={this.submitVariant}
             schema={schema}
+            is409={is409}
           />
         </div>
       </div>

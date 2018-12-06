@@ -123,8 +123,7 @@ class Schema {
    */
   getQueryable() {
     const { schema } = this;
-
-    return Object.values(schema).filter(model => model.expose.QUERY);
+    return Object.values(schema).filter(model => model.expose && model.expose.QUERY);
   }
 
   /**
@@ -198,13 +197,13 @@ class Schema {
     const properties = this.getProperties(record['@class']);
     properties.forEach((prop) => {
       if (!allColumns.includes(prop.name)) {
-        if (record[prop.name] && record[prop.name]['@class']) {
+        if (record[prop.name]) {
           if (prop.type === 'link' || prop.type === 'embedded') {
-            const nestedProperties = this.getProperties(record[prop.name]['@class']);
+            const nestedProperties = this.getProperties(record[prop.name]['@class']) || [];
             if (prop.linkedClass && prop.linkedClass.isAbstract) {
               nestedProperties.push({ name: '@class' });
             }
-            (nestedProperties || []).forEach((nestedProp) => {
+            nestedProperties.forEach((nestedProp) => {
               if (
                 record[prop.name][nestedProp.name]
                 && !allColumns.includes(`${prop.name}.${nestedProp.name}`)

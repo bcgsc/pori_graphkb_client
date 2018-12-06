@@ -15,10 +15,11 @@ import {
 } from '@material-ui/core/';
 import * as qs from 'querystring';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
-import util from '../../services/util';
-import FormTemplater from '../../components/FormTemplater/FormTemplater';
-import config from '../../static/config';
 import { withKB } from '../../components/KBContext/KBContext';
+import FormTemplater from '../../components/FormTemplater/FormTemplater';
+import util from '../../services/util';
+import auth from '../../services/auth';
+import config from '../../static/config';
 
 const DEFAULT_ORDER = [
   'name',
@@ -209,7 +210,7 @@ class AdvancedQueryViewBase extends Component {
               name="@class"
               label="Class"
               id="class-adv"
-              resources={schema.getQueryable()}
+              resources={schema.getQueryable(auth.isAdmin())}
             >
               {resource => (
                 <MenuItem key={resource.name} value={resource.name}>

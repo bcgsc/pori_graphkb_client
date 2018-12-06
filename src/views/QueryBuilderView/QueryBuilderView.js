@@ -19,9 +19,10 @@ import HelpIcon from '@material-ui/icons/Help';
 import * as qs from 'querystring';
 import { Link } from 'react-router-dom';
 import { withKB } from '../../components/KBContext/KBContext';
-import api from '../../services/api';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
 import CodeInput from '../../components/CodeInput/CodeInput';
+import api from '../../services/api';
+import auth from '../../services/auth';
 
 const COMMENT_REGEX = /\/\/.*(?!\\n)/g;
 
@@ -190,8 +191,7 @@ class QueryBuilderViewBase extends Component {
             <ResourceSelectComponent
               label="Endpoint"
               name="endpoint"
-              resources={Object.values(schema.schema)
-                .filter(item => item.expose.QUERY && item.routeName)}
+              resources={schema.getQueryable(auth.isAdmin())}
               value={endpoint}
               onChange={this.handleChange}
             >

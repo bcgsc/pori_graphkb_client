@@ -13,7 +13,7 @@ class Schema {
    */
   get(className) {
     return this.schema[className]
-      || Object.values(this.schema).find(model => model.reverseName === className);
+      || Object.values(this.schema).find(model => className && model.reverseName === className);
   }
 
   /**
@@ -45,6 +45,22 @@ class Schema {
     const classModel = this.get(className);
     if (!classModel) return null;
     return Object.values(classModel.properties || [])
+      .filter(prop => !VPropKeys[prop.name] || extraProps.includes(prop.name));
+  }
+
+  /**
+   * Returns route and query properties of a certain knowledgebase class
+   * (most useful data).
+   * @param {string} className - requested class name.
+   * @param {Array.<string>} [extraProps=[]] - Extra props to be returned in the
+   * class properties list.
+   */
+  getQueryProperties(className, extraProps = []) {
+    const { schema } = this;
+    const VPropKeys = schema.V.properties;
+    const classModel = this.get(className);
+    if (!classModel) return null;
+    return Object.values(classModel.queryProperties || [])
       .filter(prop => !VPropKeys[prop.name] || extraProps.includes(prop.name));
   }
 
@@ -107,7 +123,7 @@ class Schema {
           if (linkedClass && linkedClass.properties) {
             newModel[name] = model[name]
               ? Object.assign({}, model[name])
-              : this.initModel({}, linkedClass.name, [], true);
+              : this.initModel({}, linkedClass.name, [], !!linkedClass.isAbstract);
           }
           break;
         default:
@@ -119,14 +135,35 @@ class Schema {
   }
 
   /**
+   * Returns all queryable classModels.
+   */
+  getQueryable(isAdmin) {
+    const { schema } = this;
+    return Object.values(schema).filter(model => model.expose
+      && model.expose.QUERY
+      && (isAdmin || !['User', 'UserGroup'].includes(model.name)));
+  }
+
+  /**
+   * Returns subclasses of the given classmodel name.
+   * @param {string} cls - class model name.
+   * @param {boolean} subOnly - if true, does not return superclass model.
+   */
+  getSubclassesOf(cls, subOnly = false) {
+    const { schema } = this;
+    if (!schema[cls]) return null;
+    const list = Object.values(schema)
+      .filter(model => model.inherits && model.inherits.includes(cls));
+    if (!subOnly) list.push(schema[cls]);
+    return list;
+  }
+
+  /**
    * Returns all ontology types.
    * @param {boolean} [subOnly=false] - flag for checking only subclasses.
    */
   getOntologies(subOnly = false) {
-    const { schema } = this;
-    const list = schema.Ontology.subclasses.slice();
-    if (!subOnly) list.push(schema.Ontology);
-    return list;
+    return this.getSubclassesOf('Ontology', subOnly);
   }
 
   /**
@@ -134,10 +171,7 @@ class Schema {
    * @param {boolean} [subOnly=false] - flag for checking only subclasses.
    */
   getVariants(subOnly = false) {
-    const { schema } = this;
-    const list = schema.Variant.subclasses.slice();
-    if (!subOnly) list.push(schema.Variant);
-    return list;
+    return this.getSubclassesOf('Variant', subOnly);
   }
 
   /**
@@ -183,11 +217,11 @@ class Schema {
       if (!allColumns.includes(prop.name)) {
         if (record[prop.name]) {
           if (prop.type === 'link' || prop.type === 'embedded') {
-            const nestedProperties = this.getProperties(record[prop.name]['@class']);
+            const nestedProperties = this.getProperties(record[prop.name]['@class']) || [];
             if (prop.linkedClass && prop.linkedClass.isAbstract) {
               nestedProperties.push({ name: '@class' });
             }
-            (nestedProperties || []).forEach((nestedProp) => {
+            nestedProperties.forEach((nestedProp) => {
               if (
                 record[prop.name][nestedProp.name]
                 && !allColumns.includes(`${prop.name}.${nestedProp.name}`)

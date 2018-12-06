@@ -98,8 +98,11 @@ class StatementFormComponent extends Component {
       this.setState(update);
     } else {
       this.setState({ loading: true, notificationDrawerOpen: true });
-      await onSubmit(form, relationships, originalRelationships);
-      this.setState({ loading: false });
+      if (await onSubmit(form, relationships, originalRelationships)) {
+        this.setState({ loading: false });
+      } else {
+        this.setState({ notificationDrawerOpen: false });
+      }
     }
   }
 
@@ -151,6 +154,7 @@ class StatementFormComponent extends Component {
       schema,
       handleFinish,
       node,
+      is409,
     } = this.props;
 
     if (!form) return null;
@@ -209,8 +213,18 @@ class StatementFormComponent extends Component {
               onChange={this.handleChange}
               name="relationships"
               edgeTypes={[
-                { name: 'Implies', direction: 'in', endpoint: '' },
-                { name: 'SupportedBy', direction: 'in', endpoint: '' },
+                {
+                  name: 'Implies',
+                  direction: 'in',
+                  superClass: 'Evidence',
+                  endpoint: '/evidence',
+                },
+                {
+                  name: 'SupportedBy',
+                  direction: 'in',
+                  endpoint: '/ontologies',
+                  superClass: 'Biomarker',
+                },
               ]}
               errorMsg="Statements need at least 1 Implication edge and 1 Support edge"
               error={(!oneOfEachEdge && relationships.length > 0) || relationshipsError}
@@ -228,6 +242,14 @@ class StatementFormComponent extends Component {
           >
             Submit
           </Button>
+          {is409 && (
+            <Typography
+              style={{ margin: 'auto', marginRight: 8 }}
+              color="error"
+            >
+              Record already exists
+            </Typography>
+          )}
           {node && (
             <Button
               onClick={() => this.handleDialog(true)}
@@ -259,6 +281,7 @@ StatementFormComponent.propTypes = {
   onSubmit: PropTypes.func,
   handleFinish: PropTypes.func,
   onDelete: PropTypes.func,
+  is409: PropTypes.bool,
 };
 
 StatementFormComponent.defaultProps = {
@@ -266,6 +289,7 @@ StatementFormComponent.defaultProps = {
   onSubmit: null,
   handleFinish: null,
   onDelete: null,
+  is409: false,
 };
 
 export default StatementFormComponent;

@@ -22,6 +22,9 @@ import { withKB } from '../../components/KBContext/KBContext';
 class AddOntologyViewBase extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      is409: false,
+    };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
   }
@@ -35,8 +38,14 @@ class AddOntologyViewBase extends Component {
     const properties = schema.getProperties(form['@class']);
     const route = schema.getRoute(form['@class']);
     const payload = util.parsePayload(form, properties);
-    const response = await api.post(route, { ...payload });
-    await api.submitEdges(relationships, schema, response.result['@rid']);
+    try {
+      const response = await api.post(route, { ...payload });
+      await api.submitEdges(relationships, schema, response.result['@rid']);
+      return true;
+    } catch (error) {
+      this.setState({ is409: true });
+      return false;
+    }
   }
 
   /**
@@ -49,6 +58,7 @@ class AddOntologyViewBase extends Component {
 
   render() {
     const { schema } = this.props;
+    const { is409 } = this.state;
 
     return schema && (
       <div className="add-form-wrapper">
@@ -71,6 +81,7 @@ class AddOntologyViewBase extends Component {
           schema={schema}
           handleSubmit={this.handleSubmit}
           handleFinish={this.handleFinish}
+          is409={is409}
         />
       </div>
     );

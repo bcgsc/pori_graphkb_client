@@ -11,6 +11,7 @@ import {
   FormHelperText,
   Paper,
   ListItem,
+  Typography,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
 import kbp from '@bcgsc/knowledgebase-parser';
@@ -394,8 +395,11 @@ class PositionalVariantParser extends Component {
       this.setState({ errorFields });
     } else {
       this.setState({ loading: true, notificationDrawerOpen: true });
-      await handleSubmit(variant, relationships, originalRelationships);
-      this.setState({ loading: false });
+      if (await handleSubmit(variant, relationships, originalRelationships)) {
+        this.setState({ loading: false });
+      } else {
+        this.setState({ notificationDrawerOpen: false });
+      }
     }
   }
 
@@ -418,6 +422,7 @@ class PositionalVariantParser extends Component {
       schema,
       handleFinish,
       initVariant,
+      is409,
     } = this.props;
 
     if (!variant) return null;
@@ -505,7 +510,6 @@ class PositionalVariantParser extends Component {
           </Paper>
         </div>
         <Paper elevation={4} id="variant-form-submit">
-
           <Button
             onClick={this.submitVariant}
             color="primary"
@@ -513,6 +517,14 @@ class PositionalVariantParser extends Component {
           >
             Submit
           </Button>
+          {is409 && (
+            <Typography
+              style={{ margin: 'auto', marginRight: 8 }}
+              color="error"
+            >
+              Record already exists
+            </Typography>
+          )}
           {initVariant && (
             <Button
               variant="contained"
@@ -546,6 +558,7 @@ PositionalVariantParser.propTypes = {
   handleSubmit: PropTypes.func,
   schema: PropTypes.object.isRequired,
   initVariant: PropTypes.object,
+  is409: PropTypes.bool,
 };
 
 PositionalVariantParser.defaultProps = {
@@ -554,6 +567,7 @@ PositionalVariantParser.defaultProps = {
   error: false,
   disabled: false,
   handleSubmit: () => { },
+  is409: false,
 };
 
 export default PositionalVariantParser;

@@ -15,10 +15,11 @@ import {
 } from '@material-ui/core/';
 import * as qs from 'querystring';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
-import util from '../../services/util';
-import FormTemplater from '../../components/FormTemplater/FormTemplater';
-import config from '../../static/config';
 import { withKB } from '../../components/KBContext/KBContext';
+import FormTemplater from '../../components/FormTemplater/FormTemplater';
+import util from '../../services/util';
+import auth from '../../services/auth';
+import config from '../../static/config';
 
 const DEFAULT_ORDER = [
   'name',
@@ -49,7 +50,6 @@ class AdvancedQueryViewBase extends Component {
 
     this.state = {
       form: null,
-      classes: [],
       message: '',
     };
 
@@ -74,14 +74,9 @@ class AdvancedQueryViewBase extends Component {
       this.setState({ message: `${name || ''}: ${message}` });
     }
 
-    const classes = [];
-    classes.push(...schema.getOntologies());
-    classes.push(...schema.getVariants());
-    classes.push({ name: 'Statement' });
     const form = schema.initModel({}, 'Ontology', config.ONTOLOGY_QUERY_PARAMS);
 
     this.setState({
-      classes,
       form,
     });
   }
@@ -93,7 +88,7 @@ class AdvancedQueryViewBase extends Component {
     const { form } = this.state;
     const { schema } = this.props;
     const params = ['@class'];
-    const properties = schema.getProperties(form['@class']) || [];
+    const properties = schema.getQueryProperties(form['@class']) || [];
     properties.push(...config.ONTOLOGY_QUERY_PARAMS);
     const payload = util.parsePayload(form, properties, params, true);
     return qs.stringify(payload);
@@ -175,13 +170,12 @@ class AdvancedQueryViewBase extends Component {
   render() {
     const {
       form,
-      classes,
       message,
     } = this.state;
     const { history, schema } = this.props;
 
     if (!form) return null;
-    const props = schema.getProperties(form['@class']) || [];
+    const props = schema.getQueryProperties(form['@class']) || [];
     props.push(...config.ONTOLOGY_QUERY_PARAMS);
 
     return (
@@ -216,11 +210,11 @@ class AdvancedQueryViewBase extends Component {
               name="@class"
               label="Class"
               id="class-adv"
-              resources={classes}
+              resources={schema.getQueryable(auth.isAdmin())}
             >
               {resource => (
                 <MenuItem key={resource.name} value={resource.name}>
-                  {resource.name ? util.antiCamelCase(resource.name) : '---'}
+                  {resource.name || '---'}
                 </MenuItem>
               )}
             </ResourceSelectComponent>
@@ -233,6 +227,7 @@ class AdvancedQueryViewBase extends Component {
             sort={util.sortFields(DEFAULT_ORDER)}
             ignoreRequired
             onClassChange={this.handleNestedClassChange}
+            disableLists // TODO: update once list syntax is defined
             pairs={{
               range: ['start', 'end'],
               sourceId: ['sourceId', 'sourceIdVersion'],

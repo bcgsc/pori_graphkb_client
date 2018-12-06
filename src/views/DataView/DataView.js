@@ -127,7 +127,6 @@ class DataViewBase extends Component {
       ({ routeName } = kbClass);
       omitted.push('@class');
     }
-    console.log(schema.getQueryable());
 
     let response;
     try {

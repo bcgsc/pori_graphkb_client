@@ -150,7 +150,6 @@ class QueryBuilderViewBase extends Component {
       text,
       error,
     } = this.state;
-
     const iFrame = <iframe title="api spec" src={`${api.API_BASE_URL}/spec/#/`} />;
     return (
       <div className="qbv">
@@ -192,11 +191,11 @@ class QueryBuilderViewBase extends Component {
               label="Endpoint"
               name="endpoint"
               resources={Object.values(schema.schema)
-                .filter(item => item.expose.GET && item.routeName)}
+                .filter(item => item.expose.QUERY && item.routeName)}
               value={endpoint}
               onChange={this.handleChange}
             >
-              {item => <MenuItem key={item.name} value={item.name}>{`${item.routeName}/search`}</MenuItem>}
+              {item => <MenuItem key={item.name} value={item.name}>{item.name}</MenuItem>}
             </ResourceSelectComponent>
           </div>
           <div className="qbv-json">

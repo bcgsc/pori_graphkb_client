@@ -101,6 +101,7 @@ class EditVariantViewBase extends Component {
     });
     const payload = util.parsePayload(copy, properties);
     await api.patch(`${route}/${node['@rid'].slice(1)}`, payload);
+    return true;
   }
 
   render() {

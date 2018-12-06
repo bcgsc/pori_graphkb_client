@@ -329,7 +329,6 @@ class PositionalVariantParser extends Component {
         errorFields: [],
       });
     } catch (error) {
-      console.log(error);
       this.setState({
         shorthand: shorthand.toString(),
         invalidFlag: error.message,
@@ -345,7 +344,6 @@ class PositionalVariantParser extends Component {
    */
   updateErrorFields(error, errorFields) {
     const { variant } = this.state;
-    console.log(error);
     if (error && error.content) {
       const { violatedAttr } = error.content;
       if (violatedAttr) {

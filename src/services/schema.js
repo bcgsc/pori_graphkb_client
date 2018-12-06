@@ -124,7 +124,8 @@ class Schema {
    */
   getOntologies(subOnly = false) {
     const { schema } = this;
-    const list = schema.Ontology.subclasses.slice();
+    const list = Object.values(schema)
+      .filter(model => model.inherits && model.inherits.includes('Ontology'));
     if (!subOnly) list.push(schema.Ontology);
     return list;
   }
@@ -135,7 +136,8 @@ class Schema {
    */
   getVariants(subOnly = false) {
     const { schema } = this;
-    const list = schema.Variant.subclasses.slice();
+    const list = Object.values(schema)
+      .filter(model => model.inherits && model.inherits.includes('Variant'));
     if (!subOnly) list.push(schema.Variant);
     return list;
   }

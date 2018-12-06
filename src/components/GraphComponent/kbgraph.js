@@ -272,6 +272,7 @@ class GraphOptions {
       linksColors: this.linksColors,
       nodesLegend: this.nodesLegend,
       linksLegend: this.linksLegend,
+      nodePreview: this.nodePreview,
     }));
   }
 }

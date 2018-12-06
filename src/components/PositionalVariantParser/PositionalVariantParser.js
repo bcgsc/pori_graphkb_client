@@ -329,6 +329,7 @@ class PositionalVariantParser extends Component {
         errorFields: [],
       });
     } catch (error) {
+      console.log(error);
       this.setState({
         shorthand: shorthand.toString(),
         invalidFlag: error.message,
@@ -344,6 +345,7 @@ class PositionalVariantParser extends Component {
    */
   updateErrorFields(error, errorFields) {
     const { variant } = this.state;
+    console.log(error);
     if (error && error.content) {
       const { violatedAttr } = error.content;
       if (violatedAttr) {
@@ -444,7 +446,6 @@ class PositionalVariantParser extends Component {
         />
         <div className="flexbox">
           <div className="variant-parser">
-
             <Paper elevation={4} className="variant-parser-shorthand">
               <ListItem>
                 <ResourceSelectComponent

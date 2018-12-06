@@ -248,6 +248,7 @@ class AutoSearchMulti extends Component {
       selected,
       schema,
       endpoint,
+      superClass,
     } = this.props;
 
     const TextFieldProps = {
@@ -278,12 +279,11 @@ class AutoSearchMulti extends Component {
     );
 
     const properties = schema.getProperties(cls, EXTRA_FORM_PROPS) || [];
-    const endpointName = (
+    const endpointName = superClass || (
       Object
         .values(schema.schema)
         .find(ml => ml.routeName === endpoint) || {}
     ).name;
-
     return (
       <React.Fragment>
         <AutoSearchBase
@@ -426,6 +426,7 @@ AutoSearchMulti.propTypes = {
   disabled: PropTypes.bool,
   selected: PropTypes.object,
   schema: PropTypes.object,
+  superClass: PropTypes.string,
 };
 
 AutoSearchMulti.defaultProps = {
@@ -442,6 +443,7 @@ AutoSearchMulti.defaultProps = {
   onChange: () => { },
   disabled: false,
   schema: null,
+  superClass: '',
 };
 
 export default AutoSearchMulti;

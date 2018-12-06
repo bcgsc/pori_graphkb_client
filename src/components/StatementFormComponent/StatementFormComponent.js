@@ -209,8 +209,8 @@ class StatementFormComponent extends Component {
               onChange={this.handleChange}
               name="relationships"
               edgeTypes={[
-                { name: 'Implies', direction: 'in', endpoint: '' },
-                { name: 'SupportedBy', direction: 'in', endpoint: '' },
+                { name: 'Implies', direction: 'in', endpoint: '/evidence' },
+                { name: 'SupportedBy', direction: 'in', endpoint: '/biomarkers' },
               ]}
               errorMsg="Statements need at least 1 Implication edge and 1 Support edge"
               error={(!oneOfEachEdge && relationships.length > 0) || relationshipsError}

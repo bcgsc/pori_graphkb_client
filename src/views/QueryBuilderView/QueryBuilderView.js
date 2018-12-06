@@ -190,8 +190,7 @@ class QueryBuilderViewBase extends Component {
             <ResourceSelectComponent
               label="Endpoint"
               name="endpoint"
-              resources={Object.values(schema.schema)
-                .filter(item => item.expose.QUERY && item.routeName)}
+              resources={schema.getQueryable()}
               value={endpoint}
               onChange={this.handleChange}
             >

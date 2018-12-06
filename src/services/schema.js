@@ -119,15 +119,34 @@ class Schema {
   }
 
   /**
+   * Returns all queryable classModels.
+   */
+  getQueryable() {
+    const { schema } = this;
+
+    return Object.values(schema).filter(model => model.expose.QUERY);
+  }
+
+  /**
+   * Returns subclasses of the given classmodel name.
+   * @param {string} cls - class model name.
+   * @param {boolean} subOnly - if true, does not return superclass model.
+   */
+  getSubclassesOf(cls, subOnly = false) {
+    const { schema } = this;
+    if (!schema[cls]) return null;
+    const list = Object.values(schema)
+      .filter(model => model.inherits && model.inherits.includes(cls));
+    if (!subOnly) list.push(schema[cls]);
+    return list;
+  }
+
+  /**
    * Returns all ontology types.
    * @param {boolean} [subOnly=false] - flag for checking only subclasses.
    */
   getOntologies(subOnly = false) {
-    const { schema } = this;
-    const list = Object.values(schema)
-      .filter(model => model.inherits && model.inherits.includes('Ontology'));
-    if (!subOnly) list.push(schema.Ontology);
-    return list;
+    return this.getSubclassesOf('Ontology', subOnly);
   }
 
   /**
@@ -135,11 +154,7 @@ class Schema {
    * @param {boolean} [subOnly=false] - flag for checking only subclasses.
    */
   getVariants(subOnly = false) {
-    const { schema } = this;
-    const list = Object.values(schema)
-      .filter(model => model.inherits && model.inherits.includes('Variant'));
-    if (!subOnly) list.push(schema.Variant);
-    return list;
+    return this.getSubclassesOf('Variant', subOnly);
   }
 
   /**
@@ -183,7 +198,7 @@ class Schema {
     const properties = this.getProperties(record['@class']);
     properties.forEach((prop) => {
       if (!allColumns.includes(prop.name)) {
-        if (record[prop.name]) {
+        if (record[prop.name] && record[prop.name]['@class']) {
           if (prop.type === 'link' || prop.type === 'embedded') {
             const nestedProperties = this.getProperties(record[prop.name]['@class']);
             if (prop.linkedClass && prop.linkedClass.isAbstract) {

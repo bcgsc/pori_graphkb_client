@@ -49,7 +49,6 @@ class AdvancedQueryViewBase extends Component {
 
     this.state = {
       form: null,
-      classes: [],
       message: '',
     };
 
@@ -74,14 +73,9 @@ class AdvancedQueryViewBase extends Component {
       this.setState({ message: `${name || ''}: ${message}` });
     }
 
-    const classes = [];
-    classes.push(...schema.getOntologies());
-    classes.push(...schema.getVariants());
-    classes.push({ name: 'Statement' });
     const form = schema.initModel({}, 'Ontology', config.ONTOLOGY_QUERY_PARAMS);
 
     this.setState({
-      classes,
       form,
     });
   }
@@ -175,7 +169,6 @@ class AdvancedQueryViewBase extends Component {
   render() {
     const {
       form,
-      classes,
       message,
     } = this.state;
     const { history, schema } = this.props;
@@ -216,7 +209,7 @@ class AdvancedQueryViewBase extends Component {
               name="@class"
               label="Class"
               id="class-adv"
-              resources={classes}
+              resources={schema.getQueryable()}
             >
               {resource => (
                 <MenuItem key={resource.name} value={resource.name}>

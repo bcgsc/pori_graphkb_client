@@ -80,7 +80,7 @@ class LoginView extends Component {
       });
       auth.loadToken(response.kbToken);
       handleAuthenticate();
-      history.push('/query');
+      history.back();
     } catch (error) {
       if (error.status === 401) {
         this.setState({ invalid: true });

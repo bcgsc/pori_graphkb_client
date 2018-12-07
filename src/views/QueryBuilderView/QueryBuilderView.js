@@ -29,15 +29,13 @@ const COMMENT_REGEX = /\/\/.*(?!\\n)/g;
 const EXAMPLE_PAYLOAD = `// See help for more info about constructing payloads
 // Example Query: "Find all statements that are implied by a variant on the gene KRAS"
 {
-    "where": {
-        "attr": "inE(implies).vertex",
-            "value": {
-            "type": "neighborhood",
-            "where": [{"attr": "name", "value": "KRAS"}],
-            "class": "Feature",
-            "depth": 3
+    "compoundSyntax": true,
+    "where": [
+        {
+            "attr": "inE(implies).vertex.reference1.name",
+            "value": "KRAS"
         }
-    }
+    ]
 }`;
 
 
@@ -130,7 +128,6 @@ class QueryBuilderViewBase extends Component {
       this.setState({ text: value });
     }
   }
-
 
   render() {
     const { schema } = this.props;

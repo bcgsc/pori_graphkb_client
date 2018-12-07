@@ -71,7 +71,7 @@ class AutoSearchMulti extends Component {
   componentDidMount() {
     const { schema } = this.props;
     const { cls } = this.state;
-    this.setState({ model: schema.initModel({}, cls, EXTRA_FORM_PROPS) || {} });
+    this.setState({ model: schema.initModel({}, cls, { extraProps: EXTRA_FORM_PROPS }) || {} });
   }
 
   /**
@@ -148,7 +148,7 @@ class AutoSearchMulti extends Component {
       this.setState({
         options: result,
         loading: false,
-        model: schema.initModel({}, cls, EXTRA_FORM_PROPS) || {},
+        model: schema.initModel({}, cls, { extraProps: EXTRA_FORM_PROPS }) || {},
       });
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -166,7 +166,7 @@ class AutoSearchMulti extends Component {
     const { model } = this.state;
     this.setState({
       cls: e.target.value,
-      model: schema.initModel(model, e.target.value, EXTRA_FORM_PROPS),
+      model: schema.initModel(model, e.target.value, { extraProps: EXTRA_FORM_PROPS }),
     });
   }
 

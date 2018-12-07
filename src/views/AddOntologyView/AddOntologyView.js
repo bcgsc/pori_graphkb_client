@@ -31,6 +31,9 @@ class AddOntologyViewBase extends Component {
 
   /**
    * Posts new node to the api, then posts all new edges.
+   * @param {Object} form - Statement form data.
+   * @param {Array.<Object>} relationships - Form staged relationships.
+   * @return {boolean} true if submission is successful.
    */
   async handleSubmit(form, relationships) {
     const { schema } = this.props;

@@ -1039,11 +1039,12 @@ class GraphComponent extends Component {
         key={node.getId()}
         node={node}
         detail={detail}
-        labelKey={graphOptions.nodeLabelProp}
+        labelKey={graphOptions.nodePreview ? 'preview' : graphOptions.nodeLabelProp}
         color={graphOptions.getColor(node, 'nodes')}
         handleClick={e => this.handleClick(e, node)}
         expandable={expandable[node.getId()]}
         applyDrag={this.applyDrag}
+        schema={schema}
       />
     ));
 

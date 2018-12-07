@@ -46,7 +46,6 @@ import {
   EditStatementView,
   ErrorView,
   FeedbackView,
-  IconsView,
   LoginView,
   QueryView,
   AddVariantView,
@@ -370,7 +369,6 @@ class App extends Component {
                   onKeyDown={e => e.keyCode === 13 && this.handleDrawerClose()}
                 >
                   <Switch>
-                    <Route path="/icons" component={IconsView} />
                     <Route path="/login" render={loginWithProps} />
                     <Route path="/error" component={ErrorView} />
                     {loggedIn ? <Route path="/" render={() => loggedInContent} /> : <Redirect push to="/login" />}

@@ -68,6 +68,9 @@ const testSchema = new Schema({
       },
     },
   },
+  Biomarker: {
+    name: 'Biomarker',
+  },
   Statement: {
     name: 'Statement',
     properties: {

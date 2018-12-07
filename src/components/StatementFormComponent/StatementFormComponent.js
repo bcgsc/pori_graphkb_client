@@ -216,14 +216,14 @@ class StatementFormComponent extends Component {
                 {
                   name: 'Implies',
                   direction: 'in',
-                  superClass: 'Evidence',
-                  endpoint: '/evidence',
+                  endpoint: '/ontologies',
+                  superClass: 'Biomarker',
                 },
                 {
                   name: 'SupportedBy',
                   direction: 'in',
-                  endpoint: '/ontologies',
-                  superClass: 'Biomarker',
+                  superClass: 'Evidence',
+                  endpoint: '/evidence',
                 },
               ]}
               errorMsg="Statements need at least 1 Implication edge and 1 Support edge"

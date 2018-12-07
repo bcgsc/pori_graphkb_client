@@ -444,7 +444,6 @@ class PositionalVariantParser extends Component {
         />
         <div className="flexbox">
           <div className="variant-parser">
-
             <Paper elevation={4} className="variant-parser-shorthand">
               <ListItem>
                 <ResourceSelectComponent

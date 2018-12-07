@@ -27,28 +27,16 @@ import auth from '../../services/auth';
 const COMMENT_REGEX = /\/\/.*(?!\\n)/g;
 
 const EXAMPLE_PAYLOAD = `// See help for more info about constructing payloads
+// Example Query: "Find all statements that are implied by a variant on the gene KRAS"
 {
+    "compoundSyntax": true,
     "where": [
         {
-            "attr": {
-                "type": "EDGE",
-                "edges": ["Implies"],
-                "direction": "in",
-                "child": {
-                    "attr": "vertex",
-                    "type": "LINK",
-                    "child": {
-                        "attr": "reference1",
-                        "type": "LINK",
-                        "child": "name"
-                    }
-                }
-            },
+            "attr": "inE(implies).vertex.reference1.name",
             "value": "KRAS"
         }
     ]
-}
-// "Find all statements which are implied by a variant on the gene KRAS"`;
+}`;
 
 
 const parseJSON = (string) => {
@@ -141,7 +129,6 @@ class QueryBuilderViewBase extends Component {
     }
   }
 
-
   render() {
     const { schema } = this.props;
     const {
@@ -170,11 +157,12 @@ class QueryBuilderViewBase extends Component {
             </div>
             <Collapse in={specBlurbOpen}>
               <div style={{ padding: '1rem' }}>
-                Build your query string as a JSON object. Use the select to
-                specify your route and whether or not the query is complex.
+                Build your query string as a JSON object. All queries sent
+                using this form will be complex POST queries.
                 <br />
                 <br />
                 Here is the GraphKB specification for the api version in use.
+                Follow complex POST syntax.
               </div>
             </Collapse>
           </div>

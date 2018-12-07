@@ -298,12 +298,12 @@ class RelationshipsForm extends Component {
 
     const isPristine = !Object.keys(model).some(key => model[key] !== initState[key]);
     let endpoint;
+    let superClass;
     let direction = forward ? 'in' : 'out';
     const edgeDetails = edges.find(e => typeof e === 'object' && e.name === model['@class']);
     if (edgeDetails) {
-      if (edgeDetails.endpoint) {
-        ({ endpoint } = edgeDetails);
-      }
+      ({ endpoint, superClass } = edgeDetails);
+
       if (edgeDetails.direction) {
         ({ direction } = edgeDetails);
         direction = direction === 'in' ? 'out' : 'in';
@@ -338,7 +338,7 @@ class RelationshipsForm extends Component {
             >
               {(resource) => {
                 let name = resource;
-                let dir = direction;
+                let dir = direction === 'out';
                 if (typeof resource === 'object') {
                   ({ name, direction: dir } = resource);
                   dir = dir === 'out';
@@ -353,6 +353,7 @@ class RelationshipsForm extends Component {
           </ListItem>
           <ListItem disableGutters>
             <AutoSearchMulti
+              superClass={superClass}
               endpoint={endpoint}
               selected={model[`${direction}.data`]}
               label="Target Record"

@@ -48,10 +48,16 @@ class GraphNodeDisplay extends PureComponent {
       actionsNode,
       detail,
       filter,
+      schema,
     } = this.props;
 
     if (!node) return null;
-    const label = node instanceof GraphNode ? node.getLabel(labelKey) : node.data[labelKey];
+    let label;
+    if (labelKey === 'preview') {
+      label = schema.getPreview(node.data);
+    } else {
+      label = node instanceof GraphNode ? node.getLabel(labelKey) : node.data[labelKey];
+    }
     const faded = (detail && detail['@rid'] !== node.getId())
       || (actionsNode && actionsNode.getId() !== node.getId())
       || (filter && !label.includes(filter.toLowerCase()));
@@ -107,6 +113,7 @@ class GraphNodeDisplay extends PureComponent {
  * @property {Object} actionsNode - Node decorator object.
  * @property {Object} detail - Node currently opened in detail drawer.
  * @property {string} filter - current filter string value.
+ * @property {Object} schema - Knowledgebase Schema object.
  */
 GraphNodeDisplay.propTypes = {
   node: PropTypes.object,
@@ -117,6 +124,7 @@ GraphNodeDisplay.propTypes = {
   actionsNode: PropTypes.object,
   detail: PropTypes.object,
   filter: PropTypes.string,
+  schema: PropTypes.object,
 };
 
 GraphNodeDisplay.defaultProps = {
@@ -128,6 +136,7 @@ GraphNodeDisplay.defaultProps = {
   applyDrag: null,
   detail: null,
   filter: '',
+  schema: null,
 };
 
 

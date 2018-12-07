@@ -75,7 +75,7 @@ class StatementFormComponent extends Component {
     let formIsInvalid = false;
     const errorFields = [];
     const oneOfEachEdge = relationships.some(r => r['@class'] === 'SupportedBy' && !r.deleted)
-      && relationships.some(r => r['@class'] === 'Implies' && !r.deleted);
+      && relationships.some(r => r['@class'] === 'ImpliedBy' && !r.deleted);
     schema.getProperties('Statement').forEach((prop) => {
       if (prop.mandatory) {
         if (prop.type === 'link' && !(form[`${prop.name}.data`] && form[`${prop.name}.data`]['@rid'])) {
@@ -160,7 +160,7 @@ class StatementFormComponent extends Component {
     if (!form) return null;
 
     const oneOfEachEdge = relationships.some(r => r['@class'] === 'SupportedBy' && !r.deleted)
-      && relationships.some(r => r['@class'] === 'Implies' && !r.deleted);
+      && relationships.some(r => r['@class'] === 'ImpliedBy' && !r.deleted);
 
     return (
       <div>

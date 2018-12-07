@@ -214,14 +214,14 @@ class StatementFormComponent extends Component {
               name="relationships"
               edgeTypes={[
                 {
-                  name: 'Implies',
-                  direction: 'in',
+                  name: 'ImpliedBy',
+                  direction: 'out',
                   endpoint: '/ontologies',
                   superClass: 'Biomarker',
                 },
                 {
                   name: 'SupportedBy',
-                  direction: 'in',
+                  direction: 'out',
                   superClass: 'Evidence',
                   endpoint: '/evidence',
                 },

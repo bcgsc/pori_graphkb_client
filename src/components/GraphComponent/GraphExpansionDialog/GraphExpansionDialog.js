@@ -102,6 +102,7 @@ function GraphExpansionDialog(props) {
               || links.find(l => l.getId() === edge['@rid'])) {
               return null;
             }
+            const classLabel = schema.get(edge['@class'])[inRid === node['@rid'] ? 'reverseName' : 'name'];
             return (
               <ListItem
                 key={edge['@rid']}
@@ -111,9 +112,8 @@ function GraphExpansionDialog(props) {
               >
                 <Checkbox checked={!expandExclusions.includes(edge['@rid'])} />
                 <ListItemText>
-                  <Typography variant="body1">{target.name}</Typography>
-                  <Typography>{target.sourceId}</Typography>
-                  <Typography variant="caption">{target.source.name || node.source.name}</Typography>
+                  <Typography variant="body1">{schema.getPreview(target)}</Typography>
+                  <Typography variant="caption">{classLabel}</Typography>
                 </ListItemText>
               </ListItem>
             );

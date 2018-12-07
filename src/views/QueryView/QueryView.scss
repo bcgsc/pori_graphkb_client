@@ -11,7 +11,7 @@
   border-radius: 4px;
   border: 1px solid rgba(0, 0, 0, 0.2);
   padding-bottom: 16px;
-  @media (max-width: $breakpoint-tablet) {
+  @media (max-width: $breakpoint-mobile) {
     left: 16px;
     right: 16px;
     max-width: unset;

@@ -235,6 +235,7 @@ class GraphOptions {
     this.nodesLegend = !!initial.nodesLegend;
     this.linksLegend = !!initial.linksLegend;
     this.chargeMax = initial.chargeMax || CHARGE_MAX;
+    this.nodePreview = initial.nodePreview || false;
   }
 
   /**
@@ -271,6 +272,7 @@ class GraphOptions {
       linksColors: this.linksColors,
       nodesLegend: this.nodesLegend,
       linksLegend: this.linksLegend,
+      nodePreview: this.nodePreview,
     }));
   }
 }

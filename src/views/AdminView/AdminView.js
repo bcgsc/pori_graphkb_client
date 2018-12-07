@@ -69,6 +69,7 @@ class AdminViewBase extends Component {
   /**
    * Sends a POST request to the database, refreshes new user form model, and
    * updates listed users.
+   * @param {Object} payload - New User record payload.
    */
   async addUser(payload) {
     await api.post('/users', payload);
@@ -78,6 +79,7 @@ class AdminViewBase extends Component {
   /**
    * Iterates over selected users and sends a DELETE request to the server for
    * each. Updates users list.
+   * @param {Array.<string>} selected - List of record ID's to delete.
    */
   async deleteUsers(selected) {
     const deletes = [];
@@ -98,6 +100,8 @@ class AdminViewBase extends Component {
   /**
    * Sends a PATCH request to the server, re-initializes new user form model,
    * and updates user list.
+   * @param {string} - User record ID.
+   * @param {Object} payload - User record payload.
    */
   async editUser(rid, payload) {
     await api.patch(`/users/${rid}`, payload);
@@ -105,11 +109,20 @@ class AdminViewBase extends Component {
   }
 
 
+  /**
+   * PATCHes UserGroup record.
+   * @param {string} rid - Usergroup record ID.
+   * @param {Object} payload - UserGroup record payload.
+   */
   async patchUserGroup(rid, payload) {
     await api.patch(`/usergroups/${rid}`, payload);
     this.componentDidMount();
   }
 
+  /**
+   * POSTs new UserGroup record.
+   * @param {Object} payload - User record payload.
+   */
   async postUserGroup(payload) {
     await api.post('/usergroups', payload);
     this.componentDidMount();

@@ -38,6 +38,7 @@ class AddStatementViewBase extends Component {
    * Bundles payload and sends post request to server.
    * @param {Object} form - Statement form data.
    * @param {Array.<Object>} relationships - Form staged relationships.
+   * @return {boolean} true if submission is successful.
    */
   async handleSubmit(form, relationships) {
     const { schema } = this.props;
@@ -69,6 +70,7 @@ class AddStatementViewBase extends Component {
       await api.post(route, payload);
       return true;
     } catch (error) {
+      console.error(error);
       this.setState({ is409: true });
       return false;
     }

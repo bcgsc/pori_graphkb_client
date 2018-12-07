@@ -71,6 +71,7 @@ class EditVariantViewBase extends Component {
    */
   async submitVariant(variant, relationships, originalRelationships) {
     const { schema } = this.props;
+    const { node } = this.state;
     let oRelationships = originalRelationships;
     if (!Array.isArray(originalRelationships)) {
       oRelationships = originalRelationships.relationships.slice();
@@ -99,7 +100,7 @@ class EditVariantViewBase extends Component {
       }
     });
     const payload = util.parsePayload(copy, properties);
-    await api.patch(`${route}/${variant['@rid'].slice(1)}`, payload);
+    await api.patch(`${route}/${node['@rid'].slice(1)}`, payload);
   }
 
   render() {

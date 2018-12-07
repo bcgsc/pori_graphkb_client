@@ -42,6 +42,7 @@ function FormTemplater(props) {
     ignoreRequired,
     disablePadding,
     disablePortal,
+    disableLists,
   } = props;
   const fields = [];
 
@@ -211,7 +212,7 @@ function FormTemplater(props) {
         </ListItem>
       );
     }
-    if (type === 'embeddedset') {
+    if (type === 'embeddedset' && !disableLists) {
       return (
         <ListItem
           component={fieldComponent}
@@ -414,6 +415,7 @@ FormTemplater.defaultProps = {
   ignoreRequired: false,
   disablePadding: false,
   disablePortal: false,
+  disableLists: false,
 };
 
 export default FormTemplater;

@@ -45,7 +45,6 @@ function FormTemplater(props) {
     disableLists,
   } = props;
   const fields = [];
-
   const formatFormField = (property) => {
     if (!property) return null;
     const {
@@ -58,17 +57,19 @@ function FormTemplater(props) {
       max,
     } = property;
     const mandatory = property.mandatory && !ignoreRequired;
+    let field;
+    const wrapperProps = {
+      component: fieldComponent,
+      key: `${appendToKeys}.${name}`,
+      disableGutters: disablePadding,
+    };
     // Radio group component for boolean types.
     if (type === 'boolean') {
       // If boolean property is not present on the model, initialize it as
       // neither true nor false, otherwise use the value of the model.
       const boolValue = model[name] === undefined || model[name] === null ? '' : model[name];
-      return (
-        <ListItem
-          component={fieldComponent}
-          key={`${appendToKeys}.${name}`}
-          disableGutters={disablePadding}
-        >
+      field = (
+        <React.Fragment>
           <FormControl
             component="fieldset"
             required={mandatory}
@@ -93,54 +94,41 @@ function FormTemplater(props) {
               <HelpIcon color="primary" className="form-templater-help-icon radio" />
             </Tooltip>
           )}
-        </ListItem>
+        </React.Fragment>
       );
-    }
-    if (type === 'link') {
+    } else if (type === 'link') {
       // If type is a link to another record, must find that record in the
       // database and store its rid.
 
       // Decide which endpoint to query.
       let endpoint;
+      wrapperProps.className = 'form-templater-autosearch';
       if (linkedClass) {
         endpoint = linkedClass.routeName.slice(1);
-        return (
-          <ListItem
-            className="form-templater-autosearch"
-            component={fieldComponent}
-            key={`${appendToKeys}.${name}`}
-            disableGutters={disablePadding}
-          >
-            <AutoSearchSingle
-              error={errorFields.includes(name)}
-              disabled={disabledFields.includes(name)}
-              value={model[name]}
-              selected={model[`${name}.data`]}
-              onChange={onChange}
-              name={name}
-              label={util.antiCamelCase(name)}
-              limit={30}
-              endpoint={endpoint}
-              required={mandatory}
-              property={!linkedClass ? ['name', 'sourceId'] : undefined}
-              disablePortal={disablePortal}
-              schema={schema}
-              endAdornment={description ? (
-                <Tooltip title={description}>
-                  <HelpIcon color="primary" style={{ cursor: 'default' }} />
-                </Tooltip>
-              ) : undefined}
-            />
-          </ListItem>
+        field = (
+          <AutoSearchSingle
+            error={errorFields.includes(name)}
+            disabled={disabledFields.includes(name)}
+            value={model[name]}
+            selected={model[`${name}.data`]}
+            onChange={onChange}
+            name={name}
+            label={util.antiCamelCase(name)}
+            limit={30}
+            endpoint={endpoint}
+            required={mandatory}
+            property={!linkedClass ? ['name', 'sourceId'] : undefined}
+            disablePortal={disablePortal}
+            schema={schema}
+            endAdornment={description ? (
+              <Tooltip title={description}>
+                <HelpIcon color="primary" style={{ cursor: 'default' }} />
+              </Tooltip>
+            ) : undefined}
+          />
         );
-      }
-      return (
-        <ListItem
-          className="form-templater-autosearch"
-          component={fieldComponent}
-          key={`${appendToKeys}.${name}`}
-          disableGutters={disablePadding}
-        >
+      } else {
+        field = (
           <AutoSearchMulti
             error={errorFields.includes(name)}
             disabled={disabledFields.includes(name)}
@@ -152,10 +140,9 @@ function FormTemplater(props) {
             schema={schema}
             required={mandatory}
           />
-        </ListItem>
-      );
-    }
-    if (type === 'embedded') {
+        );
+      }
+    } else if (type === 'embedded') {
       const properties = schema.getProperties((model[name] || {})['@class']);
       let classSelector = (
         <Typography variant="subtitle1">
@@ -183,12 +170,8 @@ function FormTemplater(props) {
           </ResourceSelectComponent>
         );
       }
-      return (
-        <ListItem
-          component={fieldComponent}
-          key={`${appendToKeys}.${name}`}
-          disableGutters={disablePadding}
-        >
+      field = (
+        <React.Fragment>
           <div className="form-templater-embedded-selector">
             {classSelector}
             {description && (
@@ -209,87 +192,61 @@ function FormTemplater(props) {
             ignoreRequired={ignoreRequired}
             disabled={disabledFields.includes(name)}
           />
-        </ListItem>
+        </React.Fragment>
       );
-    }
-    if (type === 'embeddedset' && !disableLists) {
-      return (
-        <ListItem
-          component={fieldComponent}
-          key={`${appendToKeys}.${name}`}
-          disableGutters={disablePadding}
+    } else if (type === 'embeddedset' && !disableLists) {
+      field = (
+        <EmbeddedSetForm
+          list={model[name]}
+          onChange={onChange}
+          name={name}
+          label={util.antiCamelCase(name)}
+          error={errorFields.includes(name)}
+          disabled={disabledFields.includes(name)}
+        />
+      );
+    } else if (choices) {
+      field = (
+        <ResourceSelectComponent
+          name={name}
+          required={mandatory}
+          onChange={e => onChange(e)}
+          resources={[...choices, '']}
+          label={util.antiCamelCase(name)}
+          value={model[name] || ''}
+          error={errorFields.includes(name)}
+          disabled={disabledFields.includes(name)}
         >
-          <EmbeddedSetForm
-            list={model[name]}
-            onChange={onChange}
-            name={name}
-            label={util.antiCamelCase(name)}
-            error={errorFields.includes(name)}
-            disabled={disabledFields.includes(name)}
-          />
-        </ListItem>
+          {resource => (
+            <MenuItem key={resource} value={resource}>
+              {util.antiCamelCase(resource) || 'None'}
+            </MenuItem>
+          )}
+        </ResourceSelectComponent>
       );
-    }
-    if (choices) {
-      return (
-        <ListItem
-          component={fieldComponent}
-          key={`${appendToKeys}.${name}`}
-          disableGutters={disablePadding}
-        >
-          <ResourceSelectComponent
-            name={name}
-            required={mandatory}
-            onChange={e => onChange(e)}
-            resources={[...choices, '']}
-            label={util.antiCamelCase(name)}
-            value={model[name] || ''}
-            error={errorFields.includes(name)}
-            disabled={disabledFields.includes(name)}
-          >
-            {resource => (
-              <MenuItem key={resource} value={resource}>
-                {util.antiCamelCase(resource) || 'None'}
-              </MenuItem>
-            )}
-          </ResourceSelectComponent>
-        </ListItem>
-      );
-    }
-
-
-    // For text fields, apply some final changes for number inputs.
-    let t;
-    let step;
-    if (type === 'string') {
-      t = 'text';
-    } else if (type === 'integer') {
-      t = 'number';
-      step = 1;
-    } else if (type === 'long') {
-      t = 'number';
-    }
-
-    const invalid = () => {
-      let range = false;
-      if (t === 'number') {
-        if (min) {
-          range = !range && model[name] < min;
-        }
-        if (max) {
-          range = !range && model[name] > max;
-        }
+    } else {
+      // For text fields, apply some final changes for number inputs.
+      const typeCast = { string: 'text', integer: 'number', long: 'number' };
+      const t = typeCast[type];
+      let step;
+      if (type === 'integer' || type === 'long') {
+        step = 1;
       }
-      return errorFields.includes(name) || range;
-    };
 
-    /* eslint-disable react/jsx-no-duplicate-props */
-    return (
-      <ListItem
-        component={fieldComponent}
-        key={`${appendToKeys}.${name}`}
-        disableGutters={disablePadding}
-      >
+      const invalid = () => {
+        let range = false;
+        if (t === 'number') {
+          if (min) {
+            range = !range && model[name] < min;
+          }
+          if (max) {
+            range = !range && model[name] > max;
+          }
+        }
+        return errorFields.includes(name) || range;
+      };
+
+      field = (
         <TextField
           style={{ width: '100%' }}
           label={util.antiCamelCase(name)}
@@ -308,15 +265,18 @@ function FormTemplater(props) {
                 </Tooltip>
               </InputAdornment>
             ),
-
-          }}
-          inputProps={{
             type: t || '',
             step: step || '',
             min: min || undefined,
             max: max || undefined,
           }}
         />
+      );
+    }
+
+    return (
+      <ListItem {...wrapperProps}>
+        {field}
       </ListItem>
     );
   };

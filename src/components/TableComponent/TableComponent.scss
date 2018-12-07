@@ -23,6 +23,15 @@ $flip-duration: 0.15s;
         white-space: nowrap;
         padding: 4px 24px;
       }
+      tr {
+        cursor: pointer;
+        &:hover {
+          background-color: rgba($md-secondary-light, 0.1);
+        }
+      }
+      tr.selected-override {
+        background-color: rgba($md-secondary-light, 0.5);
+      }
     }
     .table-head {
       tr,
@@ -49,11 +58,8 @@ $flip-duration: 0.15s;
         border-bottom: 1px solid #e0e0e0;
       }
     }
-    .table-row-checkbox{
+    .table-row-checkbox {
       width: 96px;
-    }
-    .selected-override {
-      background-color: rgba($md-secondary-light, 0.5);
     }
   }
   .table-drawer-open {
@@ -74,11 +80,6 @@ $flip-duration: 0.15s;
     overflow-x: auto;
     overflow-y: hidden;
     z-index: calc(#{$drawer-z-index} + 1);
-    .table-paginator {
-      display: flex;
-      float: left;
-      z-index: 1;
-    }
     .paginator-spacing {
       display: grid !important;
       grid-template-columns: 0 100px 56px 120px 116px;
@@ -96,48 +97,6 @@ $flip-duration: 0.15s;
     .more-results-btn {
       margin: auto 0;
     }
-  }
-}
-
-.cursor-override {
-  cursor: pointer;
-}
-
-.cursor-override:hover {
-  background-color: rgba($md-secondary-light, 0.1);
-}
-
-.column-dialog {
-  width: 600px;
-}
-
-.spacer-cell {
-  position: sticky;
-  left: 0;
-  right: 0;
-  background-color: $background-light;
-  bottom: 0;
-}
-
-.spacer-cell:before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  border-top: 1px solid rgba(224, 224, 224, 1);
-}
-
-.detail-btn {
-  svg {
-    transition: transform #{$flip-duration};
-  }
-}
-
-.active {
-  svg {
-    transform: rotate(180deg);
   }
 }
 
@@ -168,8 +127,4 @@ $flip-duration: 0.15s;
   z-index: 1;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   white-space: nowrap;
-}
-.filter-icon {
-  margin: auto;
-  margin-right: 0;
 }

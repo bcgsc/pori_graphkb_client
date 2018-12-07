@@ -67,12 +67,12 @@ class EditStatementViewBase extends Component {
    */
   async handleSubmit(form, relationships, originalRelationships) {
     const { schema } = this.props;
-
     await api.patchEdges(originalRelationships || [], relationships, schema);
     const properties = schema.getProperties(form['@class']);
     const route = schema.getRoute(form['@class']);
     const payload = util.parsePayload(form, properties);
     await api.patch(`${route}/${form['@rid'].slice(1)}`, payload);
+    return true;
   }
 
   render() {

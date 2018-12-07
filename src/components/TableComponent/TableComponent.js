@@ -229,11 +229,13 @@ class TableComponent extends Component {
     const { data, hidden, allProps } = this.props;
     const rows = [];
     const rids = fData || Object.keys(data);
-    rows.push(allProps.map(column => util.getEdgeLabel(column)).join('\t'));
+    const tsvColumns = allProps.filter(column => column !== 'preview');
+    rows.push(tsvColumns
+      .map(column => util.getEdgeLabel(column)).join('\t'));
     rids.forEach((rid) => {
       const row = [];
       if (!hidden.includes(rid)) {
-        allProps.forEach((column) => {
+        tsvColumns.forEach((column) => {
           if (column.includes('.')) {
             row.push(util.getTSVRepresentation(data[rid][column.split('.')[0]], column));
           } else {

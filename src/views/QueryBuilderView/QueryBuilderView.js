@@ -27,24 +27,12 @@ import auth from '../../services/auth';
 const COMMENT_REGEX = /\/\/.*(?!\\n)/g;
 
 const EXAMPLE_PAYLOAD = `// See help for more info about constructing payloads
-// Example Query: "Find all statements which are implied by a variant on the gene KRAS"
+// Example Query: "Find all statements that are implied by a variant on the gene KRAS"
 {
+    "compoundSyntax": true,
     "where": [
         {
-            "attr": {
-                "type": "EDGE",
-                "edges": ["Implies"],
-                "direction": "in",
-                "child": {
-                    "attr": "vertex",
-                    "type": "LINK",
-                    "child": {
-                        "attr": "reference1",
-                        "type": "LINK",
-                        "child": "name"
-                    }
-                }
-            },
+            "attr": "inE(implies).vertex.reference1.name",
             "value": "KRAS"
         }
     ]
@@ -140,7 +128,6 @@ class QueryBuilderViewBase extends Component {
       this.setState({ text: value });
     }
   }
-
 
   render() {
     const { schema } = this.props;

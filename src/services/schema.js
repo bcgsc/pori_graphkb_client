@@ -138,7 +138,11 @@ class Schema {
           if (linkedClass && linkedClass.properties) {
             newModel[name] = model[name]
               ? Object.assign({}, model[name])
-              : this.initModel({}, linkedClass.name, [], !!linkedClass.isAbstract);
+              : this.initModel({}, linkedClass.name, {
+                extraProps: [],
+                ignoreClass: !!linkedClass.isAbstract,
+                isQuery,
+              });
           }
           break;
         default:

@@ -74,7 +74,10 @@ class AdvancedQueryViewBase extends Component {
       this.setState({ message: `${name || ''}: ${message}` });
     }
 
-    const form = schema.initModel({}, 'Ontology', config.ONTOLOGY_QUERY_PARAMS);
+    const form = schema.initModel({}, 'Ontology', {
+      extraProps: config.ONTOLOGY_QUERY_PARAMS,
+      isQuery: true,
+    });
 
     this.setState({
       form,
@@ -129,7 +132,10 @@ class AdvancedQueryViewBase extends Component {
   async handleClassChange(e) {
     const { form } = this.state;
     const { schema } = this.props;
-    const newForm = schema.initModel(form, e.target.value || 'Ontology', config.ONTOLOGY_QUERY_PARAMS);
+    const newForm = schema.initModel(form, e.target.value || 'Ontology', {
+      extraProps: config.ONTOLOGY_QUERY_PARAMS,
+      isQuery: true,
+    });
     this.setState({ form: newForm });
   }
 

@@ -12,20 +12,6 @@ $data-view-collapse: 60em;
   overflow: hidden;
 }
 
-.close-drawer-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 1;
-  button {
-    margin: 8px;
-  }
-}
-
-.drawer-box-graph {
-  width: calc(100vw - 1px);
-}
-
 #progress-spinner {
   margin: auto;
   position: absolute;

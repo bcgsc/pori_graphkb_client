@@ -76,13 +76,28 @@ class Schema {
    * Initializes a new instance of given kbClass.
    * @param {Object} model - existing model to keep existing values from.
    * @param {string} kbClass - Knowledge base class key.
-   * @param {Array.<Object>} [extraProps=[]] - Extra props to initialize on model.
-   * @param {boolean} [ignoreClass=false] - flag to omit '@class' prop on new model.
-   * @param {boolean} [stripProps=false] - flag to strip old props from model.
+   * @param {Array.<Object>} [opt.extraProps=[]] - Extra props to initialize on model.
+   * @param {boolean} [opt.ignoreClass=false] - flag to omit '@class' prop on new model.
+   * @param {boolean} [opt.stripProps=false] - flag to strip old props from model.
+   * @param {boolean} [opt.isQuery=false] - flag to retreive queryproperties
+   * from classmodel.
    */
-  initModel(model, kbClass, extraProps = [], ignoreClass = false, stripProps = false) {
+  initModel(model, kbClass, opt = {}) {
+    let {
+      extraProps,
+    } = opt;
+    const {
+      ignoreClass,
+      stripProps,
+      isQuery,
+    } = opt;
+    extraProps = extraProps || [];
+
     const editableProps = kbClass
-      && (this.getProperties(kbClass, extraProps) || {});
+      && (
+        isQuery
+          ? (this.getQueryProperties(kbClass, extraProps) || {})
+          : (this.getProperties(kbClass, extraProps) || {}));
     if (!editableProps) return null;
     extraProps.forEach((prop) => { editableProps[prop.name] = prop; });
     const newModel = stripProps ? {} : Object.assign({}, model);

@@ -19,6 +19,9 @@ import AddIcon from '@material-ui/icons/Add';
 import UserDialog from './UserDialog/UserDialog';
 import UserDeleteDialog from './UserDeleteDialog/UserDeleteDialog';
 
+/**
+ * Component for managing AdminView User form state.
+ */
 class UserForm extends Component {
   constructor(props) {
     super(props);
@@ -53,8 +56,12 @@ class UserForm extends Component {
     window.clearInterval(timerId);
   }
 
-  handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
+  /**
+   * Updates state change from user input.
+   * @param {Event} event - user input event.
+   */
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   /**
@@ -91,11 +98,17 @@ class UserForm extends Component {
     this.setState(update);
   }
 
+  /**
+   * Toggles delete dialog open state.
+   */
   handleDeleteDialog() {
     const { deleteDialogOpen } = this.state;
     this.setState({ deleteDialogOpen: !deleteDialogOpen });
   }
 
+  /**
+   * Calls user deletion handlers.
+   */
   handleUsersDelete() {
     const { deleteUsers } = this.props;
     const { selected } = this.state;
@@ -140,6 +153,9 @@ class UserForm extends Component {
     });
   }
 
+  /**
+   * Clears form state on form exit.
+   */
   handleExited() {
     this.setState({ newUserName: '', newUserGroups: [] });
   }
@@ -189,6 +205,9 @@ class UserForm extends Component {
     }, this.handleUserDialog);
   }
 
+  /**
+   * Validates form and calls add user handler.
+   */
   async handleUserAdd() {
     const { users, addUser } = this.props;
     const { newUserName, newUserGroups } = this.state;
@@ -322,6 +341,14 @@ class UserForm extends Component {
   }
 }
 
+/**
+ * @namespace
+ * @property {Array} users - List of user records.
+ * @property {Array} userGroups - List of usergroup records.
+ * @property {function} deleteUsers - delete users handler.
+ * @property {function} addUser - add user handler.
+ * @property {function} editUser - edit user handler.
+ */
 UserForm.propTypes = {
   users: PropTypes.array,
   userGroups: PropTypes.array,

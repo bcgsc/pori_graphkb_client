@@ -107,7 +107,6 @@ class Schema {
         name,
         type,
         linkedClass,
-        min,
         default: defaultValue,
       } = property;
       switch (type) {
@@ -127,7 +126,7 @@ class Schema {
         case 'integer' || 'long':
           newModel[name] = model[name] !== undefined
             ? model[name]
-            : min || '';
+            : '';
           break;
         case 'boolean':
           newModel[name] = model[name] !== undefined

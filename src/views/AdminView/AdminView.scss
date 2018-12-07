@@ -1,11 +1,11 @@
 @import "../../globals";
 
-h2 {
-  font-weight: 300;
-}
 .admin-wrapper {
   @include view-wrapper;
   grid-template-columns: 100%;
+}
+.admin-headline {
+  @include page-header;
 }
 .admin-section-heading {
   display: flex;
@@ -21,70 +21,6 @@ h2 {
     button {
       margin: auto 8px;
     }
-  }
-}
-.admin-headline {
-  @include page-header;
-}
-.admin-users {
-  max-height: 720px;
-  @include paper;
-  .users-btns {
-    margin: 8px 0;
-    display: flex;
-    flex-direction: row-reverse;
-    button {
-      margin: 0 8px;
-    }
-  }
-}
-.admin-user-groups {
-  @include paper;
-  .editedGroup {
-    h3 {
-      animation: fade-in(0.1s);
-    }
-  }
-  .user-group-body {
-    flex-direction: column;
-    padding-top: 0;
-    .user-group-toolbar {
-      display: flex;
-      flex-direction: row-reverse;
-      height: 68px;
-      button {
-        margin: auto 4px;
-      }
-      h3 {
-        margin: auto auto auto 0;
-        animation: fade-in(0.1s);
-      }
-    }
-  }
-}
-.admin-table-wrapper {
-  overflow: auto;
-  .admin-table {
-    tr:nth-child(odd) {
-      background: #e8e8e8;
-    }
-  }
-}
-
-.permissions-icons {
-  flex-direction: row-reverse;
-}
-.paper {
-  padding: 16px;
-}
-
-.admin-badge {
-  animation: fade-in(0.1s);
-}
-
-div {
-  .avatar-colored {
-    background: $md-primary-color;
   }
 }
 

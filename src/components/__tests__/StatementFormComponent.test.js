@@ -28,8 +28,8 @@ const testSchema = new Schema({
     },
     getPreview: () => 'pass',
   },
-  Implies: {
-    name: 'Implies',
+  ImpliedBy: {
+    name: 'ImpliedBy',
     inherits: ['E'],
     properties: {
       in: {

@@ -83,15 +83,12 @@ class Schema {
    * from classmodel.
    */
   initModel(model, kbClass, opt = {}) {
-    let {
-      extraProps,
-    } = opt;
     const {
       ignoreClass,
       stripProps,
       isQuery,
     } = opt;
-    extraProps = extraProps || [];
+    const extraProps = opt.extraProps || [];
 
     const editableProps = kbClass
       && (

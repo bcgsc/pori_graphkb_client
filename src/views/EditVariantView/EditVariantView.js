@@ -2,7 +2,7 @@
  * @module /views/EditVariantView
  */
 import React, { Component } from 'react';
-import './EditVariantView.css';
+import '../AddVariantView/AddVariantView.css';
 import PropTypes from 'prop-types';
 import { Paper, Typography, Button } from '@material-ui/core';
 import * as jc from 'json-cycle';

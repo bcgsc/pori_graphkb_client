@@ -42,12 +42,15 @@ class AddVariantViewBase extends Component {
 
   /**
    * Submits a POST request to the server with current variant data.
+   * @param {Object} form - completed form object.
+   * @param {Array.<Object>} relationships - List of relationship data.
+   * @return {boolean} true if submission is successful.
    */
-  async submitVariant(variant, relationships) {
+  async submitVariant(form, relationships) {
     const { schema } = this.props;
-    const copy = Object.assign({}, variant);
-    const properties = schema.getProperties(variant['@class']);
-    const route = schema.getRoute(variant['@class']);
+    const copy = Object.assign({}, form);
+    const properties = schema.getProperties(form['@class']);
+    const route = schema.getRoute(form['@class']);
     // Strips away empty break objects and casts number props to numbers.
     Object.keys(copy).forEach((k) => {
       if (typeof copy[k] === 'object' && copy[k]) { // more flexible
@@ -75,6 +78,7 @@ class AddVariantViewBase extends Component {
       return true;
     } catch (error) {
       this.setState({ is409: true });
+      console.error(error);
       return false;
     }
   }

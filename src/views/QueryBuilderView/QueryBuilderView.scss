@@ -19,9 +19,6 @@ $lightened-secondary: rgba($md-secondary-color, 0.2);
 
     .qbv-endpoint {
       display: flex;
-      .qbv-complex-checkbox {
-        padding: 0 8px;
-      }
     }
 
     .qbv-json {
@@ -30,31 +27,6 @@ $lightened-secondary: rgba($md-secondary-color, 0.2);
       width: 100%;
       margin-top: 1rem;
       position: relative;
-
-      .qbv-json-wrapper {
-        position: relative;
-        height: $line-height;
-        display: flex;
-        box-sizing: border-box;
-        border-radius: 2px;
-        &:hover {
-          background: $lightened-secondary;
-        }
-        > span {
-          display: inline-block;
-          margin-top: auto;
-          margin-bottom: auto;
-        }
-        .qbv-json-key {
-          color: $md-primary-color;
-        }
-        .qbv-json-value {
-          color: $md-secondary-color;
-        }
-        .qbv-json-close-brace {
-          display: block;
-        }
-      }
     }
   }
   .qbv-action-btns {

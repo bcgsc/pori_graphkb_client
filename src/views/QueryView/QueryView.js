@@ -27,9 +27,9 @@ const DEFAULT_PARAMS = [
 ].reduce((array, item) => {
   array.push(
     ...[
-      'inE(Implies).vertex.reference1',
-      'inE(Implies).vertex.reference2',
-      'inE(Implies).vertex.type',
+      'inE(ImpliedBy).vertex.reference1',
+      'inE(ImpliedBy).vertex.reference2',
+      'inE(ImpliedBy).vertex.type',
     ].map(str => `${str}.${item}`),
   );
 

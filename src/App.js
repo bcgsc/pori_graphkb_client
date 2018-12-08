@@ -55,6 +55,7 @@ import {
 import logo from './static/logo.png';
 import title from './static/title.png';
 import auth from './services/auth';
+import api from './services/api';
 import history from './services/history';
 import Schema from './services/schema';
 import { KBContext } from './components/KBContext/KBContext';
@@ -94,6 +95,7 @@ class App extends Component {
       loggedIn: (!!auth.getToken() && !auth.isExpired()),
       drawerOpen: false,
       expanded: [],
+      apiVersion: '',
     };
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -103,6 +105,11 @@ class App extends Component {
     this.handleSideBarNavigate = this.handleSideBarNavigate.bind(this);
     this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
     this.handleDrawerClose = this.handleDrawerClose.bind(this);
+  }
+
+  async componentDidMount() {
+    const { api: apiVersion } = await api.get('/version');
+    this.setState({ apiVersion });
   }
 
   /**
@@ -179,6 +186,7 @@ class App extends Component {
       loggedIn,
       drawerOpen,
       expanded,
+      apiVersion,
     } = this.state;
 
     const loginWithProps = () => (
@@ -309,6 +317,7 @@ class App extends Component {
                 <div className="appbar-title">
                   <Link to="/query" onClick={this.handleDrawerClose}>
                     <Typography variant="h6">GraphKB</Typography>
+                    <Typography variant="caption">{apiVersion}</Typography>
                   </Link>
                 </div>
                 <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>

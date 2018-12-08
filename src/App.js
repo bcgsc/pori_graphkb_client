@@ -58,7 +58,6 @@ import auth from './services/auth';
 import history from './services/history';
 import Schema from './services/schema';
 import { KBContext } from './components/KBContext/KBContext';
-import packageJson from '../package.json';
 
 const theme = createMuiTheme({
   direction: 'ltr',
@@ -310,7 +309,6 @@ class App extends Component {
                 <div className="appbar-title">
                   <Link to="/query" onClick={this.handleDrawerClose}>
                     <Typography variant="h6">GraphKB</Typography>
-                    <Typography variant="caption">{packageJson.version}</Typography>
                   </Link>
                 </div>
                 <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>

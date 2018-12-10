@@ -18,13 +18,6 @@ import {
   MenuItem,
   Popover,
   Card,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-  Divider,
-  Collapse,
 } from '@material-ui/core';
 import {
   createMuiTheme,
@@ -34,7 +27,6 @@ import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
 import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { schema as SCHEMA_DEFN } from '@bcgsc/knowledgebase-schema';
 import {
   AddOntologyView,
@@ -52,13 +44,12 @@ import {
   EditVariantView,
   QueryBuilderView,
 } from './views';
-import logo from './static/logo.png';
-import title from './static/title.png';
 import auth from './services/auth';
 import history from './services/history';
 import Schema from './services/schema';
 import { KBContext } from './components/KBContext/KBContext';
 import { SnackbarProvider } from './components/Snackbar/Snackbar';
+import MainNav from './components/MainNav/MainNav';
 
 const theme = createMuiTheme({
   direction: 'ltr',
@@ -94,12 +85,10 @@ class App extends Component {
       anchorEl: null,
       loggedIn: (!!auth.getToken() && !auth.isExpired()),
       drawerOpen: false,
-      expanded: [],
     };
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleLogOut = this.handleLogOut.bind(this);
-    this.handleDrawerExpand = this.handleDrawerExpand.bind(this);
     this.handleAuthenticate = this.handleAuthenticate.bind(this);
     this.handleSideBarNavigate = this.handleSideBarNavigate.bind(this);
     this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
@@ -125,7 +114,7 @@ class App extends Component {
    */
   handleLogOut() {
     auth.clearToken();
-    this.setState({ loggedIn: false, anchorEl: null });
+    this.setState({ loggedIn: false, anchorEl: null, drawerOpen: false });
   }
 
   /**
@@ -134,21 +123,6 @@ class App extends Component {
    */
   handleAuthenticate() {
     this.setState({ loggedIn: true });
-  }
-
-  /**
-   * Expands a list item in the main navigation drawer.
-   * @param {string} item - Item to expand in main navigation drawer.
-   */
-  handleDrawerExpand(item) {
-    return () => {
-      const { expanded } = this.state;
-      if (expanded === item) {
-        this.setState({ expanded: '' });
-      } else {
-        this.setState({ expanded: item, drawerOpen: true });
-      }
-    };
   }
 
   /**
@@ -162,7 +136,7 @@ class App extends Component {
    * Closes main navigation drawer.
    */
   handleDrawerClose() {
-    this.setState({ expanded: '', drawerOpen: false });
+    this.setState({ drawerOpen: false });
   }
 
   /**
@@ -179,7 +153,6 @@ class App extends Component {
       anchorEl,
       loggedIn,
       drawerOpen,
-      expanded,
     } = this.state;
 
     const loginWithProps = () => (
@@ -190,93 +163,30 @@ class App extends Component {
       />
     );
 
-    const drawer = (
-      <Drawer
-        variant="persistent"
-        open
-        anchor="left"
-        classes={{
-          paper: `drawer${drawerOpen ? '' : ' drawer-closed'}`,
-        }}
-      >
-        <div className="banner drawer-logo">
-          <IconButton
-            disabled={!loggedIn}
-            onClick={this.handleDrawerClose}
-          >
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        <Divider />
-        <List className="drawer-links">
-          <Link to="/query">
-            <MenuItem
-              id="link-search"
-              onClick={this.handleDrawerClose}
-            >
-              <ListItemIcon>
-                <SearchIcon />
-              </ListItemIcon>
-              <ListItemText primary="Query" />
-            </MenuItem>
-          </Link>
-          <MenuItem onClick={this.handleDrawerExpand('add')}>
-            <ListItemIcon>
-              <div style={{ display: 'inline-flex' }}>
-                <AddIcon color={expanded === 'add' && drawerOpen ? 'secondary' : undefined} />
-              </div>
-            </ListItemIcon>
-            <ListItemText
-              primaryTypographyProps={{
-                color: expanded === 'add' && drawerOpen ? 'secondary' : undefined,
-              }}
-              primary="Add new record"
-            />
-          </MenuItem>
-          <Collapse in={expanded === 'add' && drawerOpen}>
-            <Link to="/add/ontology">
-              <MenuItem
-                id="link-add"
-                onClick={this.handleDrawerClose}
-              >
-                <ListItemText inset primary="Ontology" />
-              </MenuItem>
-            </Link>
-            <Link to="/add/variant">
-              <MenuItem
-                id="link-variant"
-                onClick={this.handleDrawerClose}
-              >
-                <ListItemText inset primary="Variant" />
-              </MenuItem>
-            </Link>
-            <Link to="/add/statement">
-              <MenuItem
-                id="link-statement"
-                onClick={this.handleDrawerClose}
-              >
-                <ListItemText inset primary="Statement" />
-              </MenuItem>
-            </Link>
-          </Collapse>
-        </List>
-        <div className="drawer-footer">
-          <Divider />
-          <ListItem dense>
-            <ListItemIcon>
-              <img id="bcc-logo" src={logo} alt="" />
-            </ListItemIcon>
-            <img id="bcc-label" src={title} alt="" />
-          </ListItem>
-        </div>
-      </Drawer>
-    );
+
+    const links = [
+      {
+        label: 'Query',
+        route: '/query',
+        icon: <SearchIcon />,
+        MenuProps: { id: 'link-search' },
+      },
+      {
+        label: 'Add new record',
+        icon: <AddIcon />,
+        nestedItems: [
+          { label: 'Ontology', route: '/add/ontology' },
+          { label: 'Variant', route: '/add/variant' },
+          { label: 'Statement', route: '/add/statement' },
+        ],
+      },
+    ];
 
     const loggedInContent = (
       <Switch>
         <Route exact path="/query" component={QueryView} />
         <Route exact path="/query/advanced" component={AdvancedQueryView} />
-        <Route exact path="/query/advanced/builder" component={QueryBuilderView} />
+        <Route path="/query/advanced/builder" component={QueryBuilderView} />
         <Route path="/add/ontology" component={AddOntologyView} />
         <Route path="/add/variant" component={AddVariantView} />
         <Route path="/add/statement" component={AddStatementView} />
@@ -289,6 +199,7 @@ class App extends Component {
         <Redirect from="*" to="/query" />
       </Switch>
     );
+
     return (
       <KBContext.Provider value={{ schema: new Schema(SCHEMA_DEFN), user: auth.getUser() }}>
         <MuiThemeProvider theme={theme}>
@@ -361,7 +272,9 @@ class App extends Component {
                     </div>
                   </div>
                 </AppBar>
-                {loggedIn && drawer}
+                {loggedIn && (
+                  <MainNav open={drawerOpen} handleClose={this.handleDrawerClose} links={links} />
+                )}
                 <section className={`content ${(drawerOpen ? loggedIn : '') && 'drawer-shift'} ${!loggedIn ? 'no-drawer' : ''}`}>
                   <div
                     className="router-outlet"

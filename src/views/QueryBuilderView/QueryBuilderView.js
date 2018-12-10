@@ -32,7 +32,7 @@ const EXAMPLE_PAYLOAD = `// See help for more info about constructing payloads
     "compoundSyntax": true,
     "where": [
         {
-            "attr": "inE(implies).vertex.reference1.name",
+            "attr": "inE(impliedby).vertex.reference1.name",
             "value": "KRAS"
         }
     ]
@@ -194,7 +194,7 @@ class QueryBuilderViewBase extends Component {
               tabIndex={0}
               rules={[
                 { regex: /"[\w\t\-~!@#$`'%^&*()+=|\\{}[\];"<>,. ]+"(?![ \t]*:)/g, color: 'orange', className: '' },
-                { regex: /[^"\w*]([0-9]+)(?!\w*")/g, color: 'blue', className: '' },
+                { regex: /[^"\w*]([0-9]+|true|false)(?!\w*")/g, color: 'blue', className: '' },
                 { regex: /"\w+"[ \t]*:/g, color: 'purple', className: '' },
                 { regex: COMMENT_REGEX, color: 'green', className: '' },
               ]}

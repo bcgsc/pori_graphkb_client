@@ -627,8 +627,8 @@ class GraphComponent extends Component {
    */
   updateColors() {
     ['node', 'link'].forEach((type) => {
-      const { [`${type}s`]: objs } = this.state;
-      const { graphOptions } = this.state;
+      const { snackbar } = this.props;
+      const { [`${type}s`]: objs, graphOptions } = this.state;
       const key = graphOptions[`${type}sColor`];
       const colors = {};
 
@@ -675,10 +675,14 @@ class GraphComponent extends Component {
 
   /**
    * Handles user selections within the actions ring.
+   * @param {function} action - callback function to be called before node is
+   * deselected.
    */
-  withClose(action) {
+  withClose(action = null) {
     return () => {
-      action();
+      if (action) {
+        action();
+      }
       this.setState({ actionsNode: null });
     };
   }
@@ -688,7 +692,7 @@ class GraphComponent extends Component {
    * @param {Event} e - User click event.
    * @param {Object} node - Clicked simulation node.
    */
-  async handleClick(e, node) {
+  async handleClick(node) {
     const { handleClick, handleDetailDrawerOpen } = this.props;
     // Prematurely loads neighbor data.
     await handleClick(node);
@@ -736,6 +740,9 @@ class GraphComponent extends Component {
     });
   }
 
+  /**
+   * Expands currently staged nodes.
+   */
   handleExpand() {
     const { actionsNode } = this.state;
     this.setState({ expansionDialogOpen: false });
@@ -747,7 +754,7 @@ class GraphComponent extends Component {
    * @param {Event} e - User click event.
    * @param {Object} link - Clicked simulation link.
    */
-  handleLinkClick(e, link) {
+  handleLinkClick(link) {
     const { handleDetailDrawerOpen } = this.props;
 
     // Update contents of detail drawer if open.
@@ -946,62 +953,37 @@ class GraphComponent extends Component {
           ({ target } = l);
         }
         return source !== target;
-      }).length === 0
-    );
-
-    const snackbar = (
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        open={!!snackbarMessage}
-        onClose={() => this.setState({ snackbarMessage: null })}
-        autoHideDuration={SNACKBAR_AUTOHIDE_DURATION}
-        message={(
-          <span>
-            {snackbarMessage}
-          </span>
-        )}
-        action={(
-          <Button color="secondary" onClick={() => this.setState({ snackbarMessage: null })}>
-            Ok
-          </Button>
-        )}
-      />
+      })
     );
 
     const actionsRingOptions = actionsNodeIsEdge
       ? [
         {
           name: 'Details',
-          icon: <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />,
           action: this.withClose(() => handleDetailDrawerOpen(actionsNode, true, true)),
           disabled: link => link.getId() === (detail || {})['@rid'],
         },
         {
           name: 'Hide',
-          icon: <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" />,
           action: this.withClose(this.handleLinkHide),
           disabled: false,
         }] : [
         {
           name: 'Details',
-          icon: <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />,
           action: this.withClose(() => handleDetailDrawerOpen(actionsNode, true)),
           disabled: node => node.getId() === (detail || {})['@rid'],
         },
         {
           name: 'Close',
-          icon: <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />,
-          action: this.withClose(() => { }),
+          action: this.withClose(),
         },
         {
           name: 'Expand',
-          icon: <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />,
           action: () => this.handleExpandRequest(actionsNode),
           disabled: node => !expandable[node.getId()],
         },
         {
           name: 'Hide',
-          icon: <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" />,
           action: this.withClose(this.handleNodeHide),
           disabled: () => nodes.length === 1,
         },
@@ -1022,7 +1004,7 @@ class GraphComponent extends Component {
         detail={detail}
         labelKey={graphOptions.linkLabelProp}
         color={graphOptions.getColor(link, 'links')}
-        handleClick={e => this.handleLinkClick(e, link)}
+        handleClick={() => this.handleLinkClick(link)}
         actionsNode={actionsNode}
         marker={`url(#${MARKER_ID})`}
       />));
@@ -1034,7 +1016,7 @@ class GraphComponent extends Component {
         detail={detail}
         labelKey={graphOptions.nodePreview ? 'preview' : graphOptions.nodeLabelProp}
         color={graphOptions.getColor(node, 'nodes')}
-        handleClick={e => this.handleClick(e, node)}
+        handleClick={() => this.handleClick(node)}
         expandable={expandable[node.getId()]}
         applyDrag={this.applyDrag}
         schema={schema}

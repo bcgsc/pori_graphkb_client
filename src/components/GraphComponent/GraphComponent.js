@@ -19,6 +19,7 @@ import GraphActionsNode from './GraphActionsNode/GraphActionsNode';
 import GraphOptionsPanel from './GraphOptionsPanel/GraphOptionsPanel';
 import GraphLinkDisplay from './GraphLinkDisplay/GraphLinkDisplay';
 import GraphNodeDisplay from './GraphNodeDisplay/GraphNodeDisplay';
+import GraphArrowMarker from './GraphArrowMarker/GraphArrowMarker';
 import util from '../../services/util';
 import config from '../../static/config';
 import {
@@ -31,8 +32,6 @@ import GraphExpansionDialog from './GraphExpansionDialog/GraphExpansionDialog';
 import GraphLegend from './GraphLegend/GraphLegend';
 
 const {
-  ARROW_WIDTH,
-  ARROW_LENGTH,
   NODE_INIT_RADIUS,
   ZOOM_BOUNDS,
 } = config.GRAPH_PROPERTIES;
@@ -1072,7 +1071,7 @@ class GraphComponent extends Component {
           handleGraphOptionsChange={this.handleGraphOptionsChange}
         />
 
-        <div className={`toolbar ${detail ? 'transition-left' : ''}`}>
+        <div className="toolbar">
           <Tooltip placement="top" title="Return to table view">
             <IconButton
               color="secondary"
@@ -1116,19 +1115,7 @@ class GraphComponent extends Component {
             }}
           >
             <defs>
-              <marker
-                id={MARKER_ID}
-                markerWidth={ARROW_LENGTH}
-                markerHeight={ARROW_WIDTH}
-                refY={ARROW_WIDTH / 2}
-                orient="auto"
-                markerUnits="strokeWidth"
-              >
-                <path
-                  d={`M0,0,L0,${ARROW_WIDTH} L ${ARROW_LENGTH}, ${ARROW_WIDTH / 2} z`}
-                  fill="#555"
-                />
-              </marker>
+              <GraphArrowMarker />
             </defs>
             <g ref={(node) => { this.zoom = node; }}>
               {linksDisplay}

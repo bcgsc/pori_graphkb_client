@@ -8,8 +8,6 @@ import * as jc from 'json-cycle';
 import { Route, Redirect, Switch } from 'react-router-dom';
 import {
   CircularProgress,
-  Snackbar,
-  Button,
   Typography,
 } from '@material-ui/core';
 import qs from 'qs';
@@ -18,6 +16,7 @@ import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
 import { withKB } from '../../components/KBContext/KBContext';
+import { withSnackbar } from '../../components/Snackbar/Snackbar';
 import api from '../../services/api';
 import config from '../../static/config';
 
@@ -116,7 +115,7 @@ class DataViewBase extends Component {
    * Queries the api and loads results into component state.
    */
   async componentDidMount() {
-    const { history, schema } = this.props;
+    const { history, schema, snackbar } = this.props;
     const queryParams = qs.parse(history.location.search.slice(1));
     let isComplex = false;
 
@@ -144,7 +143,6 @@ class DataViewBase extends Component {
         response = await DataViewBase.makeApiQuery(routeName, queryParams, omitted);
       }
 
-
       const { data, allProps } = this.processData(response);
 
       const {
@@ -158,7 +156,13 @@ class DataViewBase extends Component {
           next: null,
           filteredSearch: null,
         };
-
+      if (Object.keys(data).length === 0) {
+        snackbar.add(
+          'No results found, redirecting...',
+          'Back',
+          () => history.back(),
+        );
+      }
       this.setState({
         filteredSearch: filteredSearch || queryParams,
         moreResults,
@@ -406,7 +410,7 @@ class DataViewBase extends Component {
     }
     const edges = schema.getEdges();
     const cls = filteredSearch && filteredSearch['@class'];
-    const defaultOrders = schema.get(cls || 'Ontology').identifiers;
+    const defaultOrders = (schema.get(cls) || schema.get('V')).identifiers;
     const detailDrawer = (
       <DetailDrawer
         node={detail}
@@ -457,22 +461,7 @@ class DataViewBase extends Component {
     );
     return (
       <div className="data-view">
-        <Snackbar
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          open={Object.keys(data).length === 0}
-          onClose={() => history.push('/query')}
-          autoHideDuration={3000}
-          message={(
-            <span>
-              No results found, redirecting...
-            </span>
-          )}
-          action={(
-            <Button color="secondary" onClick={() => history.push('/query')}>
-              Ok
-            </Button>
-          )}
-        />
+
         {Object.keys(data).length !== 0 && qs.stringify(filteredSearch) && edges
           ? (
             <Switch>
@@ -507,7 +496,7 @@ DataViewBase.propTypes = {
   schema: PropTypes.object.isRequired,
 };
 
-const DataView = withKB(DataViewBase);
+const DataView = withSnackbar(withKB(DataViewBase));
 
 export {
   DataView,

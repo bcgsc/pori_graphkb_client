@@ -58,6 +58,7 @@ import auth from './services/auth';
 import history from './services/history';
 import Schema from './services/schema';
 import { KBContext } from './components/KBContext/KBContext';
+import { SnackbarProvider } from './components/Snackbar/Snackbar';
 
 const theme = createMuiTheme({
   direction: 'ltr',
@@ -291,92 +292,94 @@ class App extends Component {
     return (
       <KBContext.Provider value={{ schema: new Schema(SCHEMA_DEFN), user: auth.getUser() }}>
         <MuiThemeProvider theme={theme}>
-          <Router history={history}>
-            <div className="App">
-              <AppBar
-                position="absolute"
-                className={`banner ${drawerOpen ? 'drawer-shift' : ''}`}
-              >
-                {!drawerOpen && loggedIn && (
-                  <IconButton
-                    color="inherit"
-                    onClick={this.handleDrawerOpen}
-                    className="appbar-btn"
-                  >
-                    <MenuIcon />
-                  </IconButton>
-                )}
-                <div className="appbar-title">
-                  <Link to="/query" onClick={this.handleDrawerClose}>
-                    <Typography variant="h6">GraphKB</Typography>
-                  </Link>
-                </div>
-                <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>
-                  <div>
-                    <Button
-                      classes={{ root: 'user-btn' }}
-                      onClick={this.handleOpen}
-                      size="small"
-                      disabled={!loggedIn}
+          <SnackbarProvider>
+            <Router history={history}>
+              <div className="App">
+                <AppBar
+                  position="absolute"
+                  className={`banner ${drawerOpen ? 'drawer-shift' : ''}`}
+                >
+                  {!drawerOpen && loggedIn && (
+                    <IconButton
+                      color="inherit"
+                      onClick={this.handleDrawerOpen}
                       className="appbar-btn"
                     >
-                      <PersonIcon />
-                      <Typography color="inherit">
-                        {(auth.getUser() && auth.getUser().name) || 'Logged Out'}
-                      </Typography>
-                    </Button>
-                    <Popover
-                      open={!!anchorEl}
-                      anchorEl={anchorEl}
-                      onClose={this.handleClose}
-                      anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                      }}
-                      transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'left',
-                      }}
-                    >
-                      <Card className="user-menu">
-                        <Link to="/feedback">
-                          <MenuItem onClick={this.handleClose}>
-                            Feedback
-                          </MenuItem>
-                        </Link>
-                        {auth.isAdmin() && (
-                          <Link to="/admin">
+                      <MenuIcon />
+                    </IconButton>
+                  )}
+                  <div className="appbar-title">
+                    <Link to="/query" onClick={this.handleDrawerClose}>
+                      <Typography variant="h6">GraphKB</Typography>
+                    </Link>
+                  </div>
+                  <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>
+                    <div>
+                      <Button
+                        classes={{ root: 'user-btn' }}
+                        onClick={this.handleOpen}
+                        size="small"
+                        disabled={!loggedIn}
+                        className="appbar-btn"
+                      >
+                        <PersonIcon />
+                        <Typography color="inherit">
+                          {(auth.getUser() && auth.getUser().name) || 'Logged Out'}
+                        </Typography>
+                      </Button>
+                      <Popover
+                        open={!!anchorEl}
+                        anchorEl={anchorEl}
+                        onClose={this.handleClose}
+                        anchorOrigin={{
+                          vertical: 'bottom',
+                          horizontal: 'left',
+                        }}
+                        transformOrigin={{
+                          vertical: 'top',
+                          horizontal: 'left',
+                        }}
+                      >
+                        <Card className="user-menu">
+                          <Link to="/feedback">
                             <MenuItem onClick={this.handleClose}>
-                              Admin
+                              Feedback
                             </MenuItem>
                           </Link>
-                        )}
-                        <MenuItem onClick={this.handleLogOut}>
-                          Logout
-                        </MenuItem>
-                      </Card>
-                    </Popover>
+                          {auth.isAdmin() && (
+                            <Link to="/admin">
+                              <MenuItem onClick={this.handleClose}>
+                                Admin
+                              </MenuItem>
+                            </Link>
+                          )}
+                          <MenuItem onClick={this.handleLogOut}>
+                            Logout
+                          </MenuItem>
+                        </Card>
+                      </Popover>
+                    </div>
                   </div>
-                </div>
-              </AppBar>
-              {loggedIn && drawer}
-              <section className={`content ${(drawerOpen ? loggedIn : '') && 'drawer-shift'} ${!loggedIn ? 'no-drawer' : ''}`}>
-                <div
-                  className="router-outlet"
-                  role="button"
-                  tabIndex={0}
-                  onClick={this.handleDrawerClose}
-                  onKeyDown={e => e.keyCode === 13 && this.handleDrawerClose()}
-                >
-                  <Switch>
-                    <Route path="/login" render={loginWithProps} />
-                    <Route path="/error" component={ErrorView} />
-                    {loggedIn ? <Route path="/" render={() => loggedInContent} /> : <Redirect push to="/login" />}
-                  </Switch>
-                </div>
-              </section>
-            </div>
-          </Router>
+                </AppBar>
+                {loggedIn && drawer}
+                <section className={`content ${(drawerOpen ? loggedIn : '') && 'drawer-shift'} ${!loggedIn ? 'no-drawer' : ''}`}>
+                  <div
+                    className="router-outlet"
+                    role="button"
+                    tabIndex={0}
+                    onClick={this.handleDrawerClose}
+                    onKeyDown={e => e.keyCode === 13 && this.handleDrawerClose()}
+                  >
+                    <Switch>
+                      <Route path="/login" render={loginWithProps} />
+                      <Route path="/error" component={ErrorView} />
+                      {loggedIn ? <Route path="/" render={() => loggedInContent} /> : <Redirect push to="/login" />}
+                    </Switch>
+                  </div>
+                </section>
+              </div>
+            </Router>
+          </SnackbarProvider>
         </MuiThemeProvider>
       </KBContext.Provider>
     );

@@ -9,8 +9,6 @@ import * as d3 from 'd3';
 import {
   IconButton,
   Tooltip,
-  Snackbar,
-  Button,
 } from '@material-ui/core';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -20,6 +18,9 @@ import GraphOptionsPanel from './GraphOptionsPanel/GraphOptionsPanel';
 import GraphLinkDisplay from './GraphLinkDisplay/GraphLinkDisplay';
 import GraphNodeDisplay from './GraphNodeDisplay/GraphNodeDisplay';
 import GraphArrowMarker from './GraphArrowMarker/GraphArrowMarker';
+import GraphExpansionDialog from './GraphExpansionDialog/GraphExpansionDialog';
+import GraphLegend from './GraphLegend/GraphLegend';
+import { withSnackbar } from '../Snackbar/Snackbar';
 import util from '../../services/util';
 import config from '../../static/config';
 import {
@@ -28,8 +29,7 @@ import {
   GraphNode,
   GraphLink,
 } from './kbgraph';
-import GraphExpansionDialog from './GraphExpansionDialog/GraphExpansionDialog';
-import GraphLegend from './GraphLegend/GraphLegend';
+
 
 const {
   NODE_INIT_RADIUS,
@@ -40,7 +40,6 @@ const { GRAPH_UNIQUE_LIMIT } = config.NOTIFICATIONS;
 
 // Component specific constants.
 const AUTO_SPACE_COEFFICIENT = 2;
-const SNACKBAR_AUTOHIDE_DURATION = 6000;
 const MARKER_ID = 'endArrow';
 const DIALOG_FADEOUT_TIME = 150;
 const HEAVILY_CONNECTED = 10;
@@ -657,13 +656,12 @@ class GraphComponent extends Component {
       const notDefined = key && !props[key];
 
       if (tooManyUniques || noUniques || notDefined) {
-        let snackbarMessage = '';
         if (tooManyUniques) {
-          snackbarMessage = `${GRAPH_UNIQUE_LIMIT} (${graphOptions[`${type}sColor`]})`;
+          snackbar.add(`${GRAPH_UNIQUE_LIMIT} (${graphOptions[`${type}sColor`]})`);
         }
 
         graphOptions[`${type}sColor`] = '';
-        this.setState({ graphOptions, snackbarMessage }, () => this.updateColors());
+        this.setState({ graphOptions }, () => this.updateColors());
       } else {
         const pallette = util.getPallette(Object.keys(colors).length, `${type}s`);
         Object.keys(colors).forEach((color, i) => { colors[color] = pallette[i]; });
@@ -914,8 +912,6 @@ class GraphComponent extends Component {
       actionsNode,
       expandable,
       graphOptions,
-      simulation,
-      snackbarMessage,
       refreshable,
       actionsNodeIsEdge,
       graphOptionsOpen,
@@ -933,11 +929,10 @@ class GraphComponent extends Component {
       schema,
     } = this.props;
 
-    if (!simulation) return null;
 
     const linkLegendDisabled = (
       links.length === 0
-      || links.filter((l) => {
+      || !links.some((l) => {
         let source;
         let target;
         if (typeof l.source === 'object') {
@@ -1016,7 +1011,6 @@ class GraphComponent extends Component {
       <GraphActionsNode
         actionsNode={actionsNode}
         options={actionsRingOptions}
-        withClose={this.withClose}
         edge={actionsNodeIsEdge}
       />
     );
@@ -1049,7 +1043,6 @@ class GraphComponent extends Component {
 
     return (
       <div className="graph-wrapper">
-        {snackbar}
         <GraphExpansionDialog
           schema={schema}
           node={expandNode}
@@ -1152,6 +1145,7 @@ class GraphComponent extends Component {
  * @property {string} localStorageKey - key to identify graph session data with in
  * localStorage.
  * @property {Object} schema - KnowledgeBase Schema.
+ * @property {Object} snackbar - App snackbar context value.
  */
 GraphComponent.propTypes = {
   handleClick: PropTypes.func,
@@ -1166,6 +1160,7 @@ GraphComponent.propTypes = {
   displayed: PropTypes.array,
   localStorageKey: PropTypes.string,
   schema: PropTypes.object.isRequired,
+  snackbar: PropTypes.object.isRequired,
 };
 
 GraphComponent.defaultProps = {
@@ -1177,4 +1172,4 @@ GraphComponent.defaultProps = {
   localStorageKey: '',
 };
 
-export default GraphComponent;
+export default withSnackbar(GraphComponent);

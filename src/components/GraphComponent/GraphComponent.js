@@ -5,7 +5,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './GraphComponent.css';
-import * as d3 from 'd3';
+import * as d3Zoom from 'd3-zoom';
+import * as d3Select from 'd3-selection';
+import * as d3Force from 'd3-force';
 import {
   IconButton,
   Tooltip,
@@ -58,7 +60,7 @@ class GraphComponent extends Component {
       expandable: {},
       expandedEdgeTypes: [],
       actionsNode: null,
-      simulation: d3.forceSimulation(),
+      simulation: d3Force.forceSimulation(),
       svg: undefined,
       width: 0,
       height: 0,
@@ -258,7 +260,7 @@ class GraphComponent extends Component {
     } = this.state;
     const { localStorageKey } = this.props;
     // remove all event listeners
-    svg.call(d3.zoom()
+    svg.call(d3Zoom.zoom()
       .on('zoom', null))
       .on('dblclick.zoom', null);
     simulation.on('tick', null);
@@ -272,22 +274,22 @@ class GraphComponent extends Component {
    */
   applyDrag(node) {
     const { simulation } = this.state;
-    d3.event.sourceEvent.stopPropagation();
+    d3Select.event.sourceEvent.stopPropagation();
 
-    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+    if (!d3Select.event.active) simulation.alphaTarget(0.3).restart();
 
     const dragged = () => {
-      node.fx = d3.event.x; // eslint-disable-line no-param-reassign
-      node.fy = d3.event.y; // eslint-disable-line no-param-reassign
+      node.fx = d3Select.event.x; // eslint-disable-line no-param-reassign
+      node.fy = d3Select.event.y; // eslint-disable-line no-param-reassign
     };
 
     const ended = () => {
-      if (!d3.event.active) simulation.alphaTarget(0);
+      if (!d3Select.event.active) simulation.alphaTarget(0);
       node.fx = null; // eslint-disable-line no-param-reassign
       node.fy = null; // eslint-disable-line no-param-reassign
     };
 
-    d3.event
+    d3Select.event
       .on('drag', dragged)
       .on('end', ended);
   }
@@ -307,7 +309,7 @@ class GraphComponent extends Component {
 
     simulation.force(
       'links',
-      d3
+      d3Force
         .forceLink(links)
         .strength(graphOptions.linkStrength)
         .id(d => d.getId()),
@@ -337,10 +339,10 @@ class GraphComponent extends Component {
     } = this.state;
     simulation.force(
       'link',
-      d3.forceLink().id(d => d.getId()),
+      d3Force.forceLink().id(d => d.getId()),
     ).force(
       'collide',
-      d3.forceCollide((d) => {
+      d3Force.forceCollide((d) => {
         if (graphOptions.autoCollisionRadius) {
           let obj = d.data;
           let key = graphOptions.nodeLabelProp;
@@ -355,27 +357,27 @@ class GraphComponent extends Component {
       }),
     ).force(
       'charge',
-      d3.forceManyBody()
+      d3Force.forceManyBody()
         .strength(-graphOptions.chargeStrength)
         .distanceMax(graphOptions.chargeMax),
     ).force(
       'center',
-      d3.forceCenter(
+      d3Force.forceCenter(
         width / 2,
         height / 2,
       ),
     );
 
-    const container = d3.select(this.zoom);
-    const svg = d3.select(this.graph);
+    const container = d3Select.select(this.zoom);
+    const svg = d3Select.select(this.graph);
 
     svg
       .attr('width', width)
       .attr('height', height)
-      .call(d3.zoom()
+      .call(d3Zoom.zoom()
         .scaleExtent(ZOOM_BOUNDS)
         .on('zoom', () => {
-          const { transform } = d3.event;
+          const { transform } = d3Select.event;
           container.attr(
             'transform',
             `translate(${transform.x},${transform.y})scale(${transform.k})`,

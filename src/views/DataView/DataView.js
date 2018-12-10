@@ -45,6 +45,12 @@ class DataViewBase extends Component {
     return jc.retrocycle(response).result;
   }
 
+  /**
+   * Makes API POST call to specified endpoint, with specified payload.
+   * @param {string} route - API endpoint.
+   * @param {Object} payload - Query payload object.
+   * @param {Array.<string>} omitted - List of parameters to strip from API call.
+   */
   static async makeComplexApiQuery(route, payload, omitted = []) {
     const response = await api.post(route, omit(payload, omitted));
     return jc.retrocycle(response).result;

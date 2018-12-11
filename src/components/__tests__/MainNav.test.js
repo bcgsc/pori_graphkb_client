@@ -32,10 +32,10 @@ describe('<MainNav />', () => {
   ];
 
   it('correctly renders links', () => {
-    const handleClose = jest.fn();
+    const onChange = jest.fn();
     wrapper = mount(
       <Router>
-        <MainNav open links={testLinks} handleClose={handleClose} />
+        <MainNav open links={testLinks} onChange={() => onChange} />
       </Router>,
     );
     expect(wrapper.find('#icon')).to.have.lengthOf(1);
@@ -44,6 +44,6 @@ describe('<MainNav />', () => {
     wrapper.find('#test-expand').first().simulate('click');
     wrapper.find('#test-expand').first().simulate('click');
     wrapper.find('.drawer-logo button').first().simulate('click');
-    expect(handleClose.mock.calls.length).to.eq(1);
+    expect(onChange.mock.calls.length).to.eq(1);
   });
 });

@@ -273,7 +273,7 @@ class App extends Component {
                     role="button"
                     tabIndex={0}
                     onClick={this.handleNavBar(false)}
-                    onKeyDown={e => e.keyCode === 13 && this.handleNavBar(false)}
+                    onKeyDown={e => e.keyCode === 13 && this.handleNavBar(false)()}
                   >
                     <Switch>
                       <Route path="/login" render={loginWithProps} />

@@ -27,15 +27,18 @@ class MainNav extends Component {
     this.renderLink = this.renderLink.bind(this);
   }
 
-
   /**
    * Expands a list item in the main navigation drawer.
    * @param {string} key - Item key to expand in main navigation drawer.
    */
   handleExpand(key) {
+    const { open, onChange } = this.props;
     return () => {
       const { expanded } = this.state;
       this.setState({ expanded: expanded === key ? '' : key });
+      if (!open) {
+        onChange(true)();
+      }
     };
   }
 
@@ -43,8 +46,8 @@ class MainNav extends Component {
    * Handles closing of drawer.
    */
   handleClose() {
-    const { handleClose } = this.props;
-    handleClose();
+    const { onChange } = this.props;
+    onChange(false)();
     this.setState({ expanded: '' });
   }
 
@@ -143,11 +146,13 @@ MainNav.propTypes = {
     MenuProps: PropTypes.object,
     nestedItems: PropTypes.array,
   })),
+  onChange: PropTypes.func,
 };
 
 MainNav.defaultProps = {
   open: false,
   links: [],
+  onChange: () => { },
 };
 
 export default MainNav;

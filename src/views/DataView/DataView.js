@@ -409,6 +409,7 @@ class DataViewBase extends Component {
     const {
       schema,
       history,
+      snackbar,
     } = this.props;
 
     if (!data) {
@@ -442,6 +443,7 @@ class DataViewBase extends Component {
         localStorageKey={qs.stringify(filteredSearch)}
         handleNewColumns={this.handleNewColumns}
         schema={schema}
+        snackbar={snackbar}
       />
     );
     const TableWithProps = () => (
@@ -496,10 +498,12 @@ class DataViewBase extends Component {
  * @namespace
  * @property {Object} history - Application routing history object.
  * @property {Object} schema - Knowledgebase schema object.
+ * @property {Object} snackbar - App snackbar context.
  */
 DataViewBase.propTypes = {
   history: PropTypes.object.isRequired,
   schema: PropTypes.object.isRequired,
+  snackbar: PropTypes.object.isRequired,
 };
 
 const DataView = withSnackbar(withKB(DataViewBase));

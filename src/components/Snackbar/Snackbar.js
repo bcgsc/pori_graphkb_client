@@ -51,7 +51,7 @@ class SnackbarProvider extends Component {
 
   clear() {
     this.queue = [];
-    this.close();
+    this.handleClose();
   }
 
   grabFromQueue() {

@@ -1,5 +1,5 @@
-/* eslint-disable */
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   Link,
 } from 'react-router-dom';
@@ -36,7 +36,7 @@ class MainNav extends Component {
     return () => {
       const { expanded } = this.state;
       this.setState({ expanded: expanded === key ? '' : key });
-    }
+    };
   }
 
   /**
@@ -88,7 +88,7 @@ class MainNav extends Component {
       );
     }
     return (
-      <Link to={route}>
+      <Link to={route} key={label.toLowerCase()}>
         <MenuItem {...MenuProps} onClick={this.handleClose}>
           {icon && <ListItemIcon>{icon}</ListItemIcon>}
           <ListItemText inset={nested} primary={label} />
@@ -133,5 +133,21 @@ class MainNav extends Component {
     );
   }
 }
+
+MainNav.propTypes = {
+  open: PropTypes.bool,
+  links: PropTypes.arrayOf(PropTypes.shape({
+    label: PropTypes.string,
+    route: PropTypes.string,
+    icon: PropTypes.node,
+    MenuProps: PropTypes.object,
+    nestedItems: PropTypes.array,
+  })),
+};
+
+MainNav.defaultProps = {
+  open: false,
+  links: [],
+};
 
 export default MainNav;

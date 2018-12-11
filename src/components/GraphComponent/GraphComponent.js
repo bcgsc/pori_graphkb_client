@@ -22,7 +22,6 @@ import GraphNodeDisplay from './GraphNodeDisplay/GraphNodeDisplay';
 import GraphArrowMarker from './GraphArrowMarker/GraphArrowMarker';
 import GraphExpansionDialog from './GraphExpansionDialog/GraphExpansionDialog';
 import GraphLegend from './GraphLegend/GraphLegend';
-import { withSnackbar } from '../Snackbar/Snackbar';
 import util from '../../services/util';
 import config from '../../static/config';
 import {
@@ -1156,4 +1155,4 @@ GraphComponent.defaultProps = {
   localStorageKey: '',
 };
 
-export default withSnackbar(GraphComponent);
+export default GraphComponent;

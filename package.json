@@ -100,7 +100,7 @@
     "collectCoverage": true,
     "coverageDirectory": "coverage",
     "collectCoverageFrom": [
-      "src/components/**/!(KBContext).{js,jsx,mjs}",
+      "src/components/**/*.{js,jsx,mjs}",
       "src/services/**/!(api).{js,jsx,mjs}",
       "src/models/**/*.{js,jsx,mjs}"
     ],

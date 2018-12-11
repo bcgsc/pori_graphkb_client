@@ -91,8 +91,7 @@ class App extends Component {
     this.handleLogOut = this.handleLogOut.bind(this);
     this.handleAuthenticate = this.handleAuthenticate.bind(this);
     this.handleSideBarNavigate = this.handleSideBarNavigate.bind(this);
-    this.handleDrawerOpen = this.handleDrawerOpen.bind(this);
-    this.handleDrawerClose = this.handleDrawerClose.bind(this);
+    this.handleNavBar = this.handleNavBar.bind(this);
   }
 
   /**
@@ -126,17 +125,10 @@ class App extends Component {
   }
 
   /**
-   * Opens the main navigation drawer.
+   * Sets main navigation drawer open state.
    */
-  handleDrawerOpen() {
-    this.setState({ drawerOpen: true });
-  }
-
-  /**
-   * Closes main navigation drawer.
-   */
-  handleDrawerClose() {
-    this.setState({ drawerOpen: false });
+  handleNavBar(state) {
+    return () => this.setState({ drawerOpen: state });
   }
 
   /**
@@ -213,14 +205,14 @@ class App extends Component {
                   {!drawerOpen && loggedIn && (
                     <IconButton
                       color="inherit"
-                      onClick={this.handleDrawerOpen}
+                      onClick={this.handleNavBar(true)}
                       className="appbar-btn"
                     >
                       <MenuIcon />
                     </IconButton>
                   )}
                   <div className="appbar-title">
-                    <Link to="/query" onClick={this.handleDrawerClose}>
+                    <Link to="/query" onClick={this.handleNavBar(false)}>
                       <Typography variant="h6">GraphKB</Typography>
                     </Link>
                   </div>
@@ -273,20 +265,22 @@ class App extends Component {
                   </div>
                 </AppBar>
                 {loggedIn && (
-                  <MainNav open={drawerOpen} handleClose={this.handleDrawerClose} links={links} />
+                  <MainNav open={drawerOpen} onChange={this.handleNavBar} links={links} />
                 )}
                 <section className={`content ${(drawerOpen ? loggedIn : '') && 'drawer-shift'} ${!loggedIn ? 'no-drawer' : ''}`}>
                   <div
                     className="router-outlet"
                     role="button"
                     tabIndex={0}
-                    onClick={this.handleDrawerClose}
-                    onKeyDown={e => e.keyCode === 13 && this.handleDrawerClose()}
+                    onClick={this.handleNavBar(false)}
+                    onKeyDown={e => e.keyCode === 13 && this.handleNavBar(false)}
                   >
                     <Switch>
                       <Route path="/login" render={loginWithProps} />
                       <Route path="/error" component={ErrorView} />
-                      {loggedIn ? <Route path="/" render={() => loggedInContent} /> : <Redirect push to="/login" />}
+                      {loggedIn
+                        ? <Route path="/" render={() => loggedInContent} />
+                        : <Redirect push to="/login" />}
                     </Switch>
                   </div>
                 </section>

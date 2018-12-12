@@ -182,7 +182,7 @@ class EmbeddedSetForm extends Component {
  */
 EmbeddedSetForm.propTypes = {
   onChange: PropTypes.func.isRequired,
-  list: PropTypes.array,
+  list: PropTypes.arrayOf(PropTypes.string),
   label: PropTypes.string,
   name: PropTypes.string,
   error: PropTypes.bool,

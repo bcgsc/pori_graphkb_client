@@ -137,6 +137,12 @@ class MainNav extends Component {
   }
 }
 
+/**
+ * @namespace
+ * @property {boolean} open - drawer open state.
+ * @property {Array} links - List of app links to display in sidebar.
+ * @property {function} onChange - handler for siderbar state change.
+ */
 MainNav.propTypes = {
   open: PropTypes.bool,
   links: PropTypes.arrayOf(PropTypes.shape({

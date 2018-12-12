@@ -414,7 +414,7 @@ AutoSearchMulti.propTypes = {
   onChange: PropTypes.func,
   limit: PropTypes.number,
   endpoint: PropTypes.string,
-  property: PropTypes.array,
+  property: PropTypes.arrayOf(PropTypes.string),
   placeholder: PropTypes.string,
   label: PropTypes.string,
   required: PropTypes.bool,

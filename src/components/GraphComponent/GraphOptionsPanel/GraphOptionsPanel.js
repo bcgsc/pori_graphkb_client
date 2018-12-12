@@ -296,7 +296,7 @@ export default class GraphOptionsPanel extends Component {
 
 /**
  * @namespace
- * @property {Object} graphOptions - Graph options object.
+ * @property {GraphOptions} graphOptions - Graph options object.
  * @property {PropsMap} propsMap - Graph coloringpropsmap.
  * @property {boolean} graphOptionsOpen - dialog open flag.
  * @property {boolean} linkLegendDisabled - link legend disabled flag.

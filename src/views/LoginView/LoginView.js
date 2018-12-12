@@ -1,7 +1,7 @@
 /**
  * @module /views/LoginView
  */
-
+/* eslint-disable */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './LoginView.css';
@@ -25,128 +25,41 @@ class LoginView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
-      password: '',
-      invalid: false,
-      timedout: false,
+      initialized: false,
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   /**
    * Checks if there is a timedout flag in passed state to notify user, then
    * updates parent component if user is logged out with handleLogOut.
    */
-  componentDidMount() {
-    const { handleLogOut } = this.props;
-    const { timedout } = history.location.state || {};
-    if (!auth.getToken() || auth.isExpired()) {
-      handleLogOut();
-    }
-    this.setState({ timedout: !!timedout });
-  }
-
-  /**
-   * Updates component state based on user input.
-   * @param {Event} e - Change event triggered from user inputs.
-   */
-  handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value, invalid: false });
-  }
-
-  /**
-   * Closes snackbar.
-   */
-  handleClose() {
-    this.setState({ timedout: false });
-  }
-
-  /**
-   * Makes authentication request to api.
-   * @param {Event} e - Submit event.
-   */
-  async handleSubmit(e) {
-    e.stopPropagation();
-    e.preventDefault();
-
-    const { username, password } = this.state;
+  async componentDidMount() {
     const { handleAuthenticate } = this.props;
+    if (auth.getToken() && auth.isExpired()) {
+      history.push('/query');
+    } else {
+      const token = await auth.login();
+      const response = await api.post('/token', token);
 
-    try {
-      const response = await api.post('/token', {
-        username,
-        password,
-      });
-      auth.loadToken(response.kbToken);
-      handleAuthenticate();
-      history.back();
-    } catch (error) {
-      if (error.status === 401) {
-        this.setState({ invalid: true });
+      if (response) {
+        handleAuthenticate();
+        if (auth.isLoggedIn()) {
+          history.push('/query');
+        } else {
+          this.setState({ initialized: true });
+        }
       }
     }
   }
 
-  /**
-   * Renders the component.
-   */
-  render() {
-    const {
-      username,
-      password,
-      invalid,
-      timedout,
-    } = this.state;
 
-    return (
-      <div className="login-wrapper">
-        <Snackbar
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          open={timedout}
-          onClose={this.handleClose}
-          autoHideDuration={3000}
-          message={(
-            <span>
-              Session timed out.
-            </span>
-          )}
-        />
-        <form className="login-form" onSubmit={this.handleSubmit}>
-          <TextField
-            className="login-input"
-            name="username"
-            value={username}
-            onChange={this.handleChange}
-            type="text"
-            label="Username"
-            required
-            error={invalid}
-          />
-          <TextField
-            className="login-input"
-            name="password"
-            value={password}
-            onChange={this.handleChange}
-            type="password"
-            label="Password"
-            required
-            error={invalid}
-          />
-          <Button type="submit" color="primary" variant="contained">
-            Login
-          </Button>
-          <Typography variant="caption" id="caption">
-            Log in with your BC GSC web credentials
-          </Typography>
-          {invalid && (
-            <Typography variant="subtitle1" id="invalid-meessage">
-              Invalid Username or Password
-            </Typography>
-          )}
-        </form>
-      </div>
+  render() {
+    const { initialized } = this.state;
+    return initialized && (
+      <Typography>
+        You do not have access to the GraphKB Project. Create a JIRA Ticket
+        for systems in order to be added to GraphKB.
+      </Typography>
     );
   }
 }

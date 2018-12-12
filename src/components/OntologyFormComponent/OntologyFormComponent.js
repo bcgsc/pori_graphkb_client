@@ -323,6 +323,8 @@ class OntologyFormComponent extends Component {
  * submitted.
  * @property {function} handleDelete - Function triggered when ontology is
  * deleted.
+ * @property {Array.<Object>} classes - list of possible classes for form.
+ * @property {boolean} is409 - flag for whether previous submission was a 409.
  */
 OntologyFormComponent.propTypes = {
   node: PropTypes.object,

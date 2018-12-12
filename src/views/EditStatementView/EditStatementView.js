@@ -104,7 +104,7 @@ class EditStatementViewBase extends Component {
           schema={schema}
           node={node}
           onSubmit={this.handleSubmit}
-          handleFinish={this.handleFinish}
+          onFinish={this.handleFinish}
           onDelete={this.handleDelete}
         />
       </div>

@@ -98,7 +98,7 @@ class AddStatementViewBase extends Component {
         <StatementFormComponent
           schema={schema}
           onSubmit={this.handleSubmit}
-          handleFinish={this.handleFinish}
+          onDelete={this.handleFinish}
           is409={is409}
         />
       </div>

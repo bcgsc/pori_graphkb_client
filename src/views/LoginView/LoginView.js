@@ -152,7 +152,7 @@ class LoginView extends Component {
 
 /**
  * @namespace
- * @property {object} history -  Application history object.
+ * @property {Object} history -  Application history object.
  * @property {function} handleLogOut - Updates parent state on unauthorized user.
  * @property {function} handleAuthenticate - Updates parent state on successful login.
  */

@@ -16,7 +16,7 @@ import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
 import { withKB } from '../../components/KBContext/KBContext';
-import { withSnackbar } from '../../components/Snackbar/Snackbar';
+import { SnackbarContext } from '../../components/Snackbar/Snackbar';
 import api from '../../services/api';
 import config from '../../static/config';
 
@@ -121,7 +121,8 @@ class DataViewBase extends Component {
    * Queries the api and loads results into component state.
    */
   async componentDidMount() {
-    const { history, schema, snackbar } = this.props;
+    const { history, schema } = this.props;
+    const snackbar = this.context;
     const queryParams = qs.parse(history.location.search.slice(1));
     let isComplex = false;
 
@@ -409,8 +410,9 @@ class DataViewBase extends Component {
     const {
       schema,
       history,
-      snackbar,
     } = this.props;
+
+    const snackbar = this.context;
 
     if (!data) {
       return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
@@ -498,15 +500,14 @@ class DataViewBase extends Component {
  * @namespace
  * @property {Object} history - Application routing history object.
  * @property {Object} schema - Knowledgebase schema object.
- * @property {Object} snackbar - App snackbar context.
  */
 DataViewBase.propTypes = {
   history: PropTypes.object.isRequired,
   schema: PropTypes.object.isRequired,
-  snackbar: PropTypes.object.isRequired,
 };
+DataViewBase.contextType = SnackbarContext;
 
-const DataView = withSnackbar(withKB(DataViewBase));
+const DataView = withKB(DataViewBase);
 
 export {
   DataView,

@@ -2,14 +2,40 @@
  * Handles token storage and authentication.
  * @module /services/auth
  */
-
+import * as Keycloak from 'keycloak-js';
 import * as jwt from 'jsonwebtoken';
 import config from '../static/config';
 
 const { KEYS } = config;
 const { KB_TOKEN } = KEYS;
 
+/*eslint-disable*/
+const keycloak = Keycloak({
+  realm: 'TestKB',
+  clientId: 'GraphKB',
+  url: 'http://ga4ghdev01.bcgsc.ca:8080/auth',
+});
+
+
+const GRAPHKB_ROLE = 'GraphKB';
+
 export default {
+  GRAPHKB_ROLE,
+  logout: async () => {
+    try {
+      await keycloak.init();
+      localStorage.removeItem(KB_TOKEN);
+      const resp = await keycloak.logout();
+      return resp;
+    } catch (err) {
+      localStorage.removeItem(KB_TOKEN);
+      return err;
+    }
+  },
+  login: async () => {
+    await keycloak.init({ onLoad: 'login-required', promiseType: 'native' });
+    return jwt.decode(keycloak.token);
+  },
   /**
    * Retrieves Knowledge Base token.
    */
@@ -49,7 +75,7 @@ export default {
   getUser: () => {
     const token = localStorage.getItem(KB_TOKEN);
     if (token && jwt.decode(token)) {
-      return jwt.decode(token).user;
+      return jwt.decode(token);
     }
     return null;
   },
@@ -58,6 +84,7 @@ export default {
    * Returns true if user is in the 'admin' usergroup.
    */
   isAdmin: () => {
+    return true;
     const token = localStorage.getItem(KB_TOKEN);
     if (token && jwt.decode(token)) {
       return !!jwt.decode(token).user.groups.find(group => group.name === 'admin');

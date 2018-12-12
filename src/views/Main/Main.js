@@ -81,7 +81,7 @@ class Main extends Component {
    * Clears authentication token and sets logged in status to false.
    */
   handleLogOut() {
-    auth.clearToken();
+    auth.logout();
     this.setState({ loggedIn: false, anchorEl: null, drawerOpen: false });
   }
 
@@ -145,7 +145,6 @@ class Main extends Component {
         <Route path="/edit/variant/:rid" component={EditVariantView} />
         <Route path="/edit/statement/:rid" component={EditStatementView} />
         <Route path="/data" component={DataView} />
-        <Route path="/feedback" component={FeedbackView} />
         <Route path="/admin" component={AdminView} />
         <Redirect from="*" to="/query" />
       </Switch>
@@ -153,7 +152,6 @@ class Main extends Component {
 
     return (
       <KBContext.Provider value={{ schema: new Schema(SCHEMA_DEFN), user: auth.getUser() }}>
-
         <div className="Main">
           <AppBar
             position="absolute"
@@ -179,12 +177,11 @@ class Main extends Component {
                   classes={{ root: 'user-btn' }}
                   onClick={this.handleOpen}
                   size="small"
-                  disabled={!loggedIn}
                   className="appbar-btn"
                 >
                   <PersonIcon />
                   <Typography color="inherit">
-                    {(auth.getUser() && auth.getUser().name) || 'Logged Out'}
+                    {(auth.getUser() && auth.getUser().preferred_username) || 'Logged Out'}
                   </Typography>
                 </Button>
                 <Popover
@@ -235,6 +232,7 @@ class Main extends Component {
               <Switch>
                 <Route path="/login" render={loginWithProps} />
                 <Route path="/error" component={ErrorView} />
+                <Route path="/feedback" component={FeedbackView} />
                 {loggedIn
                   ? <Route path="/" render={() => loggedInContent} />
                   : <Redirect push to="/login" />}

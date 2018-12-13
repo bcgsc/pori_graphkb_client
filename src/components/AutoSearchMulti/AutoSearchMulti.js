@@ -348,11 +348,7 @@ class AutoSearchMulti extends Component {
                         ? schema.getSubclassesOf(endpointName)
                         : schema.getQueryable()
                       ).map(m => m.name)}
-                  >
-                    {v => (
-                      <MenuItem key={v} value={v}>{v}</MenuItem>
-                    )}
-                  </ResourceSelectComponent>
+                  />
                 </ListItem>
                 {model && (
                   <div className="autosearch-multi-form-templater">

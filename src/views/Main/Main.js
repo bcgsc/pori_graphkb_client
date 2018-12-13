@@ -167,7 +167,7 @@ class Main extends Component {
               </IconButton>
             )}
             <div className="appbar-title">
-              <Link to="/query" onClick={this.handleNavBar(false)}>
+              <Link to="/query" onClick={this.handleNavBar(false)} disabled={!loggedIn}>
                 <Typography variant="h6">GraphKB</Typography>
               </Link>
             </div>
@@ -181,7 +181,11 @@ class Main extends Component {
                 >
                   <PersonIcon />
                   <Typography color="inherit">
-                    {(auth.getUser() && auth.getUser().name) || 'Logged Out'}
+                    {auth.getKeyCloakToken()
+                      ? ((auth.getUser() && auth.getUser().name)
+                        || auth.getKeyCloakToken().preferred_username)
+                      : 'Logged Out'
+                    }
                   </Typography>
                 </Button>
                 <Popover
@@ -230,12 +234,13 @@ class Main extends Component {
               onKeyDown={e => e.keyCode === 13 && this.handleNavBar(false)()}
             >
               <Switch>
+                <Route path="/feedback" component={FeedbackView} />
                 <Route path="/login" render={loginWithProps} />
                 <Route path="/error" component={ErrorView} />
-                <Route path="/feedback" component={FeedbackView} />
                 {loggedIn
                   ? <Route path="/" render={() => loggedInContent} />
-                  : <Redirect push to="/login" />}
+                  : <Route path="*" render={() => <Redirect push to="/login" />} />
+                }
               </Switch>
             </div>
           </section>

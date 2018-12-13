@@ -7,7 +7,7 @@ import * as jwt from 'jsonwebtoken';
 import config from '../static/config';
 
 const { KEYS } = config;
-const { KB_TOKEN } = KEYS;
+const { KB_TOKEN, KEYCLOAK_TOKEN } = KEYS;
 
 const keycloak = Keycloak({
   realm: 'TestKB',
@@ -31,8 +31,11 @@ export default {
   },
   login: async () => {
     await keycloak.init({ onLoad: 'login-required', promiseType: 'native' });
+    localStorage.setItem(KEYCLOAK_TOKEN, keycloak.token);
     return keycloak.token;
   },
+  getKeyCloakToken: () => jwt.decode(localStorage.getItem(KEYCLOAK_TOKEN)),
+  loadKeyCloakToken: token => localStorage.setItem(KEYCLOAK_TOKEN, token),
   /**
    * Retrieves Knowledge Base token.
    */

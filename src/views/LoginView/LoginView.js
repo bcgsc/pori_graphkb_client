@@ -50,10 +50,12 @@ class LoginView extends Component {
   render() {
     const { unauthorized } = this.state;
     return unauthorized && (
-      <Typography>
-        You do not have access to the GraphKB Project. Create a JIRA Ticket
-        for systems in order to be added to GraphKB.
+      <div className="login-wrapper">
+        <Typography variant="h5">
+          You do not have access to the GraphKB Project. Create a JIRA Ticket
+          for systems in order to be added to GraphKB.
       </Typography>
+      </div>
     );
   }
 }

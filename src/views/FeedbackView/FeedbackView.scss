@@ -2,10 +2,6 @@
 
 .feedback-wrapper {
   @include view-wrapper;
-  a {
-    text-decoration: none;
-    color: $md-secondary-color;
-  }
 
   .feedback-header {
     @include page-header;

@@ -33,12 +33,12 @@
     "whatwg-fetch": "2.0.3"
   },
   "scripts": {
-    "prod": "NODE_ENV=production npm run build && serve -s build",
+    "prod": "cross-env REACT_APP_VERSION=$npm_package_version NODE_ENV=production npm run build && serve -s build",
     "build-css": "node-sass-chokidar --include-path ./node_modules src/ -o src/",
     "watch-css": "npm run build-css && npm run build-css -- --watch --recursive",
     "start-js": "cross-env REACT_APP_VERSION=$npm_package_version node scripts/start.js",
     "start": "npm-run-all -p watch-css start-js",
-    "build": "cross-env REACT_APP_VERSION=$npm_package_version npm run build-css && node scripts/build.js",
+    "build": "npm run build-css && node scripts/build.js",
     "test": "cypress run && jest --env=jsdom",
     "test:unit": "node scripts/test.js --env=jsdom",
     "test:e2e": "cypress run --config video=false",

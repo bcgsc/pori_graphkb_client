@@ -14,6 +14,9 @@ import {
 import api from '../../services/api';
 import auth from '../../services/auth';
 import history from '../../services/history';
+import config from '../../static/config';
+
+const { FEEDBACK_EMAIL } = config;
 
 /**
  * View to handle user authentication. Redirected to if at any point during use
@@ -51,11 +54,12 @@ class LoginView extends Component {
 
   render() {
     const { unauthorized } = this.state;
+    const emailLink = <a href={`mailto:${FEEDBACK_EMAIL}`}>{FEEDBACK_EMAIL}</a>;
     return unauthorized && (
       <div className="login-wrapper">
         <Typography variant="h5">
           You do not have access to the GraphKB Project. To gain access, please
-          create a systems JIRA ticket or email graphkb@bcgsc.ca.
+          create a systems JIRA ticket or email {emailLink}.
         </Typography>
         <Button
           id="redirect-btn"

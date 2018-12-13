@@ -47,12 +47,12 @@ export default {
    */
   isExpired: () => {
     const token = localStorage.getItem(KB_TOKEN);
-    if (token && jwt.decode(token)) {
-      const expiry = jwt.decode(token).exp;
-      const now = new Date();
-      return now.getTime() > expiry * 1000;
-    }
-    return false;
+    return !!(
+      token
+      && jwt.decode(token)
+      && !Number.isNaN(jwt.decode(token).exp)
+      && (jwt.decode(token).exp * 1000) < (new Date()).getTime()
+    );
   },
 
   /**
@@ -87,9 +87,12 @@ export default {
    */
   isAdmin: () => {
     const token = localStorage.getItem(KB_TOKEN);
-    if (token && jwt.decode(token)) {
-      return !!jwt.decode(token).user.groups.find(group => group.name === 'admin');
-    }
-    return null;
+    return !!(
+      token
+      && jwt.decode(token)
+      && jwt.decode(token).user
+      && jwt.decode(token).user.groups
+      && jwt.decode(token).user.groups.find(group => group.name === 'admin')
+    );
   },
 };

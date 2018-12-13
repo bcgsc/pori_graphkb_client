@@ -4,7 +4,7 @@ export default {
     KB_TOKEN: 'kbToken',
     KEYCLOAK_TOKEN: 'kcToken',
   },
-  FEEDBACK_EMAIL: 'ibeckie@bcgsc.ca',
+  FEEDBACK_EMAIL: 'graphkb@bcgsc.ca',
   FEEDBACK_HIPCHAT: '@IsaacBeckie',
   JIRA_LINK: 'https://www.bcgsc.ca/jira/projects/KBDEV',
   GRAPH_PROPERTIES: {

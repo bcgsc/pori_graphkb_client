@@ -21,6 +21,7 @@ export default {
   GRAPHKB_ROLE,
   logout: async () => {
     localStorage.removeItem(KB_TOKEN);
+    localStorage.removeItem(KEYCLOAK_TOKEN);
     try {
       await keycloak.init();
       const resp = await keycloak.logout();
@@ -67,6 +68,7 @@ export default {
    */
   clearToken: () => {
     localStorage.removeItem(KB_TOKEN);
+    localStorage.removeItem(KEYCLOAK_TOKEN);
   },
 
   /**

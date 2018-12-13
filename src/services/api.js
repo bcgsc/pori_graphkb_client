@@ -135,7 +135,7 @@ const del = (endpoint) => {
 /**
  * Wrapper for autosearch method.
  * @param {string} endpoint - URL endpoint.
- * @param {string} property - Property to query.
+ * @param {Array.<string>} property - Property to query.
  * @param {string} value - Query input string.
  * @param {number} limit - Limit for number of returned matches.
  */

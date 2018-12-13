@@ -1034,9 +1034,9 @@ class GraphComponent extends Component {
           links={links}
           expandExclusions={expandExclusions}
           onExpand={this.handleExpand}
-          onExpandAll={this.handleExpandCheckAll}
-          onExpandExclusion={this.handleExpandExclusion}
-          onExpandByClass={this.handleExpandByClass}
+          onStageAll={this.handleExpandCheckAll}
+          onStage={this.handleExpandExclusion}
+          onStageClass={this.handleExpandByClass}
         />
         <GraphOptionsPanel
           linkLegendDisabled={linkLegendDisabled}
@@ -1102,8 +1102,8 @@ class GraphComponent extends Component {
         </div>
         <GraphLegend
           graphOptions={graphOptions}
-          handleGraphOptionsChange={this.handleGraphOptionsChange}
-          disabled={linkLegendDisabled}
+          onChange={this.handleGraphOptionsChange}
+          linkDisabled={linkLegendDisabled}
           propsMap={propsMap}
         />
       </div>
@@ -1138,9 +1138,9 @@ GraphComponent.propTypes = {
   handleNewColumns: PropTypes.func.isRequired,
   detail: PropTypes.object,
   data: PropTypes.object.isRequired,
-  allProps: PropTypes.array,
-  edgeTypes: PropTypes.array,
-  displayed: PropTypes.array,
+  allProps: PropTypes.arrayOf(PropTypes.string),
+  edgeTypes: PropTypes.arrayOf(PropTypes.string),
+  displayed: PropTypes.arrayOf(PropTypes.string),
   localStorageKey: PropTypes.string,
   schema: PropTypes.object.isRequired,
   snackbar: PropTypes.object.isRequired,

@@ -62,6 +62,7 @@ function FormTemplater(props) {
       component: fieldComponent,
       key: `${appendToKeys}.${name}`,
       disableGutters: disablePadding,
+      className: 'form-templater-item',
     };
     // Radio group component for boolean types.
     if (type === 'boolean') {
@@ -70,30 +71,32 @@ function FormTemplater(props) {
       const boolValue = model[name] === undefined || model[name] === null ? '' : model[name];
       field = (
         <React.Fragment>
-          <FormControl
-            component="fieldset"
-            required={mandatory}
-            error={errorFields.includes(name)}
-            disabled={disabledFields.includes(name)}
-          >
-            <FormLabel>
-              {util.antiCamelCase(name)}
-            </FormLabel>
-            <RadioGroup
-              name={name}
-              onChange={e => onChange(e)}
-              value={boolValue.toString()}
-              style={{ flexDirection: 'row' }}
+          <div className="form-templater-radio-wrapper">
+            <FormControl
+              component="fieldset"
+              required={mandatory}
+              error={errorFields.includes(name)}
+              disabled={disabledFields.includes(name)}
             >
-              <FormControlLabel value="true" control={<Radio />} label="Yes" />
-              <FormControlLabel value="false" control={<Radio />} label="No" />
-            </RadioGroup>
-          </FormControl>
-          {description && (
-            <Tooltip title={description}>
-              <HelpIcon color="primary" className="form-templater-help-icon radio" />
-            </Tooltip>
-          )}
+              <FormLabel>
+                {util.antiCamelCase(name)}
+              </FormLabel>
+              <RadioGroup
+                name={name}
+                onChange={e => onChange(e)}
+                value={boolValue.toString()}
+                style={{ flexDirection: 'row' }}
+              >
+                <FormControlLabel value="true" control={<Radio />} label="Yes" />
+                <FormControlLabel value="false" control={<Radio />} label="No" />
+              </RadioGroup>
+            </FormControl>
+            {description && (
+              <Tooltip title={description}>
+                <HelpIcon color="primary" className="form-templater-help-icon radio" />
+              </Tooltip>
+            )}
+          </div>
         </React.Fragment>
       );
     } else if (type === 'link') {

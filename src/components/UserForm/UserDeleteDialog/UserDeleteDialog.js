@@ -63,7 +63,8 @@ function UserDeleteDialog(props) {
  * @property {function} onClose - dialog close event handler.
  * @property {function} onSubmit - deletion confirmation event handler.
  * @property {function} onCancel - Unstage user from deletion event handler.
- * @property {Array} selected - list of user records that are staged for deletion.
+ * @property {Array.<string>} selected - list of user record ids that are
+ * staged for deletion.
  * @property {Array} users - list of all user records.
  */
 UserDeleteDialog.propTypes = {
@@ -71,7 +72,7 @@ UserDeleteDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
-  selected: PropTypes.array,
+  selected: PropTypes.arrayOf(PropTypes.string),
   users: PropTypes.array,
 };
 

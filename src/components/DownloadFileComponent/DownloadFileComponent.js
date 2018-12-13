@@ -64,7 +64,7 @@ function DownloadFileComponent(props) {
  */
 DownloadFileComponent.propTypes = {
   mediaType: PropTypes.string,
-  rawFileContent: PropTypes.any,
+  rawFileContent: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
   fileName: PropTypes.string,
   children: PropTypes.node.isRequired,
 };

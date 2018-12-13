@@ -124,7 +124,6 @@ function GraphActionsNode(props) {
  * @property {array} options - List of options, each must be in the form:
  *    option: {
  *      name: [string]
- *      icon: [svg element]
  *      action: [(any) => any]
  *      disabled?: [(any) => boolean}
  *    }
@@ -133,7 +132,11 @@ function GraphActionsNode(props) {
  * an edge or not
  */
 GraphActionsNode.propTypes = {
-  options: PropTypes.array,
+  options: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    action: PropTypes.func,
+    disabled: PropTypes.func,
+  })),
   actionsNode: PropTypes.object,
   edge: PropTypes.bool,
 };

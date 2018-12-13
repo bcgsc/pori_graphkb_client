@@ -6,7 +6,7 @@ import { PropsMap } from '../GraphComponent/kbgraph';
 
 describe('<GraphLegend />', () => {
   it('does not crash', () => {
-    const handleGraphOptionsChange = jest.fn();
+    const onChange = jest.fn();
     const wrapper = mount(
       <GraphLegend
         graphOptions={{
@@ -18,15 +18,15 @@ describe('<GraphLegend />', () => {
           linksColors: { color2: 'black' },
         }}
         propsMap={new PropsMap()}
-        handleGraphOptionsChange={handleGraphOptionsChange}
-        disabled={false}
+        onChange={onChange}
+        linkDisabled={false}
       />,
     );
 
     wrapper.find('button[name="nodesLegend"]').simulate('click');
-    expect(handleGraphOptionsChange.mock.calls.length).to.eq(1);
+    expect(onChange.mock.calls.length).to.eq(1);
 
     wrapper.find('button[name="linksLegend"]').simulate('click');
-    expect(handleGraphOptionsChange.mock.calls.length).to.eq(2);
+    expect(onChange.mock.calls.length).to.eq(2);
   });
 });

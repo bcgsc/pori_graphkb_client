@@ -65,7 +65,7 @@ class AddStatementViewBase extends Component {
       return rPayload;
     });
     payload.supportedBy = relationshipPayloads.filter(r => r['@class'] === 'SupportedBy');
-    payload.impliedBy = relationshipPayloads.filter(r => r['@class'] === 'Implies');
+    payload.impliedBy = relationshipPayloads.filter(r => r['@class'] === 'ImpliedBy');
     try {
       await api.post(route, payload);
       return true;

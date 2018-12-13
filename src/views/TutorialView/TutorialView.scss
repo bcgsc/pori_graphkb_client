@@ -8,6 +8,13 @@
   }
   .tutorial-body {
     @include paper;
+    h4 a {
+      color: unset;
+    }
+    .tutorial-central-image {
+      margin: auto;
+      max-width: 100%;
+    }
   }
   .form-list-item {
     img {

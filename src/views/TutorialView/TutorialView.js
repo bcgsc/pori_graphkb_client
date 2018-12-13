@@ -13,6 +13,7 @@ import {
 import listFields from '../../static/tutorial/list-fields.png';
 import linkFields from '../../static/tutorial/link-fields.png';
 import selectFields from '../../static/tutorial/select-fields.png';
+import queryResults from '../../static/tutorial/table-tutorial.png';
 import config from '../../static/config';
 
 const { API_BASE_URL } = config;
@@ -27,7 +28,11 @@ function TutorialView() {
         <Typography variant="h5">Tutorial</Typography>
       </Paper>
       <Paper className="tutorial-body" elevation={4}>
-        <Typography variant="subtitle1" paragraph>Querying</Typography>
+        <Typography variant="subtitle1" component="h4" paragraph>
+          <a href="querying">
+            Querying
+          </a>
+        </Typography>
         <Typography paragraph>
           To query GraphKB using this GUI, navigate to the
           &quot;Query&quot; page by using the navbar on the left. To query
@@ -54,7 +59,11 @@ function TutorialView() {
         </Typography>
       </Paper>
       <Paper className="tutorial-body" elevation={4}>
-        <Typography variant="subtitle1" paragraph>GraphKB Forms</Typography>
+        <Typography variant="subtitle1" component="h4" paragraph>
+          <a href="forms">
+            GraphKB Forms
+          </a>
+        </Typography>
         <Typography paragraph>
           When filling out forms, certain fields will behave differently from
           others based on the type of input. The following are several of the
@@ -103,6 +112,40 @@ function TutorialView() {
                   before submitting the form."
             />
             <img src={selectFields} alt="Select Fields" />
+          </ListItem>
+        </List>
+      </Paper>
+      <Paper className="tutorial-body" elevation={4}>
+        <Typography variant="subtitle1" component="h4" paragraph>
+          <a href="Query View">
+            Viewing Results
+          </a>
+        </Typography>
+        <List>
+          <ListItem>
+            <img src={queryResults} alt="Query Results" className="tutorial-central-image" />
+          </ListItem>
+          <ListItem>
+            After sending a query, results will be loaded into this table for
+            viewing. From here, you can:
+          </ListItem>
+          <ListItem>
+            <ListItemText inset primary="Filter columns to isolate specific records" />
+          </ListItem>
+          <ListItem>
+            <ListItemText inset primary="Sort columns" />
+          </ListItem>
+          <ListItem>
+            <ListItemText inset primary="Click records to view details in a side drawer" />
+          </ListItem>
+          <ListItem>
+            <ListItemText inset primary="Download the query results as a TSV file" />
+          </ListItem>
+          <ListItem>
+            <ListItemText inset primary="Hide rows from the table" />
+          </ListItem>
+          <ListItem>
+            <ListItemText inset primary="View records in Graph form" />
           </ListItem>
         </List>
       </Paper>

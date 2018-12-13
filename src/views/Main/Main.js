@@ -80,8 +80,8 @@ class Main extends Component {
   /**
    * Clears authentication token and sets logged in status to false.
    */
-  handleLogOut() {
-    auth.logout();
+  async handleLogOut() {
+    await auth.logout();
     this.setState({ loggedIn: false, anchorEl: null, drawerOpen: false });
   }
 

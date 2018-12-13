@@ -22,12 +22,18 @@ import { withKB } from '../../components/KBContext/KBContext';
 class AddOntologyViewBase extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      is409: false,
+    };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
   }
 
   /**
    * Posts new node to the api, then posts all new edges.
+   * @param {Object} form - Statement form data.
+   * @param {Array.<Object>} relationships - Form staged relationships.
+   * @return {boolean} true if submission is successful.
    */
   async handleSubmit(form, relationships) {
     const { schema } = this.props;
@@ -35,8 +41,14 @@ class AddOntologyViewBase extends Component {
     const properties = schema.getProperties(form);
     const { routeName } = schema.get(form);
     const payload = util.parsePayload(form, properties);
-    const response = await api.post(routeName, { ...payload });
-    await api.submitEdges(relationships, schema, response.result['@rid']);
+    try {
+      const response = await api.post(routeName, { ...payload });
+      await api.submitEdges(relationships, schema, response.result['@rid']);
+      return true;
+    } catch (error) {
+      this.setState({ is409: true });
+      return false;
+    }
   }
 
   /**
@@ -49,6 +61,7 @@ class AddOntologyViewBase extends Component {
 
   render() {
     const { schema } = this.props;
+    const { is409 } = this.state;
 
     return (
       <div className="add-form-wrapper">
@@ -71,6 +84,7 @@ class AddOntologyViewBase extends Component {
           schema={schema}
           handleSubmit={this.handleSubmit}
           handleFinish={this.handleFinish}
+          is409={is409}
         />
       </div>
     );

@@ -52,6 +52,7 @@ class GraphObj {
   }
 }
 
+
 /**
  * Represents a d3 force directed graph node.
  */
@@ -63,6 +64,7 @@ class GraphNode extends GraphObj {
     this.y = y || 0;
   }
 }
+
 
 /**
  * Represents a d3 force directed graph link object.
@@ -235,6 +237,7 @@ class GraphOptions {
     this.nodesLegend = !!initial.nodesLegend;
     this.linksLegend = !!initial.linksLegend;
     this.chargeMax = initial.chargeMax || CHARGE_MAX;
+    this.nodePreview = initial.nodePreview || false;
   }
 
   /**
@@ -271,6 +274,7 @@ class GraphOptions {
       linksColors: this.linksColors,
       nodesLegend: this.nodesLegend,
       linksLegend: this.linksLegend,
+      nodePreview: this.nodePreview,
     }));
   }
 }

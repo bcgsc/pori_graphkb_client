@@ -33,6 +33,7 @@ function ResourceSelectComponent(props) {
     dense,
     variant,
     className,
+    disabled,
   } = props;
 
   const resourcesDisplay = resources.map(resource => children(resource));
@@ -48,6 +49,7 @@ function ResourceSelectComponent(props) {
       className={`resource-select ${className}`}
       id={id}
       variant={variant}
+      disabled={disabled}
     >
       <InputLabel
         htmlFor={`resource-select-${name}`}
@@ -102,6 +104,7 @@ ResourceSelectComponent.propTypes = {
   dense: PropTypes.bool,
   variant: PropTypes.string,
   className: PropTypes.string,
+  disabled: PropTypes.bool,
 };
 
 ResourceSelectComponent.defaultProps = {
@@ -120,6 +123,7 @@ ResourceSelectComponent.defaultProps = {
   dense: false,
   variant: 'standard',
   className: '',
+  disabled: false,
 };
 
 export default ResourceSelectComponent;

@@ -5,7 +5,6 @@ import { DataView } from './DataView/DataView';
 import { EditOntologyView } from './EditOntologyView/EditOntologyView';
 import ErrorView from './ErrorView/ErrorView';
 import FeedbackView from './FeedbackView/FeedbackView';
-import IconsView from './IconsView/IconsView';
 import LoginView from './LoginView/LoginView';
 import { QueryView } from './QueryView/QueryView';
 import { AddVariantView } from './AddVariantView/AddVariantView';
@@ -23,7 +22,6 @@ export {
   EditOntologyView,
   ErrorView,
   FeedbackView,
-  IconsView,
   LoginView,
   QueryView,
   AddVariantView,

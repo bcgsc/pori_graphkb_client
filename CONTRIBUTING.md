@@ -107,8 +107,8 @@ Here are the naming conventions for the different types of branches used in this
 * Follow `Material Design` when designing front end components.
 * Reuse dynamic components when applicable to generate class based layouts. `FormTemplater.js` and `DetailDrawer.js`, and the `initModel` function in the `src/models/schema.js` file all contain examples of using record class models to automatically generate scaffolding.
 * Some important  knowledge that should be learned before working on this project:
-  * [Knowledgebase spec](http://kbapi01:8061/api/v0.6.1/spec/) (how to build queries, class definitions)
-  * Schema specification can be found at http://kbapi01:8061/api/v0.6.1/schema, or the [knowledgebase schema repo](https://svn.bcgsc.ca/bitbucket/projects/VDB/repos/knowledgebase_schema/browse)
+  * [Knowledgebase spec](http://kbapi01:8100/api/spec/) (how to build queries, class definitions)
+  * Schema specification can be found at http://kbapi01:8100/api/schema, or the [knowledgebase schema repo](https://svn.bcgsc.ca/bitbucket/projects/VDB/repos/knowledgebase_schema/browse)
   * [ReactJS basics](https://reactjs.org/tutorial/tutorial.html)
   * [React Routing](https://reacttraining.com/react-router/web/guides/quick-start) as well as [integrating a custom history object into your app](https://stackoverflow.com/questions/42701129/how-to-push-to-history-in-react-router-v4/45849608#45849608)
   * [ReactJS Context](https://reactjs.org/docs/context.html), which is used for providing `schema` and `user` data throughout other components in the application.
@@ -123,4 +123,4 @@ Some features I would like to see in the near future include:
 * Database diagnostics/statistics page
   * This page was well in the works using d3 to create different charts (branch `feature/kb-stats`, but got lost in the backburner. More features should be integrated into both the front end and back end, but are not essential to the core purpose of the app, so are a relatively low priority task [KBDEV-164](https://www.bcgsc.ca/jira/browse/KBDEV-164).
 * Larger controls suite in Graph View
-  * As of now the graph view can display data nicely in a force-directed graph layout. One problem is that it can get cluttered easily if a user keeps expanding nodes to view its relatives. An undo button, mass selection and searchbar for nodes in graph, would allow users to better manage their graph nodes [KBDEV-283](https://www.bcgsc.ca/jira/projects/KBDEV/issues/KBDEV-283)
+  * As of now the graph view can display data nicely in a force-directed graph layout. One problem is that it can get cluttered easily if a user keeps expanding nodes to view its relatives. An undo button, mass node selection and searchbar for nodes in graph, would allow users to better manage their graph nodes [KBDEV-283](https://www.bcgsc.ca/jira/projects/KBDEV/issues/KBDEV-283)

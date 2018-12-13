@@ -1,5 +1,6 @@
-/* eslint-disable */
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import './UserGroupForm.css';
 import {
   Paper,
   Typography,
@@ -17,10 +18,24 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import PermissionsTable from '../PermissionsTable/PermissionsTable';
-import UserGroupDeleteDialog from './UserGroupDeleteDialog/UserGroupDeleteDialog';
+import DeleteRecordDialog from '../DeleteRecordDialog/DeleteRecordDialog';
 import UserGroupDialog from './UserGroupDialog/UserGroupDialog';
 
+/**
+ * Handles AdminView UserGroup form state.
+ */
 class UserGroupForm extends Component {
+  static castPermissions(permissions) {
+    const tempPermissions = {};
+    const reducer = (accumulator, curr, i) => accumulator + curr * (2 ** i);
+    Object.keys(permissions)
+      .filter(pKey => pKey !== '@type' && pKey !== '@class')
+      .forEach((pKey) => {
+        tempPermissions[pKey] = permissions[pKey].reduce(reducer);
+      });
+    return tempPermissions;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -121,23 +136,7 @@ class UserGroupForm extends Component {
   }
 
   /**
-   * Casts permissions temp object to decimal number to send to server.
-   * @param {Object} permissions - Permissions object from record.
-   */
-  castPermissions(permissions) {
-    const tempPermissions = {};
-    const reducer = (accumulator, curr, i) => accumulator + curr * (2 ** i);
-    Object.keys(permissions)
-      .filter(pKey => pKey !== '@type' && pKey !== '@class')
-      .forEach((pKey) => {
-        tempPermissions[pKey] = permissions[pKey].reduce(reducer);
-      });
-    return tempPermissions;
-  }
-
-  /**
-   * Validates form and calls onEdit props function with usergroup name and
-   * permissions as payload.
+   * Validates form and submits PATCH request to server.
    */
   async handleUserGroupEdit() {
     const { onEdit } = this.props;
@@ -151,7 +150,7 @@ class UserGroupForm extends Component {
       return;
     }
 
-    const tempPermissions = this.castPermissions(tempUserGroupPermissions);
+    const tempPermissions = UserGroupForm.castPermissions(tempUserGroupPermissions);
     const payload = { name: tempUserGroupName, permissions: tempPermissions };
     const { '@rid': rid } = tempUserGroup;
     await onEdit(rid.slice(1), payload);
@@ -181,7 +180,7 @@ class UserGroupForm extends Component {
       return;
     }
 
-    const tempPermissions = this.castPermissions(tempUserGroupPermissions);
+    const tempPermissions = UserGroupForm.castPermissions(tempUserGroupPermissions);
     const payload = { name: tempUserGroupName, permissions: tempPermissions };
 
     await onAdd(payload);
@@ -248,11 +247,11 @@ class UserGroupForm extends Component {
 
     return (
       <Paper className="admin-user-groups">
-        <UserGroupDeleteDialog
+        <DeleteRecordDialog
           open={!!deletedUserGroup}
-          deletedUserGroup={deletedUserGroup}
           onClose={this.handleDeleteDialog}
-          onSubmit={this.handleUserGroupDelete}
+          onDelete={() => this.handleUserGroupDelete(deletedUserGroup)}
+          message={`Delete User Group "${(deletedUserGroup || '').name}"?`}
         />
         <UserGroupDialog
           userGroups={userGroups}
@@ -368,5 +367,20 @@ class UserGroupForm extends Component {
     );
   }
 }
+
+/**
+ * @namespace
+ * @property {Array} userGroups - list of usergroup records from server.
+ * @property {Object} schema - Knowledgebase schema object.
+ */
+UserGroupForm.propTypes = {
+  userGroups: PropTypes.array,
+  schema: PropTypes.object,
+};
+
+UserGroupForm.defaultProps = {
+  userGroups: [],
+  schema: null,
+};
 
 export default UserGroupForm;

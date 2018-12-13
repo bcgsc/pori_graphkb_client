@@ -28,9 +28,9 @@ function GraphExpansionDialog(props) {
     links,
     expandExclusions,
     onExpand,
-    onExpandAll,
-    onExpandExclusion,
-    onExpandByClass,
+    onStageAll,
+    onStage,
+    onStageClass,
   } = props;
 
   if (!node) {
@@ -70,7 +70,7 @@ function GraphExpansionDialog(props) {
               <Button
                 variant="outlined"
                 color="secondary"
-                onClick={onExpandByClass(edge)}
+                onClick={onStageClass(edge)}
               >
                 {util.getEdgeLabel(edge)}
               </Button>
@@ -82,7 +82,7 @@ function GraphExpansionDialog(props) {
         </Typography>
         <ListItem
           button
-          onClick={onExpandAll}
+          onClick={onStageAll}
           className="expand-links-link"
         >
           <Checkbox checked={!(expandExclusions.length === edges.length)} />
@@ -102,18 +102,18 @@ function GraphExpansionDialog(props) {
               || links.find(l => l.getId() === edge['@rid'])) {
               return null;
             }
+            const classLabel = schema.get(edge['@class'])[inRid === node['@rid'] ? 'reverseName' : 'name'];
             return (
               <ListItem
                 key={edge['@rid']}
                 button
-                onClick={() => onExpandExclusion(edge['@rid'])}
+                onClick={() => onStage(edge['@rid'])}
                 className="expand-links-link"
               >
                 <Checkbox checked={!expandExclusions.includes(edge['@rid'])} />
                 <ListItemText>
-                  <Typography variant="body1">{target.name}</Typography>
-                  <Typography>{target.sourceId}</Typography>
-                  <Typography variant="caption">{target.source.name || node.source.name}</Typography>
+                  <Typography variant="body1">{schema.getPreview(target)}</Typography>
+                  <Typography variant="caption">{classLabel}</Typography>
                 </ListItemText>
               </ListItem>
             );
@@ -135,17 +135,35 @@ function GraphExpansionDialog(props) {
   );
 }
 
+/**
+ * @namespace
+ * @property {Object} schema - KB Schema object.
+ * @property {Object} node - Graph node staged for expansion.
+ * @property {boolean} open - Dialog open state
+ * @property {function} onClose - handler for user clicking away or cancelling.
+ * @property {Array.<Object>} links - list of all currently rendered graph
+ * links.
+ * @property {Array.<string>} expandExclusions - list of edge RID's that will be
+ * excluded in node expansion. (unstaged)
+ * @property {function} onExpand - handler for confirming expansion.
+ * @property {function} onStageAll - toggles selecting all/none of staged
+ * edges.
+ * @property {function} onStage - toggles staged/unstaged state for a single
+ * edge.
+ * @property {function} onStageClass - toggles staged/unstaged state for edges
+ * of a single class.
+ */
 GraphExpansionDialog.propTypes = {
   schema: PropTypes.object.isRequired,
   node: PropTypes.object,
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   links: PropTypes.array,
-  expandExclusions: PropTypes.array,
+  expandExclusions: PropTypes.arrayOf(PropTypes.string),
   onExpand: PropTypes.func.isRequired,
-  onExpandAll: PropTypes.func.isRequired,
-  onExpandExclusion: PropTypes.func.isRequired,
-  onExpandByClass: PropTypes.func.isRequired,
+  onStageAll: PropTypes.func.isRequired,
+  onStage: PropTypes.func.isRequired,
+  onStageClass: PropTypes.func.isRequired,
 };
 
 GraphExpansionDialog.defaultProps = {

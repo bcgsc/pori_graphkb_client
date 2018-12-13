@@ -2,7 +2,7 @@
  * @module /views/EditVariantView
  */
 import React, { Component } from 'react';
-import './EditVariantView.css';
+import '../AddVariantView/AddVariantView.css';
 import PropTypes from 'prop-types';
 import { Paper, Typography, Button } from '@material-ui/core';
 import * as jc from 'json-cycle';
@@ -68,38 +68,49 @@ class EditVariantViewBase extends Component {
 
   /**
    * Submits a POST request to the server with current variant data.
+   * @param {Object} form - Form object containing core record parameters.
+   * @param {Array.<Object>} relationships - New list of relationships.
+   * @param {Array.<Object>} originalRelationships - Original list of relationships.
+   * @return {boolean} true if submission is successful.
    */
-  async submitVariant(variant, relationships, originalRelationships) {
+  async submitVariant(form, relationships, originalRelationships) {
     const { schema } = this.props;
+    const { node } = this.state;
     let oRelationships = originalRelationships;
     if (!Array.isArray(originalRelationships)) {
       oRelationships = originalRelationships.relationships.slice();
     }
-    await api.patchEdges(oRelationships || [], relationships, schema);
+    try {
+      await api.patchEdges(oRelationships || [], relationships, schema);
 
-    const copy = Object.assign({}, variant);
-    const properties = schema.getProperties(variant);
-    const { routeName } = schema.get(variant);
-    Object.keys(copy).forEach((k) => {
-      if (copy[k] && typeof copy[k] === 'object') {
-        if (!copy[k]['@class']) {
-          delete copy[k];
-        } else {
-          const nestedProps = schema.getProperties(copy[k]);
-          nestedProps.forEach((prop) => {
-            if (!copy[k][prop.name]) {
-              if (prop.type === 'integer' && prop.mandatory) {
-                copy[k][prop.name] = Number(copy[k][prop.name]);
-              } else {
-                delete copy[k][prop.name];
+      const copy = Object.assign({}, form);
+      const properties = schema.getProperties(form);
+      const { routeName } = schema.get(form);
+      Object.keys(copy).forEach((k) => {
+        if (copy[k] && typeof copy[k] === 'object') {
+          if (!copy[k]['@class']) {
+            delete copy[k];
+          } else {
+            const nestedProps = schema.getProperties(copy[k]);
+            nestedProps.forEach((prop) => {
+              if (!copy[k][prop.name]) {
+                if (prop.type === 'integer' && prop.mandatory) {
+                  copy[k][prop.name] = Number(copy[k][prop.name]);
+                } else {
+                  delete copy[k][prop.name];
+                }
               }
-            }
-          });
+            });
+          }
         }
-      }
-    });
-    const payload = util.parsePayload(copy, properties);
-    await api.patch(`${routeName}/${variant['@rid'].slice(1)}`, payload);
+      });
+      const payload = util.parsePayload(copy, properties);
+      await api.patch(`${routeName}/${node['@rid'].slice(1)}`, payload);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   }
 
   render() {

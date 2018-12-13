@@ -51,16 +51,27 @@ class EditOntologyViewBase extends Component {
 
 
   /**
-   * Adds new edges and deletes specified ones, then patches property changes to the api.
+   * Adds new edges and deletes specified ones, then PATCHes property changes
+   * to the api.
+   * @param {Object} form - completed form object.
+   * @param {Array.<Object>} relationships - List of relationship data.
+   * @param {Object} originalNode - Original node data.
+   * @return {boolean} true if submission is successful.
    */
   async handleSubmit(form, relationships, originalNode) {
     const { schema } = this.props;
 
-    await api.patchEdges(originalNode.relationships || [], relationships, schema);
-    const { routeName } = schema.get(originalNode);
-    const properties = schema.getProperties(originalNode);
-    const payload = util.parsePayload(form, properties);
-    await api.patch(`${routeName}/${originalNode['@rid'].slice(1)}`, payload);
+    try {
+      await api.patchEdges(originalNode.relationships || [], relationships, schema);
+      const { routeName } = schema.get(originalNode);
+      const properties = schema.getProperties(originalNode);
+      const payload = util.parsePayload(form, properties);
+      await api.patch(`${routeName}/${originalNode['@rid'].slice(1)}`, payload);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   }
 
   /**

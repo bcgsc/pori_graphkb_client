@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core';
 import api from '../../services/api';
 import auth from '../../services/auth';
+import history from '../../services/history';
 
 /**
  * View to handle user authentication. Redirected to if at any point during use
@@ -39,7 +40,7 @@ class LoginView extends Component {
    * updates parent component if user is logged out with handleLogOut.
    */
   componentDidMount() {
-    const { history, handleLogOut } = this.props;
+    const { handleLogOut } = this.props;
     const { timedout } = history.location.state || {};
     if (!auth.getToken() || auth.isExpired()) {
       handleLogOut();
@@ -71,7 +72,7 @@ class LoginView extends Component {
     e.preventDefault();
 
     const { username, password } = this.state;
-    const { history, handleAuthenticate } = this.props;
+    const { handleAuthenticate } = this.props;
 
     try {
       const response = await api.post('/token', {
@@ -152,12 +153,10 @@ class LoginView extends Component {
 
 /**
  * @namespace
- * @property {Object} history -  Application history object.
  * @property {function} handleLogOut - Updates parent state on unauthorized user.
  * @property {function} handleAuthenticate - Updates parent state on successful login.
  */
 LoginView.propTypes = {
-  history: PropTypes.object.isRequired,
   handleLogOut: PropTypes.func.isRequired,
   handleAuthenticate: PropTypes.func.isRequired,
 };

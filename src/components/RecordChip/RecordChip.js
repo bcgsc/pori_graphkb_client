@@ -56,6 +56,8 @@ class RecordChip extends Component {
     } = this.props;
     const { anchorEl } = this.state;
 
+    if (!record) return null;
+
     let className = 'record-chip-root';
     if (other.className) {
       className = `${className} ${other.className}`;

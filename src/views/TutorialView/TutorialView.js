@@ -14,6 +14,7 @@ import listFields from '../../static/tutorial/list-fields.png';
 import linkFields from '../../static/tutorial/link-fields.png';
 import selectFields from '../../static/tutorial/select-fields.png';
 import queryResults from '../../static/tutorial/table-tutorial.png';
+import grephResults from '../../static/tutorial/graph-tutorial.png';
 import config from '../../static/config';
 
 const { API_BASE_URL } = config;
@@ -123,6 +124,9 @@ function TutorialView() {
         </Typography>
         <List>
           <ListItem>
+            <Typography variant="subtitle2">Table</Typography>
+          </ListItem>
+          <ListItem>
             <img src={queryResults} alt="Query Results" className="tutorial-central-image" />
           </ListItem>
           <ListItem>
@@ -146,6 +150,14 @@ function TutorialView() {
           </ListItem>
           <ListItem>
             <ListItemText inset primary="View records in Graph form" />
+          </ListItem>
+        </List>
+        <List>
+          <ListItem>
+            <Typography variant="subtitle2">Graph</Typography>
+          </ListItem>
+          <ListItem>
+            <img src={grephResults} alt="Graph" className="tutorial-central-image" />
           </ListItem>
         </List>
       </Paper>

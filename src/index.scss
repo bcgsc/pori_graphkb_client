@@ -1,8 +1,5 @@
 @import "globals";
 
-/***************
-    PROPERTIES
-****************/
 body {
   margin: 0;
   padding: 0;
@@ -14,4 +11,5 @@ body {
 }
 a {
   text-decoration: none;
+  color: $md-secondary-color;
 }

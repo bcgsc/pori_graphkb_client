@@ -19,6 +19,9 @@ import AddIcon from '@material-ui/icons/Add';
 import UserDialog from './UserDialog/UserDialog';
 import UserDeleteDialog from './UserDeleteDialog/UserDeleteDialog';
 
+/**
+ * Component for managing AdminView User form state.
+ */
 class UserForm extends Component {
   constructor(props) {
     super(props);
@@ -253,7 +256,7 @@ class UserForm extends Component {
         />
         <UserDialog
           open={userDialogOpen}
-          date={date}
+          date={date.toLocaleString()}
           users={users}
           userGroups={userGroups}
           selectedUser={selectedUser}
@@ -339,6 +342,14 @@ class UserForm extends Component {
   }
 }
 
+/**
+ * @namespace
+ * @property {Array} users - List of user records.
+ * @property {Array} userGroups - List of usergroup records.
+ * @property {function} deleteUsers - delete users handler.
+ * @property {function} addUser - add user handler.
+ * @property {function} editUser - edit user handler.
+ */
 UserForm.propTypes = {
   users: PropTypes.array,
   userGroups: PropTypes.array,

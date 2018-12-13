@@ -16,6 +16,9 @@ import { withKB } from '../../components/KBContext/KBContext';
 class AddVariantViewBase extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      is409: false,
+    };
     this.handleCancel = this.handleCancel.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
     this.submitVariant = this.submitVariant.bind(this);
@@ -39,12 +42,15 @@ class AddVariantViewBase extends Component {
 
   /**
    * Submits a POST request to the server with current variant data.
+   * @param {Object} form - completed form object.
+   * @param {Array.<Object>} relationships - List of relationship data.
+   * @return {boolean} true if submission is successful.
    */
-  async submitVariant(variant, relationships) {
+  async submitVariant(form, relationships) {
     const { schema } = this.props;
-    const copy = Object.assign({}, variant);
-    const properties = schema.getProperties(variant);
-    const routeName = schema.get(variant);
+    const copy = Object.assign({}, form);
+    const properties = schema.getProperties(form);
+    const { routeName } = schema.get(form);
     // Strips away empty break objects and casts number props to numbers.
     Object.keys(copy).forEach((k) => {
       if (typeof copy[k] === 'object' && copy[k]) { // more flexible
@@ -65,14 +71,22 @@ class AddVariantViewBase extends Component {
       }
     });
     const payload = util.parsePayload(copy, properties);
+    try {
+      const response = await api.post(routeName, payload);
 
-    const response = await api.post(routeName, payload);
-
-    await api.submitEdges(relationships, schema, response.result['@rid']);
+      await api.submitEdges(relationships, schema, response.result['@rid']);
+      return true;
+    } catch (error) {
+      this.setState({ is409: true });
+      console.error(error);
+      return false;
+    }
   }
 
   render() {
     const { schema } = this.props;
+    const { is409 } = this.state;
+    if (!schema) return null;
     return (
       <div className="variant-wrapper">
         <Paper elevation={4} className="variant-headline">
@@ -93,6 +107,7 @@ class AddVariantViewBase extends Component {
             handleFinish={this.handleFinish}
             handleSubmit={this.submitVariant}
             schema={schema}
+            is409={is409}
           />
         </div>
       </div>

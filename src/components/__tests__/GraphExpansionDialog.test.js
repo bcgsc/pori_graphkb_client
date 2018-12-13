@@ -55,7 +55,7 @@ const testNode = {
   }],
 };
 
-describe('KB Context provider and consumers', () => {
+describe('<GraphExpansionDialog />', () => {
   it('does not crash', () => {
     mount(
       <GraphExpansionDialog
@@ -64,9 +64,9 @@ describe('KB Context provider and consumers', () => {
         node={testNode}
         onClose={jest.fn()}
         onExpand={jest.fn()}
-        onExpandAll={jest.fn()}
-        onExpandExclusion={jest.fn()}
-        onExpandByClass={jest.fn()}
+        onStageAll={jest.fn()}
+        onStage={jest.fn()}
+        onStageClass={jest.fn()}
       />,
     );
   });

@@ -265,30 +265,45 @@ const flatten = (obj) => {
 };
 
 /**
- * Prepares a payload to be sent to the server for a POST, PATCH, or GET requst.
+ * Prepares a payload to be sent to the server for a POST, PATCH, or GET
+ * requst.
  * @param {Object} form - unprocessed form object containing user data.
- * @param {Array.<Object>} properties - List of valid properties for given form.
- * @param {Array.<string>} extraProps - List of extra parameters not specified in objectSchema.
+ * @param {Array.<Object>} [properties=null] - List of valid properties for given
+ * form.
+ * @param {Array.<string>} [extraProps=[]] - List of extra parameters not specified
+ * in objectSchema.
+ * @param {boolean} [isQuery=false] - If true, object will be flattened in order to be
+ * passed to qs.stringify.
  */
-const parsePayload = (form, properties, extraProps = [], isQuery = false) => {
-  const payload = {};
-  properties.forEach((prop) => {
-    const { name, type, default: defaultValue } = prop;
-    if (type === 'link') {
-      const formLink = form[`${name}.data`];
-      if (formLink && formLink['@rid']) {
-        payload[name] = formLink['@rid'];
+const parsePayload = (form, properties = null, extraProps = [], isQuery = false) => {
+  const payload = properties ? {} : form;
+  if (properties) {
+    properties.forEach((prop) => {
+      const {
+        name,
+        type,
+        default: defaultValue,
+        linkedClass,
+      } = prop;
+      if (type === 'link') {
+        const formLink = form[`${name}.data`];
+        if (formLink && formLink['@rid']) {
+          payload[name] = formLink['@rid'];
+        }
+      } else if (type === 'embedded' && linkedClass && !linkedClass.isAbstract) {
+        const { '@class': cls, ...embedded } = form[name];
+        payload[name] = embedded;
+      } else if (form[name] && !(defaultValue && form[name] === defaultValue)) {
+        payload[name] = form[name];
       }
-    } else if (form[name] && !(defaultValue && form[name] === defaultValue)) {
-      payload[name] = form[name];
-    }
-  });
+    });
 
-  extraProps.forEach((name) => {
-    if (form[name]) {
-      payload[name] = form[name];
-    }
-  });
+    extraProps.forEach((name) => {
+      if (form[name]) {
+        payload[name] = form[name];
+      }
+    });
+  }
 
   return isQuery ? flatten(payload) : payload;
 };

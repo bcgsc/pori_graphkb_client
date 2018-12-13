@@ -173,8 +173,11 @@ class OntologyFormComponent extends Component {
       this.setState({ errorFields });
     } else {
       this.setState({ loading: true, notificationDrawerOpen: true });
-      await handleSubmit(form, relationships, originalNode);
-      this.setState({ loading: false });
+      if (await handleSubmit(form, relationships, originalNode)) {
+        this.setState({ loading: false });
+      } else {
+        this.setState({ notificationDrawerOpen: false });
+      }
     }
   }
 
@@ -194,6 +197,7 @@ class OntologyFormComponent extends Component {
       variant,
       handleFinish,
       classes,
+      is409,
     } = this.props;
 
     // Wait for form to get initialized
@@ -289,6 +293,14 @@ class OntologyFormComponent extends Component {
                 Delete
               </Button>
             )}
+            {is409 && (
+              <Typography
+                style={{ margin: 'auto', marginRight: 8 }}
+                color="error"
+              >
+                Record already exists
+              </Typography>
+            )}
             <Button
               onClick={this.handleSubmit}
               variant="contained"
@@ -316,6 +328,8 @@ class OntologyFormComponent extends Component {
  * submitted.
  * @property {function} handleDelete - Function triggered when ontology is
  * deleted.
+ * @property {Array.<Object>} classes - list of possible classes for form.
+ * @property {boolean} is409 - flag for whether previous submission was a 409.
  */
 OntologyFormComponent.propTypes = {
   node: PropTypes.object,
@@ -325,6 +339,7 @@ OntologyFormComponent.propTypes = {
   handleSubmit: PropTypes.func,
   handleDelete: PropTypes.func,
   classes: PropTypes.array,
+  is409: PropTypes.bool,
 };
 
 OntologyFormComponent.defaultProps = {
@@ -334,6 +349,7 @@ OntologyFormComponent.defaultProps = {
   handleDelete: null,
   node: null,
   classes: null,
+  is409: false,
 };
 
 export default OntologyFormComponent;

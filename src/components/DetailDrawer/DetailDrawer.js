@@ -329,6 +329,7 @@ class DetailDrawer extends Component {
           const isOpen = linkOpen === edge['@rid'];
           const isIn = edge.in && edge.in['@rid'] === node['@rid'];
           const targetNode = isIn ? edge.out : edge.in;
+          if (targetNode['@rid'] === node['@rid']) return null;
           let preview;
           try {
             preview = schema.getPreview(targetNode);

@@ -13,7 +13,10 @@ import {
 import listFields from '../../static/tutorial/list-fields.png';
 import linkFields from '../../static/tutorial/link-fields.png';
 import selectFields from '../../static/tutorial/select-fields.png';
-/* eslint-disable */
+import config from '../../static/config';
+
+const { API_BASE_URL } = config;
+
 /**
  * Tutorial page
  */
@@ -33,12 +36,11 @@ function TutorialView() {
         </Typography>
         <Typography paragraph>
           To access the Advanced Query page, click on the labelled
-          button. The Advanced Query page allows more specific queries, to be
+          button. The Advanced Query page allows more specific queries to be
           made to the database. The first thing to do when building a query is
-          to choose what record class you want to choose. The dropdown contains
-          a list of classes to choose from, and in doing so, you will change
-          the available form fields to type in, as certain classes have
-          different properties than others.
+          to choose a record class. The dropdown contains a list of classes to choose
+          from, and in doing so, you will change the available form fields to
+          fill out, as certain classes have different properties than others.
         </Typography>
         <Typography paragraph>
           If you wish for more control over your query, the Query Builder page
@@ -46,7 +48,9 @@ function TutorialView() {
           database. Navigate from the Advanced Query page by clicking the
           button in the top right corner. It is recommended for beginners to
           read the GraphKB specification to better understand the classes and
-          the different querying features.
+          the different querying features. Queries made by the Query Builder
+          follow the complex POST query syntax, which can be found&nbsp;
+          <a href={`${API_BASE_URL}/spec`} rel="noopener noreferrer" target="_blank">here</a>.
         </Typography>
       </Paper>
       <Paper className="tutorial-body" elevation={4}>
@@ -93,12 +97,10 @@ function TutorialView() {
           <ListItem className="form-list-item">
             <ListItemText
               primary="Select Fields"
-              secondary={`
-                  Select fields are used to select an item from a set of
+              secondary="Select fields are used to select an item from a set of
                   options. Most selects are able to be set to a null/empty
                   value, but for mandatory selects an option must be chosen
-                  before submitting the form.
-              `}
+                  before submitting the form."
             />
             <img src={selectFields} alt="Select Fields" />
           </ListItem>

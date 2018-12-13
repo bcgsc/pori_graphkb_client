@@ -2,6 +2,7 @@
  * @module /components/RecordChip
  */
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './RecordChip.css';
 import {
   Chip,
@@ -54,6 +55,8 @@ class RecordChip extends Component {
       ...other
     } = this.props;
     const { anchorEl } = this.state;
+
+    if (!record) return null;
 
     let className = 'record-chip-root';
     if (other.className) {
@@ -127,4 +130,18 @@ class RecordChip extends Component {
     );
   }
 }
+
+/**
+ * @namespace
+ * @property {Object} record - record to be displayed in chip.
+ * @property {Object} schema - KB schema object.
+ */
+RecordChip.propTypes = {
+  record: PropTypes.object,
+  schema: PropTypes.object.isRequired,
+};
+
+RecordChip.defaultProps = {
+  record: null,
+};
 export default RecordChip;

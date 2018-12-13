@@ -29,18 +29,27 @@
   }
 }
 
-.form-templater-autosearch {
-  display: flex;
-  width: 100%;
-}
-.form-templater-help-icon {
-  margin: auto;
-  margin-left: 24px;
-}
-.radio {
-  margin-top: 28px;
-}
-.form-templater-embedded-selector {
-  display: flex;
-  flex-grow: 1;
+.form-templater-item {
+  .form-templater-autosearch {
+    display: flex;
+    width: 100%;
+  }
+  .form-templater-help-icon {
+    margin: auto;
+    margin-left: 24px;
+  }
+  .form-templater-radio-wrapper {
+    display: flex;
+    > fieldset {
+      margin-right: auto;
+    }
+  }
+  .radio {
+    margin-top: 28px;
+    margin-right: 0;
+  }
+  .form-templater-embedded-selector {
+    display: flex;
+    flex-grow: 1;
+  }
 }

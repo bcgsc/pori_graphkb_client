@@ -64,15 +64,22 @@ class EditStatementViewBase extends Component {
    * @param {Object} form - Form object containing core record parameters.
    * @param {Array.<Object>} relationships - New list of relationships.
    * @param {Array.<Object>} originalRelationships - Original list of relationships.
+   * @return {boolean} true if submission is successful.
    */
   async handleSubmit(form, relationships, originalRelationships) {
     const { schema } = this.props;
 
-    await api.patchEdges(originalRelationships || [], relationships, schema);
-    const properties = schema.getProperties(form);
-    const { routeName } = schema.get(form);
-    const payload = util.parsePayload(form, properties);
-    await api.patch(`${routeName}/${form['@rid'].slice(1)}`, payload);
+    try {
+      await api.patchEdges(originalRelationships || [], relationships, schema);
+      const properties = schema.getProperties(form);
+      const { routeName } = schema.get(form);
+      const payload = util.parsePayload(form, properties);
+      await api.patch(`${routeName}/${form['@rid'].slice(1)}`, payload);
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   }
 
   render() {
@@ -98,7 +105,7 @@ class EditStatementViewBase extends Component {
           schema={schema}
           node={node}
           onSubmit={this.handleSubmit}
-          handleFinish={this.handleFinish}
+          onFinish={this.handleFinish}
           onDelete={this.handleDelete}
         />
       </div>

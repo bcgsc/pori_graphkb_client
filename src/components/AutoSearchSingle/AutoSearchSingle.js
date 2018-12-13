@@ -210,7 +210,7 @@ class AutoSearchSingle extends Component {
  * @property {function} onChange - parent method for handling change events
  * @property {number} limit - database return record limit.
  * @property {string} endpoint - api endpoint identifier.
- * @property {string} property - api property identifier.
+ * @property {Array.<string>} property - api property identifier.
  * @property {string} placeholder - placeholder for text input.
  * @property {string} label - label for text input.
  * @property {boolean} required - required flag for text input indicator.
@@ -229,7 +229,7 @@ AutoSearchSingle.propTypes = {
   onChange: PropTypes.func,
   limit: PropTypes.number,
   endpoint: PropTypes.string,
-  property: PropTypes.array,
+  property: PropTypes.arrayOf(PropTypes.string),
   placeholder: PropTypes.string,
   label: PropTypes.string,
   required: PropTypes.bool,

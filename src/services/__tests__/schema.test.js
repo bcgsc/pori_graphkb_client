@@ -32,7 +32,6 @@ describe('Schema wrapper class tests', () => {
         .filter(model => model.inherits && model.inherits.includes('Ontology'));
       const variants = Object.values(testSchema.schema)
         .filter(model => model.inherits && model.inherits.includes('Variant'));
-
       expect(testSchema.getOntologies(true)).to.eql(ontologies);
       expect(testSchema.getOntologies()).to.not.eql(ontologies);
 

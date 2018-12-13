@@ -150,7 +150,6 @@ class Main extends Component {
         <Redirect from="*" to="/query" />
       </Switch>
     );
-
     return (
       <KBContext.Provider value={{ schema: new Schema(SCHEMA_DEFN), user: auth.getUser() }}>
 
@@ -171,6 +170,7 @@ class Main extends Component {
             <div className="appbar-title">
               <Link to="/query" onClick={this.handleNavBar(false)}>
                 <Typography variant="h6">GraphKB</Typography>
+                <Typography variant="caption">v{process.env.REACT_APP_VERSION}</Typography>
               </Link>
             </div>
             <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>

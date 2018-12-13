@@ -20,6 +20,7 @@ import {
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
+import HelpIcon from '@material-ui/icons/Help';
 import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
 import { schema as SCHEMA_DEFN } from '@bcgsc/knowledgebase-schema';
@@ -131,6 +132,11 @@ class Main extends Component {
           { label: 'Variant', route: '/add/variant' },
           { label: 'Statement', route: '/add/statement' },
         ],
+      },
+      {
+        label: 'Tutorial',
+        icon: <HelpIcon />,
+        route: '/tutorial',
       },
     ];
 

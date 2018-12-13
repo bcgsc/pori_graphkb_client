@@ -1,15 +1,12 @@
 /**
  * @module /views/LoginView
  */
-/* eslint-disable */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './LoginView.css';
 import {
   Button,
   Typography,
-  TextField,
-  Snackbar,
 } from '@material-ui/core';
 import api from '../../services/api';
 import auth from '../../services/auth';
@@ -73,18 +70,16 @@ class LoginView extends Component {
         >
           Back to login
         </Button>
-      </div >
+      </div>
     );
   }
 }
 
 /**
  * @namespace
- * @property {function} handleLogOut - Updates parent state on unauthorized user.
  * @property {function} handleAuthenticate - Updates parent state on successful login.
  */
 LoginView.propTypes = {
-  handleLogOut: PropTypes.func.isRequired,
   handleAuthenticate: PropTypes.func.isRequired,
 };
 

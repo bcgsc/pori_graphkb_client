@@ -39,6 +39,9 @@ class LoginView extends Component {
   async componentDidMount() {
     const { handleAuthenticate } = this.props;
     setTimeout(async () => {
+      if (auth.isExpired()) {
+        await auth.logout();
+      }
       const token = await auth.login();
       try {
         const response = await api.post('/token', { keyCloakToken: token });

@@ -2,33 +2,30 @@
  * Handles token storage and authentication.
  * @module /services/auth
  */
-import * as Keycloak from 'keycloak-js';
+import Keycloak from 'keycloak-js';
 import * as jwt from 'jsonwebtoken';
 import config from '../static/config';
 
 const { KEYS } = config;
 const { KB_TOKEN } = KEYS;
 
-/*eslint-disable*/
 const keycloak = Keycloak({
   realm: 'TestKB',
   clientId: 'GraphKB',
   url: 'http://ga4ghdev01.bcgsc.ca:8080/auth',
 });
 
-
 const GRAPHKB_ROLE = 'GraphKB';
 
 export default {
   GRAPHKB_ROLE,
   logout: async () => {
+    localStorage.removeItem(KB_TOKEN);
     try {
       await keycloak.init();
-      localStorage.removeItem(KB_TOKEN);
       const resp = await keycloak.logout();
       return resp;
     } catch (err) {
-      localStorage.removeItem(KB_TOKEN);
       return err;
     }
   },

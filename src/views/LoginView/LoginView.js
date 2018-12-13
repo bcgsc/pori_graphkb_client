@@ -38,7 +38,6 @@ class LoginView extends Component {
     const token = await auth.login();
     try {
       const response = await api.post('/token', { keyCloakToken: token });
-      console.log(response);
       auth.loadToken(response.kbToken);
       handleAuthenticate();
       history.push('/query');

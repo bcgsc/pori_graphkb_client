@@ -82,7 +82,7 @@ class Main extends Component {
    */
   async handleLogOut() {
     await auth.logout();
-    this.setState({ loggedIn: false, anchorEl: null, drawerOpen: false });
+    this.setState({ anchorEl: null, drawerOpen: false });
   }
 
   /**

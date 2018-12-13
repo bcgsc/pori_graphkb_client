@@ -25,7 +25,7 @@ class LoginView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      initialized: false,
+      unauthorized: false,
     };
   }
 
@@ -35,27 +35,22 @@ class LoginView extends Component {
    */
   async componentDidMount() {
     const { handleAuthenticate } = this.props;
-    if (auth.getToken() && auth.isExpired()) {
+    const token = await auth.login();
+    try {
+      const response = await api.post('/token', { keyCloakToken: token });
+      console.log(response);
+      auth.loadToken(response.kbToken);
+      handleAuthenticate();
       history.push('/query');
-    } else {
-      const token = await auth.login();
-      const response = await api.post('/token', token);
-
-      if (response) {
-        handleAuthenticate();
-        if (auth.isLoggedIn()) {
-          history.push('/query');
-        } else {
-          this.setState({ initialized: true });
-        }
-      }
+    } catch (error) {
+      this.setState({ unauthorized: true });
     }
   }
 
 
   render() {
-    const { initialized } = this.state;
-    return initialized && (
+    const { unauthorized } = this.state;
+    return unauthorized && (
       <Typography>
         You do not have access to the GraphKB Project. Create a JIRA Ticket
         for systems in order to be added to GraphKB.

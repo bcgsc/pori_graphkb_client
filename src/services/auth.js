@@ -34,7 +34,7 @@ export default {
   },
   login: async () => {
     await keycloak.init({ onLoad: 'login-required', promiseType: 'native' });
-    return jwt.decode(keycloak.token);
+    return keycloak.token;
   },
   /**
    * Retrieves Knowledge Base token.
@@ -75,7 +75,7 @@ export default {
   getUser: () => {
     const token = localStorage.getItem(KB_TOKEN);
     if (token && jwt.decode(token)) {
-      return jwt.decode(token);
+      return jwt.decode(token).user;
     }
     return null;
   },
@@ -84,7 +84,6 @@ export default {
    * Returns true if user is in the 'admin' usergroup.
    */
   isAdmin: () => {
-    return true;
     const token = localStorage.getItem(KB_TOKEN);
     if (token && jwt.decode(token)) {
       return !!jwt.decode(token).user.groups.find(group => group.name === 'admin');

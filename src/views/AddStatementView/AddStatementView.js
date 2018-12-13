@@ -65,7 +65,7 @@ class AddStatementViewBase extends Component {
       return rPayload;
     });
     payload.supportedBy = relationshipPayloads.filter(r => r['@class'] === 'SupportedBy');
-    payload.impliedBy = relationshipPayloads.filter(r => r['@class'] === 'Implies');
+    payload.impliedBy = relationshipPayloads.filter(r => r['@class'] === 'ImpliedBy');
     try {
       await api.post(route, payload);
       return true;
@@ -98,7 +98,7 @@ class AddStatementViewBase extends Component {
         <StatementFormComponent
           schema={schema}
           onSubmit={this.handleSubmit}
-          handleFinish={this.handleFinish}
+          onDelete={this.handleFinish}
           is409={is409}
         />
       </div>

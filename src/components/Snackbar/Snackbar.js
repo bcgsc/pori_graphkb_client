@@ -106,4 +106,5 @@ SnackbarProvider.defaultProps = {
 export {
   SnackbarProvider,
   withSnackbar,
+  SnackbarContext,
 };

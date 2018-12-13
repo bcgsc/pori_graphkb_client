@@ -15,7 +15,7 @@ import {
 import * as qs from 'querystring';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
 import { withKB } from '../../components/KBContext/KBContext';
-import { withSnackbar } from '../../components/Snackbar/Snackbar';
+import { SnackbarContext } from '../../components/Snackbar/Snackbar';
 import FormTemplater from '../../components/FormTemplater/FormTemplater';
 import util from '../../services/util';
 import auth from '../../services/auth';
@@ -60,7 +60,8 @@ class AdvancedQueryViewBase extends Component {
    * Initializes valid sources.
    */
   async componentDidMount() {
-    const { history, schema, snackbar } = this.props;
+    const { history, schema } = this.props;
+    const snackbar = this.context;
     if (
       history.location
       && history.location.state
@@ -256,7 +257,9 @@ AdvancedQueryViewBase.propTypes = {
   schema: PropTypes.object.isRequired,
 };
 
-const AdvancedQueryView = withSnackbar(withKB(AdvancedQueryViewBase));
+AdvancedQueryViewBase.contextType = SnackbarContext;
+
+const AdvancedQueryView = withKB(AdvancedQueryViewBase);
 
 /**
  * Export consumer component and regular component for testing.

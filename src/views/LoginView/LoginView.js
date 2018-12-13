@@ -35,15 +35,17 @@ class LoginView extends Component {
    */
   async componentDidMount() {
     const { handleAuthenticate } = this.props;
-    const token = await auth.login();
-    try {
-      const response = await api.post('/token', { keyCloakToken: token });
-      auth.loadToken(response.kbToken);
-      handleAuthenticate();
-      history.push('/query');
-    } catch (error) {
-      this.setState({ unauthorized: true });
-    }
+    setTimeout(async () => {
+      const token = await auth.login();
+      try {
+        const response = await api.post('/token', { keyCloakToken: token });
+        auth.loadToken(response.kbToken);
+        handleAuthenticate();
+        history.push('/query');
+      } catch (error) {
+        this.setState({ unauthorized: true });
+      }
+    }, 0);
   }
 
 
@@ -52,10 +54,19 @@ class LoginView extends Component {
     return unauthorized && (
       <div className="login-wrapper">
         <Typography variant="h5">
-          You do not have access to the GraphKB Project. Create a JIRA Ticket
-          for systems in order to be added to GraphKB.
-      </Typography>
-      </div>
+          You do not have access to the GraphKB Project. To gain access, please
+          create a systems JIRA ticket or email graphkb@bcgsc.ca.
+        </Typography>
+        <Button
+          id="redirect-btn"
+          onClick={auth.logout}
+          size="large"
+          variant="contained"
+          color="primary"
+        >
+          Back to login
+        </Button>
+      </div >
     );
   }
 }

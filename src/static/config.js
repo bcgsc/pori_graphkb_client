@@ -1,9 +1,8 @@
 export default {
   API_BASE_URL: process.env.REACT_APP_API_BASE_URL || 'http://kbapi01:8112/api',
   KEYS: {
-    SOURCES: 'sources',
-    SCHEMA: 'schema',
     KB_TOKEN: 'kbToken',
+    KEYCLOAK_TOKEN: 'kcToken',
   },
   FEEDBACK_EMAIL: 'ibeckie@bcgsc.ca',
   FEEDBACK_HIPCHAT: '@IsaacBeckie',

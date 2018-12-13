@@ -1,10 +1,17 @@
 .login-wrapper {
   display: flex;
+  flex-direction: column;
   margin: 32px;
   height: calc(50% + 16px);
   > h5 {
     text-align: center;
     margin: auto;
     margin-bottom: 0;
+  }
+  $btn-margin: 2rem;
+  > button {
+    margin: auto;
+    margin-top: $btn-margin;
+    margin-bottom: -#{$btn-margin};
   }
 }

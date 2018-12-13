@@ -181,7 +181,7 @@ class Main extends Component {
                 >
                   <PersonIcon />
                   <Typography color="inherit">
-                    {(auth.getUser() && auth.getUser().preferred_username) || 'Logged Out'}
+                    {(auth.getUser() && auth.getUser().name) || 'Logged Out'}
                   </Typography>
                 </Button>
                 <Popover

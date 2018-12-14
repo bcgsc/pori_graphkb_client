@@ -10,7 +10,7 @@ const { KEYS } = config;
 const { KB_TOKEN, KEYCLOAK_TOKEN } = KEYS;
 
 const keycloak = Keycloak({
-  realm: 'TestKB',
+  realm: 'TestKB', // TODO: Migrate over to production keycloak realm (will probably be something like "GSC")s
   clientId: 'GraphKB',
   url: 'http://ga4ghdev01.bcgsc.ca:8080/auth',
 });
@@ -23,8 +23,8 @@ export default {
     localStorage.removeItem(KB_TOKEN);
     localStorage.removeItem(KEYCLOAK_TOKEN);
     try {
-      await keycloak.init();
-      const resp = await keycloak.logout();
+      keycloak.init();
+      const resp = await keycloak.logout({ redirectUri: `${window.location.origin}/login` });
       return resp;
     } catch (err) {
       return err;

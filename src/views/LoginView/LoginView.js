@@ -43,8 +43,8 @@ class LoginView extends Component {
       try {
         const response = await api.post('/token', { keyCloakToken: token });
         auth.loadToken(response.kbToken);
-        handleAuthenticate();
         history.push('/query');
+        handleAuthenticate();
       } catch (error) {
         this.setState({ unauthorized: true });
       }

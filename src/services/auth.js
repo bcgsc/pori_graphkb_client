@@ -6,13 +6,13 @@ import Keycloak from 'keycloak-js';
 import * as jwt from 'jsonwebtoken';
 import config from '../static/config';
 
-const { KEYS } = config;
+const { KEYS, KEYCLOAK } = config;
 const { KB_TOKEN, KEYCLOAK_TOKEN } = KEYS;
 
 const keycloak = Keycloak({
-  realm: 'TestKB', // TODO: Migrate over to production keycloak realm (will probably be something like "GSC")s
-  clientId: 'GraphKB',
-  url: 'http://ga4ghdev01.bcgsc.ca:8080/auth',
+  realm: KEYCLOAK.REALM,
+  clientId: KEYCLOAK.CLIENT_ID,
+  url: KEYCLOAK.URL,
 });
 
 const GRAPHKB_ROLE = 'GraphKB';

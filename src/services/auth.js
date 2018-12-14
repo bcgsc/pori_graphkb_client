@@ -92,7 +92,6 @@ const isAdmin = () => {
 const login = async () => {
   await keycloak.init({ onLoad: 'login-required', promiseType: 'native' });
   loadKeyCloakToken(keycloak.token);
-  console.log(jwt.decode(keycloak.token));
   return keycloak.token;
 };
 

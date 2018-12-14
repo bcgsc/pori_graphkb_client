@@ -14,7 +14,8 @@ import listFields from '../../static/tutorial/list-fields.png';
 import linkFields from '../../static/tutorial/link-fields.png';
 import selectFields from '../../static/tutorial/select-fields.png';
 import queryResults from '../../static/tutorial/table-tutorial.png';
-import grephResults from '../../static/tutorial/graph-tutorial.png';
+import graphResults from '../../static/tutorial/graph-tutorial.png';
+import graphActions from '../../static/tutorial/graph-actions.png';
 import config from '../../static/config';
 
 const { API_BASE_URL } = config;
@@ -157,7 +158,37 @@ function TutorialView() {
             <Typography variant="subtitle2">Graph</Typography>
           </ListItem>
           <ListItem>
-            <img src={grephResults} alt="Graph" className="tutorial-central-image" />
+            <img
+              src={graphResults}
+              alt="Graph"
+              className="tutorial-central-image"
+            />
+          </ListItem>
+          <ListItem>
+            The Graph view can be used to view clusters of records and their
+            relationships with eachother. Click and drag nodes with your mouse
+            or finger, and open the Graph settings to change labels, coloring
+            schemes, and physical behavior of the graph and its constituents.
+          </ListItem>
+          <ListItem>
+            <img
+              src={graphActions}
+              alt="Graph Node Actions"
+              className="tutorial-central-image"
+            />
+          </ListItem>
+          <ListItem>
+            After clicking a graph node or link, you will see this actions ring
+            appear, which will allow you to:
+          </ListItem>
+          <ListItem>
+            <ListItemText inset primary="Expand the record to view its related records" />
+          </ListItem>
+          <ListItem>
+            <ListItemText inset primary="Hide the record from the graph" />
+          </ListItem>
+          <ListItem>
+            <ListItemText inset primary="View record details in a side drawer" />
           </ListItem>
         </List>
       </Paper>

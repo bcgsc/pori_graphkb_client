@@ -30,11 +30,13 @@ class LoginView extends Component {
   }
 
   /**
-   * Checks if there is a timedout flag in passed state to notify user, then
-   * updates parent component if user is logged out with handleLogOut.
+   * Sends user to log in to keycloak then checks token validity against api.
+   * Redirects to /query if successful, displays unauthorized message
+   * otherwise.
    */
   async componentDidMount() {
     const { handleAuthenticate } = this.props;
+    // Clear event loop
     setTimeout(async () => {
       if (auth.isExpired()) {
         await auth.logout();
@@ -44,10 +46,10 @@ class LoginView extends Component {
         const response = await api.post('/token', { keyCloakToken: token });
         auth.loadToken(response.kbToken);
         history.push('/query');
-        handleAuthenticate();
       } catch (error) {
         this.setState({ unauthorized: true });
       }
+      handleAuthenticate();
     }, 0);
   }
 

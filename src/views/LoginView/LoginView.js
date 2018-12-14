@@ -37,10 +37,13 @@ class LoginView extends Component {
   async componentDidMount() {
     const { handleAuthenticate } = this.props;
     // Clear event loop
-    setTimeout(async () => {
-      if (auth.isExpired()) {
-        await auth.logout();
-      }
+    if (auth.isExpired()) {
+      await auth.logout();
+    }
+    if (auth.getKeyCloakToken()) {
+      handleAuthenticate();
+      history.push('/query');
+    } else {
       const token = await auth.login();
       try {
         const response = await api.post('/token', { keyCloakToken: token });
@@ -48,9 +51,10 @@ class LoginView extends Component {
         history.push('/query');
       } catch (error) {
         this.setState({ unauthorized: true });
+      } finally {
+        handleAuthenticate();
       }
-      handleAuthenticate();
-    }, 0);
+    }
   }
 
 

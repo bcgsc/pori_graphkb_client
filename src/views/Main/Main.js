@@ -105,7 +105,6 @@ class Main extends Component {
       />
     );
 
-
     const links = [
       {
         label: 'Query',

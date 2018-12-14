@@ -102,7 +102,7 @@ const login = async () => {
 const logout = async () => {
   clearToken();
   try {
-    keycloak.init();
+    await keycloak.init();
     const resp = await keycloak.logout({ redirectUri: `${window.location.origin}/login` });
     return resp;
   } catch (err) {

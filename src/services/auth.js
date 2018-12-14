@@ -9,13 +9,13 @@ import config from '../static/config';
 const { KEYS, KEYCLOAK } = config;
 const { KB_TOKEN, KEYCLOAK_TOKEN } = KEYS;
 
+
 const keycloak = Keycloak({
   realm: KEYCLOAK.REALM,
   clientId: KEYCLOAK.CLIENT_ID,
   url: KEYCLOAK.URL,
+  realm_access: { roles: [KEYCLOAK.GRAPHKB_ROLE] },
 });
-
-const GRAPHKB_ROLE = 'GraphKB';
 
 /**
  * Returns decoded keycloak token.
@@ -102,7 +102,7 @@ const login = async () => {
 const logout = async () => {
   clearToken();
   try {
-    await keycloak.init();
+    await keycloak.init({ promiseType: 'native' });
     const resp = await keycloak.logout({ redirectUri: `${window.location.origin}/login` });
     return resp;
   } catch (err) {
@@ -111,7 +111,7 @@ const logout = async () => {
 };
 
 export default {
-  GRAPHKB_ROLE,
+  GRAPHKB_ROLE: KEYCLOAK.GRAPHKB_ROLE,
   login,
   logout,
   getToken,

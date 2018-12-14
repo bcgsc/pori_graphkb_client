@@ -1,5 +1,5 @@
 export default {
-  API_BASE_URL: process.env.REACT_APP_API_BASE_URL || 'http://kbapi01:8112/api',
+  API_BASE_URL: process.env.REACT_APP_API_BASE_URL || 'http://kbapi01:8120/api',
   KEYS: {
     KB_TOKEN: 'kbToken',
     KEYCLOAK_TOKEN: 'kcToken',

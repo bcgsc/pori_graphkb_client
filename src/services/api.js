@@ -76,9 +76,7 @@ const fetchWithInterceptors = async (endpoint, init) => {
     history.push({
       pathname: '/error',
       state: {
-        message: error.message,
-        url: API_BASE_URL,
-        statusText: 'Fetch',
+        message: 'GraphKB is down',
       },
     });
     throw new Error('Unexpected Error, redirecting...');

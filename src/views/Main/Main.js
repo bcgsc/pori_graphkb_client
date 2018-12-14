@@ -58,7 +58,6 @@ class Main extends Component {
     };
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.handleLogOut = this.handleLogOut.bind(this);
     this.handleAuthenticate = this.handleAuthenticate.bind(this);
     this.handleNavBar = this.handleNavBar.bind(this);
   }
@@ -78,19 +77,11 @@ class Main extends Component {
   }
 
   /**
-   * Clears authentication token and sets logged in status to false.
-   */
-  async handleLogOut() {
-    await auth.logout();
-    this.setState({ anchorEl: null, drawerOpen: false });
-  }
-
-  /**
    * Disables action buttons in headers and force redirects to /login.
    * setState call required so component is re rendered.
    */
   handleAuthenticate() {
-    this.setState({ loggedIn: true });
+    this.setState({ loggedIn: (!!auth.getToken() && !auth.isExpired()) });
   }
 
   /**
@@ -214,7 +205,7 @@ class Main extends Component {
                         </MenuItem>
                       </Link>
                     )}
-                    <MenuItem onClick={this.handleLogOut}>
+                    <MenuItem onClick={auth.logout}>
                       Logout
                     </MenuItem>
                   </Card>

@@ -23,7 +23,7 @@ const testSchema = new Schema({
   Disease: {
     name: 'Disease',
     inherits: ['Ontology'],
-    properties: [
+    queryProperties: [
       { name: '@rid', type: 'string', mandatory: true },
       { name: 'name', type: 'string', mandatory: true },
       { name: 'sourceId', type: 'string' },

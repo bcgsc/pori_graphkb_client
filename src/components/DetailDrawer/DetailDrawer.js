@@ -355,7 +355,7 @@ class DetailDrawer extends Component {
                     color: isOpen ? 'secondary' : 'default',
                   }}
                   primary={<Typography variant="subtitle1">{preview}</Typography>}
-                  secondary={util.getEdgeLabel(`${isIn ? 'in' : 'out'}_${edge['@class']}`)}
+                  secondary={schema.get(edge['@class'])[isIn ? 'reverseName' : 'name']}
                 />
                 {!isOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
               </ListItem>
@@ -370,7 +370,7 @@ class DetailDrawer extends Component {
                     Link Properties
                   </ListSubheader>
                   {this.formatOtherProps(edge, true)}
-                  <ListItem dense button onClick={() => this.handleExpand(`${edge['@rid']}meta`)}>
+                  <ListItem dense button onClick={() => this.handleExpand(`${edge['@rid']} meta`)}>
                     <div className="nested-spacer" />
                     <ListItemText className="detail-li-text">
                       <Typography variant="subtitle1" color={metaOpen ? 'secondary' : 'default'}>
@@ -538,12 +538,12 @@ class DetailDrawer extends Component {
 
 /**
  * @namespace
- * @property {Object} schema - Knowledgebase schema object.
- * @property {Object} node - Ontology to be displayed in drawer.
- * @property {function} onClose - Function triggered on @material-ui/Drawer onClose event.
- * @property {bool} isEdge - Flag for edge classes.
- * @property {function} handleNodeEditStart - Function triggered on node edit button click.
- */
+* @property {Object} schema - Knowledgebase schema object.
+* @property {Object} node - Ontology to be displayed in drawer.
+* @property {function} onClose - Function triggered on @material-ui/Drawer onClose event.
+* @property {bool} isEdge - Flag for edge classes.
+* @property {function} handleNodeEditStart - Function triggered on node edit button click.
+    */
 DetailDrawer.propTypes = {
   schema: PropTypes.object,
   node: PropTypes.object,

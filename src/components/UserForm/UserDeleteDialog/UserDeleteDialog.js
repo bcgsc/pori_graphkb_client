@@ -12,6 +12,9 @@ import {
 import CancelIcon from '@material-ui/icons/Cancel';
 import DeleteRecordDialog from '../../DeleteRecordDialog/DeleteRecordDialog';
 
+/**
+ * Handles user delete dialog.
+ */
 function UserDeleteDialog(props) {
   const {
     open,
@@ -54,6 +57,15 @@ function UserDeleteDialog(props) {
   );
 }
 
+/**
+ * @namespace
+ * @property {boolean} open - dialog open state.
+ * @property {function} onClose - dialog close event handler.
+ * @property {function} onSubmit - deletion confirmation event handler.
+ * @property {function} onCancel - Unstage user from deletion event handler.
+ * @property {Array} selected - list of user records that are staged for deletion.
+ * @property {Array} users - list of all user records.
+ */
 UserDeleteDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,

@@ -1,5 +1,5 @@
-/* eslint-disable */
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Button,
   Dialog,
@@ -12,6 +12,9 @@ import {
 } from '@material-ui/core';
 import PermissionsTable from '../../PermissionsTable/PermissionsTable';
 
+/**
+ * New UserGroup dialog component.
+ */
 function UserGroupDialog(props) {
   const {
     userGroups,
@@ -79,5 +82,45 @@ function UserGroupDialog(props) {
     </Dialog>
   );
 }
+
+/**
+ * @namespace
+ * @property {Array} userGroups - List of usergroup records.
+ * @property {boolean} open - Dialog open state.
+ * @property {Object} tempUserGroupPermissions - Form permissions object.
+ * @property {string} tempUserGroupName - Form name string.
+ * @property {Object} schema - Knowledgebase schema object.
+ * @property {function} onClose - Handler on dialog close.
+ * @property {function} handleChange - Form input handler method.
+ * @property {function} handlePermissionsChange - Permission object change
+ * handler.
+ * @property {function} handlePermissionsCheckAll - Handle permissions column check all.
+ * @property {function} onSubmit - Handler on form submission.
+ */
+UserGroupDialog.propTypes = {
+  userGroups: PropTypes.array,
+  open: PropTypes.bool,
+  tempUserGroupPermissions: PropTypes.object,
+  tempUserGroupName: PropTypes.string,
+  schema: PropTypes.object,
+  onClose: PropTypes.func,
+  handleChange: PropTypes.func,
+  handlePermissionsChange: PropTypes.func,
+  handlePermissionsCheckAll: PropTypes.func,
+  onSubmit: PropTypes.func,
+};
+
+UserGroupDialog.defaultProps = {
+  userGroups: [],
+  open: false,
+  tempUserGroupPermissions: {},
+  tempUserGroupName: '',
+  onClose: null,
+  schema: null,
+  handleChange: null,
+  handlePermissionsChange: null,
+  handlePermissionsCheckAll: null,
+  onSubmit: null,
+};
 
 export default UserGroupDialog;

@@ -11,7 +11,7 @@ const { KB_TOKEN, KEYCLOAK_TOKEN } = KEYS;
 
 
 const keycloak = Keycloak({
-  realm: KEYCLOAK.REALM,
+  realm: KEYCLOAK.KEYCLOAK_REALM,
   clientId: KEYCLOAK.CLIENT_ID,
   url: KEYCLOAK.URL,
   realm_access: { roles: [KEYCLOAK.GRAPHKB_ROLE] },

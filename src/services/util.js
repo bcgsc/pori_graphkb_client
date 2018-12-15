@@ -2,13 +2,19 @@
  * Handles miscellaneous tasks.
  * @module /services/util
  */
-
 import * as jc from 'json-cycle';
 import config from '../static/config';
 
-const { PERMISSIONS } = config;
-const { PALLETE_SIZE } = config.GRAPH_DEFAULTS;
-const { NODE_INIT_RADIUS } = config.GRAPH_PROPERTIES;
+const {
+  PERMISSIONS,
+  GRAPH_DEFAULTS,
+  GRAPH_PROPERTIES,
+  KEYS,
+} = config;
+const { PALLETE_SIZE } = GRAPH_DEFAULTS;
+const { NODE_INIT_RADIUS } = GRAPH_PROPERTIES;
+const { GRAPH_OBJECTS } = KEYS;
+
 const ACRONYMS = [
   'id',
   'uuid',
@@ -24,8 +30,6 @@ const ACRONYMS = [
   'rid',
   'iupac',
 ];
-
-const GRAPH_OBJECTS_KEY = 'graphObjects';
 const DEFAULT_CUTOFF = 25;
 
 
@@ -294,7 +298,7 @@ const getPallette = (n, type) => {
 const loadGraphData = (search, data) => {
   const newData = Object.assign({ localStorageKey: search }, data);
   try {
-    localStorage.setItem(GRAPH_OBJECTS_KEY, JSON.stringify(jc.decycle(newData)));
+    localStorage.setItem(GRAPH_OBJECTS, JSON.stringify(jc.decycle(newData)));
   } catch (e) {
     // eslint-disable-next-line no-console
     console.error('localstorage quota exceeded');
@@ -306,7 +310,7 @@ const loadGraphData = (search, data) => {
  * @param {Object} search - collection of search parameters .
  */
 const getGraphData = (search) => {
-  const data = localStorage.getItem(GRAPH_OBJECTS_KEY);
+  const data = localStorage.getItem(GRAPH_OBJECTS);
   if (data) {
     const obj = jc.retrocycle(JSON.parse(data));
     if (obj.localStorageKey === search) {

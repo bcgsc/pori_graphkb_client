@@ -3,6 +3,7 @@ export default {
   KEYS: {
     KB_TOKEN: 'kbToken',
     KEYCLOAK_TOKEN: 'kcToken',
+    GRAPH_OBJECTS: 'graphObjects',
   },
   KEYCLOAK: {
     REALM: process.env.REACT_APP_REALM || 'TestKB', // TODO: Migrate over to production keycloak realm (will probably be something like "GSC")s

@@ -60,7 +60,6 @@ class Main extends Component {
     };
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.handleLogOut = this.handleLogOut.bind(this);
     this.handleAuthenticate = this.handleAuthenticate.bind(this);
     this.handleNavBar = this.handleNavBar.bind(this);
   }
@@ -80,19 +79,11 @@ class Main extends Component {
   }
 
   /**
-   * Clears authentication token and sets logged in status to false.
-   */
-  handleLogOut() {
-    auth.clearToken();
-    this.setState({ loggedIn: false, anchorEl: null, drawerOpen: false });
-  }
-
-  /**
    * Disables action buttons in headers and force redirects to /login.
    * setState call required so component is re rendered.
    */
   handleAuthenticate() {
-    this.setState({ loggedIn: true });
+    this.setState({ loggedIn: (!!auth.getToken() && !auth.isExpired()) });
   }
 
   /**
@@ -115,7 +106,6 @@ class Main extends Component {
         handleAuthenticate={this.handleAuthenticate}
       />
     );
-
 
     const links = [
       {
@@ -152,16 +142,13 @@ class Main extends Component {
         <Route path="/edit/variant/:rid" component={EditVariantView} />
         <Route path="/edit/statement/:rid" component={EditStatementView} />
         <Route path="/data" component={DataView} />
-        <Route path="/feedback" component={FeedbackView} />
         <Route path="/admin" component={AdminView} />
         <Route path="/tutorial" component={TutorialView} />
         <Redirect from="*" to="/query" />
       </Switch>
     );
-
     return (
       <KBContext.Provider value={{ schema: new Schema(SCHEMA_DEFN), user: auth.getUser() }}>
-
         <div className="Main">
           <AppBar
             position="absolute"
@@ -177,8 +164,9 @@ class Main extends Component {
               </IconButton>
             )}
             <div className="appbar-title">
-              <Link to="/query" onClick={this.handleNavBar(false)}>
+              <Link to="/query" onClick={this.handleNavBar(false)} disabled={!loggedIn}>
                 <Typography variant="h6">GraphKB</Typography>
+                <Typography variant="caption">v{process.env.REACT_APP_VERSION}</Typography>
               </Link>
             </div>
             <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>
@@ -187,12 +175,15 @@ class Main extends Component {
                   classes={{ root: 'user-btn' }}
                   onClick={this.handleOpen}
                   size="small"
-                  disabled={!loggedIn}
                   className="appbar-btn"
                 >
                   <PersonIcon />
                   <Typography color="inherit">
-                    {(auth.getUser() && auth.getUser().name) || 'Logged Out'}
+                    {auth.getKeyCloakToken()
+                      ? ((auth.getUser() && auth.getUser().name)
+                        || auth.getKeyCloakToken().preferred_username)
+                      : 'Logged Out'
+                    }
                   </Typography>
                 </Button>
                 <Popover
@@ -221,7 +212,7 @@ class Main extends Component {
                         </MenuItem>
                       </Link>
                     )}
-                    <MenuItem onClick={this.handleLogOut}>
+                    <MenuItem onClick={auth.logout}>
                       Logout
                     </MenuItem>
                   </Card>
@@ -241,11 +232,13 @@ class Main extends Component {
               onKeyDown={e => e.keyCode === 13 && this.handleNavBar(false)()}
             >
               <Switch>
+                <Route path="/feedback" component={FeedbackView} />
                 <Route path="/login" render={loginWithProps} />
                 <Route path="/error" component={ErrorView} />
                 {loggedIn
                   ? <Route path="/" render={() => loggedInContent} />
-                  : <Redirect push to="/login" />}
+                  : <Route path="*" render={() => <Redirect push to="/login" />} />
+                }
               </Switch>
             </div>
           </section>

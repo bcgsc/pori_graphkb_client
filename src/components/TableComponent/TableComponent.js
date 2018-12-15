@@ -230,8 +230,7 @@ class TableComponent extends Component {
     const rows = [];
     const rids = fData || Object.keys(data);
     const tsvColumns = allProps.filter(column => column !== 'preview');
-    rows.push(tsvColumns
-      .map(column => util.getEdgeLabel(column)).join('\t'));
+    rows.push(tsvColumns.join('\t'));
     rids.forEach((rid) => {
       const row = [];
       if (!hidden.includes(rid)) {

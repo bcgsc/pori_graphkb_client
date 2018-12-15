@@ -172,7 +172,7 @@ class StatementFormComponent extends Component {
         <NotificationDrawer
           open={notificationDrawerOpen}
           loading={loading}
-          onFinish={onFinish}
+          handleFinish={onFinish}
         />
         <div className="statement-form-wrapper">
           <div className="statement-form-node">

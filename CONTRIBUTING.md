@@ -82,7 +82,7 @@ The files generated for jest coverage reports are stored in the `/coverage` dire
 | src/App.[js, scss] | `React` app root component |
 | src/index.[js, scss] | `webpack` bundle root script, simply renders `React` app root component and registers service worker. |
 | src/registerServiceWorker.js | Boilerplate script from `create-react-app` to register a template service worker to  the browser |
-|
+
 
 
 ##### Branch conventions

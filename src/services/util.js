@@ -157,47 +157,6 @@ const expandEdges = edges => edges.reduce((r, edge) => {
 }, []);
 
 /**
- * Formatter meant for edge types given in the form:
- * '['in' | 'out']_[edgeType]'.
- *
- *    Format string:  in_[edgeType] => has[edgeType]
- *                    out_[edgeType] => [edgeType]
- *
- * @param {string} str - string to be formatted.
- */
-const getEdgeLabel = (str) => {
-  const edgeType = str.split('_')[1];
-  let retstr = edgeType || str;
-
-  if (str.startsWith('in_')) {
-    switch (edgeType.slice(edgeType.length - 2, edgeType.length)) {
-      case 'By':
-        if (
-          ['a', 'e', 'i', 'o', 'u', 'y']
-            .includes(edgeType.slice(edgeType.length - 6, edgeType.length - 5))
-        ) {
-          retstr = `${edgeType.slice(0, edgeType.length - 3)}s`;
-        } else {
-          retstr = `${edgeType.slice(0, edgeType.length - 4)}s`;
-        }
-        break;
-      case 'Of':
-        retstr = `has${edgeType.slice(0, edgeType.length - 2)}`;
-        break;
-      case 'es':
-        retstr = `${edgeType.slice(0, edgeType.length - 1)}dBy`;
-        break;
-      case 'rs':
-        retstr = `${edgeType.slice(0, edgeType.length - 1)}redBy`;
-        break;
-      default:
-        break;
-    }
-  }
-  return retstr;
-};
-
-/**
  * Returns the plaintext representation of a value in order to be loaded into
  * a TSV file. Parses nested objects and arrays using the key as reference.
  * @param {any} value - Value
@@ -452,7 +411,6 @@ const sortFields = (order = [], prop = 'name') => (a, b) => {
 export default {
   antiCamelCase,
   expandEdges,
-  getEdgeLabel,
   getTSVRepresentation,
   parsePayload,
   getPallette,

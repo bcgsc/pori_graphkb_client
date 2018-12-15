@@ -17,7 +17,7 @@ const testSchema = new Schema({
   },
   E: {
     subclasses: [
-      { name: 'Implies' },
+      { name: 'ImpliedBy' },
       { name: 'SupportedBy' },
     ],
   },
@@ -28,8 +28,8 @@ const testSchema = new Schema({
     },
     getPreview: () => 'pass',
   },
-  Implies: {
-    name: 'Implies',
+  ImpliedBy: {
+    name: 'ImpliedBy',
     inherits: ['E'],
     properties: {
       in: {
@@ -114,8 +114,8 @@ const validNode = {
     in: { '@rid': '#1' },
     out: { '@rid': '#2' },
   }],
-  in_Implies: [{
-    '@class': 'Implies',
+  in_ImpliedBy: [{
+    '@class': 'ImpliedBy',
     in: { '@rid': '#1' },
     out: { '@rid': '#2' },
   }],
@@ -178,7 +178,7 @@ describe('<StatementFormComponent />', () => {
           '@class': 'SupportedBy',
         },
         {
-          '@class': 'Implies',
+          '@class': 'ImpliedBy',
         },
       ],
     });

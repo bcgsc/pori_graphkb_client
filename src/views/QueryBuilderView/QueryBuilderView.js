@@ -27,7 +27,7 @@ import auth from '../../services/auth';
 const COMMENT_REGEX = /\/\/.*(?!\\n)/g;
 
 const EXAMPLE_PAYLOAD = `// See help for more info about constructing payloads
-// Example Query: "Find all statements that are implied by a variant on the gene KRAS"
+// Example Query: "Find statements that are implied by variants on the gene KRAS"
 {
     "compoundSyntax": true,
     "where": [

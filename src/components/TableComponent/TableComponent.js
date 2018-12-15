@@ -834,7 +834,6 @@ class TableComponent extends Component {
                         selected={isSelected}
                         onClick={() => handleDetailDrawerOpen(n, true)}
                         classes={{
-                          root: 'cursor-override',
                           selected: 'selected-override',
                         }}
                       >

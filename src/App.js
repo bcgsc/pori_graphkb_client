@@ -34,6 +34,7 @@ const theme = createMuiTheme({
   },
 });
 
+
 /**
  * Entry point to application. Handles routing, app theme, and logged in state.
  */

@@ -12,4 +12,7 @@ body {
 a {
   text-decoration: none;
   color: $md-secondary-color;
+  &[disabled] {
+    pointer-events: none;
+  }
 }

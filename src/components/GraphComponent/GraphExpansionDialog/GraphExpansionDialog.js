@@ -14,7 +14,6 @@ import {
   ListItem,
   ListItemText,
 } from '@material-ui/core';
-import util from '../../../services/util';
 
 /**
  * Dialog opened when a user attempts to open a heavily connected node.
@@ -72,7 +71,7 @@ function GraphExpansionDialog(props) {
                 color="secondary"
                 onClick={onStageClass(edge)}
               >
-                {util.getEdgeLabel(edge)}
+                {edge}
               </Button>
             </ListItem>
           ))}

@@ -39,34 +39,6 @@ describe('validate outputs for util methods', () => {
     util.expandEdges(testEdges).forEach((edge, i) => expect(edge).to.eq(expectedEdges[i]));
   });
 
-  it('getEdgeLabel', () => {
-    const testEdges = [
-      'in_AliasOf',
-      'out_AliasOf',
-      'out_DeprecatedBy',
-      'in_ElementOf',
-      'out_SupportedBy',
-      'in_SupportedBy',
-      'in_Implies',
-      'out_Implies',
-      'in_hasSubClass',
-    ];
-    const outputs = [
-      'hasAlias',
-      'AliasOf',
-      'DeprecatedBy',
-      'hasElement',
-      'SupportedBy',
-      'Supports',
-      'ImpliedBy',
-      'Implies',
-      'hasSubClass',
-    ];
-    testEdges.forEach((edge, i) => {
-      expect(util.getEdgeLabel(edge)).to.eq(outputs[i]);
-    });
-  });
-
   it('getTSVRepresentation', () => {
     const testTSVs = [
       {

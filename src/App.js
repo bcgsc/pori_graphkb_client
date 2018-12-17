@@ -5,7 +5,7 @@ import React from 'react';
 import { Router } from 'react-router-dom';
 import {
   createMuiTheme,
-  MuiThemeProvider
+  MuiThemeProvider,
 } from '@material-ui/core/styles';
 import Main from './views/Main/Main';
 

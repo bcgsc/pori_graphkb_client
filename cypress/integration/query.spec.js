@@ -1,11 +1,14 @@
 
 describe('Query Page Test', () => {
   beforeEach(() => {
-    cy.visit('/');
-    cy.url().should('includes', '/login');
-    cy.get('input[name=username]').type(Cypress.env('USER'));
-    cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
-    cy.url().should('includes', '/query');
+    cy.visit('/login');
+    cy.wait(1000).then(() => {
+      if (!localStorage.getItem('kcToken')) {
+        cy.get('input#username').type(Cypress.env('USER'));
+        cy.get('input#password').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
+      }
+      cy.url().should('includes', '/query');
+    });
   });
 
   it('Buttons are enabled', () => {
@@ -21,21 +24,11 @@ describe('Query Page Test', () => {
     });
 
     cy.get('div.droptions ul li:first span:first').click({ force: true });
-
-    cy.get('input[type=text]').then((inputText) => {
-      cy.get('#search-btn').click();
-      cy.then(() => {
-        cy.url().should('includes', encodeURI(`/data/table?name=~${inputText[0].value}`));
-      });
-    });
   });
 
   it('AutoSearch no results', () => {
     cy.get('input[type=text]').type('AAAAAAAAAAAAAAAAAAAAAA');
     cy.contains('No Results');
-    cy.get('#search-btn').click();
-    cy.wait(6500);
-    cy.url().should('includes', '/query');
   });
 
   it('Advanced search', () => {
@@ -62,7 +55,7 @@ describe('Query Page Test', () => {
     ].forEach(t => cy.url().should('includes', t));
   });
 
-  it('Other classes', () => {
+  it.only('Other classes', () => {
     cy.contains('Advanced Search').click();
     cy.get('#class-adv').click();
     const endpoints = [
@@ -85,7 +78,7 @@ describe('Query Page Test', () => {
 
     endpoints.forEach((endpoint) => {
       cy.get(`ul li[data-value=${endpoint}]`).click();
-      cy.contains(endpoint.replace(/[A-Z]/g, m => ` ${m}`).trim());
+      cy.contains(endpoint);
       cy.get('#class-adv').click();
     });
     cy.get(`ul li[data-value=${endpoints[endpoints.length - 1]}]`).click();

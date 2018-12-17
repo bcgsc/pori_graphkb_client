@@ -230,8 +230,7 @@ class TableComponent extends Component {
     const rows = [];
     const rids = fData || Object.keys(data);
     const tsvColumns = allProps.filter(column => column !== 'preview');
-    rows.push(tsvColumns
-      .map(column => util.getEdgeLabel(column)).join('\t'));
+    rows.push(tsvColumns.join('\t'));
     rids.forEach((rid) => {
       const row = [];
       if (!hidden.includes(rid)) {
@@ -971,7 +970,7 @@ class TableComponent extends Component {
 TableComponent.propTypes = {
   data: PropTypes.object.isRequired,
   detail: PropTypes.object,
-  displayed: PropTypes.array,
+  displayed: PropTypes.arrayOf(PropTypes.string),
   handleCheckAll: PropTypes.func.isRequired,
   handleCheckbox: PropTypes.func.isRequired,
   handleHideSelected: PropTypes.func.isRequired,
@@ -979,12 +978,12 @@ TableComponent.propTypes = {
   handleGraphRedirect: PropTypes.func.isRequired,
   handleDetailDrawerOpen: PropTypes.func.isRequired,
   handleSubsequentPagination: PropTypes.func,
-  hidden: PropTypes.array,
-  allProps: PropTypes.array,
+  hidden: PropTypes.arrayOf(PropTypes.string),
+  allProps: PropTypes.arrayOf(PropTypes.string),
   moreResults: PropTypes.bool,
   completedNext: PropTypes.bool,
   storedFilters: PropTypes.array,
-  defaultOrder: PropTypes.array,
+  defaultOrder: PropTypes.arrayOf(PropTypes.string),
   schema: PropTypes.object.isRequired,
 };
 

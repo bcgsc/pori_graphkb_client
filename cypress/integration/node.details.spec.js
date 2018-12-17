@@ -7,22 +7,16 @@ function goToClass(endpoint) {
   cy.get('#detail-drawer').should('exist');
 }
 
-function getRecord(name, sourceId) {
-  cy.get('input[name=limit]').type('10');
-  cy.get('textarea[name=name]').type(name);
-  cy.get('textarea[name=sourceId]').type(sourceId);
-  cy.contains('Search').click();
-  cy.get('table tbody tr:first').click({ force: true });
-  cy.get('#detail-drawer').should('exist');
-}
-
 describe('Node Detail ', () => {
   beforeEach(() => {
-    cy.visit('/');
-    cy.url().should('includes', '/login');
-    cy.get('input[name=username]').type(Cypress.env('USER'));
-    cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
-    cy.url().should('includes', '/query');
+    cy.visit('/login');
+    cy.wait(1000).then(() => {
+      if (!localStorage.getItem('kcToken')) {
+        cy.get('input#username').type(Cypress.env('USER'));
+        cy.get('input#password').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
+      }
+      cy.url().should('includes', '/query');
+    });
     cy.get('button.advanced-button').click();
     cy.url().should('includes', '/query/advanced');
   });
@@ -30,13 +24,6 @@ describe('Node Detail ', () => {
   it('Node Detail in Table View', () => {
     goToClass('Feature');
     cy.contains('Biotype');
-  });
-
-  it('Subset links', () => {
-    getRecord('disease by infectious agent', 'doid:0050117');
-    cy.contains('Subsets').click();
-    cy.contains('Doid#').click();
-    cy.url().should('not.includes', 'subsets=');
   });
 
   it('Graph view details', () => {

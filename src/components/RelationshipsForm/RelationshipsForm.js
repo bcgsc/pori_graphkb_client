@@ -98,12 +98,12 @@ class RelationshipsForm extends Component {
       let initEdge = edges[0];
       let direction = forward;
       if (typeof initEdge === 'object') {
-        initEdge = initEdge.name;
         direction = initEdge.direction === 'in';
+        initEdge = initEdge.name;
       }
       const newModel = schema.initModel({}, initEdge);
 
-      newModel[`${direction ? 'out' : 'in'}.data`] = { '@rid': nodeRid };
+      newModel[`${direction ? 'in' : 'out'}.data`] = { '@rid': nodeRid };
       newModel['@rid'] = this.applyTestId();
       this.setState({ model: newModel });
     }

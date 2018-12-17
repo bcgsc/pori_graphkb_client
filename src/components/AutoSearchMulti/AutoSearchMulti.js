@@ -123,7 +123,7 @@ class AutoSearchMulti extends Component {
     const { schema } = this.props;
     const pattern = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
 
-    const properties = schema.getProperties(cls, EXTRA_FORM_PROPS);
+    const properties = schema.getQueryProperties(cls, EXTRA_FORM_PROPS);
     const payload = util.parsePayload(model, properties, [], true);
     Object.keys(payload).forEach((k) => {
       const trimmed = String(payload[k]).trim();
@@ -278,7 +278,7 @@ class AutoSearchMulti extends Component {
       </Tooltip>
     );
 
-    const properties = schema.getProperties(cls, EXTRA_FORM_PROPS) || [];
+    const properties = schema.getQueryProperties(cls, EXTRA_FORM_PROPS) || [];
     const endpointName = superClass || (
       Object
         .values(schema.schema)
@@ -348,11 +348,7 @@ class AutoSearchMulti extends Component {
                         ? schema.getSubclassesOf(endpointName)
                         : schema.getQueryable()
                       ).map(m => m.name)}
-                  >
-                    {v => (
-                      <MenuItem key={v} value={v}>{v}</MenuItem>
-                    )}
-                  </ResourceSelectComponent>
+                  />
                 </ListItem>
                 {model && (
                   <div className="autosearch-multi-form-templater">
@@ -418,7 +414,7 @@ AutoSearchMulti.propTypes = {
   onChange: PropTypes.func,
   limit: PropTypes.number,
   endpoint: PropTypes.string,
-  property: PropTypes.array,
+  property: PropTypes.arrayOf(PropTypes.string),
   placeholder: PropTypes.string,
   label: PropTypes.string,
   required: PropTypes.bool,

@@ -5,12 +5,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './GraphComponent.css';
-import * as d3 from 'd3';
+import * as d3Zoom from 'd3-zoom';
+import * as d3Select from 'd3-selection';
+import * as d3Force from 'd3-force';
 import {
   IconButton,
   Tooltip,
-  Snackbar,
-  Button,
 } from '@material-ui/core';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -19,6 +19,9 @@ import GraphActionsNode from './GraphActionsNode/GraphActionsNode';
 import GraphOptionsPanel from './GraphOptionsPanel/GraphOptionsPanel';
 import GraphLinkDisplay from './GraphLinkDisplay/GraphLinkDisplay';
 import GraphNodeDisplay from './GraphNodeDisplay/GraphNodeDisplay';
+import GraphArrowMarker from './GraphArrowMarker/GraphArrowMarker';
+import GraphExpansionDialog from './GraphExpansionDialog/GraphExpansionDialog';
+import GraphLegend from './GraphLegend/GraphLegend';
 import util from '../../services/util';
 import config from '../../static/config';
 import {
@@ -27,12 +30,9 @@ import {
   GraphNode,
   GraphLink,
 } from './kbgraph';
-import GraphExpansionDialog from './GraphExpansionDialog/GraphExpansionDialog';
-import GraphLegend from './GraphLegend/GraphLegend';
+
 
 const {
-  ARROW_WIDTH,
-  ARROW_LENGTH,
   NODE_INIT_RADIUS,
   ZOOM_BOUNDS,
 } = config.GRAPH_PROPERTIES;
@@ -41,7 +41,6 @@ const { GRAPH_UNIQUE_LIMIT } = config.NOTIFICATIONS;
 
 // Component specific constants.
 const AUTO_SPACE_COEFFICIENT = 2;
-const SNACKBAR_AUTOHIDE_DURATION = 6000;
 const MARKER_ID = 'endArrow';
 const DIALOG_FADEOUT_TIME = 150;
 const HEAVILY_CONNECTED = 10;
@@ -60,7 +59,7 @@ class GraphComponent extends Component {
       expandable: {},
       expandedEdgeTypes: [],
       actionsNode: null,
-      simulation: d3.forceSimulation(),
+      simulation: d3Force.forceSimulation(),
       svg: undefined,
       width: 0,
       height: 0,
@@ -260,7 +259,7 @@ class GraphComponent extends Component {
     } = this.state;
     const { localStorageKey } = this.props;
     // remove all event listeners
-    svg.call(d3.zoom()
+    svg.call(d3Zoom.zoom()
       .on('zoom', null))
       .on('dblclick.zoom', null);
     simulation.on('tick', null);
@@ -274,22 +273,22 @@ class GraphComponent extends Component {
    */
   applyDrag(node) {
     const { simulation } = this.state;
-    d3.event.sourceEvent.stopPropagation();
+    d3Select.event.sourceEvent.stopPropagation();
 
-    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+    if (!d3Select.event.active) simulation.alphaTarget(0.3).restart();
 
     const dragged = () => {
-      node.fx = d3.event.x; // eslint-disable-line no-param-reassign
-      node.fy = d3.event.y; // eslint-disable-line no-param-reassign
+      node.fx = d3Select.event.x; // eslint-disable-line no-param-reassign
+      node.fy = d3Select.event.y; // eslint-disable-line no-param-reassign
     };
 
     const ended = () => {
-      if (!d3.event.active) simulation.alphaTarget(0);
+      if (!d3Select.event.active) simulation.alphaTarget(0);
       node.fx = null; // eslint-disable-line no-param-reassign
       node.fy = null; // eslint-disable-line no-param-reassign
     };
 
-    d3.event
+    d3Select.event
       .on('drag', dragged)
       .on('end', ended);
   }
@@ -309,7 +308,7 @@ class GraphComponent extends Component {
 
     simulation.force(
       'links',
-      d3
+      d3Force
         .forceLink(links)
         .strength(graphOptions.linkStrength)
         .id(d => d.getId()),
@@ -339,10 +338,10 @@ class GraphComponent extends Component {
     } = this.state;
     simulation.force(
       'link',
-      d3.forceLink().id(d => d.getId()),
+      d3Force.forceLink().id(d => d.getId()),
     ).force(
       'collide',
-      d3.forceCollide((d) => {
+      d3Force.forceCollide((d) => {
         if (graphOptions.autoCollisionRadius) {
           let obj = d.data;
           let key = graphOptions.nodeLabelProp;
@@ -357,27 +356,27 @@ class GraphComponent extends Component {
       }),
     ).force(
       'charge',
-      d3.forceManyBody()
+      d3Force.forceManyBody()
         .strength(-graphOptions.chargeStrength)
         .distanceMax(graphOptions.chargeMax),
     ).force(
       'center',
-      d3.forceCenter(
+      d3Force.forceCenter(
         width / 2,
         height / 2,
       ),
     );
 
-    const container = d3.select(this.zoom);
-    const svg = d3.select(this.graph);
+    const container = d3Select.select(this.zoom);
+    const svg = d3Select.select(this.graph);
 
     svg
       .attr('width', width)
       .attr('height', height)
-      .call(d3.zoom()
+      .call(d3Zoom.zoom()
         .scaleExtent(ZOOM_BOUNDS)
         .on('zoom', () => {
-          const { transform } = d3.event;
+          const { transform } = d3Select.event;
           container.attr(
             'transform',
             `translate(${transform.x},${transform.y})scale(${transform.k})`,
@@ -629,8 +628,8 @@ class GraphComponent extends Component {
    */
   updateColors() {
     ['node', 'link'].forEach((type) => {
-      const { [`${type}s`]: objs } = this.state;
-      const { graphOptions } = this.state;
+      const { snackbar } = this.props;
+      const { [`${type}s`]: objs, graphOptions } = this.state;
       const key = graphOptions[`${type}sColor`];
       const colors = {};
 
@@ -658,13 +657,12 @@ class GraphComponent extends Component {
       const notDefined = key && !props[key];
 
       if (tooManyUniques || noUniques || notDefined) {
-        let snackbarMessage = '';
         if (tooManyUniques) {
-          snackbarMessage = `${GRAPH_UNIQUE_LIMIT} (${graphOptions[`${type}sColor`]})`;
+          snackbar.add(`${GRAPH_UNIQUE_LIMIT} (${graphOptions[`${type}sColor`]})`);
         }
 
         graphOptions[`${type}sColor`] = '';
-        this.setState({ graphOptions, snackbarMessage }, () => this.updateColors());
+        this.setState({ graphOptions }, () => this.updateColors());
       } else {
         const pallette = util.getPallette(Object.keys(colors).length, `${type}s`);
         Object.keys(colors).forEach((color, i) => { colors[color] = pallette[i]; });
@@ -678,10 +676,14 @@ class GraphComponent extends Component {
 
   /**
    * Handles user selections within the actions ring.
+   * @param {function} action - callback function to be called before node is
+   * deselected.
    */
-  withClose(action) {
+  withClose(action = null) {
     return () => {
-      action();
+      if (action) {
+        action();
+      }
       this.setState({ actionsNode: null });
     };
   }
@@ -691,7 +693,7 @@ class GraphComponent extends Component {
    * @param {Event} e - User click event.
    * @param {Object} node - Clicked simulation node.
    */
-  async handleClick(e, node) {
+  async handleClick(node) {
     const { handleClick, handleDetailDrawerOpen } = this.props;
     // Prematurely loads neighbor data.
     await handleClick(node);
@@ -739,6 +741,9 @@ class GraphComponent extends Component {
     });
   }
 
+  /**
+   * Expands currently staged nodes.
+   */
   handleExpand() {
     const { actionsNode } = this.state;
     this.setState({ expansionDialogOpen: false });
@@ -750,7 +755,7 @@ class GraphComponent extends Component {
    * @param {Event} e - User click event.
    * @param {Object} link - Clicked simulation link.
    */
-  handleLinkClick(e, link) {
+  handleLinkClick(link) {
     const { handleDetailDrawerOpen } = this.props;
 
     // Update contents of detail drawer if open.
@@ -915,8 +920,6 @@ class GraphComponent extends Component {
       actionsNode,
       expandable,
       graphOptions,
-      simulation,
-      snackbarMessage,
       refreshable,
       actionsNodeIsEdge,
       graphOptionsOpen,
@@ -934,11 +937,10 @@ class GraphComponent extends Component {
       schema,
     } = this.props;
 
-    if (!simulation) return null;
 
     const linkLegendDisabled = (
       links.length === 0
-      || links.filter((l) => {
+      || !links.some((l) => {
         let source;
         let target;
         if (typeof l.source === 'object') {
@@ -952,62 +954,37 @@ class GraphComponent extends Component {
           ({ target } = l);
         }
         return source !== target;
-      }).length === 0
-    );
-
-    const snackbar = (
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        open={!!snackbarMessage}
-        onClose={() => this.setState({ snackbarMessage: null })}
-        autoHideDuration={SNACKBAR_AUTOHIDE_DURATION}
-        message={(
-          <span>
-            {snackbarMessage}
-          </span>
-        )}
-        action={(
-          <Button color="secondary" onClick={() => this.setState({ snackbarMessage: null })}>
-            Ok
-          </Button>
-        )}
-      />
+      })
     );
 
     const actionsRingOptions = actionsNodeIsEdge
       ? [
         {
           name: 'Details',
-          icon: <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />,
           action: this.withClose(() => handleDetailDrawerOpen(actionsNode, true, true)),
           disabled: link => link.getId() === (detail || {})['@rid'],
         },
         {
           name: 'Hide',
-          icon: <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" />,
           action: this.withClose(this.handleLinkHide),
           disabled: false,
         }] : [
         {
           name: 'Details',
-          icon: <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" />,
           action: this.withClose(() => handleDetailDrawerOpen(actionsNode, true)),
           disabled: node => node.getId() === (detail || {})['@rid'],
         },
         {
           name: 'Close',
-          icon: <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />,
-          action: this.withClose(() => { }),
+          action: this.withClose(),
         },
         {
           name: 'Expand',
-          icon: <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />,
           action: () => this.handleExpandRequest(actionsNode),
           disabled: node => !expandable[node.getId()],
         },
         {
           name: 'Hide',
-          icon: <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" />,
           action: this.withClose(this.handleNodeHide),
           disabled: () => nodes.length === 1,
         },
@@ -1017,7 +994,6 @@ class GraphComponent extends Component {
       <GraphActionsNode
         actionsNode={actionsNode}
         options={actionsRingOptions}
-        withClose={this.withClose}
         edge={actionsNodeIsEdge}
       />
     );
@@ -1029,7 +1005,7 @@ class GraphComponent extends Component {
         detail={detail}
         labelKey={graphOptions.linkLabelProp}
         color={graphOptions.getColor(link, 'links')}
-        handleClick={e => this.handleLinkClick(e, link)}
+        handleClick={() => this.handleLinkClick(link)}
         actionsNode={actionsNode}
         marker={`url(#${MARKER_ID})`}
       />));
@@ -1041,7 +1017,7 @@ class GraphComponent extends Component {
         detail={detail}
         labelKey={graphOptions.nodePreview ? 'preview' : graphOptions.nodeLabelProp}
         color={graphOptions.getColor(node, 'nodes')}
-        handleClick={e => this.handleClick(e, node)}
+        handleClick={() => this.handleClick(node)}
         expandable={expandable[node.getId()]}
         applyDrag={this.applyDrag}
         schema={schema}
@@ -1050,7 +1026,6 @@ class GraphComponent extends Component {
 
     return (
       <div className="graph-wrapper">
-        {snackbar}
         <GraphExpansionDialog
           schema={schema}
           node={expandNode}
@@ -1059,9 +1034,9 @@ class GraphComponent extends Component {
           links={links}
           expandExclusions={expandExclusions}
           onExpand={this.handleExpand}
-          onExpandAll={this.handleExpandCheckAll}
-          onExpandExclusion={this.handleExpandExclusion}
-          onExpandByClass={this.handleExpandByClass}
+          onStageAll={this.handleExpandCheckAll}
+          onStage={this.handleExpandExclusion}
+          onStageClass={this.handleExpandByClass}
         />
         <GraphOptionsPanel
           linkLegendDisabled={linkLegendDisabled}
@@ -1072,7 +1047,7 @@ class GraphComponent extends Component {
           handleGraphOptionsChange={this.handleGraphOptionsChange}
         />
 
-        <div className={`toolbar ${detail ? 'transition-left' : ''}`}>
+        <div className="toolbar">
           <Tooltip placement="top" title="Return to table view">
             <IconButton
               color="secondary"
@@ -1116,19 +1091,7 @@ class GraphComponent extends Component {
             }}
           >
             <defs>
-              <marker
-                id={MARKER_ID}
-                markerWidth={ARROW_LENGTH}
-                markerHeight={ARROW_WIDTH}
-                refY={ARROW_WIDTH / 2}
-                orient="auto"
-                markerUnits="strokeWidth"
-              >
-                <path
-                  d={`M0,0,L0,${ARROW_WIDTH} L ${ARROW_LENGTH}, ${ARROW_WIDTH / 2} z`}
-                  fill="#555"
-                />
-              </marker>
+              <GraphArrowMarker />
             </defs>
             <g ref={(node) => { this.zoom = node; }}>
               {linksDisplay}
@@ -1139,8 +1102,8 @@ class GraphComponent extends Component {
         </div>
         <GraphLegend
           graphOptions={graphOptions}
-          handleGraphOptionsChange={this.handleGraphOptionsChange}
-          disabled={linkLegendDisabled}
+          onChange={this.handleGraphOptionsChange}
+          linkDisabled={linkLegendDisabled}
           propsMap={propsMap}
         />
       </div>
@@ -1165,6 +1128,7 @@ class GraphComponent extends Component {
  * @property {string} localStorageKey - key to identify graph session data with in
  * localStorage.
  * @property {Object} schema - KnowledgeBase Schema.
+ * @property {Object} snackbar - App snackbar context value.
  */
 GraphComponent.propTypes = {
   handleClick: PropTypes.func,
@@ -1174,11 +1138,12 @@ GraphComponent.propTypes = {
   handleNewColumns: PropTypes.func.isRequired,
   detail: PropTypes.object,
   data: PropTypes.object.isRequired,
-  allProps: PropTypes.array,
-  edgeTypes: PropTypes.array,
-  displayed: PropTypes.array,
+  allProps: PropTypes.arrayOf(PropTypes.string),
+  edgeTypes: PropTypes.arrayOf(PropTypes.string),
+  displayed: PropTypes.arrayOf(PropTypes.string),
   localStorageKey: PropTypes.string,
   schema: PropTypes.object.isRequired,
+  snackbar: PropTypes.object.isRequired,
 };
 
 GraphComponent.defaultProps = {

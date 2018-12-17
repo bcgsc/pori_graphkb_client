@@ -2,66 +2,124 @@
  * Handles token storage and authentication.
  * @module /services/auth
  */
-
+import Keycloak from 'keycloak-js';
 import * as jwt from 'jsonwebtoken';
 import config from '../static/config';
 
-const { KEYS } = config;
-const { KB_TOKEN } = KEYS;
+const { KEYS, KEYCLOAK } = config;
+const { KB_TOKEN, KEYCLOAK_TOKEN } = KEYS;
+
+
+const keycloak = Keycloak({
+  realm: KEYCLOAK.REALM,
+  clientId: KEYCLOAK.CLIENT_ID,
+  url: KEYCLOAK.URL,
+  realm_access: { roles: [KEYCLOAK.GRAPHKB_ROLE] },
+});
+
+/**
+ * Returns decoded keycloak token.
+ */
+const getKeyCloakToken = () => jwt.decode(localStorage.getItem(KEYCLOAK_TOKEN));
+
+/**
+ * Loads KeyCloak token into localstorage.
+ */
+const loadKeyCloakToken = token => localStorage.setItem(KEYCLOAK_TOKEN, token);
+
+/**
+ * Retrieves Knowledge Base token.
+ */
+const getToken = () => localStorage.getItem(KB_TOKEN);
+
+/**
+ * Checks expiry date on JWT token and compares with current time.
+ */
+const isExpired = () => {
+  const token = localStorage.getItem(KB_TOKEN);
+  return !!(
+    token
+    && jwt.decode(token)
+    && !Number.isNaN(jwt.decode(token).exp)
+    && (jwt.decode(token).exp * 1000) < (new Date()).getTime()
+  );
+};
+
+/**
+ * Loads new Knowledge Base token into localstorage.
+ * @param {string} token - New Knowledge Base token.
+ */
+const loadToken = (token) => {
+  localStorage.setItem(KB_TOKEN, token);
+};
+
+/**
+ * Clears Knowledge Base token from localstorage.
+ */
+const clearToken = () => {
+  localStorage.removeItem(KB_TOKEN);
+  localStorage.removeItem(KEYCLOAK_TOKEN);
+};
+
+/**
+ * Returns username of currently logged in user.
+ */
+const getUser = () => {
+  const token = localStorage.getItem(KB_TOKEN);
+  if (token && jwt.decode(token)) {
+    return jwt.decode(token).user;
+  }
+  return null;
+};
+
+/**
+ * Returns true if user is in the 'admin' usergroup.
+ */
+const isAdmin = () => {
+  const token = localStorage.getItem(KB_TOKEN);
+  return !!(
+    token
+    && jwt.decode(token)
+    && jwt.decode(token).user
+    && jwt.decode(token).user.groups
+    && jwt.decode(token).user.groups.find(group => group.name === 'admin')
+  );
+};
+
+/**
+ * Redirects to keycloak login page, loads token into localstorage once returned.
+ */
+const login = async () => {
+  await keycloak.init({ onLoad: 'login-required', promiseType: 'native' });
+  loadKeyCloakToken(keycloak.token);
+  return keycloak.token;
+};
+
+/**
+ * Clears tokens and redirects user to keycloak login page. On successful login
+ * routes to /login.
+ */
+const logout = async () => {
+  clearToken();
+  try {
+    await keycloak.init({ promiseType: 'native' });
+    const resp = await keycloak.logout({ redirectUri: `${window.location.origin}/login` });
+    return resp;
+  } catch (err) {
+    return err;
+  }
+};
 
 export default {
-  /**
-   * Retrieves Knowledge Base token.
-   */
-  getToken: () => localStorage.getItem(KB_TOKEN),
-
-  /**
-   * Checks expiry date on JWT token and compares with current time.
-   */
-  isExpired: () => {
-    const token = localStorage.getItem(KB_TOKEN);
-    if (token && jwt.decode(token)) {
-      const expiry = jwt.decode(token).exp;
-      const now = new Date();
-      return now.getTime() > expiry * 1000;
-    }
-    return false;
-  },
-
-  /**
-   * Loads new Knowledge Base token into localstorage.
-   * @param {string} token - New Knowledge Base token.
-   */
-  loadToken: (token) => {
-    localStorage.setItem(KB_TOKEN, token);
-  },
-
-  /**
-   * Clears Knowledge Base token from localstorage.
-   */
-  clearToken: () => {
-    localStorage.removeItem(KB_TOKEN);
-  },
-
-  /**
-   * Returns username of currently logged in user.
-   */
-  getUser: () => {
-    const token = localStorage.getItem(KB_TOKEN);
-    if (token && jwt.decode(token)) {
-      return jwt.decode(token).user;
-    }
-    return null;
-  },
-
-  /**
-   * Returns true if user is in the 'admin' usergroup.
-   */
-  isAdmin: () => {
-    const token = localStorage.getItem(KB_TOKEN);
-    if (token && jwt.decode(token)) {
-      return !!jwt.decode(token).user.groups.find(group => group.name === 'admin');
-    }
-    return null;
-  },
+  GRAPHKB_ROLE: KEYCLOAK.GRAPHKB_ROLE,
+  login,
+  logout,
+  getToken,
+  loadToken,
+  loadKeyCloakToken,
+  getKeyCloakToken,
+  isAdmin,
+  isExpired,
+  getUser,
+  clearToken,
 };

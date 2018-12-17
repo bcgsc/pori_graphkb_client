@@ -147,7 +147,7 @@ function FormTemplater(props) {
         );
       }
     } else if (type === 'embedded') {
-      const properties = schema.getProperties((model[name] || {})['@class']);
+      const properties = schema.getProperties(model[name]);
       let classSelector = (
         <Typography variant="subtitle1">
           {util.antiCamelCase(name)}
@@ -284,6 +284,7 @@ function FormTemplater(props) {
       </ListItem>
     );
   };
+
 
   const completedpairs = {};
   const sortedProps = Object.values(propSchemas || {})

@@ -128,7 +128,7 @@ class DataViewBase extends Component {
 
     let { routeName } = schema.get('V');
     const omitted = [];
-    const kbClass = schema.get(queryParams['@class']);
+    const kbClass = schema.get(queryParams);
     if (kbClass) {
       ({ routeName } = kbClass);
       omitted.push('@class');
@@ -213,7 +213,7 @@ class DataViewBase extends Component {
     const { schema } = this.props;
     const { data } = this.state;
     if (!data[node.data['@rid']]) {
-      const routeName = schema.getRoute(node.data['@class']);
+      const { routeName } = schema.get(node.data);
       const endpoint = `${routeName || '/ontologies'}/${node.data['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`; // change
       const response = await api.get(endpoint);
       this.setState({ ...this.processData([jc.retrocycle(response).result]) });
@@ -222,10 +222,11 @@ class DataViewBase extends Component {
 
   /**
    * Adds node identifier to list of displayed nodes.
+   * @param {Event} event - User checkbox event.
    * @param {string} rid - Checked node identifier.
    */
-  handleCheckbox(e, rid) {
-    e.stopPropagation();
+  handleCheckbox(event, rid) {
+    event.stopPropagation();
     const { displayed } = this.state;
     const i = displayed.indexOf(rid);
     if (i === -1) {
@@ -238,11 +239,12 @@ class DataViewBase extends Component {
 
   /**
    * Adds all data entries to the list of displayed nodes.
-   * @param {Event} e - Checkbox event.
+   * @param {Event} event - Checkbox event.
+   * @param {Array.<Object>} - Currently displayed page data.
    */
-  handleCheckAll(e, pageData) {
+  handleCheckAll(event, pageData) {
     let displayed;
-    if (e.target.checked) {
+    if (event.target.checked) {
       displayed = pageData.map(d => d['@rid']);
     } else {
       displayed = [];
@@ -288,7 +290,7 @@ class DataViewBase extends Component {
 
         let route = '/ontologies';
         const omitted = [];
-        const kbClass = schema.get(filteredSearch['@class']);
+        const kbClass = schema.get(filteredSearch);
         if (kbClass) {
           ({ routeName: route } = kbClass);
           omitted.push('@class');
@@ -301,9 +303,9 @@ class DataViewBase extends Component {
           ...DataViewBase.prepareNextPagination(route, filteredSearch, nextData, omitted),
           completedNext: true,
         });
-      } catch (e) {
+      } catch (error) {
         // eslint-disable-next-line no-console
-        console.error(e);
+        console.error(error);
       }
     }
     return next;
@@ -317,7 +319,7 @@ class DataViewBase extends Component {
     const { history, schema } = this.props;
     if (detail) {
       let route;
-      const { inherits } = schema.get(detail['@class']);
+      const { inherits } = schema.get(detail);
       if (inherits && inherits.includes('Ontology')) {
         route = 'ontology';
       } else if (inherits && inherits.includes('Variant')) {

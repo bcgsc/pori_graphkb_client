@@ -67,7 +67,7 @@ class DetailDrawer extends Component {
   formatIdentifiers(node, isNested) {
     const { schema } = this.props;
     if (!node['@class']) return null;
-    const { identifiers, properties } = schema.get(node['@class']);
+    const { identifiers, properties } = schema.get(node);
     return this.formatProps(node, identifiers.reduce((array, id) => {
       const [key, nestedKey] = id.split('.');
       if (!schema.getMetadata().find(p => p.name === key)) {
@@ -296,12 +296,12 @@ class DetailDrawer extends Component {
    */
   formatOtherProps(node, isNested) {
     const { schema } = this.props;
-    const { identifiers } = schema.get(node['@class']);
+    const { identifiers } = schema.get(node);
 
     let properties = Object.keys(node)
       .map(key => ({ name: key, type: util.parseKBType(node[key]) }));
-    if (schema && schema.getProperties(node['@class'])) {
-      properties = schema.getProperties(node['@class']);
+    if (schema && schema.getProperties(node)) {
+      properties = schema.getProperties(node);
     }
     const propsList = Object.values(properties)
       .filter(prop => !identifiers.map(id => id.split('.')[0]).includes(prop.name)
@@ -475,7 +475,7 @@ class DetailDrawer extends Component {
               </Button>
             </div>
             <div className="detail-edit-btn">
-              {(schema.isSubclass(node['@class'], ['Ontology', 'Variant'])
+              {(schema.isSubclass(node, ['Ontology', 'Variant'])
                 || node['@class'] === 'Statement')
                 && (
                   <Button

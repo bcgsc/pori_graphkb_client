@@ -57,7 +57,7 @@ class UserForm extends Component {
   }
 
   /**
-   * Updates state change from user input.
+   * Updates state variables with a given input event.
    * @param {Event} event - user input event.
    */
   handleChange(event) {
@@ -99,7 +99,7 @@ class UserForm extends Component {
   }
 
   /**
-   * Toggles delete dialog open state.
+   * Toggles user delete dialog.
    */
   handleDeleteDialog() {
     const { deleteDialogOpen } = this.state;
@@ -107,7 +107,7 @@ class UserForm extends Component {
   }
 
   /**
-   * Calls user deletion handlers.
+   * Calls deleteUsers prop function.
    */
   handleUsersDelete() {
     const { deleteUsers } = this.props;
@@ -154,7 +154,8 @@ class UserForm extends Component {
   }
 
   /**
-   * Clears form state on form exit.
+   * Clears temp user data after dialog has exited so as to not flicker the
+   * contents.
    */
   handleExited() {
     this.setState({ newUserName: '', newUserGroups: [] });
@@ -206,7 +207,7 @@ class UserForm extends Component {
   }
 
   /**
-   * Validates form and calls add user handler.
+   * Validates form and submits payload to addUser prop function.
    */
   async handleUserAdd() {
     const { users, addUser } = this.props;

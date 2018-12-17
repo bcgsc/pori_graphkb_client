@@ -233,7 +233,10 @@ class TutorialView extends Component {
         </Paper>
         <Paper className="tutorial-body" elevation={4}>
           <div className="tutorial-paragraph">
-            <div dangerouslySetInnerHTML={{ __html: notationMd }} />
+            <div
+              id="variant-notation"
+              dangerouslySetInnerHTML={{ __html: notationMd }}
+            />
           </div>
         </Paper>
       </div>

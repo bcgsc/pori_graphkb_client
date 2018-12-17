@@ -135,6 +135,7 @@ class EmbeddedSetForm extends Component {
           className="embedded-list-textfield"
           id={`${label.toLowerCase()}-temp`}
           label={label}
+          name={label.toLowerCase()}
           value={tempElement}
           onChange={this.handleChange}
           disabled={disabled}
@@ -182,7 +183,7 @@ class EmbeddedSetForm extends Component {
  */
 EmbeddedSetForm.propTypes = {
   onChange: PropTypes.func.isRequired,
-  list: PropTypes.array,
+  list: PropTypes.arrayOf(PropTypes.string),
   label: PropTypes.string,
   name: PropTypes.string,
   error: PropTypes.bool,

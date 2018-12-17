@@ -78,20 +78,23 @@ class ErrorView extends Component {
           )}
         </div>
         <div className="error-content">
-          <div style={{ display: 'inline-flex', margin: 'auto' }}>
-            <Typography variant="subtitle1">
-              {statusText || ''}&nbsp;
-            </Typography>
-            {url && (
-              <React.Fragment>
+          {(statusText || url) && (
+            <div style={{ display: 'inline-flex', margin: 'auto' }}>
+              {statusText && (
                 <Typography variant="subtitle1">
-                  to URL&nbsp;
+                  {statusText}&nbsp;
                 </Typography>
-                <Typography variant="subtitle1" color="error">
-                  {url}
-                </Typography>
-              </React.Fragment>)}
-          </div>
+              )}
+              {url && (
+                <React.Fragment>
+                  <Typography variant="subtitle1">
+                    to URL&nbsp;
+                  </Typography>
+                  <Typography variant="subtitle1" color="error">
+                    {url}
+                  </Typography>
+                </React.Fragment>)}
+            </div>)}
         </div>
         <div className="error-content">
           <Typography variant="h6">

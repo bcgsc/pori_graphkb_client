@@ -1,24 +1,27 @@
 
 function getName(name) {
-  cy.get('input').type(`${name}{enter}`);
-  cy.url().should('includes', `/table?name=~${name}`);
+  cy.visit('/query/advanced');
+  cy.get('textarea[name=name]').type(name);
+  cy.contains('Search').click();
 }
 
 describe('Table Test', () => {
   beforeEach(() => {
-    cy.visit('/');
-    cy.url().should('includes', '/login');
-    cy.get('input[name=username]').type(Cypress.env('USER'));
-    cy.get('input[name=password]').type(Cypress.env('PASSWORD'), { log: false });
-    cy.get('button[type=submit]').click();
-    cy.url().should('includes', '/query');
+    cy.visit('/login');
+    cy.wait(1000).then(() => {
+      if (!localStorage.getItem('kcToken')) {
+        cy.get('input#username').type(Cypress.env('USER'));
+        cy.get('input#password').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
+      }
+      cy.url().should('includes', '/query');
+    });
   });
 
   /**
    * Tests checkboxes visuals.
    */
   it('Checkboxes', () => {
-    getName('melanoma');
+    getName('~disease');
     cy.get('table tbody tr').then((array) => {
       cy.wrap(array).each((row, i) => {
         if (i !== 0 && i !== array.length - 1) {
@@ -36,7 +39,7 @@ describe('Table Test', () => {
    * Tests node detail drawer expansion.
    */
   it('Expand details', () => {
-    getName('melanoma');
+    getName('~disease');
     cy.get('table tbody tr:first').click({ force: true });
     cy.get('#detail-drawer').should('exist');
     cy.get('div.detail-heading div.detail-headline>button').click();
@@ -47,7 +50,7 @@ describe('Table Test', () => {
    * Tables paginator navigation buttons.
    */
   it('Paginator', () => {
-    getName('melanoma');
+    getName('~disease');
     cy.get('div.pag div div div button').each((button, i) => {
       if (i !== 0) {
         cy.wrap(button).click();
@@ -67,7 +70,7 @@ describe('Table Test', () => {
    * Check all checkbox
    */
   it('Check-all', () => {
-    getName('diso');
+    getName('~diso');
     cy.get('table thead tr th:first input[type=checkbox]').click();
     cy.get('#ellipsis-menu').click();
     cy.contains('Hide selected rows (50)');
@@ -84,7 +87,7 @@ describe('Table Test', () => {
    * Tests download as TSV button.
    */
   it('Ellipsis menu: Download as TSV', () => {
-    getName('melanoma');
+    getName('~disease');
     cy.get('#ellipsis-menu').click();
     cy.get('#download-tsv').click();
   });
@@ -93,7 +96,7 @@ describe('Table Test', () => {
    * Tests hiding and showing table rows.
    */
   it('Ellipsis menu: hiding/returning rows', () => {
-    getName('melanoma');
+    getName('~disease');
     cy.get('table tbody tr').then((array) => {
       cy.contains('1-50').invoke('text').then((text) => {
         cy.log(text);
@@ -119,17 +122,15 @@ describe('Table Test', () => {
   /**
    * Tests column management.
    */
-  it('Ellipsis menu: column changes', () => {
-    getName('melanoma');
+  it.only('Ellipsis menu: column changes', () => {
+    getName('~disease');
     cy.get('#ellipsis-menu').click();
     cy.get('#column-edit').click();
     cy.contains('Select Columns:');
     cy.get('#subsets input[type=checkbox]').click();
-    cy.get('#deprecated').scrollIntoView();
-    cy.get('#deprecated input[type=checkbox]').click();
     cy.get('#column-dialog-actions button').click();
     cy.get('thead tr th').then((array) => {
-      cy.expect(array.length).to.eq(8);
+      cy.expect(array.length).to.eq(7);
     });
   });
 
@@ -137,7 +138,7 @@ describe('Table Test', () => {
    * Tests automatic loading of more records.
    */
   it('Subsequent Pagination', () => {
-    getName('diso');
+    cy.visit('/data/table?@class=Disease');
     cy.get('div.pag div div div button').each((button, i) => {
       // Chooses second button.
       if (i !== 0) {
@@ -156,7 +157,7 @@ describe('Table Test', () => {
    * Tests manual add button for loading more records.
    */
   it('Forced Subsequent Pagination', () => {
-    getName('diso');
+    cy.visit('/data/table?@class=Disease');
     cy.get('div.more-results-btn button').click();
     cy.contains('loading more results...');
     cy.contains('1000');
@@ -167,7 +168,7 @@ describe('Table Test', () => {
   /**
    * Tests table filters
    */
-  it.only('Filtering', () => {
+  it('Filtering', () => {
     cy.visit('/data/table?name=~diso&@class=Disease');
     cy.get('div.filter-btn button').each((button, i) => {
       if (i === 1) {

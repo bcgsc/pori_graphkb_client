@@ -67,15 +67,16 @@ const fetchWithInterceptors = async (endpoint, init) => {
     if (response.status === 409) {
       return Promise.reject(response);
     }
+    if (response.status === 403) {
+      return Promise.reject(response);
+    }
     history.push({ pathname: '/error', state: error });
     throw new Error('Unexpected Error, redirecting...');
   } catch (error) {
     history.push({
       pathname: '/error',
       state: {
-        message: error.message,
-        url: API_BASE_URL,
-        statusText: 'Fetch',
+        message: 'GraphKB is down',
       },
     });
     throw new Error('Unexpected Error, redirecting...');
@@ -135,7 +136,7 @@ const del = (endpoint) => {
 /**
  * Wrapper for autosearch method.
  * @param {string} endpoint - URL endpoint.
- * @param {string} property - Property to query.
+ * @param {Array.<string>} property - Property to query.
  * @param {string} value - Query input string.
  * @param {number} limit - Limit for number of returned matches.
  */
@@ -146,7 +147,7 @@ const autoSearch = (endpoint, property, value, limit) => {
   const literalRe = new RegExp(/^['"].*['"]$/);
   const m = !!(value.split(KB_SEP_CHARS).some(chunk => chunk.length < 4));
 
-  const orStr = `or=${property.join(',')}`;
+  const orStr = property.length > 1 ? `or=${property.join(',')}` : '';
   let extras = `limit=${limit}&neighbors=1`;
   let query;
 
@@ -161,7 +162,7 @@ const autoSearch = (endpoint, property, value, limit) => {
     extras += '&@class=!Publication';
   }
 
-  return get(`/${endpoint}?${query}&${orStr}&${extras}`);
+  return get(`/${endpoint}?${query}${orStr && `&${orStr}`}&${extras}`);
 };
 
 /**

@@ -5,7 +5,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import './GraphNodeDisplay.css';
-import * as d3 from 'd3';
+import * as d3Select from 'd3-selection';
+import * as d3Drag from 'd3-drag';
 import config from '../../../static/config';
 import { GraphNode } from '../kbgraph';
 
@@ -24,8 +25,8 @@ class GraphNodeDisplay extends PureComponent {
   componentDidMount() {
     const { node, applyDrag } = this.props;
     if (applyDrag) {
-      const nodeElement = d3.select(this.node);
-      nodeElement.call(d3.drag()
+      const nodeElement = d3Select.select(this.node);
+      nodeElement.call(d3Drag.drag()
         .on('start', () => applyDrag(node)));
     }
   }
@@ -34,8 +35,8 @@ class GraphNodeDisplay extends PureComponent {
    * Removes d3 listener from object.
    */
   componentWillUnmount() {
-    const nodeElement = d3.select(this.node);
-    nodeElement.call(d3.drag()
+    const nodeElement = d3Select.select(this.node);
+    nodeElement.call(d3Drag.drag()
       .on('start', null));
   }
 

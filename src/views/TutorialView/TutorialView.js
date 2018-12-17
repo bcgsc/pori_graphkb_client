@@ -22,7 +22,6 @@ import graphActions from '../../static/tutorial/graph-actions.png';
 import config from '../../static/config';
 
 const { API_BASE_URL } = config;
-const HGVS_LINK = 'https://svn.bcgsc.ca/bitbucket/projects/VDB/repos/knowledgebase_parser/browse/README.md';
 
 /**
  * Tutorial page
@@ -141,15 +140,6 @@ class TutorialView extends Component {
                 <img src={selectFields} alt="Select Fields" />
               </ListItem>
             </List>
-            <Typography variant="subtitle1" component="h4" paragraph>
-              HGVS Shorthand
-            </Typography>
-            <ListItem>
-              <Typography paragraph>
-                Variant Forms can be filled out using HGVS shorthand notation. Learn more&nbsp;
-                <a href={HGVS_LINK} target="_blank" rel="noopener noreferrer">here</a>.
-              </Typography>
-            </ListItem>
           </div>
         </Paper>
         <Paper className="tutorial-body" elevation={4}>

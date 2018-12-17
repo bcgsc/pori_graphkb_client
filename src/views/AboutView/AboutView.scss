@@ -1,4 +1,28 @@
+@import "../../globals";
 
-.pie-chart {
-    padding: 10px;
+.about-page {
+    display: grid;
+    grid-template-columns: min-content auto;
+    @include sm-media {
+        grid-template-columns: auto;
+        max-width: 100%;
+    }
+    > .pie-chart {
+        padding: 10px;
+        grid-column: 1;
+        text {
+            fill: white;
+        }
+        @include sm-media {
+            max-width: 100%;
+        }
+    }
+    > p {
+        grid-column: 2;
+        padding: 10px;
+        @include sm-media {
+            grid-column: 1;
+            max-width: 100%;
+        }
+    }
 }

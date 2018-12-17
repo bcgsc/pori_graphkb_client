@@ -40,16 +40,24 @@ class AboutView extends Component {
     if (stats.length === 0) return null;
 
     return (
-      <div className="about-wrapper">
-        <Paper className="about-headline">
-          <Typography variant="h5">About</Typography>
+      <div className="view-wrapper">
+        <Paper className="view-header" elevation={4}>
+          <Typography variant="h5">About GraphKB</Typography>
         </Paper>
-        <PieChart
-          height={500}
-          width={500}
-          innerRadius={100}
-          data={stats}
-        />
+        <Paper className="about-page">
+          <PieChart
+            height={500}
+            width={500}
+            innerRadius={100}
+            data={stats}
+          />
+          <Typography paragraph className="readable">
+            Knowlegebase is a curated database of variants in cancer and their therapeutic,
+            biological, diagnostic, and prognostic implications according to literature. The main
+            use of Knowlegebase is to act as the link between the known and published variant
+            information and the expermientally collected data.
+          </Typography>
+        </Paper>
       </div>
     );
   }

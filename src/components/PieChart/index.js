@@ -69,15 +69,16 @@ class PieChart extends Component {
         datum.noLabel = true;
       }
     }
-    console.log(data);
 
     const layout = this.pie(data);
     const translate = `translate(${x}, ${y})`;
+    const viewBox = `0 0 ${width} ${height}`;
 
     return (
       <svg
         height={height}
         width={width}
+        viewBox={viewBox}
         className="pie-chart"
       >
         <g transform={translate}>

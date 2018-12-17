@@ -20,6 +20,7 @@ import {
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
 import { schema as SCHEMA_DEFN } from '@bcgsc/knowledgebase-schema';
@@ -39,6 +40,7 @@ import {
   AddVariantView,
   EditVariantView,
   QueryBuilderView,
+  TutorialView,
 } from '..';
 import auth from '../../services/auth';
 import Schema from '../../services/schema';
@@ -89,7 +91,7 @@ class Main extends Component {
    * Sets main navigation drawer open state.
    */
   handleNavBar(state) {
-    return () => this.setState({ drawerOpen: state });
+    return () => this.setState({ drawerOpen: state, anchorEl: null });
   }
 
   render() {
@@ -122,6 +124,11 @@ class Main extends Component {
           { label: 'Statement', route: '/add/statement' },
         ],
       },
+      {
+        label: 'Tutorial',
+        icon: <HelpOutlineIcon />,
+        route: '/tutorial',
+      },
     ];
 
     const loggedInContent = (
@@ -138,6 +145,7 @@ class Main extends Component {
         <Route path="/edit/statement/:rid" component={EditStatementView} />
         <Route path="/data" component={DataView} />
         <Route path="/admin" component={AdminView} />
+        <Route path="/tutorial" component={TutorialView} />
         <Redirect from="*" to="/query" />
       </Switch>
     );

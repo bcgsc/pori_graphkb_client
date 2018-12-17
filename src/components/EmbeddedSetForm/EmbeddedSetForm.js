@@ -27,10 +27,10 @@ class EmbeddedSetForm extends Component {
 
   /**
    * Adds new element to state list. Clears temporary element field.
-   * @param {Event} e - User element add event (button click or Enter keypress)
+   * @param {Event} event - User element add event (button click or Enter keypress)
    */
-  handleAdd(e) {
-    e.preventDefault();
+  handleAdd(event) {
+    event.preventDefault();
     const {
       list,
       name,
@@ -91,10 +91,10 @@ class EmbeddedSetForm extends Component {
 
   /**
    * Handles user changes to component state.
-   * @param {Event} e - User change event.
+   * @param {Event} event - User change event.
    */
-  handleChange(e) {
-    this.setState({ tempElement: e.target.value });
+  handleChange(event) {
+    this.setState({ tempElement: event.target.value });
   }
 
   render() {
@@ -135,15 +135,16 @@ class EmbeddedSetForm extends Component {
           className="embedded-list-textfield"
           id={`${label.toLowerCase()}-temp`}
           label={label}
+          name={label.toLowerCase()}
           value={tempElement}
           onChange={this.handleChange}
           disabled={disabled}
           error={error}
-          onKeyDown={(e) => {
-            if (e.keyCode === 13) {
-              this.handleAdd(e);
+          onKeyDown={(event) => {
+            if (event.keyCode === 13) {
+              this.handleAdd(event);
             }
-            if (e.keyCode === 8 && !tempElement) {
+            if (event.keyCode === 8 && !tempElement) {
               this.handleDelete(list[list.length - 1]);
             }
           }}

@@ -1,18 +1,19 @@
 /**
  * @module /views/LoginView
  */
-
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './LoginView.css';
 import {
   Button,
   Typography,
-  TextField,
-  Snackbar,
 } from '@material-ui/core';
 import api from '../../services/api';
 import auth from '../../services/auth';
+import history from '../../services/history';
+import config from '../../static/config';
+
+const { FEEDBACK_EMAIL } = config;
 
 /**
  * View to handle user authentication. Redirected to if at any point during use
@@ -24,127 +25,57 @@ class LoginView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
-      password: '',
-      invalid: false,
-      timedout: false,
+      unauthorized: false,
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   /**
-   * Checks if there is a timedout flag in passed state to notify user, then
-   * updates parent component if user is logged out with handleLogOut.
+   * Sends user to log in to keycloak then checks token validity against api.
+   * Redirects to /query if successful, displays unauthorized message
+   * otherwise.
    */
-  componentDidMount() {
-    const { history, handleLogOut } = this.props;
-    const { timedout } = history.location.state || {};
-    if (!auth.getToken() || auth.isExpired()) {
-      handleLogOut();
+  async componentDidMount() {
+    const { handleAuthenticate } = this.props;
+    // Clear event loop
+    if (auth.isExpired()) {
+      await auth.logout();
     }
-    this.setState({ timedout: !!timedout });
-  }
-
-  /**
-   * Updates component state based on user input.
-   * @param {Event} e - Change event triggered from user inputs.
-   */
-  handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value, invalid: false });
-  }
-
-  /**
-   * Closes snackbar.
-   */
-  handleClose() {
-    this.setState({ timedout: false });
-  }
-
-  /**
-   * Makes authentication request to api.
-   * @param {Event} e - Submit event.
-   */
-  async handleSubmit(e) {
-    e.stopPropagation();
-    e.preventDefault();
-
-    const { username, password } = this.state;
-    const { history, handleAuthenticate } = this.props;
-
-    try {
-      const response = await api.post('/token', {
-        username,
-        password,
-      });
-      auth.loadToken(response.kbToken);
+    if (auth.getKeyCloakToken()) {
       handleAuthenticate();
       history.push('/query');
-    } catch (error) {
-      if (error.status === 401) {
-        this.setState({ invalid: true });
+    } else {
+      const token = await auth.login();
+      try {
+        const response = await api.post('/token', { keyCloakToken: token });
+        auth.loadToken(response.kbToken);
+        history.push('/query');
+      } catch (error) {
+        this.setState({ unauthorized: true });
+      } finally {
+        handleAuthenticate();
       }
     }
   }
 
-  /**
-   * Renders the component.
-   */
-  render() {
-    const {
-      username,
-      password,
-      invalid,
-      timedout,
-    } = this.state;
 
-    return (
+  render() {
+    const { unauthorized } = this.state;
+    const emailLink = <a href={`mailto:${FEEDBACK_EMAIL}`}>{FEEDBACK_EMAIL}</a>;
+    return unauthorized && (
       <div className="login-wrapper">
-        <Snackbar
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          open={timedout}
-          onClose={this.handleClose}
-          autoHideDuration={3000}
-          message={(
-            <span>
-              Session timed out.
-            </span>
-          )}
-        />
-        <form className="login-form" onSubmit={this.handleSubmit}>
-          <TextField
-            className="login-input"
-            name="username"
-            value={username}
-            onChange={this.handleChange}
-            type="text"
-            label="Username"
-            required
-            error={invalid}
-          />
-          <TextField
-            className="login-input"
-            name="password"
-            value={password}
-            onChange={this.handleChange}
-            type="password"
-            label="Password"
-            required
-            error={invalid}
-          />
-          <Button type="submit" color="primary" variant="contained">
-            Login
-          </Button>
-          <Typography variant="caption" id="caption">
-            Log in with your BC GSC web credentials
-          </Typography>
-          {invalid && (
-            <Typography variant="subtitle1" id="invalid-meessage">
-              Invalid Username or Password
-            </Typography>
-          )}
-        </form>
+        <Typography variant="h5">
+          You do not have access to the GraphKB Project. To gain access, please
+          create a systems JIRA ticket or email {emailLink}.
+        </Typography>
+        <Button
+          id="redirect-btn"
+          onClick={auth.logout}
+          size="large"
+          variant="contained"
+          color="primary"
+        >
+          Back to login
+        </Button>
       </div>
     );
   }
@@ -152,13 +83,9 @@ class LoginView extends Component {
 
 /**
  * @namespace
- * @property {object} history -  Application history object.
- * @property {function} handleLogOut - Updates parent state on unauthorized user.
  * @property {function} handleAuthenticate - Updates parent state on successful login.
  */
 LoginView.propTypes = {
-  history: PropTypes.object.isRequired,
-  handleLogOut: PropTypes.func.isRequired,
   handleAuthenticate: PropTypes.func.isRequired,
 };
 

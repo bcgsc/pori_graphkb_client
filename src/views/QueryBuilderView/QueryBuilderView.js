@@ -1,33 +1,48 @@
 /**
  * @module /views/QueryBuilderView
  */
-/* eslint-disable no-unused-vars */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './QueryBuilderView.css';
 import {
   Button,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
   Dialog,
   Paper,
   Typography,
-  Switch,
   Collapse,
   MenuItem,
+  Tooltip,
 } from '@material-ui/core';
-import * as qs from 'querystring';
-import AddIcon from '@material-ui/icons/Add';
-import CloseIcon from '@material-ui/icons/Close';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import HelpIcon from '@material-ui/icons/Help';
+import * as qs from 'querystring';
+import { Link } from 'react-router-dom';
 import { withKB } from '../../components/KBContext/KBContext';
-import util from '../../services/util';
-import api from '../../services/api';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
+import CodeInput from '../../components/CodeInput/CodeInput';
+import api from '../../services/api';
+import auth from '../../services/auth';
+
+const COMMENT_REGEX = /\/\/.*(?!\\n)/g;
+
+const EXAMPLE_PAYLOAD = `// See help for more info about constructing payloads
+// Example Query: "Find statements that are implied by variants on the gene KRAS"
+{
+    "compoundSyntax": true,
+    "where": [
+        {
+            "attr": "inE(impliedby).vertex.reference1.name",
+            "value": "KRAS"
+        }
+    ]
+}`;
+
+
+const parseJSON = (string) => {
+  const text = string.replace(COMMENT_REGEX, '');
+  return JSON.parse(text);
+};
 
 /**
  * Freeform query builder where users can add key-value pairs or nested groups
@@ -37,23 +52,19 @@ class QueryBuilderViewBase extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      params: {},
-      tempNested: { query: false },
-      tempNames: { query: '' },
-      tempValues: { query: '' },
       specOpen: false,
       specBlurbOpen: false,
-      endpoint: 'Ontology',
+      endpoint: 'Statement',
+      text: EXAMPLE_PAYLOAD,
+      error: '',
+      params: parseJSON(EXAMPLE_PAYLOAD),
     };
 
     this.bundle = this.bundle.bind(this);
-    this.toggleNested = this.toggleNested.bind(this);
-    this.handleAdd = this.handleAdd.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handleNested = this.handleNested.bind(this);
     this.handleToggle = this.handleToggle.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleText = this.handleText.bind(this);
   }
 
   /**
@@ -61,28 +72,21 @@ class QueryBuilderViewBase extends Component {
    */
   bundle() {
     const { params, endpoint } = this.state;
-    params['@class'] = endpoint;
-    const props = Object.keys(params).map(p => ({ name: p }));
-    const payload = util.parsePayload(params, props, [], true);
+    const cls = params['@class'] || endpoint;
+    delete params['@class'];
+    const payload = {
+      complex: encodeURIComponent(btoa(JSON.stringify(params))),
+      '@class': cls,
+    };
     return qs.stringify(payload);
   }
 
   /**
-   * Toggles staged param type between key-value pair and nested property key.
-   * @param {string} key - nested param key.
-   */
-  toggleNested(key) {
-    const { tempNested } = this.state;
-    tempNested[key] = !tempNested[key];
-    this.setState({ tempNested });
-  }
-
-  /**
    * Handles change of a state property.
-   * @param {Event} e - User input event.
+   * @param {Event} event - User input event.
    */
-  handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   /**
@@ -94,191 +98,46 @@ class QueryBuilderViewBase extends Component {
   }
 
   /**
-   * Handles change of a nested state property.
-   * @param {string} type - state key.
-   */
-  handleNested(type) {
-    return (e) => {
-      const { [type]: temp } = this.state;
-      const { name, value } = e.target;
-      temp[name] = value;
-      this.setState({ [type]: temp });
-    };
-  }
-
-  /**
-   * Adds temp param to the query.
-   * @param {string} k - Nested property key.
-   */
-  handleAdd(k) {
-    const {
-      tempNested,
-      tempNames,
-      tempValues,
-      params,
-    } = this.state;
-    if (
-      !tempNames[k]
-      || (!tempNested[k] && !tempValues[k])
-      || tempNames[k].includes(' ')
-    ) {
-      return;
-    }
-    const keys = k.split('.').slice(1);
-    keys.push(tempNames[k]);
-    const recursiveUpdate = (obj, rKeys, i) => {
-      const rObj = obj;
-      if (i === rKeys.length - 1) {
-        rObj[rKeys[i]] = tempNested[k] ? {} : tempValues[k];
-      } else {
-        rObj[rKeys[i]] = recursiveUpdate(obj[rKeys[i]], rKeys, i + 1);
-      }
-      return rObj;
-    };
-    recursiveUpdate(params, keys, 0);
-
-    tempNames[`${k}.${tempNames[k]}`] = '';
-    tempValues[`${k}.${tempNames[k]}`] = '';
-    tempNested[`${k}.${tempNames[k]}`] = false;
-    tempNames[k] = '';
-    tempValues[k] = '';
-    tempNested[k] = false;
-
-    this.setState({
-      params,
-      tempNames,
-      tempValues,
-      tempNested,
-    });
-  }
-
-  /**
-   * Deletes a parameter from the staged query.
-   * @param {string} k - Nested property key.
-   */
-  handleDelete(k) {
-    const {
-      params,
-      tempNames,
-      tempValues,
-      tempNested,
-    } = this.state;
-    const keys = k.split('.').slice(1);
-    const recursiveUpdate = (obj, rKeys, i) => {
-      const rObj = obj;
-      if (i === rKeys.length - 1) {
-        delete rObj[rKeys[i]];
-      } else {
-        rObj[rKeys[i]] = recursiveUpdate(obj[rKeys[i]], rKeys, i + 1);
-      }
-      return rObj;
-    };
-    delete tempNames[k];
-    delete tempValues[k];
-    delete tempNested[k];
-    recursiveUpdate(params, keys, 0);
-    this.setState({
-      params,
-      tempNames,
-      tempValues,
-      tempNested,
-    });
-  }
-
-  /**
    * Bundles query and navigates to query results page.
    */
   handleSubmit() {
     const { history } = this.props;
-    history.push({
-      pathname: '/data/table',
-      search: this.bundle(),
-    });
+    const { error } = this.state;
+    if (!error) {
+      history.push({
+        pathname: '/data/table',
+        search: this.bundle(),
+      });
+    }
+  }
+
+
+  /**
+   * Parses user input as JSON and sets error if malformed. Otherwise, update
+   * params object.
+   * @param {Event} event - User input event
+   */
+  handleText(event) {
+    const { value } = event.target;
+    try {
+      const params = parseJSON(value);
+      this.setState({ params, error: '' });
+    } catch (error) {
+      this.setState({ error: error.toString() });
+    } finally {
+      this.setState({ text: value });
+    }
   }
 
   render() {
     const { schema } = this.props;
     const {
-      params,
-      tempNested,
-      tempNames,
-      tempValues,
       specOpen,
       specBlurbOpen,
       endpoint,
+      text,
+      error,
     } = this.state;
-
-    const input = nested => (
-      <div className="qbv-input">
-        <div className="input-checkbox">
-          <input
-            type="checkbox"
-            onChange={() => this.toggleNested(nested.join('.'))}
-            checked={tempNested[nested.join('.')]}
-          />
-        </div>
-        <div className={`input-key ${tempNested[nested.join('.')] && 'input-key-nested'}`}>
-          <input
-            value={tempNames[nested.join('.')]}
-            name={nested.join('.')}
-            onChange={this.handleNested('tempNames')}
-            onKeyUp={e => e.keyCode === 13 ? this.handleAdd(nested.join('.')) : null}
-          />
-        </div>
-        {!tempNested[nested.join('.')]
-          && (
-            <div className="input-value">
-              <input
-                onChange={this.handleNested('tempValues')}
-                value={tempValues[nested.join('.')]}
-                name={nested.join('.')}
-                onKeyUp={e => e.keyCode === 13 ? this.handleAdd(nested.join('.')) : null}
-              />
-            </div>
-          )}
-        <AddIcon
-          className="formatted-close-btn"
-          onClick={() => this.handleAdd(nested.join('.'))}
-        />
-      </div>
-    );
-
-    const jsonFormat = (k, value, nested) => {
-      const newNested = [...nested, k];
-      if (typeof value === 'object') {
-        return (
-          <React.Fragment key={k}>
-            <div className="qbv-json-wrapper">
-              <span className="qbv-json-key">{k}</span><span>:&nbsp;</span><span>{'{'}</span>
-            </div>
-            <div className="qbv-nest">
-              {Object.keys(value).map(nestedK => jsonFormat(nestedK, value[nestedK], newNested))}
-            </div>
-            {input(newNested)}
-            <div className="qbv-json-wrapper">
-              <span className="qbv-json-close-brace">{'}'}{k !== 'query' && ','}</span>
-            </div>
-          </React.Fragment>
-        );
-      }
-      return (
-        <div key={k} className="qbv-json-wrapper">
-          <span>
-            <span className="qbv-json-key">
-              {k}
-            </span>
-            :&nbsp;
-            <span className="qbv-json-value">&quot;{value}&quot;</span>
-            ,
-          </span>
-          <CloseIcon
-            className="formatted-close-btn"
-            onClick={() => this.handleDelete(newNested.join('.'))}
-          />
-        </div>
-      );
-    };
-
     const iFrame = <iframe title="api spec" src={`${api.API_BASE_URL}/spec/#/`} />;
     return (
       <div className="qbv">
@@ -290,7 +149,7 @@ class QueryBuilderViewBase extends Component {
           onClose={this.handleToggle}
         >
           <div>
-            <div style={{ display: 'flex', flexDirection: 'row', padding: '1rem' }}>
+            <div className="qbv-help-blurb">
               <Typography variant="h5">Help</Typography>
               {specBlurbOpen
                 ? <ExpandLessIcon onClick={() => this.setState({ specBlurbOpen: false })} />
@@ -298,43 +157,69 @@ class QueryBuilderViewBase extends Component {
             </div>
             <Collapse in={specBlurbOpen}>
               <div style={{ padding: '1rem' }}>
-                Type key value pairs in the inputs to build your query. Use the
-                switch to add nested groups of parameters.
+                Build your query string as a JSON object. All queries sent
+                using this form will be complex POST queries.
                 <br />
                 <br />
                 Here is the GraphKB specification for the api version in use.
+                Follow complex POST syntax.
               </div>
             </Collapse>
           </div>
           {iFrame}
         </Dialog>
         <Paper className="qbv-header" elevation={4}>
-          <Button variant="outlined" onClick={this.handleToggle}>Help</Button>
+          <Tooltip title="Query building help">
+            <HelpIcon onClick={this.handleToggle} color="primary" />
+          </Tooltip>
           <Typography variant="h5">Query Builder</Typography>
         </Paper>
         <Paper className="qbv-body qbv-column-flex">
-          <ResourceSelectComponent
-            label="Endpoint"
-            name="endpoint"
-            resources={Object.values(schema.schema)
-              .filter(item => item.expose.GET && item.routeName)}
-            value={endpoint}
-            onChange={this.handleChange}
-          >
-            {item => <MenuItem key={item.name} value={item.name}>{item.routeName}</MenuItem>}
-          </ResourceSelectComponent>
+          <div className="qbv-endpoint">
+            <ResourceSelectComponent
+              label="Endpoint"
+              name="endpoint"
+              resources={schema.getQueryable(auth.isAdmin())}
+              value={endpoint}
+              onChange={this.handleChange}
+            >
+              {item => <MenuItem key={item.name} value={item.name}>{item.name}</MenuItem>}
+            </ResourceSelectComponent>
+          </div>
           <div className="qbv-json">
-            {jsonFormat('query', params, [])}
+            <CodeInput
+              placeholder="Query Payload"
+              value={text}
+              onChange={this.handleText}
+              tabIndex={0}
+              rules={[
+                { regex: /"[\w\t\-~!@#$`'%^&*()+=|\\{}[\];"<>,. ]+"(?![ \t]*:)/g, color: 'orange', className: '' },
+                { regex: /[^"\w*]([0-9]+|true|false)(?!\w*")/g, color: 'blue', className: '' },
+                { regex: /"\w+"[ \t]*:/g, color: 'purple', className: '' },
+                { regex: COMMENT_REGEX, color: 'green', className: '' },
+              ]}
+            />
+            {error && text && (
+              <Typography variant="caption" color="error">
+                {error}
+              </Typography>
+            )}
           </div>
         </Paper>
-        <Button
-          id="qbv-submit"
-          onClick={this.handleSubmit}
-          variant="contained"
-          color="primary"
-        >
-          Submit
-        </Button>
+        <Paper className="qbv-action-btns">
+          <Link to="/query/advanced">
+            <Button variant="contained">Back</Button>
+          </Link>
+
+          <Button
+            id="qbv-submit"
+            onClick={this.handleSubmit}
+            variant="contained"
+            color="primary"
+          >
+            Submit
+          </Button>
+        </Paper>
       </div>
     );
   }

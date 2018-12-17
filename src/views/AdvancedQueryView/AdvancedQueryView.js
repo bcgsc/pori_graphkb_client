@@ -11,14 +11,15 @@ import {
   MenuItem,
   ListItem,
   Paper,
-  Snackbar,
 } from '@material-ui/core/';
 import * as qs from 'querystring';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
-import util from '../../services/util';
-import FormTemplater from '../../components/FormTemplater/FormTemplater';
-import config from '../../static/config';
 import { withKB } from '../../components/KBContext/KBContext';
+import { SnackbarContext } from '../../components/Snackbar/Snackbar';
+import FormTemplater from '../../components/FormTemplater/FormTemplater';
+import util from '../../services/util';
+import auth from '../../services/auth';
+import config from '../../static/config';
 
 const DEFAULT_ORDER = [
   'name',
@@ -36,8 +37,6 @@ const DEFAULT_ORDER = [
   'appliesTo',
 ];
 
-const SNACKBAR_DURATION = 6000;
-
 /**
  * View for in-depth database query building. Form submissions will route to
  * the data results route to display the returned data. Forms are dynamically
@@ -49,15 +48,12 @@ class AdvancedQueryViewBase extends Component {
 
     this.state = {
       form: null,
-      classes: [],
-      message: '',
     };
 
     this.bundle = this.bundle.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleClassChange = this.handleClassChange.bind(this);
     this.handleNestedClassChange = this.handleNestedClassChange.bind(this);
-    this.handleClose = this.handleClose.bind(this);
   }
 
   /**
@@ -65,23 +61,22 @@ class AdvancedQueryViewBase extends Component {
    */
   async componentDidMount() {
     const { history, schema } = this.props;
+    const snackbar = this.context;
     if (
       history.location
       && history.location.state
       && history.location.state.message
     ) {
       const { message, name } = history.location.state;
-      this.setState({ message: `${name || ''}: ${message}` });
+      snackbar.add(`${name || ''}: ${message}`);
     }
 
-    const classes = [];
-    classes.push(...schema.getOntologies());
-    classes.push(...schema.getVariants());
-    classes.push({ name: 'Statement' });
-    const form = schema.initModel({}, 'Ontology', config.ONTOLOGY_QUERY_PARAMS);
+    const form = schema.initModel({}, 'Ontology', {
+      extraProps: config.ONTOLOGY_QUERY_PARAMS,
+      isQuery: true,
+    });
 
     this.setState({
-      classes,
       form,
     });
   }
@@ -93,7 +88,7 @@ class AdvancedQueryViewBase extends Component {
     const { form } = this.state;
     const { schema } = this.props;
     const params = ['@class'];
-    const properties = schema.getProperties(form['@class']) || [];
+    const properties = schema.getQueryProperties(form['@class']) || [];
     properties.push(...config.ONTOLOGY_QUERY_PARAMS);
     const payload = util.parsePayload(form, properties, params, true);
     return qs.stringify(payload);
@@ -134,7 +129,10 @@ class AdvancedQueryViewBase extends Component {
   async handleClassChange(e) {
     const { form } = this.state;
     const { schema } = this.props;
-    const newForm = schema.initModel(form, e.target.value || 'Ontology', config.ONTOLOGY_QUERY_PARAMS);
+    const newForm = schema.initModel(form, e.target.value || 'Ontology', {
+      extraProps: config.ONTOLOGY_QUERY_PARAMS,
+      isQuery: true,
+    });
     this.setState({ form: newForm });
   }
 
@@ -165,38 +163,18 @@ class AdvancedQueryViewBase extends Component {
     this.setState({ form });
   }
 
-  /**
-   * Closes notification snackbar.
-   */
-  handleClose() {
-    this.setState({ message: '' });
-  }
-
   render() {
     const {
       form,
-      classes,
-      message,
     } = this.state;
     const { history, schema } = this.props;
 
     if (!form) return null;
-    const props = schema.getProperties(form['@class']) || [];
+    const props = schema.getQueryProperties(form['@class']) || [];
     props.push(...config.ONTOLOGY_QUERY_PARAMS);
 
     return (
       <div className="adv-wrapper" elevation={4}>
-        <Snackbar
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          open={!!message}
-          onClose={this.handleClose}
-          autoHideDuration={SNACKBAR_DURATION}
-          message={(
-            <span>
-              {message}
-            </span>
-          )}
-        />
         <Paper elevation={4} className="adv-header">
           <Button
             onClick={() => history.push('/query/advanced/builder')}
@@ -216,11 +194,11 @@ class AdvancedQueryViewBase extends Component {
               name="@class"
               label="Class"
               id="class-adv"
-              resources={classes}
+              resources={schema.getQueryable(auth.isAdmin())}
             >
               {resource => (
                 <MenuItem key={resource.name} value={resource.name}>
-                  {resource.name ? util.antiCamelCase(resource.name) : '---'}
+                  {resource.name || '---'}
                 </MenuItem>
               )}
             </ResourceSelectComponent>
@@ -233,6 +211,7 @@ class AdvancedQueryViewBase extends Component {
             sort={util.sortFields(DEFAULT_ORDER)}
             ignoreRequired
             onClassChange={this.handleNestedClassChange}
+            disableLists // TODO: update once list syntax is defined
             pairs={{
               range: ['start', 'end'],
               sourceId: ['sourceId', 'sourceIdVersion'],
@@ -277,6 +256,8 @@ AdvancedQueryViewBase.propTypes = {
   history: PropTypes.object.isRequired,
   schema: PropTypes.object.isRequired,
 };
+
+AdvancedQueryViewBase.contextType = SnackbarContext;
 
 const AdvancedQueryView = withKB(AdvancedQueryViewBase);
 

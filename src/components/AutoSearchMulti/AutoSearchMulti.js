@@ -71,7 +71,7 @@ class AutoSearchMulti extends Component {
   componentDidMount() {
     const { schema } = this.props;
     const { cls } = this.state;
-    this.setState({ model: schema.initModel({}, cls, EXTRA_FORM_PROPS) || {} });
+    this.setState({ model: schema.initModel({}, cls, { extraProps: EXTRA_FORM_PROPS }) || {} });
   }
 
   /**
@@ -123,7 +123,7 @@ class AutoSearchMulti extends Component {
     const { schema } = this.props;
     const pattern = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
 
-    const properties = schema.getProperties(cls, EXTRA_FORM_PROPS);
+    const properties = schema.getQueryProperties(cls, EXTRA_FORM_PROPS);
     const payload = util.parsePayload(model, properties, [], true);
     Object.keys(payload).forEach((k) => {
       const trimmed = String(payload[k]).trim();
@@ -148,7 +148,7 @@ class AutoSearchMulti extends Component {
       this.setState({
         options: result,
         loading: false,
-        model: schema.initModel({}, cls, EXTRA_FORM_PROPS) || {},
+        model: schema.initModel({}, cls, { extraProps: EXTRA_FORM_PROPS }) || {},
       });
     } catch (error) {
       // eslint-disable-next-line no-console
@@ -166,7 +166,7 @@ class AutoSearchMulti extends Component {
     const { model } = this.state;
     this.setState({
       cls: e.target.value,
-      model: schema.initModel(model, e.target.value, EXTRA_FORM_PROPS),
+      model: schema.initModel(model, e.target.value, { extraProps: EXTRA_FORM_PROPS }),
     });
   }
 
@@ -247,6 +247,8 @@ class AutoSearchMulti extends Component {
       error,
       selected,
       schema,
+      endpoint,
+      superClass,
     } = this.props;
 
     const TextFieldProps = {
@@ -276,8 +278,12 @@ class AutoSearchMulti extends Component {
       </Tooltip>
     );
 
-    const properties = schema.getProperties(cls, EXTRA_FORM_PROPS) || [];
-
+    const properties = schema.getQueryProperties(cls, EXTRA_FORM_PROPS) || [];
+    const endpointName = superClass || (
+      Object
+        .values(schema.schema)
+        .find(ml => ml.routeName === endpoint) || {}
+    ).name;
     return (
       <React.Fragment>
         <AutoSearchBase
@@ -337,16 +343,12 @@ class AutoSearchMulti extends Component {
                     onChange={this.handleClassChange}
                     fullWidth
                     label="Class"
-                    resources={[
-                      ...schema.getOntologies().map(o => o.name),
-                      ...schema.getVariants().map(v => v.name),
-                      'Statement',
-                    ]}
-                  >
-                    {v => (
-                      <MenuItem key={v} value={v}>{v}</MenuItem>
-                    )}
-                  </ResourceSelectComponent>
+                    resources={
+                      (endpointName
+                        ? schema.getSubclassesOf(endpointName)
+                        : schema.getQueryable()
+                      ).map(m => m.name)}
+                  />
                 </ListItem>
                 {model && (
                   <div className="autosearch-multi-form-templater">
@@ -412,7 +414,7 @@ AutoSearchMulti.propTypes = {
   onChange: PropTypes.func,
   limit: PropTypes.number,
   endpoint: PropTypes.string,
-  property: PropTypes.array,
+  property: PropTypes.arrayOf(PropTypes.string),
   placeholder: PropTypes.string,
   label: PropTypes.string,
   required: PropTypes.bool,
@@ -420,6 +422,7 @@ AutoSearchMulti.propTypes = {
   disabled: PropTypes.bool,
   selected: PropTypes.object,
   schema: PropTypes.object,
+  superClass: PropTypes.string,
 };
 
 AutoSearchMulti.defaultProps = {
@@ -436,6 +439,7 @@ AutoSearchMulti.defaultProps = {
   onChange: () => { },
   disabled: false,
   schema: null,
+  superClass: '',
 };
 
 export default AutoSearchMulti;

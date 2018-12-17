@@ -12,7 +12,8 @@ class Schema {
    * @param {string} className - class name;
    */
   get(className) {
-    return this.schema[className];
+    return this.schema[className]
+      || Object.values(this.schema).find(model => className && model.reverseName === className);
   }
 
   /**
@@ -41,9 +42,25 @@ class Schema {
   getProperties(className, extraProps = []) {
     const { schema } = this;
     const VPropKeys = schema.V.properties;
-    const classModel = schema[className];
+    const classModel = this.get(className);
     if (!classModel) return null;
     return Object.values(classModel.properties || [])
+      .filter(prop => !VPropKeys[prop.name] || extraProps.includes(prop.name));
+  }
+
+  /**
+   * Returns route and query properties of a certain knowledgebase class
+   * (most useful data).
+   * @param {string} className - requested class name.
+   * @param {Array.<string>} [extraProps=[]] - Extra props to be returned in the
+   * class properties list.
+   */
+  getQueryProperties(className, extraProps = []) {
+    const { schema } = this;
+    const VPropKeys = schema.V.properties;
+    const classModel = this.get(className);
+    if (!classModel) return null;
+    return Object.values(classModel.queryProperties || [])
       .filter(prop => !VPropKeys[prop.name] || extraProps.includes(prop.name));
   }
 
@@ -59,23 +76,34 @@ class Schema {
    * Initializes a new instance of given kbClass.
    * @param {Object} model - existing model to keep existing values from.
    * @param {string} kbClass - Knowledge base class key.
-   * @param {Array.<Object>} [extraProps=[]] - Extra props to initialize on model.
-   * @param {boolean} [ignoreClass=false] - flag to omit '@class' prop on new model.
-   * @param {boolean} [stripProps=false] - flag to strip old props from model.
+   * @param {Array.<Object>} [opt.extraProps=[]] - Extra props to initialize on model.
+   * @param {boolean} [opt.ignoreClass=false] - flag to omit '@class' prop on new model.
+   * @param {boolean} [opt.stripProps=false] - flag to strip old props from model.
+   * @param {boolean} [opt.isQuery=false] - flag to retreive queryproperties
+   * from classmodel.
    */
-  initModel(model, kbClass, extraProps = [], ignoreClass = false, stripProps = false) {
+  initModel(model, kbClass, opt = {}) {
+    const {
+      ignoreClass,
+      stripProps,
+      isQuery,
+    } = opt;
+    const extraProps = opt.extraProps || [];
+
     const editableProps = kbClass
-      && (this.getProperties(kbClass, extraProps) || {});
+      && (
+        isQuery
+          ? (this.getQueryProperties(kbClass, extraProps) || {})
+          : (this.getProperties(kbClass, extraProps) || {}));
     if (!editableProps) return null;
     extraProps.forEach((prop) => { editableProps[prop.name] = prop; });
     const newModel = stripProps ? {} : Object.assign({}, model);
-    newModel['@class'] = ignoreClass ? '' : kbClass;
+    newModel['@class'] = ignoreClass ? '' : this.get(kbClass).name;
     Object.values(editableProps).forEach((property) => {
       const {
         name,
         type,
         linkedClass,
-        min,
         default: defaultValue,
       } = property;
       switch (type) {
@@ -95,7 +123,7 @@ class Schema {
         case 'integer' || 'long':
           newModel[name] = model[name] !== undefined
             ? model[name]
-            : min || '';
+            : '';
           break;
         case 'boolean':
           newModel[name] = model[name] !== undefined
@@ -106,7 +134,11 @@ class Schema {
           if (linkedClass && linkedClass.properties) {
             newModel[name] = model[name]
               ? Object.assign({}, model[name])
-              : this.initModel({}, linkedClass.name, [], true);
+              : this.initModel({}, linkedClass.name, {
+                extraProps: [],
+                ignoreClass: !!linkedClass.isAbstract,
+                isQuery,
+              });
           }
           break;
         default:
@@ -118,14 +150,35 @@ class Schema {
   }
 
   /**
+   * Returns all queryable classModels.
+   */
+  getQueryable(isAdmin) {
+    const { schema } = this;
+    return Object.values(schema).filter(model => model.expose
+      && model.expose.QUERY
+      && (isAdmin || !['User', 'UserGroup'].includes(model.name)));
+  }
+
+  /**
+   * Returns subclasses of the given classmodel name.
+   * @param {string} cls - class model name.
+   * @param {boolean} subOnly - if true, does not return superclass model.
+   */
+  getSubclassesOf(cls, subOnly = false) {
+    const { schema } = this;
+    if (!schema[cls]) return null;
+    const list = Object.values(schema)
+      .filter(model => model.inherits && model.inherits.includes(cls));
+    if (!subOnly) list.push(schema[cls]);
+    return list;
+  }
+
+  /**
    * Returns all ontology types.
    * @param {boolean} [subOnly=false] - flag for checking only subclasses.
    */
   getOntologies(subOnly = false) {
-    const { schema } = this;
-    const list = schema.Ontology.subclasses.slice();
-    if (!subOnly) list.push(schema.Ontology);
-    return list;
+    return this.getSubclassesOf('Ontology', subOnly);
   }
 
   /**
@@ -133,10 +186,7 @@ class Schema {
    * @param {boolean} [subOnly=false] - flag for checking only subclasses.
    */
   getVariants(subOnly = false) {
-    const { schema } = this;
-    const list = schema.Variant.subclasses.slice();
-    if (!subOnly) list.push(schema.Variant);
-    return list;
+    return this.getSubclassesOf('Variant', subOnly);
   }
 
   /**
@@ -182,11 +232,11 @@ class Schema {
       if (!allColumns.includes(prop.name)) {
         if (record[prop.name]) {
           if (prop.type === 'link' || prop.type === 'embedded') {
-            const nestedProperties = this.getProperties(record[prop.name]['@class']);
+            const nestedProperties = this.getProperties(record[prop.name]['@class']) || [];
             if (prop.linkedClass && prop.linkedClass.isAbstract) {
               nestedProperties.push({ name: '@class' });
             }
-            (nestedProperties || []).forEach((nestedProp) => {
+            nestedProperties.forEach((nestedProp) => {
               if (
                 record[prop.name][nestedProp.name]
                 && !allColumns.includes(`${prop.name}.${nestedProp.name}`)

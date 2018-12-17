@@ -1,19 +1,12 @@
 /**
  * @module /App
  */
-import React, { Component } from 'react';
+import React from 'react';
+import { Router } from 'react-router-dom';
 import {
-  Router,
-  Route,
-  Redirect,
-  Switch,
-  Link,
-} from 'react-router-dom';
-import './App.css';
-import {
-  AppBar,
   createMuiTheme,
   MuiThemeProvider,
+<<<<<<< HEAD
   IconButton,
   Button,
   Typography,
@@ -55,9 +48,12 @@ import {
 import logo from './static/logo.png';
 import title from './static/title.png';
 import auth from './services/auth';
+=======
+} from '@material-ui/core/styles';
+import Main from './views/Main/Main';
+>>>>>>> development
 import history from './services/history';
-import Schema from './services/schema';
-import { KBContext } from './components/KBContext/KBContext';
+import { SnackbarProvider } from './components/Snackbar/Snackbar';
 
 const theme = createMuiTheme({
   direction: 'ltr',
@@ -82,9 +78,11 @@ const theme = createMuiTheme({
   },
 });
 
+
 /**
  * Entry point to application. Handles routing, app theme, and logged in state.
  */
+<<<<<<< HEAD
 class App extends Component {
   constructor(props) {
     super(props);
@@ -383,6 +381,18 @@ class App extends Component {
       </KBContext.Provider>
     );
   }
+=======
+function App() {
+  return (
+    <MuiThemeProvider theme={theme}>
+      <SnackbarProvider>
+        <Router history={history}>
+          <Main />
+        </Router>
+      </SnackbarProvider>
+    </MuiThemeProvider>
+  );
+>>>>>>> development
 }
 
 export default App;

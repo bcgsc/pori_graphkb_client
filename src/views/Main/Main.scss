@@ -1,11 +1,11 @@
-@import "globals";
+@import "../../globals";
 
 $user-menu-width: 124px;
 $transition-speed: 0.3s;
 $drawer-width: 240px;
 $closed-drawer-width: 56px;
 $drawer-breakpoint: 1024px;
-.App {
+.Main {
   .banner {
     height: $banner-height;
     flex-direction: row;
@@ -18,6 +18,7 @@ $drawer-breakpoint: 1024px;
     color: white;
     width: auto;
     .appbar-title {
+      display: flex;
       max-width: 100%;
       margin: auto 16px;
       transition: all 0.5s;
@@ -28,6 +29,10 @@ $drawer-breakpoint: 1024px;
       }
       * {
         color: white;
+        display: inline-block;
+      }
+      span {
+        margin-left: 0.5rem;
       }
     }
     .appbar-btn {
@@ -99,7 +104,6 @@ $drawer-breakpoint: 1024px;
     -webkit-tap-highlight-color: transparent;
     outline: none;
     border: none;
-    user-select: none;
     text-decoration: none;
     position: absolute;
     left: 0;
@@ -168,4 +172,5 @@ $drawer-breakpoint: 1024px;
 ::selection {
   background: rgba($md-primary-color, 0.8);
   color: white;
+  -webkit-text-fill-color: white;
 }

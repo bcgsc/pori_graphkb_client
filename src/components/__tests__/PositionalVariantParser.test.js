@@ -92,6 +92,9 @@ describe('<PositionalVariantParser />', () => {
         inherits: ['Position'],
         properties: {},
       },
+      embed: {
+        name: 'embed',
+      },
       embedded: {
         name: 'embedded',
         properties: { name: { name: 'embeddedName', type: 'string' } },

@@ -157,47 +157,6 @@ const expandEdges = edges => edges.reduce((r, edge) => {
 }, []);
 
 /**
- * Formatter meant for edge types given in the form:
- * '['in' | 'out']_[edgeType]'.
- *
- *    Format string:  in_[edgeType] => has[edgeType]
- *                    out_[edgeType] => [edgeType]
- *
- * @param {string} str - string to be formatted.
- */
-const getEdgeLabel = (str) => {
-  const edgeType = str.split('_')[1];
-  let retstr = edgeType || str;
-
-  if (str.startsWith('in_')) {
-    switch (edgeType.slice(edgeType.length - 2, edgeType.length)) {
-      case 'By':
-        if (
-          ['a', 'e', 'i', 'o', 'u', 'y']
-            .includes(edgeType.slice(edgeType.length - 6, edgeType.length - 5))
-        ) {
-          retstr = `${edgeType.slice(0, edgeType.length - 3)}s`;
-        } else {
-          retstr = `${edgeType.slice(0, edgeType.length - 4)}s`;
-        }
-        break;
-      case 'Of':
-        retstr = `has${edgeType.slice(0, edgeType.length - 2)}`;
-        break;
-      case 'es':
-        retstr = `${edgeType.slice(0, edgeType.length - 1)}dBy`;
-        break;
-      case 'rs':
-        retstr = `${edgeType.slice(0, edgeType.length - 1)}redBy`;
-        break;
-      default:
-        break;
-    }
-  }
-  return retstr;
-};
-
-/**
  * Returns the plaintext representation of a value in order to be loaded into
  * a TSV file. Parses nested objects and arrays using the key as reference.
  * @param {any} value - Value
@@ -265,30 +224,45 @@ const flatten = (obj) => {
 };
 
 /**
- * Prepares a payload to be sent to the server for a POST, PATCH, or GET requst.
+ * Prepares a payload to be sent to the server for a POST, PATCH, or GET
+ * requst.
  * @param {Object} form - unprocessed form object containing user data.
- * @param {Array.<Object>} properties - List of valid properties for given form.
- * @param {Array.<string>} extraProps - List of extra parameters not specified in objectSchema.
+ * @param {Array.<Object>} [properties=null] - List of valid properties for given
+ * form.
+ * @param {Array.<string>} [extraProps=[]] - List of extra parameters not specified
+ * in objectSchema.
+ * @param {boolean} [isQuery=false] - If true, object will be flattened in order to be
+ * passed to qs.stringify.
  */
-const parsePayload = (form, properties, extraProps = [], isQuery = false) => {
-  const payload = {};
-  properties.forEach((prop) => {
-    const { name, type, default: defaultValue } = prop;
-    if (type === 'link') {
-      const formLink = form[`${name}.data`];
-      if (formLink && formLink['@rid']) {
-        payload[name] = formLink['@rid'];
+const parsePayload = (form, properties = null, extraProps = [], isQuery = false) => {
+  const payload = properties ? {} : form;
+  if (properties) {
+    properties.forEach((prop) => {
+      const {
+        name,
+        type,
+        default: defaultValue,
+        linkedClass,
+      } = prop;
+      if (type === 'link') {
+        const formLink = form[`${name}.data`];
+        if (formLink && formLink['@rid']) {
+          payload[name] = formLink['@rid'];
+        }
+      } else if (type === 'embedded' && linkedClass && !linkedClass.isAbstract) {
+        const { '@class': cls, ...embedded } = form[name];
+        payload[name] = embedded;
+      } else if (form[name] && !(defaultValue && form[name] === defaultValue)) {
+        payload[name] = form[name];
       }
-    } else if (form[name] && !(defaultValue && form[name] === defaultValue)) {
-      payload[name] = form[name];
-    }
-  });
+    });
 
-  extraProps.forEach((name) => {
-    if (form[name]) {
-      payload[name] = form[name];
-    }
-  });
+    extraProps.forEach((name) => {
+      if (form[name]) {
+        payload[name] = form[name];
+      }
+    });
+  }
 
   return isQuery ? flatten(payload) : payload;
 };
@@ -437,7 +411,6 @@ const sortFields = (order = [], prop = 'name') => (a, b) => {
 export default {
   antiCamelCase,
   expandEdges,
-  getEdgeLabel,
   getTSVRepresentation,
   parsePayload,
   getPallette,

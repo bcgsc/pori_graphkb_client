@@ -5,7 +5,8 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import './GraphNodeDisplay.css';
-import * as d3 from 'd3';
+import * as d3Select from 'd3-selection';
+import * as d3Drag from 'd3-drag';
 import config from '../../../static/config';
 import { GraphNode } from '../kbgraph';
 
@@ -24,8 +25,8 @@ class GraphNodeDisplay extends PureComponent {
   componentDidMount() {
     const { node, applyDrag } = this.props;
     if (applyDrag) {
-      const nodeElement = d3.select(this.node);
-      nodeElement.call(d3.drag()
+      const nodeElement = d3Select.select(this.node);
+      nodeElement.call(d3Drag.drag()
         .on('start', () => applyDrag(node)));
     }
   }
@@ -34,8 +35,8 @@ class GraphNodeDisplay extends PureComponent {
    * Removes d3 listener from object.
    */
   componentWillUnmount() {
-    const nodeElement = d3.select(this.node);
-    nodeElement.call(d3.drag()
+    const nodeElement = d3Select.select(this.node);
+    nodeElement.call(d3Drag.drag()
       .on('start', null));
   }
 
@@ -48,10 +49,16 @@ class GraphNodeDisplay extends PureComponent {
       actionsNode,
       detail,
       filter,
+      schema,
     } = this.props;
 
     if (!node) return null;
-    const label = node instanceof GraphNode ? node.getLabel(labelKey) : node.data[labelKey];
+    let label;
+    if (labelKey === 'preview') {
+      label = schema.getPreview(node.data);
+    } else {
+      label = node instanceof GraphNode ? node.getLabel(labelKey) : node.data[labelKey];
+    }
     const faded = (detail && detail['@rid'] !== node.getId())
       || (actionsNode && actionsNode.getId() !== node.getId())
       || (filter && !label.includes(filter.toLowerCase()));
@@ -107,6 +114,7 @@ class GraphNodeDisplay extends PureComponent {
  * @property {Object} actionsNode - Node decorator object.
  * @property {Object} detail - Node currently opened in detail drawer.
  * @property {string} filter - current filter string value.
+ * @property {Object} schema - Knowledgebase Schema object.
  */
 GraphNodeDisplay.propTypes = {
   node: PropTypes.object,
@@ -117,6 +125,7 @@ GraphNodeDisplay.propTypes = {
   actionsNode: PropTypes.object,
   detail: PropTypes.object,
   filter: PropTypes.string,
+  schema: PropTypes.object,
 };
 
 GraphNodeDisplay.defaultProps = {
@@ -128,6 +137,7 @@ GraphNodeDisplay.defaultProps = {
   applyDrag: null,
   detail: null,
   filter: '',
+  schema: null,
 };
 
 

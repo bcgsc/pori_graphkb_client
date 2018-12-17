@@ -28,11 +28,16 @@ const DEFAULT_ORDER = [
   'description',
 ];
 const DEFAULT_NODE_CLASS = 'Disease';
+
 /**
  * Component for editing or adding database nodes. Is also used to add or
  * delete edges from the database. All changes are staged and not
  * published to the database until the form is valid and submit button
- * has been clicked.
+ * has been clicked. This form is the most basic of the different form types,
+ * and essentially just manages a classmodel and its generated form.
+ * It can be used for any basic form that does not require any special input
+ * features. This is the reason this form is used for CategoryVariants even
+ * though they are not Ontologies.
  */
 class OntologyFormComponent extends Component {
   constructor(props) {
@@ -89,20 +94,20 @@ class OntologyFormComponent extends Component {
 
   /**
    * Changes state base on user input.
-   * @param {Event} e - user input event.
+   * @param {Event} event - user input event.
    */
-  handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   /**
    * Re renders form input fields based on class editable properties.
-   * @param {Event} e - User class selection event.
+   * @param {Event} event - User class selection event.
    */
-  handleClassChange(e) {
+  handleClassChange(event) {
     const { form } = this.state;
     const { schema } = this.props;
-    this.setState({ form: schema.initModel(form, e.target.value) });
+    this.setState({ form: schema.initModel(form, event.target.value) });
   }
 
   /**
@@ -126,12 +131,12 @@ class OntologyFormComponent extends Component {
 
   /**
    * Changes form state based on user input.
-   * @param {Event} e - user input event.
+   * @param {Event} event - user input event.
    */
-  handleFormChange(e) {
+  handleFormChange(event) {
     const { form } = this.state;
     const { schema } = this.props;
-    const { name, value } = e.target;
+    const { name, value } = event.target;
     form[name] = value;
     if (name.includes('.data') && value) {
       form[name.split('.')[0]] = schema.getPreview(value);
@@ -142,14 +147,14 @@ class OntologyFormComponent extends Component {
   /**
    * Validates form and calls submission parent method with the form and
    * relationships data.
-   * @param {Event} e - Submit event.
+   * @param {Event} event - Submit event.
    */
-  async handleSubmit(e) {
-    e.preventDefault();
+  async handleSubmit(event) {
+    event.preventDefault();
     const { form, relationships, originalNode } = this.state;
     const { handleSubmit, schema } = this.props;
 
-    const editableProps = schema.getProperties(form['@class']);
+    const editableProps = schema.getProperties(form);
     // Validates form
     let formIsInvalid = false;
     const errorFields = [];
@@ -198,7 +203,7 @@ class OntologyFormComponent extends Component {
     // Wait for form to get initialized
     if (!form) return null;
 
-    const editableProps = schema.getProperties(form['@class']);
+    const editableProps = schema.getProperties(form);
 
     return (
       <div className="node-form-wrapper">

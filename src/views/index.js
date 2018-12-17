@@ -13,6 +13,7 @@ import { EditVariantView } from './EditVariantView/EditVariantView';
 import { EditStatementView } from './EditStatementView/EditStatementView';
 import { QueryBuilderView } from './QueryBuilderView/QueryBuilderView';
 import { AddStatementView } from './AddStatementView/AddStatementView';
+import TutorialView from './TutorialView/TutorialView';
 
 export {
   AboutView,
@@ -30,4 +31,5 @@ export {
   QueryBuilderView,
   EditStatementView,
   AddStatementView,
+  TutorialView,
 };

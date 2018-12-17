@@ -310,28 +310,28 @@ class TableComponent extends Component {
 
   /**
    * Updates currently editing filter string.
-   * @param {Event} e - User input event.
+   * @param {Event} event - User input event.
    */
-  handleFilterStrings(e) {
+  handleFilterStrings(event) {
     const { columnFilterStrings, tempFilterIndex } = this.state;
-    columnFilterStrings[tempFilterIndex] = e.target.value;
+    columnFilterStrings[tempFilterIndex] = event.target.value;
     this.setState({ columnFilterStrings });
   }
 
   /**
    * General state update handler.
-   * @param {Event} e - user change event.
+   * @param {Event} event - user change event.
    */
-  handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   /**
    * Updates page to display.
-   * @param {Event} e - Triggered event.
+   * @param {Event} event - Triggered event.
    * @param {number} page - New page number.
    */
-  handleChangePage(e, page) {
+  handleChangePage(event, page) {
     const { sortedData, rowsPerPage } = this.state;
     const { moreResults } = this.props;
     const rows = (page + 1) * rowsPerPage;
@@ -420,10 +420,10 @@ class TableComponent extends Component {
 
   /**
    * Opens table actions menu.
-   * @param {Event} e - Open menu button event.
+   * @param {Event} event - Open menu button event.
    */
-  handleOpen(e) {
-    this.setState({ anchorEl: e.currentTarget });
+  handleOpen(event) {
+    this.setState({ anchorEl: event.currentTarget });
   }
 
   /**

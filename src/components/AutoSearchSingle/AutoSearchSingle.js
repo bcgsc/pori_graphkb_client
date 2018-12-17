@@ -89,13 +89,13 @@ class AutoSearchSingle extends Component {
 
   /**
    * Calls api with user input value as parameter.
-   * @param {Event} e - user input event.
+   * @param {Event} event - user input event.
    */
-  refreshOptions(e) {
-    if (!ACTION_KEYCODES.includes(e.keyCode)) {
+  refreshOptions(event) {
+    if (!ACTION_KEYCODES.includes(event.keyCode)) {
       const { selected } = this.state;
       const { value: propValue, onChange } = this.props;
-      const { value, name } = e.target;
+      const { value, name } = event.target;
       let val = value;
 
       if (selected) {
@@ -243,7 +243,7 @@ AutoSearchSingle.propTypes = {
 AutoSearchSingle.defaultProps = {
   className: '',
   limit: 30,
-  endpoint: 'ontologies',
+  endpoint: '/ontologies',
   property: ['name'],
   placeholder: '',
   name: undefined,

@@ -64,15 +64,19 @@ const fetchWithInterceptors = async (endpoint, init) => {
       history.push({ pathname: '/query/advanced', state: error });
       return Promise.reject('Invalid Query');
     }
+    if (response.status === 409) {
+      return Promise.reject(response);
+    }
+    if (response.status === 403) {
+      return Promise.reject(response);
+    }
     history.push({ pathname: '/error', state: error });
     throw new Error('Unexpected Error, redirecting...');
   } catch (error) {
     history.push({
       pathname: '/error',
       state: {
-        message: error.message,
-        url: API_BASE_URL,
-        statusText: 'Fetch',
+        message: 'GraphKB is down',
       },
     });
     throw new Error('Unexpected Error, redirecting...');
@@ -132,7 +136,7 @@ const del = (endpoint) => {
 /**
  * Wrapper for autosearch method.
  * @param {string} endpoint - URL endpoint.
- * @param {string} property - Property to query.
+ * @param {Array.<string>} property - Property to query.
  * @param {string} value - Query input string.
  * @param {number} limit - Limit for number of returned matches.
  */
@@ -178,7 +182,7 @@ const submitEdges = (edges, schema, rid = '') => {
       edge.out = rid;
     }
 
-    newEdges.push(post(schema[edges[i]['@class']].routeName, edge));
+    newEdges.push(post(schema.get(edges[i]['@class']).routeName, edge));
   }
   return Promise.all(newEdges);
 };

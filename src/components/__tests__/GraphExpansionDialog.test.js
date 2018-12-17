@@ -64,9 +64,9 @@ describe('<GraphExpansionDialog />', () => {
         node={testNode}
         onClose={jest.fn()}
         onExpand={jest.fn()}
-        onExpandAll={jest.fn()}
-        onExpandExclusion={jest.fn()}
-        onExpandByClass={jest.fn()}
+        onStageAll={jest.fn()}
+        onStage={jest.fn()}
+        onStageClass={jest.fn()}
       />,
     );
   });

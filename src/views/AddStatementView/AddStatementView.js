@@ -19,6 +19,9 @@ import StatementFormComponent from '../../components/StatementFormComponent/Stat
 class AddStatementViewBase extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      is409: false,
+    };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
   }
@@ -35,6 +38,7 @@ class AddStatementViewBase extends Component {
    * Bundles payload and sends post request to server.
    * @param {Object} form - Statement form data.
    * @param {Array.<Object>} relationships - Form staged relationships.
+   * @return {boolean} true if submission is successful.
    */
   async handleSubmit(form, relationships) {
     const { schema } = this.props;
@@ -61,12 +65,20 @@ class AddStatementViewBase extends Component {
       return rPayload;
     });
     payload.supportedBy = relationshipPayloads.filter(r => r['@class'] === 'SupportedBy');
-    payload.impliedBy = relationshipPayloads.filter(r => r['@class'] === 'Implies');
-    await api.post(route, payload);
+    payload.impliedBy = relationshipPayloads.filter(r => r['@class'] === 'ImpliedBy');
+    try {
+      await api.post(route, payload);
+      return true;
+    } catch (error) {
+      console.error(error);
+      this.setState({ is409: true });
+      return false;
+    }
   }
 
   render() {
     const { schema } = this.props;
+    const { is409 } = this.state;
     return (
       <div className="edit-form-wrapper">
         <Paper className="form-header" elevation={4}>
@@ -86,7 +98,8 @@ class AddStatementViewBase extends Component {
         <StatementFormComponent
           schema={schema}
           onSubmit={this.handleSubmit}
-          handleFinish={this.handleFinish}
+          onDelete={this.handleFinish}
+          is409={is409}
         />
       </div>
     );

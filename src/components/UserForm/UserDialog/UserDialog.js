@@ -21,6 +21,9 @@ import {
 import PersonIcon from '@material-ui/icons/Person';
 import auth from '../../../services/auth';
 
+/**
+ * New user and edit user dialog component.
+ */
 function UserDialog(props) {
   const {
     users,
@@ -134,7 +137,7 @@ function UserDialog(props) {
                 <td>
                   <Typography variant="caption" component="p">
                     {selectedUser ? new Date(selectedUser.createdAt).toLocaleString()
-                      : date.toLocaleString()}
+                      : date}
                   </Typography>
                 </td>
               </tr>
@@ -183,6 +186,22 @@ function UserDialog(props) {
   );
 }
 
+/**
+ * @namespace
+ * @property {boolean} open - dialog open state.
+ * @property {string} date - current date string.
+ * @property {Array} users - user records list.
+ * @property {Array} userGroups - user group records list.
+ * @property {Object} selectedUser - selected user record.
+ * @property {boolean} error - error state flag.
+ * @property {string} newUserName - New user form username string.
+ * @property {Array} newUserGroups - New user form groups list.
+ * @property {function} onClose - Dialog onClose handler.
+ * @property {function} addUser - Add user handler.
+ * @property {function} editUser - Edit user handler.
+ * @property {function} onChange - form change handler.
+ * @property {function} onUserGroup - Form UserGroup list change handler.
+ */
 UserDialog.propTypes = {
   open: PropTypes.bool.isRequired,
   date: PropTypes.string,

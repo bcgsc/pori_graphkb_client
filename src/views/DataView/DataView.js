@@ -8,8 +8,6 @@ import * as jc from 'json-cycle';
 import { Route, Redirect, Switch } from 'react-router-dom';
 import {
   CircularProgress,
-  Snackbar,
-  Button,
   Typography,
 } from '@material-ui/core';
 import qs from 'qs';
@@ -18,6 +16,7 @@ import GraphComponent from '../../components/GraphComponent/GraphComponent';
 import TableComponent from '../../components/TableComponent/TableComponent';
 import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
 import { withKB } from '../../components/KBContext/KBContext';
+import { SnackbarContext } from '../../components/Snackbar/Snackbar';
 import api from '../../services/api';
 import config from '../../static/config';
 
@@ -43,6 +42,17 @@ class DataViewBase extends Component {
    */
   static async makeApiQuery(route, queryParams, omitted = []) {
     const response = await api.get(`${route}?${qs.stringify(omit(queryParams, omitted))}`);
+    return jc.retrocycle(response).result;
+  }
+
+  /**
+   * Makes API POST call to specified endpoint, with specified payload.
+   * @param {string} route - API endpoint.
+   * @param {Object} payload - Query payload object.
+   * @param {Array.<string>} omitted - List of parameters to strip from API call.
+   */
+  static async makeComplexApiQuery(route, payload, omitted = []) {
+    const response = await api.post(route, omit(payload, omitted));
     return jc.retrocycle(response).result;
   }
 
@@ -112,31 +122,64 @@ class DataViewBase extends Component {
    */
   async componentDidMount() {
     const { history, schema } = this.props;
+    const snackbar = this.context;
     const queryParams = qs.parse(history.location.search.slice(1));
-    let route = '/ontologies';
+    let isComplex = false;
+
+    let { routeName } = schema.get('V');
     const omitted = [];
     const kbClass = schema.get(queryParams['@class']);
     if (kbClass) {
-      ({ routeName: route } = kbClass);
+      ({ routeName } = kbClass);
       omitted.push('@class');
     }
-    queryParams.neighbors = queryParams.neighbors || DEFAULT_NEIGHBORS;
-    queryParams.limit = queryParams.limit || DEFAULT_LIMIT;
-    const response = await DataViewBase.makeApiQuery(route, queryParams, omitted);
-    const { data, allProps } = this.processData(response);
-    const {
-      next,
-      moreResults,
-      filteredSearch,
-    } = DataViewBase.prepareNextPagination(route, queryParams, response, omitted);
 
-    this.setState({
-      filteredSearch: filteredSearch || queryParams,
-      moreResults,
-      next,
-      data,
-      allProps,
-    });
+    let response;
+    try {
+      if (queryParams.complex) {
+        routeName += '/search';
+        isComplex = true;
+        // Decode base64 encoded string.
+        const payload = JSON.parse(atob(decodeURIComponent(queryParams.complex)));
+        payload.neighbors = Math.max(payload.neighbors || 0, DEFAULT_NEIGHBORS);
+        payload.limit = Math.min(payload.limit || DEFAULT_LIMIT, DEFAULT_LIMIT);
+        response = await DataViewBase.makeComplexApiQuery(routeName, payload, omitted);
+      } else {
+        queryParams.neighbors = queryParams.neighbors || DEFAULT_NEIGHBORS;
+        queryParams.limit = queryParams.limit || DEFAULT_LIMIT;
+        response = await DataViewBase.makeApiQuery(routeName, queryParams, omitted);
+      }
+
+      const { data, allProps } = this.processData(response);
+
+      const {
+        next,
+        moreResults,
+        filteredSearch,
+      } = !isComplex
+        ? DataViewBase.prepareNextPagination(routeName, queryParams, response, omitted)
+        : {
+          moreResults: false,
+          next: null,
+          filteredSearch: null,
+        };
+      if (Object.keys(data).length === 0) {
+        snackbar.add(
+          'No results found, redirecting...',
+          'Back',
+          () => history.back(),
+        );
+      }
+      this.setState({
+        filteredSearch: filteredSearch || queryParams,
+        moreResults,
+        next,
+        data,
+        allProps,
+      });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   /**
@@ -369,12 +412,14 @@ class DataViewBase extends Component {
       history,
     } = this.props;
 
+    const snackbar = this.context;
+
     if (!data) {
       return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
     }
     const edges = schema.getEdges();
     const cls = filteredSearch && filteredSearch['@class'];
-    const defaultOrders = schema.get(cls || 'Ontology').identifiers;
+    const defaultOrders = (schema.get(cls) || schema.get('V')).identifiers;
     const detailDrawer = (
       <DetailDrawer
         node={detail}
@@ -400,6 +445,7 @@ class DataViewBase extends Component {
         localStorageKey={qs.stringify(filteredSearch)}
         handleNewColumns={this.handleNewColumns}
         schema={schema}
+        snackbar={snackbar}
       />
     );
     const TableWithProps = () => (
@@ -425,22 +471,7 @@ class DataViewBase extends Component {
     );
     return (
       <div className="data-view">
-        <Snackbar
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          open={Object.keys(data).length === 0}
-          onClose={() => history.push('/query')}
-          autoHideDuration={3000}
-          message={(
-            <span>
-              No results found, redirecting...
-            </span>
-          )}
-          action={(
-            <Button color="secondary" onClick={() => history.push('/query')}>
-              Ok
-            </Button>
-          )}
-        />
+
         {Object.keys(data).length !== 0 && qs.stringify(filteredSearch) && edges
           ? (
             <Switch>
@@ -474,6 +505,7 @@ DataViewBase.propTypes = {
   history: PropTypes.object.isRequired,
   schema: PropTypes.object.isRequired,
 };
+DataViewBase.contextType = SnackbarContext;
 
 const DataView = withKB(DataViewBase);
 

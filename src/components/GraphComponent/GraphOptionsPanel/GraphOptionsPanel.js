@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import './GraphOptionsPanel.css';
 import {
   Checkbox,
   FormControlLabel,
@@ -144,7 +145,27 @@ export default class GraphOptionsPanel extends Component {
                 onChange={handleGraphOptionsChange}
                 value={graphOptions.nodeLabelProp}
                 resources={['', ...nodeLabelBy]}
+                disabled={graphOptions.nodePreview}
               />
+              <FormControl className="graph-option">
+                <FormControlLabel
+                  control={(
+                    <Checkbox
+                      color="secondary"
+                      onChange={e => handleGraphOptionsChange({
+                        target: {
+                          value: e.target.checked,
+                          name: e.target.name,
+                        },
+                      })
+                      }
+                      name="nodePreview"
+                      checked={!!(graphOptions.nodePreview)}
+                    />
+                  )}
+                  label="Label nodes by preview"
+                />
+              </FormControl>
               <ResourceSelectComponent
                 className="graph-option"
                 label="Color nodes by"
@@ -275,7 +296,7 @@ export default class GraphOptionsPanel extends Component {
 
 /**
  * @namespace
- * @property {Object} graphOptions - Graph options object.
+ * @property {GraphOptions} graphOptions - Graph options object.
  * @property {PropsMap} propsMap - Graph coloringpropsmap.
  * @property {boolean} graphOptionsOpen - dialog open flag.
  * @property {boolean} linkLegendDisabled - link legend disabled flag.

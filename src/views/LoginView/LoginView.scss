@@ -1,41 +1,17 @@
 .login-wrapper {
-  position: absolute;
-  top: 30vh;
-  bottom: 0;
-  left: 0;
-  right: 0;
-
-  .login-form {
+  display: flex;
+  flex-direction: column;
+  margin: 32px;
+  height: calc(50% + 16px);
+  > h5 {
+    text-align: center;
     margin: auto;
-    width: 50vw;
-    display: flex;
-    flex-direction: column;
-
-    .login-input {
-      margin: 8px;
-    }
-
-    button {
-      margin: 8px;
-    }
-    #caption {
-      margin: 8px;
-    }
+    margin-bottom: 0;
   }
-}
-
-.unauthorized-modal{
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  padding: 8px;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  margin: auto; 
-}
-
-#invalid-meessage{
-  margin: 8px;
+  $btn-margin: 2rem;
+  > button {
+    margin: auto;
+    margin-top: $btn-margin;
+    margin-bottom: -#{$btn-margin};
+  }
 }

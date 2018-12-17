@@ -147,7 +147,7 @@ const autoSearch = (endpoint, property, value, limit) => {
   const literalRe = new RegExp(/^['"].*['"]$/);
   const m = !!(value.split(KB_SEP_CHARS).some(chunk => chunk.length < 4));
 
-  const orStr = `or=${property.join(',')}`;
+  const orStr = property.length > 1 ? `or=${property.join(',')}` : '';
   let extras = `limit=${limit}&neighbors=1`;
   let query;
 
@@ -162,7 +162,7 @@ const autoSearch = (endpoint, property, value, limit) => {
     extras += '&@class=!Publication';
   }
 
-  return get(`${endpoint}?${query}&${orStr}&${extras}`);
+  return get(`/${endpoint}?${query}${orStr && `&${orStr}`}&${extras}`);
 };
 
 /**

@@ -58,6 +58,7 @@ function FormTemplater(props) {
     } = property;
     const mandatory = property.mandatory && !ignoreRequired;
     let field;
+
     const wrapperProps = {
       component: fieldComponent,
       key: `${appendToKeys}.${name}`,

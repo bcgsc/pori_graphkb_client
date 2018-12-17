@@ -19,6 +19,7 @@ import graphActions from '../../static/tutorial/graph-actions.png';
 import config from '../../static/config';
 
 const { API_BASE_URL } = config;
+const HGVS_LINK = 'https://varnomen.hgvs.org/';
 
 /**
  * Tutorial page
@@ -66,14 +67,16 @@ function TutorialView() {
             GraphKB Forms
           </a>
         </Typography>
-        <Typography paragraph>
-          When filling out forms, certain fields will behave differently from
-          others based on the type of input. The following are several of the
-          core field types that you will encounter when interacting with
-          GraphKB through this GUI:
-        </Typography>
 
         <List>
+          <ListItem>
+            <Typography paragraph>
+              When filling out forms, certain fields will behave differently from
+              others based on the type of input. The following are several of the
+              core field types that you will encounter when interacting with
+              GraphKB through this GUI:
+            </Typography>
+          </ListItem>
           <ListItem className="form-list-item">
             <ListItemText
               primary="List Fields"
@@ -116,6 +119,15 @@ function TutorialView() {
             <img src={selectFields} alt="Select Fields" />
           </ListItem>
         </List>
+        <Typography variant="subtitle1" component="h4" paragraph>
+          HGVS Shorthand
+        </Typography>
+        <ListItem>
+          <Typography paragraph>
+            Variant Forms can be filled out using HGVS shorthand notation. Learn more&nbsp;
+            <a href={HGVS_LINK} target="_blank" rel="noopener noreferrer">here</a>.
+          </Typography>
+        </ListItem>
       </Paper>
       <Paper className="tutorial-body" elevation={4}>
         <Typography variant="subtitle1" component="h4" paragraph>

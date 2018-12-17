@@ -135,6 +135,7 @@ class EmbeddedSetForm extends Component {
           className="embedded-list-textfield"
           id={`${label.toLowerCase()}-temp`}
           label={label}
+          name={label.toLowerCase()}
           value={tempElement}
           onChange={this.handleChange}
           disabled={disabled}

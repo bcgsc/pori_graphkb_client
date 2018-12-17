@@ -6,7 +6,7 @@ export default {
     GRAPH_OBJECTS: 'graphObjects',
   },
   KEYCLOAK: {
-    REALM: process.env.REACT_APP_REALM || 'TestKB', // TODO: Migrate over to production keycloak realm (will probably be something like "GSC")s
+    REALM: process.env.REACT_APP_KEYCLOAK_REALM || 'TestKB', // TODO: Migrate over to production keycloak realm (will probably be something like "GSC")s
     CLIENT_ID: process.env.REACT_APP_KEYCLOAK_CLIENT_ID || 'GraphKB',
     URL: process.env.REACT_APP_KEYCLOAK_URL || 'http://ga4ghdev01.bcgsc.ca:8080/auth',
     GRAPHKB_ROLE: process.env.REACT_APP_KEYCLOAK_ROLE || 'GraphKB',

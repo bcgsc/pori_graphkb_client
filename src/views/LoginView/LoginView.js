@@ -40,7 +40,7 @@ class LoginView extends Component {
     if (auth.isExpired()) {
       await auth.logout();
     }
-    if (auth.getKeyCloakToken()) {
+    if (auth.getKeyCloakToken() && auth.getToken()) {
       handleAuthenticate();
       history.push('/query');
     } else {

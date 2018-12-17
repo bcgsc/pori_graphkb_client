@@ -88,7 +88,7 @@ class Main extends Component {
    * Sets main navigation drawer open state.
    */
   handleNavBar(state) {
-    return () => this.setState({ drawerOpen: state });
+    return () => this.setState({ drawerOpen: state, anchorEl: null });
   }
 
   render() {

@@ -1,15 +1,18 @@
 describe('Admin Page Test', () => {
   beforeEach(() => {
-    cy.visit('/');
-    cy.url().should('includes', '/login');
-    cy.get('input[name=username]').type(Cypress.env('USER'));
-    cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
-    cy.url().should('includes', '/query');
+    cy.visit('/login');
+    cy.wait(1000).then(() => {
+      if (!localStorage.getItem('kcToken')) {
+        cy.get('input#username').type(Cypress.env('USER'));
+        cy.get('input#password').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
+      }
+      cy.url().should('includes', '/query');
+    });
   });
 
   it('Admin Page', () => {
     cy.get('div.user-dropdown').click();
-    cy.contains('Admin').click();
+    cy.get('a[href="/admin"] li').click({ force: true });
     cy.url().should('includes', '/admin');
     cy.contains('Admin');
     cy.contains('Users');

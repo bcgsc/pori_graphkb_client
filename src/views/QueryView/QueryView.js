@@ -36,6 +36,8 @@ const DEFAULT_PARAMS = [
   return array;
 }, ['name', 'sourceId']);
 
+const ENTER_KEYCODE = 13;
+
 /**
  * View for simple search by name query. Form submissions are passed through the URL to
  * the DataView module to handle the query transaction.
@@ -149,11 +151,11 @@ class QueryViewBase extends Component {
 
   /**
    * Updates state from user input.
-   * @param {Event} e - user input event.
+   * @param {Event} event - user input event.
    */
-  handleChange(e) {
+  handleChange(event) {
     const { schema } = this.props;
-    const { name, value } = e.target;
+    const { name, value } = event.target;
     if (name && name.includes('.data') && value) {
       this.setState({ [name.split('.data')[0]]: schema.getPreview(value) });
     } else {
@@ -178,11 +180,11 @@ class QueryViewBase extends Component {
         variant: kbp.variant.parse(str),
         variantError: '',
       });
-    } catch (e) {
+    } catch (error) {
       // If anything is parsed, use that..
-      const update = { variantError: str ? e.message : '', queryable: false };
-      if (e.content && e.content.parsed) {
-        const { variantString, ...parsed } = e.content.parsed;
+      const update = { variantError: str ? error.message : '', queryable: false };
+      if (error.content && error.content.parsed) {
+        const { variantString, ...parsed } = error.content.parsed;
         if (Object.keys(parsed).length !== 0) {
           update.variant = parsed;
           update.queryable = true;
@@ -206,11 +208,7 @@ class QueryViewBase extends Component {
         <div className="search-bar">
           <div
             className="main-search"
-            onKeyUp={(e) => {
-              if (e.keyCode === 13) {
-                this.handleSubmit();
-              }
-            }}
+            onKeyUp={event => event.keyCode === ENTER_KEYCODE && this.handleSubmit()}
             role="textbox"
             tabIndex={0}
           >

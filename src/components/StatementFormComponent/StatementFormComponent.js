@@ -127,12 +127,12 @@ class StatementFormComponent extends Component {
 
   /**
    * Updates form model based off user input.
-   * @param {Event} e - User input event.
+   * @param {Event} event - User input event.
    */
-  handleChange(e) {
+  handleChange(event) {
     const { form } = this.state;
     const { schema } = this.props;
-    const { name, value } = e.target;
+    const { name, value } = event.target;
     form[name] = value;
     if (name.includes('.data') && value) {
       form[name.split('.')[0]] = schema.getPreview(value);

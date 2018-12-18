@@ -9,11 +9,14 @@ class Schema {
 
   /**
    * Returns Knowledgebase class schema.
-   * @param {string} className - class name;
+   * @param {Object|string} obj - Record to fetch schema of.
    */
-  get(className) {
-    return this.schema[className]
-      || Object.values(this.schema).find(model => className && model.reverseName === className);
+  get(obj) {
+    let cls = obj;
+    if (obj && typeof obj === 'object' && obj['@class']) {
+      cls = obj['@class'];
+    }
+    return this.schema[cls];
   }
 
   /**
@@ -35,14 +38,16 @@ class Schema {
   /**
    * Returns route and properties of a certain knowledgebase class
    * (most useful data).
-   * @param {string} className - requested class name.
+   * @param {Object|string} obj - Knowledgebase Record.
    * @param {Array.<string>} [extraProps=[]] - Extra props to be returned in the
    * class properties list.
    */
-  getProperties(className, extraProps = []) {
-    const { schema } = this;
-    const VPropKeys = schema.V.properties;
-    const classModel = this.get(className);
+  getProperties(obj, extraProps = []) {
+    const VPropKeys = this.schema.V.properties;
+    if (obj && typeof obj === 'object') {
+      obj = obj['@class'] || '';
+    }
+    const classModel = this.schema[obj];
     if (!classModel) return null;
     return Object.values(classModel.properties || [])
       .filter(prop => !VPropKeys[prop.name] || extraProps.includes(prop.name));
@@ -209,16 +214,17 @@ class Schema {
 
   /**
    * Checks if a ClassModel is a subclass of another ClassModel.
-   * @param {string} cls - ClassModel name of child
-   * @param {Array.<string>} parentCls - ClassModel name of parent
+   * @param {string|Object} cls - ClassModel name of child
+   * @param {string|Array.<string>} parentCls - ClassModel name of parent
    */
   isSubclass(cls, parentCls = []) {
     if (typeof parentCls === 'string') {
       parentCls = [parentCls];
     }
 
-    return !!(this.schema[cls]
-      && this.schema[cls].inherits.some(inherited => parentCls.includes(inherited)));
+
+    return !!(this.get(cls)
+      && this.get(cls).inherits.some(inherited => parentCls.includes(inherited)));
   }
 
   /**

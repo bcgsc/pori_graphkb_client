@@ -579,7 +579,7 @@ class TableComponent extends Component {
             label: 'View selected in Graph',
           },
           {
-            id: 'download-all',
+            id: 'download-tsv',
             disabled: sortedData.length === 0,
             label: (
               <DownloadFileComponent
@@ -587,6 +587,7 @@ class TableComponent extends Component {
                 rawFileContent={this.createTSV}
                 fileName={TSV_FILENAME}
                 id="download-tsv"
+
               >
                 Download all as TSV
               </DownloadFileComponent>
@@ -600,7 +601,6 @@ class TableComponent extends Component {
                 mediaType="text/tab-separated-values"
                 rawFileContent={() => this.createTSV(displayed)}
                 fileName={TSV_FILENAME}
-                id="download-tsv"
               >
                 Download selected as TSV
               </DownloadFileComponent>

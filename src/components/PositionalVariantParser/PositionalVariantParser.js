@@ -97,12 +97,12 @@ class PositionalVariantParser extends Component {
 
   /**
    * Parses shorthand string and updates form fields with response.
-   * @param {Event} e - user input event.
+   * @param {Event} event - user input event.
    */
-  async parseString(e) {
+  async parseString(event) {
     const { variant } = this.state;
     const { schema } = this.props;
-    const { value } = e.target;
+    const { value } = event.target;
     this.setState({ shorthand: value });
     const properties = schema.getProperties('PositionalVariant');
     if (!value) {
@@ -207,13 +207,13 @@ class PositionalVariantParser extends Component {
 
   /**
    * Handles changes in an embedded property's class.
-   * @param {Event} e - new class selection event.
+   * @param {Event} event - new class selection event.
    * @param {string} nested - nested property key.
    */
-  handleClassChange(e, nested) {
+  handleClassChange(event, nested) {
     const { variant } = this.state;
     const { schema } = this.props;
-    const { value } = e.target;
+    const { value } = event.target;
     const classSchema = schema.getProperties('PositionalVariant');
     if (schema.getProperties(value)) {
       const abstractClass = classSchema
@@ -236,12 +236,12 @@ class PositionalVariantParser extends Component {
   /**
    * Handles update of state variables. Refreshes form model if class is
    * changed.
-   * @param {Event} e - Change event.
+   * @param {Event} event - Change event.
    */
-  handleChange(e) {
+  handleChange(event) {
     const { variant } = this.state;
     const { schema } = this.props;
-    const { name, value } = e.target;
+    const { name, value } = event.target;
     const update = { [name]: value };
     if (name === 'nodeClass') {
       update.variant = schema.initModel(variant, value);
@@ -271,13 +271,13 @@ class PositionalVariantParser extends Component {
   /**
    * Fired whenever the variant form fields (excluding the shorthand input) are
    * modified.
-   * @param {Event} e - user input event
+   * @param {Event} event - user input event
    * @param {string} nested - nested property key
    */
-  handleVariantChange(e, nested) {
+  handleVariantChange(event, nested) {
     const { variant } = this.state;
     const { schema } = this.props;
-    const { name, value } = e.target;
+    const { name, value } = event.target;
     if (nested) {
       variant[nested][name] = value;
       if (name.includes('.data') && value) {
@@ -364,10 +364,10 @@ class PositionalVariantParser extends Component {
 
   /**
    * Opens notification drawer and triggers parent submit component.
-   * @param {Event} e - submit button click event.
+   * @param {Event} event - submit button click event.
    */
-  async submitVariant(e) {
-    e.preventDefault();
+  async submitVariant(event) {
+    event.preventDefault();
     const {
       variant,
       relationships,

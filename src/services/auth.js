@@ -6,15 +6,25 @@ import Keycloak from 'keycloak-js';
 import * as jwt from 'jsonwebtoken';
 import config from '../static/config';
 
-const { KEYS, KEYCLOAK } = config;
-const { KB_TOKEN, KEYCLOAK_TOKEN } = KEYS;
+const {
+  KEYS: {
+    KB_TOKEN,
+    KEYCLOAK_TOKEN,
+  },
+  KEYCLOAK: {
+    GRAPHKB_ROLE,
+    REALM,
+    CLIENT_ID,
+    URL,
+  },
+} = config;
 
 
 const keycloak = Keycloak({
-  realm: KEYCLOAK.REALM,
-  clientId: KEYCLOAK.CLIENT_ID,
-  url: KEYCLOAK.URL,
-  realm_access: { roles: [KEYCLOAK.GRAPHKB_ROLE] },
+  realm: REALM,
+  clientId: CLIENT_ID,
+  url: URL,
+  realm_access: { roles: [GRAPHKB_ROLE] },
 });
 
 /**
@@ -111,7 +121,7 @@ const logout = async () => {
 };
 
 export default {
-  GRAPHKB_ROLE: KEYCLOAK.GRAPHKB_ROLE,
+  GRAPHKB_ROLE,
   login,
   logout,
   getToken,

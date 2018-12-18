@@ -15,8 +15,8 @@ import {
 import kbp from '@bcgsc/knowledgebase-parser';
 import * as qs from 'querystring';
 import SearchIcon from '@material-ui/icons/Search';
-import AutoSearchSingle from '../../components/AutoSearchSingle/AutoSearchSingle';
-import { withKB } from '../../components/KBContext/KBContext';
+import AutoSearchSingle from '../../components/AutoSearchSingle';
+import { withKB } from '../../components/KBContext';
 import util from '../../services/util';
 
 const KB_SEP_CHARS = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');

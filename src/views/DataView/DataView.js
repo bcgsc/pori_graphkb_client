@@ -12,11 +12,11 @@ import {
 } from '@material-ui/core';
 import qs from 'qs';
 import omit from 'lodash.omit';
-import GraphComponent from '../../components/GraphComponent/GraphComponent';
-import TableComponent from '../../components/TableComponent/TableComponent';
-import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
-import { withKB } from '../../components/KBContext/KBContext';
-import { SnackbarContext } from '../../components/Snackbar/Snackbar';
+import DetailDrawer from '../../components/DetailDrawer';
+import GraphComponent from '../../components/GraphComponent';
+import { withKB } from '../../components/KBContext';
+import { SnackbarContext } from '../../components/Snackbar';
+import TableComponent from '../../components/TableComponent';
 import api from '../../services/api';
 import config from '../../static/config';
 

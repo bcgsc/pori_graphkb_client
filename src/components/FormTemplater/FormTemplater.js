@@ -15,10 +15,10 @@ import {
   Typography,
 } from '@material-ui/core';
 import HelpIcon from '@material-ui/icons/Help';
-import AutoSearchSingle from '../AutoSearchSingle/AutoSearchSingle';
-import AutoSearchMulti from '../AutoSearchMulti/AutoSearchMulti';
-import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
-import EmbeddedSetForm from '../EmbeddedSetForm/EmbeddedSetForm';
+import AutoSearchSingle from '../AutoSearchSingle';
+import AutoSearchMulti from '../AutoSearchMulti';
+import ResourceSelectComponent from '../ResourceSelectComponent';
+import EmbeddedSetForm from '../EmbeddedSetForm';
 import util from '../../services/util';
 
 /**

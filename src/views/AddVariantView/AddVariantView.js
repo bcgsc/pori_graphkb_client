@@ -5,10 +5,10 @@ import React, { Component } from 'react';
 import './AddVariantView.css';
 import PropTypes from 'prop-types';
 import { Paper, Typography, Button } from '@material-ui/core';
-import PositionalVariantParser from '../../components/PositionalVariantParser/PositionalVariantParser';
+import { withKB } from '../../components/KBContext';
+import PositionalVariantParser from '../../components/PositionalVariantParser';
 import util from '../../services/util';
 import api from '../../services/api';
-import { withKB } from '../../components/KBContext/KBContext';
 
 /**
  * Route for submitting Variant records to db.

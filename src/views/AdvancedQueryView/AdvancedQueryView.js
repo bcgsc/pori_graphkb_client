@@ -65,10 +65,9 @@ class AdvancedQueryViewBase extends Component {
     if (
       history.location
       && history.location.state
-      && history.location.state.message
     ) {
       const { message, name } = history.location.state;
-      snackbar.add(`${name || ''}: ${message}`);
+      snackbar.add(`${name || 'Error'}: ${message || 'Bad Request'}`);
     }
 
     const form = schema.initModel({}, 'Ontology', {
@@ -76,9 +75,7 @@ class AdvancedQueryViewBase extends Component {
       isQuery: true,
     });
 
-    this.setState({
-      form,
-    });
+    this.setState({ form });
   }
 
   /**

@@ -19,11 +19,18 @@ import util from '../../../services/util';
 function GraphLegend(props) {
   const {
     graphOptions,
-    handleGraphOptionsChange,
-    disabled,
+    onChange,
+    linkDisabled,
     propsMap,
   } = props;
 
+  if (!(
+    (graphOptions.nodesLegend && graphOptions.nodesColor)
+    || (
+      !linkDisabled
+      && graphOptions.linksLegend
+      && graphOptions.linksColor)
+  )) return null;
   return (
     <div className="legend-wrapper">
       {graphOptions.nodesLegend && graphOptions.nodesColor && (
@@ -38,7 +45,7 @@ function GraphLegend(props) {
               </div>
               <IconButton
                 name="nodesLegend"
-                onClick={() => handleGraphOptionsChange({
+                onClick={() => onChange({
                   target: {
                     value: false,
                     name: 'nodesLegend',
@@ -74,7 +81,7 @@ function GraphLegend(props) {
             </List>
           </div>
         </Paper>)}
-      {!disabled
+      {!linkDisabled
         && graphOptions.linksLegend
         && graphOptions.linksColor
         && (
@@ -89,7 +96,7 @@ function GraphLegend(props) {
                 </div>
                 <IconButton
                   name="linksLegend"
-                  onClick={() => handleGraphOptionsChange({
+                  onClick={() => onChange({
                     target: {
                       value: false,
                       name: 'linksLegend',
@@ -130,15 +137,24 @@ function GraphLegend(props) {
   );
 }
 
+/**
+ * @namespace
+ * @property {PropsMap} propsMap - Graph PropsMap instance
+ * @see /src/components/GraphComponent/kbgraph.js
+ * @property {GraphOptions} graphOptions - Graph Options instance.
+ * @see /src/components/GraphComponent/kbgraph.js
+ * @property {function} onChange - handler for graph options change.
+ * @property {boolean} linkDisabled - flag for link legend being disabled.
+ */
 GraphLegend.propTypes = {
   propsMap: PropTypes.object.isRequired,
   graphOptions: PropTypes.object.isRequired,
-  handleGraphOptionsChange: PropTypes.func.isRequired,
-  disabled: PropTypes.bool,
+  onChange: PropTypes.func.isRequired,
+  linkDisabled: PropTypes.bool,
 };
 
 GraphLegend.defaultProps = {
-  disabled: true,
+  linkDisabled: true,
 };
 
 export default GraphLegend;

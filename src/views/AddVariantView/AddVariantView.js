@@ -5,10 +5,10 @@ import React, { Component } from 'react';
 import './AddVariantView.css';
 import PropTypes from 'prop-types';
 import { Paper, Typography, Button } from '@material-ui/core';
-import PositionalVariantParser from '../../components/PositionalVariantParser/PositionalVariantParser';
+import { withKB } from '../../components/KBContext';
+import PositionalVariantParser from '../../components/PositionalVariantParser';
 import util from '../../services/util';
 import api from '../../services/api';
-import { withKB } from '../../components/KBContext/KBContext';
 
 /**
  * Route for submitting Variant records to db.
@@ -49,15 +49,15 @@ class AddVariantViewBase extends Component {
   async submitVariant(form, relationships) {
     const { schema } = this.props;
     const copy = Object.assign({}, form);
-    const properties = schema.getProperties(form['@class']);
-    const route = schema.getRoute(form['@class']);
+    const properties = schema.getProperties(form);
+    const { routeName } = schema.get(form);
     // Strips away empty break objects and casts number props to numbers.
     Object.keys(copy).forEach((k) => {
       if (typeof copy[k] === 'object' && copy[k]) { // more flexible
         if (!copy[k]['@class']) {
           delete copy[k];
         } else {
-          const nestedProps = schema.getProperties(copy[k]['@class']);
+          const nestedProps = schema.getProperties(copy[k]);
           nestedProps.forEach((prop) => {
             if (!copy[k][prop.name]) {
               if (prop.type === 'integer' && prop.mandatory) {
@@ -72,7 +72,7 @@ class AddVariantViewBase extends Component {
     });
     const payload = util.parsePayload(copy, properties);
     try {
-      const response = await api.post(route, payload);
+      const response = await api.post(routeName, payload);
 
       await api.submitEdges(relationships, schema, response.result['@rid']);
       return true;

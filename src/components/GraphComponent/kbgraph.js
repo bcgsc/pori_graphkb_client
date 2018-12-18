@@ -52,6 +52,7 @@ class GraphObj {
   }
 }
 
+
 /**
  * Represents a d3 force directed graph node.
  */
@@ -63,6 +64,7 @@ class GraphNode extends GraphObj {
     this.y = y || 0;
   }
 }
+
 
 /**
  * Represents a d3 force directed graph link object.

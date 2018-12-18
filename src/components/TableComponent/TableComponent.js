@@ -17,30 +17,22 @@ import {
   IconButton,
   Typography,
   Checkbox,
-  Menu,
-  MenuItem,
   Tooltip,
   CircularProgress,
-  Popover,
-  TextField,
-  Paper,
-  List,
-  ListItem,
-  ListItemText,
-  InputAdornment,
   Fade,
 } from '@material-ui/core';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import AddIcon from '@material-ui/icons/Add';
-import SearchIcon from '@material-ui/icons/Search';
 import SortIcon from '@material-ui/icons/Sort';
-import DownloadFileComponent from '../DownloadFileComponent/DownloadFileComponent';
+import DownloadFileComponent from '../DownloadFileComponent';
+import FilterPopover from './TableFilterPopover/TableFilterPopover';
 import TableColumnDialog from './TableColumnDialog/TableColumnDialog';
 import util from '../../services/util';
 import FilterIcon from '../../static/icons/FilterIcon/FilterIcon';
 import config from '../../static/config';
+import TableMenu from './TableMenu/TableMenu';
 
 const NEXT_CUTOFF = 0.8;
 const { ROWS_PER_PAGE, TSV_FILENAME } = config.TABLE_PROPERTIES;
@@ -230,8 +222,7 @@ class TableComponent extends Component {
     const rows = [];
     const rids = fData || Object.keys(data);
     const tsvColumns = allProps.filter(column => column !== 'preview');
-    rows.push(tsvColumns
-      .map(column => util.getEdgeLabel(column)).join('\t'));
+    rows.push(tsvColumns.join('\t'));
     rids.forEach((rid) => {
       const row = [];
       if (!hidden.includes(rid)) {
@@ -311,28 +302,28 @@ class TableComponent extends Component {
 
   /**
    * Updates currently editing filter string.
-   * @param {Event} e - User input event.
+   * @param {Event} event - User input event.
    */
-  handleFilterStrings(e) {
+  handleFilterStrings(event) {
     const { columnFilterStrings, tempFilterIndex } = this.state;
-    columnFilterStrings[tempFilterIndex] = e.target.value;
+    columnFilterStrings[tempFilterIndex] = event.target.value;
     this.setState({ columnFilterStrings });
   }
 
   /**
    * General state update handler.
-   * @param {Event} e - user change event.
+   * @param {Event} event - user change event.
    */
-  handleChange(e) {
-    this.setState({ [e.target.name]: e.target.value });
+  handleChange(event) {
+    this.setState({ [event.target.name]: event.target.value });
   }
 
   /**
    * Updates page to display.
-   * @param {Event} e - Triggered event.
+   * @param {Event} event - Triggered event.
    * @param {number} page - New page number.
    */
-  handleChangePage(e, page) {
+  handleChangePage(event, page) {
     const { sortedData, rowsPerPage } = this.state;
     const { moreResults } = this.props;
     const rows = (page + 1) * rowsPerPage;
@@ -391,12 +382,15 @@ class TableComponent extends Component {
 
   /**
    * Toggles filters from selecting all/deselecting all options.
-   * @param {Array.<string>} options - current array of filter options.
    */
-  handleFilterCheckAll(options) {
-    const { columnFilterExclusions, tempFilterIndex } = this.state;
+  handleFilterCheckAll() {
+    const {
+      columnFilterExclusions,
+      tempFilterIndex,
+      filterOptions,
+    } = this.state;
     if (columnFilterExclusions[tempFilterIndex].length === 0) {
-      columnFilterExclusions[tempFilterIndex] = options.slice();
+      columnFilterExclusions[tempFilterIndex] = filterOptions.slice();
     } else {
       columnFilterExclusions[tempFilterIndex] = [];
     }
@@ -421,10 +415,10 @@ class TableComponent extends Component {
 
   /**
    * Opens table actions menu.
-   * @param {Event} e - Open menu button event.
+   * @param {Event} event - Open menu button event.
    */
-  handleOpen(e) {
-    this.setState({ anchorEl: e.currentTarget });
+  handleOpen(event) {
+    this.setState({ anchorEl: event.currentTarget });
   }
 
   /**
@@ -570,79 +564,67 @@ class TableComponent extends Component {
       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
     const menu = (
-      <Menu
+      <TableMenu
         anchorEl={anchorEl}
-        open={!!anchorEl}
+        items={[
+          {
+            action: this.clearFilters,
+            id: 'clear-filters',
+            label: 'Clear all filters',
+          },
+          {
+            action: () => handleGraphRedirect(columnFilterExclusions),
+            disabled: displayed.length === 0,
+            id: 'view-as-graph',
+            label: 'View selected in Graph',
+          },
+          {
+            id: 'download-tsv',
+            disabled: sortedData.length === 0,
+            label: (
+              <DownloadFileComponent
+                mediaType="text/tab-separated-values"
+                rawFileContent={this.createTSV}
+                fileName={TSV_FILENAME}
+                id="download-tsv"
+
+              >
+                Download all as TSV
+              </DownloadFileComponent>
+            ),
+          },
+          {
+            id: 'download-selected',
+            disabled: displayed.length === 0,
+            label: (
+              <DownloadFileComponent
+                mediaType="text/tab-separated-values"
+                rawFileContent={() => this.createTSV(displayed)}
+                fileName={TSV_FILENAME}
+              >
+                Download selected as TSV
+              </DownloadFileComponent>
+            ),
+          },
+          {
+            action: handleHideSelected,
+            disabled: displayed.length === 0,
+            id: 'hide-selected',
+            label: `Hide selected rows${displayed.length !== 0 && ` (${displayed.length})`}`,
+          },
+          {
+            action: () => { handleShowAllNodes(); this.handleSortByChange('desc'); },
+            disabled: hidden.length === 0,
+            label: `Show hidden rows${hidden.length !== 0 && ` (${hidden.length})`}`,
+          },
+          {
+            action: () => this.handleChange({ target: { name: 'columnSelect', value: true } }),
+            id: 'column-edit',
+            label: 'Edit visible columns',
+          },
+        ]}
         onClose={this.handleClose}
-      >
-        <MenuItem
-          onClick={() => { this.handleClose(); this.clearFilters(); }}
-          id="clear-filters"
-        >
-          Clear all filters
-        </MenuItem>
-        <MenuItem
-          onClick={() => { this.handleClose(); handleGraphRedirect(columnFilterExclusions); }}
-          disabled={displayed.length === 0}
-          id="view-as-graph"
-        >
-          View selected in Graph
-        </MenuItem>
-        <DownloadFileComponent
-          mediaType="text/tab-separated-values"
-          rawFileContent={this.createTSV}
-          fileName={TSV_FILENAME}
-          id="download-tsv"
-        >
-          <MenuItem
-            onClick={this.handleClose}
-            disabled={sortedData.length === 0}
-          >
-            Download all as TSV
-          </MenuItem>
-        </DownloadFileComponent>
-        <DownloadFileComponent
-          mediaType="text/tab-separated-values"
-          rawFileContent={() => this.createTSV(displayed)}
-          fileName={TSV_FILENAME}
-          id="download-tsv"
-        >
-          <MenuItem
-            onClick={this.handleClose}
-            disabled={displayed.length === 0}
-          >
-            Download selected as TSV
-          </MenuItem>
-        </DownloadFileComponent>
-        <MenuItem
-          onClick={() => { this.handleClose(); handleHideSelected(); }}
-          disabled={displayed.length === 0}
-          id="hide-selected"
-        >
-          Hide selected rows
-          {displayed.length !== 0 && ` (${displayed.length})`}
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            this.handleClose();
-            handleShowAllNodes();
-            this.handleSortByChecked('desc');
-          }}
-          disabled={hidden.length === 0}
-        >
-          Show hidden rows
-          {hidden.length !== 0 && ` (${hidden.length})`}
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            this.handleClose();
-            this.handleChange({ target: { name: 'columnSelect', value: true } });
-          }}
-          id="column-edit"
-        >
-          Edit visible columns
-        </MenuItem>
-      </Menu>
+      />
     );
 
     const columnDialog = (
@@ -654,95 +636,18 @@ class TableComponent extends Component {
         tableColumns={tableColumns}
       />
     );
-
     const filterPopover = (
-      <Popover
+      <FilterPopover
         anchorEl={filterPopoverNode}
-        open={!!filterPopoverNode}
         onClose={this.handleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-        id="filter-popover"
-      >
-        <Paper className="filter-wrapper">
-          <List className="filter-list">
-            <ListItem dense>
-              <TextField
-                value={columnFilterStrings[tempFilterIndex]}
-                onChange={e => this.handleFilterStrings(e)}
-                fullWidth
-                margin="none"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment><SearchIcon /></InputAdornment>
-                  ),
-                }}
-              />
-            </ListItem>
-            <ListItem
-              button
-              dense
-              onClick={() => this.handleFilterCheckAll(filterOptions)}
-              id="select-all-checkbox"
-              classes={{
-                root: 'filter-item-background',
-              }}
-            >
-              <Checkbox
-                checked={columnFilterExclusions[tempFilterIndex]
-                  && columnFilterExclusions[tempFilterIndex].length === 0
-                }
-              />
-              <ListItemText primary={columnFilterExclusions[tempFilterIndex]
-                && columnFilterExclusions[tempFilterIndex].length === 0 ? 'Deselect All' : 'Select All'}
-              />
-            </ListItem>
-            <List
-              component="div"
-              dense
-              disablePadding
-              className="filter-exclusions-list"
-            >
-              {filterOptions
-                .filter((o) => {
-                  const filter = columnFilterStrings[tempFilterIndex];
-                  return util.castToExist(o).includes(filter);
-                })
-                .sort((o) => {
-                  const option = util.castToExist(o);
-                  if (option === 'null') return -1;
-                  return 1;
-                })
-                .slice(0, 100)
-                .map((o) => {
-                  const option = util.castToExist(o);
-                  return (
-                    <ListItem
-                      dense
-                      key={option}
-                      button
-                      onClick={() => this.handleFilterExclusions(option)}
-                    >
-                      <Checkbox
-                        checked={columnFilterExclusions[tempFilterIndex]
-                          && !columnFilterExclusions[tempFilterIndex].includes(option)
-                        }
-                      />
-                      <ListItemText primary={option} />
-                    </ListItem>
-                  );
-                })}
-            </List>
-          </List>
-        </Paper>
-      </Popover>
-    );
+        filterValue={columnFilterStrings[tempFilterIndex]}
+        onFilterChange={this.handleFilterStrings}
+        onFilterCheckAll={this.handleFilterCheckAll}
+        onFilterExclude={this.handleFilterExclusions}
+        values={filterOptions || []}
+        filtered={columnFilterExclusions[tempFilterIndex] || []}
+      />);
+
     return (
       <section className="data-table">
         {columnDialog}
@@ -971,7 +876,7 @@ class TableComponent extends Component {
 TableComponent.propTypes = {
   data: PropTypes.object.isRequired,
   detail: PropTypes.object,
-  displayed: PropTypes.array,
+  displayed: PropTypes.arrayOf(PropTypes.string),
   handleCheckAll: PropTypes.func.isRequired,
   handleCheckbox: PropTypes.func.isRequired,
   handleHideSelected: PropTypes.func.isRequired,
@@ -979,12 +884,12 @@ TableComponent.propTypes = {
   handleGraphRedirect: PropTypes.func.isRequired,
   handleDetailDrawerOpen: PropTypes.func.isRequired,
   handleSubsequentPagination: PropTypes.func,
-  hidden: PropTypes.array,
-  allProps: PropTypes.array,
+  hidden: PropTypes.arrayOf(PropTypes.string),
+  allProps: PropTypes.arrayOf(PropTypes.string),
   moreResults: PropTypes.bool,
   completedNext: PropTypes.bool,
   storedFilters: PropTypes.array,
-  defaultOrder: PropTypes.array,
+  defaultOrder: PropTypes.arrayOf(PropTypes.string),
   schema: PropTypes.object.isRequired,
 };
 

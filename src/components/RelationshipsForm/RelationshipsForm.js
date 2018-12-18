@@ -22,9 +22,9 @@ import CloseIcon from '@material-ui/icons/Close';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import FormTemplater from '../FormTemplater/FormTemplater';
-import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
-import AutoSearchMulti from '../AutoSearchMulti/AutoSearchMulti';
+import AutoSearchMulti from '../AutoSearchMulti';
+import FormTemplater from '../FormTemplater';
+import ResourceSelectComponent from '../ResourceSelectComponent';
 import util from '../../services/util';
 
 const DEFAULT_RELATIONSHIPS_PROPSLENGTH = 3;
@@ -74,10 +74,10 @@ class RelationshipsForm extends Component {
 
   /**
    * Adds new subset to state list. Clears subset field.
-   * @param {Event} e - User request subset add event.
+   * @param {Event} event - User request subset add event.
    */
-  handleAdd(e) {
-    e.preventDefault();
+  handleAdd(event) {
+    event.preventDefault();
     const {
       relationships,
       name,
@@ -98,12 +98,12 @@ class RelationshipsForm extends Component {
       let initEdge = edges[0];
       let direction = forward;
       if (typeof initEdge === 'object') {
-        initEdge = initEdge.name;
         direction = initEdge.direction === 'in';
+        initEdge = initEdge.name;
       }
       const newModel = schema.initModel({}, initEdge);
 
-      newModel[`${direction ? 'out' : 'in'}.data`] = { '@rid': nodeRid };
+      newModel[`${direction ? 'in' : 'out'}.data`] = { '@rid': nodeRid };
       newModel['@rid'] = this.applyTestId();
       this.setState({ model: newModel });
     }
@@ -111,11 +111,11 @@ class RelationshipsForm extends Component {
 
   /**
    * Deletes subset from state relationship list.
-   * @param {Event} e - User delete button event click.
+   * @param {Event} event - User delete button event click.
    * @param {string} rid - relationship id to be deleted.
    */
-  handleDelete(e, rid) {
-    e.stopPropagation();
+  handleDelete(event, rid) {
+    event.stopPropagation();
     const {
       originalRelationships,
     } = this.state;
@@ -137,11 +137,11 @@ class RelationshipsForm extends Component {
 
   /**
    * Reverts a subset that is staged for deletion.
-   * @param {Event} e - User undo button click event.
+   * @param {Event} event - User undo button click event.
    * @param {string} rid - deleted subset to be reverted.
    */
-  handleUndo(e, rid) {
-    e.stopPropagation();
+  handleUndo(event, rid) {
+    event.stopPropagation();
 
     const { relationships, name, onChange } = this.props;
     relationships.find(r => r['@rid'] === rid).deleted = false;
@@ -150,12 +150,12 @@ class RelationshipsForm extends Component {
 
   /**
    * Handles change in temp relationship model.
-   * @param {Event} e - User change event.
+   * @param {Event} event - User change event.
    */
-  handleChange(e) {
+  handleChange(event) {
     const { model } = this.state;
     const { schema } = this.props;
-    const { name, value } = e.target;
+    const { name, value } = event.target;
     model[name] = value;
     if (name && name.includes('.data') && value) {
       model[name.split('.')[0]] = schema.getPreview(value);
@@ -166,12 +166,12 @@ class RelationshipsForm extends Component {
   /**
    * Handles changes in the temp relationship model's class, causing a
    * reinitialization of the model.
-   * @param {Event} e - class change event.
+   * @param {Event} event - class change event.
    */
-  handleClassChange(e) {
+  handleClassChange(event) {
     const { model } = this.state;
     const { schema } = this.props;
-    const { value } = e.target;
+    const { value } = event.target;
 
     const newModel = schema.initModel(model, value);
     this.setState({ model: newModel });
@@ -247,7 +247,7 @@ class RelationshipsForm extends Component {
       : 'in';
     return (
       <div className="relationships-expansion">
-        {schema.getProperties(r['@class']).filter(k => (
+        {schema.getProperties(r).filter(k => (
           k.name !== (isIn ? 'in' : 'out')
           && r[k.name]
         )).map(k => (
@@ -283,7 +283,7 @@ class RelationshipsForm extends Component {
     } = this.props;
 
     if (!model) return null;
-    const editableProps = schema.getProperties(model['@class']);
+    const editableProps = schema.getProperties(model);
 
     let formIsInvalid = false;
     editableProps.forEach((prop) => {
@@ -423,8 +423,8 @@ class RelationshipsForm extends Component {
                 const {
                   name,
                   reverseName,
-                } = schema.get(r['@class']);
-                const shouldExpand = schema.getProperties(r['@class'])
+                } = schema.get(r);
+                const shouldExpand = schema.getProperties(r)
                   .filter(k => r[k.name] !== undefined && !(r[`${k.name}.data`] && r[`${k.name}.data`] === null))
                   .length > DEFAULT_RELATIONSHIPS_PROPSLENGTH;
                 const isIn = (r['in.data'] || {})['@rid'] === nodeRid;

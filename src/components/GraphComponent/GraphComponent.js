@@ -31,13 +31,18 @@ import {
   GraphLink,
 } from './kbgraph';
 
-
 const {
-  NODE_INIT_RADIUS,
-  ZOOM_BOUNDS,
-} = config.GRAPH_PROPERTIES;
-const { PALLETE_SIZE } = config.GRAPH_DEFAULTS;
-const { GRAPH_UNIQUE_LIMIT } = config.NOTIFICATIONS;
+  GRAPH_PROPERTIES: {
+    NODE_INIT_RADIUS,
+    ZOOM_BOUNDS,
+  },
+  GRAPH_DEFAULTS: {
+    PALLETE_SIZE,
+  },
+  NOTIFICATIONS: {
+    GRAPH_UNIQUE_LIMIT,
+  },
+} = config;
 
 // Component specific constants.
 const AUTO_SPACE_COEFFICIENT = 2;

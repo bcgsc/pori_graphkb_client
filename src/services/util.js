@@ -8,12 +8,10 @@ import config from '../static/config';
 const {
   PERMISSIONS,
   GRAPH_DEFAULTS,
-  GRAPH_PROPERTIES,
-  KEYS,
+  GRAPH_PROPERTIES: { NODE_INIT_RADIUS },
+  KEYS: { GRAPH_OBJECTS },
 } = config;
 const { PALLETE_SIZE } = GRAPH_DEFAULTS;
-const { NODE_INIT_RADIUS } = GRAPH_PROPERTIES;
-const { GRAPH_OBJECTS } = KEYS;
 
 const ACRONYMS = [
   'id',

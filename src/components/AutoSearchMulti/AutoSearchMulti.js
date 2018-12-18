@@ -20,7 +20,7 @@ import * as jc from 'json-cycle';
 import * as qs from 'querystring';
 import debounce from 'lodash.debounce';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
-import AutoSearchBase from '../AutoSearchBase/AutoSearchBase';
+import AutoSearchBase from '../AutoSearchBase';
 import FormTemplater from '../FormTemplater/FormTemplater';
 import api from '../../services/api';
 import util from '../../services/util';

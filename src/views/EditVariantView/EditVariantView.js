@@ -6,9 +6,9 @@ import '../AddVariantView/AddVariantView.css';
 import PropTypes from 'prop-types';
 import { Paper, Typography, Button } from '@material-ui/core';
 import * as jc from 'json-cycle';
-import PositionalVariantParser from '../../components/PositionalVariantParser/PositionalVariantParser';
-import { withKB } from '../../components/KBContext/KBContext';
-import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
+import { withKB } from '../../components/KBContext';
+import OntologyFormComponent from '../../components/OntologyFormComponent';
+import PositionalVariantParser from '../../components/PositionalVariantParser';
 import util from '../../services/util';
 import api from '../../services/api';
 

@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Snackbar } from '@material-ui/core';
 
+/**
+ * High level snackbar state manager for app.
+ */
 const SnackbarContext = React.createContext({
   add: () => { },
   clear: () => { },
@@ -13,6 +16,9 @@ const withSnackbar = WrappedComponent => props => (
   </SnackbarContext.Consumer>
 );
 
+/**
+ * Renders snackbar when activated.
+ */
 class SnackbarProvider extends Component {
   constructor(props) {
     super(props);
@@ -29,10 +35,19 @@ class SnackbarProvider extends Component {
     this.handleExit = this.handleExit.bind(this);
   }
 
+  /**
+   * Closes snackbar.
+   */
   handleClose() {
     this.setState({ open: false });
   }
 
+  /**
+   * Pushes a new snack to the snack queue. Opens snackbar if currently closed.
+   * @param {string} message - Snackbar message.
+   * @param {string} label - Snackbar button label.
+   * @param {function} action - Action on snackbar button click.
+   */
   add(message, label, action) {
     const { open } = this.state;
     const snack = { message };
@@ -49,16 +64,25 @@ class SnackbarProvider extends Component {
     }
   }
 
+  /**
+   * Clears snack queue and closes current snackbar.
+   */
   clear() {
     this.queue = [];
     this.handleClose();
   }
 
+  /**
+   * Takes the first snack in the queue and displays it.
+   */
   grabFromQueue() {
     const snack = this.queue.shift();
     this.setState({ open: true, snack });
   }
 
+  /**
+   * Displays the next item in the queue when the current snack closes.
+   */
   handleExit() {
     if (this.queue.length > 0) {
       this.grabFromQueue();
@@ -95,6 +119,10 @@ class SnackbarProvider extends Component {
   }
 }
 
+/**
+ * @namespace
+ * @property {any} children - Rest of app.
+ */
 SnackbarProvider.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
 };

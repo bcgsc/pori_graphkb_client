@@ -36,6 +36,8 @@ const DEFAULT_PARAMS = [
   return array;
 }, ['name', 'sourceId']);
 
+const ENTER_KEYCODE = 13;
+
 /**
  * View for simple search by name query. Form submissions are passed through the URL to
  * the DataView module to handle the query transaction.
@@ -206,7 +208,7 @@ class QueryViewBase extends Component {
         <div className="search-bar">
           <div
             className="main-search"
-            onKeyUp={event => event.keyCode === 13 && this.handleSubmit()}
+            onKeyUp={event => event.keyCode === ENTER_KEYCODE && this.handleSubmit()}
             role="textbox"
             tabIndex={0}
           >

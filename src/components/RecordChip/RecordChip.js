@@ -2,6 +2,7 @@
  * @module /components/RecordChip
  */
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './RecordChip.css';
 import {
   Chip,
@@ -41,10 +42,10 @@ class RecordChip extends Component {
 
   /**
    * Opens popover.
-   * @param {Event} e - User click event.
+   * @param {Event} event - User click event.
    */
-  handlePopoverOpen(e) {
-    this.setState({ anchorEl: e.currentTarget });
+  handlePopoverOpen(event) {
+    this.setState({ anchorEl: event.currentTarget });
   }
 
   render() {
@@ -54,6 +55,8 @@ class RecordChip extends Component {
       ...other
     } = this.props;
     const { anchorEl } = this.state;
+
+    if (!record) return null;
 
     let className = 'record-chip-root';
     if (other.className) {
@@ -127,4 +130,18 @@ class RecordChip extends Component {
     );
   }
 }
+
+/**
+ * @namespace
+ * @property {Object} record - record to be displayed in chip.
+ * @property {Object} schema - KB schema object.
+ */
+RecordChip.propTypes = {
+  record: PropTypes.object,
+  schema: PropTypes.object.isRequired,
+};
+
+RecordChip.defaultProps = {
+  record: null,
+};
 export default RecordChip;

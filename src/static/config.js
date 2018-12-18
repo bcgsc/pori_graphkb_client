@@ -1,11 +1,17 @@
 export default {
-  API_BASE_URL: process.env.REACT_APP_API_BASE_URL || 'http://kbapi01:8100/api',
+  API_BASE_URL: process.env.REACT_APP_API_BASE_URL || 'http://kbapi01:8080/api',
   KEYS: {
-    SOURCES: 'sources',
-    SCHEMA: 'schema',
     KB_TOKEN: 'kbToken',
+    KEYCLOAK_TOKEN: 'kcToken',
+    GRAPH_OBJECTS: 'graphObjects',
   },
-  FEEDBACK_EMAIL: 'ibeckie@bcgsc.ca',
+  KEYCLOAK: {
+    REALM: process.env.REACT_APP_KEYCLOAK_REALM || 'TestKB', // TODO: Migrate over to production keycloak realm (will probably be something like "GSC")s
+    CLIENT_ID: process.env.REACT_APP_KEYCLOAK_CLIENT_ID || 'GraphKB',
+    URL: process.env.REACT_APP_KEYCLOAK_URL || 'http://ga4ghdev01.bcgsc.ca:8080/auth',
+    GRAPHKB_ROLE: process.env.REACT_APP_KEYCLOAK_ROLE || 'GraphKB',
+  },
+  FEEDBACK_EMAIL: 'graphkb@bcgsc.ca',
   FEEDBACK_HIPCHAT: '@IsaacBeckie',
   JIRA_LINK: 'https://www.bcgsc.ca/jira/projects/KBDEV',
   GRAPH_PROPERTIES: {

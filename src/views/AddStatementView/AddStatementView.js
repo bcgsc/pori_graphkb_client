@@ -8,10 +8,10 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
-import { withKB } from '../../components/KBContext/KBContext';
+import { withKB } from '../../components/KBContext';
+import StatementFormComponent from '../../components/StatementFormComponent';
 import api from '../../services/api';
 import util from '../../services/util';
-import StatementFormComponent from '../../components/StatementFormComponent/StatementFormComponent';
 
 /**
  * Route for submitting Statement records to the db.
@@ -42,12 +42,12 @@ class AddStatementViewBase extends Component {
    */
   async handleSubmit(form, relationships) {
     const { schema } = this.props;
-    const route = schema.getRoute(form['@class']);
-    const properties = schema.getProperties(form['@class']);
+    const { routeName } = schema.get(form);
+    const properties = schema.getProperties(form);
 
     const payload = util.parsePayload(form, properties);
     const relationshipPayloads = relationships.map((r) => {
-      const relationshipProperties = schema.getProperties(r['@class'], ['@class']);
+      const relationshipProperties = schema.getProperties(r, ['@class']);
       const rPayload = util.parsePayload(r, relationshipProperties);
 
       Object.keys(rPayload).forEach((k) => {
@@ -65,9 +65,9 @@ class AddStatementViewBase extends Component {
       return rPayload;
     });
     payload.supportedBy = relationshipPayloads.filter(r => r['@class'] === 'SupportedBy');
-    payload.impliedBy = relationshipPayloads.filter(r => r['@class'] === 'Implies');
+    payload.impliedBy = relationshipPayloads.filter(r => r['@class'] === 'ImpliedBy');
     try {
-      await api.post(route, payload);
+      await api.post(routeName, payload);
       return true;
     } catch (error) {
       console.error(error);
@@ -98,7 +98,7 @@ class AddStatementViewBase extends Component {
         <StatementFormComponent
           schema={schema}
           onSubmit={this.handleSubmit}
-          handleFinish={this.handleFinish}
+          onDelete={this.handleFinish}
           is409={is409}
         />
       </div>

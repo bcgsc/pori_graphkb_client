@@ -20,7 +20,7 @@ import * as jc from 'json-cycle';
 import * as qs from 'querystring';
 import debounce from 'lodash.debounce';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
-import AutoSearchBase from '../AutoSearchBase/AutoSearchBase';
+import AutoSearchBase from '../AutoSearchBase';
 import FormTemplater from '../FormTemplater/FormTemplater';
 import api from '../../services/api';
 import util from '../../services/util';
@@ -109,10 +109,10 @@ class AutoSearchMulti extends Component {
 
   /**
    * Opens/closes popover, and closes downshift component.
-   * @param {Event} e - Popover event.
+   * @param {Event} event - Popover event.
    */
-  handleOpenPopover(e) {
-    this.setState({ anchorEl: e ? e.currentTarget : null, downshiftOpen: false });
+  handleOpenPopover(event) {
+    this.setState({ anchorEl: event ? event.currentTarget : null, downshiftOpen: false });
   }
 
   /**
@@ -123,7 +123,7 @@ class AutoSearchMulti extends Component {
     const { schema } = this.props;
     const pattern = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
 
-    const properties = schema.getProperties(cls, EXTRA_FORM_PROPS);
+    const properties = schema.getQueryProperties(cls, EXTRA_FORM_PROPS);
     const payload = util.parsePayload(model, properties, [], true);
     Object.keys(payload).forEach((k) => {
       const trimmed = String(payload[k]).trim();
@@ -159,14 +159,14 @@ class AutoSearchMulti extends Component {
   /**
    * Handles the update of the model class by reinitializing model and changing
    * class state variable.
-   * @param {Event} e - New class select event.
+   * @param {Event} event - New class select event.
    */
-  handleClassChange(e) {
+  handleClassChange(event) {
     const { schema } = this.props;
     const { model } = this.state;
     this.setState({
-      cls: e.target.value,
-      model: schema.initModel(model, e.target.value, { extraProps: EXTRA_FORM_PROPS }),
+      cls: event.target.value,
+      model: schema.initModel(model, event.target.value, { extraProps: EXTRA_FORM_PROPS }),
     });
   }
 
@@ -181,13 +181,13 @@ class AutoSearchMulti extends Component {
 
   /**
    * Calls api with user input value as parameter.
-   * @param {Event} e - user input event.
+   * @param {Event} event - user input event.
    */
-  refreshOptions(e) {
-    if (!ACTION_KEYCODES.includes(e.keyCode)) {
+  refreshOptions(event) {
+    if (!ACTION_KEYCODES.includes(event.keyCode)) {
       const { selected } = this.state;
       const { value: propValue, onChange } = this.props;
-      const { value, name } = e.target;
+      const { value, name } = event.target;
       let val = value;
 
       if (selected) {
@@ -278,7 +278,7 @@ class AutoSearchMulti extends Component {
       </Tooltip>
     );
 
-    const properties = schema.getProperties(cls, EXTRA_FORM_PROPS) || [];
+    const properties = schema.getQueryProperties(cls, EXTRA_FORM_PROPS) || [];
     const endpointName = superClass || (
       Object
         .values(schema.schema)
@@ -348,11 +348,7 @@ class AutoSearchMulti extends Component {
                         ? schema.getSubclassesOf(endpointName)
                         : schema.getQueryable()
                       ).map(m => m.name)}
-                  >
-                    {v => (
-                      <MenuItem key={v} value={v}>{v}</MenuItem>
-                    )}
-                  </ResourceSelectComponent>
+                  />
                 </ListItem>
                 {model && (
                   <div className="autosearch-multi-form-templater">
@@ -418,7 +414,7 @@ AutoSearchMulti.propTypes = {
   onChange: PropTypes.func,
   limit: PropTypes.number,
   endpoint: PropTypes.string,
-  property: PropTypes.array,
+  property: PropTypes.arrayOf(PropTypes.string),
   placeholder: PropTypes.string,
   label: PropTypes.string,
   required: PropTypes.bool,
@@ -431,7 +427,7 @@ AutoSearchMulti.propTypes = {
 
 AutoSearchMulti.defaultProps = {
   limit: 30,
-  endpoint: 'ontologies',
+  endpoint: '/ontologies',
   property: ['name'],
   placeholder: '',
   name: undefined,

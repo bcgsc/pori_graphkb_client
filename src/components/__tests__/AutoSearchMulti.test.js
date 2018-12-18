@@ -3,8 +3,8 @@ import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { TextField } from '@material-ui/core';
 import Downshift from 'downshift';
-import AutoSearchMulti from '../AutoSearchMulti/AutoSearchMulti';
-import AutoSearchBase from '../AutoSearchBase/AutoSearchBase';
+import AutoSearchMulti from '../AutoSearchMulti';
+import AutoSearchBase from '../AutoSearchBase';
 import Schema from '../../services/schema';
 
 const testSchema = new Schema({
@@ -23,7 +23,7 @@ const testSchema = new Schema({
   Disease: {
     name: 'Disease',
     inherits: ['Ontology'],
-    properties: [
+    queryProperties: [
       { name: '@rid', type: 'string', mandatory: true },
       { name: 'name', type: 'string', mandatory: true },
       { name: 'sourceId', type: 'string' },

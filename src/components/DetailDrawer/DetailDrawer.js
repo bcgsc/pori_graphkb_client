@@ -67,7 +67,7 @@ class DetailDrawer extends Component {
   formatIdentifiers(node, isNested) {
     const { schema } = this.props;
     if (!node['@class']) return null;
-    const { identifiers, properties } = schema.get(node['@class']);
+    const { identifiers, properties } = schema.get(node);
     return this.formatProps(node, identifiers.reduce((array, id) => {
       const [key, nestedKey] = id.split('.');
       if (!schema.getMetadata().find(p => p.name === key)) {
@@ -296,12 +296,12 @@ class DetailDrawer extends Component {
    */
   formatOtherProps(node, isNested) {
     const { schema } = this.props;
-    const { identifiers } = schema.get(node['@class']);
+    const { identifiers } = schema.get(node);
 
     let properties = Object.keys(node)
       .map(key => ({ name: key, type: util.parseKBType(node[key]) }));
-    if (schema && schema.getProperties(node['@class'])) {
-      properties = schema.getProperties(node['@class']);
+    if (schema && schema.getProperties(node)) {
+      properties = schema.getProperties(node);
     }
     const propsList = Object.values(properties)
       .filter(prop => !identifiers.map(id => id.split('.')[0]).includes(prop.name)
@@ -329,6 +329,7 @@ class DetailDrawer extends Component {
           const isOpen = linkOpen === edge['@rid'];
           const isIn = edge.in && edge.in['@rid'] === node['@rid'];
           const targetNode = isIn ? edge.out : edge.in;
+          if (targetNode['@rid'] === node['@rid']) return null;
           let preview;
           try {
             preview = schema.getPreview(targetNode);
@@ -354,7 +355,7 @@ class DetailDrawer extends Component {
                     color: isOpen ? 'secondary' : 'default',
                   }}
                   primary={<Typography variant="subtitle1">{preview}</Typography>}
-                  secondary={util.getEdgeLabel(`${isIn ? 'in' : 'out'}_${edge['@class']}`)}
+                  secondary={schema.get(edge['@class'])[isIn ? 'reverseName' : 'name']}
                 />
                 {!isOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
               </ListItem>
@@ -369,7 +370,7 @@ class DetailDrawer extends Component {
                     Link Properties
                   </ListSubheader>
                   {this.formatOtherProps(edge, true)}
-                  <ListItem dense button onClick={() => this.handleExpand(`${edge['@rid']}meta`)}>
+                  <ListItem dense button onClick={() => this.handleExpand(`${edge['@rid']} meta`)}>
                     <div className="nested-spacer" />
                     <ListItemText className="detail-li-text">
                       <Typography variant="subtitle1" color={metaOpen ? 'secondary' : 'default'}>
@@ -474,7 +475,7 @@ class DetailDrawer extends Component {
               </Button>
             </div>
             <div className="detail-edit-btn">
-              {(schema.isSubclass(node['@class'], ['Ontology', 'Variant'])
+              {(schema.isSubclass(node, ['Ontology', 'Variant'])
                 || node['@class'] === 'Statement')
                 && (
                   <Button
@@ -537,12 +538,12 @@ class DetailDrawer extends Component {
 
 /**
  * @namespace
- * @property {Object} schema - Knowledgebase schema object.
- * @property {Object} node - Ontology to be displayed in drawer.
- * @property {function} onClose - Function triggered on @material-ui/Drawer onClose event.
- * @property {bool} isEdge - Flag for edge classes.
- * @property {function} handleNodeEditStart - Function triggered on node edit button click.
- */
+* @property {Object} schema - Knowledgebase schema object.
+* @property {Object} node - Ontology to be displayed in drawer.
+* @property {function} onClose - Function triggered on @material-ui/Drawer onClose event.
+* @property {bool} isEdge - Flag for edge classes.
+* @property {function} handleNodeEditStart - Function triggered on node edit button click.
+    */
 DetailDrawer.propTypes = {
   schema: PropTypes.object,
   node: PropTypes.object,

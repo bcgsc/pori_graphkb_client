@@ -15,8 +15,8 @@ import {
 import kbp from '@bcgsc/knowledgebase-parser';
 import * as qs from 'querystring';
 import SearchIcon from '@material-ui/icons/Search';
-import AutoSearchSingle from '../../components/AutoSearchSingle/AutoSearchSingle';
-import { withKB } from '../../components/KBContext/KBContext';
+import AutoSearchSingle from '../../components/AutoSearchSingle';
+import { withKB } from '../../components/KBContext';
 import util from '../../services/util';
 
 const KB_SEP_CHARS = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
@@ -27,14 +27,16 @@ const DEFAULT_PARAMS = [
 ].reduce((array, item) => {
   array.push(
     ...[
-      'inE(Implies).vertex.reference1',
-      'inE(Implies).vertex.reference2',
-      'inE(Implies).vertex.type',
+      'inE(ImpliedBy).vertex.reference1',
+      'inE(ImpliedBy).vertex.reference2',
+      'inE(ImpliedBy).vertex.type',
     ].map(str => `${str}.${item}`),
   );
 
   return array;
 }, ['name', 'sourceId']);
+
+const ENTER_KEYCODE = 13;
 
 /**
  * View for simple search by name query. Form submissions are passed through the URL to
@@ -149,11 +151,11 @@ class QueryViewBase extends Component {
 
   /**
    * Updates state from user input.
-   * @param {Event} e - user input event.
+   * @param {Event} event - user input event.
    */
-  handleChange(e) {
+  handleChange(event) {
     const { schema } = this.props;
-    const { name, value } = e.target;
+    const { name, value } = event.target;
     if (name && name.includes('.data') && value) {
       this.setState({ [name.split('.data')[0]]: schema.getPreview(value) });
     } else {
@@ -178,11 +180,11 @@ class QueryViewBase extends Component {
         variant: kbp.variant.parse(str),
         variantError: '',
       });
-    } catch (e) {
+    } catch (error) {
       // If anything is parsed, use that..
-      const update = { variantError: str ? e.message : '', queryable: false };
-      if (e.content && e.content.parsed) {
-        const { variantString, ...parsed } = e.content.parsed;
+      const update = { variantError: str ? error.message : '', queryable: false };
+      if (error.content && error.content.parsed) {
+        const { variantString, ...parsed } = error.content.parsed;
         if (Object.keys(parsed).length !== 0) {
           update.variant = parsed;
           update.queryable = true;
@@ -206,11 +208,7 @@ class QueryViewBase extends Component {
         <div className="search-bar">
           <div
             className="main-search"
-            onKeyUp={(e) => {
-              if (e.keyCode === 13) {
-                this.handleSubmit();
-              }
-            }}
+            onKeyUp={event => event.keyCode === ENTER_KEYCODE && this.handleSubmit()}
             role="textbox"
             tabIndex={0}
           >

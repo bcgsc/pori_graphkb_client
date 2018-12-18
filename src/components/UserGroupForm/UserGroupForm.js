@@ -17,8 +17,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import PermissionsTable from '../PermissionsTable/PermissionsTable';
-import DeleteRecordDialog from '../DeleteRecordDialog/DeleteRecordDialog';
+import PermissionsTable from '../PermissionsTable';
+import DeleteRecordDialog from '../DeleteRecordDialog';
 import UserGroupDialog from './UserGroupDialog/UserGroupDialog';
 
 /**
@@ -120,16 +120,16 @@ class UserGroupForm extends Component {
   /**
    * Checks/unchecks one column of UserGroup permissions.
    * @param {Event} event - user input checkbox event.
-   * @param {number} i - Column index ([D, U, R, C]).
+   * @param {number} index - Column index ([D, U, R, C]).
    */
-  handlePermissionsCheckAll(event, i) {
+  handlePermissionsCheckAll(event, index) {
     const { tempUserGroupPermissions } = this.state;
     const { schema } = this.props;
     Object.keys(tempUserGroupPermissions).forEach((pKey) => {
       const { isEdge, isAbstract } = schema.get(pKey);
-      tempUserGroupPermissions[pKey][i] = (event.target.checked
-        && !(isEdge && i === 1))
-        && !(isAbstract && i !== 2)
+      tempUserGroupPermissions[pKey][index] = (event.target.checked
+        && !(isEdge && index === 1))
+        && !(isAbstract && index !== 2)
         ? 1 : 0;
     });
     this.setState({ tempUserGroupPermissions });
@@ -162,7 +162,8 @@ class UserGroupForm extends Component {
   }
 
   /**
-   * Validates form and submits POST request to server.
+   * Validates form and calls onAdd props function with usergroup name and
+   * permissions as payload.
    */
   async handleUserGroupSubmit() {
     const { onAdd, userGroups } = this.props;
@@ -202,7 +203,8 @@ class UserGroupForm extends Component {
   }
 
   /**
-   * Opens new usergroup dialog, initializes form model.
+   * Toggles new UserGroup dialog between open and closed. Initializes temp
+   * usergroup permissions on open.
    */
   handleUserGroupDialog() {
     const { schema } = this.props;
@@ -222,7 +224,7 @@ class UserGroupForm extends Component {
   }
 
   /**
-   * Updates component state from input event.
+   * Updates state based on a user input event.
    * @param {Event} event - User input event.
    */
   handleChange(event) {

@@ -15,10 +15,10 @@ import {
   Typography,
 } from '@material-ui/core';
 import HelpIcon from '@material-ui/icons/Help';
-import AutoSearchSingle from '../AutoSearchSingle/AutoSearchSingle';
-import AutoSearchMulti from '../AutoSearchMulti/AutoSearchMulti';
-import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
-import EmbeddedSetForm from '../EmbeddedSetForm/EmbeddedSetForm';
+import AutoSearchSingle from '../AutoSearchSingle';
+import AutoSearchMulti from '../AutoSearchMulti';
+import ResourceSelectComponent from '../ResourceSelectComponent';
+import EmbeddedSetForm from '../EmbeddedSetForm';
 import util from '../../services/util';
 
 /**
@@ -58,10 +58,12 @@ function FormTemplater(props) {
     } = property;
     const mandatory = property.mandatory && !ignoreRequired;
     let field;
+
     const wrapperProps = {
       component: fieldComponent,
       key: `${appendToKeys}.${name}`,
       disableGutters: disablePadding,
+      className: 'form-templater-item',
     };
     // Radio group component for boolean types.
     if (type === 'boolean') {
@@ -70,30 +72,32 @@ function FormTemplater(props) {
       const boolValue = model[name] === undefined || model[name] === null ? '' : model[name];
       field = (
         <React.Fragment>
-          <FormControl
-            component="fieldset"
-            required={mandatory}
-            error={errorFields.includes(name)}
-            disabled={disabledFields.includes(name)}
-          >
-            <FormLabel>
-              {util.antiCamelCase(name)}
-            </FormLabel>
-            <RadioGroup
-              name={name}
-              onChange={e => onChange(e)}
-              value={boolValue.toString()}
-              style={{ flexDirection: 'row' }}
+          <div className="form-templater-radio-wrapper">
+            <FormControl
+              component="fieldset"
+              required={mandatory}
+              error={errorFields.includes(name)}
+              disabled={disabledFields.includes(name)}
             >
-              <FormControlLabel value="true" control={<Radio />} label="Yes" />
-              <FormControlLabel value="false" control={<Radio />} label="No" />
-            </RadioGroup>
-          </FormControl>
-          {description && (
-            <Tooltip title={description}>
-              <HelpIcon color="primary" className="form-templater-help-icon radio" />
-            </Tooltip>
-          )}
+              <FormLabel>
+                {util.antiCamelCase(name)}
+              </FormLabel>
+              <RadioGroup
+                name={name}
+                onChange={e => onChange(e)}
+                value={boolValue.toString()}
+                style={{ flexDirection: 'row' }}
+              >
+                <FormControlLabel value="true" control={<Radio />} label="Yes" />
+                <FormControlLabel value="false" control={<Radio />} label="No" />
+              </RadioGroup>
+            </FormControl>
+            {description && (
+              <Tooltip title={description}>
+                <HelpIcon color="primary" className="form-templater-help-icon radio" />
+              </Tooltip>
+            )}
+          </div>
         </React.Fragment>
       );
     } else if (type === 'link') {
@@ -143,7 +147,7 @@ function FormTemplater(props) {
         );
       }
     } else if (type === 'embedded') {
-      const properties = schema.getProperties((model[name] || {})['@class']);
+      const properties = schema.getProperties(model[name]);
       let classSelector = (
         <Typography variant="subtitle1">
           {util.antiCamelCase(name)}
@@ -281,6 +285,7 @@ function FormTemplater(props) {
     );
   };
 
+
   const completedpairs = {};
   const sortedProps = Object.values(propSchemas || {})
     .filter(p => !excludedProps.includes(p.name))
@@ -351,13 +356,13 @@ FormTemplater.propTypes = {
   onChange: PropTypes.func.isRequired,
   onClassChange: PropTypes.func,
   model: PropTypes.object.isRequired,
-  propSchemas: PropTypes.any,
-  excludedProps: PropTypes.array,
+  propSchemas: PropTypes.array,
+  excludedProps: PropTypes.arrayOf(PropTypes.string),
   fieldComponent: PropTypes.string,
-  errorFields: PropTypes.array,
-  disabledFields: PropTypes.array,
+  errorFields: PropTypes.arrayOf(PropTypes.string),
+  disabledFields: PropTypes.arrayOf(PropTypes.string),
   sort: PropTypes.func,
-  pairs: PropTypes.object,
+  pairs: PropTypes.objectOf(PropTypes.arrayOf(PropTypes.string)),
   ignoreRequired: PropTypes.bool,
   disablePadding: PropTypes.bool,
   disablePortal: PropTypes.bool,

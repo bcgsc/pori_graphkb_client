@@ -11,12 +11,12 @@ import {
   MenuItem,
   ListItem,
   Paper,
-  Snackbar,
 } from '@material-ui/core/';
 import * as qs from 'querystring';
-import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
-import { withKB } from '../../components/KBContext/KBContext';
-import FormTemplater from '../../components/FormTemplater/FormTemplater';
+import FormTemplater from '../../components/FormTemplater';
+import { withKB } from '../../components/KBContext';
+import ResourceSelectComponent from '../../components/ResourceSelectComponent';
+import { SnackbarContext } from '../../components/Snackbar';
 import util from '../../services/util';
 import auth from '../../services/auth';
 import config from '../../static/config';
@@ -37,8 +37,6 @@ const DEFAULT_ORDER = [
   'appliesTo',
 ];
 
-const SNACKBAR_DURATION = 6000;
-
 /**
  * View for in-depth database query building. Form submissions will route to
  * the data results route to display the returned data. Forms are dynamically
@@ -50,14 +48,12 @@ class AdvancedQueryViewBase extends Component {
 
     this.state = {
       form: null,
-      message: '',
     };
 
     this.bundle = this.bundle.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleClassChange = this.handleClassChange.bind(this);
     this.handleNestedClassChange = this.handleNestedClassChange.bind(this);
-    this.handleClose = this.handleClose.bind(this);
   }
 
   /**
@@ -65,13 +61,14 @@ class AdvancedQueryViewBase extends Component {
    */
   async componentDidMount() {
     const { history, schema } = this.props;
+    const snackbar = this.context;
     if (
       history.location
       && history.location.state
       && history.location.state.message
     ) {
       const { message, name } = history.location.state;
-      this.setState({ message: `${name || ''}: ${message}` });
+      snackbar.add(`${name || ''}: ${message}`);
     }
 
     const form = schema.initModel({}, 'Ontology', {
@@ -99,15 +96,15 @@ class AdvancedQueryViewBase extends Component {
 
   /**
    * Updates main parameters after user input.
-   * @param {Event} e - User input event.
+   * @param {Event} event - User input event.
    */
-  handleChange(e, nested) {
+  handleChange(event, nested) {
     const { form } = this.state;
     const { schema } = this.props;
     const {
       name,
       value,
-    } = e.target;
+    } = event.target;
 
     if (nested) {
       form[nested][name] = value;
@@ -127,12 +124,12 @@ class AdvancedQueryViewBase extends Component {
 
   /**
    * Re renders form input fields based on class editable properties.
-   * @param {Event} e - User class selection event.
+   * @param {Event} event - User class selection event.
    */
-  async handleClassChange(e) {
+  async handleClassChange(event) {
     const { form } = this.state;
     const { schema } = this.props;
-    const newForm = schema.initModel(form, e.target.value || 'Ontology', {
+    const newForm = schema.initModel(form, event.target.value || 'Ontology', {
       extraProps: config.ONTOLOGY_QUERY_PARAMS,
       isQuery: true,
     });
@@ -141,14 +138,14 @@ class AdvancedQueryViewBase extends Component {
 
   /**
    * Handles changes in an embedded property's class.
-   * @param {Event} e - new class selection event.
+   * @param {Event} event - new class selection event.
    * @param {string} nested - nested property key.
    */
-  handleNestedClassChange(e, nested) {
+  handleNestedClassChange(event, nested) {
     const { form } = this.state;
     const { schema } = this.props;
-    const { value } = e.target;
-    const classSchema = schema.getProperties(form['@class']);
+    const { value } = event.target;
+    const classSchema = schema.getProperties(form);
     if (schema.getProperties(value)) {
       const abstractClass = classSchema
         .find(p => p.name === nested).linkedClass.name;
@@ -166,17 +163,9 @@ class AdvancedQueryViewBase extends Component {
     this.setState({ form });
   }
 
-  /**
-   * Closes notification snackbar.
-   */
-  handleClose() {
-    this.setState({ message: '' });
-  }
-
   render() {
     const {
       form,
-      message,
     } = this.state;
     const { history, schema } = this.props;
 
@@ -186,17 +175,6 @@ class AdvancedQueryViewBase extends Component {
 
     return (
       <div className="adv-wrapper" elevation={4}>
-        <Snackbar
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          open={!!message}
-          onClose={this.handleClose}
-          autoHideDuration={SNACKBAR_DURATION}
-          message={(
-            <span>
-              {message}
-            </span>
-          )}
-        />
         <Paper elevation={4} className="adv-header">
           <Button
             onClick={() => history.push('/query/advanced/builder')}
@@ -278,6 +256,8 @@ AdvancedQueryViewBase.propTypes = {
   history: PropTypes.object.isRequired,
   schema: PropTypes.object.isRequired,
 };
+
+AdvancedQueryViewBase.contextType = SnackbarContext;
 
 const AdvancedQueryView = withKB(AdvancedQueryViewBase);
 

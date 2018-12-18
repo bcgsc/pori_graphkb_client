@@ -1,12 +1,14 @@
 describe('Variant Form Test', () => {
   beforeEach(() => {
-    cy.visit('/');
-    cy.url().should('includes', '/login');
-    cy.get('input[name=username]').type(Cypress.env('USER'));
-    cy.get('input[name=password]').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
-    cy.url().should('includes', '/query');
-    cy.get('#link-variant').click({ force: true });
-    cy.url().should('includes', '/variant');
+    cy.visit('/login');
+    cy.wait(1000).then(() => {
+      if (!localStorage.getItem('kcToken')) {
+        cy.get('input#username').type(Cypress.env('USER'));
+        cy.get('input#password').type(`${Cypress.env('PASSWORD')}{enter}`, { log: false });
+      }
+      cy.url().should('includes', '/query');
+    });
+    cy.visit('/add/variant');
   });
 
   it('Editing shorthand', () => {
@@ -17,10 +19,9 @@ describe('Variant Form Test', () => {
     const type = { shorthand: 'del', name: 'deletion' };
     cy.get('input[name=shorthand]')
       .click()
-      .type(`${reference1}:${prefix}.${break1.arm}${break1.majorBand}.${break1.minorBand}_${break2.arm}${break2.majorBand}.${break2.minorBand}${type.shorthand}`);
-    cy.get('input[name=type]').should('have.value', type.name);
-    cy.get('input[name=reference1]').should('have.value', reference1);
-
+      .type(`${reference1}:${prefix}.${break1.arm}${break1.majorBand}.${break1.minorBand}_${break2.arm}${break2.majorBand}.${break2.minorBand}${type.shorthand} `);
+    cy.wait(200);
+    cy.get('input[name=shorthand]').type('{backspace}{backspace}l');
     cy.get('#break1 li:first input')
       .should('have.value', 'CytobandPosition');
     cy.get('#break1 input[name=minorBand]').should('have.value', break1.minorBand);
@@ -51,7 +52,7 @@ describe('Variant Form Test', () => {
     cy.get('#break1 textarea[name=arm]').type('p');
     cy.get('#break2 textarea[name=arm]').type('p');
     cy.contains('cytoband arm must be p or q ()').should('not.exist');
-    cy.contains('minorBand must be a positive integer ()');
+    cy.contains('majorBand must be a positive integer ()');
     cy.get('#break1 input[name=minorBand]').type('23');
     cy.get('#break2 input[name=minorBand]').type('52');
     cy.contains('minorBand must be a positive integer ()').should('not.exist');

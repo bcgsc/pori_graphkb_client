@@ -9,10 +9,10 @@ import {
   Typography,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
-import { withKB } from '../../components/KBContext/KBContext';
+import { withKB } from '../../components/KBContext';
+import StatementFormComponent from '../../components/StatementFormComponent';
 import api from '../../services/api';
 import util from '../../services/util';
-import StatementFormComponent from '../../components/StatementFormComponent/StatementFormComponent';
 
 /**
  * Route for editing existing Statement records.
@@ -34,8 +34,8 @@ class EditStatementViewBase extends Component {
   async componentDidMount() {
     const { match, schema } = this.props;
     const { rid } = match.params;
-    const route = schema.getRoute('Statement');
-    const response = await api.get(`${route}/${rid}?neighbors=3`);
+    const { routeName } = schema.get('Statement');
+    const response = await api.get(`${routeName}/${rid}?neighbors=3`);
     const node = jc.retrocycle(response).result;
     this.setState({ node });
   }
@@ -46,8 +46,8 @@ class EditStatementViewBase extends Component {
   async handleDelete() {
     const { node } = this.state;
     const { schema } = this.props;
-    const route = schema.getRoute(node['@class']);
-    await api.delete(`${route}/${node['@rid'].slice(1)}`);
+    const { routeName } = schema.get(node);
+    await api.delete(`${routeName}/${node['@rid'].slice(1)}`);
   }
 
   /**
@@ -68,12 +68,13 @@ class EditStatementViewBase extends Component {
    */
   async handleSubmit(form, relationships, originalRelationships) {
     const { schema } = this.props;
+
     try {
       await api.patchEdges(originalRelationships || [], relationships, schema);
-      const properties = schema.getProperties(form['@class']);
-      const route = schema.getRoute(form['@class']);
+      const properties = schema.getProperties(form);
+      const { routeName } = schema.get(form);
       const payload = util.parsePayload(form, properties);
-      await api.patch(`${route}/${form['@rid'].slice(1)}`, payload);
+      await api.patch(`${routeName}/${form['@rid'].slice(1)}`, payload);
       return true;
     } catch (error) {
       console.error(error);
@@ -104,7 +105,7 @@ class EditStatementViewBase extends Component {
           schema={schema}
           node={node}
           onSubmit={this.handleSubmit}
-          handleFinish={this.handleFinish}
+          onFinish={this.handleFinish}
           onDelete={this.handleDelete}
         />
       </div>

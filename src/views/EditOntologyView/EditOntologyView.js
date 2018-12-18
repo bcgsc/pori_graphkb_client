@@ -11,8 +11,8 @@ import {
   Typography,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
-import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
-import { withKB } from '../../components/KBContext/KBContext';
+import { withKB } from '../../components/KBContext';
+import OntologyFormComponent from '../../components/OntologyFormComponent';
 import api from '../../services/api';
 import util from '../../services/util';
 import config from '../../static/config';
@@ -60,12 +60,13 @@ class EditOntologyViewBase extends Component {
    */
   async handleSubmit(form, relationships, originalNode) {
     const { schema } = this.props;
+
     try {
       await api.patchEdges(originalNode.relationships || [], relationships, schema);
-      const route = schema.getRoute(originalNode['@class']);
-      const properties = schema.getProperties(originalNode['@class']);
+      const { routeName } = schema.get(originalNode);
+      const properties = schema.getProperties(originalNode);
       const payload = util.parsePayload(form, properties);
-      await api.patch(`${route}/${originalNode['@rid'].slice(1)}`, payload);
+      await api.patch(`${routeName}/${originalNode['@rid'].slice(1)}`, payload);
       return true;
     } catch (error) {
       console.error(error);
@@ -79,8 +80,8 @@ class EditOntologyViewBase extends Component {
   async handleDelete() {
     const { node } = this.state;
     const { schema } = this.props;
-    const route = schema.getRoute(node['@class']);
-    await api.delete(`${route}/${node['@rid'].slice(1)}`);
+    const { routeName } = schema.get(node);
+    await api.delete(`${routeName}/${node['@rid'].slice(1)}`);
   }
 
   /**

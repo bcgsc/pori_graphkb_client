@@ -9,10 +9,10 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
-import FormTemplater from '../FormTemplater/FormTemplater';
-import RelationshipsForm from '../RelationshipsForm/RelationshipsForm';
-import NotificationDrawer from '../NotificationDrawer/NotificationDrawer';
-import DeleteRecordDialog from '../DeleteRecordDialog/DeleteRecordDialog';
+import DeleteRecordDialog from '../DeleteRecordDialog';
+import FormTemplater from '../FormTemplater';
+import NotificationDrawer from '../NotificationDrawer';
+import RelationshipsForm from '../RelationshipsForm';
 
 const DEFAULT_REVIEW_STATUS = 'pending';
 
@@ -127,12 +127,12 @@ class StatementFormComponent extends Component {
 
   /**
    * Updates form model based off user input.
-   * @param {Event} e - User input event.
+   * @param {Event} event - User input event.
    */
-  handleChange(e) {
+  handleChange(event) {
     const { form } = this.state;
     const { schema } = this.props;
-    const { name, value } = e.target;
+    const { name, value } = event.target;
     form[name] = value;
     if (name.includes('.data') && value) {
       form[name.split('.')[0]] = schema.getPreview(value);
@@ -152,7 +152,7 @@ class StatementFormComponent extends Component {
     } = this.state;
     const {
       schema,
-      handleFinish,
+      onFinish,
       node,
       is409,
     } = this.props;
@@ -172,7 +172,7 @@ class StatementFormComponent extends Component {
         <NotificationDrawer
           open={notificationDrawerOpen}
           loading={loading}
-          handleFinish={handleFinish}
+          handleFinish={onFinish}
         />
         <div className="statement-form-wrapper">
           <div className="statement-form-node">
@@ -272,14 +272,15 @@ class StatementFormComponent extends Component {
  * @property {Object} node - Existing Statement record to be edited. If not
  * included, form will generate a clean model to post.
  * @property {function} onSubmit - Handler for when form is submitted.
- * @property {function} handleFinish - Handler for when form has been
+ * @property {function} onFinish - Handler for when form has been
  * successfully submitted.
+ * @property {function} onDelete - Handler for when record has been deleted.
  */
 StatementFormComponent.propTypes = {
   schema: PropTypes.object.isRequired,
   node: PropTypes.object,
   onSubmit: PropTypes.func,
-  handleFinish: PropTypes.func,
+  onFinish: PropTypes.func,
   onDelete: PropTypes.func,
   is409: PropTypes.bool,
 };
@@ -287,7 +288,7 @@ StatementFormComponent.propTypes = {
 StatementFormComponent.defaultProps = {
   node: null,
   onSubmit: null,
-  handleFinish: null,
+  onFinish: null,
   onDelete: null,
   is409: false,
 };

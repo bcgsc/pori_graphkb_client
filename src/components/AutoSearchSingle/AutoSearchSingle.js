@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
 import debounce from 'lodash.debounce';
-import AutoSearchBase from '../AutoSearchBase/AutoSearchBase';
+import AutoSearchBase from '../AutoSearchBase';
 import api from '../../services/api';
 
 const DEBOUNCE_TIME = 300;
@@ -89,13 +89,13 @@ class AutoSearchSingle extends Component {
 
   /**
    * Calls api with user input value as parameter.
-   * @param {Event} e - user input event.
+   * @param {Event} event - user input event.
    */
-  refreshOptions(e) {
-    if (!ACTION_KEYCODES.includes(e.keyCode)) {
+  refreshOptions(event) {
+    if (!ACTION_KEYCODES.includes(event.keyCode)) {
       const { selected } = this.state;
       const { value: propValue, onChange } = this.props;
-      const { value, name } = e.target;
+      const { value, name } = event.target;
       let val = value;
 
       if (selected) {
@@ -210,7 +210,7 @@ class AutoSearchSingle extends Component {
  * @property {function} onChange - parent method for handling change events
  * @property {number} limit - database return record limit.
  * @property {string} endpoint - api endpoint identifier.
- * @property {string} property - api property identifier.
+ * @property {Array.<string>} property - api property identifier.
  * @property {string} placeholder - placeholder for text input.
  * @property {string} label - label for text input.
  * @property {boolean} required - required flag for text input indicator.
@@ -229,7 +229,7 @@ AutoSearchSingle.propTypes = {
   onChange: PropTypes.func,
   limit: PropTypes.number,
   endpoint: PropTypes.string,
-  property: PropTypes.array,
+  property: PropTypes.arrayOf(PropTypes.string),
   placeholder: PropTypes.string,
   label: PropTypes.string,
   required: PropTypes.bool,
@@ -243,7 +243,7 @@ AutoSearchSingle.propTypes = {
 AutoSearchSingle.defaultProps = {
   className: '',
   limit: 30,
-  endpoint: 'ontologies',
+  endpoint: '/ontologies',
   property: ['name'],
   placeholder: '',
   name: undefined,

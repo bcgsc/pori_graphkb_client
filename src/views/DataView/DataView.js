@@ -8,16 +8,15 @@ import * as jc from 'json-cycle';
 import { Route, Redirect, Switch } from 'react-router-dom';
 import {
   CircularProgress,
-  Snackbar,
-  Button,
   Typography,
 } from '@material-ui/core';
 import qs from 'qs';
 import omit from 'lodash.omit';
-import GraphComponent from '../../components/GraphComponent/GraphComponent';
-import TableComponent from '../../components/TableComponent/TableComponent';
-import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
-import { withKB } from '../../components/KBContext/KBContext';
+import DetailDrawer from '../../components/DetailDrawer';
+import GraphComponent from '../../components/GraphComponent';
+import { withKB } from '../../components/KBContext';
+import { SnackbarContext } from '../../components/Snackbar';
+import TableComponent from '../../components/TableComponent';
 import api from '../../services/api';
 import config from '../../static/config';
 
@@ -46,6 +45,12 @@ class DataViewBase extends Component {
     return jc.retrocycle(response).result;
   }
 
+  /**
+   * Makes API POST call to specified endpoint, with specified payload.
+   * @param {string} route - API endpoint.
+   * @param {Object} payload - Query payload object.
+   * @param {Array.<string>} omitted - List of parameters to strip from API call.
+   */
   static async makeComplexApiQuery(route, payload, omitted = []) {
     const response = await api.post(route, omit(payload, omitted));
     return jc.retrocycle(response).result;
@@ -117,12 +122,13 @@ class DataViewBase extends Component {
    */
   async componentDidMount() {
     const { history, schema } = this.props;
+    const snackbar = this.context;
     const queryParams = qs.parse(history.location.search.slice(1));
     let isComplex = false;
 
     let { routeName } = schema.get('V');
     const omitted = [];
-    const kbClass = schema.get(queryParams['@class']);
+    const kbClass = schema.get(queryParams);
     if (kbClass) {
       ({ routeName } = kbClass);
       omitted.push('@class');
@@ -144,7 +150,6 @@ class DataViewBase extends Component {
         response = await DataViewBase.makeApiQuery(routeName, queryParams, omitted);
       }
 
-
       const { data, allProps } = this.processData(response);
 
       const {
@@ -158,7 +163,13 @@ class DataViewBase extends Component {
           next: null,
           filteredSearch: null,
         };
-
+      if (Object.keys(data).length === 0) {
+        snackbar.add(
+          'No results found, redirecting...',
+          'Back',
+          () => history.back(),
+        );
+      }
       this.setState({
         filteredSearch: filteredSearch || queryParams,
         moreResults,
@@ -202,7 +213,7 @@ class DataViewBase extends Component {
     const { schema } = this.props;
     const { data } = this.state;
     if (!data[node.data['@rid']]) {
-      const routeName = schema.getRoute(node.data['@class']);
+      const { routeName } = schema.get(node.data);
       const endpoint = `${routeName || '/ontologies'}/${node.data['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`; // change
       const response = await api.get(endpoint);
       this.setState({ ...this.processData([jc.retrocycle(response).result]) });
@@ -211,10 +222,11 @@ class DataViewBase extends Component {
 
   /**
    * Adds node identifier to list of displayed nodes.
+   * @param {Event} event - User checkbox event.
    * @param {string} rid - Checked node identifier.
    */
-  handleCheckbox(e, rid) {
-    e.stopPropagation();
+  handleCheckbox(event, rid) {
+    event.stopPropagation();
     const { displayed } = this.state;
     const i = displayed.indexOf(rid);
     if (i === -1) {
@@ -227,11 +239,12 @@ class DataViewBase extends Component {
 
   /**
    * Adds all data entries to the list of displayed nodes.
-   * @param {Event} e - Checkbox event.
+   * @param {Event} event - Checkbox event.
+   * @param {Array.<Object>} - Currently displayed page data.
    */
-  handleCheckAll(e, pageData) {
+  handleCheckAll(event, pageData) {
     let displayed;
-    if (e.target.checked) {
+    if (event.target.checked) {
       displayed = pageData.map(d => d['@rid']);
     } else {
       displayed = [];
@@ -277,7 +290,7 @@ class DataViewBase extends Component {
 
         let route = '/ontologies';
         const omitted = [];
-        const kbClass = schema.get(filteredSearch['@class']);
+        const kbClass = schema.get(filteredSearch);
         if (kbClass) {
           ({ routeName: route } = kbClass);
           omitted.push('@class');
@@ -290,9 +303,9 @@ class DataViewBase extends Component {
           ...DataViewBase.prepareNextPagination(route, filteredSearch, nextData, omitted),
           completedNext: true,
         });
-      } catch (e) {
+      } catch (error) {
         // eslint-disable-next-line no-console
-        console.error(e);
+        console.error(error);
       }
     }
     return next;
@@ -306,7 +319,7 @@ class DataViewBase extends Component {
     const { history, schema } = this.props;
     if (detail) {
       let route;
-      const { inherits } = schema.get(detail['@class']);
+      const { inherits } = schema.get(detail);
       if (inherits && inherits.includes('Ontology')) {
         route = 'ontology';
       } else if (inherits && inherits.includes('Variant')) {
@@ -401,12 +414,14 @@ class DataViewBase extends Component {
       history,
     } = this.props;
 
+    const snackbar = this.context;
+
     if (!data) {
       return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
     }
     const edges = schema.getEdges();
     const cls = filteredSearch && filteredSearch['@class'];
-    const defaultOrders = schema.get(cls || 'Ontology').identifiers;
+    const defaultOrders = (schema.get(cls) || schema.get('V')).identifiers;
     const detailDrawer = (
       <DetailDrawer
         node={detail}
@@ -432,6 +447,7 @@ class DataViewBase extends Component {
         localStorageKey={qs.stringify(filteredSearch)}
         handleNewColumns={this.handleNewColumns}
         schema={schema}
+        snackbar={snackbar}
       />
     );
     const TableWithProps = () => (
@@ -457,22 +473,7 @@ class DataViewBase extends Component {
     );
     return (
       <div className="data-view">
-        <Snackbar
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-          open={Object.keys(data).length === 0}
-          onClose={() => history.push('/query')}
-          autoHideDuration={3000}
-          message={(
-            <span>
-              No results found, redirecting...
-            </span>
-          )}
-          action={(
-            <Button color="secondary" onClick={() => history.push('/query')}>
-              Ok
-            </Button>
-          )}
-        />
+
         {Object.keys(data).length !== 0 && qs.stringify(filteredSearch) && edges
           ? (
             <Switch>
@@ -506,6 +507,7 @@ DataViewBase.propTypes = {
   history: PropTypes.object.isRequired,
   schema: PropTypes.object.isRequired,
 };
+DataViewBase.contextType = SnackbarContext;
 
 const DataView = withKB(DataViewBase);
 

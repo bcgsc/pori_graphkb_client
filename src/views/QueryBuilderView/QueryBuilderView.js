@@ -18,9 +18,9 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import HelpIcon from '@material-ui/icons/Help';
 import * as qs from 'querystring';
 import { Link } from 'react-router-dom';
-import { withKB } from '../../components/KBContext/KBContext';
-import ResourceSelectComponent from '../../components/ResourceSelectComponent/ResourceSelectComponent';
-import CodeInput from '../../components/CodeInput/CodeInput';
+import { withKB } from '../../components/KBContext';
+import CodeInput from '../../components/CodeInput';
+import ResourceSelectComponent from '../../components/ResourceSelectComponent';
 import api from '../../services/api';
 import auth from '../../services/auth';
 

@@ -3,8 +3,8 @@ import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { TextField } from '@material-ui/core';
 import Downshift from 'downshift';
-import AutoSearchMulti from '../AutoSearchMulti/AutoSearchMulti';
-import AutoSearchBase from '../AutoSearchBase/AutoSearchBase';
+import AutoSearchMulti from '../AutoSearchMulti';
+import AutoSearchBase from '../AutoSearchBase';
 import Schema from '../../services/schema';
 
 const testSchema = new Schema({

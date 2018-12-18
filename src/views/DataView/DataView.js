@@ -136,7 +136,12 @@ class DataViewBase extends Component {
 
     let response;
     try {
-      if (queryParams.complex) {
+      if (queryParams.keyword) {
+        routeName = '/search';
+        queryParams.neighbors = queryParams.neighbors || DEFAULT_NEIGHBORS;
+        queryParams.limit = queryParams.limit || DEFAULT_LIMIT;
+        response = await DataViewBase.makeApiQuery(routeName, queryParams);
+      } else if (queryParams.complex) {
         routeName += '/search';
         isComplex = true;
         // Decode base64 encoded string.

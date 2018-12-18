@@ -43,8 +43,8 @@ import {
 } from '..';
 import auth from '../../services/auth';
 import Schema from '../../services/schema';
-import { KBContext } from '../../components/KBContext/KBContext';
-import MainNav from '../../components/MainNav/MainNav';
+import { KBContext } from '../../components/KBContext';
+import MainNav from '../../components/MainNav';
 
 /**
  * Entry point to application. Handles routing, app theme, and logged in state.

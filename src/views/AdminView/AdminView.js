@@ -9,9 +9,9 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
-import UserForm from '../../components/UserForm/UserForm';
-import UserGroupForm from '../../components/UserGroupForm/UserGroupForm';
-import { withKB } from '../../components/KBContext/KBContext';
+import { withKB } from '../../components/KBContext';
+import UserForm from '../../components/UserForm';
+import UserGroupForm from '../../components/UserGroupForm';
 import api from '../../services/api';
 import util from '../../services/util';
 

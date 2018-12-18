@@ -9,10 +9,10 @@ import {
   Typography,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
-import { withKB } from '../../components/KBContext/KBContext';
+import { withKB } from '../../components/KBContext';
+import StatementFormComponent from '../../components/StatementFormComponent';
 import api from '../../services/api';
 import util from '../../services/util';
-import StatementFormComponent from '../../components/StatementFormComponent/StatementFormComponent';
 
 /**
  * Route for editing existing Statement records.

@@ -14,12 +14,12 @@ import {
   ListItemText,
   Divider,
 } from '@material-ui/core';
-import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
-import FormTemplater from '../FormTemplater/FormTemplater';
-import NotificationDrawer from '../NotificationDrawer/NotificationDrawer';
+import DeleteRecordDialog from '../DeleteRecordDialog';
+import FormTemplater from '../FormTemplater';
+import NotificationDrawer from '../NotificationDrawer';
+import RelationshipsForm from '../RelationshipsForm';
+import ResourceSelectComponent from '../ResourceSelectComponent';
 import util from '../../services/util';
-import RelationshipsForm from '../RelationshipsForm/RelationshipsForm';
-import DeleteRecordDialog from '../DeleteRecordDialog/DeleteRecordDialog';
 
 const DEFAULT_ORDER = [
   'name',

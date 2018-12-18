@@ -11,8 +11,8 @@ import {
   Typography,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
-import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
-import { withKB } from '../../components/KBContext/KBContext';
+import { withKB } from '../../components/KBContext';
+import OntologyFormComponent from '../../components/OntologyFormComponent';
 import api from '../../services/api';
 import util from '../../services/util';
 import config from '../../static/config';

@@ -8,10 +8,10 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
-import { withKB } from '../../components/KBContext/KBContext';
+import { withKB } from '../../components/KBContext';
+import StatementFormComponent from '../../components/StatementFormComponent';
 import api from '../../services/api';
 import util from '../../services/util';
-import StatementFormComponent from '../../components/StatementFormComponent/StatementFormComponent';
 
 /**
  * Route for submitting Statement records to the db.

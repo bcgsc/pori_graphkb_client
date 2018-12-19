@@ -171,7 +171,7 @@ describe('<TableComponent />', () => {
     wrapper.find('div#filter-popover div').first().simulate('close');
     wrapper.find('button#ellipsis-menu').simulate('click');
     expect(wrapper.find('div[role="document"] ul[role="menu"] li#clear-filters')).to.have.lengthOf(1);
-    wrapper.find('div[role="document"] ul[role="menu"] div#download-tsv li').first().simulate('click');
+    wrapper.find('div[role="document"] ul[role="menu"] div#download-tsv').first().simulate('click');
 
     expect(TableComponent.prototype.createTSV).to.have.property('callCount', 1);
 

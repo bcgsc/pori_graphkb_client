@@ -40,7 +40,6 @@ import {
   AddVariantView,
   EditVariantView,
   QueryBuilderView,
-  TutorialView,
 } from '..';
 import auth from '../../services/auth';
 import Schema from '../../services/schema';
@@ -125,9 +124,9 @@ class Main extends Component {
         ],
       },
       {
-        label: 'Tutorial',
+        label: 'About',
         icon: <HelpOutlineIcon />,
-        route: '/tutorial',
+        route: '/about',
       },
     ];
 
@@ -145,7 +144,6 @@ class Main extends Component {
         <Route path="/edit/statement/:rid" component={EditStatementView} />
         <Route path="/data" component={DataView} />
         <Route path="/admin" component={AdminView} />
-        <Route path="/tutorial" component={TutorialView} />
         <Redirect from="*" to="/query" />
       </Switch>
     );

@@ -1,0 +1,77 @@
+@import "../../globals";
+.about-page {
+
+    .two-column-grid {
+        @include two-column-grid;
+        margin: 40px 0px;
+    }
+    .tabs-content {
+        padding: 20px;
+        padding-left: 50px;
+        @include sm-media {
+            padding-left: 20px;
+        }
+        display: block;
+    }
+
+    #about-variant-notation {
+        // Fix for non mui components
+        font-family: $roboto;
+        line-height: 1.5;
+        letter-spacing: 0.00938em;
+        font-weight: 400;
+        font-size: 1rem;
+        color: rgba(0, 0, 0, 0.7);
+        pre {
+            background-color: $background-dark;
+            padding: 5px;
+            code {
+                font-family: $code-font;
+            }
+        }
+        h1, h2 {
+            color: rgba(0, 0, 0, 0.7);
+            font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+            font-weight: 400;
+            line-height: 1.33;
+            letter-spacing: 0em;
+        }
+        h1 {
+            font-size: 1.5rem;
+            margin-top: 0;
+        }
+        h2 {
+            font-size: 1.2rem;
+        }
+    }
+
+    p, .about-version-info {
+        min-width: $readable-min;
+        max-width: $readable-max;
+    }
+
+    h2 {
+        margin-bottom: 10px;
+    }
+
+    img, svg {
+        max-width: 100%;
+        display: block;
+    }
+    .pie-chart {
+        text {
+            fill: white;
+        }
+        max-height: calc(100vw - 60px);
+    }
+    @include lg-media {
+        img, svg {
+            max-width: inherit;
+        }
+    }
+    @include sm-media {
+        .pie-chart {
+            display: none;
+        }
+    }
+}

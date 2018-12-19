@@ -15,11 +15,11 @@ import {
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
 import kbp from '@bcgsc/knowledgebase-parser';
-import NotificationDrawer from '../NotificationDrawer/NotificationDrawer';
-import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
-import DeleteRecordDialog from '../DeleteRecordDialog/DeleteRecordDialog';
-import RelationshipsForm from '../RelationshipsForm/RelationshipsForm';
-import FormTemplater from '../FormTemplater/FormTemplater';
+import DeleteRecordDialog from '../DeleteRecordDialog';
+import FormTemplater from '../FormTemplater';
+import NotificationDrawer from '../NotificationDrawer';
+import RelationshipsForm from '../RelationshipsForm';
+import ResourceSelectComponent from '../ResourceSelectComponent';
 import api from '../../services/api';
 import util from '../../services/util';
 

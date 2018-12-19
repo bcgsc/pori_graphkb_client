@@ -9,10 +9,10 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
-import FormTemplater from '../FormTemplater/FormTemplater';
-import RelationshipsForm from '../RelationshipsForm/RelationshipsForm';
-import NotificationDrawer from '../NotificationDrawer/NotificationDrawer';
-import DeleteRecordDialog from '../DeleteRecordDialog/DeleteRecordDialog';
+import DeleteRecordDialog from '../DeleteRecordDialog';
+import FormTemplater from '../FormTemplater';
+import NotificationDrawer from '../NotificationDrawer';
+import RelationshipsForm from '../RelationshipsForm';
 
 const DEFAULT_REVIEW_STATUS = 'pending';
 

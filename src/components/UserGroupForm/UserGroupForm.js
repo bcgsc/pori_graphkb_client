@@ -17,8 +17,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import PermissionsTable from '../PermissionsTable/PermissionsTable';
-import DeleteRecordDialog from '../DeleteRecordDialog/DeleteRecordDialog';
+import PermissionsTable from '../PermissionsTable';
+import DeleteRecordDialog from '../DeleteRecordDialog';
 import UserGroupDialog from './UserGroupDialog/UserGroupDialog';
 
 /**

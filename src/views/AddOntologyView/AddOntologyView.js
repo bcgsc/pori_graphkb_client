@@ -9,10 +9,10 @@ import {
   Button,
   Typography,
 } from '@material-ui/core';
-import OntologyFormComponent from '../../components/OntologyFormComponent/OntologyFormComponent';
+import { withKB } from '../../components/KBContext';
+import OntologyFormComponent from '../../components/OntologyFormComponent';
 import api from '../../services/api';
 import util from '../../services/util';
-import { withKB } from '../../components/KBContext/KBContext';
 
 /**
  * View for editing or adding database nodes. Includes a NodeFormComponent with the

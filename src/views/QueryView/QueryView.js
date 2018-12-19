@@ -15,26 +15,11 @@ import {
 import kbp from '@bcgsc/knowledgebase-parser';
 import * as qs from 'querystring';
 import SearchIcon from '@material-ui/icons/Search';
-import AutoSearchSingle from '../../components/AutoSearchSingle/AutoSearchSingle';
-import { withKB } from '../../components/KBContext/KBContext';
+import AutoSearchSingle from '../../components/AutoSearchSingle';
+import { withKB } from '../../components/KBContext';
 import util from '../../services/util';
 
 const KB_SEP_CHARS = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
-
-const DEFAULT_PARAMS = [
-  'name',
-  'sourceId',
-].reduce((array, item) => {
-  array.push(
-    ...[
-      'inE(ImpliedBy).vertex.reference1',
-      'inE(ImpliedBy).vertex.reference2',
-      'inE(ImpliedBy).vertex.type',
-    ].map(str => `${str}.${item}`),
-  );
-
-  return array;
-}, ['name', 'sourceId']);
 
 const ENTER_KEYCODE = 13;
 
@@ -92,23 +77,9 @@ class QueryViewBase extends Component {
     const { history } = this.props;
     if (str && !disabled) {
       const trimmed = String(str).trim().toLowerCase();
-      const payload = {
-        complex: encodeURIComponent(btoa(JSON.stringify({
-          where: [
-            {
-              operator: 'OR',
-              comparisons: DEFAULT_PARAMS.map(attr => (
-                { attr, operator: 'CONTAINSTEXT', value: trimmed }
-              )),
-            },
-          ],
-          neighbors: 3,
-          limit: 1000,
-        }))),
-      };
       history.push({
         pathname: '/data/table',
-        search: qs.stringify(payload),
+        search: qs.stringify({ keyword: trimmed }),
       });
     }
   }
@@ -264,7 +235,7 @@ class QueryViewBase extends Component {
           variant="outlined"
           color="secondary"
           className="advanced-button"
-          onClick={() => history.push({ state: this.state, pathname: '/query/advanced' })}
+          onClick={() => history.push({ pathname: '/query/advanced' })}
         >
           Advanced Search
         </Button>

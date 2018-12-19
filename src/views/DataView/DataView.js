@@ -12,11 +12,11 @@ import {
 } from '@material-ui/core';
 import qs from 'qs';
 import omit from 'lodash.omit';
-import GraphComponent from '../../components/GraphComponent/GraphComponent';
-import TableComponent from '../../components/TableComponent/TableComponent';
-import DetailDrawer from '../../components/DetailDrawer/DetailDrawer';
-import { withKB } from '../../components/KBContext/KBContext';
-import { SnackbarContext } from '../../components/Snackbar/Snackbar';
+import DetailDrawer from '../../components/DetailDrawer';
+import GraphComponent from '../../components/GraphComponent';
+import { withKB } from '../../components/KBContext';
+import { SnackbarContext } from '../../components/Snackbar';
+import TableComponent from '../../components/TableComponent';
 import api from '../../services/api';
 import config from '../../static/config';
 
@@ -136,7 +136,12 @@ class DataViewBase extends Component {
 
     let response;
     try {
-      if (queryParams.complex) {
+      if (queryParams.keyword) {
+        routeName = '/search';
+        queryParams.neighbors = queryParams.neighbors || DEFAULT_NEIGHBORS;
+        queryParams.limit = queryParams.limit || DEFAULT_LIMIT;
+        response = await DataViewBase.makeApiQuery(routeName, queryParams);
+      } else if (queryParams.complex) {
         routeName += '/search';
         isComplex = true;
         // Decode base64 encoded string.
@@ -288,19 +293,21 @@ class DataViewBase extends Component {
           completedNext: false,
         });
 
-        let route = '/ontologies';
+        let { routeName } = schema.get('V');
         const omitted = [];
         const kbClass = schema.get(filteredSearch);
         if (kbClass) {
-          ({ routeName: route } = kbClass);
+          ({ routeName } = kbClass);
           omitted.push('@class');
         }
-
+        if (filteredSearch.keyword) {
+          routeName = '/search';
+        }
         const nextData = await next();
 
         this.setState({
           ...this.processData(nextData),
-          ...DataViewBase.prepareNextPagination(route, filteredSearch, nextData, omitted),
+          ...DataViewBase.prepareNextPagination(routeName, filteredSearch, nextData, omitted),
           completedNext: true,
         });
       } catch (error) {

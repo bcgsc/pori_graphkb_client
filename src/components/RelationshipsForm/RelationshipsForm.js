@@ -22,9 +22,9 @@ import CloseIcon from '@material-ui/icons/Close';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import FormTemplater from '../FormTemplater/FormTemplater';
-import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
-import AutoSearchMulti from '../AutoSearchMulti/AutoSearchMulti';
+import AutoSearchMulti from '../AutoSearchMulti';
+import FormTemplater from '../FormTemplater';
+import ResourceSelectComponent from '../ResourceSelectComponent';
 import util from '../../services/util';
 
 const DEFAULT_RELATIONSHIPS_PROPSLENGTH = 3;

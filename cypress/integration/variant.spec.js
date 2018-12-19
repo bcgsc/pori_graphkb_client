@@ -20,7 +20,8 @@ describe('Variant Form Test', () => {
     cy.get('input[name=shorthand]')
       .click()
       .type(`${reference1}:${prefix}.${break1.arm}${break1.majorBand}.${break1.minorBand}_${break2.arm}${break2.majorBand}.${break2.minorBand}${type.shorthand} `);
-
+    cy.wait(200);
+    cy.get('input[name=shorthand]').type('{backspace}{backspace}l');
     cy.get('#break1 li:first input')
       .should('have.value', 'CytobandPosition');
     cy.get('#break1 input[name=minorBand]').should('have.value', break1.minorBand);

@@ -293,19 +293,21 @@ class DataViewBase extends Component {
           completedNext: false,
         });
 
-        let route = '/ontologies';
+        let { routeName } = schema.get('V');
         const omitted = [];
         const kbClass = schema.get(filteredSearch);
         if (kbClass) {
-          ({ routeName: route } = kbClass);
+          ({ routeName } = kbClass);
           omitted.push('@class');
         }
-
+        if (filteredSearch.keyword) {
+          routeName = '/search';
+        }
         const nextData = await next();
 
         this.setState({
           ...this.processData(nextData),
-          ...DataViewBase.prepareNextPagination(route, filteredSearch, nextData, omitted),
+          ...DataViewBase.prepareNextPagination(routeName, filteredSearch, nextData, omitted),
           completedNext: true,
         });
       } catch (error) {

@@ -7,7 +7,6 @@ import util from '../../services/util';
 import config from '../../static/config';
 
 const { DEFAULT_NODE_COLOR } = config.GRAPH_DEFAULTS;
-const COLOR_THRESHOLD = 0.05;
 
 class PieChart extends Component {
   constructor() {
@@ -21,12 +20,13 @@ class PieChart extends Component {
       height: PropTypes.number,
       innerRadius: PropTypes.number,
       data: PropTypes.array.isRequired,
+      colorThreshold: PropTypes.number,
     };
   }
 
   static get defaultProps() {
     return {
-      height: 50, width: 400, innerRadius: 10,
+      height: 50, width: 400, innerRadius: 10, colorThreshold: 0.05,
     };
   }
 
@@ -46,7 +46,7 @@ class PieChart extends Component {
 
   render() {
     const {
-      data, width, height,
+      data, width, height, colorThreshold,
     } = this.props;
 
     const total = data.reduce((acc, curr) => acc + curr.value, 0);
@@ -55,13 +55,13 @@ class PieChart extends Component {
     const y = height / 2;
 
 
-    const colors = util.getPallette(data.filter(d => d.value / total >= COLOR_THRESHOLD).length);
+    const colors = util.getPallette(data.filter(d => d.value / total >= colorThreshold).length);
 
     let colorIndex = 0;
 
     for (const datum of data) { // eslint-disable-line
       datum.fraction = datum.value / total;
-      if ((datum.value / total) >= COLOR_THRESHOLD) {
+      if ((datum.value / total) >= colorThreshold) {
         datum.color = colors[colorIndex];
         colorIndex += 1;
       } else {
@@ -76,8 +76,8 @@ class PieChart extends Component {
 
     return (
       <svg
-        height={height}
         width={width}
+        height={height}
         viewBox={viewBox}
         className="pie-chart"
       >

@@ -43,6 +43,16 @@ class LoginView extends Component {
     if (auth.getKeyCloakToken() && auth.getToken()) {
       handleAuthenticate();
       history.push('/query');
+    } else if (process.env.DISABLE_AUTH === '1') { // FOR TESTING ONLY
+      try {
+        const response = await api.post('/token', { username: process.env.USER, password: '' });
+        auth.loadToken(response.kbToken);
+        history.push('/query');
+      } catch (error) {
+        this.setState({ unauthorized: true });
+      } finally {
+        handleAuthenticate();
+      }
     } else {
       const token = await auth.login();
       try {

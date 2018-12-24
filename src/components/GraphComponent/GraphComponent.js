@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './GraphComponent.css';
+import './GraphComponent.scss';
 import * as d3Zoom from 'd3-zoom';
 import * as d3Select from 'd3-selection';
 import * as d3Force from 'd3-force';

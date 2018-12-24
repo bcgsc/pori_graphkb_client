@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import './ErrorView.css';
+import './ErrorView.scss';
 import { Typography, Button, Tooltip } from '@material-ui/core';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import { CopyToClipboard } from 'react-copy-to-clipboard';

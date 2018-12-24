@@ -8,7 +8,7 @@ import {
   Switch,
   Link,
 } from 'react-router-dom';
-import './Main.css';
+import './Main.scss';
 import {
   AppBar,
   IconButton,

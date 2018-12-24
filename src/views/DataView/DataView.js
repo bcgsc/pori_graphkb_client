@@ -3,7 +3,7 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './DataView.css';
+import './DataView.scss';
 import * as jc from 'json-cycle';
 import { Route, Redirect, Switch } from 'react-router-dom';
 import {

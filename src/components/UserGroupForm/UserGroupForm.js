@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './UserGroupForm.css';
+import './UserGroupForm.scss';
 import {
   Paper,
   Typography,

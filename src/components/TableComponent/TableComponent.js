@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import './TableComponent.css';
+import './TableComponent.scss';
 import {
   Table,
   TableHead,

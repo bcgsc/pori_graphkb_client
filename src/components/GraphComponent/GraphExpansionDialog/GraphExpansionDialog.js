@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './GraphExpansionDialog.css';
+import './GraphExpansionDialog.scss';
 import {
   Button,
   Dialog,

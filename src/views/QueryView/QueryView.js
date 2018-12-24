@@ -3,7 +3,7 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './QueryView.css';
+import './QueryView.scss';
 import {
   Button,
   IconButton,

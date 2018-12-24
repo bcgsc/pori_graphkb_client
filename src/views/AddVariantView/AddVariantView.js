@@ -2,7 +2,7 @@
  * @module /views/AddVariantView
  */
 import React, { Component } from 'react';
-import './AddVariantView.css';
+import './AddVariantView.scss';
 import PropTypes from 'prop-types';
 import { Paper, Typography, Button } from '@material-ui/core';
 import { withKB } from '../../components/KBContext';

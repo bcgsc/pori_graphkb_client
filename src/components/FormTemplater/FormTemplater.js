@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './FormTemplater.css';
+import './FormTemplater.scss';
 import {
   ListItem,
   FormControl,

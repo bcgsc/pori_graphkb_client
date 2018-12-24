@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './CodeInput.css';
+import './CodeInput.scss';
 import PropTypes from 'prop-types';
 import config from '../../static/config';
 

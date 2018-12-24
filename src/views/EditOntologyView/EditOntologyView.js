@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './EditOntologyView.css';
+import './EditOntologyView.scss';
 import {
   Paper,
   Button,

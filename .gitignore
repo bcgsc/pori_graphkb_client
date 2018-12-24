@@ -39,3 +39,9 @@ src/index.css
 /build
 /cypress/videos
 /cypress/screenshots
+
+# webpack build
+/public/*
+!/public/index.html
+!/public/favicon.ico
+!/public/mainfest.json

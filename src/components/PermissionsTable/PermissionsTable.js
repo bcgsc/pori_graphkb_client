@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import './PermissionsTable.css';
+import './PermissionsTable.scss';
 import {
   Table,
   TableHead,

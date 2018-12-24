@@ -3,7 +3,7 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './AdminView.css';
+import './AdminView.scss';
 import * as jc from 'json-cycle';
 import {
   Paper,

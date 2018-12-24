@@ -24,7 +24,7 @@ import AutoSearchBase from '../AutoSearchBase';
 import FormTemplater from '../FormTemplater/FormTemplater';
 import api from '../../services/api';
 import util from '../../services/util';
-import './AutoSearchMulti.css';
+import './AutoSearchMulti.scss';
 
 const DEBOUNCE_TIME = 300;
 

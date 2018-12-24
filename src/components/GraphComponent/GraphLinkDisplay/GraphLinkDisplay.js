@@ -4,7 +4,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import './GraphLinkDisplay.css';
+import './GraphLinkDisplay.scss';
 import config from '../../../static/config';
 
 const LABEL_BASELINE_SHIFT = 4;

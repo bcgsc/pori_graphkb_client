@@ -3,7 +3,7 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './DetailDrawer.css';
+import './DetailDrawer.scss';
 import {
   Typography,
   Drawer,

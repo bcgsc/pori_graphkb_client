@@ -3,7 +3,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import './ResourceSelectComponent.css';
+import './ResourceSelectComponent.scss';
 import {
   InputLabel,
   MenuItem,

@@ -3,7 +3,7 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './OntologyFormComponent.css';
+import './OntologyFormComponent.scss';
 import {
   List,
   MenuItem,

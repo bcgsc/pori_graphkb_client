@@ -1,7 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // eslint ignore-line
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 
@@ -15,8 +14,8 @@ const moduleSettings = {
       test: /\.css$/,
       sideEffects: true,
       use: [
-        MiniCssExtractPlugin.loader,
         // 'style-loader',
+        MiniCssExtractPlugin.loader,
         'css-loader',
       ],
     },
@@ -24,8 +23,8 @@ const moduleSettings = {
       test: /\.scss$/,
       sideEffects: true,
       use: [
-        MiniCssExtractPlugin.loader,
         // 'style-loader',
+        MiniCssExtractPlugin.loader,
         'css-loader',
         'sass-loader',
       ],
@@ -48,10 +47,6 @@ const moduleSettings = {
       },
     },
     {
-      test: /\.svg$/,
-      use: 'file-loader',
-    },
-    {
       // Load everything else
       test: /\.(md|svg)$/,
       loader: 'file-loader',
@@ -64,30 +59,45 @@ const moduleSettings = {
 
 module.exports = {
   context: buildPath,
-  entry: './index.js',
+  entry: [
+    './../config/polyfills.js',
+    './index.js',
+  ],
   output: {
     path: distPath,
     filename: 'bundle.js',
   },
   devServer: {
-    contentBase: buildPath,
-    historyApiFallback: true,
+    lazy: true,
+    contentBase: distPath,
+    filename: 'bundle.js',
   },
   plugins: [
+    // separate the css from the main js bundle
     new MiniCssExtractPlugin({
       filename: '[name].css',
-      chunkFilename: '[id].css',
     }),
-    new BundleAnalyzerPlugin(),
     new CleanWebpackPlugin(
       distPath,
       {
-        exclude: ['index.html', 'favicon.ico', 'mainfest.json'],
+        exclude: ['index.html', 'favicon.ico', 'manifest.json'],
       },
     ),
+    // Copy values of ENV variables in as strings using these defaults (null = unset)
+    new webpack.EnvironmentPlugin({
+      API_BASE_URL: 'http://kbapi01:8080/api',
+      DEBUG: false,
+      DISABLE_AUTH: null,
+      KEYCLOAK_CLIENT_ID: 'GraphKB',
+      KEYCLOAK_REALM: 'TestKB',
+      KEYCLOAK_ROLE: 'GraphKB',
+      KEYCLOAK_URL: 'http://ga4ghdev01.bcgsc.ca:8080/auth',
+      NODE_ENV: 'production',
+      USER: null,
+    }),
   ],
   resolve: {
-    extensions: ['.js', '.jsx', 'json'],
+    extensions: ['.js', '.jsx', '.json'],
   },
   module: moduleSettings,
 };

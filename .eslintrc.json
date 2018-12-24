@@ -1,8 +1,11 @@
 {
-    "extends": "airbnb",
+    "extends": [
+        "eslint:recommended",
+        "airbnb"
+    ],
     "rules": {
         "react/jsx-filename-extension": [
-            1,
+            "warn",
             {
                 "extensions": [
                     ".js",
@@ -11,29 +14,38 @@
             }
         ],
         "react/forbid-prop-types": [
-            0,
+            "off",
             {
                 "forbid": [],
                 "checkContextTypes": false,
                 "checkChildContextTypes": false
             }
         ],
-        "import/no-cycle": 1,
-        "prefer-promise-reject-errors": 0,
+        "import/no-cycle": "warn",
+        "prefer-promise-reject-errors": "off",
         "no-param-reassign": "warn",
-        "react/jsx-one-expression-per-line": 0,
+        "react/jsx-one-expression-per-line": "off",
         "prefer-destructuring": "warn",
         "react/destructuring-assignment": "warn",
-        "no-confusing-arrow": 0,
-        "no-underscore-dangle": 0
+        "no-confusing-arrow": "off",
+        "no-underscore-dangle": "off"
     },
     "env": {
         "browser": true,
         "node": true,
         "cypress/globals": true,
-        "jest": true
+        "jest": true,
+        "es6": true
     },
     "plugins": [
-        "cypress"
-    ]
+        "cypress",
+        "react"
+    ],
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    }
 }

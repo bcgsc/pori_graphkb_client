@@ -11,13 +11,7 @@
 *.launch
 .settings/
 *.sublime-workspace
-
-# IDE - VSCode
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+.vscode
 
 # misc
 /.sass-cache
@@ -28,6 +22,7 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
+*.bk
 
 # System Files
 .DS_Store
@@ -45,3 +40,4 @@ src/index.css
 !/public/index.html
 !/public/favicon.ico
 !/public/mainfest.json
+stats.json

@@ -70,12 +70,15 @@ module.exports = {
     filename: 'bundle.js',
   },
   devServer: {
+    host: '0.0.0.0',
     port: 3000,
     disableHostCheck: true,
     historyApiFallback: true,
     publicPath: '/',
+    hot: true,
   },
   plugins: [
+    new webpack.HotModuleReplacementPlugin(),
     // separate the css from the main js bundle
     new MiniCssExtractPlugin({
       filename: '[name].css',

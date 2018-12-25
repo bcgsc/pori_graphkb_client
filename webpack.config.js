@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // eslint ignore-line
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 
 const buildPath = path.resolve(__dirname, 'src');
@@ -60,6 +61,7 @@ const moduleSettings = {
 module.exports = {
   context: buildPath,
   entry: [
+    'abortcontroller-polyfill',
     './../config/polyfills.js',
     './index.js',
   ],
@@ -68,9 +70,10 @@ module.exports = {
     filename: 'bundle.js',
   },
   devServer: {
-    lazy: true,
-    contentBase: distPath,
-    filename: 'bundle.js',
+    port: 3000,
+    disableHostCheck: true,
+    historyApiFallback: true,
+    publicPath: '/',
   },
   plugins: [
     // separate the css from the main js bundle
@@ -79,9 +82,7 @@ module.exports = {
     }),
     new CleanWebpackPlugin(
       distPath,
-      {
-        exclude: ['index.html', 'favicon.ico', 'manifest.json'],
-      },
+      { exclude: ['index.html', 'manifest.json', 'favicon.ico'] },
     ),
     // Copy values of ENV variables in as strings using these defaults (null = unset)
     new webpack.EnvironmentPlugin({
@@ -94,6 +95,13 @@ module.exports = {
       KEYCLOAK_URL: 'http://ga4ghdev01.bcgsc.ca:8080/auth',
       NODE_ENV: 'production',
       USER: null,
+      PASSWORD: null,
+      npm_package_version: null,
+    }),
+    // template index.html. Required for running the dev-server properly
+    new HtmlWebpackPlugin({
+      template: path.resolve(distPath, 'index.html'),
+      filename: './index.html',
     }),
   ],
   resolve: {

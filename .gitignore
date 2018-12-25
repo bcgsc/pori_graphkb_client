@@ -29,7 +29,7 @@ testem.log
 Thumbs.db
 
 *.css
-src/index.css
+/src/index.css
 /jsdoc
 /build
 /cypress/videos
@@ -40,4 +40,4 @@ src/index.css
 !/public/index.html
 !/public/favicon.ico
 !/public/mainfest.json
-stats.json
+/stats.json

@@ -25,63 +25,95 @@ const getHeaders = () => {
   return headers;
 };
 
-/**
- * Sends request to server, appending all global headers and handling responses and errors.
- * @param {string} endpoint - URL endpoint
- * @param {Object} init - Request properties.
- */
-const fetchWithInterceptors = async (endpoint, init) => {
-  try {
-    const initWithInterceptors = {
-      ...init,
-      headers: getHeaders(),
-    };
-    const request = new Request(API_BASE_URL + endpoint, initWithInterceptors);
-    const response = await fetch(request);
-    if (response.ok) {
-      return response.json();
-    }
 
-    const error = {
-      ...(await response.json()),
-      status: response.status,
-      statusText: response.statusText,
-      url: response.url,
-    };
-    if (response.status === 401) {
-      let state = {};
-      if (auth.isExpired()) {
-        state = { timedout: true };
-      }
-      auth.clearToken();
-      if (history.location.pathname !== '/login') {
-        history.push({ pathname: '/login', state });
-        return Promise.reject('Unauthorized, redirecting...');
-      }
-      return Promise.reject(error);
-    }
-    if (response.status === 400) {
-      history.push({ pathname: '/query/advanced', state: error });
-      return Promise.reject('Invalid Query');
-    }
-    if (response.status === 409) {
-      return Promise.reject(response);
-    }
-    if (response.status === 403) {
-      return Promise.reject(response);
-    }
-    history.push({ pathname: '/error', state: error });
-    throw new Error('Unexpected Error, redirecting...');
-  } catch (error) {
-    history.push({
-      pathname: '/error',
-      state: {
-        message: 'GraphKB is down',
-      },
-    });
-    throw new Error('Unexpected Error, redirecting...');
+class GraphKbApiCall {
+  /**
+   * Sends request to server, appending all global headers and handling responses and errors.
+   * @param {string} endpoint - URL endpoint
+   * @param {Object} init - Request properties.
+   */
+  constructor(endpoint, init) {
+    this.endpoint = endpoint;
+    this.init = init;
+    this.controller = null;
   }
-};
+
+  /**
+   * Cancel this fetch request
+   */
+  abort() {
+    if (this.controller) {
+      this.controller.abort();
+    }
+  }
+
+  /**
+   * Makes the fetch request and awaits the response or error. Also handles the redirect to error
+   * or login pages
+   */
+  async request() {
+    try {
+      const initWithInterceptors = {
+        ...this.init,
+        headers: getHeaders(),
+      };
+      this.controller = new AbortController();
+      const { signal } = this.controller;
+      const request = new Request(API_BASE_URL + this.endpoint, initWithInterceptors);
+      let response;
+      try {
+        response = await fetch(request, { signal });
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          return null;
+        }
+        throw err;
+      }
+      if (response.ok) {
+        return response.json();
+      }
+
+      const error = {
+        ...(await response.json()),
+        status: response.status,
+        statusText: response.statusText,
+        url: response.url,
+      };
+      if (response.status === 401) {
+        let state = {};
+        if (auth.isExpired()) {
+          state = { timedout: true };
+        }
+        auth.clearToken();
+        if (history.location.pathname !== '/login') {
+          history.push({ pathname: '/login', state });
+          return Promise.reject('Unauthorized, redirecting...');
+        }
+        return Promise.reject(error);
+      }
+      if (response.status === 400) {
+        history.push({ pathname: '/query/advanced', state: error });
+        return Promise.reject('Invalid Query');
+      }
+      if (response.status === 409) {
+        return Promise.reject(response);
+      }
+      if (response.status === 403) {
+        return Promise.reject(response);
+      }
+      history.push({ pathname: '/error', state: error });
+      throw new Error('Unexpected Error, redirecting...');
+    } catch (error) {
+      history.push({
+        pathname: '/error',
+        state: {
+          message: 'GraphKB is down',
+        },
+      });
+      throw new Error('Unexpected Error, redirecting...');
+    }
+  }
+}
 
 /**
  * Sends PATCH request to api.
@@ -93,7 +125,7 @@ const patch = (endpoint, payload) => {
     method: 'PATCH',
     body: jc.stringify(payload),
   };
-  return fetchWithInterceptors(endpoint, init);
+  return new GraphKbApiCall(endpoint, init);
 };
 
 /**
@@ -104,7 +136,7 @@ const get = (endpoint) => {
   const init = {
     method: 'GET',
   };
-  return fetchWithInterceptors(endpoint, init);
+  return new GraphKbApiCall(endpoint, init);
 };
 
 /**
@@ -118,7 +150,7 @@ const post = (endpoint, payload) => {
     body: jc.stringify(payload),
   };
 
-  return fetchWithInterceptors(endpoint, init);
+  return new GraphKbApiCall(endpoint, init);
 };
 
 /**
@@ -130,7 +162,7 @@ const del = (endpoint) => {
     method: 'DELETE',
   };
 
-  return fetchWithInterceptors(endpoint, init);
+  return new GraphKbApiCall(endpoint, init);
 };
 
 /**
@@ -184,7 +216,7 @@ const submitEdges = (edges, schema, rid = '') => {
 
     newEdges.push(post(schema.get(edges[i]['@class']).routeName, edge));
   }
-  return Promise.all(newEdges);
+  return newEdges;
 };
 
 /**
@@ -218,7 +250,7 @@ const patchEdges = (originalEdges, newEdges, schema) => {
     }
   });
 
-  return Promise.all(changedEdges);
+  return changedEdges;
 };
 
 export default {

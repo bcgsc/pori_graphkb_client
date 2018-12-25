@@ -30,6 +30,7 @@ class EditOntologyViewBase extends Component {
     this.state = {
       node: null,
     };
+    this.controllers = [];
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
@@ -42,13 +43,18 @@ class EditOntologyViewBase extends Component {
   async componentDidMount() {
     const { match } = this.props;
     const { rid } = match.params;
-    const response = await api.get(`/ontologies/${rid}?neighbors=${DEFAULT_NEIGHBORS}`);
+    const call = api.get(`/ontologies/${rid}?neighbors=${DEFAULT_NEIGHBORS}`);
+    this.controllers.push(call);
+    const response = await call.request();
     const node = jc.retrocycle(response).result;
     this.setState({
       node,
     });
   }
 
+  componentWillUnmount() {
+    this.controllers.forEach(c => c.abort());
+  }
 
   /**
    * Adds new edges and deletes specified ones, then PATCHes property changes
@@ -62,11 +68,17 @@ class EditOntologyViewBase extends Component {
     const { schema } = this.props;
 
     try {
-      await api.patchEdges(originalNode.relationships || [], relationships, schema);
+      // Edit the edges
+      const call = api.patchEdges(originalNode.relationships || [], relationships, schema);
+      this.controllers.push(call);
+      await call.request();
       const { routeName } = schema.get(originalNode);
       const properties = schema.getProperties(originalNode);
       const payload = util.parsePayload(form, properties);
-      await api.patch(`${routeName}/${originalNode['@rid'].slice(1)}`, payload);
+      // Edit the contents of the node itself
+      const patchNodeCall = api.patch(`${routeName}/${originalNode['@rid'].slice(1)}`, payload);
+      this.controllers.push(patchNodeCall);
+      await patchNodeCall.request();
       return true;
     } catch (error) {
       console.error(error);
@@ -81,7 +93,9 @@ class EditOntologyViewBase extends Component {
     const { node } = this.state;
     const { schema } = this.props;
     const { routeName } = schema.get(node);
-    await api.delete(`${routeName}/${node['@rid'].slice(1)}`);
+    const call = api.delete(`${routeName}/${node['@rid'].slice(1)}`);
+    this.controllers.push(call);
+    await call.request();
   }
 
   /**

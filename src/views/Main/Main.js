@@ -166,7 +166,7 @@ class Main extends Component {
             <div className="appbar-title">
               <Link to="/query" onClick={this.handleNavBar(false)} disabled={!loggedIn}>
                 <Typography variant="h6">GraphKB</Typography>
-                <Typography variant="caption">v{process.env.REACT_APP_VERSION}</Typography>
+                <Typography variant="caption">v{process.env.npm_package_version}</Typography>
               </Link>
             </div>
             <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>

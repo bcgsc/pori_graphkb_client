@@ -25,8 +25,13 @@ class AddOntologyViewBase extends Component {
     this.state = {
       is409: false,
     };
+    this.controllers = [];
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
+  }
+
+  componentWillUnmount() {
+    this.controllers.forEach(c => c.abort());
   }
 
   /**
@@ -42,8 +47,13 @@ class AddOntologyViewBase extends Component {
     const { routeName } = schema.get(form);
     const payload = util.parsePayload(form, properties);
     try {
-      const response = await api.post(routeName, { ...payload });
-      await api.submitEdges(relationships, schema, response.result['@rid']);
+      const call = api.post(routeName, { ...payload });
+      this.controllers.push(call);
+      const response = await call.request();
+      // create requests for each relationship being added
+      const edgeCalls = api.submitEdges(relationships, schema, response.result['@rid']);
+      this.controllers.push(...edgeCalls);
+      await Promise.all(edgeCalls.map(async e => e.request()));
       return true;
     } catch (error) {
       this.setState({ is409: true });

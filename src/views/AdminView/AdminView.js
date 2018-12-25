@@ -42,6 +42,7 @@ class AdminViewBase extends Component {
       users: null,
       userGroups: null,
     };
+    this.controllers = [];
 
     this.addUser = this.addUser.bind(this);
     this.deleteUsers = this.deleteUsers.bind(this);
@@ -55,8 +56,14 @@ class AdminViewBase extends Component {
    * Gets database users and usergroups. Initializes form object.
    */
   async componentDidMount() {
-    const cycledUsers = await api.get('/users?neighbors=1');
-    const cycledUserGroups = await api.get('/usergroups');
+    const cycledUsersCall = api.get('/users?neighbors=1');
+    this.controllers.push(cycledUsersCall);
+    const cycledUsers = await cycledUsersCall.request();
+
+    const cycledUserGroupsCall = api.get('/usergroups');
+    this.controllers.push(cycledUserGroupsCall);
+    const cycledUserGroups = await cycledUserGroupsCall.request();
+
     const users = jc.retrocycle(cycledUsers).result;
     const userGroups = AdminViewBase.initializeUserGroups(jc.retrocycle(cycledUserGroups).result);
 
@@ -66,14 +73,20 @@ class AdminViewBase extends Component {
     });
   }
 
+  componentWillUnmount() {
+    this.controllers.forEach(c => c.abort());
+  }
+
   /**
    * Sends a POST request to the database, refreshes new user form model, and
    * updates listed users.
    * @param {Object} payload - New User record payload.
    */
   async addUser(payload) {
-    await api.post('/users', payload);
-    this.componentDidMount();
+    const call = api.post('/users', payload);
+    this.controllers.push(call);
+    await call.request();
+    await this.componentDidMount();
   }
 
   /**
@@ -83,9 +96,13 @@ class AdminViewBase extends Component {
    */
   async deleteUsers(selected) {
     const deletes = [];
-    selected.forEach((user) => { deletes.push(api.delete(`/users/${user.slice(1)}`)); });
-    await Promise.all(deletes);
-    this.componentDidMount();
+    selected.forEach((user) => {
+      const call = api.delete(`/users/${user.slice(1)}`);
+      deletes.push(call);
+    });
+    this.components.push(...deletes);
+    await Promise.all(deletes.map(async c => c.request()));
+    await this.componentDidMount();
   }
 
   /**
@@ -93,8 +110,10 @@ class AdminViewBase extends Component {
    * @param {string} rid - usergroup object rid.
    */
   async deleteUserGroup(rid) {
-    await api.delete(`/usergroups/${rid}`);
-    this.componentDidMount();
+    const call = api.delete(`/usergroups/${rid}`);
+    this.controllers.push(call);
+    await call.request();
+    await this.componentDidMount();
   }
 
   /**
@@ -104,8 +123,10 @@ class AdminViewBase extends Component {
    * @param {Object} payload - User record payload.
    */
   async editUser(rid, payload) {
-    await api.patch(`/users/${rid}`, payload);
-    this.componentDidMount();
+    const call = api.patch(`/users/${rid}`, payload);
+    this.controllers.push(call);
+    await call.request();
+    await this.componentDidMount();
   }
 
 
@@ -115,8 +136,10 @@ class AdminViewBase extends Component {
    * @param {Object} payload - UserGroup record payload.
    */
   async patchUserGroup(rid, payload) {
-    await api.patch(`/usergroups/${rid}`, payload);
-    this.componentDidMount();
+    const call = api.patch(`/usergroups/${rid}`, payload);
+    this.controllers.push(call);
+    await call.request();
+    await this.componentDidMount();
   }
 
   /**
@@ -124,8 +147,10 @@ class AdminViewBase extends Component {
    * @param {Object} payload - User record payload.
    */
   async postUserGroup(payload) {
-    await api.post('/usergroups', payload);
-    this.componentDidMount();
+    const call = api.post('/usergroups', payload);
+    this.controllers.push(call);
+    await call.request();
+    await this.componentDidMount();
   }
 
   render() {

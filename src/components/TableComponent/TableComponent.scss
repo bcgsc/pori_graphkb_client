@@ -59,7 +59,7 @@ $flip-duration: 0.15s;
       }
     }
     .table-row-checkbox {
-      width: 96px;
+      width: calc(96px + 24px);
     }
   }
   .table-drawer-open {

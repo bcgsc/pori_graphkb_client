@@ -232,32 +232,43 @@ class AboutView extends Component {
       notationMd: '',
       apiVersion: '',
       dbVersion: '',
-      guiVersion: process.env.REACT_APP_VERSION || '',
+      guiVersion: process.env.npm_package_version || process.env.REACT_APP_VERSION || '',
       tabIndex: 0,
     };
 
     this.getClassStats = this.getClassStats.bind(this);
-    this.getMarkdownContent = this.getMarkdownCotent.bind(this);
+    this.getMarkdownContent = this.getMarkdownContent.bind(this);
     this.getVersionInfo = this.getVersionInfo.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.controllers = [];
   }
 
   async componentDidMount() {
     await Promise.all([
       this.getClassStats(),
-      this.getMarkdownCotent(),
+      this.getMarkdownContent(),
       this.getVersionInfo(),
     ]);
   }
 
-  async getMarkdownCotent() {
-    const file = await fetch(notation);
+  componentWillUnmount() {
+    this.controllers.forEach(c => c.abort());
+  }
+
+  async getMarkdownContent() {
+    const controller = new AbortController();
+    this.controllers.push(controller);
+
+    const file = await fetch(notation, { signal: controller.signal });
     const text = await file.text();
     this.setState({ notationMd: marked(text) });
   }
 
   async getClassStats() {
-    const stats = await api.get('/stats');
+    const call = api.get('/stats');
+    this.controllers.push(call);
+
+    const stats = await call.request();
 
     this.setState({
       stats: Array.from(
@@ -268,7 +279,9 @@ class AboutView extends Component {
   }
 
   async getVersionInfo() {
-    const versions = await api.get('/version');
+    const call = api.get('/version');
+    this.controllers.push(call);
+    const versions = await call.request();
     this.setState({
       apiVersion: versions.api,
       dbVersion: versions.db,

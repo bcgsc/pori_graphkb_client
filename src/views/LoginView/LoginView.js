@@ -27,6 +27,7 @@ class LoginView extends Component {
     this.state = {
       unauthorized: false,
     };
+    this.controllers = [];
   }
 
   /**
@@ -45,7 +46,9 @@ class LoginView extends Component {
       history.push('/query');
     } else if (process.env.DISABLE_AUTH === '1') { // FOR TESTING ONLY
       try {
-        const response = await api.post('/token', { username: process.env.USER, password: '' });
+        const call = api.post('/token', { username: process.env.USER, password: process.env.PASSWORD });
+        this.controllers.push(call);
+        const response = await call.request();
         auth.loadToken(response.kbToken);
         history.push('/query');
       } catch (error) {
@@ -56,7 +59,9 @@ class LoginView extends Component {
     } else {
       const token = await auth.login();
       try {
-        const response = await api.post('/token', { keyCloakToken: token });
+        const call = api.post('/token', { keyCloakToken: token });
+        this.controllers.push(call);
+        const response = await call.request();
         auth.loadToken(response.kbToken);
         history.push('/query');
       } catch (error) {
@@ -67,6 +72,9 @@ class LoginView extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.controllers.forEach(c => c.abort());
+  }
 
   render() {
     const { unauthorized } = this.state;

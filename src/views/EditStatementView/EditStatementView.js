@@ -47,7 +47,9 @@ class EditStatementViewBase extends Component {
     const { node } = this.state;
     const { schema } = this.props;
     const { routeName } = schema.get(node);
-    await api.delete(`${routeName}/${node['@rid'].slice(1)}`);
+    const call = api.delete(`${routeName}/${node['@rid'].slice(1)}`);
+    this.controllers.push(call);
+    await call.request();
   }
 
   /**
@@ -70,11 +72,16 @@ class EditStatementViewBase extends Component {
     const { schema } = this.props;
 
     try {
-      await api.patchEdges(originalRelationships || [], relationships, schema);
+      const patchEdgesCall = api.patchEdges(originalRelationships || [], relationships, schema);
+      this.controllers.push(patchEdgesCall);
+      await patchEdgesCall.request();
+
       const properties = schema.getProperties(form);
       const { routeName } = schema.get(form);
       const payload = util.parsePayload(form, properties);
-      await api.patch(`${routeName}/${form['@rid'].slice(1)}`, payload);
+      const patchNodeCall = api.patch(`${routeName}/${form['@rid'].slice(1)}`, payload);
+      this.controllers.push(patchNodeCall);
+      await patchNodeCall.request();
       return true;
     } catch (error) {
       console.error(error);

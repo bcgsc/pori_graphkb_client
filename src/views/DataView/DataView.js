@@ -34,51 +34,6 @@ const DEFAULT_LIMIT = 1000;
  *
  */
 class DataViewBase extends Component {
-  /**
-   * Makes API GET call to specified endpoint, with specified query parameters.
-   * @param {string} route - API endpoint.
-   * @param {Object} queryParams - Query parameters object.
-   * @param {Array.<string>} omitted - List of parameters to strip from API call.
-   */
-  static async makeApiQuery(route, queryParams, omitted = []) {
-    const response = await api.get(`${route}?${qs.stringify(omit(queryParams, omitted))}`);
-    return jc.retrocycle(response).result;
-  }
-
-  /**
-   * Makes API POST call to specified endpoint, with specified payload.
-   * @param {string} route - API endpoint.
-   * @param {Object} payload - Query payload object.
-   * @param {Array.<string>} omitted - List of parameters to strip from API call.
-   */
-  static async makeComplexApiQuery(route, payload, omitted = []) {
-    const response = await api.post(route, omit(payload, omitted));
-    return jc.retrocycle(response).result;
-  }
-
-  /**
-   * Prepares next query function.
-   * @param {string} route - API route.
-   * @param {Object} queryParams - Query parameters key/value pairs.
-   * @param {Array.<Object>} prevResult - Previous query results.
-   * @param {Array.<string>} omitted - List of property keys to omit during next query.
-   */
-  static prepareNextPagination(route, queryParams, prevResult, omitted = []) {
-    const nextQueryParams = queryParams;
-    if (prevResult.length >= queryParams.limit) {
-      nextQueryParams.skip = Number(queryParams.limit) + Number(queryParams.skip || 0);
-      return {
-        next: () => DataViewBase.makeApiQuery(route, nextQueryParams, omitted),
-        moreResults: true,
-        filteredSearch: nextQueryParams,
-      };
-    }
-    return {
-      next: null,
-      moreResults: false,
-    };
-  }
-
   constructor(props) {
     super(props);
     this.state = {
@@ -93,6 +48,8 @@ class DataViewBase extends Component {
       filteredSearch: null,
       moreResults: false,
     };
+
+    this.controllers = [];
 
     this.handleClick = this.handleClick.bind(this);
     this.processData = this.processData.bind(this);
@@ -140,7 +97,7 @@ class DataViewBase extends Component {
         routeName = '/search';
         queryParams.neighbors = queryParams.neighbors || DEFAULT_NEIGHBORS;
         queryParams.limit = queryParams.limit || DEFAULT_LIMIT;
-        response = await DataViewBase.makeApiQuery(routeName, queryParams);
+        response = await this.makeApiQuery(routeName, queryParams);
       } else if (queryParams.complex) {
         routeName += '/search';
         isComplex = true;
@@ -148,11 +105,11 @@ class DataViewBase extends Component {
         const payload = JSON.parse(atob(decodeURIComponent(queryParams.complex)));
         payload.neighbors = Math.max(payload.neighbors || 0, DEFAULT_NEIGHBORS);
         payload.limit = Math.min(payload.limit || DEFAULT_LIMIT, DEFAULT_LIMIT);
-        response = await DataViewBase.makeComplexApiQuery(routeName, payload, omitted);
+        response = await this.makeComplexApiQuery(routeName, payload, omitted);
       } else {
         queryParams.neighbors = queryParams.neighbors || DEFAULT_NEIGHBORS;
         queryParams.limit = queryParams.limit || DEFAULT_LIMIT;
-        response = await DataViewBase.makeApiQuery(routeName, queryParams, omitted);
+        response = await this.makeApiQuery(routeName, queryParams, omitted);
       }
 
       const { data, allProps } = this.processData(response);
@@ -162,7 +119,7 @@ class DataViewBase extends Component {
         moreResults,
         filteredSearch,
       } = !isComplex
-        ? DataViewBase.prepareNextPagination(routeName, queryParams, response, omitted)
+        ? this.prepareNextPagination(routeName, queryParams, response, omitted)
         : {
           moreResults: false,
           next: null,
@@ -187,6 +144,59 @@ class DataViewBase extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.controllers.forEach(c => c.abort());
+  }
+
+  /**
+   * Prepares next query function.
+   * @param {string} route - API route.
+   * @param {Object} queryParams - Query parameters key/value pairs.
+   * @param {Array.<Object>} prevResult - Previous query results.
+   * @param {Array.<string>} omitted - List of property keys to omit during next query.
+   */
+  prepareNextPagination(route, queryParams, prevResult, omitted = []) {
+    const nextQueryParams = queryParams;
+    if (prevResult.length >= queryParams.limit) {
+      nextQueryParams.skip = Number(queryParams.limit) + Number(queryParams.skip || 0);
+      return {
+        next: () => this.makeApiQuery(route, nextQueryParams, omitted),
+        moreResults: true,
+        filteredSearch: nextQueryParams,
+      };
+    }
+    return {
+      next: null,
+      moreResults: false,
+    };
+  }
+
+  /**
+   * Makes API GET call to specified endpoint, with specified query parameters.
+   * @param {string} route - API endpoint.
+   * @param {Object} queryParams - Query parameters object.
+   * @param {Array.<string>} omitted - List of parameters to strip from API call.
+   */
+  async makeApiQuery(route, queryParams, omitted = []) {
+    const call = api.get(`${route}?${qs.stringify(omit(queryParams, omitted))}`);
+    this.controllers.push(call);
+    const response = await call.request();
+    return jc.retrocycle(response).result;
+  }
+
+  /**
+   * Makes API POST call to specified endpoint, with specified payload.
+   * @param {string} route - API endpoint.
+   * @param {Object} payload - Query payload object.
+   * @param {Array.<string>} omitted - List of parameters to strip from API call.
+   */
+  async makeComplexApiQuery(route, payload, omitted = []) {
+    const call = api.post(route, omit(payload, omitted));
+    this.controllers.push(call);
+    const response = await call.request();
+    return jc.retrocycle(response).result;
+  }
+
   /**
    * Processes ontology data and updates properties map.
    * @param {Array.<Object>} queryResults - List of returned records.
@@ -202,7 +212,7 @@ class DataViewBase extends Component {
       allProps = ['@rid', '@class', 'preview'];
     }
 
-    queryResults.forEach((record) => {
+    (queryResults || []).forEach((record) => {
       allProps = schema.collectOntologyProps(record, allProps);
       data[record['@rid']] = record;
     });
@@ -220,7 +230,9 @@ class DataViewBase extends Component {
     if (!data[node.data['@rid']]) {
       const { routeName } = schema.get(node.data);
       const endpoint = `${routeName || '/ontologies'}/${node.data['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`; // change
-      const response = await api.get(endpoint);
+      const call = api.get(endpoint);
+      this.controllers.push(call);
+      const response = await call.request();
       this.setState({ ...this.processData([jc.retrocycle(response).result]) });
     }
   }
@@ -307,7 +319,7 @@ class DataViewBase extends Component {
 
         this.setState({
           ...this.processData(nextData),
-          ...DataViewBase.prepareNextPagination(routeName, filteredSearch, nextData, omitted),
+          ...this.prepareNextPagination(routeName, filteredSearch, nextData, omitted),
           completedNext: true,
         });
       } catch (error) {
@@ -364,7 +376,9 @@ class DataViewBase extends Component {
       });
     } else {
       if (!data[node['@rid']]) {
-        const response = await api.get(`/ontologies/${node['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
+        const call = api.get(`/ontologies/${node['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
+        this.controllers.push(call);
+        const response = await call.request();
         data[node['@rid']] = jc.retrocycle(response).result;
       }
       this.setState({ detail: data[node['@rid']], detailEdge: false });

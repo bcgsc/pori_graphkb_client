@@ -21,6 +21,7 @@ class EditVariantViewBase extends Component {
     this.state = {
       node: null,
     };
+    this.controllers = [];
     this.handleCancel = this.handleCancel.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
     this.submitVariant = this.submitVariant.bind(this);
@@ -33,7 +34,9 @@ class EditVariantViewBase extends Component {
     const { match, schema } = this.props;
     const { rid } = match.params;
     const { routeName } = schema.get('Variant');
-    const response = await api.get(`${routeName}/${rid}?neighbors=3`);
+    const call = api.get(`${routeName}/${rid}?neighbors=3`);
+    this.controllers.push(call);
+    const response = await call.request();
     const node = jc.retrocycle(response).result;
     this.setState({
       node,
@@ -55,7 +58,9 @@ class EditVariantViewBase extends Component {
     const { node } = this.state;
     const { schema } = this.props;
     const { routeName } = schema.get(node);
-    await api.delete(`${routeName}/${node['@rid'].slice(1)}`);
+    const call = api.delete(`${routeName}/${node['@rid'].slice(1)}`);
+    this.controllers.push(call);
+    await call.request();
   }
 
   /**
@@ -81,7 +86,9 @@ class EditVariantViewBase extends Component {
       oRelationships = originalRelationships.relationships.slice();
     }
     try {
-      await api.patchEdges(oRelationships || [], relationships, schema);
+      const edgesCall = api.patchEdges(oRelationships || [], relationships, schema);
+      this.controllers.push(...edgesCall);
+      await Promise.all(edgesCall.map(async c => c.request()));
 
       const copy = Object.assign({}, form);
       const properties = schema.getProperties(form);
@@ -105,7 +112,9 @@ class EditVariantViewBase extends Component {
         }
       });
       const payload = util.parsePayload(copy, properties);
-      await api.patch(`${routeName}/${node['@rid'].slice(1)}`, payload);
+      const call = api.patch(`${routeName}/${node['@rid'].slice(1)}`, payload);
+      this.controllers.push(call);
+      await call.request();
       return true;
     } catch (error) {
       console.error(error);

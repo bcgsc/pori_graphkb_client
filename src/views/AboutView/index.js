@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import './index.scss';
-import { Link } from 'react-router-dom';
+import {
+  Link,
+  NavLink,
+  Route,
+  Switch,
+} from 'react-router-dom';
 import {
   Paper,
   Typography,
@@ -9,11 +14,16 @@ import {
   ListItemText,
   Tabs,
   Tab,
+
 } from '@material-ui/core';
 import marked from 'marked';
-import notation from '@bcgsc/knowledgebase-parser/doc/notation.md';
-import PieChart from '../../components/PieChart';
+import slugify from 'slugify';
 
+
+import notation from '@bcgsc/knowledgebase-parser/doc/notation.md';
+
+
+import PieChart from '../../components/PieChart';
 import api from '../../services/api';
 
 // static content
@@ -297,60 +307,83 @@ class AboutView extends Component {
       stats, notationMd, apiVersion, guiVersion, dbVersion, tabIndex,
     } = this.state;
 
+    const AboutMain = () => (
+      <div className="two-column-grid">
+        <PieChart
+          height={500}
+          width={500}
+          innerRadius={50}
+          data={stats}
+          colorThreshold={0.05}
+        />
+        <div className="pie-partner">
+          <Typography paragraph>
+                Knowlegebase is a curated database of variants in cancer and their therapeutic,
+                biological, diagnostic, and prognostic implications according to literature. The
+                main use of Knowlegebase is to act as the link between the known and published
+                variant information and the expermientally collected data.
+          </Typography>
+          <Typography variant="h6" component="h4">
+                Current Version
+          </Typography>
+          <Typography paragraph>
+                DB ({dbVersion}); API (v{apiVersion}); GUI (v{guiVersion})
+          </Typography>
+        </div>
+      </div>
+    );
+
+    const tabsList = [
+      ['About', AboutMain],
+      ['Query', AboutQuerying],
+      ['View Table', AboutTableView],
+      ['View Graph', AboutGraphView],
+      ['Input Data', AboutForms],
+      ['Notation', () => (
+        <div
+          id="about-variant-notation"
+          dangerouslySetInnerHTML={{ __html: notationMd }}
+        />
+      )],
+    ];
+
+    const tabNavList = tabsList.map(([label], index) => (
+      <Tab
+        label={label}
+        component={NavLink}
+        key={label}
+        value={index}
+        to={
+          index === 0
+            ? '/about'
+            : `/about/${slugify(label).toLowerCase()}`
+        }
+      />
+    ));
+
+    const tabsRouteList = tabsList.map(([label, component], index) => (
+      <Route
+        label={label}
+        key={label}
+        component={component}
+        exact
+        path={
+          index === 0
+            ? '/about'
+            : `/about/${slugify(label).toLowerCase()}`
+        }
+      />
+    ));
+
     return (
       <Paper position="static" elevation={PAGE_ELEVATION} className="about-page">
         <Tabs value={tabIndex} onChange={this.handleChange} scrollable>
-          <Tab label="About" />
-          <Tab label="Query" />
-          <Tab label="View Table" />
-          <Tab label="View Graph" />
-          <Tab label="Input Data" />
-          <Tab label="Notation" />
+          {tabNavList}
         </Tabs>
         <div className="tabs-content">
-          {tabIndex === 0 && (
-          <div className="two-column-grid">
-            <PieChart
-              height={500}
-              width={500}
-              innerRadius={50}
-              data={stats}
-              colorThreshold={0.05}
-            />
-            <div className="pie-partner">
-              <Typography paragraph>
-              Knowlegebase is a curated database of variants in cancer and their therapeutic,
-              biological, diagnostic, and prognostic implications according to literature. The
-              main use of Knowlegebase is to act as the link between the known and published
-              variant information and the expermientally collected data.
-              </Typography>
-              <Typography variant="h6" component="h4">
-              Current Version
-              </Typography>
-              <Typography paragraph>
-              DB ({dbVersion}); API (v{apiVersion}); GUI (v{guiVersion})
-              </Typography>
-            </div>
-          </div>
-          )}
-          {tabIndex === 1 && (
-          <AboutQuerying />
-          )}
-          {tabIndex === 2 && (
-          <AboutTableView />
-          )}
-          {tabIndex === 3 && (
-          <AboutGraphView />
-          )}
-          {tabIndex === 4 && (
-          <AboutForms />
-          )}
-          {tabIndex === 5 && (
-          <div
-            id="about-variant-notation"
-            dangerouslySetInnerHTML={{ __html: notationMd }}
-          />
-          )}
+          <Switch>
+            {tabsRouteList}
+          </Switch>
         </div>
       </Paper>
     );

@@ -42,18 +42,21 @@ const loadKeyCloakToken = token => localStorage.setItem(KEYCLOAK_TOKEN, token);
  */
 const getToken = () => localStorage.getItem(KB_TOKEN);
 
+
 /**
  * Checks expiry date on JWT token and compares with current time.
  */
 const isExpired = () => {
-  const token = localStorage.getItem(KB_TOKEN);
-  return !!(
-    token
-    && jwt.decode(token)
-    && !Number.isNaN(jwt.decode(token).exp)
-    && (jwt.decode(token).exp * 1000) < (new Date()).getTime()
-  );
+  const token = getToken();
+  try {
+    const expiry = jwt.decode(token).exp;
+    return !Number.isNaN(expiry) && (expiry * 1000) < (new Date()).getTime();
+  } catch (err) {
+    return false;
+  }
 };
+
+const isAuthenticated = () => getToken() && !isExpired();
 
 /**
  * Loads new Knowledge Base token into localstorage.
@@ -75,25 +78,25 @@ const clearToken = () => {
  * Returns username of currently logged in user.
  */
 const getUser = () => {
-  const token = localStorage.getItem(KB_TOKEN);
-  if (token && jwt.decode(token)) {
-    return jwt.decode(token).user;
+  try {
+    return jwt.decode(getToken()).user;
+  } catch (err) {
+    return null;
   }
-  return null;
 };
 
 /**
  * Returns true if user is in the 'admin' usergroup.
  */
 const isAdmin = () => {
-  const token = localStorage.getItem(KB_TOKEN);
-  return !!(
-    token
-    && jwt.decode(token)
-    && jwt.decode(token).user
-    && jwt.decode(token).user.groups
-    && jwt.decode(token).user.groups.find(group => group.name === 'admin')
-  );
+  try {
+    return !!(
+      isAuthenticated()
+      && jwt.decode(getToken()).user.groups.find(group => group.name === 'admin')
+    );
+  } catch (err) {
+    return false;
+  }
 };
 
 /**
@@ -129,6 +132,7 @@ export default {
   loadKeyCloakToken,
   getKeyCloakToken,
   isAdmin,
+  isAuthenticated,
   isExpired,
   getUser,
   clearToken,

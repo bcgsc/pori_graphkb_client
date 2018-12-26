@@ -44,31 +44,25 @@ class LoginView extends Component {
     if (auth.getKeyCloakToken() && auth.getToken()) {
       handleAuthenticate();
       history.push('/query');
-    } else if (process.env.DISABLE_AUTH === '1') { // FOR TESTING ONLY
-      try {
-        const call = api.post('/token', { username: process.env.USER, password: process.env.PASSWORD });
-        this.controllers.push(call);
-        const response = await call.request();
-        auth.loadToken(response.kbToken);
-        history.push('/query');
-      } catch (error) {
-        this.setState({ unauthorized: true });
-      } finally {
-        handleAuthenticate();
-      }
-    } else {
+      return;
+    }
+
+    let call;
+    if (process.env.DISABLE_AUTH !== '1') { // FOR NOT TESTING
       const token = await auth.login();
-      try {
-        const call = api.post('/token', { keyCloakToken: token });
-        this.controllers.push(call);
-        const response = await call.request();
-        auth.loadToken(response.kbToken);
-        history.push('/query');
-      } catch (error) {
-        this.setState({ unauthorized: true });
-      } finally {
-        handleAuthenticate();
-      }
+      call = api.post('/token', { keyCloakToken: token });
+    } else {
+      call = api.post('/token', { username: process.env.USER, password: process.env.PASSWORD });
+    }
+    try {
+      this.controllers.push(call);
+      const response = await call.request();
+      auth.loadToken(response.kbToken);
+      history.push('/query');
+    } catch (error) {
+      this.setState({ unauthorized: true });
+    } finally {
+      handleAuthenticate();
     }
   }
 

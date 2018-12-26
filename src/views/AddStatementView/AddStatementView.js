@@ -27,6 +27,13 @@ class AddStatementViewBase extends Component {
     this.handleFinish = this.handleFinish.bind(this);
   }
 
+
+  componentWillUnmount() {
+    if (this.controller !== null) {
+      this.controller.abort();
+    }
+  }
+
   /**
    * Navigates to query page on successful form submission.
    */
@@ -75,12 +82,6 @@ class AddStatementViewBase extends Component {
       console.error(error);
       this.setState({ is409: true });
       return false;
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.controller !== null) {
-      this.controller.abort();
     }
   }
 

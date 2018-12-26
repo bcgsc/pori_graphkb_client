@@ -111,7 +111,7 @@ module.exports = {
     }),
     // template index.html. Required for running the dev-server properly
     new HtmlWebpackPlugin({
-      template: path.resolve(SRC_PATH, 'index.html'),
+      template: path.resolve(SRC_PATH, 'static/index.html'),
       filename: './index.html',
     }),
   ],

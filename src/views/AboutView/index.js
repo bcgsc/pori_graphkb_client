@@ -16,12 +16,7 @@ import {
   Tab,
 
 } from '@material-ui/core';
-import marked from 'marked';
 import slugify from 'slugify';
-
-
-import notation from '@bcgsc/knowledgebase-parser/doc/notation.md';
-
 
 import PieChart from '../../components/PieChart';
 import api from '../../services/api';
@@ -34,6 +29,9 @@ import queryResults from '../../static/tutorial/table-tutorial.png';
 import graphResults from '../../static/tutorial/graph-tutorial.png';
 import graphActions from '../../static/tutorial/graph-actions.png';
 import config from '../../static/config';
+
+import AboutNotation from './AboutNotation';
+
 
 const { API_BASE_URL } = config;
 const PAGE_ELEVATION = 4;
@@ -239,7 +237,6 @@ class AboutView extends Component {
     super(props);
     this.state = {
       stats: [{ label: '', value: 0 }], // so that the page doesn't wait to load
-      notationMd: '',
       apiVersion: '',
       dbVersion: '',
       guiVersion: process.env.npm_package_version || process.env.REACT_APP_VERSION || '',
@@ -247,7 +244,6 @@ class AboutView extends Component {
     };
 
     this.getClassStats = this.getClassStats.bind(this);
-    this.getMarkdownContent = this.getMarkdownContent.bind(this);
     this.getVersionInfo = this.getVersionInfo.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.controllers = [];
@@ -256,22 +252,12 @@ class AboutView extends Component {
   async componentDidMount() {
     await Promise.all([
       this.getClassStats(),
-      this.getMarkdownContent(),
       this.getVersionInfo(),
     ]);
   }
 
   componentWillUnmount() {
     this.controllers.forEach(c => c.abort());
-  }
-
-  async getMarkdownContent() {
-    const controller = new AbortController();
-    this.controllers.push(controller);
-
-    const file = await fetch(notation, { signal: controller.signal });
-    const text = await file.text();
-    this.setState({ notationMd: marked(text) });
   }
 
   async getClassStats() {
@@ -304,7 +290,7 @@ class AboutView extends Component {
 
   render() {
     const {
-      stats, notationMd, apiVersion, guiVersion, dbVersion, tabIndex,
+      stats, apiVersion, guiVersion, dbVersion, tabIndex,
     } = this.state;
 
     const AboutMain = () => (
@@ -339,12 +325,7 @@ class AboutView extends Component {
       ['View Table', AboutTableView],
       ['View Graph', AboutGraphView],
       ['Input Data', AboutForms],
-      ['Notation', () => (
-        <div
-          id="about-variant-notation"
-          dangerouslySetInnerHTML={{ __html: notationMd }}
-        />
-      )],
+      ['Notation', AboutNotation],
     ];
 
     const tabNavList = tabsList.map(([label], index) => (

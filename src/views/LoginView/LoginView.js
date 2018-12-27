@@ -48,7 +48,7 @@ class LoginView extends Component {
     }
 
     let call;
-    if (process.env.DISABLE_AUTH !== '1') { // FOR NOT TESTING
+    if (config.DISABLE_AUTH === true) { // FOR NOT TESTING
       const token = await auth.login();
       call = api.post('/token', { keyCloakToken: token });
     } else {

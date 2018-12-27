@@ -1,0 +1,59 @@
+// main jest configuration file
+const path = require('path');
+
+const BASE_DIR = path.resolve(__dirname, '..');
+
+module.exports = {
+  rootDir: BASE_DIR,
+  collectCoverage: true,
+  coverageDirectory: 'coverage',
+  collectCoverageFrom: [
+    '<rootDir>/src/components/**/!(index).{js,jsx,mjs}',
+    '<rootDir>/src/services/**/!(api).{js,jsx,mjs}',
+    '<rootDir>/src/models/**/*.{js,jsx,mjs}',
+  ],
+  coverageReporters: [
+    'clover',
+    'text',
+    'json',
+    'json-summary',
+    'lcov',
+  ],
+  reporters: [
+    'default',
+    [
+      'jest-junit',
+      {
+        output: '<rootDir>/coverage/junit.xml',
+      },
+    ],
+  ],
+  setupFiles: [
+    '<rootDir>/config/polyfills.js',
+    '<rootDir>/config/jest/browserMock.js',
+    '<rootDir>/config/jest/enzymeInit.js',
+  ],
+  testMatch: [
+    '<rootDir>/src/**/__tests__/**/*.{js,jsx,mjs}',
+    '<rootDir>/src/**/?(*.)(spec|test).{js,jsx,mjs}',
+  ],
+  testEnvironment: 'node',
+  testURL: 'http://localhost',
+  transform: {
+    '^.+\\.(js|jsx|mjs)$': '<rootDir>/node_modules/babel-jest',
+    '^.+\\.css$': '<rootDir>/config/jest/cssTransform.js',
+    '^(?!.*\\.(js|jsx|mjs|css|json)$)': '<rootDir>/config/jest/fileTransform.js',
+  },
+  transformIgnorePatterns: [
+    '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$',
+  ],
+  moduleFileExtensions: [
+    'web.js',
+    'js',
+    'json',
+    'web.jsx',
+    'jsx',
+    'node',
+    'mjs',
+  ],
+};

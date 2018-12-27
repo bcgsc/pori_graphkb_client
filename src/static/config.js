@@ -1,15 +1,34 @@
+const {
+  NODE_ENV,
+  KEYCLOAK_REALM,
+  KEYCLOAK_CLIENT_ID,
+  KEYCLOAK_URL,
+  KEYCLOAK_ROLE,
+  API_BASE_URL,
+  DISABLE_AUTH,
+} = process.env;
+
+const DEFAULT_URL = NODE_ENV === 'local'
+  ? 'http://localhost:8080/api'
+  : 'http://kbapi01:8080/api';
+
+
 export default {
-  API_BASE_URL: process.env.API_BASE_URL || 'http://kbapi01:8080/api',
+  DISABLE_AUTH: (NODE_ENV === 'local'
+    ? true
+    : DISABLE_AUTH === '1'
+  ),
+  API_BASE_URL: API_BASE_URL || DEFAULT_URL,
   KEYS: {
     KB_TOKEN: 'kbToken',
     KEYCLOAK_TOKEN: 'kcToken',
     GRAPH_OBJECTS: 'graphObjects',
   },
   KEYCLOAK: {
-    REALM: process.env.REACT_APP_KEYCLOAK_REALM || 'TestKB', // TODO: Migrate over to production keycloak realm (will probably be something like "GSC")s
-    CLIENT_ID: process.env.REACT_APP_KEYCLOAK_CLIENT_ID || 'GraphKB',
-    URL: process.env.REACT_APP_KEYCLOAK_URL || 'http://ga4ghdev01.bcgsc.ca:8080/auth',
-    GRAPHKB_ROLE: process.env.REACT_APP_KEYCLOAK_ROLE || 'GraphKB',
+    REALM: KEYCLOAK_REALM || 'TestKB', // TODO: Migrate over to production keycloak realm (will probably be something like "GSC")s
+    CLIENT_ID: KEYCLOAK_CLIENT_ID || 'GraphKB',
+    URL: KEYCLOAK_URL || 'http://ga4ghdev01.bcgsc.ca:8080/auth',
+    GRAPHKB_ROLE: KEYCLOAK_ROLE || 'GraphKB',
   },
   FEEDBACK_EMAIL: 'graphkb@bcgsc.ca',
   FEEDBACK_HIPCHAT: '@IsaacBeckie',

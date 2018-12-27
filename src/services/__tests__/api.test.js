@@ -1,21 +1,23 @@
 import { expect } from 'chai';
 import jwt from 'jsonwebtoken';
+
 import api from '../api';
+
 
 describe('api methods test', () => {
   it('can get token', async () => {
-    const user = process.env.USER;
-    const password = process.env.PASSWORD;
-    const { kbToken } = await api.post('/token', { username: user, password });
-    expect(jwt.decode(kbToken).user.name).to.eq(user);
+    const username = process.env.USER;
+    const password = process.env.PASSWORD || 'dummy';  // connect to DISABLED AUTH test API server
+    const { kbToken } = await api.post('/token', { username, password }).request();
+    expect(jwt.decode(kbToken).user.name).to.eq(username);
   });
 
-  it('can\'t get token', async () => {
-    const user = process.env.USER;
-    const password = process.env.PASSWORD;
+  it('bad username', async () => {
+    const username = 'dummy';
+    const password = process.env.PASSWORD || 'dummy';
 
     try {
-      await api.post('/token', { username: `${user}a`, password });
+      await api.post('/token', { username, password }).request();
     } catch (e) {
       expect(e).to.eq('Unauthorized, redirecting...');
     }

@@ -8,7 +8,7 @@ module.exports = {
   collectCoverage: true,
   coverageDirectory: 'coverage',
   collectCoverageFrom: [
-    '<rootDir>/src/components/**/!(index).{js,jsx,mjs}',
+    '<rootDir>/src/**components/**/!(index).{js,jsx,mjs}',
     '<rootDir>/src/services/**/!(api).{js,jsx,mjs}',
     '<rootDir>/src/models/**/*.{js,jsx,mjs}',
   ],
@@ -33,10 +33,7 @@ module.exports = {
     '<rootDir>/config/jest/browserMock.js',
     '<rootDir>/config/jest/enzymeInit.js',
   ],
-  testMatch: [
-    '<rootDir>/src/**/__tests__/**/*.{js,jsx,mjs}',
-    '<rootDir>/src/**/?(*.)(spec|test).{js,jsx,mjs}',
-  ],
+  testRegex: 'src.*__tests__.*.jsx?$',
   testEnvironment: 'node',
   testURL: 'http://localhost',
   transform: {

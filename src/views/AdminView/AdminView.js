@@ -10,8 +10,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { withKB } from '../../components/KBContext';
-import UserForm from '../../components/UserForm';
-import UserGroupForm from '../../components/UserGroupForm';
+import { UserForm, UserGroupForm } from './components';
 import api from '../../services/api';
 import util from '../../services/util';
 

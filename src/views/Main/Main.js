@@ -44,7 +44,7 @@ import {
 import auth from '../../services/auth';
 import Schema from '../../services/schema';
 import { KBContext } from '../../components/KBContext';
-import MainNav from '../../components/MainNav';
+import { MainNav } from './components';
 import { AuthenticatedRoute, AdminRoute } from '../../components/routing';
 
 

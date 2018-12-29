@@ -13,7 +13,7 @@ import {
 import qs from 'qs';
 import omit from 'lodash.omit';
 import DetailDrawer from '../../components/DetailDrawer';
-import GraphComponent from '../../components/GraphComponent';
+import { GraphComponent } from './components';
 import { withKB } from '../../components/KBContext';
 import { SnackbarContext } from '../../components/Snackbar';
 import TableComponent from '../../components/TableComponent';

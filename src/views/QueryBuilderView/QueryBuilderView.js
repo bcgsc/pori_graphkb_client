@@ -19,7 +19,7 @@ import HelpIcon from '@material-ui/icons/Help';
 import * as qs from 'querystring';
 import { Link } from 'react-router-dom';
 import { withKB } from '../../components/KBContext';
-import CodeInput from '../../components/CodeInput';
+import { CodeInput } from './components';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent';
 import api from '../../services/api';
 import auth from '../../services/auth';

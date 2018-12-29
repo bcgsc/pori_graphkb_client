@@ -1,4 +1,4 @@
-@import '../../../globals';
+@import '../../../../../globals';
 
 .node {
     cursor: pointer;
@@ -14,4 +14,4 @@
     dominant-baseline: central; //doesn't work on firefox
     font-weight: 300;
     fill: $md-primary-color;
-}   
+}

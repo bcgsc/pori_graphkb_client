@@ -14,7 +14,6 @@ import {
 } from '@material-ui/core';
 import slugify from 'slugify';
 
-import PieChart from '../../components/PieChart';
 import api from '../../services/api';
 
 import {
@@ -23,6 +22,7 @@ import {
   AboutNotation,
   AboutQuerying,
   AboutTableView,
+  PieChart
 } from './components';
 
 

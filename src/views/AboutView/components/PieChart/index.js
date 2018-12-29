@@ -3,8 +3,8 @@ import { pie } from 'd3-shape';
 import { PropTypes } from 'prop-types';
 import { LabeledArc } from './Arc';
 
-import util from '../../services/util';
-import config from '../../static/config';
+import util from '../../../../services/util';
+import config from '../../../../static/config';
 
 const { DEFAULT_NODE_COLOR } = config.GRAPH_DEFAULTS;
 

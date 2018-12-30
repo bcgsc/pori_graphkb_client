@@ -29,7 +29,7 @@ module.exports = {
     ],
   ],
   setupFiles: [
-    '<rootDir>/config/polyfills.js',
+    '<rootDir>/src/polyfills.js',
     '<rootDir>/config/jest/browserMock.js',
     '<rootDir>/config/jest/enzymeInit.js',
   ],

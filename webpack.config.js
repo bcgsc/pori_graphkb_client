@@ -38,6 +38,7 @@ const moduleSettings = {
       test: /\.js$/,
       include: INCLUDE,
       use: ['babel-loader'],
+      sideEffects: false,
     },
     {
       // convert images to embeded hashes
@@ -68,13 +69,13 @@ const moduleSettings = {
 module.exports = {
   context: SRC_PATH,
   entry: [
-    'abortcontroller-polyfill',
-    './../config/polyfills.js',
+    './polyfills.js',
     './index.js',
   ],
   output: {
     path: DIST_PATH,
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
+    chunkFilename: '[name].bundle.js',
     publicPath: '/',
   },
   devServer: {
@@ -84,7 +85,21 @@ module.exports = {
     hot: true,
     publicPath: '/',
     historyApiFallback: true,
-
+  },
+  performance: { hints: 'warning' },
+  // production optimizations
+  optimization: {
+    runtimeChunk: 'single',
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+          reuseExistingChunk: true,
+        },
+      },
+    },
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),

@@ -30,9 +30,19 @@ class PieChart extends Component {
     };
   }
 
-  arcGenerator(data, index, color) {
-    const { width, height, innerRadius } = this.props;
+  arcGenerator(arcProps, index) {
+    const {
+      width, height, innerRadius, colorThreshold,
+    } = this.props;
+
+    const {
+      data: {
+        label, fraction, color, value,
+      }, ...data
+    } = arcProps;
+
     const outerRadius = Math.min(width, height) / 2;
+
     return (
       <Arc
         key={`arc-${index}`}
@@ -40,6 +50,8 @@ class PieChart extends Component {
         innerRadius={innerRadius}
         outerRadius={outerRadius}
         color={color}
+        label={fraction >= colorThreshold ? label : null}
+        value={value}
       />
     );
   }
@@ -61,7 +73,7 @@ class PieChart extends Component {
 
     for (const datum of data) { // eslint-disable-line
       datum.fraction = datum.value / total;
-      if ((datum.value / total) >= colorThreshold) {
+      if (datum.fraction >= colorThreshold) {
         datum.color = colors[colorIndex];
         colorIndex += 1;
       } else {
@@ -82,7 +94,7 @@ class PieChart extends Component {
         className="pie-chart"
       >
         <g transform={translate}>
-          {layout.map((d, i) => this.arcGenerator(d, i, d.data.color))}
+          {layout.map((d, i) => this.arcGenerator(d, i))}
         </g>
       </svg>
     );

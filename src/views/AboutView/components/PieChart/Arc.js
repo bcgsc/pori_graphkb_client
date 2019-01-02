@@ -17,6 +17,15 @@ class Arc extends Component {
       color: PropTypes.string.isRequired,
       innerRadius: PropTypes.number.isRequired,
       outerRadius: PropTypes.number.isRequired,
+      label: PropTypes.string,
+      value: PropTypes.number,
+    };
+  }
+
+  static get defaultProps() {
+    return {
+      label: null,
+      value: null,
     };
   }
 
@@ -36,8 +45,9 @@ class Arc extends Component {
   }
 
   render() {
-    const { data, color } = this.props;
-
+    const {
+      data, color, label, value,
+    } = this.props;
     const [labelX, labelY] = this.arc.centroid(data);
     const labelTranslate = `translate(${labelX || 0}, ${labelY || 0})`;
 
@@ -47,16 +57,20 @@ class Arc extends Component {
           d={this.arc(data)}
           style={{ fill: color }}
         />
+        {label && (
         <g
           transform={labelTranslate}
         >
           <text textAnchor="middle">
-            {data.noLabel ? '' : data.label}
+            {label}
           </text>
-          <text textAnchor="middle" transform="translate(0,20)">
-            {data.noLabel ? '' : `(${data.value})`}
-          </text>
+          {value && (
+            <text textAnchor="middle" transform="translate(0,20)">
+              {`(${value})`}
+            </text>
+          )}
         </g>
+        )}
       </g>
     );
   }

@@ -285,7 +285,7 @@ class AboutView extends Component {
     } = this.state;
 
     return (
-      <Paper position="static" elevation={PAGE_ELEVATION} className="about-page">
+      <Paper elevation={PAGE_ELEVATION} className="about-page">
         <Tabs value={tabIndex} onChange={this.handleChange} scrollable>
           <Tab label="About" />
           <Tab label="Query" />

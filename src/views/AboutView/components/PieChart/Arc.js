@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { arc } from 'd3-shape';
 
+/**
+ * This represents a 'wedge' or section of the pie chart and its label
+ */
 class Arc extends Component {
   constructor() {
     super();
@@ -12,15 +15,19 @@ class Arc extends Component {
     return {
       data: PropTypes.object.isRequired,
       color: PropTypes.string.isRequired,
+      innerRadius: PropTypes.number.isRequired,
+      outerRadius: PropTypes.number.isRequired,
     };
   }
 
   componentWillMount() {
-    this.updateD3(this.props);
+    const { outerRadius, innerRadius } = this.props;
+    this.updateD3({ outerRadius, innerRadius });
   }
 
   componentWillReceiveProps(newProps) {
-    this.updateD3(newProps);
+    const { outerRadius, innerRadius } = newProps;
+    this.updateD3({ outerRadius, innerRadius });
   }
 
   updateD3({ innerRadius, outerRadius }) {
@@ -30,26 +37,16 @@ class Arc extends Component {
 
   render() {
     const { data, color } = this.props;
-    return (
-      <path
-        d={this.arc(data)}
-        style={{ fill: color }}
-      />
-    );
-  }
-}
 
-class LabeledArc extends Arc {
-  render() {
-    const { data } = this.props.data;
-    const [labelX, labelY] = this.arc.centroid(this.props.data);
-
-
+    const [labelX, labelY] = this.arc.centroid(data);
     const labelTranslate = `translate(${labelX || 0}, ${labelY || 0})`;
 
     return (
       <g>
-        {super.render()}
+        <path
+          d={this.arc(data)}
+          style={{ fill: color }}
+        />
         <g
           transform={labelTranslate}
         >
@@ -66,4 +63,4 @@ class LabeledArc extends Arc {
 }
 
 
-export { LabeledArc, Arc };
+export default Arc;

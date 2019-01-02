@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { pie } from 'd3-shape';
 import { PropTypes } from 'prop-types';
-import { LabeledArc } from './Arc';
+import Arc from './Arc';
 
 import util from '../../../../services/util';
 import config from '../../../../static/config';
@@ -34,7 +34,7 @@ class PieChart extends Component {
     const { width, height, innerRadius } = this.props;
     const outerRadius = Math.min(width, height) / 2;
     return (
-      <LabeledArc
+      <Arc
         key={`arc-${index}`}
         data={data}
         innerRadius={innerRadius}

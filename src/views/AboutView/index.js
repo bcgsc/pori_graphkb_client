@@ -237,7 +237,7 @@ class AboutView extends Component {
     };
 
     this.getClassStats = this.getClassStats.bind(this);
-    this.getMarkdownContent = this.getMarkdownCotent.bind(this);
+    this.getMarkdownContent = this.getMarkdownContent.bind(this);
     this.getVersionInfo = this.getVersionInfo.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
@@ -245,12 +245,12 @@ class AboutView extends Component {
   async componentDidMount() {
     await Promise.all([
       this.getClassStats(),
-      this.getMarkdownCotent(),
+      this.getMarkdownContent(),
       this.getVersionInfo(),
     ]);
   }
 
-  async getMarkdownCotent() {
+  async getMarkdownContent() {
     const file = await fetch(notation);
     const text = await file.text();
     this.setState({ notationMd: marked(text) });

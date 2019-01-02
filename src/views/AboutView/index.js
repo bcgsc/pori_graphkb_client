@@ -22,7 +22,7 @@ import {
   AboutNotation,
   AboutQuerying,
   AboutTableView,
-  PieChart
+  PieChart,
 } from './components';
 
 
@@ -154,7 +154,7 @@ class AboutView extends Component {
     ));
 
     return (
-      <Paper position="static" elevation={PAGE_ELEVATION} className="about-page">
+      <Paper elevation={PAGE_ELEVATION} className="about-page">
         <Tabs value={tabIndex} onChange={this.handleChange} scrollable>
           {tabNavList}
         </Tabs>

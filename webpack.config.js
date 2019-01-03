@@ -3,6 +3,7 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin'); // eslint ignore-line
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
 
 
 const SRC_PATH = path.resolve(__dirname, 'src');
@@ -85,6 +86,7 @@ module.exports = {
     hot: true,
     publicPath: '/',
     historyApiFallback: true,
+    compress: true,
   },
   performance: { hints: 'warning' },
   // production optimizations
@@ -128,6 +130,11 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.resolve(SRC_PATH, 'static/index.html'),
       filename: './index.html',
+      inject: true,
+    }),
+    new CompressionPlugin({
+      test: /.*\.(js|css)$/,
+      minRatio: 0.8,
     }),
   ],
   resolve: {

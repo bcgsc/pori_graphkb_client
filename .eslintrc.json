@@ -30,7 +30,8 @@
         "no-confusing-arrow": "off",
         "no-underscore-dangle": "off",
         "import/prefer-default-export": "warn",
-        "no-console": ["error", { "allow": ["warn", "error"] }]
+        "no-console": ["error", { "allow": ["warn", "error"] }],
+        "babel/semi": "warn"
     },
     "env": {
         "browser": true,
@@ -41,8 +42,10 @@
     },
     "plugins": [
         "cypress",
-        "react"
+        "react",
+        "babel"
     ],
+    "parser": "babel-eslint",
     "parserOptions": {
         "ecmaFeatures": {
             "jsx": true

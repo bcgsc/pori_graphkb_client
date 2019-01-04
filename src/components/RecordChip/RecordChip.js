@@ -1,6 +1,7 @@
 /**
  * @module /components/RecordChip
  */
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './RecordChip.scss';
@@ -29,13 +30,12 @@ class RecordChip extends Component {
     this.state = {
       anchorEl: null,
     };
-    this.handlePopoverOpen = this.handlePopoverOpen.bind(this);
-    this.handlePopoverClose = this.handlePopoverClose.bind(this);
   }
 
   /**
    * Closes popover.
    */
+  @boundMethod
   handlePopoverClose() {
     this.setState({ anchorEl: null });
   }
@@ -44,6 +44,7 @@ class RecordChip extends Component {
    * Opens popover.
    * @param {Event} event - User click event.
    */
+  @boundMethod
   handlePopoverOpen(event) {
     this.setState({ anchorEl: event.currentTarget });
   }

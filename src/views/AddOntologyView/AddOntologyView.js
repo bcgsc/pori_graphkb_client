@@ -1,6 +1,7 @@
 /**
  * @module /views/AddOntologyView
  */
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './AddOntologyView.scss';
@@ -9,6 +10,7 @@ import {
   Button,
   Typography,
 } from '@material-ui/core';
+
 import { withKB } from '../../components/KBContext';
 import OntologyFormComponent from '../../components/OntologyFormComponent';
 import api from '../../services/api';
@@ -26,8 +28,6 @@ class AddOntologyViewBase extends Component {
       is409: false,
     };
     this.controllers = [];
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleFinish = this.handleFinish.bind(this);
   }
 
   componentWillUnmount() {
@@ -40,6 +40,7 @@ class AddOntologyViewBase extends Component {
    * @param {Array.<Object>} relationships - Form staged relationships.
    * @return {boolean} true if submission is successful.
    */
+  @boundMethod
   async handleSubmit(form, relationships) {
     const { schema } = this.props;
 
@@ -64,6 +65,7 @@ class AddOntologyViewBase extends Component {
   /**
    * Navigates user back to previous page.
    */
+  @boundMethod
   handleFinish() {
     const { history } = this.props;
     history.goBack();

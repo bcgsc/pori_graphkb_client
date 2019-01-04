@@ -1,6 +1,7 @@
 /**
  * @module /views/AddStatementView
  */
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -23,10 +24,7 @@ class AddStatementViewBase extends Component {
       is409: false,
     };
     this.controller = null;
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleFinish = this.handleFinish.bind(this);
   }
-
 
   componentWillUnmount() {
     if (this.controller !== null) {
@@ -37,6 +35,7 @@ class AddStatementViewBase extends Component {
   /**
    * Navigates to query page on successful form submission.
    */
+  @boundMethod
   handleFinish() {
     const { history } = this.props;
     history.goBack();
@@ -48,6 +47,7 @@ class AddStatementViewBase extends Component {
    * @param {Array.<Object>} relationships - Form staged relationships.
    * @return {boolean} true if submission is successful.
    */
+  @boundMethod
   async handleSubmit(form, relationships) {
     const { schema } = this.props;
     const { routeName } = schema.get(form);

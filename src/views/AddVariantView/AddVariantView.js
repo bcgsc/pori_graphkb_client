@@ -1,6 +1,7 @@
 /**
  * @module /views/AddVariantView
  */
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import './AddVariantView.scss';
 import PropTypes from 'prop-types';
@@ -20,8 +21,6 @@ class AddVariantViewBase extends Component {
       is409: false,
     };
     this.controllers = [];
-    this.handleFinish = this.handleFinish.bind(this);
-    this.submitVariant = this.submitVariant.bind(this);
   }
 
   componentWillUnmount() {
@@ -31,6 +30,7 @@ class AddVariantViewBase extends Component {
   /**
    * Takes action on a successful variant submission. Navigates to query page.
    */
+  @boundMethod
   handleFinish() {
     const { history } = this.props;
     history.goBack();
@@ -42,6 +42,7 @@ class AddVariantViewBase extends Component {
    * @param {Array.<Object>} relationships - List of relationship data.
    * @return {boolean} true if submission is successful.
    */
+  @boundMethod
   async submitVariant(form, relationships) {
     const { schema } = this.props;
     const copy = Object.assign({}, form);

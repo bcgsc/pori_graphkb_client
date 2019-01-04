@@ -1,3 +1,4 @@
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './UserForm.scss';
@@ -35,17 +36,6 @@ class UserForm extends Component {
       deleteDialogOpen: false,
       error: false,
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleCheckAllUsers = this.handleCheckAllUsers.bind(this);
-    this.handleCheckbox = this.handleCheckbox.bind(this);
-    this.handleDeleteDialog = this.handleDeleteDialog.bind(this);
-    this.handleEdit = this.handleEdit.bind(this);
-    this.handleNewUserGroup = this.handleNewUserGroup.bind(this);
-    this.handleUserAdd = this.handleUserAdd.bind(this);
-    this.handleUsersDelete = this.handleUsersDelete.bind(this);
-    this.handleUserDialog = this.handleUserDialog.bind(this);
-    this.handleUserEdit = this.handleUserEdit.bind(this);
-    this.handleExited = this.handleExited.bind(this);
   }
 
   /**
@@ -60,6 +50,7 @@ class UserForm extends Component {
    * Updates state variables with a given input event.
    * @param {Event} event - user input event.
    */
+  @boundMethod
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
   }
@@ -67,6 +58,7 @@ class UserForm extends Component {
   /**
    * Selects all users, or clears selected users.
    */
+  @boundMethod
   handleCheckAllUsers() {
     const { users } = this.props;
     const { selected } = this.state;
@@ -83,6 +75,7 @@ class UserForm extends Component {
    * Selects a single user from the table.
    * @param {string} rid - user record identifier.
    */
+  @boundMethod
   handleCheckbox(rid) {
     const { selected } = this.state;
     const i = selected.indexOf(rid);
@@ -101,6 +94,7 @@ class UserForm extends Component {
   /**
    * Toggles user delete dialog.
    */
+  @boundMethod
   handleDeleteDialog() {
     const { deleteDialogOpen } = this.state;
     this.setState({ deleteDialogOpen: !deleteDialogOpen });
@@ -109,6 +103,7 @@ class UserForm extends Component {
   /**
    * Calls deleteUsers prop function.
    */
+  @boundMethod
   handleUsersDelete() {
     const { deleteUsers } = this.props;
     const { selected } = this.state;
@@ -119,6 +114,7 @@ class UserForm extends Component {
   /**
    * Toggles new user dialog and resets/stops the createdAt timer.
    */
+  @boundMethod
   handleUserDialog() {
     const { userDialogOpen, timerId } = this.state;
     let update = {};
@@ -144,6 +140,7 @@ class UserForm extends Component {
    * opens the user editing dialog.
    * @param {Object} user - user object to be edited.
    */
+  @boundMethod
   handleEdit(user) {
     this.setState({
       newUserGroups: user.groups.slice(),
@@ -157,6 +154,7 @@ class UserForm extends Component {
    * Clears temp user data after dialog has exited so as to not flicker the
    * contents.
    */
+  @boundMethod
   handleExited() {
     this.setState({ newUserName: '', newUserGroups: [] });
   }
@@ -166,6 +164,7 @@ class UserForm extends Component {
    * @param {string} group - usergroup record identifier to be added/removed
    * from new user list.
    */
+  @boundMethod
   handleNewUserGroup(group) {
     const { newUserGroups } = this.state;
     const i = newUserGroups.findIndex(g => g['@rid'] === group['@rid']);
@@ -181,6 +180,7 @@ class UserForm extends Component {
    * Sends a PATCH request to the server, re-initializes new user form model,
    * and updates user list.
    */
+  @boundMethod
   async handleUserEdit() {
     const { users, editUser } = this.props;
     const {
@@ -209,6 +209,7 @@ class UserForm extends Component {
   /**
    * Validates form and submits payload to addUser prop function.
    */
+  @boundMethod
   async handleUserAdd() {
     const { users, addUser } = this.props;
     const { newUserName, newUserGroups } = this.state;

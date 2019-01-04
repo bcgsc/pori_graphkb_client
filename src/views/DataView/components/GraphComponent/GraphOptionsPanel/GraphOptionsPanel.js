@@ -1,3 +1,4 @@
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './GraphOptionsPanel.scss';
@@ -24,21 +25,20 @@ const { GRAPH_ADVANCED, GRAPH_MAIN } = config.DESCRIPTIONS;
 /**
  * Displays graph options in a dialog view.
  */
-export default class GraphOptionsPanel extends Component {
+class GraphOptionsPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
       mainHelp: false,
       advancedHelp: false,
     };
-    this.handleHelpOpen = this.handleHelpOpen.bind(this);
-    this.handleHelpClose = this.handleHelpClose.bind(this);
   }
 
   /**
    * Opens help drawer.
    * @param {string} key - help type state key.
    */
+  @boundMethod
   handleHelpOpen(key) {
     this.setState({ [key]: true });
   }
@@ -46,6 +46,7 @@ export default class GraphOptionsPanel extends Component {
   /**
    * Closes both help drawers.
    */
+  @boundMethod
   handleHelpClose() {
     this.setState({ mainHelp: false, advancedHelp: false });
   }
@@ -318,3 +319,5 @@ GraphOptionsPanel.defaultProps = {
   graphOptionsOpen: false,
   linkLegendDisabled: true,
 };
+
+export default GraphOptionsPanel;

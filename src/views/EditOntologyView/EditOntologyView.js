@@ -1,7 +1,7 @@
 /**
  * @module /views/EditOntologyView
  */
-
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './EditOntologyView.scss';
@@ -31,10 +31,6 @@ class EditOntologyViewBase extends Component {
       node: null,
     };
     this.controllers = [];
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleFinish = this.handleFinish.bind(this);
-    this.handleCancel = this.handleCancel.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
   }
 
   /**
@@ -64,6 +60,7 @@ class EditOntologyViewBase extends Component {
    * @param {Object} originalNode - Original node data.
    * @return {boolean} true if submission is successful.
    */
+  @boundMethod
   async handleSubmit(form, relationships, originalNode) {
     const { schema } = this.props;
 
@@ -89,6 +86,7 @@ class EditOntologyViewBase extends Component {
   /**
    * Deletes target node.
    */
+  @boundMethod
   async handleDelete() {
     const { node } = this.state;
     const { schema } = this.props;
@@ -101,6 +99,7 @@ class EditOntologyViewBase extends Component {
   /**
    * Navigates back to previous view.
    */
+  @boundMethod
   handleCancel() {
     const { history } = this.props;
     history.back();
@@ -109,6 +108,7 @@ class EditOntologyViewBase extends Component {
   /**
    * Navigates back to query page.
    */
+  @boundMethod
   handleFinish() {
     const { history } = this.props;
     history.push('/query');

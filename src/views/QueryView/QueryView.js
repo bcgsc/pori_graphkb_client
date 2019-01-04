@@ -1,6 +1,7 @@
 /**
  * @module /views/QueryView
  */
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './QueryView.scss';
@@ -45,18 +46,12 @@ class QueryViewBase extends Component {
       variant: {},
       queryable: false,
     };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleInvalid = this.handleInvalid.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleVariantParse = this.handleVariantParse.bind(this);
-    this.submitVariant = this.submitVariant.bind(this);
-    this.submitStatementOrOntology = this.submitStatementOrOntology.bind(this);
   }
 
   /**
    * Calls submit function for currently active tab.
    */
+  @boundMethod
   handleSubmit() {
     const {
       hgvs,
@@ -69,6 +64,7 @@ class QueryViewBase extends Component {
     }
   }
 
+  @boundMethod
   submitStatementOrOntology() {
     const {
       str,
@@ -87,6 +83,7 @@ class QueryViewBase extends Component {
   /**
    * Stringifies all queryable properties of parsed variant.
    */
+  @boundMethod
   submitVariant() {
     const {
       str,
@@ -124,6 +121,7 @@ class QueryViewBase extends Component {
    * Updates state from user input.
    * @param {Event} event - user input event.
    */
+  @boundMethod
   handleChange(event) {
     const { schema } = this.props;
     const { name, value } = event.target;
@@ -137,6 +135,7 @@ class QueryViewBase extends Component {
   /**
    * Binds autosearch disabled flag to search button.
    */
+  @boundMethod
   handleInvalid() {
     this.setState({ disabled: true });
   }
@@ -144,6 +143,7 @@ class QueryViewBase extends Component {
   /**
    * Updates variant state based on shorthand string.
    */
+  @boundMethod
   handleVariantParse() {
     const { str } = this.state;
     try {

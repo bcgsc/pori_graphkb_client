@@ -1,6 +1,7 @@
 /**
  * @module /components/PositionalVariantParser
  */
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './PositionalVariantParser.scss';
@@ -64,16 +65,6 @@ class PositionalVariantParser extends Component {
       nodeClass: 'PositionalVariant',
       deleteDialog: false,
     };
-    this.parseString = this.parseString.bind(this);
-    this.handleVariantChange = this.handleVariantChange.bind(this);
-    this.handleClassChange = this.handleClassChange.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleDialog = this.handleDialog.bind(this);
-    this.handleDeleteNode = this.handleDeleteNode.bind(this);
-    this.submitVariant = this.submitVariant.bind(this);
-    this.updateErrorFields = this.updateErrorFields.bind(this);
-    this.extractLinkProps = this.extractLinkProps.bind(this);
-    this.updateShorthand = this.updateShorthand.bind(this);
   }
 
   /**
@@ -131,6 +122,7 @@ class PositionalVariantParser extends Component {
    * Parses shorthand string and updates form fields with response.
    * @param {Event} event - user input event.
    */
+  @boundMethod
   async parseString(event) {
     const { variant } = this.state;
     const { schema } = this.props;
@@ -210,6 +202,7 @@ class PositionalVariantParser extends Component {
    * update, with their validated properties.
    * @param {Object} parsed - Parsed variant from kbp.
    */
+  @boundMethod
   async extractLinkProps(parsed) {
     const { schema } = this.props;
     const classSchema = schema.getProperties('PositionalVariant');
@@ -242,6 +235,7 @@ class PositionalVariantParser extends Component {
    * @param {Event} event - new class selection event.
    * @param {string} nested - nested property key.
    */
+  @boundMethod
   handleClassChange(event, nested) {
     const { variant } = this.state;
     const { schema } = this.props;
@@ -270,6 +264,7 @@ class PositionalVariantParser extends Component {
    * changed.
    * @param {Event} event - Change event.
    */
+  @boundMethod
   handleChange(event) {
     const { variant } = this.state;
     const { schema } = this.props;
@@ -285,6 +280,7 @@ class PositionalVariantParser extends Component {
   /**
    * Deletes target node.
    */
+  @boundMethod
   async handleDeleteNode() {
     const { handleDelete } = this.props;
     this.setState({ notificationDrawerOpen: true, loading: true });
@@ -296,6 +292,7 @@ class PositionalVariantParser extends Component {
   /**
    * Opens node deletion dialog.
    */
+  @boundMethod
   handleDialog(val) {
     this.setState({ deleteDialog: val });
   }
@@ -306,6 +303,7 @@ class PositionalVariantParser extends Component {
    * @param {Event} event - user input event
    * @param {string} nested - nested property key
    */
+  @boundMethod
   handleVariantChange(event, nested) {
     const { variant } = this.state;
     const { schema } = this.props;
@@ -331,6 +329,7 @@ class PositionalVariantParser extends Component {
   /**
    * Pipes changes of the variant form fields to the shorthand string form.
    */
+  @boundMethod
   updateShorthand(variant) {
     let { shorthand } = this.state;
     const { schema } = this.props;
@@ -374,6 +373,7 @@ class PositionalVariantParser extends Component {
    * Assigns blame to violatedAttr input fields in the form.
    * @param {kbp.error.ErrorMixin} error - Error object from kbp.
    */
+  @boundMethod
   updateErrorFields(error, errorFields) {
     const { variant } = this.state;
     if (error && error.content) {
@@ -398,6 +398,7 @@ class PositionalVariantParser extends Component {
    * Opens notification drawer and triggers parent submit component.
    * @param {Event} event - submit button click event.
    */
+  @boundMethod
   async submitVariant(event) {
     event.preventDefault();
     const {

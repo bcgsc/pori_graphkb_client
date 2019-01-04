@@ -1,3 +1,4 @@
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import './index.scss';
 import {
@@ -39,10 +40,6 @@ class AboutView extends Component {
       guiVersion: process.env.npm_package_version || process.env.REACT_APP_VERSION || '',
       tabIndex: 0,
     };
-
-    this.getClassStats = this.getClassStats.bind(this);
-    this.getVersionInfo = this.getVersionInfo.bind(this);
-    this.handleChange = this.handleChange.bind(this);
     this.controllers = [];
   }
 
@@ -57,6 +54,7 @@ class AboutView extends Component {
     this.controllers.forEach(c => c.abort());
   }
 
+  @boundMethod
   async getClassStats() {
     const call = api.get('/stats');
     this.controllers.push(call);
@@ -71,6 +69,7 @@ class AboutView extends Component {
     });
   }
 
+  @boundMethod
   async getVersionInfo() {
     const call = api.get('/version');
     this.controllers.push(call);
@@ -81,6 +80,7 @@ class AboutView extends Component {
     });
   }
 
+  @boundMethod
   handleChange(event, value) {
     this.setState({ tabIndex: value });
   }

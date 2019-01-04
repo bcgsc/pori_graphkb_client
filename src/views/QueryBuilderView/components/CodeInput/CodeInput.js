@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import './CodeInput.scss';
+import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
+
+import './CodeInput.scss';
 import config from '../../../../static/config';
 
 const LINE_HEIGHT_PX = 20;
@@ -79,6 +81,7 @@ class CodeInput extends Component {
   /**
    * Synchronizes scrolling between all rule layers.
    */
+  @boundMethod
   handleScroll() {
     this.ruleTextRefs.forEach((r) => {
       r.scrollTop = this.typeTextRef.scrollTop;
@@ -88,6 +91,7 @@ class CodeInput extends Component {
     this.textRef.scrollLeft = this.typeTextRef.scrollLeft;
   }
 
+  @boundMethod
   handleTab(event) {
     const { onChange } = this.props;
     let { value } = event.target;

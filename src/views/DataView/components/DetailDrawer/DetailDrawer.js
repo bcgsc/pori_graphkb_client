@@ -1,6 +1,7 @@
 /**
  * @module /components/OntologyDetailComponent
  */
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './DetailDrawer.scss';
@@ -37,11 +38,6 @@ class DetailDrawer extends Component {
       opened: [],
       linkOpen: null,
     };
-    this.formatProps = this.formatProps.bind(this);
-    this.formatRelationships = this.formatRelationships.bind(this);
-    this.formatMetadata = this.formatMetadata.bind(this);
-    this.handleExpand = this.handleExpand.bind(this);
-    this.handleLinkExpand = this.handleLinkExpand.bind(this);
   }
 
   /**
@@ -64,6 +60,7 @@ class DetailDrawer extends Component {
    * @param {Object} inputNode - Ontology being displayed.
    * @param {boolean} isNested - Nested flag.
    */
+  @boundMethod
   formatIdentifiers(node, isNested) {
     const { schema } = this.props;
     if (!node['@class']) return null;
@@ -141,6 +138,7 @@ class DetailDrawer extends Component {
    * @param {Object} node - Record to be formatted.
    * @param {boolean} isNested - Nested flag.
    */
+  @boundMethod
   formatMetadata(node, isNested) {
     const { schema } = this.props;
     return this.formatProps(node, schema.getMetadata(), isNested);
@@ -152,6 +150,7 @@ class DetailDrawer extends Component {
    * @param {Array.<Object>} properties - List of properties to display.
    * @param {boolean} isNested - Nested flag.
    */
+  @boundMethod
   formatProps(node, properties, isNested) {
     const { schema } = this.props;
     const { opened } = this.state;
@@ -294,6 +293,7 @@ class DetailDrawer extends Component {
    * @param {Object} node - Record being displayed.
    * @param {boolean} isNested - Nested flag.
    */
+  @boundMethod
   formatOtherProps(node, isNested) {
     const { schema } = this.props;
     const { identifiers } = schema.get(node);
@@ -315,6 +315,7 @@ class DetailDrawer extends Component {
    * Formats record relationships.
    * @param {Object} node - Record being displayed.
    */
+  @boundMethod
   formatRelationships(node) {
     const { linkOpen, opened } = this.state;
     const { schema } = this.props;
@@ -400,6 +401,7 @@ class DetailDrawer extends Component {
    * Toggles collapsed list item.
    * @param {string} key - list item key.
    */
+  @boundMethod
   handleExpand(key) {
     const { opened } = this.state;
     if (opened.includes(key)) {
@@ -414,6 +416,7 @@ class DetailDrawer extends Component {
    * Toggles collapsed link list item.
    * @param {string} key - list item key.
    */
+  @boundMethod
   handleLinkExpand(key) {
     const { linkOpen, opened } = this.state;
     if (linkOpen === key) {

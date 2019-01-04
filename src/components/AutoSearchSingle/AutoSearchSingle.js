@@ -1,6 +1,7 @@
 /**
  * @module /components/AutoSearchSingle
  */
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -57,9 +58,6 @@ class AutoSearchSingle extends Component {
       this.callApi.bind(this),
       property.length > 1 ? LONG_DEBOUNCE_TIME : DEBOUNCE_TIME,
     );
-    this.handleChange = this.handleChange.bind(this);
-    this.handleClear = this.handleClear.bind(this);
-    this.refreshOptions = this.refreshOptions.bind(this);
     this.setRef = (node) => { this.popperNode = node; };
   }
 
@@ -113,16 +111,10 @@ class AutoSearchSingle extends Component {
   }
 
   /**
-   * Clears loading states.
-   */
-  handleBlur() {
-    this.setState({ loading: false, options: [] });
-  }
-
-  /**
    * Updates the parent value with value from a selected item.
    * @param {Object} selectedRecord - Selected KB record.
    */
+  @boundMethod
   handleChange(selectedRecord) {
     const {
       onChange,
@@ -140,6 +132,7 @@ class AutoSearchSingle extends Component {
    * Emits a null value to the "[name].data" key name of parent component. This
    * convention represents an unselected value for link properties.
    */
+  @boundMethod
   handleClear() {
     const { name, onChange } = this.props;
     onChange({ target: { value: null, name: `${name}.data` } });
@@ -149,6 +142,7 @@ class AutoSearchSingle extends Component {
    * Calls api with user input value as parameter.
    * @param {Event} event - user input event.
    */
+  @boundMethod
   refreshOptions(event) {
     if (!ACTION_KEYCODES.includes(event.keyCode)) {
       const { selected } = this.state;

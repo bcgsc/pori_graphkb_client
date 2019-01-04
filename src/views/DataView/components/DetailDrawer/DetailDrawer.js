@@ -389,7 +389,8 @@ class DetailDrawer extends Component {
                 </List>
                 <Divider />
               </Collapse>
-            </React.Fragment>);
+            </React.Fragment>
+          );
         })}
       </List>
     );

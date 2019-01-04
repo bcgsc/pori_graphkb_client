@@ -14,6 +14,10 @@ import api from '../../services/api';
 
 /**
  * Route for editing existing Variant records.
+ * @property {object} props
+ * @property {Object} props.history - Application routing history object.
+ * @property {Object} props.schema - Knowledgebase schema object.
+ * @property {object} props.match
  */
 class EditVariantViewBase extends Component {
   constructor(props) {
@@ -43,12 +47,20 @@ class EditVariantViewBase extends Component {
     });
   }
 
+  static get propTypes() {
+    return {
+      history: PropTypes.object.isRequired,
+      schema: PropTypes.object.isRequired,
+      match: PropTypes.object.isRequired,
+    };
+  }
+
   /**
    * Takes action on a variant form cancel. Navigates to previously visited page.
    */
   handleCancel() {
     const { history } = this.props;
-    history.back();
+    history.goBack();
   }
 
   /**
@@ -150,7 +162,8 @@ class EditVariantViewBase extends Component {
                 handleDelete={this.handleDelete}
                 schema={schema}
                 initVariant={node}
-              />)
+              />
+            )
             : (
               <OntologyFormComponent
                 variant="edit"
@@ -166,16 +179,6 @@ class EditVariantViewBase extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {Object} history - Application routing history object.
- * @property {Object} schema - Knowledgebase schema object.
- */
-EditVariantViewBase.propTypes = {
-  history: PropTypes.object.isRequired,
-  schema: PropTypes.object.isRequired,
-};
 
 const EditVariantView = withKB(EditVariantViewBase);
 

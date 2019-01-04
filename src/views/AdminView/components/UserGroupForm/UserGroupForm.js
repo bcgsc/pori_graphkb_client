@@ -37,6 +37,11 @@ class UserGroupForm extends Component {
     return tempPermissions;
   }
 
+  /**
+   * @param {object} props
+   * @param {Array} props.userGroups - list of usergroup records from server.
+   * @param {Object} props.schema - Knowledgebase schema object
+   */
   constructor(props) {
     super(props);
     this.state = {
@@ -55,6 +60,23 @@ class UserGroupForm extends Component {
     this.handleUserGroupSubmit = this.handleUserGroupSubmit.bind(this);
     this.handleUserGroupEdit = this.handleUserGroupEdit.bind(this);
     this.handleUserGroupDelete = this.handleUserGroupDelete.bind(this);
+  }
+
+  static get propTypes() {
+    return {
+      userGroups: PropTypes.array,
+      schema: PropTypes.object,
+      onDelete: PropTypes.func.isRequired,
+      onEdit: PropTypes.func.isRequired,
+      onAdd: PropTypes.func.isRequired,
+    };
+  }
+
+  static get defaultProps() {
+    return {
+      userGroups: [],
+      schema: null,
+    };
   }
 
 
@@ -368,20 +390,5 @@ class UserGroupForm extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {Array} userGroups - list of usergroup records from server.
- * @property {Object} schema - Knowledgebase schema object.
- */
-UserGroupForm.propTypes = {
-  userGroups: PropTypes.array,
-  schema: PropTypes.object,
-};
-
-UserGroupForm.defaultProps = {
-  userGroups: [],
-  schema: null,
-};
 
 export default UserGroupForm;

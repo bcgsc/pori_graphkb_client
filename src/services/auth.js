@@ -66,12 +66,23 @@ const isExpired = (token) => {
   }
 };
 
+
+const validToken = (token) => {
+  try {
+    const decoded = jwt.decode(token);
+    console.warn(decoded);
+    return !!decoded;
+  } catch (err) {
+    return false;
+  }
+};
+
 /**
  * User has a valid token from the authentication server (keycloak)
  */
 const isAuthenticated = () => {
   const token = getAuthToken();
-  return !!(token && !isExpired(token));
+  return !!(validToken(token) && !isExpired(token));
 };
 
 /**
@@ -79,7 +90,8 @@ const isAuthenticated = () => {
  */
 const isAuthorized = () => {
   const token = getToken();
-  return !!(token && !isExpired(token));
+  console.warn('author token', token, !!token, token === 'undefined');
+  return !!(validToken(token) && !isExpired(token));
 };
 
 /**

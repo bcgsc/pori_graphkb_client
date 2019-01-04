@@ -649,7 +649,8 @@ class TableComponent extends Component {
         onFilterExclude={this.handleFilterExclusions}
         values={filterOptions || []}
         filtered={columnFilterExclusions[tempFilterIndex] || []}
-      />);
+      />
+    );
 
     return (
       <section className="data-table">

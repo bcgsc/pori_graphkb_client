@@ -146,7 +146,7 @@ class Main extends React.Component {
                 >
                   <PersonIcon />
                   <Typography color="inherit">
-                    {auth.isAuthenticated()
+                    {auth.isAuthorized()
                       ? auth.getUser().name
                       : 'Logged Out'
                     }

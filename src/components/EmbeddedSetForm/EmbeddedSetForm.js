@@ -13,8 +13,32 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 /**
  * Generated component for 'embeddedset' property types.
+ * @property {object} props
+ * @property {function} props.onChange - Parent component change handler.
+ * @property {Array.<string>} props.list - Embedded set property as array.
+ * @property {string} props.label - TextField label.
+ * @property {string} props.name - Input name attribute.
+ * @property {boolean} props.error - TextField error flag.
+ * @property {boolean} props.disabled - Disabled flag.
  */
 class EmbeddedSetForm extends Component {
+  static propTypes = {
+    onChange: PropTypes.func.isRequired,
+    list: PropTypes.arrayOf(PropTypes.string),
+    label: PropTypes.string,
+    name: PropTypes.string,
+    error: PropTypes.bool,
+    disabled: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    list: [],
+    label: '',
+    name: '',
+    error: false,
+    disabled: false,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -174,31 +198,5 @@ class EmbeddedSetForm extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {function} onChange - Parent component change handler.
- * @property {Array.<string>} list - Embedded set property as array.
- * @property {string} label - TextField label.
- * @property {string} name - Input name attribute.
- * @property {boolean} error - TextField error flag.
- * @property {boolean} disabled - Disabled flag.
- */
-EmbeddedSetForm.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  list: PropTypes.arrayOf(PropTypes.string),
-  label: PropTypes.string,
-  name: PropTypes.string,
-  error: PropTypes.bool,
-  disabled: PropTypes.bool,
-};
-
-EmbeddedSetForm.defaultProps = {
-  list: [],
-  label: '',
-  name: '',
-  error: false,
-  disabled: false,
-};
 
 export default EmbeddedSetForm;

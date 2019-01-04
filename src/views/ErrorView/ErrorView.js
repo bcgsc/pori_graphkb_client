@@ -17,17 +17,15 @@ const { JIRA_LINK } = config;
  * View for displaying uncaught error messages.
  */
 class ErrorView extends Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
       tooltip: false,
       error: null,
-    };
-  }
-
-  static get propTypes() {
-    return {
-      history: PropTypes.object.isRequired,
     };
   }
 

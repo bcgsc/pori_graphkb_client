@@ -23,8 +23,21 @@ import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 /**
  * Displays a record as a Material Chip. When clicked, opens a Popover
  * containing some brief details about the record.
+ *
+ * @property {obejct} props
+ * @property {Object} props.record - record to be displayed in chip.
+ * @property {Object} props.schema - KB schema object.
  */
 class RecordChip extends Component {
+  static propTypes = {
+    record: PropTypes.object,
+    schema: PropTypes.object.isRequired,
+  };
+
+  static defaultProps = {
+    record: null,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -133,17 +146,4 @@ class RecordChip extends Component {
   }
 }
 
-/**
- * @namespace
- * @property {Object} record - record to be displayed in chip.
- * @property {Object} schema - KB schema object.
- */
-RecordChip.propTypes = {
-  record: PropTypes.object,
-  schema: PropTypes.object.isRequired,
-};
-
-RecordChip.defaultProps = {
-  record: null,
-};
 export default RecordChip;

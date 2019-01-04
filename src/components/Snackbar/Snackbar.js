@@ -19,8 +19,19 @@ const withSnackbar = WrappedComponent => props => (
 
 /**
  * Renders snackbar when activated.
+ *
+ * @property {object} props
+ * @property {any} props.children - Rest of app.
  */
 class SnackbarProvider extends Component {
+  static propTypes = {
+    children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
+  };
+
+  static defaultProps = {
+    children: null,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -119,18 +130,6 @@ class SnackbarProvider extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {any} children - Rest of app.
- */
-SnackbarProvider.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
-};
-
-SnackbarProvider.defaultProps = {
-  children: null,
-};
 
 export {
   SnackbarProvider,

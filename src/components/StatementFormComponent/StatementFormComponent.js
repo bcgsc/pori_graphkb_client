@@ -20,8 +20,34 @@ const DEFAULT_REVIEW_STATUS = 'pending';
 /**
  * Form for Statement records. Shows shorthand as a mix of the appliesTo
  * Ontology, relevance Vocabulary, as well as source and sourceId.
+ *
+ * @property {object} props
+ * @property {Object} props.schema - Knowledgebase db schema
+ * @property {Object} props.node - Existing Statement record to be edited. If not
+ * included, form will generate a clean model to post.
+ * @property {function} props.onSubmit - Handler for when form is submitted.
+ * @property {function} props.onFinish - Handler for when form has been
+ * successfully submitted.
+ * @property {function} props.onDelete - Handler for when record has been deleted.
  */
 class StatementFormComponent extends Component {
+  static propTypes = {
+    schema: PropTypes.object.isRequired,
+    node: PropTypes.object,
+    onSubmit: PropTypes.func,
+    onFinish: PropTypes.func,
+    onDelete: PropTypes.func,
+    is409: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    node: null,
+    onSubmit: null,
+    onFinish: null,
+    onDelete: null,
+    is409: false,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -266,32 +292,5 @@ class StatementFormComponent extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {Object} schema - Knowledgebase db schema
- * @property {Object} node - Existing Statement record to be edited. If not
- * included, form will generate a clean model to post.
- * @property {function} onSubmit - Handler for when form is submitted.
- * @property {function} onFinish - Handler for when form has been
- * successfully submitted.
- * @property {function} onDelete - Handler for when record has been deleted.
- */
-StatementFormComponent.propTypes = {
-  schema: PropTypes.object.isRequired,
-  node: PropTypes.object,
-  onSubmit: PropTypes.func,
-  onFinish: PropTypes.func,
-  onDelete: PropTypes.func,
-  is409: PropTypes.bool,
-};
-
-StatementFormComponent.defaultProps = {
-  node: null,
-  onSubmit: null,
-  onFinish: null,
-  onDelete: null,
-  is409: false,
-};
 
 export default StatementFormComponent;

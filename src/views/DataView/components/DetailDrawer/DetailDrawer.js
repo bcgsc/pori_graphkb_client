@@ -30,8 +30,31 @@ const DATE_KEYS = ['createdAt', 'deletedAt'];
 /**
  * Component used to display record details in a side drawer. Dynamically
  * generates display based on record, and its corresponding schema entry.
+ *
+ * @property {object} props
+ * @property {Object} props.schema - Knowledgebase schema object.
+ * @property {Object} props.node - Ontology to be displayed in drawer.
+ * @property {function} props.onClose - Function triggered on @material-ui/Drawer onClose event.
+ * @property {bool} props.isEdge - Flag for edge classes.
+ * @property {function} props.handleNodeEditStart - Function triggered on node edit button click
  */
 class DetailDrawer extends Component {
+  static propTypes = {
+    schema: PropTypes.object,
+    node: PropTypes.object,
+    onClose: PropTypes.func,
+    isEdge: PropTypes.bool,
+    handleNodeEditStart: PropTypes.func,
+  };
+
+  static defaultProps = {
+    schema: null,
+    node: null,
+    onClose: null,
+    isEdge: false,
+    handleNodeEditStart: PropTypes.func,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -539,29 +562,5 @@ class DetailDrawer extends Component {
     );
   }
 }
-
-/**
- * @namespace
-* @property {Object} schema - Knowledgebase schema object.
-* @property {Object} node - Ontology to be displayed in drawer.
-* @property {function} onClose - Function triggered on @material-ui/Drawer onClose event.
-* @property {bool} isEdge - Flag for edge classes.
-* @property {function} handleNodeEditStart - Function triggered on node edit button click.
-    */
-DetailDrawer.propTypes = {
-  schema: PropTypes.object,
-  node: PropTypes.object,
-  onClose: PropTypes.func,
-  isEdge: PropTypes.bool,
-  handleNodeEditStart: PropTypes.func,
-};
-
-DetailDrawer.defaultProps = {
-  schema: null,
-  node: null,
-  onClose: null,
-  isEdge: false,
-  handleNodeEditStart: PropTypes.func,
-};
 
 export default DetailDrawer;

@@ -24,8 +24,32 @@ const { GRAPH_ADVANCED, GRAPH_MAIN } = config.DESCRIPTIONS;
 
 /**
  * Displays graph options in a dialog view.
+ *
+ * @property {object} props
+ * @property {GraphOptions} props.graphOptions - Graph options object.
+ * @property {PropsMap} props.propsMap - Graph coloringpropsmap.
+ * @property {boolean} props.graphOptionsOpen - dialog open flag.
+ * @property {boolean} props.linkLegendDisabled - link legend disabled flag.
+ * @property {function} props.handleDialogClose - function for closing dialog.
+ * @property {function} props.handleGraphOptionsChange - function for field changing.
  */
 class GraphOptionsPanel extends Component {
+  static propTypes = {
+    graphOptions: PropTypes.object,
+    propsMap: PropTypes.object,
+    graphOptionsOpen: PropTypes.bool,
+    linkLegendDisabled: PropTypes.bool,
+    handleDialogClose: PropTypes.func.isRequired,
+    handleGraphOptionsChange: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    graphOptions: {},
+    propsMap: { nodeProps: [], linkProps: [] },
+    graphOptionsOpen: false,
+    linkLegendDisabled: true,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -294,30 +318,5 @@ class GraphOptionsPanel extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {GraphOptions} graphOptions - Graph options object.
- * @property {PropsMap} propsMap - Graph coloringpropsmap.
- * @property {boolean} graphOptionsOpen - dialog open flag.
- * @property {boolean} linkLegendDisabled - link legend disabled flag.
- * @property {function} handleDialogClose - function for closing dialog.
- * @property {function} handleGraphOptionsChange - function for field changing.
- */
-GraphOptionsPanel.propTypes = {
-  graphOptions: PropTypes.object,
-  propsMap: PropTypes.object,
-  graphOptionsOpen: PropTypes.bool,
-  linkLegendDisabled: PropTypes.bool,
-  handleDialogClose: PropTypes.func.isRequired,
-  handleGraphOptionsChange: PropTypes.func.isRequired,
-};
-
-GraphOptionsPanel.defaultProps = {
-  graphOptions: {},
-  propsMap: { nodeProps: [], linkProps: [] },
-  graphOptionsOpen: false,
-  linkLegendDisabled: true,
-};
 
 export default GraphOptionsPanel;

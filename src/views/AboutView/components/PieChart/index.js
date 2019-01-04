@@ -9,25 +9,21 @@ import config from '../../../../static/config';
 const { DEFAULT_NODE_COLOR } = config.GRAPH_DEFAULTS;
 
 class PieChart extends Component {
+  static propTypes = {
+    width: PropTypes.number,
+    height: PropTypes.number,
+    innerRadius: PropTypes.number,
+    data: PropTypes.array.isRequired,
+    colorThreshold: PropTypes.number,
+  };
+
+  static defaultProps = {
+    height: 50, width: 400, innerRadius: 10, colorThreshold: 0.05,
+  };
+
   constructor() {
     super();
     this.pie = pie().value(d => d.value);
-  }
-
-  static get propTypes() {
-    return {
-      width: PropTypes.number,
-      height: PropTypes.number,
-      innerRadius: PropTypes.number,
-      data: PropTypes.array.isRequired,
-      colorThreshold: PropTypes.number,
-    };
-  }
-
-  static get defaultProps() {
-    return {
-      height: 50, width: 400, innerRadius: 10, colorThreshold: 0.05,
-    };
   }
 
   arcGenerator(arcProps, index) {

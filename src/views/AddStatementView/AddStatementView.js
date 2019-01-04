@@ -16,8 +16,17 @@ import util from '../../services/util';
 
 /**
  * Route for submitting Statement records to the db.
+ *
+ * @property {object} props
+ * @property {Object} props.history - App routing history object.
+ * @property {Object} props.schema - Knowledgebase db schema.
  */
 class AddStatementViewBase extends Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+    schema: PropTypes.object.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -114,16 +123,6 @@ class AddStatementViewBase extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {Object} history - App routing history object.
- * @property {Object} schema - Knowledgebase db schema.
- */
-AddStatementViewBase.propTypes = {
-  history: PropTypes.object.isRequired,
-  schema: PropTypes.object.isRequired,
-};
 
 const AddStatementView = withKB(AddStatementViewBase);
 

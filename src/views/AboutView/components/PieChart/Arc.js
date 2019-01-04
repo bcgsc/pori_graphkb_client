@@ -6,27 +6,23 @@ import { arc } from 'd3-shape';
  * This represents a 'wedge' or section of the pie chart and its label
  */
 class Arc extends Component {
+  static propTypes = {
+    data: PropTypes.object.isRequired,
+    color: PropTypes.string.isRequired,
+    innerRadius: PropTypes.number.isRequired,
+    outerRadius: PropTypes.number.isRequired,
+    label: PropTypes.string,
+    value: PropTypes.number,
+  };
+
+  static defaultProps = {
+    label: null,
+    value: null,
+  };
+
   constructor() {
     super();
     this.arc = arc();
-  }
-
-  static get propTypes() {
-    return {
-      data: PropTypes.object.isRequired,
-      color: PropTypes.string.isRequired,
-      innerRadius: PropTypes.number.isRequired,
-      outerRadius: PropTypes.number.isRequired,
-      label: PropTypes.string,
-      value: PropTypes.number,
-    };
-  }
-
-  static get defaultProps() {
-    return {
-      label: null,
-      value: null,
-    };
   }
 
   componentWillMount() {

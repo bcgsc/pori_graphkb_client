@@ -53,6 +53,27 @@ const SHORTHAND_EXCLUDED = [
  * @property {Object} props.schema - Knowledgebase schema object.
  */
 class PositionalVariantParser extends Component {
+  static propTypes = {
+    required: PropTypes.bool,
+    error: PropTypes.bool,
+    disabled: PropTypes.bool,
+    handleFinish: PropTypes.func.isRequired,
+    handleSubmit: PropTypes.func,
+    handleDelete: PropTypes.func.isRequired,
+    schema: PropTypes.object.isRequired,
+    initVariant: PropTypes.object,
+    is409: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    initVariant: null,
+    required: false,
+    error: false,
+    disabled: false,
+    handleSubmit: () => { },
+    is409: false,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -91,31 +112,6 @@ class PositionalVariantParser extends Component {
       relationships,
       originalRelationships: relationships.slice(),
     });
-  }
-
-  static get propTypes() {
-    return {
-      required: PropTypes.bool,
-      error: PropTypes.bool,
-      disabled: PropTypes.bool,
-      handleFinish: PropTypes.func.isRequired,
-      handleSubmit: PropTypes.func,
-      handleDelete: PropTypes.func.isRequired,
-      schema: PropTypes.object.isRequired,
-      initVariant: PropTypes.object,
-      is409: PropTypes.bool,
-    };
-  }
-
-  static get defaultProps() {
-    return {
-      initVariant: null,
-      required: false,
-      error: false,
-      disabled: false,
-      handleSubmit: () => { },
-      is409: false,
-    };
   }
 
   /**

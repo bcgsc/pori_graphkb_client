@@ -47,63 +47,59 @@ const PROGRESS_SPINNER_SIZE = 20;
  * component.
  */
 class AutoSearchBase extends Component {
+  static propTypes = {
+    schema: PropTypes.object,
+    value: PropTypes.string,
+    onChange: PropTypes.func,
+    onSelect: PropTypes.func,
+    onClear: PropTypes.func,
+    selected: PropTypes.object,
+    children: PropTypes.func,
+    loading: PropTypes.bool,
+    itemToString: PropTypes.func,
+    options: PropTypes.arrayOf(PropTypes.any),
+    endAdornment: PropTypes.node,
+    TextFieldProps: PropTypes.object,
+    DownshiftProps: PropTypes.object,
+    disablePortal: PropTypes.bool,
+    className: PropTypes.string,
+  };
+
+  static defaultProps = {
+    children: (item, index, downshiftProps) => (
+      <MenuItem
+        {...downshiftProps.getItemProps({
+          key: item,
+          index,
+          item,
+        })}
+        selected={downshiftProps.highlightedIndex === index}
+      >
+        <span>
+          {item}
+        </span>
+      </MenuItem>
+    ),
+    value: undefined,
+    selected: undefined,
+    loading: false,
+    itemToString: item => item,
+    options: [],
+    endAdornment: <SearchIcon />,
+    onSelect: undefined,
+    onChange: undefined,
+    onClear: undefined,
+    TextFieldProps: {},
+    DownshiftProps: {},
+    disablePortal: false,
+    schema: null,
+    className: '',
+  };
+
   constructor(props) {
     super(props);
     this.setRef = (node) => {
       this.popperNode = node;
-    };
-  }
-
-  static get propTypes() {
-    return {
-      schema: PropTypes.object,
-      value: PropTypes.string,
-      onChange: PropTypes.func,
-      onSelect: PropTypes.func,
-      onClear: PropTypes.func,
-      selected: PropTypes.object,
-      children: PropTypes.func,
-      loading: PropTypes.bool,
-      itemToString: PropTypes.func,
-      options: PropTypes.arrayOf(PropTypes.any),
-      endAdornment: PropTypes.node,
-      TextFieldProps: PropTypes.object,
-      DownshiftProps: PropTypes.object,
-      disablePortal: PropTypes.bool,
-      className: PropTypes.string,
-    };
-  }
-
-  static get defaultProps() {
-    return {
-      children: (item, index, downshiftProps) => (
-        <MenuItem
-          {...downshiftProps.getItemProps({
-            key: item,
-            index,
-            item,
-          })}
-          selected={downshiftProps.highlightedIndex === index}
-        >
-          <span>
-            {item}
-          </span>
-        </MenuItem>
-      ),
-      value: undefined,
-      selected: undefined,
-      loading: false,
-      itemToString: item => item,
-      options: [],
-      endAdornment: <SearchIcon />,
-      onSelect: undefined,
-      onChange: undefined,
-      onClear: undefined,
-      TextFieldProps: {},
-      DownshiftProps: {},
-      disablePortal: false,
-      schema: null,
-      className: '',
     };
   }
 

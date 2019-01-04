@@ -17,8 +17,13 @@ import util from '../../services/util';
 
 /**
  * View for editing or adding database users.
+ * @property {Object} props.schema - Knowledgebase schema object.
  */
 class AdminViewBase extends Component {
+  static propTypes = {
+    schema: PropTypes.object.isRequired,
+  };
+
   static initializeUserGroups(userGroups) {
     const newUserGroups = [];
     userGroups.forEach((u, i) => {
@@ -184,14 +189,6 @@ class AdminViewBase extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {Object} schema - Knowledgebase schema object.
- */
-AdminViewBase.propTypes = {
-  schema: PropTypes.object.isRequired,
-};
 
 const AdminView = withKB(AdminViewBase);
 

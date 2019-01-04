@@ -39,8 +39,57 @@ const EXTRA_FORM_PROPS = ['@rid'];
  * Autosearch component meant for a wide range of possible classes and/or
  * endpoints. Main use is in relationships target selector fields and
  * dependency link properties.
+ *
+ * @property {object} props
+ * @property {string} props.name - name of input for event parsing.
+ * @property {string} props.value - specified value for two way binding.
+ * @property {function} props.onChange - parent method for handling change events
+ * @property {number} props.limit - database return record limit.
+ * @property {string} props.endpoint - api endpoint identifier.
+ * @property {string} props.property - api property identifier.
+ * @property {string} props.placeholder - placeholder for text input.
+ * @property {string} props.label - label for text input.
+ * @property {bool} props.required - required flag for text input indicator.
+ * @property {bool} props.error - error flag for text input.
+ * @property {bool} props.disabled - disabled flag for text input.
+ * @property {Record} props.selected - Last selected record.
+ * @property {Object} props.schema - Knowledgebase schema object.
  */
 class AutoSearchMulti extends Component {
+  static propTypes = {
+    name: PropTypes.string,
+    value: PropTypes.string,
+    onChange: PropTypes.func,
+    limit: PropTypes.number,
+    endpoint: PropTypes.string,
+    property: PropTypes.arrayOf(PropTypes.string),
+    placeholder: PropTypes.string,
+    label: PropTypes.string,
+    required: PropTypes.bool,
+    error: PropTypes.bool,
+    disabled: PropTypes.bool,
+    selected: PropTypes.object,
+    schema: PropTypes.object,
+    superClass: PropTypes.string,
+  };
+
+  static defaultProps = {
+    limit: 30,
+    endpoint: '/ontologies',
+    property: ['name'],
+    placeholder: '',
+    name: undefined,
+    value: undefined,
+    label: '',
+    required: false,
+    error: false,
+    selected: null,
+    onChange: () => { },
+    disabled: false,
+    schema: null,
+    superClass: '',
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -392,55 +441,5 @@ class AutoSearchMulti extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {string} name - name of input for event parsing.
- * @property {string} value - specified value for two way binding.
- * @property {function} onChange - parent method for handling change events
- * @property {number} limit - database return record limit.
- * @property {string} endpoint - api endpoint identifier.
- * @property {string} property - api property identifier.
- * @property {string} placeholder - placeholder for text input.
- * @property {string} label - label for text input.
- * @property {bool} required - required flag for text input indicator.
- * @property {bool} error - error flag for text input.
- * @property {bool} disabled - disabled flag for text input.
- * @property {Record} selected - Last selected record.
- * @property {Object} schema - Knowledgebase schema object.
- */
-AutoSearchMulti.propTypes = {
-  name: PropTypes.string,
-  value: PropTypes.string,
-  onChange: PropTypes.func,
-  limit: PropTypes.number,
-  endpoint: PropTypes.string,
-  property: PropTypes.arrayOf(PropTypes.string),
-  placeholder: PropTypes.string,
-  label: PropTypes.string,
-  required: PropTypes.bool,
-  error: PropTypes.bool,
-  disabled: PropTypes.bool,
-  selected: PropTypes.object,
-  schema: PropTypes.object,
-  superClass: PropTypes.string,
-};
-
-AutoSearchMulti.defaultProps = {
-  limit: 30,
-  endpoint: '/ontologies',
-  property: ['name'],
-  placeholder: '',
-  name: undefined,
-  value: undefined,
-  label: '',
-  required: false,
-  error: false,
-  selected: null,
-  onChange: () => { },
-  disabled: false,
-  schema: null,
-  superClass: '',
-};
 
 export default AutoSearchMulti;

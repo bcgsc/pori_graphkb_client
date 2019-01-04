@@ -23,8 +23,18 @@ const { DEFAULT_NEIGHBORS } = config;
  * View for record editing. Contains a form component with the 'edit' variant
  * selected. Selects node with record ID as passed in to the url (/edit/[rid]).
  * Redirects to the home query page on form submit, or to the error page.
+ *
+ * @property {Object} props.match - Match object for extracting URL parameters.
+ * @property {Object} props.history - Application routing history object.
+ * @property {Object} props.schema - Knowledgebase schema object.
  */
 class EditOntologyViewBase extends Component {
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
+    schema: PropTypes.object.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -151,18 +161,6 @@ class EditOntologyViewBase extends Component {
     return null;
   }
 }
-
-/**
- * @namespace
- * @property {Object} match - Match object for extracting URL parameters.
- * @property {Object} history - Application routing history object.
- * @property {Object} schema - Knowledgebase schema object.
- */
-EditOntologyViewBase.propTypes = {
-  match: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
-  schema: PropTypes.object.isRequired,
-};
 
 const EditOntologyView = withKB(EditOntologyViewBase);
 

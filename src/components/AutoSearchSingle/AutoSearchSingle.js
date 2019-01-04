@@ -47,6 +47,43 @@ const ACTION_KEYCODES = [13, 16, 37, 38, 39, 40];
  * @property {Record} props.selected - Last selected record.
  */
 class AutoSearchSingle extends Component {
+  static propTypes = {
+    className: PropTypes.string,
+    name: PropTypes.string,
+    value: PropTypes.string,
+    onChange: PropTypes.func,
+    limit: PropTypes.number,
+    endpoint: PropTypes.string,
+    property: PropTypes.arrayOf(PropTypes.string),
+    placeholder: PropTypes.string,
+    label: PropTypes.string,
+    required: PropTypes.bool,
+    error: PropTypes.bool,
+    disabled: PropTypes.bool,
+    selected: PropTypes.object,
+    disablePortal: PropTypes.bool,
+    schema: PropTypes.object,
+    endAdornment: PropTypes.object.isRequired,
+  };
+
+  static defaultProps = {
+    className: '',
+    limit: 30,
+    endpoint: '/ontologies',
+    property: ['name'],
+    placeholder: '',
+    name: undefined,
+    value: undefined,
+    label: '',
+    required: false,
+    error: false,
+    selected: null,
+    onChange: () => { },
+    disabled: false,
+    disablePortal: false,
+    schema: null,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -67,47 +104,6 @@ class AutoSearchSingle extends Component {
   componentWillUnmount() {
     this.callApi.cancel();
     this.render = null;
-  }
-
-  static get propTypes() {
-    return {
-      className: PropTypes.string,
-      name: PropTypes.string,
-      value: PropTypes.string,
-      onChange: PropTypes.func,
-      limit: PropTypes.number,
-      endpoint: PropTypes.string,
-      property: PropTypes.arrayOf(PropTypes.string),
-      placeholder: PropTypes.string,
-      label: PropTypes.string,
-      required: PropTypes.bool,
-      error: PropTypes.bool,
-      disabled: PropTypes.bool,
-      selected: PropTypes.object,
-      disablePortal: PropTypes.bool,
-      schema: PropTypes.object,
-      endAdornment: PropTypes.object.isRequired,
-    };
-  }
-
-  static get defaultProps() {
-    return {
-      className: '',
-      limit: 30,
-      endpoint: '/ontologies',
-      property: ['name'],
-      placeholder: '',
-      name: undefined,
-      value: undefined,
-      label: '',
-      required: false,
-      error: false,
-      selected: null,
-      onChange: () => { },
-      disabled: false,
-      disablePortal: false,
-      schema: null,
-    };
   }
 
   /**

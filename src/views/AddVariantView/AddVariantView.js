@@ -13,8 +13,17 @@ import api from '../../services/api';
 
 /**
  * Route for submitting Variant records to db.
+ *
+ * @property {object} props
+ * @property {Object} props.history - Application routing history object.
+ * @property {Object} props.schema - Knowledgebase schema object.
  */
 class AddVariantViewBase extends Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+    schema: PropTypes.object.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -115,16 +124,6 @@ class AddVariantViewBase extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {Object} history - Application routing history object.
- * @property {Object} schema - Knowledgebase schema object.
- */
-AddVariantViewBase.propTypes = {
-  history: PropTypes.object.isRequired,
-  schema: PropTypes.object.isRequired,
-};
 
 const AddVariantView = withKB(AddVariantViewBase);
 

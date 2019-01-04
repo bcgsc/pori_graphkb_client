@@ -22,8 +22,28 @@ import UserDeleteDialog from './UserDeleteDialog';
 
 /**
  * Component for managing AdminView User form state.
+ *
+ * @property {object} props
+ * @property {Array} props.users - List of user records.
+ * @property {Array} props.userGroups - List of usergroup records.
+ * @property {function} props.deleteUsers - delete users handler.
+ * @property {function} props.addUser - add user handler.
+ * @property {function} props.editUser - edit user handler.
  */
 class UserForm extends Component {
+  static propTypes = {
+    users: PropTypes.array,
+    userGroups: PropTypes.array,
+    deleteUsers: PropTypes.func.isRequired,
+    addUser: PropTypes.func.isRequired,
+    editUser: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    users: [],
+    userGroups: [],
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -342,26 +362,5 @@ class UserForm extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {Array} users - List of user records.
- * @property {Array} userGroups - List of usergroup records.
- * @property {function} deleteUsers - delete users handler.
- * @property {function} addUser - add user handler.
- * @property {function} editUser - edit user handler.
- */
-UserForm.propTypes = {
-  users: PropTypes.array,
-  userGroups: PropTypes.array,
-  deleteUsers: PropTypes.func.isRequired,
-  addUser: PropTypes.func.isRequired,
-  editUser: PropTypes.func.isRequired,
-};
-
-UserForm.defaultProps = {
-  users: [],
-  userGroups: [],
-};
 
 export default UserForm;

@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './GraphExpansionDialog.scss';
 import {
   Button,
   Dialog,
@@ -14,6 +13,8 @@ import {
   ListItem,
   ListItemText,
 } from '@material-ui/core';
+
+import './GraphExpansionDialog.scss';
 
 /**
  * Dialog opened when a user attempts to open a heavily connected node.

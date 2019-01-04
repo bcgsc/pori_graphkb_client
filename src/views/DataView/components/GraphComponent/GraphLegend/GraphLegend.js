@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './GraphLegend.scss';
 import {
   Paper,
   Typography,
@@ -11,6 +10,8 @@ import {
   ListItemText,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+
+import './GraphLegend.scss';
 import util from '../../../../../services/util';
 
 /**

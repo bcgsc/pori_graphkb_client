@@ -9,7 +9,6 @@ import {
   Switch,
   Link,
 } from 'react-router-dom';
-import './Main.scss';
 import {
   AppBar,
   IconButton,
@@ -25,6 +24,8 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
 import { schema as SCHEMA_DEFN } from '@bcgsc/knowledgebase-schema';
+
+import './Main.scss';
 import {
   AboutView,
   AddOntologyView,

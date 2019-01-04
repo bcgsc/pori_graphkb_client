@@ -3,7 +3,6 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './QueryBuilderView.scss';
 import {
   Button,
   Dialog,
@@ -20,7 +19,7 @@ import * as qs from 'querystring';
 import { Link } from 'react-router-dom';
 import { boundMethod } from 'autobind-decorator';
 
-
+import './QueryBuilderView.scss';
 import { withKB } from '../../components/KBContext';
 import { CodeInput } from './components';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent';

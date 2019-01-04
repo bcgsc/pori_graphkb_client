@@ -3,7 +3,6 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import './ResourceSelectComponent.scss';
 import {
   InputLabel,
   MenuItem,
@@ -13,6 +12,8 @@ import {
   OutlinedInput,
   Input,
 } from '@material-ui/core';
+
+import './ResourceSelectComponent.scss';
 import util from '../../services/util';
 
 /**

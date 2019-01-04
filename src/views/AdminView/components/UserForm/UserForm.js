@@ -1,7 +1,6 @@
 import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './UserForm.scss';
 import {
   Paper,
   Typography,
@@ -17,6 +16,8 @@ import {
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
+
+import './UserForm.scss';
 import UserDialog from './UserDialog';
 import UserDeleteDialog from './UserDeleteDialog';
 

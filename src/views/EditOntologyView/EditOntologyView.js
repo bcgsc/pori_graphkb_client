@@ -4,13 +4,14 @@
 import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './EditOntologyView.scss';
 import {
   Paper,
   Button,
   Typography,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
+
+import './EditOntologyView.scss';
 import { withKB } from '../../components/KBContext';
 import OntologyFormComponent from '../../components/OntologyFormComponent';
 import api from '../../services/api';

@@ -3,9 +3,10 @@
  */
 import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
-import './AddVariantView.scss';
 import PropTypes from 'prop-types';
 import { Paper, Typography, Button } from '@material-ui/core';
+
+import './AddVariantView.scss';
 import { withKB } from '../../components/KBContext';
 import PositionalVariantParser from '../../components/PositionalVariantParser';
 import util from '../../services/util';

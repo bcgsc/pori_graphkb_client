@@ -4,12 +4,13 @@
 import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './AdminView.scss';
 import * as jc from 'json-cycle';
 import {
   Paper,
   Typography,
 } from '@material-ui/core';
+
+import './AdminView.scss';
 import { withKB } from '../../components/KBContext';
 import { UserForm, UserGroupForm } from './components';
 import api from '../../services/api';

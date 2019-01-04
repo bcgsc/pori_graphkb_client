@@ -4,7 +4,6 @@
 import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './RecordChip.scss';
 import {
   Chip,
   Avatar,
@@ -19,6 +18,8 @@ import {
   TableCell,
 } from '@material-ui/core';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
+
+import './RecordChip.scss';
 
 /**
  * Displays a record as a Material Chip. When clicked, opens a Popover

@@ -17,7 +17,6 @@ import {
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { boundMethod } from 'autobind-decorator';
 
-
 import logo from '../../../../static/logo.png';
 import title from '../../../../static/title.png';
 

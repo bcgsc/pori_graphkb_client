@@ -19,6 +19,7 @@ import {
   Chip,
 } from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
+
 import auth from '../../../../services/auth';
 
 /**

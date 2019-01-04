@@ -4,12 +4,13 @@
 import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './StatementFormComponent.scss';
 import {
   Button,
   Paper,
   Typography,
 } from '@material-ui/core';
+
+import './StatementFormComponent.scss';
 import DeleteRecordDialog from '../DeleteRecordDialog';
 import FormTemplater from '../FormTemplater';
 import NotificationDrawer from '../NotificationDrawer';

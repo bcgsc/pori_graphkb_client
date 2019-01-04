@@ -4,7 +4,6 @@
 import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './DataView.scss';
 import * as jc from 'json-cycle';
 import { Route, Redirect, Switch } from 'react-router-dom';
 import {
@@ -13,6 +12,8 @@ import {
 } from '@material-ui/core';
 import qs from 'qs';
 import omit from 'lodash.omit';
+
+import './DataView.scss';
 import { GraphComponent, DetailDrawer, TableComponent } from './components';
 import { withKB } from '../../components/KBContext';
 import { SnackbarContext } from '../../components/Snackbar';

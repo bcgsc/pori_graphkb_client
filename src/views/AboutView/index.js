@@ -1,6 +1,5 @@
 import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
-import './index.scss';
 import {
   NavLink,
   Route,
@@ -15,8 +14,8 @@ import {
 } from '@material-ui/core';
 import slugify from 'slugify';
 
+import './index.scss';
 import api from '../../services/api';
-
 import {
   AboutForms,
   AboutGraphView,

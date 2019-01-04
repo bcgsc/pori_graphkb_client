@@ -4,7 +4,6 @@
 import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './RelationshipsForm.scss';
 import {
   Collapse,
   IconButton,
@@ -23,6 +22,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+
+import './RelationshipsForm.scss';
 import AutoSearchMulti from '../AutoSearchMulti';
 import FormTemplater from '../FormTemplater';
 import ResourceSelectComponent from '../ResourceSelectComponent';

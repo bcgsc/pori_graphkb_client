@@ -4,7 +4,6 @@
 import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './DetailDrawer.scss';
 import {
   Typography,
   Drawer,
@@ -22,6 +21,8 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import LinkIcon from '@material-ui/icons/Link';
+
+import './DetailDrawer.scss';
 import util from '../../../../services/util';
 
 const MAX_STRING_LENGTH = 64;

@@ -9,6 +9,7 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
+
 import { withKB } from '../../components/KBContext';
 import StatementFormComponent from '../../components/StatementFormComponent';
 import api from '../../services/api';

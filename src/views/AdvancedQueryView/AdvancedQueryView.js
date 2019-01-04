@@ -6,15 +6,16 @@ import { boundMethod } from 'autobind-decorator';
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './AdvancedQueryView.scss';
 import {
   Button,
   Typography,
   MenuItem,
   ListItem,
   Paper,
-} from '@material-ui/core/';
+} from '@material-ui/core';
 import * as qs from 'querystring';
+
+import './AdvancedQueryView.scss';
 import FormTemplater from '../../components/FormTemplater';
 import { withKB } from '../../components/KBContext';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent';
@@ -44,13 +45,14 @@ const DEFAULT_ORDER = [
  * the data results route to display the returned data. Forms are dynamically
  * generated based off of the database schema.
  * @property {Object} props.history - Application history state object.
- * @property {Object} context.schema - Knowledgebase schema object.
+ * @property {Object} props.schema - Knowledgebase schema object.
  */
 class AdvancedQueryViewBase extends Component {
   static contextType = SnackbarContext;
 
   static propTypes = {
     history: PropTypes.object.isRequired,
+    schema: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -65,8 +67,7 @@ class AdvancedQueryViewBase extends Component {
    * Initializes valid sources.
    */
   async componentDidMount() {
-    const { history } = this.props;
-    const { schema } = this.context;
+    const { history, schema } = this.props;
 
     const snackbar = this.context;
     if (
@@ -91,7 +92,7 @@ class AdvancedQueryViewBase extends Component {
   @boundMethod
   bundle() {
     const { form } = this.state;
-    const { schema } = this.context;
+    const { schema } = this.props;
     const params = ['@class'];
     const properties = schema.getQueryProperties(form['@class']) || [];
     properties.push(...config.ONTOLOGY_QUERY_PARAMS);
@@ -106,7 +107,7 @@ class AdvancedQueryViewBase extends Component {
   @boundMethod
   handleChange(event, nested) {
     const { form } = this.state;
-    const { schema } = this.context;
+    const { schema } = this.props;
     const {
       name,
       value,
@@ -135,7 +136,7 @@ class AdvancedQueryViewBase extends Component {
   @boundMethod
   async handleClassChange(event) {
     const { form } = this.state;
-    const { schema } = this.context;
+    const { schema } = this.props;
     const newForm = schema.initModel(form, event.target.value || 'Ontology', {
       extraProps: config.ONTOLOGY_QUERY_PARAMS,
       isQuery: true,
@@ -151,7 +152,8 @@ class AdvancedQueryViewBase extends Component {
   @boundMethod
   handleNestedClassChange(event, nested) {
     const { form } = this.state;
-    const { schema } = this.context;
+    const { schema } = this.props;
+
     const { value } = event.target;
     const classSchema = schema.getProperties(form);
     if (schema.getProperties(value)) {
@@ -175,8 +177,7 @@ class AdvancedQueryViewBase extends Component {
     const {
       form,
     } = this.state;
-    const { history } = this.props;
-    const { schema } = this.context;
+    const { history, schema } = this.props;
 
     if (!form) return null;
     const props = schema.getQueryProperties(form['@class']) || [];

@@ -1,7 +1,6 @@
 import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './UserGroupForm.scss';
 import {
   Paper,
   Typography,
@@ -19,6 +18,7 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
+import './UserGroupForm.scss';
 import DeleteRecordDialog from '../../../../components/DeleteRecordDialog';
 import PermissionsTable from '../PermissionsTable';
 import UserGroupDialog from './UserGroupDialog';

@@ -62,11 +62,11 @@ class AddOntologyViewBase extends Component {
   }
 
   /**
-   * Navigates user back to query page.
+   * Navigates user back to previous page.
    */
   handleFinish() {
     const { history } = this.props;
-    history.push('/query');
+    history.goBack();
   }
 
   render() {
@@ -79,7 +79,7 @@ class AddOntologyViewBase extends Component {
           <div className="form-cancel-btn">
             <Button
               color="default"
-              onClick={this.handleFinish}
+              onClick={this.handleCancel}
               variant="outlined"
             >
               Cancel

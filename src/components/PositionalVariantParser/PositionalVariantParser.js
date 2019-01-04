@@ -43,6 +43,13 @@ const SHORTHAND_EXCLUDED = [
  * Form component for the Variant record class. Uses HGVS shorthand notation as
  * well as standard form fields to build model if the subclass selected is
  * PositionalVariant, otherwise form is a wrapper for an Ontology Form.
+ * @property {object} props
+ * @property {bool} props.required - required flag for text input indicator.
+ * @property {bool} props.error - error flag for text input.
+ * @property {bool} props.disabled - disabled flag for text input.
+ * @property {function} props.handleFinish - function for handling form finishing.
+ * @property {function} props.handleSubmit - function for handling form submission.
+ * @property {Object} props.schema - Knowledgebase schema object.
  */
 class PositionalVariantParser extends Component {
   constructor(props) {
@@ -93,6 +100,31 @@ class PositionalVariantParser extends Component {
       relationships,
       originalRelationships: relationships.slice(),
     });
+  }
+
+  static get propTypes() {
+    return {
+      required: PropTypes.bool,
+      error: PropTypes.bool,
+      disabled: PropTypes.bool,
+      handleFinish: PropTypes.func.isRequired,
+      handleSubmit: PropTypes.func,
+      handleDelete: PropTypes.func.isRequired,
+      schema: PropTypes.object.isRequired,
+      initVariant: PropTypes.object,
+      is409: PropTypes.bool,
+    };
+  }
+
+  static get defaultProps() {
+    return {
+      initVariant: null,
+      required: false,
+      error: false,
+      disabled: false,
+      handleSubmit: () => { },
+      is409: false,
+    };
   }
 
   /**
@@ -539,34 +571,5 @@ class PositionalVariantParser extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {bool} required - required flag for text input indicator.
- * @property {bool} error - error flag for text input.
- * @property {bool} disabled - disabled flag for text input.
- * @property {function} handleFinish - function for handling form finishing.
- * @property {function} handleSubmit - function for handling form submission.
- * @property {Object} schema - Knowledgebase schema object.
- */
-PositionalVariantParser.propTypes = {
-  required: PropTypes.bool,
-  error: PropTypes.bool,
-  disabled: PropTypes.bool,
-  handleFinish: PropTypes.func.isRequired,
-  handleSubmit: PropTypes.func,
-  schema: PropTypes.object.isRequired,
-  initVariant: PropTypes.object,
-  is409: PropTypes.bool,
-};
-
-PositionalVariantParser.defaultProps = {
-  initVariant: null,
-  required: false,
-  error: false,
-  disabled: false,
-  handleSubmit: () => { },
-  is409: false,
-};
 
 export default PositionalVariantParser;

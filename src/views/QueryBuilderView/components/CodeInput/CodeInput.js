@@ -28,13 +28,52 @@ const findLineIndex = (value, index) => {
  * string format, but can have additional regexes added to recognize and color
  * other patterns. Requires MONOSPACE FONT in order to properly align different
  * colored layers properly.
+ * @property {object} props
+ * @property {string} props.value - textarea value
+ * @property {Object} props.style - style prop to be applied to the base textarea component.
+ * @property {string} props.className - Class name prop applied to base textarea component.
+ * @property {Array.<Object>} props.rules - List of formatting rules for the component.
+ * @property {string} props.rules.regex - Matching regex that is applied to the text.
+ * IMPORTANT: will only match the LAST capture group defined in the regex.
+ * Using 'g' flag is recommended.
+ * @property {string} props.rules.color - Color to color matches with.
+ * @property {string} props.rules.className - Class name prop applied to matched textarea.
+ * @property {Function} props.onChange
  */
 class CodeInput extends Component {
+  /**
+
+   */
   constructor(props) {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
     this.handleTab = this.handleTab.bind(this);
     this.ruleTextRefs = [];
+  }
+
+  static get propTypes() {
+    return {
+      value: PropTypes.string,
+      style: PropTypes.objectOf(PropTypes.string),
+      className: PropTypes.string,
+      rules: PropTypes.arrayOf(
+        PropTypes.shape({
+          regex: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(RegExp)]),
+          color: PropTypes.string,
+          className: PropTypes.string,
+        }),
+      ),
+      onChange: PropTypes.func.isRequired,
+    };
+  }
+
+  static get defaultProps() {
+    return {
+      value: '',
+      style: {},
+      className: '',
+      rules: [{ regex: COMMENT_REGEX, color: 'green', className: '' }],
+    };
   }
 
   /**
@@ -114,8 +153,6 @@ class CodeInput extends Component {
       value,
       style,
       className,
-      ruleColors,
-      ruleClassNames,
       rules,
       ...other
     } = this.props;
@@ -197,41 +234,5 @@ class CodeInput extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {string} value - textarea value
- * @property {Object} style - style prop to be applied to the base textarea
- * component.
- * @property {string} className - Class name prop applied to base textarea
- * component.
- * @property {Array.<Object>} rules - List of formatting rules for the
- * component.
- * @property {string} rules.regex - Matching regex that is applied to the text.
- * IMPORTANT: will only match the LAST capture group defined in the regex.
- * Using 'g' flag is recommended.
- * @property {string} rules.color - Color to color matches with.
- * @property {string} rules.className - Class name prop applied to matched
- * textarea.
- */
-CodeInput.propTypes = {
-  value: PropTypes.string,
-  style: PropTypes.objectOf(PropTypes.string),
-  className: PropTypes.string,
-  rules: PropTypes.arrayOf(
-    PropTypes.shape({
-      regex: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(RegExp)]),
-      color: PropTypes.string,
-      className: PropTypes.string,
-    }),
-  ),
-};
-
-CodeInput.defaultProps = {
-  value: '',
-  style: {},
-  className: '',
-  rules: [{ regex: COMMENT_REGEX, color: 'green', className: '' }],
-};
 
 export default CodeInput;

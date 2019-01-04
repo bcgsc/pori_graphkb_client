@@ -80,7 +80,8 @@ function GraphLegend(props) {
               )}
             </List>
           </div>
-        </Paper>)}
+        </Paper>
+      )}
       {!linkDisabled
         && graphOptions.linksLegend
         && graphOptions.linksColor

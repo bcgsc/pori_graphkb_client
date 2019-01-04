@@ -1,3 +1,4 @@
+/* eslint-disable */
 import '@babel/polyfill';
 import 'whatwg-fetch'; // fetch() polyfill for making API calls.
 import 'abortcontroller-polyfill/dist/polyfill-patch-fetch';

@@ -25,6 +25,12 @@ class ErrorView extends Component {
     };
   }
 
+  static get propTypes() {
+    return {
+      history: PropTypes.object.isRequired,
+    };
+  }
+
   /**
    * Initializes error message, or redirects to query page if none is present.
    */
@@ -52,7 +58,8 @@ class ErrorView extends Component {
               </Button>
             </Link>
           </div>
-        </div>);
+        </div>
+      );
     }
     const {
       message,
@@ -93,8 +100,10 @@ class ErrorView extends Component {
                   <Typography variant="subtitle1" color="error">
                     {url}
                   </Typography>
-                </React.Fragment>)}
-            </div>)}
+                </React.Fragment>
+              )}
+            </div>
+          )}
         </div>
         <div className="error-content">
           <Typography variant="h6">
@@ -139,17 +148,11 @@ class ErrorView extends Component {
               <Typography variant="subtitle1" id="stacktrace-text">
                 {stacktrace}
               </Typography>
-            </div>)}
+            </div>
+          )}
       </div>
     );
   }
 }
-/**
- * @namespace
- * @property {Object} history - Application routing history object.
- */
-ErrorView.propTypes = {
-  history: PropTypes.object.isRequired,
-};
 
 export default ErrorView;

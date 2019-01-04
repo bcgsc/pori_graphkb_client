@@ -3,6 +3,7 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import auth from '../services/auth';
 
@@ -26,6 +27,11 @@ const AuthenticatedRoute = ({ component: Component, ...rest }) => (
   />
 );
 
+AuthenticatedRoute.propTypes = {
+  location: PropTypes.object.isRequired,
+  component: PropTypes.object.isRequired,
+};
+
 
 /**
  * @returns {Route} a route component which checks for admin privledges on render or redirects to
@@ -47,5 +53,10 @@ const AdminRoute = ({ component: Component, ...rest }) => (
     )}
   />
 );
+
+AdminRoute.propTypes = {
+  location: PropTypes.object.isRequired,
+  component: PropTypes.object.isRequired,
+};
 
 export { AdminRoute, AuthenticatedRoute };

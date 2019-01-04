@@ -4,7 +4,6 @@
 import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './QueryView.scss';
 import {
   Button,
   IconButton,
@@ -16,6 +15,8 @@ import {
 import kbp from '@bcgsc/knowledgebase-parser';
 import * as qs from 'querystring';
 import SearchIcon from '@material-ui/icons/Search';
+
+import './QueryView.scss';
 import AutoSearchSingle from '../../components/AutoSearchSingle';
 import { withKB } from '../../components/KBContext';
 import util from '../../services/util';

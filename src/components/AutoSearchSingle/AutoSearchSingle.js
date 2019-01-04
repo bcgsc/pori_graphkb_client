@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
 import debounce from 'lodash.debounce';
+
 import AutoSearchBase from '../AutoSearchBase';
 import api from '../../services/api';
 

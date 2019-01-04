@@ -4,7 +4,6 @@
 import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './GraphComponent.scss';
 import * as d3Zoom from 'd3-zoom';
 import * as d3Select from 'd3-selection';
 import * as d3Force from 'd3-force';
@@ -15,6 +14,8 @@ import {
 import ViewListIcon from '@material-ui/icons/ViewList';
 import SettingsIcon from '@material-ui/icons/Settings';
 import RefreshIcon from '@material-ui/icons/Refresh';
+
+import './GraphComponent.scss';
 import GraphActionsNode from './GraphActionsNode';
 import GraphOptionsPanel from './GraphOptionsPanel/GraphOptionsPanel';
 import GraphLinkDisplay from './GraphLinkDisplay/GraphLinkDisplay';

@@ -2,8 +2,9 @@
  * @module /views/FeedbackView
  */
 import React from 'react';
-import './FeedbackView.scss';
 import { Typography, Paper } from '@material-ui/core';
+
+import './FeedbackView.scss';
 import config from '../../static/config';
 
 const { FEEDBACK_EMAIL, FEEDBACK_HIPCHAT, JIRA_LINK } = config;

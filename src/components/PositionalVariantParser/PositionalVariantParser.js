@@ -4,7 +4,6 @@
 import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './PositionalVariantParser.scss';
 import {
   TextField,
   Button,
@@ -16,6 +15,8 @@ import {
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
 import kbp from '@bcgsc/knowledgebase-parser';
+
+import './PositionalVariantParser.scss';
 import DeleteRecordDialog from '../DeleteRecordDialog';
 import FormTemplater from '../FormTemplater';
 import NotificationDrawer from '../NotificationDrawer';

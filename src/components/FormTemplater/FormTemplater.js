@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './FormTemplater.scss';
 import {
   ListItem,
   FormControl,
@@ -15,6 +14,8 @@ import {
   Typography,
 } from '@material-ui/core';
 import HelpIcon from '@material-ui/icons/Help';
+
+import './FormTemplater.scss';
 import AutoSearchSingle from '../AutoSearchSingle';
 import AutoSearchMulti from '../AutoSearchMulti';
 import ResourceSelectComponent from '../ResourceSelectComponent';

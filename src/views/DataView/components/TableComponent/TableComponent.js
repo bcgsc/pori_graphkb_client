@@ -6,7 +6,6 @@ import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import './TableComponent.scss';
 import {
   Table,
   TableHead,
@@ -28,12 +27,11 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import AddIcon from '@material-ui/icons/Add';
 import SortIcon from '@material-ui/icons/Sort';
 
+import './TableComponent.scss';
 import util from '../../../../services/util';
 import FilterIcon from '../../../../static/icons/FilterIcon/FilterIcon';
 import config from '../../../../static/config';
-
 import DownloadFileComponent from '../DownloadFileComponent';
-
 import FilterPopover from './TableFilterPopover';
 import TableColumnDialog from './TableColumnDialog';
 import TableMenu from './TableMenu';

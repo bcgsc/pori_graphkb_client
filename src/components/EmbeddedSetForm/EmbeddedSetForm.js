@@ -1,7 +1,6 @@
 import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './EmbeddedSetForm.scss';
 import {
   TextField,
   Chip,
@@ -10,6 +9,9 @@ import {
 import CancelIcon from '@material-ui/icons/Cancel';
 import AddIcon from '@material-ui/icons/Add';
 import RefreshIcon from '@material-ui/icons/Refresh';
+
+import './EmbeddedSetForm.scss';
+
 
 /**
  * Generated component for 'embeddedset' property types.

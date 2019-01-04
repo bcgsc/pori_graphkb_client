@@ -3,6 +3,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import './LoginView.scss';
 import api from '../../services/api';
 import auth from '../../services/auth';

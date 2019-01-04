@@ -4,7 +4,6 @@
 import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './OntologyFormComponent.scss';
 import {
   List,
   MenuItem,
@@ -15,6 +14,8 @@ import {
   ListItemText,
   Divider,
 } from '@material-ui/core';
+
+import './OntologyFormComponent.scss';
 import DeleteRecordDialog from '../DeleteRecordDialog';
 import FormTemplater from '../FormTemplater';
 import NotificationDrawer from '../NotificationDrawer';

@@ -1,7 +1,6 @@
 import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './GraphOptionsPanel.scss';
 import {
   Checkbox,
   FormControlLabel,
@@ -16,6 +15,8 @@ import {
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import HelpIcon from '@material-ui/icons/Help';
+
+import './GraphOptionsPanel.scss';
 import ResourceSelectComponent from '../../../../../components/ResourceSelectComponent';
 import config from '../../../../../static/config';
 import util from '../../../../../services/util';

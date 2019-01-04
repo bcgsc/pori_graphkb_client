@@ -3,7 +3,6 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './AutoSearchBase.scss';
 import {
   MenuItem,
   List,
@@ -15,6 +14,8 @@ import {
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import Downshift from 'downshift';
+
+import './AutoSearchBase.scss';
 import RecordChip from '../RecordChip/RecordChip';
 
 const PROGRESS_SPINNER_SIZE = 20;

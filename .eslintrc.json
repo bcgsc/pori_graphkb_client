@@ -28,7 +28,9 @@
         "prefer-destructuring": "warn",
         "react/destructuring-assignment": "warn",
         "no-confusing-arrow": "off",
-        "no-underscore-dangle": "off"
+        "no-underscore-dangle": "off",
+        "import/prefer-default-export": "warn",
+        "no-console": ["error", { "allow": ["warn", "error"] }]
     },
     "env": {
         "browser": true,

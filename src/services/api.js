@@ -3,6 +3,7 @@
  * @module /services/api
  */
 import * as jc from 'json-cycle';
+
 import auth from './auth';
 import util from './util';
 import config from '../static/config';

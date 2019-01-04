@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { pie } from 'd3-shape';
 import { PropTypes } from 'prop-types';
-import Arc from './Arc';
 
+import Arc from './Arc';
 import util from '../../../../services/util';
 import config from '../../../../static/config';
 

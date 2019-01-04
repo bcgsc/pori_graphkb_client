@@ -1,3 +1,4 @@
+import AboutView from './AboutView';
 import { AdvancedQueryView } from './AdvancedQueryView/AdvancedQueryView';
 import { AddOntologyView } from './AddOntologyView/AddOntologyView';
 import { AdminView } from './AdminView/AdminView';
@@ -12,9 +13,9 @@ import { EditVariantView } from './EditVariantView/EditVariantView';
 import { EditStatementView } from './EditStatementView/EditStatementView';
 import { QueryBuilderView } from './QueryBuilderView/QueryBuilderView';
 import { AddStatementView } from './AddStatementView/AddStatementView';
-import TutorialView from './TutorialView/TutorialView';
 
 export {
+  AboutView,
   AdvancedQueryView,
   AddOntologyView,
   AdminView,
@@ -29,5 +30,4 @@ export {
   QueryBuilderView,
   EditStatementView,
   AddStatementView,
-  TutorialView,
 };

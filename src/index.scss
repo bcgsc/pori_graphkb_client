@@ -1,18 +1,38 @@
 @import "globals";
 
+html {
+  box-sizing: border-box;
+}
+
+*,
+*:after,
+*:before {
+  box-sizing: inherit;
+}
+
 body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
   overflow-x: hidden;
 }
+
 * {
   transition: visibility 0.01s;
 }
+
 a {
   text-decoration: none;
   color: $md-secondary-color;
   &[disabled] {
     pointer-events: none;
+  }
+}
+
+// defaults for views
+.view-wrapper {
+  @include view-wrapper;
+  .view-header {
+    @include page-header;
   }
 }

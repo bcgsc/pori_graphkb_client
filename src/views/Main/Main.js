@@ -25,6 +25,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
 import { schema as SCHEMA_DEFN } from '@bcgsc/knowledgebase-schema';
 import {
+  AboutView,
   AddOntologyView,
   AddStatementView,
   AdminView,
@@ -39,7 +40,6 @@ import {
   AddVariantView,
   EditVariantView,
   QueryBuilderView,
-  TutorialView,
 } from '..';
 import auth from '../../services/auth';
 import Schema from '../../services/schema';
@@ -124,14 +124,15 @@ class Main extends Component {
         ],
       },
       {
-        label: 'Tutorial',
+        label: 'About',
         icon: <HelpOutlineIcon />,
-        route: '/tutorial',
+        route: '/about',
       },
     ];
 
     const loggedInContent = (
       <Switch>
+        <Route exact path="/about" component={AboutView} />
         <Route exact path="/query" component={QueryView} />
         <Route exact path="/query/advanced" component={AdvancedQueryView} />
         <Route path="/query/advanced/builder" component={QueryBuilderView} />
@@ -143,7 +144,6 @@ class Main extends Component {
         <Route path="/edit/statement/:rid" component={EditStatementView} />
         <Route path="/data" component={DataView} />
         <Route path="/admin" component={AdminView} />
-        <Route path="/tutorial" component={TutorialView} />
         <Redirect from="*" to="/query" />
       </Switch>
     );

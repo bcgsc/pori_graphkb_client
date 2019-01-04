@@ -8,6 +8,7 @@ import {
   MuiThemeProvider,
 } from '@material-ui/core/styles';
 import Main from './views/Main/Main';
+
 import history from './services/history';
 import { SnackbarProvider } from './components/Snackbar/Snackbar';
 

@@ -272,9 +272,9 @@ const parsePayload = (form, properties = null, extraProps = [], isQuery = false)
 /**
  * Returns pallette of colors for displaying objects of given type.
  * @param {number} n - number of elements in collection.
- * @param {string} type - object type ['link', 'node'].
+ * @param {string} type - object type ['links', 'nodes'].
  */
-const getPallette = (n, type) => {
+const getPallette = (n, type = 'nodes') => {
   const baseName = `${type.toUpperCase().slice(0, type.length - 1)}_COLORS`;
   if (n <= PALLETE_SIZE) {
     return config.GRAPH_DEFAULTS[baseName];

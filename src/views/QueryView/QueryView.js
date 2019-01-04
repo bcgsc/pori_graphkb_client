@@ -27,8 +27,16 @@ const ENTER_KEYCODE = 13;
 /**
  * View for simple search by name query. Form submissions are passed through the URL to
  * the DataView module to handle the query transaction.
+ *
+ * @property {Object} props.history - Application routing history object.
+ * @property {Object} props.schema - Knowledgebase schema object.
  */
 class QueryViewBase extends Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+    schema: PropTypes.object.isRequired,
+  };
+
   constructor(props) {
     super(props);
     const { state } = props.history.location;
@@ -243,15 +251,6 @@ class QueryViewBase extends Component {
     );
   }
 }
-/**
- * @namespace
- * @property {Object} history - Application routing history object.
- * @property {Object} schema - Knowledgebase schema object.
- */
-QueryViewBase.propTypes = {
-  history: PropTypes.object.isRequired,
-  schema: PropTypes.object.isRequired,
-};
 
 const QueryView = withKB(QueryViewBase);
 

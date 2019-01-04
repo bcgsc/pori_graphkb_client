@@ -22,6 +22,12 @@ import api from '../../services/api';
  * @property {object} props.match
  */
 class EditVariantViewBase extends Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+    schema: PropTypes.object.isRequired,
+    match: PropTypes.object.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -44,14 +50,6 @@ class EditVariantViewBase extends Component {
     this.setState({
       node,
     });
-  }
-
-  static get propTypes() {
-    return {
-      history: PropTypes.object.isRequired,
-      schema: PropTypes.object.isRequired,
-      match: PropTypes.object.isRequired,
-    };
   }
 
   /**

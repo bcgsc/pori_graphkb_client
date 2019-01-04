@@ -51,8 +51,73 @@ const DEFAULT_COLUMN_ORDER = [
 /**
  * Component to display query results in table form. Controls state for
  * ellipsis menu, table rows/columns, and table paginator.
+ *
+ * @property {object} props
+ * @property {Object} props.data - Object containing query results.
+ * @property {Object} props.detail - Record being displayed in detail view.
+ * @property {Array.<string>} props.displayed - Array of displayed node rids.
+ * @property {function} props.handleCheckAll - Method triggered when all rows are
+ * checked.
+ * @property {function} props.handleCheckbox - Method triggered when a single row is
+ * checked.
+ * @property {function} props.handleHideSelected - Method for hiding selected rows
+ * from the view.
+ * @property {function} props.handleNodeEditStart - Method triggered when user
+ * requests to edit a node.
+ * @property {function} props.handleShowAllNodes - Method for returning previously
+ * hidden rows to the view.
+ * @property {function} props.handleGraphRedirect - Handles routing to graph
+ * component.
+ * @property {function} props.handleDetailDrawerOpen - Handles opening of detail
+ * drawer to a given record.
+ * @property {function} props.handleSubsequentPagination - parent function to handle
+ * subsequent api calls.
+ * @property {Array.<string>} props.hidden - Array of hidden node rids.
+ * @property {Array.<string>} props.allProps - all non-base columns represented
+ * throughout the query results.
+ * @property {boolean} props.moreResults - Flag to tell component there could be more
+ * results to the query.
+ * @property {boolean} props.completedNext - Flag for whether or not component has
+ * completed the current subsequent query.
+ * @property {Array.<Object>} props.storedFilters - filters stored for current
+ * session. Accessed on component init and stored on navigate to table.
+ * @property {Array.<string>} props.defaultOrder - List of columns to display in
+ * order.
+ * @property {Object} props.schema - Knowledgebase schema object.
  */
 class TableComponent extends Component {
+  static propTypes = {
+    data: PropTypes.object.isRequired,
+    detail: PropTypes.object,
+    displayed: PropTypes.arrayOf(PropTypes.string),
+    handleCheckAll: PropTypes.func.isRequired,
+    handleCheckbox: PropTypes.func.isRequired,
+    handleHideSelected: PropTypes.func.isRequired,
+    handleShowAllNodes: PropTypes.func.isRequired,
+    handleGraphRedirect: PropTypes.func.isRequired,
+    handleDetailDrawerOpen: PropTypes.func.isRequired,
+    handleSubsequentPagination: PropTypes.func,
+    hidden: PropTypes.arrayOf(PropTypes.string),
+    allProps: PropTypes.arrayOf(PropTypes.string),
+    moreResults: PropTypes.bool,
+    completedNext: PropTypes.bool,
+    storedFilters: PropTypes.array,
+    defaultOrder: PropTypes.arrayOf(PropTypes.string),
+    schema: PropTypes.object.isRequired,
+  };
+
+  static defaultProps = {
+    detail: null,
+    allProps: [],
+    hidden: [],
+    storedFilters: [],
+    handleSubsequentPagination: null,
+    moreResults: false,
+    displayed: [],
+    defaultOrder: DEFAULT_COLUMN_ORDER,
+    completedNext: true,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -842,71 +907,5 @@ class TableComponent extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {Object} data - Object containing query results.
- * @property {Object} detail - Record being displayed in detail view.
- * @property {Array.<string>} displayed - Array of displayed node rids.
- * @property {function} handleCheckAll - Method triggered when all rows are
- * checked.
- * @property {function} handleCheckbox - Method triggered when a single row is
- * checked.
- * @property {function} handleHideSelected - Method for hiding selected rows
- * from the view.
- * @property {function} handleNodeEditStart - Method triggered when user
- * requests to edit a node.
- * @property {function} handleShowAllNodes - Method for returning previously
- * hidden rows to the view.
- * @property {function} handleGraphRedirect - Handles routing to graph
- * component.
- * @property {function} handleDetailDrawerOpen - Handles opening of detail
- * drawer to a given record.
- * @property {function} handleSubsequentPagination - parent function to handle
- * subsequent api calls.
- * @property {Array.<string>} hidden - Array of hidden node rids.
- * @property {Array.<string>} allProps - all non-base columns represented
- * throughout the query results.
- * @property {boolean} moreResults - Flag to tell component there could be more
- * results to the query.
- * @property {boolean} completedNext - Flag for whether or not component has
- * completed the current subsequent query.
- * @property {Array.<Object>} storedFilters - filters stored for current
- * session. Accessed on component init and stored on navigate to table.
- * @property {Array.<string>} defaultOrder - List of columns to display in
- * order.
- * @property {Object} schema - Knowledgebase schema object.
- */
-TableComponent.propTypes = {
-  data: PropTypes.object.isRequired,
-  detail: PropTypes.object,
-  displayed: PropTypes.arrayOf(PropTypes.string),
-  handleCheckAll: PropTypes.func.isRequired,
-  handleCheckbox: PropTypes.func.isRequired,
-  handleHideSelected: PropTypes.func.isRequired,
-  handleShowAllNodes: PropTypes.func.isRequired,
-  handleGraphRedirect: PropTypes.func.isRequired,
-  handleDetailDrawerOpen: PropTypes.func.isRequired,
-  handleSubsequentPagination: PropTypes.func,
-  hidden: PropTypes.arrayOf(PropTypes.string),
-  allProps: PropTypes.arrayOf(PropTypes.string),
-  moreResults: PropTypes.bool,
-  completedNext: PropTypes.bool,
-  storedFilters: PropTypes.array,
-  defaultOrder: PropTypes.arrayOf(PropTypes.string),
-  schema: PropTypes.object.isRequired,
-};
-
-TableComponent.defaultProps = {
-  detail: null,
-  allProps: [],
-  hidden: [],
-  storedFilters: [],
-  handleSubsequentPagination: null,
-  moreResults: false,
-  displayed: [],
-  defaultOrder: DEFAULT_COLUMN_ORDER,
-  completedNext: true,
-};
 
 export default TableComponent;

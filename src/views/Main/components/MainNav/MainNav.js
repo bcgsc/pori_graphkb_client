@@ -21,7 +21,31 @@ import { boundMethod } from 'autobind-decorator';
 import logo from '../../../../static/logo.png';
 import title from '../../../../static/title.png';
 
+/**
+ * @property {object} props
+ * @property {boolean} props.open - drawer open state.
+ * @property {Array} props.links - List of app links to display in sidebar.
+ * @property {function} props.onChange - handler for siderbar state change.
+ */
 class MainNav extends Component {
+  static propTypes = {
+    open: PropTypes.bool,
+    links: PropTypes.arrayOf(PropTypes.shape({
+      label: PropTypes.string,
+      route: PropTypes.string,
+      icon: PropTypes.node,
+      MenuProps: PropTypes.object,
+      nestedItems: PropTypes.array,
+    })),
+    onChange: PropTypes.func,
+  };
+
+  static defaultProps = {
+    open: false,
+    links: [],
+    onChange: () => { },
+  };
+
   constructor(props) {
     super(props);
     this.state = { expanded: '' };
@@ -139,29 +163,5 @@ class MainNav extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {boolean} open - drawer open state.
- * @property {Array} links - List of app links to display in sidebar.
- * @property {function} onChange - handler for siderbar state change.
- */
-MainNav.propTypes = {
-  open: PropTypes.bool,
-  links: PropTypes.arrayOf(PropTypes.shape({
-    label: PropTypes.string,
-    route: PropTypes.string,
-    icon: PropTypes.node,
-    MenuProps: PropTypes.object,
-    nestedItems: PropTypes.array,
-  })),
-  onChange: PropTypes.func,
-};
-
-MainNav.defaultProps = {
-  open: false,
-  links: [],
-  onChange: () => { },
-};
 
 export default MainNav;

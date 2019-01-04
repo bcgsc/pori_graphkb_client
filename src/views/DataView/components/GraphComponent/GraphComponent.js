@@ -53,8 +53,52 @@ const HEAVILY_CONNECTED = 10;
 /**
  * Component for displaying query results in force directed graph form.
  * Implements a d3 force-directed graph: https://github.com/d3/d3-force.
+ *
+ * @property {object} props
+ * @property {function} props.handleClick - Parent component method triggered when a
+ * graph object is clicked.
+ * @property {function} props.handleDetailDrawerOpen - Method to handle opening of detail drawer.
+ * @property {function} props.handleDetailDrawerClose - Method to handle closing of detail drawer.
+ * @property {function} props.handleTableRedirect - Method to handle a redirect to the table view.
+ * @property {function} props.handleNewColumns - Updates valid properties in parent state.
+ * @property {Object} props.detail - record ID of node currently selected for detail viewing.
+ * @property {Object} props.data - Parent state data.
+ * @property {Array.<string>} props.allProps - list of all unique properties on all nodes returned
+ * in the initial query.
+ * @property {Array.<string>} props.edgeTypes - list of valid edge classes.
+ * @property {Array.<string>} props.displayed - list of initial record ID's to be displayed in
+ * graph.
+ * @property {string} props.localStorageKey - key to identify graph session data with in
+ * localStorage.
+ * @property {Object} props.schema - KnowledgeBase Schema.
+ * @property {Object} props.snackbar - App snackbar context value.
  */
 class GraphComponent extends Component {
+  static propTypes = {
+    handleClick: PropTypes.func,
+    handleDetailDrawerOpen: PropTypes.func.isRequired,
+    handleDetailDrawerClose: PropTypes.func.isRequired,
+    handleTableRedirect: PropTypes.func.isRequired,
+    handleNewColumns: PropTypes.func.isRequired,
+    detail: PropTypes.object,
+    data: PropTypes.object.isRequired,
+    allProps: PropTypes.arrayOf(PropTypes.string),
+    edgeTypes: PropTypes.arrayOf(PropTypes.string),
+    displayed: PropTypes.arrayOf(PropTypes.string),
+    localStorageKey: PropTypes.string,
+    schema: PropTypes.object.isRequired,
+    snackbar: PropTypes.object.isRequired,
+  };
+
+  static defaultProps = {
+    handleClick: null,
+    detail: null,
+    allProps: [],
+    edgeTypes: [],
+    displayed: [],
+    localStorageKey: '',
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -1114,49 +1158,5 @@ class GraphComponent extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {function} handleClick - Parent component method triggered when a
- * graph object is clicked.
- * @property {function} handleDetailDrawerOpen - Method to handle opening of detail drawer.
- * @property {function} handleDetailDrawerClose - Method to handle closing of detail drawer.
- * @property {function} handleTableRedirect - Method to handle a redirect to the table view.
- * @property {function} handleNewColumns - Updates valid properties in parent state.
- * @property {Object} detail - record ID of node currently selected for detail viewing.
- * @property {Object} data - Parent state data.
- * @property {Array.<string>} allProps - list of all unique properties on all nodes returned in
- * initial query.
- * @property {Array.<string>} edgeTypes - list of valid edge classes.
- * @property {Array.<string>} displayed - list of initial record ID's to be displayed in graph.
- * @property {string} localStorageKey - key to identify graph session data with in
- * localStorage.
- * @property {Object} schema - KnowledgeBase Schema.
- * @property {Object} snackbar - App snackbar context value.
- */
-GraphComponent.propTypes = {
-  handleClick: PropTypes.func,
-  handleDetailDrawerOpen: PropTypes.func.isRequired,
-  handleDetailDrawerClose: PropTypes.func.isRequired,
-  handleTableRedirect: PropTypes.func.isRequired,
-  handleNewColumns: PropTypes.func.isRequired,
-  detail: PropTypes.object,
-  data: PropTypes.object.isRequired,
-  allProps: PropTypes.arrayOf(PropTypes.string),
-  edgeTypes: PropTypes.arrayOf(PropTypes.string),
-  displayed: PropTypes.arrayOf(PropTypes.string),
-  localStorageKey: PropTypes.string,
-  schema: PropTypes.object.isRequired,
-  snackbar: PropTypes.object.isRequired,
-};
-
-GraphComponent.defaultProps = {
-  handleClick: null,
-  detail: null,
-  allProps: [],
-  edgeTypes: [],
-  displayed: [],
-  localStorageKey: '',
-};
 
 export default GraphComponent;

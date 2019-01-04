@@ -39,8 +39,39 @@ const DEFAULT_NODE_CLASS = 'Disease';
  * It can be used for any basic form that does not require any special input
  * features. This is the reason this form is used for CategoryVariants even
  * though they are not Ontologies.
+ *
+ * @property {object} props
+ * @property {Object} props.node - node object to be edited.
+ * @property {string} props.variant - specifies form type/function.
+ * @property {Object} props.schema - Knowledgebase db schema.
+ * @property {function} props.handleFinish - Function triggered when node is edited or deleted.
+ * @property {function} props.handleSubmit - Function triggered when form is submitted.
+ * @property {function} props.handleDelete - Function triggered when ontology is deleted.
+ * @property {Array.<Object>} props.classes - list of possible classes for form.
+ * @property {boolean} props.is409 - flag for whether previous submission was a 409.
  */
 class OntologyFormComponent extends Component {
+  static propTypes = {
+    node: PropTypes.object,
+    variant: PropTypes.oneOf(['edit', 'add']),
+    schema: PropTypes.object.isRequired,
+    handleFinish: PropTypes.func,
+    handleSubmit: PropTypes.func,
+    handleDelete: PropTypes.func,
+    classes: PropTypes.array,
+    is409: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    variant: 'edit',
+    handleFinish: null,
+    handleSubmit: null,
+    handleDelete: null,
+    node: null,
+    classes: null,
+    is409: false,
+  };
+
   constructor(props) {
     super(props);
 
@@ -316,40 +347,5 @@ class OntologyFormComponent extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {Object} node - node object to be edited.
- * @property {string} variant - specifies form type/function.
- * @property {Object} schema - Knowledgebase db schema.
- * @property {function} handleFinish - Function triggered when node is edited
- * or deleted.
- * @property {function} handleSubmit - Function triggered when form is
- * submitted.
- * @property {function} handleDelete - Function triggered when ontology is
- * deleted.
- * @property {Array.<Object>} classes - list of possible classes for form.
- * @property {boolean} is409 - flag for whether previous submission was a 409.
- */
-OntologyFormComponent.propTypes = {
-  node: PropTypes.object,
-  variant: PropTypes.oneOf(['edit', 'add']),
-  schema: PropTypes.object.isRequired,
-  handleFinish: PropTypes.func,
-  handleSubmit: PropTypes.func,
-  handleDelete: PropTypes.func,
-  classes: PropTypes.array,
-  is409: PropTypes.bool,
-};
-
-OntologyFormComponent.defaultProps = {
-  variant: 'edit',
-  handleFinish: null,
-  handleSubmit: null,
-  handleDelete: null,
-  node: null,
-  classes: null,
-  is409: false,
-};
 
 export default OntologyFormComponent;

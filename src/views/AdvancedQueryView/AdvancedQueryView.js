@@ -44,7 +44,7 @@ const DEFAULT_ORDER = [
  * the data results route to display the returned data. Forms are dynamically
  * generated based off of the database schema.
  * @property {Object} props.history - Application history state object.
- * @property {Object} props.schema - Knowledgebase schema object.
+ * @property {Object} context.schema - Knowledgebase schema object.
  */
 class AdvancedQueryViewBase extends Component {
   static contextType = SnackbarContext;

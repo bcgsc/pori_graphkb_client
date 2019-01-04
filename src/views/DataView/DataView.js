@@ -31,8 +31,17 @@ const DEFAULT_LIMIT = 1000;
  * from the url search string, retrieving the database schema, and making subsequent
  * individual record GETs throughout the user's session.
  *
+ * @property {Object} props.history - Application routing history object.
+ * @property {Object} props.schema - Knowledgebase schema object.
  */
 class DataViewBase extends Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+    schema: PropTypes.object.isRequired,
+  };
+
+  static contextType = SnackbarContext;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -508,17 +517,6 @@ class DataViewBase extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {Object} history - Application routing history object.
- * @property {Object} schema - Knowledgebase schema object.
- */
-DataViewBase.propTypes = {
-  history: PropTypes.object.isRequired,
-  schema: PropTypes.object.isRequired,
-};
-DataViewBase.contextType = SnackbarContext;
 
 const DataView = withKB(DataViewBase);
 

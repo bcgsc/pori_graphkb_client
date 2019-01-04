@@ -7,6 +7,10 @@ import notation from '@bcgsc/knowledgebase-parser/doc/notation.md';
 
 
 class AboutNotation extends React.Component {
+  static propTypes = {
+    location: PropTypes.object.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -14,12 +18,6 @@ class AboutNotation extends React.Component {
     };
 
     this.controllers = [];
-  }
-
-  static get propTypes() {
-    return {
-      location: PropTypes.object.isRequired,
-    };
   }
 
   async componentDidMount() {

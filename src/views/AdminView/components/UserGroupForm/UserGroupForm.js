@@ -27,6 +27,19 @@ import UserGroupDialog from './UserGroupDialog';
  * Handles AdminView UserGroup form state.
  */
 class UserGroupForm extends Component {
+  static propTypes = {
+    userGroups: PropTypes.array,
+    schema: PropTypes.object,
+    onDelete: PropTypes.func.isRequired,
+    onEdit: PropTypes.func.isRequired,
+    onAdd: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    userGroups: [],
+    schema: null,
+  };
+
   static castPermissions(permissions) {
     const tempPermissions = {};
     const reducer = (accumulator, curr, i) => accumulator + curr * (2 ** i);
@@ -53,24 +66,6 @@ class UserGroupForm extends Component {
       deletedUserGroup: null,
     };
   }
-
-  static get propTypes() {
-    return {
-      userGroups: PropTypes.array,
-      schema: PropTypes.object,
-      onDelete: PropTypes.func.isRequired,
-      onEdit: PropTypes.func.isRequired,
-      onAdd: PropTypes.func.isRequired,
-    };
-  }
-
-  static get defaultProps() {
-    return {
-      userGroups: [],
-      schema: null,
-    };
-  }
-
 
   /**
    * Sends a DELETE request to the server, then updates user group list.

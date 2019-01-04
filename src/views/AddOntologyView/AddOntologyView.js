@@ -20,8 +20,17 @@ import util from '../../services/util';
  * View for editing or adding database nodes. Includes a NodeFormComponent with the
  * 'add' variant. Submissions will post to the server, and redirect user to the home
  * query page.
+ *
+ * @property {object} props
+ * @property {Object} props.history - history state object.
+ * @property {Object} props.schema - Knowledgebase schema object
  */
 class AddOntologyViewBase extends Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+    schema: PropTypes.object.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -102,16 +111,6 @@ class AddOntologyViewBase extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {Object} history - history state object.
- * @property {Object} schema - Knowledgebase schema object.
- */
-AddOntologyViewBase.propTypes = {
-  history: PropTypes.object.isRequired,
-  schema: PropTypes.object.isRequired,
-};
 
 const AddOntologyView = withKB(AddOntologyViewBase);
 

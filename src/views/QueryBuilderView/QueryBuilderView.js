@@ -50,8 +50,16 @@ const parseJSON = (string) => {
 /**
  * Freeform query builder where users can add key-value pairs or nested groups
  * of key-value pairs.
+ *
+ * @property {Object} props.history - Application history state object.
+ * @property {Object} props.schema - Knowledgebase schema object.
  */
 class QueryBuilderViewBase extends Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+    schema: PropTypes.object.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -227,15 +235,6 @@ class QueryBuilderViewBase extends Component {
   }
 }
 
-/**
- * @namespace
- * @property {Object} history - Application history state object.
- * @property {Object} schema - Knowledgebase schema object.
- */
-QueryBuilderViewBase.propTypes = {
-  history: PropTypes.object.isRequired,
-  schema: PropTypes.object.isRequired,
-};
 
 const QueryBuilderView = withKB(QueryBuilderViewBase);
 

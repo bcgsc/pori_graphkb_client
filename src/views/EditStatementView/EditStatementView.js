@@ -24,6 +24,12 @@ import util from '../../services/util';
  * @property {Object} props.match
  */
 class EditStatementViewBase extends Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+    schema: PropTypes.object.isRequired,
+    match: PropTypes.object.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -41,14 +47,6 @@ class EditStatementViewBase extends Component {
     const response = await api.get(`${routeName}/${rid}?neighbors=3`);
     const node = jc.retrocycle(response).result;
     this.setState({ node });
-  }
-
-  static get propTypes() {
-    return {
-      history: PropTypes.object.isRequired,
-      schema: PropTypes.object.isRequired,
-      match: PropTypes.object.isRequired,
-    };
   }
 
   /**

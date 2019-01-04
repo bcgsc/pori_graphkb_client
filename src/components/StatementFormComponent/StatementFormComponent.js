@@ -1,6 +1,7 @@
 /**
  * @module /components/StatementFormComponent
  */
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './StatementFormComponent.scss';
@@ -31,10 +32,6 @@ class StatementFormComponent extends Component {
       errorFields: [],
       relationshipsError: false,
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleDialog = this.handleDialog.bind(this);
-    this.handleDeleteNode = this.handleDeleteNode.bind(this);
   }
 
   /**
@@ -68,6 +65,7 @@ class StatementFormComponent extends Component {
    * Calls parent submit method and opens notification drawer. Shows completed
    * icon when submission handler has completed.
    */
+  @boundMethod
   async handleSubmit() {
     const { form, relationships, originalRelationships } = this.state;
     const { onSubmit, schema } = this.props;
@@ -110,6 +108,7 @@ class StatementFormComponent extends Component {
    * Sets the open state of the delete dialog.
    * @param {boolean} val - Open state of delete dialog.
    */
+  @boundMethod
   handleDialog(val) {
     this.setState({ deleteDialog: val });
   }
@@ -117,6 +116,7 @@ class StatementFormComponent extends Component {
   /**
    * Deletes target node.
    */
+  @boundMethod
   async handleDeleteNode() {
     const { onDelete } = this.props;
     this.setState({ notificationDrawerOpen: true, loading: true });
@@ -129,6 +129,7 @@ class StatementFormComponent extends Component {
    * Updates form model based off user input.
    * @param {Event} event - User input event.
    */
+  @boundMethod
   handleChange(event) {
     const { form } = this.state;
     const { schema } = this.props;

@@ -1,7 +1,7 @@
 /**
  * @module /components/GraphComponent
  */
-
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './GraphComponent.scss';
@@ -79,27 +79,6 @@ class GraphComponent extends Component {
     };
 
     this.propsMap = new PropsMap();
-
-    this.applyDrag = this.applyDrag.bind(this);
-    this.drawGraph = this.drawGraph.bind(this);
-    this.initSimulation = this.initSimulation.bind(this);
-    this.loadNeighbors = this.loadNeighbors.bind(this);
-    this.handleExpandRequest = this.handleExpandRequest.bind(this);
-    this.refresh = this.refresh.bind(this);
-    this.pauseGraph = this.pauseGraph.bind(this);
-    this.updateColors = this.updateColors.bind(this);
-    this.handleResize = this.handleResize.bind(this);
-    this.handleGraphOptionsChange = this.handleGraphOptionsChange.bind(this);
-    this.withClose = this.withClose.bind(this);
-    this.handleExpand = this.handleExpand.bind(this);
-    this.handleNodeHide = this.handleNodeHide.bind(this);
-    this.handleLinkHide = this.handleLinkHide.bind(this);
-    this.handleDialogOpen = this.handleDialogOpen.bind(this);
-    this.handleDialogClose = this.handleDialogClose.bind(this);
-    this.handleLinkClick = this.handleLinkClick.bind(this);
-    this.handleExpandExclusion = this.handleExpandExclusion.bind(this);
-    this.handleExpandByClass = this.handleExpandByClass.bind(this);
-    this.handleExpandCheckAll = this.handleExpandCheckAll.bind(this);
   }
 
   /**
@@ -276,6 +255,7 @@ class GraphComponent extends Component {
    * Applies drag behavior to node.
    * @param {GraphNode} node - node to be dragged.
    */
+  @boundMethod
   applyDrag(node) {
     const { simulation } = this.state;
     d3Select.event.sourceEvent.stopPropagation();
@@ -301,6 +281,7 @@ class GraphComponent extends Component {
   /**
    * Renders nodes and links to the graph.
    */
+  @boundMethod
   drawGraph() {
     const {
       nodes,
@@ -334,6 +315,7 @@ class GraphComponent extends Component {
   /**
    * Initializes simulation rules and properties. Updates simulation component state.
    */
+  @boundMethod
   initSimulation() {
     const {
       simulation,
@@ -396,6 +378,7 @@ class GraphComponent extends Component {
    * Calls the api and renders neighbor nodes of the input node onto the graph.
    * @param {GraphNode} node - d3 simulation node whose neighbors were requestsed.
    */
+  @boundMethod
   loadNeighbors(node) {
     const { expandExclusions } = this.state;
     const { localStorageKey } = this.props;
@@ -447,6 +430,7 @@ class GraphComponent extends Component {
    * expansion dialog panel.
    * @param {GraphNode} node - d3 simulation node to be expanded.
    */
+  @boundMethod
   handleExpandRequest(node) {
     const {
       expandable,
@@ -469,6 +453,7 @@ class GraphComponent extends Component {
    * Pauses d3 force simulation by making simulation 'tick' event handler a
    * noop.
    */
+  @boundMethod
   pauseGraph() {
     const { simulation } = this.state;
     simulation.on('tick', null);
@@ -617,6 +602,7 @@ class GraphComponent extends Component {
    * Restarts simulation with initial nodes and links present. These are determined by the
    * first state rendered when the component mounts.
    */
+  @boundMethod
   refresh() {
     const { handleDetailDrawerClose } = this.props;
     this.setState({
@@ -631,6 +617,7 @@ class GraphComponent extends Component {
   /**
    * Updates color scheme for the graph, for nodes or links.
    */
+  @boundMethod
   updateColors() {
     ['node', 'link'].forEach((type) => {
       const { snackbar } = this.props;
@@ -684,6 +671,7 @@ class GraphComponent extends Component {
    * @param {function} action - callback function to be called before node is
    * deselected.
    */
+  @boundMethod
   withClose(action = null) {
     return () => {
       if (action) {
@@ -697,6 +685,7 @@ class GraphComponent extends Component {
    * Handles node clicks from user.
    * @param {Object} node - Clicked simulation node.
    */
+  @boundMethod
   async handleClick(node) {
     const { handleClick, handleDetailDrawerOpen } = this.props;
     // Prematurely loads neighbor data.
@@ -713,6 +702,7 @@ class GraphComponent extends Component {
    * @param {Event} event - User input event.
    * @param {boolean} isAdvanced - Advanced option flag.
    */
+  @boundMethod
   handleGraphOptionsChange(event, isAdvanced) {
     const { graphOptions, refreshable } = this.state;
     graphOptions[event.target.name] = event.target.value;
@@ -727,6 +717,7 @@ class GraphComponent extends Component {
   /**
    * Closes additional help dialog.
    */
+  @boundMethod
   handleDialogClose(key) {
     return () => this.setState({ [key]: false },
       () => {
@@ -739,6 +730,7 @@ class GraphComponent extends Component {
    * Opens additional help dialog.
    * @param {string} key - ['main', 'advanced'].
    */
+  @boundMethod
   handleDialogOpen(key) {
     return () => this.setState({ [key]: true }, () => {
       this.pauseGraph();
@@ -748,6 +740,7 @@ class GraphComponent extends Component {
   /**
    * Expands currently staged nodes.
    */
+  @boundMethod
   handleExpand() {
     const { actionsNode } = this.state;
     this.setState({ expansionDialogOpen: false });
@@ -758,6 +751,7 @@ class GraphComponent extends Component {
    * Handles link clicks from user.
    * @param {Object} link - Clicked simulation link.
    */
+  @boundMethod
   handleLinkClick(link) {
     const { handleDetailDrawerOpen } = this.props;
 
@@ -771,6 +765,7 @@ class GraphComponent extends Component {
   /**
    * Hides link from the graph view.
    */
+  @boundMethod
   handleLinkHide() {
     const {
       actionsNode,
@@ -802,6 +797,7 @@ class GraphComponent extends Component {
   /**
    * Removes node and all corresponding links from the graph.
    */
+  @boundMethod
   handleNodeHide() {
     const {
       actionsNode,
@@ -857,6 +853,7 @@ class GraphComponent extends Component {
   /**
    * Resizes svg window and reinitializes the simulation.
    */
+  @boundMethod
   handleResize() {
     if (this.wrapper) {
       this.setState(
@@ -873,6 +870,7 @@ class GraphComponent extends Component {
    * @param {string} rid - edge ID to be pushed/popped from the expand
    * exclusions list.
    */
+  @boundMethod
   handleExpandExclusion(rid) {
     const { expandExclusions } = this.state;
     const i = expandExclusions.indexOf(rid);
@@ -887,6 +885,7 @@ class GraphComponent extends Component {
   /**
    * Selects/Deselects all options in the expand node dialog.
    */
+  @boundMethod
   handleExpandCheckAll() {
     const { expandExclusions, expandNode } = this.state;
     const { schema } = this.props;
@@ -902,6 +901,7 @@ class GraphComponent extends Component {
    * Expands all links of specified class on the expand node.
    * @param {string} cls - KB edge class name to be expanded.
    */
+  @boundMethod
   handleExpandByClass(cls) {
     return () => {
       const { expandNode } = this.state;

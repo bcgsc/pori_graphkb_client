@@ -15,6 +15,9 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import { boundMethod } from 'autobind-decorator';
+
+
 import logo from '../../../../static/logo.png';
 import title from '../../../../static/title.png';
 
@@ -22,15 +25,13 @@ class MainNav extends Component {
   constructor(props) {
     super(props);
     this.state = { expanded: '' };
-    this.handleExpand = this.handleExpand.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.renderLink = this.renderLink.bind(this);
   }
 
   /**
    * Expands a list item in the main navigation drawer.
    * @param {string} key - Item key to expand in main navigation drawer.
    */
+  @boundMethod
   handleExpand(key) {
     const { open, onChange } = this.props;
     return () => {
@@ -45,6 +46,7 @@ class MainNav extends Component {
   /**
    * Handles closing of drawer.
    */
+  @boundMethod
   handleClose() {
     const { onChange } = this.props;
     onChange(false)();
@@ -54,6 +56,7 @@ class MainNav extends Component {
   /**
    * Handles render of a nav drawer list item.
    */
+  @boundMethod
   renderLink(link, nested) {
     const {
       open,

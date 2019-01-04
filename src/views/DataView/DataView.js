@@ -1,6 +1,7 @@
 /**
  * @module /views/DataView
  */
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './DataView.scss';
@@ -48,28 +49,6 @@ class DataViewBase extends Component {
     };
 
     this.controllers = [];
-
-    this.handleClick = this.handleClick.bind(this);
-    this.processData = this.processData.bind(this);
-
-    // TableComponent methods
-    this.handleCheckbox = this.handleCheckbox.bind(this);
-    this.handleCheckAll = this.handleCheckAll.bind(this);
-    this.handleHideSelected = this.handleHideSelected.bind(this);
-    this.handleShowAllNodes = this.handleShowAllNodes.bind(this);
-    this.handleSubsequentPagination = this.handleSubsequentPagination.bind(this);
-
-    // GraphComponent methods
-    this.handleDetailDrawerOpen = this.handleDetailDrawerOpen.bind(this);
-    this.handleDetailDrawerClose = this.handleDetailDrawerClose.bind(this);
-    this.handleNewColumns = this.handleNewColumns.bind(this);
-
-    // NodeDetailComponent methods
-    this.handleNodeEditStart = this.handleNodeEditStart.bind(this);
-
-    // Routing methods
-    this.handleGraphRedirect = this.handleGraphRedirect.bind(this);
-    this.handleTableRedirect = this.handleTableRedirect.bind(this);
   }
 
   /**
@@ -222,6 +201,7 @@ class DataViewBase extends Component {
    * Sets the state selected ID to clicked node.
    * @param {Object} node - Clicked node identifier.
    */
+  @boundMethod
   async handleClick(node) {
     const { schema } = this.props;
     const { data } = this.state;
@@ -240,6 +220,7 @@ class DataViewBase extends Component {
    * @param {Event} event - User checkbox event.
    * @param {string} rid - Checked node identifier.
    */
+  @boundMethod
   handleCheckbox(event, rid) {
     event.stopPropagation();
     const { displayed } = this.state;
@@ -257,6 +238,7 @@ class DataViewBase extends Component {
    * @param {Event} event - Checkbox event.
    * @param {Array.<Object>} - Currently displayed page data.
    */
+  @boundMethod
   handleCheckAll(event, pageData) {
     let displayed;
     if (event.target.checked) {
@@ -270,6 +252,7 @@ class DataViewBase extends Component {
   /**
    * Clears displayed array.
    */
+  @boundMethod
   handleHideSelected() {
     const { displayed, hidden } = this.state;
     hidden.push(...displayed);
@@ -279,6 +262,7 @@ class DataViewBase extends Component {
   /**
    * Appends the input array to the displayed array.
    */
+  @boundMethod
   handleShowAllNodes() {
     const { displayed, hidden } = this.state;
     displayed.push(...hidden);
@@ -288,6 +272,7 @@ class DataViewBase extends Component {
   /**
    * Handles subsequent pagination call
    */
+  @boundMethod
   async handleSubsequentPagination() {
     const { schema } = this.props;
     const {
@@ -331,6 +316,7 @@ class DataViewBase extends Component {
   /**
    * Sets selected ID to input node identifier and opens edit drawer.
    */
+  @boundMethod
   handleNodeEditStart() {
     const { detail } = this.state;
     const { history, schema } = this.props;
@@ -351,6 +337,7 @@ class DataViewBase extends Component {
   /**
    * Closes detail drawer.
    */
+  @boundMethod
   handleDetailDrawerClose() {
     this.setState({ detail: null });
   }
@@ -361,6 +348,7 @@ class DataViewBase extends Component {
    * @param {boolean} open - flag to open drawer, or to just update.
    * @param {boolean} edge - flag to indicate edge record.
    */
+  @boundMethod
   async handleDetailDrawerOpen(node, open, edge) {
     const { data, detail } = this.state;
     if (!open && !detail) return;
@@ -386,6 +374,7 @@ class DataViewBase extends Component {
   /**
    * Handles redirect to table to graph.
    */
+  @boundMethod
   handleGraphRedirect(filters) {
     const { history } = this.props;
     this.setState({ storedFilters: filters, detail: null });
@@ -395,6 +384,7 @@ class DataViewBase extends Component {
   /**
    * Handles redirect to graph to table.
    */
+  @boundMethod
   handleTableRedirect() {
     const { history } = this.props;
     this.setState({ detail: null });
@@ -408,6 +398,7 @@ class DataViewBase extends Component {
    * Updates column list with field keys from new node.
    * @param {Object} node - newly added object.
    */
+  @boundMethod
   handleNewColumns(node) {
     const { allProps } = this.state;
     const { schema } = this.props;

@@ -1,6 +1,7 @@
 /**
  * @module /components/RelationshipsForm
  */
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './RelationshipsForm.scss';
@@ -46,11 +47,6 @@ class RelationshipsForm extends Component {
       initState: null,
     };
     this.testId = 0;
-    this.handleAdd = this.handleAdd.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleClassChange = this.handleClassChange.bind(this);
-    this.handleDirection = this.handleDirection.bind(this);
-    this.handleExpand = this.handleExpand.bind(this);
   }
 
   /**
@@ -76,6 +72,7 @@ class RelationshipsForm extends Component {
    * Adds new subset to state list. Clears subset field.
    * @param {Event} event - User request subset add event.
    */
+  @boundMethod
   handleAdd(event) {
     event.preventDefault();
     const {
@@ -114,6 +111,7 @@ class RelationshipsForm extends Component {
    * @param {Event} event - User delete button event click.
    * @param {string} rid - relationship id to be deleted.
    */
+  @boundMethod
   handleDelete(event, rid) {
     event.stopPropagation();
     const {
@@ -140,6 +138,7 @@ class RelationshipsForm extends Component {
    * @param {Event} event - User undo button click event.
    * @param {string} rid - deleted subset to be reverted.
    */
+  @boundMethod
   handleUndo(event, rid) {
     event.stopPropagation();
 
@@ -152,6 +151,7 @@ class RelationshipsForm extends Component {
    * Handles change in temp relationship model.
    * @param {Event} event - User change event.
    */
+  @boundMethod
   handleChange(event) {
     const { model } = this.state;
     const { schema } = this.props;
@@ -168,6 +168,7 @@ class RelationshipsForm extends Component {
    * reinitialization of the model.
    * @param {Event} event - class change event.
    */
+  @boundMethod
   handleClassChange(event) {
     const { model } = this.state;
     const { schema } = this.props;
@@ -190,6 +191,7 @@ class RelationshipsForm extends Component {
    * >   out: nodeA,
    * > };
    */
+  @boundMethod
   handleDirection() {
     const { forward, model } = this.state;
 
@@ -216,6 +218,7 @@ class RelationshipsForm extends Component {
    * relationships that have more properties than the standard in, out, source.
    * @param {string} rid - ID of the relationship to be expanded.
    */
+  @boundMethod
   handleExpand(rid) {
     const { expanded } = this.state;
     this.setState({
@@ -240,6 +243,7 @@ class RelationshipsForm extends Component {
    * @param {boolean} isIn - flag for whether current editing node is on the 'in'
    * side of the relationship.
    */
+  @boundMethod
   relationshipDetails(r, isIn) {
     const { schema } = this.props;
     const targetNode = isIn

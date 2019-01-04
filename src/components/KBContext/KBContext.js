@@ -3,7 +3,7 @@ import React from 'react';
 /**
  * Passes user and schema values to wrapped consumers.
  */
-const KBContext = React.createContext(null);
+const KBContext = React.createContext({ schema: null, user: null });
 
 const withKB = Child => props => (
   <KBContext.Consumer>

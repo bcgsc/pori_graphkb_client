@@ -2,6 +2,7 @@
  * @module /components/TableComponent
  */
 
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
@@ -70,26 +71,6 @@ class TableComponent extends Component {
       columnFilterExclusions: [],
       filterOptions: [],
     };
-
-    this.clearFilter = this.clearFilter.bind(this);
-    this.clearFilters = this.clearFilters.bind(this);
-    this.createTSV = this.createTSV.bind(this);
-    this.openFilter = this.openFilter.bind(this);
-    this.setRef = this.setRef.bind(this);
-    this.handleFilterStrings = this.handleFilterStrings.bind(this);
-    this.handleFilterExclusions = this.handleFilterExclusions.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleChangePage = this.handleChangePage.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.handleColumnCheck = this.handleColumnCheck.bind(this);
-    this.handleDetailToggle = this.handleDetailToggle.bind(this);
-    this.handleHeaderMouseEnter = this.handleHeaderMouseEnter.bind(this);
-    this.handleHeaderMouseLeave = this.handleHeaderMouseLeave.bind(this);
-    this.handleOpen = this.handleOpen.bind(this);
-    this.handleRequestSort = this.handleRequestSort.bind(this);
-    this.handleSortByChange = this.handleSortByChange.bind(this);
-    this.handleSortByChecked = this.handleSortByChecked.bind(this);
-    this.handleFilterCheckAll = this.handleFilterCheckAll.bind(this);
   }
 
   /**
@@ -186,6 +167,7 @@ class TableComponent extends Component {
   /**
    * Stores DOM references in component state.
    */
+  @boundMethod
   setRef(node, i) {
     const { tableHeadRefs } = this.state;
     if (!tableHeadRefs[i]) {
@@ -199,6 +181,7 @@ class TableComponent extends Component {
    * Clears all filter values for specified column.
    * @param {number} i - column index.
    */
+  @boundMethod
   clearFilter(i) {
     const { columnFilterStrings, columnFilterExclusions } = this.state;
     columnFilterStrings[i] = '';
@@ -209,6 +192,7 @@ class TableComponent extends Component {
   /**
    * Sets all filter strings to the empty string.
    */
+  @boundMethod
   clearFilters() {
     const { tableColumns } = this.state;
     for (let i = 0; i < tableColumns.length; i += 1) {
@@ -220,6 +204,7 @@ class TableComponent extends Component {
    * builds tsv data and prompts the browser to download file.
    * @param {Array.<Object>} fData - forced data to be put into tsv.
    */
+  @boundMethod
   createTSV(fData) {
     const { data, hidden, allProps } = this.props;
     const rows = [];
@@ -247,6 +232,7 @@ class TableComponent extends Component {
    * Opens filter input box at a column header.
    * @param {number} i - column index.
    */
+  @boundMethod
   openFilter(i) {
     const { tableHeadRefs, tableColumns } = this.state;
     const { data } = this.props;
@@ -307,6 +293,7 @@ class TableComponent extends Component {
    * Updates currently editing filter string.
    * @param {Event} event - User input event.
    */
+  @boundMethod
   handleFilterStrings(event) {
     const { columnFilterStrings, tempFilterIndex } = this.state;
     columnFilterStrings[tempFilterIndex] = event.target.value;
@@ -317,6 +304,7 @@ class TableComponent extends Component {
    * General state update handler.
    * @param {Event} event - user change event.
    */
+  @boundMethod
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
   }
@@ -326,6 +314,7 @@ class TableComponent extends Component {
    * @param {Event} event - Triggered event.
    * @param {number} page - New page number.
    */
+  @boundMethod
   handleChangePage(event, page) {
     const { sortedData, rowsPerPage } = this.state;
     const { moreResults } = this.props;
@@ -342,6 +331,7 @@ class TableComponent extends Component {
   /**
    * Closes table actions menu.
    */
+  @boundMethod
   handleClose() {
     this.setState({ anchorEl: null, filterPopoverNode: null });
   }
@@ -350,6 +340,7 @@ class TableComponent extends Component {
    * Selects/deselects a column for displaying on the table.
    * @param {number} i - Table column index.
    */
+  @boundMethod
   handleColumnCheck(i) {
     const { tableColumns } = this.state;
     tableColumns[i].checked = !tableColumns[i].checked;
@@ -362,6 +353,7 @@ class TableComponent extends Component {
    * collapses it.
    * @param {string} rid - Node identifier.
    */
+  @boundMethod
   handleDetailToggle(rid) {
     const { toggle } = this.state;
     this.setState({ toggle: toggle === rid ? '' : rid });
@@ -372,6 +364,7 @@ class TableComponent extends Component {
    * filtering column.
    * @param {string} option - Option to be toggled.
    */
+  @boundMethod
   handleFilterExclusions(option) {
     const { columnFilterExclusions, tempFilterIndex } = this.state;
     const i = columnFilterExclusions[tempFilterIndex].indexOf(option);
@@ -386,6 +379,7 @@ class TableComponent extends Component {
   /**
    * Toggles filters from selecting all/deselecting all options.
    */
+  @boundMethod
   handleFilterCheckAll() {
     const {
       columnFilterExclusions,
@@ -405,6 +399,7 @@ class TableComponent extends Component {
    * the header index.
    * @param {number} i - column header index.
    */
+  @boundMethod
   handleHeaderMouseEnter(i) {
     this.setState({ hoveringHeader: i });
   }
@@ -412,6 +407,7 @@ class TableComponent extends Component {
   /**
    * Handles mouse leaving event on a table column header, clearing the state.
    */
+  @boundMethod
   handleHeaderMouseLeave() {
     this.setState({ hoveringHeader: null });
   }
@@ -420,6 +416,7 @@ class TableComponent extends Component {
    * Opens table actions menu.
    * @param {Event} event - Open menu button event.
    */
+  @boundMethod
   handleOpen(event) {
     this.setState({ anchorEl: event.currentTarget });
   }
@@ -429,6 +426,7 @@ class TableComponent extends Component {
    * selected, toggles the sort direction.
    * @param {string} column - Column property object to be sorted by.
    */
+  @boundMethod
   handleRequestSort(column) {
     const { orderBy, order } = this.state;
     const { data } = this.props;
@@ -474,6 +472,7 @@ class TableComponent extends Component {
    * @param {string} sortBy - new property for column to be sorted by.
    * @param {number} i - column index.
    */
+  @boundMethod
   handleSortByChange(sortBy, i) {
     const { tableColumns } = this.state;
     tableColumns[i].sortBy = sortBy;
@@ -485,6 +484,7 @@ class TableComponent extends Component {
    * on current state.
    * @param {string} fOrder - forced output order.
    */
+  @boundMethod
   handleSortByChecked(fOrder) {
     const { orderBy, order } = this.state;
     const { displayed, data } = this.props;

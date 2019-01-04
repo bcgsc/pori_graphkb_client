@@ -1,6 +1,7 @@
 /**
  * @module /components/OntologyFormComponent
  */
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './OntologyFormComponent.scss';
@@ -50,13 +51,6 @@ class OntologyFormComponent extends Component {
       deleteDialog: false,
       errorFields: [],
     };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleClassChange = this.handleClassChange.bind(this);
-    this.handleDeleteNode = this.handleDeleteNode.bind(this);
-    this.handleDialog = this.handleDialog.bind(this);
-    this.handleFormChange = this.handleFormChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   /**
@@ -96,6 +90,7 @@ class OntologyFormComponent extends Component {
    * Changes state base on user input.
    * @param {Event} event - user input event.
    */
+  @boundMethod
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
   }
@@ -104,6 +99,7 @@ class OntologyFormComponent extends Component {
    * Re renders form input fields based on class editable properties.
    * @param {Event} event - User class selection event.
    */
+  @boundMethod
   handleClassChange(event) {
     const { form } = this.state;
     const { schema } = this.props;
@@ -113,6 +109,7 @@ class OntologyFormComponent extends Component {
   /**
    * Deletes target node.
    */
+  @boundMethod
   async handleDeleteNode() {
     const { handleDelete } = this.props;
     this.setState({ notificationDrawerOpen: true, loading: true });
@@ -125,6 +122,7 @@ class OntologyFormComponent extends Component {
    * Sets the open state of the delete dialog.
    * @param {boolean} val - Open state of delete dialog.
    */
+  @boundMethod
   handleDialog(val) {
     this.setState({ deleteDialog: val });
   }
@@ -133,6 +131,7 @@ class OntologyFormComponent extends Component {
    * Changes form state based on user input.
    * @param {Event} event - user input event.
    */
+  @boundMethod
   handleFormChange(event) {
     const { form } = this.state;
     const { schema } = this.props;
@@ -149,6 +148,7 @@ class OntologyFormComponent extends Component {
    * relationships data.
    * @param {Event} event - Submit event.
    */
+  @boundMethod
   async handleSubmit(event) {
     event.preventDefault();
     const { form, relationships, originalNode } = this.state;

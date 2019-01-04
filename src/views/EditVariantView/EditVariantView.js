@@ -2,10 +2,12 @@
  * @module /views/EditVariantView
  */
 import React, { Component } from 'react';
-import '../AddVariantView/AddVariantView.scss';
+import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
 import { Paper, Typography, Button } from '@material-ui/core';
 import * as jc from 'json-cycle';
+
+import '../AddVariantView/AddVariantView.scss';
 import { withKB } from '../../components/KBContext';
 import OntologyFormComponent from '../../components/OntologyFormComponent';
 import PositionalVariantParser from '../../components/PositionalVariantParser';
@@ -26,9 +28,6 @@ class EditVariantViewBase extends Component {
       node: null,
     };
     this.controllers = [];
-    this.handleCancel = this.handleCancel.bind(this);
-    this.handleFinish = this.handleFinish.bind(this);
-    this.submitVariant = this.submitVariant.bind(this);
   }
 
   /**
@@ -58,6 +57,7 @@ class EditVariantViewBase extends Component {
   /**
    * Takes action on a variant form cancel. Navigates to previously visited page.
    */
+  @boundMethod
   handleCancel() {
     const { history } = this.props;
     history.goBack();
@@ -66,6 +66,7 @@ class EditVariantViewBase extends Component {
   /**
    * Sends DELETE call to api for this node.
    */
+  @boundMethod
   async handleDelete() {
     const { node } = this.state;
     const { schema } = this.props;
@@ -78,6 +79,7 @@ class EditVariantViewBase extends Component {
   /**
    * Takes action on a successful variant submission. Navigates to query page.
    */
+  @boundMethod
   handleFinish() {
     const { history } = this.props;
     history.push('/query');

@@ -1,3 +1,4 @@
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './EmbeddedSetForm.scss';
@@ -21,14 +22,13 @@ class EmbeddedSetForm extends Component {
       tempElement: '',
       initList: props.list.slice(),
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleAdd = this.handleAdd.bind(this);
   }
 
   /**
    * Adds new element to state list. Clears temporary element field.
    * @param {Event} event - User element add event (button click or Enter keypress)
    */
+  @boundMethod
   handleAdd(event) {
     event.preventDefault();
     const {
@@ -52,6 +52,7 @@ class EmbeddedSetForm extends Component {
    * Deletes element from state list.
    * @param {string} val - element to be deleted.
    */
+  @boundMethod
   handleDelete(val) {
     const {
       deleted,
@@ -76,6 +77,7 @@ class EmbeddedSetForm extends Component {
    * Reverts a element that is staged for deletion.
    * @param {string} val - deleted element to be reverted.
    */
+  @boundMethod
   handleUndo(val) {
     const {
       name,
@@ -93,6 +95,7 @@ class EmbeddedSetForm extends Component {
    * Handles user changes to component state.
    * @param {Event} event - User change event.
    */
+  @boundMethod
   handleChange(event) {
     this.setState({ tempElement: event.target.value });
   }

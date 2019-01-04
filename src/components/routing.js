@@ -13,7 +13,7 @@ const AuthenticatedRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={props => (
-      auth.isAuthenticated()
+      auth.isAuthorized()
         ? <Component {...props} />
         : (
           <Redirect to={{
@@ -35,7 +35,7 @@ const AdminRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={props => (
-      auth.isAuthenticated() && auth.isAdmin()
+      auth.isAuthorized() && auth.isAdmin()
         ? <Component {...props} />
         : (
           <Redirect to={{

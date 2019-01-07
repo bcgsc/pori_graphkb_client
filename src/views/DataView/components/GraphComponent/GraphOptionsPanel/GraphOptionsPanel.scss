@@ -1,0 +1,89 @@
+@import "../../../../../globals";
+
+.options-panel-wrapper {
+  width: 100%;
+  .options-title {
+    padding: 24px 24px 20px;
+    padding-right: 56px;
+    display: flex;
+    align-items: center;
+    button {
+      margin-left: auto;
+      svg {
+        margin: 0;
+      }
+    }
+  }
+  .graph-input-wrapper {
+    svg {
+      color: $md-secondary-color;
+    }
+  }
+  span.label {
+    margin: 0;
+    font-size: 0.7em;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    color: $md-primary-color;
+  }
+  .graph-input {
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.23);
+    overflow: hidden;
+    input {
+      border: none;
+      font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+      font-size: 0.9em;
+      background-color: unset;
+      width: 100%;
+    }
+    input:focus {
+      outline: none;
+      box-shadow: none;
+    }
+    input:invalid {
+      outline: none;
+      box-shadow: none;
+    }
+  }
+
+  .advanced-options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 8px;
+    padding: 24px;
+  }
+  .options-grid {
+    display: grid;
+    grid-template-rows: 2fr 1fr;
+    grid-template-columns: 1fr;
+    grid-column-gap: 8px;
+  }
+  .advanced-options-wrapper {
+    padding: 24px;
+    padding-top: 0;
+    .advanced-options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      grid-gap: 8px;
+      padding: 24px;
+    }
+  }
+  .main-options-wrapper {
+    flex-grow: 1;
+    padding: 0 48px 20px 48px;
+    .graph-option {
+      width: 100%;
+      margin: 12px 0;
+    }
+  }
+}
+
+.help-title {
+  display: flex;
+  align-items: center;
+  button {
+    margin-left: auto;
+  }
+}

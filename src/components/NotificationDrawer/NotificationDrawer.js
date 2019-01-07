@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './NotificationDrawer.css';
+import './NotificationDrawer.scss';
 import {
   Drawer,
   LinearProgress,

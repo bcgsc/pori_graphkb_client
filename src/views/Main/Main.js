@@ -1,14 +1,14 @@
 /**
  * @module /Main
  */
-import React, { Component } from 'react';
+import React from 'react';
 import {
   Route,
   Redirect,
   Switch,
   Link,
 } from 'react-router-dom';
-import './Main.css';
+import './Main.scss';
 import {
   AppBar,
   IconButton,
@@ -44,18 +44,20 @@ import {
 import auth from '../../services/auth';
 import Schema from '../../services/schema';
 import { KBContext } from '../../components/KBContext';
-import MainNav from '../../components/MainNav';
+import { MainNav } from './components';
+import AuthenticatedRoute from '../../components/AuthenticatedRoute';
+
 
 /**
  * Entry point to application. Handles routing, app theme, and logged in state.
  */
-class Main extends Component {
+class Main extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       anchorEl: null,
-      loggedIn: (!!auth.getToken() && !auth.isExpired()),
+      loggedIn: auth.isAuthenticated(),
       drawerOpen: false,
     };
     this.handleOpen = this.handleOpen.bind(this);
@@ -83,7 +85,7 @@ class Main extends Component {
    * setState call required so component is re rendered.
    */
   handleAuthenticate() {
-    this.setState({ loggedIn: (!!auth.getToken() && !auth.isExpired()) });
+    this.setState({ loggedIn: auth.isAuthenticated() });
   }
 
   /**
@@ -130,23 +132,6 @@ class Main extends Component {
       },
     ];
 
-    const loggedInContent = (
-      <Switch>
-        <Route exact path="/about" component={AboutView} />
-        <Route exact path="/query" component={QueryView} />
-        <Route exact path="/query/advanced" component={AdvancedQueryView} />
-        <Route path="/query/advanced/builder" component={QueryBuilderView} />
-        <Route path="/add/ontology" component={AddOntologyView} />
-        <Route path="/add/variant" component={AddVariantView} />
-        <Route path="/add/statement" component={AddStatementView} />
-        <Route path="/edit/ontology/:rid" component={EditOntologyView} />
-        <Route path="/edit/variant/:rid" component={EditVariantView} />
-        <Route path="/edit/statement/:rid" component={EditStatementView} />
-        <Route path="/data" component={DataView} />
-        <Route path="/admin" component={AdminView} />
-        <Redirect from="*" to="/query" />
-      </Switch>
-    );
     return (
       <KBContext.Provider value={{ schema: new Schema(SCHEMA_DEFN), user: auth.getUser() }}>
         <div className="Main">
@@ -166,7 +151,7 @@ class Main extends Component {
             <div className="appbar-title">
               <Link to="/query" onClick={this.handleNavBar(false)} disabled={!loggedIn}>
                 <Typography variant="h6">GraphKB</Typography>
-                <Typography variant="caption">v{process.env.REACT_APP_VERSION}</Typography>
+                <Typography variant="caption">v{process.env.npm_package_version}</Typography>
               </Link>
             </div>
             <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>
@@ -179,9 +164,8 @@ class Main extends Component {
                 >
                   <PersonIcon />
                   <Typography color="inherit">
-                    {auth.getKeyCloakToken()
-                      ? ((auth.getUser() && auth.getUser().name)
-                        || auth.getKeyCloakToken().preferred_username)
+                    {auth.isAuthenticated()
+                      ? auth.getUser().name
                       : 'Logged Out'
                     }
                   </Typography>
@@ -235,10 +219,19 @@ class Main extends Component {
                 <Route path="/feedback" component={FeedbackView} />
                 <Route path="/login" render={loginWithProps} />
                 <Route path="/error" component={ErrorView} />
-                {loggedIn
-                  ? <Route path="/" render={() => loggedInContent} />
-                  : <Route path="*" render={() => <Redirect push to="/login" />} />
-                }
+                <Route path="/about" component={AboutView} />
+                <AuthenticatedRoute exact path="/query" component={QueryView} />
+                <AuthenticatedRoute exact path="/query/advanced" component={AdvancedQueryView} />
+                <AuthenticatedRoute path="/query/advanced/builder" component={QueryBuilderView} />
+                <AuthenticatedRoute path="/add/ontology" component={AddOntologyView} />
+                <AuthenticatedRoute path="/add/variant" component={AddVariantView} />
+                <AuthenticatedRoute path="/add/statement" component={AddStatementView} />
+                <AuthenticatedRoute path="/edit/ontology/:rid" component={EditOntologyView} />
+                <AuthenticatedRoute path="/edit/variant/:rid" component={EditVariantView} />
+                <AuthenticatedRoute path="/edit/statement/:rid" component={EditStatementView} />
+                <AuthenticatedRoute path="/data" component={DataView} />
+                <AuthenticatedRoute path="/admin" admin component={AdminView} />
+                <Redirect from="/" to="/query" />
               </Switch>
             </div>
           </section>

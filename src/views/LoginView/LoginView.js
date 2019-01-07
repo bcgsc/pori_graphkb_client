@@ -3,7 +3,7 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './LoginView.css';
+import './LoginView.scss';
 import {
   Button,
   Typography,
@@ -27,6 +27,7 @@ class LoginView extends Component {
     this.state = {
       unauthorized: false,
     };
+    this.controllers = [];
   }
 
   /**
@@ -43,20 +44,31 @@ class LoginView extends Component {
     if (auth.getKeyCloakToken() && auth.getToken()) {
       handleAuthenticate();
       history.push('/query');
-    } else {
+      return;
+    }
+
+    let call;
+    if (config.DISABLE_AUTH !== true) { // FOR NOT TESTING
       const token = await auth.login();
-      try {
-        const response = await api.post('/token', { keyCloakToken: token });
-        auth.loadToken(response.kbToken);
-        history.push('/query');
-      } catch (error) {
-        this.setState({ unauthorized: true });
-      } finally {
-        handleAuthenticate();
-      }
+      call = api.post('/token', { keyCloakToken: token });
+    } else {
+      call = api.post('/token', { username: process.env.USER, password: process.env.PASSWORD });
+    }
+    this.controllers.push(call);
+    try {
+      const response = await call.request();
+      auth.loadToken(response.kbToken);
+      history.push('/query');
+    } catch (error) {
+      this.setState({ unauthorized: true });
+    } finally {
+      handleAuthenticate();
     }
   }
 
+  componentWillUnmount() {
+    this.controllers.forEach(c => c.abort());
+  }
 
   render() {
     const { unauthorized } = this.state;

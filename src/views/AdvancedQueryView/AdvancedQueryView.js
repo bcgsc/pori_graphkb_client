@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './AdvancedQueryView.css';
+import './AdvancedQueryView.scss';
 import {
   Button,
   Typography,

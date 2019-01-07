@@ -54,8 +54,8 @@ class LoginView extends Component {
     } else {
       call = api.post('/token', { username: process.env.USER, password: process.env.PASSWORD });
     }
+    this.controllers.push(call);
     try {
-      this.controllers.push(call);
       const response = await call.request();
       auth.loadToken(response.kbToken);
       history.push('/query');

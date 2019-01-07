@@ -3,7 +3,7 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './AutoSearchBase.css';
+import './AutoSearchBase.scss';
 import {
   MenuItem,
   List,

@@ -2,7 +2,7 @@
  * @module /views/AddVariantView
  */
 import React, { Component } from 'react';
-import './AddVariantView.css';
+import './AddVariantView.scss';
 import PropTypes from 'prop-types';
 import { Paper, Typography, Button } from '@material-ui/core';
 import { withKB } from '../../components/KBContext';
@@ -19,9 +19,14 @@ class AddVariantViewBase extends Component {
     this.state = {
       is409: false,
     };
+    this.controllers = [];
     this.handleCancel = this.handleCancel.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
     this.submitVariant = this.submitVariant.bind(this);
+  }
+
+  componentWillUnmount() {
+    this.controllers.forEach(c => c.abort());
   }
 
   /**
@@ -72,9 +77,13 @@ class AddVariantViewBase extends Component {
     });
     const payload = util.parsePayload(copy, properties);
     try {
-      const response = await api.post(routeName, payload);
+      const call = api.post(routeName, payload);
+      this.controllers.push(call);
+      const response = await call.request();
 
-      await api.submitEdges(relationships, schema, response.result['@rid']);
+      const edgesCalls = api.submitEdges(relationships, schema, response.result['@rid']);
+      this.controllers.push(...edgesCalls);
+      await Promise.all(edgesCalls.map(async c => c.request()));
       return true;
     } catch (error) {
       this.setState({ is409: true });

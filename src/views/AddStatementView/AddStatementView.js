@@ -22,8 +22,16 @@ class AddStatementViewBase extends Component {
     this.state = {
       is409: false,
     };
+    this.controller = null;
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
+  }
+
+
+  componentWillUnmount() {
+    if (this.controller !== null) {
+      this.controller.abort();
+    }
   }
 
   /**
@@ -67,7 +75,8 @@ class AddStatementViewBase extends Component {
     payload.supportedBy = relationshipPayloads.filter(r => r['@class'] === 'SupportedBy');
     payload.impliedBy = relationshipPayloads.filter(r => r['@class'] === 'ImpliedBy');
     try {
-      await api.post(routeName, payload);
+      this.controller = api.post(routeName, payload);
+      await this.controller.request();
       return true;
     } catch (error) {
       console.error(error);

@@ -3,7 +3,7 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './StatementFormComponent.css';
+import './StatementFormComponent.scss';
 import {
   Button,
   Paper,

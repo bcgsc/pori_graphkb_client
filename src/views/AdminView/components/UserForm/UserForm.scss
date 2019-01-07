@@ -1,0 +1,19 @@
+@import "../../../../globals";
+
+.admin-users {
+  max-height: 720px;
+  @include paper;
+
+  .users-btns {
+    margin: 8px 0;
+    display: flex;
+    flex-direction: row-reverse;
+    button {
+      margin: 0 8px;
+    }
+  }
+
+  .admin-badge {
+    animation: fade-in(0.1s);
+  }
+}

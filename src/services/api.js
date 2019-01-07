@@ -83,7 +83,6 @@ class GraphKbApiCall {
       url,
     };
     if (status === 401) {
-      error.isExpired = !!auth.isExpired();
       auth.clearTokens();
       throw new AuthenticationError(error);
     }

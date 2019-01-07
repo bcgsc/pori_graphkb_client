@@ -1,43 +1,107 @@
 import { expect } from 'chai';
+import jwt from 'jsonwebtoken';
 import auth from '../auth';
 
-// Payload:
-//   exp: 0,
-//   payload: "helo",
-//   user: {
-//      name: "test user",
-//      groups: [
-//        { name: "not admin" }
-//      ]
-//   }
-const FAKE_JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjAsInBheWxvYWQiOiJoZWxvIiwidXNlciI6eyJuYW1lIjoidGVzdCB1c2VyIiwiZ3JvdXBzIjpbeyJuYW1lIjoibm90IGFkbWluIn1dfX0.hxrVtALihqyaT4SDDQZCMmpE33uFkHnaQz1ZCCQntyo';
+const TEST_USER = { name: 'test user', groups: [{ name: 'not admin' }] };
+const ADMIN_USER = { name: 'test user', groups: [{ name: 'admin' }] };
+const REALLY_LONG_TIME = 1000000000000;
+const ENCRYPTION_KEY = 'NotSuperSecret';
 
 describe('auth methods test', () => {
-  it('loadToken & getToken', () => {
-    const token = 'pass';
-    auth.loadToken(token);
-    expect(auth.getToken()).to.eq('pass');
+  describe('expired token', () => {
+    const EXPIRED_JWT = jwt.sign({ user: TEST_USER }, ENCRYPTION_KEY, { expiresIn: 0 });
+    beforeEach(() => {
+      auth.setToken(EXPIRED_JWT);
+      auth.setAuthToken(EXPIRED_JWT);
+    });
+    it('retrieved the user', () => {
+      expect(auth.getUser()).to.eql(TEST_USER);
+    });
+    it('is not authenticated', () => {
+      expect(auth.isAuthenticated()).to.eq(false);
+    });
+    it('is not authorized', () => {
+      expect(auth.isAuthorized()).to.eq(false);
+    });
+    it('is not admin', () => {
+      expect(auth.isAdmin()).to.eq(false);
+    });
   });
 
-  it('detects expired token', () => {
-    auth.loadToken(FAKE_JWT);
-    expect(auth.isExpired()).to.eq(true);
+  describe('valid token', () => {
+    const VALID_JWT = jwt.sign({ user: TEST_USER }, ENCRYPTION_KEY, { expiresIn: REALLY_LONG_TIME });
+    beforeEach(() => {
+      auth.setToken(VALID_JWT);
+      auth.setAuthToken(VALID_JWT);
+    });
+    it('retrieved the user', () => {
+      expect(auth.getUser()).to.eql(TEST_USER);
+    });
+    it('is authenticated', () => {
+      expect(auth.isAuthenticated()).to.eq(true);
+    });
+    it('is not authorized', () => {
+      expect(auth.isAuthenticated()).to.eq(true);
+    });
+    it('is not admin', () => {
+      expect(auth.isAdmin()).to.eq(false);
+    });
+  });
+
+  describe('valid admin token without auth server', () => {
+    const VALID_JWT = jwt.sign({ user: ADMIN_USER }, ENCRYPTION_KEY, { expiresIn: REALLY_LONG_TIME });
+    beforeEach(() => {
+      auth.setToken(VALID_JWT);
+    });
+    it('retrieved the user', () => {
+      expect(auth.getUser()).to.eql(ADMIN_USER);
+    });
+    it('is not authenticated', () => {
+      expect(auth.isAuthenticated()).to.eq(false);
+    });
+    it('is authorized', () => {
+      expect(auth.isAuthorized()).to.eq(true);
+    });
+    it('is admin', () => {
+      expect(auth.isAdmin()).to.eq(true);
+    });
+  });
+
+  describe('admin token', () => {
+    const VALID_JWT = jwt.sign({ user: ADMIN_USER }, ENCRYPTION_KEY, { expiresIn: REALLY_LONG_TIME });
+    beforeEach(() => {
+      auth.setToken(VALID_JWT);
+      auth.setAuthToken(VALID_JWT);
+    });
+    it('retrieved the user', () => {
+      expect(auth.getUser()).to.eql(ADMIN_USER);
+    });
+    it('is authenticated', () => {
+      expect(auth.isAuthenticated()).to.eq(true);
+    });
+    it('is not authorized', () => {
+      expect(auth.isAuthenticated()).to.eq(true);
+    });
+    it('is admin', () => {
+      expect(auth.isAdmin()).to.eq(true);
+    });
+  });
+
+  it('setToken & getToken', () => {
+    const token = 'pass';
+    auth.setToken(token);
+    expect(auth.getToken()).to.eq('pass');
   });
 
   it('clearToken clears token', () => {
     const token = 'pass';
-    auth.loadToken(token);
+    auth.setToken(token);
     expect(auth.getToken()).to.eq('pass');
-    auth.clearToken();
+    auth.clearTokens();
     expect(auth.getToken()).to.eq(null);
   });
 
-  it('getUser gets user', () => {
-    auth.loadToken(FAKE_JWT);
-    expect(auth.getUser().name).to.eq('test user');
-  });
-
-  it('detects if user is admin', () => {
-    expect(auth.isAdmin()).to.eq(false);
+  afterEach(() => {
+    auth.clearTokens();
   });
 });

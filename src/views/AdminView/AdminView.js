@@ -51,10 +51,18 @@ class AdminViewBase extends Component {
     this.postUserGroup = this.postUserGroup.bind(this);
   }
 
+  async componentDidMount() {
+    await this.fetchData();
+  }
+
+  componentWillUnmount() {
+    this.controllers.forEach(c => c.abort());
+  }
+
   /**
    * Gets database users and usergroups. Initializes form object.
    */
-  async componentDidMount() {
+  async fetchData() {
     const cycledUsersCall = api.get('/users?neighbors=1');
     this.controllers.push(cycledUsersCall);
     const cycledUsers = await cycledUsersCall.request();
@@ -72,10 +80,6 @@ class AdminViewBase extends Component {
     });
   }
 
-  componentWillUnmount() {
-    this.controllers.forEach(c => c.abort());
-  }
-
   /**
    * Sends a POST request to the database, refreshes new user form model, and
    * updates listed users.
@@ -85,7 +89,7 @@ class AdminViewBase extends Component {
     const call = api.post('/users', payload);
     this.controllers.push(call);
     await call.request();
-    await this.componentDidMount();
+    await this.fetchData();
   }
 
   /**
@@ -101,7 +105,7 @@ class AdminViewBase extends Component {
     });
     this.components.push(...deletes);
     await Promise.all(deletes.map(async c => c.request()));
-    await this.componentDidMount();
+    await this.fetchData();
   }
 
   /**
@@ -112,7 +116,7 @@ class AdminViewBase extends Component {
     const call = api.delete(`/usergroups/${rid}`);
     this.controllers.push(call);
     await call.request();
-    await this.componentDidMount();
+    await this.fetchData();
   }
 
   /**
@@ -125,7 +129,7 @@ class AdminViewBase extends Component {
     const call = api.patch(`/users/${rid}`, payload);
     this.controllers.push(call);
     await call.request();
-    await this.componentDidMount();
+    await this.fetchData();
   }
 
 
@@ -138,7 +142,7 @@ class AdminViewBase extends Component {
     const call = api.patch(`/usergroups/${rid}`, payload);
     this.controllers.push(call);
     await call.request();
-    await this.componentDidMount();
+    await this.fetchData();
   }
 
   /**
@@ -149,7 +153,7 @@ class AdminViewBase extends Component {
     const call = api.post('/usergroups', payload);
     this.controllers.push(call);
     await call.request();
-    await this.componentDidMount();
+    await this.fetchData();
   }
 
   render() {

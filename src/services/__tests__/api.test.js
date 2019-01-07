@@ -19,7 +19,7 @@ describe('api methods test', () => {
     try {
       await api.post('/token', { username, password }).request();
     } catch (e) {
-      expect(e).to.eq('Unauthorized, redirecting...');
+      expect(e.message).to.eq('Unauthorized');
     }
   });
 });

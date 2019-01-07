@@ -38,26 +38,25 @@ class LoginView extends React.Component {
       await auth.authenticate(from);
     }
 
-    try {
-      if (!auth.isAuthorized()) {
-        let call;
-        if (config.DISABLE_AUTH !== true) {
-          const token = auth.getAuthToken();
-          call = api.post('/token', { keyCloakToken: token });
-        } else { // FOR TESTING ONLY
-          call = api.post('/token', { username: process.env.USER, password: process.env.PASSWORD });
-        }
-        this.controllers.push(call);
+    if (!auth.isAuthorized()) {
+      let call;
+      if (config.DISABLE_AUTH !== true) {
+        const token = auth.getAuthToken();
+        call = api.post('/token', { keyCloakToken: token });
+      } else { // FOR TESTING ONLY
+        call = api.post('/token', { username: process.env.USER, password: process.env.PASSWORD });
+      }
+      this.controllers.push(call);
+      try {
         const response = await call.request();
         auth.setToken(response.kbToken);
+      } catch (error) {
+        // redirect to the error page
+        console.error(error);
+        history.push('/error', { error });
+        return;
       }
-    } catch (error) {
-      // redirect to the error page
-      console.error(error);
-      history.push('/error', { error });
-      return;
     }
-
     history.push(from);
   }
 

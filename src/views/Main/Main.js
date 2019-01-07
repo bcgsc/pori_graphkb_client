@@ -45,7 +45,7 @@ import auth from '../../services/auth';
 import Schema from '../../services/schema';
 import { KBContext } from '../../components/KBContext';
 import { MainNav } from './components';
-import { AuthenticatedRoute, AdminRoute } from '../../components/routing';
+import AuthenticatedRoute from '../../components/AuthenticatedRoute';
 
 
 /**
@@ -210,7 +210,7 @@ class Main extends React.Component {
                 <AuthenticatedRoute path="/edit/variant/:rid" component={EditVariantView} />
                 <AuthenticatedRoute path="/edit/statement/:rid" component={EditStatementView} />
                 <AuthenticatedRoute path="/data" component={DataView} />
-                <AdminRoute path="/admin" component={AdminView} />
+                <AuthenticatedRoute path="/admin" admin component={AdminView} />
                 <Redirect from="/" to="/query" />
               </Switch>
             </div>

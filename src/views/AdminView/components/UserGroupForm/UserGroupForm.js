@@ -1,6 +1,6 @@
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './UserGroupForm.scss';
 import {
   Paper,
   Typography,
@@ -18,6 +18,7 @@ import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
+import './UserGroupForm.scss';
 import DeleteRecordDialog from '../../../../components/DeleteRecordDialog';
 import PermissionsTable from '../PermissionsTable';
 import UserGroupDialog from './UserGroupDialog';
@@ -26,6 +27,19 @@ import UserGroupDialog from './UserGroupDialog';
  * Handles AdminView UserGroup form state.
  */
 class UserGroupForm extends Component {
+  static propTypes = {
+    userGroups: PropTypes.array,
+    schema: PropTypes.object,
+    onDelete: PropTypes.func.isRequired,
+    onEdit: PropTypes.func.isRequired,
+    onAdd: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    userGroups: [],
+    schema: null,
+  };
+
   static castPermissions(permissions) {
     const tempPermissions = {};
     const reducer = (accumulator, curr, i) => accumulator + curr * (2 ** i);
@@ -51,39 +65,13 @@ class UserGroupForm extends Component {
       expanded: [],
       deletedUserGroup: null,
     };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleDeleteDialog = this.handleDeleteDialog.bind(this);
-    this.handleUserGroupDialog = this.handleUserGroupDialog.bind(this);
-    this.handlePermissionsChange = this.handlePermissionsChange.bind(this);
-    this.handlePermissionsCheckAll = this.handlePermissionsCheckAll.bind(this);
-    this.handleUserGroupSubmit = this.handleUserGroupSubmit.bind(this);
-    this.handleUserGroupEdit = this.handleUserGroupEdit.bind(this);
-    this.handleUserGroupDelete = this.handleUserGroupDelete.bind(this);
   }
-
-  static get propTypes() {
-    return {
-      userGroups: PropTypes.array,
-      schema: PropTypes.object,
-      onDelete: PropTypes.func.isRequired,
-      onEdit: PropTypes.func.isRequired,
-      onAdd: PropTypes.func.isRequired,
-    };
-  }
-
-  static get defaultProps() {
-    return {
-      userGroups: [],
-      schema: null,
-    };
-  }
-
 
   /**
    * Sends a DELETE request to the server, then updates user group list.
    * @param {Object} userGroup - usergroup object
    */
+  @boundMethod
   async handleUserGroupDelete(userGroup) {
     const { onDelete } = this.props;
     await onDelete(userGroup['@rid'].slice(1));
@@ -95,6 +83,7 @@ class UserGroupForm extends Component {
    * expansion panel in.
    * @param {string} rid - UserGroup record identifier.
    */
+  @boundMethod
   handleUserGroupExpand(rid) {
     const { expanded, tempUserGroup } = this.state;
     let cancelFlag = false;
@@ -114,6 +103,7 @@ class UserGroupForm extends Component {
    * model.
    * @param {Object} userGroup - UserGroup to be staged for editing.
    */
+  @boundMethod
   handlePermissionsEdit(userGroup) {
     const permissions = Object.assign({}, userGroup.permissions);
     Object.keys(permissions).forEach((key) => { permissions[key] = permissions[key].slice(); });
@@ -133,6 +123,7 @@ class UserGroupForm extends Component {
    * @param {number} permission - index of permission type([D, U, R, C]).
    * @param {number} currValue - bit representing permission status.
    */
+  @boundMethod
   handlePermissionsChange(permissionKey, permission, currValue) {
     const { tempUserGroupPermissions } = this.state;
     if (!tempUserGroupPermissions) return;
@@ -145,6 +136,7 @@ class UserGroupForm extends Component {
    * @param {Event} event - user input checkbox event.
    * @param {number} index - Column index ([D, U, R, C]).
    */
+  @boundMethod
   handlePermissionsCheckAll(event, index) {
     const { tempUserGroupPermissions } = this.state;
     const { schema } = this.props;
@@ -161,6 +153,7 @@ class UserGroupForm extends Component {
   /**
    * Validates form and submits PATCH request to server.
    */
+  @boundMethod
   async handleUserGroupEdit() {
     const { onEdit } = this.props;
     const {
@@ -188,6 +181,7 @@ class UserGroupForm extends Component {
    * Validates form and calls onAdd props function with usergroup name and
    * permissions as payload.
    */
+  @boundMethod
   async handleUserGroupSubmit() {
     const { onAdd, userGroups } = this.props;
     const {
@@ -220,6 +214,7 @@ class UserGroupForm extends Component {
    * Stages usergroup to be deleted and opens usergroup deletion dialog.
    * @param {Object} userGroup - usergroup to be staged for deletion.
    */
+  @boundMethod
   handleDeleteDialog(userGroup) {
     const { deletedUserGroup } = this.state;
     this.setState({ deletedUserGroup: deletedUserGroup ? null : userGroup });
@@ -229,6 +224,7 @@ class UserGroupForm extends Component {
    * Toggles new UserGroup dialog between open and closed. Initializes temp
    * usergroup permissions on open.
    */
+  @boundMethod
   handleUserGroupDialog() {
     const { schema } = this.props;
     const { newUserGroupDialog, tempUserGroupPermissions } = this.state;
@@ -250,6 +246,7 @@ class UserGroupForm extends Component {
    * Updates state based on a user input event.
    * @param {Event} event - User input event.
    */
+  @boundMethod
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
   }

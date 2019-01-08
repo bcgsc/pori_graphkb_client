@@ -9,6 +9,8 @@ import {
   Typography,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
+import { boundMethod } from 'autobind-decorator';
+
 import { withKB } from '../../components/KBContext';
 import StatementFormComponent from '../../components/StatementFormComponent';
 import api from '../../services/api';
@@ -22,14 +24,17 @@ import util from '../../services/util';
  * @property {Object} props.match
  */
 class EditStatementViewBase extends Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+    schema: PropTypes.object.isRequired,
+    match: PropTypes.object.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
       node: null,
     };
-    this.handleDelete = this.handleDelete.bind(this);
-    this.handleFinish = this.handleFinish.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   /**
@@ -44,17 +49,10 @@ class EditStatementViewBase extends Component {
     this.setState({ node });
   }
 
-  static get propTypes() {
-    return {
-      history: PropTypes.object.isRequired,
-      schema: PropTypes.object.isRequired,
-      match: PropTypes.object.isRequired,
-    };
-  }
-
   /**
    * Sends DELETE call to api for this node.
    */
+  @boundMethod
   async handleDelete() {
     const { node } = this.state;
     const { schema } = this.props;
@@ -67,6 +65,7 @@ class EditStatementViewBase extends Component {
   /**
    * Navigates away from page.
    */
+  @boundMethod
   handleFinish() {
     const { history } = this.props;
     history.back();
@@ -80,6 +79,7 @@ class EditStatementViewBase extends Component {
    * @param {Array.<Object>} originalRelationships - Original list of relationships.
    * @return {boolean} true if submission is successful.
    */
+  @boundMethod
   async handleSubmit(form, relationships, originalRelationships) {
     const { schema } = this.props;
 

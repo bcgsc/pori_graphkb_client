@@ -1,6 +1,6 @@
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './EmbeddedSetForm.scss';
 import {
   TextField,
   Chip,
@@ -10,10 +10,37 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import AddIcon from '@material-ui/icons/Add';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
+import './EmbeddedSetForm.scss';
+
+
 /**
  * Generated component for 'embeddedset' property types.
+ * @property {object} props
+ * @property {function} props.onChange - Parent component change handler.
+ * @property {Array.<string>} props.list - Embedded set property as array.
+ * @property {string} props.label - TextField label.
+ * @property {string} props.name - Input name attribute.
+ * @property {boolean} props.error - TextField error flag.
+ * @property {boolean} props.disabled - Disabled flag.
  */
 class EmbeddedSetForm extends Component {
+  static propTypes = {
+    onChange: PropTypes.func.isRequired,
+    list: PropTypes.arrayOf(PropTypes.string),
+    label: PropTypes.string,
+    name: PropTypes.string,
+    error: PropTypes.bool,
+    disabled: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    list: [],
+    label: '',
+    name: '',
+    error: false,
+    disabled: false,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -21,14 +48,13 @@ class EmbeddedSetForm extends Component {
       tempElement: '',
       initList: props.list.slice(),
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleAdd = this.handleAdd.bind(this);
   }
 
   /**
    * Adds new element to state list. Clears temporary element field.
    * @param {Event} event - User element add event (button click or Enter keypress)
    */
+  @boundMethod
   handleAdd(event) {
     event.preventDefault();
     const {
@@ -52,6 +78,7 @@ class EmbeddedSetForm extends Component {
    * Deletes element from state list.
    * @param {string} val - element to be deleted.
    */
+  @boundMethod
   handleDelete(val) {
     const {
       deleted,
@@ -76,6 +103,7 @@ class EmbeddedSetForm extends Component {
    * Reverts a element that is staged for deletion.
    * @param {string} val - deleted element to be reverted.
    */
+  @boundMethod
   handleUndo(val) {
     const {
       name,
@@ -93,6 +121,7 @@ class EmbeddedSetForm extends Component {
    * Handles user changes to component state.
    * @param {Event} event - User change event.
    */
+  @boundMethod
   handleChange(event) {
     this.setState({ tempElement: event.target.value });
   }
@@ -171,31 +200,5 @@ class EmbeddedSetForm extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {function} onChange - Parent component change handler.
- * @property {Array.<string>} list - Embedded set property as array.
- * @property {string} label - TextField label.
- * @property {string} name - Input name attribute.
- * @property {boolean} error - TextField error flag.
- * @property {boolean} disabled - Disabled flag.
- */
-EmbeddedSetForm.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  list: PropTypes.arrayOf(PropTypes.string),
-  label: PropTypes.string,
-  name: PropTypes.string,
-  error: PropTypes.bool,
-  disabled: PropTypes.bool,
-};
-
-EmbeddedSetForm.defaultProps = {
-  list: [],
-  label: '',
-  name: '',
-  error: false,
-  disabled: false,
-};
 
 export default EmbeddedSetForm;

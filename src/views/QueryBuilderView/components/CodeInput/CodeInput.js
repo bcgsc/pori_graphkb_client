@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import './CodeInput.scss';
+import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
+
+import './CodeInput.scss';
 import config from '../../../../static/config';
 
 const LINE_HEIGHT_PX = 20;
@@ -41,9 +43,27 @@ const findLineIndex = (value, index) => {
  * @property {Function} props.onChange
  */
 class CodeInput extends Component {
-  /**
+  static propTypes = {
+    value: PropTypes.string,
+    style: PropTypes.objectOf(PropTypes.string),
+    className: PropTypes.string,
+    rules: PropTypes.arrayOf(
+      PropTypes.shape({
+        regex: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(RegExp)]),
+        color: PropTypes.string,
+        className: PropTypes.string,
+      }),
+    ),
+    onChange: PropTypes.func.isRequired,
+  };
 
-   */
+  static defaultProps = {
+    value: '',
+    style: {},
+    className: '',
+    rules: [{ regex: COMMENT_REGEX, color: 'green', className: '' }],
+  };
+
   constructor(props) {
     super(props);
     this.handleScroll = this.handleScroll.bind(this);
@@ -51,34 +71,10 @@ class CodeInput extends Component {
     this.ruleTextRefs = [];
   }
 
-  static get propTypes() {
-    return {
-      value: PropTypes.string,
-      style: PropTypes.objectOf(PropTypes.string),
-      className: PropTypes.string,
-      rules: PropTypes.arrayOf(
-        PropTypes.shape({
-          regex: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(RegExp)]),
-          color: PropTypes.string,
-          className: PropTypes.string,
-        }),
-      ),
-      onChange: PropTypes.func.isRequired,
-    };
-  }
-
-  static get defaultProps() {
-    return {
-      value: '',
-      style: {},
-      className: '',
-      rules: [{ regex: COMMENT_REGEX, color: 'green', className: '' }],
-    };
-  }
-
   /**
    * Synchronizes scrolling between all rule layers.
    */
+  @boundMethod
   handleScroll() {
     this.ruleTextRefs.forEach((r) => {
       r.scrollTop = this.typeTextRef.scrollTop;
@@ -88,6 +84,7 @@ class CodeInput extends Component {
     this.textRef.scrollLeft = this.typeTextRef.scrollLeft;
   }
 
+  @boundMethod
   handleTab(event) {
     const { onChange } = this.props;
     let { value } = event.target;

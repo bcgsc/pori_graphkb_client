@@ -1,14 +1,16 @@
 /**
  * @module /views/AdminView
  */
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './AdminView.scss';
 import * as jc from 'json-cycle';
 import {
   Paper,
   Typography,
 } from '@material-ui/core';
+
+import './AdminView.scss';
 import { withKB } from '../../components/KBContext';
 import { UserForm, UserGroupForm } from './components';
 import api from '../../services/api';
@@ -16,8 +18,13 @@ import util from '../../services/util';
 
 /**
  * View for editing or adding database users.
+ * @property {Object} props.schema - Knowledgebase schema object.
  */
 class AdminViewBase extends Component {
+  static propTypes = {
+    schema: PropTypes.object.isRequired,
+  };
+
   static initializeUserGroups(userGroups) {
     const newUserGroups = [];
     userGroups.forEach((u, i) => {
@@ -42,13 +49,6 @@ class AdminViewBase extends Component {
       userGroups: null,
     };
     this.controllers = [];
-
-    this.addUser = this.addUser.bind(this);
-    this.deleteUsers = this.deleteUsers.bind(this);
-    this.deleteUserGroup = this.deleteUserGroup.bind(this);
-    this.editUser = this.editUser.bind(this);
-    this.patchUserGroup = this.patchUserGroup.bind(this);
-    this.postUserGroup = this.postUserGroup.bind(this);
   }
 
   async componentDidMount() {
@@ -85,6 +85,7 @@ class AdminViewBase extends Component {
    * updates listed users.
    * @param {Object} payload - New User record payload.
    */
+  @boundMethod
   async addUser(payload) {
     const call = api.post('/users', payload);
     this.controllers.push(call);
@@ -97,6 +98,7 @@ class AdminViewBase extends Component {
    * each. Updates users list.
    * @param {Array.<string>} selected - List of record ID's to delete.
    */
+  @boundMethod
   async deleteUsers(selected) {
     const deletes = [];
     selected.forEach((user) => {
@@ -112,6 +114,7 @@ class AdminViewBase extends Component {
    * Sends a DELETE request to the server, then updates user group list.
    * @param {string} rid - usergroup object rid.
    */
+  @boundMethod
   async deleteUserGroup(rid) {
     const call = api.delete(`/usergroups/${rid}`);
     this.controllers.push(call);
@@ -125,6 +128,7 @@ class AdminViewBase extends Component {
    * @param {string} - User record ID.
    * @param {Object} payload - User record payload.
    */
+  @boundMethod
   async editUser(rid, payload) {
     const call = api.patch(`/users/${rid}`, payload);
     this.controllers.push(call);
@@ -138,6 +142,7 @@ class AdminViewBase extends Component {
    * @param {string} rid - Usergroup record ID.
    * @param {Object} payload - UserGroup record payload.
    */
+  @boundMethod
   async patchUserGroup(rid, payload) {
     const call = api.patch(`/usergroups/${rid}`, payload);
     this.controllers.push(call);
@@ -149,6 +154,7 @@ class AdminViewBase extends Component {
    * POSTs new UserGroup record.
    * @param {Object} payload - User record payload.
    */
+  @boundMethod
   async postUserGroup(payload) {
     const call = api.post('/usergroups', payload);
     this.controllers.push(call);
@@ -188,14 +194,6 @@ class AdminViewBase extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {Object} schema - Knowledgebase schema object.
- */
-AdminViewBase.propTypes = {
-  schema: PropTypes.object.isRequired,
-};
 
 const AdminView = withKB(AdminViewBase);
 

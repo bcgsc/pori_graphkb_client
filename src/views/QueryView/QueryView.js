@@ -1,9 +1,9 @@
 /**
  * @module /views/QueryView
  */
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './QueryView.scss';
 import {
   Button,
   IconButton,
@@ -15,6 +15,8 @@ import {
 import kbp from '@bcgsc/knowledgebase-parser';
 import * as qs from 'querystring';
 import SearchIcon from '@material-ui/icons/Search';
+
+import './QueryView.scss';
 import AutoSearchSingle from '../../components/AutoSearchSingle';
 import { withKB } from '../../components/KBContext';
 import util from '../../services/util';
@@ -26,8 +28,16 @@ const ENTER_KEYCODE = 13;
 /**
  * View for simple search by name query. Form submissions are passed through the URL to
  * the DataView module to handle the query transaction.
+ *
+ * @property {Object} props.history - Application routing history object.
+ * @property {Object} props.schema - Knowledgebase schema object.
  */
 class QueryViewBase extends Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+    schema: PropTypes.object.isRequired,
+  };
+
   constructor(props) {
     super(props);
     const { state } = props.history.location;
@@ -45,18 +55,12 @@ class QueryViewBase extends Component {
       variant: {},
       queryable: false,
     };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleInvalid = this.handleInvalid.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleVariantParse = this.handleVariantParse.bind(this);
-    this.submitVariant = this.submitVariant.bind(this);
-    this.submitStatementOrOntology = this.submitStatementOrOntology.bind(this);
   }
 
   /**
    * Calls submit function for currently active tab.
    */
+  @boundMethod
   handleSubmit() {
     const {
       hgvs,
@@ -69,6 +73,7 @@ class QueryViewBase extends Component {
     }
   }
 
+  @boundMethod
   submitStatementOrOntology() {
     const {
       str,
@@ -87,6 +92,7 @@ class QueryViewBase extends Component {
   /**
    * Stringifies all queryable properties of parsed variant.
    */
+  @boundMethod
   submitVariant() {
     const {
       str,
@@ -124,6 +130,7 @@ class QueryViewBase extends Component {
    * Updates state from user input.
    * @param {Event} event - user input event.
    */
+  @boundMethod
   handleChange(event) {
     const { schema } = this.props;
     const { name, value } = event.target;
@@ -137,6 +144,7 @@ class QueryViewBase extends Component {
   /**
    * Binds autosearch disabled flag to search button.
    */
+  @boundMethod
   handleInvalid() {
     this.setState({ disabled: true });
   }
@@ -144,6 +152,7 @@ class QueryViewBase extends Component {
   /**
    * Updates variant state based on shorthand string.
    */
+  @boundMethod
   handleVariantParse() {
     const { str } = this.state;
     try {
@@ -243,15 +252,6 @@ class QueryViewBase extends Component {
     );
   }
 }
-/**
- * @namespace
- * @property {Object} history - Application routing history object.
- * @property {Object} schema - Knowledgebase schema object.
- */
-QueryViewBase.propTypes = {
-  history: PropTypes.object.isRequired,
-  schema: PropTypes.object.isRequired,
-};
 
 const QueryView = withKB(QueryViewBase);
 

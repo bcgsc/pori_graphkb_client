@@ -4,9 +4,10 @@
 
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import './GraphNodeDisplay.scss';
 import * as d3Select from 'd3-selection';
 import * as d3Drag from 'd3-drag';
+
+import './GraphNodeDisplay.scss';
 import config from '../../../../../static/config';
 import { GraphNode } from '../kbgraph';
 
@@ -17,8 +18,43 @@ const FADED_OPACITY = 0.6;
 /**
  * Component used to display graph nodes and apply draggable behavior to them
  * through d3.
+ *
+ * @property {object} props
+ * @property {Object} props.node - Node to be rendered.
+ * @property {function} props.handleClick - Parent method on node click event.
+ * @property {string} props.color - Color of node.
+ * @property {function} props.applyDrag - Function to apply drag functionality to node.
+ * @property {string} props.labelKey - Property to label node by.
+ * @property {Object} props.actionsNode - Node decorator object.
+ * @property {Object} props.detail - Node currently opened in detail drawer.
+ * @property {string} props.filter - current filter string value.
+ * @property {Object} props.schema - Knowledgebase Schema object.
  */
 class GraphNodeDisplay extends PureComponent {
+  static propTypes = {
+    node: PropTypes.object,
+    handleClick: PropTypes.func,
+    color: PropTypes.string,
+    applyDrag: PropTypes.func,
+    labelKey: PropTypes.string,
+    actionsNode: PropTypes.object,
+    detail: PropTypes.object,
+    filter: PropTypes.string,
+    schema: PropTypes.object,
+  };
+
+  static defaultProps = {
+    node: null,
+    handleClick: null,
+    color: '#26328C',
+    labelKey: 'name',
+    actionsNode: null,
+    applyDrag: null,
+    detail: null,
+    filter: '',
+    schema: null,
+  };
+
   /**
    * Initializes node element and applies drag behavior to it.
    */
@@ -103,42 +139,5 @@ class GraphNodeDisplay extends PureComponent {
     );
   }
 }
-
-/**
- * @namespace
- * @property {Object} node - Node to be rendered.
- * @property {function} handleClick - Parent method on node click event.
- * @property {string} color - Color of node.
- * @property {function} applyDrag - Function to apply drag functionality to node.
- * @property {string} labelKey - Property to label node by.
- * @property {Object} actionsNode - Node decorator object.
- * @property {Object} detail - Node currently opened in detail drawer.
- * @property {string} filter - current filter string value.
- * @property {Object} schema - Knowledgebase Schema object.
- */
-GraphNodeDisplay.propTypes = {
-  node: PropTypes.object,
-  handleClick: PropTypes.func,
-  color: PropTypes.string,
-  applyDrag: PropTypes.func,
-  labelKey: PropTypes.string,
-  actionsNode: PropTypes.object,
-  detail: PropTypes.object,
-  filter: PropTypes.string,
-  schema: PropTypes.object,
-};
-
-GraphNodeDisplay.defaultProps = {
-  node: null,
-  handleClick: null,
-  color: '#26328C',
-  labelKey: 'name',
-  actionsNode: null,
-  applyDrag: null,
-  detail: null,
-  filter: '',
-  schema: null,
-};
-
 
 export default GraphNodeDisplay;

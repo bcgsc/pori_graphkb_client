@@ -1,6 +1,7 @@
 /**
  * @module /views/AddStatementView
  */
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -8,6 +9,7 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
+
 import { withKB } from '../../components/KBContext';
 import StatementFormComponent from '../../components/StatementFormComponent';
 import api from '../../services/api';
@@ -15,18 +17,24 @@ import util from '../../services/util';
 
 /**
  * Route for submitting Statement records to the db.
+ *
+ * @property {object} props
+ * @property {Object} props.history - App routing history object.
+ * @property {Object} props.schema - Knowledgebase db schema.
  */
 class AddStatementViewBase extends Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+    schema: PropTypes.object.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
       is409: false,
     };
     this.controller = null;
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleFinish = this.handleFinish.bind(this);
   }
-
 
   componentWillUnmount() {
     if (this.controller !== null) {
@@ -37,6 +45,7 @@ class AddStatementViewBase extends Component {
   /**
    * Navigates to query page on successful form submission.
    */
+  @boundMethod
   handleFinish() {
     const { history } = this.props;
     history.goBack();
@@ -48,6 +57,7 @@ class AddStatementViewBase extends Component {
    * @param {Array.<Object>} relationships - Form staged relationships.
    * @return {boolean} true if submission is successful.
    */
+  @boundMethod
   async handleSubmit(form, relationships) {
     const { schema } = this.props;
     const { routeName } = schema.get(form);
@@ -114,16 +124,6 @@ class AddStatementViewBase extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {Object} history - App routing history object.
- * @property {Object} schema - Knowledgebase db schema.
- */
-AddStatementViewBase.propTypes = {
-  history: PropTypes.object.isRequired,
-  schema: PropTypes.object.isRequired,
-};
 
 const AddStatementView = withKB(AddStatementViewBase);
 

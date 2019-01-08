@@ -15,22 +15,46 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import { boundMethod } from 'autobind-decorator';
+
 import logo from '../../../../static/logo.png';
 import title from '../../../../static/title.png';
 
+/**
+ * @property {object} props
+ * @property {boolean} props.open - drawer open state.
+ * @property {Array} props.links - List of app links to display in sidebar.
+ * @property {function} props.onChange - handler for siderbar state change.
+ */
 class MainNav extends Component {
+  static propTypes = {
+    open: PropTypes.bool,
+    links: PropTypes.arrayOf(PropTypes.shape({
+      label: PropTypes.string,
+      route: PropTypes.string,
+      icon: PropTypes.node,
+      MenuProps: PropTypes.object,
+      nestedItems: PropTypes.array,
+    })),
+    onChange: PropTypes.func,
+  };
+
+  static defaultProps = {
+    open: false,
+    links: [],
+    onChange: () => { },
+  };
+
   constructor(props) {
     super(props);
     this.state = { expanded: '' };
-    this.handleExpand = this.handleExpand.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.renderLink = this.renderLink.bind(this);
   }
 
   /**
    * Expands a list item in the main navigation drawer.
    * @param {string} key - Item key to expand in main navigation drawer.
    */
+  @boundMethod
   handleExpand(key) {
     const { open, onChange } = this.props;
     return () => {
@@ -45,6 +69,7 @@ class MainNav extends Component {
   /**
    * Handles closing of drawer.
    */
+  @boundMethod
   handleClose() {
     const { onChange } = this.props;
     onChange(false)();
@@ -54,6 +79,7 @@ class MainNav extends Component {
   /**
    * Handles render of a nav drawer list item.
    */
+  @boundMethod
   renderLink(link, nested) {
     const {
       open,
@@ -136,29 +162,5 @@ class MainNav extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {boolean} open - drawer open state.
- * @property {Array} links - List of app links to display in sidebar.
- * @property {function} onChange - handler for siderbar state change.
- */
-MainNav.propTypes = {
-  open: PropTypes.bool,
-  links: PropTypes.arrayOf(PropTypes.shape({
-    label: PropTypes.string,
-    route: PropTypes.string,
-    icon: PropTypes.node,
-    MenuProps: PropTypes.object,
-    nestedItems: PropTypes.array,
-  })),
-  onChange: PropTypes.func,
-};
-
-MainNav.defaultProps = {
-  open: false,
-  links: [],
-  onChange: () => { },
-};
 
 export default MainNav;

@@ -1,9 +1,9 @@
 /**
  * @module /components/RelationshipsForm
  */
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './RelationshipsForm.scss';
 import {
   Collapse,
   IconButton,
@@ -22,6 +22,8 @@ import CloseIcon from '@material-ui/icons/Close';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import TrendingFlatIcon from '@material-ui/icons/TrendingFlat';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+
+import './RelationshipsForm.scss';
 import AutoSearchMulti from '../AutoSearchMulti';
 import FormTemplater from '../FormTemplater';
 import ResourceSelectComponent from '../ResourceSelectComponent';
@@ -31,8 +33,43 @@ const DEFAULT_RELATIONSHIPS_PROPSLENGTH = 3;
 
 /**
  * Form to manage a record's edges.
+ *
+ * @property {object} props
+ * @property {function} props.onChange - function to handle changes to the
+ * relationships list.
+ * @property {Object} props.schema - Knowledgebase db schema.
+ * @property {Array.<Object>} props.relationships - list of current relationships to be edited.
+ * @property {string} props.name - property key name of relationships on parent
+ * component.
+ * @property {string} props.nodeRid - record ID of input node.
+ * @property {string} props.errorMsg - Error message to display when error state is
+ * active.
+ * @property {boolean} props.error - Error flag.
+ * @property {boolean} props.overridePristine - flag to override form pristine check
  */
 class RelationshipsForm extends Component {
+  static propTypes = {
+    onChange: PropTypes.func.isRequired,
+    schema: PropTypes.object.isRequired,
+    relationships: PropTypes.array,
+    name: PropTypes.string,
+    nodeRid: PropTypes.string,
+    edgeTypes: PropTypes.array,
+    errorMsg: PropTypes.string,
+    error: PropTypes.bool,
+    overridePristine: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    relationships: [],
+    name: '',
+    nodeRid: '#node_rid',
+    edgeTypes: null,
+    errorMsg: '',
+    error: false,
+    overridePristine: false,
+  };
+
   constructor(props) {
     super(props);
     const { relationships } = props;
@@ -46,11 +83,6 @@ class RelationshipsForm extends Component {
       initState: null,
     };
     this.testId = 0;
-    this.handleAdd = this.handleAdd.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleClassChange = this.handleClassChange.bind(this);
-    this.handleDirection = this.handleDirection.bind(this);
-    this.handleExpand = this.handleExpand.bind(this);
   }
 
   /**
@@ -76,6 +108,7 @@ class RelationshipsForm extends Component {
    * Adds new subset to state list. Clears subset field.
    * @param {Event} event - User request subset add event.
    */
+  @boundMethod
   handleAdd(event) {
     event.preventDefault();
     const {
@@ -114,6 +147,7 @@ class RelationshipsForm extends Component {
    * @param {Event} event - User delete button event click.
    * @param {string} rid - relationship id to be deleted.
    */
+  @boundMethod
   handleDelete(event, rid) {
     event.stopPropagation();
     const {
@@ -140,6 +174,7 @@ class RelationshipsForm extends Component {
    * @param {Event} event - User undo button click event.
    * @param {string} rid - deleted subset to be reverted.
    */
+  @boundMethod
   handleUndo(event, rid) {
     event.stopPropagation();
 
@@ -152,6 +187,7 @@ class RelationshipsForm extends Component {
    * Handles change in temp relationship model.
    * @param {Event} event - User change event.
    */
+  @boundMethod
   handleChange(event) {
     const { model } = this.state;
     const { schema } = this.props;
@@ -168,6 +204,7 @@ class RelationshipsForm extends Component {
    * reinitialization of the model.
    * @param {Event} event - class change event.
    */
+  @boundMethod
   handleClassChange(event) {
     const { model } = this.state;
     const { schema } = this.props;
@@ -190,6 +227,7 @@ class RelationshipsForm extends Component {
    * >   out: nodeA,
    * > };
    */
+  @boundMethod
   handleDirection() {
     const { forward, model } = this.state;
 
@@ -216,6 +254,7 @@ class RelationshipsForm extends Component {
    * relationships that have more properties than the standard in, out, source.
    * @param {string} rid - ID of the relationship to be expanded.
    */
+  @boundMethod
   handleExpand(rid) {
     const { expanded } = this.state;
     this.setState({
@@ -240,6 +279,7 @@ class RelationshipsForm extends Component {
    * @param {boolean} isIn - flag for whether current editing node is on the 'in'
    * side of the relationship.
    */
+  @boundMethod
   relationshipDetails(r, isIn) {
     const { schema } = this.props;
     const targetNode = isIn
@@ -494,41 +534,5 @@ class RelationshipsForm extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {function} onChange - function to handle changes to the
- * relationships list.
- * @property {Object} schema - Knowledgebase db schema.
- * @property {Array.<Object>} relationships - list of current relationships to be edited.
- * @property {string} name - property key name of relationships on parent
- * component.
- * @property {string} nodeRid - record ID of input node.
- * @property {string} errorMsg - Error message to display when error state is
- * active.
- * @property {boolean} error - Error flag.
- * @property {boolean} overridePristine - flag to override form pristine check
- */
-RelationshipsForm.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  schema: PropTypes.object.isRequired,
-  relationships: PropTypes.array,
-  name: PropTypes.string,
-  nodeRid: PropTypes.string,
-  edgeTypes: PropTypes.array,
-  errorMsg: PropTypes.string,
-  error: PropTypes.bool,
-  overridePristine: PropTypes.bool,
-};
-
-RelationshipsForm.defaultProps = {
-  relationships: [],
-  name: '',
-  nodeRid: '#node_rid',
-  edgeTypes: null,
-  errorMsg: '',
-  error: false,
-  overridePristine: false,
-};
 
 export default RelationshipsForm;

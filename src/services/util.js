@@ -3,6 +3,7 @@
  * @module /services/util
  */
 import * as jc from 'json-cycle';
+
 import config from '../static/config';
 
 const {

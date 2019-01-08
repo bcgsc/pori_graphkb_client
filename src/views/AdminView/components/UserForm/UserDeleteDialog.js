@@ -10,6 +10,7 @@ import {
   ListItemSecondaryAction,
 } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
+
 import DeleteRecordDialog from '../../../../components/DeleteRecordDialog/DeleteRecordDialog';
 
 /**

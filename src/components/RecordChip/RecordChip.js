@@ -1,9 +1,9 @@
 /**
  * @module /components/RecordChip
  */
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './RecordChip.scss';
 import {
   Chip,
   Avatar,
@@ -19,23 +19,37 @@ import {
 } from '@material-ui/core';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 
+import './RecordChip.scss';
+
 /**
  * Displays a record as a Material Chip. When clicked, opens a Popover
  * containing some brief details about the record.
+ *
+ * @property {obejct} props
+ * @property {Object} props.record - record to be displayed in chip.
+ * @property {Object} props.schema - KB schema object.
  */
 class RecordChip extends Component {
+  static propTypes = {
+    record: PropTypes.object,
+    schema: PropTypes.object.isRequired,
+  };
+
+  static defaultProps = {
+    record: null,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
       anchorEl: null,
     };
-    this.handlePopoverOpen = this.handlePopoverOpen.bind(this);
-    this.handlePopoverClose = this.handlePopoverClose.bind(this);
   }
 
   /**
    * Closes popover.
    */
+  @boundMethod
   handlePopoverClose() {
     this.setState({ anchorEl: null });
   }
@@ -44,6 +58,7 @@ class RecordChip extends Component {
    * Opens popover.
    * @param {Event} event - User click event.
    */
+  @boundMethod
   handlePopoverOpen(event) {
     this.setState({ anchorEl: event.currentTarget });
   }
@@ -132,17 +147,4 @@ class RecordChip extends Component {
   }
 }
 
-/**
- * @namespace
- * @property {Object} record - record to be displayed in chip.
- * @property {Object} schema - KB schema object.
- */
-RecordChip.propTypes = {
-  record: PropTypes.object,
-  schema: PropTypes.object.isRequired,
-};
-
-RecordChip.defaultProps = {
-  record: null,
-};
 export default RecordChip;

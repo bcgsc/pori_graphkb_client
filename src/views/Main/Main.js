@@ -2,13 +2,13 @@
  * @module /Main
  */
 import React from 'react';
+import { boundMethod } from 'autobind-decorator';
 import {
   Route,
   Redirect,
   Switch,
   Link,
 } from 'react-router-dom';
-import './Main.scss';
 import {
   AppBar,
   IconButton,
@@ -24,6 +24,8 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
 import { schema as SCHEMA_DEFN } from '@bcgsc/knowledgebase-schema';
+
+import './Main.scss';
 import {
   AboutView,
   AddOntologyView,
@@ -59,14 +61,12 @@ class Main extends React.Component {
       anchorEl: null,
       drawerOpen: false,
     };
-    this.handleOpen = this.handleOpen.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.handleNavBar = this.handleNavBar.bind(this);
   }
 
   /**
    * Opens user dropdown menu.
    */
+  @boundMethod
   handleOpen() {
     this.setState({ anchorEl: this.dropdown });
   }
@@ -74,6 +74,7 @@ class Main extends React.Component {
   /**
    * Closes user dropdown menu.
    */
+  @boundMethod
   handleClose() {
     this.setState({ anchorEl: null });
   }
@@ -81,6 +82,7 @@ class Main extends React.Component {
   /**
    * Sets main navigation drawer open state.
    */
+  @boundMethod
   handleNavBar(state) {
     return () => this.setState({ drawerOpen: state, anchorEl: null });
   }

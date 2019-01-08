@@ -2,10 +2,10 @@
  * @module /components/TableComponent
  */
 
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import './TableComponent.scss';
 import {
   Table,
   TableHead,
@@ -27,12 +27,11 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import AddIcon from '@material-ui/icons/Add';
 import SortIcon from '@material-ui/icons/Sort';
 
+import './TableComponent.scss';
 import util from '../../../../services/util';
 import FilterIcon from '../../../../static/icons/FilterIcon/FilterIcon';
 import config from '../../../../static/config';
-
 import DownloadFileComponent from '../DownloadFileComponent';
-
 import FilterPopover from './TableFilterPopover';
 import TableColumnDialog from './TableColumnDialog';
 import TableMenu from './TableMenu';
@@ -50,8 +49,73 @@ const DEFAULT_COLUMN_ORDER = [
 /**
  * Component to display query results in table form. Controls state for
  * ellipsis menu, table rows/columns, and table paginator.
+ *
+ * @property {object} props
+ * @property {Object} props.data - Object containing query results.
+ * @property {Object} props.detail - Record being displayed in detail view.
+ * @property {Array.<string>} props.displayed - Array of displayed node rids.
+ * @property {function} props.handleCheckAll - Method triggered when all rows are
+ * checked.
+ * @property {function} props.handleCheckbox - Method triggered when a single row is
+ * checked.
+ * @property {function} props.handleHideSelected - Method for hiding selected rows
+ * from the view.
+ * @property {function} props.handleNodeEditStart - Method triggered when user
+ * requests to edit a node.
+ * @property {function} props.handleShowAllNodes - Method for returning previously
+ * hidden rows to the view.
+ * @property {function} props.handleGraphRedirect - Handles routing to graph
+ * component.
+ * @property {function} props.handleDetailDrawerOpen - Handles opening of detail
+ * drawer to a given record.
+ * @property {function} props.handleSubsequentPagination - parent function to handle
+ * subsequent api calls.
+ * @property {Array.<string>} props.hidden - Array of hidden node rids.
+ * @property {Array.<string>} props.allProps - all non-base columns represented
+ * throughout the query results.
+ * @property {boolean} props.moreResults - Flag to tell component there could be more
+ * results to the query.
+ * @property {boolean} props.completedNext - Flag for whether or not component has
+ * completed the current subsequent query.
+ * @property {Array.<Object>} props.storedFilters - filters stored for current
+ * session. Accessed on component init and stored on navigate to table.
+ * @property {Array.<string>} props.defaultOrder - List of columns to display in
+ * order.
+ * @property {Object} props.schema - Knowledgebase schema object.
  */
 class TableComponent extends Component {
+  static propTypes = {
+    data: PropTypes.object.isRequired,
+    detail: PropTypes.object,
+    displayed: PropTypes.arrayOf(PropTypes.string),
+    handleCheckAll: PropTypes.func.isRequired,
+    handleCheckbox: PropTypes.func.isRequired,
+    handleHideSelected: PropTypes.func.isRequired,
+    handleShowAllNodes: PropTypes.func.isRequired,
+    handleGraphRedirect: PropTypes.func.isRequired,
+    handleDetailDrawerOpen: PropTypes.func.isRequired,
+    handleSubsequentPagination: PropTypes.func,
+    hidden: PropTypes.arrayOf(PropTypes.string),
+    allProps: PropTypes.arrayOf(PropTypes.string),
+    moreResults: PropTypes.bool,
+    completedNext: PropTypes.bool,
+    storedFilters: PropTypes.array,
+    defaultOrder: PropTypes.arrayOf(PropTypes.string),
+    schema: PropTypes.object.isRequired,
+  };
+
+  static defaultProps = {
+    detail: null,
+    allProps: [],
+    hidden: [],
+    storedFilters: [],
+    handleSubsequentPagination: null,
+    moreResults: false,
+    displayed: [],
+    defaultOrder: DEFAULT_COLUMN_ORDER,
+    completedNext: true,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -70,26 +134,6 @@ class TableComponent extends Component {
       columnFilterExclusions: [],
       filterOptions: [],
     };
-
-    this.clearFilter = this.clearFilter.bind(this);
-    this.clearFilters = this.clearFilters.bind(this);
-    this.createTSV = this.createTSV.bind(this);
-    this.openFilter = this.openFilter.bind(this);
-    this.setRef = this.setRef.bind(this);
-    this.handleFilterStrings = this.handleFilterStrings.bind(this);
-    this.handleFilterExclusions = this.handleFilterExclusions.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleChangePage = this.handleChangePage.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.handleColumnCheck = this.handleColumnCheck.bind(this);
-    this.handleDetailToggle = this.handleDetailToggle.bind(this);
-    this.handleHeaderMouseEnter = this.handleHeaderMouseEnter.bind(this);
-    this.handleHeaderMouseLeave = this.handleHeaderMouseLeave.bind(this);
-    this.handleOpen = this.handleOpen.bind(this);
-    this.handleRequestSort = this.handleRequestSort.bind(this);
-    this.handleSortByChange = this.handleSortByChange.bind(this);
-    this.handleSortByChecked = this.handleSortByChecked.bind(this);
-    this.handleFilterCheckAll = this.handleFilterCheckAll.bind(this);
   }
 
   /**
@@ -186,6 +230,7 @@ class TableComponent extends Component {
   /**
    * Stores DOM references in component state.
    */
+  @boundMethod
   setRef(node, i) {
     const { tableHeadRefs } = this.state;
     if (!tableHeadRefs[i]) {
@@ -199,6 +244,7 @@ class TableComponent extends Component {
    * Clears all filter values for specified column.
    * @param {number} i - column index.
    */
+  @boundMethod
   clearFilter(i) {
     const { columnFilterStrings, columnFilterExclusions } = this.state;
     columnFilterStrings[i] = '';
@@ -209,6 +255,7 @@ class TableComponent extends Component {
   /**
    * Sets all filter strings to the empty string.
    */
+  @boundMethod
   clearFilters() {
     const { tableColumns } = this.state;
     for (let i = 0; i < tableColumns.length; i += 1) {
@@ -220,6 +267,7 @@ class TableComponent extends Component {
    * builds tsv data and prompts the browser to download file.
    * @param {Array.<Object>} fData - forced data to be put into tsv.
    */
+  @boundMethod
   createTSV(fData) {
     const { data, hidden, allProps } = this.props;
     const rows = [];
@@ -247,6 +295,7 @@ class TableComponent extends Component {
    * Opens filter input box at a column header.
    * @param {number} i - column index.
    */
+  @boundMethod
   openFilter(i) {
     const { tableHeadRefs, tableColumns } = this.state;
     const { data } = this.props;
@@ -307,6 +356,7 @@ class TableComponent extends Component {
    * Updates currently editing filter string.
    * @param {Event} event - User input event.
    */
+  @boundMethod
   handleFilterStrings(event) {
     const { columnFilterStrings, tempFilterIndex } = this.state;
     columnFilterStrings[tempFilterIndex] = event.target.value;
@@ -317,6 +367,7 @@ class TableComponent extends Component {
    * General state update handler.
    * @param {Event} event - user change event.
    */
+  @boundMethod
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
   }
@@ -326,6 +377,7 @@ class TableComponent extends Component {
    * @param {Event} event - Triggered event.
    * @param {number} page - New page number.
    */
+  @boundMethod
   handleChangePage(event, page) {
     const { sortedData, rowsPerPage } = this.state;
     const { moreResults } = this.props;
@@ -342,6 +394,7 @@ class TableComponent extends Component {
   /**
    * Closes table actions menu.
    */
+  @boundMethod
   handleClose() {
     this.setState({ anchorEl: null, filterPopoverNode: null });
   }
@@ -350,6 +403,7 @@ class TableComponent extends Component {
    * Selects/deselects a column for displaying on the table.
    * @param {number} i - Table column index.
    */
+  @boundMethod
   handleColumnCheck(i) {
     const { tableColumns } = this.state;
     tableColumns[i].checked = !tableColumns[i].checked;
@@ -362,6 +416,7 @@ class TableComponent extends Component {
    * collapses it.
    * @param {string} rid - Node identifier.
    */
+  @boundMethod
   handleDetailToggle(rid) {
     const { toggle } = this.state;
     this.setState({ toggle: toggle === rid ? '' : rid });
@@ -372,6 +427,7 @@ class TableComponent extends Component {
    * filtering column.
    * @param {string} option - Option to be toggled.
    */
+  @boundMethod
   handleFilterExclusions(option) {
     const { columnFilterExclusions, tempFilterIndex } = this.state;
     const i = columnFilterExclusions[tempFilterIndex].indexOf(option);
@@ -386,6 +442,7 @@ class TableComponent extends Component {
   /**
    * Toggles filters from selecting all/deselecting all options.
    */
+  @boundMethod
   handleFilterCheckAll() {
     const {
       columnFilterExclusions,
@@ -405,6 +462,7 @@ class TableComponent extends Component {
    * the header index.
    * @param {number} i - column header index.
    */
+  @boundMethod
   handleHeaderMouseEnter(i) {
     this.setState({ hoveringHeader: i });
   }
@@ -412,6 +470,7 @@ class TableComponent extends Component {
   /**
    * Handles mouse leaving event on a table column header, clearing the state.
    */
+  @boundMethod
   handleHeaderMouseLeave() {
     this.setState({ hoveringHeader: null });
   }
@@ -420,6 +479,7 @@ class TableComponent extends Component {
    * Opens table actions menu.
    * @param {Event} event - Open menu button event.
    */
+  @boundMethod
   handleOpen(event) {
     this.setState({ anchorEl: event.currentTarget });
   }
@@ -429,6 +489,7 @@ class TableComponent extends Component {
    * selected, toggles the sort direction.
    * @param {string} column - Column property object to be sorted by.
    */
+  @boundMethod
   handleRequestSort(column) {
     const { orderBy, order } = this.state;
     const { data } = this.props;
@@ -474,6 +535,7 @@ class TableComponent extends Component {
    * @param {string} sortBy - new property for column to be sorted by.
    * @param {number} i - column index.
    */
+  @boundMethod
   handleSortByChange(sortBy, i) {
     const { tableColumns } = this.state;
     tableColumns[i].sortBy = sortBy;
@@ -485,6 +547,7 @@ class TableComponent extends Component {
    * on current state.
    * @param {string} fOrder - forced output order.
    */
+  @boundMethod
   handleSortByChecked(fOrder) {
     const { orderBy, order } = this.state;
     const { displayed, data } = this.props;
@@ -842,71 +905,5 @@ class TableComponent extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {Object} data - Object containing query results.
- * @property {Object} detail - Record being displayed in detail view.
- * @property {Array.<string>} displayed - Array of displayed node rids.
- * @property {function} handleCheckAll - Method triggered when all rows are
- * checked.
- * @property {function} handleCheckbox - Method triggered when a single row is
- * checked.
- * @property {function} handleHideSelected - Method for hiding selected rows
- * from the view.
- * @property {function} handleNodeEditStart - Method triggered when user
- * requests to edit a node.
- * @property {function} handleShowAllNodes - Method for returning previously
- * hidden rows to the view.
- * @property {function} handleGraphRedirect - Handles routing to graph
- * component.
- * @property {function} handleDetailDrawerOpen - Handles opening of detail
- * drawer to a given record.
- * @property {function} handleSubsequentPagination - parent function to handle
- * subsequent api calls.
- * @property {Array.<string>} hidden - Array of hidden node rids.
- * @property {Array.<string>} allProps - all non-base columns represented
- * throughout the query results.
- * @property {boolean} moreResults - Flag to tell component there could be more
- * results to the query.
- * @property {boolean} completedNext - Flag for whether or not component has
- * completed the current subsequent query.
- * @property {Array.<Object>} storedFilters - filters stored for current
- * session. Accessed on component init and stored on navigate to table.
- * @property {Array.<string>} defaultOrder - List of columns to display in
- * order.
- * @property {Object} schema - Knowledgebase schema object.
- */
-TableComponent.propTypes = {
-  data: PropTypes.object.isRequired,
-  detail: PropTypes.object,
-  displayed: PropTypes.arrayOf(PropTypes.string),
-  handleCheckAll: PropTypes.func.isRequired,
-  handleCheckbox: PropTypes.func.isRequired,
-  handleHideSelected: PropTypes.func.isRequired,
-  handleShowAllNodes: PropTypes.func.isRequired,
-  handleGraphRedirect: PropTypes.func.isRequired,
-  handleDetailDrawerOpen: PropTypes.func.isRequired,
-  handleSubsequentPagination: PropTypes.func,
-  hidden: PropTypes.arrayOf(PropTypes.string),
-  allProps: PropTypes.arrayOf(PropTypes.string),
-  moreResults: PropTypes.bool,
-  completedNext: PropTypes.bool,
-  storedFilters: PropTypes.array,
-  defaultOrder: PropTypes.arrayOf(PropTypes.string),
-  schema: PropTypes.object.isRequired,
-};
-
-TableComponent.defaultProps = {
-  detail: null,
-  allProps: [],
-  hidden: [],
-  storedFilters: [],
-  handleSubsequentPagination: null,
-  moreResults: false,
-  displayed: [],
-  defaultOrder: DEFAULT_COLUMN_ORDER,
-  completedNext: true,
-};
 
 export default TableComponent;

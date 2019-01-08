@@ -1,14 +1,16 @@
 /**
  * @module /views/AddOntologyView
  */
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './AddOntologyView.scss';
 import {
   Paper,
   Button,
   Typography,
 } from '@material-ui/core';
+
+import './AddOntologyView.scss';
 import { withKB } from '../../components/KBContext';
 import OntologyFormComponent from '../../components/OntologyFormComponent';
 import api from '../../services/api';
@@ -18,16 +20,23 @@ import util from '../../services/util';
  * View for editing or adding database nodes. Includes a NodeFormComponent with the
  * 'add' variant. Submissions will post to the server, and redirect user to the home
  * query page.
+ *
+ * @property {object} props
+ * @property {Object} props.history - history state object.
+ * @property {Object} props.schema - Knowledgebase schema object
  */
 class AddOntologyViewBase extends Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+    schema: PropTypes.object.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
       is409: false,
     };
     this.controllers = [];
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleFinish = this.handleFinish.bind(this);
   }
 
   componentWillUnmount() {
@@ -40,6 +49,7 @@ class AddOntologyViewBase extends Component {
    * @param {Array.<Object>} relationships - Form staged relationships.
    * @return {boolean} true if submission is successful.
    */
+  @boundMethod
   async handleSubmit(form, relationships) {
     const { schema } = this.props;
 
@@ -64,6 +74,7 @@ class AddOntologyViewBase extends Component {
   /**
    * Navigates user back to previous page.
    */
+  @boundMethod
   handleFinish() {
     const { history } = this.props;
     history.goBack();
@@ -100,16 +111,6 @@ class AddOntologyViewBase extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {Object} history - history state object.
- * @property {Object} schema - Knowledgebase schema object.
- */
-AddOntologyViewBase.propTypes = {
-  history: PropTypes.object.isRequired,
-  schema: PropTypes.object.isRequired,
-};
 
 const AddOntologyView = withKB(AddOntologyViewBase);
 

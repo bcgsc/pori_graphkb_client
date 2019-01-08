@@ -517,7 +517,7 @@ class RelationshipsForm extends Component {
                         </Collapse>
                       </TableCell>
                     </TableRow>
-                  </React.Fragment>
+                  </>
                 );
               })}
               {relationships.length === 0 && (

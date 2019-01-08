@@ -336,7 +336,7 @@ class AutoSearchMulti extends Component {
         .find(ml => ml.routeName === endpoint) || {}
     ).name;
     return (
-      <React.Fragment>
+      <>
         <AutoSearchBase
           options={options}
           value={value}
@@ -438,7 +438,7 @@ class AutoSearchMulti extends Component {
             </Paper>
           </div>
         </Popover>
-      </React.Fragment>
+      </>
     );
   }
 }

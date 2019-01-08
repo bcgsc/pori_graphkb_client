@@ -90,7 +90,7 @@ const FormTemplater = (props) => {
       // neither true nor false, otherwise use the value of the model.
       const boolValue = model[name] === undefined || model[name] === null ? '' : model[name];
       field = (
-        <React.Fragment>
+        <>
           <div className="form-templater-radio-wrapper">
             <FormControl
               component="fieldset"
@@ -117,7 +117,7 @@ const FormTemplater = (props) => {
               </Tooltip>
             )}
           </div>
-        </React.Fragment>
+        </>
       );
     } else if (type === 'link') {
       // If type is a link to another record, must find that record in the
@@ -194,7 +194,7 @@ const FormTemplater = (props) => {
         );
       }
       field = (
-        <React.Fragment>
+        <>
           <div className="form-templater-embedded-selector">
             {classSelector}
             {description && (
@@ -215,7 +215,7 @@ const FormTemplater = (props) => {
             ignoreRequired={ignoreRequired}
             disabled={disabledFields.includes(name)}
           />
-        </React.Fragment>
+        </>
       );
     } else if (type === 'embeddedset' && !disableLists) {
       field = (

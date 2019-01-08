@@ -257,7 +257,7 @@ class OntologyFormComponent extends Component {
               </Typography>
               <List component="nav">
                 {variant === 'edit' || (classes && classes.length === 1) ? (
-                  <React.Fragment>
+                  <>
                     <ListItem>
                       <ListItemText
                         primary="Class:"
@@ -266,10 +266,10 @@ class OntologyFormComponent extends Component {
                       />
                     </ListItem>
                     <Divider />
-                  </React.Fragment>
+                  </>
                 )
                   : (
-                    <React.Fragment>
+                    <>
                       <ListItem>
                         <ResourceSelectComponent
                           value={form['@class']}
@@ -286,7 +286,7 @@ class OntologyFormComponent extends Component {
                         </ResourceSelectComponent>
                       </ListItem>
                       <Divider />
-                    </React.Fragment>
+                    </>
                   )}
                 <FormTemplater
                   model={form}

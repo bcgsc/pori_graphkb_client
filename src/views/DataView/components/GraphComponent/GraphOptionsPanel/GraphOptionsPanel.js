@@ -114,7 +114,7 @@ class GraphOptionsPanel extends Component {
               <Typography paragraph>
                 {help.description}
               </Typography>
-            </React.Fragment>
+            </>
           ))}
         </DialogContent>
       </Dialog>
@@ -136,7 +136,7 @@ class GraphOptionsPanel extends Component {
     ];
 
     return (
-      <React.Fragment>
+      <>
         {helpPanel}
         <Dialog
           open={graphOptionsOpen}
@@ -315,7 +315,7 @@ class GraphOptionsPanel extends Component {
             </div>
           </DialogContent>
         </Dialog>
-      </React.Fragment>
+      </>
     );
   }
 }

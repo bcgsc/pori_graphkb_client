@@ -143,3 +143,14 @@ $code-font: Menlo,DejaVu Sans Mono,Liberation Mono,Consolas,Ubuntu Mono,Courier 
       }
   }
 }
+
+@mixin code-block {
+  pre {
+    background-color: $background-dark;
+    overflow-x: scroll;
+    padding: 5px;
+    code {
+        font-family: $code-font;
+    }
+  }
+}

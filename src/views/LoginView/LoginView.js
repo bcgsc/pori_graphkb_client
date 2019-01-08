@@ -59,8 +59,7 @@ class LoginView extends React.Component {
       }
     } catch (error) {
       // redirect to the error page
-      console.error(error);
-      history.push('/error', { error });
+      history.push('/error', { error: error.toJSON() });
       return;
     }
 

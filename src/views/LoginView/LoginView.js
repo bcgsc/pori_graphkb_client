@@ -1,19 +1,12 @@
 /**
  * @module /views/LoginView
  */
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import './LoginView.scss';
-import {
-  Button,
-  Typography,
-} from '@material-ui/core';
 import api from '../../services/api';
 import auth from '../../services/auth';
-import history from '../../services/history';
 import config from '../../static/config';
-
-const { FEEDBACK_EMAIL } = config;
 
 /**
  * View to handle user authentication. Redirected to if at any point during use
@@ -21,12 +14,9 @@ const { FEEDBACK_EMAIL } = config;
  * user credentials to the api authentication endpoint, and stores the returned
  * token in browser localstorage.
  */
-class LoginView extends Component {
+class LoginView extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      unauthorized: false,
-    };
     this.controllers = [];
   }
 
@@ -36,69 +26,54 @@ class LoginView extends Component {
    * otherwise.
    */
   async componentDidMount() {
-    const { handleAuthenticate } = this.props;
-    // Clear event loop
-    if (auth.isExpired()) {
-      await auth.logout();
-    }
-    if (auth.getKeyCloakToken() && auth.getToken()) {
-      handleAuthenticate();
-      history.push('/query');
-      return;
+    const { history, location } = this.props;
+    let from;
+    try {
+      from = location.state.from.pathname;
+    } catch (err) {
+      from = auth.popReferrerUri() || '/query';
     }
 
-    let call;
-    if (config.DISABLE_AUTH !== true) { // FOR NOT TESTING
-      const token = await auth.login();
-      call = api.post('/token', { keyCloakToken: token });
-    } else {
-      call = api.post('/token', { username: process.env.USER, password: process.env.PASSWORD });
+    if (!auth.isAuthenticated()) {
+      await auth.authenticate(from);
     }
-    this.controllers.push(call);
-    try {
-      const response = await call.request();
-      auth.loadToken(response.kbToken);
-      history.push('/query');
-    } catch (error) {
-      this.setState({ unauthorized: true });
-    } finally {
-      handleAuthenticate();
+
+    if (!auth.isAuthorized()) {
+      let call;
+      if (config.DISABLE_AUTH !== true) {
+        const token = auth.getAuthToken();
+        call = api.post('/token', { keyCloakToken: token });
+      } else { // FOR TESTING ONLY
+        call = api.post('/token', { username: process.env.USER, password: process.env.PASSWORD });
+      }
+      this.controllers.push(call);
+      try {
+        const response = await call.request();
+        auth.setToken(response.kbToken);
+      } catch (error) {
+        // redirect to the error page
+        console.error(error);
+        history.push('/error', { error });
+        return;
+      }
     }
+    history.push(from);
   }
 
   componentWillUnmount() {
     this.controllers.forEach(c => c.abort());
   }
 
+  static get propTypes() {
+    return {
+      history: PropTypes.object.isRequired,
+      location: PropTypes.object.isRequired,
+    };
+  }
+
   render() {
-    const { unauthorized } = this.state;
-    const emailLink = <a href={`mailto:${FEEDBACK_EMAIL}`}>{FEEDBACK_EMAIL}</a>;
-    return unauthorized && (
-      <div className="login-wrapper">
-        <Typography variant="h5">
-          You do not have access to the GraphKB Project. To gain access, please
-          create a systems JIRA ticket or email {emailLink}.
-        </Typography>
-        <Button
-          id="redirect-btn"
-          onClick={auth.logout}
-          size="large"
-          variant="contained"
-          color="primary"
-        >
-          Back to login
-        </Button>
-      </div>
-    );
+    return null;
   }
 }
-
-/**
- * @namespace
- * @property {function} handleAuthenticate - Updates parent state on successful login.
- */
-LoginView.propTypes = {
-  handleAuthenticate: PropTypes.func.isRequired,
-};
 
 export default LoginView;

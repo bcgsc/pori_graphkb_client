@@ -513,7 +513,8 @@ class DataViewBase extends Component {
           )
         }
         {schema && detailDrawer}
-      </div>);
+      </div>
+    );
   }
 }
 

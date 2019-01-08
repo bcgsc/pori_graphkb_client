@@ -7,7 +7,7 @@ import api from '../api';
 describe('api methods test', () => {
   it('can get token', async () => {
     const username = process.env.USER;
-    const password = process.env.PASSWORD || 'dummy';  // connect to DISABLED AUTH test API server
+    const password = process.env.PASSWORD || 'dummy'; // connect to DISABLED AUTH test API server
     const { kbToken } = await api.post('/token', { username, password }).request();
     expect(jwt.decode(kbToken).user.name).to.eq(username);
   });
@@ -19,7 +19,7 @@ describe('api methods test', () => {
     try {
       await api.post('/token', { username, password }).request();
     } catch (e) {
-      expect(e).to.eq('Unauthorized, redirecting...');
+      expect(e.message).to.eq('Unauthorized');
     }
   });
 });

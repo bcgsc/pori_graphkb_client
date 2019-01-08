@@ -6,7 +6,9 @@ import * as jc from 'json-cycle';
 import auth from './auth';
 import util from './util';
 import config from '../static/config';
-import history from './history';
+import {
+  BadRequestError, AuthorizationError, AuthenticationError, RecordExistsError,
+} from './errors';
 
 const {
   API_BASE_URL,
@@ -52,66 +54,48 @@ class GraphKbApiCall {
    * or login pages
    */
   async request() {
+    const initWithInterceptors = {
+      ...this.init,
+      headers: getHeaders(),
+    };
+    this.controller = new AbortController();
+    const { signal } = this.controller;
+    const request = new Request(API_BASE_URL + this.endpoint, initWithInterceptors);
+    let response;
     try {
-      const initWithInterceptors = {
-        ...this.init,
-        headers: getHeaders(),
-      };
-      this.controller = new AbortController();
-      const { signal } = this.controller;
-      const request = new Request(API_BASE_URL + this.endpoint, initWithInterceptors);
-      let response;
-      try {
-        response = await fetch(request, { signal });
-      } catch (err) {
-        if (err.name === 'AbortError') {
-          return null;
-        }
-        throw err;
+      response = await fetch(request, { signal });
+    } catch (err) {
+      if (err.name === 'AbortError') {
+        return null;
       }
-      if (response.ok) {
-        return response.json();
-      }
-
-      const error = {
-        ...(await response.json()),
-        status: response.status,
-        statusText: response.statusText,
-        url: response.url,
-      };
-      if (response.status === 401) {
-        let state = {};
-        if (auth.isExpired()) {
-          state = { timedout: true };
-        }
-        auth.clearToken();
-        if (history.location.pathname !== '/login') {
-          history.push({ pathname: '/login', state });
-          return Promise.reject('Unauthorized, redirecting...');
-        }
-        return Promise.reject(error);
-      }
-      if (response.status === 400) {
-        history.push({ pathname: '/query/advanced', state: error });
-        return Promise.reject('Invalid Query');
-      }
-      if (response.status === 409) {
-        return Promise.reject(response);
-      }
-      if (response.status === 403) {
-        return Promise.reject(response);
-      }
-      history.push({ pathname: '/error', state: error });
-      throw new Error('Unexpected Error, redirecting...');
-    } catch (error) {
-      history.push({
-        pathname: '/error',
-        state: {
-          message: 'GraphKB is down',
-        },
-      });
-      throw new Error('Unexpected Error, redirecting...');
+      throw err;
     }
+    if (response.ok) {
+      return response.json();
+    }
+
+    const { status, statusText, url } = response;
+
+    const error = {
+      ...(await response.json()),
+      status,
+      message: response.statusText,
+      url,
+    };
+    if (status === 401) {
+      auth.clearTokens();
+      throw new AuthenticationError(error);
+    }
+    if (status === 400) {
+      throw new BadRequestError(error);
+    }
+    if (status === 409) {
+      return new RecordExistsError(error);
+    }
+    if (status === 403) {
+      return new AuthorizationError(error);
+    }
+    throw new Error(`Unexpected Error [${status}]: ${statusText}`);
   }
 }
 

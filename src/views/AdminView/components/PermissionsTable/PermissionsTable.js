@@ -81,7 +81,8 @@ function PermissionsTable(props) {
                           )}
                           checked={!!p}
                           disabled={disabled}
-                        />)}
+                        />
+                      )}
                   </TableCell>
                 ))}
               </TableRow>

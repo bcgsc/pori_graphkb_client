@@ -36,7 +36,7 @@ class AboutNotation extends React.Component {
    * and must be adjusted for the route location associated with this component
    */
   async getContent() {
-    const { location: { pathname } } = this.props; // passed when this is given as a routed component
+    const { location: { pathname } } = this.props;
 
     const controller = new AbortController();
     this.controllers.push(controller);

@@ -39,7 +39,7 @@ class AddStatementViewBase extends Component {
    */
   handleFinish() {
     const { history } = this.props;
-    history.push('/query');
+    history.goBack();
   }
 
   /**

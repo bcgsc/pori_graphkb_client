@@ -16,6 +16,10 @@ import util from '../../services/util';
 
 /**
  * Route for editing existing Statement records.
+ * @property {object} props
+ * @property {Object} props.schema - Knowledgebase db schema.
+ * @property {Object} props.history - App routing history object.
+ * @property {Object} props.match
  */
 class EditStatementViewBase extends Component {
   constructor(props) {
@@ -38,6 +42,14 @@ class EditStatementViewBase extends Component {
     const response = await api.get(`${routeName}/${rid}?neighbors=3`);
     const node = jc.retrocycle(response).result;
     this.setState({ node });
+  }
+
+  static get propTypes() {
+    return {
+      history: PropTypes.object.isRequired,
+      schema: PropTypes.object.isRequired,
+      match: PropTypes.object.isRequired,
+    };
   }
 
   /**
@@ -119,16 +131,6 @@ class EditStatementViewBase extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {Object} history - App routing history object.
- * @property {Object} schema - Knowledgebase db schema.
- */
-EditStatementViewBase.propTypes = {
-  history: PropTypes.object.isRequired,
-  schema: PropTypes.object.isRequired,
-};
 
 const EditStatementView = withKB(EditStatementViewBase);
 

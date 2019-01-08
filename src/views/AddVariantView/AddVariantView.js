@@ -20,7 +20,6 @@ class AddVariantViewBase extends Component {
       is409: false,
     };
     this.controllers = [];
-    this.handleCancel = this.handleCancel.bind(this);
     this.handleFinish = this.handleFinish.bind(this);
     this.submitVariant = this.submitVariant.bind(this);
   }
@@ -30,19 +29,11 @@ class AddVariantViewBase extends Component {
   }
 
   /**
-   * Takes action on a variant form cancel. Navigates to previously visited page.
-   */
-  handleCancel() {
-    const { history } = this.props;
-    history.back();
-  }
-
-  /**
    * Takes action on a successful variant submission. Navigates to query page.
    */
   handleFinish() {
     const { history } = this.props;
-    history.push('/query');
+    history.goBack();
   }
 
   /**
@@ -102,7 +93,7 @@ class AddVariantViewBase extends Component {
           <div className="variant-cancel-btn">
             <Button
               color="default"
-              onClick={this.handleCancel}
+              onClick={this.handleFinish}
               variant="outlined"
             >
               Cancel

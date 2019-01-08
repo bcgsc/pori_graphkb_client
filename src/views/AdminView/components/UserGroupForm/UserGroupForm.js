@@ -324,7 +324,7 @@ class UserGroupForm extends Component {
                     <div className="user-group-toolbar">
                       {isEditing
                         ? (
-                          <React.Fragment>
+                          <>
                             <Button
                               onClick={this.handleUserGroupEdit}
                               size="small"
@@ -357,9 +357,9 @@ class UserGroupForm extends Component {
                                 && <FormHelperText>UserGroup name already exists</FormHelperText>
                               }
                             </FormControl>
-                          </React.Fragment>
+                          </>
                         ) : (
-                          <React.Fragment>
+                          <>
                             <IconButton onClick={() => this.handlePermissionsEdit(userGroup)}>
                               <EditIcon />
                             </IconButton>
@@ -367,7 +367,7 @@ class UserGroupForm extends Component {
                               <DeleteIcon />
                             </IconButton>
                             <Typography component="h3" variant="subtitle1">Permissions</Typography>
-                          </React.Fragment>
+                          </>
                         )}
                     </div>
                     <PermissionsTable

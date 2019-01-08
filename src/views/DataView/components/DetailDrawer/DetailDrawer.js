@@ -153,7 +153,7 @@ class DetailDrawer extends Component {
           </ListItem>
         </Collapse>
         <Divider />
-      </React.Fragment>
+      </>
     );
   }
 
@@ -228,7 +228,7 @@ class DetailDrawer extends Component {
               </List>
             </Collapse>
             <Divider />
-          </React.Fragment>
+          </>
         );
       }
       if ((type === 'link' || type === 'embedded') && value['@class']) {
@@ -272,7 +272,7 @@ class DetailDrawer extends Component {
               </Collapse>
             )}
             <Divider />
-          </React.Fragment>
+          </>
         );
       }
       if (value.toString().length <= MAX_STRING_LENGTH) {
@@ -305,7 +305,7 @@ class DetailDrawer extends Component {
               </ListItemText>
             </ListItem>
             <Divider />
-          </React.Fragment>
+          </>
         );
       }
       return this.formatLongValue(name, value, true, isNested);
@@ -414,7 +414,7 @@ class DetailDrawer extends Component {
                 </List>
                 <Divider />
               </Collapse>
-            </React.Fragment>
+            </>
           );
         })}
       </List>
@@ -543,7 +543,7 @@ class DetailDrawer extends Component {
           {identifiers}
           {otherProps}
           {!isEdge && (
-            <React.Fragment>
+            <>
               <ListSubheader className="detail-relationships-subheader">
                 Relationships
               </ListSubheader>
@@ -556,7 +556,7 @@ class DetailDrawer extends Component {
                   />
                 </ListItem>
               )}
-            </React.Fragment>
+            </>
           )}
         </div>
       </Drawer>

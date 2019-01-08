@@ -80,7 +80,7 @@ class RecordChip extends Component {
     const id = schema ? schema.getPreview(record) : Object.values(record).find(v => typeof v === 'string');
 
     return (
-      <React.Fragment>
+      <>
         <Popover
           open={!!anchorEl}
           anchorEl={anchorEl}
@@ -142,7 +142,7 @@ class RecordChip extends Component {
           color="primary"
           onClick={this.handlePopoverOpen}
         />
-      </React.Fragment>
+      </>
     );
   }
 }

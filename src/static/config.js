@@ -20,9 +20,10 @@ export default {
     URL: process.env.KEYCLOAK_URL || 'http://ga4ghdev01.bcgsc.ca:8080/auth',
     GRAPHKB_ROLE: process.env.KEYCLOAK_ROLE || 'GraphKB',
   },
-  FEEDBACK_EMAIL: 'graphkb@bcgsc.ca',
-  FEEDBACK_HIPCHAT: '@IsaacBeckie',
-  JIRA_LINK: 'https://www.bcgsc.ca/jira/projects/KBDEV',
+  FEEDBACK: {
+    EMAIL: 'graphkb@bcgsc.ca',
+    JIRA: 'https://www.bcgsc.ca/jira/projects/KBDEV',
+  },
   GRAPH_PROPERTIES: {
     ARROW_WIDTH: 3,
     ARROW_LENGTH: 4,

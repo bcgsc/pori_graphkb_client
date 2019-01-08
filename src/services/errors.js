@@ -21,7 +21,7 @@ class ErrorMixin extends Error {
     return Object.assign(this.content, {
       message: this.message,
       name: this.name,
-      stacktrace: this.stack ? this.stack.split('\n').map(line => line.trim()) : null,
+      stacktrace: this.stack ? this.stack.trim() : null,
     });
   }
 }

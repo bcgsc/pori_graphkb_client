@@ -71,7 +71,6 @@ const isExpired = (token) => {
 const validToken = (token) => {
   try {
     const decoded = jwt.decode(token);
-    console.warn(decoded);
     return !!decoded;
   } catch (err) {
     return false;
@@ -91,7 +90,6 @@ const isAuthenticated = () => {
  */
 const isAuthorized = () => {
   const token = getToken();
-  console.warn('author token', token, !!token, token === 'undefined');
   return !!(validToken(token) && !isExpired(token));
 };
 

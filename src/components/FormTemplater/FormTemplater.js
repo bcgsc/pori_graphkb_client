@@ -24,8 +24,26 @@ import util from '../../services/util';
 /**
  * Templater component that generates input form fields based off of a given
  * schema and binds them to a given model.
+ * @property {Object} props.schema - Knowledgebase db schema.
+ * @property {function} props.onChange - Model updating function
+ * @property {function} props.onClassChange - Function for updating embedded prop classes.
+ * @property {Object} props.model - Model object.
+ * @property {Array.<Object>} props.propSchemas - Form object schema.
+ * @property {Array.<string>} props.excludedProps - List of prop strings to be
+ * excluded from form generation.
+ * @property {string} props.fieldComponent - Component to pass to material UI ListItem component
+ * @property {Array.<string>} props.errorFields - list of field keys that are causing errors in
+ * parent component.
+ * @property {Array.<string>} props.disabledFields - list of field keys that should be disabled.
+ * @property {function} props.sort - Sorting function for form fields.
+ * @property {Object} props.pairs - group definitions for grid.
+ * @property {boolean} props.ignoreRequired - if true, form does not apply required
+ * state to mandatory fields.
+ * @property {boolean} props.disablePadding - if true, disables left and right padding in ListItems.
+ * @property {boolean} props.disablePortal - if true, disables portals for nested
+ * autosearch components.
  */
-function FormTemplater(props) {
+const FormTemplater = (props) => {
   const {
     appendToKeys,
     model,
@@ -325,32 +343,8 @@ function FormTemplater(props) {
     }
   });
   return fields;
-}
+};
 
-/**
- * @namespace
- * @property {Object} schema - Knowledgebase db schema.
- * @property {function} onChange - Model updating function
- * @property {function} onClassChange - Function for updating embedded prop
- * classes.
- * @property {Object} model - Model object.
- * @property {Array.<Object>} propSchemas - Form object schema.
- * @property {Array.<string>} excludedProps - List of prop strings to be
- * excluded from form generation.
- * @property {string} fieldComponent - Component to pass to material UI ListItem
- * component
- * @property {Array.<string>} errorFields - list of field keys that are causing errors in
- * parent component.
- * @property {Array.<string>} disabledFields - list of field keys that should be disabled.
- * @property {function} sort - Sorting function for form fields.
- * @property {Object} pairs - group definitions for grid.
- * @property {boolean} ignoreRequired - if true, form does not apply required
- * state to mandatory fields.
- * @property {boolean} disablePadding - if true, disables left and right padding
- * in ListItems.
- * @property {boolean} disablePortal - if true, disables portals for nested
- * autosearch components.
- */
 FormTemplater.propTypes = {
   schema: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,

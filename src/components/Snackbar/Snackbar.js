@@ -111,7 +111,8 @@ class SnackbarProvider extends Component {
             (label && action) && (
               <Button key={label} color="secondary" size="small" onClick={action}>
                 {label}
-              </Button>)}
+              </Button>
+            )}
         />
         {children}
       </SnackbarContext.Provider>

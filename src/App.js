@@ -2,14 +2,13 @@
  * @module /App
  */
 import React from 'react';
-import { Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import {
   createMuiTheme,
   MuiThemeProvider,
 } from '@material-ui/core/styles';
 import Main from './views/Main/Main';
 
-import history from './services/history';
 import { SnackbarProvider } from './components/Snackbar/Snackbar';
 
 const theme = createMuiTheme({
@@ -43,9 +42,9 @@ function App() {
   return (
     <MuiThemeProvider theme={theme}>
       <SnackbarProvider>
-        <Router history={history}>
+        <BrowserRouter>
           <Main />
-        </Router>
+        </BrowserRouter>
       </SnackbarProvider>
     </MuiThemeProvider>
   );

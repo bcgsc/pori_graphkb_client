@@ -57,12 +57,10 @@ class Main extends React.Component {
 
     this.state = {
       anchorEl: null,
-      loggedIn: auth.isAuthenticated(),
       drawerOpen: false,
     };
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.handleAuthenticate = this.handleAuthenticate.bind(this);
     this.handleNavBar = this.handleNavBar.bind(this);
   }
 
@@ -81,14 +79,6 @@ class Main extends React.Component {
   }
 
   /**
-   * Disables action buttons in headers and force redirects to /login.
-   * setState call required so component is re rendered.
-   */
-  handleAuthenticate() {
-    this.setState({ loggedIn: auth.isAuthenticated() });
-  }
-
-  /**
    * Sets main navigation drawer open state.
    */
   handleNavBar(state) {
@@ -98,16 +88,8 @@ class Main extends React.Component {
   render() {
     const {
       anchorEl,
-      loggedIn,
       drawerOpen,
     } = this.state;
-
-    const loginWithProps = () => (
-      <LoginView
-        handleLogOut={this.handleLogOut}
-        handleAuthenticate={this.handleAuthenticate}
-      />
-    );
 
     const links = [
       {
@@ -139,7 +121,7 @@ class Main extends React.Component {
             position="absolute"
             className={`banner ${drawerOpen ? 'drawer-shift' : ''}`}
           >
-            {!drawerOpen && loggedIn && (
+            {!drawerOpen && (
               <IconButton
                 color="inherit"
                 onClick={this.handleNavBar(true)}
@@ -149,7 +131,7 @@ class Main extends React.Component {
               </IconButton>
             )}
             <div className="appbar-title">
-              <Link to="/query" onClick={this.handleNavBar(false)} disabled={!loggedIn}>
+              <Link to="/query" onClick={this.handleNavBar(false)}>
                 <Typography variant="h6">GraphKB</Typography>
                 <Typography variant="caption">v{process.env.npm_package_version}</Typography>
               </Link>
@@ -164,7 +146,7 @@ class Main extends React.Component {
                 >
                   <PersonIcon />
                   <Typography color="inherit">
-                    {auth.isAuthenticated()
+                    {auth.isAuthorized()
                       ? auth.getUser().name
                       : 'Logged Out'
                     }
@@ -204,10 +186,8 @@ class Main extends React.Component {
               </div>
             </div>
           </AppBar>
-          {loggedIn && (
-            <MainNav open={drawerOpen} onChange={this.handleNavBar} links={links} />
-          )}
-          <section className={`content ${(drawerOpen ? loggedIn : '') && 'drawer-shift'} ${!loggedIn ? 'no-drawer' : ''}`}>
+          <MainNav open={drawerOpen} onChange={this.handleNavBar} links={links} />
+          <section className={`content ${drawerOpen && 'drawer-shift'}`}>
             <div
               className="router-outlet"
               role="button"
@@ -216,10 +196,10 @@ class Main extends React.Component {
               onKeyDown={e => e.keyCode === 13 && this.handleNavBar(false)()}
             >
               <Switch>
-                <Route path="/feedback" component={FeedbackView} />
-                <Route path="/login" render={loginWithProps} />
-                <Route path="/error" component={ErrorView} />
-                <Route path="/about" component={AboutView} />
+                <AuthenticatedRoute path="/feedback" component={FeedbackView} />
+                <Route path="/login" component={LoginView} />
+                <Route exact path="/error" component={ErrorView} />
+                <AuthenticatedRoute path="/about" component={AboutView} />
                 <AuthenticatedRoute exact path="/query" component={QueryView} />
                 <AuthenticatedRoute exact path="/query/advanced" component={AdvancedQueryView} />
                 <AuthenticatedRoute path="/query/advanced/builder" component={QueryBuilderView} />

@@ -3,4 +3,6 @@ import DownloadFileComponent from './DownloadFileComponent';
 import GraphComponent from './GraphComponent';
 import TableComponent from './TableComponent';
 
-export { DetailDrawer, DownloadFileComponent, GraphComponent, TableComponent };
+export {
+  DetailDrawer, DownloadFileComponent, GraphComponent, TableComponent,
+};

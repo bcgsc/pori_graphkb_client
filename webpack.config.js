@@ -40,7 +40,10 @@ const moduleSettings = {
     {
       test: /\.js$/,
       include: INCLUDE,
-      use: ['babel-loader'],
+      use: [
+        'babel-loader',
+        'eslint-loader',
+      ],
       sideEffects: false,
     },
     {
@@ -108,7 +111,8 @@ const plugins = [
     fileName: 'manifest.json',
   }),
   /* From eject react app (Old webpack eject)
-   * This service worker is required to ensure that the URL refresh works with a static server (If previously visited)
+   * This service worker is required to ensure that the URL refresh works with a static
+   * server (If previously visited)
    * Generate a service worker script that will precache, and keep up to date,
    * the HTML & assets that are part of the Webpack build.
    */

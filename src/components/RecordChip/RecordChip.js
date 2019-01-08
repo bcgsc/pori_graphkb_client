@@ -99,7 +99,8 @@ class RecordChip extends Component {
                       <TableCell padding="checkbox">
                         {record['@rid']}
                       </TableCell>
-                    </TableRow>)}
+                    </TableRow>
+                  )}
                   {record.source && (
                     <TableRow>
                       <TableCell padding="checkbox">

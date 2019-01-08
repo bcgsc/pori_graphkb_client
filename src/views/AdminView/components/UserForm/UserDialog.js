@@ -94,12 +94,14 @@ function UserDialog(props) {
                       <Checkbox
                         checked={!!newUserGroups.find(uG => uG['@rid'] === userGroup['@rid'])}
                         onChange={() => onUserGroup(userGroup)}
-                      />)}
+                      />
+                    )}
                     label={userGroup.name}
                   />
                   {!userGroups.find(uG => uG['@rid'] === userGroup['@rid'])
                     && <Typography variant="caption" color="primary">Deprecated Group</Typography>}
-                </div>))}
+                </div>
+              ))}
             </FormGroup>
           </FormControl>
         </div>
@@ -161,7 +163,8 @@ function UserDialog(props) {
                           ? 'default'
                           : 'primary'
                       }
-                    />)) : <Typography component="p" variant="caption">No groups</Typography>}
+                    />
+                  )) : <Typography component="p" variant="caption">No groups</Typography>}
                 </td>
               </tr>
             </tbody>

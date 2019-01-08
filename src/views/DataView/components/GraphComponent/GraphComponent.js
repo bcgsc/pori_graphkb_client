@@ -1011,7 +1011,8 @@ class GraphComponent extends Component {
         handleClick={() => this.handleLinkClick(link)}
         actionsNode={actionsNode}
         marker={`url(#${MARKER_ID})`}
-      />));
+      />
+    ));
 
     const nodesDisplay = nodes.map(node => (
       <GraphNodeDisplay

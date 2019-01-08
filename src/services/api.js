@@ -92,10 +92,10 @@ class GraphKbApiCall {
       throw new BadRequestError(error);
     }
     if (status === 409) {
-      return new RecordExistsError(error);
+      throw new RecordExistsError(error);
     }
     if (status === 403) {
-      return new AuthorizationError(error);
+      throw new AuthorizationError(error);
     }
     throw new Error(`Unexpected Error [${status}]: ${statusText}`);
   }

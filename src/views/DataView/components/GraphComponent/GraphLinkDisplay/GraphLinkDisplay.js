@@ -4,6 +4,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import './GraphLinkDisplay.scss';
 import config from '../../../../../static/config';
 

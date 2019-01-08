@@ -7,8 +7,8 @@ import {
   createMuiTheme,
   MuiThemeProvider,
 } from '@material-ui/core/styles';
-import Main from './views/Main/Main';
 
+import Main from './views/Main/Main';
 import { SnackbarProvider } from './components/Snackbar/Snackbar';
 
 const theme = createMuiTheme({

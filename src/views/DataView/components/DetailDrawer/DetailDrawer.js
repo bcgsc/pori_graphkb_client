@@ -1,9 +1,9 @@
 /**
  * @module /components/OntologyDetailComponent
  */
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './DetailDrawer.scss';
 import {
   Typography,
   Drawer,
@@ -21,6 +21,8 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import LinkIcon from '@material-ui/icons/Link';
+
+import './DetailDrawer.scss';
 import util from '../../../../services/util';
 
 const MAX_STRING_LENGTH = 64;
@@ -29,19 +31,37 @@ const DATE_KEYS = ['createdAt', 'deletedAt'];
 /**
  * Component used to display record details in a side drawer. Dynamically
  * generates display based on record, and its corresponding schema entry.
+ *
+ * @property {object} props
+ * @property {Object} props.schema - Knowledgebase schema object.
+ * @property {Object} props.node - Ontology to be displayed in drawer.
+ * @property {function} props.onClose - Function triggered on @material-ui/Drawer onClose event.
+ * @property {bool} props.isEdge - Flag for edge classes.
+ * @property {function} props.handleNodeEditStart - Function triggered on node edit button click
  */
 class DetailDrawer extends Component {
+  static propTypes = {
+    schema: PropTypes.object,
+    node: PropTypes.object,
+    onClose: PropTypes.func,
+    isEdge: PropTypes.bool,
+    handleNodeEditStart: PropTypes.func,
+  };
+
+  static defaultProps = {
+    schema: null,
+    node: null,
+    onClose: null,
+    isEdge: false,
+    handleNodeEditStart: PropTypes.func,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
       opened: [],
       linkOpen: null,
     };
-    this.formatProps = this.formatProps.bind(this);
-    this.formatRelationships = this.formatRelationships.bind(this);
-    this.formatMetadata = this.formatMetadata.bind(this);
-    this.handleExpand = this.handleExpand.bind(this);
-    this.handleLinkExpand = this.handleLinkExpand.bind(this);
   }
 
   /**
@@ -64,6 +84,7 @@ class DetailDrawer extends Component {
    * @param {Object} inputNode - Ontology being displayed.
    * @param {boolean} isNested - Nested flag.
    */
+  @boundMethod
   formatIdentifiers(node, isNested) {
     const { schema } = this.props;
     if (!node['@class']) return null;
@@ -141,6 +162,7 @@ class DetailDrawer extends Component {
    * @param {Object} node - Record to be formatted.
    * @param {boolean} isNested - Nested flag.
    */
+  @boundMethod
   formatMetadata(node, isNested) {
     const { schema } = this.props;
     return this.formatProps(node, schema.getMetadata(), isNested);
@@ -152,6 +174,7 @@ class DetailDrawer extends Component {
    * @param {Array.<Object>} properties - List of properties to display.
    * @param {boolean} isNested - Nested flag.
    */
+  @boundMethod
   formatProps(node, properties, isNested) {
     const { schema } = this.props;
     const { opened } = this.state;
@@ -294,6 +317,7 @@ class DetailDrawer extends Component {
    * @param {Object} node - Record being displayed.
    * @param {boolean} isNested - Nested flag.
    */
+  @boundMethod
   formatOtherProps(node, isNested) {
     const { schema } = this.props;
     const { identifiers } = schema.get(node);
@@ -315,6 +339,7 @@ class DetailDrawer extends Component {
    * Formats record relationships.
    * @param {Object} node - Record being displayed.
    */
+  @boundMethod
   formatRelationships(node) {
     const { linkOpen, opened } = this.state;
     const { schema } = this.props;
@@ -400,6 +425,7 @@ class DetailDrawer extends Component {
    * Toggles collapsed list item.
    * @param {string} key - list item key.
    */
+  @boundMethod
   handleExpand(key) {
     const { opened } = this.state;
     if (opened.includes(key)) {
@@ -414,6 +440,7 @@ class DetailDrawer extends Component {
    * Toggles collapsed link list item.
    * @param {string} key - list item key.
    */
+  @boundMethod
   handleLinkExpand(key) {
     const { linkOpen, opened } = this.state;
     if (linkOpen === key) {
@@ -536,29 +563,5 @@ class DetailDrawer extends Component {
     );
   }
 }
-
-/**
- * @namespace
-* @property {Object} schema - Knowledgebase schema object.
-* @property {Object} node - Ontology to be displayed in drawer.
-* @property {function} onClose - Function triggered on @material-ui/Drawer onClose event.
-* @property {bool} isEdge - Flag for edge classes.
-* @property {function} handleNodeEditStart - Function triggered on node edit button click.
-    */
-DetailDrawer.propTypes = {
-  schema: PropTypes.object,
-  node: PropTypes.object,
-  onClose: PropTypes.func,
-  isEdge: PropTypes.bool,
-  handleNodeEditStart: PropTypes.func,
-};
-
-DetailDrawer.defaultProps = {
-  schema: null,
-  node: null,
-  onClose: null,
-  isEdge: false,
-  handleNodeEditStart: PropTypes.func,
-};
 
 export default DetailDrawer;

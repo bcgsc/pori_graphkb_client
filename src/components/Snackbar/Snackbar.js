@@ -1,3 +1,4 @@
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Snackbar } from '@material-ui/core';
@@ -18,8 +19,19 @@ const withSnackbar = WrappedComponent => props => (
 
 /**
  * Renders snackbar when activated.
+ *
+ * @property {object} props
+ * @property {any} props.children - Rest of app.
  */
 class SnackbarProvider extends Component {
+  static propTypes = {
+    children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
+  };
+
+  static defaultProps = {
+    children: null,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -27,17 +39,12 @@ class SnackbarProvider extends Component {
       snack: {},
     };
     this.queue = [];
-
-    this.add = this.add.bind(this);
-    this.clear = this.clear.bind(this);
-    this.grabFromQueue = this.grabFromQueue.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.handleExit = this.handleExit.bind(this);
   }
 
   /**
    * Closes snackbar.
    */
+  @boundMethod
   handleClose() {
     this.setState({ open: false });
   }
@@ -48,6 +55,7 @@ class SnackbarProvider extends Component {
    * @param {string} label - Snackbar button label.
    * @param {function} action - Action on snackbar button click.
    */
+  @boundMethod
   add(message, label, action) {
     const { open } = this.state;
     const snack = { message };
@@ -67,6 +75,7 @@ class SnackbarProvider extends Component {
   /**
    * Clears snack queue and closes current snackbar.
    */
+  @boundMethod
   clear() {
     this.queue = [];
     this.handleClose();
@@ -75,6 +84,7 @@ class SnackbarProvider extends Component {
   /**
    * Takes the first snack in the queue and displays it.
    */
+  @boundMethod
   grabFromQueue() {
     const snack = this.queue.shift();
     this.setState({ open: true, snack });
@@ -83,6 +93,7 @@ class SnackbarProvider extends Component {
   /**
    * Displays the next item in the queue when the current snack closes.
    */
+  @boundMethod
   handleExit() {
     if (this.queue.length > 0) {
       this.grabFromQueue();
@@ -119,18 +130,6 @@ class SnackbarProvider extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {any} children - Rest of app.
- */
-SnackbarProvider.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
-};
-
-SnackbarProvider.defaultProps = {
-  children: null,
-};
 
 export {
   SnackbarProvider,

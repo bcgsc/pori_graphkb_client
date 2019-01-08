@@ -3,6 +3,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import './LoginView.scss';
 import api from '../../services/api';
 import auth from '../../services/auth';
@@ -15,6 +16,11 @@ import config from '../../static/config';
  * token in browser localstorage.
  */
 class LoginView extends React.Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.controllers = [];
@@ -62,13 +68,6 @@ class LoginView extends React.Component {
 
   componentWillUnmount() {
     this.controllers.forEach(c => c.abort());
-  }
-
-  static get propTypes() {
-    return {
-      history: PropTypes.object.isRequired,
-      location: PropTypes.object.isRequired,
-    };
   }
 
   render() {

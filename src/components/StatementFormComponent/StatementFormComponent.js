@@ -1,14 +1,16 @@
 /**
  * @module /components/StatementFormComponent
  */
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './StatementFormComponent.scss';
 import {
   Button,
   Paper,
   Typography,
 } from '@material-ui/core';
+
+import './StatementFormComponent.scss';
 import DeleteRecordDialog from '../DeleteRecordDialog';
 import FormTemplater from '../FormTemplater';
 import NotificationDrawer from '../NotificationDrawer';
@@ -19,8 +21,34 @@ const DEFAULT_REVIEW_STATUS = 'pending';
 /**
  * Form for Statement records. Shows shorthand as a mix of the appliesTo
  * Ontology, relevance Vocabulary, as well as source and sourceId.
+ *
+ * @property {object} props
+ * @property {Object} props.schema - Knowledgebase db schema
+ * @property {Object} props.node - Existing Statement record to be edited. If not
+ * included, form will generate a clean model to post.
+ * @property {function} props.onSubmit - Handler for when form is submitted.
+ * @property {function} props.onFinish - Handler for when form has been
+ * successfully submitted.
+ * @property {function} props.onDelete - Handler for when record has been deleted.
  */
 class StatementFormComponent extends Component {
+  static propTypes = {
+    schema: PropTypes.object.isRequired,
+    node: PropTypes.object,
+    onSubmit: PropTypes.func,
+    onFinish: PropTypes.func,
+    onDelete: PropTypes.func,
+    is409: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    node: null,
+    onSubmit: null,
+    onFinish: null,
+    onDelete: null,
+    is409: false,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -31,10 +59,6 @@ class StatementFormComponent extends Component {
       errorFields: [],
       relationshipsError: false,
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleDialog = this.handleDialog.bind(this);
-    this.handleDeleteNode = this.handleDeleteNode.bind(this);
   }
 
   /**
@@ -68,6 +92,7 @@ class StatementFormComponent extends Component {
    * Calls parent submit method and opens notification drawer. Shows completed
    * icon when submission handler has completed.
    */
+  @boundMethod
   async handleSubmit() {
     const { form, relationships, originalRelationships } = this.state;
     const { onSubmit, schema } = this.props;
@@ -110,6 +135,7 @@ class StatementFormComponent extends Component {
    * Sets the open state of the delete dialog.
    * @param {boolean} val - Open state of delete dialog.
    */
+  @boundMethod
   handleDialog(val) {
     this.setState({ deleteDialog: val });
   }
@@ -117,6 +143,7 @@ class StatementFormComponent extends Component {
   /**
    * Deletes target node.
    */
+  @boundMethod
   async handleDeleteNode() {
     const { onDelete } = this.props;
     this.setState({ notificationDrawerOpen: true, loading: true });
@@ -129,6 +156,7 @@ class StatementFormComponent extends Component {
    * Updates form model based off user input.
    * @param {Event} event - User input event.
    */
+  @boundMethod
   handleChange(event) {
     const { form } = this.state;
     const { schema } = this.props;
@@ -265,32 +293,5 @@ class StatementFormComponent extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {Object} schema - Knowledgebase db schema
- * @property {Object} node - Existing Statement record to be edited. If not
- * included, form will generate a clean model to post.
- * @property {function} onSubmit - Handler for when form is submitted.
- * @property {function} onFinish - Handler for when form has been
- * successfully submitted.
- * @property {function} onDelete - Handler for when record has been deleted.
- */
-StatementFormComponent.propTypes = {
-  schema: PropTypes.object.isRequired,
-  node: PropTypes.object,
-  onSubmit: PropTypes.func,
-  onFinish: PropTypes.func,
-  onDelete: PropTypes.func,
-  is409: PropTypes.bool,
-};
-
-StatementFormComponent.defaultProps = {
-  node: null,
-  onSubmit: null,
-  onFinish: null,
-  onDelete: null,
-  is409: false,
-};
 
 export default StatementFormComponent;

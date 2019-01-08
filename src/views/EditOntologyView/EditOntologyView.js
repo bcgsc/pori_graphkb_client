@@ -1,16 +1,17 @@
 /**
  * @module /views/EditOntologyView
  */
-
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './EditOntologyView.scss';
 import {
   Paper,
   Button,
   Typography,
 } from '@material-ui/core';
 import * as jc from 'json-cycle';
+
+import './EditOntologyView.scss';
 import { withKB } from '../../components/KBContext';
 import OntologyFormComponent from '../../components/OntologyFormComponent';
 import api from '../../services/api';
@@ -23,18 +24,24 @@ const { DEFAULT_NEIGHBORS } = config;
  * View for record editing. Contains a form component with the 'edit' variant
  * selected. Selects node with record ID as passed in to the url (/edit/[rid]).
  * Redirects to the home query page on form submit, or to the error page.
+ *
+ * @property {Object} props.match - Match object for extracting URL parameters.
+ * @property {Object} props.history - Application routing history object.
+ * @property {Object} props.schema - Knowledgebase schema object.
  */
 class EditOntologyViewBase extends Component {
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
+    schema: PropTypes.object.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
       node: null,
     };
     this.controllers = [];
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleFinish = this.handleFinish.bind(this);
-    this.handleCancel = this.handleCancel.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
   }
 
   /**
@@ -64,6 +71,7 @@ class EditOntologyViewBase extends Component {
    * @param {Object} originalNode - Original node data.
    * @return {boolean} true if submission is successful.
    */
+  @boundMethod
   async handleSubmit(form, relationships, originalNode) {
     const { schema } = this.props;
 
@@ -89,6 +97,7 @@ class EditOntologyViewBase extends Component {
   /**
    * Deletes target node.
    */
+  @boundMethod
   async handleDelete() {
     const { node } = this.state;
     const { schema } = this.props;
@@ -101,6 +110,7 @@ class EditOntologyViewBase extends Component {
   /**
    * Navigates back to previous view.
    */
+  @boundMethod
   handleCancel() {
     const { history } = this.props;
     history.back();
@@ -109,6 +119,7 @@ class EditOntologyViewBase extends Component {
   /**
    * Navigates back to query page.
    */
+  @boundMethod
   handleFinish() {
     const { history } = this.props;
     history.push('/query');
@@ -151,18 +162,6 @@ class EditOntologyViewBase extends Component {
     return null;
   }
 }
-
-/**
- * @namespace
- * @property {Object} match - Match object for extracting URL parameters.
- * @property {Object} history - Application routing history object.
- * @property {Object} schema - Knowledgebase schema object.
- */
-EditOntologyViewBase.propTypes = {
-  match: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
-  schema: PropTypes.object.isRequired,
-};
 
 const EditOntologyView = withKB(EditOntologyViewBase);
 

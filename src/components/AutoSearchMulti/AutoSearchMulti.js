@@ -1,6 +1,7 @@
 /**
  * @module /components/AutoSearchMulti
  */
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -19,6 +20,7 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import * as jc from 'json-cycle';
 import * as qs from 'querystring';
 import debounce from 'lodash.debounce';
+
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
 import AutoSearchBase from '../AutoSearchBase';
 import FormTemplater from '../FormTemplater/FormTemplater';
@@ -38,8 +40,57 @@ const EXTRA_FORM_PROPS = ['@rid'];
  * Autosearch component meant for a wide range of possible classes and/or
  * endpoints. Main use is in relationships target selector fields and
  * dependency link properties.
+ *
+ * @property {object} props
+ * @property {string} props.name - name of input for event parsing.
+ * @property {string} props.value - specified value for two way binding.
+ * @property {function} props.onChange - parent method for handling change events
+ * @property {number} props.limit - database return record limit.
+ * @property {string} props.endpoint - api endpoint identifier.
+ * @property {string} props.property - api property identifier.
+ * @property {string} props.placeholder - placeholder for text input.
+ * @property {string} props.label - label for text input.
+ * @property {bool} props.required - required flag for text input indicator.
+ * @property {bool} props.error - error flag for text input.
+ * @property {bool} props.disabled - disabled flag for text input.
+ * @property {Record} props.selected - Last selected record.
+ * @property {Object} props.schema - Knowledgebase schema object.
  */
 class AutoSearchMulti extends Component {
+  static propTypes = {
+    name: PropTypes.string,
+    value: PropTypes.string,
+    onChange: PropTypes.func,
+    limit: PropTypes.number,
+    endpoint: PropTypes.string,
+    property: PropTypes.arrayOf(PropTypes.string),
+    placeholder: PropTypes.string,
+    label: PropTypes.string,
+    required: PropTypes.bool,
+    error: PropTypes.bool,
+    disabled: PropTypes.bool,
+    selected: PropTypes.object,
+    schema: PropTypes.object,
+    superClass: PropTypes.string,
+  };
+
+  static defaultProps = {
+    limit: 30,
+    endpoint: '/ontologies',
+    property: ['name'],
+    placeholder: '',
+    name: undefined,
+    value: undefined,
+    label: '',
+    required: false,
+    error: false,
+    selected: null,
+    onChange: () => { },
+    disabled: false,
+    schema: null,
+    superClass: '',
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -55,13 +106,6 @@ class AutoSearchMulti extends Component {
       this.callApi.bind(this),
       property.length > 1 ? LONG_DEBOUNCE_TIME : DEBOUNCE_TIME,
     );
-    this.handleBlur = this.handleBlur.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleClear = this.handleClear.bind(this);
-    this.handleClassChange = this.handleClassChange.bind(this);
-    this.handleOpenPopover = this.handleOpenPopover.bind(this);
-    this.handleQuery = this.handleQuery.bind(this);
-    this.refreshOptions = this.refreshOptions.bind(this);
     this.setRef = (node) => { this.popperNode = node; };
   }
 
@@ -85,6 +129,7 @@ class AutoSearchMulti extends Component {
   /**
    * Clears loading states.
    */
+  @boundMethod
   handleBlur() {
     this.setState({ loading: false, options: [], downshiftOpen: false });
   }
@@ -93,6 +138,7 @@ class AutoSearchMulti extends Component {
    * Updates the parent value with value from a selected item.
    * @param {Object} selectedRecord - Selected KB record.
    */
+  @boundMethod
   handleChange(selectedRecord) {
     const {
       onChange,
@@ -111,6 +157,7 @@ class AutoSearchMulti extends Component {
    * Opens/closes popover, and closes downshift component.
    * @param {Event} event - Popover event.
    */
+  @boundMethod
   handleOpenPopover(event) {
     this.setState({ anchorEl: event ? event.currentTarget : null, downshiftOpen: false });
   }
@@ -118,6 +165,7 @@ class AutoSearchMulti extends Component {
   /**
    * Sends query to api using the temp model as the set of query parameters.
    */
+  @boundMethod
   async handleQuery() {
     const { model, cls } = this.state;
     const { schema } = this.props;
@@ -161,6 +209,7 @@ class AutoSearchMulti extends Component {
    * class state variable.
    * @param {Event} event - New class select event.
    */
+  @boundMethod
   handleClassChange(event) {
     const { schema } = this.props;
     const { model } = this.state;
@@ -174,6 +223,7 @@ class AutoSearchMulti extends Component {
    * Emits a null value to the "[name].data" key name of parent component. This
    * convention represents an unselected value for link properties.
    */
+  @boundMethod
   handleClear() {
     const { name, onChange } = this.props;
     onChange({ target: { value: null, name: `${name}.data` } });
@@ -183,6 +233,7 @@ class AutoSearchMulti extends Component {
    * Calls api with user input value as parameter.
    * @param {Event} event - user input event.
    */
+  @boundMethod
   refreshOptions(event) {
     if (!ACTION_KEYCODES.includes(event.keyCode)) {
       const { selected } = this.state;
@@ -391,55 +442,5 @@ class AutoSearchMulti extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {string} name - name of input for event parsing.
- * @property {string} value - specified value for two way binding.
- * @property {function} onChange - parent method for handling change events
- * @property {number} limit - database return record limit.
- * @property {string} endpoint - api endpoint identifier.
- * @property {string} property - api property identifier.
- * @property {string} placeholder - placeholder for text input.
- * @property {string} label - label for text input.
- * @property {bool} required - required flag for text input indicator.
- * @property {bool} error - error flag for text input.
- * @property {bool} disabled - disabled flag for text input.
- * @property {Record} selected - Last selected record.
- * @property {Object} schema - Knowledgebase schema object.
- */
-AutoSearchMulti.propTypes = {
-  name: PropTypes.string,
-  value: PropTypes.string,
-  onChange: PropTypes.func,
-  limit: PropTypes.number,
-  endpoint: PropTypes.string,
-  property: PropTypes.arrayOf(PropTypes.string),
-  placeholder: PropTypes.string,
-  label: PropTypes.string,
-  required: PropTypes.bool,
-  error: PropTypes.bool,
-  disabled: PropTypes.bool,
-  selected: PropTypes.object,
-  schema: PropTypes.object,
-  superClass: PropTypes.string,
-};
-
-AutoSearchMulti.defaultProps = {
-  limit: 30,
-  endpoint: '/ontologies',
-  property: ['name'],
-  placeholder: '',
-  name: undefined,
-  value: undefined,
-  label: '',
-  required: false,
-  error: false,
-  selected: null,
-  onChange: () => { },
-  disabled: false,
-  schema: null,
-  superClass: '',
-};
 
 export default AutoSearchMulti;

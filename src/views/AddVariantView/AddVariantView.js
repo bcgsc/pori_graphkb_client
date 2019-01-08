@@ -1,10 +1,12 @@
 /**
  * @module /views/AddVariantView
  */
+import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
-import './AddVariantView.scss';
 import PropTypes from 'prop-types';
 import { Paper, Typography, Button } from '@material-ui/core';
+
+import './AddVariantView.scss';
 import { withKB } from '../../components/KBContext';
 import PositionalVariantParser from '../../components/PositionalVariantParser';
 import util from '../../services/util';
@@ -12,16 +14,23 @@ import api from '../../services/api';
 
 /**
  * Route for submitting Variant records to db.
+ *
+ * @property {object} props
+ * @property {Object} props.history - Application routing history object.
+ * @property {Object} props.schema - Knowledgebase schema object.
  */
 class AddVariantViewBase extends Component {
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+    schema: PropTypes.object.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
       is409: false,
     };
     this.controllers = [];
-    this.handleFinish = this.handleFinish.bind(this);
-    this.submitVariant = this.submitVariant.bind(this);
   }
 
   componentWillUnmount() {
@@ -31,6 +40,7 @@ class AddVariantViewBase extends Component {
   /**
    * Takes action on a successful variant submission. Navigates to query page.
    */
+  @boundMethod
   handleFinish() {
     const { history } = this.props;
     history.goBack();
@@ -42,6 +52,7 @@ class AddVariantViewBase extends Component {
    * @param {Array.<Object>} relationships - List of relationship data.
    * @return {boolean} true if submission is successful.
    */
+  @boundMethod
   async submitVariant(form, relationships) {
     const { schema } = this.props;
     const copy = Object.assign({}, form);
@@ -114,16 +125,6 @@ class AddVariantViewBase extends Component {
     );
   }
 }
-
-/**
- * @namespace
- * @property {Object} history - Application routing history object.
- * @property {Object} schema - Knowledgebase schema object.
- */
-AddVariantViewBase.propTypes = {
-  history: PropTypes.object.isRequired,
-  schema: PropTypes.object.isRequired,
-};
 
 const AddVariantView = withKB(AddVariantViewBase);
 

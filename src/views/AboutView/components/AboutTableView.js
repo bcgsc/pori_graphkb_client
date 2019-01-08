@@ -4,12 +4,10 @@ import {
   ListItem,
   List,
   ListItemText,
-
 } from '@material-ui/core';
 import {
   Link,
 } from 'react-router-dom';
-
 
 import queryResults from '../../../static/tutorial/table-tutorial.png';
 

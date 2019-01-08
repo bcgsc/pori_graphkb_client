@@ -3,6 +3,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import config from '../../../../static/config';
 
 const {

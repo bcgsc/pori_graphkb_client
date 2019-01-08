@@ -3,7 +3,6 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import './PermissionsTable.scss';
 import {
   Table,
   TableHead,
@@ -12,6 +11,8 @@ import {
   TableBody,
   Checkbox,
 } from '@material-ui/core';
+
+import './PermissionsTable.scss';
 import config from '../../../../static/config';
 
 const { PERMISSIONS } = config;

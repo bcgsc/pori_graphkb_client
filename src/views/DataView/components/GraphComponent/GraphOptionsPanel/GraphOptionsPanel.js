@@ -114,7 +114,7 @@ class GraphOptionsPanel extends Component {
               <Typography paragraph>
                 {help.description}
               </Typography>
-            </>
+            </React.Fragment>
           ))}
         </DialogContent>
       </Dialog>

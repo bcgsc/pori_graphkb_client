@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { mount } from 'enzyme';
 import FormTemplater from '../FormTemplater/FormTemplater';
 import Schema from '../../services/schema';
@@ -93,7 +92,7 @@ describe('<FormTemplater />', () => {
         onChange={() => { }}
       />,
     );
-    expect(wrapper.find('li')).to.have.lengthOf(Object.keys(mockClass).length);
+    expect(wrapper.find('li')).toHaveLength(Object.keys(mockClass).length);
   });
 
   it('correctly renders different list component', () => {
@@ -107,9 +106,9 @@ describe('<FormTemplater />', () => {
         ignoreRequired
       />,
     );
-    expect(wrapper.children()).to.have.lengthOf(Object.keys(mockClass).length);
+    expect(wrapper.children()).toHaveLength(Object.keys(mockClass).length);
     wrapper.children()
-      .forEach(child => expect(child.children().props().component).to.equal('div'));
+      .forEach(child => expect(child.children().props().component).toBe('div'));
   });
 
   it('successfully groups two properties into single vertical space', () => {
@@ -125,6 +124,6 @@ describe('<FormTemplater />', () => {
       />,
     );
 
-    expect(wrapper.find('.form-templater-group-wrapper')).to.have.length.gte(1);
+    expect(wrapper.find('.form-templater-group-wrapper').length).toBeGreaterThanOrEqual(1);
   });
 });

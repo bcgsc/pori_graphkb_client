@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { KBContext, withKB } from '../KBContext/KBContext';
 
@@ -18,6 +17,6 @@ describe('KB Context provider and consumers', () => {
       </KBContext.Provider>,
     );
 
-    expect(wrapper.find('#test-div').props().value).to.eql('test');
+    expect(wrapper.find('#test-div').props().value).toBe('test');
   });
 });

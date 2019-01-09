@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { mount } from 'enzyme';
 import PermissionsTable from '../PermissionsTable/PermissionsTable';
 import Schema from '../../../../services/schema';
@@ -25,8 +24,8 @@ describe('<PermissionsTable />', () => {
     wrapper = mount(
       <PermissionsTable schema={testSchema} />,
     );
-    expect(wrapper.type()).to.equal(PermissionsTable);
-    expect(wrapper.find('tr.permissions-view')).to.have.lengthOf(0);
+    expect(wrapper.type()).toBe(PermissionsTable);
+    expect(wrapper.find('tr.permissions-view')).toHaveLength(0);
   });
 
   it('renders correct number of rows with an input usergroup', () => {
@@ -36,7 +35,7 @@ describe('<PermissionsTable />', () => {
         permissions={testPermissions}
       />,
     );
-    expect(wrapper.find('tr.permissions-view')).to.have.lengthOf(4);
+    expect(wrapper.find('tr.permissions-view')).toHaveLength(4);
   });
 
   it('event functions are triggered correctly on checkbox changes', () => {
@@ -51,9 +50,9 @@ describe('<PermissionsTable />', () => {
       />,
     );
     wrapper.find('thead tr th input[type="checkbox"]').first().simulate('change');
-    expect(handleCheckAll.mock.calls.length).to.eq(1);
+    expect(handleCheckAll.mock.calls.length).toBe(1);
 
     wrapper.find('tbody tr td input[type="checkbox"]').first().simulate('change');
-    expect(handleCheckAll.mock.calls.length).to.eq(1);
+    expect(handleCheckAll.mock.calls.length).toBe(1);
   });
 });

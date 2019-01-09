@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { spy } from 'sinon';
 import { mount } from 'enzyme';
 import OntologyFormComponent from '../OntologyFormComponent/OntologyFormComponent';
@@ -87,8 +86,8 @@ describe('<OntologyFormComponent />', () => {
     wrapper = mount(
       <OntologyFormComponent schema={testSchema} />,
     );
-    expect(wrapper.type()).to.equal(OntologyFormComponent);
-    expect(OntologyFormComponent.prototype.componentDidMount).to.have.property('callCount', 1);
+    expect(wrapper.type()).toBe(OntologyFormComponent);
+    expect(OntologyFormComponent.prototype.componentDidMount).toHaveProperty('callCount', 1);
     OntologyFormComponent.prototype.componentDidMount.callCount = 0;
   });
 
@@ -103,7 +102,7 @@ describe('<OntologyFormComponent />', () => {
       />,
     );
 
-    expect(OntologyFormComponent.prototype.componentDidMount).to.have.property('callCount', 1);
+    expect(OntologyFormComponent.prototype.componentDidMount).toHaveProperty('callCount', 1);
   });
 
   it('subset deletion successfully removes chip', () => {
@@ -117,7 +116,7 @@ describe('<OntologyFormComponent />', () => {
     wrapper.find('input#subsets-temp')
       .simulate('keydown', { keyCode: 13 });
     wrapper.find('.embedded-list-chip svg').simulate('click');
-    expect(wrapper.find('.embedded-list-chip')).to.have.lengthOf(0);
+    expect(wrapper.find('.embedded-list-chip')).toHaveLength(0);
   });
 
   it('displays right chips + classes after subset delete undo', () => {
@@ -131,12 +130,12 @@ describe('<OntologyFormComponent />', () => {
         edgeTypes={['AliasOf']}
       />,
     );
-    expect(wrapper.find('.embedded-list-chip svg')).to.have.lengthOf(1);
+    expect(wrapper.find('.embedded-list-chip svg')).toHaveLength(1);
     wrapper.find('.embedded-list-chip svg').simulate('click');
-    expect(wrapper.find('.embedded-list-chip svg')).to.have.lengthOf(1);
-    expect(wrapper.find('.deleted-chip svg')).to.have.lengthOf(1);
+    expect(wrapper.find('.embedded-list-chip svg')).toHaveLength(1);
+    expect(wrapper.find('.deleted-chip svg')).toHaveLength(1);
     wrapper.find('.embedded-list-chip svg').simulate('click');
-    expect(wrapper.find('.deleted-chip')).to.have.lengthOf(0);
+    expect(wrapper.find('.deleted-chip')).toHaveLength(0);
   });
 
   it('validation and submission calls correct handlers', () => {
@@ -158,14 +157,14 @@ describe('<OntologyFormComponent />', () => {
     form.linkprop = 'test link';
     form['linkprop.data'] = { '@rid': 'test rid' };
     wrapper.setState({ form });
-    expect(wrapper.find('.form-btns button#submit-btn').props().disabled).to.eq(false);
+    expect(wrapper.find('.form-btns button#submit-btn').props().disabled).toBe(false);
     wrapper.find('#submit-btn').first().simulate('click');
-    expect(OntologyFormComponent.prototype.handleSubmit).to.have.property('callCount', 1);
-    expect(handleSubmit.mock.calls.length).to.eq(1);
+    expect(OntologyFormComponent.prototype.handleSubmit).toHaveProperty('callCount', 1);
+    expect(handleSubmit.mock.calls.length).toBe(1);
 
     wrapper.setState({ loading: false });
     wrapper.find('.notification-drawer button').simulate('click');
-    expect(handleFinish.mock.calls.length).to.eq(1);
+    expect(handleFinish.mock.calls.length).toBe(1);
 
     wrapper.setState({ notificationDrawerOpen: false });
   });
@@ -182,10 +181,10 @@ describe('<OntologyFormComponent />', () => {
     );
     wrapper.find('#delete-btn').first().simulate('click');
     wrapper.setState({ deleteDialog: true });
-    expect(wrapper.find('#confirm-delete')).to.have.length.gte(1);
+    expect(wrapper.find('#confirm-delete').length).toBeGreaterThanOrEqual(1);
 
     wrapper.find('#cancel-delete').first().simulate('click');
-    expect(wrapper.state().deleteDialog).to.eq(false);
+    expect(wrapper.state().deleteDialog).toBe(false);
     wrapper.setState({ deleteDialog: true });
     wrapper.find('#confirm-delete').first().simulate('click');
   });

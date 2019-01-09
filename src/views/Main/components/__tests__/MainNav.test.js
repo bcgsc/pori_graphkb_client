@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { BrowserRouter as Router } from 'react-router-dom';
 import MainNav from '../MainNav';
@@ -11,7 +10,7 @@ describe('<MainNav />', () => {
     wrapper = mount(
       <MainNav />,
     );
-    expect(wrapper.type()).to.equal(MainNav);
+    expect(wrapper.type()).toBe(MainNav);
   });
 
   const testLinks = [
@@ -38,12 +37,12 @@ describe('<MainNav />', () => {
         <MainNav open links={testLinks} onChange={() => onChange} />
       </Router>,
     );
-    expect(wrapper.find('#icon')).to.have.lengthOf(1);
-    expect(wrapper.find('#test-link')).to.have.length.gt(1);
+    expect(wrapper.find('#icon')).toHaveLength(1);
+    expect(wrapper.find('#test-link').length).toBeGreaterThan(1);
 
     wrapper.find('#test-expand').first().simulate('click');
     wrapper.find('#test-expand').first().simulate('click');
     wrapper.find('.drawer-logo button').first().simulate('click');
-    expect(onChange.mock.calls.length).to.eq(1);
+    expect(onChange.mock.calls.length).toBe(1);
   });
 });

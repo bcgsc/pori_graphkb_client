@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { mount } from 'enzyme';
 import RelationshipsForm from '../RelationshipsForm/RelationshipsForm';
 import Schema from '../../services/schema';
@@ -64,8 +63,8 @@ describe('<RelationshipsForm />', () => {
         relationships={relationships}
       />,
     );
-    expect(wrapper.find('#relationships-form-submit').first().props().disabled).to.eq(true);
-    expect(wrapper.find('table.relationships-form-table tr')).to.have.lengthOf(2);
+    expect(wrapper.find('#relationships-form-submit').first().props().disabled).toBe(true);
+    expect(wrapper.find('table.relationships-form-table tr')).toHaveLength(2);
 
     wrapper.find('input[name="in"]')
       .simulate('change', {
@@ -121,11 +120,11 @@ describe('<RelationshipsForm />', () => {
     });
     wrapper.find('button.relationship-direction-btn').simulate('click');
     wrapper.find('#relationships-form-submit').first().simulate('click');
-    expect(mock.mock.calls.length).to.eq(1);
+    expect(mock.mock.calls.length).toBe(1);
     wrapper.find('table.relationships-form-table tbody tr td button')
       .first()
       .simulate('click');
-    expect(wrapper.find('tr.deleted')).to.have.lengthOf(0);
+    expect(wrapper.find('tr.deleted')).toHaveLength(0);
   });
 
   it('minimize button', () => {
@@ -136,9 +135,9 @@ describe('<RelationshipsForm />', () => {
       />,
     );
 
-    expect(wrapper.find('button.minimize-open')).to.have.lengthOf(1);
+    expect(wrapper.find('button.minimize-open')).toHaveLength(1);
     wrapper.find('button.relationships-minimize-btn').simulate('click');
-    expect(wrapper.find('button.minimize-open')).to.have.lengthOf(0);
+    expect(wrapper.find('button.minimize-open')).toHaveLength(0);
   });
 
   it('initial relationships', () => {
@@ -161,7 +160,7 @@ describe('<RelationshipsForm />', () => {
 
     wrapper.find('table tbody tr td button').first().simulate('click');
     wrapper.setState({});
-    expect(wrapper.find('tr.deleted')).to.have.lengthOf(1);
+    expect(wrapper.find('tr.deleted')).toHaveLength(1);
     wrapper.find('table tbody tr td button').first().simulate('click');
   });
 
@@ -178,6 +177,6 @@ describe('<RelationshipsForm />', () => {
       />,
     );
 
-    expect(wrapper.find('#relationships-form-submit').first().props().disabled).to.eq(true);
+    expect(wrapper.find('#relationships-form-submit').first().props().disabled).toBe(true);
   });
 });

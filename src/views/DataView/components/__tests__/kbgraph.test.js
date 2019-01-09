@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import {
   PropsMap,
   GraphNode,
@@ -26,15 +25,15 @@ describe('kbgraph method i/o validations', () => {
     Object.keys(testPropsMap.nodeProps).forEach((key) => {
       if (key === 'name') {
         testPropsMap.nodeProps.name.forEach((name) => {
-          expect(['one', 'three', 'two', 'notname', 'knowledgebase']).to.contain(name);
+          expect(['one', 'three', 'two', 'notname', 'knowledgebase']).toEqual(expect.arrayContaining([name]));
         });
       } else if (key === 'sourceId') {
         testPropsMap.nodeProps.sourceId.forEach((sourceId) => {
-          expect(['sourceOne', 'sourceThree', 'sourceTwo', 'notSourceId', 'kb']).to.contain(sourceId);
+          expect(['sourceOne', 'sourceThree', 'sourceTwo', 'notSourceId', 'kb']).toEqual(expect.arrayContaining([sourceId]));
         });
       } else if (key === 'source') {
         testPropsMap.nodeProps.source.forEach((source) => {
-          expect(['test', 'nottest', 'bcgsc']).to.contain(source);
+          expect(['test', 'nottest', 'bcgsc']).toEqual(expect.arrayContaining([source]));
         });
       }
     });
@@ -50,15 +49,15 @@ describe('kbgraph method i/o validations', () => {
     Object.keys(testPropsMap.linkProps).forEach((key) => {
       if (key === 'name') {
         testPropsMap.linkProps.name.forEach((name) => {
-          expect(['one', 'three', 'two', 'notname', 'knowledgebase']).to.contain(name);
+          expect(['one', 'three', 'two', 'notname', 'knowledgebase']).toEqual(expect.arrayContaining([name]));
         });
       } else if (key === 'sourceId') {
         testPropsMap.linkProps.sourceId.forEach((sourceId) => {
-          expect(['sourceOne', 'sourceThree', 'sourceTwo', 'notSourceId', 'kb']).to.contain(sourceId);
+          expect(['sourceOne', 'sourceThree', 'sourceTwo', 'notSourceId', 'kb']).toEqual(expect.arrayContaining([sourceId]));
         });
       } else if (key === 'source') {
         testPropsMap.linkProps.source.forEach((source) => {
-          expect(['test', 'nottest', 'bcgsc']).to.contain(source);
+          expect(['test', 'nottest', 'bcgsc']).toEqual(expect.arrayContaining([source]));
         });
       }
     });
@@ -93,7 +92,7 @@ describe('kbgraph method i/o validations', () => {
     };
     const graphOptions = new GraphOptions(props);
     graphOptions.load();
-    expect(GraphOptions.retrieve()).to.deep.equals(graphOptions);
+    expect(GraphOptions.retrieve()).toEqual(graphOptions);
   });
 
   it('getColor', () => {
@@ -111,8 +110,8 @@ describe('kbgraph method i/o validations', () => {
     const data = { name: 'test name', '@rid': 'pass' };
     const graphNode = new GraphNode(data);
 
-    expect(graphNode.getId()).to.eq('pass');
-    expect(graphNode.getLabel('name')).to.eq('test name');
+    expect(graphNode.getId()).toBe('pass');
+    expect(graphNode.getLabel('name')).toBe('test name');
   });
 
   it('GraphLink', () => {
@@ -121,9 +120,9 @@ describe('kbgraph method i/o validations', () => {
     const testTarget = 'also pass';
     const graphLink = new GraphLink(data, testSource, testTarget);
 
-    expect(graphLink.getId()).to.eq('pass');
-    expect(graphLink.getLabel('name')).to.eq('test name');
-    expect(graphLink.getOutRid()).to.eq('pass');
-    expect(graphLink.getInRid()).to.eq('also pass');
+    expect(graphLink.getId()).toBe('pass');
+    expect(graphLink.getLabel('name')).toBe('test name');
+    expect(graphLink.getOutRid()).toBe('pass');
+    expect(graphLink.getInRid()).toBe('also pass');
   });
 });

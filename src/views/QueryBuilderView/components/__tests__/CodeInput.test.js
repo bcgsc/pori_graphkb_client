@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { mount } from 'enzyme';
 import CodeInput from '../CodeInput';
 
@@ -8,13 +7,13 @@ describe('<CodeInput />', () => {
 
   it('renders default layers', () => {
     wrapper = mount(<CodeInput />);
-    expect(wrapper.find('textarea')).to.have.lengthOf(3);
+    expect(wrapper.find('textarea')).toHaveLength(3);
   });
 
   it('renders a custom rule', () => {
     wrapper.setProps({ value: 'A B C', rules: [{ regex: /A/, color: 'red', className: 'a-match' }] });
     wrapper.update();
-    expect(wrapper.find('textarea.a-match')).to.have.lengthOf(1);
+    expect(wrapper.find('textarea.a-match')).toHaveLength(1);
   });
 
   it('handles TAB keypresses properly', () => {
@@ -31,7 +30,7 @@ describe('<CodeInput />', () => {
           selectionStart: 0,
           selectionEnd: 0,
         });
-    expect(wrapper.props().onChange.mock.calls.length).to.eq(1);
+    expect(wrapper.props().onChange.mock.calls.length).toBe(1);
 
     wrapper
       .find('#typeTextArea')
@@ -44,7 +43,7 @@ describe('<CodeInput />', () => {
           selectionStart: 3,
           selectionEnd: 3,
         });
-    setTimeout(() => expect(wrapper.props().onChange.mock.calls.length).to.eq(2), 0);
+    setTimeout(() => expect(wrapper.props().onChange.mock.calls.length).toBe(2), 0);
   });
 
   it('handles BACKSPACE keypresses properly', () => {
@@ -88,7 +87,7 @@ describe('<CodeInput />', () => {
           selectionStart: 0,
           selectionEnd: 0,
         });
-    expect(wrapper.props().onChange.mock.calls.length).to.eq(1);
+    expect(wrapper.props().onChange.mock.calls.length).toBe(1);
     wrapper
       .find('#typeTextArea')
       .first()
@@ -100,7 +99,7 @@ describe('<CodeInput />', () => {
           selectionStart: 0,
           selectionEnd: 0,
         });
-    expect(wrapper.props().onChange.mock.calls.length).to.eq(1);
+    expect(wrapper.props().onChange.mock.calls.length).toBe(1);
   });
 
   it('scrolls without crashing', () => {

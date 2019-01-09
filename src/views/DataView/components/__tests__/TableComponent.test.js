@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { spy } from 'sinon';
 import { TableComponent } from '..';
@@ -95,7 +94,7 @@ describe('<TableComponent />', () => {
         completedNext
       />,
     );
-    expect(TableComponent.prototype.componentDidMount).to.have.property('callCount', 1);
+    expect(TableComponent.prototype.componentDidMount).toHaveProperty('callCount', 1);
   });
 
   it('renders correct number of rows given input data', () => {
@@ -114,7 +113,7 @@ describe('<TableComponent />', () => {
         allProps={allProps}
       />,
     );
-    expect(wrapper.find('tbody tr')).to.have.lengthOf(4);
+    expect(wrapper.find('tbody tr')).toHaveLength(4);
   });
 
   it('table header and row change simulations trigger correct handlers', () => {
@@ -139,13 +138,13 @@ describe('<TableComponent />', () => {
       />,
     );
     wrapper.find('tbody tr').first().simulate('click');
-    expect(handleDetailDrawerOpen.mock.calls.length).to.eq(1);
+    expect(handleDetailDrawerOpen.mock.calls.length).toBe(1);
 
     wrapper.find('tbody tr input[type="checkbox"]').first().simulate('click');
-    expect(handleCheckbox.mock.calls.length).to.eq(1);
+    expect(handleCheckbox.mock.calls.length).toBe(1);
 
     wrapper.find('thead tr th input[type="checkbox"]').simulate('change');
-    expect(handleCheckAll.mock.calls.length).to.eq(1);
+    expect(handleCheckAll.mock.calls.length).toBe(1);
 
     wrapper.find('thead tr th span[role="button"] svg')
       .forEach(btn => btn.simulate('click'));
@@ -155,28 +154,28 @@ describe('<TableComponent />', () => {
         btn.simulate('mouseleave');
       }
     });
-    expect(TableComponent.prototype.handleHeaderMouseLeave).to.have.property('callCount', 4);
+    expect(TableComponent.prototype.handleHeaderMouseLeave).toHaveProperty('callCount', 4);
 
     wrapper.find('thead tr th button[title="Filter this column"]').first().simulate('click');
 
     wrapper.find('.filter-wrapper .filter-exclusions-list div[role="button"]').first().simulate('click');
-    expect(TableComponent.prototype.handleFilterExclusions).to.have.property('callCount', 1);
+    expect(TableComponent.prototype.handleFilterExclusions).toHaveProperty('callCount', 1);
 
     wrapper.find('.filter-list input').first().simulate('change', { target: { value: 'test' } });
 
     wrapper.find('div#select-all-checkbox').simulate('click');
     wrapper.find('div#select-all-checkbox').simulate('click');
-    expect(TableComponent.prototype.handleFilterCheckAll).to.have.property('callCount', 2);
+    expect(TableComponent.prototype.handleFilterCheckAll).toHaveProperty('callCount', 2);
 
     wrapper.find('div#filter-popover div').first().simulate('close');
     wrapper.find('button#ellipsis-menu').simulate('click');
-    expect(wrapper.find('div[role="document"] ul[role="menu"] li#clear-filters')).to.have.lengthOf(1);
+    expect(wrapper.find('div[role="document"] ul[role="menu"] li#clear-filters')).toHaveLength(1);
     wrapper.find('div[role="document"] ul[role="menu"] div#download-tsv').first().simulate('click');
 
-    expect(TableComponent.prototype.createTSV).to.have.property('callCount', 1);
+    expect(TableComponent.prototype.createTSV).toHaveProperty('callCount', 1);
 
     wrapper.find('div.graph-btn button').simulate('click');
-    expect(handleGraphRedirect.mock.calls.length).to.eq(1);
+    expect(handleGraphRedirect.mock.calls.length).toBe(1);
   });
 
   it('pagination triggers handlers correctly', () => {
@@ -198,7 +197,7 @@ describe('<TableComponent />', () => {
       />,
     );
     wrapper.find('div.pag div.more-results-btn button').simulate('click');
-    expect(handleSubsequentPagination.mock.calls.length).to.eq(1);
+    expect(handleSubsequentPagination.mock.calls.length).toBe(1);
 
     wrapper.find('div.pag div.paginator-spacing button')
       .forEach((btn, i) => {
@@ -208,7 +207,7 @@ describe('<TableComponent />', () => {
       });
     wrapper.find('div.pag div.paginator-spacing button').first().simulate('click');
 
-    expect(TableComponent.prototype.handleChangePage).to.have.property('callCount', 2);
+    expect(TableComponent.prototype.handleChangePage).toHaveProperty('callCount', 2);
 
     wrapper.find('div.pag div.paginator-spacing div[role="button"]').first().simulate('click');
     wrapper.find('div[role="document"] ul[role="listbox"] li').forEach((btn, i) => {
@@ -216,7 +215,7 @@ describe('<TableComponent />', () => {
         btn.simulate('click');
       }
     });
-    expect(TableComponent.prototype.handleChange).to.have.property('callCount', 1);
+    expect(TableComponent.prototype.handleChange).toHaveProperty('callCount', 1);
   });
 
   it('column dialog is opened correctly', () => {
@@ -239,10 +238,9 @@ describe('<TableComponent />', () => {
     wrapper.find('button#ellipsis-menu').simulate('click');
     wrapper.find('div[role="document"] ul[role="menu"] li#column-edit').simulate('click');
     wrapper.find('#name input[type="checkbox"]').simulate('change');
-    expect(TableComponent.prototype.handleColumnCheck).to.have.property('callCount', 1);
+    expect(TableComponent.prototype.handleColumnCheck).toHaveProperty('callCount', 1);
     wrapper.find('input[type="radio"]').simulate('change');
     wrapper.find('#column-dialog-actions button').simulate('click');
-    expect(wrapper.state().tableColumns.find(t => t.id === 'name'))
-      .to.have.property('checked', false);
+    expect(wrapper.state().tableColumns.find(t => t.id === 'name')).toHaveProperty('checked', false);
   });
 });

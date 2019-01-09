@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import jwt from 'jsonwebtoken';
 import auth from '../auth';
 
@@ -15,16 +14,16 @@ describe('auth methods test', () => {
       auth.setAuthToken(EXPIRED_JWT);
     });
     it('retrieved the user', () => {
-      expect(auth.getUser()).to.eql(TEST_USER);
+      expect(auth.getUser()).toEqual(TEST_USER);
     });
     it('is not authenticated', () => {
-      expect(auth.isAuthenticated()).to.eq(false);
+      expect(auth.isAuthenticated()).toBe(false);
     });
     it('is not authorized', () => {
-      expect(auth.isAuthorized()).to.eq(false);
+      expect(auth.isAuthorized()).toBe(false);
     });
     it('is not admin', () => {
-      expect(auth.isAdmin()).to.eq(false);
+      expect(auth.isAdmin()).toBe(false);
     });
   });
 
@@ -35,16 +34,16 @@ describe('auth methods test', () => {
       auth.setAuthToken(VALID_JWT);
     });
     it('retrieved the user', () => {
-      expect(auth.getUser()).to.eql(TEST_USER);
+      expect(auth.getUser()).toEqual(TEST_USER);
     });
     it('is authenticated', () => {
-      expect(auth.isAuthenticated()).to.eq(true);
+      expect(auth.isAuthenticated()).toBe(true);
     });
     it('is not authorized', () => {
-      expect(auth.isAuthenticated()).to.eq(true);
+      expect(auth.isAuthenticated()).toBe(true);
     });
     it('is not admin', () => {
-      expect(auth.isAdmin()).to.eq(false);
+      expect(auth.isAdmin()).toBe(false);
     });
   });
 
@@ -54,16 +53,16 @@ describe('auth methods test', () => {
       auth.setToken(VALID_JWT);
     });
     it('retrieved the user', () => {
-      expect(auth.getUser()).to.eql(ADMIN_USER);
+      expect(auth.getUser()).toEqual(ADMIN_USER);
     });
     it('is not authenticated', () => {
-      expect(auth.isAuthenticated()).to.eq(false);
+      expect(auth.isAuthenticated()).toBe(false);
     });
     it('is authorized', () => {
-      expect(auth.isAuthorized()).to.eq(true);
+      expect(auth.isAuthorized()).toBe(true);
     });
     it('is admin', () => {
-      expect(auth.isAdmin()).to.eq(true);
+      expect(auth.isAdmin()).toBe(true);
     });
   });
 
@@ -74,31 +73,31 @@ describe('auth methods test', () => {
       auth.setAuthToken(VALID_JWT);
     });
     it('retrieved the user', () => {
-      expect(auth.getUser()).to.eql(ADMIN_USER);
+      expect(auth.getUser()).toEqual(ADMIN_USER);
     });
     it('is authenticated', () => {
-      expect(auth.isAuthenticated()).to.eq(true);
+      expect(auth.isAuthenticated()).toBe(true);
     });
     it('is not authorized', () => {
-      expect(auth.isAuthenticated()).to.eq(true);
+      expect(auth.isAuthenticated()).toBe(true);
     });
     it('is admin', () => {
-      expect(auth.isAdmin()).to.eq(true);
+      expect(auth.isAdmin()).toBe(true);
     });
   });
 
   it('setToken & getToken', () => {
     const token = 'pass';
     auth.setToken(token);
-    expect(auth.getToken()).to.eq('pass');
+    expect(auth.getToken()).toBe('pass');
   });
 
   it('clearToken clears token', () => {
     const token = 'pass';
     auth.setToken(token);
-    expect(auth.getToken()).to.eq('pass');
+    expect(auth.getToken()).toBe('pass');
     auth.clearTokens();
-    expect(auth.getToken()).to.eq(null);
+    expect(auth.getToken()).toBeNull();
   });
 
   afterEach(() => {

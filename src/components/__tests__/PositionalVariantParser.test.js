@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { spy } from 'sinon';
 import PositionalVariantParser from '../PositionalVariantParser/PositionalVariantParser';
@@ -121,7 +120,7 @@ describe('<PositionalVariantParser />', () => {
         schema={mockSchema}
       />,
     );
-    expect(PositionalVariantParser.prototype.componentDidMount).to.have.property('callCount', 1);
+    expect(PositionalVariantParser.prototype.componentDidMount).toHaveProperty('callCount', 1);
   });
 
   it('correctly calls handlers on shorthand change and form fields', () => {
@@ -133,15 +132,15 @@ describe('<PositionalVariantParser />', () => {
         schema={mockSchema}
       />,
     );
-    expect(wrapper.type()).to.eq(PositionalVariantParser);
+    expect(wrapper.type()).toBe(PositionalVariantParser);
     wrapper.find('input[name="shorthand"]').simulate('change', { target: { value: 'test test' } });
-    expect(wrapper.find('input[name="shorthand"]').props().value).to.eq('test test');
+    expect(wrapper.find('input[name="shorthand"]').props().value).toBe('test test');
     wrapper.find('textarea[name="name"]').simulate('change', { target: { name: 'name', value: 'test name' } });
 
     wrapper.find('input[name="shorthand"]').simulate('change', { target: { value: 'brca2:p.g12del' } });
     wrapper.setState({ invalidFlag: false });
     wrapper.find('#variant-form-submit button').simulate('click');
-    expect(handleSubmit.mock.calls.length).to.eq(1);
+    expect(handleSubmit.mock.calls.length).toBe(1);
   });
 
   it('disables submit button if form state is invalid', () => {
@@ -230,7 +229,7 @@ describe('<PositionalVariantParser />', () => {
       type: 'deletion',
     });
     wrapper.update();
-    expect(wrapper.state().shorthand.toLowerCase()).to.eq('brca2:p.g11_?12del');
+    expect(wrapper.state().shorthand.toLowerCase()).toBe('brca2:p.g11_?12del');
   });
 
   it('handles nested properties changing', () => {
@@ -257,7 +256,7 @@ describe('<PositionalVariantParser />', () => {
     );
     wrapper.find('textarea[name="name"]')
       .simulate('change', { target: { name: 'name', value: 'pass' } });
-    expect(wrapper.find('textarea[name="name"]').props().value).to.eq('pass');
+    expect(wrapper.find('textarea[name="name"]').props().value).toBe('pass');
     wrapper.find('input[name="type"]')
       .simulate('change', { target: { name: 'type', value: 'pass', '@rid': '#1234' } });
   });

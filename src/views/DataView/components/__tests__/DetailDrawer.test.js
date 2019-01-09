@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
-import { spy } from 'sinon';
 import { Drawer } from '@material-ui/core';
+
 import DetailDrawer from '../DetailDrawer/DetailDrawer';
 import Schema from '../../../../services/schema';
 
@@ -52,22 +52,28 @@ const testSchema = new Schema({
 
 describe('<DetailDrawer />', () => {
   let wrapper;
+  const spies = {};
+  [
+    'formatRelationships',
+    'formatIdentifiers',
+    'formatOtherProps',
+    'componentDidUpdate',
+    'formatLongValue',
+    'handleLinkExpand',
+    'handleExpand',
+  ].forEach((method) => {
+    spies[method] = jest.spyOn(DetailDrawer.prototype, method);
+  });
 
-  beforeAll(() => {
-    spy(DetailDrawer.prototype, 'formatRelationships');
-    spy(DetailDrawer.prototype, 'formatIdentifiers');
-    spy(DetailDrawer.prototype, 'formatOtherProps');
-    spy(DetailDrawer.prototype, 'componentDidUpdate');
-    spy(DetailDrawer.prototype, 'formatLongValue');
-    spy(DetailDrawer.prototype, 'handleExpand');
-    spy(DetailDrawer.prototype, 'handleLinkExpand');
+  beforeEach(() => {
+    wrapper = null;
   });
 
   it('inits and does not call field formatting functions', () => {
     wrapper = shallow(<DetailDrawer />);
-    expect(DetailDrawer.prototype.formatRelationships).toHaveProperty('callCount', 0);
-    expect(DetailDrawer.prototype.formatIdentifiers).toHaveProperty('callCount', 0);
-    expect(DetailDrawer.prototype.formatOtherProps).toHaveProperty('callCount', 0);
+    expect(spies.formatRelationships).toHaveBeenCalledTimes(0);
+    expect(spies.formatIdentifiers).toHaveBeenCalledTimes(0);
+    expect(spies.formatOtherProps).toHaveBeenCalledTimes(0);
   });
 
   it('does not crash with test node', () => {
@@ -83,16 +89,16 @@ describe('<DetailDrawer />', () => {
     };
 
     wrapper = mount(<DetailDrawer node={node} schema={testSchema} />);
-    expect(DetailDrawer.prototype.formatRelationships).toHaveProperty('callCount', 1);
-    expect(DetailDrawer.prototype.formatIdentifiers).toHaveProperty('callCount', 2);
-    expect(DetailDrawer.prototype.formatOtherProps).toHaveProperty('callCount', 1);
+    expect(spies.formatRelationships).toHaveBeenCalledTimes(1);
+    expect(spies.formatIdentifiers).toHaveBeenCalledTimes(2);
+    expect(spies.formatOtherProps).toHaveBeenCalledTimes(1);
     expect(wrapper.children().type()).toBe(Drawer);
   });
 
   it('does not crash when componentDidUpdate is called', () => {
     wrapper = mount(<DetailDrawer />);
     wrapper.setState({});
-    expect(DetailDrawer.prototype.componentDidUpdate).toHaveProperty('callCount', 1);
+    expect(spies.componentDidUpdate).toHaveBeenCalledTimes(1);
   });
 
   it('triggers passed in handlers on events', () => {
@@ -137,7 +143,7 @@ describe('<DetailDrawer />', () => {
       subsets: ['one', 'two', 'three'],
     };
     wrapper = mount(<DetailDrawer node={node} schema={testSchema} />);
-    expect(DetailDrawer.prototype.formatLongValue).toHaveProperty('callCount', 2);
+    expect(spies.formatLongValue).toHaveBeenCalledTimes(2);
   });
 
   it('clicking expanding list items triggers handler', () => {
@@ -151,7 +157,7 @@ describe('<DetailDrawer />', () => {
     wrapper = mount(<DetailDrawer node={node} schema={testSchema} />);
     wrapper.find('div[role="button"]').simulate('click');
     wrapper.find('div[role="button"]').simulate('click');
-    expect(DetailDrawer.prototype.handleExpand).toHaveProperty('callCount', 2);
+    expect(spies.handleExpand).toHaveBeenCalledTimes(2);
   });
 
   it('initializes relationships and properly applies handlers to DOM nodes', () => {
@@ -177,10 +183,10 @@ describe('<DetailDrawer />', () => {
       }],
     };
     wrapper = mount(<DetailDrawer node={node} schema={testSchema} />);
-    expect(DetailDrawer.prototype.formatRelationships.callCount).toBeGreaterThan(1);
+    expect(spies.formatRelationships).toHaveBeenCalled();
     wrapper.find('div.detail-link-wrapper[role="button"]').first().simulate('click');
     wrapper.find('div.detail-link-wrapper[role="button"]').first().simulate('click');
-    expect(DetailDrawer.prototype.handleLinkExpand).toHaveProperty('callCount', 2);
+    expect(spies.handleLinkExpand).toHaveBeenCalledTimes(2);
   });
 
   it('expect detail-nested-list class to be rendered for nested property', () => {
@@ -203,5 +209,9 @@ describe('<DetailDrawer />', () => {
     wrapper = mount(<DetailDrawer node={node} schema={testSchema} />);
     wrapper.find('div[role="button"]').first().simulate('click');
     expect(wrapper.find('.detail-nested-list').length).toBeGreaterThan(0);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 });

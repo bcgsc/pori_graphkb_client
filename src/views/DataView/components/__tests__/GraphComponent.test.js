@@ -1,6 +1,5 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { spy } from 'sinon';
 import GraphComponent from '../GraphComponent/GraphComponent';
 import { GraphNode, GraphLink } from '../GraphComponent/kbgraph';
 
@@ -50,10 +49,7 @@ const mockData = {
 
 describe('<GraphComponent />', () => {
   let wrapper;
-
-  beforeAll(() => {
-    spy(GraphComponent.prototype, 'componentDidMount');
-  });
+  const componentDidMountSpy = jest.spyOn(GraphComponent.prototype, 'componentDidMount');
 
   it('calls componentDidMount on render and doesn\'t crash and burn', () => {
     wrapper = mount(
@@ -65,7 +61,7 @@ describe('<GraphComponent />', () => {
         handleNewColumns={() => { }}
       />,
     );
-    expect(GraphComponent.prototype.componentDidMount).toHaveProperty('callCount', 1);
+    expect(componentDidMountSpy).toHaveBeenCalledTimes(1);
   });
 
   it('renders all nodes specified in displayed', () => {

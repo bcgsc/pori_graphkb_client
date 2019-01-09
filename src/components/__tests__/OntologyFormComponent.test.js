@@ -1,6 +1,6 @@
 import React from 'react';
-import { spy } from 'sinon';
 import { mount } from 'enzyme';
+
 import OntologyFormComponent from '../OntologyFormComponent/OntologyFormComponent';
 import Schema from '../../services/schema';
 
@@ -71,24 +71,16 @@ const testNode = {
 
 describe('<OntologyFormComponent />', () => {
   let wrapper;
+  const handleSubmitSpy = jest.spyOn(OntologyFormComponent.prototype, 'handleSubmit');
+  const componentDidMountSpy = jest.spyOn(OntologyFormComponent.prototype, 'componentDidMount');
 
-  beforeAll(() => {
-    spy(OntologyFormComponent.prototype, 'handleFormChange');
-    spy(OntologyFormComponent.prototype, 'handleSubmit');
-    spy(OntologyFormComponent.prototype, 'componentDidMount');
-  });
-
-  beforeEach(() => {
-    OntologyFormComponent.prototype.componentDidMount.callCount = 0;
-  });
 
   it('does not crash', () => {
     wrapper = mount(
       <OntologyFormComponent schema={testSchema} />,
     );
     expect(wrapper.type()).toBe(OntologyFormComponent);
-    expect(OntologyFormComponent.prototype.componentDidMount).toHaveProperty('callCount', 1);
-    OntologyFormComponent.prototype.componentDidMount.callCount = 0;
+    expect(componentDidMountSpy).toHaveBeenCalledTimes(1);
   });
 
   it('does not crash in edit variant with node, calls componentDidMount', () => {
@@ -102,7 +94,7 @@ describe('<OntologyFormComponent />', () => {
       />,
     );
 
-    expect(OntologyFormComponent.prototype.componentDidMount).toHaveProperty('callCount', 1);
+    expect(componentDidMountSpy).toHaveBeenCalledTimes(1);
   });
 
   it('subset deletion successfully removes chip', () => {
@@ -159,8 +151,8 @@ describe('<OntologyFormComponent />', () => {
     wrapper.setState({ form });
     expect(wrapper.find('.form-btns button#submit-btn').props().disabled).toBe(false);
     wrapper.find('#submit-btn').first().simulate('click');
-    expect(OntologyFormComponent.prototype.handleSubmit).toHaveProperty('callCount', 1);
-    expect(handleSubmit.mock.calls.length).toBe(1);
+    expect(handleSubmitSpy).toHaveBeenCalledTimes(1);
+    expect(handleSubmit.mock.calls).toHaveLength(1);
 
     wrapper.setState({ loading: false });
     wrapper.find('.notification-drawer button').simulate('click');
@@ -187,5 +179,9 @@ describe('<OntologyFormComponent />', () => {
     expect(wrapper.state().deleteDialog).toBe(false);
     wrapper.setState({ deleteDialog: true });
     wrapper.find('#confirm-delete').first().simulate('click');
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 });

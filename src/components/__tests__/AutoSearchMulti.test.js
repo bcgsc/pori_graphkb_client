@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { TextField } from '@material-ui/core';
 import Downshift from 'downshift';
@@ -44,9 +43,9 @@ describe('<AutoSearchMulti />', () => {
 
   it('should correctly render a Downshift component, with nested div and a TextField', () => {
     wrapper = mount(<AutoSearchMulti schema={testSchema} />);
-    expect(wrapper.children().first().type()).to.equal(AutoSearchBase);
-    expect(wrapper.children().children().first().type()).to.equal(Downshift);
-    expect(wrapper.find('.autosearch-popper-node').children().type()).to.equal(TextField);
+    expect(wrapper.children().first().type()).toBe(AutoSearchBase);
+    expect(wrapper.children().children().first().type()).toBe(Downshift);
+    expect(wrapper.find('.autosearch-popper-node').children().type()).toBe(TextField);
   });
 
   it('displays popper', () => {
@@ -55,10 +54,10 @@ describe('<AutoSearchMulti />', () => {
 
     wrapper.instance().handleClassChange({ target: { value: 'Disease' } });
     wrapper.update();
-    expect(wrapper.find('.autosearch-multi-popover textarea[name="@rid"]')).to.have.lengthOf(1);
+    expect(wrapper.find('.autosearch-multi-popover textarea[name="@rid"]')).toHaveLength(1);
     wrapper.find('.autosearch-multi-popover textarea[name="@rid"]')
       .simulate('change', { target: { name: '@rid', value: '#1' } });
-    expect(wrapper.find('.autosearch-multi-popover textarea[name="name"]').props().disabled).to.eq(true);
+    expect(wrapper.find('.autosearch-multi-popover textarea[name="name"]').props().disabled).toBe(true);
   });
 
   it('displays options', () => {

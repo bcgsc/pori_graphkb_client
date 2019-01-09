@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { mount } from 'enzyme';
 import UserDialog from '../UserForm/UserDialog';
 
@@ -71,7 +70,7 @@ describe('<UserDialog />', () => {
   });
 
   it('renders without crashing', () => {
-    expect(wrapper.type()).to.equal(UserDialog);
+    expect(wrapper.type()).toBe(UserDialog);
   });
 
   it('correctly handles events', () => {
@@ -79,8 +78,8 @@ describe('<UserDialog />', () => {
       .find('.new-user-group-checkboxes input[type="checkbox"]')
       .first()
       .simulate('change');
-    expect(onUserGroup.mock.calls.length).to.eq(1);
+    expect(onUserGroup.mock.calls.length).toBe(1);
     wrapper.find('button#user-dialog-submit-btn').first().simulate('click');
-    expect(editUser.mock.calls.length).to.eq(1);
+    expect(editUser.mock.calls.length).toBe(1);
   });
 });

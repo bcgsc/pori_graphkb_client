@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import util from '../util';
 
 describe('validate outputs for util methods', () => {
@@ -17,7 +16,7 @@ describe('validate outputs for util methods', () => {
     ];
     testStrings.forEach((test, i) => {
       const output = util.antiCamelCase(test);
-      expect(output).to.eq(outputs[i]);
+      expect(output).toBe(outputs[i]);
     });
   });
 
@@ -36,7 +35,7 @@ describe('validate outputs for util methods', () => {
       'out_subclassof',
     ];
 
-    util.expandEdges(testEdges).forEach((edge, i) => expect(edge).to.eq(expectedEdges[i]));
+    util.expandEdges(testEdges).forEach((edge, i) => expect(edge).toBe(expectedEdges[i]));
   });
 
   it('getTSVRepresentation', () => {
@@ -56,7 +55,7 @@ describe('validate outputs for util methods', () => {
       },
     ];
     testTSVs.forEach((testTSV) => {
-      expect(util.getTSVRepresentation(testTSV.key, 'key').toLowerCase()).to.eq('pass');
+      expect(util.getTSVRepresentation(testTSV.key, 'key').toLowerCase()).toBe('pass');
     });
 
     const arrayTestTSVs = [
@@ -92,7 +91,7 @@ describe('validate outputs for util methods', () => {
           output += ', ';
         }
       });
-      expect(util.getTSVRepresentation(list, testTSV.testKey).toLowerCase()).to.eq(output);
+      expect(util.getTSVRepresentation(list, testTSV.testKey).toLowerCase()).toBe(output);
     });
 
     const nestedTestTSVs = [
@@ -118,8 +117,7 @@ describe('validate outputs for util methods', () => {
         .getTSVRepresentation(
           testTSV[testTSV.testKey.split('.')[0]],
           testTSV.testKey,
-        ).toLowerCase())
-        .to.eq('pass');
+        ).toLowerCase()).toBe('pass');
     });
   });
 
@@ -177,10 +175,10 @@ describe('validate outputs for util methods', () => {
 
     testPayloads.forEach((payload, i) => {
       const filtered = util.parsePayload(payload, testProps);
-      expect(filtered).to.deep.equal(output[i]);
+      expect(filtered).toEqual(output[i]);
     });
 
-    expect(util.parsePayload(flattenedTest, testProps, [], true)).to.eql(flattened);
+    expect(util.parsePayload(flattenedTest, testProps, [], true)).toEqual(flattened);
   });
 
   it('getPallette', () => {
@@ -205,7 +203,7 @@ describe('validate outputs for util methods', () => {
       { val: 5, result: [1, 0, 1, 0] },
     ];
 
-    test.forEach(testCase => expect(util.parsePermission(testCase.val)).to.eql(testCase.result));
+    test.forEach(testCase => expect(util.parsePermission(testCase.val)).toEqual(testCase.result));
   });
 
   it('getPropOfType', () => {
@@ -216,8 +214,8 @@ describe('validate outputs for util methods', () => {
       { name: 'foo', type: 'link' },
       { name: 'bar', type: 'link' },
     ];
-    expect(util.getPropOfType(classOne, 'string').length).to.eq(2);
-    expect(util.getPropOfType(classOne, 'link').length).to.eq(2);
-    expect(util.getPropOfType(classOne, 'nothing').length).to.eq(0);
+    expect(util.getPropOfType(classOne, 'string').length).toBe(2);
+    expect(util.getPropOfType(classOne, 'link').length).toBe(2);
+    expect(util.getPropOfType(classOne, 'nothing').length).toBe(0);
   });
 });

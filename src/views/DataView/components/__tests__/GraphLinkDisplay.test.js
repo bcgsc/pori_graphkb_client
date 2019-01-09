@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import GraphLinkDisplay from '../GraphComponent/GraphLinkDisplay/GraphLinkDisplay';
 
@@ -31,8 +30,8 @@ describe('<GraphLinkDisplay />', () => {
         link={mockData}
       />,
     );
-    expect(wrapper.type()).to.equal('g');
-    wrapper.children().forEach(child => expect(child.type()).to.equal('path'));
+    expect(wrapper.type()).toBe('g');
+    wrapper.children().forEach(child => expect(child.type()).toBe('path'));
   });
 
   it('renders label correctly', () => {
@@ -43,8 +42,8 @@ describe('<GraphLinkDisplay />', () => {
         labelKey="name"
       />,
     );
-    expect(wrapper.type()).to.equal('g');
-    expect(wrapper.children('text').text()).to.equal('link');
+    expect(wrapper.type()).toBe('g');
+    expect(wrapper.children('text').text()).toBe('link');
   });
 
   it('reduces opacity if link is not selected for detail viewing', () => {
@@ -59,7 +58,7 @@ describe('<GraphLinkDisplay />', () => {
       />,
     );
 
-    expect(wrapper.find('path.link').props().style.strokeOpacity).to.eq(0.4);
+    expect(wrapper.find('path.link').props().style.strokeOpacity).toBe(0.4);
   });
 
   it('invalid link', () => {
@@ -71,6 +70,6 @@ describe('<GraphLinkDisplay />', () => {
         detail={mockData}
       />,
     );
-    expect(wrapper.find('path.link')).to.have.lengthOf(0);
+    expect(wrapper.find('path.link')).toHaveLength(0);
   });
 });

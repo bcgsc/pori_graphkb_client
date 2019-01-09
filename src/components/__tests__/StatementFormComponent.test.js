@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { mount } from 'enzyme';
 import StatementFormComponent from '../StatementFormComponent/StatementFormComponent';
 import Schema from '../../services/schema';
@@ -139,7 +138,7 @@ describe('<StatementFormComponent />', () => {
       />,
     );
 
-    expect(wrapper.find('#statement-submit-btn').first().props().disabled).to.eq(undefined);
+    expect(wrapper.find('#statement-submit-btn').first().props().disabled).toBeUndefined();
   });
 
   it('form validity', () => {
@@ -171,7 +170,7 @@ describe('<StatementFormComponent />', () => {
         },
       ],
     });
-    expect(wrapper.find('#statement-submit-btn').first().props().disabled).to.eq(undefined);
+    expect(wrapper.find('#statement-submit-btn').first().props().disabled).toBeUndefined();
     wrapper.setState({
       relationships: [
         {
@@ -182,7 +181,7 @@ describe('<StatementFormComponent />', () => {
         },
       ],
     });
-    expect(wrapper.find('#statement-submit-btn').first().props().disabled).to.eq(undefined);
+    expect(wrapper.find('#statement-submit-btn').first().props().disabled).toBeUndefined();
   });
 
   it('change handlers', () => {
@@ -198,7 +197,7 @@ describe('<StatementFormComponent />', () => {
         value: 'test',
       },
     });
-    expect(wrapper.state().form.relevance).to.eq('test');
+    expect(wrapper.state().form.relevance).toBe('test');
 
     wrapper.find('input[name="relevance"]').simulate('change', {
       target: {
@@ -211,7 +210,7 @@ describe('<StatementFormComponent />', () => {
       },
     });
 
-    expect(wrapper.state().form.relevance).to.eq('pass');
+    expect(wrapper.state().form.relevance).toBe('pass');
   });
 
   it('submit', () => {
@@ -223,8 +222,8 @@ describe('<StatementFormComponent />', () => {
         node={validNode}
       />,
     );
-    expect(wrapper.find('#statement-submit-btn').first().props().disabled).to.eq(undefined);
+    expect(wrapper.find('#statement-submit-btn').first().props().disabled).toBeUndefined();
     wrapper.find('#statement-submit-btn').first().simulate('click');
-    expect(mockSubmit.mock.calls.length).to.eq(1);
+    expect(mockSubmit.mock.calls.length).toBe(1);
   });
 });

@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { shallow } from 'enzyme';
 import DownloadFileComponent from '../DownloadFileComponent';
 
@@ -12,8 +11,8 @@ describe('<DetailDrawer />', () => {
         <button type="button" />
       </DownloadFileComponent>
     ));
-    expect(wrapper.type()).to.eq('div');
-    expect(wrapper.children().type()).to.eq('button');
+    expect(wrapper.type()).toBe('div');
+    expect(wrapper.children().type()).toBe('button');
   });
 
   it('applies classes to children and wrapper properly', () => {
@@ -56,6 +55,6 @@ describe('<DetailDrawer />', () => {
     ));
     window.navigator.msSaveBlob = () => { };
     wrapper.simulate('click');
-    expect(mock.mock.calls.length).to.eq(1);
+    expect(mock.mock.calls.length).toBe(1);
   });
 });

@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { schema as SCHEMA_DEFN } from '@bcgsc/knowledgebase-schema';
 import Schema from '../schema';
 
@@ -8,7 +7,7 @@ describe('Schema wrapper class tests', () => {
     const testSchema = new Schema(SCHEMA_DEFN);
     it('gets classes properly', () => {
       Object.keys(SCHEMA_DEFN).forEach((key) => {
-        expect(testSchema.get(key)).to.not.eq(undefined);
+        expect(testSchema.get(key)).toBeDefined();
       });
     });
     it('returns proper metadata fields', () => {
@@ -16,7 +15,7 @@ describe('Schema wrapper class tests', () => {
       const V = testSchema.get('V');
 
       metadata.forEach((prop) => {
-        expect(V.properties[prop.name]).to.not.eq(undefined);
+        expect(V.properties[prop.name]).toBeDefined();
       });
     });
     it('returns the right properties list', () => {
@@ -24,7 +23,7 @@ describe('Schema wrapper class tests', () => {
       const testProps = testSchema.getProperties('Ontology');
 
       testProps.forEach((prop) => {
-        expect(ontology.properties[prop.name]).to.not.eq(undefined);
+        expect(ontology.properties[prop.name]).toBeDefined();
       });
     });
     it('returns proper subclasses of common abstract classes', () => {
@@ -32,17 +31,17 @@ describe('Schema wrapper class tests', () => {
         .filter(model => model.inherits && model.inherits.includes('Ontology'));
       const variants = Object.values(testSchema.schema)
         .filter(model => model.inherits && model.inherits.includes('Variant'));
-      expect(testSchema.getOntologies(true)).to.eql(ontologies);
-      expect(testSchema.getOntologies()).to.not.eql(ontologies);
+      expect(testSchema.getOntologies(true)).toEqual(ontologies);
+      expect(testSchema.getOntologies()).not.toEqual(ontologies);
 
-      expect(testSchema.getVariants(true)).to.eql(variants);
-      expect(testSchema.getVariants()).to.not.eql(variants);
+      expect(testSchema.getVariants(true)).toEqual(variants);
+      expect(testSchema.getVariants()).not.toEqual(variants);
     });
     it('Returns edges', () => {
       const edges = Object.values(testSchema.schema)
         .filter(model => model.inherits && model.inherits.includes('E'))
         .map(model => model.name);
-      expect(testSchema.getEdges()).to.eql(edges);
+      expect(testSchema.getEdges()).toEqual(edges);
 
       const testNode = {
         in_AliasOf: [
@@ -55,7 +54,7 @@ describe('Schema wrapper class tests', () => {
           'ingeneralization',
         ],
       };
-      expect(testSchema.getEdges(testNode)).to.eql(['inalias', 'outalias', 'ingeneralization']);
+      expect(testSchema.getEdges(testNode)).toEqual(['inalias', 'outalias', 'ingeneralization']);
     });
   });
 
@@ -129,7 +128,7 @@ describe('Schema wrapper class tests', () => {
           embeddedName: '',
         },
       };
-      expect(testSchema.initModel({}, 'Test')).to.eql(expected);
+      expect(testSchema.initModel({}, 'Test')).toEqual(expected);
     });
 
     it('collectOntologyProps()', () => {
@@ -148,9 +147,8 @@ describe('Schema wrapper class tests', () => {
         },
       ];
       const allColumns = testSchema.collectOntologyProps(testRecords[0], []);
-      expect(allColumns).to.eql(['name']);
-      expect(testSchema.collectOntologyProps(testRecords[1], allColumns))
-        .to.eql(['name', 'embed.embeddedName', 'embed.@class']);
+      expect(allColumns).toEqual(['name']);
+      expect(testSchema.collectOntologyProps(testRecords[1], allColumns)).toEqual(['name', 'embed.embeddedName', 'embed.@class']);
     });
   });
 });

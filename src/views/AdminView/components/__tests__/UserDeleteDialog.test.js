@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { mount } from 'enzyme';
 import UserDeleteDialog from '../UserForm/UserDeleteDialog';
 
@@ -57,7 +56,7 @@ describe('<UserDeleteDialog />', () => {
   });
 
   it('renders without crashing', () => {
-    expect(wrapper.type()).to.equal(UserDeleteDialog);
+    expect(wrapper.type()).toBe(UserDeleteDialog);
   });
 
   it('handles cancel button', () => {
@@ -72,6 +71,6 @@ describe('<UserDeleteDialog />', () => {
       />,
     );
     wrapper.find('ul button').first().simulate('click');
-    expect(onCancel.mock.calls.length).to.eq(1);
+    expect(onCancel.mock.calls.length).toBe(1);
   });
 });

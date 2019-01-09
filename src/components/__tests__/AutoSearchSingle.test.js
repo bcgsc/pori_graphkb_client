@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { spy } from 'sinon';
 import { TextField } from '@material-ui/core';
@@ -14,9 +13,9 @@ describe('<AutoSearchSingle />', () => {
 
   it('should correctly render a Downshift component, with nested div and a TextField', () => {
     wrapper = mount(<AutoSearchSingle />);
-    expect(wrapper.children().type()).to.equal(AutoSearchBase);
-    expect(wrapper.children().children().type()).to.equal(Downshift);
-    expect(wrapper.find('.autosearch-popper-node').children().type()).to.equal(TextField);
+    expect(wrapper.children().type()).toBe(AutoSearchBase);
+    expect(wrapper.children().children().type()).toBe(Downshift);
+    expect(wrapper.find('.autosearch-popper-node').children().type()).toBe(TextField);
   });
 
   it('allows props to be correctly distributed', () => {
@@ -27,10 +26,10 @@ describe('<AutoSearchSingle />', () => {
         placeholder="testPlaceHolder"
         disabled
       />));
-    expect(wrapper.find('input').props().name).to.equal('testName');
-    expect(wrapper.find('input').props().placeholder).to.equal('testPlaceHolder');
-    expect(wrapper.find('label').text()).to.equal('testLabel');
-    expect(wrapper.find('input').props().disabled).to.equal(true);
+    expect(wrapper.find('input').props().name).toBe('testName');
+    expect(wrapper.find('input').props().placeholder).toBe('testPlaceHolder');
+    expect(wrapper.find('label').text()).toBe('testLabel');
+    expect(wrapper.find('input').props().disabled).toBe(true);
   });
 
   it('focuses input component', () => {
@@ -62,8 +61,8 @@ describe('<AutoSearchSingle />', () => {
     wrapper.setState({ options: [{ name: 'test' }] });
     wrapper.find('input').simulate('blur');
 
-    expect(onChange.mock.calls.length).to.be.gt(0);
-    expect(AutoSearchSingle.prototype.refreshOptions).to.have.property('callCount', 1);
+    expect(onChange.mock.calls.length).toBeGreaterThan(0);
+    expect(AutoSearchSingle.prototype.refreshOptions).toHaveProperty('callCount', 1);
   });
 
   it('loading results displays spinner', () => {
@@ -77,7 +76,7 @@ describe('<AutoSearchSingle />', () => {
 
     wrapper.setState({ emptyFlag: false, loading: true });
     /* eslint-disable-next-line */
-    expect(wrapper.find('#autosearch-spinner')).to.exist;
+    expect(wrapper.find('#autosearch-spinner')).toBeDefined();
   });
 
   it('componentWillUnmount doesn\'t crash', () => {

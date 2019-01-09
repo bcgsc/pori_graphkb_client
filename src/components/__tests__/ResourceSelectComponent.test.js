@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { FormControl } from '@material-ui/core';
 import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
@@ -23,7 +22,7 @@ describe('<ResourceSelectComponent />', () => {
         value={val}
       />,
     );
-    expect(wrapper.children().type()).to.equal(FormControl);
+    expect(wrapper.children().type()).toBe(FormControl);
   });
 
   it('props are passed down correctly', () => {
@@ -34,7 +33,7 @@ describe('<ResourceSelectComponent />', () => {
         name="test"
       />,
     );
-    expect(wrapper.find('input#resource-select-test').props().name).to.equal('test');
-    expect(wrapper.find('input#resource-select-test').props().value).to.equal('best');
+    expect(wrapper.find('input#resource-select-test').props().name).toBe('test');
+    expect(wrapper.find('input#resource-select-test').props().value).toBe('best');
   });
 });

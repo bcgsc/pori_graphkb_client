@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { mount, shallow } from 'enzyme';
 import GraphNodeDisplay from '../GraphComponent/GraphNodeDisplay/GraphNodeDisplay';
 import { GraphNode } from '../GraphComponent/kbgraph';
@@ -25,8 +24,8 @@ describe('<GraphNodeDisplay />', () => {
         node={mockData}
       />,
     );
-    expect(wrapper.type()).to.equal('g');
-    expect(wrapper.children().first().type()).to.equal('text');
+    expect(wrapper.type()).toBe('g');
+    expect(wrapper.children().first().type()).toBe('text');
   });
 
   it('renders correct label', () => {
@@ -36,8 +35,8 @@ describe('<GraphNodeDisplay />', () => {
         labelKey="name"
       />,
     );
-    expect(wrapper.type()).to.equal('g');
-    expect(wrapper.children('text').text()).to.equal('node');
+    expect(wrapper.type()).toBe('g');
+    expect(wrapper.children('text').text()).toBe('node');
   });
 
   it('mutes node if not selected for detail viewing', () => {
@@ -51,7 +50,7 @@ describe('<GraphNodeDisplay />', () => {
       />,
     );
 
-    expect(wrapper.find('circle.node').props().style.opacity).to.eq(0.6);
+    expect(wrapper.find('circle.node').props().style.opacity).toBe(0.6);
   });
 
   it('does not render invalid node', () => {
@@ -62,7 +61,7 @@ describe('<GraphNodeDisplay />', () => {
         detail={mockData}
       />,
     );
-    expect(wrapper.find('circle.node')).to.have.lengthOf(0);
+    expect(wrapper.find('circle.node')).toHaveLength(0);
     wrapper.unmount();
   });
 
@@ -75,7 +74,7 @@ describe('<GraphNodeDisplay />', () => {
         applyDrag={applyDrag}
       />,
     );
-    expect(applyDrag.mock.calls.length).to.eq(0);
+    expect(applyDrag.mock.calls.length).toBe(0);
     wrapper.find('g').first().simulate('drag');
     wrapper.find('g').first().simulate('dragstart');
   });

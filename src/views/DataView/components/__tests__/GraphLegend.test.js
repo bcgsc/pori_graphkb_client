@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { mount } from 'enzyme';
 import GraphLegend from '../GraphComponent/GraphLegend/GraphLegend';
 import { PropsMap } from '../GraphComponent/kbgraph';
@@ -24,9 +23,9 @@ describe('<GraphLegend />', () => {
     );
 
     wrapper.find('button[name="nodesLegend"]').simulate('click');
-    expect(onChange.mock.calls.length).to.eq(1);
+    expect(onChange.mock.calls.length).toBe(1);
 
     wrapper.find('button[name="linksLegend"]').simulate('click');
-    expect(onChange.mock.calls.length).to.eq(2);
+    expect(onChange.mock.calls.length).toBe(2);
   });
 });

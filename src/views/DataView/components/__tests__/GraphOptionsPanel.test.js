@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { spy } from 'sinon';
 import { Dialog } from '@material-ui/core';
@@ -31,7 +30,7 @@ describe('<GraphOptionsPanel />', () => {
         handleGraphOptionsChange={() => { }}
       />,
     );
-    expect(wrapper.children().first().type()).to.eq(Dialog);
+    expect(wrapper.children().first().type()).toBe(Dialog);
   });
 
   it('passes on open prop to child dialog', () => {
@@ -46,8 +45,8 @@ describe('<GraphOptionsPanel />', () => {
       />,
     );
     wrapper.children().forEach((child) => {
-      expect(child.type()).to.eq(Dialog);
-      expect(child.children().props().open).to.eq(false);
+      expect(child.type()).toBe(Dialog);
+      expect(child.children().props().open).toBe(false);
     });
   });
 
@@ -65,7 +64,7 @@ describe('<GraphOptionsPanel />', () => {
       />,
     );
     wrapper.find('button#options-close-btn').simulate('click');
-    expect(handleDialogClose.mock.calls.length).to.eq(2);
+    expect(handleDialogClose.mock.calls.length).toBe(2);
   });
 
   it('opens and renders help dialog when help buttons are clicked', () => {
@@ -80,15 +79,15 @@ describe('<GraphOptionsPanel />', () => {
       />,
     );
     wrapper.find('.options-title button#main-help-btn').simulate('click');
-    expect(wrapper.children().length).to.eq(2);
+    expect(wrapper.children().length).toBe(2);
     wrapper.find('.help-title button').simulate('click');
 
     wrapper.find('.options-title button#advanced-help-btn').simulate('click');
-    expect(wrapper.children().length).to.eq(2);
+    expect(wrapper.children().length).toBe(2);
     wrapper.find('.help-title button').simulate('click');
 
-    expect(GraphOptionsPanel.prototype.handleHelpOpen).to.have.property('callCount', 2);
-    expect(GraphOptionsPanel.prototype.handleHelpClose).to.have.property('callCount', 2);
+    expect(GraphOptionsPanel.prototype.handleHelpOpen).toHaveProperty('callCount', 2);
+    expect(GraphOptionsPanel.prototype.handleHelpClose).toHaveProperty('callCount', 2);
   });
 
   it('advanced options changes are triggered', () => {
@@ -109,6 +108,6 @@ describe('<GraphOptionsPanel />', () => {
     wrapper.find('div.main-options-wrapper input')
       .forEach(input => input.simulate('change'));
 
-    expect(handleGraphOptionsChange.mock.calls.length).to.be.gt(0);
+    expect(handleGraphOptionsChange.mock.calls.length).toBeGreaterThan(0);
   });
 });

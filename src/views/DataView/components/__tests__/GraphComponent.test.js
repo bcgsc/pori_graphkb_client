@@ -1,5 +1,4 @@
 import React from 'react';
-import { expect } from 'chai';
 import { mount } from 'enzyme';
 import { spy } from 'sinon';
 import GraphComponent from '../GraphComponent/GraphComponent';
@@ -66,7 +65,7 @@ describe('<GraphComponent />', () => {
         handleNewColumns={() => { }}
       />,
     );
-    expect(GraphComponent.prototype.componentDidMount).to.have.property('callCount', 1);
+    expect(GraphComponent.prototype.componentDidMount).toHaveProperty('callCount', 1);
   });
 
   it('renders all nodes specified in displayed', () => {
@@ -82,8 +81,8 @@ describe('<GraphComponent />', () => {
       />,
     );
 
-    expect(wrapper.find('svg path.link')).to.have.lengthOf(0);
-    expect(wrapper.find('svg circle.node')).to.have.lengthOf(3);
+    expect(wrapper.find('svg path.link')).toHaveLength(0);
+    expect(wrapper.find('svg circle.node')).toHaveLength(3);
   });
 
   it('renders all nodes and links specified in displayed', () => {
@@ -99,8 +98,8 @@ describe('<GraphComponent />', () => {
       />,
     );
 
-    expect(wrapper.find('svg circle.node')).to.have.lengthOf(4);
-    expect(wrapper.find('svg path.link')).to.have.lengthOf(1);
+    expect(wrapper.find('svg circle.node')).toHaveLength(4);
+    expect(wrapper.find('svg path.link')).toHaveLength(1);
   });
 
   it('methods don\'t crash component', () => {
@@ -176,8 +175,8 @@ describe('<GraphComponent />', () => {
     );
     wrapper.find('circle.node').first().simulate('click');
     wrapper.find('path.link').first().simulate('click');
-    expect(handleClick.mock.calls.length).to.eq(1);
-    expect(handleDetailDrawerOpen.mock.calls.length).to.eq(1);
+    expect(handleClick.mock.calls.length).toBe(1);
+    expect(handleDetailDrawerOpen.mock.calls.length).toBe(1);
 
     wrapper.setState({
       actionsNode,
@@ -225,7 +224,7 @@ describe('<GraphComponent />', () => {
         edgeTypes={['AliasOf']}
       />,
     );
-    expect(wrapper.find('circle.node')).to.have.lengthOf(4);
+    expect(wrapper.find('circle.node')).toHaveLength(4);
     wrapper.find('circle.node').first().simulate('click');
   });
 
@@ -243,6 +242,6 @@ describe('<GraphComponent />', () => {
       />,
     );
     wrapper.find('div.svg-wrapper svg').simulate('click');
-    expect(wrapper.state().actionsNode).to.eq(null);
+    expect(wrapper.state().actionsNode).toBeNull();
   });
 });

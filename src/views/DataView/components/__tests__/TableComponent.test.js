@@ -1,6 +1,5 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { spy } from 'sinon';
 import { TableComponent } from '..';
 
 const mockData = {
@@ -67,21 +66,20 @@ const allProps = [
 ];
 
 describe('<TableComponent />', () => {
-  let wrapper;
+  const spies = {
+    componentDidMount: jest.spyOn(TableComponent.prototype, 'componentDidMount'),
+    createTSV: jest.spyOn(TableComponent.prototype, 'createTSV'),
+    handleChangePage: jest.spyOn(TableComponent.prototype, 'handleChangePage'),
+    handleChange: jest.spyOn(TableComponent.prototype, 'handleChange'),
+    handleHeaderMouseLeave: jest.spyOn(TableComponent.prototype, 'handleHeaderMouseLeave'),
+    handleFilterExclusions: jest.spyOn(TableComponent.prototype, 'handleFilterExclusions'),
+    handleFilterCheckAll: jest.spyOn(TableComponent.prototype, 'handleFilterCheckAll'),
+    handleColumnCheck: jest.spyOn(TableComponent.prototype, 'handleColumnCheck'),
+  };
 
-  beforeAll(() => {
-    spy(TableComponent.prototype, 'componentDidMount');
-    spy(TableComponent.prototype, 'createTSV');
-    spy(TableComponent.prototype, 'handleChangePage');
-    spy(TableComponent.prototype, 'handleChange');
-    spy(TableComponent.prototype, 'handleHeaderMouseLeave');
-    spy(TableComponent.prototype, 'handleFilterExclusions');
-    spy(TableComponent.prototype, 'handleFilterCheckAll');
-    spy(TableComponent.prototype, 'handleColumnCheck');
-  });
 
   it('correctly calls componentDidMount and does not blow up', () => {
-    wrapper = mount(
+    mount(
       <TableComponent
         data={{}}
         handleCheckAll={() => { }}
@@ -94,11 +92,11 @@ describe('<TableComponent />', () => {
         completedNext
       />,
     );
-    expect(TableComponent.prototype.componentDidMount).toHaveProperty('callCount', 1);
+    expect(spies.componentDidMount).toHaveBeenCalledTimes(1);
   });
 
   it('renders correct number of rows given input data', () => {
-    wrapper = mount(
+    const wrapper = mount(
       <TableComponent
         data={mockData}
         handleCheckAll={() => { }}
@@ -121,7 +119,7 @@ describe('<TableComponent />', () => {
     const handleCheckbox = jest.fn();
     const handleCheckAll = jest.fn();
     const handleGraphRedirect = jest.fn();
-    wrapper = mount(
+    const wrapper = mount(
       <TableComponent
         data={mockData}
         handleCheckAll={handleCheckAll}
@@ -154,25 +152,25 @@ describe('<TableComponent />', () => {
         btn.simulate('mouseleave');
       }
     });
-    expect(TableComponent.prototype.handleHeaderMouseLeave).toHaveProperty('callCount', 4);
+    expect(spies.handleHeaderMouseLeave).toHaveBeenCalledTimes(4);
 
     wrapper.find('thead tr th button[title="Filter this column"]').first().simulate('click');
 
     wrapper.find('.filter-wrapper .filter-exclusions-list div[role="button"]').first().simulate('click');
-    expect(TableComponent.prototype.handleFilterExclusions).toHaveProperty('callCount', 1);
+    expect(spies.handleFilterExclusions).toHaveBeenCalledTimes(1);
 
     wrapper.find('.filter-list input').first().simulate('change', { target: { value: 'test' } });
 
     wrapper.find('div#select-all-checkbox').simulate('click');
     wrapper.find('div#select-all-checkbox').simulate('click');
-    expect(TableComponent.prototype.handleFilterCheckAll).toHaveProperty('callCount', 2);
+    expect(spies.handleFilterCheckAll).toHaveBeenCalledTimes(2);
 
     wrapper.find('div#filter-popover div').first().simulate('close');
     wrapper.find('button#ellipsis-menu').simulate('click');
     expect(wrapper.find('div[role="document"] ul[role="menu"] li#clear-filters')).toHaveLength(1);
     wrapper.find('div[role="document"] ul[role="menu"] div#download-tsv').first().simulate('click');
 
-    expect(TableComponent.prototype.createTSV).toHaveProperty('callCount', 1);
+    expect(spies.createTSV).toHaveBeenCalledTimes(1);
 
     wrapper.find('div.graph-btn button').simulate('click');
     expect(handleGraphRedirect.mock.calls.length).toBe(1);
@@ -180,7 +178,7 @@ describe('<TableComponent />', () => {
 
   it('pagination triggers handlers correctly', () => {
     const handleSubsequentPagination = jest.fn();
-    wrapper = mount(
+    const wrapper = mount(
       <TableComponent
         data={bigMockData}
         handleCheckAll={() => { }}
@@ -207,7 +205,7 @@ describe('<TableComponent />', () => {
       });
     wrapper.find('div.pag div.paginator-spacing button').first().simulate('click');
 
-    expect(TableComponent.prototype.handleChangePage).toHaveProperty('callCount', 2);
+    expect(spies.handleChangePage).toHaveBeenCalledTimes(2);
 
     wrapper.find('div.pag div.paginator-spacing div[role="button"]').first().simulate('click');
     wrapper.find('div[role="document"] ul[role="listbox"] li').forEach((btn, i) => {
@@ -215,11 +213,11 @@ describe('<TableComponent />', () => {
         btn.simulate('click');
       }
     });
-    expect(TableComponent.prototype.handleChange).toHaveProperty('callCount', 1);
+    expect(spies.handleChange).toHaveBeenCalledTimes(1);
   });
 
   it('column dialog is opened correctly', () => {
-    wrapper = mount(
+    const wrapper = mount(
       <TableComponent
         data={mockData}
         handleCheckAll={() => { }}
@@ -238,9 +236,14 @@ describe('<TableComponent />', () => {
     wrapper.find('button#ellipsis-menu').simulate('click');
     wrapper.find('div[role="document"] ul[role="menu"] li#column-edit').simulate('click');
     wrapper.find('#name input[type="checkbox"]').simulate('change');
-    expect(TableComponent.prototype.handleColumnCheck).toHaveProperty('callCount', 1);
+    expect(spies.handleColumnCheck).toHaveBeenCalledTimes(1);
     wrapper.find('input[type="radio"]').simulate('change');
     wrapper.find('#column-dialog-actions button').simulate('click');
     expect(wrapper.state().tableColumns.find(t => t.id === 'name')).toHaveProperty('checked', false);
+  });
+  afterEach(() => {
+    Object.values(spies).forEach((spy) => {
+      spy.mockClear();
+    });
   });
 });

@@ -1,6 +1,5 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { spy } from 'sinon';
 import PositionalVariantParser from '../PositionalVariantParser/PositionalVariantParser';
 import Schema from '../../services/schema';
 
@@ -57,10 +56,7 @@ let mockSchema;
 
 describe('<PositionalVariantParser />', () => {
   let wrapper;
-
-  beforeAll(() => {
-    spy(PositionalVariantParser.prototype, 'componentDidMount');
-  });
+  const mountingSpy = jest.spyOn(PositionalVariantParser.prototype, 'componentDidMount');
 
   beforeEach(() => {
     mockSchema = new Schema({
@@ -120,7 +116,7 @@ describe('<PositionalVariantParser />', () => {
         schema={mockSchema}
       />,
     );
-    expect(PositionalVariantParser.prototype.componentDidMount).toHaveProperty('callCount', 1);
+    expect(mountingSpy).toHaveBeenCalledTimes(1);
   });
 
   it('correctly calls handlers on shorthand change and form fields', () => {

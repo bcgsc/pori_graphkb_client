@@ -84,7 +84,6 @@ class DetailDrawer extends Component {
    * @param {Object} inputNode - Ontology being displayed.
    * @param {boolean} isNested - Nested flag.
    */
-  @boundMethod
   formatIdentifiers(node, isNested) {
     const { schema } = this.props;
     if (!node['@class']) return null;
@@ -162,7 +161,6 @@ class DetailDrawer extends Component {
    * @param {Object} node - Record to be formatted.
    * @param {boolean} isNested - Nested flag.
    */
-  @boundMethod
   formatMetadata(node, isNested) {
     const { schema } = this.props;
     return this.formatProps(node, schema.getMetadata(), isNested);
@@ -174,7 +172,6 @@ class DetailDrawer extends Component {
    * @param {Array.<Object>} properties - List of properties to display.
    * @param {boolean} isNested - Nested flag.
    */
-  @boundMethod
   formatProps(node, properties, isNested) {
     const { schema } = this.props;
     const { opened } = this.state;
@@ -317,7 +314,6 @@ class DetailDrawer extends Component {
    * @param {Object} node - Record being displayed.
    * @param {boolean} isNested - Nested flag.
    */
-  @boundMethod
   formatOtherProps(node, isNested) {
     const { schema } = this.props;
     const { identifiers } = schema.get(node);
@@ -339,7 +335,6 @@ class DetailDrawer extends Component {
    * Formats record relationships.
    * @param {Object} node - Record being displayed.
    */
-  @boundMethod
   formatRelationships(node) {
     const { linkOpen, opened } = this.state;
     const { schema } = this.props;

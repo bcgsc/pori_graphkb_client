@@ -1,15 +1,14 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { spy } from 'sinon';
 import { TextField } from '@material-ui/core';
 import Downshift from 'downshift';
 import AutoSearchSingle from '../AutoSearchSingle/AutoSearchSingle';
 import AutoSearchBase from '../AutoSearchBase/AutoSearchBase';
 
-spy(AutoSearchSingle.prototype, 'refreshOptions');
 
 describe('<AutoSearchSingle />', () => {
   let wrapper;
+  const spy = jest.spyOn(AutoSearchSingle.prototype, 'refreshOptions');
 
   it('should correctly render a Downshift component, with nested div and a TextField', () => {
     wrapper = mount(<AutoSearchSingle />);
@@ -62,7 +61,7 @@ describe('<AutoSearchSingle />', () => {
     wrapper.find('input').simulate('blur');
 
     expect(onChange.mock.calls.length).toBeGreaterThan(0);
-    expect(AutoSearchSingle.prototype.refreshOptions).toHaveProperty('callCount', 1);
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 
   it('loading results displays spinner', () => {

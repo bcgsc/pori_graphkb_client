@@ -1,6 +1,5 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { spy } from 'sinon';
 import { Dialog } from '@material-ui/core';
 import GraphOptionsPanel from '../GraphComponent/GraphOptionsPanel/GraphOptionsPanel';
 import { PropsMap, GraphOptions } from '../GraphComponent/kbgraph';
@@ -12,10 +11,8 @@ describe('<GraphOptionsPanel />', () => {
     { name: 'goodbye', sourceId: 'test source ID' },
   ];
 
-  beforeAll(() => {
-    spy(GraphOptionsPanel.prototype, 'handleHelpOpen');
-    spy(GraphOptionsPanel.prototype, 'handleHelpClose');
-  });
+  const handleHelpOpenSpy = jest.spyOn(GraphOptionsPanel.prototype, 'handleHelpOpen');
+  const handleHelpCloseSpy = jest.spyOn(GraphOptionsPanel.prototype, 'handleHelpClose');
 
   it('renders md dialog as first child', () => {
     const propsMap = new PropsMap();
@@ -86,8 +83,8 @@ describe('<GraphOptionsPanel />', () => {
     expect(wrapper.children().length).toBe(2);
     wrapper.find('.help-title button').simulate('click');
 
-    expect(GraphOptionsPanel.prototype.handleHelpOpen).toHaveProperty('callCount', 2);
-    expect(GraphOptionsPanel.prototype.handleHelpClose).toHaveProperty('callCount', 2);
+    expect(handleHelpOpenSpy).toHaveBeenCalledTimes(2);
+    expect(handleHelpCloseSpy).toHaveBeenCalledTimes(2);
   });
 
   it('advanced options changes are triggered', () => {

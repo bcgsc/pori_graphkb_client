@@ -113,7 +113,7 @@ class MainNav extends Component {
           <Collapse in={active}>
             {nestedItems.map(nestedItem => this.renderLink(nestedItem, true))}
           </Collapse>
-        </>
+        </React.Fragment>
       );
     }
     return (

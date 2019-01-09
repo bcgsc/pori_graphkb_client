@@ -844,7 +844,7 @@ class TableComponent extends Component {
                           )}
                         </TableCell>
                       </TableRow>
-                    </>
+                    </React.Fragment>
                   );
               })}
             </TableBody>

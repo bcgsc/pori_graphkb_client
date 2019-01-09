@@ -163,6 +163,7 @@ const logout = async () => {
 
 export default {
   authenticate,
+  clearTokens,
   getAuthToken,
   getToken,
   getUser,
@@ -170,7 +171,8 @@ export default {
   isAdmin,
   isAuthenticated,
   isAuthorized,
-  setToken,
   logout,
   popReferrerUri,
+  setAuthToken,
+  setToken,
 };

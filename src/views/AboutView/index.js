@@ -65,10 +65,6 @@ class AboutView extends Component {
     };
   }
 
-  componentWillUnmount() {
-    this.controllers.forEach(c => c.abort());
-  }
-
   @boundMethod
   handleChange(event, value) {
     this.setState({ tabIndex: value });

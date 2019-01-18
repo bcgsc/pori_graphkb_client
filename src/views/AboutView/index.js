@@ -6,10 +6,8 @@ import {
   Switch,
 } from 'react-router-dom';
 import {
-  Paper,
   Tabs,
   Tab,
-
 } from '@material-ui/core';
 import slugify from 'slugify';
 import PropTypes from 'prop-types';
@@ -23,9 +21,6 @@ import {
   AboutQuerying,
   AboutTableView,
 } from './components';
-
-
-const PAGE_ELEVATION = 4;
 
 
 class AboutView extends Component {
@@ -96,8 +91,8 @@ class AboutView extends Component {
     ));
 
     return (
-      <Paper elevation={PAGE_ELEVATION} className="about-page">
-        <Tabs value={tabIndex} onChange={this.handleChange} scrollable>
+      <div className="content-wrapper about-page">
+        <Tabs value={tabIndex} onChange={this.handleChange} scrollable className="tabs-bar">
           {tabNavList}
         </Tabs>
         <div className="tabs-content">
@@ -105,7 +100,7 @@ class AboutView extends Component {
             {tabsRouteList}
           </Switch>
         </div>
-      </Paper>
+      </div>
     );
   }
 }

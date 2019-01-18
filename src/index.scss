@@ -29,10 +29,6 @@ a {
   }
 }
 
-// defaults for views
-.view-wrapper {
-  @include view-wrapper;
-  .view-header {
-    @include page-header;
-  }
+.content-wrapper {
+  @include content-wrapper;
 }

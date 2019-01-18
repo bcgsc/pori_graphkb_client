@@ -17,7 +17,6 @@ import {
   ListItem,
 } from '@material-ui/core';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import * as jc from 'json-cycle';
 import * as qs from 'querystring';
 import debounce from 'lodash.debounce';
 
@@ -190,8 +189,8 @@ class AutoSearchMulti extends Component {
     });
 
     try {
-      const response = await api.get(`${schema.get(cls).routeName}?${qs.stringify(payload)}&neighbors=3&limit=30`);
-      const { result } = jc.retrocycle(response);
+      const call = api.get(`${schema.get(cls).routeName}?${qs.stringify(payload)}&neighbors=3&limit=30`);
+      const { result } = await call.request();
 
       this.setState({
         options: result,
@@ -263,15 +262,15 @@ class AutoSearchMulti extends Component {
       property,
     } = this.props;
     try {
-      const response = await api.autoSearch(
+      const call = api.autoSearch(
         endpoint,
         property,
         value,
         limit,
       );
-      const results = jc.retrocycle(response).result;
+      const { result } = await call.request();
 
-      this.setState({ options: results, loading: false });
+      this.setState({ options: result, loading: false });
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);

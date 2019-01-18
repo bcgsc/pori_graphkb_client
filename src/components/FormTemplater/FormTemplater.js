@@ -64,6 +64,7 @@ const FormTemplater = (props) => {
     disableLists,
   } = props;
   const fields = [];
+
   const formatFormField = (property) => {
     if (!property) return null;
     const {

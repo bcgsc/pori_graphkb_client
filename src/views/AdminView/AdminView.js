@@ -4,7 +4,6 @@
 import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as jc from 'json-cycle';
 import {
   Paper,
   Typography,
@@ -63,16 +62,13 @@ class AdminViewBase extends Component {
    * Gets database users and usergroups. Initializes form object.
    */
   async fetchData() {
-    const cycledUsersCall = api.get('/users?neighbors=1');
-    this.controllers.push(cycledUsersCall);
-    const cycledUsers = await cycledUsersCall.request();
+    const usersCall = api.get('/users?neighbors=1');
+    this.controllers.push(usersCall);
+    const { result: users } = await usersCall.request();
 
-    const cycledUserGroupsCall = api.get('/usergroups');
-    this.controllers.push(cycledUserGroupsCall);
-    const cycledUserGroups = await cycledUserGroupsCall.request();
-
-    const users = jc.retrocycle(cycledUsers).result;
-    const userGroups = AdminViewBase.initializeUserGroups(jc.retrocycle(cycledUserGroups).result);
+    const userGroupsCall = api.get('/usergroups');
+    this.controllers.push(userGroupsCall);
+    const { result: userGroups } = await userGroupsCall.request();
 
     this.setState({
       users,

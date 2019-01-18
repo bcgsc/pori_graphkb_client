@@ -8,7 +8,6 @@ import {
   MenuItem,
   Typography,
 } from '@material-ui/core';
-import * as jc from 'json-cycle';
 import debounce from 'lodash.debounce';
 
 import AutoSearchBase from '../AutoSearchBase';
@@ -169,15 +168,15 @@ class AutoSearchSingle extends Component {
       property,
     } = this.props;
     try {
-      const response = await api.autoSearch(
+      const call = await api.autoSearch(
         endpoint,
         property,
         value,
         limit,
       );
-      const results = jc.retrocycle(response).result;
+      const { result } = await call.request();
 
-      this.setState({ options: results, loading: false });
+      this.setState({ options: result, loading: false });
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);

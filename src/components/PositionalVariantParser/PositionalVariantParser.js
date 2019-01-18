@@ -13,7 +13,6 @@ import {
   ListItem,
   Typography,
 } from '@material-ui/core';
-import * as jc from 'json-cycle';
 import kbp from '@bcgsc/knowledgebase-parser';
 
 import './PositionalVariantParser.scss';
@@ -210,8 +209,8 @@ class PositionalVariantParser extends Component {
     await Promise.all(linkProps.map(async (prop) => {
       const { name, linkedClass } = prop;
       if (parsed[name] && linkedClass && linkedClass.routeName) {
-        const data = await api.get(`${linkedClass.routeName}?name=${parsed[name]}&neighbors=1`);
-        const cycled = jc.retrocycle(data).result;
+        const call = api.get(`${linkedClass.routeName}?name=${parsed[name]}&neighbors=1`);
+        const cycled = await call.request();
         if (cycled.length === 1) {
           [newValues[`${name}.data`]] = cycled;
           newValues[name] = schema.getPreview(cycled[0]);

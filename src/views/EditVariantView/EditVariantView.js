@@ -5,7 +5,6 @@ import React, { Component } from 'react';
 import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
 import { Paper, Typography, Button } from '@material-ui/core';
-import * as jc from 'json-cycle';
 
 import '../AddVariantView/AddVariantView.scss';
 import { withKB } from '../../components/KBContext';
@@ -45,8 +44,7 @@ class EditVariantViewBase extends Component {
     const { routeName } = schema.get('Variant');
     const call = api.get(`${routeName}/${rid}?neighbors=3`);
     this.controllers.push(call);
-    const response = await call.request();
-    const node = jc.retrocycle(response).result;
+    const { result: node } = await call.request();
     this.setState({
       node,
     });

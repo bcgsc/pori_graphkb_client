@@ -9,7 +9,6 @@ import {
   Button,
   Typography,
 } from '@material-ui/core';
-import * as jc from 'json-cycle';
 
 import './EditOntologyView.scss';
 import { withKB } from '../../components/KBContext';
@@ -52,8 +51,7 @@ class EditOntologyViewBase extends Component {
     const { rid } = match.params;
     const call = api.get(`/ontologies/${rid}?neighbors=${DEFAULT_NEIGHBORS}`);
     this.controllers.push(call);
-    const response = await call.request();
-    const node = jc.retrocycle(response).result;
+    const { result: node } = await call.request();
     this.setState({
       node,
     });

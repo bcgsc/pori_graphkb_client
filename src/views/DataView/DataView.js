@@ -4,7 +4,6 @@
 import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import * as jc from 'json-cycle';
 import { Route, Redirect, Switch } from 'react-router-dom';
 import {
   CircularProgress,
@@ -167,8 +166,8 @@ class DataViewBase extends Component {
   async makeApiQuery(route, queryParams, omitted = []) {
     const call = api.get(`${route}?${qs.stringify(omit(queryParams, omitted))}`);
     this.controllers.push(call);
-    const response = await call.request();
-    return jc.retrocycle(response).result;
+    const { result } = await call.request();
+    return result;
   }
 
   /**
@@ -180,8 +179,8 @@ class DataViewBase extends Component {
   async makeComplexApiQuery(route, payload, omitted = []) {
     const call = api.post(route, omit(payload, omitted));
     this.controllers.push(call);
-    const response = await call.request();
-    return jc.retrocycle(response).result;
+    const { result } = await call.request();
+    return result;
   }
 
   /**
@@ -220,8 +219,8 @@ class DataViewBase extends Component {
       const endpoint = `${routeName || '/ontologies'}/${node.data['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`; // change
       const call = api.get(endpoint);
       this.controllers.push(call);
-      const response = await call.request();
-      this.setState({ ...this.processData([jc.retrocycle(response).result]) });
+      const { result } = await call.request();
+      this.setState({ ...this.processData([result]) });
     }
   }
 
@@ -374,8 +373,8 @@ class DataViewBase extends Component {
       if (!data[node['@rid']]) {
         const call = api.get(`/ontologies/${node['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
         this.controllers.push(call);
-        const response = await call.request();
-        data[node['@rid']] = jc.retrocycle(response).result;
+        const { result } = await call.request();
+        data[node['@rid']] = result;
       }
       this.setState({ detail: data[node['@rid']], detailEdge: false });
     }

@@ -72,7 +72,7 @@ class GraphKbApiCall {
       throw err;
     }
     if (response.ok) {
-      return response.json();
+      return jc.retrocycle(response.json());
     }
 
     const { status, statusText, url } = response;

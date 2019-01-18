@@ -4,7 +4,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import './LoginView.scss';
 import api from '../../services/api';
 import auth from '../../services/auth';
 import config from '../../static/config';
@@ -50,6 +49,7 @@ class LoginView extends React.Component {
         const token = auth.getAuthToken();
         call = api.post('/token', { keyCloakToken: token });
       } else { // FOR TESTING ONLY
+        console.warn('Authentication server is currently disabled by the client');
         call = api.post('/token', { username: process.env.USER, password: process.env.PASSWORD });
       }
       this.controllers.push(call);
@@ -59,7 +59,7 @@ class LoginView extends React.Component {
       } catch (error) {
         // redirect to the error page
         console.error(error);
-        history.push('/error', { error });
+        history.push('/error', { error: error.toJSON() });
         return;
       }
     }

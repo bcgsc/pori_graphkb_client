@@ -8,7 +8,6 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
-import * as jc from 'json-cycle';
 import { boundMethod } from 'autobind-decorator';
 
 import { withKB } from '../../components/KBContext';
@@ -44,8 +43,8 @@ class EditStatementViewBase extends Component {
     const { match, schema } = this.props;
     const { rid } = match.params;
     const { routeName } = schema.get('Statement');
-    const response = await api.get(`${routeName}/${rid}?neighbors=3`);
-    const node = jc.retrocycle(response).result;
+    const call = api.get(`${routeName}/${rid}?neighbors=3`);
+    const { result: node } = await call.request();
     this.setState({ node });
   }
 

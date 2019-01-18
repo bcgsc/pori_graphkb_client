@@ -4,10 +4,7 @@ const DEFAULT_URL = process.env.NODE_ENV === 'local'
 
 
 export default {
-  DISABLE_AUTH: (process.env.NODE_ENV === 'local'
-    ? true
-    : process.env.DISABLE_AUTH === '1'
-  ),
+  DISABLE_AUTH: process.env.DISABLE_AUTH === '1',
   API_BASE_URL: process.env.API_BASE_URL || DEFAULT_URL,
   KEYS: {
     KB_TOKEN: 'kbToken',

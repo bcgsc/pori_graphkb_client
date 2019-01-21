@@ -1,13 +1,16 @@
-@import "../../globals";
+@import '../../globals';
 
 .add-form-wrapper {
   @include view-wrapper;
+
   .form-header {
     @include page-header;
+
     .form-cancel-btn {
       display: flex;
       justify-items: center;
       margin: auto 0 auto auto;
+
       button {
         margin-left: auto;
       }

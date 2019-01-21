@@ -1,20 +1,24 @@
-@import "../../globals";
+@import '../../globals';
 
-$lightened-secondary: rgba($md-secondary-color, 0.2);
+$lightened-secondary: rgba($md-secondary-color, .2);
+
 .qbv {
-  display: flex;
   @include view-wrapper;
+  display: flex;
+
   .qbv-header {
     @include page-header;
+
     > svg {
-      margin-top: auto;
       margin-bottom: auto;
       margin-right: 1rem;
+      margin-top: auto;
     }
   }
+
   .qbv-body {
-    $line-height: 32px;
     @include paper;
+    $line-height: 32px;
     display: flex;
 
     .qbv-endpoint {
@@ -23,12 +27,13 @@ $lightened-secondary: rgba($md-secondary-color, 0.2);
 
     .qbv-json {
       box-sizing: border-box;
-      overflow: auto;
-      width: 100%;
       margin-top: 1rem;
+      overflow: auto;
       position: relative;
+      width: 100%;
     }
   }
+
   .qbv-action-btns {
     @include paper;
     display: flex;
@@ -37,6 +42,7 @@ $lightened-secondary: rgba($md-secondary-color, 0.2);
       margin-left: auto;
     }
   }
+
   .qbv-column-flex {
     flex-direction: column;
   }
@@ -44,14 +50,17 @@ $lightened-secondary: rgba($md-secondary-color, 0.2);
 
 .qbv-swagger-iframe {
   height: 80vh;
+
   .qbv-help-blurb {
     display: flex;
     padding: 1rem;
+
     > svg {
       margin: auto;
       margin-right: 0;
     }
   }
+
   iframe {
     height: 100%;
   }

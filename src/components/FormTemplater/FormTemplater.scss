@@ -2,27 +2,32 @@
 
 .form-templater-group-wrapper {
   width: 100%;
+
   .form-templater-row-grid {
-    display: grid;
-    grid-template-rows: 1fr;
-    grid-template-columns: repeat(2, calc(50% - 0.875rem));
-    grid-column-gap: 1.75rem;
-    width: 100%;
     box-sizing: border-box;
+    display: grid;
+    grid-column-gap: 1.75rem;
+    grid-template-columns: repeat(2, calc(50% - 0.875rem));
+    grid-template-rows: 1fr;
+    width: 100%;
+
     @media (max-width: $breakpoint-mobile) {
-      grid-template-columns: 1fr;
-      grid-row-gap: 1rem;
       display: block;
+      grid-row-gap: 1rem;
+      grid-template-columns: 1fr;
     }
+
     > * {
-      padding: 0;
       display: inline-block;
+      padding: 0;
+
       > * {
-        text-overflow: ellipsis;
         overflow: hidden;
+        text-overflow: ellipsis;
+
         label {
-          width: 100%;
           white-space: nowrap;
+          width: 100%;
         }
       }
     }
@@ -30,24 +35,30 @@
 }
 
 .form-templater-item {
+
   .form-templater-autosearch {
     display: flex;
     width: 100%;
   }
+
   .form-templater-help-icon {
     margin: auto;
     margin-left: 24px;
   }
+
   .form-templater-radio-wrapper {
     display: flex;
+
     > fieldset {
       margin-right: auto;
     }
   }
+
   .radio {
-    margin-top: 28px;
     margin-right: 0;
+    margin-top: 28px;
   }
+
   .form-templater-embedded-selector {
     display: flex;
     flex-grow: 1;

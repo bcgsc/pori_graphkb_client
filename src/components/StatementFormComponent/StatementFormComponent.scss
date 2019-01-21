@@ -2,9 +2,10 @@
 
 .statement-form-wrapper {
   display: flex;
+  margin-bottom: 1rem;
   position: relative;
   width: 100%;
-  margin-bottom: 1rem;
+  $form-bias: 50%;
   @media (max-width: $breakpoint-lg) {
     flex-direction: column;
     grid-column-end: 2;
@@ -12,21 +13,23 @@
   @media (max-width: $breakpoint-mobile) {
     margin-bottom: 0;
   }
-  $form-bias: 50%;
+
   .statement-form-node {
+    box-sizing: border-box;
     display: flex;
+    flex: 0 0 calc(#{$form-bias} - .5rem);
     flex-direction: column;
-    flex: 0 0 calc(#{$form-bias} - 0.5rem);
     max-height: 100%;
     min-height: 800px;
-    box-sizing: border-box;
     @media (max-width: $breakpoint-lg) {
       min-height: 0;
     }
+
     .statement-preview {
       @include paper;
       word-break: break-word;
     }
+
     .statement-form-params {
       @include paper;
       flex-grow: 1;
@@ -36,39 +39,41 @@
       }
     }
   }
+
   .statement-form-relationships {
     @include paper;
-    position: absolute;
-    left: calc(#{$form-bias} + 0.5rem);
-    top: 0;
     bottom: 0;
-    right: 0;
-    overflow: auto;
     display: flex;
     flex-direction: column;
+    left: calc(#{$form-bias} + 0.5rem);
+    overflow: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
     transition: all 0.3s;
     @media (max-width: $breakpoint-lg) {
-      position: relative;
       left: unset;
       margin-top: 1rem;
+      position: relative;
     }
     @media (max-width: $breakpoint-mobile) {
-      margin: 0;
       box-shadow: none;
+      margin: 0;
+
       > div {
         border-radius: 0;
         box-shadow: none;
       }
     }
-    display: flex;
-    flex-direction: column;
   }
 }
+
 .statement-form-btns {
+  @include paper;
   display: flex;
   flex-direction: row-reverse;
-  @include paper;
 }
+
 #statement-delete-btn {
   margin-right: auto;
 }

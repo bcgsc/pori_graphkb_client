@@ -1,13 +1,17 @@
-@import "../../globals";
+@import '../../globals';
+
 .variant-wrapper {
   @include view-wrapper;
+
   .variant-headline {
     @include page-header;
+
     .variant-cancel-btn {
+      display: flex;
       margin: auto;
       margin-right: 0;
-      display: flex;
-      button{
+
+      button {
         margin-left: auto;
       }
     }

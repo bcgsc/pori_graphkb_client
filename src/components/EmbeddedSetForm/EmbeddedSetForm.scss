@@ -3,22 +3,28 @@
 .embedded-list-wrapper {
   display: flex;
   width: inherit;
+
   .embedded-list-textfield {
     flex: 1;
   }
+
   .embedded-list-field {
     flex-wrap: wrap;
+
     .embedded-list-input {
-      width: auto;
       flex-grow: 1;
+      width: auto;
     }
+
     .embedded-list-chip {
       margin-bottom: 4px;
       margin-right: 2px;
     }
+
     .deleted-chip {
       background-color: lighten($md-warn, 25%);
     }
+
     .deleted-chip:focus {
       background-color: lighten($md-warn, 22%);
     }

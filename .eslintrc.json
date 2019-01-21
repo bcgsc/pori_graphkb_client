@@ -31,7 +31,8 @@
         "no-underscore-dangle": "off",
         "import/prefer-default-export": "warn",
         "no-console": ["error", { "allow": ["warn", "error"] }],
-        "babel/semi": "warn"
+        "babel/semi": "warn",
+        "max-len": ["warn", {"ignorePattern": "^\\s*\\*\\s*@(property|param)"}]
     },
     "env": {
         "browser": true,

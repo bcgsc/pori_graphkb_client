@@ -1,29 +1,30 @@
 @import "../../globals";
-$relationshipBreakpoint: 1586px;
 $mediumBreakpoint: 500px;
+$relationshipBreakpoint: 1586px;
+
 .node-form-wrapper {
   .form-grid {
     flex-grow: 1;
     @media (max-width: $breakpoint-mobile) {
       .flexbox > div {
-        margin: 0;
-        box-shadow: none;
-        border-radius: 0;
         border-bottom: 1px solid rgba(0, 0, 0, 0.26);
+        border-radius: 0;
+        box-shadow: none;
+        margin: 0;
       }
     }
     @media (max-width: $breakpoint-lg) {
-      grid-template-rows: auto;
       grid-template-columns: 100%;
+      grid-template-rows: auto;
     }
 
     .flexbox {
+      display: flex;
       grid-column-end: 3;
       grid-column-start: 1;
-      display: flex;
+      margin-bottom: 1rem;
       position: relative;
       width: 100%;
-      margin-bottom: 1rem;
       @media (max-width: $breakpoint-lg) {
         flex-direction: column;
         grid-column-end: 2;
@@ -32,31 +33,36 @@ $mediumBreakpoint: 500px;
         margin-bottom: 0;
       }
       $form-bias: 50%;
+
       .param-section {
-        flex: 0 0 calc(#{$form-bias} - 0.5rem);
-        padding: 20px;
-        padding-bottom: 40px;
+        box-sizing: border-box;
+        flex: 0 0 calc(#{$form-bias} - .5rem);
         max-height: 100%;
         min-height: 750px;
-        box-sizing: border-box;
+        padding: 20px;
+        padding-bottom: 40px;
+
         .class-select {
           margin-top: 12px;
         }
       }
+
       .forms-lists {
-        position: absolute;
-        left: calc(#{$form-bias} + 0.5rem);
-        top: 0;
         bottom: 0;
-        right: 0;
-        overflow: auto;
         display: flex;
         flex-direction: column;
-        transition: all 0.3s;
+        left: calc(#{$form-bias} + .5rem);
+        overflow: auto;
+        padding: 24px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        transition: all .3s;
+
         @media (max-width: $breakpoint-lg) {
-          position: relative;
           left: unset;
           margin-top: 8px;
+          position: relative;
         }
         @media (max-width: $breakpoint-mobile) {
           padding: 0;
@@ -65,19 +71,19 @@ $mediumBreakpoint: 500px;
             box-shadow: none;
           }
         }
-        padding: 24px;
-        display: flex;
-        flex-direction: column;
+
       }
     }
+
     .form-btns {
-      grid-column-start: 1;
-      grid-column-end: 3;
       display: flex;
+      grid-column-end: 3;
+      grid-column-start: 1;
       padding: 16px;
       @media (max-width: $breakpoint-lg) {
         grid-column-end: 2;
       }
+
       button {
         display: flex;
         margin: auto 0;
@@ -89,24 +95,26 @@ $mediumBreakpoint: 500px;
 .input-wrapper {
   display: flex;
   width: inherit;
+
   .text-input {
     flex: 1;
   }
 }
 
 #submit-btn {
-  margin-left: auto;
   flex-shrink: 1;
+  margin-left: auto;
 }
 
 #delete-btn {
-  margin-right: auto;
   flex-shrink: 1;
+  margin-right: auto;
 }
 
 #add-btn-cell {
-  padding: 0;
   display: flex;
+  padding: 0;
+
   button {
     margin: auto;
   }
@@ -114,16 +122,18 @@ $mediumBreakpoint: 500px;
 
 #relationship-add {
   background-color: $background-light;
-  position: sticky;
   bottom: 0;
+  position: sticky;
+
   td {
-    position: sticky;
-    bottom: 0;
-    padding-bottom: 24px;
     background-color: $background-light;
     border: none;
+    bottom: 0;
     height: 48px;
+    padding-bottom: 24px;
+    position: sticky;
   }
+
   .relationship-in {
     transform: rotate(180deg);
   }

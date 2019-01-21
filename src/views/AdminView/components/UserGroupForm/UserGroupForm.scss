@@ -1,24 +1,30 @@
 @import '../../../../globals';
+
 .admin-user-groups {
   @include paper;
+
   .editedGroup {
     h3 {
       animation: fade-in(0.1s);
     }
   }
+
   .user-group-body {
     flex-direction: column;
     padding-top: 0;
+
     .user-group-toolbar {
       display: flex;
       flex-direction: row-reverse;
       height: 68px;
+
       button {
         margin: auto 4px;
       }
+
       h3 {
-        margin: auto auto auto 0;
         animation: fade-in(0.1s);
+        margin: auto auto auto 0;
       }
     }
   }

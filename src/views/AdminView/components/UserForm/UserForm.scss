@@ -1,13 +1,14 @@
 @import "../../../../globals";
 
 .admin-users {
-  max-height: 720px;
   @include paper;
+  max-height: 720px;
 
   .users-btns {
-    margin: 8px 0;
     display: flex;
     flex-direction: row-reverse;
+    margin: 8px 0;
+
     button {
       margin: 0 8px;
     }

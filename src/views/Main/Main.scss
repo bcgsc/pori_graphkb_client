@@ -1,98 +1,115 @@
-@import "../../globals";
+@import '../../globals';
 
 $user-menu-width: 124px;
 $transition-speed: 0.3s;
 $drawer-width: 240px;
 $closed-drawer-width: 56px;
 $drawer-breakpoint: 1024px;
+
 .Main {
   .banner {
-    height: $banner-height;
+    color: white;
     flex-direction: row;
-    justify-content: center;
-    transition: all #{$transition-speed};
     float: right;
-    z-index: calc(#{$drawer-z-index} + 3);
+    height: $banner-height;
+    justify-content: center;
     left: 0;
     right: 0;
-    color: white;
+    transition: all #{$transition-speed};
     width: auto;
+    z-index: calc(#{$drawer-z-index} + 3);
+
     .appbar-title {
       display: flex;
-      max-width: 100%;
       margin: auto 16px;
-      transition: all 0.5s;
+      max-width: 100%;
       overflow: hidden;
+      transition: all .5s;
       white-space: nowrap;
+
       @media (max-width: $breakpoint-mobile) {
         max-width: 0;
       }
+
       * {
         color: white;
         display: inline-block;
       }
+
       span {
-        margin-left: 0.5rem;
+        margin-left: .5rem;
       }
     }
+
     .appbar-btn {
+      animation: fade-in(.2s);
       margin: auto 4px;
-      animation: fade-in(0.2s);
     }
+
     .appbar-btn:disabled {
       color: white;
     }
+
     .user-dropdown {
-      float: right;
-      margin: auto;
-      margin-right: 2%;
-      height: 100%;
       display: flex;
       flex-direction: column;
+      float: right;
+      height: 100%;
       justify-content: center;
+      margin: auto;
+      margin-right: 2%;
       min-width: $user-menu-width;
+
       div {
         margin: auto 0;
       }
+
       .user-btn {
         color: white;
+
         svg {
           font-size: 32px;
           margin-right: 4px;
         }
+
         span aside {
           color: white;
         }
       }
     }
   }
+
   .drawer-logo {
     display: flex;
     overflow: hidden;
     white-space: nowrap;
+
     button {
       margin: auto;
       margin-left: 8px;
     }
   }
+
   .user-menu {
     width: $user-menu-width;
   }
+
   .content {
-    overflow-y: auto;
-    overflow-x: hidden;
-    position: absolute;
-    top: $banner-height;
-    left: $closed-drawer-width;
-    right: 0;
-    margin: auto;
-    bottom: 0;
     background-color: rgba(0, 0, 0, 0.03);
+    bottom: 0;
+    left: $closed-drawer-width;
+    margin: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: absolute;
+    right: 0;
+    top: $banner-height;
     transition: all #{$transition-speed};
     @media (max-width: $drawer-breakpoint) {
       left: 0;
     }
   }
+
   .drawer-shift {
     left: $drawer-width;
     overflow: hidden;
@@ -100,53 +117,57 @@ $drawer-breakpoint: 1024px;
       left: 0;
     }
   }
+
   .router-outlet {
     -webkit-tap-highlight-color: transparent;
-    outline: none;
     border: none;
-    text-decoration: none;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 5px;
     bottom: 0;
+    left: 0;
+    outline: none;
+    position: absolute;
+    right: 0;
+    text-decoration: none;
+    top: 5px;
   }
+
   .drawer {
-    width: $drawer-width;
-    z-index: calc(#{$drawer-z-index} + 4);
-    transition: width #{$transition-speed};
     animation: fade-in();
     display: flex;
     flex-direction: column;
     height: 100vh;
+    transition: width #{$transition-speed};
+    width: $drawer-width;
+    z-index: calc(#{$drawer-z-index} + 4);
     @media (max-width: $breakpoint-mobile) {
       width: calc(100vw - 56px);
     }
 
     .drawer-links {
-      position: relative;
       bottom: 56px;
-      top: 0;
       flex-grow: 1;
+      position: relative;
+      top: 0;
     }
     .drawer-footer {
-      position: sticky;
       background: $background-light;
       bottom: 0;
-      left: 0;
-      right: 0;
-      top: auto;
       flex-shrink: 0;
       height: 57px;
+      left: 0;
+      position: sticky;
+      right: 0;
+      top: auto;
+
       li {
-        height: 56px;
         box-sizing: border-box;
-        white-space: nowrap;
-        padding: 12px 16px;
+        height: 56px;
         overflow: hidden;
+        padding: 12px 16px;
+        white-space: nowrap;
       }
     }
   }
+
   .drawer-closed {
     width: $closed-drawer-width;
     z-index: calc(#{$drawer-z-index} + 2);
@@ -154,23 +175,27 @@ $drawer-breakpoint: 1024px;
       width: 0;
     }
   }
+
   .no-drawer {
     left: 0;
   }
 }
+
 #bcc-logo {
   width: 24px;
   height: 24px;
 }
+
 #bcc-label {
   height: 32px;
 }
+
 .user-menu {
   width: $user-menu-width;
 }
 
 ::selection {
+  -webkit-text-fill-color: white;
   background: rgba($md-primary-color, 0.8);
   color: white;
-  -webkit-text-fill-color: white;
 }

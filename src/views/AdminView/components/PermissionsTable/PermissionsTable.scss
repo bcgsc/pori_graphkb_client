@@ -1,20 +1,22 @@
 @import "../../../../globals";
 
 .alternating-table {
+
   tr:nth-child(odd) {
     background: #e8e8e8;
   }
 }
 
 #sticky-row {
-  position: sticky;
-  top: -1px;
   background: $background-light;
   border: none;
+  position: sticky;
+  top: -1px;
+
   th {
+    background: $background-light;
     position: sticky;
     top: -1px;
-    background: $background-light;
     z-index: 1;
   }
 }

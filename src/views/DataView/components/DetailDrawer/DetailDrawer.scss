@@ -4,48 +4,56 @@
 $breakpoint-sm: 375px;
 
 #detail-drawer {
+
   .detail-root {
-    word-break: break-word;
-    width: $detail-drawer-width;
     max-width: $detail-drawer-max-width;
     transition: all #{$detail-drawer-transition};
+    width: $detail-drawer-width;
+    word-break: break-word;
     z-index: $drawer-z-index;
     @media (max-width: $breakpoint-mobile) {
       width: $detail-drawer-width-md;
     }
     @media (max-width: $breakpoint-sm) {
-      width: 100vw;
       min-width: 320px;
+      width: 100vw;
     }
+
     .detail-content {
       height: calc(100vh - #{$banner-height} - #{$toolbar-height});
       overflow: auto;
       position: absolute;
       top: $banner-height;
       width: 100%;
+
       .detail-relationships-subheader {
-        z-index: 1;
         background: $background-light;
+        z-index: 1;
       }
     }
+
     .detail-identifiers {
       display: grid;
       grid-template-columns: 164px 24px auto;
       @media (max-width: $breakpoint-mobile) {
         grid-template-columns: 144px 8px auto;
       }
+
       .detail-identifiers-nested {
         margin-left: 32px;
       }
+
       > *:nth-child(even) {
         grid-column-start: 3;
         margin: auto 0;
       }
     }
+
     .detail-li-text {
       padding: 0;
     }
   }
+
   .detail-closed {
     width: 0;
     @media (max-width: $breakpoint-sm) {
@@ -60,22 +68,26 @@ $breakpoint-sm: 375px;
 
 .detail-heading {
   padding-top: 20px;
+
   .detail-edit-btn {
-    text-align: center;
     padding: 16px;
+    text-align: center;
   }
+
   .detail-headline {
     display: flex;
-    padding: 0 16px;
     flex-shrink: 0;
+    padding: 0 16px;
+
     > div {
       margin-right: auto;
     }
+
     > button {
       flex-shrink: 0;
       margin: auto;
-      margin-right: 0;
       margin-left: 8px;
+      margin-right: 0;
     }
   }
 }
@@ -88,10 +100,12 @@ $breakpoint-sm: 375px;
       margin-left: 32px;
     }
   }
+
   hr:last-child {
     display: none;
   }
 }
+
 .detail-important,
 .detail-other,
 .detail-relationships {

@@ -1,36 +1,40 @@
 @import "../../globals";
 
 .search-wrapper {
-  min-width: 500px;
-  max-width: 60vw;
-  position: absolute;
+  border: 1px solid rgba(0, 0, 0, .2);
+  border-radius: 4px;
   left: 0;
+  margin: auto;
+  max-width: 60vw;
+  min-width: 500px;
+  padding-bottom: 16px;
+  position: absolute;
   right: 0;
   top: 35vh;
-  margin: auto;
-  border-radius: 4px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  padding-bottom: 16px;
+
   @media (max-width: $breakpoint-mobile) {
     left: 16px;
-    right: 16px;
     max-width: unset;
     min-width: unset;
+    right: 16px;
   }
+
   .search-bar {
-    width: 100%;
+    box-sizing: border-box;
     display: flex;
     padding: 16px;
-    box-sizing: border-box;
+    width: 100%;
+
     .main-search {
-      flex-grow: 1;
       -webkit-tap-highlight-color: transparent;
       border: none;
+      flex-grow: 1;
       outline: none;
     }
 
     @media (max-width: $breakpoint-mobile) {
       flex-direction: column;
+
       .main-search {
         width: 100%;
       }

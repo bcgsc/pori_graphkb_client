@@ -2,25 +2,29 @@
 
 
 .error-wrapper {
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
   width: 100%;
+
   a {
-    text-decoration: none;
     color: $md-secondary-color;
+    text-decoration: none;
   }
+
   .stacktrace {
-    min-width: $readable-min;
-    max-width: $readable-max;
     @include code-block;
+    max-width: $readable-max;
+    min-width: $readable-min;
   }
 
   h2 {
     color: $md-warn;
     margin-top: 40px;
   }
-  > h2, > h3 {
+
+  > h2,
+  > h3 {
     margin-bottom: 20px;
   }
 }

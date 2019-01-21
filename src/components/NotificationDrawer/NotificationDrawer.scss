@@ -2,15 +2,17 @@
 
 .notification-drawer {
   @include paper;
+  box-sizing: border-box;
   display: flex;
   width: 100%;
-  box-sizing: border-box;
+
   .form-linear-progress {
-    flex-grow: 1;
     display: flex;
-    justify-content: center;
     flex-direction: column;
+    flex-grow: 1;
+    justify-content: center;
   }
+
   button {
     color: white;
     margin-left: 8px;

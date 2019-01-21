@@ -1,13 +1,15 @@
-@import "../../../../../globals";
+@import '../../../../../globals';
 
 .expand-links-types {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 }
+
 .expand-links-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
   grid-column-gap: 8px;
+  grid-template-columns: repeat(3, 1fr);
+
   .expand-links-link {
     display: inline-flex;
   }
@@ -17,6 +19,7 @@
   .expand-links-types {
     grid-template-columns: repeat(2, 1fr);
   }
+
   .expand-links-list {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -29,14 +32,15 @@
 @media (max-width: $breakpoint-mobile) {
   .expansion-root {
     .expansion-dialog {
+      border-radius: 0;
+      height: 100vh;
       margin: 0;
       max-height: 100vh;
-      height: 100vh;
-      border-radius: 0;
     }
 
     .expand-links-types {
       grid-template-columns: repeat(1, 1fr);
+
       > li {
         button {
           margin: auto;

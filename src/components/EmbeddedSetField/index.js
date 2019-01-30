@@ -10,7 +10,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import AddIcon from '@material-ui/icons/Add';
 import RefreshIcon from '@material-ui/icons/Refresh';
 
-import './EmbeddedSetForm.scss';
+import './index.scss';
 
 
 /**
@@ -23,12 +23,12 @@ import './EmbeddedSetForm.scss';
  * @property {boolean} props.error - TextField error flag.
  * @property {boolean} props.disabled - Disabled flag.
  */
-class EmbeddedSetForm extends Component {
+class EmbeddedSetField extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     list: PropTypes.arrayOf(PropTypes.string),
     label: PropTypes.string,
-    name: PropTypes.string,
+    name: PropTypes.string.isRequired,
     error: PropTypes.bool,
     disabled: PropTypes.bool,
   };
@@ -36,7 +36,6 @@ class EmbeddedSetForm extends Component {
   static defaultProps = {
     list: [],
     label: '',
-    name: '',
     error: false,
     disabled: false,
   };
@@ -89,7 +88,7 @@ class EmbeddedSetForm extends Component {
       onChange,
       name,
     } = this.props;
-    if (list.indexOf(val) !== -1) {
+    if (list.includes(val)) {
       list.splice(list.indexOf(val), 1);
       onChange({ target: { name, value: list } });
       if (initList && initList.includes(val)) {
@@ -145,7 +144,7 @@ class EmbeddedSetForm extends Component {
           deleteIcon={<CancelIcon />}
           onDelete={() => this.handleDelete(s)}
           key={s}
-          className="embedded-list-chip"
+          className="embedded-list__chip"
         />
       ));
 
@@ -155,13 +154,13 @@ class EmbeddedSetForm extends Component {
         deleteIcon={<RefreshIcon />}
         onDelete={() => this.handleUndo(s)}
         key={s}
-        className="embedded-list-chip deleted-chip"
+        className="embedded-list__chip--deleted"
       />
     )));
     return (
-      <div className="embedded-list-wrapper">
+      <div className="embedded-list">
         <TextField
-          className="embedded-list-textfield"
+          className="embedded-list__textfield"
           id={`${label.toLowerCase()}-temp`}
           label={label}
           name={label.toLowerCase()}
@@ -179,15 +178,17 @@ class EmbeddedSetForm extends Component {
           }}
           InputProps={{
             classes: {
-              root: 'embedded-list-field',
+              root: 'embedded-list__field',
             },
             inputProps: {
-              className: 'embedded-list-input',
+              className: 'embedded-list__input',
             },
-            startAdornment: embeddedList.length > 0 ? embeddedList : undefined,
+            startAdornment: embeddedList.length > 0
+              ? embeddedList
+              : undefined,
           }}
         />
-        <div className="embedded-list-btns">
+        <div className="embedded-list__btns">
           <IconButton
             color="primary"
             onClick={this.handleAdd}
@@ -201,4 +202,4 @@ class EmbeddedSetForm extends Component {
   }
 }
 
-export default EmbeddedSetForm;
+export default EmbeddedSetField;

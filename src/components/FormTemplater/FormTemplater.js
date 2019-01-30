@@ -19,7 +19,7 @@ import './FormTemplater.scss';
 import AutoSearchSingle from '../AutoSearchSingle';
 import AutoSearchMulti from '../AutoSearchMulti';
 import ResourceSelectComponent from '../ResourceSelectComponent';
-import EmbeddedSetForm from '../EmbeddedSetForm';
+import EmbeddedSetField from '../EmbeddedSetField';
 import util from '../../services/util';
 
 /**
@@ -220,7 +220,7 @@ const FormTemplater = (props) => {
       );
     } else if (type === 'embeddedset' && !disableLists) {
       field = (
-        <EmbeddedSetForm
+        <EmbeddedSetField
           list={model[name]}
           onChange={onChange}
           name={name}

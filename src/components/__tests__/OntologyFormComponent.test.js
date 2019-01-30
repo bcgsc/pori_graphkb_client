@@ -107,8 +107,8 @@ describe('<OntologyFormComponent />', () => {
     wrapper.find('input#subsets-temp').simulate('change', { target: { name: 'subsets', value: 'hello' } });
     wrapper.find('input#subsets-temp')
       .simulate('keydown', { keyCode: 13 });
-    wrapper.find('.embedded-list-chip svg').simulate('click');
-    expect(wrapper.find('.embedded-list-chip')).toHaveLength(0);
+    wrapper.find('.embedded-list__chip svg').simulate('click');
+    expect(wrapper.find('.embedded-list__chip')).toHaveLength(0);
   });
 
   it('displays right chips + classes after subset delete undo', () => {
@@ -122,12 +122,15 @@ describe('<OntologyFormComponent />', () => {
         edgeTypes={['AliasOf']}
       />,
     );
-    expect(wrapper.find('.embedded-list-chip svg')).toHaveLength(1);
-    wrapper.find('.embedded-list-chip svg').simulate('click');
-    expect(wrapper.find('.embedded-list-chip svg')).toHaveLength(1);
-    expect(wrapper.find('.deleted-chip svg')).toHaveLength(1);
-    wrapper.find('.embedded-list-chip svg').simulate('click');
-    expect(wrapper.find('.deleted-chip')).toHaveLength(0);
+    expect(wrapper.find('.embedded-list__chip svg')).toHaveLength(1);
+    // delete the current chip
+    wrapper.find('.embedded-list__chip svg').simulate('click');
+    expect(wrapper.find('.embedded-list__chip--deleted svg')).toHaveLength(1);
+    expect(wrapper.find('.embedded-list__chip svg')).toHaveLength(0);
+    // restore the current chip
+    wrapper.find('.embedded-list__chip--deleted svg').simulate('click');
+    expect(wrapper.find('.embedded-list__chip--deleted svg')).toHaveLength(0);
+    expect(wrapper.find('.embedded-list__chip svg')).toHaveLength(1);
   });
 
   it('validation and submission calls correct handlers', () => {

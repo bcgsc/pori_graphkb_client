@@ -19,7 +19,7 @@ import {
 } from '@material-ui/core';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 
-import KBContext from '../KBContext';
+import { KBContext } from '../KBContext';
 import './index.scss';
 
 /**

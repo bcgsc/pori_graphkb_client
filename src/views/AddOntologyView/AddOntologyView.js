@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 
 import './AddOntologyView.scss';
-import { withKB } from '../../components/KBContext';
+import { KBContext } from '../../components/KBContext';
 import OntologyFormComponent from '../../components/OntologyFormComponent';
 import api from '../../services/api';
 import util from '../../services/util';
@@ -23,12 +23,12 @@ import util from '../../services/util';
  *
  * @property {object} props
  * @property {Object} props.history - history state object.
- * @property {Object} props.schema - Knowledgebase schema object
  */
 class AddOntologyViewBase extends Component {
+  static contextType = KBContext;
+
   static propTypes = {
     history: PropTypes.object.isRequired,
-    schema: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -51,7 +51,7 @@ class AddOntologyViewBase extends Component {
    */
   @boundMethod
   async handleSubmit(form, relationships) {
-    const { schema } = this.props;
+    const { schema } = this.context;
 
     const properties = schema.getProperties(form);
     const { routeName } = schema.get(form);
@@ -81,7 +81,7 @@ class AddOntologyViewBase extends Component {
   }
 
   render() {
-    const { schema } = this.props;
+    const { schema } = this.context;
     const { is409 } = this.state;
 
     return (
@@ -111,16 +111,5 @@ class AddOntologyViewBase extends Component {
     );
   }
 }
-
-const AddOntologyView = withKB(AddOntologyViewBase);
-
-/**
- * Export consumer component and regular component for testing.
- */
-export {
-  AddOntologyView,
-  AddOntologyViewBase,
-};
-
 
 export default AddOntologyViewBase;

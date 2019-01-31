@@ -3,26 +3,22 @@
  */
 import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import {
   Paper,
   Typography,
 } from '@material-ui/core';
 
 import './AdminView.scss';
-import { withKB } from '../../components/KBContext';
+import { KBContext } from '../../components/KBContext';
 import { UserForm, UserGroupForm } from './components';
 import api from '../../services/api';
 import util from '../../services/util';
 
 /**
  * View for editing or adding database users.
- * @property {Object} props.schema - Knowledgebase schema object.
  */
-class AdminViewBase extends Component {
-  static propTypes = {
-    schema: PropTypes.object.isRequired,
-  };
+class AdminView extends Component {
+  static contextType = KBContext;
 
   static initializeUserGroups(userGroups) {
     const newUserGroups = [];
@@ -163,7 +159,7 @@ class AdminViewBase extends Component {
       users,
       userGroups,
     } = this.state;
-    const { schema } = this.props;
+    const { schema } = this.context;
 
     if (!users) return null;
 
@@ -191,12 +187,4 @@ class AdminViewBase extends Component {
   }
 }
 
-const AdminView = withKB(AdminViewBase);
-
-/**
- * Export consumer component and regular component for testing.
- */
-export {
-  AdminView,
-  AdminViewBase,
-};
+export default AdminView;

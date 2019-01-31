@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 
 import './EditOntologyView.scss';
-import { withKB } from '../../components/KBContext';
+import { KBContext } from '../../components/KBContext';
 import OntologyFormComponent from '../../components/OntologyFormComponent';
 import api from '../../services/api';
 import util from '../../services/util';
@@ -26,13 +26,13 @@ const { DEFAULT_NEIGHBORS } = config;
  *
  * @property {Object} props.match - Match object for extracting URL parameters.
  * @property {Object} props.history - Application routing history object.
- * @property {Object} props.schema - Knowledgebase schema object.
  */
-class EditOntologyViewBase extends Component {
+class EditOntologyView extends Component {
+  static contextType = KBContext;
+
   static propTypes = {
     match: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
-    schema: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -71,7 +71,7 @@ class EditOntologyViewBase extends Component {
    */
   @boundMethod
   async handleSubmit(form, relationships, originalNode) {
-    const { schema } = this.props;
+    const { schema } = this.context;
 
     try {
       // Edit the edges
@@ -98,7 +98,7 @@ class EditOntologyViewBase extends Component {
   @boundMethod
   async handleDelete() {
     const { node } = this.state;
-    const { schema } = this.props;
+    const { schema } = this.context;
     const { routeName } = schema.get(node);
     const call = api.delete(`${routeName}/${node['@rid'].slice(1)}`);
     this.controllers.push(call);
@@ -127,7 +127,7 @@ class EditOntologyViewBase extends Component {
     const {
       node,
     } = this.state;
-    const { schema } = this.props;
+    const { schema } = this.context;
 
     if (node) {
       return (
@@ -161,9 +161,4 @@ class EditOntologyViewBase extends Component {
   }
 }
 
-const EditOntologyView = withKB(EditOntologyViewBase);
-
-export {
-  EditOntologyView,
-  EditOntologyViewBase,
-};
+export default EditOntologyView;

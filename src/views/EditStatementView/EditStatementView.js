@@ -10,7 +10,7 @@ import {
 } from '@material-ui/core';
 import { boundMethod } from 'autobind-decorator';
 
-import { withKB } from '../../components/KBContext';
+import { KBContext } from '../../components/KBContext';
 import StatementFormComponent from '../../components/StatementFormComponent';
 import api from '../../services/api';
 import util from '../../services/util';
@@ -18,14 +18,14 @@ import util from '../../services/util';
 /**
  * Route for editing existing Statement records.
  * @property {object} props
- * @property {Object} props.schema - Knowledgebase db schema.
  * @property {Object} props.history - App routing history object.
  * @property {Object} props.match
  */
-class EditStatementViewBase extends Component {
+class EditStatementView extends Component {
+  static contextType = KBContext;
+
   static propTypes = {
     history: PropTypes.object.isRequired,
-    schema: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
   };
 
@@ -40,7 +40,9 @@ class EditStatementViewBase extends Component {
    * Makes call to api to retrieve statement with RID specified in url.
    */
   async componentDidMount() {
-    const { match, schema } = this.props;
+    const { match } = this.props;
+    const { schema } = this.context;
+
     const { rid } = match.params;
     const { routeName } = schema.get('Statement');
     const call = api.get(`${routeName}/${rid}?neighbors=3`);
@@ -54,7 +56,7 @@ class EditStatementViewBase extends Component {
   @boundMethod
   async handleDelete() {
     const { node } = this.state;
-    const { schema } = this.props;
+    const { schema } = this.context;
     const { routeName } = schema.get(node);
     const call = api.delete(`${routeName}/${node['@rid'].slice(1)}`);
     this.controllers.push(call);
@@ -80,7 +82,7 @@ class EditStatementViewBase extends Component {
    */
   @boundMethod
   async handleSubmit(form, relationships, originalRelationships) {
-    const { schema } = this.props;
+    const { schema } = this.context;
 
     try {
       const patchEdgesCall = api.patchEdges(originalRelationships || [], relationships, schema);
@@ -102,7 +104,7 @@ class EditStatementViewBase extends Component {
 
   render() {
     const { node } = this.state;
-    const { schema } = this.props;
+    const { schema } = this.context;
     return node && (
       <div className="edit-form-wrapper">
         <Paper className="form-header" elevation={4}>
@@ -131,9 +133,4 @@ class EditStatementViewBase extends Component {
   }
 }
 
-const EditStatementView = withKB(EditStatementViewBase);
-
-export {
-  EditStatementView,
-  EditStatementViewBase,
-};
+export default EditStatementView;

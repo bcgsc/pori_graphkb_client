@@ -20,7 +20,7 @@ import { Link } from 'react-router-dom';
 import { boundMethod } from 'autobind-decorator';
 
 import './QueryBuilderView.scss';
-import { withKB } from '../../components/KBContext';
+import { KBContext } from '../../components/KBContext';
 import { CodeInput } from './components';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent';
 import api from '../../services/api';
@@ -51,12 +51,12 @@ const parseJSON = (string) => {
  * of key-value pairs.
  *
  * @property {Object} props.history - Application history state object.
- * @property {Object} props.schema - Knowledgebase schema object.
  */
-class QueryBuilderViewBase extends Component {
+class QueryBuilderView extends Component {
+  static contextType = KBContext;
+
   static propTypes = {
     history: PropTypes.object.isRequired,
-    schema: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -139,7 +139,7 @@ class QueryBuilderViewBase extends Component {
   }
 
   render() {
-    const { schema } = this.props;
+    const { schema } = this.context;
     const {
       specOpen,
       specBlurbOpen,
@@ -235,12 +235,4 @@ class QueryBuilderViewBase extends Component {
 }
 
 
-const QueryBuilderView = withKB(QueryBuilderViewBase);
-
-/**
- * Export consumer component and regular component for testing.
- */
-export {
-  QueryBuilderView,
-  QueryBuilderViewBase,
-};
+export default QueryBuilderView;

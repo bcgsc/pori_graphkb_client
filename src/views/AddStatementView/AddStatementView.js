@@ -10,7 +10,7 @@ import {
   Typography,
 } from '@material-ui/core';
 
-import { withKB } from '../../components/KBContext';
+import { KBContext } from '../../components/KBContext';
 import StatementFormComponent from '../../components/StatementFormComponent';
 import api from '../../services/api';
 import util from '../../services/util';
@@ -20,12 +20,12 @@ import util from '../../services/util';
  *
  * @property {object} props
  * @property {Object} props.history - App routing history object.
- * @property {Object} props.schema - Knowledgebase db schema.
  */
-class AddStatementViewBase extends Component {
+class AddStatementView extends Component {
+  static contextType = KBContext;
+
   static propTypes = {
     history: PropTypes.object.isRequired,
-    schema: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -59,7 +59,7 @@ class AddStatementViewBase extends Component {
    */
   @boundMethod
   async handleSubmit(form, relationships) {
-    const { schema } = this.props;
+    const { schema } = this.context;
     const { routeName } = schema.get(form);
     const properties = schema.getProperties(form);
 
@@ -96,7 +96,7 @@ class AddStatementViewBase extends Component {
   }
 
   render() {
-    const { schema } = this.props;
+    const { schema } = this.context;
     const { is409 } = this.state;
     return (
       <div className="edit-form-wrapper">
@@ -125,9 +125,4 @@ class AddStatementViewBase extends Component {
   }
 }
 
-const AddStatementView = withKB(AddStatementViewBase);
-
-export {
-  AddStatementView,
-  AddStatementViewBase,
-};
+export default AddStatementView;

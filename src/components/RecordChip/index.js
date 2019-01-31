@@ -91,7 +91,7 @@ class RecordChip extends Component {
         onClose={this.handlePopoverClose}
       >
         <Card>
-          <CardContent className="record-chip-panel">
+          <CardContent className="record-chip__panel">
             <Typography variant="h6" gutterBottom>
               {id}
             </Typography>
@@ -142,7 +142,7 @@ class RecordChip extends Component {
         <Chip
           {...other}
           label={id}
-          className={`record-chip-root ${className || ''}`}
+          className={`record-chip__root ${className || ''}`}
           clickable
           avatar={<Avatar><AssignmentOutlinedIcon /></Avatar>}
           variant="outlined"

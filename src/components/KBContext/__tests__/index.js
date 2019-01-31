@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { KBContext, withKB } from '../KBContext/KBContext';
+import { KBContext, withKB } from '..';
 
 describe('KB Context provider and consumers', () => {
   it('consumer inherits value', () => {

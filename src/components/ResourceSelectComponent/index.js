@@ -70,6 +70,10 @@ function ResourceSelectComponent(props) {
         style={{
           fontSize: dense ? '0.8125rem' : '',
         }}
+        IconComponent={disabled
+          ? 'span'
+          : 'ArrowDropDownIcon'
+        }
       >
         {resourcesDisplay}
       </Select>

@@ -23,8 +23,13 @@ class Schema {
    * @param {Object} obj - Record to be parsed.
    */
   getPreview(obj) {
-    if (!obj['@class'] || !this.schema[obj['@class']]) return null;
-    return this.schema[obj['@class']].getPreview(obj);
+    try {
+      return this.schema[obj['@class']].getPreview(obj);
+    } catch (err) {}  // eslint-disable-line
+    try {
+      return obj['@rid'];
+    } catch (err) {} // eslint-disable-line
+    return obj;
   }
 
   /**
@@ -232,6 +237,7 @@ class Schema {
    * @param {Array.<string>} allColumns - current list of all collected properties.
    */
   collectOntologyProps(record, allColumns) {
+    console.log('collectOntologyProps', record);
     const properties = this.getProperties(record['@class']);
     properties.forEach((prop) => {
       if (!allColumns.includes(prop.name)) {

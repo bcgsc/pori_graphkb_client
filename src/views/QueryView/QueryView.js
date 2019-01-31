@@ -18,7 +18,7 @@ import SearchIcon from '@material-ui/icons/Search';
 
 import './QueryView.scss';
 import AutoSearchSingle from '../../components/AutoSearchSingle';
-import { withKB } from '../../components/KBContext';
+import { KBContext } from '../../components/KBContext';
 import util from '../../services/util';
 
 const KB_SEP_CHARS = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
@@ -30,12 +30,12 @@ const ENTER_KEYCODE = 13;
  * the DataView module to handle the query transaction.
  *
  * @property {Object} props.history - Application routing history object.
- * @property {Object} props.schema - Knowledgebase schema object.
  */
-class QueryViewBase extends Component {
+class QueryView extends Component {
+  static contextType = KBContext;
+
   static propTypes = {
     history: PropTypes.object.isRequired,
-    schema: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -99,7 +99,9 @@ class QueryViewBase extends Component {
       variant,
       queryable,
     } = this.state;
-    const { history, schema } = this.props;
+    const { history } = this.props;
+    const { schema } = this.context;
+
     if (str && queryable) {
       ['type', 'reference1', 'reference2'].forEach((k) => { variant[k] = { name: variant[k] }; });
       const payload = util.parsePayload(
@@ -132,7 +134,7 @@ class QueryViewBase extends Component {
    */
   @boundMethod
   handleChange(event) {
-    const { schema } = this.props;
+    const { schema } = this.context;
     const { name, value } = event.target;
     if (name && name.includes('.data') && value) {
       this.setState({ [name.split('.data')[0]]: schema.getPreview(value) });
@@ -253,9 +255,4 @@ class QueryViewBase extends Component {
   }
 }
 
-const QueryView = withKB(QueryViewBase);
-
-export {
-  QueryView,
-  QueryViewBase,
-};
+export default QueryView;

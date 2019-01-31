@@ -1,0 +1,13 @@
+.record-chip {
+  &__root {
+    > div {
+      margin-left: -1px;
+    }
+  }
+
+  &__panel {
+    max-width: 320px;
+    min-width: 200px;
+    padding: 16px;
+  }
+}

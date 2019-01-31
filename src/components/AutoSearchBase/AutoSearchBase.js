@@ -16,7 +16,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import Downshift from 'downshift';
 
 import './AutoSearchBase.scss';
-import RecordChip from '../RecordChip/RecordChip';
+import RecordChip from '../RecordChip';
 
 const PROGRESS_SPINNER_SIZE = 20;
 

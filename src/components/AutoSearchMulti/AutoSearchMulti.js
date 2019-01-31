@@ -20,7 +20,7 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import * as qs from 'querystring';
 import debounce from 'lodash.debounce';
 
-import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
+import ResourceSelectComponent from '../ResourceSelectComponent';
 import AutoSearchBase from '../AutoSearchBase';
 import FormTemplater from '../FormTemplater/FormTemplater';
 import api from '../../services/api';

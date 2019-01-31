@@ -13,7 +13,7 @@ import {
   Input,
 } from '@material-ui/core';
 
-import './ResourceSelectComponent.scss';
+import './index.scss';
 import util from '../../services/util';
 
 /**

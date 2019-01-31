@@ -10,7 +10,10 @@ const withKB = Child => props => (
     {kbValues => <Child schema={kbValues.schema} user={kbValues.user} {...props} />}
   </KBContext.Consumer>
 );
+
 export {
   KBContext,
   withKB,
 };
+
+export default KBContext;

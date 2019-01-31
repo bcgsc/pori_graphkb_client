@@ -19,6 +19,7 @@ import {
 } from '@material-ui/core';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 
+import KBContext from '../KBContext';
 import './RecordChip.scss';
 
 /**
@@ -27,16 +28,20 @@ import './RecordChip.scss';
  *
  * @property {obejct} props
  * @property {Object} props.record - record to be displayed in chip.
- * @property {Object} props.schema - KB schema object.
  */
 class RecordChip extends Component {
+  static contextType = KBContext;
+
   static propTypes = {
     record: PropTypes.object,
-    schema: PropTypes.object.isRequired,
+    onDelete: PropTypes.func,
+    className: PropTypes.string,
   };
 
   static defaultProps = {
     record: null,
+    onDelete: null,
+    className: '',
   };
 
   constructor(props) {
@@ -66,81 +71,84 @@ class RecordChip extends Component {
   render() {
     const {
       record,
-      schema,
+      onDelete,
+      className,
       ...other
     } = this.props;
+    const { schema } = this.context;
     const { anchorEl } = this.state;
 
     if (!record) return null;
 
-    let className = 'record-chip-root';
-    if (other.className) {
-      className = `${className} ${other.className}`;
-    }
     const id = schema ? schema.getPreview(record) : Object.values(record).find(v => typeof v === 'string');
+
+    const PopUpContent = () => (
+      <Popover
+        open={!!anchorEl}
+        anchorEl={anchorEl}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        onClose={this.handlePopoverClose}
+      >
+        <Card>
+          <CardContent className="record-chip-panel">
+            <Typography variant="h6" gutterBottom>
+              {id}
+            </Typography>
+            <Divider />
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell padding="checkbox">
+                    <Typography variant="body2">@class</Typography>
+                  </TableCell>
+                  <TableCell />
+                  <TableCell padding="checkbox">
+                    {record['@class']}
+                  </TableCell>
+                </TableRow>
+                {record['@rid'] && (
+                <TableRow>
+                  <TableCell padding="checkbox">
+                    <Typography variant="body2">@rid</Typography>
+                  </TableCell>
+                  <TableCell />
+                  <TableCell padding="checkbox">
+                    {record['@rid']}
+                  </TableCell>
+                </TableRow>
+                )}
+                {record.source && (
+                <TableRow>
+                  <TableCell padding="checkbox">
+                    <Typography variant="body2">Source</Typography>
+                  </TableCell>
+                  <TableCell />
+                  <TableCell padding="checkbox">
+                    {record.source && record.source.name}
+                  </TableCell>
+                </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </Popover>
+    );
 
     return (
       <>
-        <Popover
-          open={!!anchorEl}
-          anchorEl={anchorEl}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-          transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-          onClose={this.handlePopoverClose}
-        >
-          <Card>
-            <CardContent className="record-chip-panel">
-              <Typography variant="h6" gutterBottom>
-                {id}
-              </Typography>
-              <Divider />
-              <Table>
-                <TableBody>
-                  <TableRow>
-                    <TableCell padding="checkbox">
-                      <Typography variant="body2">@class</Typography>
-                    </TableCell>
-                    <TableCell />
-                    <TableCell padding="checkbox">
-                      {record['@class']}
-                    </TableCell>
-                  </TableRow>
-                  {record['@rid'] && (
-                    <TableRow>
-                      <TableCell padding="checkbox">
-                        <Typography variant="body2">@rid</Typography>
-                      </TableCell>
-                      <TableCell />
-                      <TableCell padding="checkbox">
-                        {record['@rid']}
-                      </TableCell>
-                    </TableRow>
-                  )}
-                  {record.source && (
-                    <TableRow>
-                      <TableCell padding="checkbox">
-                        <Typography variant="body2">Source</Typography>
-                      </TableCell>
-                      <TableCell />
-                      <TableCell padding="checkbox">
-                        {record.source && record.source.name}
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </Popover>
+        <PopUpContent />
         <Chip
           {...other}
           label={id}
-          className={className}
+          className={`record-chip-root ${className || ''}`}
           clickable
           avatar={<Avatar><AssignmentOutlinedIcon /></Avatar>}
           variant="outlined"
           color="primary"
           onClick={this.handlePopoverOpen}
+          onDelete={onDelete}
         />
       </>
     );

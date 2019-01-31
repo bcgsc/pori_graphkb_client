@@ -4,101 +4,17 @@
  */
 import * as jc from 'json-cycle';
 
-import auth from './auth';
-import util from './util';
-import config from '../static/config';
-import {
-  BadRequestError, AuthorizationError, AuthenticationError, RecordExistsError,
-} from './errors';
+import util from '../util';
+import config from '../../static/config';
+
+import ApiCall from './call';
+
 
 const {
   API_BASE_URL,
 } = config;
 const KB_SEP_CHARS = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
 
-/**
- * Appends global headers to outgoing request.
- */
-const getHeaders = () => {
-  const headers = new Headers();
-  headers.append('Content-type', 'application/json');
-  if (auth.getToken()) {
-    headers.append('Authorization', auth.getToken());
-  }
-  return headers;
-};
-
-
-class GraphKbApiCall {
-  /**
-   * Sends request to server, appending all global headers and handling responses and errors.
-   * @param {string} endpoint - URL endpoint
-   * @param {Object} init - Request properties.
-   */
-  constructor(endpoint, init) {
-    this.endpoint = endpoint;
-    this.init = init;
-    this.controller = null;
-  }
-
-  /**
-   * Cancel this fetch request
-   */
-  abort() {
-    if (this.controller) {
-      this.controller.abort();
-    }
-  }
-
-  /**
-   * Makes the fetch request and awaits the response or error. Also handles the redirect to error
-   * or login pages
-   */
-  async request() {
-    const initWithInterceptors = {
-      ...this.init,
-      headers: getHeaders(),
-    };
-    this.controller = new AbortController();
-    const { signal } = this.controller;
-    const request = new Request(API_BASE_URL + this.endpoint, initWithInterceptors);
-    let response;
-    try {
-      response = await fetch(request, { signal });
-    } catch (err) {
-      if (err.name === 'AbortError') {
-        return null;
-      }
-      throw err;
-    }
-    if (response.ok) {
-      return jc.retrocycle(response.json());
-    }
-
-    const { status, statusText, url } = response;
-
-    const error = {
-      ...(await response.json()),
-      status,
-      message: response.statusText,
-      url,
-    };
-    if (status === 401) {
-      auth.clearTokens();
-      throw new AuthenticationError(error);
-    }
-    if (status === 400) {
-      throw new BadRequestError(error);
-    }
-    if (status === 409) {
-      throw new RecordExistsError(error);
-    }
-    if (status === 403) {
-      throw new AuthorizationError(error);
-    }
-    throw new Error(`Unexpected Error [${status}]: ${statusText}`);
-  }
-}
 
 /**
  * Sends PATCH request to api.
@@ -110,7 +26,7 @@ const patch = (endpoint, payload) => {
     method: 'PATCH',
     body: jc.stringify(payload),
   };
-  return new GraphKbApiCall(endpoint, init);
+  return new ApiCall(endpoint, init);
 };
 
 /**
@@ -121,7 +37,7 @@ const get = (endpoint) => {
   const init = {
     method: 'GET',
   };
-  return new GraphKbApiCall(endpoint, init);
+  return new ApiCall(endpoint, init);
 };
 
 /**
@@ -135,7 +51,7 @@ const post = (endpoint, payload) => {
     body: jc.stringify(payload),
   };
 
-  return new GraphKbApiCall(endpoint, init);
+  return new ApiCall(endpoint, init);
 };
 
 /**
@@ -147,7 +63,7 @@ const del = (endpoint) => {
     method: 'DELETE',
   };
 
-  return new GraphKbApiCall(endpoint, init);
+  return new ApiCall(endpoint, init);
 };
 
 /**

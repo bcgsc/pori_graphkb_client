@@ -237,7 +237,6 @@ class Schema {
    * @param {Array.<string>} allColumns - current list of all collected properties.
    */
   collectOntologyProps(record, allColumns) {
-    console.log('collectOntologyProps', record);
     const properties = this.getProperties(record['@class']);
     properties.forEach((prop) => {
       if (!allColumns.includes(prop.name)) {

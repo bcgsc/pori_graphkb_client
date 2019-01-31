@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { Paper, Typography, Button } from '@material-ui/core';
 
 import '../AddVariantView/AddVariantView.scss';
-import { withKB } from '../../components/KBContext';
+import { KBContext } from '../../components/KBContext';
 import OntologyFormComponent from '../../components/OntologyFormComponent';
 import PositionalVariantParser from '../../components/PositionalVariantParser';
 import util from '../../services/util';
@@ -17,13 +17,13 @@ import api from '../../services/api';
  * Route for editing existing Variant records.
  * @property {object} props
  * @property {Object} props.history - Application routing history object.
- * @property {Object} props.schema - Knowledgebase schema object.
  * @property {object} props.match
  */
-class EditVariantViewBase extends Component {
+class EditVariantView extends Component {
+  static contextType = KBContext;
+
   static propTypes = {
     history: PropTypes.object.isRequired,
-    schema: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired,
   };
 
@@ -39,8 +39,9 @@ class EditVariantViewBase extends Component {
    * Grabs target record and initializes state.
    */
   async componentDidMount() {
-    const { match, schema } = this.props;
-    const { rid } = match.params;
+    const { schema } = this.context;
+    const { match: { params: { rid } } } = this.props;
+
     const { routeName } = schema.get('Variant');
     const call = api.get(`${routeName}/${rid}?neighbors=3`);
     this.controllers.push(call);
@@ -65,7 +66,7 @@ class EditVariantViewBase extends Component {
   @boundMethod
   async handleDelete() {
     const { node } = this.state;
-    const { schema } = this.props;
+    const { schema } = this.context;
     const { routeName } = schema.get(node);
     const call = api.delete(`${routeName}/${node['@rid'].slice(1)}`);
     this.controllers.push(call);
@@ -89,7 +90,7 @@ class EditVariantViewBase extends Component {
    * @return {boolean} true if submission is successful.
    */
   async submitVariant(form, relationships, originalRelationships) {
-    const { schema } = this.props;
+    const { schema } = this.context;
     const { node } = this.state;
     let oRelationships = originalRelationships;
     if (!Array.isArray(originalRelationships)) {
@@ -133,7 +134,7 @@ class EditVariantViewBase extends Component {
   }
 
   render() {
-    const { schema } = this.props;
+    const { schema } = this.context;
     const { node } = this.state;
     if (!node) return null;
     return (
@@ -178,9 +179,4 @@ class EditVariantViewBase extends Component {
   }
 }
 
-const EditVariantView = withKB(EditVariantViewBase);
-
-export {
-  EditVariantViewBase,
-  EditVariantView,
-};
+export default EditVariantView;

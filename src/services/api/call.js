@@ -57,7 +57,6 @@ class ApiCall {
     };
     this.controller = new AbortController();
     const { signal } = this.controller;
-    console.log(API_BASE_URL, this.endpoint, this.init.body);
     const request = new Request(API_BASE_URL + this.endpoint, initWithInterceptors);
     let response;
     try {
@@ -71,7 +70,6 @@ class ApiCall {
     }
     if (response.ok) {
       const body = await response.json();
-      console.log(body);
       return jc.retrocycle(body);
     }
 

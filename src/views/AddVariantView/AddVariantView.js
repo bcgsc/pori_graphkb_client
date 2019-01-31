@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { Paper, Typography, Button } from '@material-ui/core';
 
 import './AddVariantView.scss';
-import { withKB } from '../../components/KBContext';
+import { KBContext } from '../../components/KBContext';
 import PositionalVariantParser from '../../components/PositionalVariantParser';
 import util from '../../services/util';
 import api from '../../services/api';
@@ -17,12 +17,12 @@ import api from '../../services/api';
  *
  * @property {object} props
  * @property {Object} props.history - Application routing history object.
- * @property {Object} props.schema - Knowledgebase schema object.
  */
-class AddVariantViewBase extends Component {
+class AddVariantView extends Component {
+  static contextType = KBContext;
+
   static propTypes = {
     history: PropTypes.object.isRequired,
-    schema: PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -54,7 +54,7 @@ class AddVariantViewBase extends Component {
    */
   @boundMethod
   async submitVariant(form, relationships) {
-    const { schema } = this.props;
+    const { schema } = this.context;
     const copy = Object.assign({}, form);
     const properties = schema.getProperties(form);
     const { routeName } = schema.get(form);
@@ -95,7 +95,7 @@ class AddVariantViewBase extends Component {
   }
 
   render() {
-    const { schema } = this.props;
+    const { schema } = this.context;
     const { is409 } = this.state;
     if (!schema) return null;
     return (
@@ -126,9 +126,4 @@ class AddVariantViewBase extends Component {
   }
 }
 
-const AddVariantView = withKB(AddVariantViewBase);
-
-export {
-  AddVariantViewBase,
-  AddVariantView,
-};
+export default AddVariantView;

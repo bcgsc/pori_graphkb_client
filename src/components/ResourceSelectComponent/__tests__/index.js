@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import { FormControl } from '@material-ui/core';
-import ResourceSelectComponent from '../ResourceSelectComponent/ResourceSelectComponent';
+import ResourceSelectComponent from '..';
 
 const mockData = [
   { name: 'opt-1', '@rid': '#1' },

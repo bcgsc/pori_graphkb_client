@@ -8,12 +8,9 @@ import {
   TextField,
   RadioGroup,
   Radio,
-  InputAdornment,
-  Tooltip,
   MenuItem,
   Typography,
 } from '@material-ui/core';
-import HelpIcon from '@material-ui/icons/Help';
 
 import './FormTemplater.scss';
 import AutoSearchSingle from '../AutoSearchSingle';
@@ -21,6 +18,7 @@ import AutoSearchMulti from '../AutoSearchMulti';
 import ResourceSelectComponent from '../ResourceSelectComponent';
 import EmbeddedSetField from '../EmbeddedSetField';
 import util from '../../services/util';
+import ClickToolTip from '../ClickToolTip';
 
 /**
  * Templater component that generates input form fields based off of a given
@@ -72,12 +70,22 @@ const FormTemplater = (props) => {
       type,
       linkedClass,
       description,
+      example,
       choices,
       min,
       max,
     } = property;
     const mandatory = property.mandatory && !ignoreRequired;
     let field;
+
+    let helpText;
+
+    if (description) {
+      helpText = description;
+      if (example) {
+        helpText = `${helpText} (example: ${example})`;
+      }
+    }
 
     const wrapperProps = {
       component: fieldComponent,
@@ -112,11 +120,7 @@ const FormTemplater = (props) => {
                 <FormControlLabel value="false" control={<Radio />} label="No" />
               </RadioGroup>
             </FormControl>
-            {description && (
-              <Tooltip title={description}>
-                <HelpIcon color="primary" className="form-templater-help-icon radio" />
-              </Tooltip>
-            )}
+            <ClickToolTip title={helpText} className="form-templater-help-icon radio" />
           </div>
         </>
       );
@@ -144,11 +148,9 @@ const FormTemplater = (props) => {
             property={!linkedClass ? ['name', 'sourceId'] : undefined}
             disablePortal={disablePortal}
             schema={schema}
-            endAdornment={description ? (
-              <Tooltip title={description}>
-                <HelpIcon color="primary" style={{ cursor: 'default' }} />
-              </Tooltip>
-            ) : undefined}
+            endAdornment={
+              <ClickToolTip title={helpText} />
+            }
           />
         );
       } else {
@@ -198,11 +200,7 @@ const FormTemplater = (props) => {
         <>
           <div className="form-templater-embedded-selector">
             {classSelector}
-            {description && (
-              <Tooltip title={description}>
-                <HelpIcon color="primary" className="form-templater-help-icon" />
-              </Tooltip>
-            )}
+            {<ClickToolTip title={helpText} />}
           </div>
           <FormTemplater
             onChange={e => onChange(e, name)}
@@ -282,13 +280,7 @@ const FormTemplater = (props) => {
           error={invalid() && !ignoreRequired}
           disabled={disabledFields.includes(name)}
           InputProps={{
-            endAdornment: description && (
-              <InputAdornment position="end">
-                <Tooltip title={description}>
-                  <HelpIcon color="primary" style={{ cursor: 'default' }} />
-                </Tooltip>
-              </InputAdornment>
-            ),
+            endAdornment: <ClickToolTip title={helpText} />,
             type: t || '',
             step: step || '',
             min: min || undefined,

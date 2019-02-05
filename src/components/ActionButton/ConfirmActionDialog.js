@@ -1,30 +1,35 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
 } from '@material-ui/core';
 
 /**
  * Component for simple dialog that prompts the user before deleting a record.
+ * @param {object} props
+ * @param {boolean} props.isOpen - Drawer open flag
+ * @param {function} props.onClose - Handler for closing of dialog.
+ * @param {function} props.onDelete - Handler for confirming delete of record.
+ * @param {string} props.message - Message to display in dialog title.
  */
-function DeleteRecordDialog(props) {
+const ConfirmActionDialog = (props) => {
   const {
-    open,
-    onClose,
-    onDelete,
-    message,
     children,
+    isOpen,
+    message,
+    onCancel,
+    onConfirm,
   } = props;
 
   return (
     <Dialog
-      onClose={onClose}
-      open={open}
-      className="delete-dialog"
+      onClose={onCancel}
+      open={isOpen}
+      className="confirm-action-dialog"
     >
       <DialogTitle>
         {message}
@@ -33,46 +38,36 @@ function DeleteRecordDialog(props) {
         {children}
         <DialogActions style={{ justifyContent: 'center' }}>
           <Button
-            onClick={onClose}
+            onClick={onCancel}
             color="primary"
             size="large"
-            id="cancel-delete"
+            className="confirm-action-dialog__cancel"
           >
             Cancel
           </Button>
           <Button
-            onClick={onDelete}
+            onClick={onConfirm}
             size="large"
-            id="confirm-delete"
+            className="confirm-action-dialog__confirm"
           >
-            Delete
+            Confirm
           </Button>
         </DialogActions>
       </DialogContent>
     </Dialog>
   );
-}
-
-/**
- * @namespace
- * @property {boolean} open - Drawer open flag
- * @property {function} onClose - Handler for closing of dialog.
- * @property {function} onDelete - Handler for confirming delete of record.
- * @property {string} message - Message to display in dialog title.
- */
-DeleteRecordDialog.propTypes = {
-  open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func,
-  onDelete: PropTypes.func,
-  message: PropTypes.string,
-  children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
 };
 
-DeleteRecordDialog.defaultProps = {
-  onClose: undefined,
-  onDelete: undefined,
-  message: 'Really Delete this Term?',
+ConfirmActionDialog.propTypes = {
+  children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
+  isOpen: PropTypes.bool.isRequired,
+  message: PropTypes.string.isRequired,
+  onCancel: PropTypes.func.isRequired,
+  onConfirm: PropTypes.func.isRequired,
+};
+
+ConfirmActionDialog.defaultProps = {
   children: null,
 };
 
-export default DeleteRecordDialog;
+export default ConfirmActionDialog;

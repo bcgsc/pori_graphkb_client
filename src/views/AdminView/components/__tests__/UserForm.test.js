@@ -83,7 +83,7 @@ describe('<UserForm />', () => {
     wrapper.update();
     expect(wrapper.find('div.admin-section-heading-btns button').first().props().disabled).toBe(false);
     wrapper.find('div.admin-section-heading-btns button').first().simulate('click');
-    expect(wrapper.find('.delete-dialog').length).toBeGreaterThan(1);
+    expect(wrapper.find('.confirm-action-dialog').length).toBeGreaterThan(1);
   });
 
   it('handles single user checkboxes', () => {

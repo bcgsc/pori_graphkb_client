@@ -16,13 +16,13 @@ import {
 import kbp from '@bcgsc/knowledgebase-parser';
 
 import './PositionalVariantParser.scss';
-import DeleteRecordDialog from '../DeleteRecordDialog';
 import FormTemplater from '../FormTemplater';
 import NotificationDrawer from '../NotificationDrawer';
 import RelationshipsForm from '../RelationshipsForm';
 import ResourceSelectComponent from '../ResourceSelectComponent';
 import api from '../../services/api';
 import util from '../../services/util';
+import ActionButton from '../ActionButton';
 
 const DEFAULT_ORDER = [
   'type',
@@ -84,7 +84,6 @@ class PositionalVariantParser extends Component {
       relationships: [],
       originalRelationships: [],
       nodeClass: 'PositionalVariant',
-      deleteDialog: false,
     };
   }
 
@@ -280,17 +279,8 @@ class PositionalVariantParser extends Component {
   async handleDeleteNode() {
     const { handleDelete } = this.props;
     this.setState({ notificationDrawerOpen: true, loading: true });
-    this.handleDialog(false);
     await handleDelete();
     this.setState({ loading: false });
-  }
-
-  /**
-   * Opens node deletion dialog.
-   */
-  @boundMethod
-  handleDialog(val) {
-    this.setState({ deleteDialog: val });
   }
 
   /**
@@ -442,7 +432,6 @@ class PositionalVariantParser extends Component {
       loading,
       relationships,
       nodeClass,
-      deleteDialog,
     } = this.state;
     const {
       required,
@@ -461,11 +450,6 @@ class PositionalVariantParser extends Component {
 
     return (
       <div className="variant-parser-wrapper">
-        <DeleteRecordDialog
-          open={deleteDialog}
-          onDelete={this.handleDeleteNode}
-          onClose={() => this.handleDialog(false)}
-        />
         <NotificationDrawer
           open={notificationDrawerOpen}
           handleFinish={handleFinish}
@@ -554,14 +538,12 @@ class PositionalVariantParser extends Component {
             </Typography>
           )}
           {initVariant && (
-            <Button
-              variant="contained"
-              onClick={() => this.handleDialog(true)}
-              id="delete-btn"
-              size="large"
+            <ActionButton
+              onClick={this.handleDeleteNode}
+              message="Really Delete this Variant?"
             >
               Delete
-            </Button>
+            </ActionButton>
           )}
         </Paper>
       </div>

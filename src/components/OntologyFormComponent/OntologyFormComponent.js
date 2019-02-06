@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import {
   List,
   MenuItem,
-  Button,
   Typography,
   Paper,
   ListItem,
@@ -16,7 +15,7 @@ import {
 } from '@material-ui/core';
 
 import './OntologyFormComponent.scss';
-import DeleteRecordDialog from '../DeleteRecordDialog';
+import ActionButton from '../ActionButton';
 import FormTemplater from '../FormTemplater';
 import NotificationDrawer from '../NotificationDrawer';
 import RelationshipsForm from '../RelationshipsForm';
@@ -80,7 +79,6 @@ class OntologyFormComponent extends Component {
       originalNode: null,
       form: null,
       relationships: [],
-      deleteDialog: false,
       errorFields: [],
     };
   }
@@ -145,19 +143,10 @@ class OntologyFormComponent extends Component {
   async handleDeleteNode() {
     const { handleDelete } = this.props;
     this.setState({ notificationDrawerOpen: true, loading: true });
-    this.handleDialog(false);
     await handleDelete();
     this.setState({ loading: false });
   }
 
-  /**
-   * Sets the open state of the delete dialog.
-   * @param {boolean} val - Open state of delete dialog.
-   */
-  @boundMethod
-  handleDialog(val) {
-    this.setState({ deleteDialog: val });
-  }
 
   /**
    * Changes form state based on user input.
@@ -182,7 +171,9 @@ class OntologyFormComponent extends Component {
    */
   @boundMethod
   async handleSubmit(event) {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
     const { form, relationships, originalNode } = this.state;
     const { handleSubmit, schema } = this.props;
 
@@ -219,7 +210,6 @@ class OntologyFormComponent extends Component {
       form,
       originalNode,
       relationships,
-      deleteDialog,
       loading,
       notificationDrawerOpen,
       errorFields,
@@ -239,11 +229,6 @@ class OntologyFormComponent extends Component {
 
     return (
       <div className="node-form-wrapper">
-        <DeleteRecordDialog
-          open={deleteDialog}
-          onDelete={this.handleDeleteNode}
-          onClose={() => this.handleDialog(false)}
-        />
         <NotificationDrawer
           open={notificationDrawerOpen}
           loading={loading}
@@ -316,14 +301,14 @@ class OntologyFormComponent extends Component {
           </div>
           <Paper className="form-btns" elevation={4}>
             {variant === 'edit' && (
-              <Button
-                variant="contained"
-                onClick={() => this.handleDialog(true)}
+              <ActionButton
+                requireConfirm
                 id="delete-btn"
-                size="large"
+                onClick={this.handleDeleteNode}
+                message="Are you sure you want to delete the node?"
               >
                 Delete
-              </Button>
+              </ActionButton>
             )}
             {is409 && (
               <Typography
@@ -333,15 +318,13 @@ class OntologyFormComponent extends Component {
                 Record already exists
               </Typography>
             )}
-            <Button
+            <ActionButton
               onClick={this.handleSubmit}
-              variant="contained"
-              color="primary"
+              requireConfirm={false}
               id="submit-btn"
-              size="large"
             >
               {variant === 'edit' ? 'Confirm Changes' : 'Submit'}
-            </Button>
+            </ActionButton>
           </Paper>
         </div>
       </div>

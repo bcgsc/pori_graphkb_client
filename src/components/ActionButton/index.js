@@ -46,10 +46,10 @@ class ActionButton extends React.Component {
    * Handler for when the user confirms their action
    */
   @boundMethod
-  async handleDialogConfirm() {
+  handleDialogConfirm() {
     const { onClick } = this.props;
     this.setState({ dialogOpen: false });
-    await onClick();
+    onClick();
   }
 
   @boundMethod

@@ -174,7 +174,7 @@ class AutoSearchSingle extends Component {
         value,
         limit,
       );
-      const { result } = await call.request();
+      const result = await call.request();
 
       this.setState({ options: result, loading: false });
     } catch (error) {

@@ -32,7 +32,7 @@
         "import/prefer-default-export": "warn",
         "no-console": ["error", { "allow": ["warn", "error"] }],
         "babel/semi": "warn",
-        "max-len": ["warn", {"ignorePattern": "^\\s*\\*\\s*@(property|param)"}]
+        "max-len": ["warn", {"ignoreComments": true}]
     },
     "env": {
         "browser": true,

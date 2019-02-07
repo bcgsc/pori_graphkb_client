@@ -19,7 +19,6 @@ import EditIcon from '@material-ui/icons/Edit';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
 import './UserGroupForm.scss';
-import DeleteRecordDialog from '../../../../components/DeleteRecordDialog';
 import PermissionsTable from '../PermissionsTable';
 import UserGroupDialog from './UserGroupDialog';
 
@@ -261,18 +260,11 @@ class UserGroupForm extends Component {
       tempUserGroupPermissions,
       tempUserGroup,
       expanded,
-      deletedUserGroup,
       newUserGroupDialog,
     } = this.state;
 
     return (
       <Paper className="admin-user-groups">
-        <DeleteRecordDialog
-          open={!!deletedUserGroup}
-          onClose={this.handleDeleteDialog}
-          onDelete={() => this.handleUserGroupDelete(deletedUserGroup)}
-          message={`Delete User Group "${(deletedUserGroup || '').name}"?`}
-        />
         <UserGroupDialog
           userGroups={userGroups}
           open={newUserGroupDialog}

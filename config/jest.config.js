@@ -8,9 +8,8 @@ module.exports = {
   collectCoverage: true,
   coverageDirectory: 'coverage',
   collectCoverageFrom: [
-    '<rootDir>/src/**components/**.{js,jsx,mjs}',
-    '<rootDir>/src/services/**/!(api).{js,jsx,mjs}',
-    '<rootDir>/src/models/**/*.{js,jsx,mjs}',
+    '<rootDir>/src/services/**/**.{js,jsx,mjs}',
+    '<rootDir>/src/**/**components/**/**.{js,jsx,mjs}',
   ],
   coverageReporters: [
     'clover',

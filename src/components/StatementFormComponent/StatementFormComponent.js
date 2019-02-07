@@ -11,10 +11,10 @@ import {
 } from '@material-ui/core';
 
 import './StatementFormComponent.scss';
-import DeleteRecordDialog from '../DeleteRecordDialog';
 import FormTemplater from '../FormTemplater';
 import NotificationDrawer from '../NotificationDrawer';
 import RelationshipsForm from '../RelationshipsForm';
+import ActionButton from '../ActionButton';
 
 const DEFAULT_REVIEW_STATUS = 'pending';
 
@@ -55,7 +55,6 @@ class StatementFormComponent extends Component {
       relationships: [],
       form: null,
       originalRelationships: null,
-      deleteDialog: false,
       errorFields: [],
       relationshipsError: false,
     };
@@ -132,22 +131,12 @@ class StatementFormComponent extends Component {
   }
 
   /**
-   * Sets the open state of the delete dialog.
-   * @param {boolean} val - Open state of delete dialog.
-   */
-  @boundMethod
-  handleDialog(val) {
-    this.setState({ deleteDialog: val });
-  }
-
-  /**
    * Deletes target node.
    */
   @boundMethod
   async handleDeleteNode() {
     const { onDelete } = this.props;
     this.setState({ notificationDrawerOpen: true, loading: true });
-    this.handleDialog(false);
     await onDelete();
     this.setState({ loading: false });
   }
@@ -174,7 +163,6 @@ class StatementFormComponent extends Component {
       relationships,
       notificationDrawerOpen,
       loading,
-      deleteDialog,
       errorFields,
       relationshipsError,
     } = this.state;
@@ -192,11 +180,6 @@ class StatementFormComponent extends Component {
 
     return (
       <div>
-        <DeleteRecordDialog
-          open={deleteDialog}
-          onDelete={this.handleDeleteNode}
-          onClose={() => this.handleDialog(false)}
-        />
         <NotificationDrawer
           open={notificationDrawerOpen}
           loading={loading}
@@ -279,14 +262,11 @@ class StatementFormComponent extends Component {
             </Typography>
           )}
           {node && (
-            <Button
-              onClick={() => this.handleDialog(true)}
-              variant="contained"
-              size="large"
-              id="statement-delete-btn"
+            <ActionButton
+              onClick={this.handleDeleteNode}
             >
               Delete
-            </Button>
+            </ActionButton>
           )}
         </Paper>
       </div>

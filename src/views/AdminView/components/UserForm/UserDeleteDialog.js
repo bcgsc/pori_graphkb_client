@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
 
-import DeleteRecordDialog from '../../../../components/DeleteRecordDialog/DeleteRecordDialog';
+import ConfirmActionDialog from '../../../../components/ActionButton/ConfirmActionDialog';
 
 /**
  * Handles user delete dialog.
@@ -27,11 +27,10 @@ function UserDeleteDialog(props) {
   } = props;
 
   return (
-    <DeleteRecordDialog
-      open={open && selected.length !== 0}
-      onClose={onClose}
-      onDelete={onSubmit}
-      TransitionProps={{ unmountOnExit: true }}
+    <ConfirmActionDialog
+      isOpen={open && selected.length !== 0}
+      onCancel={onClose}
+      onConfrm={onSubmit}
       message="Delete Users?"
     >
       <List>
@@ -54,7 +53,7 @@ function UserDeleteDialog(props) {
           );
         })}
       </List>
-    </DeleteRecordDialog>
+    </ConfirmActionDialog>
   );
 }
 

@@ -1,7 +1,8 @@
 import React from 'react';
 import { mount } from 'enzyme';
 
-import OntologyFormComponent from '../OntologyFormComponent/OntologyFormComponent';
+import OntologyFormComponent from '../OntologyFormComponent';
+import ActionButton from '../ActionButton';
 import Schema from '../../services/schema';
 
 const testSchema = new Schema({
@@ -70,13 +71,13 @@ const testNode = {
 };
 
 describe('<OntologyFormComponent />', () => {
-  let wrapper;
   const handleSubmitSpy = jest.spyOn(OntologyFormComponent.prototype, 'handleSubmit');
   const componentDidMountSpy = jest.spyOn(OntologyFormComponent.prototype, 'componentDidMount');
+  const dialogOpenSpy = jest.spyOn(ActionButton.prototype, 'handleOpenDialog');
 
 
   it('does not crash', () => {
-    wrapper = mount(
+    const wrapper = mount(
       <OntologyFormComponent schema={testSchema} />,
     );
     expect(wrapper.type()).toBe(OntologyFormComponent);
@@ -84,7 +85,7 @@ describe('<OntologyFormComponent />', () => {
   });
 
   it('does not crash in edit variant with node, calls componentDidMount', () => {
-    wrapper = mount(
+    mount(
       <OntologyFormComponent
         variant="edit"
         schema={testSchema}
@@ -98,7 +99,7 @@ describe('<OntologyFormComponent />', () => {
   });
 
   it('subset deletion successfully removes chip', () => {
-    wrapper = mount(
+    const wrapper = mount(
       <OntologyFormComponent
         variant="add"
         schema={testSchema}
@@ -113,7 +114,7 @@ describe('<OntologyFormComponent />', () => {
 
   it('displays right chips + classes after subset delete undo', () => {
     testNode.subsets = ['test'];
-    wrapper = mount(
+    const wrapper = mount(
       <OntologyFormComponent
         variant="edit"
         schema={testSchema}
@@ -133,10 +134,10 @@ describe('<OntologyFormComponent />', () => {
     expect(wrapper.find('.embedded-list__chip svg')).toHaveLength(1);
   });
 
-  it('validation and submission calls correct handlers', () => {
+  it('validation and submission calls correct handlers', async () => {
     const handleFinish = jest.fn();
-    const handleSubmit = jest.fn();
-    wrapper = mount(
+    const handleSubmit = jest.fn(() => Promise.resolve());
+    const wrapper = mount(
       <OntologyFormComponent
         variant="add"
         schema={testSchema}
@@ -146,14 +147,18 @@ describe('<OntologyFormComponent />', () => {
         handleSubmit={handleSubmit}
       />,
     );
-    expect(wrapper.find('button#submit-btn'));
+    expect(wrapper.find('#submit-btn'));
     wrapper.find('nav textarea[name="name"]').simulate('change', { target: { value: 'test', name: 'name' } });
     const { form } = wrapper.state();
     form.linkprop = 'test link';
     form['linkprop.data'] = { '@rid': 'test rid' };
     wrapper.setState({ form });
-    expect(wrapper.find('.form-btns button#submit-btn').props().disabled).toBe(false);
-    wrapper.find('#submit-btn').first().simulate('click');
+    // click submit
+    const actionButton = wrapper.find(ActionButton);
+    await actionButton.prop('onClick')();
+    wrapper.update();
+
+    // check that this triggered the form to submit
     expect(handleSubmitSpy).toHaveBeenCalledTimes(1);
     expect(handleSubmit.mock.calls).toHaveLength(1);
 
@@ -164,8 +169,8 @@ describe('<OntologyFormComponent />', () => {
     wrapper.setState({ notificationDrawerOpen: false });
   });
 
-  it('delete dialog appears', () => {
-    wrapper = mount(
+  it('delete dialog appears', async () => {
+    const wrapper = mount(
       <OntologyFormComponent
         variant="edit"
         schema={testSchema}
@@ -174,14 +179,16 @@ describe('<OntologyFormComponent />', () => {
         edgeTypes={['AliasOf']}
       />,
     );
-    wrapper.find('#delete-btn').first().simulate('click');
-    wrapper.setState({ deleteDialog: true });
-    expect(wrapper.find('#confirm-delete').length).toBeGreaterThanOrEqual(1);
+    // click the delete button
+    const deleteButton = wrapper.find(ActionButton).first();
+    expect(deleteButton.prop('id')).toEqual('delete-btn');
+    deleteButton.find('button').prop('onClick')();
+    wrapper.update();
+    deleteButton.update();
 
-    wrapper.find('#cancel-delete').first().simulate('click');
-    expect(wrapper.state().deleteDialog).toBe(false);
-    wrapper.setState({ deleteDialog: true });
-    wrapper.find('#confirm-delete').first().simulate('click');
+    // the dialog should now be open
+    expect(deleteButton.state('dialogOpen')).toBe(true);
+    expect(dialogOpenSpy).toHaveBeenCalled();
   });
 
   afterEach(() => {

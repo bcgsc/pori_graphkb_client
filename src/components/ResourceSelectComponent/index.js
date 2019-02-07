@@ -12,6 +12,7 @@ import {
   OutlinedInput,
   Input,
 } from '@material-ui/core';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 import './index.scss';
 import util from '../../services/util';
@@ -72,7 +73,7 @@ function ResourceSelectComponent(props) {
         }}
         IconComponent={disabled
           ? 'span'
-          : 'ArrowDropDownIcon'
+          : ArrowDropDownIcon
         }
       >
         {resourcesDisplay}

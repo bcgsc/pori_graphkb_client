@@ -16,7 +16,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import Downshift from 'downshift';
 
 import './AutoSearchBase.scss';
-import RecordChip from '../RecordChip';
+import DetailChip from '../DetailChip';
 
 const PROGRESS_SPINNER_SIZE = 20;
 
@@ -175,10 +175,14 @@ class AutoSearchBase extends Component {
                     ) : null,
                     startAdornment: selected
                       ? (
-                        <RecordChip
+                        <DetailChip
                           onDelete={() => onClear ? onClear() : null}
-                          record={selected}
-                          schema={schema}
+                          details={selected}
+                          label={schema.getPreview(selected)}
+                          valueToString={record => `${record
+                            ? record['@rid'] || record
+                            : record}`
+                          }
                         />
                       ) : null,
                   }}

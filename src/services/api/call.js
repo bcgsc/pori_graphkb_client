@@ -76,7 +76,10 @@ class ApiCall {
     }
     if (response.ok) {
       const body = await response.json();
-      const { result } = jc.retrocycle(body);
+      const decycled = jc.retrocycle(body);
+      const result = decycled.result !== undefined
+        ? decycled.result
+        : decycled;
 
       if (this.forceListReturn && !Array.isArray(result)) {
         return [result];

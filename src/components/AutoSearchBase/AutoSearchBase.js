@@ -17,7 +17,7 @@ import Downshift from 'downshift';
 
 import './AutoSearchBase.scss';
 import DetailChip from '../DetailChip';
-import KBContext from '../KBContext';
+import { KBContext } from '../KBContext';
 
 const PROGRESS_SPINNER_SIZE = 20;
 
@@ -178,7 +178,10 @@ class AutoSearchBase extends Component {
                         <DetailChip
                           onDelete={() => onClear ? onClear() : null}
                           details={selected}
-                          label={schema.getPreview(selected)}
+                          label={schema
+                            ? schema.getPreview(selected)
+                            : `${selected}`
+                          }
                           valueToString={record => `${record
                             ? record['@rid'] || record
                             : record}`

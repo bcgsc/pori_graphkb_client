@@ -1,8 +1,8 @@
 /**
- * @module /components/RecordChip
+ * @module /components/DetailChip
  */
 import { boundMethod } from 'autobind-decorator';
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {
   Chip,
@@ -19,29 +19,42 @@ import {
 } from '@material-ui/core';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 
-import { KBContext } from '../KBContext';
 import './index.scss';
+
+
+const shallowObjectKey = obj => JSON.stringify(obj, (k, v) => k ? `${v}` : v);
 
 /**
  * Displays a record as a Material Chip. When clicked, opens a Popover
  * containing some brief details about the record.
  *
  * @property {obejct} props
- * @property {Object} props.record - record to be displayed in chip.
+ * @property {string} props.label - label for the record
+ * @property {Object} props.details - record to be displayed in chip.
+ * @property {function} props.onDelete - function handler for the user clicking the X on the chip
+ * @property {function} props.valueToString - function to call on details values
+ * @property {object} props.ChipProps - properties passed to the chip element
  */
-class RecordChip extends Component {
-  static contextType = KBContext;
-
+class DetailChip extends React.Component {
   static propTypes = {
-    record: PropTypes.object,
-    onDelete: PropTypes.func,
+    ChipProps: PropTypes.object,
     className: PropTypes.string,
+    details: PropTypes.object,
+    label: PropTypes.string.isRequired,
+    onDelete: PropTypes.func,
+    valueToString: PropTypes.func,
   };
 
   static defaultProps = {
-    record: null,
-    onDelete: null,
+    ChipProps: {
+      avatar: (<Avatar><AssignmentOutlinedIcon /></Avatar>),
+      variant: 'outlined',
+      color: 'primary',
+    },
     className: '',
+    details: {},
+    onDelete: null,
+    valueToString: s => `${s}`,
   };
 
   constructor(props) {
@@ -49,6 +62,20 @@ class RecordChip extends Component {
     this.state = {
       anchorEl: null,
     };
+  }
+
+  /**
+   * Only update if the contents change or the anchor was added/deleted
+   * Do not update if the anchor changes (causes infinite render loop)
+   */
+  shouldComponentUpdate(nextProps, nextState) {
+    const { label, details } = this.props;
+    const { anchorEl } = this.state;
+    return (
+      label !== nextProps.label
+      || shallowObjectKey(details) !== shallowObjectKey(nextProps.details)
+      || !!anchorEl !== !!nextState.anchorEl
+    );
   }
 
   /**
@@ -70,17 +97,15 @@ class RecordChip extends Component {
 
   render() {
     const {
-      record,
+      details,
       onDelete,
       className,
-      ...other
+      label,
+      valueToString,
+      ChipProps,
+      ...rest
     } = this.props;
-    const { schema } = this.context;
     const { anchorEl } = this.state;
-
-    if (!record) return null;
-
-    const id = schema ? schema.getPreview(record) : Object.values(record).find(v => typeof v === 'string');
 
     const PopUpContent = () => (
       <Popover
@@ -89,45 +114,28 @@ class RecordChip extends Component {
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         onClose={this.handlePopoverClose}
+        className="detail-chip__popover detail-popover"
       >
         <Card>
-          <CardContent className="record-chip__panel">
+          <CardContent className="detail-popover__panel">
             <Typography variant="h6" gutterBottom>
-              {id}
+              {label}
             </Typography>
             <Divider />
             <Table>
               <TableBody>
-                <TableRow>
-                  <TableCell padding="checkbox">
-                    <Typography variant="body2">@class</Typography>
-                  </TableCell>
-                  <TableCell />
-                  <TableCell padding="checkbox">
-                    {record['@class']}
-                  </TableCell>
-                </TableRow>
-                {record['@rid'] && (
-                <TableRow>
-                  <TableCell padding="checkbox">
-                    <Typography variant="body2">@rid</Typography>
-                  </TableCell>
-                  <TableCell />
-                  <TableCell padding="checkbox">
-                    {record['@rid']}
-                  </TableCell>
-                </TableRow>
-                )}
-                {record.source && (
-                <TableRow>
-                  <TableCell padding="checkbox">
-                    <Typography variant="body2">Source</Typography>
-                  </TableCell>
-                  <TableCell />
-                  <TableCell padding="checkbox">
-                    {record.source && record.source.name}
-                  </TableCell>
-                </TableRow>
+                {details && Object.keys(details).map(
+                  name => (
+                    <TableRow key={name} className="detail-popover__row">
+                      <TableCell padding="checkbox">
+                        <Typography variant="body2">{name}</Typography>
+                      </TableCell>
+                      <TableCell />
+                      <TableCell padding="checkbox">
+                        {valueToString(details[name])}
+                      </TableCell>
+                    </TableRow>
+                  ),
                 )}
               </TableBody>
             </Table>
@@ -137,22 +145,19 @@ class RecordChip extends Component {
     );
 
     return (
-      <>
+      <div {...rest}>
         <PopUpContent />
         <Chip
-          {...other}
-          label={id}
-          className={`record-chip__root ${className || ''}`}
+          label={label}
+          className={`detail-chip__root ${className || ''}`}
           clickable
-          avatar={<Avatar><AssignmentOutlinedIcon /></Avatar>}
-          variant="outlined"
-          color="primary"
           onClick={this.handlePopoverOpen}
           onDelete={onDelete}
+          {...ChipProps}
         />
-      </>
+      </div>
     );
   }
 }
 
-export default RecordChip;
+export default DetailChip;

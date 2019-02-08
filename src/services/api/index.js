@@ -7,7 +7,7 @@ import * as jc from 'json-cycle';
 import util from '../util';
 import config from '../../static/config';
 
-import ApiCall from './call';
+import { ApiCall, ApiCallSet } from './call';
 
 
 const {
@@ -108,7 +108,7 @@ const autoSearch = (endpoint, property, value, limit, callOptions) => {
  * @param {string} [rid=''] - Record id to post edges to.
  */
 const submitEdges = (edges, schema, rid = '', callOptions) => {
-  const newEdges = [];
+  const newEdges = new ApiCallSet();
   for (let i = 0; i < edges.length; i += 1) {
     const properties = schema.getProperties(edges[i][CLASS_PROP]);
     const edge = util.parsePayload(edges[i], properties);
@@ -130,7 +130,7 @@ const submitEdges = (edges, schema, rid = '', callOptions) => {
  * @param {Object} schema - Knowledgebase db schema.
  */
 const patchEdges = (originalEdges, newEdges, schema, callOptions) => {
-  const changedEdges = [];
+  const changedEdges = new ApiCallSet();
   /* Checks for differences in original node and submitted form. */
 
   // Deletes edges that are no longer present on the edited node.

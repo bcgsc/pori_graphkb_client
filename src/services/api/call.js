@@ -109,5 +109,26 @@ class ApiCall {
   }
 }
 
+/**
+ * Set of Api calls to be co-requested and co-aborted
+ */
+class ApiCallSet {
+  constructor(calls = []) {
+    this.calls = calls;
+  }
 
-export default ApiCall;
+  push(call) {
+    this.calls.push(call);
+  }
+
+  abort() {
+    this.calls.forEach(controller => controller.abort());
+  }
+
+  async request() {
+    return Promise.all(this.calls.map(call => async () => call.request()));
+  }
+}
+
+
+export { ApiCall, ApiCallSet };

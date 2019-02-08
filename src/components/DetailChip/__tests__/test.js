@@ -80,8 +80,6 @@ describe('DetailChip', () => {
     expect(wrapper.find(Cancel)).toHaveLength(0);
   });
 
-  // TODO: currently cannot test confirm or cancel clicks since the dialog contents renders outside the wrapper element
-
   afterEach(() => {
     jest.resetAllMocks();
   });

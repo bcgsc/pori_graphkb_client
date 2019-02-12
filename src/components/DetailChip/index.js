@@ -74,7 +74,7 @@ class DetailChip extends React.Component {
     return (
       label !== nextProps.label
       || shallowObjectKey(details) !== shallowObjectKey(nextProps.details)
-      || !!anchorEl !== !!nextState.anchorEl
+      || Boolean(anchorEl) !== Boolean(nextState.anchorEl)
     );
   }
 

@@ -92,11 +92,7 @@ class RecordAutocomplete extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { searchHandler, debounceMs, value } = this.props;
-
-    if (prevProps.searchHandler !== searchHandler || prevProps.debounceMs !== debounceMs) {
-      this.setState({ debouncedSearchHandler: debounce(searchHandler, debounceMs) }); // eslint-disable-line react/no-did-update-set-state
-    }
+    const { value } = this.props;
 
     if (prevProps.value !== value) {
       this.setState({ selected: value }); // eslint-disable-line react/no-did-update-set-state

@@ -24,7 +24,7 @@ class ActionButton extends React.Component {
 
   static defaultProps = {
     requireConfirm: true,
-    message: '',
+    message: 'Are you sure?',
     className: '',
   };
 

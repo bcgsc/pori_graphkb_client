@@ -13,12 +13,12 @@ import {
 } from '@material-ui/core';
 
 import './FormTemplater.scss';
-import AutoSearchSingle from '../AutoSearchSingle';
-import AutoSearchMulti from '../AutoSearchMulti';
 import ResourceSelectComponent from '../ResourceSelectComponent';
 import EmbeddedSetField from '../EmbeddedSetField';
 import util from '../../services/util';
 import ClickToolTip from '../ClickToolTip';
+import RecordAutocomplete from '../RecordAutocomplete';
+import { defaultSearchHandler } from './util';
 
 /**
  * Templater component that generates input form fields based off of a given
@@ -39,8 +39,6 @@ import ClickToolTip from '../ClickToolTip';
  * @property {boolean} props.ignoreRequired - if true, form does not apply required
  * state to mandatory fields.
  * @property {boolean} props.disablePadding - if true, disables left and right padding in ListItems.
- * @property {boolean} props.disablePortal - if true, disables portals for nested
- * autosearch components.
  */
 const FormTemplater = (props) => {
   const {
@@ -58,7 +56,6 @@ const FormTemplater = (props) => {
     pairs,
     ignoreRequired,
     disablePadding,
-    disablePortal,
     disableLists,
   } = props;
   const fields = [];
@@ -124,50 +121,49 @@ const FormTemplater = (props) => {
           </div>
         </>
       );
-    } else if (type === 'link') {
+    } else if (type === 'link' || type === 'linkset') {
       // If type is a link to another record, must find that record in the
       // database and store its rid.
+      const searchHandler = property.linkedClass
+        ? defaultSearchHandler(property.linkedClass)
+        : defaultSearchHandler(schema.get('V'));
 
-      // Decide which endpoint to query.
-      let endpoint;
-      wrapperProps.className = 'form-templater-autosearch';
-      if (linkedClass) {
-        endpoint = linkedClass.routeName.slice(1);
-        field = (
-          <AutoSearchSingle
-            error={errorFields.includes(name)}
-            disabled={disabledFields.includes(name)}
-            value={model[name]}
-            selected={model[`${name}.data`]}
-            onChange={onChange}
-            name={name}
-            label={util.antiCamelCase(name)}
-            limit={30}
-            endpoint={endpoint}
-            required={mandatory}
-            property={!linkedClass ? ['name', 'sourceId'] : undefined}
-            disablePortal={disablePortal}
-            schema={schema}
-            endAdornment={
-              <ClickToolTip title={helpText} />
+      const itemToString = (item) => {
+        if (item) {
+          try {
+            const text = schema.getPreview(item);
+            if (item['@rid']) {
+              return `${text} (${item['@rid']})`;
             }
-          />
-        );
-      } else {
-        field = (
-          <AutoSearchMulti
-            error={errorFields.includes(name)}
-            disabled={disabledFields.includes(name)}
-            value={model[name]}
-            selected={model[`${name}.data`]}
-            onChange={onChange}
-            name={name}
-            label={util.antiCamelCase(name)}
-            schema={schema}
-            required={mandatory}
-          />
-        );
-      }
+            return text;
+        } catch (err) {}  // eslint-disable-line
+        }
+        return `${item}`;
+      };
+
+      field = (
+        <RecordAutocomplete
+          disabled={disabledFields.includes(name)}
+          error={errorFields.includes(name)}
+          itemToString={itemToString}
+          DetailChipProps={{
+            valueToString: (record) => {
+              if (record && record['@rid']) {
+                return record['@rid'];
+              }
+              return `${record}`;
+            },
+          }}
+          isMulti={type === 'linkset'}
+          name={name}
+          label={name}
+          onChange={onChange}
+          required={mandatory}
+          searchHandler={searchHandler}
+          value={model[name]}
+          placeholder="Search for an existing record by name or RID"
+        />
+      );
     } else if (type === 'embedded') {
       const properties = schema.getProperties(model[name]);
       let classSelector = (

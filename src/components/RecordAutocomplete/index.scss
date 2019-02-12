@@ -1,0 +1,46 @@
+.record-autocomplete {
+  flex-grow: 1;
+
+  &__input {
+    display: flex;
+    padding: 0;
+  }
+
+  &__value-container {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    overflow: hidden;
+  }
+
+  &__chip {
+    margin: 4px;
+    &--focused {
+      // background: darken();
+    }
+  }
+
+  &__no-options-message {
+    padding: 1px 2px;
+  }
+
+  &__placeholder {
+    font-size: 1rem;
+    left: 2px;
+    position: absolute;
+  }
+
+  &__paper {
+    left: 0;
+    margin-top: 1px;
+    position: absolute;
+    right: 0;
+    z-index: 1;
+  }
+
+  &__dropdown {
+    margin: 8px;
+    width: 1.5rem;
+  }
+}

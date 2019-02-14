@@ -40,6 +40,12 @@ const SHORTHAND_EXCLUDED = [
   'assembly',
 ];
 
+const CLASS_MODEL_NAME = 'PositionalVariant';
+
+const emptyButClass = (obj) => {
+  return Object.keys(obj).length === 1 && obj['@class'] === '';
+};
+
 /**
  * Form component for the Variant record class. Uses HGVS shorthand notation as
  * well as standard form fields to build model if the subclass selected is
@@ -83,7 +89,7 @@ class PositionalVariantParser extends Component {
       errorFields: [],
       relationships: [],
       originalRelationships: [],
-      nodeClass: 'PositionalVariant',
+      nodeClass: CLASS_MODEL_NAME,
     };
   }
 
@@ -123,9 +129,9 @@ class PositionalVariantParser extends Component {
     const { schema } = this.props;
     const { value } = event.target;
     this.setState({ shorthand: value });
-    const properties = schema.getProperties('PositionalVariant');
+    const properties = schema.getProperties(CLASS_MODEL_NAME);
     if (!value) {
-      const newVariant = schema.initModel({}, 'PositionalVariant');
+      const newVariant = schema.initModel({}, CLASS_MODEL_NAME);
       Object.keys(newVariant).forEach((k) => {
         if (newVariant[k] && typeof newVariant[k] === 'object' && newVariant[k]['@class']) {
           newVariant[k]['@class'] = '';
@@ -159,7 +165,7 @@ class PositionalVariantParser extends Component {
         });
         const sparedProps = {};
         SHORTHAND_EXCLUDED.forEach((s) => { sparedProps[s] = variant[s]; });
-        const newVariant = Object.assign(schema.initModel(sparedProps, 'PositionalVariant'),
+        const newVariant = Object.assign(schema.initModel(sparedProps, CLASS_MODEL_NAME),
           { ...response, ...linkProps.props });
         this.setState({
           variant: newVariant,
@@ -200,7 +206,7 @@ class PositionalVariantParser extends Component {
   @boundMethod
   async extractLinkProps(parsed) {
     const { schema } = this.props;
-    const classSchema = schema.getProperties('PositionalVariant');
+    const classSchema = schema.getProperties(CLASS_MODEL_NAME);
     const linkProps = util.getPropOfType(classSchema, 'link');
     const newValues = {};
     let invalidFlag = '';
@@ -235,7 +241,7 @@ class PositionalVariantParser extends Component {
     const { variant } = this.state;
     const { schema } = this.props;
     const { value } = event.target;
-    const classSchema = schema.getProperties('PositionalVariant');
+    const classSchema = schema.getProperties(CLASS_MODEL_NAME);
     if (schema.getProperties(value)) {
       const abstractClass = classSchema
         .find(p => p.name === nested).linkedClass.name;
@@ -445,7 +451,7 @@ class PositionalVariantParser extends Component {
 
     if (!variant) return null;
     const classSchema = schema.getProperties(nodeClass);
-    const isPositional = nodeClass === 'PositionalVariant';
+    const isPositional = nodeClass === CLASS_MODEL_NAME;
     const shorthandError = !!(error || invalidFlag);
 
     return (
@@ -460,7 +466,7 @@ class PositionalVariantParser extends Component {
             <Paper elevation={4} className="variant-parser-shorthand">
               <ListItem>
                 <ResourceSelectComponent
-                  resources={['PositionalVariant', 'CategoryVariant']}
+                  resources={[CLASS_MODEL_NAME, 'CategoryVariant']}
                   name="nodeClass"
                   value={nodeClass}
                   onChange={this.handleChange}

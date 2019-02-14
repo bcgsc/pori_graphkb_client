@@ -1,8 +1,10 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import AsyncSelect from 'react-select/lib/Async';
+import { Chip } from '@material-ui/core';
 
 import RecordAutocomplete from '..';
+import { Placeholder, SingleValue } from '../components';
 
 
 const mockSearchHandler = (...values) => {
@@ -16,38 +18,88 @@ const mockSearchHandler = (...values) => {
 
 
 describe('RecordLinkSuggest', () => {
-  describe('fetches option list', () => {
-    test.skip('on input', async () => {
-      const onValueChange = jest.fn();
-      const searchHandler = mockSearchHandler(
-        { name: 'bob' }, { name: 'bobby' },
-      );
-      const wrapper = mount(
-        <RecordAutocomplete
-          searchHandler={searchHandler}
-          name="test"
-          onChange={onValueChange}
-          itemToString={v => v.name}
-          minSearchLength={1}
-        />,
-      );
-      // type in "bob" and open the options menu
-      const stateManager = wrapper.find(AsyncSelect).children().first();
-      stateManager.setState({ isMenuOpen: true, inputValue: 'bob' });
-      // stateManager.prop('onInputChange')();
-      stateManager.update();
-      // should have 2 options in the drop down
-      // focus on the text field to bring up the drop down menu
-      expect(searchHandler).toHaveBeenCalled();
-      const options = wrapper.find('.record-autocomplete__option');
-      expect(options).toHaveLength(2);
-    });
-    test('from text input', () => {});
-    test('does not trigger for short searchTermValues', () => {});
+  test('accepts custom search handler', () => {
+    const searchHandler = mockSearchHandler();
+    const wrapper = mount(
+      <RecordAutocomplete
+        searchHandler={searchHandler}
+        name="test"
+        onChange={jest.fn()}
+      />,
+    );
+    expect(wrapper.prop('searchHandler')).toEqual(searchHandler);
   });
   test.todo('does not allow text input when disabled');
-  test.todo('renders new placeholder');
-  test.todo('allows multiple selections with isMulti flag');
-  test.todo('renders recordchip when initial value is given');
-  test.todo('clears input on deleting the initial chip');
+  test('renders new placeholder', () => {
+    const placeholder = 'blargh monkeys';
+    const wrapper = mount(
+      <RecordAutocomplete
+        name="test"
+        onChange={jest.fn()}
+        placeholder={placeholder}
+        searchHandler={jest.fn()}
+      />,
+    );
+    expect(wrapper.find(Placeholder).prop('children')).toEqual(placeholder);
+  });
+  test('passes isMulti flag', () => {
+    const wrapper = mount(
+      <RecordAutocomplete
+        name="test"
+        onChange={jest.fn()}
+        itemToString={v => v.name}
+        isMulti
+        searchHandler={jest.fn()}
+      />,
+    );
+    expect(wrapper.find(AsyncSelect).prop('isMulti')).toBe(true);
+  });
+  test('renders recordchip when initial value is given', () => {
+    const record = { '@rid': '#2:3', name: 'bob' };
+    const wrapper = mount(
+      <RecordAutocomplete
+        name="test"
+        onChange={jest.fn()}
+        itemToString={v => v.name}
+        value={record}
+        searchHandler={jest.fn()}
+      />,
+    );
+    expect(wrapper.find(SingleValue)).toHaveLength(1);
+  });
+  test('clears input on deleting the initial chip', () => {
+    const record = { '@rid': '#2:3', name: 'bob' };
+    const onChange = jest.fn();
+    const wrapper = mount(
+      <RecordAutocomplete
+        name="test"
+        onChange={onChange}
+        itemToString={v => v.name}
+        value={record}
+        searchHandler={jest.fn()}
+      />,
+    );
+    expect(wrapper.find(SingleValue)).toHaveLength(1);
+    wrapper.find(Chip).prop('onDelete')();
+    wrapper.update();
+    expect(wrapper.find(SingleValue)).toHaveLength(0);
+    expect(onChange).toHaveBeenCalled();
+  });
+  test('renders options immediately for minSearchLength of 0', () => {
+    const records = [{ name: 'bob' }, { name: 'alice' }];
+    const wrapper = mount(
+      <RecordAutocomplete
+        name="test"
+        onChange={jest.fn()}
+        itemToString={v => v.name}
+        searchHandler={mockSearchHandler(records)}
+        minSearchLength={0}
+      />,
+    );
+    expect(wrapper.find(AsyncSelect).prop('defaultOptions')).toBe(true);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 });

@@ -48,7 +48,8 @@ class RecordAutocomplete extends React.Component {
     DetailChipProps: PropTypes.object,
     disabled: PropTypes.bool,
     isMulti: PropTypes.bool,
-    itemToString: PropTypes.func,
+    getOptionKey: PropTypes.func,
+    getOptionLabel: PropTypes.func,
     label: PropTypes.string,
     minSearchLength: PropTypes.number,
     name: PropTypes.string.isRequired,
@@ -64,8 +65,9 @@ class RecordAutocomplete extends React.Component {
     components: defaultComponents,
     DetailChipProps: {},
     disabled: false,
+    getOptionKey: opt => opt['@rid'],
+    getOptionLabel: opt => opt.name,
     isMulti: false,
-    itemToString: opt => opt.name,
     label: '',
     minSearchLength: 4,
     onChange: () => {},
@@ -171,12 +173,23 @@ class RecordAutocomplete extends React.Component {
           <AsyncSelect
             value={selected}
             cacheOptions
-            loadOptions={this.getOptions}
+            defaultOptions={minSearchLength === 0}
             components={components}
+            DetailChipProps={DetailChipProps}
             onChange={this.handleChange}
             onInputChange={this.handleInputChange}
-            getOptionValue={v => v} // default looks for value property
-            getOptionLabel={itemToString}
+            getOptionValue={getOptionKey} // used to compare options for equality
+            getOptionLabel={getOptionLabel} // generates the string representation
+            hideSelectedOptions
+            isClearable={!disabled}
+            isMulti={isMulti}
+            isSearchable={!disabled}
+            loadOptions={this.getOptions}
+            placeholder={
+              disabled
+                ? ''
+                : placeholder
+            }
             textFieldProps={{
               InputProps: {
                 disabled: disabled || !!selected,
@@ -187,17 +200,9 @@ class RecordAutocomplete extends React.Component {
               InputLabelProps: {
                 shrink: !!selected || !(disabled && !selected),
               },
+              required,
               label,
             }}
-            DetailChipProps={DetailChipProps}
-            isMulti={isMulti}
-            placeholder={
-              disabled
-                ? ''
-                : placeholder
-            }
-            isClearable={!disabled}
-            isSearchable={!disabled}
           />
         </NoSsr>
       </div>

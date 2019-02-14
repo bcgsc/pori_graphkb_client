@@ -11,11 +11,27 @@ import {
   FilledInput,
   OutlinedInput,
   Input,
+  ListItemText,
 } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
 import './index.scss';
-import util from '../../services/util';
+
+
+const DefaultOptionComponent = resource => (
+  <MenuItem
+    className="resource-select__option"
+    component="li"
+    key={resource.key || resource}
+    value={resource.value || resource}
+  >
+    <ListItemText
+      primary={resource.label || resource || 'None'}
+      secondary={resource.caption || ''}
+      secondaryTypographyProps={{ className: 'resource-select__option-description' }}
+    />
+  </MenuItem>
+);
 
 /**
  * Component to select resources from a list of defined options.
@@ -114,11 +130,7 @@ ResourceSelectComponent.propTypes = {
 };
 
 ResourceSelectComponent.defaultProps = {
-  children: resource => (
-    <MenuItem key={resource} value={resource}>
-      {util.antiCamelCase(resource) || 'None'}
-    </MenuItem>
-  ),
+  children: DefaultOptionComponent,
   resources: [],
   onChange: null,
   name: '',

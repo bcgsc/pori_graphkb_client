@@ -55,6 +55,7 @@ class RecordAutocomplete extends React.Component {
     name: PropTypes.string.isRequired,
     onChange: PropTypes.func,
     placeholder: PropTypes.string,
+    required: PropTypes.bool,
     searchHandler: PropTypes.func.isRequired,
     value: PropTypes.object,
     debounceMs: PropTypes.number,
@@ -63,6 +64,7 @@ class RecordAutocomplete extends React.Component {
   static defaultProps = {
     className: '',
     components: defaultComponents,
+    debounceMs: 300,
     DetailChipProps: {},
     disabled: false,
     getOptionKey: opt => opt['@rid'],
@@ -72,8 +74,8 @@ class RecordAutocomplete extends React.Component {
     minSearchLength: 4,
     onChange: () => {},
     placeholder: 'Search for an Existing Record',
+    required: false,
     value: null,
-    debounceMs: 300,
   };
 
   constructor(props) {
@@ -108,7 +110,7 @@ class RecordAutocomplete extends React.Component {
     }
   }
 
-  async getOptions(term) {
+  async getOptions(term = '') {
     const { minSearchLength, searchHandler } = this.props;
 
     if (term.length >= minSearchLength) {
@@ -153,13 +155,16 @@ class RecordAutocomplete extends React.Component {
   render() {
     const {
       className,
-      disabled,
-      itemToString,
-      label,
-      placeholder,
-      isMulti,
       components,
       DetailChipProps,
+      disabled,
+      getOptionKey,
+      getOptionLabel,
+      isMulti,
+      label,
+      minSearchLength,
+      placeholder,
+      required,
     } = this.props;
 
     const {

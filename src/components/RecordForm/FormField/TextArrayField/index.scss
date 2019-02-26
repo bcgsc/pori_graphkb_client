@@ -1,10 +1,10 @@
-@import "../../globals";
+@import '../../../../globals';
 
-.embedded-list {
+.text-array-field {
   display: flex;
   width: inherit;
 
-  &__textfield {
+  &__text-field {
     flex: 1;
   }
 

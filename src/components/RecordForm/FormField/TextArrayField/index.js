@@ -14,106 +14,129 @@ import './index.scss';
 
 
 /**
- * Generated component for 'embeddedset' property types.
+ * Field which stores a list of non-redundant strings from user typed input
+ *
  * @property {object} props
- * @property {function} props.onChange - Parent component change handler.
- * @property {Array.<string>} props.list - Embedded set property as array.
+ * @property {function} props.onValueChange - Parent component change handler.
+ * @property {Array.<string>} props.value - Embedded set property as array.
  * @property {string} props.label - TextField label.
  * @property {string} props.name - Input name attribute.
- * @property {boolean} props.error - TextField error flag.
+ * @property {boolean|string} props.error - TextField error flag or message.
  * @property {boolean} props.disabled - Disabled flag.
+ * @property {object} state
+ * @property {Array.<string>} state.value the current list of values (including deleted)
+ * @property {Set} state.deleted the set of items which have been pseudo-deleted
+ * @property {Set} state.initialValue the set of items that must be pseudo-deleted
+ * @property {string} state.textInputError the error message for input to the text field
+ * @property {string} state.textInputValue the current value of the text field
  */
-class EmbeddedSetField extends Component {
+class TextArrayField extends Component {
   static propTypes = {
-    onChange: PropTypes.func.isRequired,
-    list: PropTypes.arrayOf(PropTypes.string),
+    disabled: PropTypes.bool,
+    error: PropTypes.bool,
     label: PropTypes.string,
     name: PropTypes.string.isRequired,
-    error: PropTypes.bool,
-    disabled: PropTypes.bool,
+    onValueChange: PropTypes.func.isRequired,
+    value: PropTypes.arrayOf(PropTypes.string),
   };
 
   static defaultProps = {
-    list: [],
-    label: '',
-    error: false,
     disabled: false,
+    error: false,
+    label: '',
+    value: [],
   };
 
   constructor(props) {
     super(props);
+    const { value } = props;
     this.state = {
-      deleted: [],
-      tempElement: '',
-      initList: props.list.slice(),
+      value: (value || []).slice(),
+      initialValue: new Set((value || []).slice()), // items in this list should be pseudo-deleted and allow restore
+      deleted: new Set(),
+      textInputValue: '',
+      textInputError: '',
     };
   }
 
   /**
-   * Adds new element to state list. Clears temporary element field.
-   * @param {Event} event - User element add event (button click or Enter keypress)
+   * Adds new element to state list. Clears textfield input.
+   * @param {string} text - element to add
    */
-  @boundMethod
-  handleAdd(event) {
-    event.preventDefault();
+  handleAdd(text) {
     const {
-      list,
       name,
-      onChange,
+      onValueChange,
     } = this.props;
 
-    const {
-      tempElement,
-    } = this.state;
+    const { value, deleted } = this.state;
 
-    if (tempElement.trim() && !list.includes(tempElement.toLowerCase())) {
-      list.push(tempElement);
-      onChange({ target: { name, value: list } });
-      this.setState({ tempElement: ' ' });
+    if (text) {
+      if (value.includes(text)) {
+        if (deleted.has(text)) {
+          deleted.delete(text);
+          this.setState({ deleted, textInputValue: '', textInputError: '' });
+        } else {
+          this.setState({ textInputError: `Cannot add '${text}'. Elements must be unique` });
+        }
+      } else {
+        value.push(text);
+        this.setState({ value, textInputValue: '', textInputError: '' });
+        onValueChange({ target: { name, value: value.filter(v => !deleted.has(v)) } });
+      }
     }
+  }
+
+  /**
+   * Trigger an add of the current value of the text input field
+   */
+  @boundMethod
+  handleAddCurrent() {
+    const { textInputValue: text } = this.state;
+    this.handleAdd(text);
   }
 
   /**
    * Deletes element from state list.
-   * @param {string} val - element to be deleted.
+   * @param {string} text - element to be deleted.
    */
-  @boundMethod
-  handleDelete(val) {
+  handleDelete(text) {
     const {
       deleted,
-      initList,
+      initialValue,
+      value,
     } = this.state;
     const {
-      list,
-      onChange,
       name,
+      onValueChange,
     } = this.props;
-    if (list.includes(val)) {
-      list.splice(list.indexOf(val), 1);
-      onChange({ target: { name, value: list } });
-      if (initList && initList.includes(val)) {
-        deleted.push(val);
+
+    if (text) {
+      if (initialValue.has(text)) {
+        deleted.add(text);
+        this.setState({ deleted });
+      } else {
+        this.setState({ value: value.filter(v => v !== text) });
       }
+      onValueChange({ target: { name, value: value.filter(v => !deleted.has(v)) } });
     }
-    this.setState({ deleted });
   }
 
   /**
    * Reverts a element that is staged for deletion.
-   * @param {string} val - deleted element to be reverted.
+   * @param {string} text - deleted element to be restored.
    */
   @boundMethod
-  handleUndo(val) {
+  handleRestore(text) {
     const {
       name,
-      onChange,
-      list,
+      onValueChange,
     } = this.props;
-    const { deleted } = this.state;
-    deleted.splice(deleted.indexOf(val), 1);
-    list.push(val);
-    onChange({ target: { name, value: list } });
+    const { deleted, value } = this.state;
+
+    deleted.delete(text);
     this.setState({ deleted });
+    onValueChange({ target: { name, value: value.filter(v => !deleted.has(v)) } });
   }
 
   /**
@@ -121,77 +144,108 @@ class EmbeddedSetField extends Component {
    * @param {Event} event - User change event.
    */
   @boundMethod
-  handleChange(event) {
-    this.setState({ tempElement: event.target.value });
+  handleInputChange(event) {
+    const { target: { value: text } } = event;
+    const { value } = this.state;
+    this.setState({ textInputValue: text });
+    if (text) {
+      if (value.includes(text)) {
+        this.setState({ textInputError: `Cannot add '${text}'. Elements must be unique` });
+        return;
+      }
+    }
+    this.setState({ textInputError: '' });
+  }
+
+  /**
+   * Handles the user hitting enter to insert a new
+   * term or backspace to remove the one
+   */
+  @boundMethod
+  handleInputKeyPress(event) {
+    const { key, target: { value: text } } = event;
+    const { value, deleted } = this.state;
+
+    if (text) {
+      if (key === 'Enter') {
+        this.handleAdd(text);
+      }
+    } else if (key === 'Backspace') {
+      const removeValue = value.filter(v => !deleted.has(v)).pop();
+      if (removeValue) {
+        this.handleDelete(removeValue);
+      }
+    }
   }
 
   render() {
     const {
       deleted,
-      tempElement,
+      value,
+      textInputValue,
+      textInputError,
     } = this.state;
     const {
-      list,
       label,
       disabled,
       error,
     } = this.props;
 
-    const embeddedList = list
-      .map(s => (
-        <Chip
-          label={s}
-          deleteIcon={<CancelIcon />}
-          onDelete={() => this.handleDelete(s)}
-          key={s}
-          className="embedded-list__chip"
-        />
-      ));
+    const chips = value
+      .map(
+        (text) => {
+          if (!deleted.has(text)) {
+            return (
+              <Chip
+                label={text}
+                deleteIcon={<CancelIcon />}
+                onDelete={() => this.handleDelete(text)}
+                key={text}
+                className="text-array-field__chip"
+              />
+            );
+          }
+          return (
+            <Chip
+              label={text}
+              deleteIcon={<RefreshIcon />}
+              onDelete={() => this.handleRestore(text)}
+              key={text}
+              className="text-array-field__chip--deleted"
+            />
+          );
+        },
+      );
 
-    embeddedList.push(...deleted.map(s => (
-      <Chip
-        label={s}
-        deleteIcon={<RefreshIcon />}
-        onDelete={() => this.handleUndo(s)}
-        key={s}
-        className="embedded-list__chip--deleted"
-      />
-    )));
     return (
-      <div className="embedded-list">
+      <div className="text-array-field">
         <TextField
-          className="embedded-list__textfield"
+          className="text-array-field__text-field"
           id={`${label.toLowerCase()}-temp`}
           label={label}
           name={label.toLowerCase()}
-          value={tempElement}
-          onChange={this.handleChange}
+          value={textInputValue}
+          onChange={this.handleInputChange}
           disabled={disabled}
-          error={error}
-          onKeyDown={(event) => {
-            if (event.keyCode === 13) {
-              this.handleAdd(event);
-            }
-            if (event.keyCode === 8 && !tempElement) {
-              this.handleDelete(list[list.length - 1]);
-            }
-          }}
+          error={Boolean(textInputError || error)}
+          onKeyDown={this.handleInputKeyPress}
+          helperText={textInputError}
           InputProps={{
             classes: {
-              root: 'embedded-list__field',
+              root: 'text-array-field__field',
             },
             inputProps: {
-              className: 'embedded-list__input',
+              className: 'text-array-field__input',
             },
-            startAdornment: embeddedList.length > 0
-              ? embeddedList
+            startAdornment: chips.length > 0
+              ? chips
               : undefined,
           }}
         />
-        <div className="embedded-list__btns">
+        <div className="text-array-field__btns">
           <IconButton
             color="primary"
-            onClick={this.handleAdd}
+            onClick={this.handleAddCurrent}
             disabled={disabled}
           >
             <AddIcon />
@@ -202,4 +256,4 @@ class EmbeddedSetField extends Component {
   }
 }
 
-export default EmbeddedSetField;
+export default TextArrayField;

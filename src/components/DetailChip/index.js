@@ -107,46 +107,42 @@ class DetailChip extends React.Component {
     } = this.props;
     const { anchorEl } = this.state;
 
-    const PopUpContent = () => (
-      <Popover
-        open={!!anchorEl}
-        anchorEl={anchorEl}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        onClose={this.handlePopoverClose}
-        className="detail-chip__popover detail-popover"
-      >
-        <Card>
-          <CardContent className="detail-popover__panel">
-            <Typography variant="h6" gutterBottom>
-              {label}
-            </Typography>
-            <Divider />
-            <Table>
-              <TableBody>
-                {details && Object.keys(details).map(
-                  name => (
-                    <TableRow key={name} className="detail-popover__row">
-                      <TableCell padding="checkbox">
-                        <Typography variant="body2">{name}</Typography>
-                      </TableCell>
-                      <TableCell />
-                      <TableCell padding="checkbox">
-                        {valueToString(details[name])}
-                      </TableCell>
-                    </TableRow>
-                  ),
-                )}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </Popover>
-    );
-
     return (
       <div {...rest}>
-        <PopUpContent />
+        <Popover
+          open={!!anchorEl}
+          anchorEl={anchorEl}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+          onClose={this.handlePopoverClose}
+          className="detail-chip__popover detail-popover"
+        >
+          <Card>
+            <CardContent className="detail-popover__panel">
+              <Typography variant="h6" gutterBottom>
+                {label}
+              </Typography>
+              <Divider />
+              <Table>
+                <TableBody>
+                  {details && Object.keys(details).map(
+                    name => (
+                      <TableRow key={name} className="detail-popover__row">
+                        <TableCell padding="checkbox">
+                          <Typography variant="body2">{name}</Typography>
+                        </TableCell>
+                        <TableCell />
+                        <TableCell padding="checkbox">
+                          {valueToString(details[name])}
+                        </TableCell>
+                      </TableRow>
+                    ),
+                  )}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </Popover>
         <Chip
           label={label}
           className={`detail-chip__root ${className || ''}`}

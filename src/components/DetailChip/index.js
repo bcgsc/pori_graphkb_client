@@ -34,12 +34,14 @@ const shallowObjectKey = obj => JSON.stringify(obj, (k, v) => k ? `${v}` : v);
  * @property {function} props.onDelete - function handler for the user clicking the X on the chip
  * @property {function} props.valueToString - function to call on details values
  * @property {object} props.ChipProps - properties passed to the chip element
+ * @property {function} props.getDetails function to retrieve the details from the details object
  */
 class DetailChip extends React.Component {
   static propTypes = {
     ChipProps: PropTypes.object,
     className: PropTypes.string,
     details: PropTypes.object,
+    getDetails: PropTypes.func,
     label: PropTypes.string.isRequired,
     onDelete: PropTypes.func,
     valueToString: PropTypes.func,
@@ -53,6 +55,7 @@ class DetailChip extends React.Component {
     },
     className: '',
     details: {},
+    getDetails: d => d,
     onDelete: null,
     valueToString: s => `${s}`,
   };
@@ -100,6 +103,7 @@ class DetailChip extends React.Component {
       details,
       onDelete,
       className,
+      getDetails,
       label,
       valueToString,
       ChipProps,
@@ -125,15 +129,14 @@ class DetailChip extends React.Component {
               <Divider />
               <Table>
                 <TableBody>
-                  {details && Object.keys(details).map(
-                    name => (
+                  {details && getDetails(details) && Object.entries(getDetails(details)).map(
+                    ([name, detail]) => (
                       <TableRow key={name} className="detail-popover__row">
                         <TableCell padding="checkbox">
                           <Typography variant="body2">{name}</Typography>
                         </TableCell>
-                        <TableCell />
                         <TableCell padding="checkbox">
-                          {valueToString(details[name])}
+                          {valueToString(detail)}
                         </TableCell>
                       </TableRow>
                     ),

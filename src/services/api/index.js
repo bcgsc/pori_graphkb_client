@@ -4,6 +4,8 @@
  */
 import * as jc from 'json-cycle';
 
+import kbSchema from '@bcgsc/knowledgebase-schema';
+
 import util from '../util';
 import config from '../../static/config';
 
@@ -17,7 +19,7 @@ const KB_SEP_CHARS = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
 
 const ID_PROP = '@rid';
 const CLASS_PROP = '@class';
-
+const MAX_SUGGESTIONS = 50;
 
 /**
  * Sends PATCH request to api.
@@ -158,13 +160,90 @@ const patchEdges = (originalEdges, newEdges, schema, callOptions) => {
   return changedEdges;
 };
 
+
+/**
+ * @typedef {function} searchHandlerRequest
+ * @param {string} searchTermValue the term to search for
+ * @returns {Array.<object>|object} the record or list of records suggested
+ */
+
+/**
+ * @typedef {object} searchHandler
+ * @property {function} abort aborts the current fetch request
+ * @property {searchHandlerRequest} request the asynchronous call to fetch the data
+ */
+
+/**
+ * @param {ClassModel} model the schema model to use to generate the search function
+ * @returns {searchHandler} the function to retrieve the sugesstions based on some input text
+ */
+const defaultSuggestionHandler = (model, opt = {}) => (textInput) => {
+  const terms = textInput.split(/\s+/).filter(term => term.length >= 4);
+  const { excludeClasses = [], ...rest } = opt;
+
+  const ontologyWhere = [{
+    operator: 'OR',
+    comparisons: terms.map(term => ({ attr: 'name', value: term, operator: 'CONTAINSTEXT' })),
+  }];
+  if (model.properties.sourceId) {
+    ontologyWhere[0].comparisons.push(
+      ...terms.map(term => ({ attr: 'sourceId', value: term, operator: 'CONTAINSTEXT' })),
+    );
+  }
+
+  if (excludeClasses.length) {
+    ontologyWhere.push(...excludeClasses.map(
+      c => ({ attr: '@class', value: c, negate: true }),
+    ));
+  }
+
+  const variantWhere = [{
+    operator: 'AND',
+    comparisons: terms.map(term => ({
+      operator: 'OR',
+      comparisons: [
+        { attr: 'reference1.name', value: term, operator: 'CONTAINSTEXT' },
+        { attr: 'reference1.sourceId', value: term },
+        { attr: 'reference2.name', value: term, operator: 'CONTAINSTEXT' },
+        { attr: 'reference2.sourceId', value: term },
+        { attr: 'type.name', value: term, operator: 'CONTAINSTEXT' },
+        { attr: 'type.sourceId', value: term },
+      ],
+    })),
+  }];
+
+  let where = ontologyWhere;
+  if (model.inherits.includes('Variant') || model.name === 'Variant') {
+    where = variantWhere;
+  }
+
+
+  const callOptions = { forceListReturn: true, ...rest };
+  let call;
+  if (kbSchema.util.looksLikeRID(textInput)) {
+    call = get(`${model.routeName}/${textInput}`, callOptions);
+  } else {
+    const body = {
+      where,
+      limit: MAX_SUGGESTIONS,
+      neighbors: 1,
+    };
+    call = post(`${model.routeName}/search`, body, callOptions);
+  }
+  return call;
+};
+
+
 export default {
-  get,
-  post,
-  delete: del,
-  patch,
-  autoSearch,
   API_BASE_URL,
-  submitEdges,
+  autoSearch,
+  CLASS_PROP,
+  defaultSuggestionHandler,
+  delete: del,
+  get,
+  ID_PROP,
+  patch,
   patchEdges,
+  post,
+  submitEdges,
 };

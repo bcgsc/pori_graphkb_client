@@ -17,6 +17,7 @@ import TextArrayField from './TextArrayField';
 import EmbeddedNodeForm from '../EmbeddedNodeForm';
 
 import './index.scss';
+import { FORM_VARIANT } from '../util';
 
 /**
  * Generate the field component for a form. Uses the property model to decide
@@ -49,21 +50,24 @@ const FormField = (props) => {
     default: defaultValue,
     description,
     example,
-    generated,
     generateDefault,
     linkedClass,
-    mandatory,
     name,
     type,
     nullable,
   } = model;
 
+  const generated = Boolean(model.generated && variant !== FORM_VARIANT.SEARCH);
+  const mandatory = Boolean(model.mandatory && variant !== FORM_VARIANT.SEARCH);
+
   let value = inputValue;
-  if (value === undefined || (!nullable && value === null)) {
-    if (defaultValue !== undefined) {
-      value = defaultValue;
-    } else if (generateDefault) {
-      value = generateDefault();
+  if (variant !== FORM_VARIANT.SEARCH) {
+    if (value === undefined || (!nullable && value === null)) {
+      if (defaultValue !== undefined) {
+        value = defaultValue;
+      } else if (generateDefault) {
+        value = generateDefault();
+      }
     }
   }
 
@@ -82,6 +86,7 @@ const FormField = (props) => {
         onValueChange={onValueChange}
         value={value}
         disabled={generated || disabled}
+        required={mandatory}
       />
     );
   } else if (type === 'embeddedset') {

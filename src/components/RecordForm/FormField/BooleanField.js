@@ -9,12 +9,15 @@ import {
 import PropTypes from 'prop-types';
 
 
-import util from '../../../services/util';
-
-
 const BooleanField = (props) => {
   const {
-    error, model, onValueChange, disabled, ...rest
+    disabled,
+    error,
+    label,
+    name,
+    onValueChange,
+    required,
+    ...rest
   } = props;
   const value = props.value === undefined || props.value === null
     ? null
@@ -27,15 +30,15 @@ const BooleanField = (props) => {
     >
       <FormControl
         component="fieldset"
-        required={model.mandatory}
+        required={required}
         error={error}
-        disabled={model.generated || disabled}
+        disabled={disabled}
       >
         <FormLabel>
-          {util.antiCamelCase(model.name)}
+          {label || name}
         </FormLabel>
         <RadioGroup
-          name={model.name}
+          name={name}
           onChange={e => onValueChange(e)}
           value={value}
           style={{ flexDirection: 'row' }}
@@ -49,17 +52,21 @@ const BooleanField = (props) => {
 };
 
 BooleanField.propTypes = {
-  error: PropTypes.bool,
-  model: PropTypes.object.isRequired,
-  onValueChange: PropTypes.func.isRequired,
-  value: PropTypes.string,
   disabled: PropTypes.bool,
+  error: PropTypes.bool,
+  label: PropTypes.string,
+  name: PropTypes.string.isRequired,
+  onValueChange: PropTypes.func.isRequired,
+  required: PropTypes.bool,
+  value: PropTypes.string,
 };
 
 BooleanField.defaultProps = {
-  error: false,
-  value: undefined,
   disabled: false,
+  error: false,
+  label: '',
+  required: false,
+  value: undefined,
 };
 
 export default BooleanField;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { SnackbarProvider, withSnackbar } from '../Snackbar/Snackbar';
+import { SnackbarProvider, withSnackbar } from '..';
 
 describe('Snackbar Context', () => {
   it('consumer inherits value', () => {

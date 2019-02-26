@@ -1,335 +1,504 @@
-/**
- * @module /components/OntologyFormComponent
- */
-import { boundMethod } from 'autobind-decorator';
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
+import { boundMethod } from 'autobind-decorator';
 import {
-  List,
-  MenuItem,
-  Typography,
-  Paper,
+  Collapse,
   ListItem,
   ListItemText,
-  Divider,
+  Typography,
 } from '@material-ui/core';
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+import jc from 'json-cycle';
 
-import './OntologyFormComponent.scss';
+
+import { KBContext } from '../KBContext';
 import ActionButton from '../ActionButton';
-import FormTemplater from '../FormTemplater';
-import NotificationDrawer from '../NotificationDrawer';
-import RelationshipsForm from '../RelationshipsForm';
-import ResourceSelectComponent from '../ResourceSelectComponent';
-import util from '../../services/util';
 
-const DEFAULT_ORDER = [
-  'name',
-  'sourceId',
-  'source',
-  'description',
-];
-const DEFAULT_NODE_CLASS = 'Disease';
+
+import FormField from './FormField';
+import PutativeEdgeField from './FormField/PutativeEdgeField';
+import { EdgeTable } from './EdgeTable';
+import StatementSentence from './StatementSentence';
+import {
+  CLASS_MODEL_PROP,
+  FORM_VARIANT,
+  validateValue,
+} from './util';
+
 
 /**
- * Component for editing or adding database nodes. Is also used to add or
- * delete edges from the database. All changes are staged and not
- * published to the database until the form is valid and submit button
- * has been clicked. This form is the most basic of the different form types,
- * and essentially just manages a classmodel and its generated form.
- * It can be used for any basic form that does not require any special input
- * features. This is the reason this form is used for CategoryVariants even
- * though they are not Ontologies.
- *
- * @property {object} props
- * @property {Object} props.node - node object to be edited.
- * @property {string} props.variant - specifies form type/function.
- * @property {Object} props.schema - Knowledgebase db schema.
- * @property {function} props.handleFinish - Function triggered when node is edited or deleted.
- * @property {function} props.handleSubmit - Function triggered when form is submitted.
- * @property {function} props.handleDelete - Function triggered when ontology is deleted.
- * @property {Array.<Object>} props.classes - list of possible classes for form.
- * @property {boolean} props.is409 - flag for whether previous submission was a 409.
+ * @property {object} props the input properties
+ * @property {string} props.name the name of this form element used in propgating content to the parent form
+ * @property {function} props.onValueChange the parent handler function
+ * @property {function} props.onSubmit the parent handler function to submit the form contents
+ * @property {function} props.onDelete the parent handler function to delete the current record
  */
-class OntologyFormComponent extends Component {
+class BaseRecordForm extends React.Component {
+  static contextType = KBContext;
+
   static propTypes = {
-    node: PropTypes.object,
-    variant: PropTypes.oneOf(['edit', 'add']),
-    schema: PropTypes.object.isRequired,
-    handleFinish: PropTypes.func,
-    handleSubmit: PropTypes.func,
-    handleDelete: PropTypes.func,
-    classes: PropTypes.array,
-    is409: PropTypes.bool,
+    aboveFold: PropTypes.arrayOf(PropTypes.string),
+    onSubmit: PropTypes.func,
+    onDelete: PropTypes.func,
+    belowFold: PropTypes.arrayOf(PropTypes.string),
+    className: PropTypes.string,
+    collapseExtra: PropTypes.bool,
+    groups: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+    isEmbedded: PropTypes.bool,
+    modelChoices: PropTypes.arrayOf(PropTypes.oneOf(PropTypes.string, PropTypes.shape({
+      label: PropTypes.string,
+      caption: PropTypes.string,
+      key: PropTypes.string,
+      value: PropTypes.string,
+    }))),
+    modelName: PropTypes.string,
+    name: PropTypes.string.isRequired,
+    onValueChange: PropTypes.func,
+    value: PropTypes.object,
+    variant: PropTypes.oneOf([
+      FORM_VARIANT.EDIT,
+      FORM_VARIANT.NEW,
+      FORM_VARIANT.VIEW,
+    ]),
   };
 
   static defaultProps = {
-    variant: 'edit',
-    handleFinish: null,
-    handleSubmit: null,
-    handleDelete: null,
-    node: null,
-    classes: null,
-    is409: false,
+    aboveFold: ['@rid', CLASS_MODEL_PROP, 'name', 'journalName', 'out', 'in'],
+    belowFold: ['deprecated', 'history'],
+    className: '',
+    collapseExtra: false,
+    groups: [
+      ['createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'uuid', 'history', 'groupRestrictions'],
+      ['reference1', 'break1Repr', 'break1Start', 'break1End'],
+      ['reference2', 'break2Repr', 'break2Start', 'break2End'],
+      ['source', 'sourceId', 'sourceIdVersion'],
+      ['startYear', 'completionYear'],
+      ['city', 'country'],
+      ['out', 'in'],
+    ],
+    isEmbedded: false,
+    modelChoices: [],
+    modelName: null,
+    onDelete: null,
+    onSubmit: null,
+    onValueChange: null,
+    value: { [CLASS_MODEL_PROP]: null },
+    variant: FORM_VARIANT.VIEW,
   };
 
   constructor(props) {
     super(props);
-
+    const { value } = this.props;
     this.state = {
-      originalNode: null,
-      form: null,
-      relationships: [],
-      errorFields: [],
+      content: value || { [CLASS_MODEL_PROP]: null },
+      errors: {},
+      collapseOpen: false,
     };
   }
 
   /**
-   * Loads sources and edge types from the api, initializes fields if form is
-   * an edit variant.
+   * Trigger the state change if a new initial value is passed in
    */
-  async componentDidMount() {
-    const { node, schema, classes } = this.props;
-    const { relationships } = this.state;
+  componentDidUpdate(prevProps) {
+    const { value } = this.props;
 
-    let nodeClass = classes ? classes[0] : DEFAULT_NODE_CLASS;
-    let originalNode = { '@class': nodeClass };
-    if (node) {
-      originalNode = node;
-      nodeClass = node['@class'];
+    if (jc.stringify(value) !== jc.stringify(prevProps.value)) {
+      this.populateFromRecord(value);
+    }
+  }
+
+  /**
+   * Given the current content and schema, sort the form fields and return the ordering
+   * @returns {Array.<Array.<(string|Array.<string>)>>} the nested grouping structure
+   *
+   * @example no collapsible section given
+   * > this.sortAndGroupFields()
+   * [['@class', '@rid', ['createdBy', 'createdAt']], []]
+   */
+  sortAndGroupFields() {
+    const {
+      belowFold, aboveFold, collapseExtra, groups, variant,
+    } = this.props;
+    const { schema } = this.context;
+    const { content } = this.state;
+
+    const groupMap = {};
+    const model = schema.get(content);
+
+    if (!model) {
+      return { extraFields: [], fields: [] };
+    }
+    const { properties } = model;
+
+    groups.forEach((groupItems) => {
+      // assume each field only can belong to a single group, overwrite others
+      const key = groupItems.slice().sort((p1, p2) => p1.localeCompare(p2)).join('-');
+      const groupDefn = {
+        fields: groupItems.filter(fname => properties[fname]),
+        mandatory: false,
+        generated: true,
+        name: key,
+      };
+
+      if (groupDefn.fields.length > 1) {
+        groupDefn.fields.forEach((name) => {
+          const { mandatory, generated } = properties[name];
+          groupDefn.mandatory = groupDefn.mandatory || mandatory;
+          groupDefn.generated = groupDefn.generated && generated;
+          groupMap[name] = groupDefn;
+        });
+      }
+    });
+
+    const mainFields = [];
+    const extraFields = [];
+
+    const visited = new Set();
+
+    // get the form content
+    Object.values(
+      model.properties,
+    ).filter(
+      p => p.name !== CLASS_MODEL_PROP && (variant !== FORM_VARIANT.NEW || !p.generated),
+    ).sort(
+      (p1, p2) => p1.name.localeCompare(p2.name), // alphanumeric sort by name
+    ).forEach(
+      (prop) => {
+        const {
+          name, mandatory, generated, fields,
+        } = (groupMap[prop.name] || prop);
+
+        const isAboveFold = fields
+          ? fields.some(fname => aboveFold.includes(fname))
+          : aboveFold.includes(name);
+
+        const isBelowFold = fields
+          ? fields.some(fname => belowFold.includes(fname))
+          : belowFold.includes(name);
+
+        const mustBeFilled = (
+          prop.mandatory
+          && variant === FORM_VARIANT.NEW
+          && prop.default === undefined
+          && !prop.generated
+        );
+
+        if (!visited.has(name)) {
+          if (!collapseExtra || isAboveFold || mustBeFilled) {
+            mainFields.push(fields || name);
+          } else if (isBelowFold) {
+            extraFields.push(fields || name);
+          } else if (mandatory && !generated) {
+            mainFields.push(fields || name);
+          } else {
+            extraFields.push(fields || name);
+          }
+        }
+        visited.add(name);
+        if (fields) {
+          visited.add(...fields);
+        }
+      },
+    );
+    return { fields: mainFields, extraFields };
+  }
+
+
+  /**
+   * Fill out the form fields using some record
+   */
+  populateFromRecord(record) {
+    const { schema } = this.context;
+    const { content } = this.state;
+
+    const model = schema.get(record);
+
+    if (!model) {
+      return;
     }
 
-    const form = schema.initModel(originalNode, nodeClass);
+    // do we need to update the model?
+    const newContent = Object.assign({}, content);
+    const errors = {};
 
-    if (originalNode) {
-      schema.getEdges(originalNode).forEach((edge) => {
-        relationships.push(schema.initModel(edge, edge['@class']));
+    Object.values(model.properties).forEach((prop) => {
+      const rawValue = record[prop.name];
+      const { value, error } = validateValue(prop, rawValue);
+      newContent[prop.name] = value;
+      if (error) {
+        errors[prop.name] = error;
+      }
+    });
+    // statement required edge inputs
+    if (model.name === 'Statement') {
+      ['impliedBy', 'supportedBy'].forEach((prop) => {
+        const edgeEquivalent = `out_${prop[0].toUpperCase()}${prop.slice(1)}`;
+        const edges = (record[edgeEquivalent] || []).map(e => ({ target: e.in }));
+        const rawValue = record[prop] || edges;
+        if (!rawValue || rawValue.length < 1) {
+          errors[prop] = 'At least one value is required';
+        }
+        newContent[prop] = rawValue;
       });
     }
-
-    // Shallow copy the array to avoid mutating it.
-    originalNode.relationships = relationships.slice(0);
-
-    this.setState({
-      form,
-      relationships,
-      originalNode,
-    });
+    this.setState({ content: newContent, errors });
   }
 
   /**
-   * Changes state base on user input.
-   * @param {Event} event - user input event.
+   * Handler for any changes to individual form fields
    */
   @boundMethod
-  handleChange(event) {
-    this.setState({ [event.target.name]: event.target.value });
-  }
+  handleValueChange(event) {
+    const { onValueChange, name } = this.props;
+    const { content } = this.state;
 
-  /**
-   * Re renders form input fields based on class editable properties.
-   * @param {Event} event - User class selection event.
-   */
-  @boundMethod
-  handleClassChange(event) {
-    const { form } = this.state;
-    const { schema } = this.props;
-    this.setState({ form: schema.initModel(form, event.target.value) });
-  }
+    const newContent = Object.assign({}, content);
+    // add the new value to the field
+    const propName = event.target.name || event.target.getAttribute('name'); // name of the form field triggering the event
+    const newValue = event.target.value;
 
-  /**
-   * Deletes target node.
-   */
-  @boundMethod
-  async handleDeleteNode() {
-    const { handleDelete } = this.props;
-    this.setState({ notificationDrawerOpen: true, loading: true });
-    await handleDelete();
-    this.setState({ loading: false });
-  }
+    newContent[propName] = newValue;
 
-
-  /**
-   * Changes form state based on user input.
-   * @param {Event} event - user input event.
-   */
-  @boundMethod
-  handleFormChange(event) {
-    const { form } = this.state;
-    const { schema } = this.props;
-    const { name, value } = event.target;
-    form[name] = value;
-    if (name.includes('.data') && value) {
-      form[name.split('.')[0]] = schema.getPreview(value);
+    this.populateFromRecord(newContent);
+    if (onValueChange) {
+      // propogate the event to the parent container
+      onValueChange({
+        target: {
+          name,
+          value: newContent,
+        },
+      });
     }
-    this.setState({ form, errorFields: [] });
+  }
+
+  @boundMethod
+  handleExpand() {
+    const { collapseOpen } = this.state;
+    this.setState({ collapseOpen: !collapseOpen });
+  }
+
+  @boundMethod
+  async handleAction(handler) {
+    const { content, errors } = this.state;
+
+    if (handler) {
+      await handler({
+        content, errors,
+      });
+    }
   }
 
   /**
-   * Validates form and calls submission parent method with the form and
-   * relationships data.
-   * @param {Event} event - Submit event.
+   * Given some ordering of fields (possibly grouped) return the set of fields
    */
-  @boundMethod
-  async handleSubmit(event) {
-    if (event) {
-      event.preventDefault();
-    }
-    const { form, relationships, originalNode } = this.state;
-    const { handleSubmit, schema } = this.props;
+  renderFieldGroup(ordering) {
+    const { schema } = this.context;
+    const { variant } = this.props;
+    const { content, errors } = this.state;
 
-    const editableProps = schema.getProperties(form);
-    // Validates form
-    let formIsInvalid = false;
-    const errorFields = [];
-    editableProps.forEach((prop) => {
-      if (prop.mandatory) {
-        if (prop.type === 'link' && !(form[`${prop.name}.data`] && form[`${prop.name}.data`]['@rid'])) {
-          errorFields.push(prop.name);
-          formIsInvalid = true;
-        } else if (prop.type !== 'boolean' && !form[prop.name]) {
-          errorFields.push(prop.name);
-          formIsInvalid = true;
-        }
-      }
-    });
-    if (formIsInvalid) {
-      this.setState({ errorFields });
-    } else {
-      this.setState({ loading: true, notificationDrawerOpen: true });
-      if (await handleSubmit(form, relationships, originalNode)) {
-        this.setState({ loading: false });
+    const model = schema.get(content);
+    const { properties } = model;
+
+    // get the form content
+    const fields = [];
+
+    ordering.forEach((item) => {
+      if (item instanceof Array) { // subgrouping
+        const key = item.join('--');
+        fields.push((
+          <div key={key} className="node-form__content-subgroup">
+            {this.renderFieldGroup(item)}
+          </div>
+        ));
       } else {
-        this.setState({ notificationDrawerOpen: false });
+        const prop = properties[item];
+        const { name } = prop;
+        const wrapper = FormField({
+          model: prop,
+          value: content[name],
+          error: errors[name],
+          onValueChange: this.handleValueChange,
+          schema,
+          variant,
+          disabled: variant === FORM_VARIANT.VIEW,
+        });
+        fields.push(wrapper);
       }
-    }
+    });
+
+    return fields;
   }
 
+  /**
+   * Renders the two statement specific input fields (impliedBy and SupportedBy)
+   */
+  renderStatementFields() {
+    // cache disabling related to: https://github.com/JedWatson/react-select/issues/2582
+    const { schema } = this.context;
+    const { content } = this.state;
+    const { variant } = this.props;
+
+    return (
+      <React.Fragment key="statement-content">
+        <StatementSentence
+          schema={schema}
+          content={content}
+        />
+        <PutativeEdgeField
+          disableCache
+          label="ImpliedBy"
+          linkedClassName="Biomarker"
+          name="impliedBy"
+          onValueChange={this.handleValueChange}
+          schema={schema}
+          value={content.impliedBy}
+          description="Conditions that when combined imply the statement"
+          disabled={variant === FORM_VARIANT.VIEW}
+        />
+        <PutativeEdgeField
+          disableCache
+          label="SupportedBy"
+          linkedClassName="Evidence"
+          name="supportedBy"
+          onValueChange={this.handleValueChange}
+          schema={schema}
+          value={content.supportedBy}
+          description="Publications and Records that support the conclusion of the current statement"
+          disabled={variant === FORM_VARIANT.VIEW}
+        />
+      </React.Fragment>
+    );
+  }
 
   render() {
     const {
-      form,
-      originalNode,
-      relationships,
-      loading,
-      notificationDrawerOpen,
-      errorFields,
-    } = this.state;
-    const {
-      schema,
+      className,
+      isEmbedded,
+      modelChoices,
+      modelName,
+      onSubmit,
+      onDelete,
+      value,
       variant,
-      handleFinish,
-      classes,
-      is409,
     } = this.props;
+    const { schema } = this.context;
+    const {
+      content,
+      errors,
+      collapseOpen,
+    } = this.state;
+    const model = schema.get(content);
+    let edges = isEmbedded
+      ? []
+      : schema.getEdges(value || {});
+    const isStatement = model && model.name === 'Statement';
+    if (isStatement) {
+      edges = edges.filter(e => !['SupportedBy', 'ImpliedBy'].includes(e[CLASS_MODEL_PROP]));
+    }
 
-    // Wait for form to get initialized
-    if (!form) return null;
+    if (modelChoices.length === 0) {
+      if (content[CLASS_MODEL_PROP]) {
+        modelChoices.push(content[CLASS_MODEL_PROP]);
+      } else if (variant === FORM_VARIANT.NEW) {
+        modelChoices.push(
+          ...schema.get(modelName || 'V').descendantTree(true).map(m => ({
+            label: m.name, value: m.name, key: m.name, caption: m.description,
+          })),
+        );
+        modelChoices.sort((a, b) => a.label.localeCompare(b.label));
+      }
+    }
 
-    const editableProps = schema.getProperties(form);
+    const { extraFields, fields } = this.sortAndGroupFields();
+
+    // Select the class model to build the rest of the form
+    const classSelect = FormField({
+      model: Object.assign(
+        {},
+        model
+          ? model.properties[CLASS_MODEL_PROP]
+          : {},
+        { choices: modelChoices, required: true, name: CLASS_MODEL_PROP },
+      ),
+      value: content[CLASS_MODEL_PROP],
+      error: errors[CLASS_MODEL_PROP],
+      onValueChange: this.handleValueChange,
+      disabled: modelChoices.length < 2 || (variant !== FORM_VARIANT.NEW && !isEmbedded),
+      schema,
+      className: 'node-form__class-select',
+    });
 
     return (
-      <div className="node-form-wrapper">
-        <NotificationDrawer
-          open={notificationDrawerOpen}
-          loading={loading}
-          handleFinish={handleFinish}
-        />
-        <div className="form-grid">
-          <div className="flexbox">
-            <Paper className="param-section" elevation={4}>
-              <Typography variant="h5">
-                Basic Parameters
-              </Typography>
-              <List component="nav">
-                {variant === 'edit' || (classes && classes.length === 1) ? (
-                  <>
-                    <ListItem>
-                      <ListItemText
-                        primary="Class:"
-                        secondary={originalNode['@class']}
-                        secondaryTypographyProps={{ variant: 'h6', color: 'default' }}
-                      />
-                    </ListItem>
-                    <Divider />
-                  </>
-                )
-                  : (
-                    <>
-                      <ListItem>
-                        <ResourceSelectComponent
-                          value={form['@class']}
-                          onChange={this.handleClassChange}
-                          name="newNodeClass"
-                          label="Class"
-                          resources={classes || schema.getOntologies().filter(o => o.name !== 'Ontology')}
-                        >
-                          {resource => (
-                            <MenuItem key={resource.name} value={resource.name}>
-                              {util.antiCamelCase(resource.name)}
-                            </MenuItem>
-                          )}
-                        </ResourceSelectComponent>
-                      </ListItem>
-                      <Divider />
-                    </>
-                  )}
-                <FormTemplater
-                  model={form}
-                  propSchemas={editableProps}
-                  schema={schema}
-                  onChange={this.handleFormChange}
-                  sort={util.sortFields(DEFAULT_ORDER)}
-                  pairs={{
-                    range: ['start', 'end'],
-                    sourceId: ['sourceId', 'sourceIdVersion'],
-                    trialRange: ['startYear', 'completionYear'],
-                    location: ['country', 'city'],
-                  }}
-                  errorFields={errorFields}
-                />
-              </List>
-            </Paper>
-            <Paper className="param-section forms-lists" elevation={4}>
-              <RelationshipsForm
-                schema={schema}
-                relationships={relationships}
-                nodeRid={form['@rid']}
-                name="relationships"
-                onChange={this.handleChange}
+      <div className={`node-form ${className}`}>
+        <div className="node-form__content node-form__content--long">
+          {classSelect}
+          {isStatement && variant !== FORM_VARIANT.EDIT && this.renderStatementFields()}
+        </div>
+        <div className="node-form__content">
+          {model && this.renderFieldGroup(fields)}
+        </div>
+        {extraFields.length > 0 && (
+          <>
+            <ListItem button onClick={this.handleExpand}>
+              <ListItemText
+                primary={
+                  collapseOpen
+                    ? 'Close to hide optional fields'
+                    : 'Expand to see all optional fields'
+                }
               />
-            </Paper>
-          </div>
-          <Paper className="form-btns" elevation={4}>
-            {variant === 'edit' && (
+              {collapseOpen ? <ExpandLess /> : <ExpandMore />}
+            </ListItem>
+            <Collapse in={collapseOpen} timeout="auto" unmountOnExit>
+              <div className="node-form__content">
+                {model && this.renderFieldGroup(extraFields)}
+              </div>
+            </Collapse>
+          </>
+        )}
+        {!isEmbedded && variant !== FORM_VARIANT.VIEW && (
+          <div className="node-form__action-buttons">
+            {onDelete && variant === FORM_VARIANT.EDIT && (
               <ActionButton
-                requireConfirm
-                id="delete-btn"
-                onClick={this.handleDeleteNode}
-                message="Are you sure you want to delete the node?"
+                onClick={() => this.handleAction(onDelete)}
+                variant="outlined"
+                size="large"
+                message="Are you sure you want to delete this record?"
               >
-                Delete
+                DELETE
               </ActionButton>
             )}
-            {is409 && (
-              <Typography
-                style={{ margin: 'auto', marginRight: 8 }}
-                color="error"
+            {onSubmit && (
+              <ActionButton
+                onClick={() => this.handleAction(onSubmit)}
+                variant="contained"
+                color="primary"
+                size="large"
+                requireConfirm={false}
               >
-                Record already exists
-              </Typography>
+                {variant === FORM_VARIANT.EDIT
+                  ? 'SUBMIT CHANGES'
+                  : 'SUBMIT'
+                }
+              </ActionButton>
             )}
-            <ActionButton
-              onClick={this.handleSubmit}
-              requireConfirm={false}
-              id="submit-btn"
-            >
-              {variant === 'edit' ? 'Confirm Changes' : 'Submit'}
-            </ActionButton>
-          </Paper>
-        </div>
+          </div>
+        )}
+        {!isEmbedded && variant === FORM_VARIANT.VIEW && edges.length > 0 && (
+          <div className="node-form__related-nodes">
+            <Typography variant="h6" component="h2">
+              Related Nodes
+            </Typography>
+            <EdgeTable
+              values={edges}
+              sourceNodeId={content['@rid']}
+            />
+          </div>
+        )}
       </div>
     );
   }
 }
 
-export default OntologyFormComponent;
+export default BaseRecordForm;

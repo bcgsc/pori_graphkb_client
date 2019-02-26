@@ -16,7 +16,8 @@ import SearchIcon from '@material-ui/icons/Search';
 import Downshift from 'downshift';
 
 import './AutoSearchBase.scss';
-import RecordChip from '../RecordChip';
+import DetailChip from '../DetailChip';
+import { KBContext } from '../KBContext';
 
 const PROGRESS_SPINNER_SIZE = 20;
 
@@ -24,7 +25,6 @@ const PROGRESS_SPINNER_SIZE = 20;
  * Base component for all autosearch components. Uses Downshift and Material-UI
  * TextField components.
  * @property {object} props
- * @property {Object} props.schema - Knowledgebase schema object.
  * @property {string} props.value - specified value for two way binding.
  * @property {function} props.onChange - Handler for user typing event.
  * @property {function} props.onSelect - Handler for selection of a displayed option.
@@ -48,8 +48,9 @@ const PROGRESS_SPINNER_SIZE = 20;
  * component.
  */
 class AutoSearchBase extends Component {
+  static contextType = KBContext;
+
   static propTypes = {
-    schema: PropTypes.object,
     value: PropTypes.string,
     onChange: PropTypes.func,
     onSelect: PropTypes.func,
@@ -93,7 +94,6 @@ class AutoSearchBase extends Component {
     TextFieldProps: {},
     DownshiftProps: {},
     disablePortal: false,
-    schema: null,
     className: '',
   };
 
@@ -120,8 +120,8 @@ class AutoSearchBase extends Component {
       TextFieldProps,
       DownshiftProps,
       disablePortal,
-      schema,
     } = this.props;
+    const { schema } = this.context;
 
     const autoSearchResults = downshiftProps => options
       .map((item, index) => children(item, index, downshiftProps));
@@ -175,10 +175,17 @@ class AutoSearchBase extends Component {
                     ) : null,
                     startAdornment: selected
                       ? (
-                        <RecordChip
+                        <DetailChip
                           onDelete={() => onClear ? onClear() : null}
-                          record={selected}
-                          schema={schema}
+                          details={selected}
+                          label={schema
+                            ? schema.getPreview(selected)
+                            : `${selected}`
+                          }
+                          valueToString={record => `${record
+                            ? record['@rid'] || record
+                            : record}`
+                          }
                         />
                       ) : null,
                   }}

@@ -1,8 +1,13 @@
+import kbSchema from '@bcgsc/knowledgebase-schema';
+
+const { schema: SCHEMA_DEFN } = kbSchema;
+
+
 /**
  * Knowledgebase schema.
  */
 class Schema {
-  constructor(schema) {
+  constructor(schema = SCHEMA_DEFN) {
     this.schema = schema;
   }
 

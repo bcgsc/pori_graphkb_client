@@ -9,6 +9,10 @@ const { schema: SCHEMA_DEFN } = kbSchema;
 class Schema {
   constructor(schema = SCHEMA_DEFN) {
     this.schema = schema;
+    this.normalizedModelNames = {};
+    Object.values(schema).forEach((model) => {
+      this.normalizedModelNames[model.name.toLowerCase()] = model;
+    });
   }
 
   /**
@@ -20,7 +24,10 @@ class Schema {
     if (obj && typeof obj === 'object' && obj['@class']) {
       cls = obj['@class'];
     }
-    return this.schema[cls];
+    return this.normalizedModelNames[typeof cls === 'string'
+      ? cls.toLowerCase()
+      : cls
+    ];
   }
 
   /**

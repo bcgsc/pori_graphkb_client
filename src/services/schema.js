@@ -1,3 +1,5 @@
+import { boundMethod } from 'autobind-decorator';
+
 import kbSchema from '@bcgsc/knowledgebase-schema';
 
 const { schema: SCHEMA_DEFN } = kbSchema;
@@ -19,6 +21,7 @@ class Schema {
    * Returns Knowledgebase class schema.
    * @param {Object|string} obj - Record to fetch schema of.
    */
+  @boundMethod
   get(obj) {
     let cls = obj;
     if (obj && typeof obj === 'object' && obj['@class']) {
@@ -34,6 +37,7 @@ class Schema {
    * Returns preview of given object based on its '@class' value
    * @param {Object} obj - Record to be parsed.
    */
+  @boundMethod
   getPreview(obj) {
     try {
       return this.schema[obj['@class']].getPreview(obj);

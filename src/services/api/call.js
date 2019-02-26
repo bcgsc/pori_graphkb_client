@@ -30,11 +30,18 @@ class ApiCall {
      * Sends request to server, appending all global headers and handling responses and errors.
      * @param {string} endpoint - URL endpoint
      * @param {Object} init - Request properties.
+     * @param {Object} requestOptions - options to be passed to the Request contstructor
+     * @param {object} callOptions - other options
+     * @param {object} callOptions.forceListReturn - always return a list for succesfull requests
      */
-  constructor(endpoint, init) {
+  constructor(endpoint, requestOptions, callOptions) {
+    const {
+      forceListReturn = false,
+    } = callOptions || {};
     this.endpoint = endpoint;
-    this.init = init;
+    this.requestOptions = requestOptions;
     this.controller = null;
+    this.forceListReturn = forceListReturn;
   }
 
   /**
@@ -51,13 +58,12 @@ class ApiCall {
      * or login pages
      */
   async request() {
-    const initWithInterceptors = {
-      ...this.init,
-      headers: getHeaders(),
-    };
     this.controller = new AbortController();
     const { signal } = this.controller;
-    const request = new Request(API_BASE_URL + this.endpoint, initWithInterceptors);
+    const request = new Request(API_BASE_URL + this.endpoint, {
+      ...this.requestOptions,
+      headers: getHeaders(),
+    });
     let response;
     try {
       response = await fetch(request, { signal });
@@ -70,7 +76,15 @@ class ApiCall {
     }
     if (response.ok) {
       const body = await response.json();
-      return jc.retrocycle(body);
+      const decycled = jc.retrocycle(body);
+      const result = decycled.result !== undefined
+        ? decycled.result
+        : decycled;
+
+      if (this.forceListReturn && !Array.isArray(result)) {
+        return [result];
+      }
+      return result;
     }
 
     const { status, statusText, url } = response;
@@ -98,5 +112,26 @@ class ApiCall {
   }
 }
 
+/**
+ * Set of Api calls to be co-requested and co-aborted
+ */
+class ApiCallSet {
+  constructor(calls = []) {
+    this.calls = calls;
+  }
 
-export default ApiCall;
+  push(call) {
+    this.calls.push(call);
+  }
+
+  abort() {
+    this.calls.forEach(controller => controller.abort());
+  }
+
+  async request() {
+    return Promise.all(this.calls.map(call => async () => call.request()));
+  }
+}
+
+
+export { ApiCall, ApiCallSet };

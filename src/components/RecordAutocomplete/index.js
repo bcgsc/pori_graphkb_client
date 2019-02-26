@@ -45,11 +45,14 @@ class RecordAutocomplete extends React.Component {
   static propTypes = {
     className: PropTypes.string,
     components: PropTypes.object,
+    debounceMs: PropTypes.number,
     DetailChipProps: PropTypes.object,
+    disableCache: PropTypes.bool,
     disabled: PropTypes.bool,
-    isMulti: PropTypes.bool,
+    errorText: PropTypes.string,
     getOptionKey: PropTypes.func,
     getOptionLabel: PropTypes.func,
+    isMulti: PropTypes.bool,
     label: PropTypes.string,
     minSearchLength: PropTypes.number,
     name: PropTypes.string.isRequired,
@@ -57,23 +60,31 @@ class RecordAutocomplete extends React.Component {
     placeholder: PropTypes.string,
     required: PropTypes.bool,
     searchHandler: PropTypes.func.isRequired,
-    value: PropTypes.object,
-    debounceMs: PropTypes.number,
+    value: PropTypes.oneOfType(PropTypes.object, PropTypes.arrayOf(PropTypes.object)),
   };
 
   static defaultProps = {
     className: '',
     components: defaultComponents,
     debounceMs: 300,
-    DetailChipProps: {},
+    DetailChipProps: {
+      valueToString: (record) => {
+        if (record && record['@rid']) {
+          return record['@rid'];
+        }
+        return `${record}`;
+      },
+    },
+    disableCache: false,
     disabled: false,
+    errorText: '',
     getOptionKey: opt => opt['@rid'],
     getOptionLabel: opt => opt.name,
     isMulti: false,
     label: '',
     minSearchLength: 4,
     onChange: () => {},
-    placeholder: 'Search for an Existing Record',
+    placeholder: 'Search for an Existing Record by Name or ID',
     required: false,
     value: null,
   };
@@ -157,7 +168,9 @@ class RecordAutocomplete extends React.Component {
       className,
       components,
       DetailChipProps,
+      disableCache,
       disabled,
+      errorText,
       getOptionKey,
       getOptionLabel,
       isMulti,
@@ -177,10 +190,11 @@ class RecordAutocomplete extends React.Component {
         <NoSsr>
           <AsyncSelect
             value={selected}
-            cacheOptions
+            cacheOptions={!disableCache}
             defaultOptions={minSearchLength === 0}
             components={components}
             DetailChipProps={DetailChipProps}
+            error={Boolean(errorText)}
             onChange={this.handleChange}
             onInputChange={this.handleInputChange}
             getOptionValue={getOptionKey} // used to compare options for equality
@@ -197,13 +211,13 @@ class RecordAutocomplete extends React.Component {
             }
             textFieldProps={{
               InputProps: {
-                disabled: disabled || !!selected,
-                disableUnderline: disabled || !!selected,
+                disabled: disabled || Boolean(selected),
+                disableUnderline: disabled || (Boolean(selected) && !isMulti),
               },
-              error: !!helperText,
-              helperText,
+              error: Boolean(helperText || errorText),
+              helperText: helperText || errorText,
               InputLabelProps: {
-                shrink: !!selected || !(disabled && !selected),
+                shrink: Boolean(selected) || !(disabled && !selected),
               },
               required,
               label,

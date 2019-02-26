@@ -50,10 +50,10 @@ describe('<AutoSearchBase />', () => {
         selected={{ '@rid': '#1', name: 'test record' }}
       />
     ));
-    expect(wrapper.find('.record-chip__root').length).toBeGreaterThan(0);
-    wrapper.find('.record-chip__root').first().simulate('click');
+    expect(wrapper.find('.detail-chip__root').length).toBeGreaterThan(0);
+    wrapper.find('.detail-chip__root').first().simulate('click');
 
     wrapper.setProps({ selected: null });
-    expect(wrapper.find('.record-chip__root')).toHaveLength(0);
+    expect(wrapper.find('.detail-chip__root')).toHaveLength(0);
   });
 });

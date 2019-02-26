@@ -7,7 +7,7 @@ import * as jc from 'json-cycle';
 import util from '../util';
 import config from '../../static/config';
 
-import ApiCall from './call';
+import { ApiCall, ApiCallSet } from './call';
 
 
 const {
@@ -15,29 +15,32 @@ const {
 } = config;
 const KB_SEP_CHARS = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
 
+const ID_PROP = '@rid';
+const CLASS_PROP = '@class';
+
 
 /**
  * Sends PATCH request to api.
  * @param {string} endpoint - URL endpoint.
  * @param {Object} payload - PATCH payload.
  */
-const patch = (endpoint, payload) => {
+const patch = (endpoint, payload, callOptions) => {
   const init = {
     method: 'PATCH',
     body: jc.stringify(payload),
   };
-  return new ApiCall(endpoint, init);
+  return new ApiCall(endpoint, init, callOptions);
 };
 
 /**
  * Sends GET request to api.
  * @param {string} endpoint - URL endpoint.
  */
-const get = (endpoint) => {
+const get = (endpoint, callOptions) => {
   const init = {
     method: 'GET',
   };
-  return new ApiCall(endpoint, init);
+  return new ApiCall(endpoint, init, callOptions);
 };
 
 /**
@@ -45,25 +48,25 @@ const get = (endpoint) => {
  * @param {string} endpoint - URL endpoint.
  * @param {Object} payload - POST payload.
  */
-const post = (endpoint, payload) => {
+const post = (endpoint, payload, callOptions) => {
   const init = {
     method: 'POST',
     body: jc.stringify(payload),
   };
 
-  return new ApiCall(endpoint, init);
+  return new ApiCall(endpoint, init, callOptions);
 };
 
 /**
  * Sends DELETE request to api.
  * @param {string} endpoint - URL endpoint.
  */
-const del = (endpoint) => {
+const del = (endpoint, callOptions) => {
   const init = {
     method: 'DELETE',
   };
 
-  return new ApiCall(endpoint, init);
+  return new ApiCall(endpoint, init, callOptions);
 };
 
 /**
@@ -73,7 +76,7 @@ const del = (endpoint) => {
  * @param {string} value - Query input string.
  * @param {number} limit - Limit for number of returned matches.
  */
-const autoSearch = (endpoint, property, value, limit) => {
+const autoSearch = (endpoint, property, value, limit, callOptions) => {
   if (!value || !value.trim()) return { result: [] };
 
   // Matches Knowledgebase api separator characters
@@ -95,7 +98,7 @@ const autoSearch = (endpoint, property, value, limit) => {
     extras += '&@class=!Publication';
   }
 
-  return get(`/${endpoint}?${query}${orStr && `&${orStr}`}&${extras}`);
+  return get(`/${endpoint}?${query}${orStr && `&${orStr}`}&${extras}`, callOptions);
 };
 
 /**
@@ -104,10 +107,10 @@ const autoSearch = (endpoint, property, value, limit) => {
  * @param {Object} schema - Knowledgebase db schema.
  * @param {string} [rid=''] - Record id to post edges to.
  */
-const submitEdges = (edges, schema, rid = '') => {
-  const newEdges = [];
+const submitEdges = (edges, schema, rid = '', callOptions) => {
+  const newEdges = new ApiCallSet();
   for (let i = 0; i < edges.length; i += 1) {
-    const properties = schema.getProperties(edges[i]['@class']);
+    const properties = schema.getProperties(edges[i][CLASS_PROP]);
     const edge = util.parsePayload(edges[i], properties);
     if (edge.in === '#node_rid') {
       edge.in = rid;
@@ -115,7 +118,7 @@ const submitEdges = (edges, schema, rid = '') => {
       edge.out = rid;
     }
 
-    newEdges.push(post(schema.get(edges[i]['@class']).routeName, edge));
+    newEdges.push(post(schema.get(edges[i][CLASS_PROP]).routeName, edge, callOptions));
   }
   return newEdges;
 };
@@ -126,28 +129,29 @@ const submitEdges = (edges, schema, rid = '') => {
  * @param {Array} newEdges - list of current relationships
  * @param {Object} schema - Knowledgebase db schema.
  */
-const patchEdges = (originalEdges, newEdges, schema) => {
-  const changedEdges = [];
+const patchEdges = (originalEdges, newEdges, schema, callOptions) => {
+  const changedEdges = new ApiCallSet();
   /* Checks for differences in original node and submitted form. */
 
   // Deletes edges that are no longer present on the edited node.
   originalEdges.forEach((edge) => {
-    const matched = newEdges.find(r => r['@rid'] === edge['@rid']);
+    const matched = newEdges.find(r => r[ID_PROP] === edge[ID_PROP]);
     if (!matched || matched.deleted) {
-      const { routeName } = schema.get(edge['@class']);
+      const { routeName } = schema.get(edge[CLASS_PROP]);
       changedEdges.push(del(
-        `${routeName}/${edge['@rid'].slice(1)}`,
+        `${routeName}/${edge[ID_PROP].slice(1)}`,
+        callOptions,
       ));
     }
   });
 
   // Adds new edges that were not present on the original node.
   newEdges.forEach((relationship) => {
-    if (!originalEdges.find(r => r['@rid'] === relationship['@rid'])) {
-      const properties = schema.getProperties(relationship['@class']);
-      const route = schema.getRoute(relationship['@class']);
+    if (!originalEdges.find(r => r[ID_PROP] === relationship[ID_PROP])) {
+      const properties = schema.getProperties(relationship[CLASS_PROP]);
+      const route = schema.getRoute(relationship[CLASS_PROP]);
       const payload = util.parsePayload(relationship, properties);
-      changedEdges.push(post(route, payload));
+      changedEdges.push(post(route, payload, callOptions));
     }
   });
 

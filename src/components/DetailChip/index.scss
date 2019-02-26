@@ -1,3 +1,5 @@
+@import '../../globals';
+
 .detail-chip {
   &__root {
     > div {
@@ -6,8 +8,15 @@
   }
 
   &__panel {
-    max-width: 320px;
-    min-width: 200px;
+    max-width: $readable-max;
+    min-width: $readable-min;
     padding: 16px;
+    width: 500px;
+  }
+
+  &__row {
+    :first-child {
+      max-width: min-content;
+    }
   }
 }

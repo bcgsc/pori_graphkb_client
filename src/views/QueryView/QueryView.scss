@@ -1,7 +1,7 @@
-@import "../../globals";
+@import '../../globals';
 
-.search-wrapper {
-  border: 1px solid rgba(0, 0, 0, .2);
+.search {
+  border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 4px;
   left: 0;
   margin: auto;
@@ -19,29 +19,29 @@
     right: 16px;
   }
 
-  .search-bar {
+  &__bar {
     box-sizing: border-box;
     display: flex;
     padding: 16px;
     width: 100%;
 
-    .main-search {
-      -webkit-tap-highlight-color: transparent;
-      border: none;
-      flex-grow: 1;
-      outline: none;
-    }
-
     @media (max-width: $breakpoint-mobile) {
       flex-direction: column;
-
-      .main-search {
-        width: 100%;
-      }
     }
   }
 
-  .advanced-button {
+  &__main {
+    -webkit-tap-highlight-color: transparent;
+    border: none;
+    flex-grow: 1;
+    outline: none;
+
+    @media (max-width: $breakpoint-mobile) {
+      width: 100%;
+    }
+  }
+
+  &__advanced-button {
     display: block;
     margin: auto;
   }

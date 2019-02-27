@@ -13,15 +13,11 @@ import {
   FormControlLabel,
 } from '@material-ui/core';
 import kbp from '@bcgsc/knowledgebase-parser';
-import * as qs from 'querystring';
+import * as qs from 'qs';
 import SearchIcon from '@material-ui/icons/Search';
 
 import './QueryView.scss';
-import AutoSearchSingle from '../../components/AutoSearchSingle';
 import { KBContext } from '../../components/KBContext';
-import util from '../../services/util';
-
-const KB_SEP_CHARS = new RegExp(/[\s:\\;,./+*=!?[\]()]+/, 'gm');
 
 const ENTER_KEYCODE = 13;
 
@@ -40,48 +36,22 @@ class QueryView extends Component {
 
   constructor(props) {
     super(props);
-    const { state } = props.history.location;
-    const initName = state
-      && state.mainParams
-      && state.mainParams.name
-      ? state.mainParams.name
-      : '';
-
     this.state = {
-      str: initName,
-      disabled: false,
+      value: '',
       hgvs: false,
       variantError: '',
       variant: {},
-      queryable: false,
     };
   }
 
-  /**
-   * Calls submit function for currently active tab.
-   */
   @boundMethod
-  handleSubmit() {
+  searchKeyword() {
     const {
-      hgvs,
-    } = this.state;
-
-    if (hgvs) {
-      this.submitVariant();
-    } else {
-      this.submitStatementOrOntology();
-    }
-  }
-
-  @boundMethod
-  submitStatementOrOntology() {
-    const {
-      str,
-      disabled,
+      value,
     } = this.state;
     const { history } = this.props;
-    if (str && !disabled) {
-      const trimmed = String(str).trim().toLowerCase();
+    if (value) {
+      const trimmed = String(value).trim().toLowerCase();
       history.push({
         pathname: '/data/table',
         search: qs.stringify({ keyword: trimmed }),
@@ -93,33 +63,28 @@ class QueryView extends Component {
    * Stringifies all queryable properties of parsed variant.
    */
   @boundMethod
-  submitVariant() {
+  searchByHGVS() {
     const {
-      str,
       variant,
-      queryable,
     } = this.state;
     const { history } = this.props;
     const { schema } = this.context;
 
-    if (str && queryable) {
-      ['type', 'reference1', 'reference2'].forEach((k) => { variant[k] = { name: variant[k] }; });
-      const payload = util.parsePayload(
-        variant,
-        schema.getProperties('PositionalVariant').filter(p => !p.name.includes('Repr')),
-        [],
-        true,
-      );
-      Object.keys(payload).forEach((k) => {
-        const trimmed = String(payload[k]).trim().toLowerCase();
-        if (!trimmed.split(KB_SEP_CHARS).some(chunk => chunk.length < 4)) {
-          payload[k] = `~${trimmed}`;
-        } else {
-          payload[k] = trimmed;
+    if (variant) {
+      const params = {
+        '@class': 'PositionalVariant',
+      };
+      ['type', 'reference1', 'reference2'].forEach((param) => {
+        if (variant[param]) {
+          params[param] = { name: variant[param] };
         }
       });
-      payload['@class'] = 'PositionalVariant';
-      const search = qs.stringify(payload);
+      schema.getProperties('PositionalVariant').filter(p => !p.name.includes('Repr')).forEach((prop) => {
+        if (prop.type !== 'link' && variant[prop.name] && !prop.generated) {
+          params[prop.name] = variant[prop.name];
+        }
+      });
+      const search = qs.stringify(params);
 
       history.push({
         pathname: '/data/table',
@@ -129,115 +94,115 @@ class QueryView extends Component {
   }
 
   /**
-   * Updates state from user input.
-   * @param {Event} event - user input event.
+   * Calls submit function for currently active tab.
    */
   @boundMethod
-  handleChange(event) {
-    const { schema } = this.context;
-    const { name, value } = event.target;
-    if (name && name.includes('.data') && value) {
-      this.setState({ [name.split('.data')[0]]: schema.getPreview(value) });
-    } else {
-      this.setState({ [name]: value, disabled: false });
+  handleSubmit() {
+    const {
+      hgvs, variant, value,
+    } = this.state;
+
+    if (value) {
+      if (hgvs) {
+        if (variant || !value) {
+          this.searchByHGVS();
+        }
+      } else {
+        this.searchKeyword();
+      }
     }
   }
 
   /**
-   * Binds autosearch disabled flag to search button.
+   * Updates state from user input.
+   * @param {Event} event - user input event.
    */
   @boundMethod
-  handleInvalid() {
-    this.setState({ disabled: true });
+  handleChange(event, hgvsChecked = false) {
+    const { hgvs } = this.state;
+    const { target: { value } } = event;
+    const hgvsFlag = hgvsChecked
+      ? !hgvs
+      : hgvs;
+
+    if (value) {
+      // try to parse the variant notation
+      try {
+        const parsed = kbp.variant.parse(value);
+        this.setState({ variant: parsed, variantError: '' });
+        if (!hgvsChecked) {
+          this.setState({ hgvs: true });
+        }
+      } catch (err) {
+        // if it was partially parsed use that result
+        if (hgvsFlag) {
+          if (err.content && err.content.parsed) {
+            const { content: { parsed: { variantString, ...parsed } } } = err;
+            this.setState({ variant: parsed, variantError: `${err || err.message}` });
+          } else {
+            this.setState({ variant: null, variantError: `${err || err.message}` });
+          }
+        }
+      }
+    }
+    this.setState({ value });
   }
 
   /**
-   * Updates variant state based on shorthand string.
+   * Handles the user clicking the HGVS checkbox.
+   * Toggles the current state of the flag
    */
   @boundMethod
-  handleVariantParse() {
-    const { str } = this.state;
-    try {
-      this.setState({
-        variant: kbp.variant.parse(str),
-        variantError: '',
-      });
-    } catch (error) {
-      // If anything is parsed, use that..
-      const update = { variantError: str ? error.message : '', queryable: false };
-      if (error.content && error.content.parsed) {
-        const { variantString, ...parsed } = error.content.parsed;
-        if (Object.keys(parsed).length !== 0) {
-          update.variant = parsed;
-          update.queryable = true;
-        }
-      }
-      this.setState(update);
+  handleClickHgvs() {
+    const { hgvs, value } = this.state;
+    this.setState({ hgvs: !hgvs });
+    if (value) {
+      this.handleChange({ target: { value } }, true);
     }
   }
 
   render() {
     const {
-      str,
+      value,
       hgvs,
       variantError,
-      queryable,
     } = this.state;
     const { history } = this.props;
 
     return (
-      <div className="search-wrapper">
-        <div className="search-bar">
+      <div className="search">
+        <div className="search__bar">
           <div
-            className="main-search"
+            className="search__main"
             onKeyUp={event => event.keyCode === ENTER_KEYCODE && this.handleSubmit()}
             role="textbox"
             tabIndex={0}
           >
-            {!hgvs && (
-              <AutoSearchSingle
-                value={str}
-                onChange={this.handleChange}
-                placeholder="Search by Keyword"
-                limit={30}
-                name="str"
-                onInvalid={this.handleInvalid}
-                onAction={this.handleSubmit}
-                endAdornment={(
-                  <IconButton id="search-btn" onClick={this.handleSubmit} color="primary">
-                    <SearchIcon />
-                  </IconButton>
-                )}
-              />
-            )}
-            {hgvs && (
-              <div>
-                <TextField
-                  placeholder="Search by HGVS Shorthand"
-                  fullWidth
-                  value={str}
-                  name="str"
-                  onChange={this.handleChange}
-                  onKeyUp={this.handleVariantParse}
-                  error={!!(variantError && !queryable)}
-                  helperText={variantError}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment>
-                        <IconButton id="search-btn" onClick={this.handleSubmit} color="primary">
-                          <SearchIcon />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </div>
-            )}
+            <TextField
+              fullWidth
+              value={value}
+              onChange={this.handleChange}
+              placeholder={hgvs
+                ? 'Search by HGVS Shorthand'
+                : 'Search by Keyword'
+              }
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment>
+                    <IconButton onClick={this.handleSubmit} color="primary">
+                      <SearchIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              error={Boolean(variantError)}
+              helperText={variantError}
+            />
             <FormControlLabel
               control={<Checkbox />}
               label="HGVS Shorthand"
               checked={hgvs}
-              onChange={() => this.handleChange({ target: { value: !hgvs, name: 'hgvs' } })}
+              onChange={this.handleClickHgvs}
               color="primary"
             />
           </div>
@@ -245,7 +210,7 @@ class QueryView extends Component {
         <Button
           variant="outlined"
           color="secondary"
-          className="advanced-button"
+          className="search__advanced-button"
           onClick={() => history.push({ pathname: '/query/advanced' })}
         >
           Advanced Search

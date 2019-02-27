@@ -20,6 +20,7 @@ import './QueryView.scss';
 import { KBContext } from '../../components/KBContext';
 
 const ENTER_KEYCODE = 13;
+const MIN_WORD_LENGTH = 4;
 
 /**
  * View for simple search by name query. Form submissions are passed through the URL to
@@ -40,6 +41,7 @@ class QueryView extends Component {
       value: '',
       hgvs: false,
       variantError: '',
+      keyWordError: '',
       variant: {},
     };
   }
@@ -51,11 +53,19 @@ class QueryView extends Component {
     } = this.state;
     const { history } = this.props;
     if (value) {
-      const trimmed = String(value).trim().toLowerCase();
-      history.push({
-        pathname: '/data/table',
-        search: qs.stringify({ keyword: trimmed }),
-      });
+      const trimmed = String(value)
+        .trim()
+        .toLowerCase()
+        .split(/\s+/)
+        .filter(word => word.length >= MIN_WORD_LENGTH);
+      if (!trimmed.length) {
+        this.setState({ keyWordError: `Must have 1 or more terms of at least ${MIN_WORD_LENGTH} characters` });
+      } else {
+        history.push({
+          pathname: '/data/table',
+          search: qs.stringify({ keyword: trimmed.join(' ') }),
+        });
+      }
     }
   }
 
@@ -121,7 +131,7 @@ class QueryView extends Component {
   handleChange(event, hgvsChecked = false) {
     const { hgvs } = this.state;
     const { target: { value } } = event;
-    const hgvsFlag = hgvsChecked
+    let hgvsFlag = hgvsChecked
       ? !hgvs
       : hgvs;
 
@@ -129,22 +139,40 @@ class QueryView extends Component {
       // try to parse the variant notation
       try {
         const parsed = kbp.variant.parse(value);
-        this.setState({ variant: parsed, variantError: '' });
+        this.setState({ variant: parsed, variantError: '', keyWordError: '' });
         if (!hgvsChecked) {
           this.setState({ hgvs: true });
+          hgvsFlag = true;
         }
       } catch (err) {
         // if it was partially parsed use that result
         if (hgvsFlag) {
           if (err.content && err.content.parsed) {
             const { content: { parsed: { variantString, ...parsed } } } = err;
-            this.setState({ variant: parsed, variantError: `${err || err.message}` });
+            this.setState({ variant: parsed, variantError: `${err || err.message}`, keyWordError: '' });
           } else {
-            this.setState({ variant: null, variantError: `${err || err.message}` });
+            this.setState({ variant: null, variantError: `${err || err.message}`, keyWordError: '' });
           }
         }
       }
     }
+    if (!hgvsFlag) {
+      // check that the words are sufficient length
+      const trimmed = String(value)
+        .trim()
+        .toLowerCase()
+        .split(/\s+/)
+        .filter(word => word.length >= MIN_WORD_LENGTH);
+      if (!trimmed.length) {
+        this.setState({
+          keyWordError: `Must have 1 or more terms of at least ${MIN_WORD_LENGTH} characters`,
+          variantError: '',
+        });
+      } else {
+        this.setState({ keyWordError: '', variantError: '' });
+      }
+    }
+
     this.setState({ value });
   }
 
@@ -166,6 +194,7 @@ class QueryView extends Component {
       value,
       hgvs,
       variantError,
+      keyWordError,
     } = this.state;
     const { history } = this.props;
 
@@ -195,8 +224,11 @@ class QueryView extends Component {
                   </InputAdornment>
                 ),
               }}
-              error={Boolean(variantError)}
-              helperText={variantError}
+              error={(variantError && hgvs) || keyWordError}
+              helperText={hgvs
+                ? variantError
+                : keyWordError
+              }
             />
             <FormControlLabel
               control={<Checkbox />}

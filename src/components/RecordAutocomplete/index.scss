@@ -21,6 +21,14 @@
     }
   }
 
+
+  &__option {
+    font-weight: 400;
+    &--selected {
+    font-weight: 500;
+    }
+  }
+
   &__no-options-message {
     padding: 1px 2px;
   }

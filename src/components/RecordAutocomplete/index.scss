@@ -1,36 +1,29 @@
 .record-autocomplete {
   flex-grow: 1;
 
+  &__chip {
+    margin: 4px;
+  }
+
+  &__dropdown {
+    margin: 8px;
+    width: 1.5rem;
+  }
+
   &__input {
     display: flex;
     padding: 0;
   }
 
-  &__value-container {
-    align-items: center;
-    display: flex;
-    flex: 1;
-    flex-wrap: wrap;
-    overflow: hidden;
+  &__no-options-message {
+    padding: 1px 2px;
   }
-
-  &__chip {
-    margin: 4px;
-    &--focused {
-      // background: darken();
-    }
-  }
-
 
   &__option {
     font-weight: 400;
     &--selected {
-    font-weight: 500;
+      font-weight: 500;
     }
-  }
-
-  &__no-options-message {
-    padding: 1px 2px;
   }
 
   &__placeholder {
@@ -47,8 +40,11 @@
     z-index: 1;
   }
 
-  &__dropdown {
-    margin: 8px;
-    width: 1.5rem;
+  &__value-container {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    overflow: hidden;
   }
 }

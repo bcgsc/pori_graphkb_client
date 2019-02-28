@@ -20,12 +20,16 @@ class ActionButton extends React.Component {
     children: PropTypes.node.isRequired,
     message: PropTypes.string,
     className: PropTypes.string,
+    variant: PropTypes.string,
+    color: PropTypes.string,
   };
 
   static defaultProps = {
     requireConfirm: true,
-    message: '',
+    message: 'Are you sure?',
     className: '',
+    variant: 'contained',
+    color: 'primary',
   };
 
   constructor(props) {
@@ -59,21 +63,28 @@ class ActionButton extends React.Component {
 
   render() {
     const {
-      onClick, requireConfirm, message, children, className, ...rest
+      children,
+      className,
+      color,
+      message,
+      onClick,
+      requireConfirm,
+      variant,
+      ...rest
     } = this.props;
     const { dialogOpen } = this.state;
 
     return (
       <div className={`action-button ${className}`} {...rest}>
         <Button
-          variant="contained"
+          variant={variant}
           onClick={
             requireConfirm
               ? this.handleOpenDialog
               : onClick
           }
           size="large"
-          color="primary"
+          color={color}
           className="action-button__button"
         >
           {children}

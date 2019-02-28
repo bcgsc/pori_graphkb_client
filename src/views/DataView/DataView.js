@@ -166,7 +166,7 @@ class DataViewBase extends Component {
   async makeApiQuery(route, queryParams, omitted = []) {
     const call = api.get(`${route}?${qs.stringify(omit(queryParams, omitted))}`);
     this.controllers.push(call);
-    const { result } = await call.request();
+    const result = await call.request();
     return result;
   }
 
@@ -179,7 +179,7 @@ class DataViewBase extends Component {
   async makeComplexApiQuery(route, payload, omitted = []) {
     const call = api.post(route, omit(payload, omitted));
     this.controllers.push(call);
-    const { result } = await call.request();
+    const result = await call.request();
     return result;
   }
 

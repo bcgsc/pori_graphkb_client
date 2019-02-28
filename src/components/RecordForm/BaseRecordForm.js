@@ -388,7 +388,11 @@ class BaseRecordForm extends React.Component {
       errors,
       collapseOpen,
     } = this.state;
-    const model = schema.get(content);
+    let model = schema.get(content);
+    if (model.isAbstract && variant === FORM_VARIANT.NEW) {
+      model = null;
+    }
+
     let edges = isEmbedded
       ? []
       : schema.getEdges(value || {});
@@ -398,7 +402,7 @@ class BaseRecordForm extends React.Component {
     }
 
     if (modelChoices.length === 0) {
-      if (content[CLASS_MODEL_PROP]) {
+      if (content[CLASS_MODEL_PROP] && !schema.get(content).isAbstract) {
         modelChoices.push(content[CLASS_MODEL_PROP]);
       } else if (variant === FORM_VARIANT.NEW) {
         modelChoices.push(
@@ -424,7 +428,9 @@ class BaseRecordForm extends React.Component {
       value: content[CLASS_MODEL_PROP],
       error: errors[CLASS_MODEL_PROP],
       onValueChange: this.handleValueChange,
-      disabled: modelChoices.length < 2 || (variant !== FORM_VARIANT.NEW && !isEmbedded),
+      disabled: modelChoices.length < 2
+        || (variant !== FORM_VARIANT.NEW && !isEmbedded)
+        || variant === FORM_VARIANT.SEARCH,
       schema,
       className: 'node-form__class-select',
     });

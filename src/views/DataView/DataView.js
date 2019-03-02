@@ -12,10 +12,11 @@ import {
 import qs from 'qs';
 import omit from 'lodash.omit';
 
+import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
+
 import './DataView.scss';
 import { GraphComponent, DetailDrawer, TableComponent } from './components';
 import { withKB } from '../../components/KBContext';
-import { SnackbarContext } from '../../components/Snackbar';
 import api from '../../services/api';
 import config from '../../static/config';
 

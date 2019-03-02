@@ -65,13 +65,13 @@ const Option = (props) => {
   } = props;
   return (
     <MenuItem
-      className="record-autocomplete__option"
+      className={`record-autocomplete__option ${isSelected
+        ? 'record-autocomplete__option--selected'
+        : ''
+      }`}
       buttonRef={innerRef}
       selected={isFocused}
       component="div"
-      style={{
-        fontWeight: isSelected ? 500 : 400,
-      }}
       {...innerProps}
     >
       {children}

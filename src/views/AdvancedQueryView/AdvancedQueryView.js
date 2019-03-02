@@ -15,11 +15,12 @@ import {
 } from '@material-ui/core';
 import * as qs from 'querystring';
 
+import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
+
 import './AdvancedQueryView.scss';
 import FormTemplater from '../../components/FormTemplater';
 import { withKB } from '../../components/KBContext';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent';
-import { SnackbarContext } from '../../components/Snackbar';
 import util from '../../services/util';
 import auth from '../../services/auth';
 import config from '../../static/config';

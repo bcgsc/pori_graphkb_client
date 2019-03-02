@@ -125,6 +125,10 @@ class RecordAutocomplete extends React.Component {
     const { minSearchLength, searchHandler } = this.props;
 
     if (term.length >= minSearchLength) {
+      if (this.controller) {
+        // if there is already a request being executed  abort it and make a new one
+        this.controller.abort();
+      }
       this.controller = searchHandler(term);
       try {
         const result = await this.controller.request();

@@ -12,8 +12,9 @@ import JssProvider from 'react-jss/lib/JssProvider';
 import { create } from 'jss';
 
 
+import SnackbarProvider from '@bcgsc/react-snackbar-provider';
+
 import Main from './views/Main/Main';
-import { SnackbarProvider } from './components/Snackbar/Snackbar';
 
 const theme = createMuiTheme({
   direction: 'ltr',

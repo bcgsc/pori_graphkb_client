@@ -411,6 +411,17 @@ const sortFields = (order = [], prop = 'name') => (a, b) => {
     : 1;
 };
 
+/**
+ * Return the RecordId
+ */
+const recordId = (obj) => {
+  if (typeof obj === 'object' && obj['@rid']) {
+    return obj['@rid'];
+  }
+  return obj;
+};
+
+
 export default {
   antiCamelCase,
   expandEdges,
@@ -427,5 +438,6 @@ export default {
   formatStr,
   shortenString,
   parseKBType,
+  recordId,
   sortFields,
 };

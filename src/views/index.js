@@ -1,5 +1,4 @@
 import AboutView from './AboutView';
-import { AdvancedQueryView } from './AdvancedQueryView/AdvancedQueryView';
 import AdminView from './AdminView/AdminView';
 import { DataView } from './DataView/DataView';
 import ErrorView from './ErrorView/ErrorView';
@@ -10,7 +9,6 @@ import QueryBuilderView from './QueryBuilderView/QueryBuilderView';
 
 export {
   AboutView,
-  AdvancedQueryView,
   AdminView,
   DataView,
   ErrorView,

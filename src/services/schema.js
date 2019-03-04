@@ -4,6 +4,8 @@ import kbSchema from '@bcgsc/knowledgebase-schema';
 
 const { schema: SCHEMA_DEFN } = kbSchema;
 
+const MAX_LABEL_LENGTH = 30;
+
 
 /**
  * Knowledgebase schema.
@@ -34,13 +36,34 @@ class Schema {
   }
 
   /**
+   * Get a string representation of a record
+   */
+  @boundMethod
+  getLabel(obj) {
+    try {
+      let label = this.get(obj).getPreview(obj);
+      if (label.length > MAX_LABEL_LENGTH - 3) {
+        label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
+      }
+      if (obj['@rid']) {
+        label = `${label} (${obj['@rid']})`;
+      }
+      return label;
+    } catch (err) {}  // eslint-disable-line
+    try {
+      return obj['@rid'];
+    } catch (err) {} // eslint-disable-line
+    return obj;
+  }
+
+  /**
    * Returns preview of given object based on its '@class' value
    * @param {Object} obj - Record to be parsed.
    */
   @boundMethod
   getPreview(obj) {
     try {
-      return this.schema[obj['@class']].getPreview(obj);
+      return this.get(obj).getPreview(obj);
     } catch (err) {}  // eslint-disable-line
     try {
       return obj['@rid'];
@@ -64,10 +87,7 @@ class Schema {
    */
   getProperties(obj, extraProps = []) {
     const VPropKeys = this.schema.V.properties;
-    if (obj && typeof obj === 'object') {
-      obj = obj['@class'] || '';
-    }
-    const classModel = this.schema[obj];
+    const classModel = this.get(obj);
     if (!classModel) return null;
     return Object.values(classModel.properties || [])
       .filter(prop => !VPropKeys[prop.name] || extraProps.includes(prop.name));

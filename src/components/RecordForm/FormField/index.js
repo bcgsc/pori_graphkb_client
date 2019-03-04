@@ -81,12 +81,13 @@ const FormField = (props) => {
   if (type === 'boolean') {
     propComponent = (
       <BooleanField
-        error={!!error}
-        model={model}
-        onValueChange={onValueChange}
-        value={value}
         disabled={generated || disabled}
+        error={!!error}
+        label={label || model.name}
+        name={model.name}
+        onValueChange={onValueChange}
         required={mandatory}
+        value={value}
       />
     );
   } else if (type === 'embeddedset') {
@@ -137,7 +138,10 @@ const FormField = (props) => {
       : api.defaultSuggestionHandler(schema.get('V'), searchOptions);
     let minChars = 4;
 
-    if (linkedClass && ['source', 'groupRestrictions', 'relevance'].includes(name)) {
+    if (linkedClass
+      && ['source', 'groupRestrictions', 'relevance', 'type'].includes(name)
+      && ['Source', 'Vocabulary', 'UserGroup'].includes(linkedClass.name)
+    ) {
       searchHandler = () => api.get(`${linkedClass.routeName}?neighbors=1`, { forceListReturn: true });
       minChars = 0;
     }
@@ -156,8 +160,9 @@ const FormField = (props) => {
           },
         }}
         disabled={generated || disabled}
-        isMulti={type === 'linkset'}
+        errorText={errorFlag ? error.message : ''}
         getOptionLabel={schema.getLabel}
+        isMulti={type === 'linkset'}
         label={label || name}
         minSearchLength={minChars}
         name={name}

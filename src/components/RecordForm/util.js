@@ -13,6 +13,8 @@ const validateValue = (propModel, value, ignoreMandatory = false) => {
     ) {
       return { error: { message: 'Required Value' }, value };
     }
+  } else if (value === null && !propModel.nullable) {
+    return { error: { message: 'Cannot be empty/null' }, value };
   } else {
     fieldContent.value = value;
 

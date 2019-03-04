@@ -22,7 +22,7 @@ const EmbeddedNodeForm = (props) => {
             {label}
           </Typography>
         </legend>
-        <BaseRecordForm onValueChange={onValueChange} isEmbedded {...rest} />
+        <BaseRecordForm {...rest} onValueChange={onValueChange} isEmbedded />
       </fieldset>
     </div>
   );

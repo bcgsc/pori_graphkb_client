@@ -211,6 +211,7 @@ class BaseRecordForm extends React.Component {
   populateFromRecord(record) {
     const { schema } = this.context;
     const { content } = this.state;
+    const { variant } = this.props;
 
     const model = schema.get(record);
 
@@ -224,7 +225,7 @@ class BaseRecordForm extends React.Component {
 
     Object.values(model.properties).forEach((prop) => {
       const rawValue = record[prop.name];
-      const { value, error } = validateValue(prop, rawValue);
+      const { value, error } = validateValue(prop, rawValue, variant === FORM_VARIANT.SEARCH);
       newContent[prop.name] = value;
       if (error) {
         errors[prop.name] = error;
@@ -389,7 +390,7 @@ class BaseRecordForm extends React.Component {
       collapseOpen,
     } = this.state;
     let model = schema.get(content);
-    if (model.isAbstract && variant === FORM_VARIANT.NEW) {
+    if (model && model.isAbstract && [FORM_VARIANT.SEARCH, FORM_VARIANT.NEW].includes(variant)) {
       model = null;
     }
 
@@ -404,7 +405,7 @@ class BaseRecordForm extends React.Component {
     if (modelChoices.length === 0) {
       if (content[CLASS_MODEL_PROP] && !schema.get(content).isAbstract) {
         modelChoices.push(content[CLASS_MODEL_PROP]);
-      } else if (variant === FORM_VARIANT.NEW) {
+      } else if (variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.SEARCH) {
         modelChoices.push(
           ...schema.get(modelName || 'V').descendantTree(true).map(m => ({
             label: m.name, value: m.name, key: m.name, caption: m.description,
@@ -429,8 +430,8 @@ class BaseRecordForm extends React.Component {
       error: errors[CLASS_MODEL_PROP],
       onValueChange: this.handleValueChange,
       disabled: modelChoices.length < 2
-        || (variant !== FORM_VARIANT.NEW && !isEmbedded)
-        || variant === FORM_VARIANT.SEARCH,
+        || (variant !== FORM_VARIANT.NEW && variant !== FORM_VARIANT.SEARCH && !isEmbedded)
+        || (variant === FORM_VARIANT.SEARCH && model),
       schema,
       className: 'node-form__class-select',
     });

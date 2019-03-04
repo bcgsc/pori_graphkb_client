@@ -4,13 +4,26 @@ import { Paper, Typography, Button } from '@material-ui/core';
 import { boundMethod } from 'autobind-decorator';
 import EditIcon from '@material-ui/icons/Edit';
 
+import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
+
 import api from '../../services/api';
-import { SnackbarContext } from '../Snackbar';
 import ActionButton from '../ActionButton';
 
 import './index.scss';
 import BaseNodeForm from './BaseRecordForm';
 import { FORM_VARIANT } from './util';
+import { withKB } from '../KBContext';
+
+
+const omitUndefined = (obj) => {
+  const payload = {};
+  Object.entries(obj).forEach(([key, value]) => {
+    if (value !== undefined) {
+      payload[key] = value;
+    }
+  });
+  return payload;
+};
 
 
 /**
@@ -24,18 +37,23 @@ class RecordForm extends React.Component {
   static contextType = SnackbarContext;
 
   static propTypes = {
+    modelName: PropTypes.string,
+    onError: PropTypes.func,
+    onSubmit: PropTypes.func,
+    onTopClick: PropTypes.func,
     rid: PropTypes.string,
+    schema: PropTypes.object.isRequired,
     title: PropTypes.string.isRequired,
     variant: PropTypes.string,
-    onTopClick: PropTypes.func,
-    modelName: PropTypes.string,
   };
 
   static defaultProps = {
+    modelName: null,
+    onError: () => {},
+    onSubmit: () => {},
+    onTopClick: null,
     rid: null,
     variant: FORM_VARIANT.VIEW,
-    onTopClick: null,
-    modelName: null,
   };
 
   constructor(props) {
@@ -58,51 +76,120 @@ class RecordForm extends React.Component {
     this.controllers = [];
   }
 
+  /**
+   * Issues a GET request to the API to retrieve the record contents
+   */
   async getNodeFromUri() {
     // parse the node ident from the uri
-    const { rid, variant } = this.props;
+    const { rid, variant, onError } = this.props;
 
-    if (variant !== FORM_VARIANT.NEW) {
+    if (variant !== FORM_VARIANT.NEW && variant !== FORM_VARIANT.SEARCH) {
       // If not a new form then should have existing content
       try {
-        const call = api.get(`/v/${rid}?neighbors=3`);
+        const call = api.get(`/v/${rid}?neighbors=3`, { forceListReturn: true });
         this.controllers.push(call);
-        const content = await call.request();
-        this.setState({ content });
+        const result = await call.request();
+        if (result.length) {
+          this.setState({ content: result[0] });
+        } else {
+          onError({ name: 'RecordNotFound', message: `Unable to retrieve record details for ${rid}` });
+        }
       } catch (err) {
         console.error(err);
+        onError(err);
+      }
+    }
+  }
+
+  /**
+   * Handler for submission of a new record
+   */
+  @boundMethod
+  async handleNewAction({ content, errors }) {
+    const snackbar = this.context;
+    const { schema, onSubmit, onError } = this.props;
+
+    if (errors && Object.keys(errors).length) {
+      // bring up the snackbar for errors
+      console.error(errors);
+      snackbar.add('There are errors in the form which must be resolved before it can be submitted');
+    } else {
+      // ok to POST
+      const payload = omitUndefined(content);
+      const { routeName } = schema.get(payload);
+      const call = api.post(routeName, payload);
+      this.controllers.push(call);
+      try {
+        const result = await call.request();
+        snackbar.add(`Sucessfully created the record ${result['@rid']}`);
+        onSubmit(result);
+      } catch (err) {
+        snackbar.add('Error in creating the record');
+        onError(err);
+      }
+    }
+  }
+
+  /**
+   * Handler for deleting an existing record
+   */
+  @boundMethod
+  async handleDeleteAction({ content }) {
+    const snackbar = this.context;
+    const { schema, onSubmit, onError } = this.props;
+
+    const { routeName } = schema.get(content);
+    const call = api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
+    this.controllers.push(call);
+    try {
+      await call.request();
+      snackbar.add(`Sucessfully deleted the record ${content['@rid']}`);
+      onSubmit();
+    } catch (err) {
+      snackbar.add('Error in deleting the record');
+      onError(err);
+    }
+  }
+
+  /**
+   * Handler for edits to an existing record
+   */
+  @boundMethod
+  async handleEditAction({ content, errors }) {
+    const snackbar = this.context;
+    const { schema, onSubmit, onError } = this.props;
+
+    if (errors && Object.keys(errors).length) {
+      // bring up the snackbar for errors
+      console.error(errors);
+      snackbar.add('There are errors in the form which must be resolved before it can be submitted');
+    } else {
+      // ok to PATCH
+      const payload = omitUndefined(content);
+      const { routeName } = schema.get(payload);
+      const call = api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
+      this.controllers.push(call);
+      try {
+        const result = await call.request();
+        snackbar.add(`Sucessfully edited the record ${result['@rid']}`);
+        onSubmit(result);
+      } catch (err) {
+        snackbar.add(`Error in editing the record ${content['@rid']}`);
+        onError(err);
       }
     }
   }
 
   @boundMethod
-  async handleNewAction({ content, errors }) {
+  async handleSearchAction({ content, errors }) {
     const snackbar = this.context;
+    const { onSubmit } = this.props;
 
     if (errors && Object.keys(errors).length) {
-      // bring up the snackbar for errors
       snackbar.add('There are errors in the form which must be resolved before it can be submitted');
     } else {
-      // ok to POST
-      snackbar.add('Created a new record');
-    }
-  }
-
-  @boundMethod
-  async handleDeleteAction({ content, errors }) {
-    const snackbar = this.context;
-    snackbar.add('You deleted a thing');
-  }
-
-  @boundMethod
-  async handleEditAction({ content, errors }) {
-    const snackbar = this.context;
-    if (errors && Object.keys(errors).length) {
-      // bring up the snackbar for errors
-      snackbar.add('There are errors in the form which must be resolved before it can be submitted');
-    } else {
-      // ok to POST
-      snackbar.add('You edited a thing');
+      onSubmit(content);
+      snackbar.add('You searched a thing');
     }
   }
 
@@ -115,6 +202,7 @@ class RecordForm extends React.Component {
     const actions = {
       [FORM_VARIANT.EDIT]: this.handleEditAction,
       [FORM_VARIANT.NEW]: this.handleNewAction,
+      [FORM_VARIANT.SEARCH]: this.handleSearchAction,
     };
 
     return (
@@ -141,6 +229,7 @@ class RecordForm extends React.Component {
           )}
         </div>
         <BaseNodeForm
+          {...rest}
           value={content}
           modelName={modelName}
           onSubmit={actions[variant] || null}
@@ -148,11 +237,10 @@ class RecordForm extends React.Component {
           variant={variant}
           collapseExtra
           name="name"
-          {...rest}
         />
       </Paper>
     );
   }
 }
 
-export default RecordForm;
+export default withKB(RecordForm);

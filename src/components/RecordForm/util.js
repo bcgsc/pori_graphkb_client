@@ -1,11 +1,16 @@
 /**
  * Validates a value against some property model and returns the new property tracking object
  */
-const validateValue = (propModel, value) => {
+const validateValue = (propModel, value, ignoreMandatory = false) => {
   const fieldContent = {};
 
   if (value === undefined || value === '') {
-    if (propModel.mandatory && !propModel.generated) {
+    if (propModel.mandatory
+      && !ignoreMandatory
+      && !propModel.generated
+      && propModel.default === undefined
+      && !propModel.generateDefault
+    ) {
       return { error: { message: 'Required Value' }, value };
     }
   } else {
@@ -30,7 +35,7 @@ const validateValue = (propModel, value) => {
 const CLASS_MODEL_PROP = '@class';
 
 const FORM_VARIANT = {
-  EDIT: 'edit', VIEW: 'view', DELETE: 'delete', NEW: 'new',
+  EDIT: 'edit', VIEW: 'view', DELETE: 'delete', NEW: 'new', SEARCH: 'search',
 };
 
 

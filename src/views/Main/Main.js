@@ -99,9 +99,9 @@ class Main extends React.Component {
         label: 'Add new record',
         icon: <AddIcon />,
         nestedItems: [
-          { label: 'Ontology', route: '/add/ontology' },
-          { label: 'Variant', route: '/add/variant' },
-          { label: 'Statement', route: '/add/statement' },
+          { label: 'Ontology', route: '/new/ontology' },
+          { label: 'Variant', route: '/new/variant' },
+          { label: 'Statement', route: '/new/statement' },
         ],
       },
       {
@@ -198,12 +198,13 @@ class Main extends React.Component {
                 <Route exact path="/error" component={ErrorView} />
                 <AuthenticatedRoute path="/about" component={AboutView} />
                 <AuthenticatedRoute exact path="/query" component={QueryView} />
-                <AuthenticatedRoute exact path="/query/advanced" component={AdvancedQueryView} />
                 <AuthenticatedRoute path="/query/advanced/builder" component={QueryBuilderView} />
                 <AuthenticatedRoute path="/delete/:rid" component={NodeView} />
                 <AuthenticatedRoute path="/edit/:rid" component={NodeView} />
                 <AuthenticatedRoute path="/new" exact component={NodeView} />
                 <AuthenticatedRoute path="/new/:modelName" component={NodeView} />
+                <Redirect exact path="/query/advanced" to="/search/v" />
+                <AuthenticatedRoute path="/search/:modelName" component={NodeView} />
                 <AuthenticatedRoute path="/view/:rid" component={NodeView} />
                 <AuthenticatedRoute path="/data" component={DataView} />
                 <AuthenticatedRoute path="/admin" admin component={AdminView} />

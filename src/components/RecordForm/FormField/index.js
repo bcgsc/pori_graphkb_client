@@ -139,8 +139,7 @@ const FormField = (props) => {
     let minChars = 4;
 
     if (linkedClass
-      && ['source', 'groupRestrictions', 'relevance', 'type'].includes(name)
-      && ['Source', 'Vocabulary', 'UserGroup'].includes(linkedClass.name)
+      && ['Source', 'Vocabulary', 'UserGroup', 'User'].includes(linkedClass.name) // Usually very few records total
     ) {
       searchHandler = () => api.get(`${linkedClass.routeName}?neighbors=1`, { forceListReturn: true });
       minChars = 0;

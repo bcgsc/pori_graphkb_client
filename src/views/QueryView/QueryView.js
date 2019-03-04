@@ -20,7 +20,7 @@ import './QueryView.scss';
 import { KBContext } from '../../components/KBContext';
 
 const ENTER_KEYCODE = 13;
-const MIN_WORD_LENGTH = 4;
+const MIN_WORD_LENGTH = 3;
 
 /**
  * View for simple search by name query. Form submissions are passed through the URL to

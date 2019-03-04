@@ -107,7 +107,7 @@ const FormField = (props) => {
       <EmbeddedNodeForm
         error={!!error}
         label={label || name}
-        modelChoices={model.linkedClass.descendantTree(true).map(m => m.name)}
+        modelName={model.linkedClass.name}
         name={name}
         onValueChange={onValueChange}
         schema={schema}

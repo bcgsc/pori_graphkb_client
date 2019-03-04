@@ -46,12 +46,6 @@ class BaseRecordForm extends React.Component {
     collapseExtra: PropTypes.bool,
     groups: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
     isEmbedded: PropTypes.bool,
-    modelChoices: PropTypes.arrayOf(PropTypes.oneOf(PropTypes.string, PropTypes.shape({
-      label: PropTypes.string,
-      caption: PropTypes.string,
-      key: PropTypes.string,
-      value: PropTypes.string,
-    }))),
     modelName: PropTypes.string,
     name: PropTypes.string.isRequired,
     onValueChange: PropTypes.func,
@@ -78,12 +72,11 @@ class BaseRecordForm extends React.Component {
       ['out', 'in'],
     ],
     isEmbedded: false,
-    modelChoices: [],
     modelName: null,
     onDelete: null,
     onSubmit: null,
     onValueChange: null,
-    value: { [CLASS_MODEL_PROP]: null },
+    value: {},
     variant: FORM_VARIANT.VIEW,
   };
 
@@ -91,19 +84,36 @@ class BaseRecordForm extends React.Component {
     super(props);
     const { value } = this.props;
     this.state = {
-      content: value || { [CLASS_MODEL_PROP]: null },
+      content: value,
       errors: {},
       collapseOpen: false,
     };
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const { value, modelName } = this.props;
+    const { content } = this.state;
+    if (jc.stringify(value) !== jc.stringify(nextProps.value)) {
+      return true;
+    }
+    if (modelName !== nextProps.modelName) {
+      return true;
+    }
+    if (jc.stringify(content) !== jc.stringify(nextState.content)) {
+      return true;
+    }
+    return false;
   }
 
   /**
    * Trigger the state change if a new initial value is passed in
    */
   componentDidUpdate(prevProps) {
-    const { value } = this.props;
-
-    if (jc.stringify(value) !== jc.stringify(prevProps.value)) {
+    const { value, modelName } = this.props;
+    if (
+      jc.stringify(value) !== jc.stringify(prevProps.value)
+      || modelName !== prevProps.modelName
+    ) {
       this.populateFromRecord(value);
     }
   }
@@ -120,11 +130,9 @@ class BaseRecordForm extends React.Component {
     const {
       belowFold, aboveFold, collapseExtra, groups, variant,
     } = this.props;
-    const { schema } = this.context;
-    const { content } = this.state;
 
     const groupMap = {};
-    const model = schema.get(content);
+    const model = this.currentModel();
 
     if (!model) {
       return { extraFields: [], fields: [] };
@@ -209,13 +217,13 @@ class BaseRecordForm extends React.Component {
    * Fill out the form fields using some record
    */
   populateFromRecord(record) {
-    const { schema } = this.context;
     const { content } = this.state;
     const { variant } = this.props;
 
-    const model = schema.get(record);
+    const model = this.currentModel();
 
     if (!model) {
+      this.setState({ content: {}, errors: {} });
       return;
     }
 
@@ -244,6 +252,18 @@ class BaseRecordForm extends React.Component {
       });
     }
     this.setState({ content: newContent, errors });
+  }
+
+  currentModel() {
+    const { schema } = this.context;
+    const { content } = this.state;
+    const { modelName } = this.props;
+    if (content && content['@class']) {
+      return schema.get(content);
+    } if (modelName) {
+      return schema.get(modelName);
+    }
+    return null;
   }
 
   /**
@@ -298,7 +318,10 @@ class BaseRecordForm extends React.Component {
     const { variant } = this.props;
     const { content, errors } = this.state;
 
-    const model = schema.get(content);
+    const model = this.currentModel();
+    if (!model) {
+      return [];
+    }
     const { properties } = model;
 
     // get the form content
@@ -376,7 +399,6 @@ class BaseRecordForm extends React.Component {
     const {
       className,
       isEmbedded,
-      modelChoices,
       modelName,
       onSubmit,
       onDelete,
@@ -389,7 +411,7 @@ class BaseRecordForm extends React.Component {
       errors,
       collapseOpen,
     } = this.state;
-    let model = schema.get(content);
+    let model = this.currentModel();
     if (model && model.isAbstract && [FORM_VARIANT.SEARCH, FORM_VARIANT.NEW].includes(variant)) {
       model = null;
     }
@@ -402,20 +424,32 @@ class BaseRecordForm extends React.Component {
       edges = edges.filter(e => !['SupportedBy', 'ImpliedBy'].includes(e[CLASS_MODEL_PROP]));
     }
 
-    if (modelChoices.length === 0) {
-      if (content[CLASS_MODEL_PROP] && !schema.get(content).isAbstract) {
-        modelChoices.push(content[CLASS_MODEL_PROP]);
-      } else if (variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.SEARCH) {
-        modelChoices.push(
-          ...schema.get(modelName || 'V').descendantTree(true).map(m => ({
-            label: m.name, value: m.name, key: m.name, caption: m.description,
-          })),
-        );
-        modelChoices.sort((a, b) => a.label.localeCompare(b.label));
-      }
+    const modelChoices = [];
+    if (content && content[CLASS_MODEL_PROP] && !schema.get(content).isAbstract) {
+      modelChoices.push(content[CLASS_MODEL_PROP]);
+    } else if (variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.SEARCH) {
+      modelChoices.push(
+        ...schema.get(modelName || 'V').descendantTree(true).map(m => ({
+          label: m.name, value: m.name, key: m.name, caption: m.description,
+        })),
+      );
+      modelChoices.sort((a, b) => a.label.localeCompare(b.label));
     }
 
     const { extraFields, fields } = this.sortAndGroupFields();
+
+    let disableClassSelect = false;
+    if (variant === FORM_VARIANT.VIEW) {
+      disableClassSelect = true;
+    } else if (variant === FORM_VARIANT.SEARCH || variant === FORM_VARIANT.NEW) {
+      if (isEmbedded) {
+        disableClassSelect = false;
+      } else if (modelName && !schema.get(modelName).isAbstract) {
+        disableClassSelect = true;
+      }
+    } else {
+      disableClassSelect = true;
+    }
 
     // Select the class model to build the rest of the form
     const classSelect = FormField({
@@ -426,12 +460,12 @@ class BaseRecordForm extends React.Component {
           : {},
         { choices: modelChoices, required: true, name: CLASS_MODEL_PROP },
       ),
-      value: content[CLASS_MODEL_PROP],
+      value: content
+        ? content[CLASS_MODEL_PROP]
+        : '',
       error: errors[CLASS_MODEL_PROP],
       onValueChange: this.handleValueChange,
-      disabled: modelChoices.length < 2
-        || (variant !== FORM_VARIANT.NEW && variant !== FORM_VARIANT.SEARCH && !isEmbedded)
-        || (variant === FORM_VARIANT.SEARCH && model),
+      disabled: disableClassSelect || modelChoices.length < 2,
       schema,
       className: 'node-form__class-select',
     });

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Paper, Typography, Button } from '@material-ui/core';
 import { boundMethod } from 'autobind-decorator';
 import EditIcon from '@material-ui/icons/Edit';
+import jc from 'json-cycle';
 
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 
@@ -33,7 +34,7 @@ const omitUndefined = (obj) => {
  * @property {string} props.rid the record id of the current record for the form
  * @property {string} props.title the title for this form
  */
-class RecordForm extends React.Component {
+class RecordForm extends React.PureComponent {
   static contextType = SnackbarContext;
 
   static propTypes = {
@@ -58,11 +59,8 @@ class RecordForm extends React.Component {
 
   constructor(props) {
     super(props);
-    const { modelName } = this.props;
     this.state = {
-      content: modelName
-        ? { '@class': modelName }
-        : {},
+      content: {},
     };
     this.controllers = [];
   }

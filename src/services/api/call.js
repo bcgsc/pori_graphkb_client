@@ -39,7 +39,7 @@ class ApiCall {
       forceListReturn = false,
       isPutativeEdge = false,
     } = callOptions || {};
-    this.endpoint = endpoint;
+    this.endpoint = encodeURI(endpoint);
     this.requestOptions = requestOptions;
     this.controller = null;
     this.forceListReturn = forceListReturn;
@@ -62,7 +62,6 @@ class ApiCall {
   async request() {
     this.controller = new AbortController();
     const { signal } = this.controller;
-    console.log('[API REQUEST]', this.endpoint, this.requestOptions.body);
     const request = new Request(API_BASE_URL + this.endpoint, {
       ...this.requestOptions,
       headers: getHeaders(),

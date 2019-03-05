@@ -118,83 +118,6 @@ class Schema {
   }
 
   /**
-   * Initializes a new instance of given kbClass.
-   * @param {Object} model - existing model to keep existing values from.
-   * @param {string} kbClass - Knowledge base class key.
-   * @param {Array.<Object>} [opt.extraProps=[]] - Extra props to initialize on model.
-   * @param {boolean} [opt.ignoreClass=false] - flag to omit '@class' prop on new model.
-   * @param {boolean} [opt.stripProps=false] - flag to strip old props from model.
-   * @param {boolean} [opt.isQuery=false] - flag to retreive queryproperties
-   * from classmodel.
-   */
-  initModel(model, kbClass, opt = {}) {
-    const {
-      ignoreClass,
-      stripProps,
-      isQuery,
-    } = opt;
-    const extraProps = opt.extraProps || [];
-
-    const editableProps = kbClass
-      && (
-        isQuery
-          ? (this.getQueryProperties(kbClass, extraProps) || {})
-          : (this.getProperties(kbClass, extraProps) || {}));
-    if (!editableProps) return null;
-    extraProps.forEach((prop) => { editableProps[prop.name] = prop; });
-    const newModel = stripProps ? {} : Object.assign({}, model);
-    newModel['@class'] = ignoreClass ? '' : this.get(kbClass).name;
-    Object.values(editableProps).forEach((property) => {
-      const {
-        name,
-        type,
-        linkedClass,
-        default: defaultValue,
-      } = property;
-      switch (type) {
-        case 'embeddedset':
-          newModel[name] = model[name] ? model[name].slice() : [];
-          break;
-        case 'link':
-          if (model[`${name}.data`]) {
-            newModel[`${name}.data`] = model[`${name}.data`];
-          } else if (model[name] && model[name]['@class']) {
-            newModel[`${name}.data`] = model[name];
-          } else {
-            newModel[`${name}.data`] = null;
-          }
-          newModel[name] = (newModel[`${name}.data`] && this.getPreview(newModel[`${name}.data`])) || '';
-          break;
-        case 'integer' || 'long':
-          newModel[name] = model[name] !== undefined
-            ? model[name]
-            : '';
-          break;
-        case 'boolean':
-          newModel[name] = model[name] !== undefined
-            ? model[name]
-            : (defaultValue || '').toString() === 'true';
-          break;
-        case 'embedded':
-          if (linkedClass && linkedClass.properties) {
-            newModel[name] = model[name]
-              ? Object.assign({}, model[name])
-              : this.initModel({}, linkedClass.name, {
-                extraProps: [],
-                ignoreClass: !!linkedClass.isAbstract,
-                isQuery,
-              });
-          }
-          break;
-        default:
-          newModel[name] = model[name] || '';
-          break;
-      }
-    });
-    return newModel;
-  }
-
-  /**
    * Returns all queryable classModels.
    */
   getQueryable(isAdmin) {
@@ -216,22 +139,6 @@ class Schema {
       .filter(model => model.inherits && model.inherits.includes(cls));
     if (!subOnly) list.push(schema[cls]);
     return list;
-  }
-
-  /**
-   * Returns all ontology types.
-   * @param {boolean} [subOnly=false] - flag for checking only subclasses.
-   */
-  getOntologies(subOnly = false) {
-    return this.getSubclassesOf('Ontology', subOnly);
-  }
-
-  /**
-   * Returns all variant types.
-   * @param {boolean} [subOnly=false] - flag for checking only subclasses.
-   */
-  getVariants(subOnly = false) {
-    return this.getSubclassesOf('Variant', subOnly);
   }
 
   /**

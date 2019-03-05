@@ -1,14 +1,16 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import AsyncSelect from 'react-select/lib/Async';
+import Select from 'react-select';
 import { Chip } from '@material-ui/core';
 
 import RecordAutocomplete from '..';
 import { Placeholder, SingleValue } from '../components';
 
 
-const mockSearchHandler = (...values) => {
-  const request = jest.fn().mockResolvedValue(
+const mockSearchHandler = (values = []) => {
+  const request = jest.fn();
+  request.mockResolvedValue(
     values.map(
       (value, index) => Object.assign({}, { '@rid': `#1:${index}` }, value),
     ),
@@ -85,7 +87,7 @@ describe('RecordLinkSuggest', () => {
     expect(wrapper.find(SingleValue)).toHaveLength(0);
     expect(onChange).toHaveBeenCalled();
   });
-  test('renders options immediately for minSearchLength of 0', () => {
+  test('renders options immediately for minSearchLength of 0', async () => {
     const records = [{ name: 'bob' }, { name: 'alice' }];
     const wrapper = mount(
       <RecordAutocomplete
@@ -96,7 +98,9 @@ describe('RecordLinkSuggest', () => {
         minSearchLength={0}
       />,
     );
-    expect(wrapper.find(AsyncSelect).prop('defaultOptions')).toBe(true);
+    await wrapper.find(RecordAutocomplete).instance().componentDidMount();
+    wrapper.update();
+    expect(wrapper.find(Select).prop('options')).toHaveLength(2);
   });
 
   afterEach(() => {

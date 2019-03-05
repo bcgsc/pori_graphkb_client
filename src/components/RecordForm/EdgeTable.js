@@ -25,7 +25,7 @@ import { withKB } from '../KBContext';
  * @param {Array.<object>} props.values the edge records
  * @param {Schema} props.schema the schema object (from context)
  */
-const BaseEdgeTable = (props) => {
+const EdgeTable = (props) => {
   const {
     itemToKey,
     schema,
@@ -54,18 +54,6 @@ const BaseEdgeTable = (props) => {
 
     const reversed = (target === 'out');
 
-    const itemToString = (item) => {
-      if (item) {
-        try {
-          const text = schema.getPreview(item);
-          if (item['@rid']) {
-            return `${text} (${item['@rid']})`;
-          }
-          return text;
-        } catch (err) {}  // eslint-disable-line
-      }
-      return `${item}`;
-    };
     const details = {};
     Object.keys(value[target]).filter(
       name => !name.startsWith('out_') && !name.startsWith('in_'),
@@ -84,7 +72,7 @@ const BaseEdgeTable = (props) => {
           </TableCell>
           <TableCell>
             <DetailChip
-              label={itemToString(value[target])}
+              label={schema.getLabel(value[target])}
               details={details}
               valueToString={
                 (record) => {
@@ -124,21 +112,17 @@ const BaseEdgeTable = (props) => {
   );
 };
 
-BaseEdgeTable.propTypes = {
+EdgeTable.propTypes = {
   values: PropTypes.arrayOf(PropTypes.object),
   itemToKey: PropTypes.func,
   sourceNodeId: PropTypes.string,
   schema: PropTypes.object.isRequired,
 };
 
-BaseEdgeTable.defaultProps = {
+EdgeTable.defaultProps = {
   values: [],
   itemToKey: item => item['@rid'],
   sourceNodeId: null,
 };
 
-const EdgeTable = withKB(BaseEdgeTable);
-
-export { BaseEdgeTable, EdgeTable };
-
-export default EdgeTable;
+export default withKB(EdgeTable);

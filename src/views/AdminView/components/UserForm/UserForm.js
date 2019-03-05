@@ -267,7 +267,7 @@ class UserForm extends Component {
     } = this.state;
 
     return (
-      <Paper className="admin-users">
+      <Paper className="users-table">
         <UserDeleteDialog
           open={deleteDialogOpen}
           onClose={this.handleDeleteDialog}
@@ -292,9 +292,9 @@ class UserForm extends Component {
           onUserGroup={this.handleNewUserGroup}
           onExited={this.handleExited}
         />
-        <div className="admin-section-heading">
+        <div className="users-table__header">
           <Typography component="h2" variant="h6">Users</Typography>
-          <div className="admin-section-heading-btns">
+          <div>
             <IconButton
               disabled={selected.length === 0}
               onClick={this.handleDeleteDialog}
@@ -317,8 +317,8 @@ class UserForm extends Component {
             </IconButton>
           </div>
         </div>
-        <div className="admin-table-wrapper">
-          <Table className="admin-table">
+        <div className="users-table__content">
+          <Table>
             <TableHead>
               <TableRow id="admin-sticky-row">
                 <TableCell padding="checkbox">

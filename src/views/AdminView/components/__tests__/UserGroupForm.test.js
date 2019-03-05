@@ -12,17 +12,21 @@ const testUserGroups = [
 const testSchema = new Schema({
   Ontology: {
     subclasses: [],
+    name: 'Ontology',
   },
   Variant: {
     subclasses: [],
     isAbstract: true,
+    name: 'Variant',
   },
   V: {
     properties: [],
+    name: 'V',
   },
   AliasOf: {
     properties: [],
     isEdge: true,
+    name: 'AliasOf',
   },
 });
 

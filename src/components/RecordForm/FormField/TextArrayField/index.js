@@ -14,7 +14,10 @@ import './index.scss';
 
 
 /**
- * Field which stores a list of non-redundant strings from user typed input
+ * Field which stores a list of non-redundant strings from user typed input.
+ * Allows the user to clear options if they were entered and not passed in from
+ * the parent form. Options that were passed in from the parent form are instead
+ * staged for deletion
  *
  * @property {object} props
  * @property {function} props.onValueChange - Parent component change handler.
@@ -53,7 +56,7 @@ class TextArrayField extends Component {
     this.state = {
       value: (value || []).slice(),
       initialValue: new Set((value || []).slice()), // items in this list should be pseudo-deleted and allow restore
-      deleted: new Set(),
+      deleted: new Set(), // items that have been marked as deleted
       textInputValue: '',
       textInputError: '',
     };

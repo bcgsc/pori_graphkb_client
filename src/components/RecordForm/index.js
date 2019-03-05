@@ -87,7 +87,7 @@ class RecordForm extends React.PureComponent {
         const call = api.get(`/v/${rid}?neighbors=3`, { forceListReturn: true });
         this.controllers.push(call);
         const result = await call.request();
-        if (result.length) {
+        if (result && result.length) {
           this.setState({ content: result[0] });
         } else {
           onError({ name: 'RecordNotFound', message: `Unable to retrieve record details for ${rid}` });

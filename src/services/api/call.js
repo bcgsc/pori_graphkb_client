@@ -52,6 +52,7 @@ class ApiCall {
   abort() {
     if (this.controller) {
       this.controller.abort();
+      this.controller = null;
     }
   }
 

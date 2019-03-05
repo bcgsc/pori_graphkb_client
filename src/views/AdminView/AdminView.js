@@ -164,8 +164,8 @@ class AdminView extends Component {
     if (!users) return null;
 
     return (
-      <div className="admin-wrapper">
-        <Paper className="admin-headline">
+      <div className="admin">
+        <Paper className="admin__headline">
           <Typography variant="h5">Admin</Typography>
         </Paper>
         <UserForm

@@ -1,12 +1,12 @@
 @import "../../globals";
 
-.admin-wrapper {
+.admin {
   @include view-wrapper;
   grid-template-columns: 100%;
-}
 
-.admin-headline {
-  @include page-header;
+  &__headline {
+    @include page-header;
+  }
 }
 
 .admin-section-heading {

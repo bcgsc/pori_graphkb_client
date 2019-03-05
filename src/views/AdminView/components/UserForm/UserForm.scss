@@ -1,20 +1,22 @@
 @import "../../../../globals";
 
-.admin-users {
-  @include paper;
-  max-height: 720px;
+.users-table {
+  max-height: $readable-max;
+  min-height: $readable-min;
 
-  .users-btns {
+  &__content {
+    max-height: 600px;
+    overflow-y: scroll;
+  }
+
+  &__header {
+    align-items: center;
     display: flex;
-    flex-direction: row-reverse;
-    margin: 8px 0;
-
-    button {
-      margin: 0 8px;
-    }
+    justify-content: space-between;
+    padding-left: 10px;
   }
 
   .admin-badge {
-    animation: fade-in(0.1s);
+    animation: fade-in(.1s);
   }
 }

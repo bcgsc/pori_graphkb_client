@@ -24,6 +24,7 @@ import {
   CLASS_MODEL_PROP,
   FORM_VARIANT,
   validateValue,
+  sortAndGroupFields,
 } from './util';
 
 
@@ -119,108 +120,13 @@ class BaseRecordForm extends React.Component {
   }
 
   /**
-   * Given the current content and schema, sort the form fields and return the ordering
-   * @returns {Array.<Array.<(string|Array.<string>)>>} the nested grouping structure
-   *
-   * @example no collapsible section given
-   * > this.sortAndGroupFields()
-   * [['@class', '@rid', ['createdBy', 'createdAt']], []]
-   */
-  sortAndGroupFields() {
-    const {
-      belowFold, aboveFold, collapseExtra, groups, variant,
-    } = this.props;
-
-    const groupMap = {};
-    const model = this.currentModel();
-
-    if (!model) {
-      return { extraFields: [], fields: [] };
-    }
-    const { properties } = model;
-
-    groups.forEach((groupItems) => {
-      // assume each field only can belong to a single group, overwrite others
-      const key = groupItems.slice().sort((p1, p2) => p1.localeCompare(p2)).join('-');
-      const groupDefn = {
-        fields: groupItems.filter(fname => properties[fname]),
-        mandatory: false,
-        generated: true,
-        name: key,
-      };
-
-      if (groupDefn.fields.length > 1) {
-        groupDefn.fields.forEach((name) => {
-          const { mandatory, generated } = properties[name];
-          groupDefn.mandatory = groupDefn.mandatory || mandatory;
-          groupDefn.generated = groupDefn.generated && generated;
-          groupMap[name] = groupDefn;
-        });
-      }
-    });
-
-    const mainFields = [];
-    const extraFields = [];
-
-    const visited = new Set();
-
-    // get the form content
-    Object.values(
-      model.properties,
-    ).filter(
-      p => p.name !== CLASS_MODEL_PROP && (variant !== FORM_VARIANT.NEW || !p.generated),
-    ).sort(
-      (p1, p2) => p1.name.localeCompare(p2.name), // alphanumeric sort by name
-    ).forEach(
-      (prop) => {
-        const {
-          name, mandatory, generated, fields,
-        } = (groupMap[prop.name] || prop);
-
-        const isAboveFold = fields
-          ? fields.some(fname => aboveFold.includes(fname))
-          : aboveFold.includes(name);
-
-        const isBelowFold = fields
-          ? fields.some(fname => belowFold.includes(fname))
-          : belowFold.includes(name);
-
-        const mustBeFilled = (
-          prop.mandatory
-          && variant === FORM_VARIANT.NEW
-          && prop.default === undefined
-          && !prop.generated
-        );
-
-        if (!visited.has(name)) {
-          if (!collapseExtra || isAboveFold || mustBeFilled) {
-            mainFields.push(fields || name);
-          } else if (isBelowFold) {
-            extraFields.push(fields || name);
-          } else if (mandatory && !generated) {
-            mainFields.push(fields || name);
-          } else {
-            extraFields.push(fields || name);
-          }
-        }
-        visited.add(name);
-        if (fields) {
-          visited.add(...fields);
-        }
-      },
-    );
-    return { fields: mainFields, extraFields };
-  }
-
-
-  /**
-   * Fill out the form fields using some record
+   * Fill out the form fields using some initial record
    */
   populateFromRecord(record) {
     const { content } = this.state;
     const { variant } = this.props;
 
-    const model = this.currentModel();
+    const model = this.currentModel(record['@class']);
 
     if (!model) {
       this.setState({ content: {}, errors: {} });
@@ -254,11 +160,20 @@ class BaseRecordForm extends React.Component {
     this.setState({ content: newContent, errors });
   }
 
-  currentModel() {
+  /**
+   * Based on the model name that was input or the model
+   * name (class) that was selected returns the corresonding
+   * class model from the schema
+   *
+   * @param {string} newModelName incoming model name to use if given
+   */
+  currentModel(newModelName = '') {
     const { schema } = this.context;
     const { content } = this.state;
     const { modelName } = this.props;
-    if (content && content['@class']) {
+    if (newModelName) {
+      return schema.get(newModelName);
+    } if (content && content['@class']) {
       return schema.get(content);
     } if (modelName) {
       return schema.get(modelName);
@@ -293,6 +208,10 @@ class BaseRecordForm extends React.Component {
     }
   }
 
+  /**
+   * Handler for the user opening the expandable section of less
+   * important or optional fields
+   */
   @boundMethod
   handleExpand() {
     const { collapseOpen } = this.state;
@@ -350,7 +269,6 @@ class BaseRecordForm extends React.Component {
         fields.push(wrapper);
       }
     });
-
     return fields;
   }
 
@@ -397,11 +315,15 @@ class BaseRecordForm extends React.Component {
 
   render() {
     const {
+      aboveFold,
+      belowFold,
       className,
+      collapseExtra,
+      groups,
       isEmbedded,
       modelName,
-      onSubmit,
       onDelete,
+      onSubmit,
       value,
       variant,
     } = this.props;
@@ -436,7 +358,9 @@ class BaseRecordForm extends React.Component {
       modelChoices.sort((a, b) => a.label.localeCompare(b.label));
     }
 
-    const { extraFields, fields } = this.sortAndGroupFields();
+    const { extraFields, fields } = sortAndGroupFields(model, {
+      aboveFold, belowFold, collapseExtra, variant, groups,
+    });
 
     let disableClassSelect = false;
     if (variant === FORM_VARIANT.VIEW) {

@@ -66,7 +66,7 @@ class RecordAutocomplete extends React.Component {
     placeholder: PropTypes.string,
     required: PropTypes.bool,
     searchHandler: PropTypes.func.isRequired,
-    value: PropTypes.oneOfType(PropTypes.object, PropTypes.arrayOf(PropTypes.object)),
+    value: PropTypes.oneOfType([PropTypes.object, PropTypes.arrayOf(PropTypes.object)]),
   };
 
   static defaultProps = {

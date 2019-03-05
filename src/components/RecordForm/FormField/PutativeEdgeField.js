@@ -13,7 +13,15 @@ import { KBContext } from '../../KBContext';
 
 import './index.scss';
 
-
+/**
+ * Form Field used for staged statement relationships which
+ * are submitted with the statement for new statment forms
+ *
+ * Combines a resource select drop down on the left with a
+ * record autocomplete. The left hand select allows the user
+ * to refine the search function that is used for the record
+ * autocomplete
+ */
 class PutativeEdgeField extends React.Component {
   static contextType = KBContext;
 

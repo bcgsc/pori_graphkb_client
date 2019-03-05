@@ -21,7 +21,7 @@ import { FORM_VARIANT } from '../util';
 
 /**
  * Generate the field component for a form. Uses the property model to decide
- * the component type to render
+ * the component type to render. Factory wrapper which standardized form fields.
  *
  * @param {object} props
  * @param {PropertyModel} props.model the property model which defines the property type and other requirements

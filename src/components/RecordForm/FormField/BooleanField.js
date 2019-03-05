@@ -9,6 +9,18 @@ import {
 import PropTypes from 'prop-types';
 
 
+/**
+ * RadioForm Field for a boolean form fieldset
+ *
+ * @param {object} props
+ * @param {boolean} props.disabled flag to indicate the user cannot change this field
+ * @param {boolean} props.error flag to indicate there has been an error filling this field
+ * @param {string} props.label the field label
+ * @param {string} props.name the name of the field used in propogating events
+ * @param {function} props.onValueChange the function handler for changes
+ * @param {boolean} props.required flag to indicate this field must be filled
+ * @param {string|boolean} props.value the current value
+ */
 const BooleanField = (props) => {
   const {
     disabled,
@@ -58,7 +70,7 @@ BooleanField.propTypes = {
   name: PropTypes.string.isRequired,
   onValueChange: PropTypes.func.isRequired,
   required: PropTypes.bool,
-  value: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
 };
 
 BooleanField.defaultProps = {

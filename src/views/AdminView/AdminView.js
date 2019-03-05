@@ -60,11 +60,11 @@ class AdminView extends Component {
   async fetchData() {
     const usersCall = api.get('/users?neighbors=1');
     this.controllers.push(usersCall);
-    const { result: users } = await usersCall.request();
+    const users = await usersCall.request();
 
-    const userGroupsCall = api.get('/usergroups');
+    const userGroupsCall = api.get('/usergroups?neighbors=1');
     this.controllers.push(userGroupsCall);
-    const { result: userGroups } = await userGroupsCall.request();
+    const userGroups = await userGroupsCall.request();
 
     this.setState({
       users,

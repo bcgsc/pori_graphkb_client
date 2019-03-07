@@ -91,6 +91,20 @@ class BaseRecordForm extends React.Component {
     };
   }
 
+  componentDidMount() {
+    const { variant } = this.props;
+    const { content } = this.state;
+
+    if (variant === FORM_VARIANT.NEW && !content[CLASS_MODEL_PROP]) {
+      const model = this.currentModel();
+
+      if (model && !model.isAbstract) {
+        const newContent = Object.assign({}, content, { [CLASS_MODEL_PROP]: model.name });
+        this.setState({ content: newContent });
+      }
+    }
+  }
+
   shouldComponentUpdate(nextProps, nextState) {
     const { value, modelName } = this.props;
     const { content } = this.state;

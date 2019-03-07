@@ -37,11 +37,13 @@ class ApiCall {
   constructor(endpoint, requestOptions, callOptions) {
     const {
       forceListReturn = false,
+      isPutativeEdge = false,
     } = callOptions || {};
-    this.endpoint = endpoint;
+    this.endpoint = encodeURI(endpoint);
     this.requestOptions = requestOptions;
     this.controller = null;
     this.forceListReturn = forceListReturn;
+    this.isPutativeEdge = isPutativeEdge;
   }
 
   /**
@@ -50,6 +52,7 @@ class ApiCall {
   abort() {
     if (this.controller) {
       this.controller.abort();
+      this.controller = null;
     }
   }
 
@@ -77,12 +80,19 @@ class ApiCall {
     if (response.ok) {
       const body = await response.json();
       const decycled = jc.retrocycle(body);
-      const result = decycled.result !== undefined
+      let result = decycled.result !== undefined
         ? decycled.result
         : decycled;
 
       if (this.forceListReturn && !Array.isArray(result)) {
-        return [result];
+        result = [result];
+      }
+      if (this.isPutativeEdge) {
+        if (Array.isArray(result)) {
+          result = result.map(rec => ({ target: rec }));
+        } else {
+          result = { target: result };
+        }
       }
       return result;
     }

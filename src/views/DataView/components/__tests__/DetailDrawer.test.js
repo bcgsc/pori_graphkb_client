@@ -22,6 +22,7 @@ const testSchema = new Schema({
     subclasses: [
       { name: 'AliasOf' },
     ],
+    name: 'E',
   },
   AliasOf: {
     name: 'AliasOf',

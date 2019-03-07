@@ -1,0 +1,32 @@
+@import '../../../../globals';
+
+.text-array-field {
+  display: flex;
+  width: inherit;
+
+  &__text-field {
+    flex: 1;
+  }
+
+  &__field {
+    flex-wrap: wrap;
+  }
+
+  &__input {
+    flex-grow: 1;
+    width: auto;
+  }
+
+  &__chip {
+    margin-bottom: 4px;
+    margin-right: 2px;
+
+    &--deleted {
+      background-color: lighten($md-warn, 25%);
+
+      :focus {
+        background-color: lighten($md-warn, 22%);
+      }
+    }
+  }
+}

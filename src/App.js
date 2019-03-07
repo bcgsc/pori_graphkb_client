@@ -55,7 +55,7 @@ function App() {
   return (
     <JssProvider jss={jss} generateClassName={generateClassName}>
       <MuiThemeProvider theme={theme}>
-        <SnackbarProvider>
+        <SnackbarProvider anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
           <BrowserRouter>
             <Main />
           </BrowserRouter>

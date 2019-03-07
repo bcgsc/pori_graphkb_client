@@ -26,17 +26,6 @@ describe('Schema wrapper class tests', () => {
         expect(ontology.properties[prop.name]).toBeDefined();
       });
     });
-    it('returns proper subclasses of common abstract classes', () => {
-      const ontologies = Object.values(testSchema.schema)
-        .filter(model => model.inherits && model.inherits.includes('Ontology'));
-      const variants = Object.values(testSchema.schema)
-        .filter(model => model.inherits && model.inherits.includes('Variant'));
-      expect(testSchema.getOntologies(true)).toEqual(ontologies);
-      expect(testSchema.getOntologies()).not.toEqual(ontologies);
-
-      expect(testSchema.getVariants(true)).toEqual(variants);
-      expect(testSchema.getVariants()).not.toEqual(variants);
-    });
     it('Returns edges', () => {
       const edges = Object.values(testSchema.schema)
         .filter(model => model.inherits && model.inherits.includes('E'))
@@ -55,100 +44,6 @@ describe('Schema wrapper class tests', () => {
         ],
       };
       expect(testSchema.getEdges(testNode)).toEqual(['inalias', 'outalias', 'ingeneralization']);
-    });
-  });
-
-  describe('util functions', () => {
-    const testSchema = new Schema({
-      Embedded: {
-        name: 'Embedded',
-        properties: {
-          embeddedName: {
-            type: 'string',
-            name: 'embeddedName',
-          },
-        },
-      },
-      V: {
-        properties: {},
-      },
-      Test: {
-        name: 'Test',
-        properties: {
-          name: {
-            type: 'string',
-            name: 'name',
-          },
-          embeddedset: {
-            type: 'embeddedset',
-            name: 'embeddedset',
-          },
-          num: {
-            type: 'integer',
-            name: 'num',
-            min: 0,
-          },
-          linked: {
-            type: 'link',
-            name: 'linked',
-          },
-          bool: {
-            type: 'boolean',
-            name: 'bool',
-          },
-          embed: {
-            type: 'embedded',
-            name: 'embed',
-            linkedClass: {
-              name: 'Embedded',
-              isAbstract: true,
-              properties: {
-                embeddedName: {
-                  type: 'string',
-                  name: 'embeddedName',
-                },
-              },
-            },
-          },
-        },
-      },
-    });
-
-    it('initModel()', () => {
-      const expected = {
-        '@class': 'Test',
-        name: '',
-        embeddedset: [],
-        num: '',
-        linked: '',
-        bool: false,
-        'linked.data': null,
-        embed: {
-          '@class': '',
-          embeddedName: '',
-        },
-      };
-      expect(testSchema.initModel({}, 'Test')).toEqual(expected);
-    });
-
-    it('collectOntologyProps()', () => {
-      const testRecords = [
-        {
-          '@class': 'Test',
-          name: 'testname',
-        },
-        {
-          '@class': 'Test',
-          name: 'blargh',
-          embed: {
-            '@class': 'Embedded',
-            embeddedName: 'tsets',
-          },
-        },
-      ];
-      const allColumns = testSchema.collectOntologyProps(testRecords[0], []);
-      expect(allColumns).toEqual(['name']);
-      expect(testSchema.collectOntologyProps(testRecords[1], allColumns)).toEqual(['name', 'embed.embeddedName', 'embed.@class']);
     });
   });
 });

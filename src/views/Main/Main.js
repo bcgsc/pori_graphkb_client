@@ -23,24 +23,17 @@ import AddIcon from '@material-ui/icons/Add';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
-import { schema as SCHEMA_DEFN } from '@bcgsc/knowledgebase-schema';
 
 import './Main.scss';
 import {
   AboutView,
-  AddOntologyView,
-  AddStatementView,
   AdminView,
   AdvancedQueryView,
   DataView,
-  EditOntologyView,
-  EditStatementView,
   ErrorView,
   FeedbackView,
   LoginView,
   QueryView,
-  AddVariantView,
-  EditVariantView,
   QueryBuilderView,
 } from '..';
 import auth from '../../services/auth';
@@ -48,6 +41,8 @@ import Schema from '../../services/schema';
 import { KBContext } from '../../components/KBContext';
 import { MainNav } from './components';
 import AuthenticatedRoute from '../../components/AuthenticatedRoute';
+
+import NodeView from '../NodeView';
 
 
 /**
@@ -104,9 +99,9 @@ class Main extends React.Component {
         label: 'Add new record',
         icon: <AddIcon />,
         nestedItems: [
-          { label: 'Ontology', route: '/add/ontology' },
-          { label: 'Variant', route: '/add/variant' },
-          { label: 'Statement', route: '/add/statement' },
+          { label: 'Ontology', route: '/new/ontology' },
+          { label: 'Variant', route: '/new/variant' },
+          { label: 'Statement', route: '/new/statement' },
         ],
       },
       {
@@ -117,7 +112,7 @@ class Main extends React.Component {
     ];
 
     return (
-      <KBContext.Provider value={{ schema: new Schema(SCHEMA_DEFN), user: auth.getUser() }}>
+      <KBContext.Provider value={{ schema: new Schema(), user: auth.getUser() }}>
         <div className="Main">
           <AppBar
             position="absolute"
@@ -203,14 +198,14 @@ class Main extends React.Component {
                 <Route exact path="/error" component={ErrorView} />
                 <AuthenticatedRoute path="/about" component={AboutView} />
                 <AuthenticatedRoute exact path="/query" component={QueryView} />
-                <AuthenticatedRoute exact path="/query/advanced" component={AdvancedQueryView} />
                 <AuthenticatedRoute path="/query/advanced/builder" component={QueryBuilderView} />
-                <AuthenticatedRoute path="/add/ontology" component={AddOntologyView} />
-                <AuthenticatedRoute path="/add/variant" component={AddVariantView} />
-                <AuthenticatedRoute path="/add/statement" component={AddStatementView} />
-                <AuthenticatedRoute path="/edit/ontology/:rid" component={EditOntologyView} />
-                <AuthenticatedRoute path="/edit/variant/:rid" component={EditVariantView} />
-                <AuthenticatedRoute path="/edit/statement/:rid" component={EditStatementView} />
+                <AuthenticatedRoute path="/delete/:rid" component={NodeView} />
+                <AuthenticatedRoute path="/edit/:rid" component={NodeView} />
+                <AuthenticatedRoute path="/new" exact component={NodeView} />
+                <AuthenticatedRoute path="/new/:modelName" component={NodeView} />
+                <Redirect exact path="/query/advanced" to="/search/v" />
+                <AuthenticatedRoute path="/search/:modelName" component={NodeView} />
+                <AuthenticatedRoute path="/view/:rid" component={NodeView} />
                 <AuthenticatedRoute path="/data" component={DataView} />
                 <AuthenticatedRoute path="/admin" admin component={AdminView} />
                 <Redirect from="/" to="/query" />

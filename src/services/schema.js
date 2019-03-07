@@ -20,6 +20,17 @@ class Schema {
   }
 
   /**
+   * Check that a given class/model name exists
+   */
+  has(obj) {
+    try {
+      return Boolean(this.get(obj));
+    } catch (err) {
+      return false;
+    }
+  }
+
+  /**
    * Returns Knowledgebase class schema.
    * @param {Object|string} obj - Record to fetch schema of.
    */

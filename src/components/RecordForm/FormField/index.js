@@ -12,6 +12,7 @@ import { withKB } from '../../KBContext';
 import FieldHelp from './FieldHelp';
 import BooleanField from './BooleanField';
 import TextArrayField from './TextArrayField';
+import PermissionsTable from './PermissionsTable';
 
 // unavoidable circular dependency below
 import EmbeddedNodeForm from '../EmbeddedNodeForm';
@@ -94,6 +95,18 @@ const FormField = (props) => {
     propComponent = (
       <TextArrayField
         error={error}
+        label={label || name}
+        value={value}
+        model={model}
+        name={name}
+        onValueChange={onValueChange}
+        disabled={disabled || generated}
+      />
+    );
+  } else if (type === 'embedded' && model.linkedClass && model.linkedClass.name === 'Permissions') {
+    // permissions table of checkboxes
+    propComponent = (
+      <PermissionsTable
         label={label || name}
         value={value}
         model={model}

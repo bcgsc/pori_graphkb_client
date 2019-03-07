@@ -103,51 +103,51 @@ const sortAndGroupFields = (model, opt = {}) => {
 
   const visited = new Set();
 
+  const sortedPropModels = Object.values(model.properties)
+    .sort((p1, p2) => p1.name.localeCompare(p2.name));
+
   // get the form content
-  Object.values(
-    model.properties,
-  ).filter(
-    p => p.name !== CLASS_MODEL_PROP && (variant !== FORM_VARIANT.NEW || !p.generated),
-  ).sort(
-    (p1, p2) => p1.name.localeCompare(p2.name), // alphanumeric sort by name
-  ).forEach(
-    (prop) => {
-      const {
-        name, mandatory, generated, fields,
-      } = (groupMap[prop.name] || prop);
+  for (const prop of sortedPropModels) { // eslint-disable-line no-restricted-syntax
+    if (prop.name === CLASS_MODEL_PROP
+      || (variant === FORM_VARIANT.NEW && prop.generated)
+    ) {
+      continue; // eslint-disable-line no-continue
+    }
+    const {
+      name, mandatory, generated, fields,
+    } = (groupMap[prop.name] || prop);
 
-      const isAboveFold = fields
-        ? fields.some(fname => aboveFold.includes(fname))
-        : aboveFold.includes(name);
+    const isAboveFold = fields
+      ? fields.some(fname => aboveFold.includes(fname))
+      : aboveFold.includes(name);
 
-      const isBelowFold = fields
-        ? fields.some(fname => belowFold.includes(fname))
-        : belowFold.includes(name);
+    const isBelowFold = fields
+      ? fields.some(fname => belowFold.includes(fname))
+      : belowFold.includes(name);
 
-      const mustBeFilled = (
-        prop.mandatory
-        && variant === FORM_VARIANT.NEW
-        && prop.default === undefined
-        && !prop.generated
-      );
+    const mustBeFilled = (
+      prop.mandatory
+      && variant === FORM_VARIANT.NEW
+      && prop.default === undefined
+      && !prop.generated
+    );
 
-      if (!visited.has(name)) {
-        if (!collapseExtra || isAboveFold || mustBeFilled) {
-          mainFields.push(fields || name);
-        } else if (isBelowFold) {
-          extraFields.push(fields || name);
-        } else if (mandatory && !generated && prop.default === undefined) {
-          mainFields.push(fields || name);
-        } else {
-          extraFields.push(fields || name);
-        }
+    if (!visited.has(name)) {
+      if (!collapseExtra || isAboveFold || mustBeFilled) {
+        mainFields.push(fields || name);
+      } else if (isBelowFold) {
+        extraFields.push(fields || name);
+      } else if (mandatory && !generated && prop.default === undefined) {
+        mainFields.push(fields || name);
+      } else {
+        extraFields.push(fields || name);
       }
-      visited.add(name);
-      if (fields) {
-        visited.add(...fields);
-      }
-    },
-  );
+    }
+    visited.add(name);
+    if (fields) {
+      visited.add(...fields);
+    }
+  }
   return { fields: mainFields, extraFields };
 };
 

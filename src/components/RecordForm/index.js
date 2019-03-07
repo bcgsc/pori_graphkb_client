@@ -216,7 +216,6 @@ class RecordForm extends React.PureComponent {
       [FORM_VARIANT.NEW]: this.handleNewAction,
       [FORM_VARIANT.SEARCH]: this.handleSearchAction,
     };
-    console.log('RecordForm variant', variant);
 
     return (
       <Paper className="node-form__wrapper" elevation={4}>

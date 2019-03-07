@@ -79,12 +79,20 @@ class RecordForm extends React.PureComponent {
    */
   async getNodeFromUri() {
     // parse the node ident from the uri
-    const { rid, variant, onError } = this.props;
+    const {
+      rid,
+      variant,
+      onError,
+      modelName,
+      schema,
+    } = this.props;
+
+    const model = schema.get(modelName || 'V');
 
     if (variant !== FORM_VARIANT.NEW && variant !== FORM_VARIANT.SEARCH) {
       // If not a new form then should have existing content
       try {
-        const call = api.get(`/v/${rid}?neighbors=3`, { forceListReturn: true });
+        const call = api.get(`${model.routeName}/${rid.replace(/^#/, '')}?neighbors=3`, { forceListReturn: true });
         this.controllers.push(call);
         const result = await call.request();
         if (result && result.length) {
@@ -105,7 +113,9 @@ class RecordForm extends React.PureComponent {
   @boundMethod
   async handleNewAction({ content, errors }) {
     const snackbar = this.context;
-    const { schema, onSubmit, onError } = this.props;
+    const {
+      schema, onSubmit, onError, modelName,
+    } = this.props;
 
     if (errors && Object.keys(errors).length) {
       // bring up the snackbar for errors
@@ -113,6 +123,9 @@ class RecordForm extends React.PureComponent {
       snackbar.add('There are errors in the form which must be resolved before it can be submitted');
     } else {
       // ok to POST
+      if (!content || !content['@class']) {
+        content['@class'] = modelName;
+      }
       const payload = omitUndefined(content);
       const { routeName } = schema.get(payload);
       const call = api.post(routeName, payload);
@@ -122,6 +135,7 @@ class RecordForm extends React.PureComponent {
         snackbar.add(`Sucessfully created the record ${result['@rid']}`);
         onSubmit(result);
       } catch (err) {
+        console.error(err);
         snackbar.add('Error in creating the record');
         onError(err);
       }
@@ -202,6 +216,7 @@ class RecordForm extends React.PureComponent {
       [FORM_VARIANT.NEW]: this.handleNewAction,
       [FORM_VARIANT.SEARCH]: this.handleSearchAction,
     };
+    console.log('RecordForm variant', variant);
 
     return (
       <Paper className="node-form__wrapper" elevation={4}>

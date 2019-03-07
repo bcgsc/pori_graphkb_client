@@ -92,6 +92,7 @@ class NodeView extends React.PureComponent {
     const { schema } = this.context;
     const variant = getVariantType(path);
 
+    let defaultModelName = modelName;
     if (modelName) {
       const model = schema.get(modelName);
       if (!model || (model.isAbstract && ![FORM_VARIANT.SEARCH, FORM_VARIANT.NEW].includes(variant))) {
@@ -105,13 +106,17 @@ class NodeView extends React.PureComponent {
           },
         );
       }
+    } else if (path.includes('/user/')) {
+      defaultModelName = 'user';
+    } else if (path.includes('/usergroup/')) {
+      defaultModelName = 'usergroup';
     }
     return (
       <NodeForm
         variant={variant}
-        modelName={modelName}
+        modelName={defaultModelName}
         rid={rid}
-        title={DEFAULT_TITLES[variant].replace(':modelName', modelName || '')}
+        title={DEFAULT_TITLES[variant].replace(':modelName', defaultModelName || '')}
         onTopClick={() => {
           const newPath = path
             .replace(variant,

@@ -1,12 +1,24 @@
-@import "../../../../globals";
+@import '../../../../globals';
 
-.users-table {
+.admin-table {
   max-height: $readable-max;
   min-height: $readable-min;
 
   &__content {
     max-height: 600px;
     overflow-y: scroll;
+  }
+
+  &__content-header {
+    position: sticky;
+    top: -1px;
+
+    th {
+      background: $background-light;
+      position: sticky;
+      top: -1px;
+      z-index: 1;
+    }
   }
 
   &__header {
@@ -17,6 +29,6 @@
   }
 
   .admin-badge {
-    animation: fade-in(.1s);
+    animation: fade-in(0.1s);
   }
 }

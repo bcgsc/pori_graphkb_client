@@ -28,7 +28,6 @@ import './Main.scss';
 import {
   AboutView,
   AdminView,
-  AdvancedQueryView,
   DataView,
   ErrorView,
   FeedbackView,
@@ -199,7 +198,6 @@ class Main extends React.Component {
                 <AuthenticatedRoute path="/about" component={AboutView} />
                 <AuthenticatedRoute exact path="/query" component={QueryView} />
                 <AuthenticatedRoute path="/query/advanced/builder" component={QueryBuilderView} />
-                <AuthenticatedRoute path="/delete/:rid" component={NodeView} />
                 <AuthenticatedRoute path="/edit/:rid" component={NodeView} />
                 <AuthenticatedRoute path="/new" exact component={NodeView} />
                 <AuthenticatedRoute path="/new/:modelName" component={NodeView} />

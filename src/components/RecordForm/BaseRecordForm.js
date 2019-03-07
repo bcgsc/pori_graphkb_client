@@ -18,7 +18,7 @@ import ActionButton from '../ActionButton';
 
 import FormField from './FormField';
 import PutativeEdgeField from './FormField/PutativeEdgeField';
-import { EdgeTable } from './EdgeTable';
+import EdgeTable from './EdgeTable';
 import StatementSentence from './StatementSentence';
 import {
   CLASS_MODEL_PROP,
@@ -59,7 +59,7 @@ class BaseRecordForm extends React.Component {
   };
 
   static defaultProps = {
-    aboveFold: ['@rid', CLASS_MODEL_PROP, 'name', 'journalName', 'out', 'in'],
+    aboveFold: ['@rid', CLASS_MODEL_PROP, 'name', 'groups', 'journalName', 'out', 'in', 'permissions'],
     belowFold: ['deprecated', 'history'],
     className: '',
     collapseExtra: false,
@@ -363,6 +363,8 @@ class BaseRecordForm extends React.Component {
     });
 
     let disableClassSelect = false;
+    let defaultClassSelected = '';
+
     if (variant === FORM_VARIANT.VIEW) {
       disableClassSelect = true;
     } else if (variant === FORM_VARIANT.SEARCH || variant === FORM_VARIANT.NEW) {
@@ -370,6 +372,7 @@ class BaseRecordForm extends React.Component {
         disableClassSelect = false;
       } else if (modelName && !schema.get(modelName).isAbstract) {
         disableClassSelect = true;
+        defaultClassSelected = modelName;
       }
     } else {
       disableClassSelect = true;
@@ -384,9 +387,9 @@ class BaseRecordForm extends React.Component {
           : {},
         { choices: modelChoices, required: true, name: CLASS_MODEL_PROP },
       ),
-      value: content
+      value: content && content[CLASS_MODEL_PROP]
         ? content[CLASS_MODEL_PROP]
-        : '',
+        : defaultClassSelected,
       error: errors[CLASS_MODEL_PROP],
       onValueChange: this.handleValueChange,
       disabled: disableClassSelect || modelChoices.length < 2,

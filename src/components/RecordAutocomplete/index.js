@@ -90,7 +90,7 @@ class RecordAutocomplete extends React.Component {
     label: '',
     minSearchLength: 4,
     onChange: () => {},
-    placeholder: 'Search for an Existing Record by Name or ID',
+    placeholder: 'Search Records by Name or ID',
     required: false,
     value: null,
   };

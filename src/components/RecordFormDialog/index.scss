@@ -1,0 +1,12 @@
+
+.record-form-dialog {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 10px;
+
+    > {
+      display: inline-block;
+    }
+  }
+}

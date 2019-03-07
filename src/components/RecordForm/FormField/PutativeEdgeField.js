@@ -85,8 +85,6 @@ class PutativeEdgeField extends React.Component {
           }
           return text;
           } catch (err) {}  // eslint-disable-line
-      } else if (item.target) {
-        return `${item.target}`;
       }
       return `${item}`;
     };

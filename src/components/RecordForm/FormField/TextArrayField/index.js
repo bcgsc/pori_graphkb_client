@@ -197,24 +197,24 @@ class TextArrayField extends Component {
     const chips = value
       .map(
         (text) => {
-          if (!deleted.has(text)) {
-            return (
-              <Chip
-                label={text}
-                deleteIcon={<CancelIcon />}
-                onDelete={() => this.handleDelete(text)}
-                key={text}
-                className="text-array-field__chip"
-              />
-            );
-          }
+          const isDeleted = deleted.has(text);
+          const props = {
+            deleteIcon: isDeleted
+              ? <RefreshIcon />
+              : <CancelIcon />,
+            onDelete: () => isDeleted
+              ? () => this.handleRestore(text)
+              : () => this.handleDelete(text),
+            className: `text-array-field__chip${isDeleted
+              ? ' text-array-field__chip--deleted'
+              : ''
+            }`,
+          };
           return (
             <Chip
               label={text}
-              deleteIcon={<RefreshIcon />}
-              onDelete={() => this.handleRestore(text)}
               key={text}
-              className="text-array-field__chip--deleted"
+              {...props}
             />
           );
         },

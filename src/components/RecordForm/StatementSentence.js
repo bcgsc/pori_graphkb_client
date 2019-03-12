@@ -45,7 +45,11 @@ const StatementSentence = (props) => {
 
 StatementSentence.propTypes = {
   schema: PropTypes.object.isRequired,
-  content: PropTypes.object.isRequired,
+  content: PropTypes.object,
+};
+
+StatementSentence.defaultProps = {
+  content: {},
 };
 
 export default StatementSentence;

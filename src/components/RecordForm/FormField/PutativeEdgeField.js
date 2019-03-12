@@ -78,13 +78,7 @@ class PutativeEdgeField extends React.Component {
 
     const itemToString = (item) => {
       if (item && item.target) {
-        try {
-          const text = schema.getPreview(item.target);
-          if (item.target['@rid']) {
-            return `${text} (${item.target['@rid']})`;
-          }
-          return text;
-          } catch (err) {}  // eslint-disable-line
+        return schema.getLabel(item.target);
       }
       return `${item}`;
     };

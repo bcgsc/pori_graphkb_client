@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Paper, Typography, Button } from '@material-ui/core';
 import { boundMethod } from 'autobind-decorator';
 import EditIcon from '@material-ui/icons/Edit';
-import jc from 'json-cycle';
 
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 
@@ -24,6 +23,34 @@ const omitUndefined = (obj) => {
     }
   });
   return payload;
+};
+
+const cleanPayload = (payload) => {
+  if (typeof payload !== 'object' || payload === null) {
+    return payload;
+  }
+  const newPayload = {};
+  Object.entries(payload).forEach(([key, value]) => {
+    if (value !== undefined) {
+      if (typeof value === 'object' && value !== null) {
+        if (Array.isArray(value)) {
+          newPayload[key] = value.map((arr) => {
+            if (arr && arr['@rid']) {
+              return arr['@rid'];
+            }
+            return cleanPayload;
+          });
+        } else if (value['@rid']) {
+          newPayload[key] = value['@rid'];
+        } else {
+          newPayload[key] = value;
+        }
+      } else {
+        newPayload[key] = value;
+      }
+    }
+  });
+  return newPayload;
 };
 
 
@@ -126,7 +153,7 @@ class RecordForm extends React.PureComponent {
       if (!content || !content['@class']) {
         content['@class'] = modelName;
       }
-      const payload = omitUndefined(content);
+      const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
       const call = api.post(routeName, payload);
       this.controllers.push(call);

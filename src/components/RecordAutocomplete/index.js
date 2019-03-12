@@ -52,6 +52,7 @@ class RecordAutocomplete extends React.Component {
     className: PropTypes.string,
     components: PropTypes.object,
     debounceMs: PropTypes.number,
+    defaultOptionsHandler: PropTypes.func,
     DetailChipProps: PropTypes.object,
     disableCache: PropTypes.bool,
     disabled: PropTypes.bool,
@@ -73,6 +74,7 @@ class RecordAutocomplete extends React.Component {
     className: '',
     components: defaultComponents,
     debounceMs: 300,
+    defaultOptionsHandler: null,
     DetailChipProps: {
       valueToString: (record) => {
         if (record && record['@rid']) {
@@ -114,9 +116,13 @@ class RecordAutocomplete extends React.Component {
   }
 
   async componentDidMount() {
-    const { searchHandler, minSearchLength } = this.props;
+    const { searchHandler, minSearchLength, defaultOptionsHandler } = this.props;
     if (minSearchLength === 0) {
       this.controller = searchHandler('');
+      const initialOptions = await this.controller.request();
+      this.setState({ initialOptions });
+    } else if (defaultOptionsHandler) {
+      this.controller = defaultOptionsHandler();
       const initialOptions = await this.controller.request();
       this.setState({ initialOptions });
     }
@@ -218,6 +224,9 @@ class RecordAutocomplete extends React.Component {
       uniqueProps = {
         loadOptions: this.getOptions,
       };
+      if (initialOptions) {
+        uniqueProps.defaultOptions = initialOptions;
+      }
     }
 
     return (

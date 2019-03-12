@@ -1,31 +1,85 @@
+import { boundMethod } from 'autobind-decorator';
+
+import kbSchema from '@bcgsc/knowledgebase-schema';
+
+const { schema: SCHEMA_DEFN } = kbSchema;
+
+const MAX_LABEL_LENGTH = 30;
+
 
 /**
  * Knowledgebase schema.
  */
 class Schema {
-  constructor(schema) {
+  constructor(schema = SCHEMA_DEFN) {
     this.schema = schema;
+    this.normalizedModelNames = {};
+    Object.values(schema).forEach((model) => {
+      this.normalizedModelNames[model.name.toLowerCase()] = model;
+    });
+  }
+
+  /**
+   * Check that a given class/model name exists
+   */
+  has(obj) {
+    try {
+      return Boolean(this.get(obj));
+    } catch (err) {
+      return false;
+    }
   }
 
   /**
    * Returns Knowledgebase class schema.
    * @param {Object|string} obj - Record to fetch schema of.
    */
+  @boundMethod
   get(obj) {
     let cls = obj;
     if (obj && typeof obj === 'object' && obj['@class']) {
       cls = obj['@class'];
     }
-    return this.schema[cls];
+    return this.normalizedModelNames[typeof cls === 'string'
+      ? cls.toLowerCase()
+      : cls
+    ];
+  }
+
+  /**
+   * Get a string representation of a record
+   */
+  @boundMethod
+  getLabel(obj) {
+    try {
+      let label = this.get(obj).getPreview(obj);
+      if (label.length > MAX_LABEL_LENGTH - 3) {
+        label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
+      }
+      if (obj['@rid']) {
+        label = `${label} (${obj['@rid']})`;
+      }
+      return label;
+    } catch (err) {}  // eslint-disable-line
+    try {
+      return obj['@rid'];
+    } catch (err) {} // eslint-disable-line
+    return obj;
   }
 
   /**
    * Returns preview of given object based on its '@class' value
    * @param {Object} obj - Record to be parsed.
    */
+  @boundMethod
   getPreview(obj) {
-    if (!obj['@class'] || !this.schema[obj['@class']]) return null;
-    return this.schema[obj['@class']].getPreview(obj);
+    try {
+      return this.get(obj).getPreview(obj);
+    } catch (err) {}  // eslint-disable-line
+    try {
+      return obj['@rid'];
+    } catch (err) {} // eslint-disable-line
+    return obj;
   }
 
   /**
@@ -44,10 +98,7 @@ class Schema {
    */
   getProperties(obj, extraProps = []) {
     const VPropKeys = this.schema.V.properties;
-    if (obj && typeof obj === 'object') {
-      obj = obj['@class'] || '';
-    }
-    const classModel = this.schema[obj];
+    const classModel = this.get(obj);
     if (!classModel) return null;
     return Object.values(classModel.properties || [])
       .filter(prop => !VPropKeys[prop.name] || extraProps.includes(prop.name));
@@ -78,83 +129,6 @@ class Schema {
   }
 
   /**
-   * Initializes a new instance of given kbClass.
-   * @param {Object} model - existing model to keep existing values from.
-   * @param {string} kbClass - Knowledge base class key.
-   * @param {Array.<Object>} [opt.extraProps=[]] - Extra props to initialize on model.
-   * @param {boolean} [opt.ignoreClass=false] - flag to omit '@class' prop on new model.
-   * @param {boolean} [opt.stripProps=false] - flag to strip old props from model.
-   * @param {boolean} [opt.isQuery=false] - flag to retreive queryproperties
-   * from classmodel.
-   */
-  initModel(model, kbClass, opt = {}) {
-    const {
-      ignoreClass,
-      stripProps,
-      isQuery,
-    } = opt;
-    const extraProps = opt.extraProps || [];
-
-    const editableProps = kbClass
-      && (
-        isQuery
-          ? (this.getQueryProperties(kbClass, extraProps) || {})
-          : (this.getProperties(kbClass, extraProps) || {}));
-    if (!editableProps) return null;
-    extraProps.forEach((prop) => { editableProps[prop.name] = prop; });
-    const newModel = stripProps ? {} : Object.assign({}, model);
-    newModel['@class'] = ignoreClass ? '' : this.get(kbClass).name;
-    Object.values(editableProps).forEach((property) => {
-      const {
-        name,
-        type,
-        linkedClass,
-        default: defaultValue,
-      } = property;
-      switch (type) {
-        case 'embeddedset':
-          newModel[name] = model[name] ? model[name].slice() : [];
-          break;
-        case 'link':
-          if (model[`${name}.data`]) {
-            newModel[`${name}.data`] = model[`${name}.data`];
-          } else if (model[name] && model[name]['@class']) {
-            newModel[`${name}.data`] = model[name];
-          } else {
-            newModel[`${name}.data`] = null;
-          }
-          newModel[name] = (newModel[`${name}.data`] && this.getPreview(newModel[`${name}.data`])) || '';
-          break;
-        case 'integer' || 'long':
-          newModel[name] = model[name] !== undefined
-            ? model[name]
-            : '';
-          break;
-        case 'boolean':
-          newModel[name] = model[name] !== undefined
-            ? model[name]
-            : (defaultValue || '').toString() === 'true';
-          break;
-        case 'embedded':
-          if (linkedClass && linkedClass.properties) {
-            newModel[name] = model[name]
-              ? Object.assign({}, model[name])
-              : this.initModel({}, linkedClass.name, {
-                extraProps: [],
-                ignoreClass: !!linkedClass.isAbstract,
-                isQuery,
-              });
-          }
-          break;
-        default:
-          newModel[name] = model[name] || '';
-          break;
-      }
-    });
-    return newModel;
-  }
-
-  /**
    * Returns all queryable classModels.
    */
   getQueryable(isAdmin) {
@@ -176,22 +150,6 @@ class Schema {
       .filter(model => model.inherits && model.inherits.includes(cls));
     if (!subOnly) list.push(schema[cls]);
     return list;
-  }
-
-  /**
-   * Returns all ontology types.
-   * @param {boolean} [subOnly=false] - flag for checking only subclasses.
-   */
-  getOntologies(subOnly = false) {
-    return this.getSubclassesOf('Ontology', subOnly);
-  }
-
-  /**
-   * Returns all variant types.
-   * @param {boolean} [subOnly=false] - flag for checking only subclasses.
-   */
-  getVariants(subOnly = false) {
-    return this.getSubclassesOf('Variant', subOnly);
   }
 
   /**

@@ -1,0 +1,106 @@
+@import '../../globals';
+
+.content-wrapper.about-page {
+  // move the padding below the tabs
+  padding: 0;
+
+  .tabs-content {
+    @include content-wrapper;
+  }
+
+  .tabs-bar {
+    box-shadow: $subtle-shadow;
+  }
+
+  .two-column-grid {
+    @include two-column-grid;
+    margin: 40px 0;
+  }
+
+  #about-notation {
+    // Fix for non mui components
+    color: rgba(0, 0, 0, .7);
+    font-family: $roboto;
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: .00938em;
+    line-height: 1.5;
+
+    pre {
+      background-color: $background-dark;
+      padding: 5px;
+
+      code {
+        font-family: $code-font;
+      }
+    }
+
+    h1,
+    h2 {
+      color: rgba(0, 0, 0, 0.7);
+      font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+      font-weight: 400;
+      letter-spacing: 0em;
+      line-height: 1.33;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-top: 0;
+    }
+
+
+    h2 {
+      font-size: 1.2rem;
+    }
+  }
+
+  p,
+  .about-version-info {
+    min-width: $readable-min;
+    max-width: $readable-max;
+  }
+
+  h2 {
+    margin-bottom: 10px;
+  }
+
+  img,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  .pie-chart {
+    max-height: calc(100vw - 60px);
+    text {
+      fill: white;
+    }
+  }
+  @include lg-media {
+    img,
+    svg {
+      max-width: inherit;
+    }
+  }
+  @include sm-media {
+    .pie-chart {
+      display: none;
+    }
+  }
+
+  .record-classes-table__content-header {
+    position: sticky;
+    top: -1px;
+
+    th {
+      background: $background-light;
+      position: sticky;
+      top: -1px;
+      z-index: 1;
+    }
+  }
+}
+
+
+

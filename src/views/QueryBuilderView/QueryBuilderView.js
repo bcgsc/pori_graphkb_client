@@ -3,7 +3,6 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './QueryBuilderView.css';
 import {
   Button,
   Dialog,
@@ -18,8 +17,11 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import HelpIcon from '@material-ui/icons/Help';
 import * as qs from 'querystring';
 import { Link } from 'react-router-dom';
-import { withKB } from '../../components/KBContext';
-import CodeInput from '../../components/CodeInput';
+import { boundMethod } from 'autobind-decorator';
+
+import './QueryBuilderView.scss';
+import { KBContext } from '../../components/KBContext';
+import { CodeInput } from './components';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent';
 import api from '../../services/api';
 import auth from '../../services/auth';
@@ -47,8 +49,16 @@ const parseJSON = (string) => {
 /**
  * Freeform query builder where users can add key-value pairs or nested groups
  * of key-value pairs.
+ *
+ * @property {Object} props.history - Application history state object.
  */
-class QueryBuilderViewBase extends Component {
+class QueryBuilderView extends Component {
+  static contextType = KBContext;
+
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -59,17 +69,12 @@ class QueryBuilderViewBase extends Component {
       error: '',
       params: parseJSON(EXAMPLE_PAYLOAD),
     };
-
-    this.bundle = this.bundle.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleToggle = this.handleToggle.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleText = this.handleText.bind(this);
   }
 
   /**
    * Bundles query params into a string.
    */
+  @boundMethod
   bundle() {
     const { params, endpoint } = this.state;
     const cls = params['@class'] || endpoint;
@@ -85,6 +90,7 @@ class QueryBuilderViewBase extends Component {
    * Handles change of a state property.
    * @param {Event} event - User input event.
    */
+  @boundMethod
   handleChange(event) {
     this.setState({ [event.target.name]: event.target.value });
   }
@@ -92,6 +98,7 @@ class QueryBuilderViewBase extends Component {
   /**
    * Toggles kb spec iframe dialog.
    */
+  @boundMethod
   handleToggle() {
     const { specOpen } = this.state;
     this.setState({ specOpen: !specOpen });
@@ -100,6 +107,7 @@ class QueryBuilderViewBase extends Component {
   /**
    * Bundles query and navigates to query results page.
    */
+  @boundMethod
   handleSubmit() {
     const { history } = this.props;
     const { error } = this.state;
@@ -117,6 +125,7 @@ class QueryBuilderViewBase extends Component {
    * params object.
    * @param {Event} event - User input event
    */
+  @boundMethod
   handleText(event) {
     const { value } = event.target;
     try {
@@ -130,7 +139,7 @@ class QueryBuilderViewBase extends Component {
   }
 
   render() {
-    const { schema } = this.props;
+    const { schema } = this.context;
     const {
       specOpen,
       specBlurbOpen,
@@ -225,22 +234,5 @@ class QueryBuilderViewBase extends Component {
   }
 }
 
-/**
- * @namespace
- * @property {Object} history - Application history state object.
- * @property {Object} schema - Knowledgebase schema object.
- */
-QueryBuilderViewBase.propTypes = {
-  history: PropTypes.object.isRequired,
-  schema: PropTypes.object.isRequired,
-};
 
-const QueryBuilderView = withKB(QueryBuilderViewBase);
-
-/**
- * Export consumer component and regular component for testing.
- */
-export {
-  QueryBuilderView,
-  QueryBuilderViewBase,
-};
+export default QueryBuilderView;

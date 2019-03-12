@@ -11,13 +11,7 @@
 *.launch
 .settings/
 *.sublime-workspace
-
-# IDE - VSCode
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+.vscode
 
 # misc
 /.sass-cache
@@ -28,14 +22,23 @@ npm-debug.log
 yarn-error.log
 testem.log
 /typings
+*.bk
 
 # System Files
 .DS_Store
 Thumbs.db
 
 *.css
-src/index.css
+/src/index.css
 /jsdoc
 /build
 /cypress/videos
 /cypress/screenshots
+
+# webpack build
+/public/*
+!/public/index.html
+!/public/favicon.ico
+!/public/mainfest.json
+/stats.json
+/dist

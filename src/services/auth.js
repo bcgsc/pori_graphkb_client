@@ -4,6 +4,7 @@
  */
 import Keycloak from 'keycloak-js';
 import * as jwt from 'jsonwebtoken';
+
 import config from '../static/config';
 
 const {
@@ -19,6 +20,8 @@ const {
   },
 } = config;
 
+const REFERRER = 'KEYCLOAK_LOGIN_REFERRER';
+
 
 const keycloak = Keycloak({
   realm: REALM,
@@ -28,14 +31,14 @@ const keycloak = Keycloak({
 });
 
 /**
- * Returns decoded keycloak token.
+ * Returns the keycloak token.
  */
-const getKeyCloakToken = () => jwt.decode(localStorage.getItem(KEYCLOAK_TOKEN));
+const getAuthToken = () => localStorage.getItem(KEYCLOAK_TOKEN);
 
 /**
  * Loads KeyCloak token into localstorage.
  */
-const loadKeyCloakToken = token => localStorage.setItem(KEYCLOAK_TOKEN, token);
+const setAuthToken = token => localStorage.setItem(KEYCLOAK_TOKEN, token);
 
 /**
  * Retrieves Knowledge Base token.
@@ -43,30 +46,65 @@ const loadKeyCloakToken = token => localStorage.setItem(KEYCLOAK_TOKEN, token);
 const getToken = () => localStorage.getItem(KB_TOKEN);
 
 /**
+ * Get and remove last refferer
+ */
+const popReferrerUri = () => {
+  const uri = localStorage.getItem(REFERRER);
+  localStorage.removeItem(REFERRER);
+  return uri;
+};
+
+
+/**
  * Checks expiry date on JWT token and compares with current time.
  */
-const isExpired = () => {
-  const token = localStorage.getItem(KB_TOKEN);
-  return !!(
-    token
-    && jwt.decode(token)
-    && !Number.isNaN(jwt.decode(token).exp)
-    && (jwt.decode(token).exp * 1000) < (new Date()).getTime()
-  );
+const isExpired = (token) => {
+  try {
+    const expiry = jwt.decode(token).exp;
+    return !Number.isNaN(expiry) && (expiry * 1000) < (new Date()).getTime();
+  } catch (err) {
+    return false;
+  }
+};
+
+
+const validToken = (token) => {
+  try {
+    const decoded = jwt.decode(token);
+    return !!decoded;
+  } catch (err) {
+    return false;
+  }
+};
+
+/**
+ * User has a valid token from the authentication server (keycloak)
+ */
+const isAuthenticated = () => {
+  const token = getAuthToken();
+  return !!(validToken(token) && !isExpired(token));
+};
+
+/**
+ * User has a valid token from the database server
+ */
+const isAuthorized = () => {
+  const token = getToken();
+  return !!(validToken(token) && !isExpired(token));
 };
 
 /**
  * Loads new Knowledge Base token into localstorage.
  * @param {string} token - New Knowledge Base token.
  */
-const loadToken = (token) => {
+const setToken = (token) => {
   localStorage.setItem(KB_TOKEN, token);
 };
 
 /**
  * Clears Knowledge Base token from localstorage.
  */
-const clearToken = () => {
+const clearTokens = () => {
   localStorage.removeItem(KB_TOKEN);
   localStorage.removeItem(KEYCLOAK_TOKEN);
 };
@@ -75,33 +113,35 @@ const clearToken = () => {
  * Returns username of currently logged in user.
  */
 const getUser = () => {
-  const token = localStorage.getItem(KB_TOKEN);
-  if (token && jwt.decode(token)) {
-    return jwt.decode(token).user;
+  try {
+    return jwt.decode(getToken()).user;
+  } catch (err) {
+    return null;
   }
-  return null;
 };
 
 /**
  * Returns true if user is in the 'admin' usergroup.
  */
 const isAdmin = () => {
-  const token = localStorage.getItem(KB_TOKEN);
-  return !!(
-    token
-    && jwt.decode(token)
-    && jwt.decode(token).user
-    && jwt.decode(token).user.groups
-    && jwt.decode(token).user.groups.find(group => group.name === 'admin')
-  );
+  try {
+    return !!(
+      isAuthorized()
+      && jwt.decode(getToken()).user.groups.find(group => group.name === 'admin')
+    );
+  } catch (err) {
+    return false;
+  }
 };
 
 /**
- * Redirects to keycloak login page, loads token into localstorage once returned.
+ * Redirects to keycloak login page, sets token into localstorage once returned.
  */
-const login = async () => {
+const authenticate = async (referrerUri = null) => {
+  clearTokens();
+  localStorage.setItem(REFERRER, referrerUri);
   await keycloak.init({ onLoad: 'login-required', promiseType: 'native' });
-  loadKeyCloakToken(keycloak.token);
+  setAuthToken(keycloak.token);
   return keycloak.token;
 };
 
@@ -110,7 +150,7 @@ const login = async () => {
  * routes to /login.
  */
 const logout = async () => {
-  clearToken();
+  clearTokens();
   try {
     await keycloak.init({ promiseType: 'native' });
     const resp = await keycloak.logout({ redirectUri: `${window.location.origin}/login` });
@@ -120,16 +160,19 @@ const logout = async () => {
   }
 };
 
+
 export default {
-  GRAPHKB_ROLE,
-  login,
-  logout,
+  authenticate,
+  clearTokens,
+  getAuthToken,
   getToken,
-  loadToken,
-  loadKeyCloakToken,
-  getKeyCloakToken,
-  isAdmin,
-  isExpired,
   getUser,
-  clearToken,
+  GRAPHKB_ROLE,
+  isAdmin,
+  isAuthenticated,
+  isAuthorized,
+  logout,
+  popReferrerUri,
+  setAuthToken,
+  setToken,
 };

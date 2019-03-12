@@ -1,0 +1,92 @@
+@import '../../globals';
+
+.node-form,
+.embedded-node-form {
+  flex-grow: 1;
+  margin-left: auto;
+  margin-right: auto;
+
+  position: relative;
+}
+
+.node-form {
+  &__wrapper {
+    max-width: calc(#{$readable-max} + 40px);
+    @include lg-media {
+      max-width: calc(#{$readable-max} * 2 + 40px);
+    }
+
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0;
+    padding: 20px;
+  }
+
+  &__content,
+  &__content-subgroup {
+    @include two-column-grid;
+
+    @include lg-media {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  &__content--long {
+    display: block;
+    .quote {
+      align-items: center;
+      border-left: 2px solid grey;
+      display: flex;
+      margin-bottom: 10px;
+      margin-left: 40px;
+      margin-top: 10px;
+      min-height: 40px;
+      padding-left: 10px;
+
+      &__substitution {
+        color: $md-secondary-color;
+        font-weight: 600;
+      }
+    }
+  }
+
+  & &__content-subgroup {
+    @include field-set;
+    display: grid;
+    grid-column: 1 / -1;
+    margin: 0;
+    padding-bottom: 10px;
+    padding-top: 10px;
+  }
+
+  &__related-nodes {
+    margin-top: 20px;
+  }
+
+  &__header,
+  &__action-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  &__action-buttons {
+    margin-top: 20px;
+
+    :last-child {
+      margin-left: auto;
+    }
+  }
+}
+
+
+.embedded-node-form {
+  fieldset {
+    @include field-set;
+  }
+
+  .node-form__content {
+    display: block;
+  }
+}
+

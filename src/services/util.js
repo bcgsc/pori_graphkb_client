@@ -3,6 +3,7 @@
  * @module /services/util
  */
 import * as jc from 'json-cycle';
+
 import config from '../static/config';
 
 const {
@@ -272,9 +273,9 @@ const parsePayload = (form, properties = null, extraProps = [], isQuery = false)
 /**
  * Returns pallette of colors for displaying objects of given type.
  * @param {number} n - number of elements in collection.
- * @param {string} type - object type ['link', 'node'].
+ * @param {string} type - object type ['links', 'nodes'].
  */
-const getPallette = (n, type) => {
+const getPallette = (n, type = 'nodes') => {
   const baseName = `${type.toUpperCase().slice(0, type.length - 1)}_COLORS`;
   if (n <= PALLETE_SIZE) {
     return config.GRAPH_DEFAULTS[baseName];
@@ -410,6 +411,17 @@ const sortFields = (order = [], prop = 'name') => (a, b) => {
     : 1;
 };
 
+/**
+ * Return the RecordId
+ */
+const recordId = (obj) => {
+  if (typeof obj === 'object' && obj['@rid']) {
+    return obj['@rid'];
+  }
+  return obj;
+};
+
+
 export default {
   antiCamelCase,
   expandEdges,
@@ -426,5 +438,6 @@ export default {
   formatStr,
   shortenString,
   parseKBType,
+  recordId,
   sortFields,
 };

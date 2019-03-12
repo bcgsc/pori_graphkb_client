@@ -3,8 +3,6 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './DataView.css';
-import * as jc from 'json-cycle';
 import { Route, Redirect, Switch } from 'react-router-dom';
 import {
   CircularProgress,
@@ -12,16 +10,18 @@ import {
 } from '@material-ui/core';
 import qs from 'qs';
 import omit from 'lodash.omit';
-import DetailDrawer from '../../components/DetailDrawer';
-import GraphComponent from '../../components/GraphComponent';
+import { boundMethod } from 'autobind-decorator';
+
+import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
+
+import './DataView.scss';
+import { GraphComponent, DetailDrawer, TableComponent } from './components';
 import { withKB } from '../../components/KBContext';
-import { SnackbarContext } from '../../components/Snackbar';
-import TableComponent from '../../components/TableComponent';
 import api from '../../services/api';
 import config from '../../static/config';
 
 const { DEFAULT_NEIGHBORS } = config;
-const DEFAULT_LIMIT = 1000;
+const DEFAULT_LIMIT = 100;
 
 /**
  * View for managing state of query results. Contains sub-routes for table view (/data/table)
@@ -32,52 +32,16 @@ const DEFAULT_LIMIT = 1000;
  * from the url search string, retrieving the database schema, and making subsequent
  * individual record GETs throughout the user's session.
  *
+ * @property {Object} props.history - Application routing history object.
+ * @property {Object} props.schema - Knowledgebase schema object.
  */
 class DataViewBase extends Component {
-  /**
-   * Makes API GET call to specified endpoint, with specified query parameters.
-   * @param {string} route - API endpoint.
-   * @param {Object} queryParams - Query parameters object.
-   * @param {Array.<string>} omitted - List of parameters to strip from API call.
-   */
-  static async makeApiQuery(route, queryParams, omitted = []) {
-    const response = await api.get(`${route}?${qs.stringify(omit(queryParams, omitted))}`);
-    return jc.retrocycle(response).result;
-  }
+  static propTypes = {
+    history: PropTypes.object.isRequired,
+    schema: PropTypes.object.isRequired,
+  };
 
-  /**
-   * Makes API POST call to specified endpoint, with specified payload.
-   * @param {string} route - API endpoint.
-   * @param {Object} payload - Query payload object.
-   * @param {Array.<string>} omitted - List of parameters to strip from API call.
-   */
-  static async makeComplexApiQuery(route, payload, omitted = []) {
-    const response = await api.post(route, omit(payload, omitted));
-    return jc.retrocycle(response).result;
-  }
-
-  /**
-   * Prepares next query function.
-   * @param {string} route - API route.
-   * @param {Object} queryParams - Query parameters key/value pairs.
-   * @param {Array.<Object>} prevResult - Previous query results.
-   * @param {Array.<string>} omitted - List of property keys to omit during next query.
-   */
-  static prepareNextPagination(route, queryParams, prevResult, omitted = []) {
-    const nextQueryParams = queryParams;
-    if (prevResult.length >= queryParams.limit) {
-      nextQueryParams.skip = Number(queryParams.limit) + Number(queryParams.skip || 0);
-      return {
-        next: () => DataViewBase.makeApiQuery(route, nextQueryParams, omitted),
-        moreResults: true,
-        filteredSearch: nextQueryParams,
-      };
-    }
-    return {
-      next: null,
-      moreResults: false,
-    };
-  }
+  static contextType = SnackbarContext;
 
   constructor(props) {
     super(props);
@@ -94,27 +58,7 @@ class DataViewBase extends Component {
       moreResults: false,
     };
 
-    this.handleClick = this.handleClick.bind(this);
-    this.processData = this.processData.bind(this);
-
-    // TableComponent methods
-    this.handleCheckbox = this.handleCheckbox.bind(this);
-    this.handleCheckAll = this.handleCheckAll.bind(this);
-    this.handleHideSelected = this.handleHideSelected.bind(this);
-    this.handleShowAllNodes = this.handleShowAllNodes.bind(this);
-    this.handleSubsequentPagination = this.handleSubsequentPagination.bind(this);
-
-    // GraphComponent methods
-    this.handleDetailDrawerOpen = this.handleDetailDrawerOpen.bind(this);
-    this.handleDetailDrawerClose = this.handleDetailDrawerClose.bind(this);
-    this.handleNewColumns = this.handleNewColumns.bind(this);
-
-    // NodeDetailComponent methods
-    this.handleNodeEditStart = this.handleNodeEditStart.bind(this);
-
-    // Routing methods
-    this.handleGraphRedirect = this.handleGraphRedirect.bind(this);
-    this.handleTableRedirect = this.handleTableRedirect.bind(this);
+    this.controllers = [];
   }
 
   /**
@@ -140,7 +84,7 @@ class DataViewBase extends Component {
         routeName = '/search';
         queryParams.neighbors = queryParams.neighbors || DEFAULT_NEIGHBORS;
         queryParams.limit = queryParams.limit || DEFAULT_LIMIT;
-        response = await DataViewBase.makeApiQuery(routeName, queryParams);
+        response = await this.makeApiQuery(routeName, queryParams);
       } else if (queryParams.complex) {
         routeName += '/search';
         isComplex = true;
@@ -148,11 +92,11 @@ class DataViewBase extends Component {
         const payload = JSON.parse(atob(decodeURIComponent(queryParams.complex)));
         payload.neighbors = Math.max(payload.neighbors || 0, DEFAULT_NEIGHBORS);
         payload.limit = Math.min(payload.limit || DEFAULT_LIMIT, DEFAULT_LIMIT);
-        response = await DataViewBase.makeComplexApiQuery(routeName, payload, omitted);
+        response = await this.makeComplexApiQuery(routeName, payload, omitted);
       } else {
         queryParams.neighbors = queryParams.neighbors || DEFAULT_NEIGHBORS;
         queryParams.limit = queryParams.limit || DEFAULT_LIMIT;
-        response = await DataViewBase.makeApiQuery(routeName, queryParams, omitted);
+        response = await this.makeApiQuery(routeName, queryParams, omitted);
       }
 
       const { data, allProps } = this.processData(response);
@@ -162,7 +106,7 @@ class DataViewBase extends Component {
         moreResults,
         filteredSearch,
       } = !isComplex
-        ? DataViewBase.prepareNextPagination(routeName, queryParams, response, omitted)
+        ? this.prepareNextPagination(routeName, queryParams, response, omitted)
         : {
           moreResults: false,
           next: null,
@@ -187,6 +131,59 @@ class DataViewBase extends Component {
     }
   }
 
+  componentWillUnmount() {
+    this.controllers.forEach(c => c.abort());
+  }
+
+  /**
+   * Prepares next query function.
+   * @param {string} route - API route.
+   * @param {Object} queryParams - Query parameters key/value pairs.
+   * @param {Array.<Object>} prevResult - Previous query results.
+   * @param {Array.<string>} omitted - List of property keys to omit during next query.
+   */
+  prepareNextPagination(route, queryParams, prevResult, omitted = []) {
+    const nextQueryParams = queryParams;
+    if (prevResult.length >= queryParams.limit) {
+      nextQueryParams.skip = Number(queryParams.limit) + Number(queryParams.skip || 0);
+      return {
+        next: () => this.makeApiQuery(route, nextQueryParams, omitted),
+        moreResults: true,
+        filteredSearch: nextQueryParams,
+      };
+    }
+    return {
+      next: null,
+      moreResults: false,
+    };
+  }
+
+  /**
+   * Makes API GET call to specified endpoint, with specified query parameters.
+   * @param {string} route - API endpoint.
+   * @param {Object} queryParams - Query parameters object.
+   * @param {Array.<string>} omitted - List of parameters to strip from API call.
+   */
+  async makeApiQuery(route, queryParams, omitted = []) {
+    const call = api.get(`${route}?${qs.stringify(omit(queryParams, omitted))}`);
+    this.controllers.push(call);
+    const result = await call.request();
+    return result;
+  }
+
+  /**
+   * Makes API POST call to specified endpoint, with specified payload.
+   * @param {string} route - API endpoint.
+   * @param {Object} payload - Query payload object.
+   * @param {Array.<string>} omitted - List of parameters to strip from API call.
+   */
+  async makeComplexApiQuery(route, payload, omitted = []) {
+    const call = api.post(route, omit(payload, omitted));
+    this.controllers.push(call);
+    const result = await call.request();
+    return result;
+  }
+
   /**
    * Processes ontology data and updates properties map.
    * @param {Array.<Object>} queryResults - List of returned records.
@@ -202,7 +199,7 @@ class DataViewBase extends Component {
       allProps = ['@rid', '@class', 'preview'];
     }
 
-    queryResults.forEach((record) => {
+    (queryResults || []).forEach((record) => {
       allProps = schema.collectOntologyProps(record, allProps);
       data[record['@rid']] = record;
     });
@@ -214,14 +211,17 @@ class DataViewBase extends Component {
    * Sets the state selected ID to clicked node.
    * @param {Object} node - Clicked node identifier.
    */
+  @boundMethod
   async handleClick(node) {
     const { schema } = this.props;
     const { data } = this.state;
     if (!data[node.data['@rid']]) {
       const { routeName } = schema.get(node.data);
       const endpoint = `${routeName || '/ontologies'}/${node.data['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`; // change
-      const response = await api.get(endpoint);
-      this.setState({ ...this.processData([jc.retrocycle(response).result]) });
+      const call = api.get(endpoint);
+      this.controllers.push(call);
+      const { result } = await call.request();
+      this.setState({ ...this.processData([result]) });
     }
   }
 
@@ -230,6 +230,7 @@ class DataViewBase extends Component {
    * @param {Event} event - User checkbox event.
    * @param {string} rid - Checked node identifier.
    */
+  @boundMethod
   handleCheckbox(event, rid) {
     event.stopPropagation();
     const { displayed } = this.state;
@@ -247,6 +248,7 @@ class DataViewBase extends Component {
    * @param {Event} event - Checkbox event.
    * @param {Array.<Object>} - Currently displayed page data.
    */
+  @boundMethod
   handleCheckAll(event, pageData) {
     let displayed;
     if (event.target.checked) {
@@ -260,6 +262,7 @@ class DataViewBase extends Component {
   /**
    * Clears displayed array.
    */
+  @boundMethod
   handleHideSelected() {
     const { displayed, hidden } = this.state;
     hidden.push(...displayed);
@@ -269,6 +272,7 @@ class DataViewBase extends Component {
   /**
    * Appends the input array to the displayed array.
    */
+  @boundMethod
   handleShowAllNodes() {
     const { displayed, hidden } = this.state;
     displayed.push(...hidden);
@@ -278,6 +282,7 @@ class DataViewBase extends Component {
   /**
    * Handles subsequent pagination call
    */
+  @boundMethod
   async handleSubsequentPagination() {
     const { schema } = this.props;
     const {
@@ -307,7 +312,7 @@ class DataViewBase extends Component {
 
         this.setState({
           ...this.processData(nextData),
-          ...DataViewBase.prepareNextPagination(routeName, filteredSearch, nextData, omitted),
+          ...this.prepareNextPagination(routeName, filteredSearch, nextData, omitted),
           completedNext: true,
         });
       } catch (error) {
@@ -321,26 +326,19 @@ class DataViewBase extends Component {
   /**
    * Sets selected ID to input node identifier and opens edit drawer.
    */
+  @boundMethod
   handleNodeEditStart() {
     const { detail } = this.state;
-    const { history, schema } = this.props;
+    const { history } = this.props;
     if (detail) {
-      let route;
-      const { inherits } = schema.get(detail);
-      if (inherits && inherits.includes('Ontology')) {
-        route = 'ontology';
-      } else if (inherits && inherits.includes('Variant')) {
-        route = 'variant';
-      } else if (detail['@class'] === 'Statement') {
-        route = 'statement';
-      }
-      history.push(`/edit/${route}/${detail['@rid'].slice(1)}`);
+      history.push(`/edit/${detail['@rid'].slice(1)}`);
     }
   }
 
   /**
    * Closes detail drawer.
    */
+  @boundMethod
   handleDetailDrawerClose() {
     this.setState({ detail: null });
   }
@@ -351,6 +349,7 @@ class DataViewBase extends Component {
    * @param {boolean} open - flag to open drawer, or to just update.
    * @param {boolean} edge - flag to indicate edge record.
    */
+  @boundMethod
   async handleDetailDrawerOpen(node, open, edge) {
     const { data, detail } = this.state;
     if (!open && !detail) return;
@@ -364,8 +363,10 @@ class DataViewBase extends Component {
       });
     } else {
       if (!data[node['@rid']]) {
-        const response = await api.get(`/ontologies/${node['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
-        data[node['@rid']] = jc.retrocycle(response).result;
+        const call = api.get(`/v/${node['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
+        this.controllers.push(call);
+        const { result } = await call.request();
+        data[node['@rid']] = result;
       }
       this.setState({ detail: data[node['@rid']], detailEdge: false });
     }
@@ -374,6 +375,7 @@ class DataViewBase extends Component {
   /**
    * Handles redirect to table to graph.
    */
+  @boundMethod
   handleGraphRedirect(filters) {
     const { history } = this.props;
     this.setState({ storedFilters: filters, detail: null });
@@ -383,6 +385,7 @@ class DataViewBase extends Component {
   /**
    * Handles redirect to graph to table.
    */
+  @boundMethod
   handleTableRedirect() {
     const { history } = this.props;
     this.setState({ detail: null });
@@ -396,6 +399,7 @@ class DataViewBase extends Component {
    * Updates column list with field keys from new node.
    * @param {Object} node - newly added object.
    */
+  @boundMethod
   handleNewColumns(node) {
     const { allProps } = this.state;
     const { schema } = this.props;
@@ -501,20 +505,10 @@ class DataViewBase extends Component {
           )
         }
         {schema && detailDrawer}
-      </div>);
+      </div>
+    );
   }
 }
-
-/**
- * @namespace
- * @property {Object} history - Application routing history object.
- * @property {Object} schema - Knowledgebase schema object.
- */
-DataViewBase.propTypes = {
-  history: PropTypes.object.isRequired,
-  schema: PropTypes.object.isRequired,
-};
-DataViewBase.contextType = SnackbarContext;
 
 const DataView = withKB(DataViewBase);
 

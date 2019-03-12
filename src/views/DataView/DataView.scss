@@ -1,26 +1,27 @@
 @import "../../globals";
 $data-view-collapse: 60em;
+
 .data-view {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  justify-content: center;
   background-color: $background-dark;
+  bottom: 0;
   display: flex;
+  justify-content: center;
+  left: 0;
   overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 
 #progress-spinner {
+  left: 0;
   margin: auto;
   position: absolute;
-  top: 40%;
-  left: 0;
   right: 0;
+  top: 40%;
 }
 
 .no-results-msg {
-  text-align: center;
   margin: auto;
+  text-align: center;
 }

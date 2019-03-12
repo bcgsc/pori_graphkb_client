@@ -2,14 +2,19 @@
  * @module /App
  */
 import React from 'react';
-import { Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import {
   createMuiTheme,
   MuiThemeProvider,
+  createGenerateClassName, jssPreset,
 } from '@material-ui/core/styles';
+import JssProvider from 'react-jss/lib/JssProvider';
+import { create } from 'jss';
+
+
+import SnackbarProvider from '@bcgsc/react-snackbar-provider';
+
 import Main from './views/Main/Main';
-import history from './services/history';
-import { SnackbarProvider } from './components/Snackbar/Snackbar';
 
 const theme = createMuiTheme({
   direction: 'ltr',
@@ -35,18 +40,28 @@ const theme = createMuiTheme({
 });
 
 
+const generateClassName = createGenerateClassName();
+const jss = create({
+  ...jssPreset(),
+  // We define a custom insertion point that JSS will look for injecting the styles in the DOM.
+  insertionPoint: 'jss-insertion-point',
+});
+
+
 /**
  * Entry point to application. Handles routing, app theme, and logged in state.
  */
 function App() {
   return (
-    <MuiThemeProvider theme={theme}>
-      <SnackbarProvider>
-        <Router history={history}>
-          <Main />
-        </Router>
-      </SnackbarProvider>
-    </MuiThemeProvider>
+    <JssProvider jss={jss} generateClassName={generateClassName}>
+      <MuiThemeProvider theme={theme}>
+        <SnackbarProvider anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+          <BrowserRouter>
+            <Main />
+          </BrowserRouter>
+        </SnackbarProvider>
+      </MuiThemeProvider>
+    </JssProvider>
   );
 }
 

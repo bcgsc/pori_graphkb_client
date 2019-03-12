@@ -1,19 +1,26 @@
+const DEFAULT_URL = process.env.NODE_ENV === 'local'
+  ? 'http://localhost:8080/api'
+  : 'http://kbapi01:8080/api';
+
+
 export default {
-  API_BASE_URL: process.env.REACT_APP_API_BASE_URL || 'http://kbapi01:8080/api',
+  DISABLE_AUTH: process.env.DISABLE_AUTH === '1',
+  API_BASE_URL: process.env.API_BASE_URL || DEFAULT_URL,
   KEYS: {
     KB_TOKEN: 'kbToken',
     KEYCLOAK_TOKEN: 'kcToken',
     GRAPH_OBJECTS: 'graphObjects',
   },
   KEYCLOAK: {
-    REALM: process.env.REACT_APP_KEYCLOAK_REALM || 'TestKB', // TODO: Migrate over to production keycloak realm (will probably be something like "GSC")s
-    CLIENT_ID: process.env.REACT_APP_KEYCLOAK_CLIENT_ID || 'GraphKB',
-    URL: process.env.REACT_APP_KEYCLOAK_URL || 'http://ga4ghdev01.bcgsc.ca:8080/auth',
-    GRAPHKB_ROLE: process.env.REACT_APP_KEYCLOAK_ROLE || 'GraphKB',
+    REALM: process.env.KEYCLOAK_REALM || 'TestKB', // TODO: Migrate over to production keycloak realm (will probably be something like "GSC")s
+    CLIENT_ID: process.env.KEYCLOAK_CLIENT_ID || 'GraphKB',
+    URL: process.env.KEYCLOAK_URL || 'http://ga4ghdev01.bcgsc.ca:8080/auth',
+    GRAPHKB_ROLE: process.env.KEYCLOAK_ROLE || 'GraphKB',
   },
-  FEEDBACK_EMAIL: 'graphkb@bcgsc.ca',
-  FEEDBACK_HIPCHAT: '@IsaacBeckie',
-  JIRA_LINK: 'https://www.bcgsc.ca/jira/projects/KBDEV',
+  FEEDBACK: {
+    EMAIL: 'graphkb@bcgsc.ca',
+    JIRA: 'https://www.bcgsc.ca/jira/projects/KBDEV',
+  },
   GRAPH_PROPERTIES: {
     ARROW_WIDTH: 3,
     ARROW_LENGTH: 4,

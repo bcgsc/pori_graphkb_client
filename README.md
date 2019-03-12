@@ -1,16 +1,22 @@
-# Knowledge Base GUI
+# GraphKB (Knowledge Base) GUI
+
+Instructions for developers are found in the [contribution guide](docs/CONTRIBUTING.md)
+
+## About
 
 This is the front end for the Knowledge Base database. Users can query the database, view results in a table or graph view, edit record properties, and add or delete records.
 
 ### Querying
+
 The query page allows users to search records by name or shorthand. Submit the query by pressing `Enter` or by clicking on the search icon.
 
 #### Advanced Query and Query Builder
 
-The advanced querying page allows users to specify additional search parameters, depending on the specified record class. The query builder page allows any precise query to be constructed using JSON format. Use of the knowledgebase specification is recommended for beginners, and can be found [here](http://kbapi01:8061/api/v0.6.1/spec/).
+The advanced querying page allows users to specify additional search parameters, depending on the specified record class. The query builder page allows any precise query to be constructed using JSON format. Use of the knowledgebase specification is recommended for beginners, and can be found [here](http://kbapi01:8080/api/spec/).
 
 ##### Example Query (Query Builder)
-```
+
+```json
 {
   "@class": "Statement",
   "supportedby": {

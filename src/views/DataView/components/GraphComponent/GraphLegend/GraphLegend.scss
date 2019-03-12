@@ -1,0 +1,63 @@
+@import '../../../../../globals';
+@import '../../../dataview';
+
+.legend-wrapper {
+  display: grid;
+  grid-row-gap: 8px;
+  grid-template-rows: auto;
+  height: auto;
+  left: 16px;
+  max-height: calc(100vh - 32px - #{$banner-height} - #{$toolbar-height});
+  min-width: 164px;
+  overflow: auto;
+  padding: 2px;
+  position: absolute;
+  top: 16px;
+
+  .close-btn {
+    display: flex;
+    flex-direction: row-reverse;
+    float: right;
+    margin: 8px;
+  }
+
+  .legend-content {
+    padding: 1rem;
+    padding-top: 12px;
+    white-space: nowrap;
+
+    .legend-header {
+      display: flex;
+
+      .legend-header-text {
+        margin-right: 8px;
+      }
+
+      button {
+        margin-left: auto;
+      }
+    }
+  }
+
+  .node-colors {
+    width: 100%;
+
+    li {
+      padding-left: 0;
+    }
+  }
+}
+
+@media (max-width: $breakpoint-tablet) {
+  .legend-wrapper {
+    max-width: unset;
+  }
+}
+
+.color-chip {
+  border: 1px solid rgba(0, 0, 0, .54);
+  border-radius: 4px;
+  cursor: pointer;
+  height: 20px;
+  width: 20px;
+}

@@ -1,0 +1,22 @@
+@import '../../../../../globals';
+
+.link {
+  animation: fade-in();
+  cursor: pointer;
+  stroke-opacity: .3;
+  stroke-width: 2.5;
+}
+
+.link-label {
+  cursor: pointer;
+  font-family: $roboto;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.link-widen {
+  cursor: pointer;
+  stroke: white;
+  stroke-opacity: 0;
+  stroke-width: 10;
+}

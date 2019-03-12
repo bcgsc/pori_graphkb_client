@@ -1,0 +1,23 @@
+@import '../../globals';
+
+.detail-chip {
+  &__root {
+    > div {
+      margin-left: -1px;
+    }
+  }
+
+  &__panel {
+    max-width: $readable-max;
+    min-width: $readable-min;
+    overflow-x: scroll;
+    padding: 16px;
+    width: 500px;
+  }
+
+  &__row {
+    :first-child {
+      max-width: min-content;
+    }
+  }
+}

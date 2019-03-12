@@ -1,0 +1,22 @@
+@import '../../../../globals';
+
+.permissions-table {
+
+  &__row:nth-child(odd) {
+    background: #e8e8e8;
+  }
+
+  &__header {
+    background: $background-light;
+    border: none;
+    position: sticky;
+    top: -1px;
+
+    th {
+      background: $background-light;
+      position: sticky;
+      top: -1px;
+      z-index: 1;
+    }
+  }
+}

@@ -151,11 +151,20 @@ const FormField = (props) => {
       : api.defaultSuggestionHandler(schema.get('V'), searchOptions);
     let minChars = 4;
 
+    let defaultOptionsHandler;
     if (linkedClass
-      && ['Source', 'Vocabulary', 'UserGroup', 'User'].includes(linkedClass.name) // Usually very few records total
+      && ['Source', 'UserGroup', 'User'].includes(linkedClass.name) // Usually very few records total
     ) {
       searchHandler = () => api.get(`${linkedClass.routeName}?neighbors=1`, { forceListReturn: true });
       minChars = 0;
+    } else if (
+      linkedClass
+      && linkedClass.name === 'Vocabulary'
+    ) {
+      defaultOptionsHandler = () => api.get(
+        `${linkedClass.routeName}?source[name]=bcgsc&neighbors=1`,
+        { forceListReturn: true },
+      );
     }
 
     propComponent = (
@@ -171,6 +180,7 @@ const FormField = (props) => {
             return `${record}`;
           },
         }}
+        defaultOptionsHandler={defaultOptionsHandler}
         disabled={generated || disabled}
         errorText={errorFlag ? error.message : ''}
         getOptionLabel={schema.getLabel}

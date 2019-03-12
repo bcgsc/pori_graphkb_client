@@ -103,6 +103,7 @@ class TextArrayField extends Component {
    * Deletes element from state list.
    * @param {string} text - element to be deleted.
    */
+  @boundMethod
   handleDelete(text) {
     const {
       deleted,
@@ -202,7 +203,7 @@ class TextArrayField extends Component {
             deleteIcon: isDeleted
               ? <RefreshIcon />
               : <CancelIcon />,
-            onDelete: () => isDeleted
+            onDelete: isDeleted
               ? () => this.handleRestore(text)
               : () => this.handleDelete(text),
             className: `text-array-field__chip${isDeleted

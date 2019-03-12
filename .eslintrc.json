@@ -32,7 +32,9 @@
         "import/prefer-default-export": "warn",
         "no-console": ["error", { "allow": ["warn", "error"] }],
         "babel/semi": "warn",
-        "max-len": ["warn", {"ignoreComments": true}]
+        "max-len": ["warn", {"ignoreComments": true}],
+        "no-continue": "warn",
+        "react/no-did-update-set-state": "warn"
     },
     "env": {
         "browser": true,

@@ -12,6 +12,7 @@ import { withKB } from '../../KBContext';
 import FieldHelp from './FieldHelp';
 import BooleanField from './BooleanField';
 import TextArrayField from './TextArrayField';
+import PermissionsTable from './PermissionsTable';
 
 // unavoidable circular dependency below
 import EmbeddedNodeForm from '../EmbeddedNodeForm';
@@ -102,6 +103,18 @@ const FormField = (props) => {
         disabled={disabled || generated}
       />
     );
+  } else if (type === 'embedded' && model.linkedClass && model.linkedClass.name === 'Permissions') {
+    // permissions table of checkboxes
+    propComponent = (
+      <PermissionsTable
+        label={label || name}
+        value={value}
+        model={model}
+        name={name}
+        onValueChange={onValueChange}
+        disabled={disabled || generated}
+      />
+    );
   } else if (type === 'embedded') {
     propComponent = (
       <EmbeddedNodeForm
@@ -138,11 +151,20 @@ const FormField = (props) => {
       : api.defaultSuggestionHandler(schema.get('V'), searchOptions);
     let minChars = 4;
 
+    let defaultOptionsHandler;
     if (linkedClass
-      && ['Source', 'Vocabulary', 'UserGroup', 'User'].includes(linkedClass.name) // Usually very few records total
+      && ['Source', 'UserGroup', 'User'].includes(linkedClass.name) // Usually very few records total
     ) {
       searchHandler = () => api.get(`${linkedClass.routeName}?neighbors=1`, { forceListReturn: true });
       minChars = 0;
+    } else if (
+      linkedClass
+      && linkedClass.name === 'Vocabulary'
+    ) {
+      defaultOptionsHandler = () => api.get(
+        `${linkedClass.routeName}?source[name]=bcgsc&neighbors=1`,
+        { forceListReturn: true },
+      );
     }
 
     propComponent = (
@@ -158,6 +180,7 @@ const FormField = (props) => {
             return `${record}`;
           },
         }}
+        defaultOptionsHandler={defaultOptionsHandler}
         disabled={generated || disabled}
         errorText={errorFlag ? error.message : ''}
         getOptionLabel={schema.getLabel}

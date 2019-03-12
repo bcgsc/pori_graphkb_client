@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Paper, Typography, Button } from '@material-ui/core';
 import { boundMethod } from 'autobind-decorator';
 import EditIcon from '@material-ui/icons/Edit';
-import jc from 'json-cycle';
 
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 
@@ -24,6 +23,34 @@ const omitUndefined = (obj) => {
     }
   });
   return payload;
+};
+
+const cleanPayload = (payload) => {
+  if (typeof payload !== 'object' || payload === null) {
+    return payload;
+  }
+  const newPayload = {};
+  Object.entries(payload).forEach(([key, value]) => {
+    if (value !== undefined) {
+      if (typeof value === 'object' && value !== null) {
+        if (Array.isArray(value)) {
+          newPayload[key] = value.map((arr) => {
+            if (arr && arr['@rid']) {
+              return arr['@rid'];
+            }
+            return cleanPayload;
+          });
+        } else if (value['@rid']) {
+          newPayload[key] = value['@rid'];
+        } else {
+          newPayload[key] = value;
+        }
+      } else {
+        newPayload[key] = value;
+      }
+    }
+  });
+  return newPayload;
 };
 
 
@@ -79,12 +106,20 @@ class RecordForm extends React.PureComponent {
    */
   async getNodeFromUri() {
     // parse the node ident from the uri
-    const { rid, variant, onError } = this.props;
+    const {
+      rid,
+      variant,
+      onError,
+      modelName,
+      schema,
+    } = this.props;
+
+    const model = schema.get(modelName || 'V');
 
     if (variant !== FORM_VARIANT.NEW && variant !== FORM_VARIANT.SEARCH) {
       // If not a new form then should have existing content
       try {
-        const call = api.get(`/v/${rid}?neighbors=3`, { forceListReturn: true });
+        const call = api.get(`${model.routeName}/${rid.replace(/^#/, '')}?neighbors=3`, { forceListReturn: true });
         this.controllers.push(call);
         const result = await call.request();
         if (result && result.length) {
@@ -105,7 +140,9 @@ class RecordForm extends React.PureComponent {
   @boundMethod
   async handleNewAction({ content, errors }) {
     const snackbar = this.context;
-    const { schema, onSubmit, onError } = this.props;
+    const {
+      schema, onSubmit, onError, modelName,
+    } = this.props;
 
     if (errors && Object.keys(errors).length) {
       // bring up the snackbar for errors
@@ -113,7 +150,10 @@ class RecordForm extends React.PureComponent {
       snackbar.add('There are errors in the form which must be resolved before it can be submitted');
     } else {
       // ok to POST
-      const payload = omitUndefined(content);
+      if (!content || !content['@class']) {
+        content['@class'] = modelName;
+      }
+      const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
       const call = api.post(routeName, payload);
       this.controllers.push(call);
@@ -122,6 +162,7 @@ class RecordForm extends React.PureComponent {
         snackbar.add(`Sucessfully created the record ${result['@rid']}`);
         onSubmit(result);
       } catch (err) {
+        console.error(err);
         snackbar.add('Error in creating the record');
         onError(err);
       }

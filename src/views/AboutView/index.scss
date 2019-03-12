@@ -88,4 +88,19 @@
       display: none;
     }
   }
+
+  .record-classes-table__content-header {
+    position: sticky;
+    top: -1px;
+
+    th {
+      background: $background-light;
+      position: sticky;
+      top: -1px;
+      z-index: 1;
+    }
+  }
 }
+
+
+

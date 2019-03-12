@@ -217,11 +217,10 @@ const defaultSuggestionHandler = (model, opt = {}) => (textInput) => {
     where = variantWhere;
   }
 
-
   const callOptions = { forceListReturn: true, ...rest };
   let call;
   if (kbSchema.util.looksLikeRID(textInput)) {
-    call = get(`${model.routeName}/${textInput}`, callOptions);
+    call = get(`${model.routeName}/${textInput}?neighbors=1`, callOptions);
   } else {
     const body = {
       where,

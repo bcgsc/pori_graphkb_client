@@ -1,7 +1,6 @@
 /**
  * @module /views/DataView
  */
-import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Route, Redirect, Switch } from 'react-router-dom';
@@ -11,6 +10,7 @@ import {
 } from '@material-ui/core';
 import qs from 'qs';
 import omit from 'lodash.omit';
+import { boundMethod } from 'autobind-decorator';
 
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 
@@ -21,7 +21,7 @@ import api from '../../services/api';
 import config from '../../static/config';
 
 const { DEFAULT_NEIGHBORS } = config;
-const DEFAULT_LIMIT = 1000;
+const DEFAULT_LIMIT = 100;
 
 /**
  * View for managing state of query results. Contains sub-routes for table view (/data/table)
@@ -329,18 +329,9 @@ class DataViewBase extends Component {
   @boundMethod
   handleNodeEditStart() {
     const { detail } = this.state;
-    const { history, schema } = this.props;
+    const { history } = this.props;
     if (detail) {
-      let route;
-      const { inherits } = schema.get(detail);
-      if (inherits && inherits.includes('Ontology')) {
-        route = 'ontology';
-      } else if (inherits && inherits.includes('Variant')) {
-        route = 'variant';
-      } else if (detail['@class'] === 'Statement') {
-        route = 'statement';
-      }
-      history.push(`/edit/${route}/${detail['@rid'].slice(1)}`);
+      history.push(`/edit/${detail['@rid'].slice(1)}`);
     }
   }
 
@@ -372,7 +363,7 @@ class DataViewBase extends Component {
       });
     } else {
       if (!data[node['@rid']]) {
-        const call = api.get(`/ontologies/${node['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
+        const call = api.get(`/v/${node['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
         this.controllers.push(call);
         const { result } = await call.request();
         data[node['@rid']] = result;

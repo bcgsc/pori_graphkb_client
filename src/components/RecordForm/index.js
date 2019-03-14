@@ -38,7 +38,7 @@ const cleanPayload = (payload) => {
             if (arr && arr['@rid']) {
               return arr['@rid'];
             }
-            return cleanPayload;
+            return cleanPayload(arr);
           });
         } else if (value['@rid']) {
           newPayload[key] = value['@rid'];

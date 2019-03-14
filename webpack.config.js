@@ -59,6 +59,9 @@ const moduleSettings = {
     {
       test: /\.html$/,
       loader: 'html-loader',
+      options: {
+        removeComments: false,
+      },
     },
     {
       // Load everything else
@@ -101,6 +104,9 @@ const plugins = [
     template: path.resolve(SRC_PATH, 'static/index.html'),
     filename: 'index.html',
     inject: true,
+    minify: {
+      removeComments: false,
+    },
   }),
   new CompressionPlugin({
     test: /.*\.(js|css)$/,

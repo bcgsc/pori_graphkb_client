@@ -26,15 +26,40 @@ class ErrorMixin extends Error {
   }
 }
 
-class AbortError extends ErrorMixin {}
+class AbortError extends ErrorMixin {
+  constructor(content) {
+    super(content);
+    this.name = 'AbortError';
+  }
+}
 
-class AuthenticationError extends ErrorMixin {}
+class AuthenticationError extends ErrorMixin {
+  constructor(content) {
+    super(content);
+    this.name = 'AuthenticationError';
+  }
+}
 
-class AuthorizationError extends ErrorMixin {}
+class AuthorizationError extends ErrorMixin {
+  constructor(content) {
+    super(content);
+    this.name = 'AuthorizationError';
+  }
+}
 
-class BadRequestError extends ErrorMixin {}
+class BadRequestError extends ErrorMixin {
+  constructor(content) {
+    super(content);
+    this.name = 'BadRequestError';
+  }
+}
 
-class RecordExistsError extends ErrorMixin {}
+class RecordExistsError extends ErrorMixin {
+  constructor(content) {
+    super(content);
+    this.name = 'RecordExistsError';
+  }
+}
 
 
 export {

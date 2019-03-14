@@ -55,7 +55,6 @@ const post = (endpoint, payload, callOptions) => {
     method: 'POST',
     body: jc.stringify(payload),
   };
-
   return new ApiCall(endpoint, init, callOptions);
 };
 
@@ -177,59 +176,63 @@ const patchEdges = (originalEdges, newEdges, schema, callOptions) => {
  * @param {ClassModel} model the schema model to use to generate the search function
  * @returns {searchHandler} the function to retrieve the sugesstions based on some input text
  */
-const defaultSuggestionHandler = (model, opt = {}) => (textInput) => {
-  const terms = textInput.split(/\s+/).filter(term => term.length >= 4);
-  const { excludeClasses = [], ...rest } = opt;
+const defaultSuggestionHandler = (model, opt = {}) => {
+  const searchHandler = (textInput) => {
+    const terms = textInput.split(/\s+/).filter(term => term.length >= 4);
+    const { excludeClasses = [], ...rest } = opt;
 
-  const ontologyWhere = [{
-    operator: 'OR',
-    comparisons: terms.map(term => ({ attr: 'name', value: term, operator: 'CONTAINSTEXT' })),
-  }];
-  if (model.properties.sourceId) {
-    ontologyWhere[0].comparisons.push(
-      ...terms.map(term => ({ attr: 'sourceId', value: term, operator: 'CONTAINSTEXT' })),
-    );
-  }
-
-  if (excludeClasses.length) {
-    ontologyWhere.push(...excludeClasses.map(
-      c => ({ attr: '@class', value: c, negate: true }),
-    ));
-  }
-
-  const variantWhere = [{
-    operator: 'AND',
-    comparisons: terms.map(term => ({
+    const ontologyWhere = [{
       operator: 'OR',
-      comparisons: [
-        { attr: 'reference1.name', value: term, operator: 'CONTAINSTEXT' },
-        { attr: 'reference1.sourceId', value: term },
-        { attr: 'reference2.name', value: term, operator: 'CONTAINSTEXT' },
-        { attr: 'reference2.sourceId', value: term },
-        { attr: 'type.name', value: term, operator: 'CONTAINSTEXT' },
-        { attr: 'type.sourceId', value: term },
-      ],
-    })),
-  }];
+      comparisons: terms.map(term => ({ attr: 'name', value: term, operator: 'CONTAINSTEXT' })),
+    }];
+    if (model.properties.sourceId) {
+      ontologyWhere[0].comparisons.push(
+        ...terms.map(term => ({ attr: 'sourceId', value: term, operator: 'CONTAINSTEXT' })),
+      );
+    }
 
-  let where = ontologyWhere;
-  if (model.inherits.includes('Variant') || model.name === 'Variant') {
-    where = variantWhere;
-  }
+    if (excludeClasses.length) {
+      ontologyWhere.push(...excludeClasses.map(
+        c => ({ attr: '@class', value: c, negate: true }),
+      ));
+    }
 
-  const callOptions = { forceListReturn: true, ...rest };
-  let call;
-  if (kbSchema.util.looksLikeRID(textInput)) {
-    call = get(`${model.routeName}/${textInput}?neighbors=1`, callOptions);
-  } else {
-    const body = {
-      where,
-      limit: MAX_SUGGESTIONS,
-      neighbors: 1,
-    };
-    call = post(`${model.routeName}/search`, body, callOptions);
-  }
-  return call;
+    const variantWhere = [{
+      operator: 'AND',
+      comparisons: terms.map(term => ({
+        operator: 'OR',
+        comparisons: [
+          { attr: 'reference1.name', value: term, operator: 'CONTAINSTEXT' },
+          { attr: 'reference1.sourceId', value: term },
+          { attr: 'reference2.name', value: term, operator: 'CONTAINSTEXT' },
+          { attr: 'reference2.sourceId', value: term },
+          { attr: 'type.name', value: term, operator: 'CONTAINSTEXT' },
+          { attr: 'type.sourceId', value: term },
+        ],
+      })),
+    }];
+
+    let where = ontologyWhere;
+    if (model.inherits.includes('Variant') || model.name === 'Variant') {
+      where = variantWhere;
+    }
+
+    const callOptions = { forceListReturn: true, ...rest };
+    let call;
+    if (kbSchema.util.looksLikeRID(textInput)) {
+      call = get(`${model.routeName}/${textInput}?neighbors=1`, callOptions);
+    } else {
+      const body = {
+        where,
+        limit: MAX_SUGGESTIONS,
+        neighbors: 1,
+      };
+      call = post(`${model.routeName}/search`, body, callOptions);
+    }
+    return call;
+  };
+  searchHandler.fname = `${model.name}SearchHandler`; // for equality comparisons (for render updates)
+  return searchHandler;
 };
 
 

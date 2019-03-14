@@ -17,7 +17,7 @@ import ActionButton from '../ActionButton';
 
 
 import FormField from './FormField';
-import PutativeEdgeField from './FormField/PutativeEdgeField';
+import FilteredRecordAutocomplete from './FormField/FilteredRecordAutocomplete';
 import EdgeTable from './EdgeTable';
 import StatementSentence from './StatementSentence';
 import {
@@ -301,7 +301,7 @@ class BaseRecordForm extends React.Component {
           schema={schema}
           content={content}
         />
-        <PutativeEdgeField
+        <FilteredRecordAutocomplete
           disableCache
           label="ImpliedBy"
           linkedClassName="Biomarker"
@@ -311,8 +311,9 @@ class BaseRecordForm extends React.Component {
           value={content.impliedBy}
           description="Conditions that when combined imply the statement"
           disabled={variant === FORM_VARIANT.VIEW}
+          isPutativeEdge
         />
-        <PutativeEdgeField
+        <FilteredRecordAutocomplete
           disableCache
           label="SupportedBy"
           linkedClassName="Evidence"
@@ -322,6 +323,7 @@ class BaseRecordForm extends React.Component {
           value={content.supportedBy}
           description="Publications and Records that support the conclusion of the current statement"
           disabled={variant === FORM_VARIANT.VIEW}
+          isPutativeEdge
         />
       </React.Fragment>
     );

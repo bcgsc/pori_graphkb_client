@@ -2,6 +2,8 @@
 
 .form-field {
   width: 100%;
+  display: flex;
+  align-items: flex-start;
 
   & &__content {
     margin-right: 20px;
@@ -21,14 +23,23 @@
   & &__help {
     margin-left: auto;
   }
+}
 
-  &--filtered-record-autocomplete {
-    > li {
-      padding: 0;
-    }
+.filtered-record-autocomplete {
+  align-items: flex-start;
+  display: flex;
 
-    &__select-search-class {
-      max-width: 15rem;
+  &__select-search-class {
+    margin-right: 20px;
+    margin-top: 3px;
+    max-width: 15rem;
+    span {
+      align-items: center;
+      display: flex;
     }
+  }
+
+  .record-autocomplete {
+    align-self: flex-start;
   }
 }

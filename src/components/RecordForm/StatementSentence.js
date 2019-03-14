@@ -12,11 +12,15 @@ const StatementSentence = (props) => {
     if (!text) {
       return null;
     }
-    return (
-      <Typography component="span" variant="body1" color="textPrimary" className="quote__substitution">
-        {text}
-      </Typography>
-    );
+    const words = text.split(' ').map(word => (
+      <>
+        <Typography component="span" variant="body1" color="textPrimary" className="quote__substitution">
+          &nbsp;{word}
+        </Typography>
+      </>
+    ));
+
+    return words;
   };
 
   const appliesTo = schema.getPreview(content.appliesTo);
@@ -33,12 +37,12 @@ const StatementSentence = (props) => {
 
   return (
     <Typography variant="body1" className="quote" color="textSecondary">
-      Given&nbsp;
-      {PrimaryText(conditions) || '[CONDITIONS]'},&nbsp;
-      {PrimaryText(relevance) || '[RELEVANCE]'}&nbsp;
-      applies to&nbsp;
-      {PrimaryText(appliesTo) || '[TARGET]'}&nbsp;
-      ({PrimaryText(supportedBy) || '[EVIDENCE]'})
+      Given
+      {PrimaryText(conditions) || ' [CONDITIONS]'},
+      {PrimaryText(relevance) || ' [RELEVANCE]'}&nbsp;
+      applies to
+      {PrimaryText(appliesTo) || ' [TARGET]'}&nbsp;
+      ({PrimaryText(supportedBy) || ' [EVIDENCE]'} )
     </Typography>
   );
 };

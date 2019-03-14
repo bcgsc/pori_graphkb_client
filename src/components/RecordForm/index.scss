@@ -36,7 +36,6 @@
     .quote {
       align-items: center;
       border-left: 2px solid grey;
-      display: flex;
       margin-bottom: 10px;
       margin-left: 40px;
       margin-top: 10px;
@@ -46,6 +45,7 @@
       &__substitution {
         color: $md-secondary-color;
         font-weight: 600;
+        display: inline;
       }
     }
   }

@@ -17,7 +17,6 @@ import ActionButton from '../ActionButton';
 
 
 import FormField from './FormField';
-import FilteredRecordAutocomplete from './FormField/FilteredRecordAutocomplete';
 import EdgeTable from './EdgeTable';
 import StatementSentence from './StatementSentence';
 import {

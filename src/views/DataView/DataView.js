@@ -22,6 +22,7 @@ import config from '../../static/config';
 
 const { DEFAULT_NEIGHBORS } = config;
 const DEFAULT_LIMIT = 100;
+const REDIRECT_TIMEOUT = 1000;
 
 /**
  * View for managing state of query results. Contains sub-routes for table view (/data/table)
@@ -59,6 +60,7 @@ class DataViewBase extends Component {
     };
 
     this.controllers = [];
+    this.redirectTimeout = null;
   }
 
   /**
@@ -113,11 +115,14 @@ class DataViewBase extends Component {
           filteredSearch: null,
         };
       if (Object.keys(data).length === 0) {
-        snackbar.add(
-          'No results found, redirecting...',
-          'Back',
-          () => history.back(),
-        );
+        this.redirectTimeout = setTimeout(() => {
+          history.push('/query');
+          snackbar.add(
+            'No results found, redirected to main page...',
+            'Back',
+            () => history.goBack(),
+          );
+        }, REDIRECT_TIMEOUT);
       }
       this.setState({
         filteredSearch: filteredSearch || queryParams,
@@ -133,6 +138,10 @@ class DataViewBase extends Component {
 
   componentWillUnmount() {
     this.controllers.forEach(c => c.abort());
+    if (this.redirectTimeout) {
+      clearInterval(this.redirectTimeout);
+      this.redirectTimeout = null;
+    }
   }
 
   /**
@@ -144,7 +153,7 @@ class DataViewBase extends Component {
    */
   prepareNextPagination(route, queryParams, prevResult, omitted = []) {
     const nextQueryParams = queryParams;
-    if (prevResult.length >= queryParams.limit) {
+    if ((prevResult || []).length >= queryParams.limit) {
       nextQueryParams.skip = Number(queryParams.limit) + Number(queryParams.skip || 0);
       return {
         next: () => this.makeApiQuery(route, nextQueryParams, omitted),
@@ -165,10 +174,21 @@ class DataViewBase extends Component {
    * @param {Array.<string>} omitted - List of parameters to strip from API call.
    */
   async makeApiQuery(route, queryParams, omitted = []) {
-    const call = api.get(`${route}?${qs.stringify(omit(queryParams, omitted))}`);
-    this.controllers.push(call);
-    const result = await call.request();
-    return result;
+    const { history } = this.props;
+
+    try {
+      const call = api.get(`${route}?${qs.stringify(omit(queryParams, omitted))}`);
+      this.controllers.push(call);
+      const result = await call.request();
+      return result;
+    } catch (err) {
+      let errorContent = { name: err.name, message: err.message };
+      if (err.toJSON) {
+        errorContent = err.toJSON();
+      }
+      history.push('/error', { error: errorContent });
+      throw err;
+    }
   }
 
   /**
@@ -178,10 +198,21 @@ class DataViewBase extends Component {
    * @param {Array.<string>} omitted - List of parameters to strip from API call.
    */
   async makeComplexApiQuery(route, payload, omitted = []) {
-    const call = api.post(route, omit(payload, omitted));
-    this.controllers.push(call);
-    const result = await call.request();
-    return result;
+    const { history } = this.props;
+
+    try {
+      const call = api.post(route, omit(payload, omitted));
+      this.controllers.push(call);
+      const result = await call.request();
+      return result;
+    } catch (err) {
+      let errorContent = { name: err.name, message: err.message };
+      if (err.toJSON) {
+        errorContent = err.toJSON();
+      }
+      history.push('/error', { error: errorContent });
+      throw err;
+    }
   }
 
   /**

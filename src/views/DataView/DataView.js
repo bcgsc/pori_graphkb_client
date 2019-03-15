@@ -144,7 +144,7 @@ class DataViewBase extends Component {
    */
   prepareNextPagination(route, queryParams, prevResult, omitted = []) {
     const nextQueryParams = queryParams;
-    if (prevResult.length >= queryParams.limit) {
+    if ((prevResult || []).length >= queryParams.limit) {
       nextQueryParams.skip = Number(queryParams.limit) + Number(queryParams.skip || 0);
       return {
         next: () => this.makeApiQuery(route, nextQueryParams, omitted),
@@ -173,8 +173,11 @@ class DataViewBase extends Component {
       const result = await call.request();
       return result;
     } catch (err) {
-      const { name, message } = err;
-      history.push('/error', { error: { name, message } });
+      let errorContent = { name: err.name, message: err.message };
+      if (err.toJSON) {
+        errorContent = err.toJSON();
+      }
+      history.push('/error', { error: errorContent });
       return null;
     }
   }
@@ -194,8 +197,11 @@ class DataViewBase extends Component {
       const result = await call.request();
       return result;
     } catch (err) {
-      const { name, message } = err;
-      history.push('/error', { error: { name, message } });
+      let errorContent = { name: err.name, message: err.message };
+      if (err.toJSON) {
+        errorContent = err.toJSON();
+      }
+      history.push('/error', { error: errorContent });
       return null;
     }
   }

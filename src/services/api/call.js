@@ -32,18 +32,21 @@ class ApiCall {
      * @param {Object} init - Request properties.
      * @param {Object} requestOptions - options to be passed to the Request contstructor
      * @param {object} callOptions - other options
-     * @param {object} callOptions.forceListReturn - always return a list for succesfull requests
+     * @param {object} callOptions.forceListReturn - always return a list for succesful requests
+     * @param {string} callOptions.name function name to use
      */
   constructor(endpoint, requestOptions, callOptions) {
     const {
       forceListReturn = false,
       isPutativeEdge = false,
+      name = null,
     } = callOptions || {};
     this.endpoint = encodeURI(endpoint);
     this.requestOptions = requestOptions;
     this.controller = null;
     this.forceListReturn = forceListReturn;
     this.isPutativeEdge = isPutativeEdge;
+    this.name = name || endpoint;
   }
 
   /**

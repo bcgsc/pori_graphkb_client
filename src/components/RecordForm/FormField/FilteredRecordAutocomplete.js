@@ -14,21 +14,17 @@ import { KBContext } from '../../KBContext';
 import './index.scss';
 
 /**
- * Form Field used for staged statement relationships which
- * are submitted with the statement for new statment forms
- *
- * Combines a resource select drop down on the left with a
- * record autocomplete. The left hand select allows the user
- * to refine the search function that is used for the record
- * autocomplete
+ * Allows an autocomplete record link to be filtered based on some class
+ * model name to search by
  */
-class PutativeEdgeField extends React.Component {
+class FilteredRecordAutocomplete extends React.PureComponent {
   static contextType = KBContext;
 
   static propTypes = {
     description: PropTypes.string,
     disabled: PropTypes.bool,
     example: PropTypes.string,
+    isPutativeEdge: PropTypes.bool,
     label: PropTypes.string,
     linkedClassName: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
@@ -40,6 +36,7 @@ class PutativeEdgeField extends React.Component {
     description: '',
     disabled: false,
     example: '',
+    isPutativeEdge: false,
     label: null,
     value: null,
   };
@@ -61,14 +58,15 @@ class PutativeEdgeField extends React.Component {
   render() {
     const { schema } = this.context;
     const {
+      description,
       disabled,
-      value,
+      example,
+      isPutativeEdge,
       label,
+      linkedClassName,
       name,
       onValueChange,
-      description,
-      example,
-      linkedClassName,
+      value,
     } = this.props;
     const {
       selectedClassName,
@@ -77,14 +75,32 @@ class PutativeEdgeField extends React.Component {
     const model = schema.get(linkedClassName);
 
     const itemToString = (item) => {
-      if (item && item.target) {
-        return schema.getLabel(item.target);
+      if (isPutativeEdge) {
+        if (item && item.target) {
+          return schema.getLabel(item.target);
+        }
+      } else {
+        return schema.getLabel(item);
       }
       return `${item}`;
     };
 
+    const searchHandler = api.defaultSuggestionHandler(
+      schema.get(selectedClassName), { isPutativeEdge },
+    );
+
+    const valueToString = (record) => {
+      if (record && record['@rid']) {
+        return record['@rid'];
+      }
+      if (Array.isArray(record)) {
+        return `Array(${record.length})`;
+      }
+      return `${record}`;
+    };
+
     return (
-      <ListItem component="li" className="form-field form-field--edge">
+      <ListItem component="li" className="form-field form-field--filtered-record-autocomplete">
         {!disabled && (
           <FormField
             model={{
@@ -94,34 +110,29 @@ class PutativeEdgeField extends React.Component {
             value={selectedClassName}
             onValueChange={this.handleClassChange}
             schema={schema}
-            className="node-form__class-select form-field--edge__select-search-class"
+            className="node-form__class-select form-field--filtered-record-autocomplete__select-search-class"
           />
         )}
         <div className="form-field__content">
           <RecordAutocomplete
             DetailChipProps={{
-              valueToString: (record) => {
-                if (record && record['@rid']) {
-                  return record['@rid'];
-                }
-                if (Array.isArray(record)) {
-                  return `Array(${record.length})`;
-                }
-                return `${record}`;
-              },
-              getDetails: details => details.target,
+              valueToString,
+              getDetails: details => isPutativeEdge
+                ? details.target
+                : details,
             }}
             disabled={disabled}
             isMulti
             getOptionLabel={itemToString}
-            getOptionKey={opt => opt.target['@rid']}
+            getOptionKey={opt => isPutativeEdge
+              ? opt.target['@rid']
+              : opt['@rid']
+            }
             label={label || name}
             name={name}
             onChange={onValueChange}
             required
-            searchHandler={api.defaultSuggestionHandler(
-              schema.get(selectedClassName), { isPutativeEdge: true },
-            )}
+            searchHandler={searchHandler}
             value={value}
             placeholder={`Search for an Existing ${selectedClassName} Record`}
           />
@@ -137,4 +148,4 @@ class PutativeEdgeField extends React.Component {
 }
 
 
-export default PutativeEdgeField;
+export default FilteredRecordAutocomplete;

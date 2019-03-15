@@ -86,9 +86,7 @@ class RecordForm extends React.PureComponent {
 
   constructor(props) {
     super(props);
-    this.state = {
-      content: {},
-    };
+    this.state = {};
     this.controllers = [];
   }
 
@@ -123,7 +121,7 @@ class RecordForm extends React.PureComponent {
         this.controllers.push(call);
         const result = await call.request();
         if (result && result.length) {
-          this.setState({ content: result[0] });
+          this.setState({ ...result[0] });
         } else {
           onError({ name: 'RecordNotFound', message: `Unable to retrieve record details for ${rid}` });
         }
@@ -204,7 +202,7 @@ class RecordForm extends React.PureComponent {
       snackbar.add('There are errors in the form which must be resolved before it can be submitted');
     } else {
       // ok to PATCH
-      const payload = omitUndefined(content);
+      const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
       const call = api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
       this.controllers.push(call);
@@ -237,7 +235,7 @@ class RecordForm extends React.PureComponent {
     const {
       title, variant, onTopClick, modelName, ...rest
     } = this.props;
-    const { content } = this.state;
+    const content = this.state;
 
     const actions = {
       [FORM_VARIANT.EDIT]: this.handleEditAction,

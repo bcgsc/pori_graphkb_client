@@ -58,12 +58,13 @@ class BaseRecordForm extends React.Component {
   };
 
   static defaultProps = {
-    aboveFold: ['@rid', CLASS_MODEL_PROP, 'name', 'groups', 'journalName', 'out', 'in', 'permissions'],
+    aboveFold: ['@rid', CLASS_MODEL_PROP, 'name', 'groups', 'journalName', 'out', 'in', 'permissions', 'description'],
     belowFold: ['deprecated', 'history'],
     className: '',
     collapseExtra: false,
     groups: [
       ['createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'uuid', 'history', 'groupRestrictions'],
+      ['relevance', 'appliesTo'],
       ['reference1', 'break1Repr', 'break1Start', 'break1End'],
       ['reference2', 'break2Repr', 'break2Start', 'break2End'],
       ['source', 'sourceId', 'sourceIdVersion'],

@@ -111,6 +111,8 @@ class DetailChip extends React.Component {
     } = this.props;
     const { anchorEl } = this.state;
 
+    const retrievedDetails = getDetails(details);
+
     return (
       <div {...rest}>
         <Popover
@@ -129,14 +131,14 @@ class DetailChip extends React.Component {
               <Divider />
               <Table>
                 <TableBody>
-                  {details && getDetails(details) && Object.entries(getDetails(details)).map(
-                    ([name, detail]) => (
+                  {retrievedDetails && Object.keys(retrievedDetails).sort().map(
+                    name => (
                       <TableRow key={name} className="detail-popover__row">
                         <TableCell padding="checkbox">
                           <Typography variant="body2">{name}</Typography>
                         </TableCell>
                         <TableCell padding="checkbox">
-                          {valueToString(detail)}
+                          {valueToString(retrievedDetails[name])}
                         </TableCell>
                       </TableRow>
                     ),

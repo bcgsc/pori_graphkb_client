@@ -225,6 +225,7 @@ class RecordForm extends React.PureComponent {
     const { onSubmit } = this.props;
 
     if (errors && Object.keys(errors).length) {
+      console.error(errors);
       snackbar.add('There are errors in the form which must be resolved before it can be submitted');
     } else {
       onSubmit(content);

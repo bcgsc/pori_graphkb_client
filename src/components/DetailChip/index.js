@@ -45,6 +45,7 @@ class DetailChip extends React.Component {
     label: PropTypes.string.isRequired,
     onDelete: PropTypes.func,
     valueToString: PropTypes.func,
+    onCtrlClick: PropTypes.func,
   };
 
   static defaultProps = {
@@ -58,6 +59,7 @@ class DetailChip extends React.Component {
     getDetails: d => d,
     onDelete: null,
     valueToString: s => `${s}`,
+    onCtrlClick: null,
   };
 
   constructor(props) {
@@ -95,7 +97,12 @@ class DetailChip extends React.Component {
    */
   @boundMethod
   handlePopoverOpen(event) {
-    this.setState({ anchorEl: event.currentTarget });
+    const { onCtrlClick, details, label } = this.props;
+    if (onCtrlClick && event.ctrlKey) {
+      onCtrlClick({ details, label });
+    } else {
+      this.setState({ anchorEl: event.currentTarget });
+    }
   }
 
   render() {

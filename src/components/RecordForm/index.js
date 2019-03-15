@@ -15,16 +15,6 @@ import { FORM_VARIANT } from './util';
 import { withKB } from '../KBContext';
 
 
-const omitUndefined = (obj) => {
-  const payload = {};
-  Object.entries(obj).forEach(([key, value]) => {
-    if (value !== undefined) {
-      payload[key] = value;
-    }
-  });
-  return payload;
-};
-
 const cleanPayload = (payload) => {
   if (typeof payload !== 'object' || payload === null) {
     return payload;

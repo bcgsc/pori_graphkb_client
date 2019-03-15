@@ -13,12 +13,15 @@ import FieldHelp from './FieldHelp';
 import BooleanField from './BooleanField';
 import TextArrayField from './TextArrayField';
 import PermissionsTable from './PermissionsTable';
+import FilteredRecordAutocomplete from './FilteredRecordAutocomplete';
 
 // unavoidable circular dependency below
 import EmbeddedNodeForm from '../EmbeddedNodeForm';
 
 import './index.scss';
 import { FORM_VARIANT } from '../util';
+
+const DEFAULT_MIN_CHARS = 3;
 
 /**
  * Generate the field component for a form. Uses the property model to decide
@@ -44,6 +47,7 @@ const FormField = (props) => {
     disabled = false,
     variant = 'view',
     label = null,
+    isPutativeEdge = false,
   } = props;
 
   const {
@@ -141,15 +145,33 @@ const FormField = (props) => {
         disabled={generated || disabled}
       />
     );
+  } else if (
+    (type === 'link' || type === 'linkset')
+    && linkedClass
+    && (linkedClass.isAbstract || isPutativeEdge)
+  ) {
+    propComponent = (
+      <FilteredRecordAutocomplete
+        onValueChange={onValueChange}
+        disabled={generated || disabled}
+        errorText={errorFlag ? error.message : ''}
+        isMulti={type === 'linkset'}
+        label={label || name}
+        minSearchLength={DEFAULT_MIN_CHARS}
+        name={name}
+        onChange={onValueChange}
+        required={mandatory}
+        value={value}
+        linkedClassName={linkedClass.name}
+        isPutativeEdge={isPutativeEdge}
+      />
+    );
   } else if (type === 'link' || type === 'linkset') {
     const searchOptions = {};
-    if (name === 'appliesTo') {
-      searchOptions.excludeClasses = ['Publication'];
-    }
     let searchHandler = linkedClass
       ? api.defaultSuggestionHandler(linkedClass, searchOptions)
       : api.defaultSuggestionHandler(schema.get('V'), searchOptions);
-    let minChars = 4;
+    let minChars = DEFAULT_MIN_CHARS;
 
     let defaultOptionsHandler;
     if (linkedClass
@@ -237,6 +259,7 @@ FormField.propTypes = {
   schema: PropTypes.object.isRequired,
   label: PropTypes.string,
   variant: PropTypes.string,
+  isPutativeEdge: PropTypes.bool,
 };
 
 
@@ -247,6 +270,7 @@ FormField.defaultProps = {
   label: null,
   variant: 'view',
   value: null,
+  isPutativeEdge: false,
 };
 
 

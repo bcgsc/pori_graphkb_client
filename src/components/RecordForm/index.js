@@ -86,9 +86,7 @@ class RecordForm extends React.PureComponent {
 
   constructor(props) {
     super(props);
-    this.state = {
-      content: {},
-    };
+    this.state = {};
     this.controllers = [];
   }
 
@@ -123,13 +121,13 @@ class RecordForm extends React.PureComponent {
         this.controllers.push(call);
         const result = await call.request();
         if (result && result.length) {
-          this.setState({ content: result[0] });
+          this.setState({ ...result[0] });
         } else {
           onError({ name: 'RecordNotFound', message: `Unable to retrieve record details for ${rid}` });
         }
       } catch (err) {
         console.error(err);
-        onError(err);
+        onError({ error: err });
       }
     }
   }
@@ -163,8 +161,8 @@ class RecordForm extends React.PureComponent {
         onSubmit(result);
       } catch (err) {
         console.error(err);
-        snackbar.add('Error in creating the record');
-        onError(err);
+        snackbar.add(`Error (${err.name}) in creating the record`);
+        onError({ error: err, content });
       }
     }
   }
@@ -185,8 +183,8 @@ class RecordForm extends React.PureComponent {
       snackbar.add(`Sucessfully deleted the record ${content['@rid']}`);
       onSubmit();
     } catch (err) {
-      snackbar.add('Error in deleting the record');
-      onError(err);
+      snackbar.add(`Error (${err.name}) in deleting the record (${content['@rid']})`);
+      onError({ error: err, content });
     }
   }
 
@@ -204,7 +202,7 @@ class RecordForm extends React.PureComponent {
       snackbar.add('There are errors in the form which must be resolved before it can be submitted');
     } else {
       // ok to PATCH
-      const payload = omitUndefined(content);
+      const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
       const call = api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
       this.controllers.push(call);
@@ -213,8 +211,8 @@ class RecordForm extends React.PureComponent {
         snackbar.add(`Sucessfully edited the record ${result['@rid']}`);
         onSubmit(result);
       } catch (err) {
-        snackbar.add(`Error in editing the record ${content['@rid']}`);
-        onError(err);
+        snackbar.add(`Error (${err.name}) in editing the record (${content['@rid']})`);
+        onError({ error: err, content });
       }
     }
   }
@@ -225,10 +223,11 @@ class RecordForm extends React.PureComponent {
     const { onSubmit } = this.props;
 
     if (errors && Object.keys(errors).length) {
+      console.error(errors);
       snackbar.add('There are errors in the form which must be resolved before it can be submitted');
     } else {
       onSubmit(content);
-      snackbar.add('You searched a thing');
+      snackbar.add('Search Submitted. Redirecting to the data view');
     }
   }
 
@@ -236,7 +235,7 @@ class RecordForm extends React.PureComponent {
     const {
       title, variant, onTopClick, modelName, ...rest
     } = this.props;
-    const { content } = this.state;
+    const content = this.state;
 
     const actions = {
       [FORM_VARIANT.EDIT]: this.handleEditAction,

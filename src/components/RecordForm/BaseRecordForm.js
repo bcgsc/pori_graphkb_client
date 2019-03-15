@@ -17,7 +17,6 @@ import ActionButton from '../ActionButton';
 
 
 import FormField from './FormField';
-import PutativeEdgeField from './FormField/PutativeEdgeField';
 import EdgeTable from './EdgeTable';
 import StatementSentence from './StatementSentence';
 import {
@@ -165,7 +164,7 @@ class BaseRecordForm extends React.Component {
         const edgeEquivalent = `out_${prop[0].toUpperCase()}${prop.slice(1)}`;
         const edges = (record[edgeEquivalent] || []).map(e => ({ target: e.in }));
         const rawValue = record[prop] || edges;
-        if (!rawValue || rawValue.length < 1) {
+        if ((!rawValue || rawValue.length < 1) && variant !== FORM_VARIANT.SEARCH) {
           errors[prop] = 'At least one value is required';
         }
         newContent[prop] = rawValue;
@@ -292,7 +291,7 @@ class BaseRecordForm extends React.Component {
   renderStatementFields() {
     // cache disabling related to: https://github.com/JedWatson/react-select/issues/2582
     const { schema } = this.context;
-    const { content } = this.state;
+    const { content, errors } = this.state;
     const { variant } = this.props;
 
     return (
@@ -301,27 +300,37 @@ class BaseRecordForm extends React.Component {
           schema={schema}
           content={content}
         />
-        <PutativeEdgeField
-          disableCache
-          label="ImpliedBy"
-          linkedClassName="Biomarker"
-          name="impliedBy"
+        <FormField
+          error={errors.impliedBy || ''}
           onValueChange={this.handleValueChange}
+          model={{
+            description: 'Conditions that when combined imply the statement',
+            linkedClass: schema.get('Biomarker'),
+            name: 'impliedBy',
+            type: 'linkset',
+          }}
           schema={schema}
           value={content.impliedBy}
-          description="Conditions that when combined imply the statement"
           disabled={variant === FORM_VARIANT.VIEW}
+          variant={variant}
+          label="ImpliedBy"
+          isPutativeEdge
         />
-        <PutativeEdgeField
-          disableCache
-          label="SupportedBy"
-          linkedClassName="Evidence"
-          name="supportedBy"
+        <FormField
+          error={errors.supportedBy || ''}
           onValueChange={this.handleValueChange}
+          model={{
+            linkedClass: schema.get('Evidence'),
+            description: 'Publications and Records that support the conclusion of the current statement',
+            name: 'supportedBy',
+            type: 'linkset',
+          }}
           schema={schema}
           value={content.supportedBy}
-          description="Publications and Records that support the conclusion of the current statement"
           disabled={variant === FORM_VARIANT.VIEW}
+          variant={variant}
+          label="SupportedBy"
+          isPutativeEdge
         />
       </React.Fragment>
     );

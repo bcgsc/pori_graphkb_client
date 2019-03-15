@@ -6,6 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
+const TerserWebpackPlugin = require('terser-webpack-plugin');
 
 
 const SRC_PATH = path.resolve(__dirname, 'src');
@@ -188,6 +189,14 @@ module.exports = {
         },
       },
     },
+    minimizer: [
+      new TerserWebpackPlugin({
+        terserOptions: {
+          keep_classnames: true,
+          module: true,
+        },
+      })
+    ]
   },
   plugins,
   resolve: {

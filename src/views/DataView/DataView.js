@@ -165,10 +165,18 @@ class DataViewBase extends Component {
    * @param {Array.<string>} omitted - List of parameters to strip from API call.
    */
   async makeApiQuery(route, queryParams, omitted = []) {
-    const call = api.get(`${route}?${qs.stringify(omit(queryParams, omitted))}`);
-    this.controllers.push(call);
-    const result = await call.request();
-    return result;
+    const { history } = this.props;
+
+    try {
+      const call = api.get(`${route}?${qs.stringify(omit(queryParams, omitted))}`);
+      this.controllers.push(call);
+      const result = await call.request();
+      return result;
+    } catch (err) {
+      const { name, message } = err;
+      history.push('/error', { error: { name, message } });
+      return null;
+    }
   }
 
   /**
@@ -178,10 +186,18 @@ class DataViewBase extends Component {
    * @param {Array.<string>} omitted - List of parameters to strip from API call.
    */
   async makeComplexApiQuery(route, payload, omitted = []) {
-    const call = api.post(route, omit(payload, omitted));
-    this.controllers.push(call);
-    const result = await call.request();
-    return result;
+    const { history } = this.props;
+
+    try {
+      const call = api.post(route, omit(payload, omitted));
+      this.controllers.push(call);
+      const result = await call.request();
+      return result;
+    } catch (err) {
+      const { name, message } = err;
+      history.push('/error', { error: { name, message } });
+      return null;
+    }
   }
 
   /**

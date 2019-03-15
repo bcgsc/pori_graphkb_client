@@ -230,44 +230,43 @@ class RecordAutocomplete extends React.Component {
     }
 
     return (
-      <div className={`record-autocomplete ${className}`}>
-        <NoSsr>
-          <BaseSelectComponent
-            value={selected}
-            cacheOptions={!disableCache}
-            components={components}
-            DetailChipProps={DetailChipProps}
-            error={Boolean(errorText)}
-            onChange={this.handleChange}
-            onInputChange={this.handleInputChange}
-            getOptionValue={getOptionKey} // used to compare options for equality
-            getOptionLabel={getOptionLabel} // generates the string representation
-            hideSelectedOptions
-            isClearable={!disabled}
-            isMulti={isMulti}
-            isSearchable={!disabled}
-            placeholder={
+      <NoSsr>
+        <BaseSelectComponent
+          className={`record-autocomplete ${className}`}
+          value={selected}
+          cacheOptions={!disableCache}
+          components={components}
+          DetailChipProps={DetailChipProps}
+          error={Boolean(errorText)}
+          onChange={this.handleChange}
+          onInputChange={this.handleInputChange}
+          getOptionValue={getOptionKey} // used to compare options for equality
+          getOptionLabel={getOptionLabel} // generates the string representation
+          hideSelectedOptions
+          isClearable={!disabled}
+          isMulti={isMulti}
+          isSearchable={!disabled}
+          placeholder={
               disabled
                 ? ''
                 : placeholder
             }
-            textFieldProps={{
-              InputProps: {
-                disabled: disabled || Boolean(selected),
-                disableUnderline: disabled || (Boolean(selected) && !isMulti),
-              },
-              error: Boolean(helperText || errorText),
-              helperText: helperText || errorText,
-              InputLabelProps: {
-                shrink: Boolean(selected) || !(disabled && !selected),
-              },
-              required,
-              label,
-            }}
-            {...uniqueProps}
-          />
-        </NoSsr>
-      </div>
+          textFieldProps={{
+            InputProps: {
+              disabled: disabled || Boolean(selected),
+              disableUnderline: disabled || (Boolean(selected) && !isMulti),
+            },
+            error: Boolean(helperText || errorText),
+            helperText: helperText || errorText,
+            InputLabelProps: {
+              shrink: Boolean(selected) || !(disabled && !selected),
+            },
+            required,
+            label,
+          }}
+          {...uniqueProps}
+        />
+      </NoSsr>
     );
   }
 }

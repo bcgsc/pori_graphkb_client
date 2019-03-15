@@ -1,6 +1,8 @@
 @import '../../../globals';
 
 .form-field {
+  align-items: flex-start;
+  display: flex;
   width: 100%;
 
   & &__content {
@@ -21,14 +23,19 @@
   & &__help {
     margin-left: auto;
   }
+}
 
-  &--filtered-record-autocomplete {
-    > li {
-      padding: 0;
-    }
+.filtered-record-autocomplete {
+  align-items: flex-start;
+  display: flex;
 
-    &__select-search-class {
-      max-width: 15rem;
-    }
+  &__select-search-class {
+    margin-right: 20px;
+    margin-top: 3px;
+    max-width: 15rem;
+  }
+
+  .record-autocomplete {
+    align-self: flex-start;
   }
 }

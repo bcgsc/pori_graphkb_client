@@ -136,7 +136,6 @@ class BaseRecordForm extends React.Component {
    * Fill out the form fields using some initial record
    */
   populateFromRecord(record) {
-    const { content } = this.state;
     const { variant } = this.props;
 
     const model = this.currentModel(record['@class']);
@@ -147,7 +146,7 @@ class BaseRecordForm extends React.Component {
     }
 
     // do we need to update the model?
-    const newContent = Object.assign({}, content);
+    const newContent = {};
     const errors = {};
 
     Object.values(model.properties).forEach((prop) => {

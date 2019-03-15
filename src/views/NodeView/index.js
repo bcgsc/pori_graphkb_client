@@ -81,10 +81,17 @@ class NodeView extends React.PureComponent {
    * Handles the redirect if an error occurs in the child component
    */
   @boundMethod
-  handleError(error = {}) {
+  handleError({ error = {}, content = null }) {
     const { history } = this.props;
     const { name, message } = error;
-    history.push('/error', { error: { name, message } });
+
+    if (name === 'RecordExistsError' && content) {
+      // redirect to the data view page
+      const search = qs.stringify(cleanLinkedRecords(content));
+      history.push(`/data/table?${search}`, { search, content });
+    } else {
+      history.push('/error', { error: { name, message } });
+    }
   }
 
   render() {

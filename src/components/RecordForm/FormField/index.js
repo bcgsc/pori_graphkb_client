@@ -167,7 +167,6 @@ const FormField = (props) => {
       />
     );
   } else if (type === 'link' || type === 'linkset') {
-    console.log(name, type, isPutativeEdge);
     const searchOptions = {};
     let searchHandler = linkedClass
       ? api.defaultSuggestionHandler(linkedClass, searchOptions)

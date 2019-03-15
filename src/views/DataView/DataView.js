@@ -22,6 +22,7 @@ import config from '../../static/config';
 
 const { DEFAULT_NEIGHBORS } = config;
 const DEFAULT_LIMIT = 100;
+const REDIRECT_TIMEOUT = 1000;
 
 /**
  * View for managing state of query results. Contains sub-routes for table view (/data/table)
@@ -59,6 +60,7 @@ class DataViewBase extends Component {
     };
 
     this.controllers = [];
+    this.redirectTimeout = null;
   }
 
   /**
@@ -113,11 +115,14 @@ class DataViewBase extends Component {
           filteredSearch: null,
         };
       if (Object.keys(data).length === 0) {
-        snackbar.add(
-          'No results found, redirecting...',
-          'Back',
-          () => history.back(),
-        );
+        this.redirectTimeout = setTimeout(() => {
+          history.push('/query');
+          snackbar.add(
+            'No results found, redirected to main page...',
+            'Back',
+            () => history.goBack(),
+          );
+        }, REDIRECT_TIMEOUT);
       }
       this.setState({
         filteredSearch: filteredSearch || queryParams,
@@ -133,6 +138,10 @@ class DataViewBase extends Component {
 
   componentWillUnmount() {
     this.controllers.forEach(c => c.abort());
+    if (this.redirectTimeout) {
+      clearInterval(this.redirectTimeout);
+      this.redirectTimeout = null;
+    }
   }
 
   /**
@@ -178,7 +187,7 @@ class DataViewBase extends Component {
         errorContent = err.toJSON();
       }
       history.push('/error', { error: errorContent });
-      return null;
+      throw err;
     }
   }
 
@@ -202,7 +211,7 @@ class DataViewBase extends Component {
         errorContent = err.toJSON();
       }
       history.push('/error', { error: errorContent });
-      return null;
+      throw err;
     }
   }
 

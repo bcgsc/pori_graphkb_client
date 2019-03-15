@@ -6,6 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
+const TerserWebpackPlugin = require('terser-webpack-plugin');
 
 
 const SRC_PATH = path.resolve(__dirname, 'src');
@@ -87,7 +88,7 @@ const plugins = [
   ),
   // Copy values of ENV variables in as strings using these defaults (null = unset)
   new webpack.EnvironmentPlugin({
-    API_BASE_URL: 'http://kbapi01:8080/api',
+    API_BASE_URL: 'https://graphkb-api.bcgsc.ca/api',
     DEBUG: false,
     DISABLE_AUTH: null,
     KEYCLOAK_CLIENT_ID: 'GraphKB',
@@ -188,6 +189,14 @@ module.exports = {
         },
       },
     },
+    minimizer: [
+      new TerserWebpackPlugin({
+        terserOptions: {
+          keep_classnames: true,
+          module: true,
+        },
+      })
+    ]
   },
   plugins,
   resolve: {

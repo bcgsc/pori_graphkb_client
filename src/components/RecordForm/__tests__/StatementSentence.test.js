@@ -34,9 +34,10 @@ describe('StatementSentence', () => {
         }}
       />
     ));
-    expect(wrapper.find(Typography)).toHaveLength(2);
+    expect(wrapper.find(Typography)).toHaveLength(3);
     const html = wrapper.html();
-    expect(html).toContain('condition1, and condition2');
+    expect(html).toContain('condition1');
+    expect(html).toContain('condition2');
     expect(html).toContain('[RELEVANCE]');
     expect(html).toContain('[TARGET]');
     expect(html).toContain('[EVIDENCE]');
@@ -53,9 +54,10 @@ describe('StatementSentence', () => {
         }}
       />
     ));
-    expect(wrapper.find(Typography)).toHaveLength(5);
+    expect(wrapper.find(Typography)).toHaveLength(6);
     const html = wrapper.html();
-    expect(html).toContain('KRAS mutation');
+    expect(html).toContain('KRAS');
+    expect(html).toContain('mutation');
     expect(html).toContain('sensitivity');
     expect(html).toContain('drugName');
     expect(html).toContain('PMID:1234');

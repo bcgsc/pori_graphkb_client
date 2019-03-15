@@ -12,13 +12,20 @@ const StatementSentence = (props) => {
     if (!text) {
       return null;
     }
-    const words = text.split(' ').map(word => (
-      <>
-        <Typography component="span" variant="body1" color="textPrimary" className="quote__substitution">
+    const words = text.split(' ').map((word) => {
+      if (word !== 'and') {
+        return (
+          <Typography component="span" variant="body1" color="textPrimary" className="quote__substitution">
+            &nbsp;{word}
+          </Typography>
+        );
+      }
+      return (
+        <>
           &nbsp;{word}
-        </Typography>
-      </>
-    ));
+        </>
+      );
+    });
 
     return words;
   };

@@ -164,7 +164,7 @@ class BaseRecordForm extends React.Component {
         const edgeEquivalent = `out_${prop[0].toUpperCase()}${prop.slice(1)}`;
         const edges = (record[edgeEquivalent] || []).map(e => ({ target: e.in }));
         const rawValue = record[prop] || edges;
-        if (!rawValue || rawValue.length < 1) {
+        if ((!rawValue || rawValue.length < 1) && variant !== FORM_VARIANT.SEARCH) {
           errors[prop] = 'At least one value is required';
         }
         newContent[prop] = rawValue;

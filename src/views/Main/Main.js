@@ -98,6 +98,7 @@ class Main extends React.Component {
         label: 'Add new record',
         icon: <AddIcon />,
         nestedItems: [
+          { label: 'Source', route: '/new/source' },
           { label: 'Ontology', route: '/new/ontology' },
           { label: 'Variant', route: '/new/variant' },
           { label: 'Statement', route: '/new/statement' },

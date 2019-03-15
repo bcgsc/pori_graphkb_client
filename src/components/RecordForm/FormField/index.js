@@ -141,7 +141,7 @@ const FormField = (props) => {
         resources={['', ...choices]}
         label={label || name}
         value={value || ''}
-        error={errorFlag}
+        errorText={errorFlag ? error.message || error : ''}
         disabled={generated || disabled}
       />
     );
@@ -154,7 +154,7 @@ const FormField = (props) => {
       <FilteredRecordAutocomplete
         onValueChange={onValueChange}
         disabled={generated || disabled}
-        errorText={errorFlag ? error.message : ''}
+        errorText={errorFlag ? error.message || error : ''}
         isMulti={type === 'linkset'}
         label={label || name}
         minSearchLength={DEFAULT_MIN_CHARS}

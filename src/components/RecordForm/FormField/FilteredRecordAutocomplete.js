@@ -72,7 +72,7 @@ class FilteredRecordAutocomplete extends React.PureComponent {
 
     const valueToString = (record) => {
       if (record && record['@rid']) {
-        return record['@rid'];
+        return schema.getLabel(record, false);
       }
       if (Array.isArray(record)) {
         return `Array(${record.length})`;

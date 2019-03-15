@@ -145,77 +145,64 @@ const FormField = (props) => {
         disabled={generated || disabled}
       />
     );
-  } else if (
-    (type === 'link' || type === 'linkset')
-    && linkedClass
-    && (linkedClass.isAbstract || isPutativeEdge)
-  ) {
-    propComponent = (
-      <FilteredRecordAutocomplete
-        onValueChange={onValueChange}
-        disabled={generated || disabled}
-        errorText={errorFlag ? error.message || error : ''}
-        isMulti={type === 'linkset'}
-        label={label || name}
-        minSearchLength={DEFAULT_MIN_CHARS}
-        name={name}
-        onChange={onValueChange}
-        required={mandatory}
-        value={value}
-        linkedClassName={linkedClass.name}
-        isPutativeEdge={isPutativeEdge}
-      />
-    );
   } else if (type === 'link' || type === 'linkset') {
-    const searchOptions = {};
-    let searchHandler = linkedClass
-      ? api.defaultSuggestionHandler(linkedClass, searchOptions)
-      : api.defaultSuggestionHandler(schema.get('V'), searchOptions);
-    let minChars = DEFAULT_MIN_CHARS;
+    const autoProps = {
+      disabled: generated || disabled,
+      errorText: errorFlag ? error.message || error : '',
+      isMulti: type === 'linkset',
+      label: label || name,
+      minSearchLength: DEFAULT_MIN_CHARS,
+      name,
+      onChange: onValueChange,
+      required: mandatory,
+      value,
+    };
 
-    let defaultOptionsHandler;
-    if (linkedClass
-      && ['Source', 'UserGroup', 'User'].includes(linkedClass.name) // Usually very few records total
-    ) {
-      searchHandler = () => api.get(`${linkedClass.routeName}?neighbors=1`, { forceListReturn: true });
-      minChars = 0;
-    } else if (
-      linkedClass
-      && linkedClass.name === 'Vocabulary'
-    ) {
-      defaultOptionsHandler = () => api.get(
-        `${linkedClass.routeName}?source[name]=bcgsc&neighbors=1`,
-        { forceListReturn: true },
+    if (linkedClass && (linkedClass.isAbstract || isPutativeEdge)) {
+      autoProps.isPutativeEdge = isPutativeEdge;
+      autoProps.linkedClassName = linkedClass.name;
+      propComponent = (
+        <FilteredRecordAutocomplete
+          {...autoProps}
+        />
+      );
+    } else {
+      const searchOptions = {};
+
+      if (linkedClass) {
+        if (['Source', 'UserGroup', 'User'].includes(linkedClass.name)) {
+          autoProps.searchHandler = () => api.get(`${linkedClass.routeName}?neighbors=1`, { forceListReturn: true });
+          autoProps.minSearchLength = 0;
+        } else {
+          if (linkedClass.name === 'Vocabulary') {
+            autoProps.defaultOptionsHandler = () => api.get(
+              `${linkedClass.routeName}?source[name]=bcgsc&neighbors=1`,
+              { forceListReturn: true },
+            );
+          }
+          autoProps.searchHandler = api.defaultSuggestionHandler(linkedClass, searchOptions);
+        }
+      } else {
+        autoProps.searchHandler = api.defaultSuggestionHandler(schema.get('V'), searchOptions);
+      }
+      propComponent = (
+        <RecordAutocomplete
+          {...autoProps}
+          DetailChipProps={{
+            valueToString: (record) => {
+              if (record && record['@rid']) {
+                return schema.getLabel(record, false);
+              }
+              if (Array.isArray(record)) {
+                return `Array(${record.length})`;
+              }
+              return `${record}`;
+            },
+          }}
+          getOptionLabel={opt => schema.getLabel(opt, false)}
+        />
       );
     }
-
-    propComponent = (
-      <RecordAutocomplete
-        DetailChipProps={{
-          valueToString: (record) => {
-            if (record && record['@rid']) {
-              return record['@rid'];
-            }
-            if (Array.isArray(record)) {
-              return `Array(${record.length})`;
-            }
-            return `${record}`;
-          },
-        }}
-        defaultOptionsHandler={defaultOptionsHandler}
-        disabled={generated || disabled}
-        errorText={errorFlag ? error.message : ''}
-        getOptionLabel={schema.getLabel}
-        isMulti={type === 'linkset'}
-        label={label || name}
-        minSearchLength={minChars}
-        name={name}
-        onChange={onValueChange}
-        required={mandatory}
-        searchHandler={searchHandler}
-        value={value}
-      />
-    );
   } else {
     propComponent = (
       <TextField

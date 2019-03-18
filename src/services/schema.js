@@ -50,10 +50,10 @@ class Schema {
    * Get a string representation of a record
    */
   @boundMethod
-  getLabel(obj) {
+  getLabel(obj, truncate = true) {
     try {
       let label = this.get(obj).getPreview(obj);
-      if (label.length > MAX_LABEL_LENGTH - 3) {
+      if (label.length > MAX_LABEL_LENGTH - 3 && truncate) {
         label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
       }
       if (obj['@rid']) {

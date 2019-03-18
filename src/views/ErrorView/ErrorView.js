@@ -47,26 +47,32 @@ class ErrorView extends Component {
       );
     };
 
-    const error = Object.assign({
-      name: 'No Error Reported',
-      message: 'This is the default page where errors are reported if encountered',
-      stacktrace: '',
-    }, state ? state.error || {} : {});
-
     const {
-      message,
-      name,
-      stacktrace,
-    } = error;
+      error: {
+        message = 'This is the default page where errors are reported if encountered',
+        name = 'No Error Reported',
+        stacktrace = '',
+        ...rest
+      } = {},
+    } = state;
 
     const jiraLink = <a rel="noopener noreferrer" target="_blank" href={JIRA_LINK}>JIRA</a>;
 
-    const errorDetails = `Error Details (Please include in error reports)
+    let errorDetails = `Error Details (Please include in error reports)
 version: ${process.env.npm_package_version || process.env.REACT_APP_VERSION || ''}
 error name: ${name}
-error text: ${message}
-stack trace:\n
-${stacktrace}`;
+error text: ${message}`;
+
+    Object.entries(rest).forEach(([key, value]) => {
+      if (value) {
+        errorDetails = `${errorDetails}\n${key}: ${`${value}`.trim()}`;
+      }
+    });
+
+    // TODO: Remove this after alpha testing
+    if (stacktrace) {
+      errorDetails = `${errorDetails}\n\nstack trace:\n\n${stacktrace}`;
+    }
 
     return (
       <div className="error-wrapper">

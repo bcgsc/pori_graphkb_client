@@ -6,18 +6,17 @@
       margin-left: -1px;
     }
   }
+}
 
-  &__panel {
-    max-width: $readable-max;
-    min-width: $readable-min;
-    overflow-x: scroll;
-    padding: 16px;
-    width: 500px;
-  }
+.detail-popover {
 
   &__row {
-    :first-child {
+    td:first-child {
       max-width: min-content;
+    }
+
+    td:last-child {
+      max-width: $readable-max;
     }
   }
 }

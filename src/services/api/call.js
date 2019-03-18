@@ -41,7 +41,7 @@ class ApiCall {
       isPutativeEdge = false,
       name = null,
     } = callOptions || {};
-    this.endpoint = encodeURI(endpoint);
+    this.endpoint = endpoint;
     this.requestOptions = requestOptions;
     this.controller = null;
     this.forceListReturn = forceListReturn;

@@ -86,7 +86,7 @@ class BaseRecordForm extends React.Component {
     super(props);
     const { value } = this.props;
     this.state = {
-      content: value,
+      content: value || {},
       errors: {},
       collapseOpen: false,
     };
@@ -188,6 +188,7 @@ class BaseRecordForm extends React.Component {
     const { schema } = this.context;
     const { content } = this.state;
     const { modelName } = this.props;
+
     if (newModelName) {
       return schema.get(newModelName);
     } if (content && content['@class']) {
@@ -374,11 +375,18 @@ class BaseRecordForm extends React.Component {
     }
 
     const modelChoices = [];
-    if (content && content[CLASS_MODEL_PROP] && !schema.get(content).isAbstract) {
+    if (modelName) {
+      modelChoices.push(
+        ...schema.get(modelName).descendantTree(true).map(m => ({
+          label: m.name, value: m.name, key: m.name, caption: m.description,
+        })),
+      );
+      modelChoices.sort((a, b) => a.label.localeCompare(b.label));
+    } else if (content && content[CLASS_MODEL_PROP] && !schema.get(content).isAbstract) {
       modelChoices.push(content[CLASS_MODEL_PROP]);
     } else if (variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.SEARCH) {
       modelChoices.push(
-        ...schema.get(modelName || 'V').descendantTree(true).map(m => ({
+        ...schema.get('V').descendantTree(true).map(m => ({
           label: m.name, value: m.name, key: m.name, caption: m.description,
         })),
       );

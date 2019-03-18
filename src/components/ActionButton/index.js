@@ -22,6 +22,7 @@ class ActionButton extends React.Component {
     className: PropTypes.string,
     variant: PropTypes.string,
     color: PropTypes.string,
+    disabled: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -30,6 +31,7 @@ class ActionButton extends React.Component {
     className: '',
     variant: 'contained',
     color: 'primary',
+    disabled: false,
   };
 
   constructor(props) {
@@ -66,6 +68,7 @@ class ActionButton extends React.Component {
       children,
       className,
       color,
+      disabled,
       message,
       onClick,
       requireConfirm,
@@ -86,6 +89,7 @@ class ActionButton extends React.Component {
           size="large"
           color={color}
           className="action-button__button"
+          disabled={disabled}
         >
           {children}
         </Button>

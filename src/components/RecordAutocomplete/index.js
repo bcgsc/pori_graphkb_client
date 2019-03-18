@@ -204,6 +204,7 @@ class RecordAutocomplete extends React.Component {
       minSearchLength,
       placeholder,
       required,
+      searchHandler,
     } = this.props;
 
     const {
@@ -226,6 +227,9 @@ class RecordAutocomplete extends React.Component {
       };
       if (initialOptions) {
         uniqueProps.defaultOptions = initialOptions;
+      }
+      if (searchHandler && searchHandler.fname) {
+        uniqueProps.cacheOptions = searchHandler.fname;
       }
     }
 

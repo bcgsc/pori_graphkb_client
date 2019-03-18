@@ -58,12 +58,14 @@ class BaseRecordForm extends React.Component {
   };
 
   static defaultProps = {
-    aboveFold: ['@rid', CLASS_MODEL_PROP, 'name', 'groups', 'journalName', 'out', 'in', 'permissions'],
+    aboveFold: [CLASS_MODEL_PROP, 'name', 'groups', 'journalName', 'out', 'in', 'permissions', 'description', 'reviewStatus'],
     belowFold: ['deprecated', 'history'],
     className: '',
     collapseExtra: false,
     groups: [
-      ['createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'uuid', 'history', 'groupRestrictions'],
+      ['@rid', 'createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'uuid', 'history', 'groupRestrictions'],
+      ['relevance', 'appliesTo'],
+      ['reviewStatus', 'reviewComment'],
       ['reference1', 'break1Repr', 'break1Start', 'break1End'],
       ['reference2', 'break2Repr', 'break2Start', 'break2End'],
       ['source', 'sourceId', 'sourceIdVersion'],
@@ -136,7 +138,6 @@ class BaseRecordForm extends React.Component {
    * Fill out the form fields using some initial record
    */
   populateFromRecord(record) {
-    const { content } = this.state;
     const { variant } = this.props;
 
     const model = this.currentModel(record['@class']);
@@ -147,7 +148,7 @@ class BaseRecordForm extends React.Component {
     }
 
     // do we need to update the model?
-    const newContent = Object.assign({}, content);
+    const newContent = {};
     const errors = {};
 
     Object.values(model.properties).forEach((prop) => {

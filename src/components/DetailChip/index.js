@@ -45,6 +45,7 @@ class DetailChip extends React.Component {
     label: PropTypes.string.isRequired,
     onDelete: PropTypes.func,
     valueToString: PropTypes.func,
+    onCtrlClick: PropTypes.func,
   };
 
   static defaultProps = {
@@ -58,6 +59,7 @@ class DetailChip extends React.Component {
     getDetails: d => d,
     onDelete: null,
     valueToString: s => `${s}`,
+    onCtrlClick: null,
   };
 
   constructor(props) {
@@ -95,7 +97,12 @@ class DetailChip extends React.Component {
    */
   @boundMethod
   handlePopoverOpen(event) {
-    this.setState({ anchorEl: event.currentTarget });
+    const { onCtrlClick, details, label } = this.props;
+    if (onCtrlClick && event.ctrlKey) {
+      onCtrlClick({ details, label });
+    } else {
+      this.setState({ anchorEl: event.currentTarget });
+    }
   }
 
   render() {
@@ -110,6 +117,8 @@ class DetailChip extends React.Component {
       ...rest
     } = this.props;
     const { anchorEl } = this.state;
+
+    const retrievedDetails = getDetails(details);
 
     return (
       <div {...rest}>
@@ -129,14 +138,14 @@ class DetailChip extends React.Component {
               <Divider />
               <Table>
                 <TableBody>
-                  {details && getDetails(details) && Object.entries(getDetails(details)).map(
-                    ([name, detail]) => (
+                  {retrievedDetails && Object.keys(retrievedDetails).sort().map(
+                    name => (
                       <TableRow key={name} className="detail-popover__row">
                         <TableCell padding="checkbox">
                           <Typography variant="body2">{name}</Typography>
                         </TableCell>
                         <TableCell padding="checkbox">
-                          {valueToString(detail)}
+                          {valueToString(retrievedDetails[name])}
                         </TableCell>
                       </TableRow>
                     ),

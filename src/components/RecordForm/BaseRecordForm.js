@@ -160,7 +160,10 @@ class BaseRecordForm extends React.Component {
       }
     });
     // statement required edge inputs
-    if (model.name === 'Statement') {
+    if (model.name === 'Statement'
+      && variant !== FORM_VARIANT.SEARCH
+      && variant !== FORM_VARIANT.EDIT
+    ) {
       ['impliedBy', 'supportedBy'].forEach((prop) => {
         const edgeEquivalent = `out_${prop[0].toUpperCase()}${prop.slice(1)}`;
         const edges = (record[edgeEquivalent] || []).map(e => ({ target: e.in }));
@@ -425,7 +428,7 @@ class BaseRecordForm extends React.Component {
       <div className={`node-form ${className}`}>
         <div className="node-form__content node-form__content--long">
           {classSelect}
-          {isStatement && variant !== FORM_VARIANT.EDIT && this.renderStatementFields()}
+          {isStatement && variant !== FORM_VARIANT.EDIT && variant !== FORM_VARIANT.SEARCH && this.renderStatementFields()}
         </div>
         <div className="node-form__content">
           {model && this.renderFieldGroup(fields)}

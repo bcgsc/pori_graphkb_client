@@ -72,11 +72,9 @@
 
   &__action-buttons {
     margin-top: 20px;
-
-    :last-child {
-      margin-left: auto;
-    }
+    align-items: center;
   }
+
 }
 
 

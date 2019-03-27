@@ -54,6 +54,7 @@ class Main extends React.Component {
     this.state = {
       anchorEl: null,
       drawerOpen: false,
+      activeLink: '/',
     };
   }
 
@@ -77,14 +78,25 @@ class Main extends React.Component {
    * Sets main navigation drawer open state.
    */
   @boundMethod
-  handleNavBar(state) {
-    return () => this.setState({ drawerOpen: state, anchorEl: null });
+  handleNavBar({ isOpen, activeLink }) {
+    this.setState({ drawerOpen: isOpen, anchorEl: null, activeLink });
+  }
+
+  @boundMethod
+  handleOpenNavBar() {
+    this.setState({ drawerOpen: true });
+  }
+
+  @boundMethod
+  handleCloseNavBar() {
+    this.setState({ drawerOpen: false });
   }
 
   render() {
     const {
       anchorEl,
       drawerOpen,
+      activeLink,
     } = this.state;
 
     const links = [
@@ -113,22 +125,20 @@ class Main extends React.Component {
 
     return (
       <KBContext.Provider value={{ schema: new Schema(), user: auth.getUser() }}>
-        <div className="Main">
+        <div className="main-view">
           <AppBar
-            position="absolute"
-            className={`banner ${drawerOpen ? 'drawer-shift' : ''}`}
+            position="fixed"
+            className={`appbar ${drawerOpen ? 'appbar--drawer-open' : ''}`}
           >
-            {!drawerOpen && (
-              <IconButton
-                color="inherit"
-                onClick={this.handleNavBar(true)}
-                className="appbar-btn"
-              >
-                <MenuIcon />
-              </IconButton>
-            )}
-            <div className="appbar-title">
-              <Link to="/query" onClick={this.handleNavBar(false)}>
+            <IconButton
+              color="inherit"
+              onClick={this.handleOpenNavBar}
+              className={`appbar__btn ${drawerOpen ? 'appbar__btn--drawer-open' : ''}`}
+            >
+              <MenuIcon />
+            </IconButton>
+            <div className={`appbar__title ${drawerOpen ? 'appbar__title--drawer-open' : ''}`}>
+              <Link to="/query" onClick={this.handleCloseNavBar}>
                 <Typography variant="h6">GraphKB</Typography>
                 <Typography variant="caption">v{process.env.npm_package_version}</Typography>
               </Link>
@@ -136,10 +146,9 @@ class Main extends React.Component {
             <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>
               <div>
                 <Button
-                  classes={{ root: 'user-btn' }}
+                  classes={{ root: 'user-dropdown__icon' }}
                   onClick={this.handleOpen}
                   size="small"
-                  className="appbar-btn"
                 >
                   <PersonIcon />
                   <Typography color="inherit">
@@ -162,7 +171,7 @@ class Main extends React.Component {
                     horizontal: 'left',
                   }}
                 >
-                  <Card className="user-menu">
+                  <Card className="user-dropdown__content">
                     <Link to="/feedback">
                       <MenuItem onClick={this.handleClose}>
                         Feedback

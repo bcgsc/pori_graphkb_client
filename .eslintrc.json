@@ -34,7 +34,8 @@
         "babel/semi": "warn",
         "max-len": ["warn", {"ignoreComments": true}],
         "no-continue": "warn",
-        "react/no-did-update-set-state": "warn"
+        "react/no-did-update-set-state": "warn",
+        "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }]
     },
     "env": {
         "browser": true,

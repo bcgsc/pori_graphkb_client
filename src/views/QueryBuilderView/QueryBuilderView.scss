@@ -3,11 +3,9 @@
 $lightened-secondary: rgba($md-secondary-color, .2);
 
 .qbv {
-  @include view-wrapper;
   display: flex;
 
   .qbv-header {
-    @include page-header;
 
     > svg {
       margin-bottom: auto;

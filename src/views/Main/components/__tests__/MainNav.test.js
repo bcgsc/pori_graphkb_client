@@ -44,6 +44,6 @@ describe('<MainNav />', () => {
     wrapper.find('#test-expand').first().simulate('click');
     wrapper.find('#test-expand').first().simulate('click');
     wrapper.find('.main-nav-drawer__banner').find(IconButton).prop('onClick')();
-    expect(onChange.mock.calls.length).toBe(1);
+    expect(onChange.mock.calls.length).toBe(3); // edit, open in new tab, close
   });
 });

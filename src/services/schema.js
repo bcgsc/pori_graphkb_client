@@ -227,6 +227,158 @@ class Schema {
     });
     return allColumns;
   }
+
+  /**
+   * Given some search string, defines column definitions for AgGrid table
+   *
+   * @param {string} search the URI search component
+   *
+   * @returns {Array.<object>} the column definitions to be applied to a grid
+   */
+  defineGridColumns(search) {
+    const { modelName } = api.getQueryFromSearch({ schema: this, search });
+
+    let allProps;
+    const showEdges = [];
+
+    const showByDefault = [
+      '@rid', '@class',
+    ];
+
+    if (modelName && modelName.toLowerCase() !== 'statement') {
+      allProps = this.get(modelName).queryProperties;
+      if (modelName.toLowerCase().includes('variant')) {
+        showEdges.push('in_ImpliedBy');
+        showByDefault.push('reference1', 'reference2', 'type');
+      } else if (modelName.toLowerCase() !== 'source') {
+        showByDefault.push('sourceIdVersion', 'version', 'source', 'name', 'sourceId');
+        showEdges.push('out_SubClassOf');
+      } else {
+        showByDefault.push('version', 'name', 'usage');
+      }
+    } else {
+      showEdges.push('out_ImpliedBy', 'out_SupportedBy');
+      allProps = this.get('Statement').queryProperties;
+      showByDefault.push('source', 'appliesTo', 'relevance');
+    }
+
+    const defineEdgeColumn = (name) => {
+      const type = name.startsWith('out')
+        ? 'out'
+        : 'in';
+      const target = type === 'out'
+        ? 'in'
+        : 'out';
+      let colId = name.slice(type.length + 1);
+      if (type === 'in') {
+        colId = this.get(colId).reverseName;
+      }
+
+      const getEdgeData = ({ data }) => data && (data[name] || []).map(edge => edge[target]);
+
+      return {
+        colId,
+        field: colId,
+        sortable: false,
+        valueGetter: getEdgeData,
+        width: 300,
+        cellRenderer: 'RecordList',
+      };
+    };
+
+    const exclude = [
+      'deletedBy',
+      'deletedAt',
+      'groupRestrictions',
+      'history',
+      'groups',
+      'uuid',
+    ];
+
+    const showNested = [
+      '@rid',
+      '@class',
+      'source',
+      'sourceId',
+      'name',
+    ];
+
+    const getPreview = propName => ({ data }) => {
+      if (data && data[propName]) {
+        return this.getLabel(data[propName], false);
+      }
+      return null;
+    };
+
+    const valueGetter = (propName, subPropName = null) => ({ data }) => {
+      if (data) {
+        if (!subPropName) {
+          return data[propName];
+        } if (data[propName]) {
+          return data[propName][subPropName];
+        }
+      }
+      return null;
+    };
+
+    const defns = [
+      {
+        colId: 'preview',
+        field: 'preview',
+        sortable: false,
+        valueGetter: ({ data }) => this.getLabel(data, false),
+      },
+    ];
+
+    showEdges.forEach((edgeName) => {
+      defns.push(defineEdgeColumn(edgeName));
+    });
+
+    Object.values(allProps)
+      .filter(prop => !exclude.includes(prop.name) && prop.type !== 'embedded')
+      .sort((p1, p2) => p1.name.localeCompare(p2.name))
+      .forEach((prop) => {
+        const hide = !showByDefault.includes(prop.name);
+        if (prop.linkedClass) {
+          // build a column group
+          const groupDefn = {
+            headerName: prop.name,
+            groupId: prop.name,
+            openByDefault: false,
+            children: [{
+              field: 'preview',
+              sortable: false,
+              valueGetter: getPreview(prop.name),
+              colId: `${prop.name}.preview`,
+              columnGroupShow: 'closed',
+              hide,
+            }],
+          };
+          Object.values(prop.linkedClass.properties).forEach((subProp) => {
+            if (showNested.includes(subProp.name)) {
+              const colDef = ({
+                field: subProp.name,
+                colId: `${prop.name}.${subProp.name}`,
+                valueGetter: valueGetter(prop.name, subProp.name),
+                columnGroupShow: 'open',
+                hide,
+              });
+              groupDefn.children.push(colDef);
+            }
+          });
+          defns.push(groupDefn);
+        } else {
+          // individual column
+          defns.push({
+            field: prop.name,
+            hide,
+            colId: prop.name,
+          });
+        }
+      });
+
+    return defns.sort((d1, d2) => (d1.colId || d1.groupId).localeCompare(d2.colId || d2.groupId));
+  }
 }
 
 export default Schema;

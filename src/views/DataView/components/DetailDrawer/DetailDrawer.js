@@ -263,7 +263,7 @@ class DetailDrawer extends Component {
             </ListItem>
             {!isNested && (
               <Collapse in={!!opened.includes(name)} unmountOnExit>
-                <List disablePadding dense className="detail-nested-list">
+                <List disablePadding dense className="detail-drawer__nested-list">
                   {this.formatIdentifiers(value, true)}
                   {type === 'embedded' && this.formatOtherProps(value, true)}
                 </List>
@@ -384,7 +384,7 @@ class DetailDrawer extends Component {
                 <List
                   dense
                   disablePadding
-                  className="detail-nested-list"
+                  className="detail-drawer__nested-list"
                 >
                   <Divider />
                   <ListSubheader disableSticky color="primary">

@@ -1,4 +1,5 @@
 import React from 'react';
+import { IconButton } from '@material-ui/core';
 import { mount } from 'enzyme';
 import { BrowserRouter as Router } from 'react-router-dom';
 import MainNav from '../MainNav';
@@ -34,7 +35,7 @@ describe('<MainNav />', () => {
     const onChange = jest.fn();
     wrapper = mount(
       <Router>
-        <MainNav open links={testLinks} onChange={() => onChange} />
+        <MainNav open links={testLinks} onChange={onChange} />
       </Router>,
     );
     expect(wrapper.find('#icon')).toHaveLength(1);
@@ -42,7 +43,7 @@ describe('<MainNav />', () => {
 
     wrapper.find('#test-expand').first().simulate('click');
     wrapper.find('#test-expand').first().simulate('click');
-    wrapper.find('.drawer-logo button').first().simulate('click');
+    wrapper.find('.main-nav-drawer__banner').find(IconButton).prop('onClick')();
     expect(onChange.mock.calls.length).toBe(1);
   });
 });

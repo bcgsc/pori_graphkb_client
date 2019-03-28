@@ -72,29 +72,31 @@ $drawer-breakpoint: 1024px;
     }
   }
 
-  .content {
+  &__content {
     background-color: rgba(0, 0, 0, 0.03);
     height: calc(100% - #{$banner-height});
     margin-left: $closed-drawer-width;
     margin-top: $banner-height;
-    overflow-y: scroll;
+    overflow-y: auto;
     transition: margin-left #{$drawer-transition-speed};
+    width: calc(100% - #{$closed-drawer-width});
 
     @media (max-width: $drawer-breakpoint) {
-      left: 0;
+      margin-left: 0;
     }
 
     &--drawer-open {
       margin-left: $drawer-width;
+      width: calc(100% - #{$drawer-width});
 
       @media (max-width: 500px) {
-        left: 0;
+        margin-left: 0;
       }
     }
   }
 
   .no-drawer {
-    left: 0;
+    margin-left: 0;
   }
 }
 

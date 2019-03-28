@@ -1,7 +1,3 @@
-@import "../../globals";
-
 .admin {
-  @include view-wrapper;
   grid-template-columns: 100%;
-
 }

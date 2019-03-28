@@ -18,6 +18,7 @@ class CacheRequest {
   isEqual(otherBlock) {
     if (!otherBlock
       || !otherBlock.key
+      || typeof otherBlock.key !== 'function'
       || otherBlock.key() !== this.key()
     ) {
       return false;
@@ -204,7 +205,6 @@ class PaginationDataCache {
     // remove this block from the active queue
     this.active = this.active.filter(activeReq => !activeReq.isEqual(req));
     // add to the cache
-    // TODO: check the cache size
     if (req instanceof CacheCountRequest) {
       req.result.then((count) => {
         this.counts[req.search] = count;
@@ -364,7 +364,7 @@ class PaginationDataCache {
    *
    * @param {string} search the query search string
    * @param {number} startRow the first row (ex. skip)
-   * @param {Object} sortModel the sorting model (follows ag-grid format)
+   * @param {SortModel} sortModel the sorting model (follows ag-grid format)
    */
   requestBlock({ search, startRow, sortModel }) {
     let orderBy;
@@ -416,13 +416,14 @@ class PaginationDataCache {
    * @param {number} startRow the first row index to fetch
    * @param {number} endRow the index one past the last row to be fetched
    * @param {string} search the request queryParam string
-   * @param {object} sortModel the sotring model (follows ag-grid format)
+   * @param {SortModel} sortModel the sotring model (follows ag-grid format)
    */
   async getRows({
     search, startRow, endRow, sortModel,
   }) {
     // what blocks do we need ?
     if (endRow <= startRow) {
+      console.error(`Unexpected end (${endRow}) <= start (${startRow})`);
       return [];
     }
     const firstBlockIndex = Math.floor(startRow / this.blockSize);

@@ -13,17 +13,20 @@ import {
   ListItemIcon,
   ListItemText,
   Collapse,
-  Button,
+  IconButton,
   ListSubheader,
 } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import EditIcon from '@material-ui/icons/Edit';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import LinkIcon from '@material-ui/icons/Link';
+import CloseIcon from '@material-ui/icons/Close';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 import './DetailDrawer.scss';
 import util from '../../../../services/util';
+import { KBContext } from '../../../../components/KBContext';
 
 const MAX_STRING_LENGTH = 64;
 const DATE_KEYS = ['createdAt', 'deletedAt'];
@@ -40,20 +43,18 @@ const DATE_KEYS = ['createdAt', 'deletedAt'];
  * @property {function} props.handleNodeEditStart - Function triggered on node edit button click
  */
 class DetailDrawer extends Component {
+  static contextType = KBContext;
+
   static propTypes = {
-    schema: PropTypes.object,
     node: PropTypes.object,
     onClose: PropTypes.func,
     isEdge: PropTypes.bool,
-    handleNodeEditStart: PropTypes.func,
   };
 
   static defaultProps = {
-    schema: null,
     node: null,
     onClose: null,
     isEdge: false,
-    handleNodeEditStart: PropTypes.func,
   };
 
   constructor(props) {
@@ -85,7 +86,7 @@ class DetailDrawer extends Component {
    * @param {boolean} isNested - Nested flag.
    */
   formatIdentifiers(node, isNested) {
-    const { schema } = this.props;
+    const { schema } = this.context;
     if (!node['@class']) return null;
     const { identifiers, properties } = schema.get(node);
     return this.formatProps(node, identifiers.reduce((array, id) => {
@@ -162,7 +163,7 @@ class DetailDrawer extends Component {
    * @param {boolean} isNested - Nested flag.
    */
   formatMetadata(node, isNested) {
-    const { schema } = this.props;
+    const { schema } = this.context;
     return this.formatProps(node, schema.getMetadata(), isNested);
   }
 
@@ -173,7 +174,7 @@ class DetailDrawer extends Component {
    * @param {boolean} isNested - Nested flag.
    */
   formatProps(node, properties, isNested) {
-    const { schema } = this.props;
+    const { schema } = this.context;
     const { opened } = this.state;
     return properties.map((prop) => {
       const { name, type, previewWith } = prop;
@@ -315,7 +316,7 @@ class DetailDrawer extends Component {
    * @param {boolean} isNested - Nested flag.
    */
   formatOtherProps(node, isNested) {
-    const { schema } = this.props;
+    const { schema } = this.context;
     const { identifiers } = schema.get(node);
 
     let properties = Object.keys(node)
@@ -337,7 +338,7 @@ class DetailDrawer extends Component {
    */
   formatRelationships(node) {
     const { linkOpen, opened } = this.state;
-    const { schema } = this.props;
+    const { schema } = this.context;
     // Checks subclasses
     const edges = schema.getEdges(node);
 
@@ -450,66 +451,62 @@ class DetailDrawer extends Component {
       node,
       onClose,
       isEdge,
-      handleNodeEditStart,
-      schema,
     } = this.props;
     const { opened } = this.state;
-    if (!node) return null;
-    const identifiers = this.formatIdentifiers(node);
-    const otherProps = this.formatOtherProps(node);
-    const relationships = !isEdge && this.formatRelationships(node);
-    const metadata = this.formatMetadata(node, true);
+    const { schema } = this.context;
 
-    const metadataIsOpen = opened.includes('metadata');
+    const drawerIsOpen = Boolean(node);
 
-    let preview;
-    let errorMessage;
-    try {
-      preview = schema.getPreview(node);
+    let content = null;
+    if (drawerIsOpen) {
+      const recordId = node['@rid'].slice(1);
+
+      const identifiers = this.formatIdentifiers(node);
+      const otherProps = this.formatOtherProps(node);
+      const relationships = !isEdge && this.formatRelationships(node);
+      const metadata = this.formatMetadata(node, true);
+
+      const metadataIsOpen = opened.includes('metadata');
+
+      let preview;
+      let errorMessage;
+      try {
+        preview = schema.getPreview(node);
       // Only for kbp nodes so far.
-    } catch (e) {
-      preview = 'Invalid variant';
-      errorMessage = e.message;
-    }
-
-    return (
-      <Drawer
-        open={!!node}
-        anchor="right"
-        variant="permanent"
-        id="detail-drawer"
-        classes={{ paper: `detail-root ${!node ? 'detail-closed' : ''}` }}
-      >
-        <div className="detail-content">
-          <div className="detail-heading">
-            <div className="detail-headline">
-              <div>
-                <Typography variant="h4" component="h1">
-                  {preview}
-                </Typography>
-                {errorMessage && (
-                  <Typography color="error" variant="subtitle2">
-                    {errorMessage}
-                  </Typography>
-                )}
-              </div>
-              <Button onClick={onClose} variant="fab" color="primary">
-                <ChevronRightIcon />
-              </Button>
+      } catch (e) {
+        preview = 'Invalid variant';
+        errorMessage = e.message;
+      }
+      content = (
+        <div className="detail-drawer__content">
+          <div className="detail-drawer__heading">
+            <div>
+              <Typography variant="h4" component="h1">
+                {preview}
+              </Typography>
+              {errorMessage && (
+              <Typography color="error" variant="subtitle2">
+                {errorMessage}
+              </Typography>
+              )}
             </div>
-            <div className="detail-edit-btn">
-              {(schema.isSubclass(node, ['Ontology', 'Variant'])
-                || node['@class'] === 'Statement')
-                && (
-                  <Button
-                    onClick={handleNodeEditStart}
-                    variant="outlined"
-                  >
-                    Edit {node['@class']}&nbsp;
-                    <EditIcon />
-                  </Button>
-                )}
-            </div>
+            <Link to={`/edit/${recordId}`} target="_blank">
+              <IconButton
+                variant="outlined"
+              >
+                <EditIcon />
+              </IconButton>
+            </Link>
+            <Link to={`/view/${recordId}`} target="_blank">
+              <IconButton
+                variant="outlined"
+              >
+                <OpenInNewIcon />
+              </IconButton>
+            </Link>
+            <IconButton onClick={onClose}>
+              <CloseIcon />
+            </IconButton>
           </div>
           <Divider />
           <ListItem
@@ -529,7 +526,7 @@ class DetailDrawer extends Component {
             <List
               dense
               disablePadding
-              className="detail-nested-list"
+              className="detail-drawer__nested-list"
             >
               {metadata}
             </List>
@@ -538,22 +535,38 @@ class DetailDrawer extends Component {
           {identifiers}
           {otherProps}
           {!isEdge && (
-            <>
-              <ListSubheader className="detail-relationships-subheader">
+          <>
+            <ListSubheader className="detail-drawer__relationships-subheader">
                 Relationships
-              </ListSubheader>
-              {relationships || (
-                <ListItem dense>
-                  <ListItemText
-                    inset
-                    primaryTypographyProps={{ color: 'textSecondary' }}
-                    primary="None"
-                  />
-                </ListItem>
-              )}
-            </>
+            </ListSubheader>
+            {relationships || (
+            <ListItem dense>
+              <ListItemText
+                inset
+                primaryTypographyProps={{ color: 'textSecondary' }}
+                primary="None"
+              />
+            </ListItem>
+            )}
+          </>
           )}
         </div>
+      );
+    }
+
+    return (
+      <Drawer
+        open={drawerIsOpen}
+        anchor="right"
+        variant="permanent"
+        classes={{
+          paper: `detail-drawer ${!drawerIsOpen
+            ? 'detail-drawer--closed'
+            : ''
+          }`,
+        }}
+      >
+        {content}
       </Drawer>
     );
   }

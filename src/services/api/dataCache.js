@@ -18,6 +18,7 @@ class CacheRequest {
   isEqual(otherBlock) {
     if (!otherBlock
       || !otherBlock.key
+      || typeof otherBlock.key !== 'function'
       || otherBlock.key() !== this.key()
     ) {
       return false;

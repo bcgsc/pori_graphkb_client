@@ -170,6 +170,8 @@ const getQueryFromSearch = ({ schema, search }) => {
 
   let modelName;
   if (params['@class'] || params.class) {
+    // to make URL more readable class is sometimes used in place of @class
+    // these are used to determine the route name and should not also appear as query params
     modelName = params.class || params['@class'];
     delete params['@class'];
     delete params.class;
@@ -222,6 +224,8 @@ const getSearchFromQuery = ({
   const queryParams = { ...queryParamsIn };
   let modelName;
   if (queryParams) {
+    // to make URL more readable class is sometimes used in place of @class
+    // these are used to determine the route name and should not also appear as query params
     modelName = queryParams.class || queryParams['@class'];
     delete queryParams.class;
     delete queryParams['@class'];

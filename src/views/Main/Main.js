@@ -192,33 +192,25 @@ class Main extends React.Component {
               </div>
             </div>
           </AppBar>
-          <MainNav open={drawerOpen} onChange={this.handleNavBar} links={links} />
-          <section className={`content ${drawerOpen && 'drawer-shift'}`}>
-            <div
-              className="router-outlet"
-              role="button"
-              tabIndex={0}
-              onClick={this.handleNavBar(false)}
-              onKeyDown={e => e.keyCode === 13 && this.handleNavBar(false)()}
-            >
-              <Switch>
-                <AuthenticatedRoute path="/feedback" component={FeedbackView} />
-                <Route path="/login" component={LoginView} />
-                <Route exact path="/error" component={ErrorView} />
-                <AuthenticatedRoute path="/about" component={AboutView} />
-                <AuthenticatedRoute exact path="/query" component={QueryView} />
-                <AuthenticatedRoute path="/query/advanced/builder" component={QueryBuilderView} />
-                <AuthenticatedRoute path="/edit/:rid" component={NodeView} />
-                <AuthenticatedRoute path="/new" exact component={NodeView} />
-                <AuthenticatedRoute path="/new/:modelName" component={NodeView} />
-                <Redirect exact path="/query/advanced" to="/search/v" />
-                <AuthenticatedRoute path="/search/:modelName" component={NodeView} />
-                <AuthenticatedRoute path="/view/:rid" component={NodeView} />
-                <AuthenticatedRoute path="/data" component={DataView} />
-                <AuthenticatedRoute path="/admin" admin component={AdminView} />
-                <Redirect from="/" to="/query" />
-              </Switch>
-            </div>
+          <MainNav isOpen={drawerOpen} onChange={this.handleNavBar} links={links} activeLink={activeLink} />
+          <section className={`content ${drawerOpen ? 'content--drawer-open' : ''}`}>
+            <Switch>
+              <AuthenticatedRoute path="/feedback" component={FeedbackView} />
+              <Route path="/login" component={LoginView} />
+              <Route exact path="/error" component={ErrorView} />
+              <AuthenticatedRoute path="/about" component={AboutView} />
+              <AuthenticatedRoute exact path="/query" component={QueryView} />
+              <AuthenticatedRoute path="/query/advanced/builder" component={QueryBuilderView} />
+              <AuthenticatedRoute path="/edit/:rid" component={NodeView} />
+              <AuthenticatedRoute path="/new" exact component={NodeView} />
+              <AuthenticatedRoute path="/new/:modelName" component={NodeView} />
+              <Redirect exact path="/query/advanced" to="/search/v" />
+              <AuthenticatedRoute path="/search/:modelName" component={NodeView} />
+              <AuthenticatedRoute path="/view/:rid" component={NodeView} />
+              <AuthenticatedRoute path="/data" component={DataView} />
+              <AuthenticatedRoute path="/admin" admin component={AdminView} />
+              <Redirect from="/" to="/query" />
+            </Switch>
           </section>
         </div>
       </KBContext.Provider>

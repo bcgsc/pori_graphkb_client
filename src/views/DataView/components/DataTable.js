@@ -55,57 +55,16 @@ class DataTable extends React.Component {
     const { search } = this.props;
 
     if (this.gridApi && search !== prevProps.search) {
-      const dataSource = {
-        rowCount: null,
-        getRows: ({
-          successCallback, failCallback, ...params
-        }) => {
-          this.getTableData(params)
-            .then(([rows, lastRow]) => {
-              // update filters
-              successCallback(rows, lastRow);
-            }).catch(() => failCallback());
-        },
-      };
-      // update the model
-      this.gridApi.setDatasource(dataSource);
+      this.initializeGrid();
     }
   }
 
   @boundMethod
   onGridReady({ api: gridApi, columnApi }) {
-    const { search } = this.props;
-    const { schema } = this.context;
     this.gridApi = gridApi;
     this.gridColumnApi = columnApi;
 
-    gridApi.setColumnDefs([
-      {
-        colId: 'ID',
-        field: '#',
-        valueGetter: 'node.id',
-        width: 75,
-        type: 'number',
-      },
-      ...schema.defineGridColumns(search),
-    ]);
-
-
-    this.detectColumns();
-    const dataSource = {
-      rowCount: null,
-      getRows: ({
-        successCallback, failCallback, ...params
-      }) => {
-        this.getTableData(params)
-          .then(([rows, lastRow]) => {
-            // update filters
-            successCallback(rows, lastRow);
-          }).catch(() => failCallback());
-      },
-    };
-    // update the model
-    gridApi.setDatasource(dataSource);
+    this.initializeGrid();
   }
 
   async getTableData({
@@ -122,9 +81,40 @@ class DataTable extends React.Component {
     return [result, cache.rowCount(search)];
   }
 
+  initializeGrid() {
+    const { search } = this.props;
+    const { schema } = this.context;
+
+    this.gridApi.setColumnDefs([
+      {
+        colId: 'ID',
+        field: '#',
+        valueGetter: 'node.id',
+        width: 75,
+        type: 'number',
+      },
+      ...schema.defineGridColumns(search),
+    ]);
+
+    this.detectColumns();
+    const dataSource = {
+      rowCount: null,
+      getRows: ({
+        successCallback, failCallback, ...params
+      }) => {
+        this.getTableData(params)
+          .then(([rows, lastRow]) => {
+            // update filters
+            successCallback(rows, lastRow);
+          }).catch(() => failCallback());
+      },
+    };
+    // update the model
+    this.gridApi.setDatasource(dataSource);
+  }
+
   @boundMethod
   resizeColumnsTofitEdges({ type, newPage }) {
-    // console.log('resizeColumnsTofitEdges', type, newPage, rest);
     if (this.gridColumnApi) {
       if (type === 'paginationChanged' && newPage !== undefined) {
         this.gridColumnApi.autoSizeColumns(['ImpliedBy', 'SupportedBy']);

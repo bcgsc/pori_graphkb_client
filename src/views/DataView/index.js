@@ -1,549 +1,357 @@
-/**
- * @module /views/DataView
- */
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { Route, Redirect, Switch } from 'react-router-dom';
 import {
-  CircularProgress,
+  Chip,
   Typography,
+  CircularProgress,
+  IconButton,
 } from '@material-ui/core';
-import qs from 'qs';
-import omit from 'lodash.omit';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import TimelineIcon from '@material-ui/icons/Timeline';
+import EditIcon from '@material-ui/icons/Edit';
 import { boundMethod } from 'autobind-decorator';
 
-import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 
-import './DataView.scss';
-import { GraphComponent, DetailDrawer, TableComponent } from './components';
-import { withKB } from '../../components/KBContext';
+import kbSchema from '@bcgsc/knowledgebase-schema';
+
+
+import DataTable from './components/DataTable';
+import GraphComponent from './components/GraphComponent';
+import DetailDrawer from './components/DetailDrawer';
+import { KBContext } from '../../components/KBContext';
+import RecordFormDialog from '../../components/RecordFormDialog';
 import api from '../../services/api';
-import config from '../../static/config';
+import { cleanLinkedRecords } from '../../components/util';
 
-const { DEFAULT_NEIGHBORS } = config;
-const DEFAULT_LIMIT = 100;
-const REDIRECT_TIMEOUT = 1000;
+import './index.scss';
 
 /**
- * View for managing state of query results. Contains sub-routes for table view (/data/table)
- * and graph view (/data/graph) to display data. Redirects to /data/table for all other
- * sub-routes.
- *
- * Handles all api calls for its child components, including firing the passed in query
- * from the url search string, retrieving the database schema, and making subsequent
- * individual record GETs throughout the user's session.
- *
- * @property {Object} props.history - Application routing history object.
- * @property {Object} props.schema - Knowledgebase schema object.
+ * Shows the search result filters and an edit button
  */
-class DataViewBase extends Component {
+class DataView extends React.Component {
+  static contextType = KBContext;
+
   static propTypes = {
+    location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
-    schema: PropTypes.object.isRequired,
+    cacheBlocks: PropTypes.number,
+    blockSize: PropTypes.number,
   };
 
-  static contextType = SnackbarContext;
+  static defaultProps = {
+    cacheBlocks: 10,
+    blockSize: 250,
+  };
+
 
   constructor(props) {
     super(props);
+    const { location: { search } } = this.props;
+    // cache for api requests
     this.state = {
-      data: null,
-      displayed: [],
-      hidden: [],
-      allProps: [],
-      storedFilters: [],
-      detail: null,
-      next: null,
-      completedNext: true,
-      filteredSearch: null,
-      moreResults: false,
+      cache: null,
+      statusMessage: 'loading data...',
+      totalRows: null,
+      detailPanelRow: null,
+      optionsMenuAnchor: null,
+      selectedRecords: [],
+      variant: 'table',
+      filtersEditOpen: false,
+      filters: {},
+      search,
     };
-
     this.controllers = [];
-    this.redirectTimeout = null;
   }
 
-  /**
-   * Queries the api and loads results into component state.
-   */
   async componentDidMount() {
-    const { history, schema } = this.props;
-    const snackbar = this.context;
-    const queryParams = qs.parse(history.location.search.slice(1));
-    let isComplex = false;
-
-    let { routeName } = schema.get('V');
-    const omitted = [];
-    const kbClass = schema.get(queryParams);
-    if (kbClass) {
-      ({ routeName } = kbClass);
-      omitted.push('@class');
-    }
-
-    let response;
-    try {
-      if (queryParams.keyword) {
-        routeName = '/search';
-        queryParams.neighbors = queryParams.neighbors || DEFAULT_NEIGHBORS;
-        queryParams.limit = queryParams.limit || DEFAULT_LIMIT;
-        response = await this.makeApiQuery(routeName, queryParams);
-      } else if (queryParams.complex) {
-        routeName += '/search';
-        isComplex = true;
-        // Decode base64 encoded string.
-        const payload = JSON.parse(atob(decodeURIComponent(queryParams.complex)));
-        payload.neighbors = Math.max(payload.neighbors || 0, DEFAULT_NEIGHBORS);
-        payload.limit = Math.min(payload.limit || DEFAULT_LIMIT, DEFAULT_LIMIT);
-        response = await this.makeComplexApiQuery(routeName, payload, omitted);
-      } else {
-        queryParams.neighbors = queryParams.neighbors || DEFAULT_NEIGHBORS;
-        queryParams.limit = queryParams.limit || DEFAULT_LIMIT;
-        response = await this.makeApiQuery(routeName, queryParams, omitted);
-      }
-
-      const { data, allProps } = this.processData(response);
-
-      const {
-        next,
-        moreResults,
-        filteredSearch,
-      } = !isComplex
-        ? this.prepareNextPagination(routeName, queryParams, response, omitted)
-        : {
-          moreResults: false,
-          next: null,
-          filteredSearch: null,
-        };
-      if (Object.keys(data).length === 0) {
-        this.redirectTimeout = setTimeout(() => {
-          history.push('/query');
-          snackbar.add(
-            'No results found, redirected to main page...',
-            'Back',
-            () => history.goBack(),
-          );
-        }, REDIRECT_TIMEOUT);
-      }
-      this.setState({
-        filteredSearch: filteredSearch || queryParams,
-        moreResults,
-        next,
-        data,
-        allProps,
-      });
-    } catch (error) {
-      console.error(error);
-    }
+    const { schema } = this.context;
+    const { cacheBlocks, blockSize } = this.props;
+    const cache = api.getNewCache({
+      schema,
+      cacheBlocks,
+      blockSize,
+      onLoadCallback: this.handleLoadingChange,
+      onErrorCallback: this.handleError,
+    });
+    const filters = await this.parseFilters(cache);
+    this.setState({ cache, filters });
   }
 
   componentWillUnmount() {
-    this.controllers.forEach(c => c.abort());
-    if (this.redirectTimeout) {
-      clearInterval(this.redirectTimeout);
-      this.redirectTimeout = null;
+    const { cache } = this.state;
+    if (cache) {
+      cache.abortAll();
     }
   }
 
-  /**
-   * Prepares next query function.
-   * @param {string} route - API route.
-   * @param {Object} queryParams - Query parameters key/value pairs.
-   * @param {Array.<Object>} prevResult - Previous query results.
-   * @param {Array.<string>} omitted - List of property keys to omit during next query.
-   */
-  prepareNextPagination(route, queryParams, prevResult, omitted = []) {
-    const nextQueryParams = queryParams;
-    if ((prevResult || []).length >= queryParams.limit) {
-      nextQueryParams.skip = Number(queryParams.limit) + Number(queryParams.skip || 0);
-      return {
-        next: () => this.makeApiQuery(route, nextQueryParams, omitted),
-        moreResults: true,
-        filteredSearch: nextQueryParams,
-      };
-    }
-    return {
-      next: null,
-      moreResults: false,
-    };
+  @boundMethod
+  handleEditFilters(filters) {
+    const { schema } = this.context;
+    const { history, location: { pathname } } = this.props;
+    console.log('handleEditFilters', filters);
+    // drop all undefined values
+    const { routeName } = schema.get(filters);
+    const search = api.getSearchFromQuery({
+      schema,
+      queryParams: cleanLinkedRecords(filters),
+      routeName,
+    });
+    history.replace(`${pathname}?${search}`);
+    console.log(routeName, search);
+    this.setState({ filtersEditOpen: false, filters, search: `?${search}` });
   }
 
-  /**
-   * Makes API GET call to specified endpoint, with specified query parameters.
-   * @param {string} route - API endpoint.
-   * @param {Object} queryParams - Query parameters object.
-   * @param {Array.<string>} omitted - List of parameters to strip from API call.
-   */
-  async makeApiQuery(route, queryParams, omitted = []) {
-    const { history } = this.props;
+  @boundMethod
+  handleLoadingChange() {
+    const { cache, search } = this.state;
+    if (!cache) {
+      return;
+    }
+    const rowCount = cache.rowCount(search);
+    const [start, end] = cache.pendingRows(search);
 
-    try {
-      const call = api.get(`${route}?${qs.stringify(omit(queryParams, omitted))}`);
-      this.controllers.push(call);
-      const result = await call.request();
-      return result;
-    } catch (err) {
-      let errorContent = { name: err.name, message: err.message };
-      if (err.toJSON) {
-        errorContent = err.toJSON();
+    let statusMessage;
+    if (start !== null) {
+      statusMessage = `requesting ${start} - ${end}`;
+      if (rowCount !== undefined) {
+        statusMessage = `${statusMessage} of ${rowCount} rows`;
+      } else {
+        statusMessage = `${statusMessage} rows ....`;
       }
-      history.push('/error', { error: errorContent });
-      throw err;
     }
+    this.setState({ statusMessage, totalRows: rowCount });
   }
 
-  /**
-   * Makes API POST call to specified endpoint, with specified payload.
-   * @param {string} route - API endpoint.
-   * @param {Object} payload - Query payload object.
-   * @param {Array.<string>} omitted - List of parameters to strip from API call.
-   */
-  async makeComplexApiQuery(route, payload, omitted = []) {
-    const { history } = this.props;
+  @boundMethod
+  handleToggleDetailPanel(opt = {}) {
+    const { data } = opt;
 
-    try {
-      const call = api.post(route, omit(payload, omitted));
-      this.controllers.push(call);
-      const result = await call.request();
-      return result;
-    } catch (err) {
-      let errorContent = { name: err.name, message: err.message };
-      if (err.toJSON) {
-        errorContent = err.toJSON();
-      }
-      history.push('/error', { error: errorContent });
-      throw err;
-    }
-  }
-
-  /**
-   * Processes ontology data and updates properties map.
-   * @param {Array.<Object>} queryResults - List of returned records.
-   * @param {Object} schema - Knowledgebase db schema.
-   */
-  processData(queryResults) {
-    let { allProps, data } = this.state;
-    const { schema } = this.props;
     if (!data) {
-      data = {};
+      this.setState({ detailPanelRow: null });
+    } else {
+      this.setState({ detailPanelRow: data });
     }
-    if (!allProps || allProps.length === 0) {
-      allProps = ['@rid', '@class', 'preview'];
-    }
+  }
 
-    (queryResults || []).forEach((record) => {
-      allProps = schema.collectOntologyProps(record, allProps);
-      data[record['@rid']] = record;
+  @boundMethod
+  handleToggleOptionsMenu({ currentTarget }) {
+    const { optionsMenuAnchor } = this.state;
+    if (optionsMenuAnchor) {
+      this.setState({ optionsMenuAnchor: null });
+    } else {
+      this.setState({ optionsMenuAnchor: currentTarget });
+    }
+  }
+
+  @boundMethod
+  handleRecordSelection(selectedRecords) {
+    this.setState({ selectedRecords });
+  }
+
+
+  @boundMethod
+  handleSwapToGraph() {
+    this.setState({ variant: 'graph' });
+  }
+
+  @boundMethod
+  async handleExpandNode({ data: node }) {
+    const { cache, selectedRecords } = this.state;
+    console.log('handleExpandNode', node);
+    const record = await cache.getRecord(node);
+    const newSelectedRecords = [...selectedRecords, record];
+    this.setState({ selectedRecords: newSelectedRecords });
+  }
+
+  @boundMethod
+  handleError(err) {
+    const { history } = this.props;
+    history.push('/error', { error: { name: err.name, message: err.message } });
+  }
+
+  /**
+   * If there are any linked records, fetch them now and attach them in place of their reference ID
+   */
+  async parseFilters(cache) {
+    const { search } = this.state;
+    const { schema } = this.context;
+
+    const { queryParams } = api.getQueryFromSearch({ search, schema });
+
+    const links = [];
+    Object.entries(queryParams).forEach(([key, value]) => {
+      if (typeof value === 'string' && kbSchema.util.looksLikeRID(value)) {
+        links.push({ key, value });
+      }
     });
-    return { data, allProps };
+
+    const records = await cache.getRecords(links.map(l => ({ '@rid': l.value })));
+    records.forEach((rec, index) => {
+      const { key } = links[index];
+      queryParams[key] = rec;
+    });
+
+    return queryParams;
   }
 
-  /**
-   * Triggered function for when a node object is clicked in a child component.
-   * Sets the state selected ID to clicked node.
-   * @param {Object} node - Clicked node identifier.
-   */
-  @boundMethod
-  async handleClick(node) {
-    const { schema } = this.props;
-    const { data } = this.state;
-    if (!data[node.data['@rid']]) {
-      const { routeName } = schema.get(node.data);
-      const endpoint = `${routeName || '/ontologies'}/${node.data['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`; // change
-      const call = api.get(endpoint);
-      this.controllers.push(call);
-      const { result } = await call.request();
-      this.setState({ ...this.processData([result]) });
-    }
-  }
-
-  /**
-   * Adds node identifier to list of displayed nodes.
-   * @param {Event} event - User checkbox event.
-   * @param {string} rid - Checked node identifier.
-   */
-  @boundMethod
-  handleCheckbox(event, rid) {
-    event.stopPropagation();
-    const { displayed } = this.state;
-    const i = displayed.indexOf(rid);
-    if (i === -1) {
-      displayed.push(rid);
-    } else {
-      displayed.splice(i, 1);
-    }
-    this.setState({ displayed });
-  }
-
-  /**
-   * Adds all data entries to the list of displayed nodes.
-   * @param {Event} event - Checkbox event.
-   * @param {Array.<Object>} - Currently displayed page data.
-   */
-  @boundMethod
-  handleCheckAll(event, pageData) {
-    let displayed;
-    if (event.target.checked) {
-      displayed = pageData.map(d => d['@rid']);
-    } else {
-      displayed = [];
-    }
-    this.setState({ displayed });
-  }
-
-  /**
-   * Clears displayed array.
-   */
-  @boundMethod
-  handleHideSelected() {
-    const { displayed, hidden } = this.state;
-    hidden.push(...displayed);
-    this.setState({ hidden, displayed: [] });
-  }
-
-  /**
-   * Appends the input array to the displayed array.
-   */
-  @boundMethod
-  handleShowAllNodes() {
-    const { displayed, hidden } = this.state;
-    displayed.push(...hidden);
-    this.setState({ displayed, hidden: [] });
-  }
-
-  /**
-   * Handles subsequent pagination call
-   */
-  @boundMethod
-  async handleSubsequentPagination() {
-    const { schema } = this.props;
+  renderDataComponent() {
     const {
-      next,
-      filteredSearch,
+      detailPanelRow,
+      cache,
+      optionsMenuAnchor,
+      variant,
+      selectedRecords,
+      search,
     } = this.state;
+    const { schema } = this.context;
+    if (variant === 'table') {
+      return (
+        <DataTable
+          search={search}
+          cache={cache}
+          rowBuffer={250}
+          onRecordClicked={this.handleToggleDetailPanel}
+          onRecordsSelected={this.handleRecordSelection}
+          optionsMenuAnchor={optionsMenuAnchor}
+          optionsMenuOnClose={this.handleToggleOptionsMenu}
+        />
+      );
+    }
+    return (
+      <GraphComponent
+        handleDetailDrawerOpen={this.handleToggleDetailPanel}
+        handleDetailDrawerClose={this.handleToggleDetailPanel}
+        handleTableRedirect={() => {
+          console.log('redirect to table');
+        }}
+        handleNewColumns={() => {
+          console.log('handleNewColumns');
+        }}
+        detail={detailPanelRow}
+        data={selectedRecords}
+        schema={schema}
+        handleClick={this.handleExpandNode}
+        onRecordClicked={this.handleToggleDetailPanel}
+      />
+    );
+  }
 
-    if (next) {
-      try {
-        this.setState({
-          next: null,
-          moreResults: false,
-          completedNext: false,
-        });
+  renderFilterChips(params, prefix = null) {
+    const { schema } = this.context;
+    const chips = [];
+    Object.entries(params).forEach(([key, param]) => {
+      let operator = '=';
+      let value = param;
 
-        let { routeName } = schema.get('V');
-        const omitted = [];
-        const kbClass = schema.get(filteredSearch);
-        if (kbClass) {
-          ({ routeName } = kbClass);
-          omitted.push('@class');
+      if (param !== undefined) {
+        if (typeof param === 'object' && param !== null && !param['@rid']) {
+          chips.push(...this.renderFilterChips(param, key));
+        } else {
+          if (`${param}`.startsWith('~')) {
+            operator = '~';
+            value = param.slice(1);
+          }
+          if (param && param['@rid']) {
+            value = schema.getLabel(param);
+          }
+          const name = prefix
+            ? `${prefix}.${key}`
+            : key;
+          chips.push((
+            <Chip
+              key={name}
+              label={`${name} ${operator} ${value}`}
+            />
+          ));
         }
-        if (filteredSearch.keyword) {
-          routeName = '/search';
-        }
-        const nextData = await next();
-
-        this.setState({
-          ...this.processData(nextData),
-          ...this.prepareNextPagination(routeName, filteredSearch, nextData, omitted),
-          completedNext: true,
-        });
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error(error);
       }
-    }
-    return next;
-  }
-
-  /**
-   * Sets selected ID to input node identifier and opens edit drawer.
-   */
-  @boundMethod
-  handleNodeEditStart() {
-    const { detail } = this.state;
-    const { history } = this.props;
-    if (detail) {
-      history.push(`/edit/${detail['@rid'].slice(1)}`);
-    }
-  }
-
-  /**
-   * Closes detail drawer.
-   */
-  @boundMethod
-  handleDetailDrawerClose() {
-    this.setState({ detail: null });
-  }
-
-  /**
-   * Updates data and opens detail drawer for the specified node.
-   * @param {Object} node - Specified node.
-   * @param {boolean} open - flag to open drawer, or to just update.
-   * @param {boolean} edge - flag to indicate edge record.
-   */
-  @boundMethod
-  async handleDetailDrawerOpen(node, open, edge) {
-    const { data, detail } = this.state;
-    if (!open && !detail) return;
-    if (node.data) {
-      node = node.data; // eslint-disable-line no-param-reassign
-    }
-    if (edge) {
-      this.setState({
-        detail: node,
-        detailEdge: true,
-      });
-    } else {
-      if (!data[node['@rid']]) {
-        const call = api.get(`/v/${node['@rid'].slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
-        this.controllers.push(call);
-        const { result } = await call.request();
-        data[node['@rid']] = result;
-      }
-      this.setState({ detail: data[node['@rid']], detailEdge: false });
-    }
-  }
-
-  /**
-   * Handles redirect to table to graph.
-   */
-  @boundMethod
-  handleGraphRedirect(filters) {
-    const { history } = this.props;
-    this.setState({ storedFilters: filters, detail: null });
-    history.push({ pathname: '/data/graph', search: history.location.search });
-  }
-
-  /**
-   * Handles redirect to graph to table.
-   */
-  @boundMethod
-  handleTableRedirect() {
-    const { history } = this.props;
-    this.setState({ detail: null });
-    history.push({
-      pathname: '/data/table',
-      search: history.location.search,
     });
-  }
-
-  /**
-   * Updates column list with field keys from new node.
-   * @param {Object} node - newly added object.
-   */
-  @boundMethod
-  handleNewColumns(node) {
-    const { allProps } = this.state;
-    const { schema } = this.props;
-    this.setState({ allProps: schema.collectOntologyProps(node, allProps) });
+    return chips;
   }
 
   render() {
+    const { schema } = this.context;
     const {
-      data,
-      displayed,
-      hidden,
-      allProps,
-      detail,
-      moreResults,
-      filteredSearch,
-      detailEdge,
-      completedNext,
-      storedFilters,
+      statusMessage,
+      totalRows,
+      detailPanelRow,
+      selectedRecords,
+      filtersEditOpen,
+      filters,
+      search,
+      variant,
     } = this.state;
 
-    const {
-      schema,
-      history,
-    } = this.props;
+    const detailPanelIsOpen = Boolean(detailPanelRow);
 
-    const snackbar = this.context;
+    const { modelName } = api.getQueryFromSearch({ search, schema });
 
-    if (!data) {
-      return <CircularProgress color="secondary" size={100} id="progress-spinner" />;
-    }
-    const edges = schema.getEdges();
-    const cls = filteredSearch && filteredSearch['@class'];
-    const defaultOrders = (schema.get(cls) || schema.get('V')).identifiers;
-    const detailDrawer = (
-      <DetailDrawer
-        node={detail}
-        schema={schema}
-        open={!!detail}
-        onClose={this.handleDetailDrawerClose}
-        isEdge={detailEdge}
-        handleNodeEditStart={this.handleNodeEditStart}
-        identifiers={defaultOrders}
-      />
-    );
-    const GraphWithProps = () => (
-      <GraphComponent
-        data={data}
-        handleClick={this.handleClick}
-        displayed={displayed}
-        handleDetailDrawerOpen={this.handleDetailDrawerOpen}
-        handleDetailDrawerClose={this.handleDetailDrawerClose}
-        handleTableRedirect={this.handleTableRedirect}
-        edgeTypes={edges}
-        detail={detail}
-        allProps={allProps}
-        localStorageKey={qs.stringify(filteredSearch)}
-        handleNewColumns={this.handleNewColumns}
-        schema={schema}
-        snackbar={snackbar}
-      />
-    );
-    const TableWithProps = () => (
-      <TableComponent
-        data={data}
-        detail={detail}
-        displayed={displayed}
-        handleCheckAll={this.handleCheckAll}
-        handleCheckbox={this.handleCheckbox}
-        handleHideSelected={this.handleHideSelected}
-        handleShowAllNodes={this.handleShowAllNodes}
-        handleGraphRedirect={this.handleGraphRedirect}
-        handleSubsequentPagination={this.handleSubsequentPagination}
-        handleDetailDrawerOpen={this.handleDetailDrawerOpen}
-        hidden={hidden}
-        allProps={allProps}
-        moreResults={moreResults}
-        completedNext={completedNext}
-        storedFilters={storedFilters}
-        defaultOrder={defaultOrders}
-        schema={schema}
-      />
-    );
     return (
-      <div className="data-view">
-
-        {Object.keys(data).length !== 0 && qs.stringify(filteredSearch) && edges
-          ? (
-            <Switch>
-              <Route exact path="/data/table" render={TableWithProps} />
-              <Route exact path="/data/graph" render={GraphWithProps} />
-              <Route exact path="/data/*">
-                {
-                  <Redirect to={`/data/table${history.location.search}`} />
-                }
-              </Route>
-            </Switch>
-          ) : (
-            <div className="no-results-msg">
-              <Typography variant="h5">
-                No Results
+      <div className={
+        `data-view ${detailPanelIsOpen
+          ? 'data-view--squished'
+          : ''}`}
+      >
+        <div className="data-view__header">
+          {variant === 'table' && (
+            <>
+              <Typography variant="h6" component="h3">Active Filters</Typography>
+              <IconButton
+                onClick={() => this.setState({ filtersEditOpen: true })}
+              >
+                <EditIcon />
+              </IconButton>
+              {this.renderFilterChips(filters)}
+            </>
+          )}
+          <RecordFormDialog
+            isOpen={filtersEditOpen}
+            modelName={modelName}
+            onClose={() => this.setState({ filtersEditOpen: false })}
+            onError={this.handleError}
+            onSubmit={this.handleEditFilters}
+            title="Edit Search Filters"
+            variant="search"
+            value={filters}
+          />
+          <IconButton onClick={this.handleToggleOptionsMenu} className="data-view__edit-filters">
+            <MoreHorizIcon color="action" />
+          </IconButton>
+        </div>
+        <div className="data-view__content">
+          {this.renderDataComponent()}
+          <DetailDrawer
+            node={detailPanelRow}
+            onClose={this.handleToggleDetailPanel}
+          />
+        </div>
+        <div className="data-view__footer">
+          <div className="footer__selected-records">
+            <Typography>
+              {selectedRecords.length} Record{selectedRecords.length !== 1 ? 's' : ''} Selected
+            </Typography>
+            {Boolean(selectedRecords.length) && (
+              <IconButton>
+                <TimelineIcon onClick={this.handleSwapToGraph} />
+              </IconButton>
+            )}
+          </div>
+          {statusMessage && (
+            <div className="footer__loader">
+              <CircularProgress />
+              <Typography>
+                {statusMessage}
               </Typography>
             </div>
-          )
-        }
-        {schema && detailDrawer}
+          )}
+          <Typography className="footer__total-rows">
+            Total Rows: {totalRows === undefined ? 'Unknown' : totalRows}
+          </Typography>
+        </div>
+
       </div>
     );
   }
 }
 
-const DataView = withKB(DataViewBase);
-
-export {
-  DataView,
-  DataViewBase,
-};
+export default DataView;

@@ -1,6 +1,6 @@
 import AboutView from './AboutView';
 import AdminView from './AdminView';
-import { DataView } from './DataView/DataView';
+import DataView from './DataView';
 import ErrorView from './ErrorView/ErrorView';
 import FeedbackView from './FeedbackView/FeedbackView';
 import LoginView from './LoginView/LoginView';

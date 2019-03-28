@@ -16,7 +16,6 @@ import kbSchema from '@bcgsc/knowledgebase-schema';
 
 
 import DataTable from './components/DataTable';
-import GraphComponent from './components/GraphComponent';
 import DetailDrawer from './components/DetailDrawer';
 import { KBContext } from '../../components/KBContext';
 import RecordFormDialog from '../../components/RecordFormDialog';
@@ -36,11 +35,13 @@ class DataView extends React.Component {
     history: PropTypes.object.isRequired,
     cacheBlocks: PropTypes.number,
     blockSize: PropTypes.number,
+    bufferSize: PropTypes.number,
   };
 
   static defaultProps = {
     cacheBlocks: 10,
     blockSize: 250,
+    bufferSize: 250,
   };
 
 
@@ -84,6 +85,9 @@ class DataView extends React.Component {
     }
   }
 
+  /**
+   * Changes the current filters set and updates the URL to match
+   */
   @boundMethod
   handleEditFilters(filters) {
     const { schema } = this.context;
@@ -99,6 +103,10 @@ class DataView extends React.Component {
     this.setState({ filtersEditOpen: false, filters, search: `?${search}` });
   }
 
+  /**
+   * Called in response to records being requested or loaded
+   * Responsible for giving the user information while waiting for things to load
+   */
   @boundMethod
   handleLoadingChange() {
     const { cache, search } = this.state;
@@ -120,6 +128,9 @@ class DataView extends React.Component {
     this.setState({ statusMessage, totalRows: rowCount });
   }
 
+  /**
+   * Opens the right-hand panel that shows details of a given record
+   */
   @boundMethod
   handleToggleDetailPanel(opt = {}) {
     const { data } = opt;
@@ -131,6 +142,10 @@ class DataView extends React.Component {
     }
   }
 
+  /**
+   * Opens the options menu. The trigger is defined on this component but
+   * the menu contents are handled by the data element (ex DataTable)
+   */
   @boundMethod
   handleToggleOptionsMenu({ currentTarget }) {
     const { optionsMenuAnchor } = this.state;
@@ -144,21 +159,6 @@ class DataView extends React.Component {
   @boundMethod
   handleRecordSelection(selectedRecords) {
     this.setState({ selectedRecords });
-  }
-
-
-  @boundMethod
-  handleSwapToGraph() {
-    this.setState({ variant: 'graph' });
-  }
-
-  @boundMethod
-  async handleExpandNode({ data: node }) {
-    const { cache, selectedRecords } = this.state;
-    console.log('handleExpandNode', node);
-    const record = await cache.getRecord(node);
-    const newSelectedRecords = [...selectedRecords, record];
-    this.setState({ selectedRecords: newSelectedRecords });
   }
 
   @boundMethod
@@ -189,52 +189,13 @@ class DataView extends React.Component {
       queryParams[key] = rec;
     });
 
-    return { ...queryParams, class: modelName };
+    return { ...queryParams, '@class': modelName };
   }
 
-  renderDataComponent() {
-    const {
-      detailPanelRow,
-      cache,
-      optionsMenuAnchor,
-      variant,
-      selectedRecords,
-      search,
-    } = this.state;
-    const { schema } = this.context;
-    if (variant === 'table') {
-      return (
-        <DataTable
-          search={search}
-          cache={cache}
-          rowBuffer={250}
-          onRecordClicked={this.handleToggleDetailPanel}
-          onRecordsSelected={this.handleRecordSelection}
-          optionsMenuAnchor={optionsMenuAnchor}
-          optionsMenuOnClose={this.handleToggleOptionsMenu}
-        />
-      );
-    }
-    return (
-      <GraphComponent
-        handleDetailDrawerOpen={this.handleToggleDetailPanel}
-        handleDetailDrawerClose={this.handleToggleDetailPanel}
-        handleTableRedirect={() => {
-          console.log('redirect to table');
-        }}
-        handleNewColumns={() => {
-          console.log('handleNewColumns');
-        }}
-        detail={detailPanelRow}
-        data={selectedRecords}
-        schema={schema}
-        handleClick={this.handleExpandNode}
-        onRecordClicked={this.handleToggleDetailPanel}
-      />
-    );
-  }
-
-  renderFilterChips(params, prefix = null) {
+  /**
+   * Draws the chips above the table which show the user the current filters
+   */
+  renderFilterChips({ limit, neighbors, ...params }, prefix = null) {
     const { schema } = this.context;
     const chips = [];
     Object.entries(params).forEach(([key, param]) => {
@@ -268,21 +229,21 @@ class DataView extends React.Component {
   }
 
   render() {
-    const { schema } = this.context;
     const {
+      cache,
       statusMessage,
       totalRows,
       detailPanelRow,
+      optionsMenuAnchor,
       selectedRecords,
       filtersEditOpen,
       filters,
       search,
       variant,
     } = this.state;
+    const { bufferSize } = this.props;
 
     const detailPanelIsOpen = Boolean(detailPanelRow);
-
-    const { modelName } = api.getQueryFromSearch({ search, schema });
 
     return (
       <div className={
@@ -317,7 +278,15 @@ class DataView extends React.Component {
           </IconButton>
         </div>
         <div className="data-view__content">
-          {this.renderDataComponent()}
+          <DataTable
+            search={search}
+            cache={cache}
+            rowBuffer={bufferSize}
+            onRecordClicked={this.handleToggleDetailPanel}
+            onRecordsSelected={this.handleRecordSelection}
+            optionsMenuAnchor={optionsMenuAnchor}
+            optionsMenuOnClose={this.handleToggleOptionsMenu}
+          />
           <DetailDrawer
             node={detailPanelRow}
             onClose={this.handleToggleDetailPanel}
@@ -328,11 +297,6 @@ class DataView extends React.Component {
             <Typography>
               {selectedRecords.length} Record{selectedRecords.length !== 1 ? 's' : ''} Selected
             </Typography>
-            {Boolean(selectedRecords.length) && (
-              <IconButton>
-                <TimelineIcon onClick={this.handleSwapToGraph} />
-              </IconButton>
-            )}
           </div>
           {statusMessage && (
             <div className="footer__loader">

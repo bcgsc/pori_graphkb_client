@@ -423,6 +423,7 @@ class PaginationDataCache {
   }) {
     // what blocks do we need ?
     if (endRow <= startRow) {
+      console.error(`Unexpected end (${endRow}) <= start (${startRow})`);
       return [];
     }
     const firstBlockIndex = Math.floor(startRow / this.blockSize);

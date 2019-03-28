@@ -276,7 +276,7 @@ const querySearchBlock = ({
 const recordApiCall = ({ record, schema }) => {
   const { '@rid': rid = record } = record;
   const { routeName = '/v' } = schema.get(record) || {};
-  return get(`${routeName}/${rid.slice(1)}?neighbors=3`);
+  return get(`${routeName}/${rid.slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
 };
 
 

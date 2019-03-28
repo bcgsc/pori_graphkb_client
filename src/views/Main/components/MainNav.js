@@ -15,9 +15,12 @@ import {
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { boundMethod } from 'autobind-decorator';
+import SearchIcon from '@material-ui/icons/Search';
+import AddIcon from '@material-ui/icons/Add';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
-import logo from '../../../../static/logo.png';
-import title from '../../../../static/title.png';
+import logo from '../../../static/logo.png';
+import title from '../../../static/title.png';
 
 
 /**
@@ -30,20 +33,12 @@ class MainNav extends React.PureComponent {
   static propTypes = {
     isOpen: PropTypes.bool,
     activeLink: PropTypes.string,
-    links: PropTypes.arrayOf(PropTypes.shape({
-      label: PropTypes.string,
-      route: PropTypes.string,
-      icon: PropTypes.node,
-      MenuProps: PropTypes.object,
-      nestedItems: PropTypes.array,
-    })),
     onChange: PropTypes.func,
   };
 
   static defaultProps = {
     isOpen: false,
-    links: [],
-    onChange: () => {},
+    onChange: () => { },
     activeLink: null,
   };
 
@@ -68,59 +63,25 @@ class MainNav extends React.PureComponent {
     onChange({ isOpen, activeLink: link });
   }
 
-  /**
-   * Handles render of a nav drawer list item.
-   */
-  @boundMethod
-  renderLink(link, isNested = false) {
+  render() {
     const { isOpen, activeLink } = this.props;
 
-    const {
-      label,
-      route,
-      icon,
-      MenuProps,
-      nestedItems,
-    } = link;
-
-    const isActive = route === activeLink;
-
-    if (nestedItems) {
-      return (
-        <React.Fragment key={label.toLowerCase()}>
-          <MenuItem {...MenuProps} onClick={this.handleOpen}>
-            <ListItemIcon>
-              {React.cloneElement(icon, { color: isActive ? 'secondary' : undefined })}
-            </ListItemIcon>
-            <ListItemText
-              primaryTypographyProps={{
-                color: isActive ? 'secondary' : undefined,
-              }}
-              primary={label}
-            />
-          </MenuItem>
-          {isOpen && nestedItems.map(nestedItem => this.renderLink(nestedItem, true))}
-        </React.Fragment>
-      );
-    }
-    return (
+    const MenuLink = ({
+      route, label, icon = null, inset = false,
+    }) => (
       <Link to={route} key={label.toLowerCase()}>
-        <MenuItem {...MenuProps} onClick={() => this.handleClickLink(route)}>
+        <MenuItem onClick={() => this.handleClickLink(route)}>
           {icon && <ListItemIcon>{icon}</ListItemIcon>}
           <ListItemText
-            inset={isNested}
+            inset={inset}
             primary={label}
             primaryTypographyProps={{
-              color: isActive ? 'secondary' : undefined,
+              color: activeLink === route ? 'secondary' : undefined,
             }}
           />
         </MenuItem>
       </Link>
     );
-  }
-
-  render() {
-    const { isOpen, links } = this.props;
 
     return (
       <Drawer
@@ -132,15 +93,26 @@ class MainNav extends React.PureComponent {
         }}
       >
         <div className="main-nav-drawer__banner">
-          <IconButton
-            onClick={this.handleClose}
-          >
+          <IconButton onClick={this.handleClose}>
             <ChevronLeftIcon />
           </IconButton>
         </div>
         <Divider />
         <List className="main-nav-drawer__links">
-          {links.map(link => this.renderLink(link, false))}
+          <MenuLink label="Query" route="/query" icon={<SearchIcon />} />
+          <MenuItem onClick={this.handleOpen}>
+            <ListItemIcon> <AddIcon /> </ListItemIcon>
+            <ListItemText primary="Add new Record" />
+          </MenuItem>
+          {isOpen && (
+            <>
+              <MenuLink label="Source" route="/new/source" inset />
+              <MenuLink label="Ontology" route="/new/ontology" inset />
+              <MenuLink label="Variant" route="/new/variant" inset />
+              <MenuLink label="Statement" route="/new/statement" inset />
+            </>
+          )}
+          <MenuLink label="About" route="/about" icon={<HelpOutlineIcon />} />
         </List>
         <div className="main-nav-drawer__footer">
           <Divider />

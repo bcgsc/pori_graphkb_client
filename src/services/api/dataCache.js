@@ -204,7 +204,6 @@ class PaginationDataCache {
     // remove this block from the active queue
     this.active = this.active.filter(activeReq => !activeReq.isEqual(req));
     // add to the cache
-    // TODO: check the cache size
     if (req instanceof CacheCountRequest) {
       req.result.then((count) => {
         this.counts[req.search] = count;

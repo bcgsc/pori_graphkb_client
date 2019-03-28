@@ -18,9 +18,6 @@ import {
   Popover,
   Card,
 } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
-import AddIcon from '@material-ui/icons/Add';
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
 
@@ -54,7 +51,7 @@ class Main extends React.Component {
     this.state = {
       anchorEl: null,
       drawerOpen: false,
-      activeLink: '/',
+      activeLink: '/query',
     };
   }
 
@@ -98,30 +95,6 @@ class Main extends React.Component {
       drawerOpen,
       activeLink,
     } = this.state;
-
-    const links = [
-      {
-        label: 'Query',
-        route: '/query',
-        icon: <SearchIcon />,
-        MenuProps: { id: 'link-search' },
-      },
-      {
-        label: 'Add new record',
-        icon: <AddIcon />,
-        nestedItems: [
-          { label: 'Source', route: '/new/source' },
-          { label: 'Ontology', route: '/new/ontology' },
-          { label: 'Variant', route: '/new/variant' },
-          { label: 'Statement', route: '/new/statement' },
-        ],
-      },
-      {
-        label: 'About',
-        icon: <HelpOutlineIcon />,
-        route: '/about',
-      },
-    ];
 
     return (
       <KBContext.Provider value={{ schema: new Schema(), user: auth.getUser() }}>
@@ -192,7 +165,7 @@ class Main extends React.Component {
               </div>
             </div>
           </AppBar>
-          <MainNav isOpen={drawerOpen} onChange={this.handleNavBar} links={links} activeLink={activeLink} />
+          <MainNav isOpen={drawerOpen} onChange={this.handleNavBar} activeLink={activeLink} />
           <section className={`main-view__content ${drawerOpen ? 'main-view__content--drawer-open' : ''}`}>
             <Switch>
               <AuthenticatedRoute path="/feedback" component={FeedbackView} />

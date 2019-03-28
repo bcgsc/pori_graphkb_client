@@ -78,7 +78,8 @@ $drawer-breakpoint: 1024px;
     margin-left: $closed-drawer-width;
     margin-top: $banner-height;
     overflow-y: auto;
-    transition: margin-left #{$drawer-transition-speed};
+    transition-duration: $drawer-transition-speed;
+    transition-property: width, margin-left;
     width: calc(100% - #{$closed-drawer-width});
 
     @media (max-width: $drawer-breakpoint) {
@@ -148,11 +149,12 @@ $drawer-breakpoint: 1024px;
 }
 
 .main-nav-drawer {
-  animation: fade-in();
+  //animation: fade-in();
   display: flex;
   flex-direction: column;
   height: 100%;
-  transition: width #{$drawer-transition-speed};
+  transition-duration: $drawer-transition-speed;
+  transition-property: width;
   width: $drawer-width;
   z-index: calc(#{$drawer-z-index} + 4);
 

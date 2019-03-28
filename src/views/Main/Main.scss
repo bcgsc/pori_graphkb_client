@@ -74,10 +74,10 @@ $drawer-breakpoint: 1024px;
 
   .content {
     background-color: rgba(0, 0, 0, 0.03);
-
     height: calc(100% - #{$banner-height});
     margin-left: $closed-drawer-width;
     margin-top: $banner-height;
+    overflow-y: scroll;
     transition: margin-left #{$drawer-transition-speed};
 
     @media (max-width: $drawer-breakpoint) {
@@ -85,7 +85,6 @@ $drawer-breakpoint: 1024px;
     }
 
     &--drawer-open {
-      overflow: hidden;
       margin-left: $drawer-width;
 
       @media (max-width: 500px) {

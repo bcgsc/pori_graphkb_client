@@ -3,13 +3,18 @@
 .content-wrapper.about-page {
   // move the padding below the tabs
   padding: 0;
+  height: 100%;
 
   .tabs-content {
     @include content-wrapper;
+    max-height: calc(100% - #{$tab-bar-height});
+    overflow-y: scroll;
+
   }
 
   .tabs-bar {
     box-shadow: $subtle-shadow;
+    height: $tab-bar-height;
   }
 
   .two-column-grid {

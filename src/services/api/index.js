@@ -243,6 +243,27 @@ const getSearchFromQuery = ({
 };
 
 
+/**
+ * @typedef {Object} SortModel
+ *
+ * @property {string} colId the column being sorted on
+ * @property {string} sort the direction to sort by (asc or desc)
+ */
+
+
+/**
+ * Create an API call for retrieving a block/page of rows/records
+ *
+ * @param {object} opt
+ * @param {string} opt.search the query string
+ * @param {Schema} opt.schema
+ * @param {Array.<SortModel>} opt.sortModel the sort model
+ * @param {number} opt.skip the number of records to skip on return
+ * @param {number} opt.limit the maximum number of records to return
+ * @param {boolean} opt.count count the records instead of returning them
+ *
+ * @returns {ApiCall} the api call for retriving the requested data
+ */
 const querySearchBlock = ({
   search, schema, sortModel, skip, limit, count = false,
 }) => {
@@ -273,6 +294,16 @@ const querySearchBlock = ({
   return call;
 };
 
+
+/**
+ * Grab an individual record
+ *
+ * @param {object} opt
+ * @param {object|string} opt.record the record or record ID
+ * @param {Schema} opt.schema
+ *
+ * @returns {ApiCall} the api call for retriving the requested data
+ */
 const recordApiCall = ({ record, schema }) => {
   const { '@rid': rid = record } = record;
   const { routeName = '/v' } = schema.get(record) || {};

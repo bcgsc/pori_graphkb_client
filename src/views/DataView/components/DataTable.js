@@ -127,16 +127,19 @@ class DataTable extends React.Component {
     const { rowBuffer, search, cache } = this.props;
 
     if (this.gridApi && cache && direction === 'vertical') {
-      const { rowModel: { rowHeight }, paginationProxy: { bottomRowIndex } } = this.gridApi;
-      if (!pingedIndices.has(bottomRowIndex)) {
+      const { rowModel: { rowHeight } } = this.gridApi;
+      const lastRow = this.gridApi.getLastDisplayedRow();
+      const pingedKey = `${search}-${lastRow}`;
+
+      if (!pingedIndices.has(pingedKey)) {
         const currentRowIndex = Math.round(top / rowHeight);
 
-        if (bottomRowIndex - currentRowIndex < rowBuffer) {
+        if (lastRow - currentRowIndex < rowBuffer) {
           cache.getRows({
-            search, startRow: bottomRowIndex + 1, endRow: bottomRowIndex + rowBuffer, sortModel: this.gridApi.getSortModel(),
+            search, startRow: lastRow + 1, endRow: lastRow + rowBuffer, sortModel: this.gridApi.getSortModel(),
           });
           const newPings = new Set(pingedIndices);
-          newPings.add(bottomRowIndex);
+          newPings.add(pingedKey);
           this.setState({ pingedIndices: newPings });
         }
       }

@@ -6,6 +6,7 @@ import { boundMethod } from 'autobind-decorator';
 import NodeForm from '../../components/RecordForm';
 import { KBContext } from '../../components/KBContext';
 import { FORM_VARIANT } from '../../components/RecordForm/util';
+import { cleanLinkedRecords } from '../../components/util';
 
 
 const DEFAULT_TITLES = {
@@ -26,26 +27,6 @@ const getVariantType = (url) => {
     }
   }
   return variant;
-};
-
-
-const cleanLinkedRecords = (content) => {
-  const newContent = {};
-
-  Object.keys(content).forEach((key) => {
-    if (content[key] !== undefined) {
-      try {
-        if (content[key]['@rid']) {
-          newContent[key] = content[key]['@rid'];
-        } else {
-          newContent[key] = content[key];
-        }
-      } catch (err) {
-        newContent[key] = content[key];
-      }
-    }
-  });
-  return newContent;
 };
 
 
@@ -102,6 +83,7 @@ class NodeView extends React.PureComponent {
     let defaultModelName = modelName;
     if (modelName) {
       const model = schema.get(modelName);
+      defaultModelName = model.name;
       if (!model || (model.isAbstract && ![FORM_VARIANT.SEARCH, FORM_VARIANT.NEW].includes(variant))) {
         history.push(
           '/error',
@@ -114,9 +96,9 @@ class NodeView extends React.PureComponent {
         );
       }
     } else if (path.includes('/user/')) {
-      defaultModelName = 'user';
+      defaultModelName = 'User';
     } else if (path.includes('/usergroup/')) {
-      defaultModelName = 'usergroup';
+      defaultModelName = 'UserGroup';
     }
     return (
       <NodeForm

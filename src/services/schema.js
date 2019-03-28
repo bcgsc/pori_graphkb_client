@@ -2,7 +2,9 @@ import { boundMethod } from 'autobind-decorator';
 
 import kbSchema from '@bcgsc/knowledgebase-schema';
 
-const { schema: SCHEMA_DEFN } = kbSchema;
+import api from './api';
+
+const { schema: SCHEMA_DEFN, util: { looksLikeRID } } = kbSchema;
 
 const MAX_LABEL_LENGTH = 30;
 
@@ -44,6 +46,15 @@ class Schema {
       ? cls.toLowerCase()
       : cls
     ];
+  }
+
+  getFromRoute(routeName) {
+    for (const model of Object.values(this.schema)) {  // eslint-disable-line
+      if (model.routeName === routeName) {
+        return model;
+      }
+    }
+    throw new Error(`Missing model corresponding to route (${routeName})`);
   }
 
   /**

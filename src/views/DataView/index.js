@@ -88,7 +88,6 @@ class DataView extends React.Component {
   handleEditFilters(filters) {
     const { schema } = this.context;
     const { history, location: { pathname } } = this.props;
-    console.log('handleEditFilters', filters);
     // drop all undefined values
     const { routeName } = schema.get(filters);
     const search = api.getSearchFromQuery({
@@ -97,7 +96,6 @@ class DataView extends React.Component {
       routeName,
     });
     history.replace(`${pathname}?${search}`);
-    console.log(routeName, search);
     this.setState({ filtersEditOpen: false, filters, search: `?${search}` });
   }
 
@@ -176,7 +174,7 @@ class DataView extends React.Component {
     const { search } = this.state;
     const { schema } = this.context;
 
-    const { queryParams } = api.getQueryFromSearch({ search, schema });
+    const { queryParams, modelName } = api.getQueryFromSearch({ search, schema });
 
     const links = [];
     Object.entries(queryParams).forEach(([key, value]) => {
@@ -191,7 +189,7 @@ class DataView extends React.Component {
       queryParams[key] = rec;
     });
 
-    return queryParams;
+    return { ...queryParams, class: modelName };
   }
 
   renderDataComponent() {
@@ -306,7 +304,7 @@ class DataView extends React.Component {
           )}
           <RecordFormDialog
             isOpen={filtersEditOpen}
-            modelName={modelName}
+            modelName="V"
             onClose={() => this.setState({ filtersEditOpen: false })}
             onError={this.handleError}
             onSubmit={this.handleEditFilters}

@@ -193,7 +193,7 @@ class Main extends React.Component {
             </div>
           </AppBar>
           <MainNav isOpen={drawerOpen} onChange={this.handleNavBar} links={links} activeLink={activeLink} />
-          <section className={`content ${drawerOpen ? 'content--drawer-open' : ''}`}>
+          <section className={`main-view__content ${drawerOpen ? 'main-view__content--drawer-open' : ''}`}>
             <Switch>
               <AuthenticatedRoute path="/feedback" component={FeedbackView} />
               <Route path="/login" component={LoginView} />

@@ -72,8 +72,8 @@
   }
 
   &__content {
-    width: 100%;
     height: calc(100% - 2 * #{$banner-height});
+    width: 100%;
   }
 
   .data-table {

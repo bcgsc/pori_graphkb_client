@@ -47,7 +47,6 @@ class DataTable extends React.Component {
       allGroups: {},
       activeGroups: new Set(),
       pingedIndices: new Set(),
-      shiftActive: false,
     };
   }
 

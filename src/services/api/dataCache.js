@@ -1,5 +1,3 @@
-import { boundMethod } from 'autobind-decorator';
-
 
 class CacheRequest {
   constructor({ search, call, cache }) {
@@ -200,7 +198,6 @@ class PaginationDataCache {
    *
    * @param {CacheRequest} req the request that has completed
    */
-  @boundMethod
   onReqFinished(req) {
     // remove this block from the active queue
     this.active = this.active.filter(activeReq => !activeReq.isEqual(req));

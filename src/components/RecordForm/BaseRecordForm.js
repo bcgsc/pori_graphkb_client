@@ -136,11 +136,10 @@ class BaseRecordForm extends React.Component {
    */
   componentDidUpdate(prevProps) {
     const { value, modelName } = this.props;
-    if (
-      jc.stringify(value) !== jc.stringify(prevProps.value)
-      || modelName !== prevProps.modelName
-    ) {
+    if (jc.stringify(value) !== jc.stringify(prevProps.value)) {
       this.populateFromRecord(value);
+    } else if (modelName !== prevProps.modelName) {
+      this.populateFromRecord({ [CLASS_MODEL_PROP]: modelName });
     }
   }
 

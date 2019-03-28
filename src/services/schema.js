@@ -197,38 +197,6 @@ class Schema {
   }
 
   /**
-   * Updates allColumns list with any new properties from a record.
-   * @param {Object} record - new node who's properties will be parsed.
-   * @param {Array.<string>} allColumns - current list of all collected properties.
-   */
-  collectOntologyProps(record, allColumns) {
-    const properties = this.getProperties(record['@class']);
-    properties.forEach((prop) => {
-      if (!allColumns.includes(prop.name)) {
-        if (record[prop.name]) {
-          if (prop.type === 'link' || prop.type === 'embedded') {
-            const nestedProperties = this.getProperties(record[prop.name]['@class']) || [];
-            if (prop.linkedClass && prop.linkedClass.isAbstract) {
-              nestedProperties.push({ name: '@class' });
-            }
-            nestedProperties.forEach((nestedProp) => {
-              if (
-                record[prop.name][nestedProp.name]
-                && !allColumns.includes(`${prop.name}.${nestedProp.name}`)
-              ) {
-                allColumns.push(`${prop.name}.${nestedProp.name}`);
-              }
-            });
-          } else {
-            allColumns.push(prop.name);
-          }
-        }
-      }
-    });
-    return allColumns;
-  }
-
-  /**
    * Given some search string, defines column definitions for AgGrid table
    *
    * @param {string} search the URI search component

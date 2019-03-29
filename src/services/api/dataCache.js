@@ -32,8 +32,11 @@ class CacheCountRequest extends CacheRequest {
   init() {
     this.result = (async () => {
       try {
-        const [{ count }] = await this.call.request();
-
+        const result = await this.call.request();
+        let count = null;
+        if (result) {
+          ([{ count }] = result);
+        }
         this.isLoading = false;
         this.cache.onReqFinished(this);
         return count;
@@ -103,16 +106,19 @@ class CacheBlockRequest extends CacheRequest {
     this.result = (async () => {
       try {
         const rows = await this.call.request();
-        this.size = rows.length;
 
-        this.isLoading = false;
-        if (rows.length === 0) {
-          this.isEmpty = true;
-          if (this.startRow === 0) {
-            this.lastRowFound = 0;
+        if (rows) {
+          this.size = rows.length;
+
+          this.isLoading = false;
+          if (rows.length === 0) {
+            this.isEmpty = true;
+            if (this.startRow === 0) {
+              this.lastRowFound = 0;
+            }
+          } else if (rows.length < this.cache.blockSize) {
+            this.lastRowFound = this.startRow + rows.length;
           }
-        } else if (rows.length < this.cache.blockSize) {
-          this.lastRowFound = this.startRow + rows.length;
         }
         this.cache.onReqFinished(this);
         return rows;

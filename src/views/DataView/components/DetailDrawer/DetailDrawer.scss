@@ -31,6 +31,10 @@ $toolbar-height: 57px;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+
+    &::nth-child(2) {
+      margin-left: auto;
+    }
   }
 
   &__content {

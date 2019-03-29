@@ -113,21 +113,17 @@ class BaseRecordForm extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const { value, modelName, actionInProgress } = this.props;
-    const { content } = this.state;
+    const { content, collapseOpen } = this.state;
 
-    if (jc.stringify(value) !== jc.stringify(nextProps.value)) {
-      return true;
-    }
-    if (modelName !== nextProps.modelName) {
-      return true;
-    }
-    if (jc.stringify(content) !== jc.stringify(nextState.content)) {
+    if (jc.stringify(value) !== jc.stringify(nextProps.value)
+      || modelName !== nextProps.modelName
+      || jc.stringify(content) !== jc.stringify(nextState.content)
+      || actionInProgress !== nextProps.actionInProgress
+      || collapseOpen !== nextState.collapseOpen
+    ) {
       return true;
     }
 
-    if (actionInProgress !== nextProps.actionInProgress) {
-      return true;
-    }
     return false;
   }
 

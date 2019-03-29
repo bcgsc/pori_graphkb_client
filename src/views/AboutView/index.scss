@@ -1,12 +1,26 @@
 @import '../../globals';
 
-.content-wrapper.about-page {
-  // move the padding below the tabs
-  padding: 0;
+
+.about-page {
   height: 100%;
+  padding: 0; // move the padding below the tabs
+
+  &__content {
+    margin-right: 5%;
+    padding: $default-spacing;
+
+    h1, h2, h3 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    > * {
+      margin-left: auto;
+      margin-right: auto;
+      max-width: $readable-max;
+    }
+  }
 
   .tabs-content {
-    @include content-wrapper;
     max-height: calc(100% - #{$tab-bar-height});
     overflow-y: scroll;
 
@@ -64,10 +78,7 @@
   .about-version-info {
     min-width: $readable-min;
     max-width: $readable-max;
-  }
-
-  h2 {
-    margin-bottom: 10px;
+    width: 700px;
   }
 
   img,
@@ -114,7 +125,7 @@
   color: white;
   display: flex;
   font-family: $roboto;
-  font-size: 20px;
+  font-size: 1rem;
   font-weight: bold;
   height: 50px;
   justify-content: center;

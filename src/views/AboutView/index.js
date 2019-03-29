@@ -15,11 +15,11 @@ import PropTypes from 'prop-types';
 import './index.scss';
 import {
   AboutForms,
-  AboutGraphView,
   AboutMain,
   AboutNotation,
   AboutQuerying,
-  AboutTableView,
+  AboutStatements,
+  AboutClasses,
 } from './components';
 
 
@@ -36,9 +36,9 @@ class AboutView extends Component {
 
     this.tabsList = [
       { label: 'About', component: AboutMain },
+      { label: 'Statements', component: AboutStatements },
+      { label: 'Classes', component: AboutClasses },
       { label: 'Query', component: AboutQuerying },
-      { label: 'View Table', component: AboutTableView },
-      { label: 'View Graph', component: AboutGraphView },
       { label: 'Input Data', component: AboutForms },
       { label: 'Notation', component: AboutNotation },
     ];
@@ -91,7 +91,7 @@ class AboutView extends Component {
     ));
 
     return (
-      <div className="content-wrapper about-page">
+      <div className="about-page">
         <Tabs value={tabIndex} onChange={this.handleChange} scrollable className="tabs-bar">
           {tabNavList}
         </Tabs>

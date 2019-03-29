@@ -171,7 +171,7 @@ class Main extends React.Component {
               <AuthenticatedRoute path="/feedback" component={FeedbackView} />
               <Route path="/login" component={LoginView} />
               <Route exact path="/error" component={ErrorView} />
-              <AuthenticatedRoute path="/about" component={AboutView} />
+              <Route path="/about" component={AboutView} />
               <AuthenticatedRoute exact path="/query" component={QueryView} />
               <AuthenticatedRoute path="/query/advanced/builder" component={QueryBuilderView} />
               <AuthenticatedRoute path="/edit/:rid" component={NodeView} />

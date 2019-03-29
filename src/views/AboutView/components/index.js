@@ -3,15 +3,17 @@ import AboutGraphView from './AboutGraphView';
 import AboutMain from './AboutMain';
 import AboutNotation from './AboutNotation';
 import AboutQuerying from './AboutQuerying';
-import AboutTableView from './AboutTableView';
+import AboutStatements from './AboutStatements';
 import PieChart from './PieChart';
+import AboutClasses from './AboutClasses';
 
 export {
   AboutForms,
   AboutGraphView,
   AboutMain,
+  AboutClasses,
   AboutNotation,
   AboutQuerying,
-  AboutTableView,
+  AboutStatements,
   PieChart,
 };

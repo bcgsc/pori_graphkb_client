@@ -1,9 +1,12 @@
 import React from 'react';
 import { mount, shallow } from 'enzyme';
 import { Drawer } from '@material-ui/core';
+import { BrowserRouter } from 'react-router-dom';
 
-import DetailDrawer from '../DetailDrawer/DetailDrawer';
+import DetailDrawer from '../DetailDrawer';
 import Schema from '../../../../services/schema';
+import { KBContext } from '../../../../components/KBContext';
+
 
 const testSchema = new Schema({
   test: {
@@ -51,6 +54,15 @@ const testSchema = new Schema({
   },
 });
 
+
+const ProvideSchema = ({ children = [], schema }) => (  // eslint-disable-line
+  <BrowserRouter>
+    <KBContext.Provider value={{ schema }}>
+      {children}
+    </KBContext.Provider>
+  </BrowserRouter>
+);
+
 describe('<DetailDrawer />', () => {
   let wrapper;
   const spies = {};
@@ -87,46 +99,28 @@ describe('<DetailDrawer />', () => {
         name: 'test source',
       },
       subsets: ['one', 'two', 'three'],
+      '@rid': '#1',
     };
 
-    wrapper = mount(<DetailDrawer node={node} schema={testSchema} />);
+    wrapper = mount((
+      <ProvideSchema schema={testSchema}>
+        <DetailDrawer node={node} />
+      </ProvideSchema>
+    ));
     expect(spies.formatRelationships).toHaveBeenCalledTimes(1);
     expect(spies.formatIdentifiers).toHaveBeenCalledTimes(2);
     expect(spies.formatOtherProps).toHaveBeenCalledTimes(1);
-    expect(wrapper.children().type()).toBe(Drawer);
+    expect(wrapper.find(Drawer)).toHaveLength(1);
   });
 
   it('does not crash when componentDidUpdate is called', () => {
-    wrapper = mount(<DetailDrawer />);
-    wrapper.setState({});
-    expect(spies.componentDidUpdate).toHaveBeenCalledTimes(1);
-  });
-
-  it('triggers passed in handlers on events', () => {
-    const node = {
-      '@class': 'Ontology',
-      name: 'test node',
-      sourceId: 'test sourceId',
-      source: {
-        '@class': 'Ontology',
-        name: 'test source',
-      },
-    };
-    const onClose = jest.fn();
-    const handleNodeEditStart = jest.fn();
-
     wrapper = mount((
-      <DetailDrawer
-        node={node}
-        schema={testSchema}
-        onClose={onClose}
-        handleNodeEditStart={handleNodeEditStart}
-      />
+      <ProvideSchema schema={testSchema}>
+        <DetailDrawer />
+      </ProvideSchema>
     ));
-    wrapper.find('button').first().simulate('click');
-    expect(onClose.mock.calls.length).toBe(1);
-    wrapper.find('.detail-edit-btn button').simulate('click');
-    expect(handleNodeEditStart.mock.calls.length).toBe(1);
+    wrapper.find(DetailDrawer).instance().setState({});
+    expect(spies.componentDidUpdate).toHaveBeenCalledTimes(1);
   });
 
   it('formatLongValue function is triggered on long inputs only', () => {
@@ -142,8 +136,13 @@ describe('<DetailDrawer />', () => {
         name: 'test source',
       },
       subsets: ['one', 'two', 'three'],
+      '@rid': '#1',
     };
-    wrapper = mount(<DetailDrawer node={node} schema={testSchema} />);
+    wrapper = mount((
+      <ProvideSchema schema={testSchema}>
+        <DetailDrawer node={node} />
+      </ProvideSchema>
+    ));
     expect(spies.formatLongValue).toHaveBeenCalledTimes(2);
   });
 
@@ -155,7 +154,11 @@ describe('<DetailDrawer />', () => {
       sourceId: 'test sourceId',
       longName: 'test node. this is a long value so that formatlongvalue is called and this test passes, ASHDhkdjhjsdhkJAHDSkjhsdkajsdhaksjdhakjshda blargh blargh',
     };
-    wrapper = mount(<DetailDrawer node={node} schema={testSchema} />);
+    wrapper = mount((
+      <ProvideSchema schema={testSchema}>
+        <DetailDrawer node={node} />
+      </ProvideSchema>
+    ));
     wrapper.find('div[role="button"]').simulate('click');
     wrapper.find('div[role="button"]').simulate('click');
     expect(spies.handleExpand).toHaveBeenCalledTimes(2);
@@ -183,14 +186,18 @@ describe('<DetailDrawer />', () => {
         },
       }],
     };
-    wrapper = mount(<DetailDrawer node={node} schema={testSchema} />);
+    wrapper = mount((
+      <ProvideSchema schema={testSchema}>
+        <DetailDrawer node={node} />
+      </ProvideSchema>
+    ));
     expect(spies.formatRelationships).toHaveBeenCalled();
     wrapper.find('div.detail-link-wrapper[role="button"]').first().simulate('click');
     wrapper.find('div.detail-link-wrapper[role="button"]').first().simulate('click');
     expect(spies.handleLinkExpand).toHaveBeenCalledTimes(2);
   });
 
-  it('expect detail-nested-list class to be rendered for nested property', () => {
+  it('expect detail-drawer__nested-list class to be rendered for nested property', () => {
     const node = {
       '@class': 'test',
       '@rid': '#135',
@@ -207,9 +214,13 @@ describe('<DetailDrawer />', () => {
       },
     };
 
-    wrapper = mount(<DetailDrawer node={node} schema={testSchema} />);
+    wrapper = mount((
+      <ProvideSchema schema={testSchema}>
+        <DetailDrawer node={node} />
+      </ProvideSchema>
+    ));
     wrapper.find('div[role="button"]').first().simulate('click');
-    expect(wrapper.find('.detail-nested-list').length).toBeGreaterThan(0);
+    expect(wrapper.find('.detail-drawer__nested-list').length).toBeGreaterThan(0);
   });
 
   afterEach(() => {

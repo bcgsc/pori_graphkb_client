@@ -1,7 +1,7 @@
-@import "../../globals";
-
 .admin {
-  @include view-wrapper;
-  grid-template-columns: 100%;
+  padding: 20px;
 
+  > * {
+    margin-bottom: 20px;
+  }
 }

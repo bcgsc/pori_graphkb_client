@@ -69,7 +69,7 @@ class ApiCall {
      * or login pages
      */
   @boundMethod
-  async request(onFinished = () => {}) {
+  async request(ignoreAbort = true) {
     this.controller = new AbortController();
     const { signal } = this.controller;
     const request = new Request(API_BASE_URL + this.endpoint, {
@@ -79,10 +79,8 @@ class ApiCall {
     let response;
     try {
       response = await fetch(request, { signal });
-      onFinished();
     } catch (err) {
-      onFinished();
-      if (err.name === 'AbortError') {
+      if (err.name === 'AbortError' && ignoreAbort) {
         return null;
       }
       console.error(err);

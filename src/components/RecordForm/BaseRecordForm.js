@@ -87,8 +87,10 @@ class BaseRecordForm extends React.Component {
 
   constructor(props) {
     super(props);
+    const { value } = this.props;
+
     this.state = {
-      content: {},
+      content: value || {},
       errors: {},
       collapseOpen: false,
     };
@@ -111,21 +113,17 @@ class BaseRecordForm extends React.Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     const { value, modelName, actionInProgress } = this.props;
-    const { content } = this.state;
+    const { content, collapseOpen } = this.state;
 
-    if (jc.stringify(value) !== jc.stringify(nextProps.value)) {
-      return true;
-    }
-    if (modelName !== nextProps.modelName) {
-      return true;
-    }
-    if (jc.stringify(content) !== jc.stringify(nextState.content)) {
+    if (jc.stringify(value) !== jc.stringify(nextProps.value)
+      || modelName !== nextProps.modelName
+      || jc.stringify(content) !== jc.stringify(nextState.content)
+      || actionInProgress !== nextProps.actionInProgress
+      || collapseOpen !== nextState.collapseOpen
+    ) {
       return true;
     }
 
-    if (actionInProgress !== nextProps.actionInProgress) {
-      return true;
-    }
     return false;
   }
 
@@ -134,11 +132,10 @@ class BaseRecordForm extends React.Component {
    */
   componentDidUpdate(prevProps) {
     const { value, modelName } = this.props;
-    if (
-      jc.stringify(value) !== jc.stringify(prevProps.value)
-      || modelName !== prevProps.modelName
-    ) {
+    if (jc.stringify(value) !== jc.stringify(prevProps.value)) {
       this.populateFromRecord(value);
+    } else if (modelName !== prevProps.modelName) {
+      this.populateFromRecord({ [CLASS_MODEL_PROP]: modelName });
     }
   }
 
@@ -218,6 +215,27 @@ class BaseRecordForm extends React.Component {
     const newValue = event.target.value;
 
     newContent[propName] = newValue;
+
+    this.populateFromRecord(newContent);
+    if (onValueChange) {
+      // propogate the event to the parent container
+      onValueChange({
+        target: {
+          name,
+          value: newContent,
+        },
+      });
+    }
+  }
+
+  @boundMethod
+  handleClassChange(event) {
+    const { onValueChange, name } = this.props;
+
+    // add the new value to the field
+    const propName = event.target.name || event.target.getAttribute('name'); // name of the form field triggering the event
+
+    const newContent = { [propName]: event.target.value || undefined };
 
     this.populateFromRecord(newContent);
     if (onValueChange) {
@@ -367,6 +385,7 @@ class BaseRecordForm extends React.Component {
       errors,
       collapseOpen,
     } = this.state;
+
     let model = this.currentModel();
     if (model && model.isAbstract && [FORM_VARIANT.SEARCH, FORM_VARIANT.NEW].includes(variant)) {
       model = null;
@@ -384,7 +403,7 @@ class BaseRecordForm extends React.Component {
     if (modelName) {
       modelChoices.push(
         ...schema.get(modelName).descendantTree(true).map(m => ({
-          label: m.name, value: m.name.toLowerCase(), key: m.name, caption: m.description,
+          label: m.name, value: m.name, key: m.name, caption: m.description,
         })),
       );
       modelChoices.sort((a, b) => a.label.localeCompare(b.label));
@@ -393,7 +412,7 @@ class BaseRecordForm extends React.Component {
     } else if (variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.SEARCH) {
       modelChoices.push(
         ...schema.get('V').descendantTree(true).map(m => ({
-          label: m.name, value: m.name.toLowerCase(), key: m.name, caption: m.description,
+          label: m.name, value: m.name, key: m.name, caption: m.description,
         })),
       );
       modelChoices.sort((a, b) => a.label.localeCompare(b.label));
@@ -435,7 +454,7 @@ class BaseRecordForm extends React.Component {
         ? content[CLASS_MODEL_PROP]
         : defaultClassSelected,
       error: errors[CLASS_MODEL_PROP],
-      onValueChange: this.handleValueChange,
+      onValueChange: this.handleClassChange,
       disabled: disableClassSelect || modelChoices.length < 2,
       schema,
       className: 'node-form__class-select',

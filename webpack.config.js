@@ -198,8 +198,8 @@ module.exports = {
           keep_classnames: true,
           module: true,
         },
-      })
-    ]
+      }),
+    ],
   },
   plugins,
   resolve: {

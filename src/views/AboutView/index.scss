@@ -107,5 +107,16 @@
   }
 }
 
-
-
+.letter-icon {
+  align-items: center;
+  background-color: $md-secondary-color;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  font-family: $roboto;
+  font-size: 20px;
+  font-weight: bold;
+  height: 50px;
+  justify-content: center;
+  width: 50px;
+}

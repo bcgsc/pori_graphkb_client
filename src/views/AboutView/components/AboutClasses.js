@@ -126,6 +126,14 @@ class AboutClasses extends Component {
                   className="record-autocomplete__chip record-autocomplete__chip--single"
                   label={schema.getLabel(example)}
                   details={example}
+                  valueToString={(value) => {
+                    if (Array.isArray(value)) {
+                      return `Array(${value.length})`;
+                    } if (typeof value === 'object') {
+                      return schema.getLabel(value);
+                    }
+                    return `${value}`;
+                  }}
                 />
               )}
             </ListItemText>

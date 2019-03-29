@@ -94,8 +94,8 @@ class DataTable extends React.Component {
       },
       ...schema.defineGridColumns(search),
     ]);
-
     this.detectColumns();
+
     const dataSource = {
       rowCount: null,
       getRows: ({
@@ -116,7 +116,7 @@ class DataTable extends React.Component {
   resizeColumnsTofitEdges({ type, newPage }) {
     if (this.gridColumnApi) {
       if (type === 'paginationChanged' && newPage !== undefined) {
-        this.gridColumnApi.autoSizeColumns(['ImpliedBy', 'SupportedBy']);
+        this.gridColumnApi.autoSizeColumns(['ImpliedBy', 'SupportedBy', 'Implies', 'preview']);
       }
     }
   }

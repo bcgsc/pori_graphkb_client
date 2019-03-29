@@ -87,27 +87,30 @@ class AdminTable extends React.PureComponent {
       ridOpen,
     } = this.state;
 
-    const Row = (record) => {
-      const rid = record['@rid'];
-      const { name, createdAt, groups = null } = record;
-      return (
-        <TableRow key={rid}>
-          <TableCell padding="dense">{rid}</TableCell>
-          <TableCell>{name}</TableCell>
-          <TableCell padding="dense">
-            {new Date(createdAt).toLocaleString()}
-          </TableCell>
-          {variant === 'User' && (
-            <TableCell>{groups.map(group => group.name).join(', ')}</TableCell>
-          )}
-          <TableCell padding="checkbox">
-            <IconButton onClick={() => this.handleOpenEditDialog(rid)}>
-              <EditIcon />
-            </IconButton>
-          </TableCell>
-        </TableRow>
-      );
-    };
+    const Row = ({
+      name,
+      createdAt,
+      groups = null,
+      '@rid': rid,
+    }) => (
+      <TableRow key={rid}>
+        <TableCell padding="dense">{rid}</TableCell>
+        <TableCell>{name}</TableCell>
+        <TableCell padding="dense">
+          {new Date(createdAt).toLocaleString()}
+        </TableCell>
+        {variant === 'User' && (
+        <TableCell>{groups.map(group => group.name).join(', ')}</TableCell>
+        )}
+        <TableCell padding="checkbox">
+          <IconButton onClick={() => this.handleOpenEditDialog(rid)}>
+            <EditIcon />
+          </IconButton>
+        </TableCell>
+      </TableRow>
+    );
+
+    const sortByName = (rec1, rec2) => rec1.name.localeCompare(rec2.name);
 
     return (
       <div className="admin-table">
@@ -141,7 +144,7 @@ class AdminTable extends React.PureComponent {
               </TableRow>
             </TableHead>
             <TableBody>
-              {records.map(record => Row(record))}
+              {records.sort(sortByName).map(record => Row(record))}
             </TableBody>
           </Table>
         </div>

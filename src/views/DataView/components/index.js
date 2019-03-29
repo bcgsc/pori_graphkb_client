@@ -1,8 +1,8 @@
 import DetailDrawer from './DetailDrawer';
-import DownloadFileComponent from './DownloadFileComponent';
 import GraphComponent from './GraphComponent';
-import TableComponent from './TableComponent';
+import DataTable from './DataTable';
+
 
 export {
-  DetailDrawer, DownloadFileComponent, GraphComponent, TableComponent,
+  DetailDrawer, GraphComponent, DataTable,
 };

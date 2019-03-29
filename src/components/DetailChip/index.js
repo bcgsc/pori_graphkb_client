@@ -35,6 +35,7 @@ const shallowObjectKey = obj => JSON.stringify(obj, (k, v) => k ? `${v}` : v);
  * @property {function} props.valueToString - function to call on details values
  * @property {object} props.ChipProps - properties passed to the chip element
  * @property {function} props.getDetails function to retrieve the details from the details object
+ * @property {string} props.title the title for the pop-up card (defaults to the chip label)
  */
 class DetailChip extends React.Component {
   static propTypes = {
@@ -46,6 +47,7 @@ class DetailChip extends React.Component {
     onDelete: PropTypes.func,
     valueToString: PropTypes.func,
     onCtrlClick: PropTypes.func,
+    title: PropTypes.string,
   };
 
   static defaultProps = {
@@ -60,6 +62,7 @@ class DetailChip extends React.Component {
     onDelete: null,
     valueToString: s => `${s}`,
     onCtrlClick: null,
+    title: null,
   };
 
   constructor(props) {
@@ -114,6 +117,7 @@ class DetailChip extends React.Component {
       label,
       valueToString,
       ChipProps,
+      title,
       ...rest
     } = this.props;
     const { anchorEl } = this.state;
@@ -121,7 +125,7 @@ class DetailChip extends React.Component {
     const retrievedDetails = getDetails(details);
 
     return (
-      <div {...rest}>
+      <div className="detail-chip" {...rest}>
         <Popover
           open={!!anchorEl}
           anchorEl={anchorEl}
@@ -133,7 +137,7 @@ class DetailChip extends React.Component {
           <Card>
             <CardContent className="detail-popover__panel">
               <Typography variant="h6" gutterBottom>
-                {label}
+                {title || label}
               </Typography>
               <Divider />
               <Table>

@@ -14,7 +14,7 @@ import selectFields from '../../../static/tutorial/select-fields.png';
 
 
 const AboutForms = () => (
-  <div>
+  <div className="about-page__content">
     <Typography variant="h5" component="h2" paragraph id="about-forms">
         GraphKB Forms
     </Typography>
@@ -27,59 +27,57 @@ const AboutForms = () => (
             GraphKB through this GUI:
         </Typography>
       </ListItem>
-      <ListItem>
-        <figure className="two-column-grid">
-          <img src={listFields} alt="List Fields" />
-          <figcaption>
-            <ListItemText
-              primary="List Fields"
-              secondary={`
-                        List fields are used for properties that are lists of
-                        strings. To use these, simply type the item you wish to add
-                        to the list, and press enter or click the add button to add
-                        it to the list. Items can be deleted by backspacing against
-                        them or clicking the "x" shown in the example image.
-                      `}
-            />
-          </figcaption>
-        </figure>
 
+      <ListItem>
+        <ListItemText
+          primary="List Fields"
+          secondary={`
+            List fields are used for properties that are lists of
+            strings. To use these, simply type the item you wish to add
+            to the list, and press enter or click the add button to add
+            it to the list. Items can be deleted by backspacing against
+            them or clicking the "x" shown in the example image.
+          `}
+        />
       </ListItem>
       <ListItem>
-        <figure className="two-column-grid">
-          <img src={linkFields} alt="Link Fields" />
-          <figcaption>
-            <ListItemText
-              primary="Link Fields"
-              secondary={`
-                        Some records in GraphKB are dependent on or reference others.
-                        To express these links in forms, a small query bar is
-                        included to allow you to find the linked record you need.
-                        Start typing and wait for the dropdown list of items to
-                        appear for you to pick from. The default query logic is to
-                        match the record "name" property. If you require more control
-                        over finding this linked record, some link fields have an
-                        expand button that creates a mini-form to fill out, similar
-                        to the Advanced Query form. You can clear the existing linked
-                        record by clicking the "x" as shown in the example image.
-                    `}
-            />
-          </figcaption>
-        </figure>
+        <img src={listFields} alt="List Fields" />
+      </ListItem>
+
+      <ListItem>
+        <ListItemText
+          primary="Link Fields"
+          secondary={`
+            Some records in GraphKB are dependent on or reference others.
+            To express these links in forms, a small query bar is
+            included to allow you to find the linked record you need.
+            Start typing and wait for the dropdown list of items to
+            appear for you to pick from. The default query logic is to
+            match the record "name" property. If you require more control
+            over finding this linked record, some link fields have an
+            expand button that creates a mini-form to fill out, similar
+            to the Advanced Query form. You can clear the existing linked
+            record by clicking the "x" as shown in the example image.
+        `}
+        />
       </ListItem>
       <ListItem>
-        <figure className="two-column-grid">
-          <img src={selectFields} alt="Select Fields" />
-          <figcaption>
-            <ListItemText
-              primary="Select Fields"
-              secondary="Select fields are used to select an item from a set of
-                        options. Most selects are able to be set to a null/empty
-                        value, but for mandatory selects an option must be chosen
-                        before submitting the form."
-            />
-          </figcaption>
-        </figure>
+        <img src={linkFields} alt="Link Fields" />
+      </ListItem>
+
+      <ListItem>
+        <ListItemText
+          primary="Select Fields"
+          secondary="
+            Select fields are used to select an item from a set of
+            options. Most selects are able to be set to a null/empty
+            value, but for mandatory selects an option must be chosen
+            before submitting the form.
+          "
+        />
+      </ListItem>
+      <ListItem>
+        <img src={selectFields} alt="Select Fields" />
       </ListItem>
     </List>
   </div>

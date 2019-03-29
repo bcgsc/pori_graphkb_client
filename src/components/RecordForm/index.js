@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Paper, Typography, Button } from '@material-ui/core';
+import {
+  Paper, Typography, Button,
+} from '@material-ui/core';
 import { boundMethod } from 'autobind-decorator';
 import EditIcon from '@material-ui/icons/Edit';
 
@@ -63,6 +65,7 @@ class RecordForm extends React.PureComponent {
     schema: PropTypes.object.isRequired,
     title: PropTypes.string.isRequired,
     variant: PropTypes.string,
+    value: PropTypes.object,
   };
 
   static defaultProps = {
@@ -72,11 +75,22 @@ class RecordForm extends React.PureComponent {
     onTopClick: null,
     rid: null,
     variant: FORM_VARIANT.VIEW,
+    value: {},
   };
 
   constructor(props) {
     super(props);
-    this.state = {};
+    const { value = {}, modelName } = this.props;
+
+    const defaultContent = { ...value };
+    if (modelName && !defaultContent['@class']) {
+      defaultContent['@class'] = modelName;
+    }
+
+    this.state = {
+      actionInProgress: false,
+      ...defaultContent,
+    };
     this.controllers = [];
   }
 
@@ -106,6 +120,7 @@ class RecordForm extends React.PureComponent {
 
     if (variant !== FORM_VARIANT.NEW && variant !== FORM_VARIANT.SEARCH) {
       // If not a new form then should have existing content
+      this.setState({ actionInProgress: true });
       try {
         const call = api.get(`${model.routeName}/${rid.replace(/^#/, '')}?neighbors=3`, { forceListReturn: true });
         this.controllers.push(call);
@@ -119,6 +134,7 @@ class RecordForm extends React.PureComponent {
         console.error(err);
         onError({ error: err });
       }
+      this.setState({ actionInProgress: false });
     }
   }
 
@@ -145,6 +161,7 @@ class RecordForm extends React.PureComponent {
       const { routeName } = schema.get(payload);
       const call = api.post(routeName, payload);
       this.controllers.push(call);
+      this.setState({ actionInProgress: true });
       try {
         const result = await call.request();
         snackbar.add(`Sucessfully created the record ${result['@rid']}`);
@@ -154,6 +171,7 @@ class RecordForm extends React.PureComponent {
         snackbar.add(`Error (${err.name}) in creating the record`);
         onError({ error: err, content });
       }
+      this.setState({ actionInProgress: false });
     }
   }
 
@@ -168,6 +186,7 @@ class RecordForm extends React.PureComponent {
     const { routeName } = schema.get(content);
     const call = api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
     this.controllers.push(call);
+    this.setState({ actionInProgress: true });
     try {
       await call.request();
       snackbar.add(`Sucessfully deleted the record ${content['@rid']}`);
@@ -176,13 +195,14 @@ class RecordForm extends React.PureComponent {
       snackbar.add(`Error (${err.name}) in deleting the record (${content['@rid']})`);
       onError({ error: err, content });
     }
+    this.setState({ actionInProgress: false });
   }
 
   /**
    * Handler for edits to an existing record
    */
   @boundMethod
-  async handleEditAction({ content, errors }) {
+  async handleEditAction({ content: { impliedBy, supportedBy, ...content }, errors }) {
     const snackbar = this.context;
     const { schema, onSubmit, onError } = this.props;
 
@@ -196,6 +216,7 @@ class RecordForm extends React.PureComponent {
       const { routeName } = schema.get(payload);
       const call = api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
       this.controllers.push(call);
+      this.setState({ actionInProgress: true });
       try {
         const result = await call.request();
         snackbar.add(`Sucessfully edited the record ${result['@rid']}`);
@@ -204,6 +225,7 @@ class RecordForm extends React.PureComponent {
         snackbar.add(`Error (${err.name}) in editing the record (${content['@rid']})`);
         onError({ error: err, content });
       }
+      this.setState({ actionInProgress: false });
     }
   }
 
@@ -225,7 +247,7 @@ class RecordForm extends React.PureComponent {
     const {
       title, variant, onTopClick, modelName, ...rest
     } = this.props;
-    const content = this.state;
+    const { actionInProgress, ...content } = this.state;
 
     const actions = {
       [FORM_VARIANT.EDIT]: this.handleEditAction,
@@ -241,6 +263,7 @@ class RecordForm extends React.PureComponent {
             <Button
               onClick={onTopClick}
               variant="outlined"
+              disabled={actionInProgress}
             >
               Edit
               <EditIcon />
@@ -251,6 +274,7 @@ class RecordForm extends React.PureComponent {
               onClick={onTopClick}
               variant="outlined"
               message="Are you sure you want to leave this page?"
+              disabled={actionInProgress}
             >
               View
             </ActionButton>
@@ -265,6 +289,7 @@ class RecordForm extends React.PureComponent {
           variant={variant}
           collapseExtra
           name="name"
+          actionInProgress={actionInProgress}
         />
       </Paper>
     );

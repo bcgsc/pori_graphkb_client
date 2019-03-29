@@ -22,7 +22,10 @@ const moduleSettings = {
     {
       test: /\.css$/,
       sideEffects: true,
-      include: [SRC_PATH],
+      include: [
+        SRC_PATH,
+        path.resolve(__dirname, 'node_modules/ag-grid-community/dist/styles'),
+      ],
       use: [
         MiniCssExtractPlugin.loader,
         'css-loader',
@@ -43,7 +46,7 @@ const moduleSettings = {
       include: INCLUDE,
       use: [
         'babel-loader',
-        'eslint-loader',
+        // 'eslint-loader',
       ],
       sideEffects: false,
     },
@@ -195,8 +198,8 @@ module.exports = {
           keep_classnames: true,
           module: true,
         },
-      })
-    ]
+      }),
+    ],
   },
   plugins,
   resolve: {

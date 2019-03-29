@@ -6,7 +6,7 @@
     "@babel/polyfill": "^7.2.5",
     "@babel/runtime": "^7.2.0",
     "@bcgsc/knowledgebase-parser": "^0.5.2",
-    "@bcgsc/knowledgebase-schema": "^1.6.6",
+    "@bcgsc/knowledgebase-schema": "^1.7.2",
     "@bcgsc/react-snackbar-provider": "^0.1.2",
     "@material-ui/core": "^3.4.0",
     "@material-ui/icons": "^3.0.1",

@@ -1,4 +1,5 @@
 import * as jc from 'json-cycle';
+import { boundMethod } from 'autobind-decorator';
 
 import auth from '../auth';
 
@@ -59,11 +60,16 @@ class ApiCall {
     }
   }
 
+  isFinished() {
+    return !this.controller;
+  }
+
   /**
      * Makes the fetch request and awaits the response or error. Also handles the redirect to error
      * or login pages
      */
-  async request() {
+  @boundMethod
+  async request(ignoreAbort = true) {
     this.controller = new AbortController();
     const { signal } = this.controller;
     const request = new Request(API_BASE_URL + this.endpoint, {
@@ -74,12 +80,13 @@ class ApiCall {
     try {
       response = await fetch(request, { signal });
     } catch (err) {
-      if (err.name === 'AbortError') {
+      if (err.name === 'AbortError' && ignoreAbort) {
         return null;
       }
       console.error(err);
       throw err;
     }
+    this.controller = null;
     if (response.ok) {
       const body = await response.json();
       const decycled = jc.retrocycle(body);

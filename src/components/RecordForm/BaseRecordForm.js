@@ -6,6 +6,7 @@ import {
   ListItem,
   ListItemText,
   Typography,
+  CircularProgress,
 } from '@material-ui/core';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
@@ -39,6 +40,7 @@ class BaseRecordForm extends React.Component {
 
   static propTypes = {
     aboveFold: PropTypes.arrayOf(PropTypes.string),
+    actionInProgress: PropTypes.bool,
     onSubmit: PropTypes.func,
     onDelete: PropTypes.func,
     belowFold: PropTypes.arrayOf(PropTypes.string),
@@ -59,6 +61,7 @@ class BaseRecordForm extends React.Component {
 
   static defaultProps = {
     aboveFold: [CLASS_MODEL_PROP, 'name', 'groups', 'journalName', 'out', 'in', 'permissions', 'description', 'reviewStatus'],
+    actionInProgress: false,
     belowFold: ['deprecated', 'history'],
     className: '',
     collapseExtra: false,
@@ -85,15 +88,16 @@ class BaseRecordForm extends React.Component {
   constructor(props) {
     super(props);
     const { value } = this.props;
+
     this.state = {
-      content: value,
+      content: value || {},
       errors: {},
       collapseOpen: false,
     };
   }
 
   componentDidMount() {
-    const { variant } = this.props;
+    const { variant, value } = this.props;
     const { content } = this.state;
 
     if (variant === FORM_VARIANT.NEW && !content[CLASS_MODEL_PROP]) {
@@ -104,20 +108,22 @@ class BaseRecordForm extends React.Component {
         this.setState({ content: newContent });
       }
     }
+    this.populateFromRecord(value || {});
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { value, modelName } = this.props;
-    const { content } = this.state;
-    if (jc.stringify(value) !== jc.stringify(nextProps.value)) {
+    const { value, modelName, actionInProgress } = this.props;
+    const { content, collapseOpen } = this.state;
+
+    if (jc.stringify(value) !== jc.stringify(nextProps.value)
+      || modelName !== nextProps.modelName
+      || jc.stringify(content) !== jc.stringify(nextState.content)
+      || actionInProgress !== nextProps.actionInProgress
+      || collapseOpen !== nextState.collapseOpen
+    ) {
       return true;
     }
-    if (modelName !== nextProps.modelName) {
-      return true;
-    }
-    if (jc.stringify(content) !== jc.stringify(nextState.content)) {
-      return true;
-    }
+
     return false;
   }
 
@@ -126,11 +132,10 @@ class BaseRecordForm extends React.Component {
    */
   componentDidUpdate(prevProps) {
     const { value, modelName } = this.props;
-    if (
-      jc.stringify(value) !== jc.stringify(prevProps.value)
-      || modelName !== prevProps.modelName
-    ) {
+    if (jc.stringify(value) !== jc.stringify(prevProps.value)) {
       this.populateFromRecord(value);
+    } else if (modelName !== prevProps.modelName) {
+      this.populateFromRecord({ [CLASS_MODEL_PROP]: modelName });
     }
   }
 
@@ -185,6 +190,7 @@ class BaseRecordForm extends React.Component {
     const { schema } = this.context;
     const { content } = this.state;
     const { modelName } = this.props;
+
     if (newModelName) {
       return schema.get(newModelName);
     } if (content && content['@class']) {
@@ -209,6 +215,27 @@ class BaseRecordForm extends React.Component {
     const newValue = event.target.value;
 
     newContent[propName] = newValue;
+
+    this.populateFromRecord(newContent);
+    if (onValueChange) {
+      // propogate the event to the parent container
+      onValueChange({
+        target: {
+          name,
+          value: newContent,
+        },
+      });
+    }
+  }
+
+  @boundMethod
+  handleClassChange(event) {
+    const { onValueChange, name } = this.props;
+
+    // add the new value to the field
+    const propName = event.target.name || event.target.getAttribute('name'); // name of the form field triggering the event
+
+    const newContent = { [propName]: event.target.value || undefined };
 
     this.populateFromRecord(newContent);
     if (onValueChange) {
@@ -248,7 +275,7 @@ class BaseRecordForm extends React.Component {
    */
   renderFieldGroup(ordering) {
     const { schema } = this.context;
-    const { variant } = this.props;
+    const { variant, actionInProgress } = this.props;
     const { content, errors } = this.state;
 
     const model = this.currentModel();
@@ -278,7 +305,7 @@ class BaseRecordForm extends React.Component {
           onValueChange: this.handleValueChange,
           schema,
           variant,
-          disabled: variant === FORM_VARIANT.VIEW,
+          disabled: variant === FORM_VARIANT.VIEW || actionInProgress,
         });
         fields.push(wrapper);
       }
@@ -293,7 +320,7 @@ class BaseRecordForm extends React.Component {
     // cache disabling related to: https://github.com/JedWatson/react-select/issues/2582
     const { schema } = this.context;
     const { content, errors } = this.state;
-    const { variant } = this.props;
+    const { variant, actionInProgress } = this.props;
 
     return (
       <React.Fragment key="statement-content">
@@ -312,7 +339,7 @@ class BaseRecordForm extends React.Component {
           }}
           schema={schema}
           value={content.impliedBy}
-          disabled={variant === FORM_VARIANT.VIEW}
+          disabled={variant === FORM_VARIANT.VIEW || actionInProgress}
           variant={variant}
           label="ImpliedBy"
           isPutativeEdge
@@ -328,7 +355,7 @@ class BaseRecordForm extends React.Component {
           }}
           schema={schema}
           value={content.supportedBy}
-          disabled={variant === FORM_VARIANT.VIEW}
+          disabled={variant === FORM_VARIANT.VIEW || actionInProgress}
           variant={variant}
           label="SupportedBy"
           isPutativeEdge
@@ -340,6 +367,7 @@ class BaseRecordForm extends React.Component {
   render() {
     const {
       aboveFold,
+      actionInProgress,
       belowFold,
       className,
       collapseExtra,
@@ -357,6 +385,7 @@ class BaseRecordForm extends React.Component {
       errors,
       collapseOpen,
     } = this.state;
+
     let model = this.currentModel();
     if (model && model.isAbstract && [FORM_VARIANT.SEARCH, FORM_VARIANT.NEW].includes(variant)) {
       model = null;
@@ -371,11 +400,18 @@ class BaseRecordForm extends React.Component {
     }
 
     const modelChoices = [];
-    if (content && content[CLASS_MODEL_PROP] && !schema.get(content).isAbstract) {
+    if (modelName) {
+      modelChoices.push(
+        ...schema.get(modelName).descendantTree(true).map(m => ({
+          label: m.name, value: m.name, key: m.name, caption: m.description,
+        })),
+      );
+      modelChoices.sort((a, b) => a.label.localeCompare(b.label));
+    } else if (content && content[CLASS_MODEL_PROP] && !schema.get(content).isAbstract) {
       modelChoices.push(content[CLASS_MODEL_PROP]);
     } else if (variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.SEARCH) {
       modelChoices.push(
-        ...schema.get(modelName || 'V').descendantTree(true).map(m => ({
+        ...schema.get('V').descendantTree(true).map(m => ({
           label: m.name, value: m.name, key: m.name, caption: m.description,
         })),
       );
@@ -389,6 +425,10 @@ class BaseRecordForm extends React.Component {
     let disableClassSelect = false;
     let defaultClassSelected = '';
 
+    if (modelName && !schema.get(modelName).isAbstract) {
+      defaultClassSelected = modelName;
+    }
+
     if (variant === FORM_VARIANT.VIEW) {
       disableClassSelect = true;
     } else if (variant === FORM_VARIANT.SEARCH || variant === FORM_VARIANT.NEW) {
@@ -396,7 +436,6 @@ class BaseRecordForm extends React.Component {
         disableClassSelect = false;
       } else if (modelName && !schema.get(modelName).isAbstract) {
         disableClassSelect = true;
-        defaultClassSelected = modelName;
       }
     } else {
       disableClassSelect = true;
@@ -415,7 +454,7 @@ class BaseRecordForm extends React.Component {
         ? content[CLASS_MODEL_PROP]
         : defaultClassSelected,
       error: errors[CLASS_MODEL_PROP],
-      onValueChange: this.handleValueChange,
+      onValueChange: this.handleClassChange,
       disabled: disableClassSelect || modelChoices.length < 2,
       schema,
       className: 'node-form__class-select',
@@ -425,7 +464,7 @@ class BaseRecordForm extends React.Component {
       <div className={`node-form ${className}`}>
         <div className="node-form__content node-form__content--long">
           {classSelect}
-          {isStatement && variant !== FORM_VARIANT.EDIT && this.renderStatementFields()}
+          {isStatement && variant !== FORM_VARIANT.EDIT && variant !== FORM_VARIANT.SEARCH && this.renderStatementFields()}
         </div>
         <div className="node-form__content">
           {model && this.renderFieldGroup(fields)}
@@ -449,32 +488,43 @@ class BaseRecordForm extends React.Component {
             </Collapse>
           </>
         )}
-        {!isEmbedded && variant !== FORM_VARIANT.VIEW && (
+        {!isEmbedded && (
           <div className="node-form__action-buttons">
-            {onDelete && variant === FORM_VARIANT.EDIT && (
-              <ActionButton
-                onClick={() => this.handleAction(onDelete)}
-                variant="outlined"
-                size="large"
-                message="Are you sure you want to delete this record?"
-              >
-                DELETE
-              </ActionButton>
+            {onDelete && variant === FORM_VARIANT.EDIT && variant !== FORM_VARIANT.VIEW
+              ? (
+                <ActionButton
+                  onClick={() => this.handleAction(onDelete)}
+                  variant="outlined"
+                  size="large"
+                  message="Are you sure you want to delete this record?"
+                  disabled={actionInProgress}
+                >
+                  DELETE
+                </ActionButton>
+              )
+              : (<div />) // for spacing issues only
+            }
+            {actionInProgress && (
+              <CircularProgress size={50} />
             )}
-            {onSubmit && (
-              <ActionButton
-                onClick={() => this.handleAction(onSubmit)}
-                variant="contained"
-                color="primary"
-                size="large"
-                requireConfirm={false}
-              >
-                {variant === FORM_VARIANT.EDIT
-                  ? 'SUBMIT CHANGES'
-                  : 'SUBMIT'
-                }
-              </ActionButton>
-            )}
+            {onSubmit && variant !== FORM_VARIANT.VIEW
+              ? (
+                <ActionButton
+                  onClick={() => this.handleAction(onSubmit)}
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  requireConfirm={false}
+                  disabled={actionInProgress}
+                >
+                  {variant === FORM_VARIANT.EDIT
+                    ? 'SUBMIT CHANGES'
+                    : 'SUBMIT'
+                  }
+                </ActionButton>
+              )
+              : (<div />) // for spacing issues only
+            }
           </div>
         )}
         {!isEmbedded && variant === FORM_VARIANT.VIEW && edges.length > 0 && (

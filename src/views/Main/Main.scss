@@ -1,13 +1,15 @@
 @import '../../globals';
 
 $user-menu-width: 124px;
-$transition-speed: 0.3s;
 $drawer-width: 240px;
 $closed-drawer-width: 56px;
 $drawer-breakpoint: 1024px;
 
-.Main {
-  .banner {
+.main-view {
+  height: 100vh;
+  overflow: hidden;  // TODO: det what is causing the height overflow
+
+  .appbar {
     color: white;
     flex-direction: row;
     float: right;
@@ -15,16 +17,20 @@ $drawer-breakpoint: 1024px;
     justify-content: center;
     left: 0;
     right: 0;
-    transition: all #{$transition-speed};
+    transition: left #{$drawer-transition-speed};
     width: auto;
     z-index: calc(#{$drawer-z-index} + 3);
 
-    .appbar-title {
+    &--drawer-open {
+      left: $drawer-width;
+    }
+
+    &__title {
       display: flex;
       margin: auto 16px;
       max-width: 100%;
       overflow: hidden;
-      transition: all .5s;
+
       white-space: nowrap;
 
       @media (max-width: $breakpoint-mobile) {
@@ -41,41 +47,17 @@ $drawer-breakpoint: 1024px;
       }
     }
 
-    .appbar-btn {
+    &__btn {
       animation: fade-in(.2s);
       margin: auto 4px;
+
+      &--drawer-open {
+        visibility: hidden;
+      }
     }
 
-    .appbar-btn:disabled {
+    &__btn:disabled {
       color: white;
-    }
-
-    .user-dropdown {
-      display: flex;
-      flex-direction: column;
-      float: right;
-      height: 100%;
-      justify-content: center;
-      margin: auto;
-      margin-right: 2%;
-      min-width: $user-menu-width;
-
-      div {
-        margin: auto 0;
-      }
-
-      .user-btn {
-        color: white;
-
-        svg {
-          font-size: 32px;
-          margin-right: 4px;
-        }
-
-        span aside {
-          color: white;
-        }
-      }
     }
   }
 
@@ -90,94 +72,32 @@ $drawer-breakpoint: 1024px;
     }
   }
 
-  .user-menu {
-    width: $user-menu-width;
-  }
-
-  .content {
+  &__content {
     background-color: rgba(0, 0, 0, 0.03);
-    bottom: 0;
-    left: $closed-drawer-width;
-    margin: auto;
-    overflow-x: hidden;
+    height: calc(100% - #{$banner-height});
+    margin-left: $closed-drawer-width;
+    margin-top: $banner-height;
     overflow-y: auto;
-    position: absolute;
-    right: 0;
-    top: $banner-height;
-    transition: all #{$transition-speed};
+    transition-duration: $drawer-transition-speed;
+    transition-property: width, margin-left;
+    width: calc(100% - #{$closed-drawer-width});
+
     @media (max-width: $drawer-breakpoint) {
-      left: 0;
-    }
-  }
-
-  .drawer-shift {
-    left: $drawer-width;
-    overflow: hidden;
-    @media (max-width: 500px) {
-      left: 0;
-    }
-  }
-
-  .router-outlet {
-    -webkit-tap-highlight-color: transparent;
-    border: none;
-    bottom: 0;
-    left: 0;
-    outline: none;
-    position: absolute;
-    right: 0;
-    text-decoration: none;
-    top: 5px;
-  }
-
-  .drawer {
-    animation: fade-in();
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    transition: width #{$transition-speed};
-    width: $drawer-width;
-    z-index: calc(#{$drawer-z-index} + 4);
-    @media (max-width: $breakpoint-mobile) {
-      width: calc(100vw - 56px);
+      margin-left: 0;
     }
 
-    .drawer-links {
-      bottom: 56px;
-      flex-grow: 1;
-      position: relative;
-      top: 0;
-    }
-    .drawer-footer {
-      background: $background-light;
-      bottom: 0;
-      flex-shrink: 0;
-      height: 57px;
-      left: 0;
-      position: sticky;
-      right: 0;
-      top: auto;
+    &--drawer-open {
+      margin-left: $drawer-width;
+      width: calc(100% - #{$drawer-width});
 
-      li {
-        box-sizing: border-box;
-        height: 56px;
-        overflow: hidden;
-        padding: 12px 16px;
-        white-space: nowrap;
+      @media (max-width: 500px) {
+        margin-left: 0;
       }
     }
   }
 
-  .drawer-closed {
-    width: $closed-drawer-width;
-    z-index: calc(#{$drawer-z-index} + 2);
-    @media (max-width: $drawer-breakpoint) {
-      width: 0;
-    }
-  }
-
   .no-drawer {
-    left: 0;
+    margin-left: 0;
   }
 }
 
@@ -196,6 +116,96 @@ $drawer-breakpoint: 1024px;
 
 ::selection {
   -webkit-text-fill-color: white;
-  background: rgba($md-primary-color, 0.8);
+  background: rgba($md-primary-color, .8);
   color: white;
+}
+
+.user-dropdown {
+  display: flex;
+  flex-direction: column;
+  float: right;
+  height: 100%;
+  justify-content: center;
+  margin: auto;
+  margin-right: 2%;
+  min-width: $user-menu-width;
+
+  &__content {
+    width: $user-menu-width;
+  }
+
+  &__icon {
+    color: white;
+
+    svg {
+      font-size: 32px;
+      margin-right: 4px;
+    }
+
+    span aside {
+      color: white;
+    }
+  }
+}
+
+.main-nav-drawer {
+  //animation: fade-in();
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition-duration: $drawer-transition-speed;
+  transition-property: width;
+  width: $drawer-width;
+  z-index: calc(#{$drawer-z-index} + 4);
+
+  @media (max-width: $breakpoint-mobile) {
+    width: calc(100vw - #{$banner-height});
+  }
+
+  &--closed {
+    width: $closed-drawer-width;
+    z-index: calc(#{$drawer-z-index} + 2);
+    @media (max-width: $drawer-breakpoint) {
+      width: 0;
+    }
+  }
+
+  &__links {
+    bottom: $banner-height;
+    flex-grow: 1;
+    position: relative;
+    top: 0;
+  }
+
+  &__footer {
+    background: $background-light;
+    bottom: 0;
+    flex-shrink: 0;
+    height: 57px;
+    left: 0;
+    position: sticky;
+    right: 0;
+    top: auto;
+
+    li {
+      box-sizing: border-box;
+      height: $banner-height;
+      overflow: hidden;
+      padding: 12px 16px;
+      white-space: nowrap;
+    }
+  }
+
+  // top bar of the side bar menu when it is open
+  &__banner {
+    display: flex;
+    height: $banner-height;
+    overflow: hidden;
+    white-space: nowrap;
+
+    button {
+      margin: auto;
+      margin-left: 8px;
+    }
+  }
 }

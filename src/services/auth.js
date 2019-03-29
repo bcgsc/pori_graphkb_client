@@ -125,9 +125,23 @@ const getUser = () => {
  */
 const isAdmin = () => {
   try {
-    return !!(
+    return Boolean(
       isAuthorized()
-      && jwt.decode(getToken()).user.groups.find(group => group.name === 'admin')
+      && jwt.decode(getToken()).user.groups.find(group => group.name === 'admin'),
+    );
+  } catch (err) {
+    return false;
+  }
+};
+
+
+const hasWriteAccess = () => {
+  try {
+    return Boolean(
+      isAuthorized()
+      && jwt.decode(getToken()).user.groups.find(
+        group => ['admin', 'regular'].includes(group.name),
+      ),
     );
   } catch (err) {
     return false;
@@ -167,6 +181,7 @@ export default {
   getAuthToken,
   getToken,
   getUser,
+  hasWriteAccess,
   GRAPHKB_ROLE,
   isAdmin,
   isAuthenticated,

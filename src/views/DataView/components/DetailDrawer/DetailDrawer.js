@@ -26,6 +26,7 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 import './DetailDrawer.scss';
 import util from '../../../../services/util';
+import auth from '../../../../services/auth';
 import { KBContext } from '../../../../components/KBContext';
 
 const MAX_STRING_LENGTH = 64;
@@ -490,13 +491,15 @@ class DetailDrawer extends Component {
               </Typography>
               )}
             </div>
-            <Link to={`/edit/${recordId}`} target="_blank">
-              <IconButton
-                variant="outlined"
-              >
-                <EditIcon />
-              </IconButton>
-            </Link>
+            {auth.hasWriteAccess() && (
+              <Link to={`/edit/${recordId}`} target="_blank">
+                <IconButton
+                  variant="outlined"
+                >
+                  <EditIcon />
+                </IconButton>
+              </Link>
+            )}
             <Link to={`/view/${recordId}`} target="_blank">
               <IconButton
                 variant="outlined"

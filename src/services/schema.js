@@ -298,10 +298,6 @@ class Schema {
       },
     ];
 
-    showEdges.forEach((edgeName) => {
-      defns.push(defineEdgeColumn(edgeName));
-    });
-
     Object.values(allProps)
       .filter(prop => !exclude.includes(prop.name) && prop.type !== 'embedded')
       .sort((p1, p2) => p1.name.localeCompare(p2.name))
@@ -345,7 +341,12 @@ class Schema {
         }
       });
 
-    return defns.sort((d1, d2) => (d1.colId || d1.groupId).localeCompare(d2.colId || d2.groupId));
+    defns.sort((d1, d2) => (d1.colId || d1.groupId).localeCompare(d2.colId || d2.groupId));
+    showEdges.forEach((edgeName) => {
+      defns.push(defineEdgeColumn(edgeName));
+    });
+
+    return defns;
   }
 }
 

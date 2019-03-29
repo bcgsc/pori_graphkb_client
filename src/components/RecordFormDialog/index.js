@@ -34,15 +34,19 @@ const RecordFormDialog = (props) => {
     onError,
     onSubmit,
     rid,
+    title,
+    variant,
+    ...rest
   } = props;
 
-  const variant = !rid
+  const defaultVariant = !rid
     ? FORM_VARIANT.NEW
     : FORM_VARIANT.EDIT;
 
-  const title = !rid
+  const defaultTitle = !rid
     ? `Add a new ${modelName}`
     : `Edit an Existing ${modelName}`;
+
 
   return (
     <Dialog
@@ -57,7 +61,7 @@ const RecordFormDialog = (props) => {
     >
       <div className="record-form-dialog__header">
         <DialogTitle>
-          {title}
+          {title || defaultTitle}
         </DialogTitle>
         <DialogActions>
           <IconButton
@@ -69,7 +73,8 @@ const RecordFormDialog = (props) => {
       </div>
       <DialogContent>
         <RecordForm
-          variant={variant}
+          {...rest}
+          variant={variant || defaultVariant}
           modelName={modelName}
           rid={rid}
           onSubmit={onSubmit}
@@ -87,11 +92,15 @@ RecordFormDialog.propTypes = {
   onError: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
   rid: PropTypes.string,
+  variant: PropTypes.oneOf(Object.values(FORM_VARIANT)),
+  title: PropTypes.string,
 };
 
 RecordFormDialog.defaultProps = {
   isOpen: false,
   rid: null,
+  variant: null,
+  title: ''
 };
 
 

@@ -6,6 +6,8 @@ import { boundMethod } from 'autobind-decorator';
 import NodeForm from '../../components/RecordForm';
 import { KBContext } from '../../components/KBContext';
 import { FORM_VARIANT } from '../../components/RecordForm/util';
+import { cleanLinkedRecords } from '../../components/util';
+import auth from '../../services/auth';
 
 
 const DEFAULT_TITLES = {
@@ -26,26 +28,6 @@ const getVariantType = (url) => {
     }
   }
   return variant;
-};
-
-
-const cleanLinkedRecords = (content) => {
-  const newContent = {};
-
-  Object.keys(content).forEach((key) => {
-    if (content[key] !== undefined) {
-      try {
-        if (content[key]['@rid']) {
-          newContent[key] = content[key]['@rid'];
-        } else {
-          newContent[key] = content[key];
-        }
-      } catch (err) {
-        newContent[key] = content[key];
-      }
-    }
-  });
-  return newContent;
 };
 
 
@@ -102,6 +84,7 @@ class NodeView extends React.PureComponent {
     let defaultModelName = modelName;
     if (modelName) {
       const model = schema.get(modelName);
+      defaultModelName = model.name;
       if (!model || (model.isAbstract && ![FORM_VARIANT.SEARCH, FORM_VARIANT.NEW].includes(variant))) {
         history.push(
           '/error',
@@ -114,25 +97,33 @@ class NodeView extends React.PureComponent {
         );
       }
     } else if (path.includes('/user/')) {
-      defaultModelName = 'user';
+      defaultModelName = 'User';
     } else if (path.includes('/usergroup/')) {
-      defaultModelName = 'usergroup';
+      defaultModelName = 'UserGroup';
     }
+
+    // redirect when the user clicks the top left button
+    const onTopClick = () => {
+      const newPath = path
+        .replace(variant,
+          variant === FORM_VARIANT.EDIT
+            ? FORM_VARIANT.VIEW
+            : FORM_VARIANT.EDIT)
+        .replace(':rid', rid);
+      history.push(newPath);
+    };
+
     return (
       <NodeForm
         variant={variant}
         modelName={defaultModelName}
         rid={rid}
         title={DEFAULT_TITLES[variant].replace(':modelName', defaultModelName || '')}
-        onTopClick={() => {
-          const newPath = path
-            .replace(variant,
-              variant === FORM_VARIANT.EDIT
-                ? FORM_VARIANT.VIEW
-                : FORM_VARIANT.EDIT)
-            .replace(':rid', rid);
-          history.push(newPath);
-        }}
+        onTopClick={
+          auth.hasWriteAccess()
+            ? onTopClick
+            : null
+        }
         onSubmit={this.handleSubmit}
         onError={this.handleError}
       />

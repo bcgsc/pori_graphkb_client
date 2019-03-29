@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Paper, Typography, Button, CircularProgress,
+  Paper, Typography, Button,
 } from '@material-ui/core';
 import { boundMethod } from 'autobind-decorator';
 import EditIcon from '@material-ui/icons/Edit';
@@ -65,6 +65,7 @@ class RecordForm extends React.PureComponent {
     schema: PropTypes.object.isRequired,
     title: PropTypes.string.isRequired,
     variant: PropTypes.string,
+    value: PropTypes.object,
   };
 
   static defaultProps = {
@@ -74,12 +75,21 @@ class RecordForm extends React.PureComponent {
     onTopClick: null,
     rid: null,
     variant: FORM_VARIANT.VIEW,
+    value: {},
   };
 
   constructor(props) {
     super(props);
+    const { value = {}, modelName } = this.props;
+
+    const defaultContent = { ...value };
+    if (modelName && !defaultContent['@class']) {
+      defaultContent['@class'] = modelName;
+    }
+
     this.state = {
       actionInProgress: false,
+      ...defaultContent,
     };
     this.controllers = [];
   }

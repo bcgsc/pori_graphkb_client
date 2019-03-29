@@ -12,10 +12,28 @@ $success: #48a648;
 
 $subtle-shadow: 0px 2px 4px -1px rgba(0, 0, 0, .14);
 
+// main navbar and menu
 $banner-height: 56px;
-$drawer-z-index: 100;
 $default-spacing: 20px;
 
+// login/logout menu
+$user-menu-width: 124px;
+
+// left-side-bar
+$drawer-transition-speed: .3s;
+$closed-drawer-width: 56px;
+$drawer-breakpoint: 1024px;
+$drawer-width: 240px;
+$drawer-z-index: 100;
+
+// right-side-bars
+$secondary-drawer-width: 540px;
+$secondary-drawer-max-width: calc(100vw - 56px);
+
+// tabs
+$tab-bar-height: 48px;
+
+// responsive deisng breakpoints
 $breakpoint-lg: 1300px;
 $breakpoint-tablet: 768px;
 $breakpoint-mobile: 425px;
@@ -61,36 +79,6 @@ $icon-size: 1.5rem;
   margin: auto 0;
   padding: 0;
   text-decoration: none;
-}
-
-@mixin view-wrapper {
-  @include paper-collapse;
-  display: grid;
-  grid-row-gap: 1rem;
-  grid-template-columns: calc(100% - 32px - 32px);
-  grid-template-rows: auto 1fr;
-  margin: 32px;
-
-  @media (max-width: $breakpoint-tablet) {
-    margin: 16px;
-  }
-}
-
-@mixin paper-collapse {
-  transition: all 0.5s;
-
-  @media (max-width: $breakpoint-mobile) {
-    grid-row-gap: 0;
-    margin: 0;
-    overflow: auto;
-    width: 100%;
-
-    > div {
-      border-bottom: 1px solid rgba(0, 0, 0, 0.26);
-      border-radius: 0;
-      box-shadow: none;
-    }
-  }
 }
 
 @mixin page-header {

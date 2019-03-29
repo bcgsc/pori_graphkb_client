@@ -7,6 +7,7 @@ import NodeForm from '../../components/RecordForm';
 import { KBContext } from '../../components/KBContext';
 import { FORM_VARIANT } from '../../components/RecordForm/util';
 import { cleanLinkedRecords } from '../../components/util';
+import auth from '../../services/auth';
 
 
 const DEFAULT_TITLES = {
@@ -100,21 +101,29 @@ class NodeView extends React.PureComponent {
     } else if (path.includes('/usergroup/')) {
       defaultModelName = 'UserGroup';
     }
+
+    // redirect when the user clicks the top left button
+    const onTopClick = () => {
+      const newPath = path
+        .replace(variant,
+          variant === FORM_VARIANT.EDIT
+            ? FORM_VARIANT.VIEW
+            : FORM_VARIANT.EDIT)
+        .replace(':rid', rid);
+      history.push(newPath);
+    };
+
     return (
       <NodeForm
         variant={variant}
         modelName={defaultModelName}
         rid={rid}
         title={DEFAULT_TITLES[variant].replace(':modelName', defaultModelName || '')}
-        onTopClick={() => {
-          const newPath = path
-            .replace(variant,
-              variant === FORM_VARIANT.EDIT
-                ? FORM_VARIANT.VIEW
-                : FORM_VARIANT.EDIT)
-            .replace(':rid', rid);
-          history.push(newPath);
-        }}
+        onTopClick={
+          auth.hasWriteAccess()
+            ? onTopClick
+            : null
+        }
         onSubmit={this.handleSubmit}
         onError={this.handleError}
       />

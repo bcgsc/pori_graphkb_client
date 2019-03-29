@@ -21,6 +21,7 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
 import logo from '../../../static/logo.png';
 import title from '../../../static/title.png';
+import auth from '../../../services/auth';
 
 
 /**
@@ -100,11 +101,13 @@ class MainNav extends React.PureComponent {
         <Divider />
         <List className="main-nav-drawer__links">
           <MenuLink label="Query" route="/query" icon={<SearchIcon />} />
-          <MenuItem onClick={this.handleOpen}>
-            <ListItemIcon> <AddIcon /> </ListItemIcon>
-            <ListItemText primary="Add new Record" />
-          </MenuItem>
-          {isOpen && (
+          {auth.hasWriteAccess() && (
+            <MenuItem onClick={this.handleOpen}>
+              <ListItemIcon> <AddIcon /> </ListItemIcon>
+              <ListItemText primary="Add new Record" />
+            </MenuItem>
+          )}
+          {auth.hasWriteAccess() && isOpen && (
             <>
               <MenuLink label="Source" route="/new/source" inset />
               <MenuLink label="Ontology" route="/new/ontology" inset />

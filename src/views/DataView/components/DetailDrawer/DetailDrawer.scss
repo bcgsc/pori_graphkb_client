@@ -42,10 +42,6 @@
     position: absolute;
     top: $banner-height;
     width: 100%;
-
-    @media (min-width: $breakpoint-med) {
-      height: calc(100% - #{$banner-height} - #{$banner-height});
-    }
   }
 
   &__relationships-subheader {

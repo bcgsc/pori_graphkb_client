@@ -11,22 +11,24 @@
 
 .node-form {
   &__wrapper {
-    max-width: calc(#{$readable-max} + 40px);
-    @include lg-media {
-      max-width: calc(#{$readable-max} * 2 + 40px);
-    }
-
     margin-left: auto;
     margin-right: auto;
     margin-top: 0;
+    max-width: calc(#{$readable-max} + 40px);
     padding: 20px;
+
+    @media (min-width: #{breakpoint-med}) {
+      // allow 2 columns for large dislays
+      max-width: calc(#{$readable-max} * 2 + 40px);
+    }
   }
 
   &__content,
   &__content-subgroup {
     @include two-column-grid;
 
-    @include lg-media {
+    @media (min-width: #{breakpoint-med}) {
+      // allow 2 columns for large dislays
       grid-template-columns: 1fr 1fr;
     }
   }

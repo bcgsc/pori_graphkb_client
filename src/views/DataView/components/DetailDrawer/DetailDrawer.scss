@@ -1,18 +1,17 @@
 @import '../../../../globals';
 @import '../../index.scss';
 
-$breakpoint-sm: 375px;
-$toolbar-height: 57px;
 
 .detail-drawer {
-  max-width: $secondary-drawer-max-width;
+  max-width: 100%;  // use full screen for ipad/mobile
   transition: width #{$drawer-transition-speed};
-  width: $secondary-drawer-width;
+  width: 100%;
   word-break: break-word;
   z-index: $drawer-z-index;
 
-  @media (max-width: $breakpoint-sm) {
-    width: 100%;
+  @media (min-width: $breakpoint-med) {
+    max-width: $secondary-drawer-max-width;
+    width: $secondary-drawer-width;
   }
 
   &--closed {
@@ -38,11 +37,15 @@ $toolbar-height: 57px;
   }
 
   &__content {
-    height: calc(100% - #{$banner-height} - #{$toolbar-height});
+    height: calc(100% - #{$banner-height});
     overflow: auto;
     position: absolute;
     top: $banner-height;
     width: 100%;
+
+    @media (min-width: $breakpoint-med) {
+      height: calc(100% - #{$banner-height} - #{$banner-height});
+    }
   }
 
   &__relationships-subheader {
@@ -51,10 +54,10 @@ $toolbar-height: 57px;
   }
 
   &__nested-subheader {
-    margin-left: 56px;
+    margin-left: 32px;
     z-index: 0;
-    @media (max-width: $breakpoint-mobile) {
-      margin-left: 32px;
+    @media (min-width: $breakpoint-sm) {
+      margin-left: 56px;
     }
   }
 
@@ -66,9 +69,10 @@ $toolbar-height: 57px;
 
   .detail-identifiers {
     display: grid;
-    grid-template-columns: 164px 24px auto;
-    @media (max-width: $breakpoint-mobile) {
-      grid-template-columns: 144px 8px auto;
+    grid-template-columns: 144px 8px auto;
+
+    @media (min-width: $breakpoint-sm) {
+      grid-template-columns: 164px 24px auto;
     }
 
     .detail-identifiers-nested {

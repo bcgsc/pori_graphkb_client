@@ -3,10 +3,10 @@
 $user-menu-width: 124px;
 $drawer-width: 240px;
 $closed-drawer-width: 56px;
-$drawer-breakpoint: 1024px;
 
 .main-view {
   height: 100vh;
+  min-width: $readable-min;
   overflow: hidden;  // TODO: det what is causing the height overflow
 
   .appbar {
@@ -32,10 +32,6 @@ $drawer-breakpoint: 1024px;
       overflow: hidden;
 
       white-space: nowrap;
-
-      @media (max-width: $breakpoint-mobile) {
-        max-width: 0;
-      }
 
       * {
         color: white;
@@ -89,15 +85,7 @@ $drawer-breakpoint: 1024px;
     &--drawer-open {
       margin-left: $drawer-width;
       width: calc(100% - #{$drawer-width});
-
-      @media (max-width: 500px) {
-        margin-left: 0;
-      }
     }
-  }
-
-  .no-drawer {
-    margin-left: 0;
   }
 }
 
@@ -158,14 +146,15 @@ $drawer-breakpoint: 1024px;
   width: $drawer-width;
   z-index: calc(#{$drawer-z-index} + 4);
 
-  @media (max-width: $breakpoint-mobile) {
+  @media (max-width: $breakpoint-sm) {
     width: calc(100vw - #{$banner-height});
   }
 
   &--closed {
     width: $closed-drawer-width;
     z-index: calc(#{$drawer-z-index} + 2);
-    @media (max-width: $drawer-breakpoint) {
+
+    @media (max-width: $breakpoint-med) {
       width: 0;
     }
   }

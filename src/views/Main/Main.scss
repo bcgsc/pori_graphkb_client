@@ -71,15 +71,16 @@ $closed-drawer-width: 56px;
   &__content {
     background-color: rgba(0, 0, 0, 0.03);
     height: calc(100% - #{$banner-height});
-    margin-left: $closed-drawer-width;
+    margin-left: 0;
     margin-top: $banner-height;
     overflow-y: auto;
     transition-duration: $drawer-transition-speed;
     transition-property: width, margin-left;
-    width: calc(100% - #{$closed-drawer-width});
+    width: 100%;
 
-    @media (max-width: $drawer-breakpoint) {
-      margin-left: 0;
+    @media (min-width: $breakpoint-med) {
+      margin-left: $closed-drawer-width;
+      width: calc(100% - #{$closed-drawer-width});
     }
 
     &--drawer-open {

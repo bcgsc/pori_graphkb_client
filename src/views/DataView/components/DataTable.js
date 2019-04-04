@@ -307,7 +307,7 @@ class DataTable extends React.Component {
         label: 'Configure Visible Columns',
         content: columnControl,
       },
-      { label: 'Export to TSV', handler: this.handleExportTsv },
+      { label: 'Export to TSV', handler: () => this.handleExportTsv(false) },
 
     ];
 

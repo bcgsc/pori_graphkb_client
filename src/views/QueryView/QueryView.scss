@@ -1,22 +1,22 @@
 @import '../../globals';
 
 .search {
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 0, 0, .2);
   border-radius: 4px;
-  left: 0;
-  margin: auto;
-  max-width: 60vw;
-  min-width: 500px;
+  left: 16px;
+  max-width: unset;
+  min-width: unset;
   padding-bottom: 16px;
   position: relative;
-  right: 0;
+  right: 16px;
   top: 35vh;
 
-  @media (max-width: $breakpoint-mobile) {
-    left: 16px;
-    max-width: unset;
-    min-width: unset;
-    right: 16px;
+  @media (min-width: $breakpoint-sm) {
+    left: 0;
+    margin: auto;
+    max-width: 60vw;
+    min-width: 500px;
+    right: 0;
   }
 
   &__bar {
@@ -24,10 +24,6 @@
     display: flex;
     padding: 16px;
     width: 100%;
-
-    @media (max-width: $breakpoint-mobile) {
-      flex-direction: column;
-    }
   }
 
   &__main {
@@ -35,10 +31,7 @@
     border: none;
     flex-grow: 1;
     outline: none;
-
-    @media (max-width: $breakpoint-mobile) {
-      width: 100%;
-    }
+    width: 100%;
   }
 
   &__advanced-button {

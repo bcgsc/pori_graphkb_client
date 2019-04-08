@@ -15,7 +15,7 @@ const EmbeddedNodeForm = (props) => {
     label, className, onValueChange, ...rest
   } = props;
   return (
-    <div className={`embedded-node-form ${className}`}>
+    <div className={`embedded-record-form ${className}`}>
       <fieldset>
         <legend>
           <Typography variant="h6">

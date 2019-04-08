@@ -113,7 +113,7 @@ describe('api methods test', () => {
         name: 'kras',
         sourceId: 'kras',
         or: 'name,sourceId',
-        limit: 250,
+        limit: 100,
         neighbors: 3,
       });
     });

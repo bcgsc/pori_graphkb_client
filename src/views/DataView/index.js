@@ -40,8 +40,8 @@ class DataView extends React.Component {
 
   static defaultProps = {
     cacheBlocks: 10,
-    blockSize: 250,
-    bufferSize: 250,
+    blockSize: 100,
+    bufferSize: 200,
   };
 
 

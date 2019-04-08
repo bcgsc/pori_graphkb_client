@@ -146,13 +146,13 @@ class PaginationDataCache {
    * @param {function} opt.blockApiCall a function to create the page requests. Must return an ApiCall object
    */
   constructor({
-    blockSize = 250,
+    blockSize = 100,
     cacheBlocks = 10,
     cacheExpiryMs = null,
     schema,
     onLoadCallback = () => { },
     countFirst = true,
-    concurrencyLimit = 2,
+    concurrencyLimit = 1,
     blockApiCall,
     recordApiCall,
     onErrorCallback = () => { },

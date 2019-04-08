@@ -315,7 +315,7 @@ class PaginationDataCache {
     let end = null;
     const starts = [...this.active, ...this.queued]
       .filter(b => b.search === search)
-      .map(b => b.startRow);
+      .map(b => b.startRow || 0);
     if (starts.length > 0) {
       start = Math.min(...starts);
       end = Math.max(...starts) + this.blockSize - 1;

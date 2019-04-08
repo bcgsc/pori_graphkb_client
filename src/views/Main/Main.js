@@ -158,7 +158,11 @@ class Main extends React.Component {
                       </Link>
                     )}
                     <MenuItem onClick={auth.logout}>
-                      Logout
+                      {
+                        auth.isAuthorized()
+                          ? 'Logout'
+                          : 'Login'
+                      }
                     </MenuItem>
                   </Card>
                 </Popover>

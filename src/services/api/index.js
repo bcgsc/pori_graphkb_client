@@ -22,7 +22,7 @@ const {
 const ID_PROP = '@rid';
 const CLASS_PROP = '@class';
 const MAX_SUGGESTIONS = 50;
-const DEFAULT_LIMIT = 250;
+const DEFAULT_LIMIT = 100;
 
 
 /**

@@ -17,7 +17,7 @@
     max-width: calc(#{$readable-max} + 40px);
     padding: 20px;
 
-    @media (min-width: #{breakpoint-med}) {
+    @media (min-width: #{$breakpoint-med}) {
       // allow 2 columns for large dislays
       max-width: calc(#{$readable-max} * 2 + 40px);
     }

@@ -1,7 +1,7 @@
 @import '../../globals';
 
-.node-form,
-.embedded-node-form {
+.record-form,
+.embedded-record-form {
   flex-grow: 1;
   margin-left: auto;
   margin-right: auto;
@@ -9,7 +9,7 @@
   position: relative;
 }
 
-.node-form {
+.record-form {
   &__wrapper {
     margin-left: auto;
     margin-right: auto;
@@ -80,12 +80,12 @@
 }
 
 
-.embedded-node-form {
+.embedded-record-form {
   fieldset {
     @include field-set;
   }
 
-  .node-form__content {
+  .record-form__content {
     display: block;
   }
 }

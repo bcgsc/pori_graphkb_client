@@ -291,7 +291,7 @@ class BaseRecordForm extends React.Component {
       if (item instanceof Array) { // subgrouping
         const key = item.join('--');
         fields.push((
-          <div key={key} className="node-form__content-subgroup">
+          <div key={key} className="record-form__content-subgroup">
             {this.renderFieldGroup(item)}
           </div>
         ));
@@ -457,16 +457,16 @@ class BaseRecordForm extends React.Component {
       onValueChange: this.handleClassChange,
       disabled: disableClassSelect || modelChoices.length < 2,
       schema,
-      className: 'node-form__class-select',
+      className: 'record-form__class-select',
     });
 
     return (
-      <div className={`node-form ${className}`}>
-        <div className="node-form__content node-form__content--long">
+      <div className={`record-form ${className}`}>
+        <div className="record-form__content record-form__content--long">
           {classSelect}
           {isStatement && variant !== FORM_VARIANT.EDIT && variant !== FORM_VARIANT.SEARCH && this.renderStatementFields()}
         </div>
-        <div className="node-form__content">
+        <div className="record-form__content">
           {model && this.renderFieldGroup(fields)}
         </div>
         {extraFields.length > 0 && (
@@ -482,14 +482,14 @@ class BaseRecordForm extends React.Component {
               {collapseOpen ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
             <Collapse in={collapseOpen} timeout="auto" unmountOnExit>
-              <div className="node-form__content">
+              <div className="record-form__content">
                 {model && this.renderFieldGroup(extraFields)}
               </div>
             </Collapse>
           </>
         )}
         {!isEmbedded && (
-          <div className="node-form__action-buttons">
+          <div className="record-form__action-buttons">
             {onDelete && variant === FORM_VARIANT.EDIT && variant !== FORM_VARIANT.VIEW
               ? (
                 <ActionButton
@@ -528,7 +528,7 @@ class BaseRecordForm extends React.Component {
           </div>
         )}
         {!isEmbedded && variant === FORM_VARIANT.VIEW && edges.length > 0 && (
-          <div className="node-form__related-nodes">
+          <div className="record-form__related-nodes">
             <Typography variant="h6" component="h2">
               Related Nodes
             </Typography>

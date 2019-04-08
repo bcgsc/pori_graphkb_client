@@ -256,8 +256,8 @@ class RecordForm extends React.PureComponent {
     };
 
     return (
-      <Paper className="node-form__wrapper" elevation={4}>
-        <div className="node-form__header">
+      <Paper className="record-form__wrapper" elevation={4}>
+        <div className="record-form__header">
           <Typography variant="h5" component="h1">{title}</Typography>
           {variant === FORM_VARIANT.VIEW && onTopClick && (
             <Button

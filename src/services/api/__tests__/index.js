@@ -1,27 +1,8 @@
-import jwt from 'jsonwebtoken';
 
 import api from '..';
 
 
 describe('api methods test', () => {
-  test('can get token', async () => {
-    const username = process.env.USER;
-    const password = process.env.PASSWORD || 'dummy'; // connect to DISABLED AUTH test API server
-    const { kbToken } = await api.post('/token', { username, password }).request();
-    expect(jwt.decode(kbToken).user.name).toBe(username);
-  });
-
-  test('bad username', async () => {
-    const username = 'dummy';
-    const password = process.env.PASSWORD || 'dummy';
-
-    try {
-      await api.post('/token', { username, password }).request();
-    } catch (e) {
-      expect(e.message).toBe('Unauthorized');
-    }
-  });
-
   describe('getSearchFromQuery', () => {
     const schema = { getFromRoute: () => ({ name: 'disease' }) };
     test('keyword search', () => {

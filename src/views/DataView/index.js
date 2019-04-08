@@ -7,7 +7,6 @@ import {
   IconButton,
 } from '@material-ui/core';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import TimelineIcon from '@material-ui/icons/Timeline';
 import EditIcon from '@material-ui/icons/Edit';
 import { boundMethod } from 'autobind-decorator';
 
@@ -94,13 +93,17 @@ class DataView extends React.Component {
     const { history, location: { pathname } } = this.props;
     // drop all undefined values
     const { routeName } = schema.get(filters);
-    const search = api.getSearchFromQuery({
-      schema,
-      queryParams: cleanLinkedRecords(filters),
-      routeName,
-    });
-    history.replace(`${pathname}?${search}`);
-    this.setState({ filtersEditOpen: false, filters, search: `?${search}` });
+    try {
+      const search = api.getSearchFromQuery({
+        schema,
+        queryParams: cleanLinkedRecords(filters),
+        routeName,
+      });
+      history.replace(`${pathname}?${search}`);
+      this.setState({ filtersEditOpen: false, filters, search: `?${search}` });
+    } catch (err) {
+      this.handleError(err);
+    }
   }
 
   /**
@@ -174,22 +177,25 @@ class DataView extends React.Component {
     const { search } = this.state;
     const { schema } = this.context;
 
-    const { queryParams, modelName } = api.getQueryFromSearch({ search, schema });
+    try {
+      const { queryParams, modelName } = api.getQueryFromSearch({ search, schema });
+      const links = [];
+      Object.entries(queryParams).forEach(([key, value]) => {
+        if (typeof value === 'string' && kbSchema.util.looksLikeRID(value)) {
+          links.push({ key, value });
+        }
+      });
 
-    const links = [];
-    Object.entries(queryParams).forEach(([key, value]) => {
-      if (typeof value === 'string' && kbSchema.util.looksLikeRID(value)) {
-        links.push({ key, value });
-      }
-    });
+      const records = await cache.getRecords(links.map(l => ({ '@rid': l.value })));
+      records.forEach((rec, index) => {
+        const { key } = links[index];
+        queryParams[key] = rec;
+      });
 
-    const records = await cache.getRecords(links.map(l => ({ '@rid': l.value })));
-    records.forEach((rec, index) => {
-      const { key } = links[index];
-      queryParams[key] = rec;
-    });
-
-    return { ...queryParams, '@class': modelName };
+      return { ...queryParams, '@class': modelName };
+    } catch (err) {
+      return this.handleError(err);
+    }
   }
 
   /**

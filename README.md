@@ -1,5 +1,7 @@
 # Knowledgebase Web
 
+![Build Status](https://www.bcgsc.ca/bamboo/plugins/servlet/wittified/build-status/KNOW-KNW)
+
 `knowledgebase_web` is the front-end client for the knowledgebase api. It is built
 using `React.js` and `webpack`. Linting is done with `eslint`, and follows a modified
 version of the Airbnb style guide.

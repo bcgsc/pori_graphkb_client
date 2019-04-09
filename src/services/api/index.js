@@ -15,7 +15,6 @@ import DataCache from './dataCache';
 
 const {
   API_BASE_URL,
-  MIN_WORD_LENGTH,
   DEFAULT_NEIGHBORS,
 } = config;
 
@@ -23,6 +22,7 @@ const ID_PROP = '@rid';
 const CLASS_PROP = '@class';
 const MAX_SUGGESTIONS = 50;
 const DEFAULT_LIMIT = 100;
+const MIN_WORD_LENGTH = 3;
 
 
 /**

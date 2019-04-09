@@ -9,4 +9,10 @@
       display: inline-block;
     }
   }
+
+  .node-form {
+    &__content, &__content-subgroup {
+      display: block;
+    }
+  }
 }

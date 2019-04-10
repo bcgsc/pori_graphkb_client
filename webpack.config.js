@@ -10,7 +10,7 @@ const TerserWebpackPlugin = require('terser-webpack-plugin');
 
 
 const SRC_PATH = path.resolve(__dirname, 'src');
-const DIST_PATH = path.resolve(__dirname, 'dist');
+const DIST_PATH = path.resolve(__dirname, `v${process.env.npm_package_version}`, 'dist');
 const INCLUDE = [
   path.resolve(__dirname, 'node_modules/@bcgsc'),
   SRC_PATH,

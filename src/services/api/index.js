@@ -15,14 +15,14 @@ import DataCache from './dataCache';
 
 const {
   API_BASE_URL,
-  MIN_WORD_LENGTH,
   DEFAULT_NEIGHBORS,
 } = config;
 
 const ID_PROP = '@rid';
 const CLASS_PROP = '@class';
 const MAX_SUGGESTIONS = 50;
-const DEFAULT_LIMIT = 250;
+const DEFAULT_LIMIT = 100;
+const MIN_WORD_LENGTH = 3;
 
 
 /**
@@ -168,7 +168,7 @@ const getQueryFromSearch = ({ schema, search }) => {
     ...params
   } = qs.parse(search.replace(/^\?/, ''));
 
-  let modelName;
+  let modelName = 'v';
   if (params['@class'] || params.class) {
     // to make URL more readable class is sometimes used in place of @class
     // these are used to determine the route name and should not also appear as query params
@@ -177,9 +177,11 @@ const getQueryFromSearch = ({ schema, search }) => {
     delete params.class;
   }
 
-  let routeName = schema.get(modelName || 'v')
-    ? schema.get(modelName || 'v').routeName
-    : null;
+  if (!schema.get(modelName)) {
+    throw new Error(`Failed to find the expected model (${modelName})`);
+  }
+  let { routeName } = schema.get(modelName);
+
   let payload = null;
   let queryParams = null;
 

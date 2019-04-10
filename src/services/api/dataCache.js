@@ -146,13 +146,13 @@ class PaginationDataCache {
    * @param {function} opt.blockApiCall a function to create the page requests. Must return an ApiCall object
    */
   constructor({
-    blockSize = 250,
+    blockSize = 100,
     cacheBlocks = 10,
     cacheExpiryMs = null,
     schema,
     onLoadCallback = () => { },
     countFirst = true,
-    concurrencyLimit = 2,
+    concurrencyLimit = 1,
     blockApiCall,
     recordApiCall,
     onErrorCallback = () => { },
@@ -315,7 +315,7 @@ class PaginationDataCache {
     let end = null;
     const starts = [...this.active, ...this.queued]
       .filter(b => b.search === search)
-      .map(b => b.startRow);
+      .map(b => b.startRow || 0);
     if (starts.length > 0) {
       start = Math.min(...starts);
       end = Math.max(...starts) + this.blockSize - 1;

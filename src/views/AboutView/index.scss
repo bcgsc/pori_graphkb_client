@@ -93,13 +93,7 @@
       fill: white;
     }
   }
-  @include lg-media {
-    img,
-    svg {
-      max-width: inherit;
-    }
-  }
-  @include sm-media {
+  @media (max-width: #{$breakpoint-med}) {
     .pie-chart {
       display: none;
     }

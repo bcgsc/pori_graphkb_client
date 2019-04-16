@@ -100,7 +100,7 @@
     "test": "NODE_ENV=test jest --env=jsdom --config config/jest.config.js",
     "test:watch": "NODE_ENV=test jest --env=jsdom --config config/jest.config.js --watch",
     "test:ci": "NODE_ENV=test jest --env=jsdom --config config/jest.config.js",
-    "start:prod": "NODE_ENV=production serve v${npm_package_version}/dist -s"
+    "start:prod": "NODE_ENV=production serve dist -s"
   },
   "sasslintConfig": "config/sass-lint.yml"
 }

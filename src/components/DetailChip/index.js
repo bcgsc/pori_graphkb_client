@@ -4,6 +4,7 @@
 import { boundMethod } from 'autobind-decorator';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import {
   Chip,
   Avatar,
@@ -16,8 +17,10 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  IconButton,
 } from '@material-ui/core';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 import './index.scss';
 
@@ -46,8 +49,8 @@ class DetailChip extends React.Component {
     label: PropTypes.string.isRequired,
     onDelete: PropTypes.func,
     valueToString: PropTypes.func,
-    onCtrlClick: PropTypes.func,
     title: PropTypes.string,
+    getLink: PropTypes.func,
   };
 
   static defaultProps = {
@@ -61,7 +64,7 @@ class DetailChip extends React.Component {
     getDetails: d => d,
     onDelete: null,
     valueToString: s => `${s}`,
-    onCtrlClick: null,
+    getLink: null,
     title: null,
   };
 
@@ -100,12 +103,7 @@ class DetailChip extends React.Component {
    */
   @boundMethod
   handlePopoverOpen(event) {
-    const { onCtrlClick, details, label } = this.props;
-    if (onCtrlClick && event.ctrlKey) {
-      onCtrlClick({ details, label });
-    } else {
-      this.setState({ anchorEl: event.currentTarget });
-    }
+    this.setState({ anchorEl: event.currentTarget });
   }
 
   render() {
@@ -117,6 +115,7 @@ class DetailChip extends React.Component {
       label,
       valueToString,
       ChipProps,
+      getLink,
       title,
       ...rest
     } = this.props;
@@ -136,9 +135,18 @@ class DetailChip extends React.Component {
         >
           <Card>
             <CardContent className="detail-popover__panel">
-              <Typography variant="h6" gutterBottom>
-                {title || label}
-              </Typography>
+              <div className="detail-popover__panel-header">
+                <Typography variant="h6" gutterBottom>
+                  {title || label}
+                </Typography>
+                {getLink && getLink(retrievedDetails) && (
+                  <Link to={getLink(retrievedDetails)} target="_blank">
+                    <IconButton>
+                      <OpenInNewIcon />
+                    </IconButton>
+                  </Link>
+                )}
+              </div>
               <Divider />
               <Table>
                 <TableBody>

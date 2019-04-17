@@ -90,7 +90,6 @@ class DataTable extends React.Component {
         field: '#',
         valueGetter: 'node.id',
         width: 75,
-        type: 'number',
       },
       ...schema.defineGridColumns(search),
     ]);

@@ -18,6 +18,8 @@ class Schema {
     this.normalizedModelNames = {};
     Object.values(schema).forEach((model) => {
       this.normalizedModelNames[model.name.toLowerCase()] = model;
+      this.normalizedModelNames[model.routeName] = model;
+      this.normalizedModelNames[model.routeName.slice(1)] = model;
     });
   }
 
@@ -76,6 +78,12 @@ class Schema {
       return obj['@rid'];
     } catch (err) {} // eslint-disable-line
     return obj;
+  }
+
+  @boundMethod
+  getLink(obj) {
+    const { routeName } = this.get(obj) || this.get('V');
+    return `/view${routeName}/${obj['@rid'].slice(1)}`;
   }
 
   /**

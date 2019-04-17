@@ -104,16 +104,21 @@ class NodeView extends React.PureComponent {
       defaultModelName = 'User';
     } else if (path.includes('/usergroup/')) {
       defaultModelName = 'UserGroup';
+    } else if (path.includes('/e/')) {
+      defaultModelName = 'E';
     }
 
     // redirect when the user clicks the top left button
-    const onTopClick = () => {
-      const newPath = path
+    const onTopClick = (record) => {
+      let newPath = path
         .replace(variant,
           variant === FORM_VARIANT.EDIT
             ? FORM_VARIANT.VIEW
             : FORM_VARIANT.EDIT)
         .replace(':rid', rid);
+      if (record['@class'] || modelName) {
+        newPath = newPath.replace(':modelName', schema.get(record['@class'] || modelName).routeName.slice(1));
+      }
       history.push(newPath);
     };
 

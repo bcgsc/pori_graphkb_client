@@ -190,9 +190,11 @@ class BaseRecordForm extends React.Component {
     }
     // edge records
     if (model.isEdge) {
+      newContent.out = record.out;
       if (!record.out) {
         errors.out = 'Required Value';
       }
+      newContent.in = record.in;
       if (!record.in) {
         errors.in = 'Required Value';
       }

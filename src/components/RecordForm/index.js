@@ -280,7 +280,7 @@ class RecordForm extends React.PureComponent {
           <Typography variant="h5" component="h1">{title}</Typography>
           {variant === FORM_VARIANT.VIEW && onTopClick && (
             <Button
-              onClick={onTopClick}
+              onClick={() => onTopClick(content)}
               variant="outlined"
               disabled={actionInProgress}
             >
@@ -290,7 +290,7 @@ class RecordForm extends React.PureComponent {
           )}
           {variant === FORM_VARIANT.EDIT && onTopClick && (
             <ActionButton
-              onClick={onTopClick}
+              onClick={() => onTopClick(content)}
               variant="outlined"
               message="Are you sure you want to leave this page?"
               disabled={actionInProgress}

@@ -157,7 +157,7 @@ const FormField = (props) => {
       required: mandatory,
       value,
       DetailChipProps: {
-        getLink: details => `/view/${details['@rid'].slice(1)}`,
+        getLink: schema.getLink,
       },
     };
 

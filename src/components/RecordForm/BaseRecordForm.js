@@ -115,7 +115,7 @@ class BaseRecordForm extends React.Component {
     const {
       value, modelName, actionInProgress, variant,
     } = this.props;
-    const { content, collapseOpen } = this.state;
+    const { content, collapseOpen, errors } = this.state;
 
     if (jc.stringify(value) !== jc.stringify(nextProps.value)
       || modelName !== nextProps.modelName
@@ -123,6 +123,7 @@ class BaseRecordForm extends React.Component {
       || actionInProgress !== nextProps.actionInProgress
       || collapseOpen !== nextState.collapseOpen
       || variant !== nextProps.variant
+      || jc.stringify(errors) !== jc.stringify(nextState.errors)
     ) {
       return true;
     }

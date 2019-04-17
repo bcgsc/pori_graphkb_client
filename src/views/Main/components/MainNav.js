@@ -113,6 +113,7 @@ class MainNav extends React.PureComponent {
               <MenuLink label="Ontology" route="/new/ontology" inset />
               <MenuLink label="Variant" route="/new/variant" inset />
               <MenuLink label="Statement" route="/new/statement" inset />
+              <MenuLink label="Relationship" route="/new/e" inset />
             </>
           )}
           <MenuLink label="About" route="/about" icon={<HelpOutlineIcon />} />

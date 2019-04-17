@@ -4,7 +4,7 @@ import kbSchema from '@bcgsc/knowledgebase-schema';
 
 import api from './api';
 
-const { schema: SCHEMA_DEFN, util: { looksLikeRID } } = kbSchema;
+const { schema: SCHEMA_DEFN } = kbSchema;
 
 const MAX_LABEL_LENGTH = 30;
 

@@ -284,19 +284,23 @@ class DataView extends React.Component {
           </IconButton>
         </div>
         <div className="data-view__content">
-          <DataTable
-            search={search}
-            cache={cache}
-            rowBuffer={bufferSize}
-            onRecordClicked={this.handleToggleDetailPanel}
-            onRecordsSelected={this.handleRecordSelection}
-            optionsMenuAnchor={optionsMenuAnchor}
-            optionsMenuOnClose={this.handleToggleOptionsMenu}
-          />
-          <DetailDrawer
-            node={detailPanelRow}
-            onClose={this.handleToggleDetailPanel}
-          />
+          {cache && (
+            <>
+              <DataTable
+                search={search}
+                cache={cache}
+                rowBuffer={bufferSize}
+                onRecordClicked={this.handleToggleDetailPanel}
+                onRecordsSelected={this.handleRecordSelection}
+                optionsMenuAnchor={optionsMenuAnchor}
+                optionsMenuOnClose={this.handleToggleOptionsMenu}
+              />
+              <DetailDrawer
+                node={detailPanelRow}
+                onClose={this.handleToggleDetailPanel}
+              />
+            </>
+          )}
         </div>
         <div className="data-view__footer">
           <div className="footer__selected-records">

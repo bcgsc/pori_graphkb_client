@@ -188,6 +188,15 @@ class BaseRecordForm extends React.Component {
         newContent[prop] = rawValue;
       });
     }
+    // edge records
+    if (model.isEdge) {
+      if (!record.out) {
+        errors.out = 'Required Value';
+      }
+      if (!record.in) {
+        errors.in = 'Required Value';
+      }
+    }
     this.setState({ content: newContent, errors });
   }
 
@@ -294,7 +303,7 @@ class BaseRecordForm extends React.Component {
     if (!model) {
       return [];
     }
-    const { properties } = model;
+    const { properties: { out, in: tgt, ...properties } } = model;
 
     // get the form content
     const fields = [];
@@ -302,12 +311,15 @@ class BaseRecordForm extends React.Component {
     ordering.forEach((item) => {
       if (item instanceof Array) { // subgrouping
         const key = item.join('--');
-        fields.push((
-          <div key={key} className="record-form__content-subgroup">
-            {this.renderFieldGroup(item)}
-          </div>
-        ));
-      } else {
+        const subgroup = this.renderFieldGroup(item);
+        if (subgroup.length) {
+          fields.push((
+            <div key={key} className="record-form__content-subgroup">
+              {subgroup}
+            </div>
+          ));
+        }
+      } else if (properties[item]) {
         const prop = properties[item];
         const { name } = prop;
         const wrapper = FormField({
@@ -376,6 +388,56 @@ class BaseRecordForm extends React.Component {
     );
   }
 
+  /**
+   * Renders the two statement specific input fields (impliedBy and SupportedBy)
+   */
+  renderEdgeFields() {
+    const { schema } = this.context;
+    const { content, errors } = this.state;
+    const { variant, actionInProgress } = this.props;
+
+    const model = this.currentModel();
+
+    return (
+      <React.Fragment key="relationship-content">
+        <FormField
+          error={errors.out || ''}
+          onValueChange={this.handleValueChange}
+          model={{
+            description: 'The source record for the relationship',
+            linkedClass: schema.get(model.sourceModel || 'V'),
+            name: 'out',
+            type: 'link',
+            mandatory: true,
+            nullable: false,
+          }}
+          schema={schema}
+          value={content.out}
+          disabled={variant === FORM_VARIANT.VIEW || actionInProgress}
+          variant={variant}
+          label="Source Record (out)"
+        />
+        <FormField
+          error={errors.in || ''}
+          onValueChange={this.handleValueChange}
+          model={{
+            linkedClass: schema.get(model.targetModel || 'V'),
+            description: 'The target record for the relationship',
+            name: 'in',
+            type: 'link',
+            mandatory: true,
+            nullable: false,
+          }}
+          schema={schema}
+          value={content.in}
+          disabled={variant === FORM_VARIANT.VIEW || actionInProgress}
+          variant={variant}
+          label="Target Record (in)"
+        />
+      </React.Fragment>
+    );
+  }
+
   render() {
     const {
       aboveFold,
@@ -399,11 +461,13 @@ class BaseRecordForm extends React.Component {
     } = this.state;
 
     let model = this.currentModel();
+
+    const isEdge = model && model.isEdge;
     if (model && model.isAbstract && [FORM_VARIANT.SEARCH, FORM_VARIANT.NEW].includes(variant)) {
       model = null;
     }
 
-    let edges = isEmbedded || (model && model.isEdge)
+    let edges = isEmbedded || isEdge
       ? []
       : schema.getEdges(value || {});
     const isStatement = model && model.name === 'Statement';
@@ -477,6 +541,7 @@ class BaseRecordForm extends React.Component {
         <div className="record-form__content record-form__content--long">
           {classSelect}
           {isStatement && variant !== FORM_VARIANT.EDIT && variant !== FORM_VARIANT.SEARCH && this.renderStatementFields()}
+          {isEdge && this.renderEdgeFields()}
         </div>
         <div className="record-form__content">
           {model && this.renderFieldGroup(fields)}

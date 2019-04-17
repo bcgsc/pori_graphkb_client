@@ -112,7 +112,9 @@ class BaseRecordForm extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { value, modelName, actionInProgress } = this.props;
+    const {
+      value, modelName, actionInProgress, variant,
+    } = this.props;
     const { content, collapseOpen } = this.state;
 
     if (jc.stringify(value) !== jc.stringify(nextProps.value)
@@ -120,6 +122,7 @@ class BaseRecordForm extends React.Component {
       || jc.stringify(content) !== jc.stringify(nextState.content)
       || actionInProgress !== nextProps.actionInProgress
       || collapseOpen !== nextState.collapseOpen
+      || variant !== nextProps.variant
     ) {
       return true;
     }
@@ -131,11 +134,20 @@ class BaseRecordForm extends React.Component {
    * Trigger the state change if a new initial value is passed in
    */
   componentDidUpdate(prevProps) {
-    const { value, modelName } = this.props;
+    const { value, modelName, variant } = this.props;
+    const { content } = this.state;
+
     if (jc.stringify(value) !== jc.stringify(prevProps.value)) {
       this.populateFromRecord(value);
     } else if (modelName !== prevProps.modelName) {
       this.populateFromRecord({ [CLASS_MODEL_PROP]: modelName });
+    } else if (
+      Object.keys(value).length > 1 // more than just class name
+      && modelName === prevProps.modelName // same type of record
+      && jc.stringify(value) !== jc.stringify(content)
+      && variant !== FORM_VARIANT.NEW
+    ) {
+      this.populateFromRecord(value);
     }
   }
 
@@ -391,7 +403,7 @@ class BaseRecordForm extends React.Component {
       model = null;
     }
 
-    let edges = isEmbedded
+    let edges = isEmbedded || (model && model.isEdge)
       ? []
       : schema.getEdges(value || {});
     const isStatement = model && model.name === 'Statement';

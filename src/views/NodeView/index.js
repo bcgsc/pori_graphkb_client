@@ -11,10 +11,10 @@ import auth from '../../services/auth';
 
 
 const DEFAULT_TITLES = {
-  [FORM_VARIANT.EDIT]: 'Edit this Node',
+  [FORM_VARIANT.EDIT]: 'Edit this Record',
   [FORM_VARIANT.NEW]: 'Add a new Record (:modelName)',
-  [FORM_VARIANT.DELETE]: 'Delete this Node',
-  [FORM_VARIANT.VIEW]: 'Node Contents',
+  [FORM_VARIANT.DELETE]: 'Delete this Record',
+  [FORM_VARIANT.VIEW]: 'Record Contents',
   [FORM_VARIANT.SEARCH]: 'Search for a Record (:modelName)',
 };
 
@@ -77,15 +77,19 @@ class NodeView extends React.PureComponent {
   }
 
   render() {
-    const { match: { params: { rid = null, modelName }, path }, history } = this.props;
+    const {
+      match: { params: { rid = null, modelName }, path },
+      history,
+    } = this.props;
     const { schema } = this.context;
     const variant = getVariantType(path);
 
     let defaultModelName = modelName;
+
     if (modelName) {
       const model = schema.get(modelName);
       defaultModelName = model.name;
-      if (!model || (model.isAbstract && ![FORM_VARIANT.SEARCH, FORM_VARIANT.NEW].includes(variant))) {
+      if (!model || (model.isAbstract && variant === FORM_VARIANT.EDIT)) {
         history.push(
           '/error',
           {

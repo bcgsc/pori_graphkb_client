@@ -396,7 +396,7 @@ class BaseRecordForm extends React.Component {
   }
 
   /**
-   * Renders the two statement specific input fields (impliedBy and SupportedBy)
+   * Renders the two edge specific input fields (out/in)
    */
   renderEdgeFields() {
     const { schema } = this.context;
@@ -441,7 +441,7 @@ class BaseRecordForm extends React.Component {
           value={content.in}
           disabled={variant === FORM_VARIANT.VIEW
             || actionInProgress
-            || FORM_VARIANT.EDIT}
+            || variant === FORM_VARIANT.EDIT}
           variant={variant}
           label="Target Record (in)"
         />

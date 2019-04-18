@@ -365,6 +365,8 @@ class DataTable extends React.Component {
                   }
                   return `${v}`;
                 }}
+
+                getLink={schema.getLink}
                 ChipProps={{
                   avatar: (<Avatar><LinkIcon /></Avatar>),
                   variant: 'outlined',

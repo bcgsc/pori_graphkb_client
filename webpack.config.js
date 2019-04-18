@@ -10,7 +10,7 @@ const TerserWebpackPlugin = require('terser-webpack-plugin');
 
 
 const SRC_PATH = path.resolve(__dirname, 'src');
-const DIST_PATH = path.resolve(__dirname, `v${process.env.npm_package_version}`, 'dist');
+const DIST_PATH = path.resolve(__dirname, 'dist');
 const INCLUDE = [
   path.resolve(__dirname, 'node_modules/@bcgsc'),
   SRC_PATH,
@@ -52,7 +52,7 @@ const moduleSettings = {
     },
     {
       // convert images to embeded hashes
-      test: /\.(bmp|gif|jpeg?|png)$/,
+      test: /\.(bmp|gif|jpeg?|png|ico)$/,
       loader: 'url-loader',
       include: INCLUDE,
       options: {
@@ -108,6 +108,7 @@ const plugins = [
     template: path.resolve(SRC_PATH, 'static/index.html'),
     filename: 'index.html',
     inject: true,
+    favicon: path.resolve(SRC_PATH, 'static/favicon.ico'),
     minify: {
       removeComments: false,
     },
@@ -197,6 +198,7 @@ module.exports = {
         terserOptions: {
           keep_classnames: true,
           module: true,
+          // sourceMap: true,
         },
       }),
     ],

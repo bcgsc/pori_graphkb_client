@@ -44,10 +44,11 @@ class NodeView extends React.PureComponent {
    */
   @boundMethod
   handleSubmit(result = null) {
+    const { schema } = this.context;
     const { history, match: { path } } = this.props;
     const variant = getVariantType(path);
     if (result && (variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.EDIT)) {
-      history.push(`/view/${result['@rid'].replace(/^#/, '')}`);
+      history.push(schema.getLink(result));
     } else if (variant === FORM_VARIANT.DELETE) {
       history.push('/');
     } else if (result && variant === FORM_VARIANT.SEARCH) {

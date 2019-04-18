@@ -332,7 +332,11 @@ class BaseRecordForm extends React.Component {
           onValueChange: this.handleValueChange,
           schema,
           variant,
-          disabled: variant === FORM_VARIANT.VIEW || actionInProgress,
+          disabled: (
+            variant === FORM_VARIANT.VIEW
+            || actionInProgress
+            || (variant === FORM_VARIANT.EDIT && model.isEdge)
+          ),
         });
         fields.push(wrapper);
       }
@@ -416,7 +420,9 @@ class BaseRecordForm extends React.Component {
           }}
           schema={schema}
           value={content.out}
-          disabled={variant === FORM_VARIANT.VIEW || actionInProgress}
+          disabled={variant === FORM_VARIANT.VIEW
+            || actionInProgress
+            || variant === FORM_VARIANT.EDIT}
           variant={variant}
           label="Source Record (out)"
         />
@@ -433,7 +439,9 @@ class BaseRecordForm extends React.Component {
           }}
           schema={schema}
           value={content.in}
-          disabled={variant === FORM_VARIANT.VIEW || actionInProgress}
+          disabled={variant === FORM_VARIANT.VIEW
+            || actionInProgress
+            || FORM_VARIANT.EDIT}
           variant={variant}
           label="Target Record (in)"
         />
@@ -587,7 +595,7 @@ class BaseRecordForm extends React.Component {
             {actionInProgress && (
               <CircularProgress size={50} />
             )}
-            {onSubmit && variant !== FORM_VARIANT.VIEW
+            {onSubmit && variant !== FORM_VARIANT.VIEW && (variant !== FORM_VARIANT.EDIT || !isEdge)
               ? (
                 <ActionButton
                   onClick={() => this.handleAction(onSubmit)}

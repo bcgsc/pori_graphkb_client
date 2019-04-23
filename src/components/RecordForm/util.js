@@ -57,7 +57,7 @@ const validateValue = (propModel, value, ignoreMandatory = false) => {
  *
  * @example
  * > sortAndGroupFields(model, {
- *    aboveFold: ['@class', '@rid', 'createdAt],
+ *    aboveFold: ['@class', '@rid', 'createdAt'],
  *    groups: [['createdBy', 'createdAt']]
  * })
  * {fields: ['@class', '@rid', ['createdBy', 'createdAt']], extraFields: []}

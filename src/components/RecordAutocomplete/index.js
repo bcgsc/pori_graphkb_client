@@ -7,6 +7,7 @@ import {
   NoSsr,
 } from '@material-ui/core';
 import { boundMethod } from 'autobind-decorator';
+import jc from 'json-cycle';
 
 import defaultComponents from './components';
 import './index.scss';
@@ -131,7 +132,9 @@ class RecordAutocomplete extends React.Component {
   componentDidUpdate(prevProps) {
     const { value } = this.props;
 
-    if (prevProps.value !== value) {
+    const currValue = jc.stringify(value);
+
+    if (jc.stringify(prevProps.value) !== currValue) {
       this.setState({ selected: value }); // eslint-disable-line react/no-did-update-set-state
     }
   }

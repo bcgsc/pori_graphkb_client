@@ -98,6 +98,23 @@ class RecordForm extends React.PureComponent {
     await this.getNodeFromUri();
   }
 
+  async componentDidUpdate(prevProps) {
+    const {
+      rid,
+      variant,
+      modelName,
+      value: { '@class': defaultModel },
+    } = this.props;
+    if (
+      rid !== prevProps.rid
+      || variant !== prevProps.variant
+      || modelName !== prevProps.modelName
+      || defaultModel !== prevProps.value['@class']
+    ) {
+      await this.getNodeFromUri();
+    }
+  }
+
   componentWillUnmount() {
     this.controllers.map(c => c.abort());
     this.controllers = [];
@@ -112,11 +129,14 @@ class RecordForm extends React.PureComponent {
       rid,
       variant,
       onError,
-      modelName,
       schema,
+      modelName,
+      value,
     } = this.props;
 
-    const model = schema.get(modelName || 'V');
+    const { '@class': defaultModel } = value;
+
+    const model = schema.get(modelName || defaultModel || modelName || 'V');
 
     if (variant !== FORM_VARIANT.NEW && variant !== FORM_VARIANT.SEARCH) {
       // If not a new form then should have existing content
@@ -128,10 +148,9 @@ class RecordForm extends React.PureComponent {
         if (result && result.length) {
           this.setState({ ...result[0] });
         } else {
-          onError({ name: 'RecordNotFound', message: `Unable to retrieve record details for ${rid}` });
+          onError({ error: { name: 'RecordNotFound', message: `Unable to retrieve record details for ${rid}` } });
         }
       } catch (err) {
-        console.error(err);
         onError({ error: err });
       }
       this.setState({ actionInProgress: false });
@@ -261,7 +280,7 @@ class RecordForm extends React.PureComponent {
           <Typography variant="h5" component="h1">{title}</Typography>
           {variant === FORM_VARIANT.VIEW && onTopClick && (
             <Button
-              onClick={onTopClick}
+              onClick={() => onTopClick(content)}
               variant="outlined"
               disabled={actionInProgress}
             >
@@ -271,7 +290,7 @@ class RecordForm extends React.PureComponent {
           )}
           {variant === FORM_VARIANT.EDIT && onTopClick && (
             <ActionButton
-              onClick={onTopClick}
+              onClick={() => onTopClick(content)}
               variant="outlined"
               message="Are you sure you want to leave this page?"
               disabled={actionInProgress}

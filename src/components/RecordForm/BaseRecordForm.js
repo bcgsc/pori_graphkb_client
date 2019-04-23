@@ -147,7 +147,9 @@ class BaseRecordForm extends React.Component {
       && modelName === prevProps.modelName // same type of record
       && jc.stringify(value) !== jc.stringify(content)
       && variant !== FORM_VARIANT.NEW
+      && variant !== prevProps.variant // only populate when the view type has changed
     ) {
+      // this is to populate the content when the user clicks the submit changes button to redirect from edit to view or similar
       this.populateFromRecord(value);
     }
   }

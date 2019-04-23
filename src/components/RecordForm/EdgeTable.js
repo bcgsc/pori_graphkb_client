@@ -82,7 +82,7 @@ const EdgeTable = (props) => {
                   return `${record}`;
                 }
               }
-              getLink={d => d && d['@rid'] && `/view/${d['@rid'].slice(1)}`}
+              getLink={schema.getLink}
             />
           </TableCell>
         </TableRow>

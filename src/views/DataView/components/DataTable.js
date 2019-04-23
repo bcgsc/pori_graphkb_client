@@ -90,7 +90,6 @@ class DataTable extends React.Component {
         field: '#',
         valueGetter: 'node.id',
         width: 75,
-        type: 'number',
       },
       ...schema.defineGridColumns(search),
     ]);
@@ -366,6 +365,8 @@ class DataTable extends React.Component {
                   }
                   return `${v}`;
                 }}
+
+                getLink={schema.getLink}
                 ChipProps={{
                   avatar: (<Avatar><LinkIcon /></Avatar>),
                   variant: 'outlined',

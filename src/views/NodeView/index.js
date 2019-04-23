@@ -11,10 +11,10 @@ import auth from '../../services/auth';
 
 
 const DEFAULT_TITLES = {
-  [FORM_VARIANT.EDIT]: 'Edit this Node',
+  [FORM_VARIANT.EDIT]: 'Edit this Record',
   [FORM_VARIANT.NEW]: 'Add a new Record (:modelName)',
-  [FORM_VARIANT.DELETE]: 'Delete this Node',
-  [FORM_VARIANT.VIEW]: 'Node Contents',
+  [FORM_VARIANT.DELETE]: 'Delete this Record',
+  [FORM_VARIANT.VIEW]: 'Record Contents',
   [FORM_VARIANT.SEARCH]: 'Search for a Record (:modelName)',
 };
 
@@ -44,10 +44,11 @@ class NodeView extends React.PureComponent {
    */
   @boundMethod
   handleSubmit(result = null) {
+    const { schema } = this.context;
     const { history, match: { path } } = this.props;
     const variant = getVariantType(path);
     if (result && (variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.EDIT)) {
-      history.push(`/view/${result['@rid'].replace(/^#/, '')}`);
+      history.push(schema.getLink(result));
     } else if (variant === FORM_VARIANT.DELETE) {
       history.push('/');
     } else if (result && variant === FORM_VARIANT.SEARCH) {
@@ -77,15 +78,19 @@ class NodeView extends React.PureComponent {
   }
 
   render() {
-    const { match: { params: { rid = null, modelName }, path }, history } = this.props;
+    const {
+      match: { params: { rid = null, modelName }, path },
+      history,
+    } = this.props;
     const { schema } = this.context;
     const variant = getVariantType(path);
 
     let defaultModelName = modelName;
+
     if (modelName) {
       const model = schema.get(modelName);
       defaultModelName = model.name;
-      if (!model || (model.isAbstract && ![FORM_VARIANT.SEARCH, FORM_VARIANT.NEW].includes(variant))) {
+      if (!model || (model.isAbstract && variant === FORM_VARIANT.EDIT)) {
         history.push(
           '/error',
           {
@@ -100,16 +105,21 @@ class NodeView extends React.PureComponent {
       defaultModelName = 'User';
     } else if (path.includes('/usergroup/')) {
       defaultModelName = 'UserGroup';
+    } else if (path.includes('/e/')) {
+      defaultModelName = 'E';
     }
 
     // redirect when the user clicks the top left button
-    const onTopClick = () => {
-      const newPath = path
+    const onTopClick = (record) => {
+      let newPath = path
         .replace(variant,
           variant === FORM_VARIANT.EDIT
             ? FORM_VARIANT.VIEW
             : FORM_VARIANT.EDIT)
         .replace(':rid', rid);
+      if (record['@class'] || modelName) {
+        newPath = newPath.replace(':modelName', schema.get(record['@class'] || modelName).routeName.slice(1));
+      }
       history.push(newPath);
     };
 

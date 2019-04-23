@@ -121,15 +121,15 @@ const defaultSuggestionHandler = (model, opt = {}) => {
 
     const variantWhere = [{
       operator: 'AND',
-      comparisons: terms.map(term => ({
+      comparisons: terms.map(value => ({
         operator: 'OR',
         comparisons: [
-          { attr: 'reference1.name', value: term, operator },
-          { attr: 'reference1.sourceId', value: term },
-          { attr: 'reference2.name', value: term, operator },
-          { attr: 'reference2.sourceId', value: term },
-          { attr: 'type.name', value: term, operator },
-          { attr: 'type.sourceId', value: term },
+          { attr: 'reference1.name', value, operator },
+          { attr: 'reference1.sourceId', value },
+          { attr: 'reference2.name', value, operator },
+          { attr: 'reference2.sourceId', value },
+          { attr: 'type.name', value, operator },
+          { attr: 'type.sourceId', value },
         ],
       })),
     }];

@@ -238,7 +238,7 @@ class Schema {
     } else {
       showEdges.push('out_ImpliedBy', 'out_SupportedBy');
       allProps = this.get('Statement').queryProperties;
-      showByDefault.push('source', 'appliesTo', 'relevance');
+      showByDefault.push('source', 'appliesTo', 'relevance', 'evidenceLevel');
     }
 
     const defineEdgeColumn = (name) => {

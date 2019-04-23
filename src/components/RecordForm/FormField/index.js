@@ -21,7 +21,6 @@ import EmbeddedNodeForm from '../EmbeddedNodeForm';
 import './index.scss';
 import { FORM_VARIANT } from '../util';
 
-const DEFAULT_MIN_CHARS = 3;
 
 /**
  * Generate the field component for a form. Uses the property model to decide
@@ -151,7 +150,6 @@ const FormField = (props) => {
       errorText: errorFlag ? error.message || error : '',
       isMulti: type === 'linkset',
       label: label || name,
-      minSearchLength: DEFAULT_MIN_CHARS,
       name,
       onChange: onValueChange,
       required: mandatory,

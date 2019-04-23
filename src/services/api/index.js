@@ -93,16 +93,23 @@ const del = (endpoint, callOptions) => {
  */
 const defaultSuggestionHandler = (model, opt = {}) => {
   const searchHandler = (textInput) => {
-    const terms = textInput.split(/\s+/).filter(term => term.length >= MIN_WORD_LENGTH);
+    let terms = textInput.split(/\s+/);
+    let operator = 'CONTAINSTEXT';
+    if (terms.length > 1) {
+      terms = terms.filter(term => term.length >= MIN_WORD_LENGTH);
+    } else if (terms.length === 1 && terms[0].length < MIN_WORD_LENGTH) {
+      operator = '=';
+    }
+
     const { excludeClasses = [], ...rest } = opt;
 
     const ontologyWhere = [{
       operator: 'OR',
-      comparisons: terms.map(term => ({ attr: 'name', value: term, operator: 'CONTAINSTEXT' })),
+      comparisons: terms.map(term => ({ attr: 'name', value: term, operator })),
     }];
     if (model.properties.sourceId) {
       ontologyWhere[0].comparisons.push(
-        ...terms.map(term => ({ attr: 'sourceId', value: term, operator: 'CONTAINSTEXT' })),
+        ...terms.map(term => ({ attr: 'sourceId', value: term, operator })),
       );
     }
 
@@ -117,11 +124,11 @@ const defaultSuggestionHandler = (model, opt = {}) => {
       comparisons: terms.map(term => ({
         operator: 'OR',
         comparisons: [
-          { attr: 'reference1.name', value: term, operator: 'CONTAINSTEXT' },
+          { attr: 'reference1.name', value: term, operator },
           { attr: 'reference1.sourceId', value: term },
-          { attr: 'reference2.name', value: term, operator: 'CONTAINSTEXT' },
+          { attr: 'reference2.name', value: term, operator },
           { attr: 'reference2.sourceId', value: term },
-          { attr: 'type.name', value: term, operator: 'CONTAINSTEXT' },
+          { attr: 'type.name', value: term, operator },
           { attr: 'type.sourceId', value: term },
         ],
       })),

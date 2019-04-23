@@ -156,6 +156,9 @@ const FormField = (props) => {
       onChange: onValueChange,
       required: mandatory,
       value,
+      DetailChipProps: {
+        getLink: details => `/view/${details['@rid'].slice(1)}`,
+      },
     };
 
     if (linkedClass && (linkedClass.isAbstract || isPutativeEdge)) {
@@ -189,6 +192,7 @@ const FormField = (props) => {
         <RecordAutocomplete
           {...autoProps}
           DetailChipProps={{
+            ...autoProps.DetailChipProps,
             valueToString: (record) => {
               if (record && record['@rid']) {
                 return schema.getLabel(record, false);

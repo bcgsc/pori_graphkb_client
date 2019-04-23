@@ -47,6 +47,7 @@ import './index.scss';
   * @property {string} props.label the label for this form field
   * @property {string} props.name the name of the field, used for propgating events
   * @property {string} props.placeholder the text placeholder for the search box
+  * @property {boolean} props.singleLoad load the initial options and do not requery
   */
 class RecordAutocomplete extends React.Component {
   static propTypes = {
@@ -68,6 +69,7 @@ class RecordAutocomplete extends React.Component {
     placeholder: PropTypes.string,
     required: PropTypes.bool,
     searchHandler: PropTypes.func.isRequired,
+    singleLoad: PropTypes.bool,
     value: PropTypes.oneOfType([PropTypes.object, PropTypes.arrayOf(PropTypes.object)]),
   };
 
@@ -91,10 +93,11 @@ class RecordAutocomplete extends React.Component {
     getOptionLabel: opt => opt.name,
     isMulti: false,
     label: '',
-    minSearchLength: 4,
+    minSearchLength: 1,
     onChange: () => {},
     placeholder: 'Search Records by Name or ID',
     required: false,
+    singleLoad: false,
     value: null,
   };
 
@@ -117,8 +120,8 @@ class RecordAutocomplete extends React.Component {
   }
 
   async componentDidMount() {
-    const { searchHandler, minSearchLength, defaultOptionsHandler } = this.props;
-    if (minSearchLength === 0) {
+    const { searchHandler, singleLoad, defaultOptionsHandler } = this.props;
+    if (singleLoad) {
       this.controller = searchHandler('');
       const initialOptions = await this.controller.request();
       this.setState({ initialOptions });
@@ -204,10 +207,10 @@ class RecordAutocomplete extends React.Component {
       getOptionLabel,
       isMulti,
       label,
-      minSearchLength,
       placeholder,
       required,
       searchHandler,
+      singleLoad,
     } = this.props;
 
     const {
@@ -219,7 +222,7 @@ class RecordAutocomplete extends React.Component {
     let BaseSelectComponent;
     let uniqueProps;
 
-    if (minSearchLength === 0) {
+    if (singleLoad) {
       BaseSelectComponent = Select;
       uniqueProps = { options: initialOptions };
     } else {

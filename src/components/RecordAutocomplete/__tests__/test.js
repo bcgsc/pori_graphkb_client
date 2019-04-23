@@ -87,7 +87,7 @@ describe('RecordLinkSuggest', () => {
     expect(wrapper.find(SingleValue)).toHaveLength(0);
     expect(onChange).toHaveBeenCalled();
   });
-  test('renders options immediately for minSearchLength of 0', async () => {
+  test('renders options immediately for singleLoad', async () => {
     const records = [{ name: 'bob' }, { name: 'alice' }];
     const wrapper = mount(
       <RecordAutocomplete
@@ -95,7 +95,7 @@ describe('RecordLinkSuggest', () => {
         onChange={jest.fn()}
         itemToString={v => v.name}
         searchHandler={mockSearchHandler(records)}
-        minSearchLength={0}
+        singleLoad
       />,
     );
     await wrapper.find(RecordAutocomplete).instance().componentDidMount();

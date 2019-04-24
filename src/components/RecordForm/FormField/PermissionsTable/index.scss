@@ -1,19 +1,18 @@
 @import '../../../../globals';
 
 .permissions-table {
-
   &__row:nth-child(odd) {
-    background: #e8e8e8;
+    background: var(--palette__grey--300);
   }
 
   &__header {
-    background: $background-light;
+    background: var(--palette__background--default);
     border: none;
     position: sticky;
     top: -1px;
 
     th {
-      background: $background-light;
+      background: var(--palette__background--default);
       position: sticky;
       top: -1px;
       z-index: 1;

@@ -1,4 +1,4 @@
-@import "../../globals";
+@import '../../globals';
 
 .notification-drawer {
   @include paper;
@@ -14,7 +14,7 @@
   }
 
   button {
-    color: white;
+    color: var(--palette__common--white);
     margin-left: 8px;
   }
 }

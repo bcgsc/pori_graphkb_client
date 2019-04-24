@@ -29,6 +29,7 @@ testem.log
 Thumbs.db
 
 *.css
+!src/_theme.css
 /src/index.css
 /jsdoc
 /build

@@ -3,7 +3,7 @@
 .link {
   animation: fade-in();
   cursor: pointer;
-  stroke-opacity: .3;
+  stroke-opacity: 0.3;
   stroke-width: 2.5;
 }
 
@@ -16,7 +16,7 @@
 
 .link-widen {
   cursor: pointer;
-  stroke: white;
+  stroke: var(--palette__common--white);
   stroke-opacity: 0;
   stroke-width: 10;
 }

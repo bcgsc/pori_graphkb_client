@@ -1,5 +1,4 @@
-@import "../../globals";
-
+@import '../../globals';
 
 .error-wrapper {
   align-items: center;
@@ -8,7 +7,7 @@
   width: 100%;
 
   a {
-    color: $md-secondary-color;
+    color: var(--palette__secondary--main);
     text-decoration: none;
   }
 
@@ -19,7 +18,7 @@
   }
 
   h2 {
-    color: $md-warn;
+    color: var(--palette__error--main);
     margin-top: 40px;
   }
 
@@ -28,7 +27,6 @@
     margin-bottom: 20px;
   }
 }
-
 
 #copy-button {
   margin: 8px auto;

@@ -1,4 +1,5 @@
-@import "globals";
+@import 'theme';
+@import 'globals';
 
 html {
   box-sizing: border-box;
@@ -11,10 +12,10 @@ html {
 }
 
 body {
-  margin: 0;
-  padding: 0;
   font-family: sans-serif;
+  margin: 0;
   overflow-x: hidden;
+  padding: 0;
 }
 
 * {
@@ -22,8 +23,8 @@ body {
 }
 
 a {
+  color: var(--palette__secondary--main);
   text-decoration: none;
-  color: $md-secondary-color;
   &[disabled] {
     pointer-events: none;
   }

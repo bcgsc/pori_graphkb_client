@@ -45,7 +45,7 @@
       padding-left: 10px;
 
       &__substitution {
-        color: $md-secondary-color;
+        color: var(--palette__secondary--main);
         font-weight: 600;
         display: inline;
       }
@@ -89,4 +89,3 @@
     display: block;
   }
 }
-

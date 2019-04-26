@@ -88,19 +88,21 @@
     "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.14",
-    "webpack-manifest-plugin": "^2.0.4"
+    "webpack-manifest-plugin": "^2.0.4",
+    "webpack-merge": "^4.2.1"
   },
   "scripts": {
     "clean": "rm -r dist stats.json",
-    "build": "NODE_ENV=production webpack -p --mode production",
+    "build": "NODE_ENV=production webpack -p --mode production --config config/webpack/prod.js",
+    "build:dev": "NODE_ENV=production webpack -p --mode production --config config/webpack/dev.js",
     "compress": "tar cvfz v${npm_package_version}.tar.gz dist",
-    "analyze": "NODE_ENV=production webpack --profile --json > stats.json; webpack-bundle-analyzer stats.json dist",
-    "start": "webpack-dev-server --mode development",
+    "analyze": "NODE_ENV=production webpack --profile --json --config config/webpack/prod.js > stats.json; webpack-bundle-analyzer stats.json dist",
+    "start": "webpack-dev-server --mode development --config config/webpack/dev.js",
     "test:local": "NODE_ENV=local jest --env=jsdom --config config/jest.config.js",
     "test": "NODE_ENV=test jest --env=jsdom --config config/jest.config.js",
     "test:watch": "NODE_ENV=test jest --env=jsdom --config config/jest.config.js --watch",
     "test:ci": "NODE_ENV=test jest --env=jsdom --config config/jest.config.js",
-    "start:prod": "NODE_ENV=production serve dist -s"
+    "serve": "NODE_ENV=production serve dist -s"
   },
   "sasslintConfig": "config/sass-lint.yml"
 }

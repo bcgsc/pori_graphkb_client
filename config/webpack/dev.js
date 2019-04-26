@@ -3,7 +3,7 @@ const webpack = require('webpack');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
 
 
-const common = require('./prod.js');
+const common = require('./common.js');
 
 
 const devConfig = {

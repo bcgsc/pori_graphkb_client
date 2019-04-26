@@ -201,6 +201,11 @@ class BaseRecordForm extends React.Component {
       if (!record.in) {
         errors.in = 'Required Value';
       }
+
+      if (newContent.out && newContent.in && newContent.out['@rid'] === newContent.in['@rid']) {
+        errors.out = 'Must not equal the incoming (in) vertex';
+        errors.in = 'Must not equal the outgoing (out) vertex';
+      }
     }
     this.setState({ content: newContent, errors });
   }

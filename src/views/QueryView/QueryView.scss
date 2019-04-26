@@ -1,7 +1,7 @@
 @import '../../globals';
 
 .search {
-  border: 1px solid var(--palette__grey--A100);
+  border: 1px solid #{$palette__grey--A100};
   border-radius: 4px;
   left: 16px;
   max-width: unset;

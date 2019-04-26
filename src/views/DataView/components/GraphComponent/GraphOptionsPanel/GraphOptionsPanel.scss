@@ -20,21 +20,21 @@
 
   .graph-input-wrapper {
     svg {
-      color: $md-secondary-color;
+      color: var(--palette__secondary--main);
     }
   }
 
   span {
     .label {
-      color: $md-primary-color;
+      color: var(--palette__primary--main);
       font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
-      font-size: .7em;
+      font-size: 0.7em;
       margin: 0;
     }
   }
 
   .graph-input {
-    border: 1px solid rgba(0, 0, 0, .23);
+    border: 1px solid var(--palette__grey--A100);
     border-radius: 4px;
     overflow: hidden;
 
@@ -42,7 +42,7 @@
       background-color: unset;
       border: none;
       font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
-      font-size: .9em;
+      font-size: 0.9em;
       width: 100%;
 
       &:focus {

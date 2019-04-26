@@ -7,17 +7,18 @@ $closed-drawer-width: 56px;
 .main-view {
   height: 100vh;
   min-width: $readable-min;
-  overflow: hidden;  // TODO: det what is causing the height overflow
+  overflow: hidden; // TODO: det what is causing the height overflow
 
   .appbar {
-    color: white;
+    color: var(--palette__common--white);
     flex-direction: row;
     float: right;
     height: $banner-height;
     justify-content: center;
     left: 0;
     right: 0;
-    transition: left #{$drawer-transition-speed};
+    transition-duration: var(--transitions__duration--standard);
+    transition-property: left;
     width: auto;
     z-index: calc(#{$drawer-z-index} + 3);
 
@@ -34,17 +35,17 @@ $closed-drawer-width: 56px;
       white-space: nowrap;
 
       * {
-        color: white;
+        color: var(--palette__common--white);
         display: inline-block;
       }
 
       span {
-        margin-left: .5rem;
+        margin-left: 0.5rem;
       }
     }
 
     &__btn {
-      animation: fade-in(.2s);
+      animation: fade-in(0.2s);
       margin: auto 4px;
 
       &--drawer-open {
@@ -53,7 +54,7 @@ $closed-drawer-width: 56px;
     }
 
     &__btn:disabled {
-      color: white;
+      color: var(--palette__common--white);
     }
   }
 
@@ -69,12 +70,11 @@ $closed-drawer-width: 56px;
   }
 
   &__content {
-    background-color: rgba(0, 0, 0, 0.03);
     height: calc(100% - #{$banner-height});
     margin-left: 0;
     margin-top: $banner-height;
     overflow-y: auto;
-    transition-duration: $drawer-transition-speed;
+    transition-duration: var(--transitions__duration--standard);
     transition-property: width, margin-left;
     width: 100%;
 
@@ -104,9 +104,9 @@ $closed-drawer-width: 56px;
 }
 
 ::selection {
-  -webkit-text-fill-color: white;
-  background: rgba($md-primary-color, .8);
-  color: white;
+  -webkit-text-fill-color: var(--palette__common--white);
+  background: var(--palette__primary--light);
+  color: var(--palette__common--white);
 }
 
 .user-dropdown {
@@ -124,7 +124,7 @@ $closed-drawer-width: 56px;
   }
 
   &__icon {
-    color: white;
+    color: var(--palette__common--white);
 
     svg {
       font-size: 32px;
@@ -132,7 +132,7 @@ $closed-drawer-width: 56px;
     }
 
     span aside {
-      color: white;
+      color: var(--palette__common--white);
     }
   }
 }
@@ -142,7 +142,7 @@ $closed-drawer-width: 56px;
   display: flex;
   flex-direction: column;
   height: 100%;
-  transition-duration: $drawer-transition-speed;
+  transition-duration: var(--transitions__duration--standard);
   transition-property: width;
   width: $drawer-width;
   z-index: calc(#{$drawer-z-index} + 4);
@@ -168,7 +168,7 @@ $closed-drawer-width: 56px;
   }
 
   &__footer {
-    background: $background-light;
+    background: var(--palette__background--default);
     bottom: 0;
     flex-shrink: 0;
     height: 57px;

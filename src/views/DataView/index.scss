@@ -5,7 +5,7 @@
   width: 100%;
 
   &--squished {
-    transition: width $drawer-transition-speed;
+    transition: width var(--transitions__duration--standard);
     width: calc(100% - #{$secondary-drawer-width});
   }
 

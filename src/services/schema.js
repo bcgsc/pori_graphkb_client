@@ -4,7 +4,7 @@ import kbSchema from '@bcgsc/knowledgebase-schema';
 
 import api from './api';
 
-const { schema: SCHEMA_DEFN, util: { looksLikeRID } } = kbSchema;
+const { schema: SCHEMA_DEFN } = kbSchema;
 
 const MAX_LABEL_LENGTH = 30;
 
@@ -18,6 +18,8 @@ class Schema {
     this.normalizedModelNames = {};
     Object.values(schema).forEach((model) => {
       this.normalizedModelNames[model.name.toLowerCase()] = model;
+      this.normalizedModelNames[model.routeName] = model;
+      this.normalizedModelNames[model.routeName.slice(1)] = model;
     });
   }
 
@@ -76,6 +78,15 @@ class Schema {
       return obj['@rid'];
     } catch (err) {} // eslint-disable-line
     return obj;
+  }
+
+  @boundMethod
+  getLink(obj) {
+    if (obj && obj['@rid']) {
+      const { routeName } = this.get(obj) || this.get('V');
+      return `/view${routeName}/${obj['@rid'].slice(1)}`;
+    }
+    return '';
   }
 
   /**
@@ -227,7 +238,7 @@ class Schema {
     } else {
       showEdges.push('out_ImpliedBy', 'out_SupportedBy');
       allProps = this.get('Statement').queryProperties;
-      showByDefault.push('source', 'appliesTo', 'relevance');
+      showByDefault.push('source', 'appliesTo', 'relevance', 'evidenceLevel');
     }
 
     const defineEdgeColumn = (name) => {

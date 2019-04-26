@@ -19,4 +19,13 @@
       max-width: $readable-max;
     }
   }
+
+  &__panel-header {
+    align-items: flex-end;
+    display: flex;
+
+    :last-child:not(:first-child) {
+      margin-left: auto;
+    }
+  }
 }

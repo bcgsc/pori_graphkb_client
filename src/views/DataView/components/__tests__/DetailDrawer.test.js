@@ -15,6 +15,7 @@ const testSchema = new Schema({
       dependency: { name: 'dependency', type: 'link' },
       '@rid': { name: '@rid', type: 'string' },
     },
+    routeName: '/test',
     identifiers: ['@rid'],
     inherits: ['Ontology'],
     getPreview: () => 'test',
@@ -26,6 +27,7 @@ const testSchema = new Schema({
       { name: 'AliasOf' },
     ],
     name: 'E',
+    routeName: '/e',
   },
   AliasOf: {
     name: 'AliasOf',
@@ -33,11 +35,13 @@ const testSchema = new Schema({
     identifiers: ['@rid'],
     properties: {},
     getPreview: () => 'aliasof',
+    routeName: '/aliasof',
   },
   V: {
     name: 'V',
     inherits: [],
     properties: {},
+    routeName: '/v',
   },
   Ontology: {
     name: 'Ontology',
@@ -51,6 +55,7 @@ const testSchema = new Schema({
     },
     identifiers: ['@class', 'name', 'sourceId', 'source.name'],
     getPreview: () => 'ontology',
+    routeName: '/ontology',
   },
 });
 

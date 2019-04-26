@@ -22,10 +22,10 @@
     margin-right: 2px;
 
     &--deleted {
-      background-color: lighten($md-warn, 25%);
+      background-color: var(--palette__error--main);
 
       :focus {
-        background-color: lighten($md-warn, 22%);
+        background-color: var(--palette__error--light);
       }
     }
   }

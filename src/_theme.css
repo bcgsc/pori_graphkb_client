@@ -1,0 +1,52 @@
+:root {
+  /**
+    variables that match the MUI generated styles
+
+    these must be updated if the theme is altered
+    **/
+  /* MUI palette primary */
+  --palette__primary--light: #4682b4;
+  --palette__primary--main: #26328c;
+  --palette__primary--dark: #1f2b65;
+  --palette__primary--contrast-text: #ffffff;
+  /* MUI palette secondary */
+  --palette__secondary--light: #a0ebd8;
+  --palette__secondary--main: #54b198;
+  --palette__secondary--dark: #1f6552;
+  --palette__secondary--contrast-text: #ffffff;
+  /* own extra light version */
+  --palette__secondary--extra-light: rgba(#a0ebd8, 0.5);
+
+  /* MUI text colors (default) */
+  --palette__text--disabled: rgba(0, 0, 0, 0.38);
+  --palette__text--hint: rgba(0, 0, 0, 0.38);
+  --palette__text--primary: rgba(0, 0, 0, 0.7); /* custom */
+  --palette__text--secondary: rgba(0, 0, 0, 0.54);
+
+  /* MUI palette common (default) */
+  --palette__common--white: #ffffff;
+  --palette__common--black: #000000;
+
+  /* MUI palette background (default) */
+  --palette__background--default: #fafafa;
+
+  /* MUI shadows (default) */
+  --shadows--level-4: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+
+  /* MUI palette greys (default) */
+  --palette__grey--300: #e0e0e0;
+  --palette__grey--A100: #d5d5d5;
+
+  /* MUI palette error (default) */
+  --palette__error--light: #e57373;
+  --palette__error--main: #f44336;
+  --palette__error--dark: #d32f2f;
+  --palette__error--contrast-text: #ffffff;
+
+  /* MUI transitions */
+  --transitions__duration--standard: 0.3s;
+
+  /* MUI  palette divider (default) */
+  --palette__divider: rgba(0, 0, 0, 0.12);
+}

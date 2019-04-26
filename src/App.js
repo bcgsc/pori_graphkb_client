@@ -20,18 +20,28 @@ const theme = createMuiTheme({
   direction: 'ltr',
   palette: {
     primary: {
-      main: '#26328C',
+      main: 'var(--palette__primary--main)',
+      light: 'var(--palette__primary--light)',
+      dark: 'var(--palette__primary--dark)',
+      contrastText: 'var(--palette__primary--contrast-text)',
     },
     secondary: {
-      main: '#54B198',
-      light: '#CCCFE2',
+      main: 'var(--palette__secondary--main)',
+      light: 'var(--palette__secondary--light)',
+      dark: 'var(--palette__secondary--dark)',
+      contrastText: 'var(--palette__secondary--contrast-text)',
     },
     error: {
-      main: '#d32f2f',
+      main: 'var(--palette__error--main)',
+      light: 'var(--palette__error--light)',
+      dark: 'var(--palette__error--dark)',
+      contrastText: 'var(--palette__error--contrast-text)',
     },
     text: {
-      primary: 'rgba(0, 0, 0, 0.7)',
-      secondary: 'rgba(0, 0, 0, 0.54)',
+      primary: 'var(--palette__text--primary)',
+      secondary: 'var(--palette__text--secondary)',
+      disabled: 'var(--palette__text--disabled)',
+      hint: 'var(--palette__text--hint)',
     },
   },
   typography: {

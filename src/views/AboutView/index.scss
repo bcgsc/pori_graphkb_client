@@ -1,6 +1,5 @@
 @import '../../globals';
 
-
 .about-page {
   height: 100%;
   padding: 0; // move the padding below the tabs
@@ -9,7 +8,9 @@
     margin-right: 5%;
     padding: $default-spacing;
 
-    h1, h2, h3 {
+    h1,
+    h2,
+    h3 {
       text-align: center;
       margin-bottom: 20px;
     }
@@ -23,11 +24,10 @@
   .tabs-content {
     max-height: calc(100% - #{$tab-bar-height});
     overflow-y: scroll;
-
   }
 
   .tabs-bar {
-    box-shadow: $subtle-shadow;
+    box-shadow: var(--shadows--level-4);
     height: $tab-bar-height;
   }
 
@@ -38,15 +38,15 @@
 
   #about-notation {
     // Fix for non mui components
-    color: rgba(0, 0, 0, .7);
+    color: var(--palette__text--primary);
     font-family: $roboto;
     font-size: 1rem;
     font-weight: 400;
-    letter-spacing: .00938em;
+    letter-spacing: 0.00938em;
     line-height: 1.5;
 
     pre {
-      background-color: $background-dark;
+      background-color: var(--palette__background--default);
       padding: 5px;
 
       code {
@@ -56,10 +56,10 @@
 
     h1,
     h2 {
-      color: rgba(0, 0, 0, 0.7);
+      color: var(--palette__text--primary);
       font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
       font-weight: 400;
-      letter-spacing: 0em;
+      letter-spacing: 0;
       line-height: 1.33;
     }
 
@@ -67,7 +67,6 @@
       font-size: 1.5rem;
       margin-top: 0;
     }
-
 
     h2 {
       font-size: 1.2rem;
@@ -90,7 +89,7 @@
   .pie-chart {
     max-height: calc(100vw - 60px);
     text {
-      fill: white;
+      fill: var(--palette__common--white);
     }
   }
   @media (max-width: #{$breakpoint-med}) {
@@ -104,7 +103,7 @@
     top: -1px;
 
     th {
-      background: $background-light;
+      background: var(--palette__background--default);
       position: sticky;
       top: -1px;
       z-index: 1;
@@ -114,9 +113,9 @@
 
 .letter-icon {
   align-items: center;
-  background-color: $md-secondary-color;
+  background-color: var(--palette__secondary--main);
   border-radius: 50%;
-  color: white;
+  color: var(--palette__common--white);
   display: flex;
   font-family: $roboto;
   font-size: 1rem;

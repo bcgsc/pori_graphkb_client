@@ -1,12 +1,9 @@
 @import '../../globals';
 
-$lightened-secondary: rgba($md-secondary-color, .2);
-
 .qbv {
   display: flex;
 
   .qbv-header {
-
     > svg {
       margin-bottom: auto;
       margin-right: 1rem;

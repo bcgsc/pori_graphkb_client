@@ -1,10 +1,10 @@
 @import '../../../../globals';
 @import '../../index.scss';
 
-
 .detail-drawer {
-  max-width: 100%;  // use full screen for ipad/mobile
-  transition: width #{$drawer-transition-speed};
+  max-width: 100%; // use full screen for ipad/mobile
+  transition-duration: var(--transitions__duration--standard);
+  transition-property: width;
   width: 100%;
   word-break: break-word;
   z-index: $drawer-z-index;
@@ -45,7 +45,7 @@
   }
 
   &__relationships-subheader {
-    background: $background-light;
+    background: var(--palette__background--default);
     z-index: 1;
   }
 
@@ -96,7 +96,6 @@
 .nested-spacer {
   width: 1rem;
 }
-
 
 .detail-important,
 .detail-other,

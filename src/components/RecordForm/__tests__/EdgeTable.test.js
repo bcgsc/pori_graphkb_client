@@ -24,8 +24,8 @@ describe('EdgeTable', () => {
   );
   test('Renders multiple edges', () => {
     const edges = [
-      { out: { key: 'target1' }, key: 'edge1' },
-      { in: { key: 'target2' }, key: 'edge2' },
+      { out: { key: 'target1' }, key: 'edge1', '@class': 'E' },
+      { in: { key: 'target2' }, key: 'edge2', '@class': 'E' },
     ];
     const wrapper = mount((
       <KBContext.Provider value={{ schema: new Schema() }}>
@@ -41,8 +41,12 @@ describe('EdgeTable', () => {
   });
   test('Infers direction based on sourceId', () => {
     const edges = [
-      { out: { key: 'target1' }, key: 'edge1', in: { key: 'target0' } },
-      { in: { key: 'target2' }, key: 'edge2', out: { key: 'target0' } },
+      {
+        out: { key: 'target1' }, key: 'edge1', in: { key: 'target0' }, '@class': 'E',
+      },
+      {
+        in: { key: 'target2' }, key: 'edge2', out: { key: 'target0' }, '@class': 'E',
+      },
     ];
     const wrapper = mount((
       <KBContext.Provider value={{ schema: new Schema() }}>

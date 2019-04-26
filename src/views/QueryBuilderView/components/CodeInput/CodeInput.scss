@@ -5,14 +5,14 @@
     width: 100%;
     box-sizing: border-box;
     min-height: 200px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--palette__grey--A100);
     border-radius: 4px;
     resize: none;
-    font-family: "Roboto Mono", monospace;
+    font-family: 'Roboto Mono', monospace;
     -webkit-tap-highlight-color: transparent;
     outline: none;
     line-height: 150%;
-    color: rgba(0, 0, 0, 0.55);
+    color: var(--palette__text--secondary);
     white-space: pre;
   }
   .field-textarea {

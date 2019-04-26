@@ -20,11 +20,13 @@ class FilteredRecordAutocomplete extends React.PureComponent {
     disabled: PropTypes.bool,
     isPutativeEdge: PropTypes.bool,
     linkedClassName: PropTypes.string.isRequired,
+    DetailChipProps: PropTypes.object,
   };
 
   static defaultProps = {
     disabled: false,
     isPutativeEdge: false,
+    DetailChipProps: {},
   };
 
   constructor(props) {
@@ -33,6 +35,13 @@ class FilteredRecordAutocomplete extends React.PureComponent {
     this.state = {
       selectedClassName: linkedClassName,
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    const { linkedClassName } = this.props;
+    if (linkedClassName !== prevProps.linkedClassName) {
+      this.setState({ selectedClassName: linkedClassName });
+    }
   }
 
   @boundMethod
@@ -47,6 +56,7 @@ class FilteredRecordAutocomplete extends React.PureComponent {
       disabled,
       isPutativeEdge,
       linkedClassName,
+      DetailChipProps,
       ...rest
     } = this.props;
     const {
@@ -96,6 +106,7 @@ class FilteredRecordAutocomplete extends React.PureComponent {
           <RecordAutocomplete
             {...rest}
             DetailChipProps={{
+              ...DetailChipProps,
               valueToString,
               getDetails: details => isPutativeEdge
                 ? details.target

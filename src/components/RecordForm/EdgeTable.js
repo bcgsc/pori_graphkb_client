@@ -82,6 +82,7 @@ const EdgeTable = (props) => {
                   return `${record}`;
                 }
               }
+              getLink={schema.getLink}
             />
           </TableCell>
         </TableRow>

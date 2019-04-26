@@ -7,14 +7,17 @@ const testSchema = new Schema({
   V: {
     name: 'V',
     properties: [],
+    routeName: '/v',
   },
   Ontology: {
     name: 'Ontology',
     subclasses: [{ name: 'Disease' }],
+    routeName: '/ontology',
   },
   Variant: {
     name: 'Variant',
     subclasses: [],
+    routeName: '/variant',
   },
   Disease: {
     name: 'Disease',
@@ -27,15 +30,18 @@ const testSchema = new Schema({
       { name: 'subsets', type: 'embeddedset' },
       { name: 'linkprop', type: 'link', mandatory: true },
     ],
+    routeName: '/disease',
   },
   edge: {
     name: 'edge',
     inherits: ['E'],
     isEdge: true,
+    routeName: '/edge',
   },
   E: {
     name: 'E',
     subclasses: [{ name: 'edge' }],
+    routeName: '/e',
   },
 });
 

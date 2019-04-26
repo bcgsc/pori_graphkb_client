@@ -21,7 +21,6 @@ import EmbeddedNodeForm from '../EmbeddedNodeForm';
 import './index.scss';
 import { FORM_VARIANT } from '../util';
 
-const DEFAULT_MIN_CHARS = 3;
 
 /**
  * Generate the field component for a form. Uses the property model to decide
@@ -151,11 +150,13 @@ const FormField = (props) => {
       errorText: errorFlag ? error.message || error : '',
       isMulti: type === 'linkset',
       label: label || name,
-      minSearchLength: DEFAULT_MIN_CHARS,
       name,
       onChange: onValueChange,
       required: mandatory,
       value,
+      DetailChipProps: {
+        getLink: schema.getLink,
+      },
     };
 
     if (linkedClass && (linkedClass.isAbstract || isPutativeEdge)) {
@@ -170,9 +171,15 @@ const FormField = (props) => {
       const searchOptions = {};
 
       if (linkedClass) {
-        if (['Source', 'UserGroup', 'User'].includes(linkedClass.name)) {
-          autoProps.searchHandler = () => api.get(`${linkedClass.routeName}?neighbors=1`, { forceListReturn: true });
-          autoProps.minSearchLength = 0;
+        if (['Source', 'UserGroup', 'User', 'EvidenceLevel'].includes(linkedClass.name)) {
+          autoProps.searchHandler = () => api.get(`${
+            linkedClass.routeName
+          }?neighbors=1&orderBy=${
+            linkedClass.name === 'EvidenceLevel'
+              ? 'sourceId'
+              : 'name'
+          }`, { forceListReturn: true });
+          autoProps.singleLoad = true;
         } else {
           if (linkedClass.name === 'Vocabulary') {
             autoProps.defaultOptionsHandler = () => api.get(
@@ -189,6 +196,7 @@ const FormField = (props) => {
         <RecordAutocomplete
           {...autoProps}
           DetailChipProps={{
+            ...autoProps.DetailChipProps,
             valueToString: (record) => {
               if (record && record['@rid']) {
                 return schema.getLabel(record, false);

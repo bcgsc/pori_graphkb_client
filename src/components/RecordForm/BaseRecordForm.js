@@ -60,7 +60,7 @@ class BaseRecordForm extends React.Component {
   };
 
   static defaultProps = {
-    aboveFold: [CLASS_MODEL_PROP, 'name', 'groups', 'journalName', 'out', 'in', 'permissions', 'description', 'reviewStatus'],
+    aboveFold: [CLASS_MODEL_PROP, 'name', 'groups', 'journalName', 'out', 'in', 'permissions', 'evidenceLevel', 'description', 'reviewStatus'],
     actionInProgress: false,
     belowFold: ['deprecated', 'history'],
     className: '',
@@ -112,14 +112,18 @@ class BaseRecordForm extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { value, modelName, actionInProgress } = this.props;
-    const { content, collapseOpen } = this.state;
+    const {
+      value, modelName, actionInProgress, variant,
+    } = this.props;
+    const { content, collapseOpen, errors } = this.state;
 
     if (jc.stringify(value) !== jc.stringify(nextProps.value)
       || modelName !== nextProps.modelName
       || jc.stringify(content) !== jc.stringify(nextState.content)
       || actionInProgress !== nextProps.actionInProgress
       || collapseOpen !== nextState.collapseOpen
+      || variant !== nextProps.variant
+      || jc.stringify(errors) !== jc.stringify(nextState.errors)
     ) {
       return true;
     }
@@ -131,11 +135,22 @@ class BaseRecordForm extends React.Component {
    * Trigger the state change if a new initial value is passed in
    */
   componentDidUpdate(prevProps) {
-    const { value, modelName } = this.props;
+    const { value, modelName, variant } = this.props;
+    const { content } = this.state;
+
     if (jc.stringify(value) !== jc.stringify(prevProps.value)) {
       this.populateFromRecord(value);
     } else if (modelName !== prevProps.modelName) {
       this.populateFromRecord({ [CLASS_MODEL_PROP]: modelName });
+    } else if (
+      Object.keys(value).length > 1 // more than just class name
+      && modelName === prevProps.modelName // same type of record
+      && jc.stringify(value) !== jc.stringify(content)
+      && variant !== FORM_VARIANT.NEW
+      && variant !== prevProps.variant // only populate when the view type has changed
+    ) {
+      // this is to populate the content when the user clicks the submit changes button to redirect from edit to view or similar
+      this.populateFromRecord(value);
     }
   }
 
@@ -175,6 +190,22 @@ class BaseRecordForm extends React.Component {
         }
         newContent[prop] = rawValue;
       });
+    }
+    // edge records
+    if (model.isEdge) {
+      newContent.out = record.out;
+      if (!record.out) {
+        errors.out = 'Required Value';
+      }
+      newContent.in = record.in;
+      if (!record.in) {
+        errors.in = 'Required Value';
+      }
+
+      if (newContent.out && newContent.in && newContent.out['@rid'] === newContent.in['@rid']) {
+        errors.out = 'Must not equal the incoming (in) vertex';
+        errors.in = 'Must not equal the outgoing (out) vertex';
+      }
     }
     this.setState({ content: newContent, errors });
   }
@@ -282,7 +313,7 @@ class BaseRecordForm extends React.Component {
     if (!model) {
       return [];
     }
-    const { properties } = model;
+    const { properties: { out, in: tgt, ...properties } } = model;
 
     // get the form content
     const fields = [];
@@ -290,12 +321,15 @@ class BaseRecordForm extends React.Component {
     ordering.forEach((item) => {
       if (item instanceof Array) { // subgrouping
         const key = item.join('--');
-        fields.push((
-          <div key={key} className="record-form__content-subgroup">
-            {this.renderFieldGroup(item)}
-          </div>
-        ));
-      } else {
+        const subgroup = this.renderFieldGroup(item);
+        if (subgroup.length) {
+          fields.push((
+            <div key={key} className="record-form__content-subgroup">
+              {subgroup}
+            </div>
+          ));
+        }
+      } else if (properties[item]) {
         const prop = properties[item];
         const { name } = prop;
         const wrapper = FormField({
@@ -305,7 +339,11 @@ class BaseRecordForm extends React.Component {
           onValueChange: this.handleValueChange,
           schema,
           variant,
-          disabled: variant === FORM_VARIANT.VIEW || actionInProgress,
+          disabled: (
+            variant === FORM_VARIANT.VIEW
+            || actionInProgress
+            || (variant === FORM_VARIANT.EDIT && model.isEdge)
+          ),
         });
         fields.push(wrapper);
       }
@@ -364,6 +402,60 @@ class BaseRecordForm extends React.Component {
     );
   }
 
+  /**
+   * Renders the two edge specific input fields (out/in)
+   */
+  renderEdgeFields() {
+    const { schema } = this.context;
+    const { content, errors } = this.state;
+    const { variant, actionInProgress } = this.props;
+
+    const model = this.currentModel();
+
+    return (
+      <React.Fragment key="relationship-content">
+        <FormField
+          error={errors.out || ''}
+          onValueChange={this.handleValueChange}
+          model={{
+            description: 'The source record for the relationship',
+            linkedClass: schema.get(model.sourceModel || 'V'),
+            name: 'out',
+            type: 'link',
+            mandatory: true,
+            nullable: false,
+          }}
+          schema={schema}
+          value={content.out}
+          disabled={variant === FORM_VARIANT.VIEW
+            || actionInProgress
+            || variant === FORM_VARIANT.EDIT}
+          variant={variant}
+          label="Source Record (out)"
+        />
+        <FormField
+          error={errors.in || ''}
+          onValueChange={this.handleValueChange}
+          model={{
+            linkedClass: schema.get(model.targetModel || 'V'),
+            description: 'The target record for the relationship',
+            name: 'in',
+            type: 'link',
+            mandatory: true,
+            nullable: false,
+          }}
+          schema={schema}
+          value={content.in}
+          disabled={variant === FORM_VARIANT.VIEW
+            || actionInProgress
+            || variant === FORM_VARIANT.EDIT}
+          variant={variant}
+          label="Target Record (in)"
+        />
+      </React.Fragment>
+    );
+  }
+
   render() {
     const {
       aboveFold,
@@ -387,11 +479,13 @@ class BaseRecordForm extends React.Component {
     } = this.state;
 
     let model = this.currentModel();
+
+    const isEdge = model && model.isEdge;
     if (model && model.isAbstract && [FORM_VARIANT.SEARCH, FORM_VARIANT.NEW].includes(variant)) {
       model = null;
     }
 
-    let edges = isEmbedded
+    let edges = isEmbedded || isEdge
       ? []
       : schema.getEdges(value || {});
     const isStatement = model && model.name === 'Statement';
@@ -465,6 +559,7 @@ class BaseRecordForm extends React.Component {
         <div className="record-form__content record-form__content--long">
           {classSelect}
           {isStatement && variant !== FORM_VARIANT.EDIT && variant !== FORM_VARIANT.SEARCH && this.renderStatementFields()}
+          {isEdge && this.renderEdgeFields()}
         </div>
         <div className="record-form__content">
           {model && this.renderFieldGroup(fields)}
@@ -507,7 +602,7 @@ class BaseRecordForm extends React.Component {
             {actionInProgress && (
               <CircularProgress size={50} />
             )}
-            {onSubmit && variant !== FORM_VARIANT.VIEW
+            {onSubmit && variant !== FORM_VARIANT.VIEW && (variant !== FORM_VARIANT.EDIT || !isEdge)
               ? (
                 <ActionButton
                   onClick={() => this.handleAction(onSubmit)}

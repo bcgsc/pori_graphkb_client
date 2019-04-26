@@ -55,7 +55,7 @@
 }
 
 .color-chip {
-  border: 1px solid rgba(0, 0, 0, .54);
+  border: 1px solid var(--palette__text--secondary);
   border-radius: 4px;
   cursor: pointer;
   height: 20px;

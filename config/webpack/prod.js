@@ -9,10 +9,11 @@ const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const TerserWebpackPlugin = require('terser-webpack-plugin');
 
 
-const SRC_PATH = path.resolve(__dirname, 'src');
-const DIST_PATH = path.resolve(__dirname, 'dist');
+const BASE_DIR = path.resolve(__dirname, '../..');
+const SRC_PATH = path.resolve(BASE_DIR, 'src');
+const DIST_PATH = path.resolve(BASE_DIR, 'dist');
 const INCLUDE = [
-  path.resolve(__dirname, 'node_modules/@bcgsc'),
+  path.resolve(BASE_DIR, 'node_modules/@bcgsc'),
   SRC_PATH,
 ];
 
@@ -24,7 +25,7 @@ const moduleSettings = {
       sideEffects: true,
       include: [
         SRC_PATH,
-        path.resolve(__dirname, 'node_modules/ag-grid-community/dist/styles'),
+        path.resolve(BASE_DIR, 'node_modules/ag-grid-community/dist/styles'),
       ],
       use: [
         MiniCssExtractPlugin.loader,

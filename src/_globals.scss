@@ -1,3 +1,5 @@
+@import './theme';
+
 // main navbar and menu
 $banner-height: 56px;
 $default-spacing: 20px;
@@ -106,13 +108,13 @@ $icon-size: 1.5rem;
 }
 
 @mixin field-set {
-  border: 1px solid var(--palette__divider);
+  border: 1px solid $palette__divider;
   border-radius: 4px;
 }
 
 @mixin code-block {
   pre {
-    background-color: var(--palette__background--default);
+    background-color: $palette__background--default;
     overflow-x: scroll;
     padding: 5px;
 

@@ -27,7 +27,7 @@
   }
 
   .tabs-bar {
-    box-shadow: var(--shadows--level-4);
+    box-shadow: $shadows--level-4;
     height: $tab-bar-height;
   }
 
@@ -38,7 +38,7 @@
 
   #about-notation {
     // Fix for non mui components
-    color: var(--palette__text--primary);
+    color: $palette__text--primary;
     font-family: $roboto;
     font-size: 1rem;
     font-weight: 400;
@@ -46,7 +46,7 @@
     line-height: 1.5;
 
     pre {
-      background-color: var(--palette__background--default);
+      background-color: $palette__background--default;
       padding: 5px;
 
       code {
@@ -56,7 +56,7 @@
 
     h1,
     h2 {
-      color: var(--palette__text--primary);
+      color: $palette__text--primary;
       font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
       font-weight: 400;
       letter-spacing: 0;
@@ -89,7 +89,7 @@
   .pie-chart {
     max-height: calc(100vw - 60px);
     text {
-      fill: var(--palette__common--white);
+      fill: $palette__common--white;
     }
   }
   @media (max-width: #{$breakpoint-med}) {
@@ -103,7 +103,7 @@
     top: -1px;
 
     th {
-      background: var(--palette__background--default);
+      background: $palette__background--default;
       position: sticky;
       top: -1px;
       z-index: 1;
@@ -113,9 +113,9 @@
 
 .letter-icon {
   align-items: center;
-  background-color: var(--palette__secondary--main);
+  background-color: $palette__secondary--main;
   border-radius: 50%;
-  color: var(--palette__common--white);
+  color: $palette__common--white;
   display: flex;
   font-family: $roboto;
   font-size: 1rem;

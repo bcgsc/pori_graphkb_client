@@ -8,7 +8,7 @@
 
 .node-name {
   dominant-baseline: central; //doesn't work on firefox
-  fill: var(--palette__primary--main);
+  fill: $palette__primary--main;
   font-family: $roboto;
   font-size: 14px;
   font-weight: 300;

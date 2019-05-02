@@ -18,17 +18,10 @@ const {
     CLIENT_ID,
     URL,
   },
+  DISABLE_AUTH,
 } = config;
 
-const REFERRER = 'KEYCLOAK_LOGIN_REFERRER';
-
-
-const keycloak = Keycloak({
-  realm: REALM,
-  clientId: CLIENT_ID,
-  url: URL,
-  realm_access: { roles: [GRAPHKB_ROLE] },
-});
+const KEYCLOAK_REFERRER = 'KEYCLOAK_LOGIN_REFERRER';
 
 
 /**
@@ -60,6 +53,8 @@ class Authentication {
       realm = REALM,
       role = GRAPHKB_ROLE,
       url = URL,
+      disableAuth = DISABLE_AUTH,
+      referrerUriKey = KEYCLOAK_REFERRER,
     } = opt;
     this.keycloak = Keycloak({
       realm,
@@ -67,6 +62,8 @@ class Authentication {
       url,
       realm_access: { roles: [role] },
     });
+    this.disableAuth = disableAuth;
+    this.referrerUriKey = referrerUriKey;
   }
 
 
@@ -80,24 +77,27 @@ class Authentication {
   /**
  * Loads KeyCloak token into localstorage.
  */
-  setAuthToken() {
+  setAuthToken(token) {
     localStorage.setItem(KEYCLOAK_TOKEN, token);
   }
 
   /**
  * Retrieves Knowledge Base token.
  */
-  getToken() {
+  get authorizationToken() {
     return localStorage.getItem(KB_TOKEN);
   }
 
-  /**
- * Get and remove last refferer
- */
-  popReferrerUri() {
-    const uri = localStorage.getItem(REFERRER);
-    localStorage.removeItem(REFERRER);
-    return uri;
+  get referrerUri() {
+    return localStorage.getItem(this.referrerUriKey);
+  }
+
+  set referrerUri(uri) {
+    if (uri === null) {
+      localStorage.removeItem(this.referrerUriKey);
+    } else {
+      localStorage.setItem(this.referrerUriKey, uri);
+    }
   }
 
   /**
@@ -112,7 +112,7 @@ class Authentication {
  * User has a valid token from the database server
  */
   isAuthorized() {
-    const token = getToken();
+    const token = this.getToken();
     return !!(validToken(token) && !isExpired(token));
   }
 
@@ -120,7 +120,7 @@ class Authentication {
  * Loads new Knowledge Base token into localstorage.
  * @param {string} token - New Knowledge Base token.
  */
-  setToken(token) {
+  set authorizationToken(token) {
     localStorage.setItem(KB_TOKEN, token);
   }
 
@@ -133,12 +133,21 @@ class Authentication {
   }
 
   /**
- * Returns username of currently logged in user.
- */
-  getUser() {
+   * Primarily used for display when logged in
+   */
+  get username() {
+    if (this.authorizationToken) {
+      return jwt.decode(this.authorizationToken).user.name;
+    } if (this.keycloak.token) {
+      return jwt.decode(this.keycloak.token).preferred_username;
+    }
+    return null;
+  }
+
+  get user() {
     try {
-      return jwt.decode(this.getToken()).user;
-    } catch (err) {
+      return jwt.decode(this.authorizationToken).user;
+    } catch {
       return null;
     }
   }
@@ -149,8 +158,8 @@ class Authentication {
   isAdmin() {
     try {
       return Boolean(
-        isAuthorized()
-      && jwt.decode(getToken()).user.groups.find(group => group.name === 'admin'),
+        this.isAuthorized()
+      && jwt.decode(this.getToken()).user.groups.find(group => group.name === 'admin'),
       );
     } catch (err) {
       return false;
@@ -160,8 +169,8 @@ class Authentication {
   hasWriteAccess() {
     try {
       return Boolean(
-        isAuthorized()
-        && jwt.decode(getToken()).user.groups.find(
+        this.isAuthorized()
+        && jwt.decode(this.getToken()).user.groups.find(
           group => ['admin', 'regular'].includes(group.name),
         ),
       );
@@ -173,12 +182,12 @@ class Authentication {
   /**
  * Redirects to keycloak login page, sets token into localstorage once returned.
  */
-  async authenticate(referrerUri = null) {
-    clearTokens();
-    localStorage.setItem(REFERRER, referrerUri);
-    await keycloak.init({ onLoad: 'login-required', promiseType: 'native' });
-    setAuthToken(keycloak.token);
-    return keycloak.token;
+  async login(referrerUri = null) {
+    this.clearTokens();
+    localStorage.setItem(KEYCLOAK_REFERRER, referrerUri);
+    await this.keycloak.init({ onLoad: 'login-required', promiseType: 'native' });
+    this.setAuthToken(this.keycloak.token);
+    return this.keycloak.token;
   }
 
   /**
@@ -186,10 +195,10 @@ class Authentication {
  * routes to /login.
  */
   async logout() {
-    clearTokens();
+    this.clearTokens();
     try {
-      await keycloak.init({ promiseType: 'native' });
-      const resp = await keycloak.logout({ redirectUri: `${window.location.origin}/login` });
+      await this.keycloak.init({ promiseType: 'native' });
+      const resp = await this.keycloak.logout({ redirectUri: `${window.location.origin}/login` });
       return resp;
     } catch (err) {
       return err;

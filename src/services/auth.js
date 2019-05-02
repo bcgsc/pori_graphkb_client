@@ -22,7 +22,11 @@ const {
 } = config;
 
 const KEYCLOAK_REFERRER = 'KEYCLOAK_LOGIN_REFERRER';
-
+const dbRoles = {
+  admin: 'admin',
+  regular: 'regular',
+  readonly: 'readonly',
+};
 
 /**
  * Checks expiry date on JWT token and compares with current time.
@@ -159,7 +163,7 @@ class Authentication {
     try {
       return Boolean(
         this.isAuthorized()
-      && jwt.decode(this.getToken()).user.groups.find(group => group.name === 'admin'),
+      && jwt.decode(this.getToken()).user.groups.find(group => group.name === dbRoles.admin),
       );
     } catch (err) {
       return false;
@@ -171,7 +175,7 @@ class Authentication {
       return Boolean(
         this.isAuthorized()
         && jwt.decode(this.getToken()).user.groups.find(
-          group => ['admin', 'regular'].includes(group.name),
+          group => [dbRoles.admin, dbRoles.regular].includes(group.name),
         ),
       );
     } catch (err) {

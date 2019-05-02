@@ -7,7 +7,6 @@ import NodeForm from '../../components/RecordForm';
 import { KBContext } from '../../components/KBContext';
 import { FORM_VARIANT } from '../../components/RecordForm/util';
 import { cleanLinkedRecords } from '../../components/util';
-import auth from '../../services/auth';
 
 
 const DEFAULT_TITLES = {
@@ -82,7 +81,7 @@ class NodeView extends React.PureComponent {
       match: { params: { rid = null, modelName }, path },
       history,
     } = this.props;
-    const { schema } = this.context;
+    const { schema, auth } = this.context;
     const variant = getVariantType(path);
 
     let defaultModelName = modelName;

@@ -4,7 +4,6 @@ import {
 } from '@material-ui/core';
 
 import api from '../../../services/api';
-import auth from '../../../services/auth';
 import { KBContext } from '../../../components/KBContext';
 import {
   PieChart,
@@ -26,6 +25,7 @@ class AboutMain extends Component {
   }
 
   async componentDidMount() {
+    const { auth } = this.context;
     if (auth.isAuthorized()) {
       this.getClassStats();
       this.getVersionInfo();

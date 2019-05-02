@@ -13,18 +13,6 @@ const {
   API_BASE_URL,
 } = config;
 
-/**
- * Appends global headers to outgoing request.
- */
-const getHeaders = () => {
-  const headers = new Headers();
-  headers.append('Content-type', 'application/json');
-  if (auth.getToken()) {
-    headers.append('Authorization', auth.getToken());
-  }
-  return headers;
-};
-
 
 class ApiCall {
   /**
@@ -72,13 +60,19 @@ class ApiCall {
   async request(ignoreAbort = true) {
     this.controller = new AbortController();
     const { signal } = this.controller;
-    const request = new Request(API_BASE_URL + this.endpoint, {
-      ...this.requestOptions,
-      headers: getHeaders(),
-    });
+
     let response;
     try {
-      response = await fetch(request, { signal });
+      response = await fetch(
+        API_BASE_URL + this.endpoint,
+        {
+          ...this.requestOptions,
+          headers: {
+            'Content-type': 'application/json',
+          },
+          signal,
+        },
+      );
     } catch (err) {
       if (err.name === 'AbortError' && ignoreAbort) {
         return null;

@@ -5,8 +5,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import api from '../../services/api';
-import auth from '../../services/auth';
 import config from '../../static/config';
+import { KBContext } from '../../components/KBContext';
 
 /**
  * View to handle user authentication. Redirected to if at any point during use
@@ -15,6 +15,8 @@ import config from '../../static/config';
  * token in browser localstorage.
  */
 class LoginView extends React.Component {
+  static contextType = KBContext;
+
   static propTypes = {
     history: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
@@ -31,6 +33,7 @@ class LoginView extends React.Component {
    * otherwise.
    */
   async componentDidMount() {
+    const { auth } = this.context;
     const { history, location } = this.props;
     let from;
     try {
@@ -40,13 +43,13 @@ class LoginView extends React.Component {
     }
 
     if (!auth.isAuthenticated()) {
-      await auth.authenticate(from);
+      await auth.login(from);
     }
 
     if (!auth.isAuthorized()) {
       let call;
       if (config.DISABLE_AUTH !== true) {
-        const token = auth.getAuthToken();
+        const token = auth.authorizationToken;
         call = api.post('/token', { keyCloakToken: token });
       } else { // FOR TESTING ONLY
         console.warn('Authentication server is currently disabled by the client');
@@ -55,7 +58,7 @@ class LoginView extends React.Component {
       this.controllers.push(call);
       try {
         const response = await call.request();
-        auth.setToken(response.kbToken);
+        auth.authorizationToken = response.kbToken;
       } catch (error) {
         // redirect to the error page
         console.error(error);

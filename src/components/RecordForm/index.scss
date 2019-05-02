@@ -45,7 +45,7 @@
       padding-left: 10px;
 
       &__substitution {
-        color: var(--palette__secondary--main);
+        color: $palette__secondary--main;
         font-weight: 600;
         display: inline;
       }
@@ -76,9 +76,7 @@
     margin-top: 20px;
     align-items: center;
   }
-
 }
-
 
 .embedded-record-form {
   fieldset {

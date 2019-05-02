@@ -1,3 +1,5 @@
+@import '../../../../theme';
+
 .code-input-root {
   textarea {
     background: transparent;
@@ -5,14 +7,14 @@
     width: 100%;
     box-sizing: border-box;
     min-height: 200px;
-    border: 1px solid var(--palette__grey--A100);
+    border: 1px solid $palette__grey--A100;
     border-radius: 4px;
     resize: none;
     font-family: 'Roboto Mono', monospace;
     -webkit-tap-highlight-color: transparent;
     outline: none;
     line-height: 150%;
-    color: var(--palette__text--secondary);
+    color: $palette__text--secondary;
     white-space: pre;
   }
   .field-textarea {

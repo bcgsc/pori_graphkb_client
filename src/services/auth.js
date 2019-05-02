@@ -4,6 +4,7 @@
  */
 import Keycloak from 'keycloak-js';
 import * as jwt from 'jsonwebtoken';
+import fetchIntercept from 'fetch-intercept';
 
 import config from '../static/config';
 
@@ -15,6 +16,7 @@ const {
     URL,
   },
   DISABLE_AUTH,
+  API_BASE_URL,
 } = config;
 
 // must store the referring uri in local to get around the redirect
@@ -69,6 +71,20 @@ class Authentication {
     this.authorizationToken = null; // token for the authorization (db access)
     this.disableAuth = disableAuth;
     this.referrerUriKey = referrerUriKey;
+
+    fetchIntercept.register({
+      request: (fetchUrl, fetchConfig) => {
+        if (fetchUrl.startsWith(API_BASE_URL)) {
+          const newConfig = { ...fetchConfig };
+          if (!newConfig.headers) {
+            newConfig.headers = {};
+          }
+          newConfig.headers.Authorization = this.authorizationToken;
+          return [fetchUrl, newConfig];
+        }
+        return [fetchUrl, fetchConfig];
+      },
+    });
   }
 
   get referrerUri() {

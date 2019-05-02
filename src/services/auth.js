@@ -17,7 +17,8 @@ const {
   DISABLE_AUTH,
 } = config;
 
-const KEYCLOAK_REFERRER = 'KEYCLOAK_LOGIN_REFERRER';
+// must store the referring uri in local to get around the redirect
+const KEYCLOAK_REFERRER = 'KEYCLOAK_REFERRER';
 const dbRoles = {
   admin: 'admin',
   regular: 'regular',
@@ -36,7 +37,9 @@ const isExpired = (token) => {
   }
 };
 
-
+/**
+ * Checks that the token is formatted properly and can be decoded
+ */
 const validToken = (token) => {
   try {
     const decoded = jwt.decode(token);
@@ -45,6 +48,7 @@ const validToken = (token) => {
     return false;
   }
 };
+
 
 class Authentication {
   constructor(opt = {}) {
@@ -123,8 +127,7 @@ class Authentication {
   isAdmin() {
     try {
       return Boolean(
-        this.isAuthorized()
-      && jwt.decode(this.getToken()).user.groups.find(group => group.name === dbRoles.admin),
+        this.user.groups.find(group => group.name === dbRoles.admin),
       );
     } catch (err) {
       return false;

@@ -201,7 +201,6 @@ class Authentication {
   async logout() {
     this.clearTokens();
     try {
-      await this.keycloak.init({ promiseType: 'native' });
       const resp = await this.keycloak.logout({ redirectUri: `${window.location.origin}/login` });
       return resp;
     } catch (err) {

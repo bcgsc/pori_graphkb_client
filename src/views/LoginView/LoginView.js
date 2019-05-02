@@ -43,7 +43,13 @@ class LoginView extends React.Component {
     }
 
     if (!auth.isAuthenticated()) {
-      await auth.login(from);
+      try {
+        await auth.login(from);
+      } catch (err) {
+        // redirect to the error page
+        history.push('/error', { error: { name: err.name, message: err.message } });
+        return;
+      }
     }
 
     if (!auth.isAuthorized()) {

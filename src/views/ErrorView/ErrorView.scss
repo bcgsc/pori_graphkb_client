@@ -7,7 +7,7 @@
   width: 100%;
 
   a {
-    color: var(--palette__secondary--main);
+    color: $palette__secondary--main;
     text-decoration: none;
   }
 
@@ -18,7 +18,7 @@
   }
 
   h2 {
-    color: var(--palette__error--main);
+    color: $palette__error--main;
     margin-top: 40px;
   }
 

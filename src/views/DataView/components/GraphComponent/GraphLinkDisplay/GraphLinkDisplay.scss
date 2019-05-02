@@ -16,7 +16,7 @@
 
 .link-widen {
   cursor: pointer;
-  stroke: var(--palette__common--white);
+  stroke: $palette__common--white;
   stroke-opacity: 0;
   stroke-width: 10;
 }

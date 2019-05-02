@@ -10,38 +10,38 @@ import {
 } from '@material-ui/core/styles';
 import JssProvider from 'react-jss/lib/JssProvider';
 import { create } from 'jss';
-
-
 import SnackbarProvider from '@bcgsc/react-snackbar-provider';
-
+import * as cssTheme from './_theme.scss';
 import Main from './views/Main/Main';
+
+console.log('cssTheme', cssTheme);
 
 const theme = createMuiTheme({
   direction: 'ltr',
   palette: {
     primary: {
-      main: 'var(--palette__primary--main)',
-      light: 'var(--palette__primary--light)',
-      dark: 'var(--palette__primary--dark)',
-      contrastText: 'var(--palette__primary--contrast-text)',
+      main: cssTheme.primaryMain,
+      light: cssTheme.primaryLight,
+      dark: cssTheme.primaryDark,
+      contrastText: cssTheme.primaryContrastText,
     },
     secondary: {
-      main: 'var(--palette__secondary--main)',
-      light: 'var(--palette__secondary--light)',
-      dark: 'var(--palette__secondary--dark)',
-      contrastText: 'var(--palette__secondary--contrast-text)',
+      main: cssTheme.secondaryMain,
+      light: cssTheme.secondaryLight,
+      dark: cssTheme.secondaryDark,
+      contrastText: cssTheme.secondaryContrastText,
     },
     error: {
-      main: 'var(--palette__error--main)',
-      light: 'var(--palette__error--light)',
-      dark: 'var(--palette__error--dark)',
-      contrastText: 'var(--palette__error--contrast-text)',
+      main: cssTheme.errorMain,
+      light: cssTheme.errorLight,
+      dark: cssTheme.errorDark,
+      contrastText: cssTheme.errorContrastText,
     },
     text: {
-      primary: 'var(--palette__text--primary)',
-      secondary: 'var(--palette__text--secondary)',
-      disabled: 'var(--palette__text--disabled)',
-      hint: 'var(--palette__text--hint)',
+      primary: cssTheme.textPrimary,
+      secondary: cssTheme.textSecondary,
+      hint: cssTheme.textHint,
+      disabled: cssTheme.textDisabled,
     },
   },
   typography: {

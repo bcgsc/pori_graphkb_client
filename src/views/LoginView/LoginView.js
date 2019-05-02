@@ -38,7 +38,7 @@ class LoginView extends React.Component {
     try {
       from = location.state.from.pathname + location.state.from.search;
     } catch (err) {
-      from = auth.popReferrerUri() || '/query';
+      from = auth.referrerUri || '/query';
     }
 
     if (!auth.isAuthenticated()) {

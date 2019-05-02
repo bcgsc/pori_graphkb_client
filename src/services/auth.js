@@ -210,7 +210,4 @@ class Authentication {
 }
 
 
-export default {
-  Authentication,
-  GRAPHKB_ROLE,
-};
+export { Authentication, isExpired, validToken };

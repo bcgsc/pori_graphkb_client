@@ -5,7 +5,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import api from '../../services/api';
-import config from '../../static/config';
 import { KBContext } from '../../components/KBContext';
 
 /**
@@ -54,9 +53,8 @@ class LoginView extends React.Component {
 
     if (!auth.isAuthorized()) {
       let call;
-      if (config.DISABLE_AUTH !== true) {
-        const token = auth.authorizationToken;
-        call = api.post('/token', { keyCloakToken: token });
+      if (auth.disableAuth !== true) {
+        call = api.post('/token', { keyCloakToken: auth.keycloak.token });
       } else { // FOR TESTING ONLY
         console.warn('Authentication server is currently disabled by the client');
         call = api.post('/token', { username: process.env.USER, password: process.env.PASSWORD });

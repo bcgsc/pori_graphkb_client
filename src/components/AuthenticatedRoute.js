@@ -6,6 +6,7 @@ import {
 import { PropTypes } from 'prop-types';
 
 import { Authentication } from '../services/auth';
+import { withKB } from './KBContext';
 
 /**
  * @returns {Route} a route component which checks authentication on render or redirects to login
@@ -16,7 +17,7 @@ const AuthenticatedRoute = ({
   <Route
     {...rest}
     render={props => (
-      auth.isAuthenticated() && (!admin || auth.isAdmin())
+      auth && auth.isAuthenticated() && (!admin || auth.isAdmin())
         ? <Component {...props} />
         : (
           <Redirect to={{
@@ -40,4 +41,4 @@ AuthenticatedRoute.defaultProps = {
   admin: false,
 };
 
-export default AuthenticatedRoute;
+export default withKB(AuthenticatedRoute);

@@ -8,10 +8,6 @@ import * as jwt from 'jsonwebtoken';
 import config from '../static/config';
 
 const {
-  KEYS: {
-    KB_TOKEN,
-    KEYCLOAK_TOKEN,
-  },
   KEYCLOAK: {
     GRAPHKB_ROLE,
     REALM,
@@ -66,30 +62,9 @@ class Authentication {
       url,
       realm_access: { roles: [role] },
     });
+    this.authorizationToken = null; // token for the authorization (db access)
     this.disableAuth = disableAuth;
     this.referrerUriKey = referrerUriKey;
-  }
-
-
-  /**
- * Returns the keycloak token.
- */
-  getAuthToken() {
-    return localStorage.getItem(KEYCLOAK_TOKEN);
-  }
-
-  /**
- * Loads KeyCloak token into localstorage.
- */
-  setAuthToken(token) {
-    localStorage.setItem(KEYCLOAK_TOKEN, token);
-  }
-
-  /**
- * Retrieves Knowledge Base token.
- */
-  get authorizationToken() {
-    return localStorage.getItem(KB_TOKEN);
   }
 
   get referrerUri() {
@@ -102,38 +77,6 @@ class Authentication {
     } else {
       localStorage.setItem(this.referrerUriKey, uri);
     }
-  }
-
-  /**
-  * User has a valid token from the authentication server (keycloak)
-  */
-  isAuthenticated() {
-    const token = this.getAuthToken();
-    return !!(validToken(token) && !isExpired(token));
-  }
-
-  /**
- * User has a valid token from the database server
- */
-  isAuthorized() {
-    const token = this.getToken();
-    return !!(validToken(token) && !isExpired(token));
-  }
-
-  /**
- * Loads new Knowledge Base token into localstorage.
- * @param {string} token - New Knowledge Base token.
- */
-  set authorizationToken(token) {
-    localStorage.setItem(KB_TOKEN, token);
-  }
-
-  /**
- * Clears Knowledge Base token from localstorage.
- */
-  clearTokens() {
-    localStorage.removeItem(KB_TOKEN);
-    localStorage.removeItem(KEYCLOAK_TOKEN);
   }
 
   /**
@@ -157,8 +100,26 @@ class Authentication {
   }
 
   /**
- * Returns true if user is in the 'admin' usergroup.
- */
+   * Returns true if the user has been sucessfully authenticated and the token is valid
+   */
+  isAuthenticated() {
+    if (this.keycloak.token) {
+      // check that the token is not expired
+      return Boolean(validToken(this.keycloak.token) && !isExpired(this.keycloak.token));
+    }
+    return false;
+  }
+
+  isAuthorized() {
+    if (this.isAuthenticated() || !this.disableAuth) {
+      return Boolean(validToken(this.authorizationToken) && !isExpired(this.authorizationToken));
+    }
+    return false;
+  }
+
+  /**
+   * Returns true if user is in the 'admin' usergroup.
+   */
   isAdmin() {
     try {
       return Boolean(
@@ -173,33 +134,19 @@ class Authentication {
   hasWriteAccess() {
     try {
       return Boolean(
-        this.isAuthorized()
-        && jwt.decode(this.getToken()).user.groups.find(
-          group => [dbRoles.admin, dbRoles.regular].includes(group.name),
-        ),
+        this.user.groups.find(group => [dbRoles.admin, dbRoles.regular].includes(group.name)),
       );
     } catch (err) {
       return false;
     }
   }
 
-  /**
- * Redirects to keycloak login page, sets token into localstorage once returned.
- */
   async login(referrerUri = null) {
-    this.clearTokens();
-    localStorage.setItem(KEYCLOAK_REFERRER, referrerUri);
+    this.referrerUri = referrerUri;
     await this.keycloak.init({ onLoad: 'login-required', promiseType: 'native' });
-    this.setAuthToken(this.keycloak.token);
-    return this.keycloak.token;
   }
 
-  /**
- * Clears tokens and redirects user to keycloak login page. On successful login
- * routes to /login.
- */
   async logout() {
-    this.clearTokens();
     try {
       const resp = await this.keycloak.logout({ redirectUri: `${window.location.origin}/login` });
       return resp;

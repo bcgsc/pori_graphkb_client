@@ -47,7 +47,7 @@ const moduleSettings = {
       include: INCLUDE,
       use: [
         'babel-loader',
-        // 'eslint-loader',
+        'eslint-loader',
       ],
       sideEffects: false,
     },

@@ -16,6 +16,7 @@ import Main from './views/Main/Main';
 
 console.log('cssTheme', cssTheme);
 
+
 const theme = createMuiTheme({
   direction: 'ltr',
   palette: {

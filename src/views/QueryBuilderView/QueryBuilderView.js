@@ -24,7 +24,6 @@ import { KBContext } from '../../components/KBContext';
 import { CodeInput } from './components';
 import ResourceSelectComponent from '../../components/ResourceSelectComponent';
 import api from '../../services/api';
-import auth from '../../services/auth';
 
 const COMMENT_REGEX = /\/\/.*(?!\\n)/g;
 
@@ -139,7 +138,7 @@ class QueryBuilderView extends Component {
   }
 
   render() {
-    const { schema } = this.context;
+    const { schema, auth } = this.context;
     const {
       specOpen,
       specBlurbOpen,

@@ -178,7 +178,10 @@ class RecordForm extends React.PureComponent {
       }
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
+      console.log('[RecordForm POST] routeName', routeName);
+      console.log('[RecordForm POST] content', content);
       const call = api.post(routeName, payload);
+      console.log('[RecordForm POST] call', call);
       this.controllers.push(call);
       this.setState({ actionInProgress: true });
       try {
@@ -203,7 +206,10 @@ class RecordForm extends React.PureComponent {
     const { schema, onSubmit, onError } = this.props;
 
     const { routeName } = schema.get(content);
+    console.log('[RecordForm DELETE] routeName', routeName);
+    console.log('[RecordForm DELETE] content', content);
     const call = api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
+    console.log('[RecordForm DELETE] call', call);
     this.controllers.push(call);
     this.setState({ actionInProgress: true });
     try {
@@ -233,7 +239,10 @@ class RecordForm extends React.PureComponent {
       // ok to PATCH
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
+      console.log('[RecordForm PATCH] routeName', routeName);
+      console.log('[RecordForm PATCH] content', content);
       const call = api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
+      console.log('[RecordForm PATCH] call', call);
       this.controllers.push(call);
       this.setState({ actionInProgress: true });
       try {

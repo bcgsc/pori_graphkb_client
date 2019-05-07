@@ -70,7 +70,7 @@ const del = (endpoint, callOptions) => {
   const init = {
     method: 'DELETE',
   };
-
+  console.log('[Api.js] callOptions', callOptions);
   return new ApiCall(endpoint, init, callOptions);
 };
 

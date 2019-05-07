@@ -9,17 +9,17 @@ import ActionButton from '../../ActionButton';
 import { ApiCall } from '../../../services/api/call';
 
 
-const updateStateAndClickFirstBtn = (wrapper) =>{
+const updateStateAndClickFirstBtn = (wrapper) => {
   wrapper.update();
   const firstBtn = wrapper.find(ActionButton).at(0);
   firstBtn.prop('onClick')();
-}
+};
 
-const updateStateAndClickSecondBtn = (wrapper) =>{
+const updateStateAndClickSecondBtn = (wrapper) => {
   wrapper.update();
   const secondBtn = wrapper.find(ActionButton).at(1);
   secondBtn.prop('onClick')();
-}
+};
 
 describe('BaseRecordForm', () => {
   jest.spyOn(ApiCall.prototype, 'request').mockImplementation(async () => []);
@@ -90,7 +90,7 @@ describe('BaseRecordForm', () => {
     // +1 for the unselected/null/"" option
     expect(wrapper.find(ResourceSelectComponent).prop('resources')).toHaveLength(3);
   });
-  test('editable vertex/node form', ()=>{
+  test('editable vertex/node form', () => {
     const mockEditSubmit = jest.fn();
     const wrapper = mount((
       <KBContext.Provider value={{ schema: new Schema() }}>
@@ -105,11 +105,11 @@ describe('BaseRecordForm', () => {
       </KBContext.Provider>
     ));
     expect(wrapper.find(ActionButton)).toHaveLength(2);
-    //Edit Btn is the second Btn on the RecordForm Component
+    // Edit Btn is the second Btn on the RecordForm Component
     updateStateAndClickSecondBtn(wrapper);
     expect(mockEditSubmit.mock.calls.length).toBe(1);
   });
-  test('deleting a vertex/node form from edit variance', ()=>{
+  test('deleting a vertex/node form from edit variance', () => {
     const mockDelSubmit = jest.fn();
     const wrapper = mount((
       <KBContext.Provider value={{ schema: new Schema() }}>
@@ -123,13 +123,13 @@ describe('BaseRecordForm', () => {
         />
       </KBContext.Provider>
     ));
-    
+
     expect(wrapper.find(ActionButton)).toHaveLength(2);
-    //Delete Btn is the first Btn that appears on the BaseForm Component
+    // Delete Btn is the first Btn that appears on the BaseForm Component
     updateStateAndClickFirstBtn(wrapper);
     expect(mockDelSubmit.mock.calls.length).toBe(1);
   });
-  test('adding an ontology node', ()=>{
+  test('adding an ontology node', () => {
     const mockAddSubmit = jest.fn();
     const wrapper = mount((
       <KBContext.Provider value={{ schema: new Schema() }}>
@@ -145,18 +145,18 @@ describe('BaseRecordForm', () => {
 
     expect(wrapper.find(ActionButton)).toHaveLength(1);
     wrapper.setState({
-      '@class': "Evidence", 
-      description: "testDescription",
-      name: "EvidenceTest",
-      source:{
-        '@class': "Source",
-        name: "bcgsc"
+      '@class': 'Evidence',
+      description: 'testDescription',
+      name: 'EvidenceTest',
+      source: {
+        '@class': 'Source',
+        name: 'bcgsc',
       },
-      sourceId: "sourceID"
-    }, () => {updateStateAndClickFirstBtn(wrapper)});
+      sourceId: 'sourceID',
+    }, () => { updateStateAndClickFirstBtn(wrapper); });
     expect(mockAddSubmit.mock.calls.length).toBe(1);
   });
-  test('search for biological feature test - kras', ()=>{
+  test('search for biological feature test - kras', () => {
     const mockQrySubmit = jest.fn();
     const wrapper = mount((
       <KBContext.Provider value={{ schema: new Schema() }}>
@@ -170,19 +170,19 @@ describe('BaseRecordForm', () => {
     ));
 
     expect(wrapper.find(ActionButton)).toHaveLength(1);
-    //test expandOptionsHandler
-    const instance = wrapper.instance()
+    // test expandOptionsHandler
+    const instance = wrapper.instance();
     instance.handleExpand();
-    //add in query parameters and submit 
+    // add in query parameters and submit
     wrapper.setState({
-      '@class': "Feature",
-      description: "kras",
-    }, ()=> {updateStateAndClickFirstBtn(wrapper)})
+      '@class': 'Feature',
+      description: 'kras',
+    }, () => { updateStateAndClickFirstBtn(wrapper); });
 
     expect(mockQrySubmit.mock.calls.length).toBe(1);
   });
-  test('adding a new user', ()=>{
-    const mockAddUserSubmit = jest.fn()
+  test('adding a new user', () => {
+    const mockAddUserSubmit = jest.fn();
     const wrapper = mount((
       <KBContext.Provider value={{ schema: new Schema() }}>
         <BaseRecordForm
@@ -197,31 +197,31 @@ describe('BaseRecordForm', () => {
     ));
 
     expect(wrapper.find(ActionButton)).toHaveLength(1);
-    //add in new user parameters 
+    // add in new user parameters
     wrapper.setState({
-      '@class': "User",
-      name:"testUserReadOnly",
+      '@class': 'User',
+      name: 'testUserReadOnly',
       groups: [
         {
           '@class': 'UserGroup',
-          '@rid': "#20:20",
+          '@rid': '#20:20',
           createdAt: 155198998948,
-          name:"readonly",
-          permissions:{
-            '@class': "Permissions"
-          }
-        }
-      ]
-    }, ()=> {updateStateAndClickFirstBtn(wrapper)});
+          name: 'readonly',
+          permissions: {
+            '@class': 'Permissions',
+          },
+        },
+      ],
+    }, () => { updateStateAndClickFirstBtn(wrapper); });
 
     expect(mockAddUserSubmit.mock.calls.length).toBe(1);
   });
-  test('edit edge form(delete only)', ()=>{
+  test('edit edge form(delete only)', () => {
     const mockDelUserSubmit = jest.fn();
     const wrapper = mount((
       <KBContext.Provider value={{ schema: new Schema() }}>
         <BaseRecordForm
-          rid='#20:9'
+          rid="#20:9"
           modelName="User"
           variant="edit"
           name="name"
@@ -232,11 +232,11 @@ describe('BaseRecordForm', () => {
     ));
 
     expect(wrapper.find(ActionButton)).toHaveLength(2);
-    //delete is the first Action Button in the Component
+    // delete is the first Action Button in the Component
     updateStateAndClickFirstBtn(wrapper);
     expect(mockDelUserSubmit.mock.calls.length).toBe(1);
   });
-  test('add variant - statement model has a submit button ', ()=>{
+  test('add variant - statement model has a submit button ', () => {
     const mockNewStatementSubmit = jest.fn();
     const wrapper = mount((
       <KBContext.Provider value={{ schema: new Schema() }}>
@@ -252,7 +252,7 @@ describe('BaseRecordForm', () => {
 
     expect(wrapper.find(ActionButton)).toHaveLength(1);
   });
-  test('switching between different RecordForm Models (Ontology-> Variant)', ()=>{
+  test('switching between different RecordForm Models (Ontology-> Variant)', () => {
     const wrapper = mount((
       <KBContext.Provider value={{ schema: new Schema() }}>
         <BaseRecordForm
@@ -264,17 +264,12 @@ describe('BaseRecordForm', () => {
         />
       </KBContext.Provider>
     ));
-    console.log(wrapper.props().modelName);
     expect(wrapper.find(ActionButton)).toHaveLength(1);
     wrapper.setProps({
-      modelName: 'Variant'
-    }, ()=>{wrapper.update()});
-    
+      modelName: 'Variant',
+    }, () => { wrapper.update(); });
+
     expect(wrapper.find(ActionButton)).toHaveLength(1);
     // expect(wrapper.props().modelName).toEqual('Variant');
-
   });
 });
-
-
-

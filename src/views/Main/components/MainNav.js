@@ -21,7 +21,7 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
 import logo from '../../../static/logo.png';
 import title from '../../../static/title.png';
-import auth from '../../../services/auth';
+import { KBContext } from '../../../components/KBContext';
 
 
 /**
@@ -31,6 +31,8 @@ import auth from '../../../services/auth';
  * @property {function} props.onChange - handler for siderbar state change.
  */
 class MainNav extends React.PureComponent {
+  static contextType = KBContext;
+
   static propTypes = {
     isOpen: PropTypes.bool,
     activeLink: PropTypes.string,
@@ -66,6 +68,7 @@ class MainNav extends React.PureComponent {
 
   render() {
     const { isOpen, activeLink } = this.props;
+    const { auth } = this.context;
 
     const MenuLink = ({
       route, label, icon = null, inset = false,

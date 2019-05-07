@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import DetailDrawer from '../DetailDrawer';
 import Schema from '../../../../services/schema';
 import { KBContext } from '../../../../components/KBContext';
+import { Authentication } from '../../../../services/auth';
 
 
 const testSchema = new Schema({
@@ -62,7 +63,7 @@ const testSchema = new Schema({
 
 const ProvideSchema = ({ children = [], schema }) => (  // eslint-disable-line
   <BrowserRouter>
-    <KBContext.Provider value={{ schema }}>
+    <KBContext.Provider value={{ schema, auth: new Authentication() }}>
       {children}
     </KBContext.Provider>
   </BrowserRouter>

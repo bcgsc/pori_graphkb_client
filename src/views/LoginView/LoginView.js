@@ -5,8 +5,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import api from '../../services/api';
-import auth from '../../services/auth';
-import config from '../../static/config';
+import { KBContext } from '../../components/KBContext';
 
 /**
  * View to handle user authentication. Redirected to if at any point during use
@@ -15,6 +14,8 @@ import config from '../../static/config';
  * token in browser localstorage.
  */
 class LoginView extends React.Component {
+  static contextType = KBContext;
+
   static propTypes = {
     history: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,
@@ -31,23 +32,29 @@ class LoginView extends React.Component {
    * otherwise.
    */
   async componentDidMount() {
+    const { auth } = this.context;
     const { history, location } = this.props;
     let from;
     try {
-      from = location.state.from.pathname;
+      from = location.state.from.pathname + location.state.from.search;
     } catch (err) {
-      from = auth.popReferrerUri() || '/query';
+      from = auth.referrerUri || '/query';
     }
 
     if (!auth.isAuthenticated()) {
-      await auth.authenticate(from);
+      try {
+        await auth.login(from);
+      } catch (err) {
+        // redirect to the error page
+        history.push('/error', { error: { name: err.name, message: err.message } });
+        return;
+      }
     }
 
     if (!auth.isAuthorized()) {
       let call;
-      if (config.DISABLE_AUTH !== true) {
-        const token = auth.getAuthToken();
-        call = api.post('/token', { keyCloakToken: token });
+      if (auth.disableAuth !== true) {
+        call = api.post('/token', { keyCloakToken: auth.keycloak.token });
       } else { // FOR TESTING ONLY
         console.warn('Authentication server is currently disabled by the client');
         call = api.post('/token', { username: process.env.USER, password: process.env.PASSWORD });
@@ -55,7 +62,7 @@ class LoginView extends React.Component {
       this.controllers.push(call);
       try {
         const response = await call.request();
-        auth.setToken(response.kbToken);
+        auth.authorizationToken = response.kbToken;
       } catch (error) {
         // redirect to the error page
         console.error(error);

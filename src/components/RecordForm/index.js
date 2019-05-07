@@ -167,6 +167,8 @@ class RecordForm extends React.PureComponent {
       schema, onSubmit, onError, modelName,
     } = this.props;
 
+    console.log('[handleNewAction] errors ', errors);
+    console.log('[handleNewAction] content ', content);
     if (errors && Object.keys(errors).length) {
       // bring up the snackbar for errors
       console.error(errors);
@@ -204,15 +206,17 @@ class RecordForm extends React.PureComponent {
   async handleDeleteAction({ content }) {
     const snackbar = this.context;
     const { schema, onSubmit, onError } = this.props;
-
+    console.log('[RecordForm DELETE] content before schema method', content);
     const { routeName } = schema.get(content);
     console.log('[RecordForm DELETE] routeName', routeName);
     console.log('[RecordForm DELETE] content', content);
+    // instantiate a APICALL object with delete parameters
     const call = api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
     console.log('[RecordForm DELETE] call', call);
     this.controllers.push(call);
     this.setState({ actionInProgress: true });
     try {
+      // When API call actually happens
       await call.request();
       snackbar.add(`Sucessfully deleted the record ${content['@rid']}`);
       onSubmit();

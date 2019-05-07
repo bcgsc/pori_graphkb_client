@@ -73,6 +73,7 @@ class ApiCall {
           signal,
         },
       );
+      console.log('[API/calls.js] fetch response: ', response);
     } catch (err) {
       if (err.name === 'AbortError' && ignoreAbort) {
         return null;

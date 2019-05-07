@@ -37,12 +37,16 @@ module.exports = {
   testURL: 'http://localhost',
   transform: {
     '^.+\\.(js|jsx|mjs)$': '<rootDir>/node_modules/babel-jest',
+    '^.+\\.js$': 'babel-jest',
     '^.+\\.css$': '<rootDir>/config/jest/cssTransform.js',
     '^(?!.*\\.(js|jsx|mjs|css|json)$)': '<rootDir>/config/jest/fileTransform.js',
   },
   transformIgnorePatterns: [
-    '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$',
+    '/node_modules/(?!(@bcgsc)/).*/',
   ],
+  moduleNameMapper: {
+    '@bcgsc/react-snackbar-provider': '<rootDir>/config/jest/snackbarStub.js',
+  },
   moduleFileExtensions: [
     'web.js',
     'js',

@@ -225,7 +225,7 @@ class DataTable extends React.Component {
 
   @boundMethod
   handleExportTsv(selectionOnly = false) {
-    const { schema, user } = this.context;
+    const { schema, auth } = this.context;
 
     const formatValue = (value) => {
       if (typeof value === 'object' && value !== null) {
@@ -236,7 +236,7 @@ class DataTable extends React.Component {
         : value;
     };
 
-    const header = `## Exported from GraphKB at ${new Date()} by ${user.name}
+    const header = `## Exported from GraphKB at ${new Date()} by ${auth.username}
 ## Distribution and Re-use of the contents of GraphKB are subject to the usage aggreements of individual data sources.
 ## Please review the appropriate agreements prior to use (see usage under sources)`;
 

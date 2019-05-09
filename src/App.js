@@ -14,7 +14,6 @@ import SnackbarProvider from '@bcgsc/react-snackbar-provider';
 import * as cssTheme from './_theme.scss';
 import Main from './views/Main/Main';
 
-console.log('cssTheme', cssTheme);
 
 const theme = createMuiTheme({
   direction: 'ltr',

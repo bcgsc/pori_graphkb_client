@@ -297,8 +297,9 @@ class BaseRecordForm extends React.Component {
   @boundMethod
   async handleAction(handler) {
     const { content, errors } = this.state;
-    // console.log('[ BaseRecordForm ] state: ', this.state);
-    // console.log('[ BaseRecordForm handleAction ] content: ', content);
+    console.log('[ BaseRecordForm handleAction ] content: ', content);
+    console.log('[ BaseRecordForm handleAction ] errors: ', errors);
+
     if (handler) {
       await handler({
         content, errors,

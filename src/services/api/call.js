@@ -73,10 +73,7 @@ class ApiCall {
           signal,
         },
       );
-      console.log('[API/calls.js fetch fn] response = ', response);
-      // returns a response object
     } catch (err) {
-      console.log('[API/calls.js] ERROR');
       if (err.name === 'AbortError' && ignoreAbort) {
         return null;
       }
@@ -85,9 +82,7 @@ class ApiCall {
     }
     this.controller = null;
     if (response.ok) {
-      console.log('[API/calls.js before response.json()] response: ', response);
       const body = await response.json();
-      console.log('[API/calls.js after response.json()] body: ', body);
       const decycled = jc.retrocycle(body);
       let result = decycled.result !== undefined
         ? decycled.result
@@ -103,7 +98,6 @@ class ApiCall {
           result = { target: result };
         }
       }
-      console.log('[API/calls.js fetch] processed response//result: ', result);
       return result;
     }
 

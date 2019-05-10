@@ -145,6 +145,7 @@ class RecordForm extends React.PureComponent {
         const call = api.get(`${model.routeName}/${rid.replace(/^#/, '')}?neighbors=3`, { forceListReturn: true });
         this.controllers.push(call);
         const result = await call.request();
+        console.log('[GETNODEFROMURI] result: ', result);
         if (result && result.length) {
           this.setState({ ...result[0] });
         } else {
@@ -167,8 +168,6 @@ class RecordForm extends React.PureComponent {
       schema, onSubmit, onError, modelName,
     } = this.props;
 
-    // console.log('[handleNewAction] errors ', errors);
-    // console.log('[handleNewAction] content ', content);
     if (errors && Object.keys(errors).length) {
       // bring up the snackbar for errors
       console.error(errors);
@@ -185,8 +184,8 @@ class RecordForm extends React.PureComponent {
       this.setState({ actionInProgress: true });
       try {
         const result = await call.request();
-        console.log('[RecordForm Post] result: ', result);
-        console.log('[RecordForm Post] result[`@rid`]: ', result['@rid']);
+        // console.log('[RECORMFORM POST] result: ', result);
+        // console.log('[RECORDFORM POST] result[`@rid`]: ', result['@rid']);
         snackbar.add(`Sucessfully created the record ${result['@rid']}`);
         onSubmit(result);
       } catch (err) {
@@ -205,13 +204,12 @@ class RecordForm extends React.PureComponent {
   async handleDeleteAction({ content }) {
     const snackbar = this.context;
     const { schema, onSubmit, onError } = this.props;
-    // console.log('[RecordForm DELETE] content before schema method', content);
+    console.log('[RecordForm DELETE] content before schema method', content);
     const { routeName } = schema.get(content);
-    // console.log('[RecordForm DELETE] routeName', routeName);
-    // console.log('[RecordForm DELETE] content', content);
+    console.log('[RecordForm DELETE] routeName', routeName);
+    console.log('[RecordForm DELETE] content', content);
     // instantiate a APICALL object with delete parameters
     const call = api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
-    console.log('[RecordForm DELETE] call', call);
     this.controllers.push(call);
     this.setState({ actionInProgress: true });
     try {
@@ -242,14 +240,12 @@ class RecordForm extends React.PureComponent {
       // ok to PATCH
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
-      console.log('[RecordForm PATCH] routeName', routeName);
-      console.log('[RecordForm PATCH] content', content);
       const call = api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
-      console.log('[RecordForm PATCH] call', call);
       this.controllers.push(call);
       this.setState({ actionInProgress: true });
       try {
         const result = await call.request();
+        console.log('[RECORDFORM EDIT] result: ', result);
         snackbar.add(`Sucessfully edited the record ${result['@rid']}`);
         onSubmit(result);
       } catch (err) {

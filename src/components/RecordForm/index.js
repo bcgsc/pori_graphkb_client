@@ -142,10 +142,18 @@ class RecordForm extends React.PureComponent {
       // If not a new form then should have existing content
       this.setState({ actionInProgress: true });
       try {
+        // console.group('[GETNODEFROMURI]');
+        // console.log('[GETNODEFROMURI] routeName: ', model.routeName);
+        // console.log('[GETNODEFROMURI] rid: ', rid);
         const call = api.get(`${model.routeName}/${rid.replace(/^#/, '')}?neighbors=3`, { forceListReturn: true });
+        console.group('[MOCKAPICALL]');
+        console.log('[MOCKAPICALL] get call: ', call);
+        console.group('[MOCKAPICALL]');
         this.controllers.push(call);
         const result = await call.request();
-        console.log('[GETNODEFROMURI] result: ', result);
+        // console.log('[GETNODEFROMURI] result: ', result);
+        // console.log('[GETNODEFROMURI] result: ', result.length);
+        // console.group('[GETNODEFROMURI]');
         if (result && result.length) {
           this.setState({ ...result[0] });
         } else {
@@ -180,12 +188,15 @@ class RecordForm extends React.PureComponent {
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
       const call = await api.post(routeName, payload);
+      console.group('[MOCKAPICALL]');
+      console.log('[MOCKAPICALL] post call: ', call);
+      console.group('[MOCKAPICALL]');
       this.controllers.push(call);
       this.setState({ actionInProgress: true });
       try {
         const result = await call.request();
-        // console.log('[RECORMFORM POST] result: ', result);
-        // console.log('[RECORDFORM POST] result[`@rid`]: ', result['@rid']);
+        console.log('[RECORMFORM POST] result: ', result);
+        console.log('[RECORDFORM POST] result[`@rid`]: ', result['@rid']);
         snackbar.add(`Sucessfully created the record ${result['@rid']}`);
         onSubmit(result);
       } catch (err) {
@@ -204,12 +215,15 @@ class RecordForm extends React.PureComponent {
   async handleDeleteAction({ content }) {
     const snackbar = this.context;
     const { schema, onSubmit, onError } = this.props;
-    console.log('[RecordForm DELETE] content before schema method', content);
+    // console.log('[RecordForm DELETE] content before schema method', content);
     const { routeName } = schema.get(content);
-    console.log('[RecordForm DELETE] routeName', routeName);
-    console.log('[RecordForm DELETE] content', content);
+    // console.log('[RecordForm DELETE] routeName', routeName);
+    // console.log('[RecordForm DELETE] content', content);
     // instantiate a APICALL object with delete parameters
     const call = api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
+    console.group('[MOCKAPICALL]');
+    console.log('[MOCKAPICALL] delete call: ', call);
+    console.group('[MOCKAPICALL]');
     this.controllers.push(call);
     this.setState({ actionInProgress: true });
     try {
@@ -241,6 +255,9 @@ class RecordForm extends React.PureComponent {
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
       const call = api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
+      console.group('[MOCKAPICALL]');
+      console.log('[MOCKAPICALL] patch call: ', call);
+      console.group('[MOCKAPICALL]');
       this.controllers.push(call);
       this.setState({ actionInProgress: true });
       try {
@@ -275,12 +292,16 @@ class RecordForm extends React.PureComponent {
       title, variant, onTopClick, modelName, ...rest
     } = this.props;
     const { actionInProgress, ...content } = this.state;
-
+    // console.group('[RECORDFORM]');
+    // console.log('[RECORDFORM] content', content);
+    // console.log('[RECORDFORM] variant: ', variant);
+    // console.group('[RECORDFORM]');
     const actions = {
       [FORM_VARIANT.EDIT]: this.handleEditAction,
       [FORM_VARIANT.NEW]: this.handleNewAction,
       [FORM_VARIANT.SEARCH]: this.handleSearchAction,
     };
+
 
     return (
       <Paper className="record-form__wrapper" elevation={4}>
@@ -322,5 +343,7 @@ class RecordForm extends React.PureComponent {
     );
   }
 }
+
+export { RecordForm };
 
 export default withKB(RecordForm);

@@ -1,7 +1,6 @@
-
-
 import React from 'react';
 import { mount } from 'enzyme'; // eslint-disable-line no-use-before-define
+
 import RecordForm from '..';
 import { RawRecordForm } from '..';
 import { KBContext } from '../../KBContext';

@@ -179,7 +179,6 @@ class RecordForm extends React.PureComponent {
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
       const call = api.post(routeName, payload);
-
       this.controllers.push(call);
       this.setState({ actionInProgress: true });
       try {
@@ -202,6 +201,7 @@ class RecordForm extends React.PureComponent {
   async handleDeleteAction({ content }) {
     const snackbar = this.context;
     const { schema, onSubmit, onError } = this.props;
+
     const { routeName } = schema.get(content);
     const call = api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
     this.controllers.push(call);
@@ -273,7 +273,6 @@ class RecordForm extends React.PureComponent {
       [FORM_VARIANT.NEW]: this.handleNewAction,
       [FORM_VARIANT.SEARCH]: this.handleSearchAction,
     };
-
 
     return (
       <Paper className="record-form__wrapper" elevation={4}>

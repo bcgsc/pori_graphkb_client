@@ -71,7 +71,6 @@ const sortAndGroupFields = (model, opt = {}) => {
     variant = FORM_VARIANT.VIEW,
   } = opt;
 
-
   const groupMap = {};
 
   if (!model) {

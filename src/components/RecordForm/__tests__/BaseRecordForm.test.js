@@ -43,7 +43,6 @@ describe('BaseRecordForm', () => {
     wrapper.update();
     expect(wrapper.find(ActionButton)).toHaveLength(0);
   });
-
   test('new variant has a submit button', () => {
     const wrapper = mount((
       <KBContext.Provider value={{ schema: new Schema() }}>
@@ -59,7 +58,6 @@ describe('BaseRecordForm', () => {
     wrapper.update();
     expect(wrapper.find(ActionButton)).toHaveLength(1);
   });
-
   test('abstract class descendants for select', () => {
     // the class drop down should be a list of all the non-abstract descdent model names
     const wrapper = mount((

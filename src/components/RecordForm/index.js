@@ -178,7 +178,7 @@ class RecordForm extends React.PureComponent {
       }
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
-      const call = await api.post(routeName, payload);
+      const call = api.post(routeName, payload);
 
       this.controllers.push(call);
       this.setState({ actionInProgress: true });
@@ -207,7 +207,6 @@ class RecordForm extends React.PureComponent {
     this.controllers.push(call);
     this.setState({ actionInProgress: true });
     try {
-      // When API call actually happens
       await call.request();
       snackbar.add(`Sucessfully deleted the record ${content['@rid']}`);
       onSubmit();
@@ -268,6 +267,7 @@ class RecordForm extends React.PureComponent {
       title, variant, onTopClick, modelName, ...rest
     } = this.props;
     const { actionInProgress, ...content } = this.state;
+
     const actions = {
       [FORM_VARIANT.EDIT]: this.handleEditAction,
       [FORM_VARIANT.NEW]: this.handleNewAction,

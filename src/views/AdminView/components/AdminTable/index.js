@@ -81,7 +81,6 @@ class AdminTable extends React.PureComponent {
       records,
       variant,
     } = this.props;
-    
 
     const {
       dialogOpen,

@@ -45,7 +45,6 @@ module.exports = {
     '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$',
   ],
   moduleNameMapper: {
-    '@bcgsc/react-snackbar-provider': '<rootDir>/config/jest/snackbarStub.js',
   },
   moduleFileExtensions: [
     'web.js',

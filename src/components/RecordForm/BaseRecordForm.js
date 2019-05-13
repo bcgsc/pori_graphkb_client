@@ -100,10 +100,8 @@ class BaseRecordForm extends React.Component {
     const { variant, value } = this.props;
     const { content } = this.state;
 
-
     if (variant === FORM_VARIANT.NEW && !content[CLASS_MODEL_PROP]) {
       const model = this.currentModel();
-
 
       if (model && !model.isAbstract) {
         const newContent = Object.assign({}, content, { [CLASS_MODEL_PROP]: model.name });
@@ -140,7 +138,6 @@ class BaseRecordForm extends React.Component {
     const { value, modelName, variant } = this.props;
     const { content } = this.state;
 
-
     if (jc.stringify(value) !== jc.stringify(prevProps.value)) {
       this.populateFromRecord(value);
     } else if (modelName !== prevProps.modelName) {
@@ -164,7 +161,6 @@ class BaseRecordForm extends React.Component {
     const { variant } = this.props;
 
     const model = this.currentModel(record['@class']);
-
 
     if (!model) {
       this.setState({ content: {}, errors: {} });

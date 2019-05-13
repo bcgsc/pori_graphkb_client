@@ -42,7 +42,7 @@ module.exports = {
     '^(?!.*\\.(js|jsx|mjs|css|json)$)': '<rootDir>/config/jest/fileTransform.js',
   },
   transformIgnorePatterns: [
-    '/node_modules/(?!(@bcgsc)/).*/',
+    '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$',
   ],
   moduleNameMapper: {
     '@bcgsc/react-snackbar-provider': '<rootDir>/config/jest/snackbarStub.js',

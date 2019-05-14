@@ -22,7 +22,7 @@ const AboutUsageTerms = () => {
           {section.slice(0, 1)}
         </ListItemIcon>
         <ListItemText>
-          <a href={`about/usageterms#${anchorId}`}> {section}</a>
+          <a href={`about/terms#${anchorId}`}> {section}</a>
         </ListItemText>
       </ListItem>
     );

@@ -42,7 +42,7 @@ class AboutView extends Component {
       { label: 'Query', component: AboutQuerying },
       { label: 'Input Data', component: AboutForms },
       { label: 'Notation', component: AboutNotation },
-      { label: 'Usage/Terms', component: AboutUsageTerms },
+      { label: 'Terms', component: AboutUsageTerms },
     ];
 
     const uriLookup = {};

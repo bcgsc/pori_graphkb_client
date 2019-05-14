@@ -37,7 +37,7 @@ class AboutUsageTerms extends Component {
           <List>
             {tableOfContents}
           </List>
-          <Typography variant="h6" component="h3" id="copyright">
+          <Typography variant="h6" component="h3" id={sectionAnchorIds[0]}>
             CopyRight
           </Typography>
           <Typography paragraph>
@@ -49,7 +49,7 @@ In Lorem labore officia ullamco ut et incididunt eiusmod sunt dolore eiusmod ali
 
 Veniam amet esse aliqua dolore cupidatat laboris ex commodo esse ut fugiat elit eu. Pariatur in Lorem officia adipisicing eiusmod ea. Ad sit quis occaecat magna officia ullamco id non. Incididunt culpa ullamco nulla consequat ipsum ad ullamco. Nostrud deserunt magna do duis ipsum sint consequat ea occaecat. Veniam ipsum veniam pariatur cillum dolor esse veniam Lorem nostrud laboris. Ea duis aute dolor esse.
           </Typography>
-          <Typography variant="h6" component="h3" id="useof">
+          <Typography variant="h6" component="h3" id={sectionAnchorIds[1]}>
             Use of GraphKB
           </Typography>
           <Typography paragraph>
@@ -61,7 +61,7 @@ Non sunt fugiat irure officia ullamco ullamco ex ipsum deserunt. Lorem anim eius
 
 Occaecat sint pariatur nisi ad laboris. Consequat commodo anim ad elit excepteur aliqua anim velit deserunt aliquip consectetur et. Ea exercitation Lorem sit ex laborum id do quis cillum dolore. Nostrud cillum dolore ea mollit. Et nisi culpa amet dolore nostrud id fugiat. Consectetur mollit consectetur labore mollit aliqua dolore ullamco anim ad. Irure nulla ut est sunt ad proident deserunt ad nisi ut quis voluptate.
           </Typography>
-          <Typography variant="h6" component="h3" id="thirdparty">
+          <Typography variant="h6" component="h3" id={sectionAnchorIds[2]}>
             Third-Party Platforms, Products, and Services
           </Typography>
           <Typography paragraph>
@@ -73,7 +73,7 @@ Voluptate id duis ipsum aliquip est aliqua ipsum minim amet mollit. Anim ex ea c
 
 Do fugiat nulla exercitation velit nostrud nostrud voluptate duis sit. Adipisicing sint dolore dolor in cillum anim. Nostrud adipisicing ad commodo quis veniam ex commodo deserunt labore pariatur.
           </Typography>
-          <Typography variant="h6" component="h3" id="disclaimers">
+          <Typography variant="h6" component="h3" id={sectionAnchorIds[3]}>
             Disclaimers
           </Typography>
           <Typography paragraph>
@@ -85,7 +85,7 @@ Non sint occaecat mollit incididunt fugiat quis anim aute nostrud. <br /><br />M
 
 Ut laborum duis culpa esse ipsum occaecat. Id Lorem officia laborum magna in. Sint eiusmod exercitation occaecat eu. Dolor sint do labore qui aliqua amet ea cillum non consequat eu non ullamco aliquip. Nulla occaecat officia consectetur esse culpa ad consequat mollit id proident nostrud officia in irure. Veniam deserunt nisi deserunt ullamco cupidatat excepteur sunt.
           </Typography>
-          <Typography variant="h6" component="h3" id="limits">
+          <Typography variant="h6" component="h3" id={sectionAnchorIds[4]}>
             Limitation of Liability
           </Typography>
           <Typography paragraph>

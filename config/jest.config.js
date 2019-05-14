@@ -44,8 +44,6 @@ module.exports = {
   transformIgnorePatterns: [
     '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$',
   ],
-  moduleNameMapper: {
-  },
   moduleFileExtensions: [
     'web.js',
     'js',

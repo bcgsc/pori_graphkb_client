@@ -1,5 +1,5 @@
 import React from 'react';
-import { mount } from 'enzyme'; // eslint-disable-line no-use-before-define
+import { mount } from 'enzyme';
 
 import RecordForm from '..';
 import { RawRecordForm } from '..';
@@ -46,6 +46,7 @@ describe('RecordForm', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
+
   test('Record Form Component Mounts successfully', () => {
     const wrapper = mount((
       <KBContext.Provider value={{ schema: new Schema() }}>
@@ -64,6 +65,7 @@ describe('RecordForm', () => {
     wrapper.update();
     expect(wrapper.find(RecordForm)).toHaveLength(1);
   });
+
   test('RecordForm Mounts and Unmounts correctly', () => {
     const wrapper = mount((
       <KBContext.Provider value={{ schema: new Schema() }}>
@@ -85,6 +87,7 @@ describe('RecordForm', () => {
     wrapper.unmount();
     expect(wrapper.exists()).toBeFalsy();
   });
+
   test('delete a user successfully via RecordForm', () => {
     const onErrorSpy = jest.fn();
     const handlerSpy = jest.spyOn(RawRecordForm.prototype, 'handleDeleteAction');
@@ -136,6 +139,7 @@ describe('RecordForm', () => {
     expect(onErrorSpy.mock.calls.length).toBe(0);
     expect(handlerSpy.mock.calls.length).toBe(1);
   });
+
   test('adding a new user node', () => {
     const onErrorSpy = jest.fn();
     const handlerSpy = jest.spyOn(RawRecordForm.prototype, 'handleNewAction');
@@ -181,6 +185,7 @@ describe('RecordForm', () => {
     expect(onErrorSpy.mock.calls.length).toBe(0);
     expect(handlerSpy.mock.calls.length).toBe(1);
   });
+
   test('editing a  vertex/node form ', () => {
     const onErrorSpy = jest.fn();
     const handlerSpy = jest.spyOn(RawRecordForm.prototype, 'handleEditAction');
@@ -226,6 +231,7 @@ describe('RecordForm', () => {
     expect(onErrorSpy.mock.calls.length).toBe(0);
     expect(handlerSpy.mock.calls.length).toBe(1);
   });
+
   test('search for a node/edge', () => {
     const onErrorSpy = jest.fn();
     const handlerSpy = jest.spyOn(RawRecordForm.prototype, 'handleSearchAction');
@@ -261,6 +267,7 @@ describe('RecordForm', () => {
     expect(onErrorSpy.mock.calls.length).toBe(0);
     expect(handlerSpy.mock.calls.length).toBe(1);
   });
+
   test('adding a new record (Ontology) ', () => {
     const onErrorSpy = jest.fn();
     const handlerSpy = jest.spyOn(RawRecordForm.prototype, 'handleNewAction');
@@ -302,6 +309,7 @@ describe('RecordForm', () => {
     expect(onErrorSpy.mock.calls.length).toBe(0);
     expect(handlerSpy.mock.calls.length).toBe(1);
   });
+
   test('RecordForm correctly catches no input errors', () => {
     const handlerSpy = jest.spyOn(RawRecordForm.prototype, 'handleNewAction');
     const onSubmitSpy = jest.fn();

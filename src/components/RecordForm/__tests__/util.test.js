@@ -10,6 +10,7 @@ describe('util', () => {
         gender: { name: 'gender', default: null, mandatory: true },
       },
     };
+
     test('no order or collapse', () => {
       const grouping = sortAndGroupFields(testModel);
       expect(grouping).toEqual({
@@ -17,6 +18,7 @@ describe('util', () => {
         extraFields: [],
       });
     });
+
     test('collapse flag given', () => {
       const grouping = sortAndGroupFields(testModel, { collapseExtra: true });
       expect(grouping).toEqual({
@@ -24,6 +26,7 @@ describe('util', () => {
         extraFields: ['address', 'gender'],
       });
     });
+
     test('co-require name and address', () => {
       const grouping = sortAndGroupFields(testModel, {
         collapseExtra: true,
@@ -34,6 +37,7 @@ describe('util', () => {
         extraFields: ['gender'],
       });
     });
+
     test('promote field above the fold', () => {
       const grouping = sortAndGroupFields(testModel, {
         collapseExtra: true,

@@ -6,6 +6,7 @@ import AboutQuerying from './AboutQuerying';
 import AboutStatements from './AboutStatements';
 import PieChart from './PieChart';
 import AboutClasses from './AboutClasses';
+import AboutUsageTerms from './AboutUsageTerms';
 
 export {
   AboutForms,
@@ -15,5 +16,6 @@ export {
   AboutNotation,
   AboutQuerying,
   AboutStatements,
+  AboutUsageTerms,
   PieChart,
 };

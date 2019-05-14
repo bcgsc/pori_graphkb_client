@@ -27,7 +27,7 @@ jest.mock('../../../services/api', () => {
     '@version': 2,
   };
   const mockRequest = () => ({
-    request: async () => Promise.resolve(
+    request: () => Promise.resolve(
       mockReturnVal,
     ),
     abort: () => {},

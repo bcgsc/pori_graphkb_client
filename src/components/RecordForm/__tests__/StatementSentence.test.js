@@ -12,6 +12,7 @@ describe('StatementSentence', () => {
     item => item,
   );
   const schema = new Schema();
+
   test('placeholders used when no content given', () => {
     const wrapper = mount((
       <StatementSentence
@@ -25,6 +26,7 @@ describe('StatementSentence', () => {
     expect(html).toContain('[TARGET]');
     expect(html).toContain('[EVIDENCE]');
   });
+
   test('partial content ok', () => {
     const wrapper = mount((
       <StatementSentence
@@ -42,6 +44,7 @@ describe('StatementSentence', () => {
     expect(html).toContain('[TARGET]');
     expect(html).toContain('[EVIDENCE]');
   });
+
   test('replaces all fields when given', () => {
     const wrapper = mount((
       <StatementSentence

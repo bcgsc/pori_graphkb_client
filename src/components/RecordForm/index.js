@@ -315,4 +315,6 @@ class RecordForm extends React.PureComponent {
   }
 }
 
+export { RecordForm as RawRecordForm };
+
 export default withKB(RecordForm);

@@ -12,6 +12,7 @@ import { ApiCall } from '../../../services/api/call';
 describe('BaseRecordForm', () => {
   jest.spyOn(ApiCall.prototype, 'request').mockImplementation(async () => []);
   test.todo('populateFromRecord');
+
   test('edit variant has submit and delete buttons', () => {
     const wrapper = mount((
       <KBContext.Provider value={{ schema: new Schema() }}>
@@ -27,6 +28,7 @@ describe('BaseRecordForm', () => {
     wrapper.update();
     expect(wrapper.find(ActionButton)).toHaveLength(2);
   });
+
   test('view variant has no buttons', () => {
     // edit button exist on the parent component and not the base
     const wrapper = mount((
@@ -44,6 +46,7 @@ describe('BaseRecordForm', () => {
     wrapper.update();
     expect(wrapper.find(ActionButton)).toHaveLength(0);
   });
+
   test('new variant has a submit button', () => {
     const wrapper = mount((
       <KBContext.Provider value={{ schema: new Schema() }}>
@@ -59,6 +62,7 @@ describe('BaseRecordForm', () => {
     wrapper.update();
     expect(wrapper.find(ActionButton)).toHaveLength(1);
   });
+
   test('abstract class descendants for select', () => {
     // the class drop down should be a list of all the non-abstract descdent model names
     const wrapper = mount((

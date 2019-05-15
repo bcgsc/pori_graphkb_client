@@ -46,7 +46,6 @@ const AboutUsageTerms = () => {
     sections.push(section);
   });
 
-
   return (
     <div className="about-page__content">
       <Typography variant="h5" component="h2">

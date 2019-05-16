@@ -127,7 +127,6 @@ class BaseRecordForm extends React.Component {
     ) {
       return true;
     }
-
     return false;
   }
 

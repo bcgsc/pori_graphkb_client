@@ -34,8 +34,8 @@ const AboutUsageTerms = () => {
     tableOfContents.push(tocSection);
 
     const section = (
-      <div>
-        <Typography variant="h6" component="h3" id={sectionDatum.id}>
+      <div className="terms-section">
+        <Typography variant="h3" component="h3" id={sectionDatum.id}>
           {sectionDatum.label}
         </Typography>
         <Typography paragraph>

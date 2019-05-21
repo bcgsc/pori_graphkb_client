@@ -171,8 +171,10 @@ class BaseRecordForm extends React.Component {
     const newContent = {};
     const errors = {};
 
+    console.group('[BaseRecordForm]');
     Object.values(model.properties).forEach((prop) => {
       const rawValue = record[prop.name];
+      console.log('[BaseRecordForm] rawValue || record[prop.name] : ', rawValue, prop.name);
       const { value, error } = validateValue(prop, rawValue, variant === FORM_VARIANT.SEARCH);
       newContent[prop.name] = value;
       if (error) {
@@ -207,6 +209,7 @@ class BaseRecordForm extends React.Component {
         errors.in = 'Must not equal the outgoing (out) vertex';
       }
     }
+    console.log('[ newContent errors] : ', newContent, errors);
     this.setState({ content: newContent, errors });
   }
 

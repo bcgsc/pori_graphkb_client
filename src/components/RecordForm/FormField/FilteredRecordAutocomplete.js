@@ -66,9 +66,6 @@ class FilteredRecordAutocomplete extends React.PureComponent {
     } = this.state;
 
     const model = schema.get(linkedClassName);
-    console.group('[FilteredRecordAutocomplete]');
-    console.log('[props] : ', this.props);
-    console.log('[state] ', this.state);
 
     const itemToString = (item) => {
       if (isPutativeEdge) {
@@ -95,12 +92,10 @@ class FilteredRecordAutocomplete extends React.PureComponent {
       return `${record}`;
     };
 
-    let placeholderText = `Search for an Existing ${selectedClassName} Record`;
     const { isMulti } = this.props;
-    if (isMulti) {
-      placeholderText += '(s)';
-    }
-
+    const placeholderText = isMulti
+      ? `Search for an Existing ${selectedClassName} Record(s)`
+      : `Search for an Existing ${selectedClassName} Record`;
 
     return (
       <div className="filtered-record-autocomplete">

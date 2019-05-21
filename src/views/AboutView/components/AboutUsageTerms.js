@@ -34,7 +34,7 @@ const AboutUsageTerms = () => {
     tableOfContents.push(tocSection);
 
     const section = (
-      <div className="terms-section">
+      <div>
         <Typography variant="h3" id={sectionDatum.id}>
           {sectionDatum.label}
         </Typography>

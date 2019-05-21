@@ -481,7 +481,7 @@ class DetailDrawer extends Component {
         <div className="detail-drawer__content">
           <div className="detail-drawer__heading">
             <div>
-              <Typography component="h1">
+              <Typography variant="h4" component="h1">
                 {preview}
               </Typography>
               {errorMessage && (

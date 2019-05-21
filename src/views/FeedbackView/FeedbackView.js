@@ -16,7 +16,7 @@ function FeedbackView() {
   const jiraLink = <a rel="noopener noreferrer" target="_blank" href={JIRA}>KBDEV</a>;
   return (
     <div className="content-wrapper">
-      <Typography component="h1">Feedback</Typography>
+      <Typography variant="h1">Feedback</Typography>
       <Typography variant="subtitle1" paragraph>Questions</Typography>
       <Typography paragraph>
           Email questions to: {emailLink}.

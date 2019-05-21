@@ -35,7 +35,7 @@ const AboutUsageTerms = () => {
 
     const section = (
       <div className="terms-section">
-        <Typography component="h3" id={sectionDatum.id}>
+        <Typography variant="h3" id={sectionDatum.id}>
           {sectionDatum.label}
         </Typography>
         <Typography paragraph>
@@ -48,7 +48,7 @@ const AboutUsageTerms = () => {
 
   return (
     <div className="about-page__content">
-      <Typography component="h2">
+      <Typography variant="h2">
             GraphKB Terms of Use
       </Typography>
       <List>

@@ -32,19 +32,11 @@ jest.mock('../../../services/api', () => {
     ),
     abort: () => {},
   });
-  const delRequestFunc = jest.fn()
-    .mockReturnValue(mockRequest());
-  const postRequestFunc = jest.fn()
-    .mockReturnValue(mockRequest());
-  const getRequestFunc = jest.fn()
-    .mockReturnValue(mockRequest());
-  const patchRequestFunc = jest.fn()
-    .mockReturnValue(mockRequest());
   return ({
-    delete: delRequestFunc,
-    post: postRequestFunc,
-    get: getRequestFunc,
-    patch: patchRequestFunc,
+    delete: jest.fn().mockReturnValue(mockRequest()),
+    post: jest.fn().mockReturnValue(mockRequest()),
+    get: jest.fn().mockReturnValue(mockRequest()),
+    patch: jest.fn().mockReturnValue(mockRequest()),
   });
 });
 
@@ -52,6 +44,9 @@ describe('RecordForm', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
+
+  const onSubmitSpy = jest.fn();
+  const onErrorSpy = jest.fn();
 
   test('Record Form Component Mounts successfully', () => {
     const wrapper = mount((
@@ -95,8 +90,6 @@ describe('RecordForm', () => {
   });
 
   test('delete a user successfully via RecordForm', async () => {
-    const onErrorSpy = jest.fn();
-    const onSubmitSpy = jest.fn();
     const handlerSpy = jest.spyOn(RawRecordForm.prototype, 'handleDeleteAction');
 
     const wrapper = mount((
@@ -144,14 +137,12 @@ describe('RecordForm', () => {
     await delBtn.prop('onClick')();
     wrapper.update();
 
-    expect(onErrorSpy.mock.calls.length).toBe(0);
-    expect(handlerSpy.mock.calls.length).toBe(1);
-    expect(onSubmitSpy.mock.calls.length).toBe(1);
+    expect(onErrorSpy).toHaveBeenCalledTimes(0);
+    expect(onSubmitSpy).toHaveBeenCalledTimes(1);
+    expect(handlerSpy).toHaveBeenCalledTimes(1);
   });
 
   test('adding a new user node', async () => {
-    const onErrorSpy = jest.fn();
-    const onSubmitSpy = jest.fn();
     const handlerSpy = jest.spyOn(RawRecordForm.prototype, 'handleNewAction');
 
     const wrapper = mount((
@@ -193,14 +184,12 @@ describe('RecordForm', () => {
     expect(submitNewUserBtn.text()).toEqual('SUBMIT');
     await submitNewUserBtn.prop('onClick')();
 
-    expect(onErrorSpy.mock.calls.length).toBe(0);
-    expect(handlerSpy.mock.calls.length).toBe(1);
-    expect(onSubmitSpy.mock.calls.length).toBe(1);
+    expect(onErrorSpy).toHaveBeenCalledTimes(0);
+    expect(onSubmitSpy).toHaveBeenCalledTimes(1);
+    expect(handlerSpy).toHaveBeenCalledTimes(1);
   });
 
   test('editing a  vertex/node form ', async () => {
-    const onSubmitSpy = jest.fn();
-    const onErrorSpy = jest.fn();
     const handlerSpy = jest.spyOn(RawRecordForm.prototype, 'handleEditAction');
 
     const wrapper = mount((
@@ -242,14 +231,12 @@ describe('RecordForm', () => {
     expect(submitEditBtn.text()).toEqual('SUBMIT CHANGES');
     await submitEditBtn.prop('onClick')();
 
-    expect(onErrorSpy.mock.calls.length).toBe(0);
-    expect(handlerSpy.mock.calls.length).toBe(1);
-    expect(onSubmitSpy.mock.calls.length).toBe(1);
+    expect(onErrorSpy).toHaveBeenCalledTimes(0);
+    expect(onSubmitSpy).toHaveBeenCalledTimes(1);
+    expect(handlerSpy).toHaveBeenCalledTimes(1);
   });
 
   test('search for a node/edge', async () => {
-    const onSubmitSpy = jest.fn();
-    const onErrorSpy = jest.fn();
     const handlerSpy = jest.spyOn(RawRecordForm.prototype, 'handleSearchAction');
     const wrapper = mount((
       <KBContext.Provider value={{ schema: new Schema() }}>
@@ -280,14 +267,12 @@ describe('RecordForm', () => {
     expect(submitBtn.text()).toEqual('SUBMIT');
     await submitBtn.prop('onClick')();
 
-    expect(onErrorSpy.mock.calls.length).toBe(0);
-    expect(handlerSpy.mock.calls.length).toBe(1);
-    expect(onSubmitSpy.mock.calls.length).toBe(1);
+    expect(onErrorSpy).toHaveBeenCalledTimes(0);
+    expect(onSubmitSpy).toHaveBeenCalledTimes(1);
+    expect(handlerSpy).toHaveBeenCalledTimes(1);
   });
 
   test('adding a new record (Ontology) ', async () => {
-    const onSubmitSpy = jest.fn();
-    const onErrorSpy = jest.fn();
     const handlerSpy = jest.spyOn(RawRecordForm.prototype, 'handleNewAction');
 
     const wrapper = mount((
@@ -325,14 +310,13 @@ describe('RecordForm', () => {
     expect(submitBtn.text()).toEqual('SUBMIT');
     await submitBtn.prop('onClick')();
 
-    expect(onErrorSpy.mock.calls.length).toBe(0);
-    expect(handlerSpy.mock.calls.length).toBe(1);
-    expect(onSubmitSpy.mock.calls.length).toBe(1);
+    expect(onErrorSpy).toHaveBeenCalledTimes(0);
+    expect(onSubmitSpy).toHaveBeenCalledTimes(1);
+    expect(handlerSpy).toHaveBeenCalledTimes(1);
   });
 
   test('RecordForm correctly catches no input errors', async () => {
     const handlerSpy = jest.spyOn(RawRecordForm.prototype, 'handleNewAction');
-    const onSubmitSpy = jest.fn();
 
     const wrapper = mount((
       <KBContext.Provider value={{ schema: new Schema() }}>
@@ -370,16 +354,14 @@ describe('RecordForm', () => {
 
     expect(BaseRecordFormInstance.state.errors.source.message).toEqual('Required Value');
     expect(BaseRecordFormInstance.state.errors.sourceId.message).toEqual('Required Value');
-    expect(handlerSpy.mock.calls.length).toBe(1);
-    expect(onSubmitSpy.mock.calls.length).toBe(0);
-    expect(snackbarAddSpy.mock.calls.length).toBe(1);
+    expect(onSubmitSpy).toHaveBeenCalledTimes(0);
+    expect(handlerSpy).toHaveBeenCalledTimes(1);
+    expect(snackbarAddSpy).toHaveBeenCalledTimes(1);
     expect(snackbarAddSpy).toBeCalledWith('There are errors in the form which must be resolved before it can be submitted');
   });
 
   test('submitting a new record with input errors', async () => {
-    const onErrorSpy = jest.fn();
     const handlerSpy = jest.spyOn(RawRecordForm.prototype, 'handleNewAction');
-    const onSubmitSpy = jest.fn();
 
     const wrapper = mount((
       <KBContext.Provider value={{ schema: new Schema() }}>
@@ -419,18 +401,16 @@ describe('RecordForm', () => {
 
     expect(BaseRecordFormInstance.state.errors.source.message).toEqual('Required Value');
     expect(BaseRecordFormInstance.state.errors.sourceId.message).toEqual('Required Value');
-    expect(onErrorSpy.mock.calls.length).toBe(0);
-    expect(handlerSpy.mock.calls.length).toBe(1);
-    expect(onSubmitSpy.mock.calls.length).toBe(0);
-    expect(snackbarAddSpy.mock.calls.length).toBe(1);
+    expect(onErrorSpy).toHaveBeenCalledTimes(0);
+    expect(onSubmitSpy).toHaveBeenCalledTimes(0);
+    expect(handlerSpy).toHaveBeenCalledTimes(1);
+    expect(snackbarAddSpy).toHaveBeenCalledTimes(1);
     expect(snackbarAddSpy).toBeCalledWith('There are errors in the form which must be resolved before it can be submitted');
     expect(api.post).toHaveBeenCalledTimes(0);
   });
 
   test('submitting edits with input errors', async () => {
-    const onErrorSpy = jest.fn();
     const handlerSpy = jest.spyOn(RawRecordForm.prototype, 'handleEditAction');
-    const onSubmitSpy = jest.fn();
 
     const wrapper = mount((
       <KBContext.Provider value={{ schema: new Schema() }}>
@@ -472,18 +452,16 @@ describe('RecordForm', () => {
     expect(submitEditBtn.text()).toEqual('SUBMIT CHANGES');
     await submitEditBtn.prop('onClick')();
 
-    expect(onErrorSpy.mock.calls.length).toBe(0);
-    expect(handlerSpy.mock.calls.length).toBe(1);
-    expect(onSubmitSpy.mock.calls.length).toBe(0);
+    expect(onErrorSpy).toHaveBeenCalledTimes(0);
+    expect(onSubmitSpy).toHaveBeenCalledTimes(0);
+    expect(handlerSpy).toHaveBeenCalledTimes(1);
     expect(api.get).toHaveBeenCalledTimes(1);
     expect(api.patch).toHaveBeenCalledTimes(0);
-    expect(snackbarAddSpy.mock.calls.length).toBe(1);
+    expect(snackbarAddSpy).toHaveBeenCalledTimes(1);
     expect(snackbarAddSpy).toBeCalledWith('There are errors in the form which must be resolved before it can be submitted');
   });
 
   test('test searching via Record with input errors', async () => {
-    const onSubmitSpy = jest.fn();
-    const onErrorSpy = jest.fn();
     const handlerSpy = jest.spyOn(RawRecordForm.prototype, 'handleSearchAction');
 
     const wrapper = mount((
@@ -514,24 +492,23 @@ describe('RecordForm', () => {
         name: 'Required Value',
       },
     });
-    // api.get is called once by FormField
+    // api.get is called once by FormField to populate the record
     expect(api.get).toBeCalledTimes(1);
     expect(wrapper.find(ActionButton)).toHaveLength(1);
     const submitBtn = wrapper.find(ActionButton).at(0);
     expect(submitBtn.text()).toEqual('SUBMIT');
     await submitBtn.prop('onClick')();
 
-    expect(onErrorSpy.mock.calls.length).toBe(0);
-    expect(handlerSpy.mock.calls.length).toBe(1);
-    expect(onSubmitSpy.mock.calls.length).toBe(0);
-    expect(api.get).not.toBeCalledTimes(2);
-    expect(snackbarAddSpy.mock.calls.length).toBe(1);
+    // api.get is not called again by handleAction method
+    expect(api.get).toBeCalledTimes(1);
+    expect(onErrorSpy).toHaveBeenCalledTimes(0);
+    expect(onSubmitSpy).toHaveBeenCalledTimes(0);
+    expect(handlerSpy).toHaveBeenCalledTimes(1);
+    expect(snackbarAddSpy).toHaveBeenCalledTimes(1);
     expect(snackbarAddSpy).toBeCalledWith('There are errors in the form which must be resolved before it can be submitted');
   });
 
   test('submiting a new record : catches error by await api post call ', async () => {
-    const onErrorSpy = jest.fn();
-    const onSubmitSpy = jest.fn();
     const handlerSpy = jest.spyOn(RawRecordForm.prototype, 'handleNewAction');
     const wrapper = mount((
       <KBContext.Provider value={{ schema: new Schema() }}>
@@ -575,16 +552,14 @@ describe('RecordForm', () => {
     expect(submitBtn.text()).toEqual('SUBMIT');
     await submitBtn.prop('onClick')();
 
-    expect(onErrorSpy.mock.calls.length).toBe(1);
-    expect(handlerSpy.mock.calls.length).toBe(1);
-    expect(onSubmitSpy.mock.calls.length).toBe(0);
-    expect(snackbarAddSpy.mock.calls.length).toBe(1);
+    expect(onErrorSpy).toHaveBeenCalledTimes(1);
+    expect(onSubmitSpy).toHaveBeenCalledTimes(0);
+    expect(handlerSpy).toHaveBeenCalledTimes(1);
+    expect(snackbarAddSpy).toHaveBeenCalledTimes(1);
     expect(snackbarAddSpy).toBeCalledWith('Error (Post Abort Error) in creating the record');
   });
 
   test('submiting edit : catches error  by await api call ', async () => {
-    const onErrorSpy = jest.fn();
-    const onSubmitSpy = jest.fn();
     const handlerSpy = jest.spyOn(RawRecordForm.prototype, 'handleEditAction');
 
     const wrapper = mount((
@@ -633,16 +608,14 @@ describe('RecordForm', () => {
     expect(submitEditBtn.text()).toEqual('SUBMIT CHANGES');
     await submitEditBtn.prop('onClick')();
 
-    expect(onSubmitSpy.mock.calls.length).toBe(0);
-    expect(onErrorSpy.mock.calls.length).toBe(1);
-    expect(handlerSpy.mock.calls.length).toBe(1);
-    expect(snackbarAddSpy.mock.calls.length).toBe(1);
+    expect(onErrorSpy).toHaveBeenCalledTimes(1);
+    expect(onSubmitSpy).toHaveBeenCalledTimes(0);
+    expect(handlerSpy).toHaveBeenCalledTimes(1);
+    expect(snackbarAddSpy).toHaveBeenCalledTimes(1);
     expect(snackbarAddSpy).toHaveBeenCalledWith('Error (Patch Abort Error) in editing the record (#60:200948)');
   });
 
   test('submitting a delete request: api throws an error', async () => {
-    const onErrorSpy = jest.fn();
-    const onSubmitSpy = jest.fn();
     const handlerSpy = jest.spyOn(RawRecordForm.prototype, 'handleDeleteAction');
 
     const wrapper = mount((
@@ -698,10 +671,77 @@ describe('RecordForm', () => {
     await delBtn.prop('onClick')();
     wrapper.update();
 
-    expect(onErrorSpy.mock.calls.length).toBe(1);
-    expect(handlerSpy.mock.calls.length).toBe(1);
-    expect(onSubmitSpy.mock.calls.length).toBe(0);
-    expect(snackbarAddSpy.mock.calls.length).toBe(1);
+    expect(onErrorSpy).toHaveBeenCalledTimes(1);
+    expect(onSubmitSpy).toHaveBeenCalledTimes(0);
+    expect(handlerSpy).toHaveBeenCalledTimes(1);
+    expect(snackbarAddSpy).toHaveBeenCalledTimes(1);
     expect(snackbarAddSpy).toBeCalledWith('Error (Delete Abort Error) in deleting the record (#20:12)');
+  });
+
+  test('record parsed from url not found', async () => {
+    const apiGetSpy = jest.spyOn(api, 'get');
+    const mockApiGetError = () => ({
+      request: () => [],
+      abort: () => {},
+    });
+    api.get.mockReturnValue(mockApiGetError());
+
+    const wrapper = mount((
+      <KBContext.Provider value={{ schema: new Schema() }}>
+        <RecordForm
+          variant="edit"
+          modelName={null}
+          rid="59:0"
+          onSubmit={onSubmitSpy}
+          onError={onErrorSpy}
+          onTopClick={jest.fn()}
+          value={{}}
+          title="Edit this Record"
+        />
+      </KBContext.Provider>
+    ));
+    await wrapper.update();
+    expect(wrapper.find(RecordForm)).toBeDefined();
+
+    expect(onSubmitSpy).toHaveBeenCalledTimes(0);
+    expect(onErrorSpy).toHaveBeenCalledTimes(1);
+    expect(apiGetSpy).toHaveBeenCalledTimes(1);
+    expect(onErrorSpy).toHaveBeenCalledWith({
+      error: {
+        name: 'RecordNotFound',
+        message: 'Unable to retrieve record details for 59:0',
+      },
+    });
+  });
+
+  test('submitting request for record parsed from url:  catches api throwing an error', async () => {
+    const apiGetSpy = jest.spyOn(api, 'get');
+    const mockApiGetError = () => ({
+      request: () => Promise.reject('Record retrieval error'),
+      abort: () => {},
+    });
+    api.get.mockReturnValue(mockApiGetError());
+
+    const wrapper = mount((
+      <KBContext.Provider value={{ schema: new Schema() }}>
+        <RecordForm
+          variant="edit"
+          modelName={null}
+          rid="59:0"
+          onSubmit={onSubmitSpy}
+          onError={onErrorSpy}
+          onTopClick={jest.fn()}
+          value={{}}
+          title="Edit this Record"
+        />
+      </KBContext.Provider>
+    ));
+    await wrapper.update();
+    expect(wrapper.find(RecordForm)).toBeDefined();
+
+    expect(onSubmitSpy).toHaveBeenCalledTimes(0);
+    expect(onErrorSpy).toHaveBeenCalledTimes(1);
+    expect(apiGetSpy).toHaveBeenCalledTimes(1);
+    expect(onErrorSpy).toHaveBeenCalledWith({ error: 'Record retrieval error' });
   });
 });

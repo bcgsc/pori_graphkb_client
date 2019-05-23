@@ -66,7 +66,7 @@ class FilteredRecordAutocomplete extends React.PureComponent {
     } = this.state;
 
     const model = schema.get(linkedClassName);
-    const isMulti = this.props;
+    const { isMulti } = this.props;
 
     const itemToString = (item) => {
       if (isPutativeEdge) {

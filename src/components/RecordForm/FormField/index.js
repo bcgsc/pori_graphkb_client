@@ -229,7 +229,6 @@ const FormField = (props) => {
     );
   }
 
-
   return (
     <ListItem component="li" key={name} className={`form-field form-field--${type} ${className}`}>
       <div className="form-field__content">

@@ -184,9 +184,13 @@ class RecordAutocomplete extends React.Component {
   @boundMethod
   handleInputChange(term, { action: actionType }) {
     const { minSearchLength, isMulti } = this.props;
-    const helperText = term.length < minSearchLength && term.length > 0
+    let helperText = term.length < minSearchLength && term.length > 0
       ? `Requires ${minSearchLength} or more characters to search`
       : '';
+    if (isMulti) {
+      helperText = 'May take more than one value';
+    }
+
     if (actionType === 'input-change') {
       this.setState({ helperText });
       if (!isMulti) {
@@ -263,11 +267,11 @@ class RecordAutocomplete extends React.Component {
             }
           textFieldProps={{
             InputProps: {
-              disabled: disabled || Boolean(selected),
+              disabled: (disabled || Boolean(selected)) && !isMulti,
               disableUnderline: disabled || (Boolean(selected) && !isMulti),
             },
-            error: Boolean(helperText || errorText),
-            helperText: helperText || errorText,
+            error: Boolean(errorText),
+            helperText: errorText || helperText,
             InputLabelProps: {
               shrink: Boolean(selected) || !(disabled && !selected),
             },

@@ -188,9 +188,6 @@ class BaseRecordForm extends React.Component {
         if ((!rawValue || rawValue.length < 1) && variant !== FORM_VARIANT.SEARCH) {
           errors[prop] = 'At least one value is required';
         }
-        if (rawValue.length === 1 && variant !== FORM_VARIANT.SEARCH) {
-          // errors[prop] = 'This input may take multiple values';
-        }
 
         newContent[prop] = rawValue;
       });

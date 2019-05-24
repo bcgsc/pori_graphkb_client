@@ -123,7 +123,7 @@ class AdminTable extends React.PureComponent {
           rid={ridOpen}
         />
         <div className="admin-table__header">
-          <Typography component="h2" variant="h6">
+          <Typography variant="h2">
             Current {variant}s ({records.length})
           </Typography>
           <div>

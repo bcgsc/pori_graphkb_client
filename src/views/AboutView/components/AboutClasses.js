@@ -144,7 +144,7 @@ class AboutClasses extends Component {
 
     return (
       <div className="about-page__content">
-        <Typography variant="h5" component="h2">
+        <Typography variant="h2">
             Record Classes
         </Typography>
         <Typography paragraph>
@@ -154,7 +154,7 @@ class AboutClasses extends Component {
           {models.map(ClassDescription)}
         </List>
 
-        <Typography variant="h5" component="h2">
+        <Typography variant="h2">
             Relationship (Edge) Classes
         </Typography>
         <Typography paragraph>

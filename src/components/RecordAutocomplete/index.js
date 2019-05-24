@@ -204,13 +204,13 @@ class RecordAutocomplete extends React.Component {
   @boundMethod
   handleOnFocus() {
     const { errorText, minSearchLength, isMulti } = this.props;
-    const isError = Boolean(errorText);
+    const containsError = Boolean(errorText);
 
-    const helperText = isError
+    const helperText = containsError
       ? ''
       : `Requires ${minSearchLength} or more characters to search`;
 
-    if (!isError && isMulti) {
+    if (!containsError && isMulti) {
       this.setState({ helperText });
     }
   }
@@ -218,13 +218,13 @@ class RecordAutocomplete extends React.Component {
   @boundMethod
   handleOnBlur() {
     const { isMulti, errorText } = this.props;
-    const isError = Boolean(errorText);
+    const containsError = Boolean(errorText);
 
-    const helperText = isError
+    const helperText = containsError
       ? ''
       : 'May take more than one value';
 
-    if (!isError && isMulti) {
+    if (!containsError && isMulti) {
       this.setState({ helperText });
     }
   }

@@ -137,6 +137,7 @@ class RecordAutocomplete extends React.Component {
     const { value } = this.props;
 
     const currValue = jc.stringify(value);
+
     if (jc.stringify(prevProps.value) !== currValue) {
       this.setState({ selected: value }); // eslint-disable-line react/no-did-update-set-state
     }

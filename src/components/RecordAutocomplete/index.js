@@ -193,9 +193,7 @@ class RecordAutocomplete extends React.Component {
       if (!isMulti) {
         this.handleChange(null, { action: 'clear' });
       }
-    }
-
-    if (actionType === 'set-value' && isMulti) {
+    } else if (actionType === 'set-value' && isMulti) {
       helperText = `Requires ${minSearchLength} or more characters to search`;
       this.setState({ helperText });
     }

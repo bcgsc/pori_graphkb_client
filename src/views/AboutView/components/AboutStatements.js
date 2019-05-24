@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 
 const AboutStatements = () => (
   <div className="about-page__content">
-    <Typography variant="h5" component="h2">
+    <Typography variant="h2">
         Statements
     </Typography>
     <Typography paragraph>
@@ -58,7 +58,7 @@ const AboutStatements = () => (
       they can be linked to. In most cases the required elements (variants, therapies, vocabulary, etc.)
       will already exist. However if they do not, they should be created prior to attempting to input the statement.
     </Typography>
-    <Typography variant="h6" component="h3">
+    <Typography variant="h3">
       Eligibility for a Clinical Trial
     </Typography>
     <Typography>

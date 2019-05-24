@@ -57,6 +57,7 @@ class FilteredRecordAutocomplete extends React.PureComponent {
     const {
       disabled,
       isPutativeEdge,
+      isMulti,
       linkedClassName,
       DetailChipProps,
       ...rest
@@ -66,7 +67,6 @@ class FilteredRecordAutocomplete extends React.PureComponent {
     } = this.state;
 
     const model = schema.get(linkedClassName);
-    const { isMulti } = this.props;
 
     const itemToString = (item) => {
       if (isPutativeEdge) {
@@ -108,6 +108,7 @@ class FilteredRecordAutocomplete extends React.PureComponent {
         <div className="form-field__content">
           <RecordAutocomplete
             {...rest}
+            isMulti
             DetailChipProps={{
               ...DetailChipProps,
               valueToString,

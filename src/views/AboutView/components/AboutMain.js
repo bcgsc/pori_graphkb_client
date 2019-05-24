@@ -79,7 +79,7 @@ class AboutMain extends Component {
             main use of Knowlegebase is to act as the link between the known and published
             variant information and the expermientally collected data.
           </Typography>
-          <Typography variant="h6" component="h4">
+          <Typography variant="h4">
             Current Version
           </Typography>
           <Typography paragraph>

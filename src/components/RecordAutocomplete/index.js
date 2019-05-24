@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 import AsyncSelect from 'react-select/lib/Async';
@@ -136,7 +137,6 @@ class RecordAutocomplete extends React.Component {
     const { value } = this.props;
 
     const currValue = jc.stringify(value);
-
     if (jc.stringify(prevProps.value) !== currValue) {
       this.setState({ selected: value }); // eslint-disable-line react/no-did-update-set-state
     }
@@ -184,18 +184,48 @@ class RecordAutocomplete extends React.Component {
   @boundMethod
   handleInputChange(term, { action: actionType }) {
     const { minSearchLength, isMulti } = this.props;
-    let helperText = term.length < minSearchLength && term.length > 0
+    let helperText = term.length < minSearchLength && term.length >= 0
       ? `Requires ${minSearchLength} or more characters to search`
       : '';
-    if (isMulti) {
-      helperText = 'May take more than one value';
-    }
 
     if (actionType === 'input-change') {
       this.setState({ helperText });
       if (!isMulti) {
         this.handleChange(null, { action: 'clear' });
       }
+    }
+
+    if (actionType === 'set-value' && isMulti) {
+      helperText = `Requires ${minSearchLength} or more characters to search`;
+      this.setState({ helperText });
+    }
+  }
+
+  @boundMethod
+  handleOnFocus() {
+    const { errorText, minSearchLength, isMulti } = this.props;
+    const isError = Boolean(errorText);
+
+    const helperText = isError
+      ? ''
+      : `Requires ${minSearchLength} or more characters to search`;
+
+    if (!isError && isMulti) {
+      this.setState({ helperText });
+    }
+  }
+
+  @boundMethod
+  handleOnBlur() {
+    const { isMulti, errorText } = this.props;
+    const isError = Boolean(errorText);
+
+    const helperText = isError
+      ? ''
+      : 'May take more than one value';
+
+    if (!isError && isMulti) {
+      this.setState({ helperText });
     }
   }
 
@@ -253,6 +283,8 @@ class RecordAutocomplete extends React.Component {
           DetailChipProps={DetailChipProps}
           error={Boolean(errorText)}
           onChange={this.handleChange}
+          onFocus={this.handleOnFocus}
+          onBlur={this.handleOnBlur}
           onInputChange={this.handleInputChange}
           getOptionValue={getOptionKey} // used to compare options for equality
           getOptionLabel={getOptionLabel} // generates the string representation

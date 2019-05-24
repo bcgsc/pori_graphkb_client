@@ -14,7 +14,7 @@ import queryResults from '../../../static/tutorial/table-view.png';
 
 const AboutQuerying = () => (
   <div className="about-page__content">
-    <Typography variant="h5" component="h2" id="about-page__querying">
+    <Typography variant="h2" id="about-page__querying">
         Querying
     </Typography>
     <Typography paragraph>
@@ -31,7 +31,7 @@ const AboutQuerying = () => (
         from, and in doing so, you will change the available form fields to
         fill out, as certain classes have different properties than others.
     </Typography>
-    <Typography variant="h6" component="h2" paragraph id="about-results-table">
+    <Typography variant="h2" id="about-results-table">
         Viewing Results (Table)
     </Typography>
     <Typography>

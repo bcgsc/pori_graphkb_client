@@ -206,12 +206,8 @@ class RecordAutocomplete extends React.Component {
     const { errorText, minSearchLength, isMulti } = this.props;
     const containsError = Boolean(errorText);
 
-    const helperText = containsError
-      ? ''
-      : `Requires ${minSearchLength} or more characters to search`;
-
     if (!containsError && isMulti) {
-      this.setState({ helperText });
+      this.setState({ helperText: `Requires ${minSearchLength} or more characters to search` });
     }
   }
 
@@ -220,12 +216,8 @@ class RecordAutocomplete extends React.Component {
     const { isMulti, errorText } = this.props;
     const containsError = Boolean(errorText);
 
-    const helperText = containsError
-      ? ''
-      : 'May take more than one value';
-
     if (!containsError && isMulti) {
-      this.setState({ helperText });
+      this.setState({ helperText: 'May take more than one value' });
     }
   }
 

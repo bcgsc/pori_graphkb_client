@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Button } from '@material-ui/core';
-import { boundMethod } from 'autobind-decorator';
 
 import ConfirmActionDialog from './ConfirmActionDialog';
 
@@ -13,7 +12,7 @@ import ConfirmActionDialog from './ConfirmActionDialog';
  * @property {string} props.message extended message to display in the dialog when asking the user to confirm
  * @property {function} props.onClick async function to be executed on the action being confirmed (if required)
  */
-function ActionButton (props){
+function ActionButton(props) {
   ActionButton.propTypes = {
     requireConfirm: PropTypes.bool,
     onClick: PropTypes.func.isRequired,
@@ -34,81 +33,68 @@ function ActionButton (props){
     disabled: false,
   };
 
-  const [dialogOpen, setDialogOpen]: useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   /**
    * Handler for when the user decides to cancel their action
    */
-  // handleDialogCancel() {
-  //   this.setState({ dialogOpen: false });
-  // }
-
-  const handleDialogCancel = useCallback(()=>{
+  const handleDialogCancel = useCallback(() => {
     setDialogOpen(false);
-  })
+  });
 
   /**
    * Handler for when the user confirms their action
    */
-  // handleDialogConfirm() {
-  //   const { onClick } = this.props;
-  //   this.setState({ dialogOpen: false });
-  //   onClick();
-  // }
 
-  const handleDialogConfirm = useCallback(()=>{
+  const handleDialogConfirm = useCallback(() => {
+    const { onClick } = props;
     setDialogOpen(false);
-  })
+    onClick();
+  });
 
-  // @boundMethod
-  // handleOpenDialog() {
-  //   this.setState({ dialogOpen: true });
-  // }
-
-  const handleOpenDialog = useCallback(()=>{
+  const handleOpenDialog = useCallback(() => {
     setDialogOpen(true);
-  })
+  });
 
-  render() {
-    const {
-      children,
-      className,
-      color,
-      disabled,
-      message,
-      onClick,
-      requireConfirm,
-      variant,
-      ...rest
-    } = this.props;
+  const {
+    children,
+    className,
+    color,
+    disabled,
+    message,
+    onClick,
+    requireConfirm,
+    variant,
+    ...rest
+  } = props;
 
-    return (
-      <div className={`action-button ${className}`} {...rest}>
-        <Button
-          variant={variant}
-          onClick={
+  return (
+    <div className={`action-button ${className}`} {...rest}>
+      <Button
+        variant={variant}
+        onClick={
             requireConfirm
               ? handleOpenDialog
               : onClick
           }
-          size="large"
-          color={color}
-          className="action-button__button"
-          disabled={disabled}
-        >
-          {children}
-        </Button>
-        {requireConfirm && (
-          <ConfirmActionDialog
-            onCancel={handleDialogCancel}
-            onConfirm={handleDialogConfirm}
-            isOpen={dialogOpen}
-            message={message}
-            className="action-button__dialog"
-          />
-        )}
-      </div>
-    );
-  }
+        size="large"
+        color={color}
+        className="action-button__button"
+        disabled={disabled}
+      >
+        {children}
+      </Button>
+      {requireConfirm && (
+      <ConfirmActionDialog
+        onCancel={handleDialogCancel}
+        onConfirm={handleDialogConfirm}
+        isOpen={dialogOpen}
+        message={message}
+        className="action-button__dialog"
+      />
+      )}
+    </div>
+  );
 }
 
 export default ActionButton;

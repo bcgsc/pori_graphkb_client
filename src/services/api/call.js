@@ -1,9 +1,6 @@
 import * as jc from 'json-cycle';
 import { boundMethod } from 'autobind-decorator';
 
-import auth from '../auth';
-
-
 import config from '../../static/config';
 import {
   BadRequestError, AuthorizationError, AuthenticationError, RecordExistsError,
@@ -110,7 +107,6 @@ class ApiCall {
       url,
     };
     if (status === 401) {
-      auth.clearTokens();
       throw new AuthenticationError(error);
     }
     if (status === 400) {

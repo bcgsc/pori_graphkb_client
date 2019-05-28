@@ -19,6 +19,7 @@ class FilteredRecordAutocomplete extends React.PureComponent {
   static propTypes = {
     disabled: PropTypes.bool,
     isPutativeEdge: PropTypes.bool,
+    isMulti: PropTypes.bool,
     linkedClassName: PropTypes.string.isRequired,
     DetailChipProps: PropTypes.object,
   };
@@ -26,6 +27,7 @@ class FilteredRecordAutocomplete extends React.PureComponent {
   static defaultProps = {
     disabled: false,
     isPutativeEdge: false,
+    isMulti: false,
     DetailChipProps: {},
   };
 
@@ -55,6 +57,7 @@ class FilteredRecordAutocomplete extends React.PureComponent {
     const {
       disabled,
       isPutativeEdge,
+      isMulti,
       linkedClassName,
       DetailChipProps,
       ...rest
@@ -105,6 +108,7 @@ class FilteredRecordAutocomplete extends React.PureComponent {
         <div className="form-field__content">
           <RecordAutocomplete
             {...rest}
+            isMulti
             DetailChipProps={{
               ...DetailChipProps,
               valueToString,
@@ -119,7 +123,10 @@ class FilteredRecordAutocomplete extends React.PureComponent {
               : opt['@rid']
             }
             searchHandler={searchHandler}
-            placeholder={`Search for an Existing ${selectedClassName} Record`}
+            placeholder={isMulti
+              ? `Search for Existing ${selectedClassName} Record(s)`
+              : `Search for an Existing ${selectedClassName} Record`
+            }
           />
         </div>
       </div>

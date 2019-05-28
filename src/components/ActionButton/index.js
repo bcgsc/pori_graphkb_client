@@ -12,27 +12,8 @@ import ConfirmActionDialog from './ConfirmActionDialog';
  * @property {string} props.message extended message to display in the dialog when asking the user to confirm
  * @property {function} props.onClick async function to be executed on the action being confirmed (if required)
  */
+
 function ActionButton(props) {
-  ActionButton.propTypes = {
-    requireConfirm: PropTypes.bool,
-    onClick: PropTypes.func.isRequired,
-    children: PropTypes.node.isRequired,
-    message: PropTypes.string,
-    className: PropTypes.string,
-    variant: PropTypes.string,
-    color: PropTypes.string,
-    disabled: PropTypes.bool,
-  };
-
-  ActionButton.defaultProps = {
-    requireConfirm: true,
-    message: 'Are you sure?',
-    className: '',
-    variant: 'contained',
-    color: 'primary',
-    disabled: false,
-  };
-
   const [dialogOpen, setDialogOpen] = useState(false);
 
   /**
@@ -96,5 +77,25 @@ function ActionButton(props) {
     </div>
   );
 }
+
+ActionButton.propTypes = {
+  requireConfirm: PropTypes.bool,
+  onClick: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
+  message: PropTypes.string,
+  className: PropTypes.string,
+  variant: PropTypes.string,
+  color: PropTypes.string,
+  disabled: PropTypes.bool,
+};
+
+ActionButton.defaultProps = {
+  requireConfirm: true,
+  message: 'Are you sure?',
+  className: '',
+  variant: 'contained',
+  color: 'primary',
+  disabled: false,
+};
 
 export default ActionButton;

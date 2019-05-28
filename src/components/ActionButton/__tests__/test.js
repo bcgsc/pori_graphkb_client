@@ -8,7 +8,7 @@ import ConfirmActionDialog from '../ConfirmActionDialog';
 describe('ActionButton', () => {
   const onClick = jest.fn();
 
-  test('uses onClick when requireConfirm flag is false', async () => {
+  test('uses onClick when requireConfirm flag is false', () => {
     const wrapper = mount((
       <ActionButton
         title="action"
@@ -18,7 +18,7 @@ describe('ActionButton', () => {
         action
       </ActionButton>
     ));
-    await wrapper.find('button').prop('onClick')();
+    wrapper.find('button').prop('onClick')();
     wrapper.update();
     // check that the onClick handler was called
     expect(onClick).toHaveBeenCalled();
@@ -26,7 +26,7 @@ describe('ActionButton', () => {
     expect(wrapper.find(ConfirmActionDialog).exists()).toEqual(false);
   });
 
-  test('does not use onClick when requireConfirm flag is given', async () => {
+  test('does not use onClick when requireConfirm flag is given', () => {
     const wrapper = mount((
       <ActionButton
         title="action"
@@ -36,7 +36,7 @@ describe('ActionButton', () => {
         action
       </ActionButton>
     ));
-    await wrapper.find('button').prop('onClick')();
+    wrapper.find('button').prop('onClick')();
     wrapper.update();
     // check that the onClick handler was not called
     expect(onClick).not.toHaveBeenCalled();

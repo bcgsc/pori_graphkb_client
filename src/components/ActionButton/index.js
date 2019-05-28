@@ -19,23 +19,23 @@ function ActionButton(props) {
   /**
    * Handler for when the user decides to cancel their action
    */
-  const handleDialogCancel = useCallback(() => {
+  const handleDialogCancel = () => {
     setDialogOpen(false);
-  });
+  };
 
   /**
    * Handler for when the user confirms their action
    */
 
-  const handleDialogConfirm = useCallback(() => {
+  const handleDialogConfirm = () => {
     const { onClick } = props;
     setDialogOpen(false);
     onClick();
-  });
+  };
 
-  const handleOpenDialog = useCallback(() => {
+  const handleOpenDialog = () => {
     setDialogOpen(true);
-  });
+  };
 
   const {
     children,

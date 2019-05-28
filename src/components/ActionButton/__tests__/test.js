@@ -36,12 +36,13 @@ describe('ActionButton', () => {
         action
       </ActionButton>
     ));
-    await wrapper.find('button').at(0).prop('onClick')();
+    await wrapper.find('button').prop('onClick')();
     wrapper.update();
     // check that the onClick handler was not called
     expect(onClick).not.toHaveBeenCalled();
     expect(wrapper.find(ConfirmActionDialog).exists()).toEqual(true);
   });
+
   test.todo('currently cannot test confirm or cancel clicks since the dialog contents renders outside the wrapper element');
   afterEach(() => {
     jest.resetAllMocks();

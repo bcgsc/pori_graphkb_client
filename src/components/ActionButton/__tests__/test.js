@@ -47,7 +47,7 @@ describe('ActionButton', () => {
     console.log('baseBtn prop : ', baseBtn.props);
     expect(baseBtn.props.onClick).not.toEqual(onClick);
     // set Button component up with new props.
-    wrapper.setProps({
+    await wrapper.setProps({
       children: (
         <Button
           variant={null}
@@ -55,7 +55,7 @@ describe('ActionButton', () => {
             testSpy
           }
           size="large"
-          color="primary"
+          color="primarytest"
           className="action-button__button"
           disabled={false}
         >
@@ -63,12 +63,15 @@ describe('ActionButton', () => {
         </Button>
       ),
     });
-    await wrapper.find('button').prop('onClick')();
+
+    console.log(wrapper.find(Button).at(1).instance().props);
+    expect(wrapper.find(Button).at(1).instance().props.onClick).toEqual(testSpy);
+    await wrapper.find(Button).at(1).prop('onClick')();
     wrapper.update();
     // check that the onClick handler was not called
     expect(onClick).not.toHaveBeenCalled();
     // check that the dialog handler was called
-
+    expect(testSpy).toHaveBeenCalled();
     console.log('testSpy : ', testSpy.mock);
   });
 

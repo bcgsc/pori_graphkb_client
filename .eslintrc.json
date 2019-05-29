@@ -21,6 +21,8 @@
                 "checkChildContextTypes": false
             }
         ],
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "warn",
         "import/no-cycle": "warn",
         "prefer-promise-reject-errors": "off",
         "no-param-reassign": "warn",
@@ -30,12 +32,30 @@
         "no-confusing-arrow": "off",
         "no-underscore-dangle": "off",
         "import/prefer-default-export": "warn",
-        "no-console": ["error", { "allow": ["warn", "error"] }],
+        "no-console": [
+            "error",
+            {
+                "allow": [
+                    "warn",
+                    "error"
+                ]
+            }
+        ],
         "babel/semi": "warn",
-        "max-len": ["warn", {"ignoreComments": true}],
+        "max-len": [
+            "warn",
+            {
+                "ignoreComments": true
+            }
+        ],
         "no-continue": "warn",
         "react/no-did-update-set-state": "warn",
-        "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }]
+        "no-plusplus": [
+            "error",
+            {
+                "allowForLoopAfterthoughts": true
+            }
+        ]
     },
     "env": {
         "browser": true,
@@ -47,7 +67,8 @@
     "plugins": [
         "cypress",
         "react",
-        "babel"
+        "babel",
+        "react-hooks"
     ],
     "parser": "babel-eslint",
     "parserOptions": {

@@ -6,6 +6,7 @@ import {
   CircularProgress,
   IconButton,
 } from '@material-ui/core';
+import TimelineIcon from '@material-ui/icons/Timeline';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import EditIcon from '@material-ui/icons/Edit';
 import { boundMethod } from 'autobind-decorator';
@@ -15,6 +16,7 @@ import kbSchema from '@bcgsc/knowledgebase-schema';
 
 
 import DataTable from './components/DataTable';
+import GraphComponent from './components/GraphComponent';
 import DetailDrawer from './components/DetailDrawer';
 import { KBContext } from '../../components/KBContext';
 import RecordFormDialog from '../../components/RecordFormDialog';
@@ -74,6 +76,7 @@ class DataView extends React.Component {
       onErrorCallback: this.handleError,
     });
     const filters = await this.parseFilters(cache);
+
     this.setState({ cache, filters });
   }
 
@@ -165,6 +168,21 @@ class DataView extends React.Component {
   }
 
   @boundMethod
+  handleSwapToGraph() {
+    console.log('swapping to graph....');
+    this.setState({ variant: 'graph' });
+  }
+
+  @boundMethod
+  async handleExpandNode({ data: node }) {
+    const { cache, selectedRecords } = this.state;
+    console.log('handleExpandNode', node);
+    const record = await cache.getRecord(node);
+    const newSelectedRecords = [...selectedRecords, record];
+    this.setState({ selectedRecords: newSelectedRecords });
+  }
+
+  @boundMethod
   handleError(err) {
     const { history } = this.props;
     history.push('/error', { error: { name: err.name, message: err.message } });
@@ -196,6 +214,49 @@ class DataView extends React.Component {
     } catch (err) {
       return this.handleError(err);
     }
+  }
+
+  renderDataComponent() {
+    const {
+      detailPanelRow,
+      cache,
+      optionsMenuAnchor,
+      variant,
+      selectedRecords,
+      search,
+    } = this.state;
+    const { bufferSize } = this.props;
+    const { schema } = this.context;
+    if (variant === 'table') {
+      return (
+        <DataTable
+          search={search}
+          cache={cache}
+          rowBuffer={bufferSize}
+          onRecordClicked={this.handleToggleDetailPanel}
+          onRecordsSelected={this.handleRecordSelection}
+          optionsMenuAnchor={optionsMenuAnchor}
+          optionsMenuOnClose={this.handleToggleOptionsMenu}
+        />
+      );
+    }
+    return (
+      <GraphComponent
+        handleDetailDrawerOpen={this.handleToggleDetailPanel}
+        handleDetailDrawerClose={this.handleToggleDetailPanel}
+        handleTableRedirect={() => {
+          console.log('redirect to table');
+        }}
+        handleNewColumns={() => {
+          console.log('handleNewColumns');
+        }}
+        detail={detailPanelRow}
+        data={selectedRecords}
+        schema={schema}
+        handleClick={this.handleExpandNode}
+        onRecordClicked={this.handleToggleDetailPanel}
+      />
+    );
   }
 
   /**
@@ -240,14 +301,14 @@ class DataView extends React.Component {
       statusMessage,
       totalRows,
       detailPanelRow,
-      optionsMenuAnchor,
+      // optionsMenuAnchor,
       selectedRecords,
       filtersEditOpen,
       filters,
-      search,
+      // search,
       variant,
     } = this.state;
-    const { bufferSize } = this.props;
+    // const { bufferSize } = this.props;
 
     const detailPanelIsOpen = Boolean(detailPanelRow);
 
@@ -286,15 +347,7 @@ class DataView extends React.Component {
         <div className="data-view__content">
           {cache && (
             <>
-              <DataTable
-                search={search}
-                cache={cache}
-                rowBuffer={bufferSize}
-                onRecordClicked={this.handleToggleDetailPanel}
-                onRecordsSelected={this.handleRecordSelection}
-                optionsMenuAnchor={optionsMenuAnchor}
-                optionsMenuOnClose={this.handleToggleOptionsMenu}
-              />
+              {this.renderDataComponent()}
               <DetailDrawer
                 node={detailPanelRow}
                 onClose={this.handleToggleDetailPanel}
@@ -307,6 +360,12 @@ class DataView extends React.Component {
             <Typography>
               {selectedRecords.length} Record{selectedRecords.length !== 1 ? 's' : ''} Selected
             </Typography>
+            {Boolean(selectedRecords.length) && (
+              <IconButton>
+                <TimelineIcon onClick={this.handleSwapToGraph} />
+                GRAPH ICON
+              </IconButton>
+            )}
           </div>
           {statusMessage && (
             <div className="footer__loader">

@@ -126,6 +126,7 @@ class GraphComponent extends Component {
     this.propsMap = new PropsMap();
   }
 
+
   /**
    * Loads edge types, initializes graph and populates it with specified input nodes.
    * Initializes event listener for window resize.
@@ -133,32 +134,53 @@ class GraphComponent extends Component {
   async componentDidMount() {
     const {
       displayed,
-      data,
+      // data,
       allProps,
-      localStorageKey,
+      // localStorageKey,
       edgeTypes,
     } = this.props;
     const {
       graphOptions,
       initState,
     } = this.state;
+
+    let { data } = this.props;
     let { expandable } = this.state;
+    const localStorageKey = '%40class=Statement&neighbors=3&limit=1000&skip=1000';
     this.propsMap = new PropsMap();
     // Defines what edge keys to look for.
+    // convert data to appropiate format [{}] =>  {@rid: {}, @rid: {},}
+
+    // console.log('data: ', data);
+    const oldData = data;
+    data = {};
+    oldData.forEach((obj) => {
+      data[obj['@rid']] = obj;
+    });
+    // console.log('new format for data : ', data);
+
     const expandedEdgeTypes = util.expandEdges(edgeTypes);
     let validDisplayed = displayed;
     if (!displayed || displayed.length === 0) {
       validDisplayed = Object.keys(data)[0] ? [Object.keys(data)[0]] : [];
     }
+    console.group('[componentDidMount] ');
+    console.log('props : ', this.props);
+    console.log('state : ', this.state);
+    console.log('propsMap: ', this.propsMap);
+    // console.log('validDisplayed : ', validDisplayed);
 
     this.setState({
       expandedEdgeTypes,
+      data,
     }, () => {
       this.handleResize();
       window.addEventListener('resize', this.handleResize);
 
       const storedData = util.getGraphData(localStorageKey);
       const storedOptions = GraphOptions.retrieve();
+      // console.log('storedData : ', storedData);
+      // console.log('storedOptions : ', storedOptions);
 
       /**
        * Initialization priority:
@@ -171,8 +193,10 @@ class GraphComponent extends Component {
        */
       if ((displayed && displayed.length !== 0) || (!initState && !storedData)) {
         let { nodes, links, graphObjects } = this.state;
+        console.log('case1 user switches right into graph view.');
 
         /* Case 1, iterate through specified rids. */
+        // user has not selected a record to start with. Default to first rid of result
         validDisplayed.forEach((key, i) => {
           ({
             nodes,
@@ -193,6 +217,7 @@ class GraphComponent extends Component {
         });
         util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
       } else if (initState) {
+        console.log('case2');
         const {
           graphObjects,
           nodes,
@@ -212,6 +237,7 @@ class GraphComponent extends Component {
           links: links.slice(),
         });
       } else if (storedData && storedData.localStorageKey === localStorageKey) {
+        console.log('case3')
         const {
           graphObjects,
         } = storedData;
@@ -286,7 +312,8 @@ class GraphComponent extends Component {
       nodes,
       links,
     } = this.state;
-    const { localStorageKey } = this.props;
+    // const { localStorageKey } = this.props;
+    const localStorageKey = '%40class=Statement&neighbors=3&limit=1000&skip=1000';
     // remove all event listeners
     svg.call(d3Zoom.zoom()
       .on('zoom', null))
@@ -433,7 +460,14 @@ class GraphComponent extends Component {
       graphObjects,
       expandable,
     } = this.state;
-    const { data, schema } = this.props;
+    const { schema } = this.props;
+    let { data } = this.props;
+    const oldData = data;
+    data = {};
+    oldData.forEach((obj) => {
+      data[obj['@rid']] = obj;
+    });
+
     if (expandable[node.getId()] && data[node.getId()]) {
       ({
         nodes,
@@ -481,7 +515,13 @@ class GraphComponent extends Component {
       expandable,
       links,
     } = this.state;
-    const { data, schema } = this.props;
+    const { schema } = this.props;
+    let { data } = this.props;
+    const oldData = data;
+    data = {};
+    oldData.forEach((obj) => {
+      data[obj['@rid']] = obj;
+    });
     if (expandable[node.getId()] && data[node.getId()]) {
       if (schema.getEdges(data[node.getId()])
         .filter(edge => !(links.find(l => l.getId() === edge['@rid']))).length > HEAVILY_CONNECTED
@@ -515,6 +555,7 @@ class GraphComponent extends Component {
    * @param {Array.<string>} [exclusions=[]] - List of edge ID's to be ignored on expansion.
    */
   processData(node, position, depth, prevstate, exclusions = []) {
+    console.log('[processData]');
     const { expandedEdgeTypes } = this.state;
     let {
       nodes,
@@ -523,7 +564,13 @@ class GraphComponent extends Component {
       expandable,
     } = prevstate;
     // From DataView.js
-    const { data, handleNewColumns } = this.props;
+    const { handleNewColumns } = this.props;
+    let { data } = this.props;
+    const oldData = data;
+    data = {};
+    oldData.forEach((obj) => {
+      data[obj['@rid']] = obj;
+    });
 
     if (data[node['@rid'] || data[node.getId()]]) {
       node = data[node['@rid'] || data[node.getId()]]; // eslint-disable-line no-param-reassign
@@ -664,11 +711,17 @@ class GraphComponent extends Component {
    */
   @boundMethod
   updateColors() {
+    console.log('updateColors');
     ['node', 'link'].forEach((type) => {
       const { snackbar } = this.props;
       const { [`${type}s`]: objs, graphOptions } = this.state;
       const key = graphOptions[`${type}sColor`];
       const colors = {};
+      console.log('graphOptions : ', graphOptions);
+      console.log('----------------- type: ', type);
+      console.log('objs : ', objs);
+      console.log('key : ', key);
+
 
       objs.forEach((obj) => {
         if (key.includes('.')) {
@@ -685,20 +738,95 @@ class GraphComponent extends Component {
           colors[obj.data[key]] = '';
         }
       });
+      console.log('colors : ', colors);
       const props = this.propsMap[`${type}Props`];
+
+      console.log('PropsMap: ', this.propsMap);
+      // const props = {
+      //   "@rid": [
+      //     "#83:0"
+      //   ],
+      //   "@class": [
+      //     "Statement"
+      //   ],
+      //   "preview": [
+      //     "null"
+      //   ],
+      //   "relevance.source": [
+      //     "null"
+      //   ],
+      //   "relevance.sourceId": [
+      //     "opposes diagnosis"
+      //   ],
+      //   "relevance.name": [
+      //     "opposes diagnosis"
+      //   ],
+      //   "appliesTo.source": [
+      //     "null"
+      //   ],
+      //   "appliesTo.sourceId": [
+      //     "doid:10747"
+      //   ],
+      //   "appliesTo.name": [
+      //     "lymphoid leukemia"
+      //   ],
+      //   "appliesTo.@class": [
+      //     "Disease"
+      //   ],
+      //   "description": null,
+      //   "reviewStatus": [
+      //     "not required"
+      //   ],
+      //   "sourceId": [
+      //     "1"
+      //   ],
+      //   "source.name": [
+      //     "civic"
+      //   ],
+      //   "source.url": [
+      //     "https://civicdb.org"
+      //   ],
+      //   "source.description": null,
+      //   "source.usage": [
+      //     "https://creativecommons.org/publicdomain/zero/1.0"
+      //   ],
+      //   "appliesTo.description": [
+      //     "null"
+      //   ],
+      //   "appliesTo.subsets": [
+      //     "null"
+      //   ],
+      //   "appliesTo.sourceIdVersion": [
+      //     "null"
+      //   ],
+      //   "appliesTo.mechanismOfAction": [
+      //     "null"
+      //   ],
+      //   "relevance.description": [
+      //     "null"
+      //   ],
+      //   "appliesTo.dependency": [
+      //     "null"
+      //   ],
+      // }
       const tooManyUniques = (Object.keys(colors).length > PALLETE_SIZE
         && Object.keys(props).length !== 1);
+      console.log('props: ', props);
+      console.log('props[keys]: ', props[key]);
       const noUniques = props[key]
         && (props[key].length === 0
           || (props[key].length === 1 && props[key].includes('null')));
       const notDefined = key && !props[key];
-
+      console.log('tooManyUniques : ', tooManyUniques);
+      console.log('noUniques : ', noUniques);
+      console.log('notDefined : ', notDefined);
       if (tooManyUniques || noUniques || notDefined) {
         if (tooManyUniques) {
           snackbar.add(`${GRAPH_UNIQUE_LIMIT} (${graphOptions[`${type}sColor`]})`);
         }
 
         graphOptions[`${type}sColor`] = '';
+        console.log('tooManyUniques || noUniques || notDefined');
         this.setState({ graphOptions }, () => this.updateColors());
       } else {
         const pallette = util.getPallette(Object.keys(colors).length, `${type}s`);
@@ -709,6 +837,7 @@ class GraphComponent extends Component {
         this.setState({ graphOptions });
       }
     });
+    console.log('updateColors finished running');
   }
 
   /**

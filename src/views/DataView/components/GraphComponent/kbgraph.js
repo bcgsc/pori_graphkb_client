@@ -100,6 +100,7 @@ class GraphLink extends GraphObj {
  */
 class PropsMap {
   constructor() {
+    console.log('constructing props lists...')
     this.nodeProps = {};
     this.linkProps = {};
   }
@@ -110,6 +111,7 @@ class PropsMap {
    * @param {Array.<string>} validProps - List of valid ontology properties.
    */
   loadNode(node, validProps = DEFAULT_NODE_VPROPS) {
+    console.log('loading a node into propsmap...')
     this._loadObj('node', node, validProps);
   }
 
@@ -119,6 +121,7 @@ class PropsMap {
    * @param {Array.<string>} validProps - List of valid edge properties.
    */
   loadLink(link, validProps = DEFAULT_LINK_VPROPS) {
+    console.log('loading a link into propsmap....')
     this._loadObj('link', link, validProps);
   }
 
@@ -169,6 +172,10 @@ class PropsMap {
    */
   _loadObj(type, graphObj, validProps) {
     const props = this[`${type}Props`];
+    console.log('[loadObj fn] type : ', type);
+    console.log('[loadObj fn] graphObj : ', graphObj);
+    console.log('[loadObj fn] validProps : ', validProps);
+    console.log('[loadObj fn] type propList: ', props);
     validProps.forEach((prop) => {
       if (props[prop] === undefined) {
         props[prop] = [];
@@ -210,6 +217,7 @@ class GraphOptions {
    */
   static retrieve() {
     const data = localStorage.getItem(GRAPH_OPTIONS_KEY);
+    console.log('retrieved data from localStorage: ', localStorage);
     if (data) {
       const obj = JSON.parse(data);
       return new GraphOptions(obj);

@@ -60,6 +60,7 @@ class DataView extends React.Component {
       variant: 'table',
       filtersEditOpen: false,
       filters: {},
+      allProps: [],
       search,
     };
     this.controllers = [];
@@ -77,7 +78,33 @@ class DataView extends React.Component {
     });
     const filters = await this.parseFilters(cache);
 
-    this.setState({ cache, filters });
+    // TODO figure out how to generate this dynamically
+    const allProps = [
+      "@rid",
+      "@class",
+      "preview",
+      "relevance.source",
+      "relevance.sourceId",
+      "relevance.name",
+      "appliesTo.source",
+      "appliesTo.sourceId",
+      "appliesTo.name",
+      "appliesTo.@class",
+      "description",
+      "reviewStatus",
+      "sourceId",
+      "source.name",
+      "source.url",
+      "source.description",
+      "source.usage",
+      "appliesTo.description",
+      "appliesTo.subsets",
+      "appliesTo.sourceIdVersion",
+      "appliesTo.mechanismOfAction",
+      "relevance.description",
+      "appliesTo.dependency"
+    ]
+    this.setState({ cache, filters, allProps });
   }
 
   componentWillUnmount() {
@@ -224,9 +251,16 @@ class DataView extends React.Component {
       variant,
       selectedRecords,
       search,
+      allProps,
     } = this.state;
+    const selectedInfo = [];
+    selectedRecords.forEach((obj) => {
+      selectedInfo.push(obj['@rid']);
+    });
+
     const { bufferSize } = this.props;
     const { schema } = this.context;
+    const edges = schema.getEdges();
     if (variant === 'table') {
       return (
         <DataTable
@@ -251,8 +285,11 @@ class DataView extends React.Component {
           console.log('handleNewColumns');
         }}
         detail={detailPanelRow}
+        displayed={selectedInfo}
         data={selectedRecords}
+        edgeTypes={edges}
         schema={schema}
+        allProps={allProps}
         handleClick={this.handleExpandNode}
         onRecordClicked={this.handleToggleDetailPanel}
       />

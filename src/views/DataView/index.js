@@ -102,7 +102,7 @@ class DataView extends React.Component {
       "appliesTo.sourceIdVersion",
       "appliesTo.mechanismOfAction",
       "relevance.description",
-      "appliesTo.dependency"
+      "appliesTo.dependency",
     ]
     this.setState({ cache, filters, allProps });
   }
@@ -201,6 +201,18 @@ class DataView extends React.Component {
   }
 
   @boundMethod
+  handleTableRedirect() {
+    console.log('redirecting to table view...');
+    const { history } = this.props;
+    console.log('history: ', history);
+    this.setState({ detail: null, variant: 'table' });
+    history.push({
+      pathname: '/data/table',
+      search: history.location.search,
+    });
+  }
+
+  @boundMethod
   async handleExpandNode({ data: node }) {
     const { cache, selectedRecords } = this.state;
     console.log('handleExpandNode', node);
@@ -278,9 +290,7 @@ class DataView extends React.Component {
       <GraphComponent
         handleDetailDrawerOpen={this.handleToggleDetailPanel}
         handleDetailDrawerClose={this.handleToggleDetailPanel}
-        handleTableRedirect={() => {
-          console.log('redirect to table');
-        }}
+        handleTableRedirect={this.handleTableRedirect}
         handleNewColumns={() => {
           console.log('handleNewColumns');
         }}

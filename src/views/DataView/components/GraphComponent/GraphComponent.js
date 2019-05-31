@@ -742,73 +742,7 @@ class GraphComponent extends Component {
       const props = this.propsMap[`${type}Props`];
 
       console.log('PropsMap: ', this.propsMap);
-      // const props = {
-      //   "@rid": [
-      //     "#83:0"
-      //   ],
-      //   "@class": [
-      //     "Statement"
-      //   ],
-      //   "preview": [
-      //     "null"
-      //   ],
-      //   "relevance.source": [
-      //     "null"
-      //   ],
-      //   "relevance.sourceId": [
-      //     "opposes diagnosis"
-      //   ],
-      //   "relevance.name": [
-      //     "opposes diagnosis"
-      //   ],
-      //   "appliesTo.source": [
-      //     "null"
-      //   ],
-      //   "appliesTo.sourceId": [
-      //     "doid:10747"
-      //   ],
-      //   "appliesTo.name": [
-      //     "lymphoid leukemia"
-      //   ],
-      //   "appliesTo.@class": [
-      //     "Disease"
-      //   ],
-      //   "description": null,
-      //   "reviewStatus": [
-      //     "not required"
-      //   ],
-      //   "sourceId": [
-      //     "1"
-      //   ],
-      //   "source.name": [
-      //     "civic"
-      //   ],
-      //   "source.url": [
-      //     "https://civicdb.org"
-      //   ],
-      //   "source.description": null,
-      //   "source.usage": [
-      //     "https://creativecommons.org/publicdomain/zero/1.0"
-      //   ],
-      //   "appliesTo.description": [
-      //     "null"
-      //   ],
-      //   "appliesTo.subsets": [
-      //     "null"
-      //   ],
-      //   "appliesTo.sourceIdVersion": [
-      //     "null"
-      //   ],
-      //   "appliesTo.mechanismOfAction": [
-      //     "null"
-      //   ],
-      //   "relevance.description": [
-      //     "null"
-      //   ],
-      //   "appliesTo.dependency": [
-      //     "null"
-      //   ],
-      // }
+
       const tooManyUniques = (Object.keys(colors).length > PALLETE_SIZE
         && Object.keys(props).length !== 1);
       console.log('props: ', props);

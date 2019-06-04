@@ -172,10 +172,10 @@ class PropsMap {
    */
   _loadObj(type, graphObj, validProps) {
     const props = this[`${type}Props`];
-    console.log('[loadObj fn] type : ', type);
-    console.log('[loadObj fn] graphObj : ', graphObj);
-    console.log('[loadObj fn] validProps : ', validProps);
-    console.log('[loadObj fn] type propList: ', props);
+    // console.log('[loadObj fn] type : ', type);
+    // console.log('[loadObj fn] graphObj : ', graphObj);
+    // console.log('[loadObj fn] validProps : ', validProps);
+    // console.log('[loadObj fn] type propList: ', props);
     validProps.forEach((prop) => {
       if (props[prop] === undefined) {
         props[prop] = [];
@@ -217,7 +217,7 @@ class GraphOptions {
    */
   static retrieve() {
     const data = localStorage.getItem(GRAPH_OPTIONS_KEY);
-    console.log('retrieved data from localStorage: ', localStorage);
+    // console.log('retrieved data from localStorage: ', localStorage);
     if (data) {
       const obj = JSON.parse(data);
       return new GraphOptions(obj);

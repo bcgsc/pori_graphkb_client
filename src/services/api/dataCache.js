@@ -61,6 +61,7 @@ class CacheRecordRequest extends CacheRequest {
   }
 
   init() {
+    console.log('CacheRecordRequest called...')
     this.result = (async () => {
       try {
         const record = await this.call.request();
@@ -101,6 +102,7 @@ class CacheBlockRequest extends CacheRequest {
   }
 
   init() {
+    console.log('CacheBlockRequest called...')
     this.result = (async () => {
       try {
         const rows = await this.call.request();
@@ -157,6 +159,7 @@ class PaginationDataCache {
     recordApiCall,
     onErrorCallback = () => { },
   } = {}) {
+    console.log('creating new data cache...')
     this.blockSize = blockSize;
     this.cacheBlocks = cacheBlocks;
     this.cacheExpiryMs = cacheExpiryMs;
@@ -177,6 +180,7 @@ class PaginationDataCache {
    * Initiate blocks moving from the pending queue to the active queue
    */
   startNextBlocks() {
+    console.log('startNextBlocks called...');
     while (this.active.length < this.concurrencyLimit && this.queued.length) {
       const next = this.queued.shift();
       if (next) {
@@ -206,6 +210,7 @@ class PaginationDataCache {
    */
   onReqFinished(req) {
     // remove this block from the active queue
+    console.log('onReqFinished... ');
     this.active = this.active.filter(activeReq => !activeReq.isEqual(req));
     // add to the cache
     if (req instanceof CacheCountRequest) {
@@ -239,6 +244,7 @@ class PaginationDataCache {
    * @param {Array.<CacheRequest>} requests the requests to be held on
    */
   async waitForBlocks(requests) {
+    console.log('waitForBlocks call....')
     let maxCycleCount = this.queued.length / this.concurrencyLimit + 1;
     while (maxCycleCount >= 0) {
       // check if all blocks are complete
@@ -271,6 +277,7 @@ class PaginationDataCache {
    * @returns {CacheRequest} the queued block (returns existing if found instead of input)
    */
   queueRequest(req) {
+    console.log('queueRequest called...')
     // add a new block to the queue if it is not already cached
     if (this.cache[req.key()]) {
       return this.cache[req.key()];
@@ -296,11 +303,13 @@ class PaginationDataCache {
   }
 
   purgeCache() {
+    console.log('purgeCache called...')
     this.cache = {};
     this.counts = {};
   }
 
   abortAll() {
+    console.log('abortAll called...')
     this.queued = []; // to avoid the callback starting the next request
     this.active.forEach(block => block.abort());
   }
@@ -311,6 +320,7 @@ class PaginationDataCache {
    * @param {string} search the search (uri query params string) we are using
    */
   pendingRows(search) {
+    console.log('pendingRows called...')
     let start = null;
     let end = null;
     const starts = [...this.active, ...this.queued]
@@ -339,6 +349,7 @@ class PaginationDataCache {
    * Checks if items need to be removed from the cache and purges any required items
    */
   enforceCacheLimit() {
+    console.log('enforceCacheLimit called...')
     // delete all the empty blocks first
     Object.values(this.cache).forEach((block) => {
       if (block.isEmpty && block.startRow !== 0) {
@@ -370,6 +381,7 @@ class PaginationDataCache {
    * @param {SortModel} sortModel the sorting model (follows ag-grid format)
    */
   requestBlock({ search, startRow, sortModel }) {
+    console.log('requestBlock called...')
     let orderBy;
     let orderByDirection;
     if (sortModel && sortModel.length > 0) {
@@ -419,11 +431,12 @@ class PaginationDataCache {
    * @param {number} startRow the first row index to fetch
    * @param {number} endRow the index one past the last row to be fetched
    * @param {string} search the request queryParam string
-   * @param {SortModel} sortModel the sotring model (follows ag-grid format)
+   * @param {SortModel} sortModel the sorting model (follows ag-grid format)
    */
   async getRows({
     search, startRow, endRow, sortModel,
   }) {
+    console.log('getRows called...')
     // what blocks do we need ?
     if (endRow <= startRow) {
       console.error(`Unexpected end (${endRow}) <= start (${startRow})`);
@@ -441,6 +454,7 @@ class PaginationDataCache {
         blocks.push(block);
       }
     }
+    console.log('[ getRows ] blocks : ', blocks)
     await this.waitForBlocks(blocks);
     let dataBlocks;
     try {
@@ -468,6 +482,8 @@ class PaginationDataCache {
    * Request a set of records
    */
   async getRecords(records) {
+    console.log('getRecords called....')
+    // console.log('records: ', records)
     const requests = [];
     records.forEach((record) => {
       const block = new CacheRecordRequest({
@@ -478,6 +494,8 @@ class PaginationDataCache {
 
       requests.push(this.queueRequest(block));
     });
+
+    console.log('requests: ', requests);
 
     await this.waitForBlocks(requests);
     let result;
@@ -493,6 +511,7 @@ class PaginationDataCache {
    * request a single record
    */
   async getRecord(record) {
+    console.log('getRecord called...')
     const block = new CacheRecordRequest({
       call: this.recordApiCall({ schema: this.schema, record }),
       record,
@@ -500,6 +519,7 @@ class PaginationDataCache {
     });
 
     const req = this.queueRequest(block);
+    // console.log('req: ', req);
     await this.waitForBlocks([req]);
     let result;
     try {

@@ -67,6 +67,7 @@ class DataView extends React.Component {
   }
 
   async componentDidMount() {
+    // console.log('[componentDidMount]')
     const { schema } = this.context;
     const { cacheBlocks, blockSize } = this.props;
     const cache = api.getNewCache({
@@ -76,34 +77,43 @@ class DataView extends React.Component {
       onLoadCallback: this.handleLoadingChange,
       onErrorCallback: this.handleError,
     });
+
+    // misleading function name. This function doesn't just fetch filters.
+    // not only does this parse through filters,  it also fetches data via apicalls
+    // and stores it in the cache.
+    // console.log('calling parseFilters...')
     const filters = await this.parseFilters(cache);
+    // console.log('returned filters from parseFilters: ', filters)
 
     // TODO figure out how to generate this dynamically
+    // processData in old Dataview does this by passing through
+    // query results. For each query result/row, dataview extracts
+    // unique props from the results. allProps is all unique props.
     const allProps = [
-      "@rid",
-      "@class",
-      "preview",
-      "relevance.source",
-      "relevance.sourceId",
-      "relevance.name",
-      "appliesTo.source",
-      "appliesTo.sourceId",
-      "appliesTo.name",
-      "appliesTo.@class",
-      "description",
-      "reviewStatus",
-      "sourceId",
-      "source.name",
-      "source.url",
-      "source.description",
-      "source.usage",
-      "appliesTo.description",
-      "appliesTo.subsets",
-      "appliesTo.sourceIdVersion",
-      "appliesTo.mechanismOfAction",
-      "relevance.description",
-      "appliesTo.dependency",
-    ]
+      '@rid',
+      '@class',
+      'preview',
+      'relevance.source',
+      'relevance.sourceId',
+      'relevance.name',
+      'appliesTo.source',
+      'appliesTo.sourceId',
+      'appliesTo.name',
+      'appliesTo.@class',
+      'description',
+      'reviewStatus',
+      'sourceId',
+      'source.name',
+      'source.url',
+      'source.description',
+      'source.usage',
+      'appliesTo.description',
+      'appliesTo.subsets',
+      'appliesTo.sourceIdVersion',
+      'appliesTo.mechanismOfAction',
+      'relevance.description',
+      'appliesTo.dependency',
+    ];
     this.setState({ cache, filters, allProps });
   }
 
@@ -204,7 +214,7 @@ class DataView extends React.Component {
   handleTableRedirect() {
     console.log('redirecting to table view...');
     const { history } = this.props;
-    console.log('history: ', history);
+    // console.log('history: ', history);
     this.setState({ detail: null, variant: 'table' });
     history.push({
       pathname: '/data/table',
@@ -227,15 +237,24 @@ class DataView extends React.Component {
     history.push('/error', { error: { name: err.name, message: err.message } });
   }
 
+  componentDidUpdate() {
+    console.log('[ componentDidUpdate ]');
+    // console.log('props: ', this.props);
+    // console.log('state: ', this.state)
+  }
+
   /**
    * If there are any linked records, fetch them now and attach them in place of their reference ID
    */
   async parseFilters(cache) {
     const { search } = this.state;
+    // console.log('search: ', search);
     const { schema } = this.context;
 
     try {
       const { queryParams, modelName } = api.getQueryFromSearch({ search, schema });
+      // console.log('queryParams : ', queryParams);
+      // console.log('modelName : ', modelName);
       const links = [];
       Object.entries(queryParams).forEach(([key, value]) => {
         if (typeof value === 'string' && kbSchema.util.looksLikeRID(value)) {
@@ -243,7 +262,10 @@ class DataView extends React.Component {
         }
       });
 
+      // console.log('links: ', links);
+
       const records = await cache.getRecords(links.map(l => ({ '@rid': l.value })));
+      // console.log('getRecords records result: ', records);
       records.forEach((rec, index) => {
         const { key } = links[index];
         queryParams[key] = rec;
@@ -270,10 +292,18 @@ class DataView extends React.Component {
       selectedInfo.push(obj['@rid']);
     });
 
-    const { bufferSize } = this.props;
+    const { bufferSize, history } = this.props;
     const { schema } = this.context;
+    // console.log('calling schema.getEdges')
     const edges = schema.getEdges();
-    if (variant === 'table') {
+    // console.log('edges : ',edges)
+    console.log('rendering data component...');
+    console.log('history obj pathname: ', history.location.pathname);
+    const URL = String(history.location.pathname);
+    console.log(URL);
+    const URLbool = URL.includes('table');
+    console.log(URLbool);
+    if (URLbool) {
       return (
         <DataTable
           search={search}
@@ -286,8 +316,30 @@ class DataView extends React.Component {
         />
       );
     }
+
+    // test for encoding and decoding selectedInfo via URL
+    console.log('selectedInfo : ', selectedInfo);
+    // encode
+    const selectedInfoString = String(selectedInfo);
+    console.log('selectedInfoString : ', selectedInfoString);
+    const encodedSelectedInfoString = btoa(selectedInfoString);
+    console.log('encodedSelectedInfoString: ', encodedSelectedInfoString);
+    // decode
+    const decodedSelectedInfo = atob(encodedSelectedInfoString);
+    console.log('decodedSelectedInfo : ', decodedSelectedInfo);
+    const selectedInfoArr = decodedSelectedInfo.split(',');
+    const selectedInfoDecoded = [];
+    selectedInfoArr.forEach((info) => { selectedInfoDecoded.push(info); });
+    console.log('selectedInfoDecoded : ', selectedInfoDecoded);
+
+    // test for encoding and decoding selected Records via URL
+    // encoded
+    // selectedRecords is an array of objects
+
+
     return (
       <GraphComponent
+        cache={cache}
         handleDetailDrawerOpen={this.handleToggleDetailPanel}
         handleDetailDrawerClose={this.handleToggleDetailPanel}
         handleTableRedirect={this.handleTableRedirect}
@@ -296,7 +348,8 @@ class DataView extends React.Component {
         }}
         detail={detailPanelRow}
         displayed={selectedInfo}
-        data={selectedRecords}
+        data={null}
+        search={search}
         edgeTypes={edges}
         schema={schema}
         allProps={allProps}
@@ -342,7 +395,18 @@ class DataView extends React.Component {
     return chips;
   }
 
+  redirectTest() {
+    const { history } = this.props;
+    this.setState({ detail: null });
+    history.push({
+      pathname: '/data/graph',
+      search: history.location.search,
+      hash: '',
+    });
+  }
+
   render() {
+    // options are commented out because they are added in renderDataComponent method
     const {
       cache,
       statusMessage,
@@ -355,6 +419,10 @@ class DataView extends React.Component {
       // search,
       variant,
     } = this.state;
+    const { history } = this.props;
+    const URLContainsTable = String(history.location.pathname).includes('table');
+    console.log('[DATAVIEW] state: ', this.state);
+    console.log('[DATAVIEW] props: ', this.props);
     // const { bufferSize } = this.props;
 
     const detailPanelIsOpen = Boolean(detailPanelRow);
@@ -366,11 +434,12 @@ class DataView extends React.Component {
           : ''}`}
       >
         <div className="data-view__header">
-          {variant === 'table' && (
+          {URLContainsTable && (
             <>
               <Typography variant="h3">Active Filters</Typography>
               <IconButton
-                onClick={() => this.setState({ filtersEditOpen: true })}
+                // onClick={() => this.setState({ filtersEditOpen: true })}
+                onClick={() => this.redirectTest()}
               >
                 <EditIcon />
               </IconButton>

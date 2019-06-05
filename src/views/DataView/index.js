@@ -237,10 +237,15 @@ class DataView extends React.Component {
     history.push('/error', { error: { name: err.name, message: err.message } });
   }
 
-  componentDidUpdate() {
-    console.log('[ componentDidUpdate ]');
-    // console.log('props: ', this.props);
-    // console.log('state: ', this.state)
+
+  redirectTest() {
+    const { history } = this.props;
+    this.setState({ detail: null });
+    history.push({
+      pathname: '/data/graph',
+      search: history.location.search,
+      hash: '',
+    });
   }
 
   /**
@@ -248,13 +253,10 @@ class DataView extends React.Component {
    */
   async parseFilters(cache) {
     const { search } = this.state;
-    // console.log('search: ', search);
     const { schema } = this.context;
 
     try {
       const { queryParams, modelName } = api.getQueryFromSearch({ search, schema });
-      // console.log('queryParams : ', queryParams);
-      // console.log('modelName : ', modelName);
       const links = [];
       Object.entries(queryParams).forEach(([key, value]) => {
         if (typeof value === 'string' && kbSchema.util.looksLikeRID(value)) {
@@ -262,10 +264,7 @@ class DataView extends React.Component {
         }
       });
 
-      // console.log('links: ', links);
-
       const records = await cache.getRecords(links.map(l => ({ '@rid': l.value })));
-      // console.log('getRecords records result: ', records);
       records.forEach((rec, index) => {
         const { key } = links[index];
         queryParams[key] = rec;
@@ -298,11 +297,8 @@ class DataView extends React.Component {
     const edges = schema.getEdges();
     // console.log('edges : ',edges)
     console.log('rendering data component...');
-    console.log('history obj pathname: ', history.location.pathname);
     const URL = String(history.location.pathname);
-    console.log(URL);
     const URLbool = URL.includes('table');
-    console.log(URLbool);
     if (URLbool) {
       return (
         <DataTable
@@ -317,6 +313,7 @@ class DataView extends React.Component {
       );
     }
 
+    // TODO add to be displayed RIDs to hash for parsing
     // test for encoding and decoding selectedInfo via URL
     console.log('selectedInfo : ', selectedInfo);
     // encode
@@ -336,7 +333,7 @@ class DataView extends React.Component {
     // encoded
     // selectedRecords is an array of objects
 
-
+    console.log('selectedRecords :', selectedRecords);
     return (
       <GraphComponent
         cache={cache}
@@ -395,16 +392,6 @@ class DataView extends React.Component {
     return chips;
   }
 
-  redirectTest() {
-    const { history } = this.props;
-    this.setState({ detail: null });
-    history.push({
-      pathname: '/data/graph',
-      search: history.location.search,
-      hash: '',
-    });
-  }
-
   render() {
     // options are commented out because they are added in renderDataComponent method
     const {
@@ -421,8 +408,6 @@ class DataView extends React.Component {
     } = this.state;
     const { history } = this.props;
     const URLContainsTable = String(history.location.pathname).includes('table');
-    console.log('[DATAVIEW] state: ', this.state);
-    console.log('[DATAVIEW] props: ', this.props);
     // const { bufferSize } = this.props;
 
     const detailPanelIsOpen = Boolean(detailPanelRow);

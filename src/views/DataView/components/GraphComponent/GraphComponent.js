@@ -130,11 +130,11 @@ class GraphComponent extends Component {
 
     this.propsMap = new PropsMap();
   }
-
   /**
    * Loads edge types, initializes graph and populates it with specified input nodes.
    * Initializes event listener for window resize.
    */
+
   async componentDidMount() {
     console.log('componentDidMount called...');
     const {
@@ -575,7 +575,7 @@ class GraphComponent extends Component {
    * @param {GraphNode} node - d3 simulation node to be expanded.
    */
 
-   // TODO: check that this is appending data currently
+   // TODO: check that this is updating via Graph Component props
   @boundMethod
   handleExpandRequest(node) {
     console.log('handleExpandrequest called...');
@@ -795,6 +795,11 @@ class GraphComponent extends Component {
       const { [`${type}s`]: objs, graphOptions } = this.state;
       const key = graphOptions[`${type}sColor`];
       const colors = {};
+      // console.log('graphOptions : ', graphOptions);
+      // console.log('----------------- type: ', type);
+      // console.log('objs : ', objs);
+      // console.log('key : ', key);
+
 
       objs.forEach((obj) => {
         if (key.includes('.')) {

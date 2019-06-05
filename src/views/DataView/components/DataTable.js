@@ -45,7 +45,7 @@ class DataTable extends React.Component {
       allColumns: [],
       activeColumns: new Set(),
       allGroups: {},
-      activeGroups: new Set(),s
+      activeGroups: new Set(),
       pingedIndices: new Set(),
     };
     // console.log('[ DataTable ] constructor initiated...')

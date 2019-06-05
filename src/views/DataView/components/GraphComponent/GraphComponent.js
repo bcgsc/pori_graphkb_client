@@ -130,11 +130,11 @@ class GraphComponent extends Component {
 
     this.propsMap = new PropsMap();
   }
+
   /**
    * Loads edge types, initializes graph and populates it with specified input nodes.
    * Initializes event listener for window resize.
    */
-
   async componentDidMount() {
     console.log('componentDidMount called...');
     const {

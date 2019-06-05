@@ -45,7 +45,7 @@ class DataTable extends React.Component {
       allColumns: [],
       activeColumns: new Set(),
       allGroups: {},
-      activeGroups: new Set(),
+      activeGroups: new Set(),s
       pingedIndices: new Set(),
     };
     // console.log('[ DataTable ] constructor initiated...')
@@ -80,7 +80,6 @@ class DataTable extends React.Component {
     });
     this.setState({ pingedIndices: new Set() });
     const resultArr = [result, cache.rowCount(search)];
-    // console.log('resultArr : ', resultArr)
     return resultArr;
   }
 

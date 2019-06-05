@@ -172,10 +172,6 @@ class PropsMap {
    */
   _loadObj(type, graphObj, validProps) {
     const props = this[`${type}Props`];
-    // console.log('[loadObj fn] type : ', type);
-    // console.log('[loadObj fn] graphObj : ', graphObj);
-    // console.log('[loadObj fn] validProps : ', validProps);
-    // console.log('[loadObj fn] type propList: ', props);
     validProps.forEach((prop) => {
       if (props[prop] === undefined) {
         props[prop] = [];

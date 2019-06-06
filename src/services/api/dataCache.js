@@ -475,6 +475,7 @@ class PaginationDataCache {
       totalRows.push(...rows);
     });
     totalRows.push(...dataBlocks[dataBlocks.length - 1].slice(0, endRow - lastBlockIndex * this.blockSize));
+    console.log('[getRows] totalRows: ', totalRows)
     return totalRows;
   }
 
@@ -504,6 +505,7 @@ class PaginationDataCache {
     } catch (err) {
       this.onErrorCallback(err);
     }
+    console.log('[getRecords] result : ', result);
     return result;
   }
 

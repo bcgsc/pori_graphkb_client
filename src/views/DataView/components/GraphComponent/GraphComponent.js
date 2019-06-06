@@ -795,10 +795,6 @@ class GraphComponent extends Component {
       const { [`${type}s`]: objs, graphOptions } = this.state;
       const key = graphOptions[`${type}sColor`];
       const colors = {};
-      // console.log('graphOptions : ', graphOptions);
-      // console.log('----------------- type: ', type);
-      // console.log('objs : ', objs);
-      // console.log('key : ', key);
 
 
       objs.forEach((obj) => {
@@ -823,15 +819,13 @@ class GraphComponent extends Component {
 
       const tooManyUniques = (Object.keys(colors).length > PALLETE_SIZE
         && Object.keys(props).length !== 1);
-      // console.log('props: ', props);
-      // console.log('props[keys]: ', props[key]);
+
       const noUniques = props[key]
         && (props[key].length === 0
           || (props[key].length === 1 && props[key].includes('null')));
+
       const notDefined = key && !props[key];
-      // console.log('tooManyUniques : ', tooManyUniques);
-      // console.log('noUniques : ', noUniques);
-      // console.log('notDefined : ', notDefined);
+
       if (tooManyUniques || noUniques || notDefined) {
         if (tooManyUniques) {
           snackbar.add(`${GRAPH_UNIQUE_LIMIT} (${graphOptions[`${type}sColor`]})`);

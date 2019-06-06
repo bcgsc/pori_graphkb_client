@@ -136,12 +136,9 @@ class GraphComponent extends Component {
    */
 
   async componentDidMount() {
-    console.log('componentDidMount called...');
     const {
       displayed,
-      // data,
       allProps,
-      // localStorageKey,
       edgeTypes,
     } = this.props;
     const {
@@ -153,19 +150,15 @@ class GraphComponent extends Component {
     let { expandable } = this.state;
     const localStorageKey = '%40class=Statement&neighbors=3&limit=1000&skip=1000';
     this.propsMap = new PropsMap();
-    // Defines what edge keys to look for.
-    // convert data to appropiate format [{}] =>  {@rid: {}, @rid: {},}
 
     if (data) {
-      const oldData = data;
-      data = {};
-      oldData.forEach((obj) => {
-        data[obj['@rid']] = obj;
-      });
+      data = this.formatData(data);
       this.setState({ data });
     } else {
       try {
-        data = await this.getSelectedRecordData(displayed);
+        data = [];
+        const record = await this.getSelectedRecordData(displayed);
+        data.push(record);
         this.setState({ data });
       } catch (err) {
         console.log('data fetch error: ', err);
@@ -199,7 +192,6 @@ class GraphComponent extends Component {
        */
       if ((displayed && displayed.length !== 0) || (!initState && !storedData)) {
         let { nodes, links, graphObjects } = this.state;
-        console.log('case1 user switches right into graph view.');
 
         /* Case 1, iterate through specified rids. */
         // user has not selected a record to start with. Default to first rid of result
@@ -221,11 +213,8 @@ class GraphComponent extends Component {
             },
           ));
         });
-
-        // saves graph state into localStorage
         util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
       } else if (initState) {
-        console.log('case2');
         const {
           graphObjects,
           nodes,
@@ -245,7 +234,6 @@ class GraphComponent extends Component {
           links: links.slice(),
         });
       } else if (storedData && storedData.localStorageKey === localStorageKey) {
-        console.log('case3');
         const {
           graphObjects,
         } = storedData;
@@ -313,7 +301,6 @@ class GraphComponent extends Component {
    * Removes all event listeners.
    */
   componentWillUnmount() {
-    console.log('componentWillUnmount');
     const {
       svg,
       simulation,
@@ -335,17 +322,13 @@ class GraphComponent extends Component {
 
   // TODO update this to dynamically generate startRow and endRow
   async getSelectedRecordData(displayed) {
-    console.log('getSelectedRecordData called... ');
     const { cache } = this.props;
     let { search } = this.props;
     let rid = displayed[0];
     rid = rid.replace(/['"]+/g, '');
     rid = rid.replace(/[#]/g, '');
-    // console.log('[getSelectedRecordData] rid :', rid);
 
     search = search + '&neighbors=2' + `&@rid=${rid}`;
-    console.log('[getSelectedRecordData] search : ', search);
-
     const response = await cache.getRows({
       startRow: 0,
       endRow: 50,
@@ -353,13 +336,12 @@ class GraphComponent extends Component {
       sortModel: [],
     });
     let recordData = {};
-    recordData = await this.formatData(response);
+    recordData = this.formatData(response);
     return recordData;
   }
 
-
-  async formatData (arrOfObjs) {
-    console.log('formatting data...')
+  @boundMethod
+  formatData (arrOfObjs) {
     const result = {};
     arrOfObjs.forEach((obj)=>{
       result[obj['@rid']] = obj
@@ -373,7 +355,6 @@ class GraphComponent extends Component {
    */
   @boundMethod
   applyDrag(node) {
-    console.log('applyDrag called... ')
     const { simulation } = this.state;
     d3Select.event.sourceEvent.stopPropagation();
 
@@ -400,7 +381,6 @@ class GraphComponent extends Component {
    */
   @boundMethod
   drawGraph() {
-    console.log('drawGraph called...')
     const {
       nodes,
       links,
@@ -439,7 +419,6 @@ class GraphComponent extends Component {
    */
   @boundMethod
   initSimulation() {
-    console.log('initSimulation called...')
     const {
       simulation,
       graphOptions,
@@ -505,7 +484,6 @@ class GraphComponent extends Component {
    // TODO check that this gets called with new data containing structure
   @boundMethod
   loadNeighbors(node) {
-    console.log('loadNeighbors called... ');
     const { expandExclusions } = this.state;
     const { localStorageKey } = this.props;
     let {
@@ -515,14 +493,10 @@ class GraphComponent extends Component {
       expandable,
     } = this.state;
     const { schema } = this.props;
-    const { data } = this.state;
-    // const oldData = data;
-    // data = {};
-    // oldData.forEach((obj) => {
-    //   data[obj['@rid']] = obj;
-    // // });
-    // console.log('[loading neighbors] expandable: ', expandable[node.getId()]);
-    // console.log('[loadNeighbors] node data : ', data[node.getId()]);
+    let { data } = this.props;
+
+    data = this.formatData(data);
+
 
     if (expandable[node.getId()] && data[node.getId()]) {
       ({
@@ -545,9 +519,7 @@ class GraphComponent extends Component {
       this.drawGraph();
       this.updateColors();
     }
-    // console.log('[node edges ] : ', schema.getEdges(data[node.getId()]))
-    // If there aren't any more edges that can be expandable
-    if (!this.anyEdgesExpandableFromActionNode(node, links)) {
+    if (!schema.getEdges(data[node.getId()]).some(edge => !links.find(l => l.getId() === edge['@rid']))) {
       delete expandable[node.getId()];
     }
     util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
@@ -562,52 +534,33 @@ class GraphComponent extends Component {
     });
   }
 
-  anyEdgesExpandableFromActionNode(node, links) {
-    const { schema } = this.props;
-    const { data } = this.state;
-    return schema.getEdges(data[node.getId()]).some(edge => !links.find(l => l.getId() === edge['@rid']));
-  }
-
-
   /**
    * Determines whether to quickly selected load node neighbors or open the
    * expansion dialog panel.
    * @param {GraphNode} node - d3 simulation node to be expanded.
    */
 
-   // TODO: check that this is updating via Graph Component props
   @boundMethod
   handleExpandRequest(node) {
-    console.log('handleExpandrequest called...');
     const {
       expandable,
       links,
     } = this.state;
     const { schema } = this.props;
-    const { data } = this.state;
-    // const oldData = data;
-    // data = {};
-    // oldData.forEach((obj) => {
-    //   data[obj['@rid']] = obj;
-    // });
-    // console.log('node get Id : ', node.getId());
-    // console.log('1st cond : ', expandable[node.getId()]);
-    // console.log('2nd cond : ', data[node.getId()]);
-    // data[node.getId does not exist right now]
-    // probably not being fetched. Look into this later
-    if (expandable[node.getId()] && data[node.getId()]) { // node expandable and we have data for it
-      console.log('node is expandable... ')
+    let { data } = this.props;
+    data = this.formatData(data);
+
+    if (expandable[node.getId()] && data[node.getId()]) {
       if (schema.getEdges(data[node.getId()])
         .filter(edge => !(links.find(l => l.getId() === edge['@rid']))).length > HEAVILY_CONNECTED
       ) {
-        console.log('in here'); // if there are expandEdges Options
         this.setState({ expandNode: data[node.getId()] },
           this.handleDialogOpen('expansionDialogOpen'));
       } else {
         this.loadNeighbors(node);
       }
     } else {
-      console.log('node is not expandable')
+      console.log('node is not expandable');
     }
 
   }
@@ -633,7 +586,6 @@ class GraphComponent extends Component {
    * @param {Array.<string>} [exclusions=[]] - List of edge ID's to be ignored on expansion.
    */
   processData(node, position, depth, prevstate, exclusions = []) {
-    console.log('[processData]');
     const { expandedEdgeTypes } = this.state;
     let {
       nodes,
@@ -641,14 +593,9 @@ class GraphComponent extends Component {
       graphObjects,
       expandable,
     } = prevstate;
-    // From DataView.js
     const { handleNewColumns } = this.props;
-    const { data } = this.state;
-    // const oldData = data;
-    // data = {};
-    // oldData.forEach((obj) => {
-    //   data[obj['@rid']] = obj;
-    // });
+    let { data } = this.props;
+    data = this.formatData(data);
 
     if (data[node['@rid'] || data[node.getId()]]) {
       node = data[node['@rid'] || data[node.getId()]]; // eslint-disable-line no-param-reassign
@@ -789,7 +736,6 @@ class GraphComponent extends Component {
    */
   @boundMethod
   updateColors() {
-    console.log('updateColors');
     ['node', 'link'].forEach((type) => {
       const { snackbar } = this.props;
       const { [`${type}s`]: objs, graphOptions } = this.state;
@@ -812,10 +758,7 @@ class GraphComponent extends Component {
           colors[obj.data[key]] = '';
         }
       });
-      // console.log('colors : ', colors);
       const props = this.propsMap[`${type}Props`];
-
-      // console.log('PropsMap: ', this.propsMap);
 
       const tooManyUniques = (Object.keys(colors).length > PALLETE_SIZE
         && Object.keys(props).length !== 1);
@@ -832,7 +775,6 @@ class GraphComponent extends Component {
         }
 
         graphOptions[`${type}sColor`] = '';
-        // console.log('tooManyUniques || noUniques || notDefined');
         this.setState({ graphOptions }, () => this.updateColors());
       } else {
         const pallette = util.getPallette(Object.keys(colors).length, `${type}s`);
@@ -843,7 +785,6 @@ class GraphComponent extends Component {
         this.setState({ graphOptions });
       }
     });
-    console.log('updateColors finished running');
   }
 
   /**
@@ -867,13 +808,11 @@ class GraphComponent extends Component {
    */
   @boundMethod
   async handleClick(node) {
-    console.log('handleClick called... ');
     const { handleClick, handleDetailDrawerOpen } = this.props;
     // Prematurely loads neighbor data.
-    // await handleClick(node);
-    // DP: This needs to be updated so that neighbor data is loaded onto state.
+    await handleClick(node);
 
-    await this.updateGraphData(node);
+    // await this.updateGraphData(node.data);
 
     // Update contents of detail drawer if open.
     handleDetailDrawerOpen(node);
@@ -882,7 +821,8 @@ class GraphComponent extends Component {
   }
 
   async updateGraphData(node) {
-    const { cache, data } = this.state;
+    const { data } = this.state;
+    const { cache } = this.props;
     const record = await cache.getRecord(node);
     const newdata = [...data, record];
     this.setState({ data: newdata });
@@ -933,7 +873,6 @@ class GraphComponent extends Component {
    */
   @boundMethod
   handleExpand() {
-    console.log('handleExpand called...');
     const { actionsNode } = this.state;
     this.setState({ expansionDialogOpen: false });
     setTimeout(() => this.loadNeighbors(actionsNode), DIALOG_FADEOUT_TIME);
@@ -1064,7 +1003,6 @@ class GraphComponent extends Component {
    */
   @boundMethod
   handleExpandExclusion(rid) {
-    console.log('handleExpandExclusion called... ')
     const { expandExclusions } = this.state;
     const i = expandExclusions.indexOf(rid);
     if (i === -1) {
@@ -1096,7 +1034,6 @@ class GraphComponent extends Component {
    */
   @boundMethod
   handleExpandByClass(cls) {
-    console.log('handleExpandByClass called...')
     return () => {
       const { expandNode } = this.state;
       const { schema } = this.props;

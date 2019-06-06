@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core';
 import TimelineIcon from '@material-ui/icons/Timeline';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import Tooltip from '@material-ui/core/Tooltip';
 import EditIcon from '@material-ui/icons/Edit';
 import { boundMethod } from 'autobind-decorator';
 
@@ -22,6 +23,7 @@ import { KBContext } from '../../components/KBContext';
 import RecordFormDialog from '../../components/RecordFormDialog';
 import api from '../../services/api';
 import { cleanLinkedRecords } from '../../components/util';
+// import getAllProps from './defaultProps';
 
 import './index.scss';
 
@@ -67,7 +69,6 @@ class DataView extends React.Component {
   }
 
   async componentDidMount() {
-    // console.log('[componentDidMount]')
     const { schema } = this.context;
     const { cacheBlocks, blockSize } = this.props;
     const cache = api.getNewCache({
@@ -78,12 +79,7 @@ class DataView extends React.Component {
       onErrorCallback: this.handleError,
     });
 
-    // misleading function name. This function doesn't just fetch filters.
-    // not only does this parse through filters,  it also fetches data via apicalls
-    // and stores it in the cache.
-    // console.log('calling parseFilters...')
     const filters = await this.parseFilters(cache);
-    // console.log('returned filters from parseFilters: ', filters)
 
     // TODO figure out how to generate this dynamically
     // processData in old Dataview does this by passing through
@@ -206,15 +202,18 @@ class DataView extends React.Component {
 
   @boundMethod
   handleSwapToGraph() {
-    console.log('swapping to graph....');
-    this.setState({ variant: 'graph' });
+    const { history } = this.props;
+    this.setState({ detail: null });
+    history.push({
+      pathname: '/data/graph',
+      search: history.location.search,
+      hash: '',
+    });
   }
 
   @boundMethod
   handleTableRedirect() {
-    console.log('redirecting to table view...');
     const { history } = this.props;
-    // console.log('history: ', history);
     this.setState({ detail: null, variant: 'table' });
     history.push({
       pathname: '/data/table',
@@ -225,9 +224,9 @@ class DataView extends React.Component {
   @boundMethod
   async handleExpandNode({ data: node }) {
     const { cache, selectedRecords } = this.state;
-    console.log('handleExpandNode', node);
     const record = await cache.getRecord(node);
     const newSelectedRecords = [...selectedRecords, record];
+
     this.setState({ selectedRecords: newSelectedRecords });
   }
 
@@ -235,17 +234,6 @@ class DataView extends React.Component {
   handleError(err) {
     const { history } = this.props;
     history.push('/error', { error: { name: err.name, message: err.message } });
-  }
-
-
-  redirectTest() {
-    const { history } = this.props;
-    this.setState({ detail: null });
-    history.push({
-      pathname: '/data/graph',
-      search: history.location.search,
-      hash: '',
-    });
   }
 
   /**
@@ -281,7 +269,6 @@ class DataView extends React.Component {
       detailPanelRow,
       cache,
       optionsMenuAnchor,
-      variant,
       selectedRecords,
       search,
       allProps,
@@ -293,13 +280,11 @@ class DataView extends React.Component {
 
     const { bufferSize, history } = this.props;
     const { schema } = this.context;
-    // console.log('calling schema.getEdges')
     const edges = schema.getEdges();
-    // console.log('edges : ',edges)
-    console.log('rendering data component...');
+
     const URL = String(history.location.pathname);
-    const URLbool = URL.includes('table');
-    if (URLbool) {
+    const URLContainsTable = URL.includes('table');
+    if (URLContainsTable) {
       return (
         <DataTable
           search={search}
@@ -313,27 +298,6 @@ class DataView extends React.Component {
       );
     }
 
-    // TODO add to be displayed RIDs to hash for parsing
-    // test for encoding and decoding selectedInfo via URL
-    console.log('selectedInfo : ', selectedInfo);
-    // encode
-    const selectedInfoString = String(selectedInfo);
-    console.log('selectedInfoString : ', selectedInfoString);
-    const encodedSelectedInfoString = btoa(selectedInfoString);
-    console.log('encodedSelectedInfoString: ', encodedSelectedInfoString);
-    // decode
-    const decodedSelectedInfo = atob(encodedSelectedInfoString);
-    console.log('decodedSelectedInfo : ', decodedSelectedInfo);
-    const selectedInfoArr = decodedSelectedInfo.split(',');
-    const selectedInfoDecoded = [];
-    selectedInfoArr.forEach((info) => { selectedInfoDecoded.push(info); });
-    console.log('selectedInfoDecoded : ', selectedInfoDecoded);
-
-    // test for encoding and decoding selected Records via URL
-    // encoded
-    // selectedRecords is an array of objects
-
-    console.log('selectedRecords :', selectedRecords);
     return (
       <GraphComponent
         cache={cache}
@@ -345,7 +309,7 @@ class DataView extends React.Component {
         }}
         detail={detailPanelRow}
         displayed={selectedInfo}
-        data={null}
+        data={selectedRecords}
         search={search}
         edgeTypes={edges}
         schema={schema}
@@ -399,16 +363,12 @@ class DataView extends React.Component {
       statusMessage,
       totalRows,
       detailPanelRow,
-      // optionsMenuAnchor,
       selectedRecords,
       filtersEditOpen,
       filters,
-      // search,
-      variant,
     } = this.state;
     const { history } = this.props;
     const URLContainsTable = String(history.location.pathname).includes('table');
-    // const { bufferSize } = this.props;
 
     const detailPanelIsOpen = Boolean(detailPanelRow);
 
@@ -423,8 +383,7 @@ class DataView extends React.Component {
             <>
               <Typography variant="h3">Active Filters</Typography>
               <IconButton
-                // onClick={() => this.setState({ filtersEditOpen: true })}
-                onClick={() => this.redirectTest()}
+                onClick={() => this.setState({ filtersEditOpen: true })}
               >
                 <EditIcon />
               </IconButton>
@@ -462,10 +421,14 @@ class DataView extends React.Component {
               {selectedRecords.length} Record{selectedRecords.length !== 1 ? 's' : ''} Selected
             </Typography>
             {Boolean(selectedRecords.length) && (
-              <IconButton>
-                <TimelineIcon onClick={this.handleSwapToGraph} />
-                GRAPH ICON
-              </IconButton>
+              <Tooltip title="click here for graph view">
+                <IconButton>
+                  <TimelineIcon
+                    color="secondary"
+                    onClick={this.handleSwapToGraph}
+                  />
+                </IconButton>
+              </Tooltip>
             )}
           </div>
           {statusMessage && (

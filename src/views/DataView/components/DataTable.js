@@ -78,6 +78,7 @@ class DataTable extends React.Component {
     const result = await cache.getRows({
       startRow, endRow, search, sortModel,
     });
+    console.log('[getTableData] result : ', result);
     this.setState({ pingedIndices: new Set() });
     const resultArr = [result, cache.rowCount(search)];
     return resultArr;

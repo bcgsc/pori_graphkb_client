@@ -23,7 +23,7 @@ import { KBContext } from '../../components/KBContext';
 import RecordFormDialog from '../../components/RecordFormDialog';
 import api from '../../services/api';
 import { cleanLinkedRecords } from '../../components/util';
-// import getAllProps from './defaultProps';
+import { defaultProps } from './defaultProps';
 
 import './index.scss';
 
@@ -82,35 +82,7 @@ class DataView extends React.Component {
 
     const filters = await this.parseFilters(cache);
 
-    // TODO figure out how to generate this dynamically
-    // processData in old Dataview does this by passing through
-    // query results. For each query result/row, dataview extracts
-    // unique props from the results. allProps is all unique props.
-    const allProps = [
-      '@rid',
-      '@class',
-      'preview',
-      'relevance.source',
-      'relevance.sourceId',
-      'relevance.name',
-      'appliesTo.source',
-      'appliesTo.sourceId',
-      'appliesTo.name',
-      'appliesTo.@class',
-      'description',
-      'reviewStatus',
-      'sourceId',
-      'source.name',
-      'source.url',
-      'source.description',
-      'source.usage',
-      'appliesTo.description',
-      'appliesTo.subsets',
-      'appliesTo.sourceIdVersion',
-      'appliesTo.mechanismOfAction',
-      'relevance.description',
-      'appliesTo.dependency',
-    ];
+    const allProps = defaultProps.get();
     this.setState({ cache, filters, allProps });
   }
 
@@ -266,18 +238,23 @@ class DataView extends React.Component {
   }
 
   async fetchInitialData(arr, cache, schema) {
-    let result = [];
-    arr.forEach((record)=>{
-      const response = cache.recordApiCall({ record: record, schema }).request();
-      result.push(response);
+    const result = [];
+    arr.forEach((record) => {
+      try {
+        const response = cache.recordApiCall({ record, schema }).request();
+        result.push(response);
+      } catch (err) {
+        console.log(err);
+      }
+
     });
     return result;
   }
 
-  async fetchAndSetInitialData(selectedRIDs, cache, schema){
+  fetchAndSetInitialData(selectedRIDs, cache, schema) {
     this.fetchInitialData(selectedRIDs, cache, schema)
-        .then(res => { console.log(res); return Promise.all(res); })
-        .then( (res) => { console.log('res :', res); this.setState({ data: res })})
+      .then(res => { console.log(res); return Promise.all(res) })
+      .then((res) => { console.log(res); this.setState({ data: res }); });
   }
 
   renderDataComponent() {
@@ -317,16 +294,19 @@ class DataView extends React.Component {
     if (!data) {
       this.fetchAndSetInitialData(selectedRIDs, cache, schema);
       return null;
-    } else {
-      return (
+    }
+    console.log('data : ', data);
+    console.log('selectedRIDs : ', selectedRIDs)
+    console.log('selectedRecords : ', selectedRecords)
+    return (
       <GraphComponent
         cache={cache}
         handleDetailDrawerOpen={this.handleToggleDetailPanel}
         handleDetailDrawerClose={this.handleToggleDetailPanel}
         handleTableRedirect={this.handleTableRedirect}
         handleNewColumns={() => {
-          console.log('handleNewColumns');
-        }}
+           console.log('handleNewColumns');
+         }}
         detail={detailPanelRow}
         displayed={selectedRIDs}
         data={data}
@@ -338,8 +318,6 @@ class DataView extends React.Component {
         onRecordClicked={this.handleToggleDetailPanel}
       />
     );
-    }
-
   }
 
 

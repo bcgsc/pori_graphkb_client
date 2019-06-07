@@ -2,7 +2,7 @@ export const defaultProps = {
   get: () => ([
     '@rid',
     '@class',
-    'preview',
+    'break1Repr',
     'relevance.source',
     'relevance.sourceId',
     'relevance.name',

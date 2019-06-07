@@ -15,7 +15,6 @@ import { boundMethod } from 'autobind-decorator';
 
 import kbSchema from '@bcgsc/knowledgebase-schema';
 
-
 import DataTable from './components/DataTable';
 import GraphComponent from './components/GraphComponent';
 import DetailDrawer from './components/DetailDrawer';
@@ -23,8 +22,6 @@ import { KBContext } from '../../components/KBContext';
 import RecordFormDialog from '../../components/RecordFormDialog';
 import api from '../../services/api';
 import { cleanLinkedRecords } from '../../components/util';
-import { defaultProps } from './defaultProps';
-
 import './index.scss';
 
 /**
@@ -60,10 +57,8 @@ class DataView extends React.Component {
       detailPanelRow: null,
       optionsMenuAnchor: null,
       selectedRecords: [],
-      variant: 'table',
       filtersEditOpen: false,
       filters: {},
-      allProps: [],
       search,
     };
     this.controllers = [];
@@ -81,13 +76,11 @@ class DataView extends React.Component {
     });
 
     const filters = await this.parseFilters(cache);
-
-    const allProps = defaultProps.get();
-    this.setState({ cache, filters, allProps });
+    this.setState({ cache, filters });
   }
 
+
   componentWillUnmount() {
-    console.log('[DataView] componentWillUnmount...')
     const { cache } = this.state;
     if (cache) {
       cache.abortAll();
@@ -188,7 +181,7 @@ class DataView extends React.Component {
   @boundMethod
   handleTableRedirect() {
     const { history } = this.props;
-    this.setState({ detail: null, variant: 'table' });
+    this.setState({ detail: null });
     history.push({
       pathname: '/data/table',
       search: history.location.search,
@@ -238,7 +231,22 @@ class DataView extends React.Component {
     }
   }
 
-  @boundMethod
+  getUniqueDataProps() {
+    let uniqueProps = [];
+    const { data } = this.state;
+    if (data) {
+      const totalProps = [];
+      data.forEach((obj) => {
+        const keyArr = Object.keys(obj);
+        totalProps.push(...keyArr);
+      });
+      uniqueProps = [...new Set(totalProps)];
+      return uniqueProps;
+    }
+    uniqueProps = ['@rid', '@class', 'name'];
+    return uniqueProps;
+  }
+
   async fetchInitialData(arr, cache, schema) {
     const result = [];
     arr.forEach((record) => {
@@ -248,19 +256,17 @@ class DataView extends React.Component {
       } catch (err) {
         console.log(err);
       }
-
     });
     return result;
   }
 
   fetchAndSetInitialData(selectedRIDs, cache, schema) {
     this.fetchInitialData(selectedRIDs, cache, schema)
-      .then((res) => { console.log(res); return Promise.all(res) })
+      .then((res) => { console.log(res); return Promise.all(res); })
       .then((res) => { console.log(res); this.setState({ data: res }); });
   }
 
   renderDataComponent() {
-    console.log('renderDataComponent called...')
     const {
       detailPanelRow,
       cache,
@@ -268,7 +274,6 @@ class DataView extends React.Component {
       selectedRecords,
       search,
       data,
-      allProps,
     } = this.state;
     const selectedRIDs = [];
     selectedRecords.forEach((obj) => {
@@ -298,12 +303,8 @@ class DataView extends React.Component {
       this.fetchAndSetInitialData(selectedRIDs, cache, schema);
       return null;
     }
+    const uniqueProps = this.getUniqueDataProps();
 
-    console.log('data : ', data);
-    console.log('selectedRIDs : ', selectedRIDs)
-    console.log('selectedRecords : ', selectedRecords)
-    console.log('allProps : ', allProps)
-    console.log('renderDataComponent finished...')
     return (
       <GraphComponent
         cache={cache}
@@ -312,7 +313,7 @@ class DataView extends React.Component {
         handleTableRedirect={this.handleTableRedirect}
         handleNewColumns={() => {
           console.log('handleNewColumns');
-         }}
+        }}
         detail={detailPanelRow}
         displayed={selectedRIDs}
         data={data}
@@ -320,7 +321,7 @@ class DataView extends React.Component {
         edgeTypes={edges}
         schema={schema}
         localStoragekey="%40class=Statement&neighbors=3&limit=1000&skip=1000"
-        allProps={allProps}
+        allProps={uniqueProps}
         handleClick={this.handleExpandNode}
         onRecordClicked={this.handleToggleDetailPanel}
       />
@@ -365,7 +366,6 @@ class DataView extends React.Component {
   }
 
   render() {
-    console.log('[Dataview] rendering...')
     // options are commented out because they are added in renderDataComponent method
     const {
       cache,
@@ -380,7 +380,6 @@ class DataView extends React.Component {
     const URLContainsTable = String(history.location.pathname).includes('table');
 
     const detailPanelIsOpen = Boolean(detailPanelRow);
-    console.log('[DataView] finished rendering...')
     return (
       <div className={
         `data-view ${detailPanelIsOpen

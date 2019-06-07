@@ -58,6 +58,10 @@ class Main extends React.Component {
     this.auth = new Authentication();
   }
 
+  componentWillUnmount() {
+    console.log('[Main] componentWillUnmount called...');
+  }
+
   /**
    * Opens user dropdown menu.
    */

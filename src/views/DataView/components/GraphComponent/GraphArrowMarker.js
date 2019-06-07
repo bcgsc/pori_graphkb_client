@@ -10,7 +10,6 @@ const {
 } = config.GRAPH_PROPERTIES;
 
 function GraphArrowMarker() {
-  console.log('GraphArrowMarker called...')
   return (
     <marker
       id={MARKER_ID}

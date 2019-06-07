@@ -18,7 +18,6 @@ import util from '../../../../../services/util';
  * Legend panels for nodes and links in graph.
  */
 function GraphLegend(props) {
-  console.log('GraphLegend called...')
   const {
     graphOptions,
     onChange,

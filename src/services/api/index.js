@@ -321,10 +321,14 @@ const querySearchBlock = ({
  * @returns {ApiCall} the api call for retriving the requested data
  */
 const recordApiCall = ({ record, schema }) => {
+  console.log('recordApiCall called...')
+  console.log('schema : ', schema);
   const { '@rid': rid = record } = record;
   const { routeName = '/v' } = schema.get(record) || {};
-  const result = get(`${routeName}/${rid.slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
-  return result;
+  console.log('[recordApiCall] routeName: ', routeName);
+  console.log('[recordApiCall] rid: ', rid);
+  console.log('[recordApiCall] DEFAULT_NEIGHBORS: ', DEFAULT_NEIGHBORS);
+  return get(`${routeName}/${rid.slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
 };
 
 

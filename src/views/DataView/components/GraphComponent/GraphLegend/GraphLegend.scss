@@ -48,11 +48,11 @@
   }
 }
 
-// @media (max-width: $breakpoint-tablet) {
-//   .legend-wrapper {
-//     max-width: unset;
-//   }
-// }
+@media (max-width: $breakpoint-med) {
+  .legend-wrapper {
+    max-width: unset;
+  }
+}
 
 .color-chip {
   border: 1px solid $palette__text--secondary;

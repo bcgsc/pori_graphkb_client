@@ -109,7 +109,6 @@ class GraphComponent extends Component {
     this.state = {
       nodes: [],
       links: [],
-      data: [],
       graphObjects: {},
       expandable: {},
       expandedEdgeTypes: [],
@@ -130,16 +129,17 @@ class GraphComponent extends Component {
 
     this.propsMap = new PropsMap();
   }
+
   /**
    * Loads edge types, initializes graph and populates it with specified input nodes.
    * Initializes event listener for window resize.
    */
-
   async componentDidMount() {
     const {
       displayed,
       allProps,
       edgeTypes,
+      localStorageKey,
     } = this.props;
     const {
       graphOptions,
@@ -148,7 +148,6 @@ class GraphComponent extends Component {
 
     let { data } = this.props;
     let { expandable } = this.state;
-    const localStorageKey = '%40class=Statement&neighbors=3&limit=1000&skip=1000';
     this.propsMap = new PropsMap();
 
     if (data) {
@@ -177,7 +176,6 @@ class GraphComponent extends Component {
       this.handleResize();
       window.addEventListener('resize', this.handleResize);
 
-      // retrieves graph data from local storage for search parameters
       const storedData = util.getGraphData(localStorageKey);
       const storedOptions = GraphOptions.retrieve();
 
@@ -194,7 +192,6 @@ class GraphComponent extends Component {
         let { nodes, links, graphObjects } = this.state;
 
         /* Case 1, iterate through specified rids. */
-        // user has not selected a record to start with. Default to first rid of result
         validDisplayed.forEach((key, i) => {
           ({
             nodes,
@@ -213,7 +210,8 @@ class GraphComponent extends Component {
             },
           ));
         });
-        util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
+        // TODO: replace with datacache Module
+        // util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
       } else if (initState) {
         const {
           graphObjects,
@@ -304,19 +302,18 @@ class GraphComponent extends Component {
     const {
       svg,
       simulation,
-      graphObjects,
-      nodes,
-      links,
+      // graphObjects,
+      // nodes,
+      // links,
     } = this.state;
-    // const { localStorageKey } = this.props;
-    const localStorageKey = '%40class=Statement&neighbors=3&limit=1000&skip=1000';
     // remove all event listeners
     svg.call(d3Zoom.zoom()
       .on('zoom', null))
       .on('dblclick.zoom', null);
     simulation.on('tick', null);
     window.removeEventListener('resize', this.handleResize);
-    util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
+    // TODO: replace localStorage with datacache module
+    // util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
   }
 
 
@@ -341,13 +338,14 @@ class GraphComponent extends Component {
   }
 
   @boundMethod
-  formatData (arrOfObjs) {
-    const result = {};
-    arrOfObjs.forEach((obj)=>{
-      result[obj['@rid']] = obj
+  formatData(data) {
+    const newData = {};
+    data.forEach((obj)=>{
+      newData[obj['@rid']] = obj;
     })
-    return result;
+    return newData;
   }
+
 
   /**
    * Applies drag behavior to node.
@@ -387,10 +385,6 @@ class GraphComponent extends Component {
       simulation,
       graphOptions,
     } = this.state;
-
-
-    // TODO: center single node render.
-    // currently it hangs to the right
 
     simulation.nodes(nodes);
 
@@ -522,7 +516,8 @@ class GraphComponent extends Component {
     if (!schema.getEdges(data[node.getId()]).some(edge => !links.find(l => l.getId() === edge['@rid']))) {
       delete expandable[node.getId()];
     }
-    util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
+    // replace localStorage with datacache module
+    // util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
     this.setState({
       expandable,
       actionsNode: null,
@@ -742,7 +737,6 @@ class GraphComponent extends Component {
       const key = graphOptions[`${type}sColor`];
       const colors = {};
 
-
       objs.forEach((obj) => {
         if (key.includes('.')) {
           const [prop, nestedProp] = key.split('.');
@@ -759,14 +753,11 @@ class GraphComponent extends Component {
         }
       });
       const props = this.propsMap[`${type}Props`];
-
       const tooManyUniques = (Object.keys(colors).length > PALLETE_SIZE
         && Object.keys(props).length !== 1);
-
       const noUniques = props[key]
         && (props[key].length === 0
           || (props[key].length === 1 && props[key].includes('null')));
-
       const notDefined = key && !props[key];
 
       if (tooManyUniques || noUniques || notDefined) {
@@ -977,7 +968,8 @@ class GraphComponent extends Component {
     }, () => {
       this.updateColors();
       handleDetailDrawerClose();
-      util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
+      // TODO: replace localStorage with datacache module
+      // util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
     });
   }
 

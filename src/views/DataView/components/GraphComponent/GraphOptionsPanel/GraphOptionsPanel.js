@@ -77,6 +77,7 @@ class GraphOptionsPanel extends Component {
   }
 
   render() {
+    console.log('GraphOptionsPanel called...')
     const {
       graphOptionsOpen,
       graphOptions,

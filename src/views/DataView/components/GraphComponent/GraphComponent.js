@@ -135,11 +135,12 @@ class GraphComponent extends Component {
    * Initializes event listener for window resize.
    */
   async componentDidMount() {
+    console.log('componentDidMount called...')
     const {
       displayed,
       allProps,
       edgeTypes,
-      // localStorageKey,
+      localStorageKey,
     } = this.props;
     const {
       graphOptions,
@@ -148,12 +149,10 @@ class GraphComponent extends Component {
 
     let { data } = this.props;
     let { expandable } = this.state;
-    const localStorageKey = '%40class=Statement&neighbors=3&limit=1000&skip=1000';
     this.propsMap = new PropsMap();
 
     if (data) {
       data = this.formatData(data);
-      this.setState({ data });
     } else {
       try {
         data = [];
@@ -174,6 +173,7 @@ class GraphComponent extends Component {
     this.setState({
       expandedEdgeTypes,
     }, () => {
+      console.log('expandedEdgeTypes set....')
       this.handleResize();
       window.addEventListener('resize', this.handleResize);
 
@@ -191,7 +191,7 @@ class GraphComponent extends Component {
        */
       if ((displayed && displayed.length !== 0) || (!initState && !storedData)) {
         let { nodes, links, graphObjects } = this.state;
-
+        console.log('case1')
         /* Case 1, iterate through specified rids. */
         validDisplayed.forEach((key, i) => {
           ({
@@ -211,14 +211,17 @@ class GraphComponent extends Component {
             },
           ));
         });
+        console.log('graph data updated..')
         // TODO: replace with datacache Module
         util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
+        console.log('graph data uploaded...')
       } else if (initState) {
         const {
           graphObjects,
           nodes,
           links,
         } = initState;
+        console.log('case2')
         /* Case 2, iterate through component state field containing graph state. */
         nodes.forEach((node) => {
           this.propsMap.loadNode(node.data, allProps);
@@ -233,6 +236,7 @@ class GraphComponent extends Component {
           links: links.slice(),
         });
       } else if (storedData && storedData.localStorageKey === localStorageKey) {
+        console.log('case3')
         const {
           graphObjects,
         } = storedData;
@@ -272,16 +276,20 @@ class GraphComponent extends Component {
           },
         });
       }
-
+      console.log('storedOptions : ', storedOptions);
+      console.log('expandable : ', expandable);
       if (storedOptions) {
+        console.log('storedOptions passes check');
         this.setState({
           graphOptions: storedOptions,
           expandable,
         }, () => {
+          console.log('c1 calling drawGraph and updateColors...')
           this.drawGraph();
           this.updateColors();
         });
       } else {
+        console.log('storedOptions does not pass check')
         if (this.propsMap.nodeProps.length !== 0) {
           graphOptions.nodesLegend = true;
         }
@@ -289,18 +297,20 @@ class GraphComponent extends Component {
           graphOptions,
           expandable,
         }, () => {
+          console.log('c2 calling drawGraph and updateColors...')
           this.drawGraph();
           this.updateColors();
         });
       }
     });
+    console.log('componentDidMount finished call...')
   }
 
   /**
    * Removes all event listeners.
    */
   componentWillUnmount() {
-    console.log('componentWillUnmount...')
+    console.log('[GraphComponent] componentWillUnmount...')
     const {
       svg,
       simulation,
@@ -309,8 +319,7 @@ class GraphComponent extends Component {
       links,
     } = this.state;
     // remove all event listeners
-    const localStorageKey='%40class=Statement&neighbors=3&limit=1000&skip=1000';
-
+    const { localStorageKey } = this.props;
     svg.call(d3Zoom.zoom()
       .on('zoom', null))
       .on('dblclick.zoom', null);
@@ -343,13 +352,14 @@ class GraphComponent extends Component {
 
   @boundMethod
   formatData(data) {
+    console.log('format data called...')
     const newData = {};
     data.forEach((obj)=>{
       newData[obj['@rid']] = obj;
     })
+    console.log('format data finished...')
     return newData;
   }
-
 
   /**
    * Applies drag behavior to node.
@@ -383,6 +393,7 @@ class GraphComponent extends Component {
    */
   @boundMethod
   drawGraph() {
+    console.log('drawgraph called...')
     const {
       nodes,
       links,
@@ -410,6 +421,7 @@ class GraphComponent extends Component {
     simulation.on('tick', ticked);
     simulation.restart();
     this.setState({ simulation, actionsNode: null });
+    console.log('drawGraph finish...')
   }
 
   /**
@@ -417,6 +429,7 @@ class GraphComponent extends Component {
    */
   @boundMethod
   initSimulation() {
+    console.log('initSimulation called...')
     const {
       simulation,
       graphOptions,
@@ -470,7 +483,7 @@ class GraphComponent extends Component {
           );
         }))
       .on('dblclick.zoom', null);
-
+    console.log('initSimulation finished call...')
     this.setState({ simulation, svg });
   }
 
@@ -483,10 +496,10 @@ class GraphComponent extends Component {
   @boundMethod
   loadNeighbors(node) {
     const { expandExclusions } = this.state;
-    const { localStorageKey } = this.props;
     let {
       nodes,
       links,
+      localStorageKey,
       graphObjects,
       expandable,
     } = this.state;
@@ -585,6 +598,7 @@ class GraphComponent extends Component {
    * @param {Array.<string>} [exclusions=[]] - List of edge ID's to be ignored on expansion.
    */
   processData(node, position, depth, prevstate, exclusions = []) {
+    console.log('processData called...')
     const { expandedEdgeTypes } = this.state;
     let {
       nodes,
@@ -706,6 +720,7 @@ class GraphComponent extends Component {
         });
       }
     });
+    console.log('processData finished call...')
     return {
       expandable,
       nodes,
@@ -735,9 +750,13 @@ class GraphComponent extends Component {
    */
   @boundMethod
   updateColors() {
+    console.log('updateColors called...');
     ['node', 'link'].forEach((type) => {
       const { snackbar } = this.props;
+      console.log('snackbar :', snackbar);
       const { [`${type}s`]: objs, graphOptions } = this.state;
+      console.log('objs: ', objs);
+      console.log('graphOptions: ', graphOptions);
       const key = graphOptions[`${type}sColor`];
       const colors = {};
 
@@ -780,6 +799,7 @@ class GraphComponent extends Component {
 
         graphOptions[`${type}sColors`] = colors;
         graphOptions[`${type}sPallette`] = pallette;
+        console.log('update colors finished...')
         this.setState({ graphOptions });
       }
     });
@@ -1026,6 +1046,9 @@ class GraphComponent extends Component {
     }
     this.setState({ expandExclusions: newExpandExclusions });
   }
+  componentWillUpdate(){
+    return false;
+  }
 
   /**
    * Expands all links of specified class on the expand node.
@@ -1047,6 +1070,7 @@ class GraphComponent extends Component {
   }
 
   render() {
+    console.log('rendering...')
     const {
       nodes,
       links,
@@ -1157,7 +1181,7 @@ class GraphComponent extends Component {
         schema={schema}
       />
     ));
-
+    console.log('finished rendering...')
     return (
       <div className="graph-wrapper">
         <GraphExpansionDialog

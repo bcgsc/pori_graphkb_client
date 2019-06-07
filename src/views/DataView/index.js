@@ -87,6 +87,7 @@ class DataView extends React.Component {
   }
 
   componentWillUnmount() {
+    console.log('[DataView] componentWillUnmount...')
     const { cache } = this.state;
     if (cache) {
       cache.abortAll();
@@ -237,6 +238,7 @@ class DataView extends React.Component {
     }
   }
 
+  @boundMethod
   async fetchInitialData(arr, cache, schema) {
     const result = [];
     arr.forEach((record) => {
@@ -253,11 +255,12 @@ class DataView extends React.Component {
 
   fetchAndSetInitialData(selectedRIDs, cache, schema) {
     this.fetchInitialData(selectedRIDs, cache, schema)
-      .then(res => { console.log(res); return Promise.all(res) })
+      .then((res) => { console.log(res); return Promise.all(res) })
       .then((res) => { console.log(res); this.setState({ data: res }); });
   }
 
   renderDataComponent() {
+    console.log('renderDataComponent called...')
     const {
       detailPanelRow,
       cache,
@@ -295,9 +298,12 @@ class DataView extends React.Component {
       this.fetchAndSetInitialData(selectedRIDs, cache, schema);
       return null;
     }
+
     console.log('data : ', data);
     console.log('selectedRIDs : ', selectedRIDs)
     console.log('selectedRecords : ', selectedRecords)
+    console.log('allProps : ', allProps)
+    console.log('renderDataComponent finished...')
     return (
       <GraphComponent
         cache={cache}
@@ -305,7 +311,7 @@ class DataView extends React.Component {
         handleDetailDrawerClose={this.handleToggleDetailPanel}
         handleTableRedirect={this.handleTableRedirect}
         handleNewColumns={() => {
-           console.log('handleNewColumns');
+          console.log('handleNewColumns');
          }}
         detail={detailPanelRow}
         displayed={selectedRIDs}
@@ -313,6 +319,7 @@ class DataView extends React.Component {
         search={search}
         edgeTypes={edges}
         schema={schema}
+        localStoragekey="%40class=Statement&neighbors=3&limit=1000&skip=1000"
         allProps={allProps}
         handleClick={this.handleExpandNode}
         onRecordClicked={this.handleToggleDetailPanel}
@@ -358,6 +365,7 @@ class DataView extends React.Component {
   }
 
   render() {
+    console.log('[Dataview] rendering...')
     // options are commented out because they are added in renderDataComponent method
     const {
       cache,
@@ -372,7 +380,7 @@ class DataView extends React.Component {
     const URLContainsTable = String(history.location.pathname).includes('table');
 
     const detailPanelIsOpen = Boolean(detailPanelRow);
-
+    console.log('[DataView] finished rendering...')
     return (
       <div className={
         `data-view ${detailPanelIsOpen

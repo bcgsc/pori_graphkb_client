@@ -20,6 +20,7 @@ import './GraphExpansionDialog.scss';
  * Dialog opened when a user attempts to open a heavily connected node.
  */
 function GraphExpansionDialog(props) {
+  console.log('GraphExpansionDialog called...')
   const {
     schema,
     node,
@@ -37,6 +38,7 @@ function GraphExpansionDialog(props) {
     return null;
   }
   const edges = schema.getEdges(node);
+  console.log('GraphExpansionDialog finished...')
   return (
     <Dialog
       open={open}

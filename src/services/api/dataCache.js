@@ -301,6 +301,7 @@ class PaginationDataCache {
   }
 
   abortAll() {
+    console.log('abort all called...')
     this.queued = []; // to avoid the callback starting the next request
     this.active.forEach(block => block.abort());
   }

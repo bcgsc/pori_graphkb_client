@@ -196,7 +196,7 @@ describe('<GraphComponent />', () => {
     wrapper.find('#hide').simulate('click');
   });
   // TODO: Refresh Graph is not working currently
-  it.skip('Refreshed graph still remembers displayed nodes', () => {
+  it.todo('Refreshed graph still remembers displayed nodes', () => {
     wrapper = mount(
       <GraphComponent
         data={mockData}
@@ -209,19 +209,18 @@ describe('<GraphComponent />', () => {
         edgeTypes={['AliasOf']}
       />,
     );
-    // wrapper = mount(
-    //   <GraphComponent
-    //     data={mockData}
-    //     handleDetailDrawerOpen={() => { }}
-    //     handleDetailDrawerClose={() => { }}
-    //     handleTableRedirect={() => { }}
-    //     handleNewColumns={() => { }}
-    //     handleClick={() => { }}
-    //     edgeTypes={['AliasOf']}
-    //   />,
-    // );
+    wrapper = mount(
+      <GraphComponent
+        data={mockData}
+        handleDetailDrawerOpen={() => { }}
+        handleDetailDrawerClose={() => { }}
+        handleTableRedirect={() => { }}
+        handleNewColumns={() => { }}
+        handleClick={() => { }}
+        edgeTypes={['AliasOf']}
+      />,
+    );
     expect(wrapper.find('circle.node')).toHaveLength(4);
-    const circle = wrapper.find('circle.node').at(0).instance();
     wrapper.find('circle.node').first().simulate('click');
   });
 

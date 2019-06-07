@@ -139,7 +139,7 @@ class GraphComponent extends Component {
       displayed,
       allProps,
       edgeTypes,
-      localStorageKey,
+      // localStorageKey,
     } = this.props;
     const {
       graphOptions,
@@ -148,6 +148,7 @@ class GraphComponent extends Component {
 
     let { data } = this.props;
     let { expandable } = this.state;
+    const localStorageKey = '%40class=Statement&neighbors=3&limit=1000&skip=1000';
     this.propsMap = new PropsMap();
 
     if (data) {
@@ -211,7 +212,7 @@ class GraphComponent extends Component {
           ));
         });
         // TODO: replace with datacache Module
-        // util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
+        util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
       } else if (initState) {
         const {
           graphObjects,
@@ -299,21 +300,24 @@ class GraphComponent extends Component {
    * Removes all event listeners.
    */
   componentWillUnmount() {
+    console.log('componentWillUnmount...')
     const {
       svg,
       simulation,
-      // graphObjects,
-      // nodes,
-      // links,
+      graphObjects,
+      nodes,
+      links,
     } = this.state;
     // remove all event listeners
+    const localStorageKey='%40class=Statement&neighbors=3&limit=1000&skip=1000';
+
     svg.call(d3Zoom.zoom()
       .on('zoom', null))
       .on('dblclick.zoom', null);
     simulation.on('tick', null);
     window.removeEventListener('resize', this.handleResize);
     // TODO: replace localStorage with datacache module
-    // util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
+    util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
   }
 
 
@@ -517,7 +521,7 @@ class GraphComponent extends Component {
       delete expandable[node.getId()];
     }
     // replace localStorage with datacache module
-    // util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
+    util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
     this.setState({
       expandable,
       actionsNode: null,
@@ -753,11 +757,14 @@ class GraphComponent extends Component {
         }
       });
       const props = this.propsMap[`${type}Props`];
+
       const tooManyUniques = (Object.keys(colors).length > PALLETE_SIZE
         && Object.keys(props).length !== 1);
+
       const noUniques = props[key]
         && (props[key].length === 0
           || (props[key].length === 1 && props[key].includes('null')));
+
       const notDefined = key && !props[key];
 
       if (tooManyUniques || noUniques || notDefined) {
@@ -969,7 +976,7 @@ class GraphComponent extends Component {
       this.updateColors();
       handleDetailDrawerClose();
       // TODO: replace localStorage with datacache module
-      // util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
+      util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
     });
   }
 

@@ -54,6 +54,7 @@ class DataView extends React.Component {
     // cache for api requests
     this.state = {
       cache: null,
+      data: null,
       statusMessage: 'loading data...',
       totalRows: null,
       detailPanelRow: null,
@@ -223,11 +224,11 @@ class DataView extends React.Component {
 
   @boundMethod
   async handleExpandNode({ data: node }) {
-    const { cache, selectedRecords } = this.state;
+    const { cache, data } = this.state;
     const record = await cache.getRecord(node);
-    const newSelectedRecords = [...selectedRecords, record];
+    const newData = [...data, record];
 
-    this.setState({ selectedRecords: newSelectedRecords });
+    this.setState({ data: newData });
   }
 
   @boundMethod
@@ -264,6 +265,21 @@ class DataView extends React.Component {
     }
   }
 
+  async fetchInitialData(arr, cache, schema) {
+    let result = [];
+    arr.forEach((record)=>{
+      const response = cache.recordApiCall({ record: record, schema }).request();
+      result.push(response);
+    });
+    return result;
+  }
+
+  async fetchAndSetInitialData(selectedRIDs, cache, schema){
+    this.fetchInitialData(selectedRIDs, cache, schema)
+        .then(res => { console.log(res); return Promise.all(res); })
+        .then( (res) => { console.log('res :', res); this.setState({ data: res })})
+  }
+
   renderDataComponent() {
     const {
       detailPanelRow,
@@ -271,11 +287,12 @@ class DataView extends React.Component {
       optionsMenuAnchor,
       selectedRecords,
       search,
+      data,
       allProps,
     } = this.state;
-    const selectedInfo = [];
+    const selectedRIDs = [];
     selectedRecords.forEach((obj) => {
-      selectedInfo.push(obj['@rid']);
+      selectedRIDs.push(obj['@rid']);
     });
 
     const { bufferSize, history } = this.props;
@@ -297,8 +314,11 @@ class DataView extends React.Component {
         />
       );
     }
-
-    return (
+    if (!data) {
+      this.fetchAndSetInitialData(selectedRIDs, cache, schema);
+      return null;
+    } else {
+      return (
       <GraphComponent
         cache={cache}
         handleDetailDrawerOpen={this.handleToggleDetailPanel}
@@ -308,8 +328,8 @@ class DataView extends React.Component {
           console.log('handleNewColumns');
         }}
         detail={detailPanelRow}
-        displayed={selectedInfo}
-        data={selectedRecords}
+        displayed={selectedRIDs}
+        data={data}
         search={search}
         edgeTypes={edges}
         schema={schema}
@@ -318,7 +338,10 @@ class DataView extends React.Component {
         onRecordClicked={this.handleToggleDetailPanel}
       />
     );
+    }
+
   }
+
 
   /**
    * Draws the chips above the table which show the user the current filters

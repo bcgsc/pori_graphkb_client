@@ -48,14 +48,12 @@ class DataTable extends React.Component {
       activeGroups: new Set(),
       pingedIndices: new Set(),
     };
-    // console.log('[ DataTable ] constructor initiated...')
   }
 
   componentDidUpdate(prevProps) {
     const { search } = this.props;
 
     if (this.gridApi && search !== prevProps.search) {
-      // console.log('[ DataTable ] componentDidUpdate... initializeGrid')
       this.initializeGrid();
     }
   }
@@ -74,14 +72,12 @@ class DataTable extends React.Component {
     sortModel,
   }) {
     const { search, cache } = this.props;
-    // console.log('[DataTable] calling getRows...')
+
     const result = await cache.getRows({
       startRow, endRow, search, sortModel,
     });
-    console.log('[getTableData] result : ', result);
     this.setState({ pingedIndices: new Set() });
-    const resultArr = [result, cache.rowCount(search)];
-    return resultArr;
+    return [result, cache.rowCount(search)];
   }
 
   initializeGrid() {

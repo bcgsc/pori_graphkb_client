@@ -87,6 +87,7 @@ class GraphNodeDisplay extends PureComponent {
       filter,
       schema,
     } = this.props;
+
     if (!node) return null;
     let label;
     if (labelKey === 'preview') {

@@ -15,6 +15,7 @@ import { boundMethod } from 'autobind-decorator';
 
 import kbSchema from '@bcgsc/knowledgebase-schema';
 
+
 import DataTable from './components/DataTable';
 import GraphComponent from './components/GraphComponent';
 import DetailDrawer from './components/DetailDrawer';
@@ -22,6 +23,7 @@ import { KBContext } from '../../components/KBContext';
 import RecordFormDialog from '../../components/RecordFormDialog';
 import api from '../../services/api';
 import { cleanLinkedRecords } from '../../components/util';
+
 import './index.scss';
 
 /**
@@ -74,11 +76,9 @@ class DataView extends React.Component {
       onLoadCallback: this.handleLoadingChange,
       onErrorCallback: this.handleError,
     });
-
     const filters = await this.parseFilters(cache);
     this.setState({ cache, filters });
   }
-
 
   componentWillUnmount() {
     const { cache } = this.state;
@@ -185,6 +185,7 @@ class DataView extends React.Component {
     history.push({
       pathname: '/data/table',
       search: history.location.search,
+      hash: '',
     });
   }
 
@@ -193,7 +194,6 @@ class DataView extends React.Component {
     const { cache, data } = this.state;
     const record = await cache.getRecord(node);
     const newData = [...data, record];
-
     this.setState({ data: newData });
   }
 
@@ -263,10 +263,6 @@ class DataView extends React.Component {
       search,
       data,
     } = this.state;
-    const selectedRIDs = [];
-    selectedRecords.forEach((obj) => {
-      selectedRIDs.push(obj['@rid']);
-    });
 
     const { bufferSize, history } = this.props;
     const { schema } = this.context;
@@ -287,6 +283,12 @@ class DataView extends React.Component {
         />
       );
     }
+
+    const selectedRIDs = [];
+    selectedRecords.forEach((obj) => {
+      selectedRIDs.push(obj['@rid']);
+    });
+
     if (!data) {
       this.fetchAndSetInitialData(selectedRIDs, cache, schema);
       return null;
@@ -353,7 +355,6 @@ class DataView extends React.Component {
   }
 
   render() {
-    // options are commented out because they are added in renderDataComponent method
     const {
       cache,
       statusMessage,

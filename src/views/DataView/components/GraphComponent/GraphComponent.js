@@ -135,7 +135,6 @@ class GraphComponent extends Component {
   async componentDidMount() {
     const {
       displayed,
-      // allProps,
       edgeTypes,
       localStorageKey,
       handleError,
@@ -144,16 +143,15 @@ class GraphComponent extends Component {
       graphOptions,
       initState,
     } = this.state;
-
     let { data } = this.props;
     let { expandable } = this.state;
     const allProps = this.getUniqueDataProps();
     this.propsMap = new PropsMap();
 
-
     if (data.length) {
       data = this.formatData(data);
     } else {
+      // TODO update this to generate seed graph data without record selection
       const err = {
         name: 'No Seed Data',
         message: 'Please select a record from the data table for graph visualization',
@@ -187,6 +185,7 @@ class GraphComponent extends Component {
        */
       if ((displayed && displayed.length !== 0) || (!initState && !storedData)) {
         let { nodes, links, graphObjects } = this.state;
+
         /* Case 1, iterate through specified rids. */
         validDisplayed.forEach((key, i) => {
           ({
@@ -267,6 +266,7 @@ class GraphComponent extends Component {
           },
         });
       }
+
       if (storedOptions) {
         this.setState({
           graphOptions: storedOptions,
@@ -301,8 +301,8 @@ class GraphComponent extends Component {
       nodes,
       links,
     } = this.state;
-    // remove all event listeners
     const { localStorageKey } = this.props;
+    // remove all event listeners
     if (svg) {
       svg.call(d3Zoom.zoom()
         .on('zoom', null))
@@ -331,7 +331,7 @@ class GraphComponent extends Component {
   }
 
 
-  // TODO update this to dynamically generate startRow and endRow
+  // TODO will be used to generate seed graph data without record selection
   async getSelectedRecordData(displayed) {
     const { cache } = this.props;
     let { search } = this.props;
@@ -339,7 +339,7 @@ class GraphComponent extends Component {
     rid = rid.replace(/['"]+/g, '');
     rid = rid.replace(/[#]/g, '');
 
-    search = `${search  }&neighbors=2` + `&@rid=${rid}`;
+    search = `${search}&neighbors=2` + `&@rid=${rid}`;
     const response = await cache.getRows({
       startRow: 0,
       endRow: 50,
@@ -478,6 +478,7 @@ class GraphComponent extends Component {
           );
         }))
       .on('dblclick.zoom', null);
+
     this.setState({ simulation, svg });
   }
 
@@ -486,7 +487,6 @@ class GraphComponent extends Component {
    * @param {GraphNode} node - d3 simulation node whose neighbors were requestsed.
    */
 
-  // TODO check that this gets called with new data containing structure
   @boundMethod
   loadNeighbors(node) {
     const { expandExclusions } = this.state;
@@ -545,7 +545,6 @@ class GraphComponent extends Component {
    * expansion dialog panel.
    * @param {GraphNode} node - d3 simulation node to be expanded.
    */
-
   @boundMethod
   handleExpandRequest(node) {
     const {
@@ -737,7 +736,6 @@ class GraphComponent extends Component {
     handleDetailDrawerClose();
   }
 
-
   /**
    * Updates color scheme for the graph, for nodes or links.
    */
@@ -764,14 +762,11 @@ class GraphComponent extends Component {
         }
       });
       const props = this.propsMap[`${type}Props`];
-
       const tooManyUniques = (Object.keys(colors).length > PALLETE_SIZE
         && Object.keys(props).length !== 1);
-
       const noUniques = props[key]
         && (props[key].length === 0
           || (props[key].length === 1 && props[key].includes('null')));
-
       const notDefined = key && !props[key];
 
       if (tooManyUniques || noUniques || notDefined) {
@@ -817,20 +812,10 @@ class GraphComponent extends Component {
     // Prematurely loads neighbor data.
     await handleClick(node);
 
-    // await this.updateGraphData(node.data);
-
     // Update contents of detail drawer if open.
     handleDetailDrawerOpen(node);
     // Sets clicked object as actions node.
     this.setState({ actionsNode: node, actionsNodeIsEdge: false });
-  }
-
-  async updateGraphData(node) {
-    const { data } = this.state;
-    const { cache } = this.props;
-    const record = await cache.getRecord(node);
-    const newdata = [...data, record];
-    this.setState({ data: newdata });
   }
 
   /**
@@ -1035,7 +1020,6 @@ class GraphComponent extends Component {
     this.setState({ expandExclusions: newExpandExclusions });
   }
 
-
   /**
    * Expands all links of specified class on the expand node.
    * @param {string} cls - KB edge class name to be expanded.
@@ -1166,6 +1150,7 @@ class GraphComponent extends Component {
         schema={schema}
       />
     ));
+
     return (
       <div className="graph-wrapper">
         <GraphExpansionDialog

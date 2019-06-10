@@ -309,16 +309,14 @@ class DataView extends React.Component {
         handleDetailDrawerOpen={this.handleToggleDetailPanel}
         handleDetailDrawerClose={this.handleToggleDetailPanel}
         handleTableRedirect={this.handleTableRedirect}
-        handleNewColumns={() => { }}
         detail={detailPanelRow}
         displayed={selectedRIDs}
         data={data}
-        search={search}
         handleError={this.handleError}
         edgeTypes={edges}
         schema={schema}
         handleRefresh={this.handleRefresh}
-        localStoragekey="%40class=Statement&neighbors=3&limit=1000&skip=1000"
+        localStoragekey={history.search}
         handleClick={this.handleExpandNode}
         onRecordClicked={this.handleToggleDetailPanel}
       />

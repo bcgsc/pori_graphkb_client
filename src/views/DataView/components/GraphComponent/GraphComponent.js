@@ -62,7 +62,6 @@ const HEAVILY_CONNECTED = 10;
  * @property {function} props.handleDetailDrawerOpen - Method to handle opening of detail drawer.
  * @property {function} props.handleDetailDrawerClose - Method to handle closing of detail drawer.
  * @property {function} props.handleTableRedirect - Method to handle a redirect to the table view.
- * @property {function} props.handleNewColumns - Updates valid properties in parent state.
  * @property {Object} props.detail - record ID of node currently selected for detail viewing.
  * @property {Object} props.data - Parent state data.
  * in the initial query.
@@ -81,9 +80,6 @@ class GraphComponent extends Component {
     handleDetailDrawerOpen: PropTypes.func.isRequired,
     handleDetailDrawerClose: PropTypes.func.isRequired,
     handleTableRedirect: PropTypes.func.isRequired,
-    handleNewColumns: PropTypes.func.isRequired,
-    search: PropTypes.string,
-    cache: PropTypes.object,
     detail: PropTypes.object,
     data: PropTypes.array.isRequired,
     edgeTypes: PropTypes.arrayOf(PropTypes.string),
@@ -96,8 +92,6 @@ class GraphComponent extends Component {
 
   static defaultProps = {
     handleClick: null,
-    search: '',
-    cache: null,
     detail: null,
     edgeTypes: [],
     displayed: [],
@@ -125,6 +119,7 @@ class GraphComponent extends Component {
       expansionDialogOpen: false,
       expandNode: null,
       expandExclusions: [],
+      allProps: [],
     };
 
     this.propsMap = new PropsMap();
@@ -154,7 +149,6 @@ class GraphComponent extends Component {
     if (data.length) {
       data = this.formatData(data);
     } else {
-      // TODO update this to generate seed graph data without record selection
       const err = {
         name: 'No Seed Data',
         message: 'Please select a record from the data table for graph visualization',
@@ -170,6 +164,7 @@ class GraphComponent extends Component {
 
     this.setState({
       expandedEdgeTypes,
+      allProps,
     }, () => {
       this.handleResize();
       window.addEventListener('resize', this.handleResize);
@@ -208,7 +203,6 @@ class GraphComponent extends Component {
             },
           ));
         });
-        // TODO: replace with datacache Module
         util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
       } else if (initState) {
         const {
@@ -313,7 +307,6 @@ class GraphComponent extends Component {
     }
     simulation.on('tick', null);
     window.removeEventListener('resize', this.handleResize);
-    // TODO: replace localStorage with datacache module
     util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
   }
 
@@ -331,27 +324,6 @@ class GraphComponent extends Component {
     }
     uniqueProps = ['@rid', '@class', 'name'];
     return uniqueProps;
-  }
-
-
-  // TODO will be used to generate seed graph data without record selection
-  async getSelectedRecordData(displayed) {
-    const { cache } = this.props;
-    let { search } = this.props;
-    let rid = displayed[0];
-    rid = rid.replace(/['"]+/g, '');
-    rid = rid.replace(/[#]/g, '');
-
-    search = `${search}&neighbors=2&@rid=${rid}`;
-    const response = await cache.getRows({
-      startRow: 0,
-      endRow: 50,
-      search,
-      sortModel: [],
-    });
-    let recordData = {};
-    recordData = this.formatData(response);
-    return recordData;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -529,7 +501,6 @@ class GraphComponent extends Component {
     if (!schema.getEdges(data[node.getId()]).some(edge => !links.find(l => l.getId() === edge['@rid']))) {
       delete expandable[node.getId()];
     }
-    // replace localStorage with datacache module
     util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
     this.setState({
       expandable,
@@ -579,6 +550,14 @@ class GraphComponent extends Component {
     simulation.on('tick', null);
   }
 
+  updateColumnProps(node) {
+    let { allProps } = this.state;
+    const nodeProps = Object.keys(node);
+    nodeProps.forEach((prop) => { allProps.push(prop); });
+    allProps = [...new Set(allProps)];
+    this.setState({ allProps });
+  }
+
   /**
    * Processes node data and updates state with new nodes and links. Also
    * updates expandable flags.
@@ -591,24 +570,23 @@ class GraphComponent extends Component {
    */
   processData(node, position, depth, prevstate, exclusions = []) {
     const { expandedEdgeTypes } = this.state;
+    const { allProps } = this.state;
     let {
       nodes,
       links,
       graphObjects,
       expandable,
     } = prevstate;
-    const { handleNewColumns } = this.props;
     let { data } = this.props;
     data = this.formatData(data);
+
 
     if (data[node['@rid'] || data[node.getId()]]) {
       node = data[node['@rid'] || data[node.getId()]]; // eslint-disable-line no-param-reassign
     } else {
       // Node properties haven't been processed.
-      handleNewColumns(node);
+      this.updateColumnProps(node);
     }
-
-    const allProps = this.getUniqueDataProps();
 
     if (!graphObjects[node['@rid']]) {
       nodes.push(new GraphNode(node, position.x, position.y));
@@ -929,9 +907,10 @@ class GraphComponent extends Component {
       links,
       expandedEdgeTypes,
       expandable,
+      allProps,
     } = this.state;
     const { localStorageKey } = this.props;
-    const allProps = this.getUniqueDataProps();
+
 
     const { handleDetailDrawerClose } = this.props;
     if (nodes.length === 1) return;
@@ -970,7 +949,6 @@ class GraphComponent extends Component {
     }, () => {
       this.updateColors();
       handleDetailDrawerClose();
-      // TODO: replace localStorage with datacache module
       util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
     });
   }

@@ -231,22 +231,6 @@ class DataView extends React.Component {
     }
   }
 
-  getUniqueDataProps() {
-    let uniqueProps = [];
-    const { data } = this.state;
-    if (data) {
-      const totalProps = [];
-      data.forEach((obj) => {
-        const keyArr = Object.keys(obj);
-        totalProps.push(...keyArr);
-      });
-      uniqueProps = [...new Set(totalProps)];
-      return uniqueProps;
-    }
-    uniqueProps = ['@rid', '@class', 'name'];
-    return uniqueProps;
-  }
-
   async fetchInitialData(arr, cache, schema) {
     const result = [];
     arr.forEach((record) => {
@@ -261,9 +245,13 @@ class DataView extends React.Component {
   }
 
   fetchAndSetInitialData(selectedRIDs, cache, schema) {
-    this.fetchInitialData(selectedRIDs, cache, schema)
-      .then((res) => { console.log(res); return Promise.all(res); })
-      .then((res) => { console.log(res); this.setState({ data: res }); });
+    try {
+      this.fetchInitialData(selectedRIDs, cache, schema)
+        .then((res) => { return Promise.all(res); })
+        .then((res) => { this.setState({ data: res }); });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   renderDataComponent() {
@@ -303,7 +291,6 @@ class DataView extends React.Component {
       this.fetchAndSetInitialData(selectedRIDs, cache, schema);
       return null;
     }
-    const uniqueProps = this.getUniqueDataProps();
 
     return (
       <GraphComponent
@@ -318,10 +305,10 @@ class DataView extends React.Component {
         displayed={selectedRIDs}
         data={data}
         search={search}
+        handleError={this.handleError}
         edgeTypes={edges}
         schema={schema}
         localStoragekey="%40class=Statement&neighbors=3&limit=1000&skip=1000"
-        allProps={uniqueProps}
         handleClick={this.handleExpandNode}
         onRecordClicked={this.handleToggleDetailPanel}
       />

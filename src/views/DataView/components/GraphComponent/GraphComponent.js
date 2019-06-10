@@ -85,12 +85,11 @@ class GraphComponent extends Component {
     cache: PropTypes.object,
     detail: PropTypes.object,
     data: PropTypes.array.isRequired,
-    allProps: PropTypes.arrayOf(PropTypes.string),
     edgeTypes: PropTypes.arrayOf(PropTypes.string),
     displayed: PropTypes.arrayOf(PropTypes.string),
     localStorageKey: PropTypes.string,
     schema: PropTypes.object.isRequired,
-    // snackbar: PropTypes.object.isRequired,
+    handleError: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -98,7 +97,6 @@ class GraphComponent extends Component {
     search: '',
     cache: null,
     detail: null,
-    allProps: [],
     edgeTypes: [],
     displayed: [],
     localStorageKey: '',
@@ -137,9 +135,10 @@ class GraphComponent extends Component {
   async componentDidMount() {
     const {
       displayed,
-      allProps,
+      // allProps,
       edgeTypes,
       localStorageKey,
+      handleError,
     } = this.props;
     const {
       graphOptions,
@@ -148,23 +147,18 @@ class GraphComponent extends Component {
 
     let { data } = this.props;
     let { expandable } = this.state;
+    const allProps = this.getUniqueDataProps();
     this.propsMap = new PropsMap();
-    console.log('data before update: ', data)
+
 
     if (data.length) {
-      console.log('formatting data...')
       data = this.formatData(data);
     } else {
-      try {
-        console.log('getting data...')
-        data = [];
-        const record = await this.getSelectedRecordData(displayed);
-        data.push(record);
-        console.log('data: ', data)
-        this.setState({ data });
-      } catch (err) {
-        console.log('data fetch error: ', err);
-      }
+      const err = {
+        name: 'No Seed Data',
+        message: 'Please select a record from the data table for graph visualization',
+      };
+      handleError(err);
     }
 
     const expandedEdgeTypes = util.expandEdges(edgeTypes);
@@ -309,13 +303,31 @@ class GraphComponent extends Component {
     } = this.state;
     // remove all event listeners
     const { localStorageKey } = this.props;
-    svg.call(d3Zoom.zoom()
-      .on('zoom', null))
-      .on('dblclick.zoom', null);
+    if (svg) {
+      svg.call(d3Zoom.zoom()
+        .on('zoom', null))
+        .on('dblclick.zoom', null);
+    }
     simulation.on('tick', null);
     window.removeEventListener('resize', this.handleResize);
     // TODO: replace localStorage with datacache module
     util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
+  }
+
+  getUniqueDataProps() {
+    let uniqueProps = [];
+    const { data } = this.props;
+    if (data) {
+      const totalProps = [];
+      data.forEach((obj) => {
+        const keyArr = Object.keys(obj);
+        totalProps.push(...keyArr);
+      });
+      uniqueProps = [...new Set(totalProps)];
+      return uniqueProps;
+    }
+    uniqueProps = ['@rid', '@class', 'name'];
+    return uniqueProps;
   }
 
 
@@ -339,12 +351,11 @@ class GraphComponent extends Component {
     return recordData;
   }
 
-  @boundMethod
   formatData(data) {
     const newData = {};
     data.forEach((obj) => {
       newData[obj['@rid']] = obj;
-    });;
+    });
     return newData;
   }
 
@@ -597,7 +608,8 @@ class GraphComponent extends Component {
       // Node properties haven't been processed.
       handleNewColumns(node);
     }
-    const { allProps } = this.props;
+
+    const allProps = this.getUniqueDataProps();
 
     if (!graphObjects[node['@rid']]) {
       nodes.push(new GraphNode(node, position.x, position.y));
@@ -931,7 +943,8 @@ class GraphComponent extends Component {
       expandedEdgeTypes,
       expandable,
     } = this.state;
-    const { localStorageKey, allProps } = this.props;
+    const { localStorageKey } = this.props;
+    const allProps = this.getUniqueDataProps();
 
     const { handleDetailDrawerClose } = this.props;
     if (nodes.length === 1) return;
@@ -1022,9 +1035,6 @@ class GraphComponent extends Component {
     this.setState({ expandExclusions: newExpandExclusions });
   }
 
-  componentWillUpdate() {
-    return false;
-  }
 
   /**
    * Expands all links of specified class on the expand node.

@@ -149,6 +149,7 @@ class GraphComponent extends Component {
     const allProps = this.getUniqueDataProps();
     this.propsMap = new PropsMap();
 
+
     if (data.length) {
       data = this.formatData(data);
     } else {

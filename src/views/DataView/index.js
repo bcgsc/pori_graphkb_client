@@ -203,6 +203,7 @@ class DataView extends React.Component {
     history.push('/error', { error: { name: err.name, message: err.message } });
   }
 
+
   /**
    * If there are any linked records, fetch them now and attach them in place of their reference ID
    */
@@ -231,6 +232,7 @@ class DataView extends React.Component {
     }
   }
 
+
   async fetchInitialData(arr, cache, schema) {
     const result = [];
     arr.forEach((record) => {
@@ -238,19 +240,20 @@ class DataView extends React.Component {
         const response = cache.recordApiCall({ record, schema }).request();
         result.push(response);
       } catch (err) {
-        console.log(err);
+        this.handleError(err);
       }
     });
     return result;
   }
 
+
   fetchAndSetInitialData(selectedRIDs, cache, schema) {
     try {
       this.fetchInitialData(selectedRIDs, cache, schema)
-        .then((res) => { return Promise.all(res); })
+        .then(res => Promise.all(res))
         .then((res) => { this.setState({ data: res }); });
     } catch (err) {
-      console.log(err);
+      this.handleError(err);
     }
   }
 
@@ -258,6 +261,7 @@ class DataView extends React.Component {
   handleRefresh() {
     this.setState({ data: null });
   }
+
 
   renderDataComponent() {
     const {
@@ -305,9 +309,7 @@ class DataView extends React.Component {
         handleDetailDrawerOpen={this.handleToggleDetailPanel}
         handleDetailDrawerClose={this.handleToggleDetailPanel}
         handleTableRedirect={this.handleTableRedirect}
-        handleNewColumns={() => {
-          console.log('handleNewColumns');
-        }}
+        handleNewColumns={() => { }}
         detail={detailPanelRow}
         displayed={selectedRIDs}
         data={data}

@@ -342,7 +342,7 @@ class GraphComponent extends Component {
     rid = rid.replace(/['"]+/g, '');
     rid = rid.replace(/[#]/g, '');
 
-    search = `${search}&neighbors=2` + `&@rid=${rid}`;
+    search = `${search}&neighbors=2&@rid=${rid}`;
     const response = await cache.getRows({
       startRow: 0,
       endRow: 50,

@@ -91,6 +91,7 @@ class GraphComponent extends Component {
     localStorageKey: PropTypes.string,
     schema: PropTypes.object.isRequired,
     handleError: PropTypes.func.isRequired,
+    handleRefresh: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -725,7 +726,8 @@ class GraphComponent extends Component {
    */
   @boundMethod
   refresh() {
-    const { handleDetailDrawerClose } = this.props;
+    const { handleDetailDrawerClose, handleRefresh } = this.props;
+    handleRefresh();
     this.setState({
       nodes: [],
       links: [],

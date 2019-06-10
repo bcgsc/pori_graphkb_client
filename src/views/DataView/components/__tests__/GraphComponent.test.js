@@ -106,6 +106,7 @@ describe('<GraphComponent />', () => {
         handleDetailDrawerClose={() => { }}
         handleTableRedirect={() => { }}
         handleNewColumns={() => { }}
+        handleRefresh={() => { }}
         displayed={['#1', '#2', '#3', '#4']}
         edgeTypes={['AliasOf']}
       />,

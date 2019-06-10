@@ -14,6 +14,7 @@ import {
 import ViewListIcon from '@material-ui/icons/ViewList';
 import SettingsIcon from '@material-ui/icons/Settings';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 
 import './GraphComponent.scss';
 import GraphActionsNode from './GraphActionsNode';
@@ -64,7 +65,6 @@ const HEAVILY_CONNECTED = 10;
  * @property {function} props.handleNewColumns - Updates valid properties in parent state.
  * @property {Object} props.detail - record ID of node currently selected for detail viewing.
  * @property {Object} props.data - Parent state data.
- * @property {Array.<string>} props.allProps - list of all unique properties on all nodes returned
  * in the initial query.
  * @property {Array.<string>} props.edgeTypes - list of valid edge classes.
  * @property {Array.<string>} props.displayed - list of initial record ID's to be displayed in
@@ -72,9 +72,10 @@ const HEAVILY_CONNECTED = 10;
  * @property {string} props.localStorageKey - key to identify graph session data with in
  * localStorage.
  * @property {Object} props.schema - KnowledgeBase Schema.
- * @property {Object} props.snackbar - App snackbar context value.
  */
 class GraphComponent extends Component {
+  static contextType = SnackbarContext;
+
   static propTypes = {
     handleClick: PropTypes.func,
     handleDetailDrawerOpen: PropTypes.func.isRequired,
@@ -493,11 +494,10 @@ class GraphComponent extends Component {
     let {
       nodes,
       links,
-      localStorageKey,
       graphObjects,
       expandable,
     } = this.state;
-    const { schema } = this.props;
+    const { schema, localStorageKey } = this.props;
     let { data } = this.props;
 
     data = this.formatData(data);
@@ -741,6 +741,7 @@ class GraphComponent extends Component {
    */
   @boundMethod
   updateColors() {
+    const snackbar = this.context;
     ['node', 'link'].forEach((type) => {
       const { [`${type}s`]: objs, graphOptions } = this.state;
       const key = graphOptions[`${type}sColor`];
@@ -771,7 +772,7 @@ class GraphComponent extends Component {
 
       if (tooManyUniques || noUniques || notDefined) {
         if (tooManyUniques) {
-          // snackbar.add(`${GRAPH_UNIQUE_LIMIT} (${graphOptions[`${type}sColor`]})`);
+          snackbar.add(`${GRAPH_UNIQUE_LIMIT} (${graphOptions[`${type}sColor`]})`);
         }
 
         graphOptions[`${type}sColor`] = '';

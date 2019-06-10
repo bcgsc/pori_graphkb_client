@@ -352,6 +352,7 @@ class GraphComponent extends Component {
     return recordData;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   formatData(data) {
     const newData = {};
     data.forEach((obj) => {
@@ -487,7 +488,6 @@ class GraphComponent extends Component {
    * Calls the api and renders neighbor nodes of the input node onto the graph.
    * @param {GraphNode} node - d3 simulation node whose neighbors were requestsed.
    */
-
   @boundMethod
   loadNeighbors(node) {
     const { expandExclusions } = this.state;
@@ -564,8 +564,6 @@ class GraphComponent extends Component {
       } else {
         this.loadNeighbors(node);
       }
-    } else {
-      console.log('node is not expandable');
     }
   }
 

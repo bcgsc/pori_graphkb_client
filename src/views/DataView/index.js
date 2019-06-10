@@ -254,6 +254,11 @@ class DataView extends React.Component {
     }
   }
 
+  @boundMethod
+  handleRefresh() {
+    this.setState({ data: null });
+  }
+
   renderDataComponent() {
     const {
       detailPanelRow,
@@ -310,13 +315,13 @@ class DataView extends React.Component {
         handleError={this.handleError}
         edgeTypes={edges}
         schema={schema}
+        handleRefresh={this.handleRefresh}
         localStoragekey="%40class=Statement&neighbors=3&limit=1000&skip=1000"
         handleClick={this.handleExpandNode}
         onRecordClicked={this.handleToggleDetailPanel}
       />
     );
   }
-
 
   /**
    * Draws the chips above the table which show the user the current filters

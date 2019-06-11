@@ -73,6 +73,7 @@ const HEAVILY_CONNECTED = 10;
  * @property {Object} props.schema - KnowledgeBase Schema.
  */
 class GraphComponent extends Component {
+  // App snackbar context value.
   static contextType = SnackbarContext;
 
   static propTypes = {
@@ -81,7 +82,7 @@ class GraphComponent extends Component {
     handleDetailDrawerClose: PropTypes.func.isRequired,
     handleTableRedirect: PropTypes.func.isRequired,
     detail: PropTypes.object,
-    data: PropTypes.array.isRequired,
+    data: PropTypes.object.isRequired,
     edgeTypes: PropTypes.arrayOf(PropTypes.string),
     displayed: PropTypes.arrayOf(PropTypes.string),
     localStorageKey: PropTypes.string,
@@ -119,7 +120,7 @@ class GraphComponent extends Component {
       expansionDialogOpen: false,
       expandNode: null,
       expandExclusions: [],
-      allProps: [],
+      allProps: [], // list of all unique properties on all nodes returned
     };
 
     this.propsMap = new PropsMap();
@@ -135,20 +136,17 @@ class GraphComponent extends Component {
       edgeTypes,
       localStorageKey,
       handleError,
+      data,
     } = this.props;
     const {
       graphOptions,
       initState,
     } = this.state;
-    let { data } = this.props;
     let { expandable } = this.state;
     const allProps = this.getUniqueDataProps();
     this.propsMap = new PropsMap();
 
-
-    if (data.length) {
-      data = this.formatData(data);
-    } else {
+    if (!data) {
       const err = {
         name: 'No Seed Data',
         message: 'Please select a record from the data table for graph visualization',
@@ -310,11 +308,12 @@ class GraphComponent extends Component {
     util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
   }
 
-  getUniqueDataProps() {
+  getUniqueDataProps = () => {
     let uniqueProps = [];
-    const { data } = this.props;
+    let { data } = this.props;
     if (data) {
       const totalProps = [];
+      data = Object.values(data);
       data.forEach((obj) => {
         const keyArr = Object.keys(obj);
         totalProps.push(...keyArr);
@@ -324,15 +323,6 @@ class GraphComponent extends Component {
     }
     uniqueProps = ['@rid', '@class', 'name'];
     return uniqueProps;
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  formatData(data) {
-    const newData = {};
-    data.forEach((obj) => {
-      newData[obj['@rid']] = obj;
-    });
-    return newData;
   }
 
   /**
@@ -471,11 +461,7 @@ class GraphComponent extends Component {
       graphObjects,
       expandable,
     } = this.state;
-    const { schema, localStorageKey } = this.props;
-    let { data } = this.props;
-
-    data = this.formatData(data);
-
+    const { schema, localStorageKey, data } = this.props;
 
     if (expandable[node.getId()] && data[node.getId()]) {
       ({
@@ -524,10 +510,7 @@ class GraphComponent extends Component {
       expandable,
       links,
     } = this.state;
-    const { schema } = this.props;
-    let { data } = this.props;
-    data = this.formatData(data);
-
+    const { schema, data } = this.props;
     if (expandable[node.getId()] && data[node.getId()]) {
       if (schema.getEdges(data[node.getId()])
         .filter(edge => !(links.find(l => l.getId() === edge['@rid']))).length > HEAVILY_CONNECTED
@@ -569,20 +552,17 @@ class GraphComponent extends Component {
    * @param {Array.<string>} [exclusions=[]] - List of edge ID's to be ignored on expansion.
    */
   processData(node, position, depth, prevstate, exclusions = []) {
-    const { expandedEdgeTypes } = this.state;
-    const { allProps } = this.state;
+    const { expandedEdgeTypes, allProps } = this.state;
     let {
       nodes,
       links,
       graphObjects,
       expandable,
     } = prevstate;
-    let { data } = this.props;
-    data = this.formatData(data);
+    const { data } = this.props;
 
-
-    if (data[node['@rid'] || data[node.getId()]]) {
-      node = data[node['@rid'] || data[node.getId()]]; // eslint-disable-line no-param-reassign
+    if (data[node['@rid']]) {
+      node = data[node['@rid']]; // eslint-disable-line no-param-reassign
     } else {
       // Node properties haven't been processed.
       this.updateColumnProps(node);

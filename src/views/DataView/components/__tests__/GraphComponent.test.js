@@ -3,8 +3,8 @@ import { mount } from 'enzyme';
 import GraphComponent from '../GraphComponent/GraphComponent';
 import { GraphNode, GraphLink } from '../GraphComponent/kbgraph';
 
-const mockData = [
-  {
+const mockData = {
+  '#1': {
     '@rid': '#1',
     name: 'test one',
     sourceId: 'test-1',
@@ -18,7 +18,7 @@ const mockData = [
       },
     }],
   },
-  {
+  '#2': {
     '@rid': '#2',
     name: 'test two',
     sourceId: 'test-2',
@@ -26,12 +26,12 @@ const mockData = [
       name: 'test source',
     },
   },
-  {
+  '#3': {
     '@rid': '#3',
     name: 'test three',
     sourceId: 'test-3',
   },
-  {
+  '#4': {
     '@rid': '#4',
     name: 'linked',
     sourceId: 'test-4',
@@ -45,7 +45,7 @@ const mockData = [
       },
     }],
   },
-];
+};
 
 describe('<GraphComponent />', () => {
   let wrapper;

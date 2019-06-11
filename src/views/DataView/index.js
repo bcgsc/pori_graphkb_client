@@ -87,51 +87,66 @@ class DataView extends React.Component {
     }
   }
 
-  /**
-   * Changes the current filters set and updates the URL to match
-   */
-  @boundMethod
-  handleEditFilters(filters) {
-    const { schema } = this.context;
-    const { history, location: { pathname } } = this.props;
-    // drop all undefined values
-    const { routeName } = schema.get(filters);
+  hashRecordsByRID = (data) => {
+    const newData = {};
+    data.forEach((obj) => {
+      newData[obj['@rid']] = obj;
+    });
+    return newData;
+  }
+
+  async fetchInitialData(arr, cache, schema) {
+    const result = [];
+    arr.forEach((record) => {
+      try {
+        const response = cache.recordApiCall({ record, schema }).request();
+        result.push(response);
+      } catch (err) {
+        this.handleError(err);
+      }
+    });
+    return result;
+  }
+
+  fetchAndSetInitialData(selectedRIDs, cache, schema) {
     try {
-      const search = api.getSearchFromQuery({
-        schema,
-        queryParams: cleanLinkedRecords(filters),
-        routeName,
-      });
-      history.replace(`${pathname}?${search}`);
-      this.setState({ filtersEditOpen: false, filters, search: `?${search}` });
+      this.fetchInitialData(selectedRIDs, cache, schema)
+        .then(res => Promise.all(res))
+        .then((res) => {
+          const hashedRecords = this.hashRecordsByRID(res);
+          this.setState({ data: hashedRecords });
+        });
     } catch (err) {
       this.handleError(err);
     }
   }
 
   /**
-   * Called in response to records being requested or loaded
-   * Responsible for giving the user information while waiting for things to load
+   * If there are any linked records, fetch them now and attach them in place of their reference ID
    */
-  @boundMethod
-  handleLoadingChange() {
-    const { cache, search } = this.state;
-    if (!cache) {
-      return;
-    }
-    const rowCount = cache.rowCount(search);
-    const [start, end] = cache.pendingRows(search);
+  async parseFilters(cache) {
+    const { search } = this.state;
+    const { schema } = this.context;
 
-    let statusMessage;
-    if (start !== null) {
-      statusMessage = `requesting ${start} - ${end}`;
-      if (rowCount !== undefined) {
-        statusMessage = `${statusMessage} of ${rowCount} rows`;
-      } else {
-        statusMessage = `${statusMessage} rows ....`;
-      }
+    try {
+      const { queryParams, modelName } = api.getQueryFromSearch({ search, schema });
+      const links = [];
+      Object.entries(queryParams).forEach(([key, value]) => {
+        if (typeof value === 'string' && kbSchema.util.looksLikeRID(value)) {
+          links.push({ key, value });
+        }
+      });
+
+      const records = await cache.getRecords(links.map(l => ({ '@rid': l.value })));
+      records.forEach((rec, index) => {
+        const { key } = links[index];
+        queryParams[key] = rec;
+      });
+
+      return { ...queryParams, '@class': modelName };
+    } catch (err) {
+      return this.handleError(err);
     }
-    this.setState({ statusMessage, totalRows: rowCount });
   }
 
   /**
@@ -193,8 +208,11 @@ class DataView extends React.Component {
   async handleExpandNode({ data: node }) {
     const { cache, data } = this.state;
     const record = await cache.getRecord(node);
-    const newData = [...data, record];
-    this.setState({ data: newData });
+
+    if (data[record['@rid']] === undefined) {
+      data[record['@rid']] = record;
+      this.setState({ data });
+    }
   }
 
   @boundMethod
@@ -203,65 +221,57 @@ class DataView extends React.Component {
     history.push('/error', { error: { name: err.name, message: err.message } });
   }
 
-
-  /**
-   * If there are any linked records, fetch them now and attach them in place of their reference ID
-   */
-  async parseFilters(cache) {
-    const { search } = this.state;
-    const { schema } = this.context;
-
-    try {
-      const { queryParams, modelName } = api.getQueryFromSearch({ search, schema });
-      const links = [];
-      Object.entries(queryParams).forEach(([key, value]) => {
-        if (typeof value === 'string' && kbSchema.util.looksLikeRID(value)) {
-          links.push({ key, value });
-        }
-      });
-
-      const records = await cache.getRecords(links.map(l => ({ '@rid': l.value })));
-      records.forEach((rec, index) => {
-        const { key } = links[index];
-        queryParams[key] = rec;
-      });
-
-      return { ...queryParams, '@class': modelName };
-    } catch (err) {
-      return this.handleError(err);
-    }
-  }
-
-
-  async fetchInitialData(arr, cache, schema) {
-    const result = [];
-    arr.forEach((record) => {
-      try {
-        const response = cache.recordApiCall({ record, schema }).request();
-        result.push(response);
-      } catch (err) {
-        this.handleError(err);
-      }
-    });
-    return result;
-  }
-
-
-  fetchAndSetInitialData(selectedRIDs, cache, schema) {
-    try {
-      this.fetchInitialData(selectedRIDs, cache, schema)
-        .then(res => Promise.all(res))
-        .then((res) => { this.setState({ data: res }); });
-    } catch (err) {
-      this.handleError(err);
-    }
-  }
-
   @boundMethod
   handleRefresh() {
     this.setState({ data: null });
   }
 
+  /**
+   * Called in response to records being requested or loaded
+   * Responsible for giving the user information while waiting for things to load
+   */
+  @boundMethod
+  handleLoadingChange() {
+    const { cache, search } = this.state;
+    if (!cache) {
+      return;
+    }
+    const rowCount = cache.rowCount(search);
+    const [start, end] = cache.pendingRows(search);
+
+    let statusMessage;
+    if (start !== null) {
+      statusMessage = `requesting ${start} - ${end}`;
+      if (rowCount !== undefined) {
+        statusMessage = `${statusMessage} of ${rowCount} rows`;
+      } else {
+        statusMessage = `${statusMessage} rows ....`;
+      }
+    }
+    this.setState({ statusMessage, totalRows: rowCount });
+  }
+
+  /**
+   * Changes the current filters set and updates the URL to match
+   */
+  @boundMethod
+  handleEditFilters(filters) {
+    const { schema } = this.context;
+    const { history, location: { pathname } } = this.props;
+    // drop all undefined values
+    const { routeName } = schema.get(filters);
+    try {
+      const search = api.getSearchFromQuery({
+        schema,
+        queryParams: cleanLinkedRecords(filters),
+        routeName,
+      });
+      history.replace(`${pathname}?${search}`);
+      this.setState({ filtersEditOpen: false, filters, search: `?${search}` });
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
 
   renderDataComponent() {
     const {

@@ -237,7 +237,7 @@ class GraphOptions {
     this.nodesLegend = !!initial.nodesLegend;
     this.linksLegend = !!initial.linksLegend;
     this.chargeMax = initial.chargeMax || CHARGE_MAX;
-    this.nodePreview = initial.nodePreview || false;
+    this.nodePreview = initial.nodePreview || true;
   }
 
   /**

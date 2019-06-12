@@ -29,6 +29,10 @@
       overflow-x: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+
+      h2 {
+        overflow-y: hidden;
+      }
     }
 
     &::nth-child(2) {

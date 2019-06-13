@@ -323,7 +323,13 @@ class GraphComponent extends Component {
     }
     uniqueProps = ['@rid', '@class', 'name'];
     return uniqueProps;
-  }
+  };
+
+  isObject = (val) => {
+    if (val === null) { return false; }
+    return ((typeof val === 'function') || (typeof val === 'object'));
+  };
+
 
   /**
    * Applies drag behavior to node.
@@ -534,11 +540,11 @@ class GraphComponent extends Component {
   }
 
   updateColumnProps(node) {
-    let { allProps } = this.state;
+    const { allProps } = this.state;
     const nodeProps = Object.keys(node);
     nodeProps.forEach((prop) => { allProps.push(prop); });
-    allProps = [...new Set(allProps)];
-    this.setState({ allProps });
+    const updatedAllProps = [...new Set(allProps)];
+    this.setState({ allProps: updatedAllProps });
   }
 
   /**
@@ -717,10 +723,16 @@ class GraphComponent extends Component {
             colors[obj.data[prop][nestedProp]] = '';
           }
         }
-        if (obj.data[key] && !colors[obj.data[key]]) {
+        const valueIsObject = this.isObject(obj.data[key]);
+        if (valueIsObject) {
+          if (obj.data[key].name && !colors[obj.data[key].name]) {
+            colors[obj.data[key].name] = '';
+          }
+        } else if (obj.data[key] && !colors[obj.data[key]]) {
           colors[obj.data[key]] = '';
         }
       });
+
       const props = this.propsMap[`${type}Props`];
       const tooManyUniques = (Object.keys(colors).length > PALLETE_SIZE
         && Object.keys(props).length !== 1);

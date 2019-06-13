@@ -207,11 +207,15 @@ class DataView extends React.Component {
   @boundMethod
   async handleExpandNode({ data: node }) {
     const { cache, data } = this.state;
-    const record = await cache.getRecord(node);
-
-    if (data[record['@rid']] === undefined) {
-      data[record['@rid']] = record;
-      this.setState({ data });
+    try {
+      const record = await cache.getRecord(node);
+      if (data[record['@rid']] === undefined) {
+        data[record['@rid']] = record;
+        console.log("TCL: handleExpandNode -> data", data);
+        this.setState({ data });
+      }
+    } catch (err) {
+      this.handleError(err);
     }
   }
 
@@ -286,6 +290,7 @@ class DataView extends React.Component {
     const { bufferSize, history } = this.props;
     const { schema } = this.context;
     const edges = schema.getEdges();
+    console.log("TCL: renderDataComponent -> edges", edges);
 
     const URL = String(history.location.pathname);
     const URLContainsTable = URL.includes('table');

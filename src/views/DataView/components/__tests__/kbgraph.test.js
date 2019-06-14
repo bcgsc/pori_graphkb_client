@@ -92,7 +92,10 @@ describe('kbgraph method i/o validations', () => {
     };
     const graphOptions = new GraphOptions(props);
     graphOptions.load();
-    expect(GraphOptions.retrieve()).toEqual(graphOptions);
+    console.log("TCL: graphOptions", graphOptions)
+    console.log("TCL: GraphOptions.retrieve()", GraphOptions.retrieve())
+    const retrievedGraphOptions = GraphOptions.retrieve();
+    expect(retrievedGraphOptions).toMatchObject(graphOptions);
   });
 
   it('getColor', () => {

@@ -229,7 +229,7 @@ class GraphOptionsPanel extends Component {
                 onChange={handleGraphOptionsChange}
                 value={graphOptions.linkLabelProp}
                 disabled={linkLegendDisabled}
-                resources={['', '@class', 'source.name']}
+                resources={['', '@class', '@rid', 'source.name']}
               />
               <ResourceSelectComponent
                 className="graph-option"
@@ -238,7 +238,7 @@ class GraphOptionsPanel extends Component {
                 onChange={handleGraphOptionsChange}
                 value={graphOptions.linksColor}
                 disabled={linkLegendDisabled}
-                resources={['', '@class', 'source.name']}
+                resources={['', '@class', '@rid', 'source.name']}
               />
               <FormControl>
                 <FormControlLabel

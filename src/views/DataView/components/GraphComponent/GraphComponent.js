@@ -610,7 +610,7 @@ class GraphComponent extends Component {
               const link = new GraphLink(edge, outRid, inRid);
               links.push(link);
               graphObjects[link.getId()] = link;
-              this.propsMap.loadLink(link.data);
+              this.propsMap.loadLink(link.data); // This might be the issue
               // Checks if node is already rendered
               if (outRid && !graphObjects[outRid]) {
                 // Initializes position of new child

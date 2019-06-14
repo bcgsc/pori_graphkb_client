@@ -8,6 +8,7 @@ const DEFAULT_NODE_VPROPS = [
 const DEFAULT_LINK_VPROPS = [
   'source.name',
   '@class',
+  '@rid',
 ];
 
 const GRAPH_OPTIONS_KEY = 'graphOptions';

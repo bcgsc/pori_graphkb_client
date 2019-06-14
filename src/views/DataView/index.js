@@ -211,7 +211,6 @@ class DataView extends React.Component {
       const record = await cache.getRecord(node);
       if (data[record['@rid']] === undefined) {
         data[record['@rid']] = record;
-        console.log("TCL: handleExpandNode -> data", data);
         this.setState({ data });
       }
     } catch (err) {
@@ -290,7 +289,6 @@ class DataView extends React.Component {
     const { bufferSize, history } = this.props;
     const { schema } = this.context;
     const edges = schema.getEdges();
-    console.log("TCL: renderDataComponent -> edges", edges);
 
     const URL = String(history.location.pathname);
     const URLContainsTable = URL.includes('table');

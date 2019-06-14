@@ -2,6 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import GraphComponent from '../GraphComponent/GraphComponent';
 import { GraphNode, GraphLink } from '../GraphComponent/kbgraph';
+import Schema from '../../../../services/schema';
 
 const mockData = {
   '#1': {
@@ -50,6 +51,7 @@ const mockData = {
 describe('<GraphComponent />', () => {
   let wrapper;
   const componentDidMountSpy = jest.spyOn(GraphComponent.prototype, 'componentDidMount');
+  const schema = new Schema();
 
   it('calls componentDidMount on render and doesn\'t crash and burn', () => {
     wrapper = mount(
@@ -59,6 +61,7 @@ describe('<GraphComponent />', () => {
         handleDetailDrawerClose={() => { }}
         handleTableRedirect={() => { }}
         handleNewColumns={() => { }}
+        schema={schema}
       />,
     );
     expect(componentDidMountSpy).toHaveBeenCalledTimes(1);
@@ -74,6 +77,7 @@ describe('<GraphComponent />', () => {
         handleNewColumns={() => { }}
         displayed={['#1', '#2', '#3']}
         edgeTypes={['AliasOf']}
+        schema={schema}
       />,
     );
 
@@ -91,6 +95,7 @@ describe('<GraphComponent />', () => {
         handleNewColumns={() => { }}
         displayed={['#1', '#2', '#3', '#4']}
         edgeTypes={['AliasOf']}
+        schema={schema}
       />,
     );
 
@@ -109,6 +114,7 @@ describe('<GraphComponent />', () => {
         handleRefresh={() => { }}
         displayed={['#1', '#2', '#3', '#4']}
         edgeTypes={['AliasOf']}
+        schema={schema}
       />,
     );
 
@@ -168,6 +174,7 @@ describe('<GraphComponent />', () => {
         handleClick={handleClick}
         displayed={['#1', '#2', '#3', '#4']}
         edgeTypes={['AliasOf']}
+        schema={schema}
       />,
     );
     wrapper.find('circle.node').first().simulate('click');
@@ -208,6 +215,7 @@ describe('<GraphComponent />', () => {
         handleClick={() => { }}
         displayed={['#1', '#2', '#3', '#4']}
         edgeTypes={['AliasOf']}
+        schema={schema}
       />,
     );
     wrapper = mount(
@@ -219,6 +227,7 @@ describe('<GraphComponent />', () => {
         handleNewColumns={() => { }}
         handleClick={() => { }}
         edgeTypes={['AliasOf']}
+        schema={schema}
       />,
     );
     expect(wrapper.find('circle.node')).toHaveLength(4);
@@ -236,6 +245,7 @@ describe('<GraphComponent />', () => {
         handleClick={() => { }}
         edgeTypes={['AliasOf']}
         localStorageKey="test"
+        schema={schema}
       />,
     );
     wrapper.find('div.svg-wrapper svg').simulate('click');

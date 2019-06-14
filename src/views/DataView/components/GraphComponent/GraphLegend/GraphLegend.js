@@ -32,7 +32,6 @@ function GraphLegend(props) {
       && graphOptions.linksLegend
       && graphOptions.linksColor)
   )) return null;
-
   return (
     <div className="legend-wrapper">
       {graphOptions.nodesLegend && graphOptions.nodesColor && (

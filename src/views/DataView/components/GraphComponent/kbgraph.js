@@ -25,7 +25,7 @@ const {
 const isObject = (val) => {
   if (val === null) { return false; }
   return ((typeof val === 'function') || (typeof val === 'object'));
-}
+};
 
 /**
  * Represents an object in the d3 force directed graph.

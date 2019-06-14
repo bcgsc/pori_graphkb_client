@@ -92,8 +92,6 @@ describe('kbgraph method i/o validations', () => {
     };
     const graphOptions = new GraphOptions(props);
     graphOptions.load();
-    console.log("TCL: graphOptions", graphOptions)
-    console.log("TCL: GraphOptions.retrieve()", GraphOptions.retrieve())
     const retrievedGraphOptions = GraphOptions.retrieve();
     expect(retrievedGraphOptions).toMatchObject(graphOptions);
   });

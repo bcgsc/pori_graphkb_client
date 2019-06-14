@@ -22,6 +22,11 @@ const {
   CHARGE_MAX,
 } = config.GRAPH_DEFAULTS;
 
+const isObject = (val) => {
+  if (val === null) { return false; }
+  return ((typeof val === 'function') || (typeof val === 'object'));
+}
+
 /**
  * Represents an object in the d3 force directed graph.
  */
@@ -255,7 +260,7 @@ class GraphOptions {
       const keys = targetColor.split('.');
       colorKey = (obj.data[keys[0]] || {})[keys[1]];
     } else if (targetColor) {
-      const colorKeyIsObject = this.isObject(obj.data[targetColor]);
+      const colorKeyIsObject = isObject(obj.data[targetColor]);
       if (colorKeyIsObject) {
         colorKey = obj.data[targetColor].name;
       } else {
@@ -263,11 +268,6 @@ class GraphOptions {
       }
     }
     return ColorMap[colorKey];
-  }
-
-  isObject = (val) => {
-    if (val === null) { return false; }
-    return ((typeof val === 'function') || (typeof val === 'object'));
   }
 
   /**

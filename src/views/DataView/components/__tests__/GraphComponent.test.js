@@ -203,8 +203,8 @@ describe('<GraphComponent />', () => {
     });
     wrapper.find('#hide').simulate('click');
   });
-  // TODO: Refresh Graph is not working currently
-  it.skip('Refreshed graph still remembers displayed nodes', () => {
+
+  it('Refreshed graph still remembers displayed nodes', () => {
     wrapper = mount(
       <GraphComponent
         data={mockData}

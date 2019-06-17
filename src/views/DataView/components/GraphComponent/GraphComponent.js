@@ -226,6 +226,7 @@ class GraphComponent extends Component {
           graphObjects,
         } = storedData;
         let { nodes, links } = storedData;
+
         /* Case 3, fetch state saved in localStorage. */
         delete storedData.localStorageKey;
         nodes = nodes.map((n) => {
@@ -311,7 +312,8 @@ class GraphComponent extends Component {
   getUniqueDataProps = () => {
     let uniqueProps = [];
     let { data } = this.props;
-    if (data) {
+    const isDataEmpty = Object.keys(data).length === 0;
+    if (!isDataEmpty) {
       const totalProps = [];
       data = Object.values(data);
       data.forEach((obj) => {

@@ -290,7 +290,7 @@ class DataView extends React.Component {
     const { schema } = this.context;
     const edges = schema.getEdges();
 
-    const URL = String(history.location.pathname);
+    const URL = String(window.location.href);
     const URLContainsTable = URL.includes('table');
     if (URLContainsTable) {
       return (
@@ -329,7 +329,7 @@ class DataView extends React.Component {
         edgeTypes={edges}
         schema={schema}
         handleRefresh={this.handleRefresh}
-        localStoragekey={history.search}
+        localStoragekey={window.location.href}
         handleClick={this.handleExpandNode}
         onRecordClicked={this.handleToggleDetailPanel}
       />

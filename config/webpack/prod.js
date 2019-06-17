@@ -11,7 +11,7 @@ const devConfig = {
   plugins: [
     // Copy values of ENV variables in as strings using these defaults (null = unset)
     new webpack.EnvironmentPlugin({
-      API_BASE_URL: 'https://graphkb-api.bcgsc.ca/api',
+      API_BASE_URL: 'https://graphkbapi.bcgsc.ca/api',
       DEBUG: false,
       DISABLE_AUTH: null,
       KEYCLOAK_CLIENT_ID: 'GraphKB',

@@ -286,7 +286,7 @@ class DataView extends React.Component {
       data,
     } = this.state;
 
-    const { bufferSize, history } = this.props;
+    const { bufferSize } = this.props;
     const { schema } = this.context;
     const edges = schema.getEdges();
 

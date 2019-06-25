@@ -87,7 +87,7 @@ class DataView extends React.Component {
     }
   }
 
-  hashRecordsByRID = (data) => {
+  hashRecordsByRID(data) {
     const newData = {};
     data.forEach((obj) => {
       newData[obj['@rid']] = obj;

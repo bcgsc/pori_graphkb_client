@@ -26,6 +26,7 @@ import GraphExpansionDialog from './GraphExpansionDialog/GraphExpansionDialog';
 import GraphLegend from './GraphLegend/GraphLegend';
 import util from '../../../../services/util';
 import config from '../../../../static/config';
+import isObject from './utils'
 import {
   PropsMap,
   GraphOptions,
@@ -326,12 +327,6 @@ class GraphComponent extends Component {
     uniqueProps = ['@rid', '@class', 'name'];
     return uniqueProps;
   };
-
-  isObject = (val) => {
-    if (val === null) { return false; }
-    return ((typeof val === 'function') || (typeof val === 'object'));
-  };
-
 
   /**
    * Applies drag behavior to node.
@@ -725,8 +720,8 @@ class GraphComponent extends Component {
             colors[obj.data[prop][nestedProp]] = '';
           }
         }
-        const valueIsObject = this.isObject(obj.data[key]);
-        if (valueIsObject) {
+
+        if (isObject(obj.data[key])) { // value is object
           if (obj.data[key].name && !colors[obj.data[key].name]) {
             colors[obj.data[key].name] = '';
           }

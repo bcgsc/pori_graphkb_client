@@ -1,4 +1,5 @@
 import config from '../../../../static/config';
+import isObject from './utils';
 
 const DEFAULT_NODE_VPROPS = [
   'source.name',
@@ -21,11 +22,6 @@ const {
   COLLISION_RADIUS,
   CHARGE_MAX,
 } = config.GRAPH_DEFAULTS;
-
-const isObject = (val) => {
-  if (val === null) { return false; }
-  return ((typeof val === 'function') || (typeof val === 'object'));
-};
 
 /**
  * Represents an object in the d3 force directed graph.

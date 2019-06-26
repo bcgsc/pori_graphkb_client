@@ -58,7 +58,6 @@ const HEAVILY_CONNECTED = 10;
  * Implements a d3 force-directed graph: https://github.com/d3/d3-force.
  *
  * @property {object} props
- * @property {function} props.handleClick - Parent component method triggered when a
  * graph object is clicked.
  * @property {function} props.handleDetailDrawerOpen - Method to handle opening of detail drawer.
  * @property {function} props.handleDetailDrawerClose - Method to handle closing of detail drawer.
@@ -78,7 +77,6 @@ class GraphComponent extends Component {
   static contextType = SnackbarContext;
 
   static propTypes = {
-    handleClick: PropTypes.func,
     handleDetailDrawerOpen: PropTypes.func.isRequired,
     handleDetailDrawerClose: PropTypes.func.isRequired,
     handleTableRedirect: PropTypes.func.isRequired,
@@ -94,7 +92,6 @@ class GraphComponent extends Component {
   };
 
   static defaultProps = {
-    handleClick: null,
     detail: null,
     edgeTypes: [],
     displayed: [],

@@ -46,21 +46,12 @@ class DataView extends React.Component {
     bufferSize: 200,
   };
 
-  static hashRecordsByRID(data) { // move to graph component
-    const newData = {};
-    data.forEach((obj) => {
-      newData[obj['@rid']] = obj;
-    });
-    return newData;
-  }
-
   constructor(props) {
     super(props);
     const { location: { search } } = this.props;
     // cache for api requests
     this.state = {
       cache: null,
-      data: null,
       statusMessage: 'loading data...',
       totalRows: null,
       detailPanelRow: null,
@@ -177,21 +168,6 @@ class DataView extends React.Component {
     });
   }
 
-  // move this to graph component
-  @boundMethod
-  async handleExpandNode({ data: node }) {
-    const { cache, data } = this.state;
-    try {
-      const record = await cache.getRecord(node);
-      if (data[record['@rid']] === undefined) {
-        data[record['@rid']] = record;
-        this.setState({ data });
-      }
-    } catch (err) {
-      this.handleError(err);
-    }
-  }
-
   @boundMethod
   handleError(err) {
     const { history } = this.props;
@@ -257,7 +233,6 @@ class DataView extends React.Component {
       optionsMenuAnchor,
       selectedRecords,
       search,
-      data, // move to graph component
     } = this.state;
 
     const { bufferSize } = this.props;
@@ -293,13 +268,11 @@ class DataView extends React.Component {
         handleTableRedirect={this.handleTableRedirect}
         detail={detailPanelRow}
         displayed={selectedRIDs} // an array of RIDs ["19:0", "20:0", ...]
-        data={data} // remove
         handleError={this.handleError}
         edgeTypes={edges}
         schema={schema}
         handleRefresh={this.handleRefresh}
         localStoragekey={window.location.href}
-        handleClick={this.handleExpandNode}
         onRecordClicked={this.handleToggleDetailPanel}
       />
     );

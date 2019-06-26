@@ -83,7 +83,8 @@ class GraphComponent extends Component {
     handleDetailDrawerClose: PropTypes.func.isRequired,
     handleTableRedirect: PropTypes.func.isRequired,
     detail: PropTypes.object,
-    data: PropTypes.object.isRequired,
+    // data: PropTypes.object.isRequired,
+    cache: PropTypes.object.isRequired,
     edgeTypes: PropTypes.arrayOf(PropTypes.string),
     displayed: PropTypes.arrayOf(PropTypes.string),
     localStorageKey: PropTypes.string,
@@ -100,11 +101,21 @@ class GraphComponent extends Component {
     localStorageKey: '',
   };
 
+  static hashRecordsByRID(data) { // move to graph component
+    const newData = {};
+    data.forEach((obj) => {
+      newData[obj['@rid']] = obj;
+    });
+    return newData;
+  }
+
+
   constructor(props) {
     super(props);
     this.state = {
       nodes: [],
       links: [],
+      data: null,
       graphObjects: {},
       expandable: {},
       expandedEdgeTypes: [],
@@ -133,21 +144,33 @@ class GraphComponent extends Component {
    */
   async componentDidMount() {
     const {
-      displayed,
+      displayed, // an array of RIDs ["19:0", "20:0", ...]
       edgeTypes,
       localStorageKey,
-      handleError,
-      data,
+      handleError, // move this to state and check for selectedRIDS instead
+      cache,
+      schema,
     } = this.props;
     const {
       graphOptions,
       initState,
+      data,
     } = this.state;
     let { expandable } = this.state;
     const allProps = this.getUniqueDataProps();
     this.propsMap = new PropsMap();
 
-    if (!data) {
+    if (!data) { // move to graph component
+      this.fetchAndSetInitialData(displayed, cache, schema);
+      return null;
+    }
+
+    // here Selected RIDS should be checked and data should be fetched here.
+    console.log('TCL: GraphComponent -> componentDidMount -> displayed', displayed);
+
+    console.log('TCL: GraphComponent -> componentDidMount -> data', data);
+
+    if (displayed.length === 0) {
       const err = {
         name: 'No Seed Data',
         message: 'Please select a record from the data table for graph visualization',
@@ -285,6 +308,7 @@ class GraphComponent extends Component {
         });
       }
     });
+    return null;
   }
 
   /**
@@ -312,8 +336,8 @@ class GraphComponent extends Component {
 
   getUniqueDataProps = () => {
     let uniqueProps = [];
-    let { data } = this.props;
-    if (!Object.keys(data).length === 0) { // is there any Data?
+    let { data } = this.state; // needs to be modified
+    if (data) { // is there any Data?
       const totalProps = [];
       data = Object.values(data);
       data.forEach((obj) => {
@@ -326,6 +350,37 @@ class GraphComponent extends Component {
     uniqueProps = ['@rid', '@class', 'name'];
     return uniqueProps;
   };
+  // move this to graph component
+
+  async fetchInitialData(arr, cache, schema) {
+    const result = [];
+    arr.forEach((record) => {
+      try {
+        const response = cache.recordApiCall({ record, schema }).request();
+        result.push(response);
+      } catch (err) {
+        this.handleError(err);
+      }
+    });
+    return result;
+  }
+
+  // move this to graph component
+
+  async fetchAndSetInitialData(selectedRIDs, cache, schema) {
+    try {
+      this.fetchInitialData(selectedRIDs, cache, schema)
+        .then((res) => {
+          return Promise.all(res);
+        })
+        .then((res) => {
+          const hashedRecords = GraphComponent.hashRecordsByRID(res);
+          this.setState({ data: hashedRecords }, () => { this.componentDidMount(); });
+        });
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
 
   /**
    * Applies drag behavior to node.
@@ -456,14 +511,14 @@ class GraphComponent extends Component {
    */
   @boundMethod
   loadNeighbors(node) {
-    const { expandExclusions } = this.state;
+    const { expandExclusions, data } = this.state;
     let {
       nodes,
       links,
       graphObjects,
       expandable,
     } = this.state;
-    const { schema, localStorageKey, data } = this.props;
+    const { schema, localStorageKey } = this.props;
 
     if (expandable[node.getId()] && data[node.getId()]) {
       ({
@@ -511,8 +566,9 @@ class GraphComponent extends Component {
     const {
       expandable,
       links,
+      data,
     } = this.state;
-    const { schema, data } = this.props;
+    const { schema } = this.props; // move data to state
     if (expandable[node.getId()] && data[node.getId()]) {
       if (schema.getEdges(data[node.getId()])
         .filter(edge => !(links.find(l => l.getId() === edge['@rid']))).length > HEAVILY_CONNECTED
@@ -522,6 +578,23 @@ class GraphComponent extends Component {
       } else {
         this.loadNeighbors(node);
       }
+    }
+  }
+
+
+  // move this to graph component
+  @boundMethod
+  async handleExpandNode({ data: node }) {
+    const { cache } = this.props;
+    const { data } = this.state;
+    try {
+      const record = await cache.getRecord(node);
+      if (data[record['@rid']] === undefined) {
+        data[record['@rid']] = record;
+        this.setState({ data });
+      }
+    } catch (err) {
+      this.handleError(err);
     }
   }
 
@@ -554,14 +627,14 @@ class GraphComponent extends Component {
    * @param {Array.<string>} [exclusions=[]] - List of edge ID's to be ignored on expansion.
    */
   processData(node, position, depth, prevstate, exclusions = []) {
-    const { expandedEdgeTypes, allProps } = this.state;
+    const { expandedEdgeTypes, allProps, data } = this.state;
     let {
       nodes,
       links,
       graphObjects,
       expandable,
     } = prevstate;
-    const { data } = this.props;
+    // const { data } = this.props; // move data to state
 
     if (data[node['@rid']]) {
       node = data[node['@rid']]; // eslint-disable-line no-param-reassign
@@ -776,9 +849,9 @@ class GraphComponent extends Component {
    */
   @boundMethod
   async handleClick(node) {
-    const { handleClick, handleDetailDrawerOpen } = this.props;
+    const { handleDetailDrawerOpen } = this.props;
     // Prematurely loads neighbor data.
-    await handleClick(node);
+    await this.handleExpandNode(node);
 
     // Update contents of detail drawer if open.
     handleDetailDrawerOpen(node);

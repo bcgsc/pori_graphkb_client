@@ -46,7 +46,7 @@ class DataView extends React.Component {
     bufferSize: 200,
   };
 
-  static hashRecordsByRID(data) {
+  static hashRecordsByRID(data) { // move to graph component
     const newData = {};
     data.forEach((obj) => {
       newData[obj['@rid']] = obj;
@@ -91,32 +91,6 @@ class DataView extends React.Component {
     const { cache } = this.state;
     if (cache) {
       cache.abortAll();
-    }
-  }
-
-  async fetchInitialData(arr, cache, schema) {
-    const result = [];
-    arr.forEach((record) => {
-      try {
-        const response = cache.recordApiCall({ record, schema }).request();
-        result.push(response);
-      } catch (err) {
-        this.handleError(err);
-      }
-    });
-    return result;
-  }
-
-  fetchAndSetInitialData(selectedRIDs, cache, schema) {
-    try {
-      this.fetchInitialData(selectedRIDs, cache, schema)
-        .then(res => Promise.all(res))
-        .then((res) => {
-          const hashedRecords = this.hashRecordsByRID(res);
-          this.setState({ data: hashedRecords });
-        });
-    } catch (err) {
-      this.handleError(err);
     }
   }
 
@@ -203,6 +177,7 @@ class DataView extends React.Component {
     });
   }
 
+  // move this to graph component
   @boundMethod
   async handleExpandNode({ data: node }) {
     const { cache, data } = this.state;
@@ -224,7 +199,7 @@ class DataView extends React.Component {
   }
 
   @boundMethod
-  handleRefresh() {
+  handleRefresh() { // move this to graph component
     this.setState({ data: null });
   }
 
@@ -282,7 +257,7 @@ class DataView extends React.Component {
       optionsMenuAnchor,
       selectedRecords,
       search,
-      data,
+      data, // move to graph component
     } = this.state;
 
     const { bufferSize } = this.props;
@@ -306,14 +281,9 @@ class DataView extends React.Component {
     }
 
     const selectedRIDs = [];
-    selectedRecords.forEach((obj) => {
-      selectedRIDs.push(obj['@rid']);
+    selectedRecords.forEach((record) => {
+      selectedRIDs.push(record['@rid']);
     });
-
-    if (!data) {
-      this.fetchAndSetInitialData(selectedRIDs, cache, schema);
-      return null;
-    }
 
     return (
       <GraphComponent
@@ -322,8 +292,8 @@ class DataView extends React.Component {
         handleDetailDrawerClose={this.handleToggleDetailPanel}
         handleTableRedirect={this.handleTableRedirect}
         detail={detailPanelRow}
-        displayed={selectedRIDs}
-        data={data}
+        displayed={selectedRIDs} // an array of RIDs ["19:0", "20:0", ...]
+        data={data} // remove
         handleError={this.handleError}
         edgeTypes={edges}
         schema={schema}

@@ -46,6 +46,13 @@ class DataView extends React.Component {
     bufferSize: 200,
   };
 
+  static hashRecordsByRID(data) {
+    const newData = {};
+    data.forEach((obj) => {
+      newData[obj['@rid']] = obj;
+    });
+    return newData;
+  }
 
   constructor(props) {
     super(props);
@@ -85,14 +92,6 @@ class DataView extends React.Component {
     if (cache) {
       cache.abortAll();
     }
-  }
-
-  hashRecordsByRID(data) {
-    const newData = {};
-    data.forEach((obj) => {
-      newData[obj['@rid']] = obj;
-    });
-    return newData;
   }
 
   async fetchInitialData(arr, cache, schema) {

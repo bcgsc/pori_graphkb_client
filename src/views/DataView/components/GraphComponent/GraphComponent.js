@@ -26,7 +26,7 @@ import GraphExpansionDialog from './GraphExpansionDialog/GraphExpansionDialog';
 import GraphLegend from './GraphLegend/GraphLegend';
 import util from '../../../../services/util';
 import config from '../../../../static/config';
-import isObject from './utils'
+import isObject from './utils';
 import {
   PropsMap,
   GraphOptions,
@@ -313,8 +313,7 @@ class GraphComponent extends Component {
   getUniqueDataProps = () => {
     let uniqueProps = [];
     let { data } = this.props;
-    const isDataEmpty = Object.keys(data).length === 0;
-    if (!isDataEmpty) {
+    if (!Object.keys(data).length === 0) { // is there any Data?
       const totalProps = [];
       data = Object.values(data);
       data.forEach((obj) => {

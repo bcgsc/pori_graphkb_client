@@ -63,7 +63,6 @@ const HEAVILY_CONNECTED = 10;
  * @property {function} props.handleDetailDrawerClose - Method to handle closing of detail drawer.
  * @property {function} props.handleTableRedirect - Method to handle a redirect to the table view.
  * @property {Object} props.detail - record ID of node currently selected for detail viewing.
- * @property {Object} props.data - Parent state data.
  * in the initial query.
  * @property {Array.<string>} props.edgeTypes - list of valid edge classes.
  * @property {Array.<string>} props.displayed - list of initial record ID's to be displayed in
@@ -81,7 +80,6 @@ class GraphComponent extends Component {
     handleDetailDrawerClose: PropTypes.func.isRequired,
     handleTableRedirect: PropTypes.func.isRequired,
     detail: PropTypes.object,
-    // data: PropTypes.object.isRequired,
     cache: PropTypes.object.isRequired,
     edgeTypes: PropTypes.arrayOf(PropTypes.string),
     displayed: PropTypes.arrayOf(PropTypes.string),
@@ -144,7 +142,7 @@ class GraphComponent extends Component {
       displayed, // an array of RIDs ["19:0", "20:0", ...]
       edgeTypes,
       localStorageKey,
-      handleError, // move this to state and check for selectedRIDS instead
+      handleError,
       cache,
       schema,
     } = this.props;
@@ -157,22 +155,9 @@ class GraphComponent extends Component {
     const allProps = this.getUniqueDataProps();
     this.propsMap = new PropsMap();
 
-    if (!data) { // move to graph component
+    if (!data) {
       this.fetchAndSetInitialData(displayed, cache, schema);
       return null;
-    }
-
-    // here Selected RIDS should be checked and data should be fetched here.
-    console.log('TCL: GraphComponent -> componentDidMount -> displayed', displayed);
-
-    console.log('TCL: GraphComponent -> componentDidMount -> data', data);
-
-    if (displayed.length === 0) {
-      const err = {
-        name: 'No Seed Data',
-        message: 'Please select a record from the data table for graph visualization',
-      };
-      handleError(err);
     }
 
     const expandedEdgeTypes = util.expandEdges(edgeTypes);
@@ -190,6 +175,14 @@ class GraphComponent extends Component {
 
       const storedData = util.getGraphData(localStorageKey);
       const storedOptions = GraphOptions.retrieve();
+
+      if (displayed.length === 0 && !storedData) {
+        const err = {
+          name: 'No Seed Data',
+          message: 'Please select a record from the data table for graph visualization',
+        };
+        handleError(err);
+      }
 
       /**
        * Initialization priority:
@@ -333,21 +326,22 @@ class GraphComponent extends Component {
 
   getUniqueDataProps = () => {
     let uniqueProps = [];
-    let { data } = this.state; // needs to be modified
-    if (data) { // is there any Data?
-      const totalProps = [];
-      data = Object.values(data);
-      data.forEach((obj) => {
-        const keyArr = Object.keys(obj);
-        totalProps.push(...keyArr);
-      });
-      uniqueProps = [...new Set(totalProps)];
-      return uniqueProps;
+    let { data } = this.state;
+    if (data) {
+      if (!Object.keys(data).length === 0) { // if data is not empty
+        const totalProps = [];
+        data = Object.values(data);
+        data.forEach((obj) => {
+          const keyArr = Object.keys(obj);
+          totalProps.push(...keyArr);
+        });
+        uniqueProps = [...new Set(totalProps)];
+        return uniqueProps;
+      }
     }
     uniqueProps = ['@rid', '@class', 'name'];
     return uniqueProps;
   };
-  // move this to graph component
 
   async fetchInitialData(arr, cache, schema) {
     const result = [];
@@ -362,14 +356,10 @@ class GraphComponent extends Component {
     return result;
   }
 
-  // move this to graph component
-
   async fetchAndSetInitialData(selectedRIDs, cache, schema) {
     try {
       this.fetchInitialData(selectedRIDs, cache, schema)
-        .then((res) => {
-          return Promise.all(res);
-        })
+        .then(res => Promise.all(res))
         .then((res) => {
           const hashedRecords = GraphComponent.hashRecordsByRID(res);
           this.setState({ data: hashedRecords }, () => { this.componentDidMount(); });
@@ -565,7 +555,7 @@ class GraphComponent extends Component {
       links,
       data,
     } = this.state;
-    const { schema } = this.props; // move data to state
+    const { schema } = this.props;
     if (expandable[node.getId()] && data[node.getId()]) {
       if (schema.getEdges(data[node.getId()])
         .filter(edge => !(links.find(l => l.getId() === edge['@rid']))).length > HEAVILY_CONNECTED
@@ -578,8 +568,6 @@ class GraphComponent extends Component {
     }
   }
 
-
-  // move this to graph component
   @boundMethod
   async handleExpandNode({ data: node }) {
     const { cache } = this.props;

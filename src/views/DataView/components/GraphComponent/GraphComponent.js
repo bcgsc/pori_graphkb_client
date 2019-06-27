@@ -104,6 +104,19 @@ class GraphComponent extends Component {
     return newData;
   }
 
+  static fetchInitialData(arr, cache, schema, handleError) {
+    const result = [];
+    arr.forEach(async (record) => {
+      try {
+        const apiCall = cache.recordApiCall({ record, schema });
+        const response = apiCall.request();
+        result.push(response);
+      } catch (err) {
+        handleError(err);
+      }
+    });
+    return result;
+  }
 
   constructor(props) {
     super(props);
@@ -157,7 +170,7 @@ class GraphComponent extends Component {
     this.propsMap = new PropsMap();
 
     if (!data) {
-      this.fetchAndSetInitialData(displayed, cache, schema);
+      await this.fetchAndSetInitialData(displayed, cache, schema);
       return null;
     }
 
@@ -171,7 +184,6 @@ class GraphComponent extends Component {
       expandedEdgeTypes,
       allProps,
     }, () => {
-      console.log('FINISHED INITIAL STATE SETTTING ');
       this.handleResize();
       window.addEventListener('resize', this.handleResize);
 
@@ -281,7 +293,7 @@ class GraphComponent extends Component {
           },
         });
       }
-      console.log('CHECKING STORED OPTIONS');
+
       if (storedOptions) {
         this.setState({
           graphOptions: storedOptions,
@@ -303,7 +315,6 @@ class GraphComponent extends Component {
         });
       }
     });
-    console.log('componentDidMount FINISHED');
     return null;
   }
 
@@ -350,30 +361,15 @@ class GraphComponent extends Component {
     return uniqueProps;
   };
 
-  async fetchInitialData(arr, cache, schema) {
-    const result = [];
-    arr.forEach((record) => {
-      try {
-        const apiCall = cache.recordApiCall({ record, schema });
-        const response = apiCall.request();
-        result.push(response);
-      } catch (err) {
-        this.handleError(err);
-      }
-    });
-    return result;
-  }
-
   async fetchAndSetInitialData(selectedRIDs, cache, schema) {
+    const { handleError } = this.props;
     try {
-      this.fetchInitialData(selectedRIDs, cache, schema)
-        .then(res => Promise.all(res))
-        .then((res) => {
-          const hashedRecords = GraphComponent.hashRecordsByRID(res);
-          this.setState({ data: hashedRecords }, () => { this.componentDidMount(); });
-        });
+      const promises = GraphComponent.fetchInitialData(selectedRIDs, cache, schema, handleError);
+      const results = await Promise.all(promises);
+      const hashedRecords = GraphComponent.hashRecordsByRID(results);
+      this.setState({ data: hashedRecords }, () => { this.componentDidMount(); });
     } catch (err) {
-      this.handleError(err);
+      handleError(err);
     }
   }
 
@@ -580,8 +576,10 @@ class GraphComponent extends Component {
   async handleExpandNode({ data: node }) {
     const { cache } = this.props;
     const { data } = this.state;
+    console.log('TCL: GraphComponent -> handleExpandNode -> data', data);
     try {
       const record = await cache.getRecord(node);
+      console.log('TCL: GraphComponent -> handleExpandNode -> record', record);
       if (data[record['@rid']] === undefined) {
         data[record['@rid']] = record;
         this.setState({ data });
@@ -1097,8 +1095,6 @@ class GraphComponent extends Component {
       schema,
     } = this.props;
 
-    console.log('RENDERING...');
-
     const linkLegendDisabled = (
       links.length === 0
       || !links.some((l) => {
@@ -1185,8 +1181,6 @@ class GraphComponent extends Component {
         schema={schema}
       />
     ));
-
-    console.log('FINISHED RENDERING PREPERATION');
 
     return (
       <div className="graph-wrapper">

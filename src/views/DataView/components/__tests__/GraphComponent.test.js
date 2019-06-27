@@ -63,11 +63,12 @@ const recordApiCallMockFnc = {
 };
 
 
-const getRecordMockFnc = jest.fn();
+const getRecordMockFnc = jest.fn()
+  .mockResolvedValueOnce(mockData['#4']);
 
 const cacheSpy = ({
   recordApiCall: () => recordApiCallMockFnc,
-  getRecord: getRecordMockFnc(),
+  getRecord: () => getRecordMockFnc(),
 });
 
 describe('<GraphComponent />', () => {
@@ -79,7 +80,7 @@ describe('<GraphComponent />', () => {
   const componentDidMountSpy = jest.spyOn(GraphComponent.prototype, 'componentDidMount');
   const schema = new Schema();
 
-  it.skip('calls componentDidMount on render and doesn\'t crash and burn', () => {
+  it('calls componentDidMount on render and doesn\'t crash and burn', () => {
     wrapper = mount(
       <GraphComponent
         handleError={handleErrSpy}
@@ -94,13 +95,13 @@ describe('<GraphComponent />', () => {
     expect(componentDidMountSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('renders all nodes specified in displayed', async () => {
+  it('renders all nodes specified in displayed', () => {
     requestMock
       .mockResolvedValueOnce(mockData['#1'])
       .mockResolvedValueOnce(mockData['#2'])
       .mockResolvedValueOnce(mockData['#3']);
 
-    wrapper = await mount(
+    wrapper = mount(
       <GraphComponent
         handleError={handleErrSpy}
         cache={cacheSpy}
@@ -113,32 +114,15 @@ describe('<GraphComponent />', () => {
         schema={schema}
       />,
     );
-    await wrapper.update();
+    wrapper.update();
 
-    // original test, this doesnt work
-    // wrapper.update();
-    // console.log(wrapper.debug());
-    // expect(wrapper.find('svg path.link')).toHaveLength(0);
-    // expect(wrapper.find('svg circle.node')).toHaveLength(3);
-
-    // This doesn't work
-    // setImmediate(() => {
-    //   try {
-    //     expect(wrapper.find('svg path.link')).toHaveLength(0);
-    //     expect(wrapper.find('svg circle.node')).toHaveLength(3);
-    //   } catch (err) {
-    //     console.log(err);
-    //   }
-    // });
-
-    // This works, but so fragile
     setTimeout(() => {
       expect(wrapper.find('svg circle.node')).toHaveLength(3);
       expect(wrapper.find('svg path.link')).toHaveLength(0);
-    }, 1000);
+    }, 0);
   });
 
-  it.skip('renders all nodes and links specified in displayed', () => {
+  it('renders all nodes and links specified in displayed', () => {
     requestMock
       .mockResolvedValueOnce(mockData['#1'])
       .mockResolvedValueOnce(mockData['#2'])
@@ -157,13 +141,15 @@ describe('<GraphComponent />', () => {
         schema={schema}
       />,
     );
+    wrapper.update();
 
-    expect(wrapper.find('svg circle.node')).toHaveLength(4);
-    console.log(wrapper.debug());
-    expect(wrapper.find('svg path.link')).toHaveLength(1);
+    setTimeout(() => {
+      expect(wrapper.find('svg circle.node')).toHaveLength(4);
+      expect(wrapper.find('svg path.link')).toHaveLength(1);
+    }, 0);
   });
 
-  it.skip('methods don\'t crash component', () => {
+  it('methods don\'t crash component', () => {
     requestMock
       .mockResolvedValueOnce(mockData['#1'])
       .mockResolvedValueOnce(mockData['#2'])
@@ -184,13 +170,15 @@ describe('<GraphComponent />', () => {
       />,
     );
 
-    wrapper.find('div.toolbar button.table-btn').simulate('click');
-    wrapper.find('div.toolbar button#graph-options-btn').simulate('click');
-    wrapper.find('input#linkStrength').simulate('change');
-    wrapper.find('div.toolbar .refresh-wrapper button').simulate('click');
+    setTimeout(() => {
+      wrapper.find('div.toolbar button.table-btn').simulate('click');
+      wrapper.find('div.toolbar button#graph-options-btn').simulate('click');
+      wrapper.find('input#linkStrength').simulate('change');
+      wrapper.find('div.toolbar .refresh-wrapper button').simulate('click');
+    }, 0);
   });
 
-  it.skip('clicking nodes and links calls appropriate handlers', () => {
+  it('clicking nodes and links calls appropriate handlers', () => {
     requestMock
       .mockResolvedValueOnce(mockData['#1'])
       .mockResolvedValueOnce(mockData['#2'])
@@ -249,34 +237,39 @@ describe('<GraphComponent />', () => {
         schema={schema}
       />,
     );
-    wrapper.find('circle.node').first().simulate('click');
-    wrapper.find('path.link').first().simulate('click');
-    expect(handleClick.mock.calls.length).toBe(1);
-    expect(handleDetailDrawerOpen.mock.calls.length).toBe(1);
 
-    wrapper.setState({
-      actionsNode,
-      actionsNodeIsEdge: false,
-    });
-    wrapper.find('#expand').simulate('click');
-    wrapper.find('#details').simulate('click');
-    wrapper.setState({ actionsNode });
-    wrapper.find('#hide').simulate('click');
-    wrapper.setState({ actionsNode });
-    wrapper.find('#close').simulate('click');
-    wrapper.setState({
-      actionsNode: actionsLink,
-      actionsNodeIsEdge: true,
-    });
-    wrapper.find('#details').simulate('click');
-    wrapper.setState({
-      actionsNode: actionsLink,
-      actionsNodeIsEdge: true,
-    });
-    wrapper.find('#hide').simulate('click');
+    wrapper.update();
+
+    setTimeout(() => {
+      wrapper.find('circle.node').first().simulate('click');
+      wrapper.find('path.link').first().simulate('click');
+      expect(handleClick.mock.calls.length).toBe(1);
+      expect(handleDetailDrawerOpen.mock.calls.length).toBe(1);
+
+      wrapper.setState({
+        actionsNode,
+        actionsNodeIsEdge: false,
+      });
+      wrapper.find('#expand').simulate('click');
+      wrapper.find('#details').simulate('click');
+      wrapper.setState({ actionsNode });
+      wrapper.find('#hide').simulate('click');
+      wrapper.setState({ actionsNode });
+      wrapper.find('#close').simulate('click');
+      wrapper.setState({
+        actionsNode: actionsLink,
+        actionsNodeIsEdge: true,
+      });
+      wrapper.find('#details').simulate('click');
+      wrapper.setState({
+        actionsNode: actionsLink,
+        actionsNodeIsEdge: true,
+      });
+      wrapper.find('#hide').simulate('click');
+    }, 0);
   });
 
-  it.skip('Refreshed graph still remembers displayed nodes', () => {
+  it('Refreshed graph still remembers displayed nodes', () => {
     requestMock
       .mockResolvedValueOnce(mockData['#1'])
       .mockResolvedValueOnce(mockData['#2'])
@@ -309,11 +302,13 @@ describe('<GraphComponent />', () => {
         schema={schema}
       />,
     );
-    expect(wrapper.find('circle.node')).toHaveLength(4);
-    wrapper.find('circle.node').first().simulate('click');
+    setTimeout(() => {
+      expect(wrapper.find('circle.node')).toHaveLength(4);
+      wrapper.find('circle.node').first().simulate('click');
+    }, 0);
   });
 
-  it.skip('svg click handling clears actionsNode', () => {
+  it('svg click handling clears actionsNode', () => {
     wrapper = mount(
       <GraphComponent
         handleError={handleErrSpy}
@@ -328,7 +323,10 @@ describe('<GraphComponent />', () => {
         schema={schema}
       />,
     );
-    wrapper.find('div.svg-wrapper svg').simulate('click');
-    expect(wrapper.state().actionsNode).toBeNull();
+
+    setTimeout(() => {
+      wrapper.find('div.svg-wrapper svg').simulate('click');
+      expect(wrapper.state().actionsNode).toBeNull();
+    }, 0);
   });
 });

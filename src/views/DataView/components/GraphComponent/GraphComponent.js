@@ -137,6 +137,7 @@ class GraphComponent extends Component {
    * Loads edge types, initializes graph and populates it with specified input nodes.
    * Initializes event listener for window resize.
    */
+
   async componentDidMount() {
     const {
       displayed, // an array of RIDs ["19:0", "20:0", ...]
@@ -170,6 +171,7 @@ class GraphComponent extends Component {
       expandedEdgeTypes,
       allProps,
     }, () => {
+      console.log('FINISHED INITIAL STATE SETTTING ');
       this.handleResize();
       window.addEventListener('resize', this.handleResize);
 
@@ -197,6 +199,7 @@ class GraphComponent extends Component {
         let { nodes, links, graphObjects } = this.state;
 
         /* Case 1, iterate through specified rids. */
+        console.log('case1');
         validDisplayed.forEach((key, i) => {
           ({
             nodes,
@@ -217,6 +220,7 @@ class GraphComponent extends Component {
         });
         util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
       } else if (initState) {
+        console.log('case2');
         const {
           graphObjects,
           nodes,
@@ -236,6 +240,7 @@ class GraphComponent extends Component {
           links: links.slice(),
         });
       } else if (storedData && storedData.localStorageKey === localStorageKey) {
+        console.log('case3');
         const {
           graphObjects,
         } = storedData;
@@ -276,7 +281,7 @@ class GraphComponent extends Component {
           },
         });
       }
-
+      console.log('CHECKING STORED OPTIONS');
       if (storedOptions) {
         this.setState({
           graphOptions: storedOptions,
@@ -298,6 +303,7 @@ class GraphComponent extends Component {
         });
       }
     });
+    console.log('componentDidMount FINISHED');
     return null;
   }
 
@@ -305,6 +311,7 @@ class GraphComponent extends Component {
    * Removes all event listeners.
    */
   componentWillUnmount() {
+    console.log('componentWillUnmount CALLED');
     const {
       svg,
       simulation,
@@ -347,7 +354,8 @@ class GraphComponent extends Component {
     const result = [];
     arr.forEach((record) => {
       try {
-        const response = cache.recordApiCall({ record, schema }).request();
+        const apiCall = cache.recordApiCall({ record, schema });
+        const response = apiCall.request();
         result.push(response);
       } catch (err) {
         this.handleError(err);
@@ -1089,6 +1097,7 @@ class GraphComponent extends Component {
       schema,
     } = this.props;
 
+    console.log('RENDERING...');
 
     const linkLegendDisabled = (
       links.length === 0
@@ -1176,6 +1185,8 @@ class GraphComponent extends Component {
         schema={schema}
       />
     ));
+
+    console.log('FINISHED RENDERING PREPERATION');
 
     return (
       <div className="graph-wrapper">

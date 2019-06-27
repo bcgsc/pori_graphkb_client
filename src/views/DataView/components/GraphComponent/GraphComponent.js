@@ -391,8 +391,8 @@ class GraphComponent extends Component {
 
     const ended = () => {
       if (!d3Select.event.active) simulation.alphaTarget(0);
-      node.fx = null; // eslint-disable-line no-param-reassign
-      node.fy = null; // eslint-disable-line no-param-reassign
+      node.fx = d3Select.event.x; // eslint-disable-line no-param-reassign
+      node.fy = d3Select.event.y; // eslint-disable-line no-param-reassign
     };
 
     d3Select.event
@@ -1072,6 +1072,8 @@ class GraphComponent extends Component {
   }
 
   render() {
+    // console.log('STARTING ALL PRE-RENDERING FUNCS')
+
     const {
       nodes,
       links,
@@ -1181,6 +1183,8 @@ class GraphComponent extends Component {
         schema={schema}
       />
     ));
+
+    // console.log('FINISHED ALL PRE-RENDERING FUNCS')
 
     return (
       <div className="graph-wrapper">

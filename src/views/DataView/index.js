@@ -149,7 +149,6 @@ class DataView extends React.Component {
   @boundMethod
   handleSwapToGraph() {
     const { history } = this.props;
-    this.setState({ detail: null });
     history.push({
       pathname: '/data/graph',
       search: history.location.search,
@@ -160,7 +159,6 @@ class DataView extends React.Component {
   @boundMethod
   handleTableRedirect() {
     const { history } = this.props;
-    this.setState({ detail: null });
     history.push({
       pathname: '/data/table',
       search: history.location.search,
@@ -172,11 +170,6 @@ class DataView extends React.Component {
   handleError(err) {
     const { history } = this.props;
     history.push('/error', { error: { name: err.name, message: err.message } });
-  }
-
-  @boundMethod
-  handleRefresh() { // move this to graph component
-    this.setState({ data: null });
   }
 
   /**
@@ -271,7 +264,6 @@ class DataView extends React.Component {
         handleError={this.handleError}
         edgeTypes={edges}
         schema={schema}
-        handleRefresh={this.handleRefresh}
         localStoragekey={window.location.href}
         onRecordClicked={this.handleToggleDetailPanel}
       />

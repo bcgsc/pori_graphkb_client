@@ -4,8 +4,8 @@ import GraphComponent from '../GraphComponent/GraphComponent';
 import { GraphNode, GraphLink } from '../GraphComponent/kbgraph';
 import Schema from '../../../../services/schema';
 
-const mockData = {
-  '#1': {
+const mockData = [
+  {
     '@rid': '#1',
     name: 'test one',
     sourceId: 'test-1',
@@ -19,7 +19,7 @@ const mockData = {
       },
     }],
   },
-  '#2': {
+  {
     '@rid': '#2',
     name: 'test two',
     sourceId: 'test-2',
@@ -27,12 +27,12 @@ const mockData = {
       name: 'test source',
     },
   },
-  '#3': {
+  {
     '@rid': '#3',
     name: 'test three',
     sourceId: 'test-3',
   },
-  '#4': {
+  {
     '@rid': '#4',
     name: 'linked',
     sourceId: 'test-4',
@@ -46,43 +46,30 @@ const mockData = {
       },
     }],
   },
-};
+];
 
-const handleErrSpy = jest.fn()
-  .mockImplementation(err => console.log(err));
-
-const requestMock = jest.fn()
-  .mockResolvedValueOnce(mockData['#1'])
-  .mockResolvedValueOnce(mockData['#2'])
-  .mockResolvedValueOnce(mockData['#3'])
-  .mockResolvedValueOnce(mockData['#4']);
-
-
-const recordApiCallMockFnc = {
-  request: () => requestMock(),
-};
-
+const handleErrSpy = jest.fn();
 
 const getRecordMockFnc = jest.fn()
   .mockResolvedValueOnce(mockData['#4']);
 
 const cacheSpy = ({
-  recordApiCall: () => recordApiCallMockFnc,
   getRecord: () => getRecordMockFnc(),
+  getRecords: jest.fn(),
 });
 
 describe('<GraphComponent />', () => {
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
-    requestMock.mockReset();
   });
   let wrapper;
   const componentDidMountSpy = jest.spyOn(GraphComponent.prototype, 'componentDidMount');
   const schema = new Schema();
 
-  it('calls componentDidMount on render and doesn\'t crash and burn', () => {
+  it('1) calls componentDidMount on render and doesn\'t crash and burn', () => {
     wrapper = mount(
       <GraphComponent
+        data={[]}
         handleError={handleErrSpy}
         cache={cacheSpy}
         handleDetailDrawerOpen={() => { }}
@@ -95,68 +82,50 @@ describe('<GraphComponent />', () => {
     expect(componentDidMountSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('renders all nodes specified in displayed', () => {
-    requestMock
-      .mockResolvedValueOnce(mockData['#1'])
-      .mockResolvedValueOnce(mockData['#2'])
-      .mockResolvedValueOnce(mockData['#3']);
-
+  it('2) renders all nodes specified in displayed', async () => {
     wrapper = mount(
       <GraphComponent
+        data={[mockData[0], mockData[1], mockData[2]]}
         handleError={handleErrSpy}
         cache={cacheSpy}
         handleDetailDrawerOpen={() => { }}
         handleDetailDrawerClose={() => { }}
         handleTableRedirect={() => { }}
         handleNewColumns={() => { }}
-        displayed={['#1', '#2', '#3']}
         edgeTypes={['AliasOf']}
         schema={schema}
       />,
     );
-    wrapper.update();
+    await wrapper.update();
 
-    setTimeout(() => {
-      expect(wrapper.find('svg circle.node')).toHaveLength(3);
-      expect(wrapper.find('svg path.link')).toHaveLength(0);
-    }, 0);
+    expect(wrapper.find('svg circle.node')).toHaveLength(3);
+    expect(wrapper.find('svg path.link')).toHaveLength(0);
   });
 
-  it('renders all nodes and links specified in displayed', () => {
-    requestMock
-      .mockResolvedValueOnce(mockData['#1'])
-      .mockResolvedValueOnce(mockData['#2'])
-      .mockResolvedValueOnce(mockData['#3'])
-      .mockResolvedValueOnce(mockData['#4']);
+  it('3) renders all nodes and links specified in displayed', async () => {
     wrapper = mount(
       <GraphComponent
+        data={mockData}
         handleError={handleErrSpy}
         cache={cacheSpy}
         handleDetailDrawerOpen={() => { }}
         handleDetailDrawerClose={() => { }}
         handleTableRedirect={() => { }}
         handleNewColumns={() => { }}
-        displayed={['#1', '#2', '#3', '#4']}
         edgeTypes={['AliasOf']}
         schema={schema}
       />,
     );
-    wrapper.update();
+    await wrapper.update();
 
-    setTimeout(() => {
-      expect(wrapper.find('svg circle.node')).toHaveLength(4);
-      expect(wrapper.find('svg path.link')).toHaveLength(1);
-    }, 0);
+    expect(wrapper.find('svg circle.node')).toHaveLength(4);
+    expect(wrapper.find('svg path.link')).toHaveLength(1);
   });
 
-  it('methods don\'t crash component', () => {
-    requestMock
-      .mockResolvedValueOnce(mockData['#1'])
-      .mockResolvedValueOnce(mockData['#2'])
-      .mockResolvedValueOnce(mockData['#3'])
-      .mockResolvedValueOnce(mockData['#4']);
+  it('4) methods don\'t crash component', async () => {
     wrapper = mount(
       <GraphComponent
+        data={mockData}
         handleError={handleErrSpy}
         cache={cacheSpy}
         handleDetailDrawerOpen={() => { }}
@@ -164,27 +133,22 @@ describe('<GraphComponent />', () => {
         handleTableRedirect={() => { }}
         handleNewColumns={() => { }}
         handleRefresh={() => { }}
-        displayed={['#1', '#2', '#3', '#4']}
         edgeTypes={['AliasOf']}
         schema={schema}
       />,
     );
 
-    setTimeout(() => {
-      wrapper.find('div.toolbar button.table-btn').simulate('click');
-      wrapper.find('div.toolbar button#graph-options-btn').simulate('click');
-      wrapper.find('input#linkStrength').simulate('change');
-      wrapper.find('div.toolbar .refresh-wrapper button').simulate('click');
-    }, 0);
+    await wrapper.update();
+
+    wrapper.find('div.toolbar button.table-btn').simulate('click');
+    wrapper.find('div.toolbar button#graph-options-btn').simulate('click');
+    wrapper.find('input#linkStrength').simulate('change');
+    wrapper.find('div.toolbar .refresh-wrapper button').simulate('click');
   });
 
-  it('clicking nodes and links calls appropriate handlers', () => {
-    requestMock
-      .mockResolvedValueOnce(mockData['#1'])
-      .mockResolvedValueOnce(mockData['#2'])
-      .mockResolvedValueOnce(mockData['#3'])
-      .mockResolvedValueOnce(mockData['#4']);
-    const handleClick = jest.fn();
+  it('5) clicking nodes and links calls appropriate handlers', async () => {
+    const handleClickSpy = jest.spyOn(GraphComponent.prototype, 'handleExpandNode')
+      .mockImplementation(() => {});
     const handleDetailDrawerOpen = jest.fn();
     const actionsNode = new GraphNode({
       x: 0,
@@ -225,58 +189,53 @@ describe('<GraphComponent />', () => {
 
     wrapper = mount(
       <GraphComponent
+        data={mockData}
         handleError={handleErrSpy}
         cache={cacheSpy}
         handleDetailDrawerOpen={handleDetailDrawerOpen}
         handleDetailDrawerClose={() => { }}
         handleTableRedirect={() => { }}
         handleNewColumns={() => { }}
-        handleClick={handleClick}
+        handleClick={handleClickSpy}
         displayed={['#1', '#2', '#3', '#4']}
         edgeTypes={['AliasOf']}
         schema={schema}
       />,
     );
 
-    wrapper.update();
+    await wrapper.update();
 
-    setTimeout(() => {
-      wrapper.find('circle.node').first().simulate('click');
-      wrapper.find('path.link').first().simulate('click');
-      expect(handleClick.mock.calls.length).toBe(1);
-      expect(handleDetailDrawerOpen.mock.calls.length).toBe(1);
+    wrapper.find('circle.node').first().simulate('click');
+    wrapper.find('path.link').first().simulate('click');
+    expect(handleClickSpy.mock.calls.length).toBe(1);
+    expect(handleDetailDrawerOpen.mock.calls.length).toBe(1);
 
-      wrapper.setState({
-        actionsNode,
-        actionsNodeIsEdge: false,
-      });
-      wrapper.find('#expand').simulate('click');
-      wrapper.find('#details').simulate('click');
-      wrapper.setState({ actionsNode });
-      wrapper.find('#hide').simulate('click');
-      wrapper.setState({ actionsNode });
-      wrapper.find('#close').simulate('click');
-      wrapper.setState({
-        actionsNode: actionsLink,
-        actionsNodeIsEdge: true,
-      });
-      wrapper.find('#details').simulate('click');
-      wrapper.setState({
-        actionsNode: actionsLink,
-        actionsNodeIsEdge: true,
-      });
-      wrapper.find('#hide').simulate('click');
-    }, 0);
+    wrapper.setState({
+      actionsNode,
+      actionsNodeIsEdge: false,
+    });
+    wrapper.find('#expand').simulate('click');
+    wrapper.find('#details').simulate('click');
+    wrapper.setState({ actionsNode });
+    wrapper.find('#hide').simulate('click');
+    wrapper.setState({ actionsNode });
+    wrapper.find('#close').simulate('click');
+    wrapper.setState({
+      actionsNode: actionsLink,
+      actionsNodeIsEdge: true,
+    });
+    wrapper.find('#details').simulate('click');
+    wrapper.setState({
+      actionsNode: actionsLink,
+      actionsNodeIsEdge: true,
+    });
+    wrapper.find('#hide').simulate('click');
   });
 
-  it('Refreshed graph still remembers displayed nodes', () => {
-    requestMock
-      .mockResolvedValueOnce(mockData['#1'])
-      .mockResolvedValueOnce(mockData['#2'])
-      .mockResolvedValueOnce(mockData['#3'])
-      .mockResolvedValueOnce(mockData['#4']);
+  it('6) Refreshed graph still remembers displayed nodes', () => {
     wrapper = mount(
       <GraphComponent
+        data={mockData}
         handleError={handleErrSpy}
         cache={cacheSpy}
         handleDetailDrawerOpen={() => { }}
@@ -291,6 +250,7 @@ describe('<GraphComponent />', () => {
     );
     wrapper = mount(
       <GraphComponent
+        data={[]}
         handleError={handleErrSpy}
         cache={cacheSpy}
         handleDetailDrawerOpen={() => { }}
@@ -302,15 +262,15 @@ describe('<GraphComponent />', () => {
         schema={schema}
       />,
     );
-    setTimeout(() => {
-      expect(wrapper.find('circle.node')).toHaveLength(4);
-      wrapper.find('circle.node').first().simulate('click');
-    }, 0);
+
+    expect(wrapper.find('circle.node')).toHaveLength(4);
+    wrapper.find('circle.node').first().simulate('click');
   });
 
   it('svg click handling clears actionsNode', () => {
     wrapper = mount(
       <GraphComponent
+        data={[]}
         handleError={handleErrSpy}
         cache={cacheSpy}
         handleDetailDrawerOpen={() => { }}
@@ -324,9 +284,7 @@ describe('<GraphComponent />', () => {
       />,
     );
 
-    setTimeout(() => {
-      wrapper.find('div.svg-wrapper svg').simulate('click');
-      expect(wrapper.state().actionsNode).toBeNull();
-    }, 0);
+    wrapper.find('div.svg-wrapper svg').simulate('click');
+    expect(wrapper.state().actionsNode).toBeNull();
   });
 });

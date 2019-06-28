@@ -86,7 +86,6 @@ class GraphComponent extends Component {
     localStorageKey: PropTypes.string,
     schema: PropTypes.object.isRequired,
     handleError: PropTypes.func.isRequired,
-    handleRefresh: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -706,14 +705,19 @@ class GraphComponent extends Component {
     };
   }
 
+  @boundMethod
+  handleRefresh() {
+    this.setState({ data: null });
+  }
+
   /**
    * Restarts simulation with initial nodes and links present. These are determined by the
    * first state rendered when the component mounts.
    */
   @boundMethod
   refresh() {
-    const { handleDetailDrawerClose, handleRefresh } = this.props;
-    handleRefresh();
+    const { handleDetailDrawerClose } = this.props;
+    this.handleRefresh();
     this.setState({
       nodes: [],
       links: [],

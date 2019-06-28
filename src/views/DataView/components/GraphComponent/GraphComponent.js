@@ -151,8 +151,6 @@ class GraphComponent extends Component {
     const allProps = this.getUniqueDataProps();
     this.propsMap = new PropsMap();
 
-    console.log("TCL: GraphComponent -> componentDidMount -> originalData", originalData)
-
     const displayed = originalData.map(obj => obj['@rid']);
     const data = GraphComponent.hashRecordsByRID(originalData);
 
@@ -194,7 +192,6 @@ class GraphComponent extends Component {
         let { nodes, links, graphObjects } = this.state;
 
         /* Case 1, iterate through specified rids. */
-        console.log('case1');
         validDisplayed.forEach((key, i) => {
           ({
             nodes,
@@ -215,7 +212,6 @@ class GraphComponent extends Component {
         });
         util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
       } else if (initState) {
-        console.log('case2');
         const {
           graphObjects,
           nodes,
@@ -235,7 +231,6 @@ class GraphComponent extends Component {
           links: links.slice(),
         });
       } else if (storedData && storedData.localStorageKey === localStorageKey) {
-        console.log('case3');
         const {
           graphObjects,
         } = storedData;
@@ -305,7 +300,6 @@ class GraphComponent extends Component {
    * Removes all event listeners.
    */
   componentWillUnmount() {
-    console.log('componentWillUnmount CALLED');
     const {
       svg,
       simulation,
@@ -1040,7 +1034,6 @@ class GraphComponent extends Component {
   }
 
   render() {
-
     const {
       nodes,
       links,

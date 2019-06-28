@@ -82,7 +82,7 @@ class GraphComponent extends Component {
     detail: PropTypes.object,
     cache: PropTypes.object.isRequired,
     edgeTypes: PropTypes.arrayOf(PropTypes.string),
-    displayed: PropTypes.arrayOf(PropTypes.string),
+    data: PropTypes.arrayOf(PropTypes.object).isRequired,
     localStorageKey: PropTypes.string,
     schema: PropTypes.object.isRequired,
     handleError: PropTypes.func.isRequired,
@@ -92,11 +92,10 @@ class GraphComponent extends Component {
   static defaultProps = {
     detail: null,
     edgeTypes: [],
-    displayed: [],
     localStorageKey: '',
   };
 
-  static hashRecordsByRID(data) { // move to graph component
+  static hashRecordsByRID(data) {
     const newData = {};
     data.forEach((obj) => {
       newData[obj['@rid']] = obj;
@@ -104,26 +103,12 @@ class GraphComponent extends Component {
     return newData;
   }
 
-  static fetchInitialData(arr, cache, schema, handleError) {
-    const result = [];
-    arr.forEach(async (record) => {
-      try {
-        const apiCall = cache.recordApiCall({ record, schema });
-        const response = apiCall.request();
-        result.push(response);
-      } catch (err) {
-        handleError(err);
-      }
-    });
-    return result;
-  }
-
   constructor(props) {
     super(props);
     this.state = {
       nodes: [],
       links: [],
-      data: null,
+      data: [],
       graphObjects: {},
       expandable: {},
       expandedEdgeTypes: [],
@@ -153,26 +138,23 @@ class GraphComponent extends Component {
 
   async componentDidMount() {
     const {
-      displayed, // an array of RIDs ["19:0", "20:0", ...]
       edgeTypes,
       localStorageKey,
       handleError,
-      cache,
-      schema,
+      data: originalData,
     } = this.props;
     const {
       graphOptions,
       initState,
-      data,
     } = this.state;
     let { expandable } = this.state;
     const allProps = this.getUniqueDataProps();
     this.propsMap = new PropsMap();
 
-    if (!data) {
-      await this.fetchAndSetInitialData(displayed, cache, schema);
-      return null;
-    }
+    console.log("TCL: GraphComponent -> componentDidMount -> originalData", originalData)
+
+    const displayed = originalData.map(obj => obj['@rid']);
+    const data = GraphComponent.hashRecordsByRID(originalData);
 
     const expandedEdgeTypes = util.expandEdges(edgeTypes);
     let validDisplayed = displayed;
@@ -183,6 +165,7 @@ class GraphComponent extends Component {
     this.setState({
       expandedEdgeTypes,
       allProps,
+      data,
     }, () => {
       this.handleResize();
       window.addEventListener('resize', this.handleResize);
@@ -190,7 +173,7 @@ class GraphComponent extends Component {
       const storedData = util.getGraphData(localStorageKey);
       const storedOptions = GraphOptions.retrieve();
 
-      if (displayed.length === 0 && !storedData) {
+      if (originalData.length === 0 && !storedData) {
         const err = {
           name: 'No Seed Data',
           message: 'Please select a record from the data table for graph visualization',
@@ -360,18 +343,6 @@ class GraphComponent extends Component {
     uniqueProps = ['@rid', '@class', 'name'];
     return uniqueProps;
   };
-
-  async fetchAndSetInitialData(selectedRIDs, cache, schema) {
-    const { handleError } = this.props;
-    try {
-      const promises = GraphComponent.fetchInitialData(selectedRIDs, cache, schema, handleError);
-      const results = await Promise.all(promises);
-      const hashedRecords = GraphComponent.hashRecordsByRID(results);
-      this.setState({ data: hashedRecords }, () => { this.componentDidMount(); });
-    } catch (err) {
-      handleError(err);
-    }
-  }
 
   /**
    * Applies drag behavior to node.
@@ -576,10 +547,8 @@ class GraphComponent extends Component {
   async handleExpandNode({ data: node }) {
     const { cache } = this.props;
     const { data } = this.state;
-    console.log('TCL: GraphComponent -> handleExpandNode -> data', data);
     try {
       const record = await cache.getRecord(node);
-      console.log('TCL: GraphComponent -> handleExpandNode -> record', record);
       if (data[record['@rid']] === undefined) {
         data[record['@rid']] = record;
         this.setState({ data });
@@ -625,7 +594,6 @@ class GraphComponent extends Component {
       graphObjects,
       expandable,
     } = prevstate;
-    // const { data } = this.props; // move data to state
 
     if (data[node['@rid']]) {
       node = data[node['@rid']]; // eslint-disable-line no-param-reassign
@@ -1072,7 +1040,6 @@ class GraphComponent extends Component {
   }
 
   render() {
-    // console.log('STARTING ALL PRE-RENDERING FUNCS')
 
     const {
       nodes,
@@ -1183,8 +1150,6 @@ class GraphComponent extends Component {
         schema={schema}
       />
     ));
-
-    // console.log('FINISHED ALL PRE-RENDERING FUNCS')
 
     return (
       <div className="graph-wrapper">

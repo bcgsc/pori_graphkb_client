@@ -226,6 +226,10 @@ class DataView extends React.Component {
     }
   }
 
+  /**
+   * Renders either the DataTable or Graph view depending on the parsed URL
+   */
+
   renderDataComponent() {
     const {
       detailPanelRow,
@@ -234,6 +238,8 @@ class DataView extends React.Component {
       selectedRecords,
       search,
     } = this.state;
+    console.log("TCL: renderDataComponent -> selectedRecords", selectedRecords);
+
 
     const { bufferSize } = this.props;
     const { schema } = this.context;
@@ -255,19 +261,14 @@ class DataView extends React.Component {
       );
     }
 
-    const selectedRIDs = [];
-    selectedRecords.forEach((record) => {
-      selectedRIDs.push(record['@rid']);
-    });
-
     return (
       <GraphComponent
+        data={selectedRecords}
         cache={cache}
         handleDetailDrawerOpen={this.handleToggleDetailPanel}
         handleDetailDrawerClose={this.handleToggleDetailPanel}
         handleTableRedirect={this.handleTableRedirect}
         detail={detailPanelRow}
-        displayed={selectedRIDs} // an array of RIDs ["19:0", "20:0", ...]
         handleError={this.handleError}
         edgeTypes={edges}
         schema={schema}

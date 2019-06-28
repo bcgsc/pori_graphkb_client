@@ -238,7 +238,6 @@ class DataView extends React.Component {
       selectedRecords,
       search,
     } = this.state;
-    console.log("TCL: renderDataComponent -> selectedRecords", selectedRecords);
 
 
     const { bufferSize } = this.props;

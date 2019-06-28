@@ -353,9 +353,14 @@ class GraphComponent extends Component {
     };
 
     const ended = () => {
-      if (!d3Select.event.active) simulation.alphaTarget(0);
-      node.fx = d3Select.event.x; // eslint-disable-line no-param-reassign
-      node.fy = d3Select.event.y; // eslint-disable-line no-param-reassign
+
+      if (!d3Select.event.active) {
+        simulation.alphaTarget(0);
+      }
+      if (!d3Select.event.type === 'end') {
+        node.fx = d3Select.event.x; // eslint-disable-line no-param-reassign
+        node.fy = d3Select.event.y; // eslint-disable-line no-param-reassign
+      }
     };
 
     d3Select.event

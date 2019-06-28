@@ -292,7 +292,6 @@ class GraphComponent extends Component {
         });
       }
     });
-    return null;
   }
 
   /**

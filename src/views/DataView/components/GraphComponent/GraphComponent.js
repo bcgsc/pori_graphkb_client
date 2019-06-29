@@ -353,7 +353,6 @@ class GraphComponent extends Component {
     };
 
     const ended = () => {
-
       if (!d3Select.event.active) {
         simulation.alphaTarget(0);
       }

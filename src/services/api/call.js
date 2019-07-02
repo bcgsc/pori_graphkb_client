@@ -3,7 +3,11 @@ import { boundMethod } from 'autobind-decorator';
 
 import config from '../../static/config';
 import {
-  BadRequestError, AuthorizationError, AuthenticationError, RecordExistsError,
+  BadRequestError,
+  AuthorizationError,
+  AuthenticationError,
+  RecordExistsError,
+  APIConnectionFailureError,
 } from '../errors';
 
 const {
@@ -117,6 +121,9 @@ class ApiCall {
     }
     if (status === 403) {
       throw new AuthorizationError(error);
+    }
+    if (status === 404) {
+      throw new APIConnectionFailureError(error);
     }
     throw new Error(`Unexpected Error [${status}]: ${statusText}`);
   }

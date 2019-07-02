@@ -348,9 +348,11 @@ class DataView extends React.Component {
             variant="search"
             value={filters}
           />
-          <IconButton onClick={this.handleToggleOptionsMenu} className="data-view__edit-filters">
-            <MoreHorizIcon color="action" />
-          </IconButton>
+          {URLContainsTable && (
+            <IconButton onClick={this.handleToggleOptionsMenu} className="data-view__edit-filters">
+              <MoreHorizIcon color="action" />
+            </IconButton>
+          )}
         </div>
         <div className="data-view__content">
           {cache && (

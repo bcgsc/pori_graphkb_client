@@ -329,7 +329,7 @@ class DataView extends React.Component {
         <div className="data-view__header">
           {URLContainsTable && (
             <>
-              <Typography variant="h3">Active Filters</Typography>
+              <Typography variant="h5">Active Filters</Typography>
               <IconButton
                 onClick={() => this.setState({ filtersEditOpen: true })}
               >

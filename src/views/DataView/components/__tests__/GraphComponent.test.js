@@ -66,7 +66,7 @@ describe('<GraphComponent />', () => {
   const componentDidMountSpy = jest.spyOn(GraphComponent.prototype, 'componentDidMount');
   const schema = new Schema();
 
-  it('1) calls componentDidMount on render and doesn\'t crash and burn', () => {
+  it('calls componentDidMount on render and doesn\'t crash and burn', () => {
     wrapper = mount(
       <GraphComponent
         data={[]}
@@ -82,7 +82,7 @@ describe('<GraphComponent />', () => {
     expect(componentDidMountSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('2) renders all nodes specified in displayed', async () => {
+  it('renders all nodes specified in displayed', async () => {
     wrapper = mount(
       <GraphComponent
         data={[mockData[0], mockData[1], mockData[2]]}
@@ -102,7 +102,7 @@ describe('<GraphComponent />', () => {
     expect(wrapper.find('svg path.link')).toHaveLength(0);
   });
 
-  it('3) renders all nodes and links specified in displayed', async () => {
+  it('renders all nodes and links specified in displayed', async () => {
     wrapper = mount(
       <GraphComponent
         data={mockData}
@@ -122,7 +122,7 @@ describe('<GraphComponent />', () => {
     expect(wrapper.find('svg path.link')).toHaveLength(1);
   });
 
-  it('4) methods don\'t crash component', async () => {
+  it('methods don\'t crash component', async () => {
     wrapper = mount(
       <GraphComponent
         data={mockData}
@@ -146,7 +146,7 @@ describe('<GraphComponent />', () => {
     wrapper.find('div.toolbar .refresh-wrapper button').simulate('click');
   });
 
-  it('5) clicking nodes and links calls appropriate handlers', async () => {
+  it('clicking nodes and links calls appropriate handlers', async () => {
     const handleClickSpy = jest.spyOn(GraphComponent.prototype, 'handleExpandNode')
       .mockImplementation(() => {});
     const handleDetailDrawerOpen = jest.fn();
@@ -232,7 +232,7 @@ describe('<GraphComponent />', () => {
     wrapper.find('#hide').simulate('click');
   });
 
-  it('6) Refreshed graph still remembers displayed nodes', () => {
+  it('Refreshed graph still remembers displayed nodes', () => {
     wrapper = mount(
       <GraphComponent
         data={mockData}

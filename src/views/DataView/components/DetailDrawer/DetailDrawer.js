@@ -346,7 +346,7 @@ class DetailDrawer extends Component {
     return (
       <List>
         {edges.map((edge) => {
-          const metaOpen = opened.includes(`${edge['@rid']}meta`);
+          const metaOpen = opened.includes(`${edge['@rid']} meta`);
           const isOpen = linkOpen === edge['@rid'];
           const isIn = edge.in && edge.in['@rid'] === node['@rid'];
           const targetNode = isIn ? edge.out : edge.in;

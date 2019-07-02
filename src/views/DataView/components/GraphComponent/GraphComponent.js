@@ -168,6 +168,7 @@ class GraphComponent extends Component {
       window.addEventListener('resize', this.handleResize);
 
       const storedData = util.getGraphData(localStorageKey);
+      console.log("TCL: GraphComponent -> componentDidMount -> localStorageKey", localStorageKey)
       const storedOptions = GraphOptions.retrieve();
 
       if (originalData.length === 0 && !storedData) {

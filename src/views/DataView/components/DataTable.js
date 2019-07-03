@@ -253,7 +253,6 @@ class DataTable extends React.Component {
       customHeader: header,
       onlySelected: selectionOnly,
       onlySelectedAllPages: selectionOnly,
-      allColumns: !selectionOnly,
       processCellCallback: ({ value }) => {
         if (Array.isArray(value)) {
           return value.map(formatValue).join(';');

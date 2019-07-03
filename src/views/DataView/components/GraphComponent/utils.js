@@ -4,4 +4,4 @@ const isObject = (val) => {
   return ((typeof val === 'function') || (typeof val === 'object'));
 };
 
-export default isObject;
+export { isObject };

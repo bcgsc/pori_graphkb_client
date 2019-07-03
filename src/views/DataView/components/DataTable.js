@@ -47,7 +47,7 @@ class DataTable extends React.Component {
       allGroups: {},
       activeGroups: new Set(),
       pingedIndices: new Set(),
-      totalRowNumber: null,
+      totalNumOfRows: null,
     };
   }
 
@@ -84,7 +84,6 @@ class DataTable extends React.Component {
   initializeGrid() {
     const { search } = this.props;
     const { schema } = this.context;
-    const { totalRowNumber } = this.state;
 
     this.gridApi.setColumnDefs([
       {
@@ -97,9 +96,6 @@ class DataTable extends React.Component {
     ]);
     this.detectColumns();
 
-    const fullExport = Boolean(totalRowNumber);
-    console.log('TCL: initializeGrid -> fullExport', fullExport);
-
     const dataSource = {
       rowCount: null,
       getRows: ({
@@ -108,12 +104,11 @@ class DataTable extends React.Component {
         this.getTableData(params)
           .then(([rows, lastRow]) => {
             // update filters
-            this.setState({ totalRowNumber: lastRow });
+            this.setState({ totalNumOfRows: lastRow });
             successCallback(rows, lastRow);
           }).catch(() => failCallback());
       },
     };
-
     // update the model
     this.gridApi.setDatasource(dataSource);
   }
@@ -233,7 +228,7 @@ class DataTable extends React.Component {
   @boundMethod
   async handleExportTsv(selectionOnly = false) {
     const { schema, auth } = this.context;
-    const { totalRowNumber } = this.state;
+    const { totalNumOfRows } = this.state;
 
     const { gridOptions } = this.gridApi.getModel().gridOptionsWrapper;
 
@@ -268,13 +263,14 @@ class DataTable extends React.Component {
     };
 
     if (!selectionOnly) {
-      gridOptions.cacheBlockSize = totalRowNumber;
+      gridOptions.cacheBlockSize = totalNumOfRows; // in preparation to fetch entire dataset
+
       const tempDataSource = {
         rowCount: null,
         getRows: async ({
           successCallback, failCallback, ...params
         }) => {
-          params.endRow = totalRowNumber; // fetches entire data set with this adjustment
+          params.endRow = totalNumOfRows; // fetches entire data set with this adjustment
           try {
             const [rows, lastRow] = await this.getTableData(params);
             successCallback(rows, lastRow);
@@ -286,7 +282,7 @@ class DataTable extends React.Component {
         },
       };
 
-      await this.gridApi.setDatasource(tempDataSource); // sets new datasource
+      await this.gridApi.setDatasource(tempDataSource);
     } else {
       this.gridApi.exportDataAsCsv(exportParams);
     }

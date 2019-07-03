@@ -1,5 +1,5 @@
 import config from '../../../../static/config';
-import isObject from './utils';
+import { isObject } from './utils';
 
 const DEFAULT_NODE_VPROPS = [
   'source.name',

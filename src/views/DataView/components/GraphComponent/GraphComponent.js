@@ -26,7 +26,7 @@ import GraphExpansionDialog from './GraphExpansionDialog/GraphExpansionDialog';
 import GraphLegend from './GraphLegend/GraphLegend';
 import util from '../../../../services/util';
 import config from '../../../../static/config';
-import isObject from './utils';
+import { isObject } from './utils';
 import {
   PropsMap,
   GraphOptions,

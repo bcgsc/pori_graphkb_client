@@ -233,8 +233,8 @@ class DataTable extends React.Component {
     const { gridOptions } = this.gridApi.getModel().gridOptionsWrapper;
 
     const header = `## Exported from GraphKB at ${new Date()} by ${auth.username}
-    ## Distribution and Re-use of the contents of GraphKB are subject to the usage aggreements of individual data sources.
-    ## Please review the appropriate agreements prior to use (see usage under sources)`;
+## Distribution and Re-use of the contents of GraphKB are subject to the usage aggreements of individual data sources.
+## Please review the appropriate agreements prior to use (see usage under sources)`;
 
     const formatValue = (value) => {
       if (typeof value === 'object' && value !== null) {

@@ -310,7 +310,7 @@ class DataTable extends React.Component {
 
   renderOptionsMenu() {
     const {
-      allColumns, activeColumns, allGroups, activeGroups,
+      allColumns, activeColumns, allGroups, activeGroups, totalNumOfRows,
     } = this.state;
     const { optionsMenuAnchor, optionsMenuOnClose } = this.props;
     const ignorePreviewColumns = colId => !colId.endsWith('.preview');
@@ -358,9 +358,14 @@ class DataTable extends React.Component {
         label: 'Configure Visible Columns',
         content: columnControl,
       },
-      { label: 'Export to TSV', handler: () => this.handleExportTsv(false) },
-
     ];
+
+    if(totalNumOfRows < 1000){
+      menuContents.push({
+        label: 'Export All to TSV',
+        handler: () => this.handleExportTsv(false)
+      });
+    }
 
     if (selectionCount) {
       menuContents.push({

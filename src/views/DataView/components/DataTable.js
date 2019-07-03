@@ -282,7 +282,7 @@ class DataTable extends React.Component {
         },
       };
 
-      await this.gridApi.setDatasource(tempDataSource);
+      this.gridApi.setDatasource(tempDataSource);
     } else {
       this.gridApi.exportDataAsCsv(exportParams);
     }

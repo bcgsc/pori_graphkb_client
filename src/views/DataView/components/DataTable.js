@@ -506,6 +506,7 @@ class DataTable extends React.Component {
             }
           }}
           rowSelection="multiple"
+          rowMultiSelectWithClick={true}
         />
       </div>
     );

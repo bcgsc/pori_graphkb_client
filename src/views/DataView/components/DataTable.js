@@ -231,34 +231,15 @@ class DataTable extends React.Component {
   }
 
   @boundMethod
-  handleExportTsv(selectionOnly = false) {
-    console.log('handleExporTsv called...');
+  async handleExportTsv(selectionOnly = false) {
     const { schema, auth } = this.context;
     const { totalRowNumber } = this.state;
 
-    // set temp dataSource with full data and change cacheBlockSize size temporary
     const { gridOptions } = this.gridApi.getModel().gridOptionsWrapper;
-    console.log('TCL: handleExportTsv -> gridOptions', gridOptions);
-    if (!selectionOnly) {
-      gridOptions.cacheBlockSize = totalRowNumber;
-      const tempDataSource = {
-        rowCount: null,
-        getRows: ({
-          successCallback, failCallback, ...params
-        }) => {
-          params.endRow = totalRowNumber;
-          this.getTableData(params)
-            .then(([rows, lastRow]) => {
-              console.log('TCL: handleExportTsv -> rows', rows);
-              this.setState({ totalRowNumber: lastRow });
-              // update filters
-              successCallback(rows, lastRow);
-            }).catch(() => failCallback());
-        },
-      };
 
-      this.gridApi.setDatasource(tempDataSource);
-    }
+    const header = `## Exported from GraphKB at ${new Date()} by ${auth.username}
+    ## Distribution and Re-use of the contents of GraphKB are subject to the usage aggreements of individual data sources.
+    ## Please review the appropriate agreements prior to use (see usage under sources)`;
 
     const formatValue = (value) => {
       if (typeof value === 'object' && value !== null) {
@@ -269,52 +250,67 @@ class DataTable extends React.Component {
         : value;
     };
 
-    const header = `## Exported from GraphKB at ${new Date()} by ${auth.username}
-## Distribution and Re-use of the contents of GraphKB are subject to the usage aggreements of individual data sources.
-## Please review the appropriate agreements prior to use (see usage under sources)`;
+    const exportParams = {
+      columnGroups: true,
+      fileName: `graphkb_export_${(new Date()).valueOf()}.tsv`,
+      columnSeparator: '\t',
+      suppressQuotes: true,
+      customHeader: header,
+      onlySelected: selectionOnly,
+      onlySelectedAllPages: selectionOnly,
+      allColumns: !selectionOnly,
+      processCellCallback: ({ value }) => {
+        if (Array.isArray(value)) {
+          return value.map(formatValue).join(';');
+        }
+        return formatValue(value);
+      },
+    };
 
-    // set a small timeout to wait for the new datasource to be set
-    // export datasource as CSV after timer completes
-    setTimeout(() => {
-      this.gridApi.exportDataAsCsv({
-        columnGroups: true,
-        fileName: `graphkb_export_${(new Date()).valueOf()}.tsv`,
-        columnSeparator: '\t',
-        suppressQuotes: true,
-        customHeader: header,
-        onlySelected: selectionOnly,
-        onlySelectedAllPages: selectionOnly,
-        allColumns: !selectionOnly,
-        processCellCallback: ({ value }) => {
-          if (Array.isArray(value)) {
-            return value.map(formatValue).join(';');
-          }
-          return formatValue(value);
-        },
-      });
-    }, 2000);
-
-    // set a small timeout so that the datasource is finished exporting before
-    // resetting to the oldDataSource
-    setTimeout(() => {
-      const dataSource = {
+    if (!selectionOnly) {
+      gridOptions.cacheBlockSize = totalRowNumber;
+      const tempDataSource = {
         rowCount: null,
-        getRows: ({
+        getRows: async ({
           successCallback, failCallback, ...params
         }) => {
-          this.getTableData(params)
-            .then(([rows, lastRow]) => {
-              // update filters
-              this.setState({ totalRowNumber: lastRow });
-              successCallback(rows, lastRow);
-            }).catch(() => failCallback());
+          params.endRow = totalRowNumber; // fetches entire data set with this adjustment
+          try {
+            const [rows, lastRow] = await this.getTableData(params);
+            successCallback(rows, lastRow);
+            await this.gridApi.exportDataAsCsv(exportParams);
+            await this.resetDefaultGridOptions();
+          } catch (err) {
+            failCallback();
+          }
         },
       };
 
-      // update the model
-      this.gridApi.setDatasource(dataSource);
-      gridOptions.cacheBlockSize = 50; // default cacheBlockSize
-    }, 4000);
+      await this.gridApi.setDatasource(tempDataSource); // sets new datasource
+    } else {
+      this.gridApi.exportDataAsCsv(exportParams);
+    }
+  }
+
+
+  async resetDefaultGridOptions() {
+    const { gridOptions } = this.gridApi.getModel().gridOptionsWrapper;
+    const dataSource = {
+      rowCount: null,
+      getRows: ({
+        successCallback, failCallback, ...params
+      }) => {
+        this.getTableData(params)
+          .then(([rows, lastRow]) => {
+            // update filters
+            successCallback(rows, lastRow);
+          }).catch(() => failCallback());
+      },
+    };
+
+    // update the model
+    await this.gridApi.setDatasource(dataSource);
+    gridOptions.cacheBlockSize = 50; // default cacheBlockSize
   }
 
   renderOptionsMenu() {

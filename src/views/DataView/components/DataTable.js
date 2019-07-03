@@ -47,6 +47,7 @@ class DataTable extends React.Component {
       allGroups: {},
       activeGroups: new Set(),
       pingedIndices: new Set(),
+      totalRowNumber: null,
     };
   }
 
@@ -83,6 +84,7 @@ class DataTable extends React.Component {
   initializeGrid() {
     const { search } = this.props;
     const { schema } = this.context;
+    const { totalRowNumber } = this.state;
 
     this.gridApi.setColumnDefs([
       {
@@ -95,6 +97,9 @@ class DataTable extends React.Component {
     ]);
     this.detectColumns();
 
+    const fullExport = Boolean(totalRowNumber);
+    console.log('TCL: initializeGrid -> fullExport', fullExport);
+
     const dataSource = {
       rowCount: null,
       getRows: ({
@@ -103,10 +108,12 @@ class DataTable extends React.Component {
         this.getTableData(params)
           .then(([rows, lastRow]) => {
             // update filters
+            this.setState({ totalRowNumber: lastRow });
             successCallback(rows, lastRow);
           }).catch(() => failCallback());
       },
     };
+
     // update the model
     this.gridApi.setDatasource(dataSource);
   }
@@ -225,7 +232,33 @@ class DataTable extends React.Component {
 
   @boundMethod
   handleExportTsv(selectionOnly = false) {
+    console.log('handleExporTsv called...');
     const { schema, auth } = this.context;
+    const { totalRowNumber } = this.state;
+
+    // set temp dataSource with full data and change cacheBlockSize size temporary
+    const { gridOptions } = this.gridApi.getModel().gridOptionsWrapper;
+    console.log('TCL: handleExportTsv -> gridOptions', gridOptions);
+    if (!selectionOnly) {
+      gridOptions.cacheBlockSize = totalRowNumber;
+      const tempDataSource = {
+        rowCount: null,
+        getRows: ({
+          successCallback, failCallback, ...params
+        }) => {
+          params.endRow = totalRowNumber;
+          this.getTableData(params)
+            .then(([rows, lastRow]) => {
+              console.log('TCL: handleExportTsv -> rows', rows);
+              this.setState({ totalRowNumber: lastRow });
+              // update filters
+              successCallback(rows, lastRow);
+            }).catch(() => failCallback());
+        },
+      };
+
+      this.gridApi.setDatasource(tempDataSource);
+    }
 
     const formatValue = (value) => {
       if (typeof value === 'object' && value !== null) {
@@ -240,20 +273,48 @@ class DataTable extends React.Component {
 ## Distribution and Re-use of the contents of GraphKB are subject to the usage aggreements of individual data sources.
 ## Please review the appropriate agreements prior to use (see usage under sources)`;
 
-    this.gridApi.exportDataAsCsv({
-      columnGroups: true,
-      fileName: `graphkb_export_${(new Date()).valueOf()}.tsv`,
-      columnSeparator: '\t',
-      suppressQuotes: true,
-      customHeader: header,
-      onlySelected: selectionOnly,
-      processCellCallback: ({ value }) => {
-        if (Array.isArray(value)) {
-          return value.map(formatValue).join(';');
-        }
-        return formatValue(value);
-      },
-    });
+    // set a small timeout to wait for the new datasource to be set
+    // export datasource as CSV after timer completes
+    setTimeout(() => {
+      this.gridApi.exportDataAsCsv({
+        columnGroups: true,
+        fileName: `graphkb_export_${(new Date()).valueOf()}.tsv`,
+        columnSeparator: '\t',
+        suppressQuotes: true,
+        customHeader: header,
+        onlySelected: selectionOnly,
+        onlySelectedAllPages: selectionOnly,
+        allColumns: !selectionOnly,
+        processCellCallback: ({ value }) => {
+          if (Array.isArray(value)) {
+            return value.map(formatValue).join(';');
+          }
+          return formatValue(value);
+        },
+      });
+    }, 2000);
+
+    // set a small timeout so that the datasource is finished exporting before
+    // resetting to the oldDataSource
+    setTimeout(() => {
+      const dataSource = {
+        rowCount: null,
+        getRows: ({
+          successCallback, failCallback, ...params
+        }) => {
+          this.getTableData(params)
+            .then(([rows, lastRow]) => {
+              // update filters
+              this.setState({ totalRowNumber: lastRow });
+              successCallback(rows, lastRow);
+            }).catch(() => failCallback());
+        },
+      };
+
+      // update the model
+      this.gridApi.setDatasource(dataSource);
+      gridOptions.cacheBlockSize = 50; // default cacheBlockSize
+    }, 4000);
   }
 
   renderOptionsMenu() {

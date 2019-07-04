@@ -332,19 +332,22 @@ class BaseRecordForm extends React.Component {
       } else if (properties[item]) {
         const prop = properties[item];
         const { name } = prop;
-        const wrapper = FormField({
-          model: prop,
-          value: content[name],
-          error: errors[name],
-          onValueChange: this.handleValueChange,
-          schema,
-          variant,
-          disabled: (
-            variant === FORM_VARIANT.VIEW
-            || actionInProgress
-            || (variant === FORM_VARIANT.EDIT && model.isEdge)
-          ),
-        });
+        const wrapper = (
+          <FormField
+            model={prop}
+            value={content[name]}
+            error={errors[name]}
+            onValueChange={this.handleValueChange}
+            schema={schema}
+            variant={variant}
+            key={name}
+            disabled={(
+              variant === FORM_VARIANT.VIEW
+              || actionInProgress
+              || (variant === FORM_VARIANT.EDIT && model.isEdge)
+            )}
+          />
+        );
         fields.push(wrapper);
       }
     });

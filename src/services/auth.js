@@ -162,7 +162,12 @@ class Authentication {
 
   async login(referrerUri = null) {
     this.referrerUri = referrerUri;
-    await this.keycloak.init({ onLoad: 'login-required', promiseType: 'native' });
+    const init = new Promise((resolve, reject) => {
+      const prom = this.keycloak.init({ onLoad: 'login-required' }); // setting promiseType = native does not work for later functions inside the closure
+      prom.success(resolve);
+      prom.error(reject);
+    });
+    await init;
   }
 
   async logout() {

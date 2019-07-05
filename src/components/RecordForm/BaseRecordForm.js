@@ -332,19 +332,22 @@ class BaseRecordForm extends React.Component {
       } else if (properties[item]) {
         const prop = properties[item];
         const { name } = prop;
-        const wrapper = FormField({
-          model: prop,
-          value: content[name],
-          error: errors[name],
-          onValueChange: this.handleValueChange,
-          schema,
-          variant,
-          disabled: (
-            variant === FORM_VARIANT.VIEW
-            || actionInProgress
-            || (variant === FORM_VARIANT.EDIT && model.isEdge)
-          ),
-        });
+        const wrapper = (
+          <FormField
+            model={prop}
+            value={content[name]}
+            error={errors[name]}
+            onValueChange={this.handleValueChange}
+            schema={schema}
+            variant={variant}
+            key={name}
+            disabled={(
+              variant === FORM_VARIANT.VIEW
+              || actionInProgress
+              || (variant === FORM_VARIANT.EDIT && model.isEdge)
+            )}
+          />
+        );
         fields.push(wrapper);
       }
     });
@@ -536,23 +539,25 @@ class BaseRecordForm extends React.Component {
     }
 
     // Select the class model to build the rest of the form
-    const classSelect = FormField({
-      model: Object.assign(
-        {},
-        model
-          ? model.properties[CLASS_MODEL_PROP]
-          : {},
-        { choices: modelChoices, required: true, name: CLASS_MODEL_PROP },
-      ),
-      value: content && content[CLASS_MODEL_PROP]
-        ? content[CLASS_MODEL_PROP]
-        : defaultClassSelected,
-      error: errors[CLASS_MODEL_PROP],
-      onValueChange: this.handleClassChange,
-      disabled: disableClassSelect || modelChoices.length < 2,
-      schema,
-      className: 'record-form__class-select',
-    });
+    const classSelect = (
+      <FormField
+        model={Object.assign(
+          {},
+          model
+            ? model.properties[CLASS_MODEL_PROP]
+            : {},
+          { choices: modelChoices, required: true, name: CLASS_MODEL_PROP },
+        )}
+        value={content && content[CLASS_MODEL_PROP]
+          ? content[CLASS_MODEL_PROP]
+          : defaultClassSelected}
+        error={errors[CLASS_MODEL_PROP]}
+        onValueChange={this.handleClassChange}
+        disabled={disableClassSelect || modelChoices.length < 2}
+        schema={schema}
+        className="record-form__class-select"
+      />
+    );
 
     return (
       <div className={`record-form ${className}`}>

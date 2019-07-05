@@ -42,12 +42,7 @@
             }
         ],
         "babel/semi": "warn",
-        "max-len": [
-            "warn",
-            {
-                "ignoreComments": true
-            }
-        ],
+        "max-len": "off",
         "no-continue": "warn",
         "react/no-did-update-set-state": "warn",
         "no-plusplus": [

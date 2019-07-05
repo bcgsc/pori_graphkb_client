@@ -1,4 +1,5 @@
 import config from '../../../../static/config';
+import { isObject } from './utils';
 
 const DEFAULT_NODE_VPROPS = [
   'source.name',
@@ -8,6 +9,7 @@ const DEFAULT_NODE_VPROPS = [
 const DEFAULT_LINK_VPROPS = [
   'source.name',
   '@class',
+  '@rid',
 ];
 
 const GRAPH_OPTIONS_KEY = 'graphOptions';
@@ -182,7 +184,11 @@ class PropsMap {
         obj = graphObj[prop];
       }
 
-      if (obj && (obj.length < 50 || prop === 'name')
+      if (typeof obj === 'number') {
+        obj = obj.toString(10);
+      }
+
+      if (obj && (obj.length < 50 || prop === 'name' || typeof obj === 'object')
         && !Array.isArray(obj)
       ) {
         if (props[prop] && !props[prop].includes(obj)) {
@@ -237,22 +243,27 @@ class GraphOptions {
     this.nodesLegend = !!initial.nodesLegend;
     this.linksLegend = !!initial.linksLegend;
     this.chargeMax = initial.chargeMax || CHARGE_MAX;
-    this.nodePreview = initial.nodePreview || false;
+    this.nodePreview = initial.nodePreview || true;
   }
 
   /**
    * Returns the color of the given object, given the current color property.
    */
   getColor(obj, type) {
-    const { [`${type}Color`]: objColor, [`${type}Colors`]: objColors } = this;
+    const { [`${type}Color`]: targetColor, [`${type}Colors`]: ColorMap } = this;
     let colorKey = '';
-    if (objColor && objColor.includes('.')) {
-      const keys = objColor.split('.');
+    if (targetColor && targetColor.includes('.')) {
+      const keys = targetColor.split('.');
       colorKey = (obj.data[keys[0]] || {})[keys[1]];
-    } else if (objColor) {
-      colorKey = obj.data[objColor];
+    } else if (targetColor) {
+      const colorKeyIsObject = isObject(obj.data[targetColor]);
+      if (colorKeyIsObject) {
+        colorKey = obj.data[targetColor].name;
+      } else {
+        colorKey = obj.data[targetColor];
+      }
     }
-    return objColors[colorKey];
+    return ColorMap[colorKey];
   }
 
   /**

@@ -267,7 +267,6 @@ class DataView extends React.Component {
       variant,
     } = this.state;
     const { bufferSize } = this.props;
-    console.log('TCL: render -> isMassExporting', isMassExporting);
 
     const detailPanelIsOpen = Boolean(detailPanelRow);
 

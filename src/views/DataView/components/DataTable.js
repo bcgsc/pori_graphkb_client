@@ -27,6 +27,7 @@ class DataTable extends React.Component {
     onRecordsSelected: PropTypes.func,
     optionsMenuAnchor: PropTypes.object.isRequired,
     optionsMenuOnClose: PropTypes.func.isRequired,
+    isExportingData: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -48,7 +49,14 @@ class DataTable extends React.Component {
       activeGroups: new Set(),
       pingedIndices: new Set(),
       totalNumOfRows: null,
+      isMassExporting: false,
+      selectedRecords: [],
     };
+  }
+
+  componentDidMount() {
+    const { onRef } = this.props;
+    onRef(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -60,11 +68,143 @@ class DataTable extends React.Component {
   }
 
   @boundMethod
+  customMassExportHandler() {
+    console.log('exporting allllll the things');
+  }
+
+  @boundMethod
   onGridReady({ api: gridApi, columnApi }) {
     this.gridApi = gridApi;
+    console.log('TCL: DataTable -> onGridReady -> gridApi', this.gridApi);
     this.gridColumnApi = columnApi;
 
+    // this.gridApi.addEventListener('selectionChanged', (event) => {
+    //   console.log('selection changed...', event);
+    //   // this prints true for first event only
+    //   console.log(`has changed, started = ${event.started}`);
+    //   // this prints true for last event only
+    //   console.log(`has changed, finished = ${event.finished}`);
+    // });
+
+
+    this.gridApi.addEventListener('rowClicked', this.myRowClickedHandler);
+
     this.initializeGrid();
+  }
+
+  @boundMethod
+  myRowClickedHandler(e) {
+    const nodeID = parseInt(e.node.id, 10);
+
+    console.log('TCL: DataTable -> myRowClickedHandler -> event', e);
+    const { selectedRecords } = this.state;
+    console.log('TCL: myRowClickedHandler -> selectedRecords', selectedRecords);
+    let newSelectedRecords;
+    if (!e.event.ctrlKey && !e.event.shiftKey) {
+      newSelectedRecords = [];
+      newSelectedRecords.push([nodeID, nodeID]);
+    }
+
+    if (e.event.shiftKey) { // this is going to be way more complex
+      const lastIndex = selectedRecords.length - 1;
+      const updatedInterval = selectedRecords[lastIndex];
+      updatedInterval[1] = nodeID;
+      newSelectedRecords = selectedRecords.slice();
+      newSelectedRecords[lastIndex] = updatedInterval;
+      console.log('TCL: myRowClickedHandler -> updatedInterval', updatedInterval);
+    }
+
+    if (e.event.ctrlKey) {
+      let isNodeInArr = false;
+      selectedRecords.forEach((interval, index) => {
+        if (nodeID >= interval[0] && nodeID <= interval[1]) {
+          isNodeInArr = true;
+          // found an interval that contains the node
+          // need to split interval
+          console.log('TCL: myRowClickedHandler -> index', index);
+
+          const targetInterval = selectedRecords[index];
+
+          // old interval needs to be everything after the node
+          if (nodeID === targetInterval[1]) { // node is at the high end of the interval
+            let lowInterval;
+            let highInterval;
+
+            if ((targetInterval[1] - targetInterval[0]) === 1) {
+              lowInterval = [targetInterval[0], targetInterval[0]];
+              highInterval = [targetInterval[1], targetInterval[1]];
+              newSelectedRecords = selectedRecords.slice();
+              newSelectedRecords[index] = lowInterval;
+              newSelectedRecords.push(highInterval);
+            } else if (targetInterval[0] === targetInterval[1]) {
+              newSelectedRecords = selectedRecords.slice();
+              newSelectedRecords.splice(index, 1);
+              newSelectedRecords.push(targetInterval);
+            } else {
+              lowInterval = [targetInterval[0], nodeID - 1];
+              highInterval = [nodeID, nodeID];
+              newSelectedRecords = selectedRecords.slice();
+              newSelectedRecords[index] = lowInterval;
+              newSelectedRecords.push(highInterval);
+            }
+          } else if (nodeID === targetInterval[0]) { // low end of the interval
+            let lowInterval;
+            let highInterval;
+
+            if ((targetInterval[0] === targetInterval[1])) {
+              newSelectedRecords = selectedRecords.slice();
+              newSelectedRecords.splice(index, 1);
+              newSelectedRecords.push(targetInterval);
+            } else if (targetInterval[1] - targetInterval[0] === 1) {
+              lowInterval = [targetInterval[0], targetInterval[0]];
+              highInterval = [targetInterval[1], targetInterval[1]];
+              newSelectedRecords = selectedRecords.slice();
+              newSelectedRecords[index] = highInterval;
+              newSelectedRecords.push(lowInterval);
+            } else {
+              lowInterval = [nodeID, nodeID];
+              highInterval = [nodeID + 1, targetInterval[1]];
+              newSelectedRecords = selectedRecords.slice();
+              newSelectedRecords[index] = highInterval;
+              newSelectedRecords.push(lowInterval);
+            }
+          } else {
+            const highInterval = [nodeID + 1, targetInterval[1]];
+            const lowInterval = [targetInterval[0], nodeID];
+
+            newSelectedRecords = selectedRecords.slice();
+            newSelectedRecords[index] = highInterval;
+            newSelectedRecords.push(lowInterval);
+          }
+
+          // new interval needs to be node plus everything before it
+          // push this new interval to the back of the array
+        }
+      });
+      if (!isNodeInArr) {
+        newSelectedRecords = selectedRecords.slice();
+        newSelectedRecords.push([nodeID, nodeID]);
+      }
+    }
+    console.log('TCL: myRowClickedHandler -> newSelectedRecords', newSelectedRecords);
+
+    // merge intervals if you can
+    const mergedSelectedRecords = [];
+    const alreadyMergedIntervalIndices = [];
+    newSelectedRecords.forEach((interval, index) => {
+      if (!alreadyMergedIntervalIndices.includes(index)) { // index is not already merged
+        if (index !== newSelectedRecords.length - 1) { // current interval is not the last one
+          const testInterval = newSelectedRecords[index + 1];
+          if (interval[0] >= testInterval[0] && interval[0] <= testInterval[1]) {
+            const newInterval = [testInterval[0], interval[1]];
+          } else {
+
+          }
+        }
+      }
+    });
+
+    this.setState({ selectedRecords: newSelectedRecords });
   }
 
   async getTableData({
@@ -226,12 +366,35 @@ class DataTable extends React.Component {
   }
 
   @boundMethod
+  activateMassExport() {
+    const { massExportMode } = this.props;
+    massExportMode();
+  }
+
+  @boundMethod
+  handleOnCellKeyDown({ event: { key, shiftKey }, node: rowNode, rowIndex }) {
+    console.log('detecing onCellKeyDown');
+    if (key === 'Shift') {
+      rowNode.setSelected(true);
+    } else if (shiftKey && ['ArrowDown', 'ArrowUp'].includes(key)) {
+      const direction = key === 'ArrowDown'
+        ? +1
+        : -1;
+      const nextRow = this.gridApi.getDisplayedRowAtIndex(rowIndex + direction);
+      if (nextRow) {
+        nextRow.setSelected(true);
+      }
+    }
+  }
+
+  @boundMethod
   async handleExportTsv(selectionOnly = false) {
     const { schema, auth } = this.context;
     const { totalNumOfRows } = this.state;
+    const { isExportingData } = this.props;
+    isExportingData(true);
 
     const { gridOptions } = this.gridApi.getModel().gridOptionsWrapper;
-
     const header = `## Exported from GraphKB at ${new Date()} by ${auth.username}
 ## Distribution and Re-use of the contents of GraphKB are subject to the usage aggreements of individual data sources.
 ## Please review the appropriate agreements prior to use (see usage under sources)`;
@@ -273,9 +436,12 @@ class DataTable extends React.Component {
           try {
             const [rows, lastRow] = await this.getTableData(params);
             successCallback(rows, lastRow);
+            console.log('TCL: rows', rows);
             await this.gridApi.exportDataAsCsv(exportParams);
             await this.resetDefaultGridOptions();
+            isExportingData(false);
           } catch (err) {
+            console.error(err);
             failCallback();
           }
         },
@@ -283,7 +449,9 @@ class DataTable extends React.Component {
 
       this.gridApi.setDatasource(tempDataSource);
     } else {
+      console.log('TCL: this.gridApi.getSelectedNodes();', this.gridApi.getSelectedNodes());
       this.gridApi.exportDataAsCsv(exportParams);
+      isExportingData(false);
     }
   }
 
@@ -297,6 +465,7 @@ class DataTable extends React.Component {
       }) => {
         this.getTableData(params)
           .then(([rows, lastRow]) => {
+            console.log('TCL: resetDefaultGridOptions -> rows', rows);
             // update filters
             successCallback(rows, lastRow);
           }).catch(() => failCallback());
@@ -312,6 +481,7 @@ class DataTable extends React.Component {
     const {
       allColumns, activeColumns, allGroups, activeGroups, totalNumOfRows,
     } = this.state;
+    console.log('TCL: renderOptionsMenu -> totalNumOfRows', totalNumOfRows);
     const { optionsMenuAnchor, optionsMenuOnClose } = this.props;
     const ignorePreviewColumns = colId => !colId.endsWith('.preview');
     const selectionCount = this.gridApi
@@ -360,10 +530,17 @@ class DataTable extends React.Component {
       },
     ];
 
-    if(totalNumOfRows < 1000){
+    if (totalNumOfRows < 1000) {
       menuContents.push({
         label: 'Export All to TSV',
-        handler: () => this.handleExportTsv(false)
+        handler: () => this.handleExportTsv(false),
+      });
+    }
+
+    if (totalNumOfRows > 20) {
+      menuContents.push({
+        label: 'Mass Export Selected Rows to TSV',
+        handler: () => { this.activateMassExport(); },
       });
     }
 
@@ -491,18 +668,9 @@ class DataTable extends React.Component {
             }
           }}
           // allow the user to select using the arrow keys and shift
-          onCellKeyDown={({ event: { key, shiftKey }, node: rowNode, rowIndex }) => {
-            if (key === 'Shift') {
-              rowNode.setSelected(true);
-            } else if (shiftKey && ['ArrowDown', 'ArrowUp'].includes(key)) {
-              const direction = key === 'ArrowDown'
-                ? +1
-                : -1;
-              const nextRow = this.gridApi.getDisplayedRowAtIndex(rowIndex + direction);
-              if (nextRow) {
-                nextRow.setSelected(true);
-              }
-            }
+          onCellKeyDown={this.handleOnCellKeyDown}
+          onCellKeyPress={(event) => {
+            console.log('TCL: event', event);
           }}
           onSelectionChanged={() => {
             if (onRecordsSelected) {
@@ -511,7 +679,7 @@ class DataTable extends React.Component {
             }
           }}
           rowSelection="multiple"
-          rowMultiSelectWithClick={true}
+
         />
       </div>
     );

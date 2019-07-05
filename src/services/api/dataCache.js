@@ -419,7 +419,7 @@ class PaginationDataCache {
    * @param {number} startRow the first row index to fetch
    * @param {number} endRow the index one past the last row to be fetched
    * @param {string} search the request queryParam string
-   * @param {SortModel} sortModel the sotring model (follows ag-grid format)
+   * @param {SortModel} sortModel the sorting model (follows ag-grid format)
    */
   async getRows({
     search, startRow, endRow, sortModel,

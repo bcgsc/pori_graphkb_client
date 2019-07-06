@@ -124,6 +124,7 @@ class DataTable extends React.Component {
       if (e.event.shiftKey) {
         const isCurrNodeInSelection = this.isNodeAlreadySelected(nodeID, selectedRecords);
         if (isCurrNodeInSelection) {
+          // reset selection range to whatever the current selected row is
           prevNodeID = nodeID;
           newSelectedRecords = [[nodeID, nodeID]];
         } else {
@@ -135,22 +136,18 @@ class DataTable extends React.Component {
               const prevNodeInterval = selectedRecords[lastIndex];
               const newInterval = [prevNodeInterval[0], nodeID];
               prevNodeID = nodeID;
-              newSelectedRecords = selectedRecords.slice();
-              newSelectedRecords[lastIndex] = newInterval;
+              newSelectedRecords = this.forwardExtendAndUpdateIntervals(intervalPrevNodeIsIn, selectedRecords, newInterval);
             } else {
+              // extend an interval in the selection and remove any redundant intervals it contains
               const prevNodeInterval = selectedRecords[intervalPrevNodeIsIn];
               const newInterval = [prevNodeInterval[0], nodeID];
-              // starting from current prevNodeInterval
-
-              // extend an interval in the selection and remove intervals it contains
               newSelectedRecords = this.forwardExtendAndUpdateIntervals(intervalPrevNodeIsIn, selectedRecords, newInterval);
               prevNodeID = nodeID;
             }
           } else {
-            // extending an interval in the selection backwards
+            // extending an interval in the selection backwards and remove any redundant intervals
             const prevNodeInterval = selectedRecords[intervalPrevNodeIsIn];
             const newInterval = [nodeID, prevNodeInterval[1]];
-
             newSelectedRecords = this.backwardExtendAndUpdateIntervals(intervalPrevNodeIsIn, selectedRecords, newInterval);
             prevNodeID = nodeID;
           }
@@ -158,32 +155,21 @@ class DataTable extends React.Component {
         }
       }
 
-      // set a new prevNodeID and maybe a new interval
+      // 3. ctrl key adds a new interval to selection unless it has already been selected
       if (e.event.ctrlKey) {
-        // check if nodeID is in an interval already if it is, update prevNodeID
-        let isCurrNodeInInterval = false;
-        for (let i = 0; i < selectedRecords.length; i++) {
-          const currInterval = selectedRecords[i];
-          if (nodeID >= currInterval[0] && nodeID <= currInterval[1]) {
-            isCurrNodeInInterval = true;
-            break;
-          }
-        }
-        if (isCurrNodeInInterval) {
+        const isCurrNodeInSelection = this.isNodeAlreadySelected(nodeID, selectedRecords);
+        if (isCurrNodeInSelection) {
           prevNodeID = nodeID;
           newSelectedRecords = selectedRecords.slice();
         } else {
-          // make a new interval and sort the interval into its correct position
           const newInterval = [nodeID, nodeID];
-          console.log('TCL: myRowClickedHandler -> nodeID', nodeID);
           newSelectedRecords = selectedRecords.slice();
-          console.log('TCL: myRowClickedHandler -> selectedRecords', selectedRecords);
 
+          // Add new interval in selection at it's appropriate spot.
+          // Selection is a sorted array of intervals
           for (let i = 0; i < newSelectedRecords.length; i++) {
             const currInterval = selectedRecords[i];
-            // check if the interval would fit at the beginning
             if (i === 0) { // BEGGINING OF ARRAY
-              // console.log('TCL: myRowClickedHandler -> case1');
               if (nodeID < currInterval[0]) {
                 newSelectedRecords.splice(i, 0, newInterval);
                 break;
@@ -195,37 +181,24 @@ class DataTable extends React.Component {
                 }
               }
             } else if (nodeID >= selectedRecords[i - 1][1] && nodeID <= currInterval[0]) {
-              // console.log('TCL: myRowClickedHandler -> case3');
               newSelectedRecords.splice(i, 0, newInterval);
               break;
             } else if (i === newSelectedRecords.length - 1) { // END OF ARRAY
-              // console.log('TCL: myRowClickedHandler -> case2');
               if (nodeID > currInterval[1]) {
                 newSelectedRecords.splice(i + 1, 0, newInterval);
                 break;
               }
             }
           }
-
-          // need to merge any adjacent arrays
+          // May need to merge intervals with the addition of a new one
           newSelectedRecords = this.mergeAdjacentIntervals(newSelectedRecords);
           prevNodeID = nodeID;
         }
       }
     }
-    console.log('TCL: myRowClickedHandler -> newSelectedRecords', newSelectedRecords);
     this.setState({ selectedRecords: newSelectedRecords, prevNodeID });
 
-    console.log('TCL: myRowClickedHandler -> this.gridApi;', this.gridApi);
-    this.gridApi.forEachNode((node) => {
-      const currNodeID = parseInt(node.id, 10);
-      for (let i = 0; i < newSelectedRecords.length; i++) {
-        const currInterval = newSelectedRecords[i];
-        if (currNodeID >= currInterval[0] && currNodeID <= currInterval[1]) {
-          node.setSelected(true);
-        }
-      }
-    });
+    this.selectNodeRowsInTable(this.gridApi, newSelectedRecords);
   }
 
   mergeAdjacentIntervals = (arrayOfIntervals) => {
@@ -254,6 +227,18 @@ class DataTable extends React.Component {
     this.setState({ pingedIndices: new Set() });
     return [result, cache.rowCount(search)];
   }
+
+  selectNodeRowsInTable = (gridApi, selectedRecords) => {
+    gridApi.forEachNode((node) => {
+      const currNodeID = parseInt(node.id, 10);
+      for (let i = 0; i < selectedRecords.length; i++) {
+        const currInterval = selectedRecords[i];
+        if (currNodeID >= currInterval[0] && currNodeID <= currInterval[1]) {
+          node.setSelected(true);
+        }
+      }
+    });
+  };
 
   forwardExtendAndUpdateIntervals = (intervalPrevNodeIsIn, selectedRecords, newInterval) => {
     let intervalsToBeDeleted = 1;

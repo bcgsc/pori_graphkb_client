@@ -63,6 +63,7 @@ class DataView extends React.Component {
       search,
       isExportingData: false,
       isMassExporting: false,
+      totalNumOfRowsSelected: [],
     };
     this.controllers = [];
   }
@@ -187,6 +188,11 @@ class DataView extends React.Component {
     }));
   }
 
+  @boundMethod
+  handleNewRowSelection(totalRows) {
+    this.setState({ totalNumOfRowsSelected: totalRows });
+  }
+
   /**
    * If there are any linked records, fetch them now and attach them in place of their reference ID
    */
@@ -265,6 +271,7 @@ class DataView extends React.Component {
       filters,
       search,
       variant,
+      totalNumOfRowsSelected,
     } = this.state;
     const { bufferSize } = this.props;
 
@@ -313,6 +320,7 @@ class DataView extends React.Component {
                 isExportingData={this.handleExportLoader}
                 onRecordClicked={this.handleToggleDetailPanel}
                 onRecordsSelected={this.handleRecordSelection}
+                onRowSelected={this.handleNewRowSelection}
                 optionsMenuAnchor={optionsMenuAnchor}
                 optionsMenuOnClose={this.handleToggleOptionsMenu}
                 massExportMode={this.toggleMassExportMode}
@@ -327,7 +335,7 @@ class DataView extends React.Component {
         <div className="data-view__footer">
           <div className="footer__selected-records">
             <Typography>
-              {selectedRecords.length} Record{selectedRecords.length !== 1 ? 's' : ''} Selected
+              {totalNumOfRowsSelected} Record{totalNumOfRowsSelected !== 1 ? 's' : ''} Selected
             </Typography>
             {(isMassExporting) && (
               <Tooltip title="Export Selected Data">

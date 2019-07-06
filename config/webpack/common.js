@@ -6,13 +6,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
-const TerserWebpackPlugin = require('terser-webpack-plugin');
 
 
-const SRC_PATH = path.resolve(__dirname, 'src');
-const DIST_PATH = path.resolve(__dirname, 'dist');
+const BASE_DIR = path.resolve(__dirname, '../..');
+const SRC_PATH = path.resolve(BASE_DIR, 'src');
+const DIST_PATH = path.resolve(BASE_DIR, 'dist');
 const INCLUDE = [
-  path.resolve(__dirname, 'node_modules/@bcgsc'),
+  path.resolve(BASE_DIR, 'node_modules/@bcgsc'),
   SRC_PATH,
 ];
 
@@ -24,7 +24,7 @@ const moduleSettings = {
       sideEffects: true,
       include: [
         SRC_PATH,
-        path.resolve(__dirname, 'node_modules/ag-grid-community/dist/styles'),
+        path.resolve(BASE_DIR, 'node_modules/ag-grid-community/dist/styles'),
       ],
       use: [
         MiniCssExtractPlugin.loader,
@@ -46,7 +46,7 @@ const moduleSettings = {
       include: INCLUDE,
       use: [
         'babel-loader',
-        // 'eslint-loader',
+        'eslint-loader',
       ],
       sideEffects: false,
     },
@@ -87,22 +87,8 @@ const plugins = [
     filename: 'static/style/[name].css',
   }),
   new CleanWebpackPlugin(
-    DIST_PATH,
+    DIST_PATH, { root: BASE_DIR },
   ),
-  // Copy values of ENV variables in as strings using these defaults (null = unset)
-  new webpack.EnvironmentPlugin({
-    API_BASE_URL: 'https://graphkb-api.bcgsc.ca/api',
-    DEBUG: false,
-    DISABLE_AUTH: null,
-    KEYCLOAK_CLIENT_ID: 'GraphKB',
-    KEYCLOAK_REALM: 'GSC',
-    KEYCLOAK_ROLE: 'GraphKB',
-    KEYCLOAK_URL: 'https://sso.bcgsc.ca/auth',
-    NODE_ENV: 'production',
-    USER: null,
-    PASSWORD: null,
-    npm_package_version: null,
-  }),
   // template index.html. Required for running the dev-server properly
   new HtmlWebpackPlugin({
     template: path.resolve(SRC_PATH, 'static/index.html'),
@@ -193,15 +179,6 @@ module.exports = {
         },
       },
     },
-    minimizer: [
-      new TerserWebpackPlugin({
-        terserOptions: {
-          keep_classnames: true,
-          module: true,
-          // sourceMap: true,
-        },
-      }),
-    ],
   },
   plugins,
   resolve: {

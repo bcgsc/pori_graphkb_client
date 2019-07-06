@@ -1,29 +1,18 @@
 import * as jc from 'json-cycle';
 import { boundMethod } from 'autobind-decorator';
 
-import auth from '../auth';
-
-
 import config from '../../static/config';
 import {
-  BadRequestError, AuthorizationError, AuthenticationError, RecordExistsError,
+  BadRequestError,
+  AuthorizationError,
+  AuthenticationError,
+  RecordExistsError,
+  APIConnectionFailureError,
 } from '../errors';
 
 const {
   API_BASE_URL,
 } = config;
-
-/**
- * Appends global headers to outgoing request.
- */
-const getHeaders = () => {
-  const headers = new Headers();
-  headers.append('Content-type', 'application/json');
-  if (auth.getToken()) {
-    headers.append('Authorization', auth.getToken());
-  }
-  return headers;
-};
 
 
 class ApiCall {
@@ -72,13 +61,19 @@ class ApiCall {
   async request(ignoreAbort = true) {
     this.controller = new AbortController();
     const { signal } = this.controller;
-    const request = new Request(API_BASE_URL + this.endpoint, {
-      ...this.requestOptions,
-      headers: getHeaders(),
-    });
+
     let response;
     try {
-      response = await fetch(request, { signal });
+      response = await fetch(
+        API_BASE_URL + this.endpoint,
+        {
+          ...this.requestOptions,
+          headers: {
+            'Content-type': 'application/json',
+          },
+          signal,
+        },
+      );
     } catch (err) {
       if (err.name === 'AbortError' && ignoreAbort) {
         return null;
@@ -116,7 +111,6 @@ class ApiCall {
       url,
     };
     if (status === 401) {
-      auth.clearTokens();
       throw new AuthenticationError(error);
     }
     if (status === 400) {
@@ -127,6 +121,9 @@ class ApiCall {
     }
     if (status === 403) {
       throw new AuthorizationError(error);
+    }
+    if (status === 404) {
+      throw new APIConnectionFailureError(error);
     }
     throw new Error(`Unexpected Error [${status}]: ${statusText}`);
   }

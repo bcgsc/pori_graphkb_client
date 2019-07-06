@@ -14,7 +14,7 @@
     top: -1px;
 
     th {
-      background: var(--palette__background--default);
+      background: $palette__background--default;
       position: sticky;
       top: -1px;
       z-index: 1;

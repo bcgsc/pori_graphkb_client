@@ -5,16 +5,19 @@ import {
 } from 'react-router-dom';
 import { PropTypes } from 'prop-types';
 
-import auth from '../services/auth';
+import { Authentication } from '../services/auth';
+import { withKB } from './KBContext';
 
 /**
  * @returns {Route} a route component which checks authentication on render or redirects to login
  */
-const AuthenticatedRoute = ({ component: Component, admin, ...rest }) => (
+const AuthenticatedRoute = ({
+  component: Component, auth, admin, ...rest
+}) => (
   <Route
     {...rest}
     render={props => (
-      auth.isAuthenticated() && (!admin || auth.isAdmin())
+      auth && auth.isAuthenticated() && (!admin || auth.isAdmin())
         ? <Component {...props} />
         : (
           <Redirect to={{
@@ -31,10 +34,11 @@ AuthenticatedRoute.propTypes = {
   location: PropTypes.object.isRequired,
   admin: PropTypes.bool,
   component: PropTypes.object.isRequired,
+  auth: PropTypes.instanceOf(Authentication).isRequired,
 };
 
 AuthenticatedRoute.defaultProps = {
   admin: false,
 };
 
-export default AuthenticatedRoute;
+export default withKB(AuthenticatedRoute);

@@ -22,6 +22,7 @@ describe('EdgeTable', () => {
       reversename: 'reverseRelationshipName',
     }),
   );
+
   test('Renders multiple edges', () => {
     const edges = [
       { out: { key: 'target1' }, key: 'edge1', '@class': 'E' },
@@ -39,6 +40,7 @@ describe('EdgeTable', () => {
     expect(wrapper.find(TableRow)).toHaveLength(3);
     expect(wrapper.find(DetailChip)).toHaveLength(2);
   });
+
   test('Infers direction based on sourceId', () => {
     const edges = [
       {
@@ -61,6 +63,7 @@ describe('EdgeTable', () => {
     expect(wrapper.find(TableRow)).toHaveLength(3);
     expect(wrapper.find(DetailChip)).toHaveLength(2);
   });
+
   afterEach(() => {
     jest.clearAllMocks();
   });

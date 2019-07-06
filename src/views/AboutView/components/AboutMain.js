@@ -4,7 +4,6 @@ import {
 } from '@material-ui/core';
 
 import api from '../../../services/api';
-import auth from '../../../services/auth';
 import { KBContext } from '../../../components/KBContext';
 import {
   PieChart,
@@ -26,6 +25,7 @@ class AboutMain extends Component {
   }
 
   async componentDidMount() {
+    const { auth } = this.context;
     if (auth.isAuthorized()) {
       this.getClassStats();
       this.getVersionInfo();
@@ -79,7 +79,7 @@ class AboutMain extends Component {
             main use of Knowlegebase is to act as the link between the known and published
             variant information and the expermientally collected data.
           </Typography>
-          <Typography variant="h6" component="h4">
+          <Typography variant="h4">
             Current Version
           </Typography>
           <Typography paragraph>

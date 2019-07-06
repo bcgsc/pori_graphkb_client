@@ -20,13 +20,13 @@
 
   .graph-input-wrapper {
     svg {
-      color: var(--palette__secondary--main);
+      color: $palette__secondary--main;
     }
   }
 
   span {
     .label {
-      color: var(--palette__primary--main);
+      color: $palette__primary--main;
       font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
       font-size: 0.7em;
       margin: 0;
@@ -34,7 +34,7 @@
   }
 
   .graph-input {
-    border: 1px solid var(--palette__grey--A100);
+    border: 1px solid $palette__grey--A100;
     border-radius: 4px;
     overflow: hidden;
 

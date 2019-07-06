@@ -100,7 +100,7 @@ RecordFormDialog.defaultProps = {
   isOpen: false,
   rid: null,
   variant: null,
-  title: ''
+  title: '',
 };
 
 

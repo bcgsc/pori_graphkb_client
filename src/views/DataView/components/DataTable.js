@@ -111,6 +111,7 @@ class DataTable extends React.Component {
   customSelectionHandler(e) {
     const nodeID = parseInt(e.node.id, 10);
     let { prevNodeID } = this.state;
+    const { onRowSelected } = this.props;
 
     const { selectedRecords } = this.state;
 
@@ -199,7 +200,19 @@ class DataTable extends React.Component {
     this.setState({ selectedRecords: newSelectedRecords, prevNodeID });
 
     this.selectNodeRowsInTable(this.gridApi, newSelectedRecords);
+
+    const totalNumOfRows = this.getTotalNumOfSelectedRows(newSelectedRecords);
+    onRowSelected(totalNumOfRows);
   }
+
+  getTotalNumOfSelectedRows = (selectedRecords) => {
+    let totalNumOfRows = 0;
+    selectedRecords.forEach((interval) => {
+      const partialSum = interval[0] + interval[1] + 1;
+      totalNumOfRows += partialSum;
+    });
+    return totalNumOfRows;
+  };
 
   mergeAdjacentIntervals = (arrayOfIntervals) => {
     for (let i = 0; i < arrayOfIntervals.length - 1; i++) {
@@ -563,14 +576,12 @@ class DataTable extends React.Component {
 
   renderOptionsMenu() {
     const {
-      allColumns, activeColumns, allGroups, activeGroups, totalNumOfRows,
+      allColumns, activeColumns, allGroups, activeGroups, totalNumOfRows, selectedRecords,
     } = this.state;
     const { optionsMenuAnchor, optionsMenuOnClose } = this.props;
     const ignorePreviewColumns = colId => !colId.endsWith('.preview');
-    const selectionCount = this.gridApi
-      ? this.gridApi.getSelectedRows().length
-      : null;
 
+    const selectionCount = this.getTotalNumOfSelectedRows(selectedRecords);
     const ColumnCheckBox = (colId, groupId = null) => (
       <FormControlLabel
         key={colId}

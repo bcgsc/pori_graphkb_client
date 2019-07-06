@@ -76,95 +76,84 @@ class DataTable extends React.Component {
   @boundMethod
   onGridReady({ api: gridApi, columnApi }) {
     this.gridApi = gridApi;
-    console.log('TCL: DataTable -> onGridReady -> gridApi', this.gridApi);
     this.gridColumnApi = columnApi;
 
-    this.gridApi.addEventListener('rowClicked', this.myRowClickedHandler);
+    this.gridApi.addEventListener('rowClicked', this.customSelectionHandler);
 
     this.initializeGrid();
   }
 
+  isNodeAlreadySelected = (nodeID, selectedRecords) => {
+    for (let i = 0; i < selectedRecords.length; i++) {
+      const currInterval = selectedRecords[i];
+      if (nodeID >= currInterval[0] && nodeID <= currInterval[1]) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  findIntervalIndex = (nodeID, selectedRecords) => {
+    for (let i = 0; i < selectedRecords.length; i++) {
+      const currInterval = selectedRecords[i];
+      if (nodeID >= currInterval[0] && nodeID <= currInterval[1]) {
+        return i;
+      }
+    }
+    return -1;
+  };
+
+  /*
+   * TODO: write a description of what this does and how it does it
+   */
+
   @boundMethod
-  myRowClickedHandler(e) {
+  customSelectionHandler(e) {
     const nodeID = parseInt(e.node.id, 10);
     let { prevNodeID } = this.state;
-    console.log('TCL: myRowClickedHandler -> prevNodeID', prevNodeID);
 
     const { selectedRecords } = this.state;
-    console.log('TCL: myRowClickedHandler -> selectedRecords', selectedRecords);
-    let newSelectedRecords;
 
-    if (prevNodeID === null || (!e.event.ctrlKey && !e.event.shiftKey)) { // first time selecting a record or reset
+    let newSelectedRecords;
+    // 1. first time selecting a row OR just a regular ole click
+    if (prevNodeID === null || (!e.event.ctrlKey && !e.event.shiftKey)) {
       prevNodeID = nodeID;
       newSelectedRecords = [[nodeID, nodeID]];
     } else {
-      // shift key is pressed. Need to extend whatever range the previous interval was in
+      // 2. shift key is pressed. This means an interval will be extended
       if (e.event.shiftKey) {
-        let isCurrNodeInInterval = false;
-        for (let i = 0; i < selectedRecords.length; i++) {
-          const currInterval = selectedRecords[i];
-          if (nodeID >= currInterval[0] && nodeID <= currInterval[1]) {
-            isCurrNodeInInterval = true;
-            break;
-          }
-        }
-        if (isCurrNodeInInterval) {
+        const isCurrNodeInSelection = this.isNodeAlreadySelected(nodeID, selectedRecords);
+        if (isCurrNodeInSelection) {
           prevNodeID = nodeID;
           newSelectedRecords = [[nodeID, nodeID]];
         } else {
-          // find interval that prevNodeID was in
-          let intervalPrevNodeIn;
-          for (let i = 0; i < selectedRecords.length; i++) {
-            const currInterval = selectedRecords[i];
-            if (prevNodeID >= currInterval[0] && prevNodeID <= currInterval[1]) {
-              intervalPrevNodeIn = i;
-            }
-          }
-          console.log('TCL: myRowClickedHandler -> intervalPrevNodeIn', intervalPrevNodeIn);
+          const intervalPrevNodeIsIn = this.findIntervalIndex(prevNodeID, selectedRecords);
           if (nodeID > prevNodeID) {
             const lastIndex = selectedRecords.length - 1;
-            if (intervalPrevNodeIn === lastIndex) { // prevnode is in last interval
-              // extend last interval
-              const prevNodeInterval = selectedRecords[intervalPrevNodeIn];
+            if (intervalPrevNodeIsIn === lastIndex) {
+              // extend last interval in selection
+              const prevNodeInterval = selectedRecords[lastIndex];
               const newInterval = [prevNodeInterval[0], nodeID];
               prevNodeID = nodeID;
               newSelectedRecords = selectedRecords.slice();
               newSelectedRecords[lastIndex] = newInterval;
             } else {
-              console.log('TCL: myRowClickedHandler -> case2');
-              const prevNodeInterval = selectedRecords[intervalPrevNodeIn];
+              const prevNodeInterval = selectedRecords[intervalPrevNodeIsIn];
               const newInterval = [prevNodeInterval[0], nodeID];
               // starting from current prevNodeInterval
-              let intervalsToBeDeleted = 1;
-              for (let i = intervalPrevNodeIn + 1; i <= selectedRecords.length - 1; i++) {
-                const targetInterval = selectedRecords[i];
-                if (targetInterval[0] >= newInterval[0] && targetInterval[1] <= newInterval[1]) {
-                  intervalsToBeDeleted += 1;
-                }
-              }
 
-              newSelectedRecords = selectedRecords.slice();
-              newSelectedRecords.splice(intervalPrevNodeIn, intervalsToBeDeleted, newInterval);
+              // extend an interval in the selection and remove intervals it contains
+              newSelectedRecords = this.forwardExtendAndUpdateIntervals(intervalPrevNodeIsIn, selectedRecords, newInterval);
               prevNodeID = nodeID;
             }
           } else {
-            // new nodeID is smaller
-            const prevNodeInterval = selectedRecords[intervalPrevNodeIn];
+            // extending an interval in the selection backwards
+            const prevNodeInterval = selectedRecords[intervalPrevNodeIsIn];
             const newInterval = [nodeID, prevNodeInterval[1]];
 
-            let intervalsToBeDeleted = 1;
-            for (let i = intervalPrevNodeIn; i >= 0; i--) {
-              const targetInterval = selectedRecords[i];
-              if (targetInterval[0] >= newInterval[0] && targetInterval[1] <= newInterval[1]) {
-                intervalsToBeDeleted += 1;
-              }
-            }
-            const insertPosition = selectedRecords.length - intervalsToBeDeleted;
-            newSelectedRecords = selectedRecords.slice();
-            newSelectedRecords.splice(insertPosition + 1, intervalsToBeDeleted, newInterval);
+            newSelectedRecords = this.backwardExtendAndUpdateIntervals(intervalPrevNodeIsIn, selectedRecords, newInterval);
             prevNodeID = nodeID;
           }
-
           newSelectedRecords = this.mergeAdjacentIntervals(newSelectedRecords);
         }
       }
@@ -265,6 +254,34 @@ class DataTable extends React.Component {
     this.setState({ pingedIndices: new Set() });
     return [result, cache.rowCount(search)];
   }
+
+  forwardExtendAndUpdateIntervals = (intervalPrevNodeIsIn, selectedRecords, newInterval) => {
+    let intervalsToBeDeleted = 1;
+    for (let i = intervalPrevNodeIsIn + 1; i <= selectedRecords.length - 1; i++) {
+      const targetInterval = selectedRecords[i];
+      if (targetInterval[0] >= newInterval[0] && targetInterval[1] <= newInterval[1]) {
+        intervalsToBeDeleted += 1;
+      }
+    }
+
+    const newSelectedRecords = selectedRecords.slice();
+    newSelectedRecords.splice(intervalPrevNodeIsIn, intervalsToBeDeleted, newInterval);
+    return newSelectedRecords;
+  };
+
+  backwardExtendAndUpdateIntervals = (intervalPrevNodeIsIn, selectedRecords, newInterval) => {
+    let intervalsToBeDeleted = 1;
+    for (let i = intervalPrevNodeIsIn; i >= 0; i--) {
+      const targetInterval = selectedRecords[i];
+      if (targetInterval[0] >= newInterval[0] && targetInterval[1] <= newInterval[1]) {
+        intervalsToBeDeleted += 1;
+      }
+    }
+    const insertPosition = (selectedRecords.length - intervalsToBeDeleted) + 1;
+    const newSelectedRecords = selectedRecords.slice();
+    newSelectedRecords.splice(insertPosition, intervalsToBeDeleted, newInterval);
+    return newSelectedRecords;
+  };
 
   initializeGrid() {
     const { search } = this.props;

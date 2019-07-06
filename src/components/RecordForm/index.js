@@ -277,7 +277,7 @@ class RecordForm extends React.PureComponent {
     return (
       <Paper className="record-form__wrapper" elevation={4}>
         <div className="record-form__header">
-          <Typography variant="h5" component="h1">{title}</Typography>
+          <Typography variant="h1">{title}</Typography>
           {variant === FORM_VARIANT.VIEW && onTopClick && (
             <Button
               onClick={() => onTopClick(content)}
@@ -314,5 +314,7 @@ class RecordForm extends React.PureComponent {
     );
   }
 }
+
+export { RecordForm as RawRecordForm };
 
 export default withKB(RecordForm);

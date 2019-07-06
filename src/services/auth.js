@@ -4,56 +4,28 @@
  */
 import Keycloak from 'keycloak-js';
 import * as jwt from 'jsonwebtoken';
+import fetchIntercept from 'fetch-intercept';
 
 import config from '../static/config';
 
 const {
-  KEYS: {
-    KB_TOKEN,
-    KEYCLOAK_TOKEN,
-  },
   KEYCLOAK: {
     GRAPHKB_ROLE,
     REALM,
     CLIENT_ID,
     URL,
   },
+  DISABLE_AUTH,
+  API_BASE_URL,
 } = config;
 
-const REFERRER = 'KEYCLOAK_LOGIN_REFERRER';
-
-
-const keycloak = Keycloak({
-  realm: REALM,
-  clientId: CLIENT_ID,
-  url: URL,
-  realm_access: { roles: [GRAPHKB_ROLE] },
-});
-
-/**
- * Returns the keycloak token.
- */
-const getAuthToken = () => localStorage.getItem(KEYCLOAK_TOKEN);
-
-/**
- * Loads KeyCloak token into localstorage.
- */
-const setAuthToken = token => localStorage.setItem(KEYCLOAK_TOKEN, token);
-
-/**
- * Retrieves Knowledge Base token.
- */
-const getToken = () => localStorage.getItem(KB_TOKEN);
-
-/**
- * Get and remove last refferer
- */
-const popReferrerUri = () => {
-  const uri = localStorage.getItem(REFERRER);
-  localStorage.removeItem(REFERRER);
-  return uri;
+// must store the referring uri in local to get around the redirect
+const KEYCLOAK_REFERRER = 'KEYCLOAK_REFERRER';
+const dbRoles = {
+  admin: 'admin',
+  regular: 'regular',
+  readonly: 'readonly',
 };
-
 
 /**
  * Checks expiry date on JWT token and compares with current time.
@@ -67,7 +39,9 @@ const isExpired = (token) => {
   }
 };
 
-
+/**
+ * Checks that the token is formatted properly and can be decoded
+ */
 const validToken = (token) => {
   try {
     const decoded = jwt.decode(token);
@@ -77,117 +51,134 @@ const validToken = (token) => {
   }
 };
 
-/**
- * User has a valid token from the authentication server (keycloak)
- */
-const isAuthenticated = () => {
-  const token = getAuthToken();
-  return !!(validToken(token) && !isExpired(token));
-};
 
-/**
- * User has a valid token from the database server
- */
-const isAuthorized = () => {
-  const token = getToken();
-  return !!(validToken(token) && !isExpired(token));
-};
+class Authentication {
+  constructor(opt = {}) {
+    const {
+      clientId = CLIENT_ID,
+      realm = REALM,
+      role = GRAPHKB_ROLE,
+      url = URL,
+      disableAuth = DISABLE_AUTH,
+      referrerUriKey = KEYCLOAK_REFERRER,
+    } = opt;
+    this.keycloak = Keycloak({
+      realm,
+      clientId,
+      url,
+      realm_access: { roles: [role] },
+    });
+    this.authorizationToken = null; // token for the authorization (db access)
+    this.disableAuth = disableAuth;
+    this.referrerUriKey = referrerUriKey;
 
-/**
- * Loads new Knowledge Base token into localstorage.
- * @param {string} token - New Knowledge Base token.
- */
-const setToken = (token) => {
-  localStorage.setItem(KB_TOKEN, token);
-};
+    fetchIntercept.register({
+      request: (fetchUrl, fetchConfig) => {
+        if (fetchUrl.startsWith(API_BASE_URL)) {
+          const newConfig = { ...fetchConfig };
+          if (!newConfig.headers) {
+            newConfig.headers = {};
+          }
+          newConfig.headers.Authorization = this.authorizationToken;
+          return [fetchUrl, newConfig];
+        }
+        return [fetchUrl, fetchConfig];
+      },
+    });
+  }
 
-/**
- * Clears Knowledge Base token from localstorage.
- */
-const clearTokens = () => {
-  localStorage.removeItem(KB_TOKEN);
-  localStorage.removeItem(KEYCLOAK_TOKEN);
-};
+  get referrerUri() {
+    return localStorage.getItem(this.referrerUriKey);
+  }
 
-/**
- * Returns username of currently logged in user.
- */
-const getUser = () => {
-  try {
-    return jwt.decode(getToken()).user;
-  } catch (err) {
+  set referrerUri(uri) {
+    if (uri === null) {
+      localStorage.removeItem(this.referrerUriKey);
+    } else {
+      localStorage.setItem(this.referrerUriKey, uri);
+    }
+  }
+
+  /**
+   * Primarily used for display when logged in
+   */
+  get username() {
+    if (this.authorizationToken) {
+      return jwt.decode(this.authorizationToken).user.name;
+    } if (this.keycloak.token) {
+      return jwt.decode(this.keycloak.token).preferred_username;
+    }
     return null;
   }
-};
 
-/**
- * Returns true if user is in the 'admin' usergroup.
- */
-const isAdmin = () => {
-  try {
-    return Boolean(
-      isAuthorized()
-      && jwt.decode(getToken()).user.groups.find(group => group.name === 'admin'),
-    );
-  } catch (err) {
+  get user() {
+    try {
+      return jwt.decode(this.authorizationToken).user;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Returns true if the user has been sucessfully authenticated and the token is valid
+   */
+  isAuthenticated() {
+    if (this.keycloak.token) {
+      // check that the token is not expired
+      return Boolean(validToken(this.keycloak.token) && !isExpired(this.keycloak.token));
+    }
     return false;
   }
-};
 
-
-const hasWriteAccess = () => {
-  try {
-    return Boolean(
-      isAuthorized()
-      && jwt.decode(getToken()).user.groups.find(
-        group => ['admin', 'regular'].includes(group.name),
-      ),
-    );
-  } catch (err) {
+  isAuthorized() {
+    if (this.isAuthenticated() || !this.disableAuth) {
+      return Boolean(validToken(this.authorizationToken) && !isExpired(this.authorizationToken));
+    }
     return false;
   }
-};
 
-/**
- * Redirects to keycloak login page, sets token into localstorage once returned.
- */
-const authenticate = async (referrerUri = null) => {
-  clearTokens();
-  localStorage.setItem(REFERRER, referrerUri);
-  await keycloak.init({ onLoad: 'login-required', promiseType: 'native' });
-  setAuthToken(keycloak.token);
-  return keycloak.token;
-};
-
-/**
- * Clears tokens and redirects user to keycloak login page. On successful login
- * routes to /login.
- */
-const logout = async () => {
-  clearTokens();
-  try {
-    await keycloak.init({ promiseType: 'native' });
-    const resp = await keycloak.logout({ redirectUri: `${window.location.origin}/login` });
-    return resp;
-  } catch (err) {
-    return err;
+  /**
+   * Returns true if user is in the 'admin' usergroup.
+   */
+  isAdmin() {
+    try {
+      return Boolean(
+        this.user.groups.find(group => group.name === dbRoles.admin),
+      );
+    } catch (err) {
+      return false;
+    }
   }
-};
+
+  hasWriteAccess() {
+    try {
+      return Boolean(
+        this.user.groups.find(group => [dbRoles.admin, dbRoles.regular].includes(group.name)),
+      );
+    } catch (err) {
+      return false;
+    }
+  }
+
+  async login(referrerUri = null) {
+    this.referrerUri = referrerUri;
+    const init = new Promise((resolve, reject) => {
+      const prom = this.keycloak.init({ onLoad: 'login-required' }); // setting promiseType = native does not work for later functions inside the closure
+      prom.success(resolve);
+      prom.error(reject);
+    });
+    await init;
+  }
+
+  async logout() {
+    try {
+      const resp = await this.keycloak.logout({ redirectUri: `${window.location.origin}/login` });
+      return resp;
+    } catch (err) {
+      return err;
+    }
+  }
+}
 
 
-export default {
-  authenticate,
-  clearTokens,
-  getAuthToken,
-  getToken,
-  getUser,
-  hasWriteAccess,
-  GRAPHKB_ROLE,
-  isAdmin,
-  isAuthenticated,
-  isAuthorized,
-  logout,
-  popReferrerUri,
-  setAuthToken,
-  setToken,
-};
+export { Authentication, isExpired, validToken };

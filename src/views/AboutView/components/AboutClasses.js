@@ -9,7 +9,6 @@ import {
 } from '@material-ui/core';
 
 import api from '../../../services/api';
-import auth from '../../../services/auth';
 import { KBContext } from '../../../components/KBContext';
 import DetailChip from '../../../components/DetailChip';
 
@@ -27,6 +26,7 @@ class AboutClasses extends Component {
   }
 
   async componentDidMount() {
+    const { auth } = this.context;
     if (auth.isAuthorized()) {
       this.getClassStats();
       this.getClassExamples();
@@ -73,7 +73,7 @@ class AboutClasses extends Component {
     const {
       stats,
     } = this.state;
-    const { schema } = this.context;
+    const { schema, auth } = this.context;
 
     const isAuthorized = auth.isAuthorized();
 
@@ -144,7 +144,7 @@ class AboutClasses extends Component {
 
     return (
       <div className="about-page__content">
-        <Typography variant="h5" component="h2">
+        <Typography variant="h2">
             Record Classes
         </Typography>
         <Typography paragraph>
@@ -154,7 +154,7 @@ class AboutClasses extends Component {
           {models.map(ClassDescription)}
         </List>
 
-        <Typography variant="h5" component="h2">
+        <Typography variant="h2">
             Relationship (Edge) Classes
         </Typography>
         <Typography paragraph>

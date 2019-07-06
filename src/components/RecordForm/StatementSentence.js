@@ -12,10 +12,17 @@ const StatementSentence = (props) => {
     if (!text) {
       return null;
     }
-    const words = text.split(' ').map((word) => {
+    const words = text.split(' ').map((word, wordPosition) => {
       if (word !== 'and') {
         return (
-          <Typography component="span" variant="body1" color="textPrimary" className="quote__substitution">
+          // if a word changes position within the sentence we re-render the sentence so this is a valid key here
+          <Typography
+            key={wordPosition} // eslint-disable-line react/no-array-index-key
+            component="span"
+            variant="body1"
+            color="textPrimary"
+            className="quote__substitution"
+          >
             &nbsp;{word}
           </Typography>
         );

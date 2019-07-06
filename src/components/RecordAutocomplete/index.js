@@ -184,14 +184,38 @@ class RecordAutocomplete extends React.Component {
   @boundMethod
   handleInputChange(term, { action: actionType }) {
     const { minSearchLength, isMulti } = this.props;
-    const helperText = term.length < minSearchLength && term.length > 0
+    let helperText = term.length < minSearchLength && term.length >= 0
       ? `Requires ${minSearchLength} or more characters to search`
       : '';
+
     if (actionType === 'input-change') {
       this.setState({ helperText });
       if (!isMulti) {
         this.handleChange(null, { action: 'clear' });
       }
+    } else if (actionType === 'set-value' && isMulti) {
+      helperText = `Requires ${minSearchLength} or more characters to search`;
+      this.setState({ helperText });
+    }
+  }
+
+  @boundMethod
+  handleOnFocus() {
+    const {
+      errorText, minSearchLength, isMulti, disabled,
+    } = this.props;
+
+    if (!errorText && isMulti && !disabled) {
+      this.setState({ helperText: `Requires ${minSearchLength} or more characters to search` });
+    }
+  }
+
+  @boundMethod
+  handleOnBlur() {
+    const { isMulti, errorText, disabled } = this.props;
+
+    if (!errorText && isMulti && !disabled) {
+      this.setState({ helperText: 'May take more than one value' });
     }
   }
 
@@ -249,6 +273,8 @@ class RecordAutocomplete extends React.Component {
           DetailChipProps={DetailChipProps}
           error={Boolean(errorText)}
           onChange={this.handleChange}
+          onFocus={this.handleOnFocus}
+          onBlur={this.handleOnBlur}
           onInputChange={this.handleInputChange}
           getOptionValue={getOptionKey} // used to compare options for equality
           getOptionLabel={getOptionLabel} // generates the string representation
@@ -263,11 +289,11 @@ class RecordAutocomplete extends React.Component {
             }
           textFieldProps={{
             InputProps: {
-              disabled: disabled || Boolean(selected),
+              disabled: (disabled || Boolean(selected)) && !isMulti,
               disableUnderline: disabled || (Boolean(selected) && !isMulti),
             },
-            error: Boolean(helperText || errorText),
-            helperText: helperText || errorText,
+            error: Boolean(errorText),
+            helperText: errorText || helperText,
             InputLabelProps: {
               shrink: Boolean(selected) || !(disabled && !selected),
             },

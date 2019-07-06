@@ -10,8 +10,8 @@
 }
 
 .toolbar {
-  background: var(--palette__background--default);
-  border-top: solid var(--palette__divider) 1px;
+  background: $palette__background--default;
+  border-top: solid $palette__divider 1px;
   bottom: 0;
   display: flex;
   flex-direction: row-reverse;
@@ -26,7 +26,7 @@
   z-index: calc(#{$drawer-z-index} + 1);
 
   .table-btn {
-    background-color: var(--palette__secondary--extra-light);
+    background-color: $palette__secondary--extra-light;
     margin: auto 24px auto 8px;
   }
 

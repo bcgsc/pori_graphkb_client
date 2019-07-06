@@ -2,13 +2,13 @@ import React from 'react';
 import { mount } from 'enzyme';
 
 import ActionButton from '..';
+import ConfirmActionDialog from '../ConfirmActionDialog';
 
 
 describe('ActionButton', () => {
-  const dialogOpenSpy = jest.spyOn(ActionButton.prototype, 'handleOpenDialog');
   const onClick = jest.fn();
 
-  test('does not use dialog when no requestConfirm flag is given', () => {
+  test('uses onClick when requireConfirm flag is false', () => {
     const wrapper = mount((
       <ActionButton
         title="action"
@@ -22,11 +22,11 @@ describe('ActionButton', () => {
     wrapper.update();
     // check that the onClick handler was called
     expect(onClick).toHaveBeenCalled();
-    // check that the dialog handler was not called
-    expect(dialogOpenSpy).not.toHaveBeenCalled();
+    // check that the confimation Dialog box was not rendered
+    expect(wrapper.find(ConfirmActionDialog).exists()).toEqual(false);
   });
 
-  test('uses dialog when requestConfirm flag is given', () => {
+  test('does not use onClick when requireConfirm flag is given', () => {
     const wrapper = mount((
       <ActionButton
         title="action"
@@ -40,12 +40,10 @@ describe('ActionButton', () => {
     wrapper.update();
     // check that the onClick handler was not called
     expect(onClick).not.toHaveBeenCalled();
-    // check that the dialog handler was called
-    expect(dialogOpenSpy).toHaveBeenCalled();
+    expect(wrapper.find(ConfirmActionDialog).exists()).toEqual(true);
   });
 
-  // TODO: currently cannot test confirm or cancel clicks since the dialog contents renders outside the wrapper element
-
+  test.todo('currently cannot test confirm or cancel clicks since the dialog contents renders outside the wrapper element');
   afterEach(() => {
     jest.resetAllMocks();
   });

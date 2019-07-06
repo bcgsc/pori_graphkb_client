@@ -26,7 +26,6 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 import './DetailDrawer.scss';
 import util from '../../../../services/util';
-import auth from '../../../../services/auth';
 import { KBContext } from '../../../../components/KBContext';
 
 const MAX_STRING_LENGTH = 64;
@@ -454,7 +453,7 @@ class DetailDrawer extends Component {
       isEdge,
     } = this.props;
     const { opened } = this.state;
-    const { schema } = this.context;
+    const { schema, auth } = this.context;
 
     const drawerIsOpen = Boolean(node);
 
@@ -482,7 +481,7 @@ class DetailDrawer extends Component {
         <div className="detail-drawer__content">
           <div className="detail-drawer__heading">
             <div>
-              <Typography variant="h4" component="h1">
+              <Typography variant="h2">
                 {preview}
               </Typography>
               {errorMessage && (

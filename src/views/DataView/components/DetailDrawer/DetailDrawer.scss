@@ -3,7 +3,7 @@
 
 .detail-drawer {
   max-width: 100%; // use full screen for ipad/mobile
-  transition-duration: var(--transitions__duration--standard);
+  transition-duration: $transitions__duration--standard;
   transition-property: width;
   width: 100%;
   word-break: break-word;
@@ -29,6 +29,10 @@
       overflow-x: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+
+      h2 {
+        overflow-y: hidden;
+      }
     }
 
     &::nth-child(2) {
@@ -45,7 +49,7 @@
   }
 
   &__relationships-subheader {
-    background: var(--palette__background--default);
+    background: $palette__background--default;
     z-index: 1;
   }
 

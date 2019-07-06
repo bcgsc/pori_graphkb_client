@@ -32,7 +32,7 @@ import {
   QueryView,
   QueryBuilderView,
 } from '..';
-import auth from '../../services/auth';
+import { Authentication } from '../../services/auth';
 import Schema from '../../services/schema';
 import { KBContext } from '../../components/KBContext';
 import { MainNav } from './components';
@@ -53,6 +53,9 @@ class Main extends React.Component {
       drawerOpen: false,
       activeLink: '/query',
     };
+
+    this.schema = new Schema();
+    this.auth = new Authentication();
   }
 
   /**
@@ -97,7 +100,7 @@ class Main extends React.Component {
     } = this.state;
 
     return (
-      <KBContext.Provider value={{ schema: new Schema(), user: auth.getUser() }}>
+      <KBContext.Provider value={{ schema: this.schema, auth: this.auth }}>
         <div className="main-view">
           <AppBar
             position="fixed"
@@ -125,8 +128,8 @@ class Main extends React.Component {
                 >
                   <PersonIcon />
                   <Typography color="inherit">
-                    {auth.isAuthorized()
-                      ? auth.getUser().name
+                    {this.auth.isAuthorized()
+                      ? this.auth.username
                       : 'Logged Out'
                     }
                   </Typography>
@@ -150,16 +153,16 @@ class Main extends React.Component {
                         Feedback
                       </MenuItem>
                     </Link>
-                    {auth.isAdmin() && (
+                    {this.auth.isAdmin() && (
                       <Link to="/admin">
                         <MenuItem onClick={this.handleClose}>
                           Admin
                         </MenuItem>
                       </Link>
                     )}
-                    <MenuItem onClick={auth.logout}>
+                    <MenuItem onClick={() => this.auth.logout()}>
                       {
-                        auth.isAuthorized()
+                        this.auth.isAuthorized()
                           ? 'Logout'
                           : 'Login'
                       }

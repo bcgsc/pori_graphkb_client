@@ -326,11 +326,7 @@ class DataView extends React.Component {
       statusMessage,
       totalRows,
       detailPanelRow,
-      optionsMenuAnchor,
-      search,
-      variant,
       totalNumOfRowsSelected,
-      selectedRecords,
       filtersEditOpen,
       filters,
     } = this.state;
@@ -388,7 +384,7 @@ class DataView extends React.Component {
             <Typography>
               {totalNumOfRowsSelected} Record{totalNumOfRowsSelected !== 1 ? 's' : ''} Selected
             </Typography>
-            {Boolean(selectedRecords.length) && (
+            {Boolean(totalNumOfRowsSelected) && (
               <Tooltip title="click here for graph view">
                 <IconButton>
                   <TimelineIcon

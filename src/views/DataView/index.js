@@ -5,10 +5,8 @@ import {
   Typography,
   CircularProgress,
   IconButton,
-  Tooltip,
 } from '@material-ui/core';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import InputIcon from '@material-ui/icons/Input';
 import EditIcon from '@material-ui/icons/Edit';
 import { boundMethod } from 'autobind-decorator';
 
@@ -62,7 +60,6 @@ class DataView extends React.Component {
       filters: {},
       search,
       isExportingData: false,
-      isMassExporting: false,
       totalNumOfRowsSelected: [],
     };
     this.controllers = [];
@@ -117,7 +114,7 @@ class DataView extends React.Component {
    */
   @boundMethod
   handleLoadingChange() {
-    const { cache, search } = this.state;
+    const { cache, search, isExportingData } = this.state;
     if (!cache) {
       return;
     }
@@ -126,7 +123,7 @@ class DataView extends React.Component {
 
     let statusMessage;
     if (start !== null) {
-      statusMessage = `requesting ${start} - ${end}`;
+      statusMessage = `${isExportingData ? 'Exporting' : 'Requesting'} ${start} - ${end}`;
       if (rowCount !== undefined) {
         statusMessage = `${statusMessage} of ${rowCount} rows`;
       } else {
@@ -179,13 +176,6 @@ class DataView extends React.Component {
   handleExportLoader(boolean) {
     console.log('TCL: handleExportLoader -> changing isExportingData to ...', boolean);
     this.setState({ isExportingData: boolean });
-  }
-
-  @boundMethod
-  toggleMassExportMode() {
-    this.setState(prevState => ({
-      isMassExporting: !prevState.isMassExporting,
-    }));
   }
 
   @boundMethod
@@ -262,11 +252,9 @@ class DataView extends React.Component {
       cache,
       statusMessage,
       isExportingData,
-      isMassExporting,
       totalRows,
       detailPanelRow,
       optionsMenuAnchor,
-      selectedRecords,
       filtersEditOpen,
       filters,
       search,
@@ -313,7 +301,6 @@ class DataView extends React.Component {
           {cache && (
             <>
               <DataTable
-                onRef={(ref) => { console.log('reference lock'); this.child = ref; }}
                 search={search}
                 cache={cache}
                 rowBuffer={bufferSize}
@@ -337,30 +324,12 @@ class DataView extends React.Component {
             <Typography>
               {totalNumOfRowsSelected} Record{totalNumOfRowsSelected !== 1 ? 's' : ''} Selected
             </Typography>
-            {(isMassExporting) && (
-              <Tooltip title="Export Selected Data">
-                <IconButton>
-                  <InputIcon
-                    color="secondary"
-                    onClick={() => { this.child.customMassExportHandler(); }}
-                  />
-                </IconButton>
-              </Tooltip>
-            )}
           </div>
-          {(statusMessage && !isExportingData) && (
+          {statusMessage && (
             <div className="footer__loader">
               <CircularProgress />
               <Typography>
                 {statusMessage}
-              </Typography>
-            </div>
-          )}
-          {(isExportingData) && (
-            <div className="footer__loader">
-              <CircularProgress />
-              <Typography>
-                {'Exporting data as CSV...'}
               </Typography>
             </div>
           )}

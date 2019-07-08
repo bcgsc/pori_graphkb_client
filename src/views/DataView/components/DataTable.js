@@ -15,6 +15,13 @@ import OptionsMenu from '../../../components/OptionsMenu';
 import DetailChip from '../../../components/DetailChip';
 import DataCache from '../../../services/api/dataCache';
 
+class SelectionRange {
+  constructor(minVal, maxVal) {
+    this.minVal = minVal;
+    this.maxVal = maxVal;
+    this.count = maxVal - minVal + 1;
+  }
+}
 
 class DataTable extends React.Component {
   static contextType = KBContext;
@@ -25,6 +32,7 @@ class DataTable extends React.Component {
     cache: PropTypes.instanceOf(DataCache).isRequired,
     onRecordClicked: PropTypes.func,
     onRecordsSelected: PropTypes.func,
+    onRowSelected: PropTypes.func.isRequired,
     optionsMenuAnchor: PropTypes.object.isRequired,
     optionsMenuOnClose: PropTypes.func.isRequired,
     isExportingData: PropTypes.func.isRequired,
@@ -55,22 +63,12 @@ class DataTable extends React.Component {
     };
   }
 
-  componentDidMount() {
-    const { onRef } = this.props;
-    onRef(this);
-  }
-
   componentDidUpdate(prevProps) {
     const { search } = this.props;
 
     if (this.gridApi && search !== prevProps.search) {
       this.initializeGrid();
     }
-  }
-
-  @boundMethod
-  customMassExportHandler() {
-    console.log('exporting allllll the things');
   }
 
   @boundMethod
@@ -83,149 +81,14 @@ class DataTable extends React.Component {
     this.initializeGrid();
   }
 
-  isNodeAlreadySelected = (nodeID, selectedRecords) => {
-    for (let i = 0; i < selectedRecords.length; i++) {
-      const currInterval = selectedRecords[i];
-      if (nodeID >= currInterval[0] && nodeID <= currInterval[1]) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  findIntervalIndex = (nodeID, selectedRecords) => {
-    for (let i = 0; i < selectedRecords.length; i++) {
-      const currInterval = selectedRecords[i];
-      if (nodeID >= currInterval[0] && nodeID <= currInterval[1]) {
-        return i;
-      }
-    }
-    return -1;
-  };
-
-  /*
-   * TODO: write a description of what this does and how it does it
-   */
-
-  @boundMethod
-  customSelectionHandler(e) {
-    const nodeID = parseInt(e.node.id, 10);
-    let { prevNodeID } = this.state;
-    const { onRowSelected } = this.props;
-
-    const { selectedRecords } = this.state;
-
-    let newSelectedRecords;
-    // 1. first time selecting a row OR just a regular ole click
-    if (prevNodeID === null || (!e.event.ctrlKey && !e.event.shiftKey)) {
-      prevNodeID = nodeID;
-      newSelectedRecords = [[nodeID, nodeID]];
-    } else {
-      // 2. shift key is pressed. This means an interval will be extended
-      if (e.event.shiftKey) {
-        const isCurrNodeInSelection = this.isNodeAlreadySelected(nodeID, selectedRecords);
-        if (isCurrNodeInSelection) {
-          // reset selection range to whatever the current selected row is
-          prevNodeID = nodeID;
-          newSelectedRecords = [[nodeID, nodeID]];
-        } else {
-          const intervalPrevNodeIsIn = this.findIntervalIndex(prevNodeID, selectedRecords);
-          if (nodeID > prevNodeID) {
-            const lastIndex = selectedRecords.length - 1;
-            if (intervalPrevNodeIsIn === lastIndex) {
-              // extend last interval in selection
-              const prevNodeInterval = selectedRecords[lastIndex];
-              const newInterval = [prevNodeInterval[0], nodeID];
-              prevNodeID = nodeID;
-              newSelectedRecords = this.forwardExtendAndUpdateIntervals(intervalPrevNodeIsIn, selectedRecords, newInterval);
-            } else {
-              // extend an interval in the selection and remove any redundant intervals it contains
-              const prevNodeInterval = selectedRecords[intervalPrevNodeIsIn];
-              const newInterval = [prevNodeInterval[0], nodeID];
-              newSelectedRecords = this.forwardExtendAndUpdateIntervals(intervalPrevNodeIsIn, selectedRecords, newInterval);
-              prevNodeID = nodeID;
-            }
-          } else {
-            // extending an interval in the selection backwards and remove any redundant intervals
-            const prevNodeInterval = selectedRecords[intervalPrevNodeIsIn];
-            const newInterval = [nodeID, prevNodeInterval[1]];
-            newSelectedRecords = this.backwardExtendAndUpdateIntervals(intervalPrevNodeIsIn, selectedRecords, newInterval);
-            prevNodeID = nodeID;
-          }
-          newSelectedRecords = this.mergeAdjacentIntervals(newSelectedRecords);
-        }
-      }
-
-      // 3. ctrl key adds a new interval to selection unless it has already been selected
-      if (e.event.ctrlKey) {
-        const isCurrNodeInSelection = this.isNodeAlreadySelected(nodeID, selectedRecords);
-        if (isCurrNodeInSelection) {
-          prevNodeID = nodeID;
-          newSelectedRecords = selectedRecords.slice();
-        } else {
-          const newInterval = [nodeID, nodeID];
-          newSelectedRecords = selectedRecords.slice();
-
-          // Add new interval in selection at it's appropriate spot.
-          // Selection is a sorted array of intervals
-          for (let i = 0; i < newSelectedRecords.length; i++) {
-            const currInterval = selectedRecords[i];
-            if (i === 0) { // BEGGINING OF ARRAY
-              if (nodeID < currInterval[0]) {
-                newSelectedRecords.splice(i, 0, newInterval);
-                break;
-              }
-              if (newSelectedRecords.length === 1) {
-                if (nodeID > currInterval[1]) {
-                  newSelectedRecords.splice(1, 0, newInterval);
-                  break;
-                }
-              }
-            } else if (nodeID >= selectedRecords[i - 1][1] && nodeID <= currInterval[0]) {
-              newSelectedRecords.splice(i, 0, newInterval);
-              break;
-            } else if (i === newSelectedRecords.length - 1) { // END OF ARRAY
-              if (nodeID > currInterval[1]) {
-                newSelectedRecords.splice(i + 1, 0, newInterval);
-                break;
-              }
-            }
-          }
-          // May need to merge intervals with the addition of a new one
-          newSelectedRecords = this.mergeAdjacentIntervals(newSelectedRecords);
-          prevNodeID = nodeID;
-        }
-      }
-    }
-    this.setState({ selectedRecords: newSelectedRecords, prevNodeID });
-
-    this.selectNodeRowsInTable(this.gridApi, newSelectedRecords);
-
-    const totalNumOfRows = this.getTotalNumOfSelectedRows(newSelectedRecords);
-    onRowSelected(totalNumOfRows);
-  }
-
   getTotalNumOfSelectedRows = (selectedRecords) => {
     let totalNumOfRows = 0;
     selectedRecords.forEach((interval) => {
-      const partialSum = interval[0] + interval[1] + 1;
+      const partialSum = interval.count;
       totalNumOfRows += partialSum;
     });
     return totalNumOfRows;
   };
-
-  mergeAdjacentIntervals = (arrayOfIntervals) => {
-    for (let i = 0; i < arrayOfIntervals.length - 1; i++) {
-      const currInterval = arrayOfIntervals[i];
-      if (currInterval[1] + 1 === arrayOfIntervals[i + 1][0]) {
-        const mergedInterval = [currInterval[0], arrayOfIntervals[i + 1][1]];
-        arrayOfIntervals.splice(i, 2, mergedInterval);
-        this.mergeAdjacentIntervals(arrayOfIntervals);
-      }
-    }
-    return arrayOfIntervals;
-  };
-
 
   async getTableData({
     startRow,
@@ -241,23 +104,70 @@ class DataTable extends React.Component {
     return [result, cache.rowCount(search)];
   }
 
+  mergeAdjacentIntervals = (arrayOfSelectionRanges) => {
+    for (let i = 0; i < arrayOfSelectionRanges.length - 1; i++) {
+      const currInterval = arrayOfSelectionRanges[i];
+      if (currInterval.maxVal + 1 === arrayOfSelectionRanges[i + 1].minVal) {
+        // const mergedInterval = [currInterval[0], arrayOfSelectionRanges[i + 1][1]];
+        const mergedInterval = new SelectionRange(currInterval.minVal, arrayOfSelectionRanges[i + 1].maxVal);
+        arrayOfSelectionRanges.splice(i, 2, mergedInterval);
+        this.mergeAdjacentIntervals(arrayOfSelectionRanges);
+      }
+    }
+    return arrayOfSelectionRanges;
+  };
+
+  isNodeAlreadySelected = (nodeID, selectedRecords) => {
+    for (let i = 0; i < selectedRecords.length; i++) {
+      const currInterval = selectedRecords[i];
+      if (nodeID >= currInterval.minVal && nodeID <= currInterval.maxVal) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  findIntervalIndex = (nodeID, selectedRecords) => {
+    for (let i = 0; i < selectedRecords.length; i++) {
+      const currInterval = selectedRecords[i];
+      if (nodeID >= currInterval.minVal && nodeID <= currInterval.maxVal) {
+        return i;
+      }
+    }
+    return -1;
+  };
+
   selectNodeRowsInTable = (gridApi, selectedRecords) => {
     gridApi.forEachNode((node) => {
       const currNodeID = parseInt(node.id, 10);
       for (let i = 0; i < selectedRecords.length; i++) {
         const currInterval = selectedRecords[i];
-        if (currNodeID >= currInterval[0] && currNodeID <= currInterval[1]) {
+        if (currNodeID >= currInterval.minVal && currNodeID <= currInterval.maxVal) {
           node.setSelected(true);
         }
       }
     });
   };
 
+  selectFetchedRowNodes = async (gridApi, selectedRecords) => {
+    console.log('fetching nodes and selecting them ');
+    gridApi.forEachNode((node) => {
+      const currNodeID = parseInt(node.id, 10);
+      for (let i = 0; i < selectedRecords.length; i++) {
+        const currInterval = selectedRecords[i];
+        if (currNodeID >= currInterval.minVal && currNodeID <= currInterval.maxVal) {
+          node.setSelected(true);
+        }
+      }
+    });
+    console.log('finished selecting nodes');
+  };
+
   forwardExtendAndUpdateIntervals = (intervalPrevNodeIsIn, selectedRecords, newInterval) => {
     let intervalsToBeDeleted = 1;
     for (let i = intervalPrevNodeIsIn + 1; i <= selectedRecords.length - 1; i++) {
       const targetInterval = selectedRecords[i];
-      if (targetInterval[0] >= newInterval[0] && targetInterval[1] <= newInterval[1]) {
+      if ((targetInterval.minVal >= newInterval.minVal) && (targetInterval.maxVal <= newInterval.maxVal)) {
         intervalsToBeDeleted += 1;
       }
     }
@@ -271,7 +181,7 @@ class DataTable extends React.Component {
     let intervalsToBeDeleted = 1;
     for (let i = intervalPrevNodeIsIn; i >= 0; i--) {
       const targetInterval = selectedRecords[i];
-      if (targetInterval[0] >= newInterval[0] && targetInterval[1] <= newInterval[1]) {
+      if ((targetInterval.minVal >= newInterval.minVal) && (targetInterval.maxVal <= newInterval.maxVal)) {
         intervalsToBeDeleted += 1;
       }
     }
@@ -280,72 +190,6 @@ class DataTable extends React.Component {
     newSelectedRecords.splice(insertPosition, intervalsToBeDeleted, newInterval);
     return newSelectedRecords;
   };
-
-  initializeGrid() {
-    const { search } = this.props;
-    const { schema } = this.context;
-
-    this.gridApi.setColumnDefs([
-      {
-        colId: 'ID',
-        field: '#',
-        valueGetter: 'node.id',
-        width: 75,
-      },
-      ...schema.defineGridColumns(search),
-    ]);
-    this.detectColumns();
-
-    const dataSource = {
-      rowCount: null,
-      getRows: ({
-        successCallback, failCallback, ...params
-      }) => {
-        this.getTableData(params)
-          .then(([rows, lastRow]) => {
-            // update filters
-            this.setState({ totalNumOfRows: lastRow });
-            successCallback(rows, lastRow);
-          }).catch(() => failCallback());
-      },
-    };
-    // update the model
-    this.gridApi.setDatasource(dataSource);
-  }
-
-  @boundMethod
-  resizeColumnsTofitEdges({ type, newPage }) {
-    if (this.gridColumnApi) {
-      if (type === 'paginationChanged' && newPage !== undefined) {
-        this.gridColumnApi.autoSizeColumns(['ImpliedBy', 'SupportedBy', 'Implies', 'preview']);
-      }
-    }
-  }
-
-  @boundMethod
-  detectFetchTrigger({ top, direction }) {
-    const { pingedIndices } = this.state;
-    const { rowBuffer, search, cache } = this.props;
-
-    if (this.gridApi && cache && direction === 'vertical') {
-      const { rowModel: { rowHeight } } = this.gridApi;
-      const lastRow = this.gridApi.getLastDisplayedRow();
-      const pingedKey = `${search}-${lastRow}`;
-
-      if (!pingedIndices.has(pingedKey)) {
-        const currentRowIndex = Math.round(top / rowHeight);
-
-        if (lastRow - currentRowIndex < rowBuffer) {
-          cache.getRows({
-            search, startRow: lastRow + 1, endRow: lastRow + rowBuffer, sortModel: this.gridApi.getSortModel(),
-          });
-          const newPings = new Set(pingedIndices);
-          newPings.add(pingedKey);
-          this.setState({ pingedIndices: newPings });
-        }
-      }
-    }
-  }
 
   detectColumns() {
     const activeColumns = this.gridColumnApi.getAllDisplayedColumns()
@@ -426,12 +270,6 @@ class DataTable extends React.Component {
   }
 
   @boundMethod
-  activateMassExport() {
-    const { massExportMode } = this.props;
-    massExportMode();
-  }
-
-  @boundMethod
   handleOnCellKeyDown({ event: { key, shiftKey }, node: rowNode, rowIndex }) {
     if (key === 'Shift') {
       rowNode.setSelected(true);
@@ -495,7 +333,6 @@ class DataTable extends React.Component {
           try {
             const [rows, lastRow] = await this.getTableData(params);
             successCallback(rows, lastRow);
-            console.log('TCL: rows', rows);
             await this.gridApi.exportDataAsCsv(exportParams);
             await this.resetDefaultGridOptions();
             isExportingData(false);
@@ -521,7 +358,6 @@ class DataTable extends React.Component {
           try {
             const [rows, lastRow] = await this.getTableData(params);
             successCallback(rows, lastRow);
-            console.log('TCL: rows', rows);
             await this.selectFetchedRowNodes(this.gridApi, selectedRecords);
             await this.gridApi.exportDataAsCsv(exportParams);
             await this.resetDefaultGridOptions();
@@ -534,23 +370,186 @@ class DataTable extends React.Component {
       };
 
       this.gridApi.setDatasource(tempDataSource);
-      isExportingData(false);
     }
   }
 
-  selectFetchedRowNodes = async (gridApi, selectedRecords) => {
-    console.log('fetching nodes and selecting them ');
-    gridApi.forEachNode((node) => {
-      const currNodeID = parseInt(node.id, 10);
-      for (let i = 0; i < selectedRecords.length; i++) {
-        const currInterval = selectedRecords[i];
-        if (currNodeID >= currInterval[0] && currNodeID <= currInterval[1]) {
-          node.setSelected(true);
+  @boundMethod
+  resizeColumnsTofitEdges({ type, newPage }) {
+    if (this.gridColumnApi) {
+      if (type === 'paginationChanged' && newPage !== undefined) {
+        this.gridColumnApi.autoSizeColumns(['ImpliedBy', 'SupportedBy', 'Implies', 'preview']);
+      }
+    }
+  }
+
+  @boundMethod
+  detectFetchTrigger({ top, direction }) {
+    const { pingedIndices } = this.state;
+    const { rowBuffer, search, cache } = this.props;
+
+    if (this.gridApi && cache && direction === 'vertical') {
+      const { rowModel: { rowHeight } } = this.gridApi;
+      const lastRow = this.gridApi.getLastDisplayedRow();
+      const pingedKey = `${search}-${lastRow}`;
+
+      if (!pingedIndices.has(pingedKey)) {
+        const currentRowIndex = Math.round(top / rowHeight);
+
+        if (lastRow - currentRowIndex < rowBuffer) {
+          cache.getRows({
+            search, startRow: lastRow + 1, endRow: lastRow + rowBuffer, sortModel: this.gridApi.getSortModel(),
+          });
+          const newPings = new Set(pingedIndices);
+          newPings.add(pingedKey);
+          this.setState({ pingedIndices: newPings });
         }
       }
-    });
-    console.log('finished selecting nodes');
-  };
+    }
+  }
+
+  /*
+   * TODO: write a description of what this does and how it does it
+   */
+
+  @boundMethod
+  customSelectionHandler(e) {
+    const nodeID = parseInt(e.node.id, 10);
+    let { prevNodeID } = this.state;
+    const { onRowSelected } = this.props;
+
+    const { selectedRecords } = this.state;
+    console.log('TCL: customSelectionHandler -> selectedRecords', selectedRecords);
+
+    let newSelectedRecords;
+    // 1. first time selecting a row OR just a regular ole click
+    if (prevNodeID === null || (!e.event.ctrlKey && !e.event.shiftKey)) {
+      prevNodeID = nodeID;
+      // newSelectedRecords = [[nodeID, nodeID]];
+      newSelectedRecords = [new SelectionRange(nodeID, nodeID)];
+    } else {
+      // 2. shift key is pressed. This means an interval will be extended
+      if (e.event.shiftKey) {
+        const isCurrNodeInSelection = this.isNodeAlreadySelected(nodeID, selectedRecords);
+        if (isCurrNodeInSelection) {
+          // reset selection range to whatever the current selected row is
+          prevNodeID = nodeID;
+          // newSelectedRecords = [[nodeID, nodeID]];
+          newSelectedRecords = [new SelectionRange(nodeID, nodeID)];
+        } else {
+          const intervalPrevNodeIsIn = this.findIntervalIndex(prevNodeID, selectedRecords);
+          if (nodeID > prevNodeID) {
+            const lastIndex = selectedRecords.length - 1;
+            if (intervalPrevNodeIsIn === lastIndex) {
+              // extend last interval in selection
+              const prevNodeInterval = selectedRecords[lastIndex];
+              // const newInterval = [prevNodeInterval[0], nodeID];
+              const newInterval = new SelectionRange(prevNodeInterval.minVal, nodeID);
+              prevNodeID = nodeID;
+              newSelectedRecords = this.forwardExtendAndUpdateIntervals(intervalPrevNodeIsIn, selectedRecords, newInterval);
+            } else {
+              // extend an interval in the selection and remove any redundant intervals it contains
+              const prevNodeInterval = selectedRecords[intervalPrevNodeIsIn];
+              // const newInterval = [prevNodeInterval[0], nodeID];
+              const newInterval = new SelectionRange(prevNodeInterval.minVal, nodeID);
+              newSelectedRecords = this.forwardExtendAndUpdateIntervals(intervalPrevNodeIsIn, selectedRecords, newInterval);
+              prevNodeID = nodeID;
+            }
+          } else {
+            // extending an interval in the selection backwards and remove any redundant intervals
+            const prevNodeInterval = selectedRecords[intervalPrevNodeIsIn];
+            // const newInterval = [nodeID, prevNodeInterval[1]];
+            const newInterval = new SelectionRange(nodeID, prevNodeInterval.maxVal);
+            newSelectedRecords = this.backwardExtendAndUpdateIntervals(intervalPrevNodeIsIn, selectedRecords, newInterval);
+            prevNodeID = nodeID;
+          }
+          newSelectedRecords = this.mergeAdjacentIntervals(newSelectedRecords);
+        }
+      }
+
+      // 3. ctrl key adds a new interval to selection unless it has already been selected
+      if (e.event.ctrlKey) {
+        const isCurrNodeInSelection = this.isNodeAlreadySelected(nodeID, selectedRecords);
+        if (isCurrNodeInSelection) {
+          prevNodeID = nodeID;
+          newSelectedRecords = selectedRecords.slice();
+        } else {
+          // const newInterval = [nodeID, nodeID];
+          const newInterval = new SelectionRange(nodeID, nodeID);
+          newSelectedRecords = selectedRecords.slice();
+
+          // Add new interval in selection at it's appropriate spot.
+          // Selection is a sorted array of intervals
+          for (let i = 0; i < newSelectedRecords.length; i++) {
+            const currInterval = selectedRecords[i];
+            if (i === 0) { // BEGGINING OF ARRAY
+              if (nodeID < currInterval.minVal) {
+                newSelectedRecords.splice(i, 0, newInterval);
+                break;
+              }
+              if (newSelectedRecords.length === 1) {
+                if (nodeID > currInterval.maxVal) {
+                  newSelectedRecords.splice(1, 0, newInterval);
+                  break;
+                }
+              }
+            } else if (nodeID >= selectedRecords[i - 1].maxVal && nodeID <= currInterval.minVal) {
+              newSelectedRecords.splice(i, 0, newInterval);
+              break;
+            } else if (i === newSelectedRecords.length - 1) { // END OF ARRAY
+              if (nodeID > currInterval.maxVal) {
+                newSelectedRecords.splice(i + 1, 0, newInterval);
+                break;
+              }
+            }
+          }
+          // May need to merge intervals with the addition of a new one
+          newSelectedRecords = this.mergeAdjacentIntervals(newSelectedRecords);
+          prevNodeID = nodeID;
+        }
+      }
+    }
+    this.setState({ selectedRecords: newSelectedRecords, prevNodeID });
+
+    this.selectNodeRowsInTable(this.gridApi, newSelectedRecords);
+    console.log('TCL: customSelectionHandler -> newSelectedRecords', newSelectedRecords);
+
+    const totalNumOfRows = this.getTotalNumOfSelectedRows(newSelectedRecords);
+    console.log('TCL: customSelectionHandler -> totalNumOfRows', totalNumOfRows);
+    onRowSelected(totalNumOfRows);
+  }
+
+
+  initializeGrid() {
+    const { search } = this.props;
+    const { schema } = this.context;
+
+    this.gridApi.setColumnDefs([
+      {
+        colId: 'ID',
+        field: '#',
+        valueGetter: 'node.id',
+        width: 75,
+      },
+      ...schema.defineGridColumns(search),
+    ]);
+    this.detectColumns();
+
+    const dataSource = {
+      rowCount: null,
+      getRows: ({
+        successCallback, failCallback, ...params
+      }) => {
+        this.getTableData(params)
+          .then(([rows, lastRow]) => {
+            // update filters
+            this.setState({ totalNumOfRows: lastRow });
+            successCallback(rows, lastRow);
+          }).catch(() => failCallback());
+      },
+    };
+    // update the model
+    this.gridApi.setDatasource(dataSource);
+  }
 
 
   async resetDefaultGridOptions() {
@@ -628,13 +627,6 @@ class DataTable extends React.Component {
       menuContents.push({
         label: 'Export All to TSV',
         handler: () => this.handleExportTsv(false),
-      });
-    }
-
-    if (totalNumOfRows > 20) {
-      menuContents.push({
-        label: 'Mass Export Selected Rows to TSV',
-        handler: () => { this.activateMassExport(); },
       });
     }
 

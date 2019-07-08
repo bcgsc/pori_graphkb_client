@@ -14,6 +14,7 @@ import {
 import ViewListIcon from '@material-ui/icons/ViewList';
 import SettingsIcon from '@material-ui/icons/Settings';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 
 import './GraphComponent.scss';
 import GraphActionsNode from './GraphActionsNode';
@@ -25,6 +26,7 @@ import GraphExpansionDialog from './GraphExpansionDialog/GraphExpansionDialog';
 import GraphLegend from './GraphLegend/GraphLegend';
 import util from '../../../../services/util';
 import config from '../../../../static/config';
+import { isObject } from './utils';
 import {
   PropsMap,
   GraphOptions,
@@ -56,15 +58,11 @@ const HEAVILY_CONNECTED = 10;
  * Implements a d3 force-directed graph: https://github.com/d3/d3-force.
  *
  * @property {object} props
- * @property {function} props.handleClick - Parent component method triggered when a
  * graph object is clicked.
  * @property {function} props.handleDetailDrawerOpen - Method to handle opening of detail drawer.
  * @property {function} props.handleDetailDrawerClose - Method to handle closing of detail drawer.
  * @property {function} props.handleTableRedirect - Method to handle a redirect to the table view.
- * @property {function} props.handleNewColumns - Updates valid properties in parent state.
  * @property {Object} props.detail - record ID of node currently selected for detail viewing.
- * @property {Object} props.data - Parent state data.
- * @property {Array.<string>} props.allProps - list of all unique properties on all nodes returned
  * in the initial query.
  * @property {Array.<string>} props.edgeTypes - list of valid edge classes.
  * @property {Array.<string>} props.displayed - list of initial record ID's to be displayed in
@@ -72,39 +70,44 @@ const HEAVILY_CONNECTED = 10;
  * @property {string} props.localStorageKey - key to identify graph session data with in
  * localStorage.
  * @property {Object} props.schema - KnowledgeBase Schema.
- * @property {Object} props.snackbar - App snackbar context value.
  */
 class GraphComponent extends Component {
+  // App snackbar context value.
+  static contextType = SnackbarContext;
+
   static propTypes = {
-    handleClick: PropTypes.func,
     handleDetailDrawerOpen: PropTypes.func.isRequired,
     handleDetailDrawerClose: PropTypes.func.isRequired,
     handleTableRedirect: PropTypes.func.isRequired,
-    handleNewColumns: PropTypes.func.isRequired,
     detail: PropTypes.object,
-    data: PropTypes.object.isRequired,
-    allProps: PropTypes.arrayOf(PropTypes.string),
+    cache: PropTypes.object.isRequired,
     edgeTypes: PropTypes.arrayOf(PropTypes.string),
-    displayed: PropTypes.arrayOf(PropTypes.string),
+    data: PropTypes.arrayOf(PropTypes.object).isRequired,
     localStorageKey: PropTypes.string,
     schema: PropTypes.object.isRequired,
-    snackbar: PropTypes.object.isRequired,
+    handleError: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
-    handleClick: null,
     detail: null,
-    allProps: [],
     edgeTypes: [],
-    displayed: [],
     localStorageKey: '',
   };
+
+  static hashRecordsByRID(data) {
+    const newData = {};
+    data.forEach((obj) => {
+      newData[obj['@rid']] = obj;
+    });
+    return newData;
+  }
 
   constructor(props) {
     super(props);
     this.state = {
       nodes: [],
       links: [],
+      data: [],
       graphObjects: {},
       expandable: {},
       expandedEdgeTypes: [],
@@ -121,6 +124,7 @@ class GraphComponent extends Component {
       expansionDialogOpen: false,
       expandNode: null,
       expandExclusions: [],
+      allProps: [], // list of all unique properties on all nodes returned
     };
 
     this.propsMap = new PropsMap();
@@ -130,21 +134,25 @@ class GraphComponent extends Component {
    * Loads edge types, initializes graph and populates it with specified input nodes.
    * Initializes event listener for window resize.
    */
+
   async componentDidMount() {
     const {
-      displayed,
-      data,
-      allProps,
-      localStorageKey,
       edgeTypes,
+      localStorageKey,
+      handleError,
+      data: originalData,
     } = this.props;
     const {
       graphOptions,
       initState,
     } = this.state;
     let { expandable } = this.state;
+    const allProps = this.getUniqueDataProps();
     this.propsMap = new PropsMap();
-    // Defines what edge keys to look for.
+
+    const displayed = originalData.map(obj => obj['@rid']);
+    const data = GraphComponent.hashRecordsByRID(originalData);
+
     const expandedEdgeTypes = util.expandEdges(edgeTypes);
     let validDisplayed = displayed;
     if (!displayed || displayed.length === 0) {
@@ -153,12 +161,22 @@ class GraphComponent extends Component {
 
     this.setState({
       expandedEdgeTypes,
+      allProps,
+      data,
     }, () => {
       this.handleResize();
       window.addEventListener('resize', this.handleResize);
 
       const storedData = util.getGraphData(localStorageKey);
       const storedOptions = GraphOptions.retrieve();
+
+      if (originalData.length === 0 && !storedData) {
+        const err = {
+          name: 'No Seed Data',
+          message: 'Please select a record from the data table for graph visualization',
+        };
+        handleError(err);
+      }
 
       /**
        * Initialization priority:
@@ -216,6 +234,7 @@ class GraphComponent extends Component {
           graphObjects,
         } = storedData;
         let { nodes, links } = storedData;
+
         /* Case 3, fetch state saved in localStorage. */
         delete storedData.localStorageKey;
         nodes = nodes.map((n) => {
@@ -288,13 +307,34 @@ class GraphComponent extends Component {
     } = this.state;
     const { localStorageKey } = this.props;
     // remove all event listeners
-    svg.call(d3Zoom.zoom()
-      .on('zoom', null))
-      .on('dblclick.zoom', null);
+    if (svg) {
+      svg.call(d3Zoom.zoom()
+        .on('zoom', null))
+        .on('dblclick.zoom', null);
+    }
     simulation.on('tick', null);
     window.removeEventListener('resize', this.handleResize);
     util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
   }
+
+  getUniqueDataProps = () => {
+    let uniqueProps = [];
+    let { data } = this.state;
+    if (data) {
+      if (!Object.keys(data).length === 0) { // if data is not empty
+        const totalProps = [];
+        data = Object.values(data);
+        data.forEach((obj) => {
+          const keyArr = Object.keys(obj);
+          totalProps.push(...keyArr);
+        });
+        uniqueProps = [...new Set(totalProps)];
+        return uniqueProps;
+      }
+    }
+    uniqueProps = ['@rid', '@class', 'name'];
+    return uniqueProps;
+  };
 
   /**
    * Applies drag behavior to node.
@@ -313,9 +353,13 @@ class GraphComponent extends Component {
     };
 
     const ended = () => {
-      if (!d3Select.event.active) simulation.alphaTarget(0);
-      node.fx = null; // eslint-disable-line no-param-reassign
-      node.fy = null; // eslint-disable-line no-param-reassign
+      if (!d3Select.event.active) {
+        simulation.alphaTarget(0);
+      }
+      if (!d3Select.event.type === 'end') {
+        node.fx = d3Select.event.x; // eslint-disable-line no-param-reassign
+        node.fy = d3Select.event.y; // eslint-disable-line no-param-reassign
+      }
     };
 
     d3Select.event
@@ -425,15 +469,15 @@ class GraphComponent extends Component {
    */
   @boundMethod
   loadNeighbors(node) {
-    const { expandExclusions } = this.state;
-    const { localStorageKey } = this.props;
+    const { expandExclusions, data } = this.state;
     let {
       nodes,
       links,
       graphObjects,
       expandable,
     } = this.state;
-    const { data, schema } = this.props;
+    const { schema, localStorageKey } = this.props;
+
     if (expandable[node.getId()] && data[node.getId()]) {
       ({
         nodes,
@@ -480,8 +524,9 @@ class GraphComponent extends Component {
     const {
       expandable,
       links,
+      data,
     } = this.state;
-    const { data, schema } = this.props;
+    const { schema } = this.props;
     if (expandable[node.getId()] && data[node.getId()]) {
       if (schema.getEdges(data[node.getId()])
         .filter(edge => !(links.find(l => l.getId() === edge['@rid']))).length > HEAVILY_CONNECTED
@@ -491,6 +536,21 @@ class GraphComponent extends Component {
       } else {
         this.loadNeighbors(node);
       }
+    }
+  }
+
+  @boundMethod
+  async handleExpandNode({ data: node }) {
+    const { cache } = this.props;
+    const { data } = this.state;
+    try {
+      const record = await cache.getRecord(node);
+      if (data[record['@rid']] === undefined) {
+        data[record['@rid']] = record;
+        this.setState({ data });
+      }
+    } catch (err) {
+      this.handleError(err);
     }
   }
 
@@ -504,6 +564,14 @@ class GraphComponent extends Component {
     simulation.on('tick', null);
   }
 
+  updateColumnProps(node) {
+    const { allProps } = this.state;
+    const nodeProps = Object.keys(node);
+    nodeProps.forEach((prop) => { allProps.push(prop); });
+    const updatedAllProps = [...new Set(allProps)];
+    this.setState({ allProps: updatedAllProps });
+  }
+
   /**
    * Processes node data and updates state with new nodes and links. Also
    * updates expandable flags.
@@ -515,23 +583,20 @@ class GraphComponent extends Component {
    * @param {Array.<string>} [exclusions=[]] - List of edge ID's to be ignored on expansion.
    */
   processData(node, position, depth, prevstate, exclusions = []) {
-    const { expandedEdgeTypes } = this.state;
+    const { expandedEdgeTypes, allProps, data } = this.state;
     let {
       nodes,
       links,
       graphObjects,
       expandable,
     } = prevstate;
-    // From DataView.js
-    const { data, handleNewColumns } = this.props;
 
-    if (data[node['@rid'] || data[node.getId()]]) {
-      node = data[node['@rid'] || data[node.getId()]]; // eslint-disable-line no-param-reassign
+    if (data[node['@rid']]) {
+      node = data[node['@rid']]; // eslint-disable-line no-param-reassign
     } else {
       // Node properties haven't been processed.
-      handleNewColumns(node);
+      this.updateColumnProps(node);
     }
-    const { allProps } = this.props;
 
     if (!graphObjects[node['@rid']]) {
       nodes.push(new GraphNode(node, position.x, position.y));
@@ -643,6 +708,11 @@ class GraphComponent extends Component {
     };
   }
 
+  @boundMethod
+  handleRefresh() {
+    this.setState({ data: null });
+  }
+
   /**
    * Restarts simulation with initial nodes and links present. These are determined by the
    * first state rendered when the component mounts.
@@ -650,6 +720,7 @@ class GraphComponent extends Component {
   @boundMethod
   refresh() {
     const { handleDetailDrawerClose } = this.props;
+    this.handleRefresh();
     this.setState({
       nodes: [],
       links: [],
@@ -664,8 +735,8 @@ class GraphComponent extends Component {
    */
   @boundMethod
   updateColors() {
+    const snackbar = this.context;
     ['node', 'link'].forEach((type) => {
-      const { snackbar } = this.props;
       const { [`${type}s`]: objs, graphOptions } = this.state;
       const key = graphOptions[`${type}sColor`];
       const colors = {};
@@ -681,10 +752,16 @@ class GraphComponent extends Component {
             colors[obj.data[prop][nestedProp]] = '';
           }
         }
-        if (obj.data[key] && !colors[obj.data[key]]) {
+
+        if (isObject(obj.data[key])) { // value is object
+          if (obj.data[key].name && !colors[obj.data[key].name]) {
+            colors[obj.data[key].name] = '';
+          }
+        } else if (obj.data[key] && !colors[obj.data[key]]) {
           colors[obj.data[key]] = '';
         }
       });
+
       const props = this.propsMap[`${type}Props`];
       const tooManyUniques = (Object.keys(colors).length > PALLETE_SIZE
         && Object.keys(props).length !== 1);
@@ -732,9 +809,9 @@ class GraphComponent extends Component {
    */
   @boundMethod
   async handleClick(node) {
-    const { handleClick, handleDetailDrawerOpen } = this.props;
+    const { handleDetailDrawerOpen } = this.props;
     // Prematurely loads neighbor data.
-    await handleClick(node);
+    await this.handleExpandNode(node);
 
     // Update contents of detail drawer if open.
     handleDetailDrawerOpen(node);
@@ -851,8 +928,10 @@ class GraphComponent extends Component {
       links,
       expandedEdgeTypes,
       expandable,
+      allProps,
     } = this.state;
-    const { localStorageKey, allProps } = this.props;
+    const { localStorageKey } = this.props;
+
 
     const { handleDetailDrawerClose } = this.props;
     if (nodes.length === 1) return;
@@ -984,7 +1063,6 @@ class GraphComponent extends Component {
       handleDetailDrawerOpen,
       schema,
     } = this.props;
-
 
     const linkLegendDisabled = (
       links.length === 0

@@ -92,7 +92,8 @@ describe('kbgraph method i/o validations', () => {
     };
     const graphOptions = new GraphOptions(props);
     graphOptions.load();
-    expect(GraphOptions.retrieve()).toEqual(graphOptions);
+    const retrievedGraphOptions = GraphOptions.retrieve();
+    expect(retrievedGraphOptions).toMatchObject(graphOptions);
   });
 
   it('getColor', () => {

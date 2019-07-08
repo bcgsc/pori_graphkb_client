@@ -194,7 +194,7 @@ class DataTable extends React.Component {
 
   insertIntervalIntoSelection = (newInterval, selectedRecords) => {
     // Add new interval in selection at it's appropriate spot.
-    // Selection is a sorted array of intervals
+    // Selection is a sorted array of selection ranges
     const newSelectedRecords = selectedRecords.slice();
     const nodeID = newInterval.minVal; // does not matter whether min or max val. min === max
 
@@ -221,6 +221,7 @@ class DataTable extends React.Component {
         }
       }
     }
+    return newSelectedRecords;
   };
 
   detectColumns() {
@@ -398,7 +399,7 @@ class DataTable extends React.Component {
       this.gridApi.setDatasource(tempDataSource);
     } else {
       const numOfIntervals = selectedRecords.length;
-      const maxSelectedRow = selectedRecords[numOfIntervals - 1][1];
+      const maxSelectedRow = selectedRecords[numOfIntervals - 1].maxVal;
       gridOptions.cacheBlockSize = maxSelectedRow; // in preparation to fetch entire dataset
 
       const tempDataSource = {

@@ -57,7 +57,6 @@ class DataTable extends React.Component {
       activeGroups: new Set(),
       pingedIndices: new Set(),
       totalNumOfRows: null,
-      isMassExporting: false,
       selectedRecords: [],
       prevNodeID: null,
     };
@@ -461,7 +460,10 @@ class DataTable extends React.Component {
   }
 
   /*
-   * TODO: write a description of what this does and how it does it
+   * Handles selection of records in DataTable. Maintains selectedRecords which is an array
+   * of Selection Ranges to represent the selected Rows. Ex. if rows 0-20 and 30-34 are selected,
+   * selectedRecords will contain two selection ranges. This is used instead of Ag-grids default
+   * selection API to handle infinite scrolling selection of rows that are not displayed.
    */
 
   @boundMethod
@@ -537,7 +539,6 @@ class DataTable extends React.Component {
     const totalNumOfRows = this.getTotalNumOfSelectedRows(newSelectedRecords);
     onRowSelected(totalNumOfRows);
   }
-
 
   initializeGrid() {
     const { search } = this.props;
@@ -774,9 +775,6 @@ class DataTable extends React.Component {
           }}
           // allow the user to select using the arrow keys and shift
           onCellKeyDown={this.handleOnCellKeyDown}
-          onCellKeyPress={(event) => {
-            console.log('TCL: event', event);
-          }}
           onSelectionChanged={() => {
             if (onRecordsSelected) {
               const rows = this.gridApi.getSelectedRows();
@@ -784,7 +782,6 @@ class DataTable extends React.Component {
             }
           }}
           rowSelection="multiple"
-
         />
       </div>
     );

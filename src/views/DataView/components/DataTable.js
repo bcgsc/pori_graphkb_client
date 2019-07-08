@@ -71,6 +71,10 @@ class DataTable extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.gridApi.removeEventListener('rowClicked', this.customSelectionHandler);
+  }
+
   @boundMethod
   onGridReady({ api: gridApi, columnApi }) {
     this.gridApi = gridApi;
@@ -108,7 +112,6 @@ class DataTable extends React.Component {
     for (let i = 0; i < arrayOfSelectionRanges.length - 1; i++) {
       const currInterval = arrayOfSelectionRanges[i];
       if (currInterval.maxVal + 1 === arrayOfSelectionRanges[i + 1].minVal) {
-        // const mergedInterval = [currInterval[0], arrayOfSelectionRanges[i + 1][1]];
         const mergedInterval = new SelectionRange(currInterval.minVal, arrayOfSelectionRanges[i + 1].maxVal);
         arrayOfSelectionRanges.splice(i, 2, mergedInterval);
         this.mergeAdjacentIntervals(arrayOfSelectionRanges);
@@ -150,7 +153,6 @@ class DataTable extends React.Component {
   };
 
   selectFetchedRowNodes = async (gridApi, selectedRecords) => {
-    console.log('fetching nodes and selecting them ');
     gridApi.forEachNode((node) => {
       const currNodeID = parseInt(node.id, 10);
       for (let i = 0; i < selectedRecords.length; i++) {
@@ -160,7 +162,6 @@ class DataTable extends React.Component {
         }
       }
     });
-    console.log('finished selecting nodes');
   };
 
   forwardExtendAndUpdateIntervals = (intervalPrevNodeIsIn, selectedRecords, newInterval) => {
@@ -189,6 +190,37 @@ class DataTable extends React.Component {
     const newSelectedRecords = selectedRecords.slice();
     newSelectedRecords.splice(insertPosition, intervalsToBeDeleted, newInterval);
     return newSelectedRecords;
+  };
+
+  insertIntervalIntoSelection = (newInterval, selectedRecords) => {
+    // Add new interval in selection at it's appropriate spot.
+    // Selection is a sorted array of intervals
+    const newSelectedRecords = selectedRecords.slice();
+    const nodeID = newInterval.minVal; // does not matter whether min or max val. min === max
+
+    for (let i = 0; i < newSelectedRecords.length; i++) {
+      const currInterval = selectedRecords[i];
+      if (i === 0) { // BEGGINING OF ARRAY
+        if (nodeID < currInterval.minVal) {
+          newSelectedRecords.splice(i, 0, newInterval);
+          return newSelectedRecords;
+        }
+        if (newSelectedRecords.length === 1) {
+          if (nodeID > currInterval.maxVal) {
+            newSelectedRecords.splice(1, 0, newInterval);
+            return newSelectedRecords;
+          }
+        }
+      } else if (nodeID >= selectedRecords[i - 1].maxVal && nodeID <= currInterval.minVal) {
+        newSelectedRecords.splice(i, 0, newInterval);
+        return newSelectedRecords;
+      } else if (i === newSelectedRecords.length - 1) { // END OF ARRAY
+        if (nodeID > currInterval.maxVal) {
+          newSelectedRecords.splice(i + 1, 0, newInterval);
+          return newSelectedRecords;
+        }
+      }
+    }
   };
 
   detectColumns() {
@@ -271,8 +303,28 @@ class DataTable extends React.Component {
 
   @boundMethod
   handleOnCellKeyDown({ event: { key, shiftKey }, node: rowNode, rowIndex }) {
+    const { selectedRecords } = this.state;
+    const { onRowSelected } = this.props;
+    const nodeID = parseInt(rowNode.id, 10);
+
+
     if (key === 'Shift') {
       rowNode.setSelected(true);
+
+      const isCurrNodeInSelection = this.isNodeAlreadySelected(nodeID, selectedRecords);
+      if (isCurrNodeInSelection) {
+        const prevNodeID = nodeID;
+        this.setState({ prevNodeID });
+      } else {
+        const prevNodeID = nodeID;
+        const newInterval = new SelectionRange(nodeID, nodeID);
+        const newSelectedRecords = this.insertIntervalIntoSelection(newInterval, selectedRecords);
+        const mergedNewSelectedRecords = this.mergeAdjacentIntervals(newSelectedRecords);
+
+        this.setState({ selectedRecords: mergedNewSelectedRecords, prevNodeID });
+        const totalNumOfRows = this.getTotalNumOfSelectedRows(newSelectedRecords);
+        onRowSelected(totalNumOfRows);
+      }
     } else if (shiftKey && ['ArrowDown', 'ArrowUp'].includes(key)) {
       const direction = key === 'ArrowDown'
         ? +1
@@ -418,13 +470,11 @@ class DataTable extends React.Component {
     const { onRowSelected } = this.props;
 
     const { selectedRecords } = this.state;
-    console.log('TCL: customSelectionHandler -> selectedRecords', selectedRecords);
 
     let newSelectedRecords;
     // 1. first time selecting a row OR just a regular ole click
     if (prevNodeID === null || (!e.event.ctrlKey && !e.event.shiftKey)) {
       prevNodeID = nodeID;
-      // newSelectedRecords = [[nodeID, nodeID]];
       newSelectedRecords = [new SelectionRange(nodeID, nodeID)];
     } else {
       // 2. shift key is pressed. This means an interval will be extended
@@ -433,7 +483,6 @@ class DataTable extends React.Component {
         if (isCurrNodeInSelection) {
           // reset selection range to whatever the current selected row is
           prevNodeID = nodeID;
-          // newSelectedRecords = [[nodeID, nodeID]];
           newSelectedRecords = [new SelectionRange(nodeID, nodeID)];
         } else {
           const intervalPrevNodeIsIn = this.findIntervalIndex(prevNodeID, selectedRecords);
@@ -442,14 +491,12 @@ class DataTable extends React.Component {
             if (intervalPrevNodeIsIn === lastIndex) {
               // extend last interval in selection
               const prevNodeInterval = selectedRecords[lastIndex];
-              // const newInterval = [prevNodeInterval[0], nodeID];
               const newInterval = new SelectionRange(prevNodeInterval.minVal, nodeID);
               prevNodeID = nodeID;
               newSelectedRecords = this.forwardExtendAndUpdateIntervals(intervalPrevNodeIsIn, selectedRecords, newInterval);
             } else {
               // extend an interval in the selection and remove any redundant intervals it contains
               const prevNodeInterval = selectedRecords[intervalPrevNodeIsIn];
-              // const newInterval = [prevNodeInterval[0], nodeID];
               const newInterval = new SelectionRange(prevNodeInterval.minVal, nodeID);
               newSelectedRecords = this.forwardExtendAndUpdateIntervals(intervalPrevNodeIsIn, selectedRecords, newInterval);
               prevNodeID = nodeID;
@@ -457,7 +504,6 @@ class DataTable extends React.Component {
           } else {
             // extending an interval in the selection backwards and remove any redundant intervals
             const prevNodeInterval = selectedRecords[intervalPrevNodeIsIn];
-            // const newInterval = [nodeID, prevNodeInterval[1]];
             const newInterval = new SelectionRange(nodeID, prevNodeInterval.maxVal);
             newSelectedRecords = this.backwardExtendAndUpdateIntervals(intervalPrevNodeIsIn, selectedRecords, newInterval);
             prevNodeID = nodeID;
@@ -473,35 +519,11 @@ class DataTable extends React.Component {
           prevNodeID = nodeID;
           newSelectedRecords = selectedRecords.slice();
         } else {
-          // const newInterval = [nodeID, nodeID];
           const newInterval = new SelectionRange(nodeID, nodeID);
-          newSelectedRecords = selectedRecords.slice();
 
           // Add new interval in selection at it's appropriate spot.
           // Selection is a sorted array of intervals
-          for (let i = 0; i < newSelectedRecords.length; i++) {
-            const currInterval = selectedRecords[i];
-            if (i === 0) { // BEGGINING OF ARRAY
-              if (nodeID < currInterval.minVal) {
-                newSelectedRecords.splice(i, 0, newInterval);
-                break;
-              }
-              if (newSelectedRecords.length === 1) {
-                if (nodeID > currInterval.maxVal) {
-                  newSelectedRecords.splice(1, 0, newInterval);
-                  break;
-                }
-              }
-            } else if (nodeID >= selectedRecords[i - 1].maxVal && nodeID <= currInterval.minVal) {
-              newSelectedRecords.splice(i, 0, newInterval);
-              break;
-            } else if (i === newSelectedRecords.length - 1) { // END OF ARRAY
-              if (nodeID > currInterval.maxVal) {
-                newSelectedRecords.splice(i + 1, 0, newInterval);
-                break;
-              }
-            }
-          }
+          newSelectedRecords = this.insertIntervalIntoSelection(newInterval, selectedRecords);
           // May need to merge intervals with the addition of a new one
           newSelectedRecords = this.mergeAdjacentIntervals(newSelectedRecords);
           prevNodeID = nodeID;
@@ -511,10 +533,7 @@ class DataTable extends React.Component {
     this.setState({ selectedRecords: newSelectedRecords, prevNodeID });
 
     this.selectNodeRowsInTable(this.gridApi, newSelectedRecords);
-    console.log('TCL: customSelectionHandler -> newSelectedRecords', newSelectedRecords);
-
     const totalNumOfRows = this.getTotalNumOfSelectedRows(newSelectedRecords);
-    console.log('TCL: customSelectionHandler -> totalNumOfRows', totalNumOfRows);
     onRowSelected(totalNumOfRows);
   }
 
@@ -561,7 +580,6 @@ class DataTable extends React.Component {
       }) => {
         this.getTableData(params)
           .then(([rows, lastRow]) => {
-            console.log('TCL: resetDefaultGridOptions -> rows', rows);
             // update filters
             successCallback(rows, lastRow);
           }).catch(() => failCallback());

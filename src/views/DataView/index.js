@@ -43,7 +43,6 @@ class DataView extends React.Component {
     bufferSize: 200,
   };
 
-
   constructor(props) {
     super(props);
     const { location: { search } } = this.props;
@@ -174,7 +173,6 @@ class DataView extends React.Component {
 
   @boundMethod
   handleExportLoader(boolean) {
-    console.log('TCL: handleExportLoader -> changing isExportingData to ...', boolean);
     this.setState({ isExportingData: boolean });
   }
 
@@ -189,7 +187,6 @@ class DataView extends React.Component {
   async parseFilters(cache) {
     const { search } = this.state;
     const { schema } = this.context;
-
     try {
       const { queryParams, modelName } = api.getQueryFromSearch({ search, schema });
       const links = [];
@@ -251,7 +248,6 @@ class DataView extends React.Component {
     const {
       cache,
       statusMessage,
-      isExportingData,
       totalRows,
       detailPanelRow,
       optionsMenuAnchor,

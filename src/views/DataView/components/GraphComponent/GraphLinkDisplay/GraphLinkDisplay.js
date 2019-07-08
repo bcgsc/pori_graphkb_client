@@ -40,7 +40,11 @@ function GraphLinkDisplay(props) {
   let label = '';
   if (labelKey && labelKey.includes('.')) {
     const keys = labelKey.split('.');
-    label = link.data[keys[0]][keys[1]];
+    if (link.data[keys[0]] === undefined) {
+      label = '';
+    } else {
+      label = link.data[keys[0]][keys[1]];
+    }
   } else if (labelKey) {
     label = link.data[labelKey];
   }

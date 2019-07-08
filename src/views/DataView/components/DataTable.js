@@ -199,7 +199,7 @@ class DataTable extends React.Component {
 
     for (let i = 0; i < newSelectedRecords.length; i++) {
       const currInterval = selectedRecords[i];
-      if (i === 0) { // BEGGINING OF ARRAY
+      if (i === 0) {
         if (nodeID < currInterval.minVal) {
           newSelectedRecords.splice(i, 0, newInterval);
           return newSelectedRecords;

@@ -307,7 +307,6 @@ class DataTable extends React.Component {
     const { onRowSelected } = this.props;
     const nodeID = parseInt(rowNode.id, 10);
 
-
     if (key === 'Shift') {
       rowNode.setSelected(true);
 
@@ -462,8 +461,9 @@ class DataTable extends React.Component {
   /*
    * Handles selection of records in DataTable. Maintains selectedRecords which is an array
    * of Selection Ranges to represent the selected Rows. Ex. if rows 0-20 and 30-34 are selected,
-   * selectedRecords will contain two selection ranges. This is used instead of Ag-grids default
-   * selection API to handle infinite scrolling selection of rows that are not displayed.
+   * selectedRecords will contain two selection ranges. selectedRecords = [SR(0, 20), SR(30, 34)]
+   * This is used instead of Ag-grids default selection API to handle infinite scrolling selection
+   * of rows that are not displayed.
    */
 
   @boundMethod

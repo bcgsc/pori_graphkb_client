@@ -107,6 +107,10 @@ class DataTable extends React.Component {
     return [result, cache.rowCount(search)];
   }
 
+  /*
+   * In selection range, if there are any adjacent selection ranges, i.e
+   * [ SR(2,5), SR(5,8)] merge them => [ SR(2,8)]
+   */
   mergeAdjacentIntervals = (arrayOfSelectionRanges) => {
     for (let i = 0; i < arrayOfSelectionRanges.length - 1; i++) {
       const currInterval = arrayOfSelectionRanges[i];
@@ -151,6 +155,10 @@ class DataTable extends React.Component {
     });
   };
 
+  /*
+   * Selects all nodes that are in the current selection tracking on the
+   * current displayed cache page.
+   */
   selectFetchedRowNodes = async (gridApi, selectedRecords) => {
     gridApi.forEachNode((node) => {
       const currNodeID = parseInt(node.id, 10);
@@ -162,6 +170,11 @@ class DataTable extends React.Component {
       }
     });
   };
+
+  /*
+   * Extends the selection range that your previously selected nodeRow was in.
+   * Removes any redundant selection ranges that result because of the extension.
+   */
 
   forwardExtendAndUpdateIntervals = (intervalPrevNodeIsIn, selectedRecords, newInterval) => {
     let intervalsToBeDeleted = 1;
@@ -191,9 +204,11 @@ class DataTable extends React.Component {
     return newSelectedRecords;
   };
 
+  /*
+   * Inserts the new interval into the appropriate spot to keep the selected Records
+   * a sorted array of Selection Ranges.
+   */
   insertIntervalIntoSelection = (newInterval, selectedRecords) => {
-    // Add new interval in selection at it's appropriate spot.
-    // Selection is a sorted array of selection ranges
     const newSelectedRecords = selectedRecords.slice();
     const nodeID = newInterval.minVal; // does not matter whether min or max val. min === max
 
@@ -396,8 +411,8 @@ class DataTable extends React.Component {
 
       this.gridApi.setDatasource(tempDataSource);
     } else {
-      const numOfIntervals = selectedRecords.length;
-      const maxSelectedRow = selectedRecords[numOfIntervals - 1].maxVal;
+      const lastIndex = selectedRecords.length - 1;
+      const maxSelectedRow = selectedRecords[lastIndex].maxVal;
       gridOptions.cacheBlockSize = maxSelectedRow; // in preparation to fetch entire dataset
 
       const tempDataSource = {

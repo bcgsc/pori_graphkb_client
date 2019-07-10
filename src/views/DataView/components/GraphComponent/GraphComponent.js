@@ -352,6 +352,8 @@ class GraphComponent extends Component {
       // move nodes via fixed position temporary
       node.fx = d3Select.event.x; // eslint-disable-line no-param-reassign
       node.fy = d3Select.event.y; // eslint-disable-line no-param-reassign
+      node.x = d3Select.event.x; // eslint-disable-line no-param-reassign
+      node.y = d3Select.event.y; // eslint-disable-line no-param-reassign
     };
 
     const ended = () => {

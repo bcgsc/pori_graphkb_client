@@ -351,8 +351,15 @@ const expanded = (expandedEdgeTypes, graphObjects, rid, expandable) => {
  * @param {number} n - total group size.
  */
 const positionInit = (x, y, i, n) => {
+  console.log("TCL: positionInit -> x", x)
+  console.log("TCL: positionInit -> y", y)
+  if(x === 0 && y === 0){
+    return { x: x, y: y }
+  }
   const newX = NODE_INIT_RADIUS * Math.cos((2 * Math.PI * i - Math.PI / 6) / n) + x;
+  console.log("TCL: positionInit -> newX", newX)
   const newY = NODE_INIT_RADIUS * Math.sin((2 * Math.PI * i - Math.PI / 6) / n) + y;
+  console.log("TCL: positionInit -> newY", newY)
   return { x: newX, y: newY };
 };
 

@@ -199,7 +199,8 @@ class GraphComponent extends Component {
             expandable,
           } = this.processData(
             data[key],
-            util.positionInit(0, 0, i, validDisplayed.length),
+            // center initial nodes based on viewpoint
+            util.positionInit(this.wrapper.clientWidth / 2, this.wrapper.clientHeight / 2, i, validDisplayed.length),
             0,
             {
               nodes,
@@ -210,8 +211,6 @@ class GraphComponent extends Component {
           ));
         });
         util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
-        console.log("TCL: GraphComponent -> componentDidMount -> graphObjects case3", graphObjects)
-
       } else if (initState) {
         const {
           graphObjects,
@@ -231,18 +230,15 @@ class GraphComponent extends Component {
           nodes: nodes.slice(),
           links: links.slice(),
         });
-        console.log("TCL: GraphComponent -> componentDidMount -> graphObjects case2", graphObjects)
       } else if (storedData && storedData.localStorageKey === localStorageKey) {
         const {
           graphObjects,
         } = storedData;
         let { nodes, links } = storedData;
-        console.log("TCL: GraphComponent -> componentDidMount -> nodes", nodes)
 
         /* Case 3, fetch state saved in localStorage. */
         delete storedData.localStorageKey;
         nodes = nodes.map((n) => {
-          console.log("TCL: GraphComponent -> componentDidMount -> n", n)
           this.propsMap.loadNode(n.data, allProps);
           expandable = util.expanded(expandedEdgeTypes, graphObjects, n.data['@rid'], expandable);
           return new GraphNode(n.data, n.x, n.y);
@@ -264,7 +260,6 @@ class GraphComponent extends Component {
           }
           return new GraphLink(l.data, source, target);
         });
-        console.log("TCL: GraphComponent -> componentDidMount -> graphObjects case3", graphObjects)
         this.setState({
           graphObjects,
           nodes,
@@ -348,27 +343,25 @@ class GraphComponent extends Component {
    */
   @boundMethod
   applyDrag(node) {
-     console.log("TCL: GraphComponent -> applyDrag -> node", node);
-     const { simulation } = this.state;
+    const { simulation } = this.state;
     d3Select.event.sourceEvent.stopPropagation();
 
     if (!d3Select.event.active) simulation.alphaTarget(0.3).restart();
 
     const dragged = () => {
+      // move nodes via fixed position temporary
       node.fx = d3Select.event.x; // eslint-disable-line no-param-reassign
-      console.log("TCL: GraphComponent -> applyDrag -> dragged -> d3Select.event", d3Select.event)
       node.fy = d3Select.event.y; // eslint-disable-line no-param-reassign
     };
 
     const ended = () => {
-      console.log('TCL: GraphComponent -> applyDrag -> ended -> d3Select.event', d3Select.event);
       if (!d3Select.event.active) {
-        // simulation.alphaTarget(0);
+        simulation.alphaTarget(0);
       }
-      if (!d3Select.event.type === 'end') {
-        node.fx = d3Select.event.x; // eslint-disable-line no-param-reassign
-        node.fy = d3Select.event.y; // eslint-disable-line no-param-reassign
-      }
+
+      // disable fixed position once dragEvent ends
+      node.fx = null; // eslint-disable-line no-param-reassign
+      node.fy = null; // eslint-disable-line no-param-reassign
     };
 
     d3Select.event
@@ -387,11 +380,6 @@ class GraphComponent extends Component {
       simulation,
       graphOptions,
     } = this.state;
-    console.log("TCL: GraphComponent -> drawGraph -> nodes", nodes);
-    nodes.forEach((nodez, index) => {
-      console.log("TCL: GraphComponent -> drawGraph -> node position and index", index, nodez.x, nodez.y)
-
-    })
 
     simulation.nodes(nodes);
 
@@ -403,16 +391,7 @@ class GraphComponent extends Component {
         .id(d => d.getId()),
     );
 
-    nodes.forEach((nodez, index) => {
-      console.log("TCL: GraphComponent -> drawGraph -> node position and index after force called", index, nodez.x, nodez.y)
-
-    })
-
     const ticked = () => {
-      nodes.forEach((nodez, index) => {
-        console.log("TCL: GraphComponent -> drawGraph -> node position and index ticked", index, nodez.x, nodez.y)
-
-      })
       this.setState({
         links,
         nodes,
@@ -458,12 +437,6 @@ class GraphComponent extends Component {
       d3Force.forceManyBody()
         .strength(-graphOptions.chargeStrength)
         .distanceMax(graphOptions.chargeMax),
-    ).force(
-      'center',
-      d3Force.forceCenter(
-        width / 2,
-        height / 2,
-      ),
     );
 
     const container = d3Select.select(this.zoom);
@@ -492,7 +465,6 @@ class GraphComponent extends Component {
    */
   @boundMethod
   loadNeighbors(node) {
-    console.log("TCL: GraphComponent -> loadNeighbors -> node", node)
     const { expandExclusions, data } = this.state;
     let {
       nodes,
@@ -501,14 +473,8 @@ class GraphComponent extends Component {
       expandable,
     } = this.state;
     const { schema, localStorageKey } = this.props;
-    const snapObject = Object.assign({}, graphObjects);
-    console.log("TCL: GraphComponent -> loadNeighbors -> nodes", nodes.slice())
-    console.log("TCL: GraphComponent -> loadNeighbors -> graphObjects", snapObject)
-    console.log("TCL: GraphComponent -> loadNeighbors -> links", links.slice())
 
-
-    // BUG is definitely in processData
-    if (expandable[node.getId()] && data[node.getId()]) { // updates all graphobjects
+    if (expandable[node.getId()] && data[node.getId()]) {
       ({
         nodes,
         links,
@@ -526,7 +492,6 @@ class GraphComponent extends Component {
         },
         expandExclusions,
       ));
-      console.log("TCL: GraphComponent -> loadNeighbors -> nodes before drawGraph", nodes.slice());
       this.drawGraph();
       this.updateColors();
     }
@@ -534,11 +499,7 @@ class GraphComponent extends Component {
       delete expandable[node.getId()];
     }
     util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
-    nodes.forEach((nodez, index) => {
-      console.log("TCL: GraphComponent -> loadNeighbors -> node position and index", index, nodez.x, nodez.y);
 
-    })
-    console.log("TCL: GraphComponent -> loadNeighbors -> graphObjects", graphObjects);
     this.setState({
       expandable,
       actionsNode: null,
@@ -562,9 +523,6 @@ class GraphComponent extends Component {
       links,
       data,
     } = this.state;
-    console.log("TCL: GraphComponent -> handleExpandRequest -> data", data)
-    console.log("TCL: GraphComponent -> handleExpandRequest -> links", links)
-
     const { schema } = this.props;
     if (expandable[node.getId()] && data[node.getId()]) {
       if (schema.getEdges(data[node.getId()])
@@ -582,14 +540,12 @@ class GraphComponent extends Component {
   async handleExpandNode({ data: node }) {
     const { cache } = this.props;
     const { data } = this.state;
-    console.log("TCL: GraphComponent -> handleExpandNode -> data", data)
     try {
       const record = await cache.getRecord(node);
       if (data[record['@rid']] === undefined) {
         data[record['@rid']] = record;
         this.setState({ data });
       }
-      console.log("TCL: GraphComponent -> handleExpandNode -> data", data)
     } catch (err) {
       this.handleError(err);
     }
@@ -624,8 +580,6 @@ class GraphComponent extends Component {
    * @param {Array.<string>} [exclusions=[]] - List of edge ID's to be ignored on expansion.
    */
   processData(node, position, depth, prevstate, exclusions = []) {
-    console.log("TCL: processData -> node", node)
-    console.log("TCL: processData -> position", position)
     const { expandedEdgeTypes, allProps, data } = this.state;
     let {
       nodes,
@@ -633,8 +587,6 @@ class GraphComponent extends Component {
       graphObjects,
       expandable,
     } = prevstate;
-    console.log("TCL: processData -> nodes", nodes.slice())
-
 
     if (data[node['@rid']]) {
       node = data[node['@rid']]; // eslint-disable-line no-param-reassign
@@ -645,8 +597,6 @@ class GraphComponent extends Component {
 
     if (!graphObjects[node['@rid']]) {
       const newGraphNode = new GraphNode(node, position.x, position.y);
-      const tempGraphNode = new GraphNode(node, position.x, position.y);
-      console.log("TCL: processData -> newGraphNode", tempGraphNode)
       nodes.push(newGraphNode);
       graphObjects[node['@rid']] = node;
       this.propsMap.loadNode(node, allProps);
@@ -680,13 +630,11 @@ class GraphComponent extends Component {
             ) {
               // Initialize new link object and pushes to links list.
               const link = new GraphLink(edge, outRid, inRid);
-              console.log("TCL: processData -> link", link)
               links.push(link);
               graphObjects[link.getId()] = link;
               this.propsMap.loadLink(link.data);
               // Checks if node is already rendered
               if (outRid && !graphObjects[outRid]) {
-                console.log('processData debug check point')
                 // Initializes position of new child
                 const positionInit = util.positionInit(
                   position.x,
@@ -694,7 +642,6 @@ class GraphComponent extends Component {
                   i += 1,
                   n,
                 );
-                console.log("TCL: processData -> positionInit", positionInit); // this is bug issue
                 ({
                   nodes,
                   links,
@@ -712,8 +659,6 @@ class GraphComponent extends Component {
                   },
                   exclusions,
                 ));
-                console.log("TCL: processData -> nodes 1st cond", nodes.slice())
-
               }
               if (inRid && !graphObjects[inRid]) {
                 const positionInit = util.positionInit(
@@ -739,9 +684,6 @@ class GraphComponent extends Component {
                   },
                   exclusions,
                 ));
-
-                console.log("TCL: processData -> nodes 2nd cond", nodes.slice())
-
               }
 
               // Updates expanded on target node.
@@ -756,17 +698,6 @@ class GraphComponent extends Component {
         });
       }
     });
-    const snapObject = Object.assign({}, graphObjects)
-    console.log("TCL: processData -> node position", nodes[0].x, nodes[0].y)
-    console.log("TCL: GraphComponent -> processData -> nodes", nodes.slice())
-    nodes.forEach((node, index) => {
-      console.log("TCL: processData -> node position and index", index, node.x, node.y)
-
-    })
-
-    console.log("TCL: GraphComponent -> processData -> graphObjects", snapObject)
-    console.log("TCL: GraphComponent -> processData -> links", links.slice())
-    console.log('-------------------------------------- processData -------------------------------------')
     return {
       expandable,
       nodes,
@@ -1121,11 +1052,6 @@ class GraphComponent extends Component {
       expandNode,
       expandExclusions,
     } = this.state;
-
-    nodes.forEach((nodez, index) => {
-      console.log("TCL: GraphComponent -> render -> node position and index", index, nodez.x, nodez.y)
-
-    })
 
     const { propsMap } = this;
 

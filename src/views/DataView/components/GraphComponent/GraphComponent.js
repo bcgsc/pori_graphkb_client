@@ -598,8 +598,7 @@ class GraphComponent extends Component {
     }
 
     if (!graphObjects[node['@rid']]) {
-      const newGraphNode = new GraphNode(node, position.x, position.y);
-      nodes.push(newGraphNode);
+      nodes.push(new GraphNode(node, position.x, position.y));
       graphObjects[node['@rid']] = node;
       this.propsMap.loadNode(node, allProps);
     }

@@ -372,10 +372,9 @@ class DataView extends React.Component {
             </Typography>
             {Boolean(selectedRecords.length) && (
               <Tooltip title="click here for graph view">
-                <IconButton>
+                <IconButton onClick={this.handleSwapToGraph}>
                   <TimelineIcon
                     color="secondary"
-                    onClick={this.handleSwapToGraph}
                   />
                 </IconButton>
               </Tooltip>

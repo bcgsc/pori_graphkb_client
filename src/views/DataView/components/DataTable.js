@@ -14,14 +14,7 @@ import { KBContext } from '../../../components/KBContext';
 import OptionsMenu from '../../../components/OptionsMenu';
 import DetailChip from '../../../components/DetailChip';
 import DataCache from '../../../services/api/dataCache';
-
-class SelectionRange {
-  constructor(minVal, maxVal) {
-    this.minVal = minVal;
-    this.maxVal = maxVal;
-    this.count = maxVal - minVal + 1;
-  }
-}
+import { SelectionRange, SelectionTracker } from './util';
 
 class DataTable extends React.Component {
   static contextType = KBContext;
@@ -57,7 +50,7 @@ class DataTable extends React.Component {
       activeGroups: new Set(),
       pingedIndices: new Set(),
       totalNumOfRows: null,
-      selectedRecords: [],
+      selectionTracker: new SelectionTracker(),
       prevNodeID: null,
     };
   }
@@ -87,7 +80,7 @@ class DataTable extends React.Component {
   getTotalNumOfSelectedRows = (selectedRecords) => {
     let totalNumOfRows = 0;
     selectedRecords.forEach((interval) => {
-      const partialSum = interval.count;
+      const partialSum = interval.getLength();
       totalNumOfRows += partialSum;
     });
     return totalNumOfRows;
@@ -107,46 +100,12 @@ class DataTable extends React.Component {
     return [result, cache.rowCount(search)];
   }
 
-  /*
-   * In selection range, if there are any adjacent selection ranges, i.e
-   * [ SR(2,5), SR(5,8)] merge them => [ SR(2,8)]
-   */
-  mergeAdjacentIntervals = (arrayOfSelectionRanges) => {
-    for (let i = 0; i < arrayOfSelectionRanges.length - 1; i++) {
-      const currInterval = arrayOfSelectionRanges[i];
-      if (currInterval.maxVal + 1 === arrayOfSelectionRanges[i + 1].minVal) {
-        const mergedInterval = new SelectionRange(currInterval.minVal, arrayOfSelectionRanges[i + 1].maxVal);
-        arrayOfSelectionRanges.splice(i, 2, mergedInterval);
-        this.mergeAdjacentIntervals(arrayOfSelectionRanges);
-      }
-    }
-    return arrayOfSelectionRanges;
-  };
-
-  isNodeAlreadySelected = (nodeID, selectedRecords) => {
-    for (let i = 0; i < selectedRecords.length; i++) {
-      const currInterval = selectedRecords[i];
-      if (nodeID >= currInterval.minVal && nodeID <= currInterval.maxVal) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  findIntervalIndex = (nodeID, selectedRecords) => {
-    for (let i = 0; i < selectedRecords.length; i++) {
-      const currInterval = selectedRecords[i];
-      if (nodeID >= currInterval.minVal && nodeID <= currInterval.maxVal) {
-        return i;
-      }
-    }
-    return -1;
-  };
-
-  selectNodeRowsInTable = (gridApi, selectedRecords) => {
+  selectNodeRowsInTable = (gridApi, selectionTracker) => {
+    const selectedRecords = selectionTracker.getSelection();
+    const { length } = selectedRecords;
     gridApi.forEachNode((node) => {
       const currNodeID = parseInt(node.id, 10);
-      for (let i = 0; i < selectedRecords.length; i++) {
+      for (let i = 0; i < length; i++) {
         const currInterval = selectedRecords[i];
         if (currNodeID >= currInterval.minVal && currNodeID <= currInterval.maxVal) {
           node.setSelected(true);
@@ -159,7 +118,8 @@ class DataTable extends React.Component {
    * Selects all nodes that are in the current selection tracking on the
    * current displayed cache page.
    */
-  selectFetchedRowNodes = async (gridApi, selectedRecords) => {
+  selectFetchedRowNodes = async (gridApi, selectionTracker) => {
+    const selectedRecords = selectionTracker.getSelection();
     gridApi.forEachNode((node) => {
       const currNodeID = parseInt(node.id, 10);
       for (let i = 0; i < selectedRecords.length; i++) {
@@ -169,73 +129,6 @@ class DataTable extends React.Component {
         }
       }
     });
-  };
-
-  /*
-   * Extends the selection range that your previously selected nodeRow was in.
-   * Removes any redundant selection ranges that result because of the extension.
-   */
-
-  forwardExtendAndUpdateIntervals = (intervalPrevNodeIsIn, selectedRecords, newInterval) => {
-    let intervalsToBeDeleted = 1;
-    for (let i = intervalPrevNodeIsIn + 1; i <= selectedRecords.length - 1; i++) {
-      const targetInterval = selectedRecords[i];
-      if ((targetInterval.minVal >= newInterval.minVal) && (targetInterval.maxVal <= newInterval.maxVal)) {
-        intervalsToBeDeleted += 1;
-      }
-    }
-
-    const newSelectedRecords = selectedRecords.slice();
-    newSelectedRecords.splice(intervalPrevNodeIsIn, intervalsToBeDeleted, newInterval);
-    return newSelectedRecords;
-  };
-
-  backwardExtendAndUpdateIntervals = (intervalPrevNodeIsIn, selectedRecords, newInterval) => {
-    let intervalsToBeDeleted = 1;
-    for (let i = intervalPrevNodeIsIn; i >= 0; i--) {
-      const targetInterval = selectedRecords[i];
-      if ((targetInterval.minVal >= newInterval.minVal) && (targetInterval.maxVal <= newInterval.maxVal)) {
-        intervalsToBeDeleted += 1;
-      }
-    }
-    const insertPosition = (selectedRecords.length - intervalsToBeDeleted) + 1;
-    const newSelectedRecords = selectedRecords.slice();
-    newSelectedRecords.splice(insertPosition, intervalsToBeDeleted, newInterval);
-    return newSelectedRecords;
-  };
-
-  /*
-   * Inserts the new interval into the appropriate spot to keep the selected Records
-   * a sorted array of Selection Ranges.
-   */
-  insertIntervalIntoSelection = (newInterval, selectedRecords) => {
-    const newSelectedRecords = selectedRecords.slice();
-    const nodeID = newInterval.minVal; // does not matter whether min or max val. min === max
-
-    for (let i = 0; i < newSelectedRecords.length; i++) {
-      const currInterval = selectedRecords[i];
-      if (i === 0) {
-        if (nodeID < currInterval.minVal) {
-          newSelectedRecords.splice(i, 0, newInterval);
-          return newSelectedRecords;
-        }
-        if (newSelectedRecords.length === 1) {
-          if (nodeID > currInterval.maxVal) {
-            newSelectedRecords.splice(1, 0, newInterval);
-            return newSelectedRecords;
-          }
-        }
-      } else if (nodeID >= selectedRecords[i - 1].maxVal && nodeID <= currInterval.minVal) {
-        newSelectedRecords.splice(i, 0, newInterval);
-        return newSelectedRecords;
-      } else if (i === newSelectedRecords.length - 1) { // END OF ARRAY
-        if (nodeID > currInterval.maxVal) {
-          newSelectedRecords.splice(i + 1, 0, newInterval);
-          return newSelectedRecords;
-        }
-      }
-    }
-    return newSelectedRecords;
   };
 
   detectColumns() {
@@ -318,27 +211,33 @@ class DataTable extends React.Component {
 
   @boundMethod
   handleOnCellKeyDown({ event: { key, shiftKey }, node: rowNode, rowIndex }) {
-    const { selectedRecords } = this.state;
+    const { selectionTracker } = this.state;
     const { onRowSelected } = this.props;
     const nodeID = parseInt(rowNode.id, 10);
 
     if (key === 'Shift') {
       rowNode.setSelected(true);
 
-      const isCurrNodeInSelection = this.isNodeAlreadySelected(nodeID, selectedRecords);
-      if (isCurrNodeInSelection) {
-        const prevNodeID = nodeID;
-        this.setState({ prevNodeID });
-      } else {
-        const prevNodeID = nodeID;
-        const newInterval = new SelectionRange(nodeID, nodeID);
-        const newSelectedRecords = this.insertIntervalIntoSelection(newInterval, selectedRecords);
-        const mergedNewSelectedRecords = this.mergeAdjacentIntervals(newSelectedRecords);
+      let newSelectionTracker;
+      let prevNodeID;
+      const isCurrNodeInSelection = selectionTracker.isNodeAlreadySelected(nodeID, selectionTracker);
 
-        this.setState({ selectedRecords: mergedNewSelectedRecords, prevNodeID });
-        const totalNumOfRows = this.getTotalNumOfSelectedRows(newSelectedRecords);
-        onRowSelected(totalNumOfRows);
+      if (isCurrNodeInSelection) {
+        prevNodeID = nodeID;
+        newSelectionTracker = selectionTracker;
+      } else {
+        const newInterval = new SelectionRange(nodeID, nodeID);
+        const selectedRecords = selectionTracker.getSelection();
+
+        // Add new interval in selection at it's appropriate spot.
+        const newSelectionRecords = selectionTracker.insertIntervalIntoSelection(newInterval, selectedRecords);
+        newSelectionTracker = new SelectionTracker();
+        newSelectionTracker.setSelection(newSelectionRecords);
+        prevNodeID = nodeID;
       }
+      this.setState({ selectionTracker: newSelectionTracker, prevNodeID });
+      const totalNumOfRows = this.getTotalNumOfSelectedRows(newSelectionTracker.getSelection());
+      onRowSelected(totalNumOfRows);
     } else if (shiftKey && ['ArrowDown', 'ArrowUp'].includes(key)) {
       const direction = key === 'ArrowDown'
         ? +1
@@ -353,7 +252,7 @@ class DataTable extends React.Component {
   @boundMethod
   async handleExportTsv(selectionOnly = false) {
     const { schema, auth } = this.context;
-    const { totalNumOfRows, selectedRecords } = this.state;
+    const { totalNumOfRows, selectionTracker } = this.state;
     const { isExportingData } = this.props;
     isExportingData(true);
 
@@ -411,8 +310,8 @@ class DataTable extends React.Component {
 
       this.gridApi.setDatasource(tempDataSource);
     } else {
-      const lastIndex = selectedRecords.length - 1;
-      const maxSelectedRow = selectedRecords[lastIndex].maxVal;
+      const lastIndex = selectionTracker.getSelection().length - 1;
+      const maxSelectedRow = selectionTracker.getSelection()[lastIndex].maxVal;
       gridOptions.cacheBlockSize = maxSelectedRow; // in preparation to fetch entire dataset
 
       const tempDataSource = {
@@ -424,7 +323,7 @@ class DataTable extends React.Component {
           try {
             const [rows, lastRow] = await this.getTableData(params);
             successCallback(rows, lastRow);
-            await this.selectFetchedRowNodes(this.gridApi, selectedRecords);
+            await this.selectFetchedRowNodes(this.gridApi, selectionTracker);
             await this.gridApi.exportDataAsCsv(exportParams);
             await this.resetDefaultGridOptions();
             isExportingData(false);
@@ -474,9 +373,9 @@ class DataTable extends React.Component {
   }
 
   /*
-   * Handles selection of records in DataTable. Maintains selectedRecords which is an array
+   * Handles selection of records in DataTable. Maintains selectionTracker which is an array
    * of Selection Ranges to represent the selected Rows. Ex. if rows 0-20 and 30-34 are selected,
-   * selectedRecords will contain two selection ranges. selectedRecords = [SR(0, 20), SR(30, 34)]
+   * selectionTracker will contain two selection ranges. selectionTracker = [SR(0, 20), SR(30, 34)]
    * This is used instead of Ag-grids default selection API to handle infinite scrolling selection
    * of rows that are not displayed.
    */
@@ -486,72 +385,57 @@ class DataTable extends React.Component {
     const nodeID = parseInt(e.node.id, 10);
     let { prevNodeID } = this.state;
     const { onRowSelected } = this.props;
+    const { selectionTracker } = this.state;
 
-    const { selectedRecords } = this.state;
-
-    let newSelectedRecords;
+    let newSelectionTracker;
     // 1. first time selecting a row OR just a regular ole click
     if (prevNodeID === null || (!e.event.ctrlKey && !e.event.shiftKey)) {
       prevNodeID = nodeID;
-      newSelectedRecords = [new SelectionRange(nodeID, nodeID)];
+      newSelectionTracker = new SelectionTracker(nodeID, nodeID);
     } else {
-      // 2. shift key is pressed. This means an interval will be extended
+      // 2. shift key is pressed. Unless nodeRow is already selected, an interval is extended
       if (e.event.shiftKey) {
-        const isCurrNodeInSelection = this.isNodeAlreadySelected(nodeID, selectedRecords);
+        const isCurrNodeInSelection = selectionTracker.isNodeAlreadySelected(nodeID);
         if (isCurrNodeInSelection) {
           // reset selection range to whatever the current selected row is
           prevNodeID = nodeID;
-          newSelectedRecords = [new SelectionRange(nodeID, nodeID)];
+          newSelectionTracker = new SelectionTracker(nodeID, nodeID);
         } else {
-          const intervalPrevNodeIsIn = this.findIntervalIndex(prevNodeID, selectedRecords);
+          const intervalPrevNodeIsIn = selectionTracker.findIntervalIndex(prevNodeID);
+          const prevNodeInterval = selectionTracker.getSelection()[intervalPrevNodeIsIn];
           if (nodeID > prevNodeID) {
-            const lastIndex = selectedRecords.length - 1;
-            if (intervalPrevNodeIsIn === lastIndex) {
-              // extend last interval in selection
-              const prevNodeInterval = selectedRecords[lastIndex];
-              const newInterval = new SelectionRange(prevNodeInterval.minVal, nodeID);
-              prevNodeID = nodeID;
-              newSelectedRecords = this.forwardExtendAndUpdateIntervals(intervalPrevNodeIsIn, selectedRecords, newInterval);
-            } else {
-              // extend an interval in the selection and remove any redundant intervals it contains
-              const prevNodeInterval = selectedRecords[intervalPrevNodeIsIn];
-              const newInterval = new SelectionRange(prevNodeInterval.minVal, nodeID);
-              newSelectedRecords = this.forwardExtendAndUpdateIntervals(intervalPrevNodeIsIn, selectedRecords, newInterval);
-              prevNodeID = nodeID;
-            }
+            const newInterval = new SelectionRange(prevNodeInterval.minVal, nodeID);
+            newSelectionTracker = selectionTracker.forwardExtendAndUpdateIntervals(intervalPrevNodeIsIn, newInterval);
           } else {
-            // extending an interval in the selection backwards and remove any redundant intervals
-            const prevNodeInterval = selectedRecords[intervalPrevNodeIsIn];
             const newInterval = new SelectionRange(nodeID, prevNodeInterval.maxVal);
-            newSelectedRecords = this.backwardExtendAndUpdateIntervals(intervalPrevNodeIsIn, selectedRecords, newInterval);
-            prevNodeID = nodeID;
+            newSelectionTracker = selectionTracker.backwardExtendAndUpdateIntervals(intervalPrevNodeIsIn, newInterval);
           }
-          newSelectedRecords = this.mergeAdjacentIntervals(newSelectedRecords);
+          prevNodeID = nodeID;
         }
       }
 
       // 3. ctrl key adds a new interval to selection unless it has already been selected
       if (e.event.ctrlKey) {
-        const isCurrNodeInSelection = this.isNodeAlreadySelected(nodeID, selectedRecords);
+        const isCurrNodeInSelection = selectionTracker.isNodeAlreadySelected(nodeID, selectionTracker);
         if (isCurrNodeInSelection) {
           prevNodeID = nodeID;
-          newSelectedRecords = selectedRecords.slice();
+          newSelectionTracker = new SelectionTracker(nodeID, nodeID);
         } else {
           const newInterval = new SelectionRange(nodeID, nodeID);
+          const selectedRecords = selectionTracker.getSelection();
 
           // Add new interval in selection at it's appropriate spot.
-          // Selection is a sorted array of intervals
-          newSelectedRecords = this.insertIntervalIntoSelection(newInterval, selectedRecords);
-          // May need to merge intervals with the addition of a new one
-          newSelectedRecords = this.mergeAdjacentIntervals(newSelectedRecords);
+          const newSelectionRecords = selectionTracker.insertIntervalIntoSelection(newInterval, selectedRecords);
+          newSelectionTracker = new SelectionTracker();
+          newSelectionTracker.setSelection(newSelectionRecords);
           prevNodeID = nodeID;
         }
       }
     }
-    this.setState({ selectedRecords: newSelectedRecords, prevNodeID });
 
-    this.selectNodeRowsInTable(this.gridApi, newSelectedRecords);
-    const totalNumOfRows = this.getTotalNumOfSelectedRows(newSelectedRecords);
+    this.setState({ selectionTracker: newSelectionTracker, prevNodeID });
+    this.selectNodeRowsInTable(this.gridApi, newSelectionTracker);
+    const totalNumOfRows = this.getTotalNumOfSelectedRows(newSelectionTracker.getSelection());
     onRowSelected(totalNumOfRows);
   }
 
@@ -610,12 +494,12 @@ class DataTable extends React.Component {
 
   renderOptionsMenu() {
     const {
-      allColumns, activeColumns, allGroups, activeGroups, totalNumOfRows, selectedRecords,
+      allColumns, activeColumns, allGroups, activeGroups, totalNumOfRows, selectionTracker,
     } = this.state;
     const { optionsMenuAnchor, optionsMenuOnClose } = this.props;
     const ignorePreviewColumns = colId => !colId.endsWith('.preview');
 
-    const selectionCount = this.getTotalNumOfSelectedRows(selectedRecords);
+    const selectionCount = this.getTotalNumOfSelectedRows(selectionTracker.getSelection());
     const ColumnCheckBox = (colId, groupId = null) => (
       <FormControlLabel
         key={colId}

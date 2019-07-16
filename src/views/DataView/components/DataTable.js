@@ -16,6 +16,8 @@ import DetailChip from '../../../components/DetailChip';
 import DataCache from '../../../services/api/dataCache';
 import { SelectionRange, SelectionTracker } from './util';
 
+const MAX_FULL_EXPORTS_ROWS = 1000;
+
 class DataTable extends React.Component {
   static contextType = KBContext;
 
@@ -542,7 +544,7 @@ class DataTable extends React.Component {
       },
     ];
 
-    if (totalNumOfRows < 1000) {
+    if (totalNumOfRows < MAX_FULL_EXPORTS_ROWS) {
       menuContents.push({
         label: 'Export All to TSV',
         handler: () => this.handleExportTsv(false),

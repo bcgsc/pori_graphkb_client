@@ -140,13 +140,13 @@ class SelectionTracker {
       const currInterval = rangeList[i];
       if (i === 0) {
         if (nodeID < currInterval.minVal) {
-          newRangeList.splice(i, 0, newInterval);
+          newRangeList.unshift(newInterval);
           newRangeList = this.mergeAdjacentIntervals(newRangeList);
           return newRangeList;
         }
         if (rangeList.length === 1) {
           if (nodeID > currInterval.maxVal) {
-            newRangeList.splice(1, 0, newInterval);
+            newRangeList.push(newInterval);
             newRangeList = this.mergeAdjacentIntervals(newRangeList);
             return newRangeList;
           }
@@ -157,7 +157,7 @@ class SelectionTracker {
         return newRangeList;
       } else if (i === rangeList.length - 1) { // END OF ARRAY
         if (nodeID > currInterval.maxVal) {
-          newRangeList.splice(i + 1, 0, newInterval);
+          newRangeList.push(newInterval);
           newRangeList = this.mergeAdjacentIntervals(newRangeList);
           return newRangeList;
         }

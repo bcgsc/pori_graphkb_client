@@ -16,16 +16,16 @@ class SelectionRange {
 class SelectionTracker {
   constructor(minVal, maxVal) {
     if (minVal === undefined || maxVal === undefined) {
-      this.selectedRecords = [];
+      this.rangeList = [];
     } else {
-      this.selectedRecords = [new SelectionRange(minVal, maxVal)];
+      this.rangeList = [new SelectionRange(minVal, maxVal)];
     }
   }
 
-  getSelection = () => this.selectedRecords;
+  getSelection = () => this.rangeList;
 
   setSelection = (newSelection) => {
-    this.selectedRecords = newSelection;
+    this.rangeList = newSelection;
   };
 
   clone = () => {
@@ -36,9 +36,9 @@ class SelectionTracker {
   };
 
   isNodeAlreadySelected = (nodeID) => {
-    const selectedRecords = this.getSelection();
-    for (let i = 0; i < selectedRecords.length; i++) {
-      const currInterval = selectedRecords[i];
+    const rangeList = this.getSelection();
+    for (let i = 0; i < rangeList.length; i++) {
+      const currInterval = rangeList[i];
       if (nodeID >= currInterval.minVal && nodeID <= currInterval.maxVal) {
         return true;
       }
@@ -47,9 +47,9 @@ class SelectionTracker {
   };
 
    findIntervalIndex = (nodeID) => {
-     const selectedRecords = this.getSelection();
-     for (let i = 0; i < selectedRecords.length; i++) {
-       const currInterval = selectedRecords[i];
+     const rangeList = this.getSelection();
+     for (let i = 0; i < rangeList.length; i++) {
+       const currInterval = rangeList[i];
        if (nodeID >= currInterval.minVal && nodeID <= currInterval.maxVal) {
          return i;
        }
@@ -64,97 +64,107 @@ class SelectionTracker {
 
   forwardExtendAndUpdateIntervals = (intervalPrevNodeIsIn, newInterval) => {
     let intervalsToBeDeleted = 1;
-    const selectedRecords = this.getSelection();
+    const rangeList = this.getSelection();
     const { length } = this.getSelection();
     for (let i = intervalPrevNodeIsIn + 1; i <= length - 1; i++) {
-      const targetInterval = selectedRecords[i];
+      const targetInterval = rangeList[i];
       if ((targetInterval.minVal >= newInterval.minVal) && (targetInterval.maxVal <= newInterval.maxVal)) {
         intervalsToBeDeleted += 1;
       }
     }
 
     const newSelectionTracker = this.clone();
-    let newSelectedRecords = newSelectionTracker.getSelection();
-    newSelectedRecords.splice(intervalPrevNodeIsIn, intervalsToBeDeleted, newInterval);
-    newSelectedRecords = this.mergeAdjacentIntervals(newSelectedRecords);
-    newSelectionTracker.setSelection(newSelectedRecords);
+    let newRangeList = newSelectionTracker.getSelection();
+    newRangeList.splice(intervalPrevNodeIsIn, intervalsToBeDeleted, newInterval);
+    newRangeList = this.mergeAdjacentIntervals(newRangeList);
+    newSelectionTracker.setSelection(newRangeList);
     return newSelectionTracker;
   };
 
    backwardExtendAndUpdateIntervals = (intervalPrevNodeIsIn, newInterval) => {
      let intervalsToBeDeleted = 1;
-     const selectedRecords = this.getSelection();
+     const rangeList = this.getSelection();
      for (let i = intervalPrevNodeIsIn; i >= 0; i--) {
-       const targetInterval = selectedRecords[i];
+       const targetInterval = rangeList[i];
        if ((targetInterval.minVal >= newInterval.minVal) && (targetInterval.maxVal <= newInterval.maxVal)) {
          intervalsToBeDeleted += 1;
        }
      }
 
-     const insertPosition = (selectedRecords.length - intervalsToBeDeleted) + 1;
+     const insertPosition = (rangeList.length - intervalsToBeDeleted) + 1;
      const newSelectionTracker = this.clone();
-     let newSelectedRecords = newSelectionTracker.getSelection();
-     newSelectedRecords.splice(insertPosition, intervalsToBeDeleted, newInterval);
-     newSelectedRecords = this.mergeAdjacentIntervals(newSelectedRecords);
-     newSelectionTracker.setSelection(newSelectedRecords);
+     let newRangeList = newSelectionTracker.getSelection();
+     newRangeList.splice(insertPosition, intervalsToBeDeleted, newInterval);
+     newRangeList = this.mergeAdjacentIntervals(newRangeList);
+     newSelectionTracker.setSelection(newRangeList);
      return newSelectionTracker;
    };
 
-   /*
+  merge = (r1, r2) => new SelectionRange(r1.minVal, r2.maxVal);
+
+  /*
    * In selection range, if there are any adjacent selection ranges, i.e
    * [ SR(2,5), SR(5,8)] merge them => [ SR(2,8)]
    */
-  mergeAdjacentIntervals = (selectedRecords) => {
-    let newSelectedRecords = [...selectedRecords];
-    for (let i = 0; i < newSelectedRecords.length - 1; i++) {
-      const currInterval = newSelectedRecords[i];
-      if (currInterval.maxVal + 1 === newSelectedRecords[i + 1].minVal) {
-        const mergedInterval = new SelectionRange(currInterval.minVal, newSelectedRecords[i + 1].maxVal);
-        newSelectedRecords.splice(i, 2, mergedInterval);
-        newSelectedRecords = this.mergeAdjacentIntervals(newSelectedRecords);
-      }
-    }
 
-    return newSelectedRecords;
+  mergeAdjacentIntervals = (rangeList) => {
+    const mergedRanges = [];
+    const sortRanges = (r1, r2) => r1.minVal - r2.minVal;
+
+    rangeList.sort(sortRanges);
+    rangeList.forEach((range) => {
+      if (mergedRanges.length) {
+        const lastRange = mergedRanges[mergedRanges.length - 1];
+        if (lastRange.maxVal + 1 === range.minVal) { // overlapping ranges
+          mergedRanges[mergedRanges.length - 1] = this.merge(lastRange, range);
+        } else {
+          mergedRanges.push(range);
+        }
+      } else {
+        mergedRanges.push(range);
+      }
+    });
+
+    return mergedRanges;
   };
 
   /*
    * Inserts the new interval into the appropriate spot to keep the selected Records
    * a sorted array of Selection Ranges.
    */
-  insertIntervalIntoSelection = (newInterval, selectedRecords) => {
-    let newSelectedRecords = [...selectedRecords];
+  insertIntervalIntoSelection = (newInterval, rangeList) => {
+    let newRangeList = [...rangeList];
     const nodeID = newInterval.minVal; // does not matter whether min or max val. min === max
 
-    for (let i = 0; i < selectedRecords.length; i++) {
-      const currInterval = selectedRecords[i];
+    for (let i = 0; i < rangeList.length; i++) {
+      const currInterval = rangeList[i];
       if (i === 0) {
         if (nodeID < currInterval.minVal) {
-          newSelectedRecords.splice(i, 0, newInterval);
-          newSelectedRecords = this.mergeAdjacentIntervals(newSelectedRecords);
-          return newSelectedRecords;
+          newRangeList.splice(i, 0, newInterval);
+          newRangeList = this.mergeAdjacentIntervals(newRangeList);
+          return newRangeList;
         }
-        if (selectedRecords.length === 1) {
+        if (rangeList.length === 1) {
           if (nodeID > currInterval.maxVal) {
-            newSelectedRecords.splice(1, 0, newInterval);
-            newSelectedRecords = this.mergeAdjacentIntervals(newSelectedRecords);
-            return newSelectedRecords;
+            newRangeList.splice(1, 0, newInterval);
+            newRangeList = this.mergeAdjacentIntervals(newRangeList);
+            return newRangeList;
           }
         }
-      } else if (nodeID >= selectedRecords[i - 1].maxVal && nodeID <= currInterval.minVal) {
-        newSelectedRecords.splice(i, 0, newInterval);
-        newSelectedRecords = this.mergeAdjacentIntervals(newSelectedRecords);
-        return newSelectedRecords;
-      } else if (i === selectedRecords.length - 1) { // END OF ARRAY
+      } else if (nodeID >= rangeList[i - 1].maxVal && nodeID <= currInterval.minVal) {
+        newRangeList.splice(i, 0, newInterval);
+        newRangeList = this.mergeAdjacentIntervals(newRangeList);
+        return newRangeList;
+      } else if (i === rangeList.length - 1) { // END OF ARRAY
         if (nodeID > currInterval.maxVal) {
-          newSelectedRecords.splice(i + 1, 0, newInterval);
-          newSelectedRecords = this.mergeAdjacentIntervals(newSelectedRecords);
-          return newSelectedRecords;
+          newRangeList.splice(i + 1, 0, newInterval);
+          newRangeList = this.mergeAdjacentIntervals(newRangeList);
+          return newRangeList;
         }
       }
     }
-    newSelectedRecords = this.mergeAdjacentIntervals(newSelectedRecords);
-    return newSelectedRecords;
+    newRangeList = this.mergeAdjacentIntervals(newRangeList);
+    return newRangeList;
   };
 }
 

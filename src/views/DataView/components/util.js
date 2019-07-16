@@ -74,10 +74,10 @@ class SelectionTracker {
     }
 
     const newSelectionTracker = this.clone();
-    let newRangeList = newSelectionTracker.getSelection();
+    const newRangeList = newSelectionTracker.getSelection();
     newRangeList.splice(intervalPrevNodeIsIn, intervalsToBeDeleted, newInterval);
-    newRangeList = this.mergeAdjacentIntervals(newRangeList);
-    newSelectionTracker.setSelection(newRangeList);
+    const updatedRangeList = this.mergeAdjacentIntervals([...newRangeList]);
+    newSelectionTracker.setSelection(updatedRangeList);
     return newSelectionTracker;
   };
 
@@ -93,10 +93,10 @@ class SelectionTracker {
 
      const insertPosition = (rangeList.length - intervalsToBeDeleted) + 1;
      const newSelectionTracker = this.clone();
-     let newRangeList = newSelectionTracker.getSelection();
+     const newRangeList = newSelectionTracker.getSelection();
      newRangeList.splice(insertPosition, intervalsToBeDeleted, newInterval);
-     newRangeList = this.mergeAdjacentIntervals(newRangeList);
-     newSelectionTracker.setSelection(newRangeList);
+     const updatedRangeList = this.mergeAdjacentIntervals([...newRangeList]);
+     newSelectionTracker.setSelection(updatedRangeList);
      return newSelectionTracker;
    };
 

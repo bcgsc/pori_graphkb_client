@@ -79,15 +79,6 @@ class DataTable extends React.Component {
     this.initializeGrid();
   }
 
-  getTotalNumOfSelectedRows = (selectedRecords) => {
-    let totalNumOfRows = 0;
-    selectedRecords.forEach((interval) => {
-      const partialSum = interval.length;
-      totalNumOfRows += partialSum;
-    });
-    return totalNumOfRows;
-  };
-
   async getTableData({
     startRow,
     endRow, // exclusive
@@ -238,7 +229,7 @@ class DataTable extends React.Component {
         prevNodeID = nodeID;
       }
       this.setState({ selectionTracker: newSelectionTracker, prevNodeID });
-      const totalNumOfRows = this.getTotalNumOfSelectedRows(newSelectionTracker.rangeList);
+      const totalNumOfRows = newSelectionTracker.getTotalNumOfSelectedRows();
       onRowSelected(totalNumOfRows);
     } else if (shiftKey && ['ArrowDown', 'ArrowUp'].includes(key)) {
       const direction = key === 'ArrowDown'
@@ -437,7 +428,7 @@ class DataTable extends React.Component {
 
     this.setState({ selectionTracker: newSelectionTracker, prevNodeID });
     this.selectNodeRowsInTable(this.gridApi, newSelectionTracker);
-    const totalNumOfRows = this.getTotalNumOfSelectedRows(newSelectionTracker.rangeList);
+    const totalNumOfRows = newSelectionTracker.getTotalNumOfSelectedRows();
     onRowSelected(totalNumOfRows);
   }
 
@@ -501,7 +492,7 @@ class DataTable extends React.Component {
     const { optionsMenuAnchor, optionsMenuOnClose } = this.props;
     const ignorePreviewColumns = colId => !colId.endsWith('.preview');
 
-    const selectionCount = this.getTotalNumOfSelectedRows(selectionTracker.rangeList);
+    const selectionCount = selectionTracker.getTotalNumOfSelectedRows();
     const ColumnCheckBox = (colId, groupId = null) => (
       <FormControlLabel
         key={colId}

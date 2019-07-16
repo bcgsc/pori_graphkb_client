@@ -165,7 +165,19 @@ class SelectionTracker {
     newRangeList = this.mergeAdjacentIntervals(newRangeList);
     return newRangeList;
   };
+
+
+  getTotalNumOfSelectedRows = () => {
+    const selectedRecords = this.rangeList;
+    let totalNumOfRows = 0;
+    selectedRecords.forEach((interval) => {
+      const partialSum = interval.length;
+      totalNumOfRows += partialSum;
+    });
+    return totalNumOfRows;
+  };
 }
+
 
 export {
   SelectionRange,

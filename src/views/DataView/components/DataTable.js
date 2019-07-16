@@ -78,6 +78,7 @@ class DataTable extends React.Component {
   }
 
   getTotalNumOfSelectedRows = (selectedRecords) => {
+    console.log('TCL: getTotalNumOfSelectedRows -> selectedRecords', selectedRecords);
     let totalNumOfRows = 0;
     selectedRecords.forEach((interval) => {
       const partialSum = interval.getLength();
@@ -386,6 +387,7 @@ class DataTable extends React.Component {
     let { prevNodeID } = this.state;
     const { onRowSelected } = this.props;
     const { selectionTracker } = this.state;
+    console.log('TCL: customSelectionHandler -> selectionTracker', selectionTracker.getSelection());
 
     let newSelectionTracker;
     // 1. first time selecting a row OR just a regular ole click
@@ -434,6 +436,7 @@ class DataTable extends React.Component {
     }
 
     this.setState({ selectionTracker: newSelectionTracker, prevNodeID });
+    console.log('TCL: customSelectionHandler -> newSelectionTracker', newSelectionTracker.getSelection());
     this.selectNodeRowsInTable(this.gridApi, newSelectionTracker);
     const totalNumOfRows = this.getTotalNumOfSelectedRows(newSelectionTracker.getSelection());
     onRowSelected(totalNumOfRows);

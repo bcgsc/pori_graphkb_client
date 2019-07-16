@@ -82,7 +82,7 @@ class DataTable extends React.Component {
   getTotalNumOfSelectedRows = (selectedRecords) => {
     let totalNumOfRows = 0;
     selectedRecords.forEach((interval) => {
-      const partialSum = interval.getLength();
+      const partialSum = interval.length;
       totalNumOfRows += partialSum;
     });
     return totalNumOfRows;
@@ -103,7 +103,7 @@ class DataTable extends React.Component {
   }
 
   selectNodeRowsInTable = (gridApi, selectionTracker) => {
-    const selectedRecords = selectionTracker.getSelection();
+    const selectedRecords = selectionTracker.rangeList;
     const { length } = selectedRecords;
     gridApi.forEachNode((node) => {
       const currNodeID = parseInt(node.id, 10);
@@ -121,7 +121,7 @@ class DataTable extends React.Component {
    * current displayed cache page.
    */
   selectFetchedRowNodes = async (gridApi, selectionTracker) => {
-    const selectedRecords = selectionTracker.getSelection();
+    const selectedRecords = selectionTracker.rangeList;
     gridApi.forEachNode((node) => {
       const currNodeID = parseInt(node.id, 10);
       for (let i = 0; i < selectedRecords.length; i++) {
@@ -229,16 +229,16 @@ class DataTable extends React.Component {
         newSelectionTracker = selectionTracker;
       } else {
         const newInterval = new SelectionRange(nodeID, nodeID);
-        const selectedRecords = selectionTracker.getSelection();
+        const selectedRecords = selectionTracker.rangeList;
 
         // Add new interval in selection at it's appropriate spot.
         const newSelectionRecords = selectionTracker.insertIntervalIntoSelection(newInterval, selectedRecords);
         newSelectionTracker = new SelectionTracker();
-        newSelectionTracker.setSelection(newSelectionRecords);
+        newSelectionTracker.rangeList = newSelectionRecords;
         prevNodeID = nodeID;
       }
       this.setState({ selectionTracker: newSelectionTracker, prevNodeID });
-      const totalNumOfRows = this.getTotalNumOfSelectedRows(newSelectionTracker.getSelection());
+      const totalNumOfRows = this.getTotalNumOfSelectedRows(newSelectionTracker.rangeList);
       onRowSelected(totalNumOfRows);
     } else if (shiftKey && ['ArrowDown', 'ArrowUp'].includes(key)) {
       const direction = key === 'ArrowDown'
@@ -312,8 +312,8 @@ class DataTable extends React.Component {
 
       this.gridApi.setDatasource(tempDataSource);
     } else {
-      const lastIndex = selectionTracker.getSelection().length - 1;
-      const maxSelectedRow = selectionTracker.getSelection()[lastIndex].maxVal;
+      const lastIndex = selectionTracker.rangeList.length - 1;
+      const maxSelectedRow = selectionTracker.rangeList[lastIndex].maxVal;
       gridOptions.cacheBlockSize = maxSelectedRow; // in preparation to fetch entire dataset
 
       const tempDataSource = {
@@ -404,7 +404,7 @@ class DataTable extends React.Component {
           newSelectionTracker = new SelectionTracker(nodeID, nodeID);
         } else {
           const intervalPrevNodeIsIn = selectionTracker.findIntervalIndex(prevNodeID);
-          const prevNodeInterval = selectionTracker.getSelection()[intervalPrevNodeIsIn];
+          const prevNodeInterval = selectionTracker.rangeList[intervalPrevNodeIsIn];
           if (nodeID > prevNodeID) {
             const newInterval = new SelectionRange(prevNodeInterval.minVal, nodeID);
             newSelectionTracker = selectionTracker.forwardExtendAndUpdateIntervals(intervalPrevNodeIsIn, newInterval);
@@ -424,12 +424,12 @@ class DataTable extends React.Component {
           newSelectionTracker = new SelectionTracker(nodeID, nodeID);
         } else {
           const newInterval = new SelectionRange(nodeID, nodeID);
-          const selectedRecords = selectionTracker.getSelection();
+          const selectedRecords = selectionTracker.rangeList;
 
           // Add new interval in selection at it's appropriate spot.
           const newSelectionRecords = selectionTracker.insertIntervalIntoSelection(newInterval, selectedRecords);
           newSelectionTracker = new SelectionTracker();
-          newSelectionTracker.setSelection(newSelectionRecords);
+          newSelectionTracker.rangeList = newSelectionRecords;
           prevNodeID = nodeID;
         }
       }
@@ -437,7 +437,7 @@ class DataTable extends React.Component {
 
     this.setState({ selectionTracker: newSelectionTracker, prevNodeID });
     this.selectNodeRowsInTable(this.gridApi, newSelectionTracker);
-    const totalNumOfRows = this.getTotalNumOfSelectedRows(newSelectionTracker.getSelection());
+    const totalNumOfRows = this.getTotalNumOfSelectedRows(newSelectionTracker.rangeList);
     onRowSelected(totalNumOfRows);
   }
 
@@ -501,7 +501,7 @@ class DataTable extends React.Component {
     const { optionsMenuAnchor, optionsMenuOnClose } = this.props;
     const ignorePreviewColumns = colId => !colId.endsWith('.preview');
 
-    const selectionCount = this.getTotalNumOfSelectedRows(selectionTracker.getSelection());
+    const selectionCount = this.getTotalNumOfSelectedRows(selectionTracker.rangeList);
     const ColumnCheckBox = (colId, groupId = null) => (
       <FormControlLabel
         key={colId}

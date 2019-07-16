@@ -5,14 +5,13 @@ class SelectionRange {
     this.maxVal = maxVal;
   }
 
-  getLength = () => this.maxVal - this.minVal + 1;
+  get length() { return this.maxVal - this.minVal + 1; }
 }
 
 /* Keeps track of selected nodeRows in DataTable. The selected nodeRows
  * are maintained as a sorted list of SelectionRanges. I.E SelectionTracker
  * would maintain selected records: (1,2,3,7,8,9) as [SR(1,3), SR(7,9)]
  */
-
 class SelectionTracker {
   constructor(minVal, maxVal) {
     if (minVal === undefined || maxVal === undefined) {
@@ -22,23 +21,23 @@ class SelectionTracker {
     }
   }
 
-  getSelection = () => this.rangeList;
+  get selection() { return this.rangeList; }
 
-  setSelection = (newSelection) => {
+  set selection(newSelection) {
     this.rangeList = newSelection;
-  };
+  }
 
   clone = () => {
     const newSelectionTracker = new SelectionTracker();
-    const clonedSelectedRecords = [...this.getSelection()];
-    newSelectionTracker.setSelection(clonedSelectedRecords);
+    const clonedSelectedRecords = [...this.rangeList];
+    newSelectionTracker.rangeList = clonedSelectedRecords;
     return newSelectionTracker;
   };
 
   isNodeAlreadySelected = (nodeID) => {
-    const rangeList = this.getSelection();
-    for (let i = 0; i < rangeList.length; i++) {
-      const currInterval = rangeList[i];
+    const selection = this.rangeList;
+    for (let i = 0; i < selection.length; i++) {
+      const currInterval = selection[i];
       if (nodeID >= currInterval.minVal && nodeID <= currInterval.maxVal) {
         return true;
       }
@@ -47,9 +46,9 @@ class SelectionTracker {
   };
 
    findIntervalIndex = (nodeID) => {
-     const rangeList = this.getSelection();
-     for (let i = 0; i < rangeList.length; i++) {
-       const currInterval = rangeList[i];
+     const selection = this.rangeList;
+     for (let i = 0; i < selection.length; i++) {
+       const currInterval = selection[i];
        if (nodeID >= currInterval.minVal && nodeID <= currInterval.maxVal) {
          return i;
        }
@@ -64,39 +63,39 @@ class SelectionTracker {
 
   forwardExtendAndUpdateIntervals = (intervalPrevNodeIsIn, newInterval) => {
     let intervalsToBeDeleted = 1;
-    const rangeList = this.getSelection();
-    const { length } = this.getSelection();
+    const selection = this.rangeList;
+    const { length } = this.rangeList;
     for (let i = intervalPrevNodeIsIn + 1; i <= length - 1; i++) {
-      const targetInterval = rangeList[i];
+      const targetInterval = selection[i];
       if ((targetInterval.minVal >= newInterval.minVal) && (targetInterval.maxVal <= newInterval.maxVal)) {
         intervalsToBeDeleted += 1;
       }
     }
 
     const newSelectionTracker = this.clone();
-    const newRangeList = newSelectionTracker.getSelection();
+    const newRangeList = newSelectionTracker.rangeList;
     newRangeList.splice(intervalPrevNodeIsIn, intervalsToBeDeleted, newInterval);
     const updatedRangeList = this.mergeAdjacentIntervals([...newRangeList]);
-    newSelectionTracker.setSelection(updatedRangeList);
+    newSelectionTracker.rangeList = updatedRangeList;
     return newSelectionTracker;
   };
 
    backwardExtendAndUpdateIntervals = (intervalPrevNodeIsIn, newInterval) => {
      let intervalsToBeDeleted = 1;
-     const rangeList = this.getSelection();
+     const selection = this.rangeList;
      for (let i = intervalPrevNodeIsIn; i >= 0; i--) {
-       const targetInterval = rangeList[i];
+       const targetInterval = selection[i];
        if ((targetInterval.minVal >= newInterval.minVal) && (targetInterval.maxVal <= newInterval.maxVal)) {
          intervalsToBeDeleted += 1;
        }
      }
 
-     const insertPosition = (rangeList.length - intervalsToBeDeleted) + 1;
+     const insertPosition = (selection.length - intervalsToBeDeleted) + 1;
      const newSelectionTracker = this.clone();
-     const newRangeList = newSelectionTracker.getSelection();
+     const newRangeList = newSelectionTracker.rangeList;
      newRangeList.splice(insertPosition, intervalsToBeDeleted, newInterval);
      const updatedRangeList = this.mergeAdjacentIntervals([...newRangeList]);
-     newSelectionTracker.setSelection(updatedRangeList);
+     newSelectionTracker.rangeList = updatedRangeList;
      return newSelectionTracker;
    };
 

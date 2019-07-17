@@ -107,7 +107,7 @@ class DataTable extends React.Component {
     });
   };
 
-  /*
+  /**
    * Selects all nodes that are in the current selection tracking on the
    * current displayed cache page.
    */
@@ -365,7 +365,7 @@ class DataTable extends React.Component {
     }
   }
 
-  /*
+  /**
    * Handles selection of records in DataTable. Maintains selectionTracker which is an array
    * of Selection Ranges to represent the selected Rows. Ex. if rows 0-20 and 30-34 are selected,
    * selectionTracker will contain two selection ranges. selectionTracker = [SR(0, 20), SR(30, 34)]

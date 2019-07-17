@@ -99,8 +99,8 @@ class DataTable extends React.Component {
     gridApi.forEachNode((node) => {
       const currNodeID = parseInt(node.id, 10);
       for (let i = 0; i < length; i++) {
-        const currInterval = selectedRecords[i];
-        if (currNodeID >= currInterval.minVal && currNodeID <= currInterval.maxVal) {
+        const currRange = selectedRecords[i];
+        if (currNodeID >= currRange.minVal && currNodeID <= currRange.maxVal) {
           node.setSelected(true);
         }
       }
@@ -116,8 +116,8 @@ class DataTable extends React.Component {
     gridApi.forEachNode((node) => {
       const currNodeID = parseInt(node.id, 10);
       for (let i = 0; i < selectedRecords.length; i++) {
-        const currInterval = selectedRecords[i];
-        if (currNodeID >= currInterval.minVal && currNodeID <= currInterval.maxVal) {
+        const currRange = selectedRecords[i];
+        if (currNodeID >= currRange.minVal && currNodeID <= currRange.maxVal) {
           node.setSelected(true);
         }
       }
@@ -219,11 +219,11 @@ class DataTable extends React.Component {
         prevNodeID = nodeID;
         newSelectionTracker = selectionTracker;
       } else {
-        const newInterval = new SelectionRange(nodeID, nodeID);
+        const newRange = new SelectionRange(nodeID, nodeID);
         const selectedRecords = selectionTracker.rangeList;
 
-        // Add new interval in selection at it's appropriate spot.
-        const newSelectionRecords = selectionTracker.insertIntervalIntoSelection(newInterval, selectedRecords);
+        // Add new Range in selection at it's appropriate spot.
+        const newSelectionRecords = selectionTracker.insertRangeIntoSelection(newRange, selectedRecords);
         newSelectionTracker = new SelectionTracker();
         newSelectionTracker.rangeList = newSelectionRecords;
         prevNodeID = nodeID;
@@ -379,6 +379,7 @@ class DataTable extends React.Component {
     let { prevNodeID } = this.state;
     const { onRowSelected } = this.props;
     const { selectionTracker } = this.state;
+    console.log('TCL: customSelectionHandler -> selectionTracker', selectionTracker.rangeList);
 
     let newSelectionTracker;
     // 1. first time selecting a row OR just a regular ole click
@@ -386,7 +387,7 @@ class DataTable extends React.Component {
       prevNodeID = nodeID;
       newSelectionTracker = new SelectionTracker(nodeID, nodeID);
     } else {
-      // 2. shift key is pressed. Unless nodeRow is already selected, an interval is extended
+      // 2. shift key is pressed. Unless nodeRow is already selected, a Range is extended
       if (e.event.shiftKey) {
         const isCurrNodeInSelection = selectionTracker.isNodeAlreadySelected(nodeID);
         if (isCurrNodeInSelection) {
@@ -394,31 +395,31 @@ class DataTable extends React.Component {
           prevNodeID = nodeID;
           newSelectionTracker = new SelectionTracker(nodeID, nodeID);
         } else {
-          const intervalPrevNodeIsIn = selectionTracker.findIntervalIndex(prevNodeID);
-          const prevNodeInterval = selectionTracker.rangeList[intervalPrevNodeIsIn];
+          const prevNodeRangeIndex = selectionTracker.findRangeIndex(prevNodeID);
+          const prevNodeRange = selectionTracker.rangeList[prevNodeRangeIndex];
           if (nodeID > prevNodeID) {
-            const newInterval = new SelectionRange(prevNodeInterval.minVal, nodeID);
-            newSelectionTracker = selectionTracker.forwardExtendAndUpdateIntervals(intervalPrevNodeIsIn, newInterval);
+            const newRange = new SelectionRange(prevNodeRange.minVal, nodeID);
+            newSelectionTracker = selectionTracker.forwardExtendAndUpdateRanges(prevNodeRangeIndex, newRange);
           } else {
-            const newInterval = new SelectionRange(nodeID, prevNodeInterval.maxVal);
-            newSelectionTracker = selectionTracker.backwardExtendAndUpdateIntervals(intervalPrevNodeIsIn, newInterval);
+            const newRange = new SelectionRange(nodeID, prevNodeRange.maxVal);
+            newSelectionTracker = selectionTracker.backwardExtendAndUpdateRanges(prevNodeRangeIndex, newRange);
           }
           prevNodeID = nodeID;
         }
       }
 
-      // 3. ctrl key adds a new interval to selection unless it has already been selected
+      // 3. ctrl key adds a new Range to selection unless it has already been selected
       if (e.event.ctrlKey) {
         const isCurrNodeInSelection = selectionTracker.isNodeAlreadySelected(nodeID, selectionTracker);
         if (isCurrNodeInSelection) {
           prevNodeID = nodeID;
           newSelectionTracker = new SelectionTracker(nodeID, nodeID);
         } else {
-          const newInterval = new SelectionRange(nodeID, nodeID);
+          const newRange = new SelectionRange(nodeID, nodeID);
           const selectedRecords = selectionTracker.rangeList;
 
-          // Add new interval in selection at it's appropriate spot.
-          const newSelectionRecords = selectionTracker.insertIntervalIntoSelection(newInterval, selectedRecords);
+          // Add new Range in selection at it's appropriate spot.
+          const newSelectionRecords = selectionTracker.insertRangeIntoSelection(newRange, selectedRecords);
           newSelectionTracker = new SelectionTracker();
           newSelectionTracker.rangeList = newSelectionRecords;
           prevNodeID = nodeID;
@@ -428,6 +429,7 @@ class DataTable extends React.Component {
 
     this.setState({ selectionTracker: newSelectionTracker, prevNodeID });
     this.selectNodeRowsInTable(this.gridApi, newSelectionTracker);
+    console.log('TCL: customSelectionHandler -> newSelectionTracker', newSelectionTracker.rangeList);
     const totalNumOfRows = newSelectionTracker.getTotalNumOfSelectedRows();
     onRowSelected(totalNumOfRows);
   }

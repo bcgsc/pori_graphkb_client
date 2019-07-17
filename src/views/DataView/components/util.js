@@ -1,4 +1,4 @@
-/* Represents a single range of selected Records */
+/** Represents a single range of selected Records */
 class SelectionRange {
   constructor(minVal, maxVal) {
     this.minVal = minVal;
@@ -8,7 +8,7 @@ class SelectionRange {
   get length() { return this.maxVal - this.minVal + 1; }
 }
 
-/* Keeps track of selected nodeRows in DataTable. The selected nodeRows
+/**  Keeps track of selected nodeRows in DataTable. The selected nodeRows
  * are maintained as a sorted list of SelectionRanges. I.E SelectionTracker
  * would maintain selected records: (1,2,3,7,8,9) as [SR(1,3), SR(7,9)]
  */

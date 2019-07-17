@@ -27,12 +27,12 @@ class SelectionTracker {
     this.rangeList = newSelection;
   }
 
-  clone = () => {
+  clone() {
     const newSelectionTracker = new SelectionTracker();
     const clonedSelectedRecords = [...this.rangeList];
     newSelectionTracker.rangeList = clonedSelectedRecords;
     return newSelectionTracker;
-  };
+  }
 
   static rangeContainsNode(nodeID, range) {
     if (nodeID >= range.minVal && nodeID <= range.maxVal) {
@@ -77,7 +77,7 @@ class SelectionTracker {
    * last selected nodeRow
    * @param {SelectionRange} newRange - the new range that will be added to SelectionTracker
    */
-  forwardExtendAndUpdateRanges = (rangePrevNodeIsIn, newRange) => {
+  forwardExtendAndUpdateRanges(rangePrevNodeIsIn, newRange) {
     let rangesToBeDeleted = 1;
     const selection = this.rangeList;
     const { length } = this.rangeList;
@@ -94,7 +94,7 @@ class SelectionTracker {
     const updatedRangeList = this.mergeAdjacentRanges([...newRangeList]);
     newSelectionTracker.rangeList = updatedRangeList;
     return newSelectionTracker;
-  };
+  }
 
   /**
    * Extends the selection range that contains your previously selected nodeRow in
@@ -105,24 +105,24 @@ class SelectionTracker {
    * last selected nodeRow
    * @param {SelectionRange} newRange - the new range that will be added to SelectionTracker
    */
-   backwardExtendAndUpdateRanges = (rangePrevNodeIsIn, newRange) => {
-     let rangesToBeDeleted = 1;
-     const selection = this.rangeList;
-     for (let i = rangePrevNodeIsIn; i >= 0; i--) {
-       const targetRange = selection[i];
-       if (SelectionTracker.rangeRedundant(newRange, targetRange)) {
-         rangesToBeDeleted += 1;
-       }
-     }
+  backwardExtendAndUpdateRanges(rangePrevNodeIsIn, newRange) {
+    let rangesToBeDeleted = 1;
+    const selection = this.rangeList;
+    for (let i = rangePrevNodeIsIn; i >= 0; i--) {
+      const targetRange = selection[i];
+      if (SelectionTracker.rangeRedundant(newRange, targetRange)) {
+        rangesToBeDeleted += 1;
+      }
+    }
 
-     const insertPosition = (selection.length - rangesToBeDeleted) + 1;
-     const newSelectionTracker = this.clone();
-     const newRangeList = newSelectionTracker.rangeList;
-     newRangeList.splice(insertPosition, rangesToBeDeleted, newRange);
-     const updatedRangeList = this.mergeAdjacentRanges([...newRangeList]);
-     newSelectionTracker.rangeList = updatedRangeList;
-     return newSelectionTracker;
-   };
+    const insertPosition = (selection.length - rangesToBeDeleted) + 1;
+    const newSelectionTracker = this.clone();
+    const newRangeList = newSelectionTracker.rangeList;
+    newRangeList.splice(insertPosition, rangesToBeDeleted, newRange);
+    const updatedRangeList = this.mergeAdjacentRanges([...newRangeList]);
+    newSelectionTracker.rangeList = updatedRangeList;
+    return newSelectionTracker;
+  }
 
   merge = (r1, r2) => new SelectionRange(r1.minVal, r2.maxVal);
 
@@ -138,7 +138,7 @@ class SelectionTracker {
    * [ SR(2,5), SR(5,8)] merge them => [ SR(2,8)]
    * @param {Array of SelectionRanges} rangeList - represents row selection
    */
-  mergeAdjacentRanges = (rangeList) => {
+  mergeAdjacentRanges(rangeList) {
     const mergedRanges = [];
     const sortRanges = (r1, r2) => r1.minVal - r2.minVal;
 
@@ -157,7 +157,7 @@ class SelectionTracker {
     });
 
     return mergedRanges;
-  };
+  }
 
   static rangeFitsInBetween(nodeID, prevRange, currRange) {
     if (nodeID >= prevRange.maxVal && nodeID <= currRange.minVal) {
@@ -172,7 +172,7 @@ class SelectionTracker {
    * @param {SelectionRange} newRange - new Range to be inserted
    * @param {Array of SelectionRanges} rangeList - represents row selection
    */
-  insertRangeIntoSelection = (newRange, rangeList) => {
+  insertRangeIntoSelection(newRange, rangeList) {
     let newRangeList = [...rangeList];
     const nodeID = newRange.minVal; // does not matter whether min or max val. min === max
 
@@ -205,10 +205,10 @@ class SelectionTracker {
     }
     newRangeList = this.mergeAdjacentRanges(newRangeList);
     return newRangeList;
-  };
+  }
 
 
-  getTotalNumOfSelectedRows = () => {
+  getTotalNumOfSelectedRows() {
     const selectedRecords = this.rangeList;
     let totalNumOfRows = 0;
     selectedRecords.forEach((range) => {
@@ -216,7 +216,7 @@ class SelectionTracker {
       totalNumOfRows += partialSum;
     });
     return totalNumOfRows;
-  };
+  }
 }
 
 

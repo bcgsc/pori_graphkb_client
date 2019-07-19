@@ -90,9 +90,7 @@ class DataTable extends React.Component {
     const selectedRecords = selectionTracker.rangeList;
 
     // Add new Range in selection at it's appropriate spot.
-    const newSelectionRecords = selectionTracker.insertRangeIntoSelection(newRange, selectedRecords);
-    const newSelectionTracker = new SelectionTracker();
-    newSelectionTracker.rangeList = newSelectionRecords;
+    const newSelectionTracker = selectionTracker.insertRangeIntoSelection(newRange, selectedRecords);
     return newSelectionTracker;
   }
 

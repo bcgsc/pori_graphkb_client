@@ -182,29 +182,39 @@ class SelectionTracker {
         if (nodeID < currRange.minVal) {
           newRangeList.unshift(newRange);
           newRangeList = this.mergeAdjacentRanges(newRangeList);
-          return newRangeList;
+          const newSelectionTracker = new SelectionTracker();
+          newSelectionTracker.rangeList = newRangeList;
+          return newSelectionTracker;
         }
         if (rangeList.length === 1) {
           if (nodeID > currRange.maxVal) {
             newRangeList.push(newRange);
             newRangeList = this.mergeAdjacentRanges(newRangeList);
-            return newRangeList;
+            const newSelectionTracker = new SelectionTracker();
+            newSelectionTracker.rangeList = newRangeList;
+            return newSelectionTracker;
           }
         }
       } else if (SelectionTracker.rangeFitsInBetween(nodeID, rangeList[i - 1], currRange)) {
         newRangeList.splice(i, 0, newRange);
         newRangeList = this.mergeAdjacentRanges(newRangeList);
-        return newRangeList;
+        const newSelectionTracker = new SelectionTracker();
+        newSelectionTracker.rangeList = newRangeList;
+        return newSelectionTracker;
       } else if (i === rangeList.length - 1) { // END OF ARRAY
         if (nodeID > currRange.maxVal) {
           newRangeList.push(newRange);
           newRangeList = this.mergeAdjacentRanges(newRangeList);
-          return newRangeList;
+          const newSelectionTracker = new SelectionTracker();
+          newSelectionTracker.rangeList = newRangeList;
+          return newSelectionTracker;
         }
       }
     }
     newRangeList = this.mergeAdjacentRanges(newRangeList);
-    return newRangeList;
+    const newSelectionTracker = new SelectionTracker();
+    newSelectionTracker.rangeList = newRangeList;
+    return newSelectionTracker;
   }
 
 

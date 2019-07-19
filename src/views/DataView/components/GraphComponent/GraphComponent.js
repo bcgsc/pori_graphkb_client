@@ -199,7 +199,8 @@ class GraphComponent extends Component {
             expandable,
           } = this.processData(
             data[key],
-            util.positionInit(0, 0, i, validDisplayed.length),
+            // center initial nodes based on viewpoint
+            util.positionInit(this.wrapper.clientWidth / 2, this.wrapper.clientHeight / 2, i, validDisplayed.length),
             0,
             {
               nodes,
@@ -348,18 +349,21 @@ class GraphComponent extends Component {
     if (!d3Select.event.active) simulation.alphaTarget(0.3).restart();
 
     const dragged = () => {
+      // move nodes via fixed position temporary
       node.fx = d3Select.event.x; // eslint-disable-line no-param-reassign
       node.fy = d3Select.event.y; // eslint-disable-line no-param-reassign
+      node.x = d3Select.event.x; // eslint-disable-line no-param-reassign
+      node.y = d3Select.event.y; // eslint-disable-line no-param-reassign
     };
 
     const ended = () => {
       if (!d3Select.event.active) {
         simulation.alphaTarget(0);
       }
-      if (!d3Select.event.type === 'end') {
-        node.fx = d3Select.event.x; // eslint-disable-line no-param-reassign
-        node.fy = d3Select.event.y; // eslint-disable-line no-param-reassign
-      }
+
+      // disable fixed position once dragEvent ends
+      node.fx = null; // eslint-disable-line no-param-reassign
+      node.fy = null; // eslint-disable-line no-param-reassign
     };
 
     d3Select.event
@@ -435,12 +439,6 @@ class GraphComponent extends Component {
       d3Force.forceManyBody()
         .strength(-graphOptions.chargeStrength)
         .distanceMax(graphOptions.chargeMax),
-    ).force(
-      'center',
-      d3Force.forceCenter(
-        width / 2,
-        height / 2,
-      ),
     );
 
     const container = d3Select.select(this.zoom);
@@ -465,7 +463,7 @@ class GraphComponent extends Component {
 
   /**
    * Calls the api and renders neighbor nodes of the input node onto the graph.
-   * @param {GraphNode} node - d3 simulation node whose neighbors were requestsed.
+   * @param {GraphNode} node - d3 simulation node whose neighbors were requested.
    */
   @boundMethod
   loadNeighbors(node) {
@@ -503,6 +501,7 @@ class GraphComponent extends Component {
       delete expandable[node.getId()];
     }
     util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
+
     this.setState({
       expandable,
       actionsNode: null,

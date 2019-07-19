@@ -41,6 +41,42 @@ class DataTable extends React.Component {
     onRecordsSelected: null,
   };
 
+  static checkAndUpdate(nodeID, selectionTracker) {
+    const isCurrNodeInSelection = selectionTracker.isNodeAlreadySelected(nodeID, selectionTracker);
+    let newSelectionTracker;
+    if (isCurrNodeInSelection) {
+      newSelectionTracker = selectionTracker;
+    } else {
+      newSelectionTracker = DataTable.addSingleRange(nodeID, selectionTracker);
+    }
+    return newSelectionTracker;
+  }
+
+  static extendRangeUpdateSelection(prevNodeID, nodeID, selectionTracker) {
+    const prevNodeRangeIndex = selectionTracker.findRangeIndex(prevNodeID);
+    const prevNodeRange = selectionTracker.rangeList[prevNodeRangeIndex];
+    let newSelectionTracker;
+    if (nodeID > prevNodeID) {
+      const newRange = new SelectionRange(prevNodeRange.minVal, nodeID);
+      newSelectionTracker = selectionTracker.forwardExtendAndUpdateRanges(prevNodeRangeIndex, newRange);
+    } else {
+      const newRange = new SelectionRange(nodeID, prevNodeRange.maxVal);
+      newSelectionTracker = selectionTracker.backwardExtendAndUpdateRanges(prevNodeRangeIndex, newRange);
+    }
+    return newSelectionTracker;
+  }
+
+  static addSingleRange(nodeID, selectionTracker) {
+    const newRange = new SelectionRange(nodeID, nodeID);
+    const selectedRecords = selectionTracker.rangeList;
+
+    // Add new Range in selection at it's appropriate spot.
+    const newSelectionRecords = selectionTracker.insertRangeIntoSelection(newRange, selectedRecords);
+    const newSelectionTracker = new SelectionTracker();
+    newSelectionTracker.rangeList = newSelectionRecords;
+    return newSelectionTracker;
+  }
+
   constructor(props) {
     super(props);
     this.api = null;
@@ -352,43 +388,20 @@ class DataTable extends React.Component {
     if (type === 'click') {
       // 1. first time selecting a row OR just a regular ole click
       if (prevNodeID === null || (!ctrlKey && !shiftKey)) {
-        prevNodeID = nodeID;
         newSelectionTracker = new SelectionTracker(nodeID, nodeID);
       } else if (shiftKey) {
       // 2. shift key extends a the previously selected range or resets selection range
         const isCurrNodeInSelection = selectionTracker.isNodeAlreadySelected(nodeID);
         if (isCurrNodeInSelection) {
-          prevNodeID = nodeID;
           newSelectionTracker = new SelectionTracker(nodeID, nodeID);
         } else {
-          const prevNodeRangeIndex = selectionTracker.findRangeIndex(prevNodeID);
-          const prevNodeRange = selectionTracker.rangeList[prevNodeRangeIndex];
-          if (nodeID > prevNodeID) {
-            const newRange = new SelectionRange(prevNodeRange.minVal, nodeID);
-            newSelectionTracker = selectionTracker.forwardExtendAndUpdateRanges(prevNodeRangeIndex, newRange);
-          } else {
-            const newRange = new SelectionRange(nodeID, prevNodeRange.maxVal);
-            newSelectionTracker = selectionTracker.backwardExtendAndUpdateRanges(prevNodeRangeIndex, newRange);
-          }
-          prevNodeID = nodeID;
+          newSelectionTracker = DataTable.extendRangeUpdateSelection(prevNodeID, nodeID, selectionTracker);
         }
       } else if (ctrlKey) {
       // 3. ctrl key adds a new Range to selection unless it has already been selected
-        const isCurrNodeInSelection = selectionTracker.isNodeAlreadySelected(nodeID, selectionTracker);
-        if (isCurrNodeInSelection) {
-          prevNodeID = nodeID;
-          newSelectionTracker = new SelectionTracker(nodeID, nodeID);
-        } else {
-          const newRange = new SelectionRange(nodeID, nodeID);
-          const selectedRecords = selectionTracker.rangeList;
-
-          // Add new Range in selection at it's appropriate spot.
-          const newSelectionRecords = selectionTracker.insertRangeIntoSelection(newRange, selectedRecords);
-          newSelectionTracker = new SelectionTracker();
-          newSelectionTracker.rangeList = newSelectionRecords;
-          prevNodeID = nodeID;
-        }
+        newSelectionTracker = DataTable.checkAndUpdate(nodeID, selectionTracker);
       }
+      prevNodeID = nodeID;
 
       this.setState({ selectionTracker: newSelectionTracker, prevNodeID });
       this.selectNodeRowsInTable(this.gridApi, newSelectionTracker);
@@ -397,21 +410,9 @@ class DataTable extends React.Component {
     } else if (type === 'keydown') {
       if (key === 'Shift') {
         rowNode.setSelected(true);
-        const isCurrNodeInSelection = selectionTracker.isNodeAlreadySelected(nodeID, selectionTracker);
+        newSelectionTracker = DataTable.checkAndUpdate(nodeID, selectionTracker);
+        prevNodeID = nodeID;
 
-        if (isCurrNodeInSelection) {
-          prevNodeID = nodeID;
-          newSelectionTracker = selectionTracker;
-        } else {
-          const newRange = new SelectionRange(nodeID, nodeID);
-          const selectedRecords = selectionTracker.rangeList;
-
-          // Add new Range in selection at it's appropriate spot.
-          const newSelectionRecords = selectionTracker.insertRangeIntoSelection(newRange, selectedRecords);
-          newSelectionTracker = new SelectionTracker();
-          newSelectionTracker.rangeList = newSelectionRecords;
-          prevNodeID = nodeID;
-        }
         this.setState({ selectionTracker: newSelectionTracker, prevNodeID });
         const totalNumOfRows = newSelectionTracker.getTotalNumOfSelectedRows();
         onRowSelected(totalNumOfRows);

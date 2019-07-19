@@ -67,7 +67,7 @@ class DataTable extends React.Component {
   }
 
   componentWillUnmount() {
-    this.gridApi.removeEventListener('rowClicked', this.customSelectionHandler);
+    this.gridApi.removeEventListener('rowClicked', this.handleSelectionChange);
   }
 
   @boundMethod
@@ -75,7 +75,7 @@ class DataTable extends React.Component {
     this.gridApi = gridApi;
     this.gridColumnApi = columnApi;
 
-    this.gridApi.addEventListener('rowClicked', this.customSelectionHandler);
+    this.gridApi.addEventListener('rowClicked', this.handleSelectionChange);
 
     this.initializeGrid();
   }
@@ -201,46 +201,6 @@ class DataTable extends React.Component {
       }
     }
     this.setState({ activeColumns: newActiveColumns, activeGroups: newActiveGroups });
-  }
-
-  @boundMethod
-  handleOnCellKeyDown({ event: { key, shiftKey }, node: rowNode, rowIndex }) {
-    const { selectionTracker } = this.state;
-    const { onRowSelected } = this.props;
-    const nodeID = parseInt(rowNode.id, 10);
-
-    if (key === 'Shift') {
-      rowNode.setSelected(true);
-
-      let newSelectionTracker;
-      let prevNodeID;
-      const isCurrNodeInSelection = selectionTracker.isNodeAlreadySelected(nodeID, selectionTracker);
-
-      if (isCurrNodeInSelection) {
-        prevNodeID = nodeID;
-        newSelectionTracker = selectionTracker;
-      } else {
-        const newRange = new SelectionRange(nodeID, nodeID);
-        const selectedRecords = selectionTracker.rangeList;
-
-        // Add new Range in selection at it's appropriate spot.
-        const newSelectionRecords = selectionTracker.insertRangeIntoSelection(newRange, selectedRecords);
-        newSelectionTracker = new SelectionTracker();
-        newSelectionTracker.rangeList = newSelectionRecords;
-        prevNodeID = nodeID;
-      }
-      this.setState({ selectionTracker: newSelectionTracker, prevNodeID });
-      const totalNumOfRows = newSelectionTracker.getTotalNumOfSelectedRows();
-      onRowSelected(totalNumOfRows);
-    } else if (shiftKey && ['ArrowDown', 'ArrowUp'].includes(key)) {
-      const direction = key === 'ArrowDown'
-        ? +1
-        : -1;
-      const nextRow = this.gridApi.getDisplayedRowAtIndex(rowIndex + direction);
-      if (nextRow) {
-        nextRow.setSelected(true);
-      }
-    }
   }
 
   @boundMethod
@@ -373,61 +333,98 @@ class DataTable extends React.Component {
    * This is used instead of Ag-grids default selection API to handle infinite scrolling selection
    * of rows that are not displayed.
    */
-
   @boundMethod
-  customSelectionHandler(event) {
-    const { event: { ctrlKey, shiftKey }, node: { id } } = event;
+  handleSelectionChange(event) {
+    const {
+      event: {
+        type, key, ctrlKey, shiftKey,
+      },
+      node: rowNode, rowIndex,
+      node: { id },
+    } = event;
+
     const nodeID = parseInt(id, 10);
     let { prevNodeID } = this.state;
     const { onRowSelected } = this.props;
     const { selectionTracker } = this.state;
 
     let newSelectionTracker;
-    // 1. first time selecting a row OR just a regular ole click
-    if (prevNodeID === null || (!ctrlKey && !shiftKey)) {
-      prevNodeID = nodeID;
-      newSelectionTracker = new SelectionTracker(nodeID, nodeID);
-    } else if (shiftKey) {
+    if (type === 'click') {
+      // 1. first time selecting a row OR just a regular ole click
+      if (prevNodeID === null || (!ctrlKey && !shiftKey)) {
+        prevNodeID = nodeID;
+        newSelectionTracker = new SelectionTracker(nodeID, nodeID);
+      } else if (shiftKey) {
       // 2. shift key extends a the previously selected range or resets selection range
-      const isCurrNodeInSelection = selectionTracker.isNodeAlreadySelected(nodeID);
-      if (isCurrNodeInSelection) {
-        prevNodeID = nodeID;
-        newSelectionTracker = new SelectionTracker(nodeID, nodeID);
-      } else {
-        const prevNodeRangeIndex = selectionTracker.findRangeIndex(prevNodeID);
-        const prevNodeRange = selectionTracker.rangeList[prevNodeRangeIndex];
-        if (nodeID > prevNodeID) {
-          const newRange = new SelectionRange(prevNodeRange.minVal, nodeID);
-          newSelectionTracker = selectionTracker.forwardExtendAndUpdateRanges(prevNodeRangeIndex, newRange);
+        const isCurrNodeInSelection = selectionTracker.isNodeAlreadySelected(nodeID);
+        if (isCurrNodeInSelection) {
+          prevNodeID = nodeID;
+          newSelectionTracker = new SelectionTracker(nodeID, nodeID);
         } else {
-          const newRange = new SelectionRange(nodeID, prevNodeRange.maxVal);
-          newSelectionTracker = selectionTracker.backwardExtendAndUpdateRanges(prevNodeRangeIndex, newRange);
+          const prevNodeRangeIndex = selectionTracker.findRangeIndex(prevNodeID);
+          const prevNodeRange = selectionTracker.rangeList[prevNodeRangeIndex];
+          if (nodeID > prevNodeID) {
+            const newRange = new SelectionRange(prevNodeRange.minVal, nodeID);
+            newSelectionTracker = selectionTracker.forwardExtendAndUpdateRanges(prevNodeRangeIndex, newRange);
+          } else {
+            const newRange = new SelectionRange(nodeID, prevNodeRange.maxVal);
+            newSelectionTracker = selectionTracker.backwardExtendAndUpdateRanges(prevNodeRangeIndex, newRange);
+          }
+          prevNodeID = nodeID;
         }
-        prevNodeID = nodeID;
-      }
-    } else if (ctrlKey) {
+      } else if (ctrlKey) {
       // 3. ctrl key adds a new Range to selection unless it has already been selected
-      const isCurrNodeInSelection = selectionTracker.isNodeAlreadySelected(nodeID, selectionTracker);
-      if (isCurrNodeInSelection) {
-        prevNodeID = nodeID;
-        newSelectionTracker = new SelectionTracker(nodeID, nodeID);
-      } else {
-        const newRange = new SelectionRange(nodeID, nodeID);
-        const selectedRecords = selectionTracker.rangeList;
+        const isCurrNodeInSelection = selectionTracker.isNodeAlreadySelected(nodeID, selectionTracker);
+        if (isCurrNodeInSelection) {
+          prevNodeID = nodeID;
+          newSelectionTracker = new SelectionTracker(nodeID, nodeID);
+        } else {
+          const newRange = new SelectionRange(nodeID, nodeID);
+          const selectedRecords = selectionTracker.rangeList;
 
-        // Add new Range in selection at it's appropriate spot.
-        const newSelectionRecords = selectionTracker.insertRangeIntoSelection(newRange, selectedRecords);
-        newSelectionTracker = new SelectionTracker();
-        newSelectionTracker.rangeList = newSelectionRecords;
-        prevNodeID = nodeID;
+          // Add new Range in selection at it's appropriate spot.
+          const newSelectionRecords = selectionTracker.insertRangeIntoSelection(newRange, selectedRecords);
+          newSelectionTracker = new SelectionTracker();
+          newSelectionTracker.rangeList = newSelectionRecords;
+          prevNodeID = nodeID;
+        }
+      }
+
+      this.setState({ selectionTracker: newSelectionTracker, prevNodeID });
+      this.selectNodeRowsInTable(this.gridApi, newSelectionTracker);
+      const totalNumOfRows = newSelectionTracker.getTotalNumOfSelectedRows();
+      onRowSelected(totalNumOfRows);
+    } else if (type === 'keydown') {
+      if (key === 'Shift') {
+        rowNode.setSelected(true);
+        const isCurrNodeInSelection = selectionTracker.isNodeAlreadySelected(nodeID, selectionTracker);
+
+        if (isCurrNodeInSelection) {
+          prevNodeID = nodeID;
+          newSelectionTracker = selectionTracker;
+        } else {
+          const newRange = new SelectionRange(nodeID, nodeID);
+          const selectedRecords = selectionTracker.rangeList;
+
+          // Add new Range in selection at it's appropriate spot.
+          const newSelectionRecords = selectionTracker.insertRangeIntoSelection(newRange, selectedRecords);
+          newSelectionTracker = new SelectionTracker();
+          newSelectionTracker.rangeList = newSelectionRecords;
+          prevNodeID = nodeID;
+        }
+        this.setState({ selectionTracker: newSelectionTracker, prevNodeID });
+        const totalNumOfRows = newSelectionTracker.getTotalNumOfSelectedRows();
+        onRowSelected(totalNumOfRows);
+      } else if (shiftKey && ['ArrowDown', 'ArrowUp'].includes(key)) {
+        const direction = key === 'ArrowDown'
+          ? +1
+          : -1;
+        const nextRow = this.gridApi.getDisplayedRowAtIndex(rowIndex + direction);
+        if (nextRow) {
+          nextRow.setSelected(true);
+        }
       }
     }
-
-
-    this.setState({ selectionTracker: newSelectionTracker, prevNodeID });
-    this.selectNodeRowsInTable(this.gridApi, newSelectionTracker);
-    const totalNumOfRows = newSelectionTracker.getTotalNumOfSelectedRows();
-    onRowSelected(totalNumOfRows);
   }
 
   initializeGrid() {
@@ -664,7 +661,7 @@ class DataTable extends React.Component {
             }
           }}
           // allow the user to select using the arrow keys and shift
-          onCellKeyDown={this.handleOnCellKeyDown}
+          onCellKeyDown={this.handleSelectionChange}
           onSelectionChanged={() => {
             if (onRecordsSelected) {
               const rows = this.gridApi.getSelectedRows();

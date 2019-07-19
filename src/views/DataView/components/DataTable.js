@@ -17,6 +17,7 @@ import DataCache from '../../../services/api/dataCache';
 import { SelectionRange, SelectionTracker } from './util';
 
 const MAX_FULL_EXPORTS_ROWS = 1000;
+const CACHE_BLOCK_SIZE = 50;
 
 class DataTable extends React.Component {
   static contextType = KBContext;
@@ -482,7 +483,7 @@ class DataTable extends React.Component {
 
     // update the model
     await this.gridApi.setDatasource(dataSource);
-    gridOptions.cacheBlockSize = 50; // default cacheBlockSize
+    gridOptions.cacheBlockSize = CACHE_BLOCK_SIZE;
   }
 
   renderOptionsMenu() {
@@ -645,7 +646,7 @@ class DataTable extends React.Component {
           maxBlocksInCache={0}
           maxConcurrentDatasourceRequests={1}
           onGridReady={this.onGridReady}
-          cacheBlockSize={50}
+          cacheBlockSize={CACHE_BLOCK_SIZE}
           // pagination
           // paginationAutoPageSize
           paginationPageSize={25}

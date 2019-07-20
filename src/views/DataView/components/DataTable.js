@@ -14,7 +14,7 @@ import { KBContext } from '../../../components/KBContext';
 import OptionsMenu from '../../../components/OptionsMenu';
 import DetailChip from '../../../components/DetailChip';
 import DataCache from '../../../services/api/dataCache';
-import { SelectionRange, SelectionTracker } from './util';
+import { SelectionTracker } from './util';
 
 const MAX_FULL_EXPORTS_ROWS = 1000;
 const CACHE_BLOCK_SIZE = 50;
@@ -40,59 +40,6 @@ class DataTable extends React.Component {
     onRecordClicked: null,
     onRecordsSelected: null,
   };
-
-  /**
-   * Returns the same selection if nodeID already exists in the selection,
-   * otherwise it adds a single selection range SR[x, x] to the selection tracker
-   * @param {integer} nodeID - ID of the currently selected nodeRow
-   * @param {SelectionTracker} selectionTracker - current selection to be updated
-   */
-  static checkAndUpdate(nodeID, selectionTracker) {
-    const isCurrNodeInSelection = selectionTracker.isNodeAlreadySelected(nodeID, selectionTracker);
-    let newSelectionTracker;
-    if (isCurrNodeInSelection) {
-      newSelectionTracker = selectionTracker;
-    } else {
-      newSelectionTracker = DataTable.addSingleRange(nodeID, selectionTracker);
-    }
-    return newSelectionTracker;
-  }
-
-  /**
-   * Checks to see whether the selected range extension should be executed
-   * in the forward or backward direction. Returns the updated SelectionTracker.
-   * @param {integer} prevNodeID - ID of the last selected nodeRow
-   * @param {integer} nodeID - ID of the currently selected nodeRow
-   * @param {SelectionTracker} selectionTracker - current selection to be updated
-   */
-  static extendRangeUpdateSelection(prevNodeID, nodeID, selectionTracker) {
-    const prevNodeRangeIndex = selectionTracker.findRangeIndex(prevNodeID);
-    const prevNodeRange = selectionTracker.rangeList[prevNodeRangeIndex];
-    let newSelectionTracker;
-    if (nodeID > prevNodeID) {
-      const newRange = new SelectionRange(prevNodeRange.minVal, nodeID);
-      newSelectionTracker = selectionTracker.forwardExtendAndUpdateRanges(prevNodeRangeIndex, newRange);
-    } else {
-      const newRange = new SelectionRange(nodeID, prevNodeRange.maxVal);
-      newSelectionTracker = selectionTracker.backwardExtendAndUpdateRanges(prevNodeRangeIndex, newRange);
-    }
-    return newSelectionTracker;
-  }
-
-  /**
-   * Adds a single SelectionRange SR[x,x] into the current SelectionTracker with
-   * a length of 1. Updates the selection and returns an updated Selection.
-   * @param {integer} nodeID - ID of the currently selected nodeRow
-   * @param {SelectionTracker} selectionTracker - current selection to be updated
-   */
-  static addSingleRange(nodeID, selectionTracker) {
-    const newRange = new SelectionRange(nodeID, nodeID);
-    const selectedRecords = selectionTracker.rangeList;
-
-    // Add new Range in selection at it's appropriate spot.
-    const newSelectionTracker = selectionTracker.insertRangeIntoSelection(newRange, selectedRecords);
-    return newSelectionTracker;
-  }
 
   constructor(props) {
     super(props);
@@ -412,11 +359,11 @@ class DataTable extends React.Component {
         if (isCurrNodeInSelection) {
           newSelectionTracker = new SelectionTracker(nodeID, nodeID);
         } else {
-          newSelectionTracker = DataTable.extendRangeUpdateSelection(prevNodeID, nodeID, selectionTracker);
+          newSelectionTracker = SelectionTracker.extendRangeUpdateSelection(prevNodeID, nodeID, selectionTracker);
         }
       } else if (ctrlKey) {
       // 3. ctrl key adds a new Range to selection unless it has already been selected
-        newSelectionTracker = DataTable.checkAndUpdate(nodeID, selectionTracker);
+        newSelectionTracker = selectionTracker.checkAndUpdate(nodeID, selectionTracker);
       }
       prevNodeID = nodeID;
 
@@ -427,7 +374,7 @@ class DataTable extends React.Component {
     } else if (type === 'keydown') {
       if (key === 'Shift') {
         rowNode.setSelected(true);
-        newSelectionTracker = DataTable.checkAndUpdate(nodeID, selectionTracker);
+        newSelectionTracker = selectionTracker.checkAndUpdate(nodeID, selectionTracker);
         prevNodeID = nodeID;
 
         this.setState({ selectionTracker: newSelectionTracker, prevNodeID });

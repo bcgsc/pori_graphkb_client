@@ -41,22 +41,134 @@ class SelectionTracker {
     return false;
   }
 
-  isNodeAlreadySelected(nodeID) {
-    const selection = this.rangeList;
-    return selection.some(range => SelectionTracker.rangeContainsNode(nodeID, range));
+  /**
+   * Checks to see whether the selected range extension should be executed
+   * in the forward or backward direction. Returns the updated SelectionTracker.
+   * @param {integer} prevNodeID - ID of the last selected nodeRow
+   * @param {integer} nodeID - ID of the currently selected nodeRow
+   * @param {SelectionTracker} selectionTracker - current selection to be updated
+   */
+  static extendRangeUpdateSelection(prevNodeID, nodeID, selectionTracker) {
+    const prevNodeRangeIndex = selectionTracker.findRangeIndex(prevNodeID);
+    const prevNodeRange = selectionTracker.rangeList[prevNodeRangeIndex];
+    let newSelectionTracker;
+    if (nodeID > prevNodeID) {
+      const newRange = new SelectionRange(prevNodeRange.minVal, nodeID);
+      newSelectionTracker = selectionTracker.forwardExtendAndUpdateRanges(prevNodeRangeIndex, newRange);
+    } else {
+      const newRange = new SelectionRange(nodeID, prevNodeRange.maxVal);
+      newSelectionTracker = selectionTracker.backwardExtendAndUpdateRanges(prevNodeRangeIndex, newRange);
+    }
+    return newSelectionTracker;
   }
 
-  findRangeIndex(nodeID) {
-    const selection = this.rangeList;
-    for (let i = 0; i < selection.length; i++) {
-      const currRange = selection[i];
-      if (SelectionTracker.rangeContainsNode(nodeID, currRange)) {
-        return i;
+  /**
+   * Adds a single SelectionRange SR[x,x] into the current SelectionTracker with
+   * a length of 1. Updates the selection and returns an updated Selection.
+   * @param {integer} nodeID - ID of the currently selected nodeRow
+   * @param {SelectionTracker} selectionTracker - current selection to be updated
+   */
+  static addSingleRange(nodeID, selectionTracker) {
+    const newRange = new SelectionRange(nodeID, nodeID);
+    const selectedRecords = selectionTracker.rangeList;
+
+    // Add new Range in selection at it's appropriate spot.
+    const newSelectionTracker = SelectionTracker.insertRangeIntoSelection(newRange, selectedRecords);
+    return newSelectionTracker;
+  }
+
+  /**
+   * In selection range, if there are any adjacent selection ranges, i.e
+   * [ SR(2,5), SR(5,8)] merge them => [ SR(2,8)]
+   * @param {Array of SelectionRanges} rangeList - represents row selection
+   */
+  static mergeAdjacentRanges(rangeList) {
+    const mergedRanges = [];
+    const sortRanges = (r1, r2) => r1.minVal - r2.minVal;
+
+    rangeList.sort(sortRanges);
+    rangeList.forEach((range) => {
+      if (mergedRanges.length) {
+        const lastRange = mergedRanges[mergedRanges.length - 1];
+        if (SelectionTracker.rangesAdjacent(lastRange, range)) { // overlapping ranges
+          mergedRanges[mergedRanges.length - 1] = SelectionTracker.merge(lastRange, range);
+        } else {
+          mergedRanges.push(range);
+        }
+      } else {
+        mergedRanges.push(range);
+      }
+    });
+
+    return mergedRanges;
+  }
+
+  static rangeFitsInBetween(nodeID, prevRange, currRange) {
+    if (nodeID >= prevRange.maxVal && nodeID <= currRange.minVal) {
+      return true;
+    }
+    return false;
+  }
+
+  static merge(r1, r2) { return new SelectionRange(r1.minVal, r2.maxVal); }
+
+  static rangesAdjacent(lastRange, currRange) {
+    if (lastRange.maxVal + 1 === currRange.minVal) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Inserts the new range into the appropriate spot to keep the selected Records
+   * a sorted array of Selection Ranges.
+   * @param {SelectionRange} newRange - new Range to be inserted
+   * @param {Array of SelectionRanges} rangeList - represents row selection
+   */
+  static insertRangeIntoSelection(newRange, rangeList) {
+    let newRangeList = [...rangeList];
+    const nodeID = newRange.minVal; // does not matter whether min or max val. min === max
+
+    for (let i = 0; i < rangeList.length; i++) {
+      const currRange = rangeList[i];
+      if (i === 0) {
+        if (nodeID < currRange.minVal) {
+          newRangeList.unshift(newRange);
+          newRangeList = SelectionTracker.mergeAdjacentRanges(newRangeList);
+          const newSelectionTracker = new SelectionTracker();
+          newSelectionTracker.rangeList = newRangeList;
+          return newSelectionTracker;
+        }
+        if (rangeList.length === 1) {
+          if (nodeID > currRange.maxVal) {
+            newRangeList.push(newRange);
+            newRangeList = SelectionTracker.mergeAdjacentRanges(newRangeList);
+            const newSelectionTracker = new SelectionTracker();
+            newSelectionTracker.rangeList = newRangeList;
+            return newSelectionTracker;
+          }
+        }
+      } else if (SelectionTracker.rangeFitsInBetween(nodeID, rangeList[i - 1], currRange)) {
+        newRangeList.splice(i, 0, newRange);
+        newRangeList = SelectionTracker.mergeAdjacentRanges(newRangeList);
+        const newSelectionTracker = new SelectionTracker();
+        newSelectionTracker.rangeList = newRangeList;
+        return newSelectionTracker;
+      } else if (i === rangeList.length - 1) { // END OF ARRAY
+        if (nodeID > currRange.maxVal) {
+          newRangeList.push(newRange);
+          newRangeList = SelectionTracker.mergeAdjacentRanges(newRangeList);
+          const newSelectionTracker = new SelectionTracker();
+          newSelectionTracker.rangeList = newRangeList;
+          return newSelectionTracker;
+        }
       }
     }
-    return -1;
+    newRangeList = SelectionTracker.mergeAdjacentRanges(newRangeList);
+    const newSelectionTracker = new SelectionTracker();
+    newSelectionTracker.rangeList = newRangeList;
+    return newSelectionTracker;
   }
-
 
   /**
    * Checks to see if newRange contains the targetRange.
@@ -91,7 +203,7 @@ class SelectionTracker {
     const newSelectionTracker = this.clone();
     const newRangeList = newSelectionTracker.rangeList;
     newRangeList.splice(rangePrevNodeIsIn, rangesToBeDeleted, newRange);
-    const updatedRangeList = this.mergeAdjacentRanges([...newRangeList]);
+    const updatedRangeList = SelectionTracker.mergeAdjacentRanges([...newRangeList]);
     newSelectionTracker.rangeList = updatedRangeList;
     return newSelectionTracker;
   }
@@ -119,104 +231,26 @@ class SelectionTracker {
     const newSelectionTracker = this.clone();
     const newRangeList = newSelectionTracker.rangeList;
     newRangeList.splice(insertPosition, rangesToBeDeleted, newRange);
-    const updatedRangeList = this.mergeAdjacentRanges([...newRangeList]);
+    const updatedRangeList = SelectionTracker.mergeAdjacentRanges([...newRangeList]);
     newSelectionTracker.rangeList = updatedRangeList;
     return newSelectionTracker;
   }
 
-  merge = (r1, r2) => new SelectionRange(r1.minVal, r2.maxVal);
-
-  static rangesAdjacent(lastRange, currRange) {
-    if (lastRange.maxVal + 1 === currRange.minVal) {
-      return true;
-    }
-    return false;
+  isNodeAlreadySelected(nodeID) {
+    const selection = this.rangeList;
+    return selection.some(range => SelectionTracker.rangeContainsNode(nodeID, range));
   }
 
-  /**
-   * In selection range, if there are any adjacent selection ranges, i.e
-   * [ SR(2,5), SR(5,8)] merge them => [ SR(2,8)]
-   * @param {Array of SelectionRanges} rangeList - represents row selection
-   */
-  mergeAdjacentRanges(rangeList) {
-    const mergedRanges = [];
-    const sortRanges = (r1, r2) => r1.minVal - r2.minVal;
-
-    rangeList.sort(sortRanges);
-    rangeList.forEach((range) => {
-      if (mergedRanges.length) {
-        const lastRange = mergedRanges[mergedRanges.length - 1];
-        if (SelectionTracker.rangesAdjacent(lastRange, range)) { // overlapping ranges
-          mergedRanges[mergedRanges.length - 1] = this.merge(lastRange, range);
-        } else {
-          mergedRanges.push(range);
-        }
-      } else {
-        mergedRanges.push(range);
-      }
-    });
-
-    return mergedRanges;
-  }
-
-  static rangeFitsInBetween(nodeID, prevRange, currRange) {
-    if (nodeID >= prevRange.maxVal && nodeID <= currRange.minVal) {
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Inserts the new range into the appropriate spot to keep the selected Records
-   * a sorted array of Selection Ranges.
-   * @param {SelectionRange} newRange - new Range to be inserted
-   * @param {Array of SelectionRanges} rangeList - represents row selection
-   */
-  insertRangeIntoSelection(newRange, rangeList) {
-    let newRangeList = [...rangeList];
-    const nodeID = newRange.minVal; // does not matter whether min or max val. min === max
-
-    for (let i = 0; i < rangeList.length; i++) {
-      const currRange = rangeList[i];
-      if (i === 0) {
-        if (nodeID < currRange.minVal) {
-          newRangeList.unshift(newRange);
-          newRangeList = this.mergeAdjacentRanges(newRangeList);
-          const newSelectionTracker = new SelectionTracker();
-          newSelectionTracker.rangeList = newRangeList;
-          return newSelectionTracker;
-        }
-        if (rangeList.length === 1) {
-          if (nodeID > currRange.maxVal) {
-            newRangeList.push(newRange);
-            newRangeList = this.mergeAdjacentRanges(newRangeList);
-            const newSelectionTracker = new SelectionTracker();
-            newSelectionTracker.rangeList = newRangeList;
-            return newSelectionTracker;
-          }
-        }
-      } else if (SelectionTracker.rangeFitsInBetween(nodeID, rangeList[i - 1], currRange)) {
-        newRangeList.splice(i, 0, newRange);
-        newRangeList = this.mergeAdjacentRanges(newRangeList);
-        const newSelectionTracker = new SelectionTracker();
-        newSelectionTracker.rangeList = newRangeList;
-        return newSelectionTracker;
-      } else if (i === rangeList.length - 1) { // END OF ARRAY
-        if (nodeID > currRange.maxVal) {
-          newRangeList.push(newRange);
-          newRangeList = this.mergeAdjacentRanges(newRangeList);
-          const newSelectionTracker = new SelectionTracker();
-          newSelectionTracker.rangeList = newRangeList;
-          return newSelectionTracker;
-        }
+  findRangeIndex(nodeID) {
+    const selection = this.rangeList;
+    for (let i = 0; i < selection.length; i++) {
+      const currRange = selection[i];
+      if (SelectionTracker.rangeContainsNode(nodeID, currRange)) {
+        return i;
       }
     }
-    newRangeList = this.mergeAdjacentRanges(newRangeList);
-    const newSelectionTracker = new SelectionTracker();
-    newSelectionTracker.rangeList = newRangeList;
-    return newSelectionTracker;
+    return -1;
   }
-
 
   getTotalNumOfSelectedRows() {
     const selectedRecords = this.rangeList;
@@ -242,42 +276,6 @@ class SelectionTracker {
     } else {
       newSelectionTracker = SelectionTracker.addSingleRange(nodeID, selectionTracker);
     }
-    return newSelectionTracker;
-  }
-
-  /**
-   * Checks to see whether the selected range extension should be executed
-   * in the forward or backward direction. Returns the updated SelectionTracker.
-   * @param {integer} prevNodeID - ID of the last selected nodeRow
-   * @param {integer} nodeID - ID of the currently selected nodeRow
-   * @param {SelectionTracker} selectionTracker - current selection to be updated
-   */
-  static extendRangeUpdateSelection(prevNodeID, nodeID, selectionTracker) {
-    const prevNodeRangeIndex = selectionTracker.findRangeIndex(prevNodeID);
-    const prevNodeRange = selectionTracker.rangeList[prevNodeRangeIndex];
-    let newSelectionTracker;
-    if (nodeID > prevNodeID) {
-      const newRange = new SelectionRange(prevNodeRange.minVal, nodeID);
-      newSelectionTracker = selectionTracker.forwardExtendAndUpdateRanges(prevNodeRangeIndex, newRange);
-    } else {
-      const newRange = new SelectionRange(nodeID, prevNodeRange.maxVal);
-      newSelectionTracker = selectionTracker.backwardExtendAndUpdateRanges(prevNodeRangeIndex, newRange);
-    }
-    return newSelectionTracker;
-  }
-
-  /**
-   * Adds a single SelectionRange SR[x,x] into the current SelectionTracker with
-   * a length of 1. Updates the selection and returns an updated Selection.
-   * @param {integer} nodeID - ID of the currently selected nodeRow
-   * @param {SelectionTracker} selectionTracker - current selection to be updated
-   */
-  static addSingleRange(nodeID, selectionTracker) {
-    const newRange = new SelectionRange(nodeID, nodeID);
-    const selectedRecords = selectionTracker.rangeList;
-
-    // Add new Range in selection at it's appropriate spot.
-    const newSelectionTracker = selectionTracker.insertRangeIntoSelection(newRange, selectedRecords);
     return newSelectionTracker;
   }
 }

@@ -14,7 +14,7 @@ import { KBContext } from '../../../components/KBContext';
 import OptionsMenu from '../../../components/OptionsMenu';
 import DetailChip from '../../../components/DetailChip';
 import DataCache from '../../../services/api/dataCache';
-import { SelectionTracker } from './util';
+import { SelectionTracker } from './SelectionTracker';
 
 const MAX_FULL_EXPORTS_ROWS = 1000;
 const CACHE_BLOCK_SIZE = 50;

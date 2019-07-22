@@ -126,47 +126,14 @@ class SelectionTracker {
    * @param {Array of SelectionRanges} rangeList - represents row selection
    */
   static insertRangeIntoSelection(newRange, rangeList) {
-    let newRangeList = [...rangeList];
-    const nodeID = newRange.minVal; // does not matter whether min or max val. min === max
+    const newRangeList = [...rangeList];
+    newRangeList.push(newRange);
+    const sortRanges = (r1, r2) => r1.minVal - r2.minVal;
+    newRangeList.sort(sortRanges);
 
-    for (let i = 0; i < rangeList.length; i++) {
-      const currRange = rangeList[i];
-      if (i === 0) {
-        if (nodeID < currRange.minVal) {
-          newRangeList.unshift(newRange);
-          newRangeList = SelectionTracker.mergeAdjacentRanges(newRangeList);
-          const newSelectionTracker = new SelectionTracker();
-          newSelectionTracker.rangeList = newRangeList;
-          return newSelectionTracker;
-        }
-        if (rangeList.length === 1) {
-          if (nodeID > currRange.maxVal) {
-            newRangeList.push(newRange);
-            newRangeList = SelectionTracker.mergeAdjacentRanges(newRangeList);
-            const newSelectionTracker = new SelectionTracker();
-            newSelectionTracker.rangeList = newRangeList;
-            return newSelectionTracker;
-          }
-        }
-      } else if (SelectionTracker.rangeFitsInBetween(nodeID, rangeList[i - 1], currRange)) {
-        newRangeList.splice(i, 0, newRange);
-        newRangeList = SelectionTracker.mergeAdjacentRanges(newRangeList);
-        const newSelectionTracker = new SelectionTracker();
-        newSelectionTracker.rangeList = newRangeList;
-        return newSelectionTracker;
-      } else if (i === rangeList.length - 1) { // END OF ARRAY
-        if (nodeID > currRange.maxVal) {
-          newRangeList.push(newRange);
-          newRangeList = SelectionTracker.mergeAdjacentRanges(newRangeList);
-          const newSelectionTracker = new SelectionTracker();
-          newSelectionTracker.rangeList = newRangeList;
-          return newSelectionTracker;
-        }
-      }
-    }
-    newRangeList = SelectionTracker.mergeAdjacentRanges(newRangeList);
+    const updatedRangeList = SelectionTracker.mergeAdjacentRanges(newRangeList);
     const newSelectionTracker = new SelectionTracker();
-    newSelectionTracker.rangeList = newRangeList;
+    newSelectionTracker.rangeList = updatedRangeList;
     return newSelectionTracker;
   }
 

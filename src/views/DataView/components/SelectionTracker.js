@@ -29,7 +29,11 @@ class SelectionTracker {
 
   clone() {
     const newSelectionTracker = new SelectionTracker();
-    const clonedSelectedRecords = [...this.rangeList];
+    const clonedSelectedRecords = [];
+    this.rangeList.forEach((range) => {
+      const newRange = new SelectionTracker(range.minVal, range.maxVal);
+      clonedSelectedRecords.push(newRange);
+    });
     newSelectionTracker.rangeList = clonedSelectedRecords;
     return newSelectionTracker;
   }

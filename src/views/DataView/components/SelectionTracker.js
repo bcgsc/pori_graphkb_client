@@ -6,6 +6,32 @@ class SelectionRange {
   }
 
   get length() { return this.maxVal - this.minVal + 1; }
+
+  merge(range) { return new SelectionRange(this.minVal, range.maxVal); }
+
+  rangeContainsNode(nodeID) {
+    if (nodeID >= this.minVal && nodeID <= this.maxVal) {
+      return true;
+    }
+    return false;
+  }
+
+  rangesAdjacent(range) {
+    if (this.maxVal + 1 === range.minVal) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Checks to see if current Range contains the target Range.
+   */
+  rangeRedundant(range) {
+    if ((this.minVal >= range.minVal) && (this.maxVal <= range.maxVal)) {
+      return true;
+    }
+    return false;
+  }
 }
 
 /**  Keeps track of selected nodeRows in DataTable. The selected nodeRows
@@ -38,13 +64,6 @@ class SelectionTracker {
     return newSelectionTracker;
   }
 
-  static rangeContainsNode(nodeID, range) {
-    if (nodeID >= range.minVal && nodeID <= range.maxVal) {
-      return true;
-    }
-    return false;
-  }
-
   /**
    * Checks to see whether the selected range extension should be executed
    * in the forward or backward direction. Returns the updated SelectionTracker.
@@ -63,7 +82,6 @@ class SelectionTracker {
       const newRange = new SelectionRange(nodeID, prevNodeRange.maxVal);
       newSelectionTracker = selectionTracker.backwardExtendAndUpdateRanges(prevNodeRangeIndex, newRange);
     }
-    console.log('TCL: SelectionTracker -> extendRangeUpdateSelection -> newSelectionTracker', newSelectionTracker);
     return newSelectionTracker;
   }
 
@@ -95,8 +113,8 @@ class SelectionTracker {
     rangeList.forEach((range) => {
       if (mergedRanges.length) {
         const lastRange = mergedRanges[mergedRanges.length - 1];
-        if (SelectionTracker.rangesAdjacent(lastRange, range)) { // overlapping ranges
-          mergedRanges[mergedRanges.length - 1] = SelectionTracker.merge(lastRange, range);
+        if (lastRange.rangesAdjacent(range)) { // overlapping ranges
+          mergedRanges[mergedRanges.length - 1] = lastRange.merge(range);
         } else {
           mergedRanges.push(range);
         }
@@ -110,15 +128,6 @@ class SelectionTracker {
 
   static rangeFitsInBetween(nodeID, prevRange, currRange) {
     if (nodeID >= prevRange.maxVal && nodeID <= currRange.minVal) {
-      return true;
-    }
-    return false;
-  }
-
-  static merge(r1, r2) { return new SelectionRange(r1.minVal, r2.maxVal); }
-
-  static rangesAdjacent(lastRange, currRange) {
-    if (lastRange.maxVal + 1 === currRange.minVal) {
       return true;
     }
     return false;
@@ -143,16 +152,6 @@ class SelectionTracker {
   }
 
   /**
-   * Checks to see if newRange contains the targetRange.
-   */
-  static rangeRedundant(newRange, targetRange) {
-    if ((targetRange.minVal >= newRange.minVal) && (targetRange.maxVal <= newRange.maxVal)) {
-      return true;
-    }
-    return false;
-  }
-
-  /**
    * Extends the selection range that contains previously selected nodeRow in
    * the forward direction. I.E if prevNode = 10, currNode = 30.
    * Removes any redundant selection ranges that result because of the extension.
@@ -167,13 +166,12 @@ class SelectionTracker {
     const { length } = this.rangeList;
     for (let i = rangePrevNodeIsIn + 1; i <= length - 1; i++) {
       const targetRange = selection[i];
-      if (SelectionTracker.rangeRedundant(newRange, targetRange)) {
+      if (targetRange.rangeRedundant(newRange)) {
         rangesToBeDeleted += 1;
       }
     }
 
     const newSelectionTracker = this.clone();
-    console.log('TCL: SelectionTracker -> forwardExtendAndUpdateRanges -> newSelectionTracker', newSelectionTracker);
     const newRangeList = newSelectionTracker.rangeList;
     newRangeList.splice(rangePrevNodeIsIn, rangesToBeDeleted, newRange);
     const updatedRangeList = SelectionTracker.mergeAdjacentRanges([...newRangeList]);
@@ -195,7 +193,7 @@ class SelectionTracker {
     const selection = this.rangeList;
     for (let i = rangePrevNodeIsIn; i >= 0; i--) {
       const targetRange = selection[i];
-      if (SelectionTracker.rangeRedundant(newRange, targetRange)) {
+      if (targetRange.rangeRedundant(newRange)) {
         rangesToBeDeleted += 1;
       }
     }
@@ -211,14 +209,14 @@ class SelectionTracker {
 
   isNodeAlreadySelected(nodeID) {
     const selection = this.rangeList;
-    return selection.some(range => SelectionTracker.rangeContainsNode(nodeID, range));
+    return selection.some(range => range.rangeContainsNode(nodeID));
   }
 
   findRangeIndex(nodeID) {
     const selection = this.rangeList;
     for (let i = 0; i < selection.length; i++) {
       const currRange = selection[i];
-      if (SelectionTracker.rangeContainsNode(nodeID, currRange)) {
+      if (currRange.rangeContainsNode(nodeID)) {
         return i;
       }
     }

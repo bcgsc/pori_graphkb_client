@@ -11,17 +11,36 @@ describe('SelectionRange Class', () => {
     const singleValRange = new SelectionRange(3, 3);
     expect(singleValRange.length).toBe(1);
   });
+
+  it('rangeRedundant method', () => {
+    const selectionRange = new SelectionRange(10, 20);
+    const containedByRange = new SelectionRange(0, 30);
+    const frontOverlapRange = new SelectionRange(0, 11);
+    const rearOverlapRange = new SelectionRange(17, 25);
+
+    expect(selectionRange.rangeRedundant(containedByRange)).toBe(true);
+    expect(selectionRange.rangeRedundant(frontOverlapRange)).toBe(false);
+    expect(selectionRange.rangeRedundant(rearOverlapRange)).toBe(false);
+  });
 });
 
 describe('SelectionTracker Class', () => {
+  let multiRangeST;
+  // creates rangeList [SR(0,5), SR(10,10), SR(20,20)... SR(100,100)]
+  beforeEach(() => {
+    multiRangeST = new SelectionTracker(0, 5);
+    for (let i = 1; i <= 10; i++) {
+      multiRangeST = SelectionTracker.addSingleRange(i * 10, multiRangeST);
+    }
+  });
   it('initializes with correct selection range', () => {
     const emptySelectionTracker = new SelectionTracker();
-    expect(emptySelectionTracker.rangeList.length).toBe(0);
-    expect(emptySelectionTracker.rangeList).toEqual([]);
+    expect(emptySelectionTracker.selection.length).toBe(0);
+    expect(emptySelectionTracker.selection).toEqual([]);
 
     const selectionTracker = new SelectionTracker(10, 1000);
-    expect(selectionTracker.rangeList.length).toBe(1);
-    expect(selectionTracker.rangeList).toEqual([new SelectionRange(10, 1000)]);
+    expect(selectionTracker.selection.length).toBe(1);
+    expect(selectionTracker.selection).toEqual([new SelectionRange(10, 1000)]);
   });
 
   it('clone method works', () => {
@@ -31,33 +50,22 @@ describe('SelectionTracker Class', () => {
     expect(selectionTracker).not.toBe(clonedSelectionTracker);
   });
 
-  it('testing extension methods', () => {
-    const selectionTracker = new SelectionTracker(10, 20);
-    // forward extend [SR(10,20)] -> [SR(10, 30)]
-    const forwardExtendedST = SelectionTracker.extendRangeUpdateSelection(10, 30, selectionTracker);
-    expect(forwardExtendedST.rangeList.length).toBe(1);
-    expect(forwardExtendedST.getTotalNumOfSelectedRows()).toBe(21);
+  it('backward extension method', () => {
+    expect(multiRangeST.selection.length).toBe(11);
+    const backwardExtendedST = SelectionTracker.extendRangeUpdateSelection(100, 6, multiRangeST);
+    expect(backwardExtendedST.selection.length).toBe(1);
+    expect(backwardExtendedST.getTotalNumOfSelectedRows()).toBe(101);
+  });
 
-    // backward extend [SR(10,30)] -> [SR(0, 30)]
-    const backwardExtendedST = SelectionTracker.extendRangeUpdateSelection(10, 0, forwardExtendedST);
-    expect(backwardExtendedST.rangeList.length).toBe(1);
-    expect(backwardExtendedST.getTotalNumOfSelectedRows()).toBe(31);
+  it('forward extension method', () => {
+    expect(multiRangeST.selection.length).toBe(11);
+    let forwardExtendedST = SelectionTracker.extendRangeUpdateSelection(10, 101, multiRangeST);
+    expect(forwardExtendedST.selection.length).toBe(2);
+    expect(forwardExtendedST.getTotalNumOfSelectedRows()).toBe(98);
 
-    // add a selection range to tracker
-    // [SR(0,30), SR(50,50)]
-    const newSelectionTracker = SelectionTracker.addSingleRange(50, backwardExtendedST);
-    expect(newSelectionTracker.rangeList.length).toBe(2);
-    expect(newSelectionTracker.getTotalNumOfSelectedRows()).toBe(32);
-
-    const forwardExtST = SelectionTracker.extendRangeUpdateSelection(50, 100, newSelectionTracker);
-    expect(forwardExtST.rangeList.length).toBe(2);
-    expect(forwardExtST.getTotalNumOfSelectedRows()).toBe(82);
-
-    // backward extend and merge ranges
-    // [SR(0,30), SR(50,100)] -> [SR(0,100)]
-    const backwardExtST = SelectionTracker.extendRangeUpdateSelection(50, 31, forwardExtST);
-    expect(backwardExtST.rangeList.length).toBe(1);
-    expect(backwardExtST.getTotalNumOfSelectedRows()).toBe(101);
+    forwardExtendedST = SelectionTracker.extendRangeUpdateSelection(5, 9, forwardExtendedST);
+    expect(forwardExtendedST.selection.length).toBe(1);
+    expect(forwardExtendedST.getTotalNumOfSelectedRows()).toBe(102);
   });
 
   it('isNodeAlreadySelected method ', () => {
@@ -77,34 +85,25 @@ describe('SelectionTracker Class', () => {
   });
 
   it('findRangeIndex method', () => {
-    let selectionTracker = new SelectionTracker(0, 5);
-    for (let i = 1; i <= 10; i++) {
-      selectionTracker = SelectionTracker.addSingleRange(i * 10, selectionTracker);
-    }
-
-    expect(selectionTracker.rangeList.length).toBe(11);
+    expect(multiRangeST.selection.length).toBe(11);
 
     for (let i = 0; i <= 10; i++) {
-      expect(selectionTracker.findRangeIndex(i * 10)).toBe(i);
+      expect(multiRangeST.findRangeIndex(i * 10)).toBe(i);
     }
 
     const badValues = [6, 11, 21, 31, 41, 51, 61, 200];
     badValues.forEach((id) => {
-      expect(selectionTracker.findRangeIndex(id)).toBe(-1);
+      expect(multiRangeST.findRangeIndex(id)).toBe(-1);
     });
   });
 
   it('rangeRedundant method', () => {
-    let selectionTracker = new SelectionTracker(0, 5);
-    for (let i = 1; i <= 10; i++) {
-      selectionTracker = SelectionTracker.addSingleRange(i * 10, selectionTracker);
-    }
-    expect(selectionTracker.rangeList.length).toBe(11);
+    expect(multiRangeST.selection.length).toBe(11);
 
     const rangeRedundantSpy = jest.spyOn(SelectionRange.prototype, 'rangeRedundant');
-    const forwardExtST = SelectionTracker.extendRangeUpdateSelection(5, 200, selectionTracker);
+    const forwardExtST = SelectionTracker.extendRangeUpdateSelection(5, 200, multiRangeST);
 
-    expect(forwardExtST.rangeList.length).toBe(1);
+    expect(forwardExtST.selection.length).toBe(1);
     expect(rangeRedundantSpy).toHaveBeenCalledTimes(10);
   });
 
@@ -117,19 +116,14 @@ describe('SelectionTracker Class', () => {
   });
 
   it('checkAndUpdate method', () => {
-    let selectionTracker = new SelectionTracker(0, 5);
-    for (let i = 1; i <= 10; i++) {
-      selectionTracker = SelectionTracker.addSingleRange(i * 10, selectionTracker);
-    }
+    expect(multiRangeST.selection.length).toBe(11);
 
-    expect(selectionTracker.rangeList.length).toBe(11);
+    const sameSelectionTracker = multiRangeST.checkAndUpdate(3, multiRangeST);
+    expect(sameSelectionTracker).toEqual(multiRangeST);
 
-    const sameSelectionTracker = selectionTracker.checkAndUpdate(3, selectionTracker);
-    expect(sameSelectionTracker).toEqual(selectionTracker);
-
-    const diffSelectionTracker = selectionTracker.checkAndUpdate(7, selectionTracker);
-    expect(diffSelectionTracker).not.toEqual(selectionTracker);
-    expect(diffSelectionTracker.rangeList.length).toBe(12);
+    const diffSelectionTracker = multiRangeST.checkAndUpdate(7, multiRangeST);
+    expect(diffSelectionTracker).not.toEqual(multiRangeST);
+    expect(diffSelectionTracker.selection.length).toBe(12);
   });
 
   it('rangeFitsInBetween method', () => {
@@ -139,5 +133,23 @@ describe('SelectionTracker Class', () => {
     expect(SelectionTracker.rangeFitsInBetween(7, lowRange, highRange)).toBe(true);
     expect(SelectionTracker.rangeFitsInBetween(9, lowRange, highRange)).toBe(true);
     expect(SelectionTracker.rangeFitsInBetween(30, lowRange, highRange)).toBe(false);
+  });
+
+  it('mergeAdjacentRanges method', () => {
+    let evenSelectionRange = new SelectionTracker();
+    for (let i = 0; i < 12; i += 2) {
+      evenSelectionRange = SelectionTracker.addSingleRange(i, evenSelectionRange);
+    }
+    expect(evenSelectionRange.selection.length).toBe(6);
+    evenSelectionRange = SelectionTracker.addSingleRange(1, evenSelectionRange);
+    expect(evenSelectionRange.selection.length).toBe(5);
+    evenSelectionRange = SelectionTracker.addSingleRange(3, evenSelectionRange);
+    expect(evenSelectionRange.selection.length).toBe(4);
+    evenSelectionRange = SelectionTracker.addSingleRange(5, evenSelectionRange);
+    expect(evenSelectionRange.selection.length).toBe(3);
+    evenSelectionRange = SelectionTracker.addSingleRange(7, evenSelectionRange);
+    expect(evenSelectionRange.selection.length).toBe(2);
+    evenSelectionRange = SelectionTracker.addSingleRange(9, evenSelectionRange);
+    expect(evenSelectionRange.selection.length).toBe(1);
   });
 });

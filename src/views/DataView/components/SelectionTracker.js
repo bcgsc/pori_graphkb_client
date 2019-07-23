@@ -27,7 +27,7 @@ class SelectionRange {
   }
 
   /**
-   * Checks to see if current Range contains the target Range.
+   * Checks to see if current Range is contained by the target Range.
    */
   rangeRedundant(range) {
     if ((this.minVal >= range.minVal) && (this.maxVal <= range.maxVal)) {

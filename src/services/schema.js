@@ -14,49 +14,12 @@ const MAX_LABEL_LENGTH = 30;
  */
 class Schema {
   constructor(schema = SCHEMA_DEFN) {
-    this.schema = schema;
-    this.normalizedModelNames = {};
-    Object.values(schema).forEach((model) => {
-      this.normalizedModelNames[model.name.toLowerCase()] = model;
-      this.normalizedModelNames[model.routeName] = model;
-      this.normalizedModelNames[model.routeName.slice(1)] = model;
-    });
-  }
+    this.schema = schema.schema;
+    this.normalizedModelNames = schema.normalizedModelNames;
 
-  /**
-   * Check that a given class/model name exists
-   */
-  has(obj) {
-    try {
-      return Boolean(this.get(obj));
-    } catch (err) {
-      return false;
-    }
-  }
-
-  /**
-   * Returns Knowledgebase class schema.
-   * @param {Object|string} obj - Record to fetch schema of.
-   */
-  @boundMethod
-  get(obj) {
-    let cls = obj;
-    if (obj && typeof obj === 'object' && obj['@class']) {
-      cls = obj['@class'];
-    }
-    return this.normalizedModelNames[typeof cls === 'string'
-      ? cls.toLowerCase()
-      : cls
-    ];
-  }
-
-  getFromRoute(routeName) {
-    for (const model of Object.values(this.schema)) {  // eslint-disable-line
-      if (model.routeName === routeName) {
-        return model;
-      }
-    }
-    throw new Error(`Missing model corresponding to route (${routeName})`);
+    this.has = schema.has.bind(this);
+    this.get = schema.get.bind(this);
+    this.getFromRoute = schema.getFromRoute.bind(this);
   }
 
   /**

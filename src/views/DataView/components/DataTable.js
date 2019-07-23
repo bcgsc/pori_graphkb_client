@@ -95,7 +95,7 @@ class DataTable extends React.Component {
   }
 
   selectNodeRowsInTable = (gridApi, selectionTracker) => {
-    const selectedRecords = selectionTracker.rangeList;
+    const selectedRecords = selectionTracker.selection;
     const { length } = selectedRecords;
     gridApi.forEachNode((node) => {
       const currNodeID = parseInt(node.id, 10);
@@ -113,7 +113,7 @@ class DataTable extends React.Component {
    * current displayed cache page.
    */
   selectFetchedRowNodes = async (gridApi, selectionTracker) => {
-    const selectedRecords = selectionTracker.rangeList;
+    const selectedRecords = selectionTracker.selection;
     gridApi.forEachNode((node) => {
       const currNodeID = parseInt(node.id, 10);
       for (let i = 0; i < selectedRecords.length; i++) {
@@ -264,8 +264,8 @@ class DataTable extends React.Component {
 
       this.gridApi.setDatasource(tempDataSource);
     } else {
-      const lastIndex = selectionTracker.rangeList.length - 1;
-      const maxSelectedRow = selectionTracker.rangeList[lastIndex].maxVal;
+      const lastIndex = selectionTracker.selection.length - 1;
+      const maxSelectedRow = selectionTracker.selection[lastIndex].maxVal;
       gridOptions.cacheBlockSize = maxSelectedRow; // in preparation to fetch entire dataset
 
       const tempDataSource = {
@@ -347,7 +347,6 @@ class DataTable extends React.Component {
     let { prevNodeID } = this.state;
     const { onRowSelected } = this.props;
     const { selectionTracker } = this.state;
-    console.log('TCL: handleSelectionChange -> selectionTracker', selectionTracker.rangeList);
 
     let newSelectionTracker;
     if (type === 'click') {
@@ -369,7 +368,6 @@ class DataTable extends React.Component {
       prevNodeID = nodeID;
 
       this.setState({ selectionTracker: newSelectionTracker, prevNodeID });
-      console.log('TCL: handleSelectionChange -> newSelectionTracker', newSelectionTracker.rangeList);
       this.selectNodeRowsInTable(this.gridApi, newSelectionTracker);
       const totalNumOfRows = newSelectionTracker.getTotalNumOfSelectedRows();
       onRowSelected(totalNumOfRows);
@@ -380,7 +378,6 @@ class DataTable extends React.Component {
         prevNodeID = nodeID;
 
         this.setState({ selectionTracker: newSelectionTracker, prevNodeID });
-        console.log('TCL: handleSelectionChange -> newSelectionTracker', newSelectionTracker.rangeList);
         const totalNumOfRows = newSelectionTracker.getTotalNumOfSelectedRows();
         onRowSelected(totalNumOfRows);
       } else if (shiftKey && ['ArrowDown', 'ArrowUp'].includes(key)) {

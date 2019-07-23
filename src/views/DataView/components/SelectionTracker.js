@@ -16,6 +16,9 @@ class SelectionRange {
     return false;
   }
 
+  /**
+   * Check to see if the inputed range is directly behind current range.
+   */
   rangesAdjacent(range) {
     if (this.maxVal + 1 === range.minVal) {
       return true;
@@ -34,33 +37,28 @@ class SelectionRange {
   }
 }
 
-/**  Keeps track of selected nodeRows in DataTable. The selected nodeRows
+/**
+ * Keeps track of selected nodeRows in DataTable. The selected nodeRows
  * are maintained as a sorted list of SelectionRanges. I.E SelectionTracker
  * would maintain selected records: (1,2,3,7,8,9) as [SR(1,3), SR(7,9)]
  */
 class SelectionTracker {
   constructor(minVal, maxVal) {
     if (minVal === undefined || maxVal === undefined) {
-      this.rangeList = [];
+      this.selection = [];
     } else {
-      this.rangeList = [new SelectionRange(minVal, maxVal)];
+      this.selection = [new SelectionRange(minVal, maxVal)];
     }
-  }
-
-  get selection() { return this.rangeList; }
-
-  set selection(newSelection) {
-    this.rangeList = newSelection;
   }
 
   clone() {
     const newSelectionTracker = new SelectionTracker();
     const clonedSelectedRecords = [];
-    this.rangeList.forEach((range) => {
+    this.selection.forEach((range) => {
       const newRange = new SelectionRange(range.minVal, range.maxVal);
       clonedSelectedRecords.push(newRange);
     });
-    newSelectionTracker.rangeList = clonedSelectedRecords;
+    newSelectionTracker.selection = clonedSelectedRecords;
     return newSelectionTracker;
   }
 
@@ -73,7 +71,7 @@ class SelectionTracker {
    */
   static extendRangeUpdateSelection(prevNodeID, nodeID, selectionTracker) {
     const prevNodeRangeIndex = selectionTracker.findRangeIndex(prevNodeID);
-    const prevNodeRange = selectionTracker.rangeList[prevNodeRangeIndex];
+    const prevNodeRange = selectionTracker.selection[prevNodeRangeIndex];
     let newSelectionTracker;
     if (nodeID > prevNodeID) {
       const newRange = new SelectionRange(prevNodeRange.minVal, nodeID);
@@ -93,7 +91,7 @@ class SelectionTracker {
    */
   static addSingleRange(nodeID, selectionTracker) {
     const newRange = new SelectionRange(nodeID, nodeID);
-    const selectedRecords = selectionTracker.rangeList;
+    const selectedRecords = selectionTracker.selection;
 
     // Add new Range in selection at it's appropriate spot.
     const newSelectionTracker = SelectionTracker.insertRangeIntoSelection(newRange, selectedRecords);
@@ -103,14 +101,14 @@ class SelectionTracker {
   /**
    * In selection range, if there are any adjacent selection ranges, i.e
    * [ SR(2,5), SR(5,8)] merge them => [ SR(2,8)]
-   * @param {Array of SelectionRanges} rangeList - represents row selection
+   * @param {Array of SelectionRanges} selection - represents row selection
    */
-  static mergeAdjacentRanges(rangeList) {
+  static mergeAdjacentRanges(selection) {
     const mergedRanges = [];
     const sortRanges = (r1, r2) => r1.minVal - r2.minVal;
 
-    rangeList.sort(sortRanges);
-    rangeList.forEach((range) => {
+    selection.sort(sortRanges);
+    selection.forEach((range) => {
       if (mergedRanges.length) {
         const lastRange = mergedRanges[mergedRanges.length - 1];
         if (lastRange.rangesAdjacent(range)) { // overlapping ranges
@@ -137,17 +135,17 @@ class SelectionTracker {
    * Inserts the new range into the appropriate spot to keep the selected Records
    * a sorted array of Selection Ranges.
    * @param {SelectionRange} newRange - new Range to be inserted
-   * @param {Array of SelectionRanges} rangeList - represents row selection
+   * @param {Array of SelectionRanges} selection - represents row selection
    */
-  static insertRangeIntoSelection(newRange, rangeList) {
-    const newRangeList = [...rangeList];
+  static insertRangeIntoSelection(newRange, selection) {
+    const newRangeList = [...selection];
     newRangeList.push(newRange);
     const sortRanges = (r1, r2) => r1.minVal - r2.minVal;
     newRangeList.sort(sortRanges);
 
     const updatedRangeList = SelectionTracker.mergeAdjacentRanges(newRangeList);
     const newSelectionTracker = new SelectionTracker();
-    newSelectionTracker.rangeList = updatedRangeList;
+    newSelectionTracker.selection = updatedRangeList;
     return newSelectionTracker;
   }
 
@@ -162,20 +160,19 @@ class SelectionTracker {
    */
   forwardExtendAndUpdateRanges(rangePrevNodeIsIn, newRange) {
     let rangesToBeDeleted = 1;
-    const selection = this.rangeList;
-    const { length } = this.rangeList;
+    const { length } = this.selection;
     for (let i = rangePrevNodeIsIn + 1; i <= length - 1; i++) {
-      const targetRange = selection[i];
+      const targetRange = this.selection[i];
       if (targetRange.rangeRedundant(newRange)) {
         rangesToBeDeleted += 1;
       }
     }
 
     const newSelectionTracker = this.clone();
-    const newRangeList = newSelectionTracker.rangeList;
+    const newRangeList = newSelectionTracker.selection;
     newRangeList.splice(rangePrevNodeIsIn, rangesToBeDeleted, newRange);
     const updatedRangeList = SelectionTracker.mergeAdjacentRanges([...newRangeList]);
-    newSelectionTracker.rangeList = updatedRangeList;
+    newSelectionTracker.selection = updatedRangeList;
     return newSelectionTracker;
   }
 
@@ -190,32 +187,29 @@ class SelectionTracker {
    */
   backwardExtendAndUpdateRanges(rangePrevNodeIsIn, newRange) {
     let rangesToBeDeleted = 1;
-    const selection = this.rangeList;
     for (let i = rangePrevNodeIsIn; i >= 0; i--) {
-      const targetRange = selection[i];
+      const targetRange = this.selection[i];
       if (targetRange.rangeRedundant(newRange)) {
         rangesToBeDeleted += 1;
       }
     }
 
-    const insertPosition = (selection.length - rangesToBeDeleted) + 1;
+    const insertPosition = (this.selection.length - rangesToBeDeleted) + 1;
     const newSelectionTracker = this.clone();
-    const newRangeList = newSelectionTracker.rangeList;
+    const newRangeList = newSelectionTracker.selection;
     newRangeList.splice(insertPosition, rangesToBeDeleted, newRange);
     const updatedRangeList = SelectionTracker.mergeAdjacentRanges([...newRangeList]);
-    newSelectionTracker.rangeList = updatedRangeList;
+    newSelectionTracker.selection = updatedRangeList;
     return newSelectionTracker;
   }
 
   isNodeAlreadySelected(nodeID) {
-    const selection = this.rangeList;
-    return selection.some(range => range.rangeContainsNode(nodeID));
+    return this.selection.some(range => range.rangeContainsNode(nodeID));
   }
 
   findRangeIndex(nodeID) {
-    const selection = this.rangeList;
-    for (let i = 0; i < selection.length; i++) {
-      const currRange = selection[i];
+    for (let i = 0; i < this.selection.length; i++) {
+      const currRange = this.selection[i];
       if (currRange.rangeContainsNode(nodeID)) {
         return i;
       }
@@ -224,7 +218,7 @@ class SelectionTracker {
   }
 
   getTotalNumOfSelectedRows() {
-    const selectedRecords = this.rangeList;
+    const selectedRecords = this.selection;
     let totalNumOfRows = 0;
     selectedRecords.forEach((range) => {
       const partialSum = range.length;

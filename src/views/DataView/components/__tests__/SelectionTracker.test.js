@@ -28,6 +28,7 @@ describe('SelectionTracker Class', () => {
     const selectionTracker = new SelectionTracker(10, 100);
     const clonedSelectionTracker = selectionTracker.clone();
     expect(selectionTracker).toEqual(clonedSelectionTracker);
+    expect(selectionTracker).not.toBe(clonedSelectionTracker);
   });
 
   it('testing extension methods', () => {
@@ -100,7 +101,7 @@ describe('SelectionTracker Class', () => {
     }
     expect(selectionTracker.rangeList.length).toBe(11);
 
-    const rangeRedundantSpy = jest.spyOn(SelectionTracker, 'rangeRedundant');
+    const rangeRedundantSpy = jest.spyOn(SelectionRange.prototype, 'rangeRedundant');
     const forwardExtST = SelectionTracker.extendRangeUpdateSelection(5, 200, selectionTracker);
 
     expect(forwardExtST.rangeList.length).toBe(1);

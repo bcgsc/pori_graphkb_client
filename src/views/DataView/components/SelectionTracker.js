@@ -31,7 +31,7 @@ class SelectionTracker {
     const newSelectionTracker = new SelectionTracker();
     const clonedSelectedRecords = [];
     this.rangeList.forEach((range) => {
-      const newRange = new SelectionTracker(range.minVal, range.maxVal);
+      const newRange = new SelectionRange(range.minVal, range.maxVal);
       clonedSelectedRecords.push(newRange);
     });
     newSelectionTracker.rangeList = clonedSelectedRecords;
@@ -63,6 +63,7 @@ class SelectionTracker {
       const newRange = new SelectionRange(nodeID, prevNodeRange.maxVal);
       newSelectionTracker = selectionTracker.backwardExtendAndUpdateRanges(prevNodeRangeIndex, newRange);
     }
+    console.log('TCL: SelectionTracker -> extendRangeUpdateSelection -> newSelectionTracker', newSelectionTracker);
     return newSelectionTracker;
   }
 
@@ -172,6 +173,7 @@ class SelectionTracker {
     }
 
     const newSelectionTracker = this.clone();
+    console.log('TCL: SelectionTracker -> forwardExtendAndUpdateRanges -> newSelectionTracker', newSelectionTracker);
     const newRangeList = newSelectionTracker.rangeList;
     newRangeList.splice(rangePrevNodeIsIn, rangesToBeDeleted, newRange);
     const updatedRangeList = SelectionTracker.mergeAdjacentRanges([...newRangeList]);

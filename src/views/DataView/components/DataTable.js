@@ -347,6 +347,7 @@ class DataTable extends React.Component {
     let { prevNodeID } = this.state;
     const { onRowSelected } = this.props;
     const { selectionTracker } = this.state;
+    console.log('TCL: handleSelectionChange -> selectionTracker', selectionTracker.rangeList);
 
     let newSelectionTracker;
     if (type === 'click') {
@@ -368,6 +369,7 @@ class DataTable extends React.Component {
       prevNodeID = nodeID;
 
       this.setState({ selectionTracker: newSelectionTracker, prevNodeID });
+      console.log('TCL: handleSelectionChange -> newSelectionTracker', newSelectionTracker.rangeList);
       this.selectNodeRowsInTable(this.gridApi, newSelectionTracker);
       const totalNumOfRows = newSelectionTracker.getTotalNumOfSelectedRows();
       onRowSelected(totalNumOfRows);
@@ -378,6 +380,7 @@ class DataTable extends React.Component {
         prevNodeID = nodeID;
 
         this.setState({ selectionTracker: newSelectionTracker, prevNodeID });
+        console.log('TCL: handleSelectionChange -> newSelectionTracker', newSelectionTracker.rangeList);
         const totalNumOfRows = newSelectionTracker.getTotalNumOfSelectedRows();
         onRowSelected(totalNumOfRows);
       } else if (shiftKey && ['ArrowDown', 'ArrowUp'].includes(key)) {

@@ -117,13 +117,21 @@ class DataView extends React.Component {
    * Opens the right-hand panel that shows details of a given record
    */
   @boundMethod
-  handleToggleDetailPanel(opt = {}) {
+  async handleToggleDetailPanel(opt = {}) {
     const { data } = opt;
-
-    if (!data) {
-      this.setState({ detailPanelRow: null });
-    } else {
-      this.setState({ detailPanelRow: data });
+    const { cache } = this.state;
+    try {
+      const record = await cache.getRecord(data);
+      console.log('TCL: DataView -> handleToggleDetailPanel -> record', record);
+      console.log('TCL: DataView -> handleToggleDetailPanel -> data', data);
+      const fetchedRecord = record[0];
+      if (!fetchedRecord) {
+        this.setState({ detailPanelRow: null });
+      } else {
+        this.setState({ detailPanelRow: fetchedRecord });
+      }
+    } catch (err) {
+      console.log(err);
     }
   }
 

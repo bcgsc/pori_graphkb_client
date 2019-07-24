@@ -189,6 +189,7 @@ class Schema {
 
     if (modelName && modelName.toLowerCase() !== 'statement') {
       allProps = this.get(modelName).queryProperties;
+      console.log('TCL: defineGridColumns -> allProps', allProps);
       if (modelName.toLowerCase().includes('variant')) {
         showEdges.push('in_ImpliedBy');
         showByDefault.push('reference1', 'reference2', 'type');
@@ -201,6 +202,7 @@ class Schema {
     } else {
       showEdges.push('out_ImpliedBy', 'out_SupportedBy');
       allProps = this.get('Statement').queryProperties;
+      console.log('TCL: defineGridColumns -> allProps', allProps);
       showByDefault.push('source', 'appliesTo', 'relevance', 'evidenceLevel');
     }
 

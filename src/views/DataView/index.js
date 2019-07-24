@@ -120,18 +120,23 @@ class DataView extends React.Component {
   async handleToggleDetailPanel(opt = {}) {
     const { data } = opt;
     const { cache } = this.state;
-    try {
-      const record = await cache.getRecord(data);
-      console.log('TCL: DataView -> handleToggleDetailPanel -> record', record);
-      console.log('TCL: DataView -> handleToggleDetailPanel -> data', data);
-      const fetchedRecord = record[0];
-      if (!fetchedRecord) {
-        this.setState({ detailPanelRow: null });
-      } else {
-        this.setState({ detailPanelRow: fetchedRecord });
+
+    if (!data) {
+      this.setState({ detailPanelRow: null });
+    } else {
+      try {
+        const records = await cache.getRecord(data);
+        console.log('TCL: DataView -> handleToggleDetailPanel -> record', records);
+        console.log('TCL: DataView -> handleToggleDetailPanel -> data', data);
+        const record = records[0];
+        if (!record) {
+          this.setState({ detailPanelRow: null });
+        } else {
+          this.setState({ detailPanelRow: record });
+        }
+      } catch (err) {
+        this.handleError(err);
       }
-    } catch (err) {
-      console.log(err);
     }
   }
 

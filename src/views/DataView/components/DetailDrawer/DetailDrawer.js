@@ -36,7 +36,6 @@ const DATE_KEYS = ['createdAt', 'deletedAt'];
  * generates display based on record, and its corresponding schema entry.
  *
  * @property {object} props
- * @property {Object} props.schema - Knowledgebase schema object.
  * @property {Object} props.node - Ontology to be displayed in drawer.
  * @property {function} props.onClose - Function triggered on @material-ui/Drawer onClose event.
  * @property {function} props.handleNodeEditStart - Function triggered on node edit button click
@@ -89,13 +88,9 @@ class DetailDrawer extends Component {
     if (!node['@class']) return null;
     const { properties } = schema.get(node);
     const identifiers = ['@class', '@rid'];
-    console.log('TCL: DetailDrawer -> formatIdentifiers -> identifiers, properties', identifiers, properties);
     return this.formatProps(node, identifiers.reduce((array, id) => { // should return properties
       const [key, nestedKey] = id.split('.');
-      console.log('TCL: DetailDrawer -> formatIdentifiers -> key, nestedKey', key, nestedKey);
-      console.log('TCL: DetailDrawer -> formatIdentifiers -> !schema.getMetadata().find(p => p.name === key)', !schema.getMetadata().find(p => p.name === key));
-      console.log('TCL: DetailDrawer -> formatIdentifiers -> schema.getMetadata()', schema.getMetadata());
-      if (!schema.getMetadata().find((p) => { p.name === key; })) { // returns false everytime currently
+      if (!schema.getMetadata().find(p => p.name === key)) { // returns false everytime currently
         if (properties[key]) {
           if (nestedKey) {
             array.push({ ...properties[key], previewWith: nestedKey });
@@ -107,7 +102,6 @@ class DetailDrawer extends Component {
           array.push({ type: 'string', name: 'preview' });
         }
       }
-      console.log('TCL: DetailDrawer -> formatIdentifiers -> array', array);
       return array;
     }, []), isNested);
   }
@@ -320,7 +314,6 @@ class DetailDrawer extends Component {
    * @param {boolean} isNested - Nested flag.
    */
   formatOtherProps(node, isNested) {
-    console.log('TCL: formatOtherProps -> node', node);
     const { schema } = this.context;
     // const { identifiers } = schema.get(node);
     const identifiers = ['@class', '@rid'];
@@ -468,9 +461,7 @@ class DetailDrawer extends Component {
       const recordId = node['@rid'].slice(1);
 
       const identifiers = this.formatIdentifiers(node);
-      console.log('TCL: DetailDrawer -> render -> identifiers', identifiers);
       const otherProps = this.formatOtherProps(node);
-      console.log('TCL: render -> otherProps', otherProps);
       const relationships = !isEdge && this.formatRelationships(node);
       const metadata = this.formatMetadata(node, true);
 

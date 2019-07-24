@@ -7,7 +7,7 @@ class SelectionRange {
 
   get length() { return this.maxVal - this.minVal + 1; }
 
-  merge(range) { return new SelectionRange(this.minVal, range.maxVal); }
+  merge(range) { return new SelectionRange(Math.min(this.minVal, range.minVal), Math.max(this.maxVal, range.maxVal)); }
 
   rangeContainsNode(nodeID) {
     if (nodeID >= this.minVal && nodeID <= this.maxVal) {
@@ -143,7 +143,7 @@ class SelectionTracker {
     const sortRanges = (r1, r2) => r1.minVal - r2.minVal;
     newRangeList.sort(sortRanges);
 
-    const updatedRangeList = SelectionTracker.mergeAdjacentRanges(newRangeList);
+    const updatedRangeList = SelectionTracker.mergeAdjacentRanges(newRangeList); // selection is good here
     const newSelectionTracker = new SelectionTracker();
     newSelectionTracker.selection = updatedRangeList;
     return newSelectionTracker;

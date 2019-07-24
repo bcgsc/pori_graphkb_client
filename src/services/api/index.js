@@ -15,6 +15,7 @@ import DataCache from './dataCache';
 
 const {
   API_BASE_URL,
+  TABLE_DEFAULT_NEIGHBORS,
   DEFAULT_NEIGHBORS,
 } = config;
 
@@ -171,7 +172,7 @@ const defaultSuggestionHandler = (model, opt = {}) => {
  */
 const getQueryFromSearch = ({ schema, search }) => {
   const {
-    neighbors = DEFAULT_NEIGHBORS,
+    neighbors = TABLE_DEFAULT_NEIGHBORS,
     limit = DEFAULT_LIMIT,
     keyword,
     complex,
@@ -200,12 +201,12 @@ const getQueryFromSearch = ({ schema, search }) => {
     routeName += '/search';
     // Decode base64 encoded string.
     payload = JSON.parse(atob(decodeURIComponent(complex)));
-    payload.neighbors = Math.max(payload.neighbors || 0, DEFAULT_NEIGHBORS);
+    payload.neighbors = Math.max(payload.neighbors || 0, TABLE_DEFAULT_NEIGHBORS);
     payload.limit = Math.min(payload.limit);
   } else {
     queryParams = {
       limit,
-      neighbors: Math.max(neighbors, DEFAULT_NEIGHBORS),
+      neighbors: Math.max(neighbors, TABLE_DEFAULT_NEIGHBORS),
     };
     if (keyword) {
       // keyword search is not associated with a particular model
@@ -323,7 +324,8 @@ const querySearchBlock = ({
 const recordApiCall = ({ record, schema }) => {
   const { '@rid': rid = record } = record;
   const { routeName = '/v' } = schema.get(record) || {};
-  return get(`${routeName}/${rid.slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
+  console.log('TCL: recordApiCall -> schema.get(record)', schema.get(record));
+  return get(`${routeName}?@rid=${rid.slice(1)}&neighbors=${DEFAULT_NEIGHBORS}`);
 };
 
 

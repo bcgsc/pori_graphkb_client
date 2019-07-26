@@ -94,6 +94,7 @@ const del = (endpoint, callOptions) => {
  */
 const defaultSuggestionHandler = (model, opt = {}) => {
   const searchHandler = (textInput) => {
+    console.log('TCL: searchHandler -> textInput', textInput);
     let terms = textInput.split(/\s+/);
     let operator = 'CONTAINSTEXT';
     if (terms.length > 1) {
@@ -104,15 +105,7 @@ const defaultSuggestionHandler = (model, opt = {}) => {
 
     const { excludeClasses = [], ...rest } = opt;
 
-    const ontologyWhere = [{
-      operator: 'OR',
-      comparisons: terms.map(term => ({ attr: 'name', value: term, operator })),
-    }];
-    if (model.properties.sourceId) {
-      ontologyWhere[0].comparisons.push(
-        ...terms.map(term => ({ attr: 'sourceId', value: term, operator })),
-      );
-    }
+    const ontologyWhere = [...terms.map(term => ({ attr: 'name', value: term, operator }))];
 
     if (excludeClasses.length) {
       ontologyWhere.push(...excludeClasses.map(
@@ -120,25 +113,8 @@ const defaultSuggestionHandler = (model, opt = {}) => {
       ));
     }
 
-    const variantWhere = [{
-      operator: 'AND',
-      comparisons: terms.map(value => ({
-        operator: 'OR',
-        comparisons: [
-          { attr: 'reference1.name', value, operator },
-          { attr: 'reference1.sourceId', value },
-          { attr: 'reference2.name', value, operator },
-          { attr: 'reference2.sourceId', value },
-          { attr: 'type.name', value, operator },
-          { attr: 'type.sourceId', value },
-        ],
-      })),
-    }];
-
-    let where = ontologyWhere;
-    if (model.inherits.includes('Variant') || model.name === 'Variant') {
-      where = variantWhere;
-    }
+    const where = ontologyWhere;
+    console.log('TCL: searchHandler -> where', where);
 
     const callOptions = { forceListReturn: true, ...rest };
     let call;
@@ -150,9 +126,6 @@ const defaultSuggestionHandler = (model, opt = {}) => {
         limit: MAX_SUGGESTIONS,
         neighbors: 1,
       };
-      if (model.inherits.includes('Ontology') || model.name === 'Ontology') {
-        body.orderBy = ['name', 'sourceId'];
-      }
       call = post(`${model.routeName}/search`, body, callOptions);
     }
     return call;

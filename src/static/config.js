@@ -95,7 +95,7 @@ export default {
     ],
     TSV_FILENAME: 'download.tsv',
   },
-  TABLE_DEFAULT_NEIGHBORS: 1,
+  TABLE_DEFAULT_NEIGHBORS: 2,
   DEFAULT_NEIGHBORS: 3,
 
   ONTOLOGY_QUERY_PARAMS: [

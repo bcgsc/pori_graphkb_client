@@ -6,7 +6,7 @@ import api from './api';
 
 const { schema: SCHEMA_DEFN } = kbSchema;
 
-const MAX_LABEL_LENGTH = 30;
+const MAX_LABEL_LENGTH = 80;
 
 
 /**
@@ -26,21 +26,44 @@ class Schema {
    * Get a string representation of a record
    */
   @boundMethod
-  getLabel(obj, truncate = true) {
+  getLabel(obj, truncate = true) { // this is were value is obtained for cols
+    let label;
     try {
-      let label = this.get(obj).getPreview(obj);
-      if (label.length > MAX_LABEL_LENGTH - 3 && truncate) {
-        label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
+      if (obj.displayNameTemplate) {
+        // return this.getPreview(obj);
+
+        label = this.getPreview(obj);
+        if (label.length > MAX_LABEL_LENGTH - 3 && truncate) {
+          label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
+        }
+        return label;
+      } if (obj.displayName) {
+        label = obj.displayName;
+        if (label.length > MAX_LABEL_LENGTH - 3 && truncate) {
+          label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
+        }
+        if (obj['@rid']) {
+          label = `${label} (${obj['@rid']})`;
+        }
+        return label;
       }
-      if (obj['@rid']) {
-        label = `${label} (${obj['@rid']})`;
-      }
-      return label;
-    } catch (err) {}  // eslint-disable-line
-    try {
-      return obj['@rid'];
-    } catch (err) {} // eslint-disable-line
+      return obj;
+    } catch (err) {}
     return obj;
+    // try {
+    //   let label = this.get(obj).getPreview(obj);
+    //   if (label.length > MAX_LABEL_LENGTH - 3 && truncate) {
+    //     label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
+    //   }
+    //   if (obj['@rid']) {
+    //     label = `${label} (${obj['@rid']})`;
+    //   }
+    //   return label;
+    // } catch (err) {}  // eslint-disable-line
+    // try {
+    //   return obj['@rid'];
+    // } catch (err) {} // eslint-disable-line
+    // return obj;
   }
 
   @boundMethod
@@ -58,9 +81,34 @@ class Schema {
    */
   @boundMethod
   getPreview(obj) {
+    if (obj.displayNameTemplate) {
+      const statementBuilder = (record) => {
+        if (record === undefined) {
+          return null;
+        }
+        const vals = Array.isArray(record) ? record : [record];
+        let label = '';
+        vals.forEach((val) => {
+          label = `${label}${val.displayName} `;
+        });
+        return label;
+      };
+      const implyBy = statementBuilder(obj.impliedBy);
+      const relevance = statementBuilder(obj.relevance);
+      const appliesTo = statementBuilder(obj.appliesTo);
+      const supportedBy = statementBuilder(obj.supportedBy);
+
+      const label = `Given ${implyBy}, ${relevance} applies to ${appliesTo} (${supportedBy})`;
+      return label;
+    }
+
+    if (obj.displayName) {
+      return obj.displayName;
+    }
     try {
-      return this.get(obj).getPreview(obj);
-    } catch (err) {}  // eslint-disable-line
+      // try to get
+      return this.get(obj).getPreview(obj); // get Preview function no longer exists on model
+    } catch (err) {} // eslint-disable-linea
     try {
       return obj['@rid'];
     } catch (err) {} // eslint-disable-line
@@ -165,7 +213,6 @@ class Schema {
       parentCls = [parentCls];
     }
 
-
     return !!(this.get(cls)
       && this.get(cls).inherits.some(inherited => parentCls.includes(inherited)));
   }
@@ -189,7 +236,6 @@ class Schema {
 
     if (modelName && modelName.toLowerCase() !== 'statement') {
       allProps = this.get(modelName).queryProperties;
-      console.log('TCL: defineGridColumns -> allProps', allProps);
       if (modelName.toLowerCase().includes('variant')) {
         showEdges.push('in_ImpliedBy');
         showByDefault.push('reference1', 'reference2', 'type');
@@ -237,6 +283,8 @@ class Schema {
       'history',
       'groups',
       'uuid',
+      'displayName',
+      'displayNameTemplate',
     ];
 
     const showNested = [
@@ -248,6 +296,7 @@ class Schema {
     ];
 
     const getPreview = propName => ({ data }) => {
+      console.log('TCL: defineGridColumns -> propName, data', propName, data);
       if (data && data[propName]) {
         return this.getLabel(data[propName], false);
       }
@@ -255,6 +304,8 @@ class Schema {
     };
 
     const valueGetter = (propName, subPropName = null) => ({ data }) => {
+      console.log('TCL: valueGetter -> propName, subPropName', propName, subPropName);
+      console.log('TCL: valueGetter -> data', data);
       if (data) {
         if (!subPropName) {
           return data[propName];
@@ -270,7 +321,8 @@ class Schema {
         colId: 'preview',
         field: 'preview',
         sortable: false,
-        valueGetter: ({ data }) => this.getLabel(data, false),
+        valueGetter: ({ data }) => this.getLabel(data),
+        width: 300,
       },
     ];
 
@@ -280,6 +332,8 @@ class Schema {
       .forEach((prop) => {
         const hide = !showByDefault.includes(prop.name);
         if (prop.linkedClass) {
+          console.log('TCL: getPreview -> prop', prop);
+          console.log('TCL: getPreview -> prop.linkedClass', prop.linkedClass);
           // build a column group
           const groupDefn = {
             headerName: prop.name,

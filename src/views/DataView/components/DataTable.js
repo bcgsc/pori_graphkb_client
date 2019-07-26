@@ -93,6 +93,8 @@ class DataTable extends React.Component {
       },
       ...schema.defineGridColumns(search),
     ]);
+    console.log('TCL: initializeGrid -> schema.defineGridColumns(search)', schema.defineGridColumns(search));
+
     this.detectColumns();
 
     const dataSource = {
@@ -380,6 +382,16 @@ class DataTable extends React.Component {
     };
 
     const DefaultRender = ({ value, data }) => {
+      console.log('TCL: DefaultRender -> { value, data }', { value, data });
+      // console.log('TCL: DefaultRender -> { value, data }', { value, data });
+      // if (data === undefined) { // takes care of the headers
+      //   return null;
+      // } else if (value === null) {
+      //   return null;
+      // } else if (value){
+      //   return
+      // }
+
       if (data === undefined) {
         return null;
       } if (typeof value === 'object' && value !== null) {

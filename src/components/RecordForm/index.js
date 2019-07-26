@@ -137,12 +137,12 @@ class RecordForm extends React.PureComponent {
     const { '@class': defaultModel } = value;
 
     const model = schema.get(modelName || defaultModel || modelName || 'V');
-
     if (variant !== FORM_VARIANT.NEW && variant !== FORM_VARIANT.SEARCH) {
       // If not a new form then should have existing content
       this.setState({ actionInProgress: true });
       try {
-        const call = api.get(`${model.routeName}/${rid.replace(/^#/, '')}?neighbors=3`, { forceListReturn: true });
+        console.log('TCL: RecordForm -> getNodeFromUri -> model', model);
+        const call = api.get(`${model.routeName}/${rid.replace(/^#/, '')}`, { forceListReturn: true });
         this.controllers.push(call);
         const result = await call.request();
         if (result && result.length) {

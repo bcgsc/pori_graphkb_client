@@ -81,29 +81,31 @@ class Schema {
    */
   @boundMethod
   getPreview(obj) {
-    if (obj.displayNameTemplate) {
-      const statementBuilder = (record) => {
-        if (record === undefined) {
-          return null;
-        }
-        const vals = Array.isArray(record) ? record : [record];
-        let label = '';
-        vals.forEach((val) => {
-          label = `${label}${val.displayName} `;
-        });
+    if (obj) {
+      if (obj.displayNameTemplate) {
+        const statementBuilder = (record) => {
+          if (record === undefined) {
+            return null;
+          }
+          const vals = Array.isArray(record) ? record : [record];
+          let label = '';
+          vals.forEach((val) => {
+            label = `${label}${val.displayName} `;
+          });
+          return label;
+        };
+        const implyBy = statementBuilder(obj.impliedBy);
+        const relevance = statementBuilder(obj.relevance);
+        const appliesTo = statementBuilder(obj.appliesTo);
+        const supportedBy = statementBuilder(obj.supportedBy);
+
+        const label = `Given ${implyBy}, ${relevance} applies to ${appliesTo} (${supportedBy})`;
         return label;
-      };
-      const implyBy = statementBuilder(obj.impliedBy);
-      const relevance = statementBuilder(obj.relevance);
-      const appliesTo = statementBuilder(obj.appliesTo);
-      const supportedBy = statementBuilder(obj.supportedBy);
+      }
 
-      const label = `Given ${implyBy}, ${relevance} applies to ${appliesTo} (${supportedBy})`;
-      return label;
-    }
-
-    if (obj.displayName) {
-      return obj.displayName;
+      if (obj.displayName) {
+        return obj.displayName;
+      }
     }
     try {
       // try to get
@@ -237,7 +239,7 @@ class Schema {
     if (modelName && modelName.toLowerCase() !== 'statement') {
       allProps = this.get(modelName).queryProperties;
       if (modelName.toLowerCase().includes('variant')) {
-        showEdges.push('in_ImpliedBy');
+        // showEdges.push('in_ImpliedBy');
         showByDefault.push('reference1', 'reference2', 'type');
       } else if (modelName.toLowerCase() !== 'source') {
         showByDefault.push('sourceIdVersion', 'version', 'source', 'name', 'sourceId');
@@ -261,6 +263,8 @@ class Schema {
         : 'out';
       let colId = name.slice(type.length + 1);
       if (type === 'in') {
+        console.log('TCL: defineEdgeColumn -> colId = this.get(colId)', colId = this.get(colId));
+        console.log('TCL: defineEdgeColumn -> normalizedModelNames', this.normalizedModelNames);
         colId = this.get(colId).reverseName;
       }
 
@@ -296,7 +300,7 @@ class Schema {
     ];
 
     const getPreview = propName => ({ data }) => {
-      console.log('TCL: defineGridColumns -> propName, data', propName, data);
+      // console.log('TCL: defineGridColumns -> propName, data', propName, data);
       if (data && data[propName]) {
         return this.getLabel(data[propName], false);
       }
@@ -304,8 +308,8 @@ class Schema {
     };
 
     const valueGetter = (propName, subPropName = null) => ({ data }) => {
-      console.log('TCL: valueGetter -> propName, subPropName', propName, subPropName);
-      console.log('TCL: valueGetter -> data', data);
+      // console.log('TCL: valueGetter -> propName, subPropName', propName, subPropName);
+      // console.log('TCL: valueGetter -> data', data);
       if (data) {
         if (!subPropName) {
           return data[propName];
@@ -332,8 +336,6 @@ class Schema {
       .forEach((prop) => {
         const hide = !showByDefault.includes(prop.name);
         if (prop.linkedClass) {
-          console.log('TCL: getPreview -> prop', prop);
-          console.log('TCL: getPreview -> prop.linkedClass', prop.linkedClass);
           // build a column group
           const groupDefn = {
             headerName: prop.name,

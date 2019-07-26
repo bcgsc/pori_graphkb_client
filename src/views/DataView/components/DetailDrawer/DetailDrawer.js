@@ -84,13 +84,17 @@ class DetailDrawer extends Component {
    * @param {boolean} isNested - Nested flag.
    */
   formatIdentifiers(node, isNested) {
+    console.log('TCL: DetailDrawer -> formatIdentifiers -> node', node);
     const { schema } = this.context;
     if (!node['@class']) return null;
     const { properties } = schema.get(node);
     const identifiers = ['@class', '@rid'];
 
+    // reducer builds an array of properties which is then formatted. Array of
+    // properties are limited to those that do not exist on metadeta fields
     return this.formatProps(node, identifiers.reduce((array, id) => { // should return properties
       const [key, nestedKey] = id.split('.');
+      console.log('TCL: DetailDrawer -> formatIdentifiers -> schema.getMetadata()', schema.getMetadata());
       if (!schema.getMetadata().find(p => (p.name === key))) { // returns false everytime currently
         if (properties[key]) {
           if (nestedKey) {
@@ -115,7 +119,6 @@ class DetailDrawer extends Component {
    * @param {boolean} isNested - if true, list item is indented.
    */
   formatLongValue(key, value, isStatic, isNested) {
-    console.log('TCL: DetailDrawer -> formatLongValue -> key, value, isStatic, isNested', key, value, isStatic, isNested);
     const { opened } = this.state;
     const listItemProps = isStatic === true
       ? {}
@@ -232,11 +235,6 @@ class DetailDrawer extends Component {
         );
       }
       if ((type === 'link' || type === 'embedded') && value['@class']) {
-        console.log('TCL: DetailDrawer -> formatProps -> prop', prop);
-        console.log('TCL: DetailDrawer -> formatProps -> node', node);
-        console.log('TCL: DetailDrawer -> formatProps -> name, isNested', name, isNested);
-        console.log('TCL: DetailDrawer -> formatProps -> value', value);
-
         let previewStr;
         let listItemProps = {};
         if (isNested) {
@@ -298,9 +296,6 @@ class DetailDrawer extends Component {
         );
       }
       if (value.toString().length <= MAX_STRING_LENGTH) {
-        // console.log('TCL: DetailDrawer -> formatProps -> name', name);
-        // console.log('TCL: DetailDrawer -> formatProps -> value', value);
-
         let Wrapper = React.Fragment;
         const compProps = {};
         if (name === 'url') {
@@ -350,22 +345,18 @@ class DetailDrawer extends Component {
     const { schema } = this.context;
     // const { identifiers } = schema.get(node);
     const identifiers = ['@class', '@rid'];
-    console.log('TCL: DetailDrawer -> formatOtherProps -> Object.keys(node)', Object.keys(node));
 
     let properties = Object.keys(node)
       .map(key => ({ name: key, type: util.parseKBType(node[key]) }));
-    console.log('TCL: DetailDrawer -> formatOtherProps -> before properties', properties);
 
     if (schema && schema.getProperties(node)) {
       properties = schema.getProperties(node);
     }
-    console.log('TCL: DetailDrawer -> formatOtherProps -> after properties', properties);
 
     const propsList = Object.values(properties)
       .filter(prop => !identifiers.map(id => id.split('.')[0]).includes(prop.name)
         && !prop.name.startsWith('in_')
         && !prop.name.startsWith('out_'));
-    console.log('TCL: DetailDrawer -> formatOtherProps -> propsList', propsList);
 
     return this.formatProps(node, propsList, isNested);
   }
@@ -375,16 +366,17 @@ class DetailDrawer extends Component {
    * @param {Object} node - Record being displayed.
    */
   formatRelationships(node) {
+    console.log('TCL: DetailDrawer -> formatRelationships -> node', node);
     const { linkOpen, opened } = this.state;
     const { schema } = this.context;
     // Checks subclasses
     const edges = schema.getEdges(node);
+    console.log('TCL: DetailDrawer -> formatRelationships -> edges', edges);
 
     if (!edges || edges.length === 0) return null;
     return (
       <List>
         {edges.map((edge) => {
-          const metaOpen = opened.includes(`${edge['@rid']} meta`);
           const isOpen = linkOpen === edge['@rid'];
           const isIn = edge.in && edge.in['@rid'] === node['@rid'];
           const targetNode = isIn ? edge.out : edge.in;
@@ -426,25 +418,10 @@ class DetailDrawer extends Component {
                 >
                   <Divider />
                   <ListSubheader disableSticky color="primary">
-                    Link Properties
-                  </ListSubheader>
-                  {this.formatOtherProps(edge, true)}
-                  <ListItem dense button onClick={() => this.handleExpand(`${edge['@rid']} meta`)}>
-                    <div className="nested-spacer" />
-                    <ListItemText className="detail-li-text">
-                      <Typography variant="subtitle1" color={metaOpen ? 'secondary' : 'default'}>
-                        Metadata
-                      </Typography>
-                    </ListItemText>
-                    {!metaOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-                  </ListItem>
-                  <Collapse in={!!metaOpen}>
-                    {this.formatMetadata(edge, true)}
-                  </Collapse>
-                  <ListSubheader disableSticky color="primary">
                     Linked Record
                   </ListSubheader>
                   {this.formatIdentifiers(isIn ? edge.out : edge.in, true)}
+                  {this.formatMetadata(isIn ? edge.out : edge.in, true)}
                 </List>
                 <Divider />
               </Collapse>
@@ -500,8 +477,6 @@ class DetailDrawer extends Component {
       const recordId = node['@rid'].slice(1);
 
       const identifiers = this.formatIdentifiers(node); // empty
-      console.log('TCL: render -> identifiers', identifiers);
-      console.log('TCL: DetailDrawer -> render -> node', node);
       const otherProps = this.formatOtherProps(node); // all other props
       const relationships = !isEdge && this.formatRelationships(node); // related vertices
       const metadata = this.formatMetadata(node, true); // nodes meta data
@@ -517,7 +492,6 @@ class DetailDrawer extends Component {
         preview = 'Invalid variant';
         errorMessage = e.message;
       }
-      console.log('TCL: DetailDrawer -> render -> preview', preview);
 
       content = (
         <div className="detail-drawer__content">

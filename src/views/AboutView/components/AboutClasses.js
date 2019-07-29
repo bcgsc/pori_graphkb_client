@@ -53,8 +53,10 @@ class AboutClasses extends Component {
 
   async getClassExample(model) {
     const call = api.get(`${model.routeName}?limit=1&neighbors=1`);
+    console.log('TCL: AboutClasses -> getClassExample -> call', call);
     this.controllers.push(call);
     const result = await call.request();
+    console.log('TCL: AboutClasses -> getClassExample -> result', result);
     if (result && result.length) {
       this.setState({ [`${model.name}-example`]: result[0] });
     }

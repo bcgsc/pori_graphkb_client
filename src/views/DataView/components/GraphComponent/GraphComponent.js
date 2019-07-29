@@ -151,7 +151,9 @@ class GraphComponent extends Component {
     this.propsMap = new PropsMap();
 
     const displayed = originalData.map(obj => obj['@rid']);
+    console.log('TCL: GraphComponent -> componentDidMount -> originalData', originalData);
     const data = GraphComponent.hashRecordsByRID(originalData);
+    console.log('TCL: GraphComponent -> componentDidMount -> data', data);
 
     const expandedEdgeTypes = util.expandEdges(edgeTypes);
     let validDisplayed = displayed;
@@ -1053,6 +1055,8 @@ class GraphComponent extends Component {
       expandNode,
       expandExclusions,
     } = this.state;
+    console.log("TCL: render -> expandable", expandable);
+
 
     const { propsMap } = this;
 

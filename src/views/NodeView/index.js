@@ -88,6 +88,8 @@ class NodeView extends React.PureComponent {
 
     if (modelName) {
       const model = schema.get(modelName);
+      console.log('TCL: render -> model', schema.normalizedModelNames);
+      console.log('TCL: render -> schema.get(modelName)', schema.get(modelName));
       defaultModelName = model.name;
       if (!model || (model.isAbstract && variant === FORM_VARIANT.EDIT)) {
         history.push(

@@ -6,7 +6,7 @@ import api from './api';
 
 const { schema: SCHEMA_DEFN } = kbSchema;
 
-const MAX_LABEL_LENGTH = 80;
+const MAX_LABEL_LENGTH = 50;
 
 
 /**
@@ -28,10 +28,8 @@ class Schema {
   @boundMethod
   getLabel(obj, truncate = true) { // this is were value is obtained for cols
     let label;
-    try {
+    if (obj) {
       if (obj.displayNameTemplate) {
-        // return this.getPreview(obj);
-
         label = this.getPreview(obj);
         if (label.length > MAX_LABEL_LENGTH - 3 && truncate) {
           label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
@@ -48,22 +46,8 @@ class Schema {
         return label;
       }
       return obj;
-    } catch (err) {}
+    }
     return obj;
-    // try {
-    //   let label = this.get(obj).getPreview(obj);
-    //   if (label.length > MAX_LABEL_LENGTH - 3 && truncate) {
-    //     label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
-    //   }
-    //   if (obj['@rid']) {
-    //     label = `${label} (${obj['@rid']})`;
-    //   }
-    //   return label;
-    // } catch (err) {}  // eslint-disable-line
-    // try {
-    //   return obj['@rid'];
-    // } catch (err) {} // eslint-disable-line
-    // return obj;
   }
 
   @boundMethod
@@ -94,6 +78,7 @@ class Schema {
           });
           return label;
         };
+
         const implyBy = statementBuilder(obj.impliedBy);
         const relevance = statementBuilder(obj.relevance);
         const appliesTo = statementBuilder(obj.appliesTo);
@@ -300,7 +285,6 @@ class Schema {
     ];
 
     const getPreview = propName => ({ data }) => {
-      // console.log('TCL: defineGridColumns -> propName, data', propName, data);
       if (data && data[propName]) {
         return this.getLabel(data[propName], false);
       }
@@ -308,8 +292,6 @@ class Schema {
     };
 
     const valueGetter = (propName, subPropName = null) => ({ data }) => {
-      // console.log('TCL: valueGetter -> propName, subPropName', propName, subPropName);
-      // console.log('TCL: valueGetter -> data', data);
       if (data) {
         if (!subPropName) {
           return data[propName];

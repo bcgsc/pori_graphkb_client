@@ -88,13 +88,13 @@ class DetailDrawer extends Component {
     const { schema } = this.context;
     if (!node['@class']) return null;
     const { properties } = schema.get(node);
+    console.log('TCL: DetailDrawer -> formatIdentifiers -> properties', properties);
     const identifiers = ['@class', '@rid'];
 
     // reducer builds an array of properties which is then formatted. Array of
     // properties are limited to those that do not exist on metadeta fields
     return this.formatProps(node, identifiers.reduce((array, id) => { // should return properties
       const [key, nestedKey] = id.split('.');
-      console.log('TCL: DetailDrawer -> formatIdentifiers -> schema.getMetadata()', schema.getMetadata());
       if (!schema.getMetadata().find(p => (p.name === key))) { // returns false everytime currently
         if (properties[key]) {
           if (nestedKey) {
@@ -366,12 +366,10 @@ class DetailDrawer extends Component {
    * @param {Object} node - Record being displayed.
    */
   formatRelationships(node) {
-    console.log('TCL: DetailDrawer -> formatRelationships -> node', node);
     const { linkOpen, opened } = this.state;
     const { schema } = this.context;
     // Checks subclasses
     const edges = schema.getEdges(node);
-    console.log('TCL: DetailDrawer -> formatRelationships -> edges', edges);
 
     if (!edges || edges.length === 0) return null;
     return (
@@ -475,11 +473,16 @@ class DetailDrawer extends Component {
     let content = null;
     if (drawerIsOpen) {
       const recordId = node['@rid'].slice(1);
+      console.log('TCL: DetailDrawer -> render -> recordId', recordId);
 
       const identifiers = this.formatIdentifiers(node); // empty
+      console.log('TCL: DetailDrawer -> render -> identifiers', identifiers);
       const otherProps = this.formatOtherProps(node); // all other props
+      console.log('TCL: DetailDrawer -> render -> otherProps', otherProps);
       const relationships = !isEdge && this.formatRelationships(node); // related vertices
+      console.log('TCL: DetailDrawer -> render -> relationships', relationships);
       const metadata = this.formatMetadata(node, true); // nodes meta data
+      console.log('TCL: DetailDrawer -> render -> metadata', metadata);
 
       const metadataIsOpen = opened.includes('metadata');
 
@@ -487,6 +490,7 @@ class DetailDrawer extends Component {
       let errorMessage;
       try {
         preview = schema.getPreview(node);
+        console.log('TCL: DetailDrawer -> render -> preview ', preview);
       // Only for kbp nodes so far.
       } catch (e) {
         preview = 'Invalid variant';

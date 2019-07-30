@@ -158,7 +158,6 @@ class BaseRecordForm extends React.Component {
    * Fill out the form fields using some initial record
    */
   populateFromRecord(record) {
-    console.log('TCL: BaseRecordForm -> populateFromRecord -> record', record);
     const { variant } = this.props;
 
     const model = this.currentModel(record['@class']);
@@ -477,7 +476,6 @@ class BaseRecordForm extends React.Component {
       ? []
       : schema.getEdges(value || {});
     const isStatement = model && model.name === 'Statement';
-    console.log('TCL: BaseRecordForm -> render -> isStatement', isStatement);
     if (isStatement) {
       edges = edges.filter(e => !['SupportedBy', 'ImpliedBy'].includes(e[CLASS_MODEL_PROP]));
     }

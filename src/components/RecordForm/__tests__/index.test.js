@@ -1,8 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 
-import RecordForm from '..';
-import { RawRecordForm } from '..';
+import RecordForm, { RawRecordForm } from '..';
 import { KBContext } from '../../KBContext';
 import Schema from '../../../services/schema';
 import ActionButton from '../../ActionButton';

@@ -35,8 +35,8 @@ class Schema {
           label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
         }
         return label;
-      } if (obj.displayName) {
-        label = obj.displayName;
+      } if (obj.displayName || obj.name) {
+        label = obj.displayName || obj.name;
         if (label.length > MAX_LABEL_LENGTH - 3 && truncate) {
           label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
         }

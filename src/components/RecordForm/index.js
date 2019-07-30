@@ -141,7 +141,6 @@ class RecordForm extends React.PureComponent {
       // If not a new form then should have existing content
       this.setState({ actionInProgress: true });
       try {
-        console.log('TCL: RecordForm -> getNodeFromUri -> model', model);
         const call = api.get(`${model.routeName}/${rid.replace(/^#/, '')}`, { forceListReturn: true });
         this.controllers.push(call);
         const result = await call.request();

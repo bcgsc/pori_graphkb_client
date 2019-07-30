@@ -243,6 +243,8 @@ class RecordAutocomplete extends React.Component {
       initialOptions,
     } = this.state;
 
+    console.log('TCL: RecordAutoComplete -> render -> selected', selected);
+
     let BaseSelectComponent;
     let uniqueProps;
 

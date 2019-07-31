@@ -84,11 +84,9 @@ class DetailDrawer extends Component {
    * @param {boolean} isNested - Nested flag.
    */
   formatIdentifiers(node, isNested) {
-    console.log('TCL: DetailDrawer -> formatIdentifiers -> node', node);
     const { schema } = this.context;
     if (!node['@class']) return null;
     const { properties } = schema.get(node);
-    console.log('TCL: DetailDrawer -> formatIdentifiers -> properties', properties);
     const identifiers = ['@class', '@rid'];
 
     // reducer builds an array of properties which is then formatted. Array of
@@ -473,16 +471,11 @@ class DetailDrawer extends Component {
     let content = null;
     if (drawerIsOpen) {
       const recordId = node['@rid'].slice(1);
-      console.log('TCL: DetailDrawer -> render -> recordId', recordId);
 
       const identifiers = this.formatIdentifiers(node); // empty
-      console.log('TCL: DetailDrawer -> render -> identifiers', identifiers);
       const otherProps = this.formatOtherProps(node); // all other props
-      console.log('TCL: DetailDrawer -> render -> otherProps', otherProps);
       const relationships = !isEdge && this.formatRelationships(node); // related vertices
-      console.log('TCL: DetailDrawer -> render -> relationships', relationships);
       const metadata = this.formatMetadata(node, true); // nodes meta data
-      console.log('TCL: DetailDrawer -> render -> metadata', metadata);
 
       const metadataIsOpen = opened.includes('metadata');
 
@@ -490,7 +483,6 @@ class DetailDrawer extends Component {
       let errorMessage;
       try {
         preview = schema.getPreview(node);
-        console.log('TCL: DetailDrawer -> render -> preview ', preview);
       // Only for kbp nodes so far.
       } catch (e) {
         preview = 'Invalid variant';

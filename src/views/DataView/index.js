@@ -126,8 +126,6 @@ class DataView extends React.Component {
     } else {
       try {
         const records = await cache.getRecord(data);
-        console.log('TCL: DataView -> handleToggleDetailPanel -> record', records);
-        console.log('TCL: DataView -> handleToggleDetailPanel -> data', data);
         const record = records[0];
         if (!record) {
           this.setState({ detailPanelRow: null });
@@ -155,8 +153,15 @@ class DataView extends React.Component {
   }
 
   @boundMethod
-  handleRecordSelection(selectedRecords) {
-    this.setState({ selectedRecords });
+  async handleRecordSelection(selectedRecords) {
+    const { cache } = this.state;
+    try {
+      const records = await cache.getRecords(selectedRecords);
+      const formattedRecords = records.map(record => record[0]);
+      this.setState({ selectedRecords: formattedRecords });
+    } catch (err) {
+      this.handleError(err);
+    }
   }
 
   @boundMethod
@@ -235,7 +240,7 @@ class DataView extends React.Component {
   /**
    * Renders either the DataTable or Graph view depending on the parsed URL
    */
-
+  @boundMethod
   renderDataComponent() {
     const {
       detailPanelRow,
@@ -244,8 +249,6 @@ class DataView extends React.Component {
       selectedRecords,
       search,
     } = this.state;
-
-    console.log('TCL: renderDataComponent -> selectedRecords', selectedRecords);
 
     const { bufferSize } = this.props;
     const { schema } = this.context;

@@ -66,6 +66,9 @@ class FilteredRecordAutocomplete extends React.PureComponent {
       selectedClassName,
     } = this.state;
 
+    console.log('TCL: FilteredRecordAutocomplete -> render -> selectedClassName', selectedClassName);
+
+
     const model = schema.get(linkedClassName);
 
     const itemToString = (item) => {
@@ -118,10 +121,7 @@ class FilteredRecordAutocomplete extends React.PureComponent {
             }}
             disabled={disabled}
             getOptionLabel={itemToString}
-            getOptionKey={opt => isPutativeEdge
-              ? opt.target['@rid']
-              : opt['@rid']
-            }
+            getOptionKey={opt => isPutativeEdge && opt.target ? opt.target['@rid'] : opt['@rid']}
             searchHandler={searchHandler}
             placeholder={isMulti
               ? `Search for Existing ${selectedClassName} Record(s)`

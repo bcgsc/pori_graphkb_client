@@ -172,7 +172,9 @@ class BaseRecordForm extends React.Component {
     const errors = {};
 
     Object.values(model.properties).forEach((prop) => {
+      console.log('TCL: BaseRecordForm -> populateFromRecord -> prop', prop);
       const rawValue = record[prop.name];
+      console.log('TCL: BaseRecordForm -> populateFromRecord -> rawValue', rawValue);
       const { value, error } = validateValue(prop, rawValue, variant === FORM_VARIANT.SEARCH);
       newContent[prop.name] = value;
       if (error) {
@@ -180,17 +182,17 @@ class BaseRecordForm extends React.Component {
       }
     });
     // statement required edge inputs
-    if (model.name === 'Statement') {
-      ['impliedBy', 'supportedBy'].forEach((prop) => {
-        const edgeEquivalent = `out_${prop[0].toUpperCase()}${prop.slice(1)}`;
-        const edges = (record[edgeEquivalent] || []).map(e => ({ target: e.in }));
-        const rawValue = record[prop] || edges;
-        if ((!rawValue || rawValue.length < 1) && variant !== FORM_VARIANT.SEARCH) {
-          errors[prop] = 'At least one value is required';
-        }
-        newContent[prop] = rawValue;
-      });
-    }
+    // if (model.name === 'Statement') {
+    //   ['impliedBy', 'supportedBy'].forEach((prop) => {
+    //     const edgeEquivalent = `out_${prop[0].toUpperCase()}${prop.slice(1)}`;
+    //     const edges = (record[edgeEquivalent] || []).map(e => ({ target: e.in }));
+    //     const rawValue = record[prop] || edges;
+    //     if ((!rawValue || rawValue.length < 1) && variant !== FORM_VARIANT.SEARCH) {
+    //       errors[prop] = 'At least one value is required';
+    //     }
+    //     newContent[prop] = rawValue;
+    //   });
+    // }
     this.setState({ content: newContent, errors });
   }
 
@@ -223,6 +225,7 @@ class BaseRecordForm extends React.Component {
   handleValueChange(event) {
     const { onValueChange, name } = this.props;
     const { content } = this.state;
+    console.log('TCL: BaseRecordForm -> handleValueChange -> content', content);
 
     const newContent = Object.assign({}, content);
     // add the new value to the field
@@ -230,6 +233,7 @@ class BaseRecordForm extends React.Component {
     const newValue = event.target.value;
 
     newContent[propName] = newValue;
+    console.log('TCL: BaseRecordForm -> handleValueChange -> newContent', newContent);
 
     this.populateFromRecord(newContent);
     if (onValueChange) {
@@ -353,38 +357,6 @@ class BaseRecordForm extends React.Component {
           schema={schema}
           content={content}
         />
-        <FormField
-          error={errors.impliedBy || ''}
-          onValueChange={this.handleValueChange}
-          model={{
-            description: 'Conditions that when combined imply the statement',
-            linkedClass: schema.get('Biomarker'),
-            name: 'impliedBy',
-            type: 'linkset',
-          }}
-          schema={schema}
-          value={content.impliedBy}
-          disabled={variant === FORM_VARIANT.VIEW || actionInProgress}
-          variant={variant}
-          label="ImpliedBy"
-          isPutativeEdge
-        />
-        <FormField
-          error={errors.supportedBy || ''}
-          onValueChange={this.handleValueChange}
-          model={{
-            linkedClass: schema.get('Evidence'),
-            description: 'Publications and Records that support the conclusion of the current statement',
-            name: 'supportedBy',
-            type: 'linkset',
-          }}
-          schema={schema}
-          value={content.supportedBy}
-          disabled={variant === FORM_VARIANT.VIEW || actionInProgress}
-          variant={variant}
-          label="SupportedBy"
-          isPutativeEdge
-        />
       </React.Fragment>
     );
   }
@@ -475,6 +447,7 @@ class BaseRecordForm extends React.Component {
     let edges = isEmbedded || isEdge
       ? []
       : schema.getEdges(value || {});
+    console.log('TCL: BaseRecordForm -> render -> edges', edges);
     const isStatement = model && model.name === 'Statement';
     if (isStatement) {
       edges = edges.filter(e => !['SupportedBy', 'ImpliedBy'].includes(e[CLASS_MODEL_PROP]));

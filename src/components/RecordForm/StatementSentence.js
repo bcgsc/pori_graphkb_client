@@ -37,12 +37,16 @@ const StatementSentence = (props) => {
     return words;
   };
 
-  const appliesTo = schema.getPreview(content.appliesTo);
+  const appliesTo = (content.appliesTo || [])
+    .map(apply => schema.getPreview(apply)).join(', ');
+
   const relevance = schema.getPreview(content.relevance);
+
   const supportedBy = (content.supportedBy || [])
-    .map(support => schema.getPreview(support.target)).join(', ');
+    .map(support => schema.getPreview(support)).join(', ');
+
   let conditions = (content.impliedBy || [])
-    .map(cond => schema.getPreview(cond.target));
+    .map(cond => schema.getPreview(cond));
 
   if (conditions.length > 1) {
     conditions[conditions.length - 1] = `and ${conditions[conditions.length - 1]}`;

@@ -45,7 +45,9 @@ class Schema {
         }
         return label;
       }
-      return obj;
+      if (obj.target) {
+        return this.getLabel(obj.target);
+      }
     }
     return obj;
   }

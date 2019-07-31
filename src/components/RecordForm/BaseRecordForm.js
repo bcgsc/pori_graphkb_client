@@ -414,6 +414,9 @@ class BaseRecordForm extends React.Component {
       ? []
       : schema.getEdges(value || {});
 
+    console.log('TCL: BaseRecordForm -> render -> edges', value, edges);
+
+
     const isStatement = model && model.name === 'Statement';
 
     const modelChoices = [];
@@ -562,6 +565,7 @@ class BaseRecordForm extends React.Component {
             <EdgeTable
               values={edges}
               sourceNodeId={content['@rid']}
+              schema={schema}
             />
           </div>
         )}

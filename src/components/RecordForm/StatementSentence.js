@@ -46,7 +46,8 @@ const StatementSentence = (props) => {
     .map(support => schema.getPreview(support)).join(', ');
 
   let conditions = (content.impliedBy || [])
-    .map(cond => schema.getPreview(cond));
+    .map((cond) => { console.log(cond); return schema.getPreview(cond) ;});
+  console.log('TCL: StatementSentence -> conditions', conditions);
 
   if (conditions.length > 1) {
     conditions[conditions.length - 1] = `and ${conditions[conditions.length - 1]}`;

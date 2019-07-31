@@ -67,6 +67,7 @@ class Schema {
    */
   @boundMethod
   getPreview(obj) {
+    console.log("TCL: Schema -> getPreview -> obj", obj);
     if (obj) {
       if (obj.displayNameTemplate) {
         const statementBuilder = (record) => {

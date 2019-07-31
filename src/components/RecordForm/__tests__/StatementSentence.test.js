@@ -9,7 +9,11 @@ import Schema from '../../../services/schema';
 describe('StatementSentence', () => {
   // patch the schema methods to simplify our mocks
   jest.spyOn(Schema.prototype, 'getPreview').mockImplementation(
-    item => item,
+    (item) => {
+      if (item) {
+        return item.displayName ? item.displayName : item;
+      }
+    },
   );
   const schema = new Schema();
 
@@ -32,7 +36,7 @@ describe('StatementSentence', () => {
       <StatementSentence
         schema={schema}
         content={{
-          impliedBy: [{ target: 'condition1' }, { target: 'condition2' }],
+          impliedBy: [{ displayName: 'condition1' }, { displayName: 'condition2' }],
         }}
       />
     ));
@@ -50,9 +54,9 @@ describe('StatementSentence', () => {
       <StatementSentence
         schema={schema}
         content={{
-          impliedBy: [{ target: 'KRAS mutation' }],
-          appliesTo: 'drugName',
-          supportedBy: [{ target: 'PMID:1234' }],
+          impliedBy: [{ displayName: 'KRAS mutation' }],
+          appliesTo: ['drugName'],
+          supportedBy: [{ displayName: 'PMID:1234' }],
           relevance: 'sensitivity',
         }}
       />

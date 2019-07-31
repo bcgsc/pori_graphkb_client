@@ -143,7 +143,7 @@ const defaultSuggestionHandler = (model, opt = {}) => {
  * @param {Schema} opt.schema
  * @param {string} opt.search the search string portion of the URL displayed by this app
  */
-const getQueryFromSearch = ({ schema, search }) => {
+const getQueryFromSearch = ({ schema, search, count }) => {
   const {
     neighbors = TABLE_DEFAULT_NEIGHBORS,
     limit = DEFAULT_LIMIT,
@@ -179,7 +179,7 @@ const getQueryFromSearch = ({ schema, search }) => {
   } else {
     queryParams = {
       limit,
-      neighbors: Math.max(neighbors, TABLE_DEFAULT_NEIGHBORS),
+      neighbors: count ? 0 : Math.max(neighbors, TABLE_DEFAULT_NEIGHBORS),
     };
     if (keyword) {
       // keyword search is not associated with a particular model
@@ -260,6 +260,7 @@ const querySearchBlock = ({
   const { queryParams, routeName, payload } = getQueryFromSearch({
     schema,
     search,
+    count,
   });
   const content = payload || queryParams;
 
@@ -298,6 +299,7 @@ const recordApiCall = ({ record, schema }) => {
   const { '@rid': rid = record } = record;
   const { routeName = '/v' } = schema.get(record) || {};
   console.log('TCL: recordApiCall -> schema.get(record)', schema.get(record));
+  // TODO: Modify this to id specific route
   return get(`${routeName}?@rid=${rid.slice(1)}&neighbors=${DEFAULT_NEIGHBORS}`);
 };
 

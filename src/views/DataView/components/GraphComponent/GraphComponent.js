@@ -147,7 +147,6 @@ class GraphComponent extends Component {
       initState,
     } = this.state;
     let { expandable } = this.state;
-    console.log('TCL: GraphComponent -> componentDidMount -> expandable', expandable);
     const allProps = this.getUniqueDataProps();
     this.propsMap = new PropsMap();
 
@@ -526,20 +525,15 @@ class GraphComponent extends Component {
       links,
       data,
     } = this.state;
-    console.log('TCL: GraphComponent -> handleExpandRequest -> data', data);
-    console.log('TCL: GraphComponent -> handleExpandRequest -> expandable', expandable, node.getId());
 
     const { schema } = this.props;
     if (expandable[node.getId()] && data[node.getId()]) {
       if (schema.getEdges(data[node.getId()])
         .filter(edge => !(links.find(l => l.getId() === edge['@rid']))).length > HEAVILY_CONNECTED
       ) {
-        console.log('TCL: GraphComponent -> handleExpandRequest -> open expansionDialog');
         this.setState({ expandNode: data[node.getId()] },
           this.handleDialogOpen('expansionDialogOpen'));
       } else {
-        console.log('TCL: GraphComponent -> handleExpandRequest -> load neighbor');
-
         this.loadNeighbors(node);
       }
     }
@@ -552,10 +546,8 @@ class GraphComponent extends Component {
     try {
       const recordArr = await cache.getRecord(node);
       const record = recordArr[0];
-      console.log('TCL: GraphComponent -> handleExpandNode -> record', record);
       if (data[record['@rid']] === undefined) {
         data[record['@rid']] = record;
-        console.log('TCL: GraphComponent -> handleExpandNode -> data', data);
         this.setState({ data });
       }
     } catch (err) {
@@ -592,16 +584,13 @@ class GraphComponent extends Component {
    * @param {Array.<string>} [exclusions=[]] - List of edge ID's to be ignored on expansion.
    */
   processData(node, position, depth, prevstate, exclusions = []) {
-    console.log('TCL: processData -> node', node);
     const { expandedEdgeTypes, allProps, data } = this.state;
-    console.log('TCL: processData -> expandedEdgeTypes', expandedEdgeTypes);
     let {
       nodes,
       links,
       graphObjects,
       expandable,
     } = prevstate;
-    console.log('TCL: processData -> expandable', prevstate.expandable);
 
     if (data[node['@rid']]) {
       node = data[node['@rid']]; // eslint-disable-line no-param-reassign
@@ -621,14 +610,12 @@ class GraphComponent extends Component {
      * those edges if present on the node.
      */
     expandedEdgeTypes.forEach((edgeType) => {
-      console.log('TCL: processData -> edgeType', edgeType);
       if (node[edgeType] && node[edgeType].length !== 0) {
         // stores total number of edges and initializes count for position calculating.
         const n = node[edgeType].length;
 
         // Looks through each edge of certain type.
         node[edgeType].forEach((edge, index) => {
-          console.log('TCL: processData -> edge', edge);
           const edgeRid = edge['@rid'] || edge;
 
           // Checks if edge is already rendered in the graph
@@ -636,7 +623,6 @@ class GraphComponent extends Component {
             const inRid = (edge.in || {})['@rid'] || edge.in;
             const outRid = (edge.out || {})['@rid'] || edge.out;
             const targetRid = inRid === node['@rid'] ? outRid : inRid;
-            console.log('TCL: processData -> depth, graphObjects', depth, graphObjects[targetRid]);
 
             if (
               edgeRid
@@ -705,12 +691,10 @@ class GraphComponent extends Component {
               // Updates expanded on target node.
               if (expandable[targetRid]) {
                 expandable = util.expanded(expandedEdgeTypes, graphObjects, targetRid, expandable);
-                console.log('TCL: processData -> expandable case1', expandable);
               }
             } else {
               // If there are unrendered edges, set expandable flag.
               expandable[node['@rid']] = true;
-              console.log('TCL: processData -> expandable case2', expandable);
             }
           }
         });
@@ -730,7 +714,6 @@ class GraphComponent extends Component {
             const sourceRid = node['@rid'];
             const targetRid = link['@rid'];
             const fakeRid = `#${Math.floor(Math.random() * 100)}:${Math.floor(Math.random() * 1000)}`;
-            console.log('TCL: processData -> fakeRid', fakeRid, depth, graphObjects[sourceRid]);
 
             if (
               sourceRid
@@ -768,18 +751,15 @@ class GraphComponent extends Component {
               // Updates expanded on target node.
               if (expandable[targetRid]) {
                 expandable = util.expanded(expandedEdgeTypes, graphObjects, targetRid, expandable);
-                console.log('TCL: processData -> expandable case1', expandable);
               }
             } else {
               // If there are unrendered edges, set expandable flag.
               expandable[node['@rid']] = true;
-              console.log('TCL: processData -> expandable  link case2', expandable);
             }
           }
         });
       }
     });
-    console.log('TCL: processData -> expandable case3', expandable);
     return {
       expandable,
       nodes,
@@ -889,7 +869,6 @@ class GraphComponent extends Component {
    */
   @boundMethod
   async handleClick(node) {
-    console.log('TCL: handleClick -> node', node);
     const { handleDetailDrawerOpen } = this.props;
     // Prematurely loads neighbor data.
     await this.handleExpandNode(node);

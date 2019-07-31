@@ -94,7 +94,6 @@ const del = (endpoint, callOptions) => {
  */
 const defaultSuggestionHandler = (model, opt = {}) => {
   const searchHandler = (textInput) => {
-    console.log('TCL: searchHandler -> textInput', textInput);
     let terms = textInput.split(/\s+/);
     let operator = 'CONTAINSTEXT';
     if (terms.length > 1) {
@@ -114,7 +113,6 @@ const defaultSuggestionHandler = (model, opt = {}) => {
     }
 
     const where = ontologyWhere;
-    console.log('TCL: searchHandler -> where', where);
 
     const callOptions = { forceListReturn: true, ...rest };
     let call;
@@ -298,9 +296,7 @@ const querySearchBlock = ({
 const recordApiCall = ({ record, schema }) => {
   const { '@rid': rid = record } = record;
   const { routeName = '/v' } = schema.get(record) || {};
-  console.log('TCL: recordApiCall -> schema.get(record)', schema.get(record));
-  // TODO: Modify this to id specific route
-  return get(`${routeName}?@rid=${rid.slice(1)}&neighbors=${DEFAULT_NEIGHBORS}`);
+  return get(`${routeName}/${rid.slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);
 };
 
 

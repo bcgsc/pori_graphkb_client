@@ -125,12 +125,12 @@ class DataView extends React.Component {
       this.setState({ detailPanelRow: null });
     } else {
       try {
-        const records = await cache.getRecord(data);
-        const record = records[0];
-        if (!record) {
+        const fullRecord = await cache.getRecord(data);
+        console.log('TCL: DataView -> handleToggleDetailPanel -> records', fullRecord);
+        if (!fullRecord) {
           this.setState({ detailPanelRow: null });
         } else {
-          this.setState({ detailPanelRow: record });
+          this.setState({ detailPanelRow: fullRecord });
         }
       } catch (err) {
         this.handleError(err);
@@ -156,9 +156,9 @@ class DataView extends React.Component {
   async handleRecordSelection(selectedRecords) {
     const { cache } = this.state;
     try {
-      const records = await cache.getRecords(selectedRecords);
-      const formattedRecords = records.map(record => record[0]);
-      this.setState({ selectedRecords: formattedRecords });
+      const fullRecords = await cache.getRecords(selectedRecords);
+      // const formattedRecords = records.map(record => record[0]);
+      this.setState({ selectedRecords: fullRecords });
     } catch (err) {
       this.handleError(err);
     }

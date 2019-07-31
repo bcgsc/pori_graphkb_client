@@ -544,8 +544,7 @@ class GraphComponent extends Component {
     const { cache } = this.props;
     const { data } = this.state;
     try {
-      const recordArr = await cache.getRecord(node);
-      const record = recordArr[0];
+      const record = await cache.getRecord(node);
       if (data[record['@rid']] === undefined) {
         data[record['@rid']] = record;
         this.setState({ data });

@@ -625,10 +625,9 @@ class GraphComponent extends Component {
       if (node[edgeType] && node[edgeType].length !== 0) {
         // stores total number of edges and initializes count for position calculating.
         const n = node[edgeType].length;
-        let i = 0;
 
         // Looks through each edge of certain type.
-        node[edgeType].forEach((edge) => {
+        node[edgeType].forEach((edge, index) => {
           console.log('TCL: processData -> edge', edge);
           const edgeRid = edge['@rid'] || edge;
 
@@ -637,6 +636,7 @@ class GraphComponent extends Component {
             const inRid = (edge.in || {})['@rid'] || edge.in;
             const outRid = (edge.out || {})['@rid'] || edge.out;
             const targetRid = inRid === node['@rid'] ? outRid : inRid;
+            console.log('TCL: processData -> depth, graphObjects', depth, graphObjects[targetRid]);
 
             if (
               edgeRid
@@ -655,7 +655,7 @@ class GraphComponent extends Component {
                 const positionInit = util.positionInit(
                   position.x,
                   position.y,
-                  i += 1,
+                  index,
                   n,
                 );
                 ({
@@ -680,7 +680,7 @@ class GraphComponent extends Component {
                 const positionInit = util.positionInit(
                   position.x,
                   position.y,
-                  i += 1,
+                  index,
                   n,
                 );
                 ({
@@ -722,26 +722,31 @@ class GraphComponent extends Component {
       if (node[linkType] && node[linkType] !== 0) {
         // stores total number of edges and initializes count for position calculating.
         const n = node[linkType].length;
-        let i = 0;
 
-        node[linkType].forEach((link) => {
+        node[linkType].forEach((link, index) => {
           const linkRid = link['@rid'];
           // check to see if link is in graph already
           if (!graphObjects[linkRid] && !exclusions.includes(linkRid)) {
             const sourceRid = node['@rid'];
             const targetRid = link['@rid'];
-            const fakeRid = `#${Math.floor(Math.random() * 10)}:${Math.floor(Math.random() * 10)}`;
+            const fakeRid = `#${Math.floor(Math.random() * 100)}:${Math.floor(Math.random() * 1000)}`;
+            console.log('TCL: processData -> fakeRid', fakeRid, depth, graphObjects[sourceRid]);
 
-            if (sourceRid && targetRid && fakeRid && (depth > 0 || graphObjects[sourceRid])) {
+            if (
+              sourceRid
+              && targetRid
+              && fakeRid
+              && (depth > 0 || graphObjects[targetRid])) {
               // create link object and push it to links list
-              const graphLink = new GraphLink({ '@rid': fakeRid, '@class': linkType, 'source.name': 'link' }, sourceRid, targetRid);
+              const linkData = { '@rid': fakeRid, '@class': linkType, 'source.name': 'link' };
+              const graphLink = new GraphLink(linkData, sourceRid, targetRid);
               links.push(graphLink);
               graphObjects[graphLink.getId()] = graphLink;
               this.propsMap.loadLink(graphLink.data);
               // check if node is already rendered
               if (targetRid && !graphObjects[targetRid]) {
                 // Initializes position of new child
-                const positionInit = util.positionInit(position.x, position.y, i += 1, n);
+                const positionInit = util.positionInit(position.x, position.y, index, n);
                 ({
                   nodes,
                   links,
@@ -765,12 +770,10 @@ class GraphComponent extends Component {
                 expandable = util.expanded(expandedEdgeTypes, graphObjects, targetRid, expandable);
                 console.log('TCL: processData -> expandable case1', expandable);
               }
-
             } else {
               // If there are unrendered edges, set expandable flag.
-              expandable[link['@rid']] = true;
+              expandable[node['@rid']] = true;
               console.log('TCL: processData -> expandable  link case2', expandable);
-
             }
           }
         });

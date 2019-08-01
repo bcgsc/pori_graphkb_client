@@ -56,6 +56,7 @@ class Schema {
   getLink(obj) {
     if (obj && obj['@rid']) {
       const { routeName } = this.get(obj) || this.get('V');
+      console.log('TCL: Schema -> getLink -> this.get(obj)', this.get(obj));
       return `/view${routeName}/${obj['@rid'].slice(1)}`;
     }
     return '';
@@ -67,7 +68,7 @@ class Schema {
    */
   @boundMethod
   getPreview(obj) {
-    console.log("TCL: Schema -> getPreview -> obj", obj);
+    console.log('TCL: Schema -> getPreview -> obj', obj);
     if (obj) {
       if (obj.displayNameTemplate) {
         const statementBuilder = (record) => {

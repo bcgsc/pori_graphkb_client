@@ -86,6 +86,7 @@ class DetailDrawer extends Component {
   formatIdentifiers(node, isNested) {
     const { schema } = this.context;
     if (!node['@class']) return null;
+
     const { properties } = schema.get(node);
     const identifiers = ['@class', '@rid'];
 

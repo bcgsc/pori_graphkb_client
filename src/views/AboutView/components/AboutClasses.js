@@ -42,9 +42,7 @@ class AboutClasses extends Component {
     this.controllers.push(call);
 
     const stats = await call.request();
-    console.log('TCL: AboutClasses -> getClassStats -> stats', stats);
     if (stats && stats !== null) {
-      console.log('TCL: AboutClasses -> getClassStats -> setting stats', stats);
       this.setState({
         stats: Array.from(
           Object.keys(stats),
@@ -56,10 +54,8 @@ class AboutClasses extends Component {
 
   async getClassExample(model) {
     const call = api.get(`${model.routeName}?limit=1&neighbors=1`);
-    console.log('TCL: AboutClasses -> getClassExample -> call', call);
     this.controllers.push(call);
     const result = await call.request();
-    console.log('TCL: AboutClasses -> getClassExample -> result', result);
     if (result && result.length) {
       this.setState({ [`${model.name}-example`]: result[0] });
     }

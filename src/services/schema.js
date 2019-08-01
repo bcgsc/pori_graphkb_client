@@ -17,9 +17,9 @@ class Schema {
     this.schema = schema.schema;
     this.normalizedModelNames = schema.normalizedModelNames;
 
-    this.has = schema.has.bind(this);
-    this.get = schema.get.bind(this);
-    this.getFromRoute = schema.getFromRoute.bind(this);
+    this.has = schema.has.bind(schema);
+    this.get = schema.get.bind(schema);
+    this.getFromRoute = schema.getFromRoute.bind(schema);
   }
 
   /**

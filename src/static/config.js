@@ -97,7 +97,6 @@ export default {
   },
   TABLE_DEFAULT_NEIGHBORS: 1,
   DEFAULT_NEIGHBORS: 3,
-
   ONTOLOGY_QUERY_PARAMS: [
     {
       name: 'neighbors',

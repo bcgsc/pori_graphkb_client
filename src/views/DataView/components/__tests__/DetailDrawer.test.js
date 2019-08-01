@@ -71,6 +71,9 @@ class MockSchemaDef {
     } if (node['@class'] === 'test') {
       const { test } = this.schema;
       return test;
+    } if (node === 'AliasOf' || node['@class'] === 'AliasOf') {
+      const { AliasOf } = this.schema;
+      return AliasOf;
     }
     return null;
   };
@@ -205,7 +208,7 @@ describe('<DetailDrawer />', () => {
     expect(spies.handleExpand).toHaveBeenCalledTimes(2);
   });
 
-  it.skip('initializes relationships and properly applies handlers to DOM nodes', () => {
+  it('initializes relationships and properly applies handlers to DOM nodes', () => {
     const node = {
       '@class': 'Ontology',
       '@rid': '#135',

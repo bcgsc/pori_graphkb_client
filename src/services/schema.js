@@ -48,6 +48,9 @@ class Schema {
       if (obj.target) {
         return this.getLabel(obj.target);
       }
+      if (obj['@class']) {
+        return obj['@class'];
+      }
     }
     return obj;
   }

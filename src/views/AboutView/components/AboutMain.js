@@ -42,12 +42,14 @@ class AboutMain extends Component {
 
     const stats = await call.request();
 
-    this.setState({
-      stats: Array.from(
-        Object.keys(stats),
-        label => ({ label, value: stats[label] }),
-      ),
-    });
+    if (stats && stats !== null) {
+      this.setState({
+        stats: Array.from(
+          Object.keys(stats),
+          label => ({ label, value: stats[label] }),
+        ),
+      });
+    }
   }
 
   async getVersionInfo() {

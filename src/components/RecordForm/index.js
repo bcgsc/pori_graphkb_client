@@ -142,7 +142,7 @@ class RecordForm extends React.PureComponent {
       this.setState({ actionInProgress: true });
       try {
         // set neighbours to 3 when api supports it
-        const call = api.get(`${model.routeName}/${rid.replace(/^#/, '')}`, { forceListReturn: true });
+        const call = api.get(`${model.routeName}/${rid.replace(/^#/, '')}?neighbors=3`, { forceListReturn: true });
         this.controllers.push(call);
         const result = await call.request();
         if (result && result.length) {

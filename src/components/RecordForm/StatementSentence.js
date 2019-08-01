@@ -37,7 +37,7 @@ const StatementSentence = (props) => {
     return words;
   };
 
-  const appliesTo = (content.appliesTo || [])
+  const appliesTo = (Array.isArray(content.appliesTo) ? content.appliesTo : [content.appliesTo] || [])
     .map(apply => schema.getPreview(apply)).join(', ');
 
   const relevance = schema.getPreview(content.relevance);
@@ -46,7 +46,7 @@ const StatementSentence = (props) => {
     .map(support => schema.getPreview(support)).join(', ');
 
   let conditions = (content.impliedBy || [])
-    .map((cond) => { console.log(cond); return schema.getPreview(cond) ;});
+    .map((cond) => { console.log(cond); return schema.getPreview(cond); });
   console.log('TCL: StatementSentence -> conditions', conditions);
 
   if (conditions.length > 1) {

@@ -66,8 +66,6 @@ class FilteredRecordAutocomplete extends React.PureComponent {
       selectedClassName,
     } = this.state;
 
-
-
     const model = schema.get(linkedClassName);
 
     const itemToString = (item) => {

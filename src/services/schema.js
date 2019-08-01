@@ -56,7 +56,6 @@ class Schema {
   getLink(obj) {
     if (obj && obj['@rid']) {
       const { routeName } = this.get(obj) || this.get('V');
-      console.log('TCL: Schema -> getLink -> this.get(obj)', this.get(obj));
       return `/view${routeName}/${obj['@rid'].slice(1)}`;
     }
     return '';
@@ -68,7 +67,6 @@ class Schema {
    */
   @boundMethod
   getPreview(obj) {
-    console.log('TCL: Schema -> getPreview -> obj', obj);
     if (obj) {
       if (obj.displayNameTemplate) {
         const statementBuilder = (record) => {
@@ -239,7 +237,6 @@ class Schema {
     } else {
       showEdges.push('out_ImpliedBy', 'out_SupportedBy');
       allProps = this.get('Statement').queryProperties;
-      console.log('TCL: defineGridColumns -> allProps', allProps);
       showByDefault.push('source', 'appliesTo', 'relevance', 'evidenceLevel');
     }
 
@@ -252,8 +249,6 @@ class Schema {
         : 'out';
       let colId = name.slice(type.length + 1);
       if (type === 'in') {
-        console.log('TCL: defineEdgeColumn -> colId = this.get(colId)', colId = this.get(colId));
-        console.log('TCL: defineEdgeColumn -> normalizedModelNames', this.normalizedModelNames);
         colId = this.get(colId).reverseName;
       }
 

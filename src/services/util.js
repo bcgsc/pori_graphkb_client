@@ -326,7 +326,10 @@ const getGraphData = (search) => {
  * @param {string} rid - identifier for input node.
  * @param {Object} expandable - Expandable flags map.
  */
-const expanded = (expandedEdgeTypes, graphObjects, rid, expandable) => {
+const expanded = (expandedEdgeTypes, graphObjects, rid, expandable, linkCheck = false) => {
+  if (linkCheck && expandable[rid] === true) {
+    return expandable;
+  }
   const newExpandable = Object.assign({}, expandable);
   let targetFlag = false;
   expandedEdgeTypes.forEach((edge) => {

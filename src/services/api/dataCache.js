@@ -370,7 +370,6 @@ class PaginationDataCache {
    * @param {SortModel} sortModel the sorting model (follows ag-grid format)
    */
   requestBlock({ search, startRow, sortModel }) {
-    console.log("TCL: PaginationDataCache -> requestBlock -> search", search);
     let orderBy;
     let orderByDirection;
     if (sortModel && sortModel.length > 0) {

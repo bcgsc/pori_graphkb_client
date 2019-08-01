@@ -381,14 +381,6 @@ class DataTable extends React.Component {
     };
 
     const DefaultRender = ({ value, data }) => {
-      // if (data === undefined) { // takes care of the headers
-      //   return null;
-      // } else if (value === null) {
-      //   return null;
-      // } else if (value){
-      //   return
-      // }
-
       if (data === undefined) {
         return null;
       } if (typeof value === 'object' && value !== null) {

@@ -525,7 +525,6 @@ class GraphComponent extends Component {
       links,
       data,
     } = this.state;
-
     const { schema } = this.props;
     if (expandable[node.getId()] && data[node.getId()]) {
       if (schema.getEdges(data[node.getId()])

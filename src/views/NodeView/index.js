@@ -46,9 +46,7 @@ class NodeView extends React.PureComponent {
     const { schema } = this.context;
     const { history, match: { path } } = this.props;
     const variant = getVariantType(path);
-    console.log('TCL: NodeView -> handleSubmit -> variant', variant);
     if (result && (variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.EDIT)) {
-      console.log('TCL: NodeView -> handleSubmit -> schema.getLink(result)', schema.getLink(result));
       history.push(schema.getLink(result));
     } else if (variant === FORM_VARIANT.DELETE) {
       history.push('/');
@@ -89,7 +87,6 @@ class NodeView extends React.PureComponent {
     let defaultModelName = modelName;
 
     if (modelName) {
-      console.log('TCL: render -> modelName', modelName);
       let model = schema.get(modelName);
       if (!model) {
         const modelNameNoS = modelName.substring(0, modelName.length - 1);
@@ -103,8 +100,6 @@ class NodeView extends React.PureComponent {
       }
       // TODO: Ask Cara if routenames for classModels should be identical so
       // we can avoid having to do these checks.
-      console.log('TCL: render -> model', schema.normalizedModelNames);
-      console.log('TCL: render -> schema.get(modelName)', schema.get(modelName));
       defaultModelName = model.name;
       if (!model || (model.isAbstract && variant === FORM_VARIANT.EDIT)) {
         history.push(
@@ -127,14 +122,12 @@ class NodeView extends React.PureComponent {
 
     // redirect when the user clicks the top left button
     const onTopClick = (record) => {
-      console.log('TCL: onTopClick -> record', record);
       let newPath = path
         .replace(variant,
           variant === FORM_VARIANT.EDIT
             ? FORM_VARIANT.VIEW
             : FORM_VARIANT.EDIT)
         .replace(':rid', rid);
-      console.log('TCL: onTopClick -> newPath', newPath);
 
       if (record['@class'] || modelName) {
         newPath = newPath.replace(':modelName', schema.get(record['@class'] || modelName).routeName.slice(1));

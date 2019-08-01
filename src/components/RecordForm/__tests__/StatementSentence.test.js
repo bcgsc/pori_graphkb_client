@@ -13,6 +13,7 @@ describe('StatementSentence', () => {
       if (item) {
         return item.displayName ? item.displayName : item;
       }
+      return null;
     },
   );
   const schema = new Schema();

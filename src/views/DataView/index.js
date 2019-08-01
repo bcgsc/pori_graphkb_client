@@ -126,7 +126,6 @@ class DataView extends React.Component {
     } else {
       try {
         const fullRecord = await cache.getRecord(data);
-        console.log('TCL: DataView -> handleToggleDetailPanel -> records', fullRecord);
         if (!fullRecord) {
           this.setState({ detailPanelRow: null });
         } else {

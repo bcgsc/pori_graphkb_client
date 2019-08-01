@@ -583,6 +583,7 @@ class GraphComponent extends Component {
    * @param {Array.<string>} [exclusions=[]] - List of edge ID's to be ignored on expansion.
    */
   processData(node, position, depth, prevstate, exclusions = []) {
+    console.log('TCL: processData -> node', node);
     const { expandedEdgeTypes, allProps, data } = this.state;
     let {
       nodes,
@@ -700,28 +701,30 @@ class GraphComponent extends Component {
       }
     });
     // add a check for links here to create links where necessary
-    const linkTypes = ['impliedBy', 'supportedBy'];
+    const linkTypes = ['impliedBy', 'supportedBy', 'relevance', 'appliesTo'];
     linkTypes.forEach((linkType) => {
-      if (node[linkType] && node[linkType] !== 0) {
+      const linkData = Array.isArray(node[linkType]) ? node[linkType] : [node[linkType]];
+      if (linkData[0] && linkData.length !== 0) {
         // stores total number of edges and initializes count for position calculating.
-        const n = node[linkType].length;
+        const n = linkData.length;
 
-        node[linkType].forEach((link, index) => {
+        linkData.forEach((link, index) => {
           const linkRid = link['@rid'];
           // check to see if link is in graph already
           if (!graphObjects[linkRid] && !exclusions.includes(linkRid)) {
             const sourceRid = node['@rid'];
             const targetRid = link['@rid'];
-            const fakeRid = `#${Math.floor(Math.random() * 100)}:${Math.floor(Math.random() * 1000)}`;
+            // unique Rid from source and target nodes. Prevents rendering same link twice
+            const linkerRid = `#${sourceRid.replace(':', '')}:${targetRid.replace(':', '')}`;
 
             if (
               sourceRid
               && targetRid
-              && fakeRid
+              && linkerRid
               && (depth > 0 || graphObjects[targetRid])) {
               // create link object and push it to links list
-              const linkData = { '@rid': fakeRid, '@class': linkType, 'source.name': 'link' };
-              const graphLink = new GraphLink(linkData, sourceRid, targetRid);
+              const graphLinkData = { '@rid': linkerRid, '@class': linkType, 'source.name': 'link' };
+              const graphLink = new GraphLink(graphLinkData, sourceRid, targetRid);
               links.push(graphLink);
               graphObjects[graphLink.getId()] = graphLink;
               this.propsMap.loadLink(graphLink.data);
@@ -747,9 +750,9 @@ class GraphComponent extends Component {
                   exclusions,
                 ));
               }
-              // Updates expanded on target node.
-              if (expandable[targetRid]) {
-                expandable = util.expanded(expandedEdgeTypes, graphObjects, targetRid, expandable);
+              // consider link properties if node is not expandable after edge check
+              if (!expandable[targetRid]) {
+                expandable = util.expanded(linkTypes, graphObjects, targetRid, expandable);
               }
             } else {
               // If there are unrendered edges, set expandable flag.

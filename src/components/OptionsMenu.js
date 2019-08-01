@@ -48,7 +48,7 @@ class OptionsMenu extends React.Component {
 
           if (content) {
             return (
-              <React.Fragment key={label}>
+              <div key={label}>
                 <MenuItem onClick={() => this.handleToggleOptionExpand(label)}>
                   <ListItemText>{label}</ListItemText>
                   <ListItemIcon>
@@ -58,7 +58,7 @@ class OptionsMenu extends React.Component {
                 <Collapse key={label} in={isOpen} timeout="auto" unmountOnExit>
                   {content}
                 </Collapse>
-              </React.Fragment>
+              </div>
             );
           }
           return (

@@ -60,6 +60,8 @@ class DataView extends React.Component {
       filtersEditOpen: false,
       filters: {},
       search,
+      isExportingData: false,
+      totalNumOfRowsSelected: 0,
     };
     this.controllers = [];
   }
@@ -189,13 +191,23 @@ class DataView extends React.Component {
     history.push('/error', { error: { name: err.name, message: err.message } });
   }
 
+  @boundMethod
+  handleExportLoader(boolean) {
+    this.setState({ isExportingData: boolean });
+  }
+
+  @boundMethod
+  handleNewRowSelection(totalRows) {
+    this.setState({ totalNumOfRowsSelected: totalRows });
+  }
+
   /**
    * Called in response to records being requested or loaded
    * Responsible for giving the user information while waiting for things to load
    */
   @boundMethod
   handleLoadingChange() {
-    const { cache, search } = this.state;
+    const { cache, search, isExportingData } = this.state;
     if (!cache) {
       return;
     }
@@ -204,7 +216,7 @@ class DataView extends React.Component {
 
     let statusMessage;
     if (start !== null) {
-      statusMessage = `requesting ${start} - ${end}`;
+      statusMessage = `${isExportingData ? 'Exporting' : 'Requesting'} ${start} - ${end}`;
       if (rowCount !== undefined) {
         statusMessage = `${statusMessage} of ${rowCount} rows`;
       } else {
@@ -261,8 +273,10 @@ class DataView extends React.Component {
           search={search}
           cache={cache}
           rowBuffer={bufferSize}
+          isExportingData={this.handleExportLoader}
           onRecordClicked={this.handleToggleDetailPanel}
           onRecordsSelected={this.handleRecordSelection}
+          onRowSelected={this.handleNewRowSelection}
           optionsMenuAnchor={optionsMenuAnchor}
           optionsMenuOnClose={this.handleToggleOptionsMenu}
         />
@@ -328,7 +342,7 @@ class DataView extends React.Component {
       statusMessage,
       totalRows,
       detailPanelRow,
-      selectedRecords,
+      totalNumOfRowsSelected,
       filtersEditOpen,
       filters,
     } = this.state;
@@ -384,9 +398,9 @@ class DataView extends React.Component {
         <div className="data-view__footer">
           <div className="footer__selected-records">
             <Typography>
-              {selectedRecords.length} Record{selectedRecords.length !== 1 ? 's' : ''} Selected
+              {totalNumOfRowsSelected} Record{totalNumOfRowsSelected !== 1 ? 's' : ''} Selected
             </Typography>
-            {Boolean(selectedRecords.length) && (
+            {Boolean(totalNumOfRowsSelected) && (
               <Tooltip title="click here for graph view">
                 <IconButton onClick={this.handleSwapToGraph}>
                   <TimelineIcon

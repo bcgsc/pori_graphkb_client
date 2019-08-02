@@ -79,8 +79,13 @@ class NodeView extends React.PureComponent {
   render() {
     const {
       match: { params: { rid = null, modelName }, path },
+      match,
       history,
     } = this.props;
+    console.log('TCL: render -> match', match);
+    console.log('TCL: render -> history', history);
+
+
     const { schema, auth } = this.context;
     const variant = getVariantType(path);
 
@@ -88,18 +93,12 @@ class NodeView extends React.PureComponent {
 
     if (modelName) {
       let model = schema.get(modelName);
-      // get classModel name via routename. Routename is plural while model is singular
-      // Ex. route /sources -> classModel source
+
       if (!model) {
-        const modelNameNoS = modelName.substring(0, modelName.length - 1);
-        model = schema.get(modelNameNoS);
+        const routeName = `/${modelName}`;
+        model = schema.getFromRoute(routeName);
       }
-      // Ex. route /anatomicalentities -> classModel anatomicalentity
-      if (!model) {
-        let modelNameNoIES = modelName.substring(0, modelName.length - 3);
-        modelNameNoIES += 'y';
-        model = schema.get(modelNameNoIES);
-      }
+
       defaultModelName = model.name;
       if (!model || (model.isAbstract && variant === FORM_VARIANT.EDIT)) {
         history.push(

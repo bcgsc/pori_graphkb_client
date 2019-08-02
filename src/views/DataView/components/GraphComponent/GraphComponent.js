@@ -540,7 +540,6 @@ class GraphComponent extends Component {
 
   @boundMethod
   async handleExpandNode({ data: node }) {
-    console.log('TCL: GraphComponent -> handleExpandNode -> node', node);
     const { cache } = this.props;
     const { data } = this.state;
     try {
@@ -699,17 +698,16 @@ class GraphComponent extends Component {
         });
       }
     });
-    // add a check for links here to create links where necessary
+    // add a check for link properties here to create links where necessary
     const linkTypes = ['impliedBy', 'supportedBy', 'relevance', 'appliesTo'];
     linkTypes.forEach((linkType) => {
       const linkData = Array.isArray(node[linkType]) ? node[linkType] : [node[linkType]];
       if (linkData[0] && linkData.length !== 0) {
-        // stores total number of edges and initializes count for position calculating.
         const n = linkData.length;
 
         linkData.forEach((link, index) => {
           const linkRid = link['@rid'];
-          // check to see if link is in graph already
+          // check to see if link is in graph already rendered
           if (!graphObjects[linkRid] && !exclusions.includes(linkRid)) {
             const sourceRid = node['@rid'];
             const targetRid = link['@rid'];
@@ -755,12 +753,11 @@ class GraphComponent extends Component {
                   exclusions,
                 ));
               }
-              // consider link properties if node is not expandable after edge check
+              // consider link properties only if node is not expandable after edge check
               if (!expandable[targetRid]) {
                 expandable = util.expanded(linkTypes, graphObjects, targetRid, expandable);
               }
             } else {
-              // If there are unrendered edges, set expandable flag.
               expandable[node['@rid']] = true;
             }
           }
@@ -942,7 +939,6 @@ class GraphComponent extends Component {
    */
   @boundMethod
   handleLinkClick(link) {
-    console.log('TCL: handleLinkClick -> link', link);
     const { handleDetailDrawerOpen } = this.props;
 
     // Update contents of detail drawer if open.

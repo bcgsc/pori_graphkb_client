@@ -121,9 +121,8 @@ class DataView extends React.Component {
   @boundMethod
   async handleToggleDetailPanel(opt = {}) {
     const { data } = opt;
-    console.log('TCL: DataView -> handleToggleDetailPanel -> data', data);
     const { cache } = this.state;
-
+    // no data or clicked link is a link property without a class model
     if (!data || data.isLinkProp) {
       this.setState({ detailPanelRow: null });
     } else {
@@ -159,7 +158,6 @@ class DataView extends React.Component {
     const { cache } = this.state;
     try {
       const fullRecords = await cache.getRecords(selectedRecords);
-      // const formattedRecords = records.map(record => record[0]);
       this.setState({ selectedRecords: fullRecords });
     } catch (err) {
       this.handleError(err);

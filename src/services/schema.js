@@ -15,7 +15,6 @@ const MAX_LABEL_LENGTH = 50;
 class Schema {
   constructor(schema = SCHEMA_DEFN) {
     this.schema = schema.schema;
-    this.normalizedModelNames = schema.normalizedModelNames;
 
     this.has = schema.has.bind(schema);
     this.get = schema.get.bind(schema);
@@ -80,9 +79,7 @@ class Schema {
           let label = '';
           vals.forEach((val) => {
             if (val) {
-              if (val.displayName) {
-                label = `${label}${val.displayName} `;
-              }
+              label = `${label}${val.displayName} `;
             }
           });
           return label;
@@ -102,9 +99,8 @@ class Schema {
       }
     }
     try {
-      // try to get
-      return this.get(obj).getPreview(obj); // get Preview function no longer exists on model
-    } catch (err) {} // eslint-disable-linea
+      return this.getPreview(this.get(obj));
+    } catch (err) {} // eslint-disable-line
     try {
       return obj['@rid'];
     } catch (err) {} // eslint-disable-line
@@ -209,6 +205,7 @@ class Schema {
       parentCls = [parentCls];
     }
 
+
     return !!(this.get(cls)
       && this.get(cls).inherits.some(inherited => parentCls.includes(inherited)));
   }
@@ -233,7 +230,6 @@ class Schema {
     if (modelName && modelName.toLowerCase() !== 'statement') {
       allProps = this.get(modelName).queryProperties;
       if (modelName.toLowerCase().includes('variant')) {
-        // showEdges.push('in_ImpliedBy');
         showByDefault.push('reference1', 'reference2', 'type');
       } else if (modelName.toLowerCase() !== 'source') {
         showByDefault.push('sourceIdVersion', 'version', 'source', 'name', 'sourceId');

@@ -108,20 +108,6 @@ class DataTable extends React.Component {
     });
   };
 
-  selectNodeRowsInTable = (gridApi, selectionTracker) => {
-    const selectedRecords = selectionTracker.selection;
-    const { length } = selectedRecords;
-    gridApi.forEachNode((node) => {
-      const currNodeID = parseInt(node.id, 10);
-      for (let i = 0; i < length; i++) {
-        const currRange = selectedRecords[i];
-        if (currNodeID >= currRange.minVal && currNodeID <= currRange.maxVal) {
-          node.setSelected(true);
-        }
-      }
-    });
-  };
-
   /**
    * Selects all nodes that are in the current selection tracking on the
    * current displayed cache page.

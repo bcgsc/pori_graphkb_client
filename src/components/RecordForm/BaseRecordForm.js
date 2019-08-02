@@ -413,7 +413,6 @@ class BaseRecordForm extends React.Component {
     const edges = isEmbedded || isEdge
       ? []
       : schema.getEdges(value || {});
-
     const isStatement = model && model.name === 'Statement';
 
     const modelChoices = [];

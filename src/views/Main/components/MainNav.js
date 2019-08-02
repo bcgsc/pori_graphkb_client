@@ -112,7 +112,7 @@ class MainNav extends React.PureComponent {
           )}
           {auth.hasWriteAccess() && isOpen && (
             <>
-              <MenuLink label="Source" route="/new/source" inset />
+              <MenuLink label="Source" route="/new/sources" inset />
               <MenuLink label="Ontology" route="/new/ontology" inset />
               <MenuLink label="Variant" route="/new/variant" inset />
               <MenuLink label="Statement" route="/new/statement" inset />

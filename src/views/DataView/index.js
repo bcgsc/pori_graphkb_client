@@ -121,9 +121,10 @@ class DataView extends React.Component {
   @boundMethod
   async handleToggleDetailPanel(opt = {}) {
     const { data } = opt;
+    console.log('TCL: DataView -> handleToggleDetailPanel -> data', data);
     const { cache } = this.state;
 
-    if (!data) {
+    if (!data || data.isLinkProp) {
       this.setState({ detailPanelRow: null });
     } else {
       try {

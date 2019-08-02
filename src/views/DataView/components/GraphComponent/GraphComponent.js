@@ -540,6 +540,7 @@ class GraphComponent extends Component {
 
   @boundMethod
   async handleExpandNode({ data: node }) {
+    console.log('TCL: GraphComponent -> handleExpandNode -> node', node);
     const { cache } = this.props;
     const { data } = this.state;
     try {
@@ -582,7 +583,6 @@ class GraphComponent extends Component {
    * @param {Array.<string>} [exclusions=[]] - List of edge ID's to be ignored on expansion.
    */
   processData(node, position, depth, prevstate, exclusions = []) {
-    console.log('TCL: processData -> node', node);
     const { expandedEdgeTypes, allProps, data } = this.state;
     let {
       nodes,
@@ -714,7 +714,7 @@ class GraphComponent extends Component {
             const sourceRid = node['@rid'];
             const targetRid = link['@rid'];
             // unique Rid from source and target nodes. Prevents rendering same link twice
-            const linkerRid = `#${sourceRid.replace(':', '')}:${targetRid.replace(':', '')}`;
+            const linkerRid = `${sourceRid.replace(/:|#/g, '')}:${targetRid.replace(/:|#/g, '')}`;
 
             if (
               sourceRid
@@ -722,7 +722,13 @@ class GraphComponent extends Component {
               && linkerRid
               && (depth > 0 || graphObjects[targetRid])) {
               // create link object and push it to links list
-              const graphLinkData = { '@rid': linkerRid, '@class': linkType, 'source.name': 'link' };
+              const graphLinkData = {
+                '@rid': linkerRid,
+                '@class': linkType,
+                in: sourceRid,
+                out: targetRid,
+                isLinkProp: true,
+              };
               const graphLink = new GraphLink(graphLinkData, sourceRid, targetRid);
               links.push(graphLink);
               graphObjects[graphLink.getId()] = graphLink;
@@ -936,6 +942,7 @@ class GraphComponent extends Component {
    */
   @boundMethod
   handleLinkClick(link) {
+    console.log('TCL: handleLinkClick -> link', link);
     const { handleDetailDrawerOpen } = this.props;
 
     // Update contents of detail drawer if open.

@@ -79,7 +79,11 @@ class Schema {
           const vals = Array.isArray(record) ? record : [record];
           let label = '';
           vals.forEach((val) => {
-            label = `${label}${val.displayName} `;
+            if (val) {
+              if (val.displayName) {
+                label = `${label}${val.displayName} `;
+              }
+            }
           });
           return label;
         };

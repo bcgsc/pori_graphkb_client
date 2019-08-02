@@ -342,16 +342,13 @@ class DetailDrawer extends Component {
    */
   formatOtherProps(node, isNested) {
     const { schema } = this.context;
-    // const { identifiers } = schema.get(node);
     const identifiers = ['@class', '@rid'];
 
     let properties = Object.keys(node)
       .map(key => ({ name: key, type: util.parseKBType(node[key]) }));
-
     if (schema && schema.getProperties(node)) {
       properties = schema.getProperties(node);
     }
-
     const propsList = Object.values(properties)
       .filter(prop => !identifiers.map(id => id.split('.')[0]).includes(prop.name)
         && !prop.name.startsWith('in_')
@@ -365,7 +362,7 @@ class DetailDrawer extends Component {
    * @param {Object} node - Record being displayed.
    */
   formatRelationships(node) {
-    const { linkOpen, opened } = this.state;
+    const { linkOpen } = this.state;
     const { schema } = this.context;
     // Checks subclasses
     const edges = schema.getEdges(node);
@@ -476,10 +473,10 @@ class DetailDrawer extends Component {
     if (drawerIsOpen) {
       const recordId = node['@rid'].slice(1);
 
-      const identifiers = this.formatIdentifiers(node); // empty
-      const otherProps = this.formatOtherProps(node); // all other props
-      const relationships = !isEdge && this.formatRelationships(node); // related vertices
-      const metadata = this.formatMetadata(node, true); // nodes meta data
+      const identifiers = this.formatIdentifiers(node);
+      const otherProps = this.formatOtherProps(node);
+      const relationships = !isEdge && this.formatRelationships(node);
+      const metadata = this.formatMetadata(node, true);
 
       const metadataIsOpen = opened.includes('metadata');
 
@@ -492,7 +489,6 @@ class DetailDrawer extends Component {
         preview = 'Invalid variant';
         errorMessage = e.message;
       }
-
       content = (
         <div className="detail-drawer__content">
           <div className="detail-drawer__heading">

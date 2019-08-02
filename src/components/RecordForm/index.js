@@ -137,6 +137,7 @@ class RecordForm extends React.PureComponent {
     const { '@class': defaultModel } = value;
 
     const model = schema.get(modelName || defaultModel || modelName || 'V');
+
     if (variant !== FORM_VARIANT.NEW && variant !== FORM_VARIANT.SEARCH) {
       // If not a new form then should have existing content
       this.setState({ actionInProgress: true });

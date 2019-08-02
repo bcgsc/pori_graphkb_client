@@ -183,7 +183,7 @@ const FormField = (props) => {
         } else {
           if (linkedClass.name === 'Vocabulary') {
             autoProps.defaultOptionsHandler = () => api.get(
-              `${linkedClass.routeName}?source.name=bcgsc&neighbors=1`,
+              `${linkedClass.routeName}?source[name]=bcgsc&neighbors=1`,
               { forceListReturn: true },
             );
           }

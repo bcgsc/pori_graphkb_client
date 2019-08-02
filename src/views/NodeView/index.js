@@ -88,18 +88,18 @@ class NodeView extends React.PureComponent {
 
     if (modelName) {
       let model = schema.get(modelName);
+      // get classModel name via routename. Routename is plural while model is singular
+      // Ex. route /sources -> classModel source
       if (!model) {
         const modelNameNoS = modelName.substring(0, modelName.length - 1);
         model = schema.get(modelNameNoS);
       }
-
+      // Ex. route /anatomicalentities -> classModel anatomicalentity
       if (!model) {
         let modelNameNoIES = modelName.substring(0, modelName.length - 3);
         modelNameNoIES += 'y';
         model = schema.get(modelNameNoIES);
       }
-      // TODO: Ask Cara if routenames for classModels should be identical so
-      // we can avoid having to do these checks.
       defaultModelName = model.name;
       if (!model || (model.isAbstract && variant === FORM_VARIANT.EDIT)) {
         history.push(
@@ -128,7 +128,6 @@ class NodeView extends React.PureComponent {
             ? FORM_VARIANT.VIEW
             : FORM_VARIANT.EDIT)
         .replace(':rid', rid);
-
       if (record['@class'] || modelName) {
         newPath = newPath.replace(':modelName', schema.get(record['@class'] || modelName).routeName.slice(1));
       }

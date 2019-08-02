@@ -101,15 +101,15 @@ class Schema {
         }
         return label;
       }
-    }
-    if (obj['@class']) {
-      const label = this.getPreview(this.get(obj));
-      if (label) {
-        return label;
+      if (obj['@class']) {
+        const label = this.getPreview(this.get(obj));
+        if (label) {
+          return label;
+        }
       }
-    }
-    if (obj['@rid']) {
-      return obj['@rid'];
+      if (obj['@rid']) {
+        return obj['@rid'];
+      }
     }
     return obj;
   }

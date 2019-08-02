@@ -89,12 +89,9 @@ class DetailDrawer extends Component {
 
     const { properties } = schema.get(node);
     const identifiers = ['@class', '@rid'];
-
-    // reducer builds an array of properties which is then formatted. Array of
-    // properties are limited to those that do not exist on metadeta fields
-    return this.formatProps(node, identifiers.reduce((array, id) => { // should return properties
+    return this.formatProps(node, identifiers.reduce((array, id) => {
       const [key, nestedKey] = id.split('.');
-      if (!schema.getMetadata().find(p => (p.name === key))) { // returns false everytime currently
+      if (!schema.getMetadata().find(p => (p.name === key))) {
         if (properties[key]) {
           if (nestedKey) {
             array.push({ ...properties[key], previewWith: nestedKey });
@@ -106,6 +103,7 @@ class DetailDrawer extends Component {
           array.push({ type: 'string', name: 'preview' });
         }
       }
+
       return array;
     }, []), isNested);
   }

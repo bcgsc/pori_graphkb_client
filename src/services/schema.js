@@ -15,7 +15,6 @@ const MAX_LABEL_LENGTH = 50;
 class Schema {
   constructor(schema = SCHEMA_DEFN) {
     this.schema = schema.schema;
-
     this.has = schema.has.bind(schema);
     this.get = schema.get.bind(schema);
     this.getFromRoute = schema.getFromRoute.bind(schema);

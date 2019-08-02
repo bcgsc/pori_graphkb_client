@@ -24,7 +24,7 @@ class Schema {
    * Get a string representation of a record
    */
   @boundMethod
-  getLabel(obj, truncate = true) { // this is were value is obtained for cols
+  getLabel(obj, truncate = true) {
     let label;
     if (obj) {
       if (obj.displayNameTemplate) {
@@ -35,9 +35,6 @@ class Schema {
         return label;
       } if (obj.displayName || obj.name) {
         label = obj.displayName || obj.name;
-        if (label.length > MAX_LABEL_LENGTH - 3 && truncate) {
-          label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
-        }
         if (obj['@rid']) {
           label = `${label} (${obj['@rid']})`;
         }
@@ -93,16 +90,27 @@ class Schema {
         return label;
       }
 
-      if (obj.displayName) {
-        return obj.displayName;
+      if (obj.displayName || obj.name) {
+        let label;
+        label = obj.displayName || obj.name;
+        if (label.length > MAX_LABEL_LENGTH) {
+          label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
+        }
+        if (obj['@rid']) {
+          label = `${label} (${obj['@rid']})`;
+        }
+        return label;
       }
     }
-    try {
-      return this.getPreview(this.get(obj));
-    } catch (err) {} // eslint-disable-line
-    try {
+    if (obj['@class']) {
+      const label = this.getPreview(this.get(obj));
+      if (label) {
+        return label;
+      }
+    }
+    if (obj['@rid']) {
       return obj['@rid'];
-    } catch (err) {} // eslint-disable-line
+    }
     return obj;
   }
 
@@ -309,7 +317,6 @@ class Schema {
         field: 'preview',
         sortable: false,
         valueGetter: ({ data }) => this.getLabel(data),
-        width: 300,
       },
     ];
 

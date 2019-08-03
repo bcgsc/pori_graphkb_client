@@ -33,9 +33,11 @@ const StatementSentence = (props) => {
         </>
       );
     });
-
     return words;
   };
+
+  const classModel = schema.get(content['@class']);
+  let { properties: { displayNameTemplate: { default: displayNameTemplate } } } = classModel;
 
   const appliesTo = (Array.isArray(content.appliesTo) ? content.appliesTo : [content.appliesTo] || [])
     .map(apply => schema.getPreview(apply)).join(', ');
@@ -54,14 +56,20 @@ const StatementSentence = (props) => {
   }
   conditions = conditions.join(', ');
 
+  let givenStatement = ' ';
+  let appliesStatement = ' ';
+  [givenStatement, displayNameTemplate] = displayNameTemplate.split(' {impliedBy} ');
+  [, displayNameTemplate] = displayNameTemplate.split('{relevance}');
+  [appliesStatement, displayNameTemplate] = displayNameTemplate.split('{appliesTo} ');
+
   return (
     <Typography variant="body1" className="quote" color="textSecondary">
-      Given
-      {PrimaryText(conditions) || ' [CONDITIONS]'},
-      {PrimaryText(relevance) || ' [RELEVANCE]'}&nbsp;
-      applies to
-      {PrimaryText(appliesTo) || ' [TARGET]'}&nbsp;
-      ({PrimaryText(supportedBy) || ' [EVIDENCE]'} )
+      {givenStatement} &nbsp;
+      {PrimaryText(conditions) || ' [CONDITIONS] '},
+      {PrimaryText(relevance) || ' [RELEVANCE] '}
+      {appliesStatement} &nbsp;
+      {PrimaryText(appliesTo) || ' [TARGET] '}
+      {PrimaryText(supportedBy) || ' [EVIDENCE] '}
     </Typography>
   );
 };

@@ -104,7 +104,15 @@ const defaultSuggestionHandler = (model, opt = {}) => {
 
     const { excludeClasses = [], ...rest } = opt;
 
-    const ontologyWhere = [...terms.map(term => ({ attr: 'name', value: term, operator }))];
+    const ontologyWhere = [{
+      operator: 'OR',
+      comparisons: terms.map(term => ({ attr: 'name', value: term, operator })),
+    }];
+    if (model.properties.sourceId) {
+      ontologyWhere[0].comparisons.push(
+        ...terms.map(term => ({ attr: 'sourceId', value: term, operator })),
+      );
+    }
 
     if (excludeClasses.length) {
       ontologyWhere.push(...excludeClasses.map(
@@ -112,7 +120,25 @@ const defaultSuggestionHandler = (model, opt = {}) => {
       ));
     }
 
-    const where = ontologyWhere;
+    const variantWhere = [{
+      operator: 'AND',
+      comparisons: terms.map(value => ({
+        operator: 'OR',
+        comparisons: [
+          { attr: 'reference1.name', value, operator },
+          { attr: 'reference1.sourceId', value },
+          { attr: 'reference2.name', value, operator },
+          { attr: 'reference2.sourceId', value },
+          { attr: 'type.name', value, operator },
+          { attr: 'type.sourceId', value },
+        ],
+      })),
+    }];
+
+    let where = ontologyWhere;
+    if (model.inherits.includes('Variant') || model.name === 'Variant') {
+      where = variantWhere;
+    }
 
     const callOptions = { forceListReturn: true, ...rest };
     let call;
@@ -124,6 +150,9 @@ const defaultSuggestionHandler = (model, opt = {}) => {
         limit: MAX_SUGGESTIONS,
         neighbors: 1,
       };
+      if (model.inherits.includes('Ontology') || model.name === 'Ontology') {
+        body.orderBy = ['name', 'sourceId'];
+      }
       call = post(`${model.routeName}/search`, body, callOptions);
     }
     return call;

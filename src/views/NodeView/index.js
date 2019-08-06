@@ -86,16 +86,9 @@ class NodeView extends React.PureComponent {
     const variant = getVariantType(path);
 
     let defaultModelName = modelName;
-    console.log('TCL: render -> modelName', modelName);
 
     if (modelName) {
-      console.log('TCL: render -> modelName', modelName);
       const model = schema.get(modelName);
-
-      // if (!model) {
-      //   const routeName = `/${modelName}`;
-      //   model = schema.getFromRoute(routeName);
-      // }
 
       defaultModelName = model.name;
       if (!model || (model.isAbstract && variant === FORM_VARIANT.EDIT)) {

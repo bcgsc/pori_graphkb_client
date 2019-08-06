@@ -54,7 +54,6 @@ class Schema {
   getLink(obj) {
     if (obj && obj['@rid']) {
       const { name } = this.get(obj) || this.get('V');
-      console.log('TCL: Schema -> getLink -> name ', name);
       return `/view/${name}/${obj['@rid'].slice(1)}`;
     }
     return '';
@@ -87,7 +86,12 @@ class Schema {
         const appliesTo = statementBuilder(obj.appliesTo);
         const supportedBy = statementBuilder(obj.supportedBy);
 
-        const label = `Given ${implyBy}, ${relevance} applies to ${appliesTo} (${supportedBy})`;
+        const label = obj.displayNameTemplate
+          .replace('{impliedBy}', implyBy)
+          .replace('{relevance}', relevance)
+          .replace('{appliesTo}', appliesTo)
+          .replace('{supportedBy}', supportedBy);
+
         return label;
       }
 

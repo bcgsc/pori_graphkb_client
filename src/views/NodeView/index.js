@@ -110,7 +110,7 @@ class NodeView extends React.PureComponent {
       defaultModelName = 'E';
     }
 
-    // redirect when the user clicks the top left button
+    // redirect when the user clicks the top right button
     const onTopClick = (record) => {
       let newPath = path
         .replace(variant,

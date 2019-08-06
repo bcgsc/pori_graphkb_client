@@ -53,8 +53,8 @@ class Schema {
   @boundMethod
   getLink(obj) {
     if (obj && obj['@rid']) {
-      const { routeName } = this.get(obj) || this.get('V');
-      return `/view${routeName}/${obj['@rid'].slice(1)}`;
+      const { name } = this.get(obj) || this.get('V');
+      return `/view/${name}/${obj['@rid'].slice(1)}`;
     }
     return '';
   }

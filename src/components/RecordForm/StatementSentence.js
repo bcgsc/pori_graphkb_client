@@ -33,11 +33,9 @@ const StatementSentence = (props) => {
         </>
       );
     });
+
     return words;
   };
-
-  const classModel = schema.get('Statement');
-  let { properties: { displayNameTemplate: { default: displayNameTemplate } } } = classModel;
 
   const appliesTo = (Array.isArray(content.appliesTo) ? content.appliesTo : [content.appliesTo] || [])
     .map(apply => schema.getPreview(apply)).join(', ');
@@ -56,21 +54,43 @@ const StatementSentence = (props) => {
   }
   conditions = conditions.join(', ');
 
-  let givenStatement = '';
-  let appliesStatement = '';
-  // remove placeholder text with content to form StatementSentence
-  [givenStatement, displayNameTemplate] = displayNameTemplate.split(' {impliedBy} ');
-  [, displayNameTemplate] = displayNameTemplate.split('{relevance}');
-  [appliesStatement, displayNameTemplate] = displayNameTemplate.split('{appliesTo} ');
+  const propValueMap = {
+    impliedBy: {
+      value: conditions,
+      default: ' [CONDITIONS] ',
+    },
+    appliesTo: {
+      value: appliesTo,
+      default: ' [TARGET] ',
+    },
+    relevance: {
+      value: relevance,
+      default: ' [RELEVANCE] ',
+    },
+    supportedBy: {
+      value: supportedBy,
+      default: ' [EVIDENCE] ',
+    },
+  };
+
+  const classModel = schema.get('Statement');
+  const { properties: { displayNameTemplate: { default: displayNameTemplate } } } = classModel;
+  const statementProp = Object.keys(propValueMap);
+  const splitTemplate = displayNameTemplate.split(/{+(impliedBy|relevance|appliesTo|supportedBy)}+/ig);
+
+  const statementSentence = splitTemplate.map((text) => {
+    let result = `${text}`;
+    statementProp.forEach((prop) => {
+      if (text === prop) {
+        result = PrimaryText(propValueMap[prop].value) || propValueMap[prop].default;
+      }
+    });
+    return result;
+  });
 
   return (
     <Typography variant="body1" className="quote" color="textSecondary">
-      {givenStatement} &nbsp;
-      {PrimaryText(conditions) || ' [CONDITIONS] '},
-      {PrimaryText(relevance) || ' [RELEVANCE] '}
-      {appliesStatement} &nbsp;
-      {PrimaryText(appliesTo) || ' [TARGET] '}
-      {PrimaryText(supportedBy) || ' [EVIDENCE] '}
+      {statementSentence}
     </Typography>
   );
 };

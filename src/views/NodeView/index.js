@@ -119,7 +119,7 @@ class NodeView extends React.PureComponent {
             : FORM_VARIANT.EDIT)
         .replace(':rid', rid);
       if (record['@class'] || modelName) {
-        newPath = newPath.replace(':modelName', schema.get(record['@class'] || modelName).routeName.slice(1));
+        newPath = newPath.replace(':modelName', schema.get(record['@class'] || modelName).name);
       }
       history.push(newPath);
     };

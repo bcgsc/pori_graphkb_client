@@ -69,7 +69,7 @@ describe('Schema wrapper class tests', () => {
       };
 
       const statementLabel = testSchema.getLabel(mockStatementRecord, false);
-      expect(statementLabel).toEqual('Given Low blood sugar , Mood Swings  applies to hungertitis  (A reputable source )');
+      expect(statementLabel).toEqual('Given Low blood sugar  Mood Swings  applies to hungertitis  (A reputable source )');
     });
 
     it('returns displayname label', () => {

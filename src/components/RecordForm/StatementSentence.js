@@ -36,7 +36,7 @@ const StatementSentence = (props) => {
     return words;
   };
 
-  const classModel = schema.get(content['@class']);
+  const classModel = schema.get('Statement');
   let { properties: { displayNameTemplate: { default: displayNameTemplate } } } = classModel;
 
   const appliesTo = (Array.isArray(content.appliesTo) ? content.appliesTo : [content.appliesTo] || [])
@@ -56,8 +56,9 @@ const StatementSentence = (props) => {
   }
   conditions = conditions.join(', ');
 
-  let givenStatement = ' ';
-  let appliesStatement = ' ';
+  let givenStatement = '';
+  let appliesStatement = '';
+  // remove placeholder text with content to form StatementSentence
   [givenStatement, displayNameTemplate] = displayNameTemplate.split(' {impliedBy} ');
   [, displayNameTemplate] = displayNameTemplate.split('{relevance}');
   [appliesStatement, displayNameTemplate] = displayNameTemplate.split('{appliesTo} ');

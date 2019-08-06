@@ -150,9 +150,6 @@ const defaultSuggestionHandler = (model, opt = {}) => {
         limit: MAX_SUGGESTIONS,
         neighbors: 1,
       };
-      if (model.inherits.includes('Ontology') || model.name === 'Ontology') {
-        body.orderBy = ['name', 'sourceId'];
-      }
       call = post(`${model.routeName}/search`, body, callOptions);
     }
     return call;

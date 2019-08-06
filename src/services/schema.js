@@ -54,6 +54,7 @@ class Schema {
   getLink(obj) {
     if (obj && obj['@rid']) {
       const { name } = this.get(obj) || this.get('V');
+      console.log('TCL: Schema -> getLink -> name ', name);
       return `/view/${name}/${obj['@rid'].slice(1)}`;
     }
     return '';

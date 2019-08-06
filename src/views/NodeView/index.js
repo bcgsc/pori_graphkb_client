@@ -81,7 +81,6 @@ class NodeView extends React.PureComponent {
       match: { params: { rid = null, modelName }, path },
       history,
     } = this.props;
-
     const { schema, auth } = this.context;
     const variant = getVariantType(path);
 
@@ -89,7 +88,6 @@ class NodeView extends React.PureComponent {
 
     if (modelName) {
       const model = schema.get(modelName);
-
       defaultModelName = model.name;
       if (!model || (model.isAbstract && variant === FORM_VARIANT.EDIT)) {
         history.push(

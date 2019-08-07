@@ -87,7 +87,11 @@ class NodeView extends React.PureComponent {
     let defaultModelName = modelName;
 
     if (modelName) {
-      const model = schema.get(modelName);
+      let model = schema.get(modelName);
+      if (!model) {
+        const routeName = `/${modelName}`;
+        model = schema.getFromRoute(routeName);
+      }
       defaultModelName = model.name;
       if (!model || (model.isAbstract && variant === FORM_VARIANT.EDIT)) {
         history.push(
@@ -117,7 +121,7 @@ class NodeView extends React.PureComponent {
             : FORM_VARIANT.EDIT)
         .replace(':rid', rid);
       if (record['@class'] || modelName) {
-        newPath = newPath.replace(':modelName', schema.get(record['@class'] || modelName).name);
+        newPath = newPath.replace(':modelName', schema.get(record['@class'] || modelName).routeName.slice(1));
       }
       history.push(newPath);
     };

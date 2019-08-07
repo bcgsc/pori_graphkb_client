@@ -94,7 +94,8 @@ class DetailDrawer extends Component {
       if (!schema.getMetadata().find(p => p.name === key)) {
         if (properties[key]) {
           if (nestedKey) {
-            array.push({ ...properties[key], previewWith: nestedKey });
+            array.push({ ...properties[key] });
+            // array.push({ ...properties[key], previewWith: nestedKey });
           } else {
             array.push(properties[key]);
           }
@@ -178,14 +179,12 @@ class DetailDrawer extends Component {
     const { opened } = this.state;
     const identifiers = ['displayName', '@rid', 'sourceId'];
     return properties.map((prop) => {
-      const { type, previewWith } = prop;
+      const { type } = prop;
       let { name } = prop;
-      let value = name === 'preview' ? schema.getPreview(node) : node[name];
-      let nestedValue = null;
-      if (previewWith && value) {
-        nestedValue = value[previewWith];
-      }
+      let value = node[name];
+      const nestedValue = null;
       if (!value) return null;
+      // figure out how to do a preview of links and expand links on click
       if (type === 'embeddedset' || type === 'linkset') {
         if (value.length === 0) return null;
         return (
@@ -234,6 +233,8 @@ class DetailDrawer extends Component {
       if ((type === 'link' || type === 'embedded') && value['@class']) {
         let previewStr;
         let listItemProps = {};
+        console.log('TCL: DetailDrawer -> formatProps -> isNested', isNested, prop);
+        // TODO: Figure out what the heck is going on with nested Values
         if (isNested) {
           previewStr = schema.getPreview(value);
         } else {
@@ -241,9 +242,14 @@ class DetailDrawer extends Component {
           previewStr = nestedValue && (DATE_KEYS.includes(name)
             ? (new Date(nestedValue)).toLocaleString()
             : util.formatStr(nestedValue));
+          if (previewStr === null) {
+            previewStr = value.displayName;
+          }
           if (type === 'embedded') {
             previewStr = value['@class'];
           }
+          console.log('TCL: DetailDrawer -> formatProps -> previewStr', previewStr);
+          console.log('TCL: DetailDrawer -> formatProps -> nestedValue', nestedValue);
         }
         return (
           <React.Fragment key={name}>
@@ -351,6 +357,9 @@ class DetailDrawer extends Component {
       .filter(prop => !identifiers.map(id => id.split('.')[0]).includes(prop.name)
         && !prop.name.startsWith('in_')
         && !prop.name.startsWith('out_'));
+    console.log('TCL: DetailDrawer -> formatOtherProps -> properties', properties);
+
+    console.log('TCL: DetailDrawer -> formatOtherProps -> propsList', propsList);
 
     return this.formatProps(node, propsList, isNested);
   }
@@ -416,6 +425,7 @@ class DetailDrawer extends Component {
                     Linked Record
                   </ListSubheader>
                   {this.formatIdentifiers(isIn ? edge.out : edge.in, true)}
+                  {this.formatOtherProps(isIn ? edge.out : edge.in, true)}
                   {this.formatMetadata(isIn ? edge.out : edge.in, true)}
                 </List>
                 <Divider />

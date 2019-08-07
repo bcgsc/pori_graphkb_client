@@ -209,8 +209,8 @@ const getQueryFromSearch = ({ schema, search, count }) => {
       neighbors: count ? 0 : Math.max(neighbors, TABLE_DEFAULT_NEIGHBORS),
     };
     if (keyword) {
-      // keyword search is not associated with a particular model
-      routeName = '/search';
+      // keyword search is only associated with statements
+      routeName = '/statements/search';
       queryParams.keyword = keyword;
     } else {
       queryParams = Object.assign({}, params, queryParams);

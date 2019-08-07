@@ -60,7 +60,7 @@ describe('api methods test', () => {
         schema,
       });
       expect(result.payload).toBe(null);
-      expect(result.routeName).toEqual('/search');
+      expect(result.routeName).toEqual('/statements/search');
       expect(result.queryParams.keyword).toEqual('kras');
     });
     test('complex search', () => {

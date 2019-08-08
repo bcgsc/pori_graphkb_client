@@ -95,7 +95,6 @@ class DetailDrawer extends Component {
         if (properties[key]) {
           if (nestedKey) {
             array.push({ ...properties[key] });
-            // array.push({ ...properties[key], previewWith: nestedKey });
           } else {
             array.push(properties[key]);
           }
@@ -202,10 +201,10 @@ class DetailDrawer extends Component {
                     <div className="nested-spacer" />
                     <ListItemText className="detail-li-text">
                       <div className="detail-identifiers">
-                        <Typography variant="subtitle1">
+                        <Typography variant="subtitle1" color={opened.includes(item) ? 'secondary' : 'textSecondary'}>
                           {item['@class']}
                         </Typography>
-                        <Typography>
+                        <Typography color={opened.includes(item) ? 'secondary' : 'textSecondary'}>
                           {schema.getPreview(item)}
                         </Typography>
                       </div>
@@ -217,8 +216,8 @@ class DetailDrawer extends Component {
                       <List disablePadding dense>
                         <ListItem>
                           <ListItemText>
-                            <div className="detail-identifiers-nested-prop">
-                              <Typography variant="subtitle2">
+                            <div className="detail-identifiers">
+                              <Typography variant="subtitle2" className="detail-identifiers-nested">
                                 {propName}
                               </Typography>
                               <Typography>
@@ -370,9 +369,6 @@ class DetailDrawer extends Component {
       .filter(prop => !identifiers.map(id => id.split('.')[0]).includes(prop.name)
         && !prop.name.startsWith('in_')
         && !prop.name.startsWith('out_'));
-    console.log('TCL: DetailDrawer -> formatOtherProps -> properties', properties);
-
-    console.log('TCL: DetailDrawer -> formatOtherProps -> propsList', propsList);
 
     return this.formatProps(node, propsList, isNested);
   }

@@ -184,23 +184,21 @@ class DetailDrawer extends Component {
       let value = node[name];
       const nestedValue = null;
       if (!value) return null;
-      // figure out how to do a preview of links and expand links on click
       if (type === 'embeddedset' || type === 'linkset') {
         if (value.length === 0) return null;
         return (
           <React.Fragment key={name}>
-            <ListItem button onClick={() => this.handleExpand(name)} dense>
+            <ListItem dense>
               <ListItemText className="detail-li-text">
                 <Typography variant="subtitle1">
                   {util.antiCamelCase(name)}
                 </Typography>
               </ListItemText>
-              {!opened.includes(name) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
             </ListItem>
-            <Collapse in={!!opened.includes(name)} unmountOnExit>
-              <List disablePadding dense>
-                {type === 'linkset' && value.map(item => (
-                  <ListItem key={item['@rid']} dense>
+            <List disablePadding dense>
+              {type === 'linkset' && value.map(item => (
+                <>
+                  <ListItem key={item['@rid']} button onClick={() => this.handleExpand(item)} dense>
                     <div className="nested-spacer" />
                     <ListItemText className="detail-li-text">
                       <div className="detail-identifiers">
@@ -212,20 +210,39 @@ class DetailDrawer extends Component {
                         </Typography>
                       </div>
                     </ListItemText>
+                    {!opened.includes(item) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
                   </ListItem>
-                ))}
-                {type === 'embeddedset' && value.map(item => (
-                  <ListItem key={item} dense>
-                    <div className="nested-spacer" />
-                    <ListItemText
-                      inset
-                      className="detail-li-text"
-                      primary={util.formatStr(item)}
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            </Collapse>
+                  <Collapse in={!!opened.includes(item)} unmountOnExit>
+                    {identifiers.map(propName => (
+                      <List disablePadding dense>
+                        <ListItem>
+                          <ListItemText>
+                            <div className="detail-identifiers-nested-prop">
+                              <Typography variant="subtitle2">
+                                {propName}
+                              </Typography>
+                              <Typography>
+                                {item[propName]}
+                              </Typography>
+                            </div>
+                          </ListItemText>
+                        </ListItem>
+                      </List>
+                    ))}
+                  </Collapse>
+                </>
+              ))}
+              { type === 'embeddedset' && value.map(item => (
+                <ListItem key={item} dense>
+                  <div className="nested-spacer" />
+                  <ListItemText
+                    inset
+                    className="detail-li-text"
+                    primary={util.formatStr(item)}
+                  />
+                </ListItem>
+              )) }
+            </List>
             <Divider />
           </React.Fragment>
         );
@@ -233,8 +250,6 @@ class DetailDrawer extends Component {
       if ((type === 'link' || type === 'embedded') && value['@class']) {
         let previewStr;
         let listItemProps = {};
-        console.log('TCL: DetailDrawer -> formatProps -> isNested', isNested, prop);
-        // TODO: Figure out what the heck is going on with nested Values
         if (isNested) {
           previewStr = schema.getPreview(value);
         } else {
@@ -248,8 +263,6 @@ class DetailDrawer extends Component {
           if (type === 'embedded') {
             previewStr = value['@class'];
           }
-          console.log('TCL: DetailDrawer -> formatProps -> previewStr', previewStr);
-          console.log('TCL: DetailDrawer -> formatProps -> nestedValue', nestedValue);
         }
         return (
           <React.Fragment key={name}>

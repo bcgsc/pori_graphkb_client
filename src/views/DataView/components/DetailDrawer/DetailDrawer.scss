@@ -85,6 +85,26 @@
     }
   }
 
+  .detail-identifiers-nested-prop {
+    display: grid;
+    grid-template-columns: 144px 8px auto;
+
+    @media (min-width: $breakpoint-sm) {
+      grid-template-columns: 164px 24px auto;
+    }
+
+    h6 {
+      margin-left: 32px;
+    }
+
+    > *:nth-child(even) {
+      grid-column-start: 3;
+      margin: auto 0;
+    }
+  }
+
+
+
   .detail-li-text {
     padding: 0;
   }

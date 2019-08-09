@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import * as qs from 'qs';
 
 import { boundMethod } from 'autobind-decorator';
-import NodeForm from '../../components/RecordForm';
+import RecordForm from '../../components/RecordForm';
 import { KBContext } from '../../components/KBContext';
 import { FORM_VARIANT } from '../../components/RecordForm/util';
 import { cleanLinkedRecords } from '../../components/util';
@@ -127,7 +127,7 @@ class NodeView extends React.PureComponent {
     };
 
     return (
-      <NodeForm
+      <RecordForm
         variant={variant}
         modelName={defaultModelName}
         rid={rid}

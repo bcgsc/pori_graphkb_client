@@ -37,11 +37,9 @@ const StatementSentence = (props) => {
     return words;
   };
 
-  const appliesTo = (Array.isArray(content.appliesTo) ? content.appliesTo : [content.appliesTo])
-    .map(apply => schema.getPreview(apply)).join(', ');
+  const appliesTo = schema.getPreview(content.appliesTo);
 
-  const relevance = (Array.isArray(content.relevance) ? content.relevance : [content.relevance])
-    .map(rel => schema.getPreview(rel)).join(', ');
+  const relevance = schema.getPreview(content.relevance);
 
   const supportedBy = (content.supportedBy || [])
     .map(support => schema.getPreview(support)).join(', ');

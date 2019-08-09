@@ -7,6 +7,8 @@ const StatementSentence = (props) => {
     schema,
     content,
   } = props;
+  console.log('TCL: StatementSentence -> content', content);
+
 
   const PrimaryText = (text) => {
     if (!text) {

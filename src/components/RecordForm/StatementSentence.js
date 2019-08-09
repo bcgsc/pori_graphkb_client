@@ -37,10 +37,10 @@ const StatementSentence = (props) => {
     return words;
   };
 
-  const appliesTo = (Array.isArray(content.appliesTo) ? content.appliesTo : [content.appliesTo] || [])
+  const appliesTo = (Array.isArray(content.appliesTo) ? content.appliesTo : [content.appliesTo])
     .map(apply => schema.getPreview(apply)).join(', ');
 
-  const relevance = (Array.isArray(content.relevance) ? content.relevance : [content.relevance] || [])
+  const relevance = (Array.isArray(content.relevance) ? content.relevance : [content.relevance])
     .map(rel => schema.getPreview(rel)).join(', ');
 
   const supportedBy = (content.supportedBy || [])

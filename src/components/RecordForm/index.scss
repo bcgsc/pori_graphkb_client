@@ -65,17 +65,33 @@
     margin-top: 20px;
   }
 
-  &__header,
+  &__header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    .header-action-buttons{
+      margin-top: 10px;
+      float: right;
+      display: flex;
+      flex-direction: row;
+      margin: 10px;
+
+      button{
+        margin: 10px;
+      }
+
+    }
+  }
+
   &__action-buttons {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-  }
-
-  &__action-buttons {
-    margin-top: 20px;
     align-items: center;
   }
+
 }
 
 .embedded-record-form {

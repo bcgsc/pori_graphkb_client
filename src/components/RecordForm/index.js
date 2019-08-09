@@ -5,6 +5,7 @@ import {
 } from '@material-ui/core';
 import { boundMethod } from 'autobind-decorator';
 import EditIcon from '@material-ui/icons/Edit';
+import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 
@@ -15,6 +16,7 @@ import './index.scss';
 import BaseNodeForm from './BaseRecordForm';
 import { FORM_VARIANT } from './util';
 import { withKB } from '../KBContext';
+import StatementReviewDialog from './StatementReviewDialog/index';
 
 
 const cleanPayload = (payload) => {
@@ -89,6 +91,7 @@ class RecordForm extends React.PureComponent {
 
     this.state = {
       actionInProgress: false,
+      reviewDialogOpen: false,
       ...defaultContent,
     };
     this.controllers = [];
@@ -266,7 +269,8 @@ class RecordForm extends React.PureComponent {
     const {
       title, variant, onTopClick, modelName, ...rest
     } = this.props;
-    const { actionInProgress, ...content } = this.state;
+
+    const { actionInProgress, reviewDialogOpen, ...content } = this.state;
 
     const actions = {
       [FORM_VARIANT.EDIT]: this.handleEditAction,
@@ -277,18 +281,30 @@ class RecordForm extends React.PureComponent {
     return (
       <Paper className="record-form__wrapper" elevation={4}>
         <div className="record-form__header">
-          <Typography variant="h1">{title}</Typography>
-          {variant === FORM_VARIANT.VIEW && onTopClick && (
+          <Typography variant="h1" className="title">{title}</Typography>
+          <div className="header-action-buttons">
+            {variant === FORM_VARIANT.VIEW && onTopClick && (
             <Button
               onClick={() => onTopClick(content)}
               variant="outlined"
               disabled={actionInProgress}
+              className="float-right"
             >
               Edit
               <EditIcon />
             </Button>
-          )}
-          {variant === FORM_VARIANT.EDIT && onTopClick && (
+            )}
+            {(content['@class'] === 'Statement' && variant === FORM_VARIANT.EDIT && (
+            <Button
+              onClick={() => this.setState({ reviewDialogOpen: true })}
+              variant="outlined"
+              disabled={actionInProgress}
+            >
+                Add Review
+              <LocalLibraryIcon />
+            </Button>
+            ))}
+            {variant === FORM_VARIANT.EDIT && onTopClick && (
             <ActionButton
               onClick={() => onTopClick(content)}
               variant="outlined"
@@ -297,7 +313,12 @@ class RecordForm extends React.PureComponent {
             >
               View
             </ActionButton>
-          )}
+            )}
+          </div>
+          <StatementReviewDialog
+            isOpen={reviewDialogOpen}
+            onClose={() => this.setState({ reviewDialogOpen: false })}
+          />
         </div>
         <BaseNodeForm
           {...rest}

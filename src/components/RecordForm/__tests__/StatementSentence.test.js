@@ -56,7 +56,7 @@ describe('StatementSentence', () => {
         schema={schema}
         content={{
           impliedBy: [{ displayName: 'KRAS mutation' }],
-          appliesTo: ['drugName'],
+          appliesTo: 'drugName',
           supportedBy: [{ displayName: 'PMID:1234' }],
           relevance: 'sensitivity',
         }}

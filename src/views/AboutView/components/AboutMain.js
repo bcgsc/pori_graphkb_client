@@ -42,7 +42,7 @@ class AboutMain extends Component {
 
     const stats = await call.request();
 
-    if (stats && stats !== null) {
+    if (stats) {
       this.setState({
         stats: Array.from(
           Object.keys(stats),

@@ -5,14 +5,11 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  DialogActions,
-  IconButton,
   Typography,
   TextField,
   ListItemIcon,
   ListItemText,
 } from '@material-ui/core';
-import CancelIcon from '@material-ui/icons/Cancel';
 
 import SendIcon from '@material-ui/icons/Send';
 import ActionButton from '../../ActionButton/index';
@@ -52,7 +49,6 @@ class StatementReviewDialog extends Component {
   @boundMethod
   handleMenuClick(opt) {
     this.setState({ currReviewStatus: opt, anchorEl: null });
-    console.log(opt);
   }
 
   renderReviewSelectBtn(reviewStatusOptions) {
@@ -117,13 +113,6 @@ class StatementReviewDialog extends Component {
           Add Statement Review
             </Typography>
           </DialogTitle>
-          <DialogActions>
-            <IconButton
-              onClick={onClose}
-            >
-              <CancelIcon />
-            </IconButton>
-          </DialogActions>
         </div>
         <div className="statement-review-dialog__content">
           <DialogContent>

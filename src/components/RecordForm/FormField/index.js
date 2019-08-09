@@ -59,6 +59,7 @@ const FormField = (props) => {
     type,
     nullable,
   } = model;
+  console.log('TCL: model', model);
 
   const generated = Boolean(model.generated && variant !== FORM_VARIANT.SEARCH);
   const mandatory = Boolean(model.mandatory && variant !== FORM_VARIANT.SEARCH);

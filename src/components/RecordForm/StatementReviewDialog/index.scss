@@ -1,7 +1,7 @@
 @import '../../../theme';
 
 .statement-review-dialog {
-   height: 500px;
+   height: 450px;
 
   &__header {
     display: flex;
@@ -16,7 +16,7 @@
     justify-content: space-between;
 
     button{
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
   }
   &__content{

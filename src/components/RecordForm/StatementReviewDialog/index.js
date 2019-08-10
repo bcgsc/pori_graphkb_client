@@ -16,6 +16,7 @@ import ActionButton from '../../ActionButton/index';
 import { StyledMenu, StyledMenuItem } from '../../StyledMenu';
 
 import './index.scss';
+import { Authentication } from '../../../services/auth';
 
 const REVIEW_STATUS = ['pending', 'not required', 'passed', 'failed', 'initial'];
 
@@ -49,6 +50,47 @@ class StatementReviewDialog extends Component {
   @boundMethod
   handleMenuClick(opt) {
     this.setState({ currReviewStatus: opt, anchorEl: null });
+  }
+
+  @boundMethod
+  handleSubmit() {
+    console.log('submittings');
+    const { currReviewStatus, currentVal } = this.state;
+    console.log('TCL: StatementReviewDialog -> handleSubmit -> currReviewStatus, currentVal', currReviewStatus, currentVal);
+    const { content, auth: { user } } = this.props;
+    console.log('TCL: StatementReviewDialog -> handleSubmit -> user', user);
+    console.log(this.props);
+    const newContent = Object.assign({}, content);
+    newContent.reviews = [];
+
+    if (!currReviewStatus || !currentVal) {
+      // grab snackbar and issue warning
+
+    }
+    const newReview = {
+      '@class': 'StatementReview',
+      createdBy: user['@rid'].slice(1),
+      createdAt: (new Date()).valueOf(),
+      comment: currentVal,
+      reviewStatus: currReviewStatus,
+    };
+    // check if review is the first one ever created
+    if (!newContent.reviews) {
+      newContent.reviews = [
+        newReview,
+      ];
+    } else {
+      newContent.reviews.push(newReview);
+    }
+
+    console.log('TCL: StatementReviewDialog -> handleSubmit -> newContent', newContent);
+
+
+    // send request
+
+    // set state to isLoading
+
+    // send request
   }
 
   renderReviewSelectBtn(reviewStatusOptions) {
@@ -146,7 +188,7 @@ class StatementReviewDialog extends Component {
                 color="primary"
                 variant="contained"
                 requireConfirm
-                onClick={() => { console.log('adding review!'); }}
+                onClick={this.handleSubmit}
               >
                 Add Review
               </ActionButton>
@@ -161,6 +203,8 @@ class StatementReviewDialog extends Component {
 StatementReviewDialog.propTypes = {
   isOpen: PropTypes.bool,
   onClose: PropTypes.func.isRequired,
+  content: PropTypes.object.isRequired,
+  auth: PropTypes.instanceOf(Authentication).isRequired,
 };
 
 StatementReviewDialog.defaultProps = {

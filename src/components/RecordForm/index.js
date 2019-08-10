@@ -17,6 +17,7 @@ import BaseNodeForm from './BaseRecordForm';
 import { FORM_VARIANT } from './util';
 import { withKB } from '../KBContext';
 import StatementReviewDialog from './StatementReviewDialog/index';
+import { Authentication } from '../../services/auth';
 
 
 const cleanPayload = (payload) => {
@@ -68,6 +69,7 @@ class RecordForm extends React.PureComponent {
     title: PropTypes.string.isRequired,
     variant: PropTypes.string,
     value: PropTypes.object,
+    auth: PropTypes.instanceOf(Authentication),
   };
 
   static defaultProps = {
@@ -78,6 +80,7 @@ class RecordForm extends React.PureComponent {
     rid: null,
     variant: FORM_VARIANT.VIEW,
     value: {},
+    auth: {},
   };
 
   constructor(props) {
@@ -267,10 +270,11 @@ class RecordForm extends React.PureComponent {
 
   render() {
     const {
-      title, variant, onTopClick, modelName, ...rest
+      title, variant, onTopClick, modelName, auth, ...rest
     } = this.props;
 
     const { actionInProgress, reviewDialogOpen, ...content } = this.state;
+    console.log('TCL: render -> content', content);
 
     const actions = {
       [FORM_VARIANT.EDIT]: this.handleEditAction,
@@ -318,6 +322,8 @@ class RecordForm extends React.PureComponent {
           <StatementReviewDialog
             isOpen={reviewDialogOpen}
             onClose={() => this.setState({ reviewDialogOpen: false })}
+            content={content}
+            auth={auth}
           />
         </div>
         <BaseNodeForm

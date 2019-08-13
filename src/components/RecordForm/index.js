@@ -18,7 +18,7 @@ import { FORM_VARIANT } from './util';
 import { withKB } from '../KBContext';
 import AddStatementReviewDialog from './AddStatementReviewDialog';
 import { Authentication } from '../../services/auth';
-import ReviewDialog from '../DetailChip/ReviewDialog';
+import ReviewDialog from './ReviewDialog';
 
 
 const cleanPayload = (payload) => {

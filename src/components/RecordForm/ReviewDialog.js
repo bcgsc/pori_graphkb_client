@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import Schema from '../../services/schema';
-import FormField from '../RecordForm/FormField';
+import FormField from './FormField';
 
 const schema = new Schema();
 const grouping = [['createdAt', 'createdBy'], 'reviewStatus', 'comment'];
@@ -35,10 +35,7 @@ class ReviewDialog extends Component {
     const {
       content,
     } = this.props;
-    console.log('TCL: renderFieldGroup -> schema', schema);
     const model = schema.get('StatementReview');
-    console.log('TCL: ReviewDialog -> renderFieldGroup -> content', content);
-    console.log('TCL: ReviewDialog -> renderFieldGroup -> model', model);
     const { properties } = model;
 
     const fields = [];
@@ -66,9 +63,7 @@ class ReviewDialog extends Component {
             variant="view"
             key={name}
             content={content}
-            disabled={(
-              false
-            )}
+            disabled
           />
         );
         fields.push(wrapper);

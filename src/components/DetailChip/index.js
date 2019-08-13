@@ -23,8 +23,6 @@ import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 import './index.scss';
-import ReviewDialog from './ReviewDialog';
-
 
 const shallowObjectKey = obj => JSON.stringify(obj, (k, v) => k ? `${v}` : v);
 

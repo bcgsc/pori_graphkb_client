@@ -179,34 +179,7 @@ class BaseRecordForm extends React.Component {
         errors[prop.name] = error;
       }
     });
-    // statement required edge inputs
-    if (model.name === 'Statement') {
-      ['impliedBy', 'supportedBy'].forEach((prop) => {
-        const edgeEquivalent = `out_${prop[0].toUpperCase()}${prop.slice(1)}`;
-        const edges = (record[edgeEquivalent] || []).map(e => ({ target: e.in }));
-        const rawValue = record[prop] || edges;
-        if ((!rawValue || rawValue.length < 1) && variant !== FORM_VARIANT.SEARCH) {
-          errors[prop] = 'At least one value is required';
-        }
-        newContent[prop] = rawValue;
-      });
-    }
-    // edge records
-    if (model.isEdge) {
-      newContent.out = record.out;
-      if (!record.out) {
-        errors.out = 'Required Value';
-      }
-      newContent.in = record.in;
-      if (!record.in) {
-        errors.in = 'Required Value';
-      }
 
-      if (newContent.out && newContent.in && newContent.out['@rid'] === newContent.in['@rid']) {
-        errors.out = 'Must not equal the incoming (in) vertex';
-        errors.in = 'Must not equal the outgoing (out) vertex';
-      }
-    }
     this.setState({ content: newContent, errors });
   }
 
@@ -355,57 +328,6 @@ class BaseRecordForm extends React.Component {
   }
 
   /**
-   * Renders the two statement specific input fields (impliedBy and SupportedBy)
-   */
-  renderStatementFields() {
-    // cache disabling related to: https://github.com/JedWatson/react-select/issues/2582
-    const { schema } = this.context;
-    const { content, errors } = this.state;
-    const { variant, actionInProgress } = this.props;
-
-    return (
-      <React.Fragment key="statement-content">
-        <StatementSentence
-          schema={schema}
-          content={content}
-        />
-        <FormField
-          error={errors.impliedBy || ''}
-          onValueChange={this.handleValueChange}
-          model={{
-            description: 'Conditions that when combined imply the statement',
-            linkedClass: schema.get('Biomarker'),
-            name: 'impliedBy',
-            type: 'linkset',
-          }}
-          schema={schema}
-          value={content.impliedBy}
-          disabled={variant === FORM_VARIANT.VIEW || actionInProgress}
-          variant={variant}
-          label="ImpliedBy"
-          isPutativeEdge
-        />
-        <FormField
-          error={errors.supportedBy || ''}
-          onValueChange={this.handleValueChange}
-          model={{
-            linkedClass: schema.get('Evidence'),
-            description: 'Publications and Records that support the conclusion of the current statement',
-            name: 'supportedBy',
-            type: 'linkset',
-          }}
-          schema={schema}
-          value={content.supportedBy}
-          disabled={variant === FORM_VARIANT.VIEW || actionInProgress}
-          variant={variant}
-          label="SupportedBy"
-          isPutativeEdge
-        />
-      </React.Fragment>
-    );
-  }
-
-  /**
    * Renders the two edge specific input fields (out/in)
    */
   renderEdgeFields() {
@@ -488,13 +410,10 @@ class BaseRecordForm extends React.Component {
       model = null;
     }
 
-    let edges = isEmbedded || isEdge
+    const edges = isEmbedded || isEdge
       ? []
       : schema.getEdges(value || {});
     const isStatement = model && model.name === 'Statement';
-    if (isStatement) {
-      edges = edges.filter(e => !['SupportedBy', 'ImpliedBy'].includes(e[CLASS_MODEL_PROP]));
-    }
 
     const modelChoices = [];
     if (modelName) {
@@ -563,7 +482,14 @@ class BaseRecordForm extends React.Component {
       <div className={`record-form ${className}`}>
         <div className="record-form__content record-form__content--long">
           {classSelect}
-          {isStatement && variant !== FORM_VARIANT.EDIT && variant !== FORM_VARIANT.SEARCH && this.renderStatementFields()}
+          {isStatement && variant !== FORM_VARIANT.EDIT && variant !== FORM_VARIANT.SEARCH && (
+            <React.Fragment key="statement-content">
+              <StatementSentence
+                schema={schema}
+                content={content}
+              />
+            </React.Fragment>
+          )}
           {isEdge && this.renderEdgeFields()}
         </div>
         <div className="record-form__content">
@@ -635,6 +561,7 @@ class BaseRecordForm extends React.Component {
             <EdgeTable
               values={edges}
               sourceNodeId={content['@rid']}
+              schema={schema}
             />
           </div>
         )}

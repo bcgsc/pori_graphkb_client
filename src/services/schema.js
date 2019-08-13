@@ -6,7 +6,7 @@ import api from './api';
 
 const { schema: SCHEMA_DEFN } = kbSchema;
 
-const MAX_LABEL_LENGTH = 30;
+const MAX_LABEL_LENGTH = 50;
 
 
 /**
@@ -14,49 +14,10 @@ const MAX_LABEL_LENGTH = 30;
  */
 class Schema {
   constructor(schema = SCHEMA_DEFN) {
-    this.schema = schema;
-    this.normalizedModelNames = {};
-    Object.values(schema).forEach((model) => {
-      this.normalizedModelNames[model.name.toLowerCase()] = model;
-      this.normalizedModelNames[model.routeName] = model;
-      this.normalizedModelNames[model.routeName.slice(1)] = model;
-    });
-  }
-
-  /**
-   * Check that a given class/model name exists
-   */
-  has(obj) {
-    try {
-      return Boolean(this.get(obj));
-    } catch (err) {
-      return false;
-    }
-  }
-
-  /**
-   * Returns Knowledgebase class schema.
-   * @param {Object|string} obj - Record to fetch schema of.
-   */
-  @boundMethod
-  get(obj) {
-    let cls = obj;
-    if (obj && typeof obj === 'object' && obj['@class']) {
-      cls = obj['@class'];
-    }
-    return this.normalizedModelNames[typeof cls === 'string'
-      ? cls.toLowerCase()
-      : cls
-    ];
-  }
-
-  getFromRoute(routeName) {
-    for (const model of Object.values(this.schema)) {  // eslint-disable-line
-      if (model.routeName === routeName) {
-        return model;
-      }
-    }
-    throw new Error(`Missing model corresponding to route (${routeName})`);
+    this.schema = schema.schema;
+    this.has = schema.has.bind(schema);
+    this.get = schema.get.bind(schema);
+    this.getFromRoute = schema.getFromRoute.bind(schema);
   }
 
   /**
@@ -64,27 +25,36 @@ class Schema {
    */
   @boundMethod
   getLabel(obj, truncate = true) {
-    try {
-      let label = this.get(obj).getPreview(obj);
-      if (label.length > MAX_LABEL_LENGTH - 3 && truncate) {
-        label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
+    let label;
+    if (obj) {
+      if (obj.displayNameTemplate) {
+        label = this.getPreview(obj);
+        if (label.length > MAX_LABEL_LENGTH - 3 && truncate) {
+          label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
+        }
+        return label;
+      } if (obj.displayName || obj.name) {
+        label = obj.displayName || obj.name;
+        if (obj['@rid']) {
+          label = `${label} (${obj['@rid']})`;
+        }
+        return label;
       }
-      if (obj['@rid']) {
-        label = `${label} (${obj['@rid']})`;
+      if (obj.target) {
+        return this.getLabel(obj.target);
       }
-      return label;
-    } catch (err) {}  // eslint-disable-line
-    try {
-      return obj['@rid'];
-    } catch (err) {} // eslint-disable-line
+      if (obj['@class']) {
+        return obj['@class'];
+      }
+    }
     return obj;
   }
 
   @boundMethod
   getLink(obj) {
     if (obj && obj['@rid']) {
-      const { routeName } = this.get(obj) || this.get('V');
-      return `/view${routeName}/${obj['@rid'].slice(1)}`;
+      const { name } = this.get(obj) || this.get('V');
+      return `/view/${name}/${obj['@rid'].slice(1)}`;
     }
     return '';
   }
@@ -95,12 +65,57 @@ class Schema {
    */
   @boundMethod
   getPreview(obj) {
-    try {
-      return this.get(obj).getPreview(obj);
-    } catch (err) {}  // eslint-disable-line
-    try {
-      return obj['@rid'];
-    } catch (err) {} // eslint-disable-line
+    if (obj) {
+      if (obj.displayNameTemplate) {
+        const statementBuilder = (record) => {
+          if (record === undefined) {
+            return null;
+          }
+          const vals = Array.isArray(record) ? record : [record];
+          let label = '';
+          vals.forEach((val) => {
+            if (val) {
+              label = `${label}${val.displayName} `;
+            }
+          });
+          return label;
+        };
+
+        const implyBy = statementBuilder(obj.impliedBy);
+        const relevance = statementBuilder(obj.relevance);
+        const appliesTo = statementBuilder(obj.appliesTo);
+        const supportedBy = statementBuilder(obj.supportedBy);
+
+        const label = obj.displayNameTemplate
+          .replace('{impliedBy}', implyBy)
+          .replace('{relevance}', relevance)
+          .replace('{appliesTo}', appliesTo)
+          .replace('{supportedBy}', supportedBy);
+
+        return label;
+      }
+
+      if (obj.displayName || obj.name) {
+        let label;
+        label = obj.displayName || obj.name;
+        if (label.length > MAX_LABEL_LENGTH) {
+          label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
+        }
+        if (obj['@rid']) {
+          label = `${label} (${obj['@rid']})`;
+        }
+        return label;
+      }
+      if (obj['@class']) {
+        const label = this.getPreview(this.get(obj));
+        if (label) {
+          return label;
+        }
+      }
+      if (obj['@rid']) {
+        return obj['@rid'];
+      }
+    }
     return obj;
   }
 
@@ -227,7 +242,6 @@ class Schema {
     if (modelName && modelName.toLowerCase() !== 'statement') {
       allProps = this.get(modelName).queryProperties;
       if (modelName.toLowerCase().includes('variant')) {
-        showEdges.push('in_ImpliedBy');
         showByDefault.push('reference1', 'reference2', 'type');
       } else if (modelName.toLowerCase() !== 'source') {
         showByDefault.push('sourceIdVersion', 'version', 'source', 'name', 'sourceId');
@@ -272,6 +286,8 @@ class Schema {
       'history',
       'groups',
       'uuid',
+      'displayName',
+      'displayNameTemplate',
     ];
 
     const showNested = [
@@ -305,7 +321,7 @@ class Schema {
         colId: 'preview',
         field: 'preview',
         sortable: false,
-        valueGetter: ({ data }) => this.getLabel(data, false),
+        valueGetter: ({ data }) => this.getLabel(data),
       },
     ];
 

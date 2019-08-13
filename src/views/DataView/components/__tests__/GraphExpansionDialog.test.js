@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 import GraphExpansionDialog from '../GraphComponent/GraphExpansionDialog/GraphExpansionDialog';
 import Schema from '../../../../services/schema';
 
-const testSchema = new Schema({
+const mockClassModels = {
   V: {
     name: 'V',
     properties: [],
@@ -43,7 +43,18 @@ const testSchema = new Schema({
     subclasses: [{ name: 'edge' }],
     routeName: '/e',
   },
-});
+};
+const mockSchemaDef = {
+  schema: mockClassModels,
+  get: () => ({
+    name: 'relationshipName',
+    reversename: 'reverseRelationshipName',
+  }),
+  has: () => {},
+  getFromRoute: () => {},
+};
+
+const testSchema = new Schema(mockSchemaDef);
 
 const testNode = {
   '@rid': '1',

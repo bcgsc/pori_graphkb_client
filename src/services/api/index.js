@@ -15,6 +15,7 @@ import DataCache from './dataCache';
 
 const {
   API_BASE_URL,
+  TABLE_DEFAULT_NEIGHBORS,
   DEFAULT_NEIGHBORS,
 } = config;
 
@@ -169,9 +170,9 @@ const defaultSuggestionHandler = (model, opt = {}) => {
  * @param {Schema} opt.schema
  * @param {string} opt.search the search string portion of the URL displayed by this app
  */
-const getQueryFromSearch = ({ schema, search }) => {
+const getQueryFromSearch = ({ schema, search, count }) => {
   const {
-    neighbors = DEFAULT_NEIGHBORS,
+    neighbors = TABLE_DEFAULT_NEIGHBORS,
     limit = DEFAULT_LIMIT,
     keyword,
     complex,
@@ -200,16 +201,16 @@ const getQueryFromSearch = ({ schema, search }) => {
     routeName += '/search';
     // Decode base64 encoded string.
     payload = JSON.parse(atob(decodeURIComponent(complex)));
-    payload.neighbors = Math.max(payload.neighbors || 0, DEFAULT_NEIGHBORS);
+    payload.neighbors = Math.max(payload.neighbors || 0, TABLE_DEFAULT_NEIGHBORS);
     payload.limit = Math.min(payload.limit);
   } else {
     queryParams = {
       limit,
-      neighbors: Math.max(neighbors, DEFAULT_NEIGHBORS),
+      neighbors: count ? 0 : Math.max(neighbors, TABLE_DEFAULT_NEIGHBORS),
     };
     if (keyword) {
-      // keyword search is not associated with a particular model
-      routeName = '/search';
+      // keyword search is only associated with statements
+      routeName = '/statements/search';
       queryParams.keyword = keyword;
     } else {
       queryParams = Object.assign({}, params, queryParams);
@@ -286,6 +287,7 @@ const querySearchBlock = ({
   const { queryParams, routeName, payload } = getQueryFromSearch({
     schema,
     search,
+    count,
   });
   const content = payload || queryParams;
 

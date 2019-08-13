@@ -87,7 +87,11 @@ class NodeView extends React.PureComponent {
     let defaultModelName = modelName;
 
     if (modelName) {
-      const model = schema.get(modelName);
+      let model = schema.get(modelName);
+      if (!model) {
+        const routeName = `/${modelName}`;
+        model = schema.getFromRoute(routeName);
+      }
       defaultModelName = model.name;
       if (!model || (model.isAbstract && variant === FORM_VARIANT.EDIT)) {
         history.push(
@@ -108,7 +112,7 @@ class NodeView extends React.PureComponent {
       defaultModelName = 'E';
     }
 
-    // redirect when the user clicks the top left button
+    // redirect when the user clicks the top right button
     const onTopClick = (record) => {
       let newPath = path
         .replace(variant,

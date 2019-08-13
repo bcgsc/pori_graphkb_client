@@ -42,13 +42,14 @@ class AboutClasses extends Component {
     this.controllers.push(call);
 
     const stats = await call.request();
-
-    this.setState({
-      stats: Array.from(
-        Object.keys(stats),
-        label => ({ label, value: stats[label] }),
-      ),
-    });
+    if (stats) {
+      this.setState({
+        stats: Array.from(
+          Object.keys(stats),
+          label => ({ label, value: stats[label] }),
+        ),
+      });
+    }
   }
 
   async getClassExample(model) {

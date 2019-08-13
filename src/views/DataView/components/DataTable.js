@@ -125,6 +125,38 @@ class DataTable extends React.Component {
     });
   };
 
+  initializeGrid() {
+    const { search } = this.props;
+    const { schema } = this.context;
+
+    this.gridApi.setColumnDefs([
+      {
+        colId: 'ID',
+        field: '#',
+        valueGetter: 'node.id',
+        width: 75,
+      },
+      ...schema.defineGridColumns(search),
+    ]);
+
+    this.detectColumns();
+
+    const dataSource = {
+      rowCount: null,
+      getRows: ({
+        successCallback, failCallback, ...params
+      }) => {
+        this.getTableData(params)
+          .then(([rows, lastRow]) => {
+            // update filters
+            successCallback(rows, lastRow);
+          }).catch(() => failCallback());
+      },
+    };
+    // update the model
+    this.gridApi.setDatasource(dataSource);
+  }
+
   detectColumns() {
     const activeColumns = this.gridColumnApi.getAllDisplayedColumns()
       .map(col => col.colId);
@@ -391,39 +423,6 @@ class DataTable extends React.Component {
       }
     }
   }
-
-  initializeGrid() {
-    const { search } = this.props;
-    const { schema } = this.context;
-
-    this.gridApi.setColumnDefs([
-      {
-        colId: 'ID',
-        field: '#',
-        valueGetter: 'node.id',
-        width: 75,
-      },
-      ...schema.defineGridColumns(search),
-    ]);
-    this.detectColumns();
-
-    const dataSource = {
-      rowCount: null,
-      getRows: ({
-        successCallback, failCallback, ...params
-      }) => {
-        this.getTableData(params)
-          .then(([rows, lastRow]) => {
-            // update filters
-            this.setState({ totalNumOfRows: lastRow });
-            successCallback(rows, lastRow);
-          }).catch(() => failCallback());
-      },
-    };
-    // update the model
-    this.gridApi.setDatasource(dataSource);
-  }
-
 
   async resetDefaultGridOptions() {
     const { gridOptions } = this.gridApi.getModel().gridOptionsWrapper;

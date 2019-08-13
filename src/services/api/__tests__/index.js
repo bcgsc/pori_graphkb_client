@@ -60,7 +60,7 @@ describe('api methods test', () => {
         schema,
       });
       expect(result.payload).toBe(null);
-      expect(result.routeName).toEqual('/search');
+      expect(result.routeName).toEqual('/statements/search');
       expect(result.queryParams.keyword).toEqual('kras');
     });
     test('complex search', () => {
@@ -69,7 +69,7 @@ describe('api methods test', () => {
           { operator: 'OR', comparisons: [{ attr: 'name', value: 'kras', operator: 'CONTAINSTEXT' }] },
         ],
         limit: 50,
-        neighbors: 3, // adds default neighbors
+        neighbors: 2, // adds default neighbors
       };
       const search = `class=disease&complex=${
         encodeURIComponent('eyJ3aGVyZSI6W3sib3BlcmF0b3IiOiJPUiIsImNvbXBhcmlzb25zIjpbeyJhdHRyIjoibmFtZSIsInZhbHVlIjoia3JhcyIsIm9wZXJhdG9yIjoiQ09OVEFJTlNURVhUIn1dfV0sImxpbWl0Ijo1MH0=')
@@ -95,7 +95,7 @@ describe('api methods test', () => {
         sourceId: 'kras',
         or: 'name,sourceId',
         limit: 100,
-        neighbors: 3,
+        neighbors: 2,
       });
     });
   });

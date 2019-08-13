@@ -46,7 +46,6 @@ const FormField = (props) => {
     disabled = false,
     variant = 'view',
     label = null,
-    isPutativeEdge = false,
   } = props;
 
   const {
@@ -159,8 +158,7 @@ const FormField = (props) => {
       },
     };
 
-    if (linkedClass && (linkedClass.isAbstract || isPutativeEdge)) {
-      autoProps.isPutativeEdge = isPutativeEdge;
+    if (linkedClass && linkedClass.isAbstract) {
       autoProps.linkedClassName = linkedClass.name;
       propComponent = (
         <FilteredRecordAutocomplete
@@ -254,7 +252,6 @@ FormField.propTypes = {
   schema: PropTypes.object.isRequired,
   label: PropTypes.string,
   variant: PropTypes.string,
-  isPutativeEdge: PropTypes.bool,
 };
 
 
@@ -265,7 +262,6 @@ FormField.defaultProps = {
   label: null,
   variant: 'view',
   value: null,
-  isPutativeEdge: false,
 };
 
 

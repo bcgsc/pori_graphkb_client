@@ -119,13 +119,23 @@ class DataView extends React.Component {
    * Opens the right-hand panel that shows details of a given record
    */
   @boundMethod
-  handleToggleDetailPanel(opt = {}) {
+  async handleToggleDetailPanel(opt = {}) {
     const { data } = opt;
-
-    if (!data) {
+    const { cache } = this.state;
+    // no data or clicked link is a link property without a class model
+    if (!data || data.isLinkProp) {
       this.setState({ detailPanelRow: null });
     } else {
-      this.setState({ detailPanelRow: data });
+      try {
+        const fullRecord = await cache.getRecord(data);
+        if (!fullRecord) {
+          this.setState({ detailPanelRow: null });
+        } else {
+          this.setState({ detailPanelRow: fullRecord });
+        }
+      } catch (err) {
+        this.handleError(err);
+      }
     }
   }
 
@@ -144,8 +154,14 @@ class DataView extends React.Component {
   }
 
   @boundMethod
-  handleRecordSelection(selectedRecords) {
-    this.setState({ selectedRecords });
+  async handleRecordSelection(selectedRecords) {
+    const { cache } = this.state;
+    try {
+      const fullRecords = await cache.getRecords(selectedRecords);
+      this.setState({ selectedRecords: fullRecords });
+    } catch (err) {
+      this.handleError(err);
+    }
   }
 
   @boundMethod
@@ -234,7 +250,7 @@ class DataView extends React.Component {
   /**
    * Renders either the DataTable or Graph view depending on the parsed URL
    */
-
+  @boundMethod
   renderDataComponent() {
     const {
       detailPanelRow,
@@ -243,7 +259,6 @@ class DataView extends React.Component {
       selectedRecords,
       search,
     } = this.state;
-
 
     const { bufferSize } = this.props;
     const { schema } = this.context;

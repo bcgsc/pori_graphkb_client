@@ -36,10 +36,8 @@ const DATE_KEYS = ['createdAt', 'deletedAt'];
  * generates display based on record, and its corresponding schema entry.
  *
  * @property {object} props
- * @property {Object} props.schema - Knowledgebase schema object.
  * @property {Object} props.node - Ontology to be displayed in drawer.
  * @property {function} props.onClose - Function triggered on @material-ui/Drawer onClose event.
- * @property {bool} props.isEdge - Flag for edge classes.
  * @property {function} props.handleNodeEditStart - Function triggered on node edit button click
  */
 class DetailDrawer extends Component {
@@ -88,7 +86,9 @@ class DetailDrawer extends Component {
   formatIdentifiers(node, isNested) {
     const { schema } = this.context;
     if (!node['@class']) return null;
-    const { identifiers, properties } = schema.get(node);
+
+    const { properties } = schema.get(node);
+    const identifiers = ['@class', '@rid'];
     return this.formatProps(node, identifiers.reduce((array, id) => {
       const [key, nestedKey] = id.split('.');
       if (!schema.getMetadata().find(p => p.name === key)) {
@@ -176,9 +176,11 @@ class DetailDrawer extends Component {
   formatProps(node, properties, isNested) {
     const { schema } = this.context;
     const { opened } = this.state;
+    const identifiers = ['displayName', '@rid', 'sourceId'];
     return properties.map((prop) => {
-      const { name, type, previewWith } = prop;
-      const value = name === 'preview' ? schema.getPreview(node) : node[name];
+      const { type, previewWith } = prop;
+      let { name } = prop;
+      let value = name === 'preview' ? schema.getPreview(node) : node[name];
       let nestedValue = null;
       if (previewWith && value) {
         nestedValue = value[previewWith];
@@ -265,6 +267,23 @@ class DetailDrawer extends Component {
               <Collapse in={!!opened.includes(name)} unmountOnExit>
                 <List disablePadding dense className="detail-drawer__nested-list">
                   {this.formatIdentifiers(value, true)}
+                  {type === 'link' && (
+                    [value['@class'], '@rid', 'sourceId'].map((item, index) => (
+                      <ListItem key={item} dense>
+                        <div className="nested-spacer" />
+                        <ListItemText className="detail-li-text">
+                          <div className="detail-identifiers">
+                            <Typography variant="subtitle1">
+                              {util.antiCamelCase(item)}
+                            </Typography>
+                            <Typography>
+                              {value[identifiers[index]]}
+                            </Typography>
+                          </div>
+                        </ListItemText>
+                      </ListItem>
+                    ))
+                  )}
                   {type === 'embedded' && this.formatOtherProps(value, true)}
                 </List>
               </Collapse>
@@ -306,6 +325,10 @@ class DetailDrawer extends Component {
           </React.Fragment>
         );
       }
+      if (name === 'displayNameTemplate') {
+        name = 'description';
+        value = schema.getPreview(node);
+      }
       return this.formatLongValue(name, value, true, isNested);
     });
   }
@@ -317,7 +340,7 @@ class DetailDrawer extends Component {
    */
   formatOtherProps(node, isNested) {
     const { schema } = this.context;
-    const { identifiers } = schema.get(node);
+    const identifiers = ['@class', '@rid'];
 
     let properties = Object.keys(node)
       .map(key => ({ name: key, type: util.parseKBType(node[key]) }));
@@ -337,7 +360,7 @@ class DetailDrawer extends Component {
    * @param {Object} node - Record being displayed.
    */
   formatRelationships(node) {
-    const { linkOpen, opened } = this.state;
+    const { linkOpen } = this.state;
     const { schema } = this.context;
     // Checks subclasses
     const edges = schema.getEdges(node);
@@ -346,7 +369,6 @@ class DetailDrawer extends Component {
     return (
       <List>
         {edges.map((edge) => {
-          const metaOpen = opened.includes(`${edge['@rid']} meta`);
           const isOpen = linkOpen === edge['@rid'];
           let isIn = false;
           if (edge.in !== undefined) {
@@ -391,25 +413,10 @@ class DetailDrawer extends Component {
                 >
                   <Divider />
                   <ListSubheader disableSticky color="primary">
-                    Link Properties
-                  </ListSubheader>
-                  {this.formatOtherProps(edge, true)}
-                  <ListItem dense button onClick={() => this.handleExpand(`${edge['@rid']} meta`)}>
-                    <div className="nested-spacer" />
-                    <ListItemText className="detail-li-text">
-                      <Typography variant="subtitle1" color={metaOpen ? 'secondary' : 'default'}>
-                        Metadata
-                      </Typography>
-                    </ListItemText>
-                    {!metaOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-                  </ListItem>
-                  <Collapse in={!!metaOpen}>
-                    {this.formatMetadata(edge, true)}
-                  </Collapse>
-                  <ListSubheader disableSticky color="primary">
                     Linked Record
                   </ListSubheader>
                   {this.formatIdentifiers(isIn ? edge.out : edge.in, true)}
+                  {this.formatMetadata(isIn ? edge.out : edge.in, true)}
                 </List>
                 <Divider />
               </Collapse>

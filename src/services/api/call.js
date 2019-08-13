@@ -28,14 +28,12 @@ class ApiCall {
   constructor(endpoint, requestOptions, callOptions) {
     const {
       forceListReturn = false,
-      isPutativeEdge = false,
       name = null,
     } = callOptions || {};
     this.endpoint = endpoint;
     this.requestOptions = requestOptions;
     this.controller = null;
     this.forceListReturn = forceListReturn;
-    this.isPutativeEdge = isPutativeEdge;
     this.name = name || endpoint;
   }
 
@@ -91,13 +89,6 @@ class ApiCall {
 
       if (this.forceListReturn && !Array.isArray(result)) {
         result = [result];
-      }
-      if (this.isPutativeEdge) {
-        if (Array.isArray(result)) {
-          result = result.map(rec => ({ target: rec }));
-        } else {
-          result = { target: result };
-        }
       }
       return result;
     }

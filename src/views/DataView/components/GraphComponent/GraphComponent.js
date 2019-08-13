@@ -611,10 +611,9 @@ class GraphComponent extends Component {
       if (node[edgeType] && node[edgeType].length !== 0) {
         // stores total number of edges and initializes count for position calculating.
         const n = node[edgeType].length;
-        let i = 0;
 
         // Looks through each edge of certain type.
-        node[edgeType].forEach((edge) => {
+        node[edgeType].forEach((edge, index) => {
           const edgeRid = edge['@rid'] || edge;
 
           // Checks if edge is already rendered in the graph
@@ -640,7 +639,7 @@ class GraphComponent extends Component {
                 const positionInit = util.positionInit(
                   position.x,
                   position.y,
-                  i += 1,
+                  index,
                   n,
                 );
                 ({
@@ -665,7 +664,7 @@ class GraphComponent extends Component {
                 const positionInit = util.positionInit(
                   position.x,
                   position.y,
-                  i += 1,
+                  index,
                   n,
                 );
                 ({
@@ -693,6 +692,72 @@ class GraphComponent extends Component {
               }
             } else {
               // If there are unrendered edges, set expandable flag.
+              expandable[node['@rid']] = true;
+            }
+          }
+        });
+      }
+    });
+    // add a check for link properties here to create links where necessary
+    const linkTypes = ['impliedBy', 'supportedBy', 'relevance', 'appliesTo'];
+    linkTypes.forEach((linkType) => {
+      const linkData = Array.isArray(node[linkType]) ? node[linkType] : [node[linkType]];
+      if (linkData[0] && linkData.length !== 0) {
+        const n = linkData.length;
+
+        linkData.forEach((link, index) => {
+          const linkRid = link['@rid'];
+          // check to see if link is in graph already rendered
+          if (!graphObjects[linkRid] && !exclusions.includes(linkRid)) {
+            const sourceRid = node['@rid'];
+            const targetRid = link['@rid'];
+            // unique Rid from source and target nodes. Prevents rendering same link twice
+            const linkerRid = `${sourceRid.replace(/:|#/g, '')}:${targetRid.replace(/:|#/g, '')}`;
+
+            if (
+              sourceRid
+              && targetRid
+              && linkerRid
+              && (depth > 0 || graphObjects[targetRid])) {
+              // create link object and push it to links list
+              const graphLinkData = {
+                '@rid': linkerRid,
+                '@class': linkType,
+                in: sourceRid,
+                out: targetRid,
+                isLinkProp: true,
+              };
+              const graphLink = new GraphLink(graphLinkData, sourceRid, targetRid);
+              links.push(graphLink);
+              graphObjects[graphLink.getId()] = graphLink;
+              this.propsMap.loadLink(graphLink.data);
+              // check if node is already rendered
+              if (targetRid && !graphObjects[targetRid]) {
+                // Initializes position of new child
+                const positionInit = util.positionInit(position.x, position.y, index, n);
+                ({
+                  nodes,
+                  links,
+                  expandable,
+                  graphObjects,
+                } = this.processData(
+                  link,
+                  positionInit,
+                  depth - 1,
+                  {
+                    nodes,
+                    links,
+                    expandable,
+                    graphObjects,
+                  },
+                  exclusions,
+                ));
+              }
+              // consider link properties only if node is not expandable after edge check
+              if (!expandable[targetRid]) {
+                expandable = util.expanded(linkTypes, graphObjects, targetRid, expandable);
+              }
+            } else {
               expandable[node['@rid']] = true;
             }
           }

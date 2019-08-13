@@ -47,7 +47,6 @@ const FormField = (props) => {
     disabled = false,
     variant = 'view',
     label = null,
-    content = null,
     handleReviewSelection,
   } = props;
 
@@ -62,7 +61,6 @@ const FormField = (props) => {
     type,
     nullable,
   } = model;
-  console.log('TCL: model', model);
 
   const generated = Boolean(model.generated && variant !== FORM_VARIANT.SEARCH);
   const mandatory = Boolean(model.mandatory && variant !== FORM_VARIANT.SEARCH);
@@ -217,10 +215,7 @@ const FormField = (props) => {
     propComponent = (
       <EmbeddedListTable
         label={name}
-        name={label || name}
         values={value || []}
-        error={errorFlag}
-        content={content}
         handleReviewSelection={handleReviewSelection}
       />
     );

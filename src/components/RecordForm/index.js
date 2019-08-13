@@ -98,6 +98,7 @@ class RecordForm extends React.PureComponent {
       addDialogOpen: false,
       reviewDialogOpen: false,
       currReview: {},
+      reviewIndex: null,
       ...defaultContent,
     };
     this.controllers = [];
@@ -272,8 +273,8 @@ class RecordForm extends React.PureComponent {
   }
 
   @boundMethod
-  handleReviewToggle(review) {
-    this.setState({ currReview: review, reviewDialogOpen: true });
+  handleReviewToggle(review, reviewIndex) {
+    this.setState({ currReview: review, reviewDialogOpen: true, reviewIndex });
   }
 
   render() {
@@ -282,8 +283,9 @@ class RecordForm extends React.PureComponent {
     } = this.props;
 
     const {
-      actionInProgress, addDialogOpen, reviewDialogOpen, currReview, ...content
+      actionInProgress, addDialogOpen, reviewDialogOpen, currReview, reviewIndex, ...content
     } = this.state;
+
 
     const snackbar = this.context;
 
@@ -339,11 +341,19 @@ class RecordForm extends React.PureComponent {
             handleSubmit={this.handleEditAction}
             onError={onError}
           />
-          <ReviewDialog
-            isOpen={reviewDialogOpen}
-            onClose={() => this.setState({ reviewDialogOpen: false })}
-            content={currReview}
-          />
+          {reviewIndex !== null && (
+            <ReviewDialog
+              isOpen={reviewDialogOpen}
+              onClose={() => this.setState({ reviewDialogOpen: false, reviewIndex: null })}
+              content={content}
+              reviewIndex={reviewIndex}
+              statement={content}
+              handleEdit={this.handleEditAction}
+              snackbar={snackbar}
+            />
+          )
+
+          }
         </div>
         <BaseNodeForm
           {...rest}

@@ -17,13 +17,11 @@ const MAX_PREVIEW_LEN = 30;
 
 const EmbeddedListTable = (props) => {
   const {
-    values, label, name, error, content, handleReviewSelection,
+    values, label, handleReviewSelection,
   } = props;
-  console.log('TCL: EmbeddedListTable -> values, label, name, error', values, label, name, error);
 
 
-  const EmbeddedRecordRow = (value) => {
-    console.log('TCL: EmbeddedRecordRow -> value', value);
+  const EmbeddedRecordRow = (value, index) => {
     const { status, comment } = value;
     const previewStr = comment.slice(0, MAX_PREVIEW_LEN);
     const details = {};
@@ -41,6 +39,7 @@ const EmbeddedListTable = (props) => {
             <DetailChip
               isEmbedded
               handleReviewSelection={handleReviewSelection}
+              reviewIndex={index}
               label={previewStr}
               title={label}
               details={details}
@@ -84,15 +83,18 @@ const EmbeddedListTable = (props) => {
   );
 };
 
-EmbeddedListTable.prototype = {
+EmbeddedListTable.propTypes = {
   values: PropTypes.arrayOf(PropTypes.object),
   label: PropTypes.string,
   content: PropTypes.object.isRequired,
+  name: PropTypes.string,
+  handleReviewSelection: PropTypes.func.isRequired,
 };
 
 EmbeddedListTable.defaultProps = {
   values: [],
   label: '',
+  name: '',
 };
 
 export default EmbeddedListTable;

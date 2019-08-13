@@ -1,5 +1,9 @@
 @import '../../globals';
 
+$user-menu-width: 124px;
+$drawer-width: 240px;
+$closed-drawer-width: 56px;
+
 .record-form,
 .embedded-record-form {
   flex-grow: 1;
@@ -101,5 +105,108 @@
 
   .record-form__content {
     display: block;
+  }
+}
+
+.review-dialog{
+  height: 100vh;
+  min-width: $readable-min;
+
+  &__header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 40px;
+
+    .title{
+      float: left;
+    }
+
+    .action-buttons{
+      float: right;
+    }
+  }
+
+  .appbar {
+    color: $palette__common--white;
+    flex-direction: row;
+    float: right;
+    height: $banner-height;
+    justify-content: center;
+    left: 0;
+    right: 0;
+    transition-duration: $transitions__duration--standard;
+    transition-property: left;
+    width: auto;
+    z-index: calc(#{$drawer-z-index} + 3);
+
+    &--drawer-open {
+      left: $drawer-width;
+    }
+
+    &__title {
+      display: flex;
+      margin: auto 16px;
+      max-width: 100%;
+      overflow: hidden;
+
+      white-space: nowrap;
+
+      * {
+        color: $palette__common--white;
+        display: inline-block;
+      }
+
+      span {
+        margin-left: 0.5rem;
+      }
+    }
+
+    &__btn {
+      animation: fade-in(0.2s);
+      margin: auto 4px;
+
+      &--drawer-open {
+        visibility: hidden;
+      }
+    }
+
+    &__btn:disabled {
+      color: $palette__common--white;
+    }
+
+  }
+
+  &__content {
+    height: calc(100% - #{$banner-height});
+    margin-left: 0;
+    margin-top: 50px;
+    overflow-y: auto;
+    transition-duration: $transitions__duration--standard;
+    transition-property: width, margin-left;
+    width: 100%;
+
+    &--drawer-open {
+      margin-left: $drawer-width;
+      width: calc(100% - #{$drawer-width});
+    }
+
+    &__action-buttons{
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      margin: 30px;
+    }
+
+  }
+
+  .statement-table {
+    margin-top: 20px;
+
+    h6 {
+      margin-left: 23px;
+    }
   }
 }

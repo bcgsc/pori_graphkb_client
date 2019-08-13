@@ -53,6 +53,7 @@ class DetailChip extends React.Component {
     isEmbedded: PropTypes.bool,
     content: PropTypes.object,
     handleReviewSelection: PropTypes.func,
+    reviewIndex: PropTypes.number,
   };
 
   static defaultProps = {
@@ -71,6 +72,7 @@ class DetailChip extends React.Component {
     isEmbedded: false,
     content: {},
     handleReviewSelection: () => {},
+    reviewIndex: null,
   };
 
   constructor(props) {
@@ -124,6 +126,7 @@ class DetailChip extends React.Component {
       title,
       isEmbedded,
       content,
+      reviewIndex,
       handleReviewSelection,
       ...rest
     } = this.props;
@@ -155,7 +158,7 @@ class DetailChip extends React.Component {
                   </Link>
                 )}
                 {isEmbedded && (
-                  <IconButton onClick={() => { console.log('toggling'); handleReviewSelection(content); }}>
+                  <IconButton onClick={() => { handleReviewSelection(content, reviewIndex); }}>
                     <OpenInNewIcon />
                   </IconButton>
                 )}

@@ -54,27 +54,29 @@ class StatementReviewDialog extends Component {
 
   @boundMethod
   handleSubmit() {
-    console.log('submittings');
     const { currReviewStatus, currentVal } = this.state;
-    console.log('TCL: StatementReviewDialog -> handleSubmit -> currReviewStatus, currentVal', currReviewStatus, currentVal);
-    const { content, auth: { user } } = this.props;
-    console.log('TCL: StatementReviewDialog -> handleSubmit -> user', user);
-    console.log(this.props);
+    const {
+      handleSubmit,
+      snackbar,
+      content,
+      auth: { user },
+      onClose,
+      onError,
+    } = this.props;
     const newContent = Object.assign({}, content);
-    newContent.reviews = [];
 
     if (!currReviewStatus || !currentVal) {
-      // grab snackbar and issue warning
-
+      snackbar.add('There are errors in the form which must be resolved before it can be submitted');
+      return;
     }
     const newReview = {
       '@class': 'StatementReview',
       createdBy: user['@rid'].slice(1),
       createdAt: (new Date()).valueOf(),
       comment: currentVal,
-      reviewStatus: currReviewStatus,
+      status: currReviewStatus,
     };
-    // check if review is the first one ever created
+
     if (!newContent.reviews) {
       newContent.reviews = [
         newReview,
@@ -83,14 +85,12 @@ class StatementReviewDialog extends Component {
       newContent.reviews.push(newReview);
     }
 
-    console.log('TCL: StatementReviewDialog -> handleSubmit -> newContent', newContent);
-
-
-    // send request
-
-    // set state to isLoading
-
-    // send request
+    try {
+      onClose();
+      handleSubmit({ content: newContent });
+    } catch (err) {
+      onError(err);
+    }
   }
 
   renderReviewSelectBtn(reviewStatusOptions) {
@@ -119,7 +119,7 @@ class StatementReviewDialog extends Component {
           onClick={this.handleClick}
           requireConfirm={false}
         >
-          {currReviewStatus || 'Select Review Status'}
+          {currReviewStatus || 'Select review status'}
         </ActionButton>
         <StyledMenu
           id="customized-menu"
@@ -205,6 +205,9 @@ StatementReviewDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   content: PropTypes.object.isRequired,
   auth: PropTypes.instanceOf(Authentication).isRequired,
+  snackbar: PropTypes.object.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
 };
 
 StatementReviewDialog.defaultProps = {

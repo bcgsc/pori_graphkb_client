@@ -51,6 +51,8 @@ class BaseRecordForm extends React.Component {
     modelName: PropTypes.string,
     name: PropTypes.string.isRequired,
     onValueChange: PropTypes.func,
+    handleReviewSelection: PropTypes.func,
+
     value: PropTypes.object,
     variant: PropTypes.oneOf([
       FORM_VARIANT.EDIT,
@@ -83,6 +85,7 @@ class BaseRecordForm extends React.Component {
     onValueChange: null,
     value: {},
     variant: FORM_VARIANT.VIEW,
+    handleReviewSelection: () => {},
   };
 
   constructor(props) {
@@ -279,7 +282,7 @@ class BaseRecordForm extends React.Component {
    */
   renderFieldGroup(ordering) {
     const { schema } = this.context;
-    const { variant, actionInProgress } = this.props;
+    const { variant, actionInProgress, handleReviewSelection } = this.props;
     const { content, errors } = this.state;
 
     const model = this.currentModel();
@@ -314,6 +317,8 @@ class BaseRecordForm extends React.Component {
             schema={schema}
             variant={variant}
             key={name}
+            content={content}
+            handleReviewSelection={handleReviewSelection}
             disabled={(
               variant === FORM_VARIANT.VIEW
               || actionInProgress

@@ -20,6 +20,7 @@ import EmbeddedNodeForm from '../EmbeddedNodeForm';
 
 import './index.scss';
 import { FORM_VARIANT } from '../util';
+import EmbeddedListTable from './EmbeddedListTable';
 
 
 /**
@@ -46,6 +47,8 @@ const FormField = (props) => {
     disabled = false,
     variant = 'view',
     label = null,
+    content = null,
+    handleReviewSelection,
   } = props;
 
   const {
@@ -59,6 +62,7 @@ const FormField = (props) => {
     type,
     nullable,
   } = model;
+  console.log('TCL: model', model);
 
   const generated = Boolean(model.generated && variant !== FORM_VARIANT.SEARCH);
   const mandatory = Boolean(model.mandatory && variant !== FORM_VARIANT.SEARCH);
@@ -209,6 +213,17 @@ const FormField = (props) => {
         />
       );
     }
+  } else if (type === 'embeddedlist') {
+    propComponent = (
+      <EmbeddedListTable
+        label={name}
+        name={label || name}
+        values={value || []}
+        error={errorFlag}
+        content={content}
+        handleReviewSelection={handleReviewSelection}
+      />
+    );
   } else {
     propComponent = (
       <TextField
@@ -252,6 +267,7 @@ FormField.propTypes = {
   schema: PropTypes.object.isRequired,
   label: PropTypes.string,
   variant: PropTypes.string,
+  handleReviewSelection: PropTypes.string,
 };
 
 
@@ -262,6 +278,7 @@ FormField.defaultProps = {
   label: null,
   variant: 'view',
   value: null,
+  handleReviewSelection: () => {},
 };
 
 

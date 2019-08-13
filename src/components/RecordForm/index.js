@@ -16,8 +16,9 @@ import './index.scss';
 import BaseNodeForm from './BaseRecordForm';
 import { FORM_VARIANT } from './util';
 import { withKB } from '../KBContext';
-import StatementReviewDialog from './StatementReviewDialog/index';
+import AddStatementReviewDialog from './AddStatementReviewDialog';
 import { Authentication } from '../../services/auth';
+import ReviewDialog from '../DetailChip/ReviewDialog';
 
 
 const cleanPayload = (payload) => {
@@ -94,7 +95,9 @@ class RecordForm extends React.PureComponent {
 
     this.state = {
       actionInProgress: false,
+      addDialogOpen: false,
       reviewDialogOpen: false,
+      currReview: {},
       ...defaultContent,
     };
     this.controllers = [];
@@ -268,13 +271,21 @@ class RecordForm extends React.PureComponent {
     }
   }
 
+  @boundMethod
+  handleReviewToggle(review) {
+    this.setState({ currReview: review, reviewDialogOpen: true });
+  }
+
   render() {
     const {
-      title, variant, onTopClick, modelName, auth, ...rest
+      title, variant, onTopClick, modelName, auth, onError, ...rest
     } = this.props;
 
-    const { actionInProgress, reviewDialogOpen, ...content } = this.state;
-    console.log('TCL: render -> content', content);
+    const {
+      actionInProgress, addDialogOpen, reviewDialogOpen, currReview, ...content
+    } = this.state;
+
+    const snackbar = this.context;
 
     const actions = {
       [FORM_VARIANT.EDIT]: this.handleEditAction,
@@ -300,7 +311,7 @@ class RecordForm extends React.PureComponent {
             )}
             {(content['@class'] === 'Statement' && variant === FORM_VARIANT.EDIT && (
             <Button
-              onClick={() => this.setState({ reviewDialogOpen: true })}
+              onClick={() => this.setState({ addDialogOpen: true })}
               variant="outlined"
               disabled={actionInProgress}
             >
@@ -319,11 +330,19 @@ class RecordForm extends React.PureComponent {
             </ActionButton>
             )}
           </div>
-          <StatementReviewDialog
-            isOpen={reviewDialogOpen}
-            onClose={() => this.setState({ reviewDialogOpen: false })}
+          <AddStatementReviewDialog
+            isOpen={addDialogOpen}
+            onClose={() => this.setState({ addDialogOpen: false })}
             content={content}
             auth={auth}
+            snackbar={snackbar}
+            handleSubmit={this.handleEditAction}
+            onError={onError}
+          />
+          <ReviewDialog
+            isOpen={reviewDialogOpen}
+            onClose={() => this.setState({ reviewDialogOpen: false })}
+            content={currReview}
           />
         </div>
         <BaseNodeForm
@@ -332,6 +351,7 @@ class RecordForm extends React.PureComponent {
           modelName={modelName}
           onSubmit={actions[variant] || null}
           onDelete={this.handleDeleteAction}
+          handleReviewSelection={this.handleReviewToggle}
           variant={variant}
           collapseExtra
           name="name"

@@ -23,6 +23,7 @@ import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 import './index.scss';
+import ReviewDialog from './ReviewDialog';
 
 
 const shallowObjectKey = obj => JSON.stringify(obj, (k, v) => k ? `${v}` : v);
@@ -51,6 +52,9 @@ class DetailChip extends React.Component {
     valueToString: PropTypes.func,
     title: PropTypes.string,
     getLink: PropTypes.func,
+    isEmbedded: PropTypes.bool,
+    content: PropTypes.object,
+    handleReviewSelection: PropTypes.func,
   };
 
   static defaultProps = {
@@ -66,6 +70,9 @@ class DetailChip extends React.Component {
     valueToString: s => `${s}`,
     getLink: null,
     title: null,
+    isEmbedded: false,
+    content: {},
+    handleReviewSelection: () => {},
   };
 
   constructor(props) {
@@ -117,6 +124,9 @@ class DetailChip extends React.Component {
       ChipProps,
       getLink,
       title,
+      isEmbedded,
+      content,
+      handleReviewSelection,
       ...rest
     } = this.props;
     const { anchorEl } = this.state;
@@ -145,6 +155,11 @@ class DetailChip extends React.Component {
                       <OpenInNewIcon />
                     </IconButton>
                   </Link>
+                )}
+                {isEmbedded && (
+                  <IconButton onClick={() => { console.log('toggling'); handleReviewSelection(content); }}>
+                    <OpenInNewIcon />
+                  </IconButton>
                 )}
               </div>
               <Divider />

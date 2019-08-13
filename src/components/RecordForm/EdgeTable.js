@@ -61,6 +61,9 @@ const EdgeTable = (props) => {
       details[name] = value[target][name];
     });
 
+    console.log('TCL: EdgeRow -> details', details);
+    console.log('TCL: EdgeRow -> schema.getLabel(value[target])', schema.getLabel(value[target]));
+
     return (
       <React.Fragment key={key}>
         <TableRow>

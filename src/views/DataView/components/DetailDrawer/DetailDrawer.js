@@ -200,7 +200,7 @@ class DetailDrawer extends Component {
                   <ListItem key={item['@rid']} button onClick={() => this.handleExpand(item)} dense>
                     <div className="nested-spacer" />
                     <ListItemText className="detail-li-text">
-                      <div className="detail-identifiers">
+                      <div className="detail-identifiers-linkset">
                         <Typography variant="subtitle1" color={opened.includes(item) ? 'secondary' : 'textSecondary'}>
                           {item['@class']}
                         </Typography>

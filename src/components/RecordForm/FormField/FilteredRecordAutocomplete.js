@@ -96,7 +96,7 @@ class FilteredRecordAutocomplete extends React.PureComponent {
         <div className="form-field__content">
           <RecordAutocomplete
             {...rest}
-            isMulti
+            isMulti={isMulti}
             DetailChipProps={{
               ...DetailChipProps,
               valueToString,

@@ -7,16 +7,14 @@ import {
   DialogTitle,
   Typography,
   TextField,
-  ListItemIcon,
-  ListItemText,
 } from '@material-ui/core';
 
-import SendIcon from '@material-ui/icons/Send';
 import ActionButton from '../../ActionButton/index';
-import { StyledMenu, StyledMenuItem } from '../../StyledMenu';
 
 import './index.scss';
 import { Authentication } from '../../../services/auth';
+import DropDownMenu from '../../DropDownMenu';
+
 
 const REVIEW_STATUS = ['pending', 'not required', 'passed', 'failed', 'initial'];
 
@@ -27,29 +25,12 @@ class StatementReviewDialog extends Component {
     this.state = {
       currentVal: null,
       currReviewStatus: null,
-      anchorEl: null,
     };
   }
 
   @boundMethod
-  handleClick(event) {
-    const { anchorEl } = this.state;
-
-    if (!anchorEl) {
-      this.setState({ anchorEl: event.currentTarget });
-    } else {
-      this.setState({ anchorEl: null });
-    }
-  }
-
-  @boundMethod
-  handleClose() {
-    this.setState({ anchorEl: null });
-  }
-
-  @boundMethod
   handleMenuClick(opt) {
-    this.setState({ currReviewStatus: opt, anchorEl: null });
+    this.setState({ currReviewStatus: opt });
   }
 
   @boundMethod
@@ -93,47 +74,6 @@ class StatementReviewDialog extends Component {
     }
   }
 
-  renderReviewSelectBtn(reviewStatusOptions) {
-    const { anchorEl, currReviewStatus } = this.state;
-
-    const menuItems = [];
-    reviewStatusOptions.forEach((opt) => {
-      menuItems.push(
-        <StyledMenuItem onClick={() => this.handleMenuClick(opt)}>
-          <ListItemIcon>
-            <SendIcon />
-          </ListItemIcon>
-          <ListItemText primary={opt} />
-        </StyledMenuItem>,
-      );
-    });
-
-    return (
-      <div style={{ display: 'flex' }}>
-        <ActionButton
-          id="addFilterBtn"
-          aria-controls="customized-menu"
-          aria-haspopup="true"
-          variant={currReviewStatus ? 'outlined' : 'contained'}
-          color="secondary"
-          onClick={this.handleClick}
-          requireConfirm={false}
-        >
-          {currReviewStatus || 'Select review status'}
-        </ActionButton>
-        <StyledMenu
-          id="customized-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={this.handleClose}
-        >
-          {menuItems}
-        </StyledMenu>
-      </div>
-    );
-  }
-
   render() {
     const { isOpen, onClose } = this.props;
     const { currentVal } = this.state;
@@ -162,7 +102,11 @@ class StatementReviewDialog extends Component {
               <Typography variant="subtitle1" color="primary">
                   Description of adding a statement
               </Typography>
-              {this.renderReviewSelectBtn(REVIEW_STATUS)}
+              <DropDownMenu
+                options={REVIEW_STATUS}
+                handleMenuClick={this.handleMenuClick}
+                defaultValue="Select Review Status"
+              />
             </div>
             <div className="statement-review-dialog__text-field">
               <TextField

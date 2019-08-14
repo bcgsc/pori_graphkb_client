@@ -42,7 +42,7 @@ class AboutClasses extends Component {
     this.controllers.push(call);
 
     const stats = await call.request();
-    if (stats && stats !== null) {
+    if (stats) {
       this.setState({
         stats: Array.from(
           Object.keys(stats),

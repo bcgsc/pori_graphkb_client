@@ -275,7 +275,10 @@ class RecordForm extends React.PureComponent {
   @boundMethod
   handleReviewToggle(review, reviewIndex) {
     this.setState({
-      currReview: review, reviewDialogOpen: true, reviewIndex, formVariant: FORM_VARIANT.VIEW,
+      currReview: review,
+      reviewDialogOpen: true,
+      reviewIndex,
+      formVariant: FORM_VARIANT.VIEW,
     });
   }
 

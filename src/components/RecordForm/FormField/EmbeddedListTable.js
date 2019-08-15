@@ -9,7 +9,10 @@ import {
   TableHead,
   TableRow,
   Typography,
+  Avatar,
 } from '@material-ui/core';
+import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
+
 import DetailChip from '../../DetailChip';
 
 const MAX_PREVIEW_LEN = 30;
@@ -37,9 +40,17 @@ const EmbeddedListTable = (props) => {
           </TableCell>
           <TableCell>
             <DetailChip
-              isEmbedded
-              handleReviewSelection={handleReviewSelection}
-              reviewIndex={index}
+              ChipProps={{
+                avatar: (<Avatar><AssignmentOutlinedIcon /></Avatar>),
+                variant: 'outlined',
+                color: 'secondary',
+              }
+              }
+              isEmbeddedLinkSet={{
+                handleReviewSelection,
+                reviewIndex: index,
+                content: value,
+              }}
               label={previewStr}
               title={label}
               details={details}
@@ -51,7 +62,6 @@ const EmbeddedListTable = (props) => {
                   return `${record}`;
                 }
               }
-              content={value}
             />
           </TableCell>
         </TableRow>

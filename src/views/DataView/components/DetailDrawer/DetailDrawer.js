@@ -116,6 +116,8 @@ class DetailDrawer extends Component {
    * @param {boolean} isNested - if true, list item is indented.
    */
   formatLongValue(key, value, isStatic, isNested) {
+    console.log('TCL: DetailDrawer -> formatLongValue -> key, value', key, value);
+    const { schema } = this.context;
     const { opened } = this.state;
     const listItemProps = isStatic === true
       ? {}
@@ -148,7 +150,7 @@ class DetailDrawer extends Component {
               <div className="nested-spacer" />
             )}
             <ListItemText className="detail-li-text">
-              {util.formatStr(value)}
+              {util.formatStr(schema.getPreview(value))}
             </ListItemText>
           </ListItem>
         </Collapse>
@@ -315,7 +317,7 @@ class DetailDrawer extends Component {
                     <Typography>
                       {DATE_KEYS.includes(name)
                         ? (new Date(value)).toLocaleString()
-                        : util.formatStr(value)}
+                        : util.formatStr(schema.getPreview(value))}
                     </Typography>
                   </Wrapper>
                 </div>

@@ -27,7 +27,7 @@ import { FORM_VARIANT } from './util';
 import util from '../../services/util';
 
 const schema = new Schema();
-const grouping = [['createdAt', 'createdBy'], 'reviewStatus', 'comment'];
+const grouping = [['createdAt', 'createdBy'], 'status', 'comment'];
 
 class ReviewDialog extends Component {
   static propTypes = {
@@ -87,7 +87,6 @@ class ReviewDialog extends Component {
     const { handleEdit, snackbar } = this.props;
     const { currContent } = this.state;
     const newContent = Object.assign({}, currContent);
-    console.log('TCL: ReviewDialog -> handleEdit -> newContent', newContent);
     try {
       handleEdit({ content: newContent });
       this.setState({ mode: 'view' });
@@ -134,9 +133,6 @@ class ReviewDialog extends Component {
       createdBy: user['@rid'].slice(1),
     };
 
-    updatedReview.status = updatedReview.reviewStatus;
-    delete updatedReview.reviewStatus;
-
     const newContent = Object.assign({}, content);
 
     if (!newContent.reviews) {
@@ -182,9 +178,8 @@ class ReviewDialog extends Component {
       review = reviews[reviewIndex];
     }
 
-    console.log('TCL: ReviewDialog -> renderFieldGroup -> review', review);
-
     const model = schema.get('StatementReview');
+    console.log('TCL: ReviewDialog -> renderFieldGroup -> model', model);
     const { properties } = model;
 
     const fields = [];

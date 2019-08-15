@@ -16,7 +16,6 @@ import './index.scss';
 import BaseNodeForm from './BaseRecordForm';
 import { FORM_VARIANT } from './util';
 import { withKB } from '../KBContext';
-import AddStatementReviewDialog from './AddStatementReviewDialog';
 import { Authentication } from '../../services/auth';
 import ReviewDialog from './ReviewDialog';
 
@@ -99,6 +98,7 @@ class RecordForm extends React.PureComponent {
       reviewDialogOpen: false,
       currReview: {},
       reviewIndex: null,
+      formVariant: null,
       ...defaultContent,
     };
     this.controllers = [];
@@ -274,7 +274,9 @@ class RecordForm extends React.PureComponent {
 
   @boundMethod
   handleReviewToggle(review, reviewIndex) {
-    this.setState({ currReview: review, reviewDialogOpen: true, reviewIndex });
+    this.setState({
+      currReview: review, reviewDialogOpen: true, reviewIndex, formVariant: FORM_VARIANT.VIEW,
+    });
   }
 
   render() {
@@ -283,7 +285,7 @@ class RecordForm extends React.PureComponent {
     } = this.props;
 
     const {
-      actionInProgress, addDialogOpen, reviewDialogOpen, currReview, reviewIndex, ...content
+      actionInProgress, addDialogOpen, reviewDialogOpen, currReview, reviewIndex, formVariant, ...content
     } = this.state;
 
 
@@ -313,7 +315,7 @@ class RecordForm extends React.PureComponent {
             )}
             {(content['@class'] === 'Statement' && variant === FORM_VARIANT.EDIT && (
             <Button
-              onClick={() => this.setState({ addDialogOpen: true })}
+              onClick={() => this.setState({ reviewDialogOpen: true, formVariant: FORM_VARIANT.NEW })}
               variant="outlined"
               disabled={actionInProgress}
             >
@@ -332,24 +334,18 @@ class RecordForm extends React.PureComponent {
             </ActionButton>
             )}
           </div>
-          <AddStatementReviewDialog
-            isOpen={addDialogOpen}
-            onClose={() => this.setState({ addDialogOpen: false })}
-            content={content}
-            auth={auth}
-            snackbar={snackbar}
-            handleSubmit={this.handleEditAction}
-            onError={onError}
-          />
-          {reviewIndex !== null && (
+          {formVariant && (
             <ReviewDialog
               isOpen={reviewDialogOpen}
-              onClose={() => this.setState({ reviewDialogOpen: false, reviewIndex: null })}
+              onClose={() => this.setState({ reviewDialogOpen: false, reviewIndex: null, formVariant: null })}
               content={content}
+              auth={auth}
               reviewIndex={reviewIndex}
               statement={content}
               handleEdit={this.handleEditAction}
               snackbar={snackbar}
+              formVariant={formVariant}
+              onError={onError}
             />
           )
 

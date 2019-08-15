@@ -12,6 +12,7 @@ import {
   AppBar,
   IconButton,
   DialogContent,
+  TextField,
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 
@@ -22,6 +23,8 @@ import FormField from './FormField';
 import './index.scss';
 import StatementTable from './StatementTable';
 import ActionButton from '../ActionButton';
+import { FORM_VARIANT } from './util';
+import util from '../../services/util';
 
 const schema = new Schema();
 const grouping = [['createdAt', 'createdBy'], 'reviewStatus', 'comment'];
@@ -34,25 +37,35 @@ class ReviewDialog extends Component {
     reviewIndex: PropTypes.number.isRequired,
     snackbar: PropTypes.object.isRequired,
     handleEdit: PropTypes.func.isRequired,
+    formVariant: PropTypes.string.isRequired,
   };
 
   constructor(props) {
     super(props);
-    const { content: initialContent } = props;
+    const { content: initialContent, formVariant: initialMode } = props;
     this.state = {
-      mode: 'view',
+      mode: initialMode,
       currContent: initialContent,
+      newReview: {},
     };
   }
 
 
   @boundMethod
-  handleContentUpdate(event, prop) {
-    const { reviewIndex } = this.props;
+  handleOldReviewUpdate(event, prop) {
+    const { reviewIndex, formVariant } = this.props;
     const { currContent } = this.state;
     const newContent = Object.assign({}, currContent);
     newContent.reviews[reviewIndex][prop] = event;
     this.setState({ currContent: newContent });
+  }
+
+  @boundMethod
+  handleNewReviewUpdate(event, prop) {
+    const { newReview } = this.state;
+    const updatedReview = Object.assign({}, newReview);
+    updatedReview[prop] = event;
+    this.setState({ newReview: updatedReview });
   }
 
   @boundMethod
@@ -74,8 +87,9 @@ class ReviewDialog extends Component {
     const { handleEdit, snackbar } = this.props;
     const { currContent } = this.state;
     const newContent = Object.assign({}, currContent);
+    console.log('TCL: ReviewDialog -> handleEdit -> newContent', newContent);
     try {
-      // handleEdit({ content: newContent });
+      handleEdit({ content: newContent });
       this.setState({ mode: 'view' });
       snackbar.add('review has been successfully updated');
     } catch (err) {
@@ -84,12 +98,92 @@ class ReviewDialog extends Component {
   }
 
   @boundMethod
+  doesFormContainErrors() {
+    const { newReview } = this.state;
+    const propList = Object.keys(newReview);
+    let formContainsError = false;
+    if (propList.length !== 2) {
+      formContainsError = true;
+      return formContainsError;
+    }
+    propList.forEach((prop) => {
+      if (!newReview[prop]) {
+        formContainsError = true;
+      }
+    });
+    return formContainsError;
+  }
+
+  @boundMethod
+  handleAddReview() {
+    const { newReview } = this.state;
+    const {
+      handleEdit, snackbar, content, auth: { user }, onClose, onError,
+    } = this.props;
+
+    const formContainsError = this.doesFormContainErrors();
+    if (formContainsError) {
+      snackbar.add('There are errors in the form which must be resolved before it can be submitted');
+      return;
+    }
+
+    const updatedReview = {
+      '@class': 'StatementReview',
+      ...newReview,
+      createdAt: (new Date()).valueOf(),
+      createdBy: user['@rid'].slice(1),
+    };
+
+    updatedReview.status = updatedReview.reviewStatus;
+    delete updatedReview.reviewStatus;
+
+    const newContent = Object.assign({}, content);
+
+    if (!newContent.reviews) {
+      newContent.reviews = [
+        updatedReview,
+      ];
+    } else {
+      newContent.reviews.push(updatedReview);
+    }
+
+    try {
+      handleEdit({ content: newContent });
+      onClose();
+    } catch (err) {
+      onError(err);
+    }
+  }
+
+  @boundMethod
+  handleValueChange(event, propName) {
+    const { formVariant } = this.props;
+    if (formVariant === FORM_VARIANT.NEW) {
+      this.handleNewReviewUpdate(event, propName);
+    } else {
+      this.handleOldReviewUpdate(event, propName);
+    }
+  }
+
+  @boundMethod
   renderFieldGroup(ordering) {
     const {
-      reviewIndex,
+      reviewIndex, formVariant,
     } = this.props;
-    const { mode, currContent: { reviews }, currContent } = this.state;
-    const review = reviews[reviewIndex];
+    console.log('TCL: ReviewDialog -> renderFieldGroup -> formVariant', formVariant);
+
+    const {
+      mode, currContent: { reviews }, currContent, newReview,
+    } = this.state;
+    let review = null;
+    if (formVariant === FORM_VARIANT.NEW) {
+      review = newReview;
+    } else {
+      review = reviews[reviewIndex];
+    }
+
+    console.log('TCL: ReviewDialog -> renderFieldGroup -> review', review);
+
     const model = schema.get('StatementReview');
     const { properties } = model;
 
@@ -107,22 +201,57 @@ class ReviewDialog extends Component {
           ));
         }
       } else if (properties[propName]) {
+        console.log('TCL: ReviewDialog -> renderFieldGroup -> properties[propName]', properties[propName], propName);
         const prop = properties[propName];
         const { name } = prop;
-        const wrapper = (
-          <FormField
-            model={prop}
-            value={review[name]}
-            onValueChange={(event) => { this.handleContentUpdate(event.target.value, propName); }}
-            schema={schema}
-            variant="view"
-            key={name}
-            content={currContent}
-            disabled={
-              mode === 'view' || ['createdAt', 'createdBy'].includes(name)
+        let wrapper;
+        console.log('TCL: ReviewDialog -> renderFieldGroup -> !formVariant === FORM_VARIANT.NEW', !(formVariant === FORM_VARIANT.NEW));
+        if (!(formVariant === FORM_VARIANT.NEW)) {
+          wrapper = (
+            <FormField
+              model={prop}
+              value={review[name]}
+              onValueChange={(event) => { this.handleValueChange(event.target.value, propName); }}
+              schema={schema}
+              variant="view"
+              label={util.antiCamelCase(name)}
+              key={name}
+              content={currContent}
+              disabled={
+              mode === FORM_VARIANT.VIEW || ['createdAt', 'createdBy'].includes(name)
             }
-          />
-        );
+            />
+          );
+        } else if (!['createdAt', 'createdBy'].includes(name)) {
+          if (name === 'comment') {
+            wrapper = (
+              <TextField
+                fullWidth
+                multiline
+                rows={7}
+                label="Review Description"
+                variant="outlined"
+                value={review[name]}
+                onChange={(event) => { this.handleNewReviewUpdate(event.target.value, name); }}
+              />
+            );
+          } else {
+            wrapper = (
+              <div className="review-status-button">
+                <FormField
+                  model={prop}
+                  value={review[name]}
+                  onValueChange={(event) => { this.handleValueChange(event.target.value, propName); }}
+                  schema={schema}
+                  label={util.antiCamelCase(name)}
+                  variant="view"
+                  key={name}
+                  content={currContent}
+                />
+              </div>
+            );
+          }
+        }
         fields.push(wrapper);
       }
     });
@@ -131,7 +260,7 @@ class ReviewDialog extends Component {
 
   render() {
     const {
-      isOpen, onClose, content,
+      isOpen, onClose, content, formVariant,
     } = this.props;
 
     const { mode } = this.state;
@@ -165,7 +294,7 @@ class ReviewDialog extends Component {
             </div>
           </AppBar>
           <div className="review-dialog__content">
-            <div className="review-dialog__header">
+            <div className={`review-dialog__header${formVariant === FORM_VARIANT.NEW ? '__new' : ''}`}>
               <div className="title">
                 <Typography variant="title" color="secondary">
                 Statement Review
@@ -196,8 +325,8 @@ class ReviewDialog extends Component {
                 )}
               </div>
             </div>
-            <DialogContent>
-              {this.renderFieldGroup(grouping)}
+            <DialogContent className="review-dialog__fields">
+              {this.renderFieldGroup(grouping, formVariant)}
               <StatementTable
                 content={content}
                 schema={schema}
@@ -223,6 +352,21 @@ class ReviewDialog extends Component {
                   </ActionButton>
                 </div>
               )}
+              { formVariant === FORM_VARIANT.NEW && (
+                <div className="review-dialog__content__submit-button">
+                  <ActionButton
+                    onClick={this.handleAddReview}
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    requireConfirm={false}
+                  >
+                    SUBMIT
+                  </ActionButton>
+                </div>
+              )
+
+              }
             </DialogContent>
           </div>
         </div>

@@ -112,21 +112,6 @@ $closed-drawer-width: 56px;
   height: 100vh;
   min-width: $readable-min;
 
-  &__header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    margin: 40px;
-
-    .title{
-      float: left;
-    }
-
-    .action-buttons{
-      float: right;
-    }
-  }
 
   .appbar {
     color: $palette__common--white;
@@ -178,6 +163,41 @@ $closed-drawer-width: 56px;
 
   }
 
+  &__header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 40px;
+    width: 78%;
+    margin-left: 11%;
+
+    &__new {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      width: 78%;
+      margin: 40px 40px 0 11%;
+    }
+
+    .title{
+      float: left;
+    }
+
+    .action-buttons{
+      float: right;
+    }
+
+  }
+
+  &__fields {
+    padding: 0;
+    width:80%;
+    margin-left: 10%;
+  }
+
+
   &__content {
     height: calc(100% - #{$banner-height});
     margin-left: 0;
@@ -200,6 +220,13 @@ $closed-drawer-width: 56px;
       margin: 30px;
     }
 
+    &__submit-button {
+      margin: 20px;
+      float: right;
+    }
+
+
+
   }
 
   .statement-table {
@@ -208,5 +235,11 @@ $closed-drawer-width: 56px;
     h6 {
       margin-left: 23px;
     }
+  }
+
+  .review-status-button {
+    width: 300px;
+    float: right;
+    margin: 20px;
   }
 }

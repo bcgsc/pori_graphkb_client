@@ -24,6 +24,7 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 import './index.scss';
 
+
 const shallowObjectKey = obj => JSON.stringify(obj, (k, v) => k ? `${v}` : v);
 
 /**
@@ -50,10 +51,7 @@ class DetailChip extends React.Component {
     valueToString: PropTypes.func,
     title: PropTypes.string,
     getLink: PropTypes.func,
-    isEmbedded: PropTypes.bool,
-    content: PropTypes.object,
-    handleReviewSelection: PropTypes.func,
-    reviewIndex: PropTypes.number,
+    isEmbeddedLinkSet: PropTypes.object,
   };
 
   static defaultProps = {
@@ -69,10 +67,7 @@ class DetailChip extends React.Component {
     valueToString: s => `${s}`,
     getLink: null,
     title: null,
-    isEmbedded: false,
-    content: {},
-    handleReviewSelection: () => {},
-    reviewIndex: null,
+    isEmbeddedLinkSet: {},
   };
 
   constructor(props) {
@@ -124,12 +119,16 @@ class DetailChip extends React.Component {
       ChipProps,
       getLink,
       title,
-      isEmbedded,
+      isEmbeddedLinkSet,
+      ...rest
+    } = this.props;
+
+    const {
       content,
       reviewIndex,
       handleReviewSelection,
-      ...rest
-    } = this.props;
+    } = isEmbeddedLinkSet;
+
     const { anchorEl } = this.state;
 
     const retrievedDetails = getDetails(details);
@@ -157,7 +156,7 @@ class DetailChip extends React.Component {
                     </IconButton>
                   </Link>
                 )}
-                {isEmbedded && (
+                {isEmbeddedLinkSet && (
                   <IconButton onClick={() => { handleReviewSelection(content, reviewIndex); }}>
                     <OpenInNewIcon />
                   </IconButton>

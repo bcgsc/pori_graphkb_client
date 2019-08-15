@@ -202,7 +202,7 @@ class DetailDrawer extends Component {
                     <ListItemText className="detail-li-text">
                       <div className="detail-identifiers-linkset">
                         <Typography variant="subtitle1" color={opened.includes(item) ? 'secondary' : 'textSecondary'}>
-                          {item['@class']}
+                          {util.antiCamelCase(item['@class'])}
                         </Typography>
                         <Typography color={opened.includes(item) ? 'secondary' : 'textSecondary'}>
                           {schema.getPreview(item)}
@@ -218,7 +218,7 @@ class DetailDrawer extends Component {
                           <ListItemText>
                             <div className="detail-identifiers">
                               <Typography variant="subtitle2" className="detail-identifiers-nested">
-                                {propName}
+                                {util.antiCamelCase(propName)}
                               </Typography>
                               <Typography>
                                 {item[propName]}
@@ -344,7 +344,7 @@ class DetailDrawer extends Component {
         );
       }
       if (name === 'displayNameTemplate') {
-        name = 'description';
+        name = 'Statement';
         value = schema.getPreview(node);
       }
       return this.formatLongValue(name, value, true, isNested);

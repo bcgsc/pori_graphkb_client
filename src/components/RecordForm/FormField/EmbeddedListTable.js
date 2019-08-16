@@ -17,7 +17,14 @@ import DetailChip from '../../DetailChip';
 
 const MAX_PREVIEW_LEN = 30;
 
-
+/**
+ * Table to display related linked records as detailChips in embedded link set.
+ *
+ * @property {Arrayof(objects)} props.values linked records to be displayed in table
+ * @property {string} props.label title of detail chip
+ * @property {function} props.handleReviewSelection function passed to DetailChip to handle
+ * review selection for related reviewDialog component
+ */
 const EmbeddedListTable = (props) => {
   const {
     values, label, handleReviewSelection,
@@ -96,15 +103,12 @@ const EmbeddedListTable = (props) => {
 EmbeddedListTable.propTypes = {
   values: PropTypes.arrayOf(PropTypes.object),
   label: PropTypes.string,
-  content: PropTypes.object.isRequired,
-  name: PropTypes.string,
   handleReviewSelection: PropTypes.func.isRequired,
 };
 
 EmbeddedListTable.defaultProps = {
   values: [],
   label: '',
-  name: '',
 };
 
 export default EmbeddedListTable;

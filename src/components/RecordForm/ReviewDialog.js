@@ -13,9 +13,11 @@ import {
   IconButton,
   DialogContent,
   TextField,
+  Tooltip,
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import MenuIcon from '@material-ui/icons/Menu';
+import GoBackIcon from '@material-ui/icons/Replay'
 
 import Schema from '../../services/schema';
 import FormField from './FormField';
@@ -315,13 +317,15 @@ class ReviewDialog extends Component {
                 <Typography variant="caption">v{process.env.npm_package_version}</Typography>
               </Link>
             </div>
-            <IconButton
-              color="inherit"
-              onClick={() => console.log('menu btn clicked')}
-              className="appbar__btn"
-            >
-              <MenuIcon />
-            </IconButton>
+            <Tooltip title="Go back to Statement Record">
+              <IconButton
+                color="inherit"
+                onClick={onClose}
+                className="appbar__btn"
+              >
+                <GoBackIcon />
+              </IconButton>
+            </Tooltip>
           </AppBar>
           <div className="review-dialog__content">
             <div className={`review-dialog__header${formVariant === FORM_VARIANT.NEW ? '__new' : ''}`}>

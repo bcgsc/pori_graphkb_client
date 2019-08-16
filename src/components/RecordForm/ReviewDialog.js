@@ -15,11 +15,10 @@ import {
   TextField,
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
-
 import MenuIcon from '@material-ui/icons/Menu';
+
 import Schema from '../../services/schema';
 import FormField from './FormField';
-
 import './index.scss';
 import StatementTable from './StatementTable';
 import ActionButton from '../ActionButton';
@@ -29,6 +28,22 @@ import util from '../../services/util';
 const schema = new Schema();
 const grouping = [['createdAt', 'createdBy'], 'status', 'comment'];
 
+/**
+ * Dialog that handles the addition of statement reviews to a Statement
+ * record or the modification of reviews. Dialog has 3 main variants,
+ * ['new', 'edit, 'view']. The dialog is triggered open via the add review
+ * statement button or by a related embedded detail chip link.
+ *
+ * @property {bool} props.isOpen flag to indicate whether dialog is open
+ * @property {function} props.onClose handles closure of dialog
+ * @property {object} props.content contains statement record info
+ * @property {integer} props.reviewIndex index of the current review in reviews Array
+ * @property {object} props.snackbar snackbar object for user feedback
+ * @property {function} props.handleEdit parent function that handles edit action
+ * @property {string} props.formVariant the variant of form depending on action
+ * @property {object} props.auth Authorization object to mark who created review
+ * @property {func} props.onError Parent error handler should something go wrong
+ */
 class ReviewDialog extends Component {
   static propTypes = {
     isOpen: PropTypes.bool.isRequired,
@@ -38,6 +53,8 @@ class ReviewDialog extends Component {
     snackbar: PropTypes.object.isRequired,
     handleEdit: PropTypes.func.isRequired,
     formVariant: PropTypes.string.isRequired,
+    auth: PropTypes.object.isRequired,
+    onError: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -70,31 +87,38 @@ class ReviewDialog extends Component {
 
   @boundMethod
   handleDelete() {
-    const { reviewIndex, handleEdit, onClose } = this.props;
+    const {
+      reviewIndex, handleEdit, onClose, onError,
+    } = this.props;
     const { currContent } = this.state;
+
     const newContent = Object.assign({}, currContent);
     const clonedReviews = this.cloneReviews();
     newContent.reviews = clonedReviews;
     newContent.reviews.splice(reviewIndex, 1);
+
     try {
       handleEdit({ content: newContent });
       onClose();
     } catch (err) {
       console.error(err);
+      onError(err);
     }
   }
 
   @boundMethod
   handleEdit() {
-    const { handleEdit, snackbar } = this.props;
+    const { handleEdit, snackbar, onError } = this.props;
     const { currContent } = this.state;
     const newContent = Object.assign({}, currContent);
+
     try {
       handleEdit({ content: newContent });
       this.setState({ mode: 'view' });
       snackbar.add('review has been successfully updated');
     } catch (err) {
       console.error(err);
+      onError(err);
     }
   }
 
@@ -159,6 +183,7 @@ class ReviewDialog extends Component {
       handleEdit({ content: newContent });
       onClose();
     } catch (err) {
+      console.error(err);
       onError(err);
     }
   }
@@ -309,20 +334,20 @@ class ReviewDialog extends Component {
                 </Typography>
               </div>
               <div className="action-buttons">
-                {mode === 'view' && (
+                {mode === FORM_VARIANT.VIEW && (
                 <ActionButton
                   variant="outlined"
-                  onClick={() => { this.setState({ mode: 'edit' }); }}
+                  onClick={() => { this.setState({ mode: FORM_VARIANT.EDIT }); }}
                   requireConfirm={false}
                 >
                     Edit
                   <EditIcon />
                 </ActionButton>
                 )}
-                {mode === 'edit' && (
+                {mode === FORM_VARIANT.EDIT && (
                 <ActionButton
                   variant="outlined"
-                  onClick={() => { this.setState({ mode: 'view' }); }}
+                  onClick={() => { this.setState({ mode: FORM_VARIANT.VIEW }); }}
                   requireConfirm={false}
                 >
                     view
@@ -336,7 +361,7 @@ class ReviewDialog extends Component {
                 content={currContent}
                 schema={schema}
               />
-              {mode === 'edit' && (
+              {mode === FORM_VARIANT.EDIT && (
                 <div className="review-dialog__content__action-buttons">
                   <ActionButton
                     onClick={this.handleDelete}

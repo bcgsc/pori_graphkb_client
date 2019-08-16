@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 
+import { create } from 'jss';
 import DetailChip from '../../DetailChip';
 
 const MAX_PREVIEW_LEN = 30;
@@ -32,8 +33,10 @@ const EmbeddedListTable = (props) => {
 
 
   const EmbeddedRecordRow = (value, index) => {
-    const { status, comment } = value;
-    const previewStr = comment.slice(0, MAX_PREVIEW_LEN);
+    const {
+      status, createdBy: { name }, createdBy,
+    } = value;
+    const previewStr = `${name} (${createdBy['@rid']})`;
     const details = {};
     Object.keys(value).forEach((prop) => {
       details[prop] = value[prop];
@@ -88,7 +91,7 @@ const EmbeddedListTable = (props) => {
               Review Status
             </TableCell>
             <TableCell padding="dense">
-              Review Record
+              Reviewer
             </TableCell>
           </TableRow>
         </TableHead>

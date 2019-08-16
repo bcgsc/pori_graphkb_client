@@ -45,7 +45,7 @@ class ReviewDialog extends Component {
     const { content: initialContent, formVariant: initialMode } = props;
     this.state = {
       mode: initialMode,
-      currContent: initialContent,
+      currContent: Object.assign({}, initialContent),
       newReview: {},
     };
   }
@@ -53,7 +53,7 @@ class ReviewDialog extends Component {
 
   @boundMethod
   handleOldReviewUpdate(event, prop) {
-    const { reviewIndex, formVariant } = this.props;
+    const { reviewIndex } = this.props;
     const { currContent } = this.state;
     const newContent = Object.assign({}, currContent);
     newContent.reviews[reviewIndex][prop] = event;
@@ -73,9 +73,11 @@ class ReviewDialog extends Component {
     const { reviewIndex, handleEdit, onClose } = this.props;
     const { currContent } = this.state;
     const newContent = Object.assign({}, currContent);
+    const clonedReviews = this.cloneReviews();
+    newContent.reviews = clonedReviews;
     newContent.reviews.splice(reviewIndex, 1);
     try {
-      // handleEdit({ content: newContent });
+      handleEdit({ content: newContent });
       onClose();
     } catch (err) {
       console.error(err);
@@ -114,10 +116,18 @@ class ReviewDialog extends Component {
   }
 
   @boundMethod
+  cloneReviews() {
+    const { currContent } = this.state;
+    const { reviews } = currContent;
+    const reviewsClone = reviews.map(obj => ({ ...obj }));
+    return reviewsClone;
+  }
+
+  @boundMethod
   handleAddReview() {
-    const { newReview } = this.state;
+    const { newReview, currContent } = this.state;
     const {
-      handleEdit, snackbar, content, auth: { user }, onClose, onError,
+      handleEdit, snackbar, auth: { user }, onClose, onError,
     } = this.props;
 
     const formContainsError = this.doesFormContainErrors();
@@ -133,7 +143,9 @@ class ReviewDialog extends Component {
       createdBy: user['@rid'].slice(1),
     };
 
-    const newContent = Object.assign({}, content);
+    const newContent = Object.assign({}, currContent);
+    const clonedReviews = this.cloneReviews();
+    newContent.reviews = clonedReviews;
 
     if (!newContent.reviews) {
       newContent.reviews = [
@@ -166,11 +178,11 @@ class ReviewDialog extends Component {
     const {
       reviewIndex, formVariant,
     } = this.props;
-    console.log('TCL: ReviewDialog -> renderFieldGroup -> formVariant', formVariant);
 
     const {
       mode, currContent: { reviews }, currContent, newReview,
     } = this.state;
+
     let review = null;
     if (formVariant === FORM_VARIANT.NEW) {
       review = newReview;
@@ -179,7 +191,6 @@ class ReviewDialog extends Component {
     }
 
     const model = schema.get('StatementReview');
-    console.log('TCL: ReviewDialog -> renderFieldGroup -> model', model);
     const { properties } = model;
 
     const fields = [];
@@ -196,11 +207,9 @@ class ReviewDialog extends Component {
           ));
         }
       } else if (properties[propName]) {
-        console.log('TCL: ReviewDialog -> renderFieldGroup -> properties[propName]', properties[propName], propName);
         const prop = properties[propName];
         const { name } = prop;
         let wrapper;
-        console.log('TCL: ReviewDialog -> renderFieldGroup -> !formVariant === FORM_VARIANT.NEW', !(formVariant === FORM_VARIANT.NEW));
         if (!(formVariant === FORM_VARIANT.NEW)) {
           wrapper = (
             <FormField
@@ -255,8 +264,9 @@ class ReviewDialog extends Component {
 
   render() {
     const {
-      isOpen, onClose, content, formVariant,
+      isOpen, onClose, formVariant,
     } = this.props;
+    const { currContent } = this.state;
 
     const { mode } = this.state;
     const model = schema.get('StatementReview');
@@ -323,7 +333,7 @@ class ReviewDialog extends Component {
             <DialogContent className="review-dialog__fields">
               {this.renderFieldGroup(grouping, formVariant)}
               <StatementTable
-                content={content}
+                content={currContent}
                 schema={schema}
               />
               {mode === 'edit' && (

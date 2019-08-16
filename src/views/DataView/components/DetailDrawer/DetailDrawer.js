@@ -116,7 +116,6 @@ class DetailDrawer extends Component {
    * @param {boolean} isNested - if true, list item is indented.
    */
   formatLongValue(key, value, isStatic, isNested) {
-    console.log('TCL: DetailDrawer -> formatLongValue -> key, value', key, value);
     const { schema } = this.context;
     const { opened } = this.state;
     const listItemProps = isStatic === true

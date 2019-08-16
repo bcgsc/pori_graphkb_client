@@ -309,19 +309,19 @@ class ReviewDialog extends Component {
             position="fixed"
             className="appbar"
           >
-            <IconButton
-              color="inherit"
-              onClick={() => console.log('menu btn clicked')}
-              className="appbar_-btn"
-            >
-              <MenuIcon />
-            </IconButton>
-            <div className={`appbar__title ${isOpen} ? 'appbar__title--drawer-open' : ''}`}>
+            <div className="appbar__title">
               <Link to="/query" onClick={this.handleCloseNavBar}>
                 <Typography variant="h6">GraphKB</Typography>
                 <Typography variant="caption">v{process.env.npm_package_version}</Typography>
               </Link>
             </div>
+            <IconButton
+              color="inherit"
+              onClick={() => console.log('menu btn clicked')}
+              className="appbar__btn"
+            >
+              <MenuIcon />
+            </IconButton>
           </AppBar>
           <div className="review-dialog__content">
             <div className={`review-dialog__header${formVariant === FORM_VARIANT.NEW ? '__new' : ''}`}>

@@ -117,6 +117,8 @@ $closed-drawer-width: 56px;
     color: $palette__common--white;
     flex-direction: row;
     float: right;
+    display: grid;
+    grid-template-columns: 30% 30% 10%;
     height: $banner-height;
     justify-content: center;
     left: 0;
@@ -131,7 +133,7 @@ $closed-drawer-width: 56px;
     }
 
     &__title {
-      display: flex;
+      grid-column-start: 2;
       margin: auto 16px;
       max-width: 100%;
       overflow: hidden;
@@ -151,6 +153,7 @@ $closed-drawer-width: 56px;
     &__btn {
       animation: fade-in(0.2s);
       margin: auto 4px;
+       grid-column-start: 9;
 
       &--drawer-open {
         visibility: hidden;

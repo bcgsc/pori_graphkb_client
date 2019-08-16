@@ -13,10 +13,8 @@ import {
 } from '@material-ui/core';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 
-import { create } from 'jss';
 import DetailChip from '../../DetailChip';
 
-const MAX_PREVIEW_LEN = 30;
 
 /**
  * Table to display related linked records as detailChips in embedded link set.

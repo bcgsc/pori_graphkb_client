@@ -262,7 +262,7 @@ FormField.propTypes = {
   schema: PropTypes.object.isRequired,
   label: PropTypes.string,
   variant: PropTypes.string,
-  handleReviewSelection: PropTypes.string,
+  handleReviewSelection: PropTypes.func,
 };
 
 

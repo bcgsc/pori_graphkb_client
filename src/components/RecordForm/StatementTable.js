@@ -10,7 +10,12 @@ import {
 } from '@material-ui/core';
 
 import DetailChip from '../DetailChip';
-
+/**
+ * Table in review dialog to relate review to Statement record. Display purposes.
+ *
+ * @property {object} props.content Statement Record to be displayed in detail DetailChip
+ * @property {Schema} props.schema schema object for detail chip props and data handling
+ */
 const StatementTable = (props) => {
   const { content, schema } = props;
 

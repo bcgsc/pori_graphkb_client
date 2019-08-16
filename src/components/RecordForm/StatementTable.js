@@ -31,6 +31,17 @@ const StatementTable = (props) => {
             details={statement}
             valueToString={
                 (record) => {
+                  if (Array.isArray(record)) {
+                    const label = record.map(val => (val.displayName));
+                    let string = label.join(', ');
+                    if (!string) {
+                      string = record.length;
+                    }
+                    return string;
+                  }
+                  if(record && record.displayName){
+                    return record.displayName;
+                  }
                   if (record && record['@rid']) {
                     return record['@rid'];
                   }

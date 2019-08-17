@@ -16,8 +16,7 @@ import {
   Tooltip,
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
-import MenuIcon from '@material-ui/icons/Menu';
-import GoBackIcon from '@material-ui/icons/Replay'
+import GoBackIcon from '@material-ui/icons/Replay';
 
 import Schema from '../../services/schema';
 import FormField from './FormField';
@@ -145,8 +144,11 @@ class ReviewDialog extends Component {
   cloneReviews() {
     const { currContent } = this.state;
     const { reviews } = currContent;
-    const reviewsClone = reviews.map(obj => ({ ...obj }));
-    return reviewsClone;
+    if (reviews) {
+      const reviewsClone = reviews.map(obj => ({ ...obj }));
+      return reviewsClone;
+    }
+    return [];
   }
 
   @boundMethod

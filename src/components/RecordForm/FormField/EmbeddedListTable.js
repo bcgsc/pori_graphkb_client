@@ -79,7 +79,7 @@ const EmbeddedListTable = (props) => {
 
   return (
     <div className="embedded-list-table">
-      <Typography variant="h6" component="h2">
+      <Typography variant="subtitle1" align="center" color="secondary">
               Reviews
       </Typography>
       <Table className="embedded-list-table__table">

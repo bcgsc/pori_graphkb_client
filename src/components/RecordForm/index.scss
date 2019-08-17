@@ -30,6 +30,7 @@ $closed-drawer-width: 56px;
   &__content,
   &__content-subgroup {
     @include two-column-grid;
+    margin: 0;
 
     @media (min-width: #{breakpoint-med}) {
       // allow 2 columns for large dislays
@@ -94,6 +95,7 @@ $closed-drawer-width: 56px;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    margin-top: 20px;
   }
 
 }
@@ -153,7 +155,7 @@ $closed-drawer-width: 56px;
     &__btn {
       animation: fade-in(0.2s);
       margin: auto 4px;
-       grid-column-start: 9;
+      grid-column-start: 9;
 
       &--drawer-open {
         visibility: hidden;
@@ -172,16 +174,16 @@ $closed-drawer-width: 56px;
     justify-content: space-between;
     align-items: center;
     margin: 40px;
-    width: 78%;
-    margin-left: 11%;
+    width: 65%;
+    margin-left: 16.2%;
 
     &__new {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-      width: 78%;
-      margin: 40px 40px 0 11%;
+      width: 65%;
+      margin: 40px 40px 0 16.2%;
     }
 
     .title{
@@ -196,8 +198,8 @@ $closed-drawer-width: 56px;
 
   &__fields {
     padding: 0;
-    width:80%;
-    margin-left: 10%;
+    width:70%;
+    margin-left: 15%;
   }
 
 
@@ -220,7 +222,7 @@ $closed-drawer-width: 56px;
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-      margin: 30px;
+      margin-top: 30px;
     }
 
     &__submit-button {

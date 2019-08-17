@@ -32,20 +32,15 @@ const StatementTable = (props) => {
             valueToString={
                 (record) => {
                   if (Array.isArray(record)) {
-                    const label = record.map(val => (val.displayName));
-                    let string = label.join(', ');
-                    if (!string) {
-                      string = record.length;
+                    if (record[0]['@class'] === 'StatementReview') {
+                      return record.length;
                     }
-                    return string;
+                    const strVals = record.map(val => (schema.getLabel(val)));
+                    const label = strVals.join(', ');
+                    return label;
                   }
-                  if(record && record.displayName){
-                    return record.displayName;
-                  }
-                  if (record && record['@rid']) {
-                    return record['@rid'];
-                  }
-                  return `${record}`;
+                  const label = schema.getLabel(record);
+                  return label;
                 }
               }
             getLink={schema.getLink}

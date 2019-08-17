@@ -18,7 +18,6 @@ const mockModels = {
     routeName: '/test',
     identifiers: ['@rid'],
     inherits: ['Ontology'],
-    getPreview: () => 'test',
   },
   E: {
     properties: {},
@@ -34,7 +33,6 @@ const mockModels = {
     inherits: ['E'],
     identifiers: ['@rid'],
     properties: {},
-    getPreview: () => 'aliasof',
     routeName: '/aliasof',
   },
   V: {
@@ -54,8 +52,16 @@ const mockModels = {
       source: { name: 'source', type: 'link' },
     },
     identifiers: ['@class', 'name', 'sourceId', 'source.name'],
-    getPreview: () => 'ontology',
     routeName: '/ontology',
+  },
+  MockClass: {
+    name: 'Mock',
+    inherits: ['Ontology'],
+    properties: {
+      name: { name: 'name', type: 'string' },
+      sourceId: { name: 'sourceId', type: 'string' },
+      impliedBy: { name: 'impliedBy', type: 'linkset' },
+    },
   },
 };
 class MockSchemaDef {
@@ -74,6 +80,9 @@ class MockSchemaDef {
     } if (node === 'AliasOf' || node['@class'] === 'AliasOf') {
       const { AliasOf } = this.schema;
       return AliasOf;
+    } if (node['@class'] === 'MockClass') {
+      const { MockClass } = this.schema;
+      return MockClass;
     }
     return null;
   };
@@ -265,6 +274,41 @@ describe('<DetailDrawer />', () => {
     ));
     wrapper.find('div[role="button"]').first().simulate('click');
     expect(wrapper.find('.detail-drawer__nested-list').length).toBeGreaterThan(0);
+  });
+
+  it('handles node property type linkset correctly ', () => {
+    const node = {
+      '@class': 'MockClass',
+      '@rid': '#135',
+      name: 'linkset node',
+      sourceId: 'test sourceId',
+      impliedBy: [
+        {
+          '@class': 'Fake',
+          '@rid': '19:1',
+          displayName: 'linkedRecord1',
+          sourceId: 'BBC',
+        },
+        {
+          '@class': 'Mock',
+          '@rid': '19:1',
+          displayName: 'linkedRecord2',
+          sourceId: 'CBC',
+        },
+      ],
+    };
+
+    wrapper = mount((
+      <ProvideSchema schema={testSchema}>
+        <DetailDrawer node={node} />
+      </ProvideSchema>
+    ));
+
+    expect(wrapper.find('.detail-identifiers-linkset').length).toEqual(2);
+    expect(wrapper.find('.detail-identifiers-nested').length).toEqual(0);
+    expect(wrapper.find('div[role="button"]').at(1).text()).toEqual('FakelinkedRecord1 (19:1)');
+    wrapper.find('div[role="button"]').at(1).simulate('click');
+    expect(wrapper.find('.detail-identifiers-nested').length).toBeGreaterThan(0);
   });
 
   afterEach(() => {

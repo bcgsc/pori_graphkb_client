@@ -31,6 +31,14 @@ import { KBContext } from '../../../../components/KBContext';
 const MAX_STRING_LENGTH = 64;
 const DATE_KEYS = ['createdAt', 'deletedAt'];
 
+const swap = (array, pos1, pos2) => {
+  console.log('TCL: swap -> array, pos1, pos2', array, pos1, pos2);
+  const newArr = [...array];
+  newArr[pos1] = array[pos2];
+  newArr[pos2] = array[pos1];
+  return newArr;
+};
+
 /**
  * Component used to display record details in a side drawer. Dynamically
  * generates display based on record, and its corresponding schema entry.
@@ -177,7 +185,16 @@ class DetailDrawer extends Component {
     const { schema } = this.context;
     const { opened } = this.state;
     const identifiers = ['displayName', '@rid', 'sourceId'];
-    return properties.map((prop) => {
+    const displayIndex = properties.findIndex(prop => prop.name === 'displayName');
+    let updatedProperties = [...properties];
+    console.log('TCL: DetailDrawer -> formatProps -> properties', properties);
+    if (displayIndex !== 0 && displayIndex !== -1) {
+      updatedProperties = swap(properties, 0, displayIndex);
+    }
+
+    console.log('TCL: DetailDrawer -> formatProps -> updatedProperties', updatedProperties);
+
+    return updatedProperties.map((prop) => {
       const { type } = prop;
       let { name } = prop;
       let value = node[name];

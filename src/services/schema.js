@@ -115,7 +115,6 @@ class Schema {
       if (obj['@rid']) {
         return obj['@rid'];
       }
-      console.log('schema -> obj', obj);
       if (Array.isArray(obj)) { // embedded link set
         return obj.length;
       }

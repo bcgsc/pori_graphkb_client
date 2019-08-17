@@ -94,7 +94,7 @@ class DetailDrawer extends Component {
       if (!schema.getMetadata().find(p => p.name === key)) {
         if (properties[key]) {
           if (nestedKey) {
-            array.push({ ...properties[key], previewWith: nestedKey });
+            array.push({ ...properties[key] });
           } else {
             array.push(properties[key]);
           }
@@ -178,55 +178,70 @@ class DetailDrawer extends Component {
     const { opened } = this.state;
     const identifiers = ['displayName', '@rid', 'sourceId'];
     return properties.map((prop) => {
-      const { type, previewWith } = prop;
+      const { type } = prop;
       let { name } = prop;
-      let value = name === 'preview' ? schema.getPreview(node) : node[name];
-      let nestedValue = null;
-      if (previewWith && value) {
-        nestedValue = value[previewWith];
-      }
+      let value = node[name];
+      const nestedValue = null;
       if (!value) return null;
       if (type === 'embeddedset' || type === 'linkset') {
         if (value.length === 0) return null;
         return (
           <React.Fragment key={name}>
-            <ListItem button onClick={() => this.handleExpand(name)} dense>
+            <ListItem dense>
               <ListItemText className="detail-li-text">
                 <Typography variant="subtitle1">
                   {util.antiCamelCase(name)}
                 </Typography>
               </ListItemText>
-              {!opened.includes(name) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
             </ListItem>
-            <Collapse in={!!opened.includes(name)} unmountOnExit>
-              <List disablePadding dense>
-                {type === 'linkset' && value.map(item => (
-                  <ListItem key={item['@rid']} dense>
+            <List disablePadding dense>
+              {type === 'linkset' && value.map(item => (
+                <>
+                  <ListItem key={item['@rid']} button onClick={() => this.handleExpand(item)} dense>
                     <div className="nested-spacer" />
                     <ListItemText className="detail-li-text">
-                      <div className="detail-identifiers">
-                        <Typography variant="subtitle1">
-                          {item['@class']}
+                      <div className="detail-identifiers-linkset">
+                        <Typography variant="subtitle1" color={opened.includes(item) ? 'secondary' : 'textSecondary'}>
+                          {util.antiCamelCase(item['@class'])}
                         </Typography>
-                        <Typography>
+                        <Typography color={opened.includes(item) ? 'secondary' : 'textSecondary'}>
                           {schema.getPreview(item)}
                         </Typography>
                       </div>
                     </ListItemText>
+                    {!opened.includes(item) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
                   </ListItem>
-                ))}
-                {type === 'embeddedset' && value.map(item => (
-                  <ListItem key={item} dense>
-                    <div className="nested-spacer" />
-                    <ListItemText
-                      inset
-                      className="detail-li-text"
-                      primary={util.formatStr(item)}
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            </Collapse>
+                  <Collapse in={!!opened.includes(item)} unmountOnExit>
+                    {identifiers.map(propName => (
+                      <List disablePadding dense>
+                        <ListItem>
+                          <ListItemText>
+                            <div className="detail-identifiers">
+                              <Typography variant="subtitle2" className="detail-identifiers-nested">
+                                {util.antiCamelCase(propName)}
+                              </Typography>
+                              <Typography>
+                                {item[propName]}
+                              </Typography>
+                            </div>
+                          </ListItemText>
+                        </ListItem>
+                      </List>
+                    ))}
+                  </Collapse>
+                </>
+              ))}
+              { type === 'embeddedset' && value.map(item => (
+                <ListItem key={item} dense>
+                  <div className="nested-spacer" />
+                  <ListItemText
+                    inset
+                    className="detail-li-text"
+                    primary={util.formatStr(item)}
+                  />
+                </ListItem>
+              )) }
+            </List>
             <Divider />
           </React.Fragment>
         );
@@ -241,6 +256,9 @@ class DetailDrawer extends Component {
           previewStr = nestedValue && (DATE_KEYS.includes(name)
             ? (new Date(nestedValue)).toLocaleString()
             : util.formatStr(nestedValue));
+          if (previewStr === null) {
+            previewStr = value.displayName;
+          }
           if (type === 'embedded') {
             previewStr = value['@class'];
           }
@@ -326,7 +344,7 @@ class DetailDrawer extends Component {
         );
       }
       if (name === 'displayNameTemplate') {
-        name = 'description';
+        name = 'Statement';
         value = schema.getPreview(node);
       }
       return this.formatLongValue(name, value, true, isNested);
@@ -416,6 +434,7 @@ class DetailDrawer extends Component {
                     Linked Record
                   </ListSubheader>
                   {this.formatIdentifiers(isIn ? edge.out : edge.in, true)}
+                  {this.formatOtherProps(isIn ? edge.out : edge.in, true)}
                   {this.formatMetadata(isIn ? edge.out : edge.in, true)}
                 </List>
                 <Divider />

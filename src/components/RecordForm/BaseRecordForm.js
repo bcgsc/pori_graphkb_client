@@ -278,6 +278,7 @@ class BaseRecordForm extends React.Component {
    * Given some ordering of fields (possibly grouped) return the set of fields
    */
   renderFieldGroup(ordering) {
+    console.log('TCL: BaseRecordForm -> renderFieldGroup -> ordering', ordering);
     const { schema } = this.context;
     const { variant, actionInProgress } = this.props;
     const { content, errors } = this.state;
@@ -437,6 +438,8 @@ class BaseRecordForm extends React.Component {
     const { extraFields, fields } = sortAndGroupFields(model, {
       aboveFold, belowFold, collapseExtra, variant, groups,
     });
+    console.log('TCL: BaseRecordForm -> render -> aboveFold, belowFold, collapseExtra, variant, groups', aboveFold, belowFold, collapseExtra, variant, groups);
+    console.log('TCL: BaseRecordForm -> render -> fields', fields);
 
     let disableClassSelect = false;
     let defaultClassSelected = '';

@@ -559,6 +559,8 @@ class DetailDrawer extends Component {
             </IconButton>
           </div>
           <Divider />
+          {identifiers}
+          {otherProps}
           <ListItem
             button
             onClick={() => this.handleExpand('metadata')}
@@ -582,8 +584,6 @@ class DetailDrawer extends Component {
             </List>
           </Collapse>
           <Divider />
-          {identifiers}
-          {otherProps}
           {!isEdge && (
           <>
             <ListSubheader className="detail-drawer__relationships-subheader">

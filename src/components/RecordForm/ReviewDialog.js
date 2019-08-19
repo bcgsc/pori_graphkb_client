@@ -60,10 +60,11 @@ class ReviewDialog extends Component {
 
   constructor(props) {
     super(props);
-    const { content: initialContent, formVariant: initialMode } = props;
+    const { content: initialContent, formVariant: initialMode, content: { reviewStatus: initialStatementReviewStatus } } = props;
     this.state = {
       mode: initialMode,
       currContent: Object.assign({}, initialContent),
+      currReviewStatus: initialStatementReviewStatus,
       newReview: {},
     };
   }
@@ -72,18 +73,27 @@ class ReviewDialog extends Component {
   @boundMethod
   handleOldReviewUpdate(event, prop) {
     const { reviewIndex } = this.props;
-    const { currContent } = this.state;
+    const { currContent, currReviewStatus } = this.state;
     const newContent = Object.assign({}, currContent);
     newContent.reviews[reviewIndex][prop] = event;
-    this.setState({ currContent: newContent });
+    const statusOfReview = newContent.reviews[reviewIndex].status;
+    if (statusOfReview && statusOfReview !== currReviewStatus) {
+      this.setState({ currReviewStatus: statusOfReview, currContent: newContent });
+    } else {
+      this.setState({ currContent: newContent });
+    }
   }
 
   @boundMethod
   handleNewReviewUpdate(event, prop) {
-    const { newReview } = this.state;
+    const { newReview, currReviewStatus } = this.state;
     const updatedReview = Object.assign({}, newReview);
     updatedReview[prop] = event;
-    this.setState({ newReview: updatedReview });
+    if (updatedReview.status && currReviewStatus !== updatedReview.status) {
+      this.setState({ newReview: updatedReview, currReviewStatus: updatedReview.status });
+    } else {
+      this.setState({ newReview: updatedReview });
+    }
   }
 
   @boundMethod
@@ -171,7 +181,7 @@ class ReviewDialog extends Component {
       createdBy: user['@rid'].slice(1),
     };
 
-    const newContent = Object.assign({}, currContent);
+    let newContent = Object.assign({}, currContent);
     const clonedReviews = this.cloneReviews();
     newContent.reviews = clonedReviews;
 
@@ -182,6 +192,8 @@ class ReviewDialog extends Component {
     } else {
       newContent.reviews.push(updatedReview);
     }
+
+    newContent = this.updateReviewStatus(newContent);
 
     try {
       handleEdit({ content: newContent });
@@ -200,6 +212,42 @@ class ReviewDialog extends Component {
     } else {
       this.handleOldReviewUpdate(event, propName);
     }
+  }
+
+  @boundMethod
+  handleReviewStatusChange(event) {
+    this.setState({ currReviewStatus: event });
+  }
+
+  @boundMethod
+  renderReviewStatusField() {
+    const { formVariant, reviewIndex } = this.props;
+    const {
+      mode, currContent: { reviews }, currContent, currReviewStatus,
+    } = this.state;
+    console.log('TCL: ReviewDialog -> renderReviewStatusField -> reviewIndex, mode', reviewIndex, mode);;
+
+    console.log('TCL: ReviewDialog -> renderReviewStatusField -> reviews', reviews);
+
+
+    const model = schema.get('Statement');
+
+    const { properties } = model;
+
+    return (
+      <FormField
+        model={properties.statusReview}
+        value={currReviewStatus}
+        onValueChange={event => this.handleReviewStatusChange(event.target.value)}
+        schema={schema}
+        variant="view"
+        label="Statement Record Review Status"
+        content={currContent}
+        disabled={
+          formVariant === FORM_VARIANT.VIEW
+        }
+      />
+    );
   }
 
   @boundMethod
@@ -335,6 +383,7 @@ class ReviewDialog extends Component {
                 <Typography variant="title" color="secondary">
                 Statement Review
                 </Typography>
+                {this.renderReviewStatusField()}
                 <Typography variant="subtitle2" color="grey">
                   {description}
                 </Typography>
@@ -362,7 +411,7 @@ class ReviewDialog extends Component {
               </div>
             </div>
             <DialogContent className="review-dialog__fields">
-              {this.renderFieldGroup(grouping, formVariant)}
+              {this.renderFieldGroup(grouping)}
               <StatementTable
                 content={currContent}
                 schema={schema}

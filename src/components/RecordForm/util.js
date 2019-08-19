@@ -4,6 +4,14 @@ const FORM_VARIANT = {
   EDIT: 'edit', VIEW: 'view', DELETE: 'delete', NEW: 'new', SEARCH: 'search',
 };
 
+const REVIEW_STATUS = {
+  PENDING: 'pending',
+  NOT_REQ: 'not required',
+  PASSED: 'passed',
+  FAILED: 'failed',
+  INITIAL: 'initial',
+};
+
 /**
  * Validates a value against some property model and returns the new property tracking object
  */
@@ -156,4 +164,5 @@ export {
   FORM_VARIANT,
   sortAndGroupFields,
   validateValue,
+  REVIEW_STATUS,
 };

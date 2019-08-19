@@ -7,6 +7,7 @@ import {
   TableHead,
   TableRow,
   Typography,
+  Divider,
 } from '@material-ui/core';
 
 import DetailChip from '../DetailChip';
@@ -18,12 +19,15 @@ import DetailChip from '../DetailChip';
  */
 const StatementTable = (props) => {
   const { content, schema } = props;
+  console.log("TCL: StatementTable -> content", content);
 
   const renderStatementRow = statement => (
     <React.Fragment>
       <TableRow>
         <TableCell padding="dense">
-          Statment
+          <Typography variant="subtitle1" color="secondary">
+                  Related Statement Record
+          </Typography>
         </TableCell>
         <TableCell>
           <DetailChip
@@ -51,21 +55,10 @@ const StatementTable = (props) => {
   );
   return (
     <div className="statement-table">
-      <Typography variant="subtitle1" color="secondary">
-         Related Statement Record
-      </Typography>
       <Table className="statement-table__table">
-        <TableHead
-          className="statement-table__table-header"
-        >
-          <TableRow>
-            <TableCell padding="dense">
-              Relationship Class
-            </TableCell>
-            <TableCell padding="dense">
-              Related Record
-            </TableCell>
-          </TableRow>
+        <TableHead>
+          <TableCell />
+          <TableCell />
         </TableHead>
         <TableBody>
           { renderStatementRow(content) }

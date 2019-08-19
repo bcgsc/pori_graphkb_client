@@ -66,7 +66,8 @@ class DetailDrawer extends Component {
     const propIndex = properties.findIndex(prop => prop.name === propToBeMovedToTop);
     const updatedProperties = [...properties];
     if (propIndex !== 0 && propIndex !== -1) {
-      [updatedProperties[0], updatedProperties[propIndex]] = [properties[propIndex], properties[0]];
+      updatedProperties.splice(propIndex, 1);
+      updatedProperties.unshift(properties[propIndex]);
     }
     return updatedProperties;
   }

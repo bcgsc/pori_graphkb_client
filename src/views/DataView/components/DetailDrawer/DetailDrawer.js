@@ -56,6 +56,9 @@ class DetailDrawer extends Component {
   };
 
   /**
+   * Takes properties list to be displayed in detail drawer and promotes an inputted
+   * property to top of the list. For display purposes.
+   *
    * @property {Array.<PropertyModel>} properties array of property models to be rearranged
    * @property {string} propToBeMovedToTop property to be promoted to top of array for display
    */

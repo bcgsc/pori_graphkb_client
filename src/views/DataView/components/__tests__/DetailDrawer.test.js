@@ -306,7 +306,7 @@ describe('<DetailDrawer />', () => {
 
     expect(wrapper.find('.detail-identifiers-linkset').length).toEqual(2);
     expect(wrapper.find('.detail-identifiers-nested').length).toEqual(0);
-    expect(wrapper.find('div[role="button"]').at(1).text()).toEqual('FakelinkedRecord1 (19:1)');
+    expect(wrapper.find('div[role="button"]').at(1).text()).toEqual('MocklinkedRecord2 (19:1)');
     wrapper.find('div[role="button"]').at(1).simulate('click');
     expect(wrapper.find('.detail-identifiers-nested').length).toBeGreaterThan(0);
   });

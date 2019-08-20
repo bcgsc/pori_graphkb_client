@@ -52,11 +52,9 @@ const DIALOG_FADEOUT_TIME = 150;
 const HEAVILY_CONNECTED = 10;
 const TREE_LINK = 'SubClassOf';
 
-const getId = (node) => {
-  return node.data
-    ? node.data['@rid']
-    : node['@rid'] || node;
-};
+const getId = node => node.data
+  ? node.data['@rid']
+  : node['@rid'] || node;
 
 
 const computeNodeLevels = (graphLinks) => {
@@ -1018,7 +1016,6 @@ class GraphComponent extends Component {
       graphObjects,
       links,
       expandable,
-      refreshable: true,
     }, () => {
       this.updateColors();
       handleDetailDrawerClose();
@@ -1075,7 +1072,6 @@ class GraphComponent extends Component {
       links,
       graphObjects,
       actionsNode: null,
-      refreshable: true,
     }, () => {
       this.updateColors();
       handleDetailDrawerClose();

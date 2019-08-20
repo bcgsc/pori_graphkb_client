@@ -156,7 +156,7 @@ class DetailChip extends React.Component {
                     </IconButton>
                   </Link>
                 )}
-                {isEmbeddedLinkSet && (
+                {content && (
                   <IconButton onClick={() => { handleReviewSelection(content, reviewIndex); }}>
                     <OpenInNewIcon />
                   </IconButton>

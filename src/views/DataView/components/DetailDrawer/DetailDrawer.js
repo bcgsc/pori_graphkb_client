@@ -55,6 +55,23 @@ class DetailDrawer extends Component {
     isEdge: false,
   };
 
+  /**
+   * Takes properties list to be displayed in detail drawer and promotes an inputted
+   * property to top of the list. For display purposes.
+   *
+   * @property {Array.<PropertyModel>} properties array of property models to be rearranged
+   * @property {string} propToBeMovedToTop property to be promoted to top of array for display
+   */
+  static movePropToTop(properties, propToBeMovedToTop) {
+    const propIndex = properties.findIndex(prop => prop.name === propToBeMovedToTop);
+    const updatedProperties = [...properties];
+    if (propIndex !== 0 && propIndex !== -1) {
+      updatedProperties.splice(propIndex, 1);
+      updatedProperties.unshift(properties[propIndex]);
+    }
+    return updatedProperties;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -177,7 +194,9 @@ class DetailDrawer extends Component {
     const { schema } = this.context;
     const { opened } = this.state;
     const identifiers = ['displayName', '@rid', 'sourceId'];
-    return properties.map((prop) => {
+    const updatedProperties = DetailDrawer.movePropToTop(properties, 'displayName');
+
+    return updatedProperties.map((prop) => {
       const { type } = prop;
       let { name } = prop;
       let value = node[name];
@@ -540,6 +559,8 @@ class DetailDrawer extends Component {
             </IconButton>
           </div>
           <Divider />
+          {identifiers}
+          {otherProps}
           <ListItem
             button
             onClick={() => this.handleExpand('metadata')}
@@ -563,8 +584,6 @@ class DetailDrawer extends Component {
             </List>
           </Collapse>
           <Divider />
-          {identifiers}
-          {otherProps}
           {!isEdge && (
           <>
             <ListSubheader className="detail-drawer__relationships-subheader">

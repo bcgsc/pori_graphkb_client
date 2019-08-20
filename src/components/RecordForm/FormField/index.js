@@ -143,6 +143,7 @@ const FormField = (props) => {
         value={value || ''}
         errorText={errorFlag ? error.message || error : ''}
         disabled={generated || disabled}
+        className={className}
       />
     );
   } else if (type === 'link' || type === 'linkset') {

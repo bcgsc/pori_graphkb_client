@@ -81,7 +81,7 @@ describe('ReviewDialog', () => {
 
     expect(wrapper.find(ReviewDialog)).toBeDefined();
     expect(wrapper.find(ActionButton)).toHaveLength(1);
-    expect(wrapper.find(FormField)).toHaveLength(4);
+    expect(wrapper.find(FormField)).toHaveLength(5);
   });
 
   it('Mounts edit variant successfully', () => {
@@ -106,7 +106,7 @@ describe('ReviewDialog', () => {
 
     expect(wrapper.find(ReviewDialog)).toBeDefined();
     expect(wrapper.find(ActionButton)).toHaveLength(3);
-    expect(wrapper.find(FormField)).toHaveLength(4);
+    expect(wrapper.find(FormField)).toHaveLength(5);
   });
 
   it('Mounts new variant successfully', () => {
@@ -131,7 +131,7 @@ describe('ReviewDialog', () => {
 
     expect(wrapper.find(ReviewDialog)).toBeDefined();
     expect(wrapper.find(ActionButton)).toHaveLength(1);
-    expect(wrapper.find(FormField)).toHaveLength(1);
+    expect(wrapper.find(FormField)).toHaveLength(2);
   });
 
   it('adds Review Correctly', () => {
@@ -192,7 +192,7 @@ describe('ReviewDialog', () => {
     expectedMockContent.reviews.push(newReview);
 
     expect(handleEditSpy).toBeCalledWith({ content: expectedMockContent });
-    expect(wrapper.find(FormField)).toHaveLength(1);
+    expect(wrapper.find(FormField)).toHaveLength(2);
   });
 
   it('detects errors on form and does not submit review', () => {

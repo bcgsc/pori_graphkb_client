@@ -158,7 +158,6 @@ class GraphComponent extends Component {
       height: 0,
       graphOptions: new GraphOptions(),
       graphOptionsOpen: false,
-      refreshable: false,
       initState: null,
       actionsNodeIsEdge: false,
       expansionDialogOpen: false,

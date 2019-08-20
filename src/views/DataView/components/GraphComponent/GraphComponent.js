@@ -36,7 +36,6 @@ import {
 
 const {
   GRAPH_PROPERTIES: {
-    NODE_INIT_RADIUS,
     ZOOM_BOUNDS,
   },
   GRAPH_DEFAULTS: {

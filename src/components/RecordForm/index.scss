@@ -189,9 +189,17 @@ $closed-drawer-width: 56px;
   }
 
   &__fields {
-    padding: 0;
+    padding: 10px;
+    margin-top: 20px;
     width:70%;
     margin-left: 15%;
+    border: solid 1px darkgrey;
+    border-radius: 3px;
+
+    .statement-review-field{
+      margin-left: 32.5%;
+      width: 300px;
+    }
   }
 
   &__content {
@@ -214,11 +222,18 @@ $closed-drawer-width: 56px;
       justify-content: space-between;
       align-items: center;
       margin-top: 30px;
+      margin-left: 15%;
+      margin-right: 15%;
     }
 
     &__submit-button {
       margin: 20px;
       float: right;
+    }
+
+    .overall-statement-status-field{
+      width:300px;
+      margin-left: 61%;
     }
   }
 

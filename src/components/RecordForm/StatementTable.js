@@ -19,7 +19,6 @@ import DetailChip from '../DetailChip';
  */
 const StatementTable = (props) => {
   const { content, schema } = props;
-  console.log("TCL: StatementTable -> content", content);
 
   const renderStatementRow = statement => (
     <React.Fragment>

@@ -64,6 +64,9 @@ const EmbeddedListTable = (props) => {
               details={details}
               valueToString={
                 (record) => {
+                  if (record && record.name) {
+                    return record.name;
+                  }
                   if (record && record['@rid']) {
                     return record['@rid'];
                   }

@@ -184,6 +184,11 @@ $closed-drawer-width: 56px;
       align-items: center;
       width: 65%;
       margin: 40px 40px 0 16.2%;
+
+      .action-buttons{
+      float: right;
+      width: 300px;
+    }
     }
 
     .title{
@@ -192,6 +197,11 @@ $closed-drawer-width: 56px;
 
     .action-buttons{
       float: right;
+      display: flex;
+
+      button {
+        margin: 20px 0 0 10px;
+      }
     }
 
   }
@@ -200,6 +210,10 @@ $closed-drawer-width: 56px;
     padding: 0;
     width:70%;
     margin-left: 15%;
+
+    .review-status-btn{
+      width: 300px;
+    }
   }
 
 
@@ -246,5 +260,10 @@ $closed-drawer-width: 56px;
     width: 300px;
     float: right;
     margin: 20px;
+    margin-right: 70px;
   }
+}
+
+.test{
+  width: 300px;
 }

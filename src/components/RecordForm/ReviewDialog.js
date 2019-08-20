@@ -121,7 +121,8 @@ class ReviewDialog extends Component {
   handleEdit() {
     const { handleEdit, snackbar, onError } = this.props;
     const { currContent } = this.state;
-    const newContent = Object.assign({}, currContent);
+    let newContent = Object.assign({}, currContent);
+    newContent = this.updateReviewStatus(newContent);
 
     try {
       handleEdit({ content: newContent });
@@ -159,6 +160,16 @@ class ReviewDialog extends Component {
       return reviewsClone;
     }
     return [];
+  }
+
+  @boundMethod
+  updateReviewStatus(content) {
+    const { currReviewStatus } = this.state;
+    const newContent = Object.assign({}, content);
+    if (newContent.reviewStatus !== currReviewStatus) {
+      newContent.reviewStatus = currReviewStatus;
+    }
+    return newContent;
   }
 
   @boundMethod
@@ -221,30 +232,26 @@ class ReviewDialog extends Component {
 
   @boundMethod
   renderReviewStatusField() {
-    const { formVariant, reviewIndex } = this.props;
+    const { formVariant } = this.props;
     const {
-      mode, currContent: { reviews }, currContent, currReviewStatus,
+      currContent, currReviewStatus, mode,
     } = this.state;
-    console.log('TCL: ReviewDialog -> renderReviewStatusField -> reviewIndex, mode', reviewIndex, mode);;
-
-    console.log('TCL: ReviewDialog -> renderReviewStatusField -> reviews', reviews);
-
 
     const model = schema.get('Statement');
-
-    const { properties } = model;
+    const { properties: { reviewStatus } } = model;
 
     return (
       <FormField
-        model={properties.statusReview}
+        model={reviewStatus}
         value={currReviewStatus}
         onValueChange={event => this.handleReviewStatusChange(event.target.value)}
         schema={schema}
         variant="view"
-        label="Statement Record Review Status"
+        label="Statement Review Status"
         content={currContent}
+        className={formVariant === FORM_VARIANT.NEW ? '' : 'review-status-btn'}
         disabled={
-          formVariant === FORM_VARIANT.VIEW
+          formVariant === FORM_VARIANT.VIEW && mode !== FORM_VARIANT.EDIT
         }
       />
     );
@@ -383,7 +390,6 @@ class ReviewDialog extends Component {
                 <Typography variant="title" color="secondary">
                 Statement Review
                 </Typography>
-                {this.renderReviewStatusField()}
                 <Typography variant="subtitle2" color="grey">
                   {description}
                 </Typography>
@@ -408,9 +414,11 @@ class ReviewDialog extends Component {
                     view
                 </ActionButton>
                 )}
+                {formVariant === FORM_VARIANT.NEW && this.renderReviewStatusField()}
               </div>
             </div>
             <DialogContent className="review-dialog__fields">
+              {formVariant !== FORM_VARIANT.NEW && this.renderReviewStatusField()}
               {this.renderFieldGroup(grouping)}
               <StatementTable
                 content={currContent}

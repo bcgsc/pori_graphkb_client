@@ -421,19 +421,7 @@ class GraphComponent extends Component {
       d3Force.forceLink().id(d => d.getId()),
     ).force(
       'collide',
-      d3Force.forceCollide((d) => {
-        if (graphOptions.autoCollisionRadius) {
-          let obj = d.data;
-          let key = graphOptions.nodeLabelProp;
-          if (key.includes('.')) {
-            [, key] = key.split('.');
-            obj = graphOptions.nodeLabelProp.split('.')[0] || {};
-          }
-          if (!obj[key] || obj[key].length === 0) return graphOptions.collisionRadius;
-          return Math.max(obj[key].length * AUTO_SPACE_COEFFICIENT, NODE_INIT_RADIUS);
-        }
-        return graphOptions.collisionRadius;
-      }),
+      d3Force.forceCollide(graphOptions.collisionRadius),
     ).force(
       'charge',
       d3Force.forceManyBody()

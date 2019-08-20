@@ -7,7 +7,6 @@ import {
   TableHead,
   TableRow,
   Typography,
-  Divider,
 } from '@material-ui/core';
 
 import DetailChip from '../DetailChip';

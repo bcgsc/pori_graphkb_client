@@ -45,7 +45,6 @@ class LoginView extends React.Component {
       try {
         await auth.login(from);
       } catch (err) {
-        console.log('TCL: LoginView -> componentDidMount -> err', err);
         // redirect to the error page
         history.push('/error', { error: { name: err.name, message: err.message } });
         return;

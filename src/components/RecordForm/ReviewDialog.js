@@ -27,7 +27,7 @@ import { FORM_VARIANT } from './util';
 import util from '../../services/util';
 
 const schema = new Schema();
-const grouping = [['createdAt', 'createdBy'], 'status', 'comment'];
+const grouping = [['reviewStatus', 'status'], ['createdAt', 'createdBy'], 'comment'];
 
 /**
  * Dialog that handles the addition of statement reviews to a Statement
@@ -247,9 +247,8 @@ class ReviewDialog extends Component {
         onValueChange={event => this.handleReviewStatusChange(event.target.value)}
         schema={schema}
         variant="view"
-        label="Statement Review Status"
+        label="Status of Statement Reviews"
         content={currContent}
-        className={formVariant === FORM_VARIANT.NEW ? '' : 'review-status-btn'}
         disabled={
           formVariant === FORM_VARIANT.VIEW && mode !== FORM_VARIANT.EDIT
         }
@@ -325,21 +324,22 @@ class ReviewDialog extends Component {
             );
           } else {
             wrapper = (
-              <div className="review-status-button">
-                <FormField
-                  model={prop}
-                  value={review[name]}
-                  onValueChange={(event) => { this.handleValueChange(event.target.value, propName); }}
-                  schema={schema}
-                  label={util.antiCamelCase(name)}
-                  variant="view"
-                  key={name}
-                  content={currContent}
-                />
-              </div>
+              <FormField
+                model={prop}
+                value={review[name]}
+                onValueChange={(event) => { this.handleValueChange(event.target.value, propName); }}
+                schema={schema}
+                label={util.antiCamelCase(name)}
+                variant="view"
+                key={name}
+                content={currContent}
+              />
             );
           }
         }
+        fields.push(wrapper);
+      } else if (propName === 'reviewStatus') {
+        const wrapper = this.renderReviewStatusField();
         fields.push(wrapper);
       }
     });
@@ -369,7 +369,7 @@ class ReviewDialog extends Component {
             className="appbar"
           >
             <div className="appbar__title">
-              <Link to="/query" onClick={this.handleCloseNavBar}>
+              <Link to="/query" onClick={onClose}>
                 <Typography variant="h6">GraphKB</Typography>
                 <Typography variant="caption">v{process.env.npm_package_version}</Typography>
               </Link>
@@ -385,7 +385,7 @@ class ReviewDialog extends Component {
             </Tooltip>
           </AppBar>
           <div className="review-dialog__content">
-            <div className={`review-dialog__header${formVariant === FORM_VARIANT.NEW ? '__new' : ''}`}>
+            <div className="review-dialog__header">
               <div className="title">
                 <Typography variant="title" color="secondary">
                 Statement Review
@@ -414,11 +414,9 @@ class ReviewDialog extends Component {
                     view
                 </ActionButton>
                 )}
-                {formVariant === FORM_VARIANT.NEW && this.renderReviewStatusField()}
               </div>
             </div>
             <DialogContent className="review-dialog__fields">
-              {formVariant !== FORM_VARIANT.NEW && this.renderReviewStatusField()}
               {this.renderFieldGroup(grouping)}
               <StatementTable
                 content={currContent}

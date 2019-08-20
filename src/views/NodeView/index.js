@@ -81,7 +81,6 @@ class NodeView extends React.PureComponent {
       match: { params: { rid = null, modelName }, path },
       history,
     } = this.props;
-    console.log('TCL: render -> this.props', this.props);
     const { schema, auth } = this.context;
     const variant = getVariantType(path);
 

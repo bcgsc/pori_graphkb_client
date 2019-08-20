@@ -24,7 +24,7 @@ const StatementTable = (props) => {
       <TableRow>
         <TableCell padding="dense">
           <Typography variant="subtitle1" color="secondary">
-                  Related Statement Record
+                  Statement under review
           </Typography>
         </TableCell>
         <TableCell>

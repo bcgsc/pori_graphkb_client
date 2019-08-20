@@ -27,7 +27,7 @@ import { FORM_VARIANT } from './util';
 import util from '../../services/util';
 
 const schema = new Schema();
-const grouping = [['reviewStatus', 'status'], ['createdAt', 'createdBy'], 'comment'];
+const grouping = ['reviewStatus', 'status', ['createdAt', 'createdBy'], 'comment'];
 
 /**
  * Dialog that handles the addition of statement reviews to a Statement
@@ -247,7 +247,7 @@ class ReviewDialog extends Component {
         onValueChange={event => this.handleReviewStatusChange(event.target.value)}
         schema={schema}
         variant="view"
-        label="Status of Statement Reviews"
+        label="Overall Statement Status"
         content={currContent}
         disabled={
           formVariant === FORM_VARIANT.VIEW && mode !== FORM_VARIANT.EDIT
@@ -277,7 +277,6 @@ class ReviewDialog extends Component {
     const { properties } = model;
 
     const fields = [];
-
     ordering.forEach((propName) => {
       if (propName instanceof Array) { // subgrouping
         const key = propName.join('--');
@@ -293,7 +292,7 @@ class ReviewDialog extends Component {
         const prop = properties[propName];
         const { name } = prop;
         let wrapper;
-        if (!(formVariant === FORM_VARIANT.NEW)) {
+        if (!(formVariant === FORM_VARIANT.NEW || name === 'status')) {
           wrapper = (
             <FormField
               model={prop}
@@ -324,22 +323,21 @@ class ReviewDialog extends Component {
             );
           } else {
             wrapper = (
-              <FormField
-                model={prop}
-                value={review[name]}
-                onValueChange={(event) => { this.handleValueChange(event.target.value, propName); }}
-                schema={schema}
-                label={util.antiCamelCase(name)}
-                variant="view"
-                key={name}
-                content={currContent}
-              />
+              <div className="statement-review-field">
+                <FormField
+                  model={prop}
+                  value={review[name]}
+                  onValueChange={(event) => { this.handleValueChange(event.target.value, propName); }}
+                  schema={schema}
+                  label="Review Status"
+                  variant="view"
+                  key={name}
+                  content={currContent}
+                />
+              </div>
             );
           }
         }
-        fields.push(wrapper);
-      } else if (propName === 'reviewStatus') {
-        const wrapper = this.renderReviewStatusField();
         fields.push(wrapper);
       }
     });
@@ -416,49 +414,52 @@ class ReviewDialog extends Component {
                 )}
               </div>
             </div>
+            <div className="overall-statement-status-field">
+              {this.renderReviewStatusField()}
+            </div>
             <DialogContent className="review-dialog__fields">
               {this.renderFieldGroup(grouping)}
               <StatementTable
                 content={currContent}
                 schema={schema}
               />
-              {mode === FORM_VARIANT.EDIT && (
-                <div className="review-dialog__content__action-buttons">
-                  <ActionButton
-                    onClick={this.handleDelete}
-                    variant="outlined"
-                    size="large"
-                    message="Are you sure you want to delete this review"
-                  >
+            </DialogContent>
+            {mode === FORM_VARIANT.EDIT && (
+            <div className="review-dialog__content__action-buttons">
+              <ActionButton
+                onClick={this.handleDelete}
+                variant="outlined"
+                size="large"
+                message="Are you sure you want to delete this review"
+              >
                     DELETE
-                  </ActionButton>
-                  <ActionButton
-                    onClick={this.handleEdit}
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    requireConfirm={false}
-                  >
+              </ActionButton>
+              <ActionButton
+                onClick={this.handleEdit}
+                variant="contained"
+                color="primary"
+                size="large"
+                requireConfirm={false}
+              >
                     SUBMIT CHANGES
-                  </ActionButton>
-                </div>
-              )}
-              { formVariant === FORM_VARIANT.NEW && (
-                <div className="review-dialog__content__submit-button">
-                  <ActionButton
-                    onClick={this.handleAddReview}
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    requireConfirm={false}
-                  >
+              </ActionButton>
+            </div>
+            )}
+            { formVariant === FORM_VARIANT.NEW && (
+            <div className="review-dialog__content__submit-button">
+              <ActionButton
+                onClick={this.handleAddReview}
+                variant="contained"
+                color="primary"
+                size="large"
+                requireConfirm={false}
+              >
                     SUBMIT
-                  </ActionButton>
-                </div>
-              )
+              </ActionButton>
+            </div>
+            )
 
               }
-            </DialogContent>
           </div>
         </div>
       </Dialog>

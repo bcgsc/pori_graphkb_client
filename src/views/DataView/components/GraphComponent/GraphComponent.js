@@ -56,7 +56,10 @@ const getId = node => node.data
   ? node.data['@rid']
   : node['@rid'] || node;
 
-
+/**
+ * Use the graph links to rank nodes in the graph based on their subclass relationships. Root nodes
+ * are given 0 and child nodes are given 1 more than the rank of their highest ranked parent node
+ */
 const computeNodeLevels = (graphLinks) => {
   const nodes = {};
   graphLinks.forEach((edge) => {

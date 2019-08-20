@@ -7,7 +7,6 @@ const CompressionPlugin = require('compression-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 
-
 const BASE_DIR = path.resolve(__dirname, '../..');
 const SRC_PATH = path.resolve(BASE_DIR, 'src');
 const DIST_PATH = path.resolve(BASE_DIR, 'dist');

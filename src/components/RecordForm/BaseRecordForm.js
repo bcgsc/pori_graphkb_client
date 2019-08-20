@@ -52,7 +52,6 @@ class BaseRecordForm extends React.Component {
     name: PropTypes.string.isRequired,
     onValueChange: PropTypes.func,
     handleReviewSelection: PropTypes.func,
-
     value: PropTypes.object,
     variant: PropTypes.oneOf([
       FORM_VARIANT.EDIT,

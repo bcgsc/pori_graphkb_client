@@ -94,7 +94,6 @@ class RecordForm extends React.PureComponent {
 
     this.state = {
       actionInProgress: false,
-      addDialogOpen: false,
       reviewDialogOpen: false,
       currReview: {},
       reviewIndex: null,
@@ -286,11 +285,14 @@ class RecordForm extends React.PureComponent {
     const {
       title, variant, onTopClick, modelName, auth, onError, ...rest
     } = this.props;
-
     const {
-      actionInProgress, addDialogOpen, reviewDialogOpen, currReview, reviewIndex, formVariant, ...content
+      actionInProgress,
+      reviewDialogOpen,
+      currReview,
+      reviewIndex,
+      formVariant,
+      ...content
     } = this.state;
-
 
     const snackbar = this.context;
 

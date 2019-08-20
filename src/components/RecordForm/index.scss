@@ -177,20 +177,6 @@ $closed-drawer-width: 56px;
     width: 65%;
     margin-left: 16.2%;
 
-    &__new {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      width: 65%;
-      margin: 40px 40px 0 16.2%;
-
-      .action-buttons{
-        float: right;
-        width: 300px;
-      }
-    }
-
     .title{
       float: left;
     }
@@ -198,10 +184,6 @@ $closed-drawer-width: 56px;
     .action-buttons{
       float: right;
       display: flex;
-
-      button {
-        margin: 20px 0 0 10px;
-      }
     }
 
   }
@@ -210,9 +192,7 @@ $closed-drawer-width: 56px;
     padding: 0;
     width:70%;
     margin-left: 15%;
-
   }
-
 
   &__content {
     height: calc(100% - #{$banner-height});
@@ -240,9 +220,6 @@ $closed-drawer-width: 56px;
       margin: 20px;
       float: right;
     }
-
-
-
   }
 
   .statement-table {

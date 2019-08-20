@@ -560,7 +560,6 @@ class GraphComponent extends Component {
     this.setState({
       expandable,
       actionsNode: null,
-      refreshable: true,
       expandExclusions: [],
       nodes,
       links,
@@ -827,25 +826,17 @@ class GraphComponent extends Component {
     };
   }
 
-  @boundMethod
-  handleRefresh() {
-    this.setState({ data: null });
-  }
-
   /**
    * Restarts simulation with initial nodes and links present. These are determined by the
    * first state rendered when the component mounts.
    */
   @boundMethod
   refresh() {
+    const { simulation } = this.state;
     const { handleDetailDrawerClose } = this.props;
-    this.handleRefresh();
-    this.setState({
-      nodes: [],
-      links: [],
-      graphObjects: {},
-      refreshable: false,
-    }, this.componentDidMount);
+    simulation.alpha(1).restart();
+    this.initSimulation();
+    this.drawGraph();
     handleDetailDrawerClose();
   }
 
@@ -944,11 +935,11 @@ class GraphComponent extends Component {
    * @param {boolean} isAdvanced - Advanced option flag.
    */
   @boundMethod
-  handleGraphOptionsChange(event, isAdvanced) {
-    const { graphOptions, refreshable } = this.state;
+  handleGraphOptionsChange(event) {
+    const { graphOptions } = this.state;
     graphOptions[event.target.name] = event.target.value;
     graphOptions.load();
-    this.setState({ graphOptions, refreshable: isAdvanced || refreshable }, () => {
+    this.setState({ graphOptions }, () => {
       this.initSimulation();
       this.drawGraph();
       this.updateColors();
@@ -1166,7 +1157,6 @@ class GraphComponent extends Component {
       actionsNode,
       expandable,
       graphOptions,
-      refreshable,
       actionsNodeIsEdge,
       graphOptionsOpen,
       expansionDialogOpen,
@@ -1314,12 +1304,11 @@ class GraphComponent extends Component {
             </IconButton>
           </Tooltip>
 
-          <Tooltip placement="top" title="Restart simulation with initial nodes">
+          <Tooltip placement="top" title="Rerun Layout">
             <div className="refresh-wrapper">
               <IconButton
                 color="primary"
                 onClick={this.refresh}
-                disabled={!refreshable}
               >
                 <RefreshIcon />
               </IconButton>

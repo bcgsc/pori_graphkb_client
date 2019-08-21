@@ -11,8 +11,7 @@ import {
   Typography,
   Avatar,
 } from '@material-ui/core';
-import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
-
+import EmbeddedIcon from '@material-ui/icons/InsertLink';
 import DetailChip from '../../DetailChip';
 
 
@@ -34,7 +33,7 @@ const EmbeddedListTable = (props) => {
     const {
       status, createdBy: { name }, createdBy,
     } = value;
-    console.log("TCL: EmbeddedRecordRow -> value", value);
+    console.log('TCL: EmbeddedRecordRow -> value', value);
     const previewStr = `${name} (${createdBy['@rid']})`;
     const details = {};
     Object.keys(value).forEach((prop) => {
@@ -52,7 +51,7 @@ const EmbeddedListTable = (props) => {
           <TableCell>
             <DetailChip
               ChipProps={{
-                avatar: (<Avatar><AssignmentOutlinedIcon /></Avatar>),
+                avatar: (<Avatar><EmbeddedIcon /></Avatar>),
                 variant: 'outlined',
                 color: 'secondary',
               }

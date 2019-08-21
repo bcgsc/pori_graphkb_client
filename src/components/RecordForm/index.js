@@ -1,17 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Paper, Typography, Button, Switch,
+  Paper, Typography, Button,
 } from '@material-ui/core';
 import { boundMethod } from 'autobind-decorator';
-import EditIcon from '@material-ui/icons/Edit';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 
 import api from '../../services/api';
-import ActionButton from '../ActionButton';
-
+import StyledSwitch from '../StyledSwitch';
 import './index.scss';
 import BaseNodeForm from './BaseRecordForm';
 import { FORM_VARIANT } from './util';
@@ -326,15 +324,13 @@ class RecordForm extends React.PureComponent {
             </Button>
             ))}
             {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
-            <div className="toggle-switch">
-              <Typography variant="h5">View</Typography>
-              <Switch
+              <StyledSwitch
                 color="primary"
                 onClick={() => onTopClick(content)}
                 checked={variant === FORM_VARIANT.EDIT}
+                opt1="View"
+                opt2="Edit"
               />
-              <Typography variant="h5">Edit</Typography>
-            </div>
             )}
           </div>
           {formVariant && (

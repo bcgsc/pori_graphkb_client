@@ -10,7 +10,6 @@ import {
   TextField,
   Tooltip,
 } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
 import GoBackIcon from '@material-ui/icons/Replay';
 
 import Schema from '../../services/schema';
@@ -20,6 +19,7 @@ import StatementTable from './StatementTable';
 import ActionButton from '../ActionButton';
 import { FORM_VARIANT } from './util';
 import util from '../../services/util';
+import StyledSwitch from '../StyledSwitch';
 
 const schema = new Schema();
 const grouping = ['reviewStatus', 'status', ['createdAt', 'createdBy'], 'comment'];
@@ -231,8 +231,17 @@ class ReviewDialog extends Component {
   }
 
   @boundMethod
+  handleModeToggle() {
+    const { mode } = this.state;
+    if (mode === FORM_VARIANT.VIEW) {
+      this.setState({ mode: FORM_VARIANT.EDIT });
+    } else {
+      this.setState({ mode: FORM_VARIANT.VIEW });
+    }
+  }
+
+  @boundMethod
   renderReviewStatusField() {
-    const { formVariant } = this.props;
     const {
       currContent, currReviewStatus, mode,
     } = this.state;
@@ -250,7 +259,7 @@ class ReviewDialog extends Component {
         label="Overall Statement Status"
         content={currContent}
         disabled={
-          formVariant === FORM_VARIANT.VIEW && mode !== FORM_VARIANT.EDIT
+          mode === FORM_VARIANT.VIEW
         }
       />
     );
@@ -333,6 +342,9 @@ class ReviewDialog extends Component {
                   variant="view"
                   key={name}
                   content={currContent}
+                  disabled={
+                    mode === FORM_VARIANT.VIEW
+                  }
                 />
               </div>
             );
@@ -394,24 +406,14 @@ class ReviewDialog extends Component {
                 </Typography>
               </div>
               <div className="action-buttons">
-                {mode === FORM_VARIANT.VIEW && (
-                <ActionButton
-                  variant="outlined"
-                  onClick={() => { this.setState({ mode: FORM_VARIANT.EDIT }); }}
-                  requireConfirm={false}
-                >
-                    Edit
-                  <EditIcon />
-                </ActionButton>
-                )}
-                {mode === FORM_VARIANT.EDIT && (
-                <ActionButton
-                  variant="outlined"
-                  onClick={() => { this.setState({ mode: FORM_VARIANT.VIEW }); }}
-                  requireConfirm={false}
-                >
-                    view
-                </ActionButton>
+                {formVariant !== FORM_VARIANT.NEW && (
+                  <StyledSwitch
+                    onClick={this.handleModeToggle}
+                    checked={mode === FORM_VARIANT.EDIT}
+                    opt1="View"
+                    opt2="Edit"
+                    color="primary"
+                  />
                 )}
               </div>
             </div>

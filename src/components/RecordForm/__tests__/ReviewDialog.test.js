@@ -8,6 +8,7 @@ import { KBContext } from '../../KBContext';
 import Schema from '../../../services/schema';
 import FormField from '../FormField';
 import ActionButton from '../../ActionButton';
+import StyledSwitch from '../../StyledSwitch';
 
 
 describe('ReviewDialog', () => {
@@ -80,7 +81,7 @@ describe('ReviewDialog', () => {
     wrapper.update();
 
     expect(wrapper.find(ReviewDialog)).toBeDefined();
-    expect(wrapper.find(ActionButton)).toHaveLength(1);
+    expect(wrapper.find(StyledSwitch)).toHaveLength(1);
     expect(wrapper.find(FormField)).toHaveLength(5);
   });
 
@@ -105,7 +106,8 @@ describe('ReviewDialog', () => {
     wrapper.update();
 
     expect(wrapper.find(ReviewDialog)).toBeDefined();
-    expect(wrapper.find(ActionButton)).toHaveLength(3);
+    expect(wrapper.find(StyledSwitch)).toHaveLength(1);
+    expect(wrapper.find(ActionButton)).toHaveLength(2);
     expect(wrapper.find(FormField)).toHaveLength(5);
   });
 
@@ -123,6 +125,8 @@ describe('ReviewDialog', () => {
             }}
             handleEdit={jest.fn()}
             formVariant="new"
+            newReview={{}}
+            updateNewReview={() => {}}
           />
         </KBContext.Provider>
       </BrowserRouter>
@@ -161,6 +165,8 @@ describe('ReviewDialog', () => {
             handleEdit={handleEditSpy}
             formVariant="new"
             auth={fakeAuth}
+            newReview={{}}
+            updateNewReview={() => {}}
           />
         </KBContext.Provider>
       </BrowserRouter>
@@ -174,7 +180,7 @@ describe('ReviewDialog', () => {
 
     expect(wrapper.find(ActionButton)).toHaveLength(1);
     const submitBtn = wrapper.find(ActionButton).at(0);
-    expect(submitBtn.text()).toEqual('SUBMIT');
+    expect(submitBtn.text()).toEqual('ADD REVIEW');
     submitBtn.prop('onClick')();
     wrapper.update();
 
@@ -221,6 +227,8 @@ describe('ReviewDialog', () => {
             handleEdit={handleEditSpy}
             formVariant="new"
             auth={fakeAuth}
+            newReview={{}}
+            updateNewReview={() => {}}
           />
         </KBContext.Provider>
       </BrowserRouter>
@@ -234,7 +242,7 @@ describe('ReviewDialog', () => {
 
     expect(wrapper.find(ActionButton)).toHaveLength(1);
     const submitBtn = wrapper.find(ActionButton).at(0);
-    expect(submitBtn.text()).toEqual('SUBMIT');
+    expect(submitBtn.text()).toEqual('ADD REVIEW');
     submitBtn.prop('onClick')();
     wrapper.update();
 
@@ -266,8 +274,8 @@ describe('ReviewDialog', () => {
     wrapper.update();
     expect(wrapper.find(ReviewDialog)).toBeDefined();
 
-    expect(wrapper.find(ActionButton)).toHaveLength(3);
-    const delBtn = wrapper.find(ActionButton).at(1);
+    expect(wrapper.find(ActionButton)).toHaveLength(2);
+    const delBtn = wrapper.find(ActionButton).at(0);
     expect(delBtn.text()).toEqual('DELETE');
     delBtn.prop('onClick')();
     wrapper.update();
@@ -321,8 +329,8 @@ describe('ReviewDialog', () => {
     reviewDialogInstance.setState({ currContent: editedContent });
     wrapper.update();
 
-    expect(wrapper.find(ActionButton)).toHaveLength(3);
-    const delBtn = wrapper.find(ActionButton).at(2);
+    expect(wrapper.find(ActionButton)).toHaveLength(2);
+    const delBtn = wrapper.find(ActionButton).at(1);
     expect(delBtn.text()).toEqual('SUBMIT CHANGES');
     delBtn.prop('onClick')();
     wrapper.update();

@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { boundMethod } from 'autobind-decorator';
 import {
-  Link,
-} from 'react-router-dom';
-import {
   Dialog,
   Typography,
   AppBar,
@@ -54,19 +51,22 @@ class ReviewDialog extends Component {
     formVariant: PropTypes.string.isRequired,
     auth: PropTypes.object.isRequired,
     onError: PropTypes.func.isRequired,
+    updateNewReview: PropTypes.func.isRequired,
+    newReview: PropTypes.object.isRequired,
   };
 
   constructor(props) {
     super(props);
-    const { content: initialContent, formVariant: initialMode, content: { reviewStatus: initialStatementReviewStatus } } = props;
+    const {
+      content: initialContent, formVariant: initialMode, content: { reviewStatus: initialStatementReviewStatus }, newReview,
+    } = props;
     this.state = {
       mode: initialMode,
       currContent: Object.assign({}, initialContent),
       currReviewStatus: initialStatementReviewStatus,
-      newReview: {},
+      newReview,
     };
   }
-
 
   @boundMethod
   handleOldReviewUpdate(event, prop) {
@@ -84,14 +84,15 @@ class ReviewDialog extends Component {
 
   @boundMethod
   handleNewReviewUpdate(event, prop) {
-    const { newReview, currReviewStatus } = this.state;
-    const updatedReview = Object.assign({}, newReview);
+    const { updateNewReview } = this.props;
+    const { newReview: updatedReview, currReviewStatus } = this.state;
     updatedReview[prop] = event;
     if (updatedReview.status && currReviewStatus !== updatedReview.status) {
       this.setState({ newReview: updatedReview, currReviewStatus: updatedReview.status });
     } else {
       this.setState({ newReview: updatedReview });
     }
+    updateNewReview(updatedReview);
   }
 
   @boundMethod
@@ -124,7 +125,7 @@ class ReviewDialog extends Component {
 
     try {
       handleEdit({ content: newContent });
-      this.setState({ mode: 'view' });
+      this.setState({ mode: FORM_VARIANT.VIEW });
       snackbar.add('review has been successfully updated');
     } catch (err) {
       console.error(err);
@@ -174,7 +175,7 @@ class ReviewDialog extends Component {
   handleAddReview() {
     const { newReview, currContent } = this.state;
     const {
-      handleEdit, snackbar, auth: { user }, onClose, onError,
+      handleEdit, snackbar, auth: { user }, onClose, onError, updateNewReview,
     } = this.props;
 
     const formContainsError = this.doesFormContainErrors();
@@ -206,6 +207,7 @@ class ReviewDialog extends Component {
 
     try {
       handleEdit({ content: newContent });
+      updateNewReview({});
       onClose();
     } catch (err) {
       console.error(err);

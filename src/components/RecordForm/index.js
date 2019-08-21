@@ -98,6 +98,7 @@ class RecordForm extends React.PureComponent {
       currReview: {},
       reviewIndex: null,
       formVariant: null,
+      newReview: {},
       ...defaultContent,
     };
     this.controllers = [];
@@ -281,6 +282,11 @@ class RecordForm extends React.PureComponent {
     });
   }
 
+  @boundMethod
+  handleNewReviewUpdate(content) {
+    this.setState({ newReview: content });
+  }
+
   render() {
     const {
       title, variant, onTopClick, modelName, auth, onError, ...rest
@@ -291,6 +297,7 @@ class RecordForm extends React.PureComponent {
       currReview,
       reviewIndex,
       formVariant,
+      newReview,
       ...content
     } = this.state;
 
@@ -347,10 +354,13 @@ class RecordForm extends React.PureComponent {
               auth={auth}
               reviewIndex={reviewIndex}
               statement={content}
+              newReview={newReview}
+              updateNewReview={this.handleNewReviewUpdate}
               handleEdit={this.handleEditAction}
               snackbar={snackbar}
               formVariant={formVariant}
               onError={onError}
+
             />
           )
 

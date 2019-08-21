@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { boundMethod } from 'autobind-decorator';
-
 import {
   Link,
 } from 'react-router-dom';
-
 import {
   Dialog,
   Typography,
@@ -368,10 +366,10 @@ class ReviewDialog extends Component {
             className="appbar"
           >
             <div className="appbar__title">
-              <Link to="/query" onClick={onClose}>
+              <IconButton onClick={onClose}>
                 <Typography variant="h6">GraphKB</Typography>
                 <Typography variant="caption">v{process.env.npm_package_version}</Typography>
-              </Link>
+              </IconButton>
             </div>
             <Tooltip title="Go back to Statement Record">
               <IconButton

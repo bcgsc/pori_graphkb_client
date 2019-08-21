@@ -453,7 +453,7 @@ class ReviewDialog extends Component {
                 size="large"
                 requireConfirm={false}
               >
-                    SUBMIT
+                    ADD REVIEW
               </ActionButton>
             </div>
             )

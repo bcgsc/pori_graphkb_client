@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Paper, Typography, Button,
+  Paper, Typography, Button, Switch,
 } from '@material-ui/core';
 import { boundMethod } from 'autobind-decorator';
 import EditIcon from '@material-ui/icons/Edit';
@@ -291,6 +291,7 @@ class RecordForm extends React.PureComponent {
     const {
       title, variant, onTopClick, modelName, auth, onError, ...rest
     } = this.props;
+
     const {
       actionInProgress,
       reviewDialogOpen,
@@ -314,17 +315,6 @@ class RecordForm extends React.PureComponent {
         <div className="record-form__header">
           <Typography variant="h1" className="title">{title}</Typography>
           <div className="header-action-buttons">
-            {variant === FORM_VARIANT.VIEW && onTopClick && (
-            <Button
-              onClick={() => onTopClick(content)}
-              variant="outlined"
-              disabled={actionInProgress}
-              className="float-right"
-            >
-              Edit
-              <EditIcon />
-            </Button>
-            )}
             {(content['@class'] === 'Statement' && variant === FORM_VARIANT.EDIT && (
             <Button
               onClick={() => this.setState({ reviewDialogOpen: true, formVariant: FORM_VARIANT.NEW })}
@@ -335,15 +325,16 @@ class RecordForm extends React.PureComponent {
               <LocalLibraryIcon />
             </Button>
             ))}
-            {variant === FORM_VARIANT.EDIT && onTopClick && (
-            <ActionButton
-              onClick={() => onTopClick(content)}
-              variant="outlined"
-              message="Are you sure you want to leave this page?"
-              disabled={actionInProgress}
-            >
-              View
-            </ActionButton>
+            {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
+            <div className="toggle-switch">
+              <Typography variant="h5">View</Typography>
+              <Switch
+                color="primary"
+                onClick={() => onTopClick(content)}
+                checked={variant === FORM_VARIANT.EDIT}
+              />
+              <Typography variant="h5">Edit</Typography>
+            </div>
             )}
           </div>
           {formVariant && (

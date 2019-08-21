@@ -34,10 +34,13 @@ const EmbeddedListTable = (props) => {
     const {
       status, createdBy: { name }, createdBy,
     } = value;
+    console.log("TCL: EmbeddedRecordRow -> value", value);
     const previewStr = `${name} (${createdBy['@rid']})`;
     const details = {};
     Object.keys(value).forEach((prop) => {
-      details[prop] = value[prop];
+      if (prop !== '@rid') {
+        details[prop] = value[prop];
+      }
     });
 
     return (

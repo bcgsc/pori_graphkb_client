@@ -358,7 +358,8 @@ class ReviewDialog extends Component {
         open={isOpen}
         onClose={onClose}
         onEscapeKeyDown={onClose}
-        fullScreen
+        maxWidth="xl"
+        fullWidth
         TransitionProps={{ unmountOnExit: true }}
       >
         <div className="review-dialog">

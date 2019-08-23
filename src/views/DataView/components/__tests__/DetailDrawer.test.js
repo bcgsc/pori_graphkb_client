@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import DetailDrawer from '../DetailDrawer';
 import Schema from '../../../../services/schema';
 import { KBContext } from '../../../../components/KBContext';
-import { Authentication } from '../../../../services/auth';
+import { } from '../../../../services/auth';
 
 const mockModels = {
   test: {
@@ -110,7 +110,7 @@ const testSchema = new Schema(new MockSchemaDef(mockModels));
 
 const ProvideSchema = ({ children = [], schema }) => (  // eslint-disable-line
   <BrowserRouter>
-    <KBContext.Provider value={{ schema, auth: new Authentication() }}>
+    <KBContext.Provider value={{ schema }}>
       {children}
     </KBContext.Provider>
   </BrowserRouter>

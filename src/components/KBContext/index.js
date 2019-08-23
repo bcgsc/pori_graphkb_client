@@ -8,7 +8,16 @@ const KBContext = React.createContext({ schema: null, auth: null });
 
 const withKB = Child => props => (
   <KBContext.Consumer>
-    {kbValues => <Child schema={kbValues.schema} auth={kbValues.auth} {...props} />}
+    {kbValues => (
+      <Child
+        schema={kbValues.schema}
+        authorizationToken={kbValues.authorizationToken}
+        setAuthorizationToken={kbValues.setAuthorizationToken}
+        authenticationToken={kbValues.authenticationToken}
+        setAuthenticationToken={kbValues.setAuthenticationToken}
+        {...props}
+      />
+    )}
   </KBContext.Consumer>
 );
 

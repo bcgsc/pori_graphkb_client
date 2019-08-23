@@ -1,8 +1,7 @@
 /**
  * @module /Main
  */
-import React from 'react';
-import { boundMethod } from 'autobind-decorator';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Route,
   Redirect,
@@ -20,6 +19,9 @@ import {
 } from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
+import fetchIntercept from 'fetch-intercept';
+
+import config from '../../static/config';
 
 import './Main.scss';
 import {
@@ -32,7 +34,9 @@ import {
   QueryView,
   QueryBuilderView,
 } from '..';
-import { Authentication } from '../../services/auth';
+import {
+  getUsername, isAdmin, logout, isAuthenticated,
+} from '../../services/auth';
 import Schema from '../../services/schema';
 import { KBContext } from '../../components/KBContext';
 import { MainNav } from './components';
@@ -40,164 +44,155 @@ import AuthenticatedRoute from '../../components/AuthenticatedRoute';
 
 import NodeView from '../NodeView';
 
+const {
+  API_BASE_URL,
+} = config;
+
 
 /**
  * Entry point to application. Handles routing, app theme, and logged in state.
  */
-class Main extends React.Component {
-  constructor(props) {
-    super(props);
+const Main = () => {
+  const schema = new Schema();
 
-    this.state = {
-      anchorEl: null,
-      drawerOpen: false,
-      activeLink: '/query',
-    };
+  const [authorizationToken, setAuthorizationToken] = useState('');
+  const [authenticationToken, setAuthenticationToken] = useState('');
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [activeLink, setActiveLink] = useState('/query');
 
-    this.schema = new Schema();
-    this.auth = new Authentication();
-  }
+  const dropdown = useRef();
 
-  /**
-   * Opens user dropdown menu.
-   */
-  @boundMethod
-  handleOpen() {
-    this.setState({ anchorEl: this.dropdown });
-  }
+  useEffect(() => {
+    const unregister = fetchIntercept.register({
+      request: (fetchUrl, fetchConfig) => {
+        if (fetchUrl.startsWith(API_BASE_URL)) {
+          const newConfig = { ...fetchConfig };
+          if (!newConfig.headers) {
+            newConfig.headers = {};
+          }
+          newConfig.headers.Authorization = authorizationToken;
+          return [fetchUrl, newConfig];
+        }
+        return [fetchUrl, fetchConfig];
+      },
+    });
+    return unregister;
+  }, [authorizationToken]);
 
-  /**
-   * Closes user dropdown menu.
-   */
-  @boundMethod
-  handleClose() {
-    this.setState({ anchorEl: null });
-  }
+  const handleOpen = () => setAnchorEl(dropdown.current);
+  const handleClose = () => setAnchorEl(null);
 
-  /**
-   * Sets main navigation drawer open state.
-   */
-  @boundMethod
-  handleNavBar({ isOpen, activeLink }) {
-    this.setState({ drawerOpen: isOpen, anchorEl: null, activeLink });
-  }
+  const handleNavBar = (isOpen, nextActiveLink) => {
+    setDrawerOpen(isOpen);
+    setAnchorEl(null);
+    setActiveLink(nextActiveLink);
+  };
 
-  @boundMethod
-  handleOpenNavBar() {
-    this.setState({ drawerOpen: true });
-  }
+  const handleOpenNavBar = () => setDrawerOpen(true);
+  const handleCloseNavBar = () => setDrawerOpen(false);
 
-  @boundMethod
-  handleCloseNavBar() {
-    this.setState({ drawerOpen: false });
-  }
-
-  render() {
-    const {
-      anchorEl,
-      drawerOpen,
-      activeLink,
-    } = this.state;
-
-    return (
-      <KBContext.Provider value={{ schema: this.schema, auth: this.auth }}>
-        <div className="main-view">
-          <AppBar
-            position="fixed"
-            className={`appbar ${drawerOpen ? 'appbar--drawer-open' : ''}`}
+  return (
+    <KBContext.Provider value={{
+      schema, authorizationToken, authenticationToken, setAuthorizationToken, setAuthenticationToken,
+    }}
+    >
+      <div className="main-view">
+        <AppBar
+          position="fixed"
+          className={`appbar ${drawerOpen ? 'appbar--drawer-open' : ''}`}
+        >
+          <IconButton
+            color="inherit"
+            onClick={handleOpenNavBar}
+            className={`appbar__btn ${drawerOpen ? 'appbar__btn--drawer-open' : ''}`}
           >
-            <IconButton
-              color="inherit"
-              onClick={this.handleOpenNavBar}
-              className={`appbar__btn ${drawerOpen ? 'appbar__btn--drawer-open' : ''}`}
-            >
-              <MenuIcon />
-            </IconButton>
-            <div className={`appbar__title ${drawerOpen ? 'appbar__title--drawer-open' : ''}`}>
-              <Link to="/query" onClick={this.handleCloseNavBar}>
-                <Typography variant="h6">GraphKB</Typography>
-                <Typography variant="caption">v{process.env.npm_package_version}</Typography>
-              </Link>
-            </div>
-            <div className="user-dropdown" ref={(node) => { this.dropdown = node; }}>
-              <div>
-                <Button
-                  classes={{ root: 'user-dropdown__icon' }}
-                  onClick={this.handleOpen}
-                  size="small"
-                >
-                  <PersonIcon />
-                  <Typography color="inherit">
-                    {this.auth.isAuthorized()
-                      ? this.auth.username
-                      : 'Logged Out'
-                    }
-                  </Typography>
-                </Button>
-                <Popover
-                  open={!!anchorEl}
-                  anchorEl={anchorEl}
-                  onClose={this.handleClose}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'left',
-                  }}
-                >
-                  <Card className="user-dropdown__content">
-                    <Link to="/feedback">
-                      <MenuItem onClick={this.handleClose}>
-                        Feedback
+            <MenuIcon />
+          </IconButton>
+          <div className={`appbar__title ${drawerOpen ? 'appbar__title--drawer-open' : ''}`}>
+            <Link to="/query" onClick={handleCloseNavBar}>
+              <Typography variant="h6">GraphKB</Typography>
+              <Typography variant="caption">v{process.env.npm_package_version}</Typography>
+            </Link>
+          </div>
+          <div className="user-dropdown" ref={dropdown}>
+            <div>
+              <Button
+                classes={{ root: 'user-dropdown__icon' }}
+                onClick={handleOpen}
+                size="small"
+              >
+                <PersonIcon />
+                <Typography color="inherit">
+                  {isAuthenticated({ authorizationToken, authenticationToken })
+                    ? getUsername({ authenticationToken, authorizationToken })
+                    : 'Logged Out'
+                  }
+                </Typography>
+              </Button>
+              <Popover
+                open={!!anchorEl}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+              >
+                <Card className="user-dropdown__content">
+                  <Link to="/feedback">
+                    <MenuItem onClick={handleClose}>
+                      Feedback
+                    </MenuItem>
+                  </Link>
+                  {isAdmin({ authorizationToken }) && (
+                    <Link to="/admin">
+                      <MenuItem onClick={handleClose}>
+                        Admin
                       </MenuItem>
                     </Link>
-                    {this.auth.isAdmin() && (
-                      <Link to="/admin">
-                        <MenuItem onClick={this.handleClose}>
-                          Admin
-                        </MenuItem>
-                      </Link>
-                    )}
-                    <MenuItem onClick={() => this.auth.logout()}>
-                      {
-                        this.auth.isAuthorized()
-                          ? 'Logout'
-                          : 'Login'
-                      }
-                    </MenuItem>
-                  </Card>
-                </Popover>
-              </div>
+                  )}
+                  <MenuItem onClick={() => logout()}>
+                    {
+                      isAuthenticated({ authorizationToken, authenticationToken })
+                        ? 'Logout'
+                        : 'Login'
+                    }
+                  </MenuItem>
+                </Card>
+              </Popover>
             </div>
-          </AppBar>
-          <MainNav isOpen={drawerOpen} onChange={this.handleNavBar} activeLink={activeLink} />
-          <section className={`main-view__content ${drawerOpen ? 'main-view__content--drawer-open' : ''}`}>
-            <Switch>
-              <AuthenticatedRoute path="/feedback" component={FeedbackView} />
-              <Route path="/login" component={LoginView} />
-              <Route exact path="/error" component={ErrorView} />
-              <Route path="/about" component={AboutView} />
-              <AuthenticatedRoute exact path="/query" component={QueryView} />
-              <AuthenticatedRoute path="/query/advanced/builder" component={QueryBuilderView} />
-              <AuthenticatedRoute path="/edit/:modelName/:rid" component={NodeView} />
-              <AuthenticatedRoute path="/edit/:rid" component={NodeView} />
-              <AuthenticatedRoute path="/new" exact component={NodeView} />
-              <AuthenticatedRoute path="/new/:modelName" component={NodeView} />
-              <Redirect exact path="/query/advanced" to="/search/v" />
-              <AuthenticatedRoute path="/search/:modelName" component={NodeView} />
-              <AuthenticatedRoute path="/view/:modelName/:rid" component={NodeView} />
-              <AuthenticatedRoute path="/view/:rid" component={NodeView} />
-              <AuthenticatedRoute path="/data" component={DataView} />
-              <AuthenticatedRoute path="/admin" admin component={AdminView} />
-              <Redirect from="/" to="/query" />
-            </Switch>
-          </section>
-        </div>
-      </KBContext.Provider>
-    );
-  }
-}
+          </div>
+        </AppBar>
+        <MainNav isOpen={drawerOpen} onChange={handleNavBar} activeLink={activeLink} />
+        <section className={`main-view__content ${drawerOpen ? 'main-view__content--drawer-open' : ''}`}>
+          <Switch>
+            <AuthenticatedRoute path="/feedback" component={FeedbackView} />
+            <Route path="/login" component={LoginView} />
+            <Route exact path="/error" component={ErrorView} />
+            <Route path="/about" component={AboutView} />
+            <AuthenticatedRoute exact path="/query" component={QueryView} />
+            <AuthenticatedRoute path="/query/advanced/builder" component={QueryBuilderView} />
+            <AuthenticatedRoute path="/edit/:modelName/:rid" component={NodeView} />
+            <AuthenticatedRoute path="/edit/:rid" component={NodeView} />
+            <AuthenticatedRoute path="/new" exact component={NodeView} />
+            <AuthenticatedRoute path="/new/:modelName" component={NodeView} />
+            <Redirect exact path="/query/advanced" to="/search/v" />
+            <AuthenticatedRoute path="/search/:modelName" component={NodeView} />
+            <AuthenticatedRoute path="/view/:modelName/:rid" component={NodeView} />
+            <AuthenticatedRoute path="/view/:rid" component={NodeView} />
+            <AuthenticatedRoute path="/data" component={DataView} />
+            <AuthenticatedRoute path="/admin" admin component={AdminView} />
+            <Redirect from="/" to="/query" />
+          </Switch>
+        </section>
+      </div>
+    </KBContext.Provider>
+  );
+};
 
 export default Main;

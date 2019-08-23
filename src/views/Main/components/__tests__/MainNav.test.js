@@ -5,7 +5,6 @@ import { BrowserRouter } from 'react-router-dom';
 
 import MainNav from '../MainNav';
 import { KBContext } from '../../../../components/KBContext';
-import { Authentication } from '../../../../services/auth';
 
 
 describe('<MainNav />', () => {
@@ -14,7 +13,7 @@ describe('<MainNav />', () => {
   it('correctly renders', () => {
     wrapper = mount(
       <BrowserRouter>
-        <KBContext.Provider value={{ auth: new Authentication() }}>
+        <KBContext.Provider value={{}}>
           <MainNav />
         </KBContext.Provider>
       </BrowserRouter>,

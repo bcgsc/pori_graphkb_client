@@ -9,6 +9,7 @@ import {
 } from '@material-ui/core';
 
 import api from '../../../services/api';
+import { isAuthorized } from '../../../services/auth';
 import { KBContext } from '../../../components/KBContext';
 import DetailChip from '../../../components/DetailChip';
 
@@ -26,8 +27,7 @@ class AboutClasses extends Component {
   }
 
   async componentDidMount() {
-    const { auth } = this.context;
-    if (auth.isAuthorized()) {
+    if (isAuthorized(this.context)) {
       this.getClassStats();
       this.getClassExamples();
     }
@@ -74,9 +74,7 @@ class AboutClasses extends Component {
     const {
       stats,
     } = this.state;
-    const { schema, auth } = this.context;
-
-    const isAuthorized = auth.isAuthorized();
+    const { schema } = this.context;
 
     const models = Object.values(schema.schema)
       .filter(m => !m.embedded && !m.isAbstract && !m.isEdge)
@@ -107,7 +105,7 @@ class AboutClasses extends Component {
         <React.Fragment key={name}>
           <ListItem>
             <ListItemIcon className="letter-icon">{
-              isAuthorized
+              isAuthorized(this.context)
                 ? count
                 : name.slice(0, 1)
             }
@@ -119,7 +117,7 @@ class AboutClasses extends Component {
               {!example
                 && count !== '0'
                 && count !== ''
-                && isAuthorized
+                && isAuthorized(this.context)
                 && (<CircularProgress size={20} />)
               }
               {example && (

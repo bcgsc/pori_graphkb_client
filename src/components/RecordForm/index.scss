@@ -110,6 +110,10 @@ $closed-drawer-width: 56px;
   }
 }
 
+.custom-positionFixed {
+  position: static;
+}
+
 .review-dialog{
   height: 100vh;
   min-width: $readable-min;
@@ -127,7 +131,6 @@ $closed-drawer-width: 56px;
     right: 0;
     transition-duration: $transitions__duration--standard;
     transition-property: left;
-    width: auto;
     z-index: calc(#{$drawer-z-index} + 3);
 
     &--drawer-open {

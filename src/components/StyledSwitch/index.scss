@@ -1,12 +1,13 @@
 @import '../../theme';
 
-.toggle-switch{
-  h5{
+.toggle-switch {
+
+  h5 {
     display: inline;
     color: grey;
   }
 }
 
-.custom-switchBase{
+.custom-switchBase {
   color: $palette__secondary--main;
 }

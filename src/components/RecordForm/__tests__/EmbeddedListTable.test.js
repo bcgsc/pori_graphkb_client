@@ -39,7 +39,7 @@ describe('EmbeddedListTable', () => {
       <EmbeddedListTable
         label="reviews"
         values={reviews}
-        handleReviewSelection={jest.fn()}
+        onReviewSelection={jest.fn()}
       />
     ));
 
@@ -51,7 +51,7 @@ describe('EmbeddedListTable', () => {
       <EmbeddedListTable
         label="reviews"
         values={[]}
-        handleReviewSelection={jest.fn()}
+        onReviewSelection={jest.fn()}
       />
     ));
 
@@ -64,7 +64,7 @@ describe('EmbeddedListTable', () => {
       <EmbeddedListTable
         label="reviews"
         values={reviews}
-        handleReviewSelection={jest.fn()}
+        onReviewSelection={jest.fn()}
       />
     ));
 
@@ -78,7 +78,7 @@ describe('EmbeddedListTable', () => {
       <EmbeddedListTable
         label="reviews"
         values={reviews}
-        handleReviewSelection={selectionSpy}
+        onReviewSelection={selectionSpy}
       />
     ));
 

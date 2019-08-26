@@ -139,7 +139,6 @@ class DataTable extends React.Component {
       ...schema.defineGridColumns(search),
     ]);
 
-
     this.detectColumns();
 
     const dataSource = {
@@ -575,9 +574,6 @@ class DataTable extends React.Component {
       if (data === undefined) {
         return null;
       } if (typeof value === 'object' && value !== null) {
-        if (Array.isArray(value)) {
-          return schema.getLabel(value[0], false);
-        }
         return schema.getLabel(value, false);
       }
       return value === undefined

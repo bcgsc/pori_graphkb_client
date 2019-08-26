@@ -257,7 +257,7 @@ class Schema {
     }
 
     const defineLinkSetColumn = (name) => {
-      const colId = name.slice(0);
+      const colId = name;
       const getLinkData = ({ data }) => data && (data[name] || []);
 
       return {

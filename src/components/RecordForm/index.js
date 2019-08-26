@@ -359,7 +359,7 @@ class RecordForm extends React.PureComponent {
           modelName={modelName}
           onSubmit={actions[variant] || null}
           onDelete={this.handleDeleteAction}
-          handleReviewSelection={this.handleReviewToggle}
+          onReviewSelection={this.handleReviewToggle}
           variant={variant}
           collapseExtra
           name="name"

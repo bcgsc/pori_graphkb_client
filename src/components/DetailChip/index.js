@@ -126,7 +126,7 @@ class DetailChip extends React.Component {
     const {
       content,
       reviewIndex,
-      handleReviewSelection,
+      onReviewSelection,
     } = isEmbeddedLinkSet;
 
     const { anchorEl } = this.state;
@@ -157,7 +157,7 @@ class DetailChip extends React.Component {
                   </Link>
                 )}
                 {content && (
-                  <IconButton onClick={() => { handleReviewSelection(content, reviewIndex); }}>
+                  <IconButton onClick={() => { onReviewSelection(content, reviewIndex); }}>
                     <OpenInNewIcon />
                   </IconButton>
                 )}

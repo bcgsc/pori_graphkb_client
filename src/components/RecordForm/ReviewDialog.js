@@ -376,8 +376,8 @@ class ReviewDialog extends Component {
       >
         <div className="review-dialog">
           <AppBar
-            position="fixed"
             className="appbar"
+            classes={{ positionFixed: 'custom-positionFixed' }}
           >
             <div className="appbar__title">
               <IconButton onClick={onClose}>

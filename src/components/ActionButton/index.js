@@ -12,7 +12,6 @@ import ConfirmActionDialog from './ConfirmActionDialog';
  * @property {string} props.message extended message to display in the dialog when asking the user to confirm
  * @property {function} props.onClick async function to be executed on the action being confirmed (if required)
  */
-
 function ActionButton(props) {
   const [dialogOpen, setDialogOpen] = useState(false);
 

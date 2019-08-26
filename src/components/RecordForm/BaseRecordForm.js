@@ -34,6 +34,7 @@ import {
  * @property {function} props.onValueChange the parent handler function
  * @property {function} props.onSubmit the parent handler function to submit the form contents
  * @property {function} props.onDelete the parent handler function to delete the current record
+ * @property {function} props.onReviewSelection parent handler to toggle Statement between statement reviews
  */
 class BaseRecordForm extends React.Component {
   static contextType = KBContext;
@@ -51,7 +52,7 @@ class BaseRecordForm extends React.Component {
     modelName: PropTypes.string,
     name: PropTypes.string.isRequired,
     onValueChange: PropTypes.func,
-    handleReviewSelection: PropTypes.func,
+    onReviewSelection: PropTypes.func,
     value: PropTypes.object,
     variant: PropTypes.oneOf([
       FORM_VARIANT.EDIT,
@@ -84,7 +85,7 @@ class BaseRecordForm extends React.Component {
     onValueChange: null,
     value: {},
     variant: FORM_VARIANT.VIEW,
-    handleReviewSelection: () => {},
+    onReviewSelection: () => {},
   };
 
   constructor(props) {
@@ -281,7 +282,7 @@ class BaseRecordForm extends React.Component {
    */
   renderFieldGroup(ordering) {
     const { schema } = this.context;
-    const { variant, actionInProgress, handleReviewSelection } = this.props;
+    const { variant, actionInProgress, onReviewSelection } = this.props;
     const { content, errors } = this.state;
 
     const model = this.currentModel();
@@ -317,7 +318,7 @@ class BaseRecordForm extends React.Component {
             variant={variant}
             key={name}
             content={content}
-            handleReviewSelection={handleReviewSelection}
+            onReviewSelection={onReviewSelection}
             disabled={(
               variant === FORM_VARIANT.VIEW
               || actionInProgress

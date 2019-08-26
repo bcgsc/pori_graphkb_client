@@ -234,6 +234,7 @@ class Schema {
 
     let allProps;
     const showEdges = [];
+    const showLinks = [];
 
     const showByDefault = [
       '@rid', '@class',
@@ -250,10 +251,24 @@ class Schema {
         showByDefault.push('version', 'name', 'usage');
       }
     } else {
-      showEdges.push('out_ImpliedBy', 'out_SupportedBy');
+      showLinks.push('impliedBy', 'supportedBy');
       allProps = this.get('Statement').queryProperties;
       showByDefault.push('source', 'appliesTo', 'relevance', 'evidenceLevel');
     }
+
+    const defineLinkSetColumn = (name) => {
+      const colId = name.slice(0);
+      const getLinkData = ({ data }) => data && (data[name] || []);
+
+      return {
+        colId,
+        field: colId,
+        sortable: false,
+        valueGetter: getLinkData,
+        width: 300,
+        cellRenderer: 'RecordList',
+      };
+    };
 
     const defineEdgeColumn = (name) => {
       const type = name.startsWith('out')
@@ -326,7 +341,9 @@ class Schema {
     ];
 
     Object.values(allProps)
-      .filter(prop => !exclude.includes(prop.name) && prop.type !== 'embedded')
+      .filter(prop => !exclude.includes(prop.name)
+        && prop.type !== 'embedded'
+        && prop.type !== 'linkset')
       .sort((p1, p2) => p1.name.localeCompare(p2.name))
       .forEach((prop) => {
         const hide = !showByDefault.includes(prop.name);
@@ -371,6 +388,10 @@ class Schema {
     defns.sort((d1, d2) => (d1.colId || d1.groupId).localeCompare(d2.colId || d2.groupId));
     showEdges.forEach((edgeName) => {
       defns.push(defineEdgeColumn(edgeName));
+    });
+
+    showLinks.forEach((link) => {
+      defns.push(defineLinkSetColumn(link));
     });
 
     return defns;

@@ -125,6 +125,14 @@ class DataTable extends React.Component {
     });
   };
 
+  autoSizeAll() {
+    const allColumnIds = [];
+    this.gridColumnApi.getAllColumns().forEach((column) => {
+      allColumnIds.push(column.colId);
+    });
+    this.gridColumnApi.autoSizeColumns(allColumnIds);
+  }
+
   initializeGrid() {
     const { search } = this.props;
     const { schema } = this.context;
@@ -150,6 +158,7 @@ class DataTable extends React.Component {
           .then(([rows, lastRow]) => {
             // update filters
             successCallback(rows, lastRow);
+            this.autoSizeAll();
           }).catch(() => failCallback());
       },
     };

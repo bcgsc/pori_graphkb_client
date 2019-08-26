@@ -1,26 +1,12 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
 import Switch from '@material-ui/core/Switch';
 import { Typography } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import colors from '../../_theme.scss';
 import './index.scss';
 
-const ColoredSwitch = withStyles({
-  switchBase: {
-    color: colors.secondaryMain,
-    '&$checked': {
-      color: colors.primaryMain,
-    },
-    '&$checked + $track': {
-      backgroundColor: colors.primaryMain,
-    },
-  },
-  checked: {},
-  track: {},
-})(Switch);
-
 /**
+ * Switch to toggle between different modes and indicate current mode.
+ *
  * @property {object} props
  * @property {bool} props.onClick parent onClick handler
  * @property {string} props.opt1 first option
@@ -35,10 +21,11 @@ function StyledSwitch(props) {
   return (
     <div className="toggle-switch">
       <Typography variant="h5">{opt1}</Typography>
-      <ColoredSwitch
+      <Switch
         color={color}
         onClick={() => onClick()}
         checked={checked}
+        classes={{ switchBase: 'custom-switchBase' }}
       />
       <Typography variant="h5">{opt2}</Typography>
     </div>

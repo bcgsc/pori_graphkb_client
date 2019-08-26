@@ -1,6 +1,12 @@
+@import '../../theme';
+
 .toggle-switch{
   h5{
     display: inline;
     color: grey;
   }
+}
+
+.custom-switchBase{
+  color: $palette__secondary--main;
 }

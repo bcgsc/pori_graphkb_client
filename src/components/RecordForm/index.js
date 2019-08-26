@@ -301,7 +301,7 @@ class RecordForm extends React.PureComponent {
         </div>
         <BaseNodeForm
           {...rest}
-          value={content || {}}
+          value={content}
           modelName={modelName}
           onSubmit={actions[variant] || null}
           onDelete={this.handleDeleteAction}

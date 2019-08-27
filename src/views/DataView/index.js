@@ -11,7 +11,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Tooltip from '@material-ui/core/Tooltip';
 import EditIcon from '@material-ui/icons/Edit';
 import { boundMethod } from 'autobind-decorator';
-
+import qs from 'qs';
 
 import kbSchema from '@bcgsc/knowledgebase-schema';
 
@@ -247,6 +247,20 @@ class DataView extends React.Component {
     }
   }
 
+  @boundMethod
+  handleGraphStateSaveIntoURL(data){
+    console.log("TCL: handleGraphStateSave -> data", data);
+    const { schema } = this.context;
+    const { nodes } = qs.parse(data.replace(/^\?/, ''));
+    console.log("TCL: handleGraphStateSaveIntoURL -> nodes", nodes)
+    const decodedContent = decodeURIComponent(nodes);
+    console.log("TCL: handleGraphStateSaveIntoURL -> decodedContent", decodedContent);
+    const base64decoded = atob(decodedContent);
+    console.log("TCL: handleGraphStateSaveIntoURL -> base64decoded", base64decoded);
+    const decodedNodes = JSON.parse(base64decoded);
+    console.log("TCL: handleGraphStateSaveIntoURL -> decodedNodes", decodedNodes);
+  }
+
   /**
    * Renders either the DataTable or Graph view depending on the parsed URL
    */
@@ -295,6 +309,7 @@ class DataView extends React.Component {
         schema={schema}
         localStorageKey={localStorageKey}
         onRecordClicked={this.handleToggleDetailPanel}
+        handleGraphStateSave={this.handleGraphStateSaveIntoURL}
       />
     );
   }

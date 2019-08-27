@@ -14,7 +14,10 @@ import {
 import ViewListIcon from '@material-ui/icons/ViewList';
 import SettingsIcon from '@material-ui/icons/Settings';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import SaveStateIcon from '@material-ui/icons/SettingsRemote';
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
+import * as qs from 'qs';
+
 
 import './GraphComponent.scss';
 import GraphActionsNode from './GraphActionsNode';
@@ -1104,6 +1107,32 @@ class GraphComponent extends Component {
     };
   }
 
+  @boundMethod
+  saveGraphStatetoURL() {
+    const { schema, handleGraphStateSave, handleError } = this.props;
+    const { nodes } = this.state;
+    console.log('TCL: saveGraphStatetoURL -> nodes', nodes);
+
+    const savedState = {};
+    const nodeRIDs = nodes.map(node => (node.data['@rid']));
+
+    try {
+      const stringifiedState = JSON.stringify(nodeRIDs);
+      console.log('TCL: saveGraphStatetoURL -> stringifiedState', stringifiedState);
+      const base64encodedState = btoa(stringifiedState);
+      console.log('TCL: saveGraphStatetoURL -> base64encodedState', base64encodedState);
+      const encodedContent = encodeURIComponent(base64encodedState);
+      console.log('TCL: saveGraphStatetoURL -> encodedContent', encodedContent);
+
+      savedState.nodes = encodedContent;
+      const encodedState = qs.stringify(savedState);
+      console.log("TCL: saveGraphStatetoURL -> encodedState", encodedState);
+      handleGraphStateSave(encodedState);
+    } catch (err) {
+      handleError(err);
+    }
+  }
+
   render() {
     const {
       nodes,
@@ -1256,6 +1285,15 @@ class GraphComponent extends Component {
               onClick={this.handleDialogOpen('graphOptionsOpen')}
             >
               <SettingsIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip placement="top" title="Save graph state to share with URL">
+            <IconButton
+              color="primary"
+              onClick={this.saveGraphStatetoURL}
+              disabled={!refreshable}
+            >
+              <SaveStateIcon />
             </IconButton>
           </Tooltip>
 

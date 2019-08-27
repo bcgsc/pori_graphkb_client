@@ -11,7 +11,7 @@ import {
   Typography,
   Avatar,
 } from '@material-ui/core';
-import EmbeddedIcon from '@material-ui/icons/InsertLink';
+import EmbeddedIcon from '@material-ui/icons/SelectAll';
 import DetailChip from '../../DetailChip';
 
 

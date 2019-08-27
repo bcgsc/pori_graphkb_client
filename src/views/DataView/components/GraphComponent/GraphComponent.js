@@ -110,7 +110,7 @@ class GraphComponent extends Component {
     this.state = {
       nodes: [],
       links: [],
-      data: [],
+      data: {},
       graphObjects: {},
       expandable: {},
       expandedEdgeTypes: [],
@@ -153,9 +153,16 @@ class GraphComponent extends Component {
     const allProps = this.getUniqueDataProps();
     this.propsMap = new PropsMap();
 
-    const displayed = originalData.map(obj => obj['@rid']);
-    const data = GraphComponent.hashRecordsByRID(originalData);
+    const isSavedState = window.location.href.includes('nodes');
+    let data;
+    if (isSavedState) {
+      localStorage.clear();
+      data  = await this.loadSavedStateFromURL();
+    } else {
+      data = GraphComponent.hashRecordsByRID(originalData);
+    }
 
+    const displayed = originalData.map(obj => obj['@rid']);
     const expandedEdgeTypes = util.expandEdges(edgeTypes);
     let validDisplayed = displayed;
     if (!displayed || displayed.length === 0) {
@@ -173,7 +180,7 @@ class GraphComponent extends Component {
       const storedData = util.getGraphData(localStorageKey);
       const storedOptions = GraphOptions.retrieve();
 
-      if (originalData.length === 0 && !storedData) {
+      if (originalData.length === 0 && !storedData && !isSavedState) {
         const err = {
           name: 'No Seed Data',
           message: 'Please select a record from the data table for graph visualization',
@@ -184,13 +191,37 @@ class GraphComponent extends Component {
       /**
        * Initialization priority:
        *
-       * 1. Checked rows from tableview always override stored state.
-       * 2. Initial state is checked. This will never be chosen on the
+       * 1. Check to see if it is a shared state via URL.
+       * 2. Checked rows from tableview always override session stored state.
+       * 3. Initial state is checked. This will never be chosen on the
        *    component's first load.
-       * 3. Stored state will be loaded if the query parameters match those of
+       * 4. Stored state will be loaded if the query parameters match those of
        *    the last stored state.
        */
-      if ((displayed && displayed.length !== 0) || (!initState && !storedData)) {
+      if (isSavedState) {
+        let { nodes, links, graphObjects } = this.state;
+        const nodeRIDs = Object.keys(data);
+        nodeRIDs.forEach((rid, index) => {
+          ({
+            nodes,
+            links,
+            graphObjects,
+            expandable,
+          } = this.processData(
+            data[rid],
+            util.positionInit(this.wrapper.clientWidth / 2, this.wrapper.clientHeight / 2, index, nodeRIDs.length),
+            0,
+            {
+              nodes,
+              links,
+              graphObjects,
+              expandable,
+            },
+          ));
+        });
+
+        util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
+      } else if ((displayed && displayed.length !== 0) || (!initState && !storedData)) {
         let { nodes, links, graphObjects } = this.state;
 
         /* Case 1, iterate through specified rids. */
@@ -710,13 +741,12 @@ class GraphComponent extends Component {
 
         linkData.forEach((link, index) => {
           const linkRid = link['@rid'];
+          const sourceRid = node['@rid'];
+          const targetRid = link['@rid'];
+          // unique Rid from source and target nodes. Prevents rendering same link twice
+          const linkerRid = `${sourceRid.replace(/:|#/g, '')}:${targetRid.replace(/:|#/g, '')}`;
           // check to see if link is in graph already rendered
-          if (!graphObjects[linkRid] && !exclusions.includes(linkRid)) {
-            const sourceRid = node['@rid'];
-            const targetRid = link['@rid'];
-            // unique Rid from source and target nodes. Prevents rendering same link twice
-            const linkerRid = `${sourceRid.replace(/:|#/g, '')}:${targetRid.replace(/:|#/g, '')}`;
-
+          if (!graphObjects[linkerRid] && !exclusions.includes(linkRid)) {
             if (
               sourceRid
               && targetRid
@@ -1108,25 +1138,59 @@ class GraphComponent extends Component {
   }
 
   @boundMethod
+  async loadSavedStateFromURL() {
+    const { cache, handleError } = this.props;
+    const encodedData = window.location.href.split('graph/')[1];
+    const { nodes } = qs.parse(encodedData.replace(/^\?/, ''));
+
+    const decodedContent = decodeURIComponent(nodes);
+    const base64decoded = atob(decodedContent);
+    const decodedNodes = JSON.parse(base64decoded);
+
+    try {
+      const records = await cache.getRecords(decodedNodes);
+      const data = GraphComponent.hashRecordsByRID(records);
+      return data;
+    } catch (err) {
+      handleError(err);
+      return null;
+    }
+  }
+
+  @boundMethod
   saveGraphStatetoURL() {
-    const { schema, handleGraphStateSave, handleError } = this.props;
+    const { handleGraphStateSave, handleError } = this.props;
     const { nodes } = this.state;
-    console.log('TCL: saveGraphStatetoURL -> nodes', nodes);
+    const withoutStatementData = [];
+
+    nodes.forEach((node) => {
+      if (node.data['@class'] !== 'Statement') {
+        withoutStatementData.push(node.data['@rid']);
+      }
+    });
+
+    // add back statement data
+    const nodeRIDs = [...withoutStatementData];
+    nodes.forEach((node) => {
+      if (node.data['@class'] === 'Statement') {
+        nodeRIDs.push(node.data['@rid']);
+      }
+    });
+    // due to how links are set up, we need to append statements to the very
+    // end of the list. This is so that when we process the nodes, the linked
+    // nodes are already displayed.
+
 
     const savedState = {};
-    const nodeRIDs = nodes.map(node => (node.data['@rid']));
+    // const nodeRIDs = nodes.map(node => (node.data['@rid']));
 
     try {
       const stringifiedState = JSON.stringify(nodeRIDs);
-      console.log('TCL: saveGraphStatetoURL -> stringifiedState', stringifiedState);
       const base64encodedState = btoa(stringifiedState);
-      console.log('TCL: saveGraphStatetoURL -> base64encodedState', base64encodedState);
       const encodedContent = encodeURIComponent(base64encodedState);
-      console.log('TCL: saveGraphStatetoURL -> encodedContent', encodedContent);
 
       savedState.nodes = encodedContent;
       const encodedState = qs.stringify(savedState);
-      console.log("TCL: saveGraphStatetoURL -> encodedState", encodedState);
       handleGraphStateSave(encodedState);
     } catch (err) {
       handleError(err);

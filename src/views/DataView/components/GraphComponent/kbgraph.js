@@ -1,3 +1,4 @@
+import color from '@material-ui/core/colors/lightGreen';
 import config from '../../../../static/config';
 import { isObject } from './utils';
 
@@ -287,6 +288,10 @@ class GraphOptions {
       linksLegend: this.linksLegend,
       nodePreview: this.nodePreview,
     }));
+  }
+
+  setNodesColors(colorObj) {
+    this.nodesColors = colorObj;
   }
 }
 

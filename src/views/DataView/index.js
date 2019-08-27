@@ -248,15 +248,17 @@ class DataView extends React.Component {
   }
 
   @boundMethod
-  handleGraphStateSaveIntoURL(data){
-    console.log("TCL: handleGraphStateSave -> data", data);
-    const { schema } = this.context;
-    const { nodes } = qs.parse(data.replace(/^\?/, ''));
-    console.log("TCL: handleGraphStateSaveIntoURL -> nodes", nodes)
+  handleGraphStateSaveIntoURL(encodedData) {
+    const { history } = this.props;
+
+    history.push({
+      pathname: `/data/graph/${encodedData}`,
+      search: '',
+    });
+    // decodes encoded data
+    const { nodes } = qs.parse(encodedData.replace(/^\?/, ''));
     const decodedContent = decodeURIComponent(nodes);
-    console.log("TCL: handleGraphStateSaveIntoURL -> decodedContent", decodedContent);
     const base64decoded = atob(decodedContent);
-    console.log("TCL: handleGraphStateSaveIntoURL -> base64decoded", base64decoded);
     const decodedNodes = JSON.parse(base64decoded);
     console.log("TCL: handleGraphStateSaveIntoURL -> decodedNodes", decodedNodes);
   }

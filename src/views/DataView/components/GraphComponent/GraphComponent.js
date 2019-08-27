@@ -72,6 +72,7 @@ const HEAVILY_CONNECTED = 10;
  * graph.
  * @property {string} props.localStorageKey - key to identify graph session data with in
  * localStorage.
+ * @property {function} props.handleGraphStateSave - parent handler to save state in URL
  * @property {Object} props.schema - KnowledgeBase Schema.
  */
 class GraphComponent extends Component {
@@ -89,12 +90,14 @@ class GraphComponent extends Component {
     localStorageKey: PropTypes.string,
     schema: PropTypes.object.isRequired,
     handleError: PropTypes.func.isRequired,
+    handleGraphStateSave: PropTypes.func,
   };
 
   static defaultProps = {
     detail: null,
     edgeTypes: [],
     localStorageKey: '',
+    handleGraphStateSave: () => {},
   };
 
   static hashRecordsByRID(data) {
@@ -157,7 +160,7 @@ class GraphComponent extends Component {
     let data;
     if (isSavedState) {
       localStorage.clear();
-      data  = await this.loadSavedStateFromURL();
+      data = await this.loadSavedStateFromURL();
     } else {
       data = GraphComponent.hashRecordsByRID(originalData);
     }
@@ -219,7 +222,6 @@ class GraphComponent extends Component {
             },
           ));
         });
-
         util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
       } else if ((displayed && displayed.length !== 0) || (!initState && !storedData)) {
         let { nodes, links, graphObjects } = this.state;

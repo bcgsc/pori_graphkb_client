@@ -13,6 +13,7 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import { KBContext } from '../../../components/KBContext';
 import OptionsMenu from '../../../components/OptionsMenu';
 import DetailChip from '../../../components/DetailChip';
+import { getUsername } from '../../../services/auth';
 import DataCache from '../../../services/api/dataCache';
 import { SelectionTracker } from './SelectionTracker';
 
@@ -237,13 +238,13 @@ class DataTable extends React.Component {
 
   @boundMethod
   async handleExportTsv(selectionOnly = false) {
-    const { schema, auth } = this.context;
+    const { schema } = this.context;
     const { totalNumOfRows, selectionTracker } = this.state;
     const { isExportingData } = this.props;
     isExportingData(true);
 
     const { gridOptions } = this.gridApi.getModel().gridOptionsWrapper;
-    const header = `## Exported from GraphKB at ${new Date()} by ${auth.username}
+    const header = `## Exported from GraphKB at ${new Date()} by ${getUsername(this.context)}
 ## Distribution and Re-use of the contents of GraphKB are subject to the usage aggreements of individual data sources.
 ## Please review the appropriate agreements prior to use (see usage under sources)`;
 

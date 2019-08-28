@@ -4,7 +4,6 @@
  */
 import Keycloak from 'keycloak-js';
 import * as jwt from 'jsonwebtoken';
-import fetchIntercept from 'fetch-intercept';
 
 import config from '../static/config';
 
@@ -16,7 +15,6 @@ const {
     URL,
   },
   DISABLE_AUTH,
-  API_BASE_URL,
 } = config;
 
 // must store the referring uri in local to get around the redirect
@@ -26,6 +24,13 @@ const dbRoles = {
   regular: 'regular',
   readonly: 'readonly',
 };
+
+const keycloak = Keycloak({
+  realm: REALM,
+  clientId: CLIENT_ID,
+  url: URL,
+  realm_access: { roles: [GRAPHKB_ROLE] },
+});
 
 /**
  * Checks expiry date on JWT token and compares with current time.
@@ -52,133 +57,99 @@ const validToken = (token) => {
 };
 
 
-class Authentication {
-  constructor(opt = {}) {
-    const {
-      clientId = CLIENT_ID,
-      realm = REALM,
-      role = GRAPHKB_ROLE,
-      url = URL,
-      disableAuth = DISABLE_AUTH,
-      referrerUriKey = KEYCLOAK_REFERRER,
-    } = opt;
-    this.keycloak = Keycloak({
-      realm,
-      clientId,
-      url,
-      realm_access: { roles: [role] },
-    });
-    this.authorizationToken = null; // token for the authorization (db access)
-    this.disableAuth = disableAuth;
-    this.referrerUriKey = referrerUriKey;
+const getReferrerUri = () => localStorage.getItem(KEYCLOAK_REFERRER);
 
-    fetchIntercept.register({
-      request: (fetchUrl, fetchConfig) => {
-        if (fetchUrl.startsWith(API_BASE_URL)) {
-          const newConfig = { ...fetchConfig };
-          if (!newConfig.headers) {
-            newConfig.headers = {};
-          }
-          newConfig.headers.Authorization = this.authorizationToken;
-          return [fetchUrl, newConfig];
-        }
-        return [fetchUrl, fetchConfig];
-      },
-    });
+const setReferrerUri = (uri) => {
+  if (uri === null) {
+    localStorage.removeItem(KEYCLOAK_REFERRER);
+  } else {
+    localStorage.setItem(KEYCLOAK_REFERRER, uri);
   }
+};
 
-  get referrerUri() {
-    return localStorage.getItem(this.referrerUriKey);
+/**
+ * Primarily used for display when logged in
+ */
+const getUsername = ({ authorizationToken, authenticationToken }) => {
+  if (authorizationToken) {
+    return jwt.decode(authorizationToken).user.name;
+  } if (authenticationToken || keycloak.token) {
+    return jwt.decode(authenticationToken || keycloak.token).preferred_username;
   }
+  return null;
+};
 
-  set referrerUri(uri) {
-    if (uri === null) {
-      localStorage.removeItem(this.referrerUriKey);
-    } else {
-      localStorage.setItem(this.referrerUriKey, uri);
-    }
-  }
-
-  /**
-   * Primarily used for display when logged in
-   */
-  get username() {
-    if (this.authorizationToken) {
-      return jwt.decode(this.authorizationToken).user.name;
-    } if (this.keycloak.token) {
-      return jwt.decode(this.keycloak.token).preferred_username;
-    }
+const getUser = ({ authorizationToken }) => {
+  try {
+    return jwt.decode(authorizationToken).user;
+  } catch {
     return null;
   }
+};
 
-  get user() {
-    try {
-      return jwt.decode(this.authorizationToken).user;
-    } catch {
-      return null;
-    }
+/**
+ * Returns true if the user has been sucessfully authenticated and the token is valid
+ */
+const isAuthenticated = ({ authenticationToken }) => {
+  const token = authenticationToken || keycloak.token;
+  if (token) {
+    // check that the token is not expired
+    return Boolean(validToken(token) && !isExpired(token));
   }
+  return false;
+};
 
-  /**
-   * Returns true if the user has been sucessfully authenticated and the token is valid
-   */
-  isAuthenticated() {
-    if (this.keycloak.token) {
-      // check that the token is not expired
-      return Boolean(validToken(this.keycloak.token) && !isExpired(this.keycloak.token));
-    }
+const isAuthorized = ({ authorizationToken, authenticationToken }) => {
+  if (isAuthenticated({ authenticationToken }) || !DISABLE_AUTH) {
+    return Boolean(validToken(authorizationToken) && !isExpired(authorizationToken));
+  }
+  return false;
+};
+
+/**
+ * Returns true if user is in the 'admin' usergroup.
+ */
+const isAdmin = ({ authorizationToken }) => {
+  try {
+    return Boolean(
+      getUser({ authorizationToken }).groups.find(group => group.name === dbRoles.admin),
+    );
+  } catch (err) {
     return false;
   }
+};
 
-  isAuthorized() {
-    if (this.isAuthenticated() || !this.disableAuth) {
-      return Boolean(validToken(this.authorizationToken) && !isExpired(this.authorizationToken));
-    }
+const hasWriteAccess = ({ authorizationToken }) => {
+  try {
+    return Boolean(
+      getUser({ authorizationToken }).groups.find(group => [dbRoles.admin, dbRoles.regular].includes(group.name)),
+    );
+  } catch (err) {
     return false;
   }
+};
 
-  /**
-   * Returns true if user is in the 'admin' usergroup.
-   */
-  isAdmin() {
-    try {
-      return Boolean(
-        this.user.groups.find(group => group.name === dbRoles.admin),
-      );
-    } catch (err) {
-      return false;
-    }
+const login = async (referrerUri = null) => {
+  setReferrerUri(referrerUri);
+  const init = new Promise((resolve, reject) => {
+    const prom = keycloak.init({ onLoad: 'login-required' }); // setting promiseType = native does not work for later functions inside the closure
+    prom.success(resolve);
+    prom.error(reject);
+  });
+  await init;
+};
+
+const logout = async () => {
+  setReferrerUri(null);
+  try {
+    const resp = await keycloak.logout({ redirectUri: `${window.location.origin}/login` });
+    return resp;
+  } catch (err) {
+    return err;
   }
-
-  hasWriteAccess() {
-    try {
-      return Boolean(
-        this.user.groups.find(group => [dbRoles.admin, dbRoles.regular].includes(group.name)),
-      );
-    } catch (err) {
-      return false;
-    }
-  }
-
-  async login(referrerUri = null) {
-    this.referrerUri = referrerUri;
-    const init = new Promise((resolve, reject) => {
-      const prom = this.keycloak.init({ onLoad: 'login-required' }); // setting promiseType = native does not work for later functions inside the closure
-      prom.success(resolve);
-      prom.error(reject);
-    });
-    await init;
-  }
-
-  async logout() {
-    try {
-      const resp = await this.keycloak.logout({ redirectUri: `${window.location.origin}/login` });
-      return resp;
-    } catch (err) {
-      return err;
-    }
-  }
-}
+};
 
 
-export { Authentication, isExpired, validToken };
+export {
+  login, logout, hasWriteAccess, isAdmin, isAuthorized, isAuthenticated, isExpired, validToken, getUser, getUsername, getReferrerUri, keycloak,
+};

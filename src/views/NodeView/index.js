@@ -140,7 +140,6 @@ class NodeView extends React.PureComponent {
         }
         onSubmit={this.handleSubmit}
         onError={this.handleError}
-        auth={auth}
       />
     );
   }

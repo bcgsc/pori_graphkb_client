@@ -67,7 +67,6 @@ class RecordForm extends React.PureComponent {
     title: PropTypes.string.isRequired,
     variant: PropTypes.string,
     value: PropTypes.object,
-    auth: PropTypes.instanceOf(Authentication),
   };
 
   static defaultProps = {
@@ -78,7 +77,6 @@ class RecordForm extends React.PureComponent {
     rid: null,
     variant: FORM_VARIANT.VIEW,
     value: {},
-    auth: {},
   };
 
   constructor(props) {
@@ -103,6 +101,7 @@ class RecordForm extends React.PureComponent {
   }
 
   async componentDidMount() {
+    console.log('componentDidMount');
     await this.getNodeFromUri();
   }
 
@@ -286,13 +285,13 @@ class RecordForm extends React.PureComponent {
   }
 
   @boundMethod
-  handleContentUpdate(content){
+  handleContentUpdate(content) {
 
   }
 
   render() {
     const {
-      title, variant, onTopClick, modelName, auth, onError, ...rest
+      title, variant, onTopClick, modelName, onError, ...rest
     } = this.props;
 
     const {
@@ -304,6 +303,8 @@ class RecordForm extends React.PureComponent {
       newReview,
       ...content
     } = this.state;
+    console.log('TCL: render -> content', content);
+
 
     const snackbar = this.context;
 
@@ -326,7 +327,7 @@ class RecordForm extends React.PureComponent {
             >
                 Add Review
               <LocalLibraryIcon
-                classes={{root: 'review-icon'}}
+                classes={{ root: 'review-icon' }}
               />
             </Button>
             ))}
@@ -345,7 +346,6 @@ class RecordForm extends React.PureComponent {
               isOpen={reviewDialogOpen}
               onClose={() => this.setState({ reviewDialogOpen: false, reviewIndex: null, formVariant: null })}
               content={content}
-              auth={auth}
               reviewIndex={reviewIndex}
               statement={content}
               newReview={newReview}

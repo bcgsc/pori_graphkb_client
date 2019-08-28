@@ -22,6 +22,7 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import logo from '../../../static/logo.png';
 import title from '../../../static/title.png';
 import { KBContext } from '../../../components/KBContext';
+import { hasWriteAccess } from '../../../services/auth';
 
 
 /**
@@ -68,7 +69,6 @@ class MainNav extends React.PureComponent {
 
   render() {
     const { isOpen, activeLink } = this.props;
-    const { auth } = this.context;
 
     const MenuLink = ({
       route, label, icon = null, inset = false,
@@ -104,13 +104,13 @@ class MainNav extends React.PureComponent {
         <Divider />
         <List className="main-nav-drawer__links">
           <MenuLink label="Query" route="/query" icon={<SearchIcon />} />
-          {auth.hasWriteAccess() && (
+          {hasWriteAccess(this.context) && (
             <MenuItem onClick={this.handleOpen}>
               <ListItemIcon> <AddIcon /> </ListItemIcon>
               <ListItemText primary="Add new Record" />
             </MenuItem>
           )}
-          {auth.hasWriteAccess() && isOpen && (
+          {hasWriteAccess(this.context) && isOpen && (
             <>
               <MenuLink label="Source" route="/new/source" inset />
               <MenuLink label="Ontology" route="/new/ontology" inset />

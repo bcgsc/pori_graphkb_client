@@ -19,7 +19,7 @@ import StatementTable from './StatementTable';
 import ActionButton from '../ActionButton';
 import { FORM_VARIANT } from './util';
 import { KBContext } from '../KBContext';
-import { getUsername } from '../../services/auth';
+import { getUsername, getUser } from '../../services/auth';
 
 import util from '../../services/util';
 import StyledSwitch from '../StyledSwitch';
@@ -54,7 +54,6 @@ class ReviewDialog extends Component {
     snackbar: PropTypes.object.isRequired,
     handleEdit: PropTypes.func.isRequired,
     formVariant: PropTypes.string.isRequired,
-    auth: PropTypes.object.isRequired,
     onError: PropTypes.func.isRequired,
     updateNewReview: PropTypes.func.isRequired,
     newReview: PropTypes.object.isRequired,
@@ -180,7 +179,7 @@ class ReviewDialog extends Component {
   handleAddReview() {
     const { newReview, currContent } = this.state;
     const {
-      handleEdit, snackbar, onClose, onError, updateNewReview,
+      handleEdit, snackbar, onClose, onError, updateNewReview, updateContent,
     } = this.props;
 
     const formContainsError = this.doesFormContainErrors();
@@ -189,12 +188,16 @@ class ReviewDialog extends Component {
       return;
     }
 
-    const username = getUsername(this.context);
+    const user = getUser(this.context);
+    console.log('TCL: ReviewDialog -> handleAddReview -> user', user);
+    console.log("TCL: ReviewDialog -> handleAddReview -> user['@rid'].slice(1)", user['@rid'].slice(1));
+
+
     const updatedReview = {
       '@class': 'StatementReview',
       ...newReview,
       createdAt: (new Date()).valueOf(),
-      createdBy: username,
+      createdBy: user['@rid'].slice(1),
     };
 
     let newContent = Object.assign({}, currContent);
@@ -212,7 +215,8 @@ class ReviewDialog extends Component {
     newContent = this.updateReviewStatus(newContent);
 
     try {
-      handleEdit({ content: newContent });
+      // handleEdit({ content: newContent });
+      updateContent(newContent);
       updateNewReview({});
       onClose();
     } catch (err) {

@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-
 
 import {
   Table,
@@ -13,6 +12,8 @@ import {
 } from '@material-ui/core';
 import EmbeddedIcon from '@material-ui/icons/SelectAll';
 import DetailChip from '../../DetailChip';
+import { KBContext } from '../../KBContext';
+import { getUsername } from '../../../services/auth';
 
 
 /**
@@ -28,13 +29,19 @@ const EmbeddedListTable = (props) => {
     values, label, onReviewSelection,
   } = props;
 
+  const context = useContext(KBContext);
+
 
   const EmbeddedRecordRow = (value, index) => {
     const {
       status, createdBy: { name }, createdBy,
     } = value;
-    const previewStr = `${name} (${createdBy['@rid']})`;
+
     const details = {};
+    const previewStr = name
+      ? `${name} (${createdBy['@rid']})`
+      : `${getUsername(context)} (#${createdBy})`;
+
     Object.keys(value).forEach((prop) => {
       if (prop !== '@rid') {
         details[prop] = value[prop];

@@ -138,14 +138,12 @@ class BaseRecordForm extends React.Component {
    * Trigger the state change if a new initial value is passed in
    */
   componentDidUpdate(prevProps) {
-    console.log('TCL: BaseRecordForm -> componentDidUpdate -> prevProps', prevProps);
     const { value, modelName, variant } = this.props;
 
     if (!value) {
       return;
     }
     const { content } = this.state;
-    console.log('TCL: BaseRecordForm -> componentDidUpdate -> content', content);
 
     if (jc.stringify(value) !== jc.stringify(prevProps.value)) {
       this.populateFromRecord(value);

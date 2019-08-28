@@ -251,6 +251,7 @@ class ReviewDialog extends Component {
 
     return (
       <FormField
+        key="reviewStatus"
         model={reviewStatus}
         value={currReviewStatus}
         onValueChange={event => this.handleReviewStatusChange(event.target.value)}
@@ -321,6 +322,7 @@ class ReviewDialog extends Component {
           if (name === 'comment') {
             wrapper = (
               <TextField
+                key={name}
                 fullWidth
                 multiline
                 rows={7}

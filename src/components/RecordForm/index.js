@@ -285,6 +285,11 @@ class RecordForm extends React.PureComponent {
     this.setState({ newReview: content });
   }
 
+  @boundMethod
+  handleContentUpdate(content){
+
+  }
+
   render() {
     const {
       title, variant, onTopClick, modelName, auth, onError, ...rest
@@ -320,7 +325,9 @@ class RecordForm extends React.PureComponent {
               disabled={actionInProgress}
             >
                 Add Review
-              <LocalLibraryIcon />
+              <LocalLibraryIcon
+                classes={{root: 'review-icon'}}
+              />
             </Button>
             ))}
             {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (

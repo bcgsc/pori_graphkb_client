@@ -169,7 +169,7 @@ const FormField = (props) => {
       const searchOptions = {};
 
       if (linkedClass) {
-        if (['Source', 'UserGroup', 'User', 'EvidenceLevel'].includes(linkedClass.name)) {
+        if (['Source', 'UserGroup', 'User', 'EvidenceLevel', 'Vocabulary'].includes(linkedClass.name)) {
           autoProps.searchHandler = () => api.get(`${
             linkedClass.routeName
           }?neighbors=1&orderBy=${
@@ -179,12 +179,6 @@ const FormField = (props) => {
           }`, { forceListReturn: true });
           autoProps.singleLoad = true;
         } else {
-          if (linkedClass.name === 'Vocabulary') {
-            autoProps.defaultOptionsHandler = () => api.get(
-              `${linkedClass.routeName}?source[name]=bcgsc&neighbors=1`,
-              { forceListReturn: true },
-            );
-          }
           autoProps.searchHandler = api.defaultSuggestionHandler(linkedClass, searchOptions);
         }
       } else {

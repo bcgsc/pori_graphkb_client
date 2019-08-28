@@ -528,6 +528,7 @@ class GraphComponent extends Component {
       links,
       graphObjects,
       expandable,
+      simulation
     } = this.state;
     const { schema, localStorageKey } = this.props;
 
@@ -564,6 +565,8 @@ class GraphComponent extends Component {
       nodes,
       links,
       graphObjects,
+    }, () => {
+      simulation.alpha(1).restart();
     });
   }
 

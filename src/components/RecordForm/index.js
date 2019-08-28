@@ -286,7 +286,7 @@ class RecordForm extends React.PureComponent {
 
   @boundMethod
   handleContentUpdate(content) {
-
+    this.setState({ ...content });
   }
 
   render() {
@@ -303,8 +303,6 @@ class RecordForm extends React.PureComponent {
       newReview,
       ...content
     } = this.state;
-    console.log('TCL: render -> content', content);
-
 
     const snackbar = this.context;
 
@@ -350,6 +348,7 @@ class RecordForm extends React.PureComponent {
               statement={content}
               newReview={newReview}
               updateNewReview={this.handleNewReviewUpdate}
+              updateContent={this.handleContentUpdate}
               handleEdit={this.handleEditAction}
               snackbar={snackbar}
               formVariant={formVariant}

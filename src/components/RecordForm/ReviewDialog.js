@@ -18,6 +18,7 @@ import './index.scss';
 import StatementTable from './StatementTable';
 import ActionButton from '../ActionButton';
 import { FORM_VARIANT } from './util';
+import { KBContext } from '../../components/KBContext';
 import util from '../../services/util';
 import StyledSwitch from '../StyledSwitch';
 
@@ -41,6 +42,8 @@ const grouping = ['reviewStatus', 'status', ['createdAt', 'createdBy'], 'comment
  * @property {func} props.onError Parent error handler should something go wrong
  */
 class ReviewDialog extends Component {
+  static contextType = KBContext;
+
   static propTypes = {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
@@ -174,8 +177,10 @@ class ReviewDialog extends Component {
   @boundMethod
   handleAddReview() {
     const { newReview, currContent } = this.state;
+    const context = this.context;
+    console.log("TCL: ReviewDialog -> handleAddReview -> context", context);
     const {
-      handleEdit, snackbar, auth: { user }, onClose, onError, updateNewReview,
+      handleEdit, snackbar, onClose, onError, updateNewReview,
     } = this.props;
 
     const formContainsError = this.doesFormContainErrors();

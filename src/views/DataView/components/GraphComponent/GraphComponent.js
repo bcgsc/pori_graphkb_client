@@ -827,8 +827,7 @@ class GraphComponent extends Component {
   }
 
   /**
-   * Restarts simulation with initial nodes and links present. These are determined by the
-   * first state rendered when the component mounts.
+   * Restarts the layout simulation with the current nodes
    */
   @boundMethod
   refresh() {

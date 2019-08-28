@@ -522,13 +522,12 @@ class GraphComponent extends Component {
    */
   @boundMethod
   loadNeighbors(node) {
-    const { expandExclusions, data } = this.state;
+    const { expandExclusions, data, simulation } = this.state;
     let {
       nodes,
       links,
       graphObjects,
       expandable,
-      simulation
     } = this.state;
     const { schema, localStorageKey } = this.props;
 

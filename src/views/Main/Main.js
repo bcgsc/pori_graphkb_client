@@ -53,8 +53,7 @@ const {
  * Entry point to application. Handles routing, app theme, and logged in state.
  */
 const Main = () => {
-  const schema = new Schema();
-
+  const [schema] = useState(new Schema());
   const [authorizationToken, setAuthorizationToken] = useState('');
   const [authenticationToken, setAuthenticationToken] = useState('');
   const [anchorEl, setAnchorEl] = useState(null);

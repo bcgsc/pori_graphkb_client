@@ -7,6 +7,7 @@ import RecordForm from '../../components/RecordForm';
 import { KBContext } from '../../components/KBContext';
 import { FORM_VARIANT } from '../../components/RecordForm/util';
 import { cleanLinkedRecords } from '../../components/util';
+import { hasWriteAccess } from '../../services/auth';
 
 
 const DEFAULT_TITLES = {
@@ -81,7 +82,7 @@ class NodeView extends React.PureComponent {
       match: { params: { rid = null, modelName }, path },
       history,
     } = this.props;
-    const { schema, auth } = this.context;
+    const { schema } = this.context;
     const variant = getVariantType(path);
 
     let defaultModelName = modelName;
@@ -133,7 +134,7 @@ class NodeView extends React.PureComponent {
         rid={rid}
         title={DEFAULT_TITLES[variant].replace(':modelName', defaultModelName || '')}
         onTopClick={
-          auth.hasWriteAccess()
+          hasWriteAccess(this.context)
             ? onTopClick
             : null
         }

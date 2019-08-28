@@ -26,6 +26,7 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 import './DetailDrawer.scss';
 import util from '../../../../services/util';
+import { hasWriteAccess } from '../../../../services/auth';
 import { KBContext } from '../../../../components/KBContext';
 
 const MAX_STRING_LENGTH = 64;
@@ -502,7 +503,7 @@ class DetailDrawer extends Component {
       isEdge,
     } = this.props;
     const { opened } = this.state;
-    const { schema, auth } = this.context;
+    const { schema } = this.context;
 
     const drawerIsOpen = Boolean(node);
 
@@ -539,7 +540,7 @@ class DetailDrawer extends Component {
               </Typography>
               )}
             </div>
-            {auth.hasWriteAccess() && (
+            {hasWriteAccess(this.context) && (
               <Link to={`/edit/${recordId}`} target="_blank">
                 <IconButton
                   variant="outlined"

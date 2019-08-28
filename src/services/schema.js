@@ -235,28 +235,37 @@ class Schema {
   defineGridColumns(search) {
     const { modelName } = api.getQueryFromSearch({ schema: this, search });
 
-    let allProps;
     const showEdges = [];
-
     const showByDefault = [
       '@rid', '@class',
     ];
 
-    if (modelName && modelName.toLowerCase() !== 'statement') {
-      allProps = this.get(modelName).queryProperties;
-      if (modelName.toLowerCase().includes('variant')) {
-        showByDefault.push('reference1', 'reference2', 'type');
-      } else if (modelName.toLowerCase() !== 'source') {
-        showByDefault.push('sourceIdVersion', 'version', 'source', 'name', 'sourceId');
-        showEdges.push('out_SubClassOf');
-      } else {
-        showByDefault.push('version', 'name', 'usage');
-      }
-    } else {
-      showEdges.push('out_ImpliedBy', 'out_SupportedBy');
-      allProps = this.get('Statement').queryProperties;
+    const allProps = this.get(modelName).queryProperties;
+
+    if (modelName.toLowerCase().includes('variant')) {
+      showByDefault.push('reference1', 'reference2', 'type');
+    } else if (modelName.toLowerCase() === 'statement') {
       showByDefault.push('source', 'appliesTo', 'relevance', 'evidenceLevel');
+    } else if (modelName.toLowerCase() !== 'source') {
+      showByDefault.push('sourceIdVersion', 'version', 'source', 'name', 'sourceId');
+      showEdges.push('out_SubClassOf');
+    } else {
+      showByDefault.push('version', 'name', 'usage');
     }
+
+    const defineLinkSetColumn = (name) => {
+      const colId = name;
+      const getLinkData = ({ data }) => data && (data[name] || []);
+
+      return {
+        colId,
+        field: colId,
+        sortable: false,
+        valueGetter: getLinkData,
+        width: 300,
+        cellRenderer: 'RecordList',
+      };
+    };
 
     const defineEdgeColumn = (name) => {
       const type = name.startsWith('out')
@@ -333,7 +342,9 @@ class Schema {
       .sort((p1, p2) => p1.name.localeCompare(p2.name))
       .forEach((prop) => {
         const hide = !showByDefault.includes(prop.name);
-        if (prop.linkedClass) {
+        if (prop.type === 'linkset') {
+          defns.push(defineLinkSetColumn(prop.name));
+        } else if (prop.linkedClass) {
           // build a column group
           const groupDefn = {
             headerName: prop.name,

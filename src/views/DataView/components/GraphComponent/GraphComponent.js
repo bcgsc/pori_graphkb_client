@@ -597,7 +597,7 @@ class GraphComponent extends Component {
 
   @boundMethod
   async handleExpandNode({ data: node }) {
-    const { cache } = this.props;
+    const { cache, handleError } = this.props;
     const { data } = this.state;
     try {
       const record = await cache.getRecord(node);
@@ -606,7 +606,7 @@ class GraphComponent extends Component {
         this.setState({ data });
       }
     } catch (err) {
-      this.handleError(err);
+      handleError(err);
     }
   }
 

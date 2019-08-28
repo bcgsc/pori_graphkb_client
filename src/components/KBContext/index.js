@@ -1,20 +1,23 @@
 import React from 'react';
 
+import Schema from '../../services/schema';
 
 /**
  * Passes user and schema values to wrapped consumers.
  */
-const KBContext = React.createContext({ schema: null, auth: null });
+const KBContext = React.createContext({
+  schema: new Schema(),
+  authorizationToken: '',
+  authenticationToken: '',
+  setAuthenticationToken: () => {},
+  setAuthorizationToken: () => {},
+});
 
 const withKB = Child => props => (
   <KBContext.Consumer>
     {kbValues => (
       <Child
-        schema={kbValues.schema}
-        authorizationToken={kbValues.authorizationToken}
-        setAuthorizationToken={kbValues.setAuthorizationToken}
-        authenticationToken={kbValues.authenticationToken}
-        setAuthenticationToken={kbValues.setAuthenticationToken}
+        {...kbValues}
         {...props}
       />
     )}

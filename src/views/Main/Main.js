@@ -82,7 +82,7 @@ const Main = () => {
   const handleOpen = () => setAnchorEl(dropdown.current);
   const handleClose = () => setAnchorEl(null);
 
-  const handleNavBar = (isOpen, nextActiveLink) => {
+  const handleNavBar = ({ isOpen, activeLink: nextActiveLink }) => {
     setDrawerOpen(isOpen);
     setAnchorEl(null);
     setActiveLink(nextActiveLink);

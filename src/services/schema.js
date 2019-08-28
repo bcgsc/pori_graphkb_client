@@ -335,8 +335,7 @@ class Schema {
     ];
 
     Object.values(allProps)
-      .filter(prop => !exclude.includes(prop.name)
-        && prop.type !== 'embedded')
+      .filter(prop => !exclude.includes(prop.name) && prop.type !== 'embedded')
       .sort((p1, p2) => p1.name.localeCompare(p2.name))
       .forEach((prop) => {
         const hide = !showByDefault.includes(prop.name);

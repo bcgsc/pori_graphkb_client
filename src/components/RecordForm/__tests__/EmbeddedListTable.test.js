@@ -34,12 +34,18 @@ describe('EmbeddedListTable', () => {
     },
   ];
 
+  const mockReviewProps = {
+    onReviewSelection: () => {},
+    content: { reviews },
+    updateContent: () => {},
+  };
+
   it('mounts successfully', () => {
     const wrapper = mount((
       <EmbeddedListTable
         label="reviews"
         values={reviews}
-        onReviewSelection={jest.fn()}
+        reviewProps={mockReviewProps}
       />
     ));
 
@@ -51,7 +57,7 @@ describe('EmbeddedListTable', () => {
       <EmbeddedListTable
         label="reviews"
         values={[]}
-        onReviewSelection={jest.fn()}
+        reviewProps={mockReviewProps}
       />
     ));
 
@@ -64,7 +70,7 @@ describe('EmbeddedListTable', () => {
       <EmbeddedListTable
         label="reviews"
         values={reviews}
-        onReviewSelection={jest.fn()}
+        reviewProps={mockReviewProps}
       />
     ));
 
@@ -74,11 +80,13 @@ describe('EmbeddedListTable', () => {
 
   it('detailChip calls review selection handler ', () => {
     const selectionSpy = jest.fn();
+    const mockPropsWithSpy = { ...mockReviewProps };
+    mockPropsWithSpy.handleDialogOpen = selectionSpy;
     const wrapper = mount((
       <EmbeddedListTable
         label="reviews"
         values={reviews}
-        onReviewSelection={selectionSpy}
+        reviewProps={mockPropsWithSpy}
       />
     ));
 
@@ -87,9 +95,6 @@ describe('EmbeddedListTable', () => {
     const detailChip = wrapper.find(Chip).at(0);
     detailChip.simulate('click'); // opens pop-over
 
-    expect(wrapper.find(IconButton)).toHaveLength(1);
-    const linkBtn = wrapper.find(IconButton).at(0);
-    linkBtn.prop('onClick')();
     expect(selectionSpy).toHaveBeenCalledTimes(1);
   });
 });

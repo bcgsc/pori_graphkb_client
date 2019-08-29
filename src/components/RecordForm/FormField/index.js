@@ -22,7 +22,6 @@ import './index.scss';
 import { FORM_VARIANT } from '../util';
 import EmbeddedListTable from './EmbeddedListTable';
 
-
 /**
  * Generate the field component for a form. Uses the property model to decide
  * the component type to render. Factory wrapper which standardized form fields.
@@ -48,7 +47,7 @@ const FormField = (props) => {
     disabled = false,
     variant = 'view',
     label = null,
-    onReviewSelection,
+    reviewProps,
   } = props;
 
   const {
@@ -218,7 +217,7 @@ const FormField = (props) => {
       <EmbeddedListTable
         label={name}
         values={value || []}
-        onReviewSelection={onReviewSelection}
+        reviewProps={reviewProps}
       />
     );
   } else {

@@ -82,12 +82,19 @@ class DetailChip extends React.Component {
    * Do not update if the anchor changes (causes infinite render loop)
    */
   shouldComponentUpdate(nextProps, nextState) {
-    const { label, details } = this.props;
+    const { label, details, isEmbeddedLinkSet: { component } } = this.props;
+    const { isEmbeddedLinkSet: { component: nextPropsComponent } } = nextProps;
     const { anchorEl } = this.state;
+    if (component) {
+      return (
+        component.props.isOpen !== nextPropsComponent.props.isOpen
+      );
+    }
     return (
       label !== nextProps.label
       || shallowObjectKey(details) !== shallowObjectKey(nextProps.details)
       || Boolean(anchorEl) !== Boolean(nextState.anchorEl)
+
     );
   }
 
@@ -123,10 +130,11 @@ class DetailChip extends React.Component {
       ...rest
     } = this.props;
 
+
     const {
       content,
-      reviewIndex,
-      onReviewSelection,
+      component,
+      handleDialogOpen,
     } = isEmbeddedLinkSet;
 
     const { anchorEl } = this.state;
@@ -135,58 +143,64 @@ class DetailChip extends React.Component {
 
     return (
       <div className="detail-chip" {...rest}>
-        <Popover
-          open={!!anchorEl}
-          anchorEl={anchorEl}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-          transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-          onClose={this.handlePopoverClose}
-          className="detail-chip__popover detail-popover"
-        >
-          <Card>
-            <CardContent className="detail-popover__panel">
-              <div className="detail-popover__panel-header">
-                <Typography variant="h6" gutterBottom>
-                  {title || label}
-                </Typography>
-                {getLink && getLink(retrievedDetails) && (
+        {!content && (
+          <Popover
+            open={!!anchorEl}
+            anchorEl={anchorEl}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+            onClose={this.handlePopoverClose}
+            className="detail-chip__popover detail-popover"
+          >
+            <Card>
+              <CardContent className="detail-popover__panel">
+                <div className="detail-popover__panel-header">
+                  <Typography variant="h6" gutterBottom>
+                    {title || label}
+                  </Typography>
+                  {getLink && getLink(retrievedDetails) && (
                   <Link to={getLink(retrievedDetails)} target="_blank">
                     <IconButton>
                       <OpenInNewIcon />
                     </IconButton>
                   </Link>
-                )}
-                {content && (
-                  <IconButton onClick={() => { onReviewSelection(content, reviewIndex); }}>
-                    <OpenInNewIcon />
-                  </IconButton>
-                )}
-              </div>
-              <Divider />
-              <Table>
-                <TableBody>
-                  {retrievedDetails && Object.keys(retrievedDetails).sort().map(
-                    name => (
-                      <TableRow key={name} className="detail-popover__row">
-                        <TableCell padding="checkbox">
-                          <Typography variant="body2">{name}</Typography>
-                        </TableCell>
-                        <TableCell padding="checkbox">
-                          {valueToString(retrievedDetails[name])}
-                        </TableCell>
-                      </TableRow>
-                    ),
                   )}
-                </TableBody>
-              </Table>
-            </CardContent>
-          </Card>
-        </Popover>
+                </div>
+                <Divider />
+                <Table>
+                  <TableBody>
+                    {retrievedDetails && Object.keys(retrievedDetails).sort().map(
+                      name => (
+                        <TableRow key={name} className="detail-popover__row">
+                          <TableCell padding="checkbox">
+                            <Typography variant="body2">{name}</Typography>
+                          </TableCell>
+                          <TableCell padding="checkbox">
+                            {valueToString(retrievedDetails[name])}
+                          </TableCell>
+                        </TableRow>
+                      ),
+                    )}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </Popover>
+        )}
+        {content && (
+          <>
+            {component}
+          </>
+        )
+
+        }
         <Chip
           label={label}
           className={`detail-chip__root ${className || ''}`}
           clickable
-          onClick={this.handlePopoverOpen}
+          onClick={content
+            ? handleDialogOpen
+            : this.handlePopoverOpen}
           onDelete={onDelete}
           {...ChipProps}
         />

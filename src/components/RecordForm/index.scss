@@ -115,9 +115,6 @@ $closed-drawer-width: 56px;
 }
 
 .review-dialog{
-  height: 100vh;
-  min-width: $readable-min;
-
 
   .appbar {
     color: $palette__common--white;
@@ -132,10 +129,6 @@ $closed-drawer-width: 56px;
     transition-duration: $transitions__duration--standard;
     transition-property: left;
     z-index: calc(#{$drawer-z-index} + 3);
-
-    &--drawer-open {
-      left: $drawer-width;
-    }
 
     &__title {
       grid-column-start: 2;
@@ -160,33 +153,10 @@ $closed-drawer-width: 56px;
       margin: auto 4px;
       grid-column-start: 9;
 
-      &--drawer-open {
-        visibility: hidden;
-      }
     }
 
     &__btn:disabled {
       color: $palette__common--white;
-    }
-
-  }
-
-  &__header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    margin: 40px;
-    width: 65%;
-    margin-left: 16.2%;
-
-    .title{
-      float: left;
-    }
-
-    .action-buttons{
-      float: right;
-      display: flex;
     }
 
   }
@@ -205,6 +175,21 @@ $closed-drawer-width: 56px;
     }
   }
 
+  &__action-button {
+    margin: 20px auto;
+    display: flex;
+    justify-content: center;
+  }
+
+  button:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 2px 20px rgba(#000, 0.25);
+  }
+
+  button:active{
+    transform: translate(0);
+  }
+
   &__content {
     height: calc(100% - #{$banner-height});
     margin-left: 0;
@@ -214,31 +199,7 @@ $closed-drawer-width: 56px;
     transition-property: width, margin-left;
     width: 100%;
 
-    &--drawer-open {
-      margin-left: $drawer-width;
-      width: calc(100% - #{$drawer-width});
-    }
 
-    &__action-buttons{
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 30px;
-      margin-left: 15%;
-      margin-right: 15%;
-    }
-
-    &__submit-button {
-      margin-top: 20px;
-      margin-right: 15%;
-      float: right;
-    }
-
-    .overall-statement-status-field{
-      width:300px;
-      margin-left: 61%;
-    }
   }
 
   .statement-table {

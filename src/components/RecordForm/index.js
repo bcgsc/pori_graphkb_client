@@ -14,7 +14,6 @@ import './index.scss';
 import BaseNodeForm from './BaseRecordForm';
 import { FORM_VARIANT } from './util';
 import { withKB } from '../KBContext';
-import { Authentication } from '../../services/auth';
 import ReviewDialog from './ReviewDialog';
 
 
@@ -91,9 +90,6 @@ class RecordForm extends React.PureComponent {
     this.state = {
       actionInProgress: false,
       reviewDialogOpen: false,
-      currReview: {},
-      reviewIndex: null,
-      formVariant: null,
       newReview: {},
       ...defaultContent,
     };
@@ -101,7 +97,6 @@ class RecordForm extends React.PureComponent {
   }
 
   async componentDidMount() {
-    console.log('componentDidMount');
     await this.getNodeFromUri();
   }
 
@@ -270,24 +265,13 @@ class RecordForm extends React.PureComponent {
   }
 
   @boundMethod
-  handleReviewToggle(review, reviewIndex) {
-    this.setState({
-      currReview: review,
-      reviewDialogOpen: true,
-      reviewIndex,
-      formVariant: FORM_VARIANT.VIEW,
-    });
-  }
-
-  @boundMethod
-  handleNewReviewUpdate(content) {
-    this.setState({ newReview: content });
+  handleNewReviewUpdate(updatedReview) {
+    this.setState({ newReview: updatedReview });
   }
 
   @boundMethod
   handleContentUpdate(content) {
-    console.log("TCL: handleContentUpdate -> content", content);
-    this.setState({ ...content }, ()=> console.log('shit is updated'));
+    this.setState({ ...content });
   }
 
   render() {
@@ -298,7 +282,6 @@ class RecordForm extends React.PureComponent {
     const {
       actionInProgress,
       reviewDialogOpen,
-      currReview,
       reviewIndex,
       formVariant,
       newReview,
@@ -355,9 +338,7 @@ class RecordForm extends React.PureComponent {
               onError={onError}
 
             />
-          )
-
-          }
+          )}
         </div>
         <BaseNodeForm
           {...rest}
@@ -365,7 +346,10 @@ class RecordForm extends React.PureComponent {
           modelName={modelName}
           onSubmit={actions[variant] || null}
           onDelete={this.handleDeleteAction}
-          onReviewSelection={this.handleReviewToggle}
+          reviewProps={{
+            updateContent: this.handleContentUpdate,
+            content,
+          }}
           variant={variant}
           collapseExtra
           name="name"

@@ -286,7 +286,7 @@ class BaseRecordForm extends React.Component {
    */
   renderFieldGroup(ordering) {
     const { schema } = this.context;
-    const { variant, actionInProgress, onReviewSelection } = this.props;
+    const { variant, actionInProgress, reviewProps } = this.props;
     const { content, errors } = this.state;
 
     const model = this.currentModel();
@@ -322,7 +322,7 @@ class BaseRecordForm extends React.Component {
             variant={variant}
             key={name}
             content={content}
-            onReviewSelection={onReviewSelection}
+            reviewProps={reviewProps}
             disabled={(
               variant === FORM_VARIANT.VIEW
               || actionInProgress

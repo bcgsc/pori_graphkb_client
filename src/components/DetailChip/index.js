@@ -115,6 +115,12 @@ class DetailChip extends React.Component {
     this.setState({ anchorEl: event.currentTarget });
   }
 
+  @boundMethod
+  handleDialogOpen() {
+    const { isEmbeddedLinkSet: { handleDialogOpen } } = this.props;
+    handleDialogOpen();
+  }
+
   render() {
     const {
       details,
@@ -134,7 +140,6 @@ class DetailChip extends React.Component {
     const {
       content,
       component,
-      handleDialogOpen,
     } = isEmbeddedLinkSet;
 
     const { anchorEl } = this.state;
@@ -199,7 +204,7 @@ class DetailChip extends React.Component {
           className={`detail-chip__root ${className || ''}`}
           clickable
           onClick={content
-            ? handleDialogOpen
+            ? this.handleDialogOpen
             : this.handlePopoverOpen}
           onDelete={onDelete}
           {...ChipProps}

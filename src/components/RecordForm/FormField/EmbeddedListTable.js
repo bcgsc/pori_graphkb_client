@@ -147,7 +147,6 @@ const EmbeddedListTable = (props) => {
 EmbeddedListTable.propTypes = {
   values: PropTypes.arrayOf(PropTypes.object),
   label: PropTypes.string,
-  onReviewSelection: PropTypes.func.isRequired,
   reviewProps: PropTypes.object.isRequired,
 };
 

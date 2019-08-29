@@ -179,6 +179,10 @@ $closed-drawer-width: 56px;
     margin: 20px auto;
     display: flex;
     justify-content: center;
+
+    .button{
+      transform: translateX(-10%);
+    }
   }
 
   button:hover{

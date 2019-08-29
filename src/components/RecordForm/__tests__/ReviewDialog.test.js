@@ -8,8 +8,10 @@ import { KBContext } from '../../KBContext';
 import Schema from '../../../services/schema';
 import FormField from '../FormField';
 import ActionButton from '../../ActionButton';
-import StyledSwitch from '../../StyledSwitch';
 
+jest.mock('../../../services/auth', () => ({
+  getUser: () => ({ '@rid': '#20:0' }),
+}));
 
 describe('ReviewDialog', () => {
   afterEach(() => {
@@ -81,34 +83,7 @@ describe('ReviewDialog', () => {
     wrapper.update();
 
     expect(wrapper.find(ReviewDialog)).toBeDefined();
-    expect(wrapper.find(StyledSwitch)).toHaveLength(1);
-    expect(wrapper.find(FormField)).toHaveLength(5);
-  });
-
-  it('Mounts edit variant successfully', () => {
-    const wrapper = mount((
-      <BrowserRouter>
-        <KBContext.Provider value={{ schema: new Schema() }}>
-          <ReviewDialog
-            isOpen
-            onClose={jest.fn()}
-            content={mockContent}
-            reviewIndex={0}
-            snackbar={{
-              add: jest.fn(),
-            }}
-            handleEdit={jest.fn()}
-            formVariant="edit"
-          />
-        </KBContext.Provider>
-      </BrowserRouter>
-    ));
-    wrapper.update();
-
-    expect(wrapper.find(ReviewDialog)).toBeDefined();
-    expect(wrapper.find(StyledSwitch)).toHaveLength(1);
-    expect(wrapper.find(ActionButton)).toHaveLength(2);
-    expect(wrapper.find(FormField)).toHaveLength(5);
+    expect(wrapper.find(FormField)).toHaveLength(3);
   });
 
   it('Mounts new variant successfully', () => {
@@ -135,22 +110,19 @@ describe('ReviewDialog', () => {
 
     expect(wrapper.find(ReviewDialog)).toBeDefined();
     expect(wrapper.find(ActionButton)).toHaveLength(1);
-    expect(wrapper.find(FormField)).toHaveLength(2);
+    expect(wrapper.find(FormField)).toHaveLength(1);
   });
 
   it('adds Review Correctly', () => {
     // need to mock date or test will fail everytime because new review is created with a timestamp
     const dateSpy = jest.spyOn(global.Date.prototype, 'valueOf').mockImplementation(() => (1000));
+    const handleAddReviewSpy = jest.spyOn(ReviewDialog.prototype, 'handleAddReview');
+    const updateContentSpy = jest.fn();
     const mockReview = {
       status: 'initial',
       comment: 'This is a mock review of this statement',
     };
-    const handleEditSpy = jest.fn();
-    const fakeAuth = {
-      user: {
-        '@rid': '#20:0',
-      },
-    };
+
     const wrapper = mount((
       <BrowserRouter>
         <KBContext.Provider value={{ schema: new Schema() }}>
@@ -158,15 +130,14 @@ describe('ReviewDialog', () => {
             isOpen
             onClose={jest.fn()}
             content={mockContent}
+            updateContent={updateContentSpy}
             reviewIndex={0}
             snackbar={{
               add: jest.fn(),
             }}
-            handleEdit={handleEditSpy}
             formVariant="new"
-            auth={fakeAuth}
             newReview={{}}
-            updateNewReview={() => {}}
+            updateNewReview={jest.fn()}
           />
         </KBContext.Provider>
       </BrowserRouter>
@@ -184,7 +155,8 @@ describe('ReviewDialog', () => {
     submitBtn.prop('onClick')();
     wrapper.update();
 
-    expect(handleEditSpy).toHaveBeenCalledTimes(1);
+    expect(handleAddReviewSpy).toHaveBeenCalledTimes(1);
+    expect(updateContentSpy).toHaveBeenCalledTimes(1);
     expect(dateSpy).toHaveBeenCalledTimes(1);
 
     const newReview = {
@@ -196,9 +168,11 @@ describe('ReviewDialog', () => {
 
     const expectedMockContent = deepClone(mockContent);
     expectedMockContent.reviews.push(newReview);
+    // by default overall statement review status will take newly added review status
+    expectedMockContent.reviewStatus = 'initial';
 
-    expect(handleEditSpy).toBeCalledWith({ content: expectedMockContent });
-    expect(wrapper.find(FormField)).toHaveLength(2);
+    expect(updateContentSpy).toBeCalledWith(expectedMockContent);
+    expect(wrapper.find(FormField)).toHaveLength(1);
   });
 
   it('detects errors on form and does not submit review', () => {
@@ -206,13 +180,9 @@ describe('ReviewDialog', () => {
       status: 'initial',
       // missing comment prop/value should raise error
     };
-    const handleEditSpy = jest.fn();
     const snackbarErrorSpy = jest.fn();
-    const fakeAuth = {
-      user: {
-        '@rid': '#20:0',
-      },
-    };
+    const updateContentSpy = jest.fn();
+
     const wrapper = mount((
       <BrowserRouter>
         <KBContext.Provider value={{ schema: new Schema() }}>
@@ -220,13 +190,12 @@ describe('ReviewDialog', () => {
             isOpen
             onClose={jest.fn()}
             content={mockContent}
+            updateContent={updateContentSpy}
             reviewIndex={0}
             snackbar={{
               add: snackbarErrorSpy,
             }}
-            handleEdit={handleEditSpy}
             formVariant="new"
-            auth={fakeAuth}
             newReview={{}}
             updateNewReview={() => {}}
           />
@@ -246,13 +215,14 @@ describe('ReviewDialog', () => {
     submitBtn.prop('onClick')();
     wrapper.update();
 
-    expect(handleEditSpy).toHaveBeenCalledTimes(0);
     expect(snackbarErrorSpy).toHaveBeenCalledTimes(1);
+    expect(updateContentSpy).toHaveBeenCalledTimes(0);
   });
 
   it('handles review deletion correctly', () => {
-    const handleEditSpy = jest.fn();
     const onCloseSpy = jest.fn();
+    const handleDeleteSpy = jest.spyOn(ReviewDialog.prototype, 'handleDelete');
+    const updateContentSpy = jest.fn();
     const wrapper = mount((
       <BrowserRouter>
         <KBContext.Provider value={{ schema: new Schema() }}>
@@ -260,12 +230,12 @@ describe('ReviewDialog', () => {
             isOpen
             onClose={onCloseSpy}
             content={mockContent}
+            updateContent={updateContentSpy}
             reviewIndex={0}
             snackbar={{
               add: jest.fn(),
             }}
-            handleEdit={handleEditSpy}
-            formVariant="edit"
+            formVariant="view"
             auth={jest.fn()}
           />
         </KBContext.Provider>
@@ -274,72 +244,18 @@ describe('ReviewDialog', () => {
     wrapper.update();
     expect(wrapper.find(ReviewDialog)).toBeDefined();
 
-    expect(wrapper.find(ActionButton)).toHaveLength(2);
+    expect(wrapper.find(ActionButton)).toHaveLength(1);
     const delBtn = wrapper.find(ActionButton).at(0);
-    expect(delBtn.text()).toEqual('DELETE');
+    expect(delBtn.text()).toEqual('DELETE REVIEW');
     delBtn.prop('onClick')();
     wrapper.update();
 
     const expectedMockContent = Object.assign({}, mockContent);
     expectedMockContent.reviews = [];
 
-    expect(handleEditSpy).toBeCalledWith({ content: expectedMockContent });
-    expect(handleEditSpy).toHaveBeenCalledTimes(1);
+    expect(handleDeleteSpy).toHaveBeenCalledTimes(1);
+    expect(updateContentSpy).toBeCalledWith(expectedMockContent);
+    expect(updateContentSpy).toHaveBeenCalledTimes(1);
     expect(onCloseSpy).toHaveBeenCalledTimes(1);
-  });
-
-  it('edits a review correctly', () => {
-    const handleEditSpy = jest.fn();
-    const onCloseSpy = jest.fn();
-    const snackbarSpy = jest.fn();
-    const wrapper = mount((
-      <BrowserRouter>
-        <KBContext.Provider value={{ schema: new Schema() }}>
-          <ReviewDialog
-            isOpen
-            onClose={onCloseSpy}
-            content={mockContent}
-            reviewIndex={0}
-            snackbar={{
-              add: snackbarSpy,
-            }}
-            handleEdit={handleEditSpy}
-            formVariant="edit"
-            auth={jest.fn()}
-          />
-        </KBContext.Provider>
-      </BrowserRouter>
-    ));
-    wrapper.update();
-    expect(wrapper.find(ReviewDialog)).toBeDefined();
-
-    const editedReview = {
-      '@class': 'StatementReview',
-      createdBy: '#19:0',
-      status: 'initial',
-      createdAt: 1565376648434,
-      comment: 'this has been edited',
-    };
-
-    const editedContent = Object.assign({}, mockContent);
-    editedContent.reviews = [];
-    editedContent.reviews.push(editedReview);
-
-    const reviewDialogInstance = wrapper.find(ReviewDialog).instance();
-    reviewDialogInstance.setState({ currContent: editedContent });
-    wrapper.update();
-
-    expect(wrapper.find(ActionButton)).toHaveLength(2);
-    const delBtn = wrapper.find(ActionButton).at(1);
-    expect(delBtn.text()).toEqual('SUBMIT CHANGES');
-    delBtn.prop('onClick')();
-    wrapper.update();
-
-    const expectedContent = Object.assign({}, mockContent);
-    expectedContent.reviews = [];
-    expectedContent.reviews.push(editedReview);
-
-    expect(handleEditSpy).toBeCalledWith({ content: editedContent });
-    expect(handleEditSpy).toHaveBeenCalledTimes(1);
   });
 });

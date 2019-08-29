@@ -1,7 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 
-import { Chip, IconButton } from '@material-ui/core';
+import { Chip } from '@material-ui/core';
 import EmbeddedListTable from '../FormField/EmbeddedListTable';
 import DetailChip from '../../DetailChip';
 
@@ -35,7 +35,6 @@ describe('EmbeddedListTable', () => {
   ];
 
   const mockReviewProps = {
-    onReviewSelection: () => {},
     content: { reviews },
     updateContent: () => {},
   };
@@ -78,10 +77,10 @@ describe('EmbeddedListTable', () => {
     expect(wrapper.find(DetailChip)).toHaveLength(reviews.length);
   });
 
-  it('detailChip calls review selection handler ', () => {
-    const selectionSpy = jest.fn();
+  it('detailChip calls review selection handler ', async () => {
+    const selectionSpy = jest.spyOn(DetailChip.prototype, 'handleDialogOpen');
+    selectionSpy.mockImplementation(() => {});
     const mockPropsWithSpy = { ...mockReviewProps };
-    mockPropsWithSpy.handleDialogOpen = selectionSpy;
     const wrapper = mount((
       <EmbeddedListTable
         label="reviews"
@@ -93,7 +92,7 @@ describe('EmbeddedListTable', () => {
     expect(wrapper.find(EmbeddedListTable)).toBeDefined();
     expect(wrapper.find(Chip)).toHaveLength(reviews.length);
     const detailChip = wrapper.find(Chip).at(0);
-    detailChip.simulate('click'); // opens pop-over
+    await detailChip.prop('onClick')();
 
     expect(selectionSpy).toHaveBeenCalledTimes(1);
   });

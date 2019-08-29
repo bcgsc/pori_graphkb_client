@@ -193,8 +193,6 @@ class ReviewDialog extends Component {
     const { formVariant } = this.props;
     if (formVariant === FORM_VARIANT.NEW) {
       this.handleNewReviewUpdate(event, propName);
-    } else {
-      this.handleOldReviewUpdate(event, propName);
     }
   }
 

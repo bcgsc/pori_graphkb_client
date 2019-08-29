@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -11,9 +11,12 @@ import {
   Avatar,
 } from '@material-ui/core';
 import EmbeddedIcon from '@material-ui/icons/SelectAll';
+import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
+
 import DetailChip from '../../DetailChip';
 import { KBContext } from '../../KBContext';
 import { getUsername } from '../../../services/auth';
+import ReviewDialog from '../ReviewDialog';
 
 
 /**
@@ -22,25 +25,54 @@ import { getUsername } from '../../../services/auth';
  * @property {Arrayof(objects)} props.values linked records to be displayed in table
  * @property {string} props.label title of detail chip
  * @property {function} props.onReviewSelection function passed to DetailChip to handle
+ * @property {object} props.reviewProps props to be passed to reviewDialog and detail chip
  * review selection for related reviewDialog component
  */
 const EmbeddedListTable = (props) => {
   const {
-    values, label, onReviewSelection,
+    values, label, reviewProps,
   } = props;
 
-  const context = useContext(KBContext);
+  const {
+    updateContent, content,
+  } = reviewProps;
 
+  const isOpenMapping = {};
+  values.forEach((val, index) => {
+    isOpenMapping[index] = false;
+  });
+
+  const [isOpenMap, setIsOpenMap] = useState(isOpenMapping);
+  const context = useContext(KBContext);
+  const snackbar = useContext(SnackbarContext);
 
   const EmbeddedRecordRow = (value, index) => {
     const {
       status, createdBy: { name }, createdBy,
     } = value;
 
+    const handleDialogToggle = (idx, bool) => {
+      const newMapping = { ...isOpenMap };
+      newMapping[idx] = bool;
+      setIsOpenMap(newMapping);
+    };
+
     const details = {};
     const previewStr = name
       ? `${name} (${createdBy['@rid']})`
       : `${getUsername(context)} (#${createdBy})`;
+
+    const loadedReviewDialog = (
+      <ReviewDialog
+        isOpen={isOpenMap[index]}
+        onClose={() => handleDialogToggle(index, false)}
+        content={content}
+        updateContent={updateContent}
+        snackbar={snackbar}
+        formVariant="view"
+        reviewIndex={index}
+      />
+    );
 
     Object.keys(value).forEach((prop) => {
       if (prop !== '@rid') {
@@ -63,9 +95,9 @@ const EmbeddedListTable = (props) => {
               }
               }
               isEmbeddedLinkSet={{
-                onReviewSelection,
-                reviewIndex: index,
                 content: value,
+                component: loadedReviewDialog,
+                handleDialogOpen: () => { handleDialogToggle(index, true); },
               }}
               label={previewStr}
               title={label}
@@ -116,6 +148,7 @@ EmbeddedListTable.propTypes = {
   values: PropTypes.arrayOf(PropTypes.object),
   label: PropTypes.string,
   onReviewSelection: PropTypes.func.isRequired,
+  reviewProps: PropTypes.object.isRequired,
 };
 
 EmbeddedListTable.defaultProps = {

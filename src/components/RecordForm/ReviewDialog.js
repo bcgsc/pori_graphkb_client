@@ -24,7 +24,7 @@ import { getUser } from '../../services/auth';
 import util from '../../services/util';
 
 const schema = new Schema();
-const grouping = ['reviewStatus', 'status', ['createdAt', 'createdBy'], 'comment'];
+const grouping = [['status', 'createdBy'], 'comment'];
 
 /**
  * Dialog that handles the addition of statement reviews to a Statement
@@ -51,12 +51,19 @@ class ReviewDialog extends Component {
     onClose: PropTypes.func.isRequired,
     content: PropTypes.object.isRequired,
     reviewIndex: PropTypes.number.isRequired,
-    snackbar: PropTypes.object.isRequired,
+    snackbar: PropTypes.object,
     formVariant: PropTypes.string.isRequired,
-    onError: PropTypes.func.isRequired,
-    updateNewReview: PropTypes.func.isRequired,
+    onError: PropTypes.func,
+    updateNewReview: PropTypes.func,
     updateContent: PropTypes.func.isRequired,
-    newReview: PropTypes.object.isRequired,
+    newReview: PropTypes.object,
+  };
+
+  static defaultProps = {
+    snackbar: {},
+    onError: () => {},
+    updateNewReview: () => {},
+    newReview: {},
   };
 
   constructor(props) {
@@ -90,7 +97,6 @@ class ReviewDialog extends Component {
     const clonedReviews = this.cloneReviews();
     newContent.reviews = clonedReviews;
     newContent.reviews.splice(reviewIndex, 1);
-    console.log("TCL: ReviewDialog -> handleDelete -> newContent", newContent);
 
     try {
       updateContent(newContent);
@@ -258,7 +264,7 @@ class ReviewDialog extends Component {
             );
           } else {
             wrapper = (
-              <div className="statement-review-field">
+              <div className={`${formVariant === FORM_VARIANT.NEW ? 'statement-review-field' : ''}`}>
                 <FormField
                   model={prop}
                   value={review[name]}
@@ -268,6 +274,7 @@ class ReviewDialog extends Component {
                   variant="view"
                   key={name}
                   content={currContent}
+                  disabled={formVariant === FORM_VARIANT.VIEW}
                 />
               </div>
             );
@@ -285,16 +292,12 @@ class ReviewDialog extends Component {
     } = this.props;
     const { currContent } = this.state;
 
-    const model = schema.get('StatementReview');
-    const { description } = model;
     return (
       <Dialog
         open={isOpen}
         onClose={onClose}
         onEscapeKeyDown={onClose}
-        maxWidth="xl"
-        fullWidth
-        TransitionProps={{ unmountOnExit: true }}
+        maxWidth="md"
       >
         <div className="review-dialog">
           <AppBar
@@ -318,16 +321,6 @@ class ReviewDialog extends Component {
             </Tooltip>
           </AppBar>
           <div className="review-dialog__content">
-            <div className="review-dialog__header">
-              <div className="title">
-                <Typography variant="title" color="secondary">
-                Statement Review
-                </Typography>
-                <Typography variant="subtitle2" color="grey">
-                  {description}
-                </Typography>
-              </div>
-            </div>
             <DialogContent className="review-dialog__fields">
               {this.renderFieldGroup(grouping)}
               <StatementTable
@@ -336,7 +329,7 @@ class ReviewDialog extends Component {
               />
             </DialogContent>
             {formVariant === FORM_VARIANT.VIEW && (
-            <div className="review-dialog__content__submit-button">
+            <div className="review-dialog__action-button">
               <ActionButton
                 onClick={this.handleDelete}
                 variant="outlined"
@@ -348,7 +341,7 @@ class ReviewDialog extends Component {
             </div>
             )}
             { formVariant === FORM_VARIANT.NEW && (
-            <div className="review-dialog__content__submit-button">
+            <div className="review-dialog__action-button">
               <ActionButton
                 onClick={this.handleAddReview}
                 variant="contained"

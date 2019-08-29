@@ -19,10 +19,9 @@ import StatementTable from './StatementTable';
 import ActionButton from '../ActionButton';
 import { FORM_VARIANT } from './util';
 import { KBContext } from '../KBContext';
-import { getUsername, getUser } from '../../services/auth';
+import { getUser } from '../../services/auth';
 
 import util from '../../services/util';
-import StyledSwitch from '../StyledSwitch';
 
 const schema = new Schema();
 const grouping = ['reviewStatus', 'status', ['createdAt', 'createdBy'], 'comment'];
@@ -38,10 +37,11 @@ const grouping = ['reviewStatus', 'status', ['createdAt', 'createdBy'], 'comment
  * @property {object} props.content contains statement record info
  * @property {integer} props.reviewIndex index of the current review in reviews Array
  * @property {object} props.snackbar snackbar object for user feedback
- * @property {function} props.handleEdit parent function that handles edit action
  * @property {string} props.formVariant the variant of form depending on action
  * @property {object} props.auth Authorization object to mark who created review
- * @property {func} props.onError Parent error handler should something go wrong
+ * @property {function} props.onError Parent error handler should something go wrong
+ * @property {function} props.updateNewReview handles parent state of new review
+ * @property {function} props.updateContent handlers parent form content update
  */
 class ReviewDialog extends Component {
   static contextType = KBContext;
@@ -52,57 +52,37 @@ class ReviewDialog extends Component {
     content: PropTypes.object.isRequired,
     reviewIndex: PropTypes.number.isRequired,
     snackbar: PropTypes.object.isRequired,
-    handleEdit: PropTypes.func.isRequired,
     formVariant: PropTypes.string.isRequired,
     onError: PropTypes.func.isRequired,
     updateNewReview: PropTypes.func.isRequired,
+    updateContent: PropTypes.func.isRequired,
     newReview: PropTypes.object.isRequired,
   };
 
   constructor(props) {
     super(props);
     const {
-      content: initialContent, formVariant: initialMode, content: { reviewStatus: initialStatementReviewStatus }, newReview,
+      content: initialContent, newReview,
     } = props;
     this.state = {
-      mode: initialMode,
       currContent: Object.assign({}, initialContent),
-      currReviewStatus: initialStatementReviewStatus,
       newReview,
     };
   }
 
   @boundMethod
-  handleOldReviewUpdate(event, prop) {
-    const { reviewIndex } = this.props;
-    const { currContent, currReviewStatus } = this.state;
-    const newContent = Object.assign({}, currContent);
-    newContent.reviews[reviewIndex][prop] = event;
-    const statusOfReview = newContent.reviews[reviewIndex].status;
-    if (statusOfReview && statusOfReview !== currReviewStatus) {
-      this.setState({ currReviewStatus: statusOfReview, currContent: newContent });
-    } else {
-      this.setState({ currContent: newContent });
-    }
-  }
-
-  @boundMethod
   handleNewReviewUpdate(event, prop) {
     const { updateNewReview } = this.props;
-    const { newReview: updatedReview, currReviewStatus } = this.state;
+    const { newReview: updatedReview } = this.state;
     updatedReview[prop] = event;
-    if (updatedReview.status && currReviewStatus !== updatedReview.status) {
-      this.setState({ newReview: updatedReview, currReviewStatus: updatedReview.status });
-    } else {
-      this.setState({ newReview: updatedReview });
-    }
+    this.setState({ newReview: updatedReview });
     updateNewReview(updatedReview);
   }
 
   @boundMethod
   handleDelete() {
     const {
-      reviewIndex, handleEdit, onClose, onError,
+      reviewIndex, onClose, onError, updateContent,
     } = this.props;
     const { currContent } = this.state;
 
@@ -110,27 +90,11 @@ class ReviewDialog extends Component {
     const clonedReviews = this.cloneReviews();
     newContent.reviews = clonedReviews;
     newContent.reviews.splice(reviewIndex, 1);
+    console.log("TCL: ReviewDialog -> handleDelete -> newContent", newContent);
 
     try {
-      handleEdit({ content: newContent });
+      updateContent(newContent);
       onClose();
-    } catch (err) {
-      console.error(err);
-      onError(err);
-    }
-  }
-
-  @boundMethod
-  handleEdit() {
-    const { handleEdit, snackbar, onError } = this.props;
-    const { currContent } = this.state;
-    let newContent = Object.assign({}, currContent);
-    newContent = this.updateReviewStatus(newContent);
-
-    try {
-      handleEdit({ content: newContent });
-      this.setState({ mode: FORM_VARIANT.VIEW });
-      snackbar.add('review has been successfully updated');
     } catch (err) {
       console.error(err);
       onError(err);
@@ -167,11 +131,9 @@ class ReviewDialog extends Component {
 
   @boundMethod
   updateReviewStatus(content) {
-    const { currReviewStatus } = this.state;
+    const { newReview: { status } } = this.state;
     const newContent = Object.assign({}, content);
-    if (newContent.reviewStatus !== currReviewStatus) {
-      newContent.reviewStatus = currReviewStatus;
-    }
+    newContent.reviewStatus = status;
     return newContent;
   }
 
@@ -179,7 +141,7 @@ class ReviewDialog extends Component {
   handleAddReview() {
     const { newReview, currContent } = this.state;
     const {
-      handleEdit, snackbar, onClose, onError, updateNewReview, updateContent,
+      snackbar, onClose, onError, updateNewReview, updateContent,
     } = this.props;
 
     const formContainsError = this.doesFormContainErrors();
@@ -189,10 +151,6 @@ class ReviewDialog extends Component {
     }
 
     const user = getUser(this.context);
-    console.log('TCL: ReviewDialog -> handleAddReview -> user', user);
-    console.log("TCL: ReviewDialog -> handleAddReview -> user['@rid'].slice(1)", user['@rid'].slice(1));
-
-
     const updatedReview = {
       '@class': 'StatementReview',
       ...newReview,
@@ -215,7 +173,6 @@ class ReviewDialog extends Component {
     newContent = this.updateReviewStatus(newContent);
 
     try {
-      // handleEdit({ content: newContent });
       updateContent(newContent);
       updateNewReview({});
       onClose();
@@ -236,54 +193,13 @@ class ReviewDialog extends Component {
   }
 
   @boundMethod
-  handleReviewStatusChange(event) {
-    this.setState({ currReviewStatus: event });
-  }
-
-  @boundMethod
-  handleModeToggle() {
-    const { mode } = this.state;
-    if (mode === FORM_VARIANT.VIEW) {
-      this.setState({ mode: FORM_VARIANT.EDIT });
-    } else {
-      this.setState({ mode: FORM_VARIANT.VIEW });
-    }
-  }
-
-  @boundMethod
-  renderReviewStatusField() {
-    const {
-      currContent, currReviewStatus, mode,
-    } = this.state;
-
-    const model = schema.get('Statement');
-    const { properties: { reviewStatus } } = model;
-
-    return (
-      <FormField
-        key="reviewStatus"
-        model={reviewStatus}
-        value={currReviewStatus}
-        onValueChange={event => this.handleReviewStatusChange(event.target.value)}
-        schema={schema}
-        variant="view"
-        label="Overall Statement Status"
-        content={currContent}
-        disabled={
-          mode === FORM_VARIANT.VIEW
-        }
-      />
-    );
-  }
-
-  @boundMethod
   renderFieldGroup(ordering) {
     const {
       reviewIndex, formVariant,
     } = this.props;
 
     const {
-      mode, currContent: { reviews }, currContent, newReview,
+      currContent: { reviews }, currContent, newReview,
     } = this.state;
 
     let review = null;
@@ -323,9 +239,7 @@ class ReviewDialog extends Component {
               label={util.antiCamelCase(name)}
               key={name}
               content={currContent}
-              disabled={
-              mode === FORM_VARIANT.VIEW || ['createdAt', 'createdBy'].includes(name)
-            }
+              disabled
             />
           );
         } else if (!['createdAt', 'createdBy'].includes(name)) {
@@ -354,9 +268,6 @@ class ReviewDialog extends Component {
                   variant="view"
                   key={name}
                   content={currContent}
-                  disabled={
-                    mode === FORM_VARIANT.VIEW
-                  }
                 />
               </div>
             );
@@ -374,7 +285,6 @@ class ReviewDialog extends Component {
     } = this.props;
     const { currContent } = this.state;
 
-    const { mode } = this.state;
     const model = schema.get('StatementReview');
     const { description } = model;
     return (
@@ -417,20 +327,6 @@ class ReviewDialog extends Component {
                   {description}
                 </Typography>
               </div>
-              <div className="action-buttons">
-                {formVariant !== FORM_VARIANT.NEW && (
-                  <StyledSwitch
-                    onClick={this.handleModeToggle}
-                    checked={mode === FORM_VARIANT.EDIT}
-                    opt1="View"
-                    opt2="Edit"
-                    color="primary"
-                  />
-                )}
-              </div>
-            </div>
-            <div className="overall-statement-status-field">
-              {this.renderReviewStatusField()}
             </div>
             <DialogContent className="review-dialog__fields">
               {this.renderFieldGroup(grouping)}
@@ -439,24 +335,15 @@ class ReviewDialog extends Component {
                 schema={schema}
               />
             </DialogContent>
-            {mode === FORM_VARIANT.EDIT && (
-            <div className="review-dialog__content__action-buttons">
+            {formVariant === FORM_VARIANT.VIEW && (
+            <div className="review-dialog__content__submit-button">
               <ActionButton
                 onClick={this.handleDelete}
                 variant="outlined"
                 size="large"
                 message="Are you sure you want to delete this review"
               >
-                    DELETE
-              </ActionButton>
-              <ActionButton
-                onClick={this.handleEdit}
-                variant="contained"
-                color="primary"
-                size="large"
-                requireConfirm={false}
-              >
-                    SUBMIT CHANGES
+                    DELETE REVIEW
               </ActionButton>
             </div>
             )}
@@ -472,9 +359,7 @@ class ReviewDialog extends Component {
                     ADD REVIEW
               </ActionButton>
             </div>
-            )
-
-              }
+            )}
           </div>
         </div>
       </Dialog>

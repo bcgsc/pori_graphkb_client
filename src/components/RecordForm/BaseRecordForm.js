@@ -140,7 +140,7 @@ class BaseRecordForm extends React.Component {
   componentDidUpdate(prevProps) {
     const { value, modelName, variant } = this.props;
 
-    if (!value) {
+    if (!value || (!modelName && variant === 'NEW')) {
       return;
     }
     const { content } = this.state;

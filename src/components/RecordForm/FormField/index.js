@@ -35,6 +35,7 @@ import EmbeddedListTable from './EmbeddedListTable';
  * @param {Error} props.error the error object if any
  * @param {string} props.label the label to use for the form field (defaults to the property model name)
  * @param {string} props.variant the form variant to be passed down to embedded forms
+ * @param {object} props.reviewProps object to be passed to EmbeddedListTable for review display
  */
 const FormField = (props) => {
   const {
@@ -263,7 +264,7 @@ FormField.propTypes = {
   schema: PropTypes.object.isRequired,
   label: PropTypes.string,
   variant: PropTypes.string,
-  onReviewSelection: PropTypes.func,
+  reviewProps: PropTypes.object,
 };
 
 
@@ -274,7 +275,7 @@ FormField.defaultProps = {
   label: null,
   variant: 'view',
   value: null,
-  onReviewSelection: () => {},
+  reviewProps: {},
 };
 
 

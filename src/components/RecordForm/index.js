@@ -52,6 +52,9 @@ const cleanPayload = (payload) => {
  * @property {string} props.variant the type of NodeForm to create
  * @property {string} props.rid the record id of the current record for the form
  * @property {string} props.title the title for this form
+ * @property {string} props.modelName name of class model to be displayed
+ * @property {object} props.schema schema object defining class/prop models
+ * @property {value} props.value values of individual properties of passed class model
  */
 class RecordForm extends React.PureComponent {
   static contextType = SnackbarContext;
@@ -282,7 +285,6 @@ class RecordForm extends React.PureComponent {
     const {
       actionInProgress,
       reviewDialogOpen,
-      reviewIndex,
       formVariant,
       newReview,
       ...content
@@ -326,10 +328,8 @@ class RecordForm extends React.PureComponent {
           {formVariant && (
             <ReviewDialog
               isOpen={reviewDialogOpen}
-              onClose={() => this.setState({ reviewDialogOpen: false, reviewIndex: null, formVariant: null })}
+              onClose={() => this.setState({ reviewDialogOpen: false, formVariant: null })}
               content={content}
-              reviewIndex={reviewIndex}
-              statement={content}
               newReview={newReview}
               updateNewReview={this.handleNewReviewUpdate}
               updateContent={this.handleContentUpdate}

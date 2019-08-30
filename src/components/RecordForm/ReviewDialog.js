@@ -242,7 +242,7 @@ class ReviewDialog extends Component {
               schema={schema}
               variant="view"
               label={util.antiCamelCase(name)}
-              key={(new Date()).valueOf()}
+              key={name}
               content={currContent}
               disabled
             />
@@ -251,7 +251,7 @@ class ReviewDialog extends Component {
           if (name === 'comment') {
             wrapper = (
               <TextField
-                key={(new Date()).valueOf()}
+                key={name}
                 fullWidth
                 multiline
                 rows={7}
@@ -263,7 +263,7 @@ class ReviewDialog extends Component {
             );
           } else {
             wrapper = (
-              <div key={(new Date()).valueOf()} className={`${formVariant === FORM_VARIANT.NEW ? 'statement-review-field' : ''}`}>
+              <div key={name} className={`${formVariant === FORM_VARIANT.NEW ? 'statement-review-field' : ''}`}>
                 <FormField
                   model={prop}
                   value={review[name]}

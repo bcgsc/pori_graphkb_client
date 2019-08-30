@@ -263,7 +263,7 @@ class ReviewDialog extends Component {
             );
           } else {
             wrapper = (
-              <div className={`${formVariant === FORM_VARIANT.NEW ? 'statement-review-field' : ''}`}>
+              <div key={(new Date()).valueOf()} className={`${formVariant === FORM_VARIANT.NEW ? 'statement-review-field' : ''}`}>
                 <FormField
                   model={prop}
                   value={review[name]}
@@ -271,7 +271,6 @@ class ReviewDialog extends Component {
                   schema={schema}
                   label="Review Status"
                   variant="view"
-                  key={(new Date()).valueOf()}
                   content={currContent}
                   disabled={formVariant === FORM_VARIANT.VIEW}
                 />

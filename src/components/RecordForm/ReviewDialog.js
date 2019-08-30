@@ -28,8 +28,8 @@ const grouping = [['status', 'createdBy'], 'comment'];
 
 /**
  * Dialog that handles the addition of statement reviews to a Statement
- * record or the modification of reviews. Dialog has 3 main variants,
- * ['new', 'edit, 'view']. The dialog is triggered open via the add review
+ * record or the modification of reviews. Dialog has 2 main variants,
+ * ['new', 'view']. The dialog is triggered open via the add review
  * statement button or by a related embedded detail chip link.
  *
  * @property {bool} props.isOpen flag to indicate whether dialog is open
@@ -50,7 +50,7 @@ class ReviewDialog extends Component {
     isOpen: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     content: PropTypes.object.isRequired,
-    reviewIndex: PropTypes.number.isRequired,
+    reviewIndex: PropTypes.number,
     snackbar: PropTypes.object,
     formVariant: PropTypes.string.isRequired,
     onError: PropTypes.func,
@@ -64,6 +64,7 @@ class ReviewDialog extends Component {
     onError: () => {},
     updateNewReview: () => {},
     newReview: {},
+    reviewIndex: 0,
   };
 
   constructor(props) {
@@ -241,7 +242,7 @@ class ReviewDialog extends Component {
               schema={schema}
               variant="view"
               label={util.antiCamelCase(name)}
-              key={name}
+              key={(new Date()).valueOf()}
               content={currContent}
               disabled
             />
@@ -250,7 +251,7 @@ class ReviewDialog extends Component {
           if (name === 'comment') {
             wrapper = (
               <TextField
-                key={name}
+                key={(new Date()).valueOf()}
                 fullWidth
                 multiline
                 rows={7}
@@ -270,7 +271,7 @@ class ReviewDialog extends Component {
                   schema={schema}
                   label="Review Status"
                   variant="view"
-                  key={name}
+                  key={(new Date()).valueOf()}
                   content={currContent}
                   disabled={formVariant === FORM_VARIANT.VIEW}
                 />

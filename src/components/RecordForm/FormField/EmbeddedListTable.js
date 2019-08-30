@@ -30,12 +30,8 @@ import ReviewDialog from '../ReviewDialog';
  */
 const EmbeddedListTable = (props) => {
   const {
-    values, label, reviewProps,
+    values, label, reviewProps: { updateContent, content },
   } = props;
-
-  const {
-    updateContent, content,
-  } = reviewProps;
 
   const isOpenMapping = {};
   values.forEach((val, index) => {
@@ -81,7 +77,7 @@ const EmbeddedListTable = (props) => {
     });
 
     return (
-      <React.Fragment>
+      <React.Fragment key={index}>
         <TableRow>
           <TableCell padding="dense">
             {status}

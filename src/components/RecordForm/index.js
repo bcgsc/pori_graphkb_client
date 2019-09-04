@@ -322,6 +322,8 @@ class RecordForm extends React.PureComponent {
                 checked={variant === FORM_VARIANT.EDIT}
                 opt1="View"
                 opt2="Edit"
+                requireConfirm
+                message="Are you sure? You will lose your changes."
               />
             )}
           </div>

@@ -1,8 +1,9 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { Typography } from '@material-ui/core';
+import { Typography, Button, Switch } from '@material-ui/core';
 
 import StyledSwitch from '..';
+import ConfirmActionDialog from '../../ActionButton/ConfirmActionDialog';
 
 describe('StyledSwitch', () => {
   it('mounts sucessfully', () => {
@@ -38,7 +39,7 @@ describe('StyledSwitch', () => {
     expect(option2.text()).toEqual('opt2');
   });
 
-  it('selects option correctly', async () => {
+  it('selects option correctly', () => {
     const mockCheck = {
       check: false,
     };
@@ -59,8 +60,33 @@ describe('StyledSwitch', () => {
     const switchTest = wrapper.find(StyledSwitch).at(0);
     expect(switchTest.prop('checked')).toEqual(false);
 
-    await switchTest.prop('onClick')();
+    switchTest.prop('onClick')();
     wrapper.update();
     expect(mockCheck.check).toEqual(true);
+  });
+
+  it('does not use onClick with requireConfirm flag', () => {
+    const toggleCheck = jest.fn();
+
+    const wrapper = mount((
+      <StyledSwitch
+        onClick={() => toggleCheck()}
+        checked
+        opt1="opt1"
+        opt2="opt2"
+        requireConfirm
+        message="Are you sure? You will lose everything."
+      />
+    ));
+    expect(wrapper.find(StyledSwitch)).toBeDefined();
+    expect(wrapper.find(Typography)).toHaveLength(2);
+    expect(wrapper.find(ConfirmActionDialog).exists()).toEqual(true);
+
+    expect(toggleCheck).not.toHaveBeenCalled();
+    const switchTest = wrapper.find(Switch).at(0);
+    switchTest.prop('onClick')();
+    wrapper.update();
+
+    expect(toggleCheck).not.toHaveBeenCalled();
   });
 });

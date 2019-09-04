@@ -1,6 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import { Typography, Button, Switch } from '@material-ui/core';
+import { Typography, Switch } from '@material-ui/core';
 
 import StyledSwitch from '..';
 import ConfirmActionDialog from '../../ActionButton/ConfirmActionDialog';

@@ -1401,7 +1401,6 @@ class GraphComponent extends Component {
             <IconButton
               color="primary"
               onClick={this.saveGraphStatetoURL}
-              disabled={!refreshable}
             >
               <SaveStateIcon />
             </IconButton>

@@ -52,8 +52,8 @@ class BaseRecordForm extends React.Component {
     modelName: PropTypes.string,
     name: PropTypes.string.isRequired,
     onValueChange: PropTypes.func,
-    onReviewSelection: PropTypes.func,
     value: PropTypes.object,
+    reviewProps: PropTypes.object,
     variant: PropTypes.oneOf([
       FORM_VARIANT.EDIT,
       FORM_VARIANT.NEW,
@@ -85,7 +85,7 @@ class BaseRecordForm extends React.Component {
     onValueChange: null,
     value: {},
     variant: FORM_VARIANT.VIEW,
-    onReviewSelection: () => {},
+    reviewProps: {},
   };
 
   constructor(props) {

@@ -11,7 +11,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Tooltip from '@material-ui/core/Tooltip';
 import EditIcon from '@material-ui/icons/Edit';
 import { boundMethod } from 'autobind-decorator';
-import qs from 'qs';
+
 
 import kbSchema from '@bcgsc/knowledgebase-schema';
 
@@ -23,7 +23,6 @@ import { KBContext } from '../../components/KBContext';
 import RecordFormDialog from '../../components/RecordFormDialog';
 import api from '../../services/api';
 import { cleanLinkedRecords } from '../../components/util';
-
 import './index.scss';
 
 /**
@@ -255,12 +254,6 @@ class DataView extends React.Component {
       pathname: `/data/graph/${encodedData}`,
       search: '',
     });
-    // decodes encoded data
-    const { nodes } = qs.parse(encodedData.replace(/^\?/, ''));
-    const decodedContent = decodeURIComponent(nodes);
-    const base64decoded = atob(decodedContent);
-    const decodedNodes = JSON.parse(base64decoded);
-    console.log("TCL: handleGraphStateSaveIntoURL -> decodedNodes", decodedNodes);
   }
 
   /**

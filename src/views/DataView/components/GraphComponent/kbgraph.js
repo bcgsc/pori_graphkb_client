@@ -1,4 +1,3 @@
-import color from '@material-ui/core/colors/lightGreen';
 import config from '../../../../static/config';
 import { isObject } from './utils';
 
@@ -290,10 +289,6 @@ class GraphOptions {
       nodePreview: this.nodePreview,
       isTreeLayout: this.isTreeLayout,
     }));
-  }
-
-  setNodesColors(colorObj) {
-    this.nodesColors = colorObj;
   }
 }
 

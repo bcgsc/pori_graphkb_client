@@ -36,7 +36,6 @@ import {
 
 const {
   GRAPH_PROPERTIES: {
-    NODE_INIT_RADIUS,
     ZOOM_BOUNDS,
   },
   GRAPH_DEFAULTS: {
@@ -48,10 +47,52 @@ const {
 } = config;
 
 // Component specific constants.
-const AUTO_SPACE_COEFFICIENT = 2;
 const MARKER_ID = 'endArrow';
 const DIALOG_FADEOUT_TIME = 150;
 const HEAVILY_CONNECTED = 10;
+const TREE_LINK = 'SubClassOf';
+
+const getId = node => node.data
+  ? node.data['@rid']
+  : node['@rid'] || node;
+
+/**
+ * Use the graph links to rank nodes in the graph based on their subclass relationships. Root nodes
+ * are given 0 and child nodes are given 1 more than the rank of their highest ranked parent node
+ */
+const computeNodeLevels = (graphLinks) => {
+  const nodes = {};
+  graphLinks.forEach((edge) => {
+    const { data: { out: src, in: tgt, '@class': edgeType } } = edge;
+    if (edgeType === TREE_LINK) {
+      const srcId = getId(src);
+      const tgtId = getId(tgt);
+      nodes[srcId] = nodes[srcId] || { id: srcId, children: [], parents: [] };
+      nodes[tgtId] = nodes[tgtId] || { id: tgtId, children: [], parents: [] };
+      nodes[srcId].children.push(tgtId);
+      nodes[tgtId].parents.push(srcId);
+    }
+  });
+
+  const queue = Object.values(nodes).filter(node => node.parents.length === 0);
+  const ranks = {};
+
+  queue.forEach((root) => {
+    ranks[root.id] = 0;
+  });
+
+  while (queue.length) {
+    const curr = queue.shift();
+
+    curr.children.forEach((childId) => {
+      if (childId) {
+        ranks[childId] = Math.max(ranks[childId] || 0, ranks[curr.id] + 1);
+        queue.push(nodes[childId]);
+      }
+    });
+  }
+  return ranks;
+};
 
 /**
  * Component for displaying query results in force directed graph form.
@@ -118,7 +159,6 @@ class GraphComponent extends Component {
       height: 0,
       graphOptions: new GraphOptions(),
       graphOptionsOpen: false,
-      refreshable: false,
       initState: null,
       actionsNodeIsEdge: false,
       expansionDialogOpen: false,
@@ -381,19 +421,45 @@ class GraphComponent extends Component {
       links,
       simulation,
       graphOptions,
+      height,
     } = this.state;
 
+    // set up the hierarchy
     simulation.nodes(nodes);
+    if (graphOptions.isTreeLayout) {
+      const ranks = computeNodeLevels(links);
+      const partitions = Math.max(...[0, ...Object.values(ranks)]) + 2;
+      const partitionSize = height / partitions;
+      // partial force https://stackoverflow.com/questions/39575319/partial-forces-on-nodes-in-d3-js
+      const subclassYForce = d3Force.forceY(node => (partitions - ranks[getId(node)] - 1) * partitionSize);
+      const init = subclassYForce.initialize;
+      subclassYForce.initialize = (allNodes) => {
+        init(allNodes.filter(node => ranks[getId(node)] !== undefined));
+      };
+
+      simulation.force('y', subclassYForce);
+    }
 
     simulation.force(
       'links',
       d3Force
         .forceLink(links)
-        .strength(graphOptions.linkStrength)
-        .id(d => d.getId()),
+        .strength((link) => {
+          if (link.data['@class'] !== TREE_LINK && graphOptions.isTreeLayout) {
+            return 5 * graphOptions.linkStrength;
+          }
+          return graphOptions.linkStrength;
+        }).id(d => d.getId()),
     );
 
     const ticked = () => {
+      const shiftDistance = 1 * simulation.alpha();
+      links.forEach((data) => {
+        if (data.data['@class'] === TREE_LINK) {
+          data.source.y += shiftDistance;
+          data.target.y -= shiftDistance;
+        }
+      });
       this.setState({
         links,
         nodes,
@@ -416,24 +482,13 @@ class GraphComponent extends Component {
       width,
       height,
     } = this.state;
+
     simulation.force(
       'link',
       d3Force.forceLink().id(d => d.getId()),
     ).force(
       'collide',
-      d3Force.forceCollide((d) => {
-        if (graphOptions.autoCollisionRadius) {
-          let obj = d.data;
-          let key = graphOptions.nodeLabelProp;
-          if (key.includes('.')) {
-            [, key] = key.split('.');
-            obj = graphOptions.nodeLabelProp.split('.')[0] || {};
-          }
-          if (!obj[key] || obj[key].length === 0) return graphOptions.collisionRadius;
-          return Math.max(obj[key].length * AUTO_SPACE_COEFFICIENT, NODE_INIT_RADIUS);
-        }
-        return graphOptions.collisionRadius;
-      }),
+      d3Force.forceCollide(graphOptions.collisionRadius),
     ).force(
       'charge',
       d3Force.forceManyBody()
@@ -467,7 +522,7 @@ class GraphComponent extends Component {
    */
   @boundMethod
   loadNeighbors(node) {
-    const { expandExclusions, data } = this.state;
+    const { expandExclusions, data, simulation } = this.state;
     let {
       nodes,
       links,
@@ -505,11 +560,12 @@ class GraphComponent extends Component {
     this.setState({
       expandable,
       actionsNode: null,
-      refreshable: true,
       expandExclusions: [],
       nodes,
       links,
       graphObjects,
+    }, () => {
+      simulation.alpha(1).restart();
     });
   }
 
@@ -540,7 +596,7 @@ class GraphComponent extends Component {
 
   @boundMethod
   async handleExpandNode({ data: node }) {
-    const { cache } = this.props;
+    const { cache, handleError } = this.props;
     const { data } = this.state;
     try {
       const record = await cache.getRecord(node);
@@ -549,7 +605,7 @@ class GraphComponent extends Component {
         this.setState({ data });
       }
     } catch (err) {
-      this.handleError(err);
+      handleError(err);
     }
   }
 
@@ -772,25 +828,16 @@ class GraphComponent extends Component {
     };
   }
 
-  @boundMethod
-  handleRefresh() {
-    this.setState({ data: null });
-  }
-
   /**
-   * Restarts simulation with initial nodes and links present. These are determined by the
-   * first state rendered when the component mounts.
+   * Restarts the layout simulation with the current nodes
    */
   @boundMethod
   refresh() {
+    const { simulation } = this.state;
     const { handleDetailDrawerClose } = this.props;
-    this.handleRefresh();
-    this.setState({
-      nodes: [],
-      links: [],
-      graphObjects: {},
-      refreshable: false,
-    }, this.componentDidMount);
+    simulation.alpha(1).restart();
+    this.initSimulation();
+    this.drawGraph();
     handleDetailDrawerClose();
   }
 
@@ -889,11 +936,11 @@ class GraphComponent extends Component {
    * @param {boolean} isAdvanced - Advanced option flag.
    */
   @boundMethod
-  handleGraphOptionsChange(event, isAdvanced) {
-    const { graphOptions, refreshable } = this.state;
+  handleGraphOptionsChange(event) {
+    const { graphOptions } = this.state;
     graphOptions[event.target.name] = event.target.value;
     graphOptions.load();
-    this.setState({ graphOptions, refreshable: isAdvanced || refreshable }, () => {
+    this.setState({ graphOptions }, () => {
       this.initSimulation();
       this.drawGraph();
       this.updateColors();
@@ -973,7 +1020,6 @@ class GraphComponent extends Component {
       graphObjects,
       links,
       expandable,
-      refreshable: true,
     }, () => {
       this.updateColors();
       handleDetailDrawerClose();
@@ -1030,7 +1076,6 @@ class GraphComponent extends Component {
       links,
       graphObjects,
       actionsNode: null,
-      refreshable: true,
     }, () => {
       this.updateColors();
       handleDetailDrawerClose();
@@ -1111,7 +1156,6 @@ class GraphComponent extends Component {
       actionsNode,
       expandable,
       graphOptions,
-      refreshable,
       actionsNodeIsEdge,
       graphOptionsOpen,
       expansionDialogOpen,
@@ -1259,12 +1303,11 @@ class GraphComponent extends Component {
             </IconButton>
           </Tooltip>
 
-          <Tooltip placement="top" title="Restart simulation with initial nodes">
+          <Tooltip placement="top" title="Rerun Layout">
             <div className="refresh-wrapper">
               <IconButton
                 color="primary"
                 onClick={this.refresh}
-                disabled={!refreshable}
               >
                 <RefreshIcon />
               </IconButton>

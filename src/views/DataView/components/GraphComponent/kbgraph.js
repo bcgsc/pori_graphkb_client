@@ -244,6 +244,7 @@ class GraphOptions {
     this.linksLegend = !!initial.linksLegend;
     this.chargeMax = initial.chargeMax || CHARGE_MAX;
     this.nodePreview = initial.nodePreview || true;
+    this.isTreeLayout = !!initial.isTreeLayout;
   }
 
   /**
@@ -286,6 +287,7 @@ class GraphOptions {
       nodesLegend: this.nodesLegend,
       linksLegend: this.linksLegend,
       nodePreview: this.nodePreview,
+      isTreeLayout: this.isTreeLayout,
     }));
   }
 }

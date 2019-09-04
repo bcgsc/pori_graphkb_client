@@ -171,6 +171,7 @@ class GraphComponent extends Component {
       expandNode: null,
       expandExclusions: [],
       allProps: [], // list of all unique properties on all nodes returned
+      isSavedState: false,
     };
 
     this.propsMap = new PropsMap();
@@ -234,7 +235,7 @@ class GraphComponent extends Component {
       /**
        * Initialization priority:
        *
-       * 1. Check to see if it is a shared state via URL.
+       * 1. Check to see if it is a user shared graph state via URL.
        * 2. Checked rows from tableview always override session stored state.
        * 3. Initial state is checked. This will never be chosen on the
        *    component's first load.
@@ -242,7 +243,11 @@ class GraphComponent extends Component {
        *    the last stored state.
        */
       if (isSavedState) {
-        let { nodes, links, graphObjects } = this.state;
+        /* Case 1, iterate through decoded node rids to generate graph objects. */
+        let nodes = [];
+        let links = [];
+        let graphObjects = {};
+
         const nodeRIDs = Object.keys(data);
         nodeRIDs.forEach((rid, index) => {
           ({
@@ -263,10 +268,17 @@ class GraphComponent extends Component {
           ));
         });
         util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
+        this.setState({
+          nodes,
+          links,
+          graphObjects,
+          expandable,
+          isSavedState,
+        });
       } else if ((displayed && displayed.length !== 0) || (!initState && !storedData)) {
         let { nodes, links, graphObjects } = this.state;
 
-        /* Case 1, iterate through specified rids. */
+        /* Case 2, iterate through specified rids. */
         validDisplayed.forEach((key, i) => {
           ({
             nodes,
@@ -293,7 +305,7 @@ class GraphComponent extends Component {
           nodes,
           links,
         } = initState;
-        /* Case 2, iterate through component state field containing graph state. */
+        /* Case 3, iterate through component state field containing graph state. */
         nodes.forEach((node) => {
           this.propsMap.loadNode(node.data, allProps);
           expandable = util.expanded(expandedEdgeTypes, graphObjects, node.getId(), expandable);
@@ -312,7 +324,7 @@ class GraphComponent extends Component {
         } = storedData;
         let { nodes, links } = storedData;
 
-        /* Case 3, fetch state saved in localStorage. */
+        /* Case 4, fetch state saved in localStorage. */
         delete storedData.localStorageKey;
         nodes = nodes.map((n) => {
           this.propsMap.loadNode(n.data, allProps);
@@ -1184,6 +1196,10 @@ class GraphComponent extends Component {
     };
   }
 
+  /**
+   * parses through URL to obtain encoded node RIDS. Decodes and
+   * returns an array of node RIDs. Ex. [#25:09,#30:43,#81:32]
+   */
   @boundMethod
   async loadSavedStateFromURL() {
     const { cache, handleError } = this.props;
@@ -1204,11 +1220,22 @@ class GraphComponent extends Component {
     }
   }
 
+  /**
+   * Saves graph state into URL. Only graph nodes are saved to maximize
+   * number of nodes that can be shared. Also reheats simulation and changes
+   * node coloring to avoid sending full graph state over limited URL.
+   */
   @boundMethod
   saveGraphStatetoURL() {
     const { handleGraphStateSave, handleError } = this.props;
     const { nodes } = this.state;
     const withoutStatementData = [];
+
+    /* Because properties types like linkset are uni-directional, we need to
+    have nodes that are connected via a linkset property rendered first.
+    For example, if a statement class node has a link property 'impliedBy' which
+    points to node A, node A will not have an equivalent 'implies' property
+    to map it back to the statement node */
 
     nodes.forEach((node) => {
       if (node.data['@class'] !== 'Statement') {
@@ -1216,21 +1243,14 @@ class GraphComponent extends Component {
       }
     });
 
-    // add back statement data
     const nodeRIDs = [...withoutStatementData];
     nodes.forEach((node) => {
       if (node.data['@class'] === 'Statement') {
         nodeRIDs.push(node.data['@rid']);
       }
     });
-    // due to how links are set up, we need to append statements to the very
-    // end of the list. This is so that when we process the nodes, the linked
-    // nodes are already displayed.
-
 
     const savedState = {};
-    // const nodeRIDs = nodes.map(node => (node.data['@rid']));
-
     try {
       const stringifiedState = JSON.stringify(nodeRIDs);
       const base64encodedState = btoa(stringifiedState);
@@ -1239,6 +1259,7 @@ class GraphComponent extends Component {
       savedState.nodes = encodedContent;
       const encodedState = qs.stringify(savedState);
       handleGraphStateSave(encodedState);
+      this.componentDidMount();
     } catch (err) {
       handleError(err);
     }
@@ -1256,6 +1277,7 @@ class GraphComponent extends Component {
       expansionDialogOpen,
       expandNode,
       expandExclusions,
+      isSavedState,
     } = this.state;
 
     const { propsMap } = this;
@@ -1383,6 +1405,7 @@ class GraphComponent extends Component {
               color="secondary"
               className="table-btn"
               onClick={handleTableRedirect}
+              disabled={isSavedState}
             >
               <ViewListIcon />
             </IconButton>

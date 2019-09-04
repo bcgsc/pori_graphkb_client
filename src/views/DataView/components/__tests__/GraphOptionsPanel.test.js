@@ -79,15 +79,11 @@ describe('<GraphOptionsPanel />', () => {
     expect(wrapper.children().length).toBe(2);
     wrapper.find('.help-title button').simulate('click');
 
-    wrapper.find('.options-title button#advanced-help-btn').simulate('click');
-    expect(wrapper.children().length).toBe(2);
-    wrapper.find('.help-title button').simulate('click');
-
-    expect(handleHelpOpenSpy).toHaveBeenCalledTimes(2);
-    expect(handleHelpCloseSpy).toHaveBeenCalledTimes(2);
+    expect(handleHelpOpenSpy).toHaveBeenCalledTimes(1);
+    expect(handleHelpCloseSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('advanced options changes are triggered', () => {
+  it('options changes trigger the handler', () => {
     const handleGraphOptionsChange = jest.fn();
     wrapper = mount(
       <GraphOptionsPanel
@@ -99,8 +95,6 @@ describe('<GraphOptionsPanel />', () => {
         handleGraphOptionsChange={handleGraphOptionsChange}
       />,
     );
-    wrapper.find('div.advanced-options-wrapper input')
-      .forEach(input => input.simulate('change'));
 
     wrapper.find('div.main-options-wrapper input')
       .forEach(input => input.simulate('change'));

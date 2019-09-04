@@ -96,9 +96,9 @@ class ApiCall {
     const { status, statusText, url } = response;
 
     const error = {
+      message: response.statusText,
       ...(await response.json()),
       status,
-      message: response.statusText,
       url,
     };
     if (status === 401) {

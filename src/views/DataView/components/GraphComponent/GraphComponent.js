@@ -209,7 +209,7 @@ class GraphComponent extends Component {
     const displayed = originalData.map(obj => obj['@rid']);
     const expandedEdgeTypes = util.expandEdges(edgeTypes);
     let validDisplayed = displayed;
-    if (!displayed || displayed.length === 0) {
+    if ((!displayed || displayed.length === 0) && data) {
       validDisplayed = Object.keys(data)[0] ? [Object.keys(data)[0]] : [];
     }
 
@@ -1205,10 +1205,14 @@ class GraphComponent extends Component {
     const { cache, handleError } = this.props;
     const encodedData = window.location.href.split('graph/')[1];
     const { nodes } = qs.parse(encodedData.replace(/^\?/, ''));
-
-    const decodedContent = decodeURIComponent(nodes);
-    const base64decoded = atob(decodedContent);
-    const decodedNodes = JSON.parse(base64decoded);
+    let decodedNodes;
+    try {
+      const decodedContent = decodeURIComponent(nodes);
+      const base64decoded = atob(decodedContent);
+      decodedNodes = JSON.parse(base64decoded);
+    } catch (err) {
+      handleError(err);
+    }
 
     try {
       const records = await cache.getRecords(decodedNodes);

@@ -142,7 +142,6 @@ describe('<GraphComponent />', () => {
 
     wrapper.find('div.toolbar button.table-btn').simulate('click');
     wrapper.find('div.toolbar button#graph-options-btn').simulate('click');
-    wrapper.find('input#linkStrength').simulate('change');
     wrapper.find('div.toolbar .refresh-wrapper button').simulate('click');
   });
 

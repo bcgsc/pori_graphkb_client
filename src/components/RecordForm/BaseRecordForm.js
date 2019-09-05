@@ -34,7 +34,7 @@ import {
  * @property {function} props.onValueChange the parent handler function
  * @property {function} props.onSubmit the parent handler function to submit the form contents
  * @property {function} props.onDelete the parent handler function to delete the current record
- * @property {function} props.onReviewSelection parent handler to toggle Statement between statement reviews
+ * @property {function} props.reviewProps props to render statement reviews to be passed to detail chip
  */
 class BaseRecordForm extends React.Component {
   static contextType = KBContext;
@@ -62,7 +62,8 @@ class BaseRecordForm extends React.Component {
   };
 
   static defaultProps = {
-    aboveFold: [CLASS_MODEL_PROP, 'displayName', 'name', 'groups', 'journalName', 'out', 'in', 'permissions', 'evidenceLevel', 'description', 'reviewStatus'],
+    aboveFold: [CLASS_MODEL_PROP, 'displayName', 'name', 'groups', 'journalName', 'out', 'in',
+      'permissions', 'evidenceLevel', 'description', 'reviewStatus', 'comment', 'reviews'],
     actionInProgress: false,
     belowFold: ['deprecated', 'history'],
     className: '',
@@ -70,7 +71,7 @@ class BaseRecordForm extends React.Component {
     groups: [
       ['@rid', 'createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'uuid', 'history', 'groupRestrictions'],
       ['relevance', 'appliesTo'],
-      ['reviewStatus', 'reviewComment'],
+      ['reviewStatus', 'reviews'],
       ['reference1', 'break1Repr', 'break1Start', 'break1End'],
       ['reference2', 'break2Repr', 'break2Start', 'break2End'],
       ['source', 'sourceId', 'sourceIdVersion'],

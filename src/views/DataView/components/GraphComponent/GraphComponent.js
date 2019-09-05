@@ -201,7 +201,11 @@ class GraphComponent extends Component {
     let data;
     if (isSavedState) {
       localStorage.clear();
-      data = await this.loadSavedStateFromURL();
+      try {
+        data = await this.loadSavedStateFromURL();
+      } catch (err) {
+        handleError(err);
+      }
     } else {
       data = GraphComponent.hashRecordsByRID(originalData);
     }

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -33,14 +33,16 @@ const EmbeddedListTable = (props) => {
     values, label, reviewProps: { updateContent, content },
   } = props;
 
-  const isOpenMapping = {};
-  values.forEach((val, index) => {
-    isOpenMapping[index] = false;
-  });
-
-  const [isOpenMap, setIsOpenMap] = useState(isOpenMapping);
+  const [isOpenMap, setIsOpenMap] = useState({});
   const context = useContext(KBContext);
   const snackbar = useContext(SnackbarContext);
+
+  useEffect(() => {
+    const isOpenMapping = {};
+    values.forEach((val, index) => {
+      isOpenMapping[index] = false;
+    });
+  });
 
   const EmbeddedRecordRow = (value, index) => {
     const {

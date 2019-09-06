@@ -2,17 +2,17 @@
 
 .permissions-table {
   &__row:nth-child(odd) {
-    background: $palette__grey--300;
+    background: $palette-grey--300;
   }
 
   &__header {
-    background: $palette__background--default;
+    background: $palette-background--default;
     border: none;
     position: sticky;
     top: -1px;
 
     th {
-      background: $palette__background--default;
+      background: $palette-background--default;
       position: sticky;
       top: -1px;
       z-index: 1;

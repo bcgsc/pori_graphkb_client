@@ -23,7 +23,7 @@ body {
 }
 
 a {
-  color: $palette__secondary--main;
+  color: $palette-secondary--main;
   text-decoration: none;
   &[disabled] {
     pointer-events: none;

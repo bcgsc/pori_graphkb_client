@@ -3,7 +3,7 @@
 
 .detail-drawer {
   max-width: 100%; // use full screen for ipad/mobile
-  transition-duration: $transitions__duration--standard;
+  transition-duration: $transitions-duration--standard;
   transition-property: width;
   width: 100%;
   word-break: break-word;
@@ -49,7 +49,7 @@
   }
 
   &__relationships-subheader {
-    background: $palette__background--default;
+    background: $palette-background--default;
     z-index: 1;
   }
 

@@ -38,7 +38,7 @@
 
   #about-notation {
     // Fix for non mui components
-    color: $palette__text--primary;
+    color: $palette-text--primary;
     font-family: $roboto;
     font-size: 1rem;
     font-weight: 400;
@@ -46,7 +46,7 @@
     line-height: 1.5;
 
     pre {
-      background-color: $palette__background--default;
+      background-color: $palette-background--default;
       padding: 5px;
 
       code {
@@ -56,7 +56,7 @@
 
     h1,
     h2 {
-      color: $palette__text--primary;
+      color: $palette-text--primary;
       font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
       font-weight: 400;
       letter-spacing: 0;
@@ -89,7 +89,7 @@
   .pie-chart {
     max-height: calc(100vw - 60px);
     text {
-      fill: $palette__common--white;
+      fill: $palette-common--white;
     }
   }
   @media (max-width: #{$breakpoint-med}) {
@@ -103,7 +103,7 @@
     top: -1px;
 
     th {
-      background: $palette__background--default;
+      background: $palette-background--default;
       position: sticky;
       top: -1px;
       z-index: 1;
@@ -113,9 +113,9 @@
 
 .letter-icon {
   align-items: center;
-  background-color: $palette__secondary--main;
+  background-color: $palette-secondary--main;
   border-radius: 50%;
-  color: $palette__common--white;
+  color: $palette-common--white;
   display: flex;
   font-family: $roboto;
   font-size: 1rem;

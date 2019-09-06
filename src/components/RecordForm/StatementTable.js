@@ -4,7 +4,6 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
   TableRow,
   Typography,
 } from '@material-ui/core';
@@ -54,10 +53,6 @@ const StatementTable = (props) => {
   return (
     <div className="statement-table">
       <Table className="statement-table__table">
-        <TableHead>
-          <TableCell />
-          <TableCell />
-        </TableHead>
         <TableBody>
           { renderStatementRow(content) }
         </TableBody>

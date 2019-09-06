@@ -90,9 +90,9 @@ const EmbeddedListTable = (props) => {
                 color: 'secondary',
               }
               }
-              isEmbeddedLinkSet={{
+              embeddedLinkSet={{
                 content: value,
-                component: loadedReviewDialog,
+                dialog: loadedReviewDialog,
                 handleDialogOpen: () => { handleDialogToggle(index, true); },
               }}
               label={previewStr}

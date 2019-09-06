@@ -51,7 +51,7 @@ class DetailChip extends React.Component {
     valueToString: PropTypes.func,
     title: PropTypes.string,
     getLink: PropTypes.func,
-    isEmbeddedLinkSet: PropTypes.object,
+    embeddedLinkSet: PropTypes.object,
   };
 
   static defaultProps = {
@@ -67,7 +67,7 @@ class DetailChip extends React.Component {
     valueToString: s => `${s}`,
     getLink: null,
     title: null,
-    isEmbeddedLinkSet: {},
+    embeddedLinkSet: {},
   };
 
   constructor(props) {
@@ -82,12 +82,12 @@ class DetailChip extends React.Component {
    * Do not update if the anchor changes (causes infinite render loop)
    */
   shouldComponentUpdate(nextProps, nextState) {
-    const { label, details, isEmbeddedLinkSet: { component } } = this.props;
-    const { isEmbeddedLinkSet: { component: nextPropsComponent } } = nextProps;
+    const { label, details, embeddedLinkSet: { dialog } } = this.props;
+    const { embeddedLinkSet: { dialog: nextPropsDialog } } = nextProps;
     const { anchorEl } = this.state;
-    if (component) {
+    if (dialog) {
       return (
-        component.props.isOpen !== nextPropsComponent.props.isOpen
+        dialog.props.isOpen !== nextPropsDialog.props.isOpen
       );
     }
     return (
@@ -117,7 +117,7 @@ class DetailChip extends React.Component {
 
   @boundMethod
   handleDialogOpen() {
-    const { isEmbeddedLinkSet: { handleDialogOpen } } = this.props;
+    const { embeddedLinkSet: { handleDialogOpen } } = this.props;
     handleDialogOpen();
   }
 
@@ -132,15 +132,15 @@ class DetailChip extends React.Component {
       ChipProps,
       getLink,
       title,
-      isEmbeddedLinkSet,
+      embeddedLinkSet,
       ...rest
     } = this.props;
 
 
     const {
       content,
-      component,
-    } = isEmbeddedLinkSet;
+      dialog,
+    } = embeddedLinkSet;
 
     const { anchorEl } = this.state;
 
@@ -194,7 +194,7 @@ class DetailChip extends React.Component {
         )}
         {content && (
           <>
-            {component}
+            {dialog}
           </>
         )
 

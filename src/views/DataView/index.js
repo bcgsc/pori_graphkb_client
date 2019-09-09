@@ -23,6 +23,7 @@ import { KBContext } from '../../components/KBContext';
 import RecordFormDialog from '../../components/RecordFormDialog';
 import api from '../../services/api';
 import { cleanLinkedRecords } from '../../components/util';
+
 import './index.scss';
 
 /**
@@ -176,9 +177,15 @@ class DataView extends React.Component {
   @boundMethod
   handleTableRedirect() {
     const { history } = this.props;
+
+    const isSavedState = window.location.href.includes('shareState=true&');
+    const search = isSavedState
+      ? window.location.search.split('&shareState=true')[0]
+      : window.location.search;
+
     history.push({
       pathname: '/data/table',
-      search: history.location.search,
+      search,
       hash: '',
     });
   }
@@ -248,11 +255,11 @@ class DataView extends React.Component {
 
   @boundMethod
   handleGraphStateSaveIntoURL(encodedData) {
-    const { history } = this.props;
+    const { history, location: { pathname }, location: { search } } = this.props;
 
     history.push({
-      pathname: `/data/graph/${encodedData}`,
-      search: '',
+      pathname,
+      search: `${search.split('&shareState=true')[0]}&shareState=true&${encodedData}`,
     });
   }
 

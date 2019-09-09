@@ -192,12 +192,14 @@ class GraphComponent extends Component {
     const {
       graphOptions,
       initState,
+      simulation,
     } = this.state;
     let { expandable } = this.state;
     const allProps = this.getUniqueDataProps();
     this.propsMap = new PropsMap();
 
-    const isSavedState = window.location.href.includes('nodes');
+    const isSavedState = window.location.href.includes('shareState=true&');
+
     let data;
     if (isSavedState) {
       localStorage.clear();
@@ -278,7 +280,7 @@ class GraphComponent extends Component {
           graphObjects,
           expandable,
           isSavedState,
-        });
+        }, () => simulation.alpha(1).restart());
       } else if ((displayed && displayed.length !== 0) || (!initState && !storedData)) {
         let { nodes, links, graphObjects } = this.state;
 
@@ -871,6 +873,9 @@ class GraphComponent extends Component {
         });
       }
     });
+
+    this.saveGraphStatetoURL();
+
     return {
       expandable,
       nodes,
@@ -1201,14 +1206,16 @@ class GraphComponent extends Component {
   }
 
   /**
-   * parses through URL to obtain encoded node RIDS. Decodes and
+   * parses through URL to obtain encoded node RIDS. Decodes and then
    * returns an array of node RIDs. Ex. [#25:09,#30:43,#81:32]
    */
   @boundMethod
   async loadSavedStateFromURL() {
     const { cache, handleError } = this.props;
-    const encodedData = window.location.href.split('graph/')[1];
+
+    const encodedData = window.location.href.split('shareState=true&')[1];
     const { nodes } = qs.parse(encodedData.replace(/^\?/, ''));
+
     let decodedNodes;
     try {
       const decodedContent = decodeURIComponent(nodes);
@@ -1267,10 +1274,25 @@ class GraphComponent extends Component {
       savedState.nodes = encodedContent;
       const encodedState = qs.stringify(savedState);
       handleGraphStateSave(encodedState);
-      this.componentDidMount();
     } catch (err) {
       handleError(err);
     }
+  }
+
+  @boundMethod
+  copyURLToClipBoard() {
+    const URL = window.location.href;
+
+    // create temp dummy element to select and copy text
+    const dummy = document.createElement('input');
+    document.body.appendChild(dummy);
+    dummy.value = URL;
+    dummy.select();
+    document.execCommand('copy');
+    document.body.removeChild(dummy);
+
+    // reheat simulation so that coloring is consistent
+    this.componentDidMount();
   }
 
   render() {
@@ -1428,10 +1450,10 @@ class GraphComponent extends Component {
               <SettingsIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip placement="top" title="Save graph state to share with URL">
+          <Tooltip placement="top" title="Copy share-able URL to clip-board">
             <IconButton
               color="primary"
-              onClick={this.saveGraphStatetoURL}
+              onClick={this.copyURLToClipBoard}
             >
               <SaveStateIcon />
             </IconButton>

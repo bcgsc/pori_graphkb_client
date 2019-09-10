@@ -1,0 +1,64 @@
+@import '../../theme';
+
+.container{
+  display: flex;
+  width: 160px;
+  justify-content: center;
+  background-color: #fff;
+}
+
+.button{
+  background: none;
+  font: inherit;
+  outline: inherit;
+  display: inline-table;
+  border: none;
+  padding: 5px 12px 8px;
+  max-width: 168px;
+  min-width: 80px;
+  transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,padding-top 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  flex: 1;
+
+  &:active{
+    color: $palette-primary--light;
+  }
+
+  &__label{
+    font-size: 0.75rem;
+    opacity: 0;
+    transition-delay: 0.1s;
+
+    &--selected{
+      font-size: 0.875rem;
+      height: 10px;
+      opacity: 1;
+      transition: font-size 0.2s, opacity 0.2s;
+      transition-delay: 0.1s;
+    }
+  }
+
+  &__wrapper{
+    color: lightgray;
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 10px;
+
+    &--selected{
+      color: $palette-primary--light;
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: center;
+      transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, padding-top 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    }
+
+  }
+
+  &:hover{
+    cursor: pointer;
+  }
+}

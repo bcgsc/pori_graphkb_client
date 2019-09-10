@@ -15,6 +15,7 @@ import BaseNodeForm from './BaseRecordForm';
 import { FORM_VARIANT } from './util';
 import { withKB } from '../KBContext';
 import ReviewDialog from './ReviewDialog';
+import ToggleButtonGroup from '../ToggleButtonGroup';
 
 
 const cleanPayload = (payload) => {
@@ -302,6 +303,12 @@ class RecordForm extends React.PureComponent {
       <Paper className="record-form__wrapper" elevation={4}>
         <div className="record-form__header">
           <Typography variant="h1" className="title">{title}</Typography>
+          <ToggleButtonGroup
+                onClick={() => onTopClick(content)}
+                requireConfirm
+                options={['view', 'edit']}
+                message="Are you sure? You will lose your changes."
+              />
           <div className="header-action-buttons">
             {(content['@class'] === 'Statement' && variant === FORM_VARIANT.EDIT && (
             <Button
@@ -316,13 +323,10 @@ class RecordForm extends React.PureComponent {
             </Button>
             ))}
             {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
-              <StyledSwitch
-                color="primary"
+              <ToggleButtonGroup
                 onClick={() => onTopClick(content)}
-                checked={variant === FORM_VARIANT.EDIT}
-                opt1="View"
-                opt2="Edit"
                 requireConfirm
+                options={['view', 'edit']}
                 message="Are you sure? You will lose your changes."
               />
             )}

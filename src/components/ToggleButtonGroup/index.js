@@ -12,6 +12,7 @@ function ToggleButtonGroup(props) {
     options, onClick, requireConfirm, message,
   } = props;
   const iconSet = [<ViewIcon />, <EditIcon />];
+
   const [value, setValue] = useState(options[0]);
   const [dialogOpen, setDialogOpen] = useState(false);
 

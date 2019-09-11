@@ -1267,13 +1267,13 @@ class GraphComponent extends Component {
 
     const savedState = {};
     try {
-      const stringifiedState = JSON.stringify(nodeRIDs);
-      const base64encodedState = btoa(stringifiedState);
-      const encodedContent = encodeURIComponent(base64encodedState);
+      // const stringifiedState = JSON.stringify(nodeRIDs);
+      // const base64encodedState = btoa(stringifiedState);
+      // const encodedContent = encodeURIComponent(base64encodedState);
 
-      savedState.nodes = encodedContent;
-      const encodedState = qs.stringify(savedState);
-      handleGraphStateSave(encodedState);
+      // savedState.nodes = encodedContent;
+      // const encodedState = qs.stringify(savedState);
+      handleGraphStateSave(nodeRIDs);
     } catch (err) {
       handleError(err);
     }

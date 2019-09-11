@@ -108,13 +108,13 @@ $icon-size: 1.5rem;
 }
 
 @mixin field-set {
-  border: 1px solid $palette-divider;
+  border: 1px solid $palette__divider;
   border-radius: 4px;
 }
 
 @mixin code-block {
   pre {
-    background-color: $palette-background--default;
+    background-color: $palette__background--default;
     overflow-x: scroll;
     padding: 5px;
 

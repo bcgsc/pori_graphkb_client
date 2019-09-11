@@ -11,6 +11,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Tooltip from '@material-ui/core/Tooltip';
 import EditIcon from '@material-ui/icons/Edit';
 import { boundMethod } from 'autobind-decorator';
+import * as qs from 'qs';
 
 
 import kbSchema from '@bcgsc/knowledgebase-schema';
@@ -254,12 +255,25 @@ class DataView extends React.Component {
   }
 
   @boundMethod
-  handleGraphStateSaveIntoURL(encodedData) {
+  handleGraphStateSaveIntoURL(nodeRIDs) {
     const { history, location: { pathname }, location: { search } } = this.props;
+
+    const savedState = {};
+    let encodedState;
+    try {
+      const stringifiedState = JSON.stringify(nodeRIDs);
+      const base64encodedState = btoa(stringifiedState);
+      const encodedContent = encodeURIComponent(base64encodedState);
+
+      savedState.nodes = encodedContent;
+      encodedState = qs.stringify(savedState);
+    } catch (err) {
+      this.handleError(err);
+    }
 
     history.push({
       pathname,
-      search: `${search.split('&shareState=true')[0]}&shareState=true&${encodedData}`,
+      search: `${search.split('&shareState=true')[0]}&shareState=true&${encodedState}`,
     });
   }
 

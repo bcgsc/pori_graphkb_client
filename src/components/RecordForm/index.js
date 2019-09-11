@@ -9,7 +9,6 @@ import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 
 import api from '../../services/api';
-import StyledSwitch from '../StyledSwitch';
 import './index.scss';
 import BaseNodeForm from './BaseRecordForm';
 import { FORM_VARIANT } from './util';
@@ -304,11 +303,11 @@ class RecordForm extends React.PureComponent {
         <div className="record-form__header">
           <Typography variant="h1" className="title">{title}</Typography>
           <ToggleButtonGroup
-                onClick={() => onTopClick(content)}
-                requireConfirm
-                options={['view', 'edit']}
-                message="Are you sure? You will lose your changes."
-              />
+            onClick={() => onTopClick(content)}
+            requireConfirm
+            options={['view', 'edit']}
+            message="Are you sure? You will lose your changes."
+          />
           <div className="header-action-buttons">
             {(content['@class'] === 'Statement' && variant === FORM_VARIANT.EDIT && (
             <Button

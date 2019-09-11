@@ -9,9 +9,12 @@ import './index.scss';
 
 function ToggleButtonGroup(props) {
   const {
-    options, onClick, requireConfirm, message,
+    options,
+    onClick,
+    requireConfirm,
+    message,
+    icons,
   } = props;
-  const iconSet = [<ViewIcon />, <EditIcon />];
 
   const [value, setValue] = useState(options[0]);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -31,7 +34,7 @@ function ToggleButtonGroup(props) {
   };
 
   const handleChange = (newValue) => {
-    if (newValue === options[0] && requireConfirm) {
+    if (newValue === options[0] && newValue !== value && requireConfirm) {
       handleOpenDialog();
     } else {
       setValue(newValue);
@@ -41,7 +44,7 @@ function ToggleButtonGroup(props) {
   const toggleButtons = options.map((option, index) => (
     <button type="button" className="button" onClick={() => handleChange(option)}>
       <span className={`button__wrapper${value === option ? '--selected' : ''}`}>
-        {iconSet[index]}
+        {icons[index]}
         <span className={`button__label${value === option ? '--selected' : ''}`}>{utils.antiCamelCase(option)}</span>
       </span>
     </button>
@@ -70,12 +73,14 @@ ToggleButtonGroup.propTypes = {
   onClick: PropTypes.func,
   requireConfirm: PropTypes.bool,
   message: PropTypes.string,
+  icons: PropTypes.array,
 };
 
 ToggleButtonGroup.defaultProps = {
   onClick: () => {},
   requireConfirm: false,
   message: 'Are you sure?',
+  icons: [<ViewIcon />, <EditIcon />],
 };
 
 export default ToggleButtonGroup;

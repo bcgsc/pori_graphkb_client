@@ -30,11 +30,10 @@ describe('ToggleButtonGroup', () => {
     expect(wrapper.find('button').length).toBe(2);
   });
 
-  it('doesnt fire onclick with requireConfirm', async () => {
-    const clickSpy = jest.fn();
+  it('changes selected toggle button on click', () => {
     const wrapper = mount((
       <ToggleButtonGroup
-        onClick={clickSpy}
+        onClick={jest.fn()}
         options={['view', 'edit']}
         message="Changes you will lose"
       />
@@ -46,8 +45,23 @@ describe('ToggleButtonGroup', () => {
     const editBtn = wrapper.find('button').at(1);
     const editSpan = wrapper.find('span').at(3);
     expect(editSpan.hasClass('button__label--selected')).toEqual(false);
-    await editBtn.simulate('click');
-    console.log(wrapper.debug());
-    expect(wrapper.find('span').at(3).hasClass('button__label--selected')).toEqual(true);
+    editBtn.simulate('click');
+
+    const updatedEditSpan = wrapper.find('span').at(3);
+    expect(updatedEditSpan.hasClass('button__label--selected')).toEqual(true);
+  });
+
+  it('displays ConfirmActionDialog when confirmation is required', () => {
+    const wrapper = mount((
+      <ToggleButtonGroup
+        onClick={jest.fn()}
+        options={['view', 'edit']}
+        message="Changes you will lose"
+      />
+    ));
+
+    expect(wrapper.find(ToggleButtonGroup)).toBeDefined();
+    expect(wrapper.find('button').length).toBe(2);
+    expect(wrapper.find(ConfirmActionDialog)).toBeDefined();
   });
 });

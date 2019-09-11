@@ -281,6 +281,8 @@ class RecordForm extends React.PureComponent {
     const {
       title, variant, onTopClick, modelName, onError, ...rest
     } = this.props;
+    console.log("TCL: render -> variant", variant)
+
 
     const {
       actionInProgress,
@@ -302,12 +304,6 @@ class RecordForm extends React.PureComponent {
       <Paper className="record-form__wrapper" elevation={4}>
         <div className="record-form__header">
           <Typography variant="h1" className="title">{title}</Typography>
-          <ToggleButtonGroup
-            onClick={() => onTopClick(content)}
-            requireConfirm
-            options={['view', 'edit']}
-            message="Are you sure? You will lose your changes."
-          />
           <div className="header-action-buttons">
             {(content['@class'] === 'Statement' && variant === FORM_VARIANT.EDIT && (
             <Button
@@ -326,6 +322,7 @@ class RecordForm extends React.PureComponent {
                 onClick={() => onTopClick(content)}
                 requireConfirm
                 options={['view', 'edit']}
+                variant={variant}
                 message="Are you sure? You will lose your changes."
               />
             )}

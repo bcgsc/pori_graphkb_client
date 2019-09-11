@@ -15,7 +15,6 @@ import GoBackIcon from '@material-ui/icons/Replay';
 import Schema from '../../services/schema';
 import FormField from './FormField';
 import './index.scss';
-import StatementTable from './StatementTable';
 import ActionButton from '../ActionButton';
 import { FORM_VARIANT } from './util';
 import { KBContext } from '../KBContext';
@@ -288,7 +287,6 @@ class ReviewDialog extends Component {
     const {
       isOpen, onClose, formVariant,
     } = this.props;
-    const { currContent } = this.state;
 
     return (
       <Dialog
@@ -321,10 +319,6 @@ class ReviewDialog extends Component {
           <div className="review-dialog__content">
             <DialogContent className="review-dialog__fields">
               {this.renderFieldGroup(grouping)}
-              <StatementTable
-                content={currContent}
-                schema={schema}
-              />
             </DialogContent>
             {formVariant === FORM_VARIANT.VIEW && (
             <div className="review-dialog__action-button">

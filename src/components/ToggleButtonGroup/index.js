@@ -59,10 +59,10 @@ function ToggleButtonGroup(props) {
   };
 
   const toggleButtons = options.map((option, index) => (
-    <button type="button" className="button" onClick={() => handleChange(option)}>
-      <span className={`button__wrapper${value === option ? '--selected' : ''}`}>
+    <button type="button" className="toggle-button" onClick={() => handleChange(option)}>
+      <span className={`toggle-button__wrapper${value === option ? '--selected' : ''}`}>
         {icons[index]}
-        <span className={`button__label${value === option ? '--selected' : ''}`}>{utils.antiCamelCase(option)}</span>
+        <span className={`toggle-button__label${value === option ? '--selected' : ''}`}>{utils.antiCamelCase(option)}</span>
       </span>
     </button>
   ));

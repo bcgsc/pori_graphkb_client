@@ -281,7 +281,6 @@ class RecordForm extends React.PureComponent {
     const {
       title, variant, onTopClick, modelName, onError, ...rest
     } = this.props;
-    console.log("TCL: render -> variant", variant)
 
 
     const {

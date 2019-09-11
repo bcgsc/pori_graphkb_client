@@ -8,7 +8,7 @@ rules:
   class-name-format:
     - 1
     -
-      convention: hyphenated-bem
+      convention: hyphenatedbem
   leading-zero:
     - 2
     -

@@ -325,16 +325,18 @@ class RecordForm extends React.PureComponent {
               />
             )}
           </div>
-          <ReviewDialog
-            isOpen={reviewDialogOpen}
-            onClose={() => this.setState({ reviewDialogOpen: false })}
-            content={content}
-            newReview={newReview}
-            updateNewReview={this.handleNewReviewUpdate}
-            updateContent={this.handleContentUpdate}
-            snackbar={snackbar}
-            onError={onError}
-          />
+          {(content['@class'] === 'Statement' && variant === FORM_VARIANT.EDIT && (
+            <ReviewDialog
+              isOpen={reviewDialogOpen}
+              onClose={() => this.setState({ reviewDialogOpen: false })}
+              content={content}
+              newReview={newReview}
+              updateNewReview={this.handleNewReviewUpdate}
+              updateContent={this.handleContentUpdate}
+              snackbar={snackbar}
+              onError={onError}
+            />
+          ))}
         </div>
         <BaseNodeForm
           {...rest}

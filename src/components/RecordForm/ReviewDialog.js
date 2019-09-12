@@ -59,10 +59,10 @@ class ReviewDialog extends Component {
   constructor(props) {
     super(props);
     const {
-      content: initialContent, newReview,
+      content, newReview,
     } = props;
     this.state = {
-      currContent: Object.assign({}, initialContent),
+      currContent: Object.assign({}, content),
       newReview,
     };
   }
@@ -115,6 +115,7 @@ class ReviewDialog extends Component {
   @boundMethod
   handleAddReview() {
     const { newReview, currContent } = this.state;
+
     const {
       snackbar, onClose, onError, updateNewReview, updateContent,
     } = this.props;

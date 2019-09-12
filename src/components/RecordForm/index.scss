@@ -143,18 +143,6 @@
         display: inline-block;
       }
     }
-
-    &__btn {
-      animation: fade-in(0.2s);
-      grid-column-start: 9;
-      margin: auto 4px;
-
-      &:disabled {
-        color: $palette__common--white;
-      }
-    }
-
-
   }
 
   &__fields {
@@ -199,19 +187,4 @@
 
 
   }
-
-  .statement-table {
-    margin: 20px;
-  }
-
-  .review-status-button {
-    float: right;
-    margin: 20px;
-    margin-right: 70px;
-    width: 300px;
-  }
-}
-
-.review-icon {
-  margin-left: 5px;
 }

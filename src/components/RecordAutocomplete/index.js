@@ -103,7 +103,8 @@ class RecordAutocomplete extends React.Component {
     this.state = {
       selected: value,
       helperText: false,
-      initialOptions: [],
+      options: [],
+      searchTerm: '',
     };
     this.controller = null; // store the request/abort object to handle the async option call
   }
@@ -112,12 +113,12 @@ class RecordAutocomplete extends React.Component {
     const { searchHandler, singleLoad, defaultOptionsHandler } = this.props;
     if (singleLoad) {
       this.controller = searchHandler('');
-      const initialOptions = await this.controller.request();
-      this.setState({ initialOptions });
+      const options = await this.controller.request();
+      this.setState({ options });
     } else if (defaultOptionsHandler) {
       this.controller = defaultOptionsHandler();
-      const initialOptions = await this.controller.request();
-      this.setState({ initialOptions });
+      const options = await this.controller.request();
+      this.setState({ options });
     }
   }
 
@@ -172,8 +173,12 @@ class RecordAutocomplete extends React.Component {
   }
 
   @boundMethod
-  handleInputChange(term, { action: actionType }) {
-    const { minSearchLength, isMulti } = this.props;
+  async handleInputChange(term, { action: actionType }) {
+    const {
+      minSearchLength, isMulti, singleLoad,
+    } = this.props;
+    const { searchTerm } = this.state;
+
     let helperText = term.length < minSearchLength && term.length >= 0
       ? `Requires ${minSearchLength} or more characters to search`
       : '';
@@ -186,6 +191,14 @@ class RecordAutocomplete extends React.Component {
     } else if (actionType === 'set-value' && isMulti) {
       helperText = `Requires ${minSearchLength} or more characters to search`;
       this.setState({ helperText });
+    }
+    if (term !== searchTerm) {
+      if (!singleLoad) {
+        const newOptions = await this.getOptions(term);
+        this.setState({ options: newOptions });
+      }
+      // const optionsHash = newOptions.map(getOptionKey).join('|');
+      this.setState({ searchTerm: term });
     }
   }
 
@@ -223,39 +236,39 @@ class RecordAutocomplete extends React.Component {
       label,
       placeholder,
       required,
-      searchHandler,
       singleLoad,
     } = this.props;
 
     const {
       helperText,
       selected,
-      initialOptions,
+      options,
+      searchTerm,
+
     } = this.state;
 
-    let BaseSelectComponent;
-    let uniqueProps;
+    // console.log('render with options', optionsHash);
+    // console.log(options);
 
-    if (singleLoad) {
-      BaseSelectComponent = Select;
-      uniqueProps = { options: initialOptions };
-    } else {
-      // Async requests
-      BaseSelectComponent = AsyncSelect;
-      uniqueProps = {
-        loadOptions: this.getOptions,
-      };
-      if (initialOptions) {
-        uniqueProps.defaultOptions = initialOptions;
+    const optionFilter = (option, candidate) => {
+      // console.log(option, candidate, option.label.toLowerCase().includes(candidate.toLowerCase()));
+
+      if (candidate && singleLoad) {
+        return [
+          option.label,
+          option.data.name,
+          option.data.sourceId,
+          option.displayName,
+        ].some(
+          tgt => tgt && tgt.toLowerCase().includes(candidate.toLowerCase()),
+        );
       }
-      if (searchHandler && searchHandler.fname) {
-        uniqueProps.cacheOptions = searchHandler.fname;
-      }
-    }
+      return true;
+    };
 
     return (
       <NoSsr>
-        <BaseSelectComponent
+        <Select
           className={`record-autocomplete ${className}`}
           value={selected}
           cacheOptions={!disableCache}
@@ -266,9 +279,11 @@ class RecordAutocomplete extends React.Component {
           onFocus={this.handleOnFocus}
           onBlur={this.handleOnBlur}
           onInputChange={this.handleInputChange}
+          filterOption={optionFilter}
           getOptionValue={getOptionKey} // used to compare options for equality
           getOptionLabel={getOptionLabel} // generates the string representation
           hideSelectedOptions
+          inputValue={searchTerm}
           isClearable={!disabled}
           isMulti={isMulti}
           isSearchable={!disabled}
@@ -290,7 +305,7 @@ class RecordAutocomplete extends React.Component {
             required,
             label,
           }}
-          {...uniqueProps}
+          options={options || []}
         />
       </NoSsr>
     );

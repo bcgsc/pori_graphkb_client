@@ -290,36 +290,6 @@ const getPallette = (n, type = 'nodes') => {
 };
 
 /**
- * Saves current graph state into localstorage, identified by the url search parameters.
- * @param {Object} search - collection of search parameters.
- * @param {Object} data - graph data to be stored.
- */
-const loadGraphData = (search, data) => {
-  const newData = Object.assign({ localStorageKey: search }, data);
-  try {
-    localStorage.setItem(GRAPH_OBJECTS, JSON.stringify(jc.decycle(newData)));
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.error('localstorage quota exceeded');
-  }
-};
-
-/**
- * Retrieves graph data from localstorage for the input search parameters.
- * @param {Object} search - collection of search parameters .
- */
-const getGraphData = (search) => {
-  const data = localStorage.getItem(GRAPH_OBJECTS);
-  if (data) {
-    const obj = jc.retrocycle(JSON.parse(data));
-    if (obj.localStorageKey === search) {
-      return obj;
-    }
-  }
-  return null;
-};
-
-/**
  * Updates expandable map for input rid.
  * @param {Array.<string>} expandedEdgeTypes - List of valid edge type keys.
  * @param {Object} graphObjects - Collection of all graph objects.
@@ -428,8 +398,6 @@ export default {
   getTSVRepresentation,
   parsePayload,
   getPallette,
-  loadGraphData,
-  getGraphData,
   expanded,
   positionInit,
   parsePermission,

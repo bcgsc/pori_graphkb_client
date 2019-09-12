@@ -1,7 +1,6 @@
 import React from 'react';
 import { mount } from 'enzyme';
 
-import { Chip } from '@material-ui/core';
 import EmbeddedListTable from '../FormField/EmbeddedListTable';
 import DetailChip from '../../DetailChip';
 

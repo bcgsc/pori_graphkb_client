@@ -64,7 +64,7 @@ const EmbeddedRecordRow = (props) => {
     } catch (err) {
       console.error(err);
     }
-  }
+  };
 
   const details = {};
   const previewStr = name

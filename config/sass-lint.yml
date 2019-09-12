@@ -5,10 +5,14 @@ rules:
       size: 2
   no-ids:
     - 0
+  variable-name-format:
+    - 1
+    -
+      convention: hyphenatedbem
   class-name-format:
     - 1
     -
-      convention: hyphenated-bem
+      convention: hyphenatedbem
   leading-zero:
     - 2
     -

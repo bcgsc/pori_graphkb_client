@@ -58,7 +58,6 @@ class ApiCall {
   @boundMethod
   async request(ignoreAbort = true) {
     this.controller = new AbortController();
-    const { signal } = this.controller;
 
     let response;
     try {
@@ -69,15 +68,36 @@ class ApiCall {
           headers: {
             'Content-type': 'application/json',
           },
-          signal,
+          signal: this.controller.signal,
         },
       );
     } catch (err) {
       if (err.name === 'AbortError' && ignoreAbort) {
         return null;
       }
+      // https://www.bcgsc.ca/jira/browse/SYS-55907
       console.error(err);
-      throw err;
+      console.error('Fetch error. Re-trying Request with cache-busting');
+      this.controller = new AbortController();
+      try {
+        response = await fetch(
+          API_BASE_URL + this.endpoint,
+          {
+            ...this.requestOptions,
+            headers: {
+              'Content-type': 'application/json',
+            },
+            signal: this.controller.signal,
+            cache: 'reload',
+          },
+        );
+      } catch (err2) {
+        if (err2.name === 'AbortError' && ignoreAbort) {
+          return null;
+        }
+        console.error(err2);
+        throw err2;
+      }
     }
     this.controller = null;
     if (response.ok) {

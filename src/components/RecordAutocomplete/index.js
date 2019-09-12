@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import AsyncSelect from 'react-select/lib/Async';
-import debounce from 'debounce-promise';
 import {
   NoSsr,
 } from '@material-ui/core';
@@ -53,7 +51,6 @@ class RecordAutocomplete extends React.Component {
   static propTypes = {
     className: PropTypes.string,
     components: PropTypes.object,
-    debounceMs: PropTypes.number,
     defaultOptionsHandler: PropTypes.func,
     DetailChipProps: PropTypes.object,
     disableCache: PropTypes.bool,
@@ -76,7 +73,6 @@ class RecordAutocomplete extends React.Component {
   static defaultProps = {
     className: '',
     components: defaultComponents,
-    debounceMs: 300,
     defaultOptionsHandler: null,
     DetailChipProps: {
       valueToString: (record) => {
@@ -104,19 +100,12 @@ class RecordAutocomplete extends React.Component {
   constructor(props) {
     super(props);
     const { value } = props;
-    const { debounceMs } = this.props;
     this.state = {
       selected: value,
       helperText: false,
       initialOptions: [],
     };
     this.controller = null; // store the request/abort object to handle the async option call
-    if (debounceMs < 0) {
-      this.getOptions = this.getOptions.bind(this);
-    } else {
-      // wrap in a debouncer to avoid spamming the api
-      this.getOptions = debounce(this.getOptions.bind(this), debounceMs);
-    }
   }
 
   async componentDidMount() {
@@ -149,6 +138,7 @@ class RecordAutocomplete extends React.Component {
     }
   }
 
+  @boundMethod
   async getOptions(term = '') {
     const { minSearchLength, searchHandler } = this.props;
 

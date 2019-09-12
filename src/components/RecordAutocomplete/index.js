@@ -1,11 +1,10 @@
-import React from 'react';
+import React, {
+  useState, useCallback, useEffect,
+} from 'react';
+import { NoSsr } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import {
-  NoSsr,
-} from '@material-ui/core';
-import { boundMethod } from 'autobind-decorator';
-import jc from 'json-cycle';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import defaultComponents from './components';
 import './index.scss';
@@ -47,269 +46,251 @@ import './index.scss';
   * @property {string} props.placeholder the text placeholder for the search box
   * @property {boolean} props.singleLoad load the initial options and do not requery
   */
-class RecordAutocomplete extends React.Component {
-  static propTypes = {
-    className: PropTypes.string,
-    components: PropTypes.object,
-    defaultOptionsHandler: PropTypes.func,
-    DetailChipProps: PropTypes.object,
-    disableCache: PropTypes.bool,
-    disabled: PropTypes.bool,
-    errorText: PropTypes.string,
-    getOptionKey: PropTypes.func,
-    getOptionLabel: PropTypes.func,
-    isMulti: PropTypes.bool,
-    label: PropTypes.string,
-    minSearchLength: PropTypes.number,
-    name: PropTypes.string.isRequired,
-    onChange: PropTypes.func,
-    placeholder: PropTypes.string,
-    required: PropTypes.bool,
-    searchHandler: PropTypes.func.isRequired,
-    singleLoad: PropTypes.bool,
-    value: PropTypes.oneOfType([PropTypes.object, PropTypes.arrayOf(PropTypes.object)]),
-  };
+const RecordAutocomplete = (props) => {
+  const {
+    className,
+    components,
+    DetailChipProps,
+    disabled,
+    errorText,
+    getOptionKey,
+    getOptionLabel,
+    isMulti,
+    label,
+    minSearchLength,
+    name,
+    onChange,
+    placeholder,
+    required,
+    searchHandler,
+    singleLoad,
+    value,
+  } = props;
 
-  static defaultProps = {
-    className: '',
-    components: defaultComponents,
-    defaultOptionsHandler: null,
-    DetailChipProps: {
-      valueToString: (record) => {
-        if (record && record['@rid']) {
-          return record['@rid'];
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [options, setOptions] = useState([]);
+  const [helperText, setHelperText] = useState('');
+  const [selectedValue, setSelectedValue] = useState(value);
+
+  // update the selected value if the initial input value changes
+  useEffect(() => {
+    setSelectedValue(value);
+  }, [value]);
+
+  // initial load handler
+  useDeepCompareEffect(
+    () => {
+      let controller;
+      const getOptions = async () => {
+        if (controller) {
+          // if there is already a request being executed  abort it and make a new one
+          controller.abort();
+          setIsLoading(false);
         }
-        return `${record}`;
-      },
+        controller = searchHandler('');
+        try {
+          setIsLoading(true);
+          const result = await controller.request();
+          setOptions([...result]);
+          setIsLoading(false);
+        } catch (err) {
+          console.error('Error in getting the RecordAutocomplete singleLoad suggestions');
+          console.error(err);
+          setIsLoading(false);
+        }
+      };
+
+      if (singleLoad && !disabled) {
+        getOptions();
+      }
+      return () => controller && controller.abort();
     },
-    disableCache: false,
-    disabled: false,
-    errorText: '',
-    getOptionKey: opt => opt['@rid'],
-    getOptionLabel: opt => opt.name,
-    isMulti: false,
-    label: '',
-    minSearchLength: 1,
-    onChange: () => {},
-    placeholder: 'Search Records by Name or ID',
-    required: false,
-    singleLoad: false,
-    value: null,
+    [disabled, searchHandler, singleLoad], // componentDidMount equivalent
+  );
+
+  // fetch options based on the current search term
+  useDeepCompareEffect(
+    () => {
+      let controller;
+      const getOptions = async () => {
+        if (searchTerm && searchTerm.length >= minSearchLength) {
+          if (controller) {
+            // if there is already a request being executed  abort it and make a new one
+            controller.abort();
+            setIsLoading(false);
+          }
+          controller = searchHandler(searchTerm);
+          try {
+            setIsLoading(true);
+            const result = await controller.request();
+            setOptions([...result]);
+            setIsLoading(false);
+          } catch (err) {
+            console.error('Error in getting the RecordAutocomplete suggestions');
+            console.error(err);
+            setIsLoading(false);
+          }
+          controller = null;
+        } else {
+          setOptions([]);
+        }
+      };
+      if (!singleLoad) {
+        getOptions();
+      }
+      return () => controller && controller.abort();
+    },
+    [searchTerm, minSearchLength, searchHandler, singleLoad], // Only call effect if debounced search term changes
+  );
+
+  const handleChange = useCallback(
+    (newValue, { action: actionType }) => {
+      setSelectedValue(newValue);
+      const event = { target: { name, value: newValue } };
+      if (actionType === 'select-option' || actionType === 'clear') {
+        onChange(event);
+      }
+    },
+    [name, onChange],
+  );
+
+  const handleInputChange = useCallback(
+    (newSearchTerm, { action: actionType }) => {
+      let newHelperText = newSearchTerm.length < minSearchLength && newSearchTerm.length >= 0
+        ? `Requires ${minSearchLength} or more characters to search`
+        : '';
+      if (actionType === 'input-change') {
+        setHelperText(newHelperText);
+      } else if (actionType === 'set-value' && isMulti) {
+        newHelperText = `Requires ${minSearchLength} or more characters to search`;
+        setHelperText(newHelperText);
+      }
+      setSearchTerm(newSearchTerm);
+    },
+    [isMulti, minSearchLength],
+  );
+
+  const handleOnFocus = useCallback(
+    () => {
+      if (isMulti && !disabled) {
+        setHelperText(`Requires ${minSearchLength} or more characters to search`);
+      }
+    },
+    [disabled, isMulti, minSearchLength],
+  );
+
+  const handleOnBlur = useCallback(
+    () => {
+      if (!errorText && isMulti && !disabled) {
+        setHelperText('May take more than one value');
+      }
+    },
+    [disabled, errorText, isMulti],
+  );
+
+  const optionFilter = (option, candidate) => {
+    if (candidate && singleLoad) {
+      return [
+        option.label,
+        option.data.name,
+        option.data.sourceId,
+        option.displayName,
+      ].some(
+        tgt => tgt && tgt.toLowerCase().includes(candidate.toLowerCase()),
+      );
+    }
+    return true;
   };
 
-  constructor(props) {
-    super(props);
-    const { value } = props;
-    this.state = {
-      selected: value,
-      helperText: false,
-      options: [],
-      searchTerm: '',
-    };
-    this.controller = null; // store the request/abort object to handle the async option call
-  }
+  return (
+    <NoSsr>
+      <Select
+        className={`record-autocomplete ${className}`}
+        value={selectedValue}
+        components={components}
+        DetailChipProps={DetailChipProps}
+        error={Boolean(errorText)}
+        onChange={handleChange}
+        onFocus={handleOnFocus}
+        onBlur={handleOnBlur}
+        inputValue={searchTerm}
+        onInputChange={handleInputChange}
+        getOptionValue={getOptionKey} // used to compare options for equality
+        getOptionLabel={getOptionLabel} // generates the string representation
+        hideSelectedOptions
+        isClearable={!disabled}
+        filterOption={optionFilter}
+        isLoading={isLoading}
+        isMulti={isMulti}
+        isSearchable={!disabled}
+        placeholder={
+            disabled
+              ? ''
+              : placeholder
+          }
+        textFieldProps={{
+          InputProps: {
+            disabled: (disabled || Boolean(selectedValue)) && !isMulti,
+            disableUnderline: disabled || (Boolean(selectedValue) && !isMulti),
+          },
+          error: Boolean(errorText),
+          helperText: helperText || errorText,
+          InputLabelProps: {
+            shrink: Boolean(selectedValue) || !(disabled && !selectedValue),
+          },
+          required,
+          label,
+        }}
+        options={options}
+      />
+    </NoSsr>
+  );
+};
 
-  async componentDidMount() {
-    const { searchHandler, singleLoad, defaultOptionsHandler } = this.props;
-    if (singleLoad) {
-      this.controller = searchHandler('');
-      const options = await this.controller.request();
-      this.setState({ options });
-    } else if (defaultOptionsHandler) {
-      this.controller = defaultOptionsHandler();
-      const options = await this.controller.request();
-      this.setState({ options });
-    }
-  }
+RecordAutocomplete.propTypes = {
+  className: PropTypes.string,
+  components: PropTypes.object,
+  DetailChipProps: PropTypes.object,
+  disabled: PropTypes.bool,
+  errorText: PropTypes.string,
+  getOptionKey: PropTypes.func,
+  getOptionLabel: PropTypes.func,
+  isMulti: PropTypes.bool,
+  label: PropTypes.string,
+  minSearchLength: PropTypes.number,
+  name: PropTypes.string.isRequired,
+  onChange: PropTypes.func,
+  placeholder: PropTypes.string,
+  required: PropTypes.bool,
+  searchHandler: PropTypes.func.isRequired,
+  singleLoad: PropTypes.bool,
+  value: PropTypes.oneOfType([PropTypes.object, PropTypes.arrayOf(PropTypes.object)]),
+};
 
-  componentDidUpdate(prevProps) {
-    const { value } = this.props;
-
-    const currValue = jc.stringify(value);
-
-    if (jc.stringify(prevProps.value) !== currValue) {
-      this.setState({ selected: value }); // eslint-disable-line react/no-did-update-set-state
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.controller) {
-      this.controller.abort();
-      this.controller = null;
-    }
-  }
-
-  @boundMethod
-  async getOptions(term = '') {
-    const { minSearchLength, searchHandler } = this.props;
-
-    if (term.length >= minSearchLength) {
-      if (this.controller) {
-        // if there is already a request being executed  abort it and make a new one
-        this.controller.abort();
+RecordAutocomplete.defaultProps = {
+  className: '',
+  components: defaultComponents,
+  DetailChipProps: {
+    valueToString: (record) => {
+      if (record && record['@rid']) {
+        return record['@rid'];
       }
-      this.controller = searchHandler(term);
-      try {
-        const result = await this.controller.request();
-        return result;
-      } catch (err) {
-        console.error('Error in getting the RecordAutocomplete suggestions');
-        console.error(err);
-      }
-    }
-    return [];
-  }
-
-  @boundMethod
-  handleChange(value, { action: actionType }) {
-    const { onChange, name } = this.props;
-    this.setState({
-      selected: value,
-    });
-    const event = { target: { name, value } };
-    if (actionType === 'select-option' || actionType === 'clear') {
-      onChange(event);
-    }
-  }
-
-  @boundMethod
-  async handleInputChange(term, { action: actionType }) {
-    const {
-      minSearchLength, isMulti, singleLoad,
-    } = this.props;
-    const { searchTerm } = this.state;
-
-    let helperText = term.length < minSearchLength && term.length >= 0
-      ? `Requires ${minSearchLength} or more characters to search`
-      : '';
-
-    if (actionType === 'input-change') {
-      this.setState({ helperText });
-      if (!isMulti) {
-        this.handleChange(null, { action: 'clear' });
-      }
-    } else if (actionType === 'set-value' && isMulti) {
-      helperText = `Requires ${minSearchLength} or more characters to search`;
-      this.setState({ helperText });
-    }
-    if (term !== searchTerm) {
-      if (!singleLoad) {
-        const newOptions = await this.getOptions(term);
-        this.setState({ options: newOptions });
-      }
-      // const optionsHash = newOptions.map(getOptionKey).join('|');
-      this.setState({ searchTerm: term });
-    }
-  }
-
-  @boundMethod
-  handleOnFocus() {
-    const {
-      errorText, minSearchLength, isMulti, disabled,
-    } = this.props;
-
-    if (!errorText && isMulti && !disabled) {
-      this.setState({ helperText: `Requires ${minSearchLength} or more characters to search` });
-    }
-  }
-
-  @boundMethod
-  handleOnBlur() {
-    const { isMulti, errorText, disabled } = this.props;
-
-    if (!errorText && isMulti && !disabled) {
-      this.setState({ helperText: 'May take more than one value' });
-    }
-  }
-
-  render() {
-    const {
-      className,
-      components,
-      DetailChipProps,
-      disableCache,
-      disabled,
-      errorText,
-      getOptionKey,
-      getOptionLabel,
-      isMulti,
-      label,
-      placeholder,
-      required,
-      singleLoad,
-    } = this.props;
-
-    const {
-      helperText,
-      selected,
-      options,
-      searchTerm,
-
-    } = this.state;
-
-    // console.log('render with options', optionsHash);
-    // console.log(options);
-
-    const optionFilter = (option, candidate) => {
-      // console.log(option, candidate, option.label.toLowerCase().includes(candidate.toLowerCase()));
-
-      if (candidate && singleLoad) {
-        return [
-          option.label,
-          option.data.name,
-          option.data.sourceId,
-          option.displayName,
-        ].some(
-          tgt => tgt && tgt.toLowerCase().includes(candidate.toLowerCase()),
-        );
-      }
-      return true;
-    };
-
-    return (
-      <NoSsr>
-        <Select
-          className={`record-autocomplete ${className}`}
-          value={selected}
-          cacheOptions={!disableCache}
-          components={components}
-          DetailChipProps={DetailChipProps}
-          error={Boolean(errorText)}
-          onChange={this.handleChange}
-          onFocus={this.handleOnFocus}
-          onBlur={this.handleOnBlur}
-          onInputChange={this.handleInputChange}
-          filterOption={optionFilter}
-          getOptionValue={getOptionKey} // used to compare options for equality
-          getOptionLabel={getOptionLabel} // generates the string representation
-          hideSelectedOptions
-          inputValue={searchTerm}
-          isClearable={!disabled}
-          isMulti={isMulti}
-          isSearchable={!disabled}
-          placeholder={
-              disabled
-                ? ''
-                : placeholder
-            }
-          textFieldProps={{
-            InputProps: {
-              disabled: (disabled || Boolean(selected)) && !isMulti,
-              disableUnderline: disabled || (Boolean(selected) && !isMulti),
-            },
-            error: Boolean(errorText),
-            helperText: errorText || helperText,
-            InputLabelProps: {
-              shrink: Boolean(selected) || !(disabled && !selected),
-            },
-            required,
-            label,
-          }}
-          options={options || []}
-        />
-      </NoSsr>
-    );
-  }
-}
+      return `${record}`;
+    },
+  },
+  disabled: false,
+  errorText: '',
+  getOptionKey: opt => opt['@rid'],
+  getOptionLabel: opt => opt.name,
+  isMulti: false,
+  label: '',
+  minSearchLength: 1,
+  onChange: () => {},
+  placeholder: 'Search Records by Name or ID',
+  required: false,
+  singleLoad: false,
+  value: null,
+};
 
 export default RecordAutocomplete;

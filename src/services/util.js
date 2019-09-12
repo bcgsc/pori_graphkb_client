@@ -2,7 +2,6 @@
  * Handles miscellaneous tasks.
  * @module /services/util
  */
-import * as jc from 'json-cycle';
 
 import config from '../static/config';
 
@@ -10,7 +9,6 @@ const {
   PERMISSIONS,
   GRAPH_DEFAULTS,
   GRAPH_PROPERTIES: { NODE_INIT_RADIUS },
-  KEYS: { GRAPH_OBJECTS },
 } = config;
 const { PALLETE_SIZE } = GRAPH_DEFAULTS;
 

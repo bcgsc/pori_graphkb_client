@@ -248,7 +248,7 @@ describe('<GraphComponent />', () => {
       />,
     );
 
-    wrapper.find('div.svg-wrapper svg').simulate('click');
+    wrapper.find('div.svg-wrapper svg').at(0).simulate('click');
     expect(wrapper.state().actionsNode).toBeNull();
   });
 });

@@ -5,6 +5,7 @@ import { NoSsr } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 import useDeepCompareEffect from 'use-deep-compare-effect';
+import { useDebounce } from 'use-debounce';
 
 import defaultComponents from './components';
 import './index.scss';
@@ -51,6 +52,7 @@ const RecordAutocomplete = (props) => {
     className,
     components,
     DetailChipProps,
+    debounceMs,
     disabled,
     errorText,
     getOptionKey,
@@ -72,6 +74,7 @@ const RecordAutocomplete = (props) => {
   const [options, setOptions] = useState([]);
   const [helperText, setHelperText] = useState('');
   const [selectedValue, setSelectedValue] = useState(value);
+  const [debouncedSearchTerm] = useDebounce(searchTerm, debounceMs);
 
   // update the selected value if the initial input value changes
   useEffect(() => {
@@ -92,7 +95,7 @@ const RecordAutocomplete = (props) => {
         try {
           setIsLoading(true);
           const result = await controller.request();
-          setOptions([...result]);
+          setOptions(result);
           setIsLoading(false);
         } catch (err) {
           console.error('Error in getting the RecordAutocomplete singleLoad suggestions');
@@ -114,17 +117,17 @@ const RecordAutocomplete = (props) => {
     () => {
       let controller;
       const getOptions = async () => {
-        if (searchTerm && searchTerm.length >= minSearchLength) {
+        if (debouncedSearchTerm && debouncedSearchTerm.length >= minSearchLength) {
           if (controller) {
             // if there is already a request being executed  abort it and make a new one
             controller.abort();
             setIsLoading(false);
           }
-          controller = searchHandler(searchTerm);
+          controller = searchHandler(debouncedSearchTerm);
           try {
             setIsLoading(true);
             const result = await controller.request();
-            setOptions([...result]);
+            setOptions(result);
             setIsLoading(false);
           } catch (err) {
             console.error('Error in getting the RecordAutocomplete suggestions');
@@ -141,7 +144,7 @@ const RecordAutocomplete = (props) => {
       }
       return () => controller && controller.abort();
     },
-    [searchTerm, minSearchLength, searchHandler, singleLoad], // Only call effect if debounced search term changes
+    [debouncedSearchTerm, minSearchLength, searchHandler, singleLoad], // Only call effect if debounced search term changes
   );
 
   const handleChange = useCallback(
@@ -251,6 +254,7 @@ const RecordAutocomplete = (props) => {
 RecordAutocomplete.propTypes = {
   className: PropTypes.string,
   components: PropTypes.object,
+  debounceMs: PropTypes.number,
   DetailChipProps: PropTypes.object,
   disabled: PropTypes.bool,
   errorText: PropTypes.string,
@@ -271,6 +275,7 @@ RecordAutocomplete.propTypes = {
 RecordAutocomplete.defaultProps = {
   className: '',
   components: defaultComponents,
+  debounceMs: 300,
   DetailChipProps: {
     valueToString: (record) => {
       if (record && record['@rid']) {

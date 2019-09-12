@@ -80,12 +80,13 @@ class DetailChip extends React.Component {
    * Do not update if the anchor changes (causes infinite render loop)
    */
   shouldComponentUpdate(nextProps, nextState) {
-    const { label, details } = this.props;
+    const { label, details, onDelete } = this.props;
     const { anchorEl } = this.state;
     return (
       label !== nextProps.label
       || shallowObjectKey(details) !== shallowObjectKey(nextProps.details)
       || Boolean(anchorEl) !== Boolean(nextState.anchorEl)
+      || Boolean(onDelete) !== Boolean(nextProps.onDelete)
     );
   }
 

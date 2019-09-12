@@ -33,7 +33,7 @@
     "jss": "^9.8.7",
     "keycloak-js": "^4.8.2",
     "lodash.omit": "^4.5.0",
-    "marked": "^0.6.2",
+    "marked": "^0.7.0",
     "object-assign": "4.1.1",
     "promise": "8.0.1",
     "prop-types": "^15.6.2",

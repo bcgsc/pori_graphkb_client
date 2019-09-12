@@ -273,7 +273,7 @@ class DataView extends React.Component {
 
     history.push({
       pathname,
-      search: `${search.split('&shareState=true')[0]}&shareState=true&${encodedState}`,
+      search: `${search.split('&nodes')[0]}&${encodedState}`,
     });
   }
 

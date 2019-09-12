@@ -231,41 +231,6 @@ describe('<GraphComponent />', () => {
     wrapper.find('#hide').simulate('click');
   });
 
-  it('Refreshed graph still remembers displayed nodes', () => {
-    wrapper = mount(
-      <GraphComponent
-        data={mockData}
-        handleError={handleErrSpy}
-        cache={cacheSpy}
-        handleDetailDrawerOpen={() => { }}
-        handleDetailDrawerClose={() => { }}
-        handleTableRedirect={() => { }}
-        handleNewColumns={() => { }}
-        handleClick={() => { }}
-        displayed={['#1', '#2', '#3', '#4']}
-        edgeTypes={['AliasOf']}
-        schema={schema}
-      />,
-    );
-    wrapper = mount(
-      <GraphComponent
-        data={[]}
-        handleError={handleErrSpy}
-        cache={cacheSpy}
-        handleDetailDrawerOpen={() => { }}
-        handleDetailDrawerClose={() => { }}
-        handleTableRedirect={() => { }}
-        handleNewColumns={() => { }}
-        handleClick={() => { }}
-        edgeTypes={['AliasOf']}
-        schema={schema}
-      />,
-    );
-
-    expect(wrapper.find('circle.node')).toHaveLength(4);
-    wrapper.find('circle.node').first().simulate('click');
-  });
-
   it('svg click handling clears actionsNode', () => {
     wrapper = mount(
       <GraphComponent

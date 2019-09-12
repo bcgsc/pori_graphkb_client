@@ -10,6 +10,7 @@ import * as d3Force from 'd3-force';
 import {
   IconButton,
   Tooltip,
+  CircularProgress,
 } from '@material-ui/core';
 import ViewListIcon from '@material-ui/icons/ViewList';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -191,7 +192,7 @@ class GraphComponent extends Component {
     const allProps = this.getUniqueDataProps();
     this.propsMap = new PropsMap();
 
-    const isSavedState = window.location.href.includes('shareState=true&');
+    const isSavedState = window.location.href.includes('nodes');
 
     let data;
     if (isSavedState) {
@@ -1129,7 +1130,8 @@ class GraphComponent extends Component {
   async loadSavedStateFromURL() {
     const { cache, handleError } = this.props;
 
-    const encodedData = window.location.href.split('shareState=true&')[1];
+    const URLBeforeNodeEncoding = window.location.href.split('nodes')[0];
+    const encodedData = window.location.href.split(URLBeforeNodeEncoding)[1];
     const { nodes } = qs.parse(encodedData.replace(/^\?/, ''));
 
     let decodedNodes;
@@ -1217,6 +1219,7 @@ class GraphComponent extends Component {
       expandExclusions,
       isSavedState,
     } = this.state;
+
 
     const { propsMap } = this;
 
@@ -1379,6 +1382,7 @@ class GraphComponent extends Component {
           </Tooltip>
         </div>
 
+
         <div className="svg-wrapper" ref={(node) => { this.wrapper = node; }}>
           <svg
             ref={(node) => { this.graph = node; }}
@@ -1397,6 +1401,11 @@ class GraphComponent extends Component {
               {actionsRing}
             </g>
           </svg>
+          {!nodes.length && (
+          <div className="circular-progress">
+            <CircularProgress color="secondary" size="4rem" />
+          </div>
+          )}
         </div>
         <GraphLegend
           graphOptions={graphOptions}

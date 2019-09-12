@@ -128,7 +128,6 @@ class DetailChip extends React.Component {
     valueToString: PropTypes.func,
     title: PropTypes.string,
     getLink: PropTypes.func,
-    embeddedLinkSet: PropTypes.object,
     PopUpComponent: PropTypes.object,
     PopUpProps: PropTypes.object,
   };
@@ -148,7 +147,6 @@ class DetailChip extends React.Component {
     valueToString: s => `${s}`,
     getLink: null,
     title: null,
-    embeddedLinkSet: {},
   };
 
   constructor(props) {
@@ -190,12 +188,6 @@ class DetailChip extends React.Component {
     this.setState({ anchorEl: event.currentTarget });
   }
 
-  @boundMethod
-  handleDialogOpen() {
-    const { embeddedLinkSet: { handleDialogOpen } } = this.props;
-    handleDialogOpen();
-  }
-
   render() {
     const {
       details,
@@ -207,7 +199,6 @@ class DetailChip extends React.Component {
       ChipProps,
       getLink,
       title,
-      embeddedLinkSet,
       PopUpComponent,
       PopUpProps,
       ...rest

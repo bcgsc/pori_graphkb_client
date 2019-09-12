@@ -311,7 +311,7 @@ class DataView extends React.Component {
         />
       );
     }
-    const localStorageKey = window.location.href.toString();
+
     return (
       <GraphComponent
         data={selectedRecords}
@@ -323,7 +323,6 @@ class DataView extends React.Component {
         handleError={this.handleError}
         edgeTypes={edges}
         schema={schema}
-        localStorageKey={localStorageKey}
         onRecordClicked={this.handleToggleDetailPanel}
         handleGraphStateSave={this.handleGraphStateSaveIntoURL}
       />

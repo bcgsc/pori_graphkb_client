@@ -111,8 +111,6 @@ const computeNodeLevels = (graphLinks) => {
  * @property {Array.<string>} props.edgeTypes - list of valid edge classes.
  * @property {Array.<string>} props.displayed - list of initial record ID's to be displayed in
  * graph.
- * @property {string} props.localStorageKey - key to identify graph session data with in
- * localStorage.
  * @property {function} props.handleGraphStateSave - parent handler to save state in URL
  * @property {Object} props.schema - KnowledgeBase Schema.
  */
@@ -128,7 +126,6 @@ class GraphComponent extends Component {
     cache: PropTypes.object.isRequired,
     edgeTypes: PropTypes.arrayOf(PropTypes.string),
     data: PropTypes.arrayOf(PropTypes.object).isRequired,
-    localStorageKey: PropTypes.string,
     schema: PropTypes.object.isRequired,
     handleError: PropTypes.func.isRequired,
     handleGraphStateSave: PropTypes.func,
@@ -137,7 +134,6 @@ class GraphComponent extends Component {
   static defaultProps = {
     detail: null,
     edgeTypes: [],
-    localStorageKey: '',
     handleGraphStateSave: () => {},
   };
 
@@ -165,7 +161,6 @@ class GraphComponent extends Component {
       height: 0,
       graphOptions: new GraphOptions(),
       graphOptionsOpen: false,
-      initState: null,
       actionsNodeIsEdge: false,
       expansionDialogOpen: false,
       expandNode: null,
@@ -185,13 +180,11 @@ class GraphComponent extends Component {
   async componentDidMount() {
     const {
       edgeTypes,
-      localStorageKey,
       handleError,
       data: originalData,
     } = this.props;
     const {
       graphOptions,
-      initState,
       simulation,
     } = this.state;
     let { expandable } = this.state;
@@ -202,7 +195,6 @@ class GraphComponent extends Component {
 
     let data;
     if (isSavedState) {
-      localStorage.clear();
       try {
         data = await this.loadSavedStateFromURL();
       } catch (err) {
@@ -227,26 +219,20 @@ class GraphComponent extends Component {
       this.handleResize();
       window.addEventListener('resize', this.handleResize);
 
-      const storedData = util.getGraphData(localStorageKey);
       const storedOptions = GraphOptions.retrieve();
 
-      if (originalData.length === 0 && !storedData && !isSavedState) {
+      if (originalData.length === 0 && !isSavedState) {
         const err = {
           name: 'No Seed Data',
           message: 'Please select a record from the data table for graph visualization',
         };
         handleError(err);
       }
-
       /**
        * Initialization priority:
        *
        * 1. Check to see if it is a user shared graph state via URL.
-       * 2. Checked rows from tableview always override session stored state.
-       * 3. Initial state is checked. This will never be chosen on the
-       *    component's first load.
-       * 4. Stored state will be loaded if the query parameters match those of
-       *    the last stored state.
+       * 2. Selected rows from table will be rendered otherwise.
        */
       if (isSavedState) {
         /* Case 1, iterate through decoded node rids to generate graph objects. */
@@ -273,7 +259,6 @@ class GraphComponent extends Component {
             },
           ));
         });
-        util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
         this.setState({
           nodes,
           links,
@@ -281,10 +266,10 @@ class GraphComponent extends Component {
           expandable,
           isSavedState,
         }, () => simulation.alpha(1).restart());
-      } else if ((displayed && displayed.length !== 0) || (!initState && !storedData)) {
+      } else if (displayed && displayed.length !== 0) {
         let { nodes, links, graphObjects } = this.state;
 
-        /* Case 2, iterate through specified rids. */
+        /* Case 2, iterate through specified rids from table. */
         validDisplayed.forEach((key, i) => {
           ({
             nodes,
@@ -303,66 +288,6 @@ class GraphComponent extends Component {
               expandable,
             },
           ));
-        });
-        util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
-      } else if (initState) {
-        const {
-          graphObjects,
-          nodes,
-          links,
-        } = initState;
-        /* Case 3, iterate through component state field containing graph state. */
-        nodes.forEach((node) => {
-          this.propsMap.loadNode(node.data, allProps);
-          expandable = util.expanded(expandedEdgeTypes, graphObjects, node.getId(), expandable);
-        });
-
-        links.forEach(link => this.propsMap.loadLink(link.data));
-
-        this.setState({
-          graphObjects: Object.assign({}, graphObjects),
-          nodes: nodes.slice(),
-          links: links.slice(),
-        });
-      } else if (storedData && storedData.localStorageKey === localStorageKey) {
-        const {
-          graphObjects,
-        } = storedData;
-        let { nodes, links } = storedData;
-
-        /* Case 4, fetch state saved in localStorage. */
-        delete storedData.localStorageKey;
-        nodes = nodes.map((n) => {
-          this.propsMap.loadNode(n.data, allProps);
-          expandable = util.expanded(expandedEdgeTypes, graphObjects, n.data['@rid'], expandable);
-          return new GraphNode(n.data, n.x, n.y);
-        });
-
-        links = links.map((l) => {
-          this.propsMap.loadLink(l.data);
-          let source;
-          let target;
-          if (typeof l.source === 'object') {
-            source = l.source.data['@rid'];
-          } else {
-            ({ source } = l);
-          }
-          if (typeof l.target === 'object') {
-            target = l.target.data['@rid'];
-          } else {
-            ({ target } = l);
-          }
-          return new GraphLink(l.data, source, target);
-        });
-        this.setState({
-          graphObjects,
-          nodes,
-          links,
-          initState: {
-            graphObjects: Object.assign({}, graphObjects),
-            nodes: nodes.slice(),
-            links: links.slice(),
-          },
         });
       }
 
@@ -396,11 +321,7 @@ class GraphComponent extends Component {
     const {
       svg,
       simulation,
-      graphObjects,
-      nodes,
-      links,
     } = this.state;
-    const { localStorageKey } = this.props;
     // remove all event listeners
     if (svg) {
       svg.call(d3Zoom.zoom()
@@ -409,7 +330,6 @@ class GraphComponent extends Component {
     }
     simulation.on('tick', null);
     window.removeEventListener('resize', this.handleResize);
-    util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
   }
 
   getUniqueDataProps = () => {
@@ -583,7 +503,7 @@ class GraphComponent extends Component {
       graphObjects,
       expandable,
     } = this.state;
-    const { schema, localStorageKey } = this.props;
+    const { schema } = this.props;
 
     if (expandable[node.getId()] && data[node.getId()]) {
       ({
@@ -609,7 +529,6 @@ class GraphComponent extends Component {
     if (!schema.getEdges(data[node.getId()]).some(edge => !links.find(l => l.getId() === edge['@rid']))) {
       delete expandable[node.getId()];
     }
-    util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
 
     this.setState({
       expandable,
@@ -874,7 +793,7 @@ class GraphComponent extends Component {
       }
     });
 
-    this.saveGraphStatetoURL();
+    this.saveGraphStatetoURL([...nodes]);
 
     return {
       expandable,
@@ -1096,8 +1015,6 @@ class GraphComponent extends Component {
       expandable,
       allProps,
     } = this.state;
-    const { localStorageKey } = this.props;
-
 
     const { handleDetailDrawerClose } = this.props;
     if (nodes.length === 1) return;
@@ -1135,7 +1052,6 @@ class GraphComponent extends Component {
     }, () => {
       this.updateColors();
       handleDetailDrawerClose();
-      util.loadGraphData(localStorageKey, { nodes, links, graphObjects });
     });
   }
 
@@ -1241,9 +1157,8 @@ class GraphComponent extends Component {
    * node coloring to avoid sending full graph state over limited URL.
    */
   @boundMethod
-  saveGraphStatetoURL() {
+  saveGraphStatetoURL(nodes) {
     const { handleGraphStateSave, handleError } = this.props;
-    const { nodes } = this.state;
     const withoutStatementData = [];
 
     /* Because properties types like linkset are uni-directional, we need to
@@ -1265,14 +1180,7 @@ class GraphComponent extends Component {
       }
     });
 
-    const savedState = {};
     try {
-      // const stringifiedState = JSON.stringify(nodeRIDs);
-      // const base64encodedState = btoa(stringifiedState);
-      // const encodedContent = encodeURIComponent(base64encodedState);
-
-      // savedState.nodes = encodedContent;
-      // const encodedState = qs.stringify(savedState);
       handleGraphStateSave(nodeRIDs);
     } catch (err) {
       handleError(err);

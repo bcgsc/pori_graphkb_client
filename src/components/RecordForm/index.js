@@ -286,7 +286,6 @@ class RecordForm extends React.PureComponent {
     const {
       actionInProgress,
       reviewDialogOpen,
-      formVariant,
       newReview,
       ...content
     } = this.state;
@@ -306,7 +305,7 @@ class RecordForm extends React.PureComponent {
           <div className="header-action-buttons">
             {(content['@class'] === 'Statement' && variant === FORM_VARIANT.EDIT && (
             <Button
-              onClick={() => this.setState({ reviewDialogOpen: true, formVariant: FORM_VARIANT.NEW })}
+              onClick={() => this.setState({ reviewDialogOpen: true })}
               variant="outlined"
               disabled={actionInProgress}
             >
@@ -326,20 +325,16 @@ class RecordForm extends React.PureComponent {
               />
             )}
           </div>
-          {formVariant && (
-            <ReviewDialog
-              isOpen={reviewDialogOpen}
-              onClose={() => this.setState({ reviewDialogOpen: false, formVariant: null })}
-              content={content}
-              newReview={newReview}
-              updateNewReview={this.handleNewReviewUpdate}
-              updateContent={this.handleContentUpdate}
-              snackbar={snackbar}
-              formVariant={formVariant}
-              onError={onError}
-
-            />
-          )}
+          <ReviewDialog
+            isOpen={reviewDialogOpen}
+            onClose={() => this.setState({ reviewDialogOpen: false })}
+            content={content}
+            newReview={newReview}
+            updateNewReview={this.handleNewReviewUpdate}
+            updateContent={this.handleContentUpdate}
+            snackbar={snackbar}
+            onError={onError}
+          />
         </div>
         <BaseNodeForm
           {...rest}

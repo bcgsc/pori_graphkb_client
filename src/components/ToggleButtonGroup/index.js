@@ -50,11 +50,13 @@ function ToggleButtonGroup(props) {
   };
 
   const handleChange = (newValue) => {
-    if (newValue === options[0] && newValue !== value && requireConfirm) {
-      handleOpenDialog();
-    } else {
-      setValue(newValue);
-      onClick();
+    if (value !== newValue) {
+      if (newValue === options[0] && newValue !== value && requireConfirm) {
+        handleOpenDialog();
+      } else {
+        setValue(newValue);
+        onClick();
+      }
     }
   };
 

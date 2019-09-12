@@ -5,7 +5,7 @@ import ToggleButtonGroup from '..';
 import ConfirmActionDialog from '../../ActionButton/ConfirmActionDialog';
 
 describe('ToggleButtonGroup', () => {
-  it('mounts without crashing and burning', () => {
+  test('mounts without crashing and burning', () => {
     const wrapper = mount((
       <ToggleButtonGroup
         onClick={jest.fn()}
@@ -17,7 +17,7 @@ describe('ToggleButtonGroup', () => {
     expect(wrapper.find(ToggleButtonGroup)).toBeDefined();
   });
 
-  it('displays correct number of options', () => {
+  test('displays correct number of options', () => {
     const wrapper = mount((
       <ToggleButtonGroup
         onClick={jest.fn()}
@@ -30,7 +30,7 @@ describe('ToggleButtonGroup', () => {
     expect(wrapper.find('button').length).toBe(2);
   });
 
-  it('changes selected toggle button on click', () => {
+  test('changes selected toggle button on click', () => {
     const wrapper = mount((
       <ToggleButtonGroup
         onClick={jest.fn()}
@@ -44,14 +44,14 @@ describe('ToggleButtonGroup', () => {
 
     const editBtn = wrapper.find('button').at(1);
     const editSpan = wrapper.find('span').at(3);
-    expect(editSpan.hasClass('button__label--selected')).toEqual(false);
+    expect(editSpan.hasClass('toggle-button__label--selected')).toEqual(false);
     editBtn.simulate('click');
 
     const updatedEditSpan = wrapper.find('span').at(3);
-    expect(updatedEditSpan.hasClass('button__label--selected')).toEqual(true);
+    expect(updatedEditSpan.hasClass('toggle-button__label--selected')).toEqual(true);
   });
 
-  it('displays ConfirmActionDialog when confirmation is required', () => {
+  test('displays ConfirmActionDialog when confirmation is required', () => {
     const wrapper = mount((
       <ToggleButtonGroup
         onClick={jest.fn()}

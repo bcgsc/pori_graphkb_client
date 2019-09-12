@@ -82,6 +82,11 @@
       margin: 10px;
       margin-top: 10px;
 
+      button {
+        &:first-child {
+          height: 40px;
+        }
+      }
     }
   }
 
@@ -113,7 +118,7 @@
 
   .appbar {
     color: $palette__common--white;
-    display: grid;
+    display: flex;
     flex-direction: row;
     float: right;
     grid-template-columns: 30% 30% 10%;
@@ -137,10 +142,6 @@
         color: $palette__common--white;
         display: inline-block;
       }
-
-      span {
-        margin-left: 0.5rem;
-      }
     }
 
     &__btn {
@@ -157,25 +158,22 @@
   }
 
   &__fields {
-    border: solid 1px darkgrey;
     border-radius: 3px;
     margin-left: 15%;
-    margin-top: 20px;
     padding: 10px;
     width: 70%;
+  }
 
-    .statement-review-field {
-      margin-left: 50%;
-      transform: translateX(-20%);
-      width: 300px;
-    }
+  &__statement-review-field {
+    margin-left: 30%;
+    transform: translateX(-20%);
+    width: 200px;
   }
 
   &__action-button {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     margin: 20px;
-    margin-right: 15%;
   }
 
   button {

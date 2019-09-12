@@ -5,22 +5,16 @@ import {
   Dialog,
   Typography,
   AppBar,
-  IconButton,
   DialogContent,
   TextField,
-  Tooltip,
 } from '@material-ui/core';
-import GoBackIcon from '@material-ui/icons/Replay';
 
 import Schema from '../../services/schema';
 import FormField from './FormField';
 import './index.scss';
 import ActionButton from '../ActionButton';
-import { FORM_VARIANT } from './util';
 import { KBContext } from '../KBContext';
 import { getUser } from '../../services/auth';
-
-import util from '../../services/util';
 
 const schema = new Schema();
 const grouping = [['status', 'createdBy'], 'comment'];
@@ -34,9 +28,7 @@ const grouping = [['status', 'createdBy'], 'comment'];
  * @property {bool} props.isOpen flag to indicate whether dialog is open
  * @property {function} props.onClose handles closure of dialog
  * @property {object} props.content contains statement record info
- * @property {integer} props.reviewIndex index of the current review in reviews Array
  * @property {object} props.snackbar snackbar object for user feedback
- * @property {string} props.formVariant the variant of form depending on action
  * @property {object} props.auth Authorization object to mark who created review
  * @property {function} props.onError Parent error handler should something go wrong
  * @property {function} props.updateNewReview handles parent state of new review
@@ -47,11 +39,9 @@ class ReviewDialog extends Component {
 
   static propTypes = {
     isOpen: PropTypes.bool.isRequired,
-    onClose: PropTypes.func.isRequired,
+    onClose: PropTypes.func,
     content: PropTypes.object.isRequired,
-    reviewIndex: PropTypes.number,
     snackbar: PropTypes.object,
-    formVariant: PropTypes.string.isRequired,
     onError: PropTypes.func,
     updateNewReview: PropTypes.func,
     updateContent: PropTypes.func.isRequired,
@@ -62,8 +52,8 @@ class ReviewDialog extends Component {
     snackbar: {},
     onError: () => {},
     updateNewReview: () => {},
+    onClose: () => {},
     newReview: {},
-    reviewIndex: 0,
   };
 
   constructor(props) {
@@ -78,33 +68,12 @@ class ReviewDialog extends Component {
   }
 
   @boundMethod
-  handleNewReviewUpdate(event, prop) {
+  handleValueChange(event, prop) {
     const { updateNewReview } = this.props;
     const { newReview: updatedReview } = this.state;
     updatedReview[prop] = event;
     this.setState({ newReview: updatedReview });
     updateNewReview(updatedReview);
-  }
-
-  @boundMethod
-  handleDelete() {
-    const {
-      reviewIndex, onClose, onError, updateContent,
-    } = this.props;
-    const { currContent } = this.state;
-
-    const newContent = Object.assign({}, currContent);
-    const clonedReviews = this.cloneReviews();
-    newContent.reviews = clonedReviews;
-    newContent.reviews.splice(reviewIndex, 1);
-
-    try {
-      updateContent(newContent);
-      onClose();
-    } catch (err) {
-      console.error(err);
-      onError(err);
-    }
   }
 
   @boundMethod
@@ -189,29 +158,10 @@ class ReviewDialog extends Component {
   }
 
   @boundMethod
-  handleValueChange(event, propName) {
-    const { formVariant } = this.props;
-    if (formVariant === FORM_VARIANT.NEW) {
-      this.handleNewReviewUpdate(event, propName);
-    }
-  }
-
-  @boundMethod
   renderFieldGroup(ordering) {
     const {
-      reviewIndex, formVariant,
-    } = this.props;
-
-    const {
-      currContent: { reviews }, currContent, newReview,
+      currContent, newReview,
     } = this.state;
-
-    let review = null;
-    if (formVariant === FORM_VARIANT.NEW) {
-      review = newReview;
-    } else {
-      review = reviews[reviewIndex];
-    }
 
     const model = schema.get('StatementReview');
     const { properties } = model;
@@ -232,21 +182,7 @@ class ReviewDialog extends Component {
         const prop = properties[propName];
         const { name } = prop;
         let wrapper;
-        if (!(formVariant === FORM_VARIANT.NEW || name === 'status')) {
-          wrapper = (
-            <FormField
-              model={prop}
-              value={review[name]}
-              onValueChange={(event) => { this.handleValueChange(event.target.value, propName); }}
-              schema={schema}
-              variant="view"
-              label={util.antiCamelCase(name)}
-              key={name}
-              content={currContent}
-              disabled
-            />
-          );
-        } else if (!['createdAt', 'createdBy'].includes(name)) {
+        if (!['createdAt', 'createdBy'].includes(name)) {
           if (name === 'comment') {
             wrapper = (
               <TextField
@@ -256,22 +192,21 @@ class ReviewDialog extends Component {
                 rows={7}
                 label="Review Description"
                 variant="outlined"
-                value={review[name]}
-                onChange={(event) => { this.handleNewReviewUpdate(event.target.value, name); }}
+                value={newReview[name]}
+                onChange={(event) => { this.handleValueChange(event.target.value, name); }}
               />
             );
           } else {
             wrapper = (
-              <div key={name} className={`${formVariant === FORM_VARIANT.NEW ? 'statement-review-field' : ''}`}>
+              <div key={name} className="review-dialog__statement-review-field">
                 <FormField
                   model={prop}
-                  value={review[name]}
+                  value={newReview[name]}
                   onValueChange={(event) => { this.handleValueChange(event.target.value, propName); }}
                   schema={schema}
                   label="Review Status"
                   variant="view"
                   content={currContent}
-                  disabled={formVariant === FORM_VARIANT.VIEW}
                 />
               </div>
             );
@@ -285,7 +220,7 @@ class ReviewDialog extends Component {
 
   render() {
     const {
-      isOpen, onClose, formVariant,
+      isOpen, onClose,
     } = this.props;
 
     return (
@@ -293,7 +228,7 @@ class ReviewDialog extends Component {
         open={isOpen}
         onClose={onClose}
         onEscapeKeyDown={onClose}
-        maxWidth="md"
+        maxWidth="lg"
       >
         <div className="review-dialog">
           <AppBar
@@ -301,38 +236,14 @@ class ReviewDialog extends Component {
             classes={{ positionFixed: 'custom-positionFixed' }}
           >
             <div className="appbar__title">
-              <IconButton onClick={onClose}>
-                <Typography variant="h6">GraphKB</Typography>
-                <Typography variant="caption">v{process.env.npm_package_version}</Typography>
-              </IconButton>
+              <Typography variant="h6">GraphKB</Typography>
+              <Typography variant="caption"> v{process.env.npm_package_version}</Typography>
             </div>
-            <Tooltip title="Go back to Statement Record">
-              <IconButton
-                color="inherit"
-                onClick={onClose}
-                className="appbar__btn"
-              >
-                <GoBackIcon />
-              </IconButton>
-            </Tooltip>
           </AppBar>
           <div className="review-dialog__content">
             <DialogContent className="review-dialog__fields">
               {this.renderFieldGroup(grouping)}
             </DialogContent>
-            {formVariant === FORM_VARIANT.VIEW && (
-            <div className="review-dialog__action-button">
-              <ActionButton
-                onClick={this.handleDelete}
-                variant="outlined"
-                size="large"
-                message="Are you sure you want to delete this review"
-              >
-                    DELETE REVIEW
-              </ActionButton>
-            </div>
-            )}
-            { formVariant === FORM_VARIANT.NEW && (
             <div className="review-dialog__action-button">
               <ActionButton
                 onClick={this.handleAddReview}
@@ -344,7 +255,6 @@ class ReviewDialog extends Component {
                     ADD REVIEW
               </ActionButton>
             </div>
-            )}
           </div>
         </div>
       </Dialog>

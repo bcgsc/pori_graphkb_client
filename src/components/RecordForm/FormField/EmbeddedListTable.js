@@ -1,6 +1,5 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-
 import {
   Table,
   TableBody,
@@ -9,14 +8,20 @@ import {
   TableRow,
   Typography,
   Avatar,
+  CardHeader,
+  Card,
+  CardContent,
+  Divider,
 } from '@material-ui/core';
 import EmbeddedIcon from '@material-ui/icons/SelectAll';
-import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
+import DeleteIcon from '@material-ui/icons/Delete';
+
 
 import DetailChip from '../../DetailChip';
 import { KBContext } from '../../KBContext';
 import { getUsername } from '../../../services/auth';
-import ReviewDialog from '../ReviewDialog';
+import ActionButton from '../../ActionButton';
+import './index.scss';
 
 
 /**
@@ -26,51 +31,101 @@ import ReviewDialog from '../ReviewDialog';
  * @property {string} props.label title of detail chip
  * @property {function} props.onReviewSelection function passed to DetailChip to handle
  * @property {object} props.reviewProps props to be passed to reviewDialog and detail chip
- * review selection for related reviewDialog component
+ * @property {function} props.updateContent parent handler function to update record
+ * @property {object} props.content record content to be displayed
+ * @property {string} props.variant mode that dialog is in. One of ['view','edit'].
+ *
  */
 const EmbeddedListTable = (props) => {
   const {
-    values, label, reviewProps: { updateContent, content },
+    values,
+    label,
+    reviewProps: { updateContent, content },
+    variant,
   } = props;
 
-  const [isOpenMap, setIsOpenMap] = useState({});
   const context = useContext(KBContext);
-  const snackbar = useContext(SnackbarContext);
-
-  useEffect(() => {
-    const isOpenMapping = {};
-    values.forEach((val, index) => {
-      isOpenMapping[index] = false;
-    });
-  });
 
   const EmbeddedRecordRow = (value, index) => {
     const {
       status, createdBy: { name }, createdBy,
     } = value;
 
-    const handleDialogToggle = (idx, bool) => {
-      const newMapping = { ...isOpenMap };
-      newMapping[idx] = bool;
-      setIsOpenMap(newMapping);
-    };
-
     const details = {};
     const previewStr = name
       ? `${name} (${createdBy['@rid']})`
       : `${getUsername(context)} (#${createdBy})`;
 
-    const loadedReviewDialog = (
-      <ReviewDialog
-        isOpen={isOpenMap[index]}
-        onClose={() => handleDialogToggle(index, false)}
-        content={content}
-        updateContent={updateContent}
-        snackbar={snackbar}
-        formVariant="view"
-        reviewIndex={index}
-      />
-    );
+    const cloneReviews = (cont) => {
+      const { reviews } = cont;
+      if (reviews) {
+        const reviewsClone = reviews.map(obj => ({ ...obj }));
+        return reviewsClone;
+      }
+      return [];
+    };
+
+    const handleDelete = (cont) => {
+      const newContent = Object.assign({}, cont);
+      const clonedReviews = cloneReviews(cont);
+      newContent.reviews = clonedReviews;
+      newContent.reviews.splice(index, 1);
+      try {
+        updateContent(newContent);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    const ReviewComp = (reviewProps) => {
+      const {
+        value: { comment },
+      } = reviewProps;
+
+      return (
+        <div className="review-card">
+          <Card>
+            <div className="review-card__header">
+              <CardHeader
+                avatar={(
+                  <Avatar
+                    aria-label="Statement Review"
+                    className="review-card__avatar"
+                  >
+               SR
+                  </Avatar>
+            )}
+                title="Statement Review"
+                subheader={`created by ${name}`}
+              />
+            </div>
+            <Divider />
+            <CardContent>
+              <Typography variant="h5" gutterBottom align="center" color="secondary">
+                {`Status: ${status}`}
+              </Typography>
+              <Typography variant="body2" color="textSecondary" align="center" component="p">
+                {comment}
+              </Typography>
+              <div className="review-card__action-button">
+                {variant === 'edit' && (
+                  <ActionButton
+                    onClick={() => handleDelete(content)}
+                    variant="contained"
+                    color="primary"
+                    size="medium"
+                    requireConfirm={false}
+                  >
+                    Delete
+                    <DeleteIcon />
+                  </ActionButton>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    };
 
     Object.keys(value).forEach((prop) => {
       if (prop !== '@rid') {
@@ -90,13 +145,9 @@ const EmbeddedListTable = (props) => {
                 avatar: (<Avatar><EmbeddedIcon /></Avatar>),
                 variant: 'outlined',
                 color: 'secondary',
-              }
-              }
-              embeddedLinkSet={{
-                content: value,
-                dialog: loadedReviewDialog,
-                handleDialogOpen: () => { handleDialogToggle(index, true); },
               }}
+              PopUpComponent={ReviewComp}
+              PopUpProps={{ value, updateContent }}
               label={previewStr}
               title={label}
               details={details}
@@ -146,11 +197,14 @@ EmbeddedListTable.propTypes = {
   values: PropTypes.arrayOf(PropTypes.object),
   label: PropTypes.string,
   reviewProps: PropTypes.object.isRequired,
+  updateContent: PropTypes.func.isRequired,
+  variant: PropTypes.string,
 };
 
 EmbeddedListTable.defaultProps = {
   values: [],
   label: '',
+  variant: 'view',
 };
 
 export default EmbeddedListTable;

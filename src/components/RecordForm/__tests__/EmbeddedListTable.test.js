@@ -76,24 +76,4 @@ describe('EmbeddedListTable', () => {
     expect(wrapper.find(EmbeddedListTable)).toBeDefined();
     expect(wrapper.find(DetailChip)).toHaveLength(reviews.length);
   });
-
-  it('detailChip calls review selection handler ', async () => {
-    const selectionSpy = jest.spyOn(DetailChip.prototype, 'handleDialogOpen');
-    selectionSpy.mockImplementation(() => {});
-    const mockPropsWithSpy = { ...mockReviewProps };
-    const wrapper = mount((
-      <EmbeddedListTable
-        label="reviews"
-        values={reviews}
-        reviewProps={mockPropsWithSpy}
-      />
-    ));
-
-    expect(wrapper.find(EmbeddedListTable)).toBeDefined();
-    expect(wrapper.find(Chip)).toHaveLength(reviews.length);
-    const detailChip = wrapper.find(Chip).at(0);
-    await detailChip.prop('onClick')();
-
-    expect(selectionSpy).toHaveBeenCalledTimes(1);
-  });
 });

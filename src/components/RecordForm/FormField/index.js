@@ -213,6 +213,7 @@ const FormField = (props) => {
         label={name}
         values={value || []}
         reviewProps={reviewProps}
+        variant={variant}
       />
     );
   } else {

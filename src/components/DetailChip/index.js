@@ -24,6 +24,81 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 import './index.scss';
 
+/**
+ * Default card pop up component displayed outlining details of record.
+ * @property {object} props
+ * @property {object} props.details record object. properties will be extracted to be displayed
+ * @property {string} props.label description of object. Defaults to title of card if title is not present
+ * @property {function} props.valueToString converts objs to string value for display
+ * @property {function} props.getLink finds routeName for displayed record
+ * @property {string} props.title title of card. Will usually be record displayName
+ */
+const DefaultPopupComponent = (props) => {
+  const {
+    details,
+    getDetails,
+    label,
+    valueToString,
+    getLink,
+    title,
+  } = props;
+
+  const retrievedDetails = getDetails(details);
+
+  return (
+    <Card>
+      <CardContent className="detail-popover__panel">
+        <div className="detail-popover__panel-header">
+          <Typography variant="h6" gutterBottom>
+            {title || label}
+          </Typography>
+          {getLink && getLink(retrievedDetails) && (
+          <Link to={getLink(retrievedDetails)} target="_blank">
+            <IconButton>
+              <OpenInNewIcon />
+            </IconButton>
+          </Link>
+          )}
+        </div>
+        <Divider />
+        <Table>
+          <TableBody>
+            {retrievedDetails && Object.keys(retrievedDetails).sort().map(
+              name => (
+                <TableRow key={name} className="detail-popover__row">
+                  <TableCell padding="checkbox">
+                    <Typography variant="body2">{name}</Typography>
+                  </TableCell>
+                  <TableCell padding="checkbox">
+                    {valueToString(retrievedDetails[name])}
+                  </TableCell>
+                </TableRow>
+              ),
+            )}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+  );
+};
+
+DefaultPopupComponent.propTypes = {
+  getDetails: PropTypes.func,
+  details: PropTypes.object,
+  label: PropTypes.string.isRequired,
+  valueToString: PropTypes.func,
+  title: PropTypes.string,
+  getLink: PropTypes.func,
+};
+
+DefaultPopupComponent.defaultProps = {
+  getDetails: d => d,
+  details: {},
+  valueToString: s => `${s}`,
+  getLink: null,
+  title: null,
+};
+
 
 const shallowObjectKey = obj => JSON.stringify(obj, (k, v) => k ? `${v}` : v);
 
@@ -39,6 +114,8 @@ const shallowObjectKey = obj => JSON.stringify(obj, (k, v) => k ? `${v}` : v);
  * @property {object} props.ChipProps - properties passed to the chip element
  * @property {function} props.getDetails function to retrieve the details from the details object
  * @property {string} props.title the title for the pop-up card (defaults to the chip label)
+ * @property {function} props.PopUpComponent function component constructor
+ * @property {object} props.PopUpProps props for PopUpComponent so that it mounts correctly
  */
 class DetailChip extends React.Component {
   static propTypes = {
@@ -52,6 +129,8 @@ class DetailChip extends React.Component {
     title: PropTypes.string,
     getLink: PropTypes.func,
     embeddedLinkSet: PropTypes.object,
+    PopUpComponent: PropTypes.object,
+    PopUpProps: PropTypes.object,
   };
 
   static defaultProps = {
@@ -60,6 +139,8 @@ class DetailChip extends React.Component {
       variant: 'outlined',
       color: 'primary',
     },
+    PopUpComponent: DefaultPopupComponent,
+    PopUpProps: null,
     className: '',
     details: {},
     getDetails: d => d,
@@ -82,14 +163,8 @@ class DetailChip extends React.Component {
    * Do not update if the anchor changes (causes infinite render loop)
    */
   shouldComponentUpdate(nextProps, nextState) {
-    const { label, details, embeddedLinkSet: { dialog } } = this.props;
-    const { embeddedLinkSet: { dialog: nextPropsDialog } } = nextProps;
+    const { label, details } = this.props;
     const { anchorEl } = this.state;
-    if (dialog) {
-      return (
-        dialog.props.isOpen !== nextPropsDialog.props.isOpen
-      );
-    }
     return (
       label !== nextProps.label
       || shallowObjectKey(details) !== shallowObjectKey(nextProps.details)
@@ -133,79 +208,30 @@ class DetailChip extends React.Component {
       getLink,
       title,
       embeddedLinkSet,
+      PopUpComponent,
+      PopUpProps,
       ...rest
     } = this.props;
-
-
-    const {
-      content,
-      dialog,
-    } = embeddedLinkSet;
-
     const { anchorEl } = this.state;
-
-    const retrievedDetails = getDetails(details);
+    const popUpProps = PopUpProps || this.props;
 
     return (
       <div className="detail-chip" {...rest}>
-        {!content && (
-          <Popover
-            open={!!anchorEl}
-            anchorEl={anchorEl}
-            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-            transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-            onClose={this.handlePopoverClose}
-            className="detail-chip__popover detail-popover"
-          >
-            <Card>
-              <CardContent className="detail-popover__panel">
-                <div className="detail-popover__panel-header">
-                  <Typography variant="h6" gutterBottom>
-                    {title || label}
-                  </Typography>
-                  {getLink && getLink(retrievedDetails) && (
-                  <Link to={getLink(retrievedDetails)} target="_blank">
-                    <IconButton>
-                      <OpenInNewIcon />
-                    </IconButton>
-                  </Link>
-                  )}
-                </div>
-                <Divider />
-                <Table>
-                  <TableBody>
-                    {retrievedDetails && Object.keys(retrievedDetails).sort().map(
-                      name => (
-                        <TableRow key={name} className="detail-popover__row">
-                          <TableCell padding="checkbox">
-                            <Typography variant="body2">{name}</Typography>
-                          </TableCell>
-                          <TableCell padding="checkbox">
-                            {valueToString(retrievedDetails[name])}
-                          </TableCell>
-                        </TableRow>
-                      ),
-                    )}
-                  </TableBody>
-                </Table>
-              </CardContent>
-            </Card>
-          </Popover>
-        )}
-        {content && (
-          <>
-            {dialog}
-          </>
-        )
-
-        }
+        <Popover
+          open={!!anchorEl}
+          anchorEl={anchorEl}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          transformOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+          onClose={this.handlePopoverClose}
+          className="detail-chip__popover detail-popover"
+        >
+          <PopUpComponent {...popUpProps} />
+        </Popover>
         <Chip
           label={label}
           className={`detail-chip__root ${className || ''}`}
           clickable
-          onClick={content
-            ? this.handleDialogOpen
-            : this.handlePopoverOpen}
+          onClick={this.handlePopoverOpen}
           onDelete={onDelete}
           {...ChipProps}
         />

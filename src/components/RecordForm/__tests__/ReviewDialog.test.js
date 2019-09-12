@@ -70,12 +70,10 @@ describe('ReviewDialog', () => {
             isOpen
             onClose={jest.fn()}
             content={mockContent}
-            reviewIndex={0}
             snackbar={{
               add: jest.fn(),
             }}
             handleEdit={jest.fn()}
-            formVariant="view"
           />
         </KBContext.Provider>
       </BrowserRouter>
@@ -83,7 +81,7 @@ describe('ReviewDialog', () => {
     wrapper.update();
 
     expect(wrapper.find(ReviewDialog)).toBeDefined();
-    expect(wrapper.find(FormField)).toHaveLength(3);
+    expect(wrapper.find(FormField)).toHaveLength(1);
   });
 
   it('Mounts new variant successfully', () => {
@@ -94,7 +92,6 @@ describe('ReviewDialog', () => {
             isOpen
             onClose={jest.fn()}
             content={mockContent}
-            reviewIndex={0}
             snackbar={{
               add: jest.fn(),
             }}
@@ -131,7 +128,6 @@ describe('ReviewDialog', () => {
             onClose={jest.fn()}
             content={mockContent}
             updateContent={updateContentSpy}
-            reviewIndex={0}
             snackbar={{
               add: jest.fn(),
             }}
@@ -217,45 +213,5 @@ describe('ReviewDialog', () => {
 
     expect(snackbarErrorSpy).toHaveBeenCalledTimes(1);
     expect(updateContentSpy).toHaveBeenCalledTimes(0);
-  });
-
-  it('handles review deletion correctly', () => {
-    const onCloseSpy = jest.fn();
-    const handleDeleteSpy = jest.spyOn(ReviewDialog.prototype, 'handleDelete');
-    const updateContentSpy = jest.fn();
-    const wrapper = mount((
-      <BrowserRouter>
-        <KBContext.Provider value={{ schema: new Schema() }}>
-          <ReviewDialog
-            isOpen
-            onClose={onCloseSpy}
-            content={mockContent}
-            updateContent={updateContentSpy}
-            reviewIndex={0}
-            snackbar={{
-              add: jest.fn(),
-            }}
-            formVariant="view"
-            auth={jest.fn()}
-          />
-        </KBContext.Provider>
-      </BrowserRouter>
-    ));
-    wrapper.update();
-    expect(wrapper.find(ReviewDialog)).toBeDefined();
-
-    expect(wrapper.find(ActionButton)).toHaveLength(1);
-    const delBtn = wrapper.find(ActionButton).at(0);
-    expect(delBtn.text()).toEqual('DELETE REVIEW');
-    delBtn.prop('onClick')();
-    wrapper.update();
-
-    const expectedMockContent = Object.assign({}, mockContent);
-    expectedMockContent.reviews = [];
-
-    expect(handleDeleteSpy).toHaveBeenCalledTimes(1);
-    expect(updateContentSpy).toBeCalledWith(expectedMockContent);
-    expect(updateContentSpy).toHaveBeenCalledTimes(1);
-    expect(onCloseSpy).toHaveBeenCalledTimes(1);
   });
 });

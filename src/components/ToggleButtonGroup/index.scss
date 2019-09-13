@@ -21,19 +21,17 @@
   outline: inherit;
   padding: 5px 12px 8px;
 
-  &:not(:first-child){
+  &:not(:first-child) {
     border-left: 1px solid $palette__grey--A100;
   }
 
   &__label {
-    font-size: 0.75rem;
-    transition-delay: 0.1s;
+    font-size: 0.875rem;
 
     &--selected {
       font-size: 0.875rem;
-      height: 10px;
       opacity: 1;
-      transition: font-size 0.2s, opacity 0.2s;
+      transition: opacity 0.2s;
       transition-delay: 0.1s;
     }
   }
@@ -44,7 +42,6 @@
     display: inline-flex;
     flex-direction: column;
     justify-content: center;
-    padding-top: 3px;
     width: 100%;
 
     &--selected {
@@ -53,7 +50,7 @@
       display: inline-flex;
       flex-direction: column;
       justify-content: center;
-      transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, padding-top 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+      transition: color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
       width: 100%;
     }
 

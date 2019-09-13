@@ -8,6 +8,7 @@ import RecordAutocomplete from '..';
 
 describe('RecordAutocomplete', () => {
   test.todo('does not allow text input when disabled');
+
   test('renders new placeholder', () => {
     const placeholder = 'blargh monkeys';
     const { getByText } = render(
@@ -20,6 +21,7 @@ describe('RecordAutocomplete', () => {
     );
     expect(getByText(placeholder)).toBeInTheDocument();
   });
+
   test('renders when initial value is given', () => {
     const record = { '@rid': '#2:3', name: 'bob' };
     const { getByText } = render(
@@ -33,6 +35,7 @@ describe('RecordAutocomplete', () => {
     );
     expect(getByText('bob')).toBeInTheDocument();
   });
+
   test('renders multiple initial values', () => {
     const record = [{ '@rid': '#2:3', name: 'bob' }, { '@rid': '#2:4', name: 'alice' }];
     const { getByText } = render(

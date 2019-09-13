@@ -173,22 +173,6 @@ class DataView extends React.Component {
   }
 
   @boundMethod
-  handleTableRedirect() {
-    const { history } = this.props;
-
-    const isSavedState = window.location.href.includes('nodes');
-    const search = isSavedState
-      ? window.location.search.split('nodes')[0]
-      : window.location.search;
-
-    history.push({
-      pathname: '/data/table',
-      search,
-      hash: '',
-    });
-  }
-
-  @boundMethod
   handleError(err) {
     const { history } = this.props;
     history.push('/error', { error: { name: err.name, message: err.message } });
@@ -298,7 +282,6 @@ class DataView extends React.Component {
           cache={cache}
           handleDetailDrawerOpen={this.handleToggleDetailPanel}
           handleDetailDrawerClose={this.handleToggleDetailPanel}
-          handleTableRedirect={this.handleTableRedirect}
           detail={detailPanelRow}
           handleError={this.handleError}
           edgeTypes={edges}

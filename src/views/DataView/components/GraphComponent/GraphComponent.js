@@ -12,7 +12,6 @@ import {
   Tooltip,
   CircularProgress,
 } from '@material-ui/core';
-import ViewListIcon from '@material-ui/icons/ViewList';
 import SettingsIcon from '@material-ui/icons/Settings';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SaveStateIcon from '@material-ui/icons/SettingsRemote';
@@ -106,7 +105,6 @@ const computeNodeLevels = (graphLinks) => {
  * graph object is clicked.
  * @property {function} props.handleDetailDrawerOpen - Method to handle opening of detail drawer.
  * @property {function} props.handleDetailDrawerClose - Method to handle closing of detail drawer.
- * @property {function} props.handleTableRedirect - Method to handle a redirect to the table view.
  * @property {Object} props.detail - record ID of node currently selected for detail viewing.
  * in the initial query.
  * @property {Array.<string>} props.edgeTypes - list of valid edge classes.
@@ -122,7 +120,6 @@ class GraphComponent extends Component {
   static propTypes = {
     handleDetailDrawerOpen: PropTypes.func.isRequired,
     handleDetailDrawerClose: PropTypes.func.isRequired,
-    handleTableRedirect: PropTypes.func.isRequired,
     detail: PropTypes.object,
     cache: PropTypes.object.isRequired,
     edgeTypes: PropTypes.arrayOf(PropTypes.string),
@@ -1131,7 +1128,7 @@ class GraphComponent extends Component {
   @boundMethod
   copyURLToClipBoard() {
     const URL = window.location.href;
-    // create temp dummy element to select and copy text
+    // create temp dummy element to select and copy text to clipboard
     const dummy = document.createElement('input');
     document.body.appendChild(dummy);
     dummy.value = URL;
@@ -1161,7 +1158,6 @@ class GraphComponent extends Component {
     const { propsMap } = this;
 
     const {
-      handleTableRedirect,
       detail,
       handleDetailDrawerOpen,
       schema,
@@ -1278,17 +1274,6 @@ class GraphComponent extends Component {
         />
 
         <div className="toolbar">
-          <Tooltip placement="top" title="Return to table view">
-            <IconButton
-              color="secondary"
-              className="table-btn"
-              onClick={handleTableRedirect}
-              disabled
-            >
-              <ViewListIcon />
-            </IconButton>
-          </Tooltip>
-
           <Tooltip placement="top" title="Graph options">
             <IconButton
               id="graph-options-btn"

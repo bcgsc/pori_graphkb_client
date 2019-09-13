@@ -58,6 +58,19 @@
             }
         ],
         "no-underscore-dangle": "off",
+        "padding-line-between-statements": [
+            "error",
+            {
+                "blankLine": "always",
+                "next": "block-like",
+                "prev": "*"
+            },
+            {
+                "blankLine": "any",
+                "next": "if",
+                "prev": "if"
+            }
+        ],
         "prefer-destructuring": "warn",
         "prefer-promise-reject-errors": "off",
         "react-hooks/exhaustive-deps": "warn",

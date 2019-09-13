@@ -30,6 +30,7 @@ describe('SelectionTracker Class', () => {
   // creates rangeList [SR(0,5), SR(10,10), SR(20,20)... SR(100,100)]
   beforeEach(() => {
     multiRangeST = new SelectionTracker(0, 5);
+
     for (let i = 1; i <= 10; i++) {
       multiRangeST = SelectionTracker.addSingleRange(i * 10, multiRangeST);
     }
@@ -139,6 +140,7 @@ describe('SelectionTracker Class', () => {
 
   test('mergeAdjacentRanges method', () => {
     let evenSelectionRange = new SelectionTracker();
+
     for (let i = 0; i < 12; i += 2) {
       evenSelectionRange = SelectionTracker.addSingleRange(i, evenSelectionRange);
     }

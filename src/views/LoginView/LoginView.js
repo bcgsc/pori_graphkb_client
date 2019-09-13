@@ -44,6 +44,7 @@ class LoginView extends React.Component {
     } = this.context;
     const { history, location } = this.props;
     let from;
+
     try {
       from = location.state.from.pathname + location.state.from.search;
     } catch (err) {
@@ -63,6 +64,7 @@ class LoginView extends React.Component {
 
     if (!isAuthorized(this.context)) {
       let call;
+
       if (DISABLE_AUTH !== true) {
         call = api.post('/token', { keyCloakToken: keycloak.token });
       } else { // FOR TESTING ONLY
@@ -70,6 +72,7 @@ class LoginView extends React.Component {
         call = api.post('/token', { username: process.env.USER, password: process.env.PASSWORD });
       }
       this.controllers.push(call);
+
       try {
         const response = await call.request();
         setAuthorizationToken(response.kbToken);

@@ -55,6 +55,7 @@ class PermissionsTable extends React.Component {
 
   componentDidUpdate(prevProps) {
     const { value } = this.props;
+
     if (JSON.stringify(prevProps.value) !== JSON.stringify(value)) {
       this.setState({ content: value });
     }
@@ -73,6 +74,7 @@ class PermissionsTable extends React.Component {
     }
     Object.keys(schema.schema).forEach((modelName) => {
       const model = schema.get(modelName);
+
       if (!model.embedded) {
         const value = permissions[model.name] === undefined
           ? PERMISSIONS.NONE
@@ -109,6 +111,7 @@ class PermissionsTable extends React.Component {
 
     const newContent = Object.assign({}, content);
     const newTopBoxes = Object.assign({}, topBoxes);
+
     if (!currModelName) {
       newTopBoxes[operation] = !newTopBoxes[operation];
     }
@@ -120,6 +123,7 @@ class PermissionsTable extends React.Component {
 
       if (currModelName) {
         const checked = (content[modelName] & PERMISSIONS[operation]) !== 0;
+
         // update an operation for a single row
         if (modelName === currModelName) {
           if (checked) {

@@ -87,6 +87,7 @@ describe('validate outputs for util methods', () => {
       let output = '';
       list.forEach((_, i) => {
         output += 'pass';
+
         if (i < list.length - 1) {
           output += ', ';
         }

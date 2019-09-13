@@ -42,6 +42,7 @@ class AboutClasses extends Component {
     this.controllers.push(call);
 
     const stats = await call.request();
+
     if (stats) {
       this.setState({
         stats: Array.from(
@@ -56,6 +57,7 @@ class AboutClasses extends Component {
     const call = api.get(`${model.routeName}?limit=1&neighbors=1`);
     this.controllers.push(call);
     const result = await call.request();
+
     if (result && result.length) {
       this.setState({ [`${model.name}-example`]: result[0] });
     }

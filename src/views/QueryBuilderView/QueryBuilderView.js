@@ -110,6 +110,7 @@ class QueryBuilderView extends Component {
   handleSubmit() {
     const { history } = this.props;
     const { error } = this.state;
+
     if (!error) {
       history.push({
         pathname: '/data/table',
@@ -127,6 +128,7 @@ class QueryBuilderView extends Component {
   @boundMethod
   handleText(event) {
     const { value } = event.target;
+
     try {
       const params = parseJSON(value);
       this.setState({ params, error: '' });

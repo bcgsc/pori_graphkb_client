@@ -15,6 +15,7 @@ const mockApiCalls = (results, waitMs = 1) => {
         const request = async () => {
           await sleep(waitMs);
           requestSpy();
+
           if (!result) {
             throw new Error('test api error');
           }

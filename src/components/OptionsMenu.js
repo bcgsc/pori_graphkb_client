@@ -30,6 +30,7 @@ class OptionsMenu extends React.Component {
   @boundMethod
   handleToggleOptionExpand(option) {
     const { expandedOption } = this.state;
+
     if (option === expandedOption) {
       this.setState({ expandedOption: null });
     } else {

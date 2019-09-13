@@ -83,6 +83,7 @@ class RecordForm extends React.PureComponent {
     const { value = {}, modelName } = this.props;
 
     const defaultContent = { ...value };
+
     if (modelName && !defaultContent['@class']) {
       defaultContent['@class'] = modelName;
     }
@@ -105,6 +106,7 @@ class RecordForm extends React.PureComponent {
       modelName,
       value: { '@class': defaultModel },
     } = this.props;
+
     if (
       rid !== prevProps.rid
       || variant !== prevProps.variant
@@ -141,10 +143,12 @@ class RecordForm extends React.PureComponent {
     if (variant !== FORM_VARIANT.NEW && variant !== FORM_VARIANT.SEARCH) {
       // If not a new form then should have existing content
       this.setState({ actionInProgress: true });
+
       try {
         const call = api.get(`${model.routeName}/${rid.replace(/^#/, '')}?neighbors=3`, { forceListReturn: true });
         this.controllers.push(call);
         const result = await call.request();
+
         if (result && result.length) {
           this.setState({ ...result[0] });
         } else {
@@ -181,6 +185,7 @@ class RecordForm extends React.PureComponent {
       const call = api.post(routeName, payload);
       this.controllers.push(call);
       this.setState({ actionInProgress: true });
+
       try {
         const result = await call.request();
         snackbar.add(`Sucessfully created the record ${result['@rid']}`);
@@ -206,6 +211,7 @@ class RecordForm extends React.PureComponent {
     const call = api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
     this.controllers.push(call);
     this.setState({ actionInProgress: true });
+
     try {
       await call.request();
       snackbar.add(`Sucessfully deleted the record ${content['@rid']}`);
@@ -236,6 +242,7 @@ class RecordForm extends React.PureComponent {
       const call = api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
       this.controllers.push(call);
       this.setState({ actionInProgress: true });
+
       try {
         const result = await call.request();
         snackbar.add(`Sucessfully edited the record ${result['@rid']}`);

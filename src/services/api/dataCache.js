@@ -32,6 +32,7 @@ class CacheCountRequest extends CacheRequest {
       try {
         const result = await this.call.request();
         let count = null;
+
         if (result) {
           ([{ count }] = result);
         }
@@ -109,8 +110,10 @@ class CacheBlockRequest extends CacheRequest {
           this.size = rows.length;
 
           this.isLoading = false;
+
           if (rows.length === 0) {
             this.isEmpty = true;
+
             if (this.startRow === 0) {
               this.lastRowFound = 0;
             }
@@ -179,6 +182,7 @@ class PaginationDataCache {
   startNextBlocks() {
     while (this.active.length < this.concurrencyLimit && this.queued.length) {
       const next = this.queued.shift();
+
       if (next) {
         // is this block beyond the row count?
         if (next instanceof CacheCountRequest
@@ -207,6 +211,7 @@ class PaginationDataCache {
   onReqFinished(req) {
     // remove this block from the active queue
     this.active = this.active.filter(activeReq => !activeReq.isEqual(req));
+
     // add to the cache
     if (req instanceof CacheCountRequest) {
       req.result.then((count) => {
@@ -214,6 +219,7 @@ class PaginationDataCache {
       });
     } else {
       this.cache[req.key()] = req;
+
       // updates the counts
       if (req.lastRowFound === 0 || req.lastRowFound) {
         this.counts[req.search] = req.lastRowFound;
@@ -240,9 +246,11 @@ class PaginationDataCache {
    */
   async waitForBlocks(requests) {
     let maxCycleCount = this.queued.length / this.concurrencyLimit + 1;
+
     while (maxCycleCount >= 0) {
       // check if all blocks are complete
       const incomplete = requests.some(req => !this.cache[req.key()] && !req.isEmpty);
+
       // if they are return
       if (!incomplete) {
         break;
@@ -251,6 +259,7 @@ class PaginationDataCache {
       if (this.active.length === 0) {
         throw new Error(`blocks are incomplete (${requests.map(req => req.key()).join(' ')}) but no blocks are active`);
       }
+
       // otherwise wait for the current running requests to complete
       try {
         await this.waitForActive();  // eslint-disable-line
@@ -276,10 +285,12 @@ class PaginationDataCache {
       return this.cache[req.key()];
     }
     const [active] = this.active.filter(b => b.isEqual(req));
+
     if (active) {
       return active;
     }
     const [pending] = this.queued.filter(b => b.isEqual(req));
+
     if (pending) {
       return pending;
     }
@@ -316,9 +327,11 @@ class PaginationDataCache {
     const starts = [...this.active, ...this.queued]
       .filter(b => b.search === search)
       .map(b => b.startRow || 0);
+
     if (starts.length > 0) {
       start = Math.min(...starts);
       end = Math.max(...starts) + this.blockSize - 1;
+
       if (this.counts[search]) {
         end = Math.min(this.counts[search], end);
       }
@@ -372,6 +385,7 @@ class PaginationDataCache {
   requestBlock({ search, startRow, sortModel }) {
     let orderBy;
     let orderByDirection;
+
     if (sortModel && sortModel.length > 0) {
       ([{ colId: orderBy, sort: orderByDirection }] = sortModel);
       orderByDirection = orderByDirection.toUpperCase();
@@ -437,12 +451,14 @@ class PaginationDataCache {
     for (let blockIndex = firstBlockIndex; blockIndex < lastBlockIndex + 1; blockIndex += 1) {
       const blockStart = blockIndex * this.blockSize;
       const block = this.requestBlock({ startRow: blockStart, search, sortModel });
+
       if (block) {
         blocks.push(block);
       }
     }
     await this.waitForBlocks(blocks);
     let dataBlocks;
+
     try {
       dataBlocks = await Promise.all(blocks.map(async block => block.result));
     } catch (err) {
@@ -481,6 +497,7 @@ class PaginationDataCache {
 
     await this.waitForBlocks(requests);
     let result;
+
     try {
       result = await Promise.all(requests.map(async block => block.result));
     } catch (err) {
@@ -502,6 +519,7 @@ class PaginationDataCache {
     const req = this.queueRequest(block);
     await this.waitForBlocks([req]);
     let result;
+
     try {
       result = await req.result;
     } catch (err) {

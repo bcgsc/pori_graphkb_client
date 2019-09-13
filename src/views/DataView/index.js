@@ -255,7 +255,7 @@ class DataView extends React.Component {
   }
 
   @boundMethod
-  handleGraphStateSaveIntoURL(nodeRIDs) {
+  handleGraphStateSaveIntoURL(nodeRIDs, replace = false) {
     const { history, location: { pathname }, location: { search } } = this.props;
 
     const savedState = {};
@@ -271,10 +271,17 @@ class DataView extends React.Component {
       this.handleError(err);
     }
 
-    history.push({
+    const stack = {
       pathname,
       search: `${search.split('&nodes')[0]}&${encodedState}`,
-    });
+    };
+
+    if (replace) {
+      history.replace(stack);
+    } else {
+      history.push(stack);
+    }
+
   }
 
   /**

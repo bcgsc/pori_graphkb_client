@@ -183,9 +183,10 @@ class GraphComponent extends Component {
     } = this.props;
     const {
       graphOptions,
-      simulation,
     } = this.state;
+
     let { expandable } = this.state;
+    const expandedEdgeTypes = util.expandEdges(edgeTypes);
     const allProps = this.getUniqueDataProps();
     this.propsMap = new PropsMap();
 
@@ -199,21 +200,18 @@ class GraphComponent extends Component {
       };
       handleError(error);
     }
-    const expandedEdgeTypes = util.expandEdges(edgeTypes);
+
+    this.handleResize();
+    window.addEventListener('resize', this.handleResize);
 
     this.setState({
       expandedEdgeTypes,
       allProps,
       data,
     }, () => {
-      this.handleResize();
-      window.addEventListener('resize', this.handleResize);
-      const storedOptions = GraphOptions.retrieve();
-
       let nodes = [];
       let links = [];
       let graphObjects = {};
-
       const nodeRIDs = Object.keys(data);
       nodeRIDs.forEach((rid, index) => {
         ({
@@ -233,34 +231,25 @@ class GraphComponent extends Component {
           },
         ));
       });
-      this.setState({
-        nodes,
-        links,
-        graphObjects,
-        expandable,
-      }, () => simulation.alpha(1).restart());
 
-
+      const storedOptions = GraphOptions.retrieve();
+      let initialGraphOptions;
       if (storedOptions) {
-        this.setState({
-          graphOptions: storedOptions,
-          expandable,
-        }, () => {
-          this.drawGraph();
-          this.updateColors();
-        });
+        initialGraphOptions = storedOptions;
       } else {
         if (this.propsMap.nodeProps.length !== 0) {
           graphOptions.nodesLegend = true;
         }
-        this.setState({
-          graphOptions,
-          expandable,
-        }, () => {
-          this.drawGraph();
-          this.updateColors();
-        });
+        initialGraphOptions = graphOptions;
       }
+
+      this.setState({
+        graphOptions: initialGraphOptions,
+        nodes,
+        links,
+        graphObjects,
+        expandable,
+      }, this.refresh);
     });
   }
 
@@ -763,6 +752,7 @@ class GraphComponent extends Component {
     simulation.alpha(1).restart();
     this.initSimulation();
     this.drawGraph();
+    this.updateColors();
     handleDetailDrawerClose();
   }
 
@@ -1293,7 +1283,7 @@ class GraphComponent extends Component {
               color="secondary"
               className="table-btn"
               onClick={handleTableRedirect}
-              disabled={true}
+              disabled
             >
               <ViewListIcon />
             </IconButton>

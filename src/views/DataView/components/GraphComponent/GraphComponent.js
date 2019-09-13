@@ -1192,7 +1192,6 @@ class GraphComponent extends Component {
   @boundMethod
   copyURLToClipBoard() {
     const URL = window.location.href;
-
     // create temp dummy element to select and copy text
     const dummy = document.createElement('input');
     document.body.appendChild(dummy);
@@ -1201,8 +1200,8 @@ class GraphComponent extends Component {
     document.execCommand('copy');
     document.body.removeChild(dummy);
 
-    // reheat simulation so that coloring is consistent
-    this.componentDidMount();
+    const snackbar = this.context;
+    snackbar.add('URL has been copied to your clip-board!');
   }
 
   render() {

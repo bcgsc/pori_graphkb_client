@@ -30,6 +30,12 @@
         "babel/semi": "warn",
         "import/no-cycle": "warn",
         "import/prefer-default-export": "warn",
+        "jest/consistent-test-it": [
+            "error",
+            {
+                "fn": "test"
+            }
+        ],
         "max-len": "off",
         "no-confusing-arrow": "off",
         "no-console": [

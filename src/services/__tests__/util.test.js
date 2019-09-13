@@ -190,7 +190,7 @@ describe('validate outputs for util methods', () => {
     ];
 
     testCases.forEach((c) => {
-      expect(Array.isArray(util.getPallette(c.n, c.type)));
+      expect(Array.isArray(util.getPallette(c.n, c.type))).toBe(true);
     });
   });
 

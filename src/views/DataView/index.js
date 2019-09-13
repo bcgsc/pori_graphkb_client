@@ -253,7 +253,7 @@ class DataView extends React.Component {
 
   @boundMethod
   handleGraphStateSaveIntoURL(nodeRIDs) {
-    const { history, location: { pathname }, location: { search } } = this.props;
+    const { history } = this.props;
 
     const savedState = {};
     let encodedState;
@@ -269,8 +269,8 @@ class DataView extends React.Component {
     }
 
     history.push({
-      pathname,
-      search: `${search.split('&nodes')[0]}&${encodedState}`,
+      pathname: '/data/graph',
+      search: `${encodedState}`,
     });
   }
 
@@ -370,7 +370,7 @@ class DataView extends React.Component {
       filters,
     } = this.state;
     const { history } = this.props;
-    const URLContainsTable = String(history.location.pathname).includes('nodes');
+    const URLContainsTable = String(history.location.pathname).includes('table');
 
     const detailPanelIsOpen = Boolean(detailPanelRow);
     return (

@@ -18,7 +18,7 @@ const mockData = new GraphNode(
 describe('<GraphNodeDisplay />', () => {
   let wrapper;
 
-  it('renders children correctly', () => {
+  test('renders children correctly', () => {
     wrapper = shallow(
       <GraphNodeDisplay
         node={mockData}
@@ -28,7 +28,7 @@ describe('<GraphNodeDisplay />', () => {
     expect(wrapper.children().first().type()).toBe('text');
   });
 
-  it('renders correct label', () => {
+  test('renders correct label', () => {
     wrapper = shallow(
       <GraphNodeDisplay
         node={mockData}
@@ -39,7 +39,7 @@ describe('<GraphNodeDisplay />', () => {
     expect(wrapper.children('text').text()).toBe('node');
   });
 
-  it('mutes node if not selected for detail viewing', () => {
+  test('mutes node if not selected for detail viewing', () => {
     const detail = { '@rid': '#2' };
     wrapper = shallow(
       <GraphNodeDisplay
@@ -53,7 +53,7 @@ describe('<GraphNodeDisplay />', () => {
     expect(wrapper.find('circle.node').props().style.opacity).toBe(0.6);
   });
 
-  it('does not render invalid node', () => {
+  test('does not render invalid node', () => {
     wrapper = shallow(
       <GraphNodeDisplay
         node={null}
@@ -65,7 +65,7 @@ describe('<GraphNodeDisplay />', () => {
     wrapper.unmount();
   });
 
-  it('successfully applies drag function to node (doesn\'t test triggering)', () => {
+  test('successfully applies drag function to node (doesn\'t test triggering)', () => {
     const applyDrag = jest.fn();
     wrapper = mount(
       <GraphNodeDisplay

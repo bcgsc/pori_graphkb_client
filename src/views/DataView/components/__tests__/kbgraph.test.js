@@ -15,7 +15,7 @@ describe('kbgraph method i/o validations', () => {
     { name: 'knowledgebase', sourceId: 'kb', source: 'bcgsc' },
   ];
 
-  it('loadColorProps', () => {
+  test('loadColorProps', () => {
     const testPropsMap = new PropsMap();
 
     // Load
@@ -39,7 +39,7 @@ describe('kbgraph method i/o validations', () => {
     });
   });
 
-  it('load links', () => {
+  test('load links', () => {
     const testPropsMap = new PropsMap();
 
     // Load
@@ -63,7 +63,7 @@ describe('kbgraph method i/o validations', () => {
     });
   });
 
-  it('remove node', () => {
+  test('remove node', () => {
     const testPropsMap = new PropsMap();
 
     // Load
@@ -73,7 +73,7 @@ describe('kbgraph method i/o validations', () => {
     testPropsMap.removeNode(deleted[0], testData.map(d => ({ data: d })), testColumns);
   });
 
-  it('remove node', () => {
+  test('remove node', () => {
     const testPropsMap = new PropsMap();
 
     // Load
@@ -83,7 +83,7 @@ describe('kbgraph method i/o validations', () => {
     testPropsMap.removeLink(deleted[0], testData.map(d => ({ data: d })), testColumns);
   });
 
-  it('GraphOptions', () => {
+  test('GraphOptions', () => {
     const props = {
       defaultColor: 'black',
       autoCollisionRadius: false,
@@ -96,7 +96,7 @@ describe('kbgraph method i/o validations', () => {
     expect(retrievedGraphOptions).toMatchObject(graphOptions);
   });
 
-  it('getColor', () => {
+  test('getColor', () => {
     const props = {
       defaultColor: 'black',
       autoCollisionRadius: false,
@@ -107,7 +107,7 @@ describe('kbgraph method i/o validations', () => {
     graphOptions.getColor({ data: { source: { name: 'hello' } } }, 'links');
   });
 
-  it('GraphNode', () => {
+  test('GraphNode', () => {
     const data = { name: 'test name', '@rid': 'pass' };
     const graphNode = new GraphNode(data);
 
@@ -115,7 +115,7 @@ describe('kbgraph method i/o validations', () => {
     expect(graphNode.getLabel('name')).toBe('test name');
   });
 
-  it('GraphLink', () => {
+  test('GraphLink', () => {
     const data = { name: 'test name', '@rid': 'pass' };
     const testSource = { data: { '@rid': 'pass' } };
     const testTarget = 'also pass';

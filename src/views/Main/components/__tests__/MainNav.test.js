@@ -10,7 +10,7 @@ import { KBContext } from '../../../../components/KBContext';
 describe('<MainNav />', () => {
   let wrapper;
 
-  it('correctly renders', () => {
+  test('correctly renders', () => {
     wrapper = mount(
       <BrowserRouter>
         <KBContext.Provider value={{}}>

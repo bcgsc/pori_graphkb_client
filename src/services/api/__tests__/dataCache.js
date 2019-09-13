@@ -57,7 +57,7 @@ describe('DataCache', () => {
     })).resolves.toEqual([1, 2, 3]);
     // the load callback is called when a request completes
     // is queued or started
-    expect(onLoadCallback).toBeCalledTimes(6);
+    expect(onLoadCallback).toHaveBeenCalledTimes(6);
     expect(onErrorCallback).not.toHaveBeenCalled();
     expect(blockApiCall.abort).not.toHaveBeenCalled();
   });
@@ -84,7 +84,7 @@ describe('DataCache', () => {
     ).rejects.toThrow('test api error');
     expect(onErrorCallback).toHaveBeenCalledTimes(1);
     expect(blockApiCall.abort).not.toHaveBeenCalled();
-    expect(onLoadCallback).toBeCalledTimes(9);
+    expect(onLoadCallback).toHaveBeenCalledTimes(9);
   });
   test('sets count on first call if no results', async () => {
     const blockApiCall = mockApiCalls([
@@ -108,7 +108,7 @@ describe('DataCache', () => {
     expect(blockApiCall.abort).not.toHaveBeenCalled();
     expect(blockApiCall.request).toHaveBeenCalledTimes(1);
     // instantly resolves the last 2 blocks so that onFinished never calls load callback
-    expect(onLoadCallback).toBeCalledTimes(7);
+    expect(onLoadCallback).toHaveBeenCalledTimes(7);
   });
   test('grab from cache', async () => {
     const blockApiCall = mockApiCalls([
@@ -129,7 +129,7 @@ describe('DataCache', () => {
       startRow: 0,
       endRow: 3,
     })).resolves.toEqual([1, 2, 3]);
-    expect(onLoadCallback).toBeCalledTimes(6);
+    expect(onLoadCallback).toHaveBeenCalledTimes(6);
     expect(onErrorCallback).not.toHaveBeenCalled();
     expect(blockApiCall.abort).not.toHaveBeenCalled();
 
@@ -139,7 +139,7 @@ describe('DataCache', () => {
       endRow: 3,
     })).resolves.toEqual([1, 2, 3]);
     // should not change the call numbers
-    expect(onLoadCallback).toBeCalledTimes(6);
+    expect(onLoadCallback).toHaveBeenCalledTimes(6);
     expect(onErrorCallback).not.toHaveBeenCalled();
     expect(blockApiCall.abort).not.toHaveBeenCalled();
   });
@@ -181,7 +181,7 @@ describe('DataCache', () => {
       startRow: 0,
       endRow: 3,
     })).resolves.toEqual([1, 2, 3]);
-    expect(onLoadCallback).toBeCalledTimes(6);
+    expect(onLoadCallback).toHaveBeenCalledTimes(6);
     expect(onErrorCallback).not.toHaveBeenCalled();
     expect(blockApiCall.abort).not.toHaveBeenCalled();
   });
@@ -216,7 +216,7 @@ describe('DataCache', () => {
       startRow: 0,
       endRow: 3,
     })).resolves.toEqual([1, 2, 3]);
-    expect(onLoadCallback).toBeCalledTimes(6);
+    expect(onLoadCallback).toHaveBeenCalledTimes(6);
     expect(onErrorCallback).not.toHaveBeenCalled();
     expect(blockApiCall.abort).not.toHaveBeenCalled();
   });
@@ -239,7 +239,7 @@ describe('DataCache', () => {
       startRow: 0,
       endRow: 3,
     })).resolves.toEqual([1, 2, 3]);
-    expect(onLoadCallback).toBeCalledTimes(6);
+    expect(onLoadCallback).toHaveBeenCalledTimes(6);
 
     await expect(cache.getRows({
       search: '',
@@ -247,7 +247,7 @@ describe('DataCache', () => {
       endRow: 3,
       sortModel: [{ colId: '1', sort: 'asc' }],
     })).resolves.toEqual([4, 3, 2]);
-    expect(onLoadCallback).toBeCalledTimes(12);
+    expect(onLoadCallback).toHaveBeenCalledTimes(12);
   });
   test('count first', async () => {
     const blockApiCall = mockApiCalls([
@@ -281,7 +281,7 @@ describe('DataCache', () => {
     // 10 for regular requests
     // 2 for the count request
     // 3 for the returns of the requests
-    expect(onLoadCallback).toBeCalledTimes(15);
+    expect(onLoadCallback).toHaveBeenCalledTimes(15);
   });
   test('grab from single block', async () => {
     const blockApiCall = mockApiCalls([

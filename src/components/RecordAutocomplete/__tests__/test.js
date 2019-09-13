@@ -1,11 +1,9 @@
+import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
-import { mount } from 'enzyme';
-import AsyncSelect from 'react-select/lib/Async';
-import Select from 'react-select';
-import { Chip } from '@material-ui/core';
+import { render, fireEvent, waitForElement } from '@testing-library/react';
+
 
 import RecordAutocomplete from '..';
-import { Placeholder, SingleValue } from '../components';
 
 
 const mockSearchHandler = (values = []) => {
@@ -18,90 +16,50 @@ const mockSearchHandler = (values = []) => {
   return jest.fn().mockReturnValue({ abort: jest.fn(), request });
 };
 
+/* eslint-disable react/prop-types */
+jest.mock('react-select', () => ({ options = [], value, onChange }) => {
+  const handleChange = (event) => {
+    const option = options.find(
+      opt => opt.value === event.currentTarget.value,
+    );
+    onChange(option);
+  };
+  return (
+    <select data-testid="select" value={value} onChange={handleChange}>
+      {options.map(({ name }) => (
+        <option key={name} value={name}>
+          {name}
+        </option>
+      ))}
+    </select>
+  );
+});
+/* eslint-enable react/prop-types */
 
-describe('RecordLinkSuggest', () => {
-  test('accepts custom search handler', () => {
-    const searchHandler = mockSearchHandler();
-    const wrapper = mount(
-      <RecordAutocomplete
-        searchHandler={searchHandler}
-        name="test"
-        onChange={jest.fn()}
-      />,
-    );
-    expect(wrapper.prop('searchHandler')).toEqual(searchHandler);
-  });
-  test.todo('does not allow text input when disabled');
-  test('renders new placeholder', () => {
-    const placeholder = 'blargh monkeys';
-    const wrapper = mount(
+
+describe('RecordAutocomplete (data-fetching)', () => {
+  test('singleLoad triggers searchHandler', async () => {
+    const spy = mockSearchHandler([{ name: 'bob' }, { name: 'alice' }]);
+    const placeholder = 'input something';
+    const { getByText, getByTestId } = render(
       <RecordAutocomplete
         name="test"
         onChange={jest.fn()}
-        placeholder={placeholder}
-        searchHandler={jest.fn()}
-      />,
-    );
-    expect(wrapper.find(Placeholder).prop('children')).toEqual(placeholder);
-  });
-  test('passes isMulti flag', () => {
-    const wrapper = mount(
-      <RecordAutocomplete
-        name="test"
-        onChange={jest.fn()}
-        itemToString={v => v.name}
-        isMulti
-        searchHandler={jest.fn()}
-      />,
-    );
-    expect(wrapper.find(AsyncSelect).prop('isMulti')).toBe(true);
-  });
-  test('renders recordchip when initial value is given', () => {
-    const record = { '@rid': '#2:3', name: 'bob' };
-    const wrapper = mount(
-      <RecordAutocomplete
-        name="test"
-        onChange={jest.fn()}
-        itemToString={v => v.name}
-        value={record}
-        searchHandler={jest.fn()}
-      />,
-    );
-    expect(wrapper.find(SingleValue)).toHaveLength(1);
-  });
-  test('clears input on deleting the initial chip', () => {
-    const record = { '@rid': '#2:3', name: 'bob' };
-    const onChange = jest.fn();
-    const wrapper = mount(
-      <RecordAutocomplete
-        name="test"
-        onChange={onChange}
-        itemToString={v => v.name}
-        value={record}
-        searchHandler={jest.fn()}
-      />,
-    );
-    expect(wrapper.find(SingleValue)).toHaveLength(1);
-    wrapper.find(Chip).prop('onDelete')();
-    wrapper.update();
-    expect(wrapper.find(SingleValue)).toHaveLength(0);
-    expect(onChange).toHaveBeenCalled();
-  });
-  test('renders options immediately for singleLoad', async () => {
-    const records = [{ name: 'bob' }, { name: 'alice' }];
-    const wrapper = mount(
-      <RecordAutocomplete
-        name="test"
-        onChange={jest.fn()}
-        itemToString={v => v.name}
-        searchHandler={mockSearchHandler(records)}
+        searchHandler={spy}
         singleLoad
+        placeholder={placeholder}
+        minSearchLength={0}
       />,
     );
-    await wrapper.find(RecordAutocomplete).instance().componentDidMount();
-    wrapper.update();
-    expect(wrapper.find(Select).prop('options')).toHaveLength(2);
+    expect(spy).toHaveBeenCalledTimes(1);
+    // click action to render the newly fetched popup options
+    fireEvent.click(getByTestId('select'));
+    const [bob, alice] = await waitForElement(() => [getByText('bob'), getByText('alice')]);
+    expect(bob).toBeInTheDocument();
+    expect(alice).toBeInTheDocument();
   });
+
+  test.todo('searchHandler triggered on input change');
 
   afterEach(() => {
     jest.clearAllMocks();

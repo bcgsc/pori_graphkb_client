@@ -2,6 +2,8 @@
 
 .container {
   background-color: $palette__common--white;
+  border: 1px solid $palette__grey--A100;
+  border-radius: 5px;
   display: flex;
   justify-content: center;
   margin-left: 20px;
@@ -19,9 +21,12 @@
   outline: inherit;
   padding: 5px 12px 8px;
 
+  &:not(:first-child){
+    border-left: 1px solid $palette__grey--A100;
+  }
+
   &__label {
     font-size: 0.75rem;
-    opacity: 0;
     transition-delay: 0.1s;
 
     &--selected {
@@ -39,7 +44,7 @@
     display: inline-flex;
     flex-direction: column;
     justify-content: center;
-    padding-top: 10px;
+    padding-top: 3px;
     width: 100%;
 
     &--selected {

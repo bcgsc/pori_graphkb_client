@@ -979,6 +979,7 @@ class GraphComponent extends Component {
     });
 
     this.propsMap.removeNode(actionsNode.data, nodes, allProps);
+    this.saveGraphStatetoURL(nodes);
 
     this.setState({
       expandable,

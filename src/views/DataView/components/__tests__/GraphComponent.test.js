@@ -85,7 +85,6 @@ describe('<GraphComponent />', () => {
   it('renders all nodes specified in displayed', async () => {
     wrapper = mount(
       <GraphComponent
-        data={[mockData[0], mockData[1], mockData[2]]}
         handleError={handleErrSpy}
         cache={cacheSpy}
         handleDetailDrawerOpen={() => { }}

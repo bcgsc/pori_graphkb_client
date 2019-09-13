@@ -1,7 +1,8 @@
 {
     "extends": [
         "eslint:recommended",
-        "airbnb"
+        "airbnb",
+        "plugin/jest:recommended"
     ],
     "rules": {
         "react/jsx-filename-extension": [
@@ -63,7 +64,8 @@
         "cypress",
         "react",
         "babel",
-        "react-hooks"
+        "react-hooks",
+        "jest"
     ],
     "parser": "babel-eslint",
     "parserOptions": {

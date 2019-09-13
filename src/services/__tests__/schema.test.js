@@ -5,12 +5,12 @@ import Schema from '../schema';
 describe('Schema wrapper class tests', () => {
   const testSchema = new Schema(SCHEMA_DEFN);
   describe('Retrieving classmodels and properties', () => {
-    it('gets classes properly', () => {
+    test('gets classes properly', () => {
       Object.keys(SCHEMA_DEFN).forEach((key) => {
         expect(testSchema.get(key)).toBeDefined();
       });
     });
-    it('returns proper metadata fields', () => {
+    test('returns proper metadata fields', () => {
       const metadata = testSchema.getMetadata();
       const V = testSchema.get('V');
 
@@ -18,7 +18,7 @@ describe('Schema wrapper class tests', () => {
         expect(V.properties[prop.name]).toBeDefined();
       });
     });
-    it('returns the right properties list', () => {
+    test('returns the right properties list', () => {
       const ontology = testSchema.get('Ontology');
       const testProps = testSchema.getProperties('Ontology');
 
@@ -26,7 +26,7 @@ describe('Schema wrapper class tests', () => {
         expect(ontology.properties[prop.name]).toBeDefined();
       });
     });
-    it('Returns edges', () => {
+    test('Returns edges', () => {
       const edges = Object.values(testSchema.schema)
         .filter(model => model.inherits && model.inherits.includes('E'))
         .map(model => model.name);
@@ -47,7 +47,7 @@ describe('Schema wrapper class tests', () => {
     });
   });
   describe('getLabel/getPreview tests ', () => {
-    it('returns a primitive value back', () => {
+    test('returns a primitive value back', () => {
       const mockRID = '#19:0';
       const label = testSchema.getLabel(mockRID);
       expect(label).toEqual(mockRID);
@@ -56,7 +56,7 @@ describe('Schema wrapper class tests', () => {
       expect(preview).toEqual(mockRID);
     });
 
-    it('builds displayNameTemplate correctly', () => {
+    test('builds displayNameTemplate correctly', () => {
       const mockStatementRecord = {
         displayName: 'displayName',
         '@class': 'Mock',
@@ -72,7 +72,7 @@ describe('Schema wrapper class tests', () => {
       expect(statementLabel).toEqual('Given Low blood sugar  Mood Swings  applies to hungertitis  (A reputable source )');
     });
 
-    it('returns displayname label', () => {
+    test('returns displayname label', () => {
       const mockClassModel = {
         displayName: 'displayName',
         '@class': 'Mock',
@@ -89,7 +89,7 @@ describe('Schema wrapper class tests', () => {
       expect(cutOffLabel).toEqual('super long display name that is going to go over the limit but does not get cut off because its not a preview');
     });
 
-    it('Preview returns cut off displayName', () => {
+    test('Preview returns cut off displayName', () => {
       const longNameModel = {
         displayName: 'super long display name that is going to go over the limit and gets cut off because its a preview',
         '@class': 'Mock',
@@ -98,7 +98,7 @@ describe('Schema wrapper class tests', () => {
       expect(cutOffLabel).toEqual('super long display name that is going to go ove...');
     });
 
-    it('returns classModel name', () => {
+    test('returns classModel name', () => {
       const classModel = {
         '@class': 'disease',
       };
@@ -107,7 +107,7 @@ describe('Schema wrapper class tests', () => {
       expect(modelLabel).toEqual('Disease');
     });
 
-    it('defaults to name if displayName is not present', () => {
+    test('defaults to name if displayName is not present', () => {
       const mockClassModel = {
         name: 'mock model',
         '@class': 'Mock',
@@ -117,7 +117,7 @@ describe('Schema wrapper class tests', () => {
       expect(shortLabel).toEqual('mock model (33:0)');
     });
 
-    it('target check', () => {
+    test('target check', () => {
       const targetModel = {
         target: {
           displayName: 'displayName',
@@ -130,7 +130,7 @@ describe('Schema wrapper class tests', () => {
       expect(targetLabel).toEqual('displayName (22:0)');
     });
 
-    it('user model', () => {
+    test('user model', () => {
       const userMock = {
         '@rid': '20:0',
         '@class': 'User',
@@ -141,7 +141,7 @@ describe('Schema wrapper class tests', () => {
       expect(label).toEqual(userMock['@class']);
     });
 
-    it('full displayName with preview for short displayname', () => {
+    test('full displayName with preview for short displayname', () => {
       const mockClassModel = {
         displayName: 'displayName',
         '@class': 'Mock',
@@ -151,7 +151,7 @@ describe('Schema wrapper class tests', () => {
       expect(shortLabel).toEqual('displayName (22:0)');
     });
 
-    it('returns rid if no other info is available', () => {
+    test('returns rid if no other info is available', () => {
       const mockModel = {
         '@rid': '22:0',
       };

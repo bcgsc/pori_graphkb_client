@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 import { KBContext, withKB } from '..';
 
 describe('KB Context provider and consumers', () => {
-  it('consumer inherits value', () => {
+  test('consumer inherits value', () => {
     const Div = withKB((props) => {
       const { schema } = props;
       return (

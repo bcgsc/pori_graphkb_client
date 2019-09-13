@@ -14,30 +14,30 @@ describe('auth methods test', () => {
   const ADMIN_JWT = jwt.sign({ user: ADMIN_USER }, ENCRYPTION_KEY, { expiresIn: REALLY_LONG_TIME });
 
   describe('expired token', () => {
-    it('retrieved the user', () => {
+    test('retrieved the user', () => {
       const user = getUser({ authorizationToken: EXPIRED_JWT });
       expect(user).toEqual(ADMIN_USER);
     });
-    it('is not authenticated', () => {
+    test('is not authenticated', () => {
       expect(isAuthenticated({ authorizationToken: EXPIRED_JWT, authenticationToken: EXPIRED_JWT })).toBe(false);
     });
-    it('is not authorized', () => {
+    test('is not authorized', () => {
       expect(isAuthorized({ authorizationToken: EXPIRED_JWT, authenticationToken: EXPIRED_JWT })).toBe(false);
     });
   });
 
   describe('valid token', () => {
-    it('retrieved the user', () => {
+    test('retrieved the user', () => {
       const user = getUser({ authorizationToken: VALID_JWT });
       expect(user).toEqual(TEST_USER);
     });
-    it('is authenticated', () => {
+    test('is authenticated', () => {
       expect(isAuthenticated({ authorizationToken: VALID_JWT, authenticationToken: VALID_JWT })).toBe(true);
     });
-    it('is authorized', () => {
+    test('is authorized', () => {
       expect(isAuthorized({ authorizationToken: VALID_JWT, authenticationToken: VALID_JWT })).toBe(true);
     });
-    it('is not admin', () => {
+    test('is not admin', () => {
       expect(isAdmin({ authorizationToken: VALID_JWT })).toBe(false);
     });
   });
@@ -54,17 +54,17 @@ describe('auth methods test', () => {
   });
 
   describe('admin token', () => {
-    it('retrieved the user', () => {
+    test('retrieved the user', () => {
       const user = getUser({ authorizationToken: ADMIN_JWT });
       expect(user).toEqual(ADMIN_USER);
     });
-    it('is authenticated', () => {
+    test('is authenticated', () => {
       expect(isAuthenticated({ authorizationToken: ADMIN_JWT, authenticationToken: ADMIN_JWT })).toBe(true);
     });
-    it('is not authorized', () => {
+    test('is not authorized', () => {
       expect(isAuthenticated({ authorizationToken: ADMIN_JWT, authenticationToken: ADMIN_JWT })).toBe(true);
     });
-    it('is admin', () => {
+    test('is admin', () => {
       expect(isAdmin({ authorizationToken: ADMIN_JWT, authenticationToken: ADMIN_JWT })).toBe(true);
     });
   });

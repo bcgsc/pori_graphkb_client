@@ -309,10 +309,10 @@ class RecordForm extends React.PureComponent {
               variant="outlined"
               disabled={actionInProgress}
             >
-                Add Review
               <LocalLibraryIcon
                 classes={{ root: 'review-icon' }}
               />
+                Add Review
             </Button>
             ))}
             {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (

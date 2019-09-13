@@ -9,7 +9,8 @@
     "extends": [
         "eslint:recommended",
         "airbnb",
-        "plugin:jest/recommended"
+        "plugin:jest/recommended",
+        "plugin:jest-formatting/recommended"
     ],
     "parser": "babel-eslint",
     "parserOptions": {
@@ -24,7 +25,8 @@
         "react",
         "babel",
         "react-hooks",
-        "jest"
+        "jest",
+        "jest-formatting"
     ],
     "rules": {
         "babel/semi": "warn",

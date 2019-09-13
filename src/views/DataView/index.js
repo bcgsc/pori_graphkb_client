@@ -167,21 +167,18 @@ class DataView extends React.Component {
 
   @boundMethod
   handleSwapToGraph() {
-    const { history } = this.props;
-    history.push({
-      pathname: '/data/graph',
-      search: history.location.search,
-      hash: '',
-    });
+    const { selectedRecords } = this.state;
+    const nodeRIDs = selectedRecords.map(node => node['@rid']);
+    this.handleGraphStateSaveIntoURL(nodeRIDs);
   }
 
   @boundMethod
   handleTableRedirect() {
     const { history } = this.props;
 
-    const isSavedState = window.location.href.includes('shareState=true&');
+    const isSavedState = window.location.href.includes('nodes');
     const search = isSavedState
-      ? window.location.search.split('&shareState=true')[0]
+      ? window.location.search.split('nodes')[0]
       : window.location.search;
 
     history.push({
@@ -255,7 +252,7 @@ class DataView extends React.Component {
   }
 
   @boundMethod
-  handleGraphStateSaveIntoURL(nodeRIDs, replace = false) {
+  handleGraphStateSaveIntoURL(nodeRIDs) {
     const { history, location: { pathname }, location: { search } } = this.props;
 
     const savedState = {};
@@ -271,17 +268,10 @@ class DataView extends React.Component {
       this.handleError(err);
     }
 
-    const stack = {
+    history.push({
       pathname,
       search: `${search.split('&nodes')[0]}&${encodedState}`,
-    };
-
-    if (replace) {
-      history.replace(stack);
-    } else {
-      history.push(stack);
-    }
-
+    });
   }
 
   /**
@@ -293,7 +283,6 @@ class DataView extends React.Component {
       detailPanelRow,
       cache,
       optionsMenuAnchor,
-      selectedRecords,
       search,
     } = this.state;
 
@@ -302,36 +291,34 @@ class DataView extends React.Component {
     const edges = schema.getEdges();
 
     const URL = String(window.location.href);
-    const URLContainsTable = URL.includes('table');
-    if (URLContainsTable) {
+    const isGraphView = URL.includes('node');
+    if (isGraphView) {
       return (
-        <DataTable
-          search={search}
+        <GraphComponent
           cache={cache}
-          rowBuffer={bufferSize}
-          isExportingData={this.handleExportLoader}
+          handleDetailDrawerOpen={this.handleToggleDetailPanel}
+          handleDetailDrawerClose={this.handleToggleDetailPanel}
+          handleTableRedirect={this.handleTableRedirect}
+          detail={detailPanelRow}
+          handleError={this.handleError}
+          edgeTypes={edges}
+          schema={schema}
           onRecordClicked={this.handleToggleDetailPanel}
-          onRecordsSelected={this.handleRecordSelection}
-          onRowSelected={this.handleNewRowSelection}
-          optionsMenuAnchor={optionsMenuAnchor}
-          optionsMenuOnClose={this.handleToggleOptionsMenu}
+          handleGraphStateSave={this.handleGraphStateSaveIntoURL}
         />
       );
     }
-
     return (
-      <GraphComponent
-        data={selectedRecords}
+      <DataTable
+        search={search}
         cache={cache}
-        handleDetailDrawerOpen={this.handleToggleDetailPanel}
-        handleDetailDrawerClose={this.handleToggleDetailPanel}
-        handleTableRedirect={this.handleTableRedirect}
-        detail={detailPanelRow}
-        handleError={this.handleError}
-        edgeTypes={edges}
-        schema={schema}
+        rowBuffer={bufferSize}
+        isExportingData={this.handleExportLoader}
         onRecordClicked={this.handleToggleDetailPanel}
-        handleGraphStateSave={this.handleGraphStateSaveIntoURL}
+        onRecordsSelected={this.handleRecordSelection}
+        onRowSelected={this.handleNewRowSelection}
+        optionsMenuAnchor={optionsMenuAnchor}
+        optionsMenuOnClose={this.handleToggleOptionsMenu}
       />
     );
   }
@@ -383,7 +370,7 @@ class DataView extends React.Component {
       filters,
     } = this.state;
     const { history } = this.props;
-    const URLContainsTable = String(history.location.pathname).includes('table');
+    const URLContainsTable = String(history.location.pathname).includes('nodes');
 
     const detailPanelIsOpen = Boolean(detailPanelRow);
     return (

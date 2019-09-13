@@ -26,6 +26,7 @@ describe('SelectionRange Class', () => {
 
 describe('SelectionTracker Class', () => {
   let multiRangeST;
+
   // creates rangeList [SR(0,5), SR(10,10), SR(20,20)... SR(100,100)]
   beforeEach(() => {
     multiRangeST = new SelectionTracker(0, 5);
@@ -33,6 +34,7 @@ describe('SelectionTracker Class', () => {
       multiRangeST = SelectionTracker.addSingleRange(i * 10, multiRangeST);
     }
   });
+
   test('initializes with correct selection range', () => {
     const emptySelectionTracker = new SelectionTracker();
     expect(emptySelectionTracker.selection.length).toBe(0);

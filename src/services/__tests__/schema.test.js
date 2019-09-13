@@ -4,12 +4,14 @@ import Schema from '../schema';
 
 describe('Schema wrapper class tests', () => {
   const testSchema = new Schema(SCHEMA_DEFN);
+
   describe('Retrieving classmodels and properties', () => {
     test('gets classes properly', () => {
       Object.keys(SCHEMA_DEFN).forEach((key) => {
         expect(testSchema.get(key)).toBeDefined();
       });
     });
+
     test('returns proper metadata fields', () => {
       const metadata = testSchema.getMetadata();
       const V = testSchema.get('V');
@@ -18,6 +20,7 @@ describe('Schema wrapper class tests', () => {
         expect(V.properties[prop.name]).toBeDefined();
       });
     });
+
     test('returns the right properties list', () => {
       const ontology = testSchema.get('Ontology');
       const testProps = testSchema.getProperties('Ontology');
@@ -26,6 +29,7 @@ describe('Schema wrapper class tests', () => {
         expect(ontology.properties[prop.name]).toBeDefined();
       });
     });
+
     test('Returns edges', () => {
       const edges = Object.values(testSchema.schema)
         .filter(model => model.inherits && model.inherits.includes('E'))
@@ -46,6 +50,7 @@ describe('Schema wrapper class tests', () => {
       expect(testSchema.getEdges(testNode)).toEqual(['inalias', 'outalias', 'ingeneralization']);
     });
   });
+
   describe('getLabel/getPreview tests ', () => {
     test('returns a primitive value back', () => {
       const mockRID = '#19:0';

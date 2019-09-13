@@ -18,9 +18,11 @@ describe('auth methods test', () => {
       const user = getUser({ authorizationToken: EXPIRED_JWT });
       expect(user).toEqual(ADMIN_USER);
     });
+
     test('is not authenticated', () => {
       expect(isAuthenticated({ authorizationToken: EXPIRED_JWT, authenticationToken: EXPIRED_JWT })).toBe(false);
     });
+
     test('is not authorized', () => {
       expect(isAuthorized({ authorizationToken: EXPIRED_JWT, authenticationToken: EXPIRED_JWT })).toBe(false);
     });
@@ -31,12 +33,15 @@ describe('auth methods test', () => {
       const user = getUser({ authorizationToken: VALID_JWT });
       expect(user).toEqual(TEST_USER);
     });
+
     test('is authenticated', () => {
       expect(isAuthenticated({ authorizationToken: VALID_JWT, authenticationToken: VALID_JWT })).toBe(true);
     });
+
     test('is authorized', () => {
       expect(isAuthorized({ authorizationToken: VALID_JWT, authenticationToken: VALID_JWT })).toBe(true);
     });
+
     test('is not admin', () => {
       expect(isAdmin({ authorizationToken: VALID_JWT })).toBe(false);
     });
@@ -47,6 +52,7 @@ describe('auth methods test', () => {
       const name = getUsername({ authorizationToken: VALID_JWT, authenticationToken: VALID_JWT });
       expect(name).toEqual('test user');
     });
+
     test('falls back to authenticationToken if not authorizationToken', () => {
       const name = getUsername({ authenticationToken: VALID_JWT });
       expect(name).toEqual('keycloak username');
@@ -58,12 +64,15 @@ describe('auth methods test', () => {
       const user = getUser({ authorizationToken: ADMIN_JWT });
       expect(user).toEqual(ADMIN_USER);
     });
+
     test('is authenticated', () => {
       expect(isAuthenticated({ authorizationToken: ADMIN_JWT, authenticationToken: ADMIN_JWT })).toBe(true);
     });
+
     test('is not authorized', () => {
       expect(isAuthenticated({ authorizationToken: ADMIN_JWT, authenticationToken: ADMIN_JWT })).toBe(true);
     });
+
     test('is admin', () => {
       expect(isAdmin({ authorizationToken: ADMIN_JWT, authenticationToken: ADMIN_JWT })).toBe(true);
     });

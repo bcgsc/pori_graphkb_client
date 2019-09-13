@@ -61,6 +61,7 @@ describe('DataCache', () => {
     expect(onErrorCallback).not.toHaveBeenCalled();
     expect(blockApiCall.abort).not.toHaveBeenCalled();
   });
+
   test('calls the error callback', async () => {
     const blockApiCall = mockApiCalls([
       [1, 2],
@@ -86,6 +87,7 @@ describe('DataCache', () => {
     expect(blockApiCall.abort).not.toHaveBeenCalled();
     expect(onLoadCallback).toHaveBeenCalledTimes(9);
   });
+
   test('sets count on first call if no results', async () => {
     const blockApiCall = mockApiCalls([
       [],
@@ -110,6 +112,7 @@ describe('DataCache', () => {
     // instantly resolves the last 2 blocks so that onFinished never calls load callback
     expect(onLoadCallback).toHaveBeenCalledTimes(7);
   });
+
   test('grab from cache', async () => {
     const blockApiCall = mockApiCalls([
       [1, 2],
@@ -143,6 +146,7 @@ describe('DataCache', () => {
     expect(onErrorCallback).not.toHaveBeenCalled();
     expect(blockApiCall.abort).not.toHaveBeenCalled();
   });
+
   test('do not add if active already', async () => {
     const blockApiCall = mockApiCalls([
       [1, 2],
@@ -185,6 +189,7 @@ describe('DataCache', () => {
     expect(onErrorCallback).not.toHaveBeenCalled();
     expect(blockApiCall.abort).not.toHaveBeenCalled();
   });
+
   test.skip('adjust pending when count is known', async () => {
     const blockApiCall = mockApiCalls([
       [1, 2],
@@ -220,6 +225,7 @@ describe('DataCache', () => {
     expect(onErrorCallback).not.toHaveBeenCalled();
     expect(blockApiCall.abort).not.toHaveBeenCalled();
   });
+
   test('request new blocks when sort changes', async () => {
     const blockApiCall = mockApiCalls([
       [1, 2], [3, 4],
@@ -249,6 +255,7 @@ describe('DataCache', () => {
     })).resolves.toEqual([4, 3, 2]);
     expect(onLoadCallback).toHaveBeenCalledTimes(12);
   });
+
   test('count first', async () => {
     const blockApiCall = mockApiCalls([
       [{ count: 4 }],
@@ -283,6 +290,7 @@ describe('DataCache', () => {
     // 3 for the returns of the requests
     expect(onLoadCallback).toHaveBeenCalledTimes(15);
   });
+
   test('grab from single block', async () => {
     const blockApiCall = mockApiCalls([
       [0, 1, 2, 3, 4, 5, 6, 7, 8],
@@ -303,6 +311,7 @@ describe('DataCache', () => {
     })).resolves.toEqual([2, 3, 4, 5]);
     expect(cache.counts['']).toEqual(9);
   });
+
   afterEach(() => {
     jest.clearAllMocks();
   });

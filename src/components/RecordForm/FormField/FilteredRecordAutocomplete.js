@@ -39,6 +39,7 @@ class FilteredRecordAutocomplete extends React.PureComponent {
 
   componentDidUpdate(prevProps) {
     const { linkedClassName } = this.props;
+
     if (linkedClassName !== prevProps.linkedClassName) {
       this.setState({ selectedClassName: linkedClassName });
     }

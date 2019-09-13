@@ -56,6 +56,7 @@ function ResourceSelectComponent(props) {
 
   const resourcesDisplay = resources.map(resource => children(resource));
   let InputComponent = Input;
+
   if (variant === 'outlined') {
     InputComponent = OutlinedInput;
   }

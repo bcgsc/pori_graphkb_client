@@ -60,6 +60,7 @@ class GraphNodeDisplay extends PureComponent {
    */
   componentDidMount() {
     const { node, applyDrag } = this.props;
+
     if (applyDrag) {
       const nodeElement = d3Select.select(this.node);
       nodeElement.call(d3Drag.drag()
@@ -90,6 +91,7 @@ class GraphNodeDisplay extends PureComponent {
 
     if (!node) return null;
     let label;
+
     if (labelKey === 'preview') {
       label = schema.getPreview(node.data);
     } else {
@@ -100,6 +102,7 @@ class GraphNodeDisplay extends PureComponent {
       || (filter && !label.includes(filter.toLowerCase()));
 
     let opacity = DEFAULT_OPACITY;
+
     if (faded) {
       opacity = FADED_OPACITY;
     }

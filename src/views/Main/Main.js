@@ -67,6 +67,7 @@ const Main = () => {
       request: (fetchUrl, fetchConfig) => {
         if (fetchUrl.startsWith(API_BASE_URL)) {
           const newConfig = { ...fetchConfig };
+
           if (!newConfig.headers) {
             newConfig.headers = {};
           }

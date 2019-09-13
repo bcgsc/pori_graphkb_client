@@ -64,6 +64,7 @@ const FormField = (props) => {
   const mandatory = Boolean(model.mandatory && variant !== FORM_VARIANT.SEARCH);
 
   let value = inputValue;
+
   if (variant !== FORM_VARIANT.SEARCH) {
     if (value === undefined || (!nullable && value === null)) {
       if (defaultValue !== undefined) {

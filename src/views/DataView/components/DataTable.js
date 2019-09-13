@@ -100,8 +100,10 @@ class DataTable extends React.Component {
     const { length } = selectedRecords;
     gridApi.forEachNode((node) => {
       const currNodeID = parseInt(node.id, 10);
+
       for (let i = 0; i < length; i++) {
         const currRange = selectedRecords[i];
+
         if (currNodeID >= currRange.minVal && currNodeID <= currRange.maxVal) {
           node.setSelected(true);
         }
@@ -117,8 +119,10 @@ class DataTable extends React.Component {
     const selectedRecords = selectionTracker.selection;
     gridApi.forEachNode((node) => {
       const currNodeID = parseInt(node.id, 10);
+
       for (let i = 0; i < selectedRecords.length; i++) {
         const currRange = selectedRecords[i];
+
         if (currNodeID >= currRange.minVal && currNodeID <= currRange.maxVal) {
           node.setSelected(true);
         }
@@ -224,10 +228,12 @@ class DataTable extends React.Component {
 
     const newActiveColumns = new Set(activeColumns);
     const newActiveGroups = new Set(activeGroups);
+
     if (isActive) {
       newActiveColumns.delete(colId);
     } else {
       newActiveColumns.add(colId);
+
       // if a group Id is given, toggle the group open
       if (groupId) {
         this.openColumnGroup(groupId, true);
@@ -282,6 +288,7 @@ class DataTable extends React.Component {
           successCallback, failCallback, ...params
         }) => {
           params.endRow = totalNumOfRows; // fetches entire data set with this adjustment
+
           try {
             const [rows, lastRow] = await this.getTableData(params);
             successCallback(rows, lastRow);
@@ -307,6 +314,7 @@ class DataTable extends React.Component {
           successCallback, failCallback, ...params
         }) => {
           params.endRow = maxSelectedRow; // fetches entire data set with this adjustment
+
           try {
             const [rows, lastRow] = await this.getTableData(params);
             successCallback(rows, lastRow);
@@ -382,6 +390,7 @@ class DataTable extends React.Component {
     const { selectionTracker } = this.state;
 
     let newSelectionTracker;
+
     if (type === 'click') {
       // 1. first time selecting a row OR just a regular ole click
       if (prevNodeID === null || (!ctrlKey && !shiftKey)) {
@@ -389,6 +398,7 @@ class DataTable extends React.Component {
       } else if (shiftKey) {
       // 2. shift key extends a the previously selected range or resets selection range
         const isCurrNodeInSelection = selectionTracker.isNodeAlreadySelected(nodeID);
+
         if (isCurrNodeInSelection) {
           newSelectionTracker = new SelectionTracker(nodeID, nodeID);
         } else {
@@ -418,6 +428,7 @@ class DataTable extends React.Component {
           ? +1
           : -1;
         const nextRow = this.gridApi.getDisplayedRowAtIndex(rowIndex + direction);
+
         if (nextRow) {
           nextRow.setSelected(true);
         }

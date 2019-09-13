@@ -26,15 +26,18 @@ class Schema {
   @boundMethod
   getLabel(obj, truncate = true) {
     let label;
+
     if (obj) {
       if (obj.displayNameTemplate) {
         label = this.getPreview(obj);
+
         if (label.length > MAX_LABEL_LENGTH - 3 && truncate) {
           label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
         }
         return label;
       } if (obj.displayName || obj.name) {
         label = obj.displayName || obj.name;
+
         if (obj['@rid']) {
           label = `${label} (${obj['@rid']})`;
         }
@@ -98,6 +101,7 @@ class Schema {
       if (obj.displayName || obj.name) {
         let label;
         label = obj.displayName || obj.name;
+
         if (label.length > MAX_LABEL_LENGTH) {
           label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
         }
@@ -108,6 +112,7 @@ class Schema {
       }
       if (obj['@class']) {
         const label = this.getPreview(this.get(obj));
+
         if (label) {
           return label;
         }
@@ -196,6 +201,7 @@ class Schema {
   getEdges(node = null) {
     const { schema } = this;
     const list = schema.E.subclasses.slice().map(classModel => classModel.name);
+
     if (node) {
       const edges = [];
       Object.keys(node)
@@ -272,6 +278,7 @@ class Schema {
         ? 'in'
         : 'out';
       let colId = name.slice(type.length + 1);
+
       if (type === 'in') {
         colId = this.get(colId).reverseName;
       }
@@ -339,6 +346,7 @@ class Schema {
       .sort((p1, p2) => p1.name.localeCompare(p2.name))
       .forEach((prop) => {
         const hide = !showByDefault.includes(prop.name);
+
         if (prop.type === 'linkset') {
           defns.push(defineLinkSetColumn(prop.name));
         } else if (prop.linkedClass) {

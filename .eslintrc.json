@@ -1,38 +1,37 @@
 {
+    "env": {
+        "browser": true,
+        "cypress/globals": true,
+        "es6": true,
+        "jest": true,
+        "node": true
+    },
     "extends": [
         "eslint:recommended",
         "airbnb",
         "plugin/jest:recommended"
     ],
+    "parser": "babel-eslint",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 2018,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "cypress",
+        "react",
+        "babel",
+        "react-hooks",
+        "jest"
+    ],
     "rules": {
-        "react/jsx-filename-extension": [
-            "warn",
-            {
-                "extensions": [
-                    ".js",
-                    ".jsx"
-                ]
-            }
-        ],
-        "react/forbid-prop-types": [
-            "off",
-            {
-                "forbid": [],
-                "checkContextTypes": false,
-                "checkChildContextTypes": false
-            }
-        ],
-        "react-hooks/rules-of-hooks": "error",
-        "react-hooks/exhaustive-deps": "warn",
+        "babel/semi": "warn",
         "import/no-cycle": "warn",
-        "prefer-promise-reject-errors": "off",
-        "no-param-reassign": "warn",
-        "react/jsx-one-expression-per-line": "off",
-        "prefer-destructuring": "warn",
-        "react/destructuring-assignment": "warn",
-        "no-confusing-arrow": "off",
-        "no-underscore-dangle": "off",
         "import/prefer-default-export": "warn",
+        "max-len": "off",
+        "no-confusing-arrow": "off",
         "no-console": [
             "error",
             {
@@ -42,37 +41,38 @@
                 ]
             }
         ],
-        "babel/semi": "warn",
-        "max-len": "off",
         "no-continue": "warn",
-        "react/no-did-update-set-state": "warn",
+        "no-param-reassign": "warn",
         "no-plusplus": [
             "error",
             {
                 "allowForLoopAfterthoughts": true
             }
-        ]
-    },
-    "env": {
-        "browser": true,
-        "node": true,
-        "cypress/globals": true,
-        "jest": true,
-        "es6": true
-    },
-    "plugins": [
-        "cypress",
-        "react",
-        "babel",
-        "react-hooks",
-        "jest"
-    ],
-    "parser": "babel-eslint",
-    "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true
-        },
-        "ecmaVersion": 2018,
-        "sourceType": "module"
+        ],
+        "no-underscore-dangle": "off",
+        "prefer-destructuring": "warn",
+        "prefer-promise-reject-errors": "off",
+        "react-hooks/exhaustive-deps": "warn",
+        "react-hooks/rules-of-hooks": "error",
+        "react/destructuring-assignment": "warn",
+        "react/forbid-prop-types": [
+            "off",
+            {
+                "checkChildContextTypes": false,
+                "checkContextTypes": false,
+                "forbid": []
+            }
+        ],
+        "react/jsx-filename-extension": [
+            "warn",
+            {
+                "extensions": [
+                    ".js",
+                    ".jsx"
+                ]
+            }
+        ],
+        "react/jsx-one-expression-per-line": "off",
+        "react/no-did-update-set-state": "warn"
     }
 }

@@ -126,7 +126,6 @@ class GraphComponent extends Component {
     detail: PropTypes.object,
     cache: PropTypes.object.isRequired,
     edgeTypes: PropTypes.arrayOf(PropTypes.string),
-    data: PropTypes.arrayOf(PropTypes.object).isRequired,
     schema: PropTypes.object.isRequired,
     handleError: PropTypes.func.isRequired,
     handleGraphStateSave: PropTypes.func,
@@ -167,7 +166,6 @@ class GraphComponent extends Component {
       expandNode: null,
       expandExclusions: [],
       allProps: [], // list of all unique properties on all nodes returned
-      isSavedState: false,
     };
 
     this.propsMap = new PropsMap();
@@ -182,7 +180,6 @@ class GraphComponent extends Component {
     const {
       edgeTypes,
       handleError,
-      data: originalData,
     } = this.props;
     const {
       graphOptions,
@@ -192,25 +189,17 @@ class GraphComponent extends Component {
     const allProps = this.getUniqueDataProps();
     this.propsMap = new PropsMap();
 
-    const isSavedState = window.location.href.includes('nodes');
-
     let data;
-    if (isSavedState) {
-      try {
-        data = await this.loadSavedStateFromURL();
-      } catch (err) {
-        handleError(err);
-      }
-    } else {
-      data = GraphComponent.hashRecordsByRID(originalData);
+    try {
+      data = await this.loadSavedStateFromURL();
+    } catch (err) {
+      const error = {
+        name: 'No Seed Data',
+        message: 'Please select a record from the data table for graph visualization',
+      };
+      handleError(error);
     }
-
-    const displayed = originalData.map(obj => obj['@rid']);
     const expandedEdgeTypes = util.expandEdges(edgeTypes);
-    let validDisplayed = displayed;
-    if ((!displayed || displayed.length === 0) && data) {
-      validDisplayed = Object.keys(data)[0] ? [Object.keys(data)[0]] : [];
-    }
 
     this.setState({
       expandedEdgeTypes,
@@ -219,78 +208,38 @@ class GraphComponent extends Component {
     }, () => {
       this.handleResize();
       window.addEventListener('resize', this.handleResize);
-
       const storedOptions = GraphOptions.retrieve();
 
-      if (originalData.length === 0 && !isSavedState) {
-        const err = {
-          name: 'No Seed Data',
-          message: 'Please select a record from the data table for graph visualization',
-        };
-        handleError(err);
-      }
-      /**
-       * Initialization priority:
-       *
-       * 1. Check to see if it is a user shared graph state via URL.
-       * 2. Selected rows from table will be rendered otherwise.
-       */
-      if (isSavedState) {
-        /* Case 1, iterate through decoded node rids to generate graph objects. */
-        let nodes = [];
-        let links = [];
-        let graphObjects = {};
+      let nodes = [];
+      let links = [];
+      let graphObjects = {};
 
-        const nodeRIDs = Object.keys(data);
-        nodeRIDs.forEach((rid, index) => {
-          ({
-            nodes,
-            links,
-            graphObjects,
-            expandable,
-          } = this.processData(
-            data[rid],
-            util.positionInit(this.wrapper.clientWidth / 2, this.wrapper.clientHeight / 2, index, nodeRIDs.length),
-            0,
-            {
-              nodes,
-              links,
-              graphObjects,
-              expandable,
-            },
-          ));
-        });
-        this.setState({
+      const nodeRIDs = Object.keys(data);
+      nodeRIDs.forEach((rid, index) => {
+        ({
           nodes,
           links,
           graphObjects,
           expandable,
-          isSavedState,
-        }, () => simulation.alpha(1).restart());
-      } else if (displayed && displayed.length !== 0) {
-        let { nodes, links, graphObjects } = this.state;
-
-        /* Case 2, iterate through specified rids from table. */
-        validDisplayed.forEach((key, i) => {
-          ({
+        } = this.processData(
+          data[rid],
+          util.positionInit(this.wrapper.clientWidth / 2, this.wrapper.clientHeight / 2, index, nodeRIDs.length),
+          0,
+          {
             nodes,
             links,
             graphObjects,
             expandable,
-          } = this.processData(
-            data[key],
-            // center initial nodes based on viewpoint
-            util.positionInit(this.wrapper.clientWidth / 2, this.wrapper.clientHeight / 2, i, validDisplayed.length),
-            0,
-            {
-              nodes,
-              links,
-              graphObjects,
-              expandable,
-            },
-          ));
-        });
-      }
+          },
+        ));
+      });
+      this.setState({
+        nodes,
+        links,
+        graphObjects,
+        expandable,
+      }, () => simulation.alpha(1).restart());
+
 
       if (storedOptions) {
         this.setState({
@@ -1216,7 +1165,6 @@ class GraphComponent extends Component {
       expansionDialogOpen,
       expandNode,
       expandExclusions,
-      isSavedState,
     } = this.state;
 
 
@@ -1345,7 +1293,7 @@ class GraphComponent extends Component {
               color="secondary"
               className="table-btn"
               onClick={handleTableRedirect}
-              disabled={isSavedState}
+              disabled={true}
             >
               <ViewListIcon />
             </IconButton>

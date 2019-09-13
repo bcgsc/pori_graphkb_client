@@ -73,16 +73,6 @@ describe('kbgraph method i/o validations', () => {
     testPropsMap.removeNode(deleted[0], testData.map(d => ({ data: d })), testColumns);
   });
 
-  test('remove node', () => {
-    const testPropsMap = new PropsMap();
-
-    // Load
-    testData.forEach(link => testPropsMap.loadLink(link, testColumns));
-
-    const deleted = testData.splice(0, 1);
-    testPropsMap.removeLink(deleted[0], testData.map(d => ({ data: d })), testColumns);
-  });
-
   test('GraphOptions', () => {
     const props = {
       defaultColor: 'black',

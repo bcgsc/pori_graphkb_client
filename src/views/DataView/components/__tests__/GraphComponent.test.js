@@ -51,11 +51,11 @@ const mockData = [
 const handleErrSpy = jest.fn();
 
 const getRecordMockFnc = jest.fn()
-  .mockResolvedValueOnce(mockData['#4']);
+  .mockResolvedValue(mockData);
 
 const cacheSpy = ({
   getRecord: () => getRecordMockFnc(),
-  getRecords: jest.fn(),
+  getRecords: () => getRecordMockFnc(),
 });
 
 describe('<GraphComponent />', () => {
@@ -66,7 +66,7 @@ describe('<GraphComponent />', () => {
   const componentDidMountSpy = jest.spyOn(GraphComponent.prototype, 'componentDidMount');
   const schema = new Schema();
 
-  it('calls componentDidMount on render and doesn\'t crash and burn', () => {
+  test('calls componentDidMount on render and doesn\'t crash and burn', () => {
     wrapper = mount(
       <GraphComponent
         data={[]}
@@ -82,14 +82,14 @@ describe('<GraphComponent />', () => {
     expect(componentDidMountSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('renders all nodes specified in displayed', async () => {
+  test('renders all nodes specified in displayed', async () => {
     wrapper = mount(
       <GraphComponent
+        data={[mockData[0], mockData[1], mockData[2]]}
         handleError={handleErrSpy}
         cache={cacheSpy}
         handleDetailDrawerOpen={() => { }}
         handleDetailDrawerClose={() => { }}
-        handleTableRedirect={() => { }}
         handleNewColumns={() => { }}
         edgeTypes={['AliasOf']}
         schema={schema}
@@ -101,7 +101,7 @@ describe('<GraphComponent />', () => {
     expect(wrapper.find('svg path.link')).toHaveLength(0);
   });
 
-  it('renders all nodes and links specified in displayed', async () => {
+  test('renders all nodes and links specified in displayed', async () => {
     wrapper = mount(
       <GraphComponent
         data={mockData}
@@ -121,7 +121,7 @@ describe('<GraphComponent />', () => {
     expect(wrapper.find('svg path.link')).toHaveLength(1);
   });
 
-  it('methods don\'t crash component', async () => {
+  test('methods don\'t crash component', async () => {
     wrapper = mount(
       <GraphComponent
         data={mockData}
@@ -139,12 +139,11 @@ describe('<GraphComponent />', () => {
 
     await wrapper.update();
 
-    wrapper.find('div.toolbar button.table-btn').simulate('click');
     wrapper.find('div.toolbar button#graph-options-btn').simulate('click');
     wrapper.find('div.toolbar .refresh-wrapper button').simulate('click');
   });
 
-  it('clicking nodes and links calls appropriate handlers', async () => {
+  test('clicking nodes and links calls appropriate handlers', async () => {
     const handleClickSpy = jest.spyOn(GraphComponent.prototype, 'handleExpandNode')
       .mockImplementation(() => {});
     const handleDetailDrawerOpen = jest.fn();
@@ -230,7 +229,7 @@ describe('<GraphComponent />', () => {
     wrapper.find('#hide').simulate('click');
   });
 
-  it('svg click handling clears actionsNode', () => {
+  test('svg click handling clears actionsNode', () => {
     wrapper = mount(
       <GraphComponent
         data={[]}

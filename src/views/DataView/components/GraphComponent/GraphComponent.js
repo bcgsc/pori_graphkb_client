@@ -10,13 +10,11 @@ import * as d3Force from 'd3-force';
 import {
   IconButton,
   Tooltip,
-  CircularProgress,
 } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SaveStateIcon from '@material-ui/icons/SettingsRemote';
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
-import * as qs from 'qs';
 
 
 import './GraphComponent.scss';
@@ -107,6 +105,8 @@ const computeNodeLevels = (graphLinks) => {
  * @property {function} props.handleDetailDrawerClose - Method to handle closing of detail drawer.
  * @property {Object} props.detail - record ID of node currently selected for detail viewing.
  * in the initial query.
+ * @property {Object} props.data - graph data in the format of { '@rid': {data}, ... }
+ * @property {Array.<string>} props.nodesRIDs - an array of node RIDs to fetch ex. ['#25:0', '#56:9']
  * @property {Array.<string>} props.edgeTypes - list of valid edge classes.
  * @property {Array.<string>} props.displayed - list of initial record ID's to be displayed in
  * graph.
@@ -121,6 +121,7 @@ class GraphComponent extends Component {
     handleDetailDrawerOpen: PropTypes.func.isRequired,
     handleDetailDrawerClose: PropTypes.func.isRequired,
     detail: PropTypes.object,
+    data: PropTypes.object.isRequired,
     cache: PropTypes.object.isRequired,
     edgeTypes: PropTypes.arrayOf(PropTypes.string),
     schema: PropTypes.object.isRequired,
@@ -144,10 +145,11 @@ class GraphComponent extends Component {
 
   constructor(props) {
     super(props);
+    const { data: initialGraphData } = props;
     this.state = {
       nodes: [],
       links: [],
-      data: {},
+      data: initialGraphData,
       graphObjects: {},
       expandable: {},
       expandedEdgeTypes: [],
@@ -176,7 +178,6 @@ class GraphComponent extends Component {
   async componentDidMount() {
     const {
       edgeTypes,
-      handleError,
     } = this.props;
     const {
       graphOptions,
@@ -187,25 +188,14 @@ class GraphComponent extends Component {
     const allProps = this.getUniqueDataProps();
     this.propsMap = new PropsMap();
 
-    let data;
-    try {
-      data = await this.loadSavedStateFromURL();
-    } catch (err) {
-      const error = {
-        name: 'No Seed Data',
-        message: 'Please select a record from the data table for graph visualization',
-      };
-      handleError(error);
-    }
-
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
 
     this.setState({
       expandedEdgeTypes,
       allProps,
-      data,
     }, () => {
+      const { data } = this.state;
       let nodes = [];
       let links = [];
       let graphObjects = {};
@@ -1060,28 +1050,15 @@ class GraphComponent extends Component {
   }
 
   /**
-   * parses through URL to obtain encoded node RIDS. Decodes and then
-   * returns an array of node RIDs. Ex. [#25:09,#30:43,#81:32]
+   * parses through node RIDS. Decodes and then
+   * returns an array of node records corresponding to RIDs.
    */
   @boundMethod
-  async loadSavedStateFromURL() {
+  async fetchNodeRecords(nodes) {
     const { cache, handleError } = this.props;
 
-    const URLBeforeNodeEncoding = window.location.href.split('nodes')[0];
-    const encodedData = window.location.href.split(URLBeforeNodeEncoding)[1];
-    const { nodes } = qs.parse(encodedData.replace(/^\?/, ''));
-
-    let decodedNodes;
     try {
-      const decodedContent = decodeURIComponent(nodes);
-      const base64decoded = atob(decodedContent);
-      decodedNodes = JSON.parse(base64decoded);
-    } catch (err) {
-      handleError(err);
-    }
-
-    try {
-      const records = await cache.getRecords(decodedNodes);
+      const records = await cache.getRecords(nodes);
       const data = GraphComponent.hashRecordsByRID(records);
       return data;
     } catch (err) {
@@ -1286,6 +1263,7 @@ class GraphComponent extends Component {
           </Tooltip>
           <Tooltip placement="top" title="Copy share-able URL to clip-board">
             <IconButton
+              id="clipboard-copy-btn"
               color="primary"
               onClick={this.copyURLToClipBoard}
             >
@@ -1324,11 +1302,6 @@ class GraphComponent extends Component {
               {actionsRing}
             </g>
           </svg>
-          {!nodes.length && (
-          <div className="circular-progress">
-            <CircularProgress color="secondary" size="4rem" />
-          </div>
-          )}
         </div>
         <GraphLegend
           graphOptions={graphOptions}

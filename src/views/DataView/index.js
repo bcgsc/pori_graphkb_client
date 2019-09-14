@@ -47,6 +47,14 @@ class DataView extends React.Component {
     bufferSize: 200,
   };
 
+  static hashRecordsByRID(data) {
+    const newData = {};
+    data.forEach((obj) => {
+      newData[obj['@rid']] = obj;
+    });
+    return newData;
+  }
+
   constructor(props) {
     super(props);
     const { location: { search } } = this.props;
@@ -63,6 +71,7 @@ class DataView extends React.Component {
       search,
       isExportingData: false,
       totalNumOfRowsSelected: 0,
+      graphData: null,
     };
     this.controllers = [];
   }
@@ -236,6 +245,25 @@ class DataView extends React.Component {
   }
 
   @boundMethod
+  async loadSavedStateFromURL() {
+    const { cache } = this.state;
+    const URLBeforeNodeEncoding = window.location.href.split('nodes')[0];
+    const encodedData = window.location.href.split(URLBeforeNodeEncoding)[1];
+    const { nodes } = qs.parse(encodedData.replace(/^\?/, ''));
+
+    try {
+      const decodedContent = decodeURIComponent(nodes);
+      const base64decoded = atob(decodedContent);
+      const decodedNodes = JSON.parse(base64decoded);
+      const records = await cache.getRecords(decodedNodes);
+      const data = DataView.hashRecordsByRID(records);
+      this.setState({ graphData: data });
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
+
+  @boundMethod
   handleGraphStateSaveIntoURL(nodeRIDs) {
     const { history } = this.props;
 
@@ -269,6 +297,7 @@ class DataView extends React.Component {
       optionsMenuAnchor,
       search,
     } = this.state;
+    const { graphData } = this.state;
 
     const { bufferSize } = this.props;
     const { schema } = this.context;
@@ -276,9 +305,19 @@ class DataView extends React.Component {
 
     const URL = String(window.location.href);
     const isGraphView = URL.includes('node');
+
     if (isGraphView) {
+      if (!graphData) {
+        this.loadSavedStateFromURL();
+        return (
+          <div className="circular-progress">
+            <CircularProgress color="secondary" size="4rem" />
+          </div>
+        );
+      }
       return (
         <GraphComponent
+          data={graphData || {}}
           cache={cache}
           handleDetailDrawerOpen={this.handleToggleDetailPanel}
           handleDetailDrawerClose={this.handleToggleDetailPanel}
@@ -352,6 +391,7 @@ class DataView extends React.Component {
       filtersEditOpen,
       filters,
     } = this.state;
+
     const { history } = this.props;
     const URLContainsTable = String(history.location.pathname).includes('table');
 
@@ -403,17 +443,19 @@ class DataView extends React.Component {
         </div>
         <div className="data-view__footer">
           <div className="footer__selected-records">
-            <Typography>
-              {totalNumOfRowsSelected} Record{totalNumOfRowsSelected !== 1 ? 's' : ''} Selected
-            </Typography>
-            {Boolean(totalNumOfRowsSelected) && (
-              <Tooltip title="click here for graph view">
-                <IconButton onClick={this.handleSwapToGraph}>
-                  <TimelineIcon
-                    color="secondary"
-                  />
-                </IconButton>
-              </Tooltip>
+            {URLContainsTable && (
+              <>
+                <Typography>
+                  {totalNumOfRowsSelected} Record{totalNumOfRowsSelected !== 1 ? 's' : ''} Selected
+                </Typography>
+                <Tooltip title="click here for graph view">
+                  <IconButton onClick={this.handleSwapToGraph}>
+                    <TimelineIcon
+                      color="secondary"
+                    />
+                  </IconButton>
+                </Tooltip>
+              </>
             )}
           </div>
           {statusMessage && (
@@ -424,9 +466,11 @@ class DataView extends React.Component {
               </Typography>
             </div>
           )}
-          <Typography className="footer__total-rows">
+          {URLContainsTable && (
+            <Typography className="footer__total-rows">
             Total Rows: {totalRows === undefined ? 'Unknown' : totalRows}
-          </Typography>
+            </Typography>
+          )}
         </div>
 
       </div>

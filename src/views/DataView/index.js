@@ -85,6 +85,7 @@ class DataView extends React.Component {
 
   componentWillUnmount() {
     const { cache } = this.state;
+
     if (cache) {
       cache.abortAll();
     }
@@ -125,12 +126,14 @@ class DataView extends React.Component {
   async handleToggleDetailPanel(opt = {}) {
     const { data } = opt;
     const { cache } = this.state;
+
     // no data or clicked link is a link property without a class model
     if (!data || data.isLinkProp) {
       this.setState({ detailPanelRow: null });
     } else {
       try {
         const fullRecord = await cache.getRecord(data);
+
         if (!fullRecord) {
           this.setState({ detailPanelRow: null });
         } else {
@@ -149,6 +152,7 @@ class DataView extends React.Component {
   @boundMethod
   handleToggleOptionsMenu({ currentTarget }) {
     const { optionsMenuAnchor } = this.state;
+
     if (optionsMenuAnchor) {
       this.setState({ optionsMenuAnchor: null });
     } else {
@@ -159,6 +163,7 @@ class DataView extends React.Component {
   @boundMethod
   async handleRecordSelection(selectedRecords) {
     const { cache } = this.state;
+
     try {
       const fullRecords = await cache.getRecords(selectedRecords);
       this.setState({ selectedRecords: fullRecords });
@@ -197,6 +202,7 @@ class DataView extends React.Component {
   @boundMethod
   handleLoadingChange() {
     const { cache, search, isExportingData } = this.state;
+
     if (!cache) {
       return;
     }
@@ -204,8 +210,10 @@ class DataView extends React.Component {
     const [start, end] = cache.pendingRows(search);
 
     let statusMessage;
+
     if (start !== null) {
       statusMessage = `${isExportingData ? 'Exporting' : 'Requesting'} ${start} - ${end}`;
+
       if (rowCount !== undefined) {
         statusMessage = `${statusMessage} of ${rowCount} rows`;
       } else {
@@ -224,6 +232,7 @@ class DataView extends React.Component {
     const { history, location: { pathname } } = this.props;
     // drop all undefined values
     const { routeName } = schema.get(filters);
+
     try {
       const search = api.getSearchFromQuery({
         schema,

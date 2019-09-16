@@ -59,6 +59,7 @@ const castToExist = (obj) => {
  */
 const parseAcronyms = (str) => {
   let words = str;
+
   if (!Array.isArray(str)) {
     words = str.split(' ');
   }
@@ -93,12 +94,14 @@ const antiCamelCase = (str) => {
   let accstr = str.toString();
   if (accstr.startsWith('@')) accstr = accstr.slice(1);
   let words = [accstr];
+
   if (accstr.includes('.')) {
     words = accstr.split('.');
   }
 
   words = words.reduce((array, word) => {
     const newWords = word.replace(/[A-Z]+|[0-9]+/g, match => ` ${match}`);
+
     if (newWords) {
       array.push(...newWords.split(' '));
     } else {
@@ -169,6 +172,7 @@ const getTSVRepresentation = (value, key) => {
   }
   if (Array.isArray(value)) {
     let list;
+
     if (key.startsWith('in_')) {
       list = value.map(obj => obj.out['@rid'] || obj.out);
     } else if (key.startsWith('out_')) {
@@ -209,6 +213,7 @@ const flatten = (obj) => {
 
   Object.keys(obj).forEach((key) => {
     let value = obj[key];
+
     if (value !== null && value !== undefined && value !== '') {
       if (typeof value === 'object') {
         value = flatten(value);
@@ -237,6 +242,7 @@ const flatten = (obj) => {
  */
 const parsePayload = (form, properties = null, extraProps = [], isQuery = false) => {
   const payload = properties ? {} : form;
+
   if (properties) {
     properties.forEach((prop) => {
       const {
@@ -245,8 +251,10 @@ const parsePayload = (form, properties = null, extraProps = [], isQuery = false)
         default: defaultValue,
         linkedClass,
       } = prop;
+
       if (type === 'link') {
         const formLink = form[`${name}.data`];
+
         if (formLink && formLink['@rid']) {
           payload[name] = formLink['@rid'];
         }
@@ -275,11 +283,13 @@ const parsePayload = (form, properties = null, extraProps = [], isQuery = false)
  */
 const getPallette = (n, type = 'nodes') => {
   const baseName = `${type.toUpperCase().slice(0, type.length - 1)}_COLORS`;
+
   if (n <= PALLETE_SIZE) {
     return config.GRAPH_DEFAULTS[baseName];
   }
 
   const list = config.GRAPH_DEFAULTS[baseName];
+
   for (let i = PALLETE_SIZE; i < n; i += 1) {
     const color = Math.round(Math.random() * (255 ** 3)).toString(16);
     list.push(`#${color.substr(color.length - 6)}`);
@@ -368,6 +378,7 @@ const getPropOfType = (kbClass, type) => Object.values(kbClass)
 const sortFields = (order = [], prop = 'name') => (a, b) => {
   const sortA = prop ? a[prop] : a;
   const sortB = prop ? b[prop] : b;
+
   if (order.indexOf(sortB) === -1) {
     return -1;
   }

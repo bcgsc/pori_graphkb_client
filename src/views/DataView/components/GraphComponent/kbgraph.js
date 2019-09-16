@@ -43,11 +43,13 @@ class GraphObj {
     let obj = this.data;
     let key = labelKey;
     let parentKey;
+
     if (labelKey.includes('.')) {
       [parentKey, key] = labelKey.split('.');
       obj = this.data[parentKey];
     }
     const label = obj && obj[key];
+
     if (label && label.length > MAX_LABEL_LENGTH) {
       return `${label.substring(0, MAX_LABEL_LENGTH - 4).trim()}...`;
     }
@@ -178,6 +180,7 @@ class PropsMap {
       }
 
       let obj;
+
       if (prop.includes('.')) {
         const [key, nestedKey] = prop.split('.');
         obj = (graphObj[key] || {})[nestedKey];
@@ -217,6 +220,7 @@ class GraphOptions {
    */
   static retrieve() {
     const data = localStorage.getItem(GRAPH_OPTIONS_KEY);
+
     if (data) {
       const obj = JSON.parse(data);
       return new GraphOptions(obj);
@@ -254,11 +258,13 @@ class GraphOptions {
   getColor(obj, type) {
     const { [`${type}Color`]: targetColor, [`${type}Colors`]: ColorMap } = this;
     let colorKey = '';
+
     if (targetColor && targetColor.includes('.')) {
       const keys = targetColor.split('.');
       colorKey = (obj.data[keys[0]] || {})[keys[1]];
     } else if (targetColor) {
       const colorKeyIsObject = isObject(obj.data[targetColor]);
+
       if (colorKeyIsObject) {
         colorKey = obj.data[targetColor].name;
       } else {

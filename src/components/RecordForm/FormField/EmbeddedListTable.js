@@ -47,6 +47,7 @@ const EmbeddedRecordRow = (props) => {
 
   const cloneReviews = (cont) => {
     const { reviews } = cont;
+
     if (reviews) {
       const reviewsClone = reviews.map(obj => ({ ...obj }));
       return reviewsClone;
@@ -59,6 +60,7 @@ const EmbeddedRecordRow = (props) => {
     const clonedReviews = cloneReviews(cont);
     newContent.reviews = clonedReviews;
     newContent.reviews.splice(idx, 1);
+
     try {
       updateContent(newContent);
     } catch (err) {

@@ -5,18 +5,18 @@ import CodeInput from '../CodeInput';
 describe('<CodeInput />', () => {
   let wrapper;
 
-  it('renders default layers', () => {
+  test('renders default layers', () => {
     wrapper = mount(<CodeInput />);
     expect(wrapper.find('textarea')).toHaveLength(3);
   });
 
-  it('renders a custom rule', () => {
+  test('renders a custom rule', () => {
     wrapper.setProps({ value: 'A B C', rules: [{ regex: /A/, color: 'red', className: 'a-match' }] });
     wrapper.update();
     expect(wrapper.find('textarea.a-match')).toHaveLength(1);
   });
 
-  it('handles TAB keypresses properly', () => {
+  test('handles TAB keypresses properly', () => {
     wrapper.setProps({ value: '', onChange: jest.fn() });
     wrapper.update();
     wrapper.find('#typeTextArea').first().simulate('keydown');
@@ -46,7 +46,7 @@ describe('<CodeInput />', () => {
     setTimeout(() => expect(wrapper.props().onChange.mock.calls.length).toBe(2), 0);
   });
 
-  it('handles BACKSPACE keypresses properly', () => {
+  test('handles BACKSPACE keypresses properly', () => {
     wrapper.setProps({ value: '', onChange: jest.fn() });
     wrapper.update();
     wrapper
@@ -73,7 +73,7 @@ describe('<CodeInput />', () => {
         });
   });
 
-  it('handles DELETE keypresses properly', () => {
+  test('handles DELETE keypresses properly', () => {
     wrapper.setProps({ value: '', onChange: jest.fn() });
     wrapper.update();
     wrapper
@@ -102,7 +102,7 @@ describe('<CodeInput />', () => {
     expect(wrapper.props().onChange.mock.calls.length).toBe(1);
   });
 
-  it('scrolls without crashing', () => {
+  test('scrolls without crashing', () => {
     wrapper.find('#typeTextArea').first().simulate('scroll');
   });
 });

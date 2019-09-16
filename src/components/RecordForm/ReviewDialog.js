@@ -81,6 +81,7 @@ class ReviewDialog extends Component {
     const { newReview } = this.state;
     const propList = Object.keys(newReview);
     let formContainsError = false;
+
     if (propList.length !== 2) {
       formContainsError = true;
       return formContainsError;
@@ -97,6 +98,7 @@ class ReviewDialog extends Component {
   cloneReviews() {
     const { currContent } = this.state;
     const { reviews } = currContent;
+
     if (reviews) {
       const reviewsClone = reviews.map(obj => ({ ...obj }));
       return reviewsClone;
@@ -121,6 +123,7 @@ class ReviewDialog extends Component {
     } = this.props;
 
     const formContainsError = this.doesFormContainErrors();
+
     if (formContainsError) {
       snackbar.add('There are errors in the form which must be resolved before it can be submitted');
       return;
@@ -172,6 +175,7 @@ class ReviewDialog extends Component {
       if (propName instanceof Array) { // subgrouping
         const key = propName.join('--');
         const subgroup = this.renderFieldGroup(propName);
+
         if (subgroup.length) {
           fields.push((
             <div key={key} className="record-form__content-subgroup">
@@ -183,6 +187,7 @@ class ReviewDialog extends Component {
         const prop = properties[propName];
         const { name } = prop;
         let wrapper;
+
         if (!['createdAt', 'createdBy'].includes(name)) {
           if (name === 'comment') {
             wrapper = (

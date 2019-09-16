@@ -62,7 +62,7 @@ describe('ReviewDialog', () => {
     '@version': 2,
   };
 
-  it('Mounts view variant successfully', () => {
+  test('Mounts view variant successfully', () => {
     const wrapper = mount((
       <BrowserRouter>
         <KBContext.Provider value={{ schema: new Schema() }}>
@@ -84,7 +84,7 @@ describe('ReviewDialog', () => {
     expect(wrapper.find(FormField)).toHaveLength(1);
   });
 
-  it('Mounts new variant successfully', () => {
+  test('Mounts new variant successfully', () => {
     const wrapper = mount((
       <BrowserRouter>
         <KBContext.Provider value={{ schema: new Schema() }}>
@@ -110,7 +110,7 @@ describe('ReviewDialog', () => {
     expect(wrapper.find(FormField)).toHaveLength(1);
   });
 
-  it('adds Review Correctly', () => {
+  test('adds Review Correctly', () => {
     // need to mock date or test will fail everytime because new review is created with a timestamp
     const dateSpy = jest.spyOn(global.Date.prototype, 'valueOf').mockImplementation(() => (1000));
     const handleAddReviewSpy = jest.spyOn(ReviewDialog.prototype, 'handleAddReview');
@@ -167,11 +167,11 @@ describe('ReviewDialog', () => {
     // by default overall statement review status will take newly added review status
     expectedMockContent.reviewStatus = 'initial';
 
-    expect(updateContentSpy).toBeCalledWith(expectedMockContent);
+    expect(updateContentSpy).toHaveBeenCalledWith(expectedMockContent);
     expect(wrapper.find(FormField)).toHaveLength(1);
   });
 
-  it('detects errors on form and does not submit review', () => {
+  test('detects errors on form and does not submit review', () => {
     const reviewWithError = {
       status: 'initial',
       // missing comment prop/value should raise error

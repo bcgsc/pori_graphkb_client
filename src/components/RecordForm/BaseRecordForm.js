@@ -34,6 +34,7 @@ import {
  * @property {function} props.onValueChange the parent handler function
  * @property {function} props.onSubmit the parent handler function to submit the form contents
  * @property {function} props.onDelete the parent handler function to delete the current record
+ * @property {function} props.reviewProps props to render statement reviews to be passed to detail chip
  */
 class BaseRecordForm extends React.Component {
   static contextType = KBContext;
@@ -52,6 +53,7 @@ class BaseRecordForm extends React.Component {
     name: PropTypes.string.isRequired,
     onValueChange: PropTypes.func,
     value: PropTypes.object,
+    reviewProps: PropTypes.object,
     variant: PropTypes.oneOf([
       FORM_VARIANT.EDIT,
       FORM_VARIANT.NEW,
@@ -60,7 +62,8 @@ class BaseRecordForm extends React.Component {
   };
 
   static defaultProps = {
-    aboveFold: [CLASS_MODEL_PROP, 'displayName', 'name', 'groups', 'journalName', 'out', 'in', 'permissions', 'evidenceLevel', 'description', 'reviewStatus'],
+    aboveFold: [CLASS_MODEL_PROP, 'displayName', 'name', 'groups', 'journalName', 'out', 'in',
+      'permissions', 'evidenceLevel', 'description', 'reviewStatus', 'comment', 'reviews'],
     actionInProgress: false,
     belowFold: ['deprecated', 'history'],
     className: '',
@@ -68,7 +71,7 @@ class BaseRecordForm extends React.Component {
     groups: [
       ['@rid', 'createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'uuid', 'history', 'groupRestrictions'],
       ['relevance', 'appliesTo'],
-      ['reviewStatus', 'reviewComment'],
+      ['reviewStatus', 'reviews'],
       ['reference1', 'break1Repr', 'break1Start', 'break1End'],
       ['reference2', 'break2Repr', 'break2Start', 'break2End'],
       ['source', 'sourceId', 'sourceIdVersion'],
@@ -83,6 +86,7 @@ class BaseRecordForm extends React.Component {
     onValueChange: null,
     value: {},
     variant: FORM_VARIANT.VIEW,
+    reviewProps: {},
   };
 
   constructor(props) {
@@ -283,7 +287,7 @@ class BaseRecordForm extends React.Component {
    */
   renderFieldGroup(ordering) {
     const { schema } = this.context;
-    const { variant, actionInProgress } = this.props;
+    const { variant, actionInProgress, reviewProps } = this.props;
     const { content, errors } = this.state;
 
     const model = this.currentModel();
@@ -318,6 +322,8 @@ class BaseRecordForm extends React.Component {
             schema={schema}
             variant={variant}
             key={name}
+            content={content}
+            reviewProps={reviewProps}
             disabled={(
               variant === FORM_VARIANT.VIEW
               || actionInProgress

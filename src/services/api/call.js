@@ -60,6 +60,7 @@ class ApiCall {
     this.controller = new AbortController();
 
     let response;
+
     try {
       response = await fetch(
         API_BASE_URL + this.endpoint,
@@ -79,6 +80,7 @@ class ApiCall {
       console.error(err);
       console.error('Fetch error. Re-trying Request with cache-busting');
       this.controller = new AbortController();
+
       try {
         response = await fetch(
           API_BASE_URL + this.endpoint,
@@ -100,6 +102,7 @@ class ApiCall {
       }
     }
     this.controller = null;
+
     if (response.ok) {
       const body = await response.json();
       const decycled = jc.retrocycle(body);
@@ -121,6 +124,7 @@ class ApiCall {
       status,
       url,
     };
+
     if (status === 401) {
       throw new AuthenticationError(error);
     }

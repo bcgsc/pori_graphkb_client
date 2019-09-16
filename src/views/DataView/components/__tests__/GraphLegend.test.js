@@ -4,7 +4,7 @@ import GraphLegend from '../GraphComponent/GraphLegend/GraphLegend';
 import { PropsMap } from '../GraphComponent/kbgraph';
 
 describe('<GraphLegend />', () => {
-  it('does not crash', () => {
+  test('does not crash', () => {
     const onChange = jest.fn();
     const wrapper = mount(
       <GraphLegend

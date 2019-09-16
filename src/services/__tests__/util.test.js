@@ -1,7 +1,7 @@
 import util from '../util';
 
 describe('validate outputs for util methods', () => {
-  it('antiCamelCase', () => {
+  test('antiCamelCase', () => {
     const testStrings = [
       'testString',
       'acronymTestId',
@@ -20,7 +20,7 @@ describe('validate outputs for util methods', () => {
     });
   });
 
-  it('expandEdges', () => {
+  test('expandEdges', () => {
     const testEdges = [
       'one',
       'blargh',
@@ -38,7 +38,7 @@ describe('validate outputs for util methods', () => {
     util.expandEdges(testEdges).forEach((edge, i) => expect(edge).toBe(expectedEdges[i]));
   });
 
-  it('getTSVRepresentation', () => {
+  test('getTSVRepresentation', () => {
     const testTSVs = [
       {
         name: 'fail',
@@ -87,6 +87,7 @@ describe('validate outputs for util methods', () => {
       let output = '';
       list.forEach((_, i) => {
         output += 'pass';
+
         if (i < list.length - 1) {
           output += ', ';
         }
@@ -121,7 +122,7 @@ describe('validate outputs for util methods', () => {
     });
   });
 
-  it('parsePayload', () => {
+  test('parsePayload', () => {
     const testProps = [
       { name: 'name' },
       { name: 'blargh' },
@@ -181,7 +182,7 @@ describe('validate outputs for util methods', () => {
     expect(util.parsePayload(flattenedTest, testProps, [], true)).toEqual(flattened);
   });
 
-  it('getPallette', () => {
+  test('getPallette', () => {
     const testCases = [
       { n: 3, type: 'links' },
       { n: 5, type: 'nodes' },
@@ -190,11 +191,11 @@ describe('validate outputs for util methods', () => {
     ];
 
     testCases.forEach((c) => {
-      expect(Array.isArray(util.getPallette(c.n, c.type)));
+      expect(Array.isArray(util.getPallette(c.n, c.type))).toBe(true);
     });
   });
 
-  it('parsePermission', () => {
+  test('parsePermission', () => {
     const test = [
       { val: 6, result: [0, 1, 1, 0] },
       { val: 8, result: [0, 0, 0, 1] },
@@ -206,7 +207,7 @@ describe('validate outputs for util methods', () => {
     test.forEach(testCase => expect(util.parsePermission(testCase.val)).toEqual(testCase.result));
   });
 
-  it('getPropOfType', () => {
+  test('getPropOfType', () => {
     const classOne = [
       { name: 'name', type: 'string' },
       { name: 'day', type: 'integer' },

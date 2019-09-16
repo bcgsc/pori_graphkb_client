@@ -27,6 +27,7 @@ const validateValue = (propModel, value, ignoreMandatory = false) => {
     if (fieldContent.value !== null) { // validate the new value using the schema model property
       try {
         let valueToValidate = fieldContent.value;
+
         if (propModel.type === 'link') {
           valueToValidate = fieldContent.value['@rid'] || fieldContent.value;
         }
@@ -144,6 +145,7 @@ const sortAndGroupFields = (model, opt = {}) => {
       }
     }
     visited.add(name);
+
     if (fields) {
       visited.add(...fields);
     }

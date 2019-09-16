@@ -58,6 +58,7 @@ class ClickToolTip extends React.Component {
       title, style, className, ...rest
     } = this.props;
     const { isOpen } = this.state;
+
     if (!title) {
       return null;
     }

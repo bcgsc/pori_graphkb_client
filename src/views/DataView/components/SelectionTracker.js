@@ -73,6 +73,7 @@ class SelectionTracker {
     const prevNodeRangeIndex = selectionTracker.findRangeIndex(prevNodeID);
     const prevNodeRange = selectionTracker.selection[prevNodeRangeIndex];
     let newSelectionTracker;
+
     if (nodeID > prevNodeID) {
       const newRange = new SelectionRange(prevNodeRange.minVal, nodeID);
       newSelectionTracker = selectionTracker.forwardExtendAndUpdateRanges(prevNodeRangeIndex, newRange);
@@ -111,6 +112,7 @@ class SelectionTracker {
     selection.forEach((range) => {
       if (mergedRanges.length) {
         const lastRange = mergedRanges[mergedRanges.length - 1];
+
         if (lastRange.rangesAdjacent(range)) { // overlapping ranges
           mergedRanges[mergedRanges.length - 1] = lastRange.merge(range);
         } else {
@@ -161,8 +163,10 @@ class SelectionTracker {
   forwardExtendAndUpdateRanges(rangePrevNodeIsIn, newRange) {
     let rangesToBeDeleted = 1;
     const { length } = this.selection;
+
     for (let i = rangePrevNodeIsIn + 1; i <= length - 1; i++) {
       const targetRange = this.selection[i];
+
       if (targetRange.rangeRedundant(newRange)) {
         rangesToBeDeleted += 1;
       }
@@ -187,8 +191,10 @@ class SelectionTracker {
    */
   backwardExtendAndUpdateRanges(rangePrevNodeIsIn, newRange) {
     let rangesToBeDeleted = 1;
+
     for (let i = rangePrevNodeIsIn; i >= 0; i--) {
       const targetRange = this.selection[i];
+
       if (targetRange.rangeRedundant(newRange)) {
         rangesToBeDeleted += 1;
       }
@@ -210,6 +216,7 @@ class SelectionTracker {
   findRangeIndex(nodeID) {
     for (let i = 0; i < this.selection.length; i++) {
       const currRange = this.selection[i];
+
       if (currRange.rangeContainsNode(nodeID)) {
         return i;
       }
@@ -236,6 +243,7 @@ class SelectionTracker {
   checkAndUpdate(nodeID, selectionTracker) {
     const isCurrNodeInSelection = this.isNodeAlreadySelected(nodeID);
     let newSelectionTracker;
+
     if (isCurrNodeInSelection) {
       newSelectionTracker = selectionTracker;
     } else {

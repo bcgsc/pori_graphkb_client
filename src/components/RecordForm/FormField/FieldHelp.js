@@ -16,8 +16,10 @@ import ClickToolTip from '../../ClickToolTip';
  */
 const FieldHelp = ({ example, description }) => {
   let text;
+
   if (description) {
     text = description;
+
     if (example) {
       text = `${text} (Example: ${example})`;
     }

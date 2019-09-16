@@ -62,6 +62,7 @@ describe('<GraphComponent />', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+
   let wrapper;
   const componentDidMountSpy = jest.spyOn(GraphComponent.prototype, 'componentDidMount');
   const schema = new Schema();

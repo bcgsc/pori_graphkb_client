@@ -66,6 +66,7 @@ class DetailDrawer extends Component {
   static movePropToTop(properties, propToBeMovedToTop) {
     const propIndex = properties.findIndex(prop => prop.name === propToBeMovedToTop);
     const updatedProperties = [...properties];
+
     if (propIndex !== 0 && propIndex !== -1) {
       updatedProperties.splice(propIndex, 1);
       updatedProperties.unshift(properties[propIndex]);
@@ -88,6 +89,7 @@ class DetailDrawer extends Component {
   componentDidUpdate(prevProps) {
     const { node: prevNode } = prevProps;
     const { node } = this.props;
+
     if (
       (!node && prevNode)
     ) {
@@ -109,6 +111,7 @@ class DetailDrawer extends Component {
     const identifiers = ['@class', '@rid'];
     return this.formatProps(node, identifiers.reduce((array, id) => {
       const [key, nestedKey] = id.split('.');
+
       if (!schema.getMetadata().find(p => p.name === key)) {
         if (properties[key]) {
           if (nestedKey) {
@@ -143,6 +146,7 @@ class DetailDrawer extends Component {
       ? { in: true }
       : { in: !!opened.includes(key) };
     let itemIcon = null;
+
     if (isStatic !== true) {
       itemIcon = !opened.includes(key)
         ? <ExpandMoreIcon />
@@ -270,6 +274,7 @@ class DetailDrawer extends Component {
       if ((type === 'link' || type === 'embedded') && value['@class']) {
         let previewStr;
         let listItemProps = {};
+
         if (isNested) {
           previewStr = schema.getPreview(value);
         } else {
@@ -277,6 +282,7 @@ class DetailDrawer extends Component {
           previewStr = nestedValue && (DATE_KEYS.includes(name)
             ? (new Date(nestedValue)).toLocaleString()
             : util.formatStr(nestedValue));
+
           if (previewStr === null) {
             previewStr = value.displayName;
           }
@@ -334,6 +340,7 @@ class DetailDrawer extends Component {
       if (value.toString().length <= MAX_STRING_LENGTH) {
         let Wrapper = React.Fragment;
         const compProps = {};
+
         if (name === 'url') {
           Wrapper = 'a';
           compProps.href = value;
@@ -383,6 +390,7 @@ class DetailDrawer extends Component {
 
     let properties = Object.keys(node)
       .map(key => ({ name: key, type: util.parseKBType(node[key]) }));
+
     if (schema && schema.getProperties(node)) {
       properties = schema.getProperties(node);
     }
@@ -410,12 +418,14 @@ class DetailDrawer extends Component {
         {edges.map((edge) => {
           const isOpen = linkOpen === edge['@rid'];
           let isIn = false;
+
           if (edge.in !== undefined) {
             isIn = edge.in && edge.in['@rid'] === node['@rid'];
           }
           const targetNode = isIn ? edge.out : edge.in;
           if (targetNode['@rid'] === node['@rid']) return null;
           let preview;
+
           try {
             preview = schema.getPreview(targetNode);
           } catch (e) {
@@ -474,6 +484,7 @@ class DetailDrawer extends Component {
   @boundMethod
   handleExpand(key) {
     const { opened } = this.state;
+
     if (opened.includes(key)) {
       opened.splice(opened.indexOf(key), 1);
     } else {
@@ -489,6 +500,7 @@ class DetailDrawer extends Component {
   @boundMethod
   handleLinkExpand(key) {
     const { linkOpen, opened } = this.state;
+
     if (linkOpen === key) {
       this.setState({ linkOpen: null, opened: opened.filter(o => !o.includes(key)) });
     } else {
@@ -508,6 +520,7 @@ class DetailDrawer extends Component {
     const drawerIsOpen = Boolean(node);
 
     let content = null;
+
     if (drawerIsOpen) {
       const recordId = node['@rid'].slice(1);
 
@@ -520,6 +533,7 @@ class DetailDrawer extends Component {
 
       let preview;
       let errorMessage;
+
       try {
         preview = schema.getPreview(node);
       // Only for kbp nodes so far.

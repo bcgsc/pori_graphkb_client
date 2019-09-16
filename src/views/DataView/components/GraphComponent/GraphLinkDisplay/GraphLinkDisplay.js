@@ -38,8 +38,10 @@ function GraphLinkDisplay(props) {
   const left = link.source.x < link.target.x;
 
   let label = '';
+
   if (labelKey && labelKey.includes('.')) {
     const keys = labelKey.split('.');
+
     if (link.data[keys[0]] === undefined) {
       label = '';
     } else {

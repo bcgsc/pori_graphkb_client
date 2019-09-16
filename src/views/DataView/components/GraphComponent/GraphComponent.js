@@ -64,6 +64,7 @@ const computeNodeLevels = (graphLinks) => {
   const nodes = {};
   graphLinks.forEach((edge) => {
     const { data: { out: src, in: tgt, '@class': edgeType } } = edge;
+
     if (edgeType === TREE_LINK) {
       const srcId = getId(src);
       const tgtId = getId(tgt);
@@ -260,6 +261,7 @@ class GraphComponent extends Component {
   getUniqueDataProps = () => {
     let uniqueProps = [];
     let { data } = this.state;
+
     if (data) {
       if (!Object.keys(data).length === 0) { // if data is not empty
         const totalProps = [];
@@ -325,6 +327,7 @@ class GraphComponent extends Component {
 
     // set up the hierarchy
     simulation.nodes(nodes);
+
     if (graphOptions.isTreeLayout) {
       const ranks = computeNodeLevels(links);
       const partitions = Math.max(...[0, ...Object.values(ranks)]) + 2;
@@ -332,6 +335,7 @@ class GraphComponent extends Component {
       // partial force https://stackoverflow.com/questions/39575319/partial-forces-on-nodes-in-d3-js
       const subclassYForce = d3Force.forceY(node => (partitions - ranks[getId(node)] - 1) * partitionSize);
       const init = subclassYForce.initialize;
+
       subclassYForce.initialize = (allNodes) => {
         init(allNodes.filter(node => ranks[getId(node)] !== undefined));
       };
@@ -480,6 +484,7 @@ class GraphComponent extends Component {
       data,
     } = this.state;
     const { schema } = this.props;
+
     if (expandable[node.getId()] && data[node.getId()]) {
       if (schema.getEdges(data[node.getId()])
         .filter(edge => !(links.find(l => l.getId() === edge['@rid']))).length > HEAVILY_CONNECTED
@@ -496,8 +501,10 @@ class GraphComponent extends Component {
   async handleExpandNode({ data: node }) {
     const { cache, handleError } = this.props;
     const { data } = this.state;
+
     try {
       const record = await cache.getRecord(node);
+
       if (data[record['@rid']] === undefined) {
         data[record['@rid']] = record;
         this.setState({ data });
@@ -587,6 +594,7 @@ class GraphComponent extends Component {
               links.push(link);
               graphObjects[link.getId()] = link;
               this.propsMap.loadLink(link.data);
+
               // Checks if node is already rendered
               if (outRid && !graphObjects[outRid]) {
                 // Initializes position of new child
@@ -656,6 +664,7 @@ class GraphComponent extends Component {
     const linkTypes = ['impliedBy', 'supportedBy', 'relevance', 'appliesTo'];
     linkTypes.forEach((linkType) => {
       const linkData = Array.isArray(node[linkType]) ? node[linkType] : [node[linkType]];
+
       if (linkData[0] && linkData.length !== 0) {
         const n = linkData.length;
 
@@ -684,6 +693,7 @@ class GraphComponent extends Component {
               links.push(graphLink);
               graphObjects[graphLink.getId()] = graphLink;
               this.propsMap.loadLink(graphLink.data);
+
               // check if node is already rendered
               if (targetRid && !graphObjects[targetRid]) {
                 // Initializes position of new child
@@ -756,6 +766,7 @@ class GraphComponent extends Component {
       objs.forEach((obj) => {
         if (key.includes('.')) {
           const [prop, nestedProp] = key.split('.');
+
           if (
             obj.data[prop]
             && obj.data[prop][nestedProp]
@@ -954,6 +965,7 @@ class GraphComponent extends Component {
         actionsNode.data[edgeType].forEach((edge) => {
           const edgeRid = edge['@rid'] || edge;
           const j = links.findIndex(l => l.data['@rid'] === edgeRid);
+
           if (j !== -1) {
             const link = links[j];
             const targetRid = link.source.data['@rid'] === actionsNode.data['@rid']
@@ -1006,6 +1018,7 @@ class GraphComponent extends Component {
   handleExpandExclusion(rid) {
     const { expandExclusions } = this.state;
     const i = expandExclusions.indexOf(rid);
+
     if (i === -1) {
       expandExclusions.push(rid);
     } else {
@@ -1023,6 +1036,7 @@ class GraphComponent extends Component {
     const { schema } = this.props;
     const allEdges = schema.getEdges(expandNode).map(e => e['@rid']);
     let newExpandExclusions = [];
+
     if (expandExclusions.length !== allEdges.length) {
       newExpandExclusions = allEdges;
     }
@@ -1145,6 +1159,7 @@ class GraphComponent extends Component {
       || !links.some((l) => {
         let source;
         let target;
+
         if (typeof l.source === 'object') {
           source = l.source.data['@rid'];
         } else {

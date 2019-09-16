@@ -1,7 +1,7 @@
 import { SelectionRange, SelectionTracker } from '../SelectionTracker';
 
 describe('SelectionRange Class', () => {
-  it('get length returns correct length', () => {
+  test('get length returns correct length', () => {
     const largeRange = new SelectionRange(0, 1000);
     expect(largeRange.length).toBe(1001);
 
@@ -12,7 +12,7 @@ describe('SelectionRange Class', () => {
     expect(singleValRange.length).toBe(1);
   });
 
-  it('rangeRedundant method', () => {
+  test('rangeRedundant method', () => {
     const selectionRange = new SelectionRange(10, 20);
     const containedByRange = new SelectionRange(0, 30);
     const frontOverlapRange = new SelectionRange(0, 11);
@@ -26,14 +26,17 @@ describe('SelectionRange Class', () => {
 
 describe('SelectionTracker Class', () => {
   let multiRangeST;
+
   // creates rangeList [SR(0,5), SR(10,10), SR(20,20)... SR(100,100)]
   beforeEach(() => {
     multiRangeST = new SelectionTracker(0, 5);
+
     for (let i = 1; i <= 10; i++) {
       multiRangeST = SelectionTracker.addSingleRange(i * 10, multiRangeST);
     }
   });
-  it('initializes with correct selection range', () => {
+
+  test('initializes with correct selection range', () => {
     const emptySelectionTracker = new SelectionTracker();
     expect(emptySelectionTracker.selection.length).toBe(0);
     expect(emptySelectionTracker.selection).toEqual([]);
@@ -43,21 +46,21 @@ describe('SelectionTracker Class', () => {
     expect(selectionTracker.selection).toEqual([new SelectionRange(10, 1000)]);
   });
 
-  it('clone method works', () => {
+  test('clone method works', () => {
     const selectionTracker = new SelectionTracker(10, 100);
     const clonedSelectionTracker = selectionTracker.clone();
     expect(selectionTracker).toEqual(clonedSelectionTracker);
     expect(selectionTracker).not.toBe(clonedSelectionTracker);
   });
 
-  it('backward extension method', () => {
+  test('backward extension method', () => {
     expect(multiRangeST.selection.length).toBe(11);
     const backwardExtendedST = SelectionTracker.extendRangeUpdateSelection(100, 6, multiRangeST);
     expect(backwardExtendedST.selection.length).toBe(1);
     expect(backwardExtendedST.getTotalNumOfSelectedRows()).toBe(101);
   });
 
-  it('forward extension method', () => {
+  test('forward extension method', () => {
     expect(multiRangeST.selection.length).toBe(11);
     let forwardExtendedST = SelectionTracker.extendRangeUpdateSelection(10, 101, multiRangeST);
     expect(forwardExtendedST.selection.length).toBe(2);
@@ -68,7 +71,7 @@ describe('SelectionTracker Class', () => {
     expect(forwardExtendedST.getTotalNumOfSelectedRows()).toBe(102);
   });
 
-  it('isNodeAlreadySelected method ', () => {
+  test('isNodeAlreadySelected method ', () => {
     const selectionTracker = new SelectionTracker(50, 100);
     const updatedST = SelectionTracker.addSingleRange(200, selectionTracker);
     const forwardExtendedST = SelectionTracker.extendRangeUpdateSelection(200, 300, updatedST);
@@ -84,7 +87,7 @@ describe('SelectionTracker Class', () => {
     });
   });
 
-  it('findRangeIndex method', () => {
+  test('findRangeIndex method', () => {
     expect(multiRangeST.selection.length).toBe(11);
 
     for (let i = 0; i <= 10; i++) {
@@ -97,7 +100,7 @@ describe('SelectionTracker Class', () => {
     });
   });
 
-  it('rangeRedundant method', () => {
+  test('rangeRedundant method', () => {
     expect(multiRangeST.selection.length).toBe(11);
 
     const rangeRedundantSpy = jest.spyOn(SelectionRange.prototype, 'rangeRedundant');
@@ -107,7 +110,7 @@ describe('SelectionTracker Class', () => {
     expect(rangeRedundantSpy).toHaveBeenCalledTimes(10);
   });
 
-  it('get total number of rows returns correct values', () => {
+  test('get total number of rows returns correct values', () => {
     const emptySelectionTracker = new SelectionTracker();
     expect(emptySelectionTracker.getTotalNumOfSelectedRows()).toBe(0);
 
@@ -115,7 +118,7 @@ describe('SelectionTracker Class', () => {
     expect(selectionTracker.getTotalNumOfSelectedRows()).toBe(91);
   });
 
-  it('checkAndUpdate method', () => {
+  test('checkAndUpdate method', () => {
     expect(multiRangeST.selection.length).toBe(11);
 
     const sameSelectionTracker = multiRangeST.checkAndUpdate(3, multiRangeST);
@@ -126,7 +129,7 @@ describe('SelectionTracker Class', () => {
     expect(diffSelectionTracker.selection.length).toBe(12);
   });
 
-  it('rangeFitsInBetween method', () => {
+  test('rangeFitsInBetween method', () => {
     const lowRange = new SelectionRange(0, 5);
     const highRange = new SelectionRange(10, 20);
     expect(SelectionTracker.rangeFitsInBetween(3, lowRange, highRange)).toBe(false);
@@ -135,8 +138,9 @@ describe('SelectionTracker Class', () => {
     expect(SelectionTracker.rangeFitsInBetween(30, lowRange, highRange)).toBe(false);
   });
 
-  it('mergeAdjacentRanges method', () => {
+  test('mergeAdjacentRanges method', () => {
     let evenSelectionRange = new SelectionTracker();
+
     for (let i = 0; i < 12; i += 2) {
       evenSelectionRange = SelectionTracker.addSingleRange(i, evenSelectionRange);
     }

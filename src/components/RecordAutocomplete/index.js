@@ -85,6 +85,7 @@ const RecordAutocomplete = (props) => {
   useDeepCompareEffect(
     () => {
       let controller;
+
       const getOptions = async () => {
         if (controller) {
           // if there is already a request being executed  abort it and make a new one
@@ -92,10 +93,11 @@ const RecordAutocomplete = (props) => {
           setIsLoading(false);
         }
         controller = searchHandler('');
+
         try {
           setIsLoading(true);
           const result = await controller.request();
-          setOptions(result);
+          setOptions(result || []);
           setIsLoading(false);
         } catch (err) {
           console.error('Error in getting the RecordAutocomplete singleLoad suggestions');
@@ -116,6 +118,7 @@ const RecordAutocomplete = (props) => {
   useDeepCompareEffect(
     () => {
       let controller;
+
       const getOptions = async () => {
         if (debouncedSearchTerm && debouncedSearchTerm.length >= minSearchLength) {
           if (controller) {
@@ -124,6 +127,7 @@ const RecordAutocomplete = (props) => {
             setIsLoading(false);
           }
           controller = searchHandler(debouncedSearchTerm);
+
           try {
             setIsLoading(true);
             const result = await controller.request();
@@ -139,6 +143,7 @@ const RecordAutocomplete = (props) => {
           setOptions([]);
         }
       };
+
       if (!singleLoad) {
         getOptions();
       }
@@ -151,6 +156,7 @@ const RecordAutocomplete = (props) => {
     (newValue, { action: actionType }) => {
       setSelectedValue(newValue);
       const event = { target: { name, value: newValue } };
+
       if (actionType === 'select-option' || actionType === 'clear') {
         onChange(event);
       }
@@ -163,6 +169,7 @@ const RecordAutocomplete = (props) => {
       let newHelperText = newSearchTerm.length < minSearchLength && newSearchTerm.length >= 0
         ? `Requires ${minSearchLength} or more characters to search`
         : '';
+
       if (actionType === 'input-change') {
         setHelperText(newHelperText);
       } else if (actionType === 'set-value' && isMulti) {

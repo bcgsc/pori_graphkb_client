@@ -92,6 +92,7 @@ const getUser = ({ authorizationToken }) => {
  */
 const isAuthenticated = ({ authenticationToken }) => {
   const token = authenticationToken || keycloak.token;
+
   if (token) {
     // check that the token is not expired
     return Boolean(validToken(token) && !isExpired(token));
@@ -141,6 +142,7 @@ const login = async (referrerUri = null) => {
 
 const logout = async () => {
   setReferrerUri(null);
+
   try {
     const resp = await keycloak.logout({ redirectUri: `${window.location.origin}/login` });
     return resp;

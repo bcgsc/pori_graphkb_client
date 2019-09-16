@@ -1,5 +1,6 @@
+import isObject from 'lodash.isobject';
+
 import config from '../../../../static/config';
-import { isObject } from './utils';
 
 const DEFAULT_NODE_VPROPS = [
   'source.name',

@@ -15,7 +15,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import SaveStateIcon from '@material-ui/icons/SettingsRemote';
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
-import isObject from 'lodash/isObject';
+import isObject from 'lodash.isobject';
 
 import './GraphComponent.scss';
 import GraphActionsNode from './GraphActionsNode';

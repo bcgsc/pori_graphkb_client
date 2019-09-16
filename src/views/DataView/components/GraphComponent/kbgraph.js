@@ -1,4 +1,4 @@
-import isObject from 'lodash/isObject';
+import isObject from 'lodash.isobject';
 
 import config from '../../../../static/config';
 

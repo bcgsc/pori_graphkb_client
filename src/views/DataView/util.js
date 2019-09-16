@@ -10,7 +10,7 @@ const hashRecordsByRID = (data) => {
     newData[obj['@rid']] = obj;
   });
   return newData;
-}
+};
 
 export {
   isObject,

@@ -11,6 +11,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Tooltip from '@material-ui/core/Tooltip';
 import EditIcon from '@material-ui/icons/Edit';
 import { boundMethod } from 'autobind-decorator';
+import * as qs from 'qs';
 
 
 import kbSchema from '@bcgsc/knowledgebase-schema';
@@ -23,6 +24,7 @@ import { KBContext } from '../../components/KBContext';
 import RecordFormDialog from '../../components/RecordFormDialog';
 import api from '../../services/api';
 import { cleanLinkedRecords } from '../../components/util';
+import { hashRecordsByRID } from './util';
 
 import './index.scss';
 
@@ -62,6 +64,7 @@ class DataView extends React.Component {
       search,
       isExportingData: false,
       totalNumOfRowsSelected: 0,
+      graphData: null,
     };
     this.controllers = [];
   }
@@ -171,22 +174,9 @@ class DataView extends React.Component {
 
   @boundMethod
   handleSwapToGraph() {
-    const { history } = this.props;
-    history.push({
-      pathname: '/data/graph',
-      search: history.location.search,
-      hash: '',
-    });
-  }
-
-  @boundMethod
-  handleTableRedirect() {
-    const { history } = this.props;
-    history.push({
-      pathname: '/data/table',
-      search: history.location.search,
-      hash: '',
-    });
+    const { selectedRecords } = this.state;
+    const nodeRIDs = selectedRecords.map(node => node['@rid']);
+    this.handleGraphStateSaveIntoURL(nodeRIDs);
   }
 
   @boundMethod
@@ -256,6 +246,49 @@ class DataView extends React.Component {
     }
   }
 
+  @boundMethod
+  async loadSavedStateFromURL() {
+    const { cache } = this.state;
+    const URLBeforeNodeEncoding = window.location.href.split('nodes')[0];
+    const encodedData = window.location.href.split(URLBeforeNodeEncoding)[1];
+    const { nodes } = qs.parse(encodedData.replace(/^\?/, ''));
+
+    try {
+      const decodedContent = decodeURIComponent(nodes);
+      const base64decoded = atob(decodedContent);
+      const decodedNodes = JSON.parse(base64decoded);
+      const records = await cache.getRecords(decodedNodes);
+      const data = hashRecordsByRID(records);
+      this.setState({ graphData: data });
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
+
+  @boundMethod
+  handleGraphStateSaveIntoURL(nodeRIDs) {
+    const { history } = this.props;
+
+    const savedState = {};
+    let encodedState;
+
+    try {
+      const stringifiedState = JSON.stringify(nodeRIDs);
+      const base64encodedState = btoa(stringifiedState);
+      const encodedContent = encodeURIComponent(base64encodedState);
+
+      savedState.nodes = encodedContent;
+      encodedState = qs.stringify(savedState);
+    } catch (err) {
+      this.handleError(err);
+    }
+
+    history.push({
+      pathname: '/data/graph',
+      search: `${encodedState}`,
+    });
+  }
+
   /**
    * Renders either the DataTable or Graph view depending on the parsed URL
    */
@@ -265,46 +298,52 @@ class DataView extends React.Component {
       detailPanelRow,
       cache,
       optionsMenuAnchor,
-      selectedRecords,
       search,
     } = this.state;
+    const { graphData } = this.state;
 
     const { bufferSize } = this.props;
     const { schema } = this.context;
     const edges = schema.getEdges();
 
     const URL = String(window.location.href);
-    const URLContainsTable = URL.includes('table');
+    const isGraphView = URL.includes('node');
 
-    if (URLContainsTable) {
+    if (isGraphView) {
+      if (!graphData) {
+        this.loadSavedStateFromURL();
+        return (
+          <div className="circular-progress">
+            <CircularProgress color="secondary" size="4rem" />
+          </div>
+        );
+      }
       return (
-        <DataTable
-          search={search}
+        <GraphComponent
+          data={graphData || {}}
           cache={cache}
-          rowBuffer={bufferSize}
-          isExportingData={this.handleExportLoader}
+          handleDetailDrawerOpen={this.handleToggleDetailPanel}
+          handleDetailDrawerClose={this.handleToggleDetailPanel}
+          detail={detailPanelRow}
+          handleError={this.handleError}
+          edgeTypes={edges}
+          schema={schema}
           onRecordClicked={this.handleToggleDetailPanel}
-          onRecordsSelected={this.handleRecordSelection}
-          onRowSelected={this.handleNewRowSelection}
-          optionsMenuAnchor={optionsMenuAnchor}
-          optionsMenuOnClose={this.handleToggleOptionsMenu}
+          handleGraphStateSave={this.handleGraphStateSaveIntoURL}
         />
       );
     }
-    const localStorageKey = window.location.href.toString();
     return (
-      <GraphComponent
-        data={selectedRecords}
+      <DataTable
+        search={search}
         cache={cache}
-        handleDetailDrawerOpen={this.handleToggleDetailPanel}
-        handleDetailDrawerClose={this.handleToggleDetailPanel}
-        handleTableRedirect={this.handleTableRedirect}
-        detail={detailPanelRow}
-        handleError={this.handleError}
-        edgeTypes={edges}
-        schema={schema}
-        localStorageKey={localStorageKey}
+        rowBuffer={bufferSize}
+        isExportingData={this.handleExportLoader}
         onRecordClicked={this.handleToggleDetailPanel}
+        onRecordsSelected={this.handleRecordSelection}
+        onRowSelected={this.handleNewRowSelection}
+        optionsMenuAnchor={optionsMenuAnchor}
+        optionsMenuOnClose={this.handleToggleOptionsMenu}
       />
     );
   }
@@ -355,6 +394,7 @@ class DataView extends React.Component {
       filtersEditOpen,
       filters,
     } = this.state;
+
     const { history } = this.props;
     const URLContainsTable = String(history.location.pathname).includes('table');
 
@@ -406,17 +446,19 @@ class DataView extends React.Component {
         </div>
         <div className="data-view__footer">
           <div className="footer__selected-records">
-            <Typography>
-              {totalNumOfRowsSelected} Record{totalNumOfRowsSelected !== 1 ? 's' : ''} Selected
-            </Typography>
-            {Boolean(totalNumOfRowsSelected) && (
-              <Tooltip title="click here for graph view">
-                <IconButton onClick={this.handleSwapToGraph}>
-                  <TimelineIcon
-                    color="secondary"
-                  />
-                </IconButton>
-              </Tooltip>
+            {URLContainsTable && (
+              <>
+                <Typography>
+                  {totalNumOfRowsSelected} Record{totalNumOfRowsSelected !== 1 ? 's' : ''} Selected
+                </Typography>
+                <Tooltip title="click here for graph view">
+                  <IconButton onClick={this.handleSwapToGraph}>
+                    <TimelineIcon
+                      color="secondary"
+                    />
+                  </IconButton>
+                </Tooltip>
+              </>
             )}
           </div>
           {statusMessage && (
@@ -427,9 +469,11 @@ class DataView extends React.Component {
               </Typography>
             </div>
           )}
-          <Typography className="footer__total-rows">
+          {URLContainsTable && (
+            <Typography className="footer__total-rows">
             Total Rows: {totalRows === undefined ? 'Unknown' : totalRows}
-          </Typography>
+            </Typography>
+          )}
         </div>
 
       </div>

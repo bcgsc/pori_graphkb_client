@@ -20,7 +20,7 @@ import EmbeddedNodeForm from '../EmbeddedNodeForm';
 
 import './index.scss';
 import { FORM_VARIANT } from '../util';
-
+import EmbeddedListTable from './EmbeddedListTable';
 
 /**
  * Generate the field component for a form. Uses the property model to decide
@@ -30,10 +30,12 @@ import { FORM_VARIANT } from '../util';
  * @param {PropertyModel} props.model the property model which defines the property type and other requirements
  * @param {Schema} props.schema the schema object
  * @param {function} props.onValueChange the function to update the parent form
+ * @param {function} props.onReviewSelection the function to toggle between statement reviews
  * @param {*} props.value the initial value of the field
  * @param {Error} props.error the error object if any
  * @param {string} props.label the label to use for the form field (defaults to the property model name)
  * @param {string} props.variant the form variant to be passed down to embedded forms
+ * @param {object} props.reviewProps object to be passed to EmbeddedListTable for review display
  */
 const FormField = (props) => {
   const {
@@ -46,6 +48,7 @@ const FormField = (props) => {
     disabled = false,
     variant = 'view',
     label = null,
+    reviewProps,
   } = props;
 
   const {
@@ -142,6 +145,7 @@ const FormField = (props) => {
         value={value || ''}
         errorText={errorFlag ? error.message || error : ''}
         disabled={generated || disabled}
+        className={className}
       />
     );
   } else if (type === 'link' || type === 'linkset') {
@@ -204,6 +208,15 @@ const FormField = (props) => {
         />
       );
     }
+  } else if (type === 'embeddedlist') {
+    propComponent = (
+      <EmbeddedListTable
+        label={name}
+        values={value || []}
+        reviewProps={reviewProps}
+        variant={variant}
+      />
+    );
   } else {
     propComponent = (
       <TextField
@@ -247,6 +260,7 @@ FormField.propTypes = {
   schema: PropTypes.object.isRequired,
   label: PropTypes.string,
   variant: PropTypes.string,
+  reviewProps: PropTypes.object,
 };
 
 
@@ -257,6 +271,7 @@ FormField.defaultProps = {
   label: null,
   variant: 'view',
   value: null,
+  reviewProps: {},
 };
 
 

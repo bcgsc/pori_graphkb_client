@@ -11,8 +11,8 @@ import ConfirmActionDialog from './ConfirmActionDialog';
  * @property {string|*} props.children the elements contained in the button (Generally the title for the button)
  * @property {string} props.message extended message to display in the dialog when asking the user to confirm
  * @property {function} props.onClick async function to be executed on the action being confirmed (if required)
+ * @property {string} props.size one of ['small', 'medium', 'large'] to indicate size of button
  */
-
 function ActionButton(props) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -45,6 +45,7 @@ function ActionButton(props) {
     message,
     onClick,
     requireConfirm,
+    size,
     variant,
     ...rest
   } = props;
@@ -58,7 +59,7 @@ function ActionButton(props) {
               ? handleOpenDialog
               : onClick
           }
-        size="large"
+        size={size}
         color={color}
         className="action-button__button"
         disabled={disabled}
@@ -87,6 +88,7 @@ ActionButton.propTypes = {
   variant: PropTypes.string,
   color: PropTypes.string,
   disabled: PropTypes.bool,
+  size: PropTypes.string,
 };
 
 ActionButton.defaultProps = {
@@ -96,6 +98,7 @@ ActionButton.defaultProps = {
   variant: 'contained',
   color: 'primary',
   disabled: false,
+  size: 'large',
 };
 
 export default ActionButton;

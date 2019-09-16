@@ -271,6 +271,7 @@ class DataView extends React.Component {
 
     const savedState = {};
     let encodedState;
+
     try {
       const stringifiedState = JSON.stringify(nodeRIDs);
       const base64encodedState = btoa(stringifiedState);

@@ -130,8 +130,8 @@ describe('RecordForm', () => {
     });
     wrapper.update();
 
-    expect(wrapper.find(ActionButton)).toHaveLength(3);
-    const delBtn = wrapper.find(ActionButton).at(1);
+    expect(wrapper.find(ActionButton)).toHaveLength(2);
+    const delBtn = wrapper.find(ActionButton).at(0);
     expect(delBtn.text()).toEqual('DELETE');
     await delBtn.prop('onClick')();
     wrapper.update();
@@ -225,8 +225,8 @@ describe('RecordForm', () => {
       errors: {},
     });
 
-    expect(wrapper.find(ActionButton)).toHaveLength(3);
-    const submitEditBtn = wrapper.find(ActionButton).at(2);
+    expect(wrapper.find(ActionButton)).toHaveLength(2);
+    const submitEditBtn = wrapper.find(ActionButton).at(1);
     expect(submitEditBtn.text()).toEqual('SUBMIT CHANGES');
     await submitEditBtn.prop('onClick')();
 
@@ -446,8 +446,8 @@ describe('RecordForm', () => {
       errors: { sourceId: 'Required Value' },
     });
 
-    expect(wrapper.find(ActionButton)).toHaveLength(3);
-    const submitEditBtn = wrapper.find(ActionButton).at(2);
+    expect(wrapper.find(ActionButton)).toHaveLength(2);
+    const submitEditBtn = wrapper.find(ActionButton).at(1);
     expect(submitEditBtn.text()).toEqual('SUBMIT CHANGES');
     await submitEditBtn.prop('onClick')();
 
@@ -602,8 +602,8 @@ describe('RecordForm', () => {
     });
     api.patch.mockReturnValue(mockApiPostError());
 
-    expect(wrapper.find(ActionButton)).toHaveLength(3);
-    const submitEditBtn = wrapper.find(ActionButton).at(2);
+    expect(wrapper.find(ActionButton)).toHaveLength(2);
+    const submitEditBtn = wrapper.find(ActionButton).at(1);
     expect(submitEditBtn.text()).toEqual('SUBMIT CHANGES');
     await submitEditBtn.prop('onClick')();
 
@@ -664,8 +664,8 @@ describe('RecordForm', () => {
     });
     api.delete.mockReturnValue(mockApiPostError());
 
-    expect(wrapper.find(ActionButton)).toHaveLength(3);
-    const delBtn = wrapper.find(ActionButton).at(1);
+    expect(wrapper.find(ActionButton)).toHaveLength(2);
+    const delBtn = wrapper.find(ActionButton).at(0);
     expect(delBtn.text()).toEqual('DELETE');
     await delBtn.prop('onClick')();
     wrapper.update();

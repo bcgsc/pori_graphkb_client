@@ -1,4 +1,5 @@
 @import '../../../globals';
+@import '../../../theme';
 
 .form-field {
   align-items: flex-start;
@@ -37,5 +38,25 @@
 
   .record-autocomplete {
     align-self: flex-start;
+  }
+}
+
+.review-card {
+  min-width: 300px;
+  max-width: 600px;
+
+  &__header {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__avatar {
+    background-color: $palette__secondary--main;
+  }
+
+  &__action-button {
+    display: flex;
+    justify-content: center;
+    margin: 10px auto 0;
   }
 }

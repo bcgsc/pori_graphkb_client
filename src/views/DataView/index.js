@@ -24,6 +24,7 @@ import { KBContext } from '../../components/KBContext';
 import RecordFormDialog from '../../components/RecordFormDialog';
 import api from '../../services/api';
 import { cleanLinkedRecords } from '../../components/util';
+import { hashRecordsByRID } from './util';
 
 import './index.scss';
 
@@ -46,14 +47,6 @@ class DataView extends React.Component {
     blockSize: 100,
     bufferSize: 200,
   };
-
-  static hashRecordsByRID(data) {
-    const newData = {};
-    data.forEach((obj) => {
-      newData[obj['@rid']] = obj;
-    });
-    return newData;
-  }
 
   constructor(props) {
     super(props);
@@ -256,7 +249,7 @@ class DataView extends React.Component {
       const base64decoded = atob(decodedContent);
       const decodedNodes = JSON.parse(base64decoded);
       const records = await cache.getRecords(decodedNodes);
-      const data = DataView.hashRecordsByRID(records);
+      const data = hashRecordsByRID(records);
       this.setState({ graphData: data });
     } catch (err) {
       this.handleError(err);

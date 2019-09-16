@@ -73,7 +73,7 @@ const testNode = {
 };
 
 describe('<GraphExpansionDialog />', () => {
-  it('does not crash', () => {
+  test('does not crash', () => {
     mount(
       <GraphExpansionDialog
         schema={testSchema}

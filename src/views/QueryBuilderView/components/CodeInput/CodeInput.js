@@ -11,6 +11,7 @@ const COMMENT_REGEX = /\/\/.*(?!\\n)/g;
 const { NODE_COLORS } = config.GRAPH_DEFAULTS;
 
 const regexify = str => str.replace(/[.+*^()\\\][$]/g, match => `\\${match}`);
+
 const findLineIndex = (value, index) => {
   let tempIndex = 0;
   value.split('').findIndex((char, i) => {
@@ -101,6 +102,7 @@ class CodeInput extends Component {
         let tempIndex;
         value.slice(lineIndex, lineIndex + 5).split('').some((char, i) => {
           tempIndex = i;
+
           if (char.trim() || i === 4) {
             return true;
           }
@@ -117,6 +119,7 @@ class CodeInput extends Component {
       const oldLength = value.length;
       value = `${value.slice(0, selectionStart).trim()}${value.slice(selectionStart)}`;
       newCursor = selectionStart + (value.length - oldLength);
+
       if (value.length - oldLength !== 0) {
         changed = true;
       }
@@ -128,6 +131,7 @@ class CodeInput extends Component {
         }
         return false;
       });
+
       if (index !== 0) {
         changed = true;
         value = `${value.slice(0, selectionStart)}${value.slice(selectionStart + index)}`;
@@ -166,6 +170,7 @@ class CodeInput extends Component {
 
       // Cycle through all instances of pattern
       let match = regex.exec(value);
+
       while (match) {
         // Calculates additional offset within the total match and the intended
         // capture group.
@@ -183,6 +188,7 @@ class CodeInput extends Component {
         text = `${text.slice(0, index)}${spaces}${text.slice(index + length)}`;
         // Finds next match
         match = regex.exec(value);
+
         // Validates match is not repeated for non g regexes
         if (match && match.index === index) {
           match = null;

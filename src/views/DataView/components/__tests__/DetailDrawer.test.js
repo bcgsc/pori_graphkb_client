@@ -135,14 +135,14 @@ describe('<DetailDrawer />', () => {
     wrapper = null;
   });
 
-  it('inits and does not call field formatting functions', () => {
+  test('inits and does not call field formatting functions', () => {
     wrapper = shallow(<DetailDrawer />);
     expect(spies.formatRelationships).toHaveBeenCalledTimes(0);
     expect(spies.formatIdentifiers).toHaveBeenCalledTimes(0);
     expect(spies.formatOtherProps).toHaveBeenCalledTimes(0);
   });
 
-  it('does not crash with test node', () => {
+  test('does not crash with test node', () => {
     const node = {
       '@class': 'Ontology',
       name: 'test node',
@@ -166,7 +166,7 @@ describe('<DetailDrawer />', () => {
     expect(wrapper.find(Drawer)).toHaveLength(1);
   });
 
-  it('does not crash when componentDidUpdate is called', () => {
+  test('does not crash when componentDidUpdate is called', () => {
     wrapper = mount((
       <ProvideSchema schema={testSchema}>
         <DetailDrawer />
@@ -176,7 +176,7 @@ describe('<DetailDrawer />', () => {
     expect(spies.componentDidUpdate).toHaveBeenCalledTimes(1);
   });
 
-  it('formatLongValue function is triggered on long inputs only', () => {
+  test('formatLongValue function is triggered on long inputs only', () => {
     const node = {
       '@class': 'Ontology',
       // 1st long field
@@ -199,7 +199,7 @@ describe('<DetailDrawer />', () => {
     expect(spies.formatLongValue).toHaveBeenCalledTimes(2);
   });
 
-  it('clicking expanding list items triggers handler', () => {
+  test('clicking expanding list items triggers handler', () => {
     const node = {
       '@class': 'Ontology',
       '@rid': '#135',
@@ -217,7 +217,7 @@ describe('<DetailDrawer />', () => {
     expect(spies.handleExpand).toHaveBeenCalledTimes(2);
   });
 
-  it('initializes relationships and properly applies handlers to DOM nodes', () => {
+  test('initializes relationships and properly applies handlers to DOM nodes', () => {
     const node = {
       '@class': 'Ontology',
       '@rid': '#135',
@@ -250,7 +250,7 @@ describe('<DetailDrawer />', () => {
     expect(spies.handleLinkExpand).toHaveBeenCalledTimes(2);
   });
 
-  it('expect detail-drawer__nested-list class to be rendered for nested property', () => {
+  test('expect detail-drawer__nested-list class to be rendered for nested property', () => {
     const node = {
       '@class': 'test',
       '@rid': '#135',
@@ -276,7 +276,7 @@ describe('<DetailDrawer />', () => {
     expect(wrapper.find('.detail-drawer__nested-list').length).toBeGreaterThan(0);
   });
 
-  it('handles node property type linkset correctly ', () => {
+  test('handles node property type linkset correctly ', () => {
     const node = {
       '@class': 'MockClass',
       '@rid': '#135',

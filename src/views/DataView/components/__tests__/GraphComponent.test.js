@@ -62,11 +62,12 @@ describe('<GraphComponent />', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+
   let wrapper;
   const componentDidMountSpy = jest.spyOn(GraphComponent.prototype, 'componentDidMount');
   const schema = new Schema();
 
-  it('calls componentDidMount on render and doesn\'t crash and burn', () => {
+  test('calls componentDidMount on render and doesn\'t crash and burn', () => {
     wrapper = mount(
       <GraphComponent
         data={[]}
@@ -82,7 +83,7 @@ describe('<GraphComponent />', () => {
     expect(componentDidMountSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('renders all nodes specified in displayed', async () => {
+  test('renders all nodes specified in displayed', async () => {
     wrapper = mount(
       <GraphComponent
         data={[mockData[0], mockData[1], mockData[2]]}
@@ -102,7 +103,7 @@ describe('<GraphComponent />', () => {
     expect(wrapper.find('svg path.link')).toHaveLength(0);
   });
 
-  it('renders all nodes and links specified in displayed', async () => {
+  test('renders all nodes and links specified in displayed', async () => {
     wrapper = mount(
       <GraphComponent
         data={mockData}
@@ -122,7 +123,7 @@ describe('<GraphComponent />', () => {
     expect(wrapper.find('svg path.link')).toHaveLength(1);
   });
 
-  it('methods don\'t crash component', async () => {
+  test('methods don\'t crash component', async () => {
     wrapper = mount(
       <GraphComponent
         data={mockData}
@@ -145,7 +146,7 @@ describe('<GraphComponent />', () => {
     wrapper.find('div.toolbar .refresh-wrapper button').simulate('click');
   });
 
-  it('clicking nodes and links calls appropriate handlers', async () => {
+  test('clicking nodes and links calls appropriate handlers', async () => {
     const handleClickSpy = jest.spyOn(GraphComponent.prototype, 'handleExpandNode')
       .mockImplementation(() => {});
     const handleDetailDrawerOpen = jest.fn();
@@ -231,7 +232,7 @@ describe('<GraphComponent />', () => {
     wrapper.find('#hide').simulate('click');
   });
 
-  it('Refreshed graph still remembers displayed nodes', () => {
+  test('Refreshed graph still remembers displayed nodes', () => {
     wrapper = mount(
       <GraphComponent
         data={mockData}
@@ -266,7 +267,7 @@ describe('<GraphComponent />', () => {
     wrapper.find('circle.node').first().simulate('click');
   });
 
-  it('svg click handling clears actionsNode', () => {
+  test('svg click handling clears actionsNode', () => {
     wrapper = mount(
       <GraphComponent
         data={[]}

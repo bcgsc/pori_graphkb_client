@@ -14,7 +14,7 @@ describe('<GraphOptionsPanel />', () => {
   const handleHelpOpenSpy = jest.spyOn(GraphOptionsPanel.prototype, 'handleHelpOpen');
   const handleHelpCloseSpy = jest.spyOn(GraphOptionsPanel.prototype, 'handleHelpClose');
 
-  it('renders md dialog as first child', () => {
+  test('renders md dialog as first child', () => {
     const propsMap = new PropsMap();
     testNodes.forEach(t => propsMap.loadNode(t));
     wrapper = mount(
@@ -30,7 +30,7 @@ describe('<GraphOptionsPanel />', () => {
     expect(wrapper.children().first().type()).toBe(Dialog);
   });
 
-  it('passes on open prop to child dialog', () => {
+  test('passes on open prop to child dialog', () => {
     wrapper = mount(
       <GraphOptionsPanel
         graphOptionsOpen={false}
@@ -47,7 +47,7 @@ describe('<GraphOptionsPanel />', () => {
     });
   });
 
-  it('triggers the handler when dialog closes', () => {
+  test('triggers the handler when dialog closes', () => {
     const handleDialogClose = jest.fn();
     const handleGraphOptionsChange = jest.fn();
     wrapper = mount(
@@ -64,7 +64,7 @@ describe('<GraphOptionsPanel />', () => {
     expect(handleDialogClose.mock.calls.length).toBe(2);
   });
 
-  it('opens and renders help dialog when help buttons are clicked', () => {
+  test('opens and renders help dialog when help buttons are clicked', () => {
     wrapper = mount(
       <GraphOptionsPanel
         graphOptionsOpen
@@ -83,7 +83,7 @@ describe('<GraphOptionsPanel />', () => {
     expect(handleHelpCloseSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('options changes trigger the handler', () => {
+  test('options changes trigger the handler', () => {
     const handleGraphOptionsChange = jest.fn();
     wrapper = mount(
       <GraphOptionsPanel

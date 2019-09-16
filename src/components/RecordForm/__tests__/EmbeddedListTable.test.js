@@ -38,7 +38,7 @@ describe('EmbeddedListTable', () => {
     updateContent: () => {},
   };
 
-  it('mounts successfully', () => {
+  test('mounts successfully', () => {
     const wrapper = mount((
       <EmbeddedListTable
         label="reviews"
@@ -50,7 +50,7 @@ describe('EmbeddedListTable', () => {
     expect(wrapper.find(EmbeddedListTable)).toBeDefined();
   });
 
-  it('does not crash with empty reviews array ', () => {
+  test('does not crash with empty reviews array ', () => {
     const wrapper = mount((
       <EmbeddedListTable
         label="reviews"
@@ -63,7 +63,7 @@ describe('EmbeddedListTable', () => {
     expect(wrapper.find(DetailChip)).toHaveLength(0);
   });
 
-  it('displays correct number of chips ', () => {
+  test('displays correct number of chips ', () => {
     const wrapper = mount((
       <EmbeddedListTable
         label="reviews"

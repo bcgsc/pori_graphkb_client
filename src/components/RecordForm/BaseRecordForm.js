@@ -183,6 +183,7 @@ class BaseRecordForm extends React.Component {
       const rawValue = record[prop.name];
       const { value, error } = validateValue(prop, rawValue, variant === FORM_VARIANT.SEARCH);
       newContent[prop.name] = value;
+
       if (error) {
         errors[prop.name] = error;
       }
@@ -229,6 +230,7 @@ class BaseRecordForm extends React.Component {
     newContent[propName] = newValue;
 
     this.populateFromRecord(newContent);
+
     if (onValueChange) {
       // propogate the event to the parent container
       onValueChange({
@@ -250,6 +252,7 @@ class BaseRecordForm extends React.Component {
     const newContent = { [propName]: event.target.value || undefined };
 
     this.populateFromRecord(newContent);
+
     if (onValueChange) {
       // propogate the event to the parent container
       onValueChange({
@@ -291,6 +294,7 @@ class BaseRecordForm extends React.Component {
     const { content, errors } = this.state;
 
     const model = this.currentModel();
+
     if (!model) {
       return [];
     }
@@ -303,6 +307,7 @@ class BaseRecordForm extends React.Component {
       if (item instanceof Array) { // subgrouping
         const key = item.join('--');
         const subgroup = this.renderFieldGroup(item);
+
         if (subgroup.length) {
           fields.push((
             <div key={key} className="record-form__content-subgroup">
@@ -416,6 +421,7 @@ class BaseRecordForm extends React.Component {
     let model = this.currentModel();
 
     const isEdge = model && model.isEdge;
+
     if (model && model.isAbstract && [FORM_VARIANT.SEARCH, FORM_VARIANT.NEW].includes(variant)) {
       model = null;
     }
@@ -426,6 +432,7 @@ class BaseRecordForm extends React.Component {
     const isStatement = model && model.name === 'Statement';
 
     const modelChoices = [];
+
     if (modelName) {
       modelChoices.push(
         ...schema.get(modelName).descendantTree(true).map(m => ({

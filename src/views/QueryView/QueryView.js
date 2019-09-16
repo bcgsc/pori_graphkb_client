@@ -52,12 +52,14 @@ class QueryView extends Component {
       value,
     } = this.state;
     const { history } = this.props;
+
     if (value) {
       const trimmed = String(value)
         .trim()
         .toLowerCase()
         .split(/\s+/)
         .filter(word => word.length >= MIN_WORD_LENGTH);
+
       if (!trimmed.length) {
         this.setState({ keyWordError: `Must have 1 or more terms of at least ${MIN_WORD_LENGTH} characters` });
       } else {
@@ -140,6 +142,7 @@ class QueryView extends Component {
       try {
         const parsed = kbp.variant.parse(value);
         this.setState({ variant: parsed, variantError: '', keyWordError: '' });
+
         if (!hgvsChecked) {
           this.setState({ hgvs: true });
           hgvsFlag = true;
@@ -163,6 +166,7 @@ class QueryView extends Component {
         .toLowerCase()
         .split(/\s+/)
         .filter(word => word.length >= MIN_WORD_LENGTH);
+
       if (!trimmed.length) {
         this.setState({
           keyWordError: `Must have 1 or more terms of at least ${MIN_WORD_LENGTH} characters`,
@@ -184,6 +188,7 @@ class QueryView extends Component {
   handleClickHgvs() {
     const { hgvs, value } = this.state;
     this.setState({ hgvs: !hgvs });
+
     if (value) {
       this.handleChange({ target: { value } }, true);
     }

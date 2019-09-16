@@ -221,6 +221,7 @@ class GraphComponent extends Component {
 
       const storedOptions = GraphOptions.retrieve();
       let initialGraphOptions;
+
       if (storedOptions) {
         initialGraphOptions = storedOptions;
       } else {
@@ -249,6 +250,7 @@ class GraphComponent extends Component {
       simulation,
     } = this.state;
     // remove all event listeners
+
     if (svg) {
       svg.call(d3Zoom.zoom()
         .on('zoom', null))
@@ -675,6 +677,7 @@ class GraphComponent extends Component {
           // unique Rid from source and target nodes. Prevents rendering same link twice
           const linkerRid = `${sourceRid.replace(/:|#/g, '')}:${targetRid.replace(/:|#/g, '')}`;
           // check to see if link is in graph already rendered
+
           if (!graphObjects[linkerRid] && !exclusions.includes(linkRid)) {
             if (
               sourceRid

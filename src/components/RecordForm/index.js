@@ -269,8 +269,12 @@ class RecordForm extends React.PureComponent {
       console.error(errors);
       snackbar.add('There are errors in the form which must be resolved before it can be submitted');
     } else {
-      onSubmit(content);
-      snackbar.add('Search Submitted. Redirecting to the data view');
+      try {
+        onSubmit(content);
+        snackbar.add('Search Submitted. Redirecting to the data view');
+      } catch (err) {
+        snackbar.add(err.message);
+      }
     }
   }
 

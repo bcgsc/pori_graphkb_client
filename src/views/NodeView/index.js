@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import * as qs from 'qs';
 
 import { boundMethod } from 'autobind-decorator';
+import { withSnackbar } from '@bcgsc/react-snackbar-provider';
 import RecordForm from '../../components/RecordForm';
 import { KBContext } from '../../components/KBContext';
 import { FORM_VARIANT } from '../../components/RecordForm/util';
 import { cleanLinkedRecords } from '../../components/util';
 import { hasWriteAccess } from '../../services/auth';
-
 
 const DEFAULT_TITLES = {
   [FORM_VARIANT.EDIT]: 'Edit this Record',
@@ -55,8 +55,12 @@ class NodeView extends React.PureComponent {
       history.push('/');
     } else if (result && variant === FORM_VARIANT.SEARCH) {
       // redirect to the data view page
-      const search = qs.stringify(cleanLinkedRecords(result));
-      history.push(`/data/table?${search}`, { search, content: result });
+      try {
+        const search = qs.stringify(cleanLinkedRecords(result));
+        history.push(`/data/table?${search}`, { search, content: result });
+      } catch (err) {
+        throw err;
+      }
     } else {
       history.goBack();
     }

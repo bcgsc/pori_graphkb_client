@@ -77,7 +77,6 @@ function ResourceSelectComponent(props) {
         error={error}
         style={{
           fontSize: dense ? '0.8125rem' : '',
-          fontColor: disabled ? 'grey' : 'black',
         }}
       >
         {label}

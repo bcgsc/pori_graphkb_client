@@ -20,7 +20,7 @@ import EmbeddedNodeForm from '../EmbeddedNodeForm';
 
 import './index.scss';
 import { FORM_VARIANT } from '../util';
-import EmbeddedListTable from './EmbeddedListTable';
+import EmbeddedListTable from './StatementReviewList';
 
 /**
  * Generate the field component for a form. Uses the property model to decide

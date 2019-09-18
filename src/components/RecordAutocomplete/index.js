@@ -131,7 +131,7 @@ const RecordAutocomplete = (props) => {
           try {
             setIsLoading(true);
             const result = await controller.request();
-            setOptions(result);
+            setOptions(result || []);
             setIsLoading(false);
           } catch (err) {
             console.error('Error in getting the RecordAutocomplete suggestions');

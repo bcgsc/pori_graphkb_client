@@ -1,10 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Table,
-  TableBody,
   TableCell,
-  TableHead,
   TableRow,
   Typography,
   Avatar,
@@ -18,7 +15,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 
 import DetailChip from '../../../DetailChip';
-import { KBContext } from '../../../KBContext';
 import { getUsername } from '../../../../services/auth';
 import ActionButton from '../../../ActionButton';
 import '../index.scss';

@@ -55,8 +55,12 @@ class NodeView extends React.PureComponent {
       history.push('/');
     } else if (result && variant === FORM_VARIANT.SEARCH) {
       // redirect to the data view page
-      const search = qs.stringify(cleanLinkedRecords(result));
-      history.push(`/data/table?${search}`, { search, content: result });
+      try {
+        const search = qs.stringify(cleanLinkedRecords(result));
+        history.push(`/data/table?${search}`, { search, content: result });
+      } catch (err) {
+        throw err;
+      }
     } else {
       history.goBack();
     }

@@ -4,7 +4,6 @@
 .graph-wrapper {
   bottom: 0;
   left: 0;
-  position: absolute;
   right: 0;
   top: 0;
 }
@@ -20,7 +19,7 @@
   margin: auto;
   overflow-x: auto;
   overflow-y: hidden;
-  position: absolute;
+  position: fixed;
   right: 0;
   transition: padding 255ms;
   z-index: calc(#{$drawer-z-index} + 1);
@@ -46,9 +45,9 @@
 }
 
 .svg-wrapper {
-  bottom: $toolbar-height;
+  bottom: 0;
   left: 0;
   position: absolute;
   right: 0;
-  top: 0;
+  top: 15px;
 }

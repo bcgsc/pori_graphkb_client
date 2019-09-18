@@ -16,7 +16,7 @@ import PermissionsTable from './PermissionsTable';
 import FilteredRecordAutocomplete from './FilteredRecordAutocomplete';
 
 // unavoidable circular dependency below
-import EmbeddedNodeForm from '../EmbeddedNodeForm';
+import EmbeddedNodeForm from '../EmbeddedRecordForm';
 
 import './index.scss';
 import { FORM_VARIANT } from '../util';

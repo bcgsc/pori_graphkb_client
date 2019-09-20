@@ -12,6 +12,7 @@ import {
   OutlinedInput,
   Input,
   ListItemText,
+  FormHelperText,
 } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
@@ -48,6 +49,7 @@ function ResourceSelectComponent(props) {
     required,
     id,
     error,
+    helperText,
     dense,
     variant,
     className,
@@ -69,11 +71,11 @@ function ResourceSelectComponent(props) {
       id={id}
       variant={variant}
       disabled={disabled}
+      error={error}
     >
       <InputLabel
         htmlFor={`resource-select-${name}`}
         required={required}
-        error={error}
         style={{
           fontSize: dense ? '0.8125rem' : '',
         }}
@@ -83,7 +85,6 @@ function ResourceSelectComponent(props) {
       <Select
         value={value}
         onChange={onChange}
-        error={error}
         input={<InputComponent name={name} id={`resource-select-${name}`} />}
         style={{
           fontSize: dense ? '0.8125rem' : '',
@@ -95,6 +96,7 @@ function ResourceSelectComponent(props) {
       >
         {resourcesDisplay}
       </Select>
+      <FormHelperText>{helperText}</FormHelperText>
     </FormControl>
   );
 }
@@ -128,6 +130,7 @@ ResourceSelectComponent.propTypes = {
   variant: PropTypes.string,
   className: PropTypes.string,
   disabled: PropTypes.bool,
+  helperText: PropTypes.string,
 };
 
 ResourceSelectComponent.defaultProps = {
@@ -143,6 +146,7 @@ ResourceSelectComponent.defaultProps = {
   variant: 'standard',
   className: '',
   disabled: false,
+  helperText: '',
 };
 
 export default ResourceSelectComponent;

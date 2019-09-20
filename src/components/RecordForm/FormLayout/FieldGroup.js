@@ -32,7 +32,7 @@ const FieldGroup = ({
         if (subgroup.length) {
           newOrder.push(subgroup);
         }
-      } else if (!properties[item].generated) {
+      } else if (!properties[item] || !properties[item].generated) {
         newOrder.push(item);
       }
     });

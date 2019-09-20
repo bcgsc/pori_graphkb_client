@@ -13,7 +13,7 @@ const EdgeFields = ({
   <React.Fragment key="relationship-content">
     <FormField
       error={errors.out || ''}
-      onValueChange={onChange}
+      onChange={onChange}
       model={{
         description: 'The source record for the relationship',
         linkedClass: schema.get(model.sourceModel || 'V'),
@@ -30,7 +30,7 @@ const EdgeFields = ({
     />
     <FormField
       error={errors.in || ''}
-      onValueChange={onChange}
+      onChange={onChange}
       model={{
         linkedClass: schema.get(model.targetModel || 'V'),
         description: 'The target record for the relationship',

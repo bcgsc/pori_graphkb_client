@@ -136,7 +136,7 @@ const EmbeddedRecord = ({
             choices: modelOptions, required: true, name: '@class', type: 'string',
           }}
           value={modelName}
-          onValueChange={({ target: { value } }) => {
+          onChange={({ target: { value } }) => {
             setFormFieldContent({ type: 'update', payload: { name: '@class', value } });
             setFormFieldError({ type: 'update', payload: { name: 'message', value: '' } });
           }}

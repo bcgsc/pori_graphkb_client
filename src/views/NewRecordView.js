@@ -22,7 +22,7 @@ const NewRecordView = (props) => {
   useEffect(() => {
     if (schema && path) {
       try {
-        const options = schema.get(modelNameParam || 'V').descendantTree(false).map(m => ({
+        const options = schema.get(modelNameParam || 'V').descendantTree(true).map(m => ({
           label: m.name, value: m.name, key: m.name, caption: m.description,
         }));
         setModelOptions(options);

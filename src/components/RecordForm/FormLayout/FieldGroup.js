@@ -15,7 +15,7 @@ import { FORM_VARIANT } from '../util';
  * @param {function} onChange parent form handler to pass to fields
  */
 const FieldGroup = ({
-  model, ordering, content, errors, variant, schema, onChange, disabled,
+  model, ordering, content, errors, variant, schema, onChange, disabled, formIsDirty,
 }) => {
   const { properties: { out, in: tgt, ...properties } } = model;
 
@@ -59,6 +59,7 @@ const FieldGroup = ({
             model={model}
             disabled={disabled}
             variant={variant}
+            formIsDirty={formIsDirty}
           />
         </div>
       ));
@@ -76,6 +77,7 @@ const FieldGroup = ({
           key={name}
           content={content}
           disabled={disabled}
+          formIsDirty={formIsDirty}
         />
       );
       fields.push(wrapper);
@@ -99,6 +101,7 @@ FieldGroup.propTypes = {
   disabled: PropTypes.bool,
   schema: PropTypes.object.isRequired,
   variant: PropTypes.string,
+  formIsDirty: PropTypes.bool,
 };
 
 FieldGroup.defaultProps = {
@@ -106,6 +109,7 @@ FieldGroup.defaultProps = {
   errors: {},
   disabled: false,
   variant: FORM_VARIANT.VIEW,
+  formIsDirty: true,
 };
 
 

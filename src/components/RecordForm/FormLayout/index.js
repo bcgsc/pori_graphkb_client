@@ -35,9 +35,10 @@ import EdgeFields from './EdgeFields';
  * @param {Array.<string>} props.belowFold the property names which should be put in the collapsed section
  * @param {Array.<Array.<string>>} props.groups properties that should be grouped together
  * @param {bool} props.collapseExtra flag to indicate a collapsible section should be created
+ * @param {bool} props.formIsDirty flag to indicate if the form has had any changes
  */
 const FormLayout = ({
-  content, errors, onChange, variant, modelName, disabled, className, aboveFold, belowFold, collapseExtra, groups,
+  content, errors, onChange, variant, modelName, disabled, className, aboveFold, belowFold, collapseExtra, groups, formIsDirty,
 }) => {
   const { schema } = useContext(KBContext);
 
@@ -77,6 +78,7 @@ const FormLayout = ({
           )}
           {isEdge && (
             <EdgeFields
+              formIsDirty={formIsDirty}
               schema={schema}
               content={content}
               errors={errors}
@@ -89,6 +91,7 @@ const FormLayout = ({
         </div>
         <div className="record-form__content">
           <FieldGroup
+            formIsDirty={formIsDirty}
             schema={schema}
             content={content}
             errors={errors}
@@ -114,6 +117,7 @@ const FormLayout = ({
           <Collapse in={isExpanded} timeout="auto" unmountOnExit>
             <div className="record-form__content">
               <FieldGroup
+                formIsDirty={formIsDirty}
                 schema={schema}
                 content={content}
                 errors={errors}
@@ -162,6 +166,7 @@ FormLayout.propTypes = {
     FORM_VARIANT.NEW,
     FORM_VARIANT.VIEW,
   ]),
+  formIsDirty: PropTypes.bool,
 };
 
 FormLayout.defaultProps = {
@@ -187,6 +192,7 @@ FormLayout.defaultProps = {
   content: {},
   errors: {},
   variant: FORM_VARIANT.VIEW,
+  formIsDirty: true,
 };
 
 export default FormLayout;

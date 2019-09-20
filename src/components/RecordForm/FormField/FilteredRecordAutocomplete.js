@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { boundMethod } from 'autobind-decorator';
+import { FormControl, FormHelperText } from '@material-ui/core';
 
 import api from '../../../services/api';
 import RecordAutocomplete from '../../RecordAutocomplete';
@@ -21,11 +22,16 @@ class FilteredRecordAutocomplete extends React.PureComponent {
     isMulti: PropTypes.bool,
     linkedClassName: PropTypes.string.isRequired,
     DetailChipProps: PropTypes.object,
+    helperText: PropTypes.string,
+    error: PropTypes.bool,
+    name: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
     disabled: false,
     isMulti: false,
+    helperText: '',
+    error: false,
     DetailChipProps: {},
   };
 
@@ -58,6 +64,9 @@ class FilteredRecordAutocomplete extends React.PureComponent {
       isMulti,
       linkedClassName,
       DetailChipProps,
+      helperText,
+      error,
+      name,
       ...rest
     } = this.props;
     const {
@@ -83,18 +92,18 @@ class FilteredRecordAutocomplete extends React.PureComponent {
     };
 
     return (
-      <div className="filtered-record-autocomplete">
-        {!disabled && (
+      <FormControl className="filtered-record-autocomplete" error={error} disabled={disabled}>
+        <div className="filtered-record-autocomplete__content">
+          {!disabled && (
           <ResourceSelectComponent
             name="search-class"
             onChange={this.handleClassChange}
             resources={[...model.descendantTree(false).map(m => m.name)]}
-            label="Filter Search by Class"
+            label={`Filter (${name}) Search by Class`}
             value={selectedClassName}
             className="node-form__class-select filtered-record-autocomplete__select-search-class"
           />
-        )}
-        <div className="form-field__content">
+          )}
           <RecordAutocomplete
             {...rest}
             isMulti={isMulti}
@@ -103,6 +112,7 @@ class FilteredRecordAutocomplete extends React.PureComponent {
               valueToString,
               getDetails: details => details,
             }}
+            name={name}
             disabled={disabled}
             getOptionLabel={itemToString}
             getOptionKey={opt => opt['@rid']}
@@ -113,7 +123,8 @@ class FilteredRecordAutocomplete extends React.PureComponent {
             }
           />
         </div>
-      </div>
+        {helperText && (<FormHelperText>{helperText}</FormHelperText>)}
+      </FormControl>
     );
   }
 }

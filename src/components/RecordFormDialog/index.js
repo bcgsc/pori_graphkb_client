@@ -20,6 +20,7 @@ import './index.scss';
  *
  * @param {object} props
  * @param {bool} props.isOpen flag to indicate the current dialog is open
+ * @param {Object} props.value initial value for the form
  * @param {string} props.modelName the model to use for the RecordForm
  * @param {func} props.onClose the function to handle the dialog cancel button
  * @param {func} props.onError the function handler for errors submitting the form
@@ -33,17 +34,13 @@ const RecordFormDialog = (props) => {
     onClose,
     onError,
     onSubmit,
-    rid,
     title,
     variant,
+    value,
     ...rest
   } = props;
 
-  const defaultVariant = !rid
-    ? FORM_VARIANT.NEW
-    : FORM_VARIANT.EDIT;
-
-  const defaultTitle = !rid
+  const defaultTitle = variant === FORM_VARIANT.NEW
     ? `Add a new ${modelName}`
     : `Edit an Existing ${modelName}`;
 
@@ -74,9 +71,9 @@ const RecordFormDialog = (props) => {
       <DialogContent>
         <RecordForm
           {...rest}
-          variant={variant || defaultVariant}
+          variant={variant}
           modelName={modelName}
-          rid={rid}
+          value={value}
           onSubmit={onSubmit}
           onError={onError}
         />
@@ -91,15 +88,14 @@ RecordFormDialog.propTypes = {
   onClose: PropTypes.func.isRequired,
   onError: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  rid: PropTypes.string,
-  variant: PropTypes.oneOf(Object.values(FORM_VARIANT)),
+  value: PropTypes.object,
+  variant: PropTypes.oneOf(Object.values(FORM_VARIANT)).isRequired,
   title: PropTypes.string,
 };
 
 RecordFormDialog.defaultProps = {
   isOpen: false,
-  rid: null,
-  variant: null,
+  value: {},
   title: '',
 };
 

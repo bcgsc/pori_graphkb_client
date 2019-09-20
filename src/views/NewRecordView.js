@@ -72,7 +72,7 @@ const NewRecordView = (props) => {
           choices: modelOptions, required: true, name: '@class', type: 'string',
         }}
         value={modelName}
-        onValueChange={({ target: { value } }) => setModelName(value)}
+        onChange={({ target: { value } }) => setModelName(value)}
         disabled={modelOptions.length < 2}
         schema={schema}
         className="record-form__class-select"

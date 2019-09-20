@@ -39,6 +39,10 @@
   }
 
   .embedded-record {
+    > * {
+      width: 100%;
+    }
+
     &__content {
       @include field-set;
       margin: 0;

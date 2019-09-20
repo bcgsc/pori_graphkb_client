@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   ListItem,
   TextField,
@@ -61,10 +61,28 @@ const FormField = (props) => {
     name,
     type,
     nullable,
+    iterable,
   } = model;
 
   const generated = Boolean(model.generated && variant !== FORM_VARIANT.SEARCH);
   const mandatory = Boolean(model.mandatory && variant !== FORM_VARIANT.SEARCH);
+  const errorFlag = error && !generated;
+
+  const [helperText, setHelperText] = useState('');
+
+
+  useEffect(() => {
+    let newHelperText;
+
+    if (errorFlag) {
+      newHelperText = error.message;
+    } else if (variant === FORM_VARIANT.EDIT && example !== undefined) {
+      newHelperText = `${description} (ex. ${example})`;
+    } else {
+      newHelperText = description;
+    }
+    setHelperText(newHelperText);
+  }, [description, error, errorFlag, example, variant]);
 
   let value = inputValue;
 
@@ -83,7 +101,6 @@ const FormField = (props) => {
   }
 
   let propComponent;
-  const errorFlag = error && !generated;
 
   if (type === 'boolean') {
     propComponent = (
@@ -143,7 +160,8 @@ const FormField = (props) => {
         resources={['', ...choices]}
         label={label || name}
         value={value || ''}
-        errorText={errorFlag ? error.message || error : ''}
+        error={errorFlag}
+        helperText={helperText}
         disabled={generated || disabled}
         className={className}
       />
@@ -151,13 +169,14 @@ const FormField = (props) => {
   } else if (type === 'link' || type === 'linkset') {
     const autoProps = {
       disabled: generated || disabled,
-      errorText: errorFlag ? error.message || error : '',
+      error: errorFlag,
       isMulti: type === 'linkset',
       label: label || name,
       name,
       onChange: onValueChange,
       required: mandatory,
       value,
+      helperText,
       DetailChipProps: {
         getLink: schema.getLink,
       },
@@ -227,10 +246,9 @@ const FormField = (props) => {
         onChange={onValueChange}
         InputLabelProps={{ shrink: !!value }}
         error={errorFlag}
-        helperText={errorFlag ? error.message : ''}
+        helperText={helperText}
         disabled={generated || disabled}
         className="text-field"
-        multiline
       />
     );
   }
@@ -240,11 +258,6 @@ const FormField = (props) => {
       <div className="form-field__content">
         {propComponent}
       </div>
-      <FieldHelp
-        className="form-field__help"
-        description={description}
-        example={example && example.toString()}
-      />
     </ListItem>
   );
 };

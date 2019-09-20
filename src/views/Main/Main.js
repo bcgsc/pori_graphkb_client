@@ -42,7 +42,8 @@ import { KBContext } from '../../components/KBContext';
 import { MainNav } from './components';
 import AuthenticatedRoute from '../../components/AuthenticatedRoute';
 
-import NodeView from '../NodeView';
+import RecordView from '../RecordView';
+import NewRecordView from '../NewRecordView';
 
 const {
   API_BASE_URL,
@@ -177,14 +178,12 @@ const Main = () => {
             <Route path="/about" component={AboutView} />
             <AuthenticatedRoute exact path="/query" component={QueryView} />
             <AuthenticatedRoute path="/query/advanced/builder" component={QueryBuilderView} />
-            <AuthenticatedRoute path="/edit/:modelName/:rid" component={NodeView} />
-            <AuthenticatedRoute path="/edit/:rid" component={NodeView} />
-            <AuthenticatedRoute path="/new" exact component={NodeView} />
-            <AuthenticatedRoute path="/new/:modelName" component={NodeView} />
+            <AuthenticatedRoute path="/:variant(edit|view)/:modelName/:rid" component={RecordView} />
+            <AuthenticatedRoute path="/:variant(edit|view)/:rid" component={RecordView} />
+            <AuthenticatedRoute path="/new" exact component={NewRecordView} />
+            <AuthenticatedRoute path="/new/:modelName" component={NewRecordView} />
             <Redirect exact path="/query/advanced" to="/search/v" />
-            <AuthenticatedRoute path="/search/:modelName" component={NodeView} />
-            <AuthenticatedRoute path="/view/:modelName/:rid" component={NodeView} />
-            <AuthenticatedRoute path="/view/:rid" component={NodeView} />
+            {/* TODO: Add search routing */}
             <AuthenticatedRoute path="/data" component={DataView} />
             <AuthenticatedRoute path="/admin" admin component={AdminView} />
             <Redirect from="/" to="/query" />

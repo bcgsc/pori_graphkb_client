@@ -4,15 +4,27 @@
 .form-field {
   align-items: flex-start;
   display: flex;
+  max-width: 100%;
   width: 100%;
 
   & &__content {
-    margin-right: 20px;
     width: 100%;
+    min-height: 56px;
+
+    @media (min-width: #{$breakpoint-med}) {
+      margin-right: 20px;
+    }
+  }
+
+  &--string {
+    .form-field__content {
+      display: flex;
+      align-items: flex-end;
+    }
   }
 
   &--embedded {
-    align-items: start;
+    // align-items: start;
     display: block;
   }
 
@@ -24,26 +36,52 @@
   & &__help {
     margin-left: auto;
   }
+
+  .embedded-record {
+    &__content {
+      @include field-set;
+      margin: 0;
+      padding-bottom: 10px;
+      padding-top: 10px;
+    }
+
+    &__header {
+      margin-bottom: 2px;
+    }
+  }
 }
 
 .filtered-record-autocomplete {
-  align-items: flex-start;
-  display: flex;
+  max-width: 100%;
 
-  &__select-search-class {
-    margin-right: 20px;
-    margin-top: 3px;
-    max-width: 15rem;
+  &__content {
+    max-width: 100%;
+    width: 100%;
   }
 
-  .record-autocomplete {
-    align-self: flex-start;
+  @media (min-width: #{$breakpoint-lg}) {
+    align-items: flex-start;
+    display: flex;
+
+    &__select-search-class {
+      margin-right: 20px;
+      margin-top: 3px;
+      max-width: 15rem;
+    }
+
+    &__content {
+      display: flex;
+    }
+
+    .record-autocomplete {
+      align-self: flex-start;
+    }
   }
 }
 
 .review-card {
-  min-width: 300px;
   max-width: 600px;
+  min-width: 300px;
 
   &__header {
     display: flex;

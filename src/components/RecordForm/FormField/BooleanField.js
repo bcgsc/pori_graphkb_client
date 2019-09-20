@@ -5,6 +5,7 @@ import {
   FormControlLabel,
   RadioGroup,
   Radio,
+  FormHelperText,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 
@@ -29,11 +30,13 @@ const BooleanField = (props) => {
     name,
     onValueChange,
     required,
+    helperText,
+    value: initialValue,
     ...rest
   } = props;
-  const value = props.value === undefined || props.value === null
+  const value = initialValue === undefined || initialValue === null
     ? null
-    : props.value.toString();
+    : initialValue.toString();
 
   return (
     <div
@@ -58,6 +61,7 @@ const BooleanField = (props) => {
           <FormControlLabel value="true" control={<Radio checked={value === 'true'} />} label="Yes" />
           <FormControlLabel value="false" control={<Radio checked={value === 'false'} />} label="No" />
         </RadioGroup>
+        {helperText && (<FormHelperText>{helperText}</FormHelperText>)}
       </FormControl>
     </div>
   );
@@ -71,6 +75,7 @@ BooleanField.propTypes = {
   onValueChange: PropTypes.func.isRequired,
   required: PropTypes.bool,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  helperText: PropTypes.string,
 };
 
 BooleanField.defaultProps = {
@@ -78,6 +83,7 @@ BooleanField.defaultProps = {
   error: false,
   label: '',
   required: false,
+  helperText: '',
   value: undefined,
 };
 

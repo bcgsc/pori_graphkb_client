@@ -1,73 +1,87 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, {
+  useContext, useState, useCallback, useEffect,
+} from 'react';
 import * as qs from 'qs';
+import {
+  CircularProgress,
+} from '@material-ui/core';
+import useDeepCompareEffect from 'use-deep-compare-effect';
+import propTypes from 'prop-types';
 
-import { boundMethod } from 'autobind-decorator';
 import RecordForm from '../../components/RecordForm';
 import { KBContext } from '../../components/KBContext';
 import { FORM_VARIANT } from '../../components/RecordForm/util';
 import { cleanLinkedRecords } from '../../components/util';
 import { hasWriteAccess } from '../../services/auth';
+import api from '../../services/api';
 
 
 const DEFAULT_TITLES = {
   [FORM_VARIANT.EDIT]: 'Edit this Record',
-  [FORM_VARIANT.NEW]: 'Add a new Record (:modelName)',
-  [FORM_VARIANT.DELETE]: 'Delete this Record',
   [FORM_VARIANT.VIEW]: 'Record Contents',
-  [FORM_VARIANT.SEARCH]: 'Search for a Record (:modelName)',
 };
 
 
-const getVariantType = (url) => {
-  let variant = FORM_VARIANT.VIEW;
+const getModelFromName = (schema, path = '', modelName = '', variant = FORM_VARIANT.VIEW) => {
+  let defaultModelName = modelName;
 
-  for (const variantName of Object.values(FORM_VARIANT)) { // eslint-disable-line no-restricted-syntax
-    if (url.includes(variantName)) {
-      variant = variantName;
-      break;
+  if (modelName) {
+    const model = schema.getModel(modelName);
+    defaultModelName = model.name;
+
+    if (!model || (model.isAbstract && variant === FORM_VARIANT.EDIT)) {
+      throw new Error(`Page Not Found. '${modelName}' is not a valid model`);
     }
+  } else if (path.includes('/user/')) {
+    defaultModelName = 'User';
+  } else if (path.includes('/usergroup/')) {
+    defaultModelName = 'UserGroup';
+  } else if (path.includes('/e/')) {
+    defaultModelName = 'E';
   }
-  return variant;
+  return schema.getModel(defaultModelName || 'V').name;
 };
 
 
-class NodeView extends React.PureComponent {
-  static contextType = KBContext;
+const RecordView = (props) => {
+  const { history, match: { path, params: { rid, modelName: modelNameParam, variant } } } = props;
+  const context = useContext(KBContext);
+  const { schema } = context;
 
-  static propTypes = {
-    match: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
-  };
+  const [recordContent, setRecordContent] = useState({});
+  const [modelName, setModelName] = useState('');
+
+  useEffect(() => {
+    if (schema && path) {
+      try {
+        const name = getModelFromName(schema, path, modelNameParam, variant);
+        setModelName(name);
+      } catch (err) {
+        history.push('/error', { error: { name: err.name, message: err.toString() } });
+      }
+    }
+  }, [path, modelNameParam, variant, schema, history]);
+
 
   /**
    * After the form is submitted/completed. Handle the corresponding redirect
    */
-  @boundMethod
-  handleSubmit(result = null) {
-    const { schema } = this.context;
-    const { history, match: { path } } = this.props;
-    const variant = getVariantType(path);
-
+  const handleSubmit = useCallback((result = null) => {
     if (result && (variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.EDIT)) {
       history.push(schema.getLink(result));
-    } else if (variant === FORM_VARIANT.DELETE) {
-      history.push('/');
     } else if (result && variant === FORM_VARIANT.SEARCH) {
       // redirect to the data view page
       const search = qs.stringify(cleanLinkedRecords(result));
       history.push(`/data/table?${search}`, { search, content: result });
     } else {
-      history.goBack();
+      history.push('/');
     }
-  }
+  }, [history, schema, variant]);
 
   /**
    * Handles the redirect if an error occurs in the child component
    */
-  @boundMethod
-  handleError({ error = {}, content = null }) {
-    const { history } = this.props;
+  const handleError = useCallback(({ error = {}, content = null }) => {
     const { name, message } = error;
 
     if (name === 'RecordExistsError' && content) {
@@ -77,78 +91,77 @@ class NodeView extends React.PureComponent {
     } else {
       history.push('/error', { error: { name, message } });
     }
-  }
+  }, [history]);
 
-  render() {
-    const {
-      match: { params: { rid = null, modelName }, path },
-      history,
-    } = this.props;
-    const { schema } = this.context;
-    const variant = getVariantType(path);
+  // fetch the record from the rid if given
+  useDeepCompareEffect(() => {
+    let call = null;
 
-    let defaultModelName = modelName;
-
-    if (modelName) {
-      let model = schema.get(modelName);
+    const fetchRecord = async () => {
+      const { '@class': defaultModel } = recordContent;
+      const model = schema.get(modelName || 'V');
 
       if (!model) {
-        const routeName = `/${modelName}`;
-        model = schema.getFromRoute(routeName);
-      }
-      defaultModelName = model.name;
+        handleError({ error: { name: 'ModelNotFound', message: `Unable to find model for ${modelName || defaultModel}` } });
+      } else if (variant !== FORM_VARIANT.NEW && variant !== FORM_VARIANT.SEARCH && rid) {
+        // If not a new form then should have existing content
+        try {
+          call = api.get(`${model.routeName}/${rid.replace(/^#/, '')}?neighbors=3`, { forceListReturn: true });
+          const result = await call.request();
 
-      if (!model || (model.isAbstract && variant === FORM_VARIANT.EDIT)) {
-        history.push(
-          '/error',
-          {
-            error: {
-              name: 'PageNotFound',
-              message: `Page Not Found. '${modelName}' is not a valid model`,
-            },
-          },
-        );
-      }
-    } else if (path.includes('/user/')) {
-      defaultModelName = 'User';
-    } else if (path.includes('/usergroup/')) {
-      defaultModelName = 'UserGroup';
-    } else if (path.includes('/e/')) {
-      defaultModelName = 'E';
-    }
-
-    // redirect when the user clicks the top right button
-    const onTopClick = (record) => {
-      let newPath = path
-        .replace(variant,
-          variant === FORM_VARIANT.EDIT
-            ? FORM_VARIANT.VIEW
-            : FORM_VARIANT.EDIT)
-        .replace(':rid', rid);
-
-      if (record['@class'] || modelName) {
-        newPath = newPath.replace(':modelName', schema.get(record['@class'] || modelName).routeName.slice(1));
-      }
-      history.push(newPath);
-    };
-
-    return (
-      <RecordForm
-        variant={variant}
-        modelName={defaultModelName}
-        rid={rid}
-        title={DEFAULT_TITLES[variant].replace(':modelName', defaultModelName || '')}
-        onTopClick={
-          hasWriteAccess(this.context)
-            ? onTopClick
-            : null
+          if (result && result.length) {
+            setRecordContent({ ...result[0] });
+            setModelName(result[0]['@class']);
+          } else {
+            handleError({ error: { name: 'RecordNotFound', message: `Unable to retrieve record details for ${model.routeName}/${rid}` } });
+          }
+        } catch (err) {
+          handleError({ error: err });
         }
-        onSubmit={this.handleSubmit}
-        onError={this.handleError}
-      />
-    );
-  }
-}
+      }
+    };
+    fetchRecord();
+    return () => call && call.abort();
+    // must not update on modelName since this sets modelName
+  }, [rid, modelNameParam, schema, path, recordContent, variant, handleError]); // eslint-disable-line
 
 
-export default NodeView;
+  // redirect when the user clicks the top right button
+  const onTopClick = useCallback(() => {
+    const model = schema.get(modelName);
+    const newVariant = variant === FORM_VARIANT.EDIT
+      ? FORM_VARIANT.VIEW
+      : FORM_VARIANT.EDIT;
+    const newPath = `/${newVariant}/${model.name}/${rid}`;
+    history.push(newPath);
+  }, [history, modelName, rid, schema, variant]);
+
+  return (
+    schema && modelName
+      ? (
+        <RecordForm
+          variant={variant}
+          modelName={modelName}
+          rid={rid}
+          value={recordContent}
+          title={DEFAULT_TITLES[variant].replace(':modelName', modelName)}
+          onTopClick={
+            hasWriteAccess(context)
+              ? onTopClick
+              : null
+          }
+          onSubmit={handleSubmit}
+          onError={handleError}
+        />
+      )
+      : (<CircularProgress />)
+  );
+};
+
+RecordView.propTypes = {
+  history: propTypes.object.isRequired,
+  match: propTypes.object.isRequired,
+};
+
+
+export default RecordView;

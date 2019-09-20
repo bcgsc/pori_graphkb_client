@@ -16,7 +16,8 @@
     }
   }
 
-  &--string {
+  &--string,
+  &--integer {
     .form-field__content {
       display: flex;
       align-items: flex-end;

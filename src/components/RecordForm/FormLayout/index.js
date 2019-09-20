@@ -36,7 +36,7 @@ import {
  * @property {function} props.onDelete the parent handler function to delete the current record
  * @property {function} props.reviewProps props to render statement reviews to be passed to detail chip
  */
-class BaseRecordForm extends React.Component {
+class FormLayout extends React.Component {
   static contextType = KBContext;
 
   static propTypes = {
@@ -587,4 +587,4 @@ class BaseRecordForm extends React.Component {
   }
 }
 
-export default BaseRecordForm;
+export default FormLayout;

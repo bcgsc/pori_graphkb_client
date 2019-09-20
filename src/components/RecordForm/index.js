@@ -10,7 +10,7 @@ import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 
 import api from '../../services/api';
 import './index.scss';
-import BaseNodeForm from './BaseRecordForm';
+import FormLayout from './FormLayout';
 import { FORM_VARIANT } from './util';
 import { withKB } from '../KBContext';
 import ReviewDialog from './ReviewDialog';
@@ -345,7 +345,7 @@ class RecordForm extends React.PureComponent {
             />
           ))}
         </div>
-        <BaseNodeForm
+        <FormLayout
           {...rest}
           value={content}
           modelName={modelName}

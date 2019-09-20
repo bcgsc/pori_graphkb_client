@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Typography } from '@material-ui/core';
 
-import BaseRecordForm from './BaseRecordForm';
+import FormLayout from './FormLayout';
 
 
 /**
@@ -22,7 +22,7 @@ const EmbeddedNodeForm = (props) => {
             {label}
           </Typography>
         </legend>
-        <BaseRecordForm {...rest} onValueChange={onValueChange} isEmbedded />
+        <FormLayout {...rest} onValueChange={onValueChange} isEmbedded />
       </fieldset>
     </div>
   );

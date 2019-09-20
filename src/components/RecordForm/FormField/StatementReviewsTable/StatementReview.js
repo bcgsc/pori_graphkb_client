@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
   TableCell,
@@ -18,6 +18,7 @@ import DetailChip from '../../../DetailChip';
 import { getUsername } from '../../../../services/auth';
 import ActionButton from '../../../ActionButton';
 import '../index.scss';
+import { KBContext } from '../../../KBContext';
 
 /**
  * Displays a linked record row + detail chip in EmbeddedListTable.
@@ -25,100 +26,70 @@ import '../index.scss';
  * @property {object} props.value single linked record or review
  * @property {string} props.variant one of ['view', 'edit'] mode
  * @property {object} props.content full record which has link to value
- * @property {function} props.updateContent parent handler function to update record
+ * @property {function} props.onChange parent handler function to update record
  */
-const EmbeddedRecordRow = (props) => {
+const StatementReview = ({
+  value,
+  index,
+  variant,
+  onDelete,
+  label,
+}) => {
+  const context = useContext(KBContext);
+
   const {
-    value,
-    index,
-    variant,
-    content,
-    updateContent,
-    label,
-    context,
-  } = props;
-  const {
-    status, createdBy: { name }, createdBy,
+    status, createdBy: { name: username }, createdBy, comment,
   } = value;
 
-  const cloneReviews = (cont) => {
-    const { reviews } = cont;
-
-    if (reviews) {
-      const reviewsClone = reviews.map(obj => ({ ...obj }));
-      return reviewsClone;
-    }
-    return [];
-  };
-
-  const handleDelete = (cont, idx) => {
-    const newContent = Object.assign({}, cont);
-    const clonedReviews = cloneReviews(cont);
-    newContent.reviews = clonedReviews;
-    newContent.reviews.splice(idx, 1);
-
-    try {
-      updateContent(newContent);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const details = {};
-  const previewStr = name
-    ? `${name} (${createdBy['@rid']})`
+  const previewStr = username
+    ? `${username} (${createdBy['@rid']})`
     : `${getUsername(context)} (#${createdBy})`;
 
-  const ReviewComp = (reviewProps) => {
-    const {
-      value: { comment },
-    } = reviewProps;
-
-    return (
-      <div className="review-card">
-        <Card>
-          <div className="review-card__header">
-            <CardHeader
-              avatar={(
-                <Avatar
-                  aria-label="Statement Review"
-                  className="review-card__avatar"
-                >
-             SR
-                </Avatar>
+  const ReviewComponent = () => (
+    <div className="review-card">
+      <Card>
+        <div className="review-card__header">
+          <CardHeader
+            avatar={(
+              <Avatar
+                aria-label="Statement Review"
+                className="review-card__avatar"
+              >
+                  SR
+              </Avatar>
           )}
-              title="Statement Review"
-              subheader={`created by ${name || getUsername(context)}`}
-            />
-          </div>
-          <Divider />
-          <CardContent>
-            <Typography variant="h5" gutterBottom align="center" color="secondary">
-              {`Status: ${status}`}
-            </Typography>
-            <Typography variant="body2" color="textSecondary" align="center">
-              {comment}
-            </Typography>
-            <div className="review-card__action-button">
-              {variant === 'edit' && (
-                <ActionButton
-                  onClick={() => handleDelete(content, index)}
-                  variant="contained"
-                  color="primary"
-                  size="medium"
-                  requireConfirm={false}
-                >
+            title="Statement Review"
+            subheader={`created by ${username || getUsername(context)}`}
+          />
+        </div>
+        <Divider />
+        <CardContent>
+          <Typography variant="h5" gutterBottom align="center" color="secondary">
+            {`Status: ${status}`}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" align="center">
+            {comment}
+          </Typography>
+          <div className="review-card__action-button">
+            {variant === 'edit' && (
+            <ActionButton
+              onClick={() => onDelete({ index })}
+              variant="contained"
+              color="primary"
+              size="medium"
+              requireConfirm={false}
+            >
                   Delete
-                  <DeleteIcon />
-                </ActionButton>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  };
+              <DeleteIcon />
+            </ActionButton>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
 
+  const details = {};
   Object.keys(value).forEach((prop) => {
     if (prop !== '@rid') {
       details[prop] = value[prop];
@@ -138,11 +109,11 @@ const EmbeddedRecordRow = (props) => {
               variant: 'outlined',
               color: 'secondary',
             }}
-            PopUpComponent={ReviewComp}
-            PopUpProps={{ value, updateContent }}
+            PopUpComponent={ReviewComponent}
+            PopUpProps={{ onDelete }}
             label={previewStr}
             title={label}
-            details={details}
+            value={details}
             valueToString={
               (record) => {
                 if (record && record.name) {
@@ -161,18 +132,16 @@ const EmbeddedRecordRow = (props) => {
   );
 };
 
-EmbeddedRecordRow.propTypes = {
-  updateContent: PropTypes.func.isRequired,
+StatementReview.propTypes = {
+  onDelete: PropTypes.func.isRequired,
   variant: PropTypes.string,
   value: PropTypes.object.isRequired,
   index: PropTypes.number.isRequired,
-  content: PropTypes.object.isRequired,
   label: PropTypes.string.isRequired,
-  context: PropTypes.object.isRequired,
 };
 
-EmbeddedRecordRow.defaultProps = {
+StatementReview.defaultProps = {
   variant: 'view',
 };
 
-export default EmbeddedRecordRow;
+export default StatementReview;

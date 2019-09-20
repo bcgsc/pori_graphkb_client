@@ -20,6 +20,15 @@ class Schema {
     this.getFromRoute = schema.getFromRoute.bind(schema);
   }
 
+  @boundMethod
+  getModel(name) {
+    try {
+      return this.get(name);
+    } catch (err) {
+      return this.getFromRoute(name);
+    }
+  }
+
   /**
    * Get a string representation of a record
    */
@@ -229,6 +238,64 @@ class Schema {
 
     return !!(this.get(cls)
       && this.get(cls).inherits.some(inherited => parentCls.includes(inherited)));
+  }
+
+  /**
+   * Validates a value against some property model and returns the new property tracking object
+   */
+  @boundMethod
+  validateValue(propModel, value, ignoreMandatory = false) {
+    if (value === undefined || value === '' || (typeof value === 'object' && value && Object.keys(value).length === 0)) {
+      if (propModel.mandatory
+      && !ignoreMandatory
+      && !propModel.generated
+      && propModel.default === undefined
+      && !propModel.generateDefault
+      ) {
+        return { error: { message: 'Required Value' }, value };
+      }
+    } else if (value === null && !propModel.nullable) {
+      return { error: { message: 'Cannot be empty/null' }, value };
+    } else if (value !== null) { // validate the new value using the schema model property
+      if (propModel.linkedClass && propModel.type.includes('embedded')) {
+        const subErrors = {};
+        let embeddedModel;
+
+        try {
+          embeddedModel = this.get(value);
+        } catch (err) { }
+
+        if (!embeddedModel) {
+          return { error: { '@class': { message: 'Required Value' } } };
+        }
+        Object.values(embeddedModel.properties).forEach((subPropModel) => {
+          const { name } = subPropModel;
+          const { error } = this.validateValue(subPropModel, value[name], ignoreMandatory);
+
+          if (error) {
+            subErrors[name] = error;
+          }
+        });
+
+        if (Object.keys(subErrors).length) {
+          return { error: subErrors, value };
+        }
+        return { value };
+      }
+
+      try {
+        let valueToValidate = value;
+
+        if (propModel.type === 'link') {
+          valueToValidate = value['@rid'] || value;
+        }
+        propModel.validate(valueToValidate);
+        return { value };
+      } catch (err) {
+        return { error: err, value };
+      }
+    }
+    return { value };
   }
 
   /**

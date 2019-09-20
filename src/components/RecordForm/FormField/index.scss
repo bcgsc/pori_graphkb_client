@@ -16,7 +16,8 @@
     }
   }
 
-  &--string {
+  &--string,
+  &--integer {
     .form-field__content {
       display: flex;
       align-items: flex-end;
@@ -38,6 +39,10 @@
   }
 
   .embedded-record {
+    > * {
+      width: 100%;
+    }
+
     &__content {
       @include field-set;
       margin: 0;

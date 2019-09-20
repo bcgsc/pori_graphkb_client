@@ -77,7 +77,11 @@ const FormField = (props) => {
     if (errorFlag) {
       newHelperText = error.message;
     } else if (variant === FORM_VARIANT.EDIT && example !== undefined) {
-      newHelperText = `${description} (ex. ${example})`;
+      if (!description) {
+        newHelperText = `ex. ${example}`;
+      } else {
+        newHelperText = `${description} (ex. ${example})`;
+      }
     } else {
       newHelperText = description;
     }

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {
   Table,
@@ -10,44 +10,37 @@ import {
 } from '@material-ui/core';
 
 
-import { KBContext } from '../../../KBContext';
 import '../index.scss';
 
-import EmbeddedRecordRow from './StatementReview';
+import StatementReviewRow from './StatementReview';
 
 /**
  * Table to display related linked records as detailChips in embedded link set.
  *
  * @property {Arrayof(objects)} props.values linked records to be displayed in table
- * @property {string} props.label title of detail chip
- * @property {function} props.onReviewSelection function passed to DetailChip to handle
- * @property {object} props.reviewProps props to be passed to reviewDialog and detail chip
- * @property {function} props.updateContent parent handler function to update record
- * @property {object} props.content record content to be displayed
+ * @property {object} props.values record content to be displayed
  * @property {string} props.variant mode that dialog is in. One of ['view','edit'].
- *
+ * @property {function} props.onChange parent change handler function
+ * @property {string} props.name the name of this field (for propogating change events)
  */
-const EmbeddedListTable = (props) => {
+const StatementReviewsTable = (props) => {
   const {
     values,
-    label,
-    reviewProps: { updateContent, content },
     variant,
+    onChange,
+    name,
   } = props;
 
-  const context = useContext(KBContext);
-  const embeddedRecordProps = {
-    variant,
-    content,
-    updateContent,
-    label,
-    context,
+
+  const handleDeleteReview = ({ index }) => {
+    const newValue = [...values.slice(0, index), ...values.slice(index + 1)];
+    onChange({ target: { name, value: newValue } });
   };
 
   return (
     <div className="embedded-list-table">
       <Typography variant="subtitle1" align="center" color="secondary">
-              Reviews
+        Reviews
       </Typography>
       <Table className="embedded-list-table__table">
         <TableHead className="embedded-list-table__table-header">
@@ -61,25 +54,30 @@ const EmbeddedListTable = (props) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {values.map((value, index) => EmbeddedRecordRow({ value, index, ...embeddedRecordProps }))}
+          {values.map((value, index) => (
+            <StatementReviewRow
+              value={value}
+              index={index}
+              onDelete={handleDeleteReview}
+              variant={variant}
+            />
+          ))}
         </TableBody>
       </Table>
     </div>
   );
 };
 
-EmbeddedListTable.propTypes = {
+StatementReviewsTable.propTypes = {
   values: PropTypes.arrayOf(PropTypes.object),
-  label: PropTypes.string,
-  reviewProps: PropTypes.object.isRequired,
-  updateContent: PropTypes.func.isRequired,
   variant: PropTypes.string,
+  name: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
 };
 
-EmbeddedListTable.defaultProps = {
+StatementReviewsTable.defaultProps = {
   values: [],
-  label: '',
   variant: 'view',
 };
 
-export default EmbeddedListTable;
+export default StatementReviewsTable;

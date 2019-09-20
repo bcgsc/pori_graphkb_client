@@ -152,11 +152,11 @@ $closed-drawer-width: 56px;
   }
 
   &--closed {
-    width: $closed-drawer-width;
+    width: 0;
     z-index: calc(#{$drawer-z-index} + 2);
 
-    @media (max-width: $breakpoint-med) {
-      width: 0;
+    @media (min-width: $breakpoint-med) {
+      width: $closed-drawer-width;
     }
   }
 

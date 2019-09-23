@@ -1,5 +1,5 @@
 import React, {
-  useContext, useReducer, useEffect, useState,
+  useContext, useEffect, useState,
 } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
@@ -44,49 +44,20 @@ const EmbeddedRecord = ({
 
   const [modelName, setModelName] = useState((initialValue && initialValue['@class']) || '');
   const [modelOptions, setModelOptions] = useState([]);
-
-  // handle and store the form content
-  const [formContent, setFormFieldContent] = useReducer((state, action) => {
-    const { type: actionType, payload } = action;
-
-    if (actionType === 'update') {
-      const { name, value } = payload;
-      return { ...state, [name]: value };
-    } if (actionType === 'replace') {
-      return { ...payload };
-    }
-    throw new Error(`actionType (${actionType}) not implemented`);
-  }, initialValue || {});
-
-  // handle and store any errors reported from form field validators
-  const [formErrors, setFormFieldError] = useReducer((state, action) => {
-    const { type: actionType, payload } = action;
-
-    if (actionType === 'update') {
-      const { name, value } = payload;
-      return { ...state, [name]: value };
-    } if (actionType === 'replace') {
-      return { ...payload };
-    }
-    throw new Error(`actionType (${actionType}) not implemented`);
-  }, errors || {});
+  const [formContent, setFormContent] = useState(initialValue || {});
+  const [formErrors, setFormErrors] = useState(errors || {});
 
   const formHasErrors = Object.values(formErrors).some(err => err);
 
   // if the parent form passes down new values, replace the current ones
   useDeepCompareEffect(() => {
-    setFormFieldContent({ type: 'replace', payload: initialValue });
-    setFormFieldError({ type: 'replace', payload: errors });
+    setFormContent(initialValue);
+    setFormErrors(errors);
   }, [initialValue, errors, schema]);
 
   useEffect(() => {
     setModelName(formContent['@class']);
   }, [formContent]);
-
-  // propagate aggregated content and errors to parent form
-  useDeepCompareEffect(() => {
-    onChange({ target: { name: formName, value: formContent, error: formHasErrors ? formErrors : '' } });
-  }, [formContent, formErrors]);
 
   // change the model options when the input modelName changes
   useEffect(() => {
@@ -107,15 +78,18 @@ const EmbeddedRecord = ({
     const eventName = event.target.name || event.target.getAttribute('name'); // name of the form field triggering the event
     const eventValue = event.target.value;
 
-    const { properties: { [eventName]: prop } } = schema.get(modelName);
-    const { value, error } = schema.validateValue(prop, eventValue, variant === FORM_VARIANT.SEARCH);
-    setFormFieldContent({ type: 'update', payload: { name: eventName, value } });
-    setFormFieldError({ type: 'update', payload: { name: eventName, value: error } });
+    onChange({
+      target: {
+        name: formName,
+        value: { ...formContent, [eventName]: eventValue },
+      },
+    });
   };
 
   if ((!formContent || !formContent['@class']) && variant === FORM_VARIANT.VIEW) {
     return null;
   }
+
   return (
     <FormControl className="embedded-record" required={required} disabled={disabled} error={formHasErrors}>
       <div className="embedded-record__header">
@@ -136,10 +110,7 @@ const EmbeddedRecord = ({
             choices: modelOptions, required: true, name: '@class', type: 'string',
           }}
           value={modelName}
-          onChange={({ target: { value } }) => {
-            setFormFieldContent({ type: 'update', payload: { name: '@class', value } });
-            setFormFieldError({ type: 'update', payload: { name: 'message', value: '' } });
-          }}
+          onChange={handleOnChange}
           disabled={modelOptions.length < 2 || disabled}
           schema={schema}
           error={formErrors['@class'] || ''}

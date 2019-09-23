@@ -144,7 +144,7 @@ const AddReviewDialog = ({
           />
           <FormControlLabel
             control={<Checkbox />}
-            label="Also Update the Statement Amalgamated Reivew Status (Recommended)"
+            label="Also Update the Statement Amalgamated Review Status (Recommended)"
             checked={updateAmalgamated}
             onChange={() => setUpdateAmalgamated(!updateAmalgamated)}
             color="primary"

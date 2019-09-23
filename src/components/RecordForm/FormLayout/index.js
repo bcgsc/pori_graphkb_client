@@ -26,15 +26,17 @@ import EdgeFields from './EdgeFields';
 
 /**
  * @param {object} props the input properties
- * @param {string} props.name the name of this form element used in propgating content to the parent form
+ * @param {string} props.modelName the name of the schema model to use
  * @param {function} props.onChange the parent handler function
- * @param {function} props.onSubmit the parent handler function to submit the form contents
- * @param {function} props.onDelete the parent handler function to delete the current record
- * @param {function} props.reviewProps props to render statement reviews to be passed to detail chip
  * @param {Array.<string>} props.aboveFold the property names which should be put above the collapse
  * @param {Array.<string>} props.belowFold the property names which should be put in the collapsed section
  * @param {Array.<Array.<string>>} props.groups properties that should be grouped together
  * @param {bool} props.collapseExtra flag to indicate a collapsible section should be created
+ * @param {object} props.content the form content
+ * @param {object} props.errors the form errors
+ * @param {string} props.variant the form variant
+ * @param {bool} props.disabled flag to indicated form fields are disabled
+ * @param {string} props.className css class to add to main element
  */
 const FormLayout = ({
   content, errors, onChange, variant, modelName, disabled, className, aboveFold, belowFold, collapseExtra, groups,

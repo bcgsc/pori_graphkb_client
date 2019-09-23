@@ -18,7 +18,7 @@ import PropTypes from 'prop-types';
  * @param {boolean} props.error flag to indicate there has been an error filling this field
  * @param {string} props.label the field label
  * @param {string} props.name the name of the field used in propogating events
- * @param {function} props.onValueChange the function handler for changes
+ * @param {function} props.onChange the function handler for changes
  * @param {boolean} props.required flag to indicate this field must be filled
  * @param {string|boolean} props.value the current value
  */
@@ -28,7 +28,7 @@ const BooleanField = (props) => {
     error,
     label,
     name,
-    onValueChange,
+    onChange,
     required,
     helperText,
     value: initialValue,
@@ -54,7 +54,7 @@ const BooleanField = (props) => {
         </FormLabel>
         <RadioGroup
           name={name}
-          onChange={e => onValueChange(e)}
+          onChange={e => onChange(e)}
           value={value}
           style={{ flexDirection: 'row' }}
         >
@@ -72,7 +72,7 @@ BooleanField.propTypes = {
   error: PropTypes.bool,
   label: PropTypes.string,
   name: PropTypes.string.isRequired,
-  onValueChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
   required: PropTypes.bool,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   helperText: PropTypes.string,

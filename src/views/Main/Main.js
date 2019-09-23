@@ -178,9 +178,18 @@ const Main = () => {
             <Route path="/about" component={AboutView} />
             <AuthenticatedRoute exact path="/query" component={QueryView} />
             <AuthenticatedRoute path="/query/advanced/builder" component={QueryBuilderView} />
+            <AuthenticatedRoute
+              path="/edit/:modelName(Source|source|User|user|UserGroup|usergroup)/:rid"
+              admin
+              component={RecordView}
+            />
             <AuthenticatedRoute path="/:variant(edit|view)/:modelName/:rid" component={RecordView} />
             <AuthenticatedRoute path="/:variant(edit|view)/:rid" component={RecordView} />
-            <AuthenticatedRoute path="/new" exact component={NewRecordView} />
+            <AuthenticatedRoute
+              path="/new/:modelName(Source|source|User|user|UserGroup|usergroup)"
+              admin
+              component={NewRecordView}
+            />
             <AuthenticatedRoute path="/new/:modelName" component={NewRecordView} />
             <Redirect exact path="/query/advanced" to="/search/v" />
             {/* TODO: Add search routing */}

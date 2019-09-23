@@ -32,7 +32,7 @@ const FieldGroup = ({
         if (subgroup.length) {
           newOrder.push(subgroup);
         }
-      } else if (!properties[item].generated) {
+      } else if (!properties[item] || !properties[item].generated) {
         newOrder.push(item);
       }
     });
@@ -70,7 +70,7 @@ const FieldGroup = ({
           model={prop}
           value={content[name]}
           error={errors[name]}
-          onValueChange={onChange}
+          onChange={onChange}
           schema={schema}
           variant={variant}
           key={name}

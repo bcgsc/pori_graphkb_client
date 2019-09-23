@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import {
   ListItem,
   TextField,
@@ -36,6 +36,7 @@ import EmbeddedListTable from './StatementReviewsTable';
  * @param {string} props.variant the form variant to be passed down to embedded forms
  * @param {object} props.reviewProps object to be passed to EmbeddedListTable for review display
  * @param {object} props.innerProps props to pass to the inner form field element
+ * @param {bool} props.formIsDirty flag to indicate changes have been made to the form content
  */
 const FormField = (props) => {
   const { schema } = useContext(KBContext);
@@ -49,6 +50,7 @@ const FormField = (props) => {
     variant = 'view',
     label = null,
     innerProps,
+    formIsDirty = true,
   } = props;
 
   const {
@@ -66,27 +68,23 @@ const FormField = (props) => {
 
   const generated = Boolean(model.generated && variant !== FORM_VARIANT.SEARCH);
   const mandatory = Boolean(model.mandatory && variant !== FORM_VARIANT.SEARCH);
-  const errorFlag = error && !generated;
 
-  const [helperText, setHelperText] = useState('');
+  const errorFlag = error && !generated && formIsDirty;
 
+  let helperText;
 
-  useEffect(() => {
-    let newHelperText;
-
-    if (errorFlag) {
-      newHelperText = error.message;
-    } else if (variant === FORM_VARIANT.EDIT && example !== undefined) {
-      if (!description) {
-        newHelperText = `ex. ${example}`;
-      } else {
-        newHelperText = `${description} (ex. ${example})`;
-      }
+  if (errorFlag) {
+    helperText = error.message;
+  } else if (variant === FORM_VARIANT.EDIT && example !== undefined) {
+    if (!description) {
+      helperText = `ex. ${example}`;
     } else {
-      newHelperText = description;
+      helperText = `${description} (ex. ${example})`;
     }
-    setHelperText(newHelperText);
-  }, [description, error, errorFlag, example, variant]);
+  } else {
+    helperText = description;
+  }
+
 
   let value = inputValue;
 
@@ -293,6 +291,7 @@ FormField.propTypes = {
   label: PropTypes.string,
   variant: PropTypes.string,
   innerProps: PropTypes.object,
+  formIsDirty: PropTypes.bool,
 };
 
 
@@ -304,6 +303,7 @@ FormField.defaultProps = {
   variant: 'view',
   value: null,
   innerProps: {},
+  formIsDirty: false,
 };
 
 

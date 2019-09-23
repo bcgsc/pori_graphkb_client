@@ -8,7 +8,7 @@ import { FORM_VARIANT } from '../util';
  * Renders the two edge specific input fields (out/in)
  */
 const EdgeFields = ({
-  schema, model, onChange, content, errors, disabled, variant,
+  schema, model, onChange, content, errors, disabled, variant, formIsDirty,
 }) => (
   <React.Fragment key="relationship-content">
     <FormField
@@ -26,6 +26,7 @@ const EdgeFields = ({
       value={content.out}
       disabled={disabled}
       variant={variant}
+      formIsDirty={formIsDirty}
       label="Source Record (out)"
     />
     <FormField
@@ -43,6 +44,7 @@ const EdgeFields = ({
       value={content.in}
       disabled={disabled}
       variant={variant}
+      formIsDirty={formIsDirty}
       label="Target Record (in)"
     />
   </React.Fragment>
@@ -57,6 +59,7 @@ EdgeFields.propTypes = {
   disabled: PropTypes.bool,
   schema: PropTypes.object.isRequired,
   variant: PropTypes.string,
+  formIsDirty: PropTypes.bool,
 };
 
 EdgeFields.defaultProps = {
@@ -64,6 +67,7 @@ EdgeFields.defaultProps = {
   errors: {},
   disabled: false,
   variant: FORM_VARIANT.VIEW,
+  formIsDirty: true,
 };
 
 

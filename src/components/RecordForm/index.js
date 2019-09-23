@@ -79,6 +79,7 @@ const RecordForm = ({
   const [actionInProgress, setActionInProgress] = useState(false);
   const controllers = [];
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
+  const [formIsDirty, setFormIsDirty] = useState(false);
 
   // handle and store the form content
   const [formContent, setFormFieldContent] = useReducer((state, action) => {
@@ -113,6 +114,7 @@ const RecordForm = ({
   useDeepCompareEffect(() => {
     setFormFieldContent({ type: 'replace', payload: initialValue || {} });
     setFormFieldError({ type: 'replace', payload: {} });
+    setFormIsDirty(false);
   }, [initialValue]);
 
   /**
@@ -123,6 +125,7 @@ const RecordForm = ({
       // bring up the snackbar for errors
       console.error(formErrors);
       snackbar.add('There are errors in the form which must be resolved before it can be submitted');
+      setFormIsDirty(true);
     } else {
       // ok to POST
       const content = { ...formContent };
@@ -188,8 +191,11 @@ const RecordForm = ({
       // bring up the snackbar for errors
       console.error(formErrors);
       snackbar.add('There are errors in the form which must be resolved before it can be submitted');
+      setFormIsDirty(true);
+    } else if (!formIsDirty) {
+      snackbar.add('no changes to submit');
+      onSubmit(formContent);
     } else {
-      // ok to PATCH
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
       const call = api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
@@ -206,7 +212,7 @@ const RecordForm = ({
       }
       setActionInProgress(false);
     }
-  }, [controllers, formContent, formErrors, formHasErrors, modelName, onError, onSubmit, schema, snackbar]);
+  }, [controllers, formContent, formErrors, formHasErrors, formIsDirty, modelName, onError, onSubmit, schema, snackbar]);
 
   const handleOnChange = (event) => {
     // add the new value to the field
@@ -218,6 +224,7 @@ const RecordForm = ({
 
     setFormFieldContent({ type: 'update', payload: { name: eventName, value } });
     setFormFieldError({ type: 'update', payload: { name: eventName, value: error } });
+    setFormIsDirty(true);
   };
 
   const handleAddReview = useCallback((content, updateReviewStatus) => {
@@ -270,6 +277,7 @@ const RecordForm = ({
       </div>
       <FormLayout
         {...rest}
+        formIsDirty={formIsDirty}
         content={formContent}
         errors={formErrors}
         onChange={handleOnChange}
@@ -308,7 +316,7 @@ const RecordForm = ({
                 color="primary"
                 size="large"
                 requireConfirm={false}
-                disabled={actionInProgress || formHasErrors}
+                disabled={actionInProgress || (formHasErrors && formIsDirty)}
               >
                 {variant === FORM_VARIANT.EDIT
                   ? 'SUBMIT CHANGES'

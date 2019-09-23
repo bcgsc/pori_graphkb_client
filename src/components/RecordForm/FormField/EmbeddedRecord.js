@@ -51,8 +51,8 @@ const EmbeddedRecord = ({
 
   // if the parent form passes down new values, replace the current ones
   useDeepCompareEffect(() => {
-    setFormContent(initialValue);
-    setFormErrors(errors);
+    setFormContent(initialValue || {});
+    setFormErrors(errors || {});
   }, [initialValue, errors, schema]);
 
   useEffect(() => {

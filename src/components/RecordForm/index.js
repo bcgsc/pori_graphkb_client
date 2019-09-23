@@ -283,7 +283,7 @@ const RecordForm = ({
           {variant === FORM_VARIANT.EDIT
             ? (
               <ActionButton
-                onClick={() => handleDeleteAction}
+                onClick={handleDeleteAction}
                 variant="outlined"
                 size="large"
                 message="Are you sure you want to delete this record?"

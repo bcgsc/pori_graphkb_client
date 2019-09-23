@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import {
   ListItem,
   TextField,
@@ -69,7 +69,6 @@ const FormField = (props) => {
   const generated = Boolean(model.generated && variant !== FORM_VARIANT.SEARCH);
   const mandatory = Boolean(model.mandatory && variant !== FORM_VARIANT.SEARCH);
 
-  // const [helperText, setHelperText] = useState('');
   const errorFlag = error && !generated && formIsDirty;
 
   let helperText;

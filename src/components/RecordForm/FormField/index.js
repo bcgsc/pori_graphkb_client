@@ -36,6 +36,7 @@ import EmbeddedListTable from './StatementReviewsTable';
  * @param {string} props.variant the form variant to be passed down to embedded forms
  * @param {object} props.reviewProps object to be passed to EmbeddedListTable for review display
  * @param {object} props.innerProps props to pass to the inner form field element
+ * @param {bool} props.formIsDirty flag to indicate changes have been made to the form content
  */
 const FormField = (props) => {
   const { schema } = useContext(KBContext);

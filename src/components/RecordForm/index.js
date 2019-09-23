@@ -92,7 +92,7 @@ const RecordForm = ({
       return { ...payload };
     }
     throw new Error(`actionType (${actionType}) not implemented`);
-  }, initialValue);
+  }, initialValue || {});
 
   // handle and store any errors reported from form field validators
   const [formErrors, setFormFieldError] = useReducer((state, action) => {
@@ -112,20 +112,8 @@ const RecordForm = ({
   useEffect(() => () => controllers.map(c => c.abort()), []); // eslint-disable-line
 
   useDeepCompareEffect(() => {
-    // check for errors
-    const { properties } = schema.get(modelName);
-
-    const initialErrors = {};
-    Object.values(properties).forEach((prop) => {
-      const { error } = schema.validateValue(prop, initialValue[prop.name], false);
-
-      if (error) {
-        initialErrors[prop.name] = error;
-      }
-    });
-
-    setFormFieldContent({ type: 'replace', payload: initialValue });
-    setFormFieldError({ type: 'replace', payload: initialErrors });
+    setFormFieldContent({ type: 'replace', payload: initialValue || {} });
+    setFormFieldError({ type: 'replace', payload: {} });
     setFormIsDirty(false);
   }, [initialValue]);
 
@@ -303,7 +291,7 @@ const RecordForm = ({
           {variant === FORM_VARIANT.EDIT
             ? (
               <ActionButton
-                onClick={() => handleDeleteAction}
+                onClick={handleDeleteAction}
                 variant="outlined"
                 size="large"
                 message="Are you sure you want to delete this record?"

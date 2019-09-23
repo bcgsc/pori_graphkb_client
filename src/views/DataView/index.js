@@ -405,7 +405,7 @@ class DataView extends React.Component {
           ? 'data-view--squished'
           : ''}`}
       >
-        <div className="data-view__header">
+        <div className={`data-view__header${!URLContainsTable ? '--graph-view' : ''}`}>
           {URLContainsTable && (
             <>
               <Typography variant="h5">Active Filters</Typography>
@@ -433,7 +433,7 @@ class DataView extends React.Component {
             </IconButton>
           )}
         </div>
-        <div className="data-view__content">
+        <div className={`data-view__content${!URLContainsTable ? '--graph-view' : ''}`}>
           {cache && (
             <>
               {this.renderDataComponent()}

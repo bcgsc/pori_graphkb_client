@@ -91,7 +91,7 @@ const RecordForm = ({
       return { ...payload };
     }
     throw new Error(`actionType (${actionType}) not implemented`);
-  }, initialValue);
+  }, initialValue || {});
 
   // handle and store any errors reported from form field validators
   const [formErrors, setFormFieldError] = useReducer((state, action) => {
@@ -111,7 +111,7 @@ const RecordForm = ({
   useEffect(() => () => controllers.map(c => c.abort()), []); // eslint-disable-line
 
   useDeepCompareEffect(() => {
-    setFormFieldContent({ type: 'replace', payload: initialValue });
+    setFormFieldContent({ type: 'replace', payload: initialValue || {} });
     setFormFieldError({ type: 'replace', payload: {} });
   }, [initialValue]);
 

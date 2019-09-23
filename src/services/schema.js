@@ -25,7 +25,12 @@ class Schema {
     try {
       return this.get(name);
     } catch (err) {
-      return this.getFromRoute(name);
+      const model = this.getFromRoute(name);
+
+      if (model) {
+        return model;
+      }
+      throw err;
     }
   }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   ListItem,
   TextField,
@@ -8,19 +8,18 @@ import PropTypes from 'prop-types';
 import api from '../../../services/api';
 import ResourceSelectComponent from '../../ResourceSelectComponent';
 import RecordAutocomplete from '../../RecordAutocomplete';
-import { withKB } from '../../KBContext';
-import FieldHelp from './FieldHelp';
+import { KBContext } from '../../KBContext';
 import BooleanField from './BooleanField';
 import TextArrayField from './TextArrayField';
 import PermissionsTable from './PermissionsTable';
 import FilteredRecordAutocomplete from './FilteredRecordAutocomplete';
 
 // unavoidable circular dependency below
-import EmbeddedNodeForm from '../EmbeddedRecordForm';
+import EmbeddedRecord from './EmbeddedRecord';
 
 import './index.scss';
 import { FORM_VARIANT } from '../util';
-import EmbeddedListTable from './StatementReviewList';
+import EmbeddedListTable from './StatementReviewsTable';
 
 /**
  * Generate the field component for a form. Uses the property model to decide
@@ -36,19 +35,20 @@ import EmbeddedListTable from './StatementReviewList';
  * @param {string} props.label the label to use for the form field (defaults to the property model name)
  * @param {string} props.variant the form variant to be passed down to embedded forms
  * @param {object} props.reviewProps object to be passed to EmbeddedListTable for review display
+ * @param {object} props.innerProps props to pass to the inner form field element
  */
 const FormField = (props) => {
+  const { schema } = useContext(KBContext);
   const {
     className = '',
     error,
     onValueChange,
     model,
-    schema,
     value: inputValue,
     disabled = false,
     variant = 'view',
     label = null,
-    reviewProps,
+    innerProps,
   } = props;
 
   const {
@@ -61,10 +61,28 @@ const FormField = (props) => {
     name,
     type,
     nullable,
+    iterable,
   } = model;
 
   const generated = Boolean(model.generated && variant !== FORM_VARIANT.SEARCH);
   const mandatory = Boolean(model.mandatory && variant !== FORM_VARIANT.SEARCH);
+  const errorFlag = error && !generated;
+
+  const [helperText, setHelperText] = useState('');
+
+
+  useEffect(() => {
+    let newHelperText;
+
+    if (errorFlag) {
+      newHelperText = error.message;
+    } else if (variant === FORM_VARIANT.EDIT && example !== undefined) {
+      newHelperText = `${description} (ex. ${example})`;
+    } else {
+      newHelperText = description;
+    }
+    setHelperText(newHelperText);
+  }, [description, error, errorFlag, example, variant]);
 
   let value = inputValue;
 
@@ -83,7 +101,6 @@ const FormField = (props) => {
   }
 
   let propComponent;
-  const errorFlag = error && !generated;
 
   if (type === 'boolean') {
     propComponent = (
@@ -95,45 +112,68 @@ const FormField = (props) => {
         onValueChange={onValueChange}
         required={mandatory}
         value={value}
+        helperText={helperText}
       />
     );
-  } else if (type === 'embeddedset') {
-    propComponent = (
-      <TextArrayField
-        error={error}
-        label={label || name}
-        value={value}
-        model={model}
-        name={name}
-        onValueChange={onValueChange}
-        disabled={disabled || generated}
-      />
-    );
-  } else if (type === 'embedded' && model.linkedClass && model.linkedClass.name === 'Permissions') {
-    // permissions table of checkboxes
-    propComponent = (
-      <PermissionsTable
-        label={label || name}
-        value={value}
-        model={model}
-        name={name}
-        onValueChange={onValueChange}
-        disabled={disabled || generated}
-      />
-    );
-  } else if (type === 'embedded') {
-    propComponent = (
-      <EmbeddedNodeForm
-        error={!!error}
-        label={label || name}
-        modelName={model.linkedClass.name}
-        name={name}
-        onValueChange={onValueChange}
-        schema={schema}
-        value={value}
-        variant={variant}
-      />
-    );
+  } else if (type.includes('embedded')) {
+    if (iterable) {
+      if (model.linkedClass && model.linkedClass.name === 'StatementReview') {
+        propComponent = (
+          <EmbeddedListTable
+            label={name}
+            values={value || []}
+            variant={variant}
+            onChange={onValueChange}
+            name={name}
+          />
+        );
+      } else {
+        propComponent = (
+          <TextArrayField
+            error={error}
+            label={label || name}
+            value={value}
+            model={model}
+            name={name}
+            onValueChange={onValueChange}
+            disabled={disabled || generated}
+            helperText={helperText}
+          />
+        );
+      }
+    } else if (model.linkedClass) {
+      if (model.linkedClass.name === 'Permissions') {
+        // permissions table of checkboxes
+        propComponent = (
+          <PermissionsTable
+            label={label || name}
+            value={value}
+            model={model}
+            name={name}
+            onValueChange={onValueChange}
+            disabled={disabled || generated}
+          />
+        );
+      } else {
+        const linkedModel = value && value['@class']
+          ? value['@class']
+          : model.linkedClass.name;
+
+        propComponent = (
+          <EmbeddedRecord
+            errors={error}
+            label={label || name}
+            modelName={linkedModel}
+            name={name}
+            onChange={onValueChange}
+            value={value}
+            variant={variant}
+            disabled={disabled}
+            helperText={helperText}
+          />
+        );
+      }
+    }
   } else if (choices) {
     propComponent = (
       <ResourceSelectComponent
@@ -143,7 +183,8 @@ const FormField = (props) => {
         resources={['', ...choices]}
         label={label || name}
         value={value || ''}
-        errorText={errorFlag ? error.message || error : ''}
+        error={errorFlag}
+        helperText={helperText}
         disabled={generated || disabled}
         className={className}
       />
@@ -151,13 +192,14 @@ const FormField = (props) => {
   } else if (type === 'link' || type === 'linkset') {
     const autoProps = {
       disabled: generated || disabled,
-      errorText: errorFlag ? error.message || error : '',
+      error: errorFlag,
       isMulti: type === 'linkset',
       label: label || name,
       name,
       onChange: onValueChange,
       required: mandatory,
       value,
+      helperText,
       DetailChipProps: {
         getLink: schema.getLink,
       },
@@ -208,18 +250,10 @@ const FormField = (props) => {
         />
       );
     }
-  } else if (type === 'embeddedlist') {
-    propComponent = (
-      <EmbeddedListTable
-        label={name}
-        values={value || []}
-        reviewProps={reviewProps}
-        variant={variant}
-      />
-    );
   } else {
     propComponent = (
       <TextField
+        {...innerProps}
         label={name}
         name={label || name}
         required={mandatory}
@@ -227,10 +261,9 @@ const FormField = (props) => {
         onChange={onValueChange}
         InputLabelProps={{ shrink: !!value }}
         error={errorFlag}
-        helperText={errorFlag ? error.message : ''}
+        helperText={helperText}
         disabled={generated || disabled}
         className="text-field"
-        multiline
       />
     );
   }
@@ -240,11 +273,6 @@ const FormField = (props) => {
       <div className="form-field__content">
         {propComponent}
       </div>
-      <FieldHelp
-        className="form-field__help"
-        description={description}
-        example={example && example.toString()}
-      />
     </ListItem>
   );
 };
@@ -260,7 +288,7 @@ FormField.propTypes = {
   schema: PropTypes.object.isRequired,
   label: PropTypes.string,
   variant: PropTypes.string,
-  reviewProps: PropTypes.object,
+  innerProps: PropTypes.object,
 };
 
 
@@ -271,8 +299,8 @@ FormField.defaultProps = {
   label: null,
   variant: 'view',
   value: null,
-  reviewProps: {},
+  innerProps: {},
 };
 
 
-export default withKB(FormField);
+export default FormField;

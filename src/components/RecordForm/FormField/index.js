@@ -28,7 +28,7 @@ import EmbeddedListTable from './StatementReviewsTable';
  * @param {object} props
  * @param {PropertyModel} props.model the property model which defines the property type and other requirements
  * @param {Schema} props.schema the schema object
- * @param {function} props.onValueChange the function to update the parent form
+ * @param {function} props.onChange the function to update the parent form
  * @param {function} props.onReviewSelection the function to toggle between statement reviews
  * @param {*} props.value the initial value of the field
  * @param {Error} props.error the error object if any
@@ -42,7 +42,7 @@ const FormField = (props) => {
   const {
     className = '',
     error,
-    onValueChange,
+    onChange,
     model,
     value: inputValue,
     disabled = false,
@@ -77,7 +77,11 @@ const FormField = (props) => {
     if (errorFlag) {
       newHelperText = error.message;
     } else if (variant === FORM_VARIANT.EDIT && example !== undefined) {
-      newHelperText = `${description} (ex. ${example})`;
+      if (!description) {
+        newHelperText = `ex. ${example}`;
+      } else {
+        newHelperText = `${description} (ex. ${example})`;
+      }
     } else {
       newHelperText = description;
     }
@@ -97,7 +101,7 @@ const FormField = (props) => {
   }
 
   if (value !== inputValue) {
-    onValueChange({ target: { name, value } });
+    onChange({ target: { name, value } });
   }
 
   let propComponent;
@@ -109,7 +113,7 @@ const FormField = (props) => {
         error={!!error}
         label={label || model.name}
         name={model.name}
-        onValueChange={onValueChange}
+        onChange={onChange}
         required={mandatory}
         value={value}
         helperText={helperText}
@@ -123,7 +127,7 @@ const FormField = (props) => {
             label={name}
             values={value || []}
             variant={variant}
-            onChange={onValueChange}
+            onChange={onChange}
             name={name}
           />
         );
@@ -135,7 +139,7 @@ const FormField = (props) => {
             value={value}
             model={model}
             name={name}
-            onValueChange={onValueChange}
+            onChange={onChange}
             disabled={disabled || generated}
             helperText={helperText}
           />
@@ -150,7 +154,7 @@ const FormField = (props) => {
             value={value}
             model={model}
             name={name}
-            onValueChange={onValueChange}
+            onChange={onChange}
             disabled={disabled || generated}
           />
         );
@@ -165,7 +169,7 @@ const FormField = (props) => {
             label={label || name}
             modelName={linkedModel}
             name={name}
-            onChange={onValueChange}
+            onChange={onChange}
             value={value}
             variant={variant}
             disabled={disabled}
@@ -179,7 +183,7 @@ const FormField = (props) => {
       <ResourceSelectComponent
         name={name}
         required={mandatory}
-        onChange={onValueChange}
+        onChange={onChange}
         resources={['', ...choices]}
         label={label || name}
         value={value || ''}
@@ -196,7 +200,7 @@ const FormField = (props) => {
       isMulti: type === 'linkset',
       label: label || name,
       name,
-      onChange: onValueChange,
+      onChange,
       required: mandatory,
       value,
       helperText,
@@ -258,7 +262,7 @@ const FormField = (props) => {
         name={label || name}
         required={mandatory}
         value={value || ''}
-        onChange={onValueChange}
+        onChange={onChange}
         InputLabelProps={{ shrink: !!value }}
         error={errorFlag}
         helperText={helperText}
@@ -281,7 +285,7 @@ const FormField = (props) => {
 FormField.propTypes = {
   className: PropTypes.string,
   error: PropTypes.object,
-  onValueChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
   model: PropTypes.object.isRequired,
   disabled: PropTypes.bool,
   value: PropTypes.any,

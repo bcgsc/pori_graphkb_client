@@ -125,14 +125,14 @@ const AddReviewDialog = ({
         <DialogContent className="review-dialog__fields">
           <FormField
             model={status}
-            onValueChange={handleOnChange}
+            onChange={handleOnChange}
             value={formContent[status.name]}
             variant={FORM_VARIANT.NEW}
             error={formErrors[status.name]}
           />
           <FormField
             model={comment}
-            onValueChange={handleOnChange}
+            onChange={handleOnChange}
             value={formContent[comment.name]}
             variant={FORM_VARIANT.NEW}
             error={formErrors[comment.name]}

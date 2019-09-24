@@ -606,6 +606,7 @@ class DataTable extends React.Component {
       >
         {this.renderOptionsMenu()}
         <AgGridReact
+          reactNext
           defaultColDef={{
             sortable: true,
             resizable: true,

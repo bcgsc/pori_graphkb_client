@@ -358,7 +358,7 @@ class Schema {
               hide,
             }],
           };
-          Object.values(prop.linkedClass.properties).forEach((subProp) => {
+          Object.values(prop.linkedClass.queryProperties).forEach((subProp) => {
             if (showNested.includes(subProp.name)) {
               const colDef = ({
                 field: subProp.name,

@@ -312,37 +312,28 @@ class Schema {
     const showNested = [
       '@rid',
       '@class',
-      'source',
-      'sourceId',
-      'name',
+      'displayName',
     ];
 
     const getPreview = propName => ({ data }) => {
       if (data && data[propName]) {
         return this.getLabel(data[propName], false);
       }
-      return null;
+      return '';
     };
 
     const valueGetter = (propName, subPropName = null) => ({ data }) => {
       if (data) {
         if (!subPropName) {
-          return data[propName];
+          return this.getLabel(data[propName]);
         } if (data[propName]) {
-          return data[propName][subPropName];
+          return this.getLabel(data[propName][subPropName]);
         }
       }
-      return null;
+      return '';
     };
 
-    const defns = [
-      {
-        colId: 'preview',
-        field: 'preview',
-        sortable: false,
-        valueGetter: ({ data }) => this.getLabel(data),
-      },
-    ];
+    const defns = [];
 
     Object.values(allProps)
       .filter(prop => !exclude.includes(prop.name) && prop.type !== 'embedded')
@@ -374,6 +365,7 @@ class Schema {
                 colId: `${prop.name}.${subProp.name}`,
                 valueGetter: valueGetter(prop.name, subProp.name),
                 columnGroupShow: 'open',
+                sortable: true,
                 hide,
               });
               groupDefn.children.push(colDef);

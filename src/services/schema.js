@@ -312,27 +312,25 @@ class Schema {
     const showNested = [
       '@rid',
       '@class',
-      'source',
-      'sourceId',
-      'name',
+      'displayName',
     ];
 
     const getPreview = propName => ({ data }) => {
       if (data && data[propName]) {
         return this.getLabel(data[propName], false);
       }
-      return null;
+      return '';
     };
 
     const valueGetter = (propName, subPropName = null) => ({ data }) => {
       if (data) {
         if (!subPropName) {
-          return data[propName];
+          return this.getLabel(data[propName]);
         } if (data[propName]) {
-          return data[propName][subPropName];
+          return this.getLabel(data[propName][subPropName]);
         }
       }
-      return null;
+      return '';
     };
 
     const defns = [
@@ -367,13 +365,14 @@ class Schema {
               hide,
             }],
           };
-          Object.values(prop.linkedClass.properties).forEach((subProp) => {
+          Object.values(prop.linkedClass.queryProperties).forEach((subProp) => {
             if (showNested.includes(subProp.name)) {
               const colDef = ({
                 field: subProp.name,
                 colId: `${prop.name}.${subProp.name}`,
                 valueGetter: valueGetter(prop.name, subProp.name),
                 columnGroupShow: 'open',
+                sortable: true,
                 hide,
               });
               groupDefn.children.push(colDef);

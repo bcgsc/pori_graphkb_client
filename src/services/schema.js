@@ -6,7 +6,7 @@ import api from './api';
 
 const { schema: SCHEMA_DEFN } = kbSchema;
 
-const MAX_LABEL_LENGTH = 30;
+const MAX_LABEL_LENGTH = 50;
 
 
 /**
@@ -14,49 +14,10 @@ const MAX_LABEL_LENGTH = 30;
  */
 class Schema {
   constructor(schema = SCHEMA_DEFN) {
-    this.schema = schema;
-    this.normalizedModelNames = {};
-    Object.values(schema).forEach((model) => {
-      this.normalizedModelNames[model.name.toLowerCase()] = model;
-      this.normalizedModelNames[model.routeName] = model;
-      this.normalizedModelNames[model.routeName.slice(1)] = model;
-    });
-  }
-
-  /**
-   * Check that a given class/model name exists
-   */
-  has(obj) {
-    try {
-      return Boolean(this.get(obj));
-    } catch (err) {
-      return false;
-    }
-  }
-
-  /**
-   * Returns Knowledgebase class schema.
-   * @param {Object|string} obj - Record to fetch schema of.
-   */
-  @boundMethod
-  get(obj) {
-    let cls = obj;
-    if (obj && typeof obj === 'object' && obj['@class']) {
-      cls = obj['@class'];
-    }
-    return this.normalizedModelNames[typeof cls === 'string'
-      ? cls.toLowerCase()
-      : cls
-    ];
-  }
-
-  getFromRoute(routeName) {
-    for (const model of Object.values(this.schema)) {  // eslint-disable-line
-      if (model.routeName === routeName) {
-        return model;
-      }
-    }
-    throw new Error(`Missing model corresponding to route (${routeName})`);
+    this.schema = schema.schema;
+    this.has = schema.has.bind(schema);
+    this.get = schema.get.bind(schema);
+    this.getFromRoute = schema.getFromRoute.bind(schema);
   }
 
   /**
@@ -64,27 +25,39 @@ class Schema {
    */
   @boundMethod
   getLabel(obj, truncate = true) {
-    try {
-      let label = this.get(obj).getPreview(obj);
-      if (label.length > MAX_LABEL_LENGTH - 3 && truncate) {
-        label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
+    let label;
+
+    if (obj) {
+      if (obj.displayNameTemplate) {
+        label = this.getPreview(obj);
+
+        if (label.length > MAX_LABEL_LENGTH - 3 && truncate) {
+          label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
+        }
+        return label;
+      } if (obj.displayName || obj.name) {
+        label = obj.displayName || obj.name;
+
+        if (obj['@rid']) {
+          label = `${label} (${obj['@rid']})`;
+        }
+        return label;
       }
-      if (obj['@rid']) {
-        label = `${label} (${obj['@rid']})`;
+      if (obj.target) {
+        return this.getLabel(obj.target);
       }
-      return label;
-    } catch (err) {}  // eslint-disable-line
-    try {
-      return obj['@rid'];
-    } catch (err) {} // eslint-disable-line
+      if (obj['@class']) {
+        return obj['@class'];
+      }
+    }
     return obj;
   }
 
   @boundMethod
   getLink(obj) {
     if (obj && obj['@rid']) {
-      const { routeName } = this.get(obj) || this.get('V');
-      return `/view${routeName}/${obj['@rid'].slice(1)}`;
+      const { name } = this.get(obj) || this.get('V');
+      return `/view/${name}/${obj['@rid'].slice(1)}`;
     }
     return '';
   }
@@ -95,12 +68,62 @@ class Schema {
    */
   @boundMethod
   getPreview(obj) {
-    try {
-      return this.get(obj).getPreview(obj);
-    } catch (err) {}  // eslint-disable-line
-    try {
-      return obj['@rid'];
-    } catch (err) {} // eslint-disable-line
+    if (obj) {
+      if (obj.displayNameTemplate) {
+        const statementBuilder = (record) => {
+          if (record === undefined) {
+            return null;
+          }
+          const vals = Array.isArray(record) ? record : [record];
+          let label = '';
+          vals.forEach((val) => {
+            if (val) {
+              label = `${label}${val.displayName} `;
+            }
+          });
+          return label;
+        };
+
+        const implyBy = statementBuilder(obj.impliedBy);
+        const relevance = statementBuilder(obj.relevance);
+        const appliesTo = statementBuilder(obj.appliesTo);
+        const supportedBy = statementBuilder(obj.supportedBy);
+
+        const label = obj.displayNameTemplate
+          .replace('{impliedBy}', implyBy)
+          .replace('{relevance}', relevance)
+          .replace('{appliesTo}', appliesTo)
+          .replace('{supportedBy}', supportedBy);
+
+        return label;
+      }
+
+      if (obj.displayName || obj.name) {
+        let label;
+        label = obj.displayName || obj.name;
+
+        if (label.length > MAX_LABEL_LENGTH) {
+          label = `${label.slice(0, MAX_LABEL_LENGTH - 3)}...`;
+        }
+        if (obj['@rid']) {
+          label = `${label} (${obj['@rid']})`;
+        }
+        return label;
+      }
+      if (obj['@class']) {
+        const label = this.getPreview(this.get(obj));
+
+        if (label) {
+          return label;
+        }
+      }
+      if (obj['@rid']) {
+        return obj['@rid'];
+      }
+      if (Array.isArray(obj)) { // embedded link set
+        return obj.length;
+      }
+    }
     return obj;
   }
 
@@ -181,6 +204,7 @@ class Schema {
   getEdges(node = null) {
     const { schema } = this;
     const list = schema.E.subclasses.slice().map(classModel => classModel.name);
+
     if (node) {
       const edges = [];
       Object.keys(node)
@@ -217,29 +241,37 @@ class Schema {
   defineGridColumns(search) {
     const { modelName } = api.getQueryFromSearch({ schema: this, search });
 
-    let allProps;
     const showEdges = [];
-
     const showByDefault = [
       '@rid', '@class',
     ];
 
-    if (modelName && modelName.toLowerCase() !== 'statement') {
-      allProps = this.get(modelName).queryProperties;
-      if (modelName.toLowerCase().includes('variant')) {
-        showEdges.push('in_ImpliedBy');
-        showByDefault.push('reference1', 'reference2', 'type');
-      } else if (modelName.toLowerCase() !== 'source') {
-        showByDefault.push('sourceIdVersion', 'version', 'source', 'name', 'sourceId');
-        showEdges.push('out_SubClassOf');
-      } else {
-        showByDefault.push('version', 'name', 'usage');
-      }
-    } else {
-      showEdges.push('out_ImpliedBy', 'out_SupportedBy');
-      allProps = this.get('Statement').queryProperties;
+    const allProps = this.get(modelName).queryProperties;
+
+    if (modelName.toLowerCase().includes('variant')) {
+      showByDefault.push('reference1', 'reference2', 'type');
+    } else if (modelName.toLowerCase() === 'statement') {
       showByDefault.push('source', 'appliesTo', 'relevance', 'evidenceLevel');
+    } else if (modelName.toLowerCase() !== 'source') {
+      showByDefault.push('sourceIdVersion', 'version', 'source', 'name', 'sourceId');
+      showEdges.push('out_SubClassOf');
+    } else {
+      showByDefault.push('version', 'name', 'usage');
     }
+
+    const defineLinkSetColumn = (name) => {
+      const colId = name;
+      const getLinkData = ({ data }) => data && (data[name] || []);
+
+      return {
+        colId,
+        field: colId,
+        sortable: false,
+        valueGetter: getLinkData,
+        width: 300,
+        cellRenderer: 'RecordList',
+      };
+    };
 
     const defineEdgeColumn = (name) => {
       const type = name.startsWith('out')
@@ -249,6 +281,7 @@ class Schema {
         ? 'in'
         : 'out';
       let colId = name.slice(type.length + 1);
+
       if (type === 'in') {
         colId = this.get(colId).reverseName;
       }
@@ -272,32 +305,32 @@ class Schema {
       'history',
       'groups',
       'uuid',
+      'displayName',
+      'displayNameTemplate',
     ];
 
     const showNested = [
       '@rid',
       '@class',
-      'source',
-      'sourceId',
-      'name',
+      'displayName',
     ];
 
     const getPreview = propName => ({ data }) => {
       if (data && data[propName]) {
         return this.getLabel(data[propName], false);
       }
-      return null;
+      return '';
     };
 
     const valueGetter = (propName, subPropName = null) => ({ data }) => {
       if (data) {
         if (!subPropName) {
-          return data[propName];
+          return this.getLabel(data[propName]);
         } if (data[propName]) {
-          return data[propName][subPropName];
+          return this.getLabel(data[propName][subPropName]);
         }
       }
-      return null;
+      return '';
     };
 
     const defns = [
@@ -305,7 +338,7 @@ class Schema {
         colId: 'preview',
         field: 'preview',
         sortable: false,
-        valueGetter: ({ data }) => this.getLabel(data, false),
+        valueGetter: ({ data }) => this.getLabel(data),
       },
     ];
 
@@ -314,7 +347,10 @@ class Schema {
       .sort((p1, p2) => p1.name.localeCompare(p2.name))
       .forEach((prop) => {
         const hide = !showByDefault.includes(prop.name);
-        if (prop.linkedClass) {
+
+        if (prop.type === 'linkset') {
+          defns.push(defineLinkSetColumn(prop.name));
+        } else if (prop.linkedClass) {
           // build a column group
           const groupDefn = {
             headerName: prop.name,
@@ -329,13 +365,14 @@ class Schema {
               hide,
             }],
           };
-          Object.values(prop.linkedClass.properties).forEach((subProp) => {
+          Object.values(prop.linkedClass.queryProperties).forEach((subProp) => {
             if (showNested.includes(subProp.name)) {
               const colDef = ({
                 field: subProp.name,
                 colId: `${prop.name}.${subProp.name}`,
                 valueGetter: valueGetter(prop.name, subProp.name),
                 columnGroupShow: 'open',
+                sortable: true,
                 hide,
               });
               groupDefn.children.push(colDef);

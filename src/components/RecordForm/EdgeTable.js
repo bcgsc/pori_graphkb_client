@@ -16,11 +16,11 @@ import { withKB } from '../KBContext';
 
 
 /**
- * Give some source node, summarizes the related nodes by their relationship class
+ * Given some source node, summarizes the related nodes by their relationship class
  * and the node they are related to
  *
  * @param {object} props
- * @param {function} props.itemToKey the function to create a uique key for each egde record
+ * @param {function} props.itemToKey the function to create a uique key for each edge record
  * @param {string} props.sourceNodeId the ID of the node we are summarizing relationships for
  * @param {Array.<object>} props.values the edge records
  * @param {Schema} props.schema the schema object (from context)

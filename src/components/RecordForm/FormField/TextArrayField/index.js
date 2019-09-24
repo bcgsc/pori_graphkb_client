@@ -152,6 +152,7 @@ class TextArrayField extends Component {
     const { target: { value: text } } = event;
     const { value } = this.state;
     this.setState({ textInputValue: text });
+
     if (text) {
       if (value.includes(text)) {
         this.setState({ textInputError: `Cannot add '${text}'. Elements must be unique` });
@@ -176,6 +177,7 @@ class TextArrayField extends Component {
       }
     } else if (key === 'Backspace') {
       const removeValue = value.filter(v => !deleted.has(v)).pop();
+
       if (removeValue) {
         this.handleDelete(removeValue);
       }

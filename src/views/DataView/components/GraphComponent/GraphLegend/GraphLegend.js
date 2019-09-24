@@ -65,7 +65,11 @@ function GraphLegend(props) {
                       className="color-chip"
                     />
                   </ListItemIcon>
-                  <ListItemText primary={util.antiCamelCase(key)} />
+                  <ListItemText primary={typeof key === 'object'
+                    ? util.antiCamelCase(key.name)
+                    : util.antiCamelCase(key)
+                                          }
+                  />
                 </ListItem>
               ))}
               {(propsMap.nodeProps[graphOptions.nodesColor] || []).includes('null') && (

@@ -4,6 +4,7 @@ import {
 } from '@material-ui/core';
 
 import api from '../../../services/api';
+import { isAuthorized } from '../../../services/auth';
 import { KBContext } from '../../../components/KBContext';
 import {
   PieChart,
@@ -25,8 +26,7 @@ class AboutMain extends Component {
   }
 
   async componentDidMount() {
-    const { auth } = this.context;
-    if (auth.isAuthorized()) {
+    if (isAuthorized(this.context)) {
       this.getClassStats();
       this.getVersionInfo();
     }
@@ -42,12 +42,14 @@ class AboutMain extends Component {
 
     const stats = await call.request();
 
-    this.setState({
-      stats: Array.from(
-        Object.keys(stats),
-        label => ({ label, value: stats[label] }),
-      ),
-    });
+    if (stats) {
+      this.setState({
+        stats: Array.from(
+          Object.keys(stats),
+          label => ({ label, value: stats[label] }),
+        ),
+      });
+    }
   }
 
   async getVersionInfo() {

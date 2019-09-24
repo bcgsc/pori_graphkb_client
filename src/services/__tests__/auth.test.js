@@ -1,94 +1,80 @@
 import jwt from 'jsonwebtoken';
-import { Authentication } from '../auth';
+import {
+  getUser, getUsername, isAuthenticated, isAuthorized, isAdmin,
+} from '../auth';
 
 const TEST_USER = { name: 'test user', groups: [{ name: 'not admin' }] };
-const ADMIN_USER = { name: 'test user', groups: [{ name: 'admin' }] };
+const ADMIN_USER = { name: 'admin user', groups: [{ name: 'admin' }] };
 const REALLY_LONG_TIME = 1000000000000;
 const ENCRYPTION_KEY = 'NotSuperSecret';
 
 describe('auth methods test', () => {
-  let auth;
-
-  beforeEach(() => {
-    auth = new Authentication();
-  });
+  const EXPIRED_JWT = jwt.sign({ user: ADMIN_USER }, ENCRYPTION_KEY, { expiresIn: 0 });
+  const VALID_JWT = jwt.sign({ user: TEST_USER, preferred_username: 'keycloak username' }, ENCRYPTION_KEY, { expiresIn: REALLY_LONG_TIME });
+  const ADMIN_JWT = jwt.sign({ user: ADMIN_USER }, ENCRYPTION_KEY, { expiresIn: REALLY_LONG_TIME });
 
   describe('expired token', () => {
-    const EXPIRED_JWT = jwt.sign({ user: TEST_USER }, ENCRYPTION_KEY, { expiresIn: 0 });
-    beforeEach(() => {
-      auth.keycloak.token = EXPIRED_JWT;
-      auth.authorizationToken = EXPIRED_JWT;
+    test('retrieved the user', () => {
+      const user = getUser({ authorizationToken: EXPIRED_JWT });
+      expect(user).toEqual(ADMIN_USER);
     });
-    it('retrieved the user', () => {
-      expect(auth.user).toEqual(TEST_USER);
+
+    test('is not authenticated', () => {
+      expect(isAuthenticated({ authorizationToken: EXPIRED_JWT, authenticationToken: EXPIRED_JWT })).toBe(false);
     });
-    it('is not authenticated', () => {
-      expect(auth.isAuthenticated()).toBe(false);
-    });
-    it('is not authorized', () => {
-      expect(auth.isAuthorized()).toBe(false);
-    });
-    it('is not admin', () => {
-      expect(auth.isAdmin(TEST_USER)).toBe(false);
+
+    test('is not authorized', () => {
+      expect(isAuthorized({ authorizationToken: EXPIRED_JWT, authenticationToken: EXPIRED_JWT })).toBe(false);
     });
   });
 
   describe('valid token', () => {
-    const VALID_JWT = jwt.sign({ user: TEST_USER }, ENCRYPTION_KEY, { expiresIn: REALLY_LONG_TIME });
-    beforeEach(() => {
-      auth.keycloak.token = VALID_JWT;
-      auth.authorizationToken = VALID_JWT;
+    test('retrieved the user', () => {
+      const user = getUser({ authorizationToken: VALID_JWT });
+      expect(user).toEqual(TEST_USER);
     });
-    it('retrieved the user', () => {
-      expect(auth.user).toEqual(TEST_USER);
+
+    test('is authenticated', () => {
+      expect(isAuthenticated({ authorizationToken: VALID_JWT, authenticationToken: VALID_JWT })).toBe(true);
     });
-    it('is authenticated', () => {
-      expect(auth.isAuthenticated()).toBe(true);
+
+    test('is authorized', () => {
+      expect(isAuthorized({ authorizationToken: VALID_JWT, authenticationToken: VALID_JWT })).toBe(true);
     });
-    it('is not authorized', () => {
-      expect(auth.isAuthenticated()).toBe(true);
-    });
-    it('is not admin', () => {
-      expect(auth.isAdmin(TEST_USER)).toBe(false);
+
+    test('is not admin', () => {
+      expect(isAdmin({ authorizationToken: VALID_JWT })).toBe(false);
     });
   });
 
-  describe('valid admin token without authent server', () => {
-    const VALID_JWT = jwt.sign({ user: ADMIN_USER }, ENCRYPTION_KEY, { expiresIn: REALLY_LONG_TIME });
-    beforeEach(() => {
-      auth.authorizationToken = VALID_JWT;
+  describe('getUsername', () => {
+    test('get username from authorizationToken', () => {
+      const name = getUsername({ authorizationToken: VALID_JWT, authenticationToken: VALID_JWT });
+      expect(name).toEqual('test user');
     });
-    it('retrieved the user', () => {
-      expect(auth.user).toEqual(ADMIN_USER);
-    });
-    it('is not authenticated', () => {
-      expect(auth.isAuthenticated()).toBe(false);
-    });
-    it('is authorized', () => {
-      expect(auth.isAuthorized()).toBe(true);
-    });
-    it('is admin', () => {
-      expect(auth.isAdmin(ADMIN_USER)).toBe(true);
+
+    test('falls back to authenticationToken if not authorizationToken', () => {
+      const name = getUsername({ authenticationToken: VALID_JWT });
+      expect(name).toEqual('keycloak username');
     });
   });
 
   describe('admin token', () => {
-    const VALID_JWT = jwt.sign({ user: ADMIN_USER }, ENCRYPTION_KEY, { expiresIn: REALLY_LONG_TIME });
-    beforeEach(() => {
-      auth.keycloak.token = VALID_JWT;
-      auth.authorizationToken = VALID_JWT;
+    test('retrieved the user', () => {
+      const user = getUser({ authorizationToken: ADMIN_JWT });
+      expect(user).toEqual(ADMIN_USER);
     });
-    it('retrieved the user', () => {
-      expect(auth.user).toEqual(ADMIN_USER);
+
+    test('is authenticated', () => {
+      expect(isAuthenticated({ authorizationToken: ADMIN_JWT, authenticationToken: ADMIN_JWT })).toBe(true);
     });
-    it('is authenticated', () => {
-      expect(auth.isAuthenticated()).toBe(true);
+
+    test('is not authorized', () => {
+      expect(isAuthenticated({ authorizationToken: ADMIN_JWT, authenticationToken: ADMIN_JWT })).toBe(true);
     });
-    it('is not authorized', () => {
-      expect(auth.isAuthenticated()).toBe(true);
-    });
-    it('is admin', () => {
-      expect(auth.isAdmin(ADMIN_USER)).toBe(true);
+
+    test('is admin', () => {
+      expect(isAdmin({ authorizationToken: ADMIN_JWT, authenticationToken: ADMIN_JWT })).toBe(true);
     });
   });
 });

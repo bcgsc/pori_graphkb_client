@@ -14,7 +14,7 @@ describe('<GraphOptionsPanel />', () => {
   const handleHelpOpenSpy = jest.spyOn(GraphOptionsPanel.prototype, 'handleHelpOpen');
   const handleHelpCloseSpy = jest.spyOn(GraphOptionsPanel.prototype, 'handleHelpClose');
 
-  it('renders md dialog as first child', () => {
+  test('renders md dialog as first child', () => {
     const propsMap = new PropsMap();
     testNodes.forEach(t => propsMap.loadNode(t));
     wrapper = mount(
@@ -30,7 +30,7 @@ describe('<GraphOptionsPanel />', () => {
     expect(wrapper.children().first().type()).toBe(Dialog);
   });
 
-  it('passes on open prop to child dialog', () => {
+  test('passes on open prop to child dialog', () => {
     wrapper = mount(
       <GraphOptionsPanel
         graphOptionsOpen={false}
@@ -47,7 +47,7 @@ describe('<GraphOptionsPanel />', () => {
     });
   });
 
-  it('triggers the handler when dialog closes', () => {
+  test('triggers the handler when dialog closes', () => {
     const handleDialogClose = jest.fn();
     const handleGraphOptionsChange = jest.fn();
     wrapper = mount(
@@ -64,7 +64,7 @@ describe('<GraphOptionsPanel />', () => {
     expect(handleDialogClose.mock.calls.length).toBe(2);
   });
 
-  it('opens and renders help dialog when help buttons are clicked', () => {
+  test('opens and renders help dialog when help buttons are clicked', () => {
     wrapper = mount(
       <GraphOptionsPanel
         graphOptionsOpen
@@ -79,15 +79,11 @@ describe('<GraphOptionsPanel />', () => {
     expect(wrapper.children().length).toBe(2);
     wrapper.find('.help-title button').simulate('click');
 
-    wrapper.find('.options-title button#advanced-help-btn').simulate('click');
-    expect(wrapper.children().length).toBe(2);
-    wrapper.find('.help-title button').simulate('click');
-
-    expect(handleHelpOpenSpy).toHaveBeenCalledTimes(2);
-    expect(handleHelpCloseSpy).toHaveBeenCalledTimes(2);
+    expect(handleHelpOpenSpy).toHaveBeenCalledTimes(1);
+    expect(handleHelpCloseSpy).toHaveBeenCalledTimes(1);
   });
 
-  it('advanced options changes are triggered', () => {
+  test('options changes trigger the handler', () => {
     const handleGraphOptionsChange = jest.fn();
     wrapper = mount(
       <GraphOptionsPanel
@@ -99,8 +95,6 @@ describe('<GraphOptionsPanel />', () => {
         handleGraphOptionsChange={handleGraphOptionsChange}
       />,
     );
-    wrapper.find('div.advanced-options-wrapper input')
-      .forEach(input => input.simulate('change'));
 
     wrapper.find('div.main-options-wrapper input')
       .forEach(input => input.simulate('change'));

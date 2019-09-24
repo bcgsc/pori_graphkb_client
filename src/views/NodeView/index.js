@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import * as qs from 'qs';
 
 import { boundMethod } from 'autobind-decorator';
-import NodeForm from '../../components/RecordForm';
+import RecordForm from '../../components/RecordForm';
 import { KBContext } from '../../components/KBContext';
 import { FORM_VARIANT } from '../../components/RecordForm/util';
 import { cleanLinkedRecords } from '../../components/util';
+import { hasWriteAccess } from '../../services/auth';
 
 
 const DEFAULT_TITLES = {
@@ -20,6 +21,7 @@ const DEFAULT_TITLES = {
 
 const getVariantType = (url) => {
   let variant = FORM_VARIANT.VIEW;
+
   for (const variantName of Object.values(FORM_VARIANT)) { // eslint-disable-line no-restricted-syntax
     if (url.includes(variantName)) {
       variant = variantName;
@@ -46,14 +48,19 @@ class NodeView extends React.PureComponent {
     const { schema } = this.context;
     const { history, match: { path } } = this.props;
     const variant = getVariantType(path);
+
     if (result && (variant === FORM_VARIANT.NEW || variant === FORM_VARIANT.EDIT)) {
       history.push(schema.getLink(result));
     } else if (variant === FORM_VARIANT.DELETE) {
       history.push('/');
     } else if (result && variant === FORM_VARIANT.SEARCH) {
       // redirect to the data view page
-      const search = qs.stringify(cleanLinkedRecords(result));
-      history.push(`/data/table?${search}`, { search, content: result });
+      try {
+        const search = qs.stringify(cleanLinkedRecords(result));
+        history.push(`/data/table?${search}`, { search, content: result });
+      } catch (err) {
+        throw err;
+      }
     } else {
       history.goBack();
     }
@@ -81,14 +88,20 @@ class NodeView extends React.PureComponent {
       match: { params: { rid = null, modelName }, path },
       history,
     } = this.props;
-    const { schema, auth } = this.context;
+    const { schema } = this.context;
     const variant = getVariantType(path);
 
     let defaultModelName = modelName;
 
     if (modelName) {
-      const model = schema.get(modelName);
+      let model = schema.get(modelName);
+
+      if (!model) {
+        const routeName = `/${modelName}`;
+        model = schema.getFromRoute(routeName);
+      }
       defaultModelName = model.name;
+
       if (!model || (model.isAbstract && variant === FORM_VARIANT.EDIT)) {
         history.push(
           '/error',
@@ -108,7 +121,7 @@ class NodeView extends React.PureComponent {
       defaultModelName = 'E';
     }
 
-    // redirect when the user clicks the top left button
+    // redirect when the user clicks the top right button
     const onTopClick = (record) => {
       let newPath = path
         .replace(variant,
@@ -116,6 +129,7 @@ class NodeView extends React.PureComponent {
             ? FORM_VARIANT.VIEW
             : FORM_VARIANT.EDIT)
         .replace(':rid', rid);
+
       if (record['@class'] || modelName) {
         newPath = newPath.replace(':modelName', schema.get(record['@class'] || modelName).routeName.slice(1));
       }
@@ -123,13 +137,13 @@ class NodeView extends React.PureComponent {
     };
 
     return (
-      <NodeForm
+      <RecordForm
         variant={variant}
         modelName={defaultModelName}
         rid={rid}
         title={DEFAULT_TITLES[variant].replace(':modelName', defaultModelName || '')}
         onTopClick={
-          auth.hasWriteAccess()
+          hasWriteAccess(this.context)
             ? onTopClick
             : null
         }

@@ -98,6 +98,7 @@ function GraphExpansionDialog(props) {
           {edges.map((edge) => {
             const inRid = edge.in['@rid'];
             const target = inRid === node['@rid'] ? edge.out : edge.in;
+
             if (target['@rid'] === node['@rid']
               || links.find(l => l.getId() === edge['@rid'])) {
               return null;

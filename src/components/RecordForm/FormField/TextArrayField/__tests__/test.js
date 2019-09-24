@@ -28,6 +28,7 @@ describe('TextArrayField', () => {
     // should now be a single chip element
     expect(wrapper.find(Chip)).toHaveLength(1);
   });
+
   test('Add value with button', () => {
     const wrapper = mount((
       <TextArrayField
@@ -47,6 +48,7 @@ describe('TextArrayField', () => {
     // should now be a single chip element
     expect(wrapper.find(Chip)).toHaveLength(1);
   });
+
   test('Delete added value with backspace', () => {
     const wrapper = mount((
       <TextArrayField
@@ -68,6 +70,7 @@ describe('TextArrayField', () => {
     // should not be any chips
     expect(wrapper.find(Chip)).toHaveLength(0);
   });
+
   test('Delete added value with clear', () => {
     const wrapper = mount((
       <TextArrayField
@@ -89,6 +92,7 @@ describe('TextArrayField', () => {
     wrapper.update();
     expect(wrapper.find(Chip)).toHaveLength(0);
   });
+
   test('Delete initial value with clear', () => {
     const wrapper = mount((
       <TextArrayField
@@ -107,6 +111,7 @@ describe('TextArrayField', () => {
     expect(wrapper.find(Chip)).toHaveLength(1);
     expect(wrapper.find(RefreshIcon)).toHaveLength(1);
   });
+
   test('Add duplicate value', () => {
     const wrapper = mount((
       <TextArrayField
@@ -125,6 +130,7 @@ describe('TextArrayField', () => {
     // should now be a single chip element
     expect(wrapper.find(Chip)).toHaveLength(1);
   });
+
   afterEach(() => {
     jest.clearAllMocks();
   });

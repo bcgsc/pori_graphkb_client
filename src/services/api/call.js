@@ -28,14 +28,12 @@ class ApiCall {
   constructor(endpoint, requestOptions, callOptions) {
     const {
       forceListReturn = false,
-      isPutativeEdge = false,
       name = null,
     } = callOptions || {};
     this.endpoint = endpoint;
     this.requestOptions = requestOptions;
     this.controller = null;
     this.forceListReturn = forceListReturn;
-    this.isPutativeEdge = isPutativeEdge;
     this.name = name || endpoint;
   }
 
@@ -60,9 +58,9 @@ class ApiCall {
   @boundMethod
   async request(ignoreAbort = true) {
     this.controller = new AbortController();
-    const { signal } = this.controller;
 
     let response;
+
     try {
       response = await fetch(
         API_BASE_URL + this.endpoint,
@@ -71,17 +69,40 @@ class ApiCall {
           headers: {
             'Content-type': 'application/json',
           },
-          signal,
+          signal: this.controller.signal,
         },
       );
     } catch (err) {
       if (err.name === 'AbortError' && ignoreAbort) {
         return null;
       }
+      // https://www.bcgsc.ca/jira/browse/SYS-55907
       console.error(err);
-      throw err;
+      console.error('Fetch error. Re-trying Request with cache-busting');
+      this.controller = new AbortController();
+
+      try {
+        response = await fetch(
+          API_BASE_URL + this.endpoint,
+          {
+            ...this.requestOptions,
+            headers: {
+              'Content-type': 'application/json',
+            },
+            signal: this.controller.signal,
+            cache: 'reload',
+          },
+        );
+      } catch (err2) {
+        if (err2.name === 'AbortError' && ignoreAbort) {
+          return null;
+        }
+        console.error(err2);
+        throw err2;
+      }
     }
     this.controller = null;
+
     if (response.ok) {
       const body = await response.json();
       const decycled = jc.retrocycle(body);
@@ -92,24 +113,18 @@ class ApiCall {
       if (this.forceListReturn && !Array.isArray(result)) {
         result = [result];
       }
-      if (this.isPutativeEdge) {
-        if (Array.isArray(result)) {
-          result = result.map(rec => ({ target: rec }));
-        } else {
-          result = { target: result };
-        }
-      }
       return result;
     }
 
     const { status, statusText, url } = response;
 
     const error = {
+      message: response.statusText,
       ...(await response.json()),
       status,
-      message: response.statusText,
       url,
     };
+
     if (status === 401) {
       throw new AuthenticationError(error);
     }

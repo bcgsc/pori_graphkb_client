@@ -69,6 +69,7 @@ describe('DetailChip', () => {
     wrapper.update();
     expect(onDelete).toHaveBeenCalled();
   });
+
   test('does not provide a close icon when onDelete handler is null', () => {
     const wrapper = mount((
       <DetailChip

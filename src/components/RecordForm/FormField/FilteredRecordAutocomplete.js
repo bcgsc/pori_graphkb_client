@@ -18,7 +18,6 @@ class FilteredRecordAutocomplete extends React.PureComponent {
 
   static propTypes = {
     disabled: PropTypes.bool,
-    isPutativeEdge: PropTypes.bool,
     isMulti: PropTypes.bool,
     linkedClassName: PropTypes.string.isRequired,
     DetailChipProps: PropTypes.object,
@@ -26,7 +25,6 @@ class FilteredRecordAutocomplete extends React.PureComponent {
 
   static defaultProps = {
     disabled: false,
-    isPutativeEdge: false,
     isMulti: false,
     DetailChipProps: {},
   };
@@ -41,6 +39,7 @@ class FilteredRecordAutocomplete extends React.PureComponent {
 
   componentDidUpdate(prevProps) {
     const { linkedClassName } = this.props;
+
     if (linkedClassName !== prevProps.linkedClassName) {
       this.setState({ selectedClassName: linkedClassName });
     }
@@ -56,7 +55,6 @@ class FilteredRecordAutocomplete extends React.PureComponent {
     const { schema } = this.context;
     const {
       disabled,
-      isPutativeEdge,
       isMulti,
       linkedClassName,
       DetailChipProps,
@@ -68,19 +66,10 @@ class FilteredRecordAutocomplete extends React.PureComponent {
 
     const model = schema.get(linkedClassName);
 
-    const itemToString = (item) => {
-      if (isPutativeEdge) {
-        if (item && item.target) {
-          return schema.getLabel(item.target);
-        }
-      } else {
-        return schema.getLabel(item);
-      }
-      return `${item}`;
-    };
+    const itemToString = item => schema.getLabel(item);
 
     const searchHandler = api.defaultSuggestionHandler(
-      schema.get(selectedClassName), { isPutativeEdge },
+      schema.get(selectedClassName),
     );
 
     const valueToString = (record) => {
@@ -108,20 +97,15 @@ class FilteredRecordAutocomplete extends React.PureComponent {
         <div className="form-field__content">
           <RecordAutocomplete
             {...rest}
-            isMulti
+            isMulti={isMulti}
             DetailChipProps={{
               ...DetailChipProps,
               valueToString,
-              getDetails: details => isPutativeEdge
-                ? details.target
-                : details,
+              getDetails: details => details,
             }}
             disabled={disabled}
             getOptionLabel={itemToString}
-            getOptionKey={opt => isPutativeEdge
-              ? opt.target['@rid']
-              : opt['@rid']
-            }
+            getOptionKey={opt => opt['@rid']}
             searchHandler={searchHandler}
             placeholder={isMulti
               ? `Search for Existing ${selectedClassName} Record(s)`

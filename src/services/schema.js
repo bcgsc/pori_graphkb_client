@@ -333,7 +333,14 @@ class Schema {
       return '';
     };
 
-    const defns = [];
+    const defns = [
+      {
+        colId: 'preview',
+        field: 'preview',
+        sortable: false,
+        valueGetter: ({ data }) => this.getLabel(data),
+      },
+    ];
 
     Object.values(allProps)
       .filter(prop => !exclude.includes(prop.name) && prop.type !== 'embedded')

@@ -15,7 +15,7 @@ describe('<ResourceSelectComponent />', () => {
   let wrapper;
   const val = 'best';
 
-  it('renders FormControl child correctly', () => {
+  test('renders FormControl child correctly', () => {
     wrapper = mount(
       <ResourceSelectComponent
         resources={mockData}
@@ -25,7 +25,7 @@ describe('<ResourceSelectComponent />', () => {
     expect(wrapper.children().type()).toBe(FormControl);
   });
 
-  it('props are passed down correctly', () => {
+  test('props are passed down correctly', () => {
     wrapper = mount(
       <ResourceSelectComponent
         resources={mockData}

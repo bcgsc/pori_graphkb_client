@@ -11,16 +11,19 @@ import { KBContext } from '../../KBContext';
 import DetailChip from '../../DetailChip';
 
 
+const mockSchemaDef = {
+  get: () => ({
+    name: 'relationshipName',
+    reversename: 'reverseRelationshipName',
+  }),
+  has: () => {},
+  getFromRoute: () => {},
+};
+
 describe('EdgeTable', () => {
   // patch the schema methods to simplify our edge mocks
   jest.spyOn(Schema.prototype, 'getLabel').mockImplementation(
     item => item.key,
-  );
-  jest.spyOn(Schema.prototype, 'get').mockImplementation(
-    () => ({
-      name: 'relationshipName',
-      reversename: 'reverseRelationshipName',
-    }),
   );
 
   test('Renders multiple edges', () => {
@@ -29,7 +32,7 @@ describe('EdgeTable', () => {
       { in: { key: 'target2' }, key: 'edge2', '@class': 'E' },
     ];
     const wrapper = mount((
-      <KBContext.Provider value={{ schema: new Schema() }}>
+      <KBContext.Provider value={{ schema: new Schema(mockSchemaDef) }}>
         <EdgeTable
           itemToKey={item => `${item.key}`}
           values={edges}

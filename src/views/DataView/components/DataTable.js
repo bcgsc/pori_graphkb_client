@@ -1,11 +1,10 @@
 import React from 'react';
 import {
-  FormControlLabel, Checkbox, Popover, Avatar,
+  FormControlLabel, Checkbox, Popover,
 } from '@material-ui/core';
 import { AgGridReact } from 'ag-grid-react';
 import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
-import LinkIcon from '@material-ui/icons/Link';
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
@@ -13,8 +12,12 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css';
 import { KBContext } from '../../../components/KBContext';
 import OptionsMenu from '../../../components/OptionsMenu';
 import DetailChip from '../../../components/DetailChip';
+import { getUsername } from '../../../services/auth';
 import DataCache from '../../../services/api/dataCache';
+import { SelectionTracker } from './SelectionTracker';
 
+const MAX_FULL_EXPORTS_ROWS = 1000;
+const CACHE_BLOCK_SIZE = 50;
 
 class DataTable extends React.Component {
   static contextType = KBContext;
@@ -25,8 +28,10 @@ class DataTable extends React.Component {
     cache: PropTypes.instanceOf(DataCache).isRequired,
     onRecordClicked: PropTypes.func,
     onRecordsSelected: PropTypes.func,
+    onRowSelected: PropTypes.func.isRequired,
     optionsMenuAnchor: PropTypes.object.isRequired,
     optionsMenuOnClose: PropTypes.func.isRequired,
+    isExportingData: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -47,6 +52,9 @@ class DataTable extends React.Component {
       allGroups: {},
       activeGroups: new Set(),
       pingedIndices: new Set(),
+      totalNumOfRows: null,
+      selectionTracker: new SelectionTracker(),
+      prevNodeID: null,
     };
   }
 
@@ -58,10 +66,16 @@ class DataTable extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.gridApi.removeEventListener('rowClicked', this.handleSelectionChange);
+  }
+
   @boundMethod
   onGridReady({ api: gridApi, columnApi }) {
     this.gridApi = gridApi;
     this.gridColumnApi = columnApi;
+
+    this.gridApi.addEventListener('rowClicked', this.handleSelectionChange);
 
     this.initializeGrid();
   }
@@ -80,6 +94,41 @@ class DataTable extends React.Component {
     return [result, cache.rowCount(search)];
   }
 
+  selectNodeRowsInTable = (gridApi, selectionTracker) => {
+    const selectedRecords = selectionTracker.selection;
+    const { length } = selectedRecords;
+    gridApi.forEachNode((node) => {
+      const currNodeID = parseInt(node.id, 10);
+
+      for (let i = 0; i < length; i++) {
+        const currRange = selectedRecords[i];
+
+        if (currNodeID >= currRange.minVal && currNodeID <= currRange.maxVal) {
+          node.setSelected(true);
+        }
+      }
+    });
+  };
+
+  /**
+   * Selects all nodes that are in the current selection tracking on the
+   * current displayed cache page.
+   */
+  selectFetchedRowNodes = async (gridApi, selectionTracker) => {
+    const selectedRecords = selectionTracker.selection;
+    gridApi.forEachNode((node) => {
+      const currNodeID = parseInt(node.id, 10);
+
+      for (let i = 0; i < selectedRecords.length; i++) {
+        const currRange = selectedRecords[i];
+
+        if (currNodeID >= currRange.minVal && currNodeID <= currRange.maxVal) {
+          node.setSelected(true);
+        }
+      }
+    });
+  };
+
   initializeGrid() {
     const { search } = this.props;
     const { schema } = this.context;
@@ -93,6 +142,7 @@ class DataTable extends React.Component {
       },
       ...schema.defineGridColumns(search),
     ]);
+
     this.detectColumns();
 
     const dataSource = {
@@ -109,40 +159,6 @@ class DataTable extends React.Component {
     };
     // update the model
     this.gridApi.setDatasource(dataSource);
-  }
-
-  @boundMethod
-  resizeColumnsTofitEdges({ type, newPage }) {
-    if (this.gridColumnApi) {
-      if (type === 'paginationChanged' && newPage !== undefined) {
-        this.gridColumnApi.autoSizeColumns(['ImpliedBy', 'SupportedBy', 'Implies', 'preview']);
-      }
-    }
-  }
-
-  @boundMethod
-  detectFetchTrigger({ top, direction }) {
-    const { pingedIndices } = this.state;
-    const { rowBuffer, search, cache } = this.props;
-
-    if (this.gridApi && cache && direction === 'vertical') {
-      const { rowModel: { rowHeight } } = this.gridApi;
-      const lastRow = this.gridApi.getLastDisplayedRow();
-      const pingedKey = `${search}-${lastRow}`;
-
-      if (!pingedIndices.has(pingedKey)) {
-        const currentRowIndex = Math.round(top / rowHeight);
-
-        if (lastRow - currentRowIndex < rowBuffer) {
-          cache.getRows({
-            search, startRow: lastRow + 1, endRow: lastRow + rowBuffer, sortModel: this.gridApi.getSortModel(),
-          });
-          const newPings = new Set(pingedIndices);
-          newPings.add(pingedKey);
-          this.setState({ pingedIndices: newPings });
-        }
-      }
-    }
   }
 
   detectColumns() {
@@ -211,10 +227,12 @@ class DataTable extends React.Component {
 
     const newActiveColumns = new Set(activeColumns);
     const newActiveGroups = new Set(activeGroups);
+
     if (isActive) {
       newActiveColumns.delete(colId);
     } else {
       newActiveColumns.add(colId);
+
       // if a group Id is given, toggle the group open
       if (groupId) {
         this.openColumnGroup(groupId, true);
@@ -224,8 +242,16 @@ class DataTable extends React.Component {
   }
 
   @boundMethod
-  handleExportTsv(selectionOnly = false) {
-    const { schema, auth } = this.context;
+  async handleExportTsv(selectionOnly = false) {
+    const { schema } = this.context;
+    const { totalNumOfRows, selectionTracker } = this.state;
+    const { isExportingData } = this.props;
+    isExportingData(true);
+
+    const { gridOptions } = this.gridApi.getModel().gridOptionsWrapper;
+    const header = `## Exported from GraphKB at ${new Date()} by ${getUsername(this.context)}
+## Distribution and Re-use of the contents of GraphKB are subject to the usage aggreements of individual data sources.
+## Please review the appropriate agreements prior to use (see usage under sources)`;
 
     const formatValue = (value) => {
       if (typeof value === 'object' && value !== null) {
@@ -236,36 +262,207 @@ class DataTable extends React.Component {
         : value;
     };
 
-    const header = `## Exported from GraphKB at ${new Date()} by ${auth.username}
-## Distribution and Re-use of the contents of GraphKB are subject to the usage aggreements of individual data sources.
-## Please review the appropriate agreements prior to use (see usage under sources)`;
-
-    this.gridApi.exportDataAsCsv({
+    const exportParams = {
       columnGroups: true,
       fileName: `graphkb_export_${(new Date()).valueOf()}.tsv`,
       columnSeparator: '\t',
       suppressQuotes: true,
       customHeader: header,
       onlySelected: selectionOnly,
+      onlySelectedAllPages: selectionOnly,
       processCellCallback: ({ value }) => {
         if (Array.isArray(value)) {
           return value.map(formatValue).join(';');
         }
         return formatValue(value);
       },
-    });
+    };
+
+    if (!selectionOnly) {
+      gridOptions.cacheBlockSize = totalNumOfRows; // in preparation to fetch entire dataset
+
+      const tempDataSource = {
+        rowCount: null,
+        getRows: async ({
+          successCallback, failCallback, ...params
+        }) => {
+          params.endRow = totalNumOfRows; // fetches entire data set with this adjustment
+
+          try {
+            const [rows, lastRow] = await this.getTableData(params);
+            successCallback(rows, lastRow);
+            await this.gridApi.exportDataAsCsv(exportParams);
+            await this.resetDefaultGridOptions();
+            isExportingData(false);
+          } catch (err) {
+            console.error(err);
+            failCallback();
+          }
+        },
+      };
+
+      this.gridApi.setDatasource(tempDataSource);
+    } else {
+      const lastIndex = selectionTracker.selection.length - 1;
+      const maxSelectedRow = selectionTracker.selection[lastIndex].maxVal;
+      gridOptions.cacheBlockSize = maxSelectedRow; // in preparation to fetch entire dataset
+
+      const tempDataSource = {
+        rowCount: null,
+        getRows: async ({
+          successCallback, failCallback, ...params
+        }) => {
+          params.endRow = maxSelectedRow; // fetches entire data set with this adjustment
+
+          try {
+            const [rows, lastRow] = await this.getTableData(params);
+            successCallback(rows, lastRow);
+            await this.selectFetchedRowNodes(this.gridApi, selectionTracker);
+            await this.gridApi.exportDataAsCsv(exportParams);
+            await this.resetDefaultGridOptions();
+            isExportingData(false);
+          } catch (err) {
+            console.error(err);
+            failCallback();
+          }
+        },
+      };
+
+      this.gridApi.setDatasource(tempDataSource);
+    }
+  }
+
+  @boundMethod
+  resizeColumnsTofitEdges({ type, newPage }) {
+    if (this.gridColumnApi) {
+      if (type === 'paginationChanged' && newPage !== undefined) {
+        this.gridColumnApi.autoSizeColumns(['ImpliedBy', 'SupportedBy', 'Implies', 'preview']);
+      }
+    }
+  }
+
+  @boundMethod
+  detectFetchTrigger({ top, direction }) {
+    const { pingedIndices } = this.state;
+    const { rowBuffer, search, cache } = this.props;
+
+    if (this.gridApi && cache && direction === 'vertical') {
+      const { rowModel: { rowHeight } } = this.gridApi;
+      const lastRow = this.gridApi.getLastDisplayedRow();
+      const pingedKey = `${search}-${lastRow}`;
+
+      if (!pingedIndices.has(pingedKey)) {
+        const currentRowIndex = Math.round(top / rowHeight);
+
+        if (lastRow - currentRowIndex < rowBuffer) {
+          cache.getRows({
+            search, startRow: lastRow + 1, endRow: lastRow + rowBuffer, sortModel: this.gridApi.getSortModel(),
+          });
+          const newPings = new Set(pingedIndices);
+          newPings.add(pingedKey);
+          this.setState({ pingedIndices: newPings });
+        }
+      }
+    }
+  }
+
+  /**
+   * Handles selection of records in DataTable. Maintains selectionTracker which is an array
+   * of Selection Ranges to represent the selected Rows. Ex. if rows 0-20 and 30-34 are selected,
+   * selectionTracker will contain two selection ranges. selectionTracker = [SR(0, 20), SR(30, 34)]
+   * This is used instead of Ag-grids default selection API to handle infinite scrolling selection
+   * of rows that are not displayed.
+   */
+  @boundMethod
+  handleSelectionChange(event) {
+    const {
+      event: {
+        type, key, ctrlKey, shiftKey,
+      },
+      node: rowNode, rowIndex,
+      node: { id },
+    } = event;
+
+    const nodeID = parseInt(id, 10);
+    let { prevNodeID } = this.state;
+    const { onRowSelected } = this.props;
+    const { selectionTracker } = this.state;
+
+    let newSelectionTracker;
+
+    if (type === 'click') {
+      // 1. first time selecting a row OR just a regular ole click
+      if (prevNodeID === null || (!ctrlKey && !shiftKey)) {
+        newSelectionTracker = new SelectionTracker(nodeID, nodeID);
+      } else if (shiftKey) {
+      // 2. shift key extends a the previously selected range or resets selection range
+        const isCurrNodeInSelection = selectionTracker.isNodeAlreadySelected(nodeID);
+
+        if (isCurrNodeInSelection) {
+          newSelectionTracker = new SelectionTracker(nodeID, nodeID);
+        } else {
+          newSelectionTracker = SelectionTracker.extendRangeUpdateSelection(prevNodeID, nodeID, selectionTracker);
+        }
+      } else if (ctrlKey) {
+      // 3. ctrl key adds a new Range to selection unless it has already been selected
+        newSelectionTracker = selectionTracker.checkAndUpdate(nodeID, selectionTracker);
+      }
+      prevNodeID = nodeID;
+
+      this.setState({ selectionTracker: newSelectionTracker, prevNodeID });
+      this.selectNodeRowsInTable(this.gridApi, newSelectionTracker);
+      const totalNumOfRows = newSelectionTracker.getTotalNumOfSelectedRows();
+      onRowSelected(totalNumOfRows);
+    } else if (type === 'keydown') {
+      if (key === 'Shift') {
+        rowNode.setSelected(true);
+        newSelectionTracker = selectionTracker.checkAndUpdate(nodeID, selectionTracker);
+        prevNodeID = nodeID;
+
+        this.setState({ selectionTracker: newSelectionTracker, prevNodeID });
+        const totalNumOfRows = newSelectionTracker.getTotalNumOfSelectedRows();
+        onRowSelected(totalNumOfRows);
+      } else if (shiftKey && ['ArrowDown', 'ArrowUp'].includes(key)) {
+        const direction = key === 'ArrowDown'
+          ? +1
+          : -1;
+        const nextRow = this.gridApi.getDisplayedRowAtIndex(rowIndex + direction);
+
+        if (nextRow) {
+          nextRow.setSelected(true);
+        }
+      }
+    }
+  }
+
+  async resetDefaultGridOptions() {
+    const { gridOptions } = this.gridApi.getModel().gridOptionsWrapper;
+    const dataSource = {
+      rowCount: null,
+      getRows: ({
+        successCallback, failCallback, ...params
+      }) => {
+        this.getTableData(params)
+          .then(([rows, lastRow]) => {
+            // update filters
+            successCallback(rows, lastRow);
+          }).catch(() => failCallback());
+      },
+    };
+
+    // update the model
+    await this.gridApi.setDatasource(dataSource);
+    gridOptions.cacheBlockSize = CACHE_BLOCK_SIZE;
   }
 
   renderOptionsMenu() {
     const {
-      allColumns, activeColumns, allGroups, activeGroups,
+      allColumns, activeColumns, allGroups, activeGroups, totalNumOfRows, selectionTracker,
     } = this.state;
     const { optionsMenuAnchor, optionsMenuOnClose } = this.props;
     const ignorePreviewColumns = colId => !colId.endsWith('.preview');
-    const selectionCount = this.gridApi
-      ? this.gridApi.getSelectedRows().length
-      : null;
 
+    const selectionCount = selectionTracker.getTotalNumOfSelectedRows();
     const ColumnCheckBox = (colId, groupId = null) => (
       <FormControlLabel
         key={colId}
@@ -306,9 +503,14 @@ class DataTable extends React.Component {
         label: 'Configure Visible Columns',
         content: columnControl,
       },
-      { label: 'Export to TSV', handler: () => this.handleExportTsv(false) },
-
     ];
+
+    if (totalNumOfRows < MAX_FULL_EXPORTS_ROWS) {
+      menuContents.push({
+        label: 'Export All to TSV',
+        handler: () => this.handleExportTsv(false),
+      });
+    }
 
     if (selectionCount) {
       menuContents.push({
@@ -367,27 +569,11 @@ class DataTable extends React.Component {
                 }}
 
                 getLink={schema.getLink}
-                ChipProps={{
-                  avatar: (<Avatar><LinkIcon /></Avatar>),
-                  variant: 'outlined',
-                  color: 'primary',
-                }}
               />
             );
           })}
         </div>
       );
-    };
-
-    const DefaultRender = ({ value, data }) => {
-      if (data === undefined) {
-        return null;
-      } if (typeof value === 'object' && value !== null) {
-        return schema.getLabel(value, false);
-      }
-      return value === undefined
-        ? null
-        : value;
     };
 
     return (
@@ -403,26 +589,23 @@ class DataTable extends React.Component {
       >
         {this.renderOptionsMenu()}
         <AgGridReact
+          reactNext
           defaultColDef={{
             sortable: true,
             resizable: true,
             width: 150,
-            cellRenderer: 'DefaultRender',
           }}
           infiniteInitialRowCount={1}
           maxBlocksInCache={0}
           maxConcurrentDatasourceRequests={1}
           onGridReady={this.onGridReady}
-          cacheBlockSize={50}
-          // pagination
-          // paginationAutoPageSize
+          cacheBlockSize={CACHE_BLOCK_SIZE}
           paginationPageSize={25}
           cacheOverflowSize={1}
           rowModelType="infinite"
           suppressHorizontalScroll={false}
           frameworkComponents={{
             RecordList,
-            DefaultRender,
           }}
           blockLoadDebounceMillis={100}
           onPaginationChanged={this.resizeColumnsTofitEdges}
@@ -434,19 +617,7 @@ class DataTable extends React.Component {
             }
           }}
           // allow the user to select using the arrow keys and shift
-          onCellKeyDown={({ event: { key, shiftKey }, node: rowNode, rowIndex }) => {
-            if (key === 'Shift') {
-              rowNode.setSelected(true);
-            } else if (shiftKey && ['ArrowDown', 'ArrowUp'].includes(key)) {
-              const direction = key === 'ArrowDown'
-                ? +1
-                : -1;
-              const nextRow = this.gridApi.getDisplayedRowAtIndex(rowIndex + direction);
-              if (nextRow) {
-                nextRow.setSelected(true);
-              }
-            }
-          }}
+          onCellKeyDown={this.handleSelectionChange}
           onSelectionChanged={() => {
             if (onRecordsSelected) {
               const rows = this.gridApi.getSelectedRows();

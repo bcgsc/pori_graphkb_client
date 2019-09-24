@@ -16,12 +16,14 @@ describe('FieldHelp', () => {
     expect(click).toHaveLength(1);
     expect(click.prop('title')).toEqual('does stuff (Example: 3)');
   });
+
   test('returns null if no description or example', () => {
     const wrapper = mount((
       <FieldHelp />
     ));
     expect(wrapper.find(Tooltip)).toHaveLength(0);
   });
+
   test('ignores example if not given', () => {
     const wrapper = mount((
       <FieldHelp description="does stuff" />

@@ -11,6 +11,7 @@ import { ApiCall } from '../../../services/api/call';
 
 describe('BaseRecordForm', () => {
   jest.spyOn(ApiCall.prototype, 'request').mockImplementation(async () => []);
+
   test.todo('populateFromRecord');
 
   test('edit variant has submit and delete buttons', () => {

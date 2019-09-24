@@ -18,7 +18,7 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import './index.scss';
 
 
-const DefaultOptionComponent = resource => (
+const DefaultOptionComponent = (resource, disabled) => (
   <MenuItem
     className="resource-select__option"
     component="li"
@@ -29,6 +29,7 @@ const DefaultOptionComponent = resource => (
       primary={resource.label || resource || 'None'}
       secondary={resource.caption || ''}
       secondaryTypographyProps={{ className: 'resource-select__option-description' }}
+      classes={{ primary: disabled ? 'disabled-text' : '' }}
     />
   </MenuItem>
 );
@@ -54,8 +55,9 @@ function ResourceSelectComponent(props) {
     disabled,
   } = props;
 
-  const resourcesDisplay = resources.map(resource => children(resource));
+  const resourcesDisplay = resources.map(resource => children(resource, disabled));
   let InputComponent = Input;
+
   if (variant === 'outlined') {
     InputComponent = OutlinedInput;
   }

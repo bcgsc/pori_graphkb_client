@@ -4,17 +4,17 @@ import {
   Paper, Typography, Button,
 } from '@material-ui/core';
 import { boundMethod } from 'autobind-decorator';
-import EditIcon from '@material-ui/icons/Edit';
+import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 
 import api from '../../services/api';
-import ActionButton from '../ActionButton';
-
 import './index.scss';
 import BaseNodeForm from './BaseRecordForm';
 import { FORM_VARIANT } from './util';
 import { withKB } from '../KBContext';
+import ReviewDialog from './ReviewDialog';
+import ToggleButtonGroup from '../ToggleButtonGroup';
 
 
 const cleanPayload = (payload) => {
@@ -52,6 +52,9 @@ const cleanPayload = (payload) => {
  * @property {string} props.variant the type of NodeForm to create
  * @property {string} props.rid the record id of the current record for the form
  * @property {string} props.title the title for this form
+ * @property {string} props.modelName name of class model to be displayed
+ * @property {object} props.schema schema object defining class/prop models
+ * @property {value} props.value values of individual properties of passed class model
  */
 class RecordForm extends React.PureComponent {
   static contextType = SnackbarContext;
@@ -83,12 +86,15 @@ class RecordForm extends React.PureComponent {
     const { value = {}, modelName } = this.props;
 
     const defaultContent = { ...value };
+
     if (modelName && !defaultContent['@class']) {
       defaultContent['@class'] = modelName;
     }
 
     this.state = {
       actionInProgress: false,
+      reviewDialogOpen: false,
+      newReview: {},
       ...defaultContent,
     };
     this.controllers = [];
@@ -105,6 +111,7 @@ class RecordForm extends React.PureComponent {
       modelName,
       value: { '@class': defaultModel },
     } = this.props;
+
     if (
       rid !== prevProps.rid
       || variant !== prevProps.variant
@@ -141,10 +148,12 @@ class RecordForm extends React.PureComponent {
     if (variant !== FORM_VARIANT.NEW && variant !== FORM_VARIANT.SEARCH) {
       // If not a new form then should have existing content
       this.setState({ actionInProgress: true });
+
       try {
         const call = api.get(`${model.routeName}/${rid.replace(/^#/, '')}?neighbors=3`, { forceListReturn: true });
         this.controllers.push(call);
         const result = await call.request();
+
         if (result && result.length) {
           this.setState({ ...result[0] });
         } else {
@@ -181,6 +190,7 @@ class RecordForm extends React.PureComponent {
       const call = api.post(routeName, payload);
       this.controllers.push(call);
       this.setState({ actionInProgress: true });
+
       try {
         const result = await call.request();
         snackbar.add(`Sucessfully created the record ${result['@rid']}`);
@@ -206,6 +216,7 @@ class RecordForm extends React.PureComponent {
     const call = api.delete(`${routeName}/${content['@rid'].replace(/^#/, '')}`);
     this.controllers.push(call);
     this.setState({ actionInProgress: true });
+
     try {
       await call.request();
       snackbar.add(`Sucessfully deleted the record ${content['@rid']}`);
@@ -236,6 +247,7 @@ class RecordForm extends React.PureComponent {
       const call = api.patch(`${routeName}/${content['@rid'].replace(/^#/, '')}`, payload);
       this.controllers.push(call);
       this.setState({ actionInProgress: true });
+
       try {
         const result = await call.request();
         snackbar.add(`Sucessfully edited the record ${result['@rid']}`);
@@ -257,16 +269,39 @@ class RecordForm extends React.PureComponent {
       console.error(errors);
       snackbar.add('There are errors in the form which must be resolved before it can be submitted');
     } else {
-      onSubmit(content);
-      snackbar.add('Search Submitted. Redirecting to the data view');
+      try {
+        onSubmit(content);
+        snackbar.add('Search Submitted. Redirecting to the data view');
+      } catch (err) {
+        snackbar.add(err.message);
+      }
     }
+  }
+
+  @boundMethod
+  handleNewReviewUpdate(updatedReview) {
+    this.setState({ newReview: updatedReview });
+  }
+
+  @boundMethod
+  handleContentUpdate(content) {
+    this.setState({ ...content });
   }
 
   render() {
     const {
-      title, variant, onTopClick, modelName, ...rest
+      title, variant, onTopClick, modelName, onError, ...rest
     } = this.props;
-    const { actionInProgress, ...content } = this.state;
+
+
+    const {
+      actionInProgress,
+      reviewDialogOpen,
+      newReview,
+      ...content
+    } = this.state;
+
+    const snackbar = this.context;
 
     const actions = {
       [FORM_VARIANT.EDIT]: this.handleEditAction,
@@ -277,27 +312,42 @@ class RecordForm extends React.PureComponent {
     return (
       <Paper className="record-form__wrapper" elevation={4}>
         <div className="record-form__header">
-          <Typography variant="h1">{title}</Typography>
-          {variant === FORM_VARIANT.VIEW && onTopClick && (
+          <Typography variant="h1" className="title">{title}</Typography>
+          <div className="header-action-buttons">
+            {(content['@class'] === 'Statement' && variant === FORM_VARIANT.EDIT && (
             <Button
-              onClick={() => onTopClick(content)}
+              onClick={() => this.setState({ reviewDialogOpen: true })}
               variant="outlined"
               disabled={actionInProgress}
             >
-              Edit
-              <EditIcon />
+              <LocalLibraryIcon
+                classes={{ root: 'review-icon' }}
+              />
+                Add Review
             </Button>
-          )}
-          {variant === FORM_VARIANT.EDIT && onTopClick && (
-            <ActionButton
-              onClick={() => onTopClick(content)}
-              variant="outlined"
-              message="Are you sure you want to leave this page?"
-              disabled={actionInProgress}
-            >
-              View
-            </ActionButton>
-          )}
+            ))}
+            {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
+              <ToggleButtonGroup
+                onClick={() => onTopClick(content)}
+                requireConfirm
+                options={['view', 'edit']}
+                variant={variant}
+                message="Are you sure? You will lose your changes."
+              />
+            )}
+          </div>
+          {(content['@class'] === 'Statement' && variant === FORM_VARIANT.EDIT && (
+            <ReviewDialog
+              isOpen={reviewDialogOpen}
+              onClose={() => this.setState({ reviewDialogOpen: false })}
+              content={content}
+              newReview={newReview}
+              updateNewReview={this.handleNewReviewUpdate}
+              updateContent={this.handleContentUpdate}
+              snackbar={snackbar}
+              onError={onError}
+            />
+          ))}
         </div>
         <BaseNodeForm
           {...rest}
@@ -305,6 +355,10 @@ class RecordForm extends React.PureComponent {
           modelName={modelName}
           onSubmit={actions[variant] || null}
           onDelete={this.handleDeleteAction}
+          reviewProps={{
+            updateContent: this.handleContentUpdate,
+            content,
+          }}
           variant={variant}
           collapseExtra
           name="name"

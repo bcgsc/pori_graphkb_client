@@ -6,10 +6,9 @@ import { BrowserRouter } from 'react-router-dom';
 import DetailDrawer from '../DetailDrawer';
 import Schema from '../../../../services/schema';
 import { KBContext } from '../../../../components/KBContext';
-import { Authentication } from '../../../../services/auth';
+import { } from '../../../../services/auth';
 
-
-const testSchema = new Schema({
+const mockModels = {
   test: {
     name: 'test',
     properties: {
@@ -19,7 +18,6 @@ const testSchema = new Schema({
     routeName: '/test',
     identifiers: ['@rid'],
     inherits: ['Ontology'],
-    getPreview: () => 'test',
   },
   E: {
     properties: {},
@@ -35,7 +33,6 @@ const testSchema = new Schema({
     inherits: ['E'],
     identifiers: ['@rid'],
     properties: {},
-    getPreview: () => 'aliasof',
     routeName: '/aliasof',
   },
   V: {
@@ -55,15 +52,65 @@ const testSchema = new Schema({
       source: { name: 'source', type: 'link' },
     },
     identifiers: ['@class', 'name', 'sourceId', 'source.name'],
-    getPreview: () => 'ontology',
     routeName: '/ontology',
   },
-});
+  MockClass: {
+    name: 'Mock',
+    inherits: ['Ontology'],
+    properties: {
+      name: { name: 'name', type: 'string' },
+      sourceId: { name: 'sourceId', type: 'string' },
+      impliedBy: { name: 'impliedBy', type: 'linkset' },
+    },
+  },
+};
+class MockSchemaDef {
+  constructor(models) {
+    this.schema = { ...models };
+    this.normalizedModelNames = [];
+  }
+
+  get = (node) => {
+    if (node['@class'] === 'Ontology') {
+      const { Ontology } = this.schema;
+      return Ontology;
+    } if (node['@class'] === 'test') {
+      const { test } = this.schema;
+      return test;
+    } if (node === 'AliasOf' || node['@class'] === 'AliasOf') {
+      const { AliasOf } = this.schema;
+      return AliasOf;
+    } if (node['@class'] === 'MockClass') {
+      const { MockClass } = this.schema;
+      return MockClass;
+    }
+    return null;
+  };
+
+  has = (obj) => {
+    try {
+      return Boolean(this.get(obj));
+    } catch (err) {
+      return false;
+    }
+  };
+
+  getFromRoute = (routeName) => {
+    for (const model of Object.values(this.schema)) {  // eslint-disable-line
+      if (model.routeName === routeName) {
+        return model;
+      }
+    }
+    throw new Error(`Missing model corresponding to route (${routeName})`);
+  };
+}
+
+const testSchema = new Schema(new MockSchemaDef(mockModels));
 
 
 const ProvideSchema = ({ children = [], schema }) => (  // eslint-disable-line
   <BrowserRouter>
-    <KBContext.Provider value={{ schema, auth: new Authentication() }}>
+    <KBContext.Provider value={{ schema }}>
       {children}
     </KBContext.Provider>
   </BrowserRouter>
@@ -88,14 +135,14 @@ describe('<DetailDrawer />', () => {
     wrapper = null;
   });
 
-  it('inits and does not call field formatting functions', () => {
+  test('inits and does not call field formatting functions', () => {
     wrapper = shallow(<DetailDrawer />);
     expect(spies.formatRelationships).toHaveBeenCalledTimes(0);
     expect(spies.formatIdentifiers).toHaveBeenCalledTimes(0);
     expect(spies.formatOtherProps).toHaveBeenCalledTimes(0);
   });
 
-  it('does not crash with test node', () => {
+  test('does not crash with test node', () => {
     const node = {
       '@class': 'Ontology',
       name: 'test node',
@@ -119,7 +166,7 @@ describe('<DetailDrawer />', () => {
     expect(wrapper.find(Drawer)).toHaveLength(1);
   });
 
-  it('does not crash when componentDidUpdate is called', () => {
+  test('does not crash when componentDidUpdate is called', () => {
     wrapper = mount((
       <ProvideSchema schema={testSchema}>
         <DetailDrawer />
@@ -129,7 +176,7 @@ describe('<DetailDrawer />', () => {
     expect(spies.componentDidUpdate).toHaveBeenCalledTimes(1);
   });
 
-  it('formatLongValue function is triggered on long inputs only', () => {
+  test('formatLongValue function is triggered on long inputs only', () => {
     const node = {
       '@class': 'Ontology',
       // 1st long field
@@ -152,7 +199,7 @@ describe('<DetailDrawer />', () => {
     expect(spies.formatLongValue).toHaveBeenCalledTimes(2);
   });
 
-  it('clicking expanding list items triggers handler', () => {
+  test('clicking expanding list items triggers handler', () => {
     const node = {
       '@class': 'Ontology',
       '@rid': '#135',
@@ -170,7 +217,7 @@ describe('<DetailDrawer />', () => {
     expect(spies.handleExpand).toHaveBeenCalledTimes(2);
   });
 
-  it('initializes relationships and properly applies handlers to DOM nodes', () => {
+  test('initializes relationships and properly applies handlers to DOM nodes', () => {
     const node = {
       '@class': 'Ontology',
       '@rid': '#135',
@@ -203,7 +250,7 @@ describe('<DetailDrawer />', () => {
     expect(spies.handleLinkExpand).toHaveBeenCalledTimes(2);
   });
 
-  it('expect detail-drawer__nested-list class to be rendered for nested property', () => {
+  test('expect detail-drawer__nested-list class to be rendered for nested property', () => {
     const node = {
       '@class': 'test',
       '@rid': '#135',
@@ -227,6 +274,41 @@ describe('<DetailDrawer />', () => {
     ));
     wrapper.find('div[role="button"]').first().simulate('click');
     expect(wrapper.find('.detail-drawer__nested-list').length).toBeGreaterThan(0);
+  });
+
+  test('handles node property type linkset correctly ', () => {
+    const node = {
+      '@class': 'MockClass',
+      '@rid': '#135',
+      name: 'linkset node',
+      sourceId: 'test sourceId',
+      impliedBy: [
+        {
+          '@class': 'Fake',
+          '@rid': '19:1',
+          displayName: 'linkedRecord1',
+          sourceId: 'BBC',
+        },
+        {
+          '@class': 'Mock',
+          '@rid': '19:1',
+          displayName: 'linkedRecord2',
+          sourceId: 'CBC',
+        },
+      ],
+    };
+
+    wrapper = mount((
+      <ProvideSchema schema={testSchema}>
+        <DetailDrawer node={node} />
+      </ProvideSchema>
+    ));
+
+    expect(wrapper.find('.detail-identifiers-linkset').length).toEqual(2);
+    expect(wrapper.find('.detail-identifiers-nested').length).toEqual(0);
+    expect(wrapper.find('div[role="button"]').at(1).text()).toEqual('MocklinkedRecord2 (19:1)');
+    wrapper.find('div[role="button"]').at(1).simulate('click');
+    expect(wrapper.find('.detail-identifiers-nested').length).toBeGreaterThan(0);
   });
 
   afterEach(() => {

@@ -5,6 +5,7 @@ import api from '..';
 describe('api methods test', () => {
   describe('getSearchFromQuery', () => {
     const schema = { getFromRoute: () => ({ name: 'disease' }) };
+
     test('keyword search', () => {
       const queryParams = {
         keyword: 'kras',
@@ -18,6 +19,7 @@ describe('api methods test', () => {
         'keyword=kras&limit=50&neighbors=4',
       );
     });
+
     test('complex search', () => {
       const payload = {
         where: [
@@ -33,6 +35,7 @@ describe('api methods test', () => {
       }`;
       expect(result).toEqual(search);
     });
+
     test('general search', () => {
       const queryParams = {
         name: 'kras',
@@ -51,8 +54,10 @@ describe('api methods test', () => {
       );
     });
   });
+
   describe('getQueryFromSearch', () => {
     const schema = { get: () => ({ routeName: '/diseases' }) };
+
     test('keyword search', () => {
       const search = 'keyword=kras';
       const result = api.getQueryFromSearch({
@@ -60,16 +65,17 @@ describe('api methods test', () => {
         schema,
       });
       expect(result.payload).toBe(null);
-      expect(result.routeName).toEqual('/search');
+      expect(result.routeName).toEqual('/statements/search');
       expect(result.queryParams.keyword).toEqual('kras');
     });
+
     test('complex search', () => {
       const complex = {
         where: [
           { operator: 'OR', comparisons: [{ attr: 'name', value: 'kras', operator: 'CONTAINSTEXT' }] },
         ],
         limit: 50,
-        neighbors: 3, // adds default neighbors
+        neighbors: 2, // adds default neighbors
       };
       const search = `class=disease&complex=${
         encodeURIComponent('eyJ3aGVyZSI6W3sib3BlcmF0b3IiOiJPUiIsImNvbXBhcmlzb25zIjpbeyJhdHRyIjoibmFtZSIsInZhbHVlIjoia3JhcyIsIm9wZXJhdG9yIjoiQ09OVEFJTlNURVhUIn1dfV0sImxpbWl0Ijo1MH0=')
@@ -82,6 +88,7 @@ describe('api methods test', () => {
         modelName: 'disease',
       });
     });
+
     test('general search', () => {
       const search = 'name=kras&sourceId=kras&or=name,sourceId';
       const result = api.getQueryFromSearch({
@@ -95,7 +102,7 @@ describe('api methods test', () => {
         sourceId: 'kras',
         or: 'name,sourceId',
         limit: 100,
-        neighbors: 3,
+        neighbors: 2,
       });
     });
   });

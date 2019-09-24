@@ -11,7 +11,6 @@ import {
   Typography,
   FormControl,
   Divider,
-  TextField,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import HelpIcon from '@material-ui/icons/Help';
@@ -19,7 +18,6 @@ import HelpIcon from '@material-ui/icons/Help';
 import './GraphOptionsPanel.scss';
 import ResourceSelectComponent from '../../../../../components/ResourceSelectComponent';
 import config from '../../../../../static/config';
-import util from '../../../../../services/util';
 
 const { GRAPH_ADVANCED, GRAPH_MAIN } = config.DESCRIPTIONS;
 
@@ -128,13 +126,6 @@ class GraphOptionsPanel extends Component {
         && propsMap.nodeProps[prop].length <= 20
         && !(propsMap.nodeProps[prop].length === 1 && propsMap.nodeProps[prop].includes('null')));
 
-    const advancedOptions = [
-      { name: 'collisionRadius', max: 100, step: 1 },
-      { name: 'linkStrength', max: 1, step: 0.001 },
-      { name: 'chargeStrength', max: 1000, step: 1 },
-      { name: 'chargeMax', step: 1, label: 'Max Charge Distance' },
-    ];
-
     return (
       <>
         {helpPanel}
@@ -229,7 +220,7 @@ class GraphOptionsPanel extends Component {
                 onChange={handleGraphOptionsChange}
                 value={graphOptions.linkLabelProp}
                 disabled={linkLegendDisabled}
-                resources={['', '@class', 'source.name']}
+                resources={['', '@class', '@rid', 'source.name']}
               />
               <ResourceSelectComponent
                 className="graph-option"
@@ -238,7 +229,7 @@ class GraphOptionsPanel extends Component {
                 onChange={handleGraphOptionsChange}
                 value={graphOptions.linksColor}
                 disabled={linkLegendDisabled}
-                resources={['', '@class', 'source.name']}
+                resources={['', '@class', '@rid', 'source.name']}
               />
               <FormControl>
                 <FormControlLabel
@@ -264,37 +255,8 @@ class GraphOptionsPanel extends Component {
                 />
               </FormControl>
             </div>
-          </DialogContent>
-          <Divider />
-          <div className="options-title">
-            <Typography variant="h6">Advanced Graph Options</Typography>
-            <IconButton
-              onClick={() => this.handleHelpOpen('advancedHelp')}
-              color="primary"
-              id="advanced-help-btn"
-            >
-              <HelpIcon />
-            </IconButton>
-          </div>
-          <DialogContent className="advanced-options-wrapper">
-            <div className="advanced-options-grid">
-              {advancedOptions.map(option => (
-                <div key={option.name} className="graph-input-wrapper">
-                  <TextField
-                    label={option.label || util.antiCamelCase(option.name)}
-                    name={option.name}
-                    type="number"
-                    id={option.name}
-                    value={graphOptions[option.name]}
-                    onChange={e => handleGraphOptionsChange(e, true)}
-                    inputProps={{
-                      max: option.max,
-                      step: option.step,
-                    }}
-                  />
-                </div>
-              ))}
-              <div>
+            <div className="main-options-wrapper">
+              <FormControl className="graph-option">
                 <FormControlLabel
                   control={(
                     <Checkbox
@@ -304,16 +266,18 @@ class GraphOptionsPanel extends Component {
                           value: e.target.checked,
                           name: e.target.name,
                         },
-                      }, true)}
-                      name="autoCollisionRadius"
-                      checked={graphOptions.autoCollisionRadius}
+                      })
+                      }
+                      name="isTreeLayout"
+                      checked={!!(graphOptions.isTreeLayout)}
                     />
                   )}
-                  label="Auto Space Nodes"
+                  label="Use a Weak Tree layout"
                 />
-              </div>
+              </FormControl>
             </div>
           </DialogContent>
+          <Divider />
         </Dialog>
       </>
     );

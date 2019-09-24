@@ -15,6 +15,7 @@ import DataCache from './dataCache';
 
 const {
   API_BASE_URL,
+  TABLE_DEFAULT_NEIGHBORS,
   DEFAULT_NEIGHBORS,
 } = config;
 
@@ -95,6 +96,7 @@ const defaultSuggestionHandler = (model, opt = {}) => {
   const searchHandler = (textInput) => {
     let terms = textInput.split(/\s+/);
     let operator = 'CONTAINSTEXT';
+
     if (terms.length > 1) {
       terms = terms.filter(term => term.length >= MIN_WORD_LENGTH);
     } else if (terms.length === 1 && terms[0].length < MIN_WORD_LENGTH) {
@@ -107,6 +109,7 @@ const defaultSuggestionHandler = (model, opt = {}) => {
       operator: 'OR',
       comparisons: terms.map(term => ({ attr: 'name', value: term, operator })),
     }];
+
     if (model.properties.sourceId) {
       ontologyWhere[0].comparisons.push(
         ...terms.map(term => ({ attr: 'sourceId', value: term, operator })),
@@ -135,12 +138,14 @@ const defaultSuggestionHandler = (model, opt = {}) => {
     }];
 
     let where = ontologyWhere;
+
     if (model.inherits.includes('Variant') || model.name === 'Variant') {
       where = variantWhere;
     }
 
     const callOptions = { forceListReturn: true, ...rest };
     let call;
+
     if (kbSchema.util.looksLikeRID(textInput)) {
       call = get(`${model.routeName}/${textInput}?neighbors=1`, callOptions);
     } else {
@@ -149,6 +154,7 @@ const defaultSuggestionHandler = (model, opt = {}) => {
         limit: MAX_SUGGESTIONS,
         neighbors: 1,
       };
+
       if (model.inherits.includes('Ontology') || model.name === 'Ontology') {
         body.orderBy = ['name', 'sourceId'];
       }
@@ -169,9 +175,9 @@ const defaultSuggestionHandler = (model, opt = {}) => {
  * @param {Schema} opt.schema
  * @param {string} opt.search the search string portion of the URL displayed by this app
  */
-const getQueryFromSearch = ({ schema, search }) => {
+const getQueryFromSearch = ({ schema, search, count }) => {
   const {
-    neighbors = DEFAULT_NEIGHBORS,
+    neighbors = TABLE_DEFAULT_NEIGHBORS,
     limit = DEFAULT_LIMIT,
     keyword,
     complex,
@@ -179,6 +185,7 @@ const getQueryFromSearch = ({ schema, search }) => {
   } = qs.parse(search.replace(/^\?/, ''));
 
   let modelName = 'v';
+
   if (params['@class'] || params.class) {
     // to make URL more readable class is sometimes used in place of @class
     // these are used to determine the route name and should not also appear as query params
@@ -200,16 +207,18 @@ const getQueryFromSearch = ({ schema, search }) => {
     routeName += '/search';
     // Decode base64 encoded string.
     payload = JSON.parse(atob(decodeURIComponent(complex)));
-    payload.neighbors = Math.max(payload.neighbors || 0, DEFAULT_NEIGHBORS);
+    payload.neighbors = Math.max(payload.neighbors || 0, TABLE_DEFAULT_NEIGHBORS);
     payload.limit = Math.min(payload.limit);
   } else {
     queryParams = {
       limit,
-      neighbors: Math.max(neighbors, DEFAULT_NEIGHBORS),
+      neighbors: count ? 0 : Math.max(neighbors, TABLE_DEFAULT_NEIGHBORS),
     };
+
     if (keyword) {
-      // keyword search is not associated with a particular model
-      routeName = '/search';
+      // keyword search is only associated with statements
+      routeName = '/statements/search';
+      modelName = 'Statement';
       queryParams.keyword = keyword;
     } else {
       queryParams = Object.assign({}, params, queryParams);
@@ -235,6 +244,7 @@ const getSearchFromQuery = ({
 }) => {
   const queryParams = { ...queryParamsIn };
   let modelName;
+
   if (queryParams) {
     // to make URL more readable class is sometimes used in place of @class
     // these are used to determine the route name and should not also appear as query params
@@ -248,6 +258,7 @@ const getSearchFromQuery = ({
     modelName = name;
   }
   const alphaSort = (a, b) => a.localeCompare(b);
+
   if (payload) {
     // complex query
     const complex = btoa(JSON.stringify(payload));
@@ -286,6 +297,7 @@ const querySearchBlock = ({
   const { queryParams, routeName, payload } = getQueryFromSearch({
     schema,
     search,
+    count,
   });
   const content = payload || queryParams;
 
@@ -294,6 +306,7 @@ const querySearchBlock = ({
   } else {
     content.skip = skip;
     content.limit = limit;
+
     if (sortModel.length) {
       const [{ colId: orderBy, sort: orderByDirection }] = sortModel;
       content.orderBy = orderBy;
@@ -302,6 +315,7 @@ const querySearchBlock = ({
   }
 
   let call;
+
   if (payload) {
     call = post(routeName, payload);
   } else {

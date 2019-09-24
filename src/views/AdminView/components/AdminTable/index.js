@@ -90,7 +90,7 @@ class AdminTable extends React.PureComponent {
     const Row = ({
       name,
       createdAt,
-      groups = null,
+      groups = [],
       '@rid': rid,
     }) => (
       <TableRow key={rid}>

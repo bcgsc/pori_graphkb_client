@@ -2,7 +2,6 @@
  * Handles miscellaneous tasks.
  * @module /services/util
  */
-import * as jc from 'json-cycle';
 
 import config from '../static/config';
 
@@ -10,7 +9,6 @@ const {
   PERMISSIONS,
   GRAPH_DEFAULTS,
   GRAPH_PROPERTIES: { NODE_INIT_RADIUS },
-  KEYS: { GRAPH_OBJECTS },
 } = config;
 const { PALLETE_SIZE } = GRAPH_DEFAULTS;
 
@@ -61,6 +59,7 @@ const castToExist = (obj) => {
  */
 const parseAcronyms = (str) => {
   let words = str;
+
   if (!Array.isArray(str)) {
     words = str.split(' ');
   }
@@ -95,12 +94,14 @@ const antiCamelCase = (str) => {
   let accstr = str.toString();
   if (accstr.startsWith('@')) accstr = accstr.slice(1);
   let words = [accstr];
+
   if (accstr.includes('.')) {
     words = accstr.split('.');
   }
 
   words = words.reduce((array, word) => {
     const newWords = word.replace(/[A-Z]+|[0-9]+/g, match => ` ${match}`);
+
     if (newWords) {
       array.push(...newWords.split(' '));
     } else {
@@ -171,6 +172,7 @@ const getTSVRepresentation = (value, key) => {
   }
   if (Array.isArray(value)) {
     let list;
+
     if (key.startsWith('in_')) {
       list = value.map(obj => obj.out['@rid'] || obj.out);
     } else if (key.startsWith('out_')) {
@@ -211,6 +213,7 @@ const flatten = (obj) => {
 
   Object.keys(obj).forEach((key) => {
     let value = obj[key];
+
     if (value !== null && value !== undefined && value !== '') {
       if (typeof value === 'object') {
         value = flatten(value);
@@ -239,6 +242,7 @@ const flatten = (obj) => {
  */
 const parsePayload = (form, properties = null, extraProps = [], isQuery = false) => {
   const payload = properties ? {} : form;
+
   if (properties) {
     properties.forEach((prop) => {
       const {
@@ -247,8 +251,10 @@ const parsePayload = (form, properties = null, extraProps = [], isQuery = false)
         default: defaultValue,
         linkedClass,
       } = prop;
+
       if (type === 'link') {
         const formLink = form[`${name}.data`];
+
         if (formLink && formLink['@rid']) {
           payload[name] = formLink['@rid'];
         }
@@ -277,46 +283,18 @@ const parsePayload = (form, properties = null, extraProps = [], isQuery = false)
  */
 const getPallette = (n, type = 'nodes') => {
   const baseName = `${type.toUpperCase().slice(0, type.length - 1)}_COLORS`;
+
   if (n <= PALLETE_SIZE) {
     return config.GRAPH_DEFAULTS[baseName];
   }
 
   const list = config.GRAPH_DEFAULTS[baseName];
+
   for (let i = PALLETE_SIZE; i < n; i += 1) {
     const color = Math.round(Math.random() * (255 ** 3)).toString(16);
     list.push(`#${color.substr(color.length - 6)}`);
   }
   return list;
-};
-
-/**
- * Saves current graph state into localstorage, identified by the url search parameters.
- * @param {Object} search - collection of search parameters.
- * @param {Object} data - graph data to be stored.
- */
-const loadGraphData = (search, data) => {
-  const newData = Object.assign({ localStorageKey: search }, data);
-  try {
-    localStorage.setItem(GRAPH_OBJECTS, JSON.stringify(jc.decycle(newData)));
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.error('localstorage quota exceeded');
-  }
-};
-
-/**
- * Retrieves graph data from localstorage for the input search parameters.
- * @param {Object} search - collection of search parameters .
- */
-const getGraphData = (search) => {
-  const data = localStorage.getItem(GRAPH_OBJECTS);
-  if (data) {
-    const obj = jc.retrocycle(JSON.parse(data));
-    if (obj.localStorageKey === search) {
-      return obj;
-    }
-  }
-  return null;
 };
 
 /**
@@ -400,6 +378,7 @@ const getPropOfType = (kbClass, type) => Object.values(kbClass)
 const sortFields = (order = [], prop = 'name') => (a, b) => {
   const sortA = prop ? a[prop] : a;
   const sortB = prop ? b[prop] : b;
+
   if (order.indexOf(sortB) === -1) {
     return -1;
   }
@@ -428,8 +407,6 @@ export default {
   getTSVRepresentation,
   parsePayload,
   getPallette,
-  loadGraphData,
-  getGraphData,
   expanded,
   positionInit,
   parsePermission,

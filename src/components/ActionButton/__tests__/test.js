@@ -44,6 +44,7 @@ describe('ActionButton', () => {
   });
 
   test.todo('currently cannot test confirm or cancel clicks since the dialog contents renders outside the wrapper element');
+
   afterEach(() => {
     jest.resetAllMocks();
   });

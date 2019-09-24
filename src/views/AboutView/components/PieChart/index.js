@@ -69,6 +69,7 @@ class PieChart extends Component {
 
     for (const datum of data) { // eslint-disable-line
       datum.fraction = datum.value / total;
+
       if (datum.fraction >= colorThreshold) {
         datum.color = colors[colorIndex];
         colorIndex += 1;

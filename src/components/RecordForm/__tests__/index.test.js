@@ -1,8 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 
-import RecordForm from '..';
-import { RawRecordForm } from '..';
+import RecordForm, { RawRecordForm } from '..';
 import { KBContext } from '../../KBContext';
 import Schema from '../../../services/schema';
 import ActionButton from '../../ActionButton';
@@ -131,8 +130,8 @@ describe('RecordForm', () => {
     });
     wrapper.update();
 
-    expect(wrapper.find(ActionButton)).toHaveLength(3);
-    const delBtn = wrapper.find(ActionButton).at(1);
+    expect(wrapper.find(ActionButton)).toHaveLength(2);
+    const delBtn = wrapper.find(ActionButton).at(0);
     expect(delBtn.text()).toEqual('DELETE');
     await delBtn.prop('onClick')();
     wrapper.update();
@@ -226,8 +225,8 @@ describe('RecordForm', () => {
       errors: {},
     });
 
-    expect(wrapper.find(ActionButton)).toHaveLength(3);
-    const submitEditBtn = wrapper.find(ActionButton).at(2);
+    expect(wrapper.find(ActionButton)).toHaveLength(2);
+    const submitEditBtn = wrapper.find(ActionButton).at(1);
     expect(submitEditBtn.text()).toEqual('SUBMIT CHANGES');
     await submitEditBtn.prop('onClick')();
 
@@ -357,7 +356,7 @@ describe('RecordForm', () => {
     expect(onSubmitSpy).toHaveBeenCalledTimes(0);
     expect(handlerSpy).toHaveBeenCalledTimes(1);
     expect(snackbarAddSpy).toHaveBeenCalledTimes(1);
-    expect(snackbarAddSpy).toBeCalledWith('There are errors in the form which must be resolved before it can be submitted');
+    expect(snackbarAddSpy).toHaveBeenCalledWith('There are errors in the form which must be resolved before it can be submitted');
   });
 
   test('submitting a new record with input errors', async () => {
@@ -405,7 +404,7 @@ describe('RecordForm', () => {
     expect(onSubmitSpy).toHaveBeenCalledTimes(0);
     expect(handlerSpy).toHaveBeenCalledTimes(1);
     expect(snackbarAddSpy).toHaveBeenCalledTimes(1);
-    expect(snackbarAddSpy).toBeCalledWith('There are errors in the form which must be resolved before it can be submitted');
+    expect(snackbarAddSpy).toHaveBeenCalledWith('There are errors in the form which must be resolved before it can be submitted');
     expect(api.post).toHaveBeenCalledTimes(0);
   });
 
@@ -447,8 +446,8 @@ describe('RecordForm', () => {
       errors: { sourceId: 'Required Value' },
     });
 
-    expect(wrapper.find(ActionButton)).toHaveLength(3);
-    const submitEditBtn = wrapper.find(ActionButton).at(2);
+    expect(wrapper.find(ActionButton)).toHaveLength(2);
+    const submitEditBtn = wrapper.find(ActionButton).at(1);
     expect(submitEditBtn.text()).toEqual('SUBMIT CHANGES');
     await submitEditBtn.prop('onClick')();
 
@@ -458,7 +457,7 @@ describe('RecordForm', () => {
     expect(api.get).toHaveBeenCalledTimes(1);
     expect(api.patch).toHaveBeenCalledTimes(0);
     expect(snackbarAddSpy).toHaveBeenCalledTimes(1);
-    expect(snackbarAddSpy).toBeCalledWith('There are errors in the form which must be resolved before it can be submitted');
+    expect(snackbarAddSpy).toHaveBeenCalledWith('There are errors in the form which must be resolved before it can be submitted');
   });
 
   test('test searching via Record with input errors', async () => {
@@ -493,19 +492,19 @@ describe('RecordForm', () => {
       },
     });
     // api.get is called once by FormField to populate the record
-    expect(api.get).toBeCalledTimes(1);
+    expect(api.get).toHaveBeenCalledTimes(1);
     expect(wrapper.find(ActionButton)).toHaveLength(1);
     const submitBtn = wrapper.find(ActionButton).at(0);
     expect(submitBtn.text()).toEqual('SUBMIT');
     await submitBtn.prop('onClick')();
 
     // api.get is not called again by handleAction method
-    expect(api.get).toBeCalledTimes(1);
+    expect(api.get).toHaveBeenCalledTimes(1);
     expect(onErrorSpy).toHaveBeenCalledTimes(0);
     expect(onSubmitSpy).toHaveBeenCalledTimes(0);
     expect(handlerSpy).toHaveBeenCalledTimes(1);
     expect(snackbarAddSpy).toHaveBeenCalledTimes(1);
-    expect(snackbarAddSpy).toBeCalledWith('There are errors in the form which must be resolved before it can be submitted');
+    expect(snackbarAddSpy).toHaveBeenCalledWith('There are errors in the form which must be resolved before it can be submitted');
   });
 
   test('submiting a new record : catches error by await api post call ', async () => {
@@ -556,7 +555,7 @@ describe('RecordForm', () => {
     expect(onSubmitSpy).toHaveBeenCalledTimes(0);
     expect(handlerSpy).toHaveBeenCalledTimes(1);
     expect(snackbarAddSpy).toHaveBeenCalledTimes(1);
-    expect(snackbarAddSpy).toBeCalledWith('Error (Post Abort Error) in creating the record');
+    expect(snackbarAddSpy).toHaveBeenCalledWith('Error (Post Abort Error) in creating the record');
   });
 
   test('submiting edit : catches error  by await api call ', async () => {
@@ -603,8 +602,8 @@ describe('RecordForm', () => {
     });
     api.patch.mockReturnValue(mockApiPostError());
 
-    expect(wrapper.find(ActionButton)).toHaveLength(3);
-    const submitEditBtn = wrapper.find(ActionButton).at(2);
+    expect(wrapper.find(ActionButton)).toHaveLength(2);
+    const submitEditBtn = wrapper.find(ActionButton).at(1);
     expect(submitEditBtn.text()).toEqual('SUBMIT CHANGES');
     await submitEditBtn.prop('onClick')();
 
@@ -665,8 +664,8 @@ describe('RecordForm', () => {
     });
     api.delete.mockReturnValue(mockApiPostError());
 
-    expect(wrapper.find(ActionButton)).toHaveLength(3);
-    const delBtn = wrapper.find(ActionButton).at(1);
+    expect(wrapper.find(ActionButton)).toHaveLength(2);
+    const delBtn = wrapper.find(ActionButton).at(0);
     expect(delBtn.text()).toEqual('DELETE');
     await delBtn.prop('onClick')();
     wrapper.update();
@@ -675,7 +674,7 @@ describe('RecordForm', () => {
     expect(onSubmitSpy).toHaveBeenCalledTimes(0);
     expect(handlerSpy).toHaveBeenCalledTimes(1);
     expect(snackbarAddSpy).toHaveBeenCalledTimes(1);
-    expect(snackbarAddSpy).toBeCalledWith('Error (Delete Abort Error) in deleting the record (#20:12)');
+    expect(snackbarAddSpy).toHaveBeenCalledWith('Error (Delete Abort Error) in deleting the record (#20:12)');
   });
 
   test('record parsed from url not found', async () => {

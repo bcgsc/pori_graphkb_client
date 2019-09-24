@@ -6,20 +6,25 @@ import {
   CircularProgress,
   IconButton,
 } from '@material-ui/core';
+import TimelineIcon from '@material-ui/icons/Timeline';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import Tooltip from '@material-ui/core/Tooltip';
 import EditIcon from '@material-ui/icons/Edit';
 import { boundMethod } from 'autobind-decorator';
+import * as qs from 'qs';
 
 
 import kbSchema from '@bcgsc/knowledgebase-schema';
 
 
 import DataTable from './components/DataTable';
+import GraphComponent from './components/GraphComponent';
 import DetailDrawer from './components/DetailDrawer';
 import { KBContext } from '../../components/KBContext';
 import RecordFormDialog from '../../components/RecordFormDialog';
 import api from '../../services/api';
 import { cleanLinkedRecords } from '../../components/util';
+import { hashRecordsByRID } from './util';
 
 import './index.scss';
 
@@ -43,7 +48,6 @@ class DataView extends React.Component {
     bufferSize: 200,
   };
 
-
   constructor(props) {
     super(props);
     const { location: { search } } = this.props;
@@ -55,10 +59,12 @@ class DataView extends React.Component {
       detailPanelRow: null,
       optionsMenuAnchor: null,
       selectedRecords: [],
-      variant: 'table',
       filtersEditOpen: false,
       filters: {},
       search,
+      isExportingData: false,
+      totalNumOfRowsSelected: 0,
+      graphData: null,
     };
     this.controllers = [];
   }
@@ -79,95 +85,10 @@ class DataView extends React.Component {
 
   componentWillUnmount() {
     const { cache } = this.state;
+
     if (cache) {
       cache.abortAll();
     }
-  }
-
-  /**
-   * Changes the current filters set and updates the URL to match
-   */
-  @boundMethod
-  handleEditFilters(filters) {
-    const { schema } = this.context;
-    const { history, location: { pathname } } = this.props;
-    // drop all undefined values
-    const { routeName } = schema.get(filters);
-    try {
-      const search = api.getSearchFromQuery({
-        schema,
-        queryParams: cleanLinkedRecords(filters),
-        routeName,
-      });
-      history.replace(`${pathname}?${search}`);
-      this.setState({ filtersEditOpen: false, filters, search: `?${search}` });
-    } catch (err) {
-      this.handleError(err);
-    }
-  }
-
-  /**
-   * Called in response to records being requested or loaded
-   * Responsible for giving the user information while waiting for things to load
-   */
-  @boundMethod
-  handleLoadingChange() {
-    const { cache, search } = this.state;
-    if (!cache) {
-      return;
-    }
-    const rowCount = cache.rowCount(search);
-    const [start, end] = cache.pendingRows(search);
-
-    let statusMessage;
-    if (start !== null) {
-      statusMessage = `requesting ${start} - ${end}`;
-      if (rowCount !== undefined) {
-        statusMessage = `${statusMessage} of ${rowCount} rows`;
-      } else {
-        statusMessage = `${statusMessage} rows ....`;
-      }
-    }
-    this.setState({ statusMessage, totalRows: rowCount });
-  }
-
-  /**
-   * Opens the right-hand panel that shows details of a given record
-   */
-  @boundMethod
-  handleToggleDetailPanel(opt = {}) {
-    const { data } = opt;
-
-    if (!data) {
-      this.setState({ detailPanelRow: null });
-    } else {
-      this.setState({ detailPanelRow: data });
-    }
-  }
-
-  /**
-   * Opens the options menu. The trigger is defined on this component but
-   * the menu contents are handled by the data element (ex DataTable)
-   */
-  @boundMethod
-  handleToggleOptionsMenu({ currentTarget }) {
-    const { optionsMenuAnchor } = this.state;
-    if (optionsMenuAnchor) {
-      this.setState({ optionsMenuAnchor: null });
-    } else {
-      this.setState({ optionsMenuAnchor: currentTarget });
-    }
-  }
-
-  @boundMethod
-  handleRecordSelection(selectedRecords) {
-    this.setState({ selectedRecords });
-  }
-
-  @boundMethod
-  handleError(err) {
-    const { history } = this.props;
-    history.push('/error', { error: { name: err.name, message: err.message } });
   }
 
   /**
@@ -196,6 +117,235 @@ class DataView extends React.Component {
     } catch (err) {
       return this.handleError(err);
     }
+  }
+
+  /**
+   * Opens the right-hand panel that shows details of a given record
+   */
+  @boundMethod
+  async handleToggleDetailPanel(opt = {}) {
+    const { data } = opt;
+    const { cache } = this.state;
+
+    // no data or clicked link is a link property without a class model
+    if (!data || data.isLinkProp) {
+      this.setState({ detailPanelRow: null });
+    } else {
+      try {
+        const fullRecord = await cache.getRecord(data);
+
+        if (!fullRecord) {
+          this.setState({ detailPanelRow: null });
+        } else {
+          this.setState({ detailPanelRow: fullRecord });
+        }
+      } catch (err) {
+        this.handleError(err);
+      }
+    }
+  }
+
+  /**
+   * Opens the options menu. The trigger is defined on this component but
+   * the menu contents are handled by the data element (ex DataTable)
+   */
+  @boundMethod
+  handleToggleOptionsMenu({ currentTarget }) {
+    const { optionsMenuAnchor } = this.state;
+
+    if (optionsMenuAnchor) {
+      this.setState({ optionsMenuAnchor: null });
+    } else {
+      this.setState({ optionsMenuAnchor: currentTarget });
+    }
+  }
+
+  @boundMethod
+  async handleRecordSelection(selectedRecords) {
+    const { cache } = this.state;
+
+    try {
+      const fullRecords = await cache.getRecords(selectedRecords);
+      this.setState({ selectedRecords: fullRecords });
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
+
+  @boundMethod
+  handleSwapToGraph() {
+    const { selectedRecords } = this.state;
+    const nodeRIDs = selectedRecords.map(node => node['@rid']);
+    this.handleGraphStateSaveIntoURL(nodeRIDs);
+  }
+
+  @boundMethod
+  handleError(err) {
+    const { history } = this.props;
+    history.push('/error', { error: { name: err.name, message: err.message } });
+  }
+
+  @boundMethod
+  handleExportLoader(boolean) {
+    this.setState({ isExportingData: boolean });
+  }
+
+  @boundMethod
+  handleNewRowSelection(totalRows) {
+    this.setState({ totalNumOfRowsSelected: totalRows });
+  }
+
+  /**
+   * Called in response to records being requested or loaded
+   * Responsible for giving the user information while waiting for things to load
+   */
+  @boundMethod
+  handleLoadingChange() {
+    const { cache, search, isExportingData } = this.state;
+
+    if (!cache) {
+      return;
+    }
+    const rowCount = cache.rowCount(search);
+    const [start, end] = cache.pendingRows(search);
+
+    let statusMessage;
+
+    if (start !== null) {
+      statusMessage = `${isExportingData ? 'Exporting' : 'Requesting'} ${start} - ${end}`;
+
+      if (rowCount !== undefined) {
+        statusMessage = `${statusMessage} of ${rowCount} rows`;
+      } else {
+        statusMessage = `${statusMessage} rows ....`;
+      }
+    }
+    this.setState({ statusMessage, totalRows: rowCount });
+  }
+
+  /**
+   * Changes the current filters set and updates the URL to match
+   */
+  @boundMethod
+  handleEditFilters(filters) {
+    const { schema } = this.context;
+    const { history, location: { pathname } } = this.props;
+    // drop all undefined values
+    const { routeName } = schema.get(filters);
+
+    try {
+      const search = api.getSearchFromQuery({
+        schema,
+        queryParams: cleanLinkedRecords(filters),
+        routeName,
+      });
+      history.replace(`${pathname}?${search}`);
+      this.setState({ filtersEditOpen: false, filters, search: `?${search}` });
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
+
+  @boundMethod
+  async loadSavedStateFromURL() {
+    const { cache } = this.state;
+    const URLBeforeNodeEncoding = window.location.href.split('nodes')[0];
+    const encodedData = window.location.href.split(URLBeforeNodeEncoding)[1];
+    const { nodes } = qs.parse(encodedData.replace(/^\?/, ''));
+
+    try {
+      const decodedContent = decodeURIComponent(nodes);
+      const base64decoded = atob(decodedContent);
+      const decodedNodes = JSON.parse(base64decoded);
+      const records = await cache.getRecords(decodedNodes);
+      const data = hashRecordsByRID(records);
+      this.setState({ graphData: data });
+    } catch (err) {
+      this.handleError(err);
+    }
+  }
+
+  @boundMethod
+  handleGraphStateSaveIntoURL(nodeRIDs) {
+    const { history } = this.props;
+
+    const savedState = {};
+    let encodedState;
+
+    try {
+      const stringifiedState = JSON.stringify(nodeRIDs);
+      const base64encodedState = btoa(stringifiedState);
+      const encodedContent = encodeURIComponent(base64encodedState);
+
+      savedState.nodes = encodedContent;
+      encodedState = qs.stringify(savedState);
+    } catch (err) {
+      this.handleError(err);
+    }
+
+    history.push({
+      pathname: '/data/graph',
+      search: `${encodedState}`,
+    });
+  }
+
+  /**
+   * Renders either the DataTable or Graph view depending on the parsed URL
+   */
+  @boundMethod
+  renderDataComponent() {
+    const {
+      detailPanelRow,
+      cache,
+      optionsMenuAnchor,
+      search,
+    } = this.state;
+    const { graphData } = this.state;
+
+    const { bufferSize } = this.props;
+    const { schema } = this.context;
+    const edges = schema.getEdges();
+
+    const URL = String(window.location.href);
+    const isGraphView = URL.includes('node');
+
+    if (isGraphView) {
+      if (!graphData) {
+        this.loadSavedStateFromURL();
+        return (
+          <div className="circular-progress">
+            <CircularProgress color="secondary" size="4rem" />
+          </div>
+        );
+      }
+      return (
+        <GraphComponent
+          data={graphData || {}}
+          cache={cache}
+          handleDetailDrawerOpen={this.handleToggleDetailPanel}
+          handleDetailDrawerClose={this.handleToggleDetailPanel}
+          detail={detailPanelRow}
+          handleError={this.handleError}
+          edgeTypes={edges}
+          schema={schema}
+          onRecordClicked={this.handleToggleDetailPanel}
+          handleGraphStateSave={this.handleGraphStateSaveIntoURL}
+        />
+      );
+    }
+    return (
+      <DataTable
+        search={search}
+        cache={cache}
+        rowBuffer={bufferSize}
+        isExportingData={this.handleExportLoader}
+        onRecordClicked={this.handleToggleDetailPanel}
+        onRecordsSelected={this.handleRecordSelection}
+        onRowSelected={this.handleNewRowSelection}
+        optionsMenuAnchor={optionsMenuAnchor}
+        optionsMenuOnClose={this.handleToggleOptionsMenu}
+      />
+    );
   }
 
   /**
@@ -240,25 +390,23 @@ class DataView extends React.Component {
       statusMessage,
       totalRows,
       detailPanelRow,
-      optionsMenuAnchor,
-      selectedRecords,
+      totalNumOfRowsSelected,
       filtersEditOpen,
       filters,
-      search,
-      variant,
     } = this.state;
-    const { bufferSize } = this.props;
+
+    const { history } = this.props;
+    const URLContainsTable = String(history.location.pathname).includes('table');
 
     const detailPanelIsOpen = Boolean(detailPanelRow);
-
     return (
       <div className={
         `data-view ${detailPanelIsOpen
           ? 'data-view--squished'
           : ''}`}
       >
-        <div className="data-view__header">
-          {variant === 'table' && (
+        <div className={`data-view__header${!URLContainsTable ? '--graph-view' : ''}`}>
+          {URLContainsTable && (
             <>
               <Typography variant="h5">Active Filters</Typography>
               <IconButton
@@ -279,22 +427,16 @@ class DataView extends React.Component {
             variant="search"
             value={filters}
           />
-          <IconButton onClick={this.handleToggleOptionsMenu} className="data-view__edit-filters">
-            <MoreHorizIcon color="action" />
-          </IconButton>
+          {URLContainsTable && (
+            <IconButton onClick={this.handleToggleOptionsMenu} className="data-view__edit-filters">
+              <MoreHorizIcon color="action" />
+            </IconButton>
+          )}
         </div>
-        <div className="data-view__content">
+        <div className={`data-view__content${!URLContainsTable ? '--graph-view' : ''}`}>
           {cache && (
             <>
-              <DataTable
-                search={search}
-                cache={cache}
-                rowBuffer={bufferSize}
-                onRecordClicked={this.handleToggleDetailPanel}
-                onRecordsSelected={this.handleRecordSelection}
-                optionsMenuAnchor={optionsMenuAnchor}
-                optionsMenuOnClose={this.handleToggleOptionsMenu}
-              />
+              {this.renderDataComponent()}
               <DetailDrawer
                 node={detailPanelRow}
                 onClose={this.handleToggleDetailPanel}
@@ -304,9 +446,20 @@ class DataView extends React.Component {
         </div>
         <div className="data-view__footer">
           <div className="footer__selected-records">
-            <Typography>
-              {selectedRecords.length} Record{selectedRecords.length !== 1 ? 's' : ''} Selected
-            </Typography>
+            {URLContainsTable && (
+              <>
+                <Typography>
+                  {totalNumOfRowsSelected} Record{totalNumOfRowsSelected !== 1 ? 's' : ''} Selected
+                </Typography>
+                <Tooltip title="click here for graph view">
+                  <IconButton onClick={this.handleSwapToGraph}>
+                    <TimelineIcon
+                      color="secondary"
+                    />
+                  </IconButton>
+                </Tooltip>
+              </>
+            )}
           </div>
           {statusMessage && (
             <div className="footer__loader">
@@ -316,9 +469,11 @@ class DataView extends React.Component {
               </Typography>
             </div>
           )}
-          <Typography className="footer__total-rows">
+          {URLContainsTable && (
+            <Typography className="footer__total-rows">
             Total Rows: {totalRows === undefined ? 'Unknown' : totalRows}
-          </Typography>
+            </Typography>
+          )}
         </div>
 
       </div>

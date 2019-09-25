@@ -97,6 +97,11 @@ class GraphNodeDisplay extends PureComponent {
     } else {
       label = node instanceof GraphNode ? node.getLabel(labelKey) : node.data[labelKey];
     }
+
+    if (typeof label === 'object') {
+      label = schema.getLabel(label, true);
+    }
+
     const faded = (detail && detail['@rid'] !== node.getId())
       || (actionsNode && actionsNode.getId() !== node.getId())
       || (filter && !label.includes(filter.toLowerCase()));

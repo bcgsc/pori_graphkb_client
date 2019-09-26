@@ -288,7 +288,6 @@ FormField.propTypes = {
   model: PropTypes.object.isRequired,
   disabled: PropTypes.bool,
   value: PropTypes.any,
-  schema: PropTypes.object.isRequired,
   label: PropTypes.string,
   variant: PropTypes.string,
   innerProps: PropTypes.object,

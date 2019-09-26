@@ -262,6 +262,7 @@ const FormField = (props) => {
         value={value || ''}
         onChange={onChange}
         InputLabelProps={{ shrink: !!value }}
+        inputProps={{ ...(innerProps.inputProps || {}), 'data-testid': name }}
         error={errorFlag}
         helperText={helperText}
         disabled={generated || disabled}

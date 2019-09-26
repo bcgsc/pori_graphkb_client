@@ -91,7 +91,7 @@ const FieldGroup = ({
 
 FieldGroup.propTypes = {
   model: PropTypes.object.isRequired,
-  ordering: PropTypes.arrayOf(PropTypes.oneOf([
+  ordering: PropTypes.arrayOf(PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.arrayOf(PropTypes.string),
   ])).isRequired,

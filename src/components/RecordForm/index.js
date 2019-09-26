@@ -113,7 +113,17 @@ const RecordForm = ({
 
   useDeepCompareEffect(() => {
     setFormFieldContent({ type: 'replace', payload: initialValue || {} });
-    setFormFieldError({ type: 'replace', payload: {} });
+
+    const initialErrors = {};
+    Object.values(schema.get(modelName).properties).forEach((prop) => {
+      const { error } = schema.validateValue(prop, (initialValue || {})[prop.name], false);
+
+      if (error) {
+        initialErrors[prop.name] = error;
+      }
+    });
+
+    setFormFieldError({ type: 'replace', payload: initialErrors });
     setFormIsDirty(false);
   }, [initialValue]);
 

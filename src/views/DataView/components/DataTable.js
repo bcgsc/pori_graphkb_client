@@ -1,11 +1,10 @@
 import React from 'react';
 import {
-  FormControlLabel, Checkbox, Popover, Avatar,
+  FormControlLabel, Checkbox, Popover,
 } from '@material-ui/core';
 import { AgGridReact } from 'ag-grid-react';
 import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
-import LinkIcon from '@material-ui/icons/Link';
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
@@ -570,27 +569,11 @@ class DataTable extends React.Component {
                 }}
 
                 getLink={schema.getLink}
-                ChipProps={{
-                  avatar: (<Avatar><LinkIcon /></Avatar>),
-                  variant: 'outlined',
-                  color: 'primary',
-                }}
               />
             );
           })}
         </div>
       );
-    };
-
-    const DefaultRender = ({ value, data }) => {
-      if (data === undefined) {
-        return null;
-      } if (typeof value === 'object' && value !== null) {
-        return schema.getLabel(value, false);
-      }
-      return value === undefined
-        ? null
-        : value;
     };
 
     return (
@@ -606,26 +589,23 @@ class DataTable extends React.Component {
       >
         {this.renderOptionsMenu()}
         <AgGridReact
+          reactNext
           defaultColDef={{
             sortable: true,
             resizable: true,
             width: 150,
-            cellRenderer: 'DefaultRender',
           }}
           infiniteInitialRowCount={1}
           maxBlocksInCache={0}
           maxConcurrentDatasourceRequests={1}
           onGridReady={this.onGridReady}
           cacheBlockSize={CACHE_BLOCK_SIZE}
-          // pagination
-          // paginationAutoPageSize
           paginationPageSize={25}
           cacheOverflowSize={1}
           rowModelType="infinite"
           suppressHorizontalScroll={false}
           frameworkComponents={{
             RecordList,
-            DefaultRender,
           }}
           blockLoadDebounceMillis={100}
           onPaginationChanged={this.resizeColumnsTofitEdges}

@@ -1,6 +1,6 @@
 {
   "name": "knowledgebase-web",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "private": true,
   "bugs": {
     "email": "graphkb@bcgsc.ca"
@@ -13,13 +13,13 @@
     "@babel/polyfill": "^7.2.5",
     "@babel/runtime": "^7.2.0",
     "@bcgsc/knowledgebase-parser": "^0.5.6",
-    "@bcgsc/knowledgebase-schema": "^2.3.0",
+    "@bcgsc/knowledgebase-schema": "^2.6.1",
     "@bcgsc/react-snackbar-provider": "^0.2.0",
     "@material-ui/core": "^3.4.0",
     "@material-ui/icons": "^3.0.1",
     "abortcontroller-polyfill": "^1.2.1",
-    "ag-grid-community": "^20.2.0",
-    "ag-grid-react": "^20.2.0",
+    "ag-grid-community": "^21.2.1",
+    "ag-grid-react": "^21.2.1",
     "autobind-decorator": "^2.4.0",
     "d3-drag": "^1.2.3",
     "d3-force": "^1.1.2",

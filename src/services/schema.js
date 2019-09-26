@@ -268,7 +268,7 @@ class Schema {
 
         try {
           embeddedModel = this.get(value);
-        } catch (err) { }
+        } catch (err) { } // eslint-disable-line no-empty
 
         if (!embeddedModel) {
           return { error: { '@class': { message: 'Required Value' } } };

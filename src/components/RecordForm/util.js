@@ -69,7 +69,14 @@ const sortAndGroupFields = (model, opt = {}) => {
   const visited = new Set();
 
   const sortedPropModels = Object.values(model.properties)
-    .sort((p1, p2) => p1.name.localeCompare(p2.name));
+    .sort((p1, p2) => {
+      if (p1.mandatory === p2.mandatory) {
+        return p1.name.localeCompare(p2.name);
+      } if (p1.mandatory) {
+        return -1;
+      }
+      return 1;
+    });
 
   // get the form content
   for (const prop of sortedPropModels) { // eslint-disable-line no-restricted-syntax

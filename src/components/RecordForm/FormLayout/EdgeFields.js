@@ -6,6 +6,14 @@ import { FORM_VARIANT } from '../util';
 
 /**
  * Renders the two edge specific input fields (out/in)
+ *
+ * @param {SchemaDefinition} props.schema the schema
+ * @param {ClassModel} props.model the current edge model
+ * @param {function} props.onChange the parent change handler
+ * @param {object} props.content the form content (key by property name)
+ * @param {object} props.errors the form errors (key by property name)
+ * @param {string} props.variant the form variant
+ * @param {boolean} props.formIsDirty the form has had changes and is not identical to its initial pristine state
  */
 const EdgeFields = ({
   schema, model, onChange, content, errors, disabled, variant, formIsDirty,

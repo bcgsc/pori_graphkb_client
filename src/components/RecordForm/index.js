@@ -246,6 +246,7 @@ const RecordForm = ({
       setFormFieldContent({ type: 'update', payload: { name: 'reviewStatus', value: content.status } });
     }
     setReviewDialogOpen(false);
+    setFormIsDirty(true);
   }, [formContent]);
 
   const isEdge = false; // TODO

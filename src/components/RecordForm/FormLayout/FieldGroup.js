@@ -33,7 +33,9 @@ const FieldGroup = ({
           newOrder.push(subgroup);
         }
       } else if (!properties[item] || !properties[item].generated) {
-        newOrder.push(item);
+        if (!model.isEdge || !['out', 'in'].includes(item)) {
+          newOrder.push(item);
+        }
       }
     });
     return newOrder;

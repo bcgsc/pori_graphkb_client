@@ -70,7 +70,7 @@ const sortAndGroupFields = (model, opt = {}) => {
 
   const sortedPropModels = Object.values(model.properties)
     .sort((p1, p2) => {
-      if (p1.mandatory === p2.mandatory) {
+      if (p1.mandatory === p2.mandatory || variant === FORM_VARIANT.VIEW) {
         return p1.name.localeCompare(p2.name);
       } if (p1.mandatory) {
         return -1;

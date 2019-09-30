@@ -780,8 +780,8 @@ class GraphComponent extends Component {
         }
 
         if (isObject(obj.data[key])) { // value is object
-          if (obj.data[key].name && !colors[obj.data[key].name]) {
-            colors[obj.data[key].name] = '';
+          if (obj.data[key].displayName && !colors[obj.data[key].displayName]) {
+            colors[obj.data[key].displayName] = '';
           }
         } else if (obj.data[key] && !colors[obj.data[key]]) {
           colors[obj.data[key]] = '';

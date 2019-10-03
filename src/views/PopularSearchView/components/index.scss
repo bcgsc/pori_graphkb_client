@@ -1,0 +1,127 @@
+@import '../../../globals';
+
+
+@mixin menuItemContentMobile (){
+  padding: 4px;
+  position: relative;
+  right: 15px;
+  width: 300px;
+  margin: 10px 0;
+}
+
+@mixin menuItemContent (){
+  margin: 20px 0;
+  padding: 5px 10px 5px 0;
+  position: relative;
+  right: 15px;
+  width: 400px;
+}
+@media only screen and (max-width: $breakpoint-mobile) {
+  .popular-search {
+    &__menu {
+      margin: auto;
+      padding-top: 5%;
+      width: 300px;
+
+      button {
+        width: 300px;
+      }
+    }
+
+    &__input-field {
+      margin: auto;
+      padding-top: 5%;
+      width: 200px;
+      box-sizing: border-box;
+    }
+
+    &__menuItem {
+      @include menuItemContentMobile;
+
+      &--selected {
+        @include menuItemContentMobile;
+        background-color: $palette__grey--300;
+      }
+
+      &:hover {
+        background-color: $palette__grey--300;
+      }
+    }
+  }
+
+  .search-input {
+    &__label {
+      display: flex;
+      justify-content: center;
+      margin: 20px;
+    }
+
+    &__input-field {
+      margin: 20px;
+    }
+
+    &__action-button {
+      display: flex;
+      justify-content: center;
+    }
+  }
+
+
+}
+
+@media only screen and (min-width: $breakpoint-mobile){
+  .popular-search {
+    &__contents {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    &__menu {
+      margin: auto;
+      padding-top: 5%;
+      width: 400px;
+
+      button {
+        width: 400px;
+      }
+    }
+
+    &__menuItem {
+      @include menuItemContent;
+
+      &--selected{
+        @include menuItemContent;
+        background-color: $palette__grey--300;
+      }
+
+      &:hover {
+        background-color: $palette__grey--300;
+      }
+    }
+
+    &__input-field {
+      margin: auto;
+      padding-top: 15%;
+      width: 400px;
+    }
+  }
+
+  .search-input {
+    &__label {
+      display: flex;
+      justify-content: center;
+      margin: 20px;
+    }
+
+    &__input-field {
+      display: flex;
+      justify-content: center;
+      margin: 20px;
+    }
+
+    &__action-button {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}

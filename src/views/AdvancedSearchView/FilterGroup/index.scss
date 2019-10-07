@@ -1,0 +1,93 @@
+@import '../../../globals';
+
+@mixin boxContent (){
+  border: 1px solid $palette__primary--light;
+  border-radius: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  // margin: 90px 75px;
+  position: relative;
+  width: 89%;
+}
+
+@media only screen and (min-width: $breakpoint-mobile){
+  .filter-groups {
+    &__header {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+
+      h5 {
+        position: relative;
+        left: 75px;
+      }
+
+      .action-button {
+        position: relative;
+        right: 60px;
+      }
+    }
+
+    &__content {
+      border-radius: 5px;
+    }
+
+    &__cancel-btn {
+      background-color: white;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transform: translate((40%, -40%));
+    }
+
+    &__group-label {
+      position: absolute;
+      left: 0;
+      right: 0;
+      transform: translateY(-50%);
+
+      &--empty {
+        opacity: 0;
+      }
+    }
+
+
+    &__box {
+      @include boxContent;
+      margin: 90px 75px;
+
+      &:first-child {
+        @include boxContent;
+        margin-top: 20px;
+        margin-right: 75px;
+        margin-bottom: 90px;
+        margin-left: 75px;
+      }
+
+      &:not(:first-child):before {
+        display: block;
+        content: 'OR';
+        position: absolute;
+        top: -60px;
+        transform: translate(-50%, 50%);
+      }
+
+      .filter-chip {
+        margin: 20px;
+        padding: 5px;
+
+        &:not(:last-child):after {
+          display: inline;
+          content: 'AND';
+          margin-left: 50px
+        }
+      }
+
+      &--empty {
+
+      }
+    }
+  }
+
+}

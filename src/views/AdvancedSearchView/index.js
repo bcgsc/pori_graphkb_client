@@ -3,32 +3,32 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import useDeepCompareEffect from 'use-deep-compare-effect';
-import { Typography, Chip } from '@material-ui/core';
+import {
+  Typography, Card,
+} from '@material-ui/core';
 
 import { KBContext } from '../../components/KBContext';
 import FormField from '../../components/RecordForm/FormField';
 import { OPERATORS } from './util';
 import './index.scss';
 import ActionButton from '../../components/ActionButton';
+import FilterGroup from './FilterGroup';
 
 
-const defaultFilterGroup = [{ name: 'filterGroup1', filters: [] }];
+const defaultFilterGroup = [{ key: 1, name: 'filterGroup1', filters: [] }];
 
 const filterGroupReducer = (state, action) => {
   const {
-    type: actionType, payload, filterGroupName, resetFunctions,
+    type: actionType, payload, filterGroupName,
   } = action;
 
   if (actionType === 'addGroup') {
-    return [...state, { name: `filterGroup${state.length + 1}`, filters: [] }];
+    const { key: lastKey } = state[state.length - 1];
+    return [...state, { key: lastKey + 1, name: `filterGroup${lastKey + 1}`, filters: [] }];
   } if (actionType === 'addFilter') {
-    const { setCurrProp, setCurrValue, setCurrOperater } = resetFunctions;
-    // setCurrProp(null);
-    // setCurrValue(null);
-    // setCurrOperater(null);
     const targetIndex = state.findIndex(fgroup => fgroup.name === filterGroupName);
     const targetFilterGroup = state[targetIndex];
-    const newFilterGroup = { name: targetFilterGroup.name, filters: [...targetFilterGroup.filters] };
+    const newFilterGroup = { ...targetFilterGroup, filters: [...targetFilterGroup.filters] };
     newFilterGroup.filters.push(payload);
 
     if (state.length === 1) {
@@ -37,7 +37,36 @@ const filterGroupReducer = (state, action) => {
     return [...state.slice(0, targetIndex), newFilterGroup, ...state.slice(targetIndex + 1)];
   } if (actionType === 'clear') {
     return [...defaultFilterGroup];
+  } if (actionType === 'delete') {
+    if (state.length === 1) {
+      return [...defaultFilterGroup];
+    }
+    const targetIndex = state.findIndex(fgroup => fgroup.name === filterGroupName);
+    return [...state.slice(0, targetIndex), ...state.slice(targetIndex + 1)];
   }
+  return [...state];
+};
+
+const initialFilterValues = {
+  prop: null,
+  value: null,
+  operator: null,
+};
+
+/**
+ * Manages current values for active filter.
+ * State will be current filter. Action will either clear values or set values.
+ *
+ * */
+const activeFilterReducer = (state, action) => {
+  const { type: actionType, payload } = action;
+
+  if (actionType === 'clear') {
+    return { prop: null, value: null, operator: null };
+  } if (actionType === 'prop-change') {
+    return { ...state, value: null, operator: null };
+  }
+  return { ...state, [actionType]: payload };
 };
 
 function AdvancedSearchView(props) {
@@ -48,27 +77,18 @@ function AdvancedSearchView(props) {
 
 
   const { schema } = useContext(KBContext);
+  const [currFilter, setFilter] = useReducer(activeFilterReducer, initialFilterValues);
+  const { prop: currProp, value: currValue, operator: currOperator } = currFilter;
+
+  // set up current model for search
   const [modelName, setModelName] = useState(initialModelName);
-
-
   const [model, setModel] = useState(null);
-  // setting model
   useDeepCompareEffect(() => {
     setModel(schema.get(modelName || 'V'));
   }, [schema, modelName]);
 
   // fetching class model options
   const [modelOptions, setModelOptions] = useState([]);
-
-  const [currOperater, setCurrOperater] = useState('');
-  const operatorOptions = [];
-  OPERATORS.forEach((op) => {
-    const operatorOpt = {};
-    ['label', 'value', 'key'].forEach((val) => { operatorOpt[val] = op; });
-    operatorOptions.push(operatorOpt);
-  });
-
-
   useEffect(() => {
     if (schema) {
       try {
@@ -88,12 +108,12 @@ function AdvancedSearchView(props) {
     }
   }, [schema, history]);
 
-  // set query property options
+  // set filter query property options
   const queryProps = model ? model.queryProperties : [];
   const [queryProperties, setQueryProperties] = useState(queryProps);
   useEffect(() => {
     if (model) {
-      const qProps = Object.values(model._properties);
+      const qProps = Object.values(model.properties);
       const queryPropOptions = qProps.map(p => ({
         label: p.name, value: p.name, key: p.name, caption: p.description,
       }));
@@ -101,35 +121,48 @@ function AdvancedSearchView(props) {
     }
   }, [model]);
 
+
   // set current Property and allowed values
-  const [currProp, setCurrProp] = useState(null);
   const [propertyModel, setPropertyModel] = useState(null);
-  const [currValue, setCurrValue] = useState('');
   useEffect(() => {
     if (model) {
       const propModel = model.queryProperties[currProp];
+
+      // set generatated false so that we can search for value
+      if (propModel) {
+        propModel.generated = false;
+      }
       setPropertyModel(propModel);
-      setCurrValue(null);
-      setCurrOperater(null);
+      setFilter({ type: 'prop-change' });
     }
   }, [currProp, model]);
 
-  // set up filter group reducer
+  const operatorOptions = [];
+  OPERATORS.forEach((op) => {
+    const operatorOpt = {};
+    ['label', 'value', 'key'].forEach((val) => { operatorOpt[val] = op; });
+    operatorOptions.push(operatorOpt);
+  });
+
+  // set up filter group reducer and currFilterGroup tracker
   const [filterGroups, setFilterGroups] = useReducer(filterGroupReducer, defaultFilterGroup);
-  console.log('TCL: AdvancedSearchView -> filterGroups', filterGroups);
-
   const [currFilterGroup, setFilterGroup] = useState('');
-  console.log('TCL: AdvancedSearchView -> currFilterGroup', currFilterGroup);
 
+  const hasActiveFilters = filterGroups.some(fGroup => fGroup.filters.length > 0);
 
+  // clears form if modelname changes
   useEffect(() => {
-    console.log('clearing current values');
-    setCurrProp(null);
-    setCurrValue(null);
-    setCurrOperater(null);
+    setFilter({ type: 'clear' });
     setFilterGroup(null);
     setFilterGroups({ type: 'clear' });
   }, [modelName]);
+
+  const handleFilterGroupDelete = (filterGroupName) => {
+    if (filterGroupName === currFilterGroup) {
+      setFilterGroup(null);
+    }
+    setFilterGroups({ type: 'delete', filterGroupName });
+  };
 
   return (
     <>
@@ -146,7 +179,7 @@ function AdvancedSearchView(props) {
       </div>
 
       {/* Add New Filter Box */}
-      <div className="add-filter-box">
+      <Card className="add-filter-box">
         <Typography variant="h5">
           Add New Filter
         </Typography>
@@ -157,7 +190,7 @@ function AdvancedSearchView(props) {
                 choices: queryProperties, required: true, name: 'properties', type: 'string',
               }}
               value={currProp}
-              onChange={({ target: { value } }) => setCurrProp(value)}
+              onChange={({ target: { value } }) => setFilter({ type: 'prop', payload: value })}
               schema={schema}
               className="property-select"
               disabled={!modelName}
@@ -168,7 +201,7 @@ function AdvancedSearchView(props) {
             <FormField
               model={propertyModel || { type: 'nope', choices: [] }}
               value={currValue}
-              onChange={({ target: { value } }) => setCurrValue(value)}
+              onChange={({ target: { value } }) => setFilter({ type: 'value', payload: value })}
               schema={schema}
               className="value-select"
               disabled={!currProp}
@@ -181,15 +214,15 @@ function AdvancedSearchView(props) {
               model={{
                 choices: operatorOptions, required: true, name: 'operator', type: 'string',
               }}
-              value={currOperater}
-              onChange={({ target: { value } }) => setCurrOperater(value)}
+              value={currOperator}
+              onChange={({ target: { value } }) => setFilter({ type: 'operator', payload: value })}
               schema={schema}
               className="operator-select"
               disabled={!currValue}
             />
           </div>
         </div>
-      </div>
+      </Card>
       <div className="add-filter-group-box">
         <div className="add-filter-group-box__dropdown">
           <FormField
@@ -200,8 +233,10 @@ function AdvancedSearchView(props) {
               required: true,
               name: 'filterGroup',
               type: 'string',
+              description: 'add filter to filterGroup',
             }}
             value={currFilterGroup}
+            variant="edit"
             onChange={({ target: { value } }) => setFilterGroup(value)}
             schema={schema}
           />
@@ -211,19 +246,19 @@ function AdvancedSearchView(props) {
           onClick={() => {
             setFilterGroups({
               type: 'addFilter',
-              payload: { name: currProp, value: currValue, operator: currOperater },
+              payload: { name: currProp, value: currValue, operator: currOperator },
               filterGroupName: currFilterGroup,
-              resetFunctions: { setCurrOperater, setCurrProp, setCurrValue },
             });
+            // setFilter({ type: 'clear' });
           }}
-          disabled={!(currProp && currValue && currOperater) || !currFilterGroup}
+          disabled={!(currProp && currValue && currOperator) || !currFilterGroup}
         >
           Add Filter
         </ActionButton>
       </div>
 
       {/* Filter Groups  */}
-      <div className="filter-groups">
+      <Card className="filter-groups">
         <div className="filter-groups__header">
           <Typography variant="h5">
           Active Filter Groups
@@ -238,28 +273,22 @@ function AdvancedSearchView(props) {
         </div>
         <div className="filter-groups__content">
           {filterGroups.map(filterGroup => (
-            <div className={`filter-groups__box${filterGroup.filters.length ? '' : '--empty'}`}>
-              <>
-                {filterGroup.filters.map(filter => (
-                  <div className="filter-chip">
-                    <Typography>
-                      {`${filter.name} = ${typeof filter.value === 'object' ? filter.value.name : filter.value}`}
-                    </Typography>
-                  </div>
-                ))}
-              </>
-            </div>
+            <FilterGroup
+              filterGroup={filterGroup}
+              handleDelete={handleFilterGroupDelete}
+            />
           ))}
         </div>
-      </div>
-      <div className="search-btn">
-        <ActionButton
-          requireConfirm={false}
-          onClick={() => console.log('searching!')}
-        >
+        <div className={`search-btn${!hasActiveFilters ? '--disabled' : ''}`}>
+          <ActionButton
+            requireConfirm={false}
+            onClick={() => console.log(filterGroups)}
+            disabled={!hasActiveFilters}
+          >
           Search
-        </ActionButton>
-      </div>
+          </ActionButton>
+        </div>
+      </Card>
     </>
   );
 }

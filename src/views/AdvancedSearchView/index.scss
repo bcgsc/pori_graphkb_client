@@ -55,56 +55,19 @@
     }
   }
 
-  .filter-groups {
-    &__header {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 20px;
-
-      h5 {
-        position: relative;
-        left: 75px;
-      }
-
-      .action-button {
-        position: relative;
-        right: 60px;
-      }
-    }
-
-    &__content {
-      border-radius: 5px;
-    }
-
-    &__box {
-      border: 1px solid $palette__primary--light;
-      border-radius: 15px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      margin: 20px 75px;
-      width: 89%;
-
-      .filter-chip {
-        border: 1px solid magenta;
-        border-radius: 5px;
-        margin: 20px;
-        padding: 5px;
-      }
-
-      &--empty {
-
-      }
-    }
-  }
 
   .search-btn {
-    margin-top: 20px;
 
     .action-button {
       float: right;
+      margin: 20px 0;
       position: relative;
       right: 60px;
+    }
+
+    &--disabled {
+      opacity: 0;
+      z-index: -100;
     }
   }
 }

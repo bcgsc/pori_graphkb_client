@@ -14,6 +14,29 @@ import config from '../../static/config';
 
 const { FEEDBACK: { JIRA: JIRA_LINK, EMAIL } } = config;
 
+const EmailReportError = (props) => {
+  const { linkText, body, subject } = props;
+  return (
+    <a href={`mailto:${
+      EMAIL
+    }?subject=${
+      encodeURIComponent(subject)
+    }&body=${
+      encodeURIComponent(body)
+    }`}
+    >
+      {linkText}
+    </a>
+  );
+};
+
+EmailReportError.propTypes = {
+  linkText: PropTypes.string.isRequired,
+  body: PropTypes.string.isRequired,
+  subject: PropTypes.string.isRequired,
+};
+
+
 /**
  * View for displaying uncaught error messages.
  */
@@ -30,28 +53,6 @@ class ErrorView extends Component {
   render() {
     const { location: { state } } = this.props;
     const { tooltipOpen } = this.state;
-
-    const EmailReportError = (props) => {
-      const { linkText, body, subject } = props;
-      return (
-        <a href={`mailto:${
-          EMAIL
-        }?subject=${
-          encodeURIComponent(subject)
-        }&body=${
-          encodeURIComponent(body)
-        }`}
-        >
-          {linkText}
-        </a>
-      );
-    };
-
-    EmailReportError.propTypes = {
-      linkText: PropTypes.string.isRequired,
-      body: PropTypes.string.isRequired,
-      subject: PropTypes.string.isRequired,
-    };
 
     const {
       error: {

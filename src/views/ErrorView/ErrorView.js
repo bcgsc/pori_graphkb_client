@@ -47,6 +47,12 @@ class ErrorView extends Component {
       );
     };
 
+    EmailReportError.propTypes = {
+      linkText: PropTypes.string.isRequired,
+      body: PropTypes.string.isRequired,
+      subject: PropTypes.string.isRequired,
+    };
+
     const {
       error: {
         message = 'This is the default page where errors are reported if encountered',

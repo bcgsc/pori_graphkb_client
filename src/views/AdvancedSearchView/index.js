@@ -1,5 +1,5 @@
 import React, {
-  useState, useContext, useEffect, useReducer,
+  useState, useContext, useEffect, useReducer, useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
 import useDeepCompareEffect from 'use-deep-compare-effect';
@@ -7,6 +7,7 @@ import {
   Typography, Card,
 } from '@material-ui/core';
 
+import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 import { KBContext } from '../../components/KBContext';
 import FormField from '../../components/RecordForm/FormField';
 import { OPERATORS } from './util';
@@ -15,7 +16,7 @@ import ActionButton from '../../components/ActionButton';
 import FilterGroup from './FilterGroup';
 
 
-const defaultFilterGroup = [{ key: 1, name: 'filterGroup1', filters: [] }];
+const defaultFilterGroup = [{ key: 1, name: 'Filter Group 1', filters: [] }];
 
 const filterGroupReducer = (state, action) => {
   const {
@@ -24,7 +25,7 @@ const filterGroupReducer = (state, action) => {
 
   if (actionType === 'addGroup') {
     const { key: lastKey } = state[state.length - 1];
-    return [...state, { key: lastKey + 1, name: `filterGroup${lastKey + 1}`, filters: [] }];
+    return [...state, { key: lastKey + 1, name: `Filter Group ${lastKey + 1}`, filters: [] }];
   } if (actionType === 'addFilter') {
     const targetIndex = state.findIndex(fgroup => fgroup.name === filterGroupName);
     const targetFilterGroup = state[targetIndex];
@@ -58,16 +59,6 @@ const initialFilterValues = {
  * State will be current filter. Action will either clear values or set values.
  *
  * */
-const activeFilterReducer = (state, action) => {
-  const { type: actionType, payload } = action;
-
-  if (actionType === 'clear') {
-    return { prop: null, value: null, operator: null };
-  } if (actionType === 'prop-change') {
-    return { ...state, value: null, operator: null };
-  }
-  return { ...state, [actionType]: payload };
-};
 
 function AdvancedSearchView(props) {
   const {
@@ -77,12 +68,12 @@ function AdvancedSearchView(props) {
 
 
   const { schema } = useContext(KBContext);
-  const [currFilter, setFilter] = useReducer(activeFilterReducer, initialFilterValues);
-  const { prop: currProp, value: currValue, operator: currOperator } = currFilter;
+  const snackbar = useContext(SnackbarContext);
 
   // set up current model for search
   const [modelName, setModelName] = useState(initialModelName);
   const [model, setModel] = useState(null);
+  const [propertyModel, setPropertyModel] = useState(null);
   useDeepCompareEffect(() => {
     setModel(schema.get(modelName || 'V'));
   }, [schema, modelName]);
@@ -122,8 +113,36 @@ function AdvancedSearchView(props) {
   }, [model]);
 
 
+  /**
+   * Manages current values for active filter.
+   * State will be current filter. Action will either clear values or set values.
+   *
+   * */
+  const activeFilterReducer = useCallback((state, action) => {
+    const {
+      type: actionType, payload,
+    } = action;
+
+    if (actionType === 'clear') {
+      return { prop: null, value: null, operator: null };
+    } if (actionType === 'prop-change') {
+      return { ...state, value: null, operator: null };
+    } if (actionType === 'value') {
+      // validate value first before change it
+      const { error } = schema.validateValue(propertyModel, payload, false);
+
+      if (error) {
+        snackbar.add(`${propertyModel.name} ${error.message}`);
+        return { ...state };
+      }
+    }
+    return { ...state, [actionType]: payload };
+  }, [propertyModel, schema, snackbar]);
+  const [currFilter, setFilter] = useReducer(activeFilterReducer, initialFilterValues);
+  const { prop: currProp, value: currValue, operator: currOperator } = currFilter;
+
+
   // set current Property and allowed values
-  const [propertyModel, setPropertyModel] = useState(null);
   useEffect(() => {
     if (model) {
       const propModel = model.queryProperties[currProp];
@@ -201,7 +220,9 @@ function AdvancedSearchView(props) {
             <FormField
               model={propertyModel || { type: 'nope', choices: [] }}
               value={currValue}
-              onChange={({ target: { value } }) => setFilter({ type: 'value', payload: value })}
+              onChange={({ target: { value } }) => setFilter({
+                type: 'value', payload: value, schema, propertyModel,
+              })}
               schema={schema}
               className="value-select"
               disabled={!currProp}

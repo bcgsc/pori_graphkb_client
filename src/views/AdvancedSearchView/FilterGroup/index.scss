@@ -47,6 +47,13 @@
       right: 0;
       transform: translateY(-50%);
 
+      h6 {
+        background-color: white;
+        display: inline-block;
+        position: relative;
+        left: 5px;
+      }
+
       &--empty {
         opacity: 0;
       }

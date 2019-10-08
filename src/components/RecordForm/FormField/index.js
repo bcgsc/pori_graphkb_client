@@ -66,7 +66,6 @@ const FormField = (props) => {
     iterable,
   } = model;
 
-
   const generated = Boolean(model.generated && variant !== FORM_VARIANT.SEARCH);
   const mandatory = Boolean(model.mandatory && variant !== FORM_VARIANT.SEARCH);
 
@@ -304,7 +303,7 @@ FormField.defaultProps = {
   variant: 'view',
   value: null,
   innerProps: {},
-  formIsDirty: false,
+  formIsDirty: true,
 };
 
 

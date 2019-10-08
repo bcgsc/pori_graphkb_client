@@ -19,7 +19,7 @@ import {
 import './index.scss';
 
 function PopularSearchView(props) {
-  const baseUri = '/popular_query';
+  const baseUri = '/popular-query';
   const { location: { pathname: currentUri } } = props;
 
   const tabsList = [

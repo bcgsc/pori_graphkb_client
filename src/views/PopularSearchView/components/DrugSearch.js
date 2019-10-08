@@ -1,7 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-function DrugSearch(prop) {
+function DrugSearch() {
   return (
     <h1>DrugSearch</h1>
   );

@@ -117,6 +117,14 @@ class GraphComponent extends Component {
   // App snackbar context value.
   static contextType = SnackbarContext;
 
+  static hashRecordsByRID(data) {
+    const newData = {};
+    data.forEach((obj) => {
+      newData[obj['@rid']] = obj;
+    });
+    return newData;
+  }
+
   static propTypes = {
     handleDetailDrawerOpen: PropTypes.func.isRequired,
     handleDetailDrawerClose: PropTypes.func.isRequired,
@@ -134,14 +142,6 @@ class GraphComponent extends Component {
     edgeTypes: [],
     handleGraphStateSave: () => {},
   };
-
-  static hashRecordsByRID(data) {
-    const newData = {};
-    data.forEach((obj) => {
-      newData[obj['@rid']] = obj;
-    });
-    return newData;
-  }
 
   constructor(props) {
     super(props);

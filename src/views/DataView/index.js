@@ -80,6 +80,7 @@ class DataView extends React.Component {
       onErrorCallback: this.handleError,
     });
     const filters = await this.parseFilters(cache);
+    console.log('TCL: DataView -> componentDidMount -> filters', filters);
     this.setState({ cache, filters });
   }
 
@@ -96,16 +97,20 @@ class DataView extends React.Component {
    */
   async parseFilters(cache) {
     const { search } = this.state;
+    console.log('TCL: DataView -> parseFilters -> search', search);
     const { schema } = this.context;
 
     try {
       const { queryParams, modelName } = api.getQueryFromSearch({ search, schema });
+      console.log('TCL: DataView -> parseFilters -> queryParams, modelName', queryParams, modelName);
       const links = [];
-      Object.entries(queryParams).forEach(([key, value]) => {
+      Object.entries(queryParams || {}).forEach(([key, value]) => {
         if (typeof value === 'string' && kbSchema.util.looksLikeRID(value)) {
           links.push({ key, value });
         }
       });
+      console.log('TCL: DataView -> parseFilters -> links', links);
+
 
       const records = await cache.getRecords(links.map(l => ({ '@rid': l.value })));
       records.forEach((rec, index) => {

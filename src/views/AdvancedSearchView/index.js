@@ -6,6 +6,8 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import {
   Typography, Card,
 } from '@material-ui/core';
+import * as qs from 'qs';
+
 
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 import { KBContext } from '../../components/KBContext';
@@ -183,6 +185,81 @@ function AdvancedSearchView(props) {
     setFilterGroups({ type: 'delete', filterGroupName });
   };
 
+  const handleSubmit = () => {
+    // api will append /search onto routeName
+    // const routeName = schema.getRoute(modelName);
+    // // deep copy filters
+    // console.log(filterGroups);
+    // const searchFilters = filterGroups.map(fg => ({
+    //   filters: [...fg.filters],
+    // }));
+    // console.log('TCL: handleSubmit -> searchFilters', searchFilters);
+
+    // // go through filter values and if any of them are objects convert to rid
+
+    // searchFilters.forEach((filterGroup) => {
+    //   filterGroup.filters.forEach((filter) => {
+    //     if (typeof filter.value === 'object') {
+    //       filter.value = filter.value['@rid'];
+    //     }
+    //   });
+    // });
+
+    const content = {
+      where: [
+        {
+          operator: 'OR',
+          comparisons: [{
+            operator: 'AND',
+            comparisons: [
+              {
+                attr: 'relevance', value: '#148:2', operator: '=',
+              },
+              {
+                attr: 'reviewStatus', value: 'not required', operator: '=',
+              },
+            ],
+          }, {
+            operator: 'AND',
+            comparisons: [
+              {
+                attr: 'createdBy', value: '#29:0', operator: '=',
+              },
+              {
+                attr: 'reviewStatus', value: 'passed', operator: '=',
+              },
+            ],
+          }],
+        },
+      ],
+    };
+
+    const body = {};
+
+    try {
+      const stringifiedContent = JSON.stringify(content);
+      const base64EncodedContent = btoa(stringifiedContent);
+      const encodedContent = encodeURIComponent(base64EncodedContent);
+      body.complex = encodedContent;
+      body.searchBy = 'true';
+      body['@class'] = 'Statement';
+      const search = qs.stringify(body);
+      console.log('TCL: SearchForm -> handleSubmit -> search', search);
+      history.push(`/data/table?${search}`, { search, content });
+
+      // const {
+      //   complex,
+      //   searchBy,
+      // } = qs.parse(search.replace(/^\?/, ''));
+
+      // const decodedpayload = decodeURIComponent(complex);
+      // const atobpayload = atob(decodedpayload);
+      // const parsedload = JSON.parse(atobpayload)
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <>
       <div className="class-select">
@@ -300,11 +377,12 @@ function AdvancedSearchView(props) {
             />
           ))}
         </div>
-        <div className={`search-btn${!hasActiveFilters ? '--disabled' : ''}`}>
+        {/* <div className={`search-btn${!hasActiveFilters ? '--disabled' : ''}`}> */}
+        <div>
           <ActionButton
             requireConfirm={false}
-            onClick={() => console.log(filterGroups)}
-            disabled={!hasActiveFilters}
+            onClick={handleSubmit}
+            // disabled={!hasActiveFilters}
           >
           Search
           </ActionButton>

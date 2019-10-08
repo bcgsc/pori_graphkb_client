@@ -183,6 +183,10 @@ const getQueryFromSearch = ({ schema, search, count }) => {
     complex,
     ...params
   } = qs.parse(search.replace(/^\?/, ''));
+  console.log('TCL: getQueryFromSearch -> params', params);
+
+  console.log('TCL: getQueryFromSearch -> complex', complex);
+
 
   let modelName = 'v';
 
@@ -208,7 +212,8 @@ const getQueryFromSearch = ({ schema, search, count }) => {
     // Decode base64 encoded string.
     payload = JSON.parse(atob(decodeURIComponent(complex)));
     payload.neighbors = Math.max(payload.neighbors || 0, TABLE_DEFAULT_NEIGHBORS);
-    payload.limit = Math.min(payload.limit);
+    payload.limit = Math.min(payload.limit || DEFAULT_LIMIT);
+    console.log('TCL: getQueryFromSearch -> payload', payload);
   } else {
     queryParams = {
       limit,

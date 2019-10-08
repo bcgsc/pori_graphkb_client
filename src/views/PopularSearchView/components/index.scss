@@ -1,7 +1,7 @@
 @import '../../../globals';
 
 
-@mixin menuItemContentMobile (){
+@mixin menu-item-content-mobile {
   padding: 4px;
   position: relative;
   right: 15px;
@@ -9,7 +9,7 @@
   margin: 10px 0;
 }
 
-@mixin menuItemContent (){
+@mixin menu-item-content {
   margin: 20px 0;
   padding: 5px 10px 5px 0;
   position: relative;
@@ -36,10 +36,10 @@
     }
 
     &__menuItem {
-      @include menuItemContentMobile;
+      @include menu-item-content-mobile;
 
       &--selected {
-        @include menuItemContentMobile;
+        @include menu-item-content-mobile;
         background-color: $palette__grey--300;
       }
 
@@ -73,11 +73,11 @@
   .popular-search {
     &__contents {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
     }
 
     &__menu {
-      margin: auto;
+      margin: 0 5%;
       padding-top: 5%;
       width: 400px;
 
@@ -87,10 +87,10 @@
     }
 
     &__menuItem {
-      @include menuItemContent;
+      @include menu-item-content;
 
       &--selected{
-        @include menuItemContent;
+        @include menu-item-content;
         background-color: $palette__grey--300;
       }
 
@@ -100,8 +100,8 @@
     }
 
     &__input-field {
-      margin: auto;
-      padding-top: 15%;
+      margin: 0 5%;
+      padding-top: 10%;
       width: 400px;
     }
   }
@@ -117,6 +117,10 @@
       display: flex;
       justify-content: center;
       margin: 20px;
+
+      .component-outlined {
+        width: 300px;
+      }
     }
 
     &__action-button {

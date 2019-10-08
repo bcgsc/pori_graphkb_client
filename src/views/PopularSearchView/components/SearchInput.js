@@ -5,7 +5,6 @@ import {
 } from '@material-ui/core';
 import './index.scss';
 import ActionButton from '../../../components/ActionButton';
-import FormField from '../../../components/RecordForm/FormField';
 import { KBContext } from '../../../components/KBContext';
 import RecordAutocomplete from '../../../components/RecordAutocomplete';
 import api from '../../../services/api';
@@ -41,8 +40,6 @@ function SearchInput(props) {
     schema.get('Feature'),
   );
 
-  const model = schema.get('feature');
-  console.log('TCL: SearchInput -> model', model);
 
   useEffect(() => {
     setOptValue(initialOptVal);
@@ -123,7 +120,11 @@ SearchInput.propTypes = {
   handleSubmit: PropTypes.func,
   handleOptionalChange: PropTypes.func,
   optionalValue: PropTypes.string,
-  selectedOption: PropTypes.object,
+  selectedOption: PropTypes.shape({
+    label: PropTypes.string,
+    requiredInput: PropTypes.object,
+    optionalInput: PropTypes.object,
+  }),
   value: PropTypes.string,
 };
 

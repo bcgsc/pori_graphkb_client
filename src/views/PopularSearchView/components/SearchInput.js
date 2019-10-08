@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
   Typography, Card, CardContent, FormControl, InputLabel, OutlinedInput,
 } from '@material-ui/core';
 import './index.scss';
 import ActionButton from '../../../components/ActionButton';
+import FormField from '../../../components/RecordForm/FormField';
+import { KBContext } from '../../../components/KBContext';
+import RecordAutocomplete from '../../../components/RecordAutocomplete';
+import api from '../../../services/api';
 
 /**
  * handles required/optional input for Popular Search View.
@@ -27,15 +31,20 @@ function SearchInput(props) {
     selectedOption: { requiredInput, optionalInput },
   } = props;
 
-  const labelRef = React.useRef(null);
   const optLabelRef = React.useRef(null);
   const hasOptionalInput = !!optionalInput;
 
-  const [value, setValue] = useState(initialValue);
   const [optValue, setOptValue] = useState(initialOptVal);
+  const { schema } = useContext(KBContext);
+
+  const searchHandler = api.defaultSuggestionHandler(
+    schema.get('Feature'),
+  );
+
+  const model = schema.get('feature');
+  console.log('TCL: SearchInput -> model', model);
 
   useEffect(() => {
-    setValue(initialValue);
     setOptValue(initialOptVal);
   }, [initialOptVal, initialValue]);
 
@@ -59,13 +68,13 @@ function SearchInput(props) {
         </div>
         <div className="search-input__input-field">
           <FormControl className="" variant="outlined">
-            <InputLabel ref={labelRef} htmlFor="component-outlined">
-              {requiredInput.property}
-            </InputLabel>
-            <OutlinedInput
-              id="component-outlined"
-              value={value}
+            <RecordAutocomplete
+              getOptionLabel={item => schema.getLabel(item)}
+              getOptionKey={opt => opt['@rid']}
+              searchHandler={searchHandler}
+              placeholder="Search for a gene"
               onChange={e => handleChange(e)}
+              className="component-outlined"
             />
           </FormControl>
         </div>

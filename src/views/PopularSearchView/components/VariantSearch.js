@@ -1,7 +1,6 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
-function VariantSearch(prop) {
+function VariantSearch() {
   return (
     <h1>VariantSearch</h1>
   );

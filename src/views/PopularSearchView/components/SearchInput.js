@@ -6,7 +6,16 @@ import {
 import './index.scss';
 import ActionButton from '../../../components/ActionButton';
 
-
+/**
+ * handles required/optional input for Popular Search View.
+ *
+ * @property {bool} props.disabled disabled input flag from parent
+ * @property {function} props.handleInputChange parent input change handler
+ * @property {function} props.handleOptionalChange handler for optional input
+ * @property {string} props.value value of required input
+ * @property {function} props.handleSubmit parent search handler
+ * @property {object} props.selectedOption search option and it's required/optional inputs
+ */
 function SearchInput(props) {
   const {
     disabled,

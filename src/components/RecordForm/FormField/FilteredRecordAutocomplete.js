@@ -69,9 +69,7 @@ class FilteredRecordAutocomplete extends React.PureComponent {
       name,
       ...rest
     } = this.props;
-    console.log('TCL: FilteredRecordAutocomplete -> render -> ...rest', rest);
 
-    console.log('TCL: FilteredRecordAutocomplete -> render -> props', this.props);
     const {
       selectedClassName,
     } = this.state;
@@ -82,7 +80,6 @@ class FilteredRecordAutocomplete extends React.PureComponent {
 
     const searchHandler = api.defaultSuggestionHandler(
       schema.get(selectedClassName),
-      console.log('TCL: FilteredRecordAutocomplete -> render -> selectedClassName', selectedClassName),
     );
 
     const valueToString = (record) => {

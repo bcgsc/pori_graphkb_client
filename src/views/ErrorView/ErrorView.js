@@ -36,7 +36,6 @@ EmailReportError.propTypes = {
   subject: PropTypes.string.isRequired,
 };
 
-
 /**
  * View for displaying uncaught error messages.
  */
@@ -90,13 +89,13 @@ error text: ${message}`;
           {message}
         </Typography>
         <Typography paragraph>
-            Report this error in a {jiraLink} ticket or email us at {
-              <EmailReportError
-                linkText={EMAIL}
-                subject={`${name}: ${message}`}
-                body={errorDetails}
-              />
-            }.
+            Report this error in a {jiraLink} ticket or email us at
+          <EmailReportError
+            linkText={EMAIL}
+            subject={`${name}: ${message}`}
+            body={errorDetails}
+          />
+            .
         </Typography>
         {stacktrace
           && (

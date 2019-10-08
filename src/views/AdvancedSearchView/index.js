@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
-import PropType from 'prop-types';
+import React from 'react';
 
-function AdvancedSearchView(prop) {
+function AdvancedSearchView() {
   return (
     <h1>AdvancedSearchView</h1>
   );

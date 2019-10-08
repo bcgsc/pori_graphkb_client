@@ -180,8 +180,8 @@ const Main = () => {
             <Route exact path="/error" component={ErrorView} />
             <Route path="/about" component={AboutView} />
             <AuthenticatedRoute exact path="/query" component={QueryView} />
-            <AuthenticatedRoute path="/popular_query" component={PopularSearchView} />
-            <AuthenticatedRoute exact path="/advanced_query" component={AdvancedSearchView} />
+            <AuthenticatedRoute path="/popular-query" component={PopularSearchView} />
+            <AuthenticatedRoute exact path="/advanced-query" component={AdvancedSearchView} />
             <AuthenticatedRoute path="/query/advanced/builder" component={QueryBuilderView} />
             <AuthenticatedRoute
               path="/edit/:modelName(Source|source|User|user|UserGroup|usergroup)/:rid"

@@ -69,6 +69,7 @@ class FilteredRecordAutocomplete extends React.PureComponent {
       name,
       ...rest
     } = this.props;
+
     const {
       selectedClassName,
     } = this.state;

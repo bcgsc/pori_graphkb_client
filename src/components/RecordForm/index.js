@@ -297,48 +297,46 @@ const RecordForm = ({
         collapseExtra
         disabled={actionInProgress || variant === FORM_VARIANT.VIEW}
       />
-      {(
-        <div className="record-form__action-buttons">
-          {variant === FORM_VARIANT.EDIT
-            ? (
-              <ActionButton
-                onClick={handleDeleteAction}
-                variant="outlined"
-                size="large"
-                message="Are you sure you want to delete this record?"
-                disabled={actionInProgress}
-              >
+      <div className="record-form__action-buttons">
+        {variant === FORM_VARIANT.EDIT
+          ? (
+            <ActionButton
+              onClick={handleDeleteAction}
+              variant="outlined"
+              size="large"
+              message="Are you sure you want to delete this record?"
+              disabled={actionInProgress}
+            >
                 DELETE
-              </ActionButton>
-            )
-            : (<div />) // for spacing issues only
+            </ActionButton>
+          )
+          : (<div />) // for spacing issues only
           }
-          {actionInProgress && (
-            <CircularProgress size={50} />
-          )}
-          {variant === FORM_VARIANT.NEW || (variant === FORM_VARIANT.EDIT && !isEdge)
-            ? (
-              <ActionButton
-                onClick={variant === FORM_VARIANT.EDIT
-                  ? handleEditAction
-                  : handleNewAction
+        {actionInProgress && (
+        <CircularProgress size={50} />
+        )}
+        {variant === FORM_VARIANT.NEW || (variant === FORM_VARIANT.EDIT && !isEdge)
+          ? (
+            <ActionButton
+              onClick={variant === FORM_VARIANT.EDIT
+                ? handleEditAction
+                : handleNewAction
                 }
-                variant="contained"
-                color="primary"
-                size="large"
-                requireConfirm={false}
-                disabled={actionInProgress || (formHasErrors && formIsDirty)}
-              >
-                {variant === FORM_VARIANT.EDIT
-                  ? 'SUBMIT CHANGES'
-                  : 'SUBMIT'
+              variant="contained"
+              color="primary"
+              size="large"
+              requireConfirm={false}
+              disabled={actionInProgress || (formHasErrors && formIsDirty)}
+            >
+              {variant === FORM_VARIANT.EDIT
+                ? 'SUBMIT CHANGES'
+                : 'SUBMIT'
                 }
-              </ActionButton>
-            )
-            : (<div />) // for spacing issues only
+            </ActionButton>
+          )
+          : (<div />) // for spacing issues only
           }
-        </div>
-      )}
+      </div>
     </Paper>
   );
 };

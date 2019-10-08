@@ -19,7 +19,7 @@ function GeneSearch() {
   };
 
   // handle submission of form
-  const handleSubmit = () => console.log(value);
+  const handleSubmit = () => {};
 
   const labels = SEARCH_OPTS.GENE.map(opt => opt.label);
   const selectedOption = SEARCH_OPTS.GENE[searchIndex];

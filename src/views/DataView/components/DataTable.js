@@ -576,6 +576,10 @@ class DataTable extends React.Component {
       );
     };
 
+    RecordList.propTypes = {
+      value: PropTypes.object.isRequired,
+    };
+
     return (
       <div
         className="ag-theme-material data-table"

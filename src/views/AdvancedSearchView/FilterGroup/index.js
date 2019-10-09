@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Typography, IconButton, Chip } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
 import PropTypes from 'prop-types';
 import './index.scss';
+import { KBContext } from '../../../components/KBContext';
 
 /**
  * Displays filter chips and filter group box
  */
 function FilterGroup(props) {
   const { filterGroup, handleDelete } = props;
+  const { schema } = useContext(KBContext);
 
   return (
     <div className={`filter-groups__box${filterGroup.filters.length ? '' : '--empty'}`}>
@@ -25,15 +27,25 @@ function FilterGroup(props) {
         </IconButton>
       </div>
       <>
-        {filterGroup.filters.map(filter => (
-          <div className="filter-chip">
-            <Chip
-              default="outlined"
-              key={`${filter.name}.${filter.value}`}
-              label={`${filter.name} ${filter.operator} '${typeof filter.value === 'object' ? filter.value.name : filter.value}'`}
-            />
-          </div>
-        ))}
+        {filterGroup.filters.map((filter) => {
+          let filterValue = filter.value;
+
+          if (typeof filterValue === 'object' && !Array.isArray(filterValue)) {
+            filterValue = schema.getPreview(filter.value);
+          } else if (Array.isArray(filterValue)) {
+            filterValue = schema.getPreview(filter.value[0]);
+          }
+
+          return (
+            <div className="filter-chip">
+              <Chip
+                default="outlined"
+                key={`${filter.attr}.${filter.value}`}
+                label={`${filter.attr} ${filter.operator} '${filterValue}'`}
+              />
+            </div>
+          );
+        })}
       </>
     </div>
   );

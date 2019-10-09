@@ -21,20 +21,27 @@ const AuthenticatedRoute = ({
   const authOk = isAuthenticated({ autheticationToken });
   const adminOk = isAdmin({ autheticationToken, authorizationToken });
 
+  let ChildComponent;
+
+  if (!authOk) {
+    ChildComponent = props => (
+      <Redirect to={{
+        pathname: '/login',
+        state: { from: props.location },
+      }}
+      />
+    );
+  } else if (admin && !adminOk) {
+    ChildComponent = () => (
+      <Redirect to="/" />
+    );
+  } else {
+    ChildComponent = props => (<Component {...props} />);
+  }
   return (
     <Route
       {...rest}
-      render={props => (
-        authOk && (!admin || adminOk)
-          ? <Component {...props} />
-          : (
-            <Redirect to={{
-              pathname: '/login',
-              state: { from: props.location },
-            }}
-            />
-          )
-      )}
+      render={props => (<ChildComponent {...props} />)}
     />
   );
 };

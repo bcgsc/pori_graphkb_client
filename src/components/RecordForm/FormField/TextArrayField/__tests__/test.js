@@ -16,7 +16,7 @@ describe('TextArrayField', () => {
     const wrapper = mount((
       <TextArrayField
         name="test"
-        onValueChange={jest.fn()}
+        onChange={jest.fn()}
       />
     ));
     // input the text and hit the enter key
@@ -33,7 +33,7 @@ describe('TextArrayField', () => {
     const wrapper = mount((
       <TextArrayField
         name="test"
-        onValueChange={jest.fn()}
+        onChange={jest.fn()}
       />
     ));
     // input the text
@@ -53,7 +53,7 @@ describe('TextArrayField', () => {
     const wrapper = mount((
       <TextArrayField
         name="test"
-        onValueChange={jest.fn()}
+        onChange={jest.fn()}
       />
     ));
     // input the text and hit the enter key
@@ -75,7 +75,7 @@ describe('TextArrayField', () => {
     const wrapper = mount((
       <TextArrayField
         name="test"
-        onValueChange={jest.fn()}
+        onChange={jest.fn()}
       />
     ));
     // input the text and hit the enter key
@@ -97,7 +97,7 @@ describe('TextArrayField', () => {
     const wrapper = mount((
       <TextArrayField
         name="test"
-        onValueChange={jest.fn()}
+        onChange={jest.fn()}
         value={['someElement']}
       />
     ));
@@ -116,7 +116,7 @@ describe('TextArrayField', () => {
     const wrapper = mount((
       <TextArrayField
         name="test"
-        onValueChange={jest.fn()}
+        onChange={jest.fn()}
         value={['someElement']}
       />
     ));

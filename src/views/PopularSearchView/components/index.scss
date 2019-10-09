@@ -2,11 +2,11 @@
 
 
 @mixin menu-item-content-mobile {
+  margin: 10px 0;
   padding: 4px;
   position: relative;
   right: 15px;
   width: 300px;
-  margin: 10px 0;
 }
 
 @mixin menu-item-content {
@@ -29,10 +29,10 @@
     }
 
     &__input-field {
+      box-sizing: border-box;
       margin: auto;
       padding-top: 5%;
       width: 200px;
-      box-sizing: border-box;
     }
 
     &__menuItem {

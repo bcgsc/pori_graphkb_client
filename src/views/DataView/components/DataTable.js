@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   FormControlLabel, Checkbox, Popover,
 } from '@material-ui/core';
@@ -18,6 +18,50 @@ import { SelectionTracker } from './SelectionTracker';
 
 const MAX_FULL_EXPORTS_ROWS = 1000;
 const CACHE_BLOCK_SIZE = 50;
+
+/**
+ * Cell renderer for linked records in Datatable.
+ *
+ * @property {ArrayOf<Objects>} props.value linked records to be displayed
+ */
+const RecordList = (props) => {
+  const { value: records } = props;
+  const { schema } = useContext(KBContext);
+
+  if (!records) {
+    return null;
+  }
+  return (
+    <div className="data-table__record-list">
+      {records.map((record) => {
+        const label = schema.getLabel(record);
+        return (
+          <DetailChip
+            label={label}
+            title={schema.getLabel(record, false)}
+            key={label}
+            details={record}
+            valueToString={(v) => {
+              if (Array.isArray(v)) {
+                return `Array(${v.length})`;
+              }
+              if (v && typeof v === 'object' && v['@rid']) {
+                return schema.getLabel(v, false);
+              }
+              return `${v}`;
+            }}
+
+            getLink={schema.getLink}
+          />
+        );
+      })}
+    </div>
+  );
+};
+
+RecordList.propTypes = {
+  value: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
 
 class DataTable extends React.Component {
   static contextType = KBContext;
@@ -539,42 +583,7 @@ class DataTable extends React.Component {
   }
 
   render() {
-    const { schema } = this.context;
     const { onRecordClicked, onRecordsSelected } = this.props;
-
-    const RecordList = (props) => {
-      const { value: records } = props;
-
-      if (!records) {
-        return null;
-      }
-      return (
-        <div className="data-table__record-list">
-          {records.map((record) => {
-            const label = schema.getLabel(record);
-            return (
-              <DetailChip
-                label={label}
-                title={schema.getLabel(record, false)}
-                key={label}
-                details={record}
-                valueToString={(v) => {
-                  if (Array.isArray(v)) {
-                    return `Array(${v.length})`;
-                  }
-                  if (v && typeof v === 'object' && v['@rid']) {
-                    return schema.getLabel(v, false);
-                  }
-                  return `${v}`;
-                }}
-
-                getLink={schema.getLink}
-              />
-            );
-          })}
-        </div>
-      );
-    };
 
     return (
       <div

@@ -139,14 +139,22 @@ function AdvancedSearchView(props) {
 
     if (actionType === 'clear') {
       return { prop: null, value: null, operator: null };
-    } if (actionType === 'prop-change') {
+    }
+    if (actionType === 'prop-change') {
       return { ...state, value: null, operator: null };
-    } if (actionType === 'value') {
+    }
+    if (actionType === 'value') {
       // validate value first before change it
       const { error } = schema.validateValue(propertyModel, payload, false);
 
       if (error) {
         snackbar.add(`${propertyModel.name} ${error.message}`);
+        return { ...state };
+      }
+    }
+    if (actionType === 'operator') {
+      if (['CONTAINSALL', 'IN', 'CONTAINSANY', 'CONTAINS'].includes(payload)) {
+        snackbar.add('Operator can only be used for iterables (inputs that take multiple values)');
         return { ...state };
       }
     }
@@ -170,13 +178,6 @@ function AdvancedSearchView(props) {
       setFilter({ type: 'prop-change' });
     }
   }, [currProp, model]);
-
-  const operatorOptions = [];
-  OPERATORS.forEach((op) => {
-    const operatorOpt = {};
-    ['label', 'value', 'key'].forEach((val) => { operatorOpt[val] = op; });
-    operatorOptions.push(operatorOpt);
-  });
 
   // set up filter group reducer and currFilterGroup tracker
   const [filterGroups, setFilterGroups] = useReducer(filterGroupReducer, defaultFilterGroup);
@@ -323,7 +324,7 @@ function AdvancedSearchView(props) {
           <div className="add-filter-box-actions__operator">
             <FormField
               model={{
-                choices: operatorOptions, required: true, name: 'operator', type: 'string',
+                choices: OPERATORS, required: true, name: 'operator', type: 'string',
               }}
               value={currOperator}
               onChange={({ target: { value } }) => setFilter({ type: 'operator', payload: value })}

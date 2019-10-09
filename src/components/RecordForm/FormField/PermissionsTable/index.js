@@ -25,7 +25,7 @@ const { constants: { PERMISSIONS } } = kbSchema;
  * Table to display permissions state for a certain user group.
  * @property {Object} props - Component props.
  * @property {bool} props.disabled flag to indicate this field cannot be edited
- * @property {func} props.onValueChange handler to propogate changes to the parent form
+ * @property {func} props.onChange handler to propogate changes to the parent form
  * @property {string} props.name field name to use in simulating events
  * @property {object} props.value the current permissions set
  */
@@ -35,7 +35,7 @@ class PermissionsTable extends React.Component {
   static propTypes = {
     value: PropTypes.object,
     disabled: PropTypes.bool,
-    onValueChange: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
     name: PropTypes.string.isRequired,
   };
 
@@ -105,7 +105,7 @@ class PermissionsTable extends React.Component {
    * when the modelName is not given and is null, assumes a checkAll event
    */
   handleClick(operation, currModelName = null) {
-    const { onValueChange, name } = this.props;
+    const { onChange, name } = this.props;
     const { content, topBoxes } = this.state;
     const { schema } = this.context;
 
@@ -143,7 +143,7 @@ class PermissionsTable extends React.Component {
       }
     }
     this.setState({ content: newContent, topBoxes: newTopBoxes });
-    onValueChange({ target: { name, value: newContent } });
+    onChange({ target: { name, value: newContent } });
   }
 
   render() {

@@ -4,42 +4,6 @@ const FORM_VARIANT = {
   EDIT: 'edit', VIEW: 'view', DELETE: 'delete', NEW: 'new', SEARCH: 'search',
 };
 
-/**
- * Validates a value against some property model and returns the new property tracking object
- */
-const validateValue = (propModel, value, ignoreMandatory = false) => {
-  const fieldContent = {};
-
-  if (value === undefined || value === '') {
-    if (propModel.mandatory
-      && !ignoreMandatory
-      && !propModel.generated
-      && propModel.default === undefined
-      && !propModel.generateDefault
-    ) {
-      return { error: { message: 'Required Value' }, value };
-    }
-  } else if (value === null && !propModel.nullable) {
-    return { error: { message: 'Cannot be empty/null' }, value };
-  } else {
-    fieldContent.value = value;
-
-    if (fieldContent.value !== null) { // validate the new value using the schema model property
-      try {
-        let valueToValidate = fieldContent.value;
-
-        if (propModel.type === 'link') {
-          valueToValidate = fieldContent.value['@rid'] || fieldContent.value;
-        }
-        propModel.validate(valueToValidate);
-      } catch (err) {
-        fieldContent.error = err;
-      }
-    }
-  }
-  return fieldContent;
-};
-
 
 /**
  * Given some model and options, sort the form fields and return the ordering. The 'fold'
@@ -105,7 +69,14 @@ const sortAndGroupFields = (model, opt = {}) => {
   const visited = new Set();
 
   const sortedPropModels = Object.values(model.properties)
-    .sort((p1, p2) => p1.name.localeCompare(p2.name));
+    .sort((p1, p2) => {
+      if (p1.mandatory === p2.mandatory || variant === FORM_VARIANT.VIEW) {
+        return p1.name.localeCompare(p2.name);
+      } if (p1.mandatory) {
+        return -1;
+      }
+      return 1;
+    });
 
   // get the form content
   for (const prop of sortedPropModels) { // eslint-disable-line no-restricted-syntax
@@ -157,5 +128,4 @@ export {
   CLASS_MODEL_PROP,
   FORM_VARIANT,
   sortAndGroupFields,
-  validateValue,
 };

@@ -162,11 +162,14 @@ const Menu = (props) => {
 
 
 const DropdownIndicator = (props) => {
-  const { className = '' } = props;
+  const { className = '', selectProps: { isSearchable } } = props;
   return (
-    <SearchIcon
-      className={`record-autocomplete__dropdown ${className}`}
-    />
+    !isSearchable ? null
+      : (
+        <SearchIcon
+          className={`record-autocomplete__dropdown ${className}`}
+        />
+      )
   );
 };
 

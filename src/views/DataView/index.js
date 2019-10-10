@@ -107,7 +107,6 @@ class DataView extends React.Component {
         }
       });
 
-
       const records = await cache.getRecords(links.map(l => ({ '@rid': l.value })));
       records.forEach((rec, index) => {
         const { key } = links[index];

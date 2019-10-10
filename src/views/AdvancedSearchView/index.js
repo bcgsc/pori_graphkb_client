@@ -144,7 +144,7 @@ function AdvancedSearchView(props) {
       return { ...state, value: null, operator: null };
     }
     if (actionType === 'value') {
-      // validate value first before change it
+      // validate value first before changing it
       const { error } = schema.validateValue(propertyModel, payload, false);
 
       if (error) {
@@ -153,7 +153,7 @@ function AdvancedSearchView(props) {
       }
     }
     if (actionType === 'operator') {
-      if (['CONTAINSALL', 'IN', 'CONTAINSANY', 'CONTAINS'].includes(payload)) {
+      if (['CONTAINSALL', 'IN', 'CONTAINSANY', 'CONTAINS'].includes(payload) && !Array.isArray(state.value)) {
         snackbar.add('Operator can only be used for iterables (inputs that take multiple values)');
         return { ...state };
       }
@@ -231,7 +231,7 @@ function AdvancedSearchView(props) {
     //         operator: 'AND',
     //         comparisons: [
     //           {
-    //             attr: 'createdBy', value: '#29:0', operator: '=',
+    //             attr: 'relevance', value: '#148:2', operator: '=',
     //           },
     //           {
     //             attr: 'reviewStatus', value: 'passed', operator: '=',
@@ -288,7 +288,6 @@ function AdvancedSearchView(props) {
         />
       </div>
 
-      {/* Add New Filter Box */}
       <div className="add-filter-box">
         <Typography variant="h5">
           Add New Filter
@@ -361,8 +360,6 @@ function AdvancedSearchView(props) {
               payload: { attr: currProp, value: currValue, operator: currOperator },
               filterGroupName: currFilterGroup,
             });
-            // TODO: add back in once done testing
-            // setFilter({ type: 'clear' });
           }}
           disabled={!(currProp && currValue && currOperator) || !currFilterGroup}
         >
@@ -370,7 +367,6 @@ function AdvancedSearchView(props) {
         </ActionButton>
       </div>
 
-      {/* Filter Groups  */}
       <Card className="filter-groups">
         <div className="filter-groups__header">
           <Typography variant="h5">

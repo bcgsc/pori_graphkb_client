@@ -184,7 +184,6 @@ const getQueryFromSearch = ({ schema, search, count }) => {
     ...params
   } = qs.parse(search.replace(/^\?/, ''));
 
-
   let modelName = 'v';
 
   if (params['@class'] || params.class) {

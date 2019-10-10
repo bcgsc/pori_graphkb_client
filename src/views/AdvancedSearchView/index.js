@@ -213,49 +213,17 @@ function AdvancedSearchView(props) {
       });
     });
 
-    // const exampleQuery = {
-    //   where: [
-    //     {
-    //       operator: 'OR',
-    //       comparisons: [{
-    //         operator: 'AND',
-    //         comparisons: [
-    //           {
-    //             attr: 'relevance', value: '#148:2', operator: '=',
-    //           },
-    //           {
-    //             attr: 'reviewStatus', value: 'not required', operator: '=',
-    //           },
-    //         ],
-    //       }, {
-    //         operator: 'AND',
-    //         comparisons: [
-    //           {
-    //             attr: 'relevance', value: '#148:2', operator: '=',
-    //           },
-    //           {
-    //             attr: 'reviewStatus', value: 'passed', operator: '=',
-    //           },
-    //         ],
-    //       }],
-    //     },
-    //   ],
-    // };
-
     const content = {
-      where: [
-        {
-          operator: 'OR', // top level operator between filter groups
-          comparisons: [], // where individual filter groups will be placed
-        },
-      ],
+      target: modelName,
+      filters: {
+        OR: [],
+      },
     };
 
     searchFilters.forEach((fg) => {
-      const filterGroupComparisons = content.where[0].comparisons;
+      const filterGroupComparisons = content.filters.OR;
       filterGroupComparisons.push({
-        operator: 'AND',
-        comparisons: [...fg.filters],
+        AND: fg.filters.map(filter => ({ [filter.attr]: filter.value, operator: filter.operator })),
       });
     });
 

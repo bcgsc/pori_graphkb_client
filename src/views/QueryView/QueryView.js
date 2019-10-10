@@ -5,7 +5,6 @@ import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button,
   IconButton,
   TextField,
   InputAdornment,
@@ -201,7 +200,6 @@ class QueryView extends Component {
       variantError,
       keyWordError,
     } = this.state;
-    const { history } = this.props;
 
     return (
       <div className="search">
@@ -217,8 +215,8 @@ class QueryView extends Component {
               value={value}
               onChange={this.handleChange}
               placeholder={hgvs
-                ? 'Search by HGVS Shorthand'
-                : 'Search by Keyword'
+                ? 'Search Statements by HGVS Shorthand'
+                : 'Search Statements by Keyword'
               }
               InputProps={{
                 endAdornment: (
@@ -244,14 +242,6 @@ class QueryView extends Component {
             />
           </div>
         </div>
-        <Button
-          variant="outlined"
-          color="secondary"
-          className="search__advanced-button"
-          onClick={() => history.push({ pathname: '/query/advanced' })}
-        >
-          Advanced Search
-        </Button>
       </div>
     );
   }

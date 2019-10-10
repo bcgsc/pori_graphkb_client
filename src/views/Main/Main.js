@@ -197,7 +197,6 @@ const Main = () => {
             />
             <AuthenticatedRoute path="/new/:modelName" component={NewRecordView} />
             <Redirect exact path="/query/advanced" to="/search/v" />
-            {/* TODO: Add search routing */}
             <AuthenticatedRoute path="/data" component={DataView} />
             <AuthenticatedRoute path="/admin" admin component={AdminView} />
             <Redirect from="/" to="/query" />

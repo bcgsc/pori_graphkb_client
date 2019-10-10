@@ -10,23 +10,19 @@ import {
   Tab,
 } from '@material-ui/core';
 import slugify from 'slugify';
-import {
-  DiseaseSearch,
-  DrugSearch,
-  GeneSearch,
-  VariantSearch,
-} from './components';
+import BasePopularSearch from './components/BasePopularSearch';
 import './index.scss';
+
 
 function PopularSearchView(props) {
   const baseUri = '/popular-query';
   const { location: { pathname: currentUri } } = props;
 
   const tabsList = [
-    { label: 'Gene', component: GeneSearch },
-    { label: 'Variant', component: VariantSearch },
-    { label: 'Disease', component: DiseaseSearch },
-    { label: 'Drug', component: DrugSearch },
+    { label: 'Gene', component: () => <BasePopularSearch variant="GENE" /> },
+    { label: 'Variant', component: () => <BasePopularSearch variant="VARIANT" /> },
+    { label: 'Disease', component: () => <BasePopularSearch variant="DISEASE" /> },
+    { label: 'Drug', component: () => <BasePopularSearch variant="DRUG" /> },
   ];
 
   const uriLookup = {};
@@ -58,7 +54,7 @@ function PopularSearchView(props) {
     <Route
       label={label}
       key={label}
-      component={component}
+      render={component}
       exact
       path={uri}
     />

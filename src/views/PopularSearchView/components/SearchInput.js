@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Typography, Card, CardContent, FormControl, InputLabel, OutlinedInput,
+  Typography, Card, CardContent, FormControl,
 } from '@material-ui/core';
 import './index.scss';
 import ActionButton from '../../../components/ActionButton';
@@ -24,22 +24,28 @@ function SearchInput(props) {
     disabled,
     handleInputChange,
     handleOptionalChange,
-    optionalValue: initialOptVal,
-    value: initialValue,
     handleSubmit,
+    optionalValue: initialOptVal,
     selectedOption: { requiredInput, optionalInput },
+    value: initialValue,
   } = props;
 
-  const optLabelRef = React.useRef(null);
   const hasOptionalInput = !!optionalInput;
 
   const [optValue, setOptValue] = useState(initialOptVal);
   const { schema } = useContext(KBContext);
 
   const searchHandler = api.defaultSuggestionHandler(
-    schema.get('Feature'),
+    schema.get(requiredInput.class),
   );
 
+  let optSearchHandler;
+
+  if (hasOptionalInput) {
+    optSearchHandler = api.defaultSuggestionHandler(
+      schema.get(optionalInput.class),
+    );
+  }
 
   useEffect(() => {
     setOptValue(initialOptVal);
@@ -60,7 +66,7 @@ function SearchInput(props) {
       <CardContent>
         <div className="search-input__label">
           <Typography variant="h3">
-            {requiredInput.class}
+            {requiredInput.label}
           </Typography>
         </div>
         <div className="search-input__input-field">
@@ -69,7 +75,7 @@ function SearchInput(props) {
               getOptionLabel={item => schema.getLabel(item)}
               getOptionKey={opt => opt['@rid']}
               searchHandler={searchHandler}
-              placeholder="Search for a gene"
+              placeholder={`Search for a ${requiredInput.label}`}
               onChange={e => handleChange(e)}
               className="component-outlined"
             />
@@ -79,18 +85,18 @@ function SearchInput(props) {
           <>
             <div className="search-input__label">
               <Typography variant="h3">
-                {optionalInput.class}
+                {optionalInput.label}
               </Typography>
             </div>
             <div className="search-input__input-field">
               <FormControl className="" variant="outlined">
-                <InputLabel ref={optLabelRef} htmlFor="component-outlined">
-                  {optionalInput.property}
-                </InputLabel>
-                <OutlinedInput
-                  id="component-outlined2"
-                  value={optValue}
-                  onChange={e => handleChange(e, true)}
+                <RecordAutocomplete
+                  getOptionLabel={item => schema.getLabel(item)}
+                  getOptionKey={opt => opt['@rid']}
+                  searchHandler={optSearchHandler}
+                  placeholder="Optional - defaults to all if left empty"
+                  onChange={e => handleChange(e)}
+                  className="component-outlined"
                 />
               </FormControl>
             </div>

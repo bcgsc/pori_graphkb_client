@@ -4,6 +4,9 @@ import {
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 
+/**
+ * Displays individual popular search option that populates search menu.
+ */
 function SearchOption(props) {
   const { label, selected, handleChange } = props;
   return (

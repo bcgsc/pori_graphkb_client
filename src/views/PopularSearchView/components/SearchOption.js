@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 function SearchOption(props) {
   const { label, selected, handleChange } = props;
   return (
-    <div className={`popular-search__menuItem${selected ? '--selected' : ''}`}>
+    <div className={`popular-search__menu-item${selected ? '--selected' : ''}`}>
       <ButtonBase onClick={handleChange}>
         <Typography variant="h5" color={selected ? 'secondary' : ''}>
           {label}

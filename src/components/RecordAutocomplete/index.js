@@ -69,6 +69,7 @@ const RecordAutocomplete = (props) => {
     helperText: initialHelperText,
     value,
   } = props;
+  console.log('TCL: RecordAutocomplete -> props', props);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);

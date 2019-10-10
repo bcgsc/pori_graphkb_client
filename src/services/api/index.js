@@ -183,14 +183,13 @@ const getQueryFromSearch = ({ schema, search, count }) => {
   if (!schema.get(modelName)) {
     throw new Error(`Failed to find the expected model (${modelName})`);
   }
-  let { routeName } = schema.get(modelName);
+  let routeName = '/query';
 
   let payload = null;
   let queryParams = null;
 
   if (complex) {
     // complex encodes the body in the URL so that it can be passed around as a link but still perform a POST search
-    routeName += '/search';
     // Decode base64 encoded string.
     payload = JSON.parse(atob(decodeURIComponent(complex)));
     payload.neighbors = Math.max(payload.neighbors || 0, TABLE_DEFAULT_NEIGHBORS);
@@ -203,7 +202,7 @@ const getQueryFromSearch = ({ schema, search, count }) => {
 
     if (keyword) {
       // keyword search is only associated with statements
-      routeName = '/statements/search';
+      routeName = '/query';
       modelName = 'Statement';
       queryParams.keyword = keyword;
     } else {

@@ -103,62 +103,48 @@ const defaultSuggestionHandler = (model, opt = {}) => {
       operator = '=';
     }
 
-    const { excludeClasses = [], ...rest } = opt;
+    const { ...rest } = opt;
 
-    const ontologyWhere = [{
-      operator: 'OR',
-      comparisons: terms.map(term => ({ attr: 'name', value: term, operator })),
-    }];
+
+    const ontologyFilters = {
+      OR: terms.map(term => ({ name: term, operator })),
+    };
 
     if (model.properties.sourceId) {
-      ontologyWhere[0].comparisons.push(
-        ...terms.map(term => ({ attr: 'sourceId', value: term, operator })),
+      ontologyFilters.OR.push(
+        ...terms.map(term => ({ sourceId: term, operator })),
       );
     }
 
-    if (excludeClasses.length) {
-      ontologyWhere.push(...excludeClasses.map(
-        c => ({ attr: '@class', value: c, negate: true }),
-      ));
-    }
-
-    const variantWhere = [{
-      operator: 'AND',
-      comparisons: terms.map(value => ({
-        operator: 'OR',
-        comparisons: [
-          { attr: 'reference1.name', value, operator },
-          { attr: 'reference1.sourceId', value },
-          { attr: 'reference2.name', value, operator },
-          { attr: 'reference2.sourceId', value },
-          { attr: 'type.name', value, operator },
-          { attr: 'type.sourceId', value },
-        ],
-      })),
-    }];
-
-    let where = ontologyWhere;
-
-    if (model.inherits.includes('Variant') || model.name === 'Variant') {
-      where = variantWhere;
-    }
+    const variantBody = {
+      queryType: 'keyword',
+      target: 'Variant',
+      keyword: terms.join(),
+    };
 
     const callOptions = { forceListReturn: true, ...rest };
+    let body;
     let call;
 
     if (kbSchema.util.looksLikeRID(textInput)) {
-      call = get(`${model.routeName}/${textInput}?neighbors=1`, callOptions);
-    } else {
-      const body = {
-        where,
-        limit: MAX_SUGGESTIONS,
-        neighbors: 1,
+      body = {
+        target: [textInput],
       };
+    } else {
+      body = {
+        target: `${model.name}`,
+        filters: ontologyFilters,
+        limit: MAX_SUGGESTIONS,
+      };
+
+      if (model.inherits.includes('Variant') || model.name === 'Variant') {
+        body = variantBody;
+      }
 
       if (model.inherits.includes('Ontology') || model.name === 'Ontology') {
         body.orderBy = ['name', 'sourceId'];
       }
-      call = post(`${model.routeName}/search`, body, callOptions);
+      call = post('/query', body, callOptions);
     }
     return call;
   };

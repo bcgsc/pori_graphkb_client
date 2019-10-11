@@ -6,7 +6,6 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import {
   Typography, Card,
 } from '@material-ui/core';
-import * as qs from 'qs';
 
 
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';

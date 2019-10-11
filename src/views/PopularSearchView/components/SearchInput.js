@@ -1,13 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Typography, FormControl, TextField,
+  TextField,
 } from '@material-ui/core';
 import './index.scss';
 import ActionButton from '../../../components/ActionButton';
-import { KBContext } from '../../../components/KBContext';
-import RecordAutocomplete from '../../../components/RecordAutocomplete';
-import api from '../../../services/api';
 
 
 /**
@@ -30,20 +27,6 @@ function SearchInput(props) {
   } = props;
 
   const hasOptionalInput = !!optionalInput;
-
-  const { schema } = useContext(KBContext);
-
-  const searchHandler = api.defaultSuggestionHandler(
-    schema.get(requiredInput.class),
-  );
-
-  let optSearchHandler;
-
-  if (hasOptionalInput) {
-    optSearchHandler = api.defaultSuggestionHandler(
-      schema.get(optionalInput.class),
-    );
-  }
 
   const handleChange = (event, optionalValue = false) => {
     const { target: { value: newVal } } = event;

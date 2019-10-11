@@ -35,7 +35,7 @@
       width: 200px;
     }
 
-    &__menuItem {
+    &__menu-item {
       @include menu-item-content-mobile;
 
       &--selected {
@@ -58,18 +58,23 @@
 
     &__input-field {
       margin: 20px;
+      transform: translateX((-40%));
     }
 
     &__action-button {
       display: flex;
       justify-content: center;
     }
+
+    .input-box {
+      width: 300px;
+    }
   }
 
 
 }
 
-@media only screen and (min-width: $breakpoint-mobile){
+@media only screen and (min-width: $breakpoint-mobile) {
   .popular-search {
     &__contents {
       display: flex;
@@ -86,10 +91,10 @@
       }
     }
 
-    &__menuItem {
+    &__menu-item {
       @include menu-item-content;
 
-      &--selected{
+      &--selected {
         @include menu-item-content;
         background-color: $palette__grey--300;
       }
@@ -118,8 +123,8 @@
       justify-content: center;
       margin: 20px;
 
-      .component-outlined {
-        width: 300px;
+      .input-box {
+        width: 350px;
       }
     }
 

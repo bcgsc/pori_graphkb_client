@@ -13,9 +13,14 @@ import slugify from 'slugify';
 import BasePopularSearch from './components/BasePopularSearch';
 import './index.scss';
 
-
+/**
+ * Main view for popular search. Displays top level query option tabs. This view
+ * should house common/frequently used searches that the analysts use.
+ *
+ * @property {string} currentUri parses URI to determine which search variant to render
+ */
 function PopularSearchView(props) {
-  const baseUri = '/popular-query';
+  const baseUri = '/query-popular';
   const { location: { pathname: currentUri } } = props;
 
   const tabsList = [

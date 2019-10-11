@@ -98,16 +98,16 @@ class Schema {
           return label;
         };
 
-        const implyBy = statementBuilder(obj.impliedBy);
+        const implyBy = statementBuilder(obj.conditions);
         const relevance = statementBuilder(obj.relevance);
-        const appliesTo = statementBuilder(obj.appliesTo);
-        const supportedBy = statementBuilder(obj.supportedBy);
+        const subject = statementBuilder(obj.subject);
+        const evidence = statementBuilder(obj.evidence);
 
         const label = obj.displayNameTemplate
-          .replace('{impliedBy}', implyBy)
+          .replace('{conditions}', implyBy)
           .replace('{relevance}', relevance)
-          .replace('{appliesTo}', appliesTo)
-          .replace('{supportedBy}', supportedBy);
+          .replace('{subject}', subject)
+          .replace('{evidence}', evidence);
 
         return label;
       }
@@ -323,7 +323,7 @@ class Schema {
     if (modelName.toLowerCase().includes('variant')) {
       showByDefault.push('reference1', 'reference2', 'type');
     } else if (modelName.toLowerCase() === 'statement') {
-      showByDefault.push('source', 'appliesTo', 'relevance', 'evidenceLevel');
+      showByDefault.push('source', 'subject', 'relevance', 'evidenceLevel');
     } else if (modelName.toLowerCase() !== 'source') {
       showByDefault.push('sourceIdVersion', 'version', 'source', 'name', 'sourceId');
       showEdges.push('out_SubClassOf');

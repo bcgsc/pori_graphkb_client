@@ -37,14 +37,14 @@ const StatementSentence = (props) => {
     return words;
   };
 
-  const appliesTo = schema.getPreview(content.appliesTo);
+  const subject = schema.getPreview(content.subject);
 
   const relevance = schema.getPreview(content.relevance);
 
-  const supportedBy = (content.supportedBy || [])
+  const evidence = (content.evidence || [])
     .map(support => schema.getPreview(support)).join(', ');
 
-  let conditions = (content.impliedBy || [])
+  let conditions = (content.conditions || [])
     .map(cond => schema.getPreview(cond));
 
   if (conditions.length > 1) {
@@ -53,20 +53,20 @@ const StatementSentence = (props) => {
   conditions = conditions.join(', ');
 
   const propValueMap = {
-    impliedBy: {
+    conditions: {
       value: conditions,
       default: ' [CONDITIONS] ',
     },
-    appliesTo: {
-      value: appliesTo,
+    subject: {
+      value: subject,
       default: ' [TARGET] ',
     },
     relevance: {
       value: relevance,
       default: ' [RELEVANCE] ',
     },
-    supportedBy: {
-      value: supportedBy,
+    evidence: {
+      value: evidence,
       default: ' [EVIDENCE] ',
     },
   };
@@ -74,7 +74,7 @@ const StatementSentence = (props) => {
   const classModel = schema.get('Statement');
   const { properties: { displayNameTemplate: { default: displayNameTemplate } } } = classModel;
   const statementProp = Object.keys(propValueMap);
-  const splitTemplate = displayNameTemplate.split(/{+(impliedBy|relevance|appliesTo|supportedBy)}+/ig);
+  const splitTemplate = displayNameTemplate.split(/{+(conditions|relevance|subject|evidence)}+/ig);
 
   const statementSentence = splitTemplate.map((text) => {
     let result = `${text}`;

@@ -335,8 +335,27 @@ const getNewCache = (opt) => {
   return cache;
 };
 
+/**
+ * encodes complex/payload for POST query request. Returns search with encoded complex.
+ *
+ * @param {object} content is the payload or query object to be sent with request
+ * @param {string} modelName target class that is expected to be returned
+ */
+const encodeQueryComplexToSearch = (content, modelName = 'V') => {
+  const stringifiedContent = JSON.stringify(content);
+  const base64EncodedContent = btoa(stringifiedContent);
+  const encodedContent = encodeURIComponent(base64EncodedContent);
+
+  const payload = {};
+  payload.complex = encodedContent;
+  payload['@class'] = modelName;
+  const search = qs.stringify(payload);
+  return search;
+};
+
 
 export default {
+  encodeQueryComplexToSearch,
   getNewCache,
   getQueryFromSearch,
   getSearchFromQuery,

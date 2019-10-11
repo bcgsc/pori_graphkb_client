@@ -17,7 +17,7 @@ import './index.scss';
 import ActionButton from '../../components/ActionButton';
 import FilterGroup from './FilterGroup';
 import { cleanLinkedRecords } from '../../components/util';
-
+import api from '../../services/api';
 
 const defaultFilterGroup = [{ key: 1, name: 'Filter Group 1', filters: [] }];
 
@@ -228,14 +228,7 @@ function AdvancedSearchView(props) {
     });
 
     try {
-      const stringifiedContent = JSON.stringify(content);
-      const base64EncodedContent = btoa(stringifiedContent);
-      const encodedContent = encodeURIComponent(base64EncodedContent);
-
-      const payload = {};
-      payload.complex = encodedContent;
-      payload['@class'] = modelName;
-      const search = qs.stringify(payload);
+      const search = api.encodeQueryComplexToSearch(content, modelName);
       history.push(`/data/table?${search}`, { search, content });
     } catch (err) {
       console.error(err);

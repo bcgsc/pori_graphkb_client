@@ -1,13 +1,14 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Typography, FormControl,
+  Typography, FormControl, TextField,
 } from '@material-ui/core';
 import './index.scss';
 import ActionButton from '../../../components/ActionButton';
 import { KBContext } from '../../../components/KBContext';
 import RecordAutocomplete from '../../../components/RecordAutocomplete';
 import api from '../../../services/api';
+
 
 /**
  * handles required/optional input for Popular Search View.
@@ -56,43 +57,28 @@ function SearchInput(props) {
 
   return (
     <div className="search-input">
-      <div className="search-input__label">
-        <Typography variant="h3">
-          {requiredInput.label}
-        </Typography>
-      </div>
       <div className="search-input__input-field">
-        <FormControl className="" variant="outlined">
-          <RecordAutocomplete
-            getOptionLabel={item => schema.getLabel(item)}
-            getOptionKey={opt => opt['@rid']}
-            searchHandler={searchHandler}
-            placeholder={`Search for a ${requiredInput.label}`}
-            onChange={e => handleChange(e)}
-            className="input-box"
-          />
-        </FormControl>
+        <TextField
+          autoFocus
+          className="input-box"
+          helperText={requiredInput.example}
+          label={requiredInput.label}
+          margin="normal"
+          onChange={e => handleChange(e)}
+          variant="outlined"
+        />
       </div>
       {(hasOptionalInput) && (
-      <>
-        <div className="search-input__label">
-          <Typography variant="h3">
-            {optionalInput.label}
-          </Typography>
-        </div>
         <div className="search-input__input-field">
-          <FormControl className="" variant="outlined">
-            <RecordAutocomplete
-              getOptionLabel={item => schema.getLabel(item)}
-              getOptionKey={opt => opt['@rid']}
-              searchHandler={optSearchHandler}
-              placeholder="Optional - defaults to all if left empty"
-              onChange={e => handleChange(e)}
-              className="input-box"
-            />
-          </FormControl>
+          <TextField
+            className="input-box"
+            helperText={optionalInput.example}
+            label={optionalInput.label}
+            margin="normal"
+            onChange={e => handleChange(e, true)}
+            variant="outlined"
+          />
         </div>
-      </>
       )}
       <div className="search-input__action-button">
         <ActionButton

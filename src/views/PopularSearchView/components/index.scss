@@ -56,11 +56,6 @@
   }
 
   .search-input {
-    &__label {
-      display: flex;
-      justify-content: center;
-      margin: 20px;
-    }
 
     &__input-field {
       margin: 20px;
@@ -73,6 +68,7 @@
     }
 
     .input-box {
+      margin-top: 5px;
       width: 300px;
     }
   }
@@ -124,11 +120,6 @@
   }
 
   .search-input {
-    &__label {
-      display: flex;
-      justify-content: center;
-      margin: 20px;
-    }
 
     &__input-field {
       display: flex;
@@ -136,7 +127,8 @@
       margin: 20px;
 
       .input-box {
-        width: 350px;
+        margin-top: 5px;
+        width: 300px;
       }
     }
 

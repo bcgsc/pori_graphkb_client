@@ -23,7 +23,6 @@ const ID_PROP = '@rid';
 const CLASS_PROP = '@class';
 const MAX_SUGGESTIONS = 50;
 const DEFAULT_LIMIT = 100;
-const MIN_WORD_LENGTH = 3;
 
 
 /**
@@ -94,37 +93,10 @@ const del = (endpoint, callOptions) => {
  */
 const defaultSuggestionHandler = (model, opt = {}) => {
   const searchHandler = (textInput) => {
-    let terms = textInput.split(/\s+/);
-    let operator = 'CONTAINSTEXT';
-
-    if (terms.length > 1) {
-      terms = terms.filter(term => term.length >= MIN_WORD_LENGTH);
-    } else if (terms.length === 1 && terms[0].length < MIN_WORD_LENGTH) {
-      operator = '=';
-    }
-
     const { ...rest } = opt;
 
-
-    const ontologyFilters = {
-      OR: terms.map(term => ({ name: term, operator })),
-    };
-
-    if (model.properties.sourceId) {
-      ontologyFilters.OR.push(
-        ...terms.map(term => ({ sourceId: term, operator })),
-      );
-    }
-
-    const variantBody = {
-      queryType: 'keyword',
-      target: 'Variant',
-      keyword: terms.join(),
-    };
-
     const callOptions = { forceListReturn: true, ...rest };
-    let body;
-    let call;
+    let body = {};
 
     if (kbSchema.util.looksLikeRID(textInput)) {
       body = {
@@ -132,20 +104,18 @@ const defaultSuggestionHandler = (model, opt = {}) => {
       };
     } else {
       body = {
+        queryType: 'keyword',
         target: `${model.name}`,
-        filters: ontologyFilters,
+        keyword: textInput,
         limit: MAX_SUGGESTIONS,
       };
-
-      if (model.inherits.includes('Variant') || model.name === 'Variant') {
-        body = variantBody;
-      }
 
       if (model.inherits.includes('Ontology') || model.name === 'Ontology') {
         body.orderBy = ['name', 'sourceId'];
       }
-      call = post('/query', body, callOptions);
     }
+    const call = post('/query', body, callOptions);
+
     return call;
   };
   searchHandler.fname = `${model.name}SearchHandler`; // for equality comparisons (for render updates)

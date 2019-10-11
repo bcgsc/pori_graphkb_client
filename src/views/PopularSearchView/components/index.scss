@@ -1,6 +1,11 @@
 @import '../../../globals';
 
-
+@mixin mobile-input-field {
+  box-sizing: border-box;
+  margin: auto;
+  padding-top: 5%;
+  width: 200px;
+}
 @mixin menu-item-content-mobile {
   margin: 10px 0;
   padding: 4px;
@@ -29,10 +34,11 @@
     }
 
     &__input-field {
-      box-sizing: border-box;
-      margin: auto;
-      padding-top: 5%;
-      width: 200px;
+      @include mobile-input-field;
+
+      &--optional {
+        @include mobile-input-field;
+      }
     }
 
     &__menu-item {
@@ -108,6 +114,12 @@
       margin: 0 5%;
       padding-top: 10%;
       width: 400px;
+
+      &--optional {
+        margin: 0 5%;
+        padding-top: 7%;
+        width: 400px;
+      }
     }
   }
 

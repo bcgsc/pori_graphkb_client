@@ -119,8 +119,8 @@ class MainNav extends React.PureComponent {
           {isAuthorized(this.context) && (isOpen && subMenuOpen === 'query') && (
             <>
               <MenuLink label="Quick" route="/query" inset />
-              <MenuLink label="Popular" route="/popular-query/gene" inset />
-              <MenuLink label="Advanced" route="/advanced-query" inset />
+              <MenuLink label="Popular" route="/query-popular/gene" inset />
+              <MenuLink label="Advanced" route="/query-advanced" inset />
             </>
           )}
           {hasWriteAccess(this.context) && (

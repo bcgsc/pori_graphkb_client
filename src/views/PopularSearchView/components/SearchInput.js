@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Typography, Card, CardContent, FormControl,
+  Typography, FormControl,
 } from '@material-ui/core';
 import './index.scss';
 import ActionButton from '../../../components/ActionButton';
@@ -25,14 +25,11 @@ function SearchInput(props) {
     handleInputChange,
     handleOptionalChange,
     handleSubmit,
-    optionalValue: initialOptVal,
     selectedOption: { requiredInput, optionalInput },
-    value: initialValue,
   } = props;
 
   const hasOptionalInput = !!optionalInput;
 
-  const [optValue, setOptValue] = useState(initialOptVal);
   const { schema } = useContext(KBContext);
 
   const searchHandler = api.defaultSuggestionHandler(
@@ -47,10 +44,6 @@ function SearchInput(props) {
     );
   }
 
-  useEffect(() => {
-    setOptValue(initialOptVal);
-  }, [initialOptVal, initialValue]);
-
   const handleChange = (event, optionalValue = false) => {
     const { target: { value: newVal } } = event;
 
@@ -62,11 +55,29 @@ function SearchInput(props) {
   };
 
   return (
-    <Card>
-      <CardContent>
+    <div className="search-input">
+      <div className="search-input__label">
+        <Typography variant="h3">
+          {requiredInput.label}
+        </Typography>
+      </div>
+      <div className="search-input__input-field">
+        <FormControl className="" variant="outlined">
+          <RecordAutocomplete
+            getOptionLabel={item => schema.getLabel(item)}
+            getOptionKey={opt => opt['@rid']}
+            searchHandler={searchHandler}
+            placeholder={`Search for a ${requiredInput.label}`}
+            onChange={e => handleChange(e)}
+            className="input-box"
+          />
+        </FormControl>
+      </div>
+      {(hasOptionalInput) && (
+      <>
         <div className="search-input__label">
           <Typography variant="h3">
-            {requiredInput.label}
+            {optionalInput.label}
           </Typography>
         </div>
         <div className="search-input__input-field">
@@ -74,49 +85,29 @@ function SearchInput(props) {
             <RecordAutocomplete
               getOptionLabel={item => schema.getLabel(item)}
               getOptionKey={opt => opt['@rid']}
-              searchHandler={searchHandler}
-              placeholder={`Search for a ${requiredInput.label}`}
+              searchHandler={optSearchHandler}
+              placeholder="Optional - defaults to all if left empty"
               onChange={e => handleChange(e)}
-              className="component-outlined"
+              className="input-box"
             />
           </FormControl>
         </div>
-        {(hasOptionalInput) && (
-          <>
-            <div className="search-input__label">
-              <Typography variant="h3">
-                {optionalInput.label}
-              </Typography>
-            </div>
-            <div className="search-input__input-field">
-              <FormControl className="" variant="outlined">
-                <RecordAutocomplete
-                  getOptionLabel={item => schema.getLabel(item)}
-                  getOptionKey={opt => opt['@rid']}
-                  searchHandler={optSearchHandler}
-                  placeholder="Optional - defaults to all if left empty"
-                  onChange={e => handleChange(e)}
-                  className="component-outlined"
-                />
-              </FormControl>
-            </div>
-          </>
-        )}
-        <div className="search-input__action-button">
-          <ActionButton
-            variant="contained"
-            color="primary"
-            size="large"
-            requireConfirm={false}
-            disabled={disabled}
-            onClick={handleSubmit}
-          >
+      </>
+      )}
+      <div className="search-input__action-button">
+        <ActionButton
+          variant="contained"
+          color="primary"
+          size="large"
+          requireConfirm={false}
+          disabled={disabled}
+          onClick={handleSubmit}
+        >
               Search
-          </ActionButton>
-        </div>
+        </ActionButton>
+      </div>
 
-      </CardContent>
-    </Card>
+    </div>
   );
 }
 
@@ -125,13 +116,11 @@ SearchInput.propTypes = {
   handleInputChange: PropTypes.func,
   handleSubmit: PropTypes.func,
   handleOptionalChange: PropTypes.func,
-  optionalValue: PropTypes.string,
   selectedOption: PropTypes.shape({
     label: PropTypes.string,
     requiredInput: PropTypes.object,
     optionalInput: PropTypes.object,
   }),
-  value: PropTypes.string,
 };
 
 SearchInput.defaultProps = {
@@ -139,9 +128,7 @@ SearchInput.defaultProps = {
   handleInputChange: () => {},
   handleSubmit: () => {},
   handleOptionalChange: () => {},
-  optionalValue: '',
   selectedOption: {},
-  value: '',
 };
 
 export default SearchInput;

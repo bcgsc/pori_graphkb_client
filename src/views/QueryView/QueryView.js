@@ -17,6 +17,7 @@ import SearchIcon from '@material-ui/icons/Search';
 
 import './QueryView.scss';
 import { KBContext } from '../../components/KBContext';
+import api from '../../services/api';
 
 const ENTER_KEYCODE = 13;
 const MIN_WORD_LENGTH = 3;
@@ -62,9 +63,16 @@ class QueryView extends Component {
       if (!trimmed.length) {
         this.setState({ keyWordError: `Must have 1 or more terms of at least ${MIN_WORD_LENGTH} characters` });
       } else {
+        const payload = {
+          queryType: 'keyword',
+          target: 'Statement',
+          keyword: trimmed.join(' '),
+        };
+
+        const search = api.encodeQueryComplexToSearch(payload, 'Statement');
         history.push({
           pathname: '/data/table',
-          search: qs.stringify({ keyword: trimmed.join(' ') }),
+          search,
         });
       }
     }

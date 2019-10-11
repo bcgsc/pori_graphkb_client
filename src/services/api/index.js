@@ -258,6 +258,7 @@ const querySearchBlock = ({
 
   if (count) {
     content.count = true;
+    delete content.neighbors;
   } else {
     content.skip = skip;
     content.limit = limit;

@@ -33,7 +33,7 @@ const EXAMPLE_PAYLOAD = `// See help for more info about constructing payloads
     "compoundSyntax": true,
     "where": [
         {
-            "attr": "outE(impliedby).vertex.reference1.name",
+            "attr": "outE(conditions).vertex.reference1.name",
             "value": "KRAS"
         }
     ]

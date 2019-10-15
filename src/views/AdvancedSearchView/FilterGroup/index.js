@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Typography, IconButton, Chip } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
 import PropTypes from 'prop-types';
+
 import './index.scss';
 import { KBContext } from '../../../components/KBContext';
 

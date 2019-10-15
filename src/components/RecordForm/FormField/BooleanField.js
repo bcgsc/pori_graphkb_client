@@ -5,6 +5,7 @@ import {
   FormControlLabel,
   RadioGroup,
   Radio,
+  FormHelperText,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 
@@ -17,7 +18,7 @@ import PropTypes from 'prop-types';
  * @param {boolean} props.error flag to indicate there has been an error filling this field
  * @param {string} props.label the field label
  * @param {string} props.name the name of the field used in propogating events
- * @param {function} props.onValueChange the function handler for changes
+ * @param {function} props.onChange the function handler for changes
  * @param {boolean} props.required flag to indicate this field must be filled
  * @param {string|boolean} props.value the current value
  */
@@ -27,13 +28,15 @@ const BooleanField = (props) => {
     error,
     label,
     name,
-    onValueChange,
+    onChange,
     required,
+    helperText,
+    value: initialValue,
     ...rest
   } = props;
-  const value = props.value === undefined || props.value === null
+  const value = initialValue === undefined || initialValue === null
     ? null
-    : props.value.toString();
+    : initialValue.toString();
 
   return (
     <div
@@ -51,13 +54,14 @@ const BooleanField = (props) => {
         </FormLabel>
         <RadioGroup
           name={name}
-          onChange={e => onValueChange(e)}
+          onChange={e => onChange(e)}
           value={value}
           style={{ flexDirection: 'row' }}
         >
           <FormControlLabel value="true" control={<Radio checked={value === 'true'} />} label="Yes" />
           <FormControlLabel value="false" control={<Radio checked={value === 'false'} />} label="No" />
         </RadioGroup>
+        {helperText && (<FormHelperText>{helperText}</FormHelperText>)}
       </FormControl>
     </div>
   );
@@ -68,9 +72,10 @@ BooleanField.propTypes = {
   error: PropTypes.bool,
   label: PropTypes.string,
   name: PropTypes.string.isRequired,
-  onValueChange: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
   required: PropTypes.bool,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  helperText: PropTypes.string,
 };
 
 BooleanField.defaultProps = {
@@ -78,6 +83,7 @@ BooleanField.defaultProps = {
   error: false,
   label: '',
   required: false,
+  helperText: '',
   value: undefined,
 };
 

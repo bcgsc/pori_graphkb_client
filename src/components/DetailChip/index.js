@@ -204,7 +204,6 @@ class DetailChip extends React.Component {
       ...rest
     } = this.props;
     const { anchorEl } = this.state;
-    const popUpProps = PopUpProps || this.props;
 
     return (
       <div className="detail-chip" {...rest}>
@@ -216,7 +215,7 @@ class DetailChip extends React.Component {
           onClose={this.handlePopoverClose}
           className="detail-chip__popover detail-popover"
         >
-          <PopUpComponent {...popUpProps} />
+          <PopUpComponent {...this.props} {...PopUpProps} />
         </Popover>
         <Chip
           label={label}

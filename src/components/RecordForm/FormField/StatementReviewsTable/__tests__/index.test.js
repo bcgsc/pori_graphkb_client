@@ -1,11 +1,11 @@
 import React from 'react';
 import { mount } from 'enzyme';
 
-import EmbeddedListTable from '../FormField/EmbeddedListTable';
-import DetailChip from '../../DetailChip';
+import StatementReviewsTable from '..';
+import DetailChip from '../../../../DetailChip';
 
 
-describe('EmbeddedListTable', () => {
+describe('StatementReviewsTable', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -40,39 +40,39 @@ describe('EmbeddedListTable', () => {
 
   test('mounts successfully', () => {
     const wrapper = mount((
-      <EmbeddedListTable
+      <StatementReviewsTable
         label="reviews"
         values={reviews}
         reviewProps={mockReviewProps}
       />
     ));
 
-    expect(wrapper.find(EmbeddedListTable)).toBeDefined();
+    expect(wrapper.find(StatementReviewsTable)).toBeDefined();
   });
 
   test('does not crash with empty reviews array ', () => {
     const wrapper = mount((
-      <EmbeddedListTable
+      <StatementReviewsTable
         label="reviews"
         values={[]}
         reviewProps={mockReviewProps}
       />
     ));
 
-    expect(wrapper.find(EmbeddedListTable)).toBeDefined();
+    expect(wrapper.find(StatementReviewsTable)).toBeDefined();
     expect(wrapper.find(DetailChip)).toHaveLength(0);
   });
 
   test('displays correct number of chips ', () => {
     const wrapper = mount((
-      <EmbeddedListTable
+      <StatementReviewsTable
         label="reviews"
         values={reviews}
         reviewProps={mockReviewProps}
       />
     ));
 
-    expect(wrapper.find(EmbeddedListTable)).toBeDefined();
+    expect(wrapper.find(StatementReviewsTable)).toBeDefined();
     expect(wrapper.find(DetailChip)).toHaveLength(reviews.length);
   });
 });

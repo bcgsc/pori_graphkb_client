@@ -22,7 +22,7 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import logo from '../../../static/logo.png';
 import title from '../../../static/title.png';
 import { KBContext } from '../../../components/KBContext';
-import { hasWriteAccess } from '../../../services/auth';
+import { hasWriteAccess, isAdmin } from '../../../services/auth';
 
 
 /**
@@ -112,7 +112,7 @@ class MainNav extends React.PureComponent {
           )}
           {hasWriteAccess(this.context) && isOpen && (
             <>
-              <MenuLink label="Source" route="/new/source" inset />
+              {isAdmin(this.context) && (<MenuLink label="Source*" route="/new/source" inset />)}
               <MenuLink label="Ontology" route="/new/ontology" inset />
               <MenuLink label="Variant" route="/new/variant" inset />
               <MenuLink label="Statement" route="/new/statement" inset />

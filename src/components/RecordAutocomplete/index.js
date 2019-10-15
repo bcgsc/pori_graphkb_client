@@ -1,10 +1,10 @@
 import React, {
   useState, useCallback, useEffect,
 } from 'react';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 import { NoSsr } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import useDeepCompareEffect from 'use-deep-compare-effect';
 import { useDebounce } from 'use-debounce';
 
 import defaultComponents from './components';
@@ -66,13 +66,14 @@ const RecordAutocomplete = (props) => {
     required,
     searchHandler,
     singleLoad,
+    helperText: initialHelperText,
     value,
   } = props;
 
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [options, setOptions] = useState([]);
-  const [helperText, setHelperText] = useState('');
+  const [helperText, setHelperText] = useState(initialHelperText);
   const [selectedValue, setSelectedValue] = useState(value);
   const [debouncedSearchTerm] = useDebounce(searchTerm, debounceMs);
 
@@ -111,7 +112,7 @@ const RecordAutocomplete = (props) => {
       }
       return () => controller && controller.abort();
     },
-    [disabled, searchHandler, singleLoad], // componentDidMount equivalent
+    [disabled, searchHandler, singleLoad],
   );
 
   // fetch options based on the current search term
@@ -149,7 +150,8 @@ const RecordAutocomplete = (props) => {
       }
       return () => controller && controller.abort();
     },
-    [debouncedSearchTerm, minSearchLength, searchHandler, singleLoad], // Only call effect if debounced search term changes
+    // Only call effect if debounced search term changes
+    [debouncedSearchTerm, minSearchLength, searchHandler, singleLoad],
   );
 
   const handleChange = useCallback(
@@ -276,6 +278,7 @@ RecordAutocomplete.propTypes = {
   required: PropTypes.bool,
   searchHandler: PropTypes.func.isRequired,
   singleLoad: PropTypes.bool,
+  helperText: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.object, PropTypes.arrayOf(PropTypes.object)]),
 };
 
@@ -303,6 +306,7 @@ RecordAutocomplete.defaultProps = {
   required: false,
   singleLoad: false,
   value: null,
+  helperText: '',
 };
 
 export default RecordAutocomplete;

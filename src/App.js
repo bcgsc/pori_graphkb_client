@@ -13,7 +13,7 @@ import { createGenerateClassName, jssPreset } from '@material-ui/styles';
 
 import JssProvider from 'react-jss/lib/JssProvider';
 import { create } from 'jss';
-import SnackbarProvider from '@bcgsc/react-snackbar-provider';
+import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackbar-provider';
 import * as cssTheme from './_theme.scss';
 import Main from './views/Main/Main';
 

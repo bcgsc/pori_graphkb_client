@@ -1,271 +1,180 @@
-import React, { Component } from 'react';
+import React, {
+  useContext, useReducer, useCallback, useState,
+} from 'react';
 import PropTypes from 'prop-types';
-import { boundMethod } from 'autobind-decorator';
 import {
-  Dialog,
-  Typography,
-  AppBar,
-  DialogContent,
-  TextField,
+  IconButton, Typography, Dialog, DialogContent, FormControlLabel, Checkbox,
 } from '@material-ui/core';
+import CancelIcon from '@material-ui/icons/Cancel';
 
-import Schema from '../../services/schema';
-import FormField from './FormField';
-import './index.scss';
-import ActionButton from '../ActionButton';
-import { KBContext } from '../KBContext';
+import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
+
 import { getUser } from '../../services/auth';
 
-const schema = new Schema();
-const grouping = [['status', 'createdBy'], 'comment'];
+import './index.scss';
+import ActionButton from '../ActionButton';
+import {
+  FORM_VARIANT,
+
+} from './util';
+import { KBContext } from '../KBContext';
+import FormField from './FormField';
+
+
+const MODEL_NAME = 'StatementReview';
 
 /**
- * Dialog that handles the addition of statement reviews to a Statement
- * record or the modification of reviews. Dialog has 2 main variants,
- * ['new', 'view']. The dialog is triggered open via the add review
- * statement button or by a related embedded detail chip link.
+ * Form/View that displays the contents of a single node
  *
- * @property {bool} props.isOpen flag to indicate whether dialog is open
- * @property {function} props.onClose handles closure of dialog
- * @property {object} props.content contains statement record info
- * @property {object} props.snackbar snackbar object for user feedback
- * @property {object} props.auth Authorization object to mark who created review
- * @property {function} props.onError Parent error handler should something go wrong
- * @property {function} props.updateNewReview handles parent state of new review
- * @property {function} props.updateContent handlers parent form content update
+ * @property {function} props.onClose parent handler
  */
-class ReviewDialog extends Component {
-  static contextType = KBContext;
+const AddReviewDialog = ({
+  onSubmit, isOpen, onClose,
+}) => {
+  const snackbar = useContext(SnackbarContext);
+  const context = useContext(KBContext);
+  const { schema } = context;
+  const { comment, status } = schema.get(MODEL_NAME).properties;
 
-  static propTypes = {
-    isOpen: PropTypes.bool.isRequired,
-    onClose: PropTypes.func,
-    content: PropTypes.object.isRequired,
-    snackbar: PropTypes.object,
-    onError: PropTypes.func,
-    updateNewReview: PropTypes.func,
-    updateContent: PropTypes.func.isRequired,
-    newReview: PropTypes.object,
-  };
+  const [updateAmalgamated, setUpdateAmalgamated] = useState(true);
 
-  static defaultProps = {
-    snackbar: {},
-    onError: () => {},
-    updateNewReview: () => {},
-    onClose: () => {},
-    newReview: {},
-  };
+  // handle and store the form content
+  const [formContent, setFormFieldContent] = useReducer((state, action) => {
+    const { type: actionType, payload } = action;
 
-  constructor(props) {
-    super(props);
-    const {
-      content, newReview,
-    } = props;
-    this.state = {
-      currContent: Object.assign({}, content),
-      newReview,
-    };
-  }
-
-  @boundMethod
-  handleValueChange(event, prop) {
-    const { updateNewReview } = this.props;
-    const { newReview: updatedReview } = this.state;
-    updatedReview[prop] = event;
-    this.setState({ newReview: updatedReview });
-    updateNewReview(updatedReview);
-  }
-
-  @boundMethod
-  doesFormContainErrors() {
-    const { newReview } = this.state;
-    const propList = Object.keys(newReview);
-    let formContainsError = false;
-
-    if (propList.length !== 2) {
-      formContainsError = true;
-      return formContainsError;
+    if (actionType === 'update') {
+      const { name, value } = payload;
+      return { ...state, [name]: value };
+    } if (actionType === 'replace') {
+      return { ...payload };
     }
-    propList.forEach((prop) => {
-      if (!newReview[prop]) {
-        formContainsError = true;
+    throw new Error(`actionType (${actionType}) not implemented`);
+  }, {});
+
+  // handle and store any errors reported from form field validators
+  const [formErrors, setFormFieldError] = useReducer((state, action) => {
+    const { type: actionType, payload } = action;
+
+    if (actionType === 'update') {
+      const { name, value } = payload;
+      return { ...state, [name]: value };
+    } if (actionType === 'replace') {
+      return { ...payload };
+    }
+    throw new Error(`actionType (${actionType}) not implemented`);
+  }, {});
+
+
+  /**
+   * Handler for submission of a new record
+   */
+  const handleSubmit = useCallback(() => {
+    // check for missing required properties etc
+    const errors = { ...formErrors };
+    [comment, status].forEach((prop) => {
+      const { error } = schema.validateValue(prop, formContent[prop.name], false);
+
+      if (error) {
+        errors[prop.name] = error;
       }
     });
-    return formContainsError;
-  }
 
-  @boundMethod
-  cloneReviews() {
-    const { currContent } = this.state;
-    const { reviews } = currContent;
+    setFormFieldError({ type: 'replace', payload: errors });
+    const formHasErrors = Object.values(errors).some(err => err);
 
-    if (reviews) {
-      const reviewsClone = reviews.map(obj => ({ ...obj }));
-      return reviewsClone;
-    }
-    return [];
-  }
-
-  @boundMethod
-  updateReviewStatus(content) {
-    const { newReview: { status } } = this.state;
-    const newContent = Object.assign({}, content);
-    newContent.reviewStatus = status;
-    return newContent;
-  }
-
-  @boundMethod
-  handleAddReview() {
-    const { newReview, currContent } = this.state;
-
-    const {
-      snackbar, onClose, onError, updateNewReview, updateContent,
-    } = this.props;
-
-    const formContainsError = this.doesFormContainErrors();
-
-    if (formContainsError) {
+    if (formHasErrors) {
+      // bring up the snackbar for errors
+      console.error(formErrors);
       snackbar.add('There are errors in the form which must be resolved before it can be submitted');
-      return;
-    }
-
-    const user = getUser(this.context);
-    const updatedReview = {
-      '@class': 'StatementReview',
-      ...newReview,
-      createdAt: (new Date()).valueOf(),
-      createdBy: user['@rid'].slice(1),
-    };
-
-    let newContent = Object.assign({}, currContent);
-    const clonedReviews = this.cloneReviews();
-    newContent.reviews = clonedReviews;
-
-    if (!newContent.reviews) {
-      newContent.reviews = [
-        updatedReview,
-      ];
     } else {
-      newContent.reviews.push(updatedReview);
+      const content = { ...formContent, '@class': MODEL_NAME, createdBy: getUser(context) };
+      onSubmit(content, updateAmalgamated);
     }
+  }, [comment, context, formContent, formErrors, onSubmit, schema, snackbar, status, updateAmalgamated]);
 
-    newContent = this.updateReviewStatus(newContent);
+  const handleOnChange = (event) => {
+    // add the new value to the field
+    const eventName = event.target.name || event.target.getAttribute('name'); // name of the form field triggering the event
+    const eventValue = event.target.value;
 
-    try {
-      updateContent(newContent);
-      updateNewReview({});
-      onClose();
-    } catch (err) {
-      console.error(err);
-      onError(err);
-    }
-  }
+    const { properties: { [eventName]: prop } } = schema.get(MODEL_NAME);
+    const { value, error } = schema.validateValue(prop, eventValue, false);
 
-  @boundMethod
-  renderFieldGroup(ordering) {
-    const {
-      currContent, newReview,
-    } = this.state;
+    setFormFieldContent({ type: 'update', payload: { name: eventName, value } });
+    setFormFieldError({ type: 'update', payload: { name: eventName, value: error } });
+  };
 
-    const model = schema.get('StatementReview');
-    const { properties } = model;
+  const formHasErrors = Object.values(formErrors).some(err => err);
 
-    const fields = [];
-    ordering.forEach((propName) => {
-      if (propName instanceof Array) { // subgrouping
-        const key = propName.join('--');
-        const subgroup = this.renderFieldGroup(propName);
-
-        if (subgroup.length) {
-          fields.push((
-            <div key={key} className="record-form__content-subgroup">
-              {subgroup}
-            </div>
-          ));
-        }
-      } else if (properties[propName]) {
-        const prop = properties[propName];
-        const { name } = prop;
-        let wrapper;
-
-        if (!['createdAt', 'createdBy'].includes(name)) {
-          if (name === 'comment') {
-            wrapper = (
-              <TextField
-                key={name}
-                fullWidth
-                multiline
-                rows={7}
-                label="Review Description"
-                variant="outlined"
-                value={newReview[name]}
-                onChange={(event) => { this.handleValueChange(event.target.value, name); }}
-              />
-            );
-          } else {
-            wrapper = (
-              <div key={name} className="review-dialog__statement-review-field">
-                <FormField
-                  model={prop}
-                  value={newReview[name]}
-                  onValueChange={(event) => { this.handleValueChange(event.target.value, propName); }}
-                  schema={schema}
-                  label="Review Status"
-                  variant="view"
-                  content={currContent}
-                />
-              </div>
-            );
-          }
-        }
-        fields.push(wrapper);
-      }
-    });
-    return fields;
-  }
-
-  render() {
-    const {
-      isOpen, onClose,
-    } = this.props;
-
-    return (
-      <Dialog
-        open={isOpen}
-        onClose={onClose}
-        onEscapeKeyDown={onClose}
-        maxWidth="lg"
-      >
-        <div className="review-dialog">
-          <AppBar
-            className="appbar"
-            classes={{ positionFixed: 'custom-positionFixed' }}
+  return (
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      onEscapeKeyDown={onClose}
+      maxWidth="lg"
+    >
+      <div className="review-dialog">
+        <div className="review-dialog__header">
+          <Typography variant="h2">Add a new Statement Review</Typography>
+          <IconButton
+            onClick={onClose}
           >
-            <div className="appbar__title">
-              <Typography variant="h6">GraphKB</Typography>
-              <Typography variant="caption"> v{process.env.npm_package_version}</Typography>
-            </div>
-          </AppBar>
-          <div className="review-dialog__content">
-            <DialogContent className="review-dialog__fields">
-              {this.renderFieldGroup(grouping)}
-            </DialogContent>
-            <div className="review-dialog__action-button">
-              <ActionButton
-                onClick={this.handleAddReview}
-                variant="contained"
-                color="primary"
-                size="large"
-                requireConfirm={false}
-              >
-                    ADD REVIEW
-              </ActionButton>
-            </div>
-          </div>
+            <CancelIcon />
+          </IconButton>
         </div>
-      </Dialog>
-    );
-  }
-}
+        <DialogContent className="review-dialog__fields">
+          <FormField
+            model={status}
+            onChange={handleOnChange}
+            value={formContent[status.name]}
+            variant={FORM_VARIANT.NEW}
+            error={formErrors[status.name]}
+          />
+          <FormField
+            model={comment}
+            onChange={handleOnChange}
+            value={formContent[comment.name]}
+            variant={FORM_VARIANT.NEW}
+            error={formErrors[comment.name]}
+            innerProps={{
+              multiline: true,
+              rows: 7,
+              variant: 'outlined',
+            }}
+          />
+          <FormControlLabel
+            control={<Checkbox />}
+            label="Also Update the Statement Amalgamated Review Status (Recommended)"
+            checked={updateAmalgamated}
+            onChange={() => setUpdateAmalgamated(!updateAmalgamated)}
+            color="primary"
+          />
+        </DialogContent>
+        <div className="review-dialog__action-button">
+          <ActionButton
+            onClick={handleSubmit}
+            variant="contained"
+            color="primary"
+            size="large"
+            requireConfirm={false}
+            disabled={formHasErrors}
+          >
+              ADD REVIEW
+          </ActionButton>
+        </div>
+      </div>
+    </Dialog>
+  );
+};
 
-export default ReviewDialog;
+AddReviewDialog.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool,
+};
+
+AddReviewDialog.defaultProps = {
+  isOpen: false,
+};
+
+export default AddReviewDialog;

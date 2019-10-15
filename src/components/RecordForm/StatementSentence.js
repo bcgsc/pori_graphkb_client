@@ -23,13 +23,13 @@ const StatementSentence = (props) => {
             color="textPrimary"
             className="quote__substitution"
           >
-            &nbsp;{word}
+            {wordPosition === 0 ? null : (<span> </span>)}{word}
           </Typography>
         );
       }
       return (
         <>
-          &nbsp;{word}
+          <span> </span>{word}
         </>
       );
     });

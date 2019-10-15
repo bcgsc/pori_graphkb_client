@@ -6,7 +6,13 @@ import './index.scss';
 import { KBContext } from '../../../components/KBContext';
 
 /**
- * Displays filter chips and filter group box
+ * Displays Filter Groups and filter chips.
+ *
+ * @property {object} filterGroup single filter group with the following format
+ * @property {integer} filterGroup.key index or key of filterGroup
+ * @property {string} filterGroup.name name of current filterGroup
+ * @property {ArrayOf<Filters>} filterGroup.filters array of filters with format {attr, value, operator}
+ * @property {function} handleDelete parent handler function to delete filterGroup
  */
 function FilterGroup(props) {
   const { filterGroup, handleDelete } = props;
@@ -21,13 +27,14 @@ function FilterGroup(props) {
       </div>
       <div className="filter-groups__cancel-btn">
         <IconButton
+          data-testid="cancel-btn"
           onClick={() => { handleDelete(filterGroup.name); }}
         >
           <CancelIcon />
         </IconButton>
       </div>
       <>
-        {filterGroup.filters.map((filter) => {
+        {filterGroup.filters.map((filter, index) => {
           let filterValue = filter.value;
 
           if (typeof filterValue === 'object' && !Array.isArray(filterValue)) {
@@ -37,7 +44,7 @@ function FilterGroup(props) {
           }
 
           return (
-            <div className="filter-chip">
+            <div className="filter-chip" data-testid={`filter-chip${index}`}>
               <Chip
                 default="outlined"
                 key={`${filter.attr}.${filter.value}`}

@@ -42,6 +42,7 @@ function SearchInput(props) {
     <div className="search-input">
       <div className="search-input__input-field">
         <TextField
+          data-testid="test-id"
           autoFocus
           className="input-box"
           helperText={requiredInput.example}

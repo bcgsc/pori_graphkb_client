@@ -67,11 +67,6 @@ const initialFilterValues = {
   operator: null,
 };
 
-/**
- * Manages current values for active filter.
- * State will be current filter. Action will either clear values or set values.
- *
- * */
 
 function AdvancedSearchView(props) {
   const {

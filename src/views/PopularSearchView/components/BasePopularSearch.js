@@ -26,7 +26,7 @@ const SEARCH_OPTS = {
       },
     },
     {
-      label: 'Given a drug, find all disease it is approved for use',
+      label: 'Given a drug, find all diseases it is approved for use',
       requiredInput: {
         label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. Adriamycin',
       },
@@ -34,7 +34,7 @@ const SEARCH_OPTS = {
   ],
   DISEASE: [
     {
-      label: 'Given a disease, find all genes associaed with therapeutic sensitivity',
+      label: 'Given a disease, find all genes associated with therapeutic sensitivity',
       requiredInput: {
         label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer',
       },
@@ -54,7 +54,7 @@ const SEARCH_OPTS = {
   ],
   VARIANT: [
     {
-      label: 'Given a variant, find all therapies associaed with sensitivity for Disease(s)',
+      label: 'Given a variant, find all therapies associated with sensitivity for Disease(s)',
       requiredInput: {
         label: 'Variant', property: 'name', class: 'Variant', example: 'Ex. KRAS:p.G12A',
       },
@@ -72,7 +72,7 @@ const SEARCH_OPTS = {
       },
     },
     {
-      label: 'Given a variant, find all disease that the variant is associated with',
+      label: 'Given a variant, find all diseases that the variant is associated with',
       requiredInput: {
         label: 'Variant', property: 'name', class: 'Variant', example: 'Ex. KRAS:p.G12A',
       },
@@ -101,7 +101,7 @@ const SEARCH_OPTS = {
       },
     },
     {
-      label: 'Given a gene, find all variants on the ',
+      label: 'Given a gene, find all variants on the gene',
       requiredInput: {
         label: 'Gene', property: 'name', class: 'Feature', example: 'Ex. KRAS',
       },

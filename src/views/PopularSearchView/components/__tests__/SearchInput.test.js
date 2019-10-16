@@ -46,7 +46,7 @@ describe('Search Input', () => {
     });
 
     test('input triggers change handlers', () => {
-      fireEvent.change(getByTestId('test-id'), { target: { value: 'Clicked! ' } });
+      fireEvent.change(getByTestId('content-input'), { target: { value: 'Clicked! ' } });
       expect(changeSpy).toHaveBeenCalledTimes(1);
     });
   });

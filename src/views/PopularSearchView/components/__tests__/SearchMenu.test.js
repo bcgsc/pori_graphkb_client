@@ -3,8 +3,23 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 
 import SearchMenu from '../SearchMenu';
-import MOCK_SEARCH_OPTS from './mockData';
 
+const MOCK_SEARCH_OPTS = {
+  GENE: [
+    {
+      label: 'gene label 1',
+      requiredInput: {
+        label: 'Gene', property: 'name', class: 'Feature', example: 'Ex. KRAS',
+      },
+    },
+    {
+      label: 'gene label 2',
+      requiredInput: {
+        label: 'Gene', property: 'name', class: 'Feature', example: 'Ex. KRAS',
+      },
+    },
+  ],
+};
 
 describe('SearchMenu', () => {
   afterEach(() => jest.clearAllMocks());

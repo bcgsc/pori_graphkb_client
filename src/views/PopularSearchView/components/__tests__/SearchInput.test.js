@@ -3,7 +3,16 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 
 import SearchInput from '../SearchInput';
-import MOCK_SEARCH_OPTS from './mockData';
+
+const mockSelectedOption = {
+  label: 'variant label 1',
+  requiredInput: {
+    label: 'Variant', property: 'name', class: 'Variant', example: 'Ex. KRAS:p.G12A',
+  },
+  optionalInput: {
+    label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer',
+  },
+};
 
 describe('Search Input', () => {
   afterEach(() => jest.clearAllMocks());
@@ -20,7 +29,7 @@ describe('Search Input', () => {
         <SearchInput
           handleInputChange={changeSpy}
           handleOptionalChange={optionalChangeSpy}
-          selectedOption={MOCK_SEARCH_OPTS.VARIANT[0]}
+          selectedOption={mockSelectedOption}
         />,
       ));
     });

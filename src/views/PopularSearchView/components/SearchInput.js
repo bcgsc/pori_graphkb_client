@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import {
   TextField,
@@ -38,6 +38,13 @@ function SearchInput(props) {
     }
   };
 
+  const ref = useRef(null);
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.focus();
+    }
+  }, [requiredInput]);
+
   return (
     <div className="search-input">
       <div className="search-input__input-field">
@@ -46,6 +53,7 @@ function SearchInput(props) {
           autoFocus
           className="input-box"
           helperText={requiredInput.example}
+          inputRef={ref}
           label={requiredInput.label}
           margin="normal"
           onChange={e => handleChange(e)}

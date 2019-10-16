@@ -14,7 +14,7 @@ const SEARCH_OPTS = {
       },
     },
     {
-      label: 'Given a drug, find all varaints associated with resistance',
+      label: 'Given a drug, find all variants associated with resistance',
       requiredInput: {
         label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. Adriamycin',
       },

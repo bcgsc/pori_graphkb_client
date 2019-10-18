@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import './index.scss';
@@ -116,13 +116,11 @@ const MIN_VAL_LENGTH = 3;
 function BasePopularSearch(props) {
   const { variant } = props;
   const [searchIndex, setSearchIndex] = useState(0);
-  const [value, setValue] = useState(null);
-  const [optionalValue, setOptionalValue] = useState('optional');
+  const [value, setValue] = useState('');
+  const [optionalValue, setOptionalValue] = useState('');
 
   const handleSelectionChange = (index) => {
     setSearchIndex(index);
-    setValue('');
-    setOptionalValue('');
   };
 
   // handle submission of form
@@ -144,9 +142,10 @@ function BasePopularSearch(props) {
       <div className={`popular-search__input-field${hasOptionalField ? '--optional' : ''}`}>
         <SearchInput
           disabled={!value || value.length < MIN_VAL_LENGTH}
-          handleInputChange={setValue}
-          handleOptionalChange={setOptionalValue}
+          handleInputChange={useCallback(setValue)}
+          handleOptionalChange={useCallback(setOptionalValue)}
           handleSubmit={handleSubmit}
+          value={value}
           optionalValue={optionalValue}
           selectedOption={selectedOption}
         />

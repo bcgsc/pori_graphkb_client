@@ -14,6 +14,7 @@ function SearchMenu(props) {
   const { labels, value, handleChange } = props;
   const searchOptions = labels.map(((label, index) => (
     <SearchOption
+      key={`${label}`}
       label={label}
       selected={value === index}
       handleChange={() => handleChange(index)}

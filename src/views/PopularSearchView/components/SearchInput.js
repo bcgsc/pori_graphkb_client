@@ -1,13 +1,11 @@
-import React, { useContext } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Typography, FormControl,
+  TextField,
 } from '@material-ui/core';
 import './index.scss';
 import ActionButton from '../../../components/ActionButton';
-import { KBContext } from '../../../components/KBContext';
-import RecordAutocomplete from '../../../components/RecordAutocomplete';
-import api from '../../../services/api';
+
 
 /**
  * handles required/optional input for Popular Search View.
@@ -25,74 +23,62 @@ function SearchInput(props) {
     handleInputChange,
     handleOptionalChange,
     handleSubmit,
+    optionalValue,
     selectedOption: { requiredInput, optionalInput },
+    selectedOption,
+    value,
   } = props;
+
 
   const hasOptionalInput = !!optionalInput;
 
-  const { schema } = useContext(KBContext);
-
-  const searchHandler = api.defaultSuggestionHandler(
-    schema.get(requiredInput.class),
-  );
-
-  let optSearchHandler;
-
-  if (hasOptionalInput) {
-    optSearchHandler = api.defaultSuggestionHandler(
-      schema.get(optionalInput.class),
-    );
-  }
-
-  const handleChange = (event, optionalValue = false) => {
+  const handleChange = (event, optionalVal = false) => {
     const { target: { value: newVal } } = event;
 
-    if (optionalValue) {
+    if (optionalVal) {
       handleOptionalChange(newVal);
     } else {
       handleInputChange(newVal);
     }
   };
 
+  const ref = useRef(null);
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.focus();
+    }
+    handleOptionalChange('');
+    handleInputChange('');
+  }, [handleInputChange, handleOptionalChange, selectedOption]);
+
   return (
     <div className="search-input">
-      <div className="search-input__label">
-        <Typography variant="h3">
-          {requiredInput.label}
-        </Typography>
-      </div>
       <div className="search-input__input-field">
-        <FormControl className="" variant="outlined">
-          <RecordAutocomplete
-            getOptionLabel={item => schema.getLabel(item)}
-            getOptionKey={opt => opt['@rid']}
-            searchHandler={searchHandler}
-            placeholder={`Search for a ${requiredInput.label}`}
-            onChange={e => handleChange(e)}
-            className="input-box"
-          />
-        </FormControl>
+        <TextField
+          autoFocus
+          className="input-box"
+          helperText={requiredInput.example}
+          inputProps={{ 'data-testid': 'content-input' }}
+          inputRef={ref}
+          label={requiredInput.label}
+          margin="normal"
+          onChange={e => handleChange(e)}
+          variant="outlined"
+          value={value}
+        />
       </div>
       {(hasOptionalInput) && (
-      <>
-        <div className="search-input__label">
-          <Typography variant="h3">
-            {optionalInput.label}
-          </Typography>
-        </div>
         <div className="search-input__input-field">
-          <FormControl className="" variant="outlined">
-            <RecordAutocomplete
-              getOptionLabel={item => schema.getLabel(item)}
-              getOptionKey={opt => opt['@rid']}
-              searchHandler={optSearchHandler}
-              placeholder="Optional - defaults to all if left empty"
-              onChange={e => handleChange(e)}
-              className="input-box"
-            />
-          </FormControl>
+          <TextField
+            className="input-box"
+            helperText={optionalInput.example}
+            label={optionalInput.label}
+            margin="normal"
+            onChange={e => handleChange(e, true)}
+            variant="outlined"
+            value={optionalValue}
+          />
         </div>
-      </>
       )}
       <div className="search-input__action-button">
         <ActionButton
@@ -121,6 +107,8 @@ SearchInput.propTypes = {
     requiredInput: PropTypes.object,
     optionalInput: PropTypes.object,
   }),
+  optionalValue: PropTypes.string,
+  value: PropTypes.string.isRequired,
 };
 
 SearchInput.defaultProps = {
@@ -129,6 +117,7 @@ SearchInput.defaultProps = {
   handleSubmit: () => {},
   handleOptionalChange: () => {},
   selectedOption: {},
+  optionalValue: '',
 };
 
 export default SearchInput;

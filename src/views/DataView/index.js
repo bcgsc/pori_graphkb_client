@@ -9,7 +9,6 @@ import {
 import TimelineIcon from '@material-ui/icons/Timeline';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Tooltip from '@material-ui/core/Tooltip';
-import EditIcon from '@material-ui/icons/Edit';
 import { boundMethod } from 'autobind-decorator';
 import * as qs from 'qs';
 
@@ -409,11 +408,6 @@ class DataView extends React.Component {
           {URLContainsTable && (
             <>
               <Typography variant="h5">Active Filters</Typography>
-              <IconButton
-                onClick={() => this.setState({ filtersEditOpen: true })}
-              >
-                <EditIcon />
-              </IconButton>
               {this.renderFilterChips(filters)}
             </>
           )}

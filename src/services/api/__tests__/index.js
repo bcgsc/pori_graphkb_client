@@ -65,7 +65,7 @@ describe('api methods test', () => {
         schema,
       });
       expect(result.payload).toBe(null);
-      expect(result.routeName).toEqual('/statements/search');
+      expect(result.routeName).toEqual('/query');
       expect(result.queryParams.keyword).toEqual('kras');
     });
 
@@ -83,7 +83,7 @@ describe('api methods test', () => {
       const actualSearch = api.getQueryFromSearch({ schema, search });
       expect(actualSearch).toEqual({
         payload: complex,
-        routeName: '/diseases/search',
+        routeName: '/query',
         queryParams: null,
         modelName: 'disease',
       });
@@ -96,7 +96,7 @@ describe('api methods test', () => {
         schema,
       });
       expect(result.payload).toBe(null);
-      expect(result.routeName).toEqual('/diseases');
+      expect(result.routeName).toEqual('/query');
       expect(result.queryParams).toEqual({
         name: 'kras',
         sourceId: 'kras',

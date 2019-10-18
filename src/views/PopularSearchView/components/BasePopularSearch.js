@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import './index.scss';
@@ -142,8 +142,8 @@ function BasePopularSearch(props) {
       <div className={`popular-search__input-field${hasOptionalField ? '--optional' : ''}`}>
         <SearchInput
           disabled={!value || value.length < MIN_VAL_LENGTH}
-          handleInputChange={useCallback(setValue)}
-          handleOptionalChange={useCallback(setOptionalValue)}
+          handleInputChange={setValue}
+          handleOptionalChange={setOptionalValue}
           handleSubmit={handleSubmit}
           value={value}
           optionalValue={optionalValue}

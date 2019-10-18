@@ -171,9 +171,7 @@ const getQueryFromSearch = ({ schema, search, count }) => {
     };
 
     if (keyword) {
-      // keyword search is only associated with statements
       routeName = '/query';
-      modelName = 'Statement';
       queryParams.keyword = keyword;
     } else {
       queryParams = Object.assign({}, params, queryParams);

@@ -23,15 +23,19 @@ function SearchInput(props) {
     handleInputChange,
     handleOptionalChange,
     handleSubmit,
+    optionalValue,
     selectedOption: { requiredInput, optionalInput },
+    selectedOption,
+    value,
   } = props;
+
 
   const hasOptionalInput = !!optionalInput;
 
-  const handleChange = (event, optionalValue = false) => {
+  const handleChange = (event, optionalVal = false) => {
     const { target: { value: newVal } } = event;
 
-    if (optionalValue) {
+    if (optionalVal) {
       handleOptionalChange(newVal);
     } else {
       handleInputChange(newVal);
@@ -43,7 +47,9 @@ function SearchInput(props) {
     if (ref.current) {
       ref.current.focus();
     }
-  }, [requiredInput]);
+    handleOptionalChange('');
+    handleInputChange('');
+  }, [handleInputChange, handleOptionalChange, selectedOption]);
 
   return (
     <div className="search-input">
@@ -58,6 +64,7 @@ function SearchInput(props) {
           margin="normal"
           onChange={e => handleChange(e)}
           variant="outlined"
+          value={value}
         />
       </div>
       {(hasOptionalInput) && (
@@ -69,6 +76,7 @@ function SearchInput(props) {
             margin="normal"
             onChange={e => handleChange(e, true)}
             variant="outlined"
+            value={optionalValue}
           />
         </div>
       )}
@@ -99,6 +107,8 @@ SearchInput.propTypes = {
     requiredInput: PropTypes.object,
     optionalInput: PropTypes.object,
   }),
+  optionalValue: PropTypes.string,
+  value: PropTypes.string.isRequired,
 };
 
 SearchInput.defaultProps = {
@@ -107,6 +117,7 @@ SearchInput.defaultProps = {
   handleSubmit: () => {},
   handleOptionalChange: () => {},
   selectedOption: {},
+  optionalValue: '',
 };
 
 export default SearchInput;

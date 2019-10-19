@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import './index.scss';
 import SearchInput from './SearchInput';
 import SearchMenu from './SearchMenu';
+import api from '../../../services/api';
 
 const SEARCH_OPTS = {
   DRUG: [
@@ -12,12 +13,56 @@ const SEARCH_OPTS = {
       requiredInput: {
         label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. Adriamycin',
       },
+      search: {
+        target: 'Statement',
+        filters: {
+          AND: [
+            {
+              subject: {
+                queryType: 'keyword',
+                keyword: 'GENE OF INTEREST',
+                target: 'Therapy',
+              },
+            }, {
+              relevance: {
+                target: 'Vocabulary',
+                filters: {
+                  name: 'sensitivity',
+                },
+              },
+            },
+          ],
+        },
+      },
+      set searchInput(keyword) { this.search.filters.AND[0].subject.keyword = keyword; },
     },
     {
       label: 'Given a drug, find all variants associated with resistance',
       requiredInput: {
         label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. Adriamycin',
       },
+      search: {
+        target: 'Statement',
+        filters: {
+          AND: [
+            {
+              subject: {
+                queryType: 'keyword',
+                keyword: 'GENE OF INTEREST',
+                target: 'Therapy',
+              },
+            }, {
+              relevance: {
+                target: 'Vocabulary',
+                filters: {
+                  name: 'resistance',
+                },
+              },
+            },
+          ],
+        },
+      },
+      set searchInput(keyword) { this.search.filters.AND[0].subject.keyword = keyword; },
     },
     {
       label: 'Given a drug, find all variants with pharmacogenomic information',
@@ -38,12 +83,58 @@ const SEARCH_OPTS = {
       requiredInput: {
         label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer',
       },
+      search: {
+        target: 'Statement',
+        filters: {
+          AND: [
+            {
+              subject: {
+                queryType: 'keyword',
+                keyword: 'DISEASE OF INTEREST',
+                target: 'Disease',
+              },
+            },
+            {
+              relevance: {
+                target: 'Vocabulary',
+                filters: {
+                  name: 'sensitivity',
+                },
+              },
+            },
+          ],
+        },
+      },
+      set searchInput(keyword) { this.search.filters.AND[0].subject.keyword = keyword; },
     },
     {
       label: 'Given a disease, find all genes associated with therapeutic resistance',
       requiredInput: {
         label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer',
       },
+      search: {
+        target: 'Statement',
+        filters: {
+          AND: [
+            {
+              subject: {
+                queryType: 'keyword',
+                keyword: 'DISEASE OF INTEREST',
+                target: 'Disease',
+              },
+            },
+            {
+              relevance: {
+                target: 'Vocabulary',
+                filters: {
+                  name: 'resistance',
+                },
+              },
+            },
+          ],
+        },
+      },
+      set searchInput(keyword) { this.search.filters.AND[0].subject.keyword = keyword; },
     },
     {
       label: 'Given a disease, find all variants associated with a relevance',
@@ -114,7 +205,8 @@ const MIN_VAL_LENGTH = 3;
  * Base Component that displays popular search options.
  */
 function BasePopularSearch(props) {
-  const { variant } = props;
+  const { variant, history } = props;
+  console.log('TCL: BasePopularSearch -> props', props);
   const [searchIndex, setSearchIndex] = useState(0);
   const [value, setValue] = useState('');
   const [optionalValue, setOptionalValue] = useState('');
@@ -123,12 +215,23 @@ function BasePopularSearch(props) {
     setSearchIndex(index);
   };
 
-  // handle submission of form
-  const handleSubmit = () => {};
 
   const labels = SEARCH_OPTS[variant].map(opt => opt.label);
   const selectedOption = SEARCH_OPTS[variant][searchIndex];
   const hasOptionalField = !!selectedOption.optionalInput;
+
+  // handle submission of form
+  const handleSubmit = () => {
+    if (value.length < MIN_VAL_LENGTH) {
+      // snackbar disapproving message
+      return;
+    }
+    selectedOption.searchInput = value;
+    const { search: rawSearch } = selectedOption;
+
+    const search = api.encodeQueryComplexToSearch(rawSearch, 'Statement');
+    history.push(`/data/table?${search}`, { search });
+  };
 
   return (
     <div className="popular-search__contents">

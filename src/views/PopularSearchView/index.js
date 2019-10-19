@@ -21,13 +21,14 @@ import './index.scss';
  */
 function PopularSearchView(props) {
   const baseUri = '/query-popular';
-  const { location: { pathname: currentUri } } = props;
+  const { location: { pathname: currentUri }, history } = props;
+  console.log('TCL: PopularSearchView -> props', props);
 
   const tabsList = [
-    { label: 'Gene', component: () => <BasePopularSearch variant="GENE" /> },
-    { label: 'Variant', component: () => <BasePopularSearch variant="VARIANT" /> },
-    { label: 'Disease', component: () => <BasePopularSearch variant="DISEASE" /> },
-    { label: 'Drug', component: () => <BasePopularSearch variant="DRUG" /> },
+    { label: 'Gene', component: () => <BasePopularSearch variant="GENE" history={history} /> },
+    { label: 'Variant', component: () => <BasePopularSearch variant="VARIANT" history={history} /> },
+    { label: 'Disease', component: () => <BasePopularSearch variant="DISEASE" history={history} /> },
+    { label: 'Drug', component: () => <BasePopularSearch variant="DRUG" history={history} /> },
   ];
 
   const uriLookup = {};

@@ -1,0 +1,13 @@
+@import '../../globals';
+
+
+.popular-search {
+  height: 100%;
+  padding: 0;
+
+  .tabs-bar {
+    box-shadow: $shadows--level-4;
+    height: $tab-bar-height;
+  }
+
+}

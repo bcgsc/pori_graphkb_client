@@ -23,7 +23,6 @@ const ID_PROP = '@rid';
 const CLASS_PROP = '@class';
 const MAX_SUGGESTIONS = 50;
 const DEFAULT_LIMIT = 100;
-const MIN_WORD_LENGTH = 3;
 
 
 /**
@@ -94,72 +93,29 @@ const del = (endpoint, callOptions) => {
  */
 const defaultSuggestionHandler = (model, opt = {}) => {
   const searchHandler = (textInput) => {
-    let terms = textInput.split(/\s+/);
-    let operator = 'CONTAINSTEXT';
-
-    if (terms.length > 1) {
-      terms = terms.filter(term => term.length >= MIN_WORD_LENGTH);
-    } else if (terms.length === 1 && terms[0].length < MIN_WORD_LENGTH) {
-      operator = '=';
-    }
-
-    const { excludeClasses = [], ...rest } = opt;
-
-    const ontologyWhere = [{
-      operator: 'OR',
-      comparisons: terms.map(term => ({ attr: 'name', value: term, operator })),
-    }];
-
-    if (model.properties.sourceId) {
-      ontologyWhere[0].comparisons.push(
-        ...terms.map(term => ({ attr: 'sourceId', value: term, operator })),
-      );
-    }
-
-    if (excludeClasses.length) {
-      ontologyWhere.push(...excludeClasses.map(
-        c => ({ attr: '@class', value: c, negate: true }),
-      ));
-    }
-
-    const variantWhere = [{
-      operator: 'AND',
-      comparisons: terms.map(value => ({
-        operator: 'OR',
-        comparisons: [
-          { attr: 'reference1.name', value, operator },
-          { attr: 'reference1.sourceId', value },
-          { attr: 'reference2.name', value, operator },
-          { attr: 'reference2.sourceId', value },
-          { attr: 'type.name', value, operator },
-          { attr: 'type.sourceId', value },
-        ],
-      })),
-    }];
-
-    let where = ontologyWhere;
-
-    if (model.inherits.includes('Variant') || model.name === 'Variant') {
-      where = variantWhere;
-    }
+    const { ...rest } = opt;
 
     const callOptions = { forceListReturn: true, ...rest };
-    let call;
+    let body = {};
 
     if (kbSchema.util.looksLikeRID(textInput)) {
-      call = get(`${model.routeName}/${textInput}?neighbors=1`, callOptions);
+      body = {
+        target: [textInput],
+      };
     } else {
-      const body = {
-        where,
+      body = {
+        queryType: 'keyword',
+        target: `${model.name}`,
+        keyword: textInput,
         limit: MAX_SUGGESTIONS,
-        neighbors: 1,
       };
 
       if (model.inherits.includes('Ontology') || model.name === 'Ontology') {
         body.orderBy = ['name', 'sourceId'];
       }
-      call = post(`${model.routeName}/search`, body, callOptions);
     }
+    const call = post('/query', body, callOptions);
+
     return call;
   };
   searchHandler.fname = `${model.name}SearchHandler`; // for equality comparisons (for render updates)

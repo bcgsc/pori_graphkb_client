@@ -27,13 +27,16 @@ import './Main.scss';
 import {
   AboutView,
   AdminView,
+  AdvancedSearchView,
   DataView,
   ErrorView,
   FeedbackView,
   LoginView,
   QueryView,
   QueryBuilderView,
+  PopularSearchView,
 } from '..';
+
 import {
   getUsername, isAdmin, logout, isAuthenticated,
 } from '../../services/auth';
@@ -177,6 +180,8 @@ const Main = () => {
             <Route exact path="/error" component={ErrorView} />
             <Route path="/about" component={AboutView} />
             <AuthenticatedRoute exact path="/query" component={QueryView} />
+            <AuthenticatedRoute path="/query-popular" component={PopularSearchView} />
+            <AuthenticatedRoute exact path="/query-advanced" component={AdvancedSearchView} />
             <AuthenticatedRoute path="/query/advanced/builder" component={QueryBuilderView} />
             <AuthenticatedRoute
               path="/edit/:modelName(Source|source|User|user|UserGroup|usergroup)/:rid"

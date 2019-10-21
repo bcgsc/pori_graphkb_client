@@ -67,7 +67,14 @@ const initialFilterValues = {
   operator: null,
 };
 
-
+/**
+ * Advanced Search Form. Gives users most control on how they can query
+ * the knowledgebase. Query consists of different filter groups with their own
+ * set of filters.
+ *
+ * @property {string} props.modelName name of target model of query
+ * @property {object} props.history history router object to navigate to different views
+ */
 function AdvancedSearchView(props) {
   const {
     modelName: initialModelName,
@@ -234,7 +241,7 @@ function AdvancedSearchView(props) {
       <div className="class-select">
         <FormField
           model={{
-            choices: modelOptions, required: true, name: '@class', type: 'string',
+            choices: modelOptions, required: true, name: '@class type to be queried', type: 'string',
           }}
           value={modelName}
           onChange={({ target: { value } }) => setModelName(value)}

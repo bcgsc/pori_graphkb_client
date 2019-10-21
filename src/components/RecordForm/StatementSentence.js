@@ -45,7 +45,8 @@ const StatementSentence = (props) => {
     .map(support => schema.getPreview(support)).join(', ');
 
   let conditions = (content.conditions || [])
-    .map(cond => schema.getPreview(cond));
+    .map(cond => (subject !== schema.getPreview(cond) ? schema.getPreview(cond) : ''))
+    .filter(cond => cond !== '');
 
   if (conditions.length > 1) {
     conditions[conditions.length - 1] = `and ${conditions[conditions.length - 1]}`;

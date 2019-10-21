@@ -22,7 +22,14 @@ const generateOperatorOptions = () => {
 
   return OPERATORS;
 };
-
+/**
+ * format: Array of Operator Option Objects.
+ * Operator Option (opt) object consists of 4 properties
+ * @property {string} opt.label how the operator option is displayed
+ * @property {string} opt.value the value of the selection. usually the same as label.
+ * @property {string} opt.key React prop to optimize rendering. usually same as label.
+ * @property {string} opt.caption optional description of operator option
+ */
 const OPERATORS = generateOperatorOptions();
 
 export {

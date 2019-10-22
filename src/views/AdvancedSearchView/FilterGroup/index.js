@@ -29,6 +29,7 @@ function FilterGroup(props) {
       <div className="filter-groups__cancel-btn">
         <IconButton
           data-testid="cancel-btn"
+          classes={{ label: 'cancel-btn-label' }}
           onClick={() => { handleDelete(filterGroup.name); }}
         >
           <CancelIcon />

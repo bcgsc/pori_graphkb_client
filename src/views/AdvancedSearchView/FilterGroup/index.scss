@@ -44,11 +44,14 @@
     }
 
     &__cancel-btn {
-      background-color: white;
       position: absolute;
       right: 0;
       top: 0;
       transform: translate((40%, -40%));
+
+      .cancel-btn-label {
+        background-color: white;
+      }
     }
 
     &__group-label {
@@ -60,7 +63,8 @@
       h6 {
         background-color: white;
         display: inline-block;
-        left: 5px;
+        font-size: 1rem;
+        left: 15px;
         position: relative;
       }
 
@@ -127,11 +131,14 @@
     }
 
     &__cancel-btn {
-      background-color: white;
       position: absolute;
       right: 0;
       top: 0;
       transform: translate((40%, -40%));
+
+      .cancel-btn-label {
+        background-color: white;
+      }
     }
 
     &__group-label {
@@ -143,7 +150,8 @@
       h6 {
         background-color: white;
         display: inline-block;
-        left: 5px;
+        font-size: 1rem;
+        left: 15px;
         position: relative;
       }
 

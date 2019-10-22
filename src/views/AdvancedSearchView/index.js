@@ -62,7 +62,7 @@ const filterGroupReducer = (state, action) => {
 };
 
 const initialFilterValues = {
-  prop: null,
+  attr: null,
   value: null,
   operator: null,
 };
@@ -86,11 +86,12 @@ function AdvancedSearchView(props) {
   const snackbar = useContext(SnackbarContext);
 
   // set up current model for search
-  const [modelName, setModelName] = useState(initialModelName);
+  const [modelName, setModelName] = useState(initialModelName || 'Statement');
   const [model, setModel] = useState(null);
   const [propertyModel, setPropertyModel] = useState(null);
   useDeepCompareEffect(() => {
-    setModel(schema.get(modelName || 'V'));
+    setModelName(modelName || 'Statement');
+    setModel(schema.get(modelName || 'Statement'));
   }, [schema, modelName]);
 
   // fetching class model options
@@ -139,12 +140,15 @@ function AdvancedSearchView(props) {
     } = action;
 
     if (actionType === 'clear') {
-      return { prop: null, value: null, operator: null };
+      return { attr: null, value: null, operator: null };
     }
     if (actionType === 'prop-change') {
       return { ...state, value: null, operator: null };
     }
     if (actionType === 'value') {
+      if (propertyModel && propertyModel.name === '@rid') {
+        return { ...state, [actionType]: payload };
+      }
       // validate value first before changing it
       const { error } = schema.validateValue(propertyModel, payload, false);
 
@@ -153,20 +157,16 @@ function AdvancedSearchView(props) {
         return { ...state };
       }
     }
-    if (actionType === 'operator') {
-      if (['CONTAINSALL', 'IN', 'CONTAINSANY', 'CONTAINS'].includes(payload) && !Array.isArray(state.value)) {
-        snackbar.add('Operator can only be used for iterables (inputs that take multiple values)');
-        return { ...state };
-      }
-    }
     return { ...state, [actionType]: payload };
   }, [propertyModel, schema, snackbar]);
 
   const [currFilter, setFilter] = useReducer(activeFilterReducer, initialFilterValues);
-  const { prop: currProp, value: currValue, operator: currOperator } = currFilter;
+  const { attr: currProp, value: currValue, operator: currOperator } = currFilter;
 
 
   // set current Property and allowed values
+  const [operatorOps, setOperatorOps] = useState(OPERATORS);
+
   useEffect(() => {
     if (model) {
       const propModel = model.queryProperties[currProp];
@@ -177,8 +177,17 @@ function AdvancedSearchView(props) {
       }
       setPropertyModel(propModel);
       setFilter({ type: 'prop-change' });
+
+      if (propModel && !propModel.iterable) {
+        const nonIterableOptions = OPERATORS.filter(op => !op.iterable);
+        setOperatorOps(nonIterableOptions);
+      } else {
+        const iterableOptions = OPERATORS.filter(op => op.iterable);
+        setOperatorOps(iterableOptions);
+      }
     }
   }, [currProp, model]);
+
 
   // set up filter group reducer and currFilterGroup tracker
   const [filterGroups, setFilterGroups] = useReducer(filterGroupReducer, defaultFilterGroup);
@@ -205,14 +214,26 @@ function AdvancedSearchView(props) {
     const searchFilters = filterGroups.map(fg => ({
       filters: [...fg.filters],
     }));
+    console.log('TCL: handleSubmit -> searchFilters', searchFilters);
 
+    let formContainsError = false;
     // go through filter values and if any of them are objects use rid instead
     filterGroups.forEach((fg, fgIndex) => {
       fg.filters.forEach((filter, filterIndex) => {
         const targetFilterGroup = searchFilters[fgIndex];
-        targetFilterGroup.filters[filterIndex] = cleanLinkedRecords(filter);
+
+        try {
+          targetFilterGroup.filters[filterIndex] = cleanLinkedRecords(filter);
+        } catch (err) {
+          snackbar.add(err.message);
+          formContainsError = true;
+        }
       });
     });
+
+    if (formContainsError) {
+      return;
+    }
 
     const content = {
       target: modelName,
@@ -223,9 +244,12 @@ function AdvancedSearchView(props) {
 
     searchFilters.forEach((fg) => {
       const filterGroupComparisons = content.filters.OR;
-      filterGroupComparisons.push({
-        AND: fg.filters.map(filter => ({ [filter.attr]: filter.value, operator: filter.operator })),
-      });
+
+      if (fg.filters.length) {
+        filterGroupComparisons.push({
+          AND: fg.filters.map(filter => ({ [filter.attr]: filter.value, operator: filter.operator })),
+        });
+      }
     });
 
     try {
@@ -261,7 +285,7 @@ function AdvancedSearchView(props) {
                 choices: queryProperties, required: true, name: 'properties', type: 'string',
               }}
               value={currProp}
-              onChange={({ target: { value } }) => setFilter({ type: 'prop', payload: value })}
+              onChange={({ target: { value } }) => setFilter({ type: 'attr', payload: value })}
               schema={schema}
               className="property-select"
               disabled={!modelName}
@@ -285,7 +309,7 @@ function AdvancedSearchView(props) {
           <div className="add-filter-box-actions__operator">
             <FormField
               model={{
-                choices: OPERATORS, required: true, name: 'operator', type: 'string',
+                choices: operatorOps, required: true, name: 'operator', type: 'string',
               }}
               value={currOperator}
               onChange={({ target: { value } }) => setFilter({ type: 'operator', payload: value })}

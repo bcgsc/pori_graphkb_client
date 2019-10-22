@@ -25,17 +25,17 @@
       justify-content: space-between;
 
       &__property {
-        width: 300px;
+        width: 40%;
         margin: 0 auto;
       }
 
       &__value {
-        width: 300px;
+        width: 40%;
         margin: 0 auto;
       }
 
       &__operator {
-        width: 300px;
+        width: 20%;
         margin: 0 auto;
       }
     }
@@ -91,15 +91,15 @@
       justify-content: space-between;
 
       &__property {
-        width: 300px;
+        width: 40%;
       }
 
       &__value {
-        width: 400px;
+        width: 40%;
       }
 
       &__operator {
-        width: 200px;
+        width: 20%;
       }
     }
   }

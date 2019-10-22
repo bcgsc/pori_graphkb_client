@@ -214,7 +214,6 @@ function AdvancedSearchView(props) {
     const searchFilters = filterGroups.map(fg => ({
       filters: [...fg.filters],
     }));
-    console.log('TCL: handleSubmit -> searchFilters', searchFilters);
 
     let formContainsError = false;
     // go through filter values and if any of them are objects use rid instead

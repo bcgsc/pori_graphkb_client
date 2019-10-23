@@ -38,11 +38,17 @@ function FilterGroup(props) {
       <>
         {filterGroup.filters.map((filter, index) => {
           let filterValue = filter.value;
+          console.log('TCL: FilterGroup -> filterValue', filterValue);
 
           if (typeof filterValue === 'object' && !Array.isArray(filterValue)) {
             filterValue = schema.getPreview(filter.value);
           } else if (Array.isArray(filterValue)) {
-            filterValue = schema.getPreview(filter.value[0]);
+            const filterValueArr = [...filterValue];
+            // filterValue = `${schema.getPreview(filter.value[0])} ${schema.getPreview(filter.value[0])}`;
+            filterValue = '';
+            filterValueArr.forEach((val) => {
+              filterValue += ` ${schema.getPreview(val)}`;
+            });
           }
 
           return (
@@ -50,7 +56,7 @@ function FilterGroup(props) {
               <Chip
                 default="outlined"
                 key={`${filter.attr}.${filter.value}`}
-                label={`${filter.attr} ${filter.operator} '${filterValue}'`}
+                label={`${filter.attr} ${filter.operator} '${filterValue} '`}
               />
             </div>
           );

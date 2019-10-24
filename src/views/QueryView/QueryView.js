@@ -5,7 +5,6 @@ import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button,
   IconButton,
   TextField,
   InputAdornment,
@@ -18,6 +17,7 @@ import SearchIcon from '@material-ui/icons/Search';
 
 import './QueryView.scss';
 import { KBContext } from '../../components/KBContext';
+import api from '../../services/api';
 
 const ENTER_KEYCODE = 13;
 const MIN_WORD_LENGTH = 3;
@@ -63,9 +63,16 @@ class QueryView extends Component {
       if (!trimmed.length) {
         this.setState({ keyWordError: `Must have 1 or more terms of at least ${MIN_WORD_LENGTH} characters` });
       } else {
+        const payload = {
+          queryType: 'keyword',
+          target: 'Statement',
+          keyword: trimmed.join(' '),
+        };
+
+        const search = api.encodeQueryComplexToSearch(payload, 'Statement');
         history.push({
           pathname: '/data/table',
-          search: qs.stringify({ keyword: trimmed.join(' ') }),
+          search,
         });
       }
     }
@@ -201,7 +208,6 @@ class QueryView extends Component {
       variantError,
       keyWordError,
     } = this.state;
-    const { history } = this.props;
 
     return (
       <div className="search">
@@ -217,8 +223,8 @@ class QueryView extends Component {
               value={value}
               onChange={this.handleChange}
               placeholder={hgvs
-                ? 'Search by HGVS Shorthand'
-                : 'Search by Keyword'
+                ? 'Search Statements by HGVS Shorthand'
+                : 'Search Statements by Keyword'
               }
               InputProps={{
                 endAdornment: (
@@ -244,14 +250,6 @@ class QueryView extends Component {
             />
           </div>
         </div>
-        <Button
-          variant="outlined"
-          color="secondary"
-          className="search__advanced-button"
-          onClick={() => history.push({ pathname: '/query/advanced' })}
-        >
-          Advanced Search
-        </Button>
       </div>
     );
   }

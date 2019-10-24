@@ -20,8 +20,8 @@ function FilterGroup(props) {
   const { schema } = useContext(KBContext);
 
   return (
-    <div className={`filter-groups__box${filterGroup.filters.length ? '' : '--empty'}`}>
-      <div className={`filter-groups__group-label${filterGroup.filters.length ? '' : '--empty'}`}>
+    <div className="filter-groups__box">
+      <div className="filter-groups__group-label">
         <Typography variant="h6">
           {filterGroup.name}
         </Typography>

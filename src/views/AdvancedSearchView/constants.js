@@ -40,7 +40,6 @@ const generateOperatorOptions = () => {
  * @property {string} opt.caption optional description of operator option
  */
 const OPERATORS = generateOperatorOptions();
-console.log('TCL: OPERATORS', OPERATORS);
 
 const BLACKLISTED_PROPERTIES = ['deletedAt', 'deletedBy', 'createdBy',
   'createdAt', 'history', 'uuid', 'groupRestrictions', 'comment', 'description',

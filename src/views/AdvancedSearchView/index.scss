@@ -1,7 +1,7 @@
 @import '../../globals';
 @import '../../theme';
 
-@media only screen and (max-width: $breakpoint-mobile){
+@media only screen and (max-width: $breakpoint-mobile) {
   .class-select {
     margin: 0 2px;
     margin-top: 2px;
@@ -14,8 +14,8 @@
     width: 89%;
 
     h5 {
-      width: fit-content;
       margin: 10px auto;
+      width: fit-content;
     }
 
     &-actions {
@@ -24,18 +24,18 @@
       justify-content: space-between;
 
       &__property {
-        width: 80%;
         margin: 0 auto;
+        width: 80%;
       }
 
       &__value {
-        width: 80%;
         margin: 0 auto;
+        width: 80%;
       }
 
       &__operator {
-        width: 80%;
         margin: 0 auto;
+        width: 80%;
       }
     }
   }
@@ -56,23 +56,18 @@
 
   .search-btn {
     display: flex;
-    margin-bottom: 20px;
     justify-content: center;
-
-
-    &--disabled {
-      opacity: 0;
-      z-index: -100;
-    }
+    margin-bottom: 20px;
   }
 }
 
-@media only screen and (min-width: $breakpoint-mobile){
+@media only screen and (min-width: $breakpoint-mobile) {
 
   .class-select {
     margin: 0 20px;
     margin-top: 20px;
   }
+
   .add-filter-box {
     border: 1px solid $palette__primary--light;
     border-radius: 15px;
@@ -81,10 +76,11 @@
 
 
     h5 {
+      margin: 10px;
       position: relative;
       top: 5px;
-      margin: 10px;
     }
+
     &-actions {
       display: flex;
       justify-content: space-between;
@@ -125,11 +121,6 @@
       margin: 20px 0;
       position: relative;
       right: 60px;
-    }
-
-    &--disabled {
-      opacity: 0;
-      z-index: -100;
     }
   }
 }

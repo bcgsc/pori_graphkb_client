@@ -11,7 +11,7 @@ import {
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 import { KBContext } from '../../components/KBContext';
 import FormField from '../../components/RecordForm/FormField';
-import { OPERATORS } from './constants';
+import { OPERATORS, BLACKLISTED_PROPERTIES } from './constants';
 import './index.scss';
 import ActionButton from '../../components/ActionButton';
 import FilterGroup from './FilterGroup';
@@ -120,7 +120,9 @@ function AdvancedSearchView(props) {
   const [queryProperties, setQueryProperties] = useState(queryProps);
   useEffect(() => {
     if (model) {
-      const qProps = Object.values(model.properties);
+      const qProps = Object.values(model.properties)
+        .filter(qprop => !BLACKLISTED_PROPERTIES.includes(qprop.name))
+        .sort((a, b) => a.name < b.name ? -1 : 1);
       const queryPropOptions = qProps.map(p => ({
         label: p.name, value: p.name, key: p.name, caption: p.description,
       }));
@@ -138,11 +140,12 @@ function AdvancedSearchView(props) {
     const {
       type: actionType, payload,
     } = action;
+    console.log('TCL: activeFilterReducer -> action', action);
 
     if (actionType === 'clear') {
       return { attr: null, value: null, operator: null };
     }
-    if (actionType === 'prop-change') {
+    if (actionType === 'value-clear') {
       return { ...state, value: null, operator: null };
     }
     if (actionType === 'value') {
@@ -166,7 +169,6 @@ function AdvancedSearchView(props) {
 
   // set current Property and allowed values
   const [operatorOps, setOperatorOps] = useState(OPERATORS);
-
   useEffect(() => {
     if (model) {
       const propModel = model.queryProperties[currProp];
@@ -176,17 +178,35 @@ function AdvancedSearchView(props) {
         propModel.generated = false;
       }
       setPropertyModel(propModel);
-      setFilter({ type: 'prop-change' });
 
+      let iterableOptCheck;
+
+      // check if value is iterable and set corresponding option values
       if (propModel && !propModel.iterable) {
-        const nonIterableOptions = OPERATORS.filter(op => !op.iterable);
-        setOperatorOps(nonIterableOptions);
+        iterableOptCheck = OPERATORS.filter(op => !op.iterable || op.label === '=');
+
+        if (currValue && !Array.isArray(currValue)) {
+          iterableOptCheck = iterableOptCheck.filter(op => !(op.label === 'IN'));
+        }
       } else {
-        const iterableOptions = OPERATORS.filter(op => op.iterable);
-        setOperatorOps(iterableOptions);
+        iterableOptCheck = OPERATORS.filter(op => op.iterable || op.label === '=');
       }
+
+      let finalOptionSet = iterableOptCheck;
+
+      if (currValue && isNaN(currValue)) {
+        finalOptionSet = iterableOptCheck.filter(op => !op.isNumOperator || op.label === '=');
+      }
+
+      setOperatorOps(finalOptionSet);
     }
-  }, [currProp, model]);
+  }, [currProp, currValue, model]);
+
+  useEffect(() => {
+    if (currProp) {
+      setFilter({ type: 'value-clear' });
+    }
+  }, [currProp]);
 
 
   // set up filter group reducer and currFilterGroup tracker
@@ -197,9 +217,11 @@ function AdvancedSearchView(props) {
 
   // clears entire form if modelname changes
   useEffect(() => {
-    setFilter({ type: 'clear' });
-    setFilterGroup(null);
-    setFilterGroups({ type: 'clear' });
+    if (modelName) {
+      setFilter({ type: 'clear' });
+      setFilterGroup(null);
+      setFilterGroups({ type: 'clear' });
+    }
   }, [modelName]);
 
   const handleFilterGroupDelete = (filterGroupName) => {
@@ -214,7 +236,6 @@ function AdvancedSearchView(props) {
     const searchFilters = filterGroups.map(fg => ({
       filters: [...fg.filters],
     }));
-    console.log('TCL: handleSubmit -> searchFilters', searchFilters);
 
     let formContainsError = false;
     // go through filter values and if any of them are objects use rid instead
@@ -259,6 +280,7 @@ function AdvancedSearchView(props) {
       console.error(err);
     }
   };
+  console.log('TCL: AdvancedSearchView -> propertyModel', propertyModel);
 
   return (
     <>

@@ -6,15 +6,15 @@ const cleanLinkedRecords = (content) => {
       if (Array.isArray(content[key])) {
         try {
           const ridArr = content[key].map(rec => (rec['@rid']));
-          if(content[key].length === 1 ){
+
+          if (content[key].length === 1) {
             newContent[key] = ridArr.join();
           } else {
-            newContent[key] = ridArr
+            newContent[key] = ridArr;
           }
         } catch (err) {
           console.error(err);
         }
-
       } else {
         try {
           if (content[key]['@rid']) {

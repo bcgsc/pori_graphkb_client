@@ -60,7 +60,7 @@ const mockModels = {
     properties: {
       name: { name: 'name', type: 'string' },
       sourceId: { name: 'sourceId', type: 'string' },
-      impliedBy: { name: 'impliedBy', type: 'linkset' },
+      conditions: { name: 'conditions', type: 'linkset' },
     },
   },
 };
@@ -282,7 +282,7 @@ describe('<DetailDrawer />', () => {
       '@rid': '#135',
       name: 'linkset node',
       sourceId: 'test sourceId',
-      impliedBy: [
+      conditions: [
         {
           '@class': 'Fake',
           '@rid': '19:1',

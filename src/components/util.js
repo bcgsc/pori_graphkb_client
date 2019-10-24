@@ -4,16 +4,17 @@ const cleanLinkedRecords = (content) => {
   Object.keys(content).forEach((key) => {
     if (content[key] !== undefined) {
       if (Array.isArray(content[key])) {
-        if (content[key].length > 1) {
-          throw new Error(`${key} only takes 1 value`);
-        } else {
-          try {
-            const ridArr = content[key].map(rec => (rec['@rid']));
+        try {
+          const ridArr = content[key].map(rec => (rec['@rid']));
+          if(content[key].length === 1 ){
             newContent[key] = ridArr.join();
-          } catch (err) {
-            console.error(err);
+          } else {
+            newContent[key] = ridArr
           }
+        } catch (err) {
+          console.error(err);
         }
+
       } else {
         try {
           if (content[key]['@rid']) {

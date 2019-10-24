@@ -38,13 +38,11 @@ function FilterGroup(props) {
       <>
         {filterGroup.filters.map((filter, index) => {
           let filterValue = filter.value;
-          console.log('TCL: FilterGroup -> filterValue', filterValue);
 
           if (typeof filterValue === 'object' && !Array.isArray(filterValue)) {
             filterValue = schema.getPreview(filter.value);
           } else if (Array.isArray(filterValue)) {
             const filterValueArr = [...filterValue];
-            // filterValue = `${schema.getPreview(filter.value[0])} ${schema.getPreview(filter.value[0])}`;
             filterValue = '';
             filterValueArr.forEach((val) => {
               filterValue += ` ${schema.getPreview(val)}`;

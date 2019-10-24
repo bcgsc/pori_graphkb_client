@@ -24,7 +24,7 @@ const defaultFilterGroup = [{ key: 1, name: 'Filter Group 1', filters: [] }];
  * Manages state of filter groups and handles action dispatching.
  *
  * @property {string} action.type type of action being dispatched
- * @property {object} action.payload filter being added in the form of
+ * @property {object} action.payload filter being added in the form with shape
  * { attr: 'property name', value: 'value assigned to prop', operator: 'operator'}
  * @property {string} action.filterGroupName name of filterGroup targetted by action
  */
@@ -140,7 +140,6 @@ function AdvancedSearchView(props) {
     const {
       type: actionType, payload,
     } = action;
-    console.log('TCL: activeFilterReducer -> action', action);
 
     if (actionType === 'clear') {
       return { attr: null, value: null, operator: null };
@@ -167,6 +166,27 @@ function AdvancedSearchView(props) {
   const { attr: currProp, value: currValue, operator: currOperator } = currFilter;
 
 
+  const constructOperatorOps = (pModel, currentVal, OperatorOptions) => {
+    let iterableOptCheck;
+
+    // check if value is iterable and set corresponding option values
+    if (pModel && !pModel.iterable) {
+      iterableOptCheck = OperatorOptions.filter(op => !op.iterable || op.label === '=');
+
+      if (currentVal && !Array.isArray(currentVal)) {
+        iterableOptCheck = iterableOptCheck.filter(op => !(op.label === 'IN'));
+      }
+    } else {
+      iterableOptCheck = OperatorOptions.filter(op => op.iterable || op.label === '=');
+    }
+
+    let finalOptionSet = iterableOptCheck;
+
+    if (currentVal && isNaN(currentVal)) {
+      finalOptionSet = iterableOptCheck.filter(op => !op.isNumOperator || op.label === '=');
+    }
+    return finalOptionSet;
+  };
   // set current Property and allowed values
   const [operatorOps, setOperatorOps] = useState(OPERATORS);
   useEffect(() => {
@@ -179,26 +199,9 @@ function AdvancedSearchView(props) {
       }
       setPropertyModel(propModel);
 
-      let iterableOptCheck;
+      const finalOptions = constructOperatorOps(propModel, currValue, OPERATORS);
 
-      // check if value is iterable and set corresponding option values
-      if (propModel && !propModel.iterable) {
-        iterableOptCheck = OPERATORS.filter(op => !op.iterable || op.label === '=');
-
-        if (currValue && !Array.isArray(currValue)) {
-          iterableOptCheck = iterableOptCheck.filter(op => !(op.label === 'IN'));
-        }
-      } else {
-        iterableOptCheck = OPERATORS.filter(op => op.iterable || op.label === '=');
-      }
-
-      let finalOptionSet = iterableOptCheck;
-
-      if (currValue && isNaN(currValue)) {
-        finalOptionSet = iterableOptCheck.filter(op => !op.isNumOperator || op.label === '=');
-      }
-
-      setOperatorOps(finalOptionSet);
+      setOperatorOps(finalOptions);
     }
   }, [currProp, currValue, model]);
 
@@ -209,13 +212,11 @@ function AdvancedSearchView(props) {
   }, [currProp]);
 
 
-  // set up filter group reducer and currFilterGroup tracker
   const [filterGroups, setFilterGroups] = useReducer(filterGroupReducer, defaultFilterGroup);
   const [currFilterGroup, setFilterGroup] = useState('');
 
   const hasActiveFilters = filterGroups.some(fGroup => fGroup.filters.length > 0);
 
-  // clears entire form if modelname changes
   useEffect(() => {
     if (modelName) {
       setFilter({ type: 'clear' });
@@ -231,8 +232,19 @@ function AdvancedSearchView(props) {
     setFilterGroups({ type: 'delete', filterGroupName });
   };
 
+  const handleFilterGroupAction = () => {
+    if (currFilterGroup === 'Create Filter Group') {
+      setFilterGroups({ type: 'addGroup' });
+    } else {
+      setFilterGroups({
+        type: 'addFilter',
+        payload: { attr: currProp, value: currValue, operator: currOperator },
+        filterGroupName: currFilterGroup,
+      });
+    }
+  };
+
   const handleSubmit = () => {
-    // deep copy filters
     const searchFilters = filterGroups.map(fg => ({
       filters: [...fg.filters],
     }));
@@ -280,7 +292,11 @@ function AdvancedSearchView(props) {
       console.error(err);
     }
   };
-  console.log('TCL: AdvancedSearchView -> propertyModel', propertyModel);
+
+  const filterGroupOptions = filterGroups.map(fg => ({
+    label: fg.name, value: fg.name, key: fg.name,
+  }));
+  filterGroupOptions.push({ label: 'Create Filter Group', value: 'Create Filter Group', key: 'Create Filter Group' });
 
   return (
     <>
@@ -346,9 +362,7 @@ function AdvancedSearchView(props) {
         <div className="add-filter-group-box__dropdown">
           <FormField
             model={{
-              choices: filterGroups.map(fg => ({
-                label: fg.name, value: fg.name, key: fg.name,
-              })),
+              choices: filterGroupOptions,
               required: true,
               name: 'filterGroup',
               type: 'string',
@@ -362,31 +376,19 @@ function AdvancedSearchView(props) {
         </div>
         <ActionButton
           requireConfirm={false}
-          onClick={() => {
-            setFilterGroups({
-              type: 'addFilter',
-              payload: { attr: currProp, value: currValue, operator: currOperator },
-              filterGroupName: currFilterGroup,
-            });
-          }}
-          disabled={!(currProp && currValue && currOperator) || !currFilterGroup}
+          onClick={handleFilterGroupAction}
+          disabled={(!(currProp && currValue && currOperator) || !currFilterGroup) && currFilterGroup !== 'Create Filter Group'}
+
         >
-          Add Filter
+          {`${currFilterGroup === 'Create Filter Group' ? 'Add Filter Group' : 'Add Filter'}`}
         </ActionButton>
       </div>
 
       <Card className="filter-groups">
         <div className="filter-groups__header">
-          <Typography variant="h5">
+          <Typography variant="h5" className="active-filter-title">
           Active Filter Groups
           </Typography>
-          <ActionButton
-            onClick={() => setFilterGroups({ type: 'addGroup' })}
-            requireConfirm={false}
-            variant="outlined"
-          >
-          Add Filter Group
-          </ActionButton>
         </div>
         <div className="filter-groups__content">
           {filterGroups.map(filterGroup => (

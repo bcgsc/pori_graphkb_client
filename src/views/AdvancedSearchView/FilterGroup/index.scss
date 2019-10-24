@@ -23,19 +23,13 @@
 @media only screen and (max-width: $breakpoint-mobile) {
   .filter-groups {
     &__header {
+      align-items: center;
       display: flex;
       flex-direction: column;
       margin-top: 5px;
 
-      h5 {
-        margin: 2px auto;
-        position: relative;
-
-      }
-
-      .action-button {
-        margin: 2px auto;
-        position: relative;
+      .active-filter-title {
+        text-decoration: underline;
       }
     }
 
@@ -112,18 +106,13 @@
   .filter-groups {
     &__header {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       margin-top: 20px;
 
-      h5 {
-        position: relative;
-        left: 75px;
+      .active-filter-title {
+        text-decoration: underline;
       }
 
-      .action-button {
-        position: relative;
-        right: 60px;
-      }
     }
 
     &__content {

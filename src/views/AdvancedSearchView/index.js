@@ -33,14 +33,14 @@ const filterGroupReducer = (state, action) => {
     type: actionType, payload, filterGroupName,
   } = action;
 
-  if (actionType === 'addGroup') {
+  if (actionType === 'add-group-and-filter') {
     if (!state.length) {
-      return [{ key: 1, name: 'Filter Group 1', filters: [] }];
+      return [{ key: 1, name: 'Filter Group 1', filters: [payload] }];
     }
     const { key: lastKey } = state[state.length - 1];
-    return [...state, { key: lastKey + 1, name: `Filter Group ${lastKey + 1}`, filters: [] }];
+    return [...state, { key: lastKey + 1, name: `Filter Group ${lastKey + 1}`, filters: [payload] }];
   }
-  if (actionType === 'addFilter') {
+  if (actionType === 'add-filter') {
     const targetIndex = state.findIndex(fgroup => fgroup.name === filterGroupName);
     const targetFilterGroup = state[targetIndex];
     const newFilterGroup = { ...targetFilterGroup, filters: [...targetFilterGroup.filters] };
@@ -228,7 +228,7 @@ function AdvancedSearchView(props) {
       if (doesFilterGroup1Exist) {
         setFilterGroup('Filter Group 1');
       } else {
-        setFilterGroup('Create Filter Group');
+        setFilterGroup('Add to new Filter Group');
       }
     }
   }, [currFilterGroup, filterGroups]);
@@ -248,12 +248,15 @@ function AdvancedSearchView(props) {
     setFilterGroups({ type: 'delete', filterGroupName });
   };
 
-  const handleFilterGroupAction = () => {
-    if (currFilterGroup === 'Create Filter Group') {
-      setFilterGroups({ type: 'addGroup' });
+  const handleFilterGroupAction = async () => {
+    if (currFilterGroup === 'Add to new Filter Group') {
+      setFilterGroups({
+        type: 'add-group-and-filter',
+        payload: { attr: currProp, value: currValue, operator: currOperator },
+      });
     } else {
       setFilterGroups({
-        type: 'addFilter',
+        type: 'add-filter',
         payload: { attr: currProp, value: currValue, operator: currOperator },
         filterGroupName: currFilterGroup,
       });
@@ -316,7 +319,7 @@ function AdvancedSearchView(props) {
   const filterGroupOptions = filterGroups.map(fg => ({
     label: fg.name, value: fg.name, key: fg.name,
   }));
-  filterGroupOptions.push({ label: 'Create Filter Group', value: 'Create Filter Group', key: 'Create Filter Group' });
+  filterGroupOptions.push({ label: 'Add to new Filter Group', value: 'Add to new Filter Group', key: 'Add to new Filter Group' });
 
   return (
     <>
@@ -386,8 +389,8 @@ function AdvancedSearchView(props) {
               required: true,
               name: 'filterGroup',
               type: 'string',
-              description: `${currFilterGroup === 'Create Filter Group'
-                ? 'add new filter group to query'
+              description: `${currFilterGroup === 'Add to new Filter Group'
+                ? 'Create new filter group and filter to it'
                 : 'add active filter to filter group'}`,
             }}
             value={currFilterGroup}
@@ -399,10 +402,10 @@ function AdvancedSearchView(props) {
         <ActionButton
           requireConfirm={false}
           onClick={handleFilterGroupAction}
-          disabled={(!(currProp && currValue && currOperator) || !currFilterGroup) && currFilterGroup !== 'Create Filter Group'}
+          disabled={!(currProp && currValue && currOperator) || !currFilterGroup}
           variant="outlined"
         >
-          {`${currFilterGroup === 'Create Filter Group' ? 'Add Filter Group' : 'Add Filter'}`}
+          ADD FILTER
         </ActionButton>
       </div>
 

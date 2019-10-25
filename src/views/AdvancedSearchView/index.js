@@ -400,7 +400,7 @@ function AdvancedSearchView(props) {
           requireConfirm={false}
           onClick={handleFilterGroupAction}
           disabled={(!(currProp && currValue && currOperator) || !currFilterGroup) && currFilterGroup !== 'Create Filter Group'}
-
+          variant="outlined"
         >
           {`${currFilterGroup === 'Create Filter Group' ? 'Add Filter Group' : 'Add Filter'}`}
         </ActionButton>

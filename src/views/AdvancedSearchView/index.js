@@ -193,6 +193,10 @@ function AdvancedSearchView(props) {
     if (currentVal && isNaN(currentVal)) {
       finalOptionSet = iterableOptCheck.filter(op => !op.isNumOperator || op.label === '=');
     }
+
+    if (currentVal && !(typeof currentVal === 'string')) {
+      finalOptionSet = finalOptionSet.filter(op => !(op.label === 'CONTAINSTEXT'));
+    }
     return finalOptionSet;
   };
   // set current Property and allowed values
@@ -209,6 +213,10 @@ function AdvancedSearchView(props) {
 
       const finalOptions = constructOperatorOptions(propModel, currValue, OPERATORS);
       setOperatorOps(finalOptions);
+
+      if (finalOptions.length === 1) {
+        setFilter({ type: 'operator', payload: finalOptions[0].label });
+      }
     }
   }, [currProp, currValue, model]);
 

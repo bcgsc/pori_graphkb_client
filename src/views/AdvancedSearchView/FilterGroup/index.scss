@@ -63,14 +63,8 @@
 
     &__box {
       @include box-content-mobile;
-      margin: 15px auto;
+      margin: 45px auto;
       min-height: 120px;
-
-      &:first-child {
-        @include box-content-mobile;
-        margin: 45px auto;
-        min-height: 120px;
-      }
 
       &:not(:first-child):before {
         content: 'OR';
@@ -138,12 +132,14 @@
 
     &__box {
       @include box-content;
-      margin: 90px 75px;
+      margin-bottom: 50px;
+      margin-left: 75px;
+      margin-right: 75px;
+      margin-top: 90px;
       min-height: 100px;
 
       &:first-child {
         @include box-content;
-        margin-bottom: 90px;
         margin-left: 75px;
         margin-right: 75px;
         margin-top: 20px;

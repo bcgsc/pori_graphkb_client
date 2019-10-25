@@ -22,13 +22,14 @@ import './index.scss';
 function PopularSearchView(props) {
   const baseUri = '/query-popular';
   const { location: { pathname: currentUri }, history } = props;
-  console.log('TCL: PopularSearchView -> props', props);
+
+  const HistoryWrappedSearch = variant => (<BasePopularSearch variant={variant} history={history} />);
 
   const tabsList = [
-    { label: 'Gene', component: () => <BasePopularSearch variant="GENE" history={history} /> },
-    { label: 'Variant', component: () => <BasePopularSearch variant="VARIANT" history={history} /> },
-    { label: 'Disease', component: () => <BasePopularSearch variant="DISEASE" history={history} /> },
-    { label: 'Drug', component: () => <BasePopularSearch variant="DRUG" history={history} /> },
+    { label: 'Gene', component: () => HistoryWrappedSearch('GENE') },
+    { label: 'Variant', component: () => HistoryWrappedSearch('VARIANT') },
+    { label: 'Disease', component: () => HistoryWrappedSearch('DISEASE') },
+    { label: 'Drug', component: () => HistoryWrappedSearch('DRUG') },
   ];
 
   const uriLookup = {};
@@ -87,6 +88,7 @@ function PopularSearchView(props) {
 
 PopularSearchView.propTypes = {
   location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 export default PopularSearchView;

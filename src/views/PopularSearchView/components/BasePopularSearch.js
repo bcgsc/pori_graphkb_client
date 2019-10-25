@@ -5,200 +5,9 @@ import './index.scss';
 import SearchInput from './SearchInput';
 import SearchMenu from './SearchMenu';
 import api from '../../../services/api';
+import { SEARCH_OPTS } from './util';
 
-const SEARCH_OPTS = {
-  DRUG: [
-    {
-      label: 'Given a drug, find all variants associated with therapeutic sensitivity',
-      requiredInput: {
-        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. Adriamycin',
-      },
-      search: {
-        target: 'Statement',
-        filters: {
-          AND: [
-            {
-              subject: {
-                queryType: 'keyword',
-                keyword: 'GENE OF INTEREST',
-                target: 'Therapy',
-              },
-            }, {
-              relevance: {
-                target: 'Vocabulary',
-                filters: {
-                  name: 'sensitivity',
-                },
-              },
-            },
-          ],
-        },
-      },
-      set searchInput(keyword) { this.search.filters.AND[0].subject.keyword = keyword; },
-    },
-    {
-      label: 'Given a drug, find all variants associated with resistance',
-      requiredInput: {
-        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. Adriamycin',
-      },
-      search: {
-        target: 'Statement',
-        filters: {
-          AND: [
-            {
-              subject: {
-                queryType: 'keyword',
-                keyword: 'GENE OF INTEREST',
-                target: 'Therapy',
-              },
-            }, {
-              relevance: {
-                target: 'Vocabulary',
-                filters: {
-                  name: 'resistance',
-                },
-              },
-            },
-          ],
-        },
-      },
-      set searchInput(keyword) { this.search.filters.AND[0].subject.keyword = keyword; },
-    },
-    {
-      label: 'Given a drug, find all variants with pharmacogenomic information',
-      requiredInput: {
-        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. Adriamycin',
-      },
-    },
-    {
-      label: 'Given a drug, find all diseases it is approved for use',
-      requiredInput: {
-        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. Adriamycin',
-      },
-    },
-  ],
-  DISEASE: [
-    {
-      label: 'Given a disease, find all genes associated with therapeutic sensitivity',
-      requiredInput: {
-        label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer',
-      },
-      search: {
-        target: 'Statement',
-        filters: {
-          AND: [
-            {
-              subject: {
-                queryType: 'keyword',
-                keyword: 'DISEASE OF INTEREST',
-                target: 'Disease',
-              },
-            },
-            {
-              relevance: {
-                target: 'Vocabulary',
-                filters: {
-                  name: 'sensitivity',
-                },
-              },
-            },
-          ],
-        },
-      },
-      set searchInput(keyword) { this.search.filters.AND[0].subject.keyword = keyword; },
-    },
-    {
-      label: 'Given a disease, find all genes associated with therapeutic resistance',
-      requiredInput: {
-        label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer',
-      },
-      search: {
-        target: 'Statement',
-        filters: {
-          AND: [
-            {
-              subject: {
-                queryType: 'keyword',
-                keyword: 'DISEASE OF INTEREST',
-                target: 'Disease',
-              },
-            },
-            {
-              relevance: {
-                target: 'Vocabulary',
-                filters: {
-                  name: 'resistance',
-                },
-              },
-            },
-          ],
-        },
-      },
-      set searchInput(keyword) { this.search.filters.AND[0].subject.keyword = keyword; },
-    },
-    {
-      label: 'Given a disease, find all variants associated with a relevance',
-      requiredInput: {
-        label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer',
-      },
-    },
-  ],
-  VARIANT: [
-    {
-      label: 'Given a variant, find all therapies associated with sensitivity for Disease(s)',
-      requiredInput: {
-        label: 'Variant', property: 'name', class: 'Variant', example: 'Ex. KRAS:p.G12A',
-      },
-      optionalInput: {
-        label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer',
-      },
-    },
-    {
-      label: 'Given a variant, find all therapies associated with resistance',
-      requiredInput: {
-        label: 'Variant', property: 'name', class: 'Variant', example: 'Ex. KRAS:p.G12A',
-      },
-      optionalInput: {
-        label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer',
-      },
-    },
-    {
-      label: 'Given a variant, find all diseases that the variant is associated with',
-      requiredInput: {
-        label: 'Variant', property: 'name', class: 'Variant', example: 'Ex. KRAS:p.G12A',
-      },
-      optionalInput: {
-        label: 'Relevance', property: 'name', class: 'Vocabulary', example: 'Ex. Reduced sensitivity',
-      },
-    },
-  ],
-  GENE: [
-    {
-      label: 'Given a gene, find all variants reported for all diseases',
-      requiredInput: {
-        label: 'Gene', property: 'name', class: 'Feature', example: 'Ex. KRAS',
-      },
-    },
-    {
-      label: 'Given a gene, find a specific disease and the associated relevances',
-      requiredInput: {
-        label: 'Gene', property: 'name', class: 'Feature', example: 'Ex. KRAS',
-      },
-    },
-    {
-      label: 'Given a gene, find all variants linked with drug sensitivity or resistance',
-      requiredInput: {
-        label: 'Gene', property: 'name', class: 'Feature', example: 'Ex. KRAS',
-      },
-    },
-    {
-      label: 'Given a gene, find all variants on the gene',
-      requiredInput: {
-        label: 'Gene', property: 'name', class: 'Feature', example: 'Ex. KRAS',
-      },
-    },
-  ],
-};
+
 const MIN_VAL_LENGTH = 3;
 
 /**
@@ -206,7 +15,6 @@ const MIN_VAL_LENGTH = 3;
  */
 function BasePopularSearch(props) {
   const { variant, history } = props;
-  console.log('TCL: BasePopularSearch -> props', props);
   const [searchIndex, setSearchIndex] = useState(0);
   const [value, setValue] = useState('');
   const [optionalValue, setOptionalValue] = useState('');
@@ -221,12 +29,18 @@ function BasePopularSearch(props) {
   const hasOptionalField = !!selectedOption.optionalInput;
 
   // handle submission of form
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (value.length < MIN_VAL_LENGTH) {
       // snackbar disapproving message
       return;
     }
-    selectedOption.searchInput = value;
+
+    // build search by fetching rids for subqueries to complete full search
+    if (selectedOption.buildSearch) {
+      await selectedOption.buildSearch(value, optionalValue);
+    } else {
+      selectedOption.searchInput = value;
+    }
     const { search: rawSearch } = selectedOption;
 
     const search = api.encodeQueryComplexToSearch(rawSearch, 'Statement');
@@ -259,6 +73,7 @@ function BasePopularSearch(props) {
 
 BasePopularSearch.propTypes = {
   variant: PropTypes.string.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 export default BasePopularSearch;

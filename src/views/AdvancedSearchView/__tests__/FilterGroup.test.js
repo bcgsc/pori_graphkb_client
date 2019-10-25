@@ -111,7 +111,7 @@ describe('FilterGroup ', () => {
     });
 
     test('displays filter chip label correctly', () => {
-      expect(queryByText("fake attr = 'value '")).toBeInTheDocument();
+      expect(queryByText("fake attr = 'value'")).toBeInTheDocument();
     });
 
     test('does not display an AND chip', () => {
@@ -141,8 +141,8 @@ describe('FilterGroup ', () => {
     });
 
     test('displays both filter chips', () => {
-      expect(queryByText("fake prop = 'value to fake prop '")).toBeInTheDocument();
-      expect(queryByText("another fake prop CONTAINSTEXT 'mock text '")).toBeInTheDocument();
+      expect(queryByText("fake prop = 'value to fake prop'")).toBeInTheDocument();
+      expect(queryByText("another fake prop CONTAINSTEXT 'mock text'")).toBeInTheDocument();
     });
   });
 
@@ -154,6 +154,6 @@ describe('FilterGroup ', () => {
       />,
     );
 
-    expect(queryByText("fake prop = 'linked record name '")).toBeInTheDocument();
+    expect(queryByText("fake prop = 'linked record name'")).toBeInTheDocument();
   });
 });

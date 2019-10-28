@@ -209,33 +209,67 @@ const SEARCH_OPTS = {
         filters: {
           AND: [
             {
-              subject: ['drug Rids'], operator: 'IN',
+              subject: ['drug RIDs'], operator: 'IN',
             },
             {
-              evidenceLevel: {
-                target: 'EvidenceLevel',
-                filters: {
-                  AND: [
-                    {
-                      name: '1',
-                    },
-                    {
-                      source: {
-                        target: 'Source',
-                        filters: { name: 'OncoKB' },
-                      },
-                    },
-                  ],
-                },
-              },
+              evidenceLevel: ['evidence level RIDs'],
             },
           ],
         },
       },
+      set evidenceLevelClause(subQuery) { this.search.filters.AND[1].evidenceLevel = subQuery; },
       set therapyClause(subQuery) { this.search.filters.AND[0].subject = subQuery; },
       async buildSearch(keyword) {
         const therapySearch = keywordSearchGenerator('Therapy', keyword);
         this.therapyClause = await setSubQuery(therapySearch);
+
+        const evidenceSearch = {
+          target: 'EvidenceLevel',
+          filters: {
+            OR: [
+              {
+                AND: [
+                  {
+                    name: ['1', 'r1'],
+                  },
+                  {
+                    source: {
+                      target: 'Source',
+                      filters: { name: 'OncoKB' },
+                    },
+                  },
+                ],
+              },
+              {
+                AND: [
+                  {
+                    name: ['a4', 'a5'], operator: 'IN',
+                  },
+                  {
+                    source: {
+                      target: 'Source',
+                      filters: { name: 'CIViC' },
+                    },
+                  },
+                ],
+              },
+              {
+                AND: [
+                  {
+                    name: ['fda guidelines', 'nccn guidelines', 'nccn/cap guidelines'], operator: 'IN',
+                  },
+                  {
+                    source: {
+                      target: 'Source',
+                      filters: { name: 'CGI' },
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        };
+        this.evidenceLevelClause = await setSubQuery(evidenceSearch);
       },
     },
   ],

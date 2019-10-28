@@ -26,7 +26,7 @@ function BasePopularSearch(props) {
 
   const labels = SEARCH_OPTS[variant].map(opt => opt.label);
   const selectedOption = SEARCH_OPTS[variant][searchIndex];
-  const hasOptionalField = !!selectedOption.additionalInput;
+  const hasAdditionalField = !!selectedOption.additionalInput;
 
 
   /**
@@ -69,7 +69,7 @@ function BasePopularSearch(props) {
           handleChange={handleSelectionChange}
         />
       </div>
-      <div className={`popular-search__input-field${hasOptionalField ? '--optional' : ''}`}>
+      <div className={`popular-search__input-field${hasAdditionalField ? '--optional' : ''}`}>
         <SearchInput
           disabled={isDisabled}
           handleInputChange={setValue}

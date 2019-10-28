@@ -26,23 +26,22 @@ function BasePopularSearch(props) {
 
   const labels = SEARCH_OPTS[variant].map(opt => opt.label);
   const selectedOption = SEARCH_OPTS[variant][searchIndex];
-  const hasOptionalField = !!selectedOption.optionalInput;
+  const hasOptionalField = !!selectedOption.additionalInput;
 
-  // handle submission of form
   const handleSubmit = async () => {
-    if (value.length < MIN_VAL_LENGTH) {
-      // snackbar disapproving message
-      return;
-    }
-
     // build search by fetching rids for subqueries to complete full search
-    if (selectedOption.buildSearch) {
-      await selectedOption.buildSearch(value, optionalValue);
-    }
-    const { search: rawSearch } = selectedOption;
+    try {
+      if (selectedOption.buildSearch) {
+        await selectedOption.buildSearch(value, optionalValue);
+      }
+      const { search: rawSearch } = selectedOption;
 
-    const search = api.encodeQueryComplexToSearch(rawSearch, 'Statement');
-    history.push(`/data/table?${search}`, { search });
+      const search = api.encodeQueryComplexToSearch(rawSearch, 'Statement');
+      history.push(`/data/table?${search}`, { search });
+    } catch (err) {
+      const { name, message } = err;
+      history.push('/error', { error: { name, message } });
+    }
   };
 
   return (

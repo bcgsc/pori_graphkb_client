@@ -1,6 +1,6 @@
 import api from '../../../services/api';
 
-const MAX_RESULT_COUNT = 400;
+const MAX_RESULT_COUNT = 200;
 
 /**
  * Given vocabulary term, returns rid of term if it exists
@@ -30,7 +30,7 @@ const keywordSearchGenerator = (modelName, keyword, returnProperties = ['@rid'])
 /**
  * Given a search object, returns an array of record rids
  */
-const getRIDs = async (search) => {
+const getRIDs = async (search = {}) => {
   const call = api.post('/query', search);
   const records = await call.request();
   const ridArr = records.map(rec => rec['@rid']);
@@ -40,7 +40,7 @@ const getRIDs = async (search) => {
 /**
  * returns record count for given search object.
  */
-const searchCount = async (search) => {
+const searchCount = async (search = {}) => {
   const searchObj = { ...search, count: true };
   delete searchObj.returnProperties;
   const call = api.post('/query', searchObj);
@@ -52,7 +52,7 @@ const searchCount = async (search) => {
 /**
  * returns bool indicating if search count is in acceptable range
  */
-const searchCountCheck = async (search) => {
+const searchCountCheck = async (search = {}) => {
   const count = await searchCount(search);
   return (count < MAX_RESULT_COUNT && count !== 0);
 };
@@ -62,7 +62,7 @@ const searchCountCheck = async (search) => {
  * the search depending on whether or not the search count is below
  * an acceptable cap.
  */
-const setSubQuery = async (search) => {
+const setSubQuery = async (search = {}) => {
   const countIsAcceptable = await searchCountCheck(search);
   const searchCpy = { ...search };
 
@@ -81,7 +81,7 @@ const setSubQuery = async (search) => {
 /**
  * Returns an additional condition to be included in search query.
  */
-const getOptionalSubQuery = async (search) => {
+const getOptionalSubQuery = async (search = {}) => {
   const countIsAcceptable = await searchCountCheck(search);
   let condition;
 
@@ -294,8 +294,8 @@ const SEARCH_OPTS = {
       requiredInput: {
         label: 'Variant', property: 'name', class: 'Variant', example: 'Ex. KRAS:p.G12A',
       },
-      optionalInput: {
-        label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer',
+      additionalInput: {
+        label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer', optional: true,
       },
       search: {
         target: 'Statement',
@@ -312,17 +312,17 @@ const SEARCH_OPTS = {
       },
       set relevanceRID(rid) { this.search.filters.AND[1].relevance = rid; },
       get conditionsClauseArr() { return this.search.filters.AND[0].AND; },
-      async buildSearch(keyword, optionalInput) {
+      async buildSearch(keyword, additionalInput) {
         this.relevanceRID = await vocabularyRIDGenerator('sensitivity');
 
         const search = keywordSearchGenerator('Variant', keyword);
         const conditionArr = this.conditionsClauseArr;
         conditionArr[0].conditions = await setSubQuery(search);
 
-        if (optionalInput) {
+        if (additionalInput) {
           const diseaseSearch = {
             target: 'Disease',
-            filters: { name: optionalInput, operator: 'CONTAINSTEXT' },
+            filters: { name: additionalInput, operator: 'CONTAINSTEXT' },
           };
           const diseaseCondition = await getOptionalSubQuery(diseaseSearch);
           conditionArr.push(diseaseCondition);
@@ -334,8 +334,8 @@ const SEARCH_OPTS = {
       requiredInput: {
         label: 'Variant', property: 'name', class: 'Variant', example: 'Ex. KRAS:p.G12A',
       },
-      optionalInput: {
-        label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer',
+      additionalInput: {
+        label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer', optional: true,
       },
       search: {
         target: 'Statement',
@@ -352,7 +352,7 @@ const SEARCH_OPTS = {
       },
       set relevanceRID(rid) { this.search.filters.AND[1].relevance = rid; },
       get conditionsClauseArr() { return this.search.filters.AND[0].AND; },
-      async buildSearch(keyword, optionalInput) {
+      async buildSearch(keyword, additionalInput) {
         this.relevanceRID = await vocabularyRIDGenerator('resistance');
 
         const search = keywordSearchGenerator('Variant', keyword);
@@ -360,10 +360,10 @@ const SEARCH_OPTS = {
         conditionArr[0].conditions = await setSubQuery(search);
 
 
-        if (optionalInput) {
+        if (additionalInput) {
           const diseaseSearch = {
             target: 'Disease',
-            filters: { name: optionalInput, operator: 'CONTAINSTEXT' },
+            filters: { name: additionalInput, operator: 'CONTAINSTEXT' },
           };
 
           const diseaseCondition = await getOptionalSubQuery(diseaseSearch);
@@ -431,8 +431,8 @@ const SEARCH_OPTS = {
       requiredInput: {
         label: 'Gene', property: 'name', class: 'Feature', example: 'Ex. KRAS',
       },
-      optionalInput: {
-        label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Melanoma',
+      additionalInput: {
+        label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Melanoma', optional: false,
       },
       search: {
         target: 'Statement',

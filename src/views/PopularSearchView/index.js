@@ -61,7 +61,7 @@ function PopularSearchView(props) {
     <Route
       label={label}
       key={label}
-      render={component}
+      component={component}
       exact
       path={uri}
     />

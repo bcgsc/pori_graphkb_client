@@ -297,7 +297,6 @@ const RecordForm = ({
         collapseExtra
         disabled={actionInProgress || variant === FORM_VARIANT.VIEW}
       />
-
       <div className="record-form__action-buttons">
         {variant === FORM_VARIANT.EDIT
           ? (
@@ -338,7 +337,6 @@ const RecordForm = ({
           : (<div />) // for spacing issues only
           }
       </div>
-
     </Paper>
   );
 };

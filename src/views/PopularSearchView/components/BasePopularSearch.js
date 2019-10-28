@@ -38,8 +38,6 @@ function BasePopularSearch(props) {
     // build search by fetching rids for subqueries to complete full search
     if (selectedOption.buildSearch) {
       await selectedOption.buildSearch(value, optionalValue);
-    } else {
-      selectedOption.searchInput = value;
     }
     const { search: rawSearch } = selectedOption;
 

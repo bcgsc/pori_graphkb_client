@@ -46,7 +46,7 @@ const StatementSentence = (props) => {
 
   let conditions = (content.conditions || [])
     .map(cond => (subject !== schema.getPreview(cond) ? schema.getPreview(cond) : ''))
-    .filter(cond => cond);
+    .filter(Boolean);
 
   if (conditions.length > 1) {
     conditions[conditions.length - 1] = `and ${conditions[conditions.length - 1]}`;

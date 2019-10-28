@@ -266,7 +266,7 @@ class GraphOptions {
       const colorKeyIsObject = isObject(obj.data[targetColor]);
 
       if (colorKeyIsObject) {
-        colorKey = obj.data[targetColor].name;
+        colorKey = obj.data[targetColor].displayName;
       } else {
         colorKey = obj.data[targetColor];
       }

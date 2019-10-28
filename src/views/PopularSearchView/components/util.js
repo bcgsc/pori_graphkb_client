@@ -1,5 +1,7 @@
 import api from '../../../services/api';
 
+const MAX_RESULT_COUNT = 400;
+
 const vocabularyRIDGenerator = async (vocabName) => {
   const sensitivityRIDSearch = {
     target: 'Vocabulary',
@@ -12,20 +14,66 @@ const vocabularyRIDGenerator = async (vocabName) => {
   const { '@rid': rid } = vocab;
   return rid;
 };
+/**
+ * returns a keyword search object with rid
+ */
+const keywordSearchGenerator = (modelName, keyword, returnProperties = ['@rid']) => ({
+  queryType: 'keyword',
+  keyword,
+  target: modelName,
+  returnProperties,
+});
 
-const keywordRIDGenerator = async (modelName, keyword) => {
-  const search = {
-    queryType: 'keyword',
-    keyword,
-    target: modelName,
-    returnProperties: ['@rid'],
-  };
-
+const getRIDs = async (search) => {
   const call = api.post('/query', search);
   const records = await call.request();
   const ridArr = records.map(rec => rec['@rid']);
   return ridArr;
 };
+
+const searchCount = async (search) => {
+  const searchObj = { ...search, count: true };
+  delete searchObj.returnProperties;
+  const call = api.post('/query', searchObj);
+  const [result] = await call.request();
+  const { count } = result;
+  return count;
+};
+
+const searchCountCheck = async (search) => {
+  const count = await searchCount(search);
+  return (count < MAX_RESULT_COUNT && count !== 0);
+};
+
+const setSubQuery = async (search) => {
+  const countIsAcceptable = await searchCountCheck(search);
+  const searchCpy = { ...search };
+
+  let subQuery;
+
+  if (countIsAcceptable) {
+    subQuery = await getRIDs(search);
+  } else {
+    delete searchCpy.returnProperties;
+    subQuery = searchCpy;
+  }
+
+  return subQuery;
+};
+
+const getOptionalSubQuery = async (search) => {
+  const countIsAcceptable = await searchCountCheck(search);
+  let condition;
+
+  if (countIsAcceptable) {
+    condition = { conditions: await getRIDs(search), operator: 'CONTAINS' };
+  } else {
+    condition = { conditions: search, operator: 'CONTAINSANY' };
+  }
+  return condition;
+};
+
+const isSearchNestedSubQuery = search => !Array.isArray(search);
 
 
 const SEARCH_OPTS = {
@@ -49,11 +97,17 @@ const SEARCH_OPTS = {
         },
       },
       set relevanceRID(rid) { this.search.filters.AND[1].relevance = rid; },
-      set subjectRIDs(ridArr) { this.search.filters.AND[0].subject = ridArr; },
+      get subjectClause() { return this.search.filters.AND[0]; },
       async buildSearch(keyword) {
-        // set vocab rid
         this.relevanceRID = await vocabularyRIDGenerator('sensitivity');
-        this.subjectRIDs = await keywordRIDGenerator('Therapy', keyword);
+
+        const search = keywordSearchGenerator('Therapy', keyword);
+        const subjectCondition = this.subjectClause;
+        subjectCondition.subject = await setSubQuery(search);
+
+        if (isSearchNestedSubQuery(subjectCondition.subject)) {
+          subjectCondition.operator = 'CONTAINSANY';
+        }
       },
     },
     {
@@ -75,11 +129,17 @@ const SEARCH_OPTS = {
         },
       },
       set relevanceRID(rid) { this.search.filters.AND[1].relevance = rid; },
-      set subjectRIDs(ridArr) { this.search.filters.AND[0].subject = ridArr; },
+      get subjectClause() { return this.search.filters.AND[0]; },
       async buildSearch(keyword) {
-        // set vocab rid
         this.relevanceRID = await vocabularyRIDGenerator('resistance');
-        this.subjectRIDs = await keywordRIDGenerator('Therapy', keyword);
+
+        const search = keywordSearchGenerator('Therapy', keyword);
+        const subjectCondition = this.subjectClause;
+        subjectCondition.subject = await setSubQuery(search);
+
+        if (isSearchNestedSubQuery(subjectCondition.subject)) {
+          subjectCondition.operator = 'CONTAINSANY';
+        }
       },
     },
     {
@@ -100,11 +160,10 @@ const SEARCH_OPTS = {
           ],
         },
       },
-      set relevanceRIDs(ridArr) { this.search.filters.AND[1].relevance = ridArr; },
-      set therapyRIDs(ridArr) { this.search.filters.AND[0].subject = ridArr; },
+      get relevanceClause() { return this.search.filters.AND[1]; },
+      get therapyClause() { return this.search.filters.AND[0]; },
       async buildSearch(keyword) {
-        // fetch pharmacogenomic rids first
-        const pharmaSearch = {
+        const relevanceSearch = {
           queryType: 'similarTo',
           target: {
             target: 'Vocabulary',
@@ -112,14 +171,12 @@ const SEARCH_OPTS = {
           },
           returnProperties: ['@rid'],
         };
+        const relevanceCondition = this.relevanceClause;
+        relevanceCondition.relevance = await setSubQuery(relevanceSearch);
 
-        const pharmaCall = api.post('/query', pharmaSearch);
-        const records = await pharmaCall.request();
-        const ridArr = records.map(rec => rec['@rid']);
-        this.relevanceRIDs = ridArr;
-
-        // fetch therapy rids
-        this.therapyRIDs = await keywordRIDGenerator('Therapy', keyword);
+        const therapySearch = keywordSearchGenerator('Therapy', keyword);
+        const therapyCondition = this.therapyClause;
+        therapyCondition.subject = await setSubQuery(therapySearch);
       },
     },
     {
@@ -150,10 +207,12 @@ const SEARCH_OPTS = {
         },
       },
       set relevanceRID(rid) { this.search.filters.AND[1].relevance = rid; },
-      set conditionsRIDs(ridArr) { this.search.filters.AND[0].conditions = ridArr; },
+      set conditionsClause(search) { this.search.filters.AND[0].conditions = search; },
       async buildSearch(keyword) {
         this.relevanceRID = await vocabularyRIDGenerator('sensitivity');
-        this.conditionsRIDs = await keywordRIDGenerator('Disease', keyword);
+
+        const search = keywordSearchGenerator('Disease', keyword);
+        this.conditionsClause = await setSubQuery(search);
       },
     },
     {
@@ -169,17 +228,18 @@ const SEARCH_OPTS = {
               conditions: [], operator: 'CONTAINSANY',
             },
             {
-              relevance: [], operator: 'IN',
+              relevance: 'resistance rid', operator: '=',
             },
           ],
         },
       },
       set relevanceRID(rid) { this.search.filters.AND[1].relevance = rid; },
-      set conditionsRIDs(ridArr) { this.search.filters.AND[0].conditions = ridArr; },
+      set conditionsClause(search) { this.search.filters.AND[0].conditions = search; },
       async buildSearch(keyword) {
         this.relevanceRID = await vocabularyRIDGenerator('resistance');
 
-        this.conditionsRIDs = await keywordRIDGenerator('Disease', keyword);
+        const search = keywordSearchGenerator('Disease', keyword);
+        this.conditionsClause = await setSubQuery(search);
       },
     },
     {
@@ -205,6 +265,7 @@ const SEARCH_OPTS = {
         },
       },
       set searchInput(keyword) { this.search.filters.AND[0].conditions.target.keyword = keyword; },
+      async buildSearch(keyword) { this.searchInput = keyword; },
     },
   ],
   VARIANT: [
@@ -230,25 +291,21 @@ const SEARCH_OPTS = {
         },
       },
       set relevanceRID(rid) { this.search.filters.AND[1].relevance = rid; },
-      set conditionsRIDs(ridArr) { this.search.filters.AND[0].AND[0].conditions = ridArr; },
-      set optionalDiseaseCondition(cond) { this.search.filters.AND[0].AND.push(cond); },
+      get conditionsClauseArr() { return this.search.filters.AND[0].AND; },
       async buildSearch(keyword, optionalInput) {
         this.relevanceRID = await vocabularyRIDGenerator('sensitivity');
-        this.conditionsRIDs = await keywordRIDGenerator('Variant', keyword);
+
+        const search = keywordSearchGenerator('Variant', keyword);
+        const conditionArr = this.conditionsClauseArr;
+        conditionArr[0].conditions = await setSubQuery(search);
 
         if (optionalInput) {
           const diseaseSearch = {
             target: 'Disease',
             filters: { name: optionalInput, operator: 'CONTAINSTEXT' },
-            returnProperties: ['@rid'],
           };
-
-          const diseaseCall = api.post('/query', diseaseSearch);
-          const dRecord = await diseaseCall.request();
-          const [rec] = dRecord;
-
-          const diseaseCondition = { conditions: rec['@rid'], operator: 'CONTAINS' };
-          this.optionalDiseaseCondition = diseaseCondition;
+          const diseaseCondition = await getOptionalSubQuery(diseaseSearch);
+          conditionArr.push(diseaseCondition);
         }
       },
     },
@@ -274,25 +331,23 @@ const SEARCH_OPTS = {
         },
       },
       set relevanceRID(rid) { this.search.filters.AND[1].relevance = rid; },
-      set conditionsRIDs(ridArr) { this.search.filters.AND[0].AND[0].conditions = ridArr; },
-      set optionalDiseaseCondition(cond) { this.search.filters.AND[0].AND.push(cond); },
+      get conditionsClauseArr() { return this.search.filters.AND[0].AND; },
       async buildSearch(keyword, optionalInput) {
         this.relevanceRID = await vocabularyRIDGenerator('resistance');
-        this.conditionsRIDs = await keywordRIDGenerator('Variant', keyword);
+
+        const search = keywordSearchGenerator('Variant', keyword);
+        const conditionArr = this.conditionsClauseArr;
+        conditionArr[0].conditions = await setSubQuery(search);
+
 
         if (optionalInput) {
           const diseaseSearch = {
             target: 'Disease',
             filters: { name: optionalInput, operator: 'CONTAINSTEXT' },
-            returnProperties: ['@rid'],
           };
 
-          const diseaseCall = api.post('/query', diseaseSearch);
-          const dRecord = await diseaseCall.request();
-          const [rec] = dRecord;
-
-          const diseaseCondition = { conditions: rec['@rid'], operator: 'CONTAINS' };
-          this.optionalDiseaseCondition = diseaseCondition;
+          const diseaseCondition = await getOptionalSubQuery(diseaseSearch);
+          conditionArr.push(diseaseCondition);
         }
       },
     },
@@ -307,10 +362,12 @@ const SEARCH_OPTS = {
           conditions: [], operator: 'CONTAINSANY',
         },
       },
-      set conditionsRIDs(ridArr) { this.search.filters.conditions = ridArr; },
+      set conditions(search) { this.search.filters.conditions = search; },
       async buildSearch(keyword) {
         this.relevanceRID = await vocabularyRIDGenerator('resistance');
-        this.conditionsRIDs = await keywordRIDGenerator('Variant', keyword);
+
+        const search = keywordSearchGenerator('Variant', keyword);
+        this.conditions = await setSubQuery(search);
       },
     },
   ],
@@ -326,7 +383,7 @@ const SEARCH_OPTS = {
           conditions: ['list of genes'], operator: 'CONTAINSANY',
         },
       },
-      set conditionsRIDs(ridArr) { this.search.filters.conditions = ridArr; },
+      set conditions(search) { this.search.filters.conditions = search; },
       async buildSearch(keyword) {
         const geneSearch = {
           queryType: 'similarTo',
@@ -346,10 +403,7 @@ const SEARCH_OPTS = {
           returnProperties: ['@rid'],
         };
 
-        const call = api.post('/query', geneSearch);
-        const records = await call.request();
-        const ridArr = records.map(rec => rec['@rid']);
-        this.conditionsRIDs = ridArr;
+        this.conditions = await setSubQuery(geneSearch);
       },
     },
     {
@@ -373,8 +427,7 @@ const SEARCH_OPTS = {
           ],
         },
       },
-      set geneRIDs(ridArr) { this.search.filters.AND[0].conditions = ridArr; },
-      set diseaseRID(rid) { this.search.filters.AND[1].conditions = rid; },
+      get conditionsClause() { return this.search.filters.AND; },
       async buildSearch(keyword, disease) {
         const geneSearch = {
           queryType: 'similarTo',
@@ -394,10 +447,9 @@ const SEARCH_OPTS = {
           returnProperties: ['@rid'],
         };
 
-        const call = api.post('/query', geneSearch);
-        const records = await call.request();
-        const ridArr = records.map(rec => rec['@rid']);
-        this.geneRIDs = ridArr;
+        const clause = this.conditionsClause;
+        clause[0].conditions = await setSubQuery(geneSearch);
+
 
         const diseaseSearch = {
           target: 'Disease',
@@ -405,10 +457,7 @@ const SEARCH_OPTS = {
           returnProperties: ['@rid'],
         };
 
-        const dcall = api.post('/query', diseaseSearch);
-        const record = await dcall.request();
-        const [rec] = record;
-        this.diseaseRID = rec['@rid'];
+        clause[1].conditions = await setSubQuery(diseaseSearch);
       },
     },
     {
@@ -430,7 +479,7 @@ const SEARCH_OPTS = {
         },
       },
       set relevanceRIDs(ridArr) { this.search.filters.AND[1].relevance = ridArr; },
-      set conditionsRIDs(ridArr) { this.search.filters.AND[0].conditions = ridArr; },
+      set conditions(search) { this.search.filters.AND[0].conditions = search; },
       async buildSearch(keyword) {
         const sensitivityRID = await vocabularyRIDGenerator('sensitivity');
         const resistanceRID = await vocabularyRIDGenerator('resistance');
@@ -443,10 +492,7 @@ const SEARCH_OPTS = {
           },
           returnProperties: ['@rid'],
         };
-        const call = api.post('/query', geneSearch);
-        const records = await call.request();
-        const ridArr = records.map(rec => rec['@rid']);
-        this.conditionsRIDs = ridArr;
+        this.conditions = await setSubQuery(geneSearch);
       },
     },
     {
@@ -492,6 +538,9 @@ const SEARCH_OPTS = {
         this.search.filters.OR[0].reference1.target.filters.AND[1].OR[1].sourceId = keyword;
         this.search.filters.OR[1].reference2.target.filters.AND[1].OR[0].name = keyword;
         this.search.filters.OR[1].reference2.target.filters.AND[1].OR[1].sourceId = keyword;
+      },
+      async buildSearch(keyword) {
+        this.searchInput = keyword;
       },
     },
   ],

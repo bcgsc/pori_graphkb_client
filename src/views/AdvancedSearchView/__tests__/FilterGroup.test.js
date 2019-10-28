@@ -110,7 +110,7 @@ describe('FilterGroup ', () => {
       expect(queryByTestId('filter-chip0')).toBeInTheDocument();
     });
 
-    test('displays a filter chip label correctly', () => {
+    test('displays filter chip label correctly', () => {
       expect(queryByText("fake attr = 'value'")).toBeInTheDocument();
     });
 

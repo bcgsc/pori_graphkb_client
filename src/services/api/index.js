@@ -172,7 +172,11 @@ const getQueryFromSearch = ({ schema, search, count }) => {
 
     if (keyword) {
       routeName = '/query';
-      queryParams.keyword = keyword;
+      payload = {
+        queryType: 'keyword',
+        keyword,
+        target: modelName,
+      };
     } else {
       queryParams = Object.assign({}, params, queryParams);
     }

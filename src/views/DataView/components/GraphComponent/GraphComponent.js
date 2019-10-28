@@ -663,7 +663,7 @@ class GraphComponent extends Component {
       }
     });
     // add a check for link properties here to create links where necessary
-    const linkTypes = ['impliedBy', 'supportedBy', 'relevance', 'appliesTo'];
+    const linkTypes = ['conditions', 'evidence', 'relevance', 'subject'];
     linkTypes.forEach((linkType) => {
       const linkData = Array.isArray(node[linkType]) ? node[linkType] : [node[linkType]];
 
@@ -1095,7 +1095,7 @@ class GraphComponent extends Component {
 
     /* Because properties types like linkset are uni-directional, we need to
     have nodes that are connected via a linkset property rendered first.
-    For example, if a statement class node has a link property 'impliedBy' which
+    For example, if a statement class node has a link property 'conditions' which
     points to node A, node A will not have an equivalent 'implies' property
     to map it back to the statement node */
 

@@ -153,18 +153,17 @@ const getQueryFromSearch = ({ schema, search, count }) => {
   if (!schema.get(modelName)) {
     throw new Error(`Failed to find the expected model (${modelName})`);
   }
-  let { routeName } = schema.get(modelName);
+  let routeName = '/query';
 
   let payload = null;
   let queryParams = null;
 
   if (complex) {
     // complex encodes the body in the URL so that it can be passed around as a link but still perform a POST search
-    routeName += '/search';
     // Decode base64 encoded string.
     payload = JSON.parse(atob(decodeURIComponent(complex)));
     payload.neighbors = Math.max(payload.neighbors || 0, TABLE_DEFAULT_NEIGHBORS);
-    payload.limit = Math.min(payload.limit);
+    payload.limit = Math.min(payload.limit || DEFAULT_LIMIT);
   } else {
     queryParams = {
       limit,
@@ -172,10 +171,12 @@ const getQueryFromSearch = ({ schema, search, count }) => {
     };
 
     if (keyword) {
-      // keyword search is only associated with statements
-      routeName = '/statements/search';
-      modelName = 'Statement';
-      queryParams.keyword = keyword;
+      routeName = '/query';
+      payload = {
+        queryType: 'keyword',
+        keyword,
+        target: modelName,
+      };
     } else {
       queryParams = Object.assign({}, params, queryParams);
     }
@@ -259,6 +260,7 @@ const querySearchBlock = ({
 
   if (count) {
     content.count = true;
+    delete content.neighbors;
   } else {
     content.skip = skip;
     content.limit = limit;
@@ -306,8 +308,27 @@ const getNewCache = (opt) => {
   return cache;
 };
 
+/**
+ * encodes complex/payload for POST query request. Returns search with encoded complex.
+ *
+ * @param {object} content is the payload or query object to be sent with request
+ * @param {string} modelName target class that is expected to be returned
+ */
+const encodeQueryComplexToSearch = (content, modelName = 'V') => {
+  const stringifiedContent = JSON.stringify(content);
+  const base64EncodedContent = btoa(stringifiedContent);
+  const encodedContent = encodeURIComponent(base64EncodedContent);
+
+  const payload = {};
+  payload.complex = encodedContent;
+  payload['@class'] = modelName;
+  const search = qs.stringify(payload);
+  return search;
+};
+
 
 export default {
+  encodeQueryComplexToSearch,
   getNewCache,
   getQueryFromSearch,
   getSearchFromQuery,

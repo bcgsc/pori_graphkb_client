@@ -180,7 +180,7 @@ FormLayout.defaultProps = {
   collapseExtra: false,
   groups: [
     ['@rid', 'createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'uuid', 'history', 'groupRestrictions'],
-    ['relevance', 'appliesTo'],
+    ['relevance', 'subject'],
     ['reviewStatus', 'reviews'],
     ['reference1', 'break1Repr', 'break1Start', 'break1End'],
     ['reference2', 'break2Repr', 'break2Start', 'break2End'],

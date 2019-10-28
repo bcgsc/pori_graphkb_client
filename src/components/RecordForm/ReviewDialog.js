@@ -15,7 +15,6 @@ import './index.scss';
 import ActionButton from '../ActionButton';
 import {
   FORM_VARIANT,
-
 } from './util';
 import { KBContext } from '../KBContext';
 import FormField from './FormField';

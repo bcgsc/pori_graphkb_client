@@ -380,7 +380,7 @@ class DataTable extends React.Component {
   resizeColumnsTofitEdges({ type, newPage }) {
     if (this.gridColumnApi) {
       if (type === 'paginationChanged' && newPage !== undefined) {
-        this.gridColumnApi.autoSizeColumns(['ImpliedBy', 'SupportedBy', 'Implies', 'preview']);
+        this.gridColumnApi.autoSizeColumns(['conditions', 'evidence', 'Implies', 'preview']);
       }
     }
   }

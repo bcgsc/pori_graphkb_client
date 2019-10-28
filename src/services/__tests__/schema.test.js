@@ -66,11 +66,11 @@ describe('Schema wrapper class tests', () => {
         displayName: 'displayName',
         '@class': 'Mock',
         '@rid': '22:0',
-        displayNameTemplate: 'Given {impliedBy} {relevance} applies to {appliesTo} ({supportedBy})',
+        displayNameTemplate: 'Given {conditions} {relevance} applies to {subject} ({evidence})',
         relevance: { displayName: 'Mood Swings' },
-        impliedBy: [{ displayName: 'Low blood sugar' }],
-        appliesTo: [{ displayName: 'hungertitis' }],
-        supportedBy: [{ displayName: 'A reputable source' }],
+        conditions: [{ displayName: 'Low blood sugar' }],
+        subject: [{ displayName: 'hungertitis' }],
+        evidence: [{ displayName: 'A reputable source' }],
       };
 
       const statementLabel = testSchema.getLabel(mockStatementRecord, false);

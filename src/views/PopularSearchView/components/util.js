@@ -2,6 +2,9 @@ import api from '../../../services/api';
 
 const MAX_RESULT_COUNT = 400;
 
+/**
+ * Given vocabulary term, returns rid of term if it exists
+ */
 const vocabularyRIDGenerator = async (vocabName) => {
   const sensitivityRIDSearch = {
     target: 'Vocabulary',
@@ -15,7 +18,7 @@ const vocabularyRIDGenerator = async (vocabName) => {
   return rid;
 };
 /**
- * returns a keyword search object with rid
+ * returns a keyword search object with rid set for return properties
  */
 const keywordSearchGenerator = (modelName, keyword, returnProperties = ['@rid']) => ({
   queryType: 'keyword',
@@ -24,6 +27,9 @@ const keywordSearchGenerator = (modelName, keyword, returnProperties = ['@rid'])
   returnProperties,
 });
 
+/**
+ * Given a search object, returns an array of record rids
+ */
 const getRIDs = async (search) => {
   const call = api.post('/query', search);
   const records = await call.request();
@@ -31,6 +37,9 @@ const getRIDs = async (search) => {
   return ridArr;
 };
 
+/**
+ * returns record count for given search object.
+ */
 const searchCount = async (search) => {
   const searchObj = { ...search, count: true };
   delete searchObj.returnProperties;
@@ -40,11 +49,19 @@ const searchCount = async (search) => {
   return count;
 };
 
+/**
+ * returns bool indicating if search count is in acceptable range
+ */
 const searchCountCheck = async (search) => {
   const count = await searchCount(search);
   return (count < MAX_RESULT_COUNT && count !== 0);
 };
 
+/**
+ * Given a search, returns the search itself or an array of RIDs from
+ * the search depending on whether or not the search count is below
+ * an acceptable cap.
+ */
 const setSubQuery = async (search) => {
   const countIsAcceptable = await searchCountCheck(search);
   const searchCpy = { ...search };
@@ -61,6 +78,9 @@ const setSubQuery = async (search) => {
   return subQuery;
 };
 
+/**
+ * Returns an additional condition to be included in search query.
+ */
 const getOptionalSubQuery = async (search) => {
   const countIsAcceptable = await searchCountCheck(search);
   let condition;

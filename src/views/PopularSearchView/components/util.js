@@ -1,6 +1,6 @@
 import api from '../../../services/api';
 
-const MAX_RESULT_COUNT = 200;
+const MAX_RESULT_COUNT = 300;
 
 /**
  * Given vocabulary term, returns rid of term if it exists
@@ -200,9 +200,42 @@ const SEARCH_OPTS = {
       },
     },
     {
-      label: 'Given a drug, find all diseases it is approved for use',
+      label: 'Given a drug, find all high-level evidence statements',
       requiredInput: {
         label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. Adriamycin',
+      },
+      search: {
+        target: 'Statement',
+        filters: {
+          AND: [
+            {
+              subject: ['drug Rids'], operator: 'IN',
+            },
+            {
+              evidenceLevel: {
+                target: 'EvidenceLevel',
+                filters: {
+                  AND: [
+                    {
+                      name: '1',
+                    },
+                    {
+                      source: {
+                        target: 'Source',
+                        filters: { name: 'OncoKB' },
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          ],
+        },
+      },
+      set therapyClause(subQuery) { this.search.filters.AND[0].subject = subQuery; },
+      async buildSearch(keyword) {
+        const therapySearch = keywordSearchGenerator('Therapy', keyword);
+        this.therapyClause = await setSubQuery(therapySearch);
       },
     },
   ],

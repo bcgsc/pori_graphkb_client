@@ -28,6 +28,22 @@ function BasePopularSearch(props) {
   const selectedOption = SEARCH_OPTS[variant][searchIndex];
   const hasOptionalField = !!selectedOption.additionalInput;
 
+
+  /**
+   * checks input fields and returns a bool to indicate whether
+   * or not search button should be disabled.
+   */
+  const inputCheck = () => {
+    const hasTwoRequiredFields = selectedOption.additionalInput
+      ? !selectedOption.additionalInput.optional
+      : false;
+    const requiredValCheck = (!value || value.length < MIN_VAL_LENGTH);
+    const additionalValCheck = (hasTwoRequiredFields && (!optionalValue || optionalValue.length < MIN_VAL_LENGTH));
+    return (requiredValCheck || additionalValCheck);
+  };
+
+  const isDisabled = inputCheck();
+
   const handleSubmit = async () => {
     // build search by fetching rids for subqueries to complete full search
     try {
@@ -55,7 +71,7 @@ function BasePopularSearch(props) {
       </div>
       <div className={`popular-search__input-field${hasOptionalField ? '--optional' : ''}`}>
         <SearchInput
-          disabled={!value || value.length < MIN_VAL_LENGTH}
+          disabled={isDisabled}
           handleInputChange={setValue}
           handleOptionalChange={setOptionalValue}
           handleSubmit={handleSubmit}

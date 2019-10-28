@@ -7,7 +7,6 @@ import FeedbackView from './FeedbackView/FeedbackView';
 import LoginView from './LoginView/LoginView';
 import PopularSearchView from './PopularSearchView';
 import QueryView from './QueryView/QueryView';
-import QueryBuilderView from './QueryBuilderView/QueryBuilderView';
 
 export {
   AboutView,
@@ -19,5 +18,4 @@ export {
   LoginView,
   PopularSearchView,
   QueryView,
-  QueryBuilderView,
 };

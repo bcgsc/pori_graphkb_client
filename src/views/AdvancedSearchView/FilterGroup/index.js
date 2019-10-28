@@ -20,8 +20,8 @@ function FilterGroup(props) {
   const { schema } = useContext(KBContext);
 
   return (
-    <div className={`filter-groups__box${filterGroup.filters.length ? '' : '--empty'}`}>
-      <div className={`filter-groups__group-label${filterGroup.filters.length ? '' : '--empty'}`}>
+    <div className="filter-groups__box">
+      <div className="filter-groups__group-label">
         <Typography variant="h6">
           {filterGroup.name}
         </Typography>
@@ -29,6 +29,7 @@ function FilterGroup(props) {
       <div className="filter-groups__cancel-btn">
         <IconButton
           data-testid="cancel-btn"
+          classes={{ label: 'cancel-btn-label' }}
           onClick={() => { handleDelete(filterGroup.name); }}
         >
           <CancelIcon />
@@ -41,7 +42,8 @@ function FilterGroup(props) {
           if (typeof filterValue === 'object' && !Array.isArray(filterValue)) {
             filterValue = schema.getPreview(filter.value);
           } else if (Array.isArray(filterValue)) {
-            filterValue = schema.getPreview(filter.value[0]);
+            const filterValueArr = [...filterValue];
+            filterValue = (filterValueArr.map(val => schema.getPreview(val))).join(' ');
           }
 
           return (

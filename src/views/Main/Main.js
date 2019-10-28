@@ -33,7 +33,6 @@ import {
   FeedbackView,
   LoginView,
   QueryView,
-  QueryBuilderView,
   PopularSearchView,
 } from '..';
 
@@ -182,7 +181,6 @@ const Main = () => {
             <AuthenticatedRoute exact path="/query" component={QueryView} />
             <AuthenticatedRoute path="/query-popular" component={PopularSearchView} />
             <AuthenticatedRoute exact path="/query-advanced" component={AdvancedSearchView} />
-            <AuthenticatedRoute path="/query/advanced/builder" component={QueryBuilderView} />
             <AuthenticatedRoute
               path="/edit/:modelName(Source|source|User|user|UserGroup|usergroup)/:rid"
               admin

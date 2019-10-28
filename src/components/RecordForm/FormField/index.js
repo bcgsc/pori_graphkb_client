@@ -219,7 +219,7 @@ const FormField = (props) => {
 
       if (linkedClass) {
         if (['Source', 'UserGroup', 'User', 'EvidenceLevel', 'Vocabulary'].includes(linkedClass.name)) {
-          autoProps.searchHandler = () => api.post('/query', { target: `${linkedClass.name}` }, { forceListReturn: true });
+          autoProps.searchHandler = () => api.post('/query', { target: `${linkedClass.name}`, orderBy: `${linkedClass.name === 'EvidenceLevel' ? 'sourceId' : 'name'}` }, { forceListReturn: true });
           autoProps.singleLoad = true;
         } else {
           autoProps.searchHandler = api.defaultSuggestionHandler(linkedClass, searchOptions);

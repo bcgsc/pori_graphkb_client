@@ -159,7 +159,7 @@ const RecordAutocomplete = (props) => {
       setSelectedValue(newValue);
       const event = { target: { name, value: newValue } };
 
-      if (actionType === 'select-option' || actionType === 'clear') {
+      if (actionType === 'select-option' || actionType === 'clear' || actionType === 'remove-value') {
         onChange(event);
       }
     },

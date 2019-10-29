@@ -20,8 +20,8 @@ function FilterGroup(props) {
   const { schema } = useContext(KBContext);
 
   return (
-    <div className={`filter-groups__box${filterGroup.filters.length ? '' : '--empty'}`}>
-      <div className={`filter-groups__group-label${filterGroup.filters.length ? '' : '--empty'}`}>
+    <div className="filter-groups__box">
+      <div className="filter-groups__group-label">
         <Typography variant="h6">
           {filterGroup.name}
         </Typography>
@@ -43,10 +43,7 @@ function FilterGroup(props) {
             filterValue = schema.getPreview(filter.value);
           } else if (Array.isArray(filterValue)) {
             const filterValueArr = [...filterValue];
-            filterValue = '';
-            filterValueArr.forEach((val) => {
-              filterValue += ` ${schema.getPreview(val)}`;
-            });
+            filterValue = (filterValueArr.map(val => schema.getPreview(val))).join(' ');
           }
 
           return (
@@ -54,7 +51,7 @@ function FilterGroup(props) {
               <Chip
                 default="outlined"
                 key={`${filter.attr}.${filter.value}`}
-                label={`${filter.attr} ${filter.operator} '${filterValue} '`}
+                label={`${filter.attr} ${filter.operator} '${filterValue}'`}
               />
             </div>
           );

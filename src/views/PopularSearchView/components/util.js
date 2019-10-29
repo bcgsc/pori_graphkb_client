@@ -289,7 +289,6 @@ const SEARCH_OPTS = {
             {
               relevance: 'sensitivityRID', operator: '=',
             },
-
           ],
         },
       },

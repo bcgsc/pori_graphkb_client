@@ -12,9 +12,12 @@ const MIN_VAL_LENGTH = 3;
 
 /**
  * Base Component that displays popular search options.
+ * @property {string} props.variant one of ['GENE', 'DISEASE', 'DRUG', 'VARIANT']
+ * @property {function} props.onError parent error handler
+ * @property {function} props.onSubmit parent error handler
  */
 function BasePopularSearch(props) {
-  const { variant, history } = props;
+  const { variant, onError, onSubmit } = props;
   const [searchIndex, setSearchIndex] = useState(0);
   const [value, setValue] = useState('');
   const [optionalValue, setOptionalValue] = useState('');
@@ -53,10 +56,9 @@ function BasePopularSearch(props) {
       const { search: rawSearch } = selectedOption;
 
       const search = api.encodeQueryComplexToSearch(rawSearch, 'Statement');
-      history.push(`/data/table?${search}`, { search });
+      onSubmit(search);
     } catch (err) {
-      const { name, message } = err;
-      history.push('/error', { error: { name, message } });
+      onError(err);
     }
   };
 
@@ -86,7 +88,12 @@ function BasePopularSearch(props) {
 
 BasePopularSearch.propTypes = {
   variant: PropTypes.string.isRequired,
-  history: PropTypes.object.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  onError: PropTypes.func,
+};
+
+BasePopularSearch.defaultProps = {
+  onError: () => {},
 };
 
 export default BasePopularSearch;

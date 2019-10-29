@@ -172,7 +172,7 @@ function AdvancedSearchView(props) {
   const constructOperatorOptions = (pModel, currentVal, OperatorOptions) => {
     let iterableOptCheck;
 
-    // check if value is iterable and set corresponding option values
+    // check if property is iterable and set corresponding option values
     if (pModel && !pModel.iterable) {
       iterableOptCheck = OperatorOptions.filter(op => !op.iterable || op.label === '=');
 
@@ -218,8 +218,8 @@ function AdvancedSearchView(props) {
       let clonedPropModel;
 
       if (propModel) {
-        clonedPropModel = Object.create(propModel);
         // set generatated false so that we can search for value
+        clonedPropModel = Object.create(propModel);
         clonedPropModel.generated = false;
         const { name: propName } = clonedPropModel;
 

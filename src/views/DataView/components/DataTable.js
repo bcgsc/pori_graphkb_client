@@ -31,7 +31,6 @@ const RecordList = (props) => {
   if (!records) {
     return null;
   }
-
   return (
     <div className="data-table__record-list">
       {records.map((record) => {

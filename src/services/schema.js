@@ -55,6 +55,9 @@ class Schema {
         if (obj['@rid']) {
           label = `${label} (${obj['@rid']})`;
         }
+        if (obj.source && obj.source.displayName) {
+          label = `${label} ${obj.source.displayName}`;
+        }
         return label;
       }
       if (obj.target) {

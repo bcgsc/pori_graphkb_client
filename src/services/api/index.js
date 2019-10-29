@@ -108,6 +108,7 @@ const defaultSuggestionHandler = (model, opt = {}) => {
         target: `${model.name}`,
         keyword: textInput,
         limit: MAX_SUGGESTIONS,
+        neighbors: 1,
       };
 
       if (model.inherits.includes('Ontology') || model.name === 'Ontology') {

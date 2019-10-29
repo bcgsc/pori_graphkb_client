@@ -111,7 +111,7 @@ const defaultSuggestionHandler = (model, opt = {}) => {
       };
 
       if (model.inherits.includes('Ontology') || model.name === 'Ontology') {
-        body.orderBy = ['name', 'sourceId'];
+        body.orderBy = ['source.sort', 'name', 'sourceId'];
       }
     }
     const call = post('/query', body, callOptions);

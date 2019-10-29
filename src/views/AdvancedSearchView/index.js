@@ -184,9 +184,9 @@ function AdvancedSearchView(props) {
 
       if (name === 'relevance' || name === 'subject') {
         if (currentVal && currentVal.length > 1) {
-          iterableOptCheck = iterableOptCheck.filter(op => (op.label === 'CONTAINSANY'));
+          iterableOptCheck = OperatorOptions.filter(op => (op.label === 'CONTAINSANY'));
         } else {
-          iterableOptCheck = iterableOptCheck.filter(op => (op.label === '='));
+          iterableOptCheck = OperatorOptions.filter(op => (op.label === '='));
         }
       } else {
         iterableOptCheck = OperatorOptions.filter(op => op.iterable || op.label === '=');
@@ -214,6 +214,7 @@ function AdvancedSearchView(props) {
   useEffect(() => {
     if (model) {
       const propModel = model.queryProperties[currProp];
+      console.log('TCL: AdvancedSearchView -> propModel', propModel);
 
       let clonedPropModel;
 

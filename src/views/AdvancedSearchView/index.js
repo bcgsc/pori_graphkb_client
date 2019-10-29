@@ -214,7 +214,6 @@ function AdvancedSearchView(props) {
   useEffect(() => {
     if (model) {
       const propModel = model.queryProperties[currProp];
-      console.log('TCL: AdvancedSearchView -> propModel', propModel);
 
       let clonedPropModel;
 

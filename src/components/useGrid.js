@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 
 /**
  * hook for setting up and using ag-grids apis
+ * credit: areisle
  */
 const useGrid = () => {
   const gridApi = useRef(null);

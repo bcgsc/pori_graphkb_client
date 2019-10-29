@@ -1,4 +1,5 @@
 @import '../../../globals';
+@import '../../../theme';
 
 @mixin box-content {
   border: 1px solid $palette__primary--light;
@@ -27,10 +28,6 @@
       display: flex;
       flex-direction: column;
       margin-top: 5px;
-
-      .active-filter-title {
-        text-decoration: underline;
-      }
     }
 
     &__content {
@@ -44,7 +41,7 @@
       transform: translate((40%, -40%));
 
       .cancel-btn-label {
-        background-color: white;
+        background-color: $palette__common--white;
       }
     }
 
@@ -55,27 +52,19 @@
       transform: translateY(-50%);
 
       h6 {
-        background-color: white;
+        background-color: $palette__common--white;
         display: inline-block;
         font-size: 1rem;
         left: 15px;
         position: relative;
-      }
-
-      &--empty {
-        opacity: 0;
       }
     }
 
 
     &__box {
       @include box-content-mobile;
-      margin: 15px auto;
-
-      &:first-child {
-        @include box-content-mobile;
-        margin: 45px auto;
-      }
+      margin: 45px auto;
+      min-height: 120px;
 
       &:not(:first-child):before {
         content: 'OR';
@@ -108,11 +97,6 @@
       display: flex;
       justify-content: center;
       margin-top: 20px;
-
-      .active-filter-title {
-        text-decoration: underline;
-      }
-
     }
 
     &__content {
@@ -126,7 +110,7 @@
       transform: translate((40%, -40%));
 
       .cancel-btn-label {
-        background-color: white;
+        background-color: $palette__common--white;
       }
     }
 
@@ -137,29 +121,29 @@
       transform: translateY(-50%);
 
       h6 {
-        background-color: white;
+        background-color: $palette__common--white;
         display: inline-block;
         font-size: 1rem;
         left: 15px;
         position: relative;
-      }
-
-      &--empty {
-        opacity: 0;
       }
     }
 
 
     &__box {
       @include box-content;
-      margin: 90px 75px;
+      margin-bottom: 50px;
+      margin-left: 75px;
+      margin-right: 75px;
+      margin-top: 90px;
+      min-height: 100px;
 
       &:first-child {
         @include box-content;
-        margin-bottom: 90px;
         margin-left: 75px;
         margin-right: 75px;
         margin-top: 20px;
+        min-height: 100px;
       }
 
       &:not(:first-child):before {
@@ -177,7 +161,7 @@
         &:not(:last-child):after {
           content: 'AND';
           display: inline;
-          margin-left: 50px
+          margin-left: 50px;
         }
       }
 

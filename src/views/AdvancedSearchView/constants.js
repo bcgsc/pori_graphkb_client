@@ -1,4 +1,4 @@
-const OPERATORS_OPTS = ['=', 'CONTAINS', 'CONTAINSALL', 'CONTAINSTEXT', 'CONTAINSANY', 'IN', '>=', '>', '<=', '<', 'IS'];
+const OPERATORS_OPTS = ['=', 'CONTAINS', 'CONTAINSALL', 'CONTAINSTEXT', 'CONTAINSANY', 'IN', '>=', '>', '<=', '<'];
 
 const generateOperatorOptions = () => {
   const OPERATORS = [];
@@ -26,7 +26,6 @@ const generateOperatorOptions = () => {
   OPERATORS[findOptIndex('CONTAINSALL')].caption = 'true if all of the values in the queried record\'s property satisfies the property value condition';
   OPERATORS[findOptIndex('CONTAINSANY')].caption = 'returns true if there is any match between the property value condition and the record\'s property values';
   OPERATORS[findOptIndex('CONTAINSTEXT')].caption = 'contains your inputted substring';
-  OPERATORS[findOptIndex('IS')].caption = 'Use to test if a value is NULL';
   OPERATORS[findOptIndex('IN')].caption = 'If the queried record\'s property is in any of the property value conditions selected';
   return OPERATORS;
 };
@@ -40,7 +39,6 @@ const generateOperatorOptions = () => {
  * @property {string} opt.caption optional description of operator option
  */
 const OPERATORS = generateOperatorOptions();
-console.log('TCL: OPERATORS', OPERATORS);
 
 const BLACKLISTED_PROPERTIES = ['deletedAt', 'deletedBy', 'createdBy',
   'createdAt', 'history', 'uuid', 'groupRestrictions', 'comment', 'description',

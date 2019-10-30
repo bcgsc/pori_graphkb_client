@@ -49,6 +49,7 @@ function ResourceSelectComponent(props) {
     children,
     required,
     id,
+    innerProps,
     error,
     helperText,
     dense,
@@ -87,6 +88,7 @@ function ResourceSelectComponent(props) {
         value={value}
         onChange={onChange}
         input={<InputComponent name={name} id={`resource-select-${name}`} />}
+        inputProps={innerProps}
         style={{
           fontSize: dense ? '0.8125rem' : '',
         }}
@@ -132,6 +134,7 @@ ResourceSelectComponent.propTypes = {
   className: PropTypes.string,
   disabled: PropTypes.bool,
   helperText: PropTypes.string,
+  innerProps: PropTypes.object,
 };
 
 ResourceSelectComponent.defaultProps = {
@@ -148,6 +151,7 @@ ResourceSelectComponent.defaultProps = {
   className: '',
   disabled: false,
   helperText: '',
+  innerProps: {},
 };
 
 export default ResourceSelectComponent;

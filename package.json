@@ -85,6 +85,8 @@
     "html-webpack-plugin": "^3.2.0",
     "jest": "^24.1.0",
     "jest-bamboo-formatter": "^1.0.1",
+    "jest-canvas-mock": "^2.1.2",
+    "jest-environment-jsdom-fourteen": "^0.1.0",
     "jest-junit": "^6.4.0",
     "mini-css-extract-plugin": "^0.5.0",
     "node-sass": "^4.11.0",
@@ -112,10 +114,10 @@
     "analyze": "NODE_ENV=production webpack --profile --json --config config/webpack/prod.js > stats.json; webpack-bundle-analyzer stats.json dist",
     "start": "webpack-dev-server --config config/webpack/dev.js",
     "start:local": "webpack-dev-server --config config/webpack/local.js",
-    "test:local": "NODE_ENV=local jest --env=jsdom --config config/jest.config.js",
-    "test": "NODE_ENV=test jest --env=jsdom --config config/jest.config.js",
-    "test:watch": "NODE_ENV=test jest --env=jsdom --config config/jest.config.js --watch",
-    "test:ci": "NODE_ENV=test jest --env=jsdom --config config/jest.config.js",
+    "test:local": "NODE_ENV=local jest --config config/jest.config.js",
+    "test": "NODE_ENV=test jest --config config/jest.config.js",
+    "test:watch": "NODE_ENV=test jest --config config/jest.config.js --watch",
+    "test:ci": "NODE_ENV=test jest --config config/jest.config.js",
     "serve": "NODE_ENV=production serve dist -s"
   },
   "sasslintConfig": "config/sass-lint.yml"

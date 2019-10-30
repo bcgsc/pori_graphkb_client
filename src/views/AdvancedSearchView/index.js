@@ -173,18 +173,28 @@ function AdvancedSearchView(props) {
   const constructOperatorOptions = (pModel, currentVal, OperatorOptions) => {
     let iterableOptCheck;
 
-    // check if value is iterable and set corresponding option values
+    // check if property is iterable and set corresponding option values
     if (pModel && !pModel.iterable) {
       iterableOptCheck = OperatorOptions.filter(op => !op.iterable || op.label === '=');
 
       if (currentVal && !Array.isArray(currentVal)) {
         iterableOptCheck = iterableOptCheck.filter(op => !(op.label === 'IN'));
       }
-    } else {
-      iterableOptCheck = OperatorOptions.filter(op => op.iterable || op.label === '=');
+    } else if (pModel) {
+      const { name } = pModel;
 
-      if (currentVal && currentVal.length > 1) {
-        iterableOptCheck = iterableOptCheck.filter(op => !(op.label === 'CONTAINS'));
+      if (name === 'relevance' || name === 'subject') {
+        if (currentVal && currentVal.length > 1) {
+          iterableOptCheck = OperatorOptions.filter(op => (op.label === 'CONTAINSANY'));
+        } else {
+          iterableOptCheck = OperatorOptions.filter(op => (op.label === '='));
+        }
+      } else {
+        iterableOptCheck = OperatorOptions.filter(op => op.iterable || op.label === '=');
+
+        if (currentVal && currentVal.length > 1) {
+          iterableOptCheck = iterableOptCheck.filter(op => !(op.label === 'CONTAINS'));
+        }
       }
     }
 
@@ -198,7 +208,7 @@ function AdvancedSearchView(props) {
     if (currentVal && !(typeof currentVal === 'string')) {
       finalOptionSet = finalOptionSet.filter(op => !(op.label === 'CONTAINSTEXT'));
     }
-    return finalOptionSet;
+    return finalOptionSet || [];
   };
   // set current Property and allowed values
   const [operatorOps, setOperatorOps] = useState(OPERATORS);
@@ -206,13 +216,24 @@ function AdvancedSearchView(props) {
     if (model) {
       const propModel = model.queryProperties[currProp];
 
-      // set generatated false so that we can search for value
-      if (propModel) {
-        propModel.generated = false;
-      }
-      setPropertyModel(propModel);
+      let clonedPropModel;
 
-      const finalOptions = constructOperatorOptions(propModel, currValue, OPERATORS);
+      if (propModel) {
+        // set generatated false so that we can search for value
+        clonedPropModel = Object.create(propModel);
+        clonedPropModel.generated = false;
+        const { name: propName } = clonedPropModel;
+
+        if (propName === 'relevance' || propName === 'subject') {
+          // allow both properties to take in a list
+          clonedPropModel.iterable = true;
+          clonedPropModel.type = 'linkset';
+        }
+        setPropertyModel(clonedPropModel);
+      }
+
+
+      const finalOptions = constructOperatorOptions(clonedPropModel, currValue, OPERATORS);
       setOperatorOps(finalOptions);
 
       if (finalOptions.length === 1) {

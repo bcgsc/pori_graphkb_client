@@ -31,9 +31,10 @@ module.exports = {
     '<rootDir>/src/polyfills.js',
     '<rootDir>/config/jest/browserMock.js',
     '<rootDir>/config/jest/enzymeInit.js',
+    'jest-canvas-mock',
   ],
   testRegex: 'src.*__tests__.*.jsx?$',
-  testEnvironment: 'node',
+  testEnvironment: 'jest-environment-jsdom-fourteen',
   testURL: 'http://localhost',
   transform: {
     '^.+\\.(js|jsx|mjs)$': '<rootDir>/node_modules/babel-jest',

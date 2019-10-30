@@ -2,10 +2,12 @@
 
 .record-form {
   &__wrapper {
+    height: auto;
     margin-left: auto;
     margin-right: auto;
     margin-top: 0;
     max-width: calc(#{$readable-max} + 40px);
+    min-height: 100%;
     padding: 20px;
 
     @media (min-width: #{$breakpoint-med}) {
@@ -68,7 +70,7 @@
     padding-top: 10px;
   }
 
-  &__related-nodes {
+  &__related-records {
     margin-top: 20px;
   }
 

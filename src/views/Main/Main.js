@@ -182,18 +182,18 @@ const Main = () => {
             <AuthenticatedRoute path="/query-popular" component={PopularSearchView} />
             <AuthenticatedRoute exact path="/query-advanced" component={AdvancedSearchView} />
             <AuthenticatedRoute
-              path="/edit/:modelName(Source|source|User|user|UserGroup|usergroup)/:rid"
+              path="/:variant(edit)/:modelName(Source|source|User|user|UserGroup|usergroup)/:rid"
               admin
               component={RecordView}
             />
             <AuthenticatedRoute path="/:variant(edit|view)/:modelName/:rid" component={RecordView} />
             <AuthenticatedRoute path="/:variant(edit|view)/:rid" component={RecordView} />
             <AuthenticatedRoute
-              path="/new/:modelName(Source|source|User|user|UserGroup|usergroup)"
+              path="/:variant(new)/:modelName(Source|source|User|user|UserGroup|usergroup)"
               admin
               component={NewRecordView}
             />
-            <AuthenticatedRoute path="/new/:modelName" component={NewRecordView} />
+            <AuthenticatedRoute path="/:variant(new)/:modelName" component={NewRecordView} />
             <Redirect exact path="/query/advanced" to="/search/v" />
             <AuthenticatedRoute path="/data" component={DataView} />
             <AuthenticatedRoute path="/admin" admin component={AdminView} />

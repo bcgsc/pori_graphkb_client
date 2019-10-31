@@ -30,9 +30,10 @@ const defaultValidator = (propName, value) => ({ value });
 /**
  * Sets up two objects for handling form content and errors when the properties are not known
  */
-const useForm = (initialValue = {}, validator = defaultValidator) => {
+const useForm = (initialValue = {}, validator = defaultValidator, expected = []) => {
   const [formIsDirty, setFormIsDirty] = useState(false);
   const [formHasErrors, setFormHasErrors] = useState(false);
+  const [expectedProps, setExpectedProps] = useState(expected || []);
 
   // handle and store the form content
   const [formContent, setFormFieldContent] = useReducer((state, action) => {
@@ -61,6 +62,10 @@ const useForm = (initialValue = {}, validator = defaultValidator) => {
   }, {});
 
   useDeepCompareEffect(() => {
+    setExpectedProps(expected);
+  }, [expected]);
+
+  useDeepCompareEffect(() => {
     const errorState = Object.values(formErrors).some(err => err);
     setFormHasErrors(errorState);
   }, [formErrors || {}]);
@@ -78,7 +83,18 @@ const useForm = (initialValue = {}, validator = defaultValidator) => {
       }
     });
 
+    expectedProps.forEach((propName) => {
+      const propValue = (initialValue || {})[propName];
+      const { error } = validator(propName, propValue);
+
+      if (error) {
+        initialErrors[propName] = error;
+      }
+    });
+
     setFormFieldError({ type: 'replace', payload: initialErrors });
+    const errorState = Object.values(initialErrors).some(err => err);
+    setFormHasErrors(errorState);
     setFormIsDirty(false);
   }, [initialValue, validator]);
 
@@ -87,6 +103,10 @@ const useForm = (initialValue = {}, validator = defaultValidator) => {
 
     setFormFieldContent({ type: 'update', payload: { name: propName, value } });
     setFormFieldError({ type: 'update', payload: { name: propName, value: error } });
+
+    if (error) {
+      setFormHasErrors(true);
+    }
     setFormIsDirty(true);
   }, [validator]);
 

@@ -143,7 +143,6 @@ function AdvancedSearchView(props) {
     const {
       type: actionType, payload,
     } = action;
-    console.log('TCL: activeFilterReducer -> action', action);
 
     if (actionType === 'clear') {
       return { attr: null, value: null, operator: null };

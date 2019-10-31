@@ -22,31 +22,6 @@ import './index.scss';
  * @returns {ApiCall} an instance of api call which implements the abort and request functions
  */
 
-const defaultOptionGrouping = (rawOptions) => {
-  const sourceGroups = {};
-
-  rawOptions.forEach((option) => {
-    const source = option.source && option.source.displayName
-      ? option.source.displayName
-      : 'no source';
-    sourceGroups[source] = sourceGroups[source] || [];
-    sourceGroups[source].push(option);
-  });
-
-  if (Object.keys(sourceGroups) < 2) {
-    return rawOptions;
-  }
-
-  const options = [];
-  Object.entries(sourceGroups).forEach(([key, group]) => {
-    options.push({
-      label: key,
-      options: group,
-    });
-  });
-  return options;
-};
-
 
 /**
   * Autocomplete dropdown component for inputs which take 1 or multiple records as input
@@ -93,7 +68,6 @@ const RecordAutocomplete = (props) => {
     searchHandler,
     singleLoad,
     helperText: initialHelperText,
-    groupOptions,
     value,
   } = props;
 
@@ -125,12 +99,7 @@ const RecordAutocomplete = (props) => {
         try {
           setIsLoading(true);
           const result = await controller.request();
-
-          if (groupOptions) {
-            setOptions(groupOptions(result || []));
-          } else {
-            setOptions(result || []);
-          }
+          setOptions(result || []);
           setIsLoading(false);
         } catch (err) {
           console.error('Error in getting the RecordAutocomplete singleLoad suggestions');
@@ -164,13 +133,7 @@ const RecordAutocomplete = (props) => {
           try {
             setIsLoading(true);
             const result = await controller.request();
-
-            if (groupOptions) {
-              setOptions(groupOptions(result || []));
-            } else {
-              setOptions(result || []);
-            }
-
+            setOptions(result || []);
             setIsLoading(false);
           } catch (err) {
             console.error('Error in getting the RecordAutocomplete suggestions');
@@ -320,7 +283,6 @@ RecordAutocomplete.propTypes = {
   singleLoad: PropTypes.bool,
   helperText: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.object, PropTypes.arrayOf(PropTypes.object)]),
-  groupOptions: PropTypes.func,
 };
 
 RecordAutocomplete.defaultProps = {
@@ -349,7 +311,6 @@ RecordAutocomplete.defaultProps = {
   singleLoad: false,
   value: null,
   helperText: '',
-  groupOptions: defaultOptionGrouping,
 };
 
 export default RecordAutocomplete;

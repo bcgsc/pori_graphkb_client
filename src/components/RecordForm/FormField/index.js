@@ -198,6 +198,7 @@ const FormField = (props) => {
       error: errorFlag,
       isMulti: type === 'linkset',
       label: label || name,
+      className,
       name,
       onChange,
       required: mandatory,

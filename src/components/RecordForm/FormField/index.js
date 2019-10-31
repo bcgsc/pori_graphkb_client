@@ -20,6 +20,7 @@ import EmbeddedRecord from './EmbeddedRecord';
 import './index.scss';
 import { FORM_VARIANT } from '../util';
 import EmbeddedListTable from './StatementReviewsTable';
+import { GeneralRecordPropType } from '../../prop-type-models';
 
 /**
  * Generate the field component for a form. Uses the property model to decide
@@ -310,16 +311,8 @@ FormField.propTypes = {
   value: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
-    PropTypes.arrayOf(PropTypes.shape({
-      name: PropTypes.string,
-      '@rid': PropTypes.string,
-      displayName: PropTypes.string,
-    })),
-    PropTypes.shape({
-      name: PropTypes.string,
-      '@rid': PropTypes.string,
-      displayName: PropTypes.string,
-    }),
+    PropTypes.arrayOf(GeneralRecordPropType),
+    GeneralRecordPropType,
   ]),
   label: PropTypes.string,
   variant: PropTypes.string,

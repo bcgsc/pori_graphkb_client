@@ -96,7 +96,6 @@ const RecordAutocomplete = (props) => {
     value,
   } = props;
 
-
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [options, setOptions] = useState([]);

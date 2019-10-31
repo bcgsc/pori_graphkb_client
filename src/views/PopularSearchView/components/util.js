@@ -597,7 +597,7 @@ const SEARCH_OPTS = {
       },
       async buildSearch(keyword) {
         const variantSearch = {
-          target: 'Statement',
+          target: 'Variant',
           filters: {
             OR: [
               {

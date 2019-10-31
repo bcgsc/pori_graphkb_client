@@ -58,7 +58,7 @@ function SearchInput(props) {
           autoFocus
           className="input-box"
           helperText={requiredInput.example}
-          inputProps={{ 'data-testid': 'content-input' }}
+          inputProps={{ 'data-testid': 'search-input' }}
           inputRef={ref}
           label={requiredInput.label}
           margin="normal"
@@ -75,6 +75,7 @@ function SearchInput(props) {
             helperText={additionalInput.example}
             label={additionalInput.label}
             margin="normal"
+            inputProps={{ 'data-testid': 'additional-input' }}
             onChange={e => handleChange(e, true)}
             required={!additionalInput.optional}
             variant="outlined"

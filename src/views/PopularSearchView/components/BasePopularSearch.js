@@ -5,7 +5,7 @@ import './index.scss';
 import SearchInput from './SearchInput';
 import SearchMenu from './SearchMenu';
 import api from '../../../services/api';
-import { SEARCH_OPTS } from './util';
+import SEARCH_OPTS from './util';
 
 
 const MIN_VAL_LENGTH = 3;
@@ -34,7 +34,7 @@ function BasePopularSearch(props) {
 
   /**
    * checks input fields and returns a bool to indicate whether
-   * or not search button should be disabled.
+   * search button should be disabled. true => search btn should be disabled
    */
   const inputCheck = () => {
     const hasTwoRequiredFields = selectedOption.additionalInput

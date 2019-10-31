@@ -89,7 +89,7 @@ const RecordForm = ({
 
   const {
     formIsDirty, setFormIsDirty, formContent, formErrors, updateForm, formHasErrors,
-  } = useForm(initialValue, formValidator);
+  } = useForm(initialValue, formValidator, Object.keys(schema.get(modelName).properties));
 
 
   useEffect(() => () => controllers.map(c => c.abort()), []); // eslint-disable-line

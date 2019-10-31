@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import {
   NavLink,
   Route,
@@ -10,8 +9,11 @@ import {
   Tab,
 } from '@material-ui/core';
 import slugify from 'slugify';
+
+
 import BasePopularSearch from './components/BasePopularSearch';
 import './index.scss';
+import { LocationPropType } from '../../components/prop-type-models';
 
 /**
  * Main view for popular search. Displays top level query option tabs. This view
@@ -85,7 +87,7 @@ function PopularSearchView(props) {
 }
 
 PopularSearchView.propTypes = {
-  location: PropTypes.object.isRequired,
+  location: LocationPropType.isRequired,
 };
 
 export default PopularSearchView;

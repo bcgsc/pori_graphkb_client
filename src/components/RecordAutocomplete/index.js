@@ -96,6 +96,7 @@ const RecordAutocomplete = (props) => {
     value,
   } = props;
 
+
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [options, setOptions] = useState([]);
@@ -299,9 +300,23 @@ const RecordAutocomplete = (props) => {
 
 RecordAutocomplete.propTypes = {
   className: PropTypes.string,
-  components: PropTypes.object,
+  components: PropTypes.shape({
+    Control: PropTypes.func,
+    DropdownIndicator: PropTypes.func,
+    Menu: PropTypes.func,
+    MultiValue: PropTypes.func,
+    NoOptionsMessage: PropTypes.func,
+    Option: PropTypes.func,
+    Placeholder: PropTypes.func,
+    SingleValue: PropTypes.func,
+    ValueContainer: PropTypes.func,
+    inputComponent: PropTypes.func,
+  }),
   debounceMs: PropTypes.number,
-  DetailChipProps: PropTypes.object,
+  DetailChipProps: PropTypes.shape({
+    getLink: PropTypes.func,
+    valueToString: PropTypes.func,
+  }),
   disabled: PropTypes.bool,
   errorText: PropTypes.string,
   getOptionKey: PropTypes.func,

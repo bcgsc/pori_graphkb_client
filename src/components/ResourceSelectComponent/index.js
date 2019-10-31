@@ -16,6 +16,7 @@ import {
 } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
+import { GeneralRecordPropType } from '../prop-type-models';
 import './index.scss';
 
 
@@ -102,6 +103,14 @@ function ResourceSelectComponent(props) {
   );
 }
 
+const SelectOptionPropType = PropTypes.shape({
+  key: PropTypes.string,
+  value: PropTypes.string,
+  label: PropTypes.string,
+  caption: PropTypes.string,
+});
+
+
 /**
  * @namespace
  * @property {Array.<any>} resources - List of resources to be selected from.
@@ -117,9 +126,10 @@ function ResourceSelectComponent(props) {
  * size.
  * @property {string} variant - Material UI Select variant (outlined, filled, standard)
  */
+
 ResourceSelectComponent.propTypes = {
-  resources: PropTypes.array,
-  value: PropTypes.any.isRequired,
+  resources: PropTypes.arrayOf(SelectOptionPropType),
+  value: PropTypes.oneOfType([GeneralRecordPropType, PropTypes.string]).isRequired,
   onChange: PropTypes.func,
   name: PropTypes.string,
   label: PropTypes.string,

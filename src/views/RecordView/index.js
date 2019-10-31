@@ -14,6 +14,7 @@ import { FORM_VARIANT } from '../../components/RecordForm/util';
 import { cleanLinkedRecords } from '../../components/util';
 import { hasWriteAccess } from '../../services/auth';
 import api from '../../services/api';
+import { HistoryPropType } from '../../components/prop-type-models';
 
 
 const DEFAULT_TITLES = {
@@ -159,8 +160,15 @@ const RecordView = (props) => {
 };
 
 RecordView.propTypes = {
-  history: propTypes.object.isRequired,
-  match: propTypes.object.isRequired,
+  history: HistoryPropType.isRequired,
+  match: propTypes.shape({
+    path: propTypes.string,
+    params: propTypes.shape({
+      rid: propTypes.string,
+      modelName: propTypes.string,
+      variant: propTypes.string,
+    }),
+  }).isRequired,
 };
 
 

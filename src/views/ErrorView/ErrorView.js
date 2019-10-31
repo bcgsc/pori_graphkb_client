@@ -11,6 +11,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import './ErrorView.scss';
 import config from '../../static/config';
+import { LocationPropType } from '../../components/prop-type-models';
 
 const { FEEDBACK: { JIRA: JIRA_LINK, EMAIL } } = config;
 
@@ -41,7 +42,7 @@ EmailReportError.propTypes = {
  */
 class ErrorView extends Component {
   static propTypes = {
-    location: PropTypes.object.isRequired,
+    location: LocationPropType.isRequired,
   };
 
   constructor(props) {

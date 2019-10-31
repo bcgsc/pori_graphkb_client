@@ -636,6 +636,4 @@ const SEARCH_OPTS = {
   ],
 };
 
-export {
-  SEARCH_OPTS,
-};
+export default SEARCH_OPTS;

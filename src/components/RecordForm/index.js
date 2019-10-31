@@ -189,32 +189,28 @@ const RecordForm = ({
       }
       setActionInProgress(false);
     }
-  }, [controllers, formContent, formErrors, formHasErrors, formIsDirty, modelName, onError, onSubmit, schema, snackbar]);
+  }, [controllers, formContent, formErrors, formHasErrors, formIsDirty, modelName, onError, onSubmit, schema, setFormIsDirty, snackbar]);
 
   const handleOnChange = (event) => {
     // add the new value to the field
     const eventName = event.target.name || event.target.getAttribute('name'); // name of the form field triggering the event
     const eventValue = event.target.value;
 
-    const { properties: { [eventName]: prop } } = schema.get(modelName);
-    const { value, error } = schema.validateValue(prop, eventValue, false);
-
-    setFormFieldContent({ type: 'update', payload: { name: eventName, value } });
-    setFormFieldError({ type: 'update', payload: { name: eventName, value: error } });
+    updateForm(eventName, eventValue);
     setFormIsDirty(true);
   };
 
   const handleAddReview = useCallback((content, updateReviewStatus) => {
     // add the new value to the field
     const reviews = [...(formContent.reviews || []), content];
-    setFormFieldContent({ type: 'update', payload: { name: 'reviews', value: reviews } });
+    updateForm('reviews', reviews);
 
     if (updateReviewStatus) {
-      setFormFieldContent({ type: 'update', payload: { name: 'reviewStatus', value: content.status } });
+      updateForm('reviewStatus', content.status);
     }
     setReviewDialogOpen(false);
     setFormIsDirty(true);
-  }, [formContent]);
+  }, [formContent.reviews, setFormIsDirty, updateForm]);
 
   const isEdge = false; // TODO
 

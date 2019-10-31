@@ -170,7 +170,7 @@ function AdvancedSearchView(props) {
 
 
   const constructOperatorOptions = (pModel, currentVal, OperatorOptions) => {
-    let iterableOptCheck;
+    let iterableOptCheck = OperatorOptions;
 
     // check if property is iterable and set corresponding option values
     if (pModel && !pModel.iterable) {

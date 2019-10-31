@@ -289,7 +289,6 @@ const SEARCH_OPTS = {
             {
               relevance: 'sensitivityRID', operator: '=',
             },
-
           ],
         },
       },
@@ -588,46 +587,50 @@ const SEARCH_OPTS = {
         label: 'Gene', property: 'name', class: 'Feature', example: 'Ex. KRAS',
       },
       search: {
-        target: 'Variant',
+        target: 'Statement',
         filters: {
-          OR: [
-            {
-              reference1: {
-                queryType: 'similarTo',
-                target: {
-                  target: 'Feature',
-                  filters: {
-                    AND: [{ biotype: 'gene' }, { OR: [{ name: '<GENE>' }, { sourceId: '<GENE>' }] }],
-                  },
-
-                },
-              },
-              operator: 'IN',
-            },
-            {
-              reference2: {
-                queryType: 'similarTo',
-                target: {
-                  target: 'Feature',
-                  filters: {
-                    AND: [{ biotype: 'gene' }, { OR: [{ name: '<GENE>' }, { sourceId: '<GENE>' }] }],
-                  },
-
-                },
-              },
-              operator: 'IN',
-            },
-          ],
+          conditions: [], operator: 'CONTAINSANY',
         },
       },
-      set searchInput(keyword) {
-        this.search.filters.OR[0].reference1.target.filters.AND[1].OR[0].name = keyword;
-        this.search.filters.OR[0].reference1.target.filters.AND[1].OR[1].sourceId = keyword;
-        this.search.filters.OR[1].reference2.target.filters.AND[1].OR[0].name = keyword;
-        this.search.filters.OR[1].reference2.target.filters.AND[1].OR[1].sourceId = keyword;
+      set conditions(keyword) {
+        this.search.filters.conditions = keyword;
       },
       async buildSearch(keyword) {
-        this.searchInput = keyword;
+        const variantSearch = {
+          target: 'Variant',
+          filters: {
+            OR: [
+              {
+                reference1: {
+                  queryType: 'similarTo',
+                  target: {
+                    target: 'Feature',
+                    filters: {
+                      AND: [{ biotype: 'gene' }, { OR: [{ name: keyword }, { sourceId: keyword }] }],
+                    },
+
+                  },
+                },
+                operator: 'IN',
+              },
+              {
+                reference2: {
+                  queryType: 'similarTo',
+                  target: {
+                    target: 'Feature',
+                    filters: {
+                      AND: [{ biotype: 'gene' }, { OR: [{ name: keyword }, { sourceId: keyword }] }],
+                    },
+
+                  },
+                },
+                operator: 'IN',
+              },
+            ],
+          },
+        };
+
+        this.conditions = await setSubQuery(variantSearch);
       },
     },
   ],

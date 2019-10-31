@@ -22,7 +22,7 @@ import { KBContext } from '../KBContext';
 import ReviewDialog from './ReviewDialog';
 import ToggleButtonGroup from '../ToggleButtonGroup';
 import EdgeTable from './EdgeTable';
-import useForm from '../uesForm';
+import useForm from '../useForm';
 
 
 const cleanPayload = (payload) => {
@@ -276,7 +276,7 @@ const RecordForm = ({
               message="Are you sure you want to delete this record?"
               disabled={actionInProgress}
             >
-                DELETE
+              DELETE
             </ActionButton>
           )
           : (<div />) // for spacing issues only

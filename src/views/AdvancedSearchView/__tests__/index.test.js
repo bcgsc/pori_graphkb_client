@@ -1,12 +1,54 @@
 import '@testing-library/jest-dom/extend-expect';
 import React from 'react';
 import {
-  render, fireEvent, act,
+  render, fireEvent,
 } from '@testing-library/react';
 
 
 import AdvancedSearchView from '..';
 
+jest.mock('../../../components/RecordAutocomplete', () => (({
+  value, onChange, name, label,
+}) => {
+  const handleChange = () => {
+    onChange({ target: { value: [{ displayName: 'value', '@rid': '1:1' }] }, name });
+  };
+
+  return (
+    <select data-testid="value-select" value={value} onChange={handleChange}>
+      <option key="test" value={value}>
+        {label}
+      </option>
+    </select>
+  );
+}));
+
+/* eslint-disable react/prop-types */
+jest.mock('../../../components/ResourceSelectComponent', () => (({
+  resources = [], value, onChange, className,
+}) => {
+  const handleChange = (event) => {
+    const option = resources.find(
+      opt => opt.value === event.currentTarget.value,
+    );
+    onChange({ target: { value: option ? option.value : option } });
+  };
+
+  const classCheck = className.includes('class') ? 'class' : null;
+  const propCheck = className.includes('property') ? 'prop' : null;
+  const operatorCheck = className.includes('operator') ? 'operator' : null;
+  const selectType = classCheck || propCheck || operatorCheck || 'filter';
+  return (
+    <select data-testid={`${selectType}-select`} value={value} onChange={handleChange}>
+      {resources.map(opt => (
+        <option key={opt.key} value={opt.value}>
+          {opt.label}
+        </option>
+      ))}
+    </select>
+  );
+}));
+/* eslint-enable react/prop-types */
 
 describe('AdvancedSearchView', () => {
   afterEach(() => {
@@ -22,28 +64,16 @@ describe('AdvancedSearchView', () => {
   describe('AdvancedSearchView renders correctly', () => {
     let getByTestId;
     let getByText;
-    let debug;
 
     beforeEach(() => {
       ({
-        getByTestId, getByText, debug,
+        getByTestId, getByText,
       } = render(
         <AdvancedSearchView
           history={mockHistory}
           modelName="Statement"
         />,
       ));
-    });
-
-    test('renders class select correctly', () => {
-      expect(getByText('Statement')).toBeInTheDocument();
-      expect(getByText('@class type to be queried')).toBeInTheDocument();
-      expect(getByText('Decomposed sentences linking variants and ontological terms to implications and evidence')).toBeInTheDocument();
-    });
-
-    test('renders add new filter box correctly', () => {
-      expect(getByText('Add New Filter')).toBeInTheDocument();
-      expect(getByText('properties')).toBeInTheDocument();
     });
 
     test('add filter button is disabled on render', async () => {
@@ -57,24 +87,23 @@ describe('AdvancedSearchView', () => {
       expect(mockPush).toHaveBeenCalledWith('/data/table?complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQifQ%253D%253D&%40class=Statement');
     });
 
-    test('fires prop select correctly', () => {
-      fireEvent.change(getByTestId('prop-select'), { target: { value: '@rid' } });
+
+    test('renders new filter group correctly', async () => {
+      await fireEvent.change(getByTestId('prop-select'), { target: { value: 'relevance' } });
+      await fireEvent.change(getByTestId('value-select'), { target: { value: [{ displayName: 'value', '@rid': '1:1' }] } });
+      expect(getByText('ADD FILTER')).toBeInTheDocument();
+      expect(getByText('ADD FILTER')).not.toBeDisabled();
+      await fireEvent.click(getByText('ADD FILTER'));
+      expect(getByText('relevance = \'value (1:1)\'')).toBeInTheDocument();
     });
 
-    test('fires value select correctly', () => {
-      fireEvent.change(getByTestId('prop-select'), { target: { value: 'relevance' } });
-      fireEvent.change(getByTestId('value-select'), { target: { value: 'resistance' } });
-      expect(getByText('ADD FILTER')).toBeInTheDocument();
-      expect(getByText('ADD FILTER')).toBeDisabled();
-    });
-
-    test('fires operator changes correct', () => {
-      fireEvent.change(getByTestId('prop-select'), { target: { value: 'relevance' } });
-      fireEvent.change(getByTestId('value-select'), { target: { value: 'resistance' } });
-      fireEvent.change(getByTestId('operator-select'), { target: { value: '=' } });
-      expect(getByText('ADD FILTER')).toBeInTheDocument();
-      expect(getByText('ADD FILTER')).toBeDisabled();
-      debug();
+    test('fires new search correctly', async () => {
+      await fireEvent.change(getByTestId('prop-select'), { target: { value: 'relevance' } });
+      await fireEvent.change(getByTestId('value-select'), { target: { value: [{ displayName: 'value', '@rid': '1:1' }] } });
+      await fireEvent.click(getByText('ADD FILTER'));
+      fireEvent.click(getByText('Search'));
+      expect(mockPush).toHaveBeenCalledTimes(1);
+      expect(mockPush).toHaveBeenCalledWith('/data/table?complex=eyJ0YXJnZXQiOiJTdGF0ZW1lbnQiLCJmaWx0ZXJzIjp7Ik9SIjpbeyJBTkQiOlt7InJlbGV2YW5jZSI6IjE6MSIsIm9wZXJhdG9yIjoiPSJ9XX1dfX0%253D&%40class=Statement');
     });
   });
 });

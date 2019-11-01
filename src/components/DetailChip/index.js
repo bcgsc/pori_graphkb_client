@@ -128,7 +128,7 @@ class DetailChip extends React.Component {
     valueToString: PropTypes.func,
     title: PropTypes.string,
     getLink: PropTypes.func,
-    PopUpComponent: PropTypes.object,
+    PopUpComponent: PropTypes.func,
     PopUpProps: PropTypes.object,
   };
 

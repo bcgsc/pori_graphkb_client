@@ -22,6 +22,7 @@ import {
 import { KBContext } from '../KBContext';
 import ReviewDialog from './ReviewDialog';
 import ToggleButtonGroup from '../ToggleButtonGroup';
+import EdgeTable from './EdgeTable';
 
 
 const cleanPayload = (payload) => {
@@ -297,7 +298,12 @@ const RecordForm = ({
         collapseExtra
         disabled={actionInProgress || variant === FORM_VARIANT.VIEW}
       />
-
+      {variant === FORM_VARIANT.VIEW && (
+        <div className="record-form__related-records">
+          <Typography variant="h4">Related Records</Typography>
+          <EdgeTable value={formContent} />
+        </div>
+      )}
       <div className="record-form__action-buttons">
         {variant === FORM_VARIANT.EDIT
           ? (
@@ -338,7 +344,6 @@ const RecordForm = ({
           : (<div />) // for spacing issues only
           }
       </div>
-
     </Paper>
   );
 };

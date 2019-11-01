@@ -57,11 +57,7 @@ describe('Search Input', () => {
     test('input triggers change handlers', () => {
       // clears inputs on mounting to handle option selection change
       expect(changeSpy).toHaveBeenCalledTimes(1);
-<<<<<<< HEAD
-      fireEvent.change(getByTestId('search-input'), { target: { value: 'Clicked!' } });
-=======
       fireEvent.change(getByTestId('search-input'), { target: { value: 'Changed!' } });
->>>>>>> 148340de810520c8f6e284b149823669d4b4bf41
       expect(changeSpy).toHaveBeenCalledTimes(2);
     });
   });

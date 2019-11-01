@@ -6,12 +6,12 @@ const MAX_RESULT_COUNT = 300;
  * Given vocabulary term, returns rid of term if it exists
  */
 const vocabularyRIDGenerator = async (vocabName) => {
-  const sensitivityRIDSearch = {
+  const search = {
     target: 'Vocabulary',
     filters: { name: vocabName },
     returnProperties: ['@rid'],
   };
-  const call = api.post('/query', sensitivityRIDSearch);
+  const call = api.post('/query', search);
   const record = await call.request();
   const [vocab] = record;
   const { '@rid': rid } = vocab;
@@ -572,9 +572,12 @@ const SEARCH_OPTS = {
         this.relevanceRIDs = [sensitivityRID, resistanceRID];
 
         const geneSearch = {
-          target: 'Feature',
-          filters: {
-            AND: [{ biotype: 'gene' }, { name: keyword }],
+          queryType: 'similarTo',
+          target: {
+            target: 'Feature',
+            filters: {
+              AND: [{ biotype: 'gene' }, { name: keyword }],
+            },
           },
           returnProperties: ['@rid'],
         };

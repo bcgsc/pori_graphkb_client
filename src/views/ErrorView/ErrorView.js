@@ -11,7 +11,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import './ErrorView.scss';
 import config from '../../static/config';
-import { LocationPropType } from '../../components/prop-type-models';
+import { LocationPropType } from '../../components/Types';
 
 const { FEEDBACK: { JIRA: JIRA_LINK, EMAIL } } = config;
 

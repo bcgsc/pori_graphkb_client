@@ -14,7 +14,7 @@ import { FORM_VARIANT } from '../../components/RecordForm/util';
 import { cleanLinkedRecords } from '../../components/util';
 import { hasWriteAccess } from '../../services/auth';
 import api from '../../services/api';
-import { HistoryPropType } from '../../components/prop-type-models';
+import { HistoryPropType } from '../../components/Types';
 
 
 const DEFAULT_TITLES = {

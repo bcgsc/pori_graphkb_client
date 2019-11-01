@@ -21,7 +21,7 @@ import {
   AboutClasses,
   AboutUsageTerms,
 } from './components';
-import { LocationPropType } from '../../components/prop-type-models';
+import { LocationPropType } from '../../components/Types';
 
 
 class AboutView extends Component {

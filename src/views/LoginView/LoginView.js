@@ -9,7 +9,7 @@ import {
   isAuthenticated, getReferrerUri, login, keycloak, isAuthorized,
 } from '../../services/auth';
 import config from '../../static/config';
-import { HistoryPropType, LocationPropType } from '../../components/prop-type-models';
+import { HistoryPropType, LocationPropType } from '../../components/Types';
 
 const {
   DISABLE_AUTH,

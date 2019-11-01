@@ -56,14 +56,8 @@ const LocationPropType = PropTypes.shape({
 });
 
 const HistoryPropType = PropTypes.shape({
-  action: PropTypes.string,
-  block: PropTypes.func,
   createHref: PropTypes.func,
-  go: PropTypes.func,
   goBack: PropTypes.func,
-  goForward: PropTypes.func,
-  length: PropTypes.number,
-  listen: PropTypes.func,
   location: LocationPropType,
   push: PropTypes.func,
   replace: PropTypes.func,

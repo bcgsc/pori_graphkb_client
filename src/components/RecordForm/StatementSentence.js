@@ -3,7 +3,7 @@ import { Typography } from '@material-ui/core';
 import PropTypes from 'prop-types';
 
 import Schema from '../../services/schema';
-import { StatementPropType } from '../prop-type-models';
+import { StatementPropType } from '../Types';
 
 const StatementSentence = (props) => {
   const {

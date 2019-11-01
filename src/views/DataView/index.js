@@ -24,7 +24,7 @@ import RecordFormDialog from '../../components/RecordFormDialog';
 import api from '../../services/api';
 import { cleanLinkedRecords } from '../../components/util';
 import { hashRecordsByRID } from './util';
-import { HistoryPropType, LocationPropType } from '../../components/prop-type-models';
+import { HistoryPropType, LocationPropType } from '../../components/Types';
 
 import './index.scss';
 

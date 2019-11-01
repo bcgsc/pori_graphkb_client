@@ -13,7 +13,7 @@ import slugify from 'slugify';
 
 import BasePopularSearch from './components/BasePopularSearch';
 import './index.scss';
-import { LocationPropType, HistoryPropType } from '../../components/Types';
+import { LocationPropType, HistoryPropType } from '../../components/types';
 
 /**
  * Main view for popular search. Displays top level query option tabs. This view

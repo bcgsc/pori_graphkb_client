@@ -23,7 +23,7 @@ import { KBContext } from '../KBContext';
 import ReviewDialog from './ReviewDialog';
 import ToggleButtonGroup from '../ToggleButtonGroup';
 import EdgeTable from './EdgeTable';
-import { GeneralRecordPropType } from '../Types';
+import { GeneralRecordPropType } from '../types';
 
 
 const cleanPayload = (payload) => {

@@ -17,7 +17,7 @@ import ActionButton from '../../components/ActionButton';
 import FilterGroup from './FilterGroup';
 import { cleanLinkedRecords } from '../../components/util';
 import api from '../../services/api';
-import { HistoryPropType } from '../../components/Types';
+import { HistoryPropType } from '../../components/types';
 
 const defaultFilterGroup = [];
 

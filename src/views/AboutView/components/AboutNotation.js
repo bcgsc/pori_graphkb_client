@@ -3,7 +3,7 @@ import marked from 'marked';
 
 
 import notation from '@bcgsc/knowledgebase-parser/doc/notation.md';
-import { LocationPropType } from '../../../components/Types';
+import { LocationPropType } from '../../../components/types';
 
 
 class AboutNotation extends React.Component {

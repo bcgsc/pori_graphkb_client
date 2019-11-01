@@ -7,7 +7,7 @@ import { PropTypes } from 'prop-types';
 
 import { KBContext } from './KBContext';
 import { isAuthenticated, isAdmin } from '../services/auth';
-import { LocationPropType } from './Types';
+import { LocationPropType } from './types';
 
 /**
  * @returns {Route} a route component which checks authentication on render or redirects to login

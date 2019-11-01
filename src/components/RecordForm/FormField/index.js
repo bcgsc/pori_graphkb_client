@@ -20,7 +20,7 @@ import EmbeddedRecord from './EmbeddedRecord';
 import './index.scss';
 import { FORM_VARIANT } from '../util';
 import EmbeddedListTable from './StatementReviewsTable';
-import { GeneralRecordPropType } from '../../Types';
+import { GeneralRecordPropType } from '../../types';
 
 /**
  * Generate the field component for a form. Uses the property model to decide

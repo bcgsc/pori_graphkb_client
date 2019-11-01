@@ -28,7 +28,7 @@ import './DetailDrawer.scss';
 import util from '../../../../services/util';
 import { hasWriteAccess } from '../../../../services/auth';
 import { KBContext } from '../../../../components/KBContext';
-import { GeneralRecordPropType } from '../../../../components/Types';
+import { GeneralRecordPropType } from '../../../../components/types';
 
 const MAX_STRING_LENGTH = 64;
 const DATE_KEYS = ['createdAt', 'deletedAt'];

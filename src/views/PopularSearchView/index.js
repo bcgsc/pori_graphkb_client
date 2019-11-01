@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   NavLink,
   Route,
@@ -13,7 +13,7 @@ import slugify from 'slugify';
 
 import BasePopularSearch from './components/BasePopularSearch';
 import './index.scss';
-import { LocationPropType } from '../../components/Types';
+import { LocationPropType, HistoryPropType } from '../../components/Types';
 
 /**
  * Main view for popular search. Displays top level query option tabs. This view
@@ -103,6 +103,7 @@ function PopularSearchView(props) {
 
 PopularSearchView.propTypes = {
   location: LocationPropType.isRequired,
+  history: HistoryPropType.isRequired,
 };
 
 export default PopularSearchView;

@@ -9,7 +9,7 @@ const mockSelectedOption = {
   requiredInput: {
     label: 'Variant', property: 'name', class: 'Variant', example: 'Ex. KRAS:p.G12A',
   },
-  optionalInput: {
+  additionalInput: {
     label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer',
   },
 };

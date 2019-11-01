@@ -24,13 +24,13 @@ function SearchInput(props) {
     handleOptionalChange,
     handleSubmit,
     optionalValue,
-    selectedOption: { requiredInput, optionalInput },
+    selectedOption: { requiredInput, additionalInput },
     selectedOption,
     value,
   } = props;
 
 
-  const hasOptionalInput = !!optionalInput;
+  const hasAdditionalInput = !!additionalInput;
 
   const handleChange = (event, optionalVal = false) => {
     const { target: { value: newVal } } = event;
@@ -63,18 +63,20 @@ function SearchInput(props) {
           label={requiredInput.label}
           margin="normal"
           onChange={e => handleChange(e)}
+          required
           variant="outlined"
           value={value}
         />
       </div>
-      {(hasOptionalInput) && (
+      {(hasAdditionalInput) && (
         <div className="search-input__input-field">
           <TextField
             className="input-box"
-            helperText={optionalInput.example}
-            label={optionalInput.label}
+            helperText={additionalInput.example}
+            label={additionalInput.label}
             margin="normal"
             onChange={e => handleChange(e, true)}
+            required={!additionalInput.optional}
             variant="outlined"
             value={optionalValue}
           />
@@ -105,7 +107,7 @@ SearchInput.propTypes = {
   selectedOption: PropTypes.shape({
     label: PropTypes.string,
     requiredInput: PropTypes.object,
-    optionalInput: PropTypes.object,
+    additionalInput: PropTypes.object,
   }),
   optionalValue: PropTypes.string,
   value: PropTypes.string.isRequired,

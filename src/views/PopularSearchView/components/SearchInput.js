@@ -76,6 +76,7 @@ function SearchInput(props) {
             inputProps={{ 'data-testid': 'additional-input' }}
             label={additionalInput.label}
             margin="normal"
+            inputProps={{ 'data-testid': 'additional-input' }}
             onChange={e => handleChange(e, true)}
             required={!additionalInput.optional}
             variant="outlined"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import {
   NavLink,
@@ -21,13 +21,28 @@ import './index.scss';
  */
 function PopularSearchView(props) {
   const baseUri = '/query-popular';
-  const { location: { pathname: currentUri } } = props;
+  const { location: { pathname: currentUri }, history } = props;
+
+  const onError = useCallback((error = {}) => {
+    const { name, message } = error;
+    history.push('/error', { error: { name, message } });
+  }, [history]);
+
+  const onSubmit = useCallback((search = '') => {
+    if (search) {
+      history.push(`/data/table?${search}`, { search });
+    } else {
+      history.push('/');
+    }
+  }, [history]);
+
+  const LoadedSearch = variant => (<BasePopularSearch variant={variant} onError={onError} onSubmit={onSubmit} />);
 
   const tabsList = [
-    { label: 'Gene', component: () => <BasePopularSearch variant="GENE" /> },
-    { label: 'Variant', component: () => <BasePopularSearch variant="VARIANT" /> },
-    { label: 'Disease', component: () => <BasePopularSearch variant="DISEASE" /> },
-    { label: 'Drug', component: () => <BasePopularSearch variant="DRUG" /> },
+    { label: 'Gene', component: () => LoadedSearch('GENE') },
+    { label: 'Variant', component: () => LoadedSearch('VARIANT') },
+    { label: 'Disease', component: () => LoadedSearch('DISEASE') },
+    { label: 'Drug', component: () => LoadedSearch('DRUG') },
   ];
 
   const uriLookup = {};
@@ -59,7 +74,7 @@ function PopularSearchView(props) {
     <Route
       label={label}
       key={label}
-      render={component}
+      component={component}
       exact
       path={uri}
     />
@@ -86,6 +101,7 @@ function PopularSearchView(props) {
 
 PopularSearchView.propTypes = {
   location: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
 export default PopularSearchView;

@@ -4,117 +4,20 @@ import PropTypes from 'prop-types';
 import './index.scss';
 import SearchInput from './SearchInput';
 import SearchMenu from './SearchMenu';
+import api from '../../../services/api';
+import { SEARCH_OPTS } from './util';
 
-const SEARCH_OPTS = {
-  DRUG: [
-    {
-      label: 'Given a drug, find all variants associated with therapeutic sensitivity',
-      requiredInput: {
-        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. Adriamycin',
-      },
-    },
-    {
-      label: 'Given a drug, find all variants associated with resistance',
-      requiredInput: {
-        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. Adriamycin',
-      },
-    },
-    {
-      label: 'Given a drug, find all variants with pharmacogenomic information',
-      requiredInput: {
-        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. Adriamycin',
-      },
-    },
-    {
-      label: 'Given a drug, find all diseases it is approved for use',
-      requiredInput: {
-        label: 'Drug', property: 'name', class: 'Therapy', example: ' Ex. Adriamycin',
-      },
-    },
-  ],
-  DISEASE: [
-    {
-      label: 'Given a disease, find all genes associated with therapeutic sensitivity',
-      requiredInput: {
-        label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer',
-      },
-    },
-    {
-      label: 'Given a disease, find all genes associated with therapeutic resistance',
-      requiredInput: {
-        label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer',
-      },
-    },
-    {
-      label: 'Given a disease, find all variants associated with a relevance',
-      requiredInput: {
-        label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer',
-      },
-    },
-  ],
-  VARIANT: [
-    {
-      label: 'Given a variant, find all therapies associated with sensitivity for Disease(s)',
-      requiredInput: {
-        label: 'Variant', property: 'name', class: 'Variant', example: 'Ex. KRAS:p.G12A',
-      },
-      optionalInput: {
-        label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer',
-      },
-    },
-    {
-      label: 'Given a variant, find all therapies associated with resistance',
-      requiredInput: {
-        label: 'Variant', property: 'name', class: 'Variant', example: 'Ex. KRAS:p.G12A',
-      },
-      optionalInput: {
-        label: 'Disease', property: 'name', class: 'Disease', example: 'Ex. Cancer',
-      },
-    },
-    {
-      label: 'Given a variant, find all diseases that the variant is associated with',
-      requiredInput: {
-        label: 'Variant', property: 'name', class: 'Variant', example: 'Ex. KRAS:p.G12A',
-      },
-      optionalInput: {
-        label: 'Relevance', property: 'name', class: 'Vocabulary', example: 'Ex. Reduced sensitivity',
-      },
-    },
-  ],
-  GENE: [
-    {
-      label: 'Given a gene, find all variants reported for all diseases',
-      requiredInput: {
-        label: 'Gene', property: 'name', class: 'Feature', example: 'Ex. KRAS',
-      },
-    },
-    {
-      label: 'Given a gene, find a specific disease and the associated relevances',
-      requiredInput: {
-        label: 'Gene', property: 'name', class: 'Feature', example: 'Ex. KRAS',
-      },
-    },
-    {
-      label: 'Given a gene, find all variants linked with drug sensitivity or resistance',
-      requiredInput: {
-        label: 'Gene', property: 'name', class: 'Feature', example: 'Ex. KRAS',
-      },
-    },
-    {
-      label: 'Given a gene, find all variants on the gene',
-      requiredInput: {
-        label: 'Gene', property: 'name', class: 'Feature', example: 'Ex. KRAS',
-      },
-    },
-  ],
-};
+
 const MIN_VAL_LENGTH = 3;
 
 /**
  * Base Component that displays popular search options.
+ * @property {string} props.variant one of ['GENE', 'DISEASE', 'DRUG', 'VARIANT']
+ * @property {function} props.onError parent error handler
+ * @property {function} props.onSubmit parent error handler
  */
 function BasePopularSearch(props) {
-  const { variant } = props;
+  const { variant, onError, onSubmit } = props;
   const [searchIndex, setSearchIndex] = useState(0);
   const [value, setValue] = useState('');
   const [optionalValue, setOptionalValue] = useState('');
@@ -123,12 +26,41 @@ function BasePopularSearch(props) {
     setSearchIndex(index);
   };
 
-  // handle submission of form
-  const handleSubmit = () => {};
 
   const labels = SEARCH_OPTS[variant].map(opt => opt.label);
   const selectedOption = SEARCH_OPTS[variant][searchIndex];
-  const hasOptionalField = !!selectedOption.optionalInput;
+  const hasAdditionalField = !!selectedOption.additionalInput;
+
+
+  /**
+   * checks input fields and returns a bool to indicate whether
+   * or not search button should be disabled.
+   */
+  const inputCheck = () => {
+    const hasTwoRequiredFields = selectedOption.additionalInput
+      ? !selectedOption.additionalInput.optional
+      : false;
+    const requiredValCheck = (!value || value.length < MIN_VAL_LENGTH);
+    const additionalValCheck = (hasTwoRequiredFields && (!optionalValue || optionalValue.length < MIN_VAL_LENGTH));
+    return (requiredValCheck || additionalValCheck);
+  };
+
+  const isDisabled = inputCheck();
+
+  const handleSubmit = async () => {
+    // build search by fetching rids for subqueries to complete full search
+    try {
+      if (selectedOption.buildSearch) {
+        await selectedOption.buildSearch(value, optionalValue);
+      }
+      const { search: rawSearch } = selectedOption;
+
+      const search = api.encodeQueryComplexToSearch(rawSearch, 'Statement');
+      onSubmit(search);
+    } catch (err) {
+      onError(err);
+    }
+  };
 
   return (
     <div className="popular-search__contents">
@@ -139,9 +71,9 @@ function BasePopularSearch(props) {
           handleChange={handleSelectionChange}
         />
       </div>
-      <div className={`popular-search__input-field${hasOptionalField ? '--optional' : ''}`}>
+      <div className={`popular-search__input-field${hasAdditionalField ? '--optional' : ''}`}>
         <SearchInput
-          disabled={!value || value.length < MIN_VAL_LENGTH}
+          disabled={isDisabled}
           handleInputChange={setValue}
           handleOptionalChange={setOptionalValue}
           handleSubmit={handleSubmit}
@@ -156,6 +88,12 @@ function BasePopularSearch(props) {
 
 BasePopularSearch.propTypes = {
   variant: PropTypes.string.isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  onError: PropTypes.func,
+};
+
+BasePopularSearch.defaultProps = {
+  onError: () => {},
 };
 
 export default BasePopularSearch;

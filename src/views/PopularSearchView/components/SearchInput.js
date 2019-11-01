@@ -58,7 +58,7 @@ function SearchInput(props) {
           autoFocus
           className="input-box"
           helperText={requiredInput.example}
-          inputProps={{ 'data-testid': 'content-input' }}
+          inputProps={{ 'data-testid': 'search-input' }}
           inputRef={ref}
           label={requiredInput.label}
           margin="normal"
@@ -73,6 +73,7 @@ function SearchInput(props) {
           <TextField
             className="input-box"
             helperText={additionalInput.example}
+            inputProps={{ 'data-testid': 'additional-input' }}
             label={additionalInput.label}
             margin="normal"
             onChange={e => handleChange(e, true)}

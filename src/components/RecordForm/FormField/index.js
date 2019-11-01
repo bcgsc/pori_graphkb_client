@@ -182,6 +182,7 @@ const FormField = (props) => {
         name={name}
         required={mandatory}
         onChange={onChange}
+        innerProps={innerProps}
         resources={['', ...choices]}
         label={label || name}
         value={value || ''}
@@ -198,6 +199,7 @@ const FormField = (props) => {
       isMulti: type === 'linkset',
       label: label || name,
       name,
+      className,
       onChange,
       required: mandatory,
       value,
@@ -230,6 +232,7 @@ const FormField = (props) => {
       propComponent = (
         <RecordAutocomplete
           {...autoProps}
+          innerProps={innerProps}
           DetailChipProps={{
             ...autoProps.DetailChipProps,
             valueToString: (record) => {

@@ -6,18 +6,15 @@ import { BrowserRouter } from 'react-router-dom';
 import {
   createMuiTheme,
   MuiThemeProvider,
-  // createGenerateClassName,
-  // jssPreset,
 } from '@material-ui/core/styles';
 import { createGenerateClassName, jssPreset } from '@material-ui/styles';
 
 import JssProvider from 'react-jss/lib/JssProvider';
+import { StylesProvider } from '@material-ui/styles'
 import { create } from 'jss';
 import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackbar-provider';
 import * as cssTheme from './_theme.scss';
 import Main from './views/Main/Main';
-
-
 
 const theme = createMuiTheme({
   direction: 'ltr',
@@ -81,15 +78,17 @@ const jss = create({
  */
 function App() {
   return (
-    <JssProvider jss={jss} generateClassName={generateClassName}>
-      <MuiThemeProvider theme={theme}>
-        <SnackbarProvider anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
-          <BrowserRouter>
-            <Main />
-          </BrowserRouter>
-        </SnackbarProvider>
-      </MuiThemeProvider>
-    </JssProvider>
+    <StylesProvider injectFirst>
+      <JssProvider jss={jss} generateClassName={generateClassName} >
+        <MuiThemeProvider theme={theme}>
+          <SnackbarProvider anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+            <BrowserRouter>
+              <Main />
+            </BrowserRouter>
+          </SnackbarProvider>
+        </MuiThemeProvider>
+      </JssProvider>
+    </StylesProvider>
   );
 }
 

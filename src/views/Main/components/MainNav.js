@@ -12,6 +12,7 @@ import {
   ListItemIcon,
   Divider,
   MenuItem,
+  makeStyles,
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { boundMethod } from 'autobind-decorator';
@@ -59,12 +60,14 @@ class MainNav extends React.PureComponent {
   @boundMethod
   handleClose() {
     const { onChange, activeLink } = this.props;
+    console.log('TCL: MainNav -> handleClose -> onChange', onChange);
     onChange({ isOpen: false, activeLink });
   }
 
   @boundMethod
   handleOpen(menuOption) {
     const { onChange, activeLink } = this.props;
+    console.log('TCL: MainNav -> handleOpen -> onChange', onChange);
     onChange({ isOpen: true, activeLink });
     this.setState({ subMenuOpen: menuOption });
   }
@@ -103,6 +106,7 @@ class MainNav extends React.PureComponent {
         anchor="left"
         classes={{
           paper: `main-nav-drawer main-nav-drawer${isOpen ? '' : '--closed'}`,
+          paperAnchorDockedLeft: 'test'
         }}
       >
         <div className="main-nav-drawer__banner">

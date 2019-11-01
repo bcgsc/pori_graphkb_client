@@ -61,6 +61,7 @@ const Main = () => {
   const [authenticationToken, setAuthenticationToken] = useState('');
   const [anchorEl, setAnchorEl] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  console.log('TCL: Main -> drawerOpen', drawerOpen);
   const [activeLink, setActiveLink] = useState('/query');
 
   const dropdown = useRef();

@@ -34,12 +34,8 @@ function BasePopularSearch(props) {
 
   /**
    * checks input fields and returns a bool to indicate whether
-<<<<<<< HEAD
    * search button should be disabled. If true, search button
    * should be disabled.
-=======
-   * search button should be disabled. true => search btn should be disabled
->>>>>>> 148340de810520c8f6e284b149823669d4b4bf41
    */
   const inputCheck = () => {
     const hasTwoRequiredFields = selectedOption.additionalInput

@@ -22,7 +22,7 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import logo from '../../../static/logo.png';
 import title from '../../../static/title.png';
 import { KBContext } from '../../../components/KBContext';
-import { hasWriteAccess, isAdmin } from '../../../services/auth';
+import { hasWriteAccess, isAdmin, isAuthorized } from '../../../services/auth';
 
 
 /**
@@ -46,6 +46,13 @@ class MainNav extends React.PureComponent {
     activeLink: null,
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      subMenuOpen: 'query',
+    };
+  }
+
   /**
    * Handles closing of drawer.
    */
@@ -56,9 +63,10 @@ class MainNav extends React.PureComponent {
   }
 
   @boundMethod
-  handleOpen() {
+  handleOpen(menuOption) {
     const { onChange, activeLink } = this.props;
     onChange({ isOpen: true, activeLink });
+    this.setState({ subMenuOpen: menuOption });
   }
 
   @boundMethod
@@ -69,6 +77,7 @@ class MainNav extends React.PureComponent {
 
   render() {
     const { isOpen, activeLink } = this.props;
+    const { subMenuOpen } = this.state;
 
     const MenuLink = ({
       route, label, icon = null, inset = false,
@@ -103,14 +112,24 @@ class MainNav extends React.PureComponent {
         </div>
         <Divider />
         <List className="main-nav-drawer__links">
-          <MenuLink label="Query" route="/query" icon={<SearchIcon />} />
+          <MenuItem onClick={() => this.handleOpen('query')}>
+            <ListItemIcon> <SearchIcon /> </ListItemIcon>
+            <ListItemText primary="Search" />
+          </MenuItem>
+          {isAuthorized(this.context) && (isOpen && subMenuOpen === 'query') && (
+            <>
+              <MenuLink label="Quick" route="/query" inset />
+              <MenuLink label="Popular" route="/query-popular/gene" inset />
+              <MenuLink label="Advanced" route="/query-advanced" inset />
+            </>
+          )}
           {hasWriteAccess(this.context) && (
-            <MenuItem onClick={this.handleOpen}>
+            <MenuItem onClick={() => this.handleOpen('add')}>
               <ListItemIcon> <AddIcon /> </ListItemIcon>
               <ListItemText primary="Add new Record" />
             </MenuItem>
           )}
-          {hasWriteAccess(this.context) && isOpen && (
+          {hasWriteAccess(this.context) && (isOpen && subMenuOpen === 'add') && (
             <>
               {isAdmin(this.context) && (<MenuLink label="Source*" route="/new/source" inset />)}
               <MenuLink label="Ontology" route="/new/ontology" inset />

@@ -15,7 +15,7 @@ const devConfig = {
       DEBUG: false,
       DISABLE_AUTH: null,
       KEYCLOAK_CLIENT_ID: 'GraphKB',
-      KEYCLOAK_REALM: 'GSC_posix_syncd',
+      KEYCLOAK_REALM: 'GSC',
       KEYCLOAK_ROLE: 'GraphKB',
       KEYCLOAK_URL: 'https://keycloakdev01.bcgsc.ca/auth',
       NODE_ENV: 'development',

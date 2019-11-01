@@ -37,7 +37,7 @@ describe('StatementSentence', () => {
       <StatementSentence
         schema={schema}
         content={{
-          impliedBy: [{ displayName: 'condition1' }, { displayName: 'condition2' }],
+          conditions: [{ displayName: 'condition1' }, { displayName: 'condition2' }],
         }}
       />
     ));
@@ -55,9 +55,9 @@ describe('StatementSentence', () => {
       <StatementSentence
         schema={schema}
         content={{
-          impliedBy: [{ displayName: 'KRAS mutation' }],
-          appliesTo: 'drugName',
-          supportedBy: [{ displayName: 'PMID:1234' }],
+          conditions: [{ displayName: 'KRAS mutation' }],
+          subject: 'drugName',
+          evidence: [{ displayName: 'PMID:1234' }],
           relevance: 'sensitivity',
         }}
       />

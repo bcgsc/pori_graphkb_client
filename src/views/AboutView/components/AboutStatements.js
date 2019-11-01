@@ -25,7 +25,7 @@ const AboutStatements = () => (
     <List>
       <ListItem>
         <ListItemText
-          primary="AppliesTo"
+          primary="subject"
           secondary="This is the element which the relevance of the statement applies to"
         />
       </ListItem>
@@ -37,13 +37,13 @@ const AboutStatements = () => (
       </ListItem>
       <ListItem>
         <ListItemText
-          primary="ImpliedBy"
+          primary="conditions"
           secondary="This is the statement context. It is a series of required conditions for the statement to be applicable/true"
         />
       </ListItem>
       <ListItem>
         <ListItemText
-          primary="SupportedBy"
+          primary="evidence"
           secondary="One or more pieces of evidence (Literature, DB, etc) which support this statement"
         />
       </ListItem>
@@ -68,7 +68,7 @@ const AboutStatements = () => (
 
       <ListItem>
         <ListItemText
-          primary="AppliesTo"
+          primary="subject"
           secondary="NCT0444444: Here 'Eligibility' applies to the clinical trial 'NCT0444444'"
         />
       </ListItem>
@@ -80,13 +80,13 @@ const AboutStatements = () => (
       </ListItem>
       <ListItem>
         <ListItemText
-          primary="ImpliedBy"
+          primary="conditions"
           secondary="Lung Adenocarcinoma, and EGFR mutation: These are the conditions required"
         />
       </ListItem>
       <ListItem>
         <ListItemText
-          primary="SupportedBy"
+          primary="evidence"
           secondary="NCT0444444: Here the support is also the clinical trial since it is responsible for defining the eligibility requirements"
         />
       </ListItem>

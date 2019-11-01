@@ -200,7 +200,6 @@ const FormField = (props) => {
       label: label || name,
       className,
       name,
-      className,
       onChange,
       required: mandatory,
       value,

@@ -731,7 +731,7 @@ class GraphComponent extends Component {
       }
     });
 
-    this.saveGraphStatetoURL([...nodes]);
+    // this.saveGraphStatetoURL([...nodes]);
 
     return {
       expandable,

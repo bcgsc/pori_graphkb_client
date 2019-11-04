@@ -40,7 +40,7 @@ const AddReviewDialog = ({
 
   // handle and store the form content
   const {
-    formContent, formErrors, formHasErrors, updateForm,
+    formContent, formErrors, formHasErrors, updateForm, formIsDirty, setFormIsDirty,
   } = useSchemaForm(
     schema, { comment, status }, {},
   );
@@ -51,13 +51,14 @@ const AddReviewDialog = ({
   const handleSubmit = useCallback(() => {
     if (formHasErrors) {
       // bring up the snackbar for errors
+      setFormIsDirty(true);
       console.error(formErrors);
       snackbar.add('There are errors in the form which must be resolved before it can be submitted');
     } else {
       const content = { ...formContent, '@class': MODEL_NAME, createdBy: getUser(context) };
       onSubmit(content, updateAmalgamated);
     }
-  }, [context, formContent, formErrors, formHasErrors, onSubmit, snackbar, updateAmalgamated]);
+  }, [context, formContent, formErrors, formHasErrors, onSubmit, setFormIsDirty, snackbar, updateAmalgamated]);
 
   const handleOnChange = useCallback((event) => {
     // add the new value to the field
@@ -117,7 +118,7 @@ const AddReviewDialog = ({
             color="primary"
             size="large"
             requireConfirm={false}
-            disabled={formHasErrors}
+            disabled={formHasErrors && formIsDirty}
           >
               ADD REVIEW
           </ActionButton>

@@ -10,7 +10,6 @@ import {
   Tab,
 } from '@material-ui/core';
 import slugify from 'slugify';
-import PropTypes from 'prop-types';
 
 import './index.scss';
 import {
@@ -22,11 +21,12 @@ import {
   AboutClasses,
   AboutUsageTerms,
 } from './components';
+import { LocationPropType } from '../../components/types';
 
 
 class AboutView extends Component {
   static propTypes = {
-    location: PropTypes.object.isRequired,
+    location: LocationPropType.isRequired,
   };
 
   constructor(props) {

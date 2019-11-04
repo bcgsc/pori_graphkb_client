@@ -24,6 +24,7 @@ import RecordFormDialog from '../../components/RecordFormDialog';
 import api from '../../services/api';
 import { cleanLinkedRecords } from '../../components/util';
 import { hashRecordsByRID } from './util';
+import { HistoryPropType, LocationPropType } from '../../components/types';
 
 import './index.scss';
 
@@ -34,8 +35,8 @@ class DataView extends React.Component {
   static contextType = KBContext;
 
   static propTypes = {
-    location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
+    location: LocationPropType.isRequired,
+    history: HistoryPropType.isRequired,
     cacheBlocks: PropTypes.number,
     blockSize: PropTypes.number,
     bufferSize: PropTypes.number,

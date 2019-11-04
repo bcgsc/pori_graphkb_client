@@ -20,6 +20,7 @@ import EmbeddedRecord from './EmbeddedRecord';
 import './index.scss';
 import { FORM_VARIANT } from '../util';
 import EmbeddedListTable from './StatementReviewsTable';
+import { GeneralRecordPropType } from '../../types';
 
 /**
  * Generate the field component for a form. Uses the property model to decide
@@ -277,14 +278,49 @@ const FormField = (props) => {
 
 FormField.propTypes = {
   className: PropTypes.string,
-  error: PropTypes.object,
+  error: PropTypes.shape({
+    name: PropTypes.string,
+    message: PropTypes.string,
+  }),
   onChange: PropTypes.func.isRequired,
-  model: PropTypes.object.isRequired,
+  model: PropTypes.shape({
+    choices: PropTypes.arrayOf(PropTypes.shape({
+      key: PropTypes.string,
+      label: PropTypes.string,
+      value: PropTypes.string,
+      caption: PropTypes.string,
+    })),
+    default: PropTypes.string,
+    description: PropTypes.string,
+    example: PropTypes.string,
+    generateDefault: PropTypes.func,
+    linkedClass: PropTypes.shape({
+      name: PropTypes.string,
+      '@rid': PropTypes.string,
+      displayName: PropTypes.string,
+      isAbstract: PropTypes.bool,
+    }),
+    name: PropTypes.string,
+    type: PropTypes.string,
+    nullable: PropTypes.bool,
+    iterable: PropTypes.bool,
+    generated: PropTypes.bool,
+    mandatory: PropTypes.bool,
+  }).isRequired,
   disabled: PropTypes.bool,
-  value: PropTypes.any,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.arrayOf(GeneralRecordPropType),
+    GeneralRecordPropType,
+  ]),
   label: PropTypes.string,
   variant: PropTypes.string,
-  innerProps: PropTypes.object,
+  innerProps: PropTypes.shape({
+    inputProps: PropTypes.shape({
+      'data-test-id': PropTypes.string,
+    }),
+  }),
   formIsDirty: PropTypes.bool,
 };
 

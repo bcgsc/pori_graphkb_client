@@ -22,7 +22,7 @@ import { KBContext } from '../KBContext';
 import ReviewDialog from './ReviewDialog';
 import ToggleButtonGroup from '../ToggleButtonGroup';
 import EdgeTable from './EdgeTable';
-import useForm from '../hooks/useForm';
+import useSchemaForm from '../hooks/useSchemaForm';
 
 
 const cleanPayload = (payload) => {
@@ -81,18 +81,18 @@ const RecordForm = ({
   const controllers = [];
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
 
-  const formValidator = useCallback((propName, propValue) => {
-    const prop = schema.get(modelName).properties[propName];
+  const [fieldDefs, setFieldDefs] = useState({});
 
-    if (prop) {
-      return schema.validateValue(prop, propValue);
+  useEffect(() => {
+    if (schema && modelName) {
+      const { properties } = schema.get(modelName);
+      setFieldDefs(properties);
     }
-    return { value: propValue };
   }, [schema, modelName]);
 
   const {
     formIsDirty, setFormIsDirty, formContent, formErrors, updateForm, formHasErrors,
-  } = useForm(initialValue, formValidator, Object.keys(schema.get(modelName).properties));
+  } = useSchemaForm(schema, fieldDefs, initialValue);
 
 
   useEffect(() => () => controllers.map(c => c.abort()), []); // eslint-disable-line

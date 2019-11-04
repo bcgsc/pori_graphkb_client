@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useCallback } from 'react';
 import {
   NavLink,
   Route,
@@ -10,8 +9,11 @@ import {
   Tab,
 } from '@material-ui/core';
 import slugify from 'slugify';
+
+
 import BasePopularSearch from './components/BasePopularSearch';
 import './index.scss';
+import { LocationPropType, HistoryPropType } from '../../components/types';
 
 /**
  * Main view for popular search. Displays top level query option tabs. This view
@@ -21,13 +23,28 @@ import './index.scss';
  */
 function PopularSearchView(props) {
   const baseUri = '/query-popular';
-  const { location: { pathname: currentUri } } = props;
+  const { location: { pathname: currentUri }, history } = props;
+
+  const onError = useCallback((error = {}) => {
+    const { name, message } = error;
+    history.push('/error', { error: { name, message } });
+  }, [history]);
+
+  const onSubmit = useCallback((search = '') => {
+    if (search) {
+      history.push(`/data/table?${search}`, { search });
+    } else {
+      history.push('/');
+    }
+  }, [history]);
+
+  const LoadedSearch = variant => (<BasePopularSearch variant={variant} onError={onError} onSubmit={onSubmit} />);
 
   const tabsList = [
-    { label: 'Gene', component: () => <BasePopularSearch variant="GENE" /> },
-    { label: 'Variant', component: () => <BasePopularSearch variant="VARIANT" /> },
-    { label: 'Disease', component: () => <BasePopularSearch variant="DISEASE" /> },
-    { label: 'Drug', component: () => <BasePopularSearch variant="DRUG" /> },
+    { label: 'Gene', component: () => LoadedSearch('GENE') },
+    { label: 'Variant', component: () => LoadedSearch('VARIANT') },
+    { label: 'Disease', component: () => LoadedSearch('DISEASE') },
+    { label: 'Drug', component: () => LoadedSearch('DRUG') },
   ];
 
   const uriLookup = {};
@@ -59,7 +76,7 @@ function PopularSearchView(props) {
     <Route
       label={label}
       key={label}
-      render={component}
+      component={component}
       exact
       path={uri}
     />
@@ -85,7 +102,8 @@ function PopularSearchView(props) {
 }
 
 PopularSearchView.propTypes = {
-  location: PropTypes.object.isRequired,
+  location: LocationPropType.isRequired,
+  history: HistoryPropType.isRequired,
 };
 
 export default PopularSearchView;

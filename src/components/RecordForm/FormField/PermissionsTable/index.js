@@ -16,10 +16,46 @@ import kbSchema from '@bcgsc/knowledgebase-schema';
 
 import { KBContext } from '../../../KBContext';
 import './index.scss';
+import schema from '../../../../services/schema';
 
 const { constants: { PERMISSIONS } } = kbSchema;
 
 /* eslint-disable no-bitwise */
+
+/**
+* For a mapping of class names to the single permissions value, split these by operation types
+* for display as checkboxes
+*/
+const splitPermissionsByOperation = (permissions) => {
+  const permByModelName = {};
+
+  Object.keys(schema.schema).forEach((modelName) => {
+    const model = schema.get(modelName);
+
+    if (!model.embedded) {
+      const value = permissions[model.name] === undefined
+        ? PERMISSIONS.NONE
+        : permissions[model.name];
+
+      permByModelName[modelName] = {
+        READ: value & PERMISSIONS.READ,
+        CREATE: null,
+        UPDATE: null,
+        DELETE: null,
+      };
+
+      if (!model.isAbstract) {
+        permByModelName[modelName].CREATE = value & PERMISSIONS.CREATE;
+        permByModelName[modelName].DELETE = value & PERMISSIONS.DELETE;
+
+        if (!model.isEdge) {
+          permByModelName[modelName].UPDATE = value & PERMISSIONS.UPDATE;
+        }
+      }
+    }
+  });
+  return permByModelName;
+};
 
 /**
  * Table to display permissions state for a certain user group.
@@ -59,45 +95,6 @@ class PermissionsTable extends React.Component {
     if (JSON.stringify(prevProps.value) !== JSON.stringify(value)) {
       this.setState({ content: value });
     }
-  }
-
-  /**
-   * For a mapping of class names to the single permissions value, split these by operation types
-   * for display as checkboxes
-   */
-  splitPermissionsByOperation(permissions) {
-    const { schema } = this.context;
-    const permByModelName = {};
-
-    if (!schema) {
-      return {};
-    }
-    Object.keys(schema.schema).forEach((modelName) => {
-      const model = schema.get(modelName);
-
-      if (!model.embedded) {
-        const value = permissions[model.name] === undefined
-          ? PERMISSIONS.NONE
-          : permissions[model.name];
-
-        permByModelName[modelName] = {
-          READ: value & PERMISSIONS.READ,
-          CREATE: null,
-          UPDATE: null,
-          DELETE: null,
-        };
-
-        if (!model.isAbstract) {
-          permByModelName[modelName].CREATE = value & PERMISSIONS.CREATE;
-          permByModelName[modelName].DELETE = value & PERMISSIONS.DELETE;
-
-          if (!model.isEdge) {
-            permByModelName[modelName].UPDATE = value & PERMISSIONS.UPDATE;
-          }
-        }
-      }
-    });
-    return permByModelName;
   }
 
   /**
@@ -152,7 +149,7 @@ class PermissionsTable extends React.Component {
     const { content, topBoxes } = this.state;
 
     const operationOrder = ['CREATE', 'READ', 'UPDATE', 'DELETE'];
-    const permByModelName = this.splitPermissionsByOperation(content || {});
+    const permByModelName = splitPermissionsByOperation(content || {});
     const modelOrder = Object.keys(permByModelName).sort();
 
     return (

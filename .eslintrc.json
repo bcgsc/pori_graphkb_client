@@ -38,8 +38,14 @@
                 "fn": "test"
             }
         ],
-        "max-len": "off",
-        "no-confusing-arrow": "off",
+        "max-len": [
+            "warn",
+            {
+                "code": 100,
+                "ignoreUrls": true,
+                "ignoreStrings": true
+            }
+        ],
         "no-console": [
             "error",
             {
@@ -77,7 +83,7 @@
         "react-hooks/rules-of-hooks": "error",
         "react/destructuring-assignment": "warn",
         "react/forbid-prop-types": [
-            "off",
+            "warn",
             {
                 "checkChildContextTypes": false,
                 "checkContextTypes": false,

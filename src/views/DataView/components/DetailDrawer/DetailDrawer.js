@@ -28,6 +28,7 @@ import './DetailDrawer.scss';
 import util from '../../../../services/util';
 import { hasWriteAccess } from '../../../../services/auth';
 import { KBContext } from '../../../../components/KBContext';
+import { GeneralRecordPropType } from '../../../../components/types';
 
 const MAX_STRING_LENGTH = 64;
 const DATE_KEYS = ['createdAt', 'deletedAt'];
@@ -45,7 +46,7 @@ class DetailDrawer extends Component {
   static contextType = KBContext;
 
   static propTypes = {
-    node: PropTypes.object,
+    node: GeneralRecordPropType,
     onClose: PropTypes.func,
     isEdge: PropTypes.bool,
   };

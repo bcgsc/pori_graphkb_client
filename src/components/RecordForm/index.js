@@ -22,7 +22,7 @@ import { KBContext } from '../KBContext';
 import ReviewDialog from './ReviewDialog';
 import ToggleButtonGroup from '../ToggleButtonGroup';
 import EdgeTable from './EdgeTable';
-import useForm from '../useForm';
+import useForm from '../hooks/useForm';
 
 
 const cleanPayload = (payload) => {
@@ -84,7 +84,10 @@ const RecordForm = ({
   const formValidator = useCallback((propName, propValue) => {
     const prop = schema.get(modelName).properties[propName];
 
-    return schema.validateValue(prop, propValue);
+    if (prop) {
+      return schema.validateValue(prop, propValue);
+    }
+    return { value: propValue };
   }, [schema, modelName]);
 
   const {

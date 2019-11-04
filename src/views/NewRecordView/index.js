@@ -1,26 +1,24 @@
 import React, {
-  useContext, useState, useCallback, useEffect,
+  useState, useCallback, useEffect,
 } from 'react';
 import * as qs from 'qs';
 import propTypes from 'prop-types';
 
 import RecordForm from '../../components/RecordForm';
 import FormField from '../../components/RecordForm/FormField';
-import { KBContext } from '../../components/KBContext';
 import { FORM_VARIANT } from '../../components/RecordForm/util';
 import { cleanLinkedRecords } from '../../components/util';
+import schema from '../../services/schema';
 
 
 const NewRecordView = (props) => {
   const { history, match: { path, params: { modelName: modelNameParam } } } = props;
-  const context = useContext(KBContext);
-  const { schema } = context;
 
   const [modelName, setModelName] = useState('');
   const [modelOptions, setModelOptions] = useState([]);
 
   useEffect(() => {
-    if (schema && path) {
+    if (path) {
       try {
         const options = schema.get(modelNameParam || 'V').descendantTree(true).map(m => ({
           label: m.name, value: m.name, key: m.name, caption: m.description,
@@ -36,7 +34,7 @@ const NewRecordView = (props) => {
         history.push('/error', { error: { name: err.name, message: err.toString() } });
       }
     }
-  }, [path, modelNameParam, schema, history]);
+  }, [path, modelNameParam, history]);
 
 
   /**
@@ -48,7 +46,7 @@ const NewRecordView = (props) => {
     } else {
       history.push('/');
     }
-  }, [history, schema]);
+  }, [history]);
 
   /**
    * Handles the redirect if an error occurs in the child component
@@ -74,7 +72,6 @@ const NewRecordView = (props) => {
         value={modelName}
         onChange={({ target: { value } }) => setModelName(value)}
         disabled={modelOptions.length < 2}
-        schema={schema}
         className="record-form__class-select"
       />
       {modelName

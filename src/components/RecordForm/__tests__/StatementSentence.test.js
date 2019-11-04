@@ -16,13 +16,10 @@ describe('StatementSentence', () => {
       return null;
     },
   );
-  const schema = new Schema();
 
   test('placeholders used when no content given', () => {
     const wrapper = mount((
-      <StatementSentence
-        schema={schema}
-      />
+      <StatementSentence />
     ));
     expect(wrapper.find(Typography)).toHaveLength(1);
     const html = wrapper.html();
@@ -35,7 +32,6 @@ describe('StatementSentence', () => {
   test('partial content ok', () => {
     const wrapper = mount((
       <StatementSentence
-        schema={schema}
         content={{
           conditions: [{ displayName: 'condition1' }, { displayName: 'condition2' }],
         }}
@@ -53,7 +49,6 @@ describe('StatementSentence', () => {
   test('replaces all fields when given', () => {
     const wrapper = mount((
       <StatementSentence
-        schema={schema}
         content={{
           conditions: [{ displayName: 'KRAS mutation' }],
           subject: 'drugName',

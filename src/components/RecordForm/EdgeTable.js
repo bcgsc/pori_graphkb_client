@@ -9,7 +9,7 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 
-import { KBContext } from '../KBContext';
+import schema from '../../services/schema';
 import useGrid from '../hooks/useGrid';
 
 
@@ -31,11 +31,8 @@ const isReversed = (nodeId, { out: src, in: tgt }) => {
  * @param {function} props.itemToKey the function to create a uique key for each edge record
  * @param {string} props.sourceNodeId the ID of the node we are summarizing relationships for
  * @param {Array.<object>} props.values the edge records
- * @param {Schema} props.schema the schema object (from context)
  */
 const EdgeTable = ({ value }) => {
-  const { schema } = useContext(KBContext);
-
   const {
     onGridReady, gridApi, gridReady,
   } = useGrid();
@@ -63,7 +60,7 @@ const EdgeTable = ({ value }) => {
         ? model.reverseName
         : model.name;
     },
-    [currNodeId, schema],
+    [currNodeId],
   );
 
   useDeepCompareEffect(() => {

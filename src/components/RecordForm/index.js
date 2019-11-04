@@ -17,7 +17,7 @@ import FormLayout from './FormLayout';
 import {
   FORM_VARIANT,
 } from './util';
-import { KBContext } from '../KBContext';
+import schema from '../../services/schema';
 import ReviewDialog from './ReviewDialog';
 import ToggleButtonGroup from '../ToggleButtonGroup';
 import EdgeTable from './EdgeTable';
@@ -61,7 +61,6 @@ const cleanPayload = (payload) => {
  * @property {string} props.rid the record id of the current record for the form
  * @property {string} props.title the title for this form
  * @property {string} props.modelName name of class model to be displayed
- * @property {object} props.schema schema object defining class/prop models
  * @property {value} props.value values of individual properties of passed class model
  */
 const RecordForm = ({
@@ -75,7 +74,6 @@ const RecordForm = ({
   ...rest
 }) => {
   const snackbar = useContext(SnackbarContext);
-  const { schema } = useContext(KBContext);
 
   const [actionInProgress, setActionInProgress] = useState(false);
   const controllers = [];
@@ -84,15 +82,15 @@ const RecordForm = ({
   const [fieldDefs, setFieldDefs] = useState({});
 
   useEffect(() => {
-    if (schema && modelName) {
+    if (modelName) {
       const { properties } = schema.get(modelName);
       setFieldDefs(properties);
     }
-  }, [schema, modelName]);
+  }, [modelName]);
 
   const {
     formIsDirty, setFormIsDirty, formContent, formErrors, updateForm, formHasErrors,
-  } = useSchemaForm(schema, fieldDefs, initialValue);
+  } = useSchemaForm(fieldDefs, initialValue);
 
 
   useEffect(() => () => controllers.map(c => c.abort()), []); // eslint-disable-line
@@ -130,7 +128,7 @@ const RecordForm = ({
       }
       setActionInProgress(false);
     }
-  }, [controllers, formContent, formErrors, formHasErrors, modelName, onError, onSubmit, schema, setFormIsDirty, snackbar]);
+  }, [controllers, formContent, formErrors, formHasErrors, modelName, onError, onSubmit, setFormIsDirty, snackbar]);
 
   /**
    * Handler for deleting an existing record
@@ -155,7 +153,7 @@ const RecordForm = ({
       onError({ error: err, content });
     }
     setActionInProgress(false);
-  }, [controllers, formContent, modelName, onError, onSubmit, schema, snackbar]);
+  }, [controllers, formContent, modelName, onError, onSubmit, snackbar]);
 
   /**
    * Handler for edits to an existing record
@@ -192,7 +190,7 @@ const RecordForm = ({
       }
       setActionInProgress(false);
     }
-  }, [controllers, formContent, formErrors, formHasErrors, formIsDirty, modelName, onError, onSubmit, schema, setFormIsDirty, snackbar]);
+  }, [controllers, formContent, formErrors, formHasErrors, formIsDirty, modelName, onError, onSubmit, setFormIsDirty, snackbar]);
 
   const handleOnChange = (event) => {
     // add the new value to the field

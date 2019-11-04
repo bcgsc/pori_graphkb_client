@@ -1,6 +1,5 @@
-import React, { useContext, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import useDeepCompareEffect from 'use-deep-compare-effect';
 import {
   Collapse,
   ListItem,
@@ -10,8 +9,7 @@ import {
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 
-
-import { KBContext } from '../../KBContext';
+import schema from '../../../services/schema';
 import EdgeTable from '../EdgeTable';
 import StatementSentence from '../StatementSentence';
 import {
@@ -42,15 +40,13 @@ import EdgeFields from './EdgeFields';
 const FormLayout = ({
   content, errors, onChange, variant, modelName, disabled, className, aboveFold, belowFold, collapseExtra, groups, formIsDirty,
 }) => {
-  const { schema } = useContext(KBContext);
-
   const [isExpanded, setIsExpanded] = useState(false);
 
   const [model, setModel] = useState(null);
 
-  useDeepCompareEffect(() => {
+  useEffect(() => {
     setModel(schema.get(modelName));
-  }, [schema, modelName]);
+  }, [modelName]);
 
   if (!model) {
     return null;
@@ -74,14 +70,12 @@ const FormLayout = ({
         <div className="record-form__content record-form__content--long">
           {isStatement && variant !== FORM_VARIANT.SEARCH && (
           <StatementSentence
-            schema={schema}
             content={content}
           />
           )}
           {isEdge && (
             <EdgeFields
               formIsDirty={formIsDirty}
-              schema={schema}
               content={content}
               errors={errors}
               onChange={onChange}
@@ -94,7 +88,6 @@ const FormLayout = ({
         <div className="record-form__content">
           <FieldGroup
             formIsDirty={formIsDirty}
-            schema={schema}
             content={content}
             errors={errors}
             onChange={onChange}
@@ -120,7 +113,6 @@ const FormLayout = ({
             <div className="record-form__content">
               <FieldGroup
                 formIsDirty={formIsDirty}
-                schema={schema}
                 content={content}
                 errors={errors}
                 onChange={onChange}
@@ -142,7 +134,6 @@ const FormLayout = ({
             <EdgeTable
               values={edges}
               sourceNodeId={content['@rid']}
-              schema={schema}
             />
           </div>
         )}

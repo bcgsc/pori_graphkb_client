@@ -107,7 +107,6 @@ class PermissionsTable extends React.Component {
   handleClick(operation, currModelName = null) {
     const { onChange, name } = this.props;
     const { content, topBoxes } = this.state;
-    const { schema } = this.context;
 
     const newContent = Object.assign({}, content);
     const newTopBoxes = Object.assign({}, topBoxes);

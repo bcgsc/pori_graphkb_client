@@ -470,4 +470,6 @@ class Schema {
   }
 }
 
-export default Schema;
+const schema = new Schema(SCHEMA_DEFN);
+
+export default schema;

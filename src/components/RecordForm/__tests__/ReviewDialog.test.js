@@ -5,7 +5,6 @@ import { render } from '@testing-library/react';
 import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackbar-provider';
 
 import ReviewDialog from '../ReviewDialog';
-import Schema from '../../../services/schema';
 import { KBContext } from '../../KBContext';
 
 
@@ -37,7 +36,7 @@ describe('ReviewDialog', () => {
 
   beforeEach(() => {
     ({ getByText, queryByText } = render(
-      <KBContext.Provider value={{ schema: new Schema() }}>
+      <KBContext.Provider value={{ }}>
         <SnackbarProvider value={{ add: snackbarSpy }}>
           <ReviewDialog
             onSubmit={onSubmitSpy}

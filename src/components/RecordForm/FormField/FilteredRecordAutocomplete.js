@@ -6,7 +6,7 @@ import { FormControl, FormHelperText } from '@material-ui/core';
 import api from '../../../services/api';
 import RecordAutocomplete from '../../RecordAutocomplete';
 import ResourceSelectComponent from '../../ResourceSelectComponent';
-import { KBContext } from '../../KBContext';
+import schema from '../../../services/schema';
 
 import './index.scss';
 
@@ -15,8 +15,6 @@ import './index.scss';
  * model name to search by
  */
 class FilteredRecordAutocomplete extends React.PureComponent {
-  static contextType = KBContext;
-
   static propTypes = {
     disabled: PropTypes.bool,
     isMulti: PropTypes.bool,
@@ -58,7 +56,6 @@ class FilteredRecordAutocomplete extends React.PureComponent {
   }
 
   render() {
-    const { schema } = this.context;
     const {
       disabled,
       isMulti,

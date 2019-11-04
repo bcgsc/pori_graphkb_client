@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Typography, IconButton, Chip } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
 import PropTypes from 'prop-types';
 
 import './index.scss';
-import { KBContext } from '../../../components/KBContext';
+import schema from '../../../services/schema';
 
 /**
  * Displays Filter Groups and filter chips.
@@ -17,7 +17,6 @@ import { KBContext } from '../../../components/KBContext';
  */
 function FilterGroup(props) {
   const { filterGroup, handleDelete } = props;
-  const { schema } = useContext(KBContext);
 
   return (
     <div className="filter-groups__box">

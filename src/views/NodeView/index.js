@@ -8,6 +8,7 @@ import { KBContext } from '../../components/KBContext';
 import { FORM_VARIANT } from '../../components/RecordForm/util';
 import { cleanLinkedRecords } from '../../components/util';
 import { hasWriteAccess } from '../../services/auth';
+import schema from '../../services/schema';
 
 
 const DEFAULT_TITLES = {
@@ -45,7 +46,6 @@ class NodeView extends React.PureComponent {
    */
   @boundMethod
   handleSubmit(result = null) {
-    const { schema } = this.context;
     const { history, match: { path } } = this.props;
     const variant = getVariantType(path);
 
@@ -88,7 +88,6 @@ class NodeView extends React.PureComponent {
       match: { params: { rid = null, modelName }, path },
       history,
     } = this.props;
-    const { schema } = this.context;
     const variant = getVariantType(path);
 
     let defaultModelName = modelName;

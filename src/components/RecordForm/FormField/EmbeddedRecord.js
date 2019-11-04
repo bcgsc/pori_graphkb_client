@@ -14,7 +14,7 @@ import FormField from '.';
 import {
   FORM_VARIANT,
 } from '../util';
-import { KBContext } from '../../KBContext';
+import schema from '../../../services/schema';
 
 
 /**
@@ -24,7 +24,6 @@ import { KBContext } from '../../KBContext';
    * @property {string} props.rid the record id of the current record for the form
    * @property {string} props.title the title for this form
    * @property {string} props.modelName name of class model to be displayed
-   * @property {object} props.schema schema object defining class/prop models
    * @property {value} props.value values of individual properties of passed class model
    */
 const EmbeddedRecord = ({
@@ -40,8 +39,6 @@ const EmbeddedRecord = ({
   FormLayoutComponent = FormLayout,
   ...rest
 }) => {
-  const { schema } = useContext(KBContext);
-
   const [modelName, setModelName] = useState((initialValue && initialValue['@class']) || '');
   const [modelOptions, setModelOptions] = useState([]);
   const [formContent, setFormContent] = useState(initialValue || {});
@@ -53,7 +50,7 @@ const EmbeddedRecord = ({
   useDeepCompareEffect(() => {
     setFormContent(initialValue || {});
     setFormErrors(errors || {});
-  }, [initialValue, errors, schema]);
+  }, [initialValue, errors]);
 
   useEffect(() => {
     setModelName(formContent['@class']);
@@ -61,17 +58,15 @@ const EmbeddedRecord = ({
 
   // change the model options when the input modelName changes
   useEffect(() => {
-    if (schema) {
-      const options = schema.get(modelNameParam).descendantTree(true).map(m => ({
-        label: m.name, value: m.name, key: m.name, caption: m.description,
-      }));
-      setModelOptions(options);
+    const options = schema.get(modelNameParam).descendantTree(true).map(m => ({
+      label: m.name, value: m.name, key: m.name, caption: m.description,
+    }));
+    setModelOptions(options);
 
-      if (options.length === 1) {
-        setModelName(options[0].name);
-      }
+    if (options.length === 1) {
+      setModelName(options[0].name);
     }
-  }, [modelNameParam, schema]);
+  }, [modelNameParam]);
 
   const handleOnChange = (event) => {
     // add the new value to the field
@@ -112,7 +107,6 @@ const EmbeddedRecord = ({
           value={modelName}
           onChange={handleOnChange}
           disabled={modelOptions.length < 2 || disabled}
-          schema={schema}
           error={formErrors['@class'] || ''}
           className="record-form__class-select"
         />

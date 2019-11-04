@@ -4,7 +4,6 @@ import { render } from '@testing-library/react';
 
 import FormLayout from '..';
 import { KBContext } from '../../../KBContext';
-import Schema from '../../../../services/schema';
 
 
 describe('FormLayout', () => {
@@ -14,7 +13,7 @@ describe('FormLayout', () => {
 
   test('new variant hides generated fields', () => {
     const { getByText, queryByText } = render(
-      <KBContext.Provider value={{ schema: new Schema() }}>
+      <KBContext.Provider value={{ }}>
         <FormLayout
           modelName="User"
           variant="new"
@@ -28,7 +27,7 @@ describe('FormLayout', () => {
 
   test('view variant shows generated fields', () => {
     const { getByText, getByTestId } = render(
-      <KBContext.Provider value={{ schema: new Schema() }}>
+      <KBContext.Provider value={{ }}>
         <FormLayout
           modelName="User"
           variant="view"

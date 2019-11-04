@@ -3,12 +3,12 @@ import { mount } from 'enzyme';
 import { Typography } from '@material-ui/core';
 
 import StatementSentence from '../StatementSentence';
-import Schema from '../../../services/schema';
+import schema from '../../../services/schema';
 
 
 describe('StatementSentence', () => {
   // patch the schema methods to simplify our mocks
-  jest.spyOn(Schema.prototype, 'getPreview').mockImplementation(
+  jest.spyOn(schema, 'getPreview').mockImplementation(
     (item) => {
       if (item) {
         return item.displayName ? item.displayName : item;

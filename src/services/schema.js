@@ -80,7 +80,6 @@ class Schema {
    * Returns preview of given object based on its '@class' value
    * @param {Object} obj - Record to be parsed.
    */
-  @boundMethod
   getPreview(obj) {
     if (obj) {
       if (obj.displayNameTemplate) {

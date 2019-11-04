@@ -17,6 +17,7 @@ import ActionButton from '../../components/ActionButton';
 import FilterGroup from './FilterGroup';
 import { cleanLinkedRecords } from '../../components/util';
 import api from '../../services/api';
+import { HistoryPropType } from '../../components/types';
 
 const defaultFilterGroup = [];
 
@@ -170,7 +171,7 @@ function AdvancedSearchView(props) {
 
 
   const constructOperatorOptions = (pModel, currentVal, OperatorOptions) => {
-    let iterableOptCheck;
+    let iterableOptCheck = OperatorOptions;
 
     // check if property is iterable and set corresponding option values
     if (pModel && !pModel.iterable) {
@@ -466,7 +467,7 @@ function AdvancedSearchView(props) {
 }
 
 AdvancedSearchView.propTypes = {
-  history: PropTypes.object.isRequired,
+  history: HistoryPropType.isRequired,
   modelName: PropTypes.string,
 };
 

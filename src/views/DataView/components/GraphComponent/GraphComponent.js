@@ -52,9 +52,9 @@ const DIALOG_FADEOUT_TIME = 150;
 const HEAVILY_CONNECTED = 10;
 const TREE_LINK = 'SubClassOf';
 
-const getId = node => node.data
+const getId = node => (node.data
   ? node.data['@rid']
-  : node['@rid'] || node;
+  : node['@rid'] || node);
 
 /**
  * Use the graph links to rank nodes in the graph based on their subclass relationships. Root nodes
@@ -731,7 +731,7 @@ class GraphComponent extends Component {
       }
     });
 
-    this.saveGraphStatetoURL([...nodes]);
+    // this.saveGraphStatetoURL([...nodes]);
 
     return {
       expandable,

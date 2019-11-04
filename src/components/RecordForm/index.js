@@ -16,13 +16,13 @@ import ActionButton from '../ActionButton';
 import FormLayout from './FormLayout';
 import {
   FORM_VARIANT,
-
 } from './util';
 import { KBContext } from '../KBContext';
 import ReviewDialog from './ReviewDialog';
 import ToggleButtonGroup from '../ToggleButtonGroup';
 import EdgeTable from './EdgeTable';
 import useSchemaForm from '../hooks/useSchemaForm';
+import { GeneralRecordPropType } from '../types';
 
 
 const cleanPayload = (payload) => {
@@ -313,6 +313,7 @@ const RecordForm = ({
   );
 };
 
+
 RecordForm.propTypes = {
   modelName: PropTypes.string,
   onError: PropTypes.func,
@@ -321,7 +322,7 @@ RecordForm.propTypes = {
   rid: PropTypes.string,
   title: PropTypes.string.isRequired,
   variant: PropTypes.string,
-  value: PropTypes.object,
+  value: GeneralRecordPropType,
 };
 
 RecordForm.defaultProps = {

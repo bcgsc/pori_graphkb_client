@@ -373,6 +373,7 @@ function AdvancedSearchView(props) {
                 choices: queryProperties, required: true, name: 'properties', type: 'string',
               }}
               value={currProp}
+              innerProps={{ 'data-testid': 'prop-select' }}
               onChange={({ target: { value } }) => setFilter({ type: 'attr', payload: value })}
               className="property-select"
               disabled={!modelName}
@@ -383,6 +384,7 @@ function AdvancedSearchView(props) {
             <FormField
               model={propertyModel || { type: 'nope', choices: [] }}
               value={currValue}
+              innerProps={{ 'data-testid': 'value-select' }}
               onChange={({ target: { value } }) => setFilter({
                 type: 'value', payload: value,
               })}
@@ -398,6 +400,7 @@ function AdvancedSearchView(props) {
                 choices: operatorOps, required: true, name: 'operator', type: 'string',
               }}
               value={currOperator}
+              innerProps={{ 'data-testid': 'operator-select' }}
               onChange={({ target: { value } }) => setFilter({ type: 'operator', payload: value })}
               className="operator-select"
               disabled={!currValue}

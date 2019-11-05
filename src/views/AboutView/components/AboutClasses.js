@@ -29,7 +29,6 @@ const AboutClasses = () => {
       controllers.push(call);
 
       const result = await call.request();
-      console.log(result);
 
       if (result) {
         setStats(Array.from(

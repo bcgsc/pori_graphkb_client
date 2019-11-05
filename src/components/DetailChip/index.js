@@ -49,7 +49,7 @@ const DefaultPopupComponent = (props) => {
     <Card>
       <CardContent className="detail-popover__panel">
         <div className="detail-popover__panel-header">
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h4" gutterBottom>
             {title || label}
           </Typography>
           {getLink && getLink(retrievedDetails) && (
@@ -66,10 +66,10 @@ const DefaultPopupComponent = (props) => {
             {retrievedDetails && Object.keys(retrievedDetails).sort().map(
               name => (
                 <TableRow key={name} className="detail-popover__row">
-                  <TableCell padding="checkbox">
-                    <Typography variant="body1">{name}</Typography>
+                  <TableCell >
+                    <Typography variant="h6">{name}</Typography>
                   </TableCell>
-                  <TableCell padding="checkbox">
+                  <TableCell >
                     {valueToString(retrievedDetails[name])}
                   </TableCell>
                 </TableRow>

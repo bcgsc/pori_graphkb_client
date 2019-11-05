@@ -20,6 +20,8 @@
 .detail-popover {
 
   &__row {
+    height: 48px;
+
     td:first-child {
       max-width: min-content;
     }

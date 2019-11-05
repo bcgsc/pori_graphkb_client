@@ -27,7 +27,7 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import './DetailDrawer.scss';
 import util from '../../../../services/util';
 import { hasWriteAccess } from '../../../../services/auth';
-import { KBContext } from '../../../../components/KBContext';
+import schema from '../../../../services/schema';
 import { GeneralRecordPropType } from '../../../../components/types';
 
 const MAX_STRING_LENGTH = 64;
@@ -43,8 +43,6 @@ const DATE_KEYS = ['createdAt', 'deletedAt'];
  * @property {function} props.handleNodeEditStart - Function triggered on node edit button click
  */
 class DetailDrawer extends Component {
-  static contextType = KBContext;
-
   static propTypes = {
     node: GeneralRecordPropType,
     onClose: PropTypes.func,
@@ -105,7 +103,6 @@ class DetailDrawer extends Component {
    * @param {boolean} isNested - Nested flag.
    */
   formatIdentifiers(node, isNested) {
-    const { schema } = this.context;
     if (!node['@class']) return null;
 
     const { properties } = schema.get(node);
@@ -138,7 +135,6 @@ class DetailDrawer extends Component {
    * @param {boolean} isNested - if true, list item is indented.
    */
   formatLongValue(key, value, isStatic, isNested) {
-    const { schema } = this.context;
     const { opened } = this.state;
     const listItemProps = isStatic === true
       ? {}
@@ -187,7 +183,6 @@ class DetailDrawer extends Component {
    * @param {boolean} isNested - Nested flag.
    */
   formatMetadata(node, isNested) {
-    const { schema } = this.context;
     return this.formatProps(node, schema.getMetadata(), isNested);
   }
 
@@ -198,7 +193,6 @@ class DetailDrawer extends Component {
    * @param {boolean} isNested - Nested flag.
    */
   formatProps(node, properties, isNested) {
-    const { schema } = this.context;
     const { opened } = this.state;
     const identifiers = ['displayName', '@rid', 'sourceId'];
     const updatedProperties = DetailDrawer.movePropToTop(properties, 'displayName');
@@ -386,7 +380,6 @@ class DetailDrawer extends Component {
    * @param {boolean} isNested - Nested flag.
    */
   formatOtherProps(node, isNested) {
-    const { schema } = this.context;
     const identifiers = ['@class', '@rid'];
 
     let properties = Object.keys(node)
@@ -409,7 +402,6 @@ class DetailDrawer extends Component {
    */
   formatRelationships(node) {
     const { linkOpen } = this.state;
-    const { schema } = this.context;
     // Checks subclasses
     const edges = schema.getEdges(node);
 
@@ -516,7 +508,6 @@ class DetailDrawer extends Component {
       isEdge,
     } = this.props;
     const { opened } = this.state;
-    const { schema } = this.context;
 
     const drawerIsOpen = Boolean(node);
 

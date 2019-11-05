@@ -26,6 +26,7 @@ import GraphArrowMarker from './GraphArrowMarker';
 import GraphExpansionDialog from './GraphExpansionDialog/GraphExpansionDialog';
 import GraphLegend from './GraphLegend/GraphLegend';
 import util from '../../../../services/util';
+import schema from '../../../../services/schema';
 import config from '../../../../static/config';
 import {
   PropsMap,
@@ -111,7 +112,6 @@ const computeNodeLevels = (graphLinks) => {
  * @property {Array.<string>} props.displayed - list of initial record ID's to be displayed in
  * graph.
  * @property {function} props.handleGraphStateSave - parent handler to save state in URL
- * @property {Object} props.schema - KnowledgeBase Schema.
  */
 class GraphComponent extends Component {
   // App snackbar context value.
@@ -132,7 +132,6 @@ class GraphComponent extends Component {
     data: PropTypes.object.isRequired,
     cache: PropTypes.object.isRequired,
     edgeTypes: PropTypes.arrayOf(PropTypes.string),
-    schema: PropTypes.object.isRequired,
     handleError: PropTypes.func.isRequired,
     handleGraphStateSave: PropTypes.func,
   };
@@ -434,7 +433,6 @@ class GraphComponent extends Component {
       graphObjects,
       expandable,
     } = this.state;
-    const { schema } = this.props;
 
     if (expandable[node.getId()] && data[node.getId()]) {
       ({
@@ -485,7 +483,6 @@ class GraphComponent extends Component {
       links,
       data,
     } = this.state;
-    const { schema } = this.props;
 
     if (expandable[node.getId()] && data[node.getId()]) {
       if (schema.getEdges(data[node.getId()])
@@ -1036,7 +1033,6 @@ class GraphComponent extends Component {
   @boundMethod
   handleExpandCheckAll() {
     const { expandExclusions, expandNode } = this.state;
-    const { schema } = this.props;
     const allEdges = schema.getEdges(expandNode).map(e => e['@rid']);
     let newExpandExclusions = [];
 
@@ -1054,7 +1050,6 @@ class GraphComponent extends Component {
   handleExpandByClass(cls) {
     return () => {
       const { expandNode } = this.state;
-      const { schema } = this.props;
       const expandExclusions = [];
       schema.getEdges(expandNode).forEach((edge) => {
         if (edge['@class'] !== cls) {
@@ -1154,7 +1149,6 @@ class GraphComponent extends Component {
     const {
       detail,
       handleDetailDrawerOpen,
-      schema,
     } = this.props;
 
     const linkLegendDisabled = (
@@ -1241,14 +1235,12 @@ class GraphComponent extends Component {
         handleClick={() => this.handleClick(node)}
         expandable={expandable[node.getId()]}
         applyDrag={this.applyDrag}
-        schema={schema}
       />
     ));
 
     return (
       <div className="graph-wrapper">
         <GraphExpansionDialog
-          schema={schema}
           node={expandNode}
           open={expansionDialogOpen}
           onClose={this.handleDialogClose('expansionDialogOpen')}

@@ -6,18 +6,19 @@ import {
 } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
+import schema from '../../services/schema';
+
 import useObject from './useObject';
 
 
 /**
  * Sets up two objects for handling form content and errors when the properties are not known
  *
- * @param {Schema} schema the schema to use in validating against the current class model
  * @param {Object.<string,PropertyModel>} initialFieldDefs field definitions to use in validating the form
  * @param {Object} initialValue the start value of the form content
  * @param {boolean} ignoreMandatoryErrors do not throw errors when required fields are missing
  */
-const useSchemaForm = (schema, initialFieldDefs, initialValue = {}, ignoreMandatoryErrors = false) => {
+const useSchemaForm = (initialFieldDefs, initialValue = {}, ignoreMandatoryErrors = false) => {
   const [formIsDirty, setFormIsDirty] = useState(false);
   const [formHasErrors, setFormHasErrors] = useState(false);
 
@@ -48,7 +49,7 @@ const useSchemaForm = (schema, initialFieldDefs, initialValue = {}, ignoreMandat
     }
 
     return { value: propValue };
-  }, [fieldDefs, schema, ignoreMandatoryErrors]);
+  }, [fieldDefs, ignoreMandatoryErrors]);
 
   useDeepCompareEffect(() => {
     const errorState = Object.values(formErrors).some(err => err);

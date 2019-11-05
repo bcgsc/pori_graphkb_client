@@ -2,7 +2,6 @@ import React from 'react';
 import { mount } from 'enzyme';
 import GraphComponent from '../GraphComponent/GraphComponent';
 import { GraphNode, GraphLink } from '../GraphComponent/kbgraph';
-import Schema from '../../../../services/schema';
 
 const mockData = [
   {
@@ -65,7 +64,6 @@ describe('<GraphComponent />', () => {
 
   let wrapper;
   const componentDidMountSpy = jest.spyOn(GraphComponent.prototype, 'componentDidMount');
-  const schema = new Schema();
 
   test('calls componentDidMount on render and doesn\'t crash and burn', () => {
     wrapper = mount(
@@ -77,7 +75,6 @@ describe('<GraphComponent />', () => {
         handleDetailDrawerClose={() => { }}
         handleTableRedirect={() => { }}
         handleNewColumns={() => { }}
-        schema={schema}
       />,
     );
     expect(componentDidMountSpy).toHaveBeenCalledTimes(1);
@@ -93,7 +90,6 @@ describe('<GraphComponent />', () => {
         handleDetailDrawerClose={() => { }}
         handleNewColumns={() => { }}
         edgeTypes={['AliasOf']}
-        schema={schema}
       />,
     );
     await wrapper.update();
@@ -113,7 +109,6 @@ describe('<GraphComponent />', () => {
         handleTableRedirect={() => { }}
         handleNewColumns={() => { }}
         edgeTypes={['AliasOf']}
-        schema={schema}
       />,
     );
     await wrapper.update();
@@ -134,7 +129,6 @@ describe('<GraphComponent />', () => {
         handleNewColumns={() => { }}
         handleRefresh={() => { }}
         edgeTypes={['AliasOf']}
-        schema={schema}
       />,
     );
 
@@ -197,7 +191,6 @@ describe('<GraphComponent />', () => {
         handleClick={handleClickSpy}
         displayed={['#1', '#2', '#3', '#4']}
         edgeTypes={['AliasOf']}
-        schema={schema}
       />,
     );
 
@@ -243,7 +236,6 @@ describe('<GraphComponent />', () => {
         handleClick={() => { }}
         edgeTypes={['AliasOf']}
         localStorageKey="test"
-        schema={schema}
       />,
     );
 

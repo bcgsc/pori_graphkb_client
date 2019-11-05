@@ -14,6 +14,7 @@ import {
   ListItemText,
 } from '@material-ui/core';
 
+import schema from '../../../../../services/schema';
 import './GraphExpansionDialog.scss';
 
 /**
@@ -21,7 +22,6 @@ import './GraphExpansionDialog.scss';
  */
 function GraphExpansionDialog(props) {
   const {
-    schema,
     node,
     open,
     onClose,
@@ -138,7 +138,6 @@ function GraphExpansionDialog(props) {
 
 /**
  * @namespace
- * @property {Object} schema - KB Schema object.
  * @property {Object} node - Graph node staged for expansion.
  * @property {boolean} open - Dialog open state
  * @property {function} onClose - handler for user clicking away or cancelling.
@@ -155,7 +154,6 @@ function GraphExpansionDialog(props) {
  * of a single class.
  */
 GraphExpansionDialog.propTypes = {
-  schema: PropTypes.object.isRequired,
   node: PropTypes.object,
   open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,

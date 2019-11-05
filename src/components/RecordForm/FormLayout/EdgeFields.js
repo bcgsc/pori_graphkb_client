@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 
 import FormField from '../FormField';
 import { FORM_VARIANT } from '../util';
+import schema from '../../../services/schema';
 
 /**
  * Renders the two edge specific input fields (out/in)
  *
- * @param {SchemaDefinition} props.schema the schema
  * @param {ClassModel} props.model the current edge model
  * @param {function} props.onChange the parent change handler
  * @param {object} props.content the form content (key by property name)
@@ -16,7 +16,7 @@ import { FORM_VARIANT } from '../util';
  * @param {boolean} props.formIsDirty the form has had changes and is not identical to its initial pristine state
  */
 const EdgeFields = ({
-  schema, model, onChange, content, errors, disabled, variant, formIsDirty,
+  model, onChange, content, errors, disabled, variant, formIsDirty,
 }) => (
   <React.Fragment key="relationship-content">
     <FormField
@@ -30,7 +30,6 @@ const EdgeFields = ({
         mandatory: true,
         nullable: false,
       }}
-      schema={schema}
       value={content.out}
       disabled={disabled}
       variant={variant}
@@ -48,7 +47,6 @@ const EdgeFields = ({
         mandatory: true,
         nullable: false,
       }}
-      schema={schema}
       value={content.in}
       disabled={disabled}
       variant={variant}
@@ -65,7 +63,6 @@ EdgeFields.propTypes = {
   content: PropTypes.object,
   errors: PropTypes.object,
   disabled: PropTypes.bool,
-  schema: PropTypes.object.isRequired,
   variant: PropTypes.string,
   formIsDirty: PropTypes.bool,
 };

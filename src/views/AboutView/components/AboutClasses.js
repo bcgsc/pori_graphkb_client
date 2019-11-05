@@ -10,13 +10,11 @@ import {
 
 import api from '../../../services/api';
 import { isAuthorized } from '../../../services/auth';
-import { KBContext } from '../../../components/KBContext';
 import DetailChip from '../../../components/DetailChip';
+import schema from '../../../services/schema';
 
 
 class AboutClasses extends Component {
-  static contextType = KBContext;
-
   constructor(props) {
     super(props);
     this.state = {
@@ -64,8 +62,6 @@ class AboutClasses extends Component {
   }
 
   getClassExamples() {
-    const { schema } = this.context;
-
     Object.values(schema.schema)
       .filter(model => !model.isAbstract && !model.embedded)
       .map(model => this.getClassExample(model));
@@ -76,7 +72,6 @@ class AboutClasses extends Component {
     const {
       stats,
     } = this.state;
-    const { schema } = this.context;
 
     const models = Object.values(schema.schema)
       .filter(m => !m.embedded && !m.isAbstract && !m.isEdge)

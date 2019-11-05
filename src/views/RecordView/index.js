@@ -14,6 +14,8 @@ import { FORM_VARIANT } from '../../components/RecordForm/util';
 import { cleanLinkedRecords } from '../../components/util';
 import { hasWriteAccess } from '../../services/auth';
 import api from '../../services/api';
+import { HistoryPropType } from '../../components/types';
+import schema from '../../services/schema';
 
 
 const DEFAULT_TITLES = {
@@ -22,7 +24,7 @@ const DEFAULT_TITLES = {
 };
 
 
-const getModelFromName = (schema, path = '', modelName = '', variant = FORM_VARIANT.VIEW) => {
+const getModelFromName = (path = '', modelName = '', variant = FORM_VARIANT.VIEW) => {
   let defaultModelName = modelName;
 
   if (modelName) {
@@ -46,21 +48,20 @@ const getModelFromName = (schema, path = '', modelName = '', variant = FORM_VARI
 const RecordView = (props) => {
   const { history, match: { path, params: { rid, modelName: modelNameParam, variant } } } = props;
   const context = useContext(KBContext);
-  const { schema } = context;
 
   const [recordContent, setRecordContent] = useState({});
   const [modelName, setModelName] = useState('');
 
   useEffect(() => {
-    if (schema && path) {
+    if (path) {
       try {
-        const name = getModelFromName(schema, path, modelNameParam, variant);
+        const name = getModelFromName(path, modelNameParam, variant);
         setModelName(name);
       } catch (err) {
         history.push('/error', { error: { name: err.name, message: err.toString() } });
       }
     }
-  }, [path, modelNameParam, variant, schema, history]);
+  }, [path, modelNameParam, variant, history]);
 
 
   /**
@@ -76,7 +77,7 @@ const RecordView = (props) => {
     } else {
       history.push('/');
     }
-  }, [history, schema, variant]);
+  }, [history, variant]);
 
   /**
    * Handles the redirect if an error occurs in the child component
@@ -134,10 +135,10 @@ const RecordView = (props) => {
       : FORM_VARIANT.EDIT;
     const newPath = `/${newVariant}/${model.name}/${rid}`;
     history.push(newPath);
-  }, [history, modelName, rid, schema, variant]);
+  }, [history, modelName, rid, variant]);
 
   return (
-    schema && modelName
+    modelName
       ? (
         <RecordForm
           variant={variant}
@@ -159,8 +160,15 @@ const RecordView = (props) => {
 };
 
 RecordView.propTypes = {
-  history: propTypes.object.isRequired,
-  match: propTypes.object.isRequired,
+  history: HistoryPropType.isRequired,
+  match: propTypes.shape({
+    path: propTypes.string,
+    params: propTypes.shape({
+      rid: propTypes.string,
+      modelName: propTypes.string,
+      variant: propTypes.string,
+    }),
+  }).isRequired,
 };
 
 

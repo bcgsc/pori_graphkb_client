@@ -4,119 +4,18 @@ import { Drawer } from '@material-ui/core';
 import { BrowserRouter } from 'react-router-dom';
 
 import DetailDrawer from '../DetailDrawer';
-import Schema from '../../../../services/schema';
 import { KBContext } from '../../../../components/KBContext';
-import { } from '../../../../services/auth';
-
-const mockModels = {
-  test: {
-    name: 'test',
-    properties: {
-      dependency: { name: 'dependency', type: 'link' },
-      '@rid': { name: '@rid', type: 'string' },
-    },
-    routeName: '/test',
-    identifiers: ['@rid'],
-    inherits: ['Ontology'],
-  },
-  E: {
-    properties: {},
-    inherits: [],
-    subclasses: [
-      { name: 'AliasOf' },
-    ],
-    name: 'E',
-    routeName: '/e',
-  },
-  AliasOf: {
-    name: 'AliasOf',
-    inherits: ['E'],
-    identifiers: ['@rid'],
-    properties: {},
-    routeName: '/aliasof',
-  },
-  V: {
-    name: 'V',
-    inherits: [],
-    properties: {},
-    routeName: '/v',
-  },
-  Ontology: {
-    name: 'Ontology',
-    inherits: ['Ontology'],
-    properties: {
-      name: { name: 'name', type: 'string' },
-      sourceId: { name: 'sourceId', type: 'string' },
-      longName: { name: 'longName', type: 'string' },
-      dependency: { name: 'dependency', type: 'link' },
-      source: { name: 'source', type: 'link' },
-    },
-    identifiers: ['@class', 'name', 'sourceId', 'source.name'],
-    routeName: '/ontology',
-  },
-  MockClass: {
-    name: 'Mock',
-    inherits: ['Ontology'],
-    properties: {
-      name: { name: 'name', type: 'string' },
-      sourceId: { name: 'sourceId', type: 'string' },
-      conditions: { name: 'conditions', type: 'linkset' },
-    },
-  },
-};
-class MockSchemaDef {
-  constructor(models) {
-    this.schema = { ...models };
-    this.normalizedModelNames = [];
-  }
-
-  get = (node) => {
-    if (node['@class'] === 'Ontology') {
-      const { Ontology } = this.schema;
-      return Ontology;
-    } if (node['@class'] === 'test') {
-      const { test } = this.schema;
-      return test;
-    } if (node === 'AliasOf' || node['@class'] === 'AliasOf') {
-      const { AliasOf } = this.schema;
-      return AliasOf;
-    } if (node['@class'] === 'MockClass') {
-      const { MockClass } = this.schema;
-      return MockClass;
-    }
-    return null;
-  };
-
-  has = (obj) => {
-    try {
-      return Boolean(this.get(obj));
-    } catch (err) {
-      return false;
-    }
-  };
-
-  getFromRoute = (routeName) => {
-    for (const model of Object.values(this.schema)) {  // eslint-disable-line
-      if (model.routeName === routeName) {
-        return model;
-      }
-    }
-    throw new Error(`Missing model corresponding to route (${routeName})`);
-  };
-}
-
-const testSchema = new Schema(new MockSchemaDef(mockModels));
 
 
 const ProvideSchema = ({ children = [], schema }) => (  // eslint-disable-line
   <BrowserRouter>
-    <KBContext.Provider value={{ schema }}>
+    <KBContext.Provider value={{}}>
       {children}
     </KBContext.Provider>
   </BrowserRouter>
 );
 
-describe('<DetailDrawer />', () => {
+describe('DetailDrawer', () => {
   let wrapper;
   const spies = {};
   [
@@ -152,11 +51,11 @@ describe('<DetailDrawer />', () => {
         name: 'test source',
       },
       subsets: ['one', 'two', 'three'],
-      '@rid': '#1',
+      '@rid': '#1:0',
     };
 
     wrapper = mount((
-      <ProvideSchema schema={testSchema}>
+      <ProvideSchema>
         <DetailDrawer node={node} />
       </ProvideSchema>
     ));
@@ -168,7 +67,7 @@ describe('<DetailDrawer />', () => {
 
   test('does not crash when componentDidUpdate is called', () => {
     wrapper = mount((
-      <ProvideSchema schema={testSchema}>
+      <ProvideSchema>
         <DetailDrawer />
       </ProvideSchema>
     ));
@@ -189,10 +88,10 @@ describe('<DetailDrawer />', () => {
         name: 'test source',
       },
       subsets: ['one', 'two', 'three'],
-      '@rid': '#1',
+      '@rid': '#1:0',
     };
     wrapper = mount((
-      <ProvideSchema schema={testSchema}>
+      <ProvideSchema>
         <DetailDrawer node={node} />
       </ProvideSchema>
     ));
@@ -202,13 +101,13 @@ describe('<DetailDrawer />', () => {
   test('clicking expanding list items triggers handler', () => {
     const node = {
       '@class': 'Ontology',
-      '@rid': '#135',
+      '@rid': '#135:0',
       name: 'test node best node',
       sourceId: 'test sourceId',
       longName: 'test node. this is a long value so that formatlongvalue is called and this test passes, ASHDhkdjhjsdhkJAHDSkjhsdkajsdhaksjdhakjshda blargh blargh',
     };
     wrapper = mount((
-      <ProvideSchema schema={testSchema}>
+      <ProvideSchema>
         <DetailDrawer node={node} />
       </ProvideSchema>
     ));
@@ -220,18 +119,18 @@ describe('<DetailDrawer />', () => {
   test('initializes relationships and properly applies handlers to DOM nodes', () => {
     const node = {
       '@class': 'Ontology',
-      '@rid': '#135',
+      '@rid': '#135:1',
       name: 'test node best node',
       sourceId: 'test sourceId',
       in_AliasOf: [{
         '@class': 'AliasOf',
-        '@rid': '#141',
+        '@rid': '#141:2',
         in: {
-          '@rid': '#135',
+          '@rid': '#135:0',
         },
         out: {
           '@class': 'AliasOf',
-          '@rid': '#136',
+          '@rid': '#136:0',
           source: {
             name: 'test source also',
           },
@@ -240,7 +139,7 @@ describe('<DetailDrawer />', () => {
       }],
     };
     wrapper = mount((
-      <ProvideSchema schema={testSchema}>
+      <ProvideSchema>
         <DetailDrawer node={node} />
       </ProvideSchema>
     ));
@@ -252,13 +151,13 @@ describe('<DetailDrawer />', () => {
 
   test('expect detail-drawer__nested-list class to be rendered for nested property', () => {
     const node = {
-      '@class': 'test',
-      '@rid': '#135',
+      '@class': 'Ontology',
+      '@rid': '#135:0',
       name: 'test node best node',
       sourceId: 'test sourceId',
       dependency: {
         '@class': 'Ontology',
-        '@rid': '#4213',
+        '@rid': '#42:13',
         name: 'dependency one',
         source: {
           '@class': 'Ontology',
@@ -268,7 +167,7 @@ describe('<DetailDrawer />', () => {
     };
 
     wrapper = mount((
-      <ProvideSchema schema={testSchema}>
+      <ProvideSchema>
         <DetailDrawer node={node} />
       </ProvideSchema>
     ));
@@ -278,19 +177,19 @@ describe('<DetailDrawer />', () => {
 
   test('handles node property type linkset correctly ', () => {
     const node = {
-      '@class': 'MockClass',
-      '@rid': '#135',
+      '@class': 'Statement',
+      '@rid': '#135:0',
       name: 'linkset node',
       sourceId: 'test sourceId',
       conditions: [
         {
-          '@class': 'Fake',
+          '@class': 'Ontology',
           '@rid': '19:1',
           displayName: 'linkedRecord1',
           sourceId: 'BBC',
         },
         {
-          '@class': 'Mock',
+          '@class': 'Ontology',
           '@rid': '19:1',
           displayName: 'linkedRecord2',
           sourceId: 'CBC',
@@ -299,14 +198,14 @@ describe('<DetailDrawer />', () => {
     };
 
     wrapper = mount((
-      <ProvideSchema schema={testSchema}>
+      <ProvideSchema>
         <DetailDrawer node={node} />
       </ProvideSchema>
     ));
 
     expect(wrapper.find('.detail-identifiers-linkset').length).toEqual(2);
     expect(wrapper.find('.detail-identifiers-nested').length).toEqual(0);
-    expect(wrapper.find('div[role="button"]').at(1).text()).toEqual('MocklinkedRecord2 (19:1)');
+    expect(wrapper.find('div[role="button"]').at(1).text()).toEqual('OntologylinkedRecord2 (19:1)');
     wrapper.find('div[role="button"]').at(1).simulate('click');
     expect(wrapper.find('.detail-identifiers-nested').length).toBeGreaterThan(0);
   });

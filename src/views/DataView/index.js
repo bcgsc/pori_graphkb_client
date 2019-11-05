@@ -19,11 +19,12 @@ import kbSchema from '@bcgsc/knowledgebase-schema';
 import DataTable from './components/DataTable';
 import GraphComponent from './components/GraphComponent';
 import DetailDrawer from './components/DetailDrawer';
-import { KBContext } from '../../components/KBContext';
 import RecordFormDialog from '../../components/RecordFormDialog';
 import api from '../../services/api';
 import { cleanLinkedRecords } from '../../components/util';
 import { hashRecordsByRID } from './util';
+import { HistoryPropType, LocationPropType } from '../../components/types';
+import schema from '../../services/schema';
 
 import './index.scss';
 
@@ -31,11 +32,9 @@ import './index.scss';
  * Shows the search result filters and an edit button
  */
 class DataView extends React.Component {
-  static contextType = KBContext;
-
   static propTypes = {
-    location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
+    location: LocationPropType.isRequired,
+    history: HistoryPropType.isRequired,
     cacheBlocks: PropTypes.number,
     blockSize: PropTypes.number,
     bufferSize: PropTypes.number,
@@ -69,7 +68,6 @@ class DataView extends React.Component {
   }
 
   async componentDidMount() {
-    const { schema } = this.context;
     const { cacheBlocks, blockSize } = this.props;
     const cache = api.getNewCache({
       schema,
@@ -95,7 +93,6 @@ class DataView extends React.Component {
    */
   async parseFilters(cache) {
     const { search } = this.state;
-    const { schema } = this.context;
 
     try {
       const { queryParams, modelName } = api.getQueryFromSearch({ search, schema });
@@ -227,7 +224,6 @@ class DataView extends React.Component {
    */
   @boundMethod
   handleEditFilters(filters) {
-    const { schema } = this.context;
     const { history, location: { pathname } } = this.props;
     // drop all undefined values
     const { routeName } = schema.get(filters);
@@ -302,7 +298,6 @@ class DataView extends React.Component {
     const { graphData } = this.state;
 
     const { bufferSize } = this.props;
-    const { schema } = this.context;
     const edges = schema.getEdges();
 
     const URL = String(window.location.href);
@@ -326,7 +321,6 @@ class DataView extends React.Component {
           detail={detailPanelRow}
           handleError={this.handleError}
           edgeTypes={edges}
-          schema={schema}
           onRecordClicked={this.handleToggleDetailPanel}
           handleGraphStateSave={this.handleGraphStateSaveIntoURL}
         />
@@ -351,7 +345,6 @@ class DataView extends React.Component {
    * Draws the chips above the table which show the user the current filters
    */
   renderFilterChips({ limit, neighbors, ...params }, prefix = null) {
-    const { schema } = this.context;
     const chips = [];
     Object.entries(params).forEach(([key, param]) => {
       let operator = '=';

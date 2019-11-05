@@ -1,10 +1,12 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
-import PropTypes from 'prop-types';
+
+import schema from '../../services/schema';
+import { StatementPropType } from '../types';
+
 
 const StatementSentence = (props) => {
   const {
-    schema,
     content,
   } = props;
 
@@ -95,8 +97,7 @@ const StatementSentence = (props) => {
 };
 
 StatementSentence.propTypes = {
-  schema: PropTypes.object.isRequired,
-  content: PropTypes.object,
+  content: StatementPropType,
 };
 
 StatementSentence.defaultProps = {

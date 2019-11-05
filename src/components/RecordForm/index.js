@@ -1,7 +1,6 @@
 import React, {
-  useEffect, useContext, useState, useReducer, useCallback,
+  useEffect, useContext, useState, useCallback,
 } from 'react';
-import useDeepCompareEffect from 'use-deep-compare-effect';
 import PropTypes from 'prop-types';
 import {
   Paper, Typography, Button, CircularProgress,
@@ -17,12 +16,12 @@ import ActionButton from '../ActionButton';
 import FormLayout from './FormLayout';
 import {
   FORM_VARIANT,
-
 } from './util';
 import { KBContext } from '../KBContext';
 import ReviewDialog from './ReviewDialog';
 import ToggleButtonGroup from '../ToggleButtonGroup';
 import EdgeTable from './EdgeTable';
+import useSchemaForm from '../hooks/useSchemaForm';
 import { GeneralRecordPropType } from '../types';
 
 
@@ -81,53 +80,22 @@ const RecordForm = ({
   const [actionInProgress, setActionInProgress] = useState(false);
   const controllers = [];
   const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
-  const [formIsDirty, setFormIsDirty] = useState(false);
 
-  // handle and store the form content
-  const [formContent, setFormFieldContent] = useReducer((state, action) => {
-    const { type: actionType, payload } = action;
+  const [fieldDefs, setFieldDefs] = useState({});
 
-    if (actionType === 'update') {
-      const { name, value } = payload;
-      return { ...state, [name]: value };
-    } if (actionType === 'replace') {
-      return { ...payload };
+  useEffect(() => {
+    if (schema && modelName) {
+      const { properties } = schema.get(modelName);
+      setFieldDefs(properties);
     }
-    throw new Error(`actionType (${actionType}) not implemented`);
-  }, initialValue || {});
+  }, [schema, modelName]);
 
-  // handle and store any errors reported from form field validators
-  const [formErrors, setFormFieldError] = useReducer((state, action) => {
-    const { type: actionType, payload } = action;
+  const {
+    formIsDirty, setFormIsDirty, formContent, formErrors, updateForm, formHasErrors,
+  } = useSchemaForm(schema, fieldDefs, initialValue);
 
-    if (actionType === 'update') {
-      const { name, value } = payload;
-      return { ...state, [name]: value };
-    } if (actionType === 'replace') {
-      return { ...payload };
-    }
-    throw new Error(`actionType (${actionType}) not implemented`);
-  }, {});
-
-  const formHasErrors = Object.values(formErrors).some(err => err);
 
   useEffect(() => () => controllers.map(c => c.abort()), []); // eslint-disable-line
-
-  useDeepCompareEffect(() => {
-    setFormFieldContent({ type: 'replace', payload: initialValue || {} });
-
-    const initialErrors = {};
-    Object.values(schema.get(modelName).properties).forEach((prop) => {
-      const { error } = schema.validateValue(prop, (initialValue || {})[prop.name], false);
-
-      if (error) {
-        initialErrors[prop.name] = error;
-      }
-    });
-
-    setFormFieldError({ type: 'replace', payload: initialErrors });
-    setFormIsDirty(false);
-  }, [initialValue]);
 
   /**
    * Handler for submission of a new record
@@ -162,7 +130,7 @@ const RecordForm = ({
       }
       setActionInProgress(false);
     }
-  }, [controllers, formContent, formErrors, formHasErrors, modelName, onError, onSubmit, schema, snackbar]);
+  }, [controllers, formContent, formErrors, formHasErrors, modelName, onError, onSubmit, schema, setFormIsDirty, snackbar]);
 
   /**
    * Handler for deleting an existing record
@@ -224,32 +192,28 @@ const RecordForm = ({
       }
       setActionInProgress(false);
     }
-  }, [controllers, formContent, formErrors, formHasErrors, formIsDirty, modelName, onError, onSubmit, schema, snackbar]);
+  }, [controllers, formContent, formErrors, formHasErrors, formIsDirty, modelName, onError, onSubmit, schema, setFormIsDirty, snackbar]);
 
   const handleOnChange = (event) => {
     // add the new value to the field
     const eventName = event.target.name || event.target.getAttribute('name'); // name of the form field triggering the event
     const eventValue = event.target.value;
 
-    const { properties: { [eventName]: prop } } = schema.get(modelName);
-    const { value, error } = schema.validateValue(prop, eventValue, false);
-
-    setFormFieldContent({ type: 'update', payload: { name: eventName, value } });
-    setFormFieldError({ type: 'update', payload: { name: eventName, value: error } });
+    updateForm(eventName, eventValue);
     setFormIsDirty(true);
   };
 
   const handleAddReview = useCallback((content, updateReviewStatus) => {
     // add the new value to the field
     const reviews = [...(formContent.reviews || []), content];
-    setFormFieldContent({ type: 'update', payload: { name: 'reviews', value: reviews } });
+    updateForm('reviews', reviews);
 
     if (updateReviewStatus) {
-      setFormFieldContent({ type: 'update', payload: { name: 'reviewStatus', value: content.status } });
+      updateForm('reviewStatus', content.status);
     }
     setReviewDialogOpen(false);
     setFormIsDirty(true);
-  }, [formContent]);
+  }, [formContent.reviews, setFormIsDirty, updateForm]);
 
   const isEdge = false; // TODO
 
@@ -315,7 +279,7 @@ const RecordForm = ({
               message="Are you sure you want to delete this record?"
               disabled={actionInProgress}
             >
-                DELETE
+              DELETE
             </ActionButton>
           )
           : (<div />) // for spacing issues only

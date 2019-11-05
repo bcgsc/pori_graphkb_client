@@ -1,5 +1,5 @@
 import React, {
-  useContext, useReducer, useCallback, useState,
+  useContext, useCallback, useState,
 } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -18,6 +18,7 @@ import {
 } from './util';
 import { KBContext } from '../KBContext';
 import FormField from './FormField';
+import useSchemaForm from '../hooks/useSchemaForm';
 
 
 const MODEL_NAME = 'StatementReview';
@@ -38,72 +39,33 @@ const AddReviewDialog = ({
   const [updateAmalgamated, setUpdateAmalgamated] = useState(true);
 
   // handle and store the form content
-  const [formContent, setFormFieldContent] = useReducer((state, action) => {
-    const { type: actionType, payload } = action;
-
-    if (actionType === 'update') {
-      const { name, value } = payload;
-      return { ...state, [name]: value };
-    } if (actionType === 'replace') {
-      return { ...payload };
-    }
-    throw new Error(`actionType (${actionType}) not implemented`);
-  }, {});
-
-  // handle and store any errors reported from form field validators
-  const [formErrors, setFormFieldError] = useReducer((state, action) => {
-    const { type: actionType, payload } = action;
-
-    if (actionType === 'update') {
-      const { name, value } = payload;
-      return { ...state, [name]: value };
-    } if (actionType === 'replace') {
-      return { ...payload };
-    }
-    throw new Error(`actionType (${actionType}) not implemented`);
-  }, {});
-
+  const {
+    formContent, formErrors, formHasErrors, updateForm, formIsDirty, setFormIsDirty,
+  } = useSchemaForm(
+    schema, { comment, status }, {},
+  );
 
   /**
    * Handler for submission of a new record
    */
   const handleSubmit = useCallback(() => {
-    // check for missing required properties etc
-    const errors = { ...formErrors };
-    [comment, status].forEach((prop) => {
-      const { error } = schema.validateValue(prop, formContent[prop.name], false);
-
-      if (error) {
-        errors[prop.name] = error;
-      }
-    });
-
-    setFormFieldError({ type: 'replace', payload: errors });
-    const formHasErrors = Object.values(errors).some(err => err);
-
     if (formHasErrors) {
       // bring up the snackbar for errors
+      setFormIsDirty(true);
       console.error(formErrors);
       snackbar.add('There are errors in the form which must be resolved before it can be submitted');
     } else {
       const content = { ...formContent, '@class': MODEL_NAME, createdBy: getUser(context) };
       onSubmit(content, updateAmalgamated);
     }
-  }, [comment, context, formContent, formErrors, onSubmit, schema, snackbar, status, updateAmalgamated]);
+  }, [context, formContent, formErrors, formHasErrors, onSubmit, setFormIsDirty, snackbar, updateAmalgamated]);
 
-  const handleOnChange = (event) => {
+  const handleOnChange = useCallback((event) => {
     // add the new value to the field
     const eventName = event.target.name || event.target.getAttribute('name'); // name of the form field triggering the event
     const eventValue = event.target.value;
-
-    const { properties: { [eventName]: prop } } = schema.get(MODEL_NAME);
-    const { value, error } = schema.validateValue(prop, eventValue, false);
-
-    setFormFieldContent({ type: 'update', payload: { name: eventName, value } });
-    setFormFieldError({ type: 'update', payload: { name: eventName, value: error } });
-  };
-
-  const formHasErrors = Object.values(formErrors).some(err => err);
+    updateForm(eventName, eventValue);
+  }, [updateForm]);
 
   return (
     <Dialog
@@ -156,7 +118,7 @@ const AddReviewDialog = ({
             color="primary"
             size="large"
             requireConfirm={false}
-            disabled={formHasErrors}
+            disabled={formHasErrors && formIsDirty}
           >
               ADD REVIEW
           </ActionButton>

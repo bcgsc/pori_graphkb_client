@@ -1,9 +1,6 @@
 import React from 'react';
 
 import {
-  Link,
-} from 'react-router-dom';
-import {
   Typography,
   ListItem,
   List,
@@ -12,8 +9,8 @@ import {
 } from '@material-ui/core';
 
 // static content
-import graphResults from '../../../static/tutorial/graph-tutorial.png';
-import graphActions from '../../../static/tutorial/graph-actions.png';
+import graphResults from '../../../static/images/graph-tutorial.png';
+import graphActions from '../../../static/images/graph-actions.png';
 
 
 const AboutGraphView = () => (
@@ -28,7 +25,7 @@ const AboutGraphView = () => (
       />
       <figcaption>
         <Typography variant="body1">
-            The <Link to="/data/graph?@class=Disease">Graph view</Link> can be used to view clusters of records and their
+            The Graph view can be used to view clusters of records and their
             relationships with eachother. Click and drag nodes with your mouse
             or finger, and open the Graph settings to change labels, coloring
             schemes, and physical behavior of the graph and its constituents.

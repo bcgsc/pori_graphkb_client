@@ -26,7 +26,7 @@ const useSchemaForm = (initialFieldDefs, initialValue = {}, ignoreMandatoryError
 
   useDeepCompareEffect(() => {
     setFieldDefs(initialFieldDefs);
-  }, [initialFieldDefs]);
+  }, [initialFieldDefs || {}]);
 
   // handle and store the form content
   const {
@@ -70,7 +70,7 @@ const useSchemaForm = (initialFieldDefs, initialValue = {}, ignoreMandatoryError
     });
 
     setFormIsDirty(false);
-  }, [initialValue, fieldDefs]);
+  }, [initialValue || {}, fieldDefs || {}]);
 
   // provide an update callback which includes the validation step
   const updateForm = useCallback((propName, propValue) => {

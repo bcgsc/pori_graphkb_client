@@ -1,4 +1,8 @@
+import kbp from '@bcgsc/knowledgebase-parser';
+
 import api from '../../../services/api';
+import schema from '../../../services/schema';
+
 
 const MAX_RESULT_COUNT = 300;
 
@@ -381,7 +385,15 @@ const SEARCH_OPTS = {
       async buildSearch(keyword, additionalInput) {
         this.relevanceRID = await vocabularyRIDGenerator('sensitivity');
 
-        const search = keywordSearchGenerator('Variant', keyword);
+        let search;
+
+        try {
+          const parsed = kbp.variant.parse(keyword);
+          search = api.buildSearchFromParseVariant(schema, parsed);
+        } catch (err) {
+          search = keywordSearchGenerator('Variant', keyword);
+        }
+
         const conditionArr = this.conditionsClauseArr;
         conditionArr[0].conditions = await setSubQuery(search);
 
@@ -421,7 +433,14 @@ const SEARCH_OPTS = {
       async buildSearch(keyword, additionalInput) {
         this.relevanceRID = await vocabularyRIDGenerator('resistance');
 
-        const search = keywordSearchGenerator('Variant', keyword);
+        let search;
+
+        try {
+          const parsed = kbp.variant.parse(keyword);
+          search = api.buildSearchFromParseVariant(schema, parsed);
+        } catch (err) {
+          search = keywordSearchGenerator('Variant', keyword);
+        }
         const conditionArr = this.conditionsClauseArr;
         conditionArr[0].conditions = await setSubQuery(search);
 
@@ -452,7 +471,14 @@ const SEARCH_OPTS = {
       async buildSearch(keyword) {
         this.relevanceRID = await vocabularyRIDGenerator('resistance');
 
-        const search = keywordSearchGenerator('Variant', keyword);
+        let search;
+
+        try {
+          const parsed = kbp.variant.parse(keyword);
+          search = api.buildSearchFromParseVariant(schema, parsed);
+        } catch (err) {
+          search = keywordSearchGenerator('Variant', keyword);
+        }
         this.conditions = await setSubQuery(search);
       },
     },

@@ -66,10 +66,10 @@ const DefaultPopupComponent = (props) => {
             {retrievedDetails && Object.keys(retrievedDetails).sort().map(
               name => (
                 <TableRow key={name} className="detail-popover__row">
-                  <TableCell >
+                  <TableCell>
                     <Typography variant="h6">{name}</Typography>
                   </TableCell>
-                  <TableCell >
+                  <TableCell>
                     {valueToString(retrievedDetails[name])}
                   </TableCell>
                 </TableRow>

@@ -157,7 +157,7 @@ class PermissionsTable extends React.Component {
         <Table>
           <TableHead>
             <TableRow className="permissions-table__header">
-              <TableCell padding="dense" />
+              <TableCell size="small" />
               {operationOrder.map(operation => (
                 <TableCell key={operation} padding="checkbox">
                   {operation}
@@ -165,7 +165,7 @@ class PermissionsTable extends React.Component {
               ))}
             </TableRow>
             <TableRow>
-              <TableCell padding="dense" />
+              <TableCell size="small" />
               {operationOrder.map(operation => (
                 <TableCell key={operation} padding="checkbox">
                   <Checkbox
@@ -183,7 +183,7 @@ class PermissionsTable extends React.Component {
                 const permission = permByModelName[modelName];
                 return (
                   <TableRow key={modelName} className="permissions-table__row">
-                    <TableCell padding="dense">
+                    <TableCell size="small">
                       {modelName}:
                     </TableCell>
                     {operationOrder.map(operation => (

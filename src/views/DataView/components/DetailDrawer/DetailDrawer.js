@@ -221,10 +221,10 @@ class DetailDrawer extends Component {
                     <div className="nested-spacer" />
                     <ListItemText className="detail-li-text">
                       <div className="detail-identifiers-linkset">
-                        <Typography variant="subtitle1" color={opened.includes(item) ? 'secondary' : 'textSecondary'}>
+                        <Typography variant="subtitle2" color={opened.includes(item) ? 'secondary' : 'textSecondary'}>
                           {util.antiCamelCase(item['@class'])}
                         </Typography>
-                        <Typography color={opened.includes(item) ? 'secondary' : 'textSecondary'}>
+                        <Typography variant="subtitle2" color={opened.includes(item) ? 'secondary' : 'textSecondary'}>
                           {schema.getPreview(item)}
                         </Typography>
                       </div>
@@ -237,7 +237,7 @@ class DetailDrawer extends Component {
                         <ListItem>
                           <ListItemText>
                             <div className="detail-identifiers">
-                              <Typography variant="subtitle2" className="detail-identifiers-nested">
+                              <Typography variant="subtitle1" className="detail-identifiers-nested">
                                 {util.antiCamelCase(propName)}
                               </Typography>
                               <Typography>
@@ -293,10 +293,10 @@ class DetailDrawer extends Component {
               )}
               <ListItemText className="detail-li-text">
                 <div className="detail-identifiers">
-                  <Typography variant="subtitle1">
+                  <Typography variant="body1">
                     {util.antiCamelCase(name)}
                   </Typography>
-                  <Typography>
+                  <Typography variant="h6">
                     {previewStr}
                   </Typography>
                 </div>

@@ -14,7 +14,7 @@ import queryResults from '../../../static/images/table-view.png';
 
 const AboutQuerying = () => (
   <div className="about-page__content">
-    <Typography variant="h2" id="about-page__querying">
+    <Typography variant="h1" id="about-page__querying">
         Querying
     </Typography>
     <Typography paragraph>

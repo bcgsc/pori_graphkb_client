@@ -128,7 +128,7 @@ const AboutClasses = () => {
 
   return (
     <div className="about-page__content">
-      <Typography variant="h2">
+      <Typography variant="h1">
             Record Classes
       </Typography>
       <Typography paragraph>

@@ -328,6 +328,60 @@ const encodeQueryComplexToSearch = (content, modelName = 'V') => {
 };
 
 
+const buildLooseSearch = (cls, name) => ({
+  queryType: 'similarTo',
+  target: {
+    target: cls,
+    filters: {
+      OR: [
+        { name },
+        { sourceId: name },
+      ],
+    },
+  },
+});
+
+
+const buildSearchFromParseVariant = (schema, variant) => {
+  const { reference1, reference2, type } = variant;
+  const payload = {
+    target: 'PositionalVariant',
+    filters: {
+      AND: [
+        {
+          reference1: buildLooseSearch('Feature', reference1),
+        },
+        {
+          type: buildLooseSearch('Vocabulary', type),
+        },
+      ],
+    },
+  };
+
+  if (reference2) {
+    payload.filters.AND.push(buildLooseSearch(reference2));
+  } else {
+    payload.filters.AND.push({ reference2: null });
+  }
+
+  schema.getProperties('PositionalVariant').filter(p => !p.name.includes('Repr')).forEach((prop) => {
+    if (prop.type !== 'link' && variant[prop.name] && !prop.generated) {
+      const value = variant[prop.name];
+
+      if (prop.type.includes('embedded')) {
+        Object.entries(value, ([subProp, subValue]) => {
+          payload.filters.AND.push({ [`${prop.name}.${subProp}`]: subValue });
+        });
+      } else {
+        payload.filters.AND.push({ [prop.name]: variant[prop.name] });
+      }
+    }
+  });
+
+  return payload;
+};
+
+
 export default {
   encodeQueryComplexToSearch,
   getNewCache,
@@ -337,6 +391,7 @@ export default {
   CLASS_PROP,
   defaultSuggestionHandler,
   delete: del,
+  buildSearchFromParseVariant,
   get,
   ID_PROP,
   patch,

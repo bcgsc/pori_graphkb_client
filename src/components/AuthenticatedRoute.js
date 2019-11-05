@@ -25,14 +25,16 @@ const AuthenticatedRoute = ({
   let ChildComponent;
 
   if (!authOk) {
-    ChildComponent = props => (
+    ChildComponent = props => {
+      const { location } = props;
+      return (
       <Redirect to={{
         pathname: '/login',
-        // eslint-disable-next-line react/destructuring-assignment
-        state: { from: props.location },
+        state: { from: location },
       }}
       />
-    );
+    )
+  };
   } else if (admin && !adminOk) {
     ChildComponent = () => (
       <Redirect to="/" />

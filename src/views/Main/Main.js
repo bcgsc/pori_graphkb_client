@@ -39,7 +39,6 @@ import {
 import {
   getUsername, isAdmin, logout, isAuthenticated,
 } from '../../services/auth';
-import Schema from '../../services/schema';
 import { KBContext } from '../../components/KBContext';
 import { MainNav } from './components';
 import AuthenticatedRoute from '../../components/AuthenticatedRoute';
@@ -56,7 +55,6 @@ const {
  * Entry point to application. Handles routing, app theme, and logged in state.
  */
 const Main = () => {
-  const [schema] = useState(new Schema());
   const [authorizationToken, setAuthorizationToken] = useState('');
   const [authenticationToken, setAuthenticationToken] = useState('');
   const [anchorEl, setAnchorEl] = useState(null);
@@ -97,7 +95,7 @@ const Main = () => {
 
   return (
     <KBContext.Provider value={{
-      schema, authorizationToken, authenticationToken, setAuthorizationToken, setAuthenticationToken,
+      authorizationToken, authenticationToken, setAuthorizationToken, setAuthenticationToken,
     }}
     >
       <div className="main-view">
@@ -182,18 +180,18 @@ const Main = () => {
             <AuthenticatedRoute path="/query-popular" component={PopularSearchView} />
             <AuthenticatedRoute exact path="/query-advanced" component={AdvancedSearchView} />
             <AuthenticatedRoute
-              path="/edit/:modelName(Source|source|User|user|UserGroup|usergroup)/:rid"
+              path="/:variant(edit)/:modelName(Source|source|User|user|UserGroup|usergroup)/:rid"
               admin
               component={RecordView}
             />
             <AuthenticatedRoute path="/:variant(edit|view)/:modelName/:rid" component={RecordView} />
             <AuthenticatedRoute path="/:variant(edit|view)/:rid" component={RecordView} />
             <AuthenticatedRoute
-              path="/new/:modelName(Source|source|User|user|UserGroup|usergroup)"
+              path="/:variant(new)/:modelName(Source|source|User|user|UserGroup|usergroup)"
               admin
               component={NewRecordView}
             />
-            <AuthenticatedRoute path="/new/:modelName" component={NewRecordView} />
+            <AuthenticatedRoute path="/:variant(new)/:modelName" component={NewRecordView} />
             <Redirect exact path="/query/advanced" to="/search/v" />
             <AuthenticatedRoute path="/data" component={DataView} />
             <AuthenticatedRoute path="/admin" admin component={AdminView} />

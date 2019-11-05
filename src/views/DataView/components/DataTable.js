@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import {
   FormControlLabel, Checkbox, Popover,
 } from '@material-ui/core';
@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 
-import { KBContext } from '../../../components/KBContext';
+import schema from '../../../services/schema';
 import OptionsMenu from '../../../components/OptionsMenu';
 import DetailChip from '../../../components/DetailChip';
 import { getUsername } from '../../../services/auth';
@@ -26,7 +26,6 @@ const CACHE_BLOCK_SIZE = 50;
  */
 const RecordList = (props) => {
   const { value: records } = props;
-  const { schema } = useContext(KBContext);
 
   if (!records) {
     return null;
@@ -64,8 +63,6 @@ RecordList.propTypes = {
 };
 
 class DataTable extends React.Component {
-  static contextType = KBContext;
-
   static propTypes = {
     search: PropTypes.string,
     rowBuffer: PropTypes.number,
@@ -175,7 +172,6 @@ class DataTable extends React.Component {
 
   initializeGrid() {
     const { search } = this.props;
-    const { schema } = this.context;
 
     this.gridApi.setColumnDefs([
       {
@@ -287,7 +283,6 @@ class DataTable extends React.Component {
 
   @boundMethod
   async handleExportTsv(selectionOnly = false) {
-    const { schema } = this.context;
     const { totalNumOfRows, selectionTracker } = this.state;
     const { isExportingData } = this.props;
     isExportingData(true);

@@ -100,7 +100,7 @@ DefaultPopupComponent.defaultProps = {
 };
 
 
-const shallowObjectKey = obj => JSON.stringify(obj, (k, v) => k ? `${v}` : v);
+const shallowObjectKey = obj => JSON.stringify(obj, (k, v) => (k ? `${v}` : v));
 
 /**
  * Displays a record as a Material Chip. When clicked, opens a Popover

@@ -10,6 +10,7 @@ import * as d3Drag from 'd3-drag';
 import './GraphNodeDisplay.scss';
 import config from '../../../../../static/config';
 import { GraphNode } from '../kbgraph';
+import schema from '../../../../../services/schema';
 
 const { NODE_RADIUS } = config.GRAPH_PROPERTIES;
 const DEFAULT_OPACITY = 1;
@@ -28,7 +29,6 @@ const FADED_OPACITY = 0.6;
  * @property {Object} props.actionsNode - Node decorator object.
  * @property {Object} props.detail - Node currently opened in detail drawer.
  * @property {string} props.filter - current filter string value.
- * @property {Object} props.schema - Knowledgebase Schema object.
  */
 class GraphNodeDisplay extends PureComponent {
   static propTypes = {
@@ -40,7 +40,6 @@ class GraphNodeDisplay extends PureComponent {
     actionsNode: PropTypes.object,
     detail: PropTypes.object,
     filter: PropTypes.string,
-    schema: PropTypes.object,
   };
 
   static defaultProps = {
@@ -52,7 +51,6 @@ class GraphNodeDisplay extends PureComponent {
     applyDrag: null,
     detail: null,
     filter: '',
-    schema: null,
   };
 
   /**
@@ -86,7 +84,6 @@ class GraphNodeDisplay extends PureComponent {
       actionsNode,
       detail,
       filter,
-      schema,
     } = this.props;
 
     if (!node) return null;

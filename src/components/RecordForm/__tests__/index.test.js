@@ -6,7 +6,6 @@ import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackb
 
 import RecordForm from '..';
 import { KBContext } from '../../KBContext';
-import Schema from '../../../services/schema';
 import * as api from '../../../services/api';
 
 
@@ -60,7 +59,7 @@ describe('RecordForm', () => {
 
     beforeEach(() => {
       ({ getByText, queryByText } = render(
-        <KBContext.Provider value={{ schema: new Schema() }}>
+        <KBContext.Provider value={{ }}>
           <SnackbarProvider value={{ add: snackbarSpy }}>
             <RecordForm
               value={{ name: 'bob', '@rid': '#1:2', '@class': 'User' }}
@@ -99,7 +98,7 @@ describe('RecordForm', () => {
 
   test('edit statement shows add review for statements', () => {
     const { getByText } = render(
-      <KBContext.Provider value={{ schema: new Schema() }}>
+      <KBContext.Provider value={{ }}>
         <SnackbarProvider value={{ add: snackbarSpy }}>
           <RecordForm
             value={{ }}
@@ -122,7 +121,7 @@ describe('RecordForm', () => {
 
     beforeEach(() => {
       ({ getByText, getByTestId } = render(
-        <KBContext.Provider value={{ schema: new Schema() }}>
+        <KBContext.Provider value={{ }}>
           <SnackbarProvider value={{ add: snackbarSpy }}>
             <RecordForm
               value={{ name: 'bob', '@rid': '#1:2' }}
@@ -172,7 +171,7 @@ describe('RecordForm', () => {
     beforeEach(() => {
       ({ getByText, getByTestId } = render(
         <SnackbarProvider value={{ add: snackbarSpy }}>
-          <KBContext.Provider value={{ schema: new Schema() }}>
+          <KBContext.Provider value={{ }}>
             <RecordForm
               value={{ }}
               modelName="User"

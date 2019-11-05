@@ -2,7 +2,6 @@
  * @module /views/LoginView
  */
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import api from '../../services/api';
 import { KBContext } from '../../components/KBContext';
@@ -10,6 +9,7 @@ import {
   isAuthenticated, getReferrerUri, login, keycloak, isAuthorized,
 } from '../../services/auth';
 import config from '../../static/config';
+import { HistoryPropType, LocationPropType } from '../../components/types';
 
 const {
   DISABLE_AUTH,
@@ -24,8 +24,8 @@ class LoginView extends React.Component {
   static contextType = KBContext;
 
   static propTypes = {
-    history: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired,
+    history: HistoryPropType.isRequired,
+    location: LocationPropType.isRequired,
   };
 
   constructor(props) {

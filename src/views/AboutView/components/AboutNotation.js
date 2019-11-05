@@ -1,14 +1,14 @@
 import React from 'react';
 import marked from 'marked';
-import PropTypes from 'prop-types';
 
 
 import notation from '@bcgsc/knowledgebase-parser/doc/notation.md';
+import { LocationPropType } from '../../../components/types';
 
 
 class AboutNotation extends React.Component {
   static propTypes = {
-    location: PropTypes.object.isRequired,
+    location: LocationPropType.isRequired,
   };
 
   constructor(props) {

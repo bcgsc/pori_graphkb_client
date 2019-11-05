@@ -9,7 +9,8 @@ import {
 
 
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
-import { KBContext } from '../../components/KBContext';
+
+import schema from '../../services/schema';
 import FormField from '../../components/RecordForm/FormField';
 import { OPERATORS, BLACKLISTED_PROPERTIES } from './constants';
 import './index.scss';
@@ -17,6 +18,7 @@ import ActionButton from '../../components/ActionButton';
 import FilterGroup from './FilterGroup';
 import { cleanLinkedRecords } from '../../components/util';
 import api from '../../services/api';
+import { HistoryPropType } from '../../components/types';
 
 const defaultFilterGroup = [];
 
@@ -85,7 +87,6 @@ function AdvancedSearchView(props) {
   } = props;
 
 
-  const { schema } = useContext(KBContext);
   const snackbar = useContext(SnackbarContext);
 
   // set up current model for search
@@ -95,28 +96,26 @@ function AdvancedSearchView(props) {
   useDeepCompareEffect(() => {
     setModelName(modelName || 'Statement');
     setModel(schema.get(modelName || 'Statement'));
-  }, [schema, modelName]);
+  }, [modelName]);
 
   // fetching class model options
   const [modelOptions, setModelOptions] = useState([]);
   useEffect(() => {
-    if (schema) {
-      try {
-        const options = schema.get('V').descendantTree(true).map(m => ({
-          label: m.name, value: m.name, key: m.name, caption: m.description,
-        }));
-        setModelOptions(options);
+    try {
+      const options = schema.get('V').descendantTree(true).map(m => ({
+        label: m.name, value: m.name, key: m.name, caption: m.description,
+      }));
+      setModelOptions(options);
 
-        if (options.length === 1) {
-          setModelName(options[0].label);
-        } else {
-          setModelName('');
-        }
-      } catch (err) {
-        history.push('/error', { error: { name: err.name, message: err.toString() } });
+      if (options.length === 1) {
+        setModelName(options[0].label);
+      } else {
+        setModelName('');
       }
+    } catch (err) {
+      history.push('/error', { error: { name: err.name, message: err.toString() } });
     }
-  }, [schema, history]);
+  }, [history]);
 
   // Based on the selected model, generate property/attribute list
   const queryProps = model ? model.queryProperties : [];
@@ -163,7 +162,7 @@ function AdvancedSearchView(props) {
       }
     }
     return { ...state, [actionType]: payload };
-  }, [propertyModel, schema, snackbar]);
+  }, [propertyModel, snackbar]);
 
   const [currFilter, setFilter] = useReducer(activeFilterReducer, initialFilterValues);
   const { attr: currProp, value: currValue, operator: currOperator } = currFilter;
@@ -359,7 +358,6 @@ function AdvancedSearchView(props) {
           }}
           value={modelName}
           onChange={({ target: { value } }) => setModelName(value)}
-          schema={schema}
           className="class-select"
         />
       </div>
@@ -375,8 +373,8 @@ function AdvancedSearchView(props) {
                 choices: queryProperties, required: true, name: 'properties', type: 'string',
               }}
               value={currProp}
+              innerProps={{ 'data-testid': 'prop-select' }}
               onChange={({ target: { value } }) => setFilter({ type: 'attr', payload: value })}
-              schema={schema}
               className="property-select"
               disabled={!modelName}
             />
@@ -386,10 +384,10 @@ function AdvancedSearchView(props) {
             <FormField
               model={propertyModel || { type: 'nope', choices: [] }}
               value={currValue}
+              innerProps={{ 'data-testid': 'value-select' }}
               onChange={({ target: { value } }) => setFilter({
                 type: 'value', payload: value,
               })}
-              schema={schema}
               className="value-select"
               disabled={!currProp}
               variant="edit"
@@ -402,8 +400,8 @@ function AdvancedSearchView(props) {
                 choices: operatorOps, required: true, name: 'operator', type: 'string',
               }}
               value={currOperator}
+              innerProps={{ 'data-testid': 'operator-select' }}
               onChange={({ target: { value } }) => setFilter({ type: 'operator', payload: value })}
-              schema={schema}
               className="operator-select"
               disabled={!currValue}
             />
@@ -425,7 +423,6 @@ function AdvancedSearchView(props) {
             value={currFilterGroup}
             variant="edit"
             onChange={({ target: { value } }) => setFilterGroup(value)}
-            schema={schema}
           />
         </div>
         <ActionButton
@@ -466,7 +463,7 @@ function AdvancedSearchView(props) {
 }
 
 AdvancedSearchView.propTypes = {
-  history: PropTypes.object.isRequired,
+  history: HistoryPropType.isRequired,
   modelName: PropTypes.string,
 };
 

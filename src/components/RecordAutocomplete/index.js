@@ -83,6 +83,7 @@ const RecordAutocomplete = (props) => {
     getOptionKey,
     getOptionLabel,
     isMulti,
+    innerProps,
     label,
     minSearchLength,
     name,
@@ -264,6 +265,7 @@ const RecordAutocomplete = (props) => {
         onFocus={handleOnFocus}
         onBlur={handleOnBlur}
         inputValue={searchTerm}
+        innerProps={innerProps}
         onInputChange={handleInputChange}
         getOptionValue={getOptionKey} // used to compare options for equality
         getOptionLabel={getOptionLabel} // generates the string representation
@@ -299,14 +301,29 @@ const RecordAutocomplete = (props) => {
 
 RecordAutocomplete.propTypes = {
   className: PropTypes.string,
-  components: PropTypes.object,
+  components: PropTypes.shape({
+    Control: PropTypes.func,
+    DropdownIndicator: PropTypes.func,
+    Menu: PropTypes.func,
+    MultiValue: PropTypes.func,
+    NoOptionsMessage: PropTypes.func,
+    Option: PropTypes.func,
+    Placeholder: PropTypes.func,
+    SingleValue: PropTypes.func,
+    ValueContainer: PropTypes.func,
+    inputComponent: PropTypes.func,
+  }),
   debounceMs: PropTypes.number,
-  DetailChipProps: PropTypes.object,
+  DetailChipProps: PropTypes.shape({
+    getLink: PropTypes.func,
+    valueToString: PropTypes.func,
+  }),
   disabled: PropTypes.bool,
   errorText: PropTypes.string,
   getOptionKey: PropTypes.func,
   getOptionLabel: PropTypes.func,
   isMulti: PropTypes.bool,
+  innerProps: PropTypes.object,
   label: PropTypes.string,
   minSearchLength: PropTypes.number,
   name: PropTypes.string.isRequired,
@@ -337,6 +354,7 @@ RecordAutocomplete.defaultProps = {
   getOptionKey: opt => opt['@rid'],
   getOptionLabel: opt => opt.name,
   isMulti: false,
+  innerProps: {},
   label: '',
   minSearchLength: 1,
   onChange: () => {},

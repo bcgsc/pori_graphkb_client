@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import {
   ListItem,
   TextField,
@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 import api from '../../../services/api';
 import ResourceSelectComponent from '../../ResourceSelectComponent';
 import RecordAutocomplete from '../../RecordAutocomplete';
-import { KBContext } from '../../KBContext';
 import BooleanField from './BooleanField';
 import TextArrayField from './TextArrayField';
 import PermissionsTable from './PermissionsTable';
@@ -20,6 +19,8 @@ import EmbeddedRecord from './EmbeddedRecord';
 import './index.scss';
 import { FORM_VARIANT } from '../util';
 import EmbeddedListTable from './StatementReviewsTable';
+import { GeneralRecordPropType } from '../../types';
+import schema from '../../../services/schema';
 
 /**
  * Generate the field component for a form. Uses the property model to decide
@@ -27,7 +28,6 @@ import EmbeddedListTable from './StatementReviewsTable';
  *
  * @param {object} props
  * @param {PropertyModel} props.model the property model which defines the property type and other requirements
- * @param {Schema} props.schema the schema object
  * @param {function} props.onChange the function to update the parent form
  * @param {function} props.onReviewSelection the function to toggle between statement reviews
  * @param {*} props.value the initial value of the field
@@ -39,7 +39,6 @@ import EmbeddedListTable from './StatementReviewsTable';
  * @param {bool} props.formIsDirty flag to indicate changes have been made to the form content
  */
 const FormField = (props) => {
-  const { schema } = useContext(KBContext);
   const {
     className = '',
     error,
@@ -182,6 +181,7 @@ const FormField = (props) => {
         name={name}
         required={mandatory}
         onChange={onChange}
+        innerProps={innerProps}
         resources={['', ...choices]}
         label={label || name}
         value={value || ''}
@@ -197,6 +197,7 @@ const FormField = (props) => {
       error: errorFlag,
       isMulti: type === 'linkset',
       label: label || name,
+      className,
       name,
       onChange,
       required: mandatory,
@@ -230,6 +231,7 @@ const FormField = (props) => {
       propComponent = (
         <RecordAutocomplete
           {...autoProps}
+          innerProps={innerProps}
           DetailChipProps={{
             ...autoProps.DetailChipProps,
             valueToString: (record) => {
@@ -277,14 +279,49 @@ const FormField = (props) => {
 
 FormField.propTypes = {
   className: PropTypes.string,
-  error: PropTypes.object,
+  error: PropTypes.shape({
+    name: PropTypes.string,
+    message: PropTypes.string,
+  }),
   onChange: PropTypes.func.isRequired,
-  model: PropTypes.object.isRequired,
+  model: PropTypes.shape({
+    choices: PropTypes.arrayOf(PropTypes.shape({
+      key: PropTypes.string,
+      label: PropTypes.string,
+      value: PropTypes.string,
+      caption: PropTypes.string,
+    })),
+    default: PropTypes.string,
+    description: PropTypes.string,
+    example: PropTypes.string,
+    generateDefault: PropTypes.func,
+    linkedClass: PropTypes.shape({
+      name: PropTypes.string,
+      '@rid': PropTypes.string,
+      displayName: PropTypes.string,
+      isAbstract: PropTypes.bool,
+    }),
+    name: PropTypes.string,
+    type: PropTypes.string,
+    nullable: PropTypes.bool,
+    iterable: PropTypes.bool,
+    generated: PropTypes.bool,
+    mandatory: PropTypes.bool,
+  }).isRequired,
   disabled: PropTypes.bool,
-  value: PropTypes.any,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.arrayOf(GeneralRecordPropType),
+    GeneralRecordPropType,
+  ]),
   label: PropTypes.string,
   variant: PropTypes.string,
-  innerProps: PropTypes.object,
+  innerProps: PropTypes.shape({
+    inputProps: PropTypes.shape({
+      'data-test-id': PropTypes.string,
+    }),
+  }),
   formIsDirty: PropTypes.bool,
 };
 

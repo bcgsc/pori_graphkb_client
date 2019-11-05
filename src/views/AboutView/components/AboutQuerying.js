@@ -17,48 +17,42 @@ const AboutQuerying = () => (
     <Typography variant="h1" id="about-page__querying">
         Querying
     </Typography>
-    <Typography paragraph>
-        To query GraphKB using this GUI, navigate to the&nbsp;
-      <Link to="/query">Query</Link> page by using the navbar on the left. To query
-        using this page, simply type into the search bars and hit enter or
-        click on the search icon on the right.
+    <Typography paragraph variant="body2">
+      There are 3 ways to query GraphKB. These can be found by clicking on the search icon in the left-hand side bar.
     </Typography>
-    <Typography paragraph>
-        To access the <Link to="/query/advanced">Advanced Query</Link> page, click on the labelled
-        button. The Advanced Query page allows more specific queries to be
-        made to the database. The first thing to do when building a query is
-        to choose a record class. The dropdown contains a list of classes to choose
-        from, and in doing so, you will change the available form fields to
-        fill out, as certain classes have different properties than others.
-    </Typography>
-    <Typography variant="h2" id="about-results-table">
-        Viewing Results (Table)
-    </Typography>
-    <Typography>
-      After sending a query, result records will be loaded into the&nbsp;
-      <Link to="/data/table?class=Statement">Table view</Link>
-    </Typography>
-    <img src={queryResults} alt="Query Results" id="query-table-view" />
-    <List style={{ width: 'min-content' }}>
+    <List>
       <ListItem>
-        <ListItemText primary="1. Filter" secondary="Filters are added using the advanced search form which pops up when you click this button" />
+        <Link to="/query">
+          <ListItemText primary="Quick Search" secondary="This is the simplest way to query. It is the main page view of this application and contains a single text box for input" />
+        </Link>
       </ListItem>
       <ListItem>
-        <ListItemText primary="2. Options" secondary="Configure the visible columns and export data" />
+        <Link to="/query-popular/gene">
+          <ListItemText primary="Popular Search" secondary="These are pre-built 'advanced' queries which are commonly used by analysts exploring the database" />
+        </Link>
       </ListItem>
       <ListItem>
-        <ListItemText primary="3. Row" secondary="Click records to view details in a side drawer" />
-      </ListItem>
-      <ListItem>
-        <ListItemText primary="4. Edit" secondary="Click the Edit Icon in the detail drawer to edit the current row" />
-      </ListItem>
-      <ListItem>
-        <ListItemText primary="5. New Tab" secondary="Click this Icon to open the current row in a new Tab" />
-      </ListItem>
-      <ListItem>
-        <ListItemText primary="6. Close" secondary="Click this Icon to close the detail side bar" />
+        <Link to="/query-advanced">
+          <ListItemText primary="Advanced Search" secondary="This view is for advanced users and lets the user build their own queries from scratch. New users should start with one of the other two query views" />
+        </Link>
       </ListItem>
     </List>
+    <Typography variant="h2" id="about-results-table">
+      Viewing Results (Table)
+    </Typography>
+    <Typography>
+      After sending a query, result records will be loaded into the Table view
+    </Typography>
+    <img src={queryResults} alt="Query Results" id="query-table-view" />
+    <Typography paragraph>
+      Clicking any row in table view will open the details panel. From the details panel you can
+      view or edit the record in a new window
+    </Typography>
+    <Typography variant="h3">Configuring Table Options</Typography>
+    <Typography paragraph>
+      Clicking the top-right ellipsis to modify the visible columns or export the current table to a
+      document
+    </Typography>
   </div>
 );
 

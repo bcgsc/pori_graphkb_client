@@ -8,9 +8,9 @@ import {
 } from '@material-ui/core';
 
 // static content
-import listFields from '../../../static/tutorial/list-fields.png';
-import linkFields from '../../../static/tutorial/link-fields.png';
-import selectFields from '../../../static/tutorial/select-fields.png';
+import listFields from '../../../static/images/list-fields.png';
+import linkFields from '../../../static/images/link-fields.png';
+import selectFields from '../../../static/images/select-fields.png';
 
 
 const AboutForms = () => (

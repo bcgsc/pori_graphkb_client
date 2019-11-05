@@ -442,7 +442,7 @@ class DataView extends React.Component {
           <div className="footer__selected-records">
             {URLContainsTable && (
               <>
-                <Typography>
+                <Typography variant="body2">
                   {totalNumOfRowsSelected} Record{totalNumOfRowsSelected !== 1 ? 's' : ''} Selected
                 </Typography>
                 <Tooltip title="click here for graph view">
@@ -458,13 +458,13 @@ class DataView extends React.Component {
           {statusMessage && (
             <div className="footer__loader">
               <CircularProgress />
-              <Typography>
+              <Typography variant="body2">
                 {statusMessage}
               </Typography>
             </div>
           )}
           {URLContainsTable && (
-            <Typography className="footer__total-rows">
+            <Typography className="footer__total-rows" variant="body2">
             Total Rows: {totalRows === undefined ? 'Unknown' : totalRows}
             </Typography>
           )}

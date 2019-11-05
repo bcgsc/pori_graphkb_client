@@ -7,10 +7,9 @@ import {
   createMuiTheme,
   MuiThemeProvider,
 } from '@material-ui/core/styles';
-import { createGenerateClassName, jssPreset } from '@material-ui/styles';
+import { createGenerateClassName, jssPreset, StylesProvider } from '@material-ui/styles';
 
 import JssProvider from 'react-jss/lib/JssProvider';
-import { StylesProvider } from '@material-ui/styles'
 import { create } from 'jss';
 import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackbar-provider';
 import * as cssTheme from './_theme.scss';
@@ -45,7 +44,6 @@ const theme = createMuiTheme({
     },
   },
   typography: {
-    useNextVariants: true,
     h1: {
       fontSize: '1.7rem',
     },
@@ -60,6 +58,23 @@ const theme = createMuiTheme({
     },
     h5: {
       fontSize: '1.1rem',
+    },
+    h6: {
+      fontSize: '0.875rem',
+    },
+    body1: {
+      fontSize: '1rem',
+    },
+    body2: {
+      fontSize: '0.875rem',
+      opacity: 0.7,
+    },
+    subtitle1: {
+      fontSize: '0.875rem',
+    },
+    subtitle2: {
+      fontSize: '0.875rem',
+      opacity: 0.8,
     },
   },
 });
@@ -79,7 +94,7 @@ const jss = create({
 function App() {
   return (
     <StylesProvider injectFirst>
-      <JssProvider jss={jss} generateClassName={generateClassName} >
+      <JssProvider jss={jss} generateClassName={generateClassName}>
         <MuiThemeProvider theme={theme}>
           <SnackbarProvider anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
             <BrowserRouter>

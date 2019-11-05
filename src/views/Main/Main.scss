@@ -1,4 +1,5 @@
 @import '../../globals';
+@import '../../theme';
 
 $user-menu-width: 124px;
 $drawer-width: 240px;
@@ -167,6 +168,14 @@ $closed-drawer-width: 56px;
     top: 0;
   }
 
+  &__link {
+    color: $palette__text--primary;
+
+    &--selected {
+      color: $palette__secondary--main;
+    }
+  }
+
   &__footer {
     background: $palette__background--default;
     bottom: 0;
@@ -198,8 +207,4 @@ $closed-drawer-width: 56px;
       margin-left: 8px;
     }
   }
-}
-
-.test .test .test {
-  z-index: 0;
 }

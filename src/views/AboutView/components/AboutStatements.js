@@ -25,7 +25,7 @@ const AboutStatements = () => (
     <List>
       <ListItem>
         <ListItemText
-          primary="subject"
+          primary="Subject"
           secondary="This is the element which the relevance of the statement applies to"
         />
       </ListItem>
@@ -37,13 +37,13 @@ const AboutStatements = () => (
       </ListItem>
       <ListItem>
         <ListItemText
-          primary="conditions"
+          primary="Conditions"
           secondary="This is the statement context. It is a series of required conditions for the statement to be applicable/true"
         />
       </ListItem>
       <ListItem>
         <ListItemText
-          primary="evidence"
+          primary="Evidence"
           secondary="One or more pieces of evidence (Literature, DB, etc) which support this statement"
         />
       </ListItem>

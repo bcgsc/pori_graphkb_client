@@ -1,5 +1,6 @@
-import { boundMethod } from 'autobind-decorator';
-import React from 'react';
+import React, {
+  useState, useCallback,
+} from 'react';
 import PropTypes from 'prop-types';
 import {
   Typography,
@@ -12,87 +13,55 @@ import {
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
-import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 
 import './index.scss';
 import RecordFormDialog from '../../../../components/RecordFormDialog';
+import { FORM_VARIANT } from '../../../../components/RecordForm/util';
+
 
 /**
  * Component for managing AdminView User form state.
  *
  * @property {object} props
- * @property {Array} props.users - List of user records.
- * @property {Array} props.userGroups - List of usergroup records.
- * @property {function} props.deleteUsers - delete users handler.
- * @property {function} props.addUser - add user handler.
- * @property {function} props.editUser - edit user handler.
+ * @property {string} props.variant the table variant (user or usergroup)
+ * @property {Array} props.records List of records.
+ * @property {function} props.onChange handler to be triggered when data changes
  */
-class AdminTable extends React.PureComponent {
-  static contextType = SnackbarContext;
+const AdminTable = ({ onChange, records, variant }) => {
+  const [recordOpen, setRecordOpen] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-  static propTypes = {
-    records: PropTypes.arrayOf(PropTypes.object),
-    onChange: PropTypes.func.isRequired,
-    variant: PropTypes.oneOf(['User', 'UserGroup']),
+  const handleOpenEditDialog = (record) => {
+    setRecordOpen(record);
+    setDialogOpen(true);
   };
 
-  static defaultProps = {
-    records: [],
-    variant: 'User',
+  const handleOpenNewDialog = () => {
+    setDialogOpen(true);
+    setRecordOpen(null);
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      ridOpen: null,
-      dialogOpen: false,
-    };
-  }
+  const handleDialogCancel = () => {
+    setDialogOpen(false);
+    setRecordOpen(null);
+  };
 
-  @boundMethod
-  handleOpenEditDialog(rid) {
-    this.setState({ dialogOpen: true, ridOpen: rid });
-  }
+  const handleDialogError = () => {
+    setDialogOpen(false);
+    setRecordOpen(null);
+  };
 
-  @boundMethod
-  handleOpenNewDialog() {
-    this.setState({ dialogOpen: true, ridOpen: null });
-  }
-
-  @boundMethod
-  handleDialogCancel() {
-    this.setState({ dialogOpen: false, ridOpen: null });
-  }
-
-  @boundMethod
-  handleDialogError() {
-    this.setState({ dialogOpen: false, ridOpen: null });
-  }
-
-  @boundMethod
-  handleDialogSubmit() {
-    const { onChange } = this.props;
-    this.setState({ dialogOpen: false, ridOpen: null });
+  const handleDialogSubmit = useCallback(() => {
+    setDialogOpen(false);
+    setRecordOpen(null);
     onChange();
-  }
+  }, [onChange]);
 
-  render() {
+  const Row = (record) => {
     const {
-      records,
-      variant,
-    } = this.props;
-
-    const {
-      dialogOpen,
-      ridOpen,
-    } = this.state;
-
-    const Row = ({
-      name,
-      createdAt,
-      groups = [],
-      '@rid': rid,
-    }) => (
+      '@rid': rid, name, createdAt, groups,
+    } = record;
+    return (
       <TableRow key={rid}>
         <TableCell padding="dense">{rid}</TableCell>
         <TableCell>{name}</TableCell>
@@ -103,54 +72,69 @@ class AdminTable extends React.PureComponent {
         <TableCell>{groups.map(group => group.name).join(', ')}</TableCell>
         )}
         <TableCell padding="checkbox">
-          <IconButton onClick={() => this.handleOpenEditDialog(rid)}>
+          <IconButton onClick={() => handleOpenEditDialog(record)}>
             <EditIcon />
           </IconButton>
         </TableCell>
       </TableRow>
     );
+  };
 
-    const sortByName = (rec1, rec2) => rec1.name.localeCompare(rec2.name);
+  const sortByName = (rec1, rec2) => rec1.name.localeCompare(rec2.name);
 
-    return (
-      <div className="admin-table">
-        <RecordFormDialog
-          isOpen={dialogOpen}
-          modelName={variant}
-          onClose={this.handleDialogCancel}
-          onError={this.handleDialogError}
-          onSubmit={this.handleDialogSubmit}
-          rid={ridOpen}
-        />
-        <div className="admin-table__header">
-          <Typography variant="h2">
+  return (
+    <div className="admin-table">
+      <RecordFormDialog
+        isOpen={dialogOpen}
+        modelName={variant}
+        onClose={handleDialogCancel}
+        onError={handleDialogError}
+        onSubmit={handleDialogSubmit}
+        value={recordOpen}
+        variant={!recordOpen
+          ? FORM_VARIANT.NEW
+          : FORM_VARIANT.EDIT}
+      />
+      <div className="admin-table__header">
+        <Typography variant="h2">
             Current {variant}s ({records.length})
-          </Typography>
-          <div>
-            <IconButton onClick={this.handleOpenNewDialog}>
-              <AddIcon />
-            </IconButton>
-          </div>
-        </div>
-        <div className="admin-table__content">
-          <Table>
-            <TableHead>
-              <TableRow className="admin-table__content-header">
-                <TableCell padding="dense">Record ID</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell padding="dense">Created At</TableCell>
-                {variant === 'User' && (<TableCell>Groups</TableCell>)}
-                <TableCell padding="checkbox" />
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {records.sort(sortByName).map(record => Row(record))}
-            </TableBody>
-          </Table>
+        </Typography>
+        <div>
+          <IconButton onClick={handleOpenNewDialog}>
+            <AddIcon />
+          </IconButton>
         </div>
       </div>
-    );
-  }
-}
+      <div className="admin-table__content">
+        <Table>
+          <TableHead>
+            <TableRow className="admin-table__content-header">
+              <TableCell padding="dense">Record ID</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell padding="dense">Created At</TableCell>
+              {variant === 'User' && (<TableCell>Groups</TableCell>)}
+              <TableCell padding="checkbox" />
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {records.sort(sortByName).map(record => Row(record))}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  );
+};
+
+
+AdminTable.propTypes = {
+  records: PropTypes.arrayOf(PropTypes.object),
+  onChange: PropTypes.func.isRequired,
+  variant: PropTypes.oneOf(['User', 'UserGroup']),
+};
+
+AdminTable.defaultProps = {
+  records: [],
+  variant: 'User',
+};
 
 export default AdminTable;

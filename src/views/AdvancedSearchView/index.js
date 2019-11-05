@@ -93,7 +93,7 @@ function AdvancedSearchView(props) {
   const [modelName, setModelName] = useState(initialModelName || 'Statement');
   const [model, setModel] = useState(null);
   const [propertyModel, setPropertyModel] = useState(null);
-  useDeepCompareEffect(() => {
+  useEffect(() => {
     setModelName(modelName || 'Statement');
     setModel(schema.get(modelName || 'Statement'));
   }, [modelName]);

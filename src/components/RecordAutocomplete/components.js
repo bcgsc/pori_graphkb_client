@@ -153,7 +153,7 @@ const Menu = (props) => {
 
   return (isSearchable
     && (
-    <Paper square className="record-autocomplete__paper" {...innerProps}>
+    <Paper elevation={2} square className="record-autocomplete__paper" {...innerProps}>
       {children}
     </Paper>
     )

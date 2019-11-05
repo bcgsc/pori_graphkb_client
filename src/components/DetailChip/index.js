@@ -67,7 +67,7 @@ const DefaultPopupComponent = (props) => {
               name => (
                 <TableRow key={name} className="detail-popover__row">
                   <TableCell padding="checkbox">
-                    <Typography variant="body2">{name}</Typography>
+                    <Typography variant="body1">{name}</Typography>
                   </TableCell>
                   <TableCell padding="checkbox">
                     {valueToString(retrievedDetails[name])}
@@ -219,6 +219,10 @@ class DetailChip extends React.Component {
         </Popover>
         <Chip
           label={label}
+          classes={{
+            avatar: 'detail-chip__avatar',
+            outlined: 'detail-chip__outlined',
+          }}
           className={`detail-chip__root ${className || ''}`}
           clickable
           onClick={this.handlePopoverOpen}

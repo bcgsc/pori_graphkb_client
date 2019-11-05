@@ -6,6 +6,15 @@
       margin-left: -1px;
     }
   }
+
+  &__avatar {
+    height: 32px;
+    width: 32px;
+  }
+
+  &__outlined &__avatar{
+    margin-left: 0;
+  }
 }
 
 .detail-popover {

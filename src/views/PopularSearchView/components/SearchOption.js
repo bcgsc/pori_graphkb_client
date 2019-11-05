@@ -12,7 +12,7 @@ function SearchOption(props) {
   return (
     <div className={`popular-search__menu-item${selected ? '--selected' : ''}`}>
       <ButtonBase onClick={handleChange}>
-        <Typography variant="h5" color={selected ? 'primary' : 'default'}>
+        <Typography variant="h5" color={selected ? 'primary' : 'initial'}>
           {label}
         </Typography>
       </ButtonBase>

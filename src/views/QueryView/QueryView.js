@@ -10,6 +10,7 @@ import {
   InputAdornment,
   Checkbox,
   FormControlLabel,
+  Typography,
 } from '@material-ui/core';
 import kbp from '@bcgsc/knowledgebase-parser';
 import * as qs from 'qs';
@@ -243,7 +244,7 @@ class QueryView extends Component {
             />
             <FormControlLabel
               control={<Checkbox />}
-              label="HGVS Shorthand"
+              label={<Typography className="search__sub-search" variant="h6">HGVS Shorthand</Typography>}
               checked={hgvs}
               onChange={this.handleClickHgvs}
               color="primary"

@@ -15,7 +15,7 @@ import selectFields from '../../../static/images/select-fields.png';
 
 const AboutForms = () => (
   <div className="about-page__content">
-    <Typography variant="h2" id="about-forms">
+    <Typography variant="h1" id="about-forms">
         GraphKB Forms
     </Typography>
     <List>

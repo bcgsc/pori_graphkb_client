@@ -52,7 +52,7 @@ class AboutClasses extends Component {
   }
 
   async getClassExample(model) {
-    const call = api.get(`${model.routeName}?limit=1&neighbors=1`);
+    const call = api.post('/query', { target: model.name, limit: 1, neighbors: 1 });
     this.controllers.push(call);
     const result = await call.request();
 

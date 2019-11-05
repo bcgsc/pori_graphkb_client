@@ -29,7 +29,6 @@ const FADED_OPACITY = 0.6;
  * @property {Object} props.actionsNode - Node decorator object.
  * @property {Object} props.detail - Node currently opened in detail drawer.
  * @property {string} props.filter - current filter string value.
- * @property {Object} props.schema - Knowledgebase Schema object.
  */
 class GraphNodeDisplay extends PureComponent {
   static propTypes = {

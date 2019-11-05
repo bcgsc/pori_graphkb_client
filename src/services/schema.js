@@ -80,7 +80,6 @@ class Schema {
    * Returns preview of given object based on its '@class' value
    * @param {Object} obj - Record to be parsed.
    */
-  @boundMethod
   getPreview(obj) {
     if (obj) {
       if (obj.displayNameTemplate) {
@@ -470,4 +469,6 @@ class Schema {
   }
 }
 
-export default Schema;
+const schema = new Schema(SCHEMA_DEFN);
+
+export default schema;

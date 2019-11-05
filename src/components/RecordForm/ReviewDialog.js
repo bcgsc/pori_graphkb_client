@@ -19,6 +19,7 @@ import {
 import { KBContext } from '../KBContext';
 import FormField from './FormField';
 import useSchemaForm from '../hooks/useSchemaForm';
+import schema from '../../services/schema';
 
 
 const MODEL_NAME = 'StatementReview';
@@ -33,7 +34,6 @@ const AddReviewDialog = ({
 }) => {
   const snackbar = useContext(SnackbarContext);
   const context = useContext(KBContext);
-  const { schema } = context;
   const { comment, status } = schema.get(MODEL_NAME).properties;
 
   const [updateAmalgamated, setUpdateAmalgamated] = useState(true);
@@ -42,7 +42,7 @@ const AddReviewDialog = ({
   const {
     formContent, formErrors, formHasErrors, updateForm, formIsDirty, setFormIsDirty,
   } = useSchemaForm(
-    schema, { comment, status }, {},
+    { comment, status }, {},
   );
 
   /**

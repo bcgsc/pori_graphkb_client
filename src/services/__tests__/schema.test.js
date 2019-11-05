@@ -1,10 +1,8 @@
 import { schema as SCHEMA_DEFN } from '@bcgsc/knowledgebase-schema';
-import Schema from '../schema';
+import testSchema from '../schema';
 
 
 describe('Schema wrapper class tests', () => {
-  const testSchema = new Schema(SCHEMA_DEFN);
-
   describe('Retrieving classmodels and properties', () => {
     test('gets classes properly', () => {
       Object.keys(SCHEMA_DEFN).forEach((key) => {

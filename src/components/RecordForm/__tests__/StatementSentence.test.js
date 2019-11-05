@@ -3,12 +3,12 @@ import { mount } from 'enzyme';
 import { Typography } from '@material-ui/core';
 
 import StatementSentence from '../StatementSentence';
-import Schema from '../../../services/schema';
+import schema from '../../../services/schema';
 
 
 describe('StatementSentence', () => {
   // patch the schema methods to simplify our mocks
-  jest.spyOn(Schema.prototype, 'getPreview').mockImplementation(
+  jest.spyOn(schema, 'getPreview').mockImplementation(
     (item) => {
       if (item) {
         return item.displayName ? item.displayName : item;
@@ -16,13 +16,10 @@ describe('StatementSentence', () => {
       return null;
     },
   );
-  const schema = new Schema();
 
   test('placeholders used when no content given', () => {
     const wrapper = mount((
-      <StatementSentence
-        schema={schema}
-      />
+      <StatementSentence />
     ));
     expect(wrapper.find(Typography)).toHaveLength(1);
     const html = wrapper.html();
@@ -35,7 +32,6 @@ describe('StatementSentence', () => {
   test('partial content ok', () => {
     const wrapper = mount((
       <StatementSentence
-        schema={schema}
         content={{
           conditions: [{ displayName: 'condition1' }, { displayName: 'condition2' }],
         }}
@@ -53,7 +49,6 @@ describe('StatementSentence', () => {
   test('replaces all fields when given', () => {
     const wrapper = mount((
       <StatementSentence
-        schema={schema}
         content={{
           conditions: [{ displayName: 'KRAS mutation' }],
           subject: 'drugName',

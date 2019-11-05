@@ -16,8 +16,8 @@ import * as qs from 'qs';
 import SearchIcon from '@material-ui/icons/Search';
 
 import './QueryView.scss';
-import { KBContext } from '../../components/KBContext';
 import api from '../../services/api';
+import schema from '../../services/schema';
 
 const ENTER_KEYCODE = 13;
 const MIN_WORD_LENGTH = 3;
@@ -29,8 +29,6 @@ const MIN_WORD_LENGTH = 3;
  * @property {Object} props.history - Application routing history object.
  */
 class QueryView extends Component {
-  static contextType = KBContext;
-
   static propTypes = {
     history: PropTypes.object.isRequired,
   };
@@ -87,7 +85,6 @@ class QueryView extends Component {
       variant,
     } = this.state;
     const { history } = this.props;
-    const { schema } = this.context;
 
     if (variant) {
       const params = {

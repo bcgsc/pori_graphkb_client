@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import {
   ListItem,
   TextField,
@@ -8,7 +8,6 @@ import PropTypes from 'prop-types';
 import api from '../../../services/api';
 import ResourceSelectComponent from '../../ResourceSelectComponent';
 import RecordAutocomplete from '../../RecordAutocomplete';
-import { KBContext } from '../../KBContext';
 import BooleanField from './BooleanField';
 import TextArrayField from './TextArrayField';
 import PermissionsTable from './PermissionsTable';
@@ -21,6 +20,7 @@ import './index.scss';
 import { FORM_VARIANT } from '../util';
 import EmbeddedListTable from './StatementReviewsTable';
 import { GeneralRecordPropType } from '../../types';
+import schema from '../../../services/schema';
 
 /**
  * Generate the field component for a form. Uses the property model to decide
@@ -28,7 +28,6 @@ import { GeneralRecordPropType } from '../../types';
  *
  * @param {object} props
  * @param {PropertyModel} props.model the property model which defines the property type and other requirements
- * @param {Schema} props.schema the schema object
  * @param {function} props.onChange the function to update the parent form
  * @param {function} props.onReviewSelection the function to toggle between statement reviews
  * @param {*} props.value the initial value of the field
@@ -40,7 +39,6 @@ import { GeneralRecordPropType } from '../../types';
  * @param {bool} props.formIsDirty flag to indicate changes have been made to the form content
  */
 const FormField = (props) => {
-  const { schema } = useContext(KBContext);
   const {
     className = '',
     error,

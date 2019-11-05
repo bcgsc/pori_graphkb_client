@@ -2,7 +2,6 @@ import React, {
   useState, useContext, useEffect, useReducer, useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
-import useDeepCompareEffect from 'use-deep-compare-effect';
 import {
   Typography, Card,
 } from '@material-ui/core';

@@ -454,7 +454,7 @@ function AdvancedSearchView(props) {
             requireConfirm={false}
             onClick={handleSubmit}
           >
-          Search
+           Search
           </ActionButton>
         </div>
       </Card>

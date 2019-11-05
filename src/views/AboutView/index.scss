@@ -19,6 +19,18 @@
       margin-right: auto;
       max-width: $readable-max;
     }
+
+    h2:not(:first-child) {
+      margin-top: 20px;
+    }
+  }
+
+  &__column-image {
+    display: flex;
+  }
+
+  &__image-list {
+    display: block;
   }
 
   .tabs-content {
@@ -83,7 +95,7 @@
   img,
   svg {
     display: block;
-    max-width: 100%;
+    max-width: $readable-max;
   }
 
   .pie-chart {

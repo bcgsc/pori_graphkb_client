@@ -12,7 +12,6 @@ import {
   FormControlLabel,
 } from '@material-ui/core';
 import kbp from '@bcgsc/knowledgebase-parser';
-import * as qs from 'qs';
 import SearchIcon from '@material-ui/icons/Search';
 
 import './QueryView.scss';
@@ -21,6 +20,7 @@ import schema from '../../services/schema';
 
 const ENTER_KEYCODE = 13;
 const MIN_WORD_LENGTH = 3;
+
 
 /**
  * View for simple search by name query. Form submissions are passed through the URL to
@@ -87,20 +87,13 @@ class QueryView extends Component {
     const { history } = this.props;
 
     if (variant) {
-      const params = {
-        '@class': 'PositionalVariant',
-      };
-      ['type', 'reference1', 'reference2'].forEach((param) => {
-        if (variant[param]) {
-          params[param] = { name: variant[param] };
-        }
-      });
-      schema.getProperties('PositionalVariant').filter(p => !p.name.includes('Repr')).forEach((prop) => {
-        if (prop.type !== 'link' && variant[prop.name] && !prop.generated) {
-          params[prop.name] = variant[prop.name];
-        }
-      });
-      const search = qs.stringify(params);
+      const search = api.encodeQueryComplexToSearch({
+        target: 'Statement',
+        filters: {
+          conditions: api.buildSearchFromParseVariant(schema, variant),
+          operator: 'CONTAINSANY',
+        },
+      }, 'Statement');
 
       history.push({
         pathname: '/data/table',

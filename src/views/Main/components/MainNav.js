@@ -12,6 +12,7 @@ import {
   ListItemIcon,
   Divider,
   MenuItem,
+  Typography,
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import { boundMethod } from 'autobind-decorator';
@@ -23,7 +24,6 @@ import logo from '../../../static/logo.png';
 import title from '../../../static/title.png';
 import { KBContext } from '../../../components/KBContext';
 import { hasWriteAccess, isAdmin, isAuthorized } from '../../../services/auth';
-
 
 /**
  * @property {object} props
@@ -87,11 +87,11 @@ class MainNav extends React.PureComponent {
           {icon && <ListItemIcon>{icon}</ListItemIcon>}
           <ListItemText
             inset={inset}
-            primary={label}
-            primaryTypographyProps={{
-              color: activeLink === route ? 'secondary' : undefined,
-            }}
-          />
+          >
+            <Typography variant="body1" className={`main-nav-drawer__link${activeLink === route ? '--selected' : ''}`}>
+              {label}
+            </Typography>
+          </ListItemText>
         </MenuItem>
       </Link>
     );

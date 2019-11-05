@@ -112,7 +112,7 @@ const Main = () => {
           </IconButton>
           <div className={`appbar__title ${drawerOpen ? 'appbar__title--drawer-open' : ''}`}>
             <Link to="/query" onClick={handleCloseNavBar}>
-              <Typography variant="h6">GraphKB</Typography>
+              <Typography variant="h4">GraphKB</Typography>
               <Typography variant="caption">v{process.env.npm_package_version}</Typography>
             </Link>
           </div>
@@ -124,7 +124,7 @@ const Main = () => {
                 size="small"
               >
                 <PersonIcon />
-                <Typography color="inherit">
+                <Typography color="inherit" variant="h6">
                   {isAuthenticated({ authorizationToken, authenticationToken })
                     ? getUsername({ authenticationToken, authorizationToken })
                     : 'Logged Out'

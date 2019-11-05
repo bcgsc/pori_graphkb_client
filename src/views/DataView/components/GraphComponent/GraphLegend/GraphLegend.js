@@ -35,7 +35,7 @@ function GraphLegend(props) {
   return (
     <div className="legend-wrapper">
       {graphOptions.nodesLegend && graphOptions.nodesColor && (
-        <Paper>
+        <Paper elevation={2}>
           <div className="legend-content">
             <div className="legend-header">
               <div className="legend-header-text">
@@ -91,7 +91,7 @@ function GraphLegend(props) {
         && graphOptions.linksLegend
         && graphOptions.linksColor
         && (
-          <Paper>
+          <Paper elevation={2}>
             <div className="legend-content">
               <div className="legend-header">
                 <div className="legend-header-text">

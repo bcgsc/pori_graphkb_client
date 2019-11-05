@@ -94,7 +94,7 @@ class AboutView extends Component {
 
     return (
       <div className="about-page">
-        <Tabs value={tabIndex} onChange={this.handleChange} scrollable className="tabs-bar">
+        <Tabs value={tabIndex} onChange={this.handleChange} variant="scrollable" className="tabs-bar">
           {tabNavList}
         </Tabs>
         <div className="tabs-content">

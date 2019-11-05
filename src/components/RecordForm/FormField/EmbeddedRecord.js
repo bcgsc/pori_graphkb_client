@@ -50,7 +50,7 @@ const EmbeddedRecord = ({
   useDeepCompareEffect(() => {
     setFormContent(initialValue || {});
     setFormErrors(errors || {});
-  }, [initialValue, errors]);
+  }, [initialValue || {}, errors || {}]);
 
   useEffect(() => {
     setModelName(formContent['@class']);

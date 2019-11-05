@@ -31,7 +31,11 @@ const DefaultOptionComponent = (resource, disabled) => (
       primary={resource.label || resource || 'None'}
       secondary={resource.caption || ''}
       secondaryTypographyProps={{ className: 'resource-select__option-description' }}
-      classes={{ primary: disabled ? 'disabled-text' : '' }}
+      classes={{
+        primary: disabled ? 'disabled-text' : '',
+        multiline: resource.caption ? 'margin-reset' : '',
+        root: resource.caption ? 'margin-reset' : '',
+      }}
     />
   </MenuItem>
 );

@@ -293,10 +293,10 @@ class DetailDrawer extends Component {
               )}
               <ListItemText className="detail-li-text">
                 <div className="detail-identifiers">
-                  <Typography variant="subtitle1">
+                  <Typography variant="body1">
                     {util.antiCamelCase(name)}
                   </Typography>
-                  <Typography>
+                  <Typography variant="h6">
                     {previewStr}
                   </Typography>
                 </div>

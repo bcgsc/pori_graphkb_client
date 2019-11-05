@@ -45,10 +45,10 @@ const StatementReviewsTable = (props) => {
       <Table className="embedded-list-table__table">
         <TableHead className="embedded-list-table__table-header">
           <TableRow>
-            <TableCell padding="dense">
+            <TableCell size="small">
               Review Status
             </TableCell>
-            <TableCell padding="dense">
+            <TableCell size="small">
               Reviewer
             </TableCell>
           </TableRow>

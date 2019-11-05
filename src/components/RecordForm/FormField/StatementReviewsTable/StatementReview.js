@@ -67,7 +67,7 @@ const StatementReview = ({
           <Typography variant="h5" gutterBottom align="center" color="secondary">
             {`Status: ${status}`}
           </Typography>
-          <Typography variant="body2" color="textSecondary" align="center">
+          <Typography variant="body1" color="textSecondary" align="center">
             {comment}
           </Typography>
           <div className="review-card__action-button">
@@ -99,7 +99,7 @@ const StatementReview = ({
   return (
     <React.Fragment key={index}>
       <TableRow>
-        <TableCell padding="dense">
+        <TableCell size="small">
           {status}
         </TableCell>
         <TableCell>

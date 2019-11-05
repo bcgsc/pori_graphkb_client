@@ -6,11 +6,22 @@
       margin-left: -1px;
     }
   }
+
+  &__avatar {
+    height: 32px;
+    width: 32px;
+  }
+
+  &__outlined &__avatar{
+    margin-left: 0;
+  }
 }
 
 .detail-popover {
 
   &__row {
+    height: 48px;
+
     td:first-child {
       max-width: min-content;
     }

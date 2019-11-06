@@ -440,13 +440,6 @@ class Schema {
       'displayName',
     ];
 
-    const getPreview = propName => ({ data }) => {
-      if (data && data[propName]) {
-        return this.getLabel(data[propName], false);
-      }
-      return '';
-    };
-
     const valueGetter = (propName, subPropName = null) => ({ data }) => {
       if (data) {
         if (!subPropName) {

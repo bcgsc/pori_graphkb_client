@@ -344,6 +344,42 @@ class Schema {
       };
     };
 
+    const getCondition = propName => ({ data }) => {
+      let values;
+
+      if (data && data.conditions && propName !== 'other') {
+        values = data.conditions.filter(val => (val['@class'].toLowerCase().includes(propName)));
+      } else if (data && data.conditions) {
+        values = data.conditions.filter(val => (
+          !val['@class'].toLowerCase().includes('variant') && !val['@class'].toLowerCase().includes('disease')
+        ));
+      }
+      return values;
+    };
+
+    const defineConditionsColumn = () => {
+      const conditionsDefn = {
+        headerName: 'Conditions',
+        groupId: 'Conditions',
+        openByDefault: true,
+        children: [],
+      };
+
+      ['variant', 'disease', 'other'].forEach((cls) => {
+        const colDef = {
+          field: cls,
+          colId: cls,
+          valueGetter: getCondition(cls),
+          sortable: true,
+          width: 400,
+          cellRenderer: 'RecordList',
+        };
+
+        conditionsDefn.children.push(colDef);
+      });
+      return conditionsDefn;
+    };
+
     const defineEdgeColumn = (name) => {
       const type = name.startsWith('out')
         ? 'out'
@@ -419,7 +455,11 @@ class Schema {
       .forEach((prop) => {
         const hide = !showByDefault.includes(prop.name);
 
-        if (prop.type === 'linkset') {
+        if (prop.name === 'conditions') {
+          defns.push(defineLinkSetColumn('conditions'));
+          defns.push(defineConditionsColumn()); // TODO: Remove after confident column is correct
+          // defns.push();
+        } else if (prop.type === 'linkset') {
           defns.push(defineLinkSetColumn(prop.name));
         } else if (prop.linkedClass) {
           // build a column group

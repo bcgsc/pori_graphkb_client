@@ -49,7 +49,7 @@ const DefaultPopupComponent = (props) => {
     <Card>
       <CardContent className="detail-popover__panel">
         <div className="detail-popover__panel-header">
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h4" gutterBottom>
             {title || label}
           </Typography>
           {getLink && getLink(retrievedDetails) && (
@@ -66,10 +66,10 @@ const DefaultPopupComponent = (props) => {
             {retrievedDetails && Object.keys(retrievedDetails).sort().map(
               name => (
                 <TableRow key={name} className="detail-popover__row">
-                  <TableCell padding="checkbox">
-                    <Typography variant="body2">{name}</Typography>
+                  <TableCell>
+                    <Typography variant="h6">{name}</Typography>
                   </TableCell>
-                  <TableCell padding="checkbox">
+                  <TableCell>
                     {valueToString(retrievedDetails[name])}
                   </TableCell>
                 </TableRow>
@@ -100,7 +100,7 @@ DefaultPopupComponent.defaultProps = {
 };
 
 
-const shallowObjectKey = obj => JSON.stringify(obj, (k, v) => k ? `${v}` : v);
+const shallowObjectKey = obj => JSON.stringify(obj, (k, v) => (k ? `${v}` : v));
 
 /**
  * Displays a record as a Material Chip. When clicked, opens a Popover
@@ -128,7 +128,7 @@ class DetailChip extends React.Component {
     valueToString: PropTypes.func,
     title: PropTypes.string,
     getLink: PropTypes.func,
-    PopUpComponent: PropTypes.object,
+    PopUpComponent: PropTypes.func,
     PopUpProps: PropTypes.object,
   };
 
@@ -204,7 +204,6 @@ class DetailChip extends React.Component {
       ...rest
     } = this.props;
     const { anchorEl } = this.state;
-    const popUpProps = PopUpProps || this.props;
 
     return (
       <div className="detail-chip" {...rest}>
@@ -216,10 +215,14 @@ class DetailChip extends React.Component {
           onClose={this.handlePopoverClose}
           className="detail-chip__popover detail-popover"
         >
-          <PopUpComponent {...popUpProps} />
+          <PopUpComponent {...this.props} {...PopUpProps} />
         </Popover>
         <Chip
           label={label}
+          classes={{
+            avatar: 'detail-chip__avatar',
+            outlined: 'detail-chip__outlined',
+          }}
           className={`detail-chip__root ${className || ''}`}
           clickable
           onClick={this.handlePopoverOpen}

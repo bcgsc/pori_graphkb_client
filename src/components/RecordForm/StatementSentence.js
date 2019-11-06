@@ -1,10 +1,12 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
-import PropTypes from 'prop-types';
+
+import schema from '../../services/schema';
+import { StatementPropType } from '../types';
+
 
 const StatementSentence = (props) => {
   const {
-    schema,
     content,
   } = props;
 
@@ -23,13 +25,13 @@ const StatementSentence = (props) => {
             color="textPrimary"
             className="quote__substitution"
           >
-            &nbsp;{word}
+            {wordPosition === 0 ? null : (<span> </span>)}{word}
           </Typography>
         );
       }
       return (
         <>
-          &nbsp;{word}
+          <span> </span>{word}
         </>
       );
     });
@@ -37,15 +39,16 @@ const StatementSentence = (props) => {
     return words;
   };
 
-  const appliesTo = schema.getPreview(content.appliesTo);
+  const subject = schema.getPreview(content.subject);
 
   const relevance = schema.getPreview(content.relevance);
 
-  const supportedBy = (content.supportedBy || [])
+  const evidence = (content.evidence || [])
     .map(support => schema.getPreview(support)).join(', ');
 
-  let conditions = (content.impliedBy || [])
-    .map(cond => schema.getPreview(cond));
+  let conditions = (content.conditions || [])
+    .map(cond => (subject !== schema.getPreview(cond) ? schema.getPreview(cond) : ''))
+    .filter(Boolean);
 
   if (conditions.length > 1) {
     conditions[conditions.length - 1] = `and ${conditions[conditions.length - 1]}`;
@@ -53,20 +56,20 @@ const StatementSentence = (props) => {
   conditions = conditions.join(', ');
 
   const propValueMap = {
-    impliedBy: {
+    conditions: {
       value: conditions,
       default: ' [CONDITIONS] ',
     },
-    appliesTo: {
-      value: appliesTo,
+    subject: {
+      value: subject,
       default: ' [TARGET] ',
     },
     relevance: {
       value: relevance,
       default: ' [RELEVANCE] ',
     },
-    supportedBy: {
-      value: supportedBy,
+    evidence: {
+      value: evidence,
       default: ' [EVIDENCE] ',
     },
   };
@@ -74,7 +77,7 @@ const StatementSentence = (props) => {
   const classModel = schema.get('Statement');
   const { properties: { displayNameTemplate: { default: displayNameTemplate } } } = classModel;
   const statementProp = Object.keys(propValueMap);
-  const splitTemplate = displayNameTemplate.split(/{+(impliedBy|relevance|appliesTo|supportedBy)}+/ig);
+  const splitTemplate = displayNameTemplate.split(/{+(conditions|relevance|subject|evidence)}+/ig);
 
   const statementSentence = splitTemplate.map((text) => {
     let result = `${text}`;
@@ -94,8 +97,7 @@ const StatementSentence = (props) => {
 };
 
 StatementSentence.propTypes = {
-  schema: PropTypes.object.isRequired,
-  content: PropTypes.object,
+  content: StatementPropType,
 };
 
 StatementSentence.defaultProps = {

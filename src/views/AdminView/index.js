@@ -37,11 +37,11 @@ class AdminView extends Component {
    */
   @boundMethod
   async fetchData() {
-    const usersCall = api.get('/users?neighbors=2');
+    const usersCall = api.post('/query', { target: 'User', neighbors: 2 });
     this.controllers.push(usersCall);
     const users = await usersCall.request();
 
-    const userGroupsCall = api.get('/usergroups?neighbors=1');
+    const userGroupsCall = api.post('/query', { target: 'UserGroup', neighbors: 1 });
     this.controllers.push(userGroupsCall);
     const userGroups = await userGroupsCall.request();
 

@@ -26,11 +26,20 @@ jest.mock('react-select', () => ({ options = [], value, onChange }) => {
   };
   return (
     <select data-testid="select" value={value} onChange={handleChange}>
-      {options.map(({ name }) => (
-        <option key={name} value={name}>
-          {name}
-        </option>
-      ))}
+      {options.map(({ name, options: subOptions }) => {
+        if (subOptions) {
+          return (
+            <div key={name}>
+              {subOptions.map(subOption => (<option key={subOption.name} value={subOption.name}>{subOption.name}</option>))}
+            </div>
+          );
+        }
+        return (
+          <option key={name} value={name}>
+            {name}
+          </option>
+        );
+      })}
     </select>
   );
 });

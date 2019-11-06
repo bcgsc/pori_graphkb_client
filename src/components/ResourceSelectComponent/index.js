@@ -12,9 +12,11 @@ import {
   OutlinedInput,
   Input,
   ListItemText,
+  FormHelperText,
 } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
+import { GeneralRecordPropType } from '../types';
 import './index.scss';
 
 
@@ -29,7 +31,11 @@ const DefaultOptionComponent = (resource, disabled) => (
       primary={resource.label || resource || 'None'}
       secondary={resource.caption || ''}
       secondaryTypographyProps={{ className: 'resource-select__option-description' }}
-      classes={{ primary: disabled ? 'disabled-text' : '' }}
+      classes={{
+        primary: disabled ? 'disabled-text' : '',
+        multiline: resource.caption ? 'margin-reset' : '',
+        root: resource.caption ? 'margin-reset' : '',
+      }}
     />
   </MenuItem>
 );
@@ -48,7 +54,9 @@ function ResourceSelectComponent(props) {
     children,
     required,
     id,
+    innerProps,
     error,
+    helperText,
     dense,
     variant,
     className,
@@ -70,11 +78,11 @@ function ResourceSelectComponent(props) {
       id={id}
       variant={variant}
       disabled={disabled}
+      error={error}
     >
       <InputLabel
         htmlFor={`resource-select-${name}`}
         required={required}
-        error={error}
         style={{
           fontSize: dense ? '0.8125rem' : '',
         }}
@@ -84,8 +92,8 @@ function ResourceSelectComponent(props) {
       <Select
         value={value}
         onChange={onChange}
-        error={error}
         input={<InputComponent name={name} id={`resource-select-${name}`} />}
+        inputProps={innerProps}
         style={{
           fontSize: dense ? '0.8125rem' : '',
         }}
@@ -96,9 +104,18 @@ function ResourceSelectComponent(props) {
       >
         {resourcesDisplay}
       </Select>
+      <FormHelperText>{helperText}</FormHelperText>
     </FormControl>
   );
 }
+
+const SelectOptionPropType = PropTypes.shape({
+  key: PropTypes.string,
+  value: PropTypes.string,
+  label: PropTypes.string,
+  caption: PropTypes.string,
+});
+
 
 /**
  * @namespace
@@ -115,9 +132,10 @@ function ResourceSelectComponent(props) {
  * size.
  * @property {string} variant - Material UI Select variant (outlined, filled, standard)
  */
+
 ResourceSelectComponent.propTypes = {
-  resources: PropTypes.array,
-  value: PropTypes.any.isRequired,
+  resources: PropTypes.arrayOf(SelectOptionPropType),
+  value: PropTypes.oneOfType([GeneralRecordPropType, PropTypes.string]).isRequired,
   onChange: PropTypes.func,
   name: PropTypes.string,
   label: PropTypes.string,
@@ -129,6 +147,8 @@ ResourceSelectComponent.propTypes = {
   variant: PropTypes.string,
   className: PropTypes.string,
   disabled: PropTypes.bool,
+  helperText: PropTypes.string,
+  innerProps: PropTypes.object,
 };
 
 ResourceSelectComponent.defaultProps = {
@@ -144,6 +164,8 @@ ResourceSelectComponent.defaultProps = {
   variant: 'standard',
   className: '',
   disabled: false,
+  helperText: '',
+  innerProps: {},
 };
 
 export default ResourceSelectComponent;

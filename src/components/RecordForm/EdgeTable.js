@@ -1,19 +1,27 @@
 /**
  * @module /components/RelationshipsForm
  */
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-} from '@material-ui/core';
+import { AgGridReact } from 'ag-grid-react';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 
-import DetailChip from '../DetailChip';
-import { withKB } from '../KBContext';
+import 'ag-grid-community/dist/styles/ag-grid.css';
+import 'ag-grid-community/dist/styles/ag-theme-material.css';
 
+import schema from '../../services/schema';
+import useGrid from '../hooks/useGrid';
+
+
+const isReversed = (nodeId, { out: src, in: tgt }) => {
+  if (src && tgt) {
+    const srcId = src['@rid'] || src;
+    return srcId !== nodeId;
+  } if (!tgt) {
+    return true;
+  }
+  return false;
+};
 
 /**
  * Given some source node, summarizes the related nodes by their relationship class
@@ -23,107 +31,98 @@ import { withKB } from '../KBContext';
  * @param {function} props.itemToKey the function to create a uique key for each edge record
  * @param {string} props.sourceNodeId the ID of the node we are summarizing relationships for
  * @param {Array.<object>} props.values the edge records
- * @param {Schema} props.schema the schema object (from context)
  */
-const EdgeTable = (props) => {
+const EdgeTable = ({ value }) => {
   const {
-    itemToKey,
-    schema,
-    sourceNodeId,
-    values,
-  } = props;
+    onGridReady, gridApi, gridReady,
+  } = useGrid();
 
-  const EdgeRow = (value) => {
-    const key = itemToKey(value);
+  const [currNodeId, setCurrNodeId] = useState('');
+  const [edges, setEdges] = useState([]);
 
-    const model = schema.get(value);
+  useDeepCompareEffect(() => {
+    const newEdges = [];
 
-    let target = 'out';
-
-    if (value.in && value.out) {
-      const outRID = value.out
-        ? value.out['@rid']
-        : value.out;
-
-      target = outRID !== sourceNodeId
-        ? 'out'
-        : 'in';
-    } else if (value.in) {
-      target = 'in';
-    }
-
-    const reversed = (target === 'out');
-
-    const details = {};
-    Object.keys(value[target]).filter(
-      name => !name.startsWith('out_') && !name.startsWith('in_'),
-    ).forEach((name) => {
-      details[name] = value[target][name];
+    Object.keys(value).forEach((propName) => {
+      if (propName.startsWith('out_') || propName.startsWith('in_')) {
+        newEdges.push(...value[propName]);
+      }
     });
 
-    return (
-      <React.Fragment key={key}>
-        <TableRow>
-          <TableCell padding="dense">
-            {reversed
-              ? model.reverseName
-              : model.name
-            }
-          </TableCell>
-          <TableCell>
-            <DetailChip
-              label={schema.getLabel(value[target])}
-              details={details}
-              valueToString={
-                (record) => {
-                  if (record && record['@rid']) {
-                    return record['@rid'];
-                  }
-                  return `${record}`;
-                }
-              }
-              getLink={schema.getLink}
-            />
-          </TableCell>
-        </TableRow>
-      </React.Fragment>
-    );
-  };
+    setCurrNodeId(value['@rid']);
+    setEdges(newEdges);
+  }, [value]);
+
+  const getRelationshipType = useCallback(
+    ({ data }) => {
+      const model = schema.get(data);
+      return isReversed(currNodeId, data)
+        ? model.reverseName
+        : model.name;
+    },
+    [currNodeId],
+  );
+
+  useDeepCompareEffect(() => {
+    if (gridReady && currNodeId) {
+      const getTarget = ({ data }) => {
+        const target = isReversed(currNodeId, data)
+          ? data.out
+          : data.in;
+        return target;
+      };
+      gridApi.setRowData(edges);
+      gridApi.setColumnDefs([
+        {
+          headerName: 'Relationship',
+          valueGetter: getRelationshipType,
+          sortable: true,
+        },
+        {
+          headerName: 'Class',
+          valueGetter: row => getTarget(row)['@class'],
+          sortable: true,
+        },
+        {
+          headerName: 'SourceId',
+          valueGetter: row => getTarget(row).sourceId,
+          sortable: true,
+        },
+        {
+          headerName: 'Name',
+          valueGetter: row => getTarget(row).displayName,
+          sortable: true,
+        },
+      ]);
+      gridApi.sizeColumnsToFit();
+    }
+  }, [edges, gridReady, currNodeId]);
 
   return (
-    <div className="edge-table">
-      <Table className="edge-table__table">
-        <TableHead
-          className="edge-table__table-header"
-        >
-          <TableRow>
-            <TableCell padding="dense">
-              Relationship Class
-            </TableCell>
-            <TableCell padding="dense">
-              Related Record
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          { values.map(EdgeRow) }
-        </TableBody>
-      </Table>
+    <div
+      className="ag-theme-material"
+      role="presentation"
+      style={{
+        width: '100%',
+        height: '352px',
+      }}
+    >
+      <AgGridReact
+        reactNext
+        onGridReady={onGridReady}
+        suppressHorizontalScroll
+        deltaRowDataMode
+        getRowNodeId={data => data['@rid']}
+        pagination
+        paginationAutoPageSize
+      />
     </div>
   );
 };
 
 EdgeTable.propTypes = {
-  values: PropTypes.arrayOf(PropTypes.object),
-  itemToKey: PropTypes.func,
-  sourceNodeId: PropTypes.string,
-  schema: PropTypes.object.isRequired,
+  value: PropTypes.object.isRequired,
 };
 
-EdgeTable.defaultProps = {
-  values: [],
-  itemToKey: item => item['@rid'],
-  sourceNodeId: null,
-};
 
-export default withKB(EdgeTable);
+export default EdgeTable;

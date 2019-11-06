@@ -8,19 +8,19 @@ import PropTypes from 'prop-types';
 import api from '../../../services/api';
 import ResourceSelectComponent from '../../ResourceSelectComponent';
 import RecordAutocomplete from '../../RecordAutocomplete';
-import { withKB } from '../../KBContext';
-import FieldHelp from './FieldHelp';
 import BooleanField from './BooleanField';
 import TextArrayField from './TextArrayField';
 import PermissionsTable from './PermissionsTable';
 import FilteredRecordAutocomplete from './FilteredRecordAutocomplete';
 
 // unavoidable circular dependency below
-import EmbeddedNodeForm from '../EmbeddedNodeForm';
+import EmbeddedRecord from './EmbeddedRecord';
 
 import './index.scss';
 import { FORM_VARIANT } from '../util';
-import EmbeddedListTable from './EmbeddedListTable';
+import EmbeddedListTable from './StatementReviewsTable';
+import { GeneralRecordPropType } from '../../types';
+import schema from '../../../services/schema';
 
 /**
  * Generate the field component for a form. Uses the property model to decide
@@ -28,27 +28,28 @@ import EmbeddedListTable from './EmbeddedListTable';
  *
  * @param {object} props
  * @param {PropertyModel} props.model the property model which defines the property type and other requirements
- * @param {Schema} props.schema the schema object
- * @param {function} props.onValueChange the function to update the parent form
+ * @param {function} props.onChange the function to update the parent form
  * @param {function} props.onReviewSelection the function to toggle between statement reviews
  * @param {*} props.value the initial value of the field
  * @param {Error} props.error the error object if any
  * @param {string} props.label the label to use for the form field (defaults to the property model name)
  * @param {string} props.variant the form variant to be passed down to embedded forms
  * @param {object} props.reviewProps object to be passed to EmbeddedListTable for review display
+ * @param {object} props.innerProps props to pass to the inner form field element
+ * @param {bool} props.formIsDirty flag to indicate changes have been made to the form content
  */
 const FormField = (props) => {
   const {
     className = '',
     error,
-    onValueChange,
+    onChange,
     model,
-    schema,
     value: inputValue,
     disabled = false,
     variant = 'view',
     label = null,
-    reviewProps,
+    innerProps,
+    formIsDirty = true,
   } = props;
 
   const {
@@ -61,10 +62,28 @@ const FormField = (props) => {
     name,
     type,
     nullable,
+    iterable,
   } = model;
 
   const generated = Boolean(model.generated && variant !== FORM_VARIANT.SEARCH);
   const mandatory = Boolean(model.mandatory && variant !== FORM_VARIANT.SEARCH);
+
+  const errorFlag = error && !generated && formIsDirty;
+
+  let helperText;
+
+  if (errorFlag) {
+    helperText = error.message;
+  } else if (variant === FORM_VARIANT.EDIT && example !== undefined) {
+    if (!description) {
+      helperText = `ex. ${example}`;
+    } else {
+      helperText = `${description} (ex. ${example})`;
+    }
+  } else {
+    helperText = description;
+  }
+
 
   let value = inputValue;
 
@@ -79,11 +98,10 @@ const FormField = (props) => {
   }
 
   if (value !== inputValue) {
-    onValueChange({ target: { name, value } });
+    onChange({ target: { name, value } });
   }
 
   let propComponent;
-  const errorFlag = error && !generated;
 
   if (type === 'boolean') {
     propComponent = (
@@ -92,58 +110,83 @@ const FormField = (props) => {
         error={!!error}
         label={label || model.name}
         name={model.name}
-        onValueChange={onValueChange}
+        onChange={onChange}
         required={mandatory}
         value={value}
+        helperText={helperText}
       />
     );
-  } else if (type === 'embeddedset') {
-    propComponent = (
-      <TextArrayField
-        error={error}
-        label={label || name}
-        value={value}
-        model={model}
-        name={name}
-        onValueChange={onValueChange}
-        disabled={disabled || generated}
-      />
-    );
-  } else if (type === 'embedded' && model.linkedClass && model.linkedClass.name === 'Permissions') {
-    // permissions table of checkboxes
-    propComponent = (
-      <PermissionsTable
-        label={label || name}
-        value={value}
-        model={model}
-        name={name}
-        onValueChange={onValueChange}
-        disabled={disabled || generated}
-      />
-    );
-  } else if (type === 'embedded') {
-    propComponent = (
-      <EmbeddedNodeForm
-        error={!!error}
-        label={label || name}
-        modelName={model.linkedClass.name}
-        name={name}
-        onValueChange={onValueChange}
-        schema={schema}
-        value={value}
-        variant={variant}
-      />
-    );
+  } else if (type.includes('embedded')) {
+    if (iterable) {
+      if (model.linkedClass && model.linkedClass.name === 'StatementReview') {
+        propComponent = (
+          <EmbeddedListTable
+            label={name}
+            values={value || []}
+            variant={variant}
+            onChange={onChange}
+            name={name}
+          />
+        );
+      } else {
+        propComponent = (
+          <TextArrayField
+            error={error}
+            label={label || name}
+            value={value}
+            model={model}
+            name={name}
+            onChange={onChange}
+            disabled={disabled || generated}
+            helperText={helperText}
+          />
+        );
+      }
+    } else if (model.linkedClass) {
+      if (model.linkedClass.name === 'Permissions') {
+        // permissions table of checkboxes
+        propComponent = (
+          <PermissionsTable
+            label={label || name}
+            value={value}
+            model={model}
+            name={name}
+            onChange={onChange}
+            disabled={disabled || generated}
+          />
+        );
+      } else {
+        const linkedModel = value && value['@class']
+          ? value['@class']
+          : model.linkedClass.name;
+
+        propComponent = (
+          <EmbeddedRecord
+            errors={error}
+            label={label || name}
+            modelName={linkedModel}
+            name={name}
+            onChange={onChange}
+            value={value}
+            variant={variant}
+            disabled={disabled}
+            helperText={helperText}
+          />
+        );
+      }
+    }
   } else if (choices) {
     propComponent = (
       <ResourceSelectComponent
         name={name}
         required={mandatory}
-        onChange={onValueChange}
+        onChange={onChange}
+        innerProps={innerProps}
         resources={['', ...choices]}
         label={label || name}
         value={value || ''}
-        errorText={errorFlag ? error.message || error : ''}
+        error={errorFlag}
+        helperText={helperText}
         disabled={generated || disabled}
         className={className}
       />
@@ -151,13 +194,15 @@ const FormField = (props) => {
   } else if (type === 'link' || type === 'linkset') {
     const autoProps = {
       disabled: generated || disabled,
-      errorText: errorFlag ? error.message || error : '',
+      error: errorFlag,
       isMulti: type === 'linkset',
       label: label || name,
+      className,
       name,
-      onChange: onValueChange,
+      onChange,
       required: mandatory,
       value,
+      helperText,
       DetailChipProps: {
         getLink: schema.getLink,
       },
@@ -175,13 +220,7 @@ const FormField = (props) => {
 
       if (linkedClass) {
         if (['Source', 'UserGroup', 'User', 'EvidenceLevel', 'Vocabulary'].includes(linkedClass.name)) {
-          autoProps.searchHandler = () => api.get(`${
-            linkedClass.routeName
-          }?neighbors=1&orderBy=${
-            linkedClass.name === 'EvidenceLevel'
-              ? 'sourceId'
-              : 'name'
-          }`, { forceListReturn: true });
+          autoProps.searchHandler = () => api.post('/query', { target: `${linkedClass.name}`, orderBy: `${linkedClass.name === 'EvidenceLevel' ? 'sourceId' : 'name'}` }, { forceListReturn: true });
           autoProps.singleLoad = true;
         } else {
           autoProps.searchHandler = api.defaultSuggestionHandler(linkedClass, searchOptions);
@@ -192,6 +231,7 @@ const FormField = (props) => {
       propComponent = (
         <RecordAutocomplete
           {...autoProps}
+          innerProps={innerProps}
           DetailChipProps={{
             ...autoProps.DetailChipProps,
             valueToString: (record) => {
@@ -208,29 +248,21 @@ const FormField = (props) => {
         />
       );
     }
-  } else if (type === 'embeddedlist') {
-    propComponent = (
-      <EmbeddedListTable
-        label={name}
-        values={value || []}
-        reviewProps={reviewProps}
-        variant={variant}
-      />
-    );
   } else {
     propComponent = (
       <TextField
+        {...innerProps}
         label={name}
         name={label || name}
         required={mandatory}
         value={value || ''}
-        onChange={onValueChange}
+        onChange={onChange}
         InputLabelProps={{ shrink: !!value }}
+        inputProps={{ ...(innerProps.inputProps || {}), 'data-testid': name }}
         error={errorFlag}
-        helperText={errorFlag ? error.message : ''}
+        helperText={helperText}
         disabled={generated || disabled}
         className="text-field"
-        multiline
       />
     );
   }
@@ -240,11 +272,6 @@ const FormField = (props) => {
       <div className="form-field__content">
         {propComponent}
       </div>
-      <FieldHelp
-        className="form-field__help"
-        description={description}
-        example={example && example.toString()}
-      />
     </ListItem>
   );
 };
@@ -252,15 +279,50 @@ const FormField = (props) => {
 
 FormField.propTypes = {
   className: PropTypes.string,
-  error: PropTypes.object,
-  onValueChange: PropTypes.func.isRequired,
-  model: PropTypes.object.isRequired,
+  error: PropTypes.shape({
+    name: PropTypes.string,
+    message: PropTypes.string,
+  }),
+  onChange: PropTypes.func.isRequired,
+  model: PropTypes.shape({
+    choices: PropTypes.arrayOf(PropTypes.shape({
+      key: PropTypes.string,
+      label: PropTypes.string,
+      value: PropTypes.string,
+      caption: PropTypes.string,
+    })),
+    default: PropTypes.string,
+    description: PropTypes.string,
+    example: PropTypes.string,
+    generateDefault: PropTypes.func,
+    linkedClass: PropTypes.shape({
+      name: PropTypes.string,
+      '@rid': PropTypes.string,
+      displayName: PropTypes.string,
+      isAbstract: PropTypes.bool,
+    }),
+    name: PropTypes.string,
+    type: PropTypes.string,
+    nullable: PropTypes.bool,
+    iterable: PropTypes.bool,
+    generated: PropTypes.bool,
+    mandatory: PropTypes.bool,
+  }).isRequired,
   disabled: PropTypes.bool,
-  value: PropTypes.any,
-  schema: PropTypes.object.isRequired,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.arrayOf(GeneralRecordPropType),
+    GeneralRecordPropType,
+  ]),
   label: PropTypes.string,
   variant: PropTypes.string,
-  reviewProps: PropTypes.object,
+  innerProps: PropTypes.shape({
+    inputProps: PropTypes.shape({
+      'data-test-id': PropTypes.string,
+    }),
+  }),
+  formIsDirty: PropTypes.bool,
 };
 
 
@@ -271,8 +333,9 @@ FormField.defaultProps = {
   label: null,
   variant: 'view',
   value: null,
-  reviewProps: {},
+  innerProps: {},
+  formIsDirty: true,
 };
 
 
-export default withKB(FormField);
+export default FormField;

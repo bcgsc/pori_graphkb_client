@@ -1,12 +1,10 @@
 import React from 'react';
 
-import Schema from '../../services/schema';
 
 /**
- * Passes user and schema values to wrapped consumers.
+ * Passes user values to wrapped consumers.
  */
 const KBContext = React.createContext({
-  schema: new Schema(),
   authorizationToken: '',
   authenticationToken: '',
   setAuthenticationToken: () => {},

@@ -27,22 +27,24 @@ import './Main.scss';
 import {
   AboutView,
   AdminView,
+  AdvancedSearchView,
   DataView,
   ErrorView,
   FeedbackView,
   LoginView,
   QueryView,
-  QueryBuilderView,
+  PopularSearchView,
 } from '..';
+
 import {
   getUsername, isAdmin, logout, isAuthenticated,
 } from '../../services/auth';
-import Schema from '../../services/schema';
 import { KBContext } from '../../components/KBContext';
 import { MainNav } from './components';
 import AuthenticatedRoute from '../../components/AuthenticatedRoute';
 
-import NodeView from '../NodeView';
+import RecordView from '../RecordView';
+import NewRecordView from '../NewRecordView';
 
 const {
   API_BASE_URL,
@@ -53,7 +55,6 @@ const {
  * Entry point to application. Handles routing, app theme, and logged in state.
  */
 const Main = () => {
-  const [schema] = useState(new Schema());
   const [authorizationToken, setAuthorizationToken] = useState('');
   const [authenticationToken, setAuthenticationToken] = useState('');
   const [anchorEl, setAnchorEl] = useState(null);
@@ -94,7 +95,7 @@ const Main = () => {
 
   return (
     <KBContext.Provider value={{
-      schema, authorizationToken, authenticationToken, setAuthorizationToken, setAuthenticationToken,
+      authorizationToken, authenticationToken, setAuthorizationToken, setAuthenticationToken,
     }}
     >
       <div className="main-view">
@@ -111,7 +112,7 @@ const Main = () => {
           </IconButton>
           <div className={`appbar__title ${drawerOpen ? 'appbar__title--drawer-open' : ''}`}>
             <Link to="/query" onClick={handleCloseNavBar}>
-              <Typography variant="h6">GraphKB</Typography>
+              <Typography variant="h4">GraphKB</Typography>
               <Typography variant="caption">v{process.env.npm_package_version}</Typography>
             </Link>
           </div>
@@ -123,7 +124,7 @@ const Main = () => {
                 size="small"
               >
                 <PersonIcon />
-                <Typography color="inherit">
+                <Typography color="inherit" variant="h6">
                   {isAuthenticated({ authorizationToken, authenticationToken })
                     ? getUsername({ authenticationToken, authorizationToken })
                     : 'Logged Out'
@@ -176,15 +177,22 @@ const Main = () => {
             <Route exact path="/error" component={ErrorView} />
             <Route path="/about" component={AboutView} />
             <AuthenticatedRoute exact path="/query" component={QueryView} />
-            <AuthenticatedRoute path="/query/advanced/builder" component={QueryBuilderView} />
-            <AuthenticatedRoute path="/edit/:modelName/:rid" component={NodeView} />
-            <AuthenticatedRoute path="/edit/:rid" component={NodeView} />
-            <AuthenticatedRoute path="/new" exact component={NodeView} />
-            <AuthenticatedRoute path="/new/:modelName" component={NodeView} />
+            <AuthenticatedRoute path="/query-popular" component={PopularSearchView} />
+            <AuthenticatedRoute exact path="/query-advanced" component={AdvancedSearchView} />
+            <AuthenticatedRoute
+              path="/:variant(edit)/:modelName(Source|source|User|user|UserGroup|usergroup)/:rid"
+              admin
+              component={RecordView}
+            />
+            <AuthenticatedRoute path="/:variant(edit|view)/:modelName/:rid" component={RecordView} />
+            <AuthenticatedRoute path="/:variant(edit|view)/:rid" component={RecordView} />
+            <AuthenticatedRoute
+              path="/:variant(new)/:modelName(Source|source|User|user|UserGroup|usergroup)"
+              admin
+              component={NewRecordView}
+            />
+            <AuthenticatedRoute path="/:variant(new)/:modelName" component={NewRecordView} />
             <Redirect exact path="/query/advanced" to="/search/v" />
-            <AuthenticatedRoute path="/search/:modelName" component={NodeView} />
-            <AuthenticatedRoute path="/view/:modelName/:rid" component={NodeView} />
-            <AuthenticatedRoute path="/view/:rid" component={NodeView} />
             <AuthenticatedRoute path="/data" component={DataView} />
             <AuthenticatedRoute path="/admin" admin component={AdminView} />
             <Redirect from="/" to="/query" />

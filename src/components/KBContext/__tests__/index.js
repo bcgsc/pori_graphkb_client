@@ -5,14 +5,14 @@ import { KBContext, withKB } from '..';
 describe('KB Context provider and consumers', () => {
   test('consumer inherits value', () => {
     const Div = withKB((props) => {
-      const { schema } = props;
+      const { authorizationToken } = props;
       return (
-        <div value={schema} id="test-div" />
+        <div value={authorizationToken} id="test-div" />
       );
     });
 
     const wrapper = mount(
-      <KBContext.Provider value={{ schema: 'test' }}>
+      <KBContext.Provider value={{ authorizationToken: 'test' }}>
         <Div />
       </KBContext.Provider>,
     );

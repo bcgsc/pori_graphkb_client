@@ -23,7 +23,6 @@ const ID_PROP = '@rid';
 const CLASS_PROP = '@class';
 const MAX_SUGGESTIONS = 50;
 const DEFAULT_LIMIT = 100;
-const MIN_WORD_LENGTH = 3;
 
 
 /**
@@ -94,72 +93,30 @@ const del = (endpoint, callOptions) => {
  */
 const defaultSuggestionHandler = (model, opt = {}) => {
   const searchHandler = (textInput) => {
-    let terms = textInput.split(/\s+/);
-    let operator = 'CONTAINSTEXT';
-
-    if (terms.length > 1) {
-      terms = terms.filter(term => term.length >= MIN_WORD_LENGTH);
-    } else if (terms.length === 1 && terms[0].length < MIN_WORD_LENGTH) {
-      operator = '=';
-    }
-
-    const { excludeClasses = [], ...rest } = opt;
-
-    const ontologyWhere = [{
-      operator: 'OR',
-      comparisons: terms.map(term => ({ attr: 'name', value: term, operator })),
-    }];
-
-    if (model.properties.sourceId) {
-      ontologyWhere[0].comparisons.push(
-        ...terms.map(term => ({ attr: 'sourceId', value: term, operator })),
-      );
-    }
-
-    if (excludeClasses.length) {
-      ontologyWhere.push(...excludeClasses.map(
-        c => ({ attr: '@class', value: c, negate: true }),
-      ));
-    }
-
-    const variantWhere = [{
-      operator: 'AND',
-      comparisons: terms.map(value => ({
-        operator: 'OR',
-        comparisons: [
-          { attr: 'reference1.name', value, operator },
-          { attr: 'reference1.sourceId', value },
-          { attr: 'reference2.name', value, operator },
-          { attr: 'reference2.sourceId', value },
-          { attr: 'type.name', value, operator },
-          { attr: 'type.sourceId', value },
-        ],
-      })),
-    }];
-
-    let where = ontologyWhere;
-
-    if (model.inherits.includes('Variant') || model.name === 'Variant') {
-      where = variantWhere;
-    }
+    const { ...rest } = opt;
 
     const callOptions = { forceListReturn: true, ...rest };
-    let call;
+    let body = {};
 
     if (kbSchema.util.looksLikeRID(textInput)) {
-      call = get(`${model.routeName}/${textInput}?neighbors=1`, callOptions);
+      body = {
+        target: [textInput],
+      };
     } else {
-      const body = {
-        where,
+      body = {
+        queryType: 'keyword',
+        target: `${model.name}`,
+        keyword: textInput,
         limit: MAX_SUGGESTIONS,
         neighbors: 1,
       };
 
       if (model.inherits.includes('Ontology') || model.name === 'Ontology') {
-        body.orderBy = ['name', 'sourceId'];
+        body.orderBy = ['source.sort', 'name', 'sourceId'];
       }
-      call = post(`${model.routeName}/search`, body, callOptions);
     }
+    const call = post('/query', body, callOptions);
+
     return call;
   };
   searchHandler.fname = `${model.name}SearchHandler`; // for equality comparisons (for render updates)
@@ -197,18 +154,17 @@ const getQueryFromSearch = ({ schema, search, count }) => {
   if (!schema.get(modelName)) {
     throw new Error(`Failed to find the expected model (${modelName})`);
   }
-  let { routeName } = schema.get(modelName);
+  let routeName = '/query';
 
   let payload = null;
   let queryParams = null;
 
   if (complex) {
     // complex encodes the body in the URL so that it can be passed around as a link but still perform a POST search
-    routeName += '/search';
     // Decode base64 encoded string.
     payload = JSON.parse(atob(decodeURIComponent(complex)));
     payload.neighbors = Math.max(payload.neighbors || 0, TABLE_DEFAULT_NEIGHBORS);
-    payload.limit = Math.min(payload.limit);
+    payload.limit = Math.min(payload.limit || DEFAULT_LIMIT);
   } else {
     queryParams = {
       limit,
@@ -216,10 +172,12 @@ const getQueryFromSearch = ({ schema, search, count }) => {
     };
 
     if (keyword) {
-      // keyword search is only associated with statements
-      routeName = '/statements/search';
-      modelName = 'Statement';
-      queryParams.keyword = keyword;
+      routeName = '/query';
+      payload = {
+        queryType: 'keyword',
+        keyword,
+        target: modelName,
+      };
     } else {
       queryParams = Object.assign({}, params, queryParams);
     }
@@ -303,6 +261,7 @@ const querySearchBlock = ({
 
   if (count) {
     content.count = true;
+    delete content.neighbors;
   } else {
     content.skip = skip;
     content.limit = limit;
@@ -350,8 +309,81 @@ const getNewCache = (opt) => {
   return cache;
 };
 
+/**
+ * encodes complex/payload for POST query request. Returns search with encoded complex.
+ *
+ * @param {object} content is the payload or query object to be sent with request
+ * @param {string} modelName target class that is expected to be returned
+ */
+const encodeQueryComplexToSearch = (content, modelName = 'V') => {
+  const stringifiedContent = JSON.stringify(content);
+  const base64EncodedContent = btoa(stringifiedContent);
+  const encodedContent = encodeURIComponent(base64EncodedContent);
+
+  const payload = {};
+  payload.complex = encodedContent;
+  payload['@class'] = modelName;
+  const search = qs.stringify(payload);
+  return search;
+};
+
+
+const buildLooseSearch = (cls, name) => ({
+  queryType: 'similarTo',
+  target: {
+    target: cls,
+    filters: {
+      OR: [
+        { name },
+        { sourceId: name },
+      ],
+    },
+  },
+});
+
+
+const buildSearchFromParseVariant = (schema, variant) => {
+  const { reference1, reference2, type } = variant;
+  const payload = {
+    target: 'PositionalVariant',
+    filters: {
+      AND: [
+        {
+          reference1: buildLooseSearch('Feature', reference1),
+        },
+        {
+          type: buildLooseSearch('Vocabulary', type),
+        },
+      ],
+    },
+  };
+
+  if (reference2) {
+    payload.filters.AND.push(buildLooseSearch(reference2));
+  } else {
+    payload.filters.AND.push({ reference2: null });
+  }
+
+  schema.getProperties('PositionalVariant').filter(p => !p.name.includes('Repr')).forEach((prop) => {
+    if (prop.type !== 'link' && variant[prop.name] && !prop.generated) {
+      const value = variant[prop.name];
+
+      if (prop.type.includes('embedded')) {
+        Object.entries(value, ([subProp, subValue]) => {
+          payload.filters.AND.push({ [`${prop.name}.${subProp}`]: subValue });
+        });
+      } else {
+        payload.filters.AND.push({ [prop.name]: variant[prop.name] });
+      }
+    }
+  });
+
+  return payload;
+};
+
 
 export default {
+  encodeQueryComplexToSearch,
   getNewCache,
   getQueryFromSearch,
   getSearchFromQuery,
@@ -359,6 +391,7 @@ export default {
   CLASS_PROP,
   defaultSuggestionHandler,
   delete: del,
+  buildSearchFromParseVariant,
   get,
   ID_PROP,
   patch,

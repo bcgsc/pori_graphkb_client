@@ -26,6 +26,7 @@ import GraphArrowMarker from './GraphArrowMarker';
 import GraphExpansionDialog from './GraphExpansionDialog/GraphExpansionDialog';
 import GraphLegend from './GraphLegend/GraphLegend';
 import util from '../../../../services/util';
+import schema from '../../../../services/schema';
 import config from '../../../../static/config';
 import {
   PropsMap,
@@ -52,9 +53,9 @@ const DIALOG_FADEOUT_TIME = 150;
 const HEAVILY_CONNECTED = 10;
 const TREE_LINK = 'SubClassOf';
 
-const getId = node => node.data
+const getId = node => (node.data
   ? node.data['@rid']
-  : node['@rid'] || node;
+  : node['@rid'] || node);
 
 /**
  * Use the graph links to rank nodes in the graph based on their subclass relationships. Root nodes
@@ -111,11 +112,18 @@ const computeNodeLevels = (graphLinks) => {
  * @property {Array.<string>} props.displayed - list of initial record ID's to be displayed in
  * graph.
  * @property {function} props.handleGraphStateSave - parent handler to save state in URL
- * @property {Object} props.schema - KnowledgeBase Schema.
  */
 class GraphComponent extends Component {
   // App snackbar context value.
   static contextType = SnackbarContext;
+
+  static hashRecordsByRID(data) {
+    const newData = {};
+    data.forEach((obj) => {
+      newData[obj['@rid']] = obj;
+    });
+    return newData;
+  }
 
   static propTypes = {
     handleDetailDrawerOpen: PropTypes.func.isRequired,
@@ -124,7 +132,6 @@ class GraphComponent extends Component {
     data: PropTypes.object.isRequired,
     cache: PropTypes.object.isRequired,
     edgeTypes: PropTypes.arrayOf(PropTypes.string),
-    schema: PropTypes.object.isRequired,
     handleError: PropTypes.func.isRequired,
     handleGraphStateSave: PropTypes.func,
   };
@@ -134,14 +141,6 @@ class GraphComponent extends Component {
     edgeTypes: [],
     handleGraphStateSave: () => {},
   };
-
-  static hashRecordsByRID(data) {
-    const newData = {};
-    data.forEach((obj) => {
-      newData[obj['@rid']] = obj;
-    });
-    return newData;
-  }
 
   constructor(props) {
     super(props);
@@ -434,7 +433,6 @@ class GraphComponent extends Component {
       graphObjects,
       expandable,
     } = this.state;
-    const { schema } = this.props;
 
     if (expandable[node.getId()] && data[node.getId()]) {
       ({
@@ -485,7 +483,6 @@ class GraphComponent extends Component {
       links,
       data,
     } = this.state;
-    const { schema } = this.props;
 
     if (expandable[node.getId()] && data[node.getId()]) {
       if (schema.getEdges(data[node.getId()])
@@ -663,7 +660,7 @@ class GraphComponent extends Component {
       }
     });
     // add a check for link properties here to create links where necessary
-    const linkTypes = ['impliedBy', 'supportedBy', 'relevance', 'appliesTo'];
+    const linkTypes = ['conditions', 'evidence', 'relevance', 'subject'];
     linkTypes.forEach((linkType) => {
       const linkData = Array.isArray(node[linkType]) ? node[linkType] : [node[linkType]];
 
@@ -731,7 +728,7 @@ class GraphComponent extends Component {
       }
     });
 
-    this.saveGraphStatetoURL([...nodes]);
+    // this.saveGraphStatetoURL([...nodes]);
 
     return {
       expandable,
@@ -780,8 +777,8 @@ class GraphComponent extends Component {
         }
 
         if (isObject(obj.data[key])) { // value is object
-          if (obj.data[key].name && !colors[obj.data[key].name]) {
-            colors[obj.data[key].name] = '';
+          if (obj.data[key].displayName && !colors[obj.data[key].displayName]) {
+            colors[obj.data[key].displayName] = '';
           }
         } else if (obj.data[key] && !colors[obj.data[key]]) {
           colors[obj.data[key]] = '';
@@ -1036,7 +1033,6 @@ class GraphComponent extends Component {
   @boundMethod
   handleExpandCheckAll() {
     const { expandExclusions, expandNode } = this.state;
-    const { schema } = this.props;
     const allEdges = schema.getEdges(expandNode).map(e => e['@rid']);
     let newExpandExclusions = [];
 
@@ -1054,7 +1050,6 @@ class GraphComponent extends Component {
   handleExpandByClass(cls) {
     return () => {
       const { expandNode } = this.state;
-      const { schema } = this.props;
       const expandExclusions = [];
       schema.getEdges(expandNode).forEach((edge) => {
         if (edge['@class'] !== cls) {
@@ -1095,7 +1090,7 @@ class GraphComponent extends Component {
 
     /* Because properties types like linkset are uni-directional, we need to
     have nodes that are connected via a linkset property rendered first.
-    For example, if a statement class node has a link property 'impliedBy' which
+    For example, if a statement class node has a link property 'conditions' which
     points to node A, node A will not have an equivalent 'implies' property
     to map it back to the statement node */
 
@@ -1154,7 +1149,6 @@ class GraphComponent extends Component {
     const {
       detail,
       handleDetailDrawerOpen,
-      schema,
     } = this.props;
 
     const linkLegendDisabled = (
@@ -1241,14 +1235,12 @@ class GraphComponent extends Component {
         handleClick={() => this.handleClick(node)}
         expandable={expandable[node.getId()]}
         applyDrag={this.applyDrag}
-        schema={schema}
       />
     ));
 
     return (
       <div className="graph-wrapper">
         <GraphExpansionDialog
-          schema={schema}
           node={expandNode}
           open={expansionDialogOpen}
           onClose={this.handleDialogClose('expansionDialogOpen')}

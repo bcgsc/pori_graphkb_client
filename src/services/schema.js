@@ -323,6 +323,7 @@ class Schema {
     if (modelName.toLowerCase().includes('variant')) {
       showByDefault.push('reference1', 'reference2', 'type');
     } else if (modelName.toLowerCase() === 'statement') {
+      defaultOrdering.push(...['relevance', 'subject', 'conditions', 'source', 'evidenceLevel', 'evidence']);
       showByDefault.push('source', 'subject', 'relevance', 'evidenceLevel');
     } else if (modelName.toLowerCase() !== 'source') {
       showByDefault.push('sourceIdVersion', 'version', 'source', 'name', 'sourceId');
@@ -406,6 +407,20 @@ class Schema {
       };
     };
 
+    const compareColumnsForSort = (col1, col2) => {
+      const index1 = defaultOrdering.indexOf(col1.name);
+      const index2 = defaultOrdering.indexOf(col2.name);
+
+      if (index1 === index2) {
+        return col1.name.localeCompare(col2.name);
+      } if (index1 === -1) {
+        return 1;
+      } if (index2 === -1) {
+        return -1;
+      }
+      return index1 - index2;
+    };
+
     const exclude = [
       'deletedBy',
       'deletedAt',
@@ -450,57 +465,59 @@ class Schema {
       },
     ];
 
-    Object.values(allProps)
+    const propModels = Object.values(allProps)
       .filter(prop => !exclude.includes(prop.name) && prop.type !== 'embedded')
-      .sort((p1, p2) => p1.name.localeCompare(p2.name))
-      .forEach((prop) => {
-        const hide = !showByDefault.includes(prop.name);
+      .sort(compareColumnsForSort);
 
-        if (prop.name === 'conditions') {
-          defns.push(defineLinkSetColumn('conditions'));
-          defns.push(defineConditionsColumn()); // TODO: Remove after confident column is correct
-        } else if (prop.type === 'linkset') {
-          defns.push(defineLinkSetColumn(prop.name));
-        } else if (prop.linkedClass) {
-          // build a column group
-          const groupDefn = {
-            headerName: prop.name,
-            groupId: prop.name,
-            openByDefault: false,
-            children: [{
-              field: 'preview',
-              sortable: false,
-              valueGetter: getPreview(prop.name),
-              colId: `${prop.name}.preview`,
-              columnGroupShow: 'closed',
-              hide,
-            }],
-          };
-          Object.values(prop.linkedClass.queryProperties).forEach((subProp) => {
-            if (showNested.includes(subProp.name)) {
-              const colDef = ({
-                field: subProp.name,
-                colId: `${prop.name}.${subProp.name}`,
-                valueGetter: valueGetter(prop.name, subProp.name),
-                columnGroupShow: 'open',
-                sortable: true,
-                hide,
-              });
-              groupDefn.children.push(colDef);
-            }
-          });
-          defns.push(groupDefn);
-        } else {
-          // individual column
-          defns.push({
-            field: prop.name,
+    propModels.forEach((prop) => {
+      const hide = !showByDefault.includes(prop.name);
+
+      if (prop.name === 'conditions') {
+        defns.push(defineConditionsColumn());
+      } else if (prop.type === 'linkset') {
+        defns.push(defineLinkSetColumn(prop.name));
+      } else if (prop.linkedClass) {
+        // build a column group
+        const groupDefn = {
+          headerName: prop.name,
+          groupId: prop.name,
+          openByDefault: false,
+          children: [{
+            field: 'displayName',
+            colId: `${prop.name}.displayName`,
+            valueGetter: valueGetter(prop.name, 'displayName'),
+            columnGroupShow: '',
+            sortable: true,
+            width: prop.name !== 'evidenceLevel'
+              ? 250
+              : 150,
             hide,
-            colId: prop.name,
-          });
-        }
-      });
+          }],
+        };
+        Object.values(prop.linkedClass.queryProperties).forEach((subProp) => {
+          if (showNested.includes(subProp.name) && subProp.name !== 'displayName') {
+            const colDef = ({
+              field: subProp.name,
+              colId: `${prop.name}.${subProp.name}`,
+              valueGetter: valueGetter(prop.name, subProp.name),
+              columnGroupShow: 'open',
+              sortable: true,
+              hide,
+            });
+            groupDefn.children.push(colDef);
+          }
+        });
+        defns.push(groupDefn);
+      } else {
+        // individual column
+        defns.push({
+          field: prop.name,
+          hide,
+          colId: prop.name,
+        });
+      }
+    });
 
-    defns.sort((d1, d2) => (d1.colId || d1.groupId).localeCompare(d2.colId || d2.groupId));
     showEdges.forEach((edgeName) => {
       defns.push(defineEdgeColumn(edgeName));
     });

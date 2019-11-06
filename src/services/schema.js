@@ -458,7 +458,6 @@ class Schema {
         if (prop.name === 'conditions') {
           defns.push(defineLinkSetColumn('conditions'));
           defns.push(defineConditionsColumn()); // TODO: Remove after confident column is correct
-          // defns.push();
         } else if (prop.type === 'linkset') {
           defns.push(defineLinkSetColumn(prop.name));
         } else if (prop.linkedClass) {

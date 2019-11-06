@@ -20,6 +20,20 @@ class Schema {
     this.getFromRoute = schema.getFromRoute.bind(schema);
   }
 
+  @boundMethod
+  getModel(name) {
+    try {
+      return this.get(name);
+    } catch (err) {
+      const model = this.getFromRoute(name);
+
+      if (model) {
+        return model;
+      }
+      throw err;
+    }
+  }
+
   /**
    * Get a string representation of a record
    */
@@ -66,7 +80,6 @@ class Schema {
    * Returns preview of given object based on its '@class' value
    * @param {Object} obj - Record to be parsed.
    */
-  @boundMethod
   getPreview(obj) {
     if (obj) {
       if (obj.displayNameTemplate) {
@@ -84,16 +97,16 @@ class Schema {
           return label;
         };
 
-        const implyBy = statementBuilder(obj.impliedBy);
+        const implyBy = statementBuilder(obj.conditions);
         const relevance = statementBuilder(obj.relevance);
-        const appliesTo = statementBuilder(obj.appliesTo);
-        const supportedBy = statementBuilder(obj.supportedBy);
+        const subject = statementBuilder(obj.subject);
+        const evidence = statementBuilder(obj.evidence);
 
         const label = obj.displayNameTemplate
-          .replace('{impliedBy}', implyBy)
+          .replace('{conditions}', implyBy)
           .replace('{relevance}', relevance)
-          .replace('{appliesTo}', appliesTo)
-          .replace('{supportedBy}', supportedBy);
+          .replace('{subject}', subject)
+          .replace('{evidence}', evidence);
 
         return label;
       }
@@ -232,6 +245,64 @@ class Schema {
   }
 
   /**
+   * Validates a value against some property model and returns the new property tracking object
+   */
+  @boundMethod
+  validateValue(propModel, value, ignoreMandatory = false) {
+    if (value === undefined || value === '' || (typeof value === 'object' && value && Object.keys(value).length === 0)) {
+      if (propModel.mandatory
+      && !ignoreMandatory
+      && !propModel.generated
+      && propModel.default === undefined
+      && !propModel.generateDefault
+      ) {
+        return { error: { message: 'Required Value' }, value };
+      }
+    } else if (value === null && !propModel.nullable) {
+      return { error: { message: 'Cannot be empty/null' }, value };
+    } else if (value !== null) { // validate the new value using the schema model property
+      if (propModel.linkedClass && propModel.type.includes('embedded')) {
+        const subErrors = {};
+        let embeddedModel;
+
+        try {
+          embeddedModel = this.get(value);
+        } catch (err) { } // eslint-disable-line no-empty
+
+        if (!embeddedModel) {
+          return { error: { '@class': { message: 'Required Value' } } };
+        }
+        Object.values(embeddedModel.properties).forEach((subPropModel) => {
+          const { name } = subPropModel;
+          const { error } = this.validateValue(subPropModel, value[name], ignoreMandatory);
+
+          if (error) {
+            subErrors[name] = error;
+          }
+        });
+
+        if (Object.keys(subErrors).length) {
+          return { error: subErrors, value };
+        }
+        return { value };
+      }
+
+      try {
+        let valueToValidate = value;
+
+        if (propModel.type === 'link') {
+          valueToValidate = value['@rid'] || value;
+        }
+        propModel.validate(valueToValidate);
+        return { value };
+      } catch (err) {
+        return { error: err, value };
+      }
+    }
+    return { value };
+  }
+
+  /**
    * Given some search string, defines column definitions for AgGrid table
    *
    * @param {string} search the URI search component
@@ -242,16 +313,18 @@ class Schema {
     const { modelName } = api.getQueryFromSearch({ schema: this, search });
 
     const showEdges = [];
-    const showByDefault = [
-      '@rid', '@class',
-    ];
+    const showByDefault = [];
+    const defaultOrdering = [];
+
+    const linkChipWidth = 300;
 
     const allProps = this.get(modelName).queryProperties;
 
     if (modelName.toLowerCase().includes('variant')) {
       showByDefault.push('reference1', 'reference2', 'type');
     } else if (modelName.toLowerCase() === 'statement') {
-      showByDefault.push('source', 'appliesTo', 'relevance', 'evidenceLevel');
+      defaultOrdering.push(...['relevance', 'subject', 'conditions', 'source', 'evidenceLevel', 'evidence']);
+      showByDefault.push('source', 'subject', 'relevance', 'evidenceLevel');
     } else if (modelName.toLowerCase() !== 'source') {
       showByDefault.push('sourceIdVersion', 'version', 'source', 'name', 'sourceId');
       showEdges.push('out_SubClassOf');
@@ -268,9 +341,47 @@ class Schema {
         field: colId,
         sortable: false,
         valueGetter: getLinkData,
-        width: 300,
+        width: linkChipWidth,
         cellRenderer: 'RecordList',
       };
+    };
+
+    const getCondition = propName => ({ data }) => {
+      let values;
+
+      if (data && data.conditions && propName !== 'other') {
+        values = data.conditions.filter(val => (val['@class'].toLowerCase().includes(propName)));
+      } else if (data && data.conditions) {
+        values = data.conditions.filter(val => (
+          !val['@class'].toLowerCase().includes('variant')
+          && !val['@class'].toLowerCase().includes('disease')
+          && (!data.subject || (data.subject['@rid'] !== val['@rid']))
+        ));
+      }
+      return values;
+    };
+
+    const defineConditionsColumn = () => {
+      const conditionsDefn = {
+        headerName: 'Conditions',
+        groupId: 'Conditions',
+        openByDefault: true,
+        children: [],
+      };
+
+      ['variant', 'disease', 'other'].forEach((cls) => {
+        const colDef = {
+          field: cls,
+          colId: cls,
+          valueGetter: getCondition(cls),
+          sortable: false,
+          width: cls === 'other' ? 150 : linkChipWidth,
+          cellRenderer: 'RecordList',
+        };
+
+        conditionsDefn.children.push(colDef);
+      });
+      return conditionsDefn;
     };
 
     const defineEdgeColumn = (name) => {
@@ -293,9 +404,23 @@ class Schema {
         field: colId,
         sortable: false,
         valueGetter: getEdgeData,
-        width: 300,
+        width: linkChipWidth,
         cellRenderer: 'RecordList',
       };
+    };
+
+    const compareColumnsForSort = (col1, col2) => {
+      const index1 = defaultOrdering.indexOf(col1.name);
+      const index2 = defaultOrdering.indexOf(col2.name);
+
+      if (index1 === index2) {
+        return col1.name.localeCompare(col2.name);
+      } if (index1 === -1) {
+        return 1;
+      } if (index2 === -1) {
+        return -1;
+      }
+      return index1 - index2;
     };
 
     const exclude = [
@@ -315,13 +440,6 @@ class Schema {
       'displayName',
     ];
 
-    const getPreview = propName => ({ data }) => {
-      if (data && data[propName]) {
-        return this.getLabel(data[propName], false);
-      }
-      return '';
-    };
-
     const valueGetter = (propName, subPropName = null) => ({ data }) => {
       if (data) {
         if (!subPropName) {
@@ -333,63 +451,72 @@ class Schema {
       return '';
     };
 
-    const defns = [
-      {
+    const defns = [];
+
+    if (modelName !== 'Statement') {
+      defns.push({
         colId: 'preview',
         field: 'preview',
         sortable: false,
         valueGetter: ({ data }) => this.getLabel(data),
-      },
-    ];
-
-    Object.values(allProps)
-      .filter(prop => !exclude.includes(prop.name) && prop.type !== 'embedded')
-      .sort((p1, p2) => p1.name.localeCompare(p2.name))
-      .forEach((prop) => {
-        const hide = !showByDefault.includes(prop.name);
-
-        if (prop.type === 'linkset') {
-          defns.push(defineLinkSetColumn(prop.name));
-        } else if (prop.linkedClass) {
-          // build a column group
-          const groupDefn = {
-            headerName: prop.name,
-            groupId: prop.name,
-            openByDefault: false,
-            children: [{
-              field: 'preview',
-              sortable: false,
-              valueGetter: getPreview(prop.name),
-              colId: `${prop.name}.preview`,
-              columnGroupShow: 'closed',
-              hide,
-            }],
-          };
-          Object.values(prop.linkedClass.queryProperties).forEach((subProp) => {
-            if (showNested.includes(subProp.name)) {
-              const colDef = ({
-                field: subProp.name,
-                colId: `${prop.name}.${subProp.name}`,
-                valueGetter: valueGetter(prop.name, subProp.name),
-                columnGroupShow: 'open',
-                sortable: true,
-                hide,
-              });
-              groupDefn.children.push(colDef);
-            }
-          });
-          defns.push(groupDefn);
-        } else {
-          // individual column
-          defns.push({
-            field: prop.name,
-            hide,
-            colId: prop.name,
-          });
-        }
       });
+    }
 
-    defns.sort((d1, d2) => (d1.colId || d1.groupId).localeCompare(d2.colId || d2.groupId));
+    const propModels = Object.values(allProps)
+      .filter(prop => !exclude.includes(prop.name) && prop.type !== 'embedded')
+      .sort(compareColumnsForSort);
+
+    const skinnyLinks = ['evidenceLevel', 'source']; // generally short content
+
+    propModels.forEach((prop) => {
+      const hide = !showByDefault.includes(prop.name);
+
+      if (prop.name === 'conditions') {
+        defns.push(defineConditionsColumn());
+      } else if (prop.type === 'linkset') {
+        defns.push(defineLinkSetColumn(prop.name));
+      } else if (prop.linkedClass) {
+        // build a column group
+        const groupDefn = {
+          headerName: prop.name,
+          groupId: prop.name,
+          openByDefault: false,
+          children: [{
+            field: 'displayName',
+            colId: `${prop.name}.displayName`,
+            valueGetter: valueGetter(prop.name, 'displayName'),
+            columnGroupShow: '',
+            sortable: true,
+            width: skinnyLinks.includes(prop.name)
+              ? 150
+              : 250,
+            hide,
+          }],
+        };
+        Object.values(prop.linkedClass.queryProperties).forEach((subProp) => {
+          if (showNested.includes(subProp.name) && subProp.name !== 'displayName') {
+            const colDef = ({
+              field: subProp.name,
+              colId: `${prop.name}.${subProp.name}`,
+              valueGetter: valueGetter(prop.name, subProp.name),
+              columnGroupShow: 'open',
+              sortable: true,
+              hide,
+            });
+            groupDefn.children.push(colDef);
+          }
+        });
+        defns.push(groupDefn);
+      } else {
+        // individual column
+        defns.push({
+          field: prop.name,
+          hide,
+          colId: prop.name,
+        });
+      }
+    });
+
     showEdges.forEach((edgeName) => {
       defns.push(defineEdgeColumn(edgeName));
     });
@@ -398,4 +525,6 @@ class Schema {
   }
 }
 
-export default Schema;
+const schema = new Schema(SCHEMA_DEFN);
+
+export default schema;

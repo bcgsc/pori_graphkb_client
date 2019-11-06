@@ -153,7 +153,7 @@ const Menu = (props) => {
 
   return (isSearchable
     && (
-    <Paper square className="record-autocomplete__paper" {...innerProps}>
+    <Paper elevation={2} square className="record-autocomplete__paper" {...innerProps}>
       {children}
     </Paper>
     )
@@ -162,11 +162,14 @@ const Menu = (props) => {
 
 
 const DropdownIndicator = (props) => {
-  const { className = '' } = props;
+  const { className = '', selectProps: { isSearchable } } = props;
   return (
-    <SearchIcon
-      className={`record-autocomplete__dropdown ${className}`}
-    />
+    !isSearchable ? null
+      : (
+        <SearchIcon
+          className={`record-autocomplete__dropdown ${className}`}
+        />
+      )
   );
 };
 

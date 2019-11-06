@@ -5,22 +5,23 @@ import { boundMethod } from 'autobind-decorator';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button,
   IconButton,
   TextField,
   InputAdornment,
   Checkbox,
   FormControlLabel,
+  Typography,
 } from '@material-ui/core';
 import kbp from '@bcgsc/knowledgebase-parser';
-import * as qs from 'qs';
 import SearchIcon from '@material-ui/icons/Search';
 
 import './QueryView.scss';
-import { KBContext } from '../../components/KBContext';
+import api from '../../services/api';
+import schema from '../../services/schema';
 
 const ENTER_KEYCODE = 13;
 const MIN_WORD_LENGTH = 3;
+
 
 /**
  * View for simple search by name query. Form submissions are passed through the URL to
@@ -29,8 +30,6 @@ const MIN_WORD_LENGTH = 3;
  * @property {Object} props.history - Application routing history object.
  */
 class QueryView extends Component {
-  static contextType = KBContext;
-
   static propTypes = {
     history: PropTypes.object.isRequired,
   };
@@ -63,9 +62,16 @@ class QueryView extends Component {
       if (!trimmed.length) {
         this.setState({ keyWordError: `Must have 1 or more terms of at least ${MIN_WORD_LENGTH} characters` });
       } else {
+        const payload = {
+          queryType: 'keyword',
+          target: 'Statement',
+          keyword: trimmed.join(' '),
+        };
+
+        const search = api.encodeQueryComplexToSearch(payload, 'Statement');
         history.push({
           pathname: '/data/table',
-          search: qs.stringify({ keyword: trimmed.join(' ') }),
+          search,
         });
       }
     }
@@ -80,23 +86,15 @@ class QueryView extends Component {
       variant,
     } = this.state;
     const { history } = this.props;
-    const { schema } = this.context;
 
     if (variant) {
-      const params = {
-        '@class': 'PositionalVariant',
-      };
-      ['type', 'reference1', 'reference2'].forEach((param) => {
-        if (variant[param]) {
-          params[param] = { name: variant[param] };
-        }
-      });
-      schema.getProperties('PositionalVariant').filter(p => !p.name.includes('Repr')).forEach((prop) => {
-        if (prop.type !== 'link' && variant[prop.name] && !prop.generated) {
-          params[prop.name] = variant[prop.name];
-        }
-      });
-      const search = qs.stringify(params);
+      const search = api.encodeQueryComplexToSearch({
+        target: 'Statement',
+        filters: {
+          conditions: api.buildSearchFromParseVariant(schema, variant),
+          operator: 'CONTAINSANY',
+        },
+      }, 'Statement');
 
       history.push({
         pathname: '/data/table',
@@ -201,7 +199,6 @@ class QueryView extends Component {
       variantError,
       keyWordError,
     } = this.state;
-    const { history } = this.props;
 
     return (
       <div className="search">
@@ -217,8 +214,8 @@ class QueryView extends Component {
               value={value}
               onChange={this.handleChange}
               placeholder={hgvs
-                ? 'Search by HGVS Shorthand'
-                : 'Search by Keyword'
+                ? 'Search Statements by HGVS Shorthand'
+                : 'Search Statements by Keyword'
               }
               InputProps={{
                 endAdornment: (
@@ -237,21 +234,13 @@ class QueryView extends Component {
             />
             <FormControlLabel
               control={<Checkbox />}
-              label="HGVS Shorthand"
+              label={<Typography className="search__sub-search" variant="h6">HGVS Shorthand</Typography>}
               checked={hgvs}
               onChange={this.handleClickHgvs}
               color="primary"
             />
           </div>
         </div>
-        <Button
-          variant="outlined"
-          color="secondary"
-          className="search__advanced-button"
-          onClick={() => history.push({ pathname: '/query/advanced' })}
-        >
-          Advanced Search
-        </Button>
       </div>
     );
   }

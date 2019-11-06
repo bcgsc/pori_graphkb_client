@@ -10,7 +10,9 @@
 
     h1,
     h2,
-    h3 {
+    h3,
+    h4 {
+      opacity: 0.7;
       text-align: center;
       margin-bottom: 20px;
     }
@@ -19,6 +21,18 @@
       margin-right: auto;
       max-width: $readable-max;
     }
+
+    h2:not(:first-child) {
+      margin-top: 20px;
+    }
+  }
+
+  &__column-image {
+    display: flex;
+  }
+
+  &__image-list {
+    display: block;
   }
 
   .tabs-content {
@@ -66,6 +80,7 @@
     h1 {
       font-size: 1.5rem;
       margin-top: 0;
+      opacity: 1;
     }
 
     h2 {
@@ -75,15 +90,17 @@
 
   p,
   .about-version-info {
+    font-size: 0.875rem;
     min-width: $readable-min;
     max-width: $readable-max;
+    opacity: 0.7;
     width: 700px;
   }
 
   img,
   svg {
     display: block;
-    max-width: 100%;
+    max-width: $readable-max;
   }
 
   .pie-chart {
@@ -122,9 +139,17 @@
   font-weight: bold;
   height: 50px;
   justify-content: center;
+  margin-right: 16px;
+  min-width: 50px;
   width: 50px;
 }
 
 .about-page__content {
   white-space: pre-line;
+}
+
+.MuiListItem-gutters {
+  &:nth-child(even) {
+    padding-top: 0;
+  }
 }

@@ -11,15 +11,38 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import './ErrorView.scss';
 import config from '../../static/config';
+import { LocationPropType } from '../../components/types';
 
 const { FEEDBACK: { JIRA: JIRA_LINK, EMAIL } } = config;
+
+const EmailReportError = (props) => {
+  const { linkText, body, subject } = props;
+  return (
+    <a href={`mailto:${
+      EMAIL
+    }?subject=${
+      encodeURIComponent(subject)
+    }&body=${
+      encodeURIComponent(body)
+    }`}
+    >
+      {linkText}
+    </a>
+  );
+};
+
+EmailReportError.propTypes = {
+  linkText: PropTypes.string.isRequired,
+  body: PropTypes.string.isRequired,
+  subject: PropTypes.string.isRequired,
+};
 
 /**
  * View for displaying uncaught error messages.
  */
 class ErrorView extends Component {
   static propTypes = {
-    location: PropTypes.object.isRequired,
+    location: LocationPropType.isRequired,
   };
 
   constructor(props) {
@@ -30,22 +53,6 @@ class ErrorView extends Component {
   render() {
     const { location: { state } } = this.props;
     const { tooltipOpen } = this.state;
-
-    const EmailReportError = (props) => {
-      const { linkText, body, subject } = props;
-      return (
-        <a href={`mailto:${
-          EMAIL
-        }?subject=${
-          encodeURIComponent(subject)
-        }&body=${
-          encodeURIComponent(body)
-        }`}
-        >
-          {linkText}
-        </a>
-      );
-    };
 
     const {
       error: {
@@ -83,13 +90,13 @@ error text: ${message}`;
           {message}
         </Typography>
         <Typography paragraph>
-            Report this error in a {jiraLink} ticket or email us at {
-              <EmailReportError
-                linkText={EMAIL}
-                subject={`${name}: ${message}`}
-                body={errorDetails}
-              />
-            }.
+            Report this error in a {jiraLink} ticket or email us at
+          <EmailReportError
+            linkText={EMAIL}
+            subject={`${name}: ${message}`}
+            body={errorDetails}
+          />
+            .
         </Typography>
         {stacktrace
           && (

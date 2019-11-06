@@ -20,7 +20,7 @@ import './index.scss';
  * staged for deletion
  *
  * @property {object} props
- * @property {function} props.onValueChange - Parent component change handler.
+ * @property {function} props.onChange - Parent component change handler.
  * @property {Array.<string>} props.value - Embedded set property as array.
  * @property {string} props.label - TextField label.
  * @property {string} props.name - Input name attribute.
@@ -39,7 +39,7 @@ class TextArrayField extends Component {
     error: PropTypes.bool,
     label: PropTypes.string,
     name: PropTypes.string.isRequired,
-    onValueChange: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
     value: PropTypes.arrayOf(PropTypes.string),
   };
 
@@ -69,7 +69,7 @@ class TextArrayField extends Component {
   handleAdd(text) {
     const {
       name,
-      onValueChange,
+      onChange,
     } = this.props;
 
     const { value, deleted } = this.state;
@@ -85,7 +85,7 @@ class TextArrayField extends Component {
       } else {
         value.push(text);
         this.setState({ value, textInputValue: '', textInputError: '' });
-        onValueChange({ target: { name, value: value.filter(v => !deleted.has(v)) } });
+        onChange({ target: { name, value: value.filter(v => !deleted.has(v)) } });
       }
     }
   }
@@ -112,7 +112,7 @@ class TextArrayField extends Component {
     } = this.state;
     const {
       name,
-      onValueChange,
+      onChange,
     } = this.props;
 
     if (text) {
@@ -122,7 +122,7 @@ class TextArrayField extends Component {
       } else {
         this.setState({ value: value.filter(v => v !== text) });
       }
-      onValueChange({ target: { name, value: value.filter(v => !deleted.has(v)) } });
+      onChange({ target: { name, value: value.filter(v => !deleted.has(v)) } });
     }
   }
 
@@ -134,13 +134,13 @@ class TextArrayField extends Component {
   handleRestore(text) {
     const {
       name,
-      onValueChange,
+      onChange,
     } = this.props;
     const { deleted, value } = this.state;
 
     deleted.delete(text);
     this.setState({ deleted });
-    onValueChange({ target: { name, value: value.filter(v => !deleted.has(v)) } });
+    onChange({ target: { name, value: value.filter(v => !deleted.has(v)) } });
   }
 
   /**

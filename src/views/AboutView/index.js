@@ -10,7 +10,6 @@ import {
   Tab,
 } from '@material-ui/core';
 import slugify from 'slugify';
-import PropTypes from 'prop-types';
 
 import './index.scss';
 import {
@@ -21,12 +20,14 @@ import {
   AboutStatements,
   AboutClasses,
   AboutUsageTerms,
+  AboutGraphView,
 } from './components';
+import { LocationPropType } from '../../components/types';
 
 
 class AboutView extends Component {
   static propTypes = {
-    location: PropTypes.object.isRequired,
+    location: LocationPropType.isRequired,
   };
 
   constructor(props) {
@@ -40,6 +41,7 @@ class AboutView extends Component {
       { label: 'Statements', component: AboutStatements },
       { label: 'Classes', component: AboutClasses },
       { label: 'Query', component: AboutQuerying },
+      { label: 'Graph View', component: AboutGraphView },
       { label: 'Input Data', component: AboutForms },
       { label: 'Notation', component: AboutNotation },
       { label: 'Terms', component: AboutUsageTerms },
@@ -94,7 +96,7 @@ class AboutView extends Component {
 
     return (
       <div className="about-page">
-        <Tabs value={tabIndex} onChange={this.handleChange} scrollable className="tabs-bar">
+        <Tabs value={tabIndex} onChange={this.handleChange} variant="scrollable" className="tabs-bar">
           {tabNavList}
         </Tabs>
         <div className="tabs-content">

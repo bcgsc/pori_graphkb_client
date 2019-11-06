@@ -16,16 +16,52 @@ import kbSchema from '@bcgsc/knowledgebase-schema';
 
 import { KBContext } from '../../../KBContext';
 import './index.scss';
+import schema from '../../../../services/schema';
 
 const { constants: { PERMISSIONS } } = kbSchema;
 
 /* eslint-disable no-bitwise */
 
 /**
+* For a mapping of class names to the single permissions value, split these by operation types
+* for display as checkboxes
+*/
+const splitPermissionsByOperation = (permissions) => {
+  const permByModelName = {};
+
+  Object.keys(schema.schema).forEach((modelName) => {
+    const model = schema.get(modelName);
+
+    if (!model.embedded) {
+      const value = permissions[model.name] === undefined
+        ? PERMISSIONS.NONE
+        : permissions[model.name];
+
+      permByModelName[modelName] = {
+        READ: value & PERMISSIONS.READ,
+        CREATE: null,
+        UPDATE: null,
+        DELETE: null,
+      };
+
+      if (!model.isAbstract) {
+        permByModelName[modelName].CREATE = value & PERMISSIONS.CREATE;
+        permByModelName[modelName].DELETE = value & PERMISSIONS.DELETE;
+
+        if (!model.isEdge) {
+          permByModelName[modelName].UPDATE = value & PERMISSIONS.UPDATE;
+        }
+      }
+    }
+  });
+  return permByModelName;
+};
+
+/**
  * Table to display permissions state for a certain user group.
  * @property {Object} props - Component props.
  * @property {bool} props.disabled flag to indicate this field cannot be edited
- * @property {func} props.onValueChange handler to propogate changes to the parent form
+ * @property {func} props.onChange handler to propogate changes to the parent form
  * @property {string} props.name field name to use in simulating events
  * @property {object} props.value the current permissions set
  */
@@ -35,7 +71,7 @@ class PermissionsTable extends React.Component {
   static propTypes = {
     value: PropTypes.object,
     disabled: PropTypes.bool,
-    onValueChange: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
     name: PropTypes.string.isRequired,
   };
 
@@ -62,52 +98,12 @@ class PermissionsTable extends React.Component {
   }
 
   /**
-   * For a mapping of class names to the single permissions value, split these by operation types
-   * for display as checkboxes
-   */
-  splitPermissionsByOperation(permissions) {
-    const { schema } = this.context;
-    const permByModelName = {};
-
-    if (!schema) {
-      return {};
-    }
-    Object.keys(schema.schema).forEach((modelName) => {
-      const model = schema.get(modelName);
-
-      if (!model.embedded) {
-        const value = permissions[model.name] === undefined
-          ? PERMISSIONS.NONE
-          : permissions[model.name];
-
-        permByModelName[modelName] = {
-          READ: value & PERMISSIONS.READ,
-          CREATE: null,
-          UPDATE: null,
-          DELETE: null,
-        };
-
-        if (!model.isAbstract) {
-          permByModelName[modelName].CREATE = value & PERMISSIONS.CREATE;
-          permByModelName[modelName].DELETE = value & PERMISSIONS.DELETE;
-
-          if (!model.isEdge) {
-            permByModelName[modelName].UPDATE = value & PERMISSIONS.UPDATE;
-          }
-        }
-      }
-    });
-    return permByModelName;
-  }
-
-  /**
    * Handle the user clicking a checkbox to either clear or check it
    * when the modelName is not given and is null, assumes a checkAll event
    */
   handleClick(operation, currModelName = null) {
-    const { onValueChange, name } = this.props;
+    const { onChange, name } = this.props;
     const { content, topBoxes } = this.state;
-    const { schema } = this.context;
 
     const newContent = Object.assign({}, content);
     const newTopBoxes = Object.assign({}, topBoxes);
@@ -143,7 +139,7 @@ class PermissionsTable extends React.Component {
       }
     }
     this.setState({ content: newContent, topBoxes: newTopBoxes });
-    onValueChange({ target: { name, value: newContent } });
+    onChange({ target: { name, value: newContent } });
   }
 
   render() {
@@ -153,7 +149,7 @@ class PermissionsTable extends React.Component {
     const { content, topBoxes } = this.state;
 
     const operationOrder = ['CREATE', 'READ', 'UPDATE', 'DELETE'];
-    const permByModelName = this.splitPermissionsByOperation(content || {});
+    const permByModelName = splitPermissionsByOperation(content || {});
     const modelOrder = Object.keys(permByModelName).sort();
 
     return (
@@ -161,7 +157,7 @@ class PermissionsTable extends React.Component {
         <Table>
           <TableHead>
             <TableRow className="permissions-table__header">
-              <TableCell padding="dense" />
+              <TableCell size="small" />
               {operationOrder.map(operation => (
                 <TableCell key={operation} padding="checkbox">
                   {operation}
@@ -169,7 +165,7 @@ class PermissionsTable extends React.Component {
               ))}
             </TableRow>
             <TableRow>
-              <TableCell padding="dense" />
+              <TableCell size="small" />
               {operationOrder.map(operation => (
                 <TableCell key={operation} padding="checkbox">
                   <Checkbox
@@ -187,7 +183,7 @@ class PermissionsTable extends React.Component {
                 const permission = permByModelName[modelName];
                 return (
                   <TableRow key={modelName} className="permissions-table__row">
-                    <TableCell padding="dense">
+                    <TableCell size="small">
                       {modelName}:
                     </TableCell>
                     {operationOrder.map(operation => (

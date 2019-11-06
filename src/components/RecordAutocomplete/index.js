@@ -1,10 +1,10 @@
 import React, {
   useState, useCallback, useEffect,
 } from 'react';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 import { NoSsr } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import useDeepCompareEffect from 'use-deep-compare-effect';
 import { useDebounce } from 'use-debounce';
 
 import defaultComponents from './components';
@@ -21,6 +21,31 @@ import './index.scss';
  * @param {string} term the term to search
  * @returns {ApiCall} an instance of api call which implements the abort and request functions
  */
+
+const defaultOptionGrouping = (rawOptions) => {
+  const sourceGroups = {};
+
+  rawOptions.forEach((option) => {
+    const source = option.source && option.source.displayName
+      ? option.source.displayName
+      : 'no source';
+    sourceGroups[source] = sourceGroups[source] || [];
+    sourceGroups[source].push(option);
+  });
+
+  if (Object.keys(sourceGroups) < 2) {
+    return rawOptions;
+  }
+
+  const options = [];
+  Object.entries(sourceGroups).forEach(([key, group]) => {
+    options.push({
+      label: key,
+      options: group,
+    });
+  });
+  return options;
+};
 
 
 /**
@@ -58,6 +83,7 @@ const RecordAutocomplete = (props) => {
     getOptionKey,
     getOptionLabel,
     isMulti,
+    innerProps,
     label,
     minSearchLength,
     name,
@@ -66,13 +92,15 @@ const RecordAutocomplete = (props) => {
     required,
     searchHandler,
     singleLoad,
+    helperText: initialHelperText,
+    groupOptions,
     value,
   } = props;
 
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [options, setOptions] = useState([]);
-  const [helperText, setHelperText] = useState('');
+  const [helperText, setHelperText] = useState(initialHelperText);
   const [selectedValue, setSelectedValue] = useState(value);
   const [debouncedSearchTerm] = useDebounce(searchTerm, debounceMs);
 
@@ -97,7 +125,12 @@ const RecordAutocomplete = (props) => {
         try {
           setIsLoading(true);
           const result = await controller.request();
-          setOptions(result || []);
+
+          if (groupOptions) {
+            setOptions(groupOptions(result || []));
+          } else {
+            setOptions(result || []);
+          }
           setIsLoading(false);
         } catch (err) {
           console.error('Error in getting the RecordAutocomplete singleLoad suggestions');
@@ -111,7 +144,7 @@ const RecordAutocomplete = (props) => {
       }
       return () => controller && controller.abort();
     },
-    [disabled, searchHandler, singleLoad], // componentDidMount equivalent
+    [disabled, searchHandler, singleLoad],
   );
 
   // fetch options based on the current search term
@@ -131,7 +164,13 @@ const RecordAutocomplete = (props) => {
           try {
             setIsLoading(true);
             const result = await controller.request();
-            setOptions(result || []);
+
+            if (groupOptions) {
+              setOptions(groupOptions(result || []));
+            } else {
+              setOptions(result || []);
+            }
+
             setIsLoading(false);
           } catch (err) {
             console.error('Error in getting the RecordAutocomplete suggestions');
@@ -149,7 +188,8 @@ const RecordAutocomplete = (props) => {
       }
       return () => controller && controller.abort();
     },
-    [debouncedSearchTerm, minSearchLength, searchHandler, singleLoad], // Only call effect if debounced search term changes
+    // Only call effect if debounced search term changes
+    [debouncedSearchTerm, minSearchLength, searchHandler, singleLoad],
   );
 
   const handleChange = useCallback(
@@ -157,7 +197,7 @@ const RecordAutocomplete = (props) => {
       setSelectedValue(newValue);
       const event = { target: { name, value: newValue } };
 
-      if (actionType === 'select-option' || actionType === 'clear') {
+      if (actionType === 'select-option' || actionType === 'clear' || actionType === 'remove-value') {
         onChange(event);
       }
     },
@@ -225,6 +265,7 @@ const RecordAutocomplete = (props) => {
         onFocus={handleOnFocus}
         onBlur={handleOnBlur}
         inputValue={searchTerm}
+        innerProps={innerProps}
         onInputChange={handleInputChange}
         getOptionValue={getOptionKey} // used to compare options for equality
         getOptionLabel={getOptionLabel} // generates the string representation
@@ -260,14 +301,29 @@ const RecordAutocomplete = (props) => {
 
 RecordAutocomplete.propTypes = {
   className: PropTypes.string,
-  components: PropTypes.object,
+  components: PropTypes.shape({
+    Control: PropTypes.func,
+    DropdownIndicator: PropTypes.func,
+    Menu: PropTypes.func,
+    MultiValue: PropTypes.func,
+    NoOptionsMessage: PropTypes.func,
+    Option: PropTypes.func,
+    Placeholder: PropTypes.func,
+    SingleValue: PropTypes.func,
+    ValueContainer: PropTypes.func,
+    inputComponent: PropTypes.func,
+  }),
   debounceMs: PropTypes.number,
-  DetailChipProps: PropTypes.object,
+  DetailChipProps: PropTypes.shape({
+    getLink: PropTypes.func,
+    valueToString: PropTypes.func,
+  }),
   disabled: PropTypes.bool,
   errorText: PropTypes.string,
   getOptionKey: PropTypes.func,
   getOptionLabel: PropTypes.func,
   isMulti: PropTypes.bool,
+  innerProps: PropTypes.object,
   label: PropTypes.string,
   minSearchLength: PropTypes.number,
   name: PropTypes.string.isRequired,
@@ -276,7 +332,9 @@ RecordAutocomplete.propTypes = {
   required: PropTypes.bool,
   searchHandler: PropTypes.func.isRequired,
   singleLoad: PropTypes.bool,
+  helperText: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.object, PropTypes.arrayOf(PropTypes.object)]),
+  groupOptions: PropTypes.func,
 };
 
 RecordAutocomplete.defaultProps = {
@@ -296,6 +354,7 @@ RecordAutocomplete.defaultProps = {
   getOptionKey: opt => opt['@rid'],
   getOptionLabel: opt => opt.name,
   isMulti: false,
+  innerProps: {},
   label: '',
   minSearchLength: 1,
   onChange: () => {},
@@ -303,6 +362,8 @@ RecordAutocomplete.defaultProps = {
   required: false,
   singleLoad: false,
   value: null,
+  helperText: '',
+  groupOptions: defaultOptionGrouping,
 };
 
 export default RecordAutocomplete;

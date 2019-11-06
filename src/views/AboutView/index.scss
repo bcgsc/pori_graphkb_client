@@ -21,13 +21,18 @@
       margin-right: auto;
       max-width: $readable-max;
     }
-    p {
-      opacity: 0.7;
-    }
 
-    span {
-      opacity: 0.7;
+    h2:not(:first-child) {
+      margin-top: 20px;
     }
+  }
+
+  &__column-image {
+    display: flex;
+  }
+
+  &__image-list {
+    display: block;
   }
 
   .tabs-content {
@@ -95,7 +100,7 @@
   img,
   svg {
     display: block;
-    max-width: 100%;
+    max-width: $readable-max;
   }
 
   .pie-chart {
@@ -141,4 +146,10 @@
 
 .about-page__content {
   white-space: pre-line;
+}
+
+.MuiListItem-gutters {
+  &:nth-child(even) {
+    padding-top: 0;
+  }
 }

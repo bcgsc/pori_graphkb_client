@@ -372,15 +372,6 @@ class DataTable extends React.Component {
   }
 
   @boundMethod
-  resizeColumnsTofitEdges({ type, newPage }) {
-    if (this.gridColumnApi) {
-      if (type === 'paginationChanged' && newPage !== undefined) {
-        this.gridColumnApi.autoSizeColumns(['conditions', 'evidence', 'Implies', 'preview']);
-      }
-    }
-  }
-
-  @boundMethod
   detectFetchTrigger({ top, direction }) {
     const { pingedIndices } = this.state;
     const { rowBuffer, search, cache } = this.props;
@@ -612,7 +603,6 @@ class DataTable extends React.Component {
             RecordList,
           }}
           blockLoadDebounceMillis={100}
-          onPaginationChanged={this.resizeColumnsTofitEdges}
           onBodyScroll={this.detectFetchTrigger}
           onCellFocused={({ rowIndex }) => {
             if (rowIndex !== null && onRecordClicked) {

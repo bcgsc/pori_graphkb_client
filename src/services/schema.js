@@ -374,8 +374,8 @@ class Schema {
           field: cls,
           colId: cls,
           valueGetter: getCondition(cls),
-          sortable: true,
-          width: 400,
+          sortable: false,
+          width: cls === 'other' ? 150 : linkChipWidth,
           cellRenderer: 'RecordList',
         };
 
@@ -404,7 +404,7 @@ class Schema {
         field: colId,
         sortable: false,
         valueGetter: getEdgeData,
-        width: 300,
+        width: linkChipWidth,
         cellRenderer: 'RecordList',
       };
     };

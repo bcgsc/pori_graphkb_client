@@ -353,7 +353,9 @@ class Schema {
         values = data.conditions.filter(val => (val['@class'].toLowerCase().includes(propName)));
       } else if (data && data.conditions) {
         values = data.conditions.filter(val => (
-          !val['@class'].toLowerCase().includes('variant') && !val['@class'].toLowerCase().includes('disease')
+          !val['@class'].toLowerCase().includes('variant')
+          && !val['@class'].toLowerCase().includes('disease')
+          && (!data.subject || (data.subject['@rid'] !== val['@rid']))
         ));
       }
       return values;

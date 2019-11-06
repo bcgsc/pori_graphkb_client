@@ -149,7 +149,7 @@
 }
 
 .MuiListItem-gutters {
-  &:nth-child(2) {
+  &:nth-child(even) {
     padding-top: 0;
   }
 }

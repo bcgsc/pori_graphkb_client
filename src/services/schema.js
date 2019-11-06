@@ -313,9 +313,10 @@ class Schema {
     const { modelName } = api.getQueryFromSearch({ schema: this, search });
 
     const showEdges = [];
-    const showByDefault = [
-      '@rid', '@class',
-    ];
+    const showByDefault = [];
+    const defaultOrdering = [];
+
+    const linkChipWidth = 300;
 
     const allProps = this.get(modelName).queryProperties;
 
@@ -339,7 +340,7 @@ class Schema {
         field: colId,
         sortable: false,
         valueGetter: getLinkData,
-        width: 300,
+        width: linkChipWidth,
         cellRenderer: 'RecordList',
       };
     };

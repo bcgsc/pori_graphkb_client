@@ -466,6 +466,8 @@ class Schema {
       .filter(prop => !exclude.includes(prop.name) && prop.type !== 'embedded')
       .sort(compareColumnsForSort);
 
+    const skinnyLinks = ['evidenceLevel', 'source']; // generally short content
+
     propModels.forEach((prop) => {
       const hide = !showByDefault.includes(prop.name);
 
@@ -485,9 +487,9 @@ class Schema {
             valueGetter: valueGetter(prop.name, 'displayName'),
             columnGroupShow: '',
             sortable: true,
-            width: prop.name !== 'evidenceLevel'
-              ? 250
-              : 150,
+            width: skinnyLinks.includes(prop.name)
+              ? 150
+              : 250,
             hide,
           }],
         };

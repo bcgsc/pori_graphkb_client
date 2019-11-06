@@ -20,21 +20,30 @@ const AboutQuerying = () => (
     <Typography paragraph variant="body2">
       There are 3 ways to query GraphKB. These can be found by clicking on the search icon in the left-hand side bar.
     </Typography>
-    <List>
+    <List className="search-list">
       <ListItem>
         <Link to="/query">
-          <ListItemText primary="Quick Search" secondary="This is the simplest way to query. It is the main page view of this application and contains a single text box for input" />
+          <ListItemText primary="Quick Search" />
         </Link>
+      </ListItem>
+      <ListItem>
+        <Typography>This is the simplest way to query. It is the main page view of this application and contains a single text box for input</Typography>
       </ListItem>
       <ListItem>
         <Link to="/query-popular/gene">
-          <ListItemText primary="Popular Search" secondary="These are pre-built 'advanced' queries which are commonly used by analysts exploring the database" />
+          <ListItemText primary="Popular Search" />
         </Link>
       </ListItem>
       <ListItem>
+        <Typography> {'These are pre-built \'advanced\' queries which are commonly used by analysts exploring the database'}</Typography>
+      </ListItem>
+      <ListItem>
         <Link to="/query-advanced">
-          <ListItemText primary="Advanced Search" secondary="This view is for advanced users and lets the user build their own queries from scratch. New users should start with one of the other two query views" />
+          <ListItemText primary="Advanced Search" />
         </Link>
+      </ListItem>
+      <ListItem>
+        <Typography>This view is for advanced users and lets the user build their own queries from scratch. New users should start with one of the other two query views</Typography>
       </ListItem>
     </List>
     <Typography variant="h2" id="about-results-table">

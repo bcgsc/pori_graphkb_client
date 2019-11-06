@@ -147,3 +147,9 @@
 .about-page__content {
   white-space: pre-line;
 }
+
+.MuiListItem-gutters {
+  &:nth-child(2) {
+    padding-top: 0;
+  }
+}

@@ -164,7 +164,7 @@ FormLayout.propTypes = {
 
 FormLayout.defaultProps = {
   aboveFold: [CLASS_MODEL_PROP, 'displayName', 'name', 'groups', 'journalName', 'out', 'in',
-    'permissions', 'evidenceLevel', 'reviewStatus', 'reviews'],
+    'permissions', 'evidenceLevel', 'reviewStatus', 'reviews', 'refSeq'],
   disabled: false,
   belowFold: ['deprecated', 'history'],
   className: '',
@@ -172,6 +172,7 @@ FormLayout.defaultProps = {
   groups: [
     ['@rid', 'createdBy', 'createdAt', 'deletedBy', 'deletedAt', 'uuid', 'history', 'groupRestrictions'],
     ['relevance', 'subject'],
+    ['refSeq', 'untemplatedSeq'],
     ['reviewStatus', 'reviews'],
     ['reference1', 'break1Repr', 'break1Start', 'break1End'],
     ['reference2', 'break2Repr', 'break2Start', 'break2End'],

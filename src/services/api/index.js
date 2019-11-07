@@ -6,6 +6,7 @@ import * as jc from 'json-cycle';
 import qs from 'qs';
 
 import kbSchema from '@bcgsc/knowledgebase-schema';
+import kbp from '@bcgsc/knowledgebase-parser';
 
 import config from '../../static/config';
 
@@ -14,6 +15,7 @@ import DataCache from './dataCache';
 import {
   getQueryFromSearch, buildSearchFromParseVariant, getSearchFromQuery,
 } from './search';
+import schema from '../schema';
 
 
 const {
@@ -103,17 +105,20 @@ const defaultSuggestionHandler = (model, opt = {}) => {
       body = {
         target: [textInput],
       };
-    } else {
-      body = {
-        queryType: 'keyword',
-        target: `${model.name}`,
-        keyword: textInput,
-        limit: MAX_SUGGESTIONS,
-        neighbors: 1,
-      };
-
-      if (model.inherits.includes('Ontology') || model.name === 'Ontology') {
-        body.orderBy = ['source.sort', 'name', 'sourceId'];
+      return post('/query', body, callOptions);
+    }
+    if (model.inherits.includes('Variant') || model.name === 'Variant') {
+      try {
+        const parsed = kbp.variant.parse(textInput);
+        body = {
+          ...buildSearchFromParseVariant(schema, parsed),
+          limit: MAX_SUGGESTIONS,
+          neighbors: 1,
+        };
+        return post('/query', body, callOptions);
+      } catch (err) {
+        console.error(err);
+        // assume it was not hgvs if the parser fails
       }
     }
     body = {
@@ -156,7 +161,7 @@ const defaultSuggestionHandler = (model, opt = {}) => {
  * @returns {ApiCall} the api call for retriving the requested data
  */
 const querySearchBlock = ({
-  search, schema, sortModel, skip, limit, count = false,
+  search, sortModel, skip, limit, count = false,
 }) => {
   const { queryParams, routeName, payload } = getQueryFromSearch({
     schema,
@@ -199,7 +204,7 @@ const querySearchBlock = ({
  *
  * @returns {ApiCall} the api call for retriving the requested data
  */
-const recordApiCall = ({ record, schema }) => {
+const recordApiCall = ({ record }) => {
   const { '@rid': rid = record } = record;
   const { routeName = '/v' } = schema.get(record) || {};
   return get(`${routeName}/${rid.slice(1)}?neighbors=${DEFAULT_NEIGHBORS}`);

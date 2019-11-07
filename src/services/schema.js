@@ -262,22 +262,45 @@ class Schema {
       return { error: { message: 'Cannot be empty/null' }, value };
     } else if (value !== null) { // validate the new value using the schema model property
       if (propModel.linkedClass && propModel.type.includes('embedded')) {
-        const subErrors = {};
+        let subErrors = {};
         let embeddedModel;
 
         try {
           embeddedModel = this.get(value);
         } catch (err) { } // eslint-disable-line no-empty
 
+        if (Array.isArray(value)) { // items should be same record class
+          const firstEl = value.findIndex(val => Object.keys(val).length >= 1);
+
+          try {
+            embeddedModel = this.get(value[firstEl]);
+          } catch (err) { } // eslint-disable-line no-empty
+        }
+
         if (!embeddedModel) {
           return { error: { '@class': { message: 'Required Value' } } };
         }
-        Object.values(embeddedModel.properties).forEach((subPropModel) => {
+
+        const valErrorCheck = (subPropModel, val, errors) => {
           const { name } = subPropModel;
-          const { error } = this.validateValue(subPropModel, value[name], ignoreMandatory);
+          const { error } = this.validateValue(subPropModel, val[name], ignoreMandatory);
+
+          const newErrors = { ...errors };
 
           if (error) {
             subErrors[name] = error;
+          }
+
+          return newErrors;
+        };
+
+        Object.values(embeddedModel.properties).forEach((subPropModel) => {
+          if (Array.isArray(value)) {
+            value.forEach((val) => {
+              subErrors = valErrorCheck(subPropModel, val, subErrors);
+            });
+          } else {
+            subErrors = valErrorCheck(subPropModel, value, subErrors);
           }
         });
 

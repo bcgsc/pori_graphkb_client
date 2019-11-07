@@ -263,6 +263,7 @@ function AdvancedSearchView(props) {
   useEffect(() => {
     if (modelName) {
       setFilter({ type: 'clear' });
+      setPropertyModel(null);
       setFilterGroup(null);
       setFilterGroups({ type: 'clear' });
     }

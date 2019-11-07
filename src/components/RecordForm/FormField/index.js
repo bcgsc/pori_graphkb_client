@@ -222,7 +222,9 @@ const FormField = (props) => {
         if (['Source', 'UserGroup', 'User', 'EvidenceLevel', 'Vocabulary'].includes(linkedClass.name)) {
           autoProps.searchHandler = () => api.post('/query', {
             target: `${linkedClass.name}`,
-            orderBy: ['source.sort', `${linkedClass.name === 'EvidenceLevel' ? 'sourceId' : 'name'}`],
+            orderBy: linkedClass.name === 'EvidenceLevel'
+              ? ['source.sort', 'sourceId']
+              : ['name'],
             neighbors: 1,
           }, { forceListReturn: true });
           autoProps.singleLoad = true;

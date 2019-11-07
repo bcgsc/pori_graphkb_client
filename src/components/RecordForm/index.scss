@@ -34,10 +34,6 @@
     }
   }
 
-  &__content-subgroup {
-    width: 100%;
-  }
-
   &__content--long {
     display: block;
 
@@ -66,8 +62,11 @@
   & &__content-subgroup {
     @include field-set;
     margin: 0;
+    margin-bottom: 20px;
+    margin-top: 20px;
     padding-bottom: 10px;
     padding-top: 10px;
+    width: 100%;
   }
 
   &__related-records {

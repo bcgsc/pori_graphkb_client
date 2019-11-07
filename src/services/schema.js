@@ -269,12 +269,13 @@ class Schema {
           embeddedModel = this.get(value);
         } catch (err) { } // eslint-disable-line no-empty
 
-        if (Array.isArray(value)) { // items should be same record class
-          const firstEl = value.findIndex(val => Object.keys(val).length >= 1);
+        if (Array.isArray(value)) {
+          embeddedModel = {};
 
-          try {
-            embeddedModel = this.get(value[firstEl]);
-          } catch (err) { } // eslint-disable-line no-empty
+          // values could have different class models
+          value.forEach((val, index) => {
+            embeddedModel[index] = this.get(val);
+          });
         }
 
         if (!embeddedModel) {
@@ -294,15 +295,17 @@ class Schema {
           return newErrors;
         };
 
-        Object.values(embeddedModel.properties).forEach((subPropModel) => {
-          if (Array.isArray(value)) {
-            value.forEach((val) => {
+        if (Array.isArray(value)) {
+          value.forEach((val, index) => {
+            Object.values(embeddedModel[index].properties).forEach((subPropModel) => {
               subErrors = valErrorCheck(subPropModel, val, subErrors);
             });
-          } else {
+          });
+        } else {
+          Object.values(embeddedModel.properties).forEach((subPropModel) => {
             subErrors = valErrorCheck(subPropModel, value, subErrors);
-          }
-        });
+          });
+        }
 
         if (Object.keys(subErrors).length) {
           return { error: subErrors, value };

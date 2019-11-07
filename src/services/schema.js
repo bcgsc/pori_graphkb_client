@@ -2,7 +2,7 @@ import { boundMethod } from 'autobind-decorator';
 
 import kbSchema from '@bcgsc/knowledgebase-schema';
 
-import api from './api';
+import { getQueryFromSearch } from './api/search';
 
 const { schema: SCHEMA_DEFN } = kbSchema;
 
@@ -310,7 +310,7 @@ class Schema {
    * @returns {Array.<object>} the column definitions to be applied to a grid
    */
   defineGridColumns(search) {
-    const { modelName } = api.getQueryFromSearch({ schema: this, search });
+    const { modelName } = getQueryFromSearch({ schema: this, search });
 
     const showEdges = [];
     const showByDefault = [];

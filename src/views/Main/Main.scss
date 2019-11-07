@@ -79,6 +79,10 @@ $closed-drawer-width: 56px;
     transition-property: width, margin-left;
     width: 100%;
 
+    > .form-field {
+      margin-top: 8px;
+    }
+
     @media (min-width: $breakpoint-med) {
       margin-left: $closed-drawer-width;
       width: calc(100% - #{$closed-drawer-width});

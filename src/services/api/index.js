@@ -11,18 +11,19 @@ import config from '../../static/config';
 
 import { ApiCall } from './call';
 import DataCache from './dataCache';
+import {
+  getQueryFromSearch, buildSearchFromParseVariant, getSearchFromQuery,
+} from './search';
 
 
 const {
   API_BASE_URL,
-  TABLE_DEFAULT_NEIGHBORS,
   DEFAULT_NEIGHBORS,
 } = config;
 
 const ID_PROP = '@rid';
 const CLASS_PROP = '@class';
 const MAX_SUGGESTIONS = 50;
-const DEFAULT_LIMIT = 100;
 
 
 /**
@@ -115,116 +116,21 @@ const defaultSuggestionHandler = (model, opt = {}) => {
         body.orderBy = ['source.sort', 'name', 'sourceId'];
       }
     }
-    const call = post('/query', body, callOptions);
+    body = {
+      queryType: 'keyword',
+      target: `${model.name}`,
+      keyword: textInput,
+      limit: MAX_SUGGESTIONS,
+      neighbors: 1,
+    };
 
-    return call;
+    if (model.inherits.includes('Ontology') || model.name === 'Ontology') {
+      body.orderBy = ['source.sort', 'name', 'sourceId'];
+    }
+    return post('/query', body, callOptions);
   };
   searchHandler.fname = `${model.name}SearchHandler`; // for equality comparisons (for render updates)
   return searchHandler;
-};
-
-
-/**
- * Given the search string from the URL/URI, parse
- * out the content for creating the API request
- *
- * @param {object} opt
- * @param {Schema} opt.schema
- * @param {string} opt.search the search string portion of the URL displayed by this app
- */
-const getQueryFromSearch = ({ schema, search, count }) => {
-  const {
-    neighbors = TABLE_DEFAULT_NEIGHBORS,
-    limit = DEFAULT_LIMIT,
-    keyword,
-    complex,
-    ...params
-  } = qs.parse(search.replace(/^\?/, ''));
-
-  let modelName = 'v';
-
-  if (params['@class'] || params.class) {
-    // to make URL more readable class is sometimes used in place of @class
-    // these are used to determine the route name and should not also appear as query params
-    modelName = params.class || params['@class'];
-    delete params['@class'];
-    delete params.class;
-  }
-
-  if (!schema.get(modelName)) {
-    throw new Error(`Failed to find the expected model (${modelName})`);
-  }
-  let routeName = '/query';
-
-  let payload = null;
-  let queryParams = null;
-
-  if (complex) {
-    // complex encodes the body in the URL so that it can be passed around as a link but still perform a POST search
-    // Decode base64 encoded string.
-    payload = JSON.parse(atob(decodeURIComponent(complex)));
-    payload.neighbors = Math.max(payload.neighbors || 0, TABLE_DEFAULT_NEIGHBORS);
-    payload.limit = Math.min(payload.limit || DEFAULT_LIMIT);
-  } else {
-    queryParams = {
-      limit,
-      neighbors: count ? 0 : Math.max(neighbors, TABLE_DEFAULT_NEIGHBORS),
-    };
-
-    if (keyword) {
-      routeName = '/query';
-      payload = {
-        queryType: 'keyword',
-        keyword,
-        target: modelName,
-      };
-    } else {
-      queryParams = Object.assign({}, params, queryParams);
-    }
-  }
-  return {
-    routeName, queryParams, payload, modelName,
-  };
-};
-
-
-/**
- * Given the API search. Return the search string to display in the top URL bar
- *
- * @param {object} opt
- * @param {Schema} opt.schema
- * @param {string} opt.routeName the API route name being queried
- * @param {object} opt.queryParams the query parameters
- * @param {object} opt.payload the body/payload
- */
-const getSearchFromQuery = ({
-  schema, routeName, queryParams: queryParamsIn = {}, payload = null,
-}) => {
-  const queryParams = { ...queryParamsIn };
-  let modelName;
-
-  if (queryParams) {
-    // to make URL more readable class is sometimes used in place of @class
-    // these are used to determine the route name and should not also appear as query params
-    modelName = queryParams.class || queryParams['@class'];
-    delete queryParams.class;
-    delete queryParams['@class'];
-  }
-  if (routeName && !modelName) {
-    const match = /(\/[^/]+)(\/search)?$/.exec(routeName);
-    const { name } = schema.getFromRoute(match[1]);
-    modelName = name;
-  }
-  const alphaSort = (a, b) => a.localeCompare(b);
-
-  if (payload) {
-    // complex query
-    const complex = btoa(JSON.stringify(payload));
-    return qs.stringify({ class: modelName, complex }, { sort: alphaSort });
-  } if (!queryParams.keyword) {
-    return qs.stringify({ class: modelName, ...queryParams }, { sort: alphaSort });
-  }
-  return qs.stringify(queryParams, { sort: alphaSort });
 };
 
 
@@ -325,60 +231,6 @@ const encodeQueryComplexToSearch = (content, modelName = 'V') => {
   payload['@class'] = modelName;
   const search = qs.stringify(payload);
   return search;
-};
-
-
-const buildLooseSearch = (cls, name) => ({
-  queryType: 'similarTo',
-  target: {
-    target: cls,
-    filters: {
-      OR: [
-        { name },
-        { sourceId: name },
-      ],
-    },
-  },
-});
-
-
-const buildSearchFromParseVariant = (schema, variant) => {
-  const { reference1, reference2, type } = variant;
-  const payload = {
-    target: 'PositionalVariant',
-    filters: {
-      AND: [
-        {
-          reference1: buildLooseSearch('Feature', reference1),
-        },
-        {
-          type: buildLooseSearch('Vocabulary', type),
-        },
-      ],
-    },
-  };
-
-  if (reference2) {
-    payload.filters.AND.push(buildLooseSearch(reference2));
-  } else {
-    payload.filters.AND.push({ reference2: null });
-  }
-
-  schema.getProperties('PositionalVariant').filter(p => !p.name.includes('Repr')).forEach((prop) => {
-    if (prop.type !== 'link' && variant[prop.name] && !prop.generated) {
-      const value = variant[prop.name];
-
-      if (prop.type.includes('embedded')) {
-        Object.entries(value, ([subProp, subValue]) => {
-          payload.filters.AND.push({ [`${prop.name}.${subProp}`]: subValue });
-        });
-      } else {
-        payload.filters.AND.push({ [prop.name]: variant[prop.name] });
-      }
-    }
-  });
-
-  return payload;
 };
 
 

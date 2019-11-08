@@ -265,23 +265,6 @@ class Schema {
         let subErrors = {};
         let embeddedModel;
 
-        try {
-          embeddedModel = this.get(value);
-        } catch (err) { } // eslint-disable-line no-empty
-
-        if (Array.isArray(value)) {
-          embeddedModel = {};
-
-          // values could have different class models
-          value.forEach((val, index) => {
-            embeddedModel[index] = this.get(val);
-          });
-        }
-
-        if (!embeddedModel) {
-          return { error: { '@class': { message: 'Required Value' } } };
-        }
-
         const valErrorCheck = (subPropModel, val, errors) => {
           const { name } = subPropModel;
           const { error } = this.validateValue(subPropModel, val[name], ignoreMandatory);
@@ -295,13 +278,25 @@ class Schema {
           return newErrors;
         };
 
-        if (Array.isArray(value)) {
-          value.forEach((val, index) => {
-            Object.values(embeddedModel[index].properties).forEach((subPropModel) => {
-              subErrors = valErrorCheck(subPropModel, val, subErrors);
-            });
+        if (Array.isArray(value) && value.length) {
+          // values could have different class models
+          value.forEach(val => {
+            embeddedModel = this.get(val);
+            if (embeddedModel) {
+              Object.values(embeddedModel.properties).forEach((subPropModel) => {
+                subErrors = valErrorCheck(subPropModel, val, subErrors);
+              });
+            }
           });
         } else {
+          try {
+            embeddedModel = this.get(value);
+          } catch (err) { } // eslint-disable-line no-empty
+
+          if (!embeddedModel) {
+            return { error: { '@class': { message: 'Required Value' } } };
+          }
+
           Object.values(embeddedModel.properties).forEach((subPropModel) => {
             subErrors = valErrorCheck(subPropModel, value, subErrors);
           });

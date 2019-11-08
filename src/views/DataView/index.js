@@ -61,7 +61,7 @@ class DataView extends React.Component {
       filters: {},
       search,
       isExportingData: false,
-      totalNumOfRowsSelected: 0,
+      totalRowsSelected: 0,
       graphData: null,
     };
     this.controllers = [];
@@ -188,7 +188,7 @@ class DataView extends React.Component {
 
   @boundMethod
   handleNewRowSelection(totalRows) {
-    this.setState({ totalNumOfRowsSelected: totalRows });
+    this.setState({ totalRowsSelected: totalRows });
   }
 
   /**
@@ -292,10 +292,12 @@ class DataView extends React.Component {
     const {
       detailPanelRow,
       cache,
+      graphData,
       optionsMenuAnchor,
       search,
+      totalRowsSelected,
+      totalRows,
     } = this.state;
-    const { graphData } = this.state;
 
     const { bufferSize } = this.props;
     const edges = schema.getEdges();
@@ -337,6 +339,8 @@ class DataView extends React.Component {
         onRowSelected={this.handleNewRowSelection}
         optionsMenuAnchor={optionsMenuAnchor}
         optionsMenuOnClose={this.handleToggleOptionsMenu}
+        totalRows={totalRows}
+        totalRowsSelected={totalRowsSelected}
       />
     );
   }
@@ -382,7 +386,7 @@ class DataView extends React.Component {
       statusMessage,
       totalRows,
       detailPanelRow,
-      totalNumOfRowsSelected,
+      totalRowsSelected,
       filtersEditOpen,
       filters,
     } = this.state;
@@ -436,7 +440,7 @@ class DataView extends React.Component {
             {URLContainsTable && (
               <>
                 <Typography variant="body2">
-                  {totalNumOfRowsSelected} Record{totalNumOfRowsSelected !== 1 ? 's' : ''} Selected
+                  {totalRowsSelected} Record{totalRowsSelected !== 1 ? 's' : ''} Selected
                 </Typography>
                 <Tooltip title="click here for graph view">
                   <IconButton onClick={this.handleSwapToGraph}>

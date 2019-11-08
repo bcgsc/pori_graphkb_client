@@ -292,14 +292,12 @@ class DataView extends React.Component {
     const {
       detailPanelRow,
       cache,
+      graphData,
       optionsMenuAnchor,
       search,
       totalRowsSelected,
       totalRows,
     } = this.state;
-
-
-    const { graphData } = this.state;
 
     const { bufferSize } = this.props;
     const edges = schema.getEdges();

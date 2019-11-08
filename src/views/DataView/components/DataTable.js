@@ -67,12 +67,14 @@ class DataTable extends React.Component {
     search: PropTypes.string,
     rowBuffer: PropTypes.number,
     cache: PropTypes.instanceOf(DataCache).isRequired,
+    isExportingData: PropTypes.func.isRequired,
     onRecordClicked: PropTypes.func,
     onRecordsSelected: PropTypes.func,
     onRowSelected: PropTypes.func.isRequired,
     optionsMenuAnchor: PropTypes.object.isRequired,
     optionsMenuOnClose: PropTypes.func.isRequired,
-    isExportingData: PropTypes.func.isRequired,
+    totalRows: PropTypes.number.isRequired,
+    totalRowsSelected: PropTypes.number.isRequired,
   };
 
   static defaultProps = {
@@ -93,7 +95,6 @@ class DataTable extends React.Component {
       allGroups: {},
       activeGroups: new Set(),
       pingedIndices: new Set(),
-      totalNumOfRows: null,
       selectionTracker: new SelectionTracker(),
       prevNodeID: null,
     };
@@ -283,8 +284,8 @@ class DataTable extends React.Component {
 
   @boundMethod
   async handleExportTsv(selectionOnly = false) {
-    const { totalNumOfRows, selectionTracker } = this.state;
-    const { isExportingData } = this.props;
+    const { selectionTracker } = this.state;
+    const { isExportingData, totalRows } = this.props;
     isExportingData(true);
 
     const { gridOptions } = this.gridApi.getModel().gridOptionsWrapper;
@@ -318,14 +319,14 @@ class DataTable extends React.Component {
     };
 
     if (!selectionOnly) {
-      gridOptions.cacheBlockSize = totalNumOfRows; // in preparation to fetch entire dataset
+      gridOptions.cacheBlockSize = totalRows; // in preparation to fetch entire dataset
 
       const tempDataSource = {
         rowCount: null,
         getRows: async ({
           successCallback, failCallback, ...params
         }) => {
-          params.endRow = totalNumOfRows; // fetches entire data set with this adjustment
+          params.endRow = totalRows; // fetches entire data set with this adjustment
 
           try {
             const [rows, lastRow] = await this.getTableData(params);
@@ -487,9 +488,10 @@ class DataTable extends React.Component {
 
   renderOptionsMenu() {
     const {
-      allColumns, activeColumns, allGroups, activeGroups, totalNumOfRows, selectionTracker,
+      allColumns, activeColumns, allGroups, activeGroups, selectionTracker,
     } = this.state;
-    const { optionsMenuAnchor, optionsMenuOnClose } = this.props;
+
+    const { optionsMenuAnchor, optionsMenuOnClose, totalRowsSelected } = this.props;
     const ignorePreviewColumns = colId => !colId.endsWith('.preview');
 
     const selectionCount = selectionTracker.getTotalNumOfSelectedRows();
@@ -535,7 +537,7 @@ class DataTable extends React.Component {
       },
     ];
 
-    if (totalNumOfRows < MAX_FULL_EXPORTS_ROWS) {
+    if (totalRowsSelected < MAX_FULL_EXPORTS_ROWS) {
       menuContents.push({
         label: 'Export All to TSV',
         handler: () => this.handleExportTsv(false),

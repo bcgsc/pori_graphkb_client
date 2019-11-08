@@ -96,7 +96,6 @@ class DataTable extends React.Component {
       activeGroups: new Set(),
       pingedIndices: new Set(),
       selectionTracker: new SelectionTracker(),
-      // totalNumOfRows: null,
       prevNodeID: null,
     };
   }

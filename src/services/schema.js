@@ -280,8 +280,9 @@ class Schema {
 
         if (Array.isArray(value) && value.length) {
           // values could have different class models
-          value.forEach(val => {
+          value.forEach((val) => {
             embeddedModel = this.get(val);
+
             if (embeddedModel) {
               Object.values(embeddedModel.properties).forEach((subPropModel) => {
                 subErrors = valErrorCheck(subPropModel, val, subErrors);

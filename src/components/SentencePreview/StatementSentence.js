@@ -1,98 +1,68 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
 
-import schema from '../../services/schema';
 import { StatementPropType } from '../types';
 
+import SentencePreview from '.';
 
-const StatementSentence = (props) => {
-  const {
-    content,
-  } = props;
 
-  const PrimaryText = (text) => {
-    if (!text) {
-      return null;
-    }
-    const words = text.split(' ').map((word, wordPosition) => {
-      if (word !== 'and') {
-        return (
-          // if a word changes position within the sentence we re-render the sentence so this is a valid key here
-          <Typography
-            key={wordPosition} // eslint-disable-line react/no-array-index-key
-            component="span"
-            variant="body1"
-            color="textPrimary"
-            className="quote__substitution"
-          >
-            {wordPosition === 0 ? null : (<span> </span>)}{word}
-          </Typography>
-        );
-      }
-      return (
-        <>
-          <span> </span>{word}
-        </>
-      );
-    });
-
-    return words;
-  };
-
-  const subject = schema.getPreview(content.subject);
-
-  const relevance = schema.getPreview(content.relevance);
-
-  const evidence = (content.evidence || [])
-    .map(support => schema.getPreview(support)).join(', ');
-
-  let conditions = (content.conditions || [])
-    .map(cond => (subject !== schema.getPreview(cond) ? schema.getPreview(cond) : ''))
-    .filter(Boolean);
-
-  if (conditions.length > 1) {
-    conditions[conditions.length - 1] = `and ${conditions[conditions.length - 1]}`;
+const naturalListJoin = (words) => {
+  if (words.length > 1) {
+    return `${words.slice(0, words.length - 1).join(', ')}, and ${words[words.length - 1]}`;
   }
-  conditions = conditions.join(', ');
+  return words[0];
+};
 
-  const propValueMap = {
-    conditions: {
-      value: conditions,
-      default: ' [CONDITIONS] ',
-    },
-    subject: {
-      value: subject,
-      default: ' [TARGET] ',
-    },
-    relevance: {
-      value: relevance,
-      default: ' [RELEVANCE] ',
-    },
-    evidence: {
-      value: evidence,
-      default: ' [EVIDENCE] ',
-    },
+
+const StatementSentence = ({ content: record }) => {
+  const substitutions = {
+    '{conditions}': '[conditions]',
+    '{subject}': '[subject]',
+    '{relevance}': '[relevance]',
+    '{evidence}': '[evidence]',
   };
+  const highlighted = [];
 
-  const classModel = schema.get('Statement');
-  const { properties: { displayNameTemplate: { default: displayNameTemplate } } } = classModel;
-  const statementProp = Object.keys(propValueMap);
-  const splitTemplate = displayNameTemplate.split(/{+(conditions|relevance|subject|evidence)}+/ig);
+  if (record.subject) {
+    const preview = record.subject.displayName || record.subject;
+    substitutions['{subject}'] = preview;
+    highlighted.push(preview);
+  }
 
-  const statementSentence = splitTemplate.map((text) => {
-    let result = `${text}`;
-    statementProp.forEach((prop) => {
-      if (text === prop) {
-        result = PrimaryText(propValueMap[prop].value) || propValueMap[prop].default;
-      }
-    });
-    return result;
+  if (record.relevance) {
+    const preview = record.relevance.displayName || record.relevance;
+    substitutions['{relevance}'] = preview;
+    highlighted.push(preview);
+  }
+
+  if (record.conditions && record.conditions.length) {
+    const words = record.conditions
+      .map(cond => cond.displayName || cond)
+      .filter(word => word !== substitutions['{subject}']);
+    highlighted.push(...words);
+
+    substitutions['{conditions}'] = naturalListJoin(words);
+  }
+
+  if (record.evidence && record.evidence.length) {
+    const words = record.evidence
+      .map(rec => rec.displayName || rec);
+    highlighted.push(...words);
+
+    substitutions['{evidence}'] = words.join(', ');
+  }
+
+
+  let content = record.displayNameTemplate || 'Given {conditions}, {relevance} applies to {subject} ({evidence})';
+
+  Object.keys(substitutions).forEach((key) => {
+    content = content.replace(key, substitutions[key]);
   });
 
   return (
-    <Typography variant="body1" className="quote" color="textSecondary">
-      {statementSentence}
-    </Typography>
+    <SentencePreview
+      content={content}
+      highlighted={highlighted}
+    />
   );
 };
 

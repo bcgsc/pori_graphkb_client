@@ -1,24 +1,17 @@
 /**
  * @module /Main
  */
-import React, { useState, useRef, useEffect } from 'react';
+import React, {
+  useState, useEffect, Suspense, lazy,
+} from 'react';
 import {
   Route,
   Redirect,
   Switch,
-  Link,
 } from 'react-router-dom';
 import {
-  AppBar,
-  IconButton,
-  Button,
-  Typography,
-  MenuItem,
-  Popover,
-  Card,
+  CircularProgress,
 } from '@material-ui/core';
-import PersonIcon from '@material-ui/icons/Person';
-import MenuIcon from '@material-ui/icons/Menu';
 import fetchIntercept from 'fetch-intercept';
 
 import config from '../../static/config';
@@ -36,11 +29,9 @@ import {
   PopularSearchView,
 } from '..';
 
-import {
-  getUsername, isAdmin, logout, isAuthenticated,
-} from '../../services/auth';
 import { KBContext } from '../../components/KBContext';
-import { MainNav } from './components';
+import AppBar from './components/AppBar';
+import MainNav from './components/MainNav';
 import AuthenticatedRoute from '../../components/AuthenticatedRoute';
 
 import RecordView from '../RecordView';
@@ -54,14 +45,12 @@ const {
 /**
  * Entry point to application. Handles routing, app theme, and logged in state.
  */
-const Main = () => {
+const Main = (props) => {
   const [authorizationToken, setAuthorizationToken] = useState('');
   const [authenticationToken, setAuthenticationToken] = useState('');
-  const [anchorEl, setAnchorEl] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [activeLink, setActiveLink] = useState('/query');
-
-  const dropdown = useRef();
+  const [activeLink, setActiveLink] = useState('');
+  console.log(props);
 
   useEffect(() => {
     const unregister = fetchIntercept.register({
@@ -81,95 +70,26 @@ const Main = () => {
     return unregister;
   }, [authorizationToken]);
 
-  const handleOpen = () => setAnchorEl(dropdown.current);
-  const handleClose = () => setAnchorEl(null);
-
-  const handleNavBar = ({ isOpen, activeLink: nextActiveLink }) => {
-    setDrawerOpen(isOpen);
-    setAnchorEl(null);
-    setActiveLink(nextActiveLink);
-  };
-
-  const handleOpenNavBar = () => setDrawerOpen(true);
-  const handleCloseNavBar = () => setDrawerOpen(false);
-
   return (
     <KBContext.Provider value={{
       authorizationToken, authenticationToken, setAuthorizationToken, setAuthenticationToken,
     }}
     >
       <div className="main-view">
+        <MainNav
+          isOpen={drawerOpen}
+          onChange={({ isOpen, activeLink: updatedLink }) => {
+            setDrawerOpen(isOpen);
+            setActiveLink(updatedLink);
+          }}
+          activeLink={activeLink}
+        />
         <AppBar
-          position="fixed"
-          className={`appbar ${drawerOpen ? 'appbar--drawer-open' : ''}`}
-        >
-          <IconButton
-            color="inherit"
-            onClick={handleOpenNavBar}
-            className={`appbar__btn ${drawerOpen ? 'appbar__btn--drawer-open' : ''}`}
-          >
-            <MenuIcon />
-          </IconButton>
-          <div className={`appbar__title ${drawerOpen ? 'appbar__title--drawer-open' : ''}`}>
-            <Link to="/query" onClick={handleCloseNavBar}>
-              <Typography variant="h4">GraphKB</Typography>
-              <Typography variant="caption">v{process.env.npm_package_version}</Typography>
-            </Link>
-          </div>
-          <div className="user-dropdown" ref={dropdown}>
-            <div>
-              <Button
-                classes={{ root: 'user-dropdown__icon' }}
-                onClick={handleOpen}
-                size="small"
-              >
-                <PersonIcon />
-                <Typography color="inherit" variant="h6">
-                  {isAuthenticated({ authorizationToken, authenticationToken })
-                    ? getUsername({ authenticationToken, authorizationToken })
-                    : 'Logged Out'
-                  }
-                </Typography>
-              </Button>
-              <Popover
-                open={!!anchorEl}
-                anchorEl={anchorEl}
-                onClose={handleClose}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'left',
-                }}
-              >
-                <Card className="user-dropdown__content">
-                  <Link to="/feedback">
-                    <MenuItem onClick={handleClose}>
-                      Feedback
-                    </MenuItem>
-                  </Link>
-                  {isAdmin({ authorizationToken }) && (
-                    <Link to="/admin">
-                      <MenuItem onClick={handleClose}>
-                        Admin
-                      </MenuItem>
-                    </Link>
-                  )}
-                  <MenuItem onClick={() => logout()}>
-                    {
-                      isAuthenticated({ authorizationToken, authenticationToken })
-                        ? 'Logout'
-                        : 'Login'
-                    }
-                  </MenuItem>
-                </Card>
-              </Popover>
-            </div>
-          </div>
-        </AppBar>
-        <MainNav isOpen={drawerOpen} onChange={handleNavBar} activeLink={activeLink} />
+          authorizationToken={authorizationToken}
+          authenticationToken={authenticationToken}
+          onDrawerChange={setDrawerOpen}
+          drawerOpen={drawerOpen}
+        />
         <section className={`main-view__content ${drawerOpen ? 'main-view__content--drawer-open' : ''}`}>
           <Switch>
             <AuthenticatedRoute path="/feedback" component={FeedbackView} />

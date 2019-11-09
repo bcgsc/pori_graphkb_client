@@ -45,12 +45,11 @@ const {
 /**
  * Entry point to application. Handles routing, app theme, and logged in state.
  */
-const Main = (props) => {
+const Main = () => {
   const [authorizationToken, setAuthorizationToken] = useState('');
   const [authenticationToken, setAuthenticationToken] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [activeLink, setActiveLink] = useState('');
-  console.log(props);
 
   useEffect(() => {
     const unregister = fetchIntercept.register({

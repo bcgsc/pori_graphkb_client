@@ -13,7 +13,7 @@ import JssProvider from 'react-jss/lib/JssProvider';
 import { create } from 'jss';
 import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackbar-provider';
 import * as cssTheme from './_theme.scss';
-import Main from './views/Main/Main';
+import Main from './views/Main';
 
 const theme = createMuiTheme({
   direction: 'ltr',

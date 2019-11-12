@@ -19,7 +19,7 @@ import config from '../../static/config';
 import './Main.scss';
 
 import { KBContext } from '../../components/KBContext';
-import AppBar from './components/AppBar';
+import MainAppBar from './components/MainAppBar';
 import MainNav from './components/MainNav';
 import AuthenticatedRoute from '../../components/AuthenticatedRoute';
 
@@ -81,7 +81,7 @@ const Main = () => {
           }}
           activeLink={activeLink}
         />
-        <AppBar
+        <MainAppBar
           authorizationToken={authorizationToken}
           authenticationToken={authenticationToken}
           onDrawerChange={setDrawerOpen}

@@ -12,6 +12,18 @@ const STOP_WORDS = new Set([
 const normalizeTerm = term => term.replace(/[),]$/, '').replace(/^\(/, '').trim().toLowerCase();
 
 
+/**
+ * Find the all positions in a parent array which are part of a complete match to the child array
+ *
+ * @param {Array} arr the parent array
+ * @param {Array} subArr the child/subset array
+ *
+ * @returns {Array.<Number>} the array of all matching start positions
+ *
+ * @example
+ * indexOfSubArray([1, 2, 3, 4], [3, 4])
+ * // [2, 3]
+ */
 const indexOfSubArray = (arr, subArr) => {
   if (!subArr.length) {
     return null;
@@ -43,6 +55,11 @@ const indexOfSubArray = (arr, subArr) => {
 };
 
 
+/**
+ * @param {Object} props
+ * @param {string} props.content the sentence
+ * @param {Array.<string>} props.highlighted list of words to emphasize from the sentence
+ */
 const SentencePreview = ({ content, highlighted }) => {
   if (!content || !content.length) {
     return null;

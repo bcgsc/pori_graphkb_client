@@ -17,25 +17,23 @@ import fetchIntercept from 'fetch-intercept';
 import config from '../../static/config';
 
 import './Main.scss';
-import {
-  AboutView,
-  AdminView,
-  AdvancedSearchView,
-  DataView,
-  ErrorView,
-  FeedbackView,
-  LoginView,
-  QueryView,
-  PopularSearchView,
-} from '..';
 
 import { KBContext } from '../../components/KBContext';
 import AppBar from './components/AppBar';
 import MainNav from './components/MainNav';
 import AuthenticatedRoute from '../../components/AuthenticatedRoute';
 
-import RecordView from '../RecordView';
-import NewRecordView from '../NewRecordView';
+const AboutView = lazy(() => import('../AboutView'));
+const AdminView = lazy(() => import('../AdminView'));
+const AdvancedSearchView = lazy(() => import('../AdvancedSearchView'));
+const DataView = lazy(() => import('../DataView'));
+const ErrorView = lazy(() => import('../ErrorView'));
+const FeedbackView = lazy(() => import('../FeedbackView'));
+const LoginView = lazy(() => import('../LoginView'));
+const NewRecordView = lazy(() => import('../NewRecordView'));
+const PopularSearchView = lazy(() => import('../PopularSearchView'));
+const QueryView = lazy(() => import('../QueryView'));
+const RecordView = lazy(() => import('../RecordView'));
 
 const {
   API_BASE_URL,
@@ -90,32 +88,34 @@ const Main = () => {
           drawerOpen={drawerOpen}
         />
         <section className={`main-view__content ${drawerOpen ? 'main-view__content--drawer-open' : ''}`}>
-          <Switch>
-            <AuthenticatedRoute path="/feedback" component={FeedbackView} />
-            <Route path="/login" component={LoginView} />
-            <Route exact path="/error" component={ErrorView} />
-            <Route path="/about" component={AboutView} />
-            <AuthenticatedRoute exact path="/query" component={QueryView} />
-            <AuthenticatedRoute path="/query-popular" component={PopularSearchView} />
-            <AuthenticatedRoute exact path="/query-advanced" component={AdvancedSearchView} />
-            <AuthenticatedRoute
-              path="/:variant(edit)/:modelName(Source|source|User|user|UserGroup|usergroup)/:rid"
-              admin
-              component={RecordView}
-            />
-            <AuthenticatedRoute path="/:variant(edit|view)/:modelName/:rid" component={RecordView} />
-            <AuthenticatedRoute path="/:variant(edit|view)/:rid" component={RecordView} />
-            <AuthenticatedRoute
-              path="/:variant(new)/:modelName(Source|source|User|user|UserGroup|usergroup)"
-              admin
-              component={NewRecordView}
-            />
-            <AuthenticatedRoute path="/:variant(new)/:modelName" component={NewRecordView} />
-            <Redirect exact path="/query/advanced" to="/search/v" />
-            <AuthenticatedRoute path="/data" component={DataView} />
-            <AuthenticatedRoute path="/admin" admin component={AdminView} />
-            <Redirect from="/" to="/query" />
-          </Switch>
+          <Suspense fallback={(<CircularProgress color="secondary" />)}>
+            <Switch>
+              <AuthenticatedRoute path="/feedback" component={FeedbackView} />
+              <Route path="/login" component={LoginView} />
+              <Route exact path="/error" component={ErrorView} />
+              <Route path="/about" component={AboutView} />
+              <AuthenticatedRoute exact path="/query" component={QueryView} />
+              <AuthenticatedRoute path="/query-popular" component={PopularSearchView} />
+              <AuthenticatedRoute exact path="/query-advanced" component={AdvancedSearchView} />
+              <AuthenticatedRoute
+                path="/:variant(edit)/:modelName(Source|source|User|user|UserGroup|usergroup)/:rid"
+                admin
+                component={RecordView}
+              />
+              <AuthenticatedRoute path="/:variant(edit|view)/:modelName/:rid" component={RecordView} />
+              <AuthenticatedRoute path="/:variant(edit|view)/:rid" component={RecordView} />
+              <AuthenticatedRoute
+                path="/:variant(new)/:modelName(Source|source|User|user|UserGroup|usergroup)"
+                admin
+                component={NewRecordView}
+              />
+              <AuthenticatedRoute path="/:variant(new)/:modelName" component={NewRecordView} />
+              <Redirect exact path="/query/advanced" to="/search/v" />
+              <AuthenticatedRoute path="/data" component={DataView} />
+              <AuthenticatedRoute path="/admin" admin component={AdminView} />
+              <Redirect from="/" to="/query" />
+            </Switch>
+          </Suspense>
         </section>
       </div>
     </KBContext.Provider>

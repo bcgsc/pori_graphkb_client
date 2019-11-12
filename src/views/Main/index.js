@@ -16,7 +16,7 @@ import fetchIntercept from 'fetch-intercept';
 
 import config from '../../static/config';
 
-import './Main.scss';
+import './index.scss';
 
 import { KBContext } from '../../components/KBContext';
 import MainAppBar from './components/MainAppBar';

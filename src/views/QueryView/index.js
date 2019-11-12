@@ -15,7 +15,7 @@ import {
 import kbp from '@bcgsc/knowledgebase-parser';
 import SearchIcon from '@material-ui/icons/Search';
 
-import './QueryView.scss';
+import './index.scss';
 import api from '../../services/api';
 import schema from '../../services/schema';
 

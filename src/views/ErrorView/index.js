@@ -9,7 +9,7 @@ import { Typography, Button, Tooltip } from '@material-ui/core';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
-import './ErrorView.scss';
+import './index.scss';
 import config from '../../static/config';
 import { LocationPropType } from '../../components/types';
 

@@ -21,7 +21,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import MenuIcon from '@material-ui/icons/Menu';
 
 
-import '../Main.scss';
+import '../index.scss';
 
 import {
   getUsername, isAdmin, logout, isAuthenticated,

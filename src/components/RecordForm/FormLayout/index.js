@@ -11,7 +11,9 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import schema from '../../../services/schema';
 import EdgeTable from '../EdgeTable';
-import StatementSentence from '../StatementSentence';
+import StatementSentence from '../../SentencePreview/StatementSentence';
+import EdgeSentence from '../../SentencePreview/EdgeSentence';
+
 import {
   CLASS_MODEL_PROP,
   FORM_VARIANT,
@@ -69,9 +71,16 @@ const FormLayout = ({
       <>
         <div className="record-form__content record-form__content--long">
           {isStatement && variant !== FORM_VARIANT.SEARCH && (
-          <StatementSentence
-            content={content}
-          />
+            <StatementSentence
+              content={content}
+            />
+          )}
+          {isEdge && variant !== FORM_VARIANT.SEARCH && (
+            <EdgeSentence
+              srcRecord={content.out}
+              tgtRecord={content.in}
+              type={model.name}
+            />
           )}
           {isEdge && (
             <EdgeFields

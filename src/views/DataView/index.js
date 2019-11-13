@@ -279,11 +279,9 @@ class DataView extends React.Component {
       this.handleError(err);
     }
 
-
     history.push({
       pathname: '/data/graph',
       search: `${encodedState}`,
-      state: { previousSearch: `${encodedState}` },
     });
   }
 
@@ -394,7 +392,6 @@ class DataView extends React.Component {
       filtersEditOpen,
       filters,
     } = this.state;
-
 
     const { history } = this.props;
     const URLContainsTable = String(history.location.pathname).includes('table');

@@ -76,6 +76,7 @@ class DataView extends React.Component {
       onLoadCallback: this.handleLoadingChange,
       onErrorCallback: this.handleError,
     });
+
     const filters = await this.parseFilters(cache);
     this.setState({ cache, filters });
   }
@@ -278,21 +279,51 @@ class DataView extends React.Component {
       this.handleError(err);
     }
 
+
     history.push({
       pathname: '/data/graph',
       search: `${encodedState}`,
+      state: { previousSearch: `${encodedState}` },
     });
   }
 
-  /**
-   * Renders either the DataTable or Graph view depending on the parsed URL
-   */
   @boundMethod
-  renderDataComponent() {
+  renderGraphView() {
     const {
       detailPanelRow,
       cache,
       graphData,
+    } = this.state;
+
+    const edges = schema.getEdges();
+
+    if (!graphData) {
+      this.loadSavedStateFromURL();
+      return (
+        <div className="circular-progress">
+          <CircularProgress color="secondary" size="4rem" />
+        </div>
+      );
+    }
+    return (
+      <GraphComponent
+        data={graphData || {}}
+        cache={cache}
+        handleDetailDrawerOpen={this.handleToggleDetailPanel}
+        handleDetailDrawerClose={this.handleToggleDetailPanel}
+        detail={detailPanelRow}
+        handleError={this.handleError}
+        edgeTypes={edges}
+        onRecordClicked={this.handleToggleDetailPanel}
+        handleGraphStateSave={this.handleGraphStateSaveIntoURL}
+      />
+    );
+  }
+
+  @boundMethod
+  renderDataTable() {
+    const {
+      cache,
       optionsMenuAnchor,
       search,
       totalRowsSelected,
@@ -300,34 +331,7 @@ class DataView extends React.Component {
     } = this.state;
 
     const { bufferSize } = this.props;
-    const edges = schema.getEdges();
 
-    const URL = String(window.location.href);
-    const isGraphView = URL.includes('node');
-
-    if (isGraphView) {
-      if (!graphData) {
-        this.loadSavedStateFromURL();
-        return (
-          <div className="circular-progress">
-            <CircularProgress color="secondary" size="4rem" />
-          </div>
-        );
-      }
-      return (
-        <GraphComponent
-          data={graphData || {}}
-          cache={cache}
-          handleDetailDrawerOpen={this.handleToggleDetailPanel}
-          handleDetailDrawerClose={this.handleToggleDetailPanel}
-          detail={detailPanelRow}
-          handleError={this.handleError}
-          edgeTypes={edges}
-          onRecordClicked={this.handleToggleDetailPanel}
-          handleGraphStateSave={this.handleGraphStateSaveIntoURL}
-        />
-      );
-    }
     return (
       <DataTable
         search={search}
@@ -391,6 +395,7 @@ class DataView extends React.Component {
       filters,
     } = this.state;
 
+
     const { history } = this.props;
     const URLContainsTable = String(history.location.pathname).includes('table');
 
@@ -427,7 +432,9 @@ class DataView extends React.Component {
         <div className={`data-view__content${!URLContainsTable ? '--graph-view' : ''}`}>
           {cache && (
             <>
-              {this.renderDataComponent()}
+              {URLContainsTable
+                ? this.renderDataTable()
+                : this.renderGraphView()}
               <DetailDrawer
                 node={detailPanelRow}
                 onClose={this.handleToggleDetailPanel}

@@ -391,6 +391,7 @@ class DataView extends React.Component {
       totalRowsSelected,
       filtersEditOpen,
       filters,
+      selectedRecords,
     } = this.state;
 
     const { history } = this.props;
@@ -447,9 +448,12 @@ class DataView extends React.Component {
                   {totalRowsSelected} Record{totalRowsSelected !== 1 ? 's' : ''} Selected
                 </Typography>
                 <Tooltip title="click here for graph view">
-                  <IconButton onClick={this.handleSwapToGraph}>
+                  <IconButton
+                    onClick={this.handleSwapToGraph}
+                    disabled={selectedRecords.length === 0}
+                  >
                     <TimelineIcon
-                      color="secondary"
+                      color={selectedRecords.length === 0 ? 'disabled' : 'secondary'}
                     />
                   </IconButton>
                 </Tooltip>

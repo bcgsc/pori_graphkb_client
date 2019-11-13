@@ -13,7 +13,7 @@ import JssProvider from 'react-jss/lib/JssProvider';
 import { create } from 'jss';
 import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackbar-provider';
 import * as cssTheme from './_theme.scss';
-import Main from './views/Main';
+import MainView from './views/MainView';
 
 const theme = createMuiTheme({
   direction: 'ltr',
@@ -94,7 +94,7 @@ function App() {
         <MuiThemeProvider theme={theme}>
           <SnackbarProvider anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
             <BrowserRouter>
-              <Main />
+              <MainView />
             </BrowserRouter>
           </SnackbarProvider>
         </MuiThemeProvider>

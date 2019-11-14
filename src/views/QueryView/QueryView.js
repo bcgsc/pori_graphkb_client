@@ -68,7 +68,12 @@ class QueryView extends Component {
           keyword: trimmed.join(' '),
         };
 
-        const search = api.encodeQueryComplexToSearch(payload, 'Statement');
+        const searchChipProps = {
+          searchType: 'Quick',
+          keyword: trimmed.join(' '),
+        };
+
+        const search = api.encodeQueryComplexToSearch(payload, 'Statement', searchChipProps);
         history.push({
           pathname: '/data/table',
           search,

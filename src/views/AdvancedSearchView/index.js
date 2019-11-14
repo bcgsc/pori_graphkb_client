@@ -336,8 +336,10 @@ function AdvancedSearchView(props) {
       delete content.filters;
     }
 
+    const searchChipProps = { searchType: 'Advanced' };
+
     try {
-      const search = api.encodeQueryComplexToSearch(content, modelName);
+      const search = api.encodeQueryComplexToSearch(content, modelName, searchChipProps);
       history.push(`/data/table?${search}`, { search, content });
     } catch (err) {
       console.error(err);

@@ -40,7 +40,7 @@ const AuthenticatedRoute = ({
       <Redirect to="/" />
     );
   } else {
-    ChildComponent = props => (<Component {...props} />);
+    ChildComponent = Component;
   }
   return (
     <Route

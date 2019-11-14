@@ -9,6 +9,7 @@ import {
 import TimelineIcon from '@material-ui/icons/Timeline';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Tooltip from '@material-ui/core/Tooltip';
+import FilterListIcon from '@material-ui/icons/FilterList';
 import { boundMethod } from 'autobind-decorator';
 import * as qs from 'qs';
 
@@ -80,7 +81,7 @@ class DataView extends React.Component {
     const filters = await this.parseFilters(cache);
     const { searchType } = filters;
     delete filters.searchType;
-    console.log('TCL: DataView -> componentDidMount -> filters', filters);
+
     this.setState({ cache, filters, searchType });
   }
 
@@ -99,7 +100,10 @@ class DataView extends React.Component {
     const { search } = this.state;
 
     try {
-      const { queryParams, modelName, searchChipProps } = api.getQueryFromSearch({ search, schema });
+      const {
+        queryParams, modelName, searchChipProps,
+      } = api.getQueryFromSearch({ search, schema });
+
       const links = [];
       Object.entries(queryParams || {}).forEach(([key, value]) => {
         if (typeof value === 'string' && kbSchema.util.looksLikeRID(value)) {
@@ -125,7 +129,7 @@ class DataView extends React.Component {
    */
   renderFilterChips = (filters) => {
     const {
-      limit, neighbors, searchChipProps, ...params
+      limit, neighbors, ...params
     } = filters;
 
     const chips = [];
@@ -384,6 +388,8 @@ class DataView extends React.Component {
       filters,
       searchType,
     } = this.state;
+    console.log('TCL: render -> searchType', searchType);
+
 
     const { history } = this.props;
     const URLContainsTable = String(history.location.pathname).includes('table');
@@ -400,6 +406,13 @@ class DataView extends React.Component {
             <>
               <Typography variant="h5">{searchType} Search</Typography>
               {this.renderFilterChips(filters)}
+              {(searchType === 'Advanced') && (
+                <Tooltip title="click here to see active filter groups">
+                  <IconButton>
+                    <FilterListIcon />
+                  </IconButton>
+                </Tooltip>
+              )}
             </>
           )}
           <RecordFormDialog
@@ -413,9 +426,11 @@ class DataView extends React.Component {
             value={filters}
           />
           {URLContainsTable && (
-            <IconButton onClick={this.handleToggleOptionsMenu} className="data-view__edit-filters">
-              <MoreHorizIcon color="action" />
-            </IconButton>
+            <Tooltip title="click here for table and export options">
+              <IconButton onClick={this.handleToggleOptionsMenu} className="data-view__edit-filters">
+                <MoreHorizIcon color="action" />
+              </IconButton>
+            </Tooltip>
           )}
         </div>
         <div className={`data-view__content${!URLContainsTable ? '--graph-view' : ''}`}>

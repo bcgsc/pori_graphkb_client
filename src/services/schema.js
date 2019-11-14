@@ -262,24 +262,46 @@ class Schema {
       return { error: { message: 'Cannot be empty/null' }, value };
     } else if (value !== null) { // validate the new value using the schema model property
       if (propModel.linkedClass && propModel.type.includes('embedded')) {
-        const subErrors = {};
+        let subErrors = {};
         let embeddedModel;
 
-        try {
-          embeddedModel = this.get(value);
-        } catch (err) { } // eslint-disable-line no-empty
-
-        if (!embeddedModel) {
-          return { error: { '@class': { message: 'Required Value' } } };
-        }
-        Object.values(embeddedModel.properties).forEach((subPropModel) => {
+        const valErrorCheck = (subPropModel, val, errors) => {
           const { name } = subPropModel;
-          const { error } = this.validateValue(subPropModel, value[name], ignoreMandatory);
+          const { error } = this.validateValue(subPropModel, val[name], ignoreMandatory);
+
+          const newErrors = { ...errors };
 
           if (error) {
             subErrors[name] = error;
           }
-        });
+
+          return newErrors;
+        };
+
+        if (Array.isArray(value) && value.length) {
+          // values could have different class models
+          value.forEach((val) => {
+            embeddedModel = this.get(val);
+
+            if (embeddedModel) {
+              Object.values(embeddedModel.properties).forEach((subPropModel) => {
+                subErrors = valErrorCheck(subPropModel, val, subErrors);
+              });
+            }
+          });
+        } else {
+          try {
+            embeddedModel = this.get(value);
+          } catch (err) { } // eslint-disable-line no-empty
+
+          if (!embeddedModel) {
+            return { error: { '@class': { message: 'Required Value' } } };
+          }
+
+          Object.values(embeddedModel.properties).forEach((subPropModel) => {
+            subErrors = valErrorCheck(subPropModel, value, subErrors);
+          });
+        }
 
         if (Object.keys(subErrors).length) {
           return { error: subErrors, value };

@@ -226,7 +226,7 @@ const getNewCache = (opt) => {
  * @param {object} content is the payload or query object to be sent with request
  * @param {string} modelName target class that is expected to be returned
  */
-const encodeQueryComplexToSearch = (content, modelName = 'V') => {
+const encodeQueryComplexToSearch = (content, modelName = 'V', searchChipProps) => {
   const stringifiedContent = JSON.stringify(content);
   const base64EncodedContent = btoa(stringifiedContent);
   const encodedContent = encodeURIComponent(base64EncodedContent);
@@ -234,6 +234,10 @@ const encodeQueryComplexToSearch = (content, modelName = 'V') => {
   const payload = {};
   payload.complex = encodedContent;
   payload['@class'] = modelName;
+
+  if (searchChipProps) {
+    payload.searchChipProps = searchChipProps;
+  }
   const search = qs.stringify(payload);
   return search;
 };

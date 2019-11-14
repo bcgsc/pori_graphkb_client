@@ -60,6 +60,7 @@ class DataView extends React.Component {
       filtersEditOpen: false,
       filters: {},
       search,
+      searchType: 'Quick',
       isExportingData: false,
       totalRowsSelected: 0,
       graphData: null,
@@ -77,7 +78,10 @@ class DataView extends React.Component {
       onErrorCallback: this.handleError,
     });
     const filters = await this.parseFilters(cache);
-    this.setState({ cache, filters });
+    const { searchType } = filters;
+    delete filters.searchType;
+    console.log('TCL: DataView -> componentDidMount -> filters', filters);
+    this.setState({ cache, filters, searchType });
   }
 
   componentWillUnmount() {
@@ -95,7 +99,7 @@ class DataView extends React.Component {
     const { search } = this.state;
 
     try {
-      const { queryParams, modelName } = api.getQueryFromSearch({ search, schema });
+      const { queryParams, modelName, searchChipProps } = api.getQueryFromSearch({ search, schema });
       const links = [];
       Object.entries(queryParams || {}).forEach(([key, value]) => {
         if (typeof value === 'string' && kbSchema.util.looksLikeRID(value)) {
@@ -109,11 +113,35 @@ class DataView extends React.Component {
         queryParams[key] = rec;
       });
 
-      return { ...queryParams, '@class': modelName };
+      return { '@class': modelName, ...queryParams, ...searchChipProps };
     } catch (err) {
       return this.handleError(err);
     }
   }
+
+
+  /**
+   * Draws the chips above the table which show the user the current filters
+   */
+  renderFilterChips = (filters) => {
+    const {
+      limit, neighbors, searchChipProps, ...params
+    } = filters;
+
+    const chips = [];
+    Object.entries(params).forEach(([key, param]) => {
+      const operator = '=';
+      const isChipProp = key.toLowerCase().includes('chip');
+      const label = isChipProp ? param : `${key} ${operator} ${param}`;
+      chips.push((
+        <Chip
+          key={key}
+          label={label}
+        />
+      ));
+    });
+    return chips;
+  };
 
   /**
    * Opens the right-hand panel that shows details of a given record
@@ -345,41 +373,6 @@ class DataView extends React.Component {
     );
   }
 
-  /**
-   * Draws the chips above the table which show the user the current filters
-   */
-  renderFilterChips({ limit, neighbors, ...params }, prefix = null) {
-    const chips = [];
-    Object.entries(params).forEach(([key, param]) => {
-      let operator = '=';
-      let value = param;
-
-      if (param !== undefined) {
-        if (typeof param === 'object' && param !== null && !param['@rid']) {
-          chips.push(...this.renderFilterChips(param, key));
-        } else {
-          if (`${param}`.startsWith('~')) {
-            operator = '~';
-            value = param.slice(1);
-          }
-          if (param && param['@rid']) {
-            value = schema.getLabel(param);
-          }
-          const name = prefix
-            ? `${prefix}.${key}`
-            : key;
-          chips.push((
-            <Chip
-              key={name}
-              label={`${name} ${operator} ${value}`}
-            />
-          ));
-        }
-      }
-    });
-    return chips;
-  }
-
   render() {
     const {
       cache,
@@ -389,6 +382,7 @@ class DataView extends React.Component {
       totalRowsSelected,
       filtersEditOpen,
       filters,
+      searchType,
     } = this.state;
 
     const { history } = this.props;
@@ -404,7 +398,7 @@ class DataView extends React.Component {
         <div className={`data-view__header${!URLContainsTable ? '--graph-view' : ''}`}>
           {URLContainsTable && (
             <>
-              <Typography variant="h5">Active Filters</Typography>
+              <Typography variant="h5">{searchType} Search</Typography>
               {this.renderFilterChips(filters)}
             </>
           )}

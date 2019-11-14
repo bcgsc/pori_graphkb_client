@@ -16,7 +16,7 @@ import * as qs from 'qs';
 
 import kbSchema from '@bcgsc/knowledgebase-schema';
 
-
+import FilterTablePopover from './components/FilterTablePopover';
 import DataTable from './components/DataTable';
 import GraphComponent from './components/GraphComponent';
 import DetailDrawer from './components/DetailDrawer';
@@ -60,6 +60,9 @@ class DataView extends React.Component {
       selectedRecords: [],
       filtersEditOpen: false,
       filters: {},
+      filterGroups: {},
+      filterTableOpen: false,
+      filterTableAnchorEl: null,
       search,
       searchType: 'Quick',
       isExportingData: false,
@@ -101,8 +104,16 @@ class DataView extends React.Component {
 
     try {
       const {
-        queryParams, modelName, searchChipProps,
+        queryParams, modelName, searchChipProps, searchChipProps: { searchType }, payload,
       } = api.getQueryFromSearch({ search, schema });
+      console.log('TCL: DataView -> parseFilters -> searchChipProps', searchChipProps);
+      console.log('TCL: DataView -> parseFilters -> payload', payload);
+
+      if (searchType === 'Advanced') {
+        const { filters: filterGroups } = payload;
+        console.log('TCL: DataView -> parseFilters -> filterGroups', filterGroups);
+        this.setState({ filterGroups });
+      }
 
       const links = [];
       Object.entries(queryParams || {}).forEach(([key, value]) => {
@@ -293,6 +304,15 @@ class DataView extends React.Component {
   }
 
   @boundMethod
+  handleFilterTableToggle(event, openState) {
+    if (openState === 'open') {
+      this.setState({ filterTableAnchorEl: event.currentTarget, filterTableOpen: true });
+    } else {
+      this.setState({ filterTableAnchorEl: null, filterTableOpen: false });
+    }
+  }
+
+  @boundMethod
   handleGraphStateSaveIntoURL(nodeRIDs) {
     const { history } = this.props;
 
@@ -386,9 +406,12 @@ class DataView extends React.Component {
       totalRowsSelected,
       filtersEditOpen,
       filters,
+      filterGroups,
+      filterTableOpen,
+      filterTableAnchorEl,
       searchType,
     } = this.state;
-    console.log('TCL: render -> searchType', searchType);
+    console.log('TCL: render -> filters', filters);
 
 
     const { history } = this.props;
@@ -407,11 +430,19 @@ class DataView extends React.Component {
               <Typography variant="h5">{searchType} Search</Typography>
               {this.renderFilterChips(filters)}
               {(searchType === 'Advanced') && (
-                <Tooltip title="click here to see active filter groups">
-                  <IconButton>
-                    <FilterListIcon />
-                  </IconButton>
-                </Tooltip>
+                <>
+                  <Tooltip title="click here to see active filter groups">
+                    <IconButton onClick={event => this.handleFilterTableToggle(event, 'open')}>
+                      <FilterListIcon />
+                    </IconButton>
+                  </Tooltip>
+                  <FilterTablePopover
+                    anchorEl={filterTableAnchorEl}
+                    filterGroups={filterGroups}
+                    handleToggle={event => this.handleFilterTableToggle(event, 'close')}
+                    isOpen={filterTableOpen}
+                  />
+                </>
               )}
             </>
           )}

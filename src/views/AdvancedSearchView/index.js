@@ -293,7 +293,7 @@ function AdvancedSearchView(props) {
 
   const handleSubmit = () => {
     const searchFilters = filterGroups.map(fg => ({
-      filters: [...fg.filters],
+      filters: fg.filters.map(filter => filter),
     }));
 
     let formContainsError = false;
@@ -336,7 +336,18 @@ function AdvancedSearchView(props) {
       delete content.filters;
     }
 
+    // add search props in
     const searchChipProps = { searchType: 'Advanced' };
+    const filters = filterGroups.map(fg => (
+      fg.filters.map((filter) => {
+        const value = Array.isArray(filter.value)
+          ? filter.value.map(val => val.displayName || val.name).join(' , ')
+          : filter.value.displayName || filter.value.name || filter.value;
+        return `${filter.attr} ${filter.operator} ${value}`;
+      })));
+    searchChipProps.filters = filters;
+    console.log('TCL: handleSubmit -> filterGroups', filterGroups);
+    console.log('TCL: handleSubmit -> filters', filters);
 
     try {
       const search = api.encodeQueryComplexToSearch(content, modelName, searchChipProps);

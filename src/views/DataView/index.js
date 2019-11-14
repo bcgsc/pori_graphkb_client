@@ -60,7 +60,7 @@ class DataView extends React.Component {
       selectedRecords: [],
       filtersEditOpen: false,
       filters: {},
-      filterGroups: {},
+      filterGroups: null,
       filterTableOpen: false,
       filterTableAnchorEl: null,
       search,
@@ -110,9 +110,10 @@ class DataView extends React.Component {
       console.log('TCL: DataView -> parseFilters -> payload', payload);
 
       if (searchType === 'Advanced') {
-        const { filters: filterGroups } = payload;
+        const { filters: filterGroups } = searchChipProps;
         console.log('TCL: DataView -> parseFilters -> filterGroups', filterGroups);
         this.setState({ filterGroups });
+        delete searchChipProps.filters;
       }
 
       const links = [];
@@ -436,12 +437,14 @@ class DataView extends React.Component {
                       <FilterListIcon />
                     </IconButton>
                   </Tooltip>
-                  <FilterTablePopover
-                    anchorEl={filterTableAnchorEl}
-                    filterGroups={filterGroups}
-                    handleToggle={event => this.handleFilterTableToggle(event, 'close')}
-                    isOpen={filterTableOpen}
-                  />
+                  {(filterGroups) && (
+                    <FilterTablePopover
+                      anchorEl={filterTableAnchorEl}
+                      filterGroups={filterGroups}
+                      handleToggle={event => this.handleFilterTableToggle(event, 'close')}
+                      isOpen={filterTableOpen}
+                    />
+                  )}
                 </>
               )}
             </>

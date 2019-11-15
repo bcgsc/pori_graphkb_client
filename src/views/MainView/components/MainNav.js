@@ -63,15 +63,18 @@ class MainNav extends React.PureComponent {
   }
 
   @boundMethod
-  handleOpen(menuOption) {
-    const { onChange } = this.props;
-    onChange({ isOpen: true, activeLink: menuOption });
-    this.setState({ subMenuOpen: menuOption });
+  handleOpen(defaultRoute) {
+    console.log('TCL: MainNav -> handleOpen -> defaultRoute', defaultRoute);
+    const { onChange, activeLink } = this.props;
+    console.log('TCL: MainNav -> handleOpen -> activeLink', activeLink);
+    onChange({ isOpen: true, activeLink: defaultRoute });
+    this.setState({ subMenuOpen: defaultRoute });
   }
 
   @boundMethod
   handleClickLink(link, topLevel) {
     if (topLevel) {
+      console.log('TCL: MainNav -> handleClickLink -> topLevel', topLevel);
       this.handleOpen(topLevel);
     } else {
       const { isOpen, onChange } = this.props;
@@ -97,7 +100,7 @@ class MainNav extends React.PureComponent {
       const selected = (activeLink === route) && (!topLevel);
       return (
         <Link to={route} key={label.toLowerCase()}>
-          <MenuItem onClick={() => { this.handleClickLink(route, topLevel); }}>
+          <MenuItem onClick={() => { this.handleClickLink(route, topLevel ? route : null); }}>
             {icon && <ListItemIcon>{icon}</ListItemIcon>}
             <ListItemText
               inset={inset}
@@ -128,7 +131,7 @@ class MainNav extends React.PureComponent {
         <Divider />
         <List className="main-nav-drawer__links">
           {isAuthorized(this.context) && (
-            <MenuLink label="Search" route="/query" icon={<SearchIcon />} topLevel="/query" />
+            <MenuLink label="Search" route="/query" icon={<SearchIcon />} topLevel />
           )}
           {isAuthorized(this.context) && (isOpen && subMenuOpen === '/query') && (
             <>
@@ -138,12 +141,9 @@ class MainNav extends React.PureComponent {
             </>
           )}
           {hasWriteAccess(this.context) && (
-            <MenuItem onClick={() => this.handleOpen('add')}>
-              <ListItemIcon> <AddIcon /> </ListItemIcon>
-              <ListItemText primary="Add new Record" />
-            </MenuItem>
+            <MenuLink label="Add new Record" route="/new/ontology" icon={<AddIcon />} topLevel />
           )}
-          {hasWriteAccess(this.context) && (isOpen && subMenuOpen === 'add') && (
+          {hasWriteAccess(this.context) && (isOpen && subMenuOpen === '/new/ontology') && (
             <>
               {isAdmin(this.context) && (<MenuLink label="Source*" route="/new/source" inset />)}
               <MenuLink label="Ontology" route="/new/ontology" inset />

@@ -49,7 +49,7 @@ class MainNav extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      subMenuOpen: '/query',
+      subMenuOpenLink: '/query',
     };
   }
 
@@ -66,7 +66,7 @@ class MainNav extends React.PureComponent {
   handleOpen(defaultRoute) {
     const { onChange } = this.props;
     onChange({ isOpen: true, activeLink: defaultRoute });
-    this.setState({ subMenuOpen: defaultRoute });
+    this.setState({ subMenuOpenLink: defaultRoute });
   }
 
   @boundMethod
@@ -81,7 +81,7 @@ class MainNav extends React.PureComponent {
 
   render() {
     const { isOpen, activeLink } = this.props;
-    const { subMenuOpen } = this.state;
+    const { subMenuOpenLink } = this.state;
 
     /**
      * Text link with optional icon to navigate through application
@@ -130,7 +130,7 @@ class MainNav extends React.PureComponent {
           {isAuthorized(this.context) && (
             <MenuLink label="Search" route="/query" icon={<SearchIcon />} topLevel />
           )}
-          {isAuthorized(this.context) && (isOpen && subMenuOpen === '/query') && (
+          {isAuthorized(this.context) && (isOpen && subMenuOpenLink === '/query') && (
             <>
               <MenuLink label="Quick" route="/query" inset />
               <MenuLink label="Popular" route="/query-popular/gene" inset />
@@ -140,7 +140,7 @@ class MainNav extends React.PureComponent {
           {hasWriteAccess(this.context) && (
             <MenuLink label="Add new Record" route="/new/ontology" icon={<AddIcon />} topLevel />
           )}
-          {hasWriteAccess(this.context) && (isOpen && subMenuOpen === '/new/ontology') && (
+          {hasWriteAccess(this.context) && (isOpen && subMenuOpenLink === '/new/ontology') && (
             <>
               {isAdmin(this.context) && (<MenuLink label="Source*" route="/new/source" inset />)}
               <MenuLink label="Ontology" route="/new/ontology" inset />

@@ -48,6 +48,7 @@ const Main = () => {
   const [authenticationToken, setAuthenticationToken] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [activeLink, setActiveLink] = useState('');
+  console.log('TCL: Main -> activeLink', activeLink);
 
   useEffect(() => {
     const unregister = fetchIntercept.register({
@@ -76,6 +77,8 @@ const Main = () => {
         <MainNav
           isOpen={drawerOpen}
           onChange={({ isOpen, activeLink: updatedLink }) => {
+            console.log('TCL: Main -> updatedLink', updatedLink);
+
             setDrawerOpen(isOpen);
             setActiveLink(updatedLink);
           }}

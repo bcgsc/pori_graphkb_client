@@ -64,9 +64,7 @@ class MainNav extends React.PureComponent {
 
   @boundMethod
   handleOpen(defaultRoute) {
-    console.log('TCL: MainNav -> handleOpen -> defaultRoute', defaultRoute);
-    const { onChange, activeLink } = this.props;
-    console.log('TCL: MainNav -> handleOpen -> activeLink', activeLink);
+    const { onChange } = this.props;
     onChange({ isOpen: true, activeLink: defaultRoute });
     this.setState({ subMenuOpen: defaultRoute });
   }
@@ -74,7 +72,6 @@ class MainNav extends React.PureComponent {
   @boundMethod
   handleClickLink(link, topLevel) {
     if (topLevel) {
-      console.log('TCL: MainNav -> handleClickLink -> topLevel', topLevel);
       this.handleOpen(topLevel);
     } else {
       const { isOpen, onChange } = this.props;

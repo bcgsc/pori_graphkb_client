@@ -9,15 +9,15 @@ import {
 
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 
-import schema from '../../services/schema';
-import FormField from '../../components/RecordForm/FormField';
+import schema from '@/services/schema';
+import FormField from '@/components/RecordForm/FormField';
 import { OPERATORS, BLACKLISTED_PROPERTIES } from './constants';
 import './index.scss';
-import ActionButton from '../../components/ActionButton';
+import ActionButton from '@/components/ActionButton';
 import FilterGroup from './FilterGroup';
-import { cleanLinkedRecords } from '../../components/util';
-import api from '../../services/api';
-import { HistoryPropType } from '../../components/types';
+import { cleanLinkedRecords } from '@/components/util';
+import api from '@/services/api';
+import { HistoryPropType } from '@/components/types';
 
 const defaultFilterGroup = [];
 

@@ -4,7 +4,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import PropTypes from 'prop-types';
 
 import './index.scss';
-import schema from '../../../services/schema';
+import schema from '@/services/schema';
 
 /**
  * Displays Filter Groups and filter chips.

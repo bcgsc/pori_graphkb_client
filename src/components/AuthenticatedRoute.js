@@ -6,7 +6,7 @@ import {
 import { PropTypes } from 'prop-types';
 
 import { KBContext } from './KBContext';
-import { isAuthenticated, isAdmin } from '../services/auth';
+import { isAuthenticated, isAdmin } from '@/services/auth';
 import { LocationPropType } from './types';
 
 /**

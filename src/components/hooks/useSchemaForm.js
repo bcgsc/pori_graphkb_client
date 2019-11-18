@@ -6,7 +6,7 @@ import {
 } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
-import schema from '../../services/schema';
+import schema from '@/services/schema';
 
 import useObject from './useObject';
 

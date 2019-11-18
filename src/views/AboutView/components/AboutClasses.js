@@ -8,12 +8,12 @@ import {
   List,
 } from '@material-ui/core';
 
-import api from '../../../services/api';
-import { KBContext } from '../../../components/KBContext';
-import { isAuthorized } from '../../../services/auth';
-import DetailChip from '../../../components/DetailChip';
-import schema from '../../../services/schema';
-import useObject from '../../../components/hooks/useObject';
+import api from '@/services/api';
+import { KBContext } from '@/components/KBContext';
+import { isAuthorized } from '@/services/auth';
+import DetailChip from '@/components/DetailChip';
+import schema from '@/services/schema';
+import useObject from '@/components/hooks/useObject';
 
 
 const AboutClasses = () => {

@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 
 import MainNav from '../MainNav';
-import { KBContext } from '../../../../components/KBContext';
+import { KBContext } from '@/components/KBContext';
 
 
 describe('<MainNav />', () => {

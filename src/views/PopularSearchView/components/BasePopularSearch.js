@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import './index.scss';
 import SearchInput from './SearchInput';
 import SearchMenu from './SearchMenu';
-import api from '../../../services/api';
+import api from '@/services/api';
 import SEARCH_OPTS from './util';
 
 

@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import * as qs from 'qs';
 
 import { boundMethod } from 'autobind-decorator';
-import RecordForm from '../../components/RecordForm';
-import { KBContext } from '../../components/KBContext';
-import { FORM_VARIANT } from '../../components/RecordForm/util';
-import { cleanLinkedRecords } from '../../components/util';
-import { hasWriteAccess } from '../../services/auth';
-import schema from '../../services/schema';
+import RecordForm from '@/components/RecordForm';
+import { KBContext } from '@/components/KBContext';
+import { FORM_VARIANT } from '@/components/RecordForm/util';
+import { cleanLinkedRecords } from '@/components/util';
+import { hasWriteAccess } from '@/services/auth';
+import schema from '@/services/schema';
 
 
 const DEFAULT_TITLES = {

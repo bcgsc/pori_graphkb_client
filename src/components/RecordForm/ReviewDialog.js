@@ -9,7 +9,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 
-import { getUser } from '../../services/auth';
+import { getUser } from '@/services/auth';
 
 import './index.scss';
 import ActionButton from '../ActionButton';
@@ -19,7 +19,7 @@ import {
 import { KBContext } from '../KBContext';
 import FormField from './FormField';
 import useSchemaForm from '../hooks/useSchemaForm';
-import schema from '../../services/schema';
+import schema from '@/services/schema';
 
 
 const MODEL_NAME = 'StatementReview';

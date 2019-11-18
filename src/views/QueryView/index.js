@@ -16,8 +16,8 @@ import kbp from '@bcgsc/knowledgebase-parser';
 import SearchIcon from '@material-ui/icons/Search';
 
 import './index.scss';
-import api from '../../services/api';
-import schema from '../../services/schema';
+import api from '@/services/api';
+import schema from '@/services/schema';
 
 const ENTER_KEYCODE = 13;
 const MIN_WORD_LENGTH = 3;

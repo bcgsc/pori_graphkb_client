@@ -25,7 +25,7 @@ import '../index.scss';
 
 import {
   getUsername, isAdmin, logout, isAuthenticated,
-} from '../../../services/auth';
+} from '@/services/auth';
 
 
 const MainAppBar = ({

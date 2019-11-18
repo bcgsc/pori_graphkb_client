@@ -8,14 +8,14 @@ import {
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import propTypes from 'prop-types';
 
-import RecordForm from '../../components/RecordForm';
-import { KBContext } from '../../components/KBContext';
-import { FORM_VARIANT } from '../../components/RecordForm/util';
-import { cleanLinkedRecords } from '../../components/util';
-import { hasWriteAccess } from '../../services/auth';
-import api from '../../services/api';
-import { HistoryPropType } from '../../components/types';
-import schema from '../../services/schema';
+import RecordForm from '@/components/RecordForm';
+import { KBContext } from '@/components/KBContext';
+import { FORM_VARIANT } from '@/components/RecordForm/util';
+import { cleanLinkedRecords } from '@/components/util';
+import { hasWriteAccess } from '@/services/auth';
+import api from '@/services/api';
+import { HistoryPropType } from '@/components/types';
+import schema from '@/services/schema';
 
 
 const DEFAULT_TITLES = {

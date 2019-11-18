@@ -9,7 +9,7 @@ import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 
-import api from '../../services/api';
+import api from '@/services/api';
 
 import './index.scss';
 import ActionButton from '../ActionButton';
@@ -17,7 +17,7 @@ import FormLayout from './FormLayout';
 import {
   FORM_VARIANT,
 } from './util';
-import schema from '../../services/schema';
+import schema from '@/services/schema';
 import ReviewDialog from './ReviewDialog';
 import ToggleButtonGroup from '../ToggleButtonGroup';
 import EdgeTable from './EdgeTable';

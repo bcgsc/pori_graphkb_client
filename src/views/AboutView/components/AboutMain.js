@@ -3,9 +3,9 @@ import {
   Typography,
 } from '@material-ui/core';
 
-import api from '../../../services/api';
-import { isAuthorized } from '../../../services/auth';
-import { KBContext } from '../../../components/KBContext';
+import api from '@/services/api';
+import { isAuthorized } from '@/services/auth';
+import { KBContext } from '@/components/KBContext';
 import {
   PieChart,
 } from '.';

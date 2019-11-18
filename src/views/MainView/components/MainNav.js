@@ -22,8 +22,8 @@ import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
 import logo from '../../../static/logo.png';
 import title from '../../../static/title.png';
-import { KBContext } from '../../../components/KBContext';
-import { hasWriteAccess, isAdmin, isAuthorized } from '../../../services/auth';
+import { KBContext } from '@/components/KBContext';
+import { hasWriteAccess, isAdmin, isAuthorized } from '@/services/auth';
 
 /**
  * @property {object} props

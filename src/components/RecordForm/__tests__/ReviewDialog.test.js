@@ -8,7 +8,7 @@ import ReviewDialog from '../ReviewDialog';
 import { KBContext } from '../../KBContext';
 
 
-jest.mock('../../../services/auth', () => ({
+jest.mock('@/services/auth', () => ({
   getUser: () => ({ '@rid': '#20:0' }),
 }));
 

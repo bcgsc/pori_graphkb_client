@@ -25,8 +25,8 @@ import GraphNodeDisplay from './GraphNodeDisplay/GraphNodeDisplay';
 import GraphArrowMarker from './GraphArrowMarker';
 import GraphExpansionDialog from './GraphExpansionDialog/GraphExpansionDialog';
 import GraphLegend from './GraphLegend/GraphLegend';
-import util from '../../../../services/util';
-import schema from '../../../../services/schema';
+import util from '@/services/util';
+import schema from '@/services/schema';
 import config from '../../../../static/config';
 import {
   PropsMap,

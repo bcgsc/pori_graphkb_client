@@ -37,15 +37,6 @@ $code-font: Menlo, DejaVu Sans Mono, Liberation Mono, Consolas, Ubuntu Mono, Cou
 
 $icon-size: 1.5rem;
 
-.MuiTypography-body1,
-.MuiTypography-h2,
-.MuiTypography-h3,
-.MuiTypography-h4,
-.MuiTypography-h5,
-.MuiTypography-h6 {
-  color: $palette__text--primary;
-}
-
 // use for media query shorthand
 @mixin paper {
   padding: 16px;

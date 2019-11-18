@@ -10,7 +10,7 @@ import AssignmentIcon from '@material-ui/icons/Assignment';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 import './index.scss';
-import config from '../../static/config';
+import config from '@/static/config';
 import { LocationPropType } from '@/components/types';
 
 const { FEEDBACK: { JIRA: JIRA_LINK, EMAIL } } = config;

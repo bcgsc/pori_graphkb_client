@@ -5,7 +5,7 @@
 import Keycloak from 'keycloak-js';
 import * as jwt from 'jsonwebtoken';
 
-import config from '../static/config';
+import config from '@/static/config';
 
 const {
   KEYCLOAK: {

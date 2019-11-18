@@ -4,7 +4,7 @@ import { PropTypes } from 'prop-types';
 
 import Arc from './Arc';
 import util from '@/services/util';
-import config from '../../../../static/config';
+import config from '@/static/config';
 
 const { DEFAULT_NODE_COLOR } = config.GRAPH_DEFAULTS;
 

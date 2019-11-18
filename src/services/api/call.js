@@ -1,7 +1,7 @@
 import * as jc from 'json-cycle';
 import { boundMethod } from 'autobind-decorator';
 
-import config from '../../static/config';
+import config from '@/static/config';
 import {
   BadRequestError,
   AuthorizationError,

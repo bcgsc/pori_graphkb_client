@@ -172,6 +172,10 @@ module.exports = {
   plugins,
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
+    alias: {
+      components: path.resolve(SRC_PATH, 'components'),
+      services: path.resolve(SRC_PATH, 'services'),
+    },
   },
   module: moduleSettings,
 };

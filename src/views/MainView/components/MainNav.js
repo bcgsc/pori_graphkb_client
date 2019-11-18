@@ -20,8 +20,8 @@ import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
-import logo from '../../../static/logo.png';
-import title from '../../../static/title.png';
+import logo from '@/static/logo.png';
+import title from '@/static/title.png';
 import { KBContext } from '@/components/KBContext';
 import { hasWriteAccess, isAdmin, isAuthorized } from '@/services/auth';
 

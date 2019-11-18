@@ -8,7 +8,7 @@ import { KBContext } from '@/components/KBContext';
 import {
   isAuthenticated, getReferrerUri, login, keycloak, isAuthorized,
 } from '@/services/auth';
-import config from '../../static/config';
+import config from '@/static/config';
 import { HistoryPropType, LocationPropType } from '@/components/types';
 
 const {

@@ -6,11 +6,11 @@ import {
 } from '@material-ui/core';
 
 // static content
-import listFields from '../../../static/images/list-fields.png';
-import singleAutocomplete1 from '../../../static/images/single-autocomplete-1.png';
-import singleAutocomplete2 from '../../../static/images/single-autocomplete-2.png';
-import singleAutocomplete3 from '../../../static/images/single-autocomplete-3.png';
-import selectFields from '../../../static/images/select-fields.png';
+import listFields from '@/static/images/list-fields.png';
+import singleAutocomplete1 from '@/static/images/single-autocomplete-1.png';
+import singleAutocomplete2 from '@/static/images/single-autocomplete-2.png';
+import singleAutocomplete3 from '@/static/images/single-autocomplete-3.png';
+import selectFields from '@/static/images/select-fields.png';
 
 
 const AboutForms = () => (

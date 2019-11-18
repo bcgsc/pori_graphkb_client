@@ -6,7 +6,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import './GraphLinkDisplay.scss';
-import config from '../../../../../static/config';
+import config from '@/static/config';
 
 const LABEL_BASELINE_SHIFT = 4;
 const SELECTED_OPACITY = 1;

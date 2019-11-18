@@ -17,7 +17,7 @@ import HelpIcon from '@material-ui/icons/Help';
 
 import './GraphOptionsPanel.scss';
 import ResourceSelectComponent from '@/components/ResourceSelectComponent';
-import config from '../../../../../static/config';
+import config from '@/static/config';
 
 const { GRAPH_ADVANCED, GRAPH_MAIN } = config.DESCRIPTIONS;
 

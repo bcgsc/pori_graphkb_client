@@ -8,7 +8,7 @@ import qs from 'qs';
 import kbSchema from '@bcgsc/knowledgebase-schema';
 import kbp from '@bcgsc/knowledgebase-parser';
 
-import config from '../../static/config';
+import config from '@/static/config';
 
 import { ApiCall } from './call';
 import DataCache from './dataCache';

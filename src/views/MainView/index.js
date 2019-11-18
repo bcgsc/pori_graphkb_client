@@ -14,7 +14,7 @@ import {
 } from '@material-ui/core';
 import fetchIntercept from 'fetch-intercept';
 
-import config from '../../static/config';
+import config from '@/static/config';
 
 import './index.scss';
 

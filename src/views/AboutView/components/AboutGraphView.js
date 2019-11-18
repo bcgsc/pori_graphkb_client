@@ -9,8 +9,8 @@ import {
 } from '@material-ui/core';
 
 // static content
-import graphResults from '../../../static/images/graph-view.png';
-import graphActions from '../../../static/images/graph-actions.png';
+import graphResults from '@/static/images/graph-view.png';
+import graphActions from '@/static/images/graph-actions.png';
 
 
 const AboutGraphView = () => (

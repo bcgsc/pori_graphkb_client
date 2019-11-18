@@ -9,7 +9,7 @@ import {
   ListItemText,
 } from '@material-ui/core';
 
-import queryResults from '../../../static/images/table-view.png';
+import queryResults from '@/static/images/table-view.png';
 
 
 const AboutQuerying = () => (

@@ -27,7 +27,7 @@
         "react-hooks",
         "jest",
         "jest-formatting",
-        "eslint-import-resolver-webpack"
+        "import"
     ],
     "rules": {
         "babel/semi": "warn",
@@ -103,5 +103,12 @@
         "react/jsx-one-expression-per-line": "off",
         "react/no-did-update-set-state": "warn",
         "react/sort-comp": "warn"
+    },
+    "settings": {
+        "import/resolver": {
+            "webpack": {
+                "config": "config/webpack/common.js"
+            }
+        }
     }
 }

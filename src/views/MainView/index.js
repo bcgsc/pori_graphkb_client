@@ -18,10 +18,10 @@ import config from '../../static/config';
 
 import './index.scss';
 
-import { KBContext } from '../../components/KBContext';
+import { KBContext } from '@/components/KBContext';
 import MainAppBar from './components/MainAppBar';
 import MainNav from './components/MainNav';
-import AuthenticatedRoute from '../../components/AuthenticatedRoute';
+import AuthenticatedRoute from '@/components/AuthenticatedRoute';
 
 const AboutView = lazy(() => import('../AboutView'));
 const AdminView = lazy(() => import('../AdminView'));

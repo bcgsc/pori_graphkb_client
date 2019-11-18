@@ -19,12 +19,12 @@ import kbSchema from '@bcgsc/knowledgebase-schema';
 import DataTable from './components/DataTable';
 import GraphComponent from './components/GraphComponent';
 import DetailDrawer from './components/DetailDrawer';
-import RecordFormDialog from '../../components/RecordFormDialog';
-import api from '../../services/api';
-import { cleanLinkedRecords } from '../../components/util';
+import RecordFormDialog from '@/components/RecordFormDialog';
+import api from '@/services/api';
+import { cleanLinkedRecords } from '@/components/util';
 import { hashRecordsByRID } from './util';
-import { HistoryPropType, LocationPropType } from '../../components/types';
-import schema from '../../services/schema';
+import { HistoryPropType, LocationPropType } from '@/components/types';
+import schema from '@/services/schema';
 
 import './index.scss';
 

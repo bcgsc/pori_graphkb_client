@@ -25,10 +25,10 @@ import CloseIcon from '@material-ui/icons/Close';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 
 import './DetailDrawer.scss';
-import util from '../../../../services/util';
-import { hasWriteAccess } from '../../../../services/auth';
-import schema from '../../../../services/schema';
-import { GeneralRecordPropType } from '../../../../components/types';
+import util from '@/services/util';
+import { hasWriteAccess } from '@/services/auth';
+import schema from '@/services/schema';
+import { GeneralRecordPropType } from '@/components/types';
 
 const MAX_STRING_LENGTH = 64;
 const DATE_KEYS = ['createdAt', 'deletedAt'];

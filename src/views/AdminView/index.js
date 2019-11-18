@@ -9,7 +9,7 @@ import {
 
 import './index.scss';
 import AdminTable from './components/AdminTable';
-import api from '../../services/api';
+import api from '@/services/api';
 
 /**
  * View for editing or adding database users.

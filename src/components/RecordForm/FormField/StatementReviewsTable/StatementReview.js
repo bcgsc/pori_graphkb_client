@@ -15,7 +15,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 
 import DetailChip from '../../../DetailChip';
-import { getUsername } from '../../../../services/auth';
+import { getUsername } from '@/services/auth';
 import ActionButton from '../../../ActionButton';
 import '../index.scss';
 import { KBContext } from '../../../KBContext';

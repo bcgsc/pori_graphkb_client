@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { boundMethod } from 'autobind-decorator';
 import { FormControl, FormHelperText } from '@material-ui/core';
 
-import api from '../../../services/api';
+import api from '@/services/api';
 import RecordAutocomplete from '../../RecordAutocomplete';
 import ResourceSelectComponent from '../../ResourceSelectComponent';
-import schema from '../../../services/schema';
+import schema from '@/services/schema';
 
 import './index.scss';
 

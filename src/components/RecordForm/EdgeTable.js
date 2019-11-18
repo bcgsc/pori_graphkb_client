@@ -9,7 +9,7 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 
-import schema from '../../services/schema';
+import schema from '@/services/schema';
 import useGrid from '../hooks/useGrid';
 
 

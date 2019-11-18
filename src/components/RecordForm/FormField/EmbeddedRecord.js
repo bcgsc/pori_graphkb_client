@@ -14,7 +14,7 @@ import FormField from '.';
 import {
   FORM_VARIANT,
 } from '../util';
-import schema from '../../../services/schema';
+import schema from '@/services/schema';
 
 
 /**

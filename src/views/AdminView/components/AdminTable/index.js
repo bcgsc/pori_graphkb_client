@@ -15,8 +15,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
 
 import './index.scss';
-import RecordFormDialog from '../../../../components/RecordFormDialog';
-import { FORM_VARIANT } from '../../../../components/RecordForm/util';
+import RecordFormDialog from '@/components/RecordFormDialog';
+import { FORM_VARIANT } from '@/components/RecordForm/util';
 
 
 /**

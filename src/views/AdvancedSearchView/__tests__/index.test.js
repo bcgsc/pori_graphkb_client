@@ -7,7 +7,7 @@ import {
 
 import AdvancedSearchView from '..';
 
-jest.mock('../../../components/RecordAutocomplete', () => (({
+jest.mock('@/components/RecordAutocomplete', () => (({
   value, onChange, name, label,
 }) => {
   const handleChange = () => {
@@ -23,7 +23,7 @@ jest.mock('../../../components/RecordAutocomplete', () => (({
   );
 }));
 
-jest.mock('../../../components/ResourceSelectComponent', () => (({
+jest.mock('@/components/ResourceSelectComponent', () => (({
   resources = [], value, onChange, className,
 }) => {
   const handleChange = (event) => {

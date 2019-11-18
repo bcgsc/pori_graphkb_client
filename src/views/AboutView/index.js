@@ -22,7 +22,7 @@ import {
   AboutUsageTerms,
   AboutGraphView,
 } from './components';
-import { LocationPropType } from '../../components/types';
+import { LocationPropType } from '@/components/types';
 
 
 class AboutView extends Component {

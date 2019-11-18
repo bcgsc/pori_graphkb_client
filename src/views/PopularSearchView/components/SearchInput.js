@@ -4,7 +4,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import './index.scss';
-import ActionButton from '../../../components/ActionButton';
+import ActionButton from '@/components/ActionButton';
 
 
 /**

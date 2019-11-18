@@ -9,11 +9,11 @@ import PropTypes from 'prop-types';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 
-import schema from '../../../services/schema';
-import OptionsMenu from '../../../components/OptionsMenu';
-import DetailChip from '../../../components/DetailChip';
-import { getUsername } from '../../../services/auth';
-import DataCache from '../../../services/api/dataCache';
+import schema from '@/services/schema';
+import OptionsMenu from '@/components/OptionsMenu';
+import DetailChip from '@/components/DetailChip';
+import { getUsername } from '@/services/auth';
+import DataCache from '@/services/api/dataCache';
 import { SelectionTracker } from './SelectionTracker';
 
 const MAX_FULL_EXPORTS_ROWS = 1000;

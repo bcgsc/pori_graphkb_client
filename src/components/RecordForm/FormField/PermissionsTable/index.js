@@ -16,7 +16,7 @@ import kbSchema from '@bcgsc/knowledgebase-schema';
 
 import { KBContext } from '../../../KBContext';
 import './index.scss';
-import schema from '../../../../services/schema';
+import schema from '@/services/schema';
 
 const { constants: { PERMISSIONS } } = kbSchema;
 

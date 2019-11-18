@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import FormField from '../FormField';
 import { FORM_VARIANT } from '../util';
-import schema from '../../../services/schema';
+import schema from '@/services/schema';
 
 /**
  * Renders the two edge specific input fields (out/in)

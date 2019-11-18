@@ -10,7 +10,7 @@ import * as d3Drag from 'd3-drag';
 import './GraphNodeDisplay.scss';
 import config from '../../../../../static/config';
 import { GraphNode } from '../kbgraph';
-import schema from '../../../../../services/schema';
+import schema from '@/services/schema';
 
 const { NODE_RADIUS } = config.GRAPH_PROPERTIES;
 const DEFAULT_OPACITY = 1;

@@ -6,7 +6,7 @@ import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackb
 
 import RecordForm from '..';
 import { KBContext } from '../../KBContext';
-import * as api from '../../../services/api';
+import * as api from '@/services/api';
 
 
 jest.mock('@bcgsc/react-snackbar-provider', () => {
@@ -18,7 +18,7 @@ jest.mock('@bcgsc/react-snackbar-provider', () => {
 });
 
 
-jest.mock('../../../services/api', () => {
+jest.mock('@/services/api', () => {
   const mockRequest = () => ({
     request: () => Promise.resolve(
       [],

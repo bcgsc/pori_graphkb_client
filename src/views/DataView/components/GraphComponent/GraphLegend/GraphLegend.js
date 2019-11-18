@@ -12,7 +12,7 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 
 import './GraphLegend.scss';
-import util from '../../../../../services/util';
+import util from '@/services/util';
 
 /**
  * Legend panels for nodes and links in graph.

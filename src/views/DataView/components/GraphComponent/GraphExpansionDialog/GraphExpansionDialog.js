@@ -14,7 +14,7 @@ import {
   ListItemText,
 } from '@material-ui/core';
 
-import schema from '../../../../../services/schema';
+import schema from '@/services/schema';
 import './GraphExpansionDialog.scss';
 
 /**

@@ -5,7 +5,7 @@ import {
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 
-import api from '../../../services/api';
+import api from '@/services/api';
 import ResourceSelectComponent from '../../ResourceSelectComponent';
 import RecordAutocomplete from '../../RecordAutocomplete';
 import BooleanField from './BooleanField';
@@ -20,7 +20,7 @@ import './index.scss';
 import { FORM_VARIANT } from '../util';
 import EmbeddedListTable from './StatementReviewsTable';
 import { GeneralRecordPropType } from '../../types';
-import schema from '../../../services/schema';
+import schema from '@/services/schema';
 
 /**
  * Generate the field component for a form. Uses the property model to decide

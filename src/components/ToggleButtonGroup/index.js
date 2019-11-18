@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import EditIcon from '@material-ui/icons/Create';
 import ViewIcon from '@material-ui/icons/Pageview';
-import utils from '../../services/util';
+import utils from '@/services/util';
 
 import ConfirmActionDialog from '../ActionButton/ConfirmActionDialog';
 import './index.scss';

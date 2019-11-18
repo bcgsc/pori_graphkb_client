@@ -4,11 +4,11 @@ import React, {
 import * as qs from 'qs';
 import propTypes from 'prop-types';
 
-import RecordForm from '../../components/RecordForm';
-import FormField from '../../components/RecordForm/FormField';
-import { FORM_VARIANT } from '../../components/RecordForm/util';
-import { cleanLinkedRecords } from '../../components/util';
-import schema from '../../services/schema';
+import RecordForm from '@/components/RecordForm';
+import FormField from '@/components/RecordForm/FormField';
+import { FORM_VARIANT } from '@/components/RecordForm/util';
+import { cleanLinkedRecords } from '@/components/util';
+import schema from '@/services/schema';
 
 
 const NewRecordView = (props) => {

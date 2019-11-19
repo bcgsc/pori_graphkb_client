@@ -153,7 +153,6 @@ module.exports = {
   output: {
     path: DIST_PATH,
     filename: 'static/js/[name].bundle.js',
-    chunkFilename: 'static/js/[name].bundle.js',
     publicPath: '/',
   },
   devServer: {
@@ -169,16 +168,6 @@ module.exports = {
   // production optimizations
   optimization: {
     runtimeChunk: 'single',
-    splitChunks: {
-      cacheGroups: {
-        commons: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
-          chunks: 'all',
-          reuseExistingChunk: true,
-        },
-      },
-    },
   },
   plugins,
   resolve: {

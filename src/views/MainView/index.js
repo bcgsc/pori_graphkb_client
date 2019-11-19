@@ -34,6 +34,7 @@ const NewRecordView = lazy(() => import('../NewRecordView'));
 const PopularSearchView = lazy(() => import('../PopularSearchView'));
 const QueryView = lazy(() => import('../QueryView'));
 const RecordView = lazy(() => import('../RecordView'));
+const ImportPubmedView = lazy(() => import('../ImportPubmedView'));
 
 const {
   API_BASE_URL,
@@ -113,6 +114,7 @@ const Main = () => {
               <Redirect exact path="/query/advanced" to="/search/v" />
               <AuthenticatedRoute path="/data" component={DataView} />
               <AuthenticatedRoute path="/admin" admin component={AdminView} />
+              <AuthenticatedRoute path="/import/pubmed" component={ImportPubmedView} />
               <Redirect from="/" to="/query" />
             </Switch>
           </Suspense>

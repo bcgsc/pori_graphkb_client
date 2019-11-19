@@ -20,8 +20,8 @@ const AboutMain = () => {
     let controller;
 
     const getData = async () => {
-      controller = api.get('/stats');
-      const result = await controller.request();
+      controller = api.get('/stats?classList=Statement&groupBy=source');
+      const { Statement: result } = await controller.request();
       setChartData(result);
     };
     getData();

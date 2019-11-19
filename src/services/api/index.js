@@ -225,6 +225,8 @@ const getNewCache = (opt) => {
  *
  * @param {object} content is the payload or query object to be sent with request
  * @param {string} modelName target class that is expected to be returned
+ * @param {object} searchChipProps props passed to query specifically for search chips
+ * generated at the top of dataview
  */
 const encodeQueryComplexToSearch = (content, modelName = 'V', searchChipProps) => {
   const stringifiedContent = JSON.stringify(content);

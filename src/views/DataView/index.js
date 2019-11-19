@@ -81,6 +81,7 @@ class DataView extends React.Component {
       onLoadCallback: this.handleLoadingChange,
       onErrorCallback: this.handleError,
     });
+
     const filters = await this.parseFilters(cache);
     const { searchType } = filters;
     delete filters.searchType;
@@ -337,15 +338,43 @@ class DataView extends React.Component {
     });
   }
 
-  /**
-   * Renders either the DataTable or Graph view depending on the parsed URL
-   */
   @boundMethod
-  renderDataComponent() {
+  renderGraphView() {
     const {
       detailPanelRow,
       cache,
       graphData,
+    } = this.state;
+
+    const edges = schema.getEdges();
+
+    if (!graphData) {
+      this.loadSavedStateFromURL();
+      return (
+        <div className="circular-progress">
+          <CircularProgress color="secondary" size="4rem" />
+        </div>
+      );
+    }
+    return (
+      <GraphComponent
+        data={graphData || {}}
+        cache={cache}
+        handleDetailDrawerOpen={this.handleToggleDetailPanel}
+        handleDetailDrawerClose={this.handleToggleDetailPanel}
+        detail={detailPanelRow}
+        handleError={this.handleError}
+        edgeTypes={edges}
+        onRecordClicked={this.handleToggleDetailPanel}
+        handleGraphStateSave={this.handleGraphStateSaveIntoURL}
+      />
+    );
+  }
+
+  @boundMethod
+  renderDataTable() {
+    const {
+      cache,
       optionsMenuAnchor,
       search,
       totalRowsSelected,
@@ -353,34 +382,7 @@ class DataView extends React.Component {
     } = this.state;
 
     const { bufferSize } = this.props;
-    const edges = schema.getEdges();
 
-    const URL = String(window.location.href);
-    const isGraphView = URL.includes('node');
-
-    if (isGraphView) {
-      if (!graphData) {
-        this.loadSavedStateFromURL();
-        return (
-          <div className="circular-progress">
-            <CircularProgress color="secondary" size="4rem" />
-          </div>
-        );
-      }
-      return (
-        <GraphComponent
-          data={graphData || {}}
-          cache={cache}
-          handleDetailDrawerOpen={this.handleToggleDetailPanel}
-          handleDetailDrawerClose={this.handleToggleDetailPanel}
-          detail={detailPanelRow}
-          handleError={this.handleError}
-          edgeTypes={edges}
-          onRecordClicked={this.handleToggleDetailPanel}
-          handleGraphStateSave={this.handleGraphStateSaveIntoURL}
-        />
-      );
-    }
     return (
       <DataTable
         search={search}
@@ -411,6 +413,7 @@ class DataView extends React.Component {
       filterTableOpen,
       filterTableAnchorEl,
       searchType,
+      selectedRecords,
     } = this.state;
     console.log('TCL: render -> filters', filters);
 
@@ -433,7 +436,10 @@ class DataView extends React.Component {
               {(searchType === 'Advanced') && (
                 <>
                   <Tooltip title="click here to see active filter groups">
-                    <IconButton onClick={event => this.handleFilterTableToggle(event, 'open')}>
+                    <IconButton
+                      onClick={event => this.handleFilterTableToggle(event, 'open')}
+                      disabled={!filterGroups}
+                    >
                       <FilterListIcon />
                     </IconButton>
                   </Tooltip>
@@ -470,7 +476,9 @@ class DataView extends React.Component {
         <div className={`data-view__content${!URLContainsTable ? '--graph-view' : ''}`}>
           {cache && (
             <>
-              {this.renderDataComponent()}
+              {URLContainsTable
+                ? this.renderDataTable()
+                : this.renderGraphView()}
               <DetailDrawer
                 node={detailPanelRow}
                 onClose={this.handleToggleDetailPanel}
@@ -486,9 +494,12 @@ class DataView extends React.Component {
                   {totalRowsSelected} Record{totalRowsSelected !== 1 ? 's' : ''} Selected
                 </Typography>
                 <Tooltip title="click here for graph view">
-                  <IconButton onClick={this.handleSwapToGraph}>
+                  <IconButton
+                    onClick={this.handleSwapToGraph}
+                    disabled={selectedRecords.length === 0}
+                  >
                     <TimelineIcon
-                      color="secondary"
+                      color={selectedRecords.length === 0 ? 'disabled' : 'secondary'}
                     />
                   </IconButton>
                 </Tooltip>

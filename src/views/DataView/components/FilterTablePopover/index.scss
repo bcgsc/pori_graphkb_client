@@ -1,19 +1,39 @@
 @import '../../../../theme';
 
+
+@mixin filterRowBase {
+  border-bottom: 2px solid $palette__grey--A100;
+  display: flex;
+  justify-content: flex-start;
+  margin: 10px;
+  padding: 10px;
+}
+
 .filter-table {
+  min-width: 30vw;
+
+  &__title {
+    width: fit-content;
+    margin: 0 auto;
+    margin-bottom: 20px;
+  }
   .filter-row {
-    border-bottom: 2px solid $palette__grey--A100;
-    display: flex;
-    justify-content: flex-start;
-    margin: 10px;
-    padding: 10px;
+    @include filterRowBase;
+
+    &:nth-child(1){
+      border-top: 2px solid $palette__grey--A100;
+      @include filterRowBase;
+    }
 
     &__avatar {
       background-color: $palette__secondary--main;
     }
 
     &__icon {
-      padding-right: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-right: 2vw;
     }
 
     &__chips {

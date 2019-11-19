@@ -14,15 +14,11 @@ import { boundMethod } from 'autobind-decorator';
 import * as qs from 'qs';
 
 
-import kbSchema from '@bcgsc/knowledgebase-schema';
-
 import FilterTablePopover from './components/FilterTablePopover';
 import DataTable from './components/DataTable';
 import GraphComponent from './components/GraphComponent';
 import DetailDrawer from './components/DetailDrawer';
-import RecordFormDialog from '../../components/RecordFormDialog';
 import api from '../../services/api';
-import { cleanLinkedRecords } from '../../components/util';
 import { hashRecordsByRID } from './util';
 import { HistoryPropType, LocationPropType } from '../../components/types';
 import schema from '../../services/schema';
@@ -58,7 +54,6 @@ class DataView extends React.Component {
       detailPanelRow: null,
       optionsMenuAnchor: null,
       selectedRecords: [],
-      filtersEditOpen: false,
       filters: {},
       filterGroups: null,
       filterTableOpen: false,
@@ -82,7 +77,7 @@ class DataView extends React.Component {
       onErrorCallback: this.handleError,
     });
 
-    const filters = await this.parseFilters(cache);
+    const filters = this.parseFilters();
     const { searchType } = filters;
     delete filters.searchType;
 
@@ -98,37 +93,21 @@ class DataView extends React.Component {
   }
 
   /**
-   * If there are any linked records, fetch them now and attach them in place of their reference ID
+   * Grab filters from search and sets filtergroups if it is advanced search
    */
-  async parseFilters(cache) {
+  parseFilters() {
     const { search } = this.state;
 
     try {
       const {
-        queryParams, modelName, searchChipProps, searchChipProps: { searchType }, payload,
+        queryParams, modelName, searchChipProps, searchChipProps: { searchType },
       } = api.getQueryFromSearch({ search, schema });
-      console.log('TCL: DataView -> parseFilters -> searchChipProps', searchChipProps);
-      console.log('TCL: DataView -> parseFilters -> payload', payload);
 
       if (searchType === 'Advanced') {
         const { filters: filterGroups } = searchChipProps;
-        console.log('TCL: DataView -> parseFilters -> filterGroups', filterGroups);
         this.setState({ filterGroups });
         delete searchChipProps.filters;
       }
-
-      const links = [];
-      Object.entries(queryParams || {}).forEach(([key, value]) => {
-        if (typeof value === 'string' && kbSchema.util.looksLikeRID(value)) {
-          links.push({ key, value });
-        }
-      });
-
-      const records = await cache.getRecords(links.map(l => ({ '@rid': l.value })));
-      records.forEach((rec, index) => {
-        const { key } = links[index];
-        queryParams[key] = rec;
-      });
 
       return { '@class': modelName, ...queryParams, ...searchChipProps };
     } catch (err) {
@@ -264,28 +243,6 @@ class DataView extends React.Component {
     this.setState({ statusMessage, totalRows: rowCount });
   }
 
-  /**
-   * Changes the current filters set and updates the URL to match
-   */
-  @boundMethod
-  handleEditFilters(filters) {
-    const { history, location: { pathname } } = this.props;
-    // drop all undefined values
-    const { routeName } = schema.get(filters);
-
-    try {
-      const search = api.getSearchFromQuery({
-        schema,
-        queryParams: cleanLinkedRecords(filters),
-        routeName,
-      });
-      history.replace(`${pathname}?${search}`);
-      this.setState({ filtersEditOpen: false, filters, search: `?${search}` });
-    } catch (err) {
-      this.handleError(err);
-    }
-  }
-
   @boundMethod
   async loadSavedStateFromURL() {
     const { cache } = this.state;
@@ -407,7 +364,6 @@ class DataView extends React.Component {
       totalRows,
       detailPanelRow,
       totalRowsSelected,
-      filtersEditOpen,
       filters,
       filterGroups,
       filterTableOpen,
@@ -415,7 +371,6 @@ class DataView extends React.Component {
       searchType,
       selectedRecords,
     } = this.state;
-    console.log('TCL: render -> filters', filters);
 
 
     const { history } = this.props;
@@ -455,16 +410,6 @@ class DataView extends React.Component {
               )}
             </>
           )}
-          <RecordFormDialog
-            isOpen={filtersEditOpen}
-            modelName="V"
-            onClose={() => this.setState({ filtersEditOpen: false })}
-            onError={this.handleError}
-            onSubmit={this.handleEditFilters}
-            title="Edit Search Filters"
-            variant="search"
-            value={filters}
-          />
           {URLContainsTable && (
             <Tooltip title="click here for table and export options">
               <IconButton onClick={this.handleToggleOptionsMenu} className="data-view__edit-filters">

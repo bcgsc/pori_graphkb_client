@@ -1,0 +1,28 @@
+@import '../../../globals';
+
+.pubmed-card {
+  overflow: hidden;
+
+  .pubmed-iframe {
+    border: 1px solid $palette__grey--A100;
+
+    iframe {
+      height: 400px;
+      margin-top: -100px;
+      max-width: $readable-max;
+    }
+  }
+
+  &__actions {
+    justify-content: flex-end;
+
+    > {
+      display: block;
+    }
+  }
+
+  &__title {
+    margin-bottom: 5px;
+    margin-top: 10px;
+  }
+}

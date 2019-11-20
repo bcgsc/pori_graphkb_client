@@ -1,11 +1,11 @@
-import React, { useState, useCallback } from 'react';
 import {
   IconButton,
-  TextField,
   InputAdornment,
+  TextField,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import PropTypes from 'prop-types';
+import React, { useCallback, useState } from 'react';
 
 
 const SearchBox = ({

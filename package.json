@@ -113,6 +113,7 @@
     "clean": "rm -r dist stats.json",
     "build": "NODE_ENV=production webpack -p --config config/webpack/prod.js",
     "build:dev": "NODE_ENV=production webpack -p --mode production --config config/webpack/dev.js",
+    "build:staging": "NODE_ENV=production webpack -p --mode production --config config/webpack/staging.js",
     "compress": "tar cvfz v${npm_package_version}.tar.gz dist",
     "analyze": "NODE_ENV=production webpack --profile --json --config config/webpack/prod.js > stats.json; webpack-bundle-analyzer stats.json dist",
     "start": "webpack-dev-server --config config/webpack/dev.js",

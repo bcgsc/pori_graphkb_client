@@ -1,0 +1,22 @@
+@import '../../globals';
+
+.sentence-preview {
+  align-items: center;
+  border-left: 2px solid grey;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  min-height: 40px;
+  padding-left: 5px;
+
+  @media (min-width: #{$breakpoint-med}) {
+    margin-left: 40px;
+    padding-left: 10px;
+  }
+
+  &__word--highlighted {
+    color: $palette__secondary--main;
+    display: inline;
+
+    font-weight: 600;
+  }
+}

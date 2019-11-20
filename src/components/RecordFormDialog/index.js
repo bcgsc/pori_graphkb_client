@@ -1,18 +1,18 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import './index.scss';
+
 import {
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
-  DialogActions,
   IconButton,
 } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 import RecordForm from '@/components/RecordForm';
 import { FORM_VARIANT } from '@/components/RecordForm/util';
-
-import './index.scss';
 
 
 /**

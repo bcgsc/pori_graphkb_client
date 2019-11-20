@@ -1,8 +1,7 @@
-import React from 'react';
-import marked from 'marked';
-
-
 import notation from '@bcgsc/knowledgebase-parser/doc/notation.md';
+import marked from 'marked';
+import React from 'react';
+
 import { LocationPropType } from '@/components/types';
 
 

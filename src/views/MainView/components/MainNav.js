@@ -1,29 +1,29 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import {
-  Link,
-} from 'react-router-dom';
-import {
+  Divider,
   Drawer,
+  IconButton,
   List,
   ListItem,
-  IconButton,
-  ListItemText,
   ListItemIcon,
-  Divider,
+  ListItemText,
   MenuItem,
   Typography,
 } from '@material-ui/core';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import { boundMethod } from 'autobind-decorator';
-import SearchIcon from '@material-ui/icons/Search';
 import AddIcon from '@material-ui/icons/Add';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import SearchIcon from '@material-ui/icons/Search';
+import { boundMethod } from 'autobind-decorator';
+import PropTypes from 'prop-types';
+import React from 'react';
+import {
+  Link,
+} from 'react-router-dom';
 
-import logo from '@/static/logo.png';
-import title from '@/static/title.png';
 import { KBContext } from '@/components/KBContext';
 import { hasWriteAccess, isAdmin, isAuthorized } from '@/services/auth';
+import logo from '@/static/logo.png';
+import title from '@/static/title.png';
 
 /**
  * @property {object} props

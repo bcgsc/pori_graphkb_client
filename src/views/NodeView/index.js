@@ -1,10 +1,10 @@
-import React from 'react';
+import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
 import * as qs from 'qs';
+import React from 'react';
 
-import { boundMethod } from 'autobind-decorator';
-import RecordForm from '@/components/RecordForm';
 import { KBContext } from '@/components/KBContext';
+import RecordForm from '@/components/RecordForm';
 import { FORM_VARIANT } from '@/components/RecordForm/util';
 import { cleanLinkedRecords } from '@/components/util';
 import { hasWriteAccess } from '@/services/auth';

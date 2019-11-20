@@ -1,5 +1,3 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import {
   Collapse,
   ListItem,
@@ -8,20 +6,21 @@ import {
 } from '@material-ui/core';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
+import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
 
-import schema from '@/services/schema';
-import EdgeTable from '../EdgeTable';
-import StatementSentence from '@/components/SentencePreview/StatementSentence';
 import EdgeSentence from '@/components/SentencePreview/EdgeSentence';
+import StatementSentence from '@/components/SentencePreview/StatementSentence';
+import schema from '@/services/schema';
 
+import EdgeTable from '../EdgeTable';
 import {
   CLASS_MODEL_PROP,
   FORM_VARIANT,
   sortAndGroupFields,
 } from '../util';
-
-import FieldGroup from './FieldGroup';
 import EdgeFields from './EdgeFields';
+import FieldGroup from './FieldGroup';
 
 
 /**

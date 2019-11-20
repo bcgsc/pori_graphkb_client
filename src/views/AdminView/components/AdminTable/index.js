@@ -1,22 +1,24 @@
-import React, {
-  useState, useCallback,
-} from 'react';
-import PropTypes from 'prop-types';
+import './index.scss';
+
 import {
-  Typography,
   IconButton,
   Table,
   TableBody,
+  TableCell,
   TableHead,
   TableRow,
-  TableCell,
+  Typography,
 } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
+import PropTypes from 'prop-types';
+import React, {
+  useCallback,
+  useState,
+} from 'react';
 
-import './index.scss';
-import RecordFormDialog from '@/components/RecordFormDialog';
 import { FORM_VARIANT } from '@/components/RecordForm/util';
+import RecordFormDialog from '@/components/RecordFormDialog';
 
 
 /**

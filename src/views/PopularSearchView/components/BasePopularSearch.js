@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-
 import './index.scss';
+
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+
+import api from '@/services/api';
+
 import SearchInput from './SearchInput';
 import SearchMenu from './SearchMenu';
-import api from '@/services/api';
 import SEARCH_OPTS from './util';
 
 

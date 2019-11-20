@@ -1,5 +1,5 @@
-import React from 'react';
 import SVGIcon from '@material-ui/core/SvgIcon';
+import React from 'react';
 
 function FilterIcon(props) {
   return (

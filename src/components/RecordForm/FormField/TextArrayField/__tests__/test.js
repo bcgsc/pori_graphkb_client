@@ -1,12 +1,12 @@
-import React from 'react';
-import { mount } from 'enzyme';
 import {
-  TextField,
   Chip,
   IconButton,
+  TextField,
 } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import { mount } from 'enzyme';
+import React from 'react';
 
 import TextArrayField from '..';
 

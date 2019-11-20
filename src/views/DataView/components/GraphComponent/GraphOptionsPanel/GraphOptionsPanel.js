@@ -1,21 +1,22 @@
-import { boundMethod } from 'autobind-decorator';
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import './GraphOptionsPanel.scss';
+
 import {
   Checkbox,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  FormControl,
   FormControlLabel,
   IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
   Typography,
-  FormControl,
-  Divider,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import HelpIcon from '@material-ui/icons/Help';
+import { boundMethod } from 'autobind-decorator';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
-import './GraphOptionsPanel.scss';
 import ResourceSelectComponent from '@/components/ResourceSelectComponent';
 import config from '@/static/config';
 

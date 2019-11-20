@@ -1,13 +1,14 @@
-import * as jc from 'json-cycle';
 import { boundMethod } from 'autobind-decorator';
+import * as jc from 'json-cycle';
 
 import config from '@/static/config';
+
 import {
-  BadRequestError,
-  AuthorizationError,
-  AuthenticationError,
-  RecordExistsError,
   APIConnectionFailureError,
+  AuthenticationError,
+  AuthorizationError,
+  BadRequestError,
+  RecordExistsError,
 } from '../errors';
 
 const {

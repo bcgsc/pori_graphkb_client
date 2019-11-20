@@ -2,15 +2,17 @@
  * @module /components/GraphNodeDisplay
  */
 
-import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
-import * as d3Select from 'd3-selection';
-import * as d3Drag from 'd3-drag';
-
 import './GraphNodeDisplay.scss';
-import config from '../../../../../static/config';
+
+import * as d3Drag from 'd3-drag';
+import * as d3Select from 'd3-selection';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
+
+import schema from '@/services/schema';
+import config from '@/static/config';
+
 import { GraphNode } from '../kbgraph';
-import schema from '../../../../../services/schema';
 
 const { NODE_RADIUS } = config.GRAPH_PROPERTIES;
 const DEFAULT_OPACITY = 1;

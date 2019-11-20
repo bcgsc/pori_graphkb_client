@@ -1,13 +1,14 @@
 import '@testing-library/jest-dom/extend-expect';
-import React from 'react';
-import {
-  render, fireEvent,
-} from '@testing-library/react';
 
+import {
+  fireEvent,
+  render,
+} from '@testing-library/react';
+import React from 'react';
 
 import AdvancedSearchView from '..';
 
-jest.mock('../../../components/RecordAutocomplete', () => (({
+jest.mock('@/components/RecordAutocomplete', () => (({
   value, onChange, name, label,
 }) => {
   const handleChange = () => {
@@ -23,7 +24,7 @@ jest.mock('../../../components/RecordAutocomplete', () => (({
   );
 }));
 
-jest.mock('../../../components/ResourceSelectComponent', () => (({
+jest.mock('@/components/ResourceSelectComponent', () => (({
   resources = [], value, onChange, className,
 }) => {
   const handleChange = (event) => {

@@ -1,6 +1,5 @@
-import { boundMethod } from 'autobind-decorator';
-
 import kbSchema from '@bcgsc/knowledgebase-schema';
+import { boundMethod } from 'autobind-decorator';
 
 import { getQueryFromSearch } from './api/search';
 

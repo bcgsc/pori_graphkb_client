@@ -1,15 +1,14 @@
 /**
  * Adapted from: https://material-ui.com/demos/autocomplete/#react-select
  */
-import React from 'react';
 import {
-  Typography,
-  TextField,
   MenuItem,
   Paper,
+  TextField,
+  Typography,
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-
+import React from 'react';
 
 import DetailChip from '../DetailChip';
 

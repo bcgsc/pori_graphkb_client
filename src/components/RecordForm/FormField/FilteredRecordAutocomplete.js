@@ -1,14 +1,15 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { boundMethod } from 'autobind-decorator';
-import { FormControl, FormHelperText } from '@material-ui/core';
+import './index.scss';
 
-import api from '../../../services/api';
+import { FormControl, FormHelperText } from '@material-ui/core';
+import { boundMethod } from 'autobind-decorator';
+import PropTypes from 'prop-types';
+import React from 'react';
+
+import api from '@/services/api';
+import schema from '@/services/schema';
+
 import RecordAutocomplete from '../../RecordAutocomplete';
 import ResourceSelectComponent from '../../ResourceSelectComponent';
-import schema from '../../../services/schema';
-
-import './index.scss';
 
 /**
  * Allows an autocomplete record link to be filtered based on some class

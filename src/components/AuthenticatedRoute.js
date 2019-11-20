@@ -1,13 +1,13 @@
+import { PropTypes } from 'prop-types';
 import React, { useContext } from 'react';
 import {
-  Route,
   Redirect,
+  Route,
 } from 'react-router-dom';
-import { PropTypes } from 'prop-types';
 
 import { KBContext } from '@/components/KBContext';
-import { isAuthenticated, isAdmin } from '@/services/auth';
 import { LocationPropType } from '@/components/types';
+import { isAdmin, isAuthenticated } from '@/services/auth';
 
 /**
  * @returns {Route} a route component which checks authentication on render or redirects to login

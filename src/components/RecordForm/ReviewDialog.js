@@ -1,26 +1,26 @@
-import React, {
-  useContext, useCallback, useState,
-} from 'react';
-import PropTypes from 'prop-types';
-import {
-  IconButton, Typography, Dialog, DialogContent, FormControlLabel, Checkbox,
-} from '@material-ui/core';
-import CancelIcon from '@material-ui/icons/Cancel';
-
-import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
-
-import { getUser } from '@/services/auth';
-import schema from '@/services/schema';
-import useSchemaForm from '@/components/hooks/useSchemaForm';
-import { KBContext } from '@/components/KBContext';
-import ActionButton from '@/components/ActionButton';
-
 import './index.scss';
 
+import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
+import {
+  Checkbox,
+  Dialog, DialogContent, FormControlLabel, IconButton, Typography,
+} from '@material-ui/core';
+import CancelIcon from '@material-ui/icons/Cancel';
+import PropTypes from 'prop-types';
+import React, {
+  useCallback, useContext, useState,
+} from 'react';
+
+import ActionButton from '@/components/ActionButton';
+import useSchemaForm from '@/components/hooks/useSchemaForm';
+import { KBContext } from '@/components/KBContext';
+import { getUser } from '@/services/auth';
+import schema from '@/services/schema';
+
+import FormField from './FormField';
 import {
   FORM_VARIANT,
 } from './util';
-import FormField from './FormField';
 
 
 const MODEL_NAME = 'StatementReview';

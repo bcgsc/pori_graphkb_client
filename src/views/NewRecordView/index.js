@@ -1,8 +1,9 @@
-import React, {
-  useState, useCallback, useEffect,
-} from 'react';
-import * as qs from 'qs';
 import propTypes from 'prop-types';
+import * as qs from 'qs';
+import React, {
+  useCallback, useEffect,
+  useState,
+} from 'react';
 
 import RecordForm from '@/components/RecordForm';
 import FormField from '@/components/RecordForm/FormField';

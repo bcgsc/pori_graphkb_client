@@ -1,30 +1,31 @@
 /**
  * @module /Main
  */
-import React, {
-  useState, useRef,
-} from 'react';
-import PropTypes from 'prop-types';
-import {
-  Link,
-} from 'react-router-dom';
-import {
-  AppBar,
-  IconButton,
-  Button,
-  Typography,
-  MenuItem,
-  Popover,
-  Card,
-} from '@material-ui/core';
-import PersonIcon from '@material-ui/icons/Person';
-import MenuIcon from '@material-ui/icons/Menu';
-
-
 import '../index.scss';
 
 import {
-  getUsername, isAdmin, logout, isAuthenticated,
+  AppBar,
+  Button,
+  Card,
+  IconButton,
+  MenuItem,
+  Popover,
+  Typography,
+} from '@material-ui/core';
+import MenuIcon from '@material-ui/icons/Menu';
+import PersonIcon from '@material-ui/icons/Person';
+import PropTypes from 'prop-types';
+import React, {
+  useRef,
+  useState,
+} from 'react';
+import {
+  Link,
+} from 'react-router-dom';
+
+import {
+  getUsername, isAdmin, isAuthenticated,
+  logout,
 } from '@/services/auth';
 
 

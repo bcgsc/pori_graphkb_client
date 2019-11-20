@@ -1,24 +1,24 @@
-import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
+import '../index.scss';
+
 import {
+  Avatar,
+  Card,
+  CardContent,
+  CardHeader,
+  Divider,
   TableCell,
   TableRow,
   Typography,
-  Avatar,
-  CardHeader,
-  Card,
-  CardContent,
-  Divider,
 } from '@material-ui/core';
-import EmbeddedIcon from '@material-ui/icons/SelectAll';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EmbeddedIcon from '@material-ui/icons/SelectAll';
+import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
 
-
-import DetailChip from '@/components/DetailChip';
-import { getUsername } from '@/services/auth';
 import ActionButton from '@/components/ActionButton';
-import '../index.scss';
+import DetailChip from '@/components/DetailChip';
 import { KBContext } from '@/components/KBContext';
+import { getUsername } from '@/services/auth';
 
 /**
  * Displays a linked record row + detail chip in EmbeddedListTable.

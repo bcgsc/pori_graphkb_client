@@ -2,16 +2,17 @@
  * @module /views/ErrorView
  */
 
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import { Typography, Button, Tooltip } from '@material-ui/core';
-import AssignmentIcon from '@material-ui/icons/Assignment';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-
 import './index.scss';
-import config from '@/static/config';
+
+import { Button, Tooltip, Typography } from '@material-ui/core';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { Link } from 'react-router-dom';
+
 import { LocationPropType } from '@/components/types';
+import config from '@/static/config';
 
 const { FEEDBACK: { JIRA: JIRA_LINK, EMAIL } } = config;
 

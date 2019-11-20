@@ -1,8 +1,8 @@
 /**
  * @module /components/GraphActionsNode
  */
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 
 import config from '@/static/config';
 

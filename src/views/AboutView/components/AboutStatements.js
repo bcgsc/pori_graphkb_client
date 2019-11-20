@@ -1,10 +1,10 @@
-import React from 'react';
 import {
-  Typography,
   List,
   ListItem,
   ListItemText,
+  Typography,
 } from '@material-ui/core';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 

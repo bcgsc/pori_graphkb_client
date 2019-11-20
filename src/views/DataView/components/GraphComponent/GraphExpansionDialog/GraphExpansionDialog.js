@@ -1,21 +1,22 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import './GraphExpansionDialog.scss';
+
 import {
   Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
   Checkbox,
+  Dialog,
   DialogActions,
+  DialogContent,
+  DialogTitle,
   Divider,
-  Typography,
   List,
   ListItem,
   ListItemText,
+  Typography,
 } from '@material-ui/core';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 import schema from '@/services/schema';
-import './GraphExpansionDialog.scss';
 
 /**
  * Dialog opened when a user attempts to open a heavily connected node.

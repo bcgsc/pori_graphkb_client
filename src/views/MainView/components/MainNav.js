@@ -95,10 +95,6 @@ class MainNav extends React.PureComponent {
       route, label, icon = null, inset = false, topLevel,
     }) => {
       const selected = (activeLink === route) && (!topLevel);
-      console.log("TCL: MainNav -> render -> topLevel", topLevel)
-      console.log("TCL: MainNav -> render -> route", route)
-      console.log("TCL: MainNav -> render -> activeLink", activeLink)
-      console.log("TCL: MainNav -> render -> selected", selected)
 
       return (
         <Link to={route} key={label.toLowerCase()}>

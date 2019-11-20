@@ -34,11 +34,10 @@ const createPubmedQuery = pmid => api.post('/query', {
 const ImportPubmedView = () => {
   const snackbar = useContext(SnackbarContext);
   const [errorText, setErrorText] = useState('');
-  const [pmid, setPmid] = useState('1776821');
+  const [pmid, setPmid] = useState('');
 
   const [currentRecords, setCurrentRecords] = useState([]);
   const [source, setSource] = useState('');
-  // const [importRecord, setImportRecord] = useState([]);
 
   const controllers = useRef([]);
 

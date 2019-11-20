@@ -194,7 +194,7 @@ class GraphComponent extends Component {
       expandedEdgeTypes,
       allProps,
     }, () => {
-      const { data } = this.state;
+      const { data = {} } = this.state;
       let nodes = [];
       let links = [];
       let graphObjects = {};
@@ -224,11 +224,15 @@ class GraphComponent extends Component {
       if (storedOptions) {
         initialGraphOptions = storedOptions;
       } else {
-        if (this.propsMap.nodeProps.length !== 0) {
+        const nodePropVal = Object.values(this.propsMap.nodeProps);
+        const nodeHasDefaultProps = nodePropVal.length !== 0;
+
+        if (nodeHasDefaultProps) {
           graphOptions.nodesLegend = true;
         }
         initialGraphOptions = graphOptions;
       }
+
 
       this.setState({
         graphOptions: initialGraphOptions,
@@ -452,6 +456,9 @@ class GraphComponent extends Component {
         },
         expandExclusions,
       ));
+
+      this.saveGraphStatetoURL([...nodes]);
+
       this.drawGraph();
       this.updateColors();
     }
@@ -727,8 +734,6 @@ class GraphComponent extends Component {
         });
       }
     });
-
-    // this.saveGraphStatetoURL([...nodes]);
 
     return {
       expandable,

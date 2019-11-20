@@ -5,19 +5,25 @@ import {
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 import PropTypes from 'prop-types';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useDebounce } from 'use-debounce';
 
 
 const SearchBox = ({
-  onSubmit, value, error, helperText, onChange, className, ...props
+  onSubmit, value, error, helperText, onChange, className, debounceMs, ...props
 }) => {
   const [searchText, setSearchText] = useState(value);
+  const [debouncedSearchText] = useDebounce(searchText, debounceMs);
   const ENTER_KEYCODE = 13;
 
   const handleTextChange = useCallback(({ target: { value: newValue } }) => {
     setSearchText(newValue);
-    onChange(newValue);
-  }, [onChange]);
+    onChange(debouncedSearchText);
+  }, [debouncedSearchText, onChange]);
+
+  useEffect(() => {
+    onChange(debouncedSearchText);
+  }, [debouncedSearchText, onChange]);
 
   return (
     <div
@@ -55,6 +61,7 @@ SearchBox.propTypes = {
   error: PropTypes.bool,
   helperText: PropTypes.string,
   className: PropTypes.string,
+  debounceMs: PropTypes.number,
 };
 
 
@@ -64,6 +71,7 @@ SearchBox.defaultProps = {
   value: '',
   error: false,
   helperText: '',
+  debounceMs: 300,
   className: '',
 };
 

@@ -14,7 +14,7 @@ import {
 
 import kbSchema from '@bcgsc/knowledgebase-schema';
 
-import { KBContext } from '../../../KBContext';
+import { KBContext } from '@/components/KBContext';
 import './index.scss';
 import schema from '@/services/schema';
 

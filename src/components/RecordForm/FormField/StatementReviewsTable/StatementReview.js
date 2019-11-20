@@ -14,11 +14,11 @@ import EmbeddedIcon from '@material-ui/icons/SelectAll';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 
-import DetailChip from '../../../DetailChip';
+import DetailChip from '@/components/DetailChip';
 import { getUsername } from '@/services/auth';
-import ActionButton from '../../../ActionButton';
+import ActionButton from '@/components/ActionButton';
 import '../index.scss';
-import { KBContext } from '../../../KBContext';
+import { KBContext } from '@/components/KBContext';
 
 /**
  * Displays a linked record row + detail chip in EmbeddedListTable.

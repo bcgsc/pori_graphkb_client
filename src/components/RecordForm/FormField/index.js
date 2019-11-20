@@ -6,8 +6,8 @@ import {
 import PropTypes from 'prop-types';
 
 import api from '@/services/api';
-import ResourceSelectComponent from '../../ResourceSelectComponent';
-import RecordAutocomplete from '../../RecordAutocomplete';
+import ResourceSelectComponent from '@/components/ResourceSelectComponent';
+import RecordAutocomplete from '@/components/RecordAutocomplete';
 import BooleanField from './BooleanField';
 import TextArrayField from './TextArrayField';
 import PermissionsTable from './PermissionsTable';
@@ -19,7 +19,7 @@ import EmbeddedRecord from './EmbeddedRecord';
 import './index.scss';
 import { FORM_VARIANT } from '../util';
 import EmbeddedListTable from './StatementReviewsTable';
-import { GeneralRecordPropType } from '../../types';
+import { GeneralRecordPropType } from '@/components/types';
 import schema from '@/services/schema';
 
 /**

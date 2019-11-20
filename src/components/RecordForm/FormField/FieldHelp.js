@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import ClickToolTip from '../../ClickToolTip';
+import ClickToolTip from '@/components/ClickToolTip';
 
 /**
  * Clickable Question mark Icon that displays some description

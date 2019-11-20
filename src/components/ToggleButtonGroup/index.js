@@ -4,7 +4,7 @@ import EditIcon from '@material-ui/icons/Create';
 import ViewIcon from '@material-ui/icons/Pageview';
 import utils from '@/services/util';
 
-import ConfirmActionDialog from '../ActionButton/ConfirmActionDialog';
+import ConfirmActionDialog from '@/components/ActionButton/ConfirmActionDialog';
 import './index.scss';
 
 /**

@@ -10,16 +10,17 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 
 import { getUser } from '@/services/auth';
+import schema from '@/services/schema';
+import useSchemaForm from '@/components/hooks/useSchemaForm';
+import { KBContext } from '@/components/KBContext';
+import ActionButton from '@/components/ActionButton';
 
 import './index.scss';
-import ActionButton from '../ActionButton';
+
 import {
   FORM_VARIANT,
 } from './util';
-import { KBContext } from '../KBContext';
 import FormField from './FormField';
-import useSchemaForm from '../hooks/useSchemaForm';
-import schema from '@/services/schema';
 
 
 const MODEL_NAME = 'StatementReview';

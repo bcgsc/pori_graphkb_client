@@ -10,19 +10,20 @@ import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 
 import api from '@/services/api';
+import schema from '@/services/schema';
+import ActionButton from '@/components/ActionButton';
+import ToggleButtonGroup from '@/components/ToggleButtonGroup';
+import useSchemaForm from '@/components/hooks/useSchemaForm';
+import { GeneralRecordPropType } from '@/components/types';
 
 import './index.scss';
-import ActionButton from '../ActionButton';
+
 import FormLayout from './FormLayout';
-import {
-  FORM_VARIANT,
-} from './util';
-import schema from '@/services/schema';
+import { FORM_VARIANT } from './util';
+
 import ReviewDialog from './ReviewDialog';
-import ToggleButtonGroup from '../ToggleButtonGroup';
+
 import EdgeTable from './EdgeTable';
-import useSchemaForm from '../hooks/useSchemaForm';
-import { GeneralRecordPropType } from '../types';
 
 
 const cleanPayload = (payload) => {

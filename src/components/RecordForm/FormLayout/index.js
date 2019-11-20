@@ -11,8 +11,8 @@ import ExpandMore from '@material-ui/icons/ExpandMore';
 
 import schema from '@/services/schema';
 import EdgeTable from '../EdgeTable';
-import StatementSentence from '../../SentencePreview/StatementSentence';
-import EdgeSentence from '../../SentencePreview/EdgeSentence';
+import StatementSentence from '@/components/SentencePreview/StatementSentence';
+import EdgeSentence from '@/components/SentencePreview/EdgeSentence';
 
 import {
   CLASS_MODEL_PROP,

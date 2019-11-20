@@ -10,7 +10,7 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 
 import schema from '@/services/schema';
-import useGrid from '../hooks/useGrid';
+import useGrid from '@/components/hooks/useGrid';
 
 
 const isReversed = (nodeId, { out: src, in: tgt }) => {

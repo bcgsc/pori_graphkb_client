@@ -16,7 +16,7 @@ import {
 } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 
-import { GeneralRecordPropType } from '../types';
+import { GeneralRecordPropType } from '@/components/types';
 import './index.scss';
 
 

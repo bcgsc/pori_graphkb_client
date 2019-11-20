@@ -9,8 +9,8 @@ import {
 } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
 
-import RecordForm from '../RecordForm';
-import { FORM_VARIANT } from '../RecordForm/util';
+import RecordForm from '@/components/RecordForm';
+import { FORM_VARIANT } from '@/components/RecordForm/util';
 
 import './index.scss';
 

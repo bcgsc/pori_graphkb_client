@@ -179,7 +179,7 @@ $closed-drawer-width: 56px;
   &__link {
     color: $palette__text--primary;
 
-    &--selected {
+    &--selected.MuiTypography-body1 {
       color: $palette__secondary--main;
     }
   }

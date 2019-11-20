@@ -95,6 +95,11 @@ class MainNav extends React.PureComponent {
       route, label, icon = null, inset = false, topLevel,
     }) => {
       const selected = (activeLink === route) && (!topLevel);
+      console.log("TCL: MainNav -> render -> topLevel", topLevel)
+      console.log("TCL: MainNav -> render -> route", route)
+      console.log("TCL: MainNav -> render -> activeLink", activeLink)
+      console.log("TCL: MainNav -> render -> selected", selected)
+
       return (
         <Link to={route} key={label.toLowerCase()}>
           <MenuItem onClick={() => { this.handleClickLink(route, topLevel ? route : null); }}>
@@ -102,7 +107,7 @@ class MainNav extends React.PureComponent {
             <ListItemText
               inset={inset}
             >
-              <Typography variant="body1" className={`main-nav-drawer__link${selected ? '--selected' : ''}`}>
+              <Typography variant="body1" color="secondary" className={`main-nav-drawer__link${selected ? '--selected' : ''}`}>
                 {label}
               </Typography>
             </ListItemText>

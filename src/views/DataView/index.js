@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Chip,
   Typography,
   CircularProgress,
   IconButton,
@@ -9,19 +8,17 @@ import {
 import TimelineIcon from '@material-ui/icons/Timeline';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Tooltip from '@material-ui/core/Tooltip';
+import FilterListIcon from '@material-ui/icons/FilterList';
 import { boundMethod } from 'autobind-decorator';
 import * as qs from 'qs';
 
 
-import kbSchema from '@bcgsc/knowledgebase-schema';
-
-
+import FilterTablePopover from './components/FilterTablePopover';
 import DataTable from './components/DataTable';
 import GraphComponent from './components/GraphComponent';
 import DetailDrawer from './components/DetailDrawer';
-import RecordFormDialog from '../../components/RecordFormDialog';
 import api from '../../services/api';
-import { cleanLinkedRecords } from '../../components/util';
+import FilterChips from './components/FilterChips';
 import { hashRecordsByRID } from './util';
 import { HistoryPropType, LocationPropType } from '../../components/types';
 import schema from '../../services/schema';
@@ -57,9 +54,12 @@ class DataView extends React.Component {
       detailPanelRow: null,
       optionsMenuAnchor: null,
       selectedRecords: [],
-      filtersEditOpen: false,
       filters: {},
+      filterGroups: null,
+      filterTableOpen: false,
+      filterTableAnchorEl: null,
       search,
+      searchType: 'Quick',
       isExportingData: false,
       totalRowsSelected: 0,
       graphData: null,
@@ -77,8 +77,10 @@ class DataView extends React.Component {
       onErrorCallback: this.handleError,
     });
 
-    const filters = await this.parseFilters(cache);
-    this.setState({ cache, filters });
+    const {
+      searchType, limit, neighbors, ...filters
+    } = this.parseFilters();
+    this.setState({ cache, filters, searchType });
   }
 
   componentWillUnmount() {
@@ -90,27 +92,23 @@ class DataView extends React.Component {
   }
 
   /**
-   * If there are any linked records, fetch them now and attach them in place of their reference ID
+   * Grab filters from search and sets filtergroups if it is advanced search
    */
-  async parseFilters(cache) {
+  parseFilters() {
     const { search } = this.state;
 
     try {
-      const { queryParams, modelName } = api.getQueryFromSearch({ search, schema });
-      const links = [];
-      Object.entries(queryParams || {}).forEach(([key, value]) => {
-        if (typeof value === 'string' && kbSchema.util.looksLikeRID(value)) {
-          links.push({ key, value });
-        }
-      });
+      const {
+        queryParams, modelName, searchChipProps, searchChipProps: { searchType },
+      } = api.getQueryFromSearch({ search, schema });
 
-      const records = await cache.getRecords(links.map(l => ({ '@rid': l.value })));
-      records.forEach((rec, index) => {
-        const { key } = links[index];
-        queryParams[key] = rec;
-      });
+      if (searchType === 'Advanced') {
+        const { filters: filterGroups } = searchChipProps;
+        this.setState({ filterGroups });
+        delete searchChipProps.filters;
+      }
 
-      return { ...queryParams, '@class': modelName };
+      return { '@class': modelName, ...queryParams, ...searchChipProps };
     } catch (err) {
       return this.handleError(err);
     }
@@ -220,28 +218,6 @@ class DataView extends React.Component {
     this.setState({ statusMessage, totalRows: rowCount });
   }
 
-  /**
-   * Changes the current filters set and updates the URL to match
-   */
-  @boundMethod
-  handleEditFilters(filters) {
-    const { history, location: { pathname } } = this.props;
-    // drop all undefined values
-    const { routeName } = schema.get(filters);
-
-    try {
-      const search = api.getSearchFromQuery({
-        schema,
-        queryParams: cleanLinkedRecords(filters),
-        routeName,
-      });
-      history.replace(`${pathname}?${search}`);
-      this.setState({ filtersEditOpen: false, filters, search: `?${search}` });
-    } catch (err) {
-      this.handleError(err);
-    }
-  }
-
   @boundMethod
   async loadSavedStateFromURL() {
     const { cache } = this.state;
@@ -258,6 +234,15 @@ class DataView extends React.Component {
       this.setState({ graphData: data });
     } catch (err) {
       this.handleError(err);
+    }
+  }
+
+  @boundMethod
+  handleFilterTableToggle(event, openState) {
+    if (openState === 'open') {
+      this.setState({ filterTableAnchorEl: event.currentTarget, filterTableOpen: true });
+    } else {
+      this.setState({ filterTableAnchorEl: null, filterTableOpen: false });
     }
   }
 
@@ -347,41 +332,6 @@ class DataView extends React.Component {
     );
   }
 
-  /**
-   * Draws the chips above the table which show the user the current filters
-   */
-  renderFilterChips({ limit, neighbors, ...params }, prefix = null) {
-    const chips = [];
-    Object.entries(params).forEach(([key, param]) => {
-      let operator = '=';
-      let value = param;
-
-      if (param !== undefined) {
-        if (typeof param === 'object' && param !== null && !param['@rid']) {
-          chips.push(...this.renderFilterChips(param, key));
-        } else {
-          if (`${param}`.startsWith('~')) {
-            operator = '~';
-            value = param.slice(1);
-          }
-          if (param && param['@rid']) {
-            value = schema.getLabel(param);
-          }
-          const name = prefix
-            ? `${prefix}.${key}`
-            : key;
-          chips.push((
-            <Chip
-              key={name}
-              label={`${name} ${operator} ${value}`}
-            />
-          ));
-        }
-      }
-    });
-    return chips;
-  }
-
   render() {
     const {
       cache,
@@ -389,10 +339,14 @@ class DataView extends React.Component {
       totalRows,
       detailPanelRow,
       totalRowsSelected,
-      filtersEditOpen,
       filters,
+      filterGroups,
+      filterTableOpen,
+      filterTableAnchorEl,
+      searchType,
       selectedRecords,
     } = this.state;
+
 
     const { history } = this.props;
     const URLContainsTable = String(history.location.pathname).includes('table');
@@ -407,24 +361,36 @@ class DataView extends React.Component {
         <div className={`data-view__header${!URLContainsTable ? '--graph-view' : ''}`}>
           {URLContainsTable && (
             <>
-              <Typography variant="h5">Active Filters</Typography>
-              {this.renderFilterChips(filters)}
+              <Typography variant="h5">{searchType} Search</Typography>
+              <FilterChips {...filters} />
+              {(searchType === 'Advanced') && (
+                <>
+                  <Tooltip title="click here to see active filter groups">
+                    <IconButton
+                      onClick={event => this.handleFilterTableToggle(event, 'open')}
+                      disabled={!filterGroups}
+                    >
+                      <FilterListIcon />
+                    </IconButton>
+                  </Tooltip>
+                  {(filterGroups) && (
+                    <FilterTablePopover
+                      anchorEl={filterTableAnchorEl}
+                      filterGroups={filterGroups}
+                      handleToggle={event => this.handleFilterTableToggle(event, 'close')}
+                      isOpen={filterTableOpen}
+                    />
+                  )}
+                </>
+              )}
             </>
           )}
-          <RecordFormDialog
-            isOpen={filtersEditOpen}
-            modelName="V"
-            onClose={() => this.setState({ filtersEditOpen: false })}
-            onError={this.handleError}
-            onSubmit={this.handleEditFilters}
-            title="Edit Search Filters"
-            variant="search"
-            value={filters}
-          />
           {URLContainsTable && (
-            <IconButton onClick={this.handleToggleOptionsMenu} className="data-view__edit-filters">
-              <MoreHorizIcon color="action" />
-            </IconButton>
+            <Tooltip title="click here for table and export options">
+              <IconButton onClick={this.handleToggleOptionsMenu} className="data-view__edit-filters">
+                <MoreHorizIcon color="action" />
+              </IconButton>
+            </Tooltip>
           )}
         </div>
         <div className={`data-view__content${!URLContainsTable ? '--graph-view' : ''}`}>

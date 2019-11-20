@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Chip,
   Typography,
   CircularProgress,
   IconButton,
@@ -19,6 +18,7 @@ import DataTable from './components/DataTable';
 import GraphComponent from './components/GraphComponent';
 import DetailDrawer from './components/DetailDrawer';
 import api from '../../services/api';
+import FilterChips from './components/FilterChips';
 import { hashRecordsByRID } from './util';
 import { HistoryPropType, LocationPropType } from '../../components/types';
 import schema from '../../services/schema';
@@ -77,10 +77,9 @@ class DataView extends React.Component {
       onErrorCallback: this.handleError,
     });
 
-    const filters = this.parseFilters();
-    const { searchType } = filters;
-    delete filters.searchType;
-
+    const {
+      searchType, limit, neighbors, ...filters
+    } = this.parseFilters();
     this.setState({ cache, filters, searchType });
   }
 
@@ -114,30 +113,6 @@ class DataView extends React.Component {
       return this.handleError(err);
     }
   }
-
-
-  /**
-   * Draws the chips above the table which show the user the current filters
-   */
-  renderFilterChips = (filters) => {
-    const {
-      limit, neighbors, ...params
-    } = filters;
-
-    const chips = [];
-    Object.entries(params).forEach(([key, param]) => {
-      const operator = '=';
-      const isChipProp = key.toLowerCase().includes('chip');
-      const label = isChipProp ? param : `${key} ${operator} ${param}`;
-      chips.push((
-        <Chip
-          key={key}
-          label={label}
-        />
-      ));
-    });
-    return chips;
-  };
 
   /**
    * Opens the right-hand panel that shows details of a given record
@@ -387,7 +362,7 @@ class DataView extends React.Component {
           {URLContainsTable && (
             <>
               <Typography variant="h5">{searchType} Search</Typography>
-              {this.renderFilterChips(filters)}
+              <FilterChips {...filters} />
               {(searchType === 'Advanced') && (
                 <>
                   <Tooltip title="click here to see active filter groups">

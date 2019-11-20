@@ -1,18 +1,18 @@
-import React, {
-  useState, useEffect, useCallback, useRef, useContext,
-} from 'react';
+import './index.scss';
+
+import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 import {
   Typography,
 } from '@material-ui/core';
 import { titleCase } from 'change-case';
-
-import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
+import React, {
+  useCallback, useContext,
+  useEffect, useRef, useState,
+} from 'react';
 
 import SearchBox from '../../components/SearchBox';
-import PubmedCard from './components/PubmedCard';
 import api from '../../services/api';
-
-import './index.scss';
+import PubmedCard from './components/PubmedCard';
 
 
 const createPubmedQuery = pmid => api.post('/query', {

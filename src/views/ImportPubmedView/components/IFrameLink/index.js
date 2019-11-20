@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import './index.scss';
+
 import { CircularProgress } from '@material-ui/core';
 import PropTypes from 'prop-types';
-
-
-import './index.scss';
+import React, { useState } from 'react';
 
 
 const IFrameLink = ({

@@ -1,17 +1,17 @@
-import React from 'react';
-import {
-  Card, CardActions, CardContent, Typography, Button, IconButton,
-} from '@material-ui/core';
-import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import InputIcon from '@material-ui/icons/Input';
-import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
-
-import IFrame from '../IFrameLink';
-import schema from '../../../../services/schema';
-
-
 import './index.scss';
+
+import {
+  Button, Card, CardActions, CardContent, IconButton,
+  Typography,
+} from '@material-ui/core';
+import InputIcon from '@material-ui/icons/Input';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Link } from 'react-router-dom';
+
+import schema from '../../../../services/schema';
+import IFrame from '../IFrameLink';
 
 
 const PUBMED_BASE_URL = 'https://www.ncbi.nlm.nih.gov/pubmed';

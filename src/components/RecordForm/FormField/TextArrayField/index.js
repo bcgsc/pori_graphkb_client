@@ -1,16 +1,16 @@
-import { boundMethod } from 'autobind-decorator';
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import './index.scss';
+
 import {
-  TextField,
   Chip,
   IconButton,
+  TextField,
 } from '@material-ui/core';
-import CancelIcon from '@material-ui/icons/Cancel';
 import AddIcon from '@material-ui/icons/Add';
+import CancelIcon from '@material-ui/icons/Cancel';
 import RefreshIcon from '@material-ui/icons/Refresh';
-
-import './index.scss';
+import { boundMethod } from 'autobind-decorator';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 
 /**

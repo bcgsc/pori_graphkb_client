@@ -3,7 +3,7 @@
  * @module /services/util
  */
 
-import config from '../static/config';
+import config from '@/static/config';
 
 const {
   PERMISSIONS,

@@ -45,6 +45,9 @@ module.exports = {
   transformIgnorePatterns: [
     '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$',
   ],
+  moduleNameMapper: {
+    '@/(.*)$': '<rootDir>/src/$1',
+  },
   moduleFileExtensions: [
     'web.js',
     'js',

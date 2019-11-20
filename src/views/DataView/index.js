@@ -1,32 +1,30 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import {
-  Chip,
-  Typography,
-  CircularProgress,
-  IconButton,
-} from '@material-ui/core';
-import TimelineIcon from '@material-ui/icons/Timeline';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import Tooltip from '@material-ui/core/Tooltip';
-import { boundMethod } from 'autobind-decorator';
-import * as qs from 'qs';
-
+import './index.scss';
 
 import kbSchema from '@bcgsc/knowledgebase-schema';
+import {
+  Chip,
+  CircularProgress,
+  IconButton,
+  Typography,
+} from '@material-ui/core';
+import Tooltip from '@material-ui/core/Tooltip';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import TimelineIcon from '@material-ui/icons/Timeline';
+import { boundMethod } from 'autobind-decorator';
+import PropTypes from 'prop-types';
+import * as qs from 'qs';
+import React from 'react';
 
+import RecordFormDialog from '@/components/RecordFormDialog';
+import { HistoryPropType, LocationPropType } from '@/components/types';
+import { cleanLinkedRecords } from '@/components/util';
+import api from '@/services/api';
+import schema from '@/services/schema';
 
 import DataTable from './components/DataTable';
-import GraphComponent from './components/GraphComponent';
 import DetailDrawer from './components/DetailDrawer';
-import RecordFormDialog from '../../components/RecordFormDialog';
-import api from '../../services/api';
-import { cleanLinkedRecords } from '../../components/util';
+import GraphComponent from './components/GraphComponent';
 import { hashRecordsByRID } from './util';
-import { HistoryPropType, LocationPropType } from '../../components/types';
-import schema from '../../services/schema';
-
-import './index.scss';
 
 /**
  * Shows the search result filters and an edit button

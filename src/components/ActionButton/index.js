@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import { Button } from '@material-ui/core';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 
 import ConfirmActionDialog from './ConfirmActionDialog';
 

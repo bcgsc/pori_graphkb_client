@@ -1,28 +1,28 @@
 /**
  * @module /components/DetailChip
  */
-import { boundMethod } from 'autobind-decorator';
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import './index.scss';
+
 import {
-  Chip,
   Avatar,
-  Popover,
-  Typography,
-  Divider,
   Card,
   CardContent,
+  Chip,
+  Divider,
+  IconButton,
+  Popover,
   Table,
   TableBody,
-  TableRow,
   TableCell,
-  IconButton,
+  TableRow,
+  Typography,
 } from '@material-ui/core';
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-
-import './index.scss';
+import { boundMethod } from 'autobind-decorator';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 /**
  * Default card pop up component displayed outlining details of record.

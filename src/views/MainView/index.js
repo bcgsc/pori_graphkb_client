@@ -1,40 +1,41 @@
 /**
  * @module /Main
  */
-import React, {
-  useState, useEffect, Suspense, lazy,
-} from 'react';
-import {
-  Route,
-  Redirect,
-  Switch,
-} from 'react-router-dom';
+import './index.scss';
+
 import {
   CircularProgress,
 } from '@material-ui/core';
 import fetchIntercept from 'fetch-intercept';
+import React, {
+  lazy,
+  Suspense, useEffect, useState,
+} from 'react';
+import {
+  Redirect,
+  Route,
+  Switch,
+} from 'react-router-dom';
 
-import config from '../../static/config';
+import AuthenticatedRoute from '@/components/AuthenticatedRoute';
+import { KBContext } from '@/components/KBContext';
+import config from '@/static/config';
 
-import './index.scss';
-
-import { KBContext } from '../../components/KBContext';
 import MainAppBar from './components/MainAppBar';
 import MainNav from './components/MainNav';
-import AuthenticatedRoute from '../../components/AuthenticatedRoute';
 
-const AboutView = lazy(() => import('../AboutView'));
-const AdminView = lazy(() => import('../AdminView'));
-const AdvancedSearchView = lazy(() => import('../AdvancedSearchView'));
-const DataView = lazy(() => import('../DataView'));
-const ErrorView = lazy(() => import('../ErrorView'));
-const FeedbackView = lazy(() => import('../FeedbackView'));
-const LoginView = lazy(() => import('../LoginView'));
-const NewRecordView = lazy(() => import('../NewRecordView'));
-const PopularSearchView = lazy(() => import('../PopularSearchView'));
-const QueryView = lazy(() => import('../QueryView'));
-const RecordView = lazy(() => import('../RecordView'));
-const ImportPubmedView = lazy(() => import('../ImportPubmedView'));
+const AboutView = lazy(() => import('@/views/AboutView'));
+const AdminView = lazy(() => import('@/views/AdminView'));
+const AdvancedSearchView = lazy(() => import('@/views/AdvancedSearchView'));
+const DataView = lazy(() => import('@/views/DataView'));
+const ErrorView = lazy(() => import('@/views/ErrorView'));
+const FeedbackView = lazy(() => import('@/views/FeedbackView'));
+const ImportPubmedView = lazy(() => import('@/views/ImportPubmedView'));
+const LoginView = lazy(() => import('@/views/LoginView'));
+const NewRecordView = lazy(() => import('@/views/NewRecordView'));
+const PopularSearchView = lazy(() => import('@/views/PopularSearchView'));
+const QueryView = lazy(() => import('@/views/QueryView'));
+const RecordView = lazy(() => import('@/views/RecordView'));
 
 const {
   API_BASE_URL,

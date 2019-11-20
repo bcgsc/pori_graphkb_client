@@ -1,18 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import './GraphLegend.scss';
+
 import {
-  Paper,
-  Typography,
   IconButton,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
+  Paper,
+  Typography,
 } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-import './GraphLegend.scss';
-import util from '../../../../../services/util';
+import util from '@/services/util';
 
 /**
  * Legend panels for nodes and links in graph.

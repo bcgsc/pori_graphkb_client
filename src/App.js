@@ -43,6 +43,17 @@ const theme = createMuiTheme({
       disabled: cssTheme.textDisabled,
     },
   },
+  typography: {
+    body1: { fontSize: cssTheme.fontSizeBody1 },
+    body2: { fontSize: cssTheme.fontSizeBody2 },
+    h1: { fontSize: cssTheme.fontSizeH1 },
+    h2: { fontSize: cssTheme.fontSizeH2 },
+    h3: { fontSize: cssTheme.fontSizeH3 },
+    h4: { fontSize: cssTheme.fontSizeH4 },
+    h5: { fontSize: cssTheme.fontSizeH5 },
+    h6: { fontSize: cssTheme.fontSizeH6 },
+    subtitle1: { fontSize: cssTheme.fontSizeSubtitle1 },
+  },
 });
 
 

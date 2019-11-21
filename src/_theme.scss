@@ -49,52 +49,13 @@ $transitions__duration--standard: 0.3s;
 /* MUI  palette divider (default) */
 $palette__divider: rgba(0, 0, 0, 0.12);
 
-// MUI Overrides: matches to MUI v3 style
-.MuiTypography {
-  &-body1,
-  &-h1,
-  &-h2,
-  &-h3,
-  &-h4,
-  &-h5,
-  &-h6 {
-    color: $palette__text--primary;
-  }
-
-  &-body2 {
-    color: $palette__text--secondary;
-  }
-
-  &-h1 {
-    font-size: 1.7rem;
-  }
-
-  &-h2 {
-    font-size: 1.5rem;
-  }
-
-  &-h3 {
-    font-size: 1.4rem;
-  }
-
-  &-h4 {
-    font-size: 1.25rem;
-  }
-
-  &-h5 {
-    font-size: 1.1rem;
-  }
-
-  &-body1 {
-    font-size: 1rem;
-  }
-
-  &-body2,
-  &-subtitle1,
-  &-h6 {
-    font-size: 0.875rem;
-  }
-}
+$typography__font-size--body1: 1rem;
+$typography__font-size--h1: 1.7rem;
+$typography__font-size--h2: 1.5rem;
+$typography__font-size--h3: 1.4rem;
+$typography__font-size--h4: 1.25rem;
+$typography__font-size--h5: 1.1rem;
+$typography__font-size--h6: 0.875rem;
 
 // export the css colors to use in creating the MUI theme
 :export {
@@ -102,16 +63,29 @@ $palette__divider: rgba(0, 0, 0, 0.12);
   errorDark: $palette__error--dark;
   errorLight: $palette__error--light;
   errorMain: $palette__error--main;
+
   primaryContrastText: $palette__primary--contrast-text;
   primaryDark: $palette__primary--dark;
   primaryLight: $palette__primary--light;
   primaryMain: $palette__primary--main;
+
   secondaryContrastText: $palette__secondary--contrast-text;
   secondaryDark: $palette__secondary--dark;
   secondaryLight: $palette__secondary--light;
   secondaryMain: $palette__secondary--main;
+
   textDisabled: $palette__text--disabled;
   textHint: $palette__text--hint;
   textPrimary: $palette__text--primary;
   textSecondary: $palette__text--secondary;
+
+  fontSizeBody1: $typography__font-size--body1;
+  fontSizeBody2: $typography__font-size--h6;
+  fontSizeH1: $typography__font-size--h1;
+  fontSizeH2: $typography__font-size--h2;
+  fontSizeH3: $typography__font-size--h3;
+  fontSizeH4: $typography__font-size--h4;
+  fontSizeH5: $typography__font-size--h5;
+  fontSizeH6: $typography__font-size--h6;
+  fontSizeSubtitle1: $typography__font-size--h6;
 }

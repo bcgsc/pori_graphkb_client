@@ -3,6 +3,7 @@
  */
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
+import { CssBaseline } from '@material-ui/core';
 import {
   createMuiTheme,
   MuiThemeProvider,
@@ -71,6 +72,7 @@ const jss = create({
 function App() {
   return (
     <StylesProvider injectFirst>
+      <CssBaseline />
       <JssProvider jss={jss} generateClassName={generateClassName}>
         <MuiThemeProvider theme={theme}>
           <SnackbarProvider anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>

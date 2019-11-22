@@ -9,6 +9,16 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 
 
+/**
+ * @param {Object} props
+ * @param {function} props.onSubmit the handler when the seach icon is pressed or enter is hit
+ * @param {function} props.onChange handler triggered when the input changes (debounced)
+ * @param {string} props.value the initial value in the serach box
+ * @param {string} props.helperText the text to display below the search box
+ * @param {string} props.className the class name to add to the parent div element
+ * @param {Number} props.debounceMs the number of ms to debounce reporting changes to the input text
+ * @param {boolean} props.error the error state of the input box
+ */
 const SearchBox = ({
   onSubmit, value, error, helperText, onChange, className, debounceMs, ...props
 }) => {
@@ -38,6 +48,7 @@ const SearchBox = ({
         value={searchText}
         onChange={handleTextChange}
         InputProps={{
+          'data-test-id': 'search-box__input',
           endAdornment: (
             <InputAdornment>
               <IconButton onClick={onSubmit} color="primary">

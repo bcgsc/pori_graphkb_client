@@ -4,7 +4,12 @@ import { CircularProgress } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
-
+/**
+ * @param {Object} props
+ * @param {string} props.url the url to display in the iframe
+ * @param {string} props.title the title of the iframe (not displayed)
+ * @param {string} props.className the class name to apply to the parent div element
+ */
 const IFrameLink = ({
   url, title, className, ...opt
 }) => {

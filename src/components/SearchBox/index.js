@@ -28,8 +28,7 @@ const SearchBox = ({
 
   const handleTextChange = useCallback(({ target: { value: newValue } }) => {
     setSearchText(newValue);
-    onChange(debouncedSearchText);
-  }, [debouncedSearchText, onChange]);
+  }, []);
 
   useEffect(() => {
     onChange(debouncedSearchText);
@@ -38,7 +37,7 @@ const SearchBox = ({
   return (
     <div
       className={`search-box ${className}`}
-      onKeyUp={event => event.keyCode === ENTER_KEYCODE && onSubmit}
+      onKeyUp={event => event.keyCode === ENTER_KEYCODE && onSubmit(searchText)}
       role="textbox"
       tabIndex={0}
     >
@@ -48,7 +47,6 @@ const SearchBox = ({
         value={searchText}
         onChange={handleTextChange}
         InputProps={{
-          'data-test-id': 'search-box__input',
           endAdornment: (
             <InputAdornment>
               <IconButton onClick={onSubmit} color="primary">
@@ -56,6 +54,9 @@ const SearchBox = ({
               </IconButton>
             </InputAdornment>
           ),
+        }}
+        inputProps={{ // eslint-disable-line react/jsx-no-duplicate-props
+          'data-testid': 'search-box__input',
         }}
         error={error}
         helperText={helperText}

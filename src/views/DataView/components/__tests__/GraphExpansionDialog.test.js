@@ -1,7 +1,9 @@
-import React from 'react';
 import { mount } from 'enzyme';
+import React from 'react';
+
+import testSchema from '@/services/schema';
+
 import GraphExpansionDialog from '../GraphComponent/GraphExpansionDialog/GraphExpansionDialog';
-import testSchema from '../../../../services/schema';
 
 
 const testNode = {

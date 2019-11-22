@@ -1,5 +1,6 @@
-import React from 'react';
 import { mount, shallow } from 'enzyme';
+import React from 'react';
+
 import GraphNodeDisplay from '../GraphComponent/GraphNodeDisplay/GraphNodeDisplay';
 import { GraphNode } from '../GraphComponent/kbgraph';
 

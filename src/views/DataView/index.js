@@ -1,29 +1,29 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import './index.scss';
+
 import {
-  Typography,
   CircularProgress,
   IconButton,
+  Typography,
 } from '@material-ui/core';
-import TimelineIcon from '@material-ui/icons/Timeline';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import Tooltip from '@material-ui/core/Tooltip';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import TimelineIcon from '@material-ui/icons/Timeline';
 import { boundMethod } from 'autobind-decorator';
+import PropTypes from 'prop-types';
 import * as qs from 'qs';
+import React from 'react';
 
+import { HistoryPropType, LocationPropType } from '@/components/types';
+import api from '@/services/api';
+import schema from '@/services/schema';
 
-import FilterTablePopover from './components/FilterTablePopover';
 import DataTable from './components/DataTable';
-import GraphComponent from './components/GraphComponent';
 import DetailDrawer from './components/DetailDrawer';
-import api from '../../services/api';
 import FilterChips from './components/FilterChips';
+import FilterTablePopover from './components/FilterTablePopover';
+import GraphComponent from './components/GraphComponent';
 import { hashRecordsByRID } from './util';
-import { HistoryPropType, LocationPropType } from '../../components/types';
-import schema from '../../services/schema';
-
-import './index.scss';
 
 /**
  * Shows the search result filters and an edit button

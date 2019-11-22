@@ -1,10 +1,10 @@
 /**
  * @module /views/FeedbackView
  */
-import React from 'react';
 import { Typography } from '@material-ui/core';
+import React from 'react';
 
-import config from '../../static/config';
+import config from '@/static/config';
 
 const { FEEDBACK: { JIRA, EMAIL } } = config;
 

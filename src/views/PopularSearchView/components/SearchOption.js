@@ -1,8 +1,9 @@
-import React from 'react';
 import {
-  Typography, ButtonBase,
+  ButtonBase,
+  Typography,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
+import React from 'react';
 
 /**
  * Displays individual popular search option that populates search menu.

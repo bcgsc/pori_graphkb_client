@@ -1,11 +1,12 @@
-import React, { Component } from 'react';
 import {
   Typography,
 } from '@material-ui/core';
+import React, { Component } from 'react';
 
-import api from '../../../services/api';
-import { isAuthorized } from '../../../services/auth';
-import { KBContext } from '../../../components/KBContext';
+import { KBContext } from '@/components/KBContext';
+import api from '@/services/api';
+import { isAuthorized } from '@/services/auth';
+
 import {
   PieChart,
 } from '.';

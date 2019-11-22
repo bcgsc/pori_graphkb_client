@@ -1,7 +1,8 @@
-import React from 'react';
 import { mount } from 'enzyme';
+import React from 'react';
+
 import GraphComponent from '../GraphComponent/GraphComponent';
-import { GraphNode, GraphLink } from '../GraphComponent/kbgraph';
+import { GraphLink, GraphNode } from '../GraphComponent/kbgraph';
 
 const mockData = [
   {

@@ -1,10 +1,10 @@
 /**
  * @module /components/GraphActionsNode
  */
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 
-import config from '../../../../static/config';
+import config from '@/static/config';
 
 const {
   DETAILS_RING_RADIUS,

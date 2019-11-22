@@ -42,4 +42,14 @@ describe('SearchBox', () => {
     expect(onChangeSpy).toHaveBeenCalledTimes(2);
     expect(onChangeSpy).toHaveBeenNthCalledWith(2, 'blargh2');
   });
+
+  test('returns text on clicking submit', () => {
+    const onSubmitSpy = jest.fn();
+    const { getByTestId } = render(<SearchBox onSubmit={onSubmitSpy} value="blargh" />);
+    const button = getByTestId('search-box__button');
+    fireEvent.click(button);
+
+    expect(onSubmitSpy).toHaveBeenCalledTimes(1);
+    expect(onSubmitSpy).toHaveBeenCalledWith('blargh');
+  });
 });

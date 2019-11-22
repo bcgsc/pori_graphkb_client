@@ -2,10 +2,11 @@
  * @module /components/GraphLinkDisplay
  */
 
-import React from 'react';
-import PropTypes from 'prop-types';
-
 import './GraphLinkDisplay.scss';
+
+import PropTypes from 'prop-types';
+import React from 'react';
+
 import config from '@/static/config';
 
 const LABEL_BASELINE_SHIFT = 4;

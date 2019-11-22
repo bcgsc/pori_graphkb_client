@@ -1,38 +1,40 @@
 /**
  * @module /components/GraphComponent
  */
-import { boundMethod } from 'autobind-decorator';
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import * as d3Zoom from 'd3-zoom';
-import * as d3Select from 'd3-selection';
-import * as d3Force from 'd3-force';
+import './GraphComponent.scss';
+
+import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 import {
   IconButton,
   Tooltip,
 } from '@material-ui/core';
-import SettingsIcon from '@material-ui/icons/Settings';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import SettingsIcon from '@material-ui/icons/Settings';
 import SaveStateIcon from '@material-ui/icons/SettingsRemote';
-import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
+import { boundMethod } from 'autobind-decorator';
+import * as d3Force from 'd3-force';
+import * as d3Select from 'd3-selection';
+import * as d3Zoom from 'd3-zoom';
 import isObject from 'lodash.isobject';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
-import './GraphComponent.scss';
+import schema from '@/services/schema';
+import util from '@/services/util';
+import config from '@/static/config';
+
 import GraphActionsNode from './GraphActionsNode';
-import GraphOptionsPanel from './GraphOptionsPanel/GraphOptionsPanel';
-import GraphLinkDisplay from './GraphLinkDisplay/GraphLinkDisplay';
-import GraphNodeDisplay from './GraphNodeDisplay/GraphNodeDisplay';
 import GraphArrowMarker from './GraphArrowMarker';
 import GraphExpansionDialog from './GraphExpansionDialog/GraphExpansionDialog';
 import GraphLegend from './GraphLegend/GraphLegend';
-import util from '@/services/util';
-import schema from '@/services/schema';
-import config from '@/static/config';
+import GraphLinkDisplay from './GraphLinkDisplay/GraphLinkDisplay';
+import GraphNodeDisplay from './GraphNodeDisplay/GraphNodeDisplay';
+import GraphOptionsPanel from './GraphOptionsPanel/GraphOptionsPanel';
 import {
-  PropsMap,
-  GraphOptions,
-  GraphNode,
   GraphLink,
+  GraphNode,
+  GraphOptions,
+  PropsMap,
 } from './kbgraph';
 
 const {

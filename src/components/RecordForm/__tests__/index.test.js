@@ -1,12 +1,13 @@
 import '@testing-library/jest-dom/extend-expect';
-import React from 'react';
-import { render, fireEvent, act } from '@testing-library/react';
 
 import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackbar-provider';
+import { act, fireEvent, render } from '@testing-library/react';
+import React from 'react';
+
+import * as api from '@/services/api';
 
 import RecordForm from '..';
 import { KBContext } from '../../KBContext';
-import * as api from '@/services/api';
 
 
 jest.mock('@bcgsc/react-snackbar-provider', () => {

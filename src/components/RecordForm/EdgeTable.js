@@ -1,16 +1,16 @@
 /**
  * @module /components/RelationshipsForm
  */
-import React, { useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
-import { AgGridReact } from 'ag-grid-react';
-import useDeepCompareEffect from 'use-deep-compare-effect';
-
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-material.css';
 
+import { AgGridReact } from 'ag-grid-react';
+import PropTypes from 'prop-types';
+import React, { useCallback, useState } from 'react';
+import useDeepCompareEffect from 'use-deep-compare-effect';
+
+import useGrid from '@/components/hooks/useGrid';
 import schema from '@/services/schema';
-import useGrid from '../hooks/useGrid';
 
 
 const isReversed = (nodeId, { out: src, in: tgt }) => {

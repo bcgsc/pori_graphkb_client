@@ -1,10 +1,11 @@
-import React from 'react';
-import { mount, shallow } from 'enzyme';
 import { Drawer } from '@material-ui/core';
+import { mount, shallow } from 'enzyme';
+import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
-import DetailDrawer from '../DetailDrawer';
 import { KBContext } from '@/components/KBContext';
+
+import DetailDrawer from '../DetailDrawer';
 
 
 const ProvideSchema = ({ children = [], schema }) => (  // eslint-disable-line

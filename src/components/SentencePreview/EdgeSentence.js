@@ -1,6 +1,6 @@
-import React from 'react';
 import { titleCase } from 'change-case';
 import PropTypes from 'prop-types';
+import React from 'react';
 
 import SentencePreview from '.';
 

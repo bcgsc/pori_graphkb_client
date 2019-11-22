@@ -1,20 +1,23 @@
+import './index.scss';
+
+import {
+  FormControl, FormHelperText,
+  FormLabel, IconButton,
+} from '@material-ui/core';
+import CancelIcon from '@material-ui/icons/Cancel';
+import PropTypes from 'prop-types';
 import React, {
   useEffect, useState,
 } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
-import PropTypes from 'prop-types';
-import CancelIcon from '@material-ui/icons/Cancel';
 
-import './index.scss';
-import {
-  FormLabel, FormControl, IconButton, FormHelperText,
-} from '@material-ui/core';
+import schema from '@/services/schema';
+
 import FormLayout from '../FormLayout';
-import FormField from '.';
 import {
   FORM_VARIANT,
 } from '../util';
-import schema from '@/services/schema';
+import FormField from '.';
 
 
 /**

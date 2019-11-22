@@ -1,19 +1,19 @@
-import React, { useEffect, useState, useContext } from 'react';
 import {
-  Typography,
   CircularProgress,
+  List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  List,
+  Typography,
 } from '@material-ui/core';
+import React, { useContext, useEffect, useState } from 'react';
 
-import api from '@/services/api';
-import { KBContext } from '@/components/KBContext';
-import { isAuthorized } from '@/services/auth';
 import DetailChip from '@/components/DetailChip';
-import schema from '@/services/schema';
 import useObject from '@/components/hooks/useObject';
+import { KBContext } from '@/components/KBContext';
+import api from '@/services/api';
+import { isAuthorized } from '@/services/auth';
+import schema from '@/services/schema';
 
 
 const AboutClasses = () => {

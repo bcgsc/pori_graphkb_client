@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { arc } from 'd3-shape';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
 /**
  * This represents a 'wedge' or section of the pie chart and its label

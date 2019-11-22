@@ -1,8 +1,8 @@
-import React from 'react';
-import { mount } from 'enzyme';
 import {
   Tooltip,
 } from '@material-ui/core';
+import { mount } from 'enzyme';
+import React from 'react';
 
 import FieldHelp from '../FieldHelp';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { StatementPropType } from '../types';
+import { StatementPropType } from '@/components/types';
 
 import SentencePreview from '.';
 

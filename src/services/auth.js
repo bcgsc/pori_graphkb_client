@@ -2,8 +2,8 @@
  * Handles token storage and authentication.
  * @module /services/auth
  */
-import Keycloak from 'keycloak-js';
 import * as jwt from 'jsonwebtoken';
+import Keycloak from 'keycloak-js';
 
 import config from '@/static/config';
 

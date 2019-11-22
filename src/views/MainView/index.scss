@@ -124,6 +124,10 @@ $closed-drawer-width: 56px;
   margin-right: 2%;
   min-width: $user-menu-width;
 
+  .user-dropdown__icon * {
+    color: $palette__primary--contrast-text;
+  }
+
   &__content {
     width: $user-menu-width;
   }

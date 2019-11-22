@@ -3,6 +3,7 @@ import {
   Typography,
 } from '@material-ui/core';
 
+import { KBContext } from '@/components/KBContext';
 import api from '@/services/api';
 import {
   PieChart,

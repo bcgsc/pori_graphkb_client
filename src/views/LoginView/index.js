@@ -3,13 +3,14 @@
  */
 import React from 'react';
 
-import api from '../../services/api';
-import { KBContext } from '../../components/KBContext';
+import { KBContext } from '@/components/KBContext';
+import { HistoryPropType, LocationPropType } from '@/components/types';
+import api from '@/services/api';
 import {
-  isAuthenticated, getReferrerUri, login, keycloak, isAuthorized,
-} from '../../services/auth';
-import config from '../../static/config';
-import { HistoryPropType, LocationPropType } from '../../components/types';
+  getReferrerUri, isAuthenticated, isAuthorized,
+  keycloak, login,
+} from '@/services/auth';
+import config from '@/static/config';
 
 const {
   DISABLE_AUTH,

@@ -1,8 +1,8 @@
-import React from 'react';
+import './index.scss';
+
 import { Typography } from '@material-ui/core';
 import PropTypes from 'prop-types';
-
-import './index.scss';
+import React from 'react';
 
 
 const STOP_WORDS = new Set([

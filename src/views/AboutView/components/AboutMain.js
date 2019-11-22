@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Typography,
+  Typography, CircularProgress, Chip,
 } from '@material-ui/core';
+import Chart from 'react-google-charts';
 
 import { KBContext } from '@/components/KBContext';
 import api from '@/services/api';
-import {
-  PieChart,
-} from '.';
+
+import * as cssTheme from '@/_theme.scss';
 
 
 const AboutMain = () => {
-  const [chartData, setChartData] = useState({}); // label -> value
+  const [chartData, setChartData] = useState(null);
   const [apiVersion, setApiVersion] = useState('');
   const [dbVersion, setDbVersion] = useState('');
   const guiVersion = process.env.npm_package_version || process.env.REACT_APP_VERSION || '';
@@ -23,7 +23,11 @@ const AboutMain = () => {
     const getData = async () => {
       controller = api.get('/stats?classList=Statement&groupBy=source');
       const { Statement: result } = await controller.request();
-      setChartData(result);
+      const data = [['source', 'count']];
+      Object.entries(result).forEach(([label, value]) => {
+        data.push([label, value]);
+      });
+      setChartData(data);
     };
     getData();
     return () => controller && controller.abort();
@@ -44,11 +48,6 @@ const AboutMain = () => {
   }, []);
 
 
-  const data = [];
-  Object.entries(chartData).forEach(([label, value]) => {
-    data.push({ label, value });
-  });
-
   return (
     <div className="about-page__content">
       <div className="pie-partner">
@@ -58,21 +57,38 @@ const AboutMain = () => {
           main use of Knowlegebase is to act as the link between the known and published
           variant information and the expermientally collected data.
         </Typography>
-        <Typography variant="h4">
-          Current Version
-        </Typography>
-        <Typography paragraph>
-          DB ({dbVersion}); API (v{apiVersion}); GUI (v{guiVersion})
-        </Typography>
-
+        <div className="about-page__version-chips">
+          <Chip
+            label={`DB ${dbVersion}`}
+            color="primary"
+            variant="outline"
+          />
+          <Chip
+            label={`API v${apiVersion}`}
+            color="primary"
+            variant="outline"
+          />
+          <Chip
+            label={`Client v${guiVersion}`}
+            color="primary"
+            variant="outline"
+          />
+        </div>
       </div>
-      <PieChart
-        height={500}
-        width={500}
-        innerRadius={50}
-        data={data}
-        colorThreshold={0.05}
+      {chartData && (
+      <Chart
+        chartType="BarChart"
+        width="100%"
+        height="500px"
+        data={chartData}
+        options={{
+          title: 'Statement Sources',
+          legend: 'none',
+          colors: [cssTheme.primaryMain, cssTheme.secondaryMain],
+        }}
+        loader={<CircularProgress className="about-page__loader" />}
       />
+      )}
     </div>
   );
 };

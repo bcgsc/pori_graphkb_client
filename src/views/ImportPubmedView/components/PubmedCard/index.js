@@ -10,7 +10,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import schema from '../../../../services/schema';
+import schema from '@/services/schema';
+
 import IFrame from '../IFrameLink';
 
 

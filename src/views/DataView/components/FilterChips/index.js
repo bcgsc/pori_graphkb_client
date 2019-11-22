@@ -1,5 +1,5 @@
-import React from 'react';
 import { Chip } from '@material-ui/core';
+import React from 'react';
 
 /**
  * Search/Filter chips to be displayed at top of DataTable. Used to provide

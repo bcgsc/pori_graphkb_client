@@ -1,23 +1,24 @@
 /**
  * @module /components/ResourceSelectComponent
  */
-import React from 'react';
-import PropTypes from 'prop-types';
+import './index.scss';
+
 import {
-  InputLabel,
-  MenuItem,
-  FormControl,
-  Select,
   FilledInput,
-  OutlinedInput,
-  Input,
-  ListItemText,
+  FormControl,
   FormHelperText,
+  Input,
+  InputLabel,
+  ListItemText,
+  MenuItem,
+  OutlinedInput,
+  Select,
 } from '@material-ui/core';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-import { GeneralRecordPropType } from '../types';
-import './index.scss';
+import { GeneralRecordPropType } from '@/components/types';
 
 
 const DefaultOptionComponent = (resource, disabled) => (

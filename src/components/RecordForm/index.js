@@ -1,28 +1,28 @@
-import React, {
-  useEffect, useContext, useState, useCallback,
-} from 'react';
-import PropTypes from 'prop-types';
-import {
-  Paper, Typography, Button, CircularProgress,
-} from '@material-ui/core';
-import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
+import './index.scss';
 
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
-
-import api from '../../services/api';
-
-import './index.scss';
-import ActionButton from '../ActionButton';
-import FormLayout from './FormLayout';
 import {
-  FORM_VARIANT,
-} from './util';
-import schema from '../../services/schema';
-import ReviewDialog from './ReviewDialog';
-import ToggleButtonGroup from '../ToggleButtonGroup';
+  Button, CircularProgress,
+  Paper, Typography,
+} from '@material-ui/core';
+import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
+import PropTypes from 'prop-types';
+import React, {
+  useCallback,
+  useContext, useEffect, useState,
+} from 'react';
+
+import ActionButton from '@/components/ActionButton';
+import useSchemaForm from '@/components/hooks/useSchemaForm';
+import ToggleButtonGroup from '@/components/ToggleButtonGroup';
+import { GeneralRecordPropType } from '@/components/types';
+import api from '@/services/api';
+import schema from '@/services/schema';
+
 import EdgeTable from './EdgeTable';
-import useSchemaForm from '../hooks/useSchemaForm';
-import { GeneralRecordPropType } from '../types';
+import FormLayout from './FormLayout';
+import ReviewDialog from './ReviewDialog';
+import { FORM_VARIANT } from './util';
 
 
 const cleanPayload = (payload) => {

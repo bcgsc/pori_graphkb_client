@@ -1,18 +1,18 @@
 /**
  * @module /App
  */
-import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackbar-provider';
 import { CssBaseline } from '@material-ui/core';
 import {
   createMuiTheme,
   MuiThemeProvider,
 } from '@material-ui/core/styles';
 import { createGenerateClassName, jssPreset, StylesProvider } from '@material-ui/styles';
-
-import JssProvider from 'react-jss/lib/JssProvider';
 import { create } from 'jss';
-import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackbar-provider';
+import React from 'react';
+import JssProvider from 'react-jss/lib/JssProvider';
+import { BrowserRouter } from 'react-router-dom';
+
 import * as cssTheme from './_theme.scss';
 import MainView from './views/MainView';
 

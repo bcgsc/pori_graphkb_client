@@ -1,19 +1,20 @@
-import React from 'react';
+import 'ag-grid-community/dist/styles/ag-grid.css';
+import 'ag-grid-community/dist/styles/ag-theme-material.css';
+
 import {
-  FormControlLabel, Checkbox, Popover,
+  Checkbox, FormControlLabel, Popover,
 } from '@material-ui/core';
 import { AgGridReact } from 'ag-grid-react';
 import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
+import React from 'react';
 
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-material.css';
+import DetailChip from '@/components/DetailChip';
+import OptionsMenu from '@/components/OptionsMenu';
+import DataCache from '@/services/api/dataCache';
+import { getUsername } from '@/services/auth';
+import schema from '@/services/schema';
 
-import schema from '../../../services/schema';
-import OptionsMenu from '../../../components/OptionsMenu';
-import DetailChip from '../../../components/DetailChip';
-import { getUsername } from '../../../services/auth';
-import DataCache from '../../../services/api/dataCache';
 import { SelectionTracker } from './SelectionTracker';
 
 const MAX_FULL_EXPORTS_ROWS = 1000;

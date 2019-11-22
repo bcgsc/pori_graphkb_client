@@ -1,10 +1,12 @@
-import React, { useEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
+import './index.scss';
+
 import {
   TextField,
 } from '@material-ui/core';
-import './index.scss';
-import ActionButton from '../../../components/ActionButton';
+import PropTypes from 'prop-types';
+import React, { useEffect, useRef } from 'react';
+
+import ActionButton from '@/components/ActionButton';
 
 
 /**

@@ -1,6 +1,6 @@
 import * as qs from 'qs';
 
-import config from '../../static/config';
+import config from '@/static/config';
 
 
 const DEFAULT_LIMIT = 100;

@@ -172,6 +172,9 @@ module.exports = {
   plugins,
   resolve: {
     extensions: ['.js', '.jsx', '.json'],
+    alias: {
+      '@': SRC_PATH,
+    },
   },
   module: moduleSettings,
 };

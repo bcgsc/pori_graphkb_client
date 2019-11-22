@@ -1,23 +1,24 @@
 /**
  * @module /views/QueryView
  */
-import { boundMethod } from 'autobind-decorator';
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import './index.scss';
+
+import kbp from '@bcgsc/knowledgebase-parser';
 import {
-  IconButton,
-  TextField,
-  InputAdornment,
   Checkbox,
   FormControlLabel,
+  IconButton,
+  InputAdornment,
+  TextField,
   Typography,
 } from '@material-ui/core';
-import kbp from '@bcgsc/knowledgebase-parser';
 import SearchIcon from '@material-ui/icons/Search';
+import { boundMethod } from 'autobind-decorator';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 
-import './index.scss';
-import api from '../../services/api';
-import schema from '../../services/schema';
+import api from '@/services/api';
+import schema from '@/services/schema';
 
 const ENTER_KEYCODE = 13;
 const MIN_WORD_LENGTH = 3;

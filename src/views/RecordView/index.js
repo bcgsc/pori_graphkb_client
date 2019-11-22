@@ -1,21 +1,22 @@
-import React, {
-  useContext, useState, useCallback, useEffect,
-} from 'react';
-import * as qs from 'qs';
 import {
   CircularProgress,
 } from '@material-ui/core';
-import useDeepCompareEffect from 'use-deep-compare-effect';
 import propTypes from 'prop-types';
+import * as qs from 'qs';
+import React, {
+  useCallback, useContext, useEffect,
+  useState,
+} from 'react';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 
-import RecordForm from '../../components/RecordForm';
-import { KBContext } from '../../components/KBContext';
-import { FORM_VARIANT } from '../../components/RecordForm/util';
-import { cleanLinkedRecords } from '../../components/util';
-import { hasWriteAccess } from '../../services/auth';
-import api from '../../services/api';
-import { HistoryPropType } from '../../components/types';
-import schema from '../../services/schema';
+import { KBContext } from '@/components/KBContext';
+import RecordForm from '@/components/RecordForm';
+import { FORM_VARIANT } from '@/components/RecordForm/util';
+import { HistoryPropType } from '@/components/types';
+import { cleanLinkedRecords } from '@/components/util';
+import api from '@/services/api';
+import { hasWriteAccess } from '@/services/auth';
+import schema from '@/services/schema';
 
 
 const DEFAULT_TITLES = {

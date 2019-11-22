@@ -1,16 +1,14 @@
+import {
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+} from '@material-ui/core';
 import React from 'react';
 
-import {
-  Typography,
-  ListItem,
-  List,
-  ListItemText,
-
-} from '@material-ui/core';
-
+import graphActions from '@/static/images/graph-actions.png';
 // static content
-import graphResults from '../../../static/images/graph-view.png';
-import graphActions from '../../../static/images/graph-actions.png';
+import graphResults from '@/static/images/graph-view.png';
 
 
 const AboutGraphView = () => (

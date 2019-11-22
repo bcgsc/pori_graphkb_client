@@ -1,14 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import './NotificationDrawer.scss';
+
 import {
-  Drawer,
-  LinearProgress,
   Button,
   CircularProgress,
+  Drawer,
+  LinearProgress,
 } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
-
-import './NotificationDrawer.scss';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 const NOTIFICATION_SPINNER_SIZE = 16;
 

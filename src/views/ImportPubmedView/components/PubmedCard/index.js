@@ -16,7 +16,14 @@ import IFrame from '../IFrameLink';
 
 const PUBMED_BASE_URL = 'https://www.ncbi.nlm.nih.gov/pubmed';
 
-
+/**
+ * @param {Object} props
+ * @param {string} props.title the publication title
+ * @param {string} props.sourceId the pubmed id
+ * @param {string} props.recordId the record id in graphkb (if exsits)
+ * @param {function} props.onClick the onClick handler function
+ * @param {string} props.journalName the name of the journal the article was published in
+ */
 const PubmedCard = ({
   title, sourceId, recordId, onClick, journalName,
 }) => (

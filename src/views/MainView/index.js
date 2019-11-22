@@ -94,7 +94,7 @@ const Main = () => {
               <AuthenticatedRoute path="/feedback" component={FeedbackView} />
               <Route path="/login" component={LoginView} />
               <Route exact path="/error" component={ErrorView} />
-              <Route path="/about" component={AboutView} />
+              <AuthenticatedRoute path="/about" component={AboutView} />
               <AuthenticatedRoute exact path="/query" component={QueryView} />
               <AuthenticatedRoute path="/query-popular" component={PopularSearchView} />
               <AuthenticatedRoute exact path="/query-advanced" component={AdvancedSearchView} />

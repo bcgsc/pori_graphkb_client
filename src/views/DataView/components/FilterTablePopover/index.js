@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import {
-  Avatar, Card, Chip, CardContent, Popover, Typography,
-} from '@material-ui/core';
-
 import './index.scss';
+
+import {
+  Avatar, Card, CardContent, Chip, Popover, Typography,
+} from '@material-ui/core';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 /**
  * Card Popup that displays the filter groups applied to search

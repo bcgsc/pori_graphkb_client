@@ -49,7 +49,7 @@ const SearchBox = ({
         InputProps={{
           endAdornment: (
             <InputAdornment>
-              <IconButton onClick={onSubmit} color="primary">
+              <IconButton onClick={() => onSubmit(searchText)} color="primary" data-testid="search-box__button">
                 <SearchIcon />
               </IconButton>
             </InputAdornment>

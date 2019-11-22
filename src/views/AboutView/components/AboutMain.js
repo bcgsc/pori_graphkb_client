@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
 import {
-  Typography, CircularProgress, Chip,
+  Chip,
+  CircularProgress, Typography,
 } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
 import Chart from 'react-google-charts';
 
-import { KBContext } from '@/components/KBContext';
-import api from '@/services/api';
-
 import * as cssTheme from '@/_theme.scss';
+import api from '@/services/api';
 
 
 const AboutMain = () => {

@@ -27,11 +27,13 @@
         "react-hooks",
         "jest",
         "jest-formatting",
-        "import"
+        "import",
+        "simple-import-sort"
     ],
     "rules": {
         "babel/semi": "warn",
         "import/no-cycle": "warn",
+        "import/order": "off",
         "import/prefer-default-export": "warn",
         "jest/consistent-test-it": [
             "error",
@@ -43,8 +45,8 @@
             "warn",
             {
                 "code": 100,
-                "ignoreUrls": true,
-                "ignoreStrings": true
+                "ignoreStrings": true,
+                "ignoreUrls": true
             }
         ],
         "no-console": [
@@ -102,7 +104,9 @@
         ],
         "react/jsx-one-expression-per-line": "off",
         "react/no-did-update-set-state": "warn",
-        "react/sort-comp": "warn"
+        "react/sort-comp": "warn",
+        "simple-import-sort/sort": "error",
+        "sort-imports": "off"
     },
     "settings": {
         "import/resolver": {

@@ -11,13 +11,13 @@ const devConfig = {
   plugins: [
     // Copy values of ENV variables in as strings using these defaults (null = unset)
     new webpack.EnvironmentPlugin({
-      API_BASE_URL: 'https://graphkbapi.bcgsc.ca/api',
+      API_BASE_URL: 'https://graphkb-api.bcgsc.ca/api',
       DEBUG: false,
       DISABLE_AUTH: null,
       KEYCLOAK_CLIENT_ID: 'GraphKB',
       KEYCLOAK_REALM: 'GSC',
       KEYCLOAK_ROLE: 'GraphKB',
-      KEYCLOAK_URL: 'https://sso.bcgsc.ca/auth',
+      KEYCLOAK_URL: 'https://keycloak.bcgsc.ca/auth',
       NODE_ENV: 'production',
       USER: null,
       PASSWORD: null,

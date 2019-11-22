@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import './index.scss';
+
 import EditIcon from '@material-ui/icons/Create';
 import ViewIcon from '@material-ui/icons/Pageview';
-import utils from '@/services/util';
+import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
 
-import ConfirmActionDialog from '../ActionButton/ConfirmActionDialog';
-import './index.scss';
+import ConfirmActionDialog from '@/components/ActionButton/ConfirmActionDialog';
+import utils from '@/services/util';
 
 /**
  * Toggle Button Navigation to switch between modes or settings.

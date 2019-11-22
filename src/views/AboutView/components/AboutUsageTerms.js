@@ -1,11 +1,11 @@
-import React from 'react';
 import {
-  Typography,
   List,
   ListItem,
-  ListItemText,
   ListItemIcon,
+  ListItemText,
+  Typography,
 } from '@material-ui/core';
+import React from 'react';
 
 const AboutUsageTerms = () => {
   const sectionData = [

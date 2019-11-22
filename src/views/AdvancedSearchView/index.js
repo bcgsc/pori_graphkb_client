@@ -1,23 +1,25 @@
-import React, {
-  useState, useContext, useEffect, useReducer, useCallback,
-} from 'react';
-import PropTypes from 'prop-types';
-import {
-  Typography, Card,
-} from '@material-ui/core';
-
+import './index.scss';
 
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
+import {
+  Card,
+  Typography,
+} from '@material-ui/core';
+import PropTypes from 'prop-types';
+import React, {
+  useCallback,
+  useContext, useEffect, useReducer, useState,
+} from 'react';
 
-import schema from '@/services/schema';
-import FormField from '@/components/RecordForm/FormField';
-import { OPERATORS, BLACKLISTED_PROPERTIES } from './constants';
-import './index.scss';
 import ActionButton from '@/components/ActionButton';
-import FilterGroup from './FilterGroup';
+import FormField from '@/components/RecordForm/FormField';
+import { HistoryPropType } from '@/components/types';
 import { cleanLinkedRecords } from '@/components/util';
 import api from '@/services/api';
-import { HistoryPropType } from '@/components/types';
+import schema from '@/services/schema';
+
+import { BLACKLISTED_PROPERTIES, OPERATORS } from './constants';
+import FilterGroup from './FilterGroup';
 
 const defaultFilterGroup = [];
 
@@ -291,6 +293,20 @@ function AdvancedSearchView(props) {
     }
   };
 
+  /**
+   * Generates search chip props from filter groups
+   */
+  const generateSearchChipProps = (FilterGroups) => {
+    const filters = FilterGroups.map(fg => (
+      fg.filters.map((filter) => {
+        const value = Array.isArray(filter.value)
+          ? filter.value.map(val => val.displayName || val.name).join(' , ')
+          : filter.value.displayName || filter.value.name || filter.value;
+        return `${filter.attr} ${filter.operator} ${value}`;
+      })));
+    return filters;
+  };
+
   const handleSubmit = () => {
     const searchFilters = filterGroups.map(fg => ({
       filters: [...fg.filters],
@@ -336,8 +352,13 @@ function AdvancedSearchView(props) {
       delete content.filters;
     }
 
+    // search chip props need to be added here due to how search is constructed
+    const searchChipProps = {};
+    searchChipProps.searchType = 'Advanced';
+    searchChipProps.filters = generateSearchChipProps(filterGroups);
+
     try {
-      const search = api.encodeQueryComplexToSearch(content, modelName);
+      const search = api.encodeQueryComplexToSearch(content, modelName, searchChipProps);
       history.push(`/data/table?${search}`, { search, content });
     } catch (err) {
       console.error(err);

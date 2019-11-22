@@ -31,7 +31,7 @@ $palette__background--default: #fafafa;
 
 /* MUI shadows (default) */
 $shadows--level-4: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14),
-0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+  0px 1px 10px 0px rgba(0, 0, 0, 0.12);
 
 /* MUI palette greys (default) */
 $palette__grey--300: #e0e0e0;
@@ -49,6 +49,54 @@ $transitions__duration--standard: 0.3s;
 /* MUI  palette divider (default) */
 $palette__divider: rgba(0, 0, 0, 0.12);
 
+// MUI Overrides: matches to MUI v3 style
+.MuiTypography {
+  &-body1,
+  &-h1,
+  &-h2,
+  &-h3,
+  &-h4,
+  &-h5,
+  &-h6 {
+    color: $palette__text--primary;
+  }
+
+  &-body2 {
+    color: $palette__text--secondary;
+  }
+
+  &-h1 {
+    font-size: 1.7rem;
+  }
+
+  &-h2 {
+    font-size: 1.5rem;
+  }
+
+  &-h3 {
+    font-size: 1.4rem;
+  }
+
+  &-h4 {
+    font-size: 1.25rem;
+  }
+
+  &-h5 {
+    font-size: 1.1rem;
+  }
+
+  &-body1 {
+    font-size: 1rem;
+  }
+
+  &-body2,
+  &-subtitle1,
+  &-h6 {
+    font-size: 0.875rem;
+  }
+}
+
+// export the css colors to use in creating the MUI theme
 :export {
   errorContrastText: $palette__error--contrast-text;
   errorDark: $palette__error--dark;

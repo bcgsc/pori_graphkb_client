@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
 import { pie } from 'd3-shape';
 import { PropTypes } from 'prop-types';
+import React, { Component } from 'react';
 
-import Arc from './Arc';
 import util from '@/services/util';
 import config from '@/static/config';
+
+import Arc from './Arc';
 
 const { DEFAULT_NODE_COLOR } = config.GRAPH_DEFAULTS;
 

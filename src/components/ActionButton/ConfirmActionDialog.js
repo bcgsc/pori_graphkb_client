@@ -1,5 +1,3 @@
-import React from 'react';
-import PropTypes from 'prop-types';
 import {
   Button,
   Dialog,
@@ -7,6 +5,8 @@ import {
   DialogContent,
   DialogTitle,
 } from '@material-ui/core';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 /**
  * Component for simple dialog that prompts the user before deleting a record.

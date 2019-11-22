@@ -2,7 +2,8 @@
  * Basic formContent and error management states
  */
 import {
-  useState, useCallback,
+  useCallback,
+  useState,
 } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 

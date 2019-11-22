@@ -1,26 +1,26 @@
-import React from 'react';
+import './index.scss';
+
 import {
   ListItem,
   TextField,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
+import React from 'react';
 
+import RecordAutocomplete from '@/components/RecordAutocomplete';
+import ResourceSelectComponent from '@/components/ResourceSelectComponent';
+import { GeneralRecordPropType } from '@/components/types';
 import api from '@/services/api';
-import ResourceSelectComponent from '../../ResourceSelectComponent';
-import RecordAutocomplete from '../../RecordAutocomplete';
-import BooleanField from './BooleanField';
-import TextArrayField from './TextArrayField';
-import PermissionsTable from './PermissionsTable';
-import FilteredRecordAutocomplete from './FilteredRecordAutocomplete';
+import schema from '@/services/schema';
 
+import { FORM_VARIANT } from '../util';
+import BooleanField from './BooleanField';
 // unavoidable circular dependency below
 import EmbeddedRecord from './EmbeddedRecord';
-
-import './index.scss';
-import { FORM_VARIANT } from '../util';
+import FilteredRecordAutocomplete from './FilteredRecordAutocomplete';
+import PermissionsTable from './PermissionsTable';
 import EmbeddedListTable from './StatementReviewsTable';
-import { GeneralRecordPropType } from '../../types';
-import schema from '@/services/schema';
+import TextArrayField from './TextArrayField';
 
 /**
  * Generate the field component for a form. Uses the property model to decide

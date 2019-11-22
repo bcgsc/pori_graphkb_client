@@ -1,10 +1,10 @@
-import React from 'react';
 import { mount } from 'enzyme';
+import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
+import { KBContext } from '@/components/KBContext';
 
 import MainNav from '../MainNav';
-import { KBContext } from '@/components/KBContext';
 
 
 describe('<MainNav />', () => {

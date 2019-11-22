@@ -1,10 +1,10 @@
-import React from 'react';
-import { mount } from 'enzyme';
 import {
-  Chip, TableRow, Popover,
+  Chip, Popover,
+  TableRow,
 } from '@material-ui/core';
 import { Cancel } from '@material-ui/icons';
-
+import { mount } from 'enzyme';
+import React from 'react';
 
 import DetailChip from '..';
 

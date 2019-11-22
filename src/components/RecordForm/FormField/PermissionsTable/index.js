@@ -1,21 +1,21 @@
 /**
  * @module /components/PermissionsTable
  */
-import React from 'react';
-import PropTypes from 'prop-types';
-import {
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Checkbox,
-} from '@material-ui/core';
+import './index.scss';
 
 import kbSchema from '@bcgsc/knowledgebase-schema';
+import {
+  Checkbox,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from '@material-ui/core';
+import PropTypes from 'prop-types';
+import React from 'react';
 
-import { KBContext } from '../../../KBContext';
-import './index.scss';
+import { KBContext } from '@/components/KBContext';
 import schema from '@/services/schema';
 
 const { constants: { PERMISSIONS } } = kbSchema;

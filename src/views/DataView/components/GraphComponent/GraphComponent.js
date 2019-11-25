@@ -190,15 +190,14 @@ class GraphComponent extends Component {
       data,
       simulation,
     } = this.state;
-    let { expandable } = this.state;
+    let {
+      expandable, nodes, links, graphObjects,
+    } = this.state;
     this.propsMap = new PropsMap();
 
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
 
-    let nodes = [];
-    let links = [];
-    let graphObjects = {};
     const nodeRIDs = Object.keys(data);
     nodeRIDs.forEach((rid, index) => {
       ({
@@ -219,13 +218,15 @@ class GraphComponent extends Component {
       ));
     });
 
-    const initialGraphOptions = this.getGraphOptions(this.propsMap);
-    console.log('TCL: GraphComponent -> componentDidMount -> initialGraphOptions', initialGraphOptions);
-    const initialSeed = [simulation, initialGraphOptions, nodes, links];
+    const graphOptions = this.getGraphOptions(this.propsMap);
+    this.initSimulation(simulation, graphOptions);
+
+    const initialSeed = {
+      simulation, graphOptions, nodes, links,
+    };
     this.refresh(initialSeed);
 
     this.setState({
-      graphOptions: initialGraphOptions, // init simulation handles this
       nodes,
       links,
       graphObjects,
@@ -294,14 +295,6 @@ class GraphComponent extends Component {
    */
   @boundMethod
   drawGraph(nodes, links, simulation, graphOptions) {
-    // const {
-    //   nodes,
-    //   links,
-    //   simulation,
-    //   graphOptions,
-    //   // height,
-    // } = this.state;
-
     // set up the hierarchy
     simulation.nodes(nodes);
 
@@ -396,15 +389,15 @@ class GraphComponent extends Component {
    */
   @boundMethod
   loadNeighbors(node) {
-    const { expandExclusions, data, simulation } = this.state;
+    const {
+      expandExclusions, data, simulation, graphOptions,
+    } = this.state;
     let {
       nodes,
       links,
       graphObjects,
       expandable,
     } = this.state;
-    const { graphOptions } = this.state;
-    console.log('TCL: GraphComponent -> loadNeighbors -> graphOptions', graphOptions);
 
     if (expandable[node.getId()] && data[node.getId()]) {
       ({
@@ -424,12 +417,13 @@ class GraphComponent extends Component {
         },
         expandExclusions,
       ));
-
-      this.saveGraphStatetoURL([...nodes]);
-
-      this.drawGraph(nodes, links, simulation, graphOptions);
-      this.updateColors(nodes, links, graphOptions);
     }
+
+    this.refresh({
+      simulation, graphOptions, nodes, links,
+    });
+    this.saveGraphStatetoURL([...nodes]);
+
     if (!schema.getEdges(data[node.getId()]).some(edge => !links.find(l => l.getId() === edge['@rid']))) {
       delete expandable[node.getId()];
     }
@@ -441,8 +435,6 @@ class GraphComponent extends Component {
       nodes,
       links,
       graphObjects,
-    }, () => {
-      simulation.alpha(1).restart();
     });
   }
 
@@ -459,12 +451,18 @@ class GraphComponent extends Component {
       data,
     } = this.state;
 
+    const nodeIsHeavilyConnected = (currNode) => {
+      const nodeEdges = schema.getEdges(currNode);
+      const edgesToBeRendered = nodeEdges.filter(edge => !(links.find(l => l.getId() === edge['@rid'])));
+      return (edgesToBeRendered.length > HEAVILY_CONNECTED);
+    };
+
     if (expandable[node.getId()] && data[node.getId()]) {
-      if (schema.getEdges(data[node.getId()])
-        .filter(edge => !(links.find(l => l.getId() === edge['@rid']))).length > HEAVILY_CONNECTED
+      if (nodeIsHeavilyConnected(data[node.getId()])
       ) {
-        this.setState({ expandNode: data[node.getId()] },
-          this.handleDialogOpen('expansionDialogOpen'));
+        // Opens up expansion confirmation dialog
+        this.setState({ expandNode: data[node.getId()], expansionDialogOpen: true });
+        this.pauseGraph();
       } else {
         this.loadNeighbors(node);
       }
@@ -508,7 +506,7 @@ class GraphComponent extends Component {
 
   /**
    * Processes node data and updates state with new nodes and links. Also
-   * updates expandable flags.
+   * updates expandable object which tracks via RID which nodes can be expanded.
    * @param {Object} node - Node object as returned by the api.
    * @param {Object} position - Object containing x and y position of node.
    * @param {number} depth - Recursion base case flag.
@@ -714,27 +712,23 @@ class GraphComponent extends Component {
 
   /**
    * Restarts the layout simulation with the current nodes
+   *
+   * @property {object} seed seed graph Info to refresh view
+   * @property {d3} simulation d3 force layout
+   * @property {graphOptions} graphOptions graphOptions object
+   * @property {Arrayof<GraphObjects>} nodes list of node graphObjects
+   * @property {Arrayof<GraphObjects>} links list of link graphObjects
    */
   @boundMethod
-  refresh(seed) {
-    console.log('TCL: refresh -> seed', seed);
-    let {
+  refresh(seed = null) {
+    const {
       simulation, graphOptions, nodes, links,
-    } = this.state;
+    } = !seed ? this.state : seed;
 
-    if (seed) {
-      [simulation, graphOptions, nodes, links] = seed;
-    }
-
-    console.log('TCL: refresh -> graphOptions', graphOptions.nodesLegend, seed);
     const { handleDetailDrawerClose } = this.props;
-    simulation.alpha(1).restart();
-    // updates up simulation and svg
-    this.initSimulation(simulation, graphOptions); // sets up rules for simulation
-    // updates simuation and actionNode
-    this.drawGraph(nodes, links, simulation, graphOptions); // renders nodes and links to graph
-    // updates graph Options
     this.updateColors(nodes, links, graphOptions); // updates color scheme based on graph objects
+    this.drawGraph(nodes, links, simulation, graphOptions); // renders nodes and links to graph
+    simulation.alpha(1).restart();
     handleDetailDrawerClose();
   }
 
@@ -777,7 +771,7 @@ class GraphComponent extends Component {
   };
 
   /**
-   * Updates color scheme for the graph, for nodes or links.
+   * Updates color scheme for the graph, for nodes or links via graphOptions.
    */
   @boundMethod
   updateColors(nodes, links, graphOptions) {
@@ -817,12 +811,10 @@ class GraphComponent extends Component {
    */
   @boundMethod
   withClose(action = null) {
-    return () => {
-      if (action) {
-        action();
-      }
-      this.setState({ actionsNode: null });
-    };
+    if (action) {
+      action();
+    }
+    this.setState({ actionsNode: null });
   }
 
   /**
@@ -853,11 +845,8 @@ class GraphComponent extends Component {
     } = this.state;
     graphOptions[event.target.name] = event.target.value;
     graphOptions.load();
-    console.log('TCL: handleGraphOptionsChange -> graphOptions', graphOptions.nodesLegend);
-    this.setState({ graphOptions }, () => {
-      this.initSimulation(simulation, graphOptions);
-      this.drawGraph(nodes, links, simulation, graphOptions);
-      this.updateColors(nodes, links, graphOptions);
+    this.refresh({
+      simulation, graphOptions, nodes, links,
     });
   }
 
@@ -870,26 +859,22 @@ class GraphComponent extends Component {
       nodes, links, simulation, graphOptions,
     } = this.state;
 
-    return () => this.setState({ [key]: false },
-      () => {
-        this.drawGraph(nodes, links, simulation, graphOptions);
-        setTimeout(() => this.setState({ expandExclusions: [] }), DIALOG_FADEOUT_TIME);
-      });
+    this.setState({ [key]: false });
+    this.drawGraph(nodes, links, simulation, graphOptions);
+    setTimeout(() => this.setState({ expandExclusions: [] }), DIALOG_FADEOUT_TIME);
   }
 
   /**
-   * Opens additional help dialog.
-   * @param {string} key - ['main', 'advanced'].
+   * Opens graphOptions help dialog.
    */
   @boundMethod
-  handleDialogOpen(key) {
-    return () => this.setState({ [key]: true }, () => {
-      this.pauseGraph();
-    });
+  openGraphOptions() {
+    this.setState({ graphOptionsOpen: true });
+    this.pauseGraph();
   }
 
   /**
-   * Expands currently staged nodes.
+   * Expands currently staged nodes. Passed to GraphExpansion Dialog to expand nodes.
    */
   @boundMethod
   handleExpand() {
@@ -934,16 +919,15 @@ class GraphComponent extends Component {
 
     expandable[actionsNode.source.data['@rid']] = true;
     expandable[actionsNode.target.data['@rid']] = true;
-    console.log('TCL: handleLinkHide -> expandable', expandable);
+
+    this.updateColors(nodes, links, graphOptions);
+    handleDetailDrawerClose();
 
     this.setState({
       actionsNode: null,
       graphObjects,
       links,
       expandable,
-    }, () => {
-      this.updateColors(nodes, links, graphOptions);
-      handleDetailDrawerClose();
     });
   }
 
@@ -963,7 +947,6 @@ class GraphComponent extends Component {
     } = this.state;
 
     const { edgeTypes } = this.props;
-    console.log('TCL: handleNodeHide -> edgeTypes', edgeTypes);
 
     const { handleDetailDrawerClose } = this.props;
     if (nodes.length === 1) return;
@@ -993,6 +976,8 @@ class GraphComponent extends Component {
 
     this.propsMap.removeNode(actionsNode.data, nodes, allProps);
     this.saveGraphStatetoURL(nodes);
+    this.updateColors(nodes, links, graphOptions);
+    handleDetailDrawerClose();
 
     this.setState({
       expandable,
@@ -1000,9 +985,6 @@ class GraphComponent extends Component {
       links,
       graphObjects,
       actionsNode: null,
-    }, () => {
-      this.updateColors(nodes, links, graphOptions);
-      handleDetailDrawerClose();
     });
   }
 
@@ -1131,7 +1113,6 @@ class GraphComponent extends Component {
       expandNode,
       expandExclusions,
     } = this.state;
-    console.log('TCL: render -> graphOptions', graphOptions.nodesLegend);
 
 
     const { propsMap } = this;
@@ -1165,22 +1146,22 @@ class GraphComponent extends Component {
       ? [
         {
           name: 'Details',
-          action: this.withClose(() => handleDetailDrawerOpen(actionsNode, true, true)),
+          action: () => this.withClose(() => handleDetailDrawerOpen(actionsNode, true, true)),
           disabled: link => link.getId() === (detail || {})['@rid'],
         },
         {
           name: 'Hide',
-          action: this.withClose(this.handleLinkHide),
+          action: () => this.withClose(this.handleLinkHide),
           disabled: false,
         }] : [
         {
           name: 'Details',
-          action: this.withClose(() => handleDetailDrawerOpen(actionsNode, true)),
+          action: () => this.withClose(() => handleDetailDrawerOpen(actionsNode, true)),
           disabled: node => node.getId() === (detail || {})['@rid'],
         },
         {
           name: 'Close',
-          action: this.withClose(),
+          action: () => this.withClose(),
         },
         {
           name: 'Expand',
@@ -1189,7 +1170,7 @@ class GraphComponent extends Component {
         },
         {
           name: 'Hide',
-          action: this.withClose(this.handleNodeHide),
+          action: () => this.withClose(this.handleNodeHide),
           disabled: () => nodes.length === 1,
         },
       ];
@@ -1233,7 +1214,7 @@ class GraphComponent extends Component {
         <GraphExpansionDialog
           node={expandNode}
           open={expansionDialogOpen}
-          onClose={this.handleDialogClose('expansionDialogOpen')}
+          onClose={() => this.handleDialogClose('expansionDialogOpen')}
           links={links}
           expandExclusions={expandExclusions}
           onExpand={this.handleExpand}
@@ -1246,7 +1227,7 @@ class GraphComponent extends Component {
           graphOptionsOpen={graphOptionsOpen}
           graphOptions={graphOptions}
           propsMap={propsMap}
-          handleDialogClose={this.handleDialogClose}
+          handleDialogClose={() => this.handleDialogClose('graphOptionsOpen')}
           handleGraphOptionsChange={this.handleGraphOptionsChange}
         />
 
@@ -1255,7 +1236,7 @@ class GraphComponent extends Component {
             <IconButton
               id="graph-options-btn"
               color="primary"
-              onClick={this.handleDialogOpen('graphOptionsOpen')}
+              onClick={this.openGraphOptions}
             >
               <SettingsIcon />
             </IconButton>
@@ -1274,7 +1255,7 @@ class GraphComponent extends Component {
             <div className="refresh-wrapper">
               <IconButton
                 color="primary"
-                onClick={this.refresh}
+                onClick={() => this.refresh()}
               >
                 <RefreshIcon />
               </IconButton>

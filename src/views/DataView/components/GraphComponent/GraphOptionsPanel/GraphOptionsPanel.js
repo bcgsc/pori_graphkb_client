@@ -131,14 +131,14 @@ class GraphOptionsPanel extends Component {
         {helpPanel}
         <Dialog
           open={graphOptionsOpen}
-          onClose={handleDialogClose('graphOptionsOpen')}
+          onClose={handleDialogClose}
           classes={{
             paper: 'options-panel-wrapper',
           }}
           scroll="body"
         >
           <IconButton
-            onClick={handleDialogClose('graphOptionsOpen')}
+            onClick={handleDialogClose}
             id="options-close-btn"
           >
             <CloseIcon />

@@ -15,12 +15,12 @@ import * as qs from 'qs';
 
 import kbSchema from '@bcgsc/knowledgebase-schema';
 
-
 import DataTable from './components/DataTable';
 import GraphComponent from './components/GraphComponent';
 import DetailDrawer from './components/DetailDrawer';
 import RecordFormDialog from '../../components/RecordFormDialog';
 import api from '../../services/api';
+import util from '../../services/util';
 import { cleanLinkedRecords } from '../../components/util';
 import { hashRecordsByRID } from './util';
 import { HistoryPropType, LocationPropType } from '../../components/types';
@@ -294,6 +294,7 @@ class DataView extends React.Component {
     } = this.state;
 
     const edges = schema.getEdges();
+    const expandedEdgeTypes = util.expandEdges(edges)
 
     if (!graphData) {
       this.loadSavedStateFromURL();
@@ -311,7 +312,7 @@ class DataView extends React.Component {
         handleDetailDrawerClose={this.handleToggleDetailPanel}
         detail={detailPanelRow}
         handleError={this.handleError}
-        edgeTypes={edges}
+        edgeTypes={expandedEdgeTypes}
         onRecordClicked={this.handleToggleDetailPanel}
         handleGraphStateSave={this.handleGraphStateSaveIntoURL}
       />

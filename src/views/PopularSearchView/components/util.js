@@ -1,7 +1,7 @@
 import kbp from '@bcgsc/knowledgebase-parser';
 
-import api from '../../../services/api';
-import schema from '../../../services/schema';
+import api from '@/services/api';
+import schema from '@/services/schema';
 
 
 const MAX_RESULT_COUNT = 300;

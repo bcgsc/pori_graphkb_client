@@ -1,12 +1,12 @@
+import AboutClasses from './AboutClasses';
 import AboutForms from './AboutForms';
 import AboutGraphView from './AboutGraphView';
 import AboutMain from './AboutMain';
 import AboutNotation from './AboutNotation';
 import AboutQuerying from './AboutQuerying';
 import AboutStatements from './AboutStatements';
-import PieChart from './PieChart';
-import AboutClasses from './AboutClasses';
 import AboutUsageTerms from './AboutUsageTerms';
+import PieChart from './PieChart';
 
 export {
   AboutForms,

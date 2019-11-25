@@ -1,17 +1,18 @@
 /**
  * @module /App
  */
-import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackbar-provider';
+import { CssBaseline } from '@material-ui/core';
 import {
   createMuiTheme,
   MuiThemeProvider,
 } from '@material-ui/core/styles';
 import { createGenerateClassName, jssPreset, StylesProvider } from '@material-ui/styles';
-
-import JssProvider from 'react-jss/lib/JssProvider';
 import { create } from 'jss';
-import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackbar-provider';
+import React from 'react';
+import JssProvider from 'react-jss/lib/JssProvider';
+import { BrowserRouter } from 'react-router-dom';
+
 import * as cssTheme from './_theme.scss';
 import MainView from './views/MainView';
 
@@ -43,6 +44,17 @@ const theme = createMuiTheme({
       disabled: cssTheme.textDisabled,
     },
   },
+  typography: {
+    body1: { fontSize: cssTheme.fontSizeBody1 },
+    body2: { fontSize: cssTheme.fontSizeBody2 },
+    h1: { fontSize: cssTheme.fontSizeH1 },
+    h2: { fontSize: cssTheme.fontSizeH2 },
+    h3: { fontSize: cssTheme.fontSizeH3 },
+    h4: { fontSize: cssTheme.fontSizeH4 },
+    h5: { fontSize: cssTheme.fontSizeH5 },
+    h6: { fontSize: cssTheme.fontSizeH6 },
+    subtitle1: { fontSize: cssTheme.fontSizeSubtitle1 },
+  },
 });
 
 
@@ -60,6 +72,7 @@ const jss = create({
 function App() {
   return (
     <StylesProvider injectFirst>
+      <CssBaseline />
       <JssProvider jss={jss} generateClassName={generateClassName}>
         <MuiThemeProvider theme={theme}>
           <SnackbarProvider anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>

@@ -1,8 +1,9 @@
-import React from 'react';
-import { mount } from 'enzyme';
 import { Dialog } from '@material-ui/core';
+import { mount } from 'enzyme';
+import React from 'react';
+
 import GraphOptionsPanel from '../GraphComponent/GraphOptionsPanel/GraphOptionsPanel';
-import { PropsMap, GraphOptions } from '../GraphComponent/kbgraph';
+import { GraphOptions, PropsMap } from '../GraphComponent/kbgraph';
 
 describe('<GraphOptionsPanel />', () => {
   let wrapper;

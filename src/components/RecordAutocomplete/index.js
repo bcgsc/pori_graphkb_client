@@ -1,14 +1,16 @@
-import React, {
-  useState, useCallback, useEffect,
-} from 'react';
-import useDeepCompareEffect from 'use-deep-compare-effect';
+import './index.scss';
+
 import { NoSsr } from '@material-ui/core';
 import PropTypes from 'prop-types';
+import React, {
+  useCallback, useEffect,
+  useState,
+} from 'react';
 import Select from 'react-select';
 import { useDebounce } from 'use-debounce';
+import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import defaultComponents from './components';
-import './index.scss';
 
 /**
  * @typedef {function} searchHandlerRequest

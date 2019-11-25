@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken';
+
 import {
-  getUser, getUsername, isAuthenticated, isAuthorized, isAdmin,
+  getUser, getUsername, isAdmin,
+  isAuthenticated, isAuthorized,
 } from '../auth';
 
 const TEST_USER = { name: 'test user', groups: [{ name: 'not admin' }] };

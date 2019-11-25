@@ -1,5 +1,5 @@
-import React from 'react';
 import { mount } from 'enzyme';
+import React from 'react';
 
 import ToggleButtonGroup from '..';
 import ConfirmActionDialog from '../../ActionButton/ConfirmActionDialog';

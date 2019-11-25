@@ -1,5 +1,6 @@
-import React from 'react';
 import { mount } from 'enzyme';
+import React from 'react';
+
 import { KBContext, withKB } from '..';
 
 describe('KB Context provider and consumers', () => {

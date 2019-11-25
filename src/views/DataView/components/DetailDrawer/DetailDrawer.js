@@ -1,34 +1,35 @@
 /**
  * @module /components/OntologyDetailComponent
  */
-import { boundMethod } from 'autobind-decorator';
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import './DetailDrawer.scss';
+
 import {
-  Typography,
-  Drawer,
+  Collapse,
   Divider,
+  Drawer,
+  IconButton,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  Collapse,
-  IconButton,
   ListSubheader,
+  Typography,
 } from '@material-ui/core';
-import { Link } from 'react-router-dom';
-import EditIcon from '@material-ui/icons/Edit';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import LinkIcon from '@material-ui/icons/Link';
 import CloseIcon from '@material-ui/icons/Close';
+import EditIcon from '@material-ui/icons/Edit';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import LinkIcon from '@material-ui/icons/Link';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import { boundMethod } from 'autobind-decorator';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
-import './DetailDrawer.scss';
-import util from '../../../../services/util';
-import { hasWriteAccess } from '../../../../services/auth';
-import schema from '../../../../services/schema';
-import { GeneralRecordPropType } from '../../../../components/types';
+import { GeneralRecordPropType } from '@/components/types';
+import { hasWriteAccess } from '@/services/auth';
+import schema from '@/services/schema';
+import util from '@/services/util';
 
 const MAX_STRING_LENGTH = 64;
 const DATE_KEYS = ['createdAt', 'deletedAt'];

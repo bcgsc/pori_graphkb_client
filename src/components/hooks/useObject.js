@@ -1,5 +1,6 @@
 import {
-  useReducer, useCallback,
+  useCallback,
+  useReducer,
 } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 

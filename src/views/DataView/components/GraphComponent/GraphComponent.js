@@ -36,11 +36,10 @@ import {
   GraphOptions,
   PropsMap,
 } from './kbgraph';
-
 import {
-  getId,
   computeNodeLevels,
   copyURLToClipBoard,
+  getId,
   TREE_LINK,
 } from './util';
 

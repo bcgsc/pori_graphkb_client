@@ -1,15 +1,17 @@
 /**
  * @module /views/AdminView
  */
-import { boundMethod } from 'autobind-decorator';
-import React, { Component } from 'react';
+import './index.scss';
+
 import {
   Typography,
 } from '@material-ui/core';
+import { boundMethod } from 'autobind-decorator';
+import React, { Component } from 'react';
 
-import './index.scss';
+import api from '@/services/api';
+
 import AdminTable from './components/AdminTable';
-import api from '../../services/api';
 
 /**
  * View for editing or adding database users.

@@ -5,12 +5,13 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import * as d3Select from 'd3-selection';
+import './GraphNodeDisplay.scss';
 import * as d3Drag from 'd3-drag';
 
-import './GraphNodeDisplay.scss';
-import config from '../../../../../static/config';
+import schema from '@/services/schema';
+import config from '@/static/config';
+
 import { GraphNode } from '../kbgraph';
-import schema from '../../../../../services/schema';
 
 const { NODE_RADIUS } = config.GRAPH_PROPERTIES;
 const DEFAULT_OPACITY = 1;

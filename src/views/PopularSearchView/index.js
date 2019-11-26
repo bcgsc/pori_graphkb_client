@@ -1,19 +1,20 @@
-import React, { useState, useCallback } from 'react';
+import './index.scss';
+
+import {
+  Tab,
+  Tabs,
+} from '@material-ui/core';
+import React, { useCallback, useState } from 'react';
 import {
   NavLink,
   Route,
   Switch,
 } from 'react-router-dom';
-import {
-  Tabs,
-  Tab,
-} from '@material-ui/core';
 import slugify from 'slugify';
 
+import { HistoryPropType, LocationPropType } from '@/components/types';
 
 import BasePopularSearch from './components/BasePopularSearch';
-import './index.scss';
-import { LocationPropType, HistoryPropType } from '../../components/types';
 
 /**
  * Main view for popular search. Displays top level query option tabs. This view

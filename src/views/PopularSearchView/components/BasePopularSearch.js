@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-
 import './index.scss';
+
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+
+import api from '@/services/api';
+
 import SearchInput from './SearchInput';
 import SearchMenu from './SearchMenu';
-import api from '../../../services/api';
 import SEARCH_OPTS from './util';
 
 
@@ -54,9 +56,9 @@ function BasePopularSearch(props) {
       if (selectedOption.buildSearch) {
         await selectedOption.buildSearch(value, optionalValue);
       }
-      const { search: rawSearch } = selectedOption;
+      const { search: rawSearch, searchChipProps } = selectedOption;
 
-      const search = api.encodeQueryComplexToSearch(rawSearch, 'Statement');
+      const search = api.encodeQueryComplexToSearch(rawSearch, 'Statement', searchChipProps);
       onSubmit(search);
     } catch (err) {
       onError(err);

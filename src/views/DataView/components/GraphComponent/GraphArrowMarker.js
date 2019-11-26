@@ -1,6 +1,6 @@
 import React from 'react';
 
-import config from '../../../../static/config';
+import config from '@/static/config';
 
 // Component specific constants.
 const {

@@ -1,14 +1,14 @@
 import '@testing-library/jest-dom/extend-expect';
-import React from 'react';
-import { render } from '@testing-library/react';
 
 import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackbar-provider';
+import { render } from '@testing-library/react';
+import React from 'react';
 
-import ReviewDialog from '../ReviewDialog';
 import { KBContext } from '../../KBContext';
+import ReviewDialog from '../ReviewDialog';
 
 
-jest.mock('../../../services/auth', () => ({
+jest.mock('@/services/auth', () => ({
   getUser: () => ({ '@rid': '#20:0' }),
 }));
 

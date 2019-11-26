@@ -1,5 +1,6 @@
-import React from 'react';
 import { mount } from 'enzyme';
+import React from 'react';
+
 import GraphLegend from '../GraphComponent/GraphLegend/GraphLegend';
 import { PropsMap } from '../GraphComponent/kbgraph';
 

@@ -56,11 +56,11 @@ const copyURLToClipBoard = (snackbar) => {
 
   // const snackbar = this.context;
   snackbar.add('URL has been copied to your clip-board!');
-}
+};
 
 export {
   getId,
   computeNodeLevels,
   copyURLToClipBoard,
   TREE_LINK,
-}
+};

@@ -340,7 +340,6 @@ class GraphComponent extends Component {
       .on('dblclick.zoom', null);
 
     this.setState({ simulation, svg });
-    return simulation;
   }
 
   /**
@@ -687,8 +686,8 @@ class GraphComponent extends Component {
     } = !seed ? this.state : seed;
 
     const { handleDetailDrawerClose } = this.props;
-    this.updateColors(nodes, links, graphOptions); // updates color scheme based on graph objects
-    this.drawGraph(nodes, links, simulation, graphOptions); // renders nodes and links to graph
+    this.updateColors(nodes, links, graphOptions);
+    this.drawGraph(nodes, links, simulation, graphOptions);
     simulation.alpha(1).restart();
     handleDetailDrawerClose();
   }

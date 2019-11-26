@@ -12,6 +12,7 @@ import {
 import AddIcon from '@material-ui/icons/Add';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import InputIcon from '@material-ui/icons/Input';
 import SearchIcon from '@material-ui/icons/Search';
 import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
@@ -148,6 +149,17 @@ class MainNav extends React.PureComponent {
               <MenuLink label="Variant" route="/new/variant" inset />
               <MenuLink label="Statement" route="/new/statement" inset />
               <MenuLink label="Relationship" route="/new/e" inset />
+            </>
+          )}
+          {hasWriteAccess(this.context) && (
+            <MenuItem onClick={() => this.handleOpen('import')}>
+              <ListItemIcon> <InputIcon /> </ListItemIcon>
+              <ListItemText primary="Import" />
+            </MenuItem>
+          )}
+          {hasWriteAccess(this.context) && (isOpen && subMenuOpen === 'import') && (
+            <>
+              <MenuLink label="PubMed" route="/import/pubmed" inset />
             </>
           )}
           <MenuLink label="About" route="/about" icon={<HelpOutlineIcon />} />

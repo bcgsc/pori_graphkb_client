@@ -54,7 +54,7 @@ const ImportPubmedView = () => {
     fetchRecord();
 
     return () => call && call.abort();
-  }, [pmid]);
+  }, []);
 
   // fetch records that already exist in GraphKB
   useEffect(() => {

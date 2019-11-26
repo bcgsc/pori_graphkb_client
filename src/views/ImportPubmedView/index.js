@@ -102,7 +102,7 @@ const ImportPubmedView = () => {
 
   return (
     <div className="import-view">
-      <Typography variant="h2" component="h2" className="import-view__title">
+      <Typography variant="h1" className="import-view__title">
         Import PubMed Articles to GraphKB
       </Typography>
       <SearchBox

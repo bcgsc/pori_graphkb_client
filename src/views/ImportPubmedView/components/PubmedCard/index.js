@@ -33,9 +33,9 @@ const PubmedCard = ({
       <Typography color="textSecondary">
         PMID:{sourceId}
       </Typography>
-      {title && (<Typography variant="h4" component="h2" className="pubmed-card__title">{title}</Typography>)}
+      {title && (<Typography variant="h2" className="pubmed-card__title">{title}</Typography>)}
       {journalName && (
-        <Typography color="textSecondary">
+        <Typography variant="subtitle1">
           {journalName}
         </Typography>
       )}

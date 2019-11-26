@@ -24,7 +24,12 @@ const AboutMain = () => {
       const { Statement: result } = await controller.request();
       const data = [['source', 'count']];
       Object.entries(result).forEach(([label, value]) => {
-        data.push([label, value]);
+        data.push([
+          label === 'null'
+            ? 'other'
+            : label,
+          value,
+        ]);
       });
       setChartData(data);
     };

@@ -61,7 +61,7 @@ describe('<GraphOptionsPanel />', () => {
       />,
     );
     wrapper.find('button#options-close-btn').simulate('click');
-    expect(handleDialogClose.mock.calls.length).toBe(2);
+    expect(handleDialogClose.mock.calls.length).toBe(1);
   });
 
   test('opens and renders help dialog when help buttons are clicked', () => {

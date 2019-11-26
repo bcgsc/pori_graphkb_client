@@ -89,7 +89,7 @@ describe('<GraphComponent />', () => {
         handleDetailDrawerOpen={() => { }}
         handleDetailDrawerClose={() => { }}
         handleNewColumns={() => { }}
-        edgeTypes={['AliasOf']}
+        edgeTypes={['out_AliasOf', 'in_AliasOf']}
       />,
     );
     await wrapper.update();
@@ -108,7 +108,7 @@ describe('<GraphComponent />', () => {
         handleDetailDrawerClose={() => { }}
         handleTableRedirect={() => { }}
         handleNewColumns={() => { }}
-        edgeTypes={['AliasOf']}
+        edgeTypes={['out_AliasOf', 'in_AliasOf']}
       />,
     );
     await wrapper.update();
@@ -143,8 +143,8 @@ describe('<GraphComponent />', () => {
       .mockImplementation(() => {});
     const handleDetailDrawerOpen = jest.fn();
     const actionsNode = new GraphNode({
-      x: 0,
-      y: 0,
+      x: 1,
+      y: 2,
       data: {
         '@rid': '#4',
         name: 'linked',
@@ -159,11 +159,13 @@ describe('<GraphComponent />', () => {
           },
         }],
       },
-    });
+    },
+    1,
+    2);
     const actionsLink = new GraphLink({},
       {
-        x: 0,
-        y: 0,
+        x: 1,
+        y: 2,
         data: {
           '@rid': '#4',
           name: 'linked',
@@ -171,13 +173,14 @@ describe('<GraphComponent />', () => {
         },
       },
       {
-        x: 0,
-        y: 0,
+        x: 2,
+        y: 3,
         data: {
           '@rid': '#3',
           name: 'linked',
         },
       });
+
 
     wrapper = mount(
       <GraphComponent
@@ -190,7 +193,7 @@ describe('<GraphComponent />', () => {
         handleNewColumns={() => { }}
         handleClick={handleClickSpy}
         displayed={['#1', '#2', '#3', '#4']}
-        edgeTypes={['AliasOf']}
+        edgeTypes={['out_AliasOf', 'in_AliasOf']}
       />,
     );
 
@@ -211,14 +214,12 @@ describe('<GraphComponent />', () => {
     wrapper.find('#hide').simulate('click');
     wrapper.setState({ actionsNode });
     wrapper.find('#close').simulate('click');
-    wrapper.setState({
+    await wrapper.setState({
       actionsNode: actionsLink,
-      actionsNodeIsEdge: true,
     });
     wrapper.find('#details').simulate('click');
-    wrapper.setState({
+    await wrapper.setState({
       actionsNode: actionsLink,
-      actionsNodeIsEdge: true,
     });
     wrapper.find('#hide').simulate('click');
   });

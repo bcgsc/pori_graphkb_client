@@ -35,9 +35,19 @@ import {
   GraphLink,
 } from './kbgraph';
 
+import {
+  getId,
+  computeNodeLevels,
+  copyURLToClipBoard,
+  TREE_LINK,
+} from './util';
+
 const {
   GRAPH_PROPERTIES: {
     ZOOM_BOUNDS,
+    MARKER_ID,
+    DIALOG_FADEOUT_TIME,
+    HEAVILY_CONNECTED,
   },
   GRAPH_DEFAULTS: {
     PALLETE_SIZE,
@@ -46,56 +56,6 @@ const {
     GRAPH_UNIQUE_LIMIT,
   },
 } = config;
-
-
-// Component specific constants.
-const MARKER_ID = 'endArrow';
-const DIALOG_FADEOUT_TIME = 150;
-const HEAVILY_CONNECTED = 10;
-const TREE_LINK = 'SubClassOf';
-
-const getId = node => (node.data
-  ? node.data['@rid']
-  : node['@rid'] || node);
-
-/**
- * Use the graph links to rank nodes in the graph based on their subclass relationships. Root nodes
- * are given 0 and child nodes are given 1 more than the rank of their highest ranked parent node
- */
-const computeNodeLevels = (graphLinks) => {
-  const nodes = {};
-  graphLinks.forEach((edge) => {
-    const { data: { out: src, in: tgt, '@class': edgeType } } = edge;
-
-    if (edgeType === TREE_LINK) {
-      const srcId = getId(src);
-      const tgtId = getId(tgt);
-      nodes[srcId] = nodes[srcId] || { id: srcId, children: [], parents: [] };
-      nodes[tgtId] = nodes[tgtId] || { id: tgtId, children: [], parents: [] };
-      nodes[srcId].children.push(tgtId);
-      nodes[tgtId].parents.push(srcId);
-    }
-  });
-
-  const queue = Object.values(nodes).filter(node => node.parents.length === 0);
-  const ranks = {};
-
-  queue.forEach((root) => {
-    ranks[root.id] = 0;
-  });
-
-  while (queue.length) {
-    const curr = queue.shift();
-
-    curr.children.forEach((childId) => {
-      if (childId) {
-        ranks[childId] = Math.max(ranks[childId] || 0, ranks[curr.id] + 1);
-        queue.push(nodes[childId]);
-      }
-    });
-  }
-  return ranks;
-};
 
 /**
  * Component for displaying query results in force directed graph form.
@@ -149,11 +109,10 @@ class GraphComponent extends Component {
       svg: undefined,
       graphOptions: new GraphOptions(),
       graphOptionsOpen: false,
-      actionsNodeIsEdge: false,
       expansionDialogOpen: false,
       expandNode: null,
       expandExclusions: [],
-      allProps: ['@rid', '@class', 'name'], // list of all unique properties on all nodes returned
+      allProps: ['@rid', '@class', 'name'],
     };
 
     this.propsMap = new PropsMap();
@@ -208,7 +167,7 @@ class GraphComponent extends Component {
       } = this.processData(
         data[rid],
         util.positionInit(this.wrapper.clientWidth / 2, this.wrapper.clientHeight / 2, index, nodeRIDs.length),
-        0,
+        false,
         {
           nodes,
           links,
@@ -243,8 +202,8 @@ class GraphComponent extends Component {
       simulation,
       graphOptions,
     } = this.state;
-    // remove all event listeners
 
+    // remove all event listeners
     if (svg) {
       svg.call(d3Zoom.zoom()
         .on('zoom', null))
@@ -318,7 +277,7 @@ class GraphComponent extends Component {
       d3Force
         .forceLink(links)
         .strength((link) => {
-          if (link.data['@class'] !== TREE_LINK && graphOptions.isTreeLayout) {
+          if ((link.data['@class'] !== TREE_LINK) && graphOptions.isTreeLayout) {
             return 5 * graphOptions.linkStrength;
           }
           return graphOptions.linkStrength;
@@ -328,7 +287,7 @@ class GraphComponent extends Component {
     const ticked = () => {
       const shiftDistance = 1 * simulation.alpha();
       links.forEach((data) => {
-        if (data.data['@class'] === TREE_LINK) {
+        if (data.data['@class'] === TREE_LINK && graphOptions.isTreeLayout) {
           data.source.y += shiftDistance;
           data.target.y -= shiftDistance;
         }
@@ -408,7 +367,7 @@ class GraphComponent extends Component {
       } = this.processData(
         data[node.getId()],
         { x: node.x, y: node.y },
-        1,
+        true,
         {
           nodes,
           links,
@@ -505,17 +464,43 @@ class GraphComponent extends Component {
   }
 
   /**
+   * Adds a graphNode or graphLink to graphObjects.
+   * @param {string} type one of ['link', 'node']
+   * @param {object} data record information
+   * @param {object} prop1 either x position if graphNode or source if graphLink
+   * @param {object} prop2 either y position if graphNode or target if graphLink
+   * @param {object} graphObjects graphObjects attached to simulation
+   * @param {object} propsMap keeps track of node/link properties and associated values
+   */
+  addGraphObject = (type, data, prop1, prop2, graphObjects, propsMap) => {
+    const newGraphObject = type === 'node'
+      ? new GraphNode(data, prop1, prop2)
+      : new GraphLink(data, prop1, prop2);
+
+    const { [`${type}s`]: objs, allProps } = this.state;
+    objs.push(newGraphObject);
+    graphObjects[data['@rid']] = data;
+
+    if (type === 'node') {
+      propsMap.loadNode(data, allProps);
+    } else {
+      propsMap.loadLink(data);
+    }
+  };
+
+  /**
    * Processes node data and updates state with new nodes and links. Also
    * updates expandable object which tracks via RID which nodes can be expanded.
-   * @param {Object} node - Node object as returned by the api.
-   * @param {Object} position - Object containing x and y position of node.
-   * @param {number} depth - Recursion base case flag.
+   * @param {Object} node - record object as returned by the api. One of [node, link, edge]
+   * @param {Object} pos - Object containing x and y position of node.
+   * @param {bool} expansionFlag - Whether or not edges/links of record being processed
+   * should also have it's edges/links expanded. If false, only record is processed.
    * @param {Object} prevstate - Object containing nodes, links,
    * graphobjects, and expandable map, from previous state.
    * @param {Array.<string>} [exclusions=[]] - List of edge ID's to be ignored on expansion.
    */
-  processData(node, position, depth, prevstate, exclusions = []) {
-    const { allProps, data } = this.state;
+  processData(node, pos, expansionFlag, prevstate, exclusions = []) {
+    const { data } = this.state;
     const { edgeTypes } = this.props;
     let {
       nodes,
@@ -532,9 +517,7 @@ class GraphComponent extends Component {
     }
 
     if (!graphObjects[node['@rid']]) {
-      nodes.push(new GraphNode(node, position.x, position.y));
-      graphObjects[node['@rid']] = node;
-      this.propsMap.loadNode(node, allProps);
+      this.addGraphObject('node', node, pos.x, pos.y, graphObjects, this.propsMap);
     }
 
     /**
@@ -557,26 +540,15 @@ class GraphComponent extends Component {
             const targetRid = inRid === node['@rid'] ? outRid : inRid;
 
             if (
-              edgeRid
-              && inRid
-              && outRid
-              && (depth > 0 || graphObjects[targetRid])
+              edgeRid && inRid && outRid
+              && (expansionFlag || graphObjects[targetRid])
             ) {
-              // Initialize new link object and pushes to links list.
-              const link = new GraphLink(edge, outRid, inRid);
-              links.push(link);
-              graphObjects[link.getId()] = link;
-              this.propsMap.loadLink(link.data);
+              this.addGraphObject('link', edge, outRid, inRid, graphObjects, this.propsMap);
 
               // Checks if node is already rendered
               if (outRid && !graphObjects[outRid]) {
                 // Initializes position of new child
-                const positionInit = util.positionInit(
-                  position.x,
-                  position.y,
-                  index,
-                  n,
-                );
+                const positionInit = util.positionInit(pos.x, pos.y, index, n);
                 ({
                   nodes,
                   links,
@@ -585,7 +557,7 @@ class GraphComponent extends Component {
                 } = this.processData(
                   edge.out,
                   positionInit,
-                  depth - 1,
+                  false,
                   {
                     nodes,
                     links,
@@ -596,12 +568,7 @@ class GraphComponent extends Component {
                 ));
               }
               if (inRid && !graphObjects[inRid]) {
-                const positionInit = util.positionInit(
-                  position.x,
-                  position.y,
-                  index,
-                  n,
-                );
+                const positionInit = util.positionInit(pos.x, pos.y, index, n);
                 ({
                   nodes,
                   links,
@@ -610,7 +577,7 @@ class GraphComponent extends Component {
                 } = this.processData(
                   edge.in,
                   positionInit,
-                  depth - 1,
+                  false,
                   {
                     nodes,
                     links,
@@ -650,11 +617,7 @@ class GraphComponent extends Component {
           // check to see if link is in graph already rendered
 
           if (!graphObjects[linkerRid] && !exclusions.includes(linkRid)) {
-            if (
-              sourceRid
-              && targetRid
-              && linkerRid
-              && (depth > 0 || graphObjects[targetRid])) {
+            if (expansionFlag || graphObjects[targetRid]) {
               // create link object and push it to links list
               const graphLinkData = {
                 '@rid': linkerRid,
@@ -663,15 +626,12 @@ class GraphComponent extends Component {
                 out: targetRid,
                 isLinkProp: true,
               };
-              const graphLink = new GraphLink(graphLinkData, sourceRid, targetRid);
-              links.push(graphLink);
-              graphObjects[graphLink.getId()] = graphLink;
-              this.propsMap.loadLink(graphLink.data);
+              this.addGraphObject('link', graphLinkData, sourceRid, targetRid, graphObjects, this.propsMap);
 
               // check if node is already rendered
               if (targetRid && !graphObjects[targetRid]) {
                 // Initializes position of new child
-                const positionInit = util.positionInit(position.x, position.y, index, n);
+                const positionInit = util.positionInit(pos.x, pos.y, index, n);
                 ({
                   nodes,
                   links,
@@ -680,7 +640,7 @@ class GraphComponent extends Component {
                 } = this.processData(
                   link,
                   positionInit,
-                  depth - 1,
+                  false,
                   {
                     nodes,
                     links,
@@ -732,6 +692,14 @@ class GraphComponent extends Component {
     handleDetailDrawerClose();
   }
 
+  /**
+   * updates color mapping based on data properties of graphobject and selected
+   * coloring key.
+   *
+   * @param {object} colorPalette maps properties to colors from palette
+   * @param {object} graphObjectData data from graph object
+   * @param {string} key selected coloring key ex. 'class', 'rid', 'name'
+   */
   updateColorPalette = (colorPalette, graphObjectData, key) => {
     const colorMapping = { ...colorPalette };
 
@@ -757,7 +725,12 @@ class GraphComponent extends Component {
     return colorMapping;
   };
 
-  coloringKeyCheck = (propsMap, colorPalette, key, type) => {
+  /**
+   * Given key and all unique node/link props, checks to see if key selected
+   * is a valid or bad choice for node/link coloring. Also returns whether or not
+   * there are too many unique colors for given key.
+   */
+  coloringKeyCheck = (propsMap, colorPalette = {}, key, type) => {
     const props = propsMap[`${type}Props`];
     const tooManyUniques = (Object.keys(colorPalette).length > PALLETE_SIZE
         && Object.keys(props).length !== 1);
@@ -830,7 +803,7 @@ class GraphComponent extends Component {
     // Update contents of detail drawer if open.
     handleDetailDrawerOpen(node);
     // Sets clicked object as actions node.
-    this.setState({ actionsNode: node, actionsNodeIsEdge: false });
+    this.setState({ actionsNode: node });
   }
 
   /**
@@ -852,6 +825,7 @@ class GraphComponent extends Component {
 
   /**
    * Closes additional help dialog.
+   * @property {string} key is one of ['expansionDialogOpen', 'graphOptionsOpen']
    */
   @boundMethod
   handleDialogClose(key) {
@@ -895,7 +869,7 @@ class GraphComponent extends Component {
     handleDetailDrawerOpen(link, false, true);
 
     // Sets clicked object as actions node.
-    this.setState({ actionsNode: link, actionsNodeIsEdge: true });
+    this.setState({ actionsNode: link });
   }
 
   /**
@@ -1085,21 +1059,6 @@ class GraphComponent extends Component {
     }
   }
 
-  @boundMethod
-  copyURLToClipBoard() {
-    const URL = window.location.href;
-    // create temp dummy element to select and copy text to clipboard
-    const dummy = document.createElement('input');
-    document.body.appendChild(dummy);
-    dummy.value = URL;
-    dummy.select();
-    document.execCommand('copy');
-    document.body.removeChild(dummy);
-
-    const snackbar = this.context;
-    snackbar.add('URL has been copied to your clip-board!');
-  }
-
   render() {
     const {
       nodes,
@@ -1107,15 +1066,13 @@ class GraphComponent extends Component {
       actionsNode,
       expandable,
       graphOptions,
-      actionsNodeIsEdge,
       graphOptionsOpen,
       expansionDialogOpen,
       expandNode,
       expandExclusions,
     } = this.state;
 
-
-    const { propsMap } = this;
+    const { propsMap, context: snackbar } = this;
 
     const {
       detail,
@@ -1142,6 +1099,8 @@ class GraphComponent extends Component {
       })
     );
 
+    // edges dont have an x or y position
+    const actionsNodeIsEdge = actionsNode ? Boolean(!actionsNode.x || !actionsNode.y) : false;
     const actionsRingOptions = actionsNodeIsEdge
       ? [
         {
@@ -1245,7 +1204,7 @@ class GraphComponent extends Component {
             <IconButton
               id="clipboard-copy-btn"
               color="primary"
-              onClick={this.copyURLToClipBoard}
+              onClick={() => copyURLToClipBoard(snackbar)}
             >
               <SaveStateIcon />
             </IconButton>

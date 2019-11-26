@@ -67,7 +67,7 @@ const splitPermissionsByOperation = (permissions) => {
 const PermissionsTable = ({
   value, disabled, onChange, name,
 }) => {
-  const [content, setContent] = useState(value);
+  const [content, setContent] = useState(value || {});
   const [topBoxes, setTopboxes] = useState({});
 
   /**
@@ -75,8 +75,8 @@ const PermissionsTable = ({
    * when the modelName is not given and is null, assumes a checkAll event
    */
   const handleClick = useCallback((operation, currModelName = null) => {
-    const newContent = Object.assign({}, content);
-    const newTopBoxes = Object.assign({}, topBoxes);
+    const newContent = { ...content };
+    const newTopBoxes = { ...topBoxes };
 
     if (!currModelName) {
       newTopBoxes[operation] = !newTopBoxes[operation];

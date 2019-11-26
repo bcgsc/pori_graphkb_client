@@ -1,17 +1,18 @@
 /**
  * @module /App
  */
-import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
+import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackbar-provider';
+import { CssBaseline } from '@material-ui/core';
 import {
   createMuiTheme,
   MuiThemeProvider,
 } from '@material-ui/core/styles';
 import { createGenerateClassName, jssPreset, StylesProvider } from '@material-ui/styles';
-
-import JssProvider from 'react-jss/lib/JssProvider';
 import { create } from 'jss';
-import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackbar-provider';
+import React from 'react';
+import JssProvider from 'react-jss/lib/JssProvider';
+import { BrowserRouter } from 'react-router-dom';
+
 import * as cssTheme from './_theme.scss';
 import MainView from './views/MainView';
 
@@ -44,34 +45,15 @@ const theme = createMuiTheme({
     },
   },
   typography: {
-    h1: {
-      fontSize: '1.7rem',
-    },
-    h2: {
-      fontSize: '1.5rem',
-    },
-    h3: {
-      fontSize: '1.4rem',
-    },
-    h4: {
-      fontSize: '1.25rem',
-    },
-    h5: {
-      fontSize: '1.1rem',
-    },
-    h6: {
-      fontSize: '0.875rem',
-    },
-    body1: {
-      fontSize: '1rem',
-    },
-    body2: {
-      fontSize: '0.875rem',
-      opacity: 0.7,
-    },
-    subtitle1: {
-      fontSize: '0.875rem',
-    },
+    body1: { fontSize: cssTheme.fontSizeBody1 },
+    body2: { fontSize: cssTheme.fontSizeBody2 },
+    h1: { fontSize: cssTheme.fontSizeH1 },
+    h2: { fontSize: cssTheme.fontSizeH2 },
+    h3: { fontSize: cssTheme.fontSizeH3 },
+    h4: { fontSize: cssTheme.fontSizeH4 },
+    h5: { fontSize: cssTheme.fontSizeH5 },
+    h6: { fontSize: cssTheme.fontSizeH6 },
+    subtitle1: { fontSize: cssTheme.fontSizeSubtitle1 },
   },
 });
 
@@ -90,6 +72,7 @@ const jss = create({
 function App() {
   return (
     <StylesProvider injectFirst>
+      <CssBaseline />
       <JssProvider jss={jss} generateClassName={generateClassName}>
         <MuiThemeProvider theme={theme}>
           <SnackbarProvider anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>

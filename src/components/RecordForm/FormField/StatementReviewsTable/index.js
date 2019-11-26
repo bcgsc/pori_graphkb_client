@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import '../index.scss';
+
 import {
   Table,
   TableBody,
@@ -8,9 +8,8 @@ import {
   TableRow,
   Typography,
 } from '@material-ui/core';
-
-
-import '../index.scss';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 import StatementReviewRow from './StatementReview';
 

@@ -1,8 +1,8 @@
 import {
-  PropsMap,
-  GraphNode,
   GraphLink,
+  GraphNode,
   GraphOptions,
+  PropsMap,
 } from '../GraphComponent/kbgraph';
 
 describe('kbgraph method i/o validations', () => {

@@ -1,9 +1,8 @@
-import React from 'react';
-import marked from 'marked';
-
-
 import notation from '@bcgsc/knowledgebase-parser/doc/notation.md';
-import { LocationPropType } from '../../../components/types';
+import marked from 'marked';
+import React from 'react';
+
+import { LocationPropType } from '@/components/types';
 
 
 class AboutNotation extends React.Component {

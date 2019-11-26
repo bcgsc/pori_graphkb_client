@@ -124,6 +124,10 @@ $closed-drawer-width: 56px;
   margin-right: 2%;
   min-width: $user-menu-width;
 
+  .user-dropdown__icon * {
+    color: $palette__primary--contrast-text;
+  }
+
   &__content {
     width: $user-menu-width;
   }
@@ -175,7 +179,7 @@ $closed-drawer-width: 56px;
   &__link {
     color: $palette__text--primary;
 
-    &--selected {
+    &--selected.MuiTypography-body1 {
       color: $palette__secondary--main;
     }
   }

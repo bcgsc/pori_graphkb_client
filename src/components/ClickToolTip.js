@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { boundMethod } from 'autobind-decorator';
 import {
-  Tooltip,
   ClickAwayListener,
+  Tooltip,
 } from '@material-ui/core';
 import HelpIcon from '@material-ui/icons/Help';
+import { boundMethod } from 'autobind-decorator';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 
 /**

@@ -1,15 +1,15 @@
+import {
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+} from '@material-ui/core';
 import React from 'react';
 import {
   Link,
 } from 'react-router-dom';
-import {
-  Typography,
-  ListItem,
-  List,
-  ListItemText,
-} from '@material-ui/core';
 
-import queryResults from '../../../static/images/table-view.png';
+import queryResults from '@/static/images/table-view.png';
 
 
 const AboutQuerying = () => (

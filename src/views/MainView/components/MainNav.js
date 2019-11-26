@@ -157,7 +157,7 @@ class MainNav extends React.PureComponent {
               <ListItemText primary="Import" />
             </MenuItem>
           )}
-          {hasWriteAccess(this.context) && (isOpen && subMenuOpen === 'import') && (
+          {hasWriteAccess(this.context) && (isOpen && subMenuOpenLink === 'import') && (
             <>
               <MenuLink label="PubMed" route="/import/pubmed" inset />
             </>

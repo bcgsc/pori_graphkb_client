@@ -89,6 +89,7 @@ const AboutMain = () => {
           title: 'Statement Sources',
           legend: 'none',
           colors: [cssTheme.primaryMain, cssTheme.secondaryMain],
+          backgroundColor: 'transparent',
         }}
         loader={<CircularProgress className="about-page__loader" />}
       />

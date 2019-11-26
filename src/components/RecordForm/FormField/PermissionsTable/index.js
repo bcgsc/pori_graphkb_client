@@ -13,9 +13,8 @@ import {
   TableRow,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
-import { KBContext } from '@/components/KBContext';
 import schema from '@/services/schema';
 
 const { constants: { PERMISSIONS } } = kbSchema;
@@ -65,46 +64,17 @@ const splitPermissionsByOperation = (permissions) => {
  * @property {string} props.name field name to use in simulating events
  * @property {object} props.value the current permissions set
  */
-class PermissionsTable extends React.Component {
-  static contextType = KBContext;
-
-  static propTypes = {
-    value: PropTypes.object,
-    disabled: PropTypes.bool,
-    onChange: PropTypes.func.isRequired,
-    name: PropTypes.string.isRequired,
-  };
-
-  static defaultProps = {
-    value: {},
-    disabled: false,
-  };
-
-  constructor(props) {
-    super(props);
-    const { value } = this.props;
-    this.state = {
-      content: value,
-      topBoxes: {},
-    };
-  }
-
-  componentDidUpdate(prevProps) {
-    const { value } = this.props;
-
-    if (JSON.stringify(prevProps.value) !== JSON.stringify(value)) {
-      this.setState({ content: value });
-    }
-  }
+const PermissionsTable = ({
+  value, disabled, onChange, name,
+}) => {
+  const [content, setContent] = useState(value);
+  const [topBoxes, setTopboxes] = useState({});
 
   /**
    * Handle the user clicking a checkbox to either clear or check it
    * when the modelName is not given and is null, assumes a checkAll event
    */
-  handleClick(operation, currModelName = null) {
-    const { onChange, name } = this.props;
-    const { content, topBoxes } = this.state;
-
+  const handleClick = useCallback((operation, currModelName = null) => {
     const newContent = Object.assign({}, content);
     const newTopBoxes = Object.assign({}, topBoxes);
 
@@ -114,7 +84,7 @@ class PermissionsTable extends React.Component {
 
     for (const modelName of Object.keys(content)) { // eslint-disable-line no-restricted-syntax
       if (!schema.has(modelName) || content[modelName] === null) {
-        continue;
+        continue; // eslint-disable-line no-continue
       }
 
       if (currModelName) {
@@ -138,74 +108,82 @@ class PermissionsTable extends React.Component {
         newContent[modelName] |= PERMISSIONS[operation];
       }
     }
-    this.setState({ content: newContent, topBoxes: newTopBoxes });
+    setContent(newContent);
+    setTopboxes(newTopBoxes);
     onChange({ target: { name, value: newContent } });
-  }
+  }, [content, name, onChange, topBoxes]);
 
-  render() {
-    const {
-      disabled,
-    } = this.props;
-    const { content, topBoxes } = this.state;
 
-    const operationOrder = ['CREATE', 'READ', 'UPDATE', 'DELETE'];
-    const permByModelName = splitPermissionsByOperation(content || {});
-    const modelOrder = Object.keys(permByModelName).sort();
+  const operationOrder = ['CREATE', 'READ', 'UPDATE', 'DELETE'];
+  const permByModelName = splitPermissionsByOperation(content || {});
+  const modelOrder = Object.keys(permByModelName).sort();
 
-    return (
-      <div className="permissions-table">
-        <Table>
-          <TableHead>
-            <TableRow className="permissions-table__header">
-              <TableCell size="small" />
-              {operationOrder.map(operation => (
-                <TableCell key={operation} padding="checkbox">
-                  {operation}
-                </TableCell>
-              ))}
-            </TableRow>
-            <TableRow>
-              <TableCell size="small" />
-              {operationOrder.map(operation => (
-                <TableCell key={operation} padding="checkbox">
-                  <Checkbox
-                    onChange={() => this.handleClick(operation, null)}
-                    checked={topBoxes[operation]}
-                    disabled={disabled}
-                  />
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {modelOrder.map(
-              (modelName) => {
-                const permission = permByModelName[modelName];
-                return (
-                  <TableRow key={modelName} className="permissions-table__row">
-                    <TableCell size="small">
-                      {modelName}:
+  return (
+    <div className="permissions-table">
+      <Table>
+        <TableHead>
+          <TableRow className="permissions-table__header">
+            <TableCell size="small" />
+            {operationOrder.map(operation => (
+              <TableCell key={operation} padding="checkbox">
+                {operation}
+              </TableCell>
+            ))}
+          </TableRow>
+          <TableRow>
+            <TableCell size="small" />
+            {operationOrder.map(operation => (
+              <TableCell key={operation} padding="checkbox">
+                <Checkbox
+                  onChange={() => handleClick(operation, null)}
+                  checked={topBoxes[operation]}
+                  disabled={disabled}
+                />
+              </TableCell>
+            ))}
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {modelOrder.map(
+            (modelName) => {
+              const permission = permByModelName[modelName];
+              return (
+                <TableRow key={modelName} className="permissions-table__row">
+                  <TableCell size="small">
+                    {modelName}:
+                  </TableCell>
+                  {operationOrder.map(operation => (
+                    <TableCell padding="checkbox" key={operation}>
+                      {(permission[operation] !== null && (
+                      <Checkbox
+                        onChange={() => handleClick(operation, modelName)}
+                        checked={permission[operation] !== 0}
+                        disabled={disabled}
+                      />
+                      ))}
                     </TableCell>
-                    {operationOrder.map(operation => (
-                      <TableCell padding="checkbox" key={operation}>
-                        {(permission[operation] !== null && (
-                          <Checkbox
-                            onChange={() => this.handleClick(operation, modelName)}
-                            checked={permission[operation] !== 0}
-                            disabled={disabled}
-                          />
-                        ))}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                );
-              },
-            )}
-          </TableBody>
-        </Table>
-      </div>
-    );
-  }
-}
+                  ))}
+                </TableRow>
+              );
+            },
+          )}
+        </TableBody>
+      </Table>
+    </div>
+  );
+};
+
+
+PermissionsTable.propTypes = {
+  value: PropTypes.object,
+  disabled: PropTypes.bool,
+  onChange: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+};
+
+PermissionsTable.defaultProps = {
+  value: {},
+  disabled: false,
+};
 
 export default PermissionsTable;

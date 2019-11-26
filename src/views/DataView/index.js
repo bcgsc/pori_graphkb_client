@@ -14,13 +14,13 @@ import PropTypes from 'prop-types';
 import * as qs from 'qs';
 import React from 'react';
 
-
 import { HistoryPropType, LocationPropType } from '@/components/types';
 import api from '@/services/api';
 import schema from '@/services/schema';
+
+import util from '../../services/util';
 import DataTable from './components/DataTable';
 import DetailDrawer from './components/DetailDrawer';
-import util from '../../services/util';
 import FilterChips from './components/FilterChips';
 import FilterTablePopover from './components/FilterTablePopover';
 import GraphComponent from './components/GraphComponent';
@@ -280,7 +280,7 @@ class DataView extends React.Component {
     } = this.state;
 
     const edges = schema.getEdges();
-    const expandedEdgeTypes = util.expandEdges(edges)
+    const expandedEdgeTypes = util.expandEdges(edges);
 
     if (!graphData) {
       this.loadSavedStateFromURL();

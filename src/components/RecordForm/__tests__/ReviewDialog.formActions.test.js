@@ -33,7 +33,7 @@ jest.mock('../../ResourceSelectComponent', () => ({
     onChange({ target: { value: option, name } });
   };
   return (
-    <select data-testid="select" value={value} onChange={handleChange}>
+    <select data-testid="select" onChange={handleChange} value={value}>
       {resources.map(opt => (
         <option key={opt} value={opt}>
           {opt}
@@ -62,9 +62,9 @@ describe('ReviewDialog formActions', () => {
       <KBContext.Provider value={{ }}>
         <SnackbarProvider value={{ add: snackbarSpy }}>
           <ReviewDialog
-            onSubmit={onSubmitSpy}
             isOpen
             onClose={onCancelSpy}
+            onSubmit={onSubmitSpy}
           />
         </SnackbarProvider>
       </KBContext.Provider>,

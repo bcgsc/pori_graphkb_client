@@ -108,12 +108,12 @@ const FormField = (props) => {
       <BooleanField
         disabled={generated || disabled}
         error={!!error}
+        helperText={helperText}
         label={label || model.name}
         name={model.name}
         onChange={onChange}
         required={mandatory}
         value={value}
-        helperText={helperText}
       />
     );
   } else if (type.includes('embedded')) {
@@ -122,23 +122,23 @@ const FormField = (props) => {
         propComponent = (
           <EmbeddedListTable
             label={name}
+            name={name}
+            onChange={onChange}
             values={value || []}
             variant={variant}
-            onChange={onChange}
-            name={name}
           />
         );
       } else {
         propComponent = (
           <TextArrayField
+            disabled={disabled || generated}
             error={error}
+            helperText={helperText}
             label={label || name}
-            value={value}
             model={model}
             name={name}
             onChange={onChange}
-            disabled={disabled || generated}
-            helperText={helperText}
+            value={value}
           />
         );
       }
@@ -147,12 +147,12 @@ const FormField = (props) => {
         // permissions table of checkboxes
         propComponent = (
           <PermissionsTable
+            disabled={disabled || generated}
             label={label || name}
-            value={value}
             model={model}
             name={name}
             onChange={onChange}
-            disabled={disabled || generated}
+            value={value}
           />
         );
       } else {
@@ -162,15 +162,15 @@ const FormField = (props) => {
 
         propComponent = (
           <EmbeddedRecord
+            disabled={disabled}
             errors={error}
+            helperText={helperText}
             label={label || name}
             modelName={linkedModel}
             name={name}
             onChange={onChange}
             value={value}
             variant={variant}
-            disabled={disabled}
-            helperText={helperText}
           />
         );
       }
@@ -178,17 +178,17 @@ const FormField = (props) => {
   } else if (choices) {
     propComponent = (
       <ResourceSelectComponent
-        name={name}
-        required={mandatory}
-        onChange={onChange}
-        innerProps={innerProps}
-        resources={['', ...choices]}
-        label={label || name}
-        value={value || ''}
+        className={className}
+        disabled={generated || disabled}
         error={errorFlag}
         helperText={helperText}
-        disabled={generated || disabled}
-        className={className}
+        innerProps={innerProps}
+        label={label || name}
+        name={name}
+        onChange={onChange}
+        required={mandatory}
+        resources={['', ...choices]}
+        value={value || ''}
       />
     );
   } else if (type === 'link' || type === 'linkset') {
@@ -237,7 +237,6 @@ const FormField = (props) => {
       propComponent = (
         <RecordAutocomplete
           {...autoProps}
-          innerProps={innerProps}
           DetailChipProps={{
             ...autoProps.DetailChipProps,
             valueToString: (record) => {
@@ -251,6 +250,7 @@ const FormField = (props) => {
             },
           }}
           getOptionLabel={opt => schema.getLabel(opt, false)}
+          innerProps={innerProps}
         />
       );
     }
@@ -258,23 +258,23 @@ const FormField = (props) => {
     propComponent = (
       <TextField
         {...innerProps}
-        label={name}
-        name={label || name}
-        required={mandatory}
-        value={value || ''}
-        onChange={onChange}
-        InputLabelProps={{ shrink: !!value }}
-        inputProps={{ ...(innerProps.inputProps || {}), 'data-testid': name }}
+        className="text-field"
+        disabled={generated || disabled}
         error={errorFlag}
         helperText={helperText}
-        disabled={generated || disabled}
-        className="text-field"
+        InputLabelProps={{ shrink: !!value }}
+        inputProps={{ ...(innerProps.inputProps || {}), 'data-testid': name }}
+        label={name}
+        name={label || name}
+        onChange={onChange}
+        required={mandatory}
+        value={value || ''}
       />
     );
   }
 
   return (
-    <ListItem component="li" key={name} className={`form-field form-field--${type} ${className}`}>
+    <ListItem key={name} className={`form-field form-field--${type} ${className}`} component="li">
       <div className="form-field__content">
         {propComponent}
       </div>
@@ -284,12 +284,6 @@ const FormField = (props) => {
 
 
 FormField.propTypes = {
-  className: PropTypes.string,
-  error: PropTypes.shape({
-    name: PropTypes.string,
-    message: PropTypes.string,
-  }),
-  onChange: PropTypes.func.isRequired,
   model: PropTypes.shape({
     choices: PropTypes.arrayOf(PropTypes.shape({
       key: PropTypes.string,
@@ -314,21 +308,27 @@ FormField.propTypes = {
     generated: PropTypes.bool,
     mandatory: PropTypes.bool,
   }).isRequired,
+  onChange: PropTypes.func.isRequired,
+  className: PropTypes.string,
   disabled: PropTypes.bool,
+  error: PropTypes.shape({
+    name: PropTypes.string,
+    message: PropTypes.string,
+  }),
+  formIsDirty: PropTypes.bool,
+  innerProps: PropTypes.shape({
+    inputProps: PropTypes.shape({
+      'data-test-id': PropTypes.string,
+    }),
+  }),
+  label: PropTypes.string,
   value: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
     PropTypes.arrayOf(GeneralRecordPropType),
     GeneralRecordPropType,
   ]),
-  label: PropTypes.string,
   variant: PropTypes.string,
-  innerProps: PropTypes.shape({
-    inputProps: PropTypes.shape({
-      'data-test-id': PropTypes.string,
-    }),
-  }),
-  formIsDirty: PropTypes.bool,
 };
 
 

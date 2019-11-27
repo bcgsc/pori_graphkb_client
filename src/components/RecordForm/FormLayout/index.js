@@ -83,25 +83,25 @@ const FormLayout = ({
           )}
           {isEdge && (
             <EdgeFields
-              formIsDirty={formIsDirty}
               content={content}
-              errors={errors}
-              onChange={onChange}
-              model={model}
               disabled={disabled}
+              errors={errors}
+              formIsDirty={formIsDirty}
+              model={model}
+              onChange={onChange}
               variant={variant}
             />
           )}
         </div>
         <div className="record-form__content">
           <FieldGroup
-            formIsDirty={formIsDirty}
             content={content}
+            disabled={disabled}
             errors={errors}
+            formIsDirty={formIsDirty}
+            model={model}
             onChange={onChange}
             ordering={fields}
-            model={model}
-            disabled={disabled}
             variant={variant}
           />
         </div>
@@ -120,13 +120,13 @@ const FormLayout = ({
           <Collapse in={isExpanded} timeout="auto" unmountOnExit>
             <div className="record-form__content">
               <FieldGroup
-                formIsDirty={formIsDirty}
                 content={content}
+                disabled={disabled}
                 errors={errors}
+                formIsDirty={formIsDirty}
+                model={model}
                 onChange={onChange}
                 ordering={extraFields}
-                model={model}
-                disabled={disabled}
                 variant={variant}
               />
             </div>
@@ -136,12 +136,12 @@ const FormLayout = ({
 
         {!variant === FORM_VARIANT.VIEW && edges.length > 0 && (
           <div className="record-form__related-nodes">
-            <Typography variant="h6" component="h2">
+            <Typography component="h2" variant="h6">
               Related Nodes
             </Typography>
             <EdgeTable
-              values={edges}
               sourceNodeId={content['@rid']}
+              values={edges}
             />
           </div>
         )}
@@ -153,21 +153,21 @@ const FormLayout = ({
 
 FormLayout.propTypes = {
   aboveFold: PropTypes.arrayOf(PropTypes.string),
-  disabled: PropTypes.bool,
   belowFold: PropTypes.arrayOf(PropTypes.string),
   className: PropTypes.string,
   collapseExtra: PropTypes.bool,
+  content: PropTypes.object,
+  disabled: PropTypes.bool,
+  errors: PropTypes.object,
+  formIsDirty: PropTypes.bool,
   groups: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
   modelName: PropTypes.string,
   onChange: PropTypes.func,
-  content: PropTypes.object,
-  errors: PropTypes.object,
   variant: PropTypes.oneOf([
     FORM_VARIANT.EDIT,
     FORM_VARIANT.NEW,
     FORM_VARIANT.VIEW,
   ]),
-  formIsDirty: PropTypes.bool,
 };
 
 FormLayout.defaultProps = {

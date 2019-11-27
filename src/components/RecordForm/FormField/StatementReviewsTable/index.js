@@ -38,7 +38,7 @@ const StatementReviewsTable = (props) => {
 
   return (
     <div className="embedded-list-table">
-      <Typography variant="subtitle1" align="center" color="secondary">
+      <Typography align="center" color="secondary" variant="subtitle1">
         Reviews
       </Typography>
       <Table className="embedded-list-table__table">
@@ -55,9 +55,9 @@ const StatementReviewsTable = (props) => {
         <TableBody>
           {values.map((value, index) => (
             <StatementReviewRow
-              value={value}
               index={index}
               onDelete={handleDeleteReview}
+              value={value}
               variant={variant}
             />
           ))}
@@ -68,10 +68,10 @@ const StatementReviewsTable = (props) => {
 };
 
 StatementReviewsTable.propTypes = {
-  values: PropTypes.arrayOf(PropTypes.object),
-  variant: PropTypes.string,
   name: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+  values: PropTypes.arrayOf(PropTypes.object),
+  variant: PropTypes.string,
 };
 
 StatementReviewsTable.defaultProps = {

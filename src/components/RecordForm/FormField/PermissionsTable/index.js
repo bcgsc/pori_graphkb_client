@@ -69,10 +69,10 @@ class PermissionsTable extends React.Component {
   static contextType = KBContext;
 
   static propTypes = {
-    value: PropTypes.object,
-    disabled: PropTypes.bool,
-    onChange: PropTypes.func.isRequired,
     name: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+    disabled: PropTypes.bool,
+    value: PropTypes.object,
   };
 
   static defaultProps = {
@@ -169,9 +169,9 @@ class PermissionsTable extends React.Component {
               {operationOrder.map(operation => (
                 <TableCell key={operation} padding="checkbox">
                   <Checkbox
-                    onChange={() => this.handleClick(operation, null)}
                     checked={topBoxes[operation]}
                     disabled={disabled}
+                    onChange={() => this.handleClick(operation, null)}
                   />
                 </TableCell>
               ))}
@@ -187,12 +187,12 @@ class PermissionsTable extends React.Component {
                       {modelName}:
                     </TableCell>
                     {operationOrder.map(operation => (
-                      <TableCell padding="checkbox" key={operation}>
+                      <TableCell key={operation} padding="checkbox">
                         {(permission[operation] !== null && (
                           <Checkbox
-                            onChange={() => this.handleClick(operation, modelName)}
                             checked={permission[operation] !== 0}
                             disabled={disabled}
+                            onChange={() => this.handleClick(operation, modelName)}
                           />
                         ))}
                       </TableCell>

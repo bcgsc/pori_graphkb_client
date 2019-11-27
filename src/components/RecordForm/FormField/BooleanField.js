@@ -45,9 +45,9 @@ const BooleanField = (props) => {
     >
       <FormControl
         component="fieldset"
-        required={required}
-        error={error}
         disabled={disabled}
+        error={error}
+        required={required}
       >
         <FormLabel>
           {label || name}
@@ -55,11 +55,11 @@ const BooleanField = (props) => {
         <RadioGroup
           name={name}
           onChange={e => onChange(e)}
-          value={value}
           style={{ flexDirection: 'row' }}
+          value={value}
         >
-          <FormControlLabel value="true" control={<Radio checked={value === 'true'} />} label="Yes" />
-          <FormControlLabel value="false" control={<Radio checked={value === 'false'} />} label="No" />
+          <FormControlLabel control={<Radio checked={value === 'true'} />} label="Yes" value="true" />
+          <FormControlLabel control={<Radio checked={value === 'false'} />} label="No" value="false" />
         </RadioGroup>
         {helperText && (<FormHelperText>{helperText}</FormHelperText>)}
       </FormControl>
@@ -68,14 +68,14 @@ const BooleanField = (props) => {
 };
 
 BooleanField.propTypes = {
-  disabled: PropTypes.bool,
-  error: PropTypes.bool,
-  label: PropTypes.string,
   name: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+  error: PropTypes.bool,
+  helperText: PropTypes.string,
+  label: PropTypes.string,
   required: PropTypes.bool,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-  helperText: PropTypes.string,
 };
 
 BooleanField.defaultProps = {

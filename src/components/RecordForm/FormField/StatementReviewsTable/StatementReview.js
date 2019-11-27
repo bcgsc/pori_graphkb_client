@@ -58,26 +58,26 @@ const StatementReview = ({
                   SR
               </Avatar>
           )}
-            title="Statement Review"
             subheader={`created by ${username || getUsername(context)}`}
+            title="Statement Review"
           />
         </div>
         <Divider />
         <CardContent>
-          <Typography variant="h5" gutterBottom align="center" color="secondary">
+          <Typography align="center" color="secondary" gutterBottom variant="h5">
             {`Status: ${status}`}
           </Typography>
-          <Typography variant="body1" color="textSecondary" align="center">
+          <Typography align="center" color="textSecondary" variant="body1">
             {comment}
           </Typography>
           <div className="review-card__action-button">
             {variant === 'edit' && (
             <ActionButton
-              onClick={() => onDelete({ index })}
-              variant="contained"
               color="primary"
-              size="medium"
+              onClick={() => onDelete({ index })}
               requireConfirm={false}
+              size="medium"
+              variant="contained"
             >
                   Delete
               <DeleteIcon />
@@ -109,9 +109,9 @@ const StatementReview = ({
               variant: 'outlined',
               color: 'secondary',
             }}
+            label={previewStr}
             PopUpComponent={ReviewComponent}
             PopUpProps={{ onDelete }}
-            label={previewStr}
             title={label}
             value={details}
             valueToString={
@@ -133,11 +133,11 @@ const StatementReview = ({
 };
 
 StatementReview.propTypes = {
-  onDelete: PropTypes.func.isRequired,
-  variant: PropTypes.string,
-  value: PropTypes.object.isRequired,
   index: PropTypes.number.isRequired,
   label: PropTypes.string.isRequired,
+  onDelete: PropTypes.func.isRequired,
+  value: PropTypes.object.isRequired,
+  variant: PropTypes.string,
 };
 
 StatementReview.defaultProps = {

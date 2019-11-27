@@ -90,12 +90,12 @@ describe('RecordForm', () => {
         <KBContext.Provider value={{ }}>
           <SnackbarProvider value={{ add: snackbarSpy }}>
             <RecordForm
-              value={{ name: 'bob', '@rid': '#1:2', '@class': 'User' }}
               modelName="User"
-              title="blargh monkeys"
-              onTopClick={onTopClickSpy}
-              onSubmit={onSubmitSpy}
               onError={onErrorSpy}
+              onSubmit={onSubmitSpy}
+              onTopClick={onTopClickSpy}
+              title="blargh monkeys"
+              value={{ name: 'bob', '@rid': '#1:2', '@class': 'User' }}
               variant="view"
             />
           </SnackbarProvider>
@@ -129,12 +129,12 @@ describe('RecordForm', () => {
       <KBContext.Provider value={{ }}>
         <SnackbarProvider value={{ add: snackbarSpy }}>
           <RecordForm
-            value={{ }}
             modelName="Statement"
-            title="blargh monkeys"
-            onTopClick={onTopClickSpy}
-            onSubmit={onSubmitSpy}
             onError={onErrorSpy}
+            onSubmit={onSubmitSpy}
+            onTopClick={onTopClickSpy}
+            title="blargh monkeys"
+            value={{ }}
             variant="edit"
           />
         </SnackbarProvider>
@@ -152,12 +152,12 @@ describe('RecordForm', () => {
         <KBContext.Provider value={{ }}>
           <SnackbarProvider value={{ add: snackbarSpy }}>
             <RecordForm
-              value={{ name: 'bob', '@rid': '#1:2' }}
               modelName="User"
-              title="blargh monkeys"
-              onTopClick={onTopClickSpy}
-              onSubmit={onSubmitSpy}
               onError={onErrorSpy}
+              onSubmit={onSubmitSpy}
+              onTopClick={onTopClickSpy}
+              title="blargh monkeys"
+              value={{ name: 'bob', '@rid': '#1:2' }}
               variant="edit"
             />
           </SnackbarProvider>
@@ -201,12 +201,12 @@ describe('RecordForm', () => {
         <SnackbarProvider value={{ add: snackbarSpy }}>
           <KBContext.Provider value={{ }}>
             <RecordForm
-              value={{ }}
               modelName="User"
-              title="blargh monkeys"
-              onTopClick={onTopClickSpy}
-              onSubmit={onSubmitSpy}
               onError={onErrorSpy}
+              onSubmit={onSubmitSpy}
+              onTopClick={onTopClickSpy}
+              title="blargh monkeys"
+              value={{ }}
               variant="new"
             />
           </KBContext.Provider>

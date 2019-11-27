@@ -54,13 +54,13 @@ const FieldGroup = ({
         <div key={key} className="record-form__content-subgroup">
           <FieldGroup
             content={content}
+            disabled={disabled}
             errors={errors}
+            formIsDirty={formIsDirty}
+            model={model}
             onChange={onChange}
             ordering={item}
-            model={model}
-            disabled={disabled}
             variant={variant}
-            formIsDirty={formIsDirty}
           />
         </div>
       ));
@@ -69,15 +69,15 @@ const FieldGroup = ({
       const { name } = prop;
       const wrapper = (
         <FormField
-          model={prop}
-          value={content[name]}
-          error={errors[name]}
-          onChange={onChange}
-          variant={variant}
           key={name}
           content={content}
           disabled={disabled}
+          error={errors[name]}
           formIsDirty={formIsDirty}
+          model={prop}
+          onChange={onChange}
+          value={content[name]}
+          variant={variant}
         />
       );
       fields.push(wrapper);
@@ -91,16 +91,16 @@ const FieldGroup = ({
 
 FieldGroup.propTypes = {
   model: PropTypes.object.isRequired,
+  onChange: PropTypes.func.isRequired,
   ordering: PropTypes.arrayOf(PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.arrayOf(PropTypes.string),
   ])).isRequired,
-  onChange: PropTypes.func.isRequired,
   content: PropTypes.object,
-  errors: PropTypes.object,
   disabled: PropTypes.bool,
-  variant: PropTypes.string,
+  errors: PropTypes.object,
   formIsDirty: PropTypes.bool,
+  variant: PropTypes.string,
 };
 
 FieldGroup.defaultProps = {

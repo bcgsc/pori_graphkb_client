@@ -21,8 +21,10 @@ const EdgeFields = ({
 }) => (
   <React.Fragment key="relationship-content">
     <FormField
+      disabled={disabled}
       error={errors.out || ''}
-      onChange={onChange}
+      formIsDirty={formIsDirty}
+      label="Source Record (out)"
       model={{
         description: 'The source record for the relationship',
         linkedClass: schema.get(model.sourceModel || 'V'),
@@ -31,15 +33,15 @@ const EdgeFields = ({
         mandatory: true,
         nullable: false,
       }}
+      onChange={onChange}
       value={content.out}
-      disabled={disabled}
       variant={variant}
-      formIsDirty={formIsDirty}
-      label="Source Record (out)"
     />
     <FormField
+      disabled={disabled}
       error={errors.in || ''}
-      onChange={onChange}
+      formIsDirty={formIsDirty}
+      label="Target Record (in)"
       model={{
         linkedClass: schema.get(model.targetModel || 'V'),
         description: 'The target record for the relationship',
@@ -48,11 +50,9 @@ const EdgeFields = ({
         mandatory: true,
         nullable: false,
       }}
+      onChange={onChange}
       value={content.in}
-      disabled={disabled}
       variant={variant}
-      formIsDirty={formIsDirty}
-      label="Target Record (in)"
     />
   </React.Fragment>
 );
@@ -62,10 +62,10 @@ EdgeFields.propTypes = {
   model: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
   content: PropTypes.object,
-  errors: PropTypes.object,
   disabled: PropTypes.bool,
-  variant: PropTypes.string,
+  errors: PropTypes.object,
   formIsDirty: PropTypes.bool,
+  variant: PropTypes.string,
 };
 
 EdgeFields.defaultProps = {

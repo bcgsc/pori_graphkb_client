@@ -30,9 +30,9 @@ describe('FormLayout', () => {
     const { getByText, getByTestId } = render(
       <KBContext.Provider value={{ }}>
         <FormLayout
+          content={{ '@rid': '#3:4' }}
           modelName="User"
           variant="view"
-          content={{ '@rid': '#3:4' }}
         />
       </KBContext.Provider>,
     );

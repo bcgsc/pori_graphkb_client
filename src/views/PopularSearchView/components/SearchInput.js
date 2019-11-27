@@ -66,8 +66,8 @@ function SearchInput(props) {
           margin="normal"
           onChange={e => handleChange(e)}
           required
-          variant="outlined"
           value={value}
+          variant="outlined"
         />
       </div>
       {(hasAdditionalInput) && (
@@ -80,19 +80,19 @@ function SearchInput(props) {
             margin="normal"
             onChange={e => handleChange(e, true)}
             required={!additionalInput.optional}
-            variant="outlined"
             value={optionalValue}
+            variant="outlined"
           />
         </div>
       )}
       <div className="search-input__action-button">
         <ActionButton
-          variant="contained"
           color="primary"
-          size="large"
-          requireConfirm={false}
           disabled={disabled}
           onClick={handleSubmit}
+          requireConfirm={false}
+          size="large"
+          variant="contained"
         >
               Search
         </ActionButton>
@@ -103,17 +103,17 @@ function SearchInput(props) {
 }
 
 SearchInput.propTypes = {
+  value: PropTypes.string.isRequired,
   disabled: PropTypes.bool,
   handleInputChange: PropTypes.func,
-  handleSubmit: PropTypes.func,
   handleOptionalChange: PropTypes.func,
+  handleSubmit: PropTypes.func,
+  optionalValue: PropTypes.string,
   selectedOption: PropTypes.shape({
     label: PropTypes.string,
     requiredInput: PropTypes.object,
     additionalInput: PropTypes.object,
   }),
-  optionalValue: PropTypes.string,
-  value: PropTypes.string.isRequired,
 };
 
 SearchInput.defaultProps = {

@@ -216,34 +216,34 @@ class QueryView extends Component {
             tabIndex={0}
           >
             <TextField
+              error={(variantError && hgvs) || keyWordError}
               fullWidth
-              value={value}
-              onChange={this.handleChange}
-              placeholder={hgvs
-                ? 'Search Statements by HGVS Shorthand'
-                : 'Search Statements by Keyword'
+              helperText={hgvs
+                ? variantError
+                : keyWordError
               }
               InputProps={{
                 endAdornment: (
                   <InputAdornment>
-                    <IconButton onClick={this.handleSubmit} color="primary">
+                    <IconButton color="primary" onClick={this.handleSubmit}>
                       <SearchIcon />
                     </IconButton>
                   </InputAdornment>
                 ),
               }}
-              error={(variantError && hgvs) || keyWordError}
-              helperText={hgvs
-                ? variantError
-                : keyWordError
+              onChange={this.handleChange}
+              placeholder={hgvs
+                ? 'Search Statements by HGVS Shorthand'
+                : 'Search Statements by Keyword'
               }
+              value={value}
             />
             <FormControlLabel
+              checked={hgvs}
+              color="primary"
               control={<Checkbox />}
               label={<Typography className="search__sub-search" variant="h6">HGVS Shorthand</Typography>}
-              checked={hgvs}
               onChange={this.handleClickHgvs}
-              color="primary"
             />
           </div>
         </div>

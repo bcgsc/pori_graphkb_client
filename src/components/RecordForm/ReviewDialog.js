@@ -70,10 +70,10 @@ const AddReviewDialog = ({
 
   return (
     <Dialog
-      open={isOpen}
+      maxWidth="lg"
       onClose={onClose}
       onEscapeKeyDown={onClose}
-      maxWidth="lg"
+      open={isOpen}
     >
       <div className="review-dialog">
         <div className="review-dialog__header">
@@ -86,40 +86,40 @@ const AddReviewDialog = ({
         </div>
         <DialogContent className="review-dialog__fields">
           <FormField
+            error={formErrors[status.name]}
             model={status}
             onChange={handleOnChange}
             value={formContent[status.name]}
             variant={FORM_VARIANT.NEW}
-            error={formErrors[status.name]}
           />
           <FormField
-            model={comment}
-            onChange={handleOnChange}
-            value={formContent[comment.name]}
-            variant={FORM_VARIANT.NEW}
             error={formErrors[comment.name]}
             innerProps={{
               multiline: true,
               rows: 7,
               variant: 'outlined',
             }}
+            model={comment}
+            onChange={handleOnChange}
+            value={formContent[comment.name]}
+            variant={FORM_VARIANT.NEW}
           />
           <FormControlLabel
+            checked={updateAmalgamated}
+            color="primary"
             control={<Checkbox />}
             label="Also Update the Statement Amalgamated Review Status (Recommended)"
-            checked={updateAmalgamated}
             onChange={() => setUpdateAmalgamated(!updateAmalgamated)}
-            color="primary"
           />
         </DialogContent>
         <div className="review-dialog__action-button">
           <ActionButton
-            onClick={handleSubmit}
-            variant="contained"
             color="primary"
-            size="large"
-            requireConfirm={false}
             disabled={formHasErrors && formIsDirty}
+            onClick={handleSubmit}
+            requireConfirm={false}
+            size="large"
+            variant="contained"
           >
               ADD REVIEW
           </ActionButton>
@@ -130,8 +130,8 @@ const AddReviewDialog = ({
 };
 
 AddReviewDialog.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
   onClose: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
   isOpen: PropTypes.bool,
 };
 

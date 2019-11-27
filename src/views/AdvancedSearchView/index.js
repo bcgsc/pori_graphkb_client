@@ -374,12 +374,12 @@ function AdvancedSearchView(props) {
     <>
       <div className="class-select">
         <FormField
+          className="class-select"
           model={{
             choices: modelOptions, required: true, name: '@class type to be queried', type: 'string',
           }}
-          value={modelName}
           onChange={({ target: { value } }) => setModelName(value)}
-          className="class-select"
+          value={modelName}
         />
       </div>
 
@@ -390,41 +390,41 @@ function AdvancedSearchView(props) {
         <div className="add-filter-box-actions">
           <div className="add-filter-box-actions__property">
             <FormField
+              className="property-select"
+              disabled={!modelName}
+              innerProps={{ 'data-testid': 'prop-select' }}
               model={{
                 choices: queryProperties, required: true, name: 'properties', type: 'string',
               }}
-              value={currProp}
-              innerProps={{ 'data-testid': 'prop-select' }}
               onChange={({ target: { value } }) => setFilter({ type: 'attr', payload: value })}
-              className="property-select"
-              disabled={!modelName}
+              value={currProp}
             />
           </div>
           <div className="add-filter-box-actions__value">
             {(model) && (
             <FormField
-              model={propertyModel || { type: 'nope', choices: [] }}
-              value={currValue}
+              className="value-select"
+              disabled={!currProp}
               innerProps={{ 'data-testid': 'value-select' }}
+              model={propertyModel || { type: 'nope', choices: [] }}
               onChange={({ target: { value } }) => setFilter({
                 type: 'value', payload: value,
               })}
-              className="value-select"
-              disabled={!currProp}
+              value={currValue}
               variant="edit"
             />
             )}
           </div>
           <div className="add-filter-box-actions__operator">
             <FormField
+              className="operator-select"
+              disabled={!currValue}
+              innerProps={{ 'data-testid': 'operator-select' }}
               model={{
                 choices: operatorOps, required: true, name: 'operator', type: 'string',
               }}
-              value={currOperator}
-              innerProps={{ 'data-testid': 'operator-select' }}
               onChange={({ target: { value } }) => setFilter({ type: 'operator', payload: value })}
-              className="operator-select"
-              disabled={!currValue}
+              value={currOperator}
             />
           </div>
         </div>
@@ -441,15 +441,15 @@ function AdvancedSearchView(props) {
                 ? 'Create new filter group and filter to it'
                 : 'add active filter to filter group'}`,
             }}
+            onChange={({ target: { value } }) => setFilterGroup(value)}
             value={currFilterGroup}
             variant="edit"
-            onChange={({ target: { value } }) => setFilterGroup(value)}
           />
         </div>
         <ActionButton
-          requireConfirm={false}
-          onClick={handleFilterGroupAction}
           disabled={!(currProp && currValue && currOperator) || !currFilterGroup}
+          onClick={handleFilterGroupAction}
+          requireConfirm={false}
           variant="outlined"
         >
           ADD FILTER
@@ -472,8 +472,8 @@ function AdvancedSearchView(props) {
         </div>
         <div className="search-btn">
           <ActionButton
-            requireConfirm={false}
             onClick={handleSubmit}
+            requireConfirm={false}
           >
            Search
           </ActionButton>

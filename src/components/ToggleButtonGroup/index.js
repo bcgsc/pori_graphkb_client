@@ -62,7 +62,7 @@ function ToggleButtonGroup(props) {
   };
 
   const toggleButtons = options.map((option, index) => (
-    <button type="button" className="toggle-button" onClick={() => handleChange(option)}>
+    <button className="toggle-button" onClick={() => handleChange(option)} type="button">
       <span className={`toggle-button__wrapper${value === option ? '--selected' : ''}`}>
         {icons[index]}
         <span className={`toggle-button__label${value === option ? '--selected' : ''}`}>{utils.antiCamelCase(option)}</span>
@@ -77,11 +77,11 @@ function ToggleButtonGroup(props) {
       </div>
       {requireConfirm && (
       <ConfirmActionDialog
-        onCancel={handleDialogCancel}
-        onConfirm={handleDialogConfirm}
+        className="action-button__dialog"
         isOpen={dialogOpen}
         message={message}
-        className="action-button__dialog"
+        onCancel={handleDialogCancel}
+        onConfirm={handleDialogConfirm}
       />
       )}
     </>
@@ -90,10 +90,10 @@ function ToggleButtonGroup(props) {
 
 ToggleButtonGroup.propTypes = {
   options: PropTypes.arrayOf(PropTypes.string).isRequired,
+  icons: PropTypes.array,
+  message: PropTypes.string,
   onClick: PropTypes.func,
   requireConfirm: PropTypes.bool,
-  message: PropTypes.string,
-  icons: PropTypes.array,
   variant: PropTypes.string,
 };
 

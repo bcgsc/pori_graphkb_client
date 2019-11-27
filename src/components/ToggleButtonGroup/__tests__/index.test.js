@@ -8,9 +8,9 @@ describe('ToggleButtonGroup', () => {
   test('mounts without crashing and burning', () => {
     const wrapper = mount((
       <ToggleButtonGroup
+        message="Changes you will lose"
         onClick={jest.fn()}
         options={['view', 'edit']}
-        message="Changes you will lose"
       />
     ));
 
@@ -20,9 +20,9 @@ describe('ToggleButtonGroup', () => {
   test('displays correct number of options', () => {
     const wrapper = mount((
       <ToggleButtonGroup
+        message="Changes you will lose"
         onClick={jest.fn()}
         options={['view', 'edit']}
-        message="Changes you will lose"
       />
     ));
 
@@ -33,9 +33,9 @@ describe('ToggleButtonGroup', () => {
   test('changes selected toggle button on click', () => {
     const wrapper = mount((
       <ToggleButtonGroup
+        message="Changes you will lose"
         onClick={jest.fn()}
         options={['view', 'edit']}
-        message="Changes you will lose"
       />
     ));
 
@@ -54,9 +54,9 @@ describe('ToggleButtonGroup', () => {
   test('displays ConfirmActionDialog when confirmation is required', () => {
     const wrapper = mount((
       <ToggleButtonGroup
+        message="Changes you will lose"
         onClick={jest.fn()}
         options={['view', 'edit']}
-        message="Changes you will lose"
       />
     ));
 

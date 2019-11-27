@@ -76,27 +76,27 @@ class AboutView extends Component {
 
     const tabNavList = this.tabsList.map(({ uri, label }, index) => (
       <Tab
-        label={label}
-        component={NavLink}
         key={label}
-        value={index}
+        component={NavLink}
+        label={label}
         to={uri}
+        value={index}
       />
     ));
 
     const tabsRouteList = this.tabsList.map(({ uri, label, component }) => (
       <Route
-        label={label}
         key={label}
         component={component}
         exact
+        label={label}
         path={uri}
       />
     ));
 
     return (
       <div className="about-page">
-        <Tabs value={tabIndex} onChange={this.handleChange} variant="scrollable" className="tabs-bar">
+        <Tabs className="tabs-bar" onChange={this.handleChange} value={tabIndex} variant="scrollable">
           {tabNavList}
         </Tabs>
         <div className="tabs-content">

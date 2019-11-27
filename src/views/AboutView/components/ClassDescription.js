@@ -77,8 +77,8 @@ const ClassDescription = ({ name, description }) => {
           {example && (
             <DetailChip
               className="record-autocomplete__chip record-autocomplete__chip--single"
-              label={schema.getLabel(example)}
               details={example}
+              label={schema.getLabel(example)}
               valueToString={(value) => {
                 if (Array.isArray(value)) {
                   return `Array(${value.length})`;
@@ -96,8 +96,8 @@ const ClassDescription = ({ name, description }) => {
 };
 
 ClassDescription.propTypes = {
-  name: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
 };
 
 export default ClassDescription;

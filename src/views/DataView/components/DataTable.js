@@ -37,10 +37,12 @@ const RecordList = (props) => {
         const label = schema.getLabel(record);
         return (
           <DetailChip
-            label={label}
-            title={schema.getLabel(record, false)}
             key={label}
             details={record}
+            getLink={schema.getLink}
+            label={label}
+            title={schema.getLabel(record, false)}
+
             valueToString={(v) => {
               if (Array.isArray(v)) {
                 return `Array(${v.length})`;
@@ -50,8 +52,6 @@ const RecordList = (props) => {
               }
               return `${v}`;
             }}
-
-            getLink={schema.getLink}
           />
         );
       })}
@@ -65,17 +65,17 @@ RecordList.propTypes = {
 
 class DataTable extends React.Component {
   static propTypes = {
-    search: PropTypes.string,
-    rowBuffer: PropTypes.number,
     cache: PropTypes.instanceOf(DataCache).isRequired,
     isExportingData: PropTypes.func.isRequired,
-    onRecordClicked: PropTypes.func,
-    onRecordsSelected: PropTypes.func,
     onRowSelected: PropTypes.func.isRequired,
     optionsMenuAnchor: PropTypes.object.isRequired,
     optionsMenuOnClose: PropTypes.func.isRequired,
     totalRows: PropTypes.number.isRequired,
     totalRowsSelected: PropTypes.number.isRequired,
+    onRecordClicked: PropTypes.func,
+    onRecordsSelected: PropTypes.func,
+    rowBuffer: PropTypes.number,
+    search: PropTypes.string,
   };
 
   static defaultProps = {
@@ -554,13 +554,13 @@ class DataTable extends React.Component {
 
     const result = (
       <Popover
-        open={optionsMenuAnchor !== null}
         anchorEl={optionsMenuAnchor}
-        onClose={optionsMenuOnClose}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'left',
         }}
+        onClose={optionsMenuOnClose}
+        open={optionsMenuAnchor !== null}
       >
         <OptionsMenu
           className="data-view__options-menu"
@@ -577,35 +577,30 @@ class DataTable extends React.Component {
     return (
       <div
         className="ag-theme-material data-table"
+        onKeyDown={this.handleKeyDown}
+        onKeyUp={this.handleKeyUp}
+        role="presentation"
         style={{
           width: '100%',
           height: '100%',
         }}
-        onKeyDown={this.handleKeyDown}
-        onKeyUp={this.handleKeyUp}
-        role="presentation"
       >
         {this.renderOptionsMenu()}
         <AgGridReact
-          reactNext
+          blockLoadDebounceMillis={100}
+          cacheBlockSize={CACHE_BLOCK_SIZE}
+          cacheOverflowSize={1}
           defaultColDef={{
             sortable: true,
             resizable: true,
             width: 150,
           }}
-          infiniteInitialRowCount={1}
-          maxBlocksInCache={0}
-          maxConcurrentDatasourceRequests={1}
-          onGridReady={this.onGridReady}
-          cacheBlockSize={CACHE_BLOCK_SIZE}
-          paginationPageSize={25}
-          cacheOverflowSize={1}
-          rowModelType="infinite"
-          suppressHorizontalScroll={false}
           frameworkComponents={{
             RecordList,
           }}
-          blockLoadDebounceMillis={100}
+          infiniteInitialRowCount={1}
+          maxBlocksInCache={0}
+          maxConcurrentDatasourceRequests={1}
           onBodyScroll={this.detectFetchTrigger}
           onCellFocused={({ rowIndex }) => {
             if (rowIndex !== null && onRecordClicked) {
@@ -613,15 +608,20 @@ class DataTable extends React.Component {
               onRecordClicked(rowNode);
             }
           }}
-          // allow the user to select using the arrow keys and shift
           onCellKeyDown={this.handleSelectionChange}
+          onGridReady={this.onGridReady}
           onSelectionChanged={() => {
             if (onRecordsSelected) {
               const rows = this.gridApi.getSelectedRows();
               onRecordsSelected(rows);
             }
           }}
+          paginationPageSize={25}
+          reactNext
+          // allow the user to select using the arrow keys and shift
+          rowModelType="infinite"
           rowSelection="multiple"
+          suppressHorizontalScroll={false}
         />
       </div>
     );

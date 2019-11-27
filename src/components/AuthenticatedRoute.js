@@ -51,9 +51,9 @@ const AuthenticatedRoute = ({
 };
 
 AuthenticatedRoute.propTypes = {
+  component: PropTypes.object.isRequired,
   location: LocationPropType.isRequired,
   admin: PropTypes.bool,
-  component: PropTypes.object.isRequired,
 };
 
 AuthenticatedRoute.defaultProps = {

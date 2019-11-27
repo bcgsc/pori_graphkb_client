@@ -17,9 +17,9 @@ describe('<GraphLegend />', () => {
           nodesColors: { color1: 'white' },
           linksColors: { color2: 'black' },
         }}
-        propsMap={new PropsMap()}
-        onChange={onChange}
         linkDisabled={false}
+        onChange={onChange}
+        propsMap={new PropsMap()}
       />,
     );
 

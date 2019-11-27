@@ -47,14 +47,14 @@ function FilterTablePopover(props) {
   return (
     <div>
       <Popover
-        id="filter-table-popover"
-        open={isOpen}
-        onClose={handleToggle}
         anchorEl={anchorEl}
         anchorOrigin={{
           vertical: 'bottom',
           horizontal: 'center',
         }}
+        id="filter-table-popover"
+        onClose={handleToggle}
+        open={isOpen}
         transformOrigin={{
           vertical: 'top',
           horizontal: 'center',

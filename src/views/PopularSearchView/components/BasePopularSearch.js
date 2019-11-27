@@ -69,9 +69,9 @@ function BasePopularSearch(props) {
     <div className="popular-search__contents">
       <div className="popular-search__menu">
         <SearchMenu
+          handleChange={handleSelectionChange}
           labels={labels}
           value={searchIndex}
-          handleChange={handleSelectionChange}
         />
       </div>
       <div className={`popular-search__input-field${hasAdditionalField ? '--optional' : ''}`}>
@@ -80,9 +80,9 @@ function BasePopularSearch(props) {
           handleInputChange={setValue}
           handleOptionalChange={setOptionalValue}
           handleSubmit={handleSubmit}
-          value={value}
           optionalValue={optionalValue}
           selectedOption={selectedOption}
+          value={value}
         />
       </div>
     </div>
@@ -90,8 +90,8 @@ function BasePopularSearch(props) {
 }
 
 BasePopularSearch.propTypes = {
-  variant: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  variant: PropTypes.string.isRequired,
   onError: PropTypes.func,
 };
 

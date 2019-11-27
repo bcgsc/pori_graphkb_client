@@ -19,9 +19,9 @@ import React from 'react';
  */
 class ClickToolTip extends React.Component {
   static propTypes = {
-    title: PropTypes.string,
     className: PropTypes.string,
     style: PropTypes.object,
+    title: PropTypes.string,
   };
 
   static defaultProps = {
@@ -67,19 +67,19 @@ class ClickToolTip extends React.Component {
       <ClickAwayListener onClickAway={this.handleClose}>
         <div>
           <Tooltip
+            className={`click-tool-tip ${className}`}
+            onClick={this.handleSwitch}
+            onClose={this.handleClose}
+            onFocus={this.handleOpen}
+            onMouseEnter={this.handleOpen}
+            onOpen={this.handleOpen}
+            open={isOpen}
             PopperProps={{
               disablePortal: true,
               open: isOpen,
             }}
-            onOpen={this.handleOpen}
-            onClose={this.handleClose}
-            onClick={this.handleSwitch}
-            onFocus={this.handleOpen}
-            onMouseEnter={this.handleOpen}
-            open={isOpen}
-            title={title}
             style={style}
-            className={`click-tool-tip ${className}`}
+            title={title}
             {...rest}
           >
             <HelpIcon color="primary" focusable />

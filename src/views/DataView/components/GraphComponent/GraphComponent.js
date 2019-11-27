@@ -128,13 +128,13 @@ class GraphComponent extends Component {
   }
 
   static propTypes = {
-    handleDetailDrawerOpen: PropTypes.func.isRequired,
-    handleDetailDrawerClose: PropTypes.func.isRequired,
-    detail: PropTypes.object,
-    data: PropTypes.object.isRequired,
     cache: PropTypes.object.isRequired,
-    edgeTypes: PropTypes.arrayOf(PropTypes.string),
+    data: PropTypes.object.isRequired,
+    handleDetailDrawerClose: PropTypes.func.isRequired,
+    handleDetailDrawerOpen: PropTypes.func.isRequired,
     handleError: PropTypes.func.isRequired,
+    detail: PropTypes.object,
+    edgeTypes: PropTypes.arrayOf(PropTypes.string),
     handleGraphStateSave: PropTypes.func,
   };
 
@@ -1214,20 +1214,20 @@ class GraphComponent extends Component {
     const actionsRing = (
       <GraphActionsNode
         actionsNode={actionsNode}
-        options={actionsRingOptions}
         edge={actionsNodeIsEdge}
+        options={actionsRingOptions}
       />
     );
 
     const linksDisplay = links.map(link => (
       <GraphLinkDisplay
         key={link.getId()}
-        link={link}
-        detail={detail}
-        labelKey={graphOptions.linkLabelProp}
-        color={graphOptions.getColor(link, 'links')}
-        handleClick={() => this.handleLinkClick(link)}
         actionsNode={actionsNode}
+        color={graphOptions.getColor(link, 'links')}
+        detail={detail}
+        handleClick={() => this.handleLinkClick(link)}
+        labelKey={graphOptions.linkLabelProp}
+        link={link}
         marker={`url(#${MARKER_ID})`}
       />
     ));
@@ -1235,43 +1235,43 @@ class GraphComponent extends Component {
     const nodesDisplay = nodes.map(node => (
       <GraphNodeDisplay
         key={node.getId()}
-        node={node}
-        detail={detail}
-        labelKey={graphOptions.nodePreview ? 'preview' : graphOptions.nodeLabelProp}
-        color={graphOptions.getColor(node, 'nodes')}
-        handleClick={() => this.handleClick(node)}
-        expandable={expandable[node.getId()]}
         applyDrag={this.applyDrag}
+        color={graphOptions.getColor(node, 'nodes')}
+        detail={detail}
+        expandable={expandable[node.getId()]}
+        handleClick={() => this.handleClick(node)}
+        labelKey={graphOptions.nodePreview ? 'preview' : graphOptions.nodeLabelProp}
+        node={node}
       />
     ));
 
     return (
       <div className="graph-wrapper">
         <GraphExpansionDialog
-          node={expandNode}
-          open={expansionDialogOpen}
-          onClose={this.handleDialogClose('expansionDialogOpen')}
-          links={links}
           expandExclusions={expandExclusions}
+          links={links}
+          node={expandNode}
+          onClose={this.handleDialogClose('expansionDialogOpen')}
           onExpand={this.handleExpand}
-          onStageAll={this.handleExpandCheckAll}
           onStage={this.handleExpandExclusion}
+          onStageAll={this.handleExpandCheckAll}
           onStageClass={this.handleExpandByClass}
+          open={expansionDialogOpen}
         />
         <GraphOptionsPanel
-          linkLegendDisabled={linkLegendDisabled}
-          graphOptionsOpen={graphOptionsOpen}
           graphOptions={graphOptions}
-          propsMap={propsMap}
+          graphOptionsOpen={graphOptionsOpen}
           handleDialogClose={this.handleDialogClose}
           handleGraphOptionsChange={this.handleGraphOptionsChange}
+          linkLegendDisabled={linkLegendDisabled}
+          propsMap={propsMap}
         />
 
         <div className="toolbar">
           <Tooltip placement="top" title="Graph options">
             <IconButton
-              id="graph-options-btn"
               color="primary"
+              id="graph-options-btn"
               onClick={this.handleDialogOpen('graphOptionsOpen')}
             >
               <SettingsIcon />
@@ -1279,8 +1279,8 @@ class GraphComponent extends Component {
           </Tooltip>
           <Tooltip placement="top" title="Copy share-able URL to clip-board">
             <IconButton
-              id="clipboard-copy-btn"
               color="primary"
+              id="clipboard-copy-btn"
               onClick={this.copyURLToClipBoard}
             >
               <SaveStateIcon />
@@ -1302,12 +1302,12 @@ class GraphComponent extends Component {
 
         <div className="svg-wrapper" ref={(node) => { this.wrapper = node; }}>
           <svg
-            ref={(node) => { this.graph = node; }}
             onClick={(e) => {
               if (e.target === this.graph) {
                 this.setState({ actionsNode: null });
               }
             }}
+            ref={(node) => { this.graph = node; }}
           >
             <defs>
               <GraphArrowMarker />
@@ -1321,8 +1321,8 @@ class GraphComponent extends Component {
         </div>
         <GraphLegend
           graphOptions={graphOptions}
-          onChange={this.handleGraphOptionsChange}
           linkDisabled={linkLegendDisabled}
+          onChange={this.handleGraphOptionsChange}
           propsMap={propsMap}
         />
       </div>

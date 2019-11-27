@@ -44,12 +44,12 @@ const SearchBox = ({
       <TextField
         fullWidth
         {...props}
-        value={searchText}
-        onChange={handleTextChange}
+        error={error}
+        helperText={helperText}
         InputProps={{
           endAdornment: (
             <InputAdornment>
-              <IconButton onClick={() => onSubmit(searchText)} color="primary" data-testid="search-box__button">
+              <IconButton color="primary" data-testid="search-box__button" onClick={() => onSubmit(searchText)}>
                 <SearchIcon />
               </IconButton>
             </InputAdornment>
@@ -58,8 +58,8 @@ const SearchBox = ({
         inputProps={{ // eslint-disable-line react/jsx-no-duplicate-props
           'data-testid': 'search-box__input',
         }}
-        error={error}
-        helperText={helperText}
+        onChange={handleTextChange}
+        value={searchText}
       />
     </div>
   );
@@ -67,13 +67,13 @@ const SearchBox = ({
 
 
 SearchBox.propTypes = {
+  className: PropTypes.string,
+  debounceMs: PropTypes.number,
+  error: PropTypes.bool,
+  helperText: PropTypes.string,
   onChange: PropTypes.func,
   onSubmit: PropTypes.func,
   value: PropTypes.string,
-  error: PropTypes.bool,
-  helperText: PropTypes.string,
-  className: PropTypes.string,
-  debounceMs: PropTypes.number,
 };
 
 

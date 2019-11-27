@@ -40,21 +40,21 @@ function GraphExpansionDialog(props) {
   const edges = schema.getEdges(node);
   return (
     <Dialog
-      open={open}
-      onClose={onClose}
-      maxWidth="md"
-      fullWidth
       classes={{
         root: 'expansion-root',
         paper: 'expansion-dialog',
       }}
+      fullWidth
+      maxWidth="md"
+      onClose={onClose}
+      open={open}
     >
       <DialogTitle>Select Edges to Expand</DialogTitle>
       <DialogContent>
         <Typography variant="subtitle1">
           Expand by Edge Types:
         </Typography>
-        <List dense className="expand-links-types">
+        <List className="expand-links-types" dense>
           {(edges || []).reduce((array, edge) => {
             if (
               !array.includes(edge['@class'])
@@ -69,9 +69,9 @@ function GraphExpansionDialog(props) {
               className="expand-links-type"
             >
               <Button
-                variant="outlined"
                 color="secondary"
                 onClick={onStageClass(edge)}
+                variant="outlined"
               >
                 {edge}
               </Button>
@@ -83,8 +83,8 @@ function GraphExpansionDialog(props) {
         </Typography>
         <ListItem
           button
-          onClick={onStageAll}
           className="expand-links-link"
+          onClick={onStageAll}
         >
           <Checkbox checked={!(expandExclusions.length === edges.length)} />
           <ListItemText>
@@ -95,7 +95,7 @@ function GraphExpansionDialog(props) {
           </ListItemText>
         </ListItem>
         <Divider />
-        <List dense className="expand-links-list">
+        <List className="expand-links-list" dense>
           {edges.map((edge) => {
             const inRid = edge.in['@rid'];
             const target = inRid === node['@rid'] ? edge.out : edge.in;
@@ -109,8 +109,8 @@ function GraphExpansionDialog(props) {
               <ListItem
                 key={edge['@rid']}
                 button
-                onClick={() => onStage(edge['@rid'])}
                 className="expand-links-link"
+                onClick={() => onStage(edge['@rid'])}
               >
                 <Checkbox checked={!expandExclusions.includes(edge['@rid'])} />
                 <ListItemText>
@@ -127,8 +127,8 @@ function GraphExpansionDialog(props) {
           Cancel
         </Button>
         <Button
-          onClick={onExpand}
           id="expand-dialog-submit"
+          onClick={onExpand}
         >
           Expand
         </Button>
@@ -155,15 +155,15 @@ function GraphExpansionDialog(props) {
  * of a single class.
  */
 GraphExpansionDialog.propTypes = {
-  node: PropTypes.object,
-  open: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  links: PropTypes.array,
-  expandExclusions: PropTypes.arrayOf(PropTypes.string),
   onExpand: PropTypes.func.isRequired,
-  onStageAll: PropTypes.func.isRequired,
   onStage: PropTypes.func.isRequired,
+  onStageAll: PropTypes.func.isRequired,
   onStageClass: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
+  expandExclusions: PropTypes.arrayOf(PropTypes.string),
+  links: PropTypes.array,
+  node: PropTypes.object,
 };
 
 GraphExpansionDialog.defaultProps = {

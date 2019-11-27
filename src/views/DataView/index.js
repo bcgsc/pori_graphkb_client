@@ -79,7 +79,8 @@ class DataView extends React.Component {
     });
 
     const URLContainsTable = String(history.location.pathname).includes('table');
-    if(URLContainsTable){
+
+    if (URLContainsTable) {
       const {
         searchType, limit, neighbors, ...filters
       } = this.parseFilters();
@@ -87,7 +88,6 @@ class DataView extends React.Component {
     } else {
       this.setState({ cache });
     }
-
   }
 
   componentWillUnmount() {

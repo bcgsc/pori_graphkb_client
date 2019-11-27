@@ -15,16 +15,14 @@ import slugify from 'slugify';
 
 import { LocationPropType } from '@/components/types';
 
-import {
-  AboutClasses,
-  AboutForms,
-  AboutGraphView,
-  AboutMain,
-  AboutNotation,
-  AboutQuerying,
-  AboutStatements,
-  AboutUsageTerms,
-} from './components';
+import AboutClasses from './components/AboutClasses';
+import AboutForms from './components/AboutForms';
+import AboutGraphView from './components/AboutGraphView';
+import AboutMain from './components/AboutMain';
+import AboutNotation from './components/AboutNotation';
+import AboutQuerying from './components/AboutQuerying';
+import AboutStatements from './components/AboutStatements';
+import AboutUsageTerms from './components/AboutUsageTerms';
 
 
 class AboutView extends Component {

@@ -1,4 +1,5 @@
 @import '../../globals';
+@import '../../theme';
 
 .about-page {
   height: 100%;
@@ -23,6 +24,22 @@
 
     h2:not(:first-child) {
       margin-top: 20px;
+    }
+  }
+
+  &__loader {
+    display: block;
+  }
+
+  @media (min-width: #{$breakpoint-med}) {
+    &__version-chips {
+      display: flex;
+      justify-content: center;
+
+      > * {
+        margin-left: 10px;
+        margin-right: 10px;
+      }
     }
   }
 

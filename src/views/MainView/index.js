@@ -30,6 +30,7 @@ const AdvancedSearchView = lazy(() => import('@/views/AdvancedSearchView'));
 const DataView = lazy(() => import('@/views/DataView'));
 const ErrorView = lazy(() => import('@/views/ErrorView'));
 const FeedbackView = lazy(() => import('@/views/FeedbackView'));
+const ImportPubmedView = lazy(() => import('@/views/ImportPubmedView'));
 const LoginView = lazy(() => import('@/views/LoginView'));
 const NewRecordView = lazy(() => import('@/views/NewRecordView'));
 const PopularSearchView = lazy(() => import('@/views/PopularSearchView'));
@@ -94,7 +95,7 @@ const Main = () => {
               <AuthenticatedRoute path="/feedback" component={FeedbackView} />
               <Route path="/login" component={LoginView} />
               <Route exact path="/error" component={ErrorView} />
-              <Route path="/about" component={AboutView} />
+              <AuthenticatedRoute path="/about" component={AboutView} />
               <AuthenticatedRoute exact path="/query" component={QueryView} />
               <AuthenticatedRoute path="/query-popular" component={PopularSearchView} />
               <AuthenticatedRoute exact path="/query-advanced" component={AdvancedSearchView} />
@@ -114,6 +115,7 @@ const Main = () => {
               <Redirect exact path="/query/advanced" to="/search/v" />
               <AuthenticatedRoute path="/data" component={DataView} />
               <AuthenticatedRoute path="/admin" admin component={AdminView} />
+              <AuthenticatedRoute path="/import/pubmed" component={ImportPubmedView} />
               <Redirect from="/" to="/query" />
             </Switch>
           </Suspense>

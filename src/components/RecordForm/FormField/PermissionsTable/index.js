@@ -135,9 +135,9 @@ const PermissionsTable = ({
             {operationOrder.map(operation => (
               <TableCell key={operation} padding="checkbox">
                 <Checkbox
-                  onChange={() => handleClick(operation, null)}
                   checked={topBoxes[operation]}
                   disabled={disabled}
+                  onChange={() => handleClick(operation, null)}
                 />
               </TableCell>
             ))}
@@ -153,12 +153,12 @@ const PermissionsTable = ({
                     {modelName}:
                   </TableCell>
                   {operationOrder.map(operation => (
-                    <TableCell padding="checkbox" key={operation}>
+                    <TableCell key={operation} padding="checkbox">
                       {(permission[operation] !== null && (
                       <Checkbox
-                        onChange={() => handleClick(operation, modelName)}
                         checked={permission[operation] !== 0}
                         disabled={disabled}
+                        onChange={() => handleClick(operation, modelName)}
                       />
                       ))}
                     </TableCell>
@@ -175,10 +175,10 @@ const PermissionsTable = ({
 
 
 PermissionsTable.propTypes = {
-  value: PropTypes.object,
-  disabled: PropTypes.bool,
-  onChange: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+  value: PropTypes.object,
 };
 
 PermissionsTable.defaultProps = {

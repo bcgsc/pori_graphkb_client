@@ -218,13 +218,13 @@ const RecordForm = ({
   return (
     <Paper className="record-form__wrapper" elevation={4}>
       <div className="record-form__header">
-        <Typography variant="h1" className="title">{title}</Typography>
+        <Typography className="title" variant="h1">{title}</Typography>
         <div className="header-action-buttons">
           {(modelName === 'Statement' && variant === FORM_VARIANT.EDIT && (
           <Button
+            disabled={actionInProgress}
             onClick={() => setReviewDialogOpen(true)}
             variant="outlined"
-            disabled={actionInProgress}
           >
             <LocalLibraryIcon
               classes={{ root: 'review-icon' }}
@@ -234,11 +234,11 @@ const RecordForm = ({
           ))}
           {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
           <ToggleButtonGroup
-            onClick={() => onTopClick(formContent)}
-            requireConfirm
-            options={['view', 'edit']}
-            variant={variant}
             message="Are you sure? You will lose your changes."
+            onClick={() => onTopClick(formContent)}
+            options={['view', 'edit']}
+            requireConfirm
+            variant={variant}
           />
           )}
         </div>
@@ -252,14 +252,14 @@ const RecordForm = ({
       </div>
       <FormLayout
         {...rest}
-        formIsDirty={formIsDirty}
-        content={formContent}
-        errors={formErrors}
-        onChange={handleOnChange}
-        modelName={modelName}
-        variant={variant}
         collapseExtra
+        content={formContent}
         disabled={actionInProgress || variant === FORM_VARIANT.VIEW}
+        errors={formErrors}
+        formIsDirty={formIsDirty}
+        modelName={modelName}
+        onChange={handleOnChange}
+        variant={variant}
       />
       {variant === FORM_VARIANT.VIEW && (
         <div className="record-form__related-records">
@@ -271,11 +271,11 @@ const RecordForm = ({
         {variant === FORM_VARIANT.EDIT
           ? (
             <ActionButton
-              onClick={handleDeleteAction}
-              variant="outlined"
-              size="large"
-              message="Are you sure you want to delete this record?"
               disabled={actionInProgress}
+              message="Are you sure you want to delete this record?"
+              onClick={handleDeleteAction}
+              size="large"
+              variant="outlined"
             >
               DELETE
             </ActionButton>
@@ -288,15 +288,15 @@ const RecordForm = ({
         {variant === FORM_VARIANT.NEW || (variant === FORM_VARIANT.EDIT && !isEdge)
           ? (
             <ActionButton
+              color="primary"
+              disabled={actionInProgress || (formHasErrors && formIsDirty)}
               onClick={variant === FORM_VARIANT.EDIT
                 ? handleEditAction
                 : handleNewAction
                 }
-              variant="contained"
-              color="primary"
-              size="large"
               requireConfirm={false}
-              disabled={actionInProgress || (formHasErrors && formIsDirty)}
+              size="large"
+              variant="contained"
             >
               {variant === FORM_VARIANT.EDIT
                 ? 'SUBMIT CHANGES'
@@ -313,14 +313,14 @@ const RecordForm = ({
 
 
 RecordForm.propTypes = {
+  title: PropTypes.string.isRequired,
   modelName: PropTypes.string,
   onError: PropTypes.func,
   onSubmit: PropTypes.func,
   onTopClick: PropTypes.func,
   rid: PropTypes.string,
-  title: PropTypes.string.isRequired,
-  variant: PropTypes.string,
   value: GeneralRecordPropType,
+  variant: PropTypes.string,
 };
 
 RecordForm.defaultProps = {

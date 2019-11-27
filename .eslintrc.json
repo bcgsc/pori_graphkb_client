@@ -102,6 +102,29 @@
                 ]
             }
         ],
+        "react/jsx-sort-props": [
+            "error",
+            {
+                "callbacksLast": false,
+                "shorthandFirst": false,
+                "shorthandLast": false,
+                "ignoreCase": true,
+                "noSortAlphabetically": false,
+                "reservedFirst": [
+                    "key"
+                ]
+            }
+        ],
+        "react/sort-prop-types": [
+            "error",
+            {
+                "callbacksLast": false,
+                "ignoreCase": false,
+                "requiredFirst": true,
+                "sortShapeProp": false,
+                "noSortAlphabetically": false
+            }
+        ],
         "react/jsx-one-expression-per-line": "off",
         "react/no-did-update-set-state": "warn",
         "react/sort-comp": "warn",

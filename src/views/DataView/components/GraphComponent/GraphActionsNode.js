@@ -84,10 +84,10 @@ function GraphActionsNode(props) {
 
     actionsRing.push((
       <g
-        style={{ cursor: 'pointer' }}
-        onClick={option.action}
         key={option.name}
         id={option.name.toLowerCase()}
+        onClick={option.action}
+        style={{ cursor: 'pointer' }}
       >
         <path
           d={d}
@@ -95,16 +95,16 @@ function GraphActionsNode(props) {
           stroke="#ccc"
         />
         <g
-          transform={`translate(${dx - ICON_DIMS * SCALE / 2}, ${dy - ICON_DIMS * SCALE / 2}) scale(${SCALE})`}
           fill={option.disabled && option.disabled(actionsNode) ? '#ccc' : '#555'}
+          transform={`translate(${dx - ICON_DIMS * SCALE / 2}, ${dy - ICON_DIMS * SCALE / 2}) scale(${SCALE})`}
         >
           <path d={ICON_MAP[option.name.toLowerCase()]} />
           <text
-            textAnchor="middle"
             dominantBaseline="central"
-            fontSize={FONT_SIZE}
-            dy={ICON_DIMS + LABEL_V_MARGIN} // add small margin vertically
-            dx={ICON_DIMS / 2} // center label horizontally
+            dx={ICON_DIMS / 2}
+            dy={ICON_DIMS + LABEL_V_MARGIN}
+            fontSize={FONT_SIZE} // add small margin vertically
+            textAnchor="middle" // center label horizontally
           >
             {`(${option.name})`}
           </text>
@@ -114,7 +114,7 @@ function GraphActionsNode(props) {
   });
 
   return (
-    <g transform={`translate(${translateX},${translateY})`} className="actions-node">
+    <g className="actions-node" transform={`translate(${translateX},${translateY})`}>
       {actionsRing}
     </g>
   );
@@ -133,13 +133,13 @@ function GraphActionsNode(props) {
  * an edge or not
  */
 GraphActionsNode.propTypes = {
+  actionsNode: PropTypes.object,
+  edge: PropTypes.bool,
   options: PropTypes.arrayOf(PropTypes.shape({
     name: PropTypes.string.isRequired,
     action: PropTypes.func,
     disabled: PropTypes.func,
   })),
-  actionsNode: PropTypes.object,
-  edge: PropTypes.bool,
 };
 
 GraphActionsNode.defaultProps = {

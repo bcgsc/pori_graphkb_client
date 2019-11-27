@@ -89,7 +89,7 @@ const EmbeddedRecord = ({
   }
 
   return (
-    <FormControl className="embedded-record" required={required} disabled={disabled} error={formHasErrors}>
+    <FormControl className="embedded-record" disabled={disabled} error={formHasErrors} required={required}>
       <div className="embedded-record__header">
         <FormLabel>
           {formName}
@@ -104,24 +104,24 @@ const EmbeddedRecord = ({
       </div>
       <div className="embedded-record__content">
         <FormField
+          className="record-form__class-select"
+          disabled={modelOptions.length < 2 || disabled}
+          error={formErrors['@class'] || ''}
           model={{
             choices: modelOptions, required: true, name: '@class', type: 'string',
           }}
-          value={modelName}
           onChange={handleOnChange}
-          disabled={modelOptions.length < 2 || disabled}
-          error={formErrors['@class'] || ''}
-          className="record-form__class-select"
+          value={modelName}
         />
         {formContent && formContent['@class'] && (
           <FormLayoutComponent
             {...rest}
             content={formContent}
-            errors={formErrors}
-            onChange={handleOnChange}
-            modelName={formContent['@class']}
-            variant={variant}
             disabled={disabled}
+            errors={formErrors}
+            modelName={formContent['@class']}
+            onChange={handleOnChange}
+            variant={variant}
           />
         )}
       </div>
@@ -133,18 +133,18 @@ const EmbeddedRecord = ({
 };
 
 EmbeddedRecord.propTypes = {
-  modelName: PropTypes.string,
-  onDelete: PropTypes.func,
-  onChange: PropTypes.func,
-  onTopClick: PropTypes.func,
-  variant: PropTypes.string,
-  value: PropTypes.object,
-  errors: PropTypes.object,
   name: PropTypes.string.isRequired,
-  disabled: PropTypes.bool,
-  required: PropTypes.bool,
-  helperText: PropTypes.string,
   FormLayoutComponent: PropTypes.oneOf([PropTypes.object, PropTypes.func]),
+  disabled: PropTypes.bool,
+  errors: PropTypes.object,
+  helperText: PropTypes.string,
+  modelName: PropTypes.string,
+  onChange: PropTypes.func,
+  onDelete: PropTypes.func,
+  onTopClick: PropTypes.func,
+  required: PropTypes.bool,
+  value: PropTypes.object,
+  variant: PropTypes.string,
 };
 
 EmbeddedRecord.defaultProps = {

@@ -33,8 +33,6 @@ import title from '@/static/title.png';
  * @property {function} props.onChange - handler for siderbar state change.
  */
 class MainNav extends React.PureComponent {
-  static contextType = KBContext;
-
   static propTypes = {
     isOpen: PropTypes.bool,
     activeLink: PropTypes.string,
@@ -53,6 +51,8 @@ class MainNav extends React.PureComponent {
       subMenuOpenLink: '/query',
     };
   }
+
+  static contextType = KBContext;
 
   /**
    * Handles closing of drawer.
@@ -157,7 +157,7 @@ class MainNav extends React.PureComponent {
               <ListItemText primary="Import" />
             </MenuItem>
           )}
-          {hasWriteAccess(this.context) && (isOpen && subMenuOpen === 'import') && (
+          {hasWriteAccess(this.context) && (isOpen && subMenuOpenLink === 'import') && (
             <>
               <MenuLink label="PubMed" route="/import/pubmed" inset />
             </>

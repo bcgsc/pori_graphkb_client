@@ -69,7 +69,7 @@ class DataView extends React.Component {
   }
 
   async componentDidMount() {
-    const { cacheBlocks, blockSize } = this.props;
+    const { cacheBlocks, blockSize, history } = this.props;
     const cache = api.getNewCache({
       schema,
       cacheBlocks,
@@ -78,10 +78,16 @@ class DataView extends React.Component {
       onErrorCallback: this.handleError,
     });
 
-    const {
-      searchType, limit, neighbors, ...filters
-    } = this.parseFilters();
-    this.setState({ cache, filters, searchType });
+    const URLContainsTable = String(history.location.pathname).includes('table');
+    if(URLContainsTable){
+      const {
+        searchType, limit, neighbors, ...filters
+      } = this.parseFilters();
+      this.setState({ cache, filters, searchType });
+    } else {
+      this.setState({ cache });
+    }
+
   }
 
   componentWillUnmount() {

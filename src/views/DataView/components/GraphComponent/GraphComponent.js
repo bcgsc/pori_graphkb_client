@@ -113,7 +113,7 @@ class GraphComponent extends Component {
       expansionDialogOpen: false,
       expandNode: null,
       expandExclusions: [],
-      allProps: ['@rid', '@class', 'name'],
+      allProps: ['@rid', '@class'],
     };
 
     this.propsMap = new PropsMap();

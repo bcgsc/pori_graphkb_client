@@ -111,6 +111,10 @@ const RecordForm = ({
       if (!formContent['@class']) {
         content['@class'] = modelName;
       }
+
+      if (modelName === 'Statement' && !formContent.reviewStatus) {
+        content.reviewStatus = 'initial';
+      }
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
       const call = api.post(routeName, payload);

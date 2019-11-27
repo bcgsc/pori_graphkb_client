@@ -18,7 +18,6 @@ jest.mock('@bcgsc/react-snackbar-provider', () => {
   return { SnackbarContext, SnackbarContextProvider };
 });
 
-
 jest.mock('@/services/api', () => {
   const mockRequest = () => ({
     request: () => Promise.resolve(
@@ -26,14 +25,42 @@ jest.mock('@/services/api', () => {
     ),
     abort: () => {},
   });
+
+  // to check that initial reviewStatus is set to initial by default
+  const mockPost = jest.fn((route, payload) => ({ request: () => payload }));
   return ({
     delete: jest.fn().mockReturnValue(mockRequest()),
-    post: jest.fn().mockReturnValue(mockRequest()),
+    post: mockPost,
     get: jest.fn().mockReturnValue(mockRequest()),
     patch: jest.fn().mockReturnValue(mockRequest()),
     defaultSuggestionHandler: jest.fn().mockReturnValue(mockRequest()),
   });
 });
+
+
+jest.mock('@/components/RecordAutocomplete', () => (({
+  value, onChange, name, label,
+}) => {
+  const mockValues = {
+    conditions: ['11:11'],
+    evidence: ['12:23'],
+    subject: '20:20',
+    relevance: '90:32',
+  };
+
+  const handleChange = (event) => {
+    onChange({ target: { name, value: mockValues[event.currentTarget.value] } });
+  };
+
+  return (
+    <select data-testid={`${name}-select`} value={value} id={`${name}-id`} onChange={handleChange}>
+      <option key="test" value={value}>
+        {label}
+      </option>
+    </select>
+  );
+}));
+
 
 const originalError = console.error;
 
@@ -216,6 +243,49 @@ describe('RecordForm', () => {
       expect(getByText('SUBMIT')).toBeDisabled();
       expect(snackbarSpy).toHaveBeenCalled();
       expect(snackbarSpy).toHaveBeenCalledWith('There are errors in the form which must be resolved before it can be submitted');
+    });
+  });
+
+  describe('Statement Add', () => {
+    let getByText;
+    let getByTestId;
+
+    beforeEach(() => {
+      ({ getByText, getByTestId } = render(
+        <SnackbarProvider value={{ add: snackbarSpy }}>
+          <KBContext.Provider value={{ }}>
+            <RecordForm
+              value={{ }}
+              modelName="Statement"
+              title="blargh monkeys"
+              onTopClick={onTopClickSpy}
+              onSubmit={onSubmitSpy}
+              onError={onErrorSpy}
+              variant="new"
+            />
+          </KBContext.Provider>
+        </SnackbarProvider>,
+      ));
+    });
+
+
+    test('sets reviewStatus as initial if left blank', async () => {
+      await fireEvent.change(getByTestId('conditions-select'), { target: { value: ['11:11'] } });
+      await fireEvent.change(getByTestId('evidence-select'), { target: { value: ['12:23'] } });
+      await fireEvent.change(getByTestId('relevance-select'), { target: { value: '90:32' } });
+      await fireEvent.change(getByTestId('subject-select'), { target: { value: 'man' } });
+
+      const submitBtn = getByText('SUBMIT');
+      await fireEvent.click(submitBtn);
+      const expectedPayload = {
+        '@class': 'Statement',
+        conditions: ['11:11'],
+        evidence: ['12:23'],
+        relevance: '90:32',
+        subject: '20:20',
+        reviewStatus: 'initial',
+      };
+      expect(onSubmitSpy).toHaveBeenCalledWith(expectedPayload);
     });
   });
 });

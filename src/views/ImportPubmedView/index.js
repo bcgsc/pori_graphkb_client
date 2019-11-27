@@ -102,7 +102,7 @@ const ImportPubmedView = () => {
 
   return (
     <div className="import-view">
-      <Typography variant="h1" className="import-view__title">
+      <Typography className="import-view__title" variant="h1">
         Import PubMed Articles to GraphKB
       </Typography>
       <SearchBox
@@ -116,18 +116,18 @@ const ImportPubmedView = () => {
       {currentRecords.map(rec => (
         <PubmedCard
           key={rec['@rid']}
-          title={titleCase(rec.name)}
-          sourceId={rec.sourceId}
-          recordId={rec['@rid']}
           abstract={rec.description}
           journalName={rec.journalName}
+          recordId={rec['@rid']}
+          sourceId={rec.sourceId}
+          title={titleCase(rec.name)}
         />
       ))}
       {(!currentRecords || !currentRecords.length) && pmid && (
         <PubmedCard
           key={pmid}
-          sourceId={pmid}
           onClick={handleImport}
+          sourceId={pmid}
         />
       )}
     </div>

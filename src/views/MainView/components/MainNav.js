@@ -34,8 +34,8 @@ import title from '@/static/title.png';
  */
 class MainNav extends React.PureComponent {
   static propTypes = {
-    isOpen: PropTypes.bool,
     activeLink: PropTypes.string,
+    isOpen: PropTypes.bool,
     onChange: PropTypes.func,
   };
 
@@ -98,13 +98,13 @@ class MainNav extends React.PureComponent {
       const selected = (activeLink === route) && (!topLevel);
 
       return (
-        <Link to={route} key={label.toLowerCase()}>
+        <Link key={label.toLowerCase()} to={route}>
           <MenuItem onClick={() => { this.handleClickLink(route, topLevel ? route : null); }}>
             {icon && <ListItemIcon>{icon}</ListItemIcon>}
             <ListItemText
               inset={inset}
             >
-              <Typography variant="body1" color="secondary" className={`main-nav-drawer__link${selected ? '--selected' : ''}`}>
+              <Typography className={`main-nav-drawer__link${selected ? '--selected' : ''}`} color="secondary" variant="body1">
                 {label}
               </Typography>
             </ListItemText>
@@ -115,12 +115,12 @@ class MainNav extends React.PureComponent {
 
     return (
       <Drawer
-        variant="persistent"
-        open
         anchor="left"
         classes={{
           paper: `main-nav-drawer main-nav-drawer${isOpen ? '' : '--closed'}`,
         }}
+        open
+        variant="persistent"
       >
         <div className="main-nav-drawer__banner">
           <IconButton onClick={this.handleClose}>
@@ -130,25 +130,25 @@ class MainNav extends React.PureComponent {
         <Divider />
         <List className="main-nav-drawer__links">
           {isAuthorized(this.context) && (
-            <MenuLink label="Search" route="/query" icon={<SearchIcon />} topLevel />
+            <MenuLink icon={<SearchIcon />} label="Search" route="/query" topLevel />
           )}
           {isAuthorized(this.context) && (isOpen && subMenuOpenLink === '/query') && (
             <>
-              <MenuLink label="Quick" route="/query" inset />
-              <MenuLink label="Popular" route="/query-popular/gene" inset />
-              <MenuLink label="Advanced" route="/query-advanced" inset />
+              <MenuLink inset label="Quick" route="/query" />
+              <MenuLink inset label="Popular" route="/query-popular/gene" />
+              <MenuLink inset label="Advanced" route="/query-advanced" />
             </>
           )}
           {hasWriteAccess(this.context) && (
-            <MenuLink label="Add new Record" route="/new/ontology" icon={<AddIcon />} topLevel />
+            <MenuLink icon={<AddIcon />} label="Add new Record" route="/new/ontology" topLevel />
           )}
           {hasWriteAccess(this.context) && (isOpen && subMenuOpenLink === '/new/ontology') && (
             <>
-              {isAdmin(this.context) && (<MenuLink label="Source*" route="/new/source" inset />)}
-              <MenuLink label="Ontology" route="/new/ontology" inset />
-              <MenuLink label="Variant" route="/new/variant" inset />
-              <MenuLink label="Statement" route="/new/statement" inset />
-              <MenuLink label="Relationship" route="/new/e" inset />
+              {isAdmin(this.context) && (<MenuLink inset label="Source*" route="/new/source" />)}
+              <MenuLink inset label="Ontology" route="/new/ontology" />
+              <MenuLink inset label="Variant" route="/new/variant" />
+              <MenuLink inset label="Statement" route="/new/statement" />
+              <MenuLink inset label="Relationship" route="/new/e" />
             </>
           )}
           {hasWriteAccess(this.context) && (
@@ -159,18 +159,18 @@ class MainNav extends React.PureComponent {
           )}
           {hasWriteAccess(this.context) && (isOpen && subMenuOpenLink === 'import') && (
             <>
-              <MenuLink label="PubMed" route="/import/pubmed" inset />
+              <MenuLink inset label="PubMed" route="/import/pubmed" />
             </>
           )}
-          <MenuLink label="About" route="/about" icon={<HelpOutlineIcon />} />
+          <MenuLink icon={<HelpOutlineIcon />} label="About" route="/about" />
         </List>
         <div className="main-nav-drawer__footer">
           <Divider />
           <ListItem dense>
             <ListItemIcon>
-              <img id="bcc-logo" src={logo} alt="" />
+              <img alt="" id="bcc-logo" src={logo} />
             </ListItemIcon>
-            <img id="bcc-label" src={title} alt="" />
+            <img alt="" id="bcc-label" src={title} />
           </ListItem>
         </div>
       </Drawer>

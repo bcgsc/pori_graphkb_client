@@ -13,7 +13,7 @@ import graphResults from '@/static/images/graph-view.png';
 
 const AboutGraphView = () => (
   <div className="about-page__content">
-    <Typography variant="h1" id="about-results-graph">
+    <Typography id="about-results-graph" variant="h1">
         Graph View
     </Typography>
     <Typography variant="body1">
@@ -23,10 +23,10 @@ const AboutGraphView = () => (
       schemes, and physical behavior of the graph and its constituents.
     </Typography>
     <img
-      src={graphResults}
       alt="Graph"
+      src={graphResults}
     />
-    <Typography variant="h2" id="about-results-graph">
+    <Typography id="about-results-graph" variant="h2">
         Graph Node Actions
     </Typography>
     <Typography variant="body1">
@@ -35,8 +35,8 @@ const AboutGraphView = () => (
     </Typography>
     <div className="about-page__column-image">
       <img
-        src={graphActions}
         alt="Graph Node Actions"
+        src={graphActions}
       />
       <Typography variant="body1">
         <List>

@@ -17,13 +17,13 @@ import ResourceSelectComponent from '../../ResourceSelectComponent';
  */
 class FilteredRecordAutocomplete extends React.PureComponent {
   static propTypes = {
-    disabled: PropTypes.bool,
-    isMulti: PropTypes.bool,
     linkedClassName: PropTypes.string.isRequired,
-    DetailChipProps: PropTypes.object,
-    helperText: PropTypes.string,
-    error: PropTypes.bool,
     name: PropTypes.string.isRequired,
+    DetailChipProps: PropTypes.object,
+    disabled: PropTypes.bool,
+    error: PropTypes.bool,
+    helperText: PropTypes.string,
+    isMulti: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -91,35 +91,35 @@ class FilteredRecordAutocomplete extends React.PureComponent {
     };
 
     return (
-      <FormControl className="filtered-record-autocomplete" error={error} disabled={disabled}>
+      <FormControl className="filtered-record-autocomplete" disabled={disabled} error={error}>
         <div className="filtered-record-autocomplete__content">
           {!disabled && (
           <ResourceSelectComponent
+            className="node-form__class-select filtered-record-autocomplete__select-search-class"
+            label={`Filter (${name}) Search by Class`}
             name="search-class"
             onChange={this.handleClassChange}
             resources={[...model.descendantTree(false).map(m => m.name)]}
-            label={`Filter (${name}) Search by Class`}
             value={selectedClassName}
-            className="node-form__class-select filtered-record-autocomplete__select-search-class"
           />
           )}
           <RecordAutocomplete
             {...rest}
-            isMulti={isMulti}
             DetailChipProps={{
               ...DetailChipProps,
               valueToString,
               getDetails: details => details,
             }}
-            name={name}
             disabled={disabled}
-            getOptionLabel={itemToString}
             getOptionKey={opt => opt['@rid']}
-            searchHandler={searchHandler}
+            getOptionLabel={itemToString}
+            isMulti={isMulti}
+            name={name}
             placeholder={isMulti
               ? `Search for Existing ${selectedClassName} Record(s)`
               : `Search for an Existing ${selectedClassName} Record`
             }
+            searchHandler={searchHandler}
           />
         </div>
         {helperText && (<FormHelperText>{helperText}</FormHelperText>)}

@@ -259,24 +259,24 @@ const RecordAutocomplete = (props) => {
     <NoSsr>
       <Select
         className={`record-autocomplete ${className}`}
-        value={selectedValue}
         components={components}
         DetailChipProps={DetailChipProps}
         error={Boolean(errorText)}
+        filterOption={optionFilter}
+        getOptionLabel={getOptionLabel}
+        getOptionValue={getOptionKey}
+        hideSelectedOptions
+        innerProps={innerProps}
+        inputValue={searchTerm}
+        isClearable={!disabled}
+        isLoading={isLoading} // used to compare options for equality
+        isMulti={isMulti} // generates the string representation
+        isSearchable={!disabled}
+        onBlur={handleOnBlur}
         onChange={handleChange}
         onFocus={handleOnFocus}
-        onBlur={handleOnBlur}
-        inputValue={searchTerm}
-        innerProps={innerProps}
         onInputChange={handleInputChange}
-        getOptionValue={getOptionKey} // used to compare options for equality
-        getOptionLabel={getOptionLabel} // generates the string representation
-        hideSelectedOptions
-        isClearable={!disabled}
-        filterOption={optionFilter}
-        isLoading={isLoading}
-        isMulti={isMulti}
-        isSearchable={!disabled}
+        options={options}
         placeholder={
             disabled
               ? ''
@@ -295,13 +295,19 @@ const RecordAutocomplete = (props) => {
           required,
           label,
         }}
-        options={options}
+        value={selectedValue}
       />
     </NoSsr>
   );
 };
 
 RecordAutocomplete.propTypes = {
+  name: PropTypes.string.isRequired,
+  searchHandler: PropTypes.func.isRequired,
+  DetailChipProps: PropTypes.shape({
+    getLink: PropTypes.func,
+    valueToString: PropTypes.func,
+  }),
   className: PropTypes.string,
   components: PropTypes.shape({
     Control: PropTypes.func,
@@ -316,27 +322,21 @@ RecordAutocomplete.propTypes = {
     inputComponent: PropTypes.func,
   }),
   debounceMs: PropTypes.number,
-  DetailChipProps: PropTypes.shape({
-    getLink: PropTypes.func,
-    valueToString: PropTypes.func,
-  }),
   disabled: PropTypes.bool,
   errorText: PropTypes.string,
   getOptionKey: PropTypes.func,
   getOptionLabel: PropTypes.func,
-  isMulti: PropTypes.bool,
+  groupOptions: PropTypes.func,
+  helperText: PropTypes.string,
   innerProps: PropTypes.object,
+  isMulti: PropTypes.bool,
   label: PropTypes.string,
   minSearchLength: PropTypes.number,
-  name: PropTypes.string.isRequired,
   onChange: PropTypes.func,
   placeholder: PropTypes.string,
   required: PropTypes.bool,
-  searchHandler: PropTypes.func.isRequired,
   singleLoad: PropTypes.bool,
-  helperText: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.object, PropTypes.arrayOf(PropTypes.object)]),
-  groupOptions: PropTypes.func,
 };
 
 RecordAutocomplete.defaultProps = {

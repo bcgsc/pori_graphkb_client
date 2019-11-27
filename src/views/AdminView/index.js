@@ -63,15 +63,15 @@ class AdminView extends Component {
 
     return (
       <div className="admin">
-        <Typography variant="h1" className="admin__headline">Admin</Typography>
+        <Typography className="admin__headline" variant="h1">Admin</Typography>
         <AdminTable
-          records={users}
           onChange={this.fetchData}
+          records={users}
           variant="User"
         />
         <AdminTable
-          records={userGroups}
           onChange={this.fetchData}
+          records={userGroups}
           variant="UserGroup"
         />
       </div>

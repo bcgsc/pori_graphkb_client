@@ -39,9 +39,9 @@ describe('ReviewDialog', () => {
       <KBContext.Provider value={{ }}>
         <SnackbarProvider value={{ add: snackbarSpy }}>
           <ReviewDialog
-            onSubmit={onSubmitSpy}
             isOpen
             onClose={onCancelSpy}
+            onSubmit={onSubmitSpy}
           />
         </SnackbarProvider>
       </KBContext.Provider>,

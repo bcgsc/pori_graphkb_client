@@ -33,7 +33,7 @@ const PubmedCard = ({
       <Typography color="textSecondary">
         PMID:{sourceId}
       </Typography>
-      {title && (<Typography variant="h2" className="pubmed-card__title">{title}</Typography>)}
+      {title && (<Typography className="pubmed-card__title" variant="h2">{title}</Typography>)}
       {journalName && (
         <Typography variant="subtitle1">
           {journalName}
@@ -42,8 +42,8 @@ const PubmedCard = ({
       {!recordId && (
         <IFrame
           className="pubmed-iframe"
-          url={`${PUBMED_BASE_URL}/${sourceId}`}
           title={`Article Preview for ${sourceId}`}
+          url={`${PUBMED_BASE_URL}/${sourceId}`}
         />
       )}
     </CardContent>
@@ -53,8 +53,8 @@ const PubmedCard = ({
           <Button onClick={onClick}>Import&nbsp;<InputIcon /></Button>
         ) : (
           <Link
-            to={schema.getLink({ '@rid': recordId, '@class': 'Publication' })}
             target="_blank"
+            to={schema.getLink({ '@rid': recordId, '@class': 'Publication' })}
           >
             <IconButton>
               <OpenInNewIcon />
@@ -66,11 +66,11 @@ const PubmedCard = ({
 );
 
 PubmedCard.propTypes = {
-  title: PropTypes.string,
   sourceId: PropTypes.string.isRequired,
-  recordId: PropTypes.string,
-  onClick: PropTypes.func,
   journalName: PropTypes.string,
+  onClick: PropTypes.func,
+  recordId: PropTypes.string,
+  title: PropTypes.string,
 };
 
 PubmedCard.defaultProps = {

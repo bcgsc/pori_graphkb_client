@@ -46,6 +46,7 @@ function GraphNodeDisplay(props) {
 
   const nodeSVG = useRef(null);
 
+  // enables svg dragging,calls applyDrag to set dragged position as new position
   useEffect(() => {
     if (applyDrag) {
       const nodeElement = d3Select.select(nodeSVG.current);
@@ -58,7 +59,7 @@ function GraphNodeDisplay(props) {
       nodeElement.call(d3Drag.drag()
         .on('start', null));
     };
-  }, [applyDrag, node]);
+  }, [applyDrag, nodeSVG.current]);
 
   if (!node) return null;
   let label;

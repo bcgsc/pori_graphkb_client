@@ -52,7 +52,7 @@ describe('DetailDrawer', () => {
         '@class': 'Ontology',
         name: 'test source',
       },
-      subsets: [{ displayName: 'one' }, { displayName: 'two' }, { displayName: 'three' }],
+      subsets: ['one', 'two', 'three'],
       '@rid': '#1:0',
     };
 
@@ -90,7 +90,7 @@ describe('DetailDrawer', () => {
         '@class': 'Ontology',
         name: 'test source',
       },
-      subsets: [{ displayName: 'one' }, { displayName: 'two' }, { displayName: 'three' }],
+      subsets: ['one', 'two', 'three'],
       '@rid': '#1:0',
     };
     wrapper = mount((

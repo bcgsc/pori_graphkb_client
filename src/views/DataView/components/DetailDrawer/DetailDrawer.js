@@ -44,18 +44,6 @@ const DATE_KEYS = ['createdAt', 'deletedAt'];
  * @property {function} props.handleNodeEditStart - Function triggered on node edit button click
  */
 class DetailDrawer extends Component {
-  static propTypes = {
-    isEdge: PropTypes.bool,
-    node: GeneralRecordPropType,
-    onClose: PropTypes.func,
-  };
-
-  static defaultProps = {
-    node: null,
-    onClose: null,
-    isEdge: false,
-  };
-
   /**
    * Takes properties list to be displayed in detail drawer and promotes an inputted
    * property to top of the list. For display purposes.
@@ -73,6 +61,33 @@ class DetailDrawer extends Component {
     }
     return updatedProperties;
   }
+
+  /**
+   * sorts properties alphabetically by class and then displayname
+   *
+   * @param {Arrayof.<Objects>} value holds an array of Property Models
+   */
+  static sortProps(value) {
+    const sortedValues = value.sort((a, b) => {
+      if (a['@class'] === b['@class']) {
+        return a.displayName.localeCompare(b.displayName);
+      }
+      return a['@class'].localeCompare(b['@class']);
+    });
+    return sortedValues;
+  }
+
+  static propTypes = {
+    isEdge: PropTypes.bool,
+    node: GeneralRecordPropType,
+    onClose: PropTypes.func,
+  };
+
+  static defaultProps = {
+    node: null,
+    onClose: null,
+    isEdge: false,
+  };
 
   constructor(props) {
     super(props);
@@ -206,6 +221,7 @@ class DetailDrawer extends Component {
       if (!value) return null;
       if (type === 'embeddedset' || type === 'linkset') {
         if (value.length === 0) return null;
+        value = DetailDrawer.sortProps(value);
         return (
           <React.Fragment key={name}>
             <ListItem dense>

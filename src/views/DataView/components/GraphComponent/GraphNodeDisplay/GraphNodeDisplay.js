@@ -100,35 +100,35 @@ function GraphNodeDisplay(props) {
         </tspan>
       </text>
       <circle
-        fill="#fff"
         cx={0}
         cy={0}
+        fill="#fff"
         r={NODE_RADIUS}
       />
       <circle
+        className="node"
+        cx={0}
+        cy={0}
+        fill={color}
+        onClick={handleClick}
+        r={NODE_RADIUS}
         style={{
           opacity,
         }}
-        onClick={handleClick}
-        className="node"
-        fill={color}
-        cx={0}
-        cy={0}
-        r={NODE_RADIUS}
       />
     </g>
   );
 }
 
 GraphNodeDisplay.propTypes = {
-  node: PropTypes.object,
-  handleClick: PropTypes.func,
-  color: PropTypes.string,
-  applyDrag: PropTypes.func,
-  labelKey: PropTypes.string,
   actionsNode: PropTypes.object,
+  applyDrag: PropTypes.func,
+  color: PropTypes.string,
   detail: PropTypes.object,
   filter: PropTypes.string,
+  handleClick: PropTypes.func,
+  labelKey: PropTypes.string,
+  node: PropTypes.object,
 };
 
 GraphNodeDisplay.defaultProps = {

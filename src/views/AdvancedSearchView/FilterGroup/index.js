@@ -28,8 +28,8 @@ function FilterGroup(props) {
       </div>
       <div className="filter-groups__cancel-btn">
         <IconButton
-          data-testid="cancel-btn"
           classes={{ label: 'cancel-btn-label' }}
+          data-testid="cancel-btn"
           onClick={() => { handleDelete(filterGroup.name); }}
         >
           <CancelIcon />
@@ -49,8 +49,8 @@ function FilterGroup(props) {
           return (
             <div className="filter-chip" data-testid={`filter-chip${index}`}>
               <Chip
-                default="outlined"
                 key={`${filter.attr}.${filter.value}`}
+                default="outlined"
                 label={`${filter.attr} ${filter.operator} '${filterValue}'`}
               />
             </div>

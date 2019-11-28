@@ -73,7 +73,7 @@ function App() {
   return (
     <StylesProvider injectFirst>
       <CssBaseline />
-      <JssProvider jss={jss} generateClassName={generateClassName}>
+      <JssProvider generateClassName={generateClassName} jss={jss}>
         <MuiThemeProvider theme={theme}>
           <SnackbarProvider anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
             <BrowserRouter>

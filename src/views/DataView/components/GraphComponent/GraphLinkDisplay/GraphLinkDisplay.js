@@ -100,26 +100,26 @@ function GraphLinkDisplay(props) {
       />
       <path
         className="link"
-        id={`link${link.data['@rid']}`}
         d={`M${start.x || 0} ${start.y || 0}L${end.x || 0} ${end.y || 0}`}
-        markerEnd={marker}
-        style={{ opacity, strokeOpacity: opacity }}
         fill={color}
-        stroke={color}
+        id={`link${link.data['@rid']}`}
+        markerEnd={marker}
         onClick={handleClick}
+        stroke={color}
+        style={{ opacity, strokeOpacity: opacity }}
       />
       {labelKey && (
         <text
-          fill={color}
-          opacity={opacity}
-          onClick={handleClick}
           className="link-label"
+          fill={color}
+          onClick={handleClick}
+          opacity={opacity}
         >
           <textPath
-            href={`#link${link.data['@rid']}`}
-            startOffset={START_OFFSET}
-            side={left ? 'left' : 'right'}
             baselineShift={LABEL_BASELINE_SHIFT}
+            href={`#link${link.data['@rid']}`}
+            side={left ? 'left' : 'right'}
+            startOffset={START_OFFSET}
           >
             {label}
           </textPath>
@@ -142,13 +142,13 @@ function GraphLinkDisplay(props) {
  */
 GraphLinkDisplay.propTypes = {
   link: PropTypes.object.isRequired,
-  detail: PropTypes.object,
-  labelKey: PropTypes.string,
-  color: PropTypes.string,
-  handleClick: PropTypes.func,
   actionsNode: PropTypes.object,
-  marker: PropTypes.string,
+  color: PropTypes.string,
+  detail: PropTypes.object,
   filter: PropTypes.string,
+  handleClick: PropTypes.func,
+  labelKey: PropTypes.string,
+  marker: PropTypes.string,
 };
 
 GraphLinkDisplay.defaultProps = {

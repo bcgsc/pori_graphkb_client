@@ -89,10 +89,10 @@ const SentencePreview = ({ content, highlighted }) => {
         <React.Fragment key={wordPosition}>
           {/^\(/.exec(word) ? word[0] : ''}
           <Typography
+            className="sentence-preview__word--highlighted"
+            color="textPrimary"
             component="span"
             variant="body1"
-            color="textPrimary"
-            className="sentence-preview__word--highlighted"
           >
             {
             wordPosition === 0

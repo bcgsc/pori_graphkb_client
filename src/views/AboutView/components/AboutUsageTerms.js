@@ -36,7 +36,7 @@ const AboutUsageTerms = () => {
 
     const section = (
       <div>
-        <Typography variant="h3" id={sectionDatum.id}>
+        <Typography id={sectionDatum.id} variant="h3">
           {sectionDatum.label}
         </Typography>
         <Typography paragraph>

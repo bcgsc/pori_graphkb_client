@@ -67,23 +67,23 @@ const NewRecordView = (props) => {
   return (
     <>
       <FormField
+        className="record-form__class-select"
+        disabled={modelOptions.length < 2}
         model={{
           choices: modelOptions, required: true, name: '@class', type: 'string',
         }}
-        value={modelName}
         onChange={({ target: { value } }) => setModelName(value)}
-        disabled={modelOptions.length < 2}
-        className="record-form__class-select"
+        value={modelName}
       />
       {modelName
         ? (
           <RecordForm
-            variant={FORM_VARIANT.NEW}
             modelName={modelName}
-            title={`Create a new ${modelName} Record`}
-            onTopClick={null}
-            onSubmit={handleSubmit}
             onError={handleError}
+            onSubmit={handleSubmit}
+            onTopClick={null}
+            title={`Create a new ${modelName} Record`}
+            variant={FORM_VARIANT.NEW}
           />
         )
         : null

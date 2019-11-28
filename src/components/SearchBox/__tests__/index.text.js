@@ -26,7 +26,7 @@ describe('SearchBox', () => {
   test('debounces reporting changes to handler', async () => {
     const onChangeSpy = jest.fn();
     const debounceTime = 10;
-    const { getByTestId } = render(<SearchBox onChange={onChangeSpy} debounceMs={debounceTime} />);
+    const { getByTestId } = render(<SearchBox debounceMs={debounceTime} onChange={onChangeSpy} />);
     const inputElement = getByTestId('search-box__input');
     act(() => {
       fireEvent.change(inputElement, { target: { value: 'blargh' } });

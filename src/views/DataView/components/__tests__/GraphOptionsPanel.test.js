@@ -20,12 +20,12 @@ describe('<GraphOptionsPanel />', () => {
     testNodes.forEach(t => propsMap.loadNode(t));
     wrapper = mount(
       <GraphOptionsPanel
-        graphOptionsOpen
         graphOptions={new GraphOptions()}
-        propsMap={propsMap}
-        linkLegendDisabled={false}
+        graphOptionsOpen
         handleDialogClose={() => { }}
         handleGraphOptionsChange={() => { }}
+        linkLegendDisabled={false}
+        propsMap={propsMap}
       />,
     );
     expect(wrapper.children().first().type()).toBe(Dialog);
@@ -34,12 +34,12 @@ describe('<GraphOptionsPanel />', () => {
   test('passes on open prop to child dialog', () => {
     wrapper = mount(
       <GraphOptionsPanel
-        graphOptionsOpen={false}
         graphOptions={new GraphOptions()}
-        propsMap={new PropsMap()}
-        linkLegendDisabled={false}
+        graphOptionsOpen={false}
         handleDialogClose={jest.fn()}
         handleGraphOptionsChange={jest.fn()}
+        linkLegendDisabled={false}
+        propsMap={new PropsMap()}
       />,
     );
     wrapper.children().forEach((child) => {
@@ -53,12 +53,12 @@ describe('<GraphOptionsPanel />', () => {
     const handleGraphOptionsChange = jest.fn();
     wrapper = mount(
       <GraphOptionsPanel
-        graphOptionsOpen
         graphOptions={new GraphOptions()}
-        propsMap={new PropsMap()}
-        linkLegendDisabled={false}
+        graphOptionsOpen
         handleDialogClose={handleDialogClose}
         handleGraphOptionsChange={handleGraphOptionsChange}
+        linkLegendDisabled={false}
+        propsMap={new PropsMap()}
       />,
     );
     wrapper.find('button#options-close-btn').simulate('click');
@@ -68,12 +68,12 @@ describe('<GraphOptionsPanel />', () => {
   test('opens and renders help dialog when help buttons are clicked', () => {
     wrapper = mount(
       <GraphOptionsPanel
-        graphOptionsOpen
         graphOptions={new GraphOptions()}
-        propsMap={new PropsMap()}
-        linkLegendDisabled={false}
+        graphOptionsOpen
         handleDialogClose={() => { }}
         handleGraphOptionsChange={() => { }}
+        linkLegendDisabled={false}
+        propsMap={new PropsMap()}
       />,
     );
     wrapper.find('.options-title button#main-help-btn').simulate('click');
@@ -88,12 +88,12 @@ describe('<GraphOptionsPanel />', () => {
     const handleGraphOptionsChange = jest.fn();
     wrapper = mount(
       <GraphOptionsPanel
-        graphOptionsOpen
         graphOptions={new GraphOptions()}
-        propsMap={new PropsMap()}
-        linkLegendDisabled={false}
+        graphOptionsOpen
         handleDialogClose={() => { }}
         handleGraphOptionsChange={handleGraphOptionsChange}
+        linkLegendDisabled={false}
+        propsMap={new PropsMap()}
       />,
     );
 

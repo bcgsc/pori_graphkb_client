@@ -63,18 +63,18 @@ const AboutMain = () => {
         </Typography>
         <div className="about-page__version-chips">
           <Chip
+            color="primary"
             label={`DB ${dbVersion}`}
-            color="primary"
             variant="outline"
           />
           <Chip
+            color="primary"
             label={`API v${apiVersion}`}
-            color="primary"
             variant="outline"
           />
           <Chip
-            label={`Client v${guiVersion}`}
             color="primary"
+            label={`Client v${guiVersion}`}
             variant="outline"
           />
         </div>
@@ -82,16 +82,16 @@ const AboutMain = () => {
       {chartData && (
       <Chart
         chartType="BarChart"
-        width="100%"
-        height="500px"
         data={chartData}
+        height="500px"
+        loader={<CircularProgress className="about-page__loader" />}
         options={{
           title: 'Statement Sources',
           legend: 'none',
           colors: [cssTheme.primaryMain, cssTheme.secondaryMain],
           backgroundColor: 'transparent',
         }}
-        loader={<CircularProgress className="about-page__loader" />}
+        width="100%"
       />
       )}
     </div>

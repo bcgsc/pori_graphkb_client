@@ -35,11 +35,11 @@ import React, { Component } from 'react';
  */
 class TextArrayField extends Component {
   static propTypes = {
+    name: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
     disabled: PropTypes.bool,
     error: PropTypes.bool,
     label: PropTypes.string,
-    name: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired,
     value: PropTypes.arrayOf(PropTypes.string),
   };
 
@@ -215,8 +215,8 @@ class TextArrayField extends Component {
           };
           return (
             <Chip
-              label={text}
               key={text}
+              label={text}
               {...props}
             />
           );
@@ -227,15 +227,10 @@ class TextArrayField extends Component {
       <div className="text-array-field">
         <TextField
           className="text-array-field__text-field"
-          id={`${label.toLowerCase()}-temp`}
-          label={label}
-          name={label.toLowerCase()}
-          value={textInputValue}
-          onChange={this.handleInputChange}
           disabled={disabled}
           error={Boolean(textInputError || error)}
-          onKeyDown={this.handleInputKeyPress}
           helperText={textInputError}
+          id={`${label.toLowerCase()}-temp`}
           InputProps={{
             classes: {
               root: 'text-array-field__field',
@@ -247,12 +242,17 @@ class TextArrayField extends Component {
               ? chips
               : undefined,
           }}
+          label={label}
+          name={label.toLowerCase()}
+          onChange={this.handleInputChange}
+          onKeyDown={this.handleInputKeyPress}
+          value={textInputValue}
         />
         <div className="text-array-field__btns">
           <IconButton
             color="primary"
-            onClick={this.handleAddCurrent}
             disabled={disabled}
+            onClick={this.handleAddCurrent}
           >
             <AddIcon />
           </IconButton>

@@ -23,20 +23,20 @@ import { GeneralRecordPropType } from '@/components/types';
 
 const DefaultOptionComponent = (resource, disabled) => (
   <MenuItem
+    key={resource.key || resource}
     className="resource-select__option"
     component="li"
-    key={resource.key || resource}
     value={resource.value || resource}
   >
     <ListItemText
-      primary={resource.label || resource || 'None'}
-      secondary={resource.caption || ''}
-      secondaryTypographyProps={{ className: 'resource-select__option-description' }}
       classes={{
         primary: disabled ? 'disabled-text' : '',
         multiline: resource.caption ? 'margin-reset' : '',
         root: resource.caption ? 'margin-reset' : '',
       }}
+      primary={resource.label || resource || 'None'}
+      secondary={resource.caption || ''}
+      secondaryTypographyProps={{ className: 'resource-select__option-description' }}
     />
   </MenuItem>
 );
@@ -76,10 +76,10 @@ function ResourceSelectComponent(props) {
   return (
     <FormControl
       className={`resource-select ${className}`}
-      id={id}
-      variant={variant}
       disabled={disabled}
       error={error}
+      id={id}
+      variant={variant}
     >
       <InputLabel
         htmlFor={`resource-select-${name}`}
@@ -91,17 +91,17 @@ function ResourceSelectComponent(props) {
         {label}
       </InputLabel>
       <Select
-        value={value}
-        onChange={onChange}
-        input={<InputComponent name={name} id={`resource-select-${name}`} />}
-        inputProps={innerProps}
-        style={{
-          fontSize: dense ? '0.8125rem' : '',
-        }}
         IconComponent={disabled
           ? 'span'
           : ArrowDropDownIcon
         }
+        input={<InputComponent id={`resource-select-${name}`} name={name} />}
+        inputProps={innerProps}
+        onChange={onChange}
+        style={{
+          fontSize: dense ? '0.8125rem' : '',
+        }}
+        value={value}
       >
         {resourcesDisplay}
       </Select>
@@ -135,21 +135,21 @@ const SelectOptionPropType = PropTypes.shape({
  */
 
 ResourceSelectComponent.propTypes = {
-  resources: PropTypes.arrayOf(SelectOptionPropType),
   value: PropTypes.oneOfType([GeneralRecordPropType, PropTypes.string]).isRequired,
-  onChange: PropTypes.func,
-  name: PropTypes.string,
-  label: PropTypes.string,
   children: PropTypes.func,
-  required: PropTypes.bool,
-  error: PropTypes.bool,
-  id: PropTypes.string,
-  dense: PropTypes.bool,
-  variant: PropTypes.string,
   className: PropTypes.string,
+  dense: PropTypes.bool,
   disabled: PropTypes.bool,
+  error: PropTypes.bool,
   helperText: PropTypes.string,
+  id: PropTypes.string,
   innerProps: PropTypes.object,
+  label: PropTypes.string,
+  name: PropTypes.string,
+  onChange: PropTypes.func,
+  required: PropTypes.bool,
+  resources: PropTypes.arrayOf(SelectOptionPropType),
+  variant: PropTypes.string,
 };
 
 ResourceSelectComponent.defaultProps = {

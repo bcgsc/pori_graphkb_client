@@ -25,30 +25,30 @@ function NotificationDrawer(props) {
 
   return (
     <Drawer
-      open={open}
-      onClose={handleFinish}
       anchor="bottom"
+      onClose={handleFinish}
+      open={open}
     >
       <div className="notification-drawer">
         <div className="form-linear-progress">
           <LinearProgress
             color="secondary"
-            variant={loading ? 'indeterminate' : 'determinate'}
             value={loading ? 0 : 100}
+            variant={loading ? 'indeterminate' : 'determinate'}
           />
         </div>
         <Button
           color="secondary"
-          onClick={handleFinish}
           disabled={loading}
-          variant="contained"
+          onClick={handleFinish}
           size="large"
+          variant="contained"
         >
           {loading
             ? (
               <CircularProgress
-                size={NOTIFICATION_SPINNER_SIZE}
                 color="secondary"
+                size={NOTIFICATION_SPINNER_SIZE}
               />
             )
             : <CheckIcon />
@@ -66,9 +66,9 @@ function NotificationDrawer(props) {
  * @property {function} handleFinish - Callback for successful submission.
  */
 NotificationDrawer.propTypes = {
+  handleFinish: PropTypes.func,
   loading: PropTypes.bool,
   open: PropTypes.bool,
-  handleFinish: PropTypes.func,
 };
 
 NotificationDrawer.defaultProps = {

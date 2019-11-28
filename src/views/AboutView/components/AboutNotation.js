@@ -49,9 +49,9 @@ class AboutNotation extends React.Component {
 
     return (
       <div
-        id="about-notation"
         className="about-page__content"
         dangerouslySetInnerHTML={{ __html: content }}
+        id="about-notation"
       />
     );
   }

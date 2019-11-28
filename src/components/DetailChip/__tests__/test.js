@@ -17,9 +17,9 @@ describe('DetailChip', () => {
   test('popper renders details on click', () => {
     const wrapper = mount((
       <DetailChip
+        details={{ a: 1, b: 2 }}
         label="label"
         onDelete={onDelete}
-        details={{ a: 1, b: 2 }}
       />
     ));
     const chip = wrapper.find(Chip);
@@ -37,9 +37,9 @@ describe('DetailChip', () => {
   test('closes details popper on subsequent click', () => {
     const wrapper = mount((
       <DetailChip
+        details={{ a: 1, b: 2 }}
         label="label"
         onDelete={onDelete}
-        details={{ a: 1, b: 2 }}
       />
     ));
     const chip = wrapper.find(Chip);
@@ -60,9 +60,9 @@ describe('DetailChip', () => {
   test('calls onDelete handler on clicking the close icon', () => {
     const wrapper = mount((
       <DetailChip
+        details={{ a: 1, b: 2 }}
         label="label"
         onDelete={onDelete}
-        details={{ a: 1, b: 2 }}
       />
     ));
     wrapper.find(Chip).prop('onDelete')();
@@ -73,9 +73,9 @@ describe('DetailChip', () => {
   test('does not provide a close icon when onDelete handler is null', () => {
     const wrapper = mount((
       <DetailChip
+        details={{ a: 1, b: 2 }}
         label="label"
         onDelete={null}
-        details={{ a: 1, b: 2 }}
       />
     ));
     expect(wrapper.find(Cancel)).toHaveLength(0);

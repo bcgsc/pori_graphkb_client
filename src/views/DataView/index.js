@@ -31,11 +31,11 @@ import { hashRecordsByRID } from './util';
  */
 class DataView extends React.Component {
   static propTypes = {
-    location: LocationPropType.isRequired,
     history: HistoryPropType.isRequired,
-    cacheBlocks: PropTypes.number,
+    location: LocationPropType.isRequired,
     blockSize: PropTypes.number,
     bufferSize: PropTypes.number,
+    cacheBlocks: PropTypes.number,
   };
 
   static defaultProps = {
@@ -298,15 +298,15 @@ class DataView extends React.Component {
     }
     return (
       <GraphComponent
-        data={graphData || {}}
         cache={cache}
-        handleDetailDrawerOpen={this.handleToggleDetailPanel}
-        handleDetailDrawerClose={this.handleToggleDetailPanel}
+        data={graphData || {}}
         detail={detailPanelRow}
-        handleError={this.handleError}
         edgeTypes={expandedEdgeTypes}
-        onRecordClicked={this.handleToggleDetailPanel}
+        handleDetailDrawerClose={this.handleToggleDetailPanel}
+        handleDetailDrawerOpen={this.handleToggleDetailPanel}
+        handleError={this.handleError}
         handleGraphStateSave={this.handleGraphStateSaveIntoURL}
+        onRecordClicked={this.handleToggleDetailPanel}
       />
     );
   }
@@ -325,15 +325,15 @@ class DataView extends React.Component {
 
     return (
       <DataTable
-        search={search}
         cache={cache}
-        rowBuffer={bufferSize}
         isExportingData={this.handleExportLoader}
         onRecordClicked={this.handleToggleDetailPanel}
         onRecordsSelected={this.handleRecordSelection}
         onRowSelected={this.handleNewRowSelection}
         optionsMenuAnchor={optionsMenuAnchor}
         optionsMenuOnClose={this.handleToggleOptionsMenu}
+        rowBuffer={bufferSize}
+        search={search}
         totalRows={totalRows}
         totalRowsSelected={totalRowsSelected}
       />
@@ -375,8 +375,8 @@ class DataView extends React.Component {
                 <>
                   <Tooltip title="click here to see active filter groups">
                     <IconButton
-                      onClick={event => this.handleFilterTableToggle(event, 'open')}
                       disabled={!filterGroups}
+                      onClick={event => this.handleFilterTableToggle(event, 'open')}
                     >
                       <FilterListIcon />
                     </IconButton>
@@ -395,7 +395,7 @@ class DataView extends React.Component {
           )}
           {URLContainsTable && (
             <Tooltip title="click here for table and export options">
-              <IconButton onClick={this.handleToggleOptionsMenu} className="data-view__edit-filters">
+              <IconButton className="data-view__edit-filters" onClick={this.handleToggleOptionsMenu}>
                 <MoreHorizIcon color="action" />
               </IconButton>
             </Tooltip>
@@ -423,8 +423,8 @@ class DataView extends React.Component {
                 </Typography>
                 <Tooltip title="click here for graph view">
                   <IconButton
-                    onClick={this.handleSwapToGraph}
                     disabled={selectedRecords.length === 0}
+                    onClick={this.handleSwapToGraph}
                   >
                     <TimelineIcon
                       color={selectedRecords.length === 0 ? 'disabled' : 'secondary'}

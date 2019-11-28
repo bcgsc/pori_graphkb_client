@@ -69,13 +69,13 @@ describe('<GraphComponent />', () => {
   test('calls componentDidMount on render and doesn\'t crash and burn', () => {
     wrapper = mount(
       <GraphComponent
-        data={[]}
-        handleError={handleErrSpy}
         cache={cacheSpy}
-        handleDetailDrawerOpen={() => { }}
+        data={[]}
         handleDetailDrawerClose={() => { }}
-        handleTableRedirect={() => { }}
+        handleDetailDrawerOpen={() => { }}
+        handleError={handleErrSpy}
         handleNewColumns={() => { }}
+        handleTableRedirect={() => { }}
       />,
     );
     expect(componentDidMountSpy).toHaveBeenCalledTimes(1);
@@ -84,11 +84,12 @@ describe('<GraphComponent />', () => {
   test('renders all nodes specified in displayed', async () => {
     wrapper = mount(
       <GraphComponent
-        data={[mockData[0], mockData[1], mockData[2]]}
-        handleError={handleErrSpy}
         cache={cacheSpy}
-        handleDetailDrawerOpen={() => { }}
+        data={[mockData[0], mockData[1], mockData[2]]}
+        edgeTypes={['AliasOf']}
         handleDetailDrawerClose={() => { }}
+        handleDetailDrawerOpen={() => { }}
+        handleError={handleErrSpy}
         handleNewColumns={() => { }}
         edgeTypes={['out_AliasOf', 'in_AliasOf']}
       />,
@@ -102,12 +103,12 @@ describe('<GraphComponent />', () => {
   test('renders all nodes and links specified in displayed', async () => {
     wrapper = mount(
       <GraphComponent
-        data={mockData}
-        handleError={handleErrSpy}
         cache={cacheSpy}
-        handleDetailDrawerOpen={() => { }}
+        data={mockData}
+        edgeTypes={['AliasOf']}
         handleDetailDrawerClose={() => { }}
-        handleTableRedirect={() => { }}
+        handleDetailDrawerOpen={() => { }}
+        handleError={handleErrSpy}
         handleNewColumns={() => { }}
         edgeTypes={['out_AliasOf', 'in_AliasOf']}
       />,
@@ -121,15 +122,15 @@ describe('<GraphComponent />', () => {
   test('methods don\'t crash component', async () => {
     wrapper = mount(
       <GraphComponent
-        data={mockData}
-        handleError={handleErrSpy}
         cache={cacheSpy}
-        handleDetailDrawerOpen={() => { }}
+        data={mockData}
+        edgeTypes={['AliasOf']}
         handleDetailDrawerClose={() => { }}
-        handleTableRedirect={() => { }}
+        handleDetailDrawerOpen={() => { }}
+        handleError={handleErrSpy}
         handleNewColumns={() => { }}
         handleRefresh={() => { }}
-        edgeTypes={['AliasOf']}
+        handleTableRedirect={() => { }}
       />,
     );
 
@@ -185,16 +186,16 @@ describe('<GraphComponent />', () => {
 
     wrapper = mount(
       <GraphComponent
-        data={mockData}
-        handleError={handleErrSpy}
         cache={cacheSpy}
-        handleDetailDrawerOpen={handleDetailDrawerOpen}
-        handleDetailDrawerClose={() => { }}
-        handleTableRedirect={() => { }}
-        handleNewColumns={() => { }}
-        handleClick={handleClickSpy}
+        data={mockData}
         displayed={['#1', '#2', '#3', '#4']}
         edgeTypes={['out_AliasOf', 'in_AliasOf']}
+        handleClick={handleClickSpy}
+        handleDetailDrawerClose={() => { }}
+        handleDetailDrawerOpen={handleDetailDrawerOpen}
+        handleError={handleErrSpy}
+        handleNewColumns={() => { }}
+        handleTableRedirect={() => { }}
       />,
     );
 
@@ -228,15 +229,15 @@ describe('<GraphComponent />', () => {
   test('svg click handling clears actionsNode', () => {
     wrapper = mount(
       <GraphComponent
-        data={[]}
-        handleError={handleErrSpy}
         cache={cacheSpy}
-        handleDetailDrawerOpen={() => { }}
-        handleDetailDrawerClose={() => { }}
-        handleTableRedirect={() => { }}
-        handleNewColumns={() => { }}
-        handleClick={() => { }}
+        data={[]}
         edgeTypes={['AliasOf']}
+        handleClick={() => { }}
+        handleDetailDrawerClose={() => { }}
+        handleDetailDrawerOpen={() => { }}
+        handleError={handleErrSpy}
+        handleNewColumns={() => { }}
+        handleTableRedirect={() => { }}
         localStorageKey="test"
       />,
     );

@@ -18,6 +18,7 @@ import { HistoryPropType, LocationPropType } from '@/components/types';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
+import util from '../../services/util';
 import DataTable from './components/DataTable';
 import DetailDrawer from './components/DetailDrawer';
 import FilterChips from './components/FilterChips';
@@ -68,7 +69,7 @@ class DataView extends React.Component {
   }
 
   async componentDidMount() {
-    const { cacheBlocks, blockSize } = this.props;
+    const { cacheBlocks, blockSize, history } = this.props;
     const cache = api.getNewCache({
       schema,
       cacheBlocks,
@@ -77,10 +78,16 @@ class DataView extends React.Component {
       onErrorCallback: this.handleError,
     });
 
-    const {
-      searchType, limit, neighbors, ...filters
-    } = this.parseFilters();
-    this.setState({ cache, filters, searchType });
+    const URLContainsTable = String(history.location.pathname).includes('table');
+
+    if (URLContainsTable) {
+      const {
+        searchType, limit, neighbors, ...filters
+      } = this.parseFilters();
+      this.setState({ cache, filters, searchType });
+    } else {
+      this.setState({ cache });
+    }
   }
 
   componentWillUnmount() {
@@ -279,6 +286,7 @@ class DataView extends React.Component {
     } = this.state;
 
     const edges = schema.getEdges();
+    const expandedEdgeTypes = util.expandEdges(edges);
 
     if (!graphData) {
       this.loadSavedStateFromURL();
@@ -293,7 +301,7 @@ class DataView extends React.Component {
         cache={cache}
         data={graphData || {}}
         detail={detailPanelRow}
-        edgeTypes={edges}
+        edgeTypes={expandedEdgeTypes}
         handleDetailDrawerClose={this.handleToggleDetailPanel}
         handleDetailDrawerOpen={this.handleToggleDetailPanel}
         handleError={this.handleError}

@@ -36,10 +36,19 @@ import {
   GraphOptions,
   PropsMap,
 } from './kbgraph';
+import {
+  computeNodeLevels,
+  copyURLToClipBoard,
+  getId,
+  TREE_LINK,
+} from './util';
 
 const {
   GRAPH_PROPERTIES: {
     ZOOM_BOUNDS,
+    MARKER_ID,
+    DIALOG_FADEOUT_TIME,
+    HEAVILY_CONNECTED,
   },
   GRAPH_DEFAULTS: {
     PALLETE_SIZE,
@@ -48,55 +57,6 @@ const {
     GRAPH_UNIQUE_LIMIT,
   },
 } = config;
-
-// Component specific constants.
-const MARKER_ID = 'endArrow';
-const DIALOG_FADEOUT_TIME = 150;
-const HEAVILY_CONNECTED = 10;
-const TREE_LINK = 'SubClassOf';
-
-const getId = node => (node.data
-  ? node.data['@rid']
-  : node['@rid'] || node);
-
-/**
- * Use the graph links to rank nodes in the graph based on their subclass relationships. Root nodes
- * are given 0 and child nodes are given 1 more than the rank of their highest ranked parent node
- */
-const computeNodeLevels = (graphLinks) => {
-  const nodes = {};
-  graphLinks.forEach((edge) => {
-    const { data: { out: src, in: tgt, '@class': edgeType } } = edge;
-
-    if (edgeType === TREE_LINK) {
-      const srcId = getId(src);
-      const tgtId = getId(tgt);
-      nodes[srcId] = nodes[srcId] || { id: srcId, children: [], parents: [] };
-      nodes[tgtId] = nodes[tgtId] || { id: tgtId, children: [], parents: [] };
-      nodes[srcId].children.push(tgtId);
-      nodes[tgtId].parents.push(srcId);
-    }
-  });
-
-  const queue = Object.values(nodes).filter(node => node.parents.length === 0);
-  const ranks = {};
-
-  queue.forEach((root) => {
-    ranks[root.id] = 0;
-  });
-
-  while (queue.length) {
-    const curr = queue.shift();
-
-    curr.children.forEach((childId) => {
-      if (childId) {
-        ranks[childId] = Math.max(ranks[childId] || 0, ranks[curr.id] + 1);
-        queue.push(nodes[childId]);
-      }
-    });
-  }
-  return ranks;
-};
 
 /**
  * Component for displaying query results in force directed graph form.
@@ -118,14 +78,6 @@ const computeNodeLevels = (graphLinks) => {
 class GraphComponent extends Component {
   // App snackbar context value.
   static contextType = SnackbarContext;
-
-  static hashRecordsByRID(data) {
-    const newData = {};
-    data.forEach((obj) => {
-      newData[obj['@rid']] = obj;
-    });
-    return newData;
-  }
 
   static propTypes = {
     cache: PropTypes.object.isRequired,
@@ -153,22 +105,39 @@ class GraphComponent extends Component {
       data: initialGraphData,
       graphObjects: {},
       expandable: {},
-      expandedEdgeTypes: [],
       actionsNode: null,
       simulation: d3Force.forceSimulation(),
       svg: undefined,
-      width: 0,
-      height: 0,
       graphOptions: new GraphOptions(),
       graphOptionsOpen: false,
-      actionsNodeIsEdge: false,
       expansionDialogOpen: false,
       expandNode: null,
       expandExclusions: [],
-      allProps: [], // list of all unique properties on all nodes returned
+      allProps: ['@rid', '@class'],
     };
 
     this.propsMap = new PropsMap();
+  }
+
+  @boundMethod
+  getGraphOptions() {
+    const graphOptions = new GraphOptions();
+    const storedOptions = GraphOptions.retrieve();
+    let initialGraphOptions;
+
+    if (storedOptions) {
+      initialGraphOptions = storedOptions;
+    } else {
+      const nodePropVal = Object.values(this.propsMap.nodeProps);
+      const nodeHasDefaultProps = nodePropVal.length !== 0;
+
+      if (nodeHasDefaultProps) {
+        graphOptions.nodesLegend = true;
+      }
+      initialGraphOptions = graphOptions;
+    }
+
+    return initialGraphOptions;
   }
 
   /**
@@ -176,73 +145,52 @@ class GraphComponent extends Component {
    * Initializes event listener for window resize.
    */
 
-  async componentDidMount() {
+  componentDidMount() {
     const {
-      edgeTypes,
-    } = this.props;
-    const {
-      graphOptions,
+      data,
+      simulation,
     } = this.state;
-
-    let { expandable } = this.state;
-    const expandedEdgeTypes = util.expandEdges(edgeTypes);
-    const allProps = this.getUniqueDataProps();
+    let {
+      expandable, nodes, links, graphObjects,
+    } = this.state;
     this.propsMap = new PropsMap();
 
     this.handleResize();
     window.addEventListener('resize', this.handleResize);
 
-    this.setState({
-      expandedEdgeTypes,
-      allProps,
-    }, () => {
-      const { data = {} } = this.state;
-      let nodes = [];
-      let links = [];
-      let graphObjects = {};
-      const nodeRIDs = Object.keys(data);
-      nodeRIDs.forEach((rid, index) => {
-        ({
-          nodes,
-          links,
-          graphObjects,
-          expandable,
-        } = this.processData(
-          data[rid],
-          util.positionInit(this.wrapper.clientWidth / 2, this.wrapper.clientHeight / 2, index, nodeRIDs.length),
-          0,
-          {
-            nodes,
-            links,
-            graphObjects,
-            expandable,
-          },
-        ));
-      });
-
-      const storedOptions = GraphOptions.retrieve();
-      let initialGraphOptions;
-
-      if (storedOptions) {
-        initialGraphOptions = storedOptions;
-      } else {
-        const nodePropVal = Object.values(this.propsMap.nodeProps);
-        const nodeHasDefaultProps = nodePropVal.length !== 0;
-
-        if (nodeHasDefaultProps) {
-          graphOptions.nodesLegend = true;
-        }
-        initialGraphOptions = graphOptions;
-      }
-
-
-      this.setState({
-        graphOptions: initialGraphOptions,
+    const nodeRIDs = Object.keys(data);
+    nodeRIDs.forEach((rid, index) => {
+      ({
         nodes,
         links,
         graphObjects,
         expandable,
-      }, this.refresh);
+      } = this.processData(
+        data[rid],
+        util.positionInit(this.wrapper.clientWidth / 2, this.wrapper.clientHeight / 2, index, nodeRIDs.length),
+        false,
+        {
+          nodes,
+          links,
+          graphObjects,
+          expandable,
+        },
+      ));
+    });
+
+    const graphOptions = this.getGraphOptions(this.propsMap);
+    this.initSimulation(simulation, graphOptions);
+
+    const initialSeed = {
+      simulation, graphOptions, nodes, links,
+    };
+    this.refresh(initialSeed);
+
+    this.setState({
+      nodes,
+      links,
+      graphObjects,
+      expandable,
     });
   }
 
@@ -253,9 +201,10 @@ class GraphComponent extends Component {
     const {
       svg,
       simulation,
+      graphOptions,
     } = this.state;
-    // remove all event listeners
 
+    // remove all event listeners
     if (svg) {
       svg.call(d3Zoom.zoom()
         .on('zoom', null))
@@ -263,27 +212,9 @@ class GraphComponent extends Component {
     }
     simulation.on('tick', null);
     window.removeEventListener('resize', this.handleResize);
+    graphOptions.load();
   }
 
-  getUniqueDataProps = () => {
-    let uniqueProps = [];
-    let { data } = this.state;
-
-    if (data) {
-      if (!Object.keys(data).length === 0) { // if data is not empty
-        const totalProps = [];
-        data = Object.values(data);
-        data.forEach((obj) => {
-          const keyArr = Object.keys(obj);
-          totalProps.push(...keyArr);
-        });
-        uniqueProps = [...new Set(totalProps)];
-        return uniqueProps;
-      }
-    }
-    uniqueProps = ['@rid', '@class', 'name'];
-    return uniqueProps;
-  };
 
   /**
    * Applies drag behavior to node.
@@ -323,22 +254,14 @@ class GraphComponent extends Component {
    * Renders nodes and links to the graph.
    */
   @boundMethod
-  drawGraph() {
-    const {
-      nodes,
-      links,
-      simulation,
-      graphOptions,
-      height,
-    } = this.state;
-
+  drawGraph(nodes, links, simulation, graphOptions) {
     // set up the hierarchy
     simulation.nodes(nodes);
 
     if (graphOptions.isTreeLayout) {
       const ranks = computeNodeLevels(links);
       const partitions = Math.max(...[0, ...Object.values(ranks)]) + 2;
-      const partitionSize = height / partitions;
+      const partitionSize = this.wrapper.clientHeight / partitions;
       // partial force https://stackoverflow.com/questions/39575319/partial-forces-on-nodes-in-d3-js
       const subclassYForce = d3Force.forceY(node => (partitions - ranks[getId(node)] - 1) * partitionSize);
       const init = subclassYForce.initialize;
@@ -355,7 +278,7 @@ class GraphComponent extends Component {
       d3Force
         .forceLink(links)
         .strength((link) => {
-          if (link.data['@class'] !== TREE_LINK && graphOptions.isTreeLayout) {
+          if ((link.data['@class'] !== TREE_LINK) && graphOptions.isTreeLayout) {
             return 5 * graphOptions.linkStrength;
           }
           return graphOptions.linkStrength;
@@ -365,7 +288,7 @@ class GraphComponent extends Component {
     const ticked = () => {
       const shiftDistance = 1 * simulation.alpha();
       links.forEach((data) => {
-        if (data.data['@class'] === TREE_LINK) {
+        if (data.data['@class'] === TREE_LINK && graphOptions.isTreeLayout) {
           data.source.y += shiftDistance;
           data.target.y -= shiftDistance;
         }
@@ -385,14 +308,7 @@ class GraphComponent extends Component {
    * Initializes simulation rules and properties. Updates simulation component state.
    */
   @boundMethod
-  initSimulation() {
-    const {
-      simulation,
-      graphOptions,
-      width,
-      height,
-    } = this.state;
-
+  initSimulation(simulation, graphOptions) {
     simulation.force(
       'link',
       d3Force.forceLink().id(d => d.getId()),
@@ -410,8 +326,8 @@ class GraphComponent extends Component {
     const svg = d3Select.select(this.graph);
 
     svg
-      .attr('width', width)
-      .attr('height', height)
+      .attr('width', this.wrapper.clientWidth)
+      .attr('height', this.wrapper.clientHeight)
       .call(d3Zoom.zoom()
         .scaleExtent(ZOOM_BOUNDS)
         .on('zoom', () => {
@@ -432,7 +348,9 @@ class GraphComponent extends Component {
    */
   @boundMethod
   loadNeighbors(node) {
-    const { expandExclusions, data, simulation } = this.state;
+    const {
+      expandExclusions, data, simulation, graphOptions,
+    } = this.state;
     let {
       nodes,
       links,
@@ -449,7 +367,7 @@ class GraphComponent extends Component {
       } = this.processData(
         data[node.getId()],
         { x: node.x, y: node.y },
-        1,
+        true,
         {
           nodes,
           links,
@@ -458,12 +376,13 @@ class GraphComponent extends Component {
         },
         expandExclusions,
       ));
-
-      this.saveGraphStatetoURL([...nodes]);
-
-      this.drawGraph();
-      this.updateColors();
     }
+
+    this.refresh({
+      simulation, graphOptions, nodes, links,
+    });
+    this.saveGraphStatetoURL([...nodes]);
+
     if (!schema.getEdges(data[node.getId()]).some(edge => !links.find(l => l.getId() === edge['@rid']))) {
       delete expandable[node.getId()];
     }
@@ -475,8 +394,6 @@ class GraphComponent extends Component {
       nodes,
       links,
       graphObjects,
-    }, () => {
-      simulation.alpha(1).restart();
     });
   }
 
@@ -493,12 +410,18 @@ class GraphComponent extends Component {
       data,
     } = this.state;
 
+    const nodeIsHeavilyConnected = (currNode) => {
+      const nodeEdges = schema.getEdges(currNode);
+      const edgesToBeRendered = nodeEdges.filter(edge => !(links.find(l => l.getId() === edge['@rid'])));
+      return (edgesToBeRendered.length > HEAVILY_CONNECTED);
+    };
+
     if (expandable[node.getId()] && data[node.getId()]) {
-      if (schema.getEdges(data[node.getId()])
-        .filter(edge => !(links.find(l => l.getId() === edge['@rid']))).length > HEAVILY_CONNECTED
+      if (nodeIsHeavilyConnected(data[node.getId()])
       ) {
-        this.setState({ expandNode: data[node.getId()] },
-          this.handleDialogOpen('expansionDialogOpen'));
+        // Opens up expansion confirmation dialog
+        this.setState({ expandNode: data[node.getId()], expansionDialogOpen: true });
+        this.pauseGraph();
       } else {
         this.loadNeighbors(node);
       }
@@ -541,17 +464,44 @@ class GraphComponent extends Component {
   }
 
   /**
+   * Adds a graphNode or graphLink to graphObjects.
+   * @param {string} type one of ['link', 'node']
+   * @param {object} data record information
+   * @param {object} prop1 either x position if graphNode or source if graphLink
+   * @param {object} prop2 either y position if graphNode or target if graphLink
+   * @param {object} graphObjects graphObjects attached to simulation
+   * @param {object} propsMap keeps track of node/link properties and associated values
+   */
+  addGraphObject = (type, data, prop1, prop2, graphObjects, propsMap) => {
+    const newGraphObject = type === 'node'
+      ? new GraphNode(data, prop1, prop2)
+      : new GraphLink(data, prop1, prop2);
+
+    const { [`${type}s`]: objs, allProps } = this.state;
+    objs.push(newGraphObject);
+    graphObjects[data['@rid']] = data;
+
+    if (type === 'node') {
+      propsMap.loadNode(data, allProps);
+    } else {
+      propsMap.loadLink(data);
+    }
+  };
+
+  /**
    * Processes node data and updates state with new nodes and links. Also
-   * updates expandable flags.
-   * @param {Object} node - Node object as returned by the api.
-   * @param {Object} position - Object containing x and y position of node.
-   * @param {number} depth - Recursion base case flag.
+   * updates expandable object which tracks via RID which nodes can be expanded.
+   * @param {Object} node - record object as returned by the api. One of [node, link, edge]
+   * @param {Object} pos - Object containing x and y position of node.
+   * @param {bool} expansionFlag - Whether or not edges/links of record being processed
+   * should also have it's edges/links expanded. If false, only record is processed.
    * @param {Object} prevstate - Object containing nodes, links,
    * graphobjects, and expandable map, from previous state.
    * @param {Array.<string>} [exclusions=[]] - List of edge ID's to be ignored on expansion.
    */
-  processData(node, position, depth, prevstate, exclusions = []) {
-    const { expandedEdgeTypes, allProps, data } = this.state;
+  processData(node, pos, expansionFlag, prevstate, exclusions = []) {
+    const { data } = this.state;
+    const { edgeTypes } = this.props;
     let {
       nodes,
       links,
@@ -567,16 +517,14 @@ class GraphComponent extends Component {
     }
 
     if (!graphObjects[node['@rid']]) {
-      nodes.push(new GraphNode(node, position.x, position.y));
-      graphObjects[node['@rid']] = node;
-      this.propsMap.loadNode(node, allProps);
+      this.addGraphObject('node', node, pos.x, pos.y, graphObjects, this.propsMap);
     }
 
     /**
      * Cycles through all potential edges as defined by the schema, and expands
      * those edges if present on the node.
      */
-    expandedEdgeTypes.forEach((edgeType) => {
+    edgeTypes.forEach((edgeType) => {
       if (node[edgeType] && node[edgeType].length !== 0) {
         // stores total number of edges and initializes count for position calculating.
         const n = node[edgeType].length;
@@ -592,26 +540,15 @@ class GraphComponent extends Component {
             const targetRid = inRid === node['@rid'] ? outRid : inRid;
 
             if (
-              edgeRid
-              && inRid
-              && outRid
-              && (depth > 0 || graphObjects[targetRid])
+              edgeRid && inRid && outRid
+              && (expansionFlag || graphObjects[targetRid])
             ) {
-              // Initialize new link object and pushes to links list.
-              const link = new GraphLink(edge, outRid, inRid);
-              links.push(link);
-              graphObjects[link.getId()] = link;
-              this.propsMap.loadLink(link.data);
+              this.addGraphObject('link', edge, outRid, inRid, graphObjects, this.propsMap);
 
               // Checks if node is already rendered
               if (outRid && !graphObjects[outRid]) {
                 // Initializes position of new child
-                const positionInit = util.positionInit(
-                  position.x,
-                  position.y,
-                  index,
-                  n,
-                );
+                const positionInit = util.positionInit(pos.x, pos.y, index, n);
                 ({
                   nodes,
                   links,
@@ -620,7 +557,7 @@ class GraphComponent extends Component {
                 } = this.processData(
                   edge.out,
                   positionInit,
-                  depth - 1,
+                  false,
                   {
                     nodes,
                     links,
@@ -631,12 +568,7 @@ class GraphComponent extends Component {
                 ));
               }
               if (inRid && !graphObjects[inRid]) {
-                const positionInit = util.positionInit(
-                  position.x,
-                  position.y,
-                  index,
-                  n,
-                );
+                const positionInit = util.positionInit(pos.x, pos.y, index, n);
                 ({
                   nodes,
                   links,
@@ -645,7 +577,7 @@ class GraphComponent extends Component {
                 } = this.processData(
                   edge.in,
                   positionInit,
-                  depth - 1,
+                  false,
                   {
                     nodes,
                     links,
@@ -658,7 +590,7 @@ class GraphComponent extends Component {
 
               // Updates expanded on target node.
               if (expandable[targetRid]) {
-                expandable = util.expanded(expandedEdgeTypes, graphObjects, targetRid, expandable);
+                expandable = util.expanded(edgeTypes, graphObjects, targetRid, expandable);
               }
             } else {
               // If there are unrendered edges, set expandable flag.
@@ -685,11 +617,7 @@ class GraphComponent extends Component {
           // check to see if link is in graph already rendered
 
           if (!graphObjects[linkerRid] && !exclusions.includes(linkRid)) {
-            if (
-              sourceRid
-              && targetRid
-              && linkerRid
-              && (depth > 0 || graphObjects[targetRid])) {
+            if (expansionFlag || graphObjects[targetRid]) {
               // create link object and push it to links list
               const graphLinkData = {
                 '@rid': linkerRid,
@@ -698,15 +626,12 @@ class GraphComponent extends Component {
                 out: targetRid,
                 isLinkProp: true,
               };
-              const graphLink = new GraphLink(graphLinkData, sourceRid, targetRid);
-              links.push(graphLink);
-              graphObjects[graphLink.getId()] = graphLink;
-              this.propsMap.loadLink(graphLink.data);
+              this.addGraphObject('link', graphLinkData, sourceRid, targetRid, graphObjects, this.propsMap);
 
               // check if node is already rendered
               if (targetRid && !graphObjects[targetRid]) {
                 // Initializes position of new child
-                const positionInit = util.positionInit(position.x, position.y, index, n);
+                const positionInit = util.positionInit(pos.x, pos.y, index, n);
                 ({
                   nodes,
                   links,
@@ -715,7 +640,7 @@ class GraphComponent extends Component {
                 } = this.processData(
                   link,
                   positionInit,
-                  depth - 1,
+                  false,
                   {
                     nodes,
                     links,
@@ -747,72 +672,106 @@ class GraphComponent extends Component {
 
   /**
    * Restarts the layout simulation with the current nodes
+   *
+   * @property {object} seed seed graph Info to refresh view
+   * @property {d3} simulation d3 force layout
+   * @property {graphOptions} graphOptions graphOptions object
+   * @property {Arrayof<GraphObjects>} nodes list of node graphObjects
+   * @property {Arrayof<GraphObjects>} links list of link graphObjects
    */
   @boundMethod
-  refresh() {
-    const { simulation } = this.state;
+  refresh(seed = null) {
+    const {
+      simulation, graphOptions, nodes, links,
+    } = !seed ? this.state : seed;
+
     const { handleDetailDrawerClose } = this.props;
+    this.updateColors(nodes, links, graphOptions);
+    this.drawGraph(nodes, links, simulation, graphOptions);
     simulation.alpha(1).restart();
-    this.initSimulation();
-    this.drawGraph();
-    this.updateColors();
     handleDetailDrawerClose();
   }
 
   /**
-   * Updates color scheme for the graph, for nodes or links.
+   * updates color mapping based on data properties of graphobject and selected
+   * coloring key.
+   *
+   * @param {object} colorPalette maps properties to colors from palette
+   * @param {object} graphObjectData data from graph object
+   * @param {string} key selected coloring key ex. 'class', 'rid', 'name'
    */
-  @boundMethod
-  updateColors() {
-    const snackbar = this.context;
-    ['node', 'link'].forEach((type) => {
-      const { [`${type}s`]: objs, graphOptions } = this.state;
-      const key = graphOptions[`${type}sColor`];
-      const colors = {};
+  updateColorPalette = (colorPalette, graphObjectData, key) => {
+    const colorMapping = { ...colorPalette };
 
-      objs.forEach((obj) => {
-        if (key.includes('.')) {
-          const [prop, nestedProp] = key.split('.');
+    if (key.includes('.')) {
+      const [prop, nestedProp] = key.split('.');
 
-          if (
-            obj.data[prop]
-            && obj.data[prop][nestedProp]
-            && !colors[obj.data[prop][nestedProp]]
-          ) {
-            colors[obj.data[prop][nestedProp]] = '';
-          }
-        }
+      if (
+        graphObjectData[prop]
+        && graphObjectData[prop][nestedProp]
+        && !colorMapping[graphObjectData[prop][nestedProp]]
+      ) {
+        colorMapping[graphObjectData[prop][nestedProp]] = '';
+      }
+    }
 
-        if (isObject(obj.data[key])) { // value is object
-          if (obj.data[key].displayName && !colors[obj.data[key].displayName]) {
-            colors[obj.data[key].displayName] = '';
-          }
-        } else if (obj.data[key] && !colors[obj.data[key]]) {
-          colors[obj.data[key]] = '';
-        }
-      });
+    if (isObject(graphObjectData[key])) { // value is object
+      if (graphObjectData[key].displayName && !colorMapping[graphObjectData[key].displayName]) {
+        colorMapping[graphObjectData[key].displayName] = '';
+      }
+    } else if (graphObjectData[key] && !colorMapping[graphObjectData[key]]) {
+      colorMapping[graphObjectData[key]] = '';
+    }
+    return colorMapping;
+  };
 
-      const props = this.propsMap[`${type}Props`];
-      const tooManyUniques = (Object.keys(colors).length > PALLETE_SIZE
+  /**
+   * Given key and all unique node/link props, checks to see if key selected
+   * is a valid or bad choice for node/link coloring. Also returns whether or not
+   * there are too many unique colors for given key.
+   */
+  coloringKeyCheck = (propsMap, colorPalette = {}, key, type) => {
+    const props = propsMap[`${type}Props`];
+    const tooManyUniques = (Object.keys(colorPalette).length > PALLETE_SIZE
         && Object.keys(props).length !== 1);
-      const noUniques = props[key]
+    const noUniques = props[key]
         && (props[key].length === 0
           || (props[key].length === 1 && props[key].includes('null')));
-      const notDefined = key && !props[key];
+    const notDefined = key && !props[key];
 
-      if (tooManyUniques || noUniques || notDefined) {
+    const isColoringKeyBad = (tooManyUniques || noUniques || notDefined);
+    return [isColoringKeyBad, tooManyUniques];
+  };
+
+  /**
+   * Updates color scheme for the graph, for nodes or links via graphOptions.
+   */
+  @boundMethod
+  updateColors(nodes, links, graphOptions) {
+    const snackbar = this.context;
+    ['node', 'link'].forEach((type) => {
+      const objs = type === 'node' ? nodes : links;
+      const key = graphOptions[`${type}sColor`];
+
+      let colors = {};
+      objs.forEach((obj) => {
+        colors = this.updateColorPalette(colors, obj.data, key);
+      });
+      const [isColoringKeyBad, tooManyUniques] = this.coloringKeyCheck(this.propsMap, colors, key, type);
+
+      if (isColoringKeyBad) {
         if (tooManyUniques) {
           snackbar.add(`${GRAPH_UNIQUE_LIMIT} (${graphOptions[`${type}sColor`]})`);
         }
-
-        graphOptions[`${type}sColor`] = '';
-        this.setState({ graphOptions }, () => this.updateColors());
+        graphOptions[`${type}sColor`] = ''; // reset coloring prop chosen
+        this.updateColors(nodes, links, graphOptions);
       } else {
         const pallette = util.getPallette(Object.keys(colors).length, `${type}s`);
-        Object.keys(colors).forEach((color, i) => { colors[color] = pallette[i]; });
+        Object.keys(colors).forEach((prop, i) => { colors[prop] = pallette[i]; });
 
         graphOptions[`${type}sColors`] = colors;
         graphOptions[`${type}sPallette`] = pallette;
+
         this.setState({ graphOptions });
       }
     });
@@ -825,12 +784,10 @@ class GraphComponent extends Component {
    */
   @boundMethod
   withClose(action = null) {
-    return () => {
-      if (action) {
-        action();
-      }
-      this.setState({ actionsNode: null });
-    };
+    if (action) {
+      action();
+    }
+    this.setState({ actionsNode: null });
   }
 
   /**
@@ -846,7 +803,7 @@ class GraphComponent extends Component {
     // Update contents of detail drawer if open.
     handleDetailDrawerOpen(node);
     // Sets clicked object as actions node.
-    this.setState({ actionsNode: node, actionsNodeIsEdge: false });
+    this.setState({ actionsNode: node });
   }
 
   /**
@@ -856,41 +813,42 @@ class GraphComponent extends Component {
    */
   @boundMethod
   handleGraphOptionsChange(event) {
-    const { graphOptions } = this.state;
+    const {
+      graphOptions, simulation, nodes, links,
+    } = this.state;
     graphOptions[event.target.name] = event.target.value;
     graphOptions.load();
-    this.setState({ graphOptions }, () => {
-      this.initSimulation();
-      this.drawGraph();
-      this.updateColors();
+    this.refresh({
+      simulation, graphOptions, nodes, links,
     });
   }
 
   /**
    * Closes additional help dialog.
+   * @property {string} key is one of ['expansionDialogOpen', 'graphOptionsOpen']
    */
   @boundMethod
   handleDialogClose(key) {
-    return () => this.setState({ [key]: false },
-      () => {
-        this.drawGraph();
-        setTimeout(() => this.setState({ expandExclusions: [] }), DIALOG_FADEOUT_TIME);
-      });
+    const {
+      nodes, links, simulation, graphOptions,
+    } = this.state;
+
+    this.setState({ [key]: false });
+    this.drawGraph(nodes, links, simulation, graphOptions);
+    setTimeout(() => this.setState({ expandExclusions: [] }), DIALOG_FADEOUT_TIME);
   }
 
   /**
-   * Opens additional help dialog.
-   * @param {string} key - ['main', 'advanced'].
+   * Opens graphOptions help dialog.
    */
   @boundMethod
-  handleDialogOpen(key) {
-    return () => this.setState({ [key]: true }, () => {
-      this.pauseGraph();
-    });
+  openGraphOptions() {
+    this.setState({ graphOptionsOpen: true });
+    this.pauseGraph();
   }
 
   /**
-   * Expands currently staged nodes.
+   * Expands currently staged nodes. Passed to GraphExpansion Dialog to expand nodes.
    */
   @boundMethod
   handleExpand() {
@@ -911,7 +869,7 @@ class GraphComponent extends Component {
     handleDetailDrawerOpen(link, false, true);
 
     // Sets clicked object as actions node.
-    this.setState({ actionsNode: link, actionsNodeIsEdge: true });
+    this.setState({ actionsNode: link });
   }
 
   /**
@@ -922,6 +880,8 @@ class GraphComponent extends Component {
     const {
       actionsNode,
       links,
+      nodes,
+      graphOptions,
       graphObjects,
       expandable,
     } = this.state;
@@ -934,14 +894,14 @@ class GraphComponent extends Component {
     expandable[actionsNode.source.data['@rid']] = true;
     expandable[actionsNode.target.data['@rid']] = true;
 
+    this.updateColors(nodes, links, graphOptions);
+    handleDetailDrawerClose();
+
     this.setState({
       actionsNode: null,
       graphObjects,
       links,
       expandable,
-    }, () => {
-      this.updateColors();
-      handleDetailDrawerClose();
     });
   }
 
@@ -955,10 +915,12 @@ class GraphComponent extends Component {
       graphObjects,
       nodes,
       links,
-      expandedEdgeTypes,
       expandable,
       allProps,
+      graphOptions,
     } = this.state;
+
+    const { edgeTypes } = this.props;
 
     const { handleDetailDrawerClose } = this.props;
     if (nodes.length === 1) return;
@@ -967,7 +929,7 @@ class GraphComponent extends Component {
     nodes.splice(i, 1);
     delete graphObjects[actionsNode.data['@rid']];
 
-    expandedEdgeTypes.forEach((edgeType) => {
+    edgeTypes.forEach((edgeType) => {
       if (actionsNode.data[edgeType] && actionsNode.data[edgeType].length !== 0) {
         actionsNode.data[edgeType].forEach((edge) => {
           const edgeRid = edge['@rid'] || edge;
@@ -988,6 +950,8 @@ class GraphComponent extends Component {
 
     this.propsMap.removeNode(actionsNode.data, nodes, allProps);
     this.saveGraphStatetoURL(nodes);
+    this.updateColors(nodes, links, graphOptions);
+    handleDetailDrawerClose();
 
     this.setState({
       expandable,
@@ -995,9 +959,6 @@ class GraphComponent extends Component {
       links,
       graphObjects,
       actionsNode: null,
-    }, () => {
-      this.updateColors();
-      handleDetailDrawerClose();
     });
   }
 
@@ -1007,12 +968,7 @@ class GraphComponent extends Component {
   @boundMethod
   handleResize() {
     if (this.wrapper) {
-      this.setState(
-        {
-          width: this.wrapper.clientWidth,
-          height: this.wrapper.clientHeight,
-        }, this.initSimulation,
-      );
+      this.refresh();
     }
   }
 
@@ -1068,24 +1024,6 @@ class GraphComponent extends Component {
   }
 
   /**
-   * parses through node RIDS. Decodes and then
-   * returns an array of node records corresponding to RIDs.
-   */
-  @boundMethod
-  async fetchNodeRecords(nodes) {
-    const { cache, handleError } = this.props;
-
-    try {
-      const records = await cache.getRecords(nodes);
-      const data = GraphComponent.hashRecordsByRID(records);
-      return data;
-    } catch (err) {
-      handleError(err);
-      return null;
-    }
-  }
-
-  /**
    * Saves graph state into URL. Only graph nodes are saved to maximize
    * number of nodes that can be shared. Also reheats simulation and changes
    * node coloring to avoid sending full graph state over limited URL.
@@ -1121,21 +1059,6 @@ class GraphComponent extends Component {
     }
   }
 
-  @boundMethod
-  copyURLToClipBoard() {
-    const URL = window.location.href;
-    // create temp dummy element to select and copy text to clipboard
-    const dummy = document.createElement('input');
-    document.body.appendChild(dummy);
-    dummy.value = URL;
-    dummy.select();
-    document.execCommand('copy');
-    document.body.removeChild(dummy);
-
-    const snackbar = this.context;
-    snackbar.add('URL has been copied to your clip-board!');
-  }
-
   render() {
     const {
       nodes,
@@ -1143,15 +1066,13 @@ class GraphComponent extends Component {
       actionsNode,
       expandable,
       graphOptions,
-      actionsNodeIsEdge,
       graphOptionsOpen,
       expansionDialogOpen,
       expandNode,
       expandExclusions,
     } = this.state;
 
-
-    const { propsMap } = this;
+    const { propsMap, context: snackbar } = this;
 
     const {
       detail,
@@ -1178,26 +1099,28 @@ class GraphComponent extends Component {
       })
     );
 
+    // edges dont have an x or y position
+    const actionsNodeIsEdge = actionsNode ? Boolean(!actionsNode.x || !actionsNode.y) : false;
     const actionsRingOptions = actionsNodeIsEdge
       ? [
         {
           name: 'Details',
-          action: this.withClose(() => handleDetailDrawerOpen(actionsNode, true, true)),
+          action: () => this.withClose(() => handleDetailDrawerOpen(actionsNode, true, true)),
           disabled: link => link.getId() === (detail || {})['@rid'],
         },
         {
           name: 'Hide',
-          action: this.withClose(this.handleLinkHide),
+          action: () => this.withClose(this.handleLinkHide),
           disabled: false,
         }] : [
         {
           name: 'Details',
-          action: this.withClose(() => handleDetailDrawerOpen(actionsNode, true)),
+          action: () => this.withClose(() => handleDetailDrawerOpen(actionsNode, true)),
           disabled: node => node.getId() === (detail || {})['@rid'],
         },
         {
           name: 'Close',
-          action: this.withClose(),
+          action: () => this.withClose(),
         },
         {
           name: 'Expand',
@@ -1206,7 +1129,7 @@ class GraphComponent extends Component {
         },
         {
           name: 'Hide',
-          action: this.withClose(this.handleNodeHide),
+          action: () => this.withClose(this.handleNodeHide),
           disabled: () => nodes.length === 1,
         },
       ];
@@ -1251,7 +1174,7 @@ class GraphComponent extends Component {
           expandExclusions={expandExclusions}
           links={links}
           node={expandNode}
-          onClose={this.handleDialogClose('expansionDialogOpen')}
+          onClose={() => this.handleDialogClose('expansionDialogOpen')}
           onExpand={this.handleExpand}
           onStage={this.handleExpandExclusion}
           onStageAll={this.handleExpandCheckAll}
@@ -1261,7 +1184,7 @@ class GraphComponent extends Component {
         <GraphOptionsPanel
           graphOptions={graphOptions}
           graphOptionsOpen={graphOptionsOpen}
-          handleDialogClose={this.handleDialogClose}
+          handleDialogClose={() => this.handleDialogClose('graphOptionsOpen')}
           handleGraphOptionsChange={this.handleGraphOptionsChange}
           linkLegendDisabled={linkLegendDisabled}
           propsMap={propsMap}
@@ -1272,7 +1195,7 @@ class GraphComponent extends Component {
             <IconButton
               color="primary"
               id="graph-options-btn"
-              onClick={this.handleDialogOpen('graphOptionsOpen')}
+              onClick={this.openGraphOptions}
             >
               <SettingsIcon />
             </IconButton>
@@ -1281,7 +1204,7 @@ class GraphComponent extends Component {
             <IconButton
               color="primary"
               id="clipboard-copy-btn"
-              onClick={this.copyURLToClipBoard}
+              onClick={() => copyURLToClipBoard(snackbar)}
             >
               <SaveStateIcon />
             </IconButton>
@@ -1291,7 +1214,7 @@ class GraphComponent extends Component {
             <div className="refresh-wrapper">
               <IconButton
                 color="primary"
-                onClick={this.refresh}
+                onClick={() => this.refresh()}
               >
                 <RefreshIcon />
               </IconButton>

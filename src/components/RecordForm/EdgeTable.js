@@ -108,13 +108,13 @@ const EdgeTable = ({ value }) => {
       }}
     >
       <AgGridReact
-        reactNext
-        onGridReady={onGridReady}
-        suppressHorizontalScroll
         deltaRowDataMode
         getRowNodeId={data => data['@rid']}
+        onGridReady={onGridReady}
         pagination
         paginationAutoPageSize
+        reactNext
+        suppressHorizontalScroll
       />
     </div>
   );

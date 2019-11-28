@@ -42,8 +42,8 @@ describe('StatementReviewsTable', () => {
     const wrapper = mount((
       <StatementReviewsTable
         label="reviews"
-        values={reviews}
         reviewProps={mockReviewProps}
+        values={reviews}
       />
     ));
 
@@ -54,8 +54,8 @@ describe('StatementReviewsTable', () => {
     const wrapper = mount((
       <StatementReviewsTable
         label="reviews"
-        values={[]}
         reviewProps={mockReviewProps}
+        values={[]}
       />
     ));
 
@@ -67,8 +67,8 @@ describe('StatementReviewsTable', () => {
     const wrapper = mount((
       <StatementReviewsTable
         label="reviews"
-        values={reviews}
         reviewProps={mockReviewProps}
+        values={reviews}
       />
     ));
 

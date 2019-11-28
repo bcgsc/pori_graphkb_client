@@ -41,9 +41,9 @@ const EdgeSentence = ({ srcRecord, tgtRecord, type }) => {
 };
 
 EdgeSentence.propTypes = {
+  type: PropTypes.string.isRequired,
   srcRecord: PropTypes.object,
   tgtRecord: PropTypes.object,
-  type: PropTypes.string.isRequired,
 };
 
 

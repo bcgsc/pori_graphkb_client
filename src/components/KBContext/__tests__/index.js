@@ -8,7 +8,7 @@ describe('KB Context provider and consumers', () => {
     const Div = withKB((props) => {
       const { authorizationToken } = props;
       return (
-        <div value={authorizationToken} id="test-div" />
+        <div id="test-div" value={authorizationToken} />
       );
     });
 

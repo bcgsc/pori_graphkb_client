@@ -142,18 +142,18 @@ const RecordView = (props) => {
     modelName
       ? (
         <RecordForm
-          variant={variant}
           modelName={modelName}
-          rid={rid}
-          value={recordContent}
-          title={DEFAULT_TITLES[variant].replace(':modelName', modelName)}
+          onError={handleError}
+          onSubmit={handleSubmit}
           onTopClick={
             hasWriteAccess(context)
               ? onTopClick
               : null
           }
-          onSubmit={handleSubmit}
-          onError={handleError}
+          rid={rid}
+          title={DEFAULT_TITLES[variant].replace(':modelName', modelName)}
+          value={recordContent}
+          variant={variant}
         />
       )
       : (<CircularProgress />)

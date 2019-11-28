@@ -129,8 +129,8 @@ const AdminTable = ({ onChange, records, variant }) => {
 
 
 AdminTable.propTypes = {
-  records: PropTypes.arrayOf(PropTypes.object),
   onChange: PropTypes.func.isRequired,
+  records: PropTypes.arrayOf(PropTypes.object),
   variant: PropTypes.oneOf(['User', 'UserGroup']),
 };
 

@@ -62,8 +62,8 @@ function GraphLegend(props) {
                 <ListItem key={key}>
                   <ListItemIcon>
                     <div
-                      style={{ backgroundColor: graphOptions.nodesColors[key] }}
                       className="color-chip"
+                      style={{ backgroundColor: graphOptions.nodesColors[key] }}
                     />
                   </ListItemIcon>
                   <ListItemText primary={typeof key === 'object'
@@ -77,8 +77,8 @@ function GraphLegend(props) {
                 <ListItem key="null">
                   <ListItemIcon>
                     <div
-                      style={{ backgroundColor: graphOptions.defaultColor }}
                       className="color-chip"
+                      style={{ backgroundColor: graphOptions.defaultColor }}
                     />
                   </ListItemIcon>
                   <ListItemText primary="Null" />
@@ -118,8 +118,8 @@ function GraphLegend(props) {
                   <ListItem key={key}>
                     <ListItemIcon>
                       <div
-                        style={{ backgroundColor: graphOptions.linksColors[key] }}
                         className="color-chip"
+                        style={{ backgroundColor: graphOptions.linksColors[key] }}
                       />
                     </ListItemIcon>
                     <ListItemText primary={util.antiCamelCase(key)} />
@@ -129,8 +129,8 @@ function GraphLegend(props) {
                   <ListItem key="null">
                     <ListItemIcon>
                       <div
-                        style={{ backgroundColor: graphOptions.defaultColor }}
                         className="color-chip"
+                        style={{ backgroundColor: graphOptions.defaultColor }}
                       />
                     </ListItemIcon>
                     <ListItemText primary="Null" />
@@ -154,9 +154,9 @@ function GraphLegend(props) {
  * @property {boolean} linkDisabled - flag for link legend being disabled.
  */
 GraphLegend.propTypes = {
-  propsMap: PropTypes.object.isRequired,
   graphOptions: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
+  propsMap: PropTypes.object.isRequired,
   linkDisabled: PropTypes.bool,
 };
 

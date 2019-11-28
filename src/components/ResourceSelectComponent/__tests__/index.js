@@ -29,9 +29,9 @@ describe('<ResourceSelectComponent />', () => {
   test('props are passed down correctly', () => {
     wrapper = mount(
       <ResourceSelectComponent
+        name="test"
         resources={mockData}
         value={val}
-        name="test"
       />,
     );
     expect(wrapper.find('input#resource-select-test').props().name).toBe('test');

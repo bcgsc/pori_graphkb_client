@@ -33,8 +33,8 @@ const EmailReportError = (props) => {
 };
 
 EmailReportError.propTypes = {
-  linkText: PropTypes.string.isRequired,
   body: PropTypes.string.isRequired,
+  linkText: PropTypes.string.isRequired,
   subject: PropTypes.string.isRequired,
 };
 
@@ -64,7 +64,7 @@ class ErrorView extends Component {
       } = {},
     } = state;
 
-    const jiraLink = <a rel="noopener noreferrer" target="_blank" href={JIRA_LINK}>JIRA</a>;
+    const jiraLink = <a href={JIRA_LINK} rel="noopener noreferrer" target="_blank">JIRA</a>;
 
     let errorDetails = `Error Details (Please include in error reports)
 version: ${process.env.npm_package_version || process.env.REACT_APP_VERSION || ''}
@@ -93,9 +93,9 @@ error text: ${message}`;
         <Typography paragraph>
             Report this error in a {jiraLink} ticket or email us at
           <EmailReportError
+            body={errorDetails}
             linkText={EMAIL}
             subject={`${name}: ${message}`}
-            body={errorDetails}
           />
             .
         </Typography>
@@ -108,15 +108,15 @@ error text: ${message}`;
                 </code>
               </pre>
               <Tooltip
-                title="Copied!"
                 disableHoverListener
-                open={tooltipOpen}
                 onClose={() => this.setState({ tooltipOpen: false })}
+                open={tooltipOpen}
+                title="Copied!"
               >
-                <CopyToClipboard text={errorDetails} id="copy-button">
+                <CopyToClipboard id="copy-button" text={errorDetails}>
                   <Button
-                    variant="outlined"
                     onClick={() => this.setState({ tooltipOpen: true })}
+                    variant="outlined"
                   >
                     Copy To Clipboard
                     <AssignmentIcon />
@@ -126,7 +126,7 @@ error text: ${message}`;
             </div>
           )}
         <Link to="/">
-          <Button variant="contained" color="primary">
+          <Button color="primary" variant="contained">
               Home
           </Button>
         </Link>

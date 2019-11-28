@@ -37,8 +37,8 @@ class NodeView extends React.PureComponent {
   static contextType = KBContext;
 
   static propTypes = {
-    match: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
+    match: PropTypes.object.isRequired,
   };
 
   /**
@@ -137,17 +137,17 @@ class NodeView extends React.PureComponent {
 
     return (
       <RecordForm
-        variant={variant}
         modelName={defaultModelName}
-        rid={rid}
-        title={DEFAULT_TITLES[variant].replace(':modelName', defaultModelName || '')}
+        onError={this.handleError}
+        onSubmit={this.handleSubmit}
         onTopClick={
           hasWriteAccess(this.context)
             ? onTopClick
             : null
         }
-        onSubmit={this.handleSubmit}
-        onError={this.handleError}
+        rid={rid}
+        title={DEFAULT_TITLES[variant].replace(':modelName', defaultModelName || '')}
+        variant={variant}
       />
     );
   }

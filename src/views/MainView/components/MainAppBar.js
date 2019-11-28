@@ -46,18 +46,18 @@ const MainAppBar = ({
 
   return (
     <AppBar
-      position="fixed"
       className={`appbar ${drawerOpen ? 'appbar--drawer-open' : ''}`}
+      position="fixed"
     >
       <IconButton
+        className={`appbar__btn ${drawerOpen ? 'appbar__btn--drawer-open' : ''}`}
         color="inherit"
         onClick={() => handleDrawerChange({ isOpen: true })}
-        className={`appbar__btn ${drawerOpen ? 'appbar__btn--drawer-open' : ''}`}
       >
         <MenuIcon />
       </IconButton>
       <div className={`appbar__title ${drawerOpen ? 'appbar__title--drawer-open' : ''}`}>
-        <Link to="/query" onClick={() => handleDrawerChange({ isOpen: true })}>
+        <Link onClick={() => handleDrawerChange({ isOpen: true })} to="/query">
           <Typography variant="h4">GraphKB</Typography>
           <Typography variant="caption">v{process.env.npm_package_version}</Typography>
         </Link>
@@ -78,13 +78,13 @@ const MainAppBar = ({
             </Typography>
           </Button>
           <Popover
-            open={Boolean(dropdownAnchorEl)}
             anchorEl={dropdownAnchorEl}
-            onClose={handleClose}
             anchorOrigin={{
               vertical: 'bottom',
               horizontal: 'left',
             }}
+            onClose={handleClose}
+            open={Boolean(dropdownAnchorEl)}
             transformOrigin={{
               vertical: 'top',
               horizontal: 'left',
@@ -119,9 +119,9 @@ const MainAppBar = ({
 };
 
 MainAppBar.propTypes = {
+  onDrawerChange: PropTypes.func.isRequired,
   authenticationToken: PropTypes.string,
   authorizationToken: PropTypes.string,
-  onDrawerChange: PropTypes.func.isRequired,
   drawerOpen: PropTypes.bool,
 
 };

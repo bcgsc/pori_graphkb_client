@@ -16,7 +16,7 @@ jest.mock('@/components/RecordAutocomplete', () => (({
   };
 
   return (
-    <select data-testid="value-select" value={value} onChange={handleChange}>
+    <select data-testid="value-select" onChange={handleChange} value={value}>
       <option key="test" value={value}>
         {label}
       </option>
@@ -39,7 +39,7 @@ jest.mock('@/components/ResourceSelectComponent', () => (({
   const operatorCheck = className.includes('operator') ? 'operator' : null;
   const selectType = classCheck || propCheck || operatorCheck || 'filter';
   return (
-    <select data-testid={`${selectType}-select`} value={value} onChange={handleChange}>
+    <select data-testid={`${selectType}-select`} onChange={handleChange} value={value}>
       {resources.map(opt => (
         <option key={opt.key} value={opt.value}>
           {opt.label}

@@ -39,7 +39,7 @@ function PopularSearchView(props) {
     }
   }, [history]);
 
-  const LoadedSearch = variant => (<BasePopularSearch variant={variant} onError={onError} onSubmit={onSubmit} />);
+  const LoadedSearch = variant => (<BasePopularSearch onError={onError} onSubmit={onSubmit} variant={variant} />);
 
   const tabsList = [
     { label: 'Gene', component: () => LoadedSearch('GENE') },
@@ -65,20 +65,20 @@ function PopularSearchView(props) {
 
   const tabNavList = tabsList.map(({ uri, label }, index) => (
     <Tab
-      label={label}
-      component={NavLink}
       key={label}
-      value={index}
+      component={NavLink}
+      label={label}
       to={uri}
+      value={index}
     />
   ));
 
   const tabsRouteList = tabsList.map(({ uri, label, component }) => (
     <Route
-      label={label}
       key={label}
       component={component}
       exact
+      label={label}
       path={uri}
     />
   ));
@@ -86,10 +86,10 @@ function PopularSearchView(props) {
   return (
     <div className="popular-search">
       <Tabs
-        value={tabIndex}
-        onChange={(event, value) => setTabIndex(value)}
         centered
         className="tabs-bar"
+        onChange={(event, value) => setTabIndex(value)}
+        value={tabIndex}
       >
         {tabNavList}
       </Tabs>
@@ -103,8 +103,8 @@ function PopularSearchView(props) {
 }
 
 PopularSearchView.propTypes = {
-  location: LocationPropType.isRequired,
   history: HistoryPropType.isRequired,
+  location: LocationPropType.isRequired,
 };
 
 export default PopularSearchView;

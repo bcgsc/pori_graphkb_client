@@ -45,9 +45,9 @@ const DATE_KEYS = ['createdAt', 'deletedAt'];
  */
 class DetailDrawer extends Component {
   static propTypes = {
+    isEdge: PropTypes.bool,
     node: GeneralRecordPropType,
     onClose: PropTypes.func,
-    isEdge: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -157,7 +157,7 @@ class DetailDrawer extends Component {
             <div className="nested-spacer" />
           )}
           <ListItemText className="detail-li-text">
-            <Typography variant="subtitle1" color={isNested ? 'textSecondary' : 'default'}>
+            <Typography color={isNested ? 'textSecondary' : 'default'} variant="subtitle1">
               {util.antiCamelCase(key)}
             </Typography>
           </ListItemText>
@@ -215,17 +215,17 @@ class DetailDrawer extends Component {
                 </Typography>
               </ListItemText>
             </ListItem>
-            <List disablePadding dense>
+            <List dense disablePadding>
               {type === 'linkset' && value.map(item => (
                 <>
-                  <ListItem key={item['@rid']} button onClick={() => this.handleExpand(item)} dense>
+                  <ListItem key={item['@rid']} button dense onClick={() => this.handleExpand(item)}>
                     <div className="nested-spacer" />
                     <ListItemText className="detail-li-text">
                       <div className="detail-identifiers-linkset">
-                        <Typography variant="subtitle2" color={opened.includes(item) ? 'secondary' : 'textSecondary'}>
+                        <Typography color={opened.includes(item) ? 'secondary' : 'textSecondary'} variant="subtitle2">
                           {util.antiCamelCase(item['@class'])}
                         </Typography>
-                        <Typography variant="subtitle2" color={opened.includes(item) ? 'secondary' : 'textSecondary'}>
+                        <Typography color={opened.includes(item) ? 'secondary' : 'textSecondary'} variant="subtitle2">
                           {schema.getPreview(item)}
                         </Typography>
                       </div>
@@ -234,11 +234,11 @@ class DetailDrawer extends Component {
                   </ListItem>
                   <Collapse in={!!opened.includes(item)} unmountOnExit>
                     {identifiers.map(propName => (
-                      <List disablePadding dense>
+                      <List dense disablePadding>
                         <ListItem>
                           <ListItemText>
                             <div className="detail-identifiers">
-                              <Typography variant="subtitle1" className="detail-identifiers-nested">
+                              <Typography className="detail-identifiers-nested" variant="subtitle1">
                                 {util.antiCamelCase(propName)}
                               </Typography>
                               <Typography>
@@ -256,8 +256,8 @@ class DetailDrawer extends Component {
                 <ListItem key={item} dense>
                   <div className="nested-spacer" />
                   <ListItemText
-                    inset
                     className="detail-li-text"
+                    inset
                     primary={util.formatStr(item)}
                   />
                 </ListItem>
@@ -306,7 +306,7 @@ class DetailDrawer extends Component {
             </ListItem>
             {!isNested && (
               <Collapse in={!!opened.includes(name)} unmountOnExit>
-                <List disablePadding dense className="detail-drawer__nested-list">
+                <List className="detail-drawer__nested-list" dense disablePadding>
                   {this.formatIdentifiers(value, true)}
                   {type === 'link' && (
                     [value['@class'], '@rid', 'sourceId'].map((item, index) => (
@@ -429,9 +429,9 @@ class DetailDrawer extends Component {
             <React.Fragment key={edge['@rid']}>
               <ListItem
                 button
-                onClick={() => this.handleLinkExpand(edge['@rid'])}
                 className="detail-link-wrapper"
                 dense
+                onClick={() => this.handleLinkExpand(edge['@rid'])}
               >
                 <ListItemIcon>
                   <div style={{ display: 'inline-flex' }}>
@@ -440,22 +440,22 @@ class DetailDrawer extends Component {
                 </ListItemIcon>
                 <ListItemText
                   className="detail-li-text"
+                  primary={<Typography variant="subtitle1">{preview}</Typography>}
                   primaryTypographyProps={{
                     color: isOpen ? 'secondary' : 'default',
                   }}
-                  primary={<Typography variant="subtitle1">{preview}</Typography>}
                   secondary={schema.get(edge['@class'])[isIn ? 'reverseName' : 'name']}
                 />
                 {!isOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
               </ListItem>
               <Collapse in={!!isOpen} unmountOnExit>
                 <List
+                  className="detail-drawer__nested-list"
                   dense
                   disablePadding
-                  className="detail-drawer__nested-list"
                 >
                   <Divider />
-                  <ListSubheader disableSticky color="primary">
+                  <ListSubheader color="primary" disableSticky>
                     Linked Record
                   </ListSubheader>
                   {this.formatIdentifiers(isIn ? edge.out : edge.in, true)}
@@ -548,7 +548,7 @@ class DetailDrawer extends Component {
               )}
             </div>
             {hasWriteAccess(this.context) && (
-              <Link to={`/edit/${recordId}`} target="_blank">
+              <Link target="_blank" to={`/edit/${recordId}`}>
                 <IconButton
                   variant="outlined"
                 >
@@ -556,7 +556,7 @@ class DetailDrawer extends Component {
                 </IconButton>
               </Link>
             )}
-            <Link to={`/view/${recordId}`} target="_blank">
+            <Link target="_blank" to={`/view/${recordId}`}>
               <IconButton
                 variant="outlined"
               >
@@ -572,22 +572,22 @@ class DetailDrawer extends Component {
           {otherProps}
           <ListItem
             button
-            onClick={() => this.handleExpand('metadata')}
             dense
+            onClick={() => this.handleExpand('metadata')}
           >
             <ListItemText
+              primary={<Typography variant="subtitle1">Metadata</Typography>}
               primaryTypographyProps={{
                 color: metadataIsOpen ? 'secondary' : 'default',
               }}
-              primary={<Typography variant="subtitle1">Metadata</Typography>}
             />
             {!metadataIsOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
           </ListItem>
           <Collapse in={!!metadataIsOpen} unmountOnExit>
             <List
+              className="detail-drawer__nested-list"
               dense
               disablePadding
-              className="detail-drawer__nested-list"
             >
               {metadata}
             </List>
@@ -602,8 +602,8 @@ class DetailDrawer extends Component {
             <ListItem dense>
               <ListItemText
                 inset
-                primaryTypographyProps={{ color: 'textSecondary' }}
                 primary="None"
+                primaryTypographyProps={{ color: 'textSecondary' }}
               />
             </ListItem>
             )}
@@ -615,15 +615,15 @@ class DetailDrawer extends Component {
 
     return (
       <Drawer
-        open={drawerIsOpen}
         anchor="right"
-        variant="permanent"
         classes={{
           paper: `detail-drawer ${!drawerIsOpen
             ? 'detail-drawer--closed'
             : ''
           }`,
         }}
+        open={drawerIsOpen}
+        variant="permanent"
       >
         {content}
       </Drawer>

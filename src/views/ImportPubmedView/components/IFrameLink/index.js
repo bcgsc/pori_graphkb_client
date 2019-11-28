@@ -18,17 +18,17 @@ const IFrameLink = ({
   return (
     <div className={`iframe-link ${className}`}>
       {isLoading && (<CircularProgress className="iframe-link__loader" />)}
-      <a href={url} target="_blank" rel="noopener noreferrer" className="iframe-link__link">
+      <a className="iframe-link__link" href={url} rel="noopener noreferrer" target="_blank">
         <iframe
-          width="100%"
           frameBorder="0"
           marginHeight="0"
           marginWidth="0"
+          width="100%"
           {...opt}
-          scrolling="no"
-          title={title}
-          src={url}
           onLoad={() => setIsLoading(false)}
+          scrolling="no"
+          src={url}
+          title={title}
         />
       </a>
     </div>
@@ -36,8 +36,8 @@ const IFrameLink = ({
 };
 
 IFrameLink.propTypes = {
-  url: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
+  url: PropTypes.string.isRequired,
   className: PropTypes.string,
 };
 

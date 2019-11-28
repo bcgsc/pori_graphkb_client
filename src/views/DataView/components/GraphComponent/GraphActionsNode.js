@@ -37,6 +37,7 @@ function GraphActionsNode(props) {
 
   if (!actionsNode) return null;
 
+
   const translateX = edge
     ? (actionsNode.target.x + actionsNode.source.x) / 2
     : (actionsNode.x || 0);

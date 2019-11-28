@@ -17,8 +17,10 @@ import useSchemaForm from '@/components/hooks/useSchemaForm';
 import ToggleButtonGroup from '@/components/ToggleButtonGroup';
 import { GeneralRecordPropType } from '@/components/types';
 import api from '@/services/api';
+import { getUser } from '@/services/auth';
 import schema from '@/services/schema';
 
+import KbContext from '../KBContext';
 import EdgeTable from './EdgeTable';
 import FormLayout from './FormLayout';
 import ReviewDialog from './ReviewDialog';
@@ -74,6 +76,7 @@ const RecordForm = ({
   ...rest
 }) => {
   const snackbar = useContext(SnackbarContext);
+  const kbContext = useContext(KbContext);
 
   const [actionInProgress, setActionInProgress] = useState(false);
   const controllers = [];
@@ -95,6 +98,25 @@ const RecordForm = ({
 
   useEffect(() => () => controllers.map(c => c.abort()), []); // eslint-disable-line
 
+  const statementReviewCheck = useCallback((currContent, content) => {
+    const updatedContent = { ...content };
+
+    if (!currContent.reviewStatus) {
+      updatedContent.reviewStatus = 'initial';
+    }
+
+    if (!currContent.reviews) {
+      const createdBy = getUser(kbContext);
+      updatedContent.reviews = [{
+        status: 'initial',
+        comment: '',
+        createdBy,
+      }];
+    }
+
+    return updatedContent;
+  }, [kbContext]);
+
   /**
    * Handler for submission of a new record
    */
@@ -106,15 +128,16 @@ const RecordForm = ({
       setFormIsDirty(true);
     } else {
       // ok to POST
-      const content = { ...formContent };
+      let content = { ...formContent };
 
       if (!formContent['@class']) {
         content['@class'] = modelName;
       }
 
-      if (modelName === 'Statement' && !formContent.reviewStatus) {
-        content.reviewStatus = 'initial';
+      if (modelName === 'Statement') {
+        content = statementReviewCheck(formContent, content);
       }
+
       const payload = cleanPayload(content);
       const { routeName } = schema.get(payload);
       const call = api.post(routeName, payload);
@@ -132,7 +155,7 @@ const RecordForm = ({
       }
       setActionInProgress(false);
     }
-  }, [controllers, formContent, formErrors, formHasErrors, modelName, onError, onSubmit, setFormIsDirty, snackbar]);
+  }, [controllers, formContent, formErrors, formHasErrors, modelName, onError, onSubmit, setFormIsDirty, snackbar, statementReviewCheck]);
 
   /**
    * Handler for deleting an existing record

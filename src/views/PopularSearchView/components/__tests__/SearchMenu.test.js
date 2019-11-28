@@ -37,9 +37,9 @@ describe('SearchMenu', () => {
     beforeEach(() => {
       ({ getByText, getAllByText } = render(
         <SearchMenu
+          handleChange={changeSpy}
           labels={labels}
           value={selectedOpt}
-          handleChange={changeSpy}
         />,
       ));
     });

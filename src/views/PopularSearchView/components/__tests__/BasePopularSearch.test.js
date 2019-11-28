@@ -93,9 +93,9 @@ describe('PopularSearchView', () => {
         getByTestId, getByText, getAllByText,
       } = render(
         <BasePopularSearch
-          variant="batch1"
           onError={onErrorSpy}
           onSubmit={onSubmitSpy}
+          variant="batch1"
         />,
       ));
     });
@@ -151,9 +151,9 @@ describe('PopularSearchView', () => {
         getByTestId, getByText, getAllByText,
       } = render(
         <BasePopularSearch
-          variant="batch2"
           onError={onErrorSpy}
           onSubmit={onSubmitSpy}
+          variant="batch2"
         />,
       ));
     });

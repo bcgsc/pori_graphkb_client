@@ -9,6 +9,9 @@ import * as api from '@/services/api';
 import RecordForm from '..';
 import { KBContext } from '../../KBContext';
 
+jest.mock('@/services/auth', () => ({
+  getUser: () => '23:9',
+}));
 
 jest.mock('@bcgsc/react-snackbar-provider', () => {
   const { createContext } = require('react'); // eslint-disable-line global-require
@@ -53,7 +56,7 @@ jest.mock('@/components/RecordAutocomplete', () => (({
   };
 
   return (
-    <select data-testid={`${name}-select`} value={value} id={`${name}-id`} onChange={handleChange}>
+    <select data-testid={`${name}-select`} id={`${name}-id`} onChange={handleChange} value={value}>
       <option key="test" value={value}>
         {label}
       </option>
@@ -255,12 +258,12 @@ describe('RecordForm', () => {
         <SnackbarProvider value={{ add: snackbarSpy }}>
           <KBContext.Provider value={{ }}>
             <RecordForm
-              value={{ }}
               modelName="Statement"
-              title="blargh monkeys"
-              onTopClick={onTopClickSpy}
-              onSubmit={onSubmitSpy}
               onError={onErrorSpy}
+              onSubmit={onSubmitSpy}
+              onTopClick={onTopClickSpy}
+              title="blargh monkeys"
+              value={{ }}
               variant="new"
             />
           </KBContext.Provider>
@@ -269,7 +272,7 @@ describe('RecordForm', () => {
     });
 
 
-    test('sets reviewStatus as initial if left blank', async () => {
+    test('sets reviewStatus as initial and adds empty review if left blank', async () => {
       await fireEvent.change(getByTestId('conditions-select'), { target: { value: ['11:11'] } });
       await fireEvent.change(getByTestId('evidence-select'), { target: { value: ['12:23'] } });
       await fireEvent.change(getByTestId('relevance-select'), { target: { value: '90:32' } });
@@ -284,6 +287,11 @@ describe('RecordForm', () => {
         relevance: '90:32',
         subject: '20:20',
         reviewStatus: 'initial',
+        reviews: [{
+          status: 'initial',
+          comment: '',
+          createdBy: '23:9',
+        }],
       };
       expect(onSubmitSpy).toHaveBeenCalledWith(expectedPayload);
     });

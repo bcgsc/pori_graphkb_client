@@ -46,12 +46,13 @@ describe('DetailDrawer', () => {
     const node = {
       '@class': 'Ontology',
       name: 'test node',
+      displayName: 'testNode',
       sourceId: 'test sourceId',
       source: {
         '@class': 'Ontology',
         name: 'test source',
       },
-      subsets: ['one', 'two', 'three'],
+      subsets: [{ displayName: 'one' }, { displayName: 'two' }, { displayName: 'three' }],
       '@rid': '#1:0',
     };
 
@@ -83,12 +84,13 @@ describe('DetailDrawer', () => {
       name: 'test node. this is a long value so that formatlongvalue is called and this test passes, ASHDhkdjhjsdhkJAHDSkjhsdkajsdhaksjdhakjshda blargh blargh',
       // 2nd long field
       longName: 'test node. this is a long value so that formatlongvalue is called and this test passes, ASHDhkdjhjsdhkJAHDSkjhsdkajsdhaksjdhakjshda blargh blargh',
+      displayName: 'testNode',
       sourceId: 'test sourceId',
       source: {
         '@class': 'Ontology',
         name: 'test source',
       },
-      subsets: ['one', 'two', 'three'],
+      subsets: [{ displayName: 'one' }, { displayName: 'two' }, { displayName: 'three' }],
       '@rid': '#1:0',
     };
     wrapper = mount((

@@ -88,7 +88,6 @@ function GraphComponent(props) {
 
 
   let [nodes, setNodes] = useState([]);
-  console.log('TCL: GraphComponent -> nodes', nodes);
   let [links, setLinks] = useState([]);
   const [data, setData] = useState(initialGraphData);
   let [graphObjects, setGraphObjects] = useState({});
@@ -426,9 +425,7 @@ function GraphComponent(props) {
    * Renders nodes and links to the graph.
    */
   const drawGraph = useCallback((gNodes, gLinks, sim, graphOpts) => {
-    console.log('TCL: drawGraph -> gNodes', gNodes);
     // set up the hierarchy
-    // const newNodes = [...gNodes];
     sim.nodes(gNodes);
 
     if (graphOptions.isTreeLayout) {
@@ -458,7 +455,28 @@ function GraphComponent(props) {
         }).id(d => d.getId()),
     );
 
+    const start = () => {
+      const ticksPerRender = 200;
+      requestAnimationFrame(function render() {
+        for (let i = 0; i < ticksPerRender; i++) {
+          sim.tick();
+        }
+
+        // const newLinks = [...gLinks];
+        // const newNodes = [...gNodes];
+        // start();
+        // setLinks(newLinks);
+        // setNodes(newNodes);
+
+        if (sim.alpha() > 0) {
+          requestAnimationFrame(render);
+        }
+      });
+    };
+
     const ticked = () => {
+      // start();
+      console.log('ticked');
       const shiftDistance = 1 * sim.alpha();
       gLinks.forEach((link) => {
         if (link.data['@class'] === TREE_LINK && graphOpts.isTreeLayout) {
@@ -466,16 +484,17 @@ function GraphComponent(props) {
           link.target.y -= shiftDistance;
         }
       });
-      setLinks(gLinks);
-      setNodes(gNodes);
+
+      const newLinks = [...gLinks];
+      const newNodes = [...gNodes];
+      setLinks(newLinks);
+      setNodes(newNodes);
     };
 
+    // sim.on('start', start);
     sim.on('tick', ticked);
+    // sim.start();
     sim.restart();
-    // TEST
-    setLinks(gLinks);
-    setNodes(gNodes);
-    // TEST
     setSimulation(sim);
     setActionsNode(null);
   }, [graphOptions.isTreeLayout, links]);
@@ -575,7 +594,7 @@ function GraphComponent(props) {
         setGraphOptions(graphOpts);
       }
     });
-  });
+  }, [snackbar]);
 
   /**
    * Restarts the layout simulation with the current nodes
@@ -678,7 +697,6 @@ function GraphComponent(props) {
    * @param {GraphNode} node - node to be dragged.
    */
   const applyDrag = (node) => {
-    console.log('TCL: applyDrag -> node', node);
     d3Select.event.sourceEvent.stopPropagation();
 
     if (!d3Select.event.active) simulation.alphaTarget(0.3).restart();
@@ -686,12 +704,9 @@ function GraphComponent(props) {
     const dragged = () => {
       // move nodes via fixed position temporary
       node.fx = d3Select.event.x; // eslint-disable-line no-param-reassign
-      console.log('TCL: dragged -> node.fx ', node.fx);
       node.fy = d3Select.event.y; // eslint-disable-line no-param-reassign
       node.x = d3Select.event.x; // eslint-disable-line no-param-reassign
       node.y = d3Select.event.y; // eslint-disable-line no-param-reassign
-      setActionsNode(node);
-      drawGraph(nodes, links, simulation, graphOptions);
     };
 
     const ended = () => {
@@ -799,18 +814,24 @@ function GraphComponent(props) {
   };
 
   /**
-   * Handles node clicks from user.
+   * Handles node clicks from user. If node is unspecified, graph is refreshed.
    * @param {Object} node - Clicked simulation node.
    */
   const handleClick = async (node) => {
-    const { handleDetailDrawerOpen } = props;
-    // Prematurely loads neighbor data.
-    await handleExpandNode(node);
+    if (node) {
+      const { handleDetailDrawerOpen } = props;
+      // Prematurely loads neighbor data.
+      await handleExpandNode(node);
 
-    // Update contents of detail drawer if open.
-    handleDetailDrawerOpen(node);
-    // Sets clicked object as actions node.
-    setActionsNode(node);
+      // Update contents of detail drawer if open.
+      handleDetailDrawerOpen(node);
+      // Sets clicked object as actions node.
+      setActionsNode(node);
+
+      pauseGraph();
+    } else {
+      refresh();
+    }
   };
 
   /**
@@ -977,15 +998,6 @@ function GraphComponent(props) {
     setExpandExclusion(updatedExpandExclusions);
   };
 
-  useEffect(() => {
-    console.log('drawing graph');
-
-    if (nodes) {
-      drawGraph(nodes, links, simulation, graphOptions);
-    }
-  }, [drawGraph, graphOptions, links, nodes, simulation]);
-
-
   const {
     detail,
     handleDetailDrawerOpen,
@@ -1140,6 +1152,7 @@ function GraphComponent(props) {
           onClick={(e) => {
             if (e.target === graph.current) {
               setActionsNode(null);
+              handleClick();
             }
           }}
           ref={(node) => { graph.current = node; }}

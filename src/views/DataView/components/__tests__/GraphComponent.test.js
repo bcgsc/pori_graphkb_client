@@ -64,22 +64,6 @@ describe('<GraphComponent />', () => {
   });
 
   let wrapper;
-  const componentDidMountSpy = jest.spyOn(GraphComponent.prototype, 'componentDidMount');
-
-  test('calls componentDidMount on render and doesn\'t crash and burn', () => {
-    wrapper = mount(
-      <GraphComponent
-        cache={cacheSpy}
-        data={[]}
-        handleDetailDrawerClose={() => { }}
-        handleDetailDrawerOpen={() => { }}
-        handleError={handleErrSpy}
-        handleNewColumns={() => { }}
-        handleTableRedirect={() => { }}
-      />,
-    );
-    expect(componentDidMountSpy).toHaveBeenCalledTimes(1);
-  });
 
   test('renders all nodes specified in displayed', async () => {
     wrapper = mount(

@@ -632,8 +632,11 @@ function GraphComponent(props) {
    * Resizes svg window and reinitializes the simulation.
    */
   const handleResize = () => {
+    console.log('resize');
+
     if (wrapper.current) {
-      refresh();
+      initSimulation(simulation, graphOptions);
+      // refresh();
     }
   };
 

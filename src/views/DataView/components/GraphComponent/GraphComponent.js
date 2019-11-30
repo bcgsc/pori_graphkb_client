@@ -21,9 +21,7 @@ import React, {
   useContext,
   useEffect,
   useRef,
-  useState,
 } from 'react';
-import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import schema from '@/services/schema';
 import util from '@/services/util';
@@ -42,6 +40,7 @@ import {
   GraphOptions,
   PropsMap,
 } from './kbgraph';
+import useGraphData from './useGraphData';
 import {
   computeNodeLevels,
   copyURLToClipBoard,
@@ -64,6 +63,23 @@ const {
   },
 } = config;
 
+const initialGraphData = {
+  actionsNode: null,
+  simulation: d3Force.forceSimulation(),
+  svg: undefined,
+  graphOptions: new GraphOptions(),
+  graphOptionsOpen: false,
+  expansionDialogOpen: false,
+  expandNode: null,
+  expandExclusions: [],
+  allProps: ['@rid, @class'],
+  nodes: [],
+  links: [],
+  expandable: {},
+  data: {},
+  graphObjects: {},
+};
+
 /**
  * Component for displaying query results in force directed graph form.
  * Implements a d3 force-directed graph: https://github.com/d3/d3-force.
@@ -84,23 +100,34 @@ const {
 function GraphComponent(props) {
   // App snackbar context value.
   const snackbar = useContext(SnackbarContext);
-  const { data: initialGraphData } = props;
+  const { data: initialData } = props;
 
+  const {
+    graphValues,
+    update,
+  } = useGraphData(initialGraphData);
 
-  let [nodes, setNodes] = useState([]);
-  let [links, setLinks] = useState([]);
-  const [data, setData] = useState(initialGraphData);
-  let [graphObjects, setGraphObjects] = useState({});
-  let [expandable, setExpandable] = useState({});
-  const [actionsNode, setActionsNode] = useState(null);
-  const [simulation, setSimulation] = useState(d3Force.forceSimulation());
-  const [svg, setSVG] = useState(undefined);
-  const [graphOptions, setGraphOptions] = useState(new GraphOptions());
-  const [graphOptionsOpen, setGraphOptionsOpen] = useState(false);
-  const [expansionDialogOpen, setExpansionDialogOpen] = useState(false);
-  const [expandNode, setExpandNode] = useState(null);
-  const [expandExclusions, setExpandExclusion] = useState([]);
-  const [allProps, setAllProps] = useState(['@rid', '@class']);
+  const {
+    actionsNode,
+    simulation,
+    svg,
+    graphOptions,
+    graphOptionsOpen,
+    expansionDialogOpen,
+    expandNode,
+    expandExclusions,
+    allProps,
+    data,
+  } = graphValues;
+
+  let {
+    nodes,
+    links,
+    graphObjects,
+    expandable,
+  } = graphValues;
+  console.log('TCL: GraphComponent -> graphValues', graphValues);
+
   const propsMap = useRef(new PropsMap());
   const graph = useRef(null);
   const zoom = useRef(null);
@@ -195,15 +222,14 @@ function GraphComponent(props) {
         }))
       .on('dblclick.zoom', null);
 
-    setSimulation(sim);
-    setSVG(SVG);
+    update({ simulation: sim, svg: SVG });
   };
 
   const updateColumnProps = (node) => {
     const nodeProps = Object.keys(node);
     nodeProps.forEach((prop) => { allProps.push(prop); });
     const updatedAllProps = [...new Set(allProps)];
-    setAllProps(updatedAllProps);
+    update({ allProps: updatedAllProps });
   };
 
 
@@ -251,7 +277,7 @@ function GraphComponent(props) {
    * graphobjects, and expandable map, from previous state.
    * @param {Array.<string>} [exclusions=[]] - List of edge ID's to be ignored on expansion.
    */
-  const processData = (node, pos, expansionFlag, prevstate, exclusions = []) => {
+  const processData = useCallback((node, pos, expansionFlag, prevstate, exclusions = []) => {
     const { edgeTypes } = props;
     let {
       nodes,
@@ -419,7 +445,7 @@ function GraphComponent(props) {
       links,
       graphObjects,
     };
-  };
+  });
 
   /**
    * Renders nodes and links to the graph.
@@ -455,28 +481,7 @@ function GraphComponent(props) {
         }).id(d => d.getId()),
     );
 
-    const start = () => {
-      const ticksPerRender = 200;
-      requestAnimationFrame(function render() {
-        for (let i = 0; i < ticksPerRender; i++) {
-          sim.tick();
-        }
-
-        // const newLinks = [...gLinks];
-        // const newNodes = [...gNodes];
-        // start();
-        // setLinks(newLinks);
-        // setNodes(newNodes);
-
-        if (sim.alpha() > 0) {
-          requestAnimationFrame(render);
-        }
-      });
-    };
-
     const ticked = () => {
-      // start();
-      console.log('ticked');
       const shiftDistance = 1 * sim.alpha();
       gLinks.forEach((link) => {
         if (link.data['@class'] === TREE_LINK && graphOpts.isTreeLayout) {
@@ -485,19 +490,17 @@ function GraphComponent(props) {
         }
       });
 
+      // update node/link positions so that React can render them correctly
       const newLinks = [...gLinks];
       const newNodes = [...gNodes];
-      setLinks(newLinks);
-      setNodes(newNodes);
+
+      update({ nodes: newNodes, links: newLinks });
     };
 
-    // sim.on('start', start);
     sim.on('tick', ticked);
-    // sim.start();
     sim.restart();
-    setSimulation(sim);
-    setActionsNode(null);
-  }, [graphOptions.isTreeLayout, links]);
+    update({ simulation: sim, actionsNode: null });
+  }, [graphOptions.isTreeLayout, links, update]);
 
   /**
    * Given key and all unique node/link props, checks to see if key selected
@@ -526,7 +529,7 @@ function GraphComponent(props) {
     if (action) {
       action();
     }
-    setActionsNode(null);
+    update({ actionsNode: null });
   };
 
 
@@ -591,10 +594,10 @@ function GraphComponent(props) {
         graphOpts[`${type}sColors`] = colors;
         graphOpts[`${type}sPallette`] = pallette;
 
-        setGraphOptions(graphOpts);
+        update({ graphOptions: graphOpts });
       }
     });
-  }, [snackbar]);
+  }, [snackbar, update]);
 
   /**
    * Restarts the layout simulation with the current nodes
@@ -632,11 +635,8 @@ function GraphComponent(props) {
    * Resizes svg window and reinitializes the simulation.
    */
   const handleResize = () => {
-    console.log('resize');
-
     if (wrapper.current) {
       initSimulation(simulation, graphOptions);
-      // refresh();
     }
   };
 
@@ -645,11 +645,11 @@ function GraphComponent(props) {
    * Initializes event listener for window resize.
    */
   useEffect(() => {
-    console.log('useEffect');
+    const { data: seedData } = props;
     handleResize();
     window.addEventListener('resize', handleResize);
 
-    const nodeRIDs = Object.keys(data);
+    const nodeRIDs = Object.keys(initialData);
     nodeRIDs.forEach((rid, index) => {
       ({
         nodes,
@@ -657,7 +657,7 @@ function GraphComponent(props) {
         graphObjects,
         expandable,
       } = processData(
-        data[rid],
+        seedData[rid],
         util.positionInit(wrapper.current.clientWidth / 2, wrapper.current.clientHeight / 2, index, nodeRIDs.length),
         false,
         {
@@ -678,10 +678,9 @@ function GraphComponent(props) {
 
     refresh(initialSeed);
 
-    setNodes(nodes);
-    setLinks(links);
-    setGraphObjects(graphObjects);
-    setExpandable(expandable);
+    update({
+      nodes, links, graphObjects, expandable, data: seedData,
+    });
 
     return () => {
       if (svg) {
@@ -760,12 +759,10 @@ function GraphComponent(props) {
     if (!schema.getEdges(data[node.getId()]).some(edge => !links.find(l => l.getId() === edge['@rid']))) {
       delete expandable[node.getId()];
     }
-    setExpandable(expandable);
-    setActionsNode(null);
-    setExpandExclusion([]);
-    setNodes(nodes);
-    setLinks(links);
-    setGraphObjects(graphObjects);
+
+    update({
+      nodes, links, graphObjects, expandable, actionsNode: null, expandExclusions: [],
+    });
   };
 
   /**
@@ -792,8 +789,7 @@ function GraphComponent(props) {
       if (nodeIsHeavilyConnected(data[node.getId()])
       ) {
         // Opens up expansion confirmation dialog
-        setExpandNode(data[node.getId()]);
-        setExpansionDialogOpen(true);
+        update({ expandNode: data[node.getId()], expansionDialogOpen: true });
         pauseGraph();
       } else {
         loadNeighbors(node);
@@ -809,7 +805,7 @@ function GraphComponent(props) {
 
       if (data[record['@rid']] === undefined) {
         data[record['@rid']] = record;
-        setData(data);
+        update({ data });
       }
     } catch (err) {
       handleError(err);
@@ -829,7 +825,7 @@ function GraphComponent(props) {
       // Update contents of detail drawer if open.
       handleDetailDrawerOpen(node);
       // Sets clicked object as actions node.
-      setActionsNode(node);
+      update({ actionsNode: node });
 
       pauseGraph();
     } else {
@@ -856,19 +852,19 @@ function GraphComponent(props) {
    */
   const handleDialogClose = (key) => {
     if (key === 'expansionDialogOpen') {
-      setExpansionDialogOpen(false);
+      update({ expansionDialogOpen: false });
     } else {
-      setGraphOptionsOpen(false);
+      update({ graphOptionsOpen: false });
     }
     drawGraph(nodes, links, simulation, graphOptions);
-    setTimeout(() => setExpandExclusion([]), DIALOG_FADEOUT_TIME);
+    setTimeout(() => update({ expandExclusions: [] }), DIALOG_FADEOUT_TIME);
   };
 
   /**
    * Opens graphOptions help dialog.
    */
   const openGraphOptions = () => {
-    setGraphOptionsOpen(true);
+    update({ graphOptionsOpen: true });
     pauseGraph();
   };
 
@@ -876,7 +872,7 @@ function GraphComponent(props) {
    * Expands currently staged nodes. Passed to GraphExpansion Dialog to expand nodes.
    */
   const handleExpand = () => {
-    setExpansionDialogOpen(false);
+    update({ expansionDialogOpen: false });
     setTimeout(() => loadNeighbors(actionsNode), DIALOG_FADEOUT_TIME);
   };
 
@@ -891,7 +887,7 @@ function GraphComponent(props) {
     handleDetailDrawerOpen(link, false, true);
 
     // Sets clicked object as actions node.
-    setActionsNode(link);
+    update({ actionsNode: link });
   };
 
   /**
@@ -909,10 +905,10 @@ function GraphComponent(props) {
 
     updateColors(nodes, links, graphOptions);
     handleDetailDrawerClose();
-    setActionsNode(null);
-    setGraphObjects(graphObjects);
-    setLinks(links);
-    setExpandable(expandable);
+
+    update({
+      links, graphObjects, expandable, actionsNode: null,
+    });
   };
 
   /**
@@ -951,11 +947,9 @@ function GraphComponent(props) {
     updateColors(nodes, links, graphOptions);
     handleDetailDrawerClose();
 
-    setExpandable(expandable);
-    setNodes(nodes);
-    setLinks(links);
-    setGraphObjects(graphObjects);
-    setActionsNode(null);
+    update({
+      nodes, links, expandable, graphObjects, actionsNode: null,
+    });
   };
 
   /**
@@ -971,7 +965,7 @@ function GraphComponent(props) {
     } else {
       expandExclusions.splice(i, 1);
     }
-    setExpandExclusion(expandExclusions);
+    update({ expandExclusions });
   };
 
   /**
@@ -984,7 +978,7 @@ function GraphComponent(props) {
     if (expandExclusions.length !== allEdges.length) {
       newExpandExclusions = allEdges;
     }
-    setExpandExclusion(newExpandExclusions);
+    update({ expandExclusions: newExpandExclusions });
   };
 
   /**
@@ -998,7 +992,7 @@ function GraphComponent(props) {
         updatedExpandExclusions.push(edge['@rid']);
       }
     });
-    setExpandExclusion(updatedExpandExclusions);
+    update({ expandExclusions: updatedExpandExclusions });
   };
 
   const {
@@ -1154,7 +1148,7 @@ function GraphComponent(props) {
         <svg
           onClick={(e) => {
             if (e.target === graph.current) {
-              setActionsNode(null);
+              update({ actionsNode: null });
               handleClick();
             }
           }}

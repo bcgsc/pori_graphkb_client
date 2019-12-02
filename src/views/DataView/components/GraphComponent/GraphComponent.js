@@ -23,6 +23,7 @@ import React, {
   useRef,
 } from 'react';
 
+import useObject from '@/components/hooks/useObject';
 import schema from '@/services/schema';
 import util from '@/services/util';
 import config from '@/static/config';
@@ -40,13 +41,13 @@ import {
   GraphOptions,
   PropsMap,
 } from './kbgraph';
-import useGraphData from './useGraphData';
 import {
   computeNodeLevels,
   copyURLToClipBoard,
   getId,
   TREE_LINK,
 } from './util';
+
 
 const {
   GRAPH_PROPERTIES: {
@@ -98,14 +99,13 @@ const initialGraphData = {
  * @property {function} props.handleGraphStateSave - parent handler to save state in URL
  */
 function GraphComponent(props) {
-  // App snackbar context value.
   const snackbar = useContext(SnackbarContext);
   const { data: initialData } = props;
 
   const {
-    graphValues,
+    content: graphValues,
     update,
-  } = useGraphData(initialGraphData);
+  } = useObject(initialGraphData);
 
   const {
     actionsNode,
@@ -126,7 +126,6 @@ function GraphComponent(props) {
     graphObjects,
     expandable,
   } = graphValues;
-  console.log('TCL: GraphComponent -> graphValues', graphValues);
 
   const propsMap = useRef(new PropsMap());
   const graph = useRef(null);
@@ -225,12 +224,12 @@ function GraphComponent(props) {
     update({ simulation: sim, svg: SVG });
   };
 
-  const updateColumnProps = (node) => {
+  const updateColumnProps = useCallback((node) => {
     const nodeProps = Object.keys(node);
     nodeProps.forEach((prop) => { allProps.push(prop); });
     const updatedAllProps = [...new Set(allProps)];
     update({ allProps: updatedAllProps });
-  };
+  }, [allProps, update]);
 
 
   /**
@@ -240,9 +239,9 @@ function GraphComponent(props) {
    * @param {object} prop1 either x position if graphNode or source if graphLink
    * @param {object} prop2 either y position if graphNode or target if graphLink
    * @param {object} graphObjects graphObjects attached to simulation
-   * @param {object} propsMap keeps track of node/link properties and associated values
+   * @param {object} pMap propsMap keeps track of node/link properties and associated values
    */
-  const addGraphObject = (type, graphData, prop1, prop2, graphObjs, pMap) => {
+  const addGraphObject = useCallback((type, graphData, prop1, prop2, graphObjs, pMap) => {
     const newGraphObject = type === 'node'
       ? new GraphNode(graphData, prop1, prop2)
       : new GraphLink(graphData, prop1, prop2);
@@ -263,7 +262,7 @@ function GraphComponent(props) {
     } else {
       pMap.loadLink(graphData);
     }
-  };
+  }, [allProps, links, nodes]);
 
 
   /**
@@ -280,10 +279,10 @@ function GraphComponent(props) {
   const processData = useCallback((node, pos, expansionFlag, prevstate, exclusions = []) => {
     const { edgeTypes } = props;
     let {
-      nodes,
-      links,
-      graphObjects,
-      expandable,
+      nodes, // eslint-disable-line no-shadow
+      links, // eslint-disable-line no-shadow
+      graphObjects, // eslint-disable-line no-shadow
+      expandable, // eslint-disable-line no-shadow
     } = prevstate;
 
     if (data[node['@rid']]) {
@@ -445,7 +444,7 @@ function GraphComponent(props) {
       links,
       graphObjects,
     };
-  });
+  }, [addGraphObject, data, props, updateColumnProps]);
 
   /**
    * Renders nodes and links to the graph.
@@ -490,7 +489,8 @@ function GraphComponent(props) {
         }
       });
 
-      // update node/link positions so that React can render them correctly
+      // This is where all the updates occur to nodes/links so that React can
+      // render the svgs correctly.
       const newLinks = [...gLinks];
       const newNodes = [...gNodes];
 
@@ -600,7 +600,7 @@ function GraphComponent(props) {
   }, [snackbar, update]);
 
   /**
-   * Restarts the layout simulation with the current nodes
+   * Refreshes the layout simulation with the current nodes
    *
    * @property {object} seed seed graph Info to refresh view
    * @property {d3} simulation d3 force layout
@@ -616,12 +616,15 @@ function GraphComponent(props) {
 
     if (seed) {
       const {
-        simulation: s, nodes: n, links: l, graphOptions: g,
+        simulation: seedSim,
+        nodes: seedNodes,
+        links: seedLinks,
+        graphOptions: seedGraphOptions,
       } = seed;
-      sim = s;
-      gNodes = n;
-      gLinks = l;
-      graphOpts = g;
+      sim = seedSim;
+      gNodes = seedNodes;
+      gLinks = seedLinks;
+      graphOpts = seedGraphOptions;
     }
 
     const { handleDetailDrawerClose } = props;
@@ -656,6 +659,7 @@ function GraphComponent(props) {
         links,
         graphObjects,
         expandable,
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       } = processData(
         seedData[rid],
         util.positionInit(wrapper.current.clientWidth / 2, wrapper.current.clientHeight / 2, index, nodeRIDs.length),
@@ -669,11 +673,11 @@ function GraphComponent(props) {
       ));
     });
 
-    const graphOptions = getGraphOptions(propsMap.current);
-    initSimulation(simulation, graphOptions);
+    const intialGraphOptions = getGraphOptions(propsMap.current);
+    initSimulation(simulation, intialGraphOptions);
 
     const initialSeed = {
-      simulation, graphOptions, nodes, links,
+      simulation, graphOptions: intialGraphOptions, nodes, links,
     };
 
     refresh(initialSeed);
@@ -727,6 +731,14 @@ function GraphComponent(props) {
   };
 
   /**
+   * Checks if node is fully expanded. Looks at all edge properties on record to see
+   * if there are any edges not rendered as a link object already.
+   *
+   * @param {object} record record data. Node data returned from api
+   */
+  const isFullyExpanded = record => !schema.getEdges(record).some(edge => !links.find(l => l.getId() === edge['@rid']));
+
+  /**
    * Calls the api and renders neighbor nodes of the input node onto the graph.
    * @param {GraphNode} node - d3 simulation node whose neighbors were requested.
    */
@@ -756,7 +768,7 @@ function GraphComponent(props) {
     });
     saveGraphStatetoURL([...nodes]);
 
-    if (!schema.getEdges(data[node.getId()]).some(edge => !links.find(l => l.getId() === edge['@rid']))) {
+    if (isFullyExpanded(data[node.getId()])) {
       delete expandable[node.getId()];
     }
 
@@ -839,7 +851,8 @@ function GraphComponent(props) {
    * @param {boolean} isAdvanced - Advanced option flag.
    */
   const handleGraphOptionsChange = (event) => {
-    graphOptions[event.target.name] = event.target.value;
+    const { target: { name, value } } = event;
+    graphOptions[name] = value;
     graphOptions.load();
     refresh({
       simulation, graphOptions, nodes, links,

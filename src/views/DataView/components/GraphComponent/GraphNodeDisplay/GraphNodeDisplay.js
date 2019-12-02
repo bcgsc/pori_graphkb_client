@@ -103,6 +103,7 @@ function GraphNodeDisplay(props) {
         cx={0}
         cy={0}
         fill="#fff"
+        onClick={handleClick}
         r={NODE_RADIUS}
       />
       <circle

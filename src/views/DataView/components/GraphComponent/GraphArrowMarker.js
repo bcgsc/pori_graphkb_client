@@ -3,10 +3,10 @@ import React from 'react';
 import config from '@/static/config';
 
 // Component specific constants.
-const MARKER_ID = 'endArrow';
 const {
   ARROW_WIDTH,
   ARROW_LENGTH,
+  MARKER_ID,
 } = config.GRAPH_PROPERTIES;
 
 function GraphArrowMarker() {

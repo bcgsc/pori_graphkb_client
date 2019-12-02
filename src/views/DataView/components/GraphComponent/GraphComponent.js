@@ -1046,7 +1046,8 @@ function GraphComponent(props) {
         name: 'Hide',
         action: () => withClose(handleLinkHide),
         disabled: false,
-      }] : [
+      }]
+    : [
       {
         name: 'Details',
         action: () => withClose(() => handleDetailDrawerOpen(actionsNode, true)),

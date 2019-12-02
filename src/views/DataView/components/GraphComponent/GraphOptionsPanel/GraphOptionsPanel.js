@@ -114,6 +114,7 @@ function GraphOptionsPanel(props) {
         scroll="body"
       >
         <IconButton
+          data-testid="close-btn"
           id="options-close-btn"
           onClick={handleDialogClose}
         >
@@ -123,6 +124,7 @@ function GraphOptionsPanel(props) {
           <Typography variant="h6">Graph Options</Typography>
           <IconButton
             color="primary"
+            data-testid="main-help-btn"
             id="main-help-btn"
             onClick={() => handleHelpOpen('mainHelp')}
           >

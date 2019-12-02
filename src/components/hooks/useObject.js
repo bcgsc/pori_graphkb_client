@@ -17,7 +17,18 @@ const useObject = (initialValue = {}) => {
     if (actionType === 'update') {
       const { name, value } = payload;
       return { ...state, [name]: value };
-    } if (actionType === 'replace') {
+    }
+
+    if (actionType === 'large-update') {
+      const updatedData = {};
+      Object.keys(payload).forEach((key) => {
+        updatedData[key] = payload[key];
+      });
+
+      return { ...state, ...updatedData };
+    }
+
+    if (actionType === 'replace') {
       return { ...payload };
     }
     throw new Error(`actionType (${actionType}) not implemented`);
@@ -25,6 +36,10 @@ const useObject = (initialValue = {}) => {
 
   const updateField = useCallback((name, value) => {
     setContent({ type: 'update', payload: { name, value } });
+  }, [setContent]);
+
+  const update = useCallback((newContent = {}) => {
+    setContent({ type: 'large-update', payload: newContent });
   }, [setContent]);
 
 
@@ -37,7 +52,9 @@ const useObject = (initialValue = {}) => {
     replace(initialValue || {});
   }, [initialValue || {}]);
 
-  return { content, updateField, replace };
+  return {
+    content, updateField, replace, update,
+  };
 };
 
 

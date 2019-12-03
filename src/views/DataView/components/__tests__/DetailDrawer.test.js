@@ -46,6 +46,7 @@ describe('DetailDrawer', () => {
     const node = {
       '@class': 'Ontology',
       name: 'test node',
+      displayName: 'testNode',
       sourceId: 'test sourceId',
       source: {
         '@class': 'Ontology',
@@ -83,6 +84,7 @@ describe('DetailDrawer', () => {
       name: 'test node. this is a long value so that formatlongvalue is called and this test passes, ASHDhkdjhjsdhkJAHDSkjhsdkajsdhaksjdhakjshda blargh blargh',
       // 2nd long field
       longName: 'test node. this is a long value so that formatlongvalue is called and this test passes, ASHDhkdjhjsdhkJAHDSkjhsdkajsdhaksjdhakjshda blargh blargh',
+      displayName: 'testNode',
       sourceId: 'test sourceId',
       source: {
         '@class': 'Ontology',

@@ -44,18 +44,6 @@ const DATE_KEYS = ['createdAt', 'deletedAt'];
  * @property {function} props.handleNodeEditStart - Function triggered on node edit button click
  */
 class DetailDrawer extends Component {
-  static propTypes = {
-    isEdge: PropTypes.bool,
-    node: GeneralRecordPropType,
-    onClose: PropTypes.func,
-  };
-
-  static defaultProps = {
-    node: null,
-    onClose: null,
-    isEdge: false,
-  };
-
   /**
    * Takes properties list to be displayed in detail drawer and promotes an inputted
    * property to top of the list. For display purposes.
@@ -73,6 +61,33 @@ class DetailDrawer extends Component {
     }
     return updatedProperties;
   }
+
+  /**
+   * sorts properties alphabetically by class and then displayname
+   *
+   * @param {Arrayof.<Objects>} value holds an array of Property Models
+   */
+  static sortProps(value) {
+    const sortedValues = value.sort((a, b) => {
+      if (a['@class'] === b['@class']) {
+        return a.displayName.localeCompare(b.displayName);
+      }
+      return a['@class'].localeCompare(b['@class']);
+    });
+    return sortedValues;
+  }
+
+  static propTypes = {
+    isEdge: PropTypes.bool,
+    node: GeneralRecordPropType,
+    onClose: PropTypes.func,
+  };
+
+  static defaultProps = {
+    node: null,
+    onClose: null,
+    isEdge: false,
+  };
 
   constructor(props) {
     super(props);
@@ -188,6 +203,156 @@ class DetailDrawer extends Component {
   }
 
   /**
+   * Renders properties that are set types. i.e Embedded set and link set.
+   * @param {PropertyModel} prop link/embedded property model
+   * @param {Arrayof<Objects>}  value contains link/embedded records
+   * @param {Arrayof<string>} opened opened dropdowns in drawer
+   * @param {Arrayof<string>} identifiers props to be displayed for submenu
+   *
+   */
+  renderSetTypeProps = (prop, value, opened, identifiers) => {
+    const { type, name } = prop;
+    if (value.length === 0) return null;
+    let values = [...value];
+
+    if (type === 'linkset') {
+      values = DetailDrawer.sortProps(values);
+    }
+    return (
+      <React.Fragment key={name}>
+        <ListItem dense>
+          <ListItemText className="detail-li-text">
+            <Typography variant="subtitle1">
+              {util.antiCamelCase(name)}
+            </Typography>
+          </ListItemText>
+        </ListItem>
+        <List dense disablePadding>
+          {type === 'linkset' && values.map(item => (
+            <>
+              <ListItem key={item['@rid']} button dense onClick={() => this.handleExpand(item)}>
+                <div className="nested-spacer" />
+                <ListItemText className="detail-li-text">
+                  <div className="detail-identifiers-linkset">
+                    <Typography color={opened.includes(item) ? 'secondary' : 'textSecondary'} variant="subtitle2">
+                      {util.antiCamelCase(item['@class'])}
+                    </Typography>
+                    <Typography color={opened.includes(item) ? 'secondary' : 'textSecondary'} variant="subtitle2">
+                      {schema.getPreview(item)}
+                    </Typography>
+                  </div>
+                </ListItemText>
+                {!opened.includes(item) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+              </ListItem>
+              <Collapse in={!!opened.includes(item)} unmountOnExit>
+                {identifiers.map(propName => (
+                  <List dense disablePadding>
+                    <ListItem>
+                      <ListItemText>
+                        <div className="detail-identifiers">
+                          <Typography className="detail-identifiers-nested" variant="subtitle1">
+                            {util.antiCamelCase(propName)}
+                          </Typography>
+                          <Typography>
+                            {item[propName]}
+                          </Typography>
+                        </div>
+                      </ListItemText>
+                    </ListItem>
+                  </List>
+                ))}
+              </Collapse>
+            </>
+          ))}
+          { type === 'embeddedset' && values.map(item => (
+            <ListItem key={item} dense>
+              <div className="nested-spacer" />
+              <ListItemText
+                className="detail-li-text"
+                inset
+                primary={util.formatStr(item)}
+              />
+            </ListItem>
+          )) }
+        </List>
+        <Divider />
+      </React.Fragment>
+    );
+  };
+
+  /**
+   * Renders formatted link/embedded props.
+   *
+   * @param {PropertyModel} prop link/embedded property model
+   * @param {bool} isNested is the prop nested
+   * @param {Arrayof<Objects>}  value contains link/embedded records
+   * @param {Arrayof<string>} opened opened dropdowns in drawer
+   * @param {Arrayof<string>} identifiers props to be displayed for submenu
+   */
+  renderLinkEmbeddedProps = (prop, isNested, value, opened, identifiers) => {
+    const { name, type } = prop;
+    let previewStr;
+    let listItemProps = {};
+
+    if (isNested) {
+      previewStr = schema.getPreview(value);
+    } else {
+      listItemProps = { button: true, onClick: () => this.handleExpand(name) };
+      previewStr = value.displayName;
+
+      if (type === 'embedded') {
+        previewStr = value['@class'];
+      }
+    }
+    return (
+      <React.Fragment key={name}>
+        <ListItem {...listItemProps} dense>
+          {isNested && (
+          <div className="nested-spacer" />
+          )}
+          <ListItemText className="detail-li-text">
+            <div className="detail-identifiers">
+              <Typography variant="body1">
+                {util.antiCamelCase(name)}
+              </Typography>
+              <Typography variant="h6">
+                {previewStr}
+              </Typography>
+            </div>
+          </ListItemText>
+          {!isNested && (!opened.includes(name) ? <ExpandMoreIcon /> : <ExpandLessIcon />)}
+        </ListItem>
+        {!isNested && (
+        <Collapse in={!!opened.includes(name)} unmountOnExit>
+          <List className="detail-drawer__nested-list" dense disablePadding>
+            {this.formatIdentifiers(value, true)}
+            {type === 'link' && (
+              [value['@class'], '@rid', 'sourceId'].map((item, index) => (
+                <ListItem key={item} dense>
+                  <div className="nested-spacer" />
+                  <ListItemText className="detail-li-text">
+                    <div className="detail-identifiers">
+                      <Typography variant="subtitle1">
+                        {util.antiCamelCase(item)}
+                      </Typography>
+                      <Typography>
+                        {value[identifiers[index]]}
+                      </Typography>
+                    </div>
+                  </ListItemText>
+                </ListItem>
+              ))
+            )}
+            {type === 'embedded' && this.formatOtherProps(value, true)}
+          </List>
+        </Collapse>
+        )}
+        <Divider />
+      </React.Fragment>
+    );
+  };
+
+  /**
    * Formats properties, varying structure based on property type.
    * @param {Object} node - Record being displayed.
    * @param {Array.<Object>} properties - List of properties to display.
@@ -202,136 +367,14 @@ class DetailDrawer extends Component {
       const { type } = prop;
       let { name } = prop;
       let value = node[name];
-      const nestedValue = null;
       if (!value) return null;
       if (type === 'embeddedset' || type === 'linkset') {
-        if (value.length === 0) return null;
-        return (
-          <React.Fragment key={name}>
-            <ListItem dense>
-              <ListItemText className="detail-li-text">
-                <Typography variant="subtitle1">
-                  {util.antiCamelCase(name)}
-                </Typography>
-              </ListItemText>
-            </ListItem>
-            <List dense disablePadding>
-              {type === 'linkset' && value.map(item => (
-                <>
-                  <ListItem key={item['@rid']} button dense onClick={() => this.handleExpand(item)}>
-                    <div className="nested-spacer" />
-                    <ListItemText className="detail-li-text">
-                      <div className="detail-identifiers-linkset">
-                        <Typography color={opened.includes(item) ? 'secondary' : 'textSecondary'} variant="subtitle2">
-                          {util.antiCamelCase(item['@class'])}
-                        </Typography>
-                        <Typography color={opened.includes(item) ? 'secondary' : 'textSecondary'} variant="subtitle2">
-                          {schema.getPreview(item)}
-                        </Typography>
-                      </div>
-                    </ListItemText>
-                    {!opened.includes(item) ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-                  </ListItem>
-                  <Collapse in={!!opened.includes(item)} unmountOnExit>
-                    {identifiers.map(propName => (
-                      <List dense disablePadding>
-                        <ListItem>
-                          <ListItemText>
-                            <div className="detail-identifiers">
-                              <Typography className="detail-identifiers-nested" variant="subtitle1">
-                                {util.antiCamelCase(propName)}
-                              </Typography>
-                              <Typography>
-                                {item[propName]}
-                              </Typography>
-                            </div>
-                          </ListItemText>
-                        </ListItem>
-                      </List>
-                    ))}
-                  </Collapse>
-                </>
-              ))}
-              { type === 'embeddedset' && value.map(item => (
-                <ListItem key={item} dense>
-                  <div className="nested-spacer" />
-                  <ListItemText
-                    className="detail-li-text"
-                    inset
-                    primary={util.formatStr(item)}
-                  />
-                </ListItem>
-              )) }
-            </List>
-            <Divider />
-          </React.Fragment>
-        );
+        const formattedSetProps = this.renderSetTypeProps(prop, value, opened, identifiers);
+        return formattedSetProps;
       }
       if ((type === 'link' || type === 'embedded') && value['@class']) {
-        let previewStr;
-        let listItemProps = {};
-
-        if (isNested) {
-          previewStr = schema.getPreview(value);
-        } else {
-          listItemProps = { button: true, onClick: () => this.handleExpand(name) };
-          previewStr = nestedValue && (DATE_KEYS.includes(name)
-            ? (new Date(nestedValue)).toLocaleString()
-            : util.formatStr(nestedValue));
-
-          if (previewStr === null) {
-            previewStr = value.displayName;
-          }
-          if (type === 'embedded') {
-            previewStr = value['@class'];
-          }
-        }
-        return (
-          <React.Fragment key={name}>
-            <ListItem {...listItemProps} dense>
-              {isNested && (
-                <div className="nested-spacer" />
-              )}
-              <ListItemText className="detail-li-text">
-                <div className="detail-identifiers">
-                  <Typography variant="body1">
-                    {util.antiCamelCase(name)}
-                  </Typography>
-                  <Typography variant="h6">
-                    {previewStr}
-                  </Typography>
-                </div>
-              </ListItemText>
-              {!isNested && (!opened.includes(name) ? <ExpandMoreIcon /> : <ExpandLessIcon />)}
-            </ListItem>
-            {!isNested && (
-              <Collapse in={!!opened.includes(name)} unmountOnExit>
-                <List className="detail-drawer__nested-list" dense disablePadding>
-                  {this.formatIdentifiers(value, true)}
-                  {type === 'link' && (
-                    [value['@class'], '@rid', 'sourceId'].map((item, index) => (
-                      <ListItem key={item} dense>
-                        <div className="nested-spacer" />
-                        <ListItemText className="detail-li-text">
-                          <div className="detail-identifiers">
-                            <Typography variant="subtitle1">
-                              {util.antiCamelCase(item)}
-                            </Typography>
-                            <Typography>
-                              {value[identifiers[index]]}
-                            </Typography>
-                          </div>
-                        </ListItemText>
-                      </ListItem>
-                    ))
-                  )}
-                  {type === 'embedded' && this.formatOtherProps(value, true)}
-                </List>
-              </Collapse>
-            )}
-            <Divider />
-          </React.Fragment>
-        );
+        const linkEmbeddedProps = this.renderLinkEmbeddedProps(prop, isNested, value, opened, identifiers);
+        return linkEmbeddedProps;
       }
       if (value.toString().length <= MAX_STRING_LENGTH) {
         let Wrapper = React.Fragment;

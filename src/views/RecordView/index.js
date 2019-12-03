@@ -11,9 +11,8 @@ import useDeepCompareEffect from 'use-deep-compare-effect';
 
 import { KBContext } from '@/components/KBContext';
 import RecordForm from '@/components/RecordForm';
-import { FORM_VARIANT } from '@/components/RecordForm/util';
 import { HistoryPropType } from '@/components/types';
-import { cleanLinkedRecords } from '@/components/util';
+import { cleanLinkedRecords, FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 import { hasWriteAccess } from '@/services/auth';
 import schema from '@/services/schema';

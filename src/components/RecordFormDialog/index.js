@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import RecordForm from '@/components/RecordForm';
-import { FORM_VARIANT } from '@/components/RecordForm/util';
+import { FORM_VARIANT } from '@/components/util';
 
 
 /**

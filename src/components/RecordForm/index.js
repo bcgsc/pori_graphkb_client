@@ -14,17 +14,17 @@ import React, {
 
 import ActionButton from '@/components/ActionButton';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
+import KbContext from '@/components/KBContext';
 import ToggleButtonGroup from '@/components/ToggleButtonGroup';
 import { GeneralRecordPropType } from '@/components/types';
+import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 import { getUser } from '@/services/auth';
 import schema from '@/services/schema';
 
-import KbContext from '../KBContext';
 import EdgeTable from './EdgeTable';
 import FormLayout from './FormLayout';
 import ReviewDialog from './ReviewDialog';
-import { FORM_VARIANT } from './util';
 
 
 const cleanPayload = (payload) => {

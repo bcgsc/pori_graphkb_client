@@ -59,14 +59,27 @@ function DetailDrawer(props) {
    * Toggles collapsed list item.
    * @param {string} key - list item key.
    */
-  const handleExpand = (key) => {
+  function handleExpand(key) {
     if (opened.includes(key)) {
       opened.splice(opened.indexOf(key), 1);
     } else {
       opened.push(key);
     }
     setOpened([...opened]);
-  };
+  }
+
+  /**
+   * Toggles collapsed link list item.
+   * @param {string} key - list item key.
+   */
+  function handleLinkExpand(key) {
+    if (linkOpen === key) {
+      setLinkOpen(null);
+      setOpened(opened.filter(o => !o.includes(key)));
+    } else {
+      setLinkOpen(key);
+    }
+  }
 
   /**
    * Takes properties list to be displayed in detail drawer and promotes an inputted
@@ -110,8 +123,7 @@ function DetailDrawer(props) {
    * @param {Arrayof<string>} identifiers props to be displayed for submenu
    *
    */
-  function renderSetTypeProps(prop, value, opened, identifiers) {
-    console.log('TCL: renderSetTypeProps -> opened', opened);
+  function renderSetTypeProps(prop, value, identifiers) {
     const { type, name } = prop;
     if (value.length === 0) return null;
     let values = [...value];
@@ -191,7 +203,7 @@ function DetailDrawer(props) {
    * @param {Arrayof<string>} opened opened dropdowns in drawer
    * @param {Arrayof<string>} identifiers props to be displayed for submenu
    */
-  function renderLinkEmbeddedProps(prop, isNested, value, opened, identifiers) {
+  function renderLinkEmbeddedProps(prop, isNested, value, identifiers) {
     const { name, type } = prop;
     let previewStr;
     let listItemProps = {};
@@ -227,7 +239,6 @@ function DetailDrawer(props) {
         {!isNested && (
         <Collapse in={!!opened.includes(name)} unmountOnExit>
           <List className="detail-drawer__nested-list" dense disablePadding>
-            {formatIdentifiers(value, true)}
             {type === 'link' && (
               [value['@class'], '@rid', 'sourceId'].map((item, index) => (
                 <ListItem key={item} dense>
@@ -308,26 +319,25 @@ function DetailDrawer(props) {
 
   /**
    * Formats properties, varying structure based on property type.
-   * @param {Object} node - Record being displayed.
+   * @param {Object} record - Record being displayed.
    * @param {Array.<Object>} properties - List of properties to display.
    * @param {boolean} isNested - Nested flag.
    */
-  function formatProps(node, properties, isNested) {
-    // const { opened } = this.state;
+  function formatProps(record, properties, isNested) {
     const identifiers = ['displayName', '@rid', 'sourceId'];
     const updatedProperties = movePropToTop(properties, 'displayName');
 
     return updatedProperties.map((prop) => {
       const { type } = prop;
       let { name } = prop;
-      let value = node[name];
+      let value = record[name];
       if (!value) return null;
       if (type === 'embeddedset' || type === 'linkset') {
-        const formattedSetProps = renderSetTypeProps(prop, value, opened, identifiers);
+        const formattedSetProps = renderSetTypeProps(prop, value, identifiers);
         return formattedSetProps;
       }
       if ((type === 'link' || type === 'embedded') && value['@class']) {
-        const linkEmbeddedProps = renderLinkEmbeddedProps(prop, isNested, value, opened, identifiers);
+        const linkEmbeddedProps = renderLinkEmbeddedProps(prop, isNested, value, identifiers);
         return linkEmbeddedProps;
       }
       if (value.toString().length <= MAX_STRING_LENGTH) {
@@ -372,39 +382,6 @@ function DetailDrawer(props) {
     });
   }
 
-
-  /**
-   * Formats specific identifier properties of input ontology.
-   * @param {Object} inputNode - Ontology being displayed.
-   * @param {boolean} isNested - if linked record is nested/embedded
-   */
-  function formatIdentifiers(node, isNested = false) {
-    if (!node['@class']) return null;
-
-    const { properties } = schema.get(node);
-    const identifiers = ['@class', '@rid'];
-    // builds an array of property models
-    const updatedIdentifiers = identifiers.reduce((array, id) => {
-      const [key, nestedKey] = id.split('.');
-
-      if (!schema.getMetadata().find(p => p.name === key)) {
-        if (properties[key]) {
-          if (nestedKey) {
-            array.push({ ...properties[key] });
-          } else {
-            array.push(properties[key]);
-          }
-        }
-        if (key === 'preview') {
-          array.push({ type: 'string', name: 'preview' });
-        }
-      }
-
-      return array;
-    }, []);
-    return formatProps(node, updatedIdentifiers, isNested);
-  }
-
   /**
    * Closes all expanded list properties.
    * @param {Object} prevProps - Component's previous props.
@@ -418,40 +395,40 @@ function DetailDrawer(props) {
 
   /**
    * Formats record metadata.
-   * @param {Object} node - Record to be formatted.
+   * @param {Object} record - Record to be formatted.
    * @param {boolean} isNested - Nested flag.
    */
-  const formatMetadata = (node, isNested) => formatProps(node, schema.getMetadata(), isNested);
+  const formatMetadata = (record, isNested) => formatProps(record, schema.getMetadata(), isNested);
 
   /**
    * Formats non-identifying, non-metadata properties of the input record.
    * @param {Object} node - Record being displayed.
    * @param {boolean} isNested - Nested flag.
    */
-  function formatOtherProps(node, isNested) {
+  function formatOtherProps(record, isNested) {
     const identifiers = ['@class', '@rid'];
 
-    let properties = Object.keys(node)
-      .map(key => ({ name: key, type: util.parseKBType(node[key]) }));
+    let properties = Object.keys(record)
+      .map(key => ({ name: key, type: util.parseKBType(record[key]) }));
 
-    if (schema && schema.getProperties(node)) {
-      properties = schema.getProperties(node);
+    if (schema && schema.getProperties(record)) {
+      properties = schema.getProperties(record);
     }
     const propsList = Object.values(properties)
       .filter(prop => !identifiers.map(id => id.split('.')[0]).includes(prop.name)
         && !prop.name.startsWith('in_')
         && !prop.name.startsWith('out_'));
 
-    return formatProps(node, propsList, isNested);
+    return formatProps(record, propsList, isNested);
   }
 
   /**
    * Formats record relationships.
-   * @param {Object} node - Record being displayed.
+   * @param {Object} record - Record being displayed.
    */
-  function formatRelationships(node) {
+  function formatRelationships(record) {
     // Checks subclasses
-    const edges = schema.getEdges(node);
+    const edges = schema.getEdges(record);
 
     if (!edges || edges.length === 0) return null;
     return (
@@ -461,10 +438,10 @@ function DetailDrawer(props) {
           let isIn = false;
 
           if (edge.in !== undefined) {
-            isIn = edge.in && edge.in['@rid'] === node['@rid'];
+            isIn = edge.in && edge.in['@rid'] === record['@rid'];
           }
           const targetNode = isIn ? edge.out : edge.in;
-          if (targetNode['@rid'] === node['@rid']) return null;
+          if (targetNode['@rid'] === record['@rid']) return null;
           let preview;
 
           try {
@@ -505,7 +482,6 @@ function DetailDrawer(props) {
                   <ListSubheader color="primary" disableSticky>
                     Linked Record
                   </ListSubheader>
-                  {formatIdentifiers(isIn ? edge.out : edge.in, true)}
                   {formatOtherProps(isIn ? edge.out : edge.in, true)}
                   {formatMetadata(isIn ? edge.out : edge.in, true)}
                 </List>
@@ -525,7 +501,6 @@ function DetailDrawer(props) {
   if (drawerIsOpen) {
     const recordId = node['@rid'].slice(1);
 
-    const identifiers = formatIdentifiers(node);
     const otherProps = formatOtherProps(node);
     const relationships = !isEdge && formatRelationships(node);
     const metadata = formatMetadata(node, true);
@@ -576,7 +551,6 @@ function DetailDrawer(props) {
           </IconButton>
         </div>
         <Divider />
-        {identifiers}
         {otherProps}
         <ListItem
           button

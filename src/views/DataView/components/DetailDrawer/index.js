@@ -10,7 +10,6 @@ import {
   IconButton,
   List,
   ListItem,
-  ListItemIcon,
   ListItemText,
   ListSubheader,
   Typography,
@@ -19,7 +18,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import EditIcon from '@material-ui/icons/Edit';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import LinkIcon from '@material-ui/icons/Link';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import PropTypes from 'prop-types';
 import React, {
@@ -33,8 +31,11 @@ import { hasWriteAccess } from '@/services/auth';
 import schema from '@/services/schema';
 import util from '@/services/util';
 
+import LinkEmbeddedDisplay from './LinkEmbeddedDisplay';
 import LongValueDisplay from './LongValueDisplay';
+import RelationshipDisplay from './RelationshipDisplay';
 import SetDrawerDisplay from './SetDrawerDisplay';
+
 
 const MAX_STRING_LENGTH = 64;
 const DATE_KEYS = ['createdAt', 'deletedAt'];
@@ -104,128 +105,6 @@ function DetailDrawer(props) {
   }
 
   /**
-   * Renders formatted link/embedded props.
-   *
-   * @param {PropertyModel} prop link/embedded property model
-   * @param {bool} isNested is the prop nested
-   * @param {Arrayof<Objects>}  value contains link/embedded records
-   * @param {Arrayof<string>} opened opened dropdowns in drawer
-   * @param {Arrayof<string>} identifiers props to be displayed for submenu
-   */
-  function renderLinkEmbeddedProps(prop, isNested, value, identifiers) {
-    const { name, type } = prop;
-    let previewStr;
-    let listItemProps = {};
-
-    if (isNested) {
-      previewStr = schema.getPreview(value);
-    } else {
-      listItemProps = { button: true, onClick: () => handleExpand(name) };
-      previewStr = value.displayName;
-
-      if (type === 'embedded') {
-        previewStr = value['@class'];
-      }
-    }
-    return (
-      <React.Fragment key={name}>
-        <ListItem {...listItemProps} dense>
-          {isNested && (
-          <div className="nested-spacer" />
-          )}
-          <ListItemText className="detail-li-text">
-            <div className="detail-identifiers">
-              <Typography variant="body1">
-                {util.antiCamelCase(name)}
-              </Typography>
-              <Typography variant="h6">
-                {previewStr}
-              </Typography>
-            </div>
-          </ListItemText>
-          {!isNested && (!opened.includes(name) ? <ExpandMoreIcon /> : <ExpandLessIcon />)}
-        </ListItem>
-        {!isNested && (
-        <Collapse in={!!opened.includes(name)} unmountOnExit>
-          <List className="detail-drawer__nested-list" dense disablePadding>
-            {type === 'link' && (
-              [value['@class'], '@rid', 'sourceId'].map((item, index) => (
-                <ListItem key={item} dense>
-                  <div className="nested-spacer" />
-                  <ListItemText className="detail-li-text">
-                    <div className="detail-identifiers">
-                      <Typography variant="subtitle1">
-                        {util.antiCamelCase(item)}
-                      </Typography>
-                      <Typography>
-                        {value[identifiers[index]]}
-                      </Typography>
-                    </div>
-                  </ListItemText>
-                </ListItem>
-              ))
-            )}
-            {type === 'embedded' && formatOtherProps(value, true)}
-          </List>
-        </Collapse>
-        )}
-        <Divider />
-      </React.Fragment>
-    );
-  }
-
-
-  // /**
-  //  * Formats a key/value pair as a collapsible list item.
-  //  * @param {string} key - property key.
-  //  * @param {any} value - property value.
-  //  * @param {boolean} isStatic - if true, locks list item open.
-  //  * @param {boolean} isNested - if true, list item is indented.
-  //  */
-  // function formatLongValue(key, value, isStatic, isNested) {
-  //   const listItemProps = isStatic === true
-  //     ? {}
-  //     : { button: true, onClick: () => handleExpand(key) };
-  //   const collapseProps = isStatic === true
-  //     ? { in: true }
-  //     : { in: !!opened.includes(key) };
-  //   let itemIcon = null;
-
-  //   if (isStatic !== true) {
-  //     itemIcon = !opened.includes(key)
-  //       ? <ExpandMoreIcon />
-  //       : <ExpandLessIcon />;
-  //   }
-  //   return (
-  //     <React.Fragment key={key}>
-  //       <ListItem {...listItemProps} dense>
-  //         {isNested && (
-  //           <div className="nested-spacer" />
-  //         )}
-  //         <ListItemText className="detail-li-text">
-  //           <Typography color={isNested ? 'textSecondary' : 'default'} variant="subtitle1">
-  //             {util.antiCamelCase(key)}
-  //           </Typography>
-  //         </ListItemText>
-  //         {itemIcon}
-  //       </ListItem>
-  //       <Collapse {...collapseProps} unmountOnExit>
-  //         <ListItem dense>
-  //           {isNested && (
-  //             <div className="nested-spacer" />
-  //           )}
-  //           <ListItemText className="detail-li-text">
-  //             {util.formatStr(schema.getPreview(value))}
-  //           </ListItemText>
-  //         </ListItem>
-  //       </Collapse>
-  //       <Divider />
-  //     </React.Fragment>
-  //   );
-  // }
-
-
-  /**
    * Formats properties, varying structure based on property type.
    * @param {Object} record - Record being displayed.
    * @param {Array.<Object>} properties - List of properties to display.
@@ -253,7 +132,18 @@ function DetailDrawer(props) {
         return formattedSetProps;
       }
       if ((type === 'link' || type === 'embedded') && value['@class']) {
-        const linkEmbeddedProps = renderLinkEmbeddedProps(prop, isNested, value, identifiers);
+        const linkEmbeddedProps = (
+          <LinkEmbeddedDisplay
+            // eslint-disable-next-line no-use-before-define
+            formatOtherProps={formatOtherProps}
+            handleExpand={handleExpand}
+            identifiers={identifiers}
+            isNested={isNested}
+            opened={opened}
+            prop={prop}
+            value={value}
+          />
+        );
         return linkEmbeddedProps;
       }
       if (value.toString().length <= MAX_STRING_LENGTH) {
@@ -347,78 +237,6 @@ function DetailDrawer(props) {
     return formatProps(record, propsList, isNested);
   }
 
-  /**
-   * Formats record relationships.
-   * @param {Object} record - Record being displayed.
-   */
-  function formatRelationships(record) {
-    // Checks subclasses
-    const edges = schema.getEdges(record);
-
-    if (!edges || edges.length === 0) return null;
-    return (
-      <List>
-        {edges.map((edge) => {
-          const isOpen = linkOpen === edge['@rid'];
-          let isIn = false;
-
-          if (edge.in !== undefined) {
-            isIn = edge.in && edge.in['@rid'] === record['@rid'];
-          }
-          const targetNode = isIn ? edge.out : edge.in;
-          if (targetNode['@rid'] === record['@rid']) return null;
-          let preview;
-
-          try {
-            preview = schema.getPreview(targetNode);
-          } catch (e) {
-            preview = 'Invalid variant';
-          }
-          return (
-            <React.Fragment key={edge['@rid']}>
-              <ListItem
-                button
-                className="detail-link-wrapper"
-                dense
-                onClick={() => handleLinkExpand(edge['@rid'])}
-              >
-                <ListItemIcon>
-                  <div style={{ display: 'inline-flex' }}>
-                    <LinkIcon color={isOpen ? 'secondary' : 'action'} />
-                  </div>
-                </ListItemIcon>
-                <ListItemText
-                  className="detail-li-text"
-                  primary={<Typography variant="subtitle1">{preview}</Typography>}
-                  primaryTypographyProps={{
-                    color: isOpen ? 'secondary' : 'default',
-                  }}
-                  secondary={schema.get(edge['@class'])[isIn ? 'reverseName' : 'name']}
-                />
-                {!isOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-              </ListItem>
-              <Collapse in={!!isOpen} unmountOnExit>
-                <List
-                  className="detail-drawer__nested-list"
-                  dense
-                  disablePadding
-                >
-                  <Divider />
-                  <ListSubheader color="primary" disableSticky>
-                    Linked Record
-                  </ListSubheader>
-                  {formatOtherProps(isIn ? edge.out : edge.in, true)}
-                  {formatMetadata(isIn ? edge.out : edge.in, true)}
-                </List>
-                <Divider />
-              </Collapse>
-            </React.Fragment>
-          );
-        })}
-      </List>
-    );
-  }
-
   const context = useContext(KbContext);
   const drawerIsOpen = Boolean(node);
   let content = null;
@@ -427,7 +245,6 @@ function DetailDrawer(props) {
     const recordId = node['@rid'].slice(1);
 
     const otherProps = formatOtherProps(node);
-    const relationships = !isEdge && formatRelationships(node);
     const metadata = formatMetadata(node, true);
 
     const metadataIsOpen = opened.includes('metadata');
@@ -505,14 +322,22 @@ function DetailDrawer(props) {
             <ListSubheader className="detail-drawer__relationships-subheader">
                 Relationships
             </ListSubheader>
-            {relationships || (
-            <ListItem dense>
-              <ListItemText
-                inset
-                primary="None"
-                primaryTypographyProps={{ color: 'textSecondary' }}
+            {!isEdge ? (
+              <RelationshipDisplay
+                formatMetadata={formatMetadata}
+                formatOtherProps={formatOtherProps}
+                handleLinkExpand={handleLinkExpand}
+                linkOpen={linkOpen}
+                record={node}
               />
-            </ListItem>
+            ) : (
+              <ListItem dense>
+                <ListItemText
+                  inset
+                  primary="None"
+                  primaryTypographyProps={{ color: 'textSecondary' }}
+                />
+              </ListItem>
             )}
           </>
         )}

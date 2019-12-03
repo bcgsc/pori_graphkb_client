@@ -26,9 +26,6 @@ function LongValueDisplay(props) {
     name, value, isStatic, isNested, opened, handleExpand,
   } = props;
 
-  // if (!key) {
-  //   return null;
-  // }
   const listItemProps = isStatic === true
     ? {}
     : { button: true, onClick: () => handleExpand(name) };

@@ -21,11 +21,13 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import LinkIcon from '@material-ui/icons/Link';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
-import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, {
+  useContext, useEffect, useState,
+} from 'react';
 import { Link } from 'react-router-dom';
 
+import KbContext from '@/components/KBContext';
 import { GeneralRecordPropType } from '@/components/types';
 import { hasWriteAccess } from '@/services/auth';
 import schema from '@/services/schema';
@@ -43,7 +45,29 @@ const DATE_KEYS = ['createdAt', 'deletedAt'];
  * @property {function} props.onClose - Function triggered on @material-ui/Drawer onClose event.
  * @property {function} props.handleNodeEditStart - Function triggered on node edit button click
  */
-class DetailDrawer extends Component {
+function DetailDrawer(props) {
+  const {
+    node,
+    onClose,
+    isEdge,
+  } = props;
+
+  const [opened, setOpened] = useState([]);
+  const [linkOpen, setLinkOpen] = useState(null);
+
+  /**
+   * Toggles collapsed list item.
+   * @param {string} key - list item key.
+   */
+  const handleExpand = (key) => {
+    if (opened.includes(key)) {
+      opened.splice(opened.indexOf(key), 1);
+    } else {
+      opened.push(key);
+    }
+    setOpened([...opened]);
+  };
+
   /**
    * Takes properties list to be displayed in detail drawer and promotes an inputted
    * property to top of the list. For display purposes.
@@ -51,7 +75,7 @@ class DetailDrawer extends Component {
    * @property {Array.<PropertyModel>} properties array of property models to be rearranged
    * @property {string} propToBeMovedToTop property to be promoted to top of array for display
    */
-  static movePropToTop(properties, propToBeMovedToTop) {
+  function movePropToTop(properties, propToBeMovedToTop) {
     const propIndex = properties.findIndex(prop => prop.name === propToBeMovedToTop);
     const updatedProperties = [...properties];
 
@@ -67,7 +91,7 @@ class DetailDrawer extends Component {
    *
    * @param {Arrayof.<Objects>} value holds an array of Property Models
    */
-  static sortProps(value) {
+  function sortProps(value) {
     const sortedValues = value.sort((a, b) => {
       if (a['@class'] === b['@class']) {
         return a.displayName.localeCompare(b.displayName);
@@ -77,130 +101,6 @@ class DetailDrawer extends Component {
     return sortedValues;
   }
 
-  static propTypes = {
-    isEdge: PropTypes.bool,
-    node: GeneralRecordPropType,
-    onClose: PropTypes.func,
-  };
-
-  static defaultProps = {
-    node: null,
-    onClose: null,
-    isEdge: false,
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      opened: [],
-      linkOpen: null,
-    };
-  }
-
-  /**
-   * Closes all expanded list properties.
-   * @param {Object} prevProps - Component's previous props.
-   */
-  componentDidUpdate(prevProps) {
-    const { node: prevNode } = prevProps;
-    const { node } = this.props;
-
-    if (
-      (!node && prevNode)
-    ) {
-      /* eslint-disable-next-line react/no-did-update-set-state */
-      this.setState({ opened: [], linkOpen: null });
-    }
-  }
-
-  /**
-   * Formats specific identifier properties of input ontology.
-   * @param {Object} inputNode - Ontology being displayed.
-   * @param {boolean} isNested - Nested flag.
-   */
-  formatIdentifiers(node, isNested) {
-    if (!node['@class']) return null;
-
-    const { properties } = schema.get(node);
-    const identifiers = ['@class', '@rid'];
-    return this.formatProps(node, identifiers.reduce((array, id) => {
-      const [key, nestedKey] = id.split('.');
-
-      if (!schema.getMetadata().find(p => p.name === key)) {
-        if (properties[key]) {
-          if (nestedKey) {
-            array.push({ ...properties[key] });
-          } else {
-            array.push(properties[key]);
-          }
-        }
-        if (key === 'preview') {
-          array.push({ type: 'string', name: 'preview' });
-        }
-      }
-
-      return array;
-    }, []), isNested);
-  }
-
-  /**
-   * Formats a key/value pair as a collapsible list item.
-   * @param {string} key - property key.
-   * @param {any} value - property value.
-   * @param {boolean} isStatic - if true, locks list item open.
-   * @param {boolean} isNested - if true, list item is indented.
-   */
-  formatLongValue(key, value, isStatic, isNested) {
-    const { opened } = this.state;
-    const listItemProps = isStatic === true
-      ? {}
-      : { button: true, onClick: () => this.handleExpand(key) };
-    const collapseProps = isStatic === true
-      ? { in: true }
-      : { in: !!opened.includes(key) };
-    let itemIcon = null;
-
-    if (isStatic !== true) {
-      itemIcon = !opened.includes(key)
-        ? <ExpandMoreIcon />
-        : <ExpandLessIcon />;
-    }
-    return (
-      <React.Fragment key={key}>
-        <ListItem {...listItemProps} dense>
-          {isNested && (
-            <div className="nested-spacer" />
-          )}
-          <ListItemText className="detail-li-text">
-            <Typography color={isNested ? 'textSecondary' : 'default'} variant="subtitle1">
-              {util.antiCamelCase(key)}
-            </Typography>
-          </ListItemText>
-          {itemIcon}
-        </ListItem>
-        <Collapse {...collapseProps} unmountOnExit>
-          <ListItem dense>
-            {isNested && (
-              <div className="nested-spacer" />
-            )}
-            <ListItemText className="detail-li-text">
-              {util.formatStr(schema.getPreview(value))}
-            </ListItemText>
-          </ListItem>
-        </Collapse>
-        <Divider />
-      </React.Fragment>
-    );
-  }
-
-  /**
-   * Formats record metadata.
-   * @param {Object} node - Record to be formatted.
-   * @param {boolean} isNested - Nested flag.
-   */
-  formatMetadata(node, isNested) {
-    return this.formatProps(node, schema.getMetadata(), isNested);
-  }
 
   /**
    * Renders properties that are set types. i.e Embedded set and link set.
@@ -210,13 +110,14 @@ class DetailDrawer extends Component {
    * @param {Arrayof<string>} identifiers props to be displayed for submenu
    *
    */
-  renderSetTypeProps = (prop, value, opened, identifiers) => {
+  function renderSetTypeProps(prop, value, opened, identifiers) {
+    console.log('TCL: renderSetTypeProps -> opened', opened);
     const { type, name } = prop;
     if (value.length === 0) return null;
     let values = [...value];
 
     if (type === 'linkset') {
-      values = DetailDrawer.sortProps(values);
+      values = sortProps(values);
     }
     return (
       <React.Fragment key={name}>
@@ -230,7 +131,7 @@ class DetailDrawer extends Component {
         <List dense disablePadding>
           {type === 'linkset' && values.map(item => (
             <>
-              <ListItem key={item['@rid']} button dense onClick={() => this.handleExpand(item)}>
+              <ListItem key={item['@rid']} button dense onClick={() => handleExpand(item)}>
                 <div className="nested-spacer" />
                 <ListItemText className="detail-li-text">
                   <div className="detail-identifiers-linkset">
@@ -278,7 +179,8 @@ class DetailDrawer extends Component {
         <Divider />
       </React.Fragment>
     );
-  };
+  }
+
 
   /**
    * Renders formatted link/embedded props.
@@ -289,7 +191,7 @@ class DetailDrawer extends Component {
    * @param {Arrayof<string>} opened opened dropdowns in drawer
    * @param {Arrayof<string>} identifiers props to be displayed for submenu
    */
-  renderLinkEmbeddedProps = (prop, isNested, value, opened, identifiers) => {
+  function renderLinkEmbeddedProps(prop, isNested, value, opened, identifiers) {
     const { name, type } = prop;
     let previewStr;
     let listItemProps = {};
@@ -297,7 +199,7 @@ class DetailDrawer extends Component {
     if (isNested) {
       previewStr = schema.getPreview(value);
     } else {
-      listItemProps = { button: true, onClick: () => this.handleExpand(name) };
+      listItemProps = { button: true, onClick: () => handleExpand(name) };
       previewStr = value.displayName;
 
       if (type === 'embedded') {
@@ -325,7 +227,7 @@ class DetailDrawer extends Component {
         {!isNested && (
         <Collapse in={!!opened.includes(name)} unmountOnExit>
           <List className="detail-drawer__nested-list" dense disablePadding>
-            {this.formatIdentifiers(value, true)}
+            {formatIdentifiers(value, true)}
             {type === 'link' && (
               [value['@class'], '@rid', 'sourceId'].map((item, index) => (
                 <ListItem key={item} dense>
@@ -343,14 +245,66 @@ class DetailDrawer extends Component {
                 </ListItem>
               ))
             )}
-            {type === 'embedded' && this.formatOtherProps(value, true)}
+            {type === 'embedded' && formatOtherProps(value, true)}
           </List>
         </Collapse>
         )}
         <Divider />
       </React.Fragment>
     );
-  };
+  }
+
+
+  /**
+   * Formats a key/value pair as a collapsible list item.
+   * @param {string} key - property key.
+   * @param {any} value - property value.
+   * @param {boolean} isStatic - if true, locks list item open.
+   * @param {boolean} isNested - if true, list item is indented.
+   */
+  function formatLongValue(key, value, isStatic, isNested) {
+    // const { opened } = this.state;
+    const listItemProps = isStatic === true
+      ? {}
+      : { button: true, onClick: () => handleExpand(key) };
+    const collapseProps = isStatic === true
+      ? { in: true }
+      : { in: !!opened.includes(key) };
+    let itemIcon = null;
+
+    if (isStatic !== true) {
+      itemIcon = !opened.includes(key)
+        ? <ExpandMoreIcon />
+        : <ExpandLessIcon />;
+    }
+    return (
+      <React.Fragment key={key}>
+        <ListItem {...listItemProps} dense>
+          {isNested && (
+            <div className="nested-spacer" />
+          )}
+          <ListItemText className="detail-li-text">
+            <Typography color={isNested ? 'textSecondary' : 'default'} variant="subtitle1">
+              {util.antiCamelCase(key)}
+            </Typography>
+          </ListItemText>
+          {itemIcon}
+        </ListItem>
+        <Collapse {...collapseProps} unmountOnExit>
+          <ListItem dense>
+            {isNested && (
+              <div className="nested-spacer" />
+            )}
+            <ListItemText className="detail-li-text">
+              {util.formatStr(schema.getPreview(value))}
+            </ListItemText>
+          </ListItem>
+        </Collapse>
+        <Divider />
+      </React.Fragment>
+    );
+  }
+
 
   /**
    * Formats properties, varying structure based on property type.
@@ -358,10 +312,10 @@ class DetailDrawer extends Component {
    * @param {Array.<Object>} properties - List of properties to display.
    * @param {boolean} isNested - Nested flag.
    */
-  formatProps(node, properties, isNested) {
-    const { opened } = this.state;
+  function formatProps(node, properties, isNested) {
+    // const { opened } = this.state;
     const identifiers = ['displayName', '@rid', 'sourceId'];
-    const updatedProperties = DetailDrawer.movePropToTop(properties, 'displayName');
+    const updatedProperties = movePropToTop(properties, 'displayName');
 
     return updatedProperties.map((prop) => {
       const { type } = prop;
@@ -369,11 +323,11 @@ class DetailDrawer extends Component {
       let value = node[name];
       if (!value) return null;
       if (type === 'embeddedset' || type === 'linkset') {
-        const formattedSetProps = this.renderSetTypeProps(prop, value, opened, identifiers);
+        const formattedSetProps = renderSetTypeProps(prop, value, opened, identifiers);
         return formattedSetProps;
       }
       if ((type === 'link' || type === 'embedded') && value['@class']) {
-        const linkEmbeddedProps = this.renderLinkEmbeddedProps(prop, isNested, value, opened, identifiers);
+        const linkEmbeddedProps = renderLinkEmbeddedProps(prop, isNested, value, opened, identifiers);
         return linkEmbeddedProps;
       }
       if (value.toString().length <= MAX_STRING_LENGTH) {
@@ -414,16 +368,67 @@ class DetailDrawer extends Component {
         name = 'Statement';
         value = schema.getPreview(node);
       }
-      return this.formatLongValue(name, value, true, isNested);
+      return formatLongValue(name, value, true, isNested);
     });
   }
+
+
+  /**
+   * Formats specific identifier properties of input ontology.
+   * @param {Object} inputNode - Ontology being displayed.
+   * @param {boolean} isNested - if linked record is nested/embedded
+   */
+  function formatIdentifiers(node, isNested = false) {
+    if (!node['@class']) return null;
+
+    const { properties } = schema.get(node);
+    const identifiers = ['@class', '@rid'];
+    // builds an array of property models
+    const updatedIdentifiers = identifiers.reduce((array, id) => {
+      const [key, nestedKey] = id.split('.');
+
+      if (!schema.getMetadata().find(p => p.name === key)) {
+        if (properties[key]) {
+          if (nestedKey) {
+            array.push({ ...properties[key] });
+          } else {
+            array.push(properties[key]);
+          }
+        }
+        if (key === 'preview') {
+          array.push({ type: 'string', name: 'preview' });
+        }
+      }
+
+      return array;
+    }, []);
+    return formatProps(node, updatedIdentifiers, isNested);
+  }
+
+  /**
+   * Closes all expanded list properties.
+   * @param {Object} prevProps - Component's previous props.
+   */
+  useEffect(() => {
+    if (!node) {
+      setOpened([]);
+      setLinkOpen(null);
+    }
+  }, [node]);
+
+  /**
+   * Formats record metadata.
+   * @param {Object} node - Record to be formatted.
+   * @param {boolean} isNested - Nested flag.
+   */
+  const formatMetadata = (node, isNested) => formatProps(node, schema.getMetadata(), isNested);
 
   /**
    * Formats non-identifying, non-metadata properties of the input record.
    * @param {Object} node - Record being displayed.
    * @param {boolean} isNested - Nested flag.
    */
-  formatOtherProps(node, isNested) {
+  function formatOtherProps(node, isNested) {
     const identifiers = ['@class', '@rid'];
 
     let properties = Object.keys(node)
@@ -437,15 +442,14 @@ class DetailDrawer extends Component {
         && !prop.name.startsWith('in_')
         && !prop.name.startsWith('out_'));
 
-    return this.formatProps(node, propsList, isNested);
+    return formatProps(node, propsList, isNested);
   }
 
   /**
    * Formats record relationships.
    * @param {Object} node - Record being displayed.
    */
-  formatRelationships(node) {
-    const { linkOpen } = this.state;
+  function formatRelationships(node) {
     // Checks subclasses
     const edges = schema.getEdges(node);
 
@@ -474,7 +478,7 @@ class DetailDrawer extends Component {
                 button
                 className="detail-link-wrapper"
                 dense
-                onClick={() => this.handleLinkExpand(edge['@rid'])}
+                onClick={() => handleLinkExpand(edge['@rid'])}
               >
                 <ListItemIcon>
                   <div style={{ display: 'inline-flex' }}>
@@ -501,9 +505,9 @@ class DetailDrawer extends Component {
                   <ListSubheader color="primary" disableSticky>
                     Linked Record
                   </ListSubheader>
-                  {this.formatIdentifiers(isIn ? edge.out : edge.in, true)}
-                  {this.formatOtherProps(isIn ? edge.out : edge.in, true)}
-                  {this.formatMetadata(isIn ? edge.out : edge.in, true)}
+                  {formatIdentifiers(isIn ? edge.out : edge.in, true)}
+                  {formatOtherProps(isIn ? edge.out : edge.in, true)}
+                  {formatMetadata(isIn ? edge.out : edge.in, true)}
                 </List>
                 <Divider />
               </Collapse>
@@ -514,129 +518,90 @@ class DetailDrawer extends Component {
     );
   }
 
-  /**
-   * Toggles collapsed list item.
-   * @param {string} key - list item key.
-   */
-  @boundMethod
-  handleExpand(key) {
-    const { opened } = this.state;
+  const context = useContext(KbContext);
+  const drawerIsOpen = Boolean(node);
+  let content = null;
 
-    if (opened.includes(key)) {
-      opened.splice(opened.indexOf(key), 1);
-    } else {
-      opened.push(key);
-    }
-    this.setState({ opened });
-  }
+  if (drawerIsOpen) {
+    const recordId = node['@rid'].slice(1);
 
-  /**
-   * Toggles collapsed link list item.
-   * @param {string} key - list item key.
-   */
-  @boundMethod
-  handleLinkExpand(key) {
-    const { linkOpen, opened } = this.state;
+    const identifiers = formatIdentifiers(node);
+    const otherProps = formatOtherProps(node);
+    const relationships = !isEdge && formatRelationships(node);
+    const metadata = formatMetadata(node, true);
 
-    if (linkOpen === key) {
-      this.setState({ linkOpen: null, opened: opened.filter(o => !o.includes(key)) });
-    } else {
-      this.setState({ linkOpen: key });
-    }
-  }
+    const metadataIsOpen = opened.includes('metadata');
 
-  render() {
-    const {
-      node,
-      onClose,
-      isEdge,
-    } = this.props;
-    const { opened } = this.state;
+    let preview;
+    let errorMessage;
 
-    const drawerIsOpen = Boolean(node);
-
-    let content = null;
-
-    if (drawerIsOpen) {
-      const recordId = node['@rid'].slice(1);
-
-      const identifiers = this.formatIdentifiers(node);
-      const otherProps = this.formatOtherProps(node);
-      const relationships = !isEdge && this.formatRelationships(node);
-      const metadata = this.formatMetadata(node, true);
-
-      const metadataIsOpen = opened.includes('metadata');
-
-      let preview;
-      let errorMessage;
-
-      try {
-        preview = schema.getPreview(node);
+    try {
+      preview = schema.getPreview(node);
       // Only for kbp nodes so far.
-      } catch (e) {
-        preview = 'Invalid variant';
-        errorMessage = e.message;
-      }
-      content = (
-        <div className="detail-drawer__content">
-          <div className="detail-drawer__heading">
-            <div>
-              <Typography variant="h2">
-                {preview}
-              </Typography>
-              {errorMessage && (
+    } catch (e) {
+      preview = 'Invalid variant';
+      errorMessage = e.message;
+    }
+    content = (
+      <div className="detail-drawer__content">
+        <div className="detail-drawer__heading">
+          <div>
+            <Typography variant="h2">
+              {preview}
+            </Typography>
+            {errorMessage && (
               <Typography color="error" variant="subtitle2">
                 {errorMessage}
               </Typography>
-              )}
-            </div>
-            {hasWriteAccess(this.context) && (
-              <Link target="_blank" to={`/edit/${recordId}`}>
-                <IconButton
-                  variant="outlined"
-                >
-                  <EditIcon />
-                </IconButton>
-              </Link>
             )}
-            <Link target="_blank" to={`/view/${recordId}`}>
-              <IconButton
-                variant="outlined"
-              >
-                <OpenInNewIcon />
-              </IconButton>
-            </Link>
-            <IconButton onClick={onClose}>
-              <CloseIcon />
-            </IconButton>
           </div>
-          <Divider />
-          {identifiers}
-          {otherProps}
-          <ListItem
-            button
-            dense
-            onClick={() => this.handleExpand('metadata')}
-          >
-            <ListItemText
-              primary={<Typography variant="subtitle1">Metadata</Typography>}
-              primaryTypographyProps={{
-                color: metadataIsOpen ? 'secondary' : 'default',
-              }}
-            />
-            {!metadataIsOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
-          </ListItem>
-          <Collapse in={!!metadataIsOpen} unmountOnExit>
-            <List
-              className="detail-drawer__nested-list"
-              dense
-              disablePadding
+          {hasWriteAccess(context) && (
+          <Link target="_blank" to={`/edit/${recordId}`}>
+            <IconButton
+              variant="outlined"
             >
-              {metadata}
-            </List>
-          </Collapse>
-          <Divider />
-          {!isEdge && (
+              <EditIcon />
+            </IconButton>
+          </Link>
+          )}
+          <Link target="_blank" to={`/view/${recordId}`}>
+            <IconButton
+              variant="outlined"
+            >
+              <OpenInNewIcon />
+            </IconButton>
+          </Link>
+          <IconButton onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        </div>
+        <Divider />
+        {identifiers}
+        {otherProps}
+        <ListItem
+          button
+          dense
+          onClick={() => handleExpand('metadata')}
+        >
+          <ListItemText
+            primary={<Typography variant="subtitle1">Metadata</Typography>}
+            primaryTypographyProps={{
+              color: metadataIsOpen ? 'secondary' : 'default',
+            }}
+          />
+          {!metadataIsOpen ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+        </ListItem>
+        <Collapse in={!!metadataIsOpen} unmountOnExit>
+          <List
+            className="detail-drawer__nested-list"
+            dense
+            disablePadding
+          >
+            {metadata}
+          </List>
+        </Collapse>
+        <Divider />
+        {!isEdge && (
           <>
             <ListSubheader className="detail-drawer__relationships-subheader">
                 Relationships
@@ -651,27 +616,39 @@ class DetailDrawer extends Component {
             </ListItem>
             )}
           </>
-          )}
-        </div>
-      );
-    }
-
-    return (
-      <Drawer
-        anchor="right"
-        classes={{
-          paper: `detail-drawer ${!drawerIsOpen
-            ? 'detail-drawer--closed'
-            : ''
-          }`,
-        }}
-        open={drawerIsOpen}
-        variant="permanent"
-      >
-        {content}
-      </Drawer>
+        )}
+      </div>
     );
   }
+
+  return (
+    <Drawer
+      anchor="right"
+      classes={{
+        paper: `detail-drawer ${!drawerIsOpen
+          ? 'detail-drawer--closed'
+          : ''
+        }`,
+      }}
+      open={drawerIsOpen}
+      variant="permanent"
+    >
+      {content}
+    </Drawer>
+  );
 }
+
+DetailDrawer.propTypes = {
+  isEdge: PropTypes.bool,
+  node: GeneralRecordPropType,
+  onClose: PropTypes.func,
+};
+
+
+DetailDrawer.defaultProps = {
+  node: null,
+  onClose: null,
+  isEdge: false,
+};
 
 export default DetailDrawer;

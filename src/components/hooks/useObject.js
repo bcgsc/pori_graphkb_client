@@ -19,13 +19,8 @@ const useObject = (initialValue = {}) => {
       return { ...state, [name]: value };
     }
 
-    if (actionType === 'large-update') {
-      const updatedData = {};
-      Object.keys(payload).forEach((key) => {
-        updatedData[key] = payload[key];
-      });
-
-      return { ...state, ...updatedData };
+    if (actionType === 'bulk-update') {
+      return { ...state, ...payload };
     }
 
     if (actionType === 'replace') {
@@ -39,7 +34,7 @@ const useObject = (initialValue = {}) => {
   }, [setContent]);
 
   const update = useCallback((newContent = {}) => {
-    setContent({ type: 'large-update', payload: newContent });
+    setContent({ type: 'bulk-update', payload: newContent });
   }, [setContent]);
 
 

@@ -26,7 +26,7 @@ import util from '@/services/util';
    * @property {function} formatOtherProps property formatting function
    * @property {function} handleExpand adds prop to opened object and handles expansion
    */
-function LinkEmbeddedDisplay(props) {
+function FormatLinkEmbedded(props) {
   const {
     prop, isNested, value, identifiers, handleExpand, formatOtherProps, opened,
   } = props;
@@ -91,7 +91,7 @@ function LinkEmbeddedDisplay(props) {
   );
 }
 
-LinkEmbeddedDisplay.propTypes = {
+FormatLinkEmbedded.propTypes = {
   formatOtherProps: PropTypes.func.isRequired,
   handleExpand: PropTypes.func,
   identifiers: PropTypes.arrayOf(PropTypes.object),
@@ -101,7 +101,7 @@ LinkEmbeddedDisplay.propTypes = {
   value: PropTypes.object,
 };
 
-LinkEmbeddedDisplay.defaultProps = {
+FormatLinkEmbedded.defaultProps = {
   handleExpand: () => {},
   identifiers: [],
   isNested: false,
@@ -110,4 +110,4 @@ LinkEmbeddedDisplay.defaultProps = {
   value: {},
 };
 
-export default LinkEmbeddedDisplay;
+export default FormatLinkEmbedded;

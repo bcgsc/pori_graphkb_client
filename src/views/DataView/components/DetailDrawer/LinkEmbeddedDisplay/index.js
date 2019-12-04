@@ -18,11 +18,13 @@ import util from '@/services/util';
 /**
    * Renders formatted link/embedded props.
    *
-   * @param {PropertyModel} prop link/embedded property model
-   * @param {bool} isNested is the prop nested
-   * @param {Arrayof<Objects>}  value contains link/embedded records
-   * @param {Arrayof<string>} opened opened dropdowns in drawer
-   * @param {Arrayof<string>} identifiers props to be displayed for submenu
+   * @property {PropertyModel} prop link/embedded property model
+   * @property {bool} isNested is the prop nested
+   * @property {Arrayof<Objects>}  value contains link/embedded records
+   * @property {Arrayof<string>} opened opened dropdowns in drawer
+   * @property {Arrayof<string>} identifiers props to be displayed for submenu
+   * @property {function} formatOtherProps property formatting function
+   * @property {function} handleExpand adds prop to opened object and handles expansion
    */
 function LinkEmbeddedDisplay(props) {
   const {

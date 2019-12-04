@@ -23,7 +23,11 @@ import schema from '@/services/schema';
 
 /**
    * Formats record relationships.
-   * @param {Object} record - Record being displayed.
+   * @property {Object} record - Record being displayed.
+   * @property {Object} linkOpen - edge record opened
+   * @property {function} handleLinkExpand - adds link to opened list
+   * @property {function} formatMetadata - formats metadata properties
+   * @property {function} formatOtherProps - formats non-metadata properties
    */
 function FormattedRelationships(props) {
   const {

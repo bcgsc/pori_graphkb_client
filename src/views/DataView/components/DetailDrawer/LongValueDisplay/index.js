@@ -16,10 +16,12 @@ import util from '@/services/util';
 
 /**
    * Formats a key/value pair as a collapsible list item.
-   * @param {string} name - property key.
-   * @param {any} value - property value.
-   * @param {boolean} isStatic - if true, locks list item open.
-   * @param {boolean} isNested - if true, list item is indented.
+   * @property {string} name - property key.
+   * @property {any} value - property value.
+   * @property {boolean} isStatic - if true, locks list item open.
+   * @property {boolean} isNested - if true, list item is indented.
+   * @property {object} opened - array containing opened property models
+   * @property {function} handleExpand - adds clicked props to opened object
    */
 function LongValueDisplay(props) {
   const {

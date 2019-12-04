@@ -75,8 +75,9 @@ function DetailDrawer(props) {
     isEdge,
   } = props;
 
+  const context = useContext(KbContext);
+
   const [opened, setOpened] = useState([]);
-  const [linkOpen, setLinkOpen] = useState(null);
 
   /**
    * Toggles collapsed list item.
@@ -90,6 +91,8 @@ function DetailDrawer(props) {
     }
     setOpened([...opened]);
   }
+
+  const [linkOpen, setLinkOpen] = useState(null);
 
   /**
    * Toggles collapsed link list item.
@@ -105,9 +108,10 @@ function DetailDrawer(props) {
   }
 
   /**
-   * Formats properties, varying structure based on property type.
-   * @param {Object} record - Record being displayed.
-   * @param {Array.<Object>} properties - List of properties to display.
+   * Formats properties, varying structure based on property type. Base function
+   * that other formatting functions call.
+   * @param {Object} record - Record being displayed for its details.
+   * @param {Array.<Object>} properties - List of property models to display.
    * @param {boolean} isNested - Nested flag.
    */
   function formatProps(record, properties, isNested) {
@@ -218,7 +222,7 @@ function DetailDrawer(props) {
   /**
    * Formats non-identifying, non-metadata properties of the input record.
    * @param {Object} node - Record being displayed.
-   * @param {boolean} isNested - Nested flag.
+   * @param {boolean} isNested - Nested flag indicating if record is embedded
    */
   function formatOtherProps(record, isNested) {
     const identifiers = ['@class', '@rid'];
@@ -237,7 +241,6 @@ function DetailDrawer(props) {
     return formatProps(record, propsList, isNested);
   }
 
-  const context = useContext(KbContext);
   const drawerIsOpen = Boolean(node);
   let content = null;
 

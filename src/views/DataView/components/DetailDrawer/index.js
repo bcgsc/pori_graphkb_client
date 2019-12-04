@@ -31,14 +31,10 @@ import { hasWriteAccess } from '@/services/auth';
 import schema from '@/services/schema';
 import util from '@/services/util';
 
-import LinkEmbeddedDisplay from './LinkEmbeddedDisplay';
-import LongValueDisplay from './LongValueDisplay';
-import RelationshipDisplay from './RelationshipDisplay';
-import SetDrawerDisplay from './SetDrawerDisplay';
-
-
-const MAX_STRING_LENGTH = 64;
-const DATE_KEYS = ['createdAt', 'deletedAt'];
+import FormatLinkEmbedded from './FormatLinkEmbedded';
+import FormatRelationships from './FormatRelationships';
+import FormatSet from './FormatSet';
+import FormatString from './FormatString';
 
 
 /**
@@ -83,14 +79,14 @@ function DetailDrawer(props) {
    * Toggles collapsed list item.
    * @param {string} key - list item key.
    */
-  function handleExpand(key) {
+  const handleExpand = (key) => {
     if (opened.includes(key)) {
       opened.splice(opened.indexOf(key), 1);
     } else {
       opened.push(key);
     }
     setOpened([...opened]);
-  }
+  };
 
   const [linkOpen, setLinkOpen] = useState(null);
 
@@ -98,14 +94,14 @@ function DetailDrawer(props) {
    * Toggles collapsed link list item.
    * @param {string} key - list item key.
    */
-  function handleLinkExpand(key) {
+  const handleLinkExpand = (key) => {
     if (linkOpen === key) {
       setLinkOpen(null);
       setOpened(opened.filter(o => !o.includes(key)));
     } else {
       setLinkOpen(key);
     }
-  }
+  };
 
   /**
    * Formats properties, varying structure based on property type. Base function
@@ -114,7 +110,7 @@ function DetailDrawer(props) {
    * @param {Array.<Object>} properties - List of property models to display.
    * @param {boolean} isNested - Nested flag.
    */
-  function formatProps(record, properties, isNested) {
+  const formatProps = (record, properties, isNested) => {
     const identifiers = ['displayName', '@rid', 'sourceId'];
     const updatedProperties = movePropToTop(properties, 'displayName');
 
@@ -125,7 +121,7 @@ function DetailDrawer(props) {
       if (!value) return null;
       if (type === 'embeddedset' || type === 'linkset') {
         const formattedSetProps = (
-          <SetDrawerDisplay
+          <FormatSet
             handleExpand={handleExpand}
             identifiers={identifiers}
             opened={opened}
@@ -137,7 +133,7 @@ function DetailDrawer(props) {
       }
       if ((type === 'link' || type === 'embedded') && value['@class']) {
         const linkEmbeddedProps = (
-          <LinkEmbeddedDisplay
+          <FormatLinkEmbedded
             // eslint-disable-next-line no-use-before-define
             formatOtherProps={formatOtherProps}
             handleExpand={handleExpand}
@@ -150,46 +146,12 @@ function DetailDrawer(props) {
         );
         return linkEmbeddedProps;
       }
-      if (value.toString().length <= MAX_STRING_LENGTH) {
-        let Wrapper = React.Fragment;
-        const compProps = {};
-
-        if (name === 'url') {
-          Wrapper = 'a';
-          compProps.href = value;
-          compProps.target = '_blank';
-        }
-        return (
-          <React.Fragment key={name}>
-            <ListItem dense>
-              {isNested && (
-                <div className="nested-spacer" />
-              )}
-              <ListItemText className="detail-li-text">
-                <div className="detail-identifiers">
-                  <Typography variant="subtitle1">
-                    {util.antiCamelCase(name)}
-                  </Typography>
-                  <Wrapper {...compProps}>
-                    <Typography>
-                      {DATE_KEYS.includes(name)
-                        ? (new Date(value)).toLocaleString()
-                        : util.formatStr(schema.getPreview(value))}
-                    </Typography>
-                  </Wrapper>
-                </div>
-              </ListItemText>
-            </ListItem>
-            <Divider />
-          </React.Fragment>
-        );
-      }
       if (name === 'displayNameTemplate') {
         name = 'Statement';
         value = schema.getPreview(node);
       }
       return (
-        <LongValueDisplay
+        <FormatString
           handleExpand={handleExpand}
           isNested={isNested}
           isStatic
@@ -199,7 +161,7 @@ function DetailDrawer(props) {
         />
       );
     });
-  }
+  };
 
   /**
    * Closes all expanded list properties.
@@ -224,7 +186,7 @@ function DetailDrawer(props) {
    * @param {Object} node - Record being displayed.
    * @param {boolean} isNested - Nested flag indicating if record is embedded
    */
-  function formatOtherProps(record, isNested) {
+  const formatOtherProps = (record, isNested) => {
     const identifiers = ['@class', '@rid'];
 
     let properties = Object.keys(record)
@@ -239,7 +201,7 @@ function DetailDrawer(props) {
         && !prop.name.startsWith('out_'));
 
     return formatProps(record, propsList, isNested);
-  }
+  };
 
   const drawerIsOpen = Boolean(node);
   let content = null;
@@ -326,7 +288,7 @@ function DetailDrawer(props) {
                 Relationships
             </ListSubheader>
             {!isEdge ? (
-              <RelationshipDisplay
+              <FormatRelationships
                 formatMetadata={formatMetadata}
                 formatOtherProps={formatOtherProps}
                 handleLinkExpand={handleLinkExpand}

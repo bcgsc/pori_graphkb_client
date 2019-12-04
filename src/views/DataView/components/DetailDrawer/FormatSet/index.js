@@ -40,7 +40,7 @@ const sortProps = (value) => {
    * @param {Arrayof<string>} identifiers props to be displayed for submenu
    *
    */
-function SetDrawerDisplay(props) {
+function FormatSet(props) {
   const {
     prop, value, identifiers, opened, handleExpand,
   } = props;
@@ -113,7 +113,7 @@ function SetDrawerDisplay(props) {
   );
 }
 
-SetDrawerDisplay.propTypes = {
+FormatSet.propTypes = {
   handleExpand: PropTypes.func,
   identifiers: PropTypes.arrayOf(PropTypes.object),
   opened: PropTypes.arrayOf(PropTypes.string),
@@ -121,7 +121,7 @@ SetDrawerDisplay.propTypes = {
   value: PropTypes.object,
 };
 
-SetDrawerDisplay.defaultProps = {
+FormatSet.defaultProps = {
   handleExpand: () => {},
   identifiers: [],
   opened: [],
@@ -129,4 +129,4 @@ SetDrawerDisplay.defaultProps = {
   value: {},
 };
 
-export default SetDrawerDisplay;
+export default FormatSet;

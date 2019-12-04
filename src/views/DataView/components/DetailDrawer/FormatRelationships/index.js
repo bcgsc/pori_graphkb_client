@@ -29,7 +29,7 @@ import schema from '@/services/schema';
    * @property {function} formatMetadata - formats metadata properties
    * @property {function} formatOtherProps - formats non-metadata properties
    */
-function FormattedRelationships(props) {
+function FormatRelationships(props) {
   const {
     linkOpen, record, handleLinkExpand, formatMetadata, formatOtherProps,
   } = props;
@@ -101,7 +101,7 @@ function FormattedRelationships(props) {
 }
 
 
-FormattedRelationships.propTypes = {
+FormatRelationships.propTypes = {
   formatMetadata: PropTypes.func.isRequired,
   formatOtherProps: PropTypes.func.isRequired,
   handleLinkExpand: PropTypes.func.isRequired,
@@ -109,8 +109,8 @@ FormattedRelationships.propTypes = {
   record: PropTypes.object,
 };
 
-FormattedRelationships.defaultProps = {
+FormatRelationships.defaultProps = {
   linkOpen: {},
   record: {},
 };
-export default FormattedRelationships;
+export default FormatRelationships;

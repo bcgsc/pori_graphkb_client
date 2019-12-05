@@ -54,7 +54,7 @@ function TextRow(props) {
           <div className="nested-spacer" />
           )}
           <ListItemText className="detail-li-text">
-            <Typography color={isNested ? 'textSecondary' : 'default'} variant="subtitle1">
+            <Typography color={isNested ? 'textSecondary' : 'default'}>
               {util.antiCamelCase(name)}
             </Typography>
           </ListItemText>
@@ -92,7 +92,7 @@ function TextRow(props) {
           )}
           <ListItemText className="detail-li-text">
             <div className="detail-identifiers">
-              <Typography variant="subtitle1">
+              <Typography>
                 {util.antiCamelCase(name)}
               </Typography>
               <Wrapper {...compProps}>

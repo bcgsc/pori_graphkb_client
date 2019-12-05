@@ -265,7 +265,7 @@ function DetailDrawer(props) {
           onClick={() => handleExpand('metadata')}
         >
           <ListItemText
-            primary={<Typography variant="subtitle1">Metadata</Typography>}
+            primary={<Typography>Metadata</Typography>}
             primaryTypographyProps={{
               color: metadataIsOpen ? 'secondary' : 'default',
             }}

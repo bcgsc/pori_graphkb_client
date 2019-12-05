@@ -10,10 +10,10 @@ import React from 'react';
 import RecordAutocomplete from '@/components/RecordAutocomplete';
 import ResourceSelectComponent from '@/components/ResourceSelectComponent';
 import { GeneralRecordPropType } from '@/components/types';
+import { FORM_VARIANT } from '@/components/util';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
-import { FORM_VARIANT } from '../util';
 import BooleanField from './BooleanField';
 // unavoidable circular dependency below
 import EmbeddedRecord from './EmbeddedRecord';

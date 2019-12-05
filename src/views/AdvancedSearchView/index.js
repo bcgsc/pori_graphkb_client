@@ -12,7 +12,7 @@ import React, {
 } from 'react';
 
 import ActionButton from '@/components/ActionButton';
-import FormField from '@/components/RecordForm/FormField';
+import FormField from '@/components/FormField';
 import { HistoryPropType } from '@/components/types';
 import { cleanLinkedRecords } from '@/components/util';
 import api from '@/services/api';

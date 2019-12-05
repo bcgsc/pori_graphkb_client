@@ -12,15 +12,14 @@ import React, {
 } from 'react';
 
 import ActionButton from '@/components/ActionButton';
+import FormField from '@/components/FormField';
 import useSchemaForm from '@/components/hooks/useSchemaForm';
 import { KBContext } from '@/components/KBContext';
-import { getUser } from '@/services/auth';
-import schema from '@/services/schema';
-
-import FormField from './FormField';
 import {
   FORM_VARIANT,
-} from './util';
+} from '@/components/util';
+import { getUser } from '@/services/auth';
+import schema from '@/services/schema';
 
 
 const MODEL_NAME = 'StatementReview';

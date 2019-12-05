@@ -11,14 +11,14 @@ import React, { useEffect, useState } from 'react';
 
 import EdgeSentence from '@/components/SentencePreview/EdgeSentence';
 import StatementSentence from '@/components/SentencePreview/StatementSentence';
-import schema from '@/services/schema';
-
-import EdgeTable from '../EdgeTable';
 import {
   CLASS_MODEL_PROP,
   FORM_VARIANT,
   sortAndGroupFields,
-} from '../util';
+} from '@/components/util';
+import schema from '@/services/schema';
+
+import EdgeTable from '../EdgeTable';
 import EdgeFields from './EdgeFields';
 import FieldGroup from './FieldGroup';
 

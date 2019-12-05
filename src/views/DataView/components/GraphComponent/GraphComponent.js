@@ -938,7 +938,7 @@ function GraphComponent(props) {
 
     // deletes edges
     edgeTypes.forEach((edgeType) => {
-      const record = actionsNode.data;
+      const { data: record } = actionsNode;
 
       if (record[edgeType] && record[edgeType].length !== 0) {
         record[edgeType].forEach((edge) => {

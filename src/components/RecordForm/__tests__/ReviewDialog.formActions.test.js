@@ -4,7 +4,8 @@ import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackb
 import { act, fireEvent, render } from '@testing-library/react';
 import React from 'react';
 
-import { KBContext } from '../../KBContext';
+import { KBContext } from '@/components/KBContext';
+
 import ReviewDialog from '../ReviewDialog';
 
 

@@ -22,13 +22,13 @@ const MAX_STRING_LENGTH = 64;
    * Formats a key/value pair where string is value. Either formats it
    * as a string row or a collapsable row depending on length
    * @property {string} name - property key.
-   * @property {any} value - property value.
+   * @property {string} value - property value
    * @property {boolean} isStatic - if true, locks list item open.
    * @property {boolean} isNested - if true, list item is indented.
    * @property {object} opened - array containing opened property models
    * @property {function} handleExpand - adds clicked props to opened object
    */
-function FormatString(props) {
+function TextRow(props) {
   const {
     name, value, isStatic, isNested, opened, handleExpand,
   } = props;
@@ -121,7 +121,7 @@ function FormatString(props) {
   return formattedString;
 }
 
-FormatString.propTypes = {
+TextRow.propTypes = {
   isNested: PropTypes.bool.isRequired,
   isStatic: PropTypes.bool.isRequired,
   opened: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -130,10 +130,10 @@ FormatString.propTypes = {
   value: PropTypes.object,
 };
 
-FormatString.defaultProps = {
+TextRow.defaultProps = {
   handleExpand: () => {},
   name: '',
   value: {},
 };
 
-export default FormatString;
+export default TextRow;

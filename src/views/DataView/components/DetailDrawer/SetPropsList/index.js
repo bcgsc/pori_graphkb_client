@@ -40,7 +40,7 @@ const sortProps = (value) => {
    * @param {Arrayof<string>} identifiers props to be displayed for submenu
    *
    */
-function FormatSet(props) {
+function SetPropsList(props) {
   const {
     prop, value, identifiers, opened, handleExpand,
   } = props;
@@ -113,7 +113,7 @@ function FormatSet(props) {
   );
 }
 
-FormatSet.propTypes = {
+SetPropsList.propTypes = {
   handleExpand: PropTypes.func,
   identifiers: PropTypes.arrayOf(PropTypes.object),
   opened: PropTypes.arrayOf(PropTypes.string),
@@ -121,7 +121,7 @@ FormatSet.propTypes = {
   value: PropTypes.object,
 };
 
-FormatSet.defaultProps = {
+SetPropsList.defaultProps = {
   handleExpand: () => {},
   identifiers: [],
   opened: [],
@@ -129,4 +129,4 @@ FormatSet.defaultProps = {
   value: {},
 };
 
-export default FormatSet;
+export default SetPropsList;

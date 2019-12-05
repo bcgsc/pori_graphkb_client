@@ -31,10 +31,10 @@ import { hasWriteAccess } from '@/services/auth';
 import schema from '@/services/schema';
 import util from '@/services/util';
 
-import FormatLinkEmbedded from './FormatLinkEmbedded';
-import FormatRelationships from './FormatRelationships';
-import FormatSet from './FormatSet';
-import FormatString from './FormatString';
+import LinkEmbeddedPropList from './LinkEmbeddedPropList';
+import RelationshipList from './RelationshipList';
+import SetPropsList from './SetPropsList';
+import TextRow from './TextRow';
 
 
 /**
@@ -121,7 +121,7 @@ function DetailDrawer(props) {
       if (!value) return null;
       if (type === 'embeddedset' || type === 'linkset') {
         const formattedSetProps = (
-          <FormatSet
+          <SetPropsList
             handleExpand={handleExpand}
             identifiers={identifiers}
             opened={opened}
@@ -133,7 +133,7 @@ function DetailDrawer(props) {
       }
       if ((type === 'link' || type === 'embedded') && value['@class']) {
         const linkEmbeddedProps = (
-          <FormatLinkEmbedded
+          <LinkEmbeddedPropList
             // eslint-disable-next-line no-use-before-define
             formatOtherProps={formatOtherProps}
             handleExpand={handleExpand}
@@ -151,7 +151,7 @@ function DetailDrawer(props) {
         value = schema.getPreview(node);
       }
       return (
-        <FormatString
+        <TextRow
           handleExpand={handleExpand}
           isNested={isNested}
           isStatic
@@ -288,7 +288,7 @@ function DetailDrawer(props) {
                 Relationships
             </ListSubheader>
             {!isEdge ? (
-              <FormatRelationships
+              <RelationshipList
                 formatMetadata={formatMetadata}
                 formatOtherProps={formatOtherProps}
                 handleLinkExpand={handleLinkExpand}

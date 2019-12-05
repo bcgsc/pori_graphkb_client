@@ -4,10 +4,10 @@ import { SnackbarContextProvider as SnackbarProvider } from '@bcgsc/react-snackb
 import { act, fireEvent, render } from '@testing-library/react';
 import React from 'react';
 
+import { KBContext } from '@/components/KBContext';
 import * as api from '@/services/api';
 
 import RecordForm from '..';
-import { KBContext } from '../../KBContext';
 
 jest.mock('@/services/auth', () => ({
   getUser: () => '23:9',

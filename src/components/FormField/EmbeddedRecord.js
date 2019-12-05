@@ -11,9 +11,9 @@ import React, {
 } from 'react';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 
+import FormLayout from '@/components/RecordForm/FormLayout';
 import schema from '@/services/schema';
 
-import FormLayout from '../FormLayout';
 import {
   FORM_VARIANT,
 } from '../util';

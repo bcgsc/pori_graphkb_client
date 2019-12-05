@@ -963,7 +963,7 @@ function GraphComponent(props) {
     let indexAdjustment = 0; // increase this with every link deletion
     links.forEach((link, index) => {
       const { data: { in: sourceRID, out: targetRID, '@rid': edgeRID } } = link;
-      const nodeRID = actionsNode.data['@rid'];
+      const { data: { '@rid': nodeRID } } = actionsNode;
 
       if (sourceRID === nodeRID || targetRID === nodeRID) {
         updatedLinks.splice(index - indexAdjustment, 1);

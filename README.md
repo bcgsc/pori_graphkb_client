@@ -83,19 +83,19 @@ The files generated for jest coverage reports are stored in the `/coverage` dire
   `-- registerServiceWorker.js
 ```
 
-| File or Directory            | Description                  |
-| ---------------------------- | -----------------------------|
-| config/ | Contains webpack and jest configurations.  |
-| cypress/ | Cypress integration test files and related config |
-| src/                          | Contains all code that is required for the app to run |
-| src/components/               | Contains general use app components, mostly presentational. Eg a special type of button with the GSC logo.|
-| src/services/                 | Contains other business logic modules that are not `React` components. Eg a collection of math functions for calculating geometries for a special graph. |
-| src/static/                   | Contains static resources to be loaded into the page. Eg a tutorial video .mp4 file to be loaded into a help dialog.|
+| File or Directory             | Description                                                                                                                                                                                                                 |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| config/                       | Contains webpack and jest configurations.                                                                                                                                                                                   |
+| cypress/                      | Cypress integration test files and related config                                                                                                                                                                           |
+| src/                          | Contains all code that is required for the app to run                                                                                                                                                                       |
+| src/components/               | Contains general use app components, mostly presentational. Eg a special type of button with the GSC logo.                                                                                                                  |
+| src/services/                 | Contains other business logic modules that are not `React` components. Eg a collection of math functions for calculating geometries for a special graph.                                                                    |
+| src/static/                   | Contains static resources to be loaded into the page. Eg a tutorial video .mp4 file to be loaded into a help dialog.                                                                                                        |
 | src/views/                    | Highest level `React` components to be served as root components of a certain URL. Interacts with the router and App context, and are placed in the `<Route />` components. Eg an "About us" page found at the URL "/about" |
-| `src/views/<view>/components` | Single-use components specific to the view they are bundled with |
-| src/App.[js, scss]           | `React` app root component |
-| src/index.[js, scss]         | `webpack` bundle root script, simply renders `React` app root component and registers service worker. |
-| src/registerServiceWorker.js | Registers the service worker created by webpack to serve cached views before re-requesting them to improve performance |
+| `src/views/<view>/components` | Single-use components specific to the view they are bundled with                                                                                                                                                            |
+| src/App.[js, scss]            | `React` app root component                                                                                                                                                                                                  |
+| src/index.[js, scss]          | `webpack` bundle root script, simply renders `React` app root component and registers service worker.                                                                                                                       |
+| src/registerServiceWorker.js  | Registers the service worker created by webpack to serve cached views before re-requesting them to improve performance                                                                                                      |
 
 
 ### Branch conventions
@@ -104,12 +104,12 @@ All changes should be made into their own branch and merged with a pull request,
 
 Here are the naming conventions for the different types of branches used in this project.
 
-| branch type | description |
-|-|-|
-|feature/[`feature name`] | Branch for adding a new feature. Eg: `feature/stats-page`
-| release/[`version number(s)`] | Branch for releases. Can specify ranges of patch versions with "X" Eg: `release/v0.6.X` or `release/v1.0.X` |
-| bugfix/[`bug desc/ticket code`] | Branch for fixing bugs. Eg: `bugfix/KBDEV-1234` or `bugfix/query-crashing`|
-| ??? | New branch conventions should be discussed with the KBDEV team |
+| branch type                     | description                                                                                                 |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| feature/[`feature name`]        | Branch for adding a new feature. Eg: `feature/stats-page`                                                   |
+| release/[`version number(s)`]   | Branch for releases. Can specify ranges of patch versions with "X" Eg: `release/v0.6.X` or `release/v1.0.X` |
+| bugfix/[`bug desc/ticket code`] | Branch for fixing bugs. Eg: `bugfix/KBDEV-1234` or `bugfix/query-crashing`                                  |
+| ???                             | New branch conventions should be discussed with the KBDEV team                                              |
 
 ### Coding Guidelines
 
@@ -118,7 +118,7 @@ Here are the naming conventions for the different types of branches used in this
 * Lint everything. App will not compile if there are linting errors.
 * JSDoc all functions, classes, and `propTypes` declarations.
 * Follow `Material Design` when designing front end components.
-* Reuse dynamic components when applicable to generate class based layouts. `components/RecordForm/FormField.js` is an example of using record class models to automatically generate scaffolding.
+* Reuse dynamic components when applicable to generate class based layouts. `components/FormField.js` is an example of using record class models to automatically generate scaffolding.
 
 
 ## Reading List

@@ -5,8 +5,7 @@ import React from 'react';
 
 import { KBContext } from '@/components/KBContext';
 import RecordForm from '@/components/RecordForm';
-import { FORM_VARIANT } from '@/components/RecordForm/util';
-import { cleanLinkedRecords } from '@/components/util';
+import { cleanLinkedRecords, FORM_VARIANT } from '@/components/util';
 import { hasWriteAccess } from '@/services/auth';
 import schema from '@/services/schema';
 

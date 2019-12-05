@@ -5,10 +5,9 @@ import React, {
   useState,
 } from 'react';
 
+import FormField from '@/components/FormField';
 import RecordForm from '@/components/RecordForm';
-import FormField from '@/components/RecordForm/FormField';
-import { FORM_VARIANT } from '@/components/RecordForm/util';
-import { cleanLinkedRecords } from '@/components/util';
+import { cleanLinkedRecords, FORM_VARIANT } from '@/components/util';
 import schema from '@/services/schema';
 
 

@@ -925,7 +925,7 @@ function GraphComponent(props) {
   };
 
   /**
-   * Removes node and all corresponding links from the graph.
+   * Removes node and all corresponding edges/links from the graph.
    */
   const handleNodeHide = () => {
     const { edgeTypes, handleDetailDrawerClose } = props;
@@ -936,15 +936,18 @@ function GraphComponent(props) {
     nodes.splice(i, 1);
     delete graphObjects[actionsNode.data['@rid']];
 
+    // deletes edges
     edgeTypes.forEach((edgeType) => {
-      if (actionsNode.data[edgeType] && actionsNode.data[edgeType].length !== 0) {
-        actionsNode.data[edgeType].forEach((edge) => {
+      const record = actionsNode.data;
+
+      if (record[edgeType] && record[edgeType].length !== 0) {
+        record[edgeType].forEach((edge) => {
           const edgeRid = edge['@rid'] || edge;
           const j = links.findIndex(l => l.data['@rid'] === edgeRid);
 
           if (j !== -1) {
             const link = links[j];
-            const targetRid = link.source.data['@rid'] === actionsNode.data['@rid']
+            const targetRid = link.source.data['@rid'] === record['@rid']
               ? link.target.data['@rid'] : link.source.data['@rid'];
             links.splice(j, 1);
             propsMap.current.removeLink(link.data, links);
@@ -955,13 +958,34 @@ function GraphComponent(props) {
       }
     });
 
+    // delete links
+    const updatedLinks = [...links];
+    let indexAdjustment = 0; // increase this with every link deletion
+    links.forEach((link, index) => {
+      const { data: { in: sourceRID, out: targetRID, '@rid': edgeRID } } = link;
+      const nodeRID = actionsNode.data['@rid'];
+
+      if (sourceRID === nodeRID || targetRID === nodeRID) {
+        updatedLinks.splice(index - indexAdjustment, 1);
+        indexAdjustment += 1;
+        propsMap.current.removeLink(link.data, links);
+        delete graphObjects[edgeRID];
+
+        if (sourceRID === nodeRID) {
+          expandable[targetRID] = true;
+        } else {
+          expandable[sourceRID] = true;
+        }
+      }
+    });
+
     propsMap.current.removeNode(actionsNode.data, nodes, allProps);
     saveGraphStatetoURL(nodes);
     updateColors(nodes, links, graphOptions);
     handleDetailDrawerClose();
 
     update({
-      nodes, links, expandable, graphObjects, actionsNode: null,
+      nodes, links: updatedLinks, expandable, graphObjects, actionsNode: null,
     });
   };
 

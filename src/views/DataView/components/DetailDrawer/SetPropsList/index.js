@@ -55,7 +55,7 @@ function SetPropsList(props) {
     <React.Fragment key={name}>
       <ListItem dense>
         <ListItemText className="detail-li-text">
-          <Typography variant="subtitle1">
+          <Typography>
             {util.antiCamelCase(name)}
           </Typography>
         </ListItemText>
@@ -67,10 +67,10 @@ function SetPropsList(props) {
               <div className="nested-spacer" />
               <ListItemText className="detail-li-text">
                 <div className="detail-identifiers-linkset">
-                  <Typography color={opened.includes(item) ? 'secondary' : 'textSecondary'} variant="subtitle2">
+                  <Typography color={opened.includes(item) ? 'secondary' : 'textSecondary'}>
                     {util.antiCamelCase(item['@class'])}
                   </Typography>
-                  <Typography color={opened.includes(item) ? 'secondary' : 'textSecondary'} variant="subtitle2">
+                  <Typography color={opened.includes(item) ? 'secondary' : 'textSecondary'}>
                     {schema.getPreview(item)}
                   </Typography>
                 </div>
@@ -86,7 +86,7 @@ function SetPropsList(props) {
                         <Typography className="detail-identifiers-nested" variant="subtitle1">
                           {util.antiCamelCase(propName)}
                         </Typography>
-                        <Typography>
+                        <Typography variant="h6">
                           {item[propName]}
                         </Typography>
                       </div>

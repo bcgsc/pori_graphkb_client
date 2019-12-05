@@ -55,7 +55,7 @@ function LinkEmbeddedPropList(props) {
             <Typography variant="body1">
               {util.antiCamelCase(name)}
             </Typography>
-            <Typography variant="h6">
+            <Typography>
               {previewStr}
             </Typography>
           </div>

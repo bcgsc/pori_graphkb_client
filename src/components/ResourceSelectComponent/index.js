@@ -148,7 +148,7 @@ ResourceSelectComponent.propTypes = {
   name: PropTypes.string,
   onChange: PropTypes.func,
   required: PropTypes.bool,
-  resources: PropTypes.arrayOf(SelectOptionPropType),
+  resources: PropTypes.arrayOf(PropTypes.oneOfType([SelectOptionPropType, PropTypes.string])),
   variant: PropTypes.string,
 };
 

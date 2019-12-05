@@ -1,8 +1,9 @@
 import { mount } from 'enzyme';
 import React from 'react';
 
+import DetailChip from '@/components/DetailChip';
+
 import StatementReviewsTable from '..';
-import DetailChip from '../../../../DetailChip';
 
 
 describe('StatementReviewsTable', () => {

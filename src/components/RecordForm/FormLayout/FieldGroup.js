@@ -1,8 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import FormField from '../FormField';
-import { FORM_VARIANT } from '../util';
+import FormField from '@/components/FormField';
+
+import { FORM_VARIANT } from '@/components/util';
 
 
 /**

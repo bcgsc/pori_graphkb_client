@@ -17,8 +17,8 @@ import React, {
   useState,
 } from 'react';
 
-import { FORM_VARIANT } from '@/components/RecordForm/util';
 import RecordFormDialog from '@/components/RecordFormDialog';
+import { FORM_VARIANT } from '@/components/util';
 
 
 /**

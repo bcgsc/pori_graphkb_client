@@ -5,11 +5,10 @@ import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
 import React from 'react';
 
+import RecordAutocomplete from '@/components/RecordAutocomplete';
+import ResourceSelectComponent from '@/components/ResourceSelectComponent';
 import api from '@/services/api';
 import schema from '@/services/schema';
-
-import RecordAutocomplete from '../../RecordAutocomplete';
-import ResourceSelectComponent from '../../ResourceSelectComponent';
 
 /**
  * Allows an autocomplete record link to be filtered based on some class

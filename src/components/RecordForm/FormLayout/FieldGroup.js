@@ -1,8 +1,8 @@
+import { List } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React from 'react';
 
 import FormField from '@/components/FormField';
-
 import { FORM_VARIANT } from '@/components/util';
 
 
@@ -52,7 +52,7 @@ const FieldGroup = ({
     if (Array.isArray(item)) { // subgrouping
       const key = item.join('--');
       fields.push((
-        <div key={key} className="record-form__content-subgroup">
+        <List key={key} className="record-form__content-subgroup">
           <FieldGroup
             content={content}
             disabled={disabled}
@@ -63,7 +63,7 @@ const FieldGroup = ({
             ordering={item}
             variant={variant}
           />
-        </div>
+        </List>
       ));
     } else if (properties[item]) {
       const prop = properties[item];

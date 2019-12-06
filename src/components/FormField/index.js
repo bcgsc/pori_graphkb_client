@@ -275,9 +275,7 @@ const FormField = (props) => {
 
   return (
     <ListItem key={name} className={`form-field form-field--${type} ${className}`} component="li">
-      <div className="form-field__content">
-        {propComponent}
-      </div>
+      {propComponent}
     </ListItem>
   );
 };

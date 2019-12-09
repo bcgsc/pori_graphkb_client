@@ -27,7 +27,7 @@ const {
  * @param {string} props.coordinateType the position class to build the form on
  * @param {object} props.value the current start and end values of this position
  */
-const BasicPositionForm = ({
+const ProteinPosition = ({
   onChange,
   value,
   name,
@@ -114,7 +114,7 @@ const BasicPositionForm = ({
   );
 };
 
-BasicPositionForm.propTypes = {
+ProteinPosition.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: PropTypes.shape({
     pos: PropTypes.number,
@@ -125,11 +125,11 @@ BasicPositionForm.propTypes = {
   required: PropTypes.bool,
 };
 
-BasicPositionForm.defaultProps = {
+ProteinPosition.defaultProps = {
   required: true,
   name: '',
   disabled: false,
 };
 
 
-export default BasicPositionForm;
+export default ProteinPosition;

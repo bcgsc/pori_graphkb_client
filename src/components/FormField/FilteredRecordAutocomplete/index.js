@@ -13,9 +13,22 @@ import schema from '@/services/schema';
 /**
  * Allows an autocomplete record link to be filtered based on some class
  * model name to search by
+ *
+ * @param {object} props
+ * @param {string} props.linkedClassName the base class for creating the class filter for the paired autocomplete component
+ * @param {string} props.defaultFilterClassName the initial class selection for the class filter
+ * @param {bool} props.disabled
+ * @param {bool} props.isMulti allows multiple selections for the autocomplete
+ * @param {Object} props.DetailChipProps properties to pass to the inner detail chip component(s)
+ * @param {string} props.helperText
+ * @param {bool} props.error
+ * @param {string} props.name the field name used in passing to parent handlers
+ *
+ * @note all remaining properties are passed to the RecordAutocomplete component
  */
 const FilteredRecordAutocomplete = ({
   linkedClassName,
+  defaultFilterClassName,
   disabled,
   isMulti,
   DetailChipProps,
@@ -24,7 +37,9 @@ const FilteredRecordAutocomplete = ({
   name,
   ...rest
 }) => {
-  const [selectedClassName, setSelectedClassName] = useState(linkedClassName);
+  const [selectedClassName, setSelectedClassName] = useState(
+    defaultFilterClassName || linkedClassName,
+  );
 
   const handleClassChange = useCallback((event) => {
     const { target: { value } } = event;
@@ -92,6 +107,7 @@ FilteredRecordAutocomplete.propTypes = {
   linkedClassName: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   DetailChipProps: PropTypes.object,
+  defaultFilterClassName: PropTypes.string,
   disabled: PropTypes.bool,
   error: PropTypes.bool,
   helperText: PropTypes.string,
@@ -100,6 +116,7 @@ FilteredRecordAutocomplete.propTypes = {
 
 FilteredRecordAutocomplete.defaultProps = {
   disabled: false,
+  defaultFilterClassName: '',
   isMulti: false,
   helperText: '',
   error: false,

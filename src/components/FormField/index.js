@@ -1,7 +1,6 @@
 import './index.scss';
 
 import {
-  ListItem,
   TextField,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
@@ -17,6 +16,7 @@ import schema from '@/services/schema';
 import BooleanField from './BooleanField';
 // unavoidable circular dependency below
 import EmbeddedRecord from './EmbeddedRecord';
+import FieldWrapper from './FieldWrapper';
 import FilteredRecordAutocomplete from './FilteredRecordAutocomplete';
 import PermissionsTable from './PermissionsTable';
 import EmbeddedListTable from './StatementReviewsTable';
@@ -274,9 +274,9 @@ const FormField = (props) => {
   }
 
   return (
-    <ListItem key={name} className={`form-field form-field--${type} ${className}`} component="li">
+    <FieldWrapper key={name} className={className} type={type}>
       {propComponent}
-    </ListItem>
+    </FieldWrapper>
   );
 };
 

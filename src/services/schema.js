@@ -271,7 +271,7 @@ class Schema {
           const newErrors = { ...errors };
 
           if (error) {
-            subErrors[name] = error;
+            newErrors[name] = error;
           }
 
           return newErrors;

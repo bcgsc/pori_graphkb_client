@@ -29,46 +29,6 @@
   }
 }
 
-.filtered-record-autocomplete {
-  max-width: 100%;
-  width: 100%;
-
-  &__content {
-    max-width: 100%;
-    width: 100%;
-  }
-
-  .Mui-error {
-    margin-top: 0;
-  }
-
-  &__select-search-class {
-    .MuiListItemText-multiline {
-      margin-bottom: 0;
-      margin-top: 0;
-    }
-  }
-
-  @media (min-width: #{$breakpoint-lg}) {
-    align-items: flex-start;
-    display: flex;
-
-    &__select-search-class {
-      margin-right: 20px;
-      max-width: 15rem;
-    }
-
-    &__content {
-      display: flex;
-    }
-
-    .record-autocomplete {
-      align-self: flex-start;
-      // margin-top: 8px; // fixed spacing issues
-    }
-  }
-}
-
 .review-card {
   max-width: 600px;
   min-width: 300px;

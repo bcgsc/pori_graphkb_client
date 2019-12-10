@@ -4,8 +4,23 @@ import React from 'react';
 import FormField from '@/components/FormField';
 import { FORM_VARIANT } from '@/components/util';
 
-import { exclusionFilter } from '../util';
-
+/**
+ * returns an array of strings without any of the indicated exclusion values
+ *
+ * @param {Array.<string>} orderingList specifies property display ordering
+ * @param {Array.<string>} exclusions fields that should not be rendered
+ */
+const exclusionFilter = (orderingList, exclusionList) => {
+  const newOrdering = [];
+  orderingList.forEach((filter) => {
+    if (Array.isArray(filter)) {
+      newOrdering.push(exclusionFilter(filter, exclusionList));
+    } else if (!exclusionList.includes(filter)) {
+      newOrdering.push(filter);
+    }
+  });
+  return newOrdering;
+};
 
 /**
  * Given some ordering of fields (possibly grouped) return the set of fields
@@ -52,7 +67,6 @@ const FieldGroup = ({
   if ((variant === FORM_VARIANT.EDIT || variant === FORM_VARIANT.NEW)) {
     filteredOrdering = filterGeneratedFields(ordering);
   }
-
   filteredOrdering = exclusionFilter(filteredOrdering, exclusions);
 
 

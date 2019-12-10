@@ -43,4 +43,20 @@ describe('FormLayout', () => {
     expect(getByTestId('@rid')).toBeInTheDocument();
     expect(getByTestId('@rid').value).toEqual('#3:4');
   });
+
+  test('exclusion works', () => {
+    const { getByText, queryByText } = render(
+      <KBContext.Provider value={{ }}>
+        <FormLayout
+          content={{ '@rid': '#3:4' }}
+          exclusions={['@rid']}
+          modelName="User"
+          variant="view"
+        />
+      </KBContext.Provider>,
+    );
+
+    expect(getByText('The username')).toBeInTheDocument();
+    expect(queryByText('@rid')).toBe(null);
+  });
 });

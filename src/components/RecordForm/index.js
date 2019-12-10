@@ -25,36 +25,7 @@ import schema from '@/services/schema';
 import EdgeTable from './EdgeTable';
 import FormLayout from './FormLayout';
 import ReviewDialog from './ReviewDialog';
-
-
-const cleanPayload = (payload) => {
-  if (typeof payload !== 'object' || payload === null) {
-    return payload;
-  }
-  const newPayload = {};
-  Object.entries(payload).forEach(([key, value]) => {
-    if (value !== undefined && !/^(in|out)_\w+$/.exec(key)) {
-      if (typeof value === 'object' && value !== null) {
-        if (Array.isArray(value)) {
-          newPayload[key] = value.map((arr) => {
-            if (arr && arr['@rid']) {
-              return arr['@rid'];
-            }
-            return cleanPayload(arr);
-          });
-        } else if (value['@rid']) {
-          newPayload[key] = value['@rid'];
-        } else {
-          newPayload[key] = value;
-        }
-      } else {
-        newPayload[key] = value;
-      }
-    }
-  });
-  return newPayload;
-};
-
+import { cleanPayload, FIELD_EXCLUSIONS } from './util';
 
 /**
  * Form/View that displays the contents of a single node
@@ -94,7 +65,6 @@ const RecordForm = ({
   const {
     formIsDirty, setFormIsDirty, formContent, formErrors, updateForm, formHasErrors,
   } = useSchemaForm(fieldDefs, initialValue);
-
 
   useEffect(() => () => controllers.map(c => c.abort()), []); // eslint-disable-line
 
@@ -283,6 +253,7 @@ const RecordForm = ({
         content={formContent}
         disabled={actionInProgress || variant === FORM_VARIANT.VIEW}
         errors={formErrors}
+        exclusions={FIELD_EXCLUSIONS}
         formIsDirty={formIsDirty}
         modelName={modelName}
         onChange={handleOnChange}

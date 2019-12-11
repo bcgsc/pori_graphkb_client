@@ -1,0 +1,19 @@
+@import '../../../globals';
+
+.position-form {
+  @include field-set;
+  display: flex;
+  padding: 10px;
+
+  &__uncertain-checkbox {
+    display: block;
+  }
+
+  &__cancel {
+    padding: 0;
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    z-index: 5;
+  }
+}

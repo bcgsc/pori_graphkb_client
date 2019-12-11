@@ -1,6 +1,7 @@
 import './index.scss';
 
 import { FormControl, FormHelperText } from '@material-ui/core';
+import FilterIcon from '@material-ui/icons/FilterList';
 import { boundMethod } from 'autobind-decorator';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -95,6 +96,7 @@ class FilteredRecordAutocomplete extends React.PureComponent {
           {!disabled && (
           <ResourceSelectComponent
             className="node-form__class-select filtered-record-autocomplete__select-search-class"
+            IconComponent={FilterIcon}
             label={`Filter (${name}) Search by Class`}
             name="search-class"
             onChange={this.handleClassChange}

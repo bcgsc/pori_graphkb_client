@@ -1,5 +1,6 @@
 import {
   Collapse,
+  List,
   ListItem,
   ListItemText,
   Typography,
@@ -94,7 +95,7 @@ const FormLayout = ({
             />
           )}
         </div>
-        <div className="record-form__content">
+        <List className="record-form__content">
           <FieldGroup
             content={content}
             disabled={disabled}
@@ -106,7 +107,7 @@ const FormLayout = ({
             ordering={fields}
             variant={variant}
           />
-        </div>
+        </List>
         {extraFields.length > 0 && (
         <>
           <ListItem button onClick={() => setIsExpanded(!isExpanded)}>
@@ -120,7 +121,7 @@ const FormLayout = ({
             {isExpanded ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
           <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-            <div className="record-form__content">
+            <List className="record-form__content">
               <FieldGroup
                 content={content}
                 disabled={disabled}
@@ -132,7 +133,7 @@ const FormLayout = ({
                 ordering={extraFields}
                 variant={variant}
               />
-            </div>
+            </List>
           </Collapse>
         </>
         )}

@@ -12,7 +12,9 @@
 
   &__input {
     display: flex;
-    height: fit-content;
+    height: fit-content; // expand with multiple selections (may be multi-line)
+    margin-top: -3px; // match other MUI form fields
+    min-height: 37px; // match other MUI form fields
     padding: 0;
   }
 
@@ -22,6 +24,7 @@
 
   &__option {
     font-weight: 400;
+
     &--selected {
       font-weight: 500;
     }

@@ -62,6 +62,7 @@ function ResourceSelectComponent(props) {
     variant,
     className,
     disabled,
+    IconComponent,
   } = props;
 
   const resourcesDisplay = resources.map(resource => children(resource, disabled));
@@ -93,7 +94,7 @@ function ResourceSelectComponent(props) {
       <Select
         IconComponent={disabled
           ? 'span'
-          : ArrowDropDownIcon
+          : IconComponent
         }
         input={<InputComponent id={`resource-select-${name}`} name={name} />}
         inputProps={innerProps}
@@ -101,7 +102,7 @@ function ResourceSelectComponent(props) {
         style={{
           fontSize: dense ? '0.8125rem' : '',
         }}
-        value={value}
+        value={value || ''}
       >
         {resourcesDisplay}
       </Select>
@@ -135,7 +136,7 @@ const SelectOptionPropType = PropTypes.shape({
  */
 
 ResourceSelectComponent.propTypes = {
-  value: PropTypes.oneOfType([GeneralRecordPropType, PropTypes.string]).isRequired,
+  IconComponent: PropTypes.element,
   children: PropTypes.func,
   className: PropTypes.string,
   dense: PropTypes.bool,
@@ -148,7 +149,8 @@ ResourceSelectComponent.propTypes = {
   name: PropTypes.string,
   onChange: PropTypes.func,
   required: PropTypes.bool,
-  resources: PropTypes.arrayOf(SelectOptionPropType),
+  resources: PropTypes.arrayOf(PropTypes.oneOfType([SelectOptionPropType, PropTypes.string])),
+  value: PropTypes.oneOfType([GeneralRecordPropType, PropTypes.string]),
   variant: PropTypes.string,
 };
 
@@ -167,6 +169,8 @@ ResourceSelectComponent.defaultProps = {
   disabled: false,
   helperText: '',
   innerProps: {},
+  value: null,
+  IconComponent: ArrowDropDownIcon,
 };
 
 export default ResourceSelectComponent;

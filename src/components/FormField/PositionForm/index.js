@@ -18,11 +18,17 @@ import CytobandPosition from './CytobandPosition';
 import ProteinPosition from './ProteinPosition';
 
 /**
- * Handles the position form and toggle between range (for when the position in undertain)
- * and single value when the position is known
- *
  * @param {object} props
- * @param {function} props.variant the position type
+ * @param {function} props.onChange change handler
+ * @param {bool} props.clearable can this position be removed/deleted/set to null
+ * @param {bool} props.disabled flag to indicate this field is disabled
+ * @param {bool} props.error indicates there is an outstanding error
+ * @param {string} props.helperText text to be displayed below the input field
+ * @param {string} props.label label to display above the field
+ * @param {object} props.value the initial value
+ * @param {string} props.name the form field name to pass up to the change handler
+ * @param {bool} props.required flag to indicate this field must be filled
+ * @param {string} props.variant the position class model name
  */
 const PositionForm = ({
   baseVariant,

@@ -19,13 +19,16 @@ const {
 
 
 /**
- * Handles the position form and toggle between range (for when the position in undertain)
- * and single value when the position is known
+ * Basic Position and Position with offset form
  *
  * @param {object} props
+ *
  * @param {function} props.onChange change handler
- * @param {string} props.coordinateType the position class to build the form on
- * @param {object} props.value the current start and end values of this position
+ * @param {string} props.variant the class model to use to build the form
+ * @param {object} props.value the initial value
+ * @param {string} props.name the form field name to pass up to the change handler
+ * @param {bool} props.required flag to indicate this field must be filled
+ * @param {bool} props.disabled flag to indicate this field is disabled
  */
 const BasicPositionForm = ({
   onChange,

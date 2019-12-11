@@ -153,7 +153,7 @@ class MainNav extends React.PureComponent {
           )}
           {hasWriteAccess(this.context) && (
             <MenuItem onClick={() => this.handleOpen('import')}>
-              <ListItemIcon> <InputIcon /> </ListItemIcon>
+              <ListItemIcon><InputIcon /></ListItemIcon>
               <ListItemText primary="Import" />
             </MenuItem>
           )}

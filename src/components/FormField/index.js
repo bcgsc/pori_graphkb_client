@@ -1,7 +1,6 @@
 import './index.scss';
 
 import {
-  ListItem,
   TextField,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
@@ -15,11 +14,11 @@ import api from '@/services/api';
 import schema from '@/services/schema';
 
 import BooleanField from './BooleanField';
-// unavoidable circular dependency below
-import EmbeddedRecord from './EmbeddedRecord';
+import FieldWrapper from './FieldWrapper';
 import FilteredRecordAutocomplete from './FilteredRecordAutocomplete';
 import PermissionsTable from './PermissionsTable';
-import EmbeddedListTable from './StatementReviewsTable';
+import PositionForm from './PositionForm';
+import StatementReviewsTable from './StatementReviewsTable';
 import TextArrayField from './TextArrayField';
 
 /**
@@ -34,7 +33,6 @@ import TextArrayField from './TextArrayField';
  * @param {Error} props.error the error object if any
  * @param {string} props.label the label to use for the form field (defaults to the property model name)
  * @param {string} props.variant the form variant to be passed down to embedded forms
- * @param {object} props.reviewProps object to be passed to EmbeddedListTable for review display
  * @param {object} props.innerProps props to pass to the inner form field element
  * @param {bool} props.formIsDirty flag to indicate changes have been made to the form content
  */
@@ -59,6 +57,7 @@ const FormField = (props) => {
     example,
     generateDefault,
     linkedClass,
+    linkedType,
     name,
     type,
     nullable,
@@ -116,64 +115,55 @@ const FormField = (props) => {
         value={value}
       />
     );
-  } else if (type.includes('embedded')) {
-    if (iterable) {
-      if (model.linkedClass && model.linkedClass.name === 'StatementReview') {
-        propComponent = (
-          <EmbeddedListTable
-            label={name}
-            name={name}
-            onChange={onChange}
-            values={value || []}
-            variant={variant}
-          />
-        );
-      } else {
-        propComponent = (
-          <TextArrayField
-            disabled={disabled || generated}
-            error={error}
-            helperText={helperText}
-            label={label || name}
-            model={model}
-            name={name}
-            onChange={onChange}
-            value={value}
-          />
-        );
-      }
-    } else if (model.linkedClass) {
-      if (model.linkedClass.name === 'Permissions') {
-        // permissions table of checkboxes
-        propComponent = (
-          <PermissionsTable
-            disabled={disabled || generated}
-            label={label || name}
-            model={model}
-            name={name}
-            onChange={onChange}
-            value={value}
-          />
-        );
-      } else {
-        const linkedModel = value && value['@class']
-          ? value['@class']
-          : model.linkedClass.name;
-
-        propComponent = (
-          <EmbeddedRecord
-            disabled={disabled}
-            errors={error}
-            helperText={helperText}
-            label={label || name}
-            modelName={linkedModel}
-            name={name}
-            onChange={onChange}
-            value={value}
-            variant={variant}
-          />
-        );
-      }
+  } else if (type.includes('embedded') && linkedType === 'string' && iterable) {
+    propComponent = (
+      <TextArrayField
+        disabled={disabled || generated}
+        error={error}
+        helperText={helperText}
+        label={label || name}
+        model={model}
+        name={name}
+        onChange={onChange}
+        value={value}
+      />
+    );
+  } else if (type.includes('embedded') && linkedClass) {
+    if (iterable && linkedClass.name === 'StatementReview') {
+      propComponent = (
+        <StatementReviewsTable
+          label={name}
+          name={name}
+          onChange={onChange}
+          values={value || []}
+          variant={variant}
+        />
+      );
+    } else if (linkedClass.name === 'Permissions') {
+      // permissions table of checkboxes
+      propComponent = (
+        <PermissionsTable
+          disabled={disabled || generated}
+          label={label || name}
+          model={model}
+          name={name}
+          onChange={onChange}
+          value={value}
+        />
+      );
+    } else if (linkedClass.name === 'Position') {
+      propComponent = (
+        <PositionForm
+          disabled={disabled}
+          error={error && formIsDirty}
+          helperText={helperText}
+          label={label || name}
+          name={name}
+          onChange={onChange}
+          value={value}
+          variant={value && value['@class']}
+        />
+      );
     }
   } else if (choices) {
     propComponent = (
@@ -254,7 +244,10 @@ const FormField = (props) => {
         />
       );
     }
-  } else {
+  }
+
+  if (!propComponent) {
+    // for lack of better option default to text field as catch all
     propComponent = (
       <TextField
         {...innerProps}
@@ -274,11 +267,9 @@ const FormField = (props) => {
   }
 
   return (
-    <ListItem key={name} className={`form-field form-field--${type} ${className}`} component="li">
-      <div className="form-field__content">
-        {propComponent}
-      </div>
-    </ListItem>
+    <FieldWrapper key={name} className={className} type={type}>
+      {propComponent}
+    </FieldWrapper>
   );
 };
 
@@ -301,6 +292,7 @@ FormField.propTypes = {
       displayName: PropTypes.string,
       isAbstract: PropTypes.bool,
     }),
+    linkedType: PropTypes.string,
     name: PropTypes.string,
     type: PropTypes.string,
     nullable: PropTypes.bool,

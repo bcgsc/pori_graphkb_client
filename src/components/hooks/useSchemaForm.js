@@ -87,8 +87,22 @@ const useSchemaForm = (initialFieldDefs, initialValue = {}, ignoreMandatoryError
     setFormIsDirty(true);
   }, [formValidator, setFormFieldContent, setFormFieldError]);
 
+  const updateFieldEvent = useCallback(({ target }) => {
+    // add the new value to the field
+    const eventName = target.name || target.getAttribute('name'); // name of the form field triggering the event
+    const eventValue = target.value;
+    updateField(eventName, eventValue);
+  }, [updateField]);
+
   return {
-    formContent, formErrors, updateField, formIsDirty, formHasErrors, setFormIsDirty, update,
+    formContent,
+    formErrors,
+    formHasErrors,
+    formIsDirty,
+    setFormIsDirty,
+    update,
+    updateField,
+    updateFieldEvent,
   };
 };
 

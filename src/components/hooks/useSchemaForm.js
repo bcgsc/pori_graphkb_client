@@ -74,7 +74,7 @@ const useSchemaForm = (initialFieldDefs, initialValue = {}, ignoreMandatoryError
   }, [initialValue || {}, fieldDefs || {}]);
 
   // provide an update callback which includes the validation step
-  const updateForm = useCallback((propName, propValue) => {
+  const updateField = useCallback((propName, propValue) => {
     const { value, error } = formValidator(propName, propValue);
 
     setFormFieldContent(propName, value);
@@ -87,7 +87,7 @@ const useSchemaForm = (initialFieldDefs, initialValue = {}, ignoreMandatoryError
   }, [formValidator, setFormFieldContent, setFormFieldError]);
 
   return {
-    formContent, formErrors, updateForm, formIsDirty, formHasErrors, setFormIsDirty,
+    formContent, formErrors, updateField, formIsDirty, formHasErrors, setFormIsDirty,
   };
 };
 

@@ -400,6 +400,32 @@ const recordId = (obj) => {
   return obj;
 };
 
+/**
+ * navigates to error view and saves previous locaton to history object.
+ */
+const handleErrorSaveLocation = (error, history, referrerLocation) => {
+  const { name, message } = error;
+  const { location: { pathname, search } } = history;
+
+  if (referrerLocation) {
+    const { pathname: savedPath, search: savedSearch } = referrerLocation;
+    history.push({
+      pathname: '/error',
+      state: {
+        from: { pathname: savedPath, search: savedSearch },
+        error: { name, message },
+      },
+    });
+  } else {
+    history.push({
+      pathname: '/error',
+      state: {
+        from: { pathname, search },
+        error: { name, message },
+      },
+    });
+  }
+};
 
 export default {
   antiCamelCase,
@@ -407,6 +433,7 @@ export default {
   getTSVRepresentation,
   parsePayload,
   getPallette,
+  handleErrorSaveLocation,
   expanded,
   positionInit,
   parsePermission,

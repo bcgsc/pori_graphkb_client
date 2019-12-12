@@ -5,10 +5,13 @@ import {
   Typography,
 } from '@material-ui/core';
 import { titleCase } from 'change-case';
+import PropTypes from 'prop-types';
 import React, {
   useCallback, useContext,
   useEffect, useRef, useState,
 } from 'react';
+
+import handleErrorSaveLocation from '@/services/util';
 
 import SearchBox from '../../components/SearchBox';
 import api from '../../services/api';
@@ -31,7 +34,8 @@ const createPubmedQuery = pmid => api.post('/query', {
 });
 
 
-const ImportPubmedView = () => {
+const ImportPubmedView = (props) => {
+  const { history } = props;
   const snackbar = useContext(SnackbarContext);
   const [errorText, setErrorText] = useState('');
   const [pmid, setPmid] = useState('');
@@ -47,14 +51,19 @@ const ImportPubmedView = () => {
 
     const fetchRecord = async () => {
       call = api.post('/query', { target: 'Source', filters: { name: 'pubmed' } });
-      const [record] = await call.request();
-      setSource(record['@rid']);
+
+      try {
+        const [record] = await call.request();
+        setSource(record['@rid']);
+      } catch (err) {
+        handleErrorSaveLocation(err, history);
+      }
     };
 
     fetchRecord();
 
     return () => call && call.abort();
-  }, []);
+  }, [history]);
 
   // fetch records that already exist in GraphKB
   useEffect(() => {
@@ -63,15 +72,20 @@ const ImportPubmedView = () => {
     const fetchRecords = async () => {
       if (pmid) {
         call = createPubmedQuery(pmid);
-        const records = await call.request();
-        setCurrentRecords(records);
+
+        try {
+          const records = await call.request();
+          setCurrentRecords(records);
+        } catch (err) {
+          handleErrorSaveLocation(err, history);
+        }
       }
     };
 
     fetchRecords();
 
     return () => call && call.abort();
-  }, [pmid]);
+  }, [history, pmid]);
 
   useEffect(() => {
     controllers.current.forEach(c => c && c.abort());
@@ -80,16 +94,20 @@ const ImportPubmedView = () => {
   // fetch records that do not already exist in GraphKB
   const handleImport = useCallback(async () => {
     if (pmid && currentRecords && currentRecords.length === 0) {
-      const call = api.get(`/extensions/pubmed/${pmid}`);
-      controllers.current.push(call);
-      const record = await call.request();
-      const newCall = api.post('/publications', { ...record, source });
-      controllers.current.push(newCall);
-      const result = await newCall.request();
-      snackbar.add(`created the new publication record ${result['@rid']}`);
-      setCurrentRecords([result]);
+      try {
+        const call = api.get(`/extensions/pubmed/${pmid}`);
+        controllers.current.push(call);
+        const record = await call.request();
+        const newCall = api.post('/publications', { ...record, source });
+        controllers.current.push(newCall);
+        const result = await newCall.request();
+        snackbar.add(`created the new publication record ${result['@rid']}`);
+        setCurrentRecords([result]);
+      } catch (err) {
+        handleErrorSaveLocation(err, history);
+      }
     }
-  }, [pmid, currentRecords, source, snackbar]);
+  }, [pmid, currentRecords, source, snackbar, history]);
 
   const handleTextChange = (value) => {
     if (/^\d*$/.exec(`${value}`)) {
@@ -132,6 +150,10 @@ const ImportPubmedView = () => {
       )}
     </div>
   );
+};
+
+ImportPubmedView.propTypes = {
+  history: PropTypes.object.isRequired,
 };
 
 export default ImportPubmedView;

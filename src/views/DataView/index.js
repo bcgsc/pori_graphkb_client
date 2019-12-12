@@ -184,7 +184,9 @@ class DataView extends React.Component {
   @boundMethod
   handleError(err) {
     const { history } = this.props;
-    history.push('/error', { error: { name: err.name, message: err.message } });
+    const { search } = this.state;
+
+    util.handleErrorSaveLocation(err, history, { pathname: '/data/table', search });
   }
 
   @boundMethod

@@ -10,6 +10,7 @@ import {
   getReferrerUri, isAuthenticated, isAuthorized,
   keycloak, login,
 } from '@/services/auth';
+import handleErrorSaveLocation from '@/services/util';
 import config from '@/static/config';
 
 const {
@@ -43,14 +44,26 @@ class LoginView extends React.Component {
     const {
       setAuthorizationToken, setAuthenticationToken,
     } = this.context;
-    const { history, location } = this.props;
+    const { history, location, location: { state } } = this.props;
+    let pathname;
+    let search;
+
+    if (state) {
+      pathname = state.pathname;
+      search = state.search;
+    }
     let from;
 
     try {
       from = location.state.from.pathname + location.state.from.search;
     } catch (err) {
-      from = getReferrerUri() || '/query';
+      try {
+        from = location.pathname + location.search;
+      } catch (error) {
+        from = getReferrerUri() || '/query';
+      }
     }
+
 
     if (!isAuthenticated(this.context)) {
       try {
@@ -80,11 +93,25 @@ class LoginView extends React.Component {
       } catch (error) {
         // redirect to the error page
         console.error(error);
-        history.push('/error', { error: error.toJSON() });
+        handleErrorSaveLocation({ error: error.toJSON() }, history);
         return;
       }
     }
-    history.push(from);
+    const savedState = localStorage.getItem('savedLocation');
+
+    if (savedState) {
+      const savedPath = localStorage.getItem('savedPathname');
+      const savedSearch = localStorage.getItem('savedSearch');
+      localStorage.removeItem('savedLocation');
+      localStorage.removeItem('savedPathname');
+      localStorage.removeItem('savedSearch');
+      history.push({
+        pathname: savedPath,
+        search: savedSearch,
+      });
+    } else {
+      history.push(from);
+    }
   }
 
   componentWillUnmount() {

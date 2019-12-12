@@ -34,6 +34,7 @@ const useSchemaForm = (initialFieldDefs, initialValue = {}, ignoreMandatoryError
     content: formContent,
     updateField: setFormFieldContent,
     replace: replaceContent,
+    update,
   } = useObject(initialValue);
 
   const {
@@ -87,7 +88,7 @@ const useSchemaForm = (initialFieldDefs, initialValue = {}, ignoreMandatoryError
   }, [formValidator, setFormFieldContent, setFormFieldError]);
 
   return {
-    formContent, formErrors, updateField, formIsDirty, formHasErrors, setFormIsDirty,
+    formContent, formErrors, updateField, formIsDirty, formHasErrors, setFormIsDirty, update,
   };
 };
 

@@ -1,4 +1,4 @@
-import kbSchema from '@bcgsc/knowledgebase-schema';
+import kbSchema, { Property } from '@bcgsc/knowledgebase-schema';
 import { boundMethod } from 'autobind-decorator';
 
 import { getQueryFromSearch } from './api/search';
@@ -314,7 +314,7 @@ class Schema {
         if (propModel.type === 'link') {
           valueToValidate = value['@rid'] || value;
         }
-        propModel.validate(valueToValidate);
+        Property.validateWith(propModel, valueToValidate);
         return { value };
       } catch (err) {
         return { error: err, value };

@@ -6,8 +6,19 @@ import React from 'react';
 
 import { KBContext } from '@/components/KBContext';
 import * as api from '@/services/api';
+// navSpy is not included in module, but needed to check if handler was called correctly
+// eslint-disable-next-line import/named
+import { navSpy } from '@/views/DataView/util';
 
 import RecordForm from '..';
+
+jest.mock('@/views/DataView/util', () => {
+  const mockGraphNavSpy = jest.fn();
+  return {
+    navigateToGraphview: mockGraphNavSpy,
+    navSpy: mockGraphNavSpy,
+  };
+});
 
 jest.mock('@/services/auth', () => ({
   getUser: () => '23:9',
@@ -87,9 +98,12 @@ describe('RecordForm', () => {
   describe('view variant', () => {
     let getByText;
     let queryByText;
+    let getByTestId;
 
     beforeEach(() => {
-      ({ getByText, queryByText } = render(
+      ({
+        getByText, queryByText, getByTestId,
+      } = render(
         <KBContext.Provider value={{ }}>
           <SnackbarProvider value={{ add: snackbarSpy }}>
             <RecordForm
@@ -124,6 +138,12 @@ describe('RecordForm', () => {
     test('no submit button', () => {
       expect(queryByText('SUBMIT')).not.toBeInTheDocument();
       expect(queryByText('SUBMIT CHANGES')).not.toBeInTheDocument();
+    });
+
+    test('triggers graphview navigation on graphview icon click', () => {
+      const graphviewBtn = getByTestId('graph-view');
+      fireEvent.click(graphviewBtn);
+      expect(navSpy).toHaveBeenCalledTimes(1);
     });
   });
 

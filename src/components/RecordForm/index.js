@@ -266,7 +266,8 @@ const RecordForm = ({
             <div className="header-action-buttons__graphview">
               <Tooltip title="click here for graphview">
                 <IconButton
-                  onClick={() => navigateToGraphview([formContent['@rid']], history, () => {})}
+                  data-testid="graph-view"
+                  onClick={() => navigateToGraphview([formContent['@rid']], history, onError)}
                 >
                   <TimelineIcon
                     color="secondary"

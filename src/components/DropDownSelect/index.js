@@ -1,5 +1,5 @@
 /**
- * @module /components/ResourceSelectComponent
+ * @module /components/DropDownSelect
  */
 import './index.scss';
 
@@ -45,7 +45,7 @@ const DefaultOptionComponent = (resource, disabled) => (
  * Component to select resources from a list of defined options.
  * @param {Object} props - Properties passed in by parent component.
  */
-function ResourceSelectComponent(props) {
+function DropDownSelect(props) {
   const {
     resources,
     value,
@@ -135,7 +135,7 @@ const SelectOptionPropType = PropTypes.shape({
  * @property {string} variant - Material UI Select variant (outlined, filled, standard)
  */
 
-ResourceSelectComponent.propTypes = {
+DropDownSelect.propTypes = {
   IconComponent: PropTypes.element,
   children: PropTypes.func,
   className: PropTypes.string,
@@ -154,7 +154,7 @@ ResourceSelectComponent.propTypes = {
   variant: PropTypes.string,
 };
 
-ResourceSelectComponent.defaultProps = {
+DropDownSelect.defaultProps = {
   children: DefaultOptionComponent,
   resources: [],
   onChange: null,
@@ -173,4 +173,4 @@ ResourceSelectComponent.defaultProps = {
   IconComponent: ArrowDropDownIcon,
 };
 
-export default ResourceSelectComponent;
+export default DropDownSelect;

@@ -16,7 +16,7 @@ import HelpIcon from '@material-ui/icons/Help';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
-import ResourceSelectComponent from '@/components/ResourceSelectComponent';
+import DropDownSelect from '@/components/DropDownSelect';
 import config from '@/static/config';
 
 const { GRAPH_ADVANCED, GRAPH_MAIN } = config.DESCRIPTIONS;
@@ -133,7 +133,7 @@ function GraphOptionsPanel(props) {
         </DialogTitle>
         <DialogContent>
           <div className="main-options-wrapper">
-            <ResourceSelectComponent
+            <DropDownSelect
               className="graph-option"
               disabled={graphOptions.nodePreview}
               label="Label nodes by"
@@ -161,7 +161,7 @@ function GraphOptionsPanel(props) {
                 label="Label nodes by preview"
               />
             </FormControl>
-            <ResourceSelectComponent
+            <DropDownSelect
               className="graph-option"
               label="Color nodes by"
               name="nodesColor"
@@ -191,7 +191,7 @@ function GraphOptionsPanel(props) {
             </FormControl>
           </div>
           <div className="main-options-wrapper">
-            <ResourceSelectComponent
+            <DropDownSelect
               className="graph-option"
               disabled={linkLegendDisabled}
               label="Label edges by"
@@ -200,7 +200,7 @@ function GraphOptionsPanel(props) {
               resources={['', '@class', '@rid', 'source.name']}
               value={graphOptions.linkLabelProp}
             />
-            <ResourceSelectComponent
+            <DropDownSelect
               className="graph-option"
               disabled={linkLegendDisabled}
               label="Color edges by"

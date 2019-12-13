@@ -2,7 +2,7 @@ import { FormControl } from '@material-ui/core';
 import { mount } from 'enzyme';
 import React from 'react';
 
-import ResourceSelectComponent from '..';
+import DropDownSelect from '..';
 
 const mockData = [
   { name: 'opt-1', '@rid': '#1' },
@@ -12,13 +12,13 @@ const mockData = [
   { name: 'opt-5', '@rid': '#5' },
 ];
 
-describe('<ResourceSelectComponent />', () => {
+describe('<DropDownSelect />', () => {
   let wrapper;
   const val = 'best';
 
   test('renders FormControl child correctly', () => {
     wrapper = mount(
-      <ResourceSelectComponent
+      <DropDownSelect
         resources={mockData}
         value={val}
       />,
@@ -28,7 +28,7 @@ describe('<ResourceSelectComponent />', () => {
 
   test('props are passed down correctly', () => {
     wrapper = mount(
-      <ResourceSelectComponent
+      <DropDownSelect
         name="test"
         resources={mockData}
         value={val}

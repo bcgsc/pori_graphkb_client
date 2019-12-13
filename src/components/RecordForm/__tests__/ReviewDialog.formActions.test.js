@@ -23,7 +23,7 @@ jest.mock('@bcgsc/react-snackbar-provider', () => {
 });
 
 /* eslint-disable react/prop-types */
-jest.mock('../../ResourceSelectComponent', () => ({
+jest.mock('../../DropDownSelect', () => ({
   resources = [], value, onChange, name,
 }) => {
   const handleChange = (event) => {

@@ -11,7 +11,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
-import ResourceSelect from '@/components/ResourceSelectComponent';
+import ResourceSelect from '@/components/DropDownSelect';
 
 import BasicPosition from './BasicPosition';
 import CytobandPosition from './CytobandPosition';

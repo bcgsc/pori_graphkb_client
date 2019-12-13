@@ -24,7 +24,7 @@ jest.mock('@/components/RecordAutocomplete', () => (({
   );
 }));
 
-jest.mock('@/components/ResourceSelectComponent', () => (({
+jest.mock('@/components/DropDownSelect', () => (({
   resources = [], value, onChange, className,
 }) => {
   const handleChange = (event) => {

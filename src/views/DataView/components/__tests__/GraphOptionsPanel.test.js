@@ -11,7 +11,7 @@ import GraphOptionsPanel from '../GraphComponent/GraphOptionsPanel/GraphOptionsP
 import { GraphOptions, PropsMap } from '../GraphComponent/kbgraph';
 
 /* eslint-disable react/prop-types */
-jest.mock('../../../../components/ResourceSelectComponent', () => ({
+jest.mock('../../../../components/DropDownSelect', () => ({
   resources = [], value, onChange, name,
 }) => {
   const handleChange = (event) => {

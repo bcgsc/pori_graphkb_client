@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 
 import RecordAutocomplete from '@/components/RecordAutocomplete';
-import ResourceSelectComponent from '@/components/ResourceSelectComponent';
+import DropDownSelect from '@/components/DropDownSelect';
 import api from '@/services/api';
 import schema from '@/services/schema';
 
@@ -69,7 +69,7 @@ const FilteredRecordAutocomplete = ({
     <FormControl className="filtered-record-autocomplete" disabled={disabled} error={error}>
       <div className="filtered-record-autocomplete__content">
         {!disabled && (
-          <ResourceSelectComponent
+          <DropDownSelect
             className="node-form__class-select filtered-record-autocomplete__select-search-class"
             IconComponent={FilterIcon}
             label={`Filter (${name}) Search by Class`}

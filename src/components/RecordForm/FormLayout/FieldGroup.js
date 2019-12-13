@@ -5,6 +5,23 @@ import React from 'react';
 import FormField from '@/components/FormField';
 import { FORM_VARIANT } from '@/components/util';
 
+/**
+ * returns an array of strings without any of the indicated exclusion values
+ *
+ * @param {Array.<string>} orderingList specifies property display ordering
+ * @param {Array.<string>} exclusions fields that should not be rendered
+ */
+const exclusionFilter = (orderingList, exclusionList) => {
+  const newOrdering = [];
+  orderingList.forEach((filter) => {
+    if (Array.isArray(filter)) {
+      newOrdering.push(exclusionFilter(filter, exclusionList));
+    } else if (!exclusionList.includes(filter)) {
+      newOrdering.push(filter);
+    }
+  });
+  return newOrdering;
+};
 
 /**
  * Given some ordering of fields (possibly grouped) return the set of fields
@@ -13,10 +30,14 @@ import { FORM_VARIANT } from '@/components/util';
  * @param {Array.<Array.<string>|string>} props.ordering the property names in order to be rendered (array of array of strings for groups)
  * @param {Object} content the form content keyed by property name
  * @param {Object} errors form errors keyed by property name
+ * @param {Array.<string>} exclusions fields to be excluded from rendering
  * @param {function} onChange parent form handler to pass to fields
+ * @param {bool} formIsDirty if the form has been modified at all
+ * @param {String} variant one of ['new', 'edit', 'search]
+ * @param {bool} disabled if field should be disabled
  */
 const FieldGroup = ({
-  model, ordering, content, errors, variant, onChange, disabled, formIsDirty,
+  model, ordering, content, errors, exclusions, variant, onChange, disabled, formIsDirty,
 }) => {
   const { properties: { out, in: tgt, ...properties } } = model;
 
@@ -47,6 +68,8 @@ const FieldGroup = ({
   if ((variant === FORM_VARIANT.EDIT || variant === FORM_VARIANT.NEW)) {
     filteredOrdering = filterGeneratedFields(ordering);
   }
+  filteredOrdering = exclusionFilter(filteredOrdering, exclusions);
+
 
   filteredOrdering.forEach((item) => {
     if (Array.isArray(item)) { // subgrouping
@@ -100,6 +123,7 @@ FieldGroup.propTypes = {
   content: PropTypes.object,
   disabled: PropTypes.bool,
   errors: PropTypes.object,
+  exclusions: PropTypes.arrayOf(PropTypes.string),
   formIsDirty: PropTypes.bool,
   variant: PropTypes.string,
 };
@@ -107,6 +131,7 @@ FieldGroup.propTypes = {
 FieldGroup.defaultProps = {
   content: {},
   errors: {},
+  exclusions: [],
   disabled: false,
   variant: FORM_VARIANT.VIEW,
   formIsDirty: true,

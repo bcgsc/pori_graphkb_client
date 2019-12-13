@@ -26,6 +26,7 @@ import EdgeTable from './EdgeTable';
 import FormLayout from './FormLayout';
 import ReviewDialog from './ReviewDialog';
 
+const FIELD_EXCLUSIONS = ['groupRestrictions'];
 
 const cleanPayload = (payload) => {
   if (typeof payload !== 'object' || payload === null) {
@@ -54,7 +55,6 @@ const cleanPayload = (payload) => {
   });
   return newPayload;
 };
-
 
 /**
  * Form/View that displays the contents of a single node
@@ -94,7 +94,6 @@ const RecordForm = ({
   const {
     formIsDirty, setFormIsDirty, formContent, formErrors, updateForm, formHasErrors,
   } = useSchemaForm(fieldDefs, initialValue);
-
 
   useEffect(() => () => controllers.map(c => c.abort()), []); // eslint-disable-line
 
@@ -283,6 +282,7 @@ const RecordForm = ({
         content={formContent}
         disabled={actionInProgress || variant === FORM_VARIANT.VIEW}
         errors={formErrors}
+        exclusions={FIELD_EXCLUSIONS}
         formIsDirty={formIsDirty}
         modelName={modelName}
         onChange={handleOnChange}

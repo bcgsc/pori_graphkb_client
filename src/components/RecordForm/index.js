@@ -3,9 +3,11 @@ import './index.scss';
 import { SnackbarContext } from '@bcgsc/react-snackbar-provider';
 import {
   Button, CircularProgress,
-  Paper, Typography,
+  IconButton,
+  Paper, Tooltip, Typography,
 } from '@material-ui/core';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
+import TimelineIcon from '@material-ui/icons/Timeline';
 import PropTypes from 'prop-types';
 import React, {
   useCallback,
@@ -258,6 +260,19 @@ const RecordForm = ({
             Add Review
           </Button>
           ))}
+          {variant === FORM_VARIANT.VIEW && (
+            <div className="header-action-buttons__graphview">
+              <Tooltip title="click here for graphview">
+                <IconButton
+                  onClick={() => console.log('jumping meow')}
+                >
+                  <TimelineIcon
+                    color="secondary"
+                  />
+                </IconButton>
+              </Tooltip>
+            </div>
+          )}
           {onTopClick && (variant === FORM_VARIANT.VIEW || variant === FORM_VARIANT.EDIT) && (
           <ToggleButtonGroup
             message="Are you sure? You will lose your changes."
